@@ -17,7 +17,6 @@ import 'package:aves/widgets/home_page.dart';
 import 'package:aves/widgets/welcome_page.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -44,6 +43,7 @@ class _AvesAppState extends State<AvesApp> {
   List<NavigatorObserver> _navigatorObservers = [];
   final EventChannel _mediaStoreChangeChannel = const EventChannel('deckers.thibault/aves/mediastorechange');
   final EventChannel _newIntentChannel = const EventChannel('deckers.thibault/aves/intent');
+  final EventChannel _errorChannel = const EventChannel('deckers.thibault/aves/error');
   final GlobalKey<NavigatorState> _navigatorKey = GlobalKey(debugLabel: 'app-navigator');
 
   Widget getFirstPage({Map? intentData}) => settings.hasAcceptedTerms ? HomePage(intentData: intentData) : const WelcomePage();
@@ -52,10 +52,10 @@ class _AvesAppState extends State<AvesApp> {
   void initState() {
     super.initState();
     EquatableConfig.stringify = true;
-    initPlatformServices();
     _appSetup = _setup();
     _mediaStoreChangeChannel.receiveBroadcastStream().listen((event) => _onMediaStoreChange(event as String?));
     _newIntentChannel.receiveBroadcastStream().listen((event) => _onNewIntent(event as Map?));
+    _errorChannel.receiveBroadcastStream().listen((event) => _onError(event as String?));
   }
 
   @override
@@ -124,18 +124,17 @@ class _AvesAppState extends State<AvesApp> {
 
   Future<void> _setup() async {
     await Firebase.initializeApp().then((app) {
-      final crashlytics = FirebaseCrashlytics.instance;
-      FlutterError.onError = crashlytics.recordFlutterError;
-      crashlytics.setCustomKey('locales', window.locales.join(', '));
+      FlutterError.onError = reportService.recordFlutterError;
       final now = DateTime.now();
-      crashlytics.setCustomKey('timezone', '${now.timeZoneName} (${now.timeZoneOffset})');
-      crashlytics.setCustomKey(
-          'build_mode',
-          kReleaseMode
-              ? 'release'
-              : kProfileMode
-                  ? 'profile'
-                  : 'debug');
+      reportService.setCustomKeys({
+        'locales': window.locales.join(', '),
+        'time_zone': '${now.timeZoneName} (${now.timeZoneOffset})',
+        'build_mode': kReleaseMode
+            ? 'release'
+            : kProfileMode
+                ? 'profile'
+                : 'debug',
+      });
     });
     await settings.init();
     await settings.initFirebase();
@@ -150,7 +149,7 @@ class _AvesAppState extends State<AvesApp> {
     // do not reset when relaunching the app
     if (appModeNotifier.value == AppMode.main && (intentData == null || intentData.isEmpty == true)) return;
 
-    FirebaseCrashlytics.instance.log('New intent');
+    reportService.log('New intent');
     _navigatorKey.currentState!.pushReplacement(DirectMaterialPageRoute(
       settings: const RouteSettings(name: HomePage.routeName),
       builder: (_) => getFirstPage(intentData: intentData),
@@ -171,4 +170,6 @@ class _AvesAppState extends State<AvesApp> {
       });
     }
   }
+
+  void _onError(String? error) => reportService.recordError(error, null);
 }

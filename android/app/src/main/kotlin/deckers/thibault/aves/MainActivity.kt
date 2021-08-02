@@ -47,6 +47,7 @@ class MainActivity : FlutterActivity() {
 
         val messenger = flutterEngine!!.dartExecutor.binaryMessenger
 
+        // dart -> platform -> dart
         MethodChannel(messenger, AppAdapterHandler.CHANNEL).setMethodCallHandler(AppAdapterHandler(this))
         MethodChannel(messenger, AppShortcutHandler.CHANNEL).setMethodCallHandler(AppShortcutHandler(this))
         MethodChannel(messenger, DebugHandler.CHANNEL).setMethodCallHandler(DebugHandler(this))
@@ -61,12 +62,13 @@ class MainActivity : FlutterActivity() {
         MethodChannel(messenger, TimeHandler.CHANNEL).setMethodCallHandler(TimeHandler())
         MethodChannel(messenger, WindowHandler.CHANNEL).setMethodCallHandler(WindowHandler(this))
 
+        // result streaming: dart -> platform ->->-> dart
         StreamsChannel(messenger, ImageByteStreamHandler.CHANNEL).setStreamHandlerFactory { args -> ImageByteStreamHandler(this, args) }
         StreamsChannel(messenger, ImageOpStreamHandler.CHANNEL).setStreamHandlerFactory { args -> ImageOpStreamHandler(this, args) }
         StreamsChannel(messenger, MediaStoreStreamHandler.CHANNEL).setStreamHandlerFactory { args -> MediaStoreStreamHandler(this, args) }
         StreamsChannel(messenger, StorageAccessStreamHandler.CHANNEL).setStreamHandlerFactory { args -> StorageAccessStreamHandler(this, args) }
 
-        // Media Store change monitoring
+        // change monitoring: platform -> dart
         mediaStoreChangeStreamHandler = MediaStoreChangeStreamHandler(this).apply {
             EventChannel(messenger, MediaStoreChangeStreamHandler.CHANNEL).setStreamHandler(this)
         }
@@ -75,9 +77,11 @@ class MainActivity : FlutterActivity() {
         }
 
         // intent handling
+        // notification: platform -> dart
         intentStreamHandler = IntentStreamHandler().apply {
             EventChannel(messenger, IntentStreamHandler.CHANNEL).setStreamHandler(this)
         }
+        // detail fetch: dart -> platform
         intentDataMap = extractIntentData(intent)
         MethodChannel(messenger, VIEWER_CHANNEL).setMethodCallHandler { call, result ->
             when (call.method) {
@@ -87,6 +91,11 @@ class MainActivity : FlutterActivity() {
                 }
                 "pick" -> pick(call)
             }
+        }
+
+        // notification: platform -> dart
+        errorStreamHandler = ErrorStreamHandler().apply {
+            EventChannel(messenger, ErrorStreamHandler.CHANNEL).setStreamHandler(this)
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
@@ -243,6 +252,10 @@ class MainActivity : FlutterActivity() {
                 handler.onDenied()
             }
         }
+
+        var errorStreamHandler: ErrorStreamHandler? = null
+
+        fun notifyError(error: String) = errorStreamHandler?.notifyError(error)
     }
 }
 

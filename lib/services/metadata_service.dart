@@ -3,7 +3,7 @@ import 'package:aves/model/metadata.dart';
 import 'package:aves/model/multipage.dart';
 import 'package:aves/model/panorama.dart';
 import 'package:aves/services/service_policy.dart';
-import 'package:flutter/foundation.dart';
+import 'package:aves/services/services.dart';
 import 'package:flutter/services.dart';
 
 abstract class MetadataService {
@@ -36,7 +36,7 @@ class PlatformMetadataService implements MetadataService {
       });
       if (result != null) return result as Map;
     } on PlatformException catch (e) {
-      debugPrint('getAllMetadata failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+      await reportService.recordChannelError('getAllMetadata', e);
     }
     return {};
   }
@@ -66,7 +66,7 @@ class PlatformMetadataService implements MetadataService {
         result['contentId'] = entry.contentId;
         return CatalogMetadata.fromMap(result);
       } on PlatformException catch (e) {
-        debugPrint('getCatalogMetadata failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+        await reportService.recordChannelError('getCatalogMetadata', e);
       }
       return null;
     }
@@ -92,7 +92,7 @@ class PlatformMetadataService implements MetadataService {
       }) as Map;
       return OverlayMetadata.fromMap(result);
     } on PlatformException catch (e) {
-      debugPrint('getOverlayMetadata failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+      await reportService.recordChannelError('getOverlayMetadata', e);
     }
     return null;
   }
@@ -114,7 +114,7 @@ class PlatformMetadataService implements MetadataService {
       }
       return MultiPageInfo.fromPageMaps(entry, pageMaps);
     } on PlatformException catch (e) {
-      debugPrint('getMultiPageInfo failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+      await reportService.recordChannelError('getMultiPageInfo', e);
     }
     return null;
   }
@@ -132,7 +132,7 @@ class PlatformMetadataService implements MetadataService {
       }) as Map;
       return PanoramaInfo.fromMap(result);
     } on PlatformException catch (e) {
-      debugPrint('PanoramaInfo failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+      await reportService.recordChannelError('PanoramaInfo', e);
     }
     return null;
   }
@@ -146,7 +146,7 @@ class PlatformMetadataService implements MetadataService {
         'prop': prop,
       });
     } on PlatformException catch (e) {
-      debugPrint('getContentResolverProp failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+      await reportService.recordChannelError('getContentResolverProp', e);
     }
     return null;
   }

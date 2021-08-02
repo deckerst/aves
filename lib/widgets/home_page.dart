@@ -17,7 +17,6 @@ import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
 import 'package:aves/widgets/search/search_page.dart';
 import 'package:aves/widgets/viewer/entry_viewer_page.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -106,7 +105,7 @@ class _HomePageState extends State<HomePage> {
       }
     }
     context.read<ValueNotifier<AppMode>>().value = appMode;
-    unawaited(FirebaseCrashlytics.instance.setCustomKey('app_mode', appMode.toString()));
+    unawaited(reportService.setCustomKey('app_mode', appMode.toString()));
 
     if (appMode != AppMode.view) {
       final source = context.read<CollectionSource>();

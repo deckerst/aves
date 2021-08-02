@@ -10,7 +10,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.request.RequestOptions
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
-import deckers.thibault.aves.channel.calls.Coresult.Companion.safesus
+import deckers.thibault.aves.channel.calls.Coresult.Companion.safeSuspend
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.utils.BitmapUtils.getBytes
 import deckers.thibault.aves.utils.LogUtils
@@ -29,35 +29,13 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
             "getPackages" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getPackages) }
-            "getAppIcon" -> GlobalScope.launch(Dispatchers.IO) { safesus(call, result, ::getAppIcon) }
+            "getAppIcon" -> GlobalScope.launch(Dispatchers.IO) { safeSuspend(call, result, ::getAppIcon) }
             "copyToClipboard" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::copyToClipboard) }
-            "edit" -> {
-                val title = call.argument<String>("title")
-                val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
-                val mimeType = call.argument<String>("mimeType")
-                result.success(edit(title, uri, mimeType))
-            }
-            "open" -> {
-                val title = call.argument<String>("title")
-                val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
-                val mimeType = call.argument<String>("mimeType")
-                result.success(open(title, uri, mimeType))
-            }
-            "openMap" -> {
-                val geoUri = call.argument<String>("geoUri")?.let { Uri.parse(it) }
-                result.success(openMap(geoUri))
-            }
-            "setAs" -> {
-                val title = call.argument<String>("title")
-                val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
-                val mimeType = call.argument<String>("mimeType")
-                result.success(setAs(title, uri, mimeType))
-            }
-            "share" -> {
-                val title = call.argument<String>("title")
-                val urisByMimeType = call.argument<Map<String, List<String>>>("urisByMimeType")!!
-                result.success(shareMultiple(title, urisByMimeType))
-            }
+            "edit" -> safe(call, result, ::edit)
+            "open" -> safe(call, result, ::open)
+            "openMap" -> safe(call, result, ::openMap)
+            "setAs" -> safe(call, result, ::setAs)
+            "share" -> safe(call, result, ::share)
             else -> result.notImplemented()
         }
     }
@@ -173,77 +151,113 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
         }
     }
 
-    private fun edit(title: String?, uri: Uri?, mimeType: String?): Boolean {
-        uri ?: return false
+    private fun edit(call: MethodCall, result: MethodChannel.Result) {
+        val title = call.argument<String>("title")
+        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        val mimeType = call.argument<String>("mimeType")
+        if (uri == null) {
+            result.error("edit-args", "failed because of missing arguments", null)
+            return
+        }
 
         val intent = Intent(Intent.ACTION_EDIT)
             .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
             .setDataAndType(getShareableUri(uri), mimeType)
-        return safeStartActivityChooser(title, intent)
+        val started = safeStartActivityChooser(title, intent)
+
+        result.success(started)
     }
 
-    private fun open(title: String?, uri: Uri?, mimeType: String?): Boolean {
-        uri ?: return false
+    private fun open(call: MethodCall, result: MethodChannel.Result) {
+        val title = call.argument<String>("title")
+        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        val mimeType = call.argument<String>("mimeType")
+        if (uri == null) {
+            result.error("open-args", "failed because of missing arguments", null)
+            return
+        }
 
         val intent = Intent(Intent.ACTION_VIEW)
             .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             .setDataAndType(getShareableUri(uri), mimeType)
-        return safeStartActivityChooser(title, intent)
+        val started = safeStartActivityChooser(title, intent)
+
+        result.success(started)
     }
 
-    private fun openMap(geoUri: Uri?): Boolean {
-        geoUri ?: return false
+    private fun openMap(call: MethodCall, result: MethodChannel.Result) {
+        val geoUri = call.argument<String>("geoUri")?.let { Uri.parse(it) }
+        if (geoUri == null) {
+            result.error("openMap-args", "failed because of missing arguments", null)
+            return
+        }
 
         val intent = Intent(Intent.ACTION_VIEW, geoUri)
-        return safeStartActivity(intent)
+        val started = safeStartActivity(intent)
+
+        result.success(started)
     }
 
-    private fun setAs(title: String?, uri: Uri?, mimeType: String?): Boolean {
-        uri ?: return false
+    private fun setAs(call: MethodCall, result: MethodChannel.Result) {
+        val title = call.argument<String>("title")
+        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        val mimeType = call.argument<String>("mimeType")
+        if (uri == null) {
+            result.error("setAs-args", "failed because of missing arguments", null)
+            return
+        }
 
         val intent = Intent(Intent.ACTION_ATTACH_DATA)
             .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             .setDataAndType(getShareableUri(uri), mimeType)
-        return safeStartActivityChooser(title, intent)
+        val started = safeStartActivityChooser(title, intent)
+
+        result.success(started)
     }
 
-    private fun shareSingle(title: String?, uri: Uri, mimeType: String): Boolean {
-        val intent = Intent(Intent.ACTION_SEND)
-            .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            .setType(mimeType)
-            .putExtra(Intent.EXTRA_STREAM, getShareableUri(uri))
-        return safeStartActivityChooser(title, intent)
-    }
-
-    private fun shareMultiple(title: String?, urisByMimeType: Map<String, List<String>>?): Boolean {
-        urisByMimeType ?: return false
+    private fun share(call: MethodCall, result: MethodChannel.Result) {
+        val title = call.argument<String>("title")
+        val urisByMimeType = call.argument<Map<String, List<String>>>("urisByMimeType")
+        if (urisByMimeType == null) {
+            result.error("setAs-args", "failed because of missing arguments", null)
+            return
+        }
 
         val uriList = ArrayList(urisByMimeType.values.flatten().mapNotNull { Uri.parse(it) })
         val mimeTypes = urisByMimeType.keys.toTypedArray()
 
         // simplify share intent for a single item, as some apps can handle one item but not more
-        if (uriList.size == 1) {
-            return shareSingle(title, uriList.first(), mimeTypes.first())
-        }
+        val started = if (uriList.size == 1) {
+            val uri = uriList.first()
+            val mimeType = mimeTypes.first()
 
-        var mimeType = "*/*"
-        if (mimeTypes.size == 1) {
-            // items have the same mime type & subtype
-            mimeType = mimeTypes.first()
+            val intent = Intent(Intent.ACTION_SEND)
+                .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                .setType(mimeType)
+                .putExtra(Intent.EXTRA_STREAM, getShareableUri(uri))
+            safeStartActivityChooser(title, intent)
         } else {
-            // items have different subtypes
-            val mimeTypeTypes = mimeTypes.map { it.split("/") }.distinct()
-            if (mimeTypeTypes.size == 1) {
-                // items have the same mime type
-                mimeType = "${mimeTypeTypes.first()}/*"
+            var mimeType = "*/*"
+            if (mimeTypes.size == 1) {
+                // items have the same mime type & subtype
+                mimeType = mimeTypes.first()
+            } else {
+                // items have different subtypes
+                val mimeTypeTypes = mimeTypes.map { it.split("/") }.distinct()
+                if (mimeTypeTypes.size == 1) {
+                    // items have the same mime type
+                    mimeType = "${mimeTypeTypes.first()}/*"
+                }
             }
+
+            val intent = Intent(Intent.ACTION_SEND_MULTIPLE)
+                .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                .putParcelableArrayListExtra(Intent.EXTRA_STREAM, uriList)
+                .setType(mimeType)
+            safeStartActivityChooser(title, intent)
         }
 
-        val intent = Intent(Intent.ACTION_SEND_MULTIPLE)
-            .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            .putParcelableArrayListExtra(Intent.EXTRA_STREAM, uriList)
-            .setType(mimeType)
-        return safeStartActivityChooser(title, intent)
+        result.success(started)
     }
 
     private fun safeStartActivity(intent: Intent): Boolean {

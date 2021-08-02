@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart';
+import 'package:aves/services/services.dart';
 import 'package:flutter/services.dart';
 
 abstract class TimeService {
@@ -13,7 +13,7 @@ class PlatformTimeService implements TimeService {
     try {
       return await platform.invokeMethod('getDefaultTimeZone');
     } on PlatformException catch (e) {
-      debugPrint('getDefaultTimeZone failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+      await reportService.recordChannelError('getDefaultTimeZone', e);
     }
     return null;
   }

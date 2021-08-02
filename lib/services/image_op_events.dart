@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/widgets.dart';
 
 @immutable
 class ImageOpEvent extends Equatable {

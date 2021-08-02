@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:aves/model/entry.dart';
+import 'package:aves/services/services.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:streams_channel/streams_channel.dart';
 
 abstract class MediaStoreService {
@@ -26,7 +26,7 @@ class PlatformMediaStoreService implements MediaStoreService {
       });
       return (result as List).cast<int>();
     } on PlatformException catch (e) {
-      debugPrint('checkObsoleteContentIds failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+      await reportService.recordChannelError('checkObsoleteContentIds', e);
     }
     return [];
   }
@@ -39,7 +39,7 @@ class PlatformMediaStoreService implements MediaStoreService {
       });
       return (result as List).cast<int>();
     } on PlatformException catch (e) {
-      debugPrint('checkObsoletePaths failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+      await reportService.recordChannelError('checkObsoletePaths', e);
     }
     return [];
   }
@@ -51,7 +51,7 @@ class PlatformMediaStoreService implements MediaStoreService {
         'knownEntries': knownEntries,
       }).map((event) => AvesEntry.fromMap(event));
     } on PlatformException catch (e) {
-      debugPrint('getEntries failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+      reportService.recordChannelError('getEntries', e);
       return Stream.error(e);
     }
   }

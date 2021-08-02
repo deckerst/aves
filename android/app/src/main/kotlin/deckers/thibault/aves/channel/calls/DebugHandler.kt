@@ -6,6 +6,8 @@ import android.database.Cursor
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import android.provider.MediaStore
 import android.util.Log
 import androidx.exifinterface.media.ExifInterface
@@ -36,8 +38,15 @@ import java.util.*
 class DebugHandler(private val context: Context) : MethodCallHandler {
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
+            "crash" -> Handler(Looper.getMainLooper()).postDelayed({ throw TestException() }, 50)
+            "exception" -> throw TestException()
+            "safeException" -> safe(call, result) { _, _ -> throw TestException() }
+            "exceptionInCoroutine" -> GlobalScope.launch(Dispatchers.IO) { throw TestException() }
+            "safeExceptionInCoroutine" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result) { _, _ -> throw TestException() } }
+
             "getContextDirs" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getContextDirs) }
-            "getEnv" -> result.success(System.getenv())
+            "getEnv" -> safe(call, result, ::getEnv)
+
             "getBitmapFactoryInfo" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getBitmapFactoryInfo) }
             "getContentResolverMetadata" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getContentResolverMetadata) }
             "getExifInterfaceMetadata" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getExifInterfaceMetadata) }
@@ -69,6 +78,10 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
         }.mapValues { it.value?.path }
 
         result.success(dirs)
+    }
+
+    private fun getEnv(@Suppress("UNUSED_PARAMETER") call: MethodCall, result: MethodChannel.Result) {
+        result.success(System.getenv())
     }
 
     private fun getBitmapFactoryInfo(call: MethodCall, result: MethodChannel.Result) {
@@ -320,4 +333,6 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
         private val LOG_TAG = LogUtils.createTag<DebugHandler>()
         const val CHANNEL = "deckers.thibault/aves/debug"
     }
+
+    class TestException internal constructor() : RuntimeException("oops")
 }

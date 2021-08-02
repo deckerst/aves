@@ -1,6 +1,7 @@
 package deckers.thibault.aves.channel.calls
 
 import android.os.Build
+import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
@@ -8,17 +9,18 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 class DeviceHandler : MethodCallHandler {
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
-            "getPerformanceClass" -> result.success(getPerformanceClass())
+            "getPerformanceClass" -> safe(call, result, ::getPerformanceClass)
             else -> result.notImplemented()
         }
     }
 
-    private fun getPerformanceClass(): Int {
+    private fun getPerformanceClass(@Suppress("UNUSED_PARAMETER") call: MethodCall, result: MethodChannel.Result) {
         // TODO TLAD uncomment when the future is here
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-//            return Build.VERSION.MEDIA_PERFORMANCE_CLASS
+//            result.success(Build.VERSION.MEDIA_PERFORMANCE_CLASS)
+//            return
 //        }
-        return Build.VERSION.SDK_INT
+        result.success(Build.VERSION.SDK_INT)
     }
 
     companion object {

@@ -24,7 +24,7 @@ class AppShortcutService {
         return result;
       }
     } on PlatformException catch (e) {
-      debugPrint('canPin failed with code=${e.code}, exception=${e.message}, details=${e.details}}');
+      await reportService.recordChannelError('canPin', e);
     }
     return false;
   }
@@ -50,7 +50,7 @@ class AppShortcutService {
         'filters': filters.map((filter) => filter.toJson()).toList(),
       });
     } on PlatformException catch (e) {
-      debugPrint('pin failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+      await reportService.recordChannelError('pin', e);
     }
   }
 }

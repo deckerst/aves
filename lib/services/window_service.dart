@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart';
+import 'package:aves/services/services.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
@@ -24,7 +24,7 @@ class PlatformWindowService implements WindowService {
         'on': on,
       });
     } on PlatformException catch (e) {
-      debugPrint('keepScreenOn failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+      await reportService.recordChannelError('keepScreenOn', e);
     }
   }
 
@@ -34,7 +34,7 @@ class PlatformWindowService implements WindowService {
       final result = await platform.invokeMethod('isRotationLocked');
       if (result != null) return result as bool;
     } on PlatformException catch (e) {
-      debugPrint('isRotationLocked failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+      await reportService.recordChannelError('isRotationLocked', e);
     }
     return false;
   }
@@ -62,7 +62,7 @@ class PlatformWindowService implements WindowService {
         'orientation': orientationCode,
       });
     } on PlatformException catch (e) {
-      debugPrint('requestOrientation failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+      await reportService.recordChannelError('requestOrientation', e);
     }
   }
 
@@ -72,7 +72,7 @@ class PlatformWindowService implements WindowService {
       final result = await platform.invokeMethod('canSetCutoutMode');
       if (result != null) return result as bool;
     } on PlatformException catch (e) {
-      debugPrint('canSetCutoutMode failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+      await reportService.recordChannelError('canSetCutoutMode', e);
     }
     return false;
   }
@@ -84,7 +84,7 @@ class PlatformWindowService implements WindowService {
         'use': use,
       });
     } on PlatformException catch (e) {
-      debugPrint('setCutoutMode failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+      await reportService.recordChannelError('setCutoutMode', e);
     }
   }
 }
