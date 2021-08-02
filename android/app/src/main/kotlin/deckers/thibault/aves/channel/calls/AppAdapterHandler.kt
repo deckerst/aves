@@ -1,8 +1,6 @@
 package deckers.thibault.aves.channel.calls
 
-import android.content.ContentResolver
-import android.content.Context
-import android.content.Intent
+import android.content.*
 import android.content.pm.ApplicationInfo
 import android.content.res.Configuration
 import android.net.Uri
@@ -32,6 +30,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
         when (call.method) {
             "getPackages" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getPackages) }
             "getAppIcon" -> GlobalScope.launch(Dispatchers.IO) { safesus(call, result, ::getAppIcon) }
+            "copyToClipboard" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::copyToClipboard) }
             "edit" -> {
                 val title = call.argument<String>("title")
                 val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
@@ -153,6 +152,24 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
             result.success(data)
         } else {
             result.error("getAppIcon-null", "failed to get icon for packageName=$packageName", null)
+        }
+    }
+
+    private fun copyToClipboard(call: MethodCall, result: MethodChannel.Result) {
+        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        val label = call.argument<String>("label")
+        if (uri == null) {
+            result.error("copyToClipboard-args", "failed because of missing arguments", null)
+            return
+        }
+
+        val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager
+        if (clipboard != null) {
+            val clip = ClipData.newUri(context.contentResolver, label, getShareableUri(uri))
+            clipboard.setPrimaryClip(clip)
+            result.success(true)
+        } else {
+            result.success(false)
         }
     }
 

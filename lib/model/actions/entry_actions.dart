@@ -19,6 +19,7 @@ enum EntryAction {
   // motion photo,
   viewMotionPhotoVideo,
   // external
+  copyToClipboard,
   edit,
   open,
   openMap,
@@ -42,6 +43,7 @@ class EntryActions {
     EntryAction.delete,
     EntryAction.rename,
     EntryAction.export,
+    EntryAction.copyToClipboard,
     EntryAction.print,
     EntryAction.viewSource,
     EntryAction.viewMotionPhotoVideo,
@@ -68,6 +70,8 @@ extension ExtraEntryAction on EntryAction {
       case EntryAction.toggleFavourite:
         // different data depending on toggle state
         return context.l10n.entryActionAddFavourite;
+      case EntryAction.copyToClipboard:
+        return context.l10n.entryActionCopyToClipboard;
       case EntryAction.delete:
         return context.l10n.entryActionDelete;
       case EntryAction.export:
@@ -116,6 +120,8 @@ extension ExtraEntryAction on EntryAction {
       case EntryAction.toggleFavourite:
         // different data depending on toggle state
         return AIcons.favourite;
+      case EntryAction.copyToClipboard:
+        return AIcons.clipboard;
       case EntryAction.delete:
         return AIcons.delete;
       case EntryAction.export:
