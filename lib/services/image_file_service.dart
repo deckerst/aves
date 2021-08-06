@@ -1,14 +1,15 @@
 import 'dart:async';
 import 'dart:math';
 import 'dart:typed_data';
+import 'dart:ui';
 
 import 'package:aves/model/entry.dart';
 import 'package:aves/services/image_op_events.dart';
 import 'package:aves/services/output_buffer.dart';
 import 'package:aves/services/service_policy.dart';
+import 'package:aves/services/services.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:streams_channel/streams_channel.dart';
 
 abstract class ImageFileService {
@@ -124,7 +125,7 @@ class PlatformImageFileService implements ImageFileService {
       }) as Map;
       return AvesEntry.fromMap(result);
     } on PlatformException catch (e) {
-      debugPrint('getEntry failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+      await reportService.recordChannelError('getEntry', e);
     }
     return null;
   }
@@ -188,7 +189,7 @@ class PlatformImageFileService implements ImageFileService {
       );
       return completer.future;
     } on PlatformException catch (e) {
-      debugPrint('getImage failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+      reportService.recordChannelError('getImage', e);
     }
     return Future.sync(() => Uint8List(0));
   }
@@ -223,7 +224,7 @@ class PlatformImageFileService implements ImageFileService {
           });
           if (result != null) return result as Uint8List;
         } on PlatformException catch (e) {
-          debugPrint('getRegion failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+          await reportService.recordChannelError('getRegion', e);
         }
         return Uint8List(0);
       },
@@ -260,7 +261,7 @@ class PlatformImageFileService implements ImageFileService {
           });
           if (result != null) return result as Uint8List;
         } on PlatformException catch (e) {
-          debugPrint('getThumbnail failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+          await reportService.recordChannelError('getThumbnail', e);
         }
         return Uint8List(0);
       },
@@ -274,7 +275,7 @@ class PlatformImageFileService implements ImageFileService {
     try {
       return platform.invokeMethod('clearSizedThumbnailDiskCache');
     } on PlatformException catch (e) {
-      debugPrint('clearSizedThumbnailDiskCache failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+      await reportService.recordChannelError('clearSizedThumbnailDiskCache', e);
     }
   }
 
@@ -295,7 +296,7 @@ class PlatformImageFileService implements ImageFileService {
         'entries': entries.map(_toPlatformEntryMap).toList(),
       }).map((event) => ImageOpEvent.fromMap(event));
     } on PlatformException catch (e) {
-      debugPrint('delete failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+      reportService.recordChannelError('delete', e);
       return Stream.error(e);
     }
   }
@@ -314,7 +315,7 @@ class PlatformImageFileService implements ImageFileService {
         'destinationPath': destinationAlbum,
       }).map((event) => MoveOpEvent.fromMap(event));
     } on PlatformException catch (e) {
-      debugPrint('move failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+      reportService.recordChannelError('move', e);
       return Stream.error(e);
     }
   }
@@ -333,7 +334,7 @@ class PlatformImageFileService implements ImageFileService {
         'destinationPath': destinationAlbum,
       }).map((event) => ExportOpEvent.fromMap(event));
     } on PlatformException catch (e) {
-      debugPrint('export failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+      reportService.recordChannelError('export', e);
       return Stream.error(e);
     }
   }
@@ -356,7 +357,7 @@ class PlatformImageFileService implements ImageFileService {
       });
       if (result != null) return (result as Map).cast<String, dynamic>();
     } on PlatformException catch (e) {
-      debugPrint('captureFrame failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+      await reportService.recordChannelError('captureFrame', e);
     }
     return {};
   }
@@ -371,7 +372,7 @@ class PlatformImageFileService implements ImageFileService {
       });
       if (result != null) return (result as Map).cast<String, dynamic>();
     } on PlatformException catch (e) {
-      debugPrint('rename failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+      await reportService.recordChannelError('rename', e);
     }
     return {};
   }
@@ -386,7 +387,7 @@ class PlatformImageFileService implements ImageFileService {
       });
       if (result != null) return (result as Map).cast<String, dynamic>();
     } on PlatformException catch (e) {
-      debugPrint('rotate failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+      await reportService.recordChannelError('rotate', e);
     }
     return {};
   }
@@ -400,7 +401,7 @@ class PlatformImageFileService implements ImageFileService {
       });
       if (result != null) return (result as Map).cast<String, dynamic>();
     } on PlatformException catch (e) {
-      debugPrint('flip failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+      await reportService.recordChannelError('flip', e);
     }
     return {};
   }

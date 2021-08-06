@@ -6,6 +6,7 @@ import 'package:aves/widgets/common/magnifier/magnifier.dart';
 import 'package:aves/widgets/common/magnifier/pan/corner_hit_detector.dart';
 import 'package:aves/widgets/common/magnifier/scale/scale_boundaries.dart';
 import 'package:aves/widgets/common/magnifier/scale/state.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/widgets.dart';
 
 /// Internal widget in which controls all animations lifecycle, core responses
@@ -276,16 +277,20 @@ class _MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateM
   }
 }
 
-class _CenterWithOriginalSizeDelegate extends SingleChildLayoutDelegate {
+@immutable
+class _CenterWithOriginalSizeDelegate extends SingleChildLayoutDelegate with EquatableMixin {
+  final Size subjectSize;
+  final Alignment basePosition;
+  final bool applyScale;
+
+  @override
+  List<Object?> get props => [subjectSize, basePosition, applyScale];
+
   const _CenterWithOriginalSizeDelegate(
     this.subjectSize,
     this.basePosition,
     this.applyScale,
   );
-
-  final Size subjectSize;
-  final Alignment basePosition;
-  final bool applyScale;
 
   @override
   Offset getPositionForChild(Size size, Size childSize) {
@@ -309,10 +314,4 @@ class _CenterWithOriginalSizeDelegate extends SingleChildLayoutDelegate {
   bool shouldRelayout(_CenterWithOriginalSizeDelegate oldDelegate) {
     return oldDelegate != this;
   }
-
-  @override
-  bool operator ==(Object other) => identical(this, other) || other is _CenterWithOriginalSizeDelegate && runtimeType == other.runtimeType && subjectSize == other.subjectSize && basePosition == other.basePosition && applyScale == other.applyScale;
-
-  @override
-  int get hashCode => hashValues(subjectSize, basePosition, applyScale);
 }

@@ -1,6 +1,5 @@
-import 'package:flutter/foundation.dart';
+import 'package:aves/services/services.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 
 class DeviceService {
   static const platform = MethodChannel('deckers.thibault/aves/device');
@@ -11,7 +10,7 @@ class DeviceService {
       final result = await platform.invokeMethod('getPerformanceClass');
       if (result != null) return result as int;
     } on PlatformException catch (e) {
-      debugPrint('getPerformanceClass failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+      await reportService.recordChannelError('getPerformanceClass', e);
     }
     return 0;
   }

@@ -1,7 +1,7 @@
 name: aves
 description: A visual media gallery and metadata explorer app.
 repository: https://github.com/deckerst/aves
-version: 1.4.6+50
+version: 1.4.7+51
 publish_to: none
 
 environment:
@@ -16,7 +16,10 @@ dependencies:
   collection:
   connectivity_plus:
   country_code:
+# TODO TLAD as of 2021/08/04, null safe version is pre-release
+  custom_rounded_rectangle_border: '>=0.2.0-nullsafety.0'
   decorated_icon:
+  equatable:
   event_bus:
   expansion_tile_card:
     git:
@@ -28,6 +31,7 @@ dependencies:
   firebase_core:
   firebase_crashlytics:
   flex_color_picker:
+  fluster:
   flutter_highlight:
   flutter_map:
   flutter_markdown:
@@ -38,7 +42,7 @@ dependencies:
   google_maps_flutter:
   intl:
   latlong2:
-# TODO TLAD as of 2021/07/08, MDI package null safe version is pre-release
+# TODO TLAD as of 2021/08/04, null safe version is pre-release
   material_design_icons_flutter: '>=5.0.5955-rc.1'
   overlay_support:
   package_info_plus:

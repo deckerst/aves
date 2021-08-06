@@ -153,7 +153,7 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
     final path = _buildAlbumPath(newName);
     final exists = newName.isNotEmpty && await Directory(path).exists();
     _existsNotifier.value = exists;
-    _isValidNotifier.value = newName.isNotEmpty;
+    _isValidNotifier.value = newName.isNotEmpty && !exists;
   }
 
   void _submit(BuildContext context) => Navigator.pop(context, _buildAlbumPath(_nameController.text));

@@ -14,7 +14,8 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
 import 'package:aves/widgets/dialogs/cover_selection_dialog.dart';
-import 'package:aves/widgets/stats/stats.dart';
+import 'package:aves/widgets/map/map_page.dart';
+import 'package:aves/widgets/stats/stats_page.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -51,6 +52,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
       case ChipSetAction.select:
       case ChipSetAction.selectAll:
       case ChipSetAction.selectNone:
+      case ChipSetAction.map:
       case ChipSetAction.stats:
       case ChipSetAction.createAlbum:
         return true;
@@ -72,6 +74,9 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
       // general
       case ChipSetAction.sort:
         _showSortDialog(context);
+        break;
+      case ChipSetAction.map:
+        _goToMap(context);
         break;
       case ChipSetAction.stats:
         _goToStats(context);
@@ -122,6 +127,19 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
     if (factor != null) {
       sortFactor = factor;
     }
+  }
+
+  void _goToMap(BuildContext context) {
+    final source = context.read<CollectionSource>();
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        settings: const RouteSettings(name: MapPage.routeName),
+        builder: (context) => MapPage(
+          source: source,
+        ),
+      ),
+    );
   }
 
   void _goToStats(BuildContext context) {

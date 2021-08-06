@@ -17,7 +17,7 @@ class WindowHandler(private val activity: Activity) : MethodCallHandler {
             "keepScreenOn" -> safe(call, result, ::keepScreenOn)
             "isRotationLocked" -> safe(call, result, ::isRotationLocked)
             "requestOrientation" -> safe(call, result, ::requestOrientation)
-            "canSetCutoutMode" -> result.success(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
+            "canSetCutoutMode" -> safe(call, result, ::canSetCutoutMode)
             "setCutoutMode" -> safe(call, result, ::setCutoutMode)
             else -> result.notImplemented()
         }
@@ -58,6 +58,10 @@ class WindowHandler(private val activity: Activity) : MethodCallHandler {
         }
         activity.requestedOrientation = orientation
         result.success(true)
+    }
+
+    private fun canSetCutoutMode(@Suppress("UNUSED_PARAMETER") call: MethodCall, result: MethodChannel.Result) {
+        result.success(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
     }
 
     private fun setCutoutMode(call: MethodCall, result: MethodChannel.Result) {

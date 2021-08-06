@@ -13,7 +13,6 @@ import 'package:aves/services/services.dart';
 import 'package:aves/utils/pedantic.dart';
 import 'package:collection/collection.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -120,7 +119,7 @@ class Settings extends ChangeNotifier {
   // to allow settings customization without Firebase context (e.g. before a Flutter Driver test)
   Future<void> initFirebase() async {
     await Firebase.app().setAutomaticDataCollectionEnabled(isCrashlyticsEnabled);
-    await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(isCrashlyticsEnabled);
+    await reportService.setCollectionEnabled(isCrashlyticsEnabled);
   }
 
   Future<void> reset({required bool includeInternalKeys}) async {

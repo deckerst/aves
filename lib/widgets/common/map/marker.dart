@@ -1,16 +1,15 @@
-import 'dart:typed_data';
-import 'dart:ui' as ui;
-
 import 'package:aves/model/entry.dart';
 import 'package:aves/widgets/collection/thumbnail/image.dart';
+import 'package:custom_rounded_rectangle_border/custom_rounded_rectangle_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:provider/provider.dart';
 
 class ImageMarker extends StatelessWidget {
-  final AvesEntry entry;
+  final AvesEntry? entry;
+  final int? count;
   final double extent;
   final Size pointerSize;
+  final bool progressive;
 
   static const double outerBorderRadiusDim = 8;
   static const double outerBorderWidth = 1.5;
@@ -18,21 +17,27 @@ class ImageMarker extends StatelessWidget {
   static const outerBorderColor = Colors.white30;
   static const innerBorderColor = Color(0xFF212121);
   static const outerBorderRadius = BorderRadius.all(Radius.circular(outerBorderRadiusDim));
-  static const innerBorderRadius = BorderRadius.all(Radius.circular(outerBorderRadiusDim - outerBorderWidth));
+  static const innerRadius = Radius.circular(outerBorderRadiusDim - outerBorderWidth);
+  static const innerBorderRadius = BorderRadius.all(innerRadius);
 
   const ImageMarker({
     Key? key,
     required this.entry,
+    required this.count,
     required this.extent,
-    this.pointerSize = Size.zero,
+    required this.pointerSize,
+    required this.progressive,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    Widget child = ThumbnailImage(
-      entry: entry,
-      extent: extent,
-    );
+    Widget child = entry != null
+        ? ThumbnailImage(
+            entry: entry!,
+            extent: extent,
+            progressive: progressive,
+          )
+        : const SizedBox();
 
     // need to be sized for the Google Maps marker generator
     child = SizedBox(
@@ -57,6 +62,49 @@ class ImageMarker extends StatelessWidget {
       borderRadius: innerBorderRadius,
     );
 
+    child = DecoratedBox(
+      decoration: innerDecoration,
+      position: DecorationPosition.foreground,
+      child: ClipRRect(
+        borderRadius: innerBorderRadius,
+        child: child,
+      ),
+    );
+
+    if (count != null) {
+      const borderSide = BorderSide(
+        color: innerBorderColor,
+        width: innerBorderWidth,
+      );
+      child = Stack(
+        children: [
+          child,
+          Container(
+            padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 2),
+            decoration: ShapeDecoration(
+              color: Theme.of(context).accentColor,
+              shape: const CustomRoundedRectangleBorder(
+                leftSide: borderSide,
+                rightSide: borderSide,
+                topSide: borderSide,
+                bottomSide: borderSide,
+                topLeftCornerSide: borderSide,
+                bottomRightCornerSide: borderSide,
+                borderRadius: BorderRadius.only(
+                  topLeft: innerRadius,
+                  bottomRight: innerRadius,
+                ),
+              ),
+            ),
+            child: Text(
+              '$count',
+              style: const TextStyle(fontSize: 12),
+            ),
+          ),
+        ],
+      );
+    }
+
     return CustomPaint(
       foregroundPainter: MarkerPointerPainter(
         color: innerBorderColor,
@@ -68,14 +116,7 @@ class ImageMarker extends StatelessWidget {
         padding: EdgeInsets.only(bottom: pointerSize.height),
         child: Container(
           decoration: outerDecoration,
-          child: DecoratedBox(
-            decoration: innerDecoration,
-            position: DecorationPosition.foreground,
-            child: ClipRRect(
-              borderRadius: innerBorderRadius,
-              child: child,
-            ),
-          ),
+          child: child,
         ),
       ),
     );
@@ -123,66 +164,4 @@ class MarkerPointerPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-
-// generate bitmap from widget, for Google Maps
-class MarkerGeneratorWidget extends StatefulWidget {
-  final List<Widget> markers;
-  final Duration delay;
-  final Function(List<Uint8List> bitmaps) onComplete;
-
-  const MarkerGeneratorWidget({
-    Key? key,
-    required this.markers,
-    this.delay = Duration.zero,
-    required this.onComplete,
-  }) : super(key: key);
-
-  @override
-  _MarkerGeneratorWidgetState createState() => _MarkerGeneratorWidgetState();
-}
-
-class _MarkerGeneratorWidgetState extends State<MarkerGeneratorWidget> {
-  final _globalKeys = <GlobalKey>[];
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((_) async {
-      if (widget.delay > Duration.zero) {
-        await Future.delayed(widget.delay);
-      }
-      widget.onComplete(await _getBitmaps(context));
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Transform.translate(
-      offset: Offset(context.select<MediaQueryData, double>((mq) => mq.size.width), 0),
-      child: Material(
-        type: MaterialType.transparency,
-        child: Stack(
-          children: widget.markers.map((i) {
-            final key = GlobalKey(debugLabel: 'map-marker-$i');
-            _globalKeys.add(key);
-            return RepaintBoundary(
-              key: key,
-              child: i,
-            );
-          }).toList(),
-        ),
-      ),
-    );
-  }
-
-  Future<List<Uint8List>> _getBitmaps(BuildContext context) async {
-    final pixelRatio = context.read<MediaQueryData>().devicePixelRatio;
-    return Future.wait(_globalKeys.map((key) async {
-      final boundary = key.currentContext!.findRenderObject() as RenderRepaintBoundary;
-      final image = await boundary.toImage(pixelRatio: pixelRatio);
-      final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
-      return byteData != null ? byteData.buffer.asUint8List() : Uint8List(0);
-    }));
-  }
 }

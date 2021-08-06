@@ -3,13 +3,14 @@ import 'package:aves/services/services.dart';
 import 'package:aves/utils/change_notifier.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:collection/collection.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 final AndroidFileUtils androidFileUtils = AndroidFileUtils._private();
 
 class AndroidFileUtils {
-  late String primaryStorage, dcimPath, downloadPath, moviesPath, picturesPath, videoCapturesPath;
+  late final String separator, primaryStorage, dcimPath, downloadPath, moviesPath, picturesPath, videoCapturesPath;
   Set<StorageVolume> storageVolumes = {};
   Set<Package> _packages = {};
   List<String> _potentialAppDirs = [];
@@ -21,9 +22,10 @@ class AndroidFileUtils {
   AndroidFileUtils._private();
 
   Future<void> init() async {
+    separator = pContext.separator;
     storageVolumes = await storageService.getStorageVolumes();
-    // path_provider getExternalStorageDirectory() gives '/storage/emulated/0/Android/data/deckers.thibault.aves/files'
-    primaryStorage = storageVolumes.firstWhereOrNull((volume) => volume.isPrimary)?.path ?? '/';
+    primaryStorage = storageVolumes.firstWhereOrNull((volume) => volume.isPrimary)?.path ?? separator;
+    // standard
     dcimPath = pContext.join(primaryStorage, 'DCIM');
     downloadPath = pContext.join(primaryStorage, 'Download');
     moviesPath = pContext.join(primaryStorage, 'Movies');
@@ -38,11 +40,11 @@ class AndroidFileUtils {
     appNameChangeNotifier.notifyListeners();
   }
 
-  bool isCameraPath(String path) => path.startsWith(dcimPath) && (path.endsWith('Camera') || path.endsWith('100ANDRO'));
+  bool isCameraPath(String path) => path.startsWith(dcimPath) && (path.endsWith('${separator}Camera') || path.endsWith('${separator}100ANDRO'));
 
-  bool isScreenshotsPath(String path) => (path.startsWith(dcimPath) || path.startsWith(picturesPath)) && path.endsWith('Screenshots');
+  bool isScreenshotsPath(String path) => (path.startsWith(dcimPath) || path.startsWith(picturesPath)) && path.endsWith('${separator}Screenshots');
 
-  bool isScreenRecordingsPath(String path) => (path.startsWith(dcimPath) || path.startsWith(moviesPath)) && (path.endsWith('Screen recordings') || path.endsWith('ScreenRecords'));
+  bool isScreenRecordingsPath(String path) => (path.startsWith(dcimPath) || path.startsWith(moviesPath)) && (path.endsWith('${separator}Screen recordings') || path.endsWith('${separator}ScreenRecords'));
 
   bool isVideoCapturesPath(String path) => path == videoCapturesPath;
 
@@ -53,7 +55,7 @@ class AndroidFileUtils {
     final volume = storageVolumes.firstWhereOrNull((v) => path.startsWith(v.path));
     // storage volume path includes trailing '/', but argument path may or may not,
     // which is an issue when the path is at the root
-    return volume != null || path.endsWith('/') ? volume : getStorageVolume('$path/');
+    return volume != null || path.endsWith(separator) ? volume : getStorageVolume('$path$separator');
   }
 
   bool isOnRemovableStorage(String path) => getStorageVolume(path)?.isRemovable ?? false;
@@ -155,8 +157,11 @@ class StorageVolume {
 }
 
 @immutable
-class VolumeRelativeDirectory {
+class VolumeRelativeDirectory extends Equatable {
   final String volumePath, relativeDir;
+
+  @override
+  List<Object?> get props => [volumePath, relativeDir];
 
   const VolumeRelativeDirectory({
     required this.volumePath,
@@ -187,13 +192,4 @@ class VolumeRelativeDirectory {
     final volume = androidFileUtils.storageVolumes.firstWhereOrNull((volume) => volume.path == volumePath);
     return volume?.getDescription(context) ?? volumePath;
   }
-
-  @override
-  bool operator ==(Object other) {
-    if (other.runtimeType != runtimeType) return false;
-    return other is VolumeRelativeDirectory && other.volumePath == volumePath && other.relativeDir == relativeDir;
-  }
-
-  @override
-  int get hashCode => hashValues(volumePath, relativeDir);
 }

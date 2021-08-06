@@ -1,17 +1,57 @@
 import 'package:aves/model/entry.dart';
 import 'package:aves/ref/mime_types.dart';
-import 'package:flutter/foundation.dart';
+import 'package:aves/services/services.dart';
 import 'package:flutter/services.dart';
 
 class AndroidDebugService {
   static const platform = MethodChannel('deckers.thibault/aves/debug');
+
+  static Future<void> crash() async {
+    try {
+      await platform.invokeMethod('crash');
+    } on PlatformException catch (e) {
+      await reportService.recordChannelError('crash', e);
+    }
+  }
+
+  static Future<void> exception() async {
+    try {
+      await platform.invokeMethod('exception');
+    } on PlatformException catch (e) {
+      await reportService.recordChannelError('exception', e);
+    }
+  }
+
+  static Future<void> safeException() async {
+    try {
+      await platform.invokeMethod('safeException');
+    } on PlatformException catch (e) {
+      await reportService.recordChannelError('safeException', e);
+    }
+  }
+
+  static Future<void> exceptionInCoroutine() async {
+    try {
+      await platform.invokeMethod('exceptionInCoroutine');
+    } on PlatformException catch (e) {
+      await reportService.recordChannelError('exceptionInCoroutine', e);
+    }
+  }
+
+  static Future<void> safeExceptionInCoroutine() async {
+    try {
+      await platform.invokeMethod('safeExceptionInCoroutine');
+    } on PlatformException catch (e) {
+      await reportService.recordChannelError('safeExceptionInCoroutine', e);
+    }
+  }
 
   static Future<Map> getContextDirs() async {
     try {
       final result = await platform.invokeMethod('getContextDirs');
       if (result != null) return result as Map;
     } on PlatformException catch (e) {
-      debugPrint('getContextDirs failed with code=${e.code}, exception=${e.message}, details=${e.details}}');
+      await reportService.recordChannelError('getContextDirs', e);
     }
     return {};
   }
@@ -21,7 +61,7 @@ class AndroidDebugService {
       final result = await platform.invokeMethod('getEnv');
       if (result != null) return result as Map;
     } on PlatformException catch (e) {
-      debugPrint('getEnv failed with code=${e.code}, exception=${e.message}, details=${e.details}}');
+      await reportService.recordChannelError('getEnv', e);
     }
     return {};
   }
@@ -34,7 +74,7 @@ class AndroidDebugService {
       });
       if (result != null) return result as Map;
     } on PlatformException catch (e) {
-      debugPrint('getBitmapFactoryInfo failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+      await reportService.recordChannelError('getBitmapFactoryInfo', e);
     }
     return {};
   }
@@ -48,7 +88,7 @@ class AndroidDebugService {
       });
       if (result != null) return result as Map;
     } on PlatformException catch (e) {
-      debugPrint('getContentResolverMetadata failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+      await reportService.recordChannelError('getContentResolverMetadata', e);
     }
     return {};
   }
@@ -63,7 +103,7 @@ class AndroidDebugService {
       });
       if (result != null) return result as Map;
     } on PlatformException catch (e) {
-      debugPrint('getExifInterfaceMetadata failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+      await reportService.recordChannelError('getExifInterfaceMetadata', e);
     }
     return {};
   }
@@ -76,7 +116,7 @@ class AndroidDebugService {
       });
       if (result != null) return result as Map;
     } on PlatformException catch (e) {
-      debugPrint('getMediaMetadataRetrieverMetadata failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+      await reportService.recordChannelError('getMediaMetadataRetrieverMetadata', e);
     }
     return {};
   }
@@ -91,7 +131,7 @@ class AndroidDebugService {
       });
       if (result != null) return result as Map;
     } on PlatformException catch (e) {
-      debugPrint('getMetadataExtractorSummary failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+      await reportService.recordChannelError('getMetadataExtractorSummary', e);
     }
     return {};
   }
@@ -105,7 +145,7 @@ class AndroidDebugService {
       });
       if (result != null) return result as Map;
     } on PlatformException catch (e) {
-      debugPrint('getTiffStructure failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+      await reportService.recordChannelError('getTiffStructure', e);
     }
     return {};
   }

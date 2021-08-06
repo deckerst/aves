@@ -16,6 +16,9 @@ class AlbumFilter extends CollectionFilter {
   final String album;
   final String? displayName;
 
+  @override
+  List<Object?> get props => [album];
+
   const AlbumFilter(this.album, this.displayName);
 
   AlbumFilter.fromMap(Map<String, dynamic> json)
@@ -78,16 +81,4 @@ class AlbumFilter extends CollectionFilter {
   // key `album-{path}` is expected by test driver
   @override
   String get key => '$type-$album';
-
-  @override
-  bool operator ==(Object other) {
-    if (other.runtimeType != runtimeType) return false;
-    return other is AlbumFilter && other.album == album;
-  }
-
-  @override
-  int get hashCode => hashValues(type, album);
-
-  @override
-  String toString() => '$runtimeType#${shortHash(this)}{album=$album}';
 }

@@ -3,6 +3,7 @@ package deckers.thibault.aves.utils
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.ContentResolver
+import android.content.ContentUris
 import android.content.Context
 import android.content.pm.PackageManager
 import android.media.MediaMetadataRetriever
@@ -15,7 +16,10 @@ import android.text.TextUtils
 import android.util.Log
 import androidx.annotation.RequiresApi
 import com.commonsware.cwac.document.DocumentFileCompat
+import deckers.thibault.aves.utils.MimeTypes.isImage
+import deckers.thibault.aves.utils.MimeTypes.isVideo
 import deckers.thibault.aves.utils.PermissionManager.getGrantedDirForPath
+import deckers.thibault.aves.utils.UriUtils.tryParseId
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.InputStream
@@ -183,14 +187,13 @@ object StorageUtils {
     // /storage/10F9-3F13/Pictures/ -> 10F9-3F13
     private fun getVolumeUuidForTreeUri(context: Context, anyPath: String): String? {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            context.getSystemService(StorageManager::class.java)?.let { sm ->
-                sm.getStorageVolume(File(anyPath))?.let { volume ->
-                    if (volume.isPrimary) {
-                        return "primary"
-                    }
-                    volume.uuid?.let { uuid ->
-                        return uuid.uppercase(Locale.ROOT)
-                    }
+            val sm = context.getSystemService(Context.STORAGE_SERVICE) as? StorageManager
+            sm?.getStorageVolume(File(anyPath))?.let { volume ->
+                if (volume.isPrimary) {
+                    return "primary"
+                }
+                volume.uuid?.let { uuid ->
+                    return uuid.uppercase(Locale.ROOT)
                 }
             }
         }
@@ -218,7 +221,8 @@ object StorageUtils {
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            context.getSystemService(StorageManager::class.java)?.let { sm ->
+            val sm = context.getSystemService(Context.STORAGE_SERVICE) as? StorageManager
+            if (sm != null) {
                 for (volumePath in getVolumePaths(context)) {
                     try {
                         val volume = sm.getStorageVolume(File(volumePath))
@@ -395,7 +399,7 @@ object StorageUtils {
         return !onPrimaryVolume
     }
 
-    private fun isMediaStoreContentUri(uri: Uri?): Boolean {
+    fun isMediaStoreContentUri(uri: Uri?): Boolean {
         uri ?: return false
         // a URI's authority is [userinfo@]host[:port]
         // but we only want the host when comparing to Media Store's "authority"
@@ -407,11 +411,29 @@ object StorageUtils {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && isMediaStoreContentUri(uri)) {
             val path = uri.path
             path ?: return uri
-            // from Android R, accessing the original URI for a file media content yields a `SecurityException`
+            // from Android R, accessing the original URI for a `file` or `downloads` media content yields a `SecurityException`
             if (path.startsWith("/external/images/") || path.startsWith("/external/video/")) {
                 // "Caller must hold ACCESS_MEDIA_LOCATION permission to access original"
                 if (context.checkSelfPermission(Manifest.permission.ACCESS_MEDIA_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                     return MediaStore.setRequireOriginal(uri)
+                }
+            }
+        }
+        return uri
+    }
+
+    // As of Glide v4.12.0, a special loader `QMediaStoreUriLoader` is automatically used
+    // to work around a bug from Android Q where metadata redaction corrupts HEIC images.
+    // This loader relies on `MediaStore.setRequireOriginal` but this yields a `SecurityException`
+    // for some content URIs (e.g. `content://media/external_primary/downloads/...`)
+    // so we build a typical `images` or `videos` content URI from the original content ID.
+    fun getGlideSafeUri(uri: Uri, mimeType: String): Uri {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && isMediaStoreContentUri(uri)) {
+            uri.tryParseId()?.let { id ->
+                return when {
+                    isImage(mimeType) -> ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
+                    isVideo(mimeType) -> ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, id)
+                    else -> uri
                 }
             }
         }

@@ -1,11 +1,10 @@
 import 'dart:math';
 
 import 'package:aves/widgets/common/basic/outlined_text.dart';
+import 'package:aves/widgets/common/map/leaflet/scalebar_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map/plugin_api.dart';
-
-import 'scalebar_utils.dart' as util;
 
 class ScaleLayerOptions extends LayerOptions {
   final Widget Function(double width, String distance) builder;
@@ -24,6 +23,7 @@ class ScaleLayerOptions extends LayerOptions {
   }
 }
 
+// TODO TLAD [map] scale bar should not rotate together with map layer
 class ScaleLayerWidget extends StatelessWidget {
   final ScaleLayerOptions options;
 
@@ -86,7 +86,7 @@ class ScaleLayer extends StatelessWidget {
                     : 2);
         final distance = scale[max(0, min(20, level))].toDouble();
         final start = map.project(center);
-        final targetPoint = util.calculateEndingGlobalCoordinates(center, 90, distance);
+        final targetPoint = ScaleBarUtils.calculateEndingGlobalCoordinates(center, 90, distance);
         final end = map.project(targetPoint);
         final displayDistance = distance > 999 ? '${(distance / 1000).toStringAsFixed(0)} km' : '${distance.toStringAsFixed(0)} m';
         final width = end.x - (start.x as double);

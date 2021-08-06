@@ -1,29 +1,24 @@
 import 'dart:ui';
 
 import 'package:aves/widgets/common/magnifier/controller/state.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 @immutable
-class ScaleStateChange {
-  const ScaleStateChange({
-    required this.state,
-    required this.source,
-    this.childFocalPoint,
-  });
-
+class ScaleStateChange extends Equatable {
   final ScaleState state;
   final ChangeSource source;
   final Offset? childFocalPoint;
 
   @override
-  bool operator ==(Object other) => identical(this, other) || other is ScaleStateChange && runtimeType == other.runtimeType && state == other.state && childFocalPoint == other.childFocalPoint;
+  List<Object?> get props => [state, source, childFocalPoint];
 
-  @override
-  int get hashCode => hashValues(state, source, childFocalPoint);
-
-  @override
-  String toString() => '$runtimeType#${shortHash(this)}{scaleState: $state, source: $source, childFocalPoint: $childFocalPoint}';
+  const ScaleStateChange({
+    required this.state,
+    required this.source,
+    this.childFocalPoint,
+  });
 }
 
 enum ScaleState {
