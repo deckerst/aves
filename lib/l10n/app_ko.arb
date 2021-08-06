@@ -147,6 +147,7 @@
 
   "menuActionSort": "정렬",
   "menuActionGroup": "묶음",
+  "menuActionMap": "지도",
   "menuActionStats": "통계",
 
   "aboutPageTitle": "앱 정보",
@@ -337,6 +338,8 @@
   "settingsLanguage": "언어",
   "settingsCoordinateFormatTile": "좌표 표현",
   "settingsCoordinateFormatTitle": "좌표 표현",
+
+  "mapPageTitle": "지도",
 
   "statsPageTitle": "통계",
   "statsImage": "{count, plural, other{사진}}",

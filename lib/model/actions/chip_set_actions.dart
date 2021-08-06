@@ -6,6 +6,7 @@ enum ChipSetAction {
   // general
   sort,
   group,
+  map,
   select,
   selectAll,
   selectNone,
@@ -35,6 +36,8 @@ extension ExtraChipSetAction on ChipSetAction {
         return context.l10n.collectionActionSelectAll;
       case ChipSetAction.selectNone:
         return context.l10n.collectionActionSelectNone;
+      case ChipSetAction.map:
+        return context.l10n.menuActionMap;
       case ChipSetAction.stats:
         return context.l10n.menuActionStats;
       case ChipSetAction.createAlbum:
@@ -68,6 +71,8 @@ extension ExtraChipSetAction on ChipSetAction {
       case ChipSetAction.selectAll:
       case ChipSetAction.selectNone:
         return null;
+      case ChipSetAction.map:
+        return AIcons.map;
       case ChipSetAction.stats:
         return AIcons.stats;
       case ChipSetAction.createAlbum:

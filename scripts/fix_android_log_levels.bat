@@ -12,6 +12,7 @@ adb.exe shell setprop log.tag.AHierarchicalStateMachine ERROR
 adb.exe shell setprop log.tag.AudioCapabilities ERROR
 adb.exe shell setprop log.tag.AudioTrack INFO
 adb.exe shell setprop log.tag.CompatibilityChangeReporter INFO
+adb.exe shell setprop log.tag.Counters WARN
 adb.exe shell setprop log.tag.CustomizedTextParser INFO
 adb.exe shell setprop log.tag.InputMethodManager WARN
 adb.exe shell setprop log.tag.InsetsSourceConsumer INFO

@@ -144,6 +144,11 @@ class Constants {
       sourceUrl: 'https://github.com/google/charts',
     ),
     Dependency(
+      name: 'Custom rounded rectangle border',
+      license: 'MIT',
+      sourceUrl: 'https://github.com/lekanbar/custom_rounded_rectangle_border',
+    ),
+    Dependency(
       name: 'Decorated Icon',
       license: 'MIT',
       sourceUrl: 'https://github.com/benPesso/flutter_decorated_icon',
@@ -232,6 +237,11 @@ class Constants {
       name: 'Event Bus',
       license: 'MIT',
       sourceUrl: 'https://github.com/marcojakob/dart-event-bus',
+    ),
+    Dependency(
+      name: 'Fluster',
+      license: 'MIT',
+      sourceUrl: 'https://github.com/alfonsocejudo/fluster',
     ),
     Dependency(
       name: 'Flutter Lints',

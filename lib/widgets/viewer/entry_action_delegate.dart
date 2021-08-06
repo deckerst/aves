@@ -77,7 +77,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         });
         break;
       case EntryAction.openMap:
-        AndroidAppService.openMap(entry.geoUri!).then((success) {
+        AndroidAppService.openMap(entry.latLng!).then((success) {
           if (!success) showNoMatchingAppDialog(context);
         });
         break;

@@ -10,6 +10,8 @@ import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
 
 extension ExtraAvesEntry on AvesEntry {
+  bool isThumbnailReady({double extent = 0}) => _isReady(_getThumbnailProviderKey(extent));
+
   ThumbnailProvider getThumbnail({double extent = 0}) {
     return ThumbnailProvider(_getThumbnailProviderKey(extent));
   }
