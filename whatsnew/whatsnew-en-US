@@ -1,7 +1,6 @@
 Thanks for using Aves!
-v1.4.6:
-- burst shot grouping
-- improved motion photo support
-- select multiple albums
-- hide paths to exclude folders and their subfolders
+v1.4.7:
+- map page
+- viewer action to copy to clipboard
+- integration with OS global search
 Full changelog available on Github

@@ -6,6 +6,8 @@ plugins {
     id 'com.google.firebase.crashlytics'
 }
 
+def appId = "deckers.thibault.aves"
+
 // Flutter properties
 
 def localProperties = new Properties()
@@ -52,13 +54,18 @@ android {
     }
 
     defaultConfig {
-        applicationId "deckers.thibault.aves"
+        applicationId appId
+        // minSdkVersion constraints:
+        // - Flutter & other plugins: 16
+        // - google_maps_flutter v2.0.5: 20
+        // - Aves native: 19
         minSdkVersion 20
         targetSdkVersion 30
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         manifestPlaceholders = [googleApiKey: keystoreProperties['googleApiKey']]
         multiDexEnabled true
+        resValue 'string', 'search_provider', "${appId}.search_provider"
     }
 
     signingConfigs {
@@ -73,9 +80,11 @@ android {
     buildTypes {
         debug {
             applicationIdSuffix ".debug"
+            resValue 'string', 'search_provider', "${appId}.debug.search_provider"
         }
         profile {
             applicationIdSuffix ".profile"
+            resValue 'string', 'search_provider', "${appId}.profile.search_provider"
         }
         release {
             // specify architectures, to specifically exclude native libs for x86,

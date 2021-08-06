@@ -19,6 +19,7 @@ import 'package:provider/provider.dart';
 class ThumbnailImage extends StatefulWidget {
   final AvesEntry entry;
   final double extent;
+  final bool progressive;
   final BoxFit? fit;
   final bool showLoadingBackground;
   final ValueNotifier<bool>? cancellableNotifier;
@@ -28,6 +29,7 @@ class ThumbnailImage extends StatefulWidget {
     Key? key,
     required this.entry,
     required this.extent,
+    this.progressive = true,
     this.fit,
     this.showLoadingBackground = true,
     this.cancellableNotifier,
@@ -93,7 +95,7 @@ class _ThumbnailImageState extends State<ThumbnailImage> {
     _lastException = null;
     _providers.clear();
     _providers.addAll([
-      if (!entry.isSvg)
+      if (widget.progressive && !entry.isSvg)
         _ConditionalImageProvider(
           ScrollAwareImageProvider(
             context: _scrollAwareContext,

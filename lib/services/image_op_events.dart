@@ -1,10 +1,13 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/widgets.dart';
 
 @immutable
-class ImageOpEvent {
+class ImageOpEvent extends Equatable {
   final bool success;
   final String uri;
+
+  @override
+  List<Object?> get props => [success, uri];
 
   const ImageOpEvent({
     required this.success,
@@ -17,18 +20,6 @@ class ImageOpEvent {
       uri: map['uri'],
     );
   }
-
-  @override
-  bool operator ==(Object other) {
-    if (other.runtimeType != runtimeType) return false;
-    return other is ImageOpEvent && other.success == success && other.uri == uri;
-  }
-
-  @override
-  int get hashCode => hashValues(success, uri);
-
-  @override
-  String toString() => '$runtimeType#${shortHash(this)}{success=$success, uri=$uri}';
 }
 
 class MoveOpEvent extends ImageOpEvent {
@@ -55,6 +46,9 @@ class MoveOpEvent extends ImageOpEvent {
 class ExportOpEvent extends MoveOpEvent {
   final int? pageId;
 
+  @override
+  List<Object?> get props => [success, uri, pageId];
+
   const ExportOpEvent({required bool success, required String uri, this.pageId, required Map newFields})
       : super(
           success: success,
@@ -70,16 +64,4 @@ class ExportOpEvent extends MoveOpEvent {
       newFields: map['newFields'] ?? {},
     );
   }
-
-  @override
-  bool operator ==(Object other) {
-    if (other.runtimeType != runtimeType) return false;
-    return other is ExportOpEvent && other.success == success && other.uri == uri && other.pageId == pageId;
-  }
-
-  @override
-  int get hashCode => hashValues(success, uri, pageId);
-
-  @override
-  String toString() => '$runtimeType#${shortHash(this)}{success=$success, uri=$uri, pageId=$pageId, newFields=$newFields}';
 }

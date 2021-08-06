@@ -30,6 +30,8 @@ abstract class MetadataDb {
 
   Future<void> updateEntryId(int oldId, AvesEntry entry);
 
+  Future<Set<AvesEntry>> searchEntries(String query, {int? limit});
+
   // date taken
 
   Future<void> clearDates();
@@ -235,6 +237,19 @@ class SqfliteMetadataDb implements MetadataDb {
     );
   }
 
+  @override
+  Future<Set<AvesEntry>> searchEntries(String query, {int? limit}) async {
+    final db = await _database;
+    final maps = await db.query(
+      entryTable,
+      where: 'title LIKE ?',
+      whereArgs: ['%$query%'],
+      orderBy: 'sourceDateTakenMillis DESC',
+      limit: limit,
+    );
+    return maps.map((map) => AvesEntry.fromMap(map)).toSet();
+  }
+
   // date taken
 
   @override
@@ -284,7 +299,7 @@ class SqfliteMetadataDb implements MetadataDb {
       await batch.commit(noResult: true);
       debugPrint('$runtimeType saveMetadata complete in ${stopwatch.elapsed.inMilliseconds}ms for ${metadataEntries.length} entries');
     } catch (error, stack) {
-      debugPrint('$runtimeType failed to save metadata with exception=$error\n$stack');
+      debugPrint('$runtimeType failed to save metadata with error=$error\n$stack');
     }
   }
 

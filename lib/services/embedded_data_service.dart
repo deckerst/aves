@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:aves/model/entry.dart';
-import 'package:flutter/foundation.dart';
+import 'package:aves/services/services.dart';
 import 'package:flutter/services.dart';
 
 abstract class EmbeddedDataService {
@@ -27,7 +27,7 @@ class PlatformEmbeddedDataService implements EmbeddedDataService {
       });
       if (result != null) return (result as List).cast<Uint8List>();
     } on PlatformException catch (e) {
-      debugPrint('getExifThumbnail failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+      await reportService.recordChannelError('getExifThumbnail', e);
     }
     return [];
   }
@@ -43,7 +43,7 @@ class PlatformEmbeddedDataService implements EmbeddedDataService {
       });
       if (result != null) return result as Map;
     } on PlatformException catch (e) {
-      debugPrint('extractMotionPhotoVideo failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+      await reportService.recordChannelError('extractMotionPhotoVideo', e);
     }
     return {};
   }
@@ -57,7 +57,7 @@ class PlatformEmbeddedDataService implements EmbeddedDataService {
       });
       if (result != null) return result as Map;
     } on PlatformException catch (e) {
-      debugPrint('extractVideoEmbeddedPicture failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+      await reportService.recordChannelError('extractVideoEmbeddedPicture', e);
     }
     return {};
   }
@@ -75,7 +75,7 @@ class PlatformEmbeddedDataService implements EmbeddedDataService {
       });
       if (result != null) return result as Map;
     } on PlatformException catch (e) {
-      debugPrint('extractXmpDataProp failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+      await reportService.recordChannelError('extractXmpDataProp', e);
     }
     return {};
   }

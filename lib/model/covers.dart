@@ -3,6 +3,7 @@ import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/services/services.dart';
 import 'package:collection/collection.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
@@ -77,9 +78,12 @@ class Covers with ChangeNotifier {
 }
 
 @immutable
-class CoverRow {
+class CoverRow extends Equatable {
   final CollectionFilter filter;
   final int contentId;
+
+  @override
+  List<Object?> get props => [filter, contentId];
 
   const CoverRow({
     required this.filter,
@@ -99,16 +103,4 @@ class CoverRow {
         'filter': filter.toJson(),
         'contentId': contentId,
       };
-
-  @override
-  bool operator ==(Object other) {
-    if (other.runtimeType != runtimeType) return false;
-    return other is CoverRow && other.filter == filter && other.contentId == contentId;
-  }
-
-  @override
-  int get hashCode => hashValues(filter, contentId);
-
-  @override
-  String toString() => '$runtimeType#${shortHash(this)}{filter=$filter, contentId=$contentId}';
 }

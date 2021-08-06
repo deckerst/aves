@@ -2,16 +2,21 @@ import 'dart:ui';
 
 import 'package:aves/widgets/common/magnifier/controller/controller.dart';
 import 'package:aves/widgets/common/magnifier/scale/scale_level.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 
 /// Internal class to wrap custom scale boundaries (min, max and initial)
 /// Also, stores values regarding the two sizes: the container and the child.
-class ScaleBoundaries {
+@immutable
+class ScaleBoundaries extends Equatable {
   final ScaleLevel _minScale;
   final ScaleLevel _maxScale;
   final ScaleLevel _initialScale;
   final Size viewportSize;
   final Size childSize;
+
+  @override
+  List<Object?> get props => [_minScale, _maxScale, _initialScale, viewportSize, childSize];
 
   const ScaleBoundaries({
     required ScaleLevel minScale,
@@ -57,13 +62,4 @@ class ScaleBoundaries {
   Offset childToStatePosition(double scale, Offset childPosition) {
     return (_childCenter - childPosition) * scale;
   }
-
-  @override
-  bool operator ==(Object other) => identical(this, other) || other is ScaleBoundaries && runtimeType == other.runtimeType && _minScale == other._minScale && _maxScale == other._maxScale && _initialScale == other._initialScale && viewportSize == other.viewportSize && childSize == other.childSize;
-
-  @override
-  int get hashCode => hashValues(_minScale, _maxScale, _initialScale, viewportSize, childSize);
-
-  @override
-  String toString() => '$runtimeType#${shortHash(this)}{viewportSize=$viewportSize, childSize=$childSize, initialScale=$initialScale, minScale=$minScale, maxScale=$maxScale}';
 }

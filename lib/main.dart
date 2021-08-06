@@ -1,7 +1,7 @@
 import 'dart:isolate';
 
+import 'package:aves/services/services.dart';
 import 'package:aves/widgets/aves_app.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -20,12 +20,11 @@ void main() {
 //
 // flutter run --profile --trace-skia
 
-  Isolate.current.addErrorListener(RawReceivePort((pair) async {
+  initPlatformServices();
+
+  Isolate.current.addErrorListener(RawReceivePort((pair) {
     final List<dynamic> errorAndStacktrace = pair;
-    await FirebaseCrashlytics.instance.recordError(
-      errorAndStacktrace.first,
-      errorAndStacktrace.last,
-    );
+    reportService.recordError(errorAndStacktrace.first, errorAndStacktrace.last);
   }).sendPort);
 
   runApp(const AvesApp());

@@ -36,6 +36,7 @@ class AIcons {
   static const IconData skip10 = Icons.forward_10_outlined;
   static const IconData captureFrame = Icons.screenshot_outlined;
   static const IconData clear = Icons.clear_outlined;
+  static const IconData clipboard = Icons.content_copy_outlined;
   static const IconData createAlbum = Icons.add_circle_outline;
   static const IconData debug = Icons.whatshot_outlined;
   static const IconData delete = Icons.delete_outlined;
@@ -49,6 +50,7 @@ class AIcons {
   static const IconData import = MdiIcons.fileImportOutline;
   static const IconData info = Icons.info_outlined;
   static const IconData layers = Icons.layers_outlined;
+  static const IconData map = Icons.map_outlined;
   static const IconData newTier = Icons.fiber_new_outlined;
   static const IconData openOutside = Icons.open_in_new_outlined;
   static const IconData pin = Icons.push_pin_outlined;

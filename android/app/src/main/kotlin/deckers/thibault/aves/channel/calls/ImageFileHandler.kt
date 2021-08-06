@@ -5,7 +5,7 @@ import android.graphics.Rect
 import android.net.Uri
 import com.bumptech.glide.Glide
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
-import deckers.thibault.aves.channel.calls.Coresult.Companion.safesus
+import deckers.thibault.aves.channel.calls.Coresult.Companion.safeSuspend
 import deckers.thibault.aves.channel.calls.fetchers.RegionFetcher
 import deckers.thibault.aves.channel.calls.fetchers.SvgRegionFetcher
 import deckers.thibault.aves.channel.calls.fetchers.ThumbnailFetcher
@@ -32,10 +32,10 @@ class ImageFileHandler(private val activity: Activity) : MethodCallHandler {
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
             "getEntry" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getEntry) }
-            "getThumbnail" -> GlobalScope.launch(Dispatchers.IO) { safesus(call, result, ::getThumbnail) }
-            "getRegion" -> GlobalScope.launch(Dispatchers.IO) { safesus(call, result, ::getRegion) }
-            "captureFrame" -> GlobalScope.launch(Dispatchers.IO) { safesus(call, result, ::captureFrame) }
-            "rename" -> GlobalScope.launch(Dispatchers.IO) { safesus(call, result, ::rename) }
+            "getThumbnail" -> GlobalScope.launch(Dispatchers.IO) { safeSuspend(call, result, ::getThumbnail) }
+            "getRegion" -> GlobalScope.launch(Dispatchers.IO) { safeSuspend(call, result, ::getRegion) }
+            "captureFrame" -> GlobalScope.launch(Dispatchers.IO) { safeSuspend(call, result, ::captureFrame) }
+            "rename" -> GlobalScope.launch(Dispatchers.IO) { safeSuspend(call, result, ::rename) }
             "rotate" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::rotate) }
             "flip" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::flip) }
             "clearSizedThumbnailDiskCache" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::clearSizedThumbnailDiskCache) }

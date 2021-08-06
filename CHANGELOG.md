@@ -3,6 +3,16 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [v1.4.7] - 2021-08-06
+### Added
+- Map
+- Viewer: action to copy to clipboard
+- integration with Android global search (Samsung Finder etc.)
+
+### Fixed
+- auto album identification and naming
+- opening HEIC images from downloads content URI on Android R+
+
 ## [v1.4.6] - 2021-07-22
 ### Added
 - Albums / Countries / Tags: multiple selection

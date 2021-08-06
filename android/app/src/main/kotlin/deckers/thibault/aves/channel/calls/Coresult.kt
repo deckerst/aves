@@ -1,5 +1,6 @@
 package deckers.thibault.aves.channel.calls
 
+import deckers.thibault.aves.MainActivity
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import kotlinx.coroutines.CoroutineScope
@@ -8,24 +9,42 @@ import kotlinx.coroutines.launch
 import kotlin.reflect.KSuspendFunction2
 
 // ensure `result` methods are called on the main looper thread
-class Coresult internal constructor(private val methodResult: MethodChannel.Result) : MethodChannel.Result {
+class Coresult internal constructor(private val call: MethodCall, private val methodResult: MethodChannel.Result) : MethodChannel.Result {
     private val mainScope = CoroutineScope(Dispatchers.Main)
 
     override fun success(result: Any?) {
-        mainScope.launch { methodResult.success(result) }
+        mainScope.launch {
+            try {
+                methodResult.success(result)
+            } catch (e: Exception) {
+                MainActivity.notifyError("failed to reply success for method=${call.method}, result=$result, exception=$e")
+            }
+        }
     }
 
     override fun error(errorCode: String, errorMessage: String?, errorDetails: Any?) {
-        mainScope.launch { methodResult.error(errorCode, errorMessage, errorDetails) }
+        mainScope.launch {
+            try {
+                methodResult.error(errorCode, errorMessage, errorDetails)
+            } catch (e: Exception) {
+                MainActivity.notifyError("failed to reply error for method=${call.method}, errorCode=$errorCode, errorMessage=$errorMessage, errorDetails=$errorDetails, exception=$e")
+            }
+        }
     }
 
     override fun notImplemented() {
-        mainScope.launch { methodResult.notImplemented() }
+        mainScope.launch {
+            try {
+                methodResult.notImplemented()
+            } catch (e: Exception) {
+                MainActivity.notifyError("failed to reply notImplemented for method=${call.method}, exception=$e")
+            }
+        }
     }
 
     companion object {
         fun safe(call: MethodCall, result: MethodChannel.Result, function: (call: MethodCall, result: MethodChannel.Result) -> Unit) {
-            val res = Coresult(result)
+            val res = Coresult(call, result)
             try {
                 function(call, res)
             } catch (e: Exception) {
@@ -33,12 +52,12 @@ class Coresult internal constructor(private val methodResult: MethodChannel.Resu
             }
         }
 
-        suspend fun safesus(call: MethodCall, result: MethodChannel.Result, function: KSuspendFunction2<MethodCall, MethodChannel.Result, Unit>) {
-            val res = Coresult(result)
+        suspend fun safeSuspend(call: MethodCall, result: MethodChannel.Result, function: KSuspendFunction2<MethodCall, MethodChannel.Result, Unit>) {
+            val res = Coresult(call, result)
             try {
                 function(call, res)
             } catch (e: Exception) {
-                res.error("safe-exception", e.message, e.stackTraceToString())
+                res.error("safeSuspend-exception", e.message, e.stackTraceToString())
             }
         }
     }

@@ -3,6 +3,8 @@ import 'package:flutter/scheduler.dart';
 class Durations {
   // Flutter animations (with margin)
   static const popupMenuAnimation = Duration(milliseconds: 300 + 10); // ref `_kMenuDuration` used in `_PopupMenuRoute`
+  // page transition duration also available via `ModalRoute.of(context)!.transitionDuration * timeDilation`
+  static const pageTransitionAnimation = Duration(milliseconds: 300 + 10); // ref `transitionDuration` used in `MaterialRouteTransitionMixin`
   static const dialogTransitionAnimation = Duration(milliseconds: 150 + 10); // ref `transitionDuration` used in `DialogRoute`
   static const drawerTransitionAnimation = Duration(milliseconds: 246 + 10); // ref `_kBaseSettleDuration` used in `DrawerControllerState`
   static const toggleableTransitionAnimation = Duration(milliseconds: 200 + 10); // ref `_kToggleDuration` used in `ToggleableStateMixin`

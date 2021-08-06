@@ -1,41 +1,25 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 
+@immutable
 class SectionKey {
   const SectionKey();
 }
 
-class EntryAlbumSectionKey extends SectionKey {
+class EntryAlbumSectionKey extends SectionKey with EquatableMixin {
   final String? directory;
 
+  @override
+  List<Object?> get props => [directory];
+
   const EntryAlbumSectionKey(this.directory);
-
-  @override
-  bool operator ==(Object other) {
-    if (other.runtimeType != runtimeType) return false;
-    return other is EntryAlbumSectionKey && other.directory == directory;
-  }
-
-  @override
-  int get hashCode => directory.hashCode;
-
-  @override
-  String toString() => '$runtimeType#${shortHash(this)}{directory=$directory}';
 }
 
-class EntryDateSectionKey extends SectionKey {
+class EntryDateSectionKey extends SectionKey with EquatableMixin {
   final DateTime? date;
 
+  @override
+  List<Object?> get props => [date];
+
   const EntryDateSectionKey(this.date);
-
-  @override
-  bool operator ==(Object other) {
-    if (other.runtimeType != runtimeType) return false;
-    return other is EntryDateSectionKey && other.date == date;
-  }
-
-  @override
-  int get hashCode => date.hashCode;
-
-  @override
-  String toString() => '$runtimeType#${shortHash(this)}{date=$date}';
 }

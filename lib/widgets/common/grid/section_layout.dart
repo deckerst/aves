@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:aves/model/source/section_keys.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:collection/collection.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -221,12 +222,16 @@ class SectionedListLayout<T> {
   String toString() => '$runtimeType#${shortHash(this)}{sectionCount=${sections.length} columnCount=$columnCount, tileExtent=$tileExtent}';
 }
 
-class SectionLayout {
+@immutable
+class SectionLayout extends Equatable {
   final SectionKey sectionKey;
   final int firstIndex, lastIndex, bodyFirstIndex;
   final double minOffset, maxOffset, bodyMinOffset;
   final double headerExtent, tileExtent, spacing, mainAxisStride;
   final IndexedWidgetBuilder builder;
+
+  @override
+  List<Object?> get props => [sectionKey, firstIndex, lastIndex, minOffset, maxOffset, headerExtent, tileExtent, spacing];
 
   const SectionLayout({
     required this.sectionKey,
@@ -263,15 +268,6 @@ class SectionLayout {
     if (scrollOffset < 0) return firstIndex;
     return bodyFirstIndex + (scrollOffset / mainAxisStride).ceil() - 1;
   }
-
-  @override
-  bool operator ==(Object other) => identical(this, other) || other is SectionLayout && runtimeType == other.runtimeType && sectionKey == other.sectionKey && firstIndex == other.firstIndex && lastIndex == other.lastIndex && minOffset == other.minOffset && maxOffset == other.maxOffset && headerExtent == other.headerExtent && tileExtent == other.tileExtent && spacing == other.spacing;
-
-  @override
-  int get hashCode => hashValues(sectionKey, firstIndex, lastIndex, minOffset, maxOffset, headerExtent, tileExtent, spacing);
-
-  @override
-  String toString() => '$runtimeType#${shortHash(this)}{sectionKey=$sectionKey, firstIndex=$firstIndex, lastIndex=$lastIndex, minOffset=$minOffset, maxOffset=$maxOffset, headerExtent=$headerExtent, tileExtent=$tileExtent, spacing=$spacing}';
 }
 
 class _GridRow extends MultiChildRenderObjectWidget {

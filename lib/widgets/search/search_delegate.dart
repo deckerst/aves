@@ -42,7 +42,13 @@ class CollectionSearchDelegate {
     MimeFilter(MimeTypes.svg),
   ];
 
-  CollectionSearchDelegate({required this.source, this.parentCollection});
+  CollectionSearchDelegate({
+    required this.source,
+    this.parentCollection,
+    String? initialQuery,
+  }) {
+    query = initialQuery ?? '';
+  }
 
   Widget buildLeading(BuildContext context) {
     return Navigator.canPop(context)

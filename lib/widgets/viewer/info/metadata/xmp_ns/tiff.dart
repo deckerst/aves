@@ -8,7 +8,7 @@ class XmpTiffNamespace extends XmpNamespace {
   @override
   String get displayTitle => 'TIFF';
 
-  XmpTiffNamespace(Map<String, String> rawProps) : super(ns, rawProps);
+  const XmpTiffNamespace(Map<String, String> rawProps) : super(ns, rawProps);
 
   @override
   String formatValue(XmpProp prop) {

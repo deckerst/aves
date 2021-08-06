@@ -1,5 +1,7 @@
 package deckers.thibault.aves
 
+import android.annotation.SuppressLint
+import android.app.SearchManager
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -29,10 +31,23 @@ class MainActivity : FlutterActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.i(LOG_TAG, "onCreate intent=$intent")
+//        StrictMode.setThreadPolicy(
+//            StrictMode.ThreadPolicy.Builder()
+//                .detectAll()
+//                .penaltyLog()
+//                .build()
+//        )
+//        StrictMode.setVmPolicy(
+//            StrictMode.VmPolicy.Builder()
+//                .detectAll()
+//                .penaltyLog()
+//                .build()
+//        )
         super.onCreate(savedInstanceState)
 
         val messenger = flutterEngine!!.dartExecutor.binaryMessenger
 
+        // dart -> platform -> dart
         MethodChannel(messenger, AppAdapterHandler.CHANNEL).setMethodCallHandler(AppAdapterHandler(this))
         MethodChannel(messenger, AppShortcutHandler.CHANNEL).setMethodCallHandler(AppShortcutHandler(this))
         MethodChannel(messenger, DebugHandler.CHANNEL).setMethodCallHandler(DebugHandler(this))
@@ -40,18 +55,20 @@ class MainActivity : FlutterActivity() {
         MethodChannel(messenger, EmbeddedDataHandler.CHANNEL).setMethodCallHandler(EmbeddedDataHandler(this))
         MethodChannel(messenger, ImageFileHandler.CHANNEL).setMethodCallHandler(ImageFileHandler(this))
         MethodChannel(messenger, GeocodingHandler.CHANNEL).setMethodCallHandler(GeocodingHandler(this))
+        MethodChannel(messenger, GlobalSearchHandler.CHANNEL).setMethodCallHandler(GlobalSearchHandler(this))
         MethodChannel(messenger, MediaStoreHandler.CHANNEL).setMethodCallHandler(MediaStoreHandler(this))
         MethodChannel(messenger, MetadataHandler.CHANNEL).setMethodCallHandler(MetadataHandler(this))
         MethodChannel(messenger, StorageHandler.CHANNEL).setMethodCallHandler(StorageHandler(this))
         MethodChannel(messenger, TimeHandler.CHANNEL).setMethodCallHandler(TimeHandler())
         MethodChannel(messenger, WindowHandler.CHANNEL).setMethodCallHandler(WindowHandler(this))
 
+        // result streaming: dart -> platform ->->-> dart
         StreamsChannel(messenger, ImageByteStreamHandler.CHANNEL).setStreamHandlerFactory { args -> ImageByteStreamHandler(this, args) }
         StreamsChannel(messenger, ImageOpStreamHandler.CHANNEL).setStreamHandlerFactory { args -> ImageOpStreamHandler(this, args) }
         StreamsChannel(messenger, MediaStoreStreamHandler.CHANNEL).setStreamHandlerFactory { args -> MediaStoreStreamHandler(this, args) }
         StreamsChannel(messenger, StorageAccessStreamHandler.CHANNEL).setStreamHandlerFactory { args -> StorageAccessStreamHandler(this, args) }
 
-        // Media Store change monitoring
+        // change monitoring: platform -> dart
         mediaStoreChangeStreamHandler = MediaStoreChangeStreamHandler(this).apply {
             EventChannel(messenger, MediaStoreChangeStreamHandler.CHANNEL).setStreamHandler(this)
         }
@@ -60,9 +77,11 @@ class MainActivity : FlutterActivity() {
         }
 
         // intent handling
+        // notification: platform -> dart
         intentStreamHandler = IntentStreamHandler().apply {
             EventChannel(messenger, IntentStreamHandler.CHANNEL).setStreamHandler(this)
         }
+        // detail fetch: dart -> platform
         intentDataMap = extractIntentData(intent)
         MethodChannel(messenger, VIEWER_CHANNEL).setMethodCallHandler { call, result ->
             when (call.method) {
@@ -72,6 +91,11 @@ class MainActivity : FlutterActivity() {
                 }
                 "pick" -> pick(call)
             }
+        }
+
+        // notification: platform -> dart
+        errorStreamHandler = ErrorStreamHandler().apply {
+            EventChannel(messenger, ErrorStreamHandler.CHANNEL).setStreamHandler(this)
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
@@ -93,31 +117,34 @@ class MainActivity : FlutterActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
-            DOCUMENT_TREE_ACCESS_REQUEST -> {
-                val treeUri = data?.data
-                if (resultCode != RESULT_OK || treeUri == null) {
-                    onPermissionResult(requestCode, null)
-                    return
-                }
+            DOCUMENT_TREE_ACCESS_REQUEST -> onDocumentTreeAccessResult(data, resultCode, requestCode)
+            DELETE_PERMISSION_REQUEST -> onDeletePermissionResult(resultCode)
+            CREATE_FILE_REQUEST, OPEN_FILE_REQUEST, SELECT_DIRECTORY_REQUEST -> onPermissionResult(requestCode, data?.data)
+        }
+    }
 
-                // save access permissions across reboots
-                val takeFlags = (data.flags
-                        and (Intent.FLAG_GRANT_READ_URI_PERMISSION
-                        or Intent.FLAG_GRANT_WRITE_URI_PERMISSION))
-                contentResolver.takePersistableUriPermission(treeUri, takeFlags)
+    @SuppressLint("WrongConstant")
+    private fun onDocumentTreeAccessResult(data: Intent?, resultCode: Int, requestCode: Int) {
+        val treeUri = data?.data
+        if (resultCode != RESULT_OK || treeUri == null) {
+            onPermissionResult(requestCode, null)
+            return
+        }
 
-                // resume pending action
-                onPermissionResult(requestCode, treeUri)
-            }
-            DELETE_PERMISSION_REQUEST -> {
-                // delete permission may be requested on Android 10+ only
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    MediaStoreImageProvider.pendingDeleteCompleter?.complete(resultCode == RESULT_OK)
-                }
-            }
-            CREATE_FILE_REQUEST, OPEN_FILE_REQUEST, SELECT_DIRECTORY_REQUEST -> {
-                onPermissionResult(requestCode, data?.data)
-            }
+        // save access permissions across reboots
+        val takeFlags = (data.flags
+                and (Intent.FLAG_GRANT_READ_URI_PERMISSION
+                or Intent.FLAG_GRANT_WRITE_URI_PERMISSION))
+        contentResolver.takePersistableUriPermission(treeUri, takeFlags)
+
+        // resume pending action
+        onPermissionResult(requestCode, treeUri)
+    }
+
+    private fun onDeletePermissionResult(resultCode: Int) {
+        // delete permission may be requested on Android 10+ only
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            MediaStoreImageProvider.pendingDeleteCompleter?.complete(resultCode == RESULT_OK)
         }
     }
 
@@ -145,6 +172,20 @@ class MainActivity : FlutterActivity() {
                     "action" to "pick",
                     "mimeType" to intent.type,
                 )
+            }
+            Intent.ACTION_SEARCH -> {
+                val viewUri = intent.dataString
+                return if (viewUri != null) hashMapOf(
+                    "action" to "view",
+                    "uri" to viewUri,
+                    "mimeType" to intent.getStringExtra(SearchManager.EXTRA_DATA_KEY),
+                ) else hashMapOf(
+                    "action" to "search",
+                    "query" to intent.getStringExtra(SearchManager.QUERY),
+                )
+            }
+            else -> {
+                Log.w(LOG_TAG, "unhandled intent action=${intent?.action}")
             }
         }
         return HashMap()
@@ -211,6 +252,10 @@ class MainActivity : FlutterActivity() {
                 handler.onDenied()
             }
         }
+
+        var errorStreamHandler: ErrorStreamHandler? = null
+
+        fun notifyError(error: String) = errorStreamHandler?.notifyError(error)
     }
 }
 

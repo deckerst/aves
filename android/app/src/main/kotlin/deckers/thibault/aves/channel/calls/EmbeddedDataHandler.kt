@@ -12,7 +12,7 @@ import com.drew.imaging.ImageMetadataReader
 import com.drew.metadata.file.FileTypeDirectory
 import com.drew.metadata.xmp.XmpDirectory
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
-import deckers.thibault.aves.channel.calls.Coresult.Companion.safesus
+import deckers.thibault.aves.channel.calls.Coresult.Companion.safeSuspend
 import deckers.thibault.aves.metadata.Metadata
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeString
 import deckers.thibault.aves.metadata.MultiPage
@@ -44,7 +44,7 @@ import java.util.*
 class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
-            "getExifThumbnails" -> GlobalScope.launch(Dispatchers.IO) { safesus(call, result, ::getExifThumbnails) }
+            "getExifThumbnails" -> GlobalScope.launch(Dispatchers.IO) { safeSuspend(call, result, ::getExifThumbnails) }
             "extractMotionPhotoVideo" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::extractMotionPhotoVideo) }
             "extractVideoEmbeddedPicture" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::extractVideoEmbeddedPicture) }
             "extractXmpDataProp" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::extractXmpDataProp) }
@@ -193,7 +193,7 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
                 }
             }
         }
-        val authority = "${context.applicationContext.packageName}.fileprovider"
+        val authority = "${context.applicationContext.packageName}.file_provider"
         val uri = if (displayName != null) {
             // add extension to ease type identification when sharing this content
             val displayNameWithExtension = if (extension == null || displayName.endsWith(extension, ignoreCase = true)) {

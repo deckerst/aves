@@ -1,8 +1,8 @@
 import 'dart:async';
 
+import 'package:aves/services/services.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:latlong2/latlong.dart';
 
 class GeocodingService {
@@ -21,7 +21,7 @@ class GeocodingService {
       });
       return (result as List).cast<Map>().map((map) => Address.fromMap(map)).toList();
     } on PlatformException catch (e) {
-      debugPrint('getAddress failed with code=${e.code}, exception=${e.message}, details=${e.details}}');
+      await reportService.recordChannelError('getAddress', e);
     }
     return [];
   }

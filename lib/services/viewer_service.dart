@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart';
+import 'package:aves/services/services.dart';
 import 'package:flutter/services.dart';
 
 class ViewerService {
@@ -10,7 +10,7 @@ class ViewerService {
       final result = await platform.invokeMethod('getIntentData');
       if (result != null) return (result as Map).cast<String, dynamic>();
     } on PlatformException catch (e) {
-      debugPrint('getIntentData failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+      await reportService.recordChannelError('getIntentData', e);
     }
     return {};
   }
@@ -21,7 +21,7 @@ class ViewerService {
         'uri': uri,
       });
     } on PlatformException catch (e) {
-      debugPrint('pick failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+      await reportService.recordChannelError('pick', e);
     }
   }
 }

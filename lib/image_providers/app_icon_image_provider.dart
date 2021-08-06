@@ -1,6 +1,7 @@
 import 'dart:ui' as ui show Codec;
 
 import 'package:aves/services/android_app_service.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
@@ -49,23 +50,18 @@ class AppIconImage extends ImageProvider<AppIconImageKey> {
   }
 }
 
-class AppIconImageKey {
+@immutable
+class AppIconImageKey extends Equatable {
   final String packageName;
   final double size;
   final double scale;
+
+  @override
+  List<Object?> get props => [packageName, size, scale];
 
   const AppIconImageKey({
     required this.packageName,
     required this.size,
     this.scale = 1.0,
   });
-
-  @override
-  bool operator ==(Object other) {
-    if (other.runtimeType != runtimeType) return false;
-    return other is AppIconImageKey && other.packageName == packageName && other.size == size && other.scale == scale;
-  }
-
-  @override
-  int get hashCode => hashValues(packageName, size, scale);
 }

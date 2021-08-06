@@ -8,6 +8,7 @@ import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
 import deckers.thibault.aves.MainActivity
 import deckers.thibault.aves.R
+import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.utils.BitmapUtils.centerSquareCrop
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -20,23 +21,31 @@ import java.util.*
 class AppShortcutHandler(private val context: Context) : MethodCallHandler {
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
-            "canPin" -> result.success(canPin())
-            "pin" -> {
-                GlobalScope.launch(Dispatchers.IO) { pin(call) }
-                result.success(null)
-            }
+            "canPin" -> safe(call, result, ::canPin)
+            "pin" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::pin) }
             else -> result.notImplemented()
         }
     }
 
-    private fun canPin() = ShortcutManagerCompat.isRequestPinShortcutSupported(context)
+    private fun isSupported() = ShortcutManagerCompat.isRequestPinShortcutSupported(context)
 
-    private fun pin(call: MethodCall) {
-        if (!canPin()) return
+    private fun canPin(@Suppress("UNUSED_PARAMETER") call: MethodCall, result: MethodChannel.Result) {
+        result.success(isSupported())
+    }
 
-        val label = call.argument<String>("label") ?: return
+    private fun pin(call: MethodCall, result: MethodChannel.Result) {
+        val label = call.argument<String>("label")
         val iconBytes = call.argument<ByteArray>("iconBytes")
-        val filters = call.argument<List<String>>("filters") ?: return
+        val filters = call.argument<List<String>>("filters")
+        if (label == null || filters == null) {
+            result.error("pin-args", "failed because of missing arguments", null)
+            return
+        }
+
+        if (!isSupported()) {
+            result.error("pin-unsupported", "failed because the launcher does not support pinning shortcuts", null)
+            return
+        }
 
         var icon: IconCompat? = null
         if (iconBytes?.isNotEmpty() == true) {
@@ -62,6 +71,8 @@ class AppShortcutHandler(private val context: Context) : MethodCallHandler {
             .setIntent(intent)
             .build()
         ShortcutManagerCompat.requestPinShortcut(context, shortcut, null)
+
+        result.success(true)
     }
 
     companion object {

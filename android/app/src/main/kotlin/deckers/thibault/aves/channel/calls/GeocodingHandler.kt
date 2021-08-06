@@ -2,6 +2,7 @@ package deckers.thibault.aves.channel.calls
 
 import android.content.Context
 import android.location.Geocoder
+import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
@@ -18,7 +19,7 @@ class GeocodingHandler(private val context: Context) : MethodCallHandler {
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
-            "getAddress" -> GlobalScope.launch(Dispatchers.IO) { Coresult.safe(call, result, ::getAddress) }
+            "getAddress" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getAddress) }
             else -> result.notImplemented()
         }
     }

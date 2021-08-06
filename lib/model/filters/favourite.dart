@@ -10,6 +10,9 @@ class FavouriteFilter extends CollectionFilter {
 
   static const instance = FavouriteFilter._private();
 
+  @override
+  List<Object?> get props => [];
+
   const FavouriteFilter._private();
 
   @override
@@ -37,13 +40,4 @@ class FavouriteFilter extends CollectionFilter {
 
   @override
   String get key => type;
-
-  @override
-  bool operator ==(Object other) {
-    if (other.runtimeType != runtimeType) return false;
-    return other is FavouriteFilter;
-  }
-
-  @override
-  int get hashCode => type.hashCode;
 }

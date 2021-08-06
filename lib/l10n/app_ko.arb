@@ -31,6 +31,7 @@
   "chipActionSetCover": "대표 이미지 변경",
   "chipActionCreateAlbum": "앨범 만들기",
 
+  "entryActionCopyToClipboard": "클립보드에 복사",
   "entryActionDelete": "삭제",
   "entryActionExport": "내보내기",
   "entryActionInfo": "상세정보",
@@ -146,6 +147,7 @@
 
   "menuActionSort": "정렬",
   "menuActionGroup": "묶음",
+  "menuActionMap": "지도",
   "menuActionStats": "통계",
 
   "aboutPageTitle": "앱 정보",
@@ -336,6 +338,8 @@
   "settingsLanguage": "언어",
   "settingsCoordinateFormatTile": "좌표 표현",
   "settingsCoordinateFormatTitle": "좌표 표현",
+
+  "mapPageTitle": "지도",
 
   "statsPageTitle": "통계",
   "statsImage": "{count, plural, other{사진}}",

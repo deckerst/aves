@@ -3,14 +3,19 @@ import 'dart:ui' as ui show Codec;
 
 import 'package:aves/services/services.dart';
 import 'package:aves/utils/pedantic.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-class UriImage extends ImageProvider<UriImage> {
+@immutable
+class UriImage extends ImageProvider<UriImage> with EquatableMixin {
   final String uri, mimeType;
   final int? pageId, rotationDegrees, expectedContentLength;
   final bool isFlipped;
   final double scale;
+
+  @override
+  List<Object?> get props => [uri, pageId, rotationDegrees, isFlipped, scale];
 
   const UriImage({
     required this.uri,
@@ -70,22 +75,6 @@ class UriImage extends ImageProvider<UriImage> {
       unawaited(chunkEvents.close());
     }
   }
-
-  @override
-  bool operator ==(Object other) {
-    if (other.runtimeType != runtimeType) return false;
-    return other is UriImage && other.uri == uri && other.mimeType == mimeType && other.rotationDegrees == rotationDegrees && other.isFlipped == isFlipped && other.pageId == pageId && other.scale == scale;
-  }
-
-  @override
-  int get hashCode => hashValues(
-        uri,
-        mimeType,
-        rotationDegrees,
-        isFlipped,
-        pageId,
-        scale,
-      );
 
   @override
   String toString() => '$runtimeType#${shortHash(this)}{uri=$uri, mimeType=$mimeType, rotationDegrees=$rotationDegrees, isFlipped=$isFlipped, pageId=$pageId, scale=$scale}';

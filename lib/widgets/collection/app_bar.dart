@@ -22,9 +22,10 @@ import 'package:aves/widgets/common/basic/menu_row.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/add_shortcut_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
+import 'package:aves/widgets/map/map_page.dart';
 import 'package:aves/widgets/search/search_button.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
-import 'package:aves/widgets/stats/stats.dart';
+import 'package:aves/widgets/stats/stats_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -213,6 +214,11 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
                     child: MenuRow(text: context.l10n.collectionActionSelect, icon: AIcons.select),
                   ),
                   PopupMenuItem(
+                    value: CollectionAction.map,
+                    enabled: isNotEmpty,
+                    child: MenuRow(text: context.l10n.menuActionMap, icon: AIcons.map),
+                  ),
+                  PopupMenuItem(
                     value: CollectionAction.stats,
                     enabled: isNotEmpty,
                     child: MenuRow(text: context.l10n.menuActionStats, icon: AIcons.stats),
@@ -291,6 +297,9 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
         break;
       case CollectionAction.selectNone:
         context.read<Selection<AvesEntry>>().clearSelection();
+        break;
+      case CollectionAction.map:
+        _goToMap();
         break;
       case CollectionAction.stats:
         _goToStats();
@@ -371,6 +380,19 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       SearchPageRoute(
         delegate: CollectionSearchDelegate(
           source: collection.source,
+          parentCollection: collection,
+        ),
+      ),
+    );
+  }
+
+  void _goToMap() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        settings: const RouteSettings(name: MapPage.routeName),
+        builder: (context) => MapPage(
+          source: source,
           parentCollection: collection,
         ),
       ),

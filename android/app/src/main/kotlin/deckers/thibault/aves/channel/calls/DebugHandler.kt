@@ -1,12 +1,13 @@
 package deckers.thibault.aves.channel.calls
 
-import android.content.ContentResolver
 import android.content.ContentUris
 import android.content.Context
 import android.database.Cursor
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import android.provider.MediaStore
 import android.util.Log
 import androidx.exifinterface.media.ExifInterface
@@ -37,8 +38,15 @@ import java.util.*
 class DebugHandler(private val context: Context) : MethodCallHandler {
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
-            "getContextDirs" -> result.success(getContextDirs())
-            "getEnv" -> result.success(System.getenv())
+            "crash" -> Handler(Looper.getMainLooper()).postDelayed({ throw TestException() }, 50)
+            "exception" -> throw TestException()
+            "safeException" -> safe(call, result) { _, _ -> throw TestException() }
+            "exceptionInCoroutine" -> GlobalScope.launch(Dispatchers.IO) { throw TestException() }
+            "safeExceptionInCoroutine" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result) { _, _ -> throw TestException() } }
+
+            "getContextDirs" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getContextDirs) }
+            "getEnv" -> safe(call, result, ::getEnv)
+
             "getBitmapFactoryInfo" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getBitmapFactoryInfo) }
             "getContentResolverMetadata" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getContentResolverMetadata) }
             "getExifInterfaceMetadata" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getExifInterfaceMetadata) }
@@ -49,24 +57,32 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
         }
     }
 
-    private fun getContextDirs() = hashMapOf(
-        "cacheDir" to context.cacheDir,
-        "filesDir" to context.filesDir,
-        "obbDir" to context.obbDir,
-        "externalCacheDir" to context.externalCacheDir,
-    ).apply {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            putAll(
-                hashMapOf(
-                    "codeCacheDir" to context.codeCacheDir,
-                    "noBackupFilesDir" to context.noBackupFilesDir,
+    private fun getContextDirs(@Suppress("UNUSED_PARAMETER") call: MethodCall, result: MethodChannel.Result) {
+        val dirs = hashMapOf(
+            "cacheDir" to context.cacheDir,
+            "filesDir" to context.filesDir,
+            "obbDir" to context.obbDir,
+            "externalCacheDir" to context.externalCacheDir,
+        ).apply {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                putAll(
+                    hashMapOf(
+                        "codeCacheDir" to context.codeCacheDir,
+                        "noBackupFilesDir" to context.noBackupFilesDir,
+                    )
                 )
-            )
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            put("dataDir", context.dataDir)
-        }
-    }.mapValues { it.value?.path }
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                put("dataDir", context.dataDir)
+            }
+        }.mapValues { it.value?.path }
+
+        result.success(dirs)
+    }
+
+    private fun getEnv(@Suppress("UNUSED_PARAMETER") call: MethodCall, result: MethodChannel.Result) {
+        result.success(System.getenv())
+    }
 
     private fun getBitmapFactoryInfo(call: MethodCall, result: MethodChannel.Result) {
         val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
@@ -105,7 +121,7 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
         }
 
         var contentUri: Uri = uri
-        if (uri.scheme == ContentResolver.SCHEME_CONTENT && MediaStore.AUTHORITY.equals(uri.host, ignoreCase = true)) {
+        if (StorageUtils.isMediaStoreContentUri(uri)) {
             uri.tryParseId()?.let { id ->
                 contentUri = when {
                     isImage(mimeType) -> ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
@@ -317,4 +333,6 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
         private val LOG_TAG = LogUtils.createTag<DebugHandler>()
         const val CHANNEL = "deckers.thibault/aves/debug"
     }
+
+    class TestException internal constructor() : RuntimeException("oops")
 }
