@@ -13,7 +13,6 @@ import 'package:aves/services/service_policy.dart';
 import 'package:aves/services/services.dart';
 import 'package:aves/services/svg_metadata_service.dart';
 import 'package:aves/utils/change_notifier.dart';
-import 'package:aves/utils/math_utils.dart';
 import 'package:aves/utils/time_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:country_code/country_code.dart';
@@ -381,13 +380,6 @@ class AvesEntry {
   bool get hasFineAddress => _addressDetails?.place?.isNotEmpty == true || (_addressDetails?.countryName?.length ?? 0) > 3;
 
   LatLng? get latLng => hasGps ? LatLng(_catalogMetadata!.latitude!, _catalogMetadata!.longitude!) : null;
-
-  String? get geoUri {
-    if (!hasGps) return null;
-    final latitude = roundToPrecision(_catalogMetadata!.latitude!, decimals: 6);
-    final longitude = roundToPrecision(_catalogMetadata!.longitude!, decimals: 6);
-    return 'geo:$latitude,$longitude?q=$latitude,$longitude';
-  }
 
   List<String>? _xmpSubjects;
 

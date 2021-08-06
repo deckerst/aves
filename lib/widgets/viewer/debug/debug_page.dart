@@ -122,7 +122,6 @@ class ViewerDebugPage extends StatelessWidget {
             'hasAddress': '${entry.hasAddress}',
             'hasFineAddress': '${entry.hasFineAddress}',
             'latLng': '${entry.latLng}',
-            'geoUri': entry.geoUri ?? '',
           },
         ),
       ],

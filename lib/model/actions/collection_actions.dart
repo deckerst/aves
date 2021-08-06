@@ -5,6 +5,7 @@ enum CollectionAction {
   select,
   selectAll,
   selectNone,
+  map,
   stats,
   // apply to entry set
   copy,
