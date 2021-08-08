@@ -4,6 +4,8 @@ import android.content.*
 import android.content.pm.ApplicationInfo
 import android.content.res.Configuration
 import android.net.Uri
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.core.content.FileProvider
 import com.bumptech.glide.Glide
@@ -141,13 +143,21 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
             return
         }
 
-        val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager
-        if (clipboard != null) {
-            val clip = ClipData.newUri(context.contentResolver, label, getShareableUri(uri))
-            clipboard.setPrimaryClip(clip)
-            result.success(true)
-        } else {
-            result.success(false)
+        // on older devices, `ClipboardManager` initialization must happen on the main thread
+        // (e.g. Samsung S7 with Android 8.0 / API 26, but not on Tab A 10.1 with Android 8.1 / API 27)
+        Handler(Looper.getMainLooper()).post {
+            try {
+                val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager
+                if (clipboard != null) {
+                    val clip = ClipData.newUri(context.contentResolver, label, getShareableUri(uri))
+                    clipboard.setPrimaryClip(clip)
+                    result.success(true)
+                } else {
+                    result.success(false)
+                }
+            } catch (e: Exception) {
+                result.error("copyToClipboard-exception", "failed to set clip", e.message)
+            }
         }
     }
 
