@@ -161,6 +161,7 @@ class _HomePageState extends State<HomePage> {
         return SearchPageRoute(
           delegate: CollectionSearchDelegate(
             source: source,
+            canPop: false,
             initialQuery: _shortcutSearchQuery,
           ),
         );
