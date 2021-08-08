@@ -40,9 +40,11 @@ class AndroidFileUtils {
   }
 
   Future<void> initAppNames() async {
-    _packages = await AndroidAppService.getPackages();
-    _potentialAppDirs = _launcherPackages.expand((package) => package.potentialDirs).toList();
-    appNameChangeNotifier.notifyListeners();
+    if (_packages.isEmpty) {
+      _packages = await AndroidAppService.getPackages();
+      _potentialAppDirs = _launcherPackages.expand((package) => package.potentialDirs).toList();
+      appNameChangeNotifier.notifyListeners();
+    }
   }
 
   bool isCameraPath(String path) => path.startsWith(dcimPath) && (path.endsWith('${separator}Camera') || path.endsWith('${separator}100ANDRO'));
