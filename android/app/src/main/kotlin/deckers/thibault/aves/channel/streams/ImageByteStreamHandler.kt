@@ -140,7 +140,7 @@ class ImageByteStreamHandler(private val activity: Activity, private val argumen
                 error("streamImage-image-decode-null", "failed to get image from uri=$uri", null)
             }
         } catch (e: Exception) {
-            error("streamImage-image-decode-exception", "failed to get image from uri=$uri", toErrorDetails(e))
+            error("streamImage-image-decode-exception", "failed to get image from uri=$uri model=$model", toErrorDetails(e))
         } finally {
             Glide.with(activity).clear(target)
         }
