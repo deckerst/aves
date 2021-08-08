@@ -14,6 +14,7 @@ class AndroidFileUtils {
   Set<StorageVolume> storageVolumes = {};
   Set<Package> _packages = {};
   List<String> _potentialAppDirs = [];
+  bool _initialized = false;
 
   AChangeNotifier appNameChangeNotifier = AChangeNotifier();
 
@@ -22,6 +23,8 @@ class AndroidFileUtils {
   AndroidFileUtils._private();
 
   Future<void> init() async {
+    if (_initialized) return;
+
     separator = pContext.separator;
     storageVolumes = await storageService.getStorageVolumes();
     primaryStorage = storageVolumes.firstWhereOrNull((volume) => volume.isPrimary)?.path ?? separator;
@@ -32,12 +35,16 @@ class AndroidFileUtils {
     picturesPath = pContext.join(primaryStorage, 'Pictures');
     // from Aves
     videoCapturesPath = pContext.join(dcimPath, 'Video Captures');
+
+    _initialized = true;
   }
 
   Future<void> initAppNames() async {
-    _packages = await AndroidAppService.getPackages();
-    _potentialAppDirs = _launcherPackages.expand((package) => package.potentialDirs).toList();
-    appNameChangeNotifier.notifyListeners();
+    if (_packages.isEmpty) {
+      _packages = await AndroidAppService.getPackages();
+      _potentialAppDirs = _launcherPackages.expand((package) => package.potentialDirs).toList();
+      appNameChangeNotifier.notifyListeners();
+    }
   }
 
   bool isCameraPath(String path) => path.startsWith(dcimPath) && (path.endsWith('${separator}Camera') || path.endsWith('${separator}100ANDRO'));

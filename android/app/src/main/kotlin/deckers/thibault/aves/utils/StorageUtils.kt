@@ -429,11 +429,15 @@ object StorageUtils {
     // so we build a typical `images` or `videos` content URI from the original content ID.
     fun getGlideSafeUri(uri: Uri, mimeType: String): Uri {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && isMediaStoreContentUri(uri)) {
-            uri.tryParseId()?.let { id ->
-                return when {
-                    isImage(mimeType) -> ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
-                    isVideo(mimeType) -> ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, id)
-                    else -> uri
+            // we cannot safely apply this to a file content URI, as it may point to a file not indexed
+            // by the Media Store (via `.nomedia`), and therefore has no matching image/video content URI
+            if (uri.path?.contains("/downloads/") == true) {
+                uri.tryParseId()?.let { id ->
+                    return when {
+                        isImage(mimeType) -> ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
+                        isVideo(mimeType) -> ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, id)
+                        else -> uri
+                    }
                 }
             }
         }

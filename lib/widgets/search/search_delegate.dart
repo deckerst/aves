@@ -28,6 +28,7 @@ class CollectionSearchDelegate {
   final CollectionSource source;
   final CollectionLens? parentCollection;
   final ValueNotifier<String?> expandedSectionNotifier = ValueNotifier(null);
+  final bool canPop;
 
   static const searchHistoryCount = 10;
   static final typeFilters = [
@@ -45,13 +46,17 @@ class CollectionSearchDelegate {
   CollectionSearchDelegate({
     required this.source,
     this.parentCollection,
+    this.canPop = true,
     String? initialQuery,
   }) {
     query = initialQuery ?? '';
   }
 
   Widget buildLeading(BuildContext context) {
-    return Navigator.canPop(context)
+    // use a property instead of checking `Navigator.canPop(context)`
+    // because the navigator state changes as soon as we press back
+    // so the leading may mistakenly switch to the close button
+    return canPop
         ? IconButton(
             icon: AnimatedIcon(
               icon: AnimatedIcons.menu_arrow,
