@@ -16,10 +16,6 @@ abstract class ReportService {
   Future<void> recordError(dynamic exception, StackTrace? stack);
 
   Future<void> recordFlutterError(FlutterErrorDetails flutterErrorDetails);
-
-  Future<void> recordChannelError(String method, PlatformException e) {
-    return recordError('$method failed with code=${e.code}, exception=${e.message}, details=${e.details}}', null);
-  }
 }
 
 class CrashlyticsReportService extends ReportService {

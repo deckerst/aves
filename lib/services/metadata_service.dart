@@ -35,8 +35,8 @@ class PlatformMetadataService implements MetadataService {
         'sizeBytes': entry.sizeBytes,
       });
       if (result != null) return result as Map;
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('getAllMetadata', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
     return {};
   }
@@ -65,8 +65,8 @@ class PlatformMetadataService implements MetadataService {
         }) as Map;
         result['contentId'] = entry.contentId;
         return CatalogMetadata.fromMap(result);
-      } on PlatformException catch (e) {
-        await reportService.recordChannelError('getCatalogMetadata', e);
+      } on PlatformException catch (e, stack) {
+        await reportService.recordError(e, stack);
       }
       return null;
     }
@@ -91,8 +91,8 @@ class PlatformMetadataService implements MetadataService {
         'sizeBytes': entry.sizeBytes,
       }) as Map;
       return OverlayMetadata.fromMap(result);
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('getOverlayMetadata', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
     return null;
   }
@@ -113,8 +113,8 @@ class PlatformMetadataService implements MetadataService {
         imagePage['rotationDegrees'] = entry.rotationDegrees;
       }
       return MultiPageInfo.fromPageMaps(entry, pageMaps);
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('getMultiPageInfo', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
     return null;
   }
@@ -131,8 +131,8 @@ class PlatformMetadataService implements MetadataService {
         'sizeBytes': entry.sizeBytes,
       }) as Map;
       return PanoramaInfo.fromMap(result);
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('PanoramaInfo', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
     return null;
   }
@@ -145,8 +145,8 @@ class PlatformMetadataService implements MetadataService {
         'uri': entry.uri,
         'prop': prop,
       });
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('getContentResolverProp', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
     return null;
   }

@@ -23,8 +23,8 @@ class AppShortcutService {
         _canPin = result;
         return result;
       }
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('canPin', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
     return false;
   }
@@ -49,8 +49,8 @@ class AppShortcutService {
         'iconBytes': iconBytes,
         'filters': filters.map((filter) => filter.toJson()).toList(),
       });
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('pin', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
   }
 }

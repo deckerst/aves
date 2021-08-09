@@ -12,8 +12,8 @@ class PlatformTimeService implements TimeService {
   Future<String?> getDefaultTimeZone() async {
     try {
       return await platform.invokeMethod('getDefaultTimeZone');
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('getDefaultTimeZone', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
     return null;
   }

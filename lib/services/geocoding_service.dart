@@ -20,8 +20,8 @@ class GeocodingService {
         'maxResults': 2,
       });
       return (result as List).cast<Map>().map((map) => Address.fromMap(map)).toList();
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('getAddress', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
     return [];
   }
