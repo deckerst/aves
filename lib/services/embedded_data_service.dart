@@ -26,8 +26,8 @@ class PlatformEmbeddedDataService implements EmbeddedDataService {
         'sizeBytes': entry.sizeBytes,
       });
       if (result != null) return (result as List).cast<Uint8List>();
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('getExifThumbnail', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
     return [];
   }
@@ -42,8 +42,8 @@ class PlatformEmbeddedDataService implements EmbeddedDataService {
         'displayName': '${entry.bestTitle} • Video',
       });
       if (result != null) return result as Map;
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('extractMotionPhotoVideo', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
     return {};
   }
@@ -56,8 +56,8 @@ class PlatformEmbeddedDataService implements EmbeddedDataService {
         'displayName': '${entry.bestTitle} • Cover',
       });
       if (result != null) return result as Map;
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('extractVideoEmbeddedPicture', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
     return {};
   }
@@ -74,8 +74,8 @@ class PlatformEmbeddedDataService implements EmbeddedDataService {
         'propMimeType': propMimeType,
       });
       if (result != null) return result as Map;
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('extractXmpDataProp', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
     return {};
   }

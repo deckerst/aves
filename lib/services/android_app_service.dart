@@ -21,8 +21,8 @@ class AndroidAppService {
         kakaoTalk.ownedDirs.add('KakaoTalkDownload');
       }
       return packages;
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('getPackages', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
     return {};
   }
@@ -34,8 +34,8 @@ class AndroidAppService {
         'sizeDip': size,
       });
       if (result != null) return result as Uint8List;
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('getAppIcon', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
     return Uint8List(0);
   }
@@ -47,8 +47,8 @@ class AndroidAppService {
         'label': label,
       });
       if (result != null) return result as bool;
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('copyToClipboard', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
     return false;
   }
@@ -60,8 +60,8 @@ class AndroidAppService {
         'mimeType': mimeType,
       });
       if (result != null) return result as bool;
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('edit', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
     return false;
   }
@@ -73,8 +73,8 @@ class AndroidAppService {
         'mimeType': mimeType,
       });
       if (result != null) return result as bool;
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('open', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
     return false;
   }
@@ -89,8 +89,8 @@ class AndroidAppService {
         'geoUri': geoUri,
       });
       if (result != null) return result as bool;
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('openMap', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
     return false;
   }
@@ -102,8 +102,8 @@ class AndroidAppService {
         'mimeType': mimeType,
       });
       if (result != null) return result as bool;
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('setAs', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
     return false;
   }
@@ -117,8 +117,8 @@ class AndroidAppService {
         'urisByMimeType': urisByMimeType,
       });
       if (result != null) return result as bool;
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('shareEntries', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
     return false;
   }
@@ -131,8 +131,8 @@ class AndroidAppService {
         },
       });
       if (result != null) return result as bool;
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('shareSingle', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
     return false;
   }
