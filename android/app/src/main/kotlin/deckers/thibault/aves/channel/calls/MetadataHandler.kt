@@ -5,6 +5,7 @@ import android.content.Context
 import android.database.Cursor
 import android.media.MediaMetadataRetriever
 import android.net.Uri
+import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
 import androidx.exifinterface.media.ExifInterface
@@ -77,6 +78,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
             "getOverlayMetadata" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getOverlayMetadata) }
             "getMultiPageInfo" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getMultiPageInfo) }
             "getPanoramaInfo" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getPanoramaInfo) }
+            "hasContentResolverProp" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::hasContentResolverProp) }
             "getContentResolverProp" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getContentResolverProp) }
             else -> result.notImplemented()
         }
@@ -679,6 +681,24 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
             }
         }
         result.error("getPanoramaInfo-empty", "failed to read XMP from uri=$uri", null)
+    }
+
+    private fun hasContentResolverProp(call: MethodCall, result: MethodChannel.Result) {
+        val prop = call.argument<String>("prop")
+        if (prop == null) {
+            result.error("hasContentResolverProp-args", "failed because of missing arguments", null)
+            return
+        }
+
+        result.success(
+            when (prop) {
+                "owner_package_name" -> Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
+                else -> {
+                    result.error("hasContentResolverProp-unknown", "unknown property=$prop", null)
+                    return
+                }
+            }
+        )
     }
 
     private fun getContentResolverProp(call: MethodCall, result: MethodChannel.Result) {

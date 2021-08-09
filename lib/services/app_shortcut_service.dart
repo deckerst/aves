@@ -13,9 +13,7 @@ class AppShortcutService {
   static bool? _canPin;
 
   static Future<bool> canPin() async {
-    if (_canPin != null) {
-      return SynchronousFuture(_canPin!);
-    }
+    if (_canPin != null) return SynchronousFuture(_canPin!);
 
     try {
       final result = await platform.invokeMethod('canPin');
