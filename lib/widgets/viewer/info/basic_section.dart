@@ -135,6 +135,7 @@ class _OwnerPropState extends State<OwnerProp> {
 
   AvesEntry get entry => widget.entry;
 
+  static const ownerPackageNamePropKey = 'owner_package_name';
   static const iconSize = 20.0;
 
   @override
@@ -142,7 +143,9 @@ class _OwnerPropState extends State<OwnerProp> {
     super.initState();
     final isMediaContent = entry.uri.startsWith('content://media/external/');
     if (isMediaContent) {
-      _ownerPackageFuture = metadataService.getContentResolverProp(entry, 'owner_package_name');
+      _ownerPackageFuture = metadataService.hasContentResolverProp(ownerPackageNamePropKey).then((exists) {
+        return exists ? metadataService.getContentResolverProp(entry, ownerPackageNamePropKey) : SynchronousFuture(null);
+      });
     } else {
       _ownerPackageFuture = SynchronousFuture(null);
     }

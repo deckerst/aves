@@ -4,6 +4,7 @@ import 'package:aves/model/multipage.dart';
 import 'package:aves/model/panorama.dart';
 import 'package:aves/services/service_policy.dart';
 import 'package:aves/services/services.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 abstract class MetadataService {
@@ -17,6 +18,8 @@ abstract class MetadataService {
   Future<MultiPageInfo?> getMultiPageInfo(AvesEntry entry);
 
   Future<PanoramaInfo?> getPanoramaInfo(AvesEntry entry);
+
+  Future<bool> hasContentResolverProp(String prop);
 
   Future<String?> getContentResolverProp(AvesEntry entry, String prop);
 }
@@ -135,6 +138,25 @@ class PlatformMetadataService implements MetadataService {
       await reportService.recordError(e, stack);
     }
     return null;
+  }
+
+  final Map<String, bool> _contentResolverProps = {};
+
+  @override
+  Future<bool> hasContentResolverProp(String prop) async {
+    var exists = _contentResolverProps[prop];
+    if (exists != null) return SynchronousFuture(exists);
+
+    try {
+      exists = await platform.invokeMethod('hasContentResolverProp', <String, dynamic>{
+        'prop': prop,
+      });
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
+    exists ??= false;
+    _contentResolverProps[prop] = exists;
+    return exists;
   }
 
   @override
