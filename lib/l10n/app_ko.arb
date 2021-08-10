@@ -147,6 +147,9 @@
 
   "menuActionSort": "정렬",
   "menuActionGroup": "묶음",
+  "menuActionSelect": "선택",
+  "menuActionSelectAll": "모두 선택",
+  "menuActionSelectNone": "모두 해제",
   "menuActionMap": "지도",
   "menuActionStats": "통계",
 
@@ -174,9 +177,6 @@
   "collectionSelectionPageTitle": "{count, plural, =0{항목 선택} other{{count}개}}",
 
   "collectionActionAddShortcut": "홈 화면에 추가",
-  "collectionActionSelect": "선택",
-  "collectionActionSelectAll": "모두 선택",
-  "collectionActionSelectNone": "모두 해제",
   "collectionActionCopy": "앨범으로 복사",
   "collectionActionMove": "앨범으로 이동",
   "collectionActionRefreshMetadata": "새로 분석",

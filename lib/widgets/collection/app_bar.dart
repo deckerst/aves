@@ -12,7 +12,6 @@ import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums.dart';
 import 'package:aves/services/app_shortcut_service.dart';
 import 'package:aves/theme/durations.dart';
-import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/pedantic.dart';
 import 'package:aves/widgets/collection/entry_set_action_delegate.dart';
 import 'package:aves/widgets/collection/filter_bar.dart';
@@ -22,10 +21,8 @@ import 'package:aves/widgets/common/basic/menu_row.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/add_shortcut_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
-import 'package:aves/widgets/map/map_page.dart';
 import 'package:aves/widgets/search/search_button.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
-import 'package:aves/widgets/stats/stats_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -192,70 +189,55 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
           return PopupMenuButton<CollectionAction>(
             key: const Key('appbar-menu-button'),
             itemBuilder: (context) {
+              final groupable = collection.sortFactor == EntrySortFactor.date;
               final selection = context.read<Selection<AvesEntry>>();
-              final isNotEmpty = !collection.isEmpty;
-              final hasSelection = selection.selection.isNotEmpty;
+              final isSelecting = selection.isSelecting;
+              final selectedItems = selection.selection;
+              final hasSelection = selectedItems.isNotEmpty;
+              final hasItems = !collection.isEmpty;
+              final otherViewEnabled = (!isSelecting && hasItems) || (isSelecting && hasSelection);
+
               return [
-                PopupMenuItem(
+                _toMenuItem(
+                  CollectionAction.sort,
                   key: const Key('menu-sort'),
-                  value: CollectionAction.sort,
-                  child: MenuRow(text: context.l10n.menuActionSort, icon: AIcons.sort),
                 ),
-                if (collection.sortFactor == EntrySortFactor.date)
-                  PopupMenuItem(
+                if (groupable)
+                  _toMenuItem(
+                    CollectionAction.group,
                     key: const Key('menu-group'),
-                    value: CollectionAction.group,
-                    child: MenuRow(text: context.l10n.menuActionGroup, icon: AIcons.group),
                   ),
-                if (!selection.isSelecting && appMode == AppMode.main) ...[
-                  PopupMenuItem(
-                    value: CollectionAction.select,
-                    enabled: isNotEmpty,
-                    child: MenuRow(text: context.l10n.collectionActionSelect, icon: AIcons.select),
-                  ),
-                  PopupMenuItem(
-                    value: CollectionAction.map,
-                    enabled: isNotEmpty,
-                    child: MenuRow(text: context.l10n.menuActionMap, icon: AIcons.map),
-                  ),
-                  PopupMenuItem(
-                    value: CollectionAction.stats,
-                    enabled: isNotEmpty,
-                    child: MenuRow(text: context.l10n.menuActionStats, icon: AIcons.stats),
-                  ),
-                  if (canAddShortcuts)
-                    PopupMenuItem(
-                      value: CollectionAction.addShortcut,
-                      child: MenuRow(text: context.l10n.collectionActionAddShortcut, icon: AIcons.addShortcut),
+                if (appMode == AppMode.main) ...[
+                  if (!isSelecting)
+                    _toMenuItem(
+                      CollectionAction.select,
+                      enabled: hasItems,
                     ),
+                  const PopupMenuDivider(),
+                  if (isSelecting)
+                    ...[
+                      CollectionAction.copy,
+                      CollectionAction.move,
+                      CollectionAction.refreshMetadata,
+                    ].map((v) => _toMenuItem(v, enabled: hasSelection)),
+                  ...[
+                    CollectionAction.map,
+                    CollectionAction.stats,
+                  ].map((v) => _toMenuItem(v, enabled: otherViewEnabled)),
+                  if (!isSelecting && canAddShortcuts) ...[
+                    const PopupMenuDivider(),
+                    _toMenuItem(CollectionAction.addShortcut),
+                  ],
                 ],
-                if (selection.isSelecting) ...[
+                if (isSelecting) ...[
                   const PopupMenuDivider(),
-                  PopupMenuItem(
-                    value: CollectionAction.copy,
-                    enabled: hasSelection,
-                    child: MenuRow(text: context.l10n.collectionActionCopy),
+                  _toMenuItem(
+                    CollectionAction.selectAll,
+                    enabled: selectedItems.length < collection.entryCount,
                   ),
-                  PopupMenuItem(
-                    value: CollectionAction.move,
+                  _toMenuItem(
+                    CollectionAction.selectNone,
                     enabled: hasSelection,
-                    child: MenuRow(text: context.l10n.collectionActionMove),
-                  ),
-                  PopupMenuItem(
-                    value: CollectionAction.refreshMetadata,
-                    enabled: hasSelection,
-                    child: MenuRow(text: context.l10n.collectionActionRefreshMetadata),
-                  ),
-                  const PopupMenuDivider(),
-                  PopupMenuItem(
-                    value: CollectionAction.selectAll,
-                    enabled: selection.selection.length < collection.entryCount,
-                    child: MenuRow(text: context.l10n.collectionActionSelectAll),
-                  ),
-                  PopupMenuItem(
-                    value: CollectionAction.selectNone,
-                    enabled: hasSelection,
-                    child: MenuRow(text: context.l10n.collectionActionSelectNone),
                   ),
                 ]
               ];
@@ -268,6 +250,18 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
         },
       ),
     ];
+  }
+
+  PopupMenuItem<CollectionAction> _toMenuItem(CollectionAction action, {Key? key, bool enabled = true}) {
+    return PopupMenuItem(
+      key: key,
+      value: action,
+      enabled: enabled,
+      child: MenuRow(
+        text: action.getText(context),
+        icon: action.getIcon(),
+      ),
+    );
   }
 
   void _onActivityChange() {
@@ -287,6 +281,8 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       case CollectionAction.copy:
       case CollectionAction.move:
       case CollectionAction.refreshMetadata:
+      case CollectionAction.map:
+      case CollectionAction.stats:
         _actionDelegate.onCollectionActionSelected(context, action);
         break;
       case CollectionAction.select:
@@ -297,12 +293,6 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
         break;
       case CollectionAction.selectNone:
         context.read<Selection<AvesEntry>>().clearSelection();
-        break;
-      case CollectionAction.map:
-        _goToMap();
-        break;
-      case CollectionAction.stats:
-        _goToStats();
         break;
       case CollectionAction.addShortcut:
         unawaited(_showShortcutDialog(context));
@@ -380,32 +370,6 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       SearchPageRoute(
         delegate: CollectionSearchDelegate(
           source: collection.source,
-          parentCollection: collection,
-        ),
-      ),
-    );
-  }
-
-  void _goToMap() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        settings: const RouteSettings(name: MapPage.routeName),
-        builder: (context) => MapPage(
-          source: source,
-          parentCollection: collection,
-        ),
-      ),
-    );
-  }
-
-  void _goToStats() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        settings: const RouteSettings(name: StatsPage.routeName),
-        builder: (context) => StatsPage(
-          source: source,
           parentCollection: collection,
         ),
       ),

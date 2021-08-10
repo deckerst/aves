@@ -1,8 +1,6 @@
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/settings/map_style.dart';
 import 'package:aves/model/settings/settings.dart';
-import 'package:aves/model/source/collection_lens.dart';
-import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/map/geo_map.dart';
@@ -14,17 +12,12 @@ import 'package:flutter/scheduler.dart';
 class MapPage extends StatefulWidget {
   static const routeName = '/collection/map';
 
-  final CollectionSource source;
-  final CollectionLens? parentCollection;
-  late final List<AvesEntry> entries;
+  final List<AvesEntry> entries;
 
-  MapPage({
+  const MapPage({
     Key? key,
-    required this.source,
-    this.parentCollection,
-  }) : super(key: key) {
-    entries = (parentCollection?.sortedEntries.expand((entry) => entry.burstEntries ?? {entry}).toSet() ?? source.visibleEntries).where((entry) => entry.hasGps).toList();
-  }
+    required this.entries,
+  }) : super(key: key);
 
   @override
   _MapPageState createState() => _MapPageState();

@@ -28,17 +28,17 @@ class StatsPage extends StatelessWidget {
 
   final CollectionSource source;
   final CollectionLens? parentCollection;
-  late final Set<AvesEntry> entries;
+  final Set<AvesEntry> entries;
   final Map<String, int> entryCountPerCountry = {}, entryCountPerPlace = {}, entryCountPerTag = {};
 
   static const mimeDonutMinWidth = 124.0;
 
   StatsPage({
     Key? key,
+    required this.entries,
     required this.source,
     this.parentCollection,
   }) : super(key: key) {
-    entries = parentCollection?.sortedEntries.expand((entry) => entry.burstEntries ?? {entry}).toSet() ?? source.visibleEntries;
     entries.forEach((entry) {
       if (entry.hasAddress) {
         final address = entry.addressDetails!;
