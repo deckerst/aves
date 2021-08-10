@@ -2,6 +2,8 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+### Added
+- Map & Stats from selection
 
 ## [v1.4.8] - 2021-08-08
 ### Added

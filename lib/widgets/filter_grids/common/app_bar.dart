@@ -174,19 +174,44 @@ class _FilterGridAppBarState<T extends CollectionFilter> extends State<FilterGri
       PopupMenuButton<ChipSetAction>(
         key: const Key('appbar-menu-button'),
         itemBuilder: (context) {
+          final selectedItems = selection.selection;
+          final hasSelection = selectedItems.isNotEmpty;
+          final hasItems = !widget.isEmpty;
+          final otherViewEnabled = (!isSelecting && hasItems) || (isSelecting && hasSelection);
+
           final menuItems = <PopupMenuEntry<ChipSetAction>>[
             toMenuItem(ChipSetAction.sort),
             if (widget.groupable) toMenuItem(ChipSetAction.group),
+            if (appMode == AppMode.main && !isSelecting)
+              toMenuItem(
+                ChipSetAction.select,
+                enabled: hasItems,
+              ),
           ];
 
-          if (isSelecting) {
-            final selectedItems = selection.selection;
-
-            if (selectionRowActions.isNotEmpty) {
-              menuItems.add(const PopupMenuDivider());
+          if (appMode == AppMode.main) {
+            menuItems.add(const PopupMenuDivider());
+            if (isSelecting) {
               menuItems.addAll(selectionRowActions.map(toMenuItem));
             }
-
+            menuItems.addAll([
+              toMenuItem(
+                ChipSetAction.map,
+                enabled: otherViewEnabled,
+              ),
+              toMenuItem(
+                ChipSetAction.stats,
+                enabled: otherViewEnabled,
+              ),
+            ]);
+            if (!isSelecting) {
+              menuItems.addAll([
+                const PopupMenuDivider(),
+                toMenuItem(ChipSetAction.createAlbum),
+              ]);
+            }
+          }
+          if (isSelecting) {
             menuItems.addAll([
               const PopupMenuDivider(),
               toMenuItem(
@@ -195,18 +220,8 @@ class _FilterGridAppBarState<T extends CollectionFilter> extends State<FilterGri
               ),
               toMenuItem(
                 ChipSetAction.selectNone,
-                enabled: selectedItems.isNotEmpty,
+                enabled: hasSelection,
               ),
-            ]);
-          } else if (appMode == AppMode.main) {
-            menuItems.addAll([
-              toMenuItem(
-                ChipSetAction.select,
-                enabled: !widget.isEmpty,
-              ),
-              toMenuItem(ChipSetAction.map),
-              toMenuItem(ChipSetAction.stats),
-              toMenuItem(ChipSetAction.createAlbum),
             ]);
           }
 

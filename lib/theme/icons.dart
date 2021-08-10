@@ -37,6 +37,7 @@ class AIcons {
   static const IconData captureFrame = Icons.screenshot_outlined;
   static const IconData clear = Icons.clear_outlined;
   static const IconData clipboard = Icons.content_copy_outlined;
+  static const IconData copy = Icons.file_copy_outlined;
   static const IconData createAlbum = Icons.add_circle_outline;
   static const IconData debug = Icons.whatshot_outlined;
   static const IconData delete = Icons.delete_outlined;
@@ -51,6 +52,7 @@ class AIcons {
   static const IconData info = Icons.info_outlined;
   static const IconData layers = Icons.layers_outlined;
   static const IconData map = Icons.map_outlined;
+  static const IconData move = MdiIcons.fileMoveOutline;
   static const IconData newTier = Icons.fiber_new_outlined;
   static const IconData openOutside = Icons.open_in_new_outlined;
   static const IconData pin = Icons.push_pin_outlined;
@@ -58,6 +60,7 @@ class AIcons {
   static const IconData play = Icons.play_arrow;
   static const IconData pause = Icons.pause;
   static const IconData print = Icons.print_outlined;
+  static const IconData refresh = Icons.refresh_outlined;
   static const IconData rename = Icons.title_outlined;
   static const IconData rotateLeft = Icons.rotate_left_outlined;
   static const IconData rotateRight = Icons.rotate_right_outlined;
