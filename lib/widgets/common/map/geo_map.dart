@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/settings/enums.dart';
 import 'package:aves/model/settings/map_style.dart';
@@ -16,6 +18,7 @@ import 'package:equatable/equatable.dart';
 import 'package:fluster/fluster.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 
 class GeoMap extends StatefulWidget {
@@ -55,11 +58,22 @@ class _GeoMapState extends State<GeoMap> with TickerProviderStateMixin {
 
   double? get mapHeight => widget.mapHeight;
 
+  static final wonders = [
+    LatLng(29.979167, 31.134167),
+    LatLng(36.451000, 28.223615),
+    LatLng(32.5355, 44.4275),
+    LatLng(31.213889, 29.885556),
+    LatLng(37.0379, 27.4241),
+    LatLng(37.637861, 21.63),
+    LatLng(37.949722, 27.363889),
+  ];
+
   @override
   void initState() {
     super.initState();
+    final points = entries.map((v) => v.latLng!).toSet();
     boundsNotifier = ValueNotifier(ZoomedBounds.fromPoints(
-      points: entries.map((v) => v.latLng!).toSet(),
+      points: points.isNotEmpty ? points : {wonders[Random().nextInt(wonders.length)]},
       collocationZoom: settings.infoMapZoom,
     ));
   }
