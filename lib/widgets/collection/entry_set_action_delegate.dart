@@ -66,7 +66,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
   }
 
   Set<AvesEntry> _getExpandedSelectedItems(Selection<AvesEntry> selection) {
-    return selection.selection.expand((entry) => entry.burstEntries ?? {entry}).toSet();
+    return selection.selectedItems.expand((entry) => entry.burstEntries ?? {entry}).toSet();
   }
 
   void _share(BuildContext context) {
