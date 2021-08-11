@@ -65,7 +65,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     _isSelectingNotifier.addListener(_onActivityChange);
     _canAddShortcutsLoader = AppShortcutService.canPin();
     _registerWidget(widget);
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _updateHeight());
+    WidgetsBinding.instance!.addPostFrameCallback((_) => _onFilterChanged());
   }
 
   @override
@@ -84,11 +84,11 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   }
 
   void _registerWidget(CollectionAppBar widget) {
-    widget.collection.filterChangeNotifier.addListener(_updateHeight);
+    widget.collection.filterChangeNotifier.addListener(_onFilterChanged);
   }
 
   void _unregisterWidget(CollectionAppBar widget) {
-    widget.collection.filterChangeNotifier.removeListener(_updateHeight);
+    widget.collection.filterChangeNotifier.removeListener(_onFilterChanged);
   }
 
   @override
@@ -146,7 +146,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   Widget? _buildAppBarTitle(bool isSelecting) {
     if (isSelecting) {
       return Selector<Selection<AvesEntry>, int>(
-        selector: (context, selection) => selection.selection.length,
+        selector: (context, selection) => selection.selectedItems.length,
         builder: (context, count, child) => Text(context.l10n.collectionSelectionPageTitle(count)),
       );
     } else {
@@ -175,7 +175,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
         ),
       if (isSelecting)
         ...EntryActions.selection.map((action) => Selector<Selection<AvesEntry>, bool>(
-              selector: (context, selection) => selection.selection.isEmpty,
+              selector: (context, selection) => selection.selectedItems.isEmpty,
               builder: (context, isEmpty, child) => IconButton(
                 icon: Icon(action.getIcon()),
                 onPressed: isEmpty ? null : () => _actionDelegate.onEntryActionSelected(context, action),
@@ -192,7 +192,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
               final groupable = collection.sortFactor == EntrySortFactor.date;
               final selection = context.read<Selection<AvesEntry>>();
               final isSelecting = selection.isSelecting;
-              final selectedItems = selection.selection;
+              final selectedItems = selection.selectedItems;
               final hasSelection = selectedItems.isNotEmpty;
               final hasItems = !collection.isEmpty;
               final otherViewEnabled = (!isSelecting && hasItems) || (isSelecting && hasSelection);
@@ -272,8 +272,17 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     }
   }
 
-  void _updateHeight() {
+  void _onFilterChanged() {
     widget.appBarHeightNotifier.value = kToolbarHeight + (hasFilters ? FilterBar.preferredHeight : 0);
+
+    if (hasFilters) {
+      final filters = collection.filters;
+      final selection = context.read<Selection<AvesEntry>>();
+      if (selection.isSelecting) {
+        final toRemove = selection.selectedItems.where((entry) => !filters.every((f) => f.test(entry))).toSet();
+        selection.removeFromSelection(toRemove);
+      }
+    }
   }
 
   Future<void> _onCollectionActionSelected(CollectionAction action) async {

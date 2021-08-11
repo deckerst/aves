@@ -111,7 +111,7 @@ class _FilterGridAppBarState<T extends CollectionFilter> extends State<FilterGri
   Widget? _buildAppBarTitle(bool isSelecting) {
     if (isSelecting) {
       return Selector<Selection<FilterGridItem<T>>, int>(
-        selector: (context, selection) => selection.selection.length,
+        selector: (context, selection) => selection.selectedItems.length,
         builder: (context, count, child) => Text(context.l10n.collectionSelectionPageTitle(count)),
       );
     } else {
@@ -127,7 +127,7 @@ class _FilterGridAppBarState<T extends CollectionFilter> extends State<FilterGri
   }
 
   List<Widget> _buildActions(AppMode appMode, Selection<FilterGridItem<T>> selection) {
-    final selectedFilters = selection.selection.map((v) => v.filter).toSet();
+    final selectedFilters = selection.selectedItems.map((v) => v.filter).toSet();
 
     PopupMenuItem<ChipSetAction> toMenuItem(ChipSetAction action, {bool enabled = true}) {
       return PopupMenuItem(
@@ -152,7 +152,7 @@ class _FilterGridAppBarState<T extends CollectionFilter> extends State<FilterGri
 
     final buttonActions = <Widget>[];
     if (isSelecting) {
-      final selectedFilters = selection.selection.map((v) => v.filter).toSet();
+      final selectedFilters = selection.selectedItems.map((v) => v.filter).toSet();
       final validActions = filterSelectionActions.where((action) => actionDelegate.isValid(selectedFilters, action)).toList();
       buttonActions.addAll(validActions.take(buttonActionCount).map(
         (action) {
@@ -174,7 +174,7 @@ class _FilterGridAppBarState<T extends CollectionFilter> extends State<FilterGri
       PopupMenuButton<ChipSetAction>(
         key: const Key('appbar-menu-button'),
         itemBuilder: (context) {
-          final selectedItems = selection.selection;
+          final selectedItems = selection.selectedItems;
           final hasSelection = selectedItems.isNotEmpty;
           final hasItems = !widget.isEmpty;
           final otherViewEnabled = (!isSelecting && hasItems) || (isSelecting && hasSelection);
