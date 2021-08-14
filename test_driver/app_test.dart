@@ -122,12 +122,14 @@ void selectFirstAlbum() {
     await driver.tap(find.byValueKey('appbar-leading-button'));
     await driver.waitUntilNoTransientCallbacks();
 
-    await driver.tap(find.byValueKey('Albums-tile'));
+    // prefix must match `AlbumListPage.routeName`
+    await driver.tap(find.byValueKey('/albums-tile'));
     await driver.waitUntilNoTransientCallbacks();
 
     // wait for collection loading
     await driver.waitForCondition(const NoPendingPlatformMessages());
 
+    // TODO TLAD fix finder
     await driver.tap(find.descendant(
       of: find.byValueKey('filter-grid-page'),
       matching: find.byType('CoveredFilterChip'),

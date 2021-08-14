@@ -12,7 +12,7 @@ import 'package:aves/widgets/common/basic/menu_row.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/settings/language/language.dart';
-import 'package:aves/widgets/settings/navigation.dart';
+import 'package:aves/widgets/settings/navigation/navigation.dart';
 import 'package:aves/widgets/settings/privacy/privacy.dart';
 import 'package:aves/widgets/settings/thumbnails.dart';
 import 'package:aves/widgets/settings/video/video.dart';

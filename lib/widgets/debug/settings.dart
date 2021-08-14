@@ -15,7 +15,7 @@ class DebugSettingsSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<Settings>(
       builder: (context, settings, child) {
-        String toMultiline(Iterable l) => l.isNotEmpty ? '\n${l.join('\n')}' : '$l';
+        String toMultiline(Iterable? l) => l != null && l.isNotEmpty ? '\n${l.join('\n')}' : '$l';
         return AvesExpansionTile(
           title: 'Settings',
           children: [
@@ -54,6 +54,9 @@ class DebugSettingsSection extends StatelessWidget {
                   'infoMapZoom': '${settings.infoMapZoom}',
                   'viewerQuickActions': '${settings.viewerQuickActions}',
                   'videoQuickActions': '${settings.videoQuickActions}',
+                  'drawerTypeBookmarks': toMultiline(settings.drawerTypeBookmarks),
+                  'drawerAlbumBookmarks': toMultiline(settings.drawerAlbumBookmarks),
+                  'drawerPageBookmarks': toMultiline(settings.drawerPageBookmarks),
                   'pinnedFilters': toMultiline(settings.pinnedFilters),
                   'hiddenFilters': toMultiline(settings.hiddenFilters),
                   'searchHistory': toMultiline(settings.searchHistory),

@@ -29,7 +29,7 @@ class AlbumPickPage extends StatefulWidget {
   static const routeName = '/album_pick';
 
   final CollectionSource source;
-  final MoveType moveType;
+  final MoveType? moveType;
 
   const AlbumPickPage({
     Key? key,
@@ -92,7 +92,7 @@ class _AlbumPickPageState extends State<AlbumPickPage> {
 
 class AlbumPickAppBar extends StatelessWidget {
   final CollectionSource source;
-  final MoveType moveType;
+  final MoveType? moveType;
   final AlbumChipSetActionDelegate actionDelegate;
   final ValueNotifier<String> queryNotifier;
 
@@ -117,7 +117,7 @@ class AlbumPickAppBar extends StatelessWidget {
         case MoveType.move:
           return context.l10n.albumPickPageTitleMove;
         default:
-          return moveType.toString();
+          return context.l10n.albumPickPageTitlePick;
       }
     }
 
@@ -131,19 +131,20 @@ class AlbumPickAppBar extends StatelessWidget {
         filterNotifier: queryNotifier,
       ),
       actions: [
-        IconButton(
-          icon: const Icon(AIcons.createAlbum),
-          onPressed: () async {
-            final newAlbum = await showDialog<String>(
-              context: context,
-              builder: (context) => const CreateAlbumDialog(),
-            );
-            if (newAlbum != null && newAlbum.isNotEmpty) {
-              Navigator.pop<String>(context, newAlbum);
-            }
-          },
-          tooltip: context.l10n.createAlbumTooltip,
-        ),
+        if (moveType != null)
+          IconButton(
+            icon: const Icon(AIcons.add),
+            onPressed: () async {
+              final newAlbum = await showDialog<String>(
+                context: context,
+                builder: (context) => const CreateAlbumDialog(),
+              );
+              if (newAlbum != null && newAlbum.isNotEmpty) {
+                Navigator.pop<String>(context, newAlbum);
+              }
+            },
+            tooltip: context.l10n.createAlbumTooltip,
+          ),
         PopupMenuButton<ChipSetAction>(
           itemBuilder: (context) {
             return [
