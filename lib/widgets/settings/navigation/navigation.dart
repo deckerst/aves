@@ -8,6 +8,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
 import 'package:aves/widgets/settings/common/tile_leading.dart';
+import 'package:aves/widgets/settings/navigation/drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -51,6 +52,7 @@ class NavigationSection extends StatelessWidget {
             }
           },
         ),
+        const NavigationDrawerTile(),
         ListTile(
           title: Text(context.l10n.settingsKeepScreenOnTile),
           subtitle: Text(currentKeepScreenOn.getName(context)),

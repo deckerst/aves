@@ -30,7 +30,7 @@ class AIcons {
   static const IconData tagOff = MdiIcons.tagOffOutline;
 
   // actions
-  static const IconData addPath = Icons.add_circle_outline;
+  static const IconData add = Icons.add_circle_outline;
   static const IconData addShortcut = Icons.add_to_home_screen_outlined;
   static const IconData replay10 = Icons.replay_10_outlined;
   static const IconData skip10 = Icons.forward_10_outlined;
@@ -38,7 +38,6 @@ class AIcons {
   static const IconData clear = Icons.clear_outlined;
   static const IconData clipboard = Icons.content_copy_outlined;
   static const IconData copy = Icons.file_copy_outlined;
-  static const IconData createAlbum = Icons.add_circle_outline;
   static const IconData debug = Icons.whatshot_outlined;
   static const IconData delete = Icons.delete_outlined;
   static const IconData export = MdiIcons.fileExportOutline;
@@ -70,6 +69,7 @@ class AIcons {
   static const IconData select = Icons.select_all_outlined;
   static const IconData setCover = MdiIcons.imageEditOutline;
   static const IconData share = Icons.share_outlined;
+  static const IconData show = Icons.visibility_outlined;
   static const IconData sort = Icons.sort_outlined;
   static const IconData speed = Icons.speed_outlined;
   static const IconData stats = Icons.pie_chart_outlined;

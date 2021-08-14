@@ -78,7 +78,7 @@ extension ExtraChipSetAction on ChipSetAction {
       case ChipSetAction.stats:
         return AIcons.stats;
       case ChipSetAction.createAlbum:
-        return AIcons.createAlbum;
+        return AIcons.add;
       // single/multiple filters
       case ChipSetAction.delete:
         return AIcons.delete;

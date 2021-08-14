@@ -1,7 +1,5 @@
 import 'dart:ui';
 
-import 'package:aves/model/filters/favourite.dart';
-import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/album.dart';
 import 'package:aves/model/source/collection_source.dart';
@@ -16,8 +14,8 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
 import 'package:aves/widgets/common/identity/aves_logo.dart';
 import 'package:aves/widgets/debug/app_debug_page.dart';
-import 'package:aves/widgets/drawer/album_tile.dart';
-import 'package:aves/widgets/drawer/collection_tile.dart';
+import 'package:aves/widgets/drawer/collection_nav_tile.dart';
+import 'package:aves/widgets/drawer/page_nav_tile.dart';
 import 'package:aves/widgets/drawer/tile.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/countries_page.dart';
@@ -32,6 +30,16 @@ class AppDrawer extends StatefulWidget {
 
   @override
   _AppDrawerState createState() => _AppDrawerState();
+
+  static List<String> getDefaultAlbums(BuildContext context) {
+    final source = context.read<CollectionSource>();
+    final specialAlbums = source.rawAlbums.where((album) {
+      final type = androidFileUtils.getAlbumType(album);
+      return [AlbumType.camera, AlbumType.screenshots].contains(type);
+    }).toList()
+      ..sort(source.compareAlbumsByName);
+    return specialAlbums;
+  }
 }
 
 class _AppDrawerState extends State<AppDrawer> {
@@ -47,19 +55,11 @@ class _AppDrawerState extends State<AppDrawer> {
 
   @override
   Widget build(BuildContext context) {
-    final hiddenFilters = settings.hiddenFilters;
-    final showVideos = !hiddenFilters.contains(MimeFilter.video);
-    final showFavourites = !hiddenFilters.contains(FavouriteFilter.instance);
     final drawerItems = <Widget>[
       _buildHeader(context),
-      allCollectionTile,
-      if (showVideos) videoTile,
-      if (showFavourites) favouriteTile,
-      _buildSpecialAlbumSection(),
-      const Divider(),
-      albumListTile,
-      countryListTile,
-      tagListTile,
+      ..._buildTypeLinks(),
+      _buildAlbumLinks(),
+      ..._buildPageLinks(),
       if (!kReleaseMode) ...[
         const Divider(),
         debugTile,
@@ -192,82 +192,77 @@ class _AppDrawerState extends State<AppDrawer> {
     );
   }
 
-  Widget _buildSpecialAlbumSection() {
+  List<Widget> _buildTypeLinks() {
+    final hiddenFilters = settings.hiddenFilters;
+    final typeBookmarks = settings.drawerTypeBookmarks;
+    return typeBookmarks
+        .where((filter) => !hiddenFilters.contains(filter))
+        .map((filter) => CollectionNavTile(
+              leading: DrawerFilterIcon(filter: filter),
+              title: DrawerFilterTitle(filter: filter),
+              filter: filter,
+            ))
+        .toList();
+  }
+
+  Widget _buildAlbumLinks() {
     return StreamBuilder(
         stream: source.eventBus.on<AlbumsChangedEvent>(),
         builder: (context, snapshot) {
-          final specialAlbums = source.rawAlbums.where((album) {
-            final type = androidFileUtils.getAlbumType(album);
-            return [AlbumType.camera, AlbumType.screenshots].contains(type);
-          }).toList()
-            ..sort(source.compareAlbumsByName);
-
-          if (specialAlbums.isEmpty) return const SizedBox.shrink();
+          final albums = settings.drawerAlbumBookmarks ?? AppDrawer.getDefaultAlbums(context);
+          if (albums.isEmpty) return const SizedBox.shrink();
           return Column(
             children: [
               const Divider(),
-              ...specialAlbums.map((album) => AlbumTile(album: album)),
+              ...albums.map((album) => AlbumNavTile(album: album)),
             ],
           );
         });
   }
 
-  // tiles
+  List<Widget> _buildPageLinks() {
+    final pageBookmarks = settings.drawerPageBookmarks;
+    if (pageBookmarks.isEmpty) return [];
 
-  Widget get allCollectionTile => CollectionNavTile(
-        leading: const Icon(AIcons.allCollection),
-        title: context.l10n.drawerCollectionAll,
-        filter: null,
-      );
+    return [
+      const Divider(),
+      ...pageBookmarks.map((route) {
+        WidgetBuilder? pageBuilder;
+        Widget? trailing;
+        switch (route) {
+          case AlbumListPage.routeName:
+            pageBuilder = (_) => const AlbumListPage();
+            trailing = StreamBuilder(
+              stream: source.eventBus.on<AlbumsChangedEvent>(),
+              builder: (context, _) => Text('${source.rawAlbums.length}'),
+            );
+            break;
+          case CountryListPage.routeName:
+            pageBuilder = (_) => const CountryListPage();
+            trailing = StreamBuilder(
+              stream: source.eventBus.on<CountriesChangedEvent>(),
+              builder: (context, _) => Text('${source.sortedCountries.length}'),
+            );
+            break;
+          case TagListPage.routeName:
+            pageBuilder = (_) => const TagListPage();
+            trailing = StreamBuilder(
+              stream: source.eventBus.on<TagsChangedEvent>(),
+              builder: (context, _) => Text('${source.sortedTags.length}'),
+            );
+            break;
+        }
 
-  Widget get videoTile => CollectionNavTile(
-        leading: const Icon(AIcons.video),
-        title: context.l10n.drawerCollectionVideos,
-        filter: MimeFilter.video,
-      );
+        return PageNavTile(
+          trailing: trailing,
+          routeName: route,
+          pageBuilder: pageBuilder ?? (_) => const SizedBox(),
+        );
+      }),
+    ];
+  }
 
-  Widget get favouriteTile => CollectionNavTile(
-        leading: const Icon(AIcons.favourite),
-        title: context.l10n.drawerCollectionFavourites,
-        filter: FavouriteFilter.instance,
-      );
-
-  Widget get albumListTile => NavTile(
-        icon: AIcons.album,
-        title: context.l10n.albumPageTitle,
-        trailing: StreamBuilder(
-          stream: source.eventBus.on<AlbumsChangedEvent>(),
-          builder: (context, _) => Text('${source.rawAlbums.length}'),
-        ),
-        routeName: AlbumListPage.routeName,
-        pageBuilder: (_) => const AlbumListPage(),
-      );
-
-  Widget get countryListTile => NavTile(
-        icon: AIcons.location,
-        title: context.l10n.countryPageTitle,
-        trailing: StreamBuilder(
-          stream: source.eventBus.on<CountriesChangedEvent>(),
-          builder: (context, _) => Text('${source.sortedCountries.length}'),
-        ),
-        routeName: CountryListPage.routeName,
-        pageBuilder: (_) => const CountryListPage(),
-      );
-
-  Widget get tagListTile => NavTile(
-        icon: AIcons.tag,
-        title: context.l10n.tagPageTitle,
-        trailing: StreamBuilder(
-          stream: source.eventBus.on<TagsChangedEvent>(),
-          builder: (context, _) => Text('${source.sortedTags.length}'),
-        ),
-        routeName: TagListPage.routeName,
-        pageBuilder: (_) => const TagListPage(),
-      );
-
-  Widget get debugTile => NavTile(
-        icon: AIcons.debug,
-        title: 'Debug',
+  Widget get debugTile => PageNavTile(
         topLevel: false,
         routeName: AppDebugPage.routeName,
         pageBuilder: (_) => const AppDebugPage(),
