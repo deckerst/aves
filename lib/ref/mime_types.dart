@@ -41,18 +41,29 @@ class MimeTypes {
   static const anyVideo = 'video/*';
 
   static const avi = 'video/avi';
+  static const mkv = 'video/x-matroska';
   static const mov = 'video/quicktime';
   static const mp2t = 'video/mp2t'; // .m2ts
   static const mp4 = 'video/mp4';
+  static const ogg = 'video/ogg';
 
   static const json = 'application/json';
 
   // groups
 
   // formats that support transparency
-  static const List<String> alphaImages = [bmp, gif, ico, png, svg, tiff, webp];
+  static const Set<String> alphaImages = {bmp, gif, ico, png, svg, tiff, webp};
 
-  static const List<String> rawImages = [arw, cr2, crw, dcr, dng, erf, k25, kdc, mrw, nef, nrw, orf, pef, raf, raw, rw2, sr2, srf, srw, x3f];
+  static const Set<String> rawImages = {arw, cr2, crw, dcr, dng, erf, k25, kdc, mrw, nef, nrw, orf, pef, raf, raw, rw2, sr2, srf, srw, x3f};
+
+  // TODO TLAD make it dynamic if it depends on OS/lib versions
+  static const Set<String> undecodableImages = {art, crw, djvu, psdVnd, psdX};
+
+  static const Set<String> _knownOpaqueImages = {heic, heif, jpeg};
+
+  static const Set<String> _knownVideos = {avi, mkv, mov, mp2t, mp4, ogg};
+
+  static final Set<String> knownMediaTypes = {..._knownOpaqueImages, ...alphaImages, ...rawImages, ...undecodableImages, ..._knownVideos};
 
   static bool isImage(String mimeType) => mimeType.startsWith('image');
 

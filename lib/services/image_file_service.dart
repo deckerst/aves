@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:aves/model/entry.dart';
+import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/image_op_events.dart';
 import 'package:aves/services/output_buffer.dart';
 import 'package:aves/services/service_policy.dart';
@@ -261,7 +262,9 @@ class PlatformImageFileService implements ImageFileService {
           });
           if (result != null) return result as Uint8List;
         } on PlatformException catch (e, stack) {
-          await reportService.recordError(e, stack);
+          if (!MimeTypes.knownMediaTypes.contains(mimeType)) {
+            await reportService.recordError(e, stack);
+          }
         }
         return Uint8List(0);
       },
