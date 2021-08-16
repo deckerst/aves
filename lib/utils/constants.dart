@@ -275,6 +275,11 @@ class Constants {
       sourceUrl: 'https://github.com/DavBfr/dart_pdf',
     ),
     Dependency(
+      name: 'Transparent Image',
+      license: 'MIT',
+      sourceUrl: 'https://pub.dev/packages/transparent_image',
+    ),
+    Dependency(
       name: 'Tuple',
       license: 'BSD 2-Clause',
       sourceUrl: 'https://github.com/dart-lang/tuple',

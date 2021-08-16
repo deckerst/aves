@@ -59,6 +59,7 @@ dependencies:
   streams_channel:
     git:
       url: git://github.com/deckerst/aves_streams_channel.git
+  transparent_image:
   tuple:
   url_launcher:
   version:
