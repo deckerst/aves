@@ -4,6 +4,7 @@ import 'package:aves/services/android_app_service.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class AppIconImage extends ImageProvider<AppIconImageKey> {
   const AppIconImage({
@@ -39,10 +40,7 @@ class AppIconImage extends ImageProvider<AppIconImageKey> {
   Future<ui.Codec> _loadAsync(AppIconImageKey key, DecoderCallback decode) async {
     try {
       final bytes = await AndroidAppService.getAppIcon(key.packageName, key.size);
-      if (bytes.isEmpty) {
-        throw StateError('$packageName app icon loading failed');
-      }
-      return await decode(bytes);
+      return await decode(bytes.isEmpty ? kTransparentImage : bytes);
     } catch (error) {
       debugPrint('$runtimeType _loadAsync failed with packageName=$packageName, error=$error');
       throw StateError('$packageName app icon decoding failed');

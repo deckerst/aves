@@ -34,8 +34,8 @@ class AndroidAppService {
         'sizeDip': size,
       });
       if (result != null) return result as Uint8List;
-    } on PlatformException catch (e, stack) {
-      await reportService.recordError(e, stack);
+    } on PlatformException catch (_, __) {
+      // ignore, as some packages legitimately do not have icons
     }
     return Uint8List(0);
   }

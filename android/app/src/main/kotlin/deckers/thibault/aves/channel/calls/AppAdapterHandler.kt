@@ -3,6 +3,7 @@ package deckers.thibault.aves.channel.calls
 import android.content.*
 import android.content.pm.ApplicationInfo
 import android.content.res.Configuration
+import android.content.res.Resources
 import android.net.Uri
 import android.os.Handler
 import android.os.Looper
@@ -103,27 +104,29 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
         var data: ByteArray? = null
         try {
             val iconResourceId = context.packageManager.getApplicationInfo(packageName, 0).icon
-            val uri = Uri.Builder()
-                .scheme(ContentResolver.SCHEME_ANDROID_RESOURCE)
-                .authority(packageName)
-                .path(iconResourceId.toString())
-                .build()
+            if (iconResourceId != Resources.ID_NULL) {
+                val uri = Uri.Builder()
+                    .scheme(ContentResolver.SCHEME_ANDROID_RESOURCE)
+                    .authority(packageName)
+                    .path(iconResourceId.toString())
+                    .build()
 
-            val options = RequestOptions()
-                .format(DecodeFormat.PREFER_RGB_565)
-                .override(size, size)
-            val target = Glide.with(context)
-                .asBitmap()
-                .apply(options)
-                .load(uri)
-                .submit(size, size)
+                val options = RequestOptions()
+                    .format(DecodeFormat.PREFER_RGB_565)
+                    .override(size, size)
+                val target = Glide.with(context)
+                    .asBitmap()
+                    .apply(options)
+                    .load(uri)
+                    .submit(size, size)
 
-            try {
-                data = target.get()?.getBytes(canHaveAlpha = true, recycle = false)
-            } catch (e: Exception) {
-                Log.w(LOG_TAG, "failed to decode app icon for packageName=$packageName", e)
+                try {
+                    data = target.get()?.getBytes(canHaveAlpha = true, recycle = false)
+                } catch (e: Exception) {
+                    Log.w(LOG_TAG, "failed to decode app icon for packageName=$packageName", e)
+                }
+                Glide.with(context).clear(target)
             }
-            Glide.with(context).clear(target)
         } catch (e: Exception) {
             Log.w(LOG_TAG, "failed to get app info for packageName=$packageName", e)
             return
