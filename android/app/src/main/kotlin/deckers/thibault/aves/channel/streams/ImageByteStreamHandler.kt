@@ -95,22 +95,22 @@ class ImageByteStreamHandler(private val activity: Activity, private val argumen
         }
 
         if (isVideo(mimeType)) {
-            streamVideoByGlide(uri)
+            streamVideoByGlide(uri, mimeType)
         } else if (!isSupportedByFlutter(mimeType, rotationDegrees, isFlipped)) {
             // decode exotic format on platform side, then encode it in portable format for Flutter
             streamImageByGlide(uri, pageId, mimeType, rotationDegrees, isFlipped)
         } else {
             // to be decoded by Flutter
-            streamImageAsIs(uri)
+            streamImageAsIs(uri, mimeType)
         }
         endOfStream()
     }
 
-    private fun streamImageAsIs(uri: Uri) {
+    private fun streamImageAsIs(uri: Uri, mimeType: String) {
         try {
             StorageUtils.openInputStream(activity, uri)?.use { input -> streamBytes(input) }
         } catch (e: IOException) {
-            error("streamImage-image-read-exception", "failed to get image from uri=$uri", e.message)
+            error("streamImage-image-read-exception", "failed to get image for mimeType=$mimeType uri=$uri", e.message)
         }
     }
 
@@ -137,16 +137,16 @@ class ImageByteStreamHandler(private val activity: Activity, private val argumen
             if (bitmap != null) {
                 success(bitmap.getBytes(MimeTypes.canHaveAlpha(mimeType), recycle = false))
             } else {
-                error("streamImage-image-decode-null", "failed to get image from uri=$uri", null)
+                error("streamImage-image-decode-null", "failed to get image for mimeType=$mimeType uri=$uri", null)
             }
         } catch (e: Exception) {
-            error("streamImage-image-decode-exception", "failed to get image from uri=$uri model=$model", toErrorDetails(e))
+            error("streamImage-image-decode-exception", "failed to get image for mimeType=$mimeType uri=$uri model=$model", toErrorDetails(e))
         } finally {
             Glide.with(activity).clear(target)
         }
     }
 
-    private suspend fun streamVideoByGlide(uri: Uri) {
+    private suspend fun streamVideoByGlide(uri: Uri, mimeType: String) {
         val target = Glide.with(activity)
             .asBitmap()
             .apply(glideOptions)
@@ -158,10 +158,10 @@ class ImageByteStreamHandler(private val activity: Activity, private val argumen
             if (bitmap != null) {
                 success(bitmap.getBytes(canHaveAlpha = false, recycle = false))
             } else {
-                error("streamImage-video-null", "failed to get image from uri=$uri", null)
+                error("streamImage-video-null", "failed to get image for mimeType=$mimeType uri=$uri", null)
             }
         } catch (e: Exception) {
-            error("streamImage-video-exception", "failed to get image from uri=$uri", e.message)
+            error("streamImage-video-exception", "failed to get image for mimeType=$mimeType uri=$uri", e.message)
         } finally {
             Glide.with(activity).clear(target)
         }

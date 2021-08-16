@@ -161,7 +161,7 @@ abstract class ImageProvider {
                 if (MimeTypes.needRotationAfterGlide(sourceMimeType)) {
                     bitmap = BitmapUtils.applyExifOrientation(context, bitmap, sourceEntry.rotationDegrees, sourceEntry.isFlipped)
                 }
-                bitmap ?: throw Exception("failed to get image from uri=$sourceUri page=$pageId")
+                bitmap ?: throw Exception("failed to get image for mimeType=$sourceMimeType uri=$sourceUri page=$pageId")
 
                 destinationDocFile.openOutputStream().use { output ->
                     if (exportMimeType == MimeTypes.BMP) {
