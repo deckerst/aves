@@ -461,6 +461,8 @@ object StorageUtils {
         val effectiveUri = getOriginalUri(context, uri)
         return try {
             MediaMetadataRetriever().apply {
+                // on Android S preview, setting the data source works but yields an internal IOException
+                // (`Input file descriptor already original`), whether we provide the original URI or not
                 setDataSource(context, effectiveUri)
             }
         } catch (e: Exception) {

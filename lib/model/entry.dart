@@ -238,9 +238,10 @@ class AvesEntry {
   bool get canRotateAndFlip => canEdit && canEditExif;
 
   // support for writing EXIF
-  // as of androidx.exifinterface:exifinterface:1.3.0
+  // as of androidx.exifinterface:exifinterface:1.3.3
   bool get canEditExif {
     switch (mimeType.toLowerCase()) {
+      case MimeTypes.dng:
       case MimeTypes.jpeg:
       case MimeTypes.png:
       case MimeTypes.webp:
