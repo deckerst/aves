@@ -1,0 +1,23 @@
+#!/bin/bash
+adb shell setprop log.tag.ACodec WARN
+adb shell setprop log.tag.AHierarchicalStateMachine ERROR
+adb shell setprop log.tag.AudioCapabilities ERROR
+adb shell setprop log.tag.AudioTrack INFO
+adb shell setprop log.tag.CompatibilityChangeReporter INFO
+adb shell setprop log.tag.Counters WARN
+adb shell setprop log.tag.CustomizedTextParser INFO
+adb shell setprop log.tag.EGL_emulation INFO
+adb shell setprop log.tag.HostConnection INFO
+adb shell setprop log.tag.InputMethodManager WARN
+adb shell setprop log.tag.InsetsSourceConsumer INFO
+adb shell setprop log.tag.InputTransport INFO
+adb shell setprop log.tag.J4A INFO
+adb shell setprop log.tag.MediaCodec WARN
+adb shell setprop log.tag.MediaMetadataRetriever INFO
+adb shell setprop log.tag.MediaMetadataRetrieverJNI INFO
+adb shell setprop log.tag.NuMediaExtractor INFO
+adb shell setprop log.tag.skia INFO
+adb shell setprop log.tag.SurfaceControl WARN
+adb shell setprop log.tag.SurfaceUtils INFO
+adb shell setprop log.tag.SurfaceView WARN
+adb shell setprop log.tag.VideoCapabilities ERROR

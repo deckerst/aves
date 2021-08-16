@@ -123,17 +123,19 @@ class _AvesAppState extends State<AvesApp> {
   }
 
   Future<void> _setup() async {
-    await Firebase.initializeApp().then((app) {
+    await Firebase.initializeApp().then((app) async {
       FlutterError.onError = reportService.recordFlutterError;
       final now = DateTime.now();
-      reportService.setCustomKeys({
-        'locales': window.locales.join(', '),
-        'time_zone': '${now.timeZoneName} (${now.timeZoneOffset})',
+      final hasPlayServices = await availability.hasPlayServices;
+      await reportService.setCustomKeys({
         'build_mode': kReleaseMode
             ? 'release'
             : kProfileMode
                 ? 'profile'
                 : 'debug',
+        'has_play_services': hasPlayServices,
+        'locales': window.locales.join(', '),
+        'time_zone': '${now.timeZoneName} (${now.timeZoneOffset})',
       });
     });
     await settings.init();
