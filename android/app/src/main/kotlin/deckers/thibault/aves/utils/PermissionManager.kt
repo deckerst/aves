@@ -10,7 +10,7 @@ import android.os.storage.StorageManager
 import android.util.Log
 import androidx.annotation.RequiresApi
 import deckers.thibault.aves.MainActivity
-import deckers.thibault.aves.PendingResultHandler
+import deckers.thibault.aves.PendingStorageAccessResultHandler
 import deckers.thibault.aves.utils.StorageUtils.PathSegments
 import java.io.File
 import java.util.*
@@ -35,7 +35,7 @@ object PermissionManager {
         }
 
         if (intent.resolveActivity(activity.packageManager) != null) {
-            MainActivity.pendingResultHandlers[MainActivity.DOCUMENT_TREE_ACCESS_REQUEST] = PendingResultHandler(path, onGranted, onDenied)
+            MainActivity.pendingStorageAccessResultHandlers[MainActivity.DOCUMENT_TREE_ACCESS_REQUEST] = PendingStorageAccessResultHandler(path, onGranted, onDenied)
             activity.startActivityForResult(intent, MainActivity.DOCUMENT_TREE_ACCESS_REQUEST)
         } else {
             Log.e(LOG_TAG, "failed to resolve activity for intent=$intent")

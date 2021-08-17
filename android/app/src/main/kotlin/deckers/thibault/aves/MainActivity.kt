@@ -119,7 +119,9 @@ class MainActivity : FlutterActivity() {
         when (requestCode) {
             DOCUMENT_TREE_ACCESS_REQUEST -> onDocumentTreeAccessResult(data, resultCode, requestCode)
             DELETE_PERMISSION_REQUEST -> onDeletePermissionResult(resultCode)
-            CREATE_FILE_REQUEST, OPEN_FILE_REQUEST, SELECT_DIRECTORY_REQUEST -> onPermissionResult(requestCode, data?.data)
+            CREATE_FILE_REQUEST,
+            OPEN_FILE_REQUEST,
+            SELECT_DIRECTORY_REQUEST -> onStorageAccessResult(requestCode, data?.data)
         }
     }
 
@@ -127,7 +129,7 @@ class MainActivity : FlutterActivity() {
     private fun onDocumentTreeAccessResult(data: Intent?, resultCode: Int, requestCode: Int) {
         val treeUri = data?.data
         if (resultCode != RESULT_OK || treeUri == null) {
-            onPermissionResult(requestCode, null)
+            onStorageAccessResult(requestCode, null)
             return
         }
 
@@ -138,7 +140,7 @@ class MainActivity : FlutterActivity() {
         contentResolver.takePersistableUriPermission(treeUri, takeFlags)
 
         // resume pending action
-        onPermissionResult(requestCode, treeUri)
+        onStorageAccessResult(requestCode, treeUri)
     }
 
     private fun onDeletePermissionResult(resultCode: Int) {
@@ -152,9 +154,17 @@ class MainActivity : FlutterActivity() {
         when (intent?.action) {
             Intent.ACTION_MAIN -> {
                 intent.getStringExtra("page")?.let { page ->
+                    var filters = intent.getStringArrayExtra("filters")?.toList()
+                    if (filters == null) {
+                        // fallback for shortcuts created on API < 26
+                        val filterString = intent.getStringExtra("filtersString")
+                        if (filterString != null) {
+                            filters = filterString.split(EXTRA_STRING_ARRAY_SEPARATOR)
+                        }
+                    }
                     return hashMapOf(
                         "page" to page,
-                        "filters" to intent.getStringArrayExtra("filters")?.toList(),
+                        "filters" to filters,
                     )
                 }
             }
@@ -209,9 +219,13 @@ class MainActivity : FlutterActivity() {
     private fun setupShortcuts() {
         // do not use 'route' as extra key, as the Flutter framework acts on it
 
+        // shortcut adaptive icons are placed in `mipmap`, not `drawable`,
+        // so that foreground is rendered at the intended scale
+        val supportAdaptiveIcon = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+
         val search = ShortcutInfoCompat.Builder(this, "search")
             .setShortLabel(getString(R.string.search_shortcut_short_label))
-            .setIcon(IconCompat.createWithResource(this, R.mipmap.ic_shortcut_search))
+            .setIcon(IconCompat.createWithResource(this, if (supportAdaptiveIcon) R.mipmap.ic_shortcut_search else R.drawable.ic_shortcut_search))
             .setIntent(
                 Intent(Intent.ACTION_MAIN, null, this, MainActivity::class.java)
                     .putExtra("page", "/search")
@@ -220,7 +234,7 @@ class MainActivity : FlutterActivity() {
 
         val videos = ShortcutInfoCompat.Builder(this, "videos")
             .setShortLabel(getString(R.string.videos_shortcut_short_label))
-            .setIcon(IconCompat.createWithResource(this, R.mipmap.ic_shortcut_movie))
+            .setIcon(IconCompat.createWithResource(this, if (supportAdaptiveIcon) R.mipmap.ic_shortcut_movie else R.drawable.ic_shortcut_movie))
             .setIntent(
                 Intent(Intent.ACTION_MAIN, null, this, MainActivity::class.java)
                     .putExtra("page", "/collection")
@@ -234,18 +248,19 @@ class MainActivity : FlutterActivity() {
     companion object {
         private val LOG_TAG = LogUtils.createTag<MainActivity>()
         const val VIEWER_CHANNEL = "deckers.thibault/aves/viewer"
+        const val EXTRA_STRING_ARRAY_SEPARATOR = "###"
         const val DOCUMENT_TREE_ACCESS_REQUEST = 1
         const val DELETE_PERMISSION_REQUEST = 2
         const val CREATE_FILE_REQUEST = 3
         const val OPEN_FILE_REQUEST = 4
         const val SELECT_DIRECTORY_REQUEST = 5
 
-        // permission request code to pending runnable
-        val pendingResultHandlers = ConcurrentHashMap<Int, PendingResultHandler>()
+        // request code to pending runnable
+        val pendingStorageAccessResultHandlers = ConcurrentHashMap<Int, PendingStorageAccessResultHandler>()
 
-        fun onPermissionResult(requestCode: Int, uri: Uri?) {
-            Log.d(LOG_TAG, "onPermissionResult with requestCode=$requestCode, uri=$uri")
-            val handler = pendingResultHandlers.remove(requestCode) ?: return
+        private fun onStorageAccessResult(requestCode: Int, uri: Uri?) {
+            Log.d(LOG_TAG, "onStorageAccessResult with requestCode=$requestCode, uri=$uri")
+            val handler = pendingStorageAccessResultHandlers.remove(requestCode) ?: return
             if (uri != null) {
                 handler.onGranted(uri)
             } else {
@@ -261,4 +276,4 @@ class MainActivity : FlutterActivity() {
 
 // onGranted: user selected a directory/file (with no guarantee that it matches the requested `path`)
 // onDenied: user cancelled
-data class PendingResultHandler(val path: String?, val onGranted: (uri: Uri) -> Unit, val onDenied: () -> Unit)
+data class PendingStorageAccessResultHandler(val path: String?, val onGranted: (uri: Uri) -> Unit, val onDenied: () -> Unit)

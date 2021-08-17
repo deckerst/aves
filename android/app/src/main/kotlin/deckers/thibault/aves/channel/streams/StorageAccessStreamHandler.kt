@@ -7,7 +7,7 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import deckers.thibault.aves.MainActivity
-import deckers.thibault.aves.PendingResultHandler
+import deckers.thibault.aves.PendingStorageAccessResultHandler
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.PermissionManager
 import deckers.thibault.aves.utils.StorageUtils
@@ -82,7 +82,7 @@ class StorageAccessStreamHandler(private val activity: Activity, arguments: Any?
             type = mimeType
             putExtra(Intent.EXTRA_TITLE, name)
         }
-        MainActivity.pendingResultHandlers[MainActivity.CREATE_FILE_REQUEST] = PendingResultHandler(null, { uri ->
+        MainActivity.pendingStorageAccessResultHandlers[MainActivity.CREATE_FILE_REQUEST] = PendingStorageAccessResultHandler(null, { uri ->
             GlobalScope.launch(Dispatchers.IO) {
                 try {
                     activity.contentResolver.openOutputStream(uri)?.use { output ->
@@ -116,7 +116,7 @@ class StorageAccessStreamHandler(private val activity: Activity, arguments: Any?
             addCategory(Intent.CATEGORY_OPENABLE)
             type = mimeType
         }
-        MainActivity.pendingResultHandlers[MainActivity.OPEN_FILE_REQUEST] = PendingResultHandler(null, { uri ->
+        MainActivity.pendingStorageAccessResultHandlers[MainActivity.OPEN_FILE_REQUEST] = PendingStorageAccessResultHandler(null, { uri ->
             GlobalScope.launch(Dispatchers.IO) {
                 activity.contentResolver.openInputStream(uri)?.use { input ->
                     val buffer = ByteArray(BUFFER_SIZE)
@@ -138,7 +138,7 @@ class StorageAccessStreamHandler(private val activity: Activity, arguments: Any?
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
 
-            MainActivity.pendingResultHandlers[MainActivity.SELECT_DIRECTORY_REQUEST] = PendingResultHandler(null, { uri ->
+            MainActivity.pendingStorageAccessResultHandlers[MainActivity.SELECT_DIRECTORY_REQUEST] = PendingStorageAccessResultHandler(null, { uri ->
                 success(StorageUtils.convertTreeUriToDirPath(activity, uri))
                 endOfStream()
             }, {

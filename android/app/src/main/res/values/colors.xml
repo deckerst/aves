@@ -2,5 +2,6 @@
 <resources>
     <color name="ic_launcher_background">#FFFFFF</color>
     <color name="ic_shortcut_background">#FFFFFF</color>
+    <color name="ic_shortcut_foreground">#455A64</color>
     <color name="ic_launcher_flavour">#3f51b5</color>
 </resources>
