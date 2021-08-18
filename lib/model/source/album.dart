@@ -120,8 +120,13 @@ mixin AlbumMixin on SourceBase {
       _notifyAlbumChange();
       invalidateAlbumFilterSummary(directories: emptyAlbums);
 
+      final bookmarks = settings.drawerAlbumBookmarks;
       final pinnedFilters = settings.pinnedFilters;
-      emptyAlbums.forEach((album) => pinnedFilters.removeWhere((filter) => filter is AlbumFilter && filter.album == album));
+      emptyAlbums.forEach((album) {
+        bookmarks?.remove(album);
+        pinnedFilters.removeWhere((filter) => filter is AlbumFilter && filter.album == album);
+      });
+      settings.drawerAlbumBookmarks = bookmarks;
       settings.pinnedFilters = pinnedFilters;
     }
   }
