@@ -117,7 +117,7 @@ class MultiPageIcon extends StatelessWidget {
     if (entry.isMotionPhoto) {
       icon = AIcons.motionPhoto;
     } else {
-      if(entry.isBurst) {
+      if (entry.isBurst) {
         text = '${entry.burstEntries?.length}';
       }
       icon = AIcons.multiPage;

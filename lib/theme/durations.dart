@@ -43,8 +43,8 @@ class Durations {
   static const viewerVerticalPageScrollAnimation = Duration(milliseconds: 500);
   static const viewerOverlayAnimation = Duration(milliseconds: 200);
   static const viewerOverlayChangeAnimation = Duration(milliseconds: 150);
-  static const viewerOverlayPageScrollAnimation = Duration(milliseconds: 200);
-  static const viewerOverlayPageShadeAnimation = Duration(milliseconds: 150);
+  static const thumbnailScrollerScrollAnimation = Duration(milliseconds: 200);
+  static const thumbnailScrollerShadeAnimation = Duration(milliseconds: 150);
   static const viewerVideoPlayerTransition = Duration(milliseconds: 500);
 
   // info animations

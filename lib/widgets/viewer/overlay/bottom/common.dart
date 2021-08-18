@@ -107,7 +107,7 @@ class _ViewerBottomOverlayState extends State<ViewerBottomOverlay> {
                   _lastDetails = snapshot.data;
                   _lastEntry = entry;
                 }
-                if (_lastEntry == null) return const SizedBox.shrink();
+                if (_lastEntry == null) return const SizedBox();
                 final mainEntry = _lastEntry!;
 
                 Widget _buildContent({AvesEntry? pageEntry}) => _BottomOverlayContent(
@@ -261,7 +261,7 @@ class _BottomOverlayContent extends AnimatedWidget {
                 padding: const EdgeInsets.only(top: _interRowPadding),
                 child: _LocationRow(entry: pageEntry),
               )
-            : const SizedBox.shrink(),
+            : const SizedBox(),
       );
 
   Widget _buildSoloShootingRow(double subRowWidth, bool hasShootingDetails) => AnimatedSwitcher(
@@ -275,7 +275,7 @@ class _BottomOverlayContent extends AnimatedWidget {
                 width: subRowWidth,
                 child: _ShootingRow(details!),
               )
-            : const SizedBox.shrink(),
+            : const SizedBox(),
       );
 
   Widget _buildDuoShootingRow(double subRowWidth, bool hasShootingDetails) => AnimatedSwitcher(
@@ -291,7 +291,7 @@ class _BottomOverlayContent extends AnimatedWidget {
                 width: subRowWidth,
                 child: _ShootingRow(details!),
               )
-            : const SizedBox.shrink(),
+            : const SizedBox(),
       );
 
   static Widget _soloTransition(Widget child, Animation<double> animation) => FadeTransition(
