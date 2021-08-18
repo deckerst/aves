@@ -159,6 +159,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
 
   Future<void> renameAlbum(String sourceAlbum, String destinationAlbum, Set<AvesEntry> todoEntries, Set<MoveOpEvent> movedOps) async {
     final oldFilter = AlbumFilter(sourceAlbum, null);
+    final bookmarked = settings.drawerAlbumBookmarks?.contains(sourceAlbum) == true;
     final pinned = settings.pinnedFilters.contains(oldFilter);
     final oldCoverContentId = covers.coverContentId(oldFilter);
     final coverEntry = oldCoverContentId != null ? todoEntries.firstWhereOrNull((entry) => entry.contentId == oldCoverContentId) : null;
@@ -169,8 +170,11 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
       destinationAlbum: destinationAlbum,
       movedOps: movedOps,
     );
-    // restore pin and cover, as the obsolete album got removed and its associated state cleaned
+    // restore bookmark, pin and cover, as the obsolete album got removed and its associated state cleaned
     final newFilter = AlbumFilter(destinationAlbum, null);
+    if (bookmarked) {
+      settings.drawerAlbumBookmarks = settings.drawerAlbumBookmarks?..add(destinationAlbum);
+    }
     if (pinned) {
       settings.pinnedFilters = settings.pinnedFilters..add(newFilter);
     }
