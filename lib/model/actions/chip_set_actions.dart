@@ -60,7 +60,11 @@ extension ExtraChipSetAction on ChipSetAction {
     }
   }
 
-  IconData? getIcon() {
+  Widget getIcon() {
+    return Icon(_getIconData());
+  }
+
+  IconData _getIconData() {
     switch (this) {
       // general
       case ChipSetAction.sort:

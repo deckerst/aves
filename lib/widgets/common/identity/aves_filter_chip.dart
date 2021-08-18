@@ -7,7 +7,7 @@ import 'package:aves/model/filters/tag.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/constants.dart';
-import 'package:aves/widgets/common/basic/menu_row.dart';
+import 'package:aves/widgets/common/basic/menu.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -74,7 +74,9 @@ class AvesFilterChip extends StatefulWidget {
         items: actions
             .map((action) => PopupMenuItem(
                   value: action,
-                  child: MenuRow(text: action.getText(context), icon: action.getIcon()),
+                  child: MenuIconTheme(
+                    child: MenuRow(text: action.getText(context), icon: action.getIcon()),
+                  ),
                 ))
             .toList(),
       );

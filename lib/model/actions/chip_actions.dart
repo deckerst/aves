@@ -23,7 +23,11 @@ extension ExtraChipAction on ChipAction {
     }
   }
 
-  IconData getIcon() {
+  Widget getIcon() {
+    return Icon(_getIconData());
+  }
+
+  IconData _getIconData() {
     switch (this) {
       case ChipAction.goToAlbumPage:
         return AIcons.album;

@@ -8,7 +8,7 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/utils/time_utils.dart';
-import 'package:aves/widgets/common/basic/menu_row.dart';
+import 'package:aves/widgets/common/basic/menu.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/blurred.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
@@ -224,12 +224,14 @@ class _ButtonRow extends StatelessWidget {
             padding: const EdgeInsetsDirectional.only(start: padding),
             child: OverlayButton(
               scale: scale,
-              child: PopupMenuButton<VideoAction>(
-                itemBuilder: (context) => menuActions.map((action) => _buildPopupMenuItem(context, action)).toList(),
-                onSelected: (action) {
-                  // wait for the popup menu to hide before proceeding with the action
-                  Future.delayed(Durations.popupMenuAnimation * timeDilation, () => onActionSelected(action));
-                },
+              child: MenuIconTheme(
+                child: PopupMenuButton<VideoAction>(
+                  itemBuilder: (context) => menuActions.map((action) => _buildPopupMenuItem(context, action)).toList(),
+                  onSelected: (action) {
+                    // wait for the popup menu to hide before proceeding with the action
+                    Future.delayed(Durations.popupMenuAnimation * timeDilation, () => onActionSelected(action));
+                  },
+                ),
               ),
             ),
           ),
@@ -249,7 +251,7 @@ class _ButtonRow extends StatelessWidget {
           onPressed: canDo ? onPressed : null,
           tooltip: action.getText(context),
         ),
-        child: Icon(action.getIcon()),
+        child: action.getIcon(),
       );
     }
 
@@ -273,7 +275,7 @@ class _ButtonRow extends StatelessWidget {
       case VideoAction.skip10:
       case VideoAction.settings:
         child = IconButton(
-          icon: Icon(action.getIcon()),
+          icon: action.getIcon(),
           onPressed: onPressed,
           tooltip: action.getText(context),
         );
@@ -401,11 +403,11 @@ class _PlayTogglerState extends State<_PlayToggler> with SingleTickerProviderSta
       return isPlaying
           ? MenuRow(
               text: context.l10n.videoActionPause,
-              icon: AIcons.pause,
+              icon: const Icon(AIcons.pause),
             )
           : MenuRow(
               text: context.l10n.videoActionPlay,
-              icon: AIcons.play,
+              icon: const Icon(AIcons.play),
             );
     }
     return IconButton(

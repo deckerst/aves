@@ -40,6 +40,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> {
   @override
   bool isValid(Set<AlbumFilter> filters, ChipSetAction action) {
     switch (action) {
+      case ChipSetAction.createAlbum:
       case ChipSetAction.delete:
       case ChipSetAction.rename:
         return true;

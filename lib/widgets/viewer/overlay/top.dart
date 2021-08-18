@@ -4,7 +4,7 @@ import 'package:aves/model/favourites.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/widgets/common/basic/menu_row.dart';
+import 'package:aves/widgets/common/basic/menu.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/sweeper.dart';
 import 'package:aves/widgets/viewer/entry_action_delegate.dart';
@@ -166,22 +166,24 @@ class _TopOverlayRow extends StatelessWidget {
         ...quickActions.map((action) => _buildOverlayButton(context, action)),
         OverlayButton(
           scale: scale,
-          child: PopupMenuButton<EntryAction>(
-            key: const Key('entry-menu-button'),
-            itemBuilder: (context) => [
-              ...inAppActions.map((action) => _buildPopupMenuItem(context, action)),
-              if (pageEntry.canRotateAndFlip) _buildRotateAndFlipMenuItems(context),
-              const PopupMenuDivider(),
-              ...externalAppActions.map((action) => _buildPopupMenuItem(context, action)),
-              if (!kReleaseMode) ...[
+          child: MenuIconTheme(
+            child: PopupMenuButton<EntryAction>(
+              key: const Key('entry-menu-button'),
+              itemBuilder: (context) => [
+                ...inAppActions.map((action) => _buildPopupMenuItem(context, action)),
+                if (pageEntry.canRotateAndFlip) _buildRotateAndFlipMenuItems(context),
                 const PopupMenuDivider(),
-                _buildPopupMenuItem(context, EntryAction.debug),
-              ]
-            ],
-            onSelected: (action) {
-              // wait for the popup menu to hide before proceeding with the action
-              Future.delayed(Durations.popupMenuAnimation * timeDilation, () => _onActionSelected(context, action));
-            },
+                ...externalAppActions.map((action) => _buildPopupMenuItem(context, action)),
+                if (!kReleaseMode) ...[
+                  const PopupMenuDivider(),
+                  _buildPopupMenuItem(context, EntryAction.debug),
+                ]
+              ],
+              onSelected: (action) {
+                // wait for the popup menu to hide before proceeding with the action
+                Future.delayed(Durations.popupMenuAnimation * timeDilation, () => _onActionSelected(context, action));
+              },
+            ),
           ),
         ),
       ],
@@ -212,7 +214,7 @@ class _TopOverlayRow extends StatelessWidget {
       case EntryAction.viewSource:
       case EntryAction.viewMotionPhotoVideo:
         child = IconButton(
-          icon: Icon(action.getIcon()),
+          icon: action.getIcon() ?? const SizedBox(),
           onPressed: onPressed,
           tooltip: action.getText(context),
         );
@@ -269,7 +271,7 @@ class _TopOverlayRow extends StatelessWidget {
             value: action,
             child: Tooltip(
               message: action.getText(context),
-              child: Center(child: Icon(action.getIcon())),
+              child: Center(child: action.getIcon()),
             ),
           ),
         );
@@ -351,11 +353,11 @@ class _FavouriteTogglerState extends State<_FavouriteToggler> {
           return isFavourite
               ? MenuRow(
                   text: context.l10n.entryActionRemoveFavourite,
-                  icon: AIcons.favouriteActive,
+                  icon: const Icon(AIcons.favouriteActive),
                 )
               : MenuRow(
                   text: context.l10n.entryActionAddFavourite,
-                  icon: AIcons.favourite,
+                  icon: const Icon(AIcons.favourite),
                 );
         }
         return Stack(

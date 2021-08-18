@@ -32,6 +32,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
   bool isValid(Set<T> filters, ChipSetAction action) {
     final hasSelection = filters.isNotEmpty;
     switch (action) {
+      case ChipSetAction.createAlbum:
       case ChipSetAction.delete:
       case ChipSetAction.rename:
         return false;

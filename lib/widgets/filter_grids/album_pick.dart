@@ -9,7 +9,7 @@ import 'package:aves/model/source/enums.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/app_bar_subtitle.dart';
-import 'package:aves/widgets/common/basic/menu_row.dart';
+import 'package:aves/widgets/common/basic/menu.dart';
 import 'package:aves/widgets/common/basic/query_bar.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
@@ -145,27 +145,29 @@ class AlbumPickAppBar extends StatelessWidget {
             },
             tooltip: context.l10n.createAlbumTooltip,
           ),
-        PopupMenuButton<ChipSetAction>(
-          itemBuilder: (context) {
-            return [
-              PopupMenuItem(
-                value: ChipSetAction.sort,
-                child: MenuRow(text: context.l10n.menuActionSort, icon: AIcons.sort),
-              ),
-              PopupMenuItem(
-                value: ChipSetAction.group,
-                child: MenuRow(text: context.l10n.menuActionGroup, icon: AIcons.group),
-              ),
-            ];
-          },
-          onSelected: (action) {
-            // remove focus, if any, to prevent the keyboard from showing up
-            // after the user is done with the popup menu
-            FocusManager.instance.primaryFocus?.unfocus();
+        MenuIconTheme(
+          child: PopupMenuButton<ChipSetAction>(
+            itemBuilder: (context) {
+              return [
+                PopupMenuItem(
+                  value: ChipSetAction.sort,
+                  child: MenuRow(text: context.l10n.menuActionSort, icon: const Icon(AIcons.sort)),
+                ),
+                PopupMenuItem(
+                  value: ChipSetAction.group,
+                  child: MenuRow(text: context.l10n.menuActionGroup, icon: const Icon(AIcons.group)),
+                ),
+              ];
+            },
+            onSelected: (action) {
+              // remove focus, if any, to prevent the keyboard from showing up
+              // after the user is done with the popup menu
+              FocusManager.instance.primaryFocus?.unfocus();
 
-            // wait for the popup menu to hide before proceeding with the action
-            Future.delayed(Durations.popupMenuAnimation * timeDilation, () => actionDelegate.onActionSelected(context, {}, action));
-          },
+              // wait for the popup menu to hide before proceeding with the action
+              Future.delayed(Durations.popupMenuAnimation * timeDilation, () => actionDelegate.onActionSelected(context, {}, action));
+            },
+          ),
         ),
       ],
       floating: true,

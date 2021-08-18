@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:aves/model/actions/collection_actions.dart';
 import 'package:aves/model/actions/entry_actions.dart';
+import 'package:aves/model/actions/entry_set_actions.dart';
 import 'package:aves/model/actions/move_type.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/album.dart';
@@ -43,21 +43,21 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     }
   }
 
-  void onCollectionActionSelected(BuildContext context, CollectionAction action) {
+  void onCollectionActionSelected(BuildContext context, EntrySetAction action) {
     switch (action) {
-      case CollectionAction.copy:
+      case EntrySetAction.copy:
         _moveSelection(context, moveType: MoveType.copy);
         break;
-      case CollectionAction.move:
+      case EntrySetAction.move:
         _moveSelection(context, moveType: MoveType.move);
         break;
-      case CollectionAction.refreshMetadata:
+      case EntrySetAction.refreshMetadata:
         _refreshMetadata(context);
         break;
-      case CollectionAction.map:
+      case EntrySetAction.map:
         _goToMap(context);
         break;
-      case CollectionAction.stats:
+      case EntrySetAction.stats:
         _goToStats(context);
         break;
       default:

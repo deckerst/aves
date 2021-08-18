@@ -46,7 +46,11 @@ extension ExtraVideoAction on VideoAction {
     }
   }
 
-  IconData? getIcon() {
+  Widget getIcon() {
+    return Icon(_getIconData());
+  }
+
+  IconData _getIconData() {
     switch (this) {
       case VideoAction.captureFrame:
         return AIcons.captureFrame;
