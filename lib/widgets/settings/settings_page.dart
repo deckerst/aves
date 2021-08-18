@@ -8,7 +8,7 @@ import 'package:aves/services/services.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
-import 'package:aves/widgets/common/basic/menu_row.dart';
+import 'package:aves/widgets/common/basic/menu.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/settings/language/language.dart';
@@ -42,23 +42,25 @@ class _SettingsPageState extends State<SettingsPage> with FeedbackMixin {
         appBar: AppBar(
           title: Text(context.l10n.settingsPageTitle),
           actions: [
-            PopupMenuButton<SettingsAction>(
-              itemBuilder: (context) {
-                return [
-                  PopupMenuItem(
-                    value: SettingsAction.export,
-                    child: MenuRow(text: context.l10n.settingsActionExport, icon: AIcons.export),
-                  ),
-                  PopupMenuItem(
-                    value: SettingsAction.import,
-                    child: MenuRow(text: context.l10n.settingsActionImport, icon: AIcons.import),
-                  ),
-                ];
-              },
-              onSelected: (action) {
-                // wait for the popup menu to hide before proceeding with the action
-                Future.delayed(Durations.popupMenuAnimation * timeDilation, () => _onActionSelected(action));
-              },
+            MenuIconTheme(
+              child: PopupMenuButton<SettingsAction>(
+                itemBuilder: (context) {
+                  return [
+                    PopupMenuItem(
+                      value: SettingsAction.export,
+                      child: MenuRow(text: context.l10n.settingsActionExport, icon: const Icon(AIcons.export)),
+                    ),
+                    PopupMenuItem(
+                      value: SettingsAction.import,
+                      child: MenuRow(text: context.l10n.settingsActionImport, icon: const Icon(AIcons.import)),
+                    ),
+                  ];
+                },
+                onSelected: (action) {
+                  // wait for the popup menu to hide before proceeding with the action
+                  Future.delayed(Durations.popupMenuAnimation * timeDilation, () => _onActionSelected(action));
+                },
+              ),
             ),
           ],
         ),

@@ -3,6 +3,7 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/type.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/theme/themes.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/debug/app_debug_page.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
@@ -73,7 +74,10 @@ class DrawerPageIcon extends StatelessWidget {
       case TagListPage.routeName:
         return const Icon(AIcons.tag);
       case AppDebugPage.routeName:
-        return const Icon(AIcons.debug);
+        return ShaderMask(
+          shaderCallback: Themes.debugGradient.createShader,
+          child: const Icon(AIcons.debug),
+        );
       default:
         return const SizedBox();
     }

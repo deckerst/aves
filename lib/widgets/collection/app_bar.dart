@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:aves/app_mode.dart';
-import 'package:aves/model/actions/collection_actions.dart';
 import 'package:aves/model/actions/entry_actions.dart';
+import 'package:aves/model/actions/entry_set_actions.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/selection.dart';
@@ -17,7 +17,7 @@ import 'package:aves/widgets/collection/entry_set_action_delegate.dart';
 import 'package:aves/widgets/collection/filter_bar.dart';
 import 'package:aves/widgets/common/app_bar_subtitle.dart';
 import 'package:aves/widgets/common/app_bar_title.dart';
-import 'package:aves/widgets/common/basic/menu_row.dart';
+import 'package:aves/widgets/common/basic/menu.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/add_shortcut_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
@@ -177,7 +177,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
         ...EntryActions.selection.map((action) => Selector<Selection<AvesEntry>, bool>(
               selector: (context, selection) => selection.selectedItems.isEmpty,
               builder: (context, isEmpty, child) => IconButton(
-                icon: Icon(action.getIcon()),
+                icon: action.getIcon() ?? const SizedBox(),
                 onPressed: isEmpty ? null : () => _actionDelegate.onEntryActionSelected(context, action),
                 tooltip: action.getText(context),
               ),
@@ -186,81 +186,80 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
         future: _canAddShortcutsLoader,
         builder: (context, snapshot) {
           final canAddShortcuts = snapshot.data ?? false;
-          return PopupMenuButton<CollectionAction>(
-            key: const Key('appbar-menu-button'),
-            itemBuilder: (context) {
-              final groupable = collection.sortFactor == EntrySortFactor.date;
-              final selection = context.read<Selection<AvesEntry>>();
-              final isSelecting = selection.isSelecting;
-              final selectedItems = selection.selectedItems;
-              final hasSelection = selectedItems.isNotEmpty;
-              final hasItems = !collection.isEmpty;
-              final otherViewEnabled = (!isSelecting && hasItems) || (isSelecting && hasSelection);
+          return MenuIconTheme(
+            child: PopupMenuButton<EntrySetAction>(
+              key: const Key('appbar-menu-button'),
+              itemBuilder: (context) {
+                final groupable = collection.sortFactor == EntrySortFactor.date;
+                final selection = context.read<Selection<AvesEntry>>();
+                final isSelecting = selection.isSelecting;
+                final selectedItems = selection.selectedItems;
+                final hasSelection = selectedItems.isNotEmpty;
+                final hasItems = !collection.isEmpty;
+                final otherViewEnabled = (!isSelecting && hasItems) || (isSelecting && hasSelection);
 
-              return [
-                _toMenuItem(
-                  CollectionAction.sort,
-                  key: const Key('menu-sort'),
-                ),
-                if (groupable)
+                return [
                   _toMenuItem(
-                    CollectionAction.group,
-                    key: const Key('menu-group'),
+                    EntrySetAction.sort,
+                    key: const Key('menu-sort'),
                   ),
-                if (appMode == AppMode.main) ...[
-                  if (!isSelecting)
+                  if (groupable)
                     _toMenuItem(
-                      CollectionAction.select,
-                      enabled: hasItems,
+                      EntrySetAction.group,
+                      key: const Key('menu-group'),
                     ),
-                  const PopupMenuDivider(),
-                  if (isSelecting)
-                    ...[
-                      CollectionAction.copy,
-                      CollectionAction.move,
-                      CollectionAction.refreshMetadata,
-                    ].map((v) => _toMenuItem(v, enabled: hasSelection)),
-                  ...[
-                    CollectionAction.map,
-                    CollectionAction.stats,
-                  ].map((v) => _toMenuItem(v, enabled: otherViewEnabled)),
-                  if (!isSelecting && canAddShortcuts) ...[
+                  if (appMode == AppMode.main) ...[
+                    if (!isSelecting)
+                      _toMenuItem(
+                        EntrySetAction.select,
+                        enabled: hasItems,
+                      ),
                     const PopupMenuDivider(),
-                    _toMenuItem(CollectionAction.addShortcut),
+                    if (isSelecting)
+                      ...[
+                        EntrySetAction.copy,
+                        EntrySetAction.move,
+                        EntrySetAction.refreshMetadata,
+                      ].map((v) => _toMenuItem(v, enabled: hasSelection)),
+                    ...[
+                      EntrySetAction.map,
+                      EntrySetAction.stats,
+                    ].map((v) => _toMenuItem(v, enabled: otherViewEnabled)),
+                    if (!isSelecting && canAddShortcuts) ...[
+                      const PopupMenuDivider(),
+                      _toMenuItem(EntrySetAction.addShortcut),
+                    ],
                   ],
-                ],
-                if (isSelecting) ...[
-                  const PopupMenuDivider(),
-                  _toMenuItem(
-                    CollectionAction.selectAll,
-                    enabled: selectedItems.length < collection.entryCount,
-                  ),
-                  _toMenuItem(
-                    CollectionAction.selectNone,
-                    enabled: hasSelection,
-                  ),
-                ]
-              ];
-            },
-            onSelected: (action) {
-              // wait for the popup menu to hide before proceeding with the action
-              Future.delayed(Durations.popupMenuAnimation * timeDilation, () => _onCollectionActionSelected(action));
-            },
+                  if (isSelecting) ...[
+                    const PopupMenuDivider(),
+                    _toMenuItem(
+                      EntrySetAction.selectAll,
+                      enabled: selectedItems.length < collection.entryCount,
+                    ),
+                    _toMenuItem(
+                      EntrySetAction.selectNone,
+                      enabled: hasSelection,
+                    ),
+                  ]
+                ];
+              },
+              onSelected: (action) {
+                // wait for the popup menu to hide before proceeding with the action
+                Future.delayed(Durations.popupMenuAnimation * timeDilation, () => _onCollectionActionSelected(action));
+              },
+            ),
           );
         },
       ),
     ];
   }
 
-  PopupMenuItem<CollectionAction> _toMenuItem(CollectionAction action, {Key? key, bool enabled = true}) {
+  PopupMenuItem<EntrySetAction> _toMenuItem(EntrySetAction action, {Key? key, bool enabled = true}) {
     return PopupMenuItem(
       key: key,
       value: action,
       enabled: enabled,
-      child: MenuRow(
-        text: action.getText(context),
-        icon: action.getIcon(),
-      ),
+      child: MenuRow(text: action.getText(context), icon: action.getIcon()),
     );
   }
 
@@ -285,28 +284,28 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     }
   }
 
-  Future<void> _onCollectionActionSelected(CollectionAction action) async {
+  Future<void> _onCollectionActionSelected(EntrySetAction action) async {
     switch (action) {
-      case CollectionAction.copy:
-      case CollectionAction.move:
-      case CollectionAction.refreshMetadata:
-      case CollectionAction.map:
-      case CollectionAction.stats:
+      case EntrySetAction.copy:
+      case EntrySetAction.move:
+      case EntrySetAction.refreshMetadata:
+      case EntrySetAction.map:
+      case EntrySetAction.stats:
         _actionDelegate.onCollectionActionSelected(context, action);
         break;
-      case CollectionAction.select:
+      case EntrySetAction.select:
         context.read<Selection<AvesEntry>>().select();
         break;
-      case CollectionAction.selectAll:
+      case EntrySetAction.selectAll:
         context.read<Selection<AvesEntry>>().addToSelection(collection.sortedEntries);
         break;
-      case CollectionAction.selectNone:
+      case EntrySetAction.selectNone:
         context.read<Selection<AvesEntry>>().clearSelection();
         break;
-      case CollectionAction.addShortcut:
+      case EntrySetAction.addShortcut:
         unawaited(_showShortcutDialog(context));
         break;
-      case CollectionAction.group:
+      case EntrySetAction.group:
         final value = await showDialog<EntryGroupFactor>(
           context: context,
           builder: (context) => AvesSelectionDialog<EntryGroupFactor>(
@@ -326,7 +325,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
           settings.collectionSectionFactor = value;
         }
         break;
-      case CollectionAction.sort:
+      case EntrySetAction.sort:
         final value = await showDialog<EntrySortFactor>(
           context: context,
           builder: (context) => AvesSelectionDialog<EntrySortFactor>(
