@@ -24,6 +24,7 @@ class EntryLeafletMap extends StatefulWidget {
   final List<AvesEntry> markerEntries;
   final Size markerSize;
   final UserZoomChangeCallback? onUserZoomChange;
+  final GeoEntryTapCallback? onEntryTap;
 
   const EntryLeafletMap({
     Key? key,
@@ -35,6 +36,7 @@ class EntryLeafletMap extends StatefulWidget {
     required this.markerEntries,
     required this.markerSize,
     this.onUserZoomChange,
+    this.onEntryTap,
   }) : super(key: key);
 
   @override
@@ -80,8 +82,8 @@ class _EntryLeafletMapState extends State<EntryLeafletMap> with TickerProviderSt
       valueListenable: boundsNotifier,
       builder: (context, visibleRegion, child) {
         final allEntries = widget.markerEntries;
-        final clusters = visibleRegion != null ? widget.markerCluster.clusters(visibleRegion.boundingBox, visibleRegion.zoom.round()) : <GeoEntry>[];
-        final clusterByMarkerKey = Map.fromEntries(clusters.map((v) {
+        final geoEntries = visibleRegion != null ? widget.markerCluster.clusters(visibleRegion.boundingBox, visibleRegion.zoom.round()) : <GeoEntry>[];
+        final geoEntryByMarkerKey = Map.fromEntries(geoEntries.map((v) {
           if (v.isCluster!) {
             final uri = v.childMarkerId;
             final entry = allEntries.firstWhere((v) => v.uri == uri);
@@ -94,7 +96,7 @@ class _EntryLeafletMapState extends State<EntryLeafletMap> with TickerProviderSt
           children: [
             MapDecorator(
               interactive: widget.interactive,
-              child: _buildMap(clusterByMarkerKey),
+              child: _buildMap(geoEntryByMarkerKey),
             ),
             MapButtonPanel(
               latLng: bounds.center,
@@ -106,16 +108,20 @@ class _EntryLeafletMapState extends State<EntryLeafletMap> with TickerProviderSt
     );
   }
 
-  Widget _buildMap(Map<MarkerKey, GeoEntry> clusterByMarkerKey) {
+  Widget _buildMap(Map<MarkerKey, GeoEntry> geoEntryByMarkerKey) {
     final markerSize = widget.markerSize;
-    final markers = clusterByMarkerKey.entries.map((kv) {
+    final markers = geoEntryByMarkerKey.entries.map((kv) {
       final markerKey = kv.key;
-      final cluster = kv.value;
-      final latLng = LatLng(cluster.latitude!, cluster.longitude!);
+      final geoEntry = kv.value;
+      final latLng = LatLng(geoEntry.latitude!, geoEntry.longitude!);
       return Marker(
         point: latLng,
         builder: (context) => GestureDetector(
-          onTap: () => _moveTo(latLng),
+          onTap: () {
+            final clusterId = geoEntry.clusterId;
+            widget.onEntryTap?.call(clusterId != null ? widget.markerCluster.points(clusterId) : [geoEntry]);
+            _moveTo(latLng);
+          },
           child: widget.markerBuilder(markerKey),
         ),
         width: markerSize.width,

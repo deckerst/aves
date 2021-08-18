@@ -27,6 +27,7 @@ class GeoMap extends StatefulWidget {
   final double? mapHeight;
   final ValueNotifier<bool> isAnimatingNotifier;
   final UserZoomChangeCallback? onUserZoomChange;
+  final GeoEntryTapCallback? onEntryTap;
 
   static const markerImageExtent = 48.0;
   static const pointerSize = Size(8, 6);
@@ -38,6 +39,7 @@ class GeoMap extends StatefulWidget {
     this.mapHeight,
     required this.isAnimatingNotifier,
     this.onUserZoomChange,
+    this.onEntryTap,
   }) : super(key: key);
 
   @override
@@ -130,6 +132,7 @@ class _GeoMapState extends State<GeoMap> with TickerProviderStateMixin {
                     markerCluster: markerCluster,
                     markerEntries: entries,
                     onUserZoomChange: widget.onUserZoomChange,
+                    onEntryTap: widget.onEntryTap,
                   )
                 : EntryLeafletMap(
                     boundsNotifier: boundsNotifier,
@@ -143,6 +146,7 @@ class _GeoMapState extends State<GeoMap> with TickerProviderStateMixin {
                       GeoMap.markerImageExtent + ImageMarker.outerBorderWidth * 2 + GeoMap.pointerSize.height,
                     ),
                     onUserZoomChange: widget.onUserZoomChange,
+                    onEntryTap: widget.onEntryTap,
                   );
 
             child = Column(
@@ -214,3 +218,4 @@ class MarkerKey extends LocalKey with EquatableMixin {
 
 typedef EntryMarkerBuilder = Widget Function(MarkerKey key);
 typedef UserZoomChangeCallback = void Function(double zoom);
+typedef GeoEntryTapCallback = void Function(List<GeoEntry> geoEntries);

@@ -25,6 +25,7 @@ class EntryGoogleMap extends StatefulWidget {
   final Fluster<GeoEntry> markerCluster;
   final List<AvesEntry> markerEntries;
   final UserZoomChangeCallback? onUserZoomChange;
+  final GeoEntryTapCallback? onEntryTap;
 
   const EntryGoogleMap({
     Key? key,
@@ -35,6 +36,7 @@ class EntryGoogleMap extends StatefulWidget {
     required this.markerCluster,
     required this.markerEntries,
     this.onUserZoomChange,
+    this.onEntryTap,
   }) : super(key: key);
 
   @override
@@ -93,8 +95,8 @@ class _EntryGoogleMapState extends State<EntryGoogleMap> with WidgetsBindingObse
       valueListenable: boundsNotifier,
       builder: (context, visibleRegion, child) {
         final allEntries = widget.markerEntries;
-        final clusters = visibleRegion != null ? widget.markerCluster.clusters(visibleRegion.boundingBox, visibleRegion.zoom.round()) : <GeoEntry>[];
-        final clusterByMarkerKey = Map.fromEntries(clusters.map((v) {
+        final geoEntries = visibleRegion != null ? widget.markerCluster.clusters(visibleRegion.boundingBox, visibleRegion.zoom.round()) : <GeoEntry>[];
+        final geoEntryByMarkerKey = Map.fromEntries(geoEntries.map((v) {
           if (v.isCluster!) {
             final uri = v.childMarkerId;
             final entry = allEntries.firstWhere((v) => v.uri == uri);
@@ -106,7 +108,7 @@ class _EntryGoogleMapState extends State<EntryGoogleMap> with WidgetsBindingObse
         return Stack(
           children: [
             MarkerGeneratorWidget<MarkerKey>(
-              markers: clusterByMarkerKey.keys.map(widget.markerBuilder).toList(),
+              markers: geoEntryByMarkerKey.keys.map(widget.markerBuilder).toList(),
               isReadyToRender: (key) => key.entry.isThumbnailReady(extent: GeoMap.markerImageExtent),
               onRendered: (key, bitmap) {
                 _markerBitmaps[key] = bitmap;
@@ -115,7 +117,7 @@ class _EntryGoogleMapState extends State<EntryGoogleMap> with WidgetsBindingObse
             ),
             MapDecorator(
               interactive: widget.interactive,
-              child: _buildMap(clusterByMarkerKey),
+              child: _buildMap(geoEntryByMarkerKey),
             ),
             MapButtonPanel(
               latLng: bounds.center,
@@ -127,19 +129,26 @@ class _EntryGoogleMapState extends State<EntryGoogleMap> with WidgetsBindingObse
     );
   }
 
-  Widget _buildMap(Map<MarkerKey, GeoEntry> clusterByMarkerKey) {
+  Widget _buildMap(Map<MarkerKey, GeoEntry> geoEntryByMarkerKey) {
     return AnimatedBuilder(
       animation: _markerBitmapChangeNotifier,
       builder: (context, child) {
         final markers = <Marker>{};
-        clusterByMarkerKey.forEach((markerKey, cluster) {
+        final onTap = widget.onEntryTap;
+        geoEntryByMarkerKey.forEach((markerKey, geoEntry) {
           final bytes = _markerBitmaps[markerKey];
           if (bytes != null) {
-            final latLng = LatLng(cluster.latitude!, cluster.longitude!);
+            final latLng = LatLng(geoEntry.latitude!, geoEntry.longitude!);
             markers.add(Marker(
-              markerId: MarkerId(cluster.markerId!),
+              markerId: MarkerId(geoEntry.markerId!),
               icon: BitmapDescriptor.fromBytes(bytes),
               position: latLng,
+              onTap: onTap != null
+                  ? () {
+                      final clusterId = geoEntry.clusterId;
+                      onTap(clusterId != null ? widget.markerCluster.points(clusterId) : [geoEntry]);
+                    }
+                  : null,
             ));
           }
         });

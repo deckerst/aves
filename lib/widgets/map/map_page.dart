@@ -5,9 +5,11 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/map/geo_map.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
+import 'package:aves/widgets/common/thumbnail/scroller.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:provider/provider.dart';
 
 class MapPage extends StatefulWidget {
   static const routeName = '/collection/map';
@@ -25,6 +27,9 @@ class MapPage extends StatefulWidget {
 
 class _MapPageState extends State<MapPage> {
   late final ValueNotifier<bool> _isAnimatingNotifier;
+  int _selectedIndex = 0;
+
+  List<AvesEntry> get entries => widget.entries;
 
   @override
   void initState() {
@@ -48,10 +53,34 @@ class _MapPageState extends State<MapPage> {
           title: Text(context.l10n.mapPageTitle),
         ),
         body: SafeArea(
-          child: GeoMap(
-            entries: widget.entries,
-            interactive: true,
-            isAnimatingNotifier: _isAnimatingNotifier,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: GeoMap(
+                  entries: entries,
+                  interactive: true,
+                  isAnimatingNotifier: _isAnimatingNotifier,
+                  onEntryTap: (geoEntries) {
+                    debugPrint('TLAD count=${geoEntries.length} entry=${geoEntries.first.entry}');
+                  },
+                ),
+              ),
+              const Divider(),
+              Selector<MediaQueryData, double>(
+                selector: (c, mq) => mq.size.width,
+                builder: (c, mqWidth, child) {
+                  return ThumbnailScroller(
+                    availableWidth: mqWidth,
+                    entryCount: entries.length,
+                    entryBuilder: (index) => entries[index],
+                    initialIndex: _selectedIndex,
+                    isCurrentIndex: (index) => _selectedIndex == index,
+                    onIndexChange: (index) => _selectedIndex = index,
+                  );
+                },
+              ),
+            ],
           ),
         ),
       ),
