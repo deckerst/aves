@@ -11,16 +11,14 @@ class ThumbnailScroller extends StatefulWidget {
   final double availableWidth;
   final int entryCount;
   final AvesEntry? Function(int index) entryBuilder;
-  final int? initialIndex;
-  final void Function(int index) onIndexChange;
+  final ValueNotifier<int?> indexNotifier;
 
   const ThumbnailScroller({
     Key? key,
     required this.availableWidth,
     required this.entryCount,
     required this.entryBuilder,
-    required this.initialIndex,
-    required this.onIndexChange,
+    required this.indexNotifier,
   }) : super(key: key);
 
   @override
@@ -30,46 +28,48 @@ class ThumbnailScroller extends StatefulWidget {
 class _ThumbnailScrollerState extends State<ThumbnailScroller> {
   final _cancellableNotifier = ValueNotifier(true);
   late ScrollController _scrollController;
-  bool _syncScroll = true;
-  final ValueNotifier<int> _currentIndexNotifier = ValueNotifier(-1);
+  bool _isAnimating = false, _isScrolling = false;
 
   static const double extent = 48;
   static const double separatorWidth = 2;
 
   int get entryCount => widget.entryCount;
 
+  ValueNotifier<int?> get indexNotifier => widget.indexNotifier;
+
   @override
   void initState() {
     super.initState();
-    _registerWidget();
+    _registerWidget(widget);
   }
 
   @override
   void didUpdateWidget(covariant ThumbnailScroller oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if (oldWidget.initialIndex != widget.initialIndex) {
-      _unregisterWidget();
-      _registerWidget();
+    if (oldWidget.indexNotifier != widget.indexNotifier) {
+      _unregisterWidget(oldWidget);
+      _registerWidget(widget);
     }
   }
 
   @override
   void dispose() {
-    _unregisterWidget();
+    _unregisterWidget(widget);
     super.dispose();
   }
 
-  void _registerWidget() {
-    _currentIndexNotifier.value = widget.initialIndex ?? 0;
-    final scrollOffset = indexToScrollOffset(_currentIndexNotifier.value);
+  void _registerWidget(ThumbnailScroller widget) {
+    final scrollOffset = indexToScrollOffset(indexNotifier.value ?? 0);
     _scrollController = ScrollController(initialScrollOffset: scrollOffset);
     _scrollController.addListener(_onScrollChange);
+    widget.indexNotifier.addListener(_onIndexChange);
   }
 
-  void _unregisterWidget() {
+  void _unregisterWidget(ThumbnailScroller widget) {
     _scrollController.removeListener(_onScrollChange);
     _scrollController.dispose();
+    widget.indexNotifier.removeListener(_onIndexChange);
   }
 
   @override
@@ -98,7 +98,7 @@ class _ThumbnailScrollerState extends State<ThumbnailScroller> {
             return Stack(
               children: [
                 GestureDetector(
-                  onTap: () => _goTo(page),
+                  onTap: () => indexNotifier.value = page,
                   child: DecoratedThumbnail(
                     entry: pageEntry,
                     tileExtent: extent,
@@ -112,8 +112,8 @@ class _ThumbnailScrollerState extends State<ThumbnailScroller> {
                   ),
                 ),
                 IgnorePointer(
-                  child: ValueListenableBuilder<int>(
-                    valueListenable: _currentIndexNotifier,
+                  child: ValueListenableBuilder<int?>(
+                    valueListenable: indexNotifier,
                     builder: (context, currentIndex, child) {
                       return AnimatedContainer(
                         color: currentIndex == page ? Colors.transparent : Colors.black45,
@@ -135,27 +135,40 @@ class _ThumbnailScrollerState extends State<ThumbnailScroller> {
   }
 
   Future<void> _goTo(int index) async {
-    _syncScroll = false;
-    setCurrentIndex(index);
-    await _scrollController.animateTo(
-      indexToScrollOffset(index),
-      duration: Durations.thumbnailScrollerScrollAnimation,
-      curve: Curves.easeOutCubic,
-    );
-    _syncScroll = true;
-  }
+    final targetOffset = indexToScrollOffset(index);
+    final offsetDelta = (targetOffset - _scrollController.offset).abs();
 
-  void _onScrollChange() {
-    if (_syncScroll) {
-      setCurrentIndex(scrollOffsetToIndex(_scrollController.offset));
+    if (offsetDelta > widget.availableWidth * 2) {
+      _scrollController.jumpTo(targetOffset);
+    } else {
+      _isAnimating = true;
+      await _scrollController.animateTo(
+        targetOffset,
+        duration: Durations.thumbnailScrollerScrollAnimation,
+        curve: Curves.easeOutCubic,
+      );
+      _isAnimating = false;
     }
   }
 
-  void setCurrentIndex(int index) {
-    if (_currentIndexNotifier.value == index) return;
+  void _onScrollChange() {
+    if (!_isAnimating) {
+      final index = scrollOffsetToIndex(_scrollController.offset);
+      if (indexNotifier.value != index) {
+        _isScrolling = true;
+        indexNotifier.value = index;
+      }
+    }
+  }
 
-    _currentIndexNotifier.value = index;
-    widget.onIndexChange(index);
+  void _onIndexChange() {
+    if (!_isScrolling && !_isAnimating) {
+      final index = indexNotifier.value;
+      if (index != null) {
+        _goTo(index);
+      }
+    }
+    _isScrolling = false;
   }
 
   double indexToScrollOffset(int index) => index * (extent + separatorWidth);
