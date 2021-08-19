@@ -31,7 +31,7 @@ class _ThumbnailScrollerState extends State<ThumbnailScroller> {
   final _cancellableNotifier = ValueNotifier(true);
   late ScrollController _scrollController;
   bool _syncScroll = true;
-  ValueNotifier<int> _currentIndexNotifier = ValueNotifier(-1);
+  final ValueNotifier<int> _currentIndexNotifier = ValueNotifier(-1);
 
   static const double extent = 48;
   static const double separatorWidth = 2;
