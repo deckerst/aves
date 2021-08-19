@@ -20,14 +20,14 @@ class MultiPageOverlay extends StatefulWidget {
 }
 
 class _MultiPageOverlayState extends State<MultiPageOverlay> {
-  int? _initControllerPage;
+  int? _previousPage;
 
   MultiPageController get controller => widget.controller;
 
   @override
   void initState() {
     super.initState();
-    _registerWidget();
+    _registerWidget(widget);
   }
 
   @override
@@ -35,24 +35,23 @@ class _MultiPageOverlayState extends State<MultiPageOverlay> {
     super.didUpdateWidget(oldWidget);
 
     if (oldWidget.controller != controller) {
-      _registerWidget();
+      _unregisterWidget(oldWidget);
+      _registerWidget(widget);
     }
   }
 
-  void _registerWidget() {
-    _initControllerPage = controller.page;
-    if (_initControllerPage == null) {
-      _correctDefaultPageScroll();
-    }
+  @override
+  void dispose() {
+    _unregisterWidget(widget);
+    super.dispose();
   }
 
-  // correct scroll offset to match default page
-  // if default page was unknown when the scroll controller was created
-  void _correctDefaultPageScroll() async {
-    await controller.infoStream.first;
-    if (_initControllerPage == null) {
-      setState(() => _initControllerPage = controller.page);
-    }
+  void _registerWidget(MultiPageOverlay widget) {
+    widget.controller.pageNotifier.addListener(_onPageChange);
+  }
+
+  void _unregisterWidget(MultiPageOverlay widget) {
+    widget.controller.pageNotifier.removeListener(_onPageChange);
   }
 
   @override
@@ -66,19 +65,20 @@ class _MultiPageOverlayState extends State<MultiPageOverlay> {
           availableWidth: widget.availableWidth,
           entryCount: multiPageInfo?.pageCount ?? 0,
           entryBuilder: (page) => multiPageInfo?.getPageEntryByIndex(page),
-          initialIndex: _initControllerPage,
-          onIndexChange: _setPage,
+          indexNotifier: controller.pageNotifier,
         );
       },
     );
   }
 
-  void _setPage(int newPage) {
-    final oldPage = controller.page;
-    if (oldPage == newPage) return;
-
-    final oldPageEntry = controller.info!.getPageEntryByIndex(oldPage);
-    controller.page = newPage;
-    context.read<ViewStateConductor>().reset(oldPageEntry);
+  void _onPageChange() {
+    if (_previousPage != null) {
+      final info = controller.info;
+      if (info != null) {
+        final oldPageEntry = info.getPageEntryByIndex(_previousPage);
+        context.read<ViewStateConductor>().reset(oldPageEntry);
+      }
+    }
+    _previousPage = controller.page;
   }
 }

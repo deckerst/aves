@@ -2,12 +2,12 @@ import 'package:aves/model/entry.dart';
 import 'package:aves/model/settings/map_style.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
+import 'package:aves/utils/debouncer.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/map/controller.dart';
 import 'package:aves/widgets/common/map/geo_map.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/common/thumbnail/scroller.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -30,7 +30,8 @@ class MapPage extends StatefulWidget {
 class _MapPageState extends State<MapPage> {
   final AvesMapController _mapController = AvesMapController();
   late final ValueNotifier<bool> _isAnimatingNotifier;
-  int _selectedIndex = 0;
+  final ValueNotifier<int> _selectedIndexNotifier = ValueNotifier(0);
+  final Debouncer _debouncer = Debouncer(delay: Durations.mapScrollDebounceDelay);
 
   List<AvesEntry> get entries => widget.entries;
 
@@ -46,11 +47,13 @@ class _MapPageState extends State<MapPage> {
     } else {
       _isAnimatingNotifier = ValueNotifier(false);
     }
+    _selectedIndexNotifier.addListener(_onThumbnailIndexChange);
   }
 
   @override
   void dispose() {
     _mapController.dispose();
+    _selectedIndexNotifier.removeListener(_onThumbnailIndexChange);
     super.dispose();
   }
 
@@ -71,8 +74,10 @@ class _MapPageState extends State<MapPage> {
                   entries: entries,
                   interactive: true,
                   isAnimatingNotifier: _isAnimatingNotifier,
-                  onMarkerTap: (entries) {
-                    debugPrint('TLAD count=${entries.length} entry=${entries.firstOrNull?.bestTitle}');
+                  onMarkerTap: (markerEntries) {
+                    if (markerEntries.isEmpty) return;
+                    final entry = markerEntries.first;
+                    _selectedIndexNotifier.value = entries.indexOf(entry);
                   },
                 ),
               ),
@@ -84,13 +89,7 @@ class _MapPageState extends State<MapPage> {
                     availableWidth: mqWidth,
                     entryCount: entries.length,
                     entryBuilder: (index) => entries[index],
-                    // TODO TLAD provide notifier instead
-                    initialIndex: _selectedIndex,
-                    onIndexChange: (index) {
-                      _selectedIndex = index;
-                      // TODO TLAD debounce move
-                      _mapController.moveTo(widget.entries[_selectedIndex].latLng!);
-                    },
+                    indexNotifier: _selectedIndexNotifier,
                   );
                 },
               ),
@@ -99,5 +98,10 @@ class _MapPageState extends State<MapPage> {
         ),
       ),
     );
+  }
+
+  void _onThumbnailIndexChange() {
+    final position = widget.entries[_selectedIndexNotifier.value].latLng!;
+    _debouncer(() => _mapController.moveTo(position));
   }
 }

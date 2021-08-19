@@ -201,6 +201,8 @@ class _EntryGoogleMapState extends State<EntryGoogleMap> with WidgetsBindingObse
   }
 
   Future<void> _updateVisibleRegion({required double zoom, required double rotation}) async {
+    if (!mounted) return;
+
     final bounds = await _googleMapController?.getVisibleRegion();
     if (bounds != null && (bounds.northeast != uninitializedLatLng || bounds.southwest != uninitializedLatLng)) {
       boundsNotifier.value = ZoomedBounds(
@@ -215,7 +217,6 @@ class _EntryGoogleMapState extends State<EntryGoogleMap> with WidgetsBindingObse
       // the visible region is sometimes uninitialized when queried right after creation,
       // so we query it again next frame
       WidgetsBinding.instance!.addPostFrameCallback((_) {
-        if (!mounted) return;
         _updateVisibleRegion(zoom: zoom, rotation: rotation);
       });
     }
