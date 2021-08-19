@@ -10,6 +10,7 @@ import 'package:aves/utils/constants.dart';
 import 'package:aves/utils/math_utils.dart';
 import 'package:aves/widgets/common/map/attribution.dart';
 import 'package:aves/widgets/common/map/buttons.dart';
+import 'package:aves/widgets/common/map/controller.dart';
 import 'package:aves/widgets/common/map/decorator.dart';
 import 'package:aves/widgets/common/map/geo_entry.dart';
 import 'package:aves/widgets/common/map/google/map.dart';
@@ -23,6 +24,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class GeoMap extends StatefulWidget {
+  final AvesMapController? controller;
   final List<AvesEntry> entries;
   final bool interactive;
   final double? mapHeight;
@@ -35,6 +37,7 @@ class GeoMap extends StatefulWidget {
 
   const GeoMap({
     Key? key,
+    this.controller,
     required this.entries,
     required this.interactive,
     this.mapHeight,
@@ -118,8 +121,11 @@ class _GeoMapState extends State<GeoMap> with TickerProviderStateMixin {
 
             Widget child = isGoogleMaps
                 ? EntryGoogleMap(
+                    controller: widget.controller,
                     boundsNotifier: _boundsNotifier,
                     interactive: interactive,
+                    minZoom: 0,
+                    maxZoom: 20,
                     style: mapStyle,
                     markerBuilder: _buildMarker,
                     markerCluster: _defaultMarkerCluster,
@@ -128,8 +134,11 @@ class _GeoMapState extends State<GeoMap> with TickerProviderStateMixin {
                     onMarkerTap: _onMarkerTap,
                   )
                 : EntryLeafletMap(
+                    controller: widget.controller,
                     boundsNotifier: _boundsNotifier,
                     interactive: interactive,
+                    minZoom: 2,
+                    maxZoom: 16,
                     style: mapStyle,
                     markerBuilder: _buildMarker,
                     markerCluster: _defaultMarkerCluster,
@@ -172,7 +181,7 @@ class _GeoMapState extends State<GeoMap> with TickerProviderStateMixin {
                         interactive: interactive,
                       ),
                       MapButtonPanel(
-                        latLng: _boundsNotifier.value.center,
+                        boundsNotifier: _boundsNotifier,
                       ),
                     ],
                   );

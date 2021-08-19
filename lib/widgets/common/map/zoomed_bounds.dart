@@ -6,14 +6,14 @@ import 'package:latlong2/latlong.dart';
 
 @immutable
 class ZoomedBounds extends Equatable {
-  final double west, south, east, north, zoom;
+  final double west, south, east, north, zoom, rotation;
 
   List<double> get boundingBox => [west, south, east, north];
 
   LatLng get center => LatLng((north + south) / 2, (east + west) / 2);
 
   @override
-  List<Object?> get props => [west, south, east, north, zoom];
+  List<Object?> get props => [west, south, east, north, zoom, rotation];
 
   const ZoomedBounds({
     required this.west,
@@ -21,6 +21,7 @@ class ZoomedBounds extends Equatable {
     required this.east,
     required this.north,
     required this.zoom,
+    required this.rotation,
   });
 
   static const _collocationMaxDeltaThreshold = 360 / (2 << 19);
@@ -59,6 +60,7 @@ class ZoomedBounds extends Equatable {
       east: east,
       north: north,
       zoom: zoom,
+      rotation: 0,
     );
   }
 }

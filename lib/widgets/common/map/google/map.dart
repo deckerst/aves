@@ -6,6 +6,7 @@ import 'package:aves/model/entry_images.dart';
 import 'package:aves/model/settings/enums.dart';
 import 'package:aves/utils/change_notifier.dart';
 import 'package:aves/widgets/common/map/buttons.dart';
+import 'package:aves/widgets/common/map/controller.dart';
 import 'package:aves/widgets/common/map/decorator.dart';
 import 'package:aves/widgets/common/map/geo_entry.dart';
 import 'package:aves/widgets/common/map/geo_map.dart';
@@ -18,8 +19,10 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:latlong2/latlong.dart' as ll;
 
 class EntryGoogleMap extends StatefulWidget {
+  final AvesMapController? controller;
   final ValueNotifier<ZoomedBounds> boundsNotifier;
   final bool interactive;
+  final double? minZoom, maxZoom;
   final EntryMapStyle style;
   final EntryMarkerBuilder markerBuilder;
   final Fluster<GeoEntry> markerCluster;
@@ -29,8 +32,11 @@ class EntryGoogleMap extends StatefulWidget {
 
   const EntryGoogleMap({
     Key? key,
+    this.controller,
     required this.boundsNotifier,
     required this.interactive,
+    this.minZoom,
+    this.maxZoom,
     required this.style,
     required this.markerBuilder,
     required this.markerCluster,
@@ -44,7 +50,8 @@ class EntryGoogleMap extends StatefulWidget {
 }
 
 class _EntryGoogleMapState extends State<EntryGoogleMap> with WidgetsBindingObserver {
-  GoogleMapController? _controller;
+  GoogleMapController? _googleMapController;
+  final List<StreamSubscription> _subscriptions = [];
   final Map<MarkerKey, Uint8List> _markerBitmaps = {};
   final AChangeNotifier _markerBitmapChangeNotifier = AChangeNotifier();
 
@@ -52,11 +59,17 @@ class _EntryGoogleMapState extends State<EntryGoogleMap> with WidgetsBindingObse
 
   ZoomedBounds get bounds => boundsNotifier.value;
 
+  bool get interactive => widget.interactive;
+
   static const uninitializedLatLng = LatLng(0, 0);
 
   @override
   void initState() {
     super.initState();
+    final avesMapController = widget.controller;
+    if (avesMapController != null) {
+      _subscriptions.add(avesMapController.moveEvents.listen((event) => _moveTo(_toGoogleLatLng(event.latLng))));
+    }
   }
 
   @override
@@ -70,7 +83,10 @@ class _EntryGoogleMapState extends State<EntryGoogleMap> with WidgetsBindingObse
 
   @override
   void dispose() {
-    _controller?.dispose();
+    _googleMapController?.dispose();
+    _subscriptions
+      ..forEach((sub) => sub.cancel())
+      ..clear();
     super.dispose();
   }
 
@@ -84,7 +100,7 @@ class _EntryGoogleMapState extends State<EntryGoogleMap> with WidgetsBindingObse
       case AppLifecycleState.resumed:
         // workaround for blank Google Maps when resuming app
         // cf https://github.com/flutter/flutter/issues/40284
-        _controller?.setMapStyle(null);
+        _googleMapController?.setMapStyle(null);
         break;
     }
   }
@@ -116,12 +132,13 @@ class _EntryGoogleMapState extends State<EntryGoogleMap> with WidgetsBindingObse
               },
             ),
             MapDecorator(
-              interactive: widget.interactive,
+              interactive: interactive,
               child: _buildMap(geoEntryByMarkerKey),
             ),
             MapButtonPanel(
-              latLng: bounds.center,
+              boundsNotifier: boundsNotifier,
               zoomBy: _zoomBy,
+              resetRotation: interactive ? _resetRotation : null,
             ),
           ],
         );
@@ -154,17 +171,18 @@ class _EntryGoogleMapState extends State<EntryGoogleMap> with WidgetsBindingObse
             target: _toGoogleLatLng(bounds.center),
             zoom: bounds.zoom,
           ),
-          onMapCreated: (controller) {
-            _controller = controller;
-            controller.getZoomLevel().then(_updateVisibleRegion);
+          onMapCreated: (controller) async {
+            _googleMapController = controller;
+            final zoom = await controller.getZoomLevel();
+            await _updateVisibleRegion(zoom: zoom, rotation: 0);
             setState(() {});
           },
-          // TODO TLAD [map] add common compass button for both google/leaflet
+          // compass disabled to use provider agnostic controls
           compassEnabled: false,
           mapToolbarEnabled: false,
           mapType: _toMapType(widget.style),
-          // TODO TLAD [map] allow rotation when leaflet scale layer is fixed
-          rotateGesturesEnabled: false,
+          minMaxZoomPreference: MinMaxZoomPreference(widget.minZoom, widget.maxZoom),
+          rotateGesturesEnabled: true,
           scrollGesturesEnabled: interactive,
           // zoom controls disabled to use provider agnostic controls
           zoomControlsEnabled: false,
@@ -176,14 +194,14 @@ class _EntryGoogleMapState extends State<EntryGoogleMap> with WidgetsBindingObse
           myLocationEnabled: false,
           myLocationButtonEnabled: false,
           markers: markers,
-          onCameraMove: (position) => _updateVisibleRegion(position.zoom),
+          onCameraMove: (position) => _updateVisibleRegion(zoom: position.zoom, rotation: -position.bearing),
         );
       },
     );
   }
 
-  Future<void> _updateVisibleRegion(double zoom) async {
-    final bounds = await _controller?.getVisibleRegion();
+  Future<void> _updateVisibleRegion({required double zoom, required double rotation}) async {
+    final bounds = await _googleMapController?.getVisibleRegion();
     if (bounds != null && (bounds.northeast != uninitializedLatLng || bounds.southwest != uninitializedLatLng)) {
       boundsNotifier.value = ZoomedBounds(
         west: bounds.southwest.longitude,
@@ -191,23 +209,42 @@ class _EntryGoogleMapState extends State<EntryGoogleMap> with WidgetsBindingObse
         east: bounds.northeast.longitude,
         north: bounds.northeast.latitude,
         zoom: zoom,
+        rotation: rotation,
       );
     } else {
       // the visible region is sometimes uninitialized when queried right after creation,
       // so we query it again next frame
       WidgetsBinding.instance!.addPostFrameCallback((_) {
         if (!mounted) return;
-        _updateVisibleRegion(zoom);
+        _updateVisibleRegion(zoom: zoom, rotation: rotation);
       });
     }
   }
 
+  Future<void> _resetRotation() async {
+    final controller = _googleMapController;
+    if (controller == null) return;
+
+    final bounds = boundsNotifier.value;
+    await controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+      target: _toGoogleLatLng(bounds.center),
+      zoom: bounds.zoom,
+    )));
+  }
+
   Future<void> _zoomBy(double amount) async {
-    final controller = _controller;
+    final controller = _googleMapController;
     if (controller == null) return;
 
     widget.onUserZoomChange?.call(await controller.getZoomLevel() + amount);
     await controller.animateCamera(CameraUpdate.zoomBy(amount));
+  }
+
+  Future<void> _moveTo(LatLng latLng) async {
+    final controller = _googleMapController;
+    if (controller == null) return;
+
+    await controller.animateCamera(CameraUpdate.newLatLng(latLng));
   }
 
   // `LatLng` used by `google_maps_flutter` is not the one from `latlong2` package

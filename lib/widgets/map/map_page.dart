@@ -3,6 +3,7 @@ import 'package:aves/model/settings/map_style.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/common/map/controller.dart';
 import 'package:aves/widgets/common/map/geo_map.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/common/thumbnail/scroller.dart';
@@ -27,6 +28,7 @@ class MapPage extends StatefulWidget {
 }
 
 class _MapPageState extends State<MapPage> {
+  final AvesMapController _mapController = AvesMapController();
   late final ValueNotifier<bool> _isAnimatingNotifier;
   int _selectedIndex = 0;
 
@@ -47,6 +49,12 @@ class _MapPageState extends State<MapPage> {
   }
 
   @override
+  void dispose() {
+    _mapController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return MediaQueryDataProvider(
       child: Scaffold(
@@ -59,6 +67,7 @@ class _MapPageState extends State<MapPage> {
             children: [
               Expanded(
                 child: GeoMap(
+                  controller: _mapController,
                   entries: entries,
                   interactive: true,
                   isAnimatingNotifier: _isAnimatingNotifier,
@@ -75,9 +84,13 @@ class _MapPageState extends State<MapPage> {
                     availableWidth: mqWidth,
                     entryCount: entries.length,
                     entryBuilder: (index) => entries[index],
+                    // TODO TLAD provide notifier instead
                     initialIndex: _selectedIndex,
-                    isCurrentIndex: (index) => _selectedIndex == index,
-                    onIndexChange: (index) => _selectedIndex = index,
+                    onIndexChange: (index) {
+                      _selectedIndex = index;
+                      // TODO TLAD debounce move
+                      _mapController.moveTo(widget.entries[_selectedIndex].latLng!);
+                    },
                   );
                 },
               ),

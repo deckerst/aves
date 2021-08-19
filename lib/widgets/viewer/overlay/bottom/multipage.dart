@@ -67,7 +67,6 @@ class _MultiPageOverlayState extends State<MultiPageOverlay> {
           entryCount: multiPageInfo?.pageCount ?? 0,
           entryBuilder: (page) => multiPageInfo?.getPageEntryByIndex(page),
           initialIndex: _initControllerPage,
-          isCurrentIndex: (page) => controller.page == page,
           onIndexChange: _setPage,
         );
       },
