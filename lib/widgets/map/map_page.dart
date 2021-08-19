@@ -77,7 +77,12 @@ class _MapPageState extends State<MapPage> {
                   onMarkerTap: (markerEntries) {
                     if (markerEntries.isEmpty) return;
                     final entry = markerEntries.first;
-                    _selectedIndexNotifier.value = entries.indexOf(entry);
+                    final index = entries.indexOf(entry);
+                    if (_selectedIndexNotifier.value != index) {
+                      _selectedIndexNotifier.value = index;
+                    } else {
+                      _moveToEntry(entry);
+                    }
                   },
                 ),
               ),
@@ -100,8 +105,7 @@ class _MapPageState extends State<MapPage> {
     );
   }
 
-  void _onThumbnailIndexChange() {
-    final position = widget.entries[_selectedIndexNotifier.value].latLng!;
-    _debouncer(() => _mapController.moveTo(position));
-  }
+  void _onThumbnailIndexChange() => _moveToEntry(widget.entries[_selectedIndexNotifier.value]);
+
+  void _moveToEntry(AvesEntry entry) => _debouncer(() => _mapController.moveTo(entry.latLng!));
 }
