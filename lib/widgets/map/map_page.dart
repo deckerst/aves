@@ -6,6 +6,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/map/geo_map.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/common/thumbnail/scroller.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -61,8 +62,8 @@ class _MapPageState extends State<MapPage> {
                   entries: entries,
                   interactive: true,
                   isAnimatingNotifier: _isAnimatingNotifier,
-                  onEntryTap: (geoEntries) {
-                    debugPrint('TLAD count=${geoEntries.length} entry=${geoEntries.first.entry}');
+                  onMarkerTap: (entries) {
+                    debugPrint('TLAD count=${entries.length} entry=${entries.firstOrNull?.bestTitle}');
                   },
                 ),
               ),

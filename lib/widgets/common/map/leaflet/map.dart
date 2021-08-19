@@ -24,7 +24,7 @@ class EntryLeafletMap extends StatefulWidget {
   final List<AvesEntry> markerEntries;
   final Size markerSize;
   final UserZoomChangeCallback? onUserZoomChange;
-  final GeoEntryTapCallback? onEntryTap;
+  final void Function(GeoEntry geoEntry)? onMarkerTap;
 
   const EntryLeafletMap({
     Key? key,
@@ -36,7 +36,7 @@ class EntryLeafletMap extends StatefulWidget {
     required this.markerEntries,
     required this.markerSize,
     this.onUserZoomChange,
-    this.onEntryTap,
+    this.onMarkerTap,
   }) : super(key: key);
 
   @override
@@ -118,8 +118,7 @@ class _EntryLeafletMapState extends State<EntryLeafletMap> with TickerProviderSt
         point: latLng,
         builder: (context) => GestureDetector(
           onTap: () {
-            final clusterId = geoEntry.clusterId;
-            widget.onEntryTap?.call(clusterId != null ? widget.markerCluster.points(clusterId) : [geoEntry]);
+            widget.onMarkerTap?.call(geoEntry);
             _moveTo(latLng);
           },
           child: widget.markerBuilder(markerKey),
