@@ -151,16 +151,16 @@ class _EntryGoogleMapState extends State<EntryGoogleMap> with WidgetsBindingObse
       animation: _markerBitmapChangeNotifier,
       builder: (context, child) {
         final markers = <Marker>{};
-        final onEntryTap = widget.onMarkerTap;
         geoEntryByMarkerKey.forEach((markerKey, geoEntry) {
           final bytes = _markerBitmaps[markerKey];
           if (bytes != null) {
-            final latLng = LatLng(geoEntry.latitude!, geoEntry.longitude!);
+            final point = LatLng(geoEntry.latitude!, geoEntry.longitude!);
             markers.add(Marker(
               markerId: MarkerId(geoEntry.markerId!),
+              consumeTapEvents: true,
               icon: BitmapDescriptor.fromBytes(bytes),
-              position: latLng,
-              onTap: onEntryTap != null ? () => onEntryTap(geoEntry) : null,
+              position: point,
+              onTap: () => widget.onMarkerTap?.call(geoEntry),
             ));
           }
         });
@@ -241,11 +241,11 @@ class _EntryGoogleMapState extends State<EntryGoogleMap> with WidgetsBindingObse
     await controller.animateCamera(CameraUpdate.zoomBy(amount));
   }
 
-  Future<void> _moveTo(LatLng latLng) async {
+  Future<void> _moveTo(LatLng point) async {
     final controller = _googleMapController;
     if (controller == null) return;
 
-    await controller.animateCamera(CameraUpdate.newLatLng(latLng));
+    await controller.animateCamera(CameraUpdate.newLatLng(point));
   }
 
   // `LatLng` used by `google_maps_flutter` is not the one from `latlong2` package

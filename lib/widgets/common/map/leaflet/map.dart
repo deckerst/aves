@@ -60,7 +60,7 @@ class _EntryLeafletMapState extends State<EntryLeafletMap> with TickerProviderSt
   bool get interactive => widget.interactive;
 
   // duration should match the uncustomizable Google Maps duration
-  static const _cameraAnimationDuration = Duration(milliseconds: 400);
+  static const _cameraAnimationDuration = Duration(milliseconds: 600);
 
   @override
   void initState() {
@@ -123,10 +123,7 @@ class _EntryLeafletMapState extends State<EntryLeafletMap> with TickerProviderSt
       return Marker(
         point: latLng,
         builder: (context) => GestureDetector(
-          onTap: () {
-            widget.onMarkerTap?.call(geoEntry);
-            _moveTo(latLng);
-          },
+          onTap: () => widget.onMarkerTap?.call(geoEntry),
           child: widget.markerBuilder(markerKey),
         ),
         width: markerSize.width,
