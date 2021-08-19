@@ -12,7 +12,6 @@ class ThumbnailScroller extends StatefulWidget {
   final int entryCount;
   final AvesEntry? Function(int index) entryBuilder;
   final int? initialIndex;
-  final bool Function(int page) isCurrentIndex;
   final void Function(int index) onIndexChange;
 
   const ThumbnailScroller({
@@ -21,7 +20,6 @@ class ThumbnailScroller extends StatefulWidget {
     required this.entryCount,
     required this.entryBuilder,
     required this.initialIndex,
-    required this.isCurrentIndex,
     required this.onIndexChange,
   }) : super(key: key);
 
@@ -33,6 +31,7 @@ class _ThumbnailScrollerState extends State<ThumbnailScroller> {
   final _cancellableNotifier = ValueNotifier(true);
   late ScrollController _scrollController;
   bool _syncScroll = true;
+  ValueNotifier<int> _currentIndexNotifier = ValueNotifier(-1);
 
   static const double extent = 48;
   static const double separatorWidth = 2;
@@ -62,7 +61,8 @@ class _ThumbnailScrollerState extends State<ThumbnailScroller> {
   }
 
   void _registerWidget() {
-    final scrollOffset = indexToScrollOffset(widget.initialIndex ?? 0);
+    _currentIndexNotifier.value = widget.initialIndex ?? 0;
+    final scrollOffset = indexToScrollOffset(_currentIndexNotifier.value);
     _scrollController = ScrollController(initialScrollOffset: scrollOffset);
     _scrollController.addListener(_onScrollChange);
   }
@@ -112,11 +112,16 @@ class _ThumbnailScrollerState extends State<ThumbnailScroller> {
                   ),
                 ),
                 IgnorePointer(
-                  child: AnimatedContainer(
-                    color: widget.isCurrentIndex(page) ? Colors.transparent : Colors.black45,
-                    width: extent,
-                    height: extent,
-                    duration: Durations.thumbnailScrollerShadeAnimation,
+                  child: ValueListenableBuilder<int>(
+                    valueListenable: _currentIndexNotifier,
+                    builder: (context, currentIndex, child) {
+                      return AnimatedContainer(
+                        color: currentIndex == page ? Colors.transparent : Colors.black45,
+                        width: extent,
+                        height: extent,
+                        duration: Durations.thumbnailScrollerShadeAnimation,
+                      );
+                    },
                   ),
                 )
               ],
@@ -131,7 +136,7 @@ class _ThumbnailScrollerState extends State<ThumbnailScroller> {
 
   Future<void> _goTo(int index) async {
     _syncScroll = false;
-    widget.onIndexChange(index);
+    setCurrentIndex(index);
     await _scrollController.animateTo(
       indexToScrollOffset(index),
       duration: Durations.thumbnailScrollerScrollAnimation,
@@ -142,8 +147,15 @@ class _ThumbnailScrollerState extends State<ThumbnailScroller> {
 
   void _onScrollChange() {
     if (_syncScroll) {
-      widget.onIndexChange(scrollOffsetToIndex(_scrollController.offset));
+      setCurrentIndex(scrollOffsetToIndex(_scrollController.offset));
     }
+  }
+
+  void setCurrentIndex(int index) {
+    if (_currentIndexNotifier.value == index) return;
+
+    _currentIndexNotifier.value = index;
+    widget.onIndexChange(index);
   }
 
   double indexToScrollOffset(int index) => index * (extent + separatorWidth);
