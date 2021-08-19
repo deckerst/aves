@@ -25,7 +25,7 @@ class EntryGoogleMap extends StatefulWidget {
   final Fluster<GeoEntry> markerCluster;
   final List<AvesEntry> markerEntries;
   final UserZoomChangeCallback? onUserZoomChange;
-  final GeoEntryTapCallback? onEntryTap;
+  final void Function(GeoEntry geoEntry)? onMarkerTap;
 
   const EntryGoogleMap({
     Key? key,
@@ -36,7 +36,7 @@ class EntryGoogleMap extends StatefulWidget {
     required this.markerCluster,
     required this.markerEntries,
     this.onUserZoomChange,
-    this.onEntryTap,
+    this.onMarkerTap,
   }) : super(key: key);
 
   @override
@@ -134,7 +134,7 @@ class _EntryGoogleMapState extends State<EntryGoogleMap> with WidgetsBindingObse
       animation: _markerBitmapChangeNotifier,
       builder: (context, child) {
         final markers = <Marker>{};
-        final onTap = widget.onEntryTap;
+        final onEntryTap = widget.onMarkerTap;
         geoEntryByMarkerKey.forEach((markerKey, geoEntry) {
           final bytes = _markerBitmaps[markerKey];
           if (bytes != null) {
@@ -143,12 +143,7 @@ class _EntryGoogleMapState extends State<EntryGoogleMap> with WidgetsBindingObse
               markerId: MarkerId(geoEntry.markerId!),
               icon: BitmapDescriptor.fromBytes(bytes),
               position: latLng,
-              onTap: onTap != null
-                  ? () {
-                      final clusterId = geoEntry.clusterId;
-                      onTap(clusterId != null ? widget.markerCluster.points(clusterId) : [geoEntry]);
-                    }
-                  : null,
+              onTap: onEntryTap != null ? () => onEntryTap(geoEntry) : null,
             ));
           }
         });
