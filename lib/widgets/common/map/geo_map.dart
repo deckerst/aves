@@ -17,6 +17,7 @@ import 'package:aves/widgets/common/map/google/map.dart';
 import 'package:aves/widgets/common/map/leaflet/map.dart';
 import 'package:aves/widgets/common/map/marker.dart';
 import 'package:aves/widgets/common/map/zoomed_bounds.dart';
+import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fluster/fluster.dart';
 import 'package:flutter/foundation.dart';
@@ -83,9 +84,12 @@ class _GeoMapState extends State<GeoMap> with TickerProviderStateMixin {
       final onTap = widget.onMarkerTap;
       if (onTap == null) return;
 
-      final geoEntries = <GeoEntry>[];
       final clusterId = geoEntry.clusterId;
-      if (clusterId != null) {
+      Set<AvesEntry> getClusterEntries() {
+        if (clusterId == null) {
+          return {geoEntry.entry!};
+        }
+
         var points = _defaultMarkerCluster.points(clusterId);
         if (points.length != geoEntry.pointsSize) {
           // `Fluster.points()` method does not always return all the points contained in a cluster
@@ -94,11 +98,20 @@ class _GeoMapState extends State<GeoMap> with TickerProviderStateMixin {
           points = _slowMarkerCluster!.points(clusterId);
           assert(points.length == geoEntry.pointsSize, 'got ${points.length}/${geoEntry.pointsSize} for geoEntry=$geoEntry');
         }
-        geoEntries.addAll(points);
-      } else {
-        geoEntries.add(geoEntry);
+        return points.map((geoEntry) => geoEntry.entry!).toSet();
       }
-      onTap(geoEntries.map((geoEntry) => geoEntry.entry!).toList());
+
+      AvesEntry? markerEntry;
+      if (clusterId != null) {
+        final uri = geoEntry.childMarkerId;
+        markerEntry = entries.firstWhereOrNull((v) => v.uri == uri);
+      } else {
+        markerEntry = geoEntry.entry;
+      }
+
+      if (markerEntry != null) {
+        onTap(markerEntry, getClusterEntries);
+      }
     }
 
     return FutureBuilder<bool>(
@@ -110,7 +123,7 @@ class _GeoMapState extends State<GeoMap> with TickerProviderStateMixin {
           builder: (context, mapStyle, child) {
             final isGoogleMaps = mapStyle.isGoogleMaps;
             final progressive = !isGoogleMaps;
-            Widget _buildMarker(MarkerKey key) => ImageMarker(
+            Widget _buildMarkerWidget(MarkerKey key) => ImageMarker(
                   key: key,
                   entry: key.entry,
                   count: key.count,
@@ -127,9 +140,8 @@ class _GeoMapState extends State<GeoMap> with TickerProviderStateMixin {
                     minZoom: 0,
                     maxZoom: 20,
                     style: mapStyle,
-                    markerBuilder: _buildMarker,
-                    markerCluster: _defaultMarkerCluster,
-                    markerEntries: entries,
+                    markerClusterBuilder: _buildMarkerClusters,
+                    markerWidgetBuilder: _buildMarkerWidget,
                     onUserZoomChange: widget.onUserZoomChange,
                     onMarkerTap: _onMarkerTap,
                   )
@@ -140,9 +152,8 @@ class _GeoMapState extends State<GeoMap> with TickerProviderStateMixin {
                     minZoom: 2,
                     maxZoom: 16,
                     style: mapStyle,
-                    markerBuilder: _buildMarker,
-                    markerCluster: _defaultMarkerCluster,
-                    markerEntries: entries,
+                    markerClusterBuilder: _buildMarkerClusters,
+                    markerWidgetBuilder: _buildMarkerWidget,
                     markerSize: Size(
                       GeoMap.markerImageExtent + ImageMarker.outerBorderWidth * 2,
                       GeoMap.markerImageExtent + ImageMarker.outerBorderWidth * 2 + GeoMap.pointerSize.height,
@@ -232,6 +243,19 @@ class _GeoMapState extends State<GeoMap> with TickerProviderStateMixin {
       createCluster: (base, lng, lat) => GeoEntry.createCluster(base, lng, lat),
     );
   }
+
+  Map<MarkerKey, GeoEntry> _buildMarkerClusters() {
+    final bounds = _boundsNotifier.value;
+    final geoEntries = _defaultMarkerCluster.clusters(bounds.boundingBox, bounds.zoom.round());
+    return Map.fromEntries(geoEntries.map((v) {
+      if (v.isCluster!) {
+        final uri = v.childMarkerId;
+        final entry = entries.firstWhere((v) => v.uri == uri);
+        return MapEntry(MarkerKey(entry, v.pointsSize), v);
+      }
+      return MapEntry(MarkerKey(v.entry!, null), v);
+    }));
+  }
 }
 
 @immutable
@@ -245,6 +269,7 @@ class MarkerKey extends LocalKey with EquatableMixin {
   const MarkerKey(this.entry, this.count);
 }
 
-typedef EntryMarkerBuilder = Widget Function(MarkerKey key);
+typedef MarkerClusterBuilder = Map<MarkerKey, GeoEntry> Function();
+typedef MarkerWidgetBuilder = Widget Function(MarkerKey key);
 typedef UserZoomChangeCallback = void Function(double zoom);
-typedef MarkerTapCallback = void Function(List<AvesEntry> entries);
+typedef MarkerTapCallback = void Function(AvesEntry markerEntry, Set<AvesEntry> Function() getClusterEntries);
