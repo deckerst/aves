@@ -62,6 +62,7 @@ class _EntryGoogleMapState extends State<EntryGoogleMap> with WidgetsBindingObse
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance!.addObserver(this);
     _registerWidget(widget);
   }
 
@@ -76,6 +77,7 @@ class _EntryGoogleMapState extends State<EntryGoogleMap> with WidgetsBindingObse
   void dispose() {
     _unregisterWidget(widget);
     _googleMapController?.dispose();
+    WidgetsBinding.instance!.removeObserver(this);
     super.dispose();
   }
 
