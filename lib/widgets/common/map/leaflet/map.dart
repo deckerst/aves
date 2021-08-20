@@ -1,7 +1,8 @@
 import 'dart:async';
 
-import 'package:aves/model/entry.dart';
 import 'package:aves/model/settings/enums.dart';
+import 'package:aves/theme/durations.dart';
+import 'package:aves/utils/debouncer.dart';
 import 'package:aves/widgets/common/map/buttons.dart';
 import 'package:aves/widgets/common/map/controller.dart';
 import 'package:aves/widgets/common/map/decorator.dart';
@@ -11,7 +12,6 @@ import 'package:aves/widgets/common/map/latlng_tween.dart';
 import 'package:aves/widgets/common/map/leaflet/scale_layer.dart';
 import 'package:aves/widgets/common/map/leaflet/tile_layers.dart';
 import 'package:aves/widgets/common/map/zoomed_bounds.dart';
-import 'package:fluster/fluster.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -22,9 +22,8 @@ class EntryLeafletMap extends StatefulWidget {
   final bool interactive;
   final double minZoom, maxZoom;
   final EntryMapStyle style;
-  final EntryMarkerBuilder markerBuilder;
-  final Fluster<GeoEntry> markerCluster;
-  final List<AvesEntry> markerEntries;
+  final MarkerClusterBuilder markerClusterBuilder;
+  final MarkerWidgetBuilder markerWidgetBuilder;
   final Size markerSize;
   final UserZoomChangeCallback? onUserZoomChange;
   final void Function(GeoEntry geoEntry)? onMarkerTap;
@@ -37,9 +36,8 @@ class EntryLeafletMap extends StatefulWidget {
     this.minZoom = 0,
     this.maxZoom = 22,
     required this.style,
-    required this.markerBuilder,
-    required this.markerCluster,
-    required this.markerEntries,
+    required this.markerClusterBuilder,
+    required this.markerWidgetBuilder,
     required this.markerSize,
     this.onUserZoomChange,
     this.onMarkerTap,
@@ -52,6 +50,8 @@ class EntryLeafletMap extends StatefulWidget {
 class _EntryLeafletMapState extends State<EntryLeafletMap> with TickerProviderStateMixin {
   final MapController _leafletMapController = MapController();
   final List<StreamSubscription> _subscriptions = [];
+  Map<MarkerKey, GeoEntry> _geoEntryByMarkerKey = {};
+  final Debouncer _debouncer = Debouncer(delay: Durations.mapIdleDebounceDelay);
 
   ValueNotifier<ZoomedBounds> get boundsNotifier => widget.boundsNotifier;
 
@@ -65,58 +65,59 @@ class _EntryLeafletMapState extends State<EntryLeafletMap> with TickerProviderSt
   @override
   void initState() {
     super.initState();
+    _registerWidget(widget);
+    WidgetsBinding.instance!.addPostFrameCallback((_) => _updateVisibleRegion());
+  }
+
+  @override
+  void didUpdateWidget(covariant EntryLeafletMap oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _unregisterWidget(oldWidget);
+    _registerWidget(widget);
+  }
+
+  @override
+  void dispose() {
+    _unregisterWidget(widget);
+    super.dispose();
+  }
+
+  void _registerWidget(EntryLeafletMap widget) {
     final avesMapController = widget.controller;
     if (avesMapController != null) {
       _subscriptions.add(avesMapController.moveEvents.listen((event) => _moveTo(event.latLng)));
     }
     _subscriptions.add(_leafletMapController.mapEventStream.listen((event) => _updateVisibleRegion()));
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _updateVisibleRegion());
+    boundsNotifier.addListener(_onBoundsChange);
   }
 
-  @override
-  void dispose() {
+  void _unregisterWidget(EntryLeafletMap widget) {
+    boundsNotifier.removeListener(_onBoundsChange);
     _subscriptions
       ..forEach((sub) => sub.cancel())
       ..clear();
-    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<ZoomedBounds?>(
-      valueListenable: boundsNotifier,
-      builder: (context, visibleRegion, child) {
-        final allEntries = widget.markerEntries;
-        final geoEntries = visibleRegion != null ? widget.markerCluster.clusters(visibleRegion.boundingBox, visibleRegion.zoom.round()) : <GeoEntry>[];
-        final geoEntryByMarkerKey = Map.fromEntries(geoEntries.map((v) {
-          if (v.isCluster!) {
-            final uri = v.childMarkerId;
-            final entry = allEntries.firstWhere((v) => v.uri == uri);
-            return MapEntry(MarkerKey(entry, v.pointsSize), v);
-          }
-          return MapEntry(MarkerKey(v.entry!, null), v);
-        }));
-
-        return Stack(
-          children: [
-            MapDecorator(
-              interactive: interactive,
-              child: _buildMap(geoEntryByMarkerKey),
-            ),
-            MapButtonPanel(
-              boundsNotifier: boundsNotifier,
-              zoomBy: _zoomBy,
-              resetRotation: interactive ? _resetRotation : null,
-            ),
-          ],
-        );
-      },
+    return Stack(
+      children: [
+        MapDecorator(
+          interactive: interactive,
+          child: _buildMap(),
+        ),
+        MapButtonPanel(
+          boundsNotifier: boundsNotifier,
+          zoomBy: _zoomBy,
+          resetRotation: interactive ? _resetRotation : null,
+        ),
+      ],
     );
   }
 
-  Widget _buildMap(Map<MarkerKey, GeoEntry> geoEntryByMarkerKey) {
+  Widget _buildMap() {
     final markerSize = widget.markerSize;
-    final markers = geoEntryByMarkerKey.entries.map((kv) {
+    final markers = _geoEntryByMarkerKey.entries.map((kv) {
       final markerKey = kv.key;
       final geoEntry = kv.value;
       final latLng = LatLng(geoEntry.latitude!, geoEntry.longitude!);
@@ -124,7 +125,7 @@ class _EntryLeafletMapState extends State<EntryLeafletMap> with TickerProviderSt
         point: latLng,
         builder: (context) => GestureDetector(
           onTap: () => widget.onMarkerTap?.call(geoEntry),
-          child: widget.markerBuilder(markerKey),
+          child: widget.markerWidgetBuilder(markerKey),
         ),
         width: markerSize.width,
         height: markerSize.height,
@@ -171,6 +172,13 @@ class _EntryLeafletMapState extends State<EntryLeafletMap> with TickerProviderSt
       default:
         return const SizedBox.shrink();
     }
+  }
+
+  void _onBoundsChange() => _debouncer(_updateClusters);
+
+  void _updateClusters() {
+    if (!mounted) return;
+    setState(() => _geoEntryByMarkerKey = widget.markerClusterBuilder());
   }
 
   void _updateVisibleRegion() {

@@ -74,14 +74,12 @@ class _MapPageState extends State<MapPage> {
                   entries: entries,
                   interactive: true,
                   isAnimatingNotifier: _isAnimatingNotifier,
-                  onMarkerTap: (markerEntries) {
-                    if (markerEntries.isEmpty) return;
-                    final entry = markerEntries.first;
-                    final index = entries.indexOf(entry);
+                  onMarkerTap: (markerEntry, getClusterEntries) {
+                    final index = entries.indexOf(markerEntry);
                     if (_selectedIndexNotifier.value != index) {
                       _selectedIndexNotifier.value = index;
                     } else {
-                      _moveToEntry(entry);
+                      _moveToEntry(markerEntry);
                     }
                   },
                 ),
