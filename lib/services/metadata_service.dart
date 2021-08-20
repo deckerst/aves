@@ -4,6 +4,7 @@ import 'package:aves/model/multipage.dart';
 import 'package:aves/model/panorama.dart';
 import 'package:aves/services/service_policy.dart';
 import 'package:aves/services/services.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 abstract class MetadataService {
@@ -17,6 +18,8 @@ abstract class MetadataService {
   Future<MultiPageInfo?> getMultiPageInfo(AvesEntry entry);
 
   Future<PanoramaInfo?> getPanoramaInfo(AvesEntry entry);
+
+  Future<bool> hasContentResolverProp(String prop);
 
   Future<String?> getContentResolverProp(AvesEntry entry, String prop);
 }
@@ -35,8 +38,8 @@ class PlatformMetadataService implements MetadataService {
         'sizeBytes': entry.sizeBytes,
       });
       if (result != null) return result as Map;
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('getAllMetadata', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
     return {};
   }
@@ -65,8 +68,8 @@ class PlatformMetadataService implements MetadataService {
         }) as Map;
         result['contentId'] = entry.contentId;
         return CatalogMetadata.fromMap(result);
-      } on PlatformException catch (e) {
-        await reportService.recordChannelError('getCatalogMetadata', e);
+      } on PlatformException catch (e, stack) {
+        await reportService.recordError(e, stack);
       }
       return null;
     }
@@ -91,8 +94,8 @@ class PlatformMetadataService implements MetadataService {
         'sizeBytes': entry.sizeBytes,
       }) as Map;
       return OverlayMetadata.fromMap(result);
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('getOverlayMetadata', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
     return null;
   }
@@ -113,8 +116,8 @@ class PlatformMetadataService implements MetadataService {
         imagePage['rotationDegrees'] = entry.rotationDegrees;
       }
       return MultiPageInfo.fromPageMaps(entry, pageMaps);
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('getMultiPageInfo', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
     return null;
   }
@@ -131,10 +134,29 @@ class PlatformMetadataService implements MetadataService {
         'sizeBytes': entry.sizeBytes,
       }) as Map;
       return PanoramaInfo.fromMap(result);
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('PanoramaInfo', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
     return null;
+  }
+
+  final Map<String, bool> _contentResolverProps = {};
+
+  @override
+  Future<bool> hasContentResolverProp(String prop) async {
+    var exists = _contentResolverProps[prop];
+    if (exists != null) return SynchronousFuture(exists);
+
+    try {
+      exists = await platform.invokeMethod('hasContentResolverProp', <String, dynamic>{
+        'prop': prop,
+      });
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
+    exists ??= false;
+    _contentResolverProps[prop] = exists;
+    return exists;
   }
 
   @override
@@ -145,8 +167,8 @@ class PlatformMetadataService implements MetadataService {
         'uri': entry.uri,
         'prop': prop,
       });
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('getContentResolverProp', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
     return null;
   }

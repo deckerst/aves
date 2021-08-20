@@ -40,7 +40,7 @@ class HiddenPathPage extends StatelessWidget {
         title: Text(context.l10n.settingsHiddenPathsTitle),
         actions: [
           IconButton(
-            icon: const Icon(AIcons.addPath),
+            icon: const Icon(AIcons.add),
             onPressed: () async {
               final path = await storageService.selectDirectory();
               if (path != null && path.isNotEmpty) {
@@ -87,7 +87,7 @@ class HiddenPathPage extends StatelessWidget {
                         onPressed: () {
                           context.read<CollectionSource>().changeFilterVisibility({pathFilter}, true);
                         },
-                        tooltip: context.l10n.settingsHiddenPathsRemoveTooltip,
+                        tooltip: context.l10n.removeTooltip,
                       ),
                     )),
               ],

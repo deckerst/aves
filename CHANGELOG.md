@@ -3,6 +3,14 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [v1.4.9] - 2021-08-20
+### Added
+- Map & Stats from selection
+- Map: item browsing, rotation control
+- Navigation menu customization
+- shortcut support on older devices (API < 26)
+- support Android 12/S (API 31)
+
 ## [v1.4.8] - 2021-08-08
 ### Added
 - Map

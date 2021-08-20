@@ -9,40 +9,40 @@ class AndroidDebugService {
   static Future<void> crash() async {
     try {
       await platform.invokeMethod('crash');
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('crash', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
   }
 
   static Future<void> exception() async {
     try {
       await platform.invokeMethod('exception');
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('exception', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
   }
 
   static Future<void> safeException() async {
     try {
       await platform.invokeMethod('safeException');
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('safeException', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
   }
 
   static Future<void> exceptionInCoroutine() async {
     try {
       await platform.invokeMethod('exceptionInCoroutine');
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('exceptionInCoroutine', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
   }
 
   static Future<void> safeExceptionInCoroutine() async {
     try {
       await platform.invokeMethod('safeExceptionInCoroutine');
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('safeExceptionInCoroutine', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
   }
 
@@ -50,8 +50,8 @@ class AndroidDebugService {
     try {
       final result = await platform.invokeMethod('getContextDirs');
       if (result != null) return result as Map;
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('getContextDirs', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
     return {};
   }
@@ -60,8 +60,8 @@ class AndroidDebugService {
     try {
       final result = await platform.invokeMethod('getEnv');
       if (result != null) return result as Map;
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('getEnv', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
     return {};
   }
@@ -73,8 +73,8 @@ class AndroidDebugService {
         'uri': entry.uri,
       });
       if (result != null) return result as Map;
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('getBitmapFactoryInfo', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
     return {};
   }
@@ -87,8 +87,8 @@ class AndroidDebugService {
         'uri': entry.uri,
       });
       if (result != null) return result as Map;
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('getContentResolverMetadata', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
     return {};
   }
@@ -102,8 +102,8 @@ class AndroidDebugService {
         'sizeBytes': entry.sizeBytes,
       });
       if (result != null) return result as Map;
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('getExifInterfaceMetadata', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
     return {};
   }
@@ -115,8 +115,8 @@ class AndroidDebugService {
         'uri': entry.uri,
       });
       if (result != null) return result as Map;
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('getMediaMetadataRetrieverMetadata', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
     return {};
   }
@@ -130,8 +130,8 @@ class AndroidDebugService {
         'sizeBytes': entry.sizeBytes,
       });
       if (result != null) return result as Map;
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('getMetadataExtractorSummary', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
     return {};
   }
@@ -144,8 +144,8 @@ class AndroidDebugService {
         'uri': entry.uri,
       });
       if (result != null) return result as Map;
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('getTiffStructure', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
     return {};
   }

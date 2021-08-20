@@ -43,8 +43,8 @@ class Durations {
   static const viewerVerticalPageScrollAnimation = Duration(milliseconds: 500);
   static const viewerOverlayAnimation = Duration(milliseconds: 200);
   static const viewerOverlayChangeAnimation = Duration(milliseconds: 150);
-  static const viewerOverlayPageScrollAnimation = Duration(milliseconds: 200);
-  static const viewerOverlayPageShadeAnimation = Duration(milliseconds: 150);
+  static const thumbnailScrollerScrollAnimation = Duration(milliseconds: 200);
+  static const thumbnailScrollerShadeAnimation = Duration(milliseconds: 150);
   static const viewerVideoPlayerTransition = Duration(milliseconds: 500);
 
   // info animations
@@ -69,6 +69,8 @@ class Durations {
   static const softKeyboardDisplayDelay = Duration(milliseconds: 300);
   static const searchDebounceDelay = Duration(milliseconds: 250);
   static const contentChangeDebounceDelay = Duration(milliseconds: 1000);
+  static const mapScrollDebounceDelay = Duration(milliseconds: 150);
+  static const mapIdleDebounceDelay = Duration(milliseconds: 100);
 
   // app life
   static const lastVersionCheckInterval = Duration(days: 7);

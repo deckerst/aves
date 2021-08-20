@@ -3,6 +3,7 @@ package deckers.thibault.aves.channel.calls
 import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
+import android.os.Build
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
@@ -52,16 +53,24 @@ class AppShortcutHandler(private val context: Context) : MethodCallHandler {
             var bitmap = BitmapFactory.decodeByteArray(iconBytes, 0, iconBytes.size)
             bitmap = centerSquareCrop(context, bitmap, 256)
             if (bitmap != null) {
-                icon = IconCompat.createWithBitmap(bitmap)
+                // adaptive, so the bitmap is used as background and covers the whole icon
+                icon = IconCompat.createWithAdaptiveBitmap(bitmap)
             }
         }
         if (icon == null) {
-            icon = IconCompat.createWithResource(context, R.mipmap.ic_shortcut_collection)
+            // shortcut adaptive icons are placed in `mipmap`, not `drawable`,
+            // so that foreground is rendered at the intended scale
+            val supportAdaptiveIcon = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+
+            icon = IconCompat.createWithResource(context, if (supportAdaptiveIcon) R.mipmap.ic_shortcut_collection else R.drawable.ic_shortcut_collection)
         }
 
         val intent = Intent(Intent.ACTION_MAIN, null, context, MainActivity::class.java)
             .putExtra("page", "/collection")
             .putExtra("filters", filters.toTypedArray())
+            // on API 25, `String[]` or `ArrayList` extras are null when using the shortcut
+            // so we use a joined `String` as fallback
+            .putExtra("filtersString", filters.joinToString(MainActivity.EXTRA_STRING_ARRAY_SEPARATOR))
 
         // multiple shortcuts sharing the same ID cannot be created with different labels or icons
         // so we provide a unique ID for each one, and let the user manage duplicates (i.e. same filter set), if any

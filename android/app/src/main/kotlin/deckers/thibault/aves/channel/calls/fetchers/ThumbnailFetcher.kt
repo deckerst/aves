@@ -81,7 +81,7 @@ class ThumbnailFetcher internal constructor(
             if (errorDetails?.isNotEmpty() == true) {
                 errorDetails = errorDetails.split("\n".toRegex(), 2).first()
             }
-            result.error("getThumbnail-null", "failed to get thumbnail for uri=$uri", errorDetails)
+            result.error("getThumbnail-null", "failed to get thumbnail for mimeType=$mimeType uri=$uri", errorDetails)
         }
     }
 

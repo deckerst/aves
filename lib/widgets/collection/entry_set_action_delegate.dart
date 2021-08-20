@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:aves/model/actions/collection_actions.dart';
 import 'package:aves/model/actions/entry_actions.dart';
+import 'package:aves/model/actions/entry_set_actions.dart';
 import 'package:aves/model/actions/move_type.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/album.dart';
@@ -22,6 +22,8 @@ import 'package:aves/widgets/common/action_mixins/size_aware.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/filter_grids/album_pick.dart';
+import 'package:aves/widgets/map/map_page.dart';
+import 'package:aves/widgets/stats/stats_page.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -41,16 +43,22 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     }
   }
 
-  void onCollectionActionSelected(BuildContext context, CollectionAction action) {
+  void onCollectionActionSelected(BuildContext context, EntrySetAction action) {
     switch (action) {
-      case CollectionAction.copy:
+      case EntrySetAction.copy:
         _moveSelection(context, moveType: MoveType.copy);
         break;
-      case CollectionAction.move:
+      case EntrySetAction.move:
         _moveSelection(context, moveType: MoveType.move);
         break;
-      case CollectionAction.refreshMetadata:
+      case EntrySetAction.refreshMetadata:
         _refreshMetadata(context);
+        break;
+      case EntrySetAction.map:
+        _goToMap(context);
+        break;
+      case EntrySetAction.stats:
+        _goToStats(context);
         break;
       default:
         break;
@@ -58,7 +66,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
   }
 
   Set<AvesEntry> _getExpandedSelectedItems(Selection<AvesEntry> selection) {
-    return selection.selection.expand((entry) => entry.burstEntries ?? {entry}).toSet();
+    return selection.selectedItems.expand((entry) => entry.burstEntries ?? {entry}).toSet();
   }
 
   void _share(BuildContext context) {
@@ -240,6 +248,39 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
         // cleanup
         await storageService.deleteEmptyDirectories(selectionDirs);
       },
+    );
+  }
+
+  void _goToMap(BuildContext context) {
+    final selection = context.read<Selection<AvesEntry>>();
+    final entries = selection.isSelecting ? _getExpandedSelectedItems(selection) : context.read<CollectionLens>().sortedEntries;
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        settings: const RouteSettings(name: MapPage.routeName),
+        builder: (context) => MapPage(
+          entries: entries.where((entry) => entry.hasGps).toList(),
+        ),
+      ),
+    );
+  }
+
+  void _goToStats(BuildContext context) {
+    final selection = context.read<Selection<AvesEntry>>();
+    final collection = context.read<CollectionLens>();
+    final entries = selection.isSelecting ? _getExpandedSelectedItems(selection) : collection.sortedEntries.toSet();
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        settings: const RouteSettings(name: StatsPage.routeName),
+        builder: (context) => StatsPage(
+          entries: entries,
+          source: collection.source,
+          parentCollection: collection,
+        ),
+      ),
     );
   }
 }

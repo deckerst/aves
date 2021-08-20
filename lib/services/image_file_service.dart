@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:aves/model/entry.dart';
+import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/image_op_events.dart';
 import 'package:aves/services/output_buffer.dart';
 import 'package:aves/services/service_policy.dart';
@@ -124,8 +125,8 @@ class PlatformImageFileService implements ImageFileService {
         'mimeType': mimeType,
       }) as Map;
       return AvesEntry.fromMap(result);
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('getEntry', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
     return null;
   }
@@ -188,8 +189,8 @@ class PlatformImageFileService implements ImageFileService {
         cancelOnError: true,
       );
       return completer.future;
-    } on PlatformException catch (e) {
-      reportService.recordChannelError('getImage', e);
+    } on PlatformException catch (e, stack) {
+      reportService.recordError(e, stack);
     }
     return Future.sync(() => Uint8List(0));
   }
@@ -223,8 +224,8 @@ class PlatformImageFileService implements ImageFileService {
             'imageHeight': imageSize.height.toInt(),
           });
           if (result != null) return result as Uint8List;
-        } on PlatformException catch (e) {
-          await reportService.recordChannelError('getRegion', e);
+        } on PlatformException catch (e, stack) {
+          await reportService.recordError(e, stack);
         }
         return Uint8List(0);
       },
@@ -260,8 +261,10 @@ class PlatformImageFileService implements ImageFileService {
             'defaultSizeDip': thumbnailDefaultSize,
           });
           if (result != null) return result as Uint8List;
-        } on PlatformException catch (e) {
-          await reportService.recordChannelError('getThumbnail', e);
+        } on PlatformException catch (e, stack) {
+          if (!MimeTypes.knownMediaTypes.contains(mimeType)) {
+            await reportService.recordError(e, stack);
+          }
         }
         return Uint8List(0);
       },
@@ -274,8 +277,8 @@ class PlatformImageFileService implements ImageFileService {
   Future<void> clearSizedThumbnailDiskCache() async {
     try {
       return platform.invokeMethod('clearSizedThumbnailDiskCache');
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('clearSizedThumbnailDiskCache', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
   }
 
@@ -295,8 +298,8 @@ class PlatformImageFileService implements ImageFileService {
         'op': 'delete',
         'entries': entries.map(_toPlatformEntryMap).toList(),
       }).map((event) => ImageOpEvent.fromMap(event));
-    } on PlatformException catch (e) {
-      reportService.recordChannelError('delete', e);
+    } on PlatformException catch (e, stack) {
+      reportService.recordError(e, stack);
       return Stream.error(e);
     }
   }
@@ -314,8 +317,8 @@ class PlatformImageFileService implements ImageFileService {
         'copy': copy,
         'destinationPath': destinationAlbum,
       }).map((event) => MoveOpEvent.fromMap(event));
-    } on PlatformException catch (e) {
-      reportService.recordChannelError('move', e);
+    } on PlatformException catch (e, stack) {
+      reportService.recordError(e, stack);
       return Stream.error(e);
     }
   }
@@ -333,8 +336,8 @@ class PlatformImageFileService implements ImageFileService {
         'mimeType': mimeType,
         'destinationPath': destinationAlbum,
       }).map((event) => ExportOpEvent.fromMap(event));
-    } on PlatformException catch (e) {
-      reportService.recordChannelError('export', e);
+    } on PlatformException catch (e, stack) {
+      reportService.recordError(e, stack);
       return Stream.error(e);
     }
   }
@@ -356,8 +359,8 @@ class PlatformImageFileService implements ImageFileService {
         'destinationPath': destinationAlbum,
       });
       if (result != null) return (result as Map).cast<String, dynamic>();
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('captureFrame', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
     return {};
   }
@@ -371,8 +374,8 @@ class PlatformImageFileService implements ImageFileService {
         'newName': newName,
       });
       if (result != null) return (result as Map).cast<String, dynamic>();
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('rename', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
     return {};
   }
@@ -386,8 +389,8 @@ class PlatformImageFileService implements ImageFileService {
         'clockwise': clockwise,
       });
       if (result != null) return (result as Map).cast<String, dynamic>();
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('rotate', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
     return {};
   }
@@ -400,8 +403,8 @@ class PlatformImageFileService implements ImageFileService {
         'entry': _toPlatformEntryMap(entry),
       });
       if (result != null) return (result as Map).cast<String, dynamic>();
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('flip', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
     return {};
   }

@@ -23,7 +23,6 @@ class ScaleLayerOptions extends LayerOptions {
   }
 }
 
-// TODO TLAD [map] scale bar should not rotate together with map layer
 class ScaleLayerWidget extends StatelessWidget {
   final ScaleLayerOptions options;
 

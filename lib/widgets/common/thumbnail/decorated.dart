@@ -1,9 +1,9 @@
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
-import 'package:aves/widgets/collection/thumbnail/image.dart';
-import 'package:aves/widgets/collection/thumbnail/overlay.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
 import 'package:aves/widgets/common/grid/overlay.dart';
+import 'package:aves/widgets/common/thumbnail/image.dart';
+import 'package:aves/widgets/common/thumbnail/overlay.dart';
 import 'package:flutter/material.dart';
 
 class DecoratedThumbnail extends StatelessWidget {

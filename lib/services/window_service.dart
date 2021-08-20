@@ -23,8 +23,8 @@ class PlatformWindowService implements WindowService {
       await platform.invokeMethod('keepScreenOn', <String, dynamic>{
         'on': on,
       });
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('keepScreenOn', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
   }
 
@@ -33,8 +33,8 @@ class PlatformWindowService implements WindowService {
     try {
       final result = await platform.invokeMethod('isRotationLocked');
       if (result != null) return result as bool;
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('isRotationLocked', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
     return false;
   }
@@ -61,8 +61,8 @@ class PlatformWindowService implements WindowService {
       await platform.invokeMethod('requestOrientation', <String, dynamic>{
         'orientation': orientationCode,
       });
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('requestOrientation', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
   }
 
@@ -71,8 +71,8 @@ class PlatformWindowService implements WindowService {
     try {
       final result = await platform.invokeMethod('canSetCutoutMode');
       if (result != null) return result as bool;
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('canSetCutoutMode', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
     return false;
   }
@@ -83,8 +83,8 @@ class PlatformWindowService implements WindowService {
       await platform.invokeMethod('setCutoutMode', <String, dynamic>{
         'use': use,
       });
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('setCutoutMode', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
   }
 }

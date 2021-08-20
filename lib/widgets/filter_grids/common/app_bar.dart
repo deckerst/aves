@@ -8,7 +8,7 @@ import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/app_bar_subtitle.dart';
 import 'package:aves/widgets/common/app_bar_title.dart';
-import 'package:aves/widgets/common/basic/menu_row.dart';
+import 'package:aves/widgets/common/basic/menu.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip_set.dart';
 import 'package:aves/widgets/search/search_button.dart';
@@ -111,7 +111,7 @@ class _FilterGridAppBarState<T extends CollectionFilter> extends State<FilterGri
   Widget? _buildAppBarTitle(bool isSelecting) {
     if (isSelecting) {
       return Selector<Selection<FilterGridItem<T>>, int>(
-        selector: (context, selection) => selection.selection.length,
+        selector: (context, selection) => selection.selectedItems.length,
         builder: (context, count, child) => Text(context.l10n.collectionSelectionPageTitle(count)),
       );
     } else {
@@ -127,16 +127,13 @@ class _FilterGridAppBarState<T extends CollectionFilter> extends State<FilterGri
   }
 
   List<Widget> _buildActions(AppMode appMode, Selection<FilterGridItem<T>> selection) {
-    final selectedFilters = selection.selection.map((v) => v.filter).toSet();
+    final selectedFilters = selection.selectedItems.map((v) => v.filter).toSet();
 
     PopupMenuItem<ChipSetAction> toMenuItem(ChipSetAction action, {bool enabled = true}) {
       return PopupMenuItem(
         value: action,
         enabled: enabled && actionDelegate.canApply(selectedFilters, action),
-        child: MenuRow(
-          text: action.getText(context),
-          icon: action.getIcon(),
-        ),
+        child: MenuRow(text: action.getText(context), icon: action.getIcon()),
       );
     }
 
@@ -152,13 +149,13 @@ class _FilterGridAppBarState<T extends CollectionFilter> extends State<FilterGri
 
     final buttonActions = <Widget>[];
     if (isSelecting) {
-      final selectedFilters = selection.selection.map((v) => v.filter).toSet();
+      final selectedFilters = selection.selectedItems.map((v) => v.filter).toSet();
       final validActions = filterSelectionActions.where((action) => actionDelegate.isValid(selectedFilters, action)).toList();
       buttonActions.addAll(validActions.take(buttonActionCount).map(
         (action) {
           final enabled = actionDelegate.canApply(selectedFilters, action);
           return IconButton(
-            icon: Icon(action.getIcon()),
+            icon: action.getIcon(),
             onPressed: enabled ? () => applyAction(action) : null,
             tooltip: action.getText(context),
           );
@@ -171,51 +168,68 @@ class _FilterGridAppBarState<T extends CollectionFilter> extends State<FilterGri
 
     return [
       ...buttonActions,
-      PopupMenuButton<ChipSetAction>(
-        key: const Key('appbar-menu-button'),
-        itemBuilder: (context) {
-          final menuItems = <PopupMenuEntry<ChipSetAction>>[
-            toMenuItem(ChipSetAction.sort),
-            if (widget.groupable) toMenuItem(ChipSetAction.group),
-          ];
+      MenuIconTheme(
+        child: PopupMenuButton<ChipSetAction>(
+          key: const Key('appbar-menu-button'),
+          itemBuilder: (context) {
+            final selectedItems = selection.selectedItems;
+            final hasSelection = selectedItems.isNotEmpty;
+            final hasItems = !widget.isEmpty;
+            final otherViewEnabled = (!isSelecting && hasItems) || (isSelecting && hasSelection);
 
-          if (isSelecting) {
-            final selectedItems = selection.selection;
+            final menuItems = <PopupMenuEntry<ChipSetAction>>[
+              toMenuItem(ChipSetAction.sort),
+              if (widget.groupable) toMenuItem(ChipSetAction.group),
+              if (appMode == AppMode.main && !isSelecting)
+                toMenuItem(
+                  ChipSetAction.select,
+                  enabled: hasItems,
+                ),
+            ];
 
-            if (selectionRowActions.isNotEmpty) {
+            if (appMode == AppMode.main) {
               menuItems.add(const PopupMenuDivider());
-              menuItems.addAll(selectionRowActions.map(toMenuItem));
+              if (isSelecting) {
+                menuItems.addAll(selectionRowActions.map(toMenuItem));
+              }
+              menuItems.addAll([
+                toMenuItem(
+                  ChipSetAction.map,
+                  enabled: otherViewEnabled,
+                ),
+                toMenuItem(
+                  ChipSetAction.stats,
+                  enabled: otherViewEnabled,
+                ),
+              ]);
+              if (!isSelecting && actionDelegate.isValid(selectedFilters, ChipSetAction.createAlbum)) {
+                menuItems.addAll([
+                  const PopupMenuDivider(),
+                  toMenuItem(ChipSetAction.createAlbum),
+                ]);
+              }
+            }
+            if (isSelecting) {
+              menuItems.addAll([
+                const PopupMenuDivider(),
+                toMenuItem(
+                  ChipSetAction.selectAll,
+                  enabled: selectedItems.length < actionDelegate.allItems.length,
+                ),
+                toMenuItem(
+                  ChipSetAction.selectNone,
+                  enabled: hasSelection,
+                ),
+              ]);
             }
 
-            menuItems.addAll([
-              const PopupMenuDivider(),
-              toMenuItem(
-                ChipSetAction.selectAll,
-                enabled: selectedItems.length < actionDelegate.allItems.length,
-              ),
-              toMenuItem(
-                ChipSetAction.selectNone,
-                enabled: selectedItems.isNotEmpty,
-              ),
-            ]);
-          } else if (appMode == AppMode.main) {
-            menuItems.addAll([
-              toMenuItem(
-                ChipSetAction.select,
-                enabled: !widget.isEmpty,
-              ),
-              toMenuItem(ChipSetAction.map),
-              toMenuItem(ChipSetAction.stats),
-              toMenuItem(ChipSetAction.createAlbum),
-            ]);
-          }
-
-          return menuItems;
-        },
-        onSelected: (action) {
-          // wait for the popup menu to hide before proceeding with the action
-          Future.delayed(Durations.popupMenuAnimation * timeDilation, () => applyAction(action));
-        },
+            return menuItems;
+          },
+          onSelected: (action) {
+            // wait for the popup menu to hide before proceeding with the action
+            Future.delayed(Durations.popupMenuAnimation * timeDilation, () => applyAction(action));
+          },
+        ),
       ),
     ];
   }

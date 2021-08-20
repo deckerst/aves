@@ -21,7 +21,7 @@ Aves is a gallery and metadata explorer app. It is built for Android, with Flutt
 - search and filter by country, place, XMP tag, type (animated, raster, vector…)
 - favorites
 - statistics
-- support Android API 20 ~ 30 (Lollipop ~ R)
+- support Android API 20 ~ 31 (Lollipop ~ S)
 - Android integration (app shortcuts, handle view/pick intents)
 
 ## Project Setup
@@ -29,4 +29,4 @@ Aves is a gallery and metadata explorer app. It is built for Android, with Flutt
 Create a file named `<app dir>/android/key.properties`. It should contain a reference to a keystore for app signing, and other necessary credentials. See `<app dir>/android/key_template.properties` for the expected keys.
 
 [Version badge]: https://img.shields.io/github/v/release/deckerst/aves?include_prereleases&sort=semver
-[Build badge]: https://img.shields.io/github/workflow/status/deckerst/aves/Release%20on%20tag
+[Build badge]: https://img.shields.io/github/workflow/status/deckerst/aves/Quality%20check

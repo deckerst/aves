@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class ActionButton extends StatelessWidget {
   final String text;
-  final IconData? icon;
+  final Widget? icon;
   final bool enabled, showCaption;
 
   const ActionButton({
@@ -27,7 +27,7 @@ class ActionButton extends StatelessWidget {
           const SizedBox(height: padding),
           OverlayButton(
             child: IconButton(
-              icon: Icon(icon),
+              icon: icon ?? const SizedBox(),
               onPressed: enabled ? () {} : null,
             ),
           ),

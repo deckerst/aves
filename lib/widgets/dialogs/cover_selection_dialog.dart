@@ -77,9 +77,9 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
                             title,
                             const Spacer(),
                             IconButton(
-                              onPressed: _isCustom ? _pickEntry : null,
-                              tooltip: 'Change',
                               icon: const Icon(AIcons.setCover),
+                              onPressed: _isCustom ? _pickEntry : null,
+                              tooltip: context.l10n.changeTooltip,
                             ),
                           ])
                         : title,

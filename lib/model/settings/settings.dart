@@ -3,7 +3,9 @@ import 'dart:math';
 
 import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/actions/video_actions.dart';
+import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/settings/enums.dart';
 import 'package:aves/model/settings/map_style.dart';
 import 'package:aves/model/settings/screen_on.dart';
@@ -11,11 +13,13 @@ import 'package:aves/model/source/enums.dart';
 import 'package:aves/services/device_service.dart';
 import 'package:aves/services/services.dart';
 import 'package:aves/utils/pedantic.dart';
+import 'package:aves/widgets/filter_grids/albums_page.dart';
+import 'package:aves/widgets/filter_grids/countries_page.dart';
+import 'package:aves/widgets/filter_grids/tags_page.dart';
 import 'package:collection/collection.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final Settings settings = Settings._private();
@@ -46,6 +50,11 @@ class Settings extends ChangeNotifier {
   static const homePageKey = 'home_page';
   static const catalogTimeZoneKey = 'catalog_time_zone';
   static const tileExtentPrefixKey = 'tile_extent_';
+
+  // drawer
+  static const drawerTypeBookmarksKey = 'drawer_type_bookmarks';
+  static const drawerAlbumBookmarksKey = 'drawer_album_bookmarks';
+  static const drawerPageBookmarksKey = 'drawer_page_bookmarks';
 
   // collection
   static const collectionGroupFactorKey = 'collection_group_factor';
@@ -100,6 +109,16 @@ class Settings extends ChangeNotifier {
   static const lastVersionCheckDateKey = 'last_version_check_date';
 
   // defaults
+  static final drawerTypeBookmarksDefault = [
+    null,
+    MimeFilter.video,
+    FavouriteFilter.instance,
+  ];
+  static final drawerPageBookmarksDefault = [
+    AlbumListPage.routeName,
+    CountryListPage.routeName,
+    TagListPage.routeName,
+  ];
   static const viewerQuickActionsDefault = [
     EntryAction.toggleFavourite,
     EntryAction.share,
@@ -208,6 +227,25 @@ class Settings extends ChangeNotifier {
   double getTileExtent(String routeName) => _prefs!.getDouble(tileExtentPrefixKey + routeName) ?? 0;
 
   void setTileExtent(String routeName, double newValue) => setAndNotify(tileExtentPrefixKey + routeName, newValue);
+
+  // drawer
+
+  List<CollectionFilter?> get drawerTypeBookmarks =>
+      (_prefs!.getStringList(drawerTypeBookmarksKey))?.map((v) {
+        if (v.isEmpty) return null;
+        return CollectionFilter.fromJson(v);
+      }).toList() ??
+      drawerTypeBookmarksDefault;
+
+  set drawerTypeBookmarks(List<CollectionFilter?> newValue) => setAndNotify(drawerTypeBookmarksKey, newValue.map((filter) => filter?.toJson() ?? '').toList());
+
+  List<String>? get drawerAlbumBookmarks => _prefs!.getStringList(drawerAlbumBookmarksKey);
+
+  set drawerAlbumBookmarks(List<String>? newValue) => setAndNotify(drawerAlbumBookmarksKey, newValue);
+
+  List<String> get drawerPageBookmarks => _prefs!.getStringList(drawerPageBookmarksKey) ?? drawerPageBookmarksDefault;
+
+  set drawerPageBookmarks(List<String> newValue) => setAndNotify(drawerPageBookmarksKey, newValue);
 
   // collection
 
@@ -447,7 +485,9 @@ class Settings extends ChangeNotifier {
 
       // apply user modifications
       jsonMap.forEach((key, value) {
-        if (key.startsWith(tileExtentPrefixKey)) {
+        if (value == null) {
+          _prefs!.remove(key);
+        } else if (key.startsWith(tileExtentPrefixKey)) {
           if (value is double) {
             _prefs!.setDouble(key, value);
           } else {
@@ -511,6 +551,9 @@ class Settings extends ChangeNotifier {
                 debugPrint('failed to import key=$key, value=$value is not a string');
               }
               break;
+            case drawerTypeBookmarksKey:
+            case drawerAlbumBookmarksKey:
+            case drawerPageBookmarksKey:
             case pinnedFiltersKey:
             case hiddenFiltersKey:
             case viewerQuickActionsKey:

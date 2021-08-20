@@ -47,8 +47,8 @@ class PlatformStorageService implements StorageService {
     try {
       final result = await platform.invokeMethod('getStorageVolumes');
       return (result as List).cast<Map>().map((map) => StorageVolume.fromMap(map)).toSet();
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('getStorageVolumes', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
     return {};
   }
@@ -60,8 +60,8 @@ class PlatformStorageService implements StorageService {
         'path': volume.path,
       });
       return result as int?;
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('getFreeSpace', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
     return null;
   }
@@ -71,8 +71,8 @@ class PlatformStorageService implements StorageService {
     try {
       final result = await platform.invokeMethod('getGrantedDirectories');
       return (result as List).cast<String>();
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('getGrantedDirectories', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
     return [];
   }
@@ -83,8 +83,8 @@ class PlatformStorageService implements StorageService {
       await platform.invokeMethod('revokeDirectoryAccess', <String, dynamic>{
         'path': path,
       });
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('revokeDirectoryAccess', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
     return;
   }
@@ -98,8 +98,8 @@ class PlatformStorageService implements StorageService {
       if (result != null) {
         return (result as List).cast<Map>().map(VolumeRelativeDirectory.fromMap).toSet();
       }
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('getInaccessibleDirectories', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
     return {};
   }
@@ -111,8 +111,8 @@ class PlatformStorageService implements StorageService {
       if (result != null) {
         return (result as List).cast<Map>().map(VolumeRelativeDirectory.fromMap).toSet();
       }
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('getRestrictedDirectories', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
     return {};
   }
@@ -134,8 +134,8 @@ class PlatformStorageService implements StorageService {
         cancelOnError: true,
       );
       return completer.future;
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('requestVolumeAccess', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
     return false;
   }
@@ -148,8 +148,8 @@ class PlatformStorageService implements StorageService {
         'dirPaths': dirPaths.toList(),
       });
       if (result != null) return result as int;
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('deleteEmptyDirectories', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
     return 0;
   }
@@ -164,8 +164,8 @@ class PlatformStorageService implements StorageService {
         'mimeType': mimeType,
       });
       if (result != null) return Uri.tryParse(result);
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('scanFile', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
     return null;
   }
@@ -188,8 +188,8 @@ class PlatformStorageService implements StorageService {
         cancelOnError: true,
       );
       return completer.future;
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('createFile', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
     return false;
   }
@@ -215,8 +215,8 @@ class PlatformStorageService implements StorageService {
         cancelOnError: true,
       );
       return completer.future;
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('openFile', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
     return Uint8List(0);
   }
@@ -236,8 +236,8 @@ class PlatformStorageService implements StorageService {
         cancelOnError: true,
       );
       return completer.future;
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('selectDirectory', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
     return null;
   }

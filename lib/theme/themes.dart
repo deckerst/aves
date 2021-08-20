@@ -6,6 +6,15 @@ import 'package:flutter/services.dart';
 class Themes {
   static const _accentColor = Colors.indigoAccent;
 
+  static const debugGradient = LinearGradient(
+    begin: Alignment.bottomCenter,
+    end: Alignment.topCenter,
+    colors: [
+      Colors.red,
+      Colors.amber,
+    ],
+  );
+
   static final darkTheme = ThemeData(
     brightness: Brightness.dark,
     accentColor: _accentColor,
