@@ -9,7 +9,7 @@ import 'package:aves/model/source/enums.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/app_bar_subtitle.dart';
-import 'package:aves/widgets/common/basic/menu_row.dart';
+import 'package:aves/widgets/common/basic/menu.dart';
 import 'package:aves/widgets/common/basic/query_bar.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
@@ -29,7 +29,7 @@ class AlbumPickPage extends StatefulWidget {
   static const routeName = '/album_pick';
 
   final CollectionSource source;
-  final MoveType moveType;
+  final MoveType? moveType;
 
   const AlbumPickPage({
     Key? key,
@@ -92,7 +92,7 @@ class _AlbumPickPageState extends State<AlbumPickPage> {
 
 class AlbumPickAppBar extends StatelessWidget {
   final CollectionSource source;
-  final MoveType moveType;
+  final MoveType? moveType;
   final AlbumChipSetActionDelegate actionDelegate;
   final ValueNotifier<String> queryNotifier;
 
@@ -117,7 +117,7 @@ class AlbumPickAppBar extends StatelessWidget {
         case MoveType.move:
           return context.l10n.albumPickPageTitleMove;
         default:
-          return moveType.toString();
+          return context.l10n.albumPickPageTitlePick;
       }
     }
 
@@ -131,40 +131,43 @@ class AlbumPickAppBar extends StatelessWidget {
         filterNotifier: queryNotifier,
       ),
       actions: [
-        IconButton(
-          icon: const Icon(AIcons.createAlbum),
-          onPressed: () async {
-            final newAlbum = await showDialog<String>(
-              context: context,
-              builder: (context) => const CreateAlbumDialog(),
-            );
-            if (newAlbum != null && newAlbum.isNotEmpty) {
-              Navigator.pop<String>(context, newAlbum);
-            }
-          },
-          tooltip: context.l10n.createAlbumTooltip,
-        ),
-        PopupMenuButton<ChipSetAction>(
-          itemBuilder: (context) {
-            return [
-              PopupMenuItem(
-                value: ChipSetAction.sort,
-                child: MenuRow(text: context.l10n.menuActionSort, icon: AIcons.sort),
-              ),
-              PopupMenuItem(
-                value: ChipSetAction.group,
-                child: MenuRow(text: context.l10n.menuActionGroup, icon: AIcons.group),
-              ),
-            ];
-          },
-          onSelected: (action) {
-            // remove focus, if any, to prevent the keyboard from showing up
-            // after the user is done with the popup menu
-            FocusManager.instance.primaryFocus?.unfocus();
+        if (moveType != null)
+          IconButton(
+            icon: const Icon(AIcons.add),
+            onPressed: () async {
+              final newAlbum = await showDialog<String>(
+                context: context,
+                builder: (context) => const CreateAlbumDialog(),
+              );
+              if (newAlbum != null && newAlbum.isNotEmpty) {
+                Navigator.pop<String>(context, newAlbum);
+              }
+            },
+            tooltip: context.l10n.createAlbumTooltip,
+          ),
+        MenuIconTheme(
+          child: PopupMenuButton<ChipSetAction>(
+            itemBuilder: (context) {
+              return [
+                PopupMenuItem(
+                  value: ChipSetAction.sort,
+                  child: MenuRow(text: context.l10n.menuActionSort, icon: const Icon(AIcons.sort)),
+                ),
+                PopupMenuItem(
+                  value: ChipSetAction.group,
+                  child: MenuRow(text: context.l10n.menuActionGroup, icon: const Icon(AIcons.group)),
+                ),
+              ];
+            },
+            onSelected: (action) {
+              // remove focus, if any, to prevent the keyboard from showing up
+              // after the user is done with the popup menu
+              FocusManager.instance.primaryFocus?.unfocus();
 
-            // wait for the popup menu to hide before proceeding with the action
-            Future.delayed(Durations.popupMenuAnimation * timeDilation, () => actionDelegate.onActionSelected(context, {}, action));
-          },
+              // wait for the popup menu to hide before proceeding with the action
+              Future.delayed(Durations.popupMenuAnimation * timeDilation, () => actionDelegate.onActionSelected(context, {}, action));
+            },
+          ),
         ),
       ],
       floating: true,

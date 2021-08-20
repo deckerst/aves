@@ -8,11 +8,11 @@ import 'package:aves/model/settings/entry_background.dart';
 import 'package:aves/model/settings/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/services.dart';
-import 'package:aves/widgets/collection/thumbnail/error.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/checkered_decoration.dart';
 import 'package:aves/widgets/common/fx/transition_image.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
+import 'package:aves/widgets/common/thumbnail/error.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

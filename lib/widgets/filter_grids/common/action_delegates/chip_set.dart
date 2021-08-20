@@ -32,6 +32,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
   bool isValid(Set<T> filters, ChipSetAction action) {
     final hasSelection = filters.isNotEmpty;
     switch (action) {
+      case ChipSetAction.createAlbum:
       case ChipSetAction.delete:
       case ChipSetAction.rename:
         return false;
@@ -76,10 +77,10 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
         _showSortDialog(context);
         break;
       case ChipSetAction.map:
-        _goToMap(context);
+        _goToMap(context, filters);
         break;
       case ChipSetAction.stats:
-        _goToStats(context);
+        _goToStats(context, filters);
         break;
       case ChipSetAction.select:
         context.read<Selection<FilterGridItem<T>>>().select();
@@ -129,28 +130,33 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
     }
   }
 
-  void _goToMap(BuildContext context) {
+  void _goToMap(BuildContext context, Set<T> filters) {
     final source = context.read<CollectionSource>();
+    final entries = filters.isEmpty ? source.visibleEntries : source.visibleEntries.where((entry) => filters.any((f) => f.test(entry)));
     Navigator.push(
       context,
       MaterialPageRoute(
         settings: const RouteSettings(name: MapPage.routeName),
         builder: (context) => MapPage(
-          source: source,
+          entries: entries.where((entry) => entry.hasGps).toList(),
         ),
       ),
     );
   }
 
-  void _goToStats(BuildContext context) {
+  void _goToStats(BuildContext context, Set<T> filters) {
     final source = context.read<CollectionSource>();
+    final entries = filters.isEmpty ? source.visibleEntries : source.visibleEntries.where((entry) => filters.any((f) => f.test(entry)));
     Navigator.push(
       context,
       MaterialPageRoute(
         settings: const RouteSettings(name: StatsPage.routeName),
-        builder: (context) => StatsPage(
-          source: source,
-        ),
+        builder: (context) {
+          return StatsPage(
+            entries: entries.toSet(),
+            source: source,
+          );
+        },
       ),
     );
   }

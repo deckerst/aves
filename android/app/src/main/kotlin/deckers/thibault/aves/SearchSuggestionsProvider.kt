@@ -46,8 +46,12 @@ class SearchSuggestionsProvider : MethodChannel.MethodCallHandler, ContentProvid
 
             val matrixCursor = MatrixCursor(columns)
             context?.let { context ->
+                // shortcut adaptive icons are placed in `mipmap`, not `drawable`,
+                // so that foreground is rendered at the intended scale
+                val supportAdaptiveIcon = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+
                 val searchShortcutTitle = "${context.resources.getString(R.string.search_shortcut_short_label)} $query"
-                val searchShortcutIcon = context.resourceUri(R.mipmap.ic_shortcut_search)
+                val searchShortcutIcon = context.resourceUri(if (supportAdaptiveIcon) R.mipmap.ic_shortcut_search else R.drawable.ic_shortcut_search)
                 matrixCursor.addRow(arrayOf(null, null, null, searchShortcutTitle, null, searchShortcutIcon))
 
                 runBlocking {

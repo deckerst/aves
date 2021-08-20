@@ -30,6 +30,9 @@
     <!-- TODO TLAD remove this permission when this is fixed: https://github.com/flutter/flutter/issues/42451 -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
+    <!-- for API < 26 -->
+    <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
+
     <!-- from Android R, we should define <queries> to make other apps visible to this app -->
     <queries>
         <intent>

@@ -1,5 +1,5 @@
 import 'package:aves/model/entry.dart';
-import 'package:aves/widgets/collection/thumbnail/image.dart';
+import 'package:aves/widgets/common/thumbnail/image.dart';
 import 'package:custom_rounded_rectangle_border/custom_rounded_rectangle_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';

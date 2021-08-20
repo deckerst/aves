@@ -6,18 +6,19 @@ enum ChipSetAction {
   // general
   sort,
   group,
-  map,
   select,
   selectAll,
   selectNone,
-  stats,
   createAlbum,
-  // single/multiple filters
+  // all or filter selection
+  map,
+  stats,
+  // single/multiple filter selection
   delete,
   hide,
   pin,
   unpin,
-  // single filter
+  // single filter selection
   rename,
   setCover,
 }
@@ -31,11 +32,11 @@ extension ExtraChipSetAction on ChipSetAction {
       case ChipSetAction.group:
         return context.l10n.menuActionGroup;
       case ChipSetAction.select:
-        return context.l10n.collectionActionSelect;
+        return context.l10n.menuActionSelect;
       case ChipSetAction.selectAll:
-        return context.l10n.collectionActionSelectAll;
+        return context.l10n.menuActionSelectAll;
       case ChipSetAction.selectNone:
-        return context.l10n.collectionActionSelectNone;
+        return context.l10n.menuActionSelectNone;
       case ChipSetAction.map:
         return context.l10n.menuActionMap;
       case ChipSetAction.stats:
@@ -59,7 +60,11 @@ extension ExtraChipSetAction on ChipSetAction {
     }
   }
 
-  IconData? getIcon() {
+  Widget getIcon() {
+    return Icon(_getIconData());
+  }
+
+  IconData _getIconData() {
     switch (this) {
       // general
       case ChipSetAction.sort:
@@ -69,14 +74,15 @@ extension ExtraChipSetAction on ChipSetAction {
       case ChipSetAction.select:
         return AIcons.select;
       case ChipSetAction.selectAll:
+        return AIcons.selected;
       case ChipSetAction.selectNone:
-        return null;
+        return AIcons.unselected;
       case ChipSetAction.map:
         return AIcons.map;
       case ChipSetAction.stats:
         return AIcons.stats;
       case ChipSetAction.createAlbum:
-        return AIcons.createAlbum;
+        return AIcons.add;
       // single/multiple filters
       case ChipSetAction.delete:
         return AIcons.delete;

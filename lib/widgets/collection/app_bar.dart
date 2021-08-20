@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:aves/app_mode.dart';
-import 'package:aves/model/actions/collection_actions.dart';
 import 'package:aves/model/actions/entry_actions.dart';
+import 'package:aves/model/actions/entry_set_actions.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/selection.dart';
@@ -12,20 +12,17 @@ import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums.dart';
 import 'package:aves/services/app_shortcut_service.dart';
 import 'package:aves/theme/durations.dart';
-import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/pedantic.dart';
 import 'package:aves/widgets/collection/entry_set_action_delegate.dart';
 import 'package:aves/widgets/collection/filter_bar.dart';
 import 'package:aves/widgets/common/app_bar_subtitle.dart';
 import 'package:aves/widgets/common/app_bar_title.dart';
-import 'package:aves/widgets/common/basic/menu_row.dart';
+import 'package:aves/widgets/common/basic/menu.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/add_shortcut_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
-import 'package:aves/widgets/map/map_page.dart';
 import 'package:aves/widgets/search/search_button.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
-import 'package:aves/widgets/stats/stats_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -68,7 +65,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     _isSelectingNotifier.addListener(_onActivityChange);
     _canAddShortcutsLoader = AppShortcutService.canPin();
     _registerWidget(widget);
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _updateHeight());
+    WidgetsBinding.instance!.addPostFrameCallback((_) => _onFilterChanged());
   }
 
   @override
@@ -87,11 +84,11 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   }
 
   void _registerWidget(CollectionAppBar widget) {
-    widget.collection.filterChangeNotifier.addListener(_updateHeight);
+    widget.collection.filterChangeNotifier.addListener(_onFilterChanged);
   }
 
   void _unregisterWidget(CollectionAppBar widget) {
-    widget.collection.filterChangeNotifier.removeListener(_updateHeight);
+    widget.collection.filterChangeNotifier.removeListener(_onFilterChanged);
   }
 
   @override
@@ -149,7 +146,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   Widget? _buildAppBarTitle(bool isSelecting) {
     if (isSelecting) {
       return Selector<Selection<AvesEntry>, int>(
-        selector: (context, selection) => selection.selection.length,
+        selector: (context, selection) => selection.selectedItems.length,
         builder: (context, count, child) => Text(context.l10n.collectionSelectionPageTitle(count)),
       );
     } else {
@@ -178,9 +175,9 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
         ),
       if (isSelecting)
         ...EntryActions.selection.map((action) => Selector<Selection<AvesEntry>, bool>(
-              selector: (context, selection) => selection.selection.isEmpty,
+              selector: (context, selection) => selection.selectedItems.isEmpty,
               builder: (context, isEmpty, child) => IconButton(
-                icon: Icon(action.getIcon()),
+                icon: action.getIcon() ?? const SizedBox(),
                 onPressed: isEmpty ? null : () => _actionDelegate.onEntryActionSelected(context, action),
                 tooltip: action.getText(context),
               ),
@@ -189,85 +186,81 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
         future: _canAddShortcutsLoader,
         builder: (context, snapshot) {
           final canAddShortcuts = snapshot.data ?? false;
-          return PopupMenuButton<CollectionAction>(
-            key: const Key('appbar-menu-button'),
-            itemBuilder: (context) {
-              final selection = context.read<Selection<AvesEntry>>();
-              final isNotEmpty = !collection.isEmpty;
-              final hasSelection = selection.selection.isNotEmpty;
-              return [
-                PopupMenuItem(
-                  key: const Key('menu-sort'),
-                  value: CollectionAction.sort,
-                  child: MenuRow(text: context.l10n.menuActionSort, icon: AIcons.sort),
-                ),
-                if (collection.sortFactor == EntrySortFactor.date)
-                  PopupMenuItem(
-                    key: const Key('menu-group'),
-                    value: CollectionAction.group,
-                    child: MenuRow(text: context.l10n.menuActionGroup, icon: AIcons.group),
+          return MenuIconTheme(
+            child: PopupMenuButton<EntrySetAction>(
+              key: const Key('appbar-menu-button'),
+              itemBuilder: (context) {
+                final groupable = collection.sortFactor == EntrySortFactor.date;
+                final selection = context.read<Selection<AvesEntry>>();
+                final isSelecting = selection.isSelecting;
+                final selectedItems = selection.selectedItems;
+                final hasSelection = selectedItems.isNotEmpty;
+                final hasItems = !collection.isEmpty;
+                final otherViewEnabled = (!isSelecting && hasItems) || (isSelecting && hasSelection);
+
+                return [
+                  _toMenuItem(
+                    EntrySetAction.sort,
+                    key: const Key('menu-sort'),
                   ),
-                if (!selection.isSelecting && appMode == AppMode.main) ...[
-                  PopupMenuItem(
-                    value: CollectionAction.select,
-                    enabled: isNotEmpty,
-                    child: MenuRow(text: context.l10n.collectionActionSelect, icon: AIcons.select),
-                  ),
-                  PopupMenuItem(
-                    value: CollectionAction.map,
-                    enabled: isNotEmpty,
-                    child: MenuRow(text: context.l10n.menuActionMap, icon: AIcons.map),
-                  ),
-                  PopupMenuItem(
-                    value: CollectionAction.stats,
-                    enabled: isNotEmpty,
-                    child: MenuRow(text: context.l10n.menuActionStats, icon: AIcons.stats),
-                  ),
-                  if (canAddShortcuts)
-                    PopupMenuItem(
-                      value: CollectionAction.addShortcut,
-                      child: MenuRow(text: context.l10n.collectionActionAddShortcut, icon: AIcons.addShortcut),
+                  if (groupable)
+                    _toMenuItem(
+                      EntrySetAction.group,
+                      key: const Key('menu-group'),
                     ),
-                ],
-                if (selection.isSelecting) ...[
-                  const PopupMenuDivider(),
-                  PopupMenuItem(
-                    value: CollectionAction.copy,
-                    enabled: hasSelection,
-                    child: MenuRow(text: context.l10n.collectionActionCopy),
-                  ),
-                  PopupMenuItem(
-                    value: CollectionAction.move,
-                    enabled: hasSelection,
-                    child: MenuRow(text: context.l10n.collectionActionMove),
-                  ),
-                  PopupMenuItem(
-                    value: CollectionAction.refreshMetadata,
-                    enabled: hasSelection,
-                    child: MenuRow(text: context.l10n.collectionActionRefreshMetadata),
-                  ),
-                  const PopupMenuDivider(),
-                  PopupMenuItem(
-                    value: CollectionAction.selectAll,
-                    enabled: selection.selection.length < collection.entryCount,
-                    child: MenuRow(text: context.l10n.collectionActionSelectAll),
-                  ),
-                  PopupMenuItem(
-                    value: CollectionAction.selectNone,
-                    enabled: hasSelection,
-                    child: MenuRow(text: context.l10n.collectionActionSelectNone),
-                  ),
-                ]
-              ];
-            },
-            onSelected: (action) {
-              // wait for the popup menu to hide before proceeding with the action
-              Future.delayed(Durations.popupMenuAnimation * timeDilation, () => _onCollectionActionSelected(action));
-            },
+                  if (appMode == AppMode.main) ...[
+                    if (!isSelecting)
+                      _toMenuItem(
+                        EntrySetAction.select,
+                        enabled: hasItems,
+                      ),
+                    const PopupMenuDivider(),
+                    if (isSelecting)
+                      ...[
+                        EntrySetAction.copy,
+                        EntrySetAction.move,
+                        EntrySetAction.refreshMetadata,
+                      ].map((v) => _toMenuItem(v, enabled: hasSelection)),
+                    ...[
+                      EntrySetAction.map,
+                      EntrySetAction.stats,
+                    ].map((v) => _toMenuItem(v, enabled: otherViewEnabled)),
+                    if (!isSelecting && canAddShortcuts) ...[
+                      const PopupMenuDivider(),
+                      _toMenuItem(EntrySetAction.addShortcut),
+                    ],
+                  ],
+                  if (isSelecting) ...[
+                    const PopupMenuDivider(),
+                    _toMenuItem(
+                      EntrySetAction.selectAll,
+                      enabled: selectedItems.length < collection.entryCount,
+                    ),
+                    _toMenuItem(
+                      EntrySetAction.selectNone,
+                      enabled: hasSelection,
+                    ),
+                  ]
+                ];
+              },
+              onSelected: (action) {
+                // wait for the popup menu to hide before proceeding with the action
+                Future.delayed(Durations.popupMenuAnimation * timeDilation, () => _onCollectionActionSelected(action));
+              },
+            ),
           );
         },
       ),
     ];
+  }
+
+  PopupMenuItem<EntrySetAction> _toMenuItem(EntrySetAction action, {Key? key, bool enabled = true}) {
+    return PopupMenuItem(
+      key: key,
+      value: action,
+      enabled: enabled,
+      child: MenuRow(text: action.getText(context), icon: action.getIcon()),
+    );
   }
 
   void _onActivityChange() {
@@ -278,36 +271,41 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     }
   }
 
-  void _updateHeight() {
+  void _onFilterChanged() {
     widget.appBarHeightNotifier.value = kToolbarHeight + (hasFilters ? FilterBar.preferredHeight : 0);
+
+    if (hasFilters) {
+      final filters = collection.filters;
+      final selection = context.read<Selection<AvesEntry>>();
+      if (selection.isSelecting) {
+        final toRemove = selection.selectedItems.where((entry) => !filters.every((f) => f.test(entry))).toSet();
+        selection.removeFromSelection(toRemove);
+      }
+    }
   }
 
-  Future<void> _onCollectionActionSelected(CollectionAction action) async {
+  Future<void> _onCollectionActionSelected(EntrySetAction action) async {
     switch (action) {
-      case CollectionAction.copy:
-      case CollectionAction.move:
-      case CollectionAction.refreshMetadata:
+      case EntrySetAction.copy:
+      case EntrySetAction.move:
+      case EntrySetAction.refreshMetadata:
+      case EntrySetAction.map:
+      case EntrySetAction.stats:
         _actionDelegate.onCollectionActionSelected(context, action);
         break;
-      case CollectionAction.select:
+      case EntrySetAction.select:
         context.read<Selection<AvesEntry>>().select();
         break;
-      case CollectionAction.selectAll:
+      case EntrySetAction.selectAll:
         context.read<Selection<AvesEntry>>().addToSelection(collection.sortedEntries);
         break;
-      case CollectionAction.selectNone:
+      case EntrySetAction.selectNone:
         context.read<Selection<AvesEntry>>().clearSelection();
         break;
-      case CollectionAction.map:
-        _goToMap();
-        break;
-      case CollectionAction.stats:
-        _goToStats();
-        break;
-      case CollectionAction.addShortcut:
+      case EntrySetAction.addShortcut:
         unawaited(_showShortcutDialog(context));
         break;
-      case CollectionAction.group:
+      case EntrySetAction.group:
         final value = await showDialog<EntryGroupFactor>(
           context: context,
           builder: (context) => AvesSelectionDialog<EntryGroupFactor>(
@@ -327,7 +325,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
           settings.collectionSectionFactor = value;
         }
         break;
-      case CollectionAction.sort:
+      case EntrySetAction.sort:
         final value = await showDialog<EntrySortFactor>(
           context: context,
           builder: (context) => AvesSelectionDialog<EntrySortFactor>(
@@ -380,32 +378,6 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       SearchPageRoute(
         delegate: CollectionSearchDelegate(
           source: collection.source,
-          parentCollection: collection,
-        ),
-      ),
-    );
-  }
-
-  void _goToMap() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        settings: const RouteSettings(name: MapPage.routeName),
-        builder: (context) => MapPage(
-          source: source,
-          parentCollection: collection,
-        ),
-      ),
-    );
-  }
-
-  void _goToStats() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        settings: const RouteSettings(name: StatsPage.routeName),
-        builder: (context) => StatsPage(
-          source: source,
           parentCollection: collection,
         ),
       ),

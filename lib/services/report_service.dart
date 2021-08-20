@@ -1,6 +1,5 @@
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
 
 abstract class ReportService {
   bool get isCollectionEnabled;
@@ -16,10 +15,6 @@ abstract class ReportService {
   Future<void> recordError(dynamic exception, StackTrace? stack);
 
   Future<void> recordFlutterError(FlutterErrorDetails flutterErrorDetails);
-
-  Future<void> recordChannelError(String method, PlatformException e) {
-    return recordError('$method failed with code=${e.code}, exception=${e.message}, details=${e.details}}', null);
-  }
 }
 
 class CrashlyticsReportService extends ReportService {

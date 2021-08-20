@@ -37,6 +37,7 @@ object MimeTypes {
 
     private const val VIDEO = "video"
 
+    private const val MKV = "video/x-matroska"
     private const val MP2T = "video/mp2t"
     private const val MP2TS = "video/mp2ts"
     const val MP4 = "video/mp4"
@@ -72,7 +73,7 @@ object MimeTypes {
 
     // as of `metadata-extractor` v2.14.0
     fun isSupportedByMetadataExtractor(mimeType: String) = when (mimeType) {
-        DJVU, WBMP, MP2T, MP2TS, OGV, WEBM -> false
+        DJVU, WBMP, MKV, MP2T, MP2TS, OGV, WEBM -> false
         else -> true
     }
 

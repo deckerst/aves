@@ -43,15 +43,6 @@ class AvesEntry {
 
   final AChangeNotifier imageChangeNotifier = AChangeNotifier(), metadataChangeNotifier = AChangeNotifier(), addressChangeNotifier = AChangeNotifier();
 
-  // TODO TLAD make it dynamic if it depends on OS/lib versions
-  static const List<String> undecodable = [
-    MimeTypes.art,
-    MimeTypes.crw,
-    MimeTypes.djvu,
-    MimeTypes.psdVnd,
-    MimeTypes.psdX,
-  ];
-
   AvesEntry({
     required this.uri,
     required String? path,
@@ -74,7 +65,7 @@ class AvesEntry {
     this.durationMillis = durationMillis;
   }
 
-  bool get canDecode => !undecodable.contains(mimeType);
+  bool get canDecode => !MimeTypes.undecodableImages.contains(mimeType);
 
   bool get canHaveAlpha => MimeTypes.alphaImages.contains(mimeType);
 
@@ -238,9 +229,10 @@ class AvesEntry {
   bool get canRotateAndFlip => canEdit && canEditExif;
 
   // support for writing EXIF
-  // as of androidx.exifinterface:exifinterface:1.3.0
+  // as of androidx.exifinterface:exifinterface:1.3.3
   bool get canEditExif {
     switch (mimeType.toLowerCase()) {
+      case MimeTypes.dng:
       case MimeTypes.jpeg:
       case MimeTypes.png:
       case MimeTypes.webp:

@@ -40,6 +40,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> {
   @override
   bool isValid(Set<AlbumFilter> filters, ChipSetAction action) {
     switch (action) {
+      case ChipSetAction.createAlbum:
       case ChipSetAction.delete:
       case ChipSetAction.rename:
         return true;
@@ -211,11 +212,11 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> {
     );
     if (newName == null || newName.isEmpty) return;
 
-    if (!await checkStoragePermissionForAlbums(context, {album})) return;
-
     final destinationAlbumParent = pContext.dirname(album);
     final destinationAlbum = pContext.join(destinationAlbumParent, newName);
     if (!await checkFreeSpaceForMove(context, todoEntries, destinationAlbum, MoveType.move)) return;
+
+    if (!await checkStoragePermissionForAlbums(context, {album})) return;
 
     if (!(await File(destinationAlbum).exists())) {
       // access to the destination parent is required to create the underlying destination folder

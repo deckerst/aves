@@ -25,8 +25,8 @@ class PlatformMediaStoreService implements MediaStoreService {
         'knownContentIds': knownContentIds,
       });
       return (result as List).cast<int>();
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('checkObsoleteContentIds', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
     return [];
   }
@@ -38,8 +38,8 @@ class PlatformMediaStoreService implements MediaStoreService {
         'knownPathById': knownPathById,
       });
       return (result as List).cast<int>();
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('checkObsoletePaths', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
     return [];
   }
@@ -50,8 +50,8 @@ class PlatformMediaStoreService implements MediaStoreService {
       return _streamChannel.receiveBroadcastStream(<String, dynamic>{
         'knownEntries': knownEntries,
       }).map((event) => AvesEntry.fromMap(event));
-    } on PlatformException catch (e) {
-      reportService.recordChannelError('getEntries', e);
+    } on PlatformException catch (e, stack) {
+      reportService.recordError(e, stack);
       return Stream.error(e);
     }
   }

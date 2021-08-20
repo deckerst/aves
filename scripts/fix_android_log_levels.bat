@@ -14,6 +14,8 @@ adb.exe shell setprop log.tag.AudioTrack INFO
 adb.exe shell setprop log.tag.CompatibilityChangeReporter INFO
 adb.exe shell setprop log.tag.Counters WARN
 adb.exe shell setprop log.tag.CustomizedTextParser INFO
+adb.exe shell setprop log.tag.EGL_emulation INFO
+adb.exe shell setprop log.tag.HostConnection INFO
 adb.exe shell setprop log.tag.InputMethodManager WARN
 adb.exe shell setprop log.tag.InsetsSourceConsumer INFO
 adb.exe shell setprop log.tag.InputTransport INFO
@@ -22,6 +24,7 @@ adb.exe shell setprop log.tag.MediaCodec WARN
 adb.exe shell setprop log.tag.MediaMetadataRetriever INFO
 adb.exe shell setprop log.tag.MediaMetadataRetrieverJNI INFO
 adb.exe shell setprop log.tag.NuMediaExtractor INFO
+adb.exe shell setprop log.tag.skia INFO
 adb.exe shell setprop log.tag.SurfaceControl WARN
 adb.exe shell setprop log.tag.SurfaceUtils INFO
 adb.exe shell setprop log.tag.SurfaceView WARN

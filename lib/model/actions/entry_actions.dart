@@ -1,4 +1,5 @@
 import 'package:aves/theme/icons.dart';
+import 'package:aves/theme/themes.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/widgets.dart';
 
@@ -115,7 +116,23 @@ extension ExtraEntryAction on EntryAction {
     }
   }
 
-  IconData? getIcon() {
+  Widget? getIcon() {
+    final icon = getIconData();
+    if (icon == null) return null;
+
+    final child = Icon(icon);
+    switch (this) {
+      case EntryAction.debug:
+        return ShaderMask(
+          shaderCallback: Themes.debugGradient.createShader,
+          child: child,
+        );
+      default:
+        return child;
+    }
+  }
+
+  IconData? getIconData() {
     switch (this) {
       case EntryAction.toggleFavourite:
         // different data depending on toggle state

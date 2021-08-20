@@ -13,9 +13,7 @@ class AppShortcutService {
   static bool? _canPin;
 
   static Future<bool> canPin() async {
-    if (_canPin != null) {
-      return SynchronousFuture(_canPin!);
-    }
+    if (_canPin != null) return SynchronousFuture(_canPin!);
 
     try {
       final result = await platform.invokeMethod('canPin');
@@ -23,8 +21,8 @@ class AppShortcutService {
         _canPin = result;
         return result;
       }
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('canPin', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
     return false;
   }
@@ -49,8 +47,8 @@ class AppShortcutService {
         'iconBytes': iconBytes,
         'filters': filters.map((filter) => filter.toJson()).toList(),
       });
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('pin', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
   }
 }

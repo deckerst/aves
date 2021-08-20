@@ -18,7 +18,7 @@ import 'package:flutter/material.dart';
 class QuickActionEditorPage<T extends Object> extends StatefulWidget {
   final String title, bannerText;
   final List<T> allAvailableActions;
-  final IconData? Function(T action) actionIcon;
+  final Widget? Function(T action) actionIcon;
   final String Function(BuildContext context, T action) actionText;
   final List<T> Function() load;
   final void Function(List<T> actions) save;
@@ -287,7 +287,7 @@ class _QuickActionEditorPageState<T extends Object> extends State<QuickActionEdi
           padding: const EdgeInsets.symmetric(vertical: _QuickActionEditorPageState.quickActionVerticalPadding, horizontal: 4),
           child: OverlayButton(
             child: IconButton(
-              icon: Icon(widget.actionIcon(action)),
+              icon: widget.actionIcon(action) ?? const SizedBox(),
               onPressed: () {},
             ),
           ),

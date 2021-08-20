@@ -9,8 +9,8 @@ class ViewerService {
       // returns nullable map with 'action' and possibly 'uri' 'mimeType'
       final result = await platform.invokeMethod('getIntentData');
       if (result != null) return (result as Map).cast<String, dynamic>();
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('getIntentData', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
     return {};
   }
@@ -20,8 +20,8 @@ class ViewerService {
       await platform.invokeMethod('pick', <String, dynamic>{
         'uri': uri,
       });
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('pick', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
   }
 }

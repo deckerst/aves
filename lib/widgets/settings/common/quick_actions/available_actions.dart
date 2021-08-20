@@ -10,7 +10,7 @@ class AvailableActionPanel<T extends Object> extends StatelessWidget {
   final ValueNotifier<T?> draggedQuickAction;
   final ValueNotifier<T?> draggedAvailableAction;
   final bool Function(T? action) removeQuickAction;
-  final IconData? Function(T action) actionIcon;
+  final Widget? Function(T action) actionIcon;
   final String Function(BuildContext context, T action) actionText;
 
   const AvailableActionPanel({

@@ -1,13 +1,17 @@
+import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
+import 'package:aves/theme/icons.dart';
+import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
+import 'package:aves/widgets/drawer/tile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class CollectionNavTile extends StatelessWidget {
   final Widget? leading;
-  final String title;
+  final Widget title;
   final Widget? trailing;
   final bool dense;
   final CollectionFilter? filter;
@@ -29,7 +33,7 @@ class CollectionNavTile extends StatelessWidget {
       bottom: false,
       child: ListTile(
         leading: leading,
-        title: Text(title),
+        title: title,
         trailing: trailing,
         dense: dense,
         onTap: () => _goToCollection(context),
@@ -51,6 +55,33 @@ class CollectionNavTile extends StatelessWidget {
         ),
       ),
       (route) => false,
+    );
+  }
+}
+
+class AlbumNavTile extends StatelessWidget {
+  final String album;
+
+  const AlbumNavTile({
+    Key? key,
+    required this.album,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final source = context.read<CollectionSource>();
+    var filter = AlbumFilter(album, source.getAlbumDisplayName(context, album));
+    return CollectionNavTile(
+      leading: DrawerFilterIcon(filter: filter),
+      title: DrawerFilterTitle(filter: filter),
+      trailing: androidFileUtils.isOnRemovableStorage(album)
+          ? const Icon(
+              AIcons.removableStorage,
+              size: 16,
+              color: Colors.grey,
+            )
+          : null,
+      filter: filter,
     );
   }
 }

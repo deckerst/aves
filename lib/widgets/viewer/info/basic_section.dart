@@ -135,6 +135,7 @@ class _OwnerPropState extends State<OwnerProp> {
 
   AvesEntry get entry => widget.entry;
 
+  static const ownerPackageNamePropKey = 'owner_package_name';
   static const iconSize = 20.0;
 
   @override
@@ -142,7 +143,9 @@ class _OwnerPropState extends State<OwnerProp> {
     super.initState();
     final isMediaContent = entry.uri.startsWith('content://media/external/');
     if (isMediaContent) {
-      _ownerPackageFuture = metadataService.getContentResolverProp(entry, 'owner_package_name');
+      _ownerPackageFuture = metadataService.hasContentResolverProp(ownerPackageNamePropKey).then((exists) {
+        return exists ? metadataService.getContentResolverProp(entry, ownerPackageNamePropKey) : SynchronousFuture(null);
+      });
     } else {
       _ownerPackageFuture = SynchronousFuture(null);
     }
@@ -165,23 +168,20 @@ class _OwnerPropState extends State<OwnerProp> {
                 text: context.l10n.viewerInfoLabelOwner,
                 style: InfoRowGroup.keyStyle,
               ),
-              // `com.android.shell` is the package reported
-              // for images copied to the device by ADB for Test Driver
-              if (ownerPackage != 'com.android.shell')
-                WidgetSpan(
-                  alignment: PlaceholderAlignment.middle,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4),
-                    child: Image(
-                      image: AppIconImage(
-                        packageName: ownerPackage,
-                        size: iconSize,
-                      ),
-                      width: iconSize,
-                      height: iconSize,
+              WidgetSpan(
+                alignment: PlaceholderAlignment.middle,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                  child: Image(
+                    image: AppIconImage(
+                      packageName: ownerPackage,
+                      size: iconSize,
                     ),
+                    width: iconSize,
+                    height: iconSize,
                   ),
                 ),
+              ),
               TextSpan(
                 text: appName,
                 style: InfoRowGroup.baseStyle,

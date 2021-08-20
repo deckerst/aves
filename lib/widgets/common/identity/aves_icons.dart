@@ -117,16 +117,24 @@ class MultiPageIcon extends StatelessWidget {
     if (entry.isMotionPhoto) {
       icon = AIcons.motionPhoto;
     } else {
-      if(entry.isBurst) {
+      if (entry.isBurst) {
         text = '${entry.burstEntries?.length}';
       }
       icon = AIcons.multiPage;
     }
-    return OverlayIcon(
+    final gridTheme = context.watch<GridThemeData>();
+    final child = OverlayIcon(
       icon: icon,
-      size: context.select<GridThemeData, double>((t) => t.iconSize),
+      size: gridTheme.iconSize,
       iconScale: .8,
       text: text,
+    );
+    return DefaultTextStyle(
+      style: TextStyle(
+        color: Colors.grey.shade200,
+        fontSize: gridTheme.fontSize,
+      ),
+      child: child,
     );
   }
 }

@@ -30,14 +30,14 @@ class AIcons {
   static const IconData tagOff = MdiIcons.tagOffOutline;
 
   // actions
-  static const IconData addPath = Icons.add_circle_outline;
+  static const IconData add = Icons.add_circle_outline;
   static const IconData addShortcut = Icons.add_to_home_screen_outlined;
   static const IconData replay10 = Icons.replay_10_outlined;
   static const IconData skip10 = Icons.forward_10_outlined;
   static const IconData captureFrame = Icons.screenshot_outlined;
   static const IconData clear = Icons.clear_outlined;
   static const IconData clipboard = Icons.content_copy_outlined;
-  static const IconData createAlbum = Icons.add_circle_outline;
+  static const IconData copy = Icons.file_copy_outlined;
   static const IconData debug = Icons.whatshot_outlined;
   static const IconData delete = Icons.delete_outlined;
   static const IconData export = MdiIcons.fileExportOutline;
@@ -51,6 +51,7 @@ class AIcons {
   static const IconData info = Icons.info_outlined;
   static const IconData layers = Icons.layers_outlined;
   static const IconData map = Icons.map_outlined;
+  static const IconData move = MdiIcons.fileMoveOutline;
   static const IconData newTier = Icons.fiber_new_outlined;
   static const IconData openOutside = Icons.open_in_new_outlined;
   static const IconData pin = Icons.push_pin_outlined;
@@ -58,6 +59,7 @@ class AIcons {
   static const IconData play = Icons.play_arrow;
   static const IconData pause = Icons.pause;
   static const IconData print = Icons.print_outlined;
+  static const IconData refresh = Icons.refresh_outlined;
   static const IconData rename = Icons.title_outlined;
   static const IconData rotateLeft = Icons.rotate_left_outlined;
   static const IconData rotateRight = Icons.rotate_right_outlined;
@@ -67,6 +69,7 @@ class AIcons {
   static const IconData select = Icons.select_all_outlined;
   static const IconData setCover = MdiIcons.imageEditOutline;
   static const IconData share = Icons.share_outlined;
+  static const IconData show = Icons.visibility_outlined;
   static const IconData sort = Icons.sort_outlined;
   static const IconData speed = Icons.speed_outlined;
   static const IconData stats = Icons.pie_chart_outlined;

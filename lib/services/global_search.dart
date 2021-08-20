@@ -14,8 +14,8 @@ class GlobalSearch {
       await platform.invokeMethod('registerCallback', <String, dynamic>{
         'callbackHandle': PluginUtilities.getCallbackHandle(_init)?.toRawHandle(),
       });
-    } on PlatformException catch (e) {
-      await reportService.recordChannelError('registerCallback', e);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
   }
 }
