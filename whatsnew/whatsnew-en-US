@@ -1,6 +1,7 @@
 Thanks for using Aves!
-v1.4.8:
-- map page
-- viewer action to copy to clipboard
-- integration with OS global search
+v1.4.9:
+- open the map or get stats for selected items
+- browse and navigate to items on the map
+- customize the navigation menu
+- create shortcuts on Android Nougat and older
 Full changelog available on Github
