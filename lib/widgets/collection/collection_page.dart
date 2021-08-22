@@ -56,6 +56,7 @@ class _CollectionPageState extends State<CollectionPage> {
                     child: ChangeNotifierProvider<CollectionLens>.value(
                       value: collection,
                       child: const CollectionGrid(
+                        // key is expected by test driver
                         key: Key('collection-grid'),
                       ),
                     ),

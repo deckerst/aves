@@ -3,10 +3,13 @@ import 'dart:io';
 import 'package:path/path.dart' as p;
 
 String get adb {
-  final env = Platform.environment;
-  // e.g. C:\Users\<username>\AppData\Local\Android\Sdk
-  final sdkDir = env['ANDROID_SDK_ROOT'] ?? env['ANDROID_SDK']!;
-  return p.join(sdkDir, 'platform-tools', Platform.isWindows ? 'adb.exe' : 'adb');
+  if (Platform.isWindows) {
+    final env = Platform.environment;
+    // e.g. C:\Users\<username>\AppData\Local\Android\Sdk
+    final sdkDir = env['ANDROID_SDK_ROOT'] ?? env['ANDROID_SDK']!;
+    return p.join(sdkDir, 'platform-tools', 'adb.exe');
+  }
+  return 'adb';
 }
 
 /*

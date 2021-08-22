@@ -133,6 +133,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       tooltip = MaterialLocalizations.of(context).openAppDrawerTooltip;
     }
     return IconButton(
+      // key is expected by test driver
       key: const Key('appbar-leading-button'),
       icon: AnimatedIcon(
         icon: AnimatedIcons.menu_arrow,
@@ -188,6 +189,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
           final canAddShortcuts = snapshot.data ?? false;
           return MenuIconTheme(
             child: PopupMenuButton<EntrySetAction>(
+              // key is expected by test driver
               key: const Key('appbar-menu-button'),
               itemBuilder: (context) {
                 final groupable = collection.sortFactor == EntrySortFactor.date;
@@ -201,11 +203,13 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
                 return [
                   _toMenuItem(
                     EntrySetAction.sort,
+                    // key is expected by test driver
                     key: const Key('menu-sort'),
                   ),
                   if (groupable)
                     _toMenuItem(
                       EntrySetAction.group,
+                      // key is expected by test driver
                       key: const Key('menu-group'),
                     ),
                   if (appMode == AppMode.main) ...[

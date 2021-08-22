@@ -142,6 +142,7 @@ class _AppDrawerState extends State<AppDrawer> {
                 runSpacing: 8,
                 children: [
                   OutlinedButton.icon(
+                    // key is expected by test driver
                     key: const Key('drawer-about-button'),
                     onPressed: () => goTo(AboutPage.routeName, (_) => const AboutPage()),
                     icon: const Icon(AIcons.info),
@@ -178,6 +179,7 @@ class _AppDrawerState extends State<AppDrawer> {
                     ),
                   ),
                   OutlinedButton.icon(
+                    // key is expected by test driver
                     key: const Key('drawer-settings-button'),
                     onPressed: () => goTo(SettingsPage.routeName, (_) => const SettingsPage()),
                     icon: const Icon(AIcons.settings),

@@ -24,6 +24,7 @@ class PageNavTile extends StatelessWidget {
       top: false,
       bottom: false,
       child: ListTile(
+        // key is expected by test driver
         key: Key('$routeName-tile'),
         leading: DrawerPageIcon(route: routeName),
         title: DrawerPageTitle(route: routeName),

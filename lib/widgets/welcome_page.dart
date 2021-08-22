@@ -109,6 +109,7 @@ class _WelcomePageState extends State<WelcomePage> {
           text: context.l10n.welcomeCrashReportToggle,
         ),
         LabeledCheckbox(
+          // key is expected by test driver
           key: const Key('agree-checkbox'),
           value: _hasAcceptedTerms,
           onChanged: (v) {
@@ -120,6 +121,7 @@ class _WelcomePageState extends State<WelcomePage> {
     );
 
     final button = ElevatedButton(
+      // key is expected by test driver
       key: const Key('continue-button'),
       onPressed: _hasAcceptedTerms
           ? () {

@@ -131,6 +131,7 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
         child: child,
       ),
       child: PageView(
+        // key is expected by test driver
         key: const Key('vertical-pageview'),
         scrollDirection: Axis.vertical,
         controller: widget.verticalPager,

@@ -22,6 +22,7 @@ class InfoAppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return SliverAppBar(
       leading: IconButton(
+        // key is expected by test driver
         key: const Key('back-button'),
         icon: const Icon(AIcons.goUp),
         onPressed: onBackPressed,
