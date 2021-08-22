@@ -98,6 +98,7 @@ class _FilterGridAppBarState<T extends CollectionFilter> extends State<FilterGri
       tooltip = MaterialLocalizations.of(context).openAppDrawerTooltip;
     }
     return IconButton(
+      // key is expected by test driver
       key: const Key('appbar-leading-button'),
       icon: AnimatedIcon(
         icon: AnimatedIcons.menu_arrow,
@@ -170,7 +171,6 @@ class _FilterGridAppBarState<T extends CollectionFilter> extends State<FilterGri
       ...buttonActions,
       MenuIconTheme(
         child: PopupMenuButton<ChipSetAction>(
-          key: const Key('appbar-menu-button'),
           itemBuilder: (context) {
             final selectedItems = selection.selectedItems;
             final hasSelection = selectedItems.isNotEmpty;
