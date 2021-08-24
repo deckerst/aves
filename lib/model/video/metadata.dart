@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:aves/model/entry.dart';
+import 'package:aves/model/metadata.dart';
 import 'package:aves/model/video/channel_layouts.dart';
 import 'package:aves/model/video/codecs.dart';
 import 'package:aves/model/video/keys.dart';
@@ -9,6 +10,7 @@ import 'package:aves/model/video/profiles/h264.dart';
 import 'package:aves/model/video/profiles/hevc.dart';
 import 'package:aves/ref/languages.dart';
 import 'package:aves/ref/mp4.dart';
+import 'package:aves/services/services.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/utils/math_utils.dart';
 import 'package:aves/utils/string_utils.dart';
@@ -50,7 +52,7 @@ class VideoMetadataFormatter {
     return info;
   }
 
-  static Future<Map<String, int>> getCatalogMetadata(AvesEntry entry) async {
+  static Future<Map<String, int>> getLoadingMetadata(AvesEntry entry) async {
     final mediaInfo = await getVideoMetadata(entry);
     final fields = <String, int>{};
 
@@ -73,6 +75,30 @@ class VideoMetadataFormatter {
       fields['durationMillis'] = (durationMicros / 1000).round();
     }
     return fields;
+  }
+
+  static Future<CatalogMetadata?> getCatalogMetadata(AvesEntry entry) async {
+    final mediaInfo = await getVideoMetadata(entry);
+
+    int? dateMillis;
+
+    final dateString = mediaInfo[Keys.date];
+    if (dateString is String && dateString != '0') {
+      final date = DateTime.tryParse(dateString);
+      if (date != null) {
+        dateMillis = date.millisecondsSinceEpoch;
+      } else {
+        await reportService.recordError('getCatalogMetadata failed to parse date=$dateString for mimeType=${entry.mimeType} entry=$entry', null);
+      }
+    }
+
+    if (dateMillis != null) {
+      return (entry.catalogMetadata ?? CatalogMetadata(contentId: entry.contentId)).copyWith(
+        dateMillis: dateMillis,
+      );
+    }
+
+    return entry.catalogMetadata;
   }
 
   // pattern to extract optional language code suffix, e.g. 'location-eng'
