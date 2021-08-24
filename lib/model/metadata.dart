@@ -75,13 +75,14 @@ class CatalogMetadata {
   CatalogMetadata copyWith({
     int? contentId,
     String? mimeType,
+    int? dateMillis,
     bool? isMultiPage,
     int? rotationDegrees,
   }) {
     return CatalogMetadata(
       contentId: contentId ?? this.contentId,
       mimeType: mimeType ?? this.mimeType,
-      dateMillis: dateMillis,
+      dateMillis: dateMillis ?? this.dateMillis,
       isAnimated: isAnimated,
       isFlipped: isFlipped,
       isGeotiff: isGeotiff,

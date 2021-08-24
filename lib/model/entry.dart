@@ -429,10 +429,14 @@ class AvesEntry {
     } else {
       if (isVideo && (!isSized || durationMillis == 0)) {
         // exotic video that is not sized during loading
-        final fields = await VideoMetadataFormatter.getCatalogMetadata(this);
+        final fields = await VideoMetadataFormatter.getLoadingMetadata(this);
         await _applyNewFields(fields, persist: persist);
       }
       catalogMetadata = await metadataService.getCatalogMetadata(this, background: background);
+
+      if (isVideo && (catalogMetadata?.dateMillis ?? 0) == 0) {
+        catalogMetadata = await VideoMetadataFormatter.getCatalogMetadata(this);
+      }
     }
   }
 
