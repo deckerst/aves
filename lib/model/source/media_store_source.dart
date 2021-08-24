@@ -36,7 +36,7 @@ class MediaStoreSource extends CollectionSource {
         settings.catalogTimeZone = currentTimeZone;
       }
     }
-    await loadDates(); // 100ms for 5400 entries
+    await loadDates();
     _initialized = true;
     debugPrint('$runtimeType init done, elapsed=${stopwatch.elapsed}');
   }
@@ -49,15 +49,15 @@ class MediaStoreSource extends CollectionSource {
     stateNotifier.value = SourceState.loading;
     clearEntries();
 
-    final oldEntries = await metadataDb.loadEntries(); // 400ms for 5500 entries
+    final oldEntries = await metadataDb.loadEntries();
     final knownDateById = Map.fromEntries(oldEntries.map((entry) => MapEntry(entry.contentId!, entry.dateModifiedSecs!)));
     final obsoleteContentIds = (await mediaStoreService.checkObsoleteContentIds(knownDateById.keys.toList())).toSet();
     oldEntries.removeWhere((entry) => obsoleteContentIds.contains(entry.contentId));
 
     // show known entries
     addEntries(oldEntries);
-    await loadCatalogMetadata(); // 600ms for 5500 entries
-    await loadAddresses(); // 200ms for 3000 entries
+    await loadCatalogMetadata();
+    await loadAddresses();
     debugPrint('$runtimeType refresh loaded ${oldEntries.length} known entries, elapsed=${stopwatch.elapsed}');
 
     // clean up obsolete entries
@@ -94,7 +94,7 @@ class MediaStoreSource extends CollectionSource {
         addPendingEntries();
         debugPrint('$runtimeType refresh loaded ${allNewEntries.length} new entries, elapsed=${stopwatch.elapsed}');
 
-        await metadataDb.saveEntries(allNewEntries); // 700ms for 5500 entries
+        await metadataDb.saveEntries(allNewEntries);
 
         if (allNewEntries.isNotEmpty) {
           // new entries include existing entries with obsolete paths

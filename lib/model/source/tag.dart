@@ -15,10 +15,8 @@ mixin TagMixin on SourceBase {
   Future<void> loadCatalogMetadata() async {
     final stopwatch = Stopwatch()..start();
     final saved = await metadataDb.loadMetadataEntries();
-    visibleEntries.forEach((entry) {
-      final contentId = entry.contentId;
-      entry.catalogMetadata = saved.firstWhereOrNull((metadata) => metadata.contentId == contentId);
-    });
+    final idMap = entryById;
+    saved.forEach((metadata) => idMap[metadata.contentId]?.catalogMetadata = metadata);
     debugPrint('$runtimeType loadCatalogMetadata complete in ${stopwatch.elapsed.inMilliseconds}ms for ${saved.length} entries');
     onCatalogMetadataChanged();
   }

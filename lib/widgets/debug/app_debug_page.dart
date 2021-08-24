@@ -95,6 +95,14 @@ class _AppDebugPageState extends State<AppDebugPage> {
           },
           title: const Text('Show tasks overlay'),
         ),
+        ElevatedButton(
+          onPressed: () async {
+            final source = context.read<CollectionSource>();
+            await source.init();
+            await source.refresh();
+          },
+          child: const Text('Source full refresh'),
+        ),
         const Divider(),
         Padding(
           padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),

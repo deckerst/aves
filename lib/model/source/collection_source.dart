@@ -7,7 +7,6 @@ import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/filters/tag.dart';
-import 'package:aves/model/metadata.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/album.dart';
 import 'package:aves/model/source/enums.dart';
@@ -21,6 +20,8 @@ import 'package:flutter/foundation.dart';
 
 mixin SourceBase {
   EventBus get eventBus;
+
+  Map<int?, AvesEntry> get entryById;
 
   Set<AvesEntry> get visibleEntries;
 
@@ -40,6 +41,11 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
 
   @override
   EventBus get eventBus => _eventBus;
+
+  final Map<int?, AvesEntry> _entryById = {};
+
+  @override
+  Map<int?, AvesEntry> get entryById => Map.unmodifiable(_entryById);
 
   final Set<AvesEntry> _rawEntries = {};
 
@@ -61,11 +67,11 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
     return _sortedEntriesByDate!;
   }
 
-  late List<DateMetadata> _savedDates;
+  late Map<int?, int?> _savedDates;
 
   Future<void> loadDates() async {
     final stopwatch = Stopwatch()..start();
-    _savedDates = List.unmodifiable(await metadataDb.loadDates());
+    _savedDates = Map.unmodifiable(await metadataDb.loadDates());
     debugPrint('$runtimeType loadDates complete in ${stopwatch.elapsed.inMilliseconds}ms for ${_savedDates.length} entries');
   }
 
@@ -84,14 +90,16 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
 
   void addEntries(Set<AvesEntry> entries) {
     if (entries.isEmpty) return;
+
+    final newIdMapEntries = Map.fromEntries(entries.map((v) => MapEntry(v.contentId, v)));
     if (_rawEntries.isNotEmpty) {
-      final newContentIds = entries.map((entry) => entry.contentId).toSet();
+      final newContentIds = newIdMapEntries.keys.toSet();
       _rawEntries.removeWhere((entry) => newContentIds.contains(entry.contentId));
     }
-    entries.forEach((entry) {
-      final contentId = entry.contentId;
-      entry.catalogDateMillis = _savedDates.firstWhereOrNull((metadata) => metadata.contentId == contentId)?.dateMillis;
-    });
+
+    entries.forEach((entry) => entry.catalogDateMillis = _savedDates[entry.contentId]);
+
+    _entryById.addAll(newIdMapEntries);
     _rawEntries.addAll(entries);
     _invalidate(entries);
 
@@ -104,6 +112,8 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
     final entries = _rawEntries.where((entry) => uris.contains(entry.uri)).toSet();
     await favourites.remove(entries);
     await covers.removeEntries(entries);
+
+    entries.forEach((v) => _entryById.remove(v.contentId));
     _rawEntries.removeAll(entries);
     _invalidate(entries);
 
@@ -114,6 +124,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
   }
 
   void clearEntries() {
+    _entryById.clear();
     _rawEntries.clear();
     _invalidate();
 
