@@ -24,7 +24,7 @@ class FakeMetadataDb extends Fake implements MetadataDb {
   Future<void> updateEntryId(int oldId, AvesEntry entry) => SynchronousFuture(null);
 
   @override
-  Future<List<DateMetadata>> loadDates() => SynchronousFuture([]);
+  Future<Map<int?, int?>> loadDates() => SynchronousFuture({});
 
   @override
   Future<List<CatalogMetadata>> loadMetadataEntries() => SynchronousFuture([]);

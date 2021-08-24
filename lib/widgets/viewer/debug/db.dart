@@ -18,7 +18,7 @@ class DbTab extends StatefulWidget {
 }
 
 class _DbTabState extends State<DbTab> {
-  late Future<DateMetadata?> _dbDateLoader;
+  late Future<int?> _dbDateLoader;
   late Future<AvesEntry?> _dbEntryLoader;
   late Future<CatalogMetadata?> _dbMetadataLoader;
   late Future<AddressDetails?> _dbAddressLoader;
@@ -33,7 +33,7 @@ class _DbTabState extends State<DbTab> {
 
   void _loadDatabase() {
     final contentId = entry.contentId;
-    _dbDateLoader = metadataDb.loadDates().then((values) => values.firstWhereOrNull((row) => row.contentId == contentId));
+    _dbDateLoader = metadataDb.loadDates().then((values) => values[contentId]);
     _dbEntryLoader = metadataDb.loadEntries().then((values) => values.firstWhereOrNull((row) => row.contentId == contentId));
     _dbMetadataLoader = metadataDb.loadMetadataEntries().then((values) => values.firstWhereOrNull((row) => row.contentId == contentId));
     _dbAddressLoader = metadataDb.loadAddresses().then((values) => values.firstWhereOrNull((row) => row.contentId == contentId));
@@ -45,7 +45,7 @@ class _DbTabState extends State<DbTab> {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        FutureBuilder<DateMetadata?>(
+        FutureBuilder<int?>(
           future: _dbDateLoader,
           builder: (context, snapshot) {
             if (snapshot.hasError) return Text(snapshot.error.toString());
@@ -58,7 +58,7 @@ class _DbTabState extends State<DbTab> {
                 if (data != null)
                   InfoRowGroup(
                     info: {
-                      'dateMillis': '${data.dateMillis}',
+                      'dateMillis': '$data',
                     },
                   ),
               ],

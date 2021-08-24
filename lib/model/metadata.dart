@@ -3,30 +3,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 
-class DateMetadata {
-  final int? contentId, dateMillis;
-
-  DateMetadata({
-    this.contentId,
-    this.dateMillis,
-  });
-
-  factory DateMetadata.fromMap(Map map) {
-    return DateMetadata(
-      contentId: map['contentId'],
-      dateMillis: map['dateMillis'] ?? 0,
-    );
-  }
-
-  Map<String, dynamic> toMap() => {
-        'contentId': contentId,
-        'dateMillis': dateMillis,
-      };
-
-  @override
-  String toString() => '$runtimeType#${shortHash(this)}{contentId=$contentId, dateMillis=$dateMillis}';
-}
-
 class CatalogMetadata {
   final int? contentId, dateMillis;
   final bool isAnimated, isGeotiff, is360, isMultiPage;
