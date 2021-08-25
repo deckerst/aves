@@ -8,6 +8,7 @@ import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/filters/type.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/services/services.dart';
+import 'package:aves/theme/format.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -16,7 +17,6 @@ import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 class BasicSection extends StatelessWidget {
   final AvesEntry entry;
@@ -42,7 +42,7 @@ class BasicSection extends StatelessWidget {
     final infoUnknown = l10n.viewerInfoUnknown;
     final date = entry.bestDate;
     final locale = l10n.localeName;
-    final dateText = date != null ? '${DateFormat.yMMMd(locale).format(date)} • ${DateFormat.Hm(locale).format(date)}' : infoUnknown;
+    final dateText = date != null ? formatDateTime(date, locale) : infoUnknown;
 
     // TODO TLAD line break on all characters for the following fields when this is fixed: https://github.com/flutter/flutter/issues/61081
     // inserting ZWSP (\u200B) between characters does help, but it messes with width and height computation (another Flutter issue)

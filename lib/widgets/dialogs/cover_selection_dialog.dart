@@ -73,15 +73,17 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
                       setState(() {});
                     },
                     title: isCustom
-                        ? Row(children: [
-                            title,
-                            const Spacer(),
-                            IconButton(
-                              icon: const Icon(AIcons.setCover),
-                              onPressed: _isCustom ? _pickEntry : null,
-                              tooltip: context.l10n.changeTooltip,
-                            ),
-                          ])
+                        ? Row(
+                            children: [
+                              title,
+                              const Spacer(),
+                              IconButton(
+                                icon: const Icon(AIcons.setCover),
+                                onPressed: _isCustom ? _pickEntry : null,
+                                tooltip: context.l10n.changeTooltip,
+                              ),
+                            ],
+                          )
                         : title,
                   );
                 },
