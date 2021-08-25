@@ -7,6 +7,7 @@ import 'package:aves/model/settings/coordinate_format.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/services.dart';
 import 'package:aves/theme/durations.dart';
+import 'package:aves/theme/format.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -18,7 +19,6 @@ import 'package:aves/widgets/viewer/page_entry_builder.dart';
 import 'package:decorated_icon/decorated_icon.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
@@ -387,7 +387,7 @@ class _DateRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final locale = context.l10n.localeName;
     final date = entry.bestDate;
-    final dateText = date != null ? '${DateFormat.yMMMd(locale).format(date)} • ${DateFormat.Hm(locale).format(date)}' : Constants.overlayUnknown;
+    final dateText = date != null ? formatDateTime(date, locale) : Constants.overlayUnknown;
     final resolutionText = entry.isSvg
         ? entry.aspectRatioText
         : entry.isSized
