@@ -18,6 +18,7 @@ import com.commonsware.cwac.document.DocumentFileCompat
 import deckers.thibault.aves.decoder.MultiTrackImage
 import deckers.thibault.aves.decoder.TiffImage
 import deckers.thibault.aves.metadata.ExifInterfaceHelper
+import deckers.thibault.aves.metadata.ExifInterfaceHelper.getSafeDateMillis
 import deckers.thibault.aves.metadata.MultiPage
 import deckers.thibault.aves.model.AvesEntry
 import deckers.thibault.aves.model.ExifOrientationOp
@@ -39,7 +40,7 @@ import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 abstract class ImageProvider {
-    open fun fetchSingle(context: Context, uri: Uri, sourceMimeType: String?, callback: ImageOpCallback) {
+    open fun fetchSingle(context: Context, uri: Uri, sourceMimeType: String?, callback: ImageOpCallback<FieldMap>) {
         callback.onFailure(UnsupportedOperationException())
     }
 
@@ -47,7 +48,7 @@ abstract class ImageProvider {
         throw UnsupportedOperationException()
     }
 
-    open suspend fun moveMultiple(activity: Activity, copy: Boolean, destinationDir: String, entries: List<AvesEntry>, callback: ImageOpCallback) {
+    open suspend fun moveMultiple(activity: Activity, copy: Boolean, destinationDir: String, entries: List<AvesEntry>, callback: ImageOpCallback<FieldMap>) {
         callback.onFailure(UnsupportedOperationException())
     }
 
@@ -56,7 +57,7 @@ abstract class ImageProvider {
         imageExportMimeType: String,
         destinationDir: String,
         entries: List<AvesEntry>,
-        callback: ImageOpCallback,
+        callback: ImageOpCallback<FieldMap>,
     ) {
         if (!supportedExportMimeTypes.contains(imageExportMimeType)) {
             throw Exception("unsupported export MIME type=$imageExportMimeType")
@@ -204,7 +205,7 @@ abstract class ImageProvider {
         exifFields: FieldMap,
         bytes: ByteArray,
         destinationDir: String,
-        callback: ImageOpCallback,
+        callback: ImageOpCallback<FieldMap>,
     ) {
         val destinationDirDocFile = createDirectoryIfAbsent(context, destinationDir)
         if (destinationDirDocFile == null) {
@@ -299,7 +300,7 @@ abstract class ImageProvider {
         }
     }
 
-    suspend fun rename(context: Context, oldPath: String, oldMediaUri: Uri, mimeType: String, newFilename: String, callback: ImageOpCallback) {
+    suspend fun rename(context: Context, oldPath: String, oldMediaUri: Uri, mimeType: String, newFilename: String, callback: ImageOpCallback<FieldMap>) {
         val oldFile = File(oldPath)
         val newFile = File(oldFile.parent, newFilename)
         if (oldFile == newFile) {
@@ -329,16 +330,33 @@ abstract class ImageProvider {
         }
     }
 
-    fun changeOrientation(context: Context, path: String, uri: Uri, mimeType: String, sizeBytes: Long, op: ExifOrientationOp, callback: ImageOpCallback) {
+    // support for writing EXIF
+    // as of androidx.exifinterface:exifinterface:1.3.0
+    private fun canEditExif(mimeType: String): Boolean {
+        return when (mimeType) {
+            MimeTypes.JPEG, MimeTypes.PNG, MimeTypes.WEBP -> true
+            else -> false
+        }
+    }
+
+    private fun <T> editExif(
+        context: Context,
+        path: String,
+        uri: Uri,
+        mimeType: String,
+        sizeBytes: Long,
+        callback: ImageOpCallback<T>,
+        editExif: (exif: ExifInterface) -> Unit,
+    ): Boolean {
         if (!canEditExif(mimeType)) {
             callback.onFailure(UnsupportedOperationException("unsupported mimeType=$mimeType"))
-            return
+            return false
         }
 
         val originalDocumentFile = getDocumentFile(context, path, uri)
         if (originalDocumentFile == null) {
             callback.onFailure(Exception("failed to get document file for path=$path, uri=$uri"))
-            return
+            return false
         }
 
         val videoSizeBytes = MultiPage.getMotionPhotoOffset(context, uri, mimeType, sizeBytes)?.toInt()
@@ -372,13 +390,33 @@ abstract class ImageProvider {
                 }
             } catch (e: Exception) {
                 callback.onFailure(e)
-                return
+                return false
             }
         }
 
-        val newFields = HashMap<String, Any?>()
         try {
             val exif = ExifInterface(editableFile)
+
+            editExif(exif)
+
+            if (videoBytes != null) {
+                // append motion photo video, if any
+                editableFile.appendBytes(videoBytes!!)
+            }
+            // copy the edited temporary file back to the original
+            DocumentFileCompat.fromFile(editableFile).copyTo(originalDocumentFile)
+        } catch (e: IOException) {
+            callback.onFailure(e)
+            return false
+        }
+
+        return true
+    }
+
+    fun changeOrientation(context: Context, path: String, uri: Uri, mimeType: String, sizeBytes: Long, op: ExifOrientationOp, callback: ImageOpCallback<FieldMap>) {
+        val newFields = HashMap<String, Any?>()
+
+        val success = editExif(context, path, uri, mimeType, sizeBytes, callback) { exif ->
             // when the orientation is not defined, it returns `undefined (0)` instead of the orientation default value `normal (1)`
             // in that case we explicitly set it to `normal` first
             // because ExifInterface fails to rotate an image with undefined orientation
@@ -393,20 +431,10 @@ abstract class ImageProvider {
                 ExifOrientationOp.FLIP -> exif.flipHorizontally()
             }
             exif.saveAttributes()
-
-            if (videoBytes != null) {
-                // append motion photo video, if any
-                editableFile.appendBytes(videoBytes!!)
-            }
-            // copy the edited temporary file back to the original
-            DocumentFileCompat.fromFile(editableFile).copyTo(originalDocumentFile)
-
             newFields["rotationDegrees"] = exif.rotationDegrees
             newFields["isFlipped"] = exif.isFlipped
-        } catch (e: IOException) {
-            callback.onFailure(e)
-            return
         }
+        if (!success) return
 
         MediaScannerConnection.scanFile(context, arrayOf(path), arrayOf(mimeType)) { _, _ ->
             val projection = arrayOf(MediaStore.MediaColumns.DATE_MODIFIED)
@@ -424,12 +452,97 @@ abstract class ImageProvider {
         }
     }
 
-    // support for writing EXIF
-    // as of androidx.exifinterface:exifinterface:1.3.0
-    private fun canEditExif(mimeType: String): Boolean {
-        return when (mimeType) {
-            MimeTypes.JPEG, MimeTypes.PNG, MimeTypes.WEBP -> true
-            else -> false
+    fun editDate(
+        context: Context,
+        path: String,
+        uri: Uri,
+        mimeType: String,
+        sizeBytes: Long,
+        dateMillis: Long?,
+        shiftMinutes: Long?,
+        fields: List<String>,
+        callback: ImageOpCallback<Boolean>,
+    ) {
+        if (dateMillis != null && dateMillis < 0) {
+            callback.onFailure(Exception("dateMillis=$dateMillis cannot be negative"))
+            return
+        }
+
+        val success = editExif(context, path, uri, mimeType, sizeBytes, callback) { exif ->
+            when {
+                dateMillis != null -> {
+                    // set
+                    val date = Date(dateMillis)
+                    val dateString = ExifInterfaceHelper.DATETIME_FORMAT.format(date)
+                    val subSec = dateMillis % 1000
+                    val subSecString = if (subSec > 0) subSec.toString().padStart(3, '0') else null
+
+                    if (fields.contains(ExifInterface.TAG_DATETIME)) {
+                        exif.setAttribute(ExifInterface.TAG_DATETIME, dateString)
+                        exif.setAttribute(ExifInterface.TAG_SUBSEC_TIME, subSecString)
+                    }
+                    if (fields.contains(ExifInterface.TAG_DATETIME_ORIGINAL)) {
+                        exif.setAttribute(ExifInterface.TAG_DATETIME_ORIGINAL, dateString)
+                        exif.setAttribute(ExifInterface.TAG_SUBSEC_TIME_ORIGINAL, subSecString)
+                    }
+                    if (fields.contains(ExifInterface.TAG_DATETIME_DIGITIZED)) {
+                        exif.setAttribute(ExifInterface.TAG_DATETIME_DIGITIZED, dateString)
+                        exif.setAttribute(ExifInterface.TAG_SUBSEC_TIME_DIGITIZED, subSecString)
+                    }
+                    if (fields.contains(ExifInterface.TAG_GPS_DATESTAMP)) {
+                        exif.setAttribute(ExifInterface.TAG_GPS_DATESTAMP, ExifInterfaceHelper.GPS_DATE_FORMAT.format(date))
+                        exif.setAttribute(ExifInterface.TAG_GPS_TIMESTAMP, ExifInterfaceHelper.GPS_TIME_FORMAT.format(date))
+                    }
+                }
+                shiftMinutes != null -> {
+                    // shift
+                    val shiftMillis = shiftMinutes * 60000
+                    listOf(
+                        ExifInterface.TAG_DATETIME,
+                        ExifInterface.TAG_DATETIME_ORIGINAL,
+                        ExifInterface.TAG_DATETIME_DIGITIZED,
+                    ).forEach { field ->
+                        if (fields.contains(field)) {
+                            exif.getSafeDateMillis(field) { date ->
+                                exif.setAttribute(field, ExifInterfaceHelper.DATETIME_FORMAT.format(date + shiftMillis))
+                            }
+                        }
+                    }
+                    if (fields.contains(ExifInterface.TAG_GPS_DATESTAMP)) {
+                        exif.gpsDateTime?.let { date ->
+                            val shifted = date + shiftMillis - TimeZone.getDefault().rawOffset
+                            exif.setAttribute(ExifInterface.TAG_GPS_DATESTAMP, ExifInterfaceHelper.GPS_DATE_FORMAT.format(shifted))
+                            exif.setAttribute(ExifInterface.TAG_GPS_TIMESTAMP, ExifInterfaceHelper.GPS_TIME_FORMAT.format(shifted))
+                        }
+                    }
+                }
+                else -> {
+                    // clear
+                    if (fields.contains(ExifInterface.TAG_DATETIME)) {
+                        exif.setAttribute(ExifInterface.TAG_DATETIME, null)
+                        exif.setAttribute(ExifInterface.TAG_SUBSEC_TIME, null)
+                        exif.setAttribute(ExifInterface.TAG_OFFSET_TIME, null)
+                    }
+                    if (fields.contains(ExifInterface.TAG_DATETIME_ORIGINAL)) {
+                        exif.setAttribute(ExifInterface.TAG_DATETIME_ORIGINAL, null)
+                        exif.setAttribute(ExifInterface.TAG_SUBSEC_TIME_ORIGINAL, null)
+                        exif.setAttribute(ExifInterface.TAG_OFFSET_TIME_ORIGINAL, null)
+                    }
+                    if (fields.contains(ExifInterface.TAG_DATETIME_DIGITIZED)) {
+                        exif.setAttribute(ExifInterface.TAG_DATETIME_DIGITIZED, null)
+                        exif.setAttribute(ExifInterface.TAG_SUBSEC_TIME_DIGITIZED, null)
+                        exif.setAttribute(ExifInterface.TAG_OFFSET_TIME_DIGITIZED, null)
+                    }
+                    if (fields.contains(ExifInterface.TAG_GPS_DATESTAMP)) {
+                        exif.setAttribute(ExifInterface.TAG_GPS_DATESTAMP, null)
+                        exif.setAttribute(ExifInterface.TAG_GPS_TIMESTAMP, null)
+                    }
+                }
+            }
+            exif.saveAttributes()
+        }
+        if (success) {
+            callback.onSuccess(true)
         }
     }
 
@@ -492,8 +605,8 @@ abstract class ImageProvider {
             }
         }
 
-    interface ImageOpCallback {
-        fun onSuccess(fields: FieldMap)
+    interface ImageOpCallback<T> {
+        fun onSuccess(res: T)
         fun onFailure(throwable: Throwable)
     }
 

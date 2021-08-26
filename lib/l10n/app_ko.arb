@@ -7,9 +7,11 @@
 
   "applyButtonLabel": "확인",
   "deleteButtonLabel": "삭제",
+  "nextButtonLabel": "다음",
   "showButtonLabel": "보기",
   "hideButtonLabel": "숨기기",
   "continueButtonLabel": "다음",
+
   "changeTooltip": "변경",
   "clearTooltip": "초기화",
   "previousTooltip": "이전",
@@ -63,6 +65,8 @@
   "videoActionSelectStreams": "트랙 선택",
   "videoActionSetSpeed": "재생 배속",
   "videoActionSettings": "설정",
+
+  "entryInfoActionEditDate": "날짜와 시간 수정",
 
   "filterFavouriteLabel": "즐겨찾기",
   "filterLocationEmptyLabel": "장소 없음",
@@ -136,6 +140,14 @@
   "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, other{이 앨범들의 항목 {count}개를 삭제하시겠습니까?}}",
 
   "renameEntryDialogLabel": "이름",
+
+  "editEntryDateDialogTitle": "날짜 및 시간",
+  "editEntryDateDialogSet": "설정",
+  "editEntryDateDialogShift": "앞뒤로",
+  "editEntryDateDialogClear": "삭제",
+  "editEntryDateDialogFieldSelection": "필드 선택",
+  "editEntryDateDialogHours": "시간",
+  "editEntryDateDialogMinutes": "분",
 
   "videoSpeedDialogLabel": "재생 배속",
 

@@ -167,6 +167,7 @@ class _WelcomePageState extends State<WelcomePage> {
         child: Theme(
           data: Theme.of(context).copyWith(
             scrollbarTheme: const ScrollbarThemeData(
+              isAlwaysShown: true,
               radius: Radius.circular(16),
               crossAxisMargin: 6,
               mainAxisMargin: 16,

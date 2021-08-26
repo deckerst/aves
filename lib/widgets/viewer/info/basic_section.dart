@@ -40,36 +40,41 @@ class BasicSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final infoUnknown = l10n.viewerInfoUnknown;
-    final date = entry.bestDate;
     final locale = l10n.localeName;
-    final dateText = date != null ? formatDateTime(date, locale) : infoUnknown;
 
-    // TODO TLAD line break on all characters for the following fields when this is fixed: https://github.com/flutter/flutter/issues/61081
-    // inserting ZWSP (\u200B) between characters does help, but it messes with width and height computation (another Flutter issue)
-    final title = entry.bestTitle ?? infoUnknown;
-    final uri = entry.uri;
-    final path = entry.path;
+    return AnimatedBuilder(
+        animation: entry.metadataChangeNotifier,
+        builder: (context, child) {
+          // TODO TLAD line break on all characters for the following fields when this is fixed: https://github.com/flutter/flutter/issues/61081
+          // inserting ZWSP (\u200B) between characters does help, but it messes with width and height computation (another Flutter issue)
+          final title = entry.bestTitle ?? infoUnknown;
+          final date = entry.bestDate;
+          final dateText = date != null ? formatDateTime(date, locale) : infoUnknown;
+          final showResolution = !entry.isSvg && entry.isSized;
+          final sizeText = entry.sizeBytes != null ? formatFilesize(entry.sizeBytes!) : infoUnknown;
+          final path = entry.path;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        InfoRowGroup(
-          info: {
-            l10n.viewerInfoLabelTitle: title,
-            l10n.viewerInfoLabelDate: dateText,
-            if (entry.isVideo) ..._buildVideoRows(context),
-            if (!entry.isSvg && entry.isSized) l10n.viewerInfoLabelResolution: rasterResolutionText,
-            l10n.viewerInfoLabelSize: entry.sizeBytes != null ? formatFilesize(entry.sizeBytes!) : infoUnknown,
-            l10n.viewerInfoLabelUri: uri,
-            if (path != null) l10n.viewerInfoLabelPath: path,
-          },
-        ),
-        OwnerProp(
-          entry: entry,
-        ),
-        _buildChips(context),
-      ],
-    );
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              InfoRowGroup(
+                info: {
+                  l10n.viewerInfoLabelTitle: title,
+                  l10n.viewerInfoLabelDate: dateText,
+                  if (entry.isVideo) ..._buildVideoRows(context),
+                  if (showResolution) l10n.viewerInfoLabelResolution: rasterResolutionText,
+                  l10n.viewerInfoLabelSize: sizeText,
+                  l10n.viewerInfoLabelUri: entry.uri,
+                  if (path != null) l10n.viewerInfoLabelPath: path,
+                },
+              ),
+              OwnerProp(
+                entry: entry,
+              ),
+              _buildChips(context),
+            ],
+          );
+        });
   }
 
   Widget _buildChips(BuildContext context) {

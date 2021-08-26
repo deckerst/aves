@@ -38,6 +38,7 @@ class ImageFileHandler(private val activity: Activity) : MethodCallHandler {
             "rename" -> GlobalScope.launch(Dispatchers.IO) { safeSuspend(call, result, ::rename) }
             "rotate" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::rotate) }
             "flip" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::flip) }
+            "editDate" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::editDate) }
             "clearSizedThumbnailDiskCache" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::clearSizedThumbnailDiskCache) }
             else -> result.notImplemented()
         }
@@ -57,8 +58,8 @@ class ImageFileHandler(private val activity: Activity) : MethodCallHandler {
             return
         }
 
-        provider.fetchSingle(activity, uri, mimeType, object : ImageOpCallback {
-            override fun onSuccess(fields: FieldMap) = result.success(fields)
+        provider.fetchSingle(activity, uri, mimeType, object : ImageOpCallback<FieldMap> {
+            override fun onSuccess(res: FieldMap) = result.success(res)
             override fun onFailure(throwable: Throwable) = result.error("getEntry-failure", "failed to get entry for uri=$uri", throwable.message)
         })
     }
@@ -159,8 +160,8 @@ class ImageFileHandler(private val activity: Activity) : MethodCallHandler {
         }
 
         destinationDir = ensureTrailingSeparator(destinationDir)
-        provider.captureFrame(activity, desiredName, exifFields, bytes, destinationDir, object : ImageOpCallback {
-            override fun onSuccess(fields: FieldMap) = result.success(fields)
+        provider.captureFrame(activity, desiredName, exifFields, bytes, destinationDir, object : ImageOpCallback<FieldMap> {
+            override fun onSuccess(res: FieldMap) = result.success(res)
             override fun onFailure(throwable: Throwable) = result.error("captureFrame-failure", "failed to capture frame", throwable.message)
         })
     }
@@ -187,8 +188,8 @@ class ImageFileHandler(private val activity: Activity) : MethodCallHandler {
             return
         }
 
-        provider.rename(activity, path, uri, mimeType, newName, object : ImageOpCallback {
-            override fun onSuccess(fields: FieldMap) = result.success(fields)
+        provider.rename(activity, path, uri, mimeType, newName, object : ImageOpCallback<FieldMap> {
+            override fun onSuccess(res: FieldMap) = result.success(res)
             override fun onFailure(throwable: Throwable) = result.error("rename-failure", "failed to rename", throwable.message)
         })
     }
@@ -230,9 +231,40 @@ class ImageFileHandler(private val activity: Activity) : MethodCallHandler {
             return
         }
 
-        provider.changeOrientation(activity, path, uri, mimeType, sizeBytes, op, object : ImageOpCallback {
-            override fun onSuccess(fields: FieldMap) = result.success(fields)
+        provider.changeOrientation(activity, path, uri, mimeType, sizeBytes, op, object : ImageOpCallback<FieldMap> {
+            override fun onSuccess(res: FieldMap) = result.success(res)
             override fun onFailure(throwable: Throwable) = result.error("changeOrientation-failure", "failed to change orientation", throwable.message)
+        })
+    }
+
+    private fun editDate(call: MethodCall, result: MethodChannel.Result) {
+        val dateMillis = call.argument<Number>("dateMillis")?.toLong()
+        val shiftMinutes = call.argument<Number>("shiftMinutes")?.toLong()
+        val fields = call.argument<List<String>>("fields")
+        val entryMap = call.argument<FieldMap>("entry")
+        if (entryMap == null || fields == null) {
+            result.error("editDate-args", "failed because of missing arguments", null)
+            return
+        }
+
+        val uri = (entryMap["uri"] as String?)?.let { Uri.parse(it) }
+        val path = entryMap["path"] as String?
+        val mimeType = entryMap["mimeType"] as String?
+        val sizeBytes = (entryMap["sizeBytes"] as Number?)?.toLong()
+        if (uri == null || path == null || mimeType == null || sizeBytes == null) {
+            result.error("editDate-args", "failed because entry fields are missing", null)
+            return
+        }
+
+        val provider = getProvider(uri)
+        if (provider == null) {
+            result.error("editDate-provider", "failed to find provider for uri=$uri", null)
+            return
+        }
+
+        provider.editDate(activity, path, uri, mimeType, sizeBytes, dateMillis, shiftMinutes, fields, object : ImageOpCallback<Boolean> {
+            override fun onSuccess(res: Boolean) = result.success(res)
+            override fun onFailure(throwable: Throwable) = result.error("editDate-failure", "failed to edit date", throwable.message)
         })
     }
 
