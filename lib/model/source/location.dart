@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:aves/geo/countries.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/location.dart';
-import 'package:aves/model/metadata.dart';
+import 'package:aves/model/metadata/address.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums.dart';
 import 'package:aves/services/services.dart';

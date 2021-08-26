@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:aves/model/entry.dart';
-import 'package:aves/model/metadata.dart';
+import 'package:aves/model/metadata/overlay.dart';
 import 'package:aves/model/multipage.dart';
 import 'package:aves/model/settings/coordinate_format.dart';
 import 'package:aves/model/settings/settings.dart';

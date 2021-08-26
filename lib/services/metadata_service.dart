@@ -1,5 +1,6 @@
 import 'package:aves/model/entry.dart';
-import 'package:aves/model/metadata.dart';
+import 'package:aves/model/metadata/catalog.dart';
+import 'package:aves/model/metadata/overlay.dart';
 import 'package:aves/model/multipage.dart';
 import 'package:aves/model/panorama.dart';
 import 'package:aves/services/service_policy.dart';

@@ -1,4 +1,3 @@
-enum SettingsAction {
-  export,
-  import,
+enum EntryInfoAction {
+  editDate,
 }

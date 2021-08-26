@@ -3,7 +3,8 @@ import 'dart:async';
 import 'package:aves/geo/countries.dart';
 import 'package:aves/model/entry_cache.dart';
 import 'package:aves/model/favourites.dart';
-import 'package:aves/model/metadata.dart';
+import 'package:aves/model/metadata/address.dart';
+import 'package:aves/model/metadata/catalog.dart';
 import 'package:aves/model/multipage.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/video/metadata.dart';
@@ -413,8 +414,8 @@ class AvesEntry {
     addressDetails = null;
   }
 
-  Future<void> catalog({bool background = false, bool persist = true}) async {
-    if (isCatalogued) return;
+  Future<void> catalog({bool background = false, bool persist = true, bool force = false}) async {
+    if (isCatalogued && !force) return;
     if (isSvg) {
       // vector image sizing is not essential, so we should not spend time for it during loading
       // but it is useful anyway (for aspect ratios etc.) so we size them during cataloguing
