@@ -9,14 +9,13 @@ import com.drew.imaging.ImageMetadataReader
 import com.drew.metadata.file.FileTypeDirectory
 import deckers.thibault.aves.metadata.Metadata
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeString
-import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.model.SourceEntry
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.StorageUtils
 
 internal class ContentImageProvider : ImageProvider() {
-    override fun fetchSingle(context: Context, uri: Uri, sourceMimeType: String?, callback: ImageOpCallback<FieldMap>) {
+    override fun fetchSingle(context: Context, uri: Uri, sourceMimeType: String?, callback: ImageOpCallback) {
         // source MIME type may be incorrect, so we get a second opinion if possible
         var extractorMimeType: String? = null
         try {

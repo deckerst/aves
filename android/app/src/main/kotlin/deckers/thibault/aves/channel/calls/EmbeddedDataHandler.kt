@@ -211,13 +211,13 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
         )
         if (isImage(mimeType) || isVideo(mimeType)) {
             GlobalScope.launch(Dispatchers.IO) {
-                ContentImageProvider().fetchSingle(context, uri, mimeType, object : ImageProvider.ImageOpCallback<FieldMap> {
-                    override fun onSuccess(res: FieldMap) {
-                        resultFields.putAll(res)
+                ContentImageProvider().fetchSingle(context, uri, mimeType, object : ImageProvider.ImageOpCallback {
+                    override fun onSuccess(fields: FieldMap) {
+                        resultFields.putAll(fields)
                         result.success(resultFields)
                     }
 
-                    override fun onFailure(throwable: Throwable) = result.error("copyEmbeddedBytes-failure", "failed to get entry for uri=$uri mime=$mimeType", throwable.message)
+                    override fun onFailure(throwable: Throwable) = result.error("copyEmbeddedBytes-failure", "failed to get entry for uri=$uri mime=$mimeType", "${throwable.message}\n${throwable.stackTraceToString()}")
                 })
             }
         } else {

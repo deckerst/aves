@@ -1,7 +1,6 @@
 import 'package:aves/model/actions/entry_info_actions.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/metadata/date_modifier.dart';
-import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
@@ -14,7 +13,6 @@ import 'package:aves/widgets/viewer/info/info_search.dart';
 import 'package:aves/widgets/viewer/info/metadata/metadata_section.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:provider/provider.dart';
 
 class InfoAppBar extends StatelessWidget with FeedbackMixin, PermissionAwareMixin {
   final AvesEntry entry;
@@ -100,7 +98,7 @@ class InfoAppBar extends StatelessWidget with FeedbackMixin, PermissionAwareMixi
     if (!await checkStoragePermission(context, {entry})) return;
 
     // TODO TLAD [meta edit] handle viewer mode
-    final success = await context.read<CollectionSource>().editEntryDate(entry, modifier);
+    final success = await entry.editDate(modifier, persist: true);
     if (success) {
       showFeedback(context, context.l10n.genericSuccessFeedback);
     } else {

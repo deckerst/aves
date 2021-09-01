@@ -97,7 +97,7 @@ abstract class ImageFileService {
 
   Future<Map<String, dynamic>> flip(AvesEntry entry);
 
-  Future<bool> editDate(AvesEntry entry, DateModifier modifier);
+  Future<Map<String, dynamic>> editDate(AvesEntry entry, DateModifier modifier);
 }
 
 class PlatformImageFileService implements ImageFileService {
@@ -414,7 +414,7 @@ class PlatformImageFileService implements ImageFileService {
   }
 
   @override
-  Future<bool> editDate(AvesEntry entry, DateModifier modifier) async {
+  Future<Map<String, dynamic>> editDate(AvesEntry entry, DateModifier modifier) async {
     try {
       final result = await platform.invokeMethod('editDate', <String, dynamic>{
         'entry': _toPlatformEntryMap(entry),
@@ -422,11 +422,11 @@ class PlatformImageFileService implements ImageFileService {
         'shiftMinutes': modifier.shiftMinutes,
         'fields': modifier.fields.map(_toExifInterfaceTag).toList(),
       });
-      if (result != null) return result as bool;
+      if (result != null) return (result as Map).cast<String, dynamic>();
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
     }
-    return false;
+    return {};
   }
 
   String _toExifInterfaceTag(MetadataField field) {
