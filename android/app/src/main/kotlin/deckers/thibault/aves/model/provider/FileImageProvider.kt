@@ -2,12 +2,11 @@ package deckers.thibault.aves.model.provider
 
 import android.content.Context
 import android.net.Uri
-import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.model.SourceEntry
 import java.io.File
 
 internal class FileImageProvider : ImageProvider() {
-    override fun fetchSingle(context: Context, uri: Uri, sourceMimeType: String?, callback: ImageOpCallback<FieldMap>) {
+    override fun fetchSingle(context: Context, uri: Uri, sourceMimeType: String?, callback: ImageOpCallback) {
         if (sourceMimeType == null) {
             callback.onFailure(Exception("MIME type is null for uri=$uri"))
             return

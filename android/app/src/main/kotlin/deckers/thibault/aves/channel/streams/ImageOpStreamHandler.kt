@@ -138,8 +138,8 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
 
         destinationDir = StorageUtils.ensureTrailingSeparator(destinationDir)
         val entries = entryMapList.map(::AvesEntry)
-        provider.exportMultiple(activity, mimeType, destinationDir, entries, object : ImageOpCallback<FieldMap> {
-            override fun onSuccess(res: FieldMap) = success(res)
+        provider.exportMultiple(activity, mimeType, destinationDir, entries, object : ImageOpCallback {
+            override fun onSuccess(fields: FieldMap) = success(fields)
             override fun onFailure(throwable: Throwable) = error("export-failure", "failed to export entries", throwable)
         })
         endOfStream()
@@ -168,8 +168,8 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
 
         destinationDir = StorageUtils.ensureTrailingSeparator(destinationDir)
         val entries = entryMapList.map(::AvesEntry)
-        provider.moveMultiple(activity, copy, destinationDir, entries, object : ImageOpCallback<FieldMap> {
-            override fun onSuccess(res: FieldMap) = success(res)
+        provider.moveMultiple(activity, copy, destinationDir, entries, object : ImageOpCallback {
+            override fun onSuccess(fields: FieldMap) = success(fields)
             override fun onFailure(throwable: Throwable) = error("move-failure", "failed to move entries", throwable)
         })
         endOfStream()

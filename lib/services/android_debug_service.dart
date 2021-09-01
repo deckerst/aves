@@ -136,6 +136,20 @@ class AndroidDebugService {
     return {};
   }
 
+  static Future<Map> getPixyMetadata(AvesEntry entry) async {
+    try {
+      // returns map with all data available from the `PixyMeta` library
+      final result = await platform.invokeMethod('getPixyMetadata', <String, dynamic>{
+        'mimeType': entry.mimeType,
+        'uri': entry.uri,
+      });
+      if (result != null) return result as Map;
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
+    return {};
+  }
+
   static Future<Map> getTiffStructure(AvesEntry entry) async {
     if (entry.mimeType != MimeTypes.tiff) return {};
 

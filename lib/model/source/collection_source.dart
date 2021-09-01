@@ -7,7 +7,6 @@ import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/filters/tag.dart';
-import 'package:aves/model/metadata/date_modifier.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/album.dart';
 import 'package:aves/model/source/enums.dart';
@@ -156,14 +155,6 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
       await favourites.moveEntry(oldContentId, entry);
       await covers.moveEntry(oldContentId, entry);
     }
-  }
-
-  Future<bool> editEntryDate(AvesEntry entry, DateModifier modifier) async {
-    final success = await imageFileService.editDate(entry, modifier);
-    if (!success) return false;
-
-    await entry.catalog(background: false, force: true);
-    return true;
   }
 
   Future<bool> renameEntry(AvesEntry entry, String newName, {required bool persist}) async {

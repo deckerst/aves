@@ -5,6 +5,7 @@ import 'package:aves/model/entry_cache.dart';
 import 'package:aves/model/favourites.dart';
 import 'package:aves/model/metadata/address.dart';
 import 'package:aves/model/metadata/catalog.dart';
+import 'package:aves/model/metadata/date_modifier.dart';
 import 'package:aves/model/multipage.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/video/metadata.dart';
@@ -29,7 +30,7 @@ class AvesEntry {
   int width;
   int height;
   int sourceRotationDegrees;
-  final int? sizeBytes;
+  int? sizeBytes;
   String? _sourceTitle;
 
   // `dateModifiedSecs` can be missing in viewer mode
@@ -560,6 +561,8 @@ class AvesEntry {
     final durationMillis = newFields['durationMillis'];
     if (durationMillis is int) this.durationMillis = durationMillis;
 
+    final sizeBytes = newFields['sizeBytes'];
+    if (sizeBytes is int) this.sizeBytes = sizeBytes;
     final dateModifiedSecs = newFields['dateModifiedSecs'];
     if (dateModifiedSecs is int) this.dateModifiedSecs = dateModifiedSecs;
     final rotationDegrees = newFields['rotationDegrees'];
@@ -596,6 +599,15 @@ class AvesEntry {
     final oldIsFlipped = isFlipped;
     await _applyNewFields(newFields, persist: persist);
     await _onImageChanged(oldDateModifiedSecs, oldRotationDegrees, oldIsFlipped);
+    return true;
+  }
+
+  Future<bool> editDate(DateModifier modifier, {required bool persist}) async {
+    final newFields = await imageFileService.editDate(this, modifier);
+    if (newFields.isEmpty) return false;
+
+    await _applyNewFields(newFields, persist: persist);
+    await catalog(background: false, persist: persist, force: true);
     return true;
   }
 

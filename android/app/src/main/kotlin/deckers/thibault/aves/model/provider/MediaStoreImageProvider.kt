@@ -38,7 +38,7 @@ class MediaStoreImageProvider : ImageProvider() {
         fetchFrom(context, isModified, handleNewEntry, VIDEO_CONTENT_URI, VIDEO_PROJECTION)
     }
 
-    override fun fetchSingle(context: Context, uri: Uri, sourceMimeType: String?, callback: ImageOpCallback<FieldMap>) {
+    override fun fetchSingle(context: Context, uri: Uri, sourceMimeType: String?, callback: ImageOpCallback) {
         val id = uri.tryParseId()
         val onSuccess = fun(entry: FieldMap) {
             entry["uri"] = uri.toString()
@@ -255,7 +255,7 @@ class MediaStoreImageProvider : ImageProvider() {
         copy: Boolean,
         destinationDir: String,
         entries: List<AvesEntry>,
-        callback: ImageOpCallback<FieldMap>,
+        callback: ImageOpCallback,
     ) {
         val destinationDirDocFile = createDirectoryIfAbsent(activity, destinationDir)
         if (destinationDirDocFile == null) {
