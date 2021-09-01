@@ -77,6 +77,11 @@ class Constants {
       license: 'Apache 2.0',
       sourceUrl: 'https://github.com/drewnoakes/metadata-extractor',
     ),
+    Dependency(
+      name: 'PixyMeta Android (Aves fork)',
+      license: 'Eclipse Public License 1.0',
+      sourceUrl: 'https://github.com/deckerst/pixymeta-android',
+    ),
   ];
 
   static const List<Dependency> flutterPlugins = [
