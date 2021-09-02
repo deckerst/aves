@@ -32,11 +32,6 @@ enum EntryAction {
 }
 
 class EntryActions {
-  static const selection = [
-    EntryAction.share,
-    EntryAction.delete,
-  ];
-
   static const inApp = [
     EntryAction.info,
     EntryAction.toggleFavourite,

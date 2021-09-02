@@ -1,7 +1,8 @@
 import 'package:aves/model/covers.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/favourites.dart';
-import 'package:aves/model/metadata.dart';
+import 'package:aves/model/metadata/address.dart';
+import 'package:aves/model/metadata/catalog.dart';
 import 'package:aves/services/services.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
@@ -17,7 +18,7 @@ class DebugAppDatabaseSection extends StatefulWidget {
 class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with AutomaticKeepAliveClientMixin {
   late Future<int> _dbFileSizeLoader;
   late Future<Set<AvesEntry>> _dbEntryLoader;
-  late Future<List<DateMetadata>> _dbDateLoader;
+  late Future<Map<int?, int?>> _dbDateLoader;
   late Future<List<CatalogMetadata>> _dbMetadataLoader;
   late Future<List<AddressDetails>> _dbAddressLoader;
   late Future<Set<FavouriteRow>> _dbFavouritesLoader;
@@ -82,7 +83,7 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                   );
                 },
               ),
-              FutureBuilder<List>(
+              FutureBuilder<Map<int?, int?>>(
                 future: _dbDateLoader,
                 builder: (context, snapshot) {
                   if (snapshot.hasError) return Text(snapshot.error.toString());

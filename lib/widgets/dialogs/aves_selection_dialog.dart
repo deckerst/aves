@@ -51,6 +51,7 @@ class _AvesSelectionDialogState<T> extends State<AvesSelectionDialog<T>> {
   Widget _buildRadioListTile(T value, String title) {
     final subtitle = widget.optionSubtitleBuilder?.call(value);
     return ReselectableRadioListTile<T>(
+      // key is expected by test driver
       key: Key(value.toString()),
       value: value,
       groupValue: _selectedValue,

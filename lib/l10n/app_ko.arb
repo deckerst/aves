@@ -7,9 +7,11 @@
 
   "applyButtonLabel": "확인",
   "deleteButtonLabel": "삭제",
+  "nextButtonLabel": "다음",
   "showButtonLabel": "보기",
   "hideButtonLabel": "숨기기",
   "continueButtonLabel": "다음",
+
   "changeTooltip": "변경",
   "clearTooltip": "초기화",
   "previousTooltip": "이전",
@@ -63,6 +65,8 @@
   "videoActionSelectStreams": "트랙 선택",
   "videoActionSetSpeed": "재생 배속",
   "videoActionSettings": "설정",
+
+  "entryInfoActionEditDate": "날짜와 시간 수정",
 
   "filterFavouriteLabel": "즐겨찾기",
   "filterLocationEmptyLabel": "장소 없음",
@@ -137,6 +141,14 @@
 
   "renameEntryDialogLabel": "이름",
 
+  "editEntryDateDialogTitle": "날짜 및 시간",
+  "editEntryDateDialogSet": "설정",
+  "editEntryDateDialogShift": "앞뒤로",
+  "editEntryDateDialogClear": "삭제",
+  "editEntryDateDialogFieldSelection": "필드 선택",
+  "editEntryDateDialogHours": "시간",
+  "editEntryDateDialogMinutes": "분",
+
   "videoSpeedDialogLabel": "재생 배속",
 
   "videoStreamSelectionDialogVideo": "동영상",
@@ -163,7 +175,7 @@
   "aboutUpdateLinks1": "앱의 최신 버전을",
   "aboutUpdateLinks2": "와",
   "aboutUpdateLinks3": "에서 다운로드 사용 가능합니다.",
-  "aboutUpdateGithub": "깃허브",
+  "aboutUpdateGitHub": "깃허브",
   "aboutUpdateGooglePlay": "구글 플레이",
   "aboutCredits": "크레딧",
   "aboutCreditsWorldAtlas1": "이 앱은",
@@ -200,7 +212,6 @@
   "dateToday": "오늘",
   "dateYesterday": "어제",
   "dateThisMonth": "이번 달",
-  "errorUnsupportedMimeType": "{mimeType} 지원되지 않음",
   "collectionDeleteFailureFeedback": "{count, plural, other{항목 {count}개를 삭제하지 못했습니다}}",
   "collectionCopyFailureFeedback": "{count, plural, other{항목 {count}개를 복사하지 못했습니다}}",
   "collectionMoveFailureFeedback": "{count, plural, other{항목 {count}개를 이동하지 못했습니다}}",
@@ -288,6 +299,10 @@
   "settingsThumbnailShowRawIcon": "Raw 아이콘 표시",
   "settingsThumbnailShowVideoDuration": "동영상 길이 표시",
 
+  "settingsCollectionSelectionQuickActionsTile": "항목 선택의 빠른 작업",
+  "settingsCollectionSelectionQuickActionEditorTitle": "빠른 작업",
+  "settingsCollectionSelectionQuickActionEditorBanner": "버튼을 길게 누른 후 이동하여 항목 선택할 때 표시될 버튼을 선택하세요.",
+
   "settingsSectionViewer": "뷰어",
   "settingsImageBackground": "사진 배경",
   "settingsViewerShowMinimap": "미니맵 표시",
@@ -311,8 +326,8 @@
   "settingsVideoEnableAutoPlay": "자동 재생",
   "settingsVideoLoopModeTile": "반복 모드",
   "settingsVideoLoopModeTitle": "반복 모드",
-  "settingsVideoQuickActionsTile": "빠른 동영상 작업",
-  "settingsVideoQuickActionEditorTitle": "빠른 동영상 작업",
+  "settingsVideoQuickActionsTile": "동영상의 빠른 작업",
+  "settingsVideoQuickActionEditorTitle": "빠른 작업",
 
   "settingsSubtitleThemeTile": "자막",
   "settingsSubtitleThemeTitle": "자막",

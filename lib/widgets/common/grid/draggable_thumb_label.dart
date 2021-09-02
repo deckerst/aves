@@ -1,3 +1,4 @@
+import 'package:aves/theme/format.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/grid/section_layout.dart';
 import 'package:flutter/material.dart';
@@ -62,6 +63,6 @@ class DraggableThumbLabel<T> extends StatelessWidget {
   static String formatDayThumbLabel(BuildContext context, DateTime? date) {
     final l10n = context.l10n;
     if (date == null) return l10n.sectionUnknown;
-    return DateFormat.yMMMd(l10n.localeName).format(date);
+    return formatDay(date, l10n.localeName);
   }
 }

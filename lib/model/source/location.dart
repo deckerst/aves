@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:aves/geo/countries.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/location.dart';
-import 'package:aves/model/metadata.dart';
+import 'package:aves/model/metadata/address.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums.dart';
 import 'package:aves/services/services.dart';
@@ -20,10 +20,8 @@ mixin LocationMixin on SourceBase {
   Future<void> loadAddresses() async {
     final stopwatch = Stopwatch()..start();
     final saved = await metadataDb.loadAddresses();
-    visibleEntries.forEach((entry) {
-      final contentId = entry.contentId;
-      entry.addressDetails = saved.firstWhereOrNull((address) => address.contentId == contentId);
-    });
+    final idMap = entryById;
+    saved.forEach((metadata) => idMap[metadata.contentId]?.addressDetails = metadata);
     debugPrint('$runtimeType loadAddresses complete in ${stopwatch.elapsed.inMilliseconds}ms for ${saved.length} entries');
     onAddressMetadataChanged();
   }

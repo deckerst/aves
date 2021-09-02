@@ -11,13 +11,11 @@ import 'package:flutter/material.dart';
 class ErrorThumbnail extends StatefulWidget {
   final AvesEntry entry;
   final double extent;
-  final String tooltip;
 
   const ErrorThumbnail({
     Key? key,
     required this.entry,
     required this.extent,
-    required this.tooltip,
   }) : super(key: key);
 
   @override
@@ -48,27 +46,27 @@ class _ErrorThumbnailState extends State<ErrorThumbnail> {
             child = const SizedBox();
           } else {
             final exists = snapshot.data!;
-            child = Tooltip(
-              message: exists ? widget.tooltip : context.l10n.viewerErrorDoesNotExist,
-              preferBelow: false,
-              child: exists
-                  ? LayoutBuilder(builder: (context, constraints) {
-                      final fontSize = min(extent, constraints.biggest.width) / 5;
-                      return Text(
-                        MimeUtils.displayType(entry.mimeType),
-                        style: TextStyle(
-                          color: color,
-                          fontSize: fontSize,
-                        ),
-                        textAlign: TextAlign.center,
-                      );
-                    })
-                  : Icon(
+            child = exists
+                ? LayoutBuilder(builder: (context, constraints) {
+                    final fontSize = min(extent, constraints.biggest.width) / 5;
+                    return Text(
+                      MimeUtils.displayType(entry.mimeType),
+                      style: TextStyle(
+                        color: color,
+                        fontSize: fontSize,
+                      ),
+                      textAlign: TextAlign.center,
+                    );
+                  })
+                : Tooltip(
+                    message: context.l10n.viewerErrorDoesNotExist,
+                    preferBelow: false,
+                    child: Icon(
                       AIcons.broken,
                       size: extent / 2,
                       color: color,
                     ),
-            );
+                  );
           }
           return Container(
             alignment: Alignment.center,

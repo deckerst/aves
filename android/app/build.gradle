@@ -32,7 +32,7 @@ if (keystorePropertiesFile.exists()) {
         keystoreProperties.load(reader)
     }
 } else {
-    // for release using credentials in environment variables set up by Github Actions
+    // for release using credentials in environment variables set up by GitHub Actions
     // warning: in property file, single quotes should be escaped with a backslash
     // but they should not be escaped when stored in env variables
     keystoreProperties['storeFile'] = System.getenv('AVES_STORE_FILE')
@@ -120,7 +120,10 @@ dependencies {
     implementation 'com.caverock:androidsvg-aar:1.4'
     implementation 'com.commonsware.cwac:document:0.4.1'
     implementation 'com.drewnoakes:metadata-extractor:2.16.0'
+    // https://jitpack.io/com/github/deckerst/Android-TiffBitmapFactory/**********/build.log
     implementation 'com.github.deckerst:Android-TiffBitmapFactory:876e53870a' // forked, built by JitPack
+    // https://jitpack.io/com/github/deckerst/pixymeta-android/**********/build.log
+    implementation 'com.github.deckerst:pixymeta-android:f90140ed2b' // forked, built by JitPack
     implementation 'com.github.bumptech.glide:glide:4.12.0'
 
     kapt 'androidx.annotation:annotation:1.2.0'

@@ -61,7 +61,7 @@ class _AboutUpdateState extends State<AboutUpdate> {
                         TextSpan(text: context.l10n.aboutUpdateLinks1),
                         WidgetSpan(
                           child: LinkChip(
-                            text: context.l10n.aboutUpdateGithub,
+                            text: context.l10n.aboutUpdateGitHub,
                             url: 'https://github.com/deckerst/aves/releases',
                             textStyle: const TextStyle(fontWeight: FontWeight.bold),
                           ),

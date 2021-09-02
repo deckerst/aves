@@ -18,12 +18,15 @@
   "@applyButtonLabel": {},
   "deleteButtonLabel": "DELETE",
   "@deleteButtonLabel": {},
+  "nextButtonLabel": "NEXT",
+  "@nextButtonLabel": {},
   "showButtonLabel": "SHOW",
   "@showButtonLabel": {},
   "hideButtonLabel": "HIDE",
   "@hideButtonLabel": {},
   "continueButtonLabel": "CONTINUE",
   "@continueButtonLabel": {},
+
   "changeTooltip": "Change",
   "@changeTooltip": {},
   "clearTooltip": "Clear",
@@ -125,6 +128,9 @@
   "@videoActionSetSpeed": {},
   "videoActionSettings": "Settings",
   "@videoActionSettings": {},
+
+  "entryInfoActionEditDate": "Edit date & time",
+  "@entryInfoActionEditDate": {},
 
   "filterFavouriteLabel": "Favourite",
   "@filterFavouriteLabel": {},
@@ -304,6 +310,21 @@
   "renameEntryDialogLabel": "New name",
   "@renameEntryDialogLabel": {},
 
+  "editEntryDateDialogTitle": "Date & Time",
+  "@editEntryDateDialogTitle": {},
+  "editEntryDateDialogSet": "Set",
+  "@editEntryDateDialogSet": {},
+  "editEntryDateDialogShift": "Shift",
+  "@editEntryDateDialogShift": {},
+  "editEntryDateDialogClear": "Clear",
+  "@editEntryDateDialogClear": {},
+  "editEntryDateDialogFieldSelection": "Field selection",
+  "@editEntryDateDialogFieldSelection": {},
+  "editEntryDateDialogHours": "Hours",
+  "@editEntryDateDialogHours": {},
+  "editEntryDateDialogMinutes": "Minutes",
+  "@editEntryDateDialogMinutes": {},
+
   "videoSpeedDialogLabel": "Playback speed",
   "@videoSpeedDialogLabel": {},
 
@@ -352,8 +373,8 @@
   "@aboutUpdateLinks2": {},
   "aboutUpdateLinks3": ".",
   "@aboutUpdateLinks3": {},
-  "aboutUpdateGithub": "Github",
-  "@aboutUpdateGithub": {},
+  "aboutUpdateGitHub": "GitHub",
+  "@aboutUpdateGitHub": {},
   "aboutUpdateGooglePlay": "Google Play",
   "@aboutUpdateGooglePlay": {},
   "aboutCredits": "Credits",
@@ -425,14 +446,6 @@
   "@dateYesterday": {},
   "dateThisMonth": "This month",
   "@dateThisMonth": {},
-  "errorUnsupportedMimeType": "{mimeType} not supported",
-  "@errorUnsupportedMimeType": {
-    "placeholders": {
-      "mimeType": {
-        "type": "String"
-      }
-    }
-  },
   "collectionDeleteFailureFeedback": "{count, plural, =1{Failed to delete 1 item} other{Failed to delete {count} items}}",
   "@collectionDeleteFailureFeedback": {
     "placeholders": {
@@ -614,6 +627,13 @@
   "settingsThumbnailShowVideoDuration": "Show video duration",
   "@settingsThumbnailShowVideoDuration": {},
 
+  "settingsCollectionSelectionQuickActionsTile": "Quick actions for item selection",
+  "@settingsCollectionSelectionQuickActionsTile": {},
+  "settingsCollectionSelectionQuickActionEditorTitle": "Quick Actions",
+  "@settingsCollectionSelectionQuickActionEditorTitle": {},
+  "settingsCollectionSelectionQuickActionEditorBanner": "Touch and hold to move buttons and select which actions are displayed when selecting items.",
+  "@settingsCollectionSelectionQuickActionEditorBanner": {},
+
   "settingsSectionViewer": "Viewer",
   "@settingsSectionViewer": {},
   "settingsImageBackground": "Image background",
@@ -658,9 +678,9 @@
   "@settingsVideoLoopModeTile": {},
   "settingsVideoLoopModeTitle": "Loop Mode",
   "@settingsVideoLoopModeTitle": {},
-  "settingsVideoQuickActionsTile": "Quick video actions",
+  "settingsVideoQuickActionsTile": "Quick actions for videos",
   "@settingsVideoQuickActionsTile": {},
-  "settingsVideoQuickActionEditorTitle": "Quick Video Actions",
+  "settingsVideoQuickActionEditorTitle": "Quick Actions",
   "@settingsVideoQuickActionEditorTitle": {},
 
   "settingsSubtitleThemeTile": "Subtitles",

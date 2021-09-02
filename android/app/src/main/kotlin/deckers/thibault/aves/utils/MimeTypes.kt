@@ -23,7 +23,7 @@ object MimeTypes {
     // raw raster
     private const val ARW = "image/x-sony-arw"
     private const val CR2 = "image/x-canon-cr2"
-    private const val DNG = "image/x-adobe-dng"
+    const val DNG = "image/x-adobe-dng"
     private const val NEF = "image/x-nikon-nef"
     private const val NRW = "image/x-nikon-nrw"
     private const val ORF = "image/x-olympus-orf"
@@ -80,6 +80,11 @@ object MimeTypes {
     // as of `ExifInterface` v1.3.1, `isSupportedMimeType` reports
     // no support for TIFF images, but it can actually open them (maybe other formats too)
     fun isSupportedByExifInterface(mimeType: String, strict: Boolean = true) = ExifInterface.isSupportedMimeType(mimeType) || !strict
+
+    fun isSupportedByPixyMeta(mimeType: String) = when (mimeType) {
+        JPEG, TIFF, PNG, GIF, BMP -> true
+        else -> false
+    }
 
     // Glide automatically applies EXIF orientation when decoding images of known formats
     // but we need to rotate the decoded bitmap for the other formats

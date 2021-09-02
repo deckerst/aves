@@ -8,6 +8,7 @@ import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/filters/type.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/services/services.dart';
+import 'package:aves/theme/format.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -16,7 +17,6 @@ import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 class BasicSection extends StatelessWidget {
   final AvesEntry entry;
@@ -40,36 +40,41 @@ class BasicSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final infoUnknown = l10n.viewerInfoUnknown;
-    final date = entry.bestDate;
     final locale = l10n.localeName;
-    final dateText = date != null ? '${DateFormat.yMMMd(locale).format(date)} • ${DateFormat.Hm(locale).format(date)}' : infoUnknown;
 
-    // TODO TLAD line break on all characters for the following fields when this is fixed: https://github.com/flutter/flutter/issues/61081
-    // inserting ZWSP (\u200B) between characters does help, but it messes with width and height computation (another Flutter issue)
-    final title = entry.bestTitle ?? infoUnknown;
-    final uri = entry.uri;
-    final path = entry.path;
+    return AnimatedBuilder(
+        animation: entry.metadataChangeNotifier,
+        builder: (context, child) {
+          // TODO TLAD line break on all characters for the following fields when this is fixed: https://github.com/flutter/flutter/issues/61081
+          // inserting ZWSP (\u200B) between characters does help, but it messes with width and height computation (another Flutter issue)
+          final title = entry.bestTitle ?? infoUnknown;
+          final date = entry.bestDate;
+          final dateText = date != null ? formatDateTime(date, locale) : infoUnknown;
+          final showResolution = !entry.isSvg && entry.isSized;
+          final sizeText = entry.sizeBytes != null ? formatFilesize(entry.sizeBytes!) : infoUnknown;
+          final path = entry.path;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        InfoRowGroup(
-          info: {
-            l10n.viewerInfoLabelTitle: title,
-            l10n.viewerInfoLabelDate: dateText,
-            if (entry.isVideo) ..._buildVideoRows(context),
-            if (!entry.isSvg && entry.isSized) l10n.viewerInfoLabelResolution: rasterResolutionText,
-            l10n.viewerInfoLabelSize: entry.sizeBytes != null ? formatFilesize(entry.sizeBytes!) : infoUnknown,
-            l10n.viewerInfoLabelUri: uri,
-            if (path != null) l10n.viewerInfoLabelPath: path,
-          },
-        ),
-        OwnerProp(
-          entry: entry,
-        ),
-        _buildChips(context),
-      ],
-    );
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              InfoRowGroup(
+                info: {
+                  l10n.viewerInfoLabelTitle: title,
+                  l10n.viewerInfoLabelDate: dateText,
+                  if (entry.isVideo) ..._buildVideoRows(context),
+                  if (showResolution) l10n.viewerInfoLabelResolution: rasterResolutionText,
+                  l10n.viewerInfoLabelSize: sizeText,
+                  l10n.viewerInfoLabelUri: entry.uri,
+                  if (path != null) l10n.viewerInfoLabelPath: path,
+                },
+              ),
+              OwnerProp(
+                entry: entry,
+              ),
+              _buildChips(context),
+            ],
+          );
+        });
   }
 
   Widget _buildChips(BuildContext context) {

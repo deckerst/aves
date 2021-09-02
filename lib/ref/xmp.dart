@@ -4,6 +4,7 @@ class XMP {
 
   // cf https://exiftool.org/TagNames/XMP.html
   static const Map<String, String> namespaces = {
+    'acdsee': 'ACDSee',
     'adsml-at': 'AdsML',
     'aux': 'Exif Aux',
     'avm': 'Astronomy Visualization',

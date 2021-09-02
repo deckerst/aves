@@ -48,6 +48,7 @@ class AvesExpansionTile extends StatelessWidget {
         accentColor: Colors.white,
       ),
       child: ExpansionTileCard(
+        // key is expected by test driver
         key: Key('tilecard-$value'),
         value: value,
         expandedNotifier: expandedNotifier,
