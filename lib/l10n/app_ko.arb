@@ -212,7 +212,6 @@
   "dateToday": "오늘",
   "dateYesterday": "어제",
   "dateThisMonth": "이번 달",
-  "errorUnsupportedMimeType": "{mimeType} 지원되지 않음",
   "collectionDeleteFailureFeedback": "{count, plural, other{항목 {count}개를 삭제하지 못했습니다}}",
   "collectionCopyFailureFeedback": "{count, plural, other{항목 {count}개를 복사하지 못했습니다}}",
   "collectionMoveFailureFeedback": "{count, plural, other{항목 {count}개를 이동하지 못했습니다}}",
