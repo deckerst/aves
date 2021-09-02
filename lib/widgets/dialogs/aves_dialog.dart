@@ -31,28 +31,7 @@ class AvesDialog extends AlertDialog {
           // scroll both the title and the content together,
           // and overflow feedback ignores the dialog shape,
           // so we restrict scrolling to the content instead
-          content: scrollableContent != null
-              ? Container(
-                  // padding to avoid transparent border overlapping
-                  padding: const EdgeInsets.symmetric(horizontal: borderWidth),
-                  // workaround because the dialog tries
-                  // to size itself to the content intrinsic size,
-                  // but the `ListView` viewport does not have one
-                  width: 1,
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      border: Border(
-                        bottom: Divider.createBorderSide(context, width: borderWidth),
-                      ),
-                    ),
-                    child: ListView(
-                      controller: scrollController ?? ScrollController(),
-                      shrinkWrap: true,
-                      children: scrollableContent,
-                    ),
-                  ),
-                )
-              : content,
+          content: _buildContent(context, scrollController, scrollableContent, content),
           contentPadding: scrollableContent != null ? EdgeInsets.zero : const EdgeInsets.fromLTRB(24, 20, 24, 0),
           actions: actions,
           actionsPadding: const EdgeInsets.symmetric(horizontal: 8),
@@ -61,6 +40,57 @@ class AvesDialog extends AlertDialog {
             borderRadius: const BorderRadius.all(Radius.circular(24)),
           ),
         );
+
+  static Widget _buildContent(
+    BuildContext context,
+    ScrollController? scrollController,
+    List<Widget>? scrollableContent,
+    Widget? content,
+  ) {
+    if (content != null) {
+      return content;
+    }
+
+    if (scrollableContent != null) {
+      scrollController ??= ScrollController();
+      return Container(
+        // padding to avoid transparent border overlapping
+        padding: const EdgeInsets.symmetric(horizontal: borderWidth),
+        // workaround because the dialog tries
+        // to size itself to the content intrinsic size,
+        // but the `ListView` viewport does not have one
+        width: 1,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            border: Border(
+              bottom: Divider.createBorderSide(context, width: borderWidth),
+            ),
+          ),
+          child: Theme(
+            data: Theme.of(context).copyWith(
+              scrollbarTheme: const ScrollbarThemeData(
+                isAlwaysShown: true,
+                radius: Radius.circular(16),
+                crossAxisMargin: 4,
+                mainAxisMargin: 4,
+                interactive: true,
+              ),
+            ),
+            child: Scrollbar(
+              controller: scrollController,
+              child: ListView(
+                controller: scrollController,
+                shrinkWrap: true,
+                children: scrollableContent,
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    return const SizedBox();
+  }
 }
 
 class DialogTitle extends StatelessWidget {

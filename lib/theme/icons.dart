@@ -40,6 +40,7 @@ class AIcons {
   static const IconData copy = Icons.file_copy_outlined;
   static const IconData debug = Icons.whatshot_outlined;
   static const IconData delete = Icons.delete_outlined;
+  static const IconData edit = Icons.edit_outlined;
   static const IconData export = MdiIcons.fileExportOutline;
   static const IconData flip = Icons.flip_outlined;
   static const IconData favourite = Icons.favorite_border;

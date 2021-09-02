@@ -38,6 +38,7 @@ class _MultiEntryScrollerState extends State<MultiEntryScroller> with AutomaticK
     return MagnifierGestureDetectorScope(
       axis: const [Axis.horizontal, Axis.vertical],
       child: PageView.builder(
+        // key is expected by test driver
         key: const Key('horizontal-pageview'),
         scrollDirection: Axis.horizontal,
         controller: pageController,
@@ -81,6 +82,7 @@ class _MultiEntryScrollerState extends State<MultiEntryScroller> with AutomaticK
 
   Widget _buildViewer(AvesEntry mainEntry, {AvesEntry? pageEntry}) {
     return EntryPageView(
+      // key is expected by test driver
       key: const Key('imageview'),
       mainEntry: mainEntry,
       pageEntry: pageEntry ?? mainEntry,

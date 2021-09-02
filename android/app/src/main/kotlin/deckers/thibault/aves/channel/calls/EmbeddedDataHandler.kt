@@ -160,9 +160,9 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
                     try {
                         val embedBytes: ByteArray = if (!dataPropPath.contains('/')) {
                             val propNs = XMP.namespaceForPropPath(dataPropPath)
-                            xmpDirs.map { it.xmpMeta.getPropertyBase64(propNs, dataPropPath) }.filterNotNull().first()
+                            xmpDirs.mapNotNull { it.xmpMeta.getPropertyBase64(propNs, dataPropPath) }.first()
                         } else {
-                            xmpDirs.map { it.xmpMeta.getSafeStructField(dataPropPath) }.filterNotNull().first().let {
+                            xmpDirs.mapNotNull { it.xmpMeta.getSafeStructField(dataPropPath) }.first().let {
                                 XMPUtils.decodeBase64(it.value)
                             }
                         }
@@ -217,7 +217,7 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
                         result.success(resultFields)
                     }
 
-                    override fun onFailure(throwable: Throwable) = result.error("copyEmbeddedBytes-failure", "failed to get entry for uri=$uri mime=$mimeType", throwable.message)
+                    override fun onFailure(throwable: Throwable) = result.error("copyEmbeddedBytes-failure", "failed to get entry for uri=$uri mime=$mimeType", "${throwable.message}\n${throwable.stackTraceToString()}")
                 })
             }
         } else {

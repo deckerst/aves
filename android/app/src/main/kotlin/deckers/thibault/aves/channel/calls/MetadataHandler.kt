@@ -267,7 +267,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
         if (metadataMap.isNotEmpty()) {
             result.success(metadataMap)
         } else {
-            result.error("getAllMetadata-failure", "failed to get metadata for uri=$uri", null)
+            result.error("getAllMetadata-failure", "failed to get metadata for mimeType=$mimeType uri=$uri", null)
         }
     }
 
@@ -474,9 +474,9 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                     }
                 }
             } catch (e: Exception) {
-                Log.w(LOG_TAG, "failed to get catalog metadata by metadata-extractor for uri=$uri, mimeType=$mimeType", e)
+                Log.w(LOG_TAG, "failed to get catalog metadata by metadata-extractor for mimeType=$mimeType uri=$uri", e)
             } catch (e: NoClassDefFoundError) {
-                Log.w(LOG_TAG, "failed to get catalog metadata by metadata-extractor for uri=$uri, mimeType=$mimeType", e)
+                Log.w(LOG_TAG, "failed to get catalog metadata by metadata-extractor for mimeType=$mimeType uri=$uri", e)
             }
         }
 
@@ -502,7 +502,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
             } catch (e: Exception) {
                 // ExifInterface initialization can fail with a RuntimeException
                 // caused by an internal MediaMetadataRetriever failure
-                Log.w(LOG_TAG, "failed to get metadata by ExifInterface for uri=$uri", e)
+                Log.w(LOG_TAG, "failed to get metadata by ExifInterface for mimeType=$mimeType uri=$uri", e)
             }
         }
 
@@ -597,9 +597,9 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                     }
                 }
             } catch (e: Exception) {
-                Log.w(LOG_TAG, "failed to get metadata by metadata-extractor for uri=$uri", e)
+                Log.w(LOG_TAG, "failed to get metadata by metadata-extractor for mimeType=$mimeType uri=$uri", e)
             } catch (e: NoClassDefFoundError) {
-                Log.w(LOG_TAG, "failed to get metadata by metadata-extractor for uri=$uri", e)
+                Log.w(LOG_TAG, "failed to get metadata by metadata-extractor for mimeType=$mimeType uri=$uri", e)
             }
         }
 
@@ -616,7 +616,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
             } catch (e: Exception) {
                 // ExifInterface initialization can fail with a RuntimeException
                 // caused by an internal MediaMetadataRetriever failure
-                Log.w(LOG_TAG, "failed to get metadata by ExifInterface for uri=$uri", e)
+                Log.w(LOG_TAG, "failed to get metadata by ExifInterface for mimeType=$mimeType uri=$uri", e)
             }
         }
 
@@ -639,7 +639,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
             else -> null
         }
         if (pages?.isEmpty() == true) {
-            result.error("getMultiPageInfo-empty", "failed to get pages for uri=$uri", null)
+            result.error("getMultiPageInfo-empty", "failed to get pages for mimeType=$mimeType uri=$uri", null)
         } else {
             result.success(pages)
         }
@@ -680,7 +680,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                 Log.w(LOG_TAG, "failed to read XMP", e)
             }
         }
-        result.error("getPanoramaInfo-empty", "failed to read XMP from uri=$uri", null)
+        result.error("getPanoramaInfo-empty", "failed to read XMP for mimeType=$mimeType uri=$uri", null)
     }
 
     private fun hasContentResolverProp(call: MethodCall, result: MethodChannel.Result) {

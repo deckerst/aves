@@ -39,7 +39,6 @@ class FilterNavigationPage<T extends CollectionFilter> extends StatelessWidget {
     return SelectionProvider<FilterGridItem<T>>(
       child: Builder(
         builder: (context) => FilterGridPage<T>(
-          key: const Key('filter-grid-page'),
           appBar: FilterGridAppBar<T>(
             source: source,
             title: title,

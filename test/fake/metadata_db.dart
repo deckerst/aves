@@ -2,7 +2,8 @@ import 'package:aves/model/covers.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/favourites.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/metadata.dart';
+import 'package:aves/model/metadata/address.dart';
+import 'package:aves/model/metadata/catalog.dart';
 import 'package:aves/model/metadata_db.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -24,7 +25,7 @@ class FakeMetadataDb extends Fake implements MetadataDb {
   Future<void> updateEntryId(int oldId, AvesEntry entry) => SynchronousFuture(null);
 
   @override
-  Future<List<DateMetadata>> loadDates() => SynchronousFuture([]);
+  Future<Map<int?, int?>> loadDates() => SynchronousFuture({});
 
   @override
   Future<List<CatalogMetadata>> loadMetadataEntries() => SynchronousFuture([]);

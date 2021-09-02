@@ -129,10 +129,11 @@ void selectFirstAlbum() {
     // wait for collection loading
     await driver.waitForCondition(const NoPendingPlatformMessages());
 
-    // TODO TLAD fix finder
+    // delay to avoid flaky descendant resolution
+    await Future.delayed(const Duration(seconds: 2));
     await driver.tap(find.descendant(
-      of: find.byValueKey('filter-grid-page'),
-      matching: find.byType('CoveredFilterChip'),
+      of: find.byValueKey('filter-grid'),
+      matching: find.byType('MetaData'),
       firstMatchOnly: true,
     ));
     await driver.waitUntilNoTransientCallbacks();
@@ -158,9 +159,11 @@ void searchAlbum() {
 
 void showViewer() {
   test('[collection] show viewer', () async {
+    // delay to avoid flaky descendant resolution
+    await Future.delayed(const Duration(seconds: 2));
     await driver.tap(find.descendant(
       of: find.byValueKey('collection-grid'),
-      matching: find.byType('DecoratedThumbnail'),
+      matching: find.byType('MetaData'),
       firstMatchOnly: true,
     ));
     await driver.waitUntilNoTransientCallbacks();

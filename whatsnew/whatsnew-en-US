@@ -1,7 +1,6 @@
 Thanks for using Aves!
-v1.4.9:
-- open the map or get stats for selected items
-- browse and navigate to items on the map
-- customize the navigation menu
-- create shortcuts on Android Nougat and older
-Full changelog available on Github
+v1.5.0:
+- faster launch
+- edit Exif dates
+- customize quick actions when selecting pictures
+Full changelog available on GitHub

@@ -1,6 +1,6 @@
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/tag.dart';
-import 'package:aves/model/metadata.dart';
+import 'package:aves/model/metadata/catalog.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums.dart';
 import 'package:aves/services/services.dart';
@@ -15,10 +15,8 @@ mixin TagMixin on SourceBase {
   Future<void> loadCatalogMetadata() async {
     final stopwatch = Stopwatch()..start();
     final saved = await metadataDb.loadMetadataEntries();
-    visibleEntries.forEach((entry) {
-      final contentId = entry.contentId;
-      entry.catalogMetadata = saved.firstWhereOrNull((metadata) => metadata.contentId == contentId);
-    });
+    final idMap = entryById;
+    saved.forEach((metadata) => idMap[metadata.contentId]?.catalogMetadata = metadata);
     debugPrint('$runtimeType loadCatalogMetadata complete in ${stopwatch.elapsed.inMilliseconds}ms for ${saved.length} entries');
     onCatalogMetadataChanged();
   }

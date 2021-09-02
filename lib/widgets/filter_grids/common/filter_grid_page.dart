@@ -90,6 +90,8 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
                 child: AnimatedBuilder(
                   animation: covers,
                   builder: (context, child) => FilterGrid<T>(
+                    // key is expected by test driver
+                    key: const Key('filter-grid'),
                     settingsRouteKey: settingsRouteKey,
                     appBar: appBar,
                     appBarHeight: appBarHeight,

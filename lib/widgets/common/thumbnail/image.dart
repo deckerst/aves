@@ -8,7 +8,6 @@ import 'package:aves/model/settings/entry_background.dart';
 import 'package:aves/model/settings/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/services.dart';
-import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/checkered_decoration.dart';
 import 'package:aves/widgets/common/fx/transition_image.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
@@ -173,10 +172,8 @@ class _ThumbnailImageState extends State<ThumbnailImage> {
 
   @override
   Widget build(BuildContext context) {
-    if (!entry.canDecode) {
-      return _buildError(context, context.l10n.errorUnsupportedMimeType(entry.mimeType), null);
-    } else if (_lastException != null) {
-      return _buildError(context, _lastException.toString(), null);
+    if (!entry.canDecode || _lastException != null) {
+      return _buildError(context);
     }
 
     // use `RawImage` instead of `Image`, using `ImageInfo` to check dimensions
@@ -246,11 +243,10 @@ class _ThumbnailImageState extends State<ThumbnailImage> {
         : image;
   }
 
-  Widget _buildError(BuildContext context, Object error, StackTrace? stackTrace) {
+  Widget _buildError(BuildContext context) {
     final child = ErrorThumbnail(
       entry: entry,
       extent: extent,
-      tooltip: error.toString(),
     );
     return widget.heroTag != null
         ? Hero(

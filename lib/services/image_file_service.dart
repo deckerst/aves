@@ -4,6 +4,8 @@ import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:aves/model/entry.dart';
+import 'package:aves/model/metadata/date_modifier.dart';
+import 'package:aves/model/metadata/enums.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/image_op_events.dart';
 import 'package:aves/services/output_buffer.dart';
@@ -94,6 +96,8 @@ abstract class ImageFileService {
   Future<Map<String, dynamic>> rotate(AvesEntry entry, {required bool clockwise});
 
   Future<Map<String, dynamic>> flip(AvesEntry entry);
+
+  Future<Map<String, dynamic>> editDate(AvesEntry entry, DateModifier modifier);
 }
 
 class PlatformImageFileService implements ImageFileService {
@@ -407,5 +411,34 @@ class PlatformImageFileService implements ImageFileService {
       await reportService.recordError(e, stack);
     }
     return {};
+  }
+
+  @override
+  Future<Map<String, dynamic>> editDate(AvesEntry entry, DateModifier modifier) async {
+    try {
+      final result = await platform.invokeMethod('editDate', <String, dynamic>{
+        'entry': _toPlatformEntryMap(entry),
+        'dateMillis': modifier.dateTime?.millisecondsSinceEpoch,
+        'shiftMinutes': modifier.shiftMinutes,
+        'fields': modifier.fields.map(_toExifInterfaceTag).toList(),
+      });
+      if (result != null) return (result as Map).cast<String, dynamic>();
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
+    return {};
+  }
+
+  String _toExifInterfaceTag(MetadataField field) {
+    switch (field) {
+      case MetadataField.exifDate:
+        return 'DateTime';
+      case MetadataField.exifDateOriginal:
+        return 'DateTimeOriginal';
+      case MetadataField.exifDateDigitized:
+        return 'DateTimeDigitized';
+      case MetadataField.exifGpsDate:
+        return 'GPSDateStamp';
+    }
   }
 }

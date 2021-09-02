@@ -4,7 +4,8 @@ import 'package:aves/model/covers.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/favourites.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/metadata.dart';
+import 'package:aves/model/metadata/address.dart';
+import 'package:aves/model/metadata/catalog.dart';
 import 'package:aves/model/metadata_db_upgrade.dart';
 import 'package:aves/services/services.dart';
 import 'package:collection/collection.dart';
@@ -36,7 +37,7 @@ abstract class MetadataDb {
 
   Future<void> clearDates();
 
-  Future<List<DateMetadata>> loadDates();
+  Future<Map<int?, int?>> loadDates();
 
   // catalog metadata
 
@@ -260,12 +261,10 @@ class SqfliteMetadataDb implements MetadataDb {
   }
 
   @override
-  Future<List<DateMetadata>> loadDates() async {
-//    final stopwatch = Stopwatch()..start();
+  Future<Map<int?, int?>> loadDates() async {
     final db = await _database;
     final maps = await db.query(dateTakenTable);
-    final metadataEntries = maps.map((map) => DateMetadata.fromMap(map)).toList();
-//    debugPrint('$runtimeType loadDates complete in ${stopwatch.elapsed.inMilliseconds}ms for ${metadataEntries.length} entries');
+    final metadataEntries = Map.fromEntries(maps.map((map) => MapEntry(map['contentId'] as int, (map['dateMillis'] ?? 0) as int)));
     return metadataEntries;
   }
 
@@ -280,11 +279,9 @@ class SqfliteMetadataDb implements MetadataDb {
 
   @override
   Future<List<CatalogMetadata>> loadMetadataEntries() async {
-//    final stopwatch = Stopwatch()..start();
     final db = await _database;
     final maps = await db.query(metadataTable);
     final metadataEntries = maps.map((map) => CatalogMetadata.fromMap(map)).toList();
-//    debugPrint('$runtimeType loadMetadataEntries complete in ${stopwatch.elapsed.inMilliseconds}ms for ${metadataEntries.length} entries');
     return metadataEntries;
   }
 
@@ -318,7 +315,10 @@ class SqfliteMetadataDb implements MetadataDb {
     if (metadata.dateMillis != 0) {
       batch.insert(
         dateTakenTable,
-        DateMetadata(contentId: metadata.contentId, dateMillis: metadata.dateMillis).toMap(),
+        {
+          'contentId': metadata.contentId,
+          'dateMillis': metadata.dateMillis,
+        },
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
     }
@@ -340,11 +340,9 @@ class SqfliteMetadataDb implements MetadataDb {
 
   @override
   Future<List<AddressDetails>> loadAddresses() async {
-//    final stopwatch = Stopwatch()..start();
     final db = await _database;
     final maps = await db.query(addressTable);
     final addresses = maps.map((map) => AddressDetails.fromMap(map)).toList();
-//    debugPrint('$runtimeType loadAddresses complete in ${stopwatch.elapsed.inMilliseconds}ms for ${addresses.length} entries');
     return addresses;
   }
 

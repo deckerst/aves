@@ -1,10 +1,10 @@
 import 'dart:ui';
 
 import 'package:aves/services/services.dart';
+import 'package:aves/theme/format.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:intl/intl.dart';
 
 class GlobalSearch {
   static const platform = MethodChannel('deckers.thibault/aves/global_search');
@@ -55,7 +55,7 @@ Future<List<Map<String, String?>>> _getSuggestions(dynamic args) async {
           'data': entry.uri,
           'mimeType': entry.mimeType,
           'title': entry.bestTitle,
-          'subtitle': date != null ? '${DateFormat.yMMMd(locale).format(date)} • ${DateFormat.Hm(locale).format(date)}' : null,
+          'subtitle': date != null ? formatDateTime(date, locale) : null,
           'iconUri': entry.uri,
         };
       }));

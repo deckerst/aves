@@ -17,11 +17,13 @@ import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.metadata.ExifInterfaceHelper
 import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper
 import deckers.thibault.aves.metadata.Metadata
+import deckers.thibault.aves.metadata.PixyMetaHelper
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes.isImage
 import deckers.thibault.aves.utils.MimeTypes.isSupportedByExifInterface
 import deckers.thibault.aves.utils.MimeTypes.isSupportedByMetadataExtractor
+import deckers.thibault.aves.utils.MimeTypes.isSupportedByPixyMeta
 import deckers.thibault.aves.utils.MimeTypes.isVideo
 import deckers.thibault.aves.utils.StorageUtils
 import deckers.thibault.aves.utils.UriUtils.tryParseId
@@ -52,9 +54,31 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
             "getExifInterfaceMetadata" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getExifInterfaceMetadata) }
             "getMediaMetadataRetrieverMetadata" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getMediaMetadataRetrieverMetadata) }
             "getMetadataExtractorSummary" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getMetadataExtractorSummary) }
+            "getPixyMetadata" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getPixyMetadata) }
             "getTiffStructure" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getTiffStructure) }
             else -> result.notImplemented()
         }
+    }
+
+    private fun getPixyMetadata(call: MethodCall, result: MethodChannel.Result) {
+        val mimeType = call.argument<String>("mimeType")
+        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        if (mimeType == null || uri == null) {
+            result.error("getPixyMetadata-args", "failed because of missing arguments", null)
+            return
+        }
+
+        val metadataMap = HashMap<String, String>()
+        if (isSupportedByPixyMeta(mimeType)) {
+            try {
+                StorageUtils.openInputStream(context, uri)?.use { input ->
+                    metadataMap.putAll(PixyMetaHelper.describe(input))
+                }
+            } catch (e: Exception) {
+                result.error("getPixyMetadata-exception", e.message, e.stackTraceToString())
+            }
+        }
+        result.success(metadataMap)
     }
 
     private fun getContextDirs(@Suppress("UNUSED_PARAMETER") call: MethodCall, result: MethodChannel.Result) {

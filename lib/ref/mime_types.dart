@@ -41,6 +41,7 @@ class MimeTypes {
   static const anyVideo = 'video/*';
 
   static const avi = 'video/avi';
+  static const aviVnd = 'video/vnd.avi';
   static const mkv = 'video/x-matroska';
   static const mov = 'video/quicktime';
   static const mp2t = 'video/mp2t'; // .m2ts
@@ -56,12 +57,12 @@ class MimeTypes {
 
   static const Set<String> rawImages = {arw, cr2, crw, dcr, dng, erf, k25, kdc, mrw, nef, nrw, orf, pef, raf, raw, rw2, sr2, srf, srw, x3f};
 
-  // TODO TLAD make it dynamic if it depends on OS/lib versions
+  // TODO TLAD [codec] make it dynamic if it depends on OS/lib versions
   static const Set<String> undecodableImages = {art, crw, djvu, psdVnd, psdX};
 
   static const Set<String> _knownOpaqueImages = {heic, heif, jpeg};
 
-  static const Set<String> _knownVideos = {avi, mkv, mov, mp2t, mp4, ogg};
+  static const Set<String> _knownVideos = {avi, aviVnd, mkv, mov, mp2t, mp4, ogg};
 
   static final Set<String> knownMediaTypes = {..._knownOpaqueImages, ...alphaImages, ...rawImages, ...undecodableImages, ..._knownVideos};
 

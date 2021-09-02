@@ -22,7 +22,7 @@ class MetadataTab extends StatefulWidget {
 }
 
 class _MetadataTabState extends State<MetadataTab> {
-  late Future<Map> _bitmapFactoryLoader, _contentResolverMetadataLoader, _exifInterfaceMetadataLoader, _mediaMetadataLoader, _metadataExtractorLoader, _tiffStructureLoader;
+  late Future<Map> _bitmapFactoryLoader, _contentResolverMetadataLoader, _exifInterfaceMetadataLoader, _mediaMetadataLoader, _metadataExtractorLoader, _pixyMetaLoader, _tiffStructureLoader;
 
   // MediaStore timestamp keys
   static const secondTimestampKeys = ['date_added', 'date_modified', 'date_expires', 'isPlayed'];
@@ -42,6 +42,7 @@ class _MetadataTabState extends State<MetadataTab> {
     _exifInterfaceMetadataLoader = AndroidDebugService.getExifInterfaceMetadata(entry);
     _mediaMetadataLoader = AndroidDebugService.getMediaMetadataRetrieverMetadata(entry);
     _metadataExtractorLoader = AndroidDebugService.getMetadataExtractorSummary(entry);
+    _pixyMetaLoader = AndroidDebugService.getPixyMetadata(entry);
     _tiffStructureLoader = AndroidDebugService.getTiffStructure(entry);
     setState(() {});
   }
@@ -106,6 +107,10 @@ class _MetadataTabState extends State<MetadataTab> {
         FutureBuilder<Map>(
           future: _metadataExtractorLoader,
           builder: (context, snapshot) => builderFromSnapshot(context, snapshot, 'Metadata Extractor'),
+        ),
+        FutureBuilder<Map>(
+          future: _pixyMetaLoader,
+          builder: (context, snapshot) => builderFromSnapshot(context, snapshot, 'Pixy Meta'),
         ),
         if (entry.mimeType == MimeTypes.tiff)
           FutureBuilder<Map>(
