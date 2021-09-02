@@ -32,7 +32,7 @@ if (keystorePropertiesFile.exists()) {
         keystoreProperties.load(reader)
     }
 } else {
-    // for release using credentials in environment variables set up by Github Actions
+    // for release using credentials in environment variables set up by GitHub Actions
     // warning: in property file, single quotes should be escaped with a backslash
     // but they should not be escaped when stored in env variables
     keystoreProperties['storeFile'] = System.getenv('AVES_STORE_FILE')
