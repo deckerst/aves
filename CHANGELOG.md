@@ -3,6 +3,19 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [v1.5.0] - 2021-09-02
+### Added
+- Info: edit Exif dates (setting, shifting, deleting)
+- Collection: custom quick actions for item selection
+- Collection: video date detection for more formats
+
+### Changed
+- faster collection loading when launching the app
+
+### Fixed
+- app launching on some devices
+- corrupting motion photo exif editing (e.g. rotation)
+
 ## [v1.4.9] - 2021-08-20
 ### Added
 - Map & Stats from selection
