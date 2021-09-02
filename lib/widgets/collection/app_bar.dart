@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:aves/app_mode.dart';
-import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/actions/entry_set_actions.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/filters.dart';
@@ -168,6 +167,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
 
   List<Widget> _buildActions(bool isSelecting) {
     final appMode = context.watch<ValueNotifier<AppMode>>().value;
+    final selectionQuickActions = settings.collectionSelectionQuickActions;
     return [
       if (!isSelecting && appMode.canSearch)
         CollectionSearchButton(
@@ -175,11 +175,11 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
           parentCollection: collection,
         ),
       if (isSelecting)
-        ...EntryActions.selection.map((action) => Selector<Selection<AvesEntry>, bool>(
+        ...selectionQuickActions.map((action) => Selector<Selection<AvesEntry>, bool>(
               selector: (context, selection) => selection.selectedItems.isEmpty,
               builder: (context, isEmpty, child) => IconButton(
-                icon: action.getIcon() ?? const SizedBox(),
-                onPressed: isEmpty ? null : () => _actionDelegate.onEntryActionSelected(context, action),
+                icon: action.getIcon(),
+                onPressed: isEmpty ? null : () => _onCollectionActionSelected(action),
                 tooltip: action.getText(context),
               ),
             )),
@@ -219,16 +219,12 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
                         enabled: hasItems,
                       ),
                     const PopupMenuDivider(),
-                    if (isSelecting)
+                    if (isSelecting) ...EntrySetActions.selection.where((v) => !selectionQuickActions.contains(v)).map((v) => _toMenuItem(v, enabled: hasSelection)),
+                    if (!isSelecting)
                       ...[
-                        EntrySetAction.copy,
-                        EntrySetAction.move,
-                        EntrySetAction.refreshMetadata,
-                      ].map((v) => _toMenuItem(v, enabled: hasSelection)),
-                    ...[
-                      EntrySetAction.map,
-                      EntrySetAction.stats,
-                    ].map((v) => _toMenuItem(v, enabled: otherViewEnabled)),
+                        EntrySetAction.map,
+                        EntrySetAction.stats,
+                      ].map((v) => _toMenuItem(v, enabled: otherViewEnabled)),
                     if (!isSelecting && canAddShortcuts) ...[
                       const PopupMenuDivider(),
                       _toMenuItem(EntrySetAction.addShortcut),
@@ -290,12 +286,14 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
 
   Future<void> _onCollectionActionSelected(EntrySetAction action) async {
     switch (action) {
+      case EntrySetAction.share:
+      case EntrySetAction.delete:
       case EntrySetAction.copy:
       case EntrySetAction.move:
       case EntrySetAction.refreshMetadata:
       case EntrySetAction.map:
       case EntrySetAction.stats:
-        _actionDelegate.onCollectionActionSelected(context, action);
+        _actionDelegate.onActionSelected(context, action);
         break;
       case EntrySetAction.select:
         context.read<Selection<AvesEntry>>().select();

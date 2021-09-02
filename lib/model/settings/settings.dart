@@ -2,10 +2,10 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:aves/model/actions/entry_actions.dart';
+import 'package:aves/model/actions/entry_set_actions.dart';
 import 'package:aves/model/actions/video_actions.dart';
-import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/filters/mime.dart';
+import 'package:aves/model/settings/defaults.dart';
 import 'package:aves/model/settings/enums.dart';
 import 'package:aves/model/settings/map_style.dart';
 import 'package:aves/model/settings/screen_on.dart';
@@ -13,9 +13,6 @@ import 'package:aves/model/source/enums.dart';
 import 'package:aves/services/device_service.dart';
 import 'package:aves/services/services.dart';
 import 'package:aves/utils/pedantic.dart';
-import 'package:aves/widgets/filter_grids/albums_page.dart';
-import 'package:aves/widgets/filter_grids/countries_page.dart';
-import 'package:aves/widgets/filter_grids/tags_page.dart';
 import 'package:collection/collection.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -59,6 +56,7 @@ class Settings extends ChangeNotifier {
   // collection
   static const collectionGroupFactorKey = 'collection_group_factor';
   static const collectionSortFactorKey = 'collection_sort_factor';
+  static const collectionSelectionQuickActionsKey = 'collection_selection_quick_actions';
   static const showThumbnailLocationKey = 'show_thumbnail_location';
   static const showThumbnailRawKey = 'show_thumbnail_raw';
   static const showThumbnailVideoDurationKey = 'show_thumbnail_video_duration';
@@ -107,27 +105,6 @@ class Settings extends ChangeNotifier {
 
   // version
   static const lastVersionCheckDateKey = 'last_version_check_date';
-
-  // defaults
-  static final drawerTypeBookmarksDefault = [
-    null,
-    MimeFilter.video,
-    FavouriteFilter.instance,
-  ];
-  static final drawerPageBookmarksDefault = [
-    AlbumListPage.routeName,
-    CountryListPage.routeName,
-    TagListPage.routeName,
-  ];
-  static const viewerQuickActionsDefault = [
-    EntryAction.toggleFavourite,
-    EntryAction.share,
-    EntryAction.rotateScreen,
-  ];
-  static const videoQuickActionsDefault = [
-    VideoAction.replay10,
-    VideoAction.togglePlay,
-  ];
 
   Future<void> init() async {
     _prefs = await SharedPreferences.getInstance();
@@ -235,7 +212,7 @@ class Settings extends ChangeNotifier {
         if (v.isEmpty) return null;
         return CollectionFilter.fromJson(v);
       }).toList() ??
-      drawerTypeBookmarksDefault;
+      SettingsDefaults.drawerTypeBookmarks;
 
   set drawerTypeBookmarks(List<CollectionFilter?> newValue) => setAndNotify(drawerTypeBookmarksKey, newValue.map((filter) => filter?.toJson() ?? '').toList());
 
@@ -243,7 +220,7 @@ class Settings extends ChangeNotifier {
 
   set drawerAlbumBookmarks(List<String>? newValue) => setAndNotify(drawerAlbumBookmarksKey, newValue);
 
-  List<String> get drawerPageBookmarks => _prefs!.getStringList(drawerPageBookmarksKey) ?? drawerPageBookmarksDefault;
+  List<String> get drawerPageBookmarks => _prefs!.getStringList(drawerPageBookmarksKey) ?? SettingsDefaults.drawerPageBookmarks;
 
   set drawerPageBookmarks(List<String> newValue) => setAndNotify(drawerPageBookmarksKey, newValue);
 
@@ -256,6 +233,10 @@ class Settings extends ChangeNotifier {
   EntrySortFactor get collectionSortFactor => getEnumOrDefault(collectionSortFactorKey, EntrySortFactor.date, EntrySortFactor.values);
 
   set collectionSortFactor(EntrySortFactor newValue) => setAndNotify(collectionSortFactorKey, newValue.toString());
+
+  List<EntrySetAction> get collectionSelectionQuickActions => getEnumListOrDefault(collectionSelectionQuickActionsKey, SettingsDefaults.collectionSelectionQuickActions, EntrySetAction.values);
+
+  set collectionSelectionQuickActions(List<EntrySetAction> newValue) => setAndNotify(collectionSelectionQuickActionsKey, newValue.map((v) => v.toString()).toList());
 
   bool get showThumbnailLocation => getBoolOrDefault(showThumbnailLocationKey, true);
 
@@ -297,7 +278,7 @@ class Settings extends ChangeNotifier {
 
   // viewer
 
-  List<EntryAction> get viewerQuickActions => getEnumListOrDefault(viewerQuickActionsKey, viewerQuickActionsDefault, EntryAction.values);
+  List<EntryAction> get viewerQuickActions => getEnumListOrDefault(viewerQuickActionsKey, SettingsDefaults.viewerQuickActions, EntryAction.values);
 
   set viewerQuickActions(List<EntryAction> newValue) => setAndNotify(viewerQuickActionsKey, newValue.map((v) => v.toString()).toList());
 
@@ -323,7 +304,7 @@ class Settings extends ChangeNotifier {
 
   // video
 
-  List<VideoAction> get videoQuickActions => getEnumListOrDefault(videoQuickActionsKey, videoQuickActionsDefault, VideoAction.values);
+  List<VideoAction> get videoQuickActions => getEnumListOrDefault(videoQuickActionsKey, SettingsDefaults.videoQuickActions, VideoAction.values);
 
   set videoQuickActions(List<VideoAction> newValue) => setAndNotify(videoQuickActionsKey, newValue.map((v) => v.toString()).toList());
 
@@ -556,6 +537,7 @@ class Settings extends ChangeNotifier {
             case drawerPageBookmarksKey:
             case pinnedFiltersKey:
             case hiddenFiltersKey:
+            case collectionSelectionQuickActionsKey:
             case viewerQuickActionsKey:
             case videoQuickActionsKey:
               if (value is List) {

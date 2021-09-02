@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/actions/entry_set_actions.dart';
 import 'package:aves/model/actions/move_type.dart';
 import 'package:aves/model/entry.dart';
@@ -30,21 +29,14 @@ import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
 class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
-  void onEntryActionSelected(BuildContext context, EntryAction action) {
+  void onActionSelected(BuildContext context, EntrySetAction action) {
     switch (action) {
-      case EntryAction.delete:
-        _showDeleteDialog(context);
-        break;
-      case EntryAction.share:
+      case EntrySetAction.share:
         _share(context);
         break;
-      default:
+      case EntrySetAction.delete:
+        _showDeleteDialog(context);
         break;
-    }
-  }
-
-  void onCollectionActionSelected(BuildContext context, EntrySetAction action) {
-    switch (action) {
       case EntrySetAction.copy:
         _moveSelection(context, moveType: MoveType.copy);
         break;
