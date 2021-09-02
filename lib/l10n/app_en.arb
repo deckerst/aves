@@ -446,14 +446,6 @@
   "@dateYesterday": {},
   "dateThisMonth": "This month",
   "@dateThisMonth": {},
-  "errorUnsupportedMimeType": "{mimeType} not supported",
-  "@errorUnsupportedMimeType": {
-    "placeholders": {
-      "mimeType": {
-        "type": "String"
-      }
-    }
-  },
   "collectionDeleteFailureFeedback": "{count, plural, =1{Failed to delete 1 item} other{Failed to delete {count} items}}",
   "@collectionDeleteFailureFeedback": {
     "placeholders": {
