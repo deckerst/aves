@@ -270,7 +270,7 @@ class Constants {
       sourceUrl: 'https://github.com/fluttercommunity/get_it',
     ),
     Dependency(
-      name: 'Github',
+      name: 'GitHub',
       license: 'MIT',
       sourceUrl: 'https://github.com/SpinlockLabs/github.dart',
     ),
