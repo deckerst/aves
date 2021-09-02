@@ -15,9 +15,23 @@ enum EntrySetAction {
   map,
   stats,
   // entry selection
+  share,
+  delete,
   copy,
   move,
   refreshMetadata,
+}
+
+class EntrySetActions {
+  static const selection = [
+    EntrySetAction.share,
+    EntrySetAction.delete,
+    EntrySetAction.copy,
+    EntrySetAction.move,
+    EntrySetAction.refreshMetadata,
+    EntrySetAction.map,
+    EntrySetAction.stats,
+  ];
 }
 
 extension ExtraEntrySetAction on EntrySetAction {
@@ -43,6 +57,10 @@ extension ExtraEntrySetAction on EntrySetAction {
       case EntrySetAction.stats:
         return context.l10n.menuActionStats;
       // entry selection
+      case EntrySetAction.share:
+        return context.l10n.entryActionShare;
+      case EntrySetAction.delete:
+        return context.l10n.entryActionDelete;
       case EntrySetAction.copy:
         return context.l10n.collectionActionCopy;
       case EntrySetAction.move:
@@ -78,6 +96,10 @@ extension ExtraEntrySetAction on EntrySetAction {
       case EntrySetAction.stats:
         return AIcons.stats;
       // entry selection
+      case EntrySetAction.share:
+        return AIcons.share;
+      case EntrySetAction.delete:
+        return AIcons.delete;
       case EntrySetAction.copy:
         return AIcons.copy;
       case EntrySetAction.move:

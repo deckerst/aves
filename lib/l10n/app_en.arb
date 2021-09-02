@@ -627,6 +627,13 @@
   "settingsThumbnailShowVideoDuration": "Show video duration",
   "@settingsThumbnailShowVideoDuration": {},
 
+  "settingsCollectionSelectionQuickActionsTile": "Quick actions for item selection",
+  "@settingsCollectionSelectionQuickActionsTile": {},
+  "settingsCollectionSelectionQuickActionEditorTitle": "Quick Actions",
+  "@settingsCollectionSelectionQuickActionEditorTitle": {},
+  "settingsCollectionSelectionQuickActionEditorBanner": "Touch and hold to move buttons and select which actions are displayed when selecting items.",
+  "@settingsCollectionSelectionQuickActionEditorBanner": {},
+
   "settingsSectionViewer": "Viewer",
   "@settingsSectionViewer": {},
   "settingsImageBackground": "Image background",
@@ -671,9 +678,9 @@
   "@settingsVideoLoopModeTile": {},
   "settingsVideoLoopModeTitle": "Loop Mode",
   "@settingsVideoLoopModeTitle": {},
-  "settingsVideoQuickActionsTile": "Quick video actions",
+  "settingsVideoQuickActionsTile": "Quick actions for videos",
   "@settingsVideoQuickActionsTile": {},
-  "settingsVideoQuickActionEditorTitle": "Quick Video Actions",
+  "settingsVideoQuickActionEditorTitle": "Quick Actions",
   "@settingsVideoQuickActionEditorTitle": {},
 
   "settingsSubtitleThemeTile": "Subtitles",
