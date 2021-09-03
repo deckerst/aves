@@ -27,7 +27,7 @@ Aves integrates with Android (from **API 20 to 31**, i.e. from Lollipop to S) wi
 
 ## Permissions
 
-Aves requires a few permissions to to its job:
+Aves requires a few permissions to do its job:
 - **read contents of shared storage**: the app only accesses media files, and modifying them requires explicit access grants from the user,
 - **read locations from media collection**: necessary to display the media coordinates, and to group them by country (via reverse geocoding),
 - **have network access**: necessary for the map view, and most likely for precise reverse geocoding too,
