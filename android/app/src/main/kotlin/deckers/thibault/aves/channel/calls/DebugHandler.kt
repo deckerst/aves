@@ -68,15 +68,19 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
             return
         }
 
+        if (!isSupportedByPixyMeta(mimeType)) {
+            result.error("getPixyMetadata-unsupported", "PixyMeta does not support mimeType=$mimeType", null)
+            return
+        }
+
         val metadataMap = HashMap<String, String>()
-        if (isSupportedByPixyMeta(mimeType)) {
-            try {
-                StorageUtils.openInputStream(context, uri)?.use { input ->
-                    metadataMap.putAll(PixyMetaHelper.describe(input))
-                }
-            } catch (e: Exception) {
-                result.error("getPixyMetadata-exception", e.message, e.stackTraceToString())
+        try {
+            StorageUtils.openInputStream(context, uri)?.use { input ->
+                metadataMap.putAll(PixyMetaHelper.describe(input))
             }
+        } catch (e: Exception) {
+            result.error("getPixyMetadata-exception", e.message, e.stackTraceToString())
+            return
         }
         result.success(metadataMap)
     }
