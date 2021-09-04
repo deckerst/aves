@@ -290,14 +290,19 @@ class Constants {
       sourceUrl: 'https://github.com/DavBfr/dart_pdf',
     ),
     Dependency(
+      name: 'Stack Trace',
+      license: 'BSD 3-Clause',
+      sourceUrl: 'https://github.com/dart-lang/stack_trace',
+    ),
+    Dependency(
       name: 'Transparent Image',
       license: 'MIT',
-      sourceUrl: 'https://pub.dev/packages/transparent_image',
+      sourceUrl: 'https://github.com/brianegan/transparent_image',
     ),
     Dependency(
       name: 'Tuple',
       license: 'BSD 2-Clause',
-      sourceUrl: 'https://github.com/dart-lang/tuple',
+      sourceUrl: 'https://github.com/google/tuple.dart',
     ),
     Dependency(
       name: 'Version',
