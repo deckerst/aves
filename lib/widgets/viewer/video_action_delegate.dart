@@ -31,12 +31,12 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
   });
 
   void dispose() {
-    _stopOverlayHidingTimer();
+    stopOverlayHidingTimer();
   }
 
   void onActionSelected(BuildContext context, AvesVideoController controller, VideoAction action) {
     // make sure overlay is not disappearing when selecting an action
-    _stopOverlayHidingTimer();
+    stopOverlayHidingTimer();
     const ToggleOverlayNotification(visible: true).dispatch(context);
 
     switch (action) {
@@ -187,5 +187,5 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     }
   }
 
-  void _stopOverlayHidingTimer() => _overlayHidingTimer?.cancel();
+  void stopOverlayHidingTimer() => _overlayHidingTimer?.cancel();
 }
