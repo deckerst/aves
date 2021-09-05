@@ -1,6 +1,8 @@
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/settings/common/quick_actions/action_button.dart';
 import 'package:aves/widgets/settings/common/quick_actions/placeholder.dart';
+import 'package:aves/widgets/viewer/overlay/common.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class AvailableActionPanel<T extends Object> extends StatelessWidget {
@@ -75,10 +77,6 @@ class AvailableActionPanel<T extends Object> extends StatelessWidget {
     Widget child,
   ) =>
       LongPressDraggable<T>(
-        data: action,
-        maxSimultaneousDrags: 1,
-        onDragStarted: () => _setDraggedAvailableAction(action),
-        onDragEnd: (details) => _setDraggedAvailableAction(null),
         feedback: MediaQueryDataProvider(
           child: _buildActionButton(
             context,
@@ -86,6 +84,13 @@ class AvailableActionPanel<T extends Object> extends StatelessWidget {
             showCaption: false,
           ),
         ),
+        data: action,
+        dragAnchorStrategy: (draggable, context, position) {
+          return childDragAnchorStrategy(draggable, context, position) + Offset(0, OverlayButton.getSize(context));
+        },
+        maxSimultaneousDrags: 1,
+        onDragStarted: () => _setDraggedAvailableAction(action),
+        onDragEnd: (details) => _setDraggedAvailableAction(null),
         childWhenDragging: child,
         child: child,
       );
