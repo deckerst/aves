@@ -142,8 +142,8 @@
   "renameEntryDialogLabel": "이름",
 
   "editEntryDateDialogTitle": "날짜 및 시간",
-  "editEntryDateDialogSet": "설정",
-  "editEntryDateDialogShift": "앞뒤로",
+  "editEntryDateDialogSet": "편집",
+  "editEntryDateDialogShift": "시간 이동",
   "editEntryDateDialogClear": "삭제",
   "editEntryDateDialogFieldSelection": "필드 선택",
   "editEntryDateDialogHours": "시간",
