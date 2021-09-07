@@ -52,7 +52,9 @@ internal class VideoThumbnailFetcher(private val model: VideoThumbnail) : DataFe
     override fun loadData(priority: Priority, callback: DataCallback<in InputStream>) {
         GlobalScope.launch(Dispatchers.IO) {
             val retriever = openMetadataRetriever(model.context, model.uri)
-            if (retriever != null) {
+            if (retriever == null) {
+                callback.onLoadFailed(Exception("failed to initialize MediaMetadataRetriever for uri=${model.uri}"))
+            } else {
                 try {
                     var bytes = retriever.embeddedPicture
                     if (bytes == null) {
