@@ -31,6 +31,10 @@ class MainActivity : FlutterActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.i(LOG_TAG, "onCreate intent=$intent")
+        intent.extras?.takeUnless { it.isEmpty }?.let {
+            Log.i(LOG_TAG, "onCreate intent extras=$it")
+        }
+
 //        StrictMode.setThreadPolicy(
 //            StrictMode.ThreadPolicy.Builder()
 //                .detectAll()
@@ -193,6 +197,9 @@ class MainActivity : FlutterActivity() {
                     "action" to "search",
                     "query" to intent.getStringExtra(SearchManager.QUERY),
                 )
+            }
+            Intent.ACTION_RUN -> {
+                // flutter run
             }
             else -> {
                 Log.w(LOG_TAG, "unhandled intent action=${intent?.action}")
