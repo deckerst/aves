@@ -50,7 +50,7 @@ internal class SvgFetcher(val model: SvgThumbnail, val width: Int, val height: I
         val context = model.context
         val uri = model.uri
 
-        StorageUtils.openInputStream(context, uri)?.use { input ->
+        val bitmap: Bitmap? = StorageUtils.openInputStream(context, uri)?.use { input ->
             try {
                 SVG.getFromInputStream(input)?.let { svg ->
                     svg.normalizeSize()
@@ -71,11 +71,18 @@ internal class SvgFetcher(val model: SvgThumbnail, val width: Int, val height: I
 
                     val canvas = Canvas(bitmap)
                     svg.renderToCanvas(canvas)
-                    callback.onDataReady(bitmap)
+                    bitmap
                 }
             } catch (ex: SVGParseException) {
                 callback.onLoadFailed(ex)
+                return
             }
+        }
+
+        if (bitmap == null) {
+            callback.onLoadFailed(Exception("failed to load SVG for uri=$uri"))
+        } else {
+            callback.onDataReady(bitmap)
         }
     }
 
