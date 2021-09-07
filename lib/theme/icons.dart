@@ -102,4 +102,7 @@ class AIcons {
   static const IconData threeSixty = Icons.threesixty_outlined;
   static const IconData selected = Icons.check_circle_outline;
   static const IconData unselected = Icons.radio_button_unchecked;
+
+  static const IconData github = MdiIcons.github;
+  static const IconData legal = MdiIcons.scaleBalance;
 }

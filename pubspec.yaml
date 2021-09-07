@@ -19,6 +19,7 @@ dependencies:
 # TODO TLAD as of 2021/08/04, null safe version is pre-release
   custom_rounded_rectangle_border: '>=0.2.0-nullsafety.0'
   decorated_icon:
+  device_info_plus:
   equatable:
   event_bus:
   expansion_tile_card:
