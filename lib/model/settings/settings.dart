@@ -143,11 +143,11 @@ class Settings extends ChangeNotifier {
 
   // app
 
-  bool get hasAcceptedTerms => getBoolOrDefault(hasAcceptedTermsKey, false);
+  bool get hasAcceptedTerms => getBoolOrDefault(hasAcceptedTermsKey, SettingsDefaults.hasAcceptedTerms);
 
   set hasAcceptedTerms(bool newValue) => setAndNotify(hasAcceptedTermsKey, newValue);
 
-  bool get isCrashlyticsEnabled => getBoolOrDefault(isCrashlyticsEnabledKey, false);
+  bool get isCrashlyticsEnabled => getBoolOrDefault(isCrashlyticsEnabledKey, SettingsDefaults.isCrashlyticsEnabled);
 
   set isCrashlyticsEnabled(bool newValue) {
     setAndNotify(isCrashlyticsEnabledKey, newValue);
@@ -182,18 +182,18 @@ class Settings extends ChangeNotifier {
     setAndNotify(localeKey, tag);
   }
 
-  bool get mustBackTwiceToExit => getBoolOrDefault(mustBackTwiceToExitKey, true);
+  bool get mustBackTwiceToExit => getBoolOrDefault(mustBackTwiceToExitKey, SettingsDefaults.mustBackTwiceToExit);
 
   set mustBackTwiceToExit(bool newValue) => setAndNotify(mustBackTwiceToExitKey, newValue);
 
-  KeepScreenOn get keepScreenOn => getEnumOrDefault(keepScreenOnKey, KeepScreenOn.viewerOnly, KeepScreenOn.values);
+  KeepScreenOn get keepScreenOn => getEnumOrDefault(keepScreenOnKey, SettingsDefaults.keepScreenOn, KeepScreenOn.values);
 
   set keepScreenOn(KeepScreenOn newValue) {
     setAndNotify(keepScreenOnKey, newValue.toString());
     newValue.apply();
   }
 
-  HomePageSetting get homePage => getEnumOrDefault(homePageKey, HomePageSetting.collection, HomePageSetting.values);
+  HomePageSetting get homePage => getEnumOrDefault(homePageKey, SettingsDefaults.homePage, HomePageSetting.values);
 
   set homePage(HomePageSetting newValue) => setAndNotify(homePageKey, newValue.toString());
 
@@ -226,11 +226,11 @@ class Settings extends ChangeNotifier {
 
   // collection
 
-  EntryGroupFactor get collectionSectionFactor => getEnumOrDefault(collectionGroupFactorKey, EntryGroupFactor.month, EntryGroupFactor.values);
+  EntryGroupFactor get collectionSectionFactor => getEnumOrDefault(collectionGroupFactorKey, SettingsDefaults.collectionSectionFactor, EntryGroupFactor.values);
 
   set collectionSectionFactor(EntryGroupFactor newValue) => setAndNotify(collectionGroupFactorKey, newValue.toString());
 
-  EntrySortFactor get collectionSortFactor => getEnumOrDefault(collectionSortFactorKey, EntrySortFactor.date, EntrySortFactor.values);
+  EntrySortFactor get collectionSortFactor => getEnumOrDefault(collectionSortFactorKey, SettingsDefaults.collectionSortFactor, EntrySortFactor.values);
 
   set collectionSortFactor(EntrySortFactor newValue) => setAndNotify(collectionSortFactorKey, newValue.toString());
 
@@ -238,33 +238,33 @@ class Settings extends ChangeNotifier {
 
   set collectionSelectionQuickActions(List<EntrySetAction> newValue) => setAndNotify(collectionSelectionQuickActionsKey, newValue.map((v) => v.toString()).toList());
 
-  bool get showThumbnailLocation => getBoolOrDefault(showThumbnailLocationKey, true);
+  bool get showThumbnailLocation => getBoolOrDefault(showThumbnailLocationKey, SettingsDefaults.showThumbnailLocation);
 
   set showThumbnailLocation(bool newValue) => setAndNotify(showThumbnailLocationKey, newValue);
 
-  bool get showThumbnailRaw => getBoolOrDefault(showThumbnailRawKey, true);
+  bool get showThumbnailRaw => getBoolOrDefault(showThumbnailRawKey, SettingsDefaults.showThumbnailRaw);
 
   set showThumbnailRaw(bool newValue) => setAndNotify(showThumbnailRawKey, newValue);
 
-  bool get showThumbnailVideoDuration => getBoolOrDefault(showThumbnailVideoDurationKey, true);
+  bool get showThumbnailVideoDuration => getBoolOrDefault(showThumbnailVideoDurationKey, SettingsDefaults.showThumbnailVideoDuration);
 
   set showThumbnailVideoDuration(bool newValue) => setAndNotify(showThumbnailVideoDurationKey, newValue);
 
   // filter grids
 
-  AlbumChipGroupFactor get albumGroupFactor => getEnumOrDefault(albumGroupFactorKey, AlbumChipGroupFactor.importance, AlbumChipGroupFactor.values);
+  AlbumChipGroupFactor get albumGroupFactor => getEnumOrDefault(albumGroupFactorKey, SettingsDefaults.albumGroupFactor, AlbumChipGroupFactor.values);
 
   set albumGroupFactor(AlbumChipGroupFactor newValue) => setAndNotify(albumGroupFactorKey, newValue.toString());
 
-  ChipSortFactor get albumSortFactor => getEnumOrDefault(albumSortFactorKey, ChipSortFactor.name, ChipSortFactor.values);
+  ChipSortFactor get albumSortFactor => getEnumOrDefault(albumSortFactorKey, SettingsDefaults.albumSortFactor, ChipSortFactor.values);
 
   set albumSortFactor(ChipSortFactor newValue) => setAndNotify(albumSortFactorKey, newValue.toString());
 
-  ChipSortFactor get countrySortFactor => getEnumOrDefault(countrySortFactorKey, ChipSortFactor.name, ChipSortFactor.values);
+  ChipSortFactor get countrySortFactor => getEnumOrDefault(countrySortFactorKey, SettingsDefaults.countrySortFactor, ChipSortFactor.values);
 
   set countrySortFactor(ChipSortFactor newValue) => setAndNotify(countrySortFactorKey, newValue.toString());
 
-  ChipSortFactor get tagSortFactor => getEnumOrDefault(tagSortFactorKey, ChipSortFactor.name, ChipSortFactor.values);
+  ChipSortFactor get tagSortFactor => getEnumOrDefault(tagSortFactorKey, SettingsDefaults.tagSortFactor, ChipSortFactor.values);
 
   set tagSortFactor(ChipSortFactor newValue) => setAndNotify(tagSortFactorKey, newValue.toString());
 
@@ -282,23 +282,23 @@ class Settings extends ChangeNotifier {
 
   set viewerQuickActions(List<EntryAction> newValue) => setAndNotify(viewerQuickActionsKey, newValue.map((v) => v.toString()).toList());
 
-  bool get showOverlayMinimap => getBoolOrDefault(showOverlayMinimapKey, false);
+  bool get showOverlayMinimap => getBoolOrDefault(showOverlayMinimapKey, SettingsDefaults.showOverlayMinimap);
 
   set showOverlayMinimap(bool newValue) => setAndNotify(showOverlayMinimapKey, newValue);
 
-  bool get showOverlayInfo => getBoolOrDefault(showOverlayInfoKey, true);
+  bool get showOverlayInfo => getBoolOrDefault(showOverlayInfoKey, SettingsDefaults.showOverlayInfo);
 
   set showOverlayInfo(bool newValue) => setAndNotify(showOverlayInfoKey, newValue);
 
-  bool get showOverlayShootingDetails => getBoolOrDefault(showOverlayShootingDetailsKey, false);
+  bool get showOverlayShootingDetails => getBoolOrDefault(showOverlayShootingDetailsKey, SettingsDefaults.showOverlayShootingDetails);
 
   set showOverlayShootingDetails(bool newValue) => setAndNotify(showOverlayShootingDetailsKey, newValue);
 
-  bool get enableOverlayBlurEffect => getBoolOrDefault(enableOverlayBlurEffectKey, true);
+  bool get enableOverlayBlurEffect => getBoolOrDefault(enableOverlayBlurEffectKey, SettingsDefaults.enableOverlayBlurEffect);
 
   set enableOverlayBlurEffect(bool newValue) => setAndNotify(enableOverlayBlurEffectKey, newValue);
 
-  bool get viewerUseCutout => getBoolOrDefault(viewerUseCutoutKey, true);
+  bool get viewerUseCutout => getBoolOrDefault(viewerUseCutoutKey, SettingsDefaults.viewerUseCutout);
 
   set viewerUseCutout(bool newValue) => setAndNotify(viewerUseCutoutKey, newValue);
 
@@ -308,67 +308,67 @@ class Settings extends ChangeNotifier {
 
   set videoQuickActions(List<VideoAction> newValue) => setAndNotify(videoQuickActionsKey, newValue.map((v) => v.toString()).toList());
 
-  bool get enableVideoHardwareAcceleration => getBoolOrDefault(enableVideoHardwareAccelerationKey, true);
+  bool get enableVideoHardwareAcceleration => getBoolOrDefault(enableVideoHardwareAccelerationKey, SettingsDefaults.enableVideoHardwareAcceleration);
 
   set enableVideoHardwareAcceleration(bool newValue) => setAndNotify(enableVideoHardwareAccelerationKey, newValue);
 
-  bool get enableVideoAutoPlay => getBoolOrDefault(enableVideoAutoPlayKey, false);
+  bool get enableVideoAutoPlay => getBoolOrDefault(enableVideoAutoPlayKey, SettingsDefaults.enableVideoAutoPlay);
 
   set enableVideoAutoPlay(bool newValue) => setAndNotify(enableVideoAutoPlayKey, newValue);
 
-  VideoLoopMode get videoLoopMode => getEnumOrDefault(videoLoopModeKey, VideoLoopMode.shortOnly, VideoLoopMode.values);
+  VideoLoopMode get videoLoopMode => getEnumOrDefault(videoLoopModeKey, SettingsDefaults.videoLoopMode, VideoLoopMode.values);
 
   set videoLoopMode(VideoLoopMode newValue) => setAndNotify(videoLoopModeKey, newValue.toString());
 
-  bool get videoShowRawTimedText => getBoolOrDefault(videoShowRawTimedTextKey, false);
+  bool get videoShowRawTimedText => getBoolOrDefault(videoShowRawTimedTextKey, SettingsDefaults.videoShowRawTimedText);
 
   set videoShowRawTimedText(bool newValue) => setAndNotify(videoShowRawTimedTextKey, newValue);
 
   // subtitles
 
-  double get subtitleFontSize => _prefs!.getDouble(subtitleFontSizeKey) ?? 20;
+  double get subtitleFontSize => _prefs!.getDouble(subtitleFontSizeKey) ?? SettingsDefaults.subtitleFontSize;
 
   set subtitleFontSize(double newValue) => setAndNotify(subtitleFontSizeKey, newValue);
 
-  TextAlign get subtitleTextAlignment => getEnumOrDefault(subtitleTextAlignmentKey, TextAlign.center, TextAlign.values);
+  TextAlign get subtitleTextAlignment => getEnumOrDefault(subtitleTextAlignmentKey, SettingsDefaults.subtitleTextAlignment, TextAlign.values);
 
   set subtitleTextAlignment(TextAlign newValue) => setAndNotify(subtitleTextAlignmentKey, newValue.toString());
 
-  bool get subtitleShowOutline => getBoolOrDefault(subtitleShowOutlineKey, true);
+  bool get subtitleShowOutline => getBoolOrDefault(subtitleShowOutlineKey, SettingsDefaults.subtitleShowOutline);
 
   set subtitleShowOutline(bool newValue) => setAndNotify(subtitleShowOutlineKey, newValue);
 
-  Color get subtitleTextColor => Color(_prefs!.getInt(subtitleTextColorKey) ?? Colors.white.value);
+  Color get subtitleTextColor => Color(_prefs!.getInt(subtitleTextColorKey) ?? SettingsDefaults.subtitleTextColor.value);
 
   set subtitleTextColor(Color newValue) => setAndNotify(subtitleTextColorKey, newValue.value);
 
-  Color get subtitleBackgroundColor => Color(_prefs!.getInt(subtitleBackgroundColorKey) ?? Colors.transparent.value);
+  Color get subtitleBackgroundColor => Color(_prefs!.getInt(subtitleBackgroundColorKey) ?? SettingsDefaults.subtitleBackgroundColor.value);
 
   set subtitleBackgroundColor(Color newValue) => setAndNotify(subtitleBackgroundColorKey, newValue.value);
 
   // info
 
-  EntryMapStyle get infoMapStyle => getEnumOrDefault(infoMapStyleKey, EntryMapStyle.stamenWatercolor, EntryMapStyle.values);
+  EntryMapStyle get infoMapStyle => getEnumOrDefault(infoMapStyleKey, SettingsDefaults.infoMapStyle, EntryMapStyle.values);
 
   set infoMapStyle(EntryMapStyle newValue) => setAndNotify(infoMapStyleKey, newValue.toString());
 
-  double get infoMapZoom => _prefs!.getDouble(infoMapZoomKey) ?? 12;
+  double get infoMapZoom => _prefs!.getDouble(infoMapZoomKey) ?? SettingsDefaults.infoMapZoom;
 
   set infoMapZoom(double newValue) => setAndNotify(infoMapZoomKey, newValue);
 
-  CoordinateFormat get coordinateFormat => getEnumOrDefault(coordinateFormatKey, CoordinateFormat.dms, CoordinateFormat.values);
+  CoordinateFormat get coordinateFormat => getEnumOrDefault(coordinateFormatKey, SettingsDefaults.coordinateFormat, CoordinateFormat.values);
 
   set coordinateFormat(CoordinateFormat newValue) => setAndNotify(coordinateFormatKey, newValue.toString());
 
   // rendering
 
-  EntryBackground get imageBackground => getEnumOrDefault(imageBackgroundKey, EntryBackground.white, EntryBackground.values);
+  EntryBackground get imageBackground => getEnumOrDefault(imageBackgroundKey, SettingsDefaults.imageBackground, EntryBackground.values);
 
   set imageBackground(EntryBackground newValue) => setAndNotify(imageBackgroundKey, newValue.toString());
 
   // search
 
-  bool get saveSearchHistory => getBoolOrDefault(saveSearchHistoryKey, true);
+  bool get saveSearchHistory => getBoolOrDefault(saveSearchHistoryKey, SettingsDefaults.saveSearchHistory);
 
   set saveSearchHistory(bool newValue) => setAndNotify(saveSearchHistoryKey, newValue);
 
