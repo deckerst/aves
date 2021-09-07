@@ -467,6 +467,7 @@ object StorageUtils {
             }
         } catch (e: Exception) {
             // unsupported format
+            Log.w(LOG_TAG, "failed to initialize MediaMetadataRetriever for uri=$uri")
             null
         }
     }
