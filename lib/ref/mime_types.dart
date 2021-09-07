@@ -50,6 +50,7 @@ class MimeTypes {
   static const webm = 'video/webm';
 
   static const json = 'application/json';
+  static const plainText = 'text/plain';
 
   // groups
 

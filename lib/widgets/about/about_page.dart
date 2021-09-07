@@ -1,4 +1,5 @@
 import 'package:aves/widgets/about/app_ref.dart';
+import 'package:aves/widgets/about/bug_report.dart';
 import 'package:aves/widgets/about/credits.dart';
 import 'package:aves/widgets/about/licenses.dart';
 import 'package:aves/widgets/about/update.dart';
@@ -27,6 +28,8 @@ class AboutPage extends StatelessWidget {
                     AppReference(),
                     Divider(),
                     AboutUpdate(),
+                    BugReport(),
+                    Divider(),
                     AboutCredits(),
                     Divider(),
                   ],

@@ -14,4 +14,4 @@ __We collect anonymous data to improve the app.__ We use Google Firebase for Cra
 ## Links
 [Sources](https://github.com/deckerst/aves)
 
-[License](https://github.com/deckerst/aves/blob/master/LICENSE)
+[License](https://github.com/deckerst/aves/blob/main/LICENSE)

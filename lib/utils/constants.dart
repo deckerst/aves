@@ -38,6 +38,8 @@ class Constants {
 
   static const int infoGroupMaxValueLength = 140;
 
+  static const String avesGithub = 'https://github.com/deckerst/aves';
+
   static const List<Dependency> androidDependencies = [
     Dependency(
       name: 'AndroidX Core-KTX',
@@ -90,6 +92,12 @@ class Constants {
       license: 'BSD 3-Clause',
       licenseUrl: 'https://github.com/fluttercommunity/plus_plugins/blob/main/packages/connectivity_plus/connectivity_plus/LICENSE',
       sourceUrl: 'https://github.com/fluttercommunity/plus_plugins/tree/main/packages/connectivity_plus',
+    ),
+    Dependency(
+      name: 'Device Info Plus',
+      license: 'BSD 3-Clause',
+      licenseUrl: 'https://github.com/fluttercommunity/plus_plugins/blob/main/packages/device_info_plus/device_info_plus/LICENSE',
+      sourceUrl: 'https://github.com/fluttercommunity/plus_plugins/tree/main/packages/device_info_plus',
     ),
     Dependency(
       name: 'FlutterFire (Core, Crashlytics)',
