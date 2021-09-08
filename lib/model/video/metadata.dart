@@ -82,8 +82,13 @@ class VideoMetadataFormatter {
 
     int? dateMillis;
 
-    final dateString = mediaInfo[Keys.date];
-    if (dateString is String && dateString != '0') {
+    bool isDefined(dynamic value) => value is String && value != '0';
+
+    var dateString = mediaInfo[Keys.date];
+    if (!isDefined(dateString)) {
+      dateString = mediaInfo[Keys.creationTime];
+    }
+    if (isDefined(dateString)) {
       final date = DateTime.tryParse(dateString);
       if (date != null) {
         dateMillis = date.millisecondsSinceEpoch;

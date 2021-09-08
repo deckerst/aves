@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:aves/widgets/common/extensions/media_query.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -52,7 +54,7 @@ class BottomPaddingSliver extends StatelessWidget {
   Widget build(BuildContext context) {
     return SliverToBoxAdapter(
       child: Selector<MediaQueryData, double>(
-        selector: (context, mq) => mq.effectiveBottomPadding,
+        selector: (context, mq) => max(mq.effectiveBottomPadding, mq.systemGestureInsets.bottom),
         builder: (context, mqPaddingBottom, child) {
           return SizedBox(height: mqPaddingBottom);
         },

@@ -1,6 +1,7 @@
 import 'dart:ui';
 
-import 'package:aves/flutter_version.dart';
+import 'package:aves/theme/icons.dart';
+import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/basic/link_chip.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_logo.dart';
@@ -29,8 +30,8 @@ class _AppReferenceState extends State<AppReference> {
       child: Column(
         children: [
           _buildAvesLine(),
-          _buildFlutterLine(),
           const SizedBox(height: 16),
+          _buildLinks(),
         ],
       ),
     );
@@ -47,37 +48,45 @@ class _AppReferenceState extends State<AppReference> {
     return FutureBuilder<PackageInfo>(
       future: _packageInfoLoader,
       builder: (context, snapshot) {
-        return LinkChip(
-          leading: AvesLogo(
-            size: style.fontSize! * MediaQuery.textScaleFactorOf(context) * 1.25,
-          ),
-          text: '${context.l10n.appName} ${snapshot.data?.version}',
-          url: 'https://github.com/deckerst/aves',
-          textStyle: style,
+        return Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            AvesLogo(
+              size: style.fontSize! * MediaQuery.textScaleFactorOf(context) * 1.25,
+            ),
+            const SizedBox(width: 8),
+            Text(
+              '${context.l10n.appName} ${snapshot.data?.version}',
+              style: style,
+            ),
+          ],
         );
       },
     );
   }
 
-  Widget _buildFlutterLine() {
-    final style = DefaultTextStyle.of(context).style;
-    final subColor = style.color!.withOpacity(.6);
-
-    return Text.rich(
-      TextSpan(
-        children: [
-          WidgetSpan(
-            child: Padding(
-              padding: const EdgeInsetsDirectional.only(end: 4),
-              child: FlutterLogo(
-                size: style.fontSize! * 1.25,
-              ),
-            ),
+  Widget _buildLinks() {
+    return Wrap(
+      crossAxisAlignment: WrapCrossAlignment.center,
+      spacing: 16,
+      children: [
+        LinkChip(
+          leading: const Icon(
+            AIcons.github,
+            size: 24,
           ),
-          TextSpan(text: '${context.l10n.aboutFlutter} ${version['frameworkVersion']}'),
-        ],
-      ),
-      style: TextStyle(color: subColor),
+          text: context.l10n.aboutLinkSources,
+          url: Constants.avesGithub,
+        ),
+        LinkChip(
+          leading: const Icon(
+            AIcons.legal,
+            size: 22,
+          ),
+          text: context.l10n.aboutLinkLicense,
+          url: '${Constants.avesGithub}/blob/main/LICENSE',
+        ),
+      ],
     );
   }
 }
