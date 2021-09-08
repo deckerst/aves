@@ -5,12 +5,14 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/basic/menu.dart';
+import 'package:aves/widgets/common/basic/popup_menu_button.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/sweeper.dart';
 import 'package:aves/widgets/viewer/entry_action_delegate.dart';
 import 'package:aves/widgets/viewer/multipage/conductor.dart';
 import 'package:aves/widgets/viewer/overlay/common.dart';
 import 'package:aves/widgets/viewer/overlay/minimap.dart';
+import 'package:aves/widgets/viewer/overlay/notifications.dart';
 import 'package:aves/widgets/viewer/page_entry_builder.dart';
 import 'package:aves/widgets/viewer/visual/conductor.dart';
 import 'package:flutter/foundation.dart';
@@ -167,7 +169,7 @@ class _TopOverlayRow extends StatelessWidget {
         OverlayButton(
           scale: scale,
           child: MenuIconTheme(
-            child: PopupMenuButton<EntryAction>(
+            child: AvesPopupMenuButton<EntryAction>(
               key: const Key('entry-menu-button'),
               itemBuilder: (context) => [
                 ...inAppActions.map((action) => _buildPopupMenuItem(context, action)),
@@ -182,6 +184,12 @@ class _TopOverlayRow extends StatelessWidget {
               onSelected: (action) {
                 // wait for the popup menu to hide before proceeding with the action
                 Future.delayed(Durations.popupMenuAnimation * timeDilation, () => _onActionSelected(context, action));
+              },
+              onMenuOpened: () {
+                // if the menu is opened while overlay is hiding,
+                // the popup menu button is disposed and menu items are ineffective,
+                // so we make sure overlay stays visible
+                const ToggleOverlayNotification(visible: true).dispatch(context);
               },
             ),
           ),

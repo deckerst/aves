@@ -142,8 +142,8 @@
   "renameEntryDialogLabel": "이름",
 
   "editEntryDateDialogTitle": "날짜 및 시간",
-  "editEntryDateDialogSet": "설정",
-  "editEntryDateDialogShift": "앞뒤로",
+  "editEntryDateDialogSet": "편집",
+  "editEntryDateDialogShift": "시간 이동",
   "editEntryDateDialogClear": "삭제",
   "editEntryDateDialogFieldSelection": "필드 선택",
   "editEntryDateDialogHours": "시간",
@@ -170,16 +170,28 @@
   "menuActionStats": "통계",
 
   "aboutPageTitle": "앱 정보",
-  "aboutFlutter": "플러터",
+  "aboutLinkSources": "소스 코드",
+  "aboutLinkLicense": "라이선스",
+
   "aboutUpdate": "업데이트 사용 가능",
   "aboutUpdateLinks1": "앱의 최신 버전을",
   "aboutUpdateLinks2": "와",
   "aboutUpdateLinks3": "에서 다운로드 사용 가능합니다.",
   "aboutUpdateGitHub": "깃허브",
   "aboutUpdateGooglePlay": "구글 플레이",
+
+  "aboutBug": "버그 보고",
+  "aboutBugSaveLogInstruction": "앱 로그를 파일에 저장하기",
+  "aboutBugSaveLogButton": "저장",
+  "aboutBugCopyInfoInstruction": "시스템 정보를 복사하기",
+  "aboutBugCopyInfoButton": "복사",
+  "aboutBugReportInstruction": "로그와 시스템 정보를 첨부하여 깃허브에서 이슈를 제출하기",
+  "aboutBugReportButton": "제출",
+
   "aboutCredits": "크레딧",
   "aboutCreditsWorldAtlas1": "이 앱은",
   "aboutCreditsWorldAtlas2": "의 TopoJSON 파일(ISC 라이선스)을 이용합니다.",
+
   "aboutLicenses": "오픈 소스 라이선스",
   "aboutLicensesBanner": "이 앱은 다음의 오픈 소스 패키지와 라이브러리를 이용합니다.",
   "aboutLicensesAndroidLibraries": "안드로이드 라이브러리",

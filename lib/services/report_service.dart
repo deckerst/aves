@@ -1,5 +1,8 @@
+import 'package:collection/collection.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
+import 'package:stack_trace/stack_trace.dart';
 
 abstract class ReportService {
   bool get isCollectionEnabled;
@@ -40,6 +43,19 @@ class CrashlyticsReportService extends ReportService {
 
   @override
   Future<void> recordError(dynamic exception, StackTrace? stack) {
+    if (exception is PlatformException && stack != null) {
+      // simply creating a trace with `Trace.current(1)` or creating a `Trace` from modified frames
+      // does not yield a stack trace that Crashlytics can segment,
+      // so we reconstruct a string stack trace instead
+      stack = StackTrace.fromString(Trace.from(stack)
+          .frames
+          .skip(2)
+          .toList()
+          .mapIndexed(
+            (i, f) => '#${(i++).toString().padRight(8)}${f.member} (${f.uri}:${f.line}:${f.column})',
+          )
+          .join('\n'));
+    }
     return instance.recordError(exception, stack);
   }
 

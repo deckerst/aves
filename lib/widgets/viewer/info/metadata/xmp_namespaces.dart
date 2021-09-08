@@ -4,6 +4,7 @@ import 'package:aves/utils/constants.dart';
 import 'package:aves/utils/string_utils.dart';
 import 'package:aves/widgets/common/identity/highlight_title.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
+import 'package:aves/widgets/viewer/info/metadata/xmp_ns/darktable.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_ns/exif.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_ns/google.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_ns/iptc.dart';
@@ -30,6 +31,8 @@ class XmpNamespace extends Equatable {
     switch (namespace) {
       case XmpBasicNamespace.ns:
         return XmpBasicNamespace(rawProps);
+      case XmpDarktableNamespace.ns:
+        return XmpDarktableNamespace(rawProps);
       case XmpExifNamespace.ns:
         return XmpExifNamespace(rawProps);
       case XmpGAudioNamespace.ns:
@@ -136,8 +139,10 @@ class XmpProp {
     return propPath.splitMapJoin(XMP.structFieldSeparator,
         onMatch: (match) => ' ${match.group(0)} ',
         onNonMatch: (s) {
-          // strip namespace & format
-          return s.split(XMP.propNamespaceSeparator).last.toSentenceCase();
+          // strip namespace
+          final key = s.split(XMP.propNamespaceSeparator).last;
+          // format
+          return key.replaceAll('_', ' ').toSentenceCase();
         });
   }
 

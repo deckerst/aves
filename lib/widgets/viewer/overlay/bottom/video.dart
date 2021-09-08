@@ -9,6 +9,7 @@ import 'package:aves/theme/format.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/basic/menu.dart';
+import 'package:aves/widgets/common/basic/popup_menu_button.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/blurred.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
@@ -24,6 +25,7 @@ class VideoControlOverlay extends StatefulWidget {
   final AvesVideoController? controller;
   final Animation<double> scale;
   final Function(VideoAction value) onActionSelected;
+  final VoidCallback onActionMenuOpened;
 
   const VideoControlOverlay({
     Key? key,
@@ -31,6 +33,7 @@ class VideoControlOverlay extends StatefulWidget {
     required this.controller,
     required this.scale,
     required this.onActionSelected,
+    required this.onActionMenuOpened,
   }) : super(key: key);
 
   @override
@@ -94,6 +97,7 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
                       scale: scale,
                       controller: controller,
                       onActionSelected: widget.onActionSelected,
+                      onActionMenuOpened: widget.onActionMenuOpened,
                     ),
                     const SizedBox(height: 8),
                     _buildProgressBar(),
@@ -199,6 +203,7 @@ class _ButtonRow extends StatelessWidget {
   final Animation<double> scale;
   final AvesVideoController? controller;
   final Function(VideoAction value) onActionSelected;
+  final VoidCallback onActionMenuOpened;
 
   const _ButtonRow({
     Key? key,
@@ -207,6 +212,7 @@ class _ButtonRow extends StatelessWidget {
     required this.scale,
     required this.controller,
     required this.onActionSelected,
+    required this.onActionMenuOpened,
   }) : super(key: key);
 
   static const double padding = 8;
@@ -225,12 +231,13 @@ class _ButtonRow extends StatelessWidget {
             child: OverlayButton(
               scale: scale,
               child: MenuIconTheme(
-                child: PopupMenuButton<VideoAction>(
+                child: AvesPopupMenuButton<VideoAction>(
                   itemBuilder: (context) => menuActions.map((action) => _buildPopupMenuItem(context, action)).toList(),
                   onSelected: (action) {
                     // wait for the popup menu to hide before proceeding with the action
                     Future.delayed(Durations.popupMenuAnimation * timeDilation, () => onActionSelected(action));
                   },
+                  onMenuOpened: onActionMenuOpened,
                 ),
               ),
             ),

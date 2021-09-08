@@ -47,8 +47,10 @@ class MimeTypes {
   static const mp2t = 'video/mp2t'; // .m2ts
   static const mp4 = 'video/mp4';
   static const ogg = 'video/ogg';
+  static const webm = 'video/webm';
 
   static const json = 'application/json';
+  static const plainText = 'text/plain';
 
   // groups
 
@@ -62,7 +64,7 @@ class MimeTypes {
 
   static const Set<String> _knownOpaqueImages = {heic, heif, jpeg};
 
-  static const Set<String> _knownVideos = {avi, aviVnd, mkv, mov, mp2t, mp4, ogg};
+  static const Set<String> _knownVideos = {avi, aviVnd, mkv, mov, mp2t, mp4, ogg, webm};
 
   static final Set<String> knownMediaTypes = {..._knownOpaqueImages, ...alphaImages, ...rawImages, ...undecodableImages, ..._knownVideos};
 
