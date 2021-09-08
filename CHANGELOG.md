@@ -3,6 +3,16 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [v1.5.1] - 2021-09-08
+### Added
+- About: bug reporting instructions
+
+### Changed
+- Collection: improved video date detection
+
+### Fixed
+- fixed hanging app when loading thumbnails for some video formats on some devices
+
 ## [v1.5.0] - 2021-09-02
 ### Added
 - Info: edit Exif dates (setting, shifting, deleting)
