@@ -185,7 +185,7 @@
   "aboutBugSaveLogButton": "저장",
   "aboutBugCopyInfoInstruction": "시스템 정보를 복사하기",
   "aboutBugCopyInfoButton": "복사",
-  "aboutBugReportInstruction": "로그와 시스템 정보를 첨부하여 깃허브에서 이슈를 제툴하기",
+  "aboutBugReportInstruction": "로그와 시스템 정보를 첨부하여 깃허브에서 이슈를 제출하기",
   "aboutBugReportButton": "제출",
 
   "aboutCredits": "크레딧",
