@@ -177,7 +177,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> {
         final deletedCount = deletedUris.length;
         if (deletedCount < todoCount) {
           final count = todoCount - deletedCount;
-          showFeedbackWithMessenger(messenger, l10n.collectionDeleteFailureFeedback(count));
+          showFeedbackWithMessenger(context, messenger, l10n.collectionDeleteFailureFeedback(count));
         }
 
         // cleanup
@@ -236,9 +236,9 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> {
         final movedCount = movedOps.length;
         if (movedCount < todoCount) {
           final count = todoCount - movedCount;
-          showFeedbackWithMessenger(messenger, l10n.collectionMoveFailureFeedback(count));
+          showFeedbackWithMessenger(context, messenger, l10n.collectionMoveFailureFeedback(count));
         } else {
-          showFeedbackWithMessenger(messenger, l10n.genericSuccessFeedback);
+          showFeedbackWithMessenger(context, messenger, l10n.genericSuccessFeedback);
         }
 
         // cleanup

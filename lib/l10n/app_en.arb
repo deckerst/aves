@@ -3,7 +3,7 @@
   "@appName": {},
   "welcomeMessage": "Welcome to Aves",
   "@welcomeMessage": {},
-  "welcomeCrashReportToggle": "Allow anonymous crash reporting (optional)",
+  "welcomeCrashReportToggle": "Allow anonymous error reporting (optional)",
   "@welcomeCrashReportToggle": {},
   "welcomeTermsToggle": "I agree to the terms and conditions",
   "@welcomeTermsToggle": {},

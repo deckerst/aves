@@ -56,8 +56,8 @@ class _MagnifierGestureDetectorState extends State<MagnifierGestureDetector> {
     if (scope != null) {
       gestures[MagnifierGestureRecognizer] = GestureRecognizerFactoryWithHandlers<MagnifierGestureRecognizer>(
         () => MagnifierGestureRecognizer(
-          hitDetector: widget.hitDetector,
           debugOwner: this,
+          hitDetector: widget.hitDetector,
           validateAxis: scope.axis,
           touchSlopFactor: scope.touchSlopFactor,
           doubleTapDetails: doubleTapDetails,

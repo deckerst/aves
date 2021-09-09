@@ -84,7 +84,7 @@ class _BugReportState extends State<BugReport> with FeedbackMixin {
           ),
           isExpanded: _showInstructions,
           canTapOnHeader: true,
-          backgroundColor: Colors.transparent,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         ),
       ],
     );
@@ -99,7 +99,7 @@ class _BugReportState extends State<BugReport> with FeedbackMixin {
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               border: Border.fromBorderSide(BorderSide(
-                color: Theme.of(context).accentColor,
+                color: Theme.of(context).colorScheme.secondary,
                 width: AvesFilterChip.outlineWidth,
               )),
               shape: BoxShape.circle,
@@ -112,7 +112,7 @@ class _BugReportState extends State<BugReport> with FeedbackMixin {
           OutlinedButton(
             onPressed: onPressed,
             style: ButtonStyle(
-              side: MaterialStateProperty.all<BorderSide>(BorderSide(color: Theme.of(context).accentColor)),
+              side: MaterialStateProperty.all<BorderSide>(BorderSide(color: Theme.of(context).colorScheme.secondary)),
               foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
             ),
             child: Text(buttonText),

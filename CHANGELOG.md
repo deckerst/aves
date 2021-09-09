@@ -2,6 +2,8 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+### Changed
+- upgraded Flutter to stable v2.5.0
 
 ## [v1.5.1] - 2021-09-08
 ### Added
@@ -71,7 +73,7 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - improved SVG support with a different rendering engine
 - changed logo
-- upgraded flutter to stable v2.2.3
+- upgraded Flutter to stable v2.2.3
 - migrated to sound null safety
 - viewer: parallax effect when scrolling
 

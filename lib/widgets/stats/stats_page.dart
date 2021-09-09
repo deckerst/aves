@@ -93,7 +93,7 @@ class StatsPage extends StatelessWidget {
               percent: withGpsPercent,
               lineHeight: lineHeight,
               backgroundColor: Colors.white24,
-              progressColor: Theme.of(context).accentColor,
+              progressColor: Theme.of(context).colorScheme.secondary,
               animation: true,
               leading: const Icon(AIcons.location),
               // right padding to match leading, so that inside label is aligned with outside label below

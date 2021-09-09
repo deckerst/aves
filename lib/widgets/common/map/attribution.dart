@@ -33,7 +33,7 @@ class Attribution extends StatelessWidget {
         data: data,
         selectable: true,
         styleSheet: MarkdownStyleSheet(
-          a: TextStyle(color: Theme.of(context).accentColor),
+          a: TextStyle(color: Theme.of(context).colorScheme.secondary),
           p: const TextStyle(color: Colors.white70, fontSize: InfoRowGroup.fontSize),
         ),
         onTapLink: (text, href, title) async {

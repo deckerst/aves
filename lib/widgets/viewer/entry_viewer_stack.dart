@@ -524,9 +524,9 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
 
   // system UI
 
-  static void _showSystemUI() => SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+  static void _showSystemUI() => SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
-  static void _hideSystemUI() => SystemChrome.setEnabledSystemUIOverlays([]);
+  static void _hideSystemUI() => SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
 
   // overlay
 

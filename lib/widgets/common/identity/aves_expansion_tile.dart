@@ -42,10 +42,13 @@ class AvesExpansionTile extends StatelessWidget {
         ],
       );
     }
+    final theme = Theme.of(context);
     return Theme(
-      data: Theme.of(context).copyWith(
-        // color used by the `ExpansionTileCard` for selected text and icons
-        accentColor: Colors.white,
+      data: theme.copyWith(
+        colorScheme: theme.colorScheme.copyWith(
+          // color used by the `ExpansionTileCard` for selected text and icons
+          secondary: theme.colorScheme.onBackground,
+        ),
       ),
       child: ExpansionTileCard(
         // key is expected by test driver
@@ -58,7 +61,7 @@ class AvesExpansionTile extends StatelessWidget {
         finalPadding: const EdgeInsets.symmetric(vertical: 6.0),
         baseColor: Colors.grey.shade900,
         expandedColor: Colors.grey[850],
-        shadowColor: Theme.of(context).shadowColor,
+        shadowColor: theme.shadowColor,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
