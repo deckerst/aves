@@ -109,10 +109,6 @@ class _SearchPageState extends State<SearchPage> {
     }
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: theme.primaryColor,
-        iconTheme: theme.primaryIconTheme,
-        textTheme: theme.primaryTextTheme,
-        brightness: theme.primaryColorBrightness,
         leading: widget.delegate.buildLeading(context),
         title: TextField(
           controller: widget.delegate.queryTextController,

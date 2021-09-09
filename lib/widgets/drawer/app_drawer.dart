@@ -68,7 +68,7 @@ class _AppDrawerState extends State<AppDrawer> {
 
     return Drawer(
       child: ListTileTheme.merge(
-        selectedColor: Theme.of(context).accentColor,
+        selectedColor: Theme.of(context).colorScheme.secondary,
         child: Selector<MediaQueryData, double>(
           selector: (c, mq) => mq.effectiveBottomPadding,
           builder: (c, mqPaddingBottom, child) {
@@ -104,7 +104,7 @@ class _AppDrawerState extends State<AppDrawer> {
 
     return Container(
       padding: const EdgeInsets.only(left: 16, top: 16, right: 16, bottom: 8),
-      color: Theme.of(context).accentColor,
+      color: Theme.of(context).colorScheme.secondary,
       child: SafeArea(
         bottom: false,
         child: Column(
@@ -147,6 +147,7 @@ class _AppDrawerState extends State<AppDrawer> {
                     onPressed: () => goTo(AboutPage.routeName, (_) => const AboutPage()),
                     icon: const Icon(AIcons.info),
                     label: Row(
+                      mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(context.l10n.aboutPageTitle),

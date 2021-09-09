@@ -34,6 +34,7 @@ Future<void> configureAndLaunch() async {
   await settings.init();
   settings.keepScreenOn = KeepScreenOn.always;
   settings.hasAcceptedTerms = false;
+  settings.isCrashlyticsEnabled = false;
   settings.locale = const Locale('en');
   settings.homePage = HomePageSetting.collection;
   settings.imageBackground = EntryBackground.checkered;

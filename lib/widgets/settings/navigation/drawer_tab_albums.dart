@@ -77,7 +77,7 @@ class _DrawerAlbumTabState extends State<DrawerAlbumTab> {
             });
           },
           style: ButtonStyle(
-            side: MaterialStateProperty.all<BorderSide>(BorderSide(color: Theme.of(context).accentColor)),
+            side: MaterialStateProperty.all<BorderSide>(BorderSide(color: Theme.of(context).colorScheme.secondary)),
             foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
           ),
           icon: const Icon(AIcons.add),

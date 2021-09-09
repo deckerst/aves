@@ -51,7 +51,7 @@ class GeoMap extends StatefulWidget {
   _GeoMapState createState() => _GeoMapState();
 }
 
-class _GeoMapState extends State<GeoMap> with TickerProviderStateMixin {
+class _GeoMapState extends State<GeoMap> {
   // as of google_maps_flutter v2.0.6, Google Maps initialization is blocking
   // cf https://github.com/flutter/flutter/issues/28493
   // it is especially severe the first time, but still significant afterwards
@@ -179,7 +179,6 @@ class _GeoMapState extends State<GeoMap> with TickerProviderStateMixin {
               alignment: Alignment.topCenter,
               curve: Curves.easeInOutCubic,
               duration: Durations.mapStyleSwitchAnimation,
-              vsync: this,
               child: ValueListenableBuilder<bool>(
                 valueListenable: widget.isAnimatingNotifier,
                 builder: (context, animating, child) {

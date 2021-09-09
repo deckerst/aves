@@ -264,7 +264,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
                   child: Banner(
                     message: banner.toUpperCase(),
                     location: BannerLocation.topStart,
-                    color: Theme.of(context).accentColor,
+                    color: Theme.of(context).colorScheme.secondary,
                     child: const SizedBox(),
                   ),
                 ),

@@ -324,6 +324,7 @@ class _TimeShiftDialogState extends State<TimeShiftDialog> {
           ),
         ),
       ],
+      hasScrollBar: false,
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
