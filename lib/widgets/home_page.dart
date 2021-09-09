@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/filters.dart';
@@ -10,7 +12,6 @@ import 'package:aves/services/global_search.dart';
 import 'package:aves/services/services.dart';
 import 'package:aves/services/viewer_service.dart';
 import 'package:aves/utils/android_file_utils.dart';
-import 'package:aves/utils/pedantic.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/behaviour/routes.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';

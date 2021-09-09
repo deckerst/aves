@@ -11,7 +11,6 @@ import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums.dart';
 import 'package:aves/services/app_shortcut_service.dart';
 import 'package:aves/theme/durations.dart';
-import 'package:aves/utils/pedantic.dart';
 import 'package:aves/widgets/collection/entry_set_action_delegate.dart';
 import 'package:aves/widgets/collection/filter_bar.dart';
 import 'package:aves/widgets/common/app_bar_subtitle.dart';

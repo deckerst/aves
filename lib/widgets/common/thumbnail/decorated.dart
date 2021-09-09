@@ -34,7 +34,7 @@ class DecoratedThumbnail extends StatelessWidget {
     // hero tag should include a collection identifier, so that it animates
     // between different views of the entry in the same collection (e.g. thumbnails <-> viewer)
     // but not between different collection instances, even with the same attributes (e.g. reloading collection page via drawer)
-    final heroTag = hero ? hashValues(collection?.id, entry.uri) : null;
+    final heroTag = hero ? Object.hashAll([collection?.id, entry.uri]) : null;
     final isSvg = entry.isSvg;
     Widget child = ThumbnailImage(
       entry: entry,

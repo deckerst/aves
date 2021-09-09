@@ -21,7 +21,6 @@ import 'package:aves/widgets/viewer/visual/state.dart';
 import 'package:aves/widgets/viewer/visual/subtitle/subtitle.dart';
 import 'package:aves/widgets/viewer/visual/vector.dart';
 import 'package:aves/widgets/viewer/visual/video.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -117,7 +116,7 @@ class _EntryPageViewState extends State<EntryPageView> {
 
     return Consumer<HeroInfo?>(
       builder: (context, info, child) => Hero(
-        tag: info != null && info.entry == mainEntry ? hashValues(info.collectionId, mainEntry.uri) : hashCode,
+        tag: info != null && info.entry == mainEntry ? Object.hashAll([info.collectionId, mainEntry.uri]) : hashCode,
         transitionOnUserGestures: true,
         child: child!,
       ),
