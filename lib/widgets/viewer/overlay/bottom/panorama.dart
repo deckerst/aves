@@ -1,6 +1,7 @@
+import 'dart:async';
+
 import 'package:aves/model/entry.dart';
 import 'package:aves/services/services.dart';
-import 'package:aves/utils/pedantic.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/viewer/overlay/common.dart';
 import 'package:aves/widgets/viewer/panorama_page.dart';
