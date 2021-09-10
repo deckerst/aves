@@ -98,9 +98,9 @@ class MediaStoreSource extends CollectionSource {
         }
       },
       onDone: () async {
-        if (allNewEntries.isNotEmpty) {
-          addPendingEntries();
+        addPendingEntries();
 
+        if (allNewEntries.isNotEmpty) {
           debugPrint('$runtimeType refresh ${stopwatch.elapsed} save new entries');
           await metadataDb.saveEntries(allNewEntries);
 
