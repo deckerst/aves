@@ -60,7 +60,7 @@ class ImageFileHandler(private val activity: Activity) : MethodCallHandler {
 
         provider.fetchSingle(activity, uri, mimeType, object : ImageOpCallback {
             override fun onSuccess(fields: FieldMap) = result.success(fields)
-            override fun onFailure(throwable: Throwable) = result.error("getEntry-failure", "failed to get entry for uri=$uri", "${throwable.message}\n${throwable.stackTraceToString()}")
+            override fun onFailure(throwable: Throwable) = result.error("getEntry-failure", "failed to get entry for uri=$uri", throwable.message)
         })
     }
 
@@ -162,7 +162,7 @@ class ImageFileHandler(private val activity: Activity) : MethodCallHandler {
         destinationDir = ensureTrailingSeparator(destinationDir)
         provider.captureFrame(activity, desiredName, exifFields, bytes, destinationDir, object : ImageOpCallback {
             override fun onSuccess(fields: FieldMap) = result.success(fields)
-            override fun onFailure(throwable: Throwable) = result.error("captureFrame-failure", "failed to capture frame", "${throwable.message}\n${throwable.stackTraceToString()}")
+            override fun onFailure(throwable: Throwable) = result.error("captureFrame-failure", "failed to capture frame", throwable.message)
         })
     }
 
@@ -190,7 +190,7 @@ class ImageFileHandler(private val activity: Activity) : MethodCallHandler {
 
         provider.rename(activity, path, uri, mimeType, newName, object : ImageOpCallback {
             override fun onSuccess(fields: FieldMap) = result.success(fields)
-            override fun onFailure(throwable: Throwable) = result.error("rename-failure", "failed to rename", "${throwable.message}\n${throwable.stackTraceToString()}")
+            override fun onFailure(throwable: Throwable) = result.error("rename-failure", "failed to rename", throwable.message)
         })
     }
 
@@ -232,7 +232,7 @@ class ImageFileHandler(private val activity: Activity) : MethodCallHandler {
 
         provider.changeOrientation(activity, path, uri, mimeType, op, object : ImageOpCallback {
             override fun onSuccess(fields: FieldMap) = result.success(fields)
-            override fun onFailure(throwable: Throwable) = result.error("changeOrientation-failure", "failed to change orientation", "${throwable.message}\n${throwable.stackTraceToString()}")
+            override fun onFailure(throwable: Throwable) = result.error("changeOrientation-failure", "failed to change orientation", throwable.message)
         })
     }
 
@@ -262,7 +262,7 @@ class ImageFileHandler(private val activity: Activity) : MethodCallHandler {
 
         provider.editDate(activity, path, uri, mimeType, dateMillis, shiftMinutes, fields, object : ImageOpCallback {
             override fun onSuccess(fields: FieldMap) = result.success(fields)
-            override fun onFailure(throwable: Throwable) = result.error("editDate-failure", "failed to edit date", "${throwable.message}\n${throwable.stackTraceToString()}")
+            override fun onFailure(throwable: Throwable) = result.error("editDate-failure", "failed to edit date", throwable.message)
         })
     }
 
