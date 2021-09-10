@@ -159,6 +159,8 @@ mixin LocationMixin on SourceBase {
   final Map<String, AvesEntry?> _filterRecentEntryMap = {};
 
   void invalidateCountryFilterSummary([Set<AvesEntry>? entries]) {
+    if (_filterEntryCountMap.isEmpty && _filterRecentEntryMap.isEmpty) return;
+
     Set<String>? countryCodes;
     if (entries == null) {
       _filterEntryCountMap.clear();

@@ -140,6 +140,8 @@ mixin AlbumMixin on SourceBase {
   final Map<String, AvesEntry?> _filterRecentEntryMap = {};
 
   void invalidateAlbumFilterSummary({Set<AvesEntry>? entries, Set<String?>? directories}) {
+    if (_filterEntryCountMap.isEmpty && _filterRecentEntryMap.isEmpty) return;
+
     if (entries == null && directories == null) {
       _filterEntryCountMap.clear();
       _filterRecentEntryMap.clear();
