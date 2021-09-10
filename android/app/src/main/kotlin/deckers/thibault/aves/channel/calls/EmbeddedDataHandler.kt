@@ -217,7 +217,7 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
                         result.success(resultFields)
                     }
 
-                    override fun onFailure(throwable: Throwable) = result.error("copyEmbeddedBytes-failure", "failed to get entry for uri=$uri mime=$mimeType", "${throwable.message}\n${throwable.stackTraceToString()}")
+                    override fun onFailure(throwable: Throwable) = result.error("copyEmbeddedBytes-failure", "failed to get entry for uri=$uri mime=$mimeType", throwable.message)
                 })
             }
         } else {
