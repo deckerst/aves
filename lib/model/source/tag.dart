@@ -70,6 +70,8 @@ mixin TagMixin on SourceBase {
   final Map<String, AvesEntry?> _filterRecentEntryMap = {};
 
   void invalidateTagFilterSummary([Set<AvesEntry>? entries]) {
+    if (_filterEntryCountMap.isEmpty && _filterRecentEntryMap.isEmpty) return;
+
     Set<String>? tags;
     if (entries == null) {
       _filterEntryCountMap.clear();
