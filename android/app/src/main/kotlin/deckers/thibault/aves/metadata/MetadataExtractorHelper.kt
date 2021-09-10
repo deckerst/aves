@@ -33,7 +33,10 @@ object MetadataExtractorHelper {
     }
 
     fun Directory.getSafeDateMillis(tag: Int, save: (value: Long) -> Unit) {
-        if (this.containsTag(tag)) save(this.getDate(tag, null, TimeZone.getDefault()).time)
+        if (this.containsTag(tag)) {
+            val date = this.getDate(tag, null, TimeZone.getDefault())
+            if (date != null) save(date.time)
+        }
     }
 
     // geotiff
