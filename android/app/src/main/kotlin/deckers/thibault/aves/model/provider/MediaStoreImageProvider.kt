@@ -82,7 +82,7 @@ class MediaStoreImageProvider : ImageProvider() {
         }
         check(context, IMAGE_CONTENT_URI)
         check(context, VIDEO_CONTENT_URI)
-        return knownContentIds.filter { id: Int -> !foundContentIds.contains(id) }.toList()
+        return knownContentIds.subtract(foundContentIds).toList()
     }
 
     fun checkObsoletePaths(context: Context, knownPathById: Map<Int, String>): List<Int> {
