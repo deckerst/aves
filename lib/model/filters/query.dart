@@ -19,6 +19,11 @@ class QueryFilter extends CollectionFilter {
 
   QueryFilter(this.query, {this.colorful = true}) {
     var upQuery = query.toUpperCase();
+    if (upQuery.startsWith('ID=')) {
+      final id = int.tryParse(upQuery.substring(3));
+      _test = (entry) => entry.contentId == id;
+      return;
+    }
 
     // allow NOT queries starting with `-`
     final not = upQuery.startsWith('-');
