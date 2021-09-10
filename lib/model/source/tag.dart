@@ -13,11 +13,11 @@ mixin TagMixin on SourceBase {
   List<String> sortedTags = List.unmodifiable([]);
 
   Future<void> loadCatalogMetadata() async {
-    final stopwatch = Stopwatch()..start();
+    // final stopwatch = Stopwatch()..start();
     final saved = await metadataDb.loadMetadataEntries();
     final idMap = entryById;
     saved.forEach((metadata) => idMap[metadata.contentId]?.catalogMetadata = metadata);
-    debugPrint('$runtimeType loadCatalogMetadata complete in ${stopwatch.elapsed.inMilliseconds}ms for ${saved.length} entries');
+    // debugPrint('$runtimeType loadCatalogMetadata complete in ${stopwatch.elapsed.inMilliseconds}ms for ${saved.length} entries');
     onCatalogMetadataChanged();
   }
 

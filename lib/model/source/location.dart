@@ -18,11 +18,11 @@ mixin LocationMixin on SourceBase {
   List<String> sortedPlaces = List.unmodifiable([]);
 
   Future<void> loadAddresses() async {
-    final stopwatch = Stopwatch()..start();
+    // final stopwatch = Stopwatch()..start();
     final saved = await metadataDb.loadAddresses();
     final idMap = entryById;
     saved.forEach((metadata) => idMap[metadata.contentId]?.addressDetails = metadata);
-    debugPrint('$runtimeType loadAddresses complete in ${stopwatch.elapsed.inMilliseconds}ms for ${saved.length} entries');
+    // debugPrint('$runtimeType loadAddresses complete in ${stopwatch.elapsed.inMilliseconds}ms for ${saved.length} entries');
     onAddressMetadataChanged();
   }
 
