@@ -202,11 +202,11 @@ class SqfliteMetadataDb implements MetadataDb {
 
   @override
   Future<Set<AvesEntry>> loadEntries() async {
-    final stopwatch = Stopwatch()..start();
+    // final stopwatch = Stopwatch()..start();
     final db = await _database;
     final maps = await db.query(entryTable);
     final entries = maps.map((map) => AvesEntry.fromMap(map)).toSet();
-    debugPrint('$runtimeType loadEntries complete in ${stopwatch.elapsed.inMilliseconds}ms for ${entries.length} entries');
+    // debugPrint('$runtimeType loadEntries complete in ${stopwatch.elapsed.inMilliseconds}ms for ${entries.length} entries');
     return entries;
   }
 
