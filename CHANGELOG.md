@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Changed
 - upgraded Flutter to stable v2.5.0
+- faster collection loading when launching the app
 
 ## [v1.5.1] - 2021-09-08
 ### Added
