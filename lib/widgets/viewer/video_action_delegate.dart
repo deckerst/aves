@@ -85,7 +85,7 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       }
     };
 
-    final newFields = await imageFileService.captureFrame(
+    final newFields = await mediaFileService.captureFrame(
       entry,
       desiredName: '${entry.bestTitle}_${'$positionMillis'.padLeft(8, '0')}',
       exif: exif,

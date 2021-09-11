@@ -25,7 +25,7 @@ class MediaStoreSource extends CollectionSource {
     await metadataDb.init();
     await favourites.init();
     await covers.init();
-    final currentTimeZone = await timeService.getDefaultTimeZone();
+    final currentTimeZone = await deviceService.getDefaultTimeZone();
     if (currentTimeZone != null) {
       final catalogTimeZone = settings.catalogTimeZone;
       if (currentTimeZone != catalogTimeZone) {
@@ -153,7 +153,7 @@ class MediaStoreSource extends CollectionSource {
     for (final kv in uriByContentId.entries) {
       final contentId = kv.key;
       final uri = kv.value;
-      final sourceEntry = await imageFileService.getEntry(uri, null);
+      final sourceEntry = await mediaFileService.getEntry(uri, null);
       if (sourceEntry != null) {
         final existingEntry = allEntries.firstWhereOrNull((entry) => entry.contentId == contentId);
         // compare paths because some apps move files without updating their `last modified date`

@@ -9,7 +9,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums.dart';
-import 'package:aves/services/app_shortcut_service.dart';
+import 'package:aves/services/android_app_service.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/collection/entry_set_action_delegate.dart';
 import 'package:aves/widgets/collection/filter_bar.dart';
@@ -61,7 +61,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       vsync: this,
     );
     _isSelectingNotifier.addListener(_onActivityChange);
-    _canAddShortcutsLoader = AppShortcutService.canPin();
+    _canAddShortcutsLoader = AndroidAppService.canPinToHomeScreen();
     _registerWidget(widget);
     WidgetsBinding.instance!.addPostFrameCallback((_) => _onFilterChanged());
   }
@@ -370,7 +370,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     final name = result.item2;
     if (name.isEmpty) return;
 
-    unawaited(AppShortcutService.pin(name, coverEntry, filters));
+    unawaited(AndroidAppService.pinToHomeScreen(name, coverEntry, filters));
   }
 
   void _goToSearch() {

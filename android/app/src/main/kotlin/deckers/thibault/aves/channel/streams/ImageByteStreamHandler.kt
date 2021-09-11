@@ -187,7 +187,7 @@ class ImageByteStreamHandler(private val activity: Activity, private val argumen
 
     companion object {
         private val LOG_TAG = LogUtils.createTag<ImageByteStreamHandler>()
-        const val CHANNEL = "deckers.thibault/aves/image_byte_stream"
+        const val CHANNEL = "deckers.thibault/aves/media_byte_stream"
 
         private const val BUFFER_SIZE = 2 shl 17 // 256kB
 

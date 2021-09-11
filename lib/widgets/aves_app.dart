@@ -41,7 +41,7 @@ class _AvesAppState extends State<AvesApp> {
   // observers are not registered when using the same list object with different items
   // the list itself needs to be reassigned
   List<NavigatorObserver> _navigatorObservers = [];
-  final EventChannel _mediaStoreChangeChannel = const EventChannel('deckers.thibault/aves/mediastorechange');
+  final EventChannel _mediaStoreChangeChannel = const EventChannel('deckers.thibault/aves/media_store_change');
   final EventChannel _newIntentChannel = const EventChannel('deckers.thibault/aves/intent');
   final EventChannel _errorChannel = const EventChannel('deckers.thibault/aves/error');
   final GlobalKey<NavigatorState> _navigatorKey = GlobalKey(debugLabel: 'app-navigator');

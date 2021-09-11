@@ -204,7 +204,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     showOpReport<ExportOpEvent>(
       context: context,
       // TODO TLAD [SVG] export separately from raster images (sending bytes, like frame captures)
-      opStream: imageFileService.export(
+      opStream: mediaFileService.export(
         selection,
         mimeType: MimeTypes.jpeg,
         destinationAlbum: destinationAlbum,
@@ -286,7 +286,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       MaterialPageRoute(
         settings: const RouteSettings(name: SourceViewerPage.routeName),
         builder: (context) => SourceViewerPage(
-          loader: () => imageFileService.getSvg(entry.uri, entry.mimeType).then(utf8.decode),
+          loader: () => mediaFileService.getSvg(entry.uri, entry.mimeType).then(utf8.decode),
         ),
       ),
     );

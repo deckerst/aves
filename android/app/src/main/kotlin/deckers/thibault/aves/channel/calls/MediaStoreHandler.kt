@@ -38,6 +38,6 @@ class MediaStoreHandler(private val activity: Activity) : MethodCallHandler {
     }
 
     companion object {
-        const val CHANNEL = "deckers.thibault/aves/mediastore"
+        const val CHANNEL = "deckers.thibault/aves/media_store"
     }
 }

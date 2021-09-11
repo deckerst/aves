@@ -13,7 +13,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:streams_channel/streams_channel.dart';
 
-abstract class ImageFileService {
+abstract class MediaFileService {
   Future<AvesEntry?> getEntry(String uri, String? mimeType);
 
   Future<Uint8List> getSvg(
@@ -92,10 +92,10 @@ abstract class ImageFileService {
   Future<Map<String, dynamic>> rename(AvesEntry entry, String newName);
 }
 
-class PlatformImageFileService implements ImageFileService {
-  static const platform = MethodChannel('deckers.thibault/aves/image');
-  static final StreamsChannel _byteStreamChannel = StreamsChannel('deckers.thibault/aves/image_byte_stream');
-  static final StreamsChannel _opStreamChannel = StreamsChannel('deckers.thibault/aves/image_op_stream');
+class PlatformMediaFileService implements MediaFileService {
+  static const platform = MethodChannel('deckers.thibault/aves/media_file');
+  static final StreamsChannel _byteStreamChannel = StreamsChannel('deckers.thibault/aves/media_byte_stream');
+  static final StreamsChannel _opStreamChannel = StreamsChannel('deckers.thibault/aves/media_op_stream');
   static const double thumbnailDefaultSize = 64.0;
 
   static Map<String, dynamic> _toPlatformEntryMap(AvesEntry entry) {
