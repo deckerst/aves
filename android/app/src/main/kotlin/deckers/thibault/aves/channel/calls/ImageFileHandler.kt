@@ -10,7 +10,6 @@ import deckers.thibault.aves.channel.calls.fetchers.RegionFetcher
 import deckers.thibault.aves.channel.calls.fetchers.SvgRegionFetcher
 import deckers.thibault.aves.channel.calls.fetchers.ThumbnailFetcher
 import deckers.thibault.aves.channel.calls.fetchers.TiffRegionFetcher
-import deckers.thibault.aves.model.ExifOrientationOp
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.model.provider.ImageProvider.ImageOpCallback
 import deckers.thibault.aves.model.provider.ImageProviderFactory.getProvider
@@ -36,9 +35,6 @@ class ImageFileHandler(private val activity: Activity) : MethodCallHandler {
             "getRegion" -> GlobalScope.launch(Dispatchers.IO) { safeSuspend(call, result, ::getRegion) }
             "captureFrame" -> GlobalScope.launch(Dispatchers.IO) { safeSuspend(call, result, ::captureFrame) }
             "rename" -> GlobalScope.launch(Dispatchers.IO) { safeSuspend(call, result, ::rename) }
-            "rotate" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::rotate) }
-            "flip" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::flip) }
-            "editDate" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::editDate) }
             "clearSizedThumbnailDiskCache" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::clearSizedThumbnailDiskCache) }
             else -> result.notImplemented()
         }
@@ -191,78 +187,6 @@ class ImageFileHandler(private val activity: Activity) : MethodCallHandler {
         provider.rename(activity, path, uri, mimeType, newName, object : ImageOpCallback {
             override fun onSuccess(fields: FieldMap) = result.success(fields)
             override fun onFailure(throwable: Throwable) = result.error("rename-failure", "failed to rename", throwable.message)
-        })
-    }
-
-    private fun rotate(call: MethodCall, result: MethodChannel.Result) {
-        val clockwise = call.argument<Boolean>("clockwise")
-        if (clockwise == null) {
-            result.error("rotate-args", "failed because of missing arguments", null)
-            return
-        }
-
-        val op = if (clockwise) ExifOrientationOp.ROTATE_CW else ExifOrientationOp.ROTATE_CCW
-        editOrientation(call, result, op)
-    }
-
-    private fun flip(call: MethodCall, result: MethodChannel.Result) {
-        editOrientation(call, result, ExifOrientationOp.FLIP)
-    }
-
-    private fun editOrientation(call: MethodCall, result: MethodChannel.Result, op: ExifOrientationOp) {
-        val entryMap = call.argument<FieldMap>("entry")
-        if (entryMap == null) {
-            result.error("editOrientation-args", "failed because of missing arguments", null)
-            return
-        }
-
-        val uri = (entryMap["uri"] as String?)?.let { Uri.parse(it) }
-        val path = entryMap["path"] as String?
-        val mimeType = entryMap["mimeType"] as String?
-        if (uri == null || path == null || mimeType == null) {
-            result.error("editOrientation-args", "failed because entry fields are missing", null)
-            return
-        }
-
-        val provider = getProvider(uri)
-        if (provider == null) {
-            result.error("editOrientation-provider", "failed to find provider for uri=$uri", null)
-            return
-        }
-
-        provider.editOrientation(activity, path, uri, mimeType, op, object : ImageOpCallback {
-            override fun onSuccess(fields: FieldMap) = result.success(fields)
-            override fun onFailure(throwable: Throwable) = result.error("editOrientation-failure", "failed to change orientation", throwable.message)
-        })
-    }
-
-    private fun editDate(call: MethodCall, result: MethodChannel.Result) {
-        val dateMillis = call.argument<Number>("dateMillis")?.toLong()
-        val shiftMinutes = call.argument<Number>("shiftMinutes")?.toLong()
-        val fields = call.argument<List<String>>("fields")
-        val entryMap = call.argument<FieldMap>("entry")
-        if (entryMap == null || fields == null) {
-            result.error("editDate-args", "failed because of missing arguments", null)
-            return
-        }
-
-        val uri = (entryMap["uri"] as String?)?.let { Uri.parse(it) }
-        val path = entryMap["path"] as String?
-        val mimeType = entryMap["mimeType"] as String?
-        if (uri == null || path == null || mimeType == null) {
-            result.error("editDate-args", "failed because entry fields are missing", null)
-            return
-        }
-
-        val provider = getProvider(uri)
-        if (provider == null) {
-            result.error("editDate-provider", "failed to find provider for uri=$uri", null)
-            return
-        }
-
-        provider.editDate(activity, path, uri, mimeType, dateMillis, shiftMinutes, fields, object : ImageOpCallback {
-            override fun onSuccess(fields: FieldMap) = result.success(fields)
-            override fun onFailure(throwable: Throwable) = result.error("editDate-failure", "failed to edit date", throwable.message)
         })
     }
 

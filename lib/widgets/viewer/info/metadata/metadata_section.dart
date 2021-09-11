@@ -5,8 +5,8 @@ import 'package:aves/model/entry.dart';
 import 'package:aves/model/video/keys.dart';
 import 'package:aves/model/video/metadata.dart';
 import 'package:aves/ref/mime_types.dart';
-import 'package:aves/services/services.dart';
-import 'package:aves/services/svg_metadata_service.dart';
+import 'package:aves/services/common/services.dart';
+import 'package:aves/services/metadata/svg_metadata_service.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/color_utils.dart';
@@ -130,7 +130,7 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> {
   }
 
   Future<void> _getMetadata() async {
-    final rawMetadata = await (entry.isSvg ? SvgMetadataService.getAllMetadata(entry) : metadataService.getAllMetadata(entry));
+    final rawMetadata = await (entry.isSvg ? SvgMetadataService.getAllMetadata(entry) : metadataFetchService.getAllMetadata(entry));
     final directories = rawMetadata.entries.map((dirKV) {
       var directoryName = dirKV.key as String;
 

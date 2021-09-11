@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:aves/main.dart' as app;
 import 'package:aves/model/settings/enums.dart';
 import 'package:aves/model/settings/settings.dart';
-import 'package:aves/services/services.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:aves/services/storage_service.dart';
 import 'package:aves/services/window_service.dart';
 import 'package:flutter/foundation.dart';

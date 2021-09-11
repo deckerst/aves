@@ -3,12 +3,12 @@ import 'package:aves/model/metadata/catalog.dart';
 import 'package:aves/model/metadata/overlay.dart';
 import 'package:aves/model/multipage.dart';
 import 'package:aves/model/panorama.dart';
-import 'package:aves/services/service_policy.dart';
-import 'package:aves/services/services.dart';
+import 'package:aves/services/common/service_policy.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
-abstract class MetadataService {
+abstract class MetadataFetchService {
   // returns Map<Map<Key, Value>> (map of directories, each directory being a map of metadata label and value description)
   Future<Map> getAllMetadata(AvesEntry entry);
 
@@ -25,8 +25,8 @@ abstract class MetadataService {
   Future<String?> getContentResolverProp(AvesEntry entry, String prop);
 }
 
-class PlatformMetadataService implements MetadataService {
-  static const platform = MethodChannel('deckers.thibault/aves/metadata');
+class PlatformMetadataFetchService implements MetadataFetchService {
+  static const platform = MethodChannel('deckers.thibault/aves/metadata_fetch');
 
   @override
   Future<Map> getAllMetadata(AvesEntry entry) async {

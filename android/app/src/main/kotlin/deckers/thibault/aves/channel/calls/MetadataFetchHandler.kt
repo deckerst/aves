@@ -70,7 +70,7 @@ import java.text.ParseException
 import java.util.*
 import kotlin.math.roundToLong
 
-class MetadataHandler(private val context: Context) : MethodCallHandler {
+class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
             "getAllMetadata" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getAllMetadata) }
@@ -755,8 +755,8 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
     }
 
     companion object {
-        private val LOG_TAG = LogUtils.createTag<MetadataHandler>()
-        const val CHANNEL = "deckers.thibault/aves/metadata"
+        private val LOG_TAG = LogUtils.createTag<MetadataFetchHandler>()
+        const val CHANNEL = "deckers.thibault/aves/metadata_fetch"
 
         private val allMetadataRedundantDirNames = setOf(
             "MP4",

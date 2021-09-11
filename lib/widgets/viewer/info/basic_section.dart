@@ -7,7 +7,7 @@ import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/filters/type.dart';
 import 'package:aves/model/source/collection_lens.dart';
-import 'package:aves/services/services.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/format.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/file_utils.dart';
@@ -148,8 +148,8 @@ class _OwnerPropState extends State<OwnerProp> {
     super.initState();
     final isMediaContent = entry.uri.startsWith('content://media/external/');
     if (isMediaContent) {
-      _ownerPackageFuture = metadataService.hasContentResolverProp(ownerPackageNamePropKey).then((exists) {
-        return exists ? metadataService.getContentResolverProp(entry, ownerPackageNamePropKey) : SynchronousFuture(null);
+      _ownerPackageFuture = metadataFetchService.hasContentResolverProp(ownerPackageNamePropKey).then((exists) {
+        return exists ? metadataFetchService.getContentResolverProp(entry, ownerPackageNamePropKey) : SynchronousFuture(null);
       });
     } else {
       _ownerPackageFuture = SynchronousFuture(null);

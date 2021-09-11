@@ -10,8 +10,8 @@ import 'package:aves/model/source/enums.dart';
 import 'package:aves/model/source/media_store_source.dart';
 import 'package:aves/services/image_file_service.dart';
 import 'package:aves/services/media_store_service.dart';
-import 'package:aves/services/metadata_service.dart';
-import 'package:aves/services/services.dart';
+import 'package:aves/services/metadata/metadata_fetch_service.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:aves/services/storage_service.dart';
 import 'package:aves/services/time_service.dart';
 import 'package:aves/services/window_service.dart';
@@ -24,7 +24,7 @@ import '../fake/availability.dart';
 import '../fake/image_file_service.dart';
 import '../fake/media_store_service.dart';
 import '../fake/metadata_db.dart';
-import '../fake/metadata_service.dart';
+import '../fake/metadata_fetch_service.dart';
 import '../fake/storage_service.dart';
 import '../fake/time_service.dart';
 import '../fake/window_service.dart';
@@ -42,7 +42,7 @@ void main() {
 
     getIt.registerLazySingleton<ImageFileService>(() => FakeImageFileService());
     getIt.registerLazySingleton<MediaStoreService>(() => FakeMediaStoreService());
-    getIt.registerLazySingleton<MetadataService>(() => FakeMetadataService());
+    getIt.registerLazySingleton<MetadataFetchService>(() => FakeMetadataFetchService());
     getIt.registerLazySingleton<StorageService>(() => FakeStorageService());
     getIt.registerLazySingleton<TimeService>(() => FakeTimeService());
     getIt.registerLazySingleton<WindowService>(() => FakeWindowService());

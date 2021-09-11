@@ -10,10 +10,10 @@ import 'package:aves/model/multipage.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/video/metadata.dart';
 import 'package:aves/ref/mime_types.dart';
+import 'package:aves/services/common/service_policy.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:aves/services/geocoding_service.dart';
-import 'package:aves/services/service_policy.dart';
-import 'package:aves/services/services.dart';
-import 'package:aves/services/svg_metadata_service.dart';
+import 'package:aves/services/metadata/svg_metadata_service.dart';
 import 'package:aves/theme/format.dart';
 import 'package:aves/utils/change_notifier.dart';
 import 'package:collection/collection.dart';
@@ -436,7 +436,7 @@ class AvesEntry {
         final fields = await VideoMetadataFormatter.getLoadingMetadata(this);
         await _applyNewFields(fields, persist: persist);
       }
-      catalogMetadata = await metadataService.getCatalogMetadata(this, background: background);
+      catalogMetadata = await metadataFetchService.getCatalogMetadata(this, background: background);
 
       if (isVideo && (catalogMetadata?.dateMillis ?? 0) == 0) {
         catalogMetadata = await VideoMetadataFormatter.getCatalogMetadata(this);
@@ -581,7 +581,7 @@ class AvesEntry {
   }
 
   Future<bool> rotate({required bool clockwise, required bool persist}) async {
-    final newFields = await imageFileService.rotate(this, clockwise: clockwise);
+    final newFields = await metadataEditService.rotate(this, clockwise: clockwise);
     if (newFields.isEmpty) return false;
 
     final oldDateModifiedSecs = dateModifiedSecs;
@@ -593,7 +593,7 @@ class AvesEntry {
   }
 
   Future<bool> flip({required bool persist}) async {
-    final newFields = await imageFileService.flip(this);
+    final newFields = await metadataEditService.flip(this);
     if (newFields.isEmpty) return false;
 
     final oldDateModifiedSecs = dateModifiedSecs;
@@ -605,7 +605,7 @@ class AvesEntry {
   }
 
   Future<bool> editDate(DateModifier modifier, {required bool persist}) async {
-    final newFields = await imageFileService.editDate(this, modifier);
+    final newFields = await metadataEditService.editDate(this, modifier);
     if (newFields.isEmpty) return false;
 
     await _applyNewFields(newFields, persist: persist);
@@ -696,7 +696,7 @@ class AvesEntry {
             .toList(),
       );
     } else {
-      return await metadataService.getMultiPageInfo(this);
+      return await metadataFetchService.getMultiPageInfo(this);
     }
   }
 

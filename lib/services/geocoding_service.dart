@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:aves/services/services.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:latlong2/latlong.dart';

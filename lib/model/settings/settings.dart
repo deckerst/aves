@@ -12,7 +12,7 @@ import 'package:aves/model/settings/map_style.dart';
 import 'package:aves/model/settings/screen_on.dart';
 import 'package:aves/model/source/enums.dart';
 import 'package:aves/services/device_service.dart';
-import 'package:aves/services/services.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:collection/collection.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
