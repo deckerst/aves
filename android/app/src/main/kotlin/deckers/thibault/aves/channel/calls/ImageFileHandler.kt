@@ -202,17 +202,17 @@ class ImageFileHandler(private val activity: Activity) : MethodCallHandler {
         }
 
         val op = if (clockwise) ExifOrientationOp.ROTATE_CW else ExifOrientationOp.ROTATE_CCW
-        changeOrientation(call, result, op)
+        editOrientation(call, result, op)
     }
 
     private fun flip(call: MethodCall, result: MethodChannel.Result) {
-        changeOrientation(call, result, ExifOrientationOp.FLIP)
+        editOrientation(call, result, ExifOrientationOp.FLIP)
     }
 
-    private fun changeOrientation(call: MethodCall, result: MethodChannel.Result, op: ExifOrientationOp) {
+    private fun editOrientation(call: MethodCall, result: MethodChannel.Result, op: ExifOrientationOp) {
         val entryMap = call.argument<FieldMap>("entry")
         if (entryMap == null) {
-            result.error("changeOrientation-args", "failed because of missing arguments", null)
+            result.error("editOrientation-args", "failed because of missing arguments", null)
             return
         }
 
@@ -220,19 +220,19 @@ class ImageFileHandler(private val activity: Activity) : MethodCallHandler {
         val path = entryMap["path"] as String?
         val mimeType = entryMap["mimeType"] as String?
         if (uri == null || path == null || mimeType == null) {
-            result.error("changeOrientation-args", "failed because entry fields are missing", null)
+            result.error("editOrientation-args", "failed because entry fields are missing", null)
             return
         }
 
         val provider = getProvider(uri)
         if (provider == null) {
-            result.error("changeOrientation-provider", "failed to find provider for uri=$uri", null)
+            result.error("editOrientation-provider", "failed to find provider for uri=$uri", null)
             return
         }
 
-        provider.changeOrientation(activity, path, uri, mimeType, op, object : ImageOpCallback {
+        provider.editOrientation(activity, path, uri, mimeType, op, object : ImageOpCallback {
             override fun onSuccess(fields: FieldMap) = result.success(fields)
-            override fun onFailure(throwable: Throwable) = result.error("changeOrientation-failure", "failed to change orientation", throwable.message)
+            override fun onFailure(throwable: Throwable) = result.error("editOrientation-failure", "failed to change orientation", throwable.message)
         })
     }
 

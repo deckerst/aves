@@ -150,7 +150,7 @@ class SourceEntry {
     // finds: width, height, orientation, date, duration
     private fun fillByMetadataExtractor(context: Context) {
         // skip raw images because `metadata-extractor` reports the decoded dimensions instead of the raw dimensions
-        if (!MimeTypes.isSupportedByMetadataExtractor(sourceMimeType)
+        if (!MimeTypes.canReadWithMetadataExtractor(sourceMimeType)
             || MimeTypes.isRaw(sourceMimeType)
         ) return
 
@@ -204,7 +204,7 @@ class SourceEntry {
 
     // finds: width, height, orientation, date
     private fun fillByExifInterface(context: Context) {
-        if (!MimeTypes.isSupportedByExifInterface(sourceMimeType)) return
+        if (!MimeTypes.canReadWithExifInterface(sourceMimeType)) return
 
         try {
             Metadata.openSafeInputStream(context, uri, sourceMimeType, sizeBytes)?.use { input ->
