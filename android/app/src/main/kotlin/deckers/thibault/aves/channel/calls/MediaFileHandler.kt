@@ -23,7 +23,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
-class ImageFileHandler(private val activity: Activity) : MethodCallHandler {
+class MediaFileHandler(private val activity: Activity) : MethodCallHandler {
     private val density = activity.resources.displayMetrics.density
 
     private val regionFetcher = RegionFetcher(activity)
@@ -196,6 +196,6 @@ class ImageFileHandler(private val activity: Activity) : MethodCallHandler {
     }
 
     companion object {
-        const val CHANNEL = "deckers.thibault/aves/image"
+        const val CHANNEL = "deckers.thibault/aves/media_file"
     }
 }

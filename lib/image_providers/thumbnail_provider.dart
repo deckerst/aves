@@ -35,7 +35,7 @@ class ThumbnailProvider extends ImageProvider<ThumbnailProviderKey> {
     final mimeType = key.mimeType;
     final pageId = key.pageId;
     try {
-      final bytes = await imageFileService.getThumbnail(
+      final bytes = await mediaFileService.getThumbnail(
         uri: uri,
         mimeType: mimeType,
         pageId: pageId,
@@ -57,11 +57,11 @@ class ThumbnailProvider extends ImageProvider<ThumbnailProviderKey> {
 
   @override
   void resolveStreamForKey(ImageConfiguration configuration, ImageStream stream, ThumbnailProviderKey key, ImageErrorListener handleError) {
-    imageFileService.resumeLoading(key);
+    mediaFileService.resumeLoading(key);
     super.resolveStreamForKey(configuration, stream, key, handleError);
   }
 
-  void pause() => imageFileService.cancelThumbnail(key);
+  void pause() => mediaFileService.cancelThumbnail(key);
 }
 
 @immutable

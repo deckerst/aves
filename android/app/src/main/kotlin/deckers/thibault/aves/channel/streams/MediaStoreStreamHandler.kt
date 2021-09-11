@@ -62,6 +62,6 @@ class MediaStoreStreamHandler(private val context: Context, arguments: Any?) : E
 
     companion object {
         private val LOG_TAG = LogUtils.createTag<MediaStoreStreamHandler>()
-        const val CHANNEL = "deckers.thibault/aves/mediastorestream"
+        const val CHANNEL = "deckers.thibault/aves/media_store_stream"
     }
 }

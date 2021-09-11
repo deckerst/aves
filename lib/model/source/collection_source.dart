@@ -159,7 +159,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
 
   Future<bool> renameEntry(AvesEntry entry, String newName, {required bool persist}) async {
     if (newName == entry.filenameWithoutExtension) return true;
-    final newFields = await imageFileService.rename(entry, '$newName${entry.extension}');
+    final newFields = await mediaFileService.rename(entry, '$newName${entry.extension}');
     if (newFields.isEmpty) return false;
 
     await _moveEntry(entry, newFields, persist: persist);

@@ -74,7 +74,7 @@ class EntryPrinter with FeedbackMixin {
 
   Future<pdf.Widget?> _buildPageImage(AvesEntry entry) async {
     if (entry.isSvg) {
-      final bytes = await imageFileService.getSvg(entry.uri, entry.mimeType);
+      final bytes = await mediaFileService.getSvg(entry.uri, entry.mimeType);
       if (bytes.isNotEmpty) {
         return pdf.SvgImage(svg: utf8.decode(bytes));
       }

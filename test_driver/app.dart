@@ -4,7 +4,7 @@ import 'package:aves/main.dart' as app;
 import 'package:aves/model/settings/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/common/services.dart';
-import 'package:aves/services/storage_service.dart';
+import 'package:aves/services/media/media_store_service.dart';
 import 'package:aves/services/window_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/src/widgets/media_query.dart';
@@ -19,9 +19,9 @@ void main() {
   // scan files copied from test assets
   // we do it via the app instead of broadcasting via ADB
   // because `MEDIA_SCANNER_SCAN_FILE` intent got deprecated in API 29
-  final storageService = PlatformStorageService();
-  storageService.scanFile(p.join(targetPicturesDir, 'aves_logo.svg'), 'image/svg+xml');
-  storageService.scanFile(p.join(targetPicturesDir, 'ipse.jpg'), 'image/jpeg');
+  final mediaStoreService = PlatformMediaStoreService();
+  mediaStoreService.scanFile(p.join(targetPicturesDir, 'aves_logo.svg'), 'image/svg+xml');
+  mediaStoreService.scanFile(p.join(targetPicturesDir, 'ipse.jpg'), 'image/jpeg');
 
   configureAndLaunch();
 }

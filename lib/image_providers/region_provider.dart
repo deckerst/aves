@@ -33,7 +33,7 @@ class RegionProvider extends ImageProvider<RegionProviderKey> {
     final mimeType = key.mimeType;
     final pageId = key.pageId;
     try {
-      final bytes = await imageFileService.getRegion(
+      final bytes = await mediaFileService.getRegion(
         uri,
         mimeType,
         key.rotationDegrees,
@@ -56,11 +56,11 @@ class RegionProvider extends ImageProvider<RegionProviderKey> {
 
   @override
   void resolveStreamForKey(ImageConfiguration configuration, ImageStream stream, RegionProviderKey key, ImageErrorListener handleError) {
-    imageFileService.resumeLoading(key);
+    mediaFileService.resumeLoading(key);
     super.resolveStreamForKey(configuration, stream, key, handleError);
   }
 
-  void pause() => imageFileService.cancelRegion(key);
+  void pause() => mediaFileService.cancelRegion(key);
 }
 
 @immutable

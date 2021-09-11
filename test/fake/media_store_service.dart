@@ -1,7 +1,7 @@
 import 'package:aves/model/entry.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/image_op_events.dart';
-import 'package:aves/services/media_store_service.dart';
+import 'package:aves/services/media/media_store_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 

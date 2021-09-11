@@ -1,8 +1,8 @@
-import 'package:aves/services/time_service.dart';
+import 'package:aves/services/device_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-class FakeTimeService extends Fake implements TimeService {
+class FakeDeviceService extends Fake implements DeviceService {
   @override
   Future<String> getDefaultTimeZone() => SynchronousFuture('');
 }

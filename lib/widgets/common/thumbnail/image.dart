@@ -155,7 +155,7 @@ class _ThumbnailImageState extends State<ThumbnailImage> {
     if (widget.cancellableNotifier?.value ?? false) {
       final key = await _currentProviderStream?.provider.provider.obtainKey(ImageConfiguration.empty);
       if (key is ThumbnailProviderKey) {
-        imageFileService.cancelThumbnail(key);
+        mediaFileService.cancelThumbnail(key);
       }
     }
   }

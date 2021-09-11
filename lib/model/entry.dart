@@ -615,7 +615,7 @@ class AvesEntry {
 
   Future<bool> delete() {
     final completer = Completer<bool>();
-    imageFileService.delete([this]).listen(
+    mediaFileService.delete([this]).listen(
       (event) => completer.complete(event.success),
       onError: completer.completeError,
       onDone: () {

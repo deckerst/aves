@@ -122,7 +122,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     source.pauseMonitoring();
     showOpReport<MoveOpEvent>(
       context: context,
-      opStream: imageFileService.move(todoEntries, copy: copy, destinationAlbum: destinationAlbum),
+      opStream: mediaFileService.move(todoEntries, copy: copy, destinationAlbum: destinationAlbum),
       itemCount: todoCount,
       onDone: (processed) async {
         final movedOps = processed.where((e) => e.success).toSet();
@@ -222,7 +222,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     source.pauseMonitoring();
     showOpReport<ImageOpEvent>(
       context: context,
-      opStream: imageFileService.delete(selectedItems),
+      opStream: mediaFileService.delete(selectedItems),
       itemCount: todoCount,
       onDone: (processed) async {
         final deletedUris = processed.where((event) => event.success).map((event) => event.uri).toSet();

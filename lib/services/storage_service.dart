@@ -4,7 +4,6 @@ import 'dart:typed_data';
 import 'package:aves/services/common/output_buffer.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/utils/android_file_utils.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:streams_channel/streams_channel.dart';
 
@@ -26,9 +25,6 @@ abstract class StorageService {
 
   // returns number of deleted directories
   Future<int> deleteEmptyDirectories(Iterable<String> dirPaths);
-
-  // returns media URI
-  Future<Uri?> scanFile(String path, String mimeType);
 
   // return whether operation succeeded (`null` if user cancelled)
   Future<bool?> createFile(String name, String mimeType, Uint8List bytes);
@@ -152,22 +148,6 @@ class PlatformStorageService implements StorageService {
       await reportService.recordError(e, stack);
     }
     return 0;
-  }
-
-  // returns media URI
-  @override
-  Future<Uri?> scanFile(String path, String mimeType) async {
-    debugPrint('scanFile with path=$path, mimeType=$mimeType');
-    try {
-      final result = await platform.invokeMethod('scanFile', <String, dynamic>{
-        'path': path,
-        'mimeType': mimeType,
-      });
-      if (result != null) return Uri.tryParse(result);
-    } on PlatformException catch (e, stack) {
-      await reportService.recordError(e, stack);
-    }
-    return null;
   }
 
   @override

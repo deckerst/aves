@@ -1,10 +1,12 @@
 import 'dart:typed_data';
 
 import 'package:aves/model/entry.dart';
+import 'package:aves/model/filters/filters.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/math_utils.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:latlong2/latlong.dart';
 
@@ -135,5 +137,50 @@ class AndroidAppService {
       await reportService.recordError(e, stack);
     }
     return false;
+  }
+
+  // app shortcuts
+
+  // this ability will not change over the lifetime of the app
+  static bool? _canPin;
+
+  static Future<bool> canPinToHomeScreen() async {
+    if (_canPin != null) return SynchronousFuture(_canPin!);
+
+    try {
+      final result = await platform.invokeMethod('canPin');
+      if (result != null) {
+        _canPin = result;
+        return result;
+      }
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
+    return false;
+  }
+
+  static Future<void> pinToHomeScreen(String label, AvesEntry? entry, Set<CollectionFilter> filters) async {
+    Uint8List? iconBytes;
+    if (entry != null) {
+      final size = entry.isVideo ? 0.0 : 256.0;
+      iconBytes = await mediaFileService.getThumbnail(
+        uri: entry.uri,
+        mimeType: entry.mimeType,
+        pageId: entry.pageId,
+        rotationDegrees: entry.rotationDegrees,
+        isFlipped: entry.isFlipped,
+        dateModifiedSecs: entry.dateModifiedSecs,
+        extent: size,
+      );
+    }
+    try {
+      await platform.invokeMethod('pin', <String, dynamic>{
+        'label': label,
+        'iconBytes': iconBytes,
+        'filters': filters.map((filter) => filter.toJson()).toList(),
+      });
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
   }
 }

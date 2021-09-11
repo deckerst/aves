@@ -12,11 +12,14 @@ abstract class MediaStoreService {
 
   // knownEntries: map of contentId -> dateModifiedSecs
   Stream<AvesEntry> getEntries(Map<int, int> knownEntries);
+
+  // returns media URI
+  Future<Uri?> scanFile(String path, String mimeType);
 }
 
 class PlatformMediaStoreService implements MediaStoreService {
-  static const platform = MethodChannel('deckers.thibault/aves/mediastore');
-  static final StreamsChannel _streamChannel = StreamsChannel('deckers.thibault/aves/mediastorestream');
+  static const platform = MethodChannel('deckers.thibault/aves/media_store');
+  static final StreamsChannel _streamChannel = StreamsChannel('deckers.thibault/aves/media_store_stream');
 
   @override
   Future<List<int>> checkObsoleteContentIds(List<int> knownContentIds) async {
@@ -54,5 +57,20 @@ class PlatformMediaStoreService implements MediaStoreService {
       reportService.recordError(e, stack);
       return Stream.error(e);
     }
+  }
+
+  // returns media URI
+  @override
+  Future<Uri?> scanFile(String path, String mimeType) async {
+    try {
+      final result = await platform.invokeMethod('scanFile', <String, dynamic>{
+        'path': path,
+        'mimeType': mimeType,
+      });
+      if (result != null) return Uri.tryParse(result);
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
+    return null;
   }
 }
