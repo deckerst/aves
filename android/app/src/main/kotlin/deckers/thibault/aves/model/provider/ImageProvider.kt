@@ -1,13 +1,10 @@
 package deckers.thibault.aves.model.provider
 
 import android.app.Activity
-import android.content.ContentUris
 import android.content.Context
 import android.graphics.Bitmap
-import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Build
-import android.provider.MediaStore
 import android.util.Log
 import androidx.exifinterface.media.ExifInterface
 import com.bumptech.glide.Glide
@@ -28,18 +25,17 @@ import deckers.thibault.aves.model.AvesEntry
 import deckers.thibault.aves.model.ExifOrientationOp
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.utils.*
+import deckers.thibault.aves.utils.MimeTypes.canEditExif
+import deckers.thibault.aves.utils.MimeTypes.canEditXmp
 import deckers.thibault.aves.utils.MimeTypes.extensionFor
-import deckers.thibault.aves.utils.MimeTypes.isImage
-import deckers.thibault.aves.utils.MimeTypes.isSupportedByPixyMeta
 import deckers.thibault.aves.utils.MimeTypes.isVideo
 import deckers.thibault.aves.utils.StorageUtils.createDirectoryIfAbsent
 import deckers.thibault.aves.utils.StorageUtils.getDocumentFile
-import deckers.thibault.aves.utils.UriUtils.tryParseId
-import java.io.*
+import java.io.ByteArrayInputStream
+import java.io.File
+import java.io.FileNotFoundException
+import java.io.IOException
 import java.util.*
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.suspendCoroutine
 
 abstract class ImageProvider {
     open fun fetchSingle(context: Context, uri: Uri, sourceMimeType: String?, callback: ImageOpCallback) {
@@ -52,6 +48,18 @@ abstract class ImageProvider {
 
     open suspend fun moveMultiple(activity: Activity, copy: Boolean, destinationDir: String, entries: List<AvesEntry>, callback: ImageOpCallback) {
         callback.onFailure(UnsupportedOperationException())
+    }
+
+    open fun scanPostExifEdit(context: Context, path: String, uri: Uri, mimeType: String, newFields: HashMap<String, Any?>, callback: ImageOpCallback) {
+        throw UnsupportedOperationException()
+    }
+
+    open fun scanObsoletePath(context: Context, path: String, mimeType: String) {
+        throw UnsupportedOperationException()
+    }
+
+    open suspend fun scanNewPath(context: Context, path: String, mimeType: String): FieldMap {
+        throw UnsupportedOperationException()
     }
 
     suspend fun exportMultiple(
@@ -324,29 +332,12 @@ abstract class ImageProvider {
             return
         }
 
-        MediaScannerConnection.scanFile(context, arrayOf(oldPath), arrayOf(mimeType), null)
+        scanObsoletePath(context, oldPath, mimeType)
         try {
             callback.onSuccess(scanNewPath(context, newFile.path, mimeType))
         } catch (e: Exception) {
             callback.onFailure(e)
         }
-    }
-
-    // support for writing EXIF
-    // as of androidx.exifinterface:exifinterface:1.3.3
-    private fun canEditExif(mimeType: String): Boolean {
-        return when (mimeType) {
-            MimeTypes.DNG,
-            MimeTypes.JPEG,
-            MimeTypes.PNG,
-            MimeTypes.WEBP -> true
-            else -> false
-        }
-    }
-
-    // support for writing XMP
-    private fun canEditXmp(mimeType: String): Boolean {
-        return isSupportedByPixyMeta(mimeType)
     }
 
     private fun editExif(
@@ -524,28 +515,7 @@ abstract class ImageProvider {
         }
     }
 
-    private fun scanPostExifEdit(context: Context, path: String, uri: Uri, mimeType: String, newFields: HashMap<String, Any?>, callback: ImageOpCallback) {
-        MediaScannerConnection.scanFile(context, arrayOf(path), arrayOf(mimeType)) { _, _ ->
-            val projection = arrayOf(
-                MediaStore.MediaColumns.DATE_MODIFIED,
-                MediaStore.MediaColumns.SIZE,
-            )
-            try {
-                val cursor = context.contentResolver.query(uri, projection, null, null, null)
-                if (cursor != null && cursor.moveToFirst()) {
-                    cursor.getColumnIndex(MediaStore.MediaColumns.DATE_MODIFIED).let { if (it != -1) newFields["dateModifiedSecs"] = cursor.getInt(it) }
-                    cursor.getColumnIndex(MediaStore.MediaColumns.SIZE).let { if (it != -1) newFields["sizeBytes"] = cursor.getLong(it) }
-                    cursor.close()
-                }
-            } catch (e: Exception) {
-                callback.onFailure(e)
-                return@scanFile
-            }
-            callback.onSuccess(newFields)
-        }
-    }
-
-    fun changeOrientation(context: Context, path: String, uri: Uri, mimeType: String, op: ExifOrientationOp, callback: ImageOpCallback) {
+    fun editOrientation(context: Context, path: String, uri: Uri, mimeType: String, op: ExifOrientationOp, callback: ImageOpCallback) {
         val newFields = HashMap<String, Any?>()
 
         val success = editExif(context, path, uri, mimeType, callback) { exif ->
@@ -665,65 +635,6 @@ abstract class ImageProvider {
             scanPostExifEdit(context, path, uri, mimeType, HashMap<String, Any?>(), callback)
         }
     }
-
-    protected suspend fun scanNewPath(context: Context, path: String, mimeType: String): FieldMap =
-        suspendCoroutine { cont ->
-            MediaScannerConnection.scanFile(context, arrayOf(path), arrayOf(mimeType)) { _, newUri: Uri? ->
-                fun scanUri(uri: Uri?): FieldMap? {
-                    uri ?: return null
-
-                    // we retrieve updated fields as the renamed/moved file became a new entry in the Media Store
-                    val projection = arrayOf(
-                        MediaStore.MediaColumns.DATE_MODIFIED,
-                        MediaStore.MediaColumns.DISPLAY_NAME,
-                        MediaStore.MediaColumns.TITLE,
-                    )
-                    try {
-                        val cursor = context.contentResolver.query(uri, projection, null, null, null)
-                        if (cursor != null && cursor.moveToFirst()) {
-                            val newFields = HashMap<String, Any?>()
-                            newFields["uri"] = uri.toString()
-                            newFields["contentId"] = uri.tryParseId()
-                            newFields["path"] = path
-                            cursor.getColumnIndex(MediaStore.MediaColumns.DATE_MODIFIED).let { if (it != -1) newFields["dateModifiedSecs"] = cursor.getInt(it) }
-                            cursor.getColumnIndex(MediaStore.MediaColumns.DISPLAY_NAME).let { if (it != -1) newFields["displayName"] = cursor.getString(it) }
-                            cursor.getColumnIndex(MediaStore.MediaColumns.TITLE).let { if (it != -1) newFields["title"] = cursor.getString(it) }
-                            cursor.close()
-                            return newFields
-                        }
-                    } catch (e: Exception) {
-                        Log.w(LOG_TAG, "failed to scan uri=$uri", e)
-                    }
-                    return null
-                }
-
-                if (newUri == null) {
-                    cont.resumeWithException(Exception("failed to get URI of item at path=$path"))
-                    return@scanFile
-                }
-
-                var contentUri: Uri? = null
-                // `newURI` is possibly a file media URI (e.g. "content://media/12a9-8b42/file/62872")
-                // but we need an image/video media URI (e.g. "content://media/external/images/media/62872")
-                val contentId = newUri.tryParseId()
-                if (contentId != null) {
-                    if (isImage(mimeType)) {
-                        contentUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentId)
-                    } else if (isVideo(mimeType)) {
-                        contentUri = ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, contentId)
-                    }
-                }
-
-                // prefer image/video content URI, fallback to original URI (possibly a file content URI)
-                val newFields = scanUri(contentUri) ?: scanUri(newUri)
-
-                if (newFields != null) {
-                    cont.resume(newFields)
-                } else {
-                    cont.resumeWithException(Exception("failed to get item details from provider at contentUri=$contentUri (from newUri=$newUri)"))
-                }
-            }
-        }
 
     interface ImageOpCallback {
         fun onSuccess(fields: FieldMap)
