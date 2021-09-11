@@ -23,16 +23,18 @@ class HighlightTitle extends StatelessWidget {
 
   static const disabledColor = Colors.grey;
 
+  static const shadows = [
+    Shadow(
+      color: Colors.black,
+      offset: Offset(1, 1),
+      blurRadius: 2,
+    )
+  ];
+
   @override
   Widget build(BuildContext context) {
     final style = TextStyle(
-      shadows: const [
-        Shadow(
-          color: Colors.black,
-          offset: Offset(1, 1),
-          blurRadius: 2,
-        )
-      ],
+      shadows: shadows,
       fontSize: fontSize,
       letterSpacing: 1.0,
       fontFeatures: const [FontFeature.enable('smcp')],

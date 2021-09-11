@@ -6,6 +6,7 @@ import 'package:aves/model/favourites.dart';
 import 'package:aves/model/metadata/address.dart';
 import 'package:aves/model/metadata/catalog.dart';
 import 'package:aves/model/metadata/date_modifier.dart';
+import 'package:aves/model/metadata/enums.dart';
 import 'package:aves/model/multipage.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/video/metadata.dart';
@@ -230,7 +231,6 @@ class AvesEntry {
 
   bool get canRotateAndFlip => canEdit && canEditExif;
 
-  // support for writing EXIF
   // as of androidx.exifinterface:exifinterface:1.3.3
   bool get canEditExif {
     switch (mimeType.toLowerCase()) {
@@ -238,6 +238,17 @@ class AvesEntry {
       case MimeTypes.jpeg:
       case MimeTypes.png:
       case MimeTypes.webp:
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  // as of latest PixyMeta
+  bool get canRemoveMetadata {
+    switch (mimeType.toLowerCase()) {
+      case MimeTypes.jpeg:
+      case MimeTypes.tiff:
         return true;
       default:
         return false;
@@ -610,6 +621,14 @@ class AvesEntry {
 
     await _applyNewFields(newFields, persist: persist);
     await catalog(background: false, persist: persist, force: true);
+    return true;
+  }
+
+  Future<bool> removeMetadata(Set<MetadataType> types, {required bool persist}) async {
+    final newFields = await metadataEditService.removeTypes(this, types);
+    if (newFields.isEmpty) return false;
+
+    await _applyNewFields(newFields, persist: persist);
     return true;
   }
 

@@ -12,6 +12,8 @@ abstract class MetadataEditService {
   Future<Map<String, dynamic>> flip(AvesEntry entry);
 
   Future<Map<String, dynamic>> editDate(AvesEntry entry, DateModifier modifier);
+
+  Future<Map<String, dynamic>> removeTypes(AvesEntry entry, Set<MetadataType> types);
 }
 
 class PlatformMetadataEditService implements MetadataEditService {
@@ -77,6 +79,20 @@ class PlatformMetadataEditService implements MetadataEditService {
     return {};
   }
 
+  @override
+  Future<Map<String, dynamic>> removeTypes(AvesEntry entry, Set<MetadataType> types) async {
+    try {
+      final result = await platform.invokeMethod('removeTypes', <String, dynamic>{
+        'entry': _toPlatformEntryMap(entry),
+        'types': types.map(_toPlatformMetadataType).toList(),
+      });
+      if (result != null) return (result as Map).cast<String, dynamic>();
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
+    return {};
+  }
+
   String _toExifInterfaceTag(MetadataField field) {
     switch (field) {
       case MetadataField.exifDate:
@@ -87,6 +103,27 @@ class PlatformMetadataEditService implements MetadataEditService {
         return 'DateTimeDigitized';
       case MetadataField.exifGpsDate:
         return 'GPSDateStamp';
+    }
+  }
+
+  String _toPlatformMetadataType(MetadataType type) {
+    switch (type) {
+      case MetadataType.exif:
+        return 'exif';
+      case MetadataType.iccProfile:
+        return 'icc_profile';
+      case MetadataType.iptc:
+        return 'iptc';
+      case MetadataType.jfif:
+        return 'jfif';
+      case MetadataType.jpegAdobe:
+        return 'jpeg_adobe';
+      case MetadataType.jpegDucky:
+        return 'jpeg_ducky';
+      case MetadataType.photoshopIrb:
+        return 'photoshop_irb';
+      case MetadataType.xmp:
+        return 'xmp';
     }
   }
 }

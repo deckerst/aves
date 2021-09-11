@@ -1,5 +1,13 @@
 package deckers.thibault.aves.metadata
 
+import deckers.thibault.aves.metadata.Metadata.TYPE_EXIF
+import deckers.thibault.aves.metadata.Metadata.TYPE_ICC_PROFILE
+import deckers.thibault.aves.metadata.Metadata.TYPE_IPTC
+import deckers.thibault.aves.metadata.Metadata.TYPE_JFIF
+import deckers.thibault.aves.metadata.Metadata.TYPE_JPEG_ADOBE
+import deckers.thibault.aves.metadata.Metadata.TYPE_JPEG_DUCKY
+import deckers.thibault.aves.metadata.Metadata.TYPE_PHOTOSHOP_IRB
+import deckers.thibault.aves.metadata.Metadata.TYPE_XMP
 import pixy.meta.meta.Metadata
 import pixy.meta.meta.MetadataEntry
 import pixy.meta.meta.MetadataType
@@ -54,4 +62,21 @@ object PixyMetaHelper {
     fun XMP.xmpDocString(): String = XMLUtils.serializeToString(xmpDocument)
 
     fun XMP.extendedXmpDocString(): String = XMLUtils.serializeToString(extendedXmpDocument)
+
+    fun removeMetadata(input: InputStream, output: OutputStream, metadataTypes: Set<String>) {
+        val types = metadataTypes.map(::toMetadataType).toTypedArray()
+        Metadata.removeMetadata(input, output, *types)
+    }
+
+    private fun toMetadataType(typeString: String): MetadataType? = when (typeString) {
+        TYPE_EXIF -> MetadataType.EXIF
+        TYPE_ICC_PROFILE -> MetadataType.ICC_PROFILE
+        TYPE_IPTC -> MetadataType.IPTC
+        TYPE_JFIF -> MetadataType.JPG_JFIF
+        TYPE_JPEG_ADOBE -> MetadataType.JPG_ADOBE
+        TYPE_JPEG_DUCKY -> MetadataType.JPG_DUCKY
+        TYPE_PHOTOSHOP_IRB -> MetadataType.PHOTOSHOP_IRB
+        TYPE_XMP -> MetadataType.XMP
+        else -> null
+    }
 }

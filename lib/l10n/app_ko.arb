@@ -67,6 +67,7 @@
   "videoActionSettings": "설정",
 
   "entryInfoActionEditDate": "날짜와 시간 수정",
+  "entryInfoActionRemoveMetadata": "메타데이터 삭제",
 
   "filterFavouriteLabel": "즐겨찾기",
   "filterLocationEmptyLabel": "장소 없음",
@@ -148,6 +149,9 @@
   "editEntryDateDialogFieldSelection": "필드 선택",
   "editEntryDateDialogHours": "시간",
   "editEntryDateDialogMinutes": "분",
+
+  "removeEntryMetadataDialogTitle": "메타데이터 삭제",
+  "removeEntryMetadataDialogMore": "더 보기",
 
   "videoSpeedDialogLabel": "재생 배속",
 

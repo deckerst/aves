@@ -14,19 +14,17 @@ import com.bumptech.glide.request.RequestOptions
 import com.commonsware.cwac.document.DocumentFileCompat
 import deckers.thibault.aves.decoder.MultiTrackImage
 import deckers.thibault.aves.decoder.TiffImage
-import deckers.thibault.aves.metadata.ExifInterfaceHelper
+import deckers.thibault.aves.metadata.*
 import deckers.thibault.aves.metadata.ExifInterfaceHelper.getSafeDateMillis
-import deckers.thibault.aves.metadata.MultiPage
-import deckers.thibault.aves.metadata.PixyMetaHelper
 import deckers.thibault.aves.metadata.PixyMetaHelper.extendedXmpDocString
 import deckers.thibault.aves.metadata.PixyMetaHelper.xmpDocString
-import deckers.thibault.aves.metadata.XMP
 import deckers.thibault.aves.model.AvesEntry
 import deckers.thibault.aves.model.ExifOrientationOp
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.utils.*
 import deckers.thibault.aves.utils.MimeTypes.canEditExif
 import deckers.thibault.aves.utils.MimeTypes.canEditXmp
+import deckers.thibault.aves.utils.MimeTypes.canRemoveMetadata
 import deckers.thibault.aves.utils.MimeTypes.extensionFor
 import deckers.thibault.aves.utils.MimeTypes.isVideo
 import deckers.thibault.aves.utils.StorageUtils.createDirectoryIfAbsent
@@ -50,7 +48,7 @@ abstract class ImageProvider {
         callback.onFailure(UnsupportedOperationException())
     }
 
-    open fun scanPostExifEdit(context: Context, path: String, uri: Uri, mimeType: String, newFields: HashMap<String, Any?>, callback: ImageOpCallback) {
+    open fun scanPostMetadataEdit(context: Context, path: String, uri: Uri, mimeType: String, newFields: HashMap<String, Any?>, callback: ImageOpCallback) {
         throw UnsupportedOperationException()
     }
 
@@ -515,7 +513,14 @@ abstract class ImageProvider {
         }
     }
 
-    fun editOrientation(context: Context, path: String, uri: Uri, mimeType: String, op: ExifOrientationOp, callback: ImageOpCallback) {
+    fun editOrientation(
+        context: Context,
+        path: String,
+        uri: Uri,
+        mimeType: String,
+        op: ExifOrientationOp,
+        callback: ImageOpCallback,
+    ) {
         val newFields = HashMap<String, Any?>()
 
         val success = editExif(context, path, uri, mimeType, callback) { exif ->
@@ -538,7 +543,7 @@ abstract class ImageProvider {
         }
 
         if (success) {
-            scanPostExifEdit(context, path, uri, mimeType, newFields, callback)
+            scanPostMetadataEdit(context, path, uri, mimeType, newFields, callback)
         }
     }
 
@@ -632,8 +637,60 @@ abstract class ImageProvider {
         }
 
         if (success) {
-            scanPostExifEdit(context, path, uri, mimeType, HashMap<String, Any?>(), callback)
+            scanPostMetadataEdit(context, path, uri, mimeType, HashMap<String, Any?>(), callback)
         }
+    }
+
+    fun removeMetadataTypes(
+        context: Context,
+        path: String,
+        uri: Uri,
+        mimeType: String,
+        types: Set<String>,
+        callback: ImageOpCallback,
+    ) {
+        if (!canRemoveMetadata(mimeType)) {
+            callback.onFailure(UnsupportedOperationException("unsupported mimeType=$mimeType"))
+            return
+        }
+
+        val originalDocumentFile = getDocumentFile(context, path, uri)
+        if (originalDocumentFile == null) {
+            callback.onFailure(Exception("failed to get document file for path=$path, uri=$uri"))
+            return
+        }
+
+        val originalFileSize = File(path).length()
+        val videoSize = MultiPage.getMotionPhotoOffset(context, uri, mimeType, originalFileSize)?.toInt()
+        val editableFile = File.createTempFile("aves", null).apply {
+            deleteOnExit()
+            try {
+                outputStream().use { output ->
+                    // reopen input to read from start
+                    originalDocumentFile.openInputStream().use { input ->
+                        PixyMetaHelper.removeMetadata(input, output, types)
+                    }
+                }
+            } catch (e: Exception) {
+                callback.onFailure(e)
+                return
+            }
+        }
+
+        try {
+            // copy the edited temporary file back to the original
+            DocumentFileCompat.fromFile(editableFile).copyTo(originalDocumentFile)
+
+            if (!types.contains(Metadata.TYPE_XMP) && !checkTrailerOffset(context, path, uri, mimeType, videoSize, editableFile, callback)) {
+                return
+            }
+        } catch (e: IOException) {
+            callback.onFailure(e)
+            return
+        }
+
+        val newFields = HashMap<String, Any?>()
+        scanPostMetadataEdit(context, path, uri, mimeType, newFields, callback)
     }
 
     interface ImageOpCallback {

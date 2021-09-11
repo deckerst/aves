@@ -71,7 +71,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
           child: IconButton(
             icon: const Icon(AIcons.edit),
             onPressed: _action == DateEditAction.set ? _editDate : null,
-            tooltip: context.l10n.changeTooltip,
+            tooltip: l10n.changeTooltip,
           ),
         ),
       ],
@@ -92,7 +92,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
           child: IconButton(
             icon: const Icon(AIcons.edit),
             onPressed: _action == DateEditAction.shift ? _editShift : null,
-            tooltip: context.l10n.changeTooltip,
+            tooltip: l10n.changeTooltip,
           ),
         ),
       ],
@@ -114,7 +114,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
       ),
       child: AvesDialog(
         context: context,
-        title: context.l10n.editEntryDateDialogTitle,
+        title: l10n.editEntryDateDialogTitle,
         scrollableContent: [
           setTile,
           shiftTile,
@@ -156,7 +156,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
           ),
           TextButton(
             onPressed: () => _submit(context),
-            child: Text(context.l10n.applyButtonLabel),
+            child: Text(l10n.applyButtonLabel),
           ),
         ],
       ),
