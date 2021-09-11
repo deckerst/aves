@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:aves/model/entry.dart';
-import 'package:aves/services/services.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/viewer/overlay/common.dart';
 import 'package:aves/widgets/viewer/panorama_page.dart';
@@ -26,7 +26,7 @@ class PanoramaOverlay extends StatelessWidget {
           scale: scale,
           buttonLabel: context.l10n.viewerOpenPanoramaButtonLabel,
           onPressed: () async {
-            final info = await metadataService.getPanoramaInfo(entry);
+            final info = await metadataFetchService.getPanoramaInfo(entry);
             if (info != null) {
               unawaited(Navigator.push(
                 context,

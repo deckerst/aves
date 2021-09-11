@@ -1,4 +1,4 @@
-import 'package:aves/services/service_policy.dart';
+import 'package:aves/services/common/service_policy.dart';
 import 'package:flutter/material.dart';
 
 class DebugTaskQueueOverlay extends StatelessWidget {

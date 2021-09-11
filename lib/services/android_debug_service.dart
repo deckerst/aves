@@ -1,6 +1,6 @@
 import 'package:aves/model/entry.dart';
 import 'package:aves/ref/mime_types.dart';
-import 'package:aves/services/services.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:flutter/services.dart';
 
 class AndroidDebugService {

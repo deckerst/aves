@@ -1,6 +1,6 @@
 import 'dart:ui' as ui show Codec;
 
-import 'package:aves/services/services.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';

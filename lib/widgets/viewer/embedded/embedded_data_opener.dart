@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:aves/model/entry.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/android_app_service.dart';
-import 'package:aves/services/services.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/behaviour/routes.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';

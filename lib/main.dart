@@ -1,6 +1,6 @@
 import 'dart:isolate';
 
-import 'package:aves/services/services.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/aves_app.dart';
 import 'package:flutter/material.dart';
 
