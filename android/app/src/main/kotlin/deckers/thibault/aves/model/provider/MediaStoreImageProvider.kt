@@ -39,28 +39,40 @@ class MediaStoreImageProvider : ImageProvider() {
     }
 
     override fun fetchSingle(context: Context, uri: Uri, sourceMimeType: String?, callback: ImageOpCallback) {
+        var found = false
+        val fetched = arrayListOf<FieldMap>()
         val id = uri.tryParseId()
         val onSuccess = fun(entry: FieldMap) {
             entry["uri"] = uri.toString()
-            callback.onSuccess(entry)
+            fetched.add(entry)
         }
         val alwaysValid = { _: Int, _: Int -> true }
         if (id != null) {
-            if (sourceMimeType == null || isImage(sourceMimeType)) {
+            if (!found && (sourceMimeType == null || isImage(sourceMimeType))) {
                 val contentUri = ContentUris.withAppendedId(IMAGE_CONTENT_URI, id)
-                if (fetchFrom(context, alwaysValid, onSuccess, contentUri, IMAGE_PROJECTION)) return
+                found = fetchFrom(context, alwaysValid, onSuccess, contentUri, IMAGE_PROJECTION)
             }
-            if (sourceMimeType == null || isVideo(sourceMimeType)) {
+            if (!found && (sourceMimeType == null || isVideo(sourceMimeType))) {
                 val contentUri = ContentUris.withAppendedId(VIDEO_CONTENT_URI, id)
-                if (fetchFrom(context, alwaysValid, onSuccess, contentUri, VIDEO_PROJECTION)) return
+                found = fetchFrom(context, alwaysValid, onSuccess, contentUri, VIDEO_PROJECTION)
             }
         }
-        // the uri can be a file media URI (e.g. "content://0@media/external/file/30050")
-        // without an equivalent image/video if it is shared from a file browser
-        // but the file is not publicly visible
-        if (fetchFrom(context, alwaysValid, onSuccess, uri, BASE_PROJECTION, fileMimeType = sourceMimeType)) return
+        if (!found) {
+            // the uri can be a file media URI (e.g. "content://0@media/external/file/30050")
+            // without an equivalent image/video if it is shared from a file browser
+            // but the file is not publicly visible
+            found = fetchFrom(context, alwaysValid, onSuccess, uri, BASE_PROJECTION, fileMimeType = sourceMimeType)
+        }
 
-        callback.onFailure(Exception("failed to fetch entry at uri=$uri"))
+        if (found && fetched.isNotEmpty()) {
+            if (fetched.size == 1) {
+                callback.onSuccess(fetched.first())
+            } else {
+                callback.onFailure(Exception("found ${fetched.size} entries at uri=$uri"))
+            }
+        } else {
+            callback.onFailure(Exception("failed to fetch entry at uri=$uri"))
+        }
     }
 
     fun checkObsoleteContentIds(context: Context, knownContentIds: List<Int>): List<Int> {
