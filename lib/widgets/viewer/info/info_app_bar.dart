@@ -1,6 +1,8 @@
 import 'package:aves/model/actions/entry_info_actions.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/metadata/date_modifier.dart';
+import 'package:aves/model/metadata/enums.dart';
+import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
@@ -9,10 +11,12 @@ import 'package:aves/widgets/common/app_bar_title.dart';
 import 'package:aves/widgets/common/basic/menu.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/edit_entry_date_dialog.dart';
+import 'package:aves/widgets/dialogs/remove_entry_metadata_dialog.dart';
 import 'package:aves/widgets/viewer/info/info_search.dart';
 import 'package:aves/widgets/viewer/info/metadata/metadata_section.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:provider/provider.dart';
 
 class InfoAppBar extends StatelessWidget with FeedbackMixin, PermissionAwareMixin {
   final AvesEntry entry;
@@ -55,6 +59,11 @@ class InfoAppBar extends StatelessWidget with FeedbackMixin, PermissionAwareMixi
                   enabled: entry.canEditExif,
                   child: MenuRow(text: context.l10n.entryInfoActionEditDate, icon: const Icon(AIcons.date)),
                 ),
+                PopupMenuItem(
+                  value: EntryInfoAction.removeMetadata,
+                  enabled: entry.canRemoveMetadata,
+                  child: MenuRow(text: context.l10n.entryInfoActionRemoveMetadata, icon: const Icon(AIcons.clear)),
+                ),
               ];
             },
             onSelected: (action) {
@@ -85,6 +94,9 @@ class InfoAppBar extends StatelessWidget with FeedbackMixin, PermissionAwareMixi
       case EntryInfoAction.editDate:
         await _showDateEditDialog(context);
         break;
+      case EntryInfoAction.removeMetadata:
+        await _showMetadataRemovalDialog(context);
+        break;
     }
   }
 
@@ -100,6 +112,25 @@ class InfoAppBar extends StatelessWidget with FeedbackMixin, PermissionAwareMixi
     // TODO TLAD [meta edit] handle viewer mode
     final success = await entry.editDate(modifier, persist: true);
     if (success) {
+      showFeedback(context, context.l10n.genericSuccessFeedback);
+    } else {
+      showFeedback(context, context.l10n.genericFailureFeedback);
+    }
+  }
+
+  Future<void> _showMetadataRemovalDialog(BuildContext context) async {
+    final types = await showDialog<Set<MetadataType>>(
+      context: context,
+      builder: (context) => RemoveEntryMetadataDialog(entry: entry),
+    );
+    if (types == null) return;
+
+    if (!await checkStoragePermission(context, {entry})) return;
+
+    // TODO TLAD [meta edit] handle viewer mode
+    final success = await entry.removeMetadata(types, persist: true);
+    if (success) {
+      await context.read<CollectionSource>().refreshMetadata({entry});
       showFeedback(context, context.l10n.genericSuccessFeedback);
     } else {
       showFeedback(context, context.l10n.genericFailureFeedback);

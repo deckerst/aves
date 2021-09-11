@@ -378,7 +378,7 @@ class MediaStoreImageProvider : ImageProvider() {
         }
     }
 
-    override fun scanPostExifEdit(context: Context, path: String, uri: Uri, mimeType: String, newFields: HashMap<String, Any?>, callback: ImageOpCallback) {
+    override fun scanPostMetadataEdit(context: Context, path: String, uri: Uri, mimeType: String, newFields: HashMap<String, Any?>, callback: ImageOpCallback) {
         MediaScannerConnection.scanFile(context, arrayOf(path), arrayOf(mimeType)) { _, _ ->
             val projection = arrayOf(
                 MediaStore.MediaColumns.DATE_MODIFIED,

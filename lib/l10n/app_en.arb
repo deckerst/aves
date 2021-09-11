@@ -131,6 +131,8 @@
 
   "entryInfoActionEditDate": "Edit date & time",
   "@entryInfoActionEditDate": {},
+  "entryInfoActionRemoveMetadata": "Remove metadata",
+  "@entryInfoActionRemoveMetadata": {},
 
   "filterFavouriteLabel": "Favourite",
   "@filterFavouriteLabel": {},
@@ -324,6 +326,11 @@
   "@editEntryDateDialogHours": {},
   "editEntryDateDialogMinutes": "Minutes",
   "@editEntryDateDialogMinutes": {},
+
+  "removeEntryMetadataDialogTitle": "Metadata Removal",
+  "@removeEntryMetadataDialogTitle": {},
+  "removeEntryMetadataDialogMore": "More",
+  "@removeEntryMetadataDialogMore": {},
 
   "videoSpeedDialogLabel": "Playback speed",
   "@videoSpeedDialogLabel": {},

@@ -20,6 +20,7 @@ class MetadataEditHandler(private val activity: Activity) : MethodCallHandler {
             "rotate" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::rotate) }
             "flip" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::flip) }
             "editDate" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::editDate) }
+            "removeTypes" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::removeTypes) }
             else -> result.notImplemented()
         }
     }
@@ -93,6 +94,34 @@ class MetadataEditHandler(private val activity: Activity) : MethodCallHandler {
         provider.editDate(activity, path, uri, mimeType, dateMillis, shiftMinutes, fields, object : ImageOpCallback {
             override fun onSuccess(fields: FieldMap) = result.success(fields)
             override fun onFailure(throwable: Throwable) = result.error("editDate-failure", "failed to edit date", throwable.message)
+        })
+    }
+
+    private fun removeTypes(call: MethodCall, result: MethodChannel.Result) {
+        val types = call.argument<List<String>>("types")
+        val entryMap = call.argument<FieldMap>("entry")
+        if (entryMap == null || types == null) {
+            result.error("removeTypes-args", "failed because of missing arguments", null)
+            return
+        }
+
+        val uri = (entryMap["uri"] as String?)?.let { Uri.parse(it) }
+        val path = entryMap["path"] as String?
+        val mimeType = entryMap["mimeType"] as String?
+        if (uri == null || path == null || mimeType == null) {
+            result.error("removeTypes-args", "failed because entry fields are missing", null)
+            return
+        }
+
+        val provider = getProvider(uri)
+        if (provider == null) {
+            result.error("removeTypes-provider", "failed to find provider for uri=$uri", null)
+            return
+        }
+
+        provider.removeMetadataTypes(activity, path, uri, mimeType, types.toSet(), object : ImageOpCallback {
+            override fun onSuccess(fields: FieldMap) = result.success(fields)
+            override fun onFailure(throwable: Throwable) = result.error("removeTypes-failure", "failed to remove metadata", throwable.message)
         })
     }
 
