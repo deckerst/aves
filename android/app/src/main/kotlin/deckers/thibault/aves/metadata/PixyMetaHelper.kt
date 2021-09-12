@@ -5,6 +5,7 @@ import deckers.thibault.aves.metadata.Metadata.TYPE_ICC_PROFILE
 import deckers.thibault.aves.metadata.Metadata.TYPE_IPTC
 import deckers.thibault.aves.metadata.Metadata.TYPE_JFIF
 import deckers.thibault.aves.metadata.Metadata.TYPE_JPEG_ADOBE
+import deckers.thibault.aves.metadata.Metadata.TYPE_JPEG_COMMENT
 import deckers.thibault.aves.metadata.Metadata.TYPE_JPEG_DUCKY
 import deckers.thibault.aves.metadata.Metadata.TYPE_PHOTOSHOP_IRB
 import deckers.thibault.aves.metadata.Metadata.TYPE_XMP
@@ -74,6 +75,7 @@ object PixyMetaHelper {
         TYPE_IPTC -> MetadataType.IPTC
         TYPE_JFIF -> MetadataType.JPG_JFIF
         TYPE_JPEG_ADOBE -> MetadataType.JPG_ADOBE
+        TYPE_JPEG_COMMENT -> MetadataType.COMMENT
         TYPE_JPEG_DUCKY -> MetadataType.JPG_DUCKY
         TYPE_PHOTOSHOP_IRB -> MetadataType.PHOTOSHOP_IRB
         TYPE_XMP -> MetadataType.XMP

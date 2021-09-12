@@ -63,7 +63,7 @@ class MetadataEditHandler(private val activity: Activity) : MethodCallHandler {
 
         provider.editOrientation(activity, path, uri, mimeType, op, object : ImageOpCallback {
             override fun onSuccess(fields: FieldMap) = result.success(fields)
-            override fun onFailure(throwable: Throwable) = result.error("editOrientation-failure", "failed to change orientation", throwable.message)
+            override fun onFailure(throwable: Throwable) = result.error("editOrientation-failure", "failed to change orientation for mimeType=$mimeType uri=$uri", throwable.message)
         })
     }
 
@@ -93,7 +93,7 @@ class MetadataEditHandler(private val activity: Activity) : MethodCallHandler {
 
         provider.editDate(activity, path, uri, mimeType, dateMillis, shiftMinutes, fields, object : ImageOpCallback {
             override fun onSuccess(fields: FieldMap) = result.success(fields)
-            override fun onFailure(throwable: Throwable) = result.error("editDate-failure", "failed to edit date", throwable.message)
+            override fun onFailure(throwable: Throwable) = result.error("editDate-failure", "failed to edit date for mimeType=$mimeType uri=$uri", throwable.message)
         })
     }
 
@@ -121,7 +121,7 @@ class MetadataEditHandler(private val activity: Activity) : MethodCallHandler {
 
         provider.removeMetadataTypes(activity, path, uri, mimeType, types.toSet(), object : ImageOpCallback {
             override fun onSuccess(fields: FieldMap) = result.success(fields)
-            override fun onFailure(throwable: Throwable) = result.error("removeTypes-failure", "failed to remove metadata", throwable.message)
+            override fun onFailure(throwable: Throwable) = result.error("removeTypes-failure", "failed to remove metadata for mimeType=$mimeType uri=$uri", throwable.message)
         })
     }
 
