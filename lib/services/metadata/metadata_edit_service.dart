@@ -118,6 +118,8 @@ class PlatformMetadataEditService implements MetadataEditService {
         return 'jfif';
       case MetadataType.jpegAdobe:
         return 'jpeg_adobe';
+      case MetadataType.jpegComment:
+        return 'jpeg_comment';
       case MetadataType.jpegDucky:
         return 'jpeg_ducky';
       case MetadataType.photoshopIrb:

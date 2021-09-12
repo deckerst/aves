@@ -123,7 +123,7 @@ dependencies {
     // https://jitpack.io/com/github/deckerst/Android-TiffBitmapFactory/**********/build.log
     implementation 'com.github.deckerst:Android-TiffBitmapFactory:876e53870a' // forked, built by JitPack
     // https://jitpack.io/com/github/deckerst/pixymeta-android/**********/build.log
-    implementation 'com.github.deckerst:pixymeta-android:e4e50da939' // forked, built by JitPack
+    implementation 'com.github.deckerst:pixymeta-android:0827df80b9' // forked, built by JitPack
     implementation 'com.github.bumptech.glide:glide:4.12.0'
 
     kapt 'androidx.annotation:annotation:1.2.0'

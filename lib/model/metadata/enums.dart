@@ -22,6 +22,8 @@ enum MetadataType {
   jfif,
   // JPEG APP14 / Adobe: https://www.exiftool.org/TagNames/JPEG.html#Adobe
   jpegAdobe,
+  // JPEG COM marker
+  jpegComment,
   // JPEG APP12 / Ducky: https://www.exiftool.org/TagNames/APP12.html#Ducky
   jpegDucky,
   // Photoshop IRB: https://www.adobe.com/devnet-apps/photoshop/fileformatashtml/
@@ -47,6 +49,7 @@ class MetadataTypes {
   static const jpeg = {
     MetadataType.jfif,
     MetadataType.jpegAdobe,
+    MetadataType.jpegComment,
     MetadataType.jpegDucky,
   };
 }
@@ -65,6 +68,8 @@ extension ExtraMetadataType on MetadataType {
         return 'JFIF';
       case MetadataType.jpegAdobe:
         return 'Adobe JPEG';
+      case MetadataType.jpegComment:
+        return 'JpegComment';
       case MetadataType.jpegDucky:
         return 'Ducky';
       case MetadataType.photoshopIrb:
