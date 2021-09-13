@@ -130,6 +130,7 @@ class MediaStoreSource extends CollectionSource {
   Future<Set<String>> refreshUris(Set<String> changedUris) async {
     if (!_initialized || !isMonitoring) return changedUris;
 
+    debugPrint('$runtimeType refreshUris ${changedUris.length} uris');
     final uriByContentId = Map.fromEntries(changedUris.map((uri) {
       final pathSegments = Uri.parse(uri).pathSegments;
       // e.g. URI `content://media/` has no path segment
