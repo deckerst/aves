@@ -153,6 +153,8 @@
   "removeEntryMetadataDialogTitle": "메타데이터 삭제",
   "removeEntryMetadataDialogMore": "더 보기",
 
+  "removeEntryMetadataMotionPhotoXmpWarningDialogMessage":  "XMP가 있어야 모션 포토에 포함되는 동영상을 재생할 수 있습니다. 삭제하시겠습니까?",
+
   "videoSpeedDialogLabel": "재생 배속",
 
   "videoStreamSelectionDialogVideo": "동영상",

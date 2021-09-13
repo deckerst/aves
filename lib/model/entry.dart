@@ -36,7 +36,7 @@ class AvesEntry {
 
   // `dateModifiedSecs` can be missing in viewer mode
   int? _dateModifiedSecs;
-  final int? sourceDateTakenMillis;
+  int? sourceDateTakenMillis;
   int? _durationMillis;
   int? _catalogDateMillis;
   CatalogMetadata? _catalogMetadata;
@@ -564,8 +564,13 @@ class AvesEntry {
     if (path is String) this.path = path;
     final contentId = newFields['contentId'];
     if (contentId is int) this.contentId = contentId;
+
     final sourceTitle = newFields['title'];
     if (sourceTitle is String) this.sourceTitle = sourceTitle;
+    final sourceRotationDegrees = newFields['sourceRotationDegrees'];
+    if (sourceRotationDegrees is int) this.sourceRotationDegrees = sourceRotationDegrees;
+    final sourceDateTakenMillis = newFields['sourceDateTakenMillis'];
+    if (sourceDateTakenMillis is int) this.sourceDateTakenMillis = sourceDateTakenMillis;
 
     final width = newFields['width'];
     if (width is int) this.width = width;
@@ -589,6 +594,24 @@ class AvesEntry {
     }
 
     metadataChangeNotifier.notifyListeners();
+  }
+
+  Future<void> refresh({required bool persist}) async {
+    _catalogMetadata = null;
+    _addressDetails = null;
+    _bestDate = null;
+    _bestTitle = null;
+    _xmpSubjects = null;
+    if (persist) {
+      await metadataDb.removeIds({contentId!}, metadataOnly: true);
+    }
+
+    final updated = await mediaFileService.getEntry(uri, mimeType);
+    if (updated != null) {
+      await _applyNewFields(updated.toMap(), persist: persist);
+      await catalog(background: false, persist: persist);
+      await locate(background: false);
+    }
   }
 
   Future<bool> rotate({required bool clockwise, required bool persist}) async {
@@ -619,8 +642,7 @@ class AvesEntry {
     final newFields = await metadataEditService.editDate(this, modifier);
     if (newFields.isEmpty) return false;
 
-    await _applyNewFields(newFields, persist: persist);
-    await catalog(background: false, persist: persist, force: true);
+    await refresh(persist: persist);
     return true;
   }
 
@@ -628,7 +650,7 @@ class AvesEntry {
     final newFields = await metadataEditService.removeTypes(this, types);
     if (newFields.isEmpty) return false;
 
-    await _applyNewFields(newFields, persist: persist);
+    await refresh(persist: persist);
     return true;
   }
 

@@ -109,14 +109,14 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
   Future<void> _flip(BuildContext context, AvesEntry entry) async {
     if (!await checkStoragePermission(context, {entry})) return;
 
-    final success = await entry.flip(persist: isMainMode(context));
+    final success = await entry.flip(persist: _isMainMode(context));
     if (!success) showFeedback(context, context.l10n.genericFailureFeedback);
   }
 
   Future<void> _rotate(BuildContext context, AvesEntry entry, {required bool clockwise}) async {
     if (!await checkStoragePermission(context, {entry})) return;
 
-    final success = await entry.rotate(clockwise: clockwise, persist: isMainMode(context));
+    final success = await entry.rotate(clockwise: clockwise, persist: _isMainMode(context));
     if (!success) showFeedback(context, context.l10n.genericFailureFeedback);
   }
 
@@ -269,7 +269,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
 
     if (!await checkStoragePermission(context, {entry})) return;
 
-    final success = await context.read<CollectionSource>().renameEntry(entry, newName, persist: isMainMode(context));
+    final success = await context.read<CollectionSource>().renameEntry(entry, newName, persist: _isMainMode(context));
 
     if (success) {
       showFeedback(context, context.l10n.genericSuccessFeedback);
@@ -278,7 +278,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     }
   }
 
-  bool isMainMode(BuildContext context) => context.read<ValueNotifier<AppMode>>().value == AppMode.main;
+  bool _isMainMode(BuildContext context) => context.read<ValueNotifier<AppMode>>().value == AppMode.main;
 
   void _goToSourceViewer(BuildContext context, AvesEntry entry) {
     Navigator.push(

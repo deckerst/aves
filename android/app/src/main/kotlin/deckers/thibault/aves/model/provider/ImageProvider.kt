@@ -672,6 +672,7 @@ abstract class ImageProvider {
                     }
                 }
             } catch (e: Exception) {
+                Log.d(LOG_TAG, "failed to remove metadata", e)
                 callback.onFailure(e)
                 return
             }
