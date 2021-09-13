@@ -31,7 +31,10 @@ class ThumbnailEntryOverlay extends StatelessWidget {
         if (entry.isGeotiff) const GeotiffIcon(),
         if (entry.is360) const SphericalImageIcon(),
       ],
-      if (entry.isMultiPage) MultiPageIcon(entry: entry),
+      if (entry.isMultiPage) ...[
+        if (entry.isMotionPhoto && context.select<GridThemeData, bool>((t) => t.showMotionPhoto)) const MotionPhotoIcon(),
+        if (!entry.isMotionPhoto) MultiPageIcon(entry: entry),
+      ],
     ];
     if (children.isEmpty) return const SizedBox.shrink();
     if (children.length == 1) return children.first;

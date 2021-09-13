@@ -652,6 +652,8 @@
   "@settingsSectionThumbnails": {},
   "settingsThumbnailShowLocationIcon": "Show location icon",
   "@settingsThumbnailShowLocationIcon": {},
+  "settingsThumbnailShowMotionPhotoIcon": "Show motion photo icon",
+  "@settingsThumbnailShowMotionPhotoIcon": {},
   "settingsThumbnailShowRawIcon": "Show raw icon",
   "@settingsThumbnailShowRawIcon": {},
   "settingsThumbnailShowVideoDuration": "Show video duration",

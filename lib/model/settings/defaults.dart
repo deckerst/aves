@@ -38,6 +38,7 @@ class SettingsDefaults {
     EntrySetAction.delete,
   ];
   static const showThumbnailLocation = true;
+  static const showThumbnailMotionPhoto = true;
   static const showThumbnailRaw = true;
   static const showThumbnailVideoDuration = true;
 
