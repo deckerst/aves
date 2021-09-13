@@ -4,6 +4,7 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/color_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
+import 'package:aves/widgets/common/identity/aves_icons.dart';
 import 'package:aves/widgets/settings/common/tile_leading.dart';
 import 'package:aves/widgets/settings/thumbnails/selection_actions_editor.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +21,7 @@ class ThumbnailsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final currentShowThumbnailLocation = context.select<Settings, bool>((s) => s.showThumbnailLocation);
+    final currentShowThumbnailMotionPhoto = context.select<Settings, bool>((s) => s.showThumbnailMotionPhoto);
     final currentShowThumbnailRaw = context.select<Settings, bool>((s) => s.showThumbnailRaw);
     final currentShowThumbnailVideoDuration = context.select<Settings, bool>((s) => s.showThumbnailVideoDuration);
 
@@ -48,6 +50,26 @@ class ThumbnailsSection extends StatelessWidget {
                 child: Icon(
                   AIcons.location,
                   size: iconSize,
+                ),
+              ),
+            ],
+          ),
+        ),
+        SwitchListTile(
+          value: currentShowThumbnailMotionPhoto,
+          onChanged: (v) => settings.showThumbnailMotionPhoto = v,
+          title: Row(
+            children: [
+              Expanded(child: Text(context.l10n.settingsThumbnailShowMotionPhotoIcon)),
+              AnimatedOpacity(
+                opacity: opacityFor(currentShowThumbnailMotionPhoto),
+                duration: Durations.toggleableTransitionAnimation,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: iconSize * (1 - MotionPhotoIcon.scale) / 2),
+                  child: Icon(
+                    AIcons.motionPhoto,
+                    size: iconSize * MotionPhotoIcon.scale,
+                  ),
                 ),
               ),
             ],

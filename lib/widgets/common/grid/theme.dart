@@ -28,6 +28,7 @@ class GridTheme extends StatelessWidget {
           fontSize: fontSize,
           highlightBorderWidth: highlightBorderWidth,
           showLocation: showLocation ?? settings.showThumbnailLocation,
+          showMotionPhoto: settings.showThumbnailMotionPhoto,
           showRaw: settings.showThumbnailRaw,
           showVideoDuration: settings.showThumbnailVideoDuration,
         );
@@ -39,13 +40,14 @@ class GridTheme extends StatelessWidget {
 
 class GridThemeData {
   final double iconSize, fontSize, highlightBorderWidth;
-  final bool showLocation, showRaw, showVideoDuration;
+  final bool showLocation, showMotionPhoto, showRaw, showVideoDuration;
 
   const GridThemeData({
     required this.iconSize,
     required this.fontSize,
     required this.highlightBorderWidth,
     required this.showLocation,
+    required this.showMotionPhoto,
     required this.showRaw,
     required this.showVideoDuration,
   });
