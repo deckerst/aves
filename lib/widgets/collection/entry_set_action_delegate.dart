@@ -42,8 +42,8 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       case EntrySetAction.move:
         _moveSelection(context, moveType: MoveType.move);
         break;
-      case EntrySetAction.refreshMetadata:
-        _refreshMetadata(context);
+      case EntrySetAction.rescan:
+        _rescan(context);
         break;
       case EntrySetAction.map:
         _goToMap(context);
@@ -68,12 +68,12 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     });
   }
 
-  void _refreshMetadata(BuildContext context) {
+  void _rescan(BuildContext context) {
     final source = context.read<CollectionSource>();
     final selection = context.read<Selection<AvesEntry>>();
     final selectedItems = _getExpandedSelectedItems(selection);
 
-    source.refreshMetadata(selectedItems);
+    source.rescan(selectedItems);
     selection.browse();
   }
 

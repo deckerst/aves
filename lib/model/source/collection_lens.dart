@@ -47,6 +47,7 @@ class CollectionLens with ChangeNotifier {
       _subscriptions.add(sourceEvents.on<EntryAddedEvent>().listen((e) => onEntryAdded(e.entries)));
       _subscriptions.add(sourceEvents.on<EntryRemovedEvent>().listen((e) => onEntryRemoved(e.entries)));
       _subscriptions.add(sourceEvents.on<EntryMovedEvent>().listen((e) => _refresh()));
+      _subscriptions.add(sourceEvents.on<EntryRefreshedEvent>().listen((e) => _refresh()));
       _subscriptions.add(sourceEvents.on<FilterVisibilityChangedEvent>().listen((e) => _refresh()));
       _subscriptions.add(sourceEvents.on<CatalogMetadataChangedEvent>().listen((e) => _refresh()));
       _subscriptions.add(sourceEvents.on<AddressMetadataChangedEvent>().listen((e) {

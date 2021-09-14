@@ -189,9 +189,9 @@ class MediaStoreSource extends CollectionSource {
   }
 
   @override
-  Future<void> refreshMetadata(Set<AvesEntry> entries) {
+  Future<void> rescan(Set<AvesEntry> entries) async {
     final contentIds = entries.map((entry) => entry.contentId).whereNotNull().toSet();
-    metadataDb.removeIds(contentIds, metadataOnly: true);
+    await metadataDb.removeIds(contentIds, metadataOnly: true);
     return refresh();
   }
 }

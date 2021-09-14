@@ -213,7 +213,7 @@
   "collectionActionAddShortcut": "홈 화면에 추가",
   "collectionActionCopy": "앨범으로 복사",
   "collectionActionMove": "앨범으로 이동",
-  "collectionActionRefreshMetadata": "새로 분석",
+  "collectionActionRescan": "새로 분석",
 
   "collectionSortTitle": "정렬",
   "collectionSortDate": "날짜",

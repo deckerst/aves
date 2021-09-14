@@ -289,7 +289,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       case EntrySetAction.delete:
       case EntrySetAction.copy:
       case EntrySetAction.move:
-      case EntrySetAction.refreshMetadata:
+      case EntrySetAction.rescan:
       case EntrySetAction.map:
       case EntrySetAction.stats:
         _actionDelegate.onActionSelected(context, action);
