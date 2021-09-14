@@ -43,28 +43,29 @@ class InfoAppBar extends StatelessWidget {
           onPressed: () => _goToSearch(context),
           tooltip: MaterialLocalizations.of(context).searchFieldLabel,
         ),
-        MenuIconTheme(
-          child: PopupMenuButton<EntryInfoAction>(
-            itemBuilder: (context) {
-              return [
-                PopupMenuItem(
-                  value: EntryInfoAction.editDate,
-                  enabled: entry.canEditExif,
-                  child: MenuRow(text: context.l10n.entryInfoActionEditDate, icon: const Icon(AIcons.date)),
-                ),
-                PopupMenuItem(
-                  value: EntryInfoAction.removeMetadata,
-                  enabled: entry.canRemoveMetadata,
-                  child: MenuRow(text: context.l10n.entryInfoActionRemoveMetadata, icon: const Icon(AIcons.clear)),
-                ),
-              ];
-            },
-            onSelected: (action) {
-              // wait for the popup menu to hide before proceeding with the action
-              Future.delayed(Durations.popupMenuAnimation * timeDilation, () => EntryInfoActionDelegate(entry).onActionSelected(context, action));
-            },
+        if (entry.canEdit)
+          MenuIconTheme(
+            child: PopupMenuButton<EntryInfoAction>(
+              itemBuilder: (context) {
+                return [
+                  PopupMenuItem(
+                    value: EntryInfoAction.editDate,
+                    enabled: entry.canEditExif,
+                    child: MenuRow(text: context.l10n.entryInfoActionEditDate, icon: const Icon(AIcons.date)),
+                  ),
+                  PopupMenuItem(
+                    value: EntryInfoAction.removeMetadata,
+                    enabled: entry.canRemoveMetadata,
+                    child: MenuRow(text: context.l10n.entryInfoActionRemoveMetadata, icon: const Icon(AIcons.clear)),
+                  ),
+                ];
+              },
+              onSelected: (action) {
+                // wait for the popup menu to hide before proceeding with the action
+                Future.delayed(Durations.popupMenuAnimation * timeDilation, () => EntryInfoActionDelegate(entry).onActionSelected(context, action));
+              },
+            ),
           ),
-        ),
       ],
       titleSpacing: 0,
       floating: true,
