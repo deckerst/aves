@@ -128,9 +128,9 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
     _rawEntries.clear();
     _invalidate();
 
-    updateDirectories();
-    updateLocations();
-    updateTags();
+    // do not update directories/locations/tags here
+    // as it could reset filter dependent settings (pins, bookmarks, etc.)
+    // caller should take care of updating these at the right time
   }
 
   Future<void> _moveEntry(AvesEntry entry, Map newFields, {required bool persist}) async {
