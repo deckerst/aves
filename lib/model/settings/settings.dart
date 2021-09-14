@@ -122,7 +122,7 @@ class Settings extends ChangeNotifier {
     if (includeInternalKeys) {
       await _prefs!.clear();
     } else {
-      await Future.forEach(_prefs!.getKeys().whereNot(internalKeys.contains), _prefs!.remove);
+      await Future.forEach<String>(_prefs!.getKeys().whereNot(internalKeys.contains), _prefs!.remove);
     }
   }
 

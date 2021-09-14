@@ -254,7 +254,17 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
 
   Future<void> refresh();
 
-  Future<void> refreshMetadata(Set<AvesEntry> entries);
+  Future<void> rescan(Set<AvesEntry> entries);
+
+  Future<void> refreshMetadata(Set<AvesEntry> entries) async {
+    await Future.forEach<AvesEntry>(entries, (entry) => entry.refresh(persist: true));
+
+    _invalidate(entries);
+    updateLocations();
+    updateTags();
+
+    eventBus.fire(EntryRefreshedEvent(entries));
+  }
 
   // monitoring
 
@@ -332,6 +342,12 @@ class EntryMovedEvent {
   final Set<AvesEntry> entries;
 
   const EntryMovedEvent(this.entries);
+}
+
+class EntryRefreshedEvent {
+  final Set<AvesEntry> entries;
+
+  const EntryRefreshedEvent(this.entries);
 }
 
 class FilterVisibilityChangedEvent {

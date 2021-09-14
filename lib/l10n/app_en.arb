@@ -445,8 +445,8 @@
   "@collectionActionCopy": {},
   "collectionActionMove": "Move to album",
   "@collectionActionMove": {},
-  "collectionActionRefreshMetadata": "Refresh metadata",
-  "@collectionActionRefreshMetadata": {},
+  "collectionActionRescan": "Rescan",
+  "@collectionActionRescan": {},
 
   "collectionSortTitle": "Sort",
   "@collectionSortTitle": {},

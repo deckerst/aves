@@ -638,20 +638,14 @@ class AvesEntry {
     return true;
   }
 
-  Future<bool> editDate(DateModifier modifier, {required bool persist}) async {
+  Future<bool> editDate(DateModifier modifier) async {
     final newFields = await metadataEditService.editDate(this, modifier);
-    if (newFields.isEmpty) return false;
-
-    await refresh(persist: persist);
-    return true;
+    return newFields.isNotEmpty;
   }
 
-  Future<bool> removeMetadata(Set<MetadataType> types, {required bool persist}) async {
+  Future<bool> removeMetadata(Set<MetadataType> types) async {
     final newFields = await metadataEditService.removeTypes(this, types);
-    if (newFields.isEmpty) return false;
-
-    await refresh(persist: persist);
-    return true;
+    return newFields.isNotEmpty;
   }
 
   Future<bool> delete() {

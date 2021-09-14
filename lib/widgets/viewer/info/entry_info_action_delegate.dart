@@ -34,13 +34,19 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin {
   Future<void> _edit(BuildContext context, Future<bool> Function() apply) async {
     if (!await checkStoragePermission(context, {entry})) return;
 
+    final l10n = context.l10n;
     final source = context.read<CollectionSource?>();
     source?.pauseMonitoring();
     final success = await apply();
     if (success) {
-      showFeedback(context, context.l10n.genericSuccessFeedback);
+      if (_isMainMode(context) && source != null) {
+        await source.refreshMetadata({entry});
+      } else {
+        await entry.refresh(persist: false);
+      }
+      showFeedback(context, l10n.genericSuccessFeedback);
     } else {
-      showFeedback(context, context.l10n.genericFailureFeedback);
+      showFeedback(context, l10n.genericFailureFeedback);
     }
     source?.resumeMonitoring();
   }
@@ -52,7 +58,7 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin {
     );
     if (modifier == null) return;
 
-    await _edit(context, () => entry.editDate(modifier, persist: _isMainMode(context)));
+    await _edit(context, () => entry.editDate(modifier));
   }
 
   Future<void> _showMetadataRemovalDialog(BuildContext context) async {
@@ -85,6 +91,6 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin {
       if (proceed == null || !proceed) return;
     }
 
-    await _edit(context, () => entry.removeMetadata(types, persist: _isMainMode(context)));
+    await _edit(context, () => entry.removeMetadata(types));
   }
 }
