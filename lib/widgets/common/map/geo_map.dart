@@ -16,6 +16,7 @@ import 'package:aves/widgets/common/map/geo_entry.dart';
 import 'package:aves/widgets/common/map/google/map.dart';
 import 'package:aves/widgets/common/map/leaflet/map.dart';
 import 'package:aves/widgets/common/map/marker.dart';
+import 'package:aves/widgets/common/map/theme.dart';
 import 'package:aves/widgets/common/map/zoomed_bounds.dart';
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
@@ -27,8 +28,6 @@ import 'package:provider/provider.dart';
 class GeoMap extends StatefulWidget {
   final AvesMapController? controller;
   final List<AvesEntry> entries;
-  final bool interactive, showBackButton;
-  final double? mapHeight;
   final ValueNotifier<bool> isAnimatingNotifier;
   final UserZoomChangeCallback? onUserZoomChange;
   final MarkerTapCallback? onMarkerTap;
@@ -40,9 +39,6 @@ class GeoMap extends StatefulWidget {
     Key? key,
     this.controller,
     required this.entries,
-    required this.interactive,
-    required this.showBackButton,
-    this.mapHeight,
     required this.isAnimatingNotifier,
     this.onUserZoomChange,
     this.onMarkerTap,
@@ -63,12 +59,6 @@ class _GeoMapState extends State<GeoMap> {
   Fluster<GeoEntry>? _slowMarkerCluster;
 
   List<AvesEntry> get entries => widget.entries;
-
-  bool get interactive => widget.interactive;
-
-  bool get showBackButton => widget.showBackButton;
-
-  double? get mapHeight => widget.mapHeight;
 
   @override
   void initState() {
@@ -139,8 +129,6 @@ class _GeoMapState extends State<GeoMap> {
                 ? EntryGoogleMap(
                     controller: widget.controller,
                     boundsNotifier: _boundsNotifier,
-                    interactive: interactive,
-                    showBackButton: showBackButton,
                     minZoom: 0,
                     maxZoom: 20,
                     style: mapStyle,
@@ -152,8 +140,6 @@ class _GeoMapState extends State<GeoMap> {
                 : EntryLeafletMap(
                     controller: widget.controller,
                     boundsNotifier: _boundsNotifier,
-                    interactive: interactive,
-                    showBackButton: showBackButton,
                     minZoom: 2,
                     maxZoom: 16,
                     style: mapStyle,
@@ -167,6 +153,7 @@ class _GeoMapState extends State<GeoMap> {
                     onMarkerTap: _onMarkerTap,
                   );
 
+            final mapHeight = context.select<MapThemeData, double?>((v) => v.mapHeight);
             child = Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -192,11 +179,8 @@ class _GeoMapState extends State<GeoMap> {
                   }
                   Widget replacement = Stack(
                     children: [
-                      MapDecorator(
-                        interactive: interactive,
-                      ),
+                      const MapDecorator(),
                       MapButtonPanel(
-                        showBackButton: showBackButton,
                         boundsNotifier: _boundsNotifier,
                       ),
                     ],

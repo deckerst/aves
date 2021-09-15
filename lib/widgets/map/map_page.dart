@@ -5,6 +5,7 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/debouncer.dart';
 import 'package:aves/widgets/common/map/controller.dart';
 import 'package:aves/widgets/common/map/geo_map.dart';
+import 'package:aves/widgets/common/map/theme.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/common/thumbnail/scroller.dart';
 import 'package:flutter/foundation.dart';
@@ -65,20 +66,22 @@ class _MapPageState extends State<MapPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
-                child: GeoMap(
-                  controller: _mapController,
-                  entries: entries,
+                child: MapTheme(
                   interactive: true,
-                  showBackButton: true,
-                  isAnimatingNotifier: _isAnimatingNotifier,
-                  onMarkerTap: (markerEntry, getClusterEntries) {
-                    final index = entries.indexOf(markerEntry);
-                    if (_selectedIndexNotifier.value != index) {
-                      _selectedIndexNotifier.value = index;
-                    } else {
-                      _moveToEntry(markerEntry);
-                    }
-                  },
+                  navigationButton: MapNavigationButton.back,
+                  child: GeoMap(
+                    controller: _mapController,
+                    entries: entries,
+                    isAnimatingNotifier: _isAnimatingNotifier,
+                    onMarkerTap: (markerEntry, getClusterEntries) {
+                      final index = entries.indexOf(markerEntry);
+                      if (_selectedIndexNotifier.value != index) {
+                        _selectedIndexNotifier.value = index;
+                      } else {
+                        _moveToEntry(markerEntry);
+                      }
+                    },
+                  ),
                 ),
               ),
               const Divider(),

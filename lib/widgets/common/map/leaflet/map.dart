@@ -11,15 +11,16 @@ import 'package:aves/widgets/common/map/geo_map.dart';
 import 'package:aves/widgets/common/map/latlng_tween.dart';
 import 'package:aves/widgets/common/map/leaflet/scale_layer.dart';
 import 'package:aves/widgets/common/map/leaflet/tile_layers.dart';
+import 'package:aves/widgets/common/map/theme.dart';
 import 'package:aves/widgets/common/map/zoomed_bounds.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:provider/provider.dart';
 
 class EntryLeafletMap extends StatefulWidget {
   final AvesMapController? controller;
   final ValueNotifier<ZoomedBounds> boundsNotifier;
-  final bool interactive, showBackButton;
   final double minZoom, maxZoom;
   final EntryMapStyle style;
   final MarkerClusterBuilder markerClusterBuilder;
@@ -32,8 +33,6 @@ class EntryLeafletMap extends StatefulWidget {
     Key? key,
     this.controller,
     required this.boundsNotifier,
-    required this.interactive,
-    required this.showBackButton,
     this.minZoom = 0,
     this.maxZoom = 22,
     required this.style,
@@ -57,8 +56,6 @@ class _EntryLeafletMapState extends State<EntryLeafletMap> with TickerProviderSt
   ValueNotifier<ZoomedBounds> get boundsNotifier => widget.boundsNotifier;
 
   ZoomedBounds get bounds => boundsNotifier.value;
-
-  bool get interactive => widget.interactive;
 
   // duration should match the uncustomizable Google Maps duration
   static const _cameraAnimationDuration = Duration(milliseconds: 600);
@@ -104,14 +101,12 @@ class _EntryLeafletMapState extends State<EntryLeafletMap> with TickerProviderSt
     return Stack(
       children: [
         MapDecorator(
-          interactive: interactive,
           child: _buildMap(),
         ),
         MapButtonPanel(
-          showBackButton: widget.showBackButton,
           boundsNotifier: boundsNotifier,
           zoomBy: _zoomBy,
-          resetRotation: interactive ? _resetRotation : null,
+          resetRotation: _resetRotation,
         ),
       ],
     );
@@ -135,13 +130,14 @@ class _EntryLeafletMapState extends State<EntryLeafletMap> with TickerProviderSt
       );
     }).toList();
 
+    final interactive = context.select<MapThemeData, bool>((v) => v.interactive);
     return FlutterMap(
       options: MapOptions(
         center: bounds.center,
         zoom: bounds.zoom,
         minZoom: widget.minZoom,
         maxZoom: widget.maxZoom,
-        interactiveFlags: widget.interactive ? InteractiveFlag.all : InteractiveFlag.none,
+        interactiveFlags: interactive ? InteractiveFlag.all : InteractiveFlag.none,
         controller: _leafletMapController,
       ),
       mapController: _leafletMapController,
