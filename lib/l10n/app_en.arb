@@ -869,8 +869,8 @@
   "@mapAttributionOsmHot": {},
   "mapAttributionStamen": "Map data © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors • Tiles by [Stamen Design](http://stamen.com), [CC BY 3.0](http://creativecommons.org/licenses/by/3.0)",
   "@mapAttributionStamen": {},
-  "openMapTooltip": "View on Map page",
-  "@openMapTooltip": {},
+  "openMapPageTooltip": "View on Map page",
+  "@openMapPageTooltip": {},
 
   "viewerInfoOpenEmbeddedFailureFeedback": "Failed to extract embedded data",
   "@viewerInfoOpenEmbeddedFailureFeedback": {},

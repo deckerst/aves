@@ -28,9 +28,11 @@ import 'package:provider/provider.dart';
 class GeoMap extends StatefulWidget {
   final AvesMapController? controller;
   final List<AvesEntry> entries;
+  final AvesEntry? initialEntry;
   final ValueNotifier<bool> isAnimatingNotifier;
   final UserZoomChangeCallback? onUserZoomChange;
   final MarkerTapCallback? onMarkerTap;
+  final MapOpener? openMapPage;
 
   static const markerImageExtent = 48.0;
   static const pointerSize = Size(8, 6);
@@ -39,9 +41,11 @@ class GeoMap extends StatefulWidget {
     Key? key,
     this.controller,
     required this.entries,
+    this.initialEntry,
     required this.isAnimatingNotifier,
     this.onUserZoomChange,
     this.onMarkerTap,
+    this.openMapPage,
   }) : super(key: key);
 
   @override
@@ -63,7 +67,8 @@ class _GeoMapState extends State<GeoMap> {
   @override
   void initState() {
     super.initState();
-    final points = entries.map((v) => v.latLng!).toSet();
+    final initialEntry = widget.initialEntry;
+    final points = (initialEntry != null ? [initialEntry] : entries).map((v) => v.latLng!).toSet();
     _boundsNotifier = ValueNotifier(ZoomedBounds.fromPoints(
       points: points.isNotEmpty ? points : {Constants.wonders[Random().nextInt(Constants.wonders.length)]},
       collocationZoom: settings.infoMapZoom,
@@ -136,6 +141,7 @@ class _GeoMapState extends State<GeoMap> {
                     markerWidgetBuilder: _buildMarkerWidget,
                     onUserZoomChange: widget.onUserZoomChange,
                     onMarkerTap: _onMarkerTap,
+                    openMapPage: widget.openMapPage,
                   )
                 : EntryLeafletMap(
                     controller: widget.controller,
@@ -151,6 +157,7 @@ class _GeoMapState extends State<GeoMap> {
                     ),
                     onUserZoomChange: widget.onUserZoomChange,
                     onMarkerTap: _onMarkerTap,
+                    openMapPage: widget.openMapPage,
                   );
 
             final mapHeight = context.select<MapThemeData, double?>((v) => v.mapHeight);
@@ -182,6 +189,7 @@ class _GeoMapState extends State<GeoMap> {
                       const MapDecorator(),
                       MapButtonPanel(
                         boundsNotifier: _boundsNotifier,
+                        openMapPage: widget.openMapPage,
                       ),
                     ],
                   );

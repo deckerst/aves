@@ -26,6 +26,7 @@ class EntryGoogleMap extends StatefulWidget {
   final MarkerWidgetBuilder markerWidgetBuilder;
   final UserZoomChangeCallback? onUserZoomChange;
   final void Function(GeoEntry geoEntry)? onMarkerTap;
+  final MapOpener? openMapPage;
 
   const EntryGoogleMap({
     Key? key,
@@ -38,6 +39,7 @@ class EntryGoogleMap extends StatefulWidget {
     required this.markerWidgetBuilder,
     this.onUserZoomChange,
     this.onMarkerTap,
+    this.openMapPage,
   }) : super(key: key);
 
   @override
@@ -125,6 +127,7 @@ class _EntryGoogleMapState extends State<EntryGoogleMap> with WidgetsBindingObse
         MapButtonPanel(
           boundsNotifier: boundsNotifier,
           zoomBy: _zoomBy,
+          openMapPage: widget.openMapPage,
           resetRotation: _resetRotation,
         ),
       ],

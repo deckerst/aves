@@ -17,10 +17,12 @@ class MapPage extends StatefulWidget {
   static const routeName = '/collection/map';
 
   final List<AvesEntry> entries;
+  final AvesEntry? initialEntry;
 
   const MapPage({
     Key? key,
     required this.entries,
+    this.initialEntry,
   }) : super(key: key);
 
   @override
@@ -38,6 +40,7 @@ class _MapPageState extends State<MapPage> {
   @override
   void initState() {
     super.initState();
+
     if (settings.infoMapStyle.isGoogleMaps) {
       _isAnimatingNotifier = ValueNotifier(true);
       Future.delayed(Durations.pageTransitionAnimation * timeDilation).then((_) {
@@ -46,6 +49,14 @@ class _MapPageState extends State<MapPage> {
       });
     } else {
       _isAnimatingNotifier = ValueNotifier(false);
+    }
+
+    final initialEntry = widget.initialEntry;
+    if (initialEntry != null) {
+      final index = entries.indexOf(initialEntry);
+      if (index != -1) {
+        _selectedIndexNotifier.value = index;
+      }
     }
     _selectedIndexNotifier.addListener(_onThumbnailIndexChange);
   }
@@ -72,6 +83,7 @@ class _MapPageState extends State<MapPage> {
                   child: GeoMap(
                     controller: _mapController,
                     entries: entries,
+                    initialEntry: widget.initialEntry,
                     isAnimatingNotifier: _isAnimatingNotifier,
                     onMarkerTap: (markerEntry, getClusterEntries) {
                       final index = entries.indexOf(markerEntry);
