@@ -1,7 +1,7 @@
 import 'package:aves/model/settings/enums.dart';
 import 'package:aves/model/settings/map_style.dart';
 import 'package:aves/model/settings/settings.dart';
-import 'package:aves/services/android_app_service.dart';
+import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
@@ -9,16 +9,17 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/blurred.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
 import 'package:aves/widgets/common/map/compass.dart';
+import 'package:aves/widgets/common/map/theme.dart';
 import 'package:aves/widgets/common/map/zoomed_bounds.dart';
-import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
+import 'package:aves/widgets/map/map_page.dart';
 import 'package:aves/widgets/viewer/overlay/common.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:provider/provider.dart';
 
 class MapButtonPanel extends StatelessWidget {
-  final bool showBackButton;
   final ValueNotifier<ZoomedBounds> boundsNotifier;
   final Future<void> Function(double amount)? zoomBy;
   final VoidCallback? resetRotation;
@@ -27,7 +28,6 @@ class MapButtonPanel extends StatelessWidget {
 
   const MapButtonPanel({
     Key? key,
-    required this.showBackButton,
     required this.boundsNotifier,
     this.zoomBy,
     this.resetRotation,
@@ -37,6 +37,28 @@ class MapButtonPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     final iconTheme = IconTheme.of(context);
     final iconSize = Size.square(iconTheme.size!);
+
+    Widget? navigationButton;
+    switch (context.select<MapThemeData, MapNavigationButton>((v) => v.navigationButton)) {
+      case MapNavigationButton.back:
+        navigationButton = MapOverlayButton(
+          icon: const BackButtonIcon(),
+          onPressed: () => Navigator.pop(context),
+          tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+        );
+        break;
+      case MapNavigationButton.map:
+        final collection = context.read<CollectionLens?>();
+        if (collection != null) {
+          navigationButton = MapOverlayButton(
+            icon: const Icon(AIcons.map),
+            onPressed: () => _goToMap(context, collection),
+            tooltip: context.l10n.openMapTooltip,
+          );
+        }
+        break;
+    }
+
     return Positioned.fill(
       child: Align(
         alignment: AlignmentDirectional.centerEnd,
@@ -53,43 +75,38 @@ class MapButtonPanel extends StatelessWidget {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      if (showBackButton)
-                        MapOverlayButton(
-                          icon: const BackButtonIcon(),
-                          onPressed: () => Navigator.pop(context),
-                          tooltip: MaterialLocalizations.of(context).backButtonTooltip,
-                        ),
-                      if (resetRotation != null) ...[
+                      if (navigationButton != null) ...[
+                        navigationButton,
                         const SizedBox(height: padding),
-                        ValueListenableBuilder<ZoomedBounds>(
-                          valueListenable: boundsNotifier,
-                          builder: (context, bounds, child) {
-                            final degrees = bounds.rotation;
-                            final opacity = degrees == 0 ? .0 : 1.0;
-                            return IgnorePointer(
-                              ignoring: opacity == 0,
-                              child: AnimatedOpacity(
-                                opacity: opacity,
-                                duration: Durations.viewerOverlayAnimation,
-                                child: MapOverlayButton(
-                                  icon: Transform(
-                                    origin: iconSize.center(Offset.zero),
-                                    transform: Matrix4.rotationZ(degToRadian(degrees)),
-                                    child: CustomPaint(
-                                      painter: CompassPainter(
-                                        color: iconTheme.color!,
-                                      ),
-                                      size: iconSize,
-                                    ),
-                                  ),
-                                  onPressed: () => resetRotation?.call(),
-                                  tooltip: context.l10n.mapPointNorthUpTooltip,
-                                ),
-                              ),
-                            );
-                          },
-                        ),
                       ],
+                      ValueListenableBuilder<ZoomedBounds>(
+                        valueListenable: boundsNotifier,
+                        builder: (context, bounds, child) {
+                          final degrees = bounds.rotation;
+                          final opacity = degrees == 0 ? .0 : 1.0;
+                          return IgnorePointer(
+                            ignoring: opacity == 0,
+                            child: AnimatedOpacity(
+                              opacity: opacity,
+                              duration: Durations.viewerOverlayAnimation,
+                              child: MapOverlayButton(
+                                icon: Transform(
+                                  origin: iconSize.center(Offset.zero),
+                                  transform: Matrix4.rotationZ(degToRadian(degrees)),
+                                  child: CustomPaint(
+                                    painter: CompassPainter(
+                                      color: iconTheme.color!,
+                                    ),
+                                    size: iconSize,
+                                  ),
+                                ),
+                                onPressed: () => resetRotation?.call(),
+                                tooltip: context.l10n.mapPointNorthUpTooltip,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
                     ],
                   ),
                 ),
@@ -98,14 +115,6 @@ class MapButtonPanel extends StatelessWidget {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      MapOverlayButton(
-                        icon: const Icon(AIcons.openOutside),
-                        onPressed: () => AndroidAppService.openMap(boundsNotifier.value.center).then((success) {
-                          if (!success) showNoMatchingAppDialog(context);
-                        }),
-                        tooltip: context.l10n.entryActionOpenMap,
-                      ),
-                      const SizedBox(height: padding),
                       MapOverlayButton(
                         icon: const Icon(AIcons.layers),
                         onPressed: () async {
@@ -161,6 +170,20 @@ class MapButtonPanel extends StatelessWidget {
       ),
     );
   }
+
+  void _goToMap(BuildContext context, CollectionLens collection) {
+    final entries = collection.sortedEntries.where((entry) => entry.hasGps).toList();
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        settings: const RouteSettings(name: MapPage.routeName),
+        builder: (context) => MapPage(
+          entries: entries,
+        ),
+      ),
+    );
+  }
 }
 
 class MapOverlayButton extends StatelessWidget {
@@ -177,6 +200,7 @@ class MapOverlayButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final visualDensity = context.select<MapThemeData, VisualDensity?>((v) => v.visualDensity);
     final blurred = settings.enableOverlayBlurEffect;
     return BlurredOval(
       enabled: blurred,
@@ -190,7 +214,7 @@ class MapOverlayButton extends StatelessWidget {
           ),
           child: IconButton(
             iconSize: 20,
-            visualDensity: VisualDensity.compact,
+            visualDensity: visualDensity,
             icon: icon,
             onPressed: onPressed,
             tooltip: tooltip,

@@ -8,8 +8,10 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/map/geo_map.dart';
+import 'package:aves/widgets/common/map/theme.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class LocationSection extends StatefulWidget {
   final CollectionLens? collection;
@@ -82,13 +84,19 @@ class _LocationSectionState extends State<LocationSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (widget.showTitle) const SectionRow(icon: AIcons.location),
-        GeoMap(
-          entries: [entry],
-          interactive: false,
-          showBackButton: false,
-          mapHeight: 200,
-          isAnimatingNotifier: widget.isScrollingNotifier,
-          onUserZoomChange: (zoom) => settings.infoMapZoom = zoom,
+        ChangeNotifierProvider<CollectionLens?>.value(
+          value: collection,
+          child: MapTheme(
+            interactive: false,
+            navigationButton: MapNavigationButton.map,
+            visualDensity: VisualDensity.compact,
+            mapHeight: 200,
+            child: GeoMap(
+              entries: [entry],
+              isAnimatingNotifier: widget.isScrollingNotifier,
+              onUserZoomChange: (zoom) => settings.infoMapZoom = zoom,
+            ),
+          ),
         ),
         _AddressInfoGroup(entry: entry),
         if (filters.isNotEmpty)

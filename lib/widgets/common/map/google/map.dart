@@ -10,15 +10,16 @@ import 'package:aves/widgets/common/map/decorator.dart';
 import 'package:aves/widgets/common/map/geo_entry.dart';
 import 'package:aves/widgets/common/map/geo_map.dart';
 import 'package:aves/widgets/common/map/google/marker_generator.dart';
+import 'package:aves/widgets/common/map/theme.dart';
 import 'package:aves/widgets/common/map/zoomed_bounds.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:latlong2/latlong.dart' as ll;
+import 'package:provider/provider.dart';
 
 class EntryGoogleMap extends StatefulWidget {
   final AvesMapController? controller;
   final ValueNotifier<ZoomedBounds> boundsNotifier;
-  final bool interactive, showBackButton;
   final double? minZoom, maxZoom;
   final EntryMapStyle style;
   final MarkerClusterBuilder markerClusterBuilder;
@@ -30,8 +31,6 @@ class EntryGoogleMap extends StatefulWidget {
     Key? key,
     this.controller,
     required this.boundsNotifier,
-    required this.interactive,
-    required this.showBackButton,
     this.minZoom,
     this.maxZoom,
     required this.style,
@@ -55,8 +54,6 @@ class _EntryGoogleMapState extends State<EntryGoogleMap> with WidgetsBindingObse
   ValueNotifier<ZoomedBounds> get boundsNotifier => widget.boundsNotifier;
 
   ZoomedBounds get bounds => boundsNotifier.value;
-
-  bool get interactive => widget.interactive;
 
   static const uninitializedLatLng = LatLng(0, 0);
 
@@ -123,14 +120,12 @@ class _EntryGoogleMapState extends State<EntryGoogleMap> with WidgetsBindingObse
           },
         ),
         MapDecorator(
-          interactive: interactive,
           child: _buildMap(),
         ),
         MapButtonPanel(
-          showBackButton: widget.showBackButton,
           boundsNotifier: boundsNotifier,
           zoomBy: _zoomBy,
-          resetRotation: interactive ? _resetRotation : null,
+          resetRotation: _resetRotation,
         ),
       ],
     );
@@ -155,7 +150,7 @@ class _EntryGoogleMapState extends State<EntryGoogleMap> with WidgetsBindingObse
           }
         });
 
-        final interactive = widget.interactive;
+        final interactive = context.select<MapThemeData, bool>((v) => v.interactive);
         return GoogleMap(
           initialCameraPosition: CameraPosition(
             target: _toGoogleLatLng(bounds.center),
