@@ -389,8 +389,6 @@
   "settingsCoordinateFormatTile": "좌표 표현",
   "settingsCoordinateFormatTitle": "좌표 표현",
 
-  "mapPageTitle": "지도",
-
   "statsPageTitle": "통계",
   "statsImage": "{count, plural, other{사진}}",
   "statsVideo": "{count, plural, other{동영상}}",
@@ -419,10 +417,11 @@
   "viewerInfoLabelCoordinates": "좌표",
   "viewerInfoLabelAddress": "주소",
 
-  "viewerInfoMapStyleTitle": "지도 유형",
-  "viewerInfoMapStyleTooltip": "지도 유형 선택",
-  "viewerInfoMapZoomInTooltip": "확대",
-  "viewerInfoMapZoomOutTooltip": "축소",
+  "mapStyleTitle": "지도 유형",
+  "mapStyleTooltip": "지도 유형 선택",
+  "mapZoomInTooltip": "확대",
+  "mapZoomOutTooltip": "축소",
+  "mapPointNorthUpTooltip": "북쪽을 위로 가리키기",
   "mapAttributionOsmHot": "지도 데이터 © [OpenStreetMap](https://www.openstreetmap.org/copyright) 기여자 • 타일 [HOT](https://www.hotosm.org/) • 호스팅 [OSM France](https://openstreetmap.fr/)",
   "mapAttributionStamen": "지도 데이터 © [OpenStreetMap](https://www.openstreetmap.org/copyright) 기여자 • 타일 [Stamen Design](http://stamen.com), [CC BY 3.0](http://creativecommons.org/licenses/by/3.0)",
 

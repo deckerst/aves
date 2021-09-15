@@ -3,7 +3,6 @@ import 'package:aves/model/settings/map_style.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/debouncer.dart';
-import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/map/controller.dart';
 import 'package:aves/widgets/common/map/geo_map.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
@@ -61,9 +60,6 @@ class _MapPageState extends State<MapPage> {
   Widget build(BuildContext context) {
     return MediaQueryDataProvider(
       child: Scaffold(
-        appBar: AppBar(
-          title: Text(context.l10n.mapPageTitle),
-        ),
         body: SafeArea(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -73,6 +69,7 @@ class _MapPageState extends State<MapPage> {
                   controller: _mapController,
                   entries: entries,
                   interactive: true,
+                  showBackButton: true,
                   isAnimatingNotifier: _isAnimatingNotifier,
                   onMarkerTap: (markerEntry, getClusterEntries) {
                     final index = entries.indexOf(markerEntry);

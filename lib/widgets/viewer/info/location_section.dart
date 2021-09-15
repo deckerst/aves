@@ -85,6 +85,7 @@ class _LocationSectionState extends State<LocationSection> {
         GeoMap(
           entries: [entry],
           interactive: false,
+          showBackButton: false,
           mapHeight: 200,
           isAnimatingNotifier: widget.isScrollingNotifier,
           onUserZoomChange: (zoom) => settings.infoMapZoom = zoom,

@@ -18,7 +18,7 @@ import 'package:latlong2/latlong.dart' as ll;
 class EntryGoogleMap extends StatefulWidget {
   final AvesMapController? controller;
   final ValueNotifier<ZoomedBounds> boundsNotifier;
-  final bool interactive;
+  final bool interactive, showBackButton;
   final double? minZoom, maxZoom;
   final EntryMapStyle style;
   final MarkerClusterBuilder markerClusterBuilder;
@@ -31,6 +31,7 @@ class EntryGoogleMap extends StatefulWidget {
     this.controller,
     required this.boundsNotifier,
     required this.interactive,
+    required this.showBackButton,
     this.minZoom,
     this.maxZoom,
     required this.style,
@@ -126,6 +127,7 @@ class _EntryGoogleMapState extends State<EntryGoogleMap> with WidgetsBindingObse
           child: _buildMap(),
         ),
         MapButtonPanel(
+          showBackButton: widget.showBackButton,
           boundsNotifier: boundsNotifier,
           zoomBy: _zoomBy,
           resetRotation: interactive ? _resetRotation : null,
