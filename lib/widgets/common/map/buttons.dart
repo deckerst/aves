@@ -1,7 +1,6 @@
 import 'package:aves/model/settings/enums.dart';
 import 'package:aves/model/settings/map_style.dart';
 import 'package:aves/model/settings/settings.dart';
-import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
@@ -12,16 +11,18 @@ import 'package:aves/widgets/common/map/compass.dart';
 import 'package:aves/widgets/common/map/theme.dart';
 import 'package:aves/widgets/common/map/zoomed_bounds.dart';
 import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
-import 'package:aves/widgets/map/map_page.dart';
 import 'package:aves/widgets/viewer/overlay/common.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 
+typedef MapOpener = void Function(BuildContext context);
+
 class MapButtonPanel extends StatelessWidget {
   final ValueNotifier<ZoomedBounds> boundsNotifier;
   final Future<void> Function(double amount)? zoomBy;
+  final MapOpener? openMapPage;
   final VoidCallback? resetRotation;
 
   static const double padding = 4;
@@ -30,6 +31,7 @@ class MapButtonPanel extends StatelessWidget {
     Key? key,
     required this.boundsNotifier,
     this.zoomBy,
+    this.openMapPage,
     this.resetRotation,
   }) : super(key: key);
 
@@ -48,12 +50,11 @@ class MapButtonPanel extends StatelessWidget {
         );
         break;
       case MapNavigationButton.map:
-        final collection = context.read<CollectionLens?>();
-        if (collection != null) {
+        if (openMapPage != null) {
           navigationButton = MapOverlayButton(
             icon: const Icon(AIcons.map),
-            onPressed: () => _goToMap(context, collection),
-            tooltip: context.l10n.openMapTooltip,
+            onPressed: () => openMapPage?.call(context),
+            tooltip: context.l10n.openMapPageTooltip,
           );
         }
         break;
@@ -166,20 +167,6 @@ class MapButtonPanel extends StatelessWidget {
               ],
             ),
           ),
-        ),
-      ),
-    );
-  }
-
-  void _goToMap(BuildContext context, CollectionLens collection) {
-    final entries = collection.sortedEntries.where((entry) => entry.hasGps).toList();
-
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        settings: const RouteSettings(name: MapPage.routeName),
-        builder: (context) => MapPage(
-          entries: entries,
         ),
       ),
     );

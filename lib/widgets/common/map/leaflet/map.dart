@@ -28,6 +28,7 @@ class EntryLeafletMap extends StatefulWidget {
   final Size markerSize;
   final UserZoomChangeCallback? onUserZoomChange;
   final void Function(GeoEntry geoEntry)? onMarkerTap;
+  final MapOpener? openMapPage;
 
   const EntryLeafletMap({
     Key? key,
@@ -41,6 +42,7 @@ class EntryLeafletMap extends StatefulWidget {
     required this.markerSize,
     this.onUserZoomChange,
     this.onMarkerTap,
+    this.openMapPage,
   }) : super(key: key);
 
   @override
@@ -106,6 +108,7 @@ class _EntryLeafletMapState extends State<EntryLeafletMap> with TickerProviderSt
         MapButtonPanel(
           boundsNotifier: boundsNotifier,
           zoomBy: _zoomBy,
+          openMapPage: widget.openMapPage,
           resetRotation: _resetRotation,
         ),
       ],
