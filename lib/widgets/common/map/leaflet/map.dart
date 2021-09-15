@@ -19,7 +19,7 @@ import 'package:latlong2/latlong.dart';
 class EntryLeafletMap extends StatefulWidget {
   final AvesMapController? controller;
   final ValueNotifier<ZoomedBounds> boundsNotifier;
-  final bool interactive;
+  final bool interactive, showBackButton;
   final double minZoom, maxZoom;
   final EntryMapStyle style;
   final MarkerClusterBuilder markerClusterBuilder;
@@ -33,6 +33,7 @@ class EntryLeafletMap extends StatefulWidget {
     this.controller,
     required this.boundsNotifier,
     required this.interactive,
+    required this.showBackButton,
     this.minZoom = 0,
     this.maxZoom = 22,
     required this.style,
@@ -107,6 +108,7 @@ class _EntryLeafletMapState extends State<EntryLeafletMap> with TickerProviderSt
           child: _buildMap(),
         ),
         MapButtonPanel(
+          showBackButton: widget.showBackButton,
           boundsNotifier: boundsNotifier,
           zoomBy: _zoomBy,
           resetRotation: interactive ? _resetRotation : null,

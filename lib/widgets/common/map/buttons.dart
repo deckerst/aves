@@ -18,6 +18,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:latlong2/latlong.dart';
 
 class MapButtonPanel extends StatelessWidget {
+  final bool showBackButton;
   final ValueNotifier<ZoomedBounds> boundsNotifier;
   final Future<void> Function(double amount)? zoomBy;
   final VoidCallback? resetRotation;
@@ -26,6 +27,7 @@ class MapButtonPanel extends StatelessWidget {
 
   const MapButtonPanel({
     Key? key,
+    required this.showBackButton,
     required this.boundsNotifier,
     this.zoomBy,
     this.resetRotation,
@@ -46,34 +48,51 @@ class MapButtonPanel extends StatelessWidget {
             ),
             child: Stack(
               children: [
-                if (resetRotation != null)
-                  Positioned(
-                    left: 0,
-                    child: ValueListenableBuilder<ZoomedBounds>(
-                      valueListenable: boundsNotifier,
-                      builder: (context, bounds, child) {
-                        final degrees = bounds.rotation;
-                        return AnimatedOpacity(
-                          opacity: degrees == 0 ? 0 : 1,
-                          duration: Durations.viewerOverlayAnimation,
-                          child: MapOverlayButton(
-                            icon: Transform(
-                              origin: iconSize.center(Offset.zero),
-                              transform: Matrix4.rotationZ(degToRadian(degrees)),
-                              child: CustomPaint(
-                                painter: CompassPainter(
-                                  color: iconTheme.color!,
+                Positioned(
+                  left: 0,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (showBackButton)
+                        MapOverlayButton(
+                          icon: const BackButtonIcon(),
+                          onPressed: () => Navigator.pop(context),
+                          tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+                        ),
+                      if (resetRotation != null) ...[
+                        const SizedBox(height: padding),
+                        ValueListenableBuilder<ZoomedBounds>(
+                          valueListenable: boundsNotifier,
+                          builder: (context, bounds, child) {
+                            final degrees = bounds.rotation;
+                            final opacity = degrees == 0 ? .0 : 1.0;
+                            return IgnorePointer(
+                              ignoring: opacity == 0,
+                              child: AnimatedOpacity(
+                                opacity: opacity,
+                                duration: Durations.viewerOverlayAnimation,
+                                child: MapOverlayButton(
+                                  icon: Transform(
+                                    origin: iconSize.center(Offset.zero),
+                                    transform: Matrix4.rotationZ(degToRadian(degrees)),
+                                    child: CustomPaint(
+                                      painter: CompassPainter(
+                                        color: iconTheme.color!,
+                                      ),
+                                      size: iconSize,
+                                    ),
+                                  ),
+                                  onPressed: () => resetRotation?.call(),
+                                  tooltip: context.l10n.mapPointNorthUpTooltip,
                                 ),
-                                size: iconSize,
                               ),
-                            ),
-                            onPressed: () => resetRotation?.call(),
-                            tooltip: context.l10n.viewerInfoMapZoomInTooltip,
-                          ),
-                        );
-                      },
-                    ),
+                            );
+                          },
+                        ),
+                      ],
+                    ],
                   ),
+                ),
                 Positioned(
                   right: 0,
                   child: Column(
@@ -100,7 +119,7 @@ class MapButtonPanel extends StatelessWidget {
                               return AvesSelectionDialog<EntryMapStyle>(
                                 initialValue: initialStyle,
                                 options: Map.fromEntries(availableStyles.map((v) => MapEntry(v, v.getName(context)))),
-                                title: context.l10n.viewerInfoMapStyleTitle,
+                                title: context.l10n.mapStyleTitle,
                               );
                             },
                           );
@@ -110,7 +129,7 @@ class MapButtonPanel extends StatelessWidget {
                             settings.infoMapStyle = style;
                           }
                         },
-                        tooltip: context.l10n.viewerInfoMapStyleTooltip,
+                        tooltip: context.l10n.mapStyleTooltip,
                       ),
                     ],
                   ),
@@ -124,13 +143,13 @@ class MapButtonPanel extends StatelessWidget {
                       MapOverlayButton(
                         icon: const Icon(AIcons.zoomIn),
                         onPressed: zoomBy != null ? () => zoomBy?.call(1) : null,
-                        tooltip: context.l10n.viewerInfoMapZoomInTooltip,
+                        tooltip: context.l10n.mapZoomInTooltip,
                       ),
                       const SizedBox(height: padding),
                       MapOverlayButton(
                         icon: const Icon(AIcons.zoomOut),
                         onPressed: zoomBy != null ? () => zoomBy?.call(-1) : null,
-                        tooltip: context.l10n.viewerInfoMapZoomOutTooltip,
+                        tooltip: context.l10n.mapZoomOutTooltip,
                       ),
                     ],
                   ),

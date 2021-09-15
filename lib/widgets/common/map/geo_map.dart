@@ -27,7 +27,7 @@ import 'package:provider/provider.dart';
 class GeoMap extends StatefulWidget {
   final AvesMapController? controller;
   final List<AvesEntry> entries;
-  final bool interactive;
+  final bool interactive, showBackButton;
   final double? mapHeight;
   final ValueNotifier<bool> isAnimatingNotifier;
   final UserZoomChangeCallback? onUserZoomChange;
@@ -41,6 +41,7 @@ class GeoMap extends StatefulWidget {
     this.controller,
     required this.entries,
     required this.interactive,
+    required this.showBackButton,
     this.mapHeight,
     required this.isAnimatingNotifier,
     this.onUserZoomChange,
@@ -64,6 +65,8 @@ class _GeoMapState extends State<GeoMap> {
   List<AvesEntry> get entries => widget.entries;
 
   bool get interactive => widget.interactive;
+
+  bool get showBackButton => widget.showBackButton;
 
   double? get mapHeight => widget.mapHeight;
 
@@ -137,6 +140,7 @@ class _GeoMapState extends State<GeoMap> {
                     controller: widget.controller,
                     boundsNotifier: _boundsNotifier,
                     interactive: interactive,
+                    showBackButton: showBackButton,
                     minZoom: 0,
                     maxZoom: 20,
                     style: mapStyle,
@@ -149,6 +153,7 @@ class _GeoMapState extends State<GeoMap> {
                     controller: widget.controller,
                     boundsNotifier: _boundsNotifier,
                     interactive: interactive,
+                    showBackButton: showBackButton,
                     minZoom: 2,
                     maxZoom: 16,
                     style: mapStyle,
@@ -191,6 +196,7 @@ class _GeoMapState extends State<GeoMap> {
                         interactive: interactive,
                       ),
                       MapButtonPanel(
+                        showBackButton: showBackButton,
                         boundsNotifier: _boundsNotifier,
                       ),
                     ],
