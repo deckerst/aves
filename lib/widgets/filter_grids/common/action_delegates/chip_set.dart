@@ -110,6 +110,12 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
     }
   }
 
+  Iterable<AvesEntry> _selectedEntries(BuildContext context, Set<dynamic> filters) {
+    final source = context.read<CollectionSource>();
+    final visibleEntries = source.visibleEntries;
+    return filters.isEmpty ? visibleEntries : visibleEntries.where((entry) => filters.any((f) => f.test(entry)));
+  }
+
   Future<void> _showSortDialog(BuildContext context) async {
     final factor = await showDialog<ChipSortFactor>(
       context: context,
@@ -131,30 +137,26 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
   }
 
   void _goToMap(BuildContext context, Set<T> filters) {
-    final source = context.read<CollectionSource>();
-    final entries = filters.isEmpty ? source.visibleEntries : source.visibleEntries.where((entry) => filters.any((f) => f.test(entry)));
     Navigator.push(
       context,
       MaterialPageRoute(
         settings: const RouteSettings(name: MapPage.routeName),
         builder: (context) => MapPage(
-          entries: entries.where((entry) => entry.hasGps).toList(),
+          entries: _selectedEntries(context, filters).where((entry) => entry.hasGps).toList()..sort(AvesEntry.compareByDate),
         ),
       ),
     );
   }
 
   void _goToStats(BuildContext context, Set<T> filters) {
-    final source = context.read<CollectionSource>();
-    final entries = filters.isEmpty ? source.visibleEntries : source.visibleEntries.where((entry) => filters.any((f) => f.test(entry)));
     Navigator.push(
       context,
       MaterialPageRoute(
         settings: const RouteSettings(name: StatsPage.routeName),
         builder: (context) {
           return StatsPage(
-            entries: entries.toSet(),
-            source: source,
+            entries: _selectedEntries(context, filters).toSet(),
+            source: context.read<CollectionSource>(),
           );
         },
       ),
