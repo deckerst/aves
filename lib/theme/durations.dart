@@ -69,7 +69,7 @@ class Durations {
   static const softKeyboardDisplayDelay = Duration(milliseconds: 300);
   static const searchDebounceDelay = Duration(milliseconds: 250);
   static const contentChangeDebounceDelay = Duration(milliseconds: 1000);
-  static const mapScrollDebounceDelay = Duration(milliseconds: 150);
+  static const mapInfoDebounceDelay = Duration(milliseconds: 150);
   static const mapIdleDebounceDelay = Duration(milliseconds: 100);
 
   // app life

@@ -4,6 +4,7 @@ import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/selection.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums.dart';
 import 'package:aves/theme/durations.dart';
@@ -142,7 +143,10 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
       MaterialPageRoute(
         settings: const RouteSettings(name: MapPage.routeName),
         builder: (context) => MapPage(
-          entries: _selectedEntries(context, filters).where((entry) => entry.hasGps).toList()..sort(AvesEntry.compareByDate),
+          collection: CollectionLens(
+            source: context.read<CollectionSource>(),
+            fixedSelection: _selectedEntries(context, filters).where((entry) => entry.hasGps).toList(),
+          ),
         ),
       ),
     );

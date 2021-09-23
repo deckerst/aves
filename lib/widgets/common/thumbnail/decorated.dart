@@ -1,5 +1,4 @@
 import 'package:aves/model/entry.dart';
-import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
 import 'package:aves/widgets/common/grid/overlay.dart';
 import 'package:aves/widgets/common/thumbnail/image.dart';
@@ -9,9 +8,9 @@ import 'package:flutter/material.dart';
 class DecoratedThumbnail extends StatelessWidget {
   final AvesEntry entry;
   final double tileExtent;
-  final CollectionLens? collection;
   final ValueNotifier<bool>? cancellableNotifier;
-  final bool selectable, highlightable, hero;
+  final bool selectable, highlightable;
+  final Object? Function()? heroTagger;
 
   static final Color borderColor = Colors.grey.shade700;
   static final double borderWidth = AvesBorder.borderWidth;
@@ -20,27 +19,22 @@ class DecoratedThumbnail extends StatelessWidget {
     Key? key,
     required this.entry,
     required this.tileExtent,
-    this.collection,
     this.cancellableNotifier,
     this.selectable = true,
     this.highlightable = true,
-    this.hero = true,
+    this.heroTagger,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final imageExtent = tileExtent - borderWidth * 2;
 
-    // hero tag should include a collection identifier, so that it animates
-    // between different views of the entry in the same collection (e.g. thumbnails <-> viewer)
-    // but not between different collection instances, even with the same attributes (e.g. reloading collection page via drawer)
-    final heroTag = hero ? Object.hashAll([collection?.id, entry.uri]) : null;
     final isSvg = entry.isSvg;
     Widget child = ThumbnailImage(
       entry: entry,
       extent: imageExtent,
       cancellableNotifier: cancellableNotifier,
-      heroTag: heroTag,
+      heroTag: heroTagger?.call(),
     );
 
     child = Stack(

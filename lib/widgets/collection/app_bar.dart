@@ -242,9 +242,10 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
                   ]
                 ];
               },
-              onSelected: (action) {
+              onSelected: (action) async {
                 // wait for the popup menu to hide before proceeding with the action
-                Future.delayed(Durations.popupMenuAnimation * timeDilation, () => _onCollectionActionSelected(action));
+                await Future.delayed(Durations.popupMenuAnimation * timeDilation);
+                await _onCollectionActionSelected(action);
               },
             ),
           );

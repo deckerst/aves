@@ -225,9 +225,10 @@ class _FilterGridAppBarState<T extends CollectionFilter> extends State<FilterGri
 
             return menuItems;
           },
-          onSelected: (action) {
+          onSelected: (action) async {
             // wait for the popup menu to hide before proceeding with the action
-            Future.delayed(Durations.popupMenuAnimation * timeDilation, () => applyAction(action));
+            await Future.delayed(Durations.popupMenuAnimation * timeDilation);
+            applyAction(action);
           },
         ),
       ),

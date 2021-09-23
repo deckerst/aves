@@ -25,8 +25,6 @@ class MapButtonPanel extends StatelessWidget {
   final MapOpener? openMapPage;
   final VoidCallback? resetRotation;
 
-  static const double padding = 4;
-
   const MapButtonPanel({
     Key? key,
     required this.boundsNotifier,
@@ -60,111 +58,117 @@ class MapButtonPanel extends StatelessWidget {
         break;
     }
 
+    final visualDensity = context.select<MapThemeData, VisualDensity?>((v) => v.visualDensity);
+    final double padding = visualDensity == VisualDensity.compact ? 4 : 8;
+
     return Positioned.fill(
       child: Align(
         alignment: AlignmentDirectional.centerEnd,
         child: Padding(
-          padding: const EdgeInsets.all(padding),
+          padding: EdgeInsets.all(padding),
           child: TooltipTheme(
             data: TooltipTheme.of(context).copyWith(
               preferBelow: false,
             ),
-            child: Stack(
-              children: [
-                Positioned(
-                  left: 0,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      if (navigationButton != null) ...[
-                        navigationButton,
-                        const SizedBox(height: padding),
-                      ],
-                      ValueListenableBuilder<ZoomedBounds>(
-                        valueListenable: boundsNotifier,
-                        builder: (context, bounds, child) {
-                          final degrees = bounds.rotation;
-                          final opacity = degrees == 0 ? .0 : 1.0;
-                          return IgnorePointer(
-                            ignoring: opacity == 0,
-                            child: AnimatedOpacity(
-                              opacity: opacity,
-                              duration: Durations.viewerOverlayAnimation,
-                              child: MapOverlayButton(
-                                icon: Transform(
-                                  origin: iconSize.center(Offset.zero),
-                                  transform: Matrix4.rotationZ(degToRadian(degrees)),
-                                  child: CustomPaint(
-                                    painter: CompassPainter(
-                                      color: iconTheme.color!,
+            child: SafeArea(
+              bottom: false,
+              child: Stack(
+                children: [
+                  Positioned(
+                    left: 0,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (navigationButton != null) ...[
+                          navigationButton,
+                          SizedBox(height: padding),
+                        ],
+                        ValueListenableBuilder<ZoomedBounds>(
+                          valueListenable: boundsNotifier,
+                          builder: (context, bounds, child) {
+                            final degrees = bounds.rotation;
+                            final opacity = degrees == 0 ? .0 : 1.0;
+                            return IgnorePointer(
+                              ignoring: opacity == 0,
+                              child: AnimatedOpacity(
+                                opacity: opacity,
+                                duration: Durations.viewerOverlayAnimation,
+                                child: MapOverlayButton(
+                                  icon: Transform(
+                                    origin: iconSize.center(Offset.zero),
+                                    transform: Matrix4.rotationZ(degToRadian(degrees)),
+                                    child: CustomPaint(
+                                      painter: CompassPainter(
+                                        color: iconTheme.color!,
+                                      ),
+                                      size: iconSize,
                                     ),
-                                    size: iconSize,
                                   ),
+                                  onPressed: () => resetRotation?.call(),
+                                  tooltip: context.l10n.mapPointNorthUpTooltip,
                                 ),
-                                onPressed: () => resetRotation?.call(),
-                                tooltip: context.l10n.mapPointNorthUpTooltip,
                               ),
-                            ),
-                          );
-                        },
-                      ),
-                    ],
+                            );
+                          },
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                Positioned(
-                  right: 0,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      MapOverlayButton(
-                        icon: const Icon(AIcons.layers),
-                        onPressed: () async {
-                          final hasPlayServices = await availability.hasPlayServices;
-                          final availableStyles = EntryMapStyle.values.where((style) => !style.isGoogleMaps || hasPlayServices);
-                          final preferredStyle = settings.infoMapStyle;
-                          final initialStyle = availableStyles.contains(preferredStyle) ? preferredStyle : availableStyles.first;
-                          final style = await showDialog<EntryMapStyle>(
-                            context: context,
-                            builder: (context) {
-                              return AvesSelectionDialog<EntryMapStyle>(
-                                initialValue: initialStyle,
-                                options: Map.fromEntries(availableStyles.map((v) => MapEntry(v, v.getName(context)))),
-                                title: context.l10n.mapStyleTitle,
-                              );
-                            },
-                          );
-                          // wait for the dialog to hide as applying the change may block the UI
-                          await Future.delayed(Durations.dialogTransitionAnimation * timeDilation);
-                          if (style != null && style != settings.infoMapStyle) {
-                            settings.infoMapStyle = style;
-                          }
-                        },
-                        tooltip: context.l10n.mapStyleTooltip,
-                      ),
-                    ],
+                  Positioned(
+                    right: 0,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        MapOverlayButton(
+                          icon: const Icon(AIcons.layers),
+                          onPressed: () async {
+                            final hasPlayServices = await availability.hasPlayServices;
+                            final availableStyles = EntryMapStyle.values.where((style) => !style.isGoogleMaps || hasPlayServices);
+                            final preferredStyle = settings.infoMapStyle;
+                            final initialStyle = availableStyles.contains(preferredStyle) ? preferredStyle : availableStyles.first;
+                            final style = await showDialog<EntryMapStyle>(
+                              context: context,
+                              builder: (context) {
+                                return AvesSelectionDialog<EntryMapStyle>(
+                                  initialValue: initialStyle,
+                                  options: Map.fromEntries(availableStyles.map((v) => MapEntry(v, v.getName(context)))),
+                                  title: context.l10n.mapStyleTitle,
+                                );
+                              },
+                            );
+                            // wait for the dialog to hide as applying the change may block the UI
+                            await Future.delayed(Durations.dialogTransitionAnimation * timeDilation);
+                            if (style != null && style != settings.infoMapStyle) {
+                              settings.infoMapStyle = style;
+                            }
+                          },
+                          tooltip: context.l10n.mapStyleTooltip,
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                Positioned(
-                  right: 0,
-                  bottom: 0,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      MapOverlayButton(
-                        icon: const Icon(AIcons.zoomIn),
-                        onPressed: zoomBy != null ? () => zoomBy?.call(1) : null,
-                        tooltip: context.l10n.mapZoomInTooltip,
-                      ),
-                      const SizedBox(height: padding),
-                      MapOverlayButton(
-                        icon: const Icon(AIcons.zoomOut),
-                        onPressed: zoomBy != null ? () => zoomBy?.call(-1) : null,
-                        tooltip: context.l10n.mapZoomOutTooltip,
-                      ),
-                    ],
+                  Positioned(
+                    right: 0,
+                    bottom: 0,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        MapOverlayButton(
+                          icon: const Icon(AIcons.zoomIn),
+                          onPressed: zoomBy != null ? () => zoomBy?.call(1) : null,
+                          tooltip: context.l10n.mapZoomInTooltip,
+                        ),
+                        SizedBox(height: padding),
+                        MapOverlayButton(
+                          icon: const Icon(AIcons.zoomOut),
+                          onPressed: zoomBy != null ? () => zoomBy?.call(-1) : null,
+                          tooltip: context.l10n.mapZoomOutTooltip,
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
@@ -187,24 +191,33 @@ class MapOverlayButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final visualDensity = context.select<MapThemeData, VisualDensity?>((v) => v.visualDensity);
     final blurred = settings.enableOverlayBlurEffect;
-    return BlurredOval(
-      enabled: blurred,
-      child: Material(
-        type: MaterialType.circle,
-        color: overlayBackgroundColor(blurred: blurred),
-        child: Ink(
-          decoration: BoxDecoration(
-            border: AvesBorder.border,
-            shape: BoxShape.circle,
-          ),
-          child: IconButton(
-            iconSize: 20,
-            visualDensity: visualDensity,
-            icon: icon,
-            onPressed: onPressed,
-            tooltip: tooltip,
+    return Selector<MapThemeData, Animation<double>>(
+      selector: (context, v) => v.scale,
+      builder: (context, scale, child) => ScaleTransition(
+        scale: scale,
+        child: child,
+      ),
+      child: BlurredOval(
+        enabled: blurred,
+        child: Material(
+          type: MaterialType.circle,
+          color: overlayBackgroundColor(blurred: blurred),
+          child: Ink(
+            decoration: BoxDecoration(
+              border: AvesBorder.border,
+              shape: BoxShape.circle,
+            ),
+            child: Selector<MapThemeData, VisualDensity?>(
+              selector: (context, v) => v.visualDensity,
+              builder: (context, visualDensity, child) => IconButton(
+                iconSize: 20,
+                visualDensity: visualDensity,
+                icon: icon,
+                onPressed: onPressed,
+                tooltip: tooltip,
+              ),
+            ),
           ),
         ),
       ),
