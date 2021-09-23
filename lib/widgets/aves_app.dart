@@ -139,7 +139,7 @@ class _AvesAppState extends State<AvesApp> {
       });
     });
     await settings.init();
-    await settings.initFirebase();
+    await reportService.setCollectionEnabled(settings.isCrashlyticsEnabled);
     _navigatorObservers = [
       CrashlyticsRouteTracker(),
     ];

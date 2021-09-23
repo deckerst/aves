@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -27,7 +28,10 @@ class CrashlyticsReportService extends ReportService {
   bool get isCollectionEnabled => instance.isCrashlyticsCollectionEnabled;
 
   @override
-  Future<void> setCollectionEnabled(bool enabled) => instance.setCrashlyticsCollectionEnabled(enabled);
+  Future<void> setCollectionEnabled(bool enabled) async {
+    await Firebase.app().setAutomaticDataCollectionEnabled(enabled);
+    await instance.setCrashlyticsCollectionEnabled(enabled);
+  }
 
   @override
   Future<void> log(String message) => instance.log(message);

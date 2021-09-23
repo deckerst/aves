@@ -14,17 +14,17 @@ abstract class StorageService {
 
   Future<List<String>> getGrantedDirectories();
 
-  Future<void> revokeDirectoryAccess(String path);
-
   Future<Set<VolumeRelativeDirectory>> getInaccessibleDirectories(Iterable<String> dirPaths);
 
   Future<Set<VolumeRelativeDirectory>> getRestrictedDirectories();
 
-  // returns whether user granted access to volume root at `volumePath`
-  Future<bool> requestVolumeAccess(String volumePath);
+  Future<void> revokeDirectoryAccess(String path);
 
   // returns number of deleted directories
   Future<int> deleteEmptyDirectories(Iterable<String> dirPaths);
+
+  // returns whether user granted access to volume root at `volumePath`
+  Future<bool> requestVolumeAccess(String volumePath);
 
   // return whether operation succeeded (`null` if user cancelled)
   Future<bool?> createFile(String name, String mimeType, Uint8List bytes);
@@ -74,18 +74,6 @@ class PlatformStorageService implements StorageService {
   }
 
   @override
-  Future<void> revokeDirectoryAccess(String path) async {
-    try {
-      await platform.invokeMethod('revokeDirectoryAccess', <String, dynamic>{
-        'path': path,
-      });
-    } on PlatformException catch (e, stack) {
-      await reportService.recordError(e, stack);
-    }
-    return;
-  }
-
-  @override
   Future<Set<VolumeRelativeDirectory>> getInaccessibleDirectories(Iterable<String> dirPaths) async {
     try {
       final result = await platform.invokeMethod('getInaccessibleDirectories', <String, dynamic>{
@@ -113,6 +101,32 @@ class PlatformStorageService implements StorageService {
     return {};
   }
 
+  @override
+  Future<void> revokeDirectoryAccess(String path) async {
+    try {
+      await platform.invokeMethod('revokeDirectoryAccess', <String, dynamic>{
+        'path': path,
+      });
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
+    return;
+  }
+
+  // returns number of deleted directories
+  @override
+  Future<int> deleteEmptyDirectories(Iterable<String> dirPaths) async {
+    try {
+      final result = await platform.invokeMethod('deleteEmptyDirectories', <String, dynamic>{
+        'dirPaths': dirPaths.toList(),
+      });
+      if (result != null) return result as int;
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
+    return 0;
+  }
+
   // returns whether user granted access to volume root at `volumePath`
   @override
   Future<bool> requestVolumeAccess(String volumePath) async {
@@ -134,20 +148,6 @@ class PlatformStorageService implements StorageService {
       await reportService.recordError(e, stack);
     }
     return false;
-  }
-
-  // returns number of deleted directories
-  @override
-  Future<int> deleteEmptyDirectories(Iterable<String> dirPaths) async {
-    try {
-      final result = await platform.invokeMethod('deleteEmptyDirectories', <String, dynamic>{
-        'dirPaths': dirPaths.toList(),
-      });
-      if (result != null) return result as int;
-    } on PlatformException catch (e, stack) {
-      await reportService.recordError(e, stack);
-    }
-    return 0;
   }
 
   @override

@@ -1,8 +1,6 @@
 package deckers.thibault.aves.channel.calls
 
 import android.content.Context
-import android.media.MediaScannerConnection
-import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.os.storage.StorageManager
@@ -30,7 +28,6 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
             "getRestrictedDirectories" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getRestrictedDirectories) }
             "revokeDirectoryAccess" -> safe(call, result, ::revokeDirectoryAccess)
             "deleteEmptyDirectories" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::deleteEmptyDirectories) }
-            "scanFile" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::scanFile) }
             else -> result.notImplemented()
         }
     }
@@ -156,12 +153,6 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
             }
         }
         result.success(deleted)
-    }
-
-    private fun scanFile(call: MethodCall, result: MethodChannel.Result) {
-        val path = call.argument<String>("path")
-        val mimeType = call.argument<String>("mimeType")
-        MediaScannerConnection.scanFile(context, arrayOf(path), arrayOf(mimeType)) { _, uri: Uri? -> result.success(uri?.toString()) }
     }
 
     companion object {
