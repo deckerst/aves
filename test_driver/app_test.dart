@@ -14,8 +14,6 @@ late FlutterDriver driver;
 
 void main() {
   group('[Aves app]', () {
-    print('adb=${[adb, ...adbDeviceParam].join(' ')}');
-
     setUpAll(() async {
       await copyContent(sourcePicturesDir, targetPicturesDir);
       await grantPermissions('deckers.thibault.aves.debug', [
@@ -53,6 +51,9 @@ void main() {
 
 void agreeToTerms() {
   test('[welcome] agree to terms', () async {
+    // delay to avoid flaky failures when widget binding is not ready from the start
+    await Future.delayed(const Duration(seconds: 3));
+
     await driver.scroll(find.text('Terms of Service'), 0, -300, const Duration(milliseconds: 500));
 
     await driver.tap(find.byValueKey('agree-checkbox'));

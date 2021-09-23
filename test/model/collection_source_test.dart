@@ -13,6 +13,7 @@ import 'package:aves/services/device_service.dart';
 import 'package:aves/services/media/media_file_service.dart';
 import 'package:aves/services/media/media_store_service.dart';
 import 'package:aves/services/metadata/metadata_fetch_service.dart';
+import 'package:aves/services/report_service.dart';
 import 'package:aves/services/storage_service.dart';
 import 'package:aves/services/window_service.dart';
 import 'package:aves/utils/android_file_utils.dart';
@@ -26,6 +27,7 @@ import '../fake/media_file_service.dart';
 import '../fake/media_store_service.dart';
 import '../fake/metadata_db.dart';
 import '../fake/metadata_fetch_service.dart';
+import '../fake/report_service.dart';
 import '../fake/storage_service.dart';
 import '../fake/window_service.dart';
 
@@ -44,6 +46,7 @@ void main() {
     getIt.registerLazySingleton<MediaFileService>(() => FakeMediaFileService());
     getIt.registerLazySingleton<MediaStoreService>(() => FakeMediaStoreService());
     getIt.registerLazySingleton<MetadataFetchService>(() => FakeMetadataFetchService());
+    getIt.registerLazySingleton<ReportService>(() => FakeReportService());
     getIt.registerLazySingleton<StorageService>(() => FakeStorageService());
     getIt.registerLazySingleton<WindowService>(() => FakeWindowService());
 

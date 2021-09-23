@@ -1,6 +1,8 @@
 package deckers.thibault.aves.channel.calls
 
 import android.app.Activity
+import android.media.MediaScannerConnection
+import android.net.Uri
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.model.provider.MediaStoreImageProvider
 import io.flutter.plugin.common.MethodCall
@@ -15,6 +17,7 @@ class MediaStoreHandler(private val activity: Activity) : MethodCallHandler {
         when (call.method) {
             "checkObsoleteContentIds" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::checkObsoleteContentIds) }
             "checkObsoletePaths" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::checkObsoletePaths) }
+            "scanFile" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::scanFile) }
             else -> result.notImplemented()
         }
     }
@@ -35,6 +38,12 @@ class MediaStoreHandler(private val activity: Activity) : MethodCallHandler {
             return
         }
         result.success(MediaStoreImageProvider().checkObsoletePaths(activity, knownPathById))
+    }
+
+    private fun scanFile(call: MethodCall, result: MethodChannel.Result) {
+        val path = call.argument<String>("path")
+        val mimeType = call.argument<String>("mimeType")
+        MediaScannerConnection.scanFile(activity, arrayOf(path), arrayOf(mimeType)) { _, uri: Uri? -> result.success(uri?.toString()) }
     }
 
     companion object {

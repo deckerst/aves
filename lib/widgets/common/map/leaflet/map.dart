@@ -154,7 +154,7 @@ class _EntryLeafletMapState extends State<EntryLeafletMap> with TickerProviderSt
         minZoom: widget.minZoom,
         maxZoom: widget.maxZoom,
         interactiveFlags: interactive ? InteractiveFlag.all : InteractiveFlag.none,
-        onTap: (point) => widget.onMapTap?.call(),
+        onTap: (tapPosition, point) => widget.onMapTap?.call(),
         controller: _leafletMapController,
       ),
       mapController: _leafletMapController,

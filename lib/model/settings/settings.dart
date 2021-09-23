@@ -13,7 +13,6 @@ import 'package:aves/model/settings/screen_on.dart';
 import 'package:aves/model/source/enums.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:collection/collection.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -111,13 +110,6 @@ class Settings extends ChangeNotifier {
     _isRotationLocked = await windowService.isRotationLocked();
   }
 
-  // Crashlytics initialization is separated from the main settings initialization
-  // to allow settings customization without Firebase context (e.g. before a Flutter Driver test)
-  Future<void> initFirebase() async {
-    await Firebase.app().setAutomaticDataCollectionEnabled(isCrashlyticsEnabled);
-    await reportService.setCollectionEnabled(isCrashlyticsEnabled);
-  }
-
   Future<void> reset({required bool includeInternalKeys}) async {
     if (includeInternalKeys) {
       await _prefs!.clear();
@@ -151,7 +143,7 @@ class Settings extends ChangeNotifier {
 
   set isCrashlyticsEnabled(bool newValue) {
     setAndNotify(isCrashlyticsEnabledKey, newValue);
-    unawaited(initFirebase());
+    unawaited(reportService.setCollectionEnabled(isCrashlyticsEnabled));
   }
 
   static const localeSeparator = '-';

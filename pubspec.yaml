@@ -12,7 +12,7 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-# TODO TLAD as of 2021/09/09, the released version is incompatible with Flutter v2.5
+# TODO TLAD as of 2021/09/23, latest version (v0.11.0) is incompatible with Flutter v2.5
   charts_flutter:
     git:
       url: git://github.com/google/charts.git
@@ -20,7 +20,7 @@ dependencies:
   collection:
   connectivity_plus:
   country_code:
-# TODO TLAD as of 2021/08/04, null safe version is pre-release
+# TODO TLAD as of 2021/09/23, null safe version is pre-release
   custom_rounded_rectangle_border: '>=0.2.0-nullsafety.0'
   decorated_icon:
   device_info_plus:
@@ -47,12 +47,12 @@ dependencies:
   google_maps_flutter:
   intl:
   latlong2:
-# TODO TLAD as of 2021/08/04, null safe version is pre-release
+# TODO TLAD as of 2021/09/23, null safe version is pre-release
   material_design_icons_flutter: '>=5.0.5955-rc.1'
   overlay_support:
   package_info_plus:
   palette_generator:
-# TODO TLAD upgrade panorama when this is fixed: https://github.com/zesage/panorama/issues/25 (bug in v0.4.1)
+# TODO TLAD as of 2021/09/23, latest version (v0.4.1) has this issue: https://github.com/zesage/panorama/issues/25
   panorama: 0.4.0
   pdf:
   percent_indicator:
