@@ -244,14 +244,19 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
 
   void _goToMap(BuildContext context) {
     final selection = context.read<Selection<AvesEntry>>();
-    final entries = selection.isSelecting ? _getExpandedSelectedItems(selection) : context.read<CollectionLens>().sortedEntries;
+    final collection = context.read<CollectionLens>();
+    final entries = (selection.isSelecting ? _getExpandedSelectedItems(selection) : collection.sortedEntries);
 
     Navigator.push(
       context,
       MaterialPageRoute(
         settings: const RouteSettings(name: MapPage.routeName),
         builder: (context) => MapPage(
-          entries: entries.where((entry) => entry.hasGps).toList(),
+          collection: CollectionLens(
+            source: collection.source,
+            filters: collection.filters,
+            fixedSelection: entries.where((entry) => entry.hasGps).toList(),
+          ),
         ),
       ),
     );

@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:aves/utils/math_utils.dart';
 import 'package:latlong2/latlong.dart';
 
 class ScaleBarUtils {
@@ -15,8 +14,8 @@ class ScaleBarUtils {
     var aSquared = a * a;
     var bSquared = b * b;
     var f = mFlattening;
-    var phi1 = toRadians(start.latitude);
-    var alpha1 = toRadians(startBearing);
+    var phi1 = degToRadian(start.latitude);
+    var alpha1 = degToRadian(startBearing);
     var cosAlpha1 = cos(alpha1);
     var sinAlpha1 = sin(alpha1);
     var s = distance;
@@ -103,8 +102,8 @@ class ScaleBarUtils {
     // cosSigma * cosAlpha1);
 
     // build result
-    var latitude = toDegrees(phi2);
-    var longitude = start.longitude + toDegrees(L);
+    var latitude = radianToDeg(phi2);
+    var longitude = start.longitude + radianToDeg(L);
 
     // if ((endBearing != null) && (endBearing.length > 0)) {
     // endBearing[0] = toDegrees(alpha2);

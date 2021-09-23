@@ -93,6 +93,7 @@ class _LocationSectionState extends State<LocationSection> {
             entries: [entry],
             isAnimatingNotifier: widget.isScrollingNotifier,
             onUserZoomChange: (zoom) => settings.infoMapZoom = zoom,
+            onMarkerTap: collection != null ? (_, __) => _openMapPage(context) : null,
             openMapPage: collection != null ? _openMapPage : null,
           ),
         ),
@@ -116,13 +117,18 @@ class _LocationSectionState extends State<LocationSection> {
   }
 
   void _openMapPage(BuildContext context) {
-    final entries = (collection?.sortedEntries ?? []).where((entry) => entry.hasGps).toList();
+    final baseCollection = collection;
+    if (baseCollection == null) return;
+
     Navigator.push(
       context,
       MaterialPageRoute(
         settings: const RouteSettings(name: MapPage.routeName),
         builder: (context) => MapPage(
-          entries: entries,
+          collection: CollectionLens(
+            source: baseCollection.source,
+            fixedSelection: baseCollection.sortedEntries.where((entry) => entry.hasGps).toList(),
+          ),
           initialEntry: entry,
         ),
       ),

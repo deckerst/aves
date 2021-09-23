@@ -1,25 +1,26 @@
 import 'dart:math';
 
+import 'package:aves/utils/geo_utils.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:latlong2/latlong.dart';
 
 @immutable
 class ZoomedBounds extends Equatable {
-  final double west, south, east, north, zoom, rotation;
+  final LatLng sw, ne;
+  final double zoom, rotation;
 
-  List<double> get boundingBox => [west, south, east, north];
+  // returns [southwestLng, southwestLat, northeastLng, northeastLat], as expected by Fluster
+  List<double> get boundingBox => [sw.longitude, sw.latitude, ne.longitude, ne.latitude];
 
-  LatLng get center => LatLng((north + south) / 2, (east + west) / 2);
+  LatLng get center => getLatLngCenter([sw, ne]);
 
   @override
-  List<Object?> get props => [west, south, east, north, zoom, rotation];
+  List<Object?> get props => [sw, ne, zoom, rotation];
 
   const ZoomedBounds({
-    required this.west,
-    required this.south,
-    required this.east,
-    required this.north,
+    required this.sw,
+    required this.ne,
     required this.zoom,
     required this.rotation,
   });
@@ -55,12 +56,20 @@ class ZoomedBounds extends Equatable {
       }
     }
     return ZoomedBounds(
-      west: west,
-      south: south,
-      east: east,
-      north: north,
+      sw: LatLng(south, west),
+      ne: LatLng(north, east),
       zoom: zoom,
       rotation: 0,
     );
+  }
+
+  bool contains(LatLng point) {
+    final lat = point.latitude;
+    final lng = point.longitude;
+    final south = sw.latitude;
+    final north = ne.latitude;
+    final west = sw.longitude;
+    final east = ne.longitude;
+    return (south <= lat && lat <= north) && (west <= east ? (west <= lng && lng <= east) : (west <= lng || lng <= east));
   }
 }

@@ -1,5 +1,4 @@
 import 'package:aves/model/settings/settings.dart';
-import 'package:aves/utils/math_utils.dart';
 import 'package:aves/widgets/common/basic/outlined_text.dart';
 import 'package:aves/widgets/viewer/video/controller.dart';
 import 'package:aves/widgets/viewer/visual/state.dart';
@@ -9,6 +8,7 @@ import 'package:aves/widgets/viewer/visual/subtitle/style.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:latlong2/latlong.dart' as angles;
 import 'package:provider/provider.dart';
 
 class VideoSubtitles extends StatelessWidget {
@@ -186,9 +186,9 @@ class VideoSubtitles extends StatelessWidget {
                           if (extraStyle.rotating) {
                             // for perspective
                             transform.setEntry(3, 2, 0.001);
-                            final x = -toRadians(extraStyle.rotationX ?? 0);
-                            final y = -toRadians(extraStyle.rotationY ?? 0);
-                            final z = -toRadians(extraStyle.rotationZ ?? 0);
+                            final x = -angles.degToRadian(extraStyle.rotationX ?? 0);
+                            final y = -angles.degToRadian(extraStyle.rotationY ?? 0);
+                            final z = -angles.degToRadian(extraStyle.rotationZ ?? 0);
                             if (x != 0) transform.rotateX(x);
                             if (y != 0) transform.rotateY(y);
                             if (z != 0) transform.rotateZ(z);

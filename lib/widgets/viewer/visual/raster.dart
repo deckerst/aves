@@ -12,6 +12,7 @@ import 'package:aves/widgets/viewer/visual/entry_page_view.dart';
 import 'package:aves/widgets/viewer/visual/state.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:tuple/tuple.dart';
 
 class RasterImageView extends StatefulWidget {
@@ -156,7 +157,7 @@ class _RasterImageViewState extends State<RasterImageView> {
       _tileTransform = Matrix4.identity()
         ..translate(entry.width / 2.0, entry.height / 2.0)
         ..scale(isFlipped ? -1.0 : 1.0, 1.0, 1.0)
-        ..rotateZ(-toRadians(rotationDegrees.toDouble()))
+        ..rotateZ(-degToRadian(rotationDegrees.toDouble()))
         ..translate(-_displaySize.width / 2.0, -_displaySize.height / 2.0);
     }
     _isTilingInitialized = true;

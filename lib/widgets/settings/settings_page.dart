@@ -56,9 +56,10 @@ class _SettingsPageState extends State<SettingsPage> with FeedbackMixin {
                     ),
                   ];
                 },
-                onSelected: (action) {
+                onSelected: (action) async {
                   // wait for the popup menu to hide before proceeding with the action
-                  Future.delayed(Durations.popupMenuAnimation * timeDilation, () => _onActionSelected(action));
+                  await Future.delayed(Durations.popupMenuAnimation * timeDilation);
+                  _onActionSelected(action);
                 },
               ),
             ),

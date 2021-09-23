@@ -159,13 +159,14 @@ class AlbumPickAppBar extends StatelessWidget {
                 ),
               ];
             },
-            onSelected: (action) {
+            onSelected: (action) async {
               // remove focus, if any, to prevent the keyboard from showing up
               // after the user is done with the popup menu
               FocusManager.instance.primaryFocus?.unfocus();
 
               // wait for the popup menu to hide before proceeding with the action
-              Future.delayed(Durations.popupMenuAnimation * timeDilation, () => actionDelegate.onActionSelected(context, {}, action));
+              await Future.delayed(Durations.popupMenuAnimation * timeDilation);
+              actionDelegate.onActionSelected(context, {}, action);
             },
           ),
         ),

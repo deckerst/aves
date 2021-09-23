@@ -30,12 +30,14 @@ class GeoMap extends StatefulWidget {
   final List<AvesEntry> entries;
   final AvesEntry? initialEntry;
   final ValueNotifier<bool> isAnimatingNotifier;
+  final ValueNotifier<AvesEntry?>? dotEntryNotifier;
   final UserZoomChangeCallback? onUserZoomChange;
+  final VoidCallback? onMapTap;
   final MarkerTapCallback? onMarkerTap;
   final MapOpener? openMapPage;
 
   static const markerImageExtent = 48.0;
-  static const pointerSize = Size(8, 6);
+  static const markerArrowSize = Size(8, 6);
 
   const GeoMap({
     Key? key,
@@ -43,7 +45,9 @@ class GeoMap extends StatefulWidget {
     required this.entries,
     this.initialEntry,
     required this.isAnimatingNotifier,
+    this.dotEntryNotifier,
     this.onUserZoomChange,
+    this.onMapTap,
     this.onMarkerTap,
     this.openMapPage,
   }) : super(key: key);
@@ -126,7 +130,7 @@ class _GeoMapState extends State<GeoMap> {
                   entry: key.entry,
                   count: key.count,
                   extent: GeoMap.markerImageExtent,
-                  pointerSize: GeoMap.pointerSize,
+                  arrowSize: GeoMap.markerArrowSize,
                   progressive: progressive,
                 );
 
@@ -139,7 +143,9 @@ class _GeoMapState extends State<GeoMap> {
                     style: mapStyle,
                     markerClusterBuilder: _buildMarkerClusters,
                     markerWidgetBuilder: _buildMarkerWidget,
+                    dotEntryNotifier: widget.dotEntryNotifier,
                     onUserZoomChange: widget.onUserZoomChange,
+                    onMapTap: widget.onMapTap,
                     onMarkerTap: _onMarkerTap,
                     openMapPage: widget.openMapPage,
                   )
@@ -151,11 +157,17 @@ class _GeoMapState extends State<GeoMap> {
                     style: mapStyle,
                     markerClusterBuilder: _buildMarkerClusters,
                     markerWidgetBuilder: _buildMarkerWidget,
+                    dotEntryNotifier: widget.dotEntryNotifier,
                     markerSize: Size(
                       GeoMap.markerImageExtent + ImageMarker.outerBorderWidth * 2,
-                      GeoMap.markerImageExtent + ImageMarker.outerBorderWidth * 2 + GeoMap.pointerSize.height,
+                      GeoMap.markerImageExtent + ImageMarker.outerBorderWidth * 2 + GeoMap.markerArrowSize.height,
+                    ),
+                    dotMarkerSize: const Size(
+                      DotMarker.diameter + ImageMarker.outerBorderWidth * 2,
+                      DotMarker.diameter + ImageMarker.outerBorderWidth * 2,
                     ),
                     onUserZoomChange: widget.onUserZoomChange,
+                    onMapTap: widget.onMapTap,
                     onMarkerTap: _onMarkerTap,
                     openMapPage: widget.openMapPage,
                   );
@@ -170,7 +182,11 @@ class _GeoMapState extends State<GeoMap> {
                         child: child,
                       )
                     : Expanded(child: child),
-                Attribution(style: mapStyle),
+                SafeArea(
+                  top: false,
+                  bottom: false,
+                  child: Attribution(style: mapStyle),
+                ),
               ],
             );
 

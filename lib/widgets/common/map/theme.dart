@@ -7,6 +7,7 @@ enum MapNavigationButton { back, map }
 class MapTheme extends StatelessWidget {
   final bool interactive;
   final MapNavigationButton navigationButton;
+  final Animation<double> scale;
   final VisualDensity? visualDensity;
   final double? mapHeight;
   final Widget child;
@@ -15,6 +16,7 @@ class MapTheme extends StatelessWidget {
     Key? key,
     required this.interactive,
     required this.navigationButton,
+    this.scale = kAlwaysCompleteAnimation,
     this.visualDensity,
     this.mapHeight,
     required this.child,
@@ -27,10 +29,9 @@ class MapTheme extends StatelessWidget {
         return MapThemeData(
           interactive: interactive,
           navigationButton: navigationButton,
+          scale: scale,
           visualDensity: visualDensity,
           mapHeight: mapHeight,
-          // TODO TLAD use settings?
-          // showLocation: showBackButton ?? settings.showThumbnailLocation,
         );
       },
       child: child,
@@ -41,13 +42,15 @@ class MapTheme extends StatelessWidget {
 class MapThemeData {
   final bool interactive;
   final MapNavigationButton navigationButton;
+  final Animation<double> scale;
   final VisualDensity? visualDensity;
   final double? mapHeight;
 
   const MapThemeData({
     required this.interactive,
     required this.navigationButton,
-    this.visualDensity,
-    this.mapHeight,
+    required this.scale,
+    required this.visualDensity,
+    required this.mapHeight,
   });
 }

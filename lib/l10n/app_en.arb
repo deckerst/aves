@@ -103,7 +103,7 @@
   "@entryActionOpen": {},
   "entryActionSetAs": "Set as…",
   "@entryActionSetAs": {},
-  "entryActionOpenMap": "Show on map…",
+  "entryActionOpenMap": "Show in map app…",
   "@entryActionOpenMap": {},
   "entryActionRotateScreen": "Rotate screen",
   "@entryActionRotateScreen": {},
@@ -871,6 +871,8 @@
   "@mapAttributionStamen": {},
   "openMapPageTooltip": "View on Map page",
   "@openMapPageTooltip": {},
+  "mapEmptyRegion": "No images in this region",
+  "@mapEmpty": {},
 
   "viewerInfoOpenEmbeddedFailureFeedback": "Failed to extract embedded data",
   "@viewerInfoOpenEmbeddedFailureFeedback": {},

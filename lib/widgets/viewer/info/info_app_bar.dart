@@ -60,9 +60,10 @@ class InfoAppBar extends StatelessWidget {
                   ),
                 ];
               },
-              onSelected: (action) {
+              onSelected: (action) async {
                 // wait for the popup menu to hide before proceeding with the action
-                Future.delayed(Durations.popupMenuAnimation * timeDilation, () => EntryInfoActionDelegate(entry).onActionSelected(context, action));
+                await Future.delayed(Durations.popupMenuAnimation * timeDilation);
+                EntryInfoActionDelegate(entry).onActionSelected(context, action);
               },
             ),
           ),

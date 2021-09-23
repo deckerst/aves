@@ -233,9 +233,10 @@ class _ButtonRow extends StatelessWidget {
               child: MenuIconTheme(
                 child: AvesPopupMenuButton<VideoAction>(
                   itemBuilder: (context) => menuActions.map((action) => _buildPopupMenuItem(context, action)).toList(),
-                  onSelected: (action) {
+                  onSelected: (action) async {
                     // wait for the popup menu to hide before proceeding with the action
-                    Future.delayed(Durations.popupMenuAnimation * timeDilation, () => onActionSelected(action));
+                    await Future.delayed(Durations.popupMenuAnimation * timeDilation);
+                    onActionSelected(action);
                   },
                   onMenuOpened: onActionMenuOpened,
                 ),
