@@ -746,8 +746,8 @@
 
   "settingsSectionPrivacy": "Privacy",
   "@settingsSectionPrivacy": {},
-  "settingsEnableCrashReport": "Allow anonymous error reporting",
-  "@settingsEnableCrashReport": {},
+  "settingsEnableErrorReporting": "Allow anonymous error reporting",
+  "@settingsEnableErrorReporting": {},
   "settingsSaveSearchHistory": "Save search history",
   "@settingsSaveSearchHistory": {},
 

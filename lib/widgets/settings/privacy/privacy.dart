@@ -20,7 +20,7 @@ class PrivacySection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currentIsCrashlyticsEnabled = context.select<Settings, bool>((s) => s.isCrashlyticsEnabled);
+    final currentIsErrorReportingEnabled = context.select<Settings, bool>((s) => s.isErrorReportingEnabled);
     final currentSaveSearchHistory = context.select<Settings, bool>((s) => s.saveSearchHistory);
 
     return AvesExpansionTile(
@@ -33,9 +33,9 @@ class PrivacySection extends StatelessWidget {
       showHighlight: false,
       children: [
         SwitchListTile(
-          value: currentIsCrashlyticsEnabled,
-          onChanged: (v) => settings.isCrashlyticsEnabled = v,
-          title: Text(context.l10n.settingsEnableCrashReport),
+          value: currentIsErrorReportingEnabled,
+          onChanged: (v) => settings.isErrorReportingEnabled = v,
+          title: Text(context.l10n.settingsEnableErrorReporting),
         ),
         SwitchListTile(
           value: currentSaveSearchHistory,

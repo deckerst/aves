@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:aves/app_mode.dart';
+import 'package:aves/model/settings/screen_on.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/media_store_source.dart';
@@ -16,7 +17,6 @@ import 'package:aves/widgets/common/providers/highlight_info_provider.dart';
 import 'package:aves/widgets/home_page.dart';
 import 'package:aves/widgets/welcome_page.dart';
 import 'package:equatable/equatable.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -123,25 +123,38 @@ class _AvesAppState extends State<AvesApp> {
   }
 
   Future<void> _setup() async {
-    await Firebase.initializeApp().then((app) async {
-      FlutterError.onError = reportService.recordFlutterError;
-      final now = DateTime.now();
-      final hasPlayServices = await availability.hasPlayServices;
-      await reportService.setCustomKeys({
-        'build_mode': kReleaseMode
-            ? 'release'
-            : kProfileMode
-                ? 'profile'
-                : 'debug',
-        'has_play_services': hasPlayServices,
-        'locales': window.locales.join(', '),
-        'time_zone': '${now.timeZoneName} (${now.timeZoneOffset})',
-      });
+    await settings.init(
+      isRotationLocked: await windowService.isRotationLocked(),
+    );
+
+    // keep screen on
+    settings.updateStream.where((key) => key == Settings.keepScreenOnKey).listen(
+          (_) => settings.keepScreenOn.apply(),
+        );
+    settings.keepScreenOn.apply();
+
+    // error reporting
+    await reportService.init();
+    settings.updateStream.where((key) => key == Settings.isErrorReportingEnabledKey).listen(
+          (_) => reportService.setCollectionEnabled(settings.isErrorReportingEnabled),
+        );
+    await reportService.setCollectionEnabled(settings.isErrorReportingEnabled);
+
+    FlutterError.onError = reportService.recordFlutterError;
+    final now = DateTime.now();
+    final hasPlayServices = await availability.hasPlayServices;
+    await reportService.setCustomKeys({
+      'build_mode': kReleaseMode
+          ? 'release'
+          : kProfileMode
+              ? 'profile'
+              : 'debug',
+      'has_play_services': hasPlayServices,
+      'locales': window.locales.join(', '),
+      'time_zone': '${now.timeZoneName} (${now.timeZoneOffset})',
     });
-    await settings.init();
-    await reportService.setCollectionEnabled(settings.isCrashlyticsEnabled);
     _navigatorObservers = [
-      CrashlyticsRouteTracker(),
+      ReportingRouteTracker(),
     ];
   }
 

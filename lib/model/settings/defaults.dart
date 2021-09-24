@@ -13,7 +13,7 @@ import 'package:flutter/material.dart';
 class SettingsDefaults {
   // app
   static const hasAcceptedTerms = false;
-  static const isCrashlyticsEnabled = false;
+  static const isErrorReportingEnabled = false;
   static const mustBackTwiceToExit = true;
   static const keepScreenOn = KeepScreenOn.viewerOnly;
   static const homePage = HomePageSetting.collection;

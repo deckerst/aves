@@ -83,6 +83,6 @@ class SettingsChangeStreamHandler(private val context: Context) : EventChannel.S
 
     companion object {
         private val LOG_TAG = LogUtils.createTag<SettingsChangeStreamHandler>()
-        const val CHANNEL = "deckers.thibault/aves/settingschange"
+        const val CHANNEL = "deckers.thibault/aves/settings_change"
     }
 }

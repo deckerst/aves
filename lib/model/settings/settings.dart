@@ -9,7 +9,6 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/defaults.dart';
 import 'package:aves/model/settings/enums.dart';
 import 'package:aves/model/settings/map_style.dart';
-import 'package:aves/model/settings/screen_on.dart';
 import 'package:aves/model/source/enums.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:collection/collection.dart';
@@ -20,7 +19,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 final Settings settings = Settings._private();
 
 class Settings extends ChangeNotifier {
-  final EventChannel _platformSettingsChangeChannel = const EventChannel('deckers.thibault/aves/settingschange');
+  final EventChannel _platformSettingsChangeChannel = const EventChannel('deckers.thibault/aves/settings_change');
+  final StreamController<String> _updateStreamController = StreamController<String>.broadcast();
+
+  Stream<String> get updateStream => _updateStreamController.stream;
 
   static SharedPreferences? _prefs;
 
@@ -38,7 +40,7 @@ class Settings extends ChangeNotifier {
 
   // app
   static const hasAcceptedTermsKey = 'has_accepted_terms';
-  static const isCrashlyticsEnabledKey = 'is_crashlytics_enabled';
+  static const isErrorReportingEnabledKey = 'is_crashlytics_enabled';
   static const localeKey = 'locale';
   static const mustBackTwiceToExitKey = 'must_back_twice_to_exit';
   static const keepScreenOnKey = 'keep_screen_on';
@@ -105,9 +107,13 @@ class Settings extends ChangeNotifier {
   // version
   static const lastVersionCheckDateKey = 'last_version_check_date';
 
-  Future<void> init() async {
+  // platform settings
+  // cf Android `Settings.System.ACCELEROMETER_ROTATION`
+  static const platformAccelerometerRotationKey = 'accelerometer_rotation';
+
+  Future<void> init({bool isRotationLocked = false}) async {
     _prefs = await SharedPreferences.getInstance();
-    _isRotationLocked = await windowService.isRotationLocked();
+    _isRotationLocked = isRotationLocked;
   }
 
   Future<void> reset({required bool includeInternalKeys}) async {
@@ -139,12 +145,9 @@ class Settings extends ChangeNotifier {
 
   set hasAcceptedTerms(bool newValue) => setAndNotify(hasAcceptedTermsKey, newValue);
 
-  bool get isCrashlyticsEnabled => getBoolOrDefault(isCrashlyticsEnabledKey, SettingsDefaults.isCrashlyticsEnabled);
+  bool get isErrorReportingEnabled => getBoolOrDefault(isErrorReportingEnabledKey, SettingsDefaults.isErrorReportingEnabled);
 
-  set isCrashlyticsEnabled(bool newValue) {
-    setAndNotify(isCrashlyticsEnabledKey, newValue);
-    unawaited(reportService.setCollectionEnabled(isCrashlyticsEnabled));
-  }
+  set isErrorReportingEnabled(bool newValue) => setAndNotify(isErrorReportingEnabledKey, newValue);
 
   static const localeSeparator = '-';
 
@@ -180,10 +183,7 @@ class Settings extends ChangeNotifier {
 
   KeepScreenOn get keepScreenOn => getEnumOrDefault(keepScreenOnKey, SettingsDefaults.keepScreenOn, KeepScreenOn.values);
 
-  set keepScreenOn(KeepScreenOn newValue) {
-    setAndNotify(keepScreenOnKey, newValue.toString());
-    newValue.apply();
-  }
+  set keepScreenOn(KeepScreenOn newValue) => setAndNotify(keepScreenOnKey, newValue.toString());
 
   HomePageSetting get homePage => getEnumOrDefault(homePageKey, SettingsDefaults.homePage, HomePageSetting.values);
 
@@ -418,6 +418,7 @@ class Settings extends ChangeNotifier {
       _prefs!.setBool(key, newValue);
     }
     if (oldValue != newValue) {
+      _updateStreamController.add(key);
       notifyListeners();
     }
   }
@@ -427,8 +428,7 @@ class Settings extends ChangeNotifier {
   void _onPlatformSettingsChange(Map? fields) {
     fields?.forEach((key, value) {
       switch (key) {
-        // cf Android `Settings.System.ACCELEROMETER_ROTATION`
-        case 'accelerometer_rotation':
+        case platformAccelerometerRotationKey:
           if (value is int) {
             final newValue = value == 0;
             if (_isRotationLocked != newValue) {
@@ -436,6 +436,7 @@ class Settings extends ChangeNotifier {
               if (!_isRotationLocked) {
                 windowService.requestOrientation();
               }
+              _updateStreamController.add(key);
               notifyListeners();
             }
           }
@@ -488,7 +489,7 @@ class Settings extends ChangeNotifier {
                 debugPrint('failed to import key=$key, value=$value is not a double');
               }
               break;
-            case isCrashlyticsEnabledKey:
+            case isErrorReportingEnabledKey:
             case mustBackTwiceToExitKey:
             case showThumbnailLocationKey:
             case showThumbnailMotionPhotoKey:
@@ -545,6 +546,7 @@ class Settings extends ChangeNotifier {
               break;
           }
         }
+        _updateStreamController.add(key);
       });
       notifyListeners();
     }
