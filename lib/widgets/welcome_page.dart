@@ -102,9 +102,9 @@ class _WelcomePageState extends State<WelcomePage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         LabeledCheckbox(
-          value: settings.isCrashlyticsEnabled,
+          value: settings.isErrorReportingEnabled,
           onChanged: (v) {
-            if (v != null) setState(() => settings.isCrashlyticsEnabled = v);
+            if (v != null) setState(() => settings.isErrorReportingEnabled = v);
           },
           text: context.l10n.welcomeCrashReportToggle,
         ),

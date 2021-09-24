@@ -4,6 +4,9 @@ import 'package:flutter_test/flutter_test.dart';
 
 class FakeReportService extends ReportService {
   @override
+  Future<void> init() => SynchronousFuture(null);
+
+  @override
   bool get isCollectionEnabled => false;
 
   @override

@@ -117,7 +117,7 @@ flutter:
 # Test driver
 
 # run (any device):
-# % flutter drive -t test_driver/app.dart --profile
+# % flutter drive -t test_driver/driver_app.dart --profile
 
 # capture shaders in profile mode (real device only):
-# % flutter drive -t test_driver/app.dart --profile --cache-sksl --write-sksl-on-exit shaders.sksl.json
+# % flutter drive -t test_driver/driver_app.dart --profile --cache-sksl --write-sksl-on-exit shaders.sksl.json

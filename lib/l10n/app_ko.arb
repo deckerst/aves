@@ -364,7 +364,7 @@
   "settingsSubtitleThemeTextAlignmentRight": "오른쪽",
 
   "settingsSectionPrivacy": "개인정보 보호",
-  "settingsEnableCrashReport": "오류 보고서 보내기",
+  "settingsEnableErrorReporting": "오류 보고서 보내기",
   "settingsSaveSearchHistory": "검색기록",
 
   "settingsHiddenFiltersTile": "숨겨진 필터",
