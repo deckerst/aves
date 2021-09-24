@@ -18,10 +18,11 @@ class GridTheme extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ProxyProvider<Settings, GridThemeData>(
-      update: (_, settings, __) {
-        final iconSize = min(28.0, (extent / 4)).roundToDouble();
-        final fontSize = (iconSize / 2).floorToDouble();
+    return ProxyProvider2<Settings, MediaQueryData, GridThemeData>(
+      update: (context, settings, mq, previous) {
+        var iconSize = min(24.0, (extent / 5)).roundToDouble();
+        final fontSize = (iconSize * .7).floorToDouble();
+        iconSize *= mq.textScaleFactor;
         final highlightBorderWidth = extent * .1;
         return GridThemeData(
           iconSize: iconSize,

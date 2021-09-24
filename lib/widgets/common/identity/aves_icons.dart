@@ -158,7 +158,12 @@ class OverlayIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = context.select<GridThemeData, double>((t) => t.iconSize);
-    final iconChild = Icon(icon, size: size);
+    final iconChild = Icon(
+      icon,
+      size: size,
+      // consistent with the color used for the text next to it
+      color: DefaultTextStyle.of(context).style.color,
+    );
     final iconBox = SizedBox(
       width: size,
       height: size,
@@ -172,7 +177,7 @@ class OverlayIcon extends StatelessWidget {
     );
 
     return Container(
-      margin: const EdgeInsets.all(1),
+      margin: const EdgeInsets.only(left: 1, right: 1, bottom: 1),
       padding: text != null ? EdgeInsets.only(right: size / 4) : null,
       decoration: BoxDecoration(
         color: const Color(0xBB000000),
