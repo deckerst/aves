@@ -56,10 +56,6 @@ abstract class ImageProvider {
         throw UnsupportedOperationException()
     }
 
-    open suspend fun scanNewPath(context: Context, path: String, mimeType: String): FieldMap {
-        throw UnsupportedOperationException()
-    }
-
     suspend fun exportMultiple(
         context: Context,
         imageExportMimeType: String,
@@ -203,7 +199,7 @@ abstract class ImageProvider {
         val fileName = destinationDocFile.name
         val destinationFullPath = destinationDir + fileName
 
-        return scanNewPath(context, destinationFullPath, exportMimeType)
+        return MediaStoreImageProvider().scanNewPath(context, destinationFullPath, exportMimeType)
     }
 
     @Suppress("BlockingMethodInNonBlockingContext")
@@ -301,7 +297,7 @@ abstract class ImageProvider {
 
             val fileName = destinationDocFile.name
             val destinationFullPath = destinationDir + fileName
-            val newFields = scanNewPath(context, destinationFullPath, captureMimeType)
+            val newFields = MediaStoreImageProvider().scanNewPath(context, destinationFullPath, captureMimeType)
             callback.onSuccess(newFields)
         } catch (e: Exception) {
             callback.onFailure(e)
@@ -332,7 +328,7 @@ abstract class ImageProvider {
 
         scanObsoletePath(context, oldPath, mimeType)
         try {
-            callback.onSuccess(scanNewPath(context, newFile.path, mimeType))
+            callback.onSuccess(MediaStoreImageProvider().scanNewPath(context, newFile.path, mimeType))
         } catch (e: Exception) {
             callback.onFailure(e)
         }
