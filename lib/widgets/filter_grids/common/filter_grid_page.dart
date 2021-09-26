@@ -238,56 +238,66 @@ class _FilterGridContent<T extends CollectionFilter> extends StatelessWidget {
         final sectionedListLayoutProvider = ValueListenableBuilder<double>(
           valueListenable: context.select<TileExtentController, ValueNotifier<double>>((controller) => controller.extentNotifier),
           builder: (context, tileExtent, child) {
-            return GridTheme(
-              extent: tileExtent,
-              child: Selector<TileExtentController, Tuple3<double, int, double>>(
-                  selector: (context, c) => Tuple3(c.viewportSize.width, c.columnCount, c.spacing),
-                  builder: (context, c, child) {
-                    final scrollableWidth = c.item1;
-                    final columnCount = c.item2;
-                    final tileSpacing = c.item3;
-                    // do not listen for animation delay change
-                    final controller = Provider.of<TileExtentController>(context, listen: false);
-                    final tileAnimationDelay = controller.getTileAnimationDelay(Durations.staggeredAnimationPageTarget);
-                    return SectionedFilterListLayoutProvider<T>(
-                      sections: visibleSections,
-                      showHeaders: showHeaders,
-                      scrollableWidth: scrollableWidth,
-                      columnCount: columnCount,
-                      spacing: tileSpacing,
-                      tileExtent: tileExtent,
-                      tileBuilder: (gridItem) {
-                        final filter = gridItem.filter;
-                        return MetaData(
-                          metaData: ScalerMetadata(gridItem),
-                          child: FilterChipGridDecorator<T, FilterGridItem<T>>(
-                            gridItem: gridItem,
-                            extent: tileExtent,
-                            child: CoveredFilterChip(
-                              key: Key(filter.key),
-                              filter: filter,
+            return Selector<TileExtentController, Tuple3<double, int, double>>(
+              selector: (context, c) => Tuple3(c.viewportSize.width, c.columnCount, c.spacing),
+              builder: (context, c, child) {
+                final scrollableWidth = c.item1;
+                final columnCount = c.item2;
+                final tileSpacing = c.item3;
+                // do not listen for animation delay change
+                final tileAnimationDelay = context.read<TileExtentController>().getTileAnimationDelay(Durations.staggeredAnimationPageTarget);
+                return Selector<MediaQueryData, double>(
+                  selector: (context, mq) => mq.textScaleFactor,
+                  builder: (context, textScaleFactor, child) {
+                    final tileHeight = CoveredFilterChip.tileHeight(extent: tileExtent, textScaleFactor: textScaleFactor);
+                    return GridTheme(
+                      extent: tileExtent,
+                      child: SectionedFilterListLayoutProvider<T>(
+                        sections: visibleSections,
+                        showHeaders: showHeaders,
+                        scrollableWidth: scrollableWidth,
+                        columnCount: columnCount,
+                        spacing: tileSpacing,
+                        tileWidth: tileExtent,
+                        tileHeight: tileHeight,
+                        tileBuilder: (gridItem) {
+                          final filter = gridItem.filter;
+                          return MetaData(
+                            metaData: ScalerMetadata(gridItem),
+                            child: FilterChipGridDecorator<T, FilterGridItem<T>>(
+                              gridItem: gridItem,
                               extent: tileExtent,
-                              pinned: pinnedFilters.contains(filter),
-                              banner: newFilters.contains(filter) ? context.l10n.newFilterBanner : null,
-                              onTap: onTap,
+                              child: CoveredFilterChip(
+                                key: Key(filter.key),
+                                filter: filter,
+                                extent: tileExtent,
+                                pinned: pinnedFilters.contains(filter),
+                                banner: newFilters.contains(filter) ? context.l10n.newFilterBanner : null,
+                                onTap: onTap,
+                              ),
                             ),
-                          ),
-                        );
-                      },
-                      tileAnimationDelay: tileAnimationDelay,
-                      child: _FilterSectionedContent<T>(
-                        appBar: appBar,
-                        appBarHeightNotifier: _appBarHeightNotifier,
-                        visibleSections: visibleSections,
-                        sortFactor: sortFactor,
-                        selectable: selectable,
-                        emptyBuilder: emptyBuilder,
-                        scrollController: PrimaryScrollController.of(context)!,
+                          );
+                        },
+                        tileAnimationDelay: tileAnimationDelay,
+                        child: child!,
                       ),
                     );
-                  }),
+                  },
+                  child: child,
+                );
+              },
+              child: child,
             );
           },
+          child: _FilterSectionedContent<T>(
+            appBar: appBar,
+            appBarHeightNotifier: _appBarHeightNotifier,
+            visibleSections: visibleSections,
+            sortFactor: sortFactor,
+            selectable: selectable,
+            emptyBuilder: emptyBuilder,
+            scrollController: PrimaryScrollController.of(context)!,
+          ),
         );
         return sectionedListLayoutProvider;
       },
@@ -399,24 +409,26 @@ class _FilterScaler<T extends CollectionFilter> extends StatelessWidget {
   Widget build(BuildContext context) {
     final pinnedFilters = settings.pinnedFilters;
     final tileSpacing = context.select<TileExtentController, double>((controller) => controller.spacing);
+    final textScaleFactor = context.select<MediaQueryData, double>((mq) => mq.textScaleFactor);
     return GridScaleGestureDetector<FilterGridItem<T>>(
       scrollableKey: scrollableKey,
-      gridBuilder: (center, extent, child) => CustomPaint(
+      heightForWidth: (width) => CoveredFilterChip.tileHeight(extent: width, textScaleFactor: textScaleFactor),
+      gridBuilder: (center, tileSize, child) => CustomPaint(
         painter: GridPainter(
           center: center,
-          extent: extent,
+          tileSize: tileSize,
           spacing: tileSpacing,
           borderWidth: AvesFilterChip.outlineWidth,
-          borderRadius: CoveredFilterChip.radius(extent),
+          borderRadius: CoveredFilterChip.radius(tileSize.width),
           color: Colors.grey.shade700,
         ),
         child: child,
       ),
-      scaledBuilder: (item, extent) {
+      scaledBuilder: (item, tileSize) {
         final filter = item.filter;
         return CoveredFilterChip(
           filter: filter,
-          extent: extent,
+          extent: tileSize.width,
           thumbnailExtent: context.read<TileExtentController>().effectiveExtentMax,
           pinned: pinnedFilters.contains(filter),
         );

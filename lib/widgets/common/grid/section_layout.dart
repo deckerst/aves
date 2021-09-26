@@ -13,7 +13,7 @@ import 'package:provider/provider.dart';
 abstract class SectionedListLayoutProvider<T> extends StatelessWidget {
   final double scrollableWidth;
   final int columnCount;
-  final double spacing, tileExtent;
+  final double spacing, tileWidth, tileHeight;
   final Widget Function(T item) tileBuilder;
   final Duration tileAnimationDelay;
   final Widget child;
@@ -23,7 +23,8 @@ abstract class SectionedListLayoutProvider<T> extends StatelessWidget {
     required this.scrollableWidth,
     required this.columnCount,
     required this.spacing,
-    required this.tileExtent,
+    required this.tileWidth,
+    required this.tileHeight,
     required this.tileBuilder,
     required this.tileAnimationDelay,
     required this.child,
@@ -60,7 +61,7 @@ abstract class SectionedListLayoutProvider<T> extends StatelessWidget {
       final sectionLastIndex = currentIndex - 1;
 
       final sectionMinOffset = currentOffset;
-      currentOffset += headerExtent + tileExtent * rowCount + spacing * (rowCount - 1);
+      currentOffset += headerExtent + tileHeight * rowCount + spacing * (rowCount - 1);
       final sectionMaxOffset = currentOffset;
 
       sectionLayouts.add(
@@ -71,7 +72,7 @@ abstract class SectionedListLayoutProvider<T> extends StatelessWidget {
           minOffset: sectionMinOffset,
           maxOffset: sectionMaxOffset,
           headerExtent: headerExtent,
-          tileExtent: tileExtent,
+          tileHeight: tileHeight,
           spacing: spacing,
           builder: (context, listIndex) => _buildInSection(
             context,
@@ -89,7 +90,8 @@ abstract class SectionedListLayoutProvider<T> extends StatelessWidget {
       sections: _sections,
       showHeaders: _showHeaders,
       columnCount: columnCount,
-      tileExtent: tileExtent,
+      tileWidth: tileWidth,
+      tileHeight: tileHeight,
       spacing: spacing,
       sectionLayouts: sectionLayouts,
     );
@@ -123,7 +125,8 @@ abstract class SectionedListLayoutProvider<T> extends StatelessWidget {
       children.add(animate ? _buildAnimation(itemGridIndex, item) : item);
     }
     return _GridRow(
-      extent: tileExtent,
+      width: tileWidth,
+      height: tileHeight,
       spacing: spacing,
       children: children,
     );
@@ -158,7 +161,8 @@ abstract class SectionedListLayoutProvider<T> extends StatelessWidget {
     properties.add(DoubleProperty('scrollableWidth', scrollableWidth));
     properties.add(IntProperty('columnCount', columnCount));
     properties.add(DoubleProperty('spacing', spacing));
-    properties.add(DoubleProperty('tileExtent', tileExtent));
+    properties.add(DoubleProperty('tileWidth', tileWidth));
+    properties.add(DoubleProperty('tileHeight', tileHeight));
     properties.add(DiagnosticsProperty<bool>('showHeaders', showHeaders));
   }
 }
@@ -167,14 +171,15 @@ class SectionedListLayout<T> {
   final Map<SectionKey, List<T>> sections;
   final bool showHeaders;
   final int columnCount;
-  final double tileExtent, spacing;
+  final double tileWidth, tileHeight, spacing;
   final List<SectionLayout> sectionLayouts;
 
   const SectionedListLayout({
     required this.sections,
     required this.showHeaders,
     required this.columnCount,
-    required this.tileExtent,
+    required this.tileWidth,
+    required this.tileHeight,
     required this.spacing,
     required this.sectionLayouts,
   });
@@ -192,9 +197,9 @@ class SectionedListLayout<T> {
     final row = (sectionItemIndex / columnCount).floor();
     final listIndex = sectionLayout.firstIndex + 1 + row;
 
-    final left = tileExtent * column + spacing * (column - 1);
+    final left = tileWidth * column + spacing * (column - 1);
     final top = sectionLayout.indexToLayoutOffset(listIndex);
-    return Rect.fromLTWH(left, top, tileExtent, tileExtent);
+    return Rect.fromLTWH(left, top, tileWidth, tileHeight);
   }
 
   SectionLayout? getSectionAt(double offsetY) => sectionLayouts.firstWhereOrNull((sl) => offsetY < sl.maxOffset);
@@ -210,8 +215,8 @@ class SectionedListLayout<T> {
     dy -= sectionLayout.minOffset + sectionLayout.headerExtent;
     if (dy < 0) return null;
 
-    final row = dy ~/ (tileExtent + spacing);
-    final column = position.dx ~/ (tileExtent + spacing);
+    final row = dy ~/ (tileHeight + spacing);
+    final column = position.dx ~/ (tileWidth + spacing);
     final index = row * columnCount + column;
     if (index >= section.length) return null;
 
@@ -219,7 +224,7 @@ class SectionedListLayout<T> {
   }
 
   @override
-  String toString() => '$runtimeType#${shortHash(this)}{sectionCount=${sections.length} columnCount=$columnCount, tileExtent=$tileExtent}';
+  String toString() => '$runtimeType#${shortHash(this)}{sectionCount=${sections.length} columnCount=$columnCount, tileWidth=$tileWidth, tileHeight=$tileHeight}';
 }
 
 @immutable
@@ -227,11 +232,11 @@ class SectionLayout extends Equatable {
   final SectionKey sectionKey;
   final int firstIndex, lastIndex, bodyFirstIndex;
   final double minOffset, maxOffset, bodyMinOffset;
-  final double headerExtent, tileExtent, spacing, mainAxisStride;
+  final double headerExtent, tileHeight, spacing, mainAxisStride;
   final IndexedWidgetBuilder builder;
 
   @override
-  List<Object?> get props => [sectionKey, firstIndex, lastIndex, minOffset, maxOffset, headerExtent, tileExtent, spacing];
+  List<Object?> get props => [sectionKey, firstIndex, lastIndex, minOffset, maxOffset, headerExtent, tileHeight, spacing];
 
   const SectionLayout({
     required this.sectionKey,
@@ -240,12 +245,12 @@ class SectionLayout extends Equatable {
     required this.minOffset,
     required this.maxOffset,
     required this.headerExtent,
-    required this.tileExtent,
+    required this.tileHeight,
     required this.spacing,
     required this.builder,
   })  : bodyFirstIndex = firstIndex + 1,
         bodyMinOffset = minOffset + headerExtent,
-        mainAxisStride = tileExtent + spacing;
+        mainAxisStride = tileHeight + spacing;
 
   bool hasChild(int index) => firstIndex <= index && index <= lastIndex;
 
@@ -271,11 +276,12 @@ class SectionLayout extends Equatable {
 }
 
 class _GridRow extends MultiChildRenderObjectWidget {
-  final double extent, spacing;
+  final double width, height, spacing;
 
   _GridRow({
     Key? key,
-    required this.extent,
+    required this.width,
+    required this.height,
     required this.spacing,
     required List<Widget> children,
   }) : super(key: key, children: children);
@@ -283,21 +289,24 @@ class _GridRow extends MultiChildRenderObjectWidget {
   @override
   RenderObject createRenderObject(BuildContext context) {
     return _RenderGridRow(
-      extent: extent,
+      width: width,
+      height: height,
       spacing: spacing,
     );
   }
 
   @override
   void updateRenderObject(BuildContext context, _RenderGridRow renderObject) {
-    renderObject.extent = extent;
+    renderObject.width = width;
+    renderObject.height = height;
     renderObject.spacing = spacing;
   }
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(DoubleProperty('extent', extent));
+    properties.add(DoubleProperty('width', width));
+    properties.add(DoubleProperty('height', height));
     properties.add(DoubleProperty('spacing', spacing));
   }
 }
@@ -307,19 +316,30 @@ class _GridRowParentData extends ContainerBoxParentData<RenderBox> {}
 class _RenderGridRow extends RenderBox with ContainerRenderObjectMixin<RenderBox, _GridRowParentData>, RenderBoxContainerDefaultsMixin<RenderBox, _GridRowParentData> {
   _RenderGridRow({
     List<RenderBox>? children,
-    required double extent,
+    required double width,
+    required double height,
     required double spacing,
-  })  : _extent = extent,
+  })  : _width = width,
+        _height = height,
         _spacing = spacing {
     addAll(children);
   }
 
-  double get extent => _extent;
-  double _extent;
+  double get width => _width;
+  double _width;
 
-  set extent(double value) {
-    if (_extent == value) return;
-    _extent = value;
+  set width(double value) {
+    if (_width == value) return;
+    _width = value;
+    markNeedsLayout();
+  }
+
+  double get height => _height;
+  double _height;
+
+  set height(double value) {
+    if (_height == value) return;
+    _height = value;
     markNeedsLayout();
   }
 
@@ -339,7 +359,7 @@ class _RenderGridRow extends RenderBox with ContainerRenderObjectMixin<RenderBox
     }
   }
 
-  double get intrinsicWidth => extent * childCount + spacing * (childCount - 1);
+  double get intrinsicWidth => width * childCount + spacing * (childCount - 1);
 
   @override
   double computeMinIntrinsicWidth(double height) => intrinsicWidth;
@@ -348,10 +368,10 @@ class _RenderGridRow extends RenderBox with ContainerRenderObjectMixin<RenderBox
   double computeMaxIntrinsicWidth(double height) => intrinsicWidth;
 
   @override
-  double computeMinIntrinsicHeight(double width) => extent;
+  double computeMinIntrinsicHeight(double width) => height;
 
   @override
-  double computeMaxIntrinsicHeight(double width) => extent;
+  double computeMaxIntrinsicHeight(double width) => height;
 
   @override
   void performLayout() {
@@ -360,14 +380,14 @@ class _RenderGridRow extends RenderBox with ContainerRenderObjectMixin<RenderBox
       size = constraints.smallest;
       return;
     }
-    size = Size(constraints.maxWidth, extent);
-    final childConstraints = BoxConstraints.tight(Size(extent, extent));
+    size = Size(constraints.maxWidth, height);
+    final childConstraints = BoxConstraints.tight(Size(width, height));
     var offset = Offset.zero;
     while (child != null) {
       child.layout(childConstraints, parentUsesSize: false);
       final childParentData = child.parentData! as _GridRowParentData;
       childParentData.offset = offset;
-      offset += Offset(extent + spacing, 0);
+      offset += Offset(width + spacing, 0);
       child = childParentData.nextSibling;
     }
   }
@@ -390,7 +410,8 @@ class _RenderGridRow extends RenderBox with ContainerRenderObjectMixin<RenderBox
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(DoubleProperty('extent', extent));
+    properties.add(DoubleProperty('width', width));
+    properties.add(DoubleProperty('height', height));
     properties.add(DoubleProperty('spacing', spacing));
   }
 }
