@@ -125,17 +125,13 @@ abstract class ImageProvider {
             val page = if (sourceMimeType == MimeTypes.TIFF) pageId + 1 else pageId
             desiredNameWithoutExtension += "_${page.toString().padStart(3, '0')}"
         }
-        val desiredFileName = desiredNameWithoutExtension + extensionFor(exportMimeType)
-
-        if (File(destinationDir, desiredFileName).exists()) {
-            throw Exception("file with name=$desiredFileName already exists in destination directory")
-        }
+        val availableNameWithoutExtension = findAvailableFileNameWithoutExtension(destinationDir, desiredNameWithoutExtension, extensionFor(exportMimeType))
 
         // the file created from a `TreeDocumentFile` is also a `TreeDocumentFile`
         // but in order to open an output stream to it, we need to use a `SingleDocumentFile`
         // through a document URI, not a tree URI
         // note that `DocumentFile.getParentFile()` returns null if we did not pick a tree first
-        val destinationTreeFile = destinationDirDocFile.createFile(exportMimeType, desiredNameWithoutExtension)
+        val destinationTreeFile = destinationDirDocFile.createFile(exportMimeType, availableNameWithoutExtension)
         val destinationDocFile = DocumentFileCompat.fromSingleUri(context, destinationTreeFile.uri)
 
         if (isVideo(sourceMimeType)) {
@@ -218,17 +214,13 @@ abstract class ImageProvider {
         }
 
         val captureMimeType = MimeTypes.JPEG
-        val desiredFileName = desiredNameWithoutExtension + extensionFor(captureMimeType)
-        if (File(destinationDir, desiredFileName).exists()) {
-            callback.onFailure(Exception("file with name=$desiredFileName already exists in destination directory"))
-            return
-        }
+        val availableNameWithoutExtension = findAvailableFileNameWithoutExtension(destinationDir, desiredNameWithoutExtension, extensionFor(captureMimeType))
 
         // the file created from a `TreeDocumentFile` is also a `TreeDocumentFile`
         // but in order to open an output stream to it, we need to use a `SingleDocumentFile`
         // through a document URI, not a tree URI
         // note that `DocumentFile.getParentFile()` returns null if we did not pick a tree first
-        val destinationTreeFile = destinationDirDocFile.createFile(captureMimeType, desiredNameWithoutExtension)
+        val destinationTreeFile = destinationDirDocFile.createFile(captureMimeType, availableNameWithoutExtension)
         val destinationDocFile = DocumentFileCompat.fromSingleUri(context, destinationTreeFile.uri)
 
         try {
@@ -302,6 +294,16 @@ abstract class ImageProvider {
         } catch (e: Exception) {
             callback.onFailure(e)
         }
+    }
+
+    private fun findAvailableFileNameWithoutExtension(dir: String, desiredNameWithoutExtension: String, extension: String?): String {
+        var nameWithoutExtension = desiredNameWithoutExtension
+        var i = 0
+        while (File(dir, "$nameWithoutExtension$extension").exists()) {
+            i++
+            nameWithoutExtension = "$desiredNameWithoutExtension ($i)"
+        }
+        return nameWithoutExtension
     }
 
     suspend fun rename(context: Context, oldPath: String, oldMediaUri: Uri, mimeType: String, newFilename: String, callback: ImageOpCallback) {
