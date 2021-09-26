@@ -118,13 +118,13 @@ class SearchSuggestionsProvider : MethodChannel.MethodCallHandler, ContentProvid
     override fun getType(uri: Uri): String? = null
 
     override fun insert(uri: Uri, values: ContentValues?): Uri =
-        throw UnsupportedOperationException()
+        throw UnsupportedOperationException("`insert` is not supported by this content provider")
 
     override fun delete(uri: Uri, selection: String?, selectionArgs: Array<String>?): Int =
-        throw UnsupportedOperationException()
+        throw UnsupportedOperationException("`delete` is not supported by this content provider")
 
     override fun update(uri: Uri, values: ContentValues?, selection: String?, selectionArgs: Array<String>?): Int =
-        throw UnsupportedOperationException()
+        throw UnsupportedOperationException("`update` is not supported by this content provider")
 
     companion object {
         private val LOG_TAG = LogUtils.createTag<SearchSuggestionsProvider>()
