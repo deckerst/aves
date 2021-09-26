@@ -9,6 +9,7 @@ import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
+import 'package:aves/widgets/common/identity/buttons.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -109,13 +110,9 @@ class _BugReportState extends State<BugReport> with FeedbackMixin {
           const SizedBox(width: 8),
           Expanded(child: Text(text)),
           const SizedBox(width: 8),
-          OutlinedButton(
+          AvesOutlinedButton(
+            label: buttonText,
             onPressed: onPressed,
-            style: ButtonStyle(
-              side: MaterialStateProperty.all<BorderSide>(BorderSide(color: Theme.of(context).colorScheme.secondary)),
-              foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
-            ),
-            child: Text(buttonText),
           )
         ],
       ),

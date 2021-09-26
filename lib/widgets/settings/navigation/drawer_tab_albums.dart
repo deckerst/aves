@@ -2,6 +2,7 @@ import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/common/identity/buttons.dart';
 import 'package:aves/widgets/drawer/tile.dart';
 import 'package:aves/widgets/filter_grids/album_pick.dart';
 import 'package:aves/widgets/settings/navigation/drawer_editor_banner.dart';
@@ -59,7 +60,9 @@ class _DrawerAlbumTabState extends State<DrawerAlbumTab> {
         ),
         const Divider(height: 0),
         const SizedBox(height: 8),
-        OutlinedButton.icon(
+        AvesOutlinedButton(
+          icon: const Icon(AIcons.add),
+          label: context.l10n.settingsNavigationDrawerAddAlbum,
           onPressed: () async {
             final source = context.read<CollectionSource>();
             final album = await Navigator.push(
@@ -76,12 +79,6 @@ class _DrawerAlbumTabState extends State<DrawerAlbumTab> {
               widget.items.add(album);
             });
           },
-          style: ButtonStyle(
-            side: MaterialStateProperty.all<BorderSide>(BorderSide(color: Theme.of(context).colorScheme.secondary)),
-            foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
-          ),
-          icon: const Icon(AIcons.add),
-          label: Text(context.l10n.settingsNavigationDrawerAddAlbum),
         )
       ],
     );
