@@ -23,7 +23,7 @@ object MimeTypes {
     // raw raster
     private const val ARW = "image/x-sony-arw"
     private const val CR2 = "image/x-canon-cr2"
-    const val DNG = "image/x-adobe-dng"
+    private const val DNG = "image/x-adobe-dng"
     private const val NEF = "image/x-nikon-nef"
     private const val NRW = "image/x-nikon-nrw"
     private const val ORF = "image/x-olympus-orf"

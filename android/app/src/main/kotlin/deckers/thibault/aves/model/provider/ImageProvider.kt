@@ -37,23 +37,23 @@ import java.util.*
 
 abstract class ImageProvider {
     open fun fetchSingle(context: Context, uri: Uri, sourceMimeType: String?, callback: ImageOpCallback) {
-        callback.onFailure(UnsupportedOperationException())
+        callback.onFailure(UnsupportedOperationException("`fetchSingle` is not supported by this image provider"))
     }
 
     open suspend fun delete(activity: Activity, uri: Uri, path: String?) {
-        throw UnsupportedOperationException()
+        throw UnsupportedOperationException("`delete` is not supported by this image provider")
     }
 
     open suspend fun moveMultiple(activity: Activity, copy: Boolean, destinationDir: String, entries: List<AvesEntry>, callback: ImageOpCallback) {
-        callback.onFailure(UnsupportedOperationException())
+        callback.onFailure(UnsupportedOperationException("`moveMultiple` is not supported by this image provider"))
     }
 
     open fun scanPostMetadataEdit(context: Context, path: String, uri: Uri, mimeType: String, newFields: HashMap<String, Any?>, callback: ImageOpCallback) {
-        throw UnsupportedOperationException()
+        throw UnsupportedOperationException("`scanPostMetadataEdit` is not supported by this image provider")
     }
 
     open fun scanObsoletePath(context: Context, path: String, mimeType: String) {
-        throw UnsupportedOperationException()
+        throw UnsupportedOperationException("`scanObsoletePath` is not supported by this image provider")
     }
 
     suspend fun exportMultiple(
