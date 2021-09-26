@@ -403,7 +403,7 @@ class MediaStoreImageProvider : ImageProvider() {
         MediaScannerConnection.scanFile(context, arrayOf(path), arrayOf(mimeType), null)
     }
 
-    override suspend fun scanNewPath(context: Context, path: String, mimeType: String): FieldMap =
+    suspend fun scanNewPath(context: Context, path: String, mimeType: String): FieldMap =
         suspendCoroutine { cont ->
             MediaScannerConnection.scanFile(context, arrayOf(path), arrayOf(mimeType)) { _, newUri: Uri? ->
                 fun scanUri(uri: Uri?): FieldMap? {

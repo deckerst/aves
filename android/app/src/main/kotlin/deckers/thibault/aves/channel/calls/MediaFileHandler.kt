@@ -158,7 +158,7 @@ class MediaFileHandler(private val activity: Activity) : MethodCallHandler {
         destinationDir = ensureTrailingSeparator(destinationDir)
         provider.captureFrame(activity, desiredName, exifFields, bytes, destinationDir, object : ImageOpCallback {
             override fun onSuccess(fields: FieldMap) = result.success(fields)
-            override fun onFailure(throwable: Throwable) = result.error("captureFrame-failure", "failed to capture frame", throwable.message)
+            override fun onFailure(throwable: Throwable) = result.error("captureFrame-failure", "failed to capture frame for uri=$uri", throwable.message)
         })
     }
 
