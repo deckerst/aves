@@ -193,7 +193,8 @@ class _MapPageContentState extends State<MapPageContent> with SingleTickerProvid
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Divider(),
+          const SizedBox(height: 8),
+          const Divider(height: 0),
           _buildScroller(),
         ],
       ),

@@ -40,13 +40,13 @@ class MapInfoRow extends StatelessWidget {
                     children: [
                       _AddressRow(entry: entry),
                       const SizedBox(height: _interRowPadding),
-                      _buildDate(context, entry),
+                      _DateRow(entry: entry),
                     ],
                   ),
                 ),
               ]
             : [
-                _buildDate(context, entry),
+                _DateRow(entry: entry),
                 Expanded(
                   child: _AddressRow(entry: entry),
                 ),
@@ -64,23 +64,6 @@ class MapInfoRow extends StatelessWidget {
           ),
         );
       },
-    );
-  }
-
-  Widget _buildDate(BuildContext context, AvesEntry? entry) {
-    final locale = context.l10n.localeName;
-    final date = entry?.bestDate;
-    final dateText = date != null ? formatDateTime(date, locale) : Constants.overlayUnknown;
-    return Row(
-      children: [
-        const SizedBox(width: iconPadding),
-        const DecoratedIcon(AIcons.date, shadows: Constants.embossShadows, size: iconSize),
-        const SizedBox(width: iconPadding),
-        Text(
-          dateText,
-          strutStyle: Constants.overflowStrutStyle,
-        ),
-      ],
     );
   }
 }
@@ -123,23 +106,30 @@ class _AddressRowState extends State<_AddressRow> {
         const DecoratedIcon(AIcons.location, shadows: Constants.embossShadows, size: MapInfoRow.iconSize),
         const SizedBox(width: MapInfoRow.iconPadding),
         Expanded(
-          child: ValueListenableBuilder<String?>(
-            valueListenable: _addressLineNotifier,
-            builder: (context, addressLine, child) {
-              final location = addressLine ??
-                  (entry == null
-                      ? Constants.overlayUnknown
-                      : entry.hasAddress
-                          ? entry.shortAddress
-                          : settings.coordinateFormat.format(entry.latLng!));
-              return Text(
-                location,
-                strutStyle: Constants.overflowStrutStyle,
-                softWrap: false,
-                overflow: TextOverflow.fade,
-                maxLines: 1,
-              );
-            },
+          child: Container(
+            alignment: AlignmentDirectional.centerStart,
+            // addresses can include non-latin scripts with inconsistent line height,
+            // which is especially an issue for relayout/painting of heavy Google maps,
+            // so we give extra height to give breathing room to the text and stabilize layout
+            height: Theme.of(context).textTheme.bodyText2!.fontSize! * context.select<MediaQueryData, double>((mq) => mq.textScaleFactor) * 2,
+            child: ValueListenableBuilder<String?>(
+              valueListenable: _addressLineNotifier,
+              builder: (context, addressLine, child) {
+                final location = addressLine ??
+                    (entry == null
+                        ? Constants.overlayUnknown
+                        : entry.hasAddress
+                            ? entry.shortAddress
+                            : settings.coordinateFormat.format(entry.latLng!));
+                return Text(
+                  location,
+                  strutStyle: Constants.overflowStrutStyle,
+                  softWrap: false,
+                  overflow: TextOverflow.fade,
+                  maxLines: 1,
+                );
+              },
+            ),
           ),
         ),
       ],
@@ -155,5 +145,32 @@ class _AddressRowState extends State<_AddressRow> {
       }
     }
     return null;
+  }
+}
+
+class _DateRow extends StatelessWidget {
+  final AvesEntry? entry;
+
+  const _DateRow({
+    Key? key,
+    required this.entry,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final locale = context.l10n.localeName;
+    final date = entry?.bestDate;
+    final dateText = date != null ? formatDateTime(date, locale) : Constants.overlayUnknown;
+    return Row(
+      children: [
+        const SizedBox(width: MapInfoRow.iconPadding),
+        const DecoratedIcon(AIcons.date, shadows: Constants.embossShadows, size: MapInfoRow.iconSize),
+        const SizedBox(width: MapInfoRow.iconPadding),
+        Text(
+          dateText,
+          strutStyle: Constants.overflowStrutStyle,
+        ),
+      ],
+    );
   }
 }
