@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:aves/model/settings/enums.dart';
+import 'package:aves/model/settings/settings.dart';
+import 'package:aves/services/a11y_service.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -15,17 +18,38 @@ mixin FeedbackMixin {
 
   // provide the messenger if feedback happens as the widget is disposed
   void showFeedbackWithMessenger(BuildContext context, ScaffoldMessengerState messenger, String message, [SnackBarAction? action]) {
-    final duration = action != null ? Durations.opToastActionDisplay : Durations.opToastDisplay;
-    final progressColor = Theme.of(context).colorScheme.secondary;
-    messenger.showSnackBar(SnackBar(
-      content: _FeedbackMessage(
-        message: message,
-        progressColor: progressColor,
-        duration: action != null ? duration : null,
-      ),
-      action: action,
-      duration: duration,
-    ));
+    _getSnackBarDuration(action != null).then((duration) {
+      final progressColor = Theme.of(context).colorScheme.secondary;
+      messenger.showSnackBar(SnackBar(
+        content: _FeedbackMessage(
+          message: message,
+          progressColor: progressColor,
+          duration: action != null ? duration : null,
+        ),
+        action: action,
+        duration: duration,
+      ));
+    });
+  }
+
+  Future<Duration> _getSnackBarDuration(bool hasAction) async {
+    final appDefaultDuration = hasAction ? Durations.opToastActionDisplay : Durations.opToastTextDisplay;
+    switch (settings.timeToTakeAction) {
+      case AccessibilityTimeout.system:
+        final original = appDefaultDuration.inMilliseconds;
+        final millis = await (hasAction ? AccessibilityService.getRecommendedTimeToTakeAction(original) : AccessibilityService.getRecommendedTimeToRead(original));
+        return Duration(milliseconds: millis);
+      case AccessibilityTimeout.appDefault:
+        return appDefaultDuration;
+      case AccessibilityTimeout.s10:
+        return const Duration(seconds: 10);
+      case AccessibilityTimeout.s30:
+        return const Duration(seconds: 30);
+      case AccessibilityTimeout.s60:
+        return const Duration(minutes: 1);
+      case AccessibilityTimeout.s120:
+        return const Duration(minutes: 2);
+    }
   }
 
   // report overlay for multiple operations

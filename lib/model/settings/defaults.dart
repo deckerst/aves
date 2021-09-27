@@ -57,6 +57,8 @@ class SettingsDefaults {
   static const showOverlayMinimap = false;
   static const showOverlayInfo = true;
   static const showOverlayShootingDetails = false;
+
+  // `enableOverlayBlurEffect` has a contextual default value
   static const enableOverlayBlurEffect = true;
   static const viewerUseCutout = true;
 
@@ -78,6 +80,7 @@ class SettingsDefaults {
   static const subtitleBackgroundColor = Colors.transparent;
 
   // info
+  // `infoMapStyle` has a contextual default value
   static const infoMapStyle = EntryMapStyle.stamenWatercolor;
   static const infoMapZoom = 12.0;
   static const coordinateFormat = CoordinateFormat.dms;
@@ -87,4 +90,8 @@ class SettingsDefaults {
 
   // search
   static const saveSearchHistory = true;
+
+  // accessibility
+  // `timeToTakeAction` has a contextual default value
+  static const timeToTakeAction = AccessibilityTimeout.appDefault;
 }

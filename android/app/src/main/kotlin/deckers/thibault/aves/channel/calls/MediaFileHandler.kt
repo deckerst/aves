@@ -66,10 +66,10 @@ class MediaFileHandler(private val activity: Activity) : MethodCallHandler {
         val dateModifiedSecs = call.argument<Number>("dateModifiedSecs")?.toLong()
         val rotationDegrees = call.argument<Int>("rotationDegrees")
         val isFlipped = call.argument<Boolean>("isFlipped")
-        val widthDip = call.argument<Double>("widthDip")
-        val heightDip = call.argument<Double>("heightDip")
+        val widthDip = call.argument<Number>("widthDip")?.toDouble()
+        val heightDip = call.argument<Number>("heightDip")?.toDouble()
         val pageId = call.argument<Int>("pageId")
-        val defaultSizeDip = call.argument<Double>("defaultSizeDip")
+        val defaultSizeDip = call.argument<Number>("defaultSizeDip")?.toDouble()
 
         if (uri == null || mimeType == null || dateModifiedSecs == null || rotationDegrees == null || isFlipped == null || widthDip == null || heightDip == null || defaultSizeDip == null) {
             result.error("getThumbnail-args", "failed because of missing arguments", null)

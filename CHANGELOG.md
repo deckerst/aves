@@ -5,11 +5,13 @@ All notable changes to this project will be documented in this file.
 ### Added
 - Map: show items for bounds, open items in viewer, tap gesture to toggle fullscreen
 - Info: remove metadata (Exif, XMP, etc.)
+- Accessibility: support "time to take action" settings
 
 ### Changed
 - upgraded Flutter to stable v2.5.1
 - faster collection loading when launching the app
 - Collection: changed color & scale of thumbnail icons to match text
+- Albums / Countries / Tags: changed layout, with label below cover
 
 ### Fixed
 - album bookmarks & pins were reset when rescanning items

@@ -102,7 +102,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
 
     private suspend fun getAppIcon(call: MethodCall, result: MethodChannel.Result) {
         val packageName = call.argument<String>("packageName")
-        val sizeDip = call.argument<Double>("sizeDip")
+        val sizeDip = call.argument<Number>("sizeDip")?.toDouble()
         if (packageName == null || sizeDip == null) {
             result.error("getAppIcon-args", "failed because of missing arguments", null)
             return
