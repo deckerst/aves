@@ -84,15 +84,16 @@ class _AddressRowState extends State<_AddressRow> {
   final ValueNotifier<String?> _addressLineNotifier = ValueNotifier(null);
 
   @override
+  void initState() {
+    super.initState();
+    _updateAddress();
+  }
+
+  @override
   void didUpdateWidget(covariant _AddressRow oldWidget) {
     super.didUpdateWidget(oldWidget);
-    final entry = widget.entry;
-    if (oldWidget.entry != entry) {
-      _getAddressLine(entry).then((addressLine) {
-        if (mounted && entry == widget.entry) {
-          _addressLineNotifier.value = addressLine;
-        }
-      });
+    if (oldWidget.entry != widget.entry) {
+      _updateAddress();
     }
   }
 
@@ -134,6 +135,14 @@ class _AddressRowState extends State<_AddressRow> {
         ),
       ],
     );
+  }
+
+  Future<void> _updateAddress() async {
+    final entry = widget.entry;
+    final addressLine = await _getAddressLine(entry);
+    if (mounted && entry == widget.entry) {
+      _addressLineNotifier.value = addressLine;
+    }
   }
 
   Future<String?> _getAddressLine(AvesEntry? entry) async {
