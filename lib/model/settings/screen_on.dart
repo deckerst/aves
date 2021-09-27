@@ -13,8 +13,6 @@ extension ExtraKeepScreenOn on KeepScreenOn {
         return context.l10n.keepScreenOnViewerOnly;
       case KeepScreenOn.always:
         return context.l10n.keepScreenOnAlways;
-      default:
-        return toString();
     }
   }
 

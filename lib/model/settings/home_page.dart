@@ -12,8 +12,6 @@ extension ExtraHomePageSetting on HomePageSetting {
         return context.l10n.collectionPageTitle;
       case HomePageSetting.albums:
         return context.l10n.albumPageTitle;
-      default:
-        return toString();
     }
   }
 
@@ -23,8 +21,6 @@ extension ExtraHomePageSetting on HomePageSetting {
         return CollectionPage.routeName;
       case HomePageSetting.albums:
         return AlbumListPage.routeName;
-      default:
-        return toString();
     }
   }
 }

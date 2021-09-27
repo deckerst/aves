@@ -7,6 +7,7 @@ class AIcons {
   static const IconData video = Icons.movie_outlined;
   static const IconData vector = Icons.code_outlined;
 
+  static const IconData a11y = Icons.accessibility_new_outlined;
   static const IconData android = Icons.android;
   static const IconData broken = Icons.broken_image_outlined;
   static const IconData checked = Icons.done_outlined;

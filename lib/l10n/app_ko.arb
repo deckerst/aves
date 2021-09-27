@@ -5,6 +5,9 @@
   "welcomeTermsToggle": "이용약관에 동의합니다",
   "itemCount": "{count, plural, other{{count}개}}",
 
+  "timeSeconds": "{seconds, plural, other{{seconds}초}}",
+  "timeMinutes": "{minutes, plural, other{{minutes}분}}",
+
   "applyButtonLabel": "확인",
   "deleteButtonLabel": "삭제",
   "nextButtonLabel": "다음",
@@ -294,6 +297,7 @@
 
   "settingsPageTitle": "설정",
   "settingsSystemDefault": "시스템",
+  "settingsDefault": "기본",
 
   "settingsActionExport": "내보내기",
   "settingsActionImport": "가져오기",
@@ -383,6 +387,10 @@
   "settingsStorageAccessBanner": "어떤 폴더는 사용자의 허용을 받아야만 앱이 파일에 접근이 가능합니다. 이 화면에 허용을 받은 폴더를 확인할 수 있으며 원하지 않으면 취소할 수 있습니다.",
   "settingsStorageAccessEmpty": "접근 허용이 없습니다",
   "settingsStorageAccessRevokeTooltip": "취소",
+
+  "settingsSectionAccessibility": "접근성",
+  "settingsTimeToTakeActionTile": "액션 취하기 전 대기 시간",
+  "settingsTimeToTakeActionTitle": "액션 취하기 전 대기 시간",
 
   "settingsSectionLanguage": "언어 및 표시 형식",
   "settingsLanguage": "언어",

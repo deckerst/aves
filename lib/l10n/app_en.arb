@@ -14,6 +14,19 @@
     }
   },
 
+  "timeSeconds": "{seconds, plural, =1{1 second} other{{seconds} seconds}}",
+  "@timeSeconds": {
+    "placeholders": {
+      "seconds": {}
+    }
+  },
+  "timeMinutes": "{minutes, plural, =1{1 minute} other{{minutes} minutes}}",
+  "@timeMinutes": {
+    "placeholders": {
+      "minutes": {}
+    }
+  },
+
   "applyButtonLabel": "APPLY",
   "@applyButtonLabel": {},
   "deleteButtonLabel": "DELETE",
@@ -616,6 +629,8 @@
   "@settingsPageTitle": {},
   "settingsSystemDefault": "System",
   "@settingsSystemDefault": {},
+  "settingsDefault": "Default",
+  "@settingsDefault": {},
 
   "settingsActionExport": "Export",
   "@settingsActionExport": {},
@@ -781,6 +796,13 @@
   "@settingsStorageAccessEmpty": {},
   "settingsStorageAccessRevokeTooltip": "Revoke",
   "@settingsStorageAccessRevokeTooltip": {},
+
+  "settingsSectionAccessibility": "Accessibility",
+  "@settingsSectionAccessibility": {},
+  "settingsTimeToTakeActionTile": "Time to take action",
+  "@settingsTimeToTakeActionTile": {},
+  "settingsTimeToTakeActionTitle": "Time to Take Action",
+  "@settingsTimeToTakeActionTitle": {},
 
   "settingsSectionLanguage": "Language & Formats",
   "@settingsSectionLanguage": {},

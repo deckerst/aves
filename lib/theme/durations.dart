@@ -56,7 +56,7 @@ class Durations {
   static const quickActionHighlightAnimation = Duration(milliseconds: 200);
 
   // delays & refresh intervals
-  static const opToastDisplay = Duration(seconds: 3);
+  static const opToastTextDisplay = Duration(seconds: 3);
   static const opToastActionDisplay = Duration(seconds: 5);
   static const infoScrollMonitoringTimerDelay = Duration(milliseconds: 100);
   static const collectionScrollMonitoringTimerDelay = Duration(milliseconds: 100);

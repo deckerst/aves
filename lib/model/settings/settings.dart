@@ -10,6 +10,7 @@ import 'package:aves/model/settings/defaults.dart';
 import 'package:aves/model/settings/enums.dart';
 import 'package:aves/model/settings/map_style.dart';
 import 'package:aves/model/source/enums.dart';
+import 'package:aves/services/a11y_service.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -104,6 +105,9 @@ class Settings extends ChangeNotifier {
   static const saveSearchHistoryKey = 'save_search_history';
   static const searchHistoryKey = 'search_history';
 
+  // accessibility
+  static const timeToTakeActionKey = 'time_to_take_action';
+
   // version
   static const lastVersionCheckDateKey = 'last_version_check_date';
 
@@ -137,6 +141,10 @@ class Settings extends ChangeNotifier {
       final styles = EntryMapStyle.values.whereNot((v) => v.isGoogleMaps).toList();
       infoMapStyle = styles[Random().nextInt(styles.length)];
     }
+
+    // accessibility
+    final hasRecommendedTimeouts = await AccessibilityService.hasRecommendedTimeouts();
+    timeToTakeAction = hasRecommendedTimeouts ? AccessibilityTimeout.system : AccessibilityTimeout.appDefault;
   }
 
   // app
@@ -372,6 +380,12 @@ class Settings extends ChangeNotifier {
 
   set searchHistory(List<CollectionFilter> newValue) => setAndNotify(searchHistoryKey, newValue.map((filter) => filter.toJson()).toList());
 
+  // accessibility
+
+  AccessibilityTimeout get timeToTakeAction => getEnumOrDefault(timeToTakeActionKey, SettingsDefaults.timeToTakeAction, AccessibilityTimeout.values);
+
+  set timeToTakeAction(AccessibilityTimeout newValue) => setAndNotify(timeToTakeActionKey, newValue.toString());
+
   // version
 
   DateTime get lastVersionCheckDate => DateTime.fromMillisecondsSinceEpoch(_prefs!.getInt(lastVersionCheckDateKey) ?? 0);
@@ -524,6 +538,7 @@ class Settings extends ChangeNotifier {
             case infoMapStyleKey:
             case coordinateFormatKey:
             case imageBackgroundKey:
+            case timeToTakeActionKey:
               if (value is String) {
                 _prefs!.setString(key, value);
               } else {
