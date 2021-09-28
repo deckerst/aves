@@ -70,8 +70,8 @@ class _AppDrawerState extends State<AppDrawer> {
       child: ListTileTheme.merge(
         selectedColor: Theme.of(context).colorScheme.secondary,
         child: Selector<MediaQueryData, double>(
-          selector: (c, mq) => mq.effectiveBottomPadding,
-          builder: (c, mqPaddingBottom, child) {
+          selector: (context, mq) => mq.effectiveBottomPadding,
+          builder: (context, mqPaddingBottom, child) {
             final iconTheme = IconTheme.of(context);
             return SingleChildScrollView(
               padding: EdgeInsets.only(bottom: mqPaddingBottom),

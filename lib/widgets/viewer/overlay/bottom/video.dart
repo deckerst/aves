@@ -81,8 +81,8 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
             );
           } else {
             child = Selector<MediaQueryData, double>(
-              selector: (c, mq) => mq.size.width - mq.padding.horizontal,
-              builder: (c, mqWidth, child) {
+              selector: (context, mq) => mq.size.width - mq.padding.horizontal,
+              builder: (context, mqWidth, child) {
                 final buttonWidth = OverlayButton.getSize(context);
                 final availableCount = ((mqWidth - outerPadding * 2) / (buttonWidth + innerPadding)).floor();
                 final quickActions = settings.videoQuickActions.take(availableCount - 1).toList();

@@ -82,8 +82,8 @@ class _ViewerBottomOverlayState extends State<ViewerBottomOverlay> {
     return BlurredRect(
       enabled: hasEdgeContent && blurred,
       child: Selector<MediaQueryData, Tuple3<double, EdgeInsets, EdgeInsets>>(
-        selector: (c, mq) => Tuple3(mq.size.width, mq.viewInsets, mq.viewPadding),
-        builder: (c, mq, child) {
+        selector: (context, mq) => Tuple3(mq.size.width, mq.viewInsets, mq.viewPadding),
+        builder: (context, mq, child) {
           final mqWidth = mq.item1;
           final mqViewInsets = mq.item2;
           final mqViewPadding = mq.item3;
@@ -176,12 +176,12 @@ class _BottomOverlayContent extends AnimatedWidget {
       child: SizedBox(
         width: availableWidth,
         child: Selector<MediaQueryData, Orientation>(
-          selector: (c, mq) => mq.orientation,
-          builder: (c, orientation, child) {
+          selector: (context, mq) => mq.orientation,
+          builder: (context, orientation, child) {
             Widget? infoColumn;
 
             if (settings.showOverlayInfo) {
-              infoColumn = _buildInfoColumn(orientation);
+              infoColumn = _buildInfoColumn(context, orientation);
             }
 
             if (mainEntry.isMultiPage && multiPageController != null) {
@@ -205,12 +205,13 @@ class _BottomOverlayContent extends AnimatedWidget {
     );
   }
 
-  Widget _buildInfoColumn(Orientation orientation) {
+  Widget _buildInfoColumn(BuildContext context, Orientation orientation) {
     final infoMaxWidth = availableWidth - infoPadding.horizontal;
     final twoColumns = orientation == Orientation.landscape && infoMaxWidth / 2 > _subRowMinWidth;
     final subRowWidth = twoColumns ? min(_subRowMinWidth, infoMaxWidth / 2) : infoMaxWidth;
     final positionTitle = _PositionTitleRow(entry: pageEntry, collectionPosition: position, multiPageController: multiPageController);
     final hasShootingDetails = details != null && !details!.isEmpty && settings.showOverlayShootingDetails;
+    final animationDuration = context.select<DurationsData, Duration>((v) => v.viewerOverlayChangeAnimation);
 
     return Padding(
       padding: infoPadding,
@@ -219,7 +220,7 @@ class _BottomOverlayContent extends AnimatedWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (positionTitle.isNotEmpty) positionTitle,
-          _buildSoloLocationRow(),
+          _buildSoloLocationRow(animationDuration),
           if (twoColumns)
             Padding(
               padding: const EdgeInsets.only(top: _interRowPadding),
@@ -231,7 +232,7 @@ class _BottomOverlayContent extends AnimatedWidget {
                         entry: pageEntry,
                         multiPageController: multiPageController,
                       )),
-                  _buildDuoShootingRow(subRowWidth, hasShootingDetails),
+                  _buildDuoShootingRow(subRowWidth, hasShootingDetails, animationDuration),
                 ],
               ),
             )
@@ -244,15 +245,15 @@ class _BottomOverlayContent extends AnimatedWidget {
                 multiPageController: multiPageController,
               ),
             ),
-            _buildSoloShootingRow(subRowWidth, hasShootingDetails),
+            _buildSoloShootingRow(subRowWidth, hasShootingDetails, animationDuration),
           ],
         ],
       ),
     );
   }
 
-  Widget _buildSoloLocationRow() => AnimatedSwitcher(
-        duration: Durations.viewerOverlayChangeAnimation,
+  Widget _buildSoloLocationRow(Duration animationDuration) => AnimatedSwitcher(
+        duration: animationDuration,
         switchInCurve: Curves.easeInOutCubic,
         switchOutCurve: Curves.easeInOutCubic,
         transitionBuilder: _soloTransition,
@@ -264,8 +265,8 @@ class _BottomOverlayContent extends AnimatedWidget {
             : const SizedBox(),
       );
 
-  Widget _buildSoloShootingRow(double subRowWidth, bool hasShootingDetails) => AnimatedSwitcher(
-        duration: Durations.viewerOverlayChangeAnimation,
+  Widget _buildSoloShootingRow(double subRowWidth, bool hasShootingDetails, Duration animationDuration) => AnimatedSwitcher(
+        duration: animationDuration,
         switchInCurve: Curves.easeInOutCubic,
         switchOutCurve: Curves.easeInOutCubic,
         transitionBuilder: _soloTransition,
@@ -278,8 +279,8 @@ class _BottomOverlayContent extends AnimatedWidget {
             : const SizedBox(),
       );
 
-  Widget _buildDuoShootingRow(double subRowWidth, bool hasShootingDetails) => AnimatedSwitcher(
-        duration: Durations.viewerOverlayChangeAnimation,
+  Widget _buildDuoShootingRow(double subRowWidth, bool hasShootingDetails, Duration animationDuration) => AnimatedSwitcher(
+        duration: animationDuration,
         switchInCurve: Curves.easeInOutCubic,
         switchOutCurve: Curves.easeInOutCubic,
         transitionBuilder: (child, animation) => FadeTransition(

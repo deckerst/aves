@@ -16,9 +16,6 @@ class Durations {
   static const iconAnimation = Duration(milliseconds: 300);
   static const sweeperOpacityAnimation = Duration(milliseconds: 150);
   static const sweepingAnimation = Duration(milliseconds: 650);
-
-  // static const staggeredAnimation = Duration(milliseconds: 375);
-  // static const staggeredAnimationPageTarget = Duration(milliseconds: 800);
   static const dialogFieldReachAnimation = Duration(milliseconds: 300);
 
   static const appBarTitleAnimation = Duration(milliseconds: 300);
@@ -43,9 +40,6 @@ class Durations {
   static const filterRowExpandAnimation = Duration(milliseconds: 300);
 
   // viewer animations
-  static const viewerVerticalPageScrollAnimation = Duration(milliseconds: 500);
-  static const viewerOverlayAnimation = Duration(milliseconds: 200);
-  static const viewerOverlayChangeAnimation = Duration(milliseconds: 150);
   static const thumbnailScrollerScrollAnimation = Duration(milliseconds: 200);
   static const thumbnailScrollerShadeAnimation = Duration(milliseconds: 150);
   static const viewerVideoPlayerTransition = Duration(milliseconds: 500);
@@ -67,8 +61,6 @@ class Durations {
   static const highlightScrollInitDelay = Duration(milliseconds: 800);
   static const videoOverlayHideDelay = Duration(milliseconds: 500);
   static const videoProgressTimerInterval = Duration(milliseconds: 300);
-
-  // static Duration staggeredAnimationDelay = Durations.staggeredAnimation ~/ 6 * timeDilation;
   static const doubleBackTimerDelay = Duration(milliseconds: 1000);
   static const softKeyboardDisplayDelay = Duration(milliseconds: 300);
   static const searchDebounceDelay = Duration(milliseconds: 250);
@@ -107,6 +99,11 @@ class DurationsData {
   final Duration staggeredAnimation;
   final Duration staggeredAnimationPageTarget;
 
+  // viewer animations
+  final Duration viewerVerticalPageScrollAnimation;
+  final Duration viewerOverlayAnimation;
+  final Duration viewerOverlayChangeAnimation;
+
   // delays & refresh intervals
   final Duration staggeredAnimationDelay;
 
@@ -114,13 +111,20 @@ class DurationsData {
     this.expansionTileAnimation = const Duration(milliseconds: 200),
     this.staggeredAnimation = const Duration(milliseconds: 375),
     this.staggeredAnimationPageTarget = const Duration(milliseconds: 800),
+    this.viewerVerticalPageScrollAnimation = const Duration(milliseconds: 500),
+    this.viewerOverlayAnimation = const Duration(milliseconds: 200),
+    this.viewerOverlayChangeAnimation = const Duration(milliseconds: 150),
   }) : staggeredAnimationDelay = staggeredAnimation ~/ 6;
 
   factory DurationsData.noAnimation() {
     return DurationsData(
-      expansionTileAnimation: const Duration(microseconds: 1), // as of Flutter v2.5.1, `ExpansionPanelList` throws if animation duration is zero
+      // as of Flutter v2.5.1, `ExpansionPanelList` throws if animation duration is zero
+      expansionTileAnimation: const Duration(microseconds: 1),
       staggeredAnimation: Duration.zero,
       staggeredAnimationPageTarget: Duration.zero,
+      viewerVerticalPageScrollAnimation: Duration.zero,
+      viewerOverlayAnimation: Duration.zero,
+      viewerOverlayChangeAnimation: Duration.zero,
     );
   }
 }

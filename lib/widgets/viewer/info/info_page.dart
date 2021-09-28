@@ -47,8 +47,8 @@ class _InfoPageState extends State<InfoPage> {
             child: NotificationListener<ScrollNotification>(
               onNotification: _handleTopScroll,
               child: Selector<MediaQueryData, double>(
-                selector: (c, mq) => mq.size.width,
-                builder: (c, mqWidth, child) {
+                selector: (context, mq) => mq.size.width,
+                builder: (context, mqWidth, child) {
                   return ValueListenableBuilder<AvesEntry?>(
                     valueListenable: widget.entryNotifier,
                     builder: (context, mainEntry, child) {
@@ -109,10 +109,11 @@ class _InfoPageState extends State<InfoPage> {
   }
 
   void _goToViewer() {
+    final animationDuration = context.read<DurationsData>().viewerVerticalPageScrollAnimation;
     ShowImageNotification().dispatch(context);
     _scrollController.animateTo(
       0,
-      duration: Durations.viewerVerticalPageScrollAnimation,
+      duration: animationDuration,
       curve: Curves.easeInOut,
     );
   }

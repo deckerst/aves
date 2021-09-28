@@ -108,7 +108,7 @@ class _MapPageContentState extends State<MapPageContent> with SingleTickerProvid
     _dotEntryNotifier.addListener(_updateInfoEntry);
 
     _overlayAnimationController = AnimationController(
-      duration: Durations.viewerOverlayAnimation,
+      duration: context.read<DurationsData>().viewerOverlayAnimation,
       vsync: this,
     );
     _overlayScale = CurvedAnimation(
@@ -238,8 +238,8 @@ class _MapPageContentState extends State<MapPageContent> with SingleTickerProvid
             ),
             const SizedBox(height: 8),
             Selector<MediaQueryData, double>(
-              selector: (c, mq) => mq.size.width,
-              builder: (c, mqWidth, child) => ValueListenableBuilder<CollectionLens?>(
+              selector: (context, mq) => mq.size.width,
+              builder: (context, mqWidth, child) => ValueListenableBuilder<CollectionLens?>(
                 valueListenable: _regionCollectionNotifier,
                 builder: (context, regionCollection, child) {
                   final regionEntries = regionCollection?.sortedEntries ?? [];
@@ -333,7 +333,7 @@ class _MapPageContentState extends State<MapPageContent> with SingleTickerProvid
       context,
       TransparentMaterialPageRoute(
         settings: const RouteSettings(name: EntryViewerPage.routeName),
-        pageBuilder: (c, a, sa) {
+        pageBuilder: (context, a, sa) {
           return EntryViewerPage(
             collection: regionCollection,
             initialEntry: initialEntry,
