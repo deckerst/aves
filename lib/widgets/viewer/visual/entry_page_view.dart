@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:aves/model/entry.dart';
+import 'package:aves/model/settings/accessibility_animations.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/magnifier/controller/controller.dart';
@@ -93,7 +94,7 @@ class _EntryPageViewState extends State<EntryPageView> {
 
   @override
   Widget build(BuildContext context) {
-    final child = AnimatedBuilder(
+    Widget child = AnimatedBuilder(
       animation: entry.imageChangeNotifier,
       builder: (context, child) {
         Widget? child;
@@ -114,14 +115,18 @@ class _EntryPageViewState extends State<EntryPageView> {
       },
     );
 
-    return Consumer<HeroInfo?>(
-      builder: (context, info, child) => Hero(
-        tag: info != null && info.entry == mainEntry ? Object.hashAll([info.collectionId, mainEntry.uri]) : hashCode,
-        transitionOnUserGestures: true,
-        child: child!,
-      ),
-      child: child,
-    );
+    final enabledAnimations = context.select<Settings, bool>((v) => v.accessibilityAnimations.enabled);
+    if (enabledAnimations) {
+      child = Consumer<HeroInfo?>(
+        builder: (context, info, child) => Hero(
+          tag: info != null && info.entry == mainEntry ? Object.hashAll([info.collectionId, mainEntry.uri]) : hashCode,
+          transitionOnUserGestures: true,
+          child: child!,
+        ),
+        child: child,
+      );
+    }
+    return child;
   }
 
   Widget _buildRasterView() {

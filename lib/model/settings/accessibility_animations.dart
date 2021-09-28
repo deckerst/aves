@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/widgets.dart';
 
@@ -12,6 +14,17 @@ extension ExtraAccessibilityAnimations on AccessibilityAnimations {
         return context.l10n.accessibilityAnimationsRemove;
       case AccessibilityAnimations.enabled:
         return context.l10n.accessibilityAnimationsKeep;
+    }
+  }
+
+  bool get enabled {
+    switch (this) {
+      case AccessibilityAnimations.system:
+        return !window.accessibilityFeatures.disableAnimations;
+      case AccessibilityAnimations.disabled:
+        return false;
+      case AccessibilityAnimations.enabled:
+        return true;
     }
   }
 }

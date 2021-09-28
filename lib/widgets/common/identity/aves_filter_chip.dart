@@ -4,6 +4,8 @@ import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/filters/tag.dart';
+import 'package:aves/model/settings/accessibility_animations.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/basic/menu.dart';
@@ -16,7 +18,7 @@ import 'package:provider/provider.dart';
 typedef FilterCallback = void Function(CollectionFilter filter);
 typedef OffsetFilterCallback = void Function(BuildContext context, CollectionFilter filter, Offset tapPosition);
 
-enum HeroType { always, onTap, never }
+enum HeroType { always, onTap }
 
 @immutable
 class AvesFilterDecoration {
@@ -295,7 +297,8 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
       ),
     );
 
-    if (widget.heroType == HeroType.always || widget.heroType == HeroType.onTap && _tapped) {
+    final enabledAnimations = context.select<Settings, bool>((v) => v.accessibilityAnimations.enabled);
+    if (enabledAnimations && (widget.heroType == HeroType.always || widget.heroType == HeroType.onTap && _tapped)) {
       chip = Hero(
         tag: filter,
         transitionOnUserGestures: true,
