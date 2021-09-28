@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:aves/flutter_version.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/services.dart';
+import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -15,6 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class BugReport extends StatefulWidget {
@@ -37,10 +39,12 @@ class _BugReportState extends State<BugReport> with FeedbackMixin {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final animationDuration = context.select<DurationsData, Duration>((v) => v.expansionTileAnimation);
     return ExpansionPanelList(
       expansionCallback: (index, isExpanded) {
         setState(() => _showInstructions = !isExpanded);
       },
+      animationDuration: animationDuration,
       expandedHeaderPadding: EdgeInsets.zero,
       elevation: 0,
       children: [

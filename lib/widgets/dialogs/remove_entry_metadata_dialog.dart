@@ -2,12 +2,14 @@ import 'package:aves/model/entry.dart';
 import 'package:aves/model/metadata/enums.dart';
 import 'package:aves/ref/brand_colors.dart';
 import 'package:aves/ref/mime_types.dart';
+import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/color_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/highlight_decoration.dart';
 import 'package:aves/widgets/common/identity/highlight_title.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'aves_dialog.dart';
 
@@ -46,6 +48,7 @@ class _RemoveEntryMetadataDialogState extends State<RemoveEntryMetadataDialog> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final animationDuration = context.select<DurationsData, Duration>((v) => v.expansionTileAnimation);
     return AvesDialog(
       context: context,
       title: l10n.removeEntryMetadataDialogTitle,
@@ -58,6 +61,7 @@ class _RemoveEntryMetadataDialogState extends State<RemoveEntryMetadataDialog> {
               expansionCallback: (index, isExpanded) {
                 setState(() => _showMore = !isExpanded);
               },
+              animationDuration: animationDuration,
               expandedHeaderPadding: EdgeInsets.zero,
               elevation: 0,
               children: [

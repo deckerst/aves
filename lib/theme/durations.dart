@@ -103,6 +103,7 @@ class DurationsProvider extends StatelessWidget {
 @immutable
 class DurationsData {
   // common animations
+  final Duration expansionTileAnimation;
   final Duration staggeredAnimation;
   final Duration staggeredAnimationPageTarget;
 
@@ -110,12 +111,14 @@ class DurationsData {
   final Duration staggeredAnimationDelay;
 
   const DurationsData({
+    this.expansionTileAnimation = const Duration(milliseconds: 200),
     this.staggeredAnimation = const Duration(milliseconds: 375),
     this.staggeredAnimationPageTarget = const Duration(milliseconds: 800),
   }) : staggeredAnimationDelay = staggeredAnimation ~/ 6;
 
   factory DurationsData.noAnimation() {
     return DurationsData(
+      expansionTileAnimation: const Duration(microseconds: 1), // as of Flutter v2.5.1, `ExpansionPanelList` throws if animation duration is zero
       staggeredAnimation: Duration.zero,
       staggeredAnimationPageTarget: Duration.zero,
     );
