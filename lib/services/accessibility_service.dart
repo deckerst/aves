@@ -4,6 +4,16 @@ import 'package:flutter/services.dart';
 class AccessibilityService {
   static const platform = MethodChannel('deckers.thibault/aves/accessibility');
 
+  static Future<bool> areAnimationsRemoved() async {
+    try {
+      final result = await platform.invokeMethod('areAnimationsRemoved');
+      if (result != null) return result as bool;
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
+    return false;
+  }
+
   static Future<bool> hasRecommendedTimeouts() async {
     try {
       final result = await platform.invokeMethod('hasRecommendedTimeouts');

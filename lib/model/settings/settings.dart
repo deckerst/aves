@@ -116,11 +116,18 @@ class Settings extends ChangeNotifier {
   // cf Android `Settings.System.ACCELEROMETER_ROTATION`
   static const platformAccelerometerRotationKey = 'accelerometer_rotation';
 
+  // cf Android `Settings.Global.TRANSITION_ANIMATION_SCALE`
+  static const platformTransitionAnimationScaleKey = 'transition_animation_scale';
+
   bool get initialized => _prefs != null;
 
-  Future<void> init({bool isRotationLocked = false}) async {
+  Future<void> init({
+    bool isRotationLocked = false,
+    bool areAnimationsRemoved = false,
+  }) async {
     _prefs = await SharedPreferences.getInstance();
     _isRotationLocked = isRotationLocked;
+    _areAnimationsRemoved = areAnimationsRemoved;
   }
 
   Future<void> reset({required bool includeInternalKeys}) async {
@@ -447,10 +454,11 @@ class Settings extends ChangeNotifier {
   // platform settings
 
   void _onPlatformSettingsChange(Map? fields) {
+    var changed = false;
     fields?.forEach((key, value) {
       switch (key) {
         case platformAccelerometerRotationKey:
-          if (value is int) {
+          if (value is num) {
             final newValue = value == 0;
             if (_isRotationLocked != newValue) {
               _isRotationLocked = newValue;
@@ -458,17 +466,33 @@ class Settings extends ChangeNotifier {
                 windowService.requestOrientation();
               }
               _updateStreamController.add(key);
-              notifyListeners();
+              changed = true;
             }
           }
           break;
+        case platformTransitionAnimationScaleKey:
+          if (value is num) {
+            final newValue = value == 0;
+            if (_areAnimationsRemoved != newValue) {
+              _areAnimationsRemoved = newValue;
+              _updateStreamController.add(key);
+              changed = true;
+            }
+          }
       }
     });
+    if (changed) {
+      notifyListeners();
+    }
   }
 
   bool _isRotationLocked = false;
 
   bool get isRotationLocked => _isRotationLocked;
+
+  bool _areAnimationsRemoved = false;
+
+  bool get areAnimationsRemoved => _areAnimationsRemoved;
 
   // import/export
 

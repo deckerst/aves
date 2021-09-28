@@ -1,5 +1,4 @@
 import 'package:aves/model/settings/accessibility_animations.dart';
-import 'package:aves/model/settings/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
@@ -72,7 +71,7 @@ class Durations {
   static const lastVersionCheckInterval = Duration(days: 7);
 }
 
-class DurationsProvider extends StatefulWidget {
+class DurationsProvider extends StatelessWidget {
   final Widget child;
 
   const DurationsProvider({
@@ -81,37 +80,13 @@ class DurationsProvider extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _DurationsProviderState createState() => _DurationsProviderState();
-}
-
-class _DurationsProviderState extends State<DurationsProvider> with WidgetsBindingObserver {
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance!.addObserver(this);
-  }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance!.removeObserver(this);
-    super.dispose();
-  }
-
-  @override
-  void didChangeAccessibilityFeatures() {
-    if (settings.accessibilityAnimations == AccessibilityAnimations.system) {
-      // TODO TLAD update provider
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
     return ProxyProvider<Settings, DurationsData>(
       update: (context, settings, __) {
         final enabled = settings.accessibilityAnimations.animate;
         return enabled ? DurationsData() : DurationsData.noAnimation();
       },
-      child: widget.child,
+      child: child,
     );
   }
 }

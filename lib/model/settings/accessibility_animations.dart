@@ -1,5 +1,4 @@
-import 'dart:ui';
-
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/widgets.dart';
 
@@ -20,7 +19,9 @@ extension ExtraAccessibilityAnimations on AccessibilityAnimations {
   bool get animate {
     switch (this) {
       case AccessibilityAnimations.system:
-        return !window.accessibilityFeatures.disableAnimations;
+        // as of Flutter v2.5.1, the check for `disableAnimations` is unreliable
+        // so we cannot use `window.accessibilityFeatures.disableAnimations` nor `MediaQuery.of(context).disableAnimations`
+        return !settings.areAnimationsRemoved;
       case AccessibilityAnimations.disabled:
         return false;
       case AccessibilityAnimations.enabled:
