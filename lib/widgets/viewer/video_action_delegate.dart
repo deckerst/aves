@@ -181,7 +181,7 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     } else {
       await controller.play();
       // hide overlay
-      _overlayHidingTimer = Timer(Durations.iconAnimation + Durations.videoOverlayHideDelay, () {
+      _overlayHidingTimer = Timer(context.read<DurationsData>().iconAnimation + Durations.videoOverlayHideDelay, () {
         const ToggleOverlayNotification(visible: false).dispatch(context);
       });
     }

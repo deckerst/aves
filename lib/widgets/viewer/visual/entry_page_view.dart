@@ -115,8 +115,8 @@ class _EntryPageViewState extends State<EntryPageView> {
       },
     );
 
-    final enabledAnimations = context.select<Settings, bool>((v) => v.accessibilityAnimations.enabled);
-    if (enabledAnimations) {
+    final animate = context.select<Settings, bool>((v) => v.accessibilityAnimations.animate);
+    if (animate) {
       child = Consumer<HeroInfo?>(
         builder: (context, info, child) => Hero(
           tag: info != null && info.entry == mainEntry ? Object.hashAll([info.collectionId, mainEntry.uri]) : hashCode,

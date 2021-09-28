@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:aves/model/settings/accessibility_animations.dart';
 import 'package:aves/model/settings/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/accessibility_service.dart';
@@ -8,6 +9,7 @@ import 'package:aves/theme/durations.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:provider/provider.dart';
 
 mixin FeedbackMixin {
   void dismissFeedback(BuildContext context) => ScaffoldMessenger.of(context).hideCurrentSnackBar();
@@ -142,6 +144,7 @@ class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerPr
           final total = widget.itemCount;
           assert(processedCount <= total);
           final percent = min(1.0, processedCount / total);
+          final animate = context.select<Settings, bool>((v) => v.accessibilityAnimations.animate);
           return FadeTransition(
             opacity: _animation,
             child: Container(
@@ -156,22 +159,23 @@ class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerPr
               child: Center(
                 child: Stack(
                   children: [
-                    Container(
-                      width: radius,
-                      height: radius,
-                      padding: const EdgeInsets.all(strokeWidth / 2),
-                      child: CircularProgressIndicator(
-                        color: progressColor.withOpacity(.1),
-                        strokeWidth: strokeWidth,
+                    if (animate)
+                      Container(
+                        width: radius,
+                        height: radius,
+                        padding: const EdgeInsets.all(strokeWidth / 2),
+                        child: CircularProgressIndicator(
+                          color: progressColor.withOpacity(.1),
+                          strokeWidth: strokeWidth,
+                        ),
                       ),
-                    ),
                     CircularPercentIndicator(
                       percent: percent,
                       lineWidth: strokeWidth,
                       radius: radius,
                       backgroundColor: Colors.white24,
                       progressColor: progressColor,
-                      animation: true,
+                      animation: animate,
                       center: Text(NumberFormat.percentPattern().format(percent)),
                       animateFromLastPercent: true,
                     ),
