@@ -6,6 +6,7 @@ import 'package:aves/model/settings/screen_on.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/media_store_source.dart';
+import 'package:aves/services/accessibility_service.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
@@ -144,6 +145,7 @@ class _AvesAppState extends State<AvesApp> {
   Future<void> _setup() async {
     await settings.init(
       isRotationLocked: await windowService.isRotationLocked(),
+      areAnimationsRemoved: await AccessibilityService.areAnimationsRemoved(),
     );
 
     // keep screen on

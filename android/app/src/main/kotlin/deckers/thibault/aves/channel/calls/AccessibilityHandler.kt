@@ -3,19 +3,33 @@ package deckers.thibault.aves.channel.calls
 import android.app.Activity
 import android.content.Context
 import android.os.Build
+import android.provider.Settings
+import android.util.Log
 import android.view.accessibility.AccessibilityManager
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
+import deckers.thibault.aves.utils.LogUtils
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 
-class AccessibilityHandler(private val context: Activity) : MethodCallHandler {
+class AccessibilityHandler(private val activity: Activity) : MethodCallHandler {
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
+            "areAnimationsRemoved" -> safe(call, result, ::areAnimationsRemoved)
             "hasRecommendedTimeouts" -> safe(call, result, ::hasRecommendedTimeouts)
             "getRecommendedTimeoutMillis" -> safe(call, result, ::getRecommendedTimeoutMillis)
             else -> result.notImplemented()
         }
+    }
+
+    private fun areAnimationsRemoved(@Suppress("UNUSED_PARAMETER") call: MethodCall, result: MethodChannel.Result) {
+        var removed = false
+        try {
+            removed = Settings.Global.getFloat(activity.contentResolver, Settings.Global.TRANSITION_ANIMATION_SCALE) == 0f
+        } catch (e: Exception) {
+            Log.w(LOG_TAG, "failed to get settings", e)
+        }
+        result.success(removed)
     }
 
     private fun hasRecommendedTimeouts(@Suppress("UNUSED_PARAMETER") call: MethodCall, result: MethodChannel.Result) {
@@ -48,7 +62,7 @@ class AccessibilityHandler(private val context: Activity) : MethodCallHandler {
             }
         }
 
-        val am = context.getSystemService(Context.ACCESSIBILITY_SERVICE) as? AccessibilityManager
+        val am = activity.getSystemService(Context.ACCESSIBILITY_SERVICE) as? AccessibilityManager
         if (am == null) {
             result.error("getRecommendedTimeoutMillis-service", "failed to get accessibility manager", null)
             return
@@ -59,6 +73,7 @@ class AccessibilityHandler(private val context: Activity) : MethodCallHandler {
     }
 
     companion object {
+        private val LOG_TAG = LogUtils.createTag<AccessibilityHandler>()
         const val CHANNEL = "deckers.thibault/aves/accessibility"
     }
 }
