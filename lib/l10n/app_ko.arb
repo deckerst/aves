@@ -101,6 +101,9 @@
   "keepScreenOnViewerOnly": "뷰어 이용 시 작동",
   "keepScreenOnAlways": "항상 켜짐",
 
+  "accessibilityAnimationsRemove": "화면 효과 제한",
+  "accessibilityAnimationsKeep": "화면 효과 유지",
+
   "albumTierNew": "신규",
   "albumTierPinned": "고정",
   "albumTierSpecial": "기본",
@@ -389,6 +392,8 @@
   "settingsStorageAccessRevokeTooltip": "취소",
 
   "settingsSectionAccessibility": "접근성",
+  "settingsRemoveAnimationsTile": "애니메이션 삭제",
+  "settingsRemoveAnimationsTitle": "애니메이션 삭제",
   "settingsTimeToTakeActionTile": "액션 취하기 전 대기 시간",
   "settingsTimeToTakeActionTitle": "액션 취하기 전 대기 시간",
 

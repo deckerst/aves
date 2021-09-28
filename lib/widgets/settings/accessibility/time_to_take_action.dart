@@ -1,7 +1,7 @@
-import 'package:aves/model/settings/a11y_timeout.dart';
+import 'package:aves/model/settings/accessibility_timeout.dart';
 import 'package:aves/model/settings/enums.dart';
 import 'package:aves/model/settings/settings.dart';
-import 'package:aves/services/a11y_service.dart';
+import 'package:aves/services/accessibility_service.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
 import 'package:flutter/material.dart';

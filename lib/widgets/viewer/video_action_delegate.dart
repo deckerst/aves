@@ -116,7 +116,8 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
                   ),
                   (route) => false,
                 ));
-                await Future.delayed(Durations.staggeredAnimationPageTarget + Durations.highlightScrollInitDelay);
+                final delayDuration = context.read<DurationsData>().staggeredAnimationPageTarget;
+                await Future.delayed(delayDuration + Durations.highlightScrollInitDelay);
                 final newUri = newFields['uri'] as String?;
                 final targetEntry = targetCollection.sortedEntries.firstWhereOrNull((entry) => entry.uri == newUri);
                 if (targetEntry != null) {

@@ -2,7 +2,7 @@ import 'package:aves/services/common/services.dart';
 import 'package:flutter/services.dart';
 
 class AccessibilityService {
-  static const platform = MethodChannel('deckers.thibault/aves/a11y');
+  static const platform = MethodChannel('deckers.thibault/aves/accessibility');
 
   static Future<bool> hasRecommendedTimeouts() async {
     try {

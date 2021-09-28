@@ -200,6 +200,11 @@
   "keepScreenOnAlways": "Always",
   "@keepScreenOnAlways": {},
 
+  "accessibilityAnimationsRemove": "Prevent screen effects",
+  "@accessibilityAnimationsRemove": {},
+  "accessibilityAnimationsKeep": "Keep screen effects",
+  "@accessibilityAnimationsKeep": {},
+
   "albumTierNew": "New",
   "@albumTierNew": {},
   "albumTierPinned": "Pinned",
@@ -799,6 +804,10 @@
 
   "settingsSectionAccessibility": "Accessibility",
   "@settingsSectionAccessibility": {},
+  "settingsRemoveAnimationsTile": "Remove animations",
+  "@settingsRemoveAnimationsTile": {},
+  "settingsRemoveAnimationsTitle": "Remove Animations",
+  "@settingsRemoveAnimationsTitle": {},
   "settingsTimeToTakeActionTile": "Time to take action",
   "@settingsTimeToTakeActionTile": {},
   "settingsTimeToTakeActionTitle": "Time to Take Action",

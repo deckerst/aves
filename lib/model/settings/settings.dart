@@ -10,7 +10,7 @@ import 'package:aves/model/settings/defaults.dart';
 import 'package:aves/model/settings/enums.dart';
 import 'package:aves/model/settings/map_style.dart';
 import 'package:aves/model/source/enums.dart';
-import 'package:aves/services/a11y_service.dart';
+import 'package:aves/services/accessibility_service.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -106,6 +106,7 @@ class Settings extends ChangeNotifier {
   static const searchHistoryKey = 'search_history';
 
   // accessibility
+  static const accessibilityAnimationsKey = 'accessibility_animations';
   static const timeToTakeActionKey = 'time_to_take_action';
 
   // version
@@ -114,6 +115,8 @@ class Settings extends ChangeNotifier {
   // platform settings
   // cf Android `Settings.System.ACCELEROMETER_ROTATION`
   static const platformAccelerometerRotationKey = 'accelerometer_rotation';
+
+  bool get initialized => _prefs != null;
 
   Future<void> init({bool isRotationLocked = false}) async {
     _prefs = await SharedPreferences.getInstance();
@@ -382,6 +385,10 @@ class Settings extends ChangeNotifier {
 
   // accessibility
 
+  AccessibilityAnimations get accessibilityAnimations => getEnumOrDefault(accessibilityAnimationsKey, SettingsDefaults.accessibilityAnimations, AccessibilityAnimations.values);
+
+  set accessibilityAnimations(AccessibilityAnimations newValue) => setAndNotify(accessibilityAnimationsKey, newValue.toString());
+
   AccessibilityTimeout get timeToTakeAction => getEnumOrDefault(timeToTakeActionKey, SettingsDefaults.timeToTakeAction, AccessibilityTimeout.values);
 
   set timeToTakeAction(AccessibilityTimeout newValue) => setAndNotify(timeToTakeActionKey, newValue.toString());
@@ -538,6 +545,7 @@ class Settings extends ChangeNotifier {
             case infoMapStyleKey:
             case coordinateFormatKey:
             case imageBackgroundKey:
+            case accessibilityAnimationsKey:
             case timeToTakeActionKey:
               if (value is String) {
                 _prefs!.setString(key, value);

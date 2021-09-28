@@ -1,4 +1,7 @@
-import 'package:flutter/scheduler.dart';
+import 'package:aves/model/settings/settings.dart';
+import 'package:aves/widgets/common/behaviour/accessibility_mixin.dart';
+import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
 
 class Durations {
   // Flutter animations (with margin)
@@ -14,8 +17,8 @@ class Durations {
   static const sweeperOpacityAnimation = Duration(milliseconds: 150);
   static const sweepingAnimation = Duration(milliseconds: 650);
 
-  static const staggeredAnimation = Duration(milliseconds: 375);
-  static const staggeredAnimationPageTarget = Duration(milliseconds: 800);
+  // static const staggeredAnimation = Duration(milliseconds: 375);
+  // static const staggeredAnimationPageTarget = Duration(milliseconds: 800);
   static const dialogFieldReachAnimation = Duration(milliseconds: 300);
 
   static const appBarTitleAnimation = Duration(milliseconds: 300);
@@ -64,7 +67,8 @@ class Durations {
   static const highlightScrollInitDelay = Duration(milliseconds: 800);
   static const videoOverlayHideDelay = Duration(milliseconds: 500);
   static const videoProgressTimerInterval = Duration(milliseconds: 300);
-  static Duration staggeredAnimationDelay = Durations.staggeredAnimation ~/ 6 * timeDilation;
+
+  // static Duration staggeredAnimationDelay = Durations.staggeredAnimation ~/ 6 * timeDilation;
   static const doubleBackTimerDelay = Duration(milliseconds: 1000);
   static const softKeyboardDisplayDelay = Duration(milliseconds: 300);
   static const searchDebounceDelay = Duration(milliseconds: 250);
@@ -74,4 +78,45 @@ class Durations {
 
   // app life
   static const lastVersionCheckInterval = Duration(days: 7);
+}
+
+class DurationsProvider extends StatelessWidget with AccessibilityMixin {
+  final Widget child;
+
+  const DurationsProvider({
+    Key? key,
+    required this.child,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ProxyProvider<Settings, DurationsData>(
+      update: (_, settings, __) {
+        return areAnimationsEnabled() ? DurationsData() : DurationsData.noAnimation();
+      },
+      child: child,
+    );
+  }
+}
+
+@immutable
+class DurationsData {
+  // common animations
+  final Duration staggeredAnimation;
+  final Duration staggeredAnimationPageTarget;
+
+  // delays & refresh intervals
+  final Duration staggeredAnimationDelay;
+
+  const DurationsData({
+    this.staggeredAnimation = const Duration(milliseconds: 375),
+    this.staggeredAnimationPageTarget = const Duration(milliseconds: 800),
+  }) : staggeredAnimationDelay = staggeredAnimation ~/ 6;
+
+  factory DurationsData.noAnimation() {
+    return DurationsData(
+      staggeredAnimation: Duration.zero,
+      staggeredAnimationPageTarget: Duration.zero,
+    );
+  }
 }

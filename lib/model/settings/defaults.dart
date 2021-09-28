@@ -57,9 +57,7 @@ class SettingsDefaults {
   static const showOverlayMinimap = false;
   static const showOverlayInfo = true;
   static const showOverlayShootingDetails = false;
-
-  // `enableOverlayBlurEffect` has a contextual default value
-  static const enableOverlayBlurEffect = true;
+  static const enableOverlayBlurEffect = true; // `enableOverlayBlurEffect` has a contextual default value
   static const viewerUseCutout = true;
 
   // video
@@ -80,8 +78,7 @@ class SettingsDefaults {
   static const subtitleBackgroundColor = Colors.transparent;
 
   // info
-  // `infoMapStyle` has a contextual default value
-  static const infoMapStyle = EntryMapStyle.stamenWatercolor;
+  static const infoMapStyle = EntryMapStyle.stamenWatercolor; // `infoMapStyle` has a contextual default value
   static const infoMapZoom = 12.0;
   static const coordinateFormat = CoordinateFormat.dms;
 
@@ -92,6 +89,6 @@ class SettingsDefaults {
   static const saveSearchHistory = true;
 
   // accessibility
-  // `timeToTakeAction` has a contextual default value
-  static const timeToTakeAction = AccessibilityTimeout.appDefault;
+  static const accessibilityAnimations = AccessibilityAnimations.system;
+  static const timeToTakeAction = AccessibilityTimeout.appDefault; // `timeToTakeAction` has a contextual default value
 }

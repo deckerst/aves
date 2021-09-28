@@ -59,6 +59,6 @@ class AccessibilityHandler(private val context: Activity) : MethodCallHandler {
     }
 
     companion object {
-        const val CHANNEL = "deckers.thibault/aves/a11y"
+        const val CHANNEL = "deckers.thibault/aves/accessibility"
     }
 }

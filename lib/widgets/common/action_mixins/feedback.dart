@@ -3,7 +3,7 @@ import 'dart:math';
 
 import 'package:aves/model/settings/enums.dart';
 import 'package:aves/model/settings/settings.dart';
-import 'package:aves/services/a11y_service.dart';
+import 'package:aves/services/accessibility_service.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
