@@ -15,7 +15,9 @@ import 'package:aves/widgets/viewer/info/metadata/metadata_dir_tile.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:provider/provider.dart';
 
 class MetadataSectionSliver extends StatefulWidget {
   final AvesEntry entry;
@@ -90,10 +92,11 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> {
               if (metadata.isEmpty) {
                 content = const SizedBox.shrink();
               } else {
+                final durations = context.watch<DurationsData>();
                 content = Column(
                   children: AnimationConfiguration.toStaggeredList(
-                    duration: Durations.staggeredAnimation,
-                    delay: Durations.staggeredAnimationDelay,
+                    duration: durations.staggeredAnimation,
+                    delay: durations.staggeredAnimationDelay * timeDilation,
                     childAnimationBuilder: (child) => SlideAnimation(
                       verticalOffset: 50.0,
                       child: FadeInAnimation(

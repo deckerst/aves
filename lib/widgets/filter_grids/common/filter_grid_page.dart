@@ -245,7 +245,8 @@ class _FilterGridContent<T extends CollectionFilter> extends StatelessWidget {
                 final columnCount = c.item2;
                 final tileSpacing = c.item3;
                 // do not listen for animation delay change
-                final tileAnimationDelay = context.read<TileExtentController>().getTileAnimationDelay(Durations.staggeredAnimationPageTarget);
+                final target = context.read<DurationsData>().staggeredAnimationPageTarget;
+                final tileAnimationDelay = context.read<TileExtentController>().getTileAnimationDelay(target);
                 return Selector<MediaQueryData, double>(
                   selector: (context, mq) => mq.textScaleFactor,
                   builder: (context, textScaleFactor, child) {

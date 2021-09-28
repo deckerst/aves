@@ -108,7 +108,7 @@ abstract class SectionedListLayoutProvider<T> extends StatelessWidget {
   ) {
     if (sectionChildIndex == 0) {
       final header = headerExtent > 0 ? buildHeader(context, sectionKey, headerExtent) : const SizedBox.shrink();
-      return animate ? _buildAnimation(sectionGridIndex, header) : header;
+      return animate ? _buildAnimation(context, sectionGridIndex, header) : header;
     }
     sectionChildIndex--;
 
@@ -122,7 +122,7 @@ abstract class SectionedListLayoutProvider<T> extends StatelessWidget {
       final item = RepaintBoundary(
         child: tileBuilder(section[i]),
       );
-      children.add(animate ? _buildAnimation(itemGridIndex, item) : item);
+      children.add(animate ? _buildAnimation(context, itemGridIndex, item) : item);
     }
     return _GridRow(
       width: tileWidth,
@@ -132,11 +132,12 @@ abstract class SectionedListLayoutProvider<T> extends StatelessWidget {
     );
   }
 
-  Widget _buildAnimation(int index, Widget child) {
+  Widget _buildAnimation(BuildContext context, int index, Widget child) {
+    final durations = context.watch<DurationsData>();
     return AnimationConfiguration.staggeredGrid(
       position: index,
       columnCount: columnCount,
-      duration: Durations.staggeredAnimation,
+      duration: durations.staggeredAnimation,
       delay: tileAnimationDelay,
       child: SlideAnimation(
         verticalOffset: 50.0,

@@ -233,7 +233,8 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
                     ),
                     (route) => false,
                   ));
-                  await Future.delayed(Durations.staggeredAnimationPageTarget + Durations.highlightScrollInitDelay);
+                  final delayDuration = context.read<DurationsData>().staggeredAnimationPageTarget;
+                  await Future.delayed(delayDuration + Durations.highlightScrollInitDelay);
                   final newUris = movedOps.map((v) => v.newFields['uri'] as String?).toSet();
                   final targetEntry = targetCollection.sortedEntries.firstWhereOrNull((entry) => newUris.contains(entry.uri));
                   if (targetEntry != null) {

@@ -10,6 +10,7 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/themes.dart';
 import 'package:aves/utils/debouncer.dart';
+import 'package:aves/widgets/common/behaviour/accessibility_mixin.dart';
 import 'package:aves/widgets/common/behaviour/route_tracker.dart';
 import 'package:aves/widgets/common/behaviour/routes.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -23,6 +24,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
+import 'package:tuple/tuple.dart';
 
 class AvesApp extends StatefulWidget {
   const AvesApp({Key? key}) : super(key: key);
@@ -31,7 +33,7 @@ class AvesApp extends StatefulWidget {
   _AvesAppState createState() => _AvesAppState();
 }
 
-class _AvesAppState extends State<AvesApp> {
+class _AvesAppState extends State<AvesApp> with AccessibilityMixin {
   final ValueNotifier<AppMode> appModeNotifier = ValueNotifier(AppMode.main);
   late Future<void> _appSetup;
   final _mediaStoreSource = MediaStoreSource();
@@ -68,24 +70,39 @@ class _AvesAppState extends State<AvesApp> {
         value: appModeNotifier,
         child: Provider<CollectionSource>.value(
           value: _mediaStoreSource,
-          child: HighlightInfoProvider(
-            child: OverlaySupport(
-              child: FutureBuilder<void>(
-                future: _appSetup,
-                builder: (context, snapshot) {
-                  final initialized = !snapshot.hasError && snapshot.connectionState == ConnectionState.done;
-                  final home = initialized
-                      ? getFirstPage()
-                      : Scaffold(
-                          body: snapshot.hasError ? _buildError(snapshot.error!) : const SizedBox(),
-                        );
-                  return Selector<Settings, Locale?>(
-                      selector: (context, s) => s.locale,
-                      builder: (context, settingsLocale, child) {
+          child: DurationsProvider(
+            child: HighlightInfoProvider(
+              child: OverlaySupport(
+                child: FutureBuilder<void>(
+                  future: _appSetup,
+                  builder: (context, snapshot) {
+                    final initialized = !snapshot.hasError && snapshot.connectionState == ConnectionState.done;
+                    final home = initialized
+                        ? getFirstPage()
+                        : Scaffold(
+                            body: snapshot.hasError ? _buildError(snapshot.error!) : const SizedBox(),
+                          );
+                    return Selector<Settings, Tuple2<Locale?, bool>>(
+                      selector: (context, s) => Tuple2(s.locale, s.initialized ? areAnimationsEnabled() : true),
+                      builder: (context, s, child) {
+                        final settingsLocale = s.item1;
+                        final areAnimationsEnabled = s.item2;
                         return MaterialApp(
                           navigatorKey: _navigatorKey,
                           home: home,
                           navigatorObservers: _navigatorObservers,
+                          builder: (context, child) {
+                            if (!areAnimationsEnabled) {
+                              child = Theme(
+                                data: Theme.of(context).copyWith(
+                                  // strip page transitions used by `MaterialPageRoute`
+                                  pageTransitionsTheme: DirectPageTransitionsTheme(),
+                                ),
+                                child: child!,
+                              );
+                            }
+                            return child!;
+                          },
                           onGenerateTitle: (context) => context.l10n.appName,
                           darkTheme: Themes.darkTheme,
                           themeMode: ThemeMode.dark,
@@ -97,8 +114,10 @@ class _AvesAppState extends State<AvesApp> {
                           // checkerboardRasterCacheImages: true,
                           // checkerboardOffscreenLayers: true,
                         );
-                      });
-                },
+                      },
+                    );
+                  },
+                ),
               ),
             ),
           ),

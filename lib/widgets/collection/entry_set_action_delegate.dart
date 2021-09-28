@@ -173,7 +173,8 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
                       ),
                     ),
                   ));
-                  await Future.delayed(Durations.staggeredAnimationPageTarget);
+                  final delayDuration = context.read<DurationsData>().staggeredAnimationPageTarget;
+                  await Future.delayed(delayDuration);
                 }
                 await Future.delayed(Durations.highlightScrollInitDelay);
                 final newUris = movedOps.map((v) => v.newFields['uri'] as String?).toSet();
