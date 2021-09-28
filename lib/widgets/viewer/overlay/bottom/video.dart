@@ -371,7 +371,7 @@ class _PlayTogglerState extends State<_PlayToggler> with SingleTickerProviderSta
   void initState() {
     super.initState();
     _playPauseAnimation = AnimationController(
-      duration: Durations.iconAnimation,
+      duration: context.read<DurationsData>().iconAnimation,
       vsync: this,
     );
     _registerWidget(widget);

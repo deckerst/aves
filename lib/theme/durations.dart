@@ -1,4 +1,5 @@
 import 'package:aves/model/settings/accessibility_animations.dart';
+import 'package:aves/model/settings/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
@@ -13,7 +14,6 @@ class Durations {
   static const toggleableTransitionAnimation = Duration(milliseconds: 200 + 10); // ref `_kToggleDuration` used in `ToggleableStateMixin`
 
   // common animations
-  static const iconAnimation = Duration(milliseconds: 300);
   static const sweeperOpacityAnimation = Duration(milliseconds: 150);
   static const sweepingAnimation = Duration(milliseconds: 650);
   static const dialogFieldReachAnimation = Duration(milliseconds: 300);
@@ -72,7 +72,7 @@ class Durations {
   static const lastVersionCheckInterval = Duration(days: 7);
 }
 
-class DurationsProvider extends StatelessWidget {
+class DurationsProvider extends StatefulWidget {
   final Widget child;
 
   const DurationsProvider({
@@ -81,13 +81,37 @@ class DurationsProvider extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  _DurationsProviderState createState() => _DurationsProviderState();
+}
+
+class _DurationsProviderState extends State<DurationsProvider> with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance!.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance!.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAccessibilityFeatures() {
+    if (settings.accessibilityAnimations == AccessibilityAnimations.system) {
+      // TODO TLAD update provider
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return ProxyProvider<Settings, DurationsData>(
-      update: (_, settings, __) {
-        final enabled = settings.accessibilityAnimations.enabled;
+      update: (context, settings, __) {
+        final enabled = settings.accessibilityAnimations.animate;
         return enabled ? DurationsData() : DurationsData.noAnimation();
       },
-      child: child,
+      child: widget.child,
     );
   }
 }
@@ -96,6 +120,7 @@ class DurationsProvider extends StatelessWidget {
 class DurationsData {
   // common animations
   final Duration expansionTileAnimation;
+  final Duration iconAnimation;
   final Duration staggeredAnimation;
   final Duration staggeredAnimationPageTarget;
 
@@ -109,6 +134,7 @@ class DurationsData {
 
   const DurationsData({
     this.expansionTileAnimation = const Duration(milliseconds: 200),
+    this.iconAnimation = const Duration(milliseconds: 300),
     this.staggeredAnimation = const Duration(milliseconds: 375),
     this.staggeredAnimationPageTarget = const Duration(milliseconds: 800),
     this.viewerVerticalPageScrollAnimation = const Duration(milliseconds: 500),
@@ -120,6 +146,7 @@ class DurationsData {
     return DurationsData(
       // as of Flutter v2.5.1, `ExpansionPanelList` throws if animation duration is zero
       expansionTileAnimation: const Duration(microseconds: 1),
+      iconAnimation: Duration.zero,
       staggeredAnimation: Duration.zero,
       staggeredAnimationPageTarget: Duration.zero,
       viewerVerticalPageScrollAnimation: Duration.zero,

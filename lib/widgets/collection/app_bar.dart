@@ -57,7 +57,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   void initState() {
     super.initState();
     _browseToSelectAnimation = AnimationController(
-      duration: Durations.iconAnimation,
+      duration: context.read<DurationsData>().iconAnimation,
       vsync: this,
     );
     _isSelectingNotifier.addListener(_onActivityChange);

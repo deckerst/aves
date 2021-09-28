@@ -17,7 +17,7 @@ extension ExtraAccessibilityAnimations on AccessibilityAnimations {
     }
   }
 
-  bool get enabled {
+  bool get animate {
     switch (this) {
       case AccessibilityAnimations.system:
         return !window.accessibilityFeatures.disableAnimations;

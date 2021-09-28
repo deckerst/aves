@@ -297,8 +297,8 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
       ),
     );
 
-    final enabledAnimations = context.select<Settings, bool>((v) => v.accessibilityAnimations.enabled);
-    if (enabledAnimations && (widget.heroType == HeroType.always || widget.heroType == HeroType.onTap && _tapped)) {
+    final animate = context.select<Settings, bool>((v) => v.accessibilityAnimations.animate);
+    if (animate && (widget.heroType == HeroType.always || widget.heroType == HeroType.onTap && _tapped)) {
       chip = Hero(
         tag: filter,
         transitionOnUserGestures: true,

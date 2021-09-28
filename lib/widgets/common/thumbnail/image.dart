@@ -173,9 +173,9 @@ class _ThumbnailImageState extends State<ThumbnailImage> {
 
   @override
   Widget build(BuildContext context) {
-    final enabledAnimations = context.select<Settings, bool>((v) => v.accessibilityAnimations.enabled);
+    final animate = context.select<Settings, bool>((v) => v.accessibilityAnimations.animate);
     if (!entry.canDecode || _lastException != null) {
-      return _buildError(context, enabledAnimations);
+      return _buildError(context, animate);
     }
 
     // use `RawImage` instead of `Image`, using `ImageInfo` to check dimensions
@@ -231,7 +231,7 @@ class _ThumbnailImageState extends State<ThumbnailImage> {
             },
           );
 
-    if (enabledAnimations && widget.heroTag != null) {
+    if (animate && widget.heroTag != null) {
       image = Hero(
         tag: widget.heroTag!,
         flightShuttleBuilder: (flight, animation, direction, fromHero, toHero) {
@@ -248,13 +248,13 @@ class _ThumbnailImageState extends State<ThumbnailImage> {
     return image;
   }
 
-  Widget _buildError(BuildContext context, bool enabledAnimations) {
+  Widget _buildError(BuildContext context, bool animate) {
     Widget child = ErrorThumbnail(
       entry: entry,
       extent: extent,
     );
 
-    if (enabledAnimations && widget.heroTag != null) {
+    if (animate && widget.heroTag != null) {
       child = Hero(
         tag: widget.heroTag!,
         flightShuttleBuilder: (flight, animation, direction, fromHero, toHero) {

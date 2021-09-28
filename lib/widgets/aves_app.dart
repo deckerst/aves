@@ -83,7 +83,7 @@ class _AvesAppState extends State<AvesApp> {
                             body: snapshot.hasError ? _buildError(snapshot.error!) : const SizedBox(),
                           );
                     return Selector<Settings, Tuple2<Locale?, bool>>(
-                      selector: (context, s) => Tuple2(s.locale, s.initialized ? s.accessibilityAnimations.enabled : true),
+                      selector: (context, s) => Tuple2(s.locale, s.initialized ? s.accessibilityAnimations.animate : true),
                       builder: (context, s, child) {
                         final settingsLocale = s.item1;
                         final areAnimationsEnabled = s.item2;
