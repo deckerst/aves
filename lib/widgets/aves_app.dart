@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:aves/app_mode.dart';
+import 'package:aves/model/settings/accessibility_animations.dart';
 import 'package:aves/model/settings/screen_on.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
@@ -10,7 +11,6 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/themes.dart';
 import 'package:aves/utils/debouncer.dart';
-import 'package:aves/widgets/common/behaviour/accessibility_mixin.dart';
 import 'package:aves/widgets/common/behaviour/route_tracker.dart';
 import 'package:aves/widgets/common/behaviour/routes.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -33,7 +33,7 @@ class AvesApp extends StatefulWidget {
   _AvesAppState createState() => _AvesAppState();
 }
 
-class _AvesAppState extends State<AvesApp> with AccessibilityMixin {
+class _AvesAppState extends State<AvesApp> {
   final ValueNotifier<AppMode> appModeNotifier = ValueNotifier(AppMode.main);
   late Future<void> _appSetup;
   final _mediaStoreSource = MediaStoreSource();
@@ -83,7 +83,7 @@ class _AvesAppState extends State<AvesApp> with AccessibilityMixin {
                             body: snapshot.hasError ? _buildError(snapshot.error!) : const SizedBox(),
                           );
                     return Selector<Settings, Tuple2<Locale?, bool>>(
-                      selector: (context, s) => Tuple2(s.locale, s.initialized ? areAnimationsEnabled() : true),
+                      selector: (context, s) => Tuple2(s.locale, s.initialized ? s.accessibilityAnimations.enabled : true),
                       builder: (context, s, child) {
                         final settingsLocale = s.item1;
                         final areAnimationsEnabled = s.item2;

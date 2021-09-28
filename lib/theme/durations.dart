@@ -1,5 +1,5 @@
+import 'package:aves/model/settings/accessibility_animations.dart';
 import 'package:aves/model/settings/settings.dart';
-import 'package:aves/widgets/common/behaviour/accessibility_mixin.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
@@ -80,7 +80,7 @@ class Durations {
   static const lastVersionCheckInterval = Duration(days: 7);
 }
 
-class DurationsProvider extends StatelessWidget with AccessibilityMixin {
+class DurationsProvider extends StatelessWidget {
   final Widget child;
 
   const DurationsProvider({
@@ -92,7 +92,8 @@ class DurationsProvider extends StatelessWidget with AccessibilityMixin {
   Widget build(BuildContext context) {
     return ProxyProvider<Settings, DurationsData>(
       update: (_, settings, __) {
-        return areAnimationsEnabled() ? DurationsData() : DurationsData.noAnimation();
+        final enabled = settings.accessibilityAnimations.enabled;
+        return enabled ? DurationsData() : DurationsData.noAnimation();
       },
       child: child,
     );

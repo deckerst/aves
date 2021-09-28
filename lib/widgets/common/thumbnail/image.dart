@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:aves/image_providers/thumbnail_provider.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/entry_images.dart';
+import 'package:aves/model/settings/accessibility_animations.dart';
 import 'package:aves/model/settings/entry_background.dart';
 import 'package:aves/model/settings/enums.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -172,8 +173,9 @@ class _ThumbnailImageState extends State<ThumbnailImage> {
 
   @override
   Widget build(BuildContext context) {
+    final enabledAnimations = context.select<Settings, bool>((v) => v.accessibilityAnimations.enabled);
     if (!entry.canDecode || _lastException != null) {
-      return _buildError(context);
+      return _buildError(context, enabledAnimations);
     }
 
     // use `RawImage` instead of `Image`, using `ImageInfo` to check dimensions
@@ -181,7 +183,7 @@ class _ThumbnailImageState extends State<ThumbnailImage> {
 
     final fit = widget.fit ?? (entry.isSvg ? BoxFit.contain : BoxFit.cover);
     final imageInfo = _lastImageInfo;
-    final image = imageInfo == null
+    Widget image = imageInfo == null
         ? Container(
             color: widget.showLoadingBackground ? loadingBackgroundColor : Colors.transparent,
             width: extent,
@@ -226,43 +228,49 @@ class _ThumbnailImageState extends State<ThumbnailImage> {
                 colorBlendMode: BlendMode.dstOver,
                 fit: fit,
               );
-            });
-
-    return widget.heroTag != null
-        ? Hero(
-            tag: widget.heroTag!,
-            flightShuttleBuilder: (flight, animation, direction, fromHero, toHero) {
-              return TransitionImage(
-                image: entry.bestCachedThumbnail,
-                animation: animation,
-              );
             },
-            transitionOnUserGestures: true,
-            child: image,
-          )
-        : image;
+          );
+
+    if (enabledAnimations && widget.heroTag != null) {
+      image = Hero(
+        tag: widget.heroTag!,
+        flightShuttleBuilder: (flight, animation, direction, fromHero, toHero) {
+          return TransitionImage(
+            image: entry.bestCachedThumbnail,
+            animation: animation,
+          );
+        },
+        transitionOnUserGestures: true,
+        child: image,
+      );
+    }
+
+    return image;
   }
 
-  Widget _buildError(BuildContext context) {
-    final child = ErrorThumbnail(
+  Widget _buildError(BuildContext context, bool enabledAnimations) {
+    Widget child = ErrorThumbnail(
       entry: entry,
       extent: extent,
     );
-    return widget.heroTag != null
-        ? Hero(
-            tag: widget.heroTag!,
-            flightShuttleBuilder: (flight, animation, direction, fromHero, toHero) {
-              return MediaQueryDataProvider(
-                child: DefaultTextStyle(
-                  style: DefaultTextStyle.of(toHero).style,
-                  child: toHero.widget,
-                ),
-              );
-            },
-            transitionOnUserGestures: true,
-            child: child,
-          )
-        : child;
+
+    if (enabledAnimations && widget.heroTag != null) {
+      child = Hero(
+        tag: widget.heroTag!,
+        flightShuttleBuilder: (flight, animation, direction, fromHero, toHero) {
+          return MediaQueryDataProvider(
+            child: DefaultTextStyle(
+              style: DefaultTextStyle.of(toHero).style,
+              child: toHero.widget,
+            ),
+          );
+        },
+        transitionOnUserGestures: true,
+        child: child,
+      );
+    }
+
+    return child;
   }
 
   // when the entry image itself changed (e.g. after rotation)
