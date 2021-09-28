@@ -19,7 +19,7 @@ class DirectMaterialPageRoute<T> extends PageRouteBuilder<T> {
   }) : super(
           settings: settings,
           transitionDuration: Duration.zero,
-          pageBuilder: (c, a, sa) => builder(c),
+          pageBuilder: (context, a, sa) => builder(context),
         );
 
   @override

@@ -90,8 +90,8 @@ class _PanoramaPageState extends State<PanoramaPage> {
                       return Visibility(
                         visible: overlayVisible,
                         child: Selector<MediaQueryData, EdgeInsets>(
-                          selector: (c, mq) => mq.viewPadding + mq.viewInsets,
-                          builder: (c, mqPadding, child) {
+                          selector: (context, mq) => mq.viewPadding + mq.viewInsets,
+                          builder: (context, mqPadding, child) {
                             return Padding(
                               padding: const EdgeInsets.all(8) + EdgeInsets.only(right: mqPadding.right, bottom: mqPadding.bottom),
                               child: OverlayButton(

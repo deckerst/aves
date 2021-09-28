@@ -72,7 +72,7 @@ class InteractiveThumbnail extends StatelessWidget {
       context,
       TransparentMaterialPageRoute(
         settings: const RouteSettings(name: EntryViewerPage.routeName),
-        pageBuilder: (c, a, sa) {
+        pageBuilder: (context, a, sa) {
           final viewerCollection = CollectionLens(
             source: collection.source,
             filters: collection.filters,

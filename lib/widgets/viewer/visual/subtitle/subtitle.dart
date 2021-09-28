@@ -48,8 +48,8 @@ class VideoSubtitles extends StatelessWidget {
           );
 
           return Selector<MediaQueryData, Orientation>(
-            selector: (c, mq) => mq.orientation,
-            builder: (c, orientation, child) {
+            selector: (context, mq) => mq.orientation,
+            builder: (context, orientation, child) {
               final bottom = orientation == Orientation.portrait ? .5 : .8;
               final viewportSize = context.read<MediaQueryData>().size;
 
