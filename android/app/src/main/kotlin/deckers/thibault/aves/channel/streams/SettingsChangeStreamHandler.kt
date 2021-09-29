@@ -20,6 +20,7 @@ class SettingsChangeStreamHandler(private val context: Context) : EventChannel.S
 
     private val contentObserver = object : ContentObserver(null) {
         private var accelerometerRotation: Int = 0
+        private var transitionAnimationScale: Float = 1f
 
         init {
             update()
@@ -33,7 +34,8 @@ class SettingsChangeStreamHandler(private val context: Context) : EventChannel.S
             if (update()) {
                 success(
                     hashMapOf(
-                        Settings.System.ACCELEROMETER_ROTATION to accelerometerRotation
+                        Settings.System.ACCELEROMETER_ROTATION to accelerometerRotation,
+                        Settings.Global.TRANSITION_ANIMATION_SCALE to transitionAnimationScale,
                     )
                 )
             }
@@ -47,6 +49,12 @@ class SettingsChangeStreamHandler(private val context: Context) : EventChannel.S
                     accelerometerRotation = newAccelerometerRotation
                     changed = true
                 }
+                val newTransitionAnimationScale = Settings.Global.getFloat(context.contentResolver, Settings.Global.TRANSITION_ANIMATION_SCALE)
+                if (transitionAnimationScale != newTransitionAnimationScale) {
+                    transitionAnimationScale = newTransitionAnimationScale
+                    changed = true
+                }
+
             } catch (e: Exception) {
                 Log.w(LOG_TAG, "failed to get settings", e)
             }
@@ -83,6 +91,6 @@ class SettingsChangeStreamHandler(private val context: Context) : EventChannel.S
 
     companion object {
         private val LOG_TAG = LogUtils.createTag<SettingsChangeStreamHandler>()
-        const val CHANNEL = "deckers.thibault/aves/settingschange"
+        const val CHANNEL = "deckers.thibault/aves/settings_change"
     }
 }

@@ -5,6 +5,8 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/tag.dart';
+import 'package:aves/model/settings/accessibility_animations.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/theme/icons.dart';
@@ -22,6 +24,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
+import 'package:provider/provider.dart';
 
 class StatsPage extends StatelessWidget {
   static const routeName = '/collection/stats';
@@ -67,6 +70,7 @@ class StatsPage extends StatelessWidget {
         text: context.l10n.collectionEmptyImages,
       );
     } else {
+      final animate = context.select<Settings, bool>((v) => v.accessibilityAnimations.animate);
       final byMimeTypes = groupBy<AvesEntry, String>(entries, (entry) => entry.mimeType).map<String, int>((k, v) => MapEntry(k, v.length));
       final imagesByMimeTypes = Map.fromEntries(byMimeTypes.entries.where((kv) => kv.key.startsWith('image')));
       final videoByMimeTypes = Map.fromEntries(byMimeTypes.entries.where((kv) => kv.key.startsWith('video')));
@@ -74,8 +78,8 @@ class StatsPage extends StatelessWidget {
         alignment: WrapAlignment.center,
         crossAxisAlignment: WrapCrossAlignment.center,
         children: [
-          _buildMimeDonut(context, (sum) => context.l10n.statsImage(sum), imagesByMimeTypes),
-          _buildMimeDonut(context, (sum) => context.l10n.statsVideo(sum), videoByMimeTypes),
+          _buildMimeDonut(context, (sum) => context.l10n.statsImage(sum), imagesByMimeTypes, animate),
+          _buildMimeDonut(context, (sum) => context.l10n.statsVideo(sum), videoByMimeTypes, animate),
         ],
       );
 
@@ -93,8 +97,8 @@ class StatsPage extends StatelessWidget {
               percent: withGpsPercent,
               lineHeight: lineHeight,
               backgroundColor: Colors.white24,
-              progressColor: Theme.of(context).accentColor,
-              animation: true,
+              progressColor: Theme.of(context).colorScheme.secondary,
+              animation: animate,
               leading: const Icon(AIcons.location),
               // right padding to match leading, so that inside label is aligned with outside label below
               padding: EdgeInsets.symmetric(horizontal: lineHeight) + const EdgeInsets.only(right: 24),
@@ -130,7 +134,12 @@ class StatsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildMimeDonut(BuildContext context, String Function(int) label, Map<String, int> byMimeTypes) {
+  Widget _buildMimeDonut(
+    BuildContext context,
+    String Function(int) label,
+    Map<String, int> byMimeTypes,
+    bool animate,
+  ) {
     if (byMimeTypes.isEmpty) return const SizedBox.shrink();
 
     final sum = byMimeTypes.values.fold<int>(0, (prev, v) => prev + v);
@@ -165,6 +174,7 @@ class StatsPage extends StatelessWidget {
           children: [
             charts.PieChart(
               series,
+              animate: animate,
               defaultRenderer: charts.ArcRendererConfig<String>(
                 arcWidth: 16,
               ),

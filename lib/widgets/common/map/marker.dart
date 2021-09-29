@@ -8,7 +8,7 @@ class ImageMarker extends StatelessWidget {
   final AvesEntry? entry;
   final int? count;
   final double extent;
-  final Size pointerSize;
+  final Size arrowSize;
   final bool progressive;
 
   static const double outerBorderRadiusDim = 8;
@@ -25,7 +25,7 @@ class ImageMarker extends StatelessWidget {
     required this.entry,
     required this.count,
     required this.extent,
-    required this.pointerSize,
+    required this.arrowSize,
     required this.progressive,
   }) : super(key: key);
 
@@ -82,7 +82,7 @@ class ImageMarker extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 2),
             decoration: ShapeDecoration(
-              color: Theme.of(context).accentColor,
+              color: Theme.of(context).colorScheme.secondary,
               shape: const CustomRoundedRectangleBorder(
                 leftSide: borderSide,
                 rightSide: borderSide,
@@ -106,14 +106,14 @@ class ImageMarker extends StatelessWidget {
     }
 
     return CustomPaint(
-      foregroundPainter: MarkerPointerPainter(
+      foregroundPainter: _MarkerArrowPainter(
         color: innerBorderColor,
         outlineColor: outerBorderColor,
         outlineWidth: outerBorderWidth,
-        size: pointerSize,
+        size: arrowSize,
       ),
       child: Padding(
-        padding: EdgeInsets.only(bottom: pointerSize.height),
+        padding: EdgeInsets.only(bottom: arrowSize.height),
         child: Container(
           decoration: outerDecoration,
           child: child,
@@ -123,12 +123,12 @@ class ImageMarker extends StatelessWidget {
   }
 }
 
-class MarkerPointerPainter extends CustomPainter {
+class _MarkerArrowPainter extends CustomPainter {
   final Color color, outlineColor;
   final double outlineWidth;
   final Size size;
 
-  const MarkerPointerPainter({
+  const _MarkerArrowPainter({
     required this.color,
     required this.outlineColor,
     required this.outlineWidth,
@@ -137,12 +137,12 @@ class MarkerPointerPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final pointerWidth = this.size.width;
-    final pointerHeight = this.size.height;
+    final triangleWidth = this.size.width;
+    final triangleHeight = this.size.height;
 
     final bottomCenter = Offset(size.width / 2, size.height);
-    final topLeft = bottomCenter + Offset(-pointerWidth / 2, -pointerHeight);
-    final topRight = bottomCenter + Offset(pointerWidth / 2, -pointerHeight);
+    final topLeft = bottomCenter + Offset(-triangleWidth / 2, -triangleHeight);
+    final topRight = bottomCenter + Offset(triangleWidth / 2, -triangleHeight);
 
     canvas.drawPath(
         Path()
@@ -164,4 +164,49 @@ class MarkerPointerPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+class DotMarker extends StatelessWidget {
+  const DotMarker({Key? key}) : super(key: key);
+
+  static const double diameter = 16;
+  static const double outerBorderRadiusDim = diameter;
+  static const outerBorderRadius = BorderRadius.all(Radius.circular(outerBorderRadiusDim));
+  static const innerRadius = Radius.circular(outerBorderRadiusDim - ImageMarker.outerBorderWidth);
+  static const innerBorderRadius = BorderRadius.all(innerRadius);
+
+  @override
+  Widget build(BuildContext context) {
+    const outerDecoration = BoxDecoration(
+      border: Border.fromBorderSide(BorderSide(
+        color: ImageMarker.outerBorderColor,
+        width: ImageMarker.outerBorderWidth,
+      )),
+      borderRadius: outerBorderRadius,
+    );
+
+    const innerDecoration = BoxDecoration(
+      border: Border.fromBorderSide(BorderSide(
+        color: ImageMarker.innerBorderColor,
+        width: ImageMarker.innerBorderWidth,
+      )),
+      borderRadius: innerBorderRadius,
+    );
+
+    return Container(
+      decoration: outerDecoration,
+      child: DecoratedBox(
+        decoration: innerDecoration,
+        position: DecorationPosition.foreground,
+        child: ClipRRect(
+          borderRadius: innerBorderRadius,
+          child: Container(
+            width: diameter,
+            height: diameter,
+            color: Theme.of(context).colorScheme.secondary,
+          ),
+        ),
+      ),
+    );
+  }
 }

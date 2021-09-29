@@ -4,16 +4,19 @@ import 'dart:typed_data';
 
 import 'package:aves/flutter_version.dart';
 import 'package:aves/ref/mime_types.dart';
-import 'package:aves/services/services.dart';
+import 'package:aves/services/common/services.dart';
+import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
+import 'package:aves/widgets/common/identity/buttons.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class BugReport extends StatefulWidget {
@@ -36,10 +39,12 @@ class _BugReportState extends State<BugReport> with FeedbackMixin {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final animationDuration = context.select<DurationsData, Duration>((v) => v.expansionTileAnimation);
     return ExpansionPanelList(
       expansionCallback: (index, isExpanded) {
         setState(() => _showInstructions = !isExpanded);
       },
+      animationDuration: animationDuration,
       expandedHeaderPadding: EdgeInsets.zero,
       elevation: 0,
       children: [
@@ -84,7 +89,7 @@ class _BugReportState extends State<BugReport> with FeedbackMixin {
           ),
           isExpanded: _showInstructions,
           canTapOnHeader: true,
-          backgroundColor: Colors.transparent,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         ),
       ],
     );
@@ -99,7 +104,7 @@ class _BugReportState extends State<BugReport> with FeedbackMixin {
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               border: Border.fromBorderSide(BorderSide(
-                color: Theme.of(context).accentColor,
+                color: Theme.of(context).colorScheme.secondary,
                 width: AvesFilterChip.outlineWidth,
               )),
               shape: BoxShape.circle,
@@ -109,13 +114,9 @@ class _BugReportState extends State<BugReport> with FeedbackMixin {
           const SizedBox(width: 8),
           Expanded(child: Text(text)),
           const SizedBox(width: 8),
-          OutlinedButton(
+          AvesOutlinedButton(
+            label: buttonText,
             onPressed: onPressed,
-            style: ButtonStyle(
-              side: MaterialStateProperty.all<BorderSide>(BorderSide(color: Theme.of(context).accentColor)),
-              foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
-            ),
-            child: Text(buttonText),
           )
         ],
       ),

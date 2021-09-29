@@ -1,8 +1,7 @@
 import 'dart:async';
 import 'dart:ui' as ui show Codec;
 
-import 'package:aves/services/services.dart';
-import 'package:aves/utils/pedantic.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
@@ -50,7 +49,7 @@ class UriImage extends ImageProvider<UriImage> with EquatableMixin {
     assert(key == this);
 
     try {
-      final bytes = await imageFileService.getImage(
+      final bytes = await mediaFileService.getImage(
         uri,
         mimeType,
         rotationDegrees,

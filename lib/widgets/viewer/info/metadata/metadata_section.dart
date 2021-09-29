@@ -5,8 +5,8 @@ import 'package:aves/model/entry.dart';
 import 'package:aves/model/video/keys.dart';
 import 'package:aves/model/video/metadata.dart';
 import 'package:aves/ref/mime_types.dart';
-import 'package:aves/services/services.dart';
-import 'package:aves/services/svg_metadata_service.dart';
+import 'package:aves/services/common/services.dart';
+import 'package:aves/services/metadata/svg_metadata_service.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/color_utils.dart';
@@ -15,7 +15,9 @@ import 'package:aves/widgets/viewer/info/metadata/metadata_dir_tile.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:provider/provider.dart';
 
 class MetadataSectionSliver extends StatefulWidget {
   final AvesEntry entry;
@@ -90,10 +92,11 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> {
               if (metadata.isEmpty) {
                 content = const SizedBox.shrink();
               } else {
+                final durations = context.watch<DurationsData>();
                 content = Column(
                   children: AnimationConfiguration.toStaggeredList(
-                    duration: Durations.staggeredAnimation,
-                    delay: Durations.staggeredAnimationDelay,
+                    duration: durations.staggeredAnimation,
+                    delay: durations.staggeredAnimationDelay * timeDilation,
                     childAnimationBuilder: (child) => SlideAnimation(
                       verticalOffset: 50.0,
                       child: FadeInAnimation(
@@ -130,7 +133,7 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> {
   }
 
   Future<void> _getMetadata() async {
-    final rawMetadata = await (entry.isSvg ? SvgMetadataService.getAllMetadata(entry) : metadataService.getAllMetadata(entry));
+    final rawMetadata = await (entry.isSvg ? SvgMetadataService.getAllMetadata(entry) : metadataFetchService.getAllMetadata(entry));
     final directories = rawMetadata.entries.map((dirKV) {
       var directoryName = dirKV.key as String;
 

@@ -1,13 +1,10 @@
 package deckers.thibault.aves.model.provider
 
 import android.app.Activity
-import android.content.ContentUris
 import android.content.Context
 import android.graphics.Bitmap
-import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Build
-import android.provider.MediaStore
 import android.util.Log
 import androidx.exifinterface.media.ExifInterface
 import com.bumptech.glide.Glide
@@ -17,41 +14,46 @@ import com.bumptech.glide.request.RequestOptions
 import com.commonsware.cwac.document.DocumentFileCompat
 import deckers.thibault.aves.decoder.MultiTrackImage
 import deckers.thibault.aves.decoder.TiffImage
-import deckers.thibault.aves.metadata.ExifInterfaceHelper
+import deckers.thibault.aves.metadata.*
 import deckers.thibault.aves.metadata.ExifInterfaceHelper.getSafeDateMillis
-import deckers.thibault.aves.metadata.MultiPage
-import deckers.thibault.aves.metadata.PixyMetaHelper
 import deckers.thibault.aves.metadata.PixyMetaHelper.extendedXmpDocString
 import deckers.thibault.aves.metadata.PixyMetaHelper.xmpDocString
-import deckers.thibault.aves.metadata.XMP
 import deckers.thibault.aves.model.AvesEntry
 import deckers.thibault.aves.model.ExifOrientationOp
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.utils.*
+import deckers.thibault.aves.utils.MimeTypes.canEditExif
+import deckers.thibault.aves.utils.MimeTypes.canEditXmp
+import deckers.thibault.aves.utils.MimeTypes.canRemoveMetadata
 import deckers.thibault.aves.utils.MimeTypes.extensionFor
-import deckers.thibault.aves.utils.MimeTypes.isImage
-import deckers.thibault.aves.utils.MimeTypes.isSupportedByPixyMeta
 import deckers.thibault.aves.utils.MimeTypes.isVideo
 import deckers.thibault.aves.utils.StorageUtils.createDirectoryIfAbsent
 import deckers.thibault.aves.utils.StorageUtils.getDocumentFile
-import deckers.thibault.aves.utils.UriUtils.tryParseId
-import java.io.*
+import java.io.ByteArrayInputStream
+import java.io.File
+import java.io.FileNotFoundException
+import java.io.IOException
 import java.util.*
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.suspendCoroutine
 
 abstract class ImageProvider {
     open fun fetchSingle(context: Context, uri: Uri, sourceMimeType: String?, callback: ImageOpCallback) {
-        callback.onFailure(UnsupportedOperationException())
+        callback.onFailure(UnsupportedOperationException("`fetchSingle` is not supported by this image provider"))
     }
 
     open suspend fun delete(activity: Activity, uri: Uri, path: String?) {
-        throw UnsupportedOperationException()
+        throw UnsupportedOperationException("`delete` is not supported by this image provider")
     }
 
     open suspend fun moveMultiple(activity: Activity, copy: Boolean, destinationDir: String, entries: List<AvesEntry>, callback: ImageOpCallback) {
-        callback.onFailure(UnsupportedOperationException())
+        callback.onFailure(UnsupportedOperationException("`moveMultiple` is not supported by this image provider"))
+    }
+
+    open fun scanPostMetadataEdit(context: Context, path: String, uri: Uri, mimeType: String, newFields: HashMap<String, Any?>, callback: ImageOpCallback) {
+        throw UnsupportedOperationException("`scanPostMetadataEdit` is not supported by this image provider")
+    }
+
+    open fun scanObsoletePath(context: Context, path: String, mimeType: String) {
+        throw UnsupportedOperationException("`scanObsoletePath` is not supported by this image provider")
     }
 
     suspend fun exportMultiple(
@@ -123,17 +125,13 @@ abstract class ImageProvider {
             val page = if (sourceMimeType == MimeTypes.TIFF) pageId + 1 else pageId
             desiredNameWithoutExtension += "_${page.toString().padStart(3, '0')}"
         }
-        val desiredFileName = desiredNameWithoutExtension + extensionFor(exportMimeType)
-
-        if (File(destinationDir, desiredFileName).exists()) {
-            throw Exception("file with name=$desiredFileName already exists in destination directory")
-        }
+        val availableNameWithoutExtension = findAvailableFileNameWithoutExtension(destinationDir, desiredNameWithoutExtension, extensionFor(exportMimeType))
 
         // the file created from a `TreeDocumentFile` is also a `TreeDocumentFile`
         // but in order to open an output stream to it, we need to use a `SingleDocumentFile`
         // through a document URI, not a tree URI
         // note that `DocumentFile.getParentFile()` returns null if we did not pick a tree first
-        val destinationTreeFile = destinationDirDocFile.createFile(exportMimeType, desiredNameWithoutExtension)
+        val destinationTreeFile = destinationDirDocFile.createFile(exportMimeType, availableNameWithoutExtension)
         val destinationDocFile = DocumentFileCompat.fromSingleUri(context, destinationTreeFile.uri)
 
         if (isVideo(sourceMimeType)) {
@@ -197,7 +195,7 @@ abstract class ImageProvider {
         val fileName = destinationDocFile.name
         val destinationFullPath = destinationDir + fileName
 
-        return scanNewPath(context, destinationFullPath, exportMimeType)
+        return MediaStoreImageProvider().scanNewPath(context, destinationFullPath, exportMimeType)
     }
 
     @Suppress("BlockingMethodInNonBlockingContext")
@@ -216,17 +214,13 @@ abstract class ImageProvider {
         }
 
         val captureMimeType = MimeTypes.JPEG
-        val desiredFileName = desiredNameWithoutExtension + extensionFor(captureMimeType)
-        if (File(destinationDir, desiredFileName).exists()) {
-            callback.onFailure(Exception("file with name=$desiredFileName already exists in destination directory"))
-            return
-        }
+        val availableNameWithoutExtension = findAvailableFileNameWithoutExtension(destinationDir, desiredNameWithoutExtension, extensionFor(captureMimeType))
 
         // the file created from a `TreeDocumentFile` is also a `TreeDocumentFile`
         // but in order to open an output stream to it, we need to use a `SingleDocumentFile`
         // through a document URI, not a tree URI
         // note that `DocumentFile.getParentFile()` returns null if we did not pick a tree first
-        val destinationTreeFile = destinationDirDocFile.createFile(captureMimeType, desiredNameWithoutExtension)
+        val destinationTreeFile = destinationDirDocFile.createFile(captureMimeType, availableNameWithoutExtension)
         val destinationDocFile = DocumentFileCompat.fromSingleUri(context, destinationTreeFile.uri)
 
         try {
@@ -295,11 +289,21 @@ abstract class ImageProvider {
 
             val fileName = destinationDocFile.name
             val destinationFullPath = destinationDir + fileName
-            val newFields = scanNewPath(context, destinationFullPath, captureMimeType)
+            val newFields = MediaStoreImageProvider().scanNewPath(context, destinationFullPath, captureMimeType)
             callback.onSuccess(newFields)
         } catch (e: Exception) {
             callback.onFailure(e)
         }
+    }
+
+    private fun findAvailableFileNameWithoutExtension(dir: String, desiredNameWithoutExtension: String, extension: String?): String {
+        var nameWithoutExtension = desiredNameWithoutExtension
+        var i = 0
+        while (File(dir, "$nameWithoutExtension$extension").exists()) {
+            i++
+            nameWithoutExtension = "$desiredNameWithoutExtension ($i)"
+        }
+        return nameWithoutExtension
     }
 
     suspend fun rename(context: Context, oldPath: String, oldMediaUri: Uri, mimeType: String, newFilename: String, callback: ImageOpCallback) {
@@ -324,29 +328,12 @@ abstract class ImageProvider {
             return
         }
 
-        MediaScannerConnection.scanFile(context, arrayOf(oldPath), arrayOf(mimeType), null)
+        scanObsoletePath(context, oldPath, mimeType)
         try {
-            callback.onSuccess(scanNewPath(context, newFile.path, mimeType))
+            callback.onSuccess(MediaStoreImageProvider().scanNewPath(context, newFile.path, mimeType))
         } catch (e: Exception) {
             callback.onFailure(e)
         }
-    }
-
-    // support for writing EXIF
-    // as of androidx.exifinterface:exifinterface:1.3.3
-    private fun canEditExif(mimeType: String): Boolean {
-        return when (mimeType) {
-            MimeTypes.DNG,
-            MimeTypes.JPEG,
-            MimeTypes.PNG,
-            MimeTypes.WEBP -> true
-            else -> false
-        }
-    }
-
-    // support for writing XMP
-    private fun canEditXmp(mimeType: String): Boolean {
-        return isSupportedByPixyMeta(mimeType)
     }
 
     private fun editExif(
@@ -524,28 +511,14 @@ abstract class ImageProvider {
         }
     }
 
-    private fun scanPostExifEdit(context: Context, path: String, uri: Uri, mimeType: String, newFields: HashMap<String, Any?>, callback: ImageOpCallback) {
-        MediaScannerConnection.scanFile(context, arrayOf(path), arrayOf(mimeType)) { _, _ ->
-            val projection = arrayOf(
-                MediaStore.MediaColumns.DATE_MODIFIED,
-                MediaStore.MediaColumns.SIZE,
-            )
-            try {
-                val cursor = context.contentResolver.query(uri, projection, null, null, null)
-                if (cursor != null && cursor.moveToFirst()) {
-                    cursor.getColumnIndex(MediaStore.MediaColumns.DATE_MODIFIED).let { if (it != -1) newFields["dateModifiedSecs"] = cursor.getInt(it) }
-                    cursor.getColumnIndex(MediaStore.MediaColumns.SIZE).let { if (it != -1) newFields["sizeBytes"] = cursor.getLong(it) }
-                    cursor.close()
-                }
-            } catch (e: Exception) {
-                callback.onFailure(e)
-                return@scanFile
-            }
-            callback.onSuccess(newFields)
-        }
-    }
-
-    fun changeOrientation(context: Context, path: String, uri: Uri, mimeType: String, op: ExifOrientationOp, callback: ImageOpCallback) {
+    fun editOrientation(
+        context: Context,
+        path: String,
+        uri: Uri,
+        mimeType: String,
+        op: ExifOrientationOp,
+        callback: ImageOpCallback,
+    ) {
         val newFields = HashMap<String, Any?>()
 
         val success = editExif(context, path, uri, mimeType, callback) { exif ->
@@ -568,7 +541,7 @@ abstract class ImageProvider {
         }
 
         if (success) {
-            scanPostExifEdit(context, path, uri, mimeType, newFields, callback)
+            scanPostMetadataEdit(context, path, uri, mimeType, newFields, callback)
         }
     }
 
@@ -662,68 +635,62 @@ abstract class ImageProvider {
         }
 
         if (success) {
-            scanPostExifEdit(context, path, uri, mimeType, HashMap<String, Any?>(), callback)
+            scanPostMetadataEdit(context, path, uri, mimeType, HashMap<String, Any?>(), callback)
         }
     }
 
-    protected suspend fun scanNewPath(context: Context, path: String, mimeType: String): FieldMap =
-        suspendCoroutine { cont ->
-            MediaScannerConnection.scanFile(context, arrayOf(path), arrayOf(mimeType)) { _, newUri: Uri? ->
-                fun scanUri(uri: Uri?): FieldMap? {
-                    uri ?: return null
+    fun removeMetadataTypes(
+        context: Context,
+        path: String,
+        uri: Uri,
+        mimeType: String,
+        types: Set<String>,
+        callback: ImageOpCallback,
+    ) {
+        if (!canRemoveMetadata(mimeType)) {
+            callback.onFailure(UnsupportedOperationException("unsupported mimeType=$mimeType"))
+            return
+        }
 
-                    // we retrieve updated fields as the renamed/moved file became a new entry in the Media Store
-                    val projection = arrayOf(
-                        MediaStore.MediaColumns.DATE_MODIFIED,
-                        MediaStore.MediaColumns.DISPLAY_NAME,
-                        MediaStore.MediaColumns.TITLE,
-                    )
-                    try {
-                        val cursor = context.contentResolver.query(uri, projection, null, null, null)
-                        if (cursor != null && cursor.moveToFirst()) {
-                            val newFields = HashMap<String, Any?>()
-                            newFields["uri"] = uri.toString()
-                            newFields["contentId"] = uri.tryParseId()
-                            newFields["path"] = path
-                            cursor.getColumnIndex(MediaStore.MediaColumns.DATE_MODIFIED).let { if (it != -1) newFields["dateModifiedSecs"] = cursor.getInt(it) }
-                            cursor.getColumnIndex(MediaStore.MediaColumns.DISPLAY_NAME).let { if (it != -1) newFields["displayName"] = cursor.getString(it) }
-                            cursor.getColumnIndex(MediaStore.MediaColumns.TITLE).let { if (it != -1) newFields["title"] = cursor.getString(it) }
-                            cursor.close()
-                            return newFields
-                        }
-                    } catch (e: Exception) {
-                        Log.w(LOG_TAG, "failed to scan uri=$uri", e)
-                    }
-                    return null
-                }
+        val originalDocumentFile = getDocumentFile(context, path, uri)
+        if (originalDocumentFile == null) {
+            callback.onFailure(Exception("failed to get document file for path=$path, uri=$uri"))
+            return
+        }
 
-                if (newUri == null) {
-                    cont.resumeWithException(Exception("failed to get URI of item at path=$path"))
-                    return@scanFile
-                }
-
-                var contentUri: Uri? = null
-                // `newURI` is possibly a file media URI (e.g. "content://media/12a9-8b42/file/62872")
-                // but we need an image/video media URI (e.g. "content://media/external/images/media/62872")
-                val contentId = newUri.tryParseId()
-                if (contentId != null) {
-                    if (isImage(mimeType)) {
-                        contentUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentId)
-                    } else if (isVideo(mimeType)) {
-                        contentUri = ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, contentId)
+        val originalFileSize = File(path).length()
+        val videoSize = MultiPage.getMotionPhotoOffset(context, uri, mimeType, originalFileSize)?.toInt()
+        val editableFile = File.createTempFile("aves", null).apply {
+            deleteOnExit()
+            try {
+                outputStream().use { output ->
+                    // reopen input to read from start
+                    originalDocumentFile.openInputStream().use { input ->
+                        PixyMetaHelper.removeMetadata(input, output, types)
                     }
                 }
-
-                // prefer image/video content URI, fallback to original URI (possibly a file content URI)
-                val newFields = scanUri(contentUri) ?: scanUri(newUri)
-
-                if (newFields != null) {
-                    cont.resume(newFields)
-                } else {
-                    cont.resumeWithException(Exception("failed to get item details from provider at contentUri=$contentUri (from newUri=$newUri)"))
-                }
+            } catch (e: Exception) {
+                Log.d(LOG_TAG, "failed to remove metadata", e)
+                callback.onFailure(e)
+                return
             }
         }
+
+        try {
+            // copy the edited temporary file back to the original
+            DocumentFileCompat.fromFile(editableFile).copyTo(originalDocumentFile)
+
+            if (!types.contains(Metadata.TYPE_XMP) && !checkTrailerOffset(context, path, uri, mimeType, videoSize, editableFile, callback)) {
+                return
+            }
+        } catch (e: IOException) {
+            callback.onFailure(e)
+            return
+        }
+
+        val newFields = HashMap<String, Any?>()
+        scanPostMetadataEdit(context, path, uri, mimeType, newFields, callback)
+    }
 
     interface ImageOpCallback {
         fun onSuccess(fields: FieldMap)

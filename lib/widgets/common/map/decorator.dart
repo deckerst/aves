@@ -1,7 +1,8 @@
+import 'package:aves/widgets/common/map/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class MapDecorator extends StatelessWidget {
-  final bool interactive;
   final Widget? child;
 
   static const mapBorderRadius = BorderRadius.all(Radius.circular(24)); // to match button circles
@@ -10,12 +11,12 @@ class MapDecorator extends StatelessWidget {
 
   const MapDecorator({
     Key? key,
-    required this.interactive,
     this.child,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final interactive = context.select<MapThemeData, bool>((v) => v.interactive);
     return GestureDetector(
       onScaleStart: interactive
           ? null

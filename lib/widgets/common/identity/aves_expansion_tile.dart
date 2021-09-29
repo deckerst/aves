@@ -1,6 +1,8 @@
+import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/identity/highlight_title.dart';
 import 'package:expansion_tile_card/expansion_tile_card.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class AvesExpansionTile extends StatelessWidget {
   final String value;
@@ -42,10 +44,15 @@ class AvesExpansionTile extends StatelessWidget {
         ],
       );
     }
+
+    final animationDuration = context.select<DurationsData, Duration>((v) => v.expansionTileAnimation);
+    final theme = Theme.of(context);
     return Theme(
-      data: Theme.of(context).copyWith(
-        // color used by the `ExpansionTileCard` for selected text and icons
-        accentColor: Colors.white,
+      data: theme.copyWith(
+        colorScheme: theme.colorScheme.copyWith(
+          // color used by the `ExpansionTileCard` for selected text and icons
+          secondary: theme.colorScheme.onBackground,
+        ),
       ),
       child: ExpansionTileCard(
         // key is expected by test driver
@@ -58,7 +65,8 @@ class AvesExpansionTile extends StatelessWidget {
         finalPadding: const EdgeInsets.symmetric(vertical: 6.0),
         baseColor: Colors.grey.shade900,
         expandedColor: Colors.grey[850],
-        shadowColor: Theme.of(context).shadowColor,
+        duration: animationDuration,
+        shadowColor: theme.shadowColor,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

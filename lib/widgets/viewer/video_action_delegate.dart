@@ -4,10 +4,9 @@ import 'package:aves/model/actions/video_actions.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/highlight.dart';
 import 'package:aves/model/source/collection_lens.dart';
-import 'package:aves/services/services.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/android_file_utils.dart';
-import 'package:aves/utils/pedantic.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
@@ -86,7 +85,7 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       }
     };
 
-    final newFields = await imageFileService.captureFrame(
+    final newFields = await mediaFileService.captureFrame(
       entry,
       desiredName: '${entry.bestTitle}_${'$positionMillis'.padLeft(8, '0')}',
       exif: exif,
@@ -117,7 +116,8 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
                   ),
                   (route) => false,
                 ));
-                await Future.delayed(Durations.staggeredAnimationPageTarget + Durations.highlightScrollInitDelay);
+                final delayDuration = context.read<DurationsData>().staggeredAnimationPageTarget;
+                await Future.delayed(delayDuration + Durations.highlightScrollInitDelay);
                 final newUri = newFields['uri'] as String?;
                 final targetEntry = targetCollection.sortedEntries.firstWhereOrNull((entry) => entry.uri == newUri);
                 if (targetEntry != null) {
@@ -181,7 +181,7 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     } else {
       await controller.play();
       // hide overlay
-      _overlayHidingTimer = Timer(Durations.iconAnimation + Durations.videoOverlayHideDelay, () {
+      _overlayHidingTimer = Timer(context.read<DurationsData>().iconAnimation + Durations.videoOverlayHideDelay, () {
         const ToggleOverlayNotification(visible: false).dispatch(context);
       });
     }

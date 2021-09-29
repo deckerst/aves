@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:aves/model/entry.dart';
-import 'package:aves/services/services.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:flutter/services.dart';
 
 abstract class EmbeddedDataService {

@@ -81,8 +81,8 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
             );
           } else {
             child = Selector<MediaQueryData, double>(
-              selector: (c, mq) => mq.size.width - mq.padding.horizontal,
-              builder: (c, mqWidth, child) {
+              selector: (context, mq) => mq.size.width - mq.padding.horizontal,
+              builder: (context, mqWidth, child) {
                 final buttonWidth = OverlayButton.getSize(context);
                 final availableCount = ((mqWidth - outerPadding * 2) / (buttonWidth + innerPadding)).floor();
                 final quickActions = settings.videoQuickActions.take(availableCount - 1).toList();
@@ -233,9 +233,10 @@ class _ButtonRow extends StatelessWidget {
               child: MenuIconTheme(
                 child: AvesPopupMenuButton<VideoAction>(
                   itemBuilder: (context) => menuActions.map((action) => _buildPopupMenuItem(context, action)).toList(),
-                  onSelected: (action) {
+                  onSelected: (action) async {
                     // wait for the popup menu to hide before proceeding with the action
-                    Future.delayed(Durations.popupMenuAnimation * timeDilation, () => onActionSelected(action));
+                    await Future.delayed(Durations.popupMenuAnimation * timeDilation);
+                    onActionSelected(action);
                   },
                   onMenuOpened: onActionMenuOpened,
                 ),
@@ -370,7 +371,7 @@ class _PlayTogglerState extends State<_PlayToggler> with SingleTickerProviderSta
   void initState() {
     super.initState();
     _playPauseAnimation = AnimationController(
-      duration: Durations.iconAnimation,
+      duration: context.read<DurationsData>().iconAnimation,
       vsync: this,
     );
     _registerWidget(widget);

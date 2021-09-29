@@ -70,7 +70,7 @@ class XmpNamespace extends Equatable {
         })
         .whereNotNull()
         .toList()
-          ..sort((a, b) => compareAsciiUpperCaseNatural(a.displayKey, b.displayKey));
+      ..sort((a, b) => compareAsciiUpperCaseNatural(a.displayKey, b.displayKey));
 
     final content = [
       if (props.isNotEmpty)

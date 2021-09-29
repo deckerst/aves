@@ -1,12 +1,13 @@
 import 'package:aves/model/availability.dart';
 import 'package:aves/model/metadata_db.dart';
-import 'package:aves/services/embedded_data_service.dart';
-import 'package:aves/services/image_file_service.dart';
-import 'package:aves/services/media_store_service.dart';
-import 'package:aves/services/metadata_service.dart';
+import 'package:aves/services/device_service.dart';
+import 'package:aves/services/media/embedded_data_service.dart';
+import 'package:aves/services/media/media_file_service.dart';
+import 'package:aves/services/media/media_store_service.dart';
+import 'package:aves/services/metadata/metadata_edit_service.dart';
+import 'package:aves/services/metadata/metadata_fetch_service.dart';
 import 'package:aves/services/report_service.dart';
 import 'package:aves/services/storage_service.dart';
-import 'package:aves/services/time_service.dart';
 import 'package:aves/services/window_service.dart';
 import 'package:get_it/get_it.dart';
 import 'package:path/path.dart' as p;
@@ -17,13 +18,14 @@ final p.Context pContext = getIt<p.Context>();
 final AvesAvailability availability = getIt<AvesAvailability>();
 final MetadataDb metadataDb = getIt<MetadataDb>();
 
+final DeviceService deviceService = getIt<DeviceService>();
 final EmbeddedDataService embeddedDataService = getIt<EmbeddedDataService>();
-final ImageFileService imageFileService = getIt<ImageFileService>();
+final MediaFileService mediaFileService = getIt<MediaFileService>();
 final MediaStoreService mediaStoreService = getIt<MediaStoreService>();
-final MetadataService metadataService = getIt<MetadataService>();
+final MetadataEditService metadataEditService = getIt<MetadataEditService>();
+final MetadataFetchService metadataFetchService = getIt<MetadataFetchService>();
 final ReportService reportService = getIt<ReportService>();
 final StorageService storageService = getIt<StorageService>();
-final TimeService timeService = getIt<TimeService>();
 final WindowService windowService = getIt<WindowService>();
 
 void initPlatformServices() {
@@ -31,12 +33,13 @@ void initPlatformServices() {
   getIt.registerLazySingleton<AvesAvailability>(() => LiveAvesAvailability());
   getIt.registerLazySingleton<MetadataDb>(() => SqfliteMetadataDb());
 
+  getIt.registerLazySingleton<DeviceService>(() => PlatformDeviceService());
   getIt.registerLazySingleton<EmbeddedDataService>(() => PlatformEmbeddedDataService());
-  getIt.registerLazySingleton<ImageFileService>(() => PlatformImageFileService());
+  getIt.registerLazySingleton<MediaFileService>(() => PlatformMediaFileService());
   getIt.registerLazySingleton<MediaStoreService>(() => PlatformMediaStoreService());
-  getIt.registerLazySingleton<MetadataService>(() => PlatformMetadataService());
+  getIt.registerLazySingleton<MetadataEditService>(() => PlatformMetadataEditService());
+  getIt.registerLazySingleton<MetadataFetchService>(() => PlatformMetadataFetchService());
   getIt.registerLazySingleton<ReportService>(() => CrashlyticsReportService());
   getIt.registerLazySingleton<StorageService>(() => PlatformStorageService());
-  getIt.registerLazySingleton<TimeService>(() => PlatformTimeService());
   getIt.registerLazySingleton<WindowService>(() => PlatformWindowService());
 }

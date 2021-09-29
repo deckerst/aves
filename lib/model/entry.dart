@@ -6,14 +6,15 @@ import 'package:aves/model/favourites.dart';
 import 'package:aves/model/metadata/address.dart';
 import 'package:aves/model/metadata/catalog.dart';
 import 'package:aves/model/metadata/date_modifier.dart';
+import 'package:aves/model/metadata/enums.dart';
 import 'package:aves/model/multipage.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/video/metadata.dart';
 import 'package:aves/ref/mime_types.dart';
+import 'package:aves/services/common/service_policy.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:aves/services/geocoding_service.dart';
-import 'package:aves/services/service_policy.dart';
-import 'package:aves/services/services.dart';
-import 'package:aves/services/svg_metadata_service.dart';
+import 'package:aves/services/metadata/svg_metadata_service.dart';
 import 'package:aves/theme/format.dart';
 import 'package:aves/utils/change_notifier.dart';
 import 'package:collection/collection.dart';
@@ -35,7 +36,7 @@ class AvesEntry {
 
   // `dateModifiedSecs` can be missing in viewer mode
   int? _dateModifiedSecs;
-  final int? sourceDateTakenMillis;
+  int? sourceDateTakenMillis;
   int? _durationMillis;
   int? _catalogDateMillis;
   CatalogMetadata? _catalogMetadata;
@@ -230,7 +231,6 @@ class AvesEntry {
 
   bool get canRotateAndFlip => canEdit && canEditExif;
 
-  // support for writing EXIF
   // as of androidx.exifinterface:exifinterface:1.3.3
   bool get canEditExif {
     switch (mimeType.toLowerCase()) {
@@ -238,6 +238,17 @@ class AvesEntry {
       case MimeTypes.jpeg:
       case MimeTypes.png:
       case MimeTypes.webp:
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  // as of latest PixyMeta
+  bool get canRemoveMetadata {
+    switch (mimeType.toLowerCase()) {
+      case MimeTypes.jpeg:
+      case MimeTypes.tiff:
         return true;
       default:
         return false;
@@ -339,11 +350,13 @@ class AvesEntry {
     _bestDate = null;
   }
 
+  // TODO TLAD cache _monthTaken
   DateTime? get monthTaken {
     final d = bestDate;
     return d == null ? null : DateTime(d.year, d.month);
   }
 
+  // TODO TLAD cache _dayTaken
   DateTime? get dayTaken {
     final d = bestDate;
     return d == null ? null : DateTime(d.year, d.month, d.day);
@@ -434,7 +447,7 @@ class AvesEntry {
         final fields = await VideoMetadataFormatter.getLoadingMetadata(this);
         await _applyNewFields(fields, persist: persist);
       }
-      catalogMetadata = await metadataService.getCatalogMetadata(this, background: background);
+      catalogMetadata = await metadataFetchService.getCatalogMetadata(this, background: background);
 
       if (isVideo && (catalogMetadata?.dateMillis ?? 0) == 0) {
         catalogMetadata = await VideoMetadataFormatter.getCatalogMetadata(this);
@@ -551,8 +564,13 @@ class AvesEntry {
     if (path is String) this.path = path;
     final contentId = newFields['contentId'];
     if (contentId is int) this.contentId = contentId;
+
     final sourceTitle = newFields['title'];
     if (sourceTitle is String) this.sourceTitle = sourceTitle;
+    final sourceRotationDegrees = newFields['sourceRotationDegrees'];
+    if (sourceRotationDegrees is int) this.sourceRotationDegrees = sourceRotationDegrees;
+    final sourceDateTakenMillis = newFields['sourceDateTakenMillis'];
+    if (sourceDateTakenMillis is int) this.sourceDateTakenMillis = sourceDateTakenMillis;
 
     final width = newFields['width'];
     if (width is int) this.width = width;
@@ -578,8 +596,26 @@ class AvesEntry {
     metadataChangeNotifier.notifyListeners();
   }
 
+  Future<void> refresh({required bool persist}) async {
+    _catalogMetadata = null;
+    _addressDetails = null;
+    _bestDate = null;
+    _bestTitle = null;
+    _xmpSubjects = null;
+    if (persist) {
+      await metadataDb.removeIds({contentId!}, metadataOnly: true);
+    }
+
+    final updated = await mediaFileService.getEntry(uri, mimeType);
+    if (updated != null) {
+      await _applyNewFields(updated.toMap(), persist: persist);
+      await catalog(background: false, persist: persist);
+      await locate(background: false);
+    }
+  }
+
   Future<bool> rotate({required bool clockwise, required bool persist}) async {
-    final newFields = await imageFileService.rotate(this, clockwise: clockwise);
+    final newFields = await metadataEditService.rotate(this, clockwise: clockwise);
     if (newFields.isEmpty) return false;
 
     final oldDateModifiedSecs = dateModifiedSecs;
@@ -591,7 +627,7 @@ class AvesEntry {
   }
 
   Future<bool> flip({required bool persist}) async {
-    final newFields = await imageFileService.flip(this);
+    final newFields = await metadataEditService.flip(this);
     if (newFields.isEmpty) return false;
 
     final oldDateModifiedSecs = dateModifiedSecs;
@@ -602,18 +638,19 @@ class AvesEntry {
     return true;
   }
 
-  Future<bool> editDate(DateModifier modifier, {required bool persist}) async {
-    final newFields = await imageFileService.editDate(this, modifier);
-    if (newFields.isEmpty) return false;
+  Future<bool> editDate(DateModifier modifier) async {
+    final newFields = await metadataEditService.editDate(this, modifier);
+    return newFields.isNotEmpty;
+  }
 
-    await _applyNewFields(newFields, persist: persist);
-    await catalog(background: false, persist: persist, force: true);
-    return true;
+  Future<bool> removeMetadata(Set<MetadataType> types) async {
+    final newFields = await metadataEditService.removeTypes(this, types);
+    return newFields.isNotEmpty;
   }
 
   Future<bool> delete() {
     final completer = Completer<bool>();
-    imageFileService.delete([this]).listen(
+    mediaFileService.delete([this]).listen(
       (event) => completer.complete(event.success),
       onError: completer.completeError,
       onDone: () {
@@ -694,7 +731,7 @@ class AvesEntry {
             .toList(),
       );
     } else {
-      return await metadataService.getMultiPageInfo(this);
+      return await metadataFetchService.getMultiPageInfo(this);
     }
   }
 

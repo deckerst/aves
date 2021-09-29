@@ -52,6 +52,9 @@ class MimeTypes {
   static const json = 'application/json';
   static const plainText = 'text/plain';
 
+  // JB2, JPC, JPX?
+  static const octetStream = 'application/octet-stream';
+
   // groups
 
   // formats that support transparency
@@ -60,7 +63,7 @@ class MimeTypes {
   static const Set<String> rawImages = {arw, cr2, crw, dcr, dng, erf, k25, kdc, mrw, nef, nrw, orf, pef, raf, raw, rw2, sr2, srf, srw, x3f};
 
   // TODO TLAD [codec] make it dynamic if it depends on OS/lib versions
-  static const Set<String> undecodableImages = {art, crw, djvu, psdVnd, psdX};
+  static const Set<String> undecodableImages = {art, crw, djvu, psdVnd, psdX, octetStream};
 
   static const Set<String> _knownOpaqueImages = {heic, heif, jpeg};
 

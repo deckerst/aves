@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:aves/widgets/common/map/zoomed_bounds.dart';
 import 'package:latlong2/latlong.dart';
 
 class AvesMapController {
@@ -7,17 +8,27 @@ class AvesMapController {
 
   Stream<dynamic> get _events => _streamController.stream;
 
-  Stream<MapControllerMoveEvent> get moveEvents => _events.where((event) => event is MapControllerMoveEvent).cast<MapControllerMoveEvent>();
+  Stream<MapControllerMoveEvent> get moveCommands => _events.where((event) => event is MapControllerMoveEvent).cast<MapControllerMoveEvent>();
+
+  Stream<MapIdleUpdate> get idleUpdates => _events.where((event) => event is MapIdleUpdate).cast<MapIdleUpdate>();
 
   void dispose() {
     _streamController.close();
   }
 
   void moveTo(LatLng latLng) => _streamController.add(MapControllerMoveEvent(latLng));
+
+  void notifyIdle(ZoomedBounds bounds) => _streamController.add(MapIdleUpdate(bounds));
 }
 
 class MapControllerMoveEvent {
   final LatLng latLng;
 
   MapControllerMoveEvent(this.latLng);
+}
+
+class MapIdleUpdate {
+  final ZoomedBounds bounds;
+
+  MapIdleUpdate(this.bounds);
 }

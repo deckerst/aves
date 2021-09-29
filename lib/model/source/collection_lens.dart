@@ -28,6 +28,7 @@ class CollectionLens with ChangeNotifier {
   final List<StreamSubscription> _subscriptions = [];
   int? id;
   bool listenToSource;
+  List<AvesEntry>? fixedSelection;
 
   List<AvesEntry> _filteredSortedEntries = [];
 
@@ -38,6 +39,7 @@ class CollectionLens with ChangeNotifier {
     Iterable<CollectionFilter?>? filters,
     this.id,
     this.listenToSource = true,
+    this.fixedSelection,
   })  : filters = (filters ?? {}).whereNotNull().toSet(),
         sectionFactor = settings.collectionSectionFactor,
         sortFactor = settings.collectionSortFactor {
@@ -47,6 +49,7 @@ class CollectionLens with ChangeNotifier {
       _subscriptions.add(sourceEvents.on<EntryAddedEvent>().listen((e) => onEntryAdded(e.entries)));
       _subscriptions.add(sourceEvents.on<EntryRemovedEvent>().listen((e) => onEntryRemoved(e.entries)));
       _subscriptions.add(sourceEvents.on<EntryMovedEvent>().listen((e) => _refresh()));
+      _subscriptions.add(sourceEvents.on<EntryRefreshedEvent>().listen((e) => _refresh()));
       _subscriptions.add(sourceEvents.on<FilterVisibilityChangedEvent>().listen((e) => _refresh()));
       _subscriptions.add(sourceEvents.on<CatalogMetadataChangedEvent>().listen((e) => _refresh()));
       _subscriptions.add(sourceEvents.on<AddressMetadataChangedEvent>().listen((e) {
@@ -117,7 +120,7 @@ class CollectionLens with ChangeNotifier {
   final bool groupBursts = true;
 
   void _applyFilters() {
-    final entries = source.visibleEntries;
+    final entries = fixedSelection ?? source.visibleEntries;
     _filteredSortedEntries = List.of(filters.isEmpty ? entries : entries.where((entry) => filters.every((filter) => filter.test(entry))));
 
     if (groupBursts) {

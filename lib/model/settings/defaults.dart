@@ -13,7 +13,7 @@ import 'package:flutter/material.dart';
 class SettingsDefaults {
   // app
   static const hasAcceptedTerms = false;
-  static const isCrashlyticsEnabled = false;
+  static const isErrorReportingEnabled = false;
   static const mustBackTwiceToExit = true;
   static const keepScreenOn = KeepScreenOn.viewerOnly;
   static const homePage = HomePageSetting.collection;
@@ -38,6 +38,7 @@ class SettingsDefaults {
     EntrySetAction.delete,
   ];
   static const showThumbnailLocation = true;
+  static const showThumbnailMotionPhoto = true;
   static const showThumbnailRaw = true;
   static const showThumbnailVideoDuration = true;
 
@@ -56,7 +57,7 @@ class SettingsDefaults {
   static const showOverlayMinimap = false;
   static const showOverlayInfo = true;
   static const showOverlayShootingDetails = false;
-  static const enableOverlayBlurEffect = true;
+  static const enableOverlayBlurEffect = true; // `enableOverlayBlurEffect` has a contextual default value
   static const viewerUseCutout = true;
 
   // video
@@ -77,7 +78,7 @@ class SettingsDefaults {
   static const subtitleBackgroundColor = Colors.transparent;
 
   // info
-  static const infoMapStyle = EntryMapStyle.stamenWatercolor;
+  static const infoMapStyle = EntryMapStyle.stamenWatercolor; // `infoMapStyle` has a contextual default value
   static const infoMapZoom = 12.0;
   static const coordinateFormat = CoordinateFormat.dms;
 
@@ -86,4 +87,8 @@ class SettingsDefaults {
 
   // search
   static const saveSearchHistory = true;
+
+  // accessibility
+  static const accessibilityAnimations = AccessibilityAnimations.system;
+  static const timeToTakeAction = AccessibilityTimeout.appDefault; // `timeToTakeAction` has a contextual default value
 }

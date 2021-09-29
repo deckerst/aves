@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
@@ -8,13 +9,10 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/defaults.dart';
 import 'package:aves/model/settings/enums.dart';
 import 'package:aves/model/settings/map_style.dart';
-import 'package:aves/model/settings/screen_on.dart';
 import 'package:aves/model/source/enums.dart';
-import 'package:aves/services/device_service.dart';
-import 'package:aves/services/services.dart';
-import 'package:aves/utils/pedantic.dart';
+import 'package:aves/services/accessibility_service.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:collection/collection.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -22,7 +20,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 final Settings settings = Settings._private();
 
 class Settings extends ChangeNotifier {
-  final EventChannel _platformSettingsChangeChannel = const EventChannel('deckers.thibault/aves/settingschange');
+  final EventChannel _platformSettingsChangeChannel = const EventChannel('deckers.thibault/aves/settings_change');
+  final StreamController<String> _updateStreamController = StreamController<String>.broadcast();
+
+  Stream<String> get updateStream => _updateStreamController.stream;
 
   static SharedPreferences? _prefs;
 
@@ -40,7 +41,7 @@ class Settings extends ChangeNotifier {
 
   // app
   static const hasAcceptedTermsKey = 'has_accepted_terms';
-  static const isCrashlyticsEnabledKey = 'is_crashlytics_enabled';
+  static const isErrorReportingEnabledKey = 'is_crashlytics_enabled';
   static const localeKey = 'locale';
   static const mustBackTwiceToExitKey = 'must_back_twice_to_exit';
   static const keepScreenOnKey = 'keep_screen_on';
@@ -58,6 +59,7 @@ class Settings extends ChangeNotifier {
   static const collectionSortFactorKey = 'collection_sort_factor';
   static const collectionSelectionQuickActionsKey = 'collection_selection_quick_actions';
   static const showThumbnailLocationKey = 'show_thumbnail_location';
+  static const showThumbnailMotionPhotoKey = 'show_thumbnail_motion_photo';
   static const showThumbnailRawKey = 'show_thumbnail_raw';
   static const showThumbnailVideoDurationKey = 'show_thumbnail_video_duration';
 
@@ -103,32 +105,42 @@ class Settings extends ChangeNotifier {
   static const saveSearchHistoryKey = 'save_search_history';
   static const searchHistoryKey = 'search_history';
 
+  // accessibility
+  static const accessibilityAnimationsKey = 'accessibility_animations';
+  static const timeToTakeActionKey = 'time_to_take_action';
+
   // version
   static const lastVersionCheckDateKey = 'last_version_check_date';
 
-  Future<void> init() async {
-    _prefs = await SharedPreferences.getInstance();
-    _isRotationLocked = await windowService.isRotationLocked();
-  }
+  // platform settings
+  // cf Android `Settings.System.ACCELEROMETER_ROTATION`
+  static const platformAccelerometerRotationKey = 'accelerometer_rotation';
 
-  // Crashlytics initialization is separated from the main settings initialization
-  // to allow settings customization without Firebase context (e.g. before a Flutter Driver test)
-  Future<void> initFirebase() async {
-    await Firebase.app().setAutomaticDataCollectionEnabled(isCrashlyticsEnabled);
-    await reportService.setCollectionEnabled(isCrashlyticsEnabled);
+  // cf Android `Settings.Global.TRANSITION_ANIMATION_SCALE`
+  static const platformTransitionAnimationScaleKey = 'transition_animation_scale';
+
+  bool get initialized => _prefs != null;
+
+  Future<void> init({
+    bool isRotationLocked = false,
+    bool areAnimationsRemoved = false,
+  }) async {
+    _prefs = await SharedPreferences.getInstance();
+    _isRotationLocked = isRotationLocked;
+    _areAnimationsRemoved = areAnimationsRemoved;
   }
 
   Future<void> reset({required bool includeInternalKeys}) async {
     if (includeInternalKeys) {
       await _prefs!.clear();
     } else {
-      await Future.forEach(_prefs!.getKeys().whereNot(internalKeys.contains), _prefs!.remove);
+      await Future.forEach<String>(_prefs!.getKeys().whereNot(internalKeys.contains), _prefs!.remove);
     }
   }
 
   Future<void> setContextualDefaults() async {
     // performance
-    final performanceClass = await DeviceService.getPerformanceClass();
+    final performanceClass = await deviceService.getPerformanceClass();
     enableOverlayBlurEffect = performanceClass >= 30;
 
     // availability
@@ -139,6 +151,10 @@ class Settings extends ChangeNotifier {
       final styles = EntryMapStyle.values.whereNot((v) => v.isGoogleMaps).toList();
       infoMapStyle = styles[Random().nextInt(styles.length)];
     }
+
+    // accessibility
+    final hasRecommendedTimeouts = await AccessibilityService.hasRecommendedTimeouts();
+    timeToTakeAction = hasRecommendedTimeouts ? AccessibilityTimeout.system : AccessibilityTimeout.appDefault;
   }
 
   // app
@@ -147,12 +163,9 @@ class Settings extends ChangeNotifier {
 
   set hasAcceptedTerms(bool newValue) => setAndNotify(hasAcceptedTermsKey, newValue);
 
-  bool get isCrashlyticsEnabled => getBoolOrDefault(isCrashlyticsEnabledKey, SettingsDefaults.isCrashlyticsEnabled);
+  bool get isErrorReportingEnabled => getBoolOrDefault(isErrorReportingEnabledKey, SettingsDefaults.isErrorReportingEnabled);
 
-  set isCrashlyticsEnabled(bool newValue) {
-    setAndNotify(isCrashlyticsEnabledKey, newValue);
-    unawaited(initFirebase());
-  }
+  set isErrorReportingEnabled(bool newValue) => setAndNotify(isErrorReportingEnabledKey, newValue);
 
   static const localeSeparator = '-';
 
@@ -188,10 +201,7 @@ class Settings extends ChangeNotifier {
 
   KeepScreenOn get keepScreenOn => getEnumOrDefault(keepScreenOnKey, SettingsDefaults.keepScreenOn, KeepScreenOn.values);
 
-  set keepScreenOn(KeepScreenOn newValue) {
-    setAndNotify(keepScreenOnKey, newValue.toString());
-    newValue.apply();
-  }
+  set keepScreenOn(KeepScreenOn newValue) => setAndNotify(keepScreenOnKey, newValue.toString());
 
   HomePageSetting get homePage => getEnumOrDefault(homePageKey, SettingsDefaults.homePage, HomePageSetting.values);
 
@@ -241,6 +251,10 @@ class Settings extends ChangeNotifier {
   bool get showThumbnailLocation => getBoolOrDefault(showThumbnailLocationKey, SettingsDefaults.showThumbnailLocation);
 
   set showThumbnailLocation(bool newValue) => setAndNotify(showThumbnailLocationKey, newValue);
+
+  bool get showThumbnailMotionPhoto => getBoolOrDefault(showThumbnailMotionPhotoKey, SettingsDefaults.showThumbnailMotionPhoto);
+
+  set showThumbnailMotionPhoto(bool newValue) => setAndNotify(showThumbnailMotionPhotoKey, newValue);
 
   bool get showThumbnailRaw => getBoolOrDefault(showThumbnailRawKey, SettingsDefaults.showThumbnailRaw);
 
@@ -376,6 +390,16 @@ class Settings extends ChangeNotifier {
 
   set searchHistory(List<CollectionFilter> newValue) => setAndNotify(searchHistoryKey, newValue.map((filter) => filter.toJson()).toList());
 
+  // accessibility
+
+  AccessibilityAnimations get accessibilityAnimations => getEnumOrDefault(accessibilityAnimationsKey, SettingsDefaults.accessibilityAnimations, AccessibilityAnimations.values);
+
+  set accessibilityAnimations(AccessibilityAnimations newValue) => setAndNotify(accessibilityAnimationsKey, newValue.toString());
+
+  AccessibilityTimeout get timeToTakeAction => getEnumOrDefault(timeToTakeActionKey, SettingsDefaults.timeToTakeAction, AccessibilityTimeout.values);
+
+  set timeToTakeAction(AccessibilityTimeout newValue) => setAndNotify(timeToTakeActionKey, newValue.toString());
+
   // version
 
   DateTime get lastVersionCheckDate => DateTime.fromMillisecondsSinceEpoch(_prefs!.getInt(lastVersionCheckDateKey) ?? 0);
@@ -422,6 +446,7 @@ class Settings extends ChangeNotifier {
       _prefs!.setBool(key, newValue);
     }
     if (oldValue != newValue) {
+      _updateStreamController.add(key);
       notifyListeners();
     }
   }
@@ -429,28 +454,45 @@ class Settings extends ChangeNotifier {
   // platform settings
 
   void _onPlatformSettingsChange(Map? fields) {
+    var changed = false;
     fields?.forEach((key, value) {
       switch (key) {
-        // cf Android `Settings.System.ACCELEROMETER_ROTATION`
-        case 'accelerometer_rotation':
-          if (value is int) {
+        case platformAccelerometerRotationKey:
+          if (value is num) {
             final newValue = value == 0;
             if (_isRotationLocked != newValue) {
               _isRotationLocked = newValue;
               if (!_isRotationLocked) {
                 windowService.requestOrientation();
               }
-              notifyListeners();
+              _updateStreamController.add(key);
+              changed = true;
             }
           }
           break;
+        case platformTransitionAnimationScaleKey:
+          if (value is num) {
+            final newValue = value == 0;
+            if (_areAnimationsRemoved != newValue) {
+              _areAnimationsRemoved = newValue;
+              _updateStreamController.add(key);
+              changed = true;
+            }
+          }
       }
     });
+    if (changed) {
+      notifyListeners();
+    }
   }
 
   bool _isRotationLocked = false;
 
   bool get isRotationLocked => _isRotationLocked;
+
+  bool _areAnimationsRemoved = false;
+
+  bool get areAnimationsRemoved => _areAnimationsRemoved;
 
   // import/export
 
@@ -492,9 +534,10 @@ class Settings extends ChangeNotifier {
                 debugPrint('failed to import key=$key, value=$value is not a double');
               }
               break;
-            case isCrashlyticsEnabledKey:
+            case isErrorReportingEnabledKey:
             case mustBackTwiceToExitKey:
             case showThumbnailLocationKey:
+            case showThumbnailMotionPhotoKey:
             case showThumbnailRawKey:
             case showThumbnailVideoDurationKey:
             case showOverlayMinimapKey:
@@ -526,6 +569,8 @@ class Settings extends ChangeNotifier {
             case infoMapStyleKey:
             case coordinateFormatKey:
             case imageBackgroundKey:
+            case accessibilityAnimationsKey:
+            case timeToTakeActionKey:
               if (value is String) {
                 _prefs!.setString(key, value);
               } else {
@@ -548,6 +593,7 @@ class Settings extends ChangeNotifier {
               break;
           }
         }
+        _updateStreamController.add(key);
       });
       notifyListeners();
     }

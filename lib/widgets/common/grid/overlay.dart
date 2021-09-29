@@ -1,7 +1,6 @@
 import 'package:aves/model/selection.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/widgets/common/grid/theme.dart';
 import 'package:aves/widgets/common/identity/aves_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -31,7 +30,6 @@ class GridItemSelectionOverlay<T> extends StatelessWidget {
                   ? OverlayIcon(
                       key: ValueKey(isSelected),
                       icon: isSelected ? AIcons.selected : AIcons.unselected,
-                      size: context.select<GridThemeData, double>((t) => t.iconSize),
                     )
                   : const SizedBox.shrink();
               child = AnimatedSwitcher(

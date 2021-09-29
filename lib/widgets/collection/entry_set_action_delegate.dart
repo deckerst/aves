@@ -9,11 +9,10 @@ import 'package:aves/model/selection.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/android_app_service.dart';
-import 'package:aves/services/image_op_events.dart';
-import 'package:aves/services/services.dart';
+import 'package:aves/services/common/image_op_events.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/android_file_utils.dart';
-import 'package:aves/utils/pedantic.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
@@ -43,8 +42,8 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       case EntrySetAction.move:
         _moveSelection(context, moveType: MoveType.move);
         break;
-      case EntrySetAction.refreshMetadata:
-        _refreshMetadata(context);
+      case EntrySetAction.rescan:
+        _rescan(context);
         break;
       case EntrySetAction.map:
         _goToMap(context);
@@ -69,12 +68,12 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     });
   }
 
-  void _refreshMetadata(BuildContext context) {
+  void _rescan(BuildContext context) {
     final source = context.read<CollectionSource>();
     final selection = context.read<Selection<AvesEntry>>();
     final selectedItems = _getExpandedSelectedItems(selection);
 
-    source.refreshMetadata(selectedItems);
+    source.rescan(selectedItems);
     selection.browse();
   }
 
@@ -123,7 +122,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     source.pauseMonitoring();
     showOpReport<MoveOpEvent>(
       context: context,
-      opStream: imageFileService.move(todoEntries, copy: copy, destinationAlbum: destinationAlbum),
+      opStream: mediaFileService.move(todoEntries, copy: copy, destinationAlbum: destinationAlbum),
       itemCount: todoCount,
       onDone: (processed) async {
         final movedOps = processed.where((e) => e.success).toSet();
@@ -174,7 +173,8 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
                       ),
                     ),
                   ));
-                  await Future.delayed(Durations.staggeredAnimationPageTarget);
+                  final delayDuration = context.read<DurationsData>().staggeredAnimationPageTarget;
+                  await Future.delayed(delayDuration);
                 }
                 await Future.delayed(Durations.highlightScrollInitDelay);
                 final newUris = movedOps.map((v) => v.newFields['uri'] as String?).toSet();
@@ -223,7 +223,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     source.pauseMonitoring();
     showOpReport<ImageOpEvent>(
       context: context,
-      opStream: imageFileService.delete(selectedItems),
+      opStream: mediaFileService.delete(selectedItems),
       itemCount: todoCount,
       onDone: (processed) async {
         final deletedUris = processed.where((event) => event.success).map((event) => event.uri).toSet();
@@ -245,14 +245,19 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
 
   void _goToMap(BuildContext context) {
     final selection = context.read<Selection<AvesEntry>>();
-    final entries = selection.isSelecting ? _getExpandedSelectedItems(selection) : context.read<CollectionLens>().sortedEntries;
+    final collection = context.read<CollectionLens>();
+    final entries = (selection.isSelecting ? _getExpandedSelectedItems(selection) : collection.sortedEntries);
 
     Navigator.push(
       context,
       MaterialPageRoute(
         settings: const RouteSettings(name: MapPage.routeName),
         builder: (context) => MapPage(
-          entries: entries.where((entry) => entry.hasGps).toList(),
+          collection: CollectionLens(
+            source: collection.source,
+            filters: collection.filters,
+            fixedSelection: entries.where((entry) => entry.hasGps).toList(),
+          ),
         ),
       ),
     );

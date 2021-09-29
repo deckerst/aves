@@ -1,5 +1,5 @@
 import 'package:aves/services/android_debug_service.dart';
-import 'package:aves/services/services.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:firebase_core/firebase_core.dart';

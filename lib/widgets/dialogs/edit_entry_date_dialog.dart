@@ -1,10 +1,12 @@
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/metadata/date_modifier.dart';
 import 'package:aves/model/metadata/enums.dart';
+import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/format.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'aves_dialog.dart';
 
@@ -71,7 +73,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
           child: IconButton(
             icon: const Icon(AIcons.edit),
             onPressed: _action == DateEditAction.set ? _editDate : null,
-            tooltip: context.l10n.changeTooltip,
+            tooltip: l10n.changeTooltip,
           ),
         ),
       ],
@@ -92,7 +94,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
           child: IconButton(
             icon: const Icon(AIcons.edit),
             onPressed: _action == DateEditAction.shift ? _editShift : null,
-            tooltip: context.l10n.changeTooltip,
+            tooltip: l10n.changeTooltip,
           ),
         ),
       ],
@@ -104,6 +106,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
       title: _tileText(l10n.editEntryDateDialogClear),
     );
 
+    final animationDuration = context.select<DurationsData, Duration>((v) => v.expansionTileAnimation);
     final theme = Theme.of(context);
     return Theme(
       data: theme.copyWith(
@@ -114,7 +117,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
       ),
       child: AvesDialog(
         context: context,
-        title: context.l10n.editEntryDateDialogTitle,
+        title: l10n.editEntryDateDialogTitle,
         scrollableContent: [
           setTile,
           shiftTile,
@@ -125,6 +128,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
               expansionCallback: (index, isExpanded) {
                 setState(() => _showOptions = !isExpanded);
               },
+              animationDuration: animationDuration,
               expandedHeaderPadding: EdgeInsets.zero,
               elevation: 0,
               children: [
@@ -156,7 +160,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
           ),
           TextButton(
             onPressed: () => _submit(context),
-            child: Text(context.l10n.applyButtonLabel),
+            child: Text(l10n.applyButtonLabel),
           ),
         ],
       ),
@@ -324,6 +328,7 @@ class _TimeShiftDialogState extends State<TimeShiftDialog> {
           ),
         ),
       ],
+      hasScrollBar: false,
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),

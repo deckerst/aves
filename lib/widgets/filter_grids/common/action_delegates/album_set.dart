@@ -8,8 +8,8 @@ import 'package:aves/model/highlight.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums.dart';
-import 'package:aves/services/image_op_events.dart';
-import 'package:aves/services/services.dart';
+import 'package:aves/services/common/image_op_events.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -167,7 +167,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> {
     source.pauseMonitoring();
     showOpReport<ImageOpEvent>(
       context: context,
-      opStream: imageFileService.delete(todoEntries),
+      opStream: mediaFileService.delete(todoEntries),
       itemCount: todoCount,
       onDone: (processed) async {
         final deletedUris = processed.where((event) => event.success).map((event) => event.uri).toSet();
@@ -177,7 +177,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> {
         final deletedCount = deletedUris.length;
         if (deletedCount < todoCount) {
           final count = todoCount - deletedCount;
-          showFeedbackWithMessenger(messenger, l10n.collectionDeleteFailureFeedback(count));
+          showFeedbackWithMessenger(context, messenger, l10n.collectionDeleteFailureFeedback(count));
         }
 
         // cleanup
@@ -226,7 +226,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> {
     source.pauseMonitoring();
     showOpReport<MoveOpEvent>(
       context: context,
-      opStream: imageFileService.move(todoEntries, copy: false, destinationAlbum: destinationAlbum),
+      opStream: mediaFileService.move(todoEntries, copy: false, destinationAlbum: destinationAlbum),
       itemCount: todoCount,
       onDone: (processed) async {
         final movedOps = processed.where((e) => e.success).toSet();
@@ -236,9 +236,9 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> {
         final movedCount = movedOps.length;
         if (movedCount < todoCount) {
           final count = todoCount - movedCount;
-          showFeedbackWithMessenger(messenger, l10n.collectionMoveFailureFeedback(count));
+          showFeedbackWithMessenger(context, messenger, l10n.collectionMoveFailureFeedback(count));
         } else {
-          showFeedbackWithMessenger(messenger, l10n.genericSuccessFeedback);
+          showFeedbackWithMessenger(context, messenger, l10n.genericSuccessFeedback);
         }
 
         // cleanup

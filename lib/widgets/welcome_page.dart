@@ -7,6 +7,7 @@ import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/home_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -44,11 +45,12 @@ class _WelcomePageState extends State<WelcomePage> {
               builder: (context, snapshot) {
                 if (snapshot.hasError || snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
                 final terms = snapshot.data!;
+                final durations = context.watch<DurationsData>();
                 return Column(
                   mainAxisSize: MainAxisSize.min,
                   children: _toStaggeredList(
-                    duration: Durations.staggeredAnimation,
-                    delay: Durations.staggeredAnimationDelay,
+                    duration: durations.staggeredAnimation,
+                    delay: durations.staggeredAnimationDelay * timeDilation,
                     childAnimationBuilder: (child) => SlideAnimation(
                       verticalOffset: 50.0,
                       child: FadeInAnimation(
@@ -102,9 +104,9 @@ class _WelcomePageState extends State<WelcomePage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         LabeledCheckbox(
-          value: settings.isCrashlyticsEnabled,
+          value: settings.isErrorReportingEnabled,
           onChanged: (v) {
-            if (v != null) setState(() => settings.isCrashlyticsEnabled = v);
+            if (v != null) setState(() => settings.isErrorReportingEnabled = v);
           },
           text: context.l10n.welcomeCrashReportToggle,
         ),

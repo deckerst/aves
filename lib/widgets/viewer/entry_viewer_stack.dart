@@ -6,7 +6,7 @@ import 'package:aves/model/highlight.dart';
 import 'package:aves/model/settings/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
-import 'package:aves/services/services.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/change_notifier.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
@@ -101,7 +101,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
     _horizontalPager = PageController(initialPage: _currentHorizontalPage);
     _verticalPager = PageController(initialPage: _currentVerticalPage.value)..addListener(_onVerticalPageControllerChange);
     _overlayAnimationController = AnimationController(
-      duration: Durations.viewerOverlayAnimation,
+      duration: context.read<DurationsData>().viewerOverlayAnimation,
       vsync: this,
     );
     _topOverlayScale = CurvedAnimation(
@@ -355,8 +355,8 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
     );
 
     child = Selector<MediaQueryData, double>(
-      selector: (c, mq) => mq.size.height,
-      builder: (c, mqHeight, child) {
+      selector: (context, mq) => mq.size.height,
+      builder: (context, mqHeight, child) {
         // when orientation change, the `PageController` offset is not updated right away
         // and it does not trigger its listeners when it does, so we force a refresh in the next frame
         WidgetsBinding.instance!.addPostFrameCallback((_) => _onVerticalPageControllerChange());
@@ -412,13 +412,18 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
     );
   }
 
-  Future<void> _goToVerticalPage(int page) {
-    // duration & curve should feel similar to changing page by vertical fling
-    return _verticalPager.animateToPage(
-      page,
-      duration: Durations.viewerVerticalPageScrollAnimation,
-      curve: Curves.easeOutQuart,
-    );
+  Future<void> _goToVerticalPage(int page) async {
+    final animationDuration = context.read<DurationsData>().viewerVerticalPageScrollAnimation;
+    if (animationDuration > Duration.zero) {
+      // duration & curve should feel similar to changing page by vertical fling
+      await _verticalPager.animateToPage(
+        page,
+        duration: animationDuration,
+        curve: Curves.easeOutQuart,
+      );
+    } else {
+      _verticalPager.jumpToPage(page);
+    }
   }
 
   void _onVerticalPageChanged(int page) {
@@ -524,9 +529,9 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
 
   // system UI
 
-  static void _showSystemUI() => SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+  static void _showSystemUI() => SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
-  static void _hideSystemUI() => SystemChrome.setEnabledSystemUIOverlays([]);
+  static void _hideSystemUI() => SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
 
   // overlay
 

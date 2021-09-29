@@ -1,5 +1,9 @@
 enum CoordinateFormat { dms, decimal }
 
+enum AccessibilityAnimations { system, disabled, enabled }
+
+enum AccessibilityTimeout { system, appDefault, s10, s30, s60, s120 }
+
 enum EntryBackground { black, white, checkered }
 
 enum HomePageSetting { collection, albums }

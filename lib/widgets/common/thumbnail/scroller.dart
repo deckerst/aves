@@ -12,6 +12,9 @@ class ThumbnailScroller extends StatefulWidget {
   final int entryCount;
   final AvesEntry? Function(int index) entryBuilder;
   final ValueNotifier<int?> indexNotifier;
+  final void Function(int index)? onTap;
+  final Object? Function(AvesEntry entry)? heroTagger;
+  final bool highlightable;
 
   const ThumbnailScroller({
     Key? key,
@@ -19,6 +22,9 @@ class ThumbnailScroller extends StatefulWidget {
     required this.entryCount,
     required this.entryBuilder,
     required this.indexNotifier,
+    this.onTap,
+    this.heroTagger,
+    this.highlightable = false,
   }) : super(key: key);
 
   @override
@@ -98,7 +104,10 @@ class _ThumbnailScrollerState extends State<ThumbnailScroller> {
             return Stack(
               children: [
                 GestureDetector(
-                  onTap: () => indexNotifier.value = page,
+                  onTap: () {
+                    indexNotifier.value = page;
+                    widget.onTap?.call(page);
+                  },
                   child: DecoratedThumbnail(
                     entry: pageEntry,
                     tileExtent: extent,
@@ -107,8 +116,8 @@ class _ThumbnailScrollerState extends State<ThumbnailScroller> {
                     // so we cancel these requests when possible
                     cancellableNotifier: _cancellableNotifier,
                     selectable: false,
-                    highlightable: false,
-                    hero: false,
+                    highlightable: widget.highlightable,
+                    heroTagger: () => widget.heroTagger?.call(pageEntry),
                   ),
                 ),
                 IgnorePointer(
@@ -123,7 +132,7 @@ class _ThumbnailScrollerState extends State<ThumbnailScroller> {
                       );
                     },
                   ),
-                )
+                ),
               ],
             );
           },

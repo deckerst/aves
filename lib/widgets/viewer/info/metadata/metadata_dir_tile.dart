@@ -2,7 +2,7 @@ import 'dart:collection';
 
 import 'package:aves/model/entry.dart';
 import 'package:aves/ref/brand_colors.dart';
-import 'package:aves/services/svg_metadata_service.dart';
+import 'package:aves/services/metadata/svg_metadata_service.dart';
 import 'package:aves/utils/color_utils.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';

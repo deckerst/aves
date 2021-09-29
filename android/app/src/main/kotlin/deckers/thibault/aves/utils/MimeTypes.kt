@@ -23,7 +23,7 @@ object MimeTypes {
     // raw raster
     private const val ARW = "image/x-sony-arw"
     private const val CR2 = "image/x-canon-cr2"
-    const val DNG = "image/x-adobe-dng"
+    private const val DNG = "image/x-adobe-dng"
     private const val NEF = "image/x-nikon-nef"
     private const val NRW = "image/x-nikon-nrw"
     private const val ORF = "image/x-olympus-orf"
@@ -65,24 +65,43 @@ object MimeTypes {
     }
 
     // as of Flutter v1.22.0, with additional custom handling for SVG
-    fun isSupportedByFlutter(mimeType: String, rotationDegrees: Int?, isFlipped: Boolean?) = when (mimeType) {
+    fun canDecodeWithFlutter(mimeType: String, rotationDegrees: Int?, isFlipped: Boolean?) = when (mimeType) {
         JPEG, GIF, WEBP, BMP, WBMP, ICO, SVG -> true
         PNG -> rotationDegrees ?: 0 == 0 && !(isFlipped ?: false)
         else -> false
     }
 
     // as of `metadata-extractor` v2.14.0
-    fun isSupportedByMetadataExtractor(mimeType: String) = when (mimeType) {
+    fun canReadWithMetadataExtractor(mimeType: String) = when (mimeType) {
         DJVU, WBMP, MKV, MP2T, MP2TS, OGV, WEBM -> false
         else -> true
     }
 
     // as of `ExifInterface` v1.3.1, `isSupportedMimeType` reports
     // no support for TIFF images, but it can actually open them (maybe other formats too)
-    fun isSupportedByExifInterface(mimeType: String, strict: Boolean = true) = ExifInterface.isSupportedMimeType(mimeType) || !strict
+    fun canReadWithExifInterface(mimeType: String, strict: Boolean = true) = ExifInterface.isSupportedMimeType(mimeType) || !strict
 
-    fun isSupportedByPixyMeta(mimeType: String) = when (mimeType) {
+    // as of latest PixyMeta
+    fun canReadWithPixyMeta(mimeType: String) = when (mimeType) {
         JPEG, TIFF, PNG, GIF, BMP -> true
+        else -> false
+    }
+
+    // as of androidx.exifinterface:exifinterface:1.3.3
+    fun canEditExif(mimeType: String) = when (mimeType) {
+        DNG,
+        JPEG,
+        PNG,
+        WEBP -> true
+        else -> false
+    }
+
+    // as of latest PixyMeta
+    fun canEditXmp(mimeType: String) = canReadWithPixyMeta(mimeType)
+
+    // as of latest PixyMeta
+    fun canRemoveMetadata(mimeType: String) = when (mimeType) {
+        JPEG, TIFF -> true
         else -> false
     }
 

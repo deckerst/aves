@@ -52,18 +52,18 @@ class MainActivity : FlutterActivity() {
         val messenger = flutterEngine!!.dartExecutor.binaryMessenger
 
         // dart -> platform -> dart
+        MethodChannel(messenger, AccessibilityHandler.CHANNEL).setMethodCallHandler(AccessibilityHandler(this))
         MethodChannel(messenger, AppAdapterHandler.CHANNEL).setMethodCallHandler(AppAdapterHandler(this))
-        MethodChannel(messenger, AppShortcutHandler.CHANNEL).setMethodCallHandler(AppShortcutHandler(this))
         MethodChannel(messenger, DebugHandler.CHANNEL).setMethodCallHandler(DebugHandler(this))
         MethodChannel(messenger, DeviceHandler.CHANNEL).setMethodCallHandler(DeviceHandler())
         MethodChannel(messenger, EmbeddedDataHandler.CHANNEL).setMethodCallHandler(EmbeddedDataHandler(this))
-        MethodChannel(messenger, ImageFileHandler.CHANNEL).setMethodCallHandler(ImageFileHandler(this))
         MethodChannel(messenger, GeocodingHandler.CHANNEL).setMethodCallHandler(GeocodingHandler(this))
         MethodChannel(messenger, GlobalSearchHandler.CHANNEL).setMethodCallHandler(GlobalSearchHandler(this))
+        MethodChannel(messenger, MediaFileHandler.CHANNEL).setMethodCallHandler(MediaFileHandler(this))
         MethodChannel(messenger, MediaStoreHandler.CHANNEL).setMethodCallHandler(MediaStoreHandler(this))
-        MethodChannel(messenger, MetadataHandler.CHANNEL).setMethodCallHandler(MetadataHandler(this))
+        MethodChannel(messenger, MetadataEditHandler.CHANNEL).setMethodCallHandler(MetadataEditHandler(this))
+        MethodChannel(messenger, MetadataFetchHandler.CHANNEL).setMethodCallHandler(MetadataFetchHandler(this))
         MethodChannel(messenger, StorageHandler.CHANNEL).setMethodCallHandler(StorageHandler(this))
-        MethodChannel(messenger, TimeHandler.CHANNEL).setMethodCallHandler(TimeHandler())
         MethodChannel(messenger, WindowHandler.CHANNEL).setMethodCallHandler(WindowHandler(this))
 
         // result streaming: dart -> platform ->->-> dart

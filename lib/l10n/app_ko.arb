@@ -5,6 +5,9 @@
   "welcomeTermsToggle": "이용약관에 동의합니다",
   "itemCount": "{count, plural, other{{count}개}}",
 
+  "timeSeconds": "{seconds, plural, other{{seconds}초}}",
+  "timeMinutes": "{minutes, plural, other{{minutes}분}}",
+
   "applyButtonLabel": "확인",
   "deleteButtonLabel": "삭제",
   "nextButtonLabel": "다음",
@@ -52,7 +55,7 @@
   "entryActionEdit": "편집…",
   "entryActionOpen": "다른 앱에서 열기…",
   "entryActionSetAs": "다음 용도로 사용…",
-  "entryActionOpenMap": "지도에서 보기…",
+  "entryActionOpenMap": "지도 앱에서 보기…",
   "entryActionRotateScreen": "화면 회전",
   "entryActionAddFavourite": "즐겨찾기에 추가",
   "entryActionRemoveFavourite": "즐겨찾기에서 삭제",
@@ -67,6 +70,7 @@
   "videoActionSettings": "설정",
 
   "entryInfoActionEditDate": "날짜와 시간 수정",
+  "entryInfoActionRemoveMetadata": "메타데이터 삭제",
 
   "filterFavouriteLabel": "즐겨찾기",
   "filterLocationEmptyLabel": "장소 없음",
@@ -96,6 +100,9 @@
   "keepScreenOnNever": "자동 꺼짐",
   "keepScreenOnViewerOnly": "뷰어 이용 시 작동",
   "keepScreenOnAlways": "항상 켜짐",
+
+  "accessibilityAnimationsRemove": "화면 효과 제한",
+  "accessibilityAnimationsKeep": "화면 효과 유지",
 
   "albumTierNew": "신규",
   "albumTierPinned": "고정",
@@ -148,6 +155,11 @@
   "editEntryDateDialogFieldSelection": "필드 선택",
   "editEntryDateDialogHours": "시간",
   "editEntryDateDialogMinutes": "분",
+
+  "removeEntryMetadataDialogTitle": "메타데이터 삭제",
+  "removeEntryMetadataDialogMore": "더 보기",
+
+  "removeEntryMetadataMotionPhotoXmpWarningDialogMessage":  "XMP가 있어야 모션 포토에 포함되는 동영상을 재생할 수 있습니다. 삭제하시겠습니까?",
 
   "videoSpeedDialogLabel": "재생 배속",
 
@@ -207,7 +219,7 @@
   "collectionActionAddShortcut": "홈 화면에 추가",
   "collectionActionCopy": "앨범으로 복사",
   "collectionActionMove": "앨범으로 이동",
-  "collectionActionRefreshMetadata": "새로 분석",
+  "collectionActionRescan": "새로 분석",
 
   "collectionSortTitle": "정렬",
   "collectionSortDate": "날짜",
@@ -288,6 +300,7 @@
 
   "settingsPageTitle": "설정",
   "settingsSystemDefault": "시스템",
+  "settingsDefault": "기본",
 
   "settingsActionExport": "내보내기",
   "settingsActionImport": "가져오기",
@@ -308,6 +321,7 @@
 
   "settingsSectionThumbnails": "섬네일",
   "settingsThumbnailShowLocationIcon": "위치 아이콘 표시",
+  "settingsThumbnailShowMotionPhotoIcon": "모션 포토 아이콘 표시",
   "settingsThumbnailShowRawIcon": "Raw 아이콘 표시",
   "settingsThumbnailShowVideoDuration": "동영상 길이 표시",
 
@@ -357,7 +371,7 @@
   "settingsSubtitleThemeTextAlignmentRight": "오른쪽",
 
   "settingsSectionPrivacy": "개인정보 보호",
-  "settingsEnableCrashReport": "오류 보고서 보내기",
+  "settingsEnableErrorReporting": "오류 보고서 보내기",
   "settingsSaveSearchHistory": "검색기록",
 
   "settingsHiddenFiltersTile": "숨겨진 필터",
@@ -377,12 +391,16 @@
   "settingsStorageAccessEmpty": "접근 허용이 없습니다",
   "settingsStorageAccessRevokeTooltip": "취소",
 
+  "settingsSectionAccessibility": "접근성",
+  "settingsRemoveAnimationsTile": "애니메이션 삭제",
+  "settingsRemoveAnimationsTitle": "애니메이션 삭제",
+  "settingsTimeToTakeActionTile": "액션 취하기 전 대기 시간",
+  "settingsTimeToTakeActionTitle": "액션 취하기 전 대기 시간",
+
   "settingsSectionLanguage": "언어 및 표시 형식",
   "settingsLanguage": "언어",
   "settingsCoordinateFormatTile": "좌표 표현",
   "settingsCoordinateFormatTitle": "좌표 표현",
-
-  "mapPageTitle": "지도",
 
   "statsPageTitle": "통계",
   "statsImage": "{count, plural, other{사진}}",
@@ -412,12 +430,15 @@
   "viewerInfoLabelCoordinates": "좌표",
   "viewerInfoLabelAddress": "주소",
 
-  "viewerInfoMapStyleTitle": "지도 유형",
-  "viewerInfoMapStyleTooltip": "지도 유형 선택",
-  "viewerInfoMapZoomInTooltip": "확대",
-  "viewerInfoMapZoomOutTooltip": "축소",
+  "mapStyleTitle": "지도 유형",
+  "mapStyleTooltip": "지도 유형 선택",
+  "mapZoomInTooltip": "확대",
+  "mapZoomOutTooltip": "축소",
+  "mapPointNorthUpTooltip": "북쪽을 위로 가리키기",
   "mapAttributionOsmHot": "지도 데이터 © [OpenStreetMap](https://www.openstreetmap.org/copyright) 기여자 • 타일 [HOT](https://www.hotosm.org/) • 호스팅 [OSM France](https://openstreetmap.fr/)",
   "mapAttributionStamen": "지도 데이터 © [OpenStreetMap](https://www.openstreetmap.org/copyright) 기여자 • 타일 [Stamen Design](http://stamen.com), [CC BY 3.0](http://creativecommons.org/licenses/by/3.0)",
+  "openMapPageTooltip": "지도 페이지에서 보기",
+  "mapEmptyRegion": "이 지역의 사진이 없습니다",
 
   "viewerInfoOpenEmbeddedFailureFeedback": "첨부 데이터 추출 오류",
   "viewerInfoOpenLinkText": "열기",

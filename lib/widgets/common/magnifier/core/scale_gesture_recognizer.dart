@@ -12,12 +12,11 @@ class MagnifierGestureRecognizer extends ScaleGestureRecognizer {
 
   MagnifierGestureRecognizer({
     Object? debugOwner,
-    PointerDeviceKind? kind,
     required this.hitDetector,
     required this.validateAxis,
     this.touchSlopFactor = 2,
     required this.doubleTapDetails,
-  }) : super(debugOwner: debugOwner, kind: kind);
+  }) : super(debugOwner: debugOwner);
 
   Map<int, Offset> _pointerLocations = <int, Offset>{};
 
@@ -29,7 +28,7 @@ class MagnifierGestureRecognizer extends ScaleGestureRecognizer {
   bool ready = true;
 
   @override
-  void addAllowedPointer(PointerEvent event) {
+  void addAllowedPointer(PointerDownEvent event) {
     if (ready) {
       ready = false;
       _initialSpan = 0.0;

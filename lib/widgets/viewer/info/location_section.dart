@@ -3,11 +3,13 @@ import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/settings/coordinate_format.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
-import 'package:aves/services/services.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/map/geo_map.dart';
+import 'package:aves/widgets/common/map/theme.dart';
+import 'package:aves/widgets/map/map_page.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:flutter/material.dart';
 
@@ -82,12 +84,18 @@ class _LocationSectionState extends State<LocationSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (widget.showTitle) const SectionRow(icon: AIcons.location),
-        GeoMap(
-          entries: [entry],
+        MapTheme(
           interactive: false,
+          navigationButton: MapNavigationButton.map,
+          visualDensity: VisualDensity.compact,
           mapHeight: 200,
-          isAnimatingNotifier: widget.isScrollingNotifier,
-          onUserZoomChange: (zoom) => settings.infoMapZoom = zoom,
+          child: GeoMap(
+            entries: [entry],
+            isAnimatingNotifier: widget.isScrollingNotifier,
+            onUserZoomChange: (zoom) => settings.infoMapZoom = zoom,
+            onMarkerTap: collection != null ? (_, __) => _openMapPage(context) : null,
+            openMapPage: collection != null ? _openMapPage : null,
+          ),
         ),
         _AddressInfoGroup(entry: entry),
         if (filters.isNotEmpty)
@@ -105,6 +113,25 @@ class _LocationSectionState extends State<LocationSection> {
             ),
           ),
       ],
+    );
+  }
+
+  void _openMapPage(BuildContext context) {
+    final baseCollection = collection;
+    if (baseCollection == null) return;
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        settings: const RouteSettings(name: MapPage.routeName),
+        builder: (context) => MapPage(
+          collection: CollectionLens(
+            source: baseCollection.source,
+            fixedSelection: baseCollection.sortedEntries.where((entry) => entry.hasGps).toList(),
+          ),
+          initialEntry: entry,
+        ),
+      ),
     );
   }
 

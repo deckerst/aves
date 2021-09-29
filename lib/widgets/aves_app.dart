@@ -1,10 +1,13 @@
 import 'dart:ui';
 
 import 'package:aves/app_mode.dart';
+import 'package:aves/model/settings/accessibility_animations.dart';
+import 'package:aves/model/settings/screen_on.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/media_store_source.dart';
-import 'package:aves/services/services.dart';
+import 'package:aves/services/accessibility_service.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/themes.dart';
@@ -16,13 +19,13 @@ import 'package:aves/widgets/common/providers/highlight_info_provider.dart';
 import 'package:aves/widgets/home_page.dart';
 import 'package:aves/widgets/welcome_page.dart';
 import 'package:equatable/equatable.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
+import 'package:tuple/tuple.dart';
 
 class AvesApp extends StatefulWidget {
   const AvesApp({Key? key}) : super(key: key);
@@ -41,7 +44,7 @@ class _AvesAppState extends State<AvesApp> {
   // observers are not registered when using the same list object with different items
   // the list itself needs to be reassigned
   List<NavigatorObserver> _navigatorObservers = [];
-  final EventChannel _mediaStoreChangeChannel = const EventChannel('deckers.thibault/aves/mediastorechange');
+  final EventChannel _mediaStoreChangeChannel = const EventChannel('deckers.thibault/aves/media_store_change');
   final EventChannel _newIntentChannel = const EventChannel('deckers.thibault/aves/intent');
   final EventChannel _errorChannel = const EventChannel('deckers.thibault/aves/error');
   final GlobalKey<NavigatorState> _navigatorKey = GlobalKey(debugLabel: 'app-navigator');
@@ -68,24 +71,39 @@ class _AvesAppState extends State<AvesApp> {
         value: appModeNotifier,
         child: Provider<CollectionSource>.value(
           value: _mediaStoreSource,
-          child: HighlightInfoProvider(
-            child: OverlaySupport(
-              child: FutureBuilder<void>(
-                future: _appSetup,
-                builder: (context, snapshot) {
-                  final initialized = !snapshot.hasError && snapshot.connectionState == ConnectionState.done;
-                  final home = initialized
-                      ? getFirstPage()
-                      : Scaffold(
-                          body: snapshot.hasError ? _buildError(snapshot.error!) : const SizedBox(),
-                        );
-                  return Selector<Settings, Locale?>(
-                      selector: (context, s) => s.locale,
-                      builder: (context, settingsLocale, child) {
+          child: DurationsProvider(
+            child: HighlightInfoProvider(
+              child: OverlaySupport(
+                child: FutureBuilder<void>(
+                  future: _appSetup,
+                  builder: (context, snapshot) {
+                    final initialized = !snapshot.hasError && snapshot.connectionState == ConnectionState.done;
+                    final home = initialized
+                        ? getFirstPage()
+                        : Scaffold(
+                            body: snapshot.hasError ? _buildError(snapshot.error!) : const SizedBox(),
+                          );
+                    return Selector<Settings, Tuple2<Locale?, bool>>(
+                      selector: (context, s) => Tuple2(s.locale, s.initialized ? s.accessibilityAnimations.animate : true),
+                      builder: (context, s, child) {
+                        final settingsLocale = s.item1;
+                        final areAnimationsEnabled = s.item2;
                         return MaterialApp(
                           navigatorKey: _navigatorKey,
                           home: home,
                           navigatorObservers: _navigatorObservers,
+                          builder: (context, child) {
+                            if (!areAnimationsEnabled) {
+                              child = Theme(
+                                data: Theme.of(context).copyWith(
+                                  // strip page transitions used by `MaterialPageRoute`
+                                  pageTransitionsTheme: DirectPageTransitionsTheme(),
+                                ),
+                                child: child!,
+                              );
+                            }
+                            return child!;
+                          },
                           onGenerateTitle: (context) => context.l10n.appName,
                           darkTheme: Themes.darkTheme,
                           themeMode: ThemeMode.dark,
@@ -97,8 +115,10 @@ class _AvesAppState extends State<AvesApp> {
                           // checkerboardRasterCacheImages: true,
                           // checkerboardOffscreenLayers: true,
                         );
-                      });
-                },
+                      },
+                    );
+                  },
+                ),
               ),
             ),
           ),
@@ -123,25 +143,39 @@ class _AvesAppState extends State<AvesApp> {
   }
 
   Future<void> _setup() async {
-    await Firebase.initializeApp().then((app) async {
-      FlutterError.onError = reportService.recordFlutterError;
-      final now = DateTime.now();
-      final hasPlayServices = await availability.hasPlayServices;
-      await reportService.setCustomKeys({
-        'build_mode': kReleaseMode
-            ? 'release'
-            : kProfileMode
-                ? 'profile'
-                : 'debug',
-        'has_play_services': hasPlayServices,
-        'locales': window.locales.join(', '),
-        'time_zone': '${now.timeZoneName} (${now.timeZoneOffset})',
-      });
+    await settings.init(
+      isRotationLocked: await windowService.isRotationLocked(),
+      areAnimationsRemoved: await AccessibilityService.areAnimationsRemoved(),
+    );
+
+    // keep screen on
+    settings.updateStream.where((key) => key == Settings.keepScreenOnKey).listen(
+          (_) => settings.keepScreenOn.apply(),
+        );
+    settings.keepScreenOn.apply();
+
+    // error reporting
+    await reportService.init();
+    settings.updateStream.where((key) => key == Settings.isErrorReportingEnabledKey).listen(
+          (_) => reportService.setCollectionEnabled(settings.isErrorReportingEnabled),
+        );
+    await reportService.setCollectionEnabled(settings.isErrorReportingEnabled);
+
+    FlutterError.onError = reportService.recordFlutterError;
+    final now = DateTime.now();
+    final hasPlayServices = await availability.hasPlayServices;
+    await reportService.setCustomKeys({
+      'build_mode': kReleaseMode
+          ? 'release'
+          : kProfileMode
+              ? 'profile'
+              : 'debug',
+      'has_play_services': hasPlayServices,
+      'locales': window.locales.join(', '),
+      'time_zone': '${now.timeZoneName} (${now.timeZoneOffset})',
     });
-    await settings.init();
-    await settings.initFirebase();
     _navigatorObservers = [
-      CrashlyticsRouteTracker(),
+      ReportingRouteTracker(),
     ];
   }
 

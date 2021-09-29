@@ -3,7 +3,7 @@
   "@appName": {},
   "welcomeMessage": "Welcome to Aves",
   "@welcomeMessage": {},
-  "welcomeCrashReportToggle": "Allow anonymous crash reporting (optional)",
+  "welcomeCrashReportToggle": "Allow anonymous error reporting (optional)",
   "@welcomeCrashReportToggle": {},
   "welcomeTermsToggle": "I agree to the terms and conditions",
   "@welcomeTermsToggle": {},
@@ -11,6 +11,19 @@
   "@itemCount": {
     "placeholders": {
       "count": {}
+    }
+  },
+
+  "timeSeconds": "{seconds, plural, =1{1 second} other{{seconds} seconds}}",
+  "@timeSeconds": {
+    "placeholders": {
+      "seconds": {}
+    }
+  },
+  "timeMinutes": "{minutes, plural, =1{1 minute} other{{minutes} minutes}}",
+  "@timeMinutes": {
+    "placeholders": {
+      "minutes": {}
     }
   },
 
@@ -103,7 +116,7 @@
   "@entryActionOpen": {},
   "entryActionSetAs": "Set as…",
   "@entryActionSetAs": {},
-  "entryActionOpenMap": "Show on map…",
+  "entryActionOpenMap": "Show in map app…",
   "@entryActionOpenMap": {},
   "entryActionRotateScreen": "Rotate screen",
   "@entryActionRotateScreen": {},
@@ -131,6 +144,8 @@
 
   "entryInfoActionEditDate": "Edit date & time",
   "@entryInfoActionEditDate": {},
+  "entryInfoActionRemoveMetadata": "Remove metadata",
+  "@entryInfoActionRemoveMetadata": {},
 
   "filterFavouriteLabel": "Favourite",
   "@filterFavouriteLabel": {},
@@ -184,6 +199,11 @@
   "@keepScreenOnViewerOnly": {},
   "keepScreenOnAlways": "Always",
   "@keepScreenOnAlways": {},
+
+  "accessibilityAnimationsRemove": "Prevent screen effects",
+  "@accessibilityAnimationsRemove": {},
+  "accessibilityAnimationsKeep": "Keep screen effects",
+  "@accessibilityAnimationsKeep": {},
 
   "albumTierNew": "New",
   "@albumTierNew": {},
@@ -325,6 +345,14 @@
   "editEntryDateDialogMinutes": "Minutes",
   "@editEntryDateDialogMinutes": {},
 
+  "removeEntryMetadataDialogTitle": "Metadata Removal",
+  "@removeEntryMetadataDialogTitle": {},
+  "removeEntryMetadataDialogMore": "More",
+  "@removeEntryMetadataDialogMore": {},
+
+  "removeEntryMetadataMotionPhotoXmpWarningDialogMessage":  "XMP is required to play the video inside this motion photo. Are you sure you want to remove it?",
+  "@removeEntryMetadataMotionPhotoXmpWarningDialogMessage": {},
+
   "videoSpeedDialogLabel": "Playback speed",
   "@videoSpeedDialogLabel": {},
 
@@ -415,7 +443,7 @@
   "@aboutLicensesFlutterPackages": {},
   "aboutLicensesDartPackages": "Dart Packages",
   "@aboutLicensesDartPackages": {},
-  "aboutLicensesShowAllButtonLabel": "SHOW ALL LICENSES",
+  "aboutLicensesShowAllButtonLabel": "Show All Licenses",
   "@aboutLicensesShowAllButtonLabel": {},
 
   "collectionPageTitle": "Collection",
@@ -435,8 +463,8 @@
   "@collectionActionCopy": {},
   "collectionActionMove": "Move to album",
   "@collectionActionMove": {},
-  "collectionActionRefreshMetadata": "Refresh metadata",
-  "@collectionActionRefreshMetadata": {},
+  "collectionActionRescan": "Rescan",
+  "@collectionActionRescan": {},
 
   "collectionSortTitle": "Sort",
   "@collectionSortTitle": {},
@@ -606,6 +634,8 @@
   "@settingsPageTitle": {},
   "settingsSystemDefault": "System",
   "@settingsSystemDefault": {},
+  "settingsDefault": "Default",
+  "@settingsDefault": {},
 
   "settingsActionExport": "Export",
   "@settingsActionExport": {},
@@ -642,6 +672,8 @@
   "@settingsSectionThumbnails": {},
   "settingsThumbnailShowLocationIcon": "Show location icon",
   "@settingsThumbnailShowLocationIcon": {},
+  "settingsThumbnailShowMotionPhotoIcon": "Show motion photo icon",
+  "@settingsThumbnailShowMotionPhotoIcon": {},
   "settingsThumbnailShowRawIcon": "Show raw icon",
   "@settingsThumbnailShowRawIcon": {},
   "settingsThumbnailShowVideoDuration": "Show video duration",
@@ -734,8 +766,8 @@
 
   "settingsSectionPrivacy": "Privacy",
   "@settingsSectionPrivacy": {},
-  "settingsEnableCrashReport": "Allow anonymous error reporting",
-  "@settingsEnableCrashReport": {},
+  "settingsEnableErrorReporting": "Allow anonymous error reporting",
+  "@settingsEnableErrorReporting": {},
   "settingsSaveSearchHistory": "Save search history",
   "@settingsSaveSearchHistory": {},
 
@@ -770,6 +802,17 @@
   "settingsStorageAccessRevokeTooltip": "Revoke",
   "@settingsStorageAccessRevokeTooltip": {},
 
+  "settingsSectionAccessibility": "Accessibility",
+  "@settingsSectionAccessibility": {},
+  "settingsRemoveAnimationsTile": "Remove animations",
+  "@settingsRemoveAnimationsTile": {},
+  "settingsRemoveAnimationsTitle": "Remove Animations",
+  "@settingsRemoveAnimationsTitle": {},
+  "settingsTimeToTakeActionTile": "Time to take action",
+  "@settingsTimeToTakeActionTile": {},
+  "settingsTimeToTakeActionTitle": "Time to Take Action",
+  "@settingsTimeToTakeActionTitle": {},
+
   "settingsSectionLanguage": "Language & Formats",
   "@settingsSectionLanguage": {},
   "settingsLanguage": "Language",
@@ -778,9 +821,6 @@
   "@settingsCoordinateFormatTile": {},
   "settingsCoordinateFormatTitle": "Coordinate Format",
   "@settingsCoordinateFormatTitle": {},
-
-  "mapPageTitle": "Map",
-  "@mapPageTitle": {},
 
   "statsPageTitle": "Stats",
   "@statsPageTitle": {},
@@ -846,18 +886,24 @@
   "viewerInfoLabelAddress": "Address",
   "@viewerInfoLabelAddress": {},
 
-  "viewerInfoMapStyleTitle": "Map Style",
-  "@viewerInfoMapStyleTitle": {},
-  "viewerInfoMapStyleTooltip": "Select map style",
-  "@viewerInfoMapStyleTooltip": {},
-  "viewerInfoMapZoomInTooltip": "Zoom in",
-  "@viewerInfoMapZoomInTooltip": {},
-  "viewerInfoMapZoomOutTooltip": "Zoom out",
-  "@viewerInfoMapZoomOutTooltip": {},
+  "mapStyleTitle": "Map Style",
+  "@mapStyleTitle": {},
+  "mapStyleTooltip": "Select map style",
+  "@mapStyleTooltip": {},
+  "mapZoomInTooltip": "Zoom in",
+  "@mapZoomInTooltip": {},
+  "mapZoomOutTooltip": "Zoom out",
+  "@mapZoomOutTooltip": {},
+  "mapPointNorthUpTooltip": "Point north up",
+  "@mapPointNorthUpTooltip": {},
   "mapAttributionOsmHot": "Map data © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors • Tiles by [HOT](https://www.hotosm.org/) • Hosted by [OSM France](https://openstreetmap.fr/)",
   "@mapAttributionOsmHot": {},
   "mapAttributionStamen": "Map data © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors • Tiles by [Stamen Design](http://stamen.com), [CC BY 3.0](http://creativecommons.org/licenses/by/3.0)",
   "@mapAttributionStamen": {},
+  "openMapPageTooltip": "View on Map page",
+  "@openMapPageTooltip": {},
+  "mapEmptyRegion": "No images in this region",
+  "@mapEmpty": {},
 
   "viewerInfoOpenEmbeddedFailureFeedback": "Failed to extract embedded data",
   "@viewerInfoOpenEmbeddedFailureFeedback": {},

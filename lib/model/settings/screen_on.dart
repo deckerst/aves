@@ -1,4 +1,4 @@
-import 'package:aves/services/services.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/widgets.dart';
 
@@ -13,8 +13,6 @@ extension ExtraKeepScreenOn on KeepScreenOn {
         return context.l10n.keepScreenOnViewerOnly;
       case KeepScreenOn.always:
         return context.l10n.keepScreenOnAlways;
-      default:
-        return toString();
     }
   }
 

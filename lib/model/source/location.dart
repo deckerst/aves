@@ -6,7 +6,7 @@ import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/metadata/address.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums.dart';
-import 'package:aves/services/services.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:tuple/tuple.dart';
@@ -18,11 +18,11 @@ mixin LocationMixin on SourceBase {
   List<String> sortedPlaces = List.unmodifiable([]);
 
   Future<void> loadAddresses() async {
-    final stopwatch = Stopwatch()..start();
+    // final stopwatch = Stopwatch()..start();
     final saved = await metadataDb.loadAddresses();
     final idMap = entryById;
     saved.forEach((metadata) => idMap[metadata.contentId]?.addressDetails = metadata);
-    debugPrint('$runtimeType loadAddresses complete in ${stopwatch.elapsed.inMilliseconds}ms for ${saved.length} entries');
+    // debugPrint('$runtimeType loadAddresses complete in ${stopwatch.elapsed.inMilliseconds}ms for ${saved.length} entries');
     onAddressMetadataChanged();
   }
 
@@ -159,6 +159,8 @@ mixin LocationMixin on SourceBase {
   final Map<String, AvesEntry?> _filterRecentEntryMap = {};
 
   void invalidateCountryFilterSummary([Set<AvesEntry>? entries]) {
+    if (_filterEntryCountMap.isEmpty && _filterRecentEntryMap.isEmpty) return;
+
     Set<String>? countryCodes;
     if (entries == null) {
       _filterEntryCountMap.clear();

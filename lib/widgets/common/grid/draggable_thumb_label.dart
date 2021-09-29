@@ -23,7 +23,7 @@ class DraggableThumbLabel<T> extends StatelessWidget {
 
     final section = sll.sections[sectionLayout.sectionKey]!;
     final dy = offsetY - (sectionLayout.minOffset + sectionLayout.headerExtent);
-    final itemIndex = dy < 0 ? 0 : (dy ~/ (sll.tileExtent + sll.spacing)) * sll.columnCount;
+    final itemIndex = dy < 0 ? 0 : (dy ~/ (sll.tileHeight + sll.spacing)) * sll.columnCount;
     final item = section[itemIndex];
 
     final lines = lineBuilder(context, item);

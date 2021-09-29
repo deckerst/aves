@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:typed_data';
 
+import 'package:aves/model/entry.dart';
 import 'package:aves/model/entry_images.dart';
 import 'package:aves/model/settings/enums.dart';
 import 'package:aves/utils/change_notifier.dart';
@@ -10,34 +11,41 @@ import 'package:aves/widgets/common/map/decorator.dart';
 import 'package:aves/widgets/common/map/geo_entry.dart';
 import 'package:aves/widgets/common/map/geo_map.dart';
 import 'package:aves/widgets/common/map/google/marker_generator.dart';
+import 'package:aves/widgets/common/map/marker.dart';
+import 'package:aves/widgets/common/map/theme.dart';
 import 'package:aves/widgets/common/map/zoomed_bounds.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:latlong2/latlong.dart' as ll;
+import 'package:provider/provider.dart';
 
 class EntryGoogleMap extends StatefulWidget {
   final AvesMapController? controller;
   final ValueNotifier<ZoomedBounds> boundsNotifier;
-  final bool interactive;
   final double? minZoom, maxZoom;
   final EntryMapStyle style;
   final MarkerClusterBuilder markerClusterBuilder;
   final MarkerWidgetBuilder markerWidgetBuilder;
+  final ValueNotifier<AvesEntry?>? dotEntryNotifier;
   final UserZoomChangeCallback? onUserZoomChange;
+  final VoidCallback? onMapTap;
   final void Function(GeoEntry geoEntry)? onMarkerTap;
+  final MapOpener? openMapPage;
 
   const EntryGoogleMap({
     Key? key,
     this.controller,
     required this.boundsNotifier,
-    required this.interactive,
     this.minZoom,
     this.maxZoom,
     required this.style,
     required this.markerClusterBuilder,
     required this.markerWidgetBuilder,
+    required this.dotEntryNotifier,
     this.onUserZoomChange,
+    this.onMapTap,
     this.onMarkerTap,
+    this.openMapPage,
   }) : super(key: key);
 
   @override
@@ -50,12 +58,11 @@ class _EntryGoogleMapState extends State<EntryGoogleMap> with WidgetsBindingObse
   Map<MarkerKey, GeoEntry> _geoEntryByMarkerKey = {};
   final Map<MarkerKey, Uint8List> _markerBitmaps = {};
   final AChangeNotifier _markerBitmapChangeNotifier = AChangeNotifier();
+  Uint8List? _dotMarkerBitmap;
 
   ValueNotifier<ZoomedBounds> get boundsNotifier => widget.boundsNotifier;
 
   ZoomedBounds get bounds => boundsNotifier.value;
-
-  bool get interactive => widget.interactive;
 
   static const uninitializedLatLng = LatLng(0, 0);
 
@@ -84,7 +91,7 @@ class _EntryGoogleMapState extends State<EntryGoogleMap> with WidgetsBindingObse
   void _registerWidget(EntryGoogleMap widget) {
     final avesMapController = widget.controller;
     if (avesMapController != null) {
-      _subscriptions.add(avesMapController.moveEvents.listen((event) => _moveTo(_toGoogleLatLng(event.latLng))));
+      _subscriptions.add(avesMapController.moveCommands.listen((event) => _moveTo(_toGoogleLatLng(event.latLng))));
     }
   }
 
@@ -113,6 +120,11 @@ class _EntryGoogleMapState extends State<EntryGoogleMap> with WidgetsBindingObse
   Widget build(BuildContext context) {
     return Stack(
       children: [
+        MarkerGeneratorWidget<Key>(
+          markers: const [DotMarker(key: Key('dot'))],
+          isReadyToRender: (key) => true,
+          onRendered: (key, bitmap) => _dotMarkerBitmap = bitmap,
+        ),
         MarkerGeneratorWidget<MarkerKey>(
           markers: _geoEntryByMarkerKey.keys.map(widget.markerWidgetBuilder).toList(),
           isReadyToRender: (key) => key.entry.isThumbnailReady(extent: GeoMap.markerImageExtent),
@@ -122,13 +134,13 @@ class _EntryGoogleMapState extends State<EntryGoogleMap> with WidgetsBindingObse
           },
         ),
         MapDecorator(
-          interactive: interactive,
           child: _buildMap(),
         ),
         MapButtonPanel(
           boundsNotifier: boundsNotifier,
           zoomBy: _zoomBy,
-          resetRotation: interactive ? _resetRotation : null,
+          openMapPage: widget.openMapPage,
+          resetRotation: _resetRotation,
         ),
       ],
     );
@@ -153,44 +165,61 @@ class _EntryGoogleMapState extends State<EntryGoogleMap> with WidgetsBindingObse
           }
         });
 
-        final interactive = widget.interactive;
-        return GoogleMap(
-          initialCameraPosition: CameraPosition(
-            target: _toGoogleLatLng(bounds.center),
-            zoom: bounds.zoom,
-          ),
-          onMapCreated: (controller) async {
-            _googleMapController = controller;
-            final zoom = await controller.getZoomLevel();
-            await _updateVisibleRegion(zoom: zoom, rotation: 0);
-            setState(() {});
-          },
-          // compass disabled to use provider agnostic controls
-          compassEnabled: false,
-          mapToolbarEnabled: false,
-          mapType: _toMapType(widget.style),
-          minMaxZoomPreference: MinMaxZoomPreference(widget.minZoom, widget.maxZoom),
-          rotateGesturesEnabled: true,
-          scrollGesturesEnabled: interactive,
-          // zoom controls disabled to use provider agnostic controls
-          zoomControlsEnabled: false,
-          zoomGesturesEnabled: interactive,
-          // lite mode disabled because it lacks camera animation
-          liteModeEnabled: false,
-          // tilt disabled to match leaflet
-          tiltGesturesEnabled: false,
-          myLocationEnabled: false,
-          myLocationButtonEnabled: false,
-          markers: markers,
-          onCameraMove: (position) => _updateVisibleRegion(zoom: position.zoom, rotation: -position.bearing),
-          onCameraIdle: _updateClusters,
-        );
+        final interactive = context.select<MapThemeData, bool>((v) => v.interactive);
+        return ValueListenableBuilder<AvesEntry?>(
+            valueListenable: widget.dotEntryNotifier ?? ValueNotifier(null),
+            builder: (context, dotEntry, child) {
+              return GoogleMap(
+                initialCameraPosition: CameraPosition(
+                  target: _toGoogleLatLng(bounds.center),
+                  zoom: bounds.zoom,
+                ),
+                onMapCreated: (controller) async {
+                  _googleMapController = controller;
+                  final zoom = await controller.getZoomLevel();
+                  await _updateVisibleRegion(zoom: zoom, rotation: 0);
+                  setState(() {});
+                },
+                // compass disabled to use provider agnostic controls
+                compassEnabled: false,
+                mapToolbarEnabled: false,
+                mapType: _toMapType(widget.style),
+                minMaxZoomPreference: MinMaxZoomPreference(widget.minZoom, widget.maxZoom),
+                rotateGesturesEnabled: true,
+                scrollGesturesEnabled: interactive,
+                // zoom controls disabled to use provider agnostic controls
+                zoomControlsEnabled: false,
+                zoomGesturesEnabled: interactive,
+                // lite mode disabled because it lacks camera animation
+                liteModeEnabled: false,
+                // tilt disabled to match leaflet
+                tiltGesturesEnabled: false,
+                myLocationEnabled: false,
+                myLocationButtonEnabled: false,
+                markers: {
+                  ...markers,
+                  if (dotEntry != null && _dotMarkerBitmap != null)
+                    Marker(
+                      markerId: const MarkerId('dot'),
+                      anchor: const Offset(.5, .5),
+                      consumeTapEvents: true,
+                      icon: BitmapDescriptor.fromBytes(_dotMarkerBitmap!),
+                      position: _toGoogleLatLng(dotEntry.latLng!),
+                      zIndex: 1,
+                    )
+                },
+                onCameraMove: (position) => _updateVisibleRegion(zoom: position.zoom, rotation: -position.bearing),
+                onCameraIdle: _onIdle,
+                onTap: (position) => widget.onMapTap?.call(),
+              );
+            });
       },
     );
   }
 
-  void _updateClusters() {
+  void _onIdle() {
     if (!mounted) return;
+    widget.controller?.notifyIdle(bounds);
     setState(() => _geoEntryByMarkerKey = widget.markerClusterBuilder());
   }
 
@@ -199,11 +228,11 @@ class _EntryGoogleMapState extends State<EntryGoogleMap> with WidgetsBindingObse
 
     final bounds = await _googleMapController?.getVisibleRegion();
     if (bounds != null && (bounds.northeast != uninitializedLatLng || bounds.southwest != uninitializedLatLng)) {
+      final sw = bounds.southwest;
+      final ne = bounds.northeast;
       boundsNotifier.value = ZoomedBounds(
-        west: bounds.southwest.longitude,
-        south: bounds.southwest.latitude,
-        east: bounds.northeast.longitude,
-        north: bounds.northeast.latitude,
+        sw: ll.LatLng(sw.latitude, sw.longitude),
+        ne: ll.LatLng(ne.latitude, ne.longitude),
         zoom: zoom,
         rotation: rotation,
       );

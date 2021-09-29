@@ -1,7 +1,7 @@
-import 'package:aves/services/services.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:flutter/material.dart';
 
-class CrashlyticsRouteTracker extends NavigatorObserver {
+class ReportingRouteTracker extends NavigatorObserver {
   @override
   void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) => reportService.log('Nav didPush to ${_name(route)}');
 

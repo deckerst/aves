@@ -4,7 +4,7 @@ import 'package:aves/model/entry.dart';
 import 'package:aves/model/settings/enums.dart';
 import 'package:aves/model/settings/map_style.dart';
 import 'package:aves/model/settings/settings.dart';
-import 'package:aves/services/services.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/utils/math_utils.dart';
@@ -16,6 +16,7 @@ import 'package:aves/widgets/common/map/geo_entry.dart';
 import 'package:aves/widgets/common/map/google/map.dart';
 import 'package:aves/widgets/common/map/leaflet/map.dart';
 import 'package:aves/widgets/common/map/marker.dart';
+import 'package:aves/widgets/common/map/theme.dart';
 import 'package:aves/widgets/common/map/zoomed_bounds.dart';
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
@@ -27,31 +28,35 @@ import 'package:provider/provider.dart';
 class GeoMap extends StatefulWidget {
   final AvesMapController? controller;
   final List<AvesEntry> entries;
-  final bool interactive;
-  final double? mapHeight;
+  final AvesEntry? initialEntry;
   final ValueNotifier<bool> isAnimatingNotifier;
+  final ValueNotifier<AvesEntry?>? dotEntryNotifier;
   final UserZoomChangeCallback? onUserZoomChange;
+  final VoidCallback? onMapTap;
   final MarkerTapCallback? onMarkerTap;
+  final MapOpener? openMapPage;
 
   static const markerImageExtent = 48.0;
-  static const pointerSize = Size(8, 6);
+  static const markerArrowSize = Size(8, 6);
 
   const GeoMap({
     Key? key,
     this.controller,
     required this.entries,
-    required this.interactive,
-    this.mapHeight,
+    this.initialEntry,
     required this.isAnimatingNotifier,
+    this.dotEntryNotifier,
     this.onUserZoomChange,
+    this.onMapTap,
     this.onMarkerTap,
+    this.openMapPage,
   }) : super(key: key);
 
   @override
   _GeoMapState createState() => _GeoMapState();
 }
 
-class _GeoMapState extends State<GeoMap> with TickerProviderStateMixin {
+class _GeoMapState extends State<GeoMap> {
   // as of google_maps_flutter v2.0.6, Google Maps initialization is blocking
   // cf https://github.com/flutter/flutter/issues/28493
   // it is especially severe the first time, but still significant afterwards
@@ -63,14 +68,11 @@ class _GeoMapState extends State<GeoMap> with TickerProviderStateMixin {
 
   List<AvesEntry> get entries => widget.entries;
 
-  bool get interactive => widget.interactive;
-
-  double? get mapHeight => widget.mapHeight;
-
   @override
   void initState() {
     super.initState();
-    final points = entries.map((v) => v.latLng!).toSet();
+    final initialEntry = widget.initialEntry;
+    final points = (initialEntry != null ? [initialEntry] : entries).map((v) => v.latLng!).toSet();
     _boundsNotifier = ValueNotifier(ZoomedBounds.fromPoints(
       points: points.isNotEmpty ? points : {Constants.wonders[Random().nextInt(Constants.wonders.length)]},
       collocationZoom: settings.infoMapZoom,
@@ -128,7 +130,7 @@ class _GeoMapState extends State<GeoMap> with TickerProviderStateMixin {
                   entry: key.entry,
                   count: key.count,
                   extent: GeoMap.markerImageExtent,
-                  pointerSize: GeoMap.pointerSize,
+                  arrowSize: GeoMap.markerArrowSize,
                   progressive: progressive,
                 );
 
@@ -136,32 +138,41 @@ class _GeoMapState extends State<GeoMap> with TickerProviderStateMixin {
                 ? EntryGoogleMap(
                     controller: widget.controller,
                     boundsNotifier: _boundsNotifier,
-                    interactive: interactive,
                     minZoom: 0,
                     maxZoom: 20,
                     style: mapStyle,
                     markerClusterBuilder: _buildMarkerClusters,
                     markerWidgetBuilder: _buildMarkerWidget,
+                    dotEntryNotifier: widget.dotEntryNotifier,
                     onUserZoomChange: widget.onUserZoomChange,
+                    onMapTap: widget.onMapTap,
                     onMarkerTap: _onMarkerTap,
+                    openMapPage: widget.openMapPage,
                   )
                 : EntryLeafletMap(
                     controller: widget.controller,
                     boundsNotifier: _boundsNotifier,
-                    interactive: interactive,
                     minZoom: 2,
                     maxZoom: 16,
                     style: mapStyle,
                     markerClusterBuilder: _buildMarkerClusters,
                     markerWidgetBuilder: _buildMarkerWidget,
+                    dotEntryNotifier: widget.dotEntryNotifier,
                     markerSize: Size(
                       GeoMap.markerImageExtent + ImageMarker.outerBorderWidth * 2,
-                      GeoMap.markerImageExtent + ImageMarker.outerBorderWidth * 2 + GeoMap.pointerSize.height,
+                      GeoMap.markerImageExtent + ImageMarker.outerBorderWidth * 2 + GeoMap.markerArrowSize.height,
+                    ),
+                    dotMarkerSize: const Size(
+                      DotMarker.diameter + ImageMarker.outerBorderWidth * 2,
+                      DotMarker.diameter + ImageMarker.outerBorderWidth * 2,
                     ),
                     onUserZoomChange: widget.onUserZoomChange,
+                    onMapTap: widget.onMapTap,
                     onMarkerTap: _onMarkerTap,
+                    openMapPage: widget.openMapPage,
                   );
 
+            final mapHeight = context.select<MapThemeData, double?>((v) => v.mapHeight);
             child = Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -171,7 +182,11 @@ class _GeoMapState extends State<GeoMap> with TickerProviderStateMixin {
                         child: child,
                       )
                     : Expanded(child: child),
-                Attribution(style: mapStyle),
+                SafeArea(
+                  top: false,
+                  bottom: false,
+                  child: Attribution(style: mapStyle),
+                ),
               ],
             );
 
@@ -179,7 +194,6 @@ class _GeoMapState extends State<GeoMap> with TickerProviderStateMixin {
               alignment: Alignment.topCenter,
               curve: Curves.easeInOutCubic,
               duration: Durations.mapStyleSwitchAnimation,
-              vsync: this,
               child: ValueListenableBuilder<bool>(
                 valueListenable: widget.isAnimatingNotifier,
                 builder: (context, animating, child) {
@@ -188,11 +202,10 @@ class _GeoMapState extends State<GeoMap> with TickerProviderStateMixin {
                   }
                   Widget replacement = Stack(
                     children: [
-                      MapDecorator(
-                        interactive: interactive,
-                      ),
+                      const MapDecorator(),
                       MapButtonPanel(
                         boundsNotifier: _boundsNotifier,
+                        openMapPage: widget.openMapPage,
                       ),
                     ],
                   );

@@ -35,7 +35,7 @@ class _ChipHighlightOverlayState extends State<ChipHighlightOverlay> {
       builder: (context) => Container(
         decoration: BoxDecoration(
           border: Border.fromBorderSide(BorderSide(
-            color: Theme.of(context).accentColor,
+            color: Theme.of(context).colorScheme.secondary,
             width: widget.extent * .1,
           )),
           borderRadius: widget.borderRadius,

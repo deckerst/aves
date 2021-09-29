@@ -12,8 +12,6 @@ extension ExtraCoordinateFormat on CoordinateFormat {
         return context.l10n.coordinateFormatDms;
       case CoordinateFormat.decimal:
         return context.l10n.coordinateFormatDecimal;
-      default:
-        return toString();
     }
   }
 
@@ -23,8 +21,6 @@ extension ExtraCoordinateFormat on CoordinateFormat {
         return toDMS(latLng).join(', ');
       case CoordinateFormat.decimal:
         return [latLng.latitude, latLng.longitude].map((n) => n.toStringAsFixed(6)).join(', ');
-      default:
-        return toString();
     }
   }
 }

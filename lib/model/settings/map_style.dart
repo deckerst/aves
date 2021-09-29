@@ -18,8 +18,6 @@ extension ExtraEntryMapStyle on EntryMapStyle {
         return context.l10n.mapStyleStamenToner;
       case EntryMapStyle.stamenWatercolor:
         return context.l10n.mapStyleStamenWatercolor;
-      default:
-        return toString();
     }
   }
 
