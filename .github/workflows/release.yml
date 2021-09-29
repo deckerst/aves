@@ -91,4 +91,5 @@ jobs:
           packageName: deckers.thibault.aves
           releaseFiles: app-release.aab
           track: beta
+          status: completed
           whatsNewDirectory: whatsnew
