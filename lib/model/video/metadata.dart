@@ -10,7 +10,7 @@ import 'package:aves/model/video/profiles/h264.dart';
 import 'package:aves/model/video/profiles/hevc.dart';
 import 'package:aves/ref/languages.dart';
 import 'package:aves/ref/mp4.dart';
-import 'package:aves/services/services.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/format.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/utils/math_utils.dart';

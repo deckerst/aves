@@ -14,6 +14,7 @@ class AvesDialog extends AlertDialog {
     String? title,
     ScrollController? scrollController,
     List<Widget>? scrollableContent,
+    bool hasScrollBar = true,
     Widget? content,
     required List<Widget> actions,
   })  : assert((scrollableContent != null) ^ (content != null)),
@@ -31,7 +32,7 @@ class AvesDialog extends AlertDialog {
           // scroll both the title and the content together,
           // and overflow feedback ignores the dialog shape,
           // so we restrict scrolling to the content instead
-          content: _buildContent(context, scrollController, scrollableContent, content),
+          content: _buildContent(context, scrollController, scrollableContent, hasScrollBar, content),
           contentPadding: scrollableContent != null ? EdgeInsets.zero : const EdgeInsets.fromLTRB(24, 20, 24, 0),
           actions: actions,
           actionsPadding: const EdgeInsets.symmetric(horizontal: 8),
@@ -45,6 +46,7 @@ class AvesDialog extends AlertDialog {
     BuildContext context,
     ScrollController? scrollController,
     List<Widget>? scrollableContent,
+    bool hasScrollBar,
     Widget? content,
   ) {
     if (content != null) {
@@ -53,6 +55,31 @@ class AvesDialog extends AlertDialog {
 
     if (scrollableContent != null) {
       scrollController ??= ScrollController();
+
+      Widget child = ListView(
+        controller: scrollController,
+        shrinkWrap: true,
+        children: scrollableContent,
+      );
+
+      if (hasScrollBar) {
+        child = Theme(
+          data: Theme.of(context).copyWith(
+            scrollbarTheme: const ScrollbarThemeData(
+              isAlwaysShown: true,
+              radius: Radius.circular(16),
+              crossAxisMargin: 4,
+              mainAxisMargin: 4,
+              interactive: true,
+            ),
+          ),
+          child: Scrollbar(
+            controller: scrollController,
+            child: child,
+          ),
+        );
+      }
+
       return Container(
         // padding to avoid transparent border overlapping
         padding: const EdgeInsets.symmetric(horizontal: borderWidth),
@@ -66,25 +93,7 @@ class AvesDialog extends AlertDialog {
               bottom: Divider.createBorderSide(context, width: borderWidth),
             ),
           ),
-          child: Theme(
-            data: Theme.of(context).copyWith(
-              scrollbarTheme: const ScrollbarThemeData(
-                isAlwaysShown: true,
-                radius: Radius.circular(16),
-                crossAxisMargin: 4,
-                mainAxisMargin: 4,
-                interactive: true,
-              ),
-            ),
-            child: Scrollbar(
-              controller: scrollController,
-              child: ListView(
-                controller: scrollController,
-                shrinkWrap: true,
-                children: scrollableContent,
-              ),
-            ),
-          ),
+          child: child,
         ),
       );
     }

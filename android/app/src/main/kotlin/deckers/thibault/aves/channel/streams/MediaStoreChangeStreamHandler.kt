@@ -59,6 +59,6 @@ class MediaStoreChangeStreamHandler(private val context: Context) : EventChannel
 
     companion object {
         private val LOG_TAG = LogUtils.createTag<MediaStoreChangeStreamHandler>()
-        const val CHANNEL = "deckers.thibault/aves/mediastorechange"
+        const val CHANNEL = "deckers.thibault/aves/media_store_change"
     }
 }

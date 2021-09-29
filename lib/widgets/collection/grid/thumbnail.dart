@@ -54,11 +54,14 @@ class InteractiveThumbnail extends StatelessWidget {
         child: DecoratedThumbnail(
           entry: entry,
           tileExtent: tileExtent,
-          collection: collection,
           // when the user is scrolling faster than we can retrieve the thumbnails,
           // the retrieval task queue can pile up for thumbnails that got disposed
           // in this case we pause the image retrieval task to get it out of the queue
           cancellableNotifier: isScrollingNotifier,
+          // hero tag should include a collection identifier, so that it animates
+          // between different views of the entry in the same collection (e.g. thumbnails <-> viewer)
+          // but not between different collection instances, even with the same attributes (e.g. reloading collection page via drawer)
+          heroTagger: () => Object.hashAll([collection.id, entry.uri]),
         ),
       ),
     );
@@ -69,7 +72,7 @@ class InteractiveThumbnail extends StatelessWidget {
       context,
       TransparentMaterialPageRoute(
         settings: const RouteSettings(name: EntryViewerPage.routeName),
-        pageBuilder: (c, a, sa) {
+        pageBuilder: (context, a, sa) {
           final viewerCollection = CollectionLens(
             source: collection.source,
             filters: collection.filters,

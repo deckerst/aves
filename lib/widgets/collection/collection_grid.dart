@@ -79,18 +79,18 @@ class _CollectionGridContent extends StatelessWidget {
         final sectionedListLayoutProvider = ValueListenableBuilder<double>(
           valueListenable: context.select<TileExtentController, ValueNotifier<double>>((controller) => controller.extentNotifier),
           builder: (context, tileExtent, child) {
-            return GridTheme(
-              extent: tileExtent,
-              child: Selector<TileExtentController, Tuple3<double, int, double>>(
-                selector: (context, c) => Tuple3(c.viewportSize.width, c.columnCount, c.spacing),
-                builder: (context, c, child) {
-                  final scrollableWidth = c.item1;
-                  final columnCount = c.item2;
-                  final tileSpacing = c.item3;
-                  // do not listen for animation delay change
-                  final controller = Provider.of<TileExtentController>(context, listen: false);
-                  final tileAnimationDelay = controller.getTileAnimationDelay(Durations.staggeredAnimationPageTarget);
-                  return SectionedEntryListLayoutProvider(
+            return Selector<TileExtentController, Tuple3<double, int, double>>(
+              selector: (context, c) => Tuple3(c.viewportSize.width, c.columnCount, c.spacing),
+              builder: (context, c, child) {
+                final scrollableWidth = c.item1;
+                final columnCount = c.item2;
+                final tileSpacing = c.item3;
+                // do not listen for animation delay change
+                final target = context.read<DurationsData>().staggeredAnimationPageTarget;
+                final tileAnimationDelay = context.read<TileExtentController>().getTileAnimationDelay(target);
+                return GridTheme(
+                  extent: tileExtent,
+                  child: SectionedEntryListLayoutProvider(
                     collection: collection,
                     scrollableWidth: scrollableWidth,
                     columnCount: columnCount,
@@ -104,16 +104,18 @@ class _CollectionGridContent extends StatelessWidget {
                       isScrollingNotifier: _isScrollingNotifier,
                     ),
                     tileAnimationDelay: tileAnimationDelay,
-                    child: _CollectionSectionedContent(
-                      collection: collection,
-                      isScrollingNotifier: _isScrollingNotifier,
-                      scrollController: PrimaryScrollController.of(context)!,
-                    ),
-                  );
-                },
-              ),
+                    child: child!,
+                  ),
+                );
+              },
+              child: child,
             );
           },
+          child: _CollectionSectionedContent(
+            collection: collection,
+            isScrollingNotifier: _isScrollingNotifier,
+            scrollController: PrimaryScrollController.of(context)!,
+          ),
         );
         return sectionedListLayoutProvider;
       },
@@ -199,10 +201,11 @@ class _CollectionScaler extends StatelessWidget {
     final tileSpacing = context.select<TileExtentController, double>((controller) => controller.spacing);
     return GridScaleGestureDetector<AvesEntry>(
       scrollableKey: scrollableKey,
-      gridBuilder: (center, extent, child) => CustomPaint(
+      heightForWidth: (width) => width,
+      gridBuilder: (center, tileSize, child) => CustomPaint(
         painter: GridPainter(
           center: center,
-          extent: extent,
+          tileSize: tileSize,
           spacing: tileSpacing,
           borderWidth: DecoratedThumbnail.borderWidth,
           borderRadius: Radius.zero,
@@ -210,7 +213,7 @@ class _CollectionScaler extends StatelessWidget {
         ),
         child: child,
       ),
-      scaledBuilder: (entry, extent) => DecoratedThumbnail(
+      scaledBuilder: (entry, tileSize) => DecoratedThumbnail(
         entry: entry,
         tileExtent: context.read<TileExtentController>().effectiveExtentMax,
         selectable: false,

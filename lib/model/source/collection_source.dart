@@ -12,8 +12,8 @@ import 'package:aves/model/source/album.dart';
 import 'package:aves/model/source/enums.dart';
 import 'package:aves/model/source/location.dart';
 import 'package:aves/model/source/tag.dart';
-import 'package:aves/services/image_op_events.dart';
-import 'package:aves/services/services.dart';
+import 'package:aves/services/common/image_op_events.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:collection/collection.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/foundation.dart';
@@ -128,9 +128,9 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
     _rawEntries.clear();
     _invalidate();
 
-    updateDirectories();
-    updateLocations();
-    updateTags();
+    // do not update directories/locations/tags here
+    // as it could reset filter dependent settings (pins, bookmarks, etc.)
+    // caller should take care of updating these at the right time
   }
 
   Future<void> _moveEntry(AvesEntry entry, Map newFields, {required bool persist}) async {
@@ -159,7 +159,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
 
   Future<bool> renameEntry(AvesEntry entry, String newName, {required bool persist}) async {
     if (newName == entry.filenameWithoutExtension) return true;
-    final newFields = await imageFileService.rename(entry, '$newName${entry.extension}');
+    final newFields = await mediaFileService.rename(entry, '$newName${entry.extension}');
     if (newFields.isEmpty) return false;
 
     await _moveEntry(entry, newFields, persist: persist);
@@ -254,7 +254,17 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
 
   Future<void> refresh();
 
-  Future<void> refreshMetadata(Set<AvesEntry> entries);
+  Future<void> rescan(Set<AvesEntry> entries);
+
+  Future<void> refreshMetadata(Set<AvesEntry> entries) async {
+    await Future.forEach<AvesEntry>(entries, (entry) => entry.refresh(persist: true));
+
+    _invalidate(entries);
+    updateLocations();
+    updateTags();
+
+    eventBus.fire(EntryRefreshedEvent(entries));
+  }
 
   // monitoring
 
@@ -332,6 +342,12 @@ class EntryMovedEvent {
   final Set<AvesEntry> entries;
 
   const EntryMovedEvent(this.entries);
+}
+
+class EntryRefreshedEvent {
+  final Set<AvesEntry> entries;
+
+  const EntryRefreshedEvent(this.entries);
 }
 
 class FilterVisibilityChangedEvent {

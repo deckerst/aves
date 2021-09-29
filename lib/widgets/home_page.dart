@@ -1,16 +1,16 @@
+import 'dart:async';
+
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/home_page.dart';
-import 'package:aves/model/settings/screen_on.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:aves/services/global_search.dart';
-import 'package:aves/services/services.dart';
 import 'package:aves/services/viewer_service.dart';
 import 'package:aves/utils/android_file_utils.dart';
-import 'package:aves/utils/pedantic.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/behaviour/routes.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
@@ -49,7 +49,6 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     _setup();
     imageCache!.maximumSizeBytes = 512 * (1 << 20);
-    settings.keepScreenOn.apply();
   }
 
   @override
@@ -124,7 +123,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<AvesEntry?> _initViewerEntry({required String uri, required String? mimeType}) async {
-    final entry = await imageFileService.getEntry(uri, mimeType);
+    final entry = await mediaFileService.getEntry(uri, mimeType);
     if (entry != null) {
       // cataloguing is essential for coordinates and video rotation
       await entry.catalog(background: false, persist: false);

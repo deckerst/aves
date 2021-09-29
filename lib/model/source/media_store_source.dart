@@ -7,7 +7,7 @@ import 'package:aves/model/favourites.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums.dart';
-import 'package:aves/services/services.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +25,7 @@ class MediaStoreSource extends CollectionSource {
     await metadataDb.init();
     await favourites.init();
     await covers.init();
-    final currentTimeZone = await timeService.getDefaultTimeZone();
+    final currentTimeZone = await deviceService.getDefaultTimeZone();
     if (currentTimeZone != null) {
       final catalogTimeZone = settings.catalogTimeZone;
       if (currentTimeZone != catalogTimeZone) {
@@ -49,21 +49,27 @@ class MediaStoreSource extends CollectionSource {
     stateNotifier.value = SourceState.loading;
     clearEntries();
 
+    debugPrint('$runtimeType refresh ${stopwatch.elapsed} fetch known entries');
     final oldEntries = await metadataDb.loadEntries();
+    debugPrint('$runtimeType refresh ${stopwatch.elapsed} check obsolete entries');
     final knownDateById = Map.fromEntries(oldEntries.map((entry) => MapEntry(entry.contentId!, entry.dateModifiedSecs!)));
     final obsoleteContentIds = (await mediaStoreService.checkObsoleteContentIds(knownDateById.keys.toList())).toSet();
     oldEntries.removeWhere((entry) => obsoleteContentIds.contains(entry.contentId));
 
     // show known entries
+    debugPrint('$runtimeType refresh ${stopwatch.elapsed} add known entries');
     addEntries(oldEntries);
+    debugPrint('$runtimeType refresh ${stopwatch.elapsed} load catalog metadata');
     await loadCatalogMetadata();
+    debugPrint('$runtimeType refresh ${stopwatch.elapsed} load address metadata');
     await loadAddresses();
-    debugPrint('$runtimeType refresh loaded ${oldEntries.length} known entries, elapsed=${stopwatch.elapsed}');
 
     // clean up obsolete entries
+    debugPrint('$runtimeType refresh ${stopwatch.elapsed} remove obsolete entries');
     await metadataDb.removeIds(obsoleteContentIds, metadataOnly: false);
 
     // verify paths because some apps move files without updating their `last modified date`
+    debugPrint('$runtimeType refresh ${stopwatch.elapsed} check obsolete paths');
     final knownPathById = Map.fromEntries(allEntries.map((entry) => MapEntry(entry.contentId!, entry.path)));
     final movedContentIds = (await mediaStoreService.checkObsoletePaths(knownPathById)).toSet();
     movedContentIds.forEach((contentId) {
@@ -72,6 +78,7 @@ class MediaStoreSource extends CollectionSource {
     });
 
     // fetch new entries
+    debugPrint('$runtimeType refresh ${stopwatch.elapsed} fetch new entries');
     // refresh after the first 10 entries, then after 100 more, then every 1000 entries
     var refreshCount = 10;
     const refreshCountMax = 1000;
@@ -92,22 +99,24 @@ class MediaStoreSource extends CollectionSource {
       },
       onDone: () async {
         addPendingEntries();
-        debugPrint('$runtimeType refresh loaded ${allNewEntries.length} new entries, elapsed=${stopwatch.elapsed}');
-
-        await metadataDb.saveEntries(allNewEntries);
 
         if (allNewEntries.isNotEmpty) {
+          debugPrint('$runtimeType refresh ${stopwatch.elapsed} save new entries');
+          await metadataDb.saveEntries(allNewEntries);
+
           // new entries include existing entries with obsolete paths
           // so directories may be added, but also removed or simply have their content summary changed
           invalidateAlbumFilterSummary();
           updateDirectories();
         }
 
+        debugPrint('$runtimeType refresh ${stopwatch.elapsed} catalog entries');
         await catalogEntries();
+        debugPrint('$runtimeType refresh ${stopwatch.elapsed} locate entries');
         await locateEntries();
         stateNotifier.value = SourceState.ready;
 
-        debugPrint('$runtimeType refresh done, elapsed=${stopwatch.elapsed}');
+        debugPrint('$runtimeType refresh ${stopwatch.elapsed} done for ${oldEntries.length} known, ${allNewEntries.length} new, ${obsoleteContentIds.length} obsolete');
       },
       onError: (error) => debugPrint('$runtimeType stream error=$error'),
     );
@@ -121,6 +130,7 @@ class MediaStoreSource extends CollectionSource {
   Future<Set<String>> refreshUris(Set<String> changedUris) async {
     if (!_initialized || !isMonitoring) return changedUris;
 
+    debugPrint('$runtimeType refreshUris ${changedUris.length} uris');
     final uriByContentId = Map.fromEntries(changedUris.map((uri) {
       final pathSegments = Uri.parse(uri).pathSegments;
       // e.g. URI `content://media/` has no path segment
@@ -144,7 +154,7 @@ class MediaStoreSource extends CollectionSource {
     for (final kv in uriByContentId.entries) {
       final contentId = kv.key;
       final uri = kv.value;
-      final sourceEntry = await imageFileService.getEntry(uri, null);
+      final sourceEntry = await mediaFileService.getEntry(uri, null);
       if (sourceEntry != null) {
         final existingEntry = allEntries.firstWhereOrNull((entry) => entry.contentId == contentId);
         // compare paths because some apps move files without updating their `last modified date`
@@ -179,9 +189,9 @@ class MediaStoreSource extends CollectionSource {
   }
 
   @override
-  Future<void> refreshMetadata(Set<AvesEntry> entries) {
+  Future<void> rescan(Set<AvesEntry> entries) async {
     final contentIds = entries.map((entry) => entry.contentId).whereNotNull().toSet();
-    metadataDb.removeIds(contentIds, metadataOnly: true);
+    await metadataDb.removeIds(contentIds, metadataOnly: true);
     return refresh();
   }
 }

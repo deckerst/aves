@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:aves/app_mode.dart';
@@ -10,10 +11,9 @@ import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/android_app_service.dart';
-import 'package:aves/services/image_op_events.dart';
-import 'package:aves/services/services.dart';
+import 'package:aves/services/common/image_op_events.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
-import 'package:aves/utils/pedantic.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
@@ -109,14 +109,14 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
   Future<void> _flip(BuildContext context, AvesEntry entry) async {
     if (!await checkStoragePermission(context, {entry})) return;
 
-    final success = await entry.flip(persist: isMainMode(context));
+    final success = await entry.flip(persist: _isMainMode(context));
     if (!success) showFeedback(context, context.l10n.genericFailureFeedback);
   }
 
   Future<void> _rotate(BuildContext context, AvesEntry entry, {required bool clockwise}) async {
     if (!await checkStoragePermission(context, {entry})) return;
 
-    final success = await entry.rotate(clockwise: clockwise, persist: isMainMode(context));
+    final success = await entry.rotate(clockwise: clockwise, persist: _isMainMode(context));
     if (!success) showFeedback(context, context.l10n.genericFailureFeedback);
   }
 
@@ -204,7 +204,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     showOpReport<ExportOpEvent>(
       context: context,
       // TODO TLAD [SVG] export separately from raster images (sending bytes, like frame captures)
-      opStream: imageFileService.export(
+      opStream: mediaFileService.export(
         selection,
         mimeType: MimeTypes.jpeg,
         destinationAlbum: destinationAlbum,
@@ -233,7 +233,8 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
                     ),
                     (route) => false,
                   ));
-                  await Future.delayed(Durations.staggeredAnimationPageTarget + Durations.highlightScrollInitDelay);
+                  final delayDuration = context.read<DurationsData>().staggeredAnimationPageTarget;
+                  await Future.delayed(delayDuration + Durations.highlightScrollInitDelay);
                   final newUris = movedOps.map((v) => v.newFields['uri'] as String?).toSet();
                   final targetEntry = targetCollection.sortedEntries.firstWhereOrNull((entry) => newUris.contains(entry.uri));
                   if (targetEntry != null) {
@@ -269,7 +270,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
 
     if (!await checkStoragePermission(context, {entry})) return;
 
-    final success = await context.read<CollectionSource>().renameEntry(entry, newName, persist: isMainMode(context));
+    final success = await context.read<CollectionSource>().renameEntry(entry, newName, persist: _isMainMode(context));
 
     if (success) {
       showFeedback(context, context.l10n.genericSuccessFeedback);
@@ -278,7 +279,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     }
   }
 
-  bool isMainMode(BuildContext context) => context.read<ValueNotifier<AppMode>>().value == AppMode.main;
+  bool _isMainMode(BuildContext context) => context.read<ValueNotifier<AppMode>>().value == AppMode.main;
 
   void _goToSourceViewer(BuildContext context, AvesEntry entry) {
     Navigator.push(
@@ -286,7 +287,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       MaterialPageRoute(
         settings: const RouteSettings(name: SourceViewerPage.routeName),
         builder: (context) => SourceViewerPage(
-          loader: () => imageFileService.getSvg(entry.uri, entry.mimeType).then(utf8.decode),
+          loader: () => mediaFileService.getSvg(entry.uri, entry.mimeType).then(utf8.decode),
         ),
       ),
     );

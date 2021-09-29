@@ -120,10 +120,10 @@ dependencies {
     implementation 'com.caverock:androidsvg-aar:1.4'
     implementation 'com.commonsware.cwac:document:0.4.1'
     implementation 'com.drewnoakes:metadata-extractor:2.16.0'
-    // https://jitpack.io/com/github/deckerst/Android-TiffBitmapFactory/**********/build.log
+    // https://jitpack.io/p/deckerst/Android-TiffBitmapFactory
     implementation 'com.github.deckerst:Android-TiffBitmapFactory:876e53870a' // forked, built by JitPack
-    // https://jitpack.io/com/github/deckerst/pixymeta-android/**********/build.log
-    implementation 'com.github.deckerst:pixymeta-android:e4e50da939' // forked, built by JitPack
+    // https://jitpack.io/p/deckerst/pixymeta-android
+    implementation 'com.github.deckerst:pixymeta-android:082ed1dafc' // forked, built by JitPack
     implementation 'com.github.bumptech.glide:glide:4.12.0'
 
     kapt 'androidx.annotation:annotation:1.2.0'

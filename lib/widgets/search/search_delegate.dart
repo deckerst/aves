@@ -133,7 +133,7 @@ class CollectionSearchDelegate {
                                     ))
                                 .where((filter) => containQuery(filter.displayName ?? filter.album))
                                 .toList()
-                                  ..sort();
+                              ..sort();
                             return _buildFilterRow(
                               context: context,
                               title: context.l10n.searchSectionAlbums,

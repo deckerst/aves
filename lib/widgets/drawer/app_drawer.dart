@@ -5,7 +5,7 @@ import 'package:aves/model/source/album.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/location.dart';
 import 'package:aves/model/source/tag.dart';
-import 'package:aves/services/services.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/android_file_utils.dart';
@@ -68,10 +68,10 @@ class _AppDrawerState extends State<AppDrawer> {
 
     return Drawer(
       child: ListTileTheme.merge(
-        selectedColor: Theme.of(context).accentColor,
+        selectedColor: Theme.of(context).colorScheme.secondary,
         child: Selector<MediaQueryData, double>(
-          selector: (c, mq) => mq.effectiveBottomPadding,
-          builder: (c, mqPaddingBottom, child) {
+          selector: (context, mq) => mq.effectiveBottomPadding,
+          builder: (context, mqPaddingBottom, child) {
             final iconTheme = IconTheme.of(context);
             return SingleChildScrollView(
               padding: EdgeInsets.only(bottom: mqPaddingBottom),
@@ -104,7 +104,7 @@ class _AppDrawerState extends State<AppDrawer> {
 
     return Container(
       padding: const EdgeInsets.only(left: 16, top: 16, right: 16, bottom: 8),
-      color: Theme.of(context).accentColor,
+      color: Theme.of(context).colorScheme.secondary,
       child: SafeArea(
         bottom: false,
         child: Column(
@@ -147,6 +147,7 @@ class _AppDrawerState extends State<AppDrawer> {
                     onPressed: () => goTo(AboutPage.routeName, (_) => const AboutPage()),
                     icon: const Icon(AIcons.info),
                     label: Row(
+                      mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(context.l10n.aboutPageTitle),

@@ -1,10 +1,27 @@
-import 'package:aves/services/services.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:flutter/services.dart';
 
-class DeviceService {
+abstract class DeviceService {
+  Future<String?> getDefaultTimeZone();
+
+  Future<int> getPerformanceClass();
+}
+
+class PlatformDeviceService implements DeviceService {
   static const platform = MethodChannel('deckers.thibault/aves/device');
 
-  static Future<int> getPerformanceClass() async {
+  @override
+  Future<String?> getDefaultTimeZone() async {
+    try {
+      return await platform.invokeMethod('getDefaultTimeZone');
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
+    return null;
+  }
+
+  @override
+  Future<int> getPerformanceClass() async {
     try {
       await platform.invokeMethod('getPerformanceClass');
       final result = await platform.invokeMethod('getPerformanceClass');

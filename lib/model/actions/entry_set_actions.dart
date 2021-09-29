@@ -19,7 +19,7 @@ enum EntrySetAction {
   delete,
   copy,
   move,
-  refreshMetadata,
+  rescan,
 }
 
 class EntrySetActions {
@@ -28,7 +28,7 @@ class EntrySetActions {
     EntrySetAction.delete,
     EntrySetAction.copy,
     EntrySetAction.move,
-    EntrySetAction.refreshMetadata,
+    EntrySetAction.rescan,
     EntrySetAction.map,
     EntrySetAction.stats,
   ];
@@ -65,8 +65,8 @@ extension ExtraEntrySetAction on EntrySetAction {
         return context.l10n.collectionActionCopy;
       case EntrySetAction.move:
         return context.l10n.collectionActionMove;
-      case EntrySetAction.refreshMetadata:
-        return context.l10n.collectionActionRefreshMetadata;
+      case EntrySetAction.rescan:
+        return context.l10n.collectionActionRescan;
     }
   }
 
@@ -104,7 +104,7 @@ extension ExtraEntrySetAction on EntrySetAction {
         return AIcons.copy;
       case EntrySetAction.move:
         return AIcons.move;
-      case EntrySetAction.refreshMetadata:
+      case EntrySetAction.rescan:
         return AIcons.refresh;
     }
   }

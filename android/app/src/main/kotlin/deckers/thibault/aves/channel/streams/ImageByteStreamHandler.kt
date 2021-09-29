@@ -17,7 +17,7 @@ import deckers.thibault.aves.utils.BitmapUtils.getBytes
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.MimeTypes.isHeic
-import deckers.thibault.aves.utils.MimeTypes.isSupportedByFlutter
+import deckers.thibault.aves.utils.MimeTypes.canDecodeWithFlutter
 import deckers.thibault.aves.utils.MimeTypes.isVideo
 import deckers.thibault.aves.utils.MimeTypes.needRotationAfterGlide
 import deckers.thibault.aves.utils.StorageUtils
@@ -96,7 +96,7 @@ class ImageByteStreamHandler(private val activity: Activity, private val argumen
 
         if (isVideo(mimeType)) {
             streamVideoByGlide(uri, mimeType)
-        } else if (!isSupportedByFlutter(mimeType, rotationDegrees, isFlipped)) {
+        } else if (!canDecodeWithFlutter(mimeType, rotationDegrees, isFlipped)) {
             // decode exotic format on platform side, then encode it in portable format for Flutter
             streamImageByGlide(uri, pageId, mimeType, rotationDegrees, isFlipped)
         } else {
@@ -187,7 +187,7 @@ class ImageByteStreamHandler(private val activity: Activity, private val argumen
 
     companion object {
         private val LOG_TAG = LogUtils.createTag<ImageByteStreamHandler>()
-        const val CHANNEL = "deckers.thibault/aves/image_byte_stream"
+        const val CHANNEL = "deckers.thibault/aves/media_byte_stream"
 
         private const val BUFFER_SIZE = 2 shl 17 // 256kB
 

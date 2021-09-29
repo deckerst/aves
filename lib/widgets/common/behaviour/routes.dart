@@ -1,5 +1,17 @@
 import 'package:flutter/material.dart';
 
+class DirectPageTransitionsTheme extends PageTransitionsTheme {
+  @override
+  Widget buildTransitions<T>(
+    PageRoute<T> route,
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+    Widget child,
+  ) =>
+      child;
+}
+
 class DirectMaterialPageRoute<T> extends PageRouteBuilder<T> {
   DirectMaterialPageRoute({
     RouteSettings? settings,
@@ -7,7 +19,7 @@ class DirectMaterialPageRoute<T> extends PageRouteBuilder<T> {
   }) : super(
           settings: settings,
           transitionDuration: Duration.zero,
-          pageBuilder: (c, a, sa) => builder(c),
+          pageBuilder: (context, a, sa) => builder(context),
         );
 
   @override

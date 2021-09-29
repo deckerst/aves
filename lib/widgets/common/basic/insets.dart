@@ -14,8 +14,8 @@ class BottomGestureAreaProtector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Selector<MediaQueryData, double>(
-      selector: (c, mq) => mq.systemGestureInsets.bottom,
-      builder: (c, systemGestureBottom, child) {
+      selector: (context, mq) => mq.systemGestureInsets.bottom,
+      builder: (context, systemGestureBottom, child) {
         return Positioned(
           left: 0,
           right: 0,

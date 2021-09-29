@@ -3,6 +3,7 @@ import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/basic/link_chip.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
+import 'package:aves/widgets/common/identity/buttons.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
@@ -69,7 +70,8 @@ class _LicensesState extends State<Licenses> {
               children: _dartPackages.map((package) => LicenseRow(package: package)).toList(),
             ),
             Center(
-              child: TextButton(
+              child: AvesOutlinedButton(
+                label: context.l10n.aboutLicensesShowAllButtonLabel,
                 onPressed: () => Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -82,7 +84,6 @@ class _LicensesState extends State<Licenses> {
                     ),
                   ),
                 ),
-                child: Text(context.l10n.aboutLicensesShowAllButtonLabel),
               ),
             ),
           ],

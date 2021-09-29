@@ -1,4 +1,4 @@
-import 'package:aves/services/services.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:flutter/material.dart';
@@ -45,7 +45,7 @@ class _DebugCacheSectionState extends State<DebugCacheSection> with AutomaticKee
                   ),
                   const SizedBox(width: 8),
                   ElevatedButton(
-                    onPressed: imageFileService.clearSizedThumbnailDiskCache,
+                    onPressed: mediaFileService.clearSizedThumbnailDiskCache,
                     child: const Text('Clear'),
                   ),
                 ],

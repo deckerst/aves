@@ -24,7 +24,6 @@ class VideoIcon extends StatelessWidget {
     final showDuration = gridTheme.showVideoDuration;
     Widget child = OverlayIcon(
       icon: entry.is360 ? AIcons.threeSixty : AIcons.videoThumb,
-      size: gridTheme.iconSize,
       text: showDuration ? entry.durationText : null,
       iconScale: entry.is360 && showDuration ? .9 : 1,
     );
@@ -44,12 +43,13 @@ class VideoIcon extends StatelessWidget {
 class AnimatedImageIcon extends StatelessWidget {
   const AnimatedImageIcon({Key? key}) : super(key: key);
 
+  static const scale = .8;
+
   @override
   Widget build(BuildContext context) {
-    return OverlayIcon(
+    return const OverlayIcon(
       icon: AIcons.animated,
-      size: context.select<GridThemeData, double>((t) => t.iconSize),
-      iconScale: .8,
+      iconScale: scale,
     );
   }
 }
@@ -59,9 +59,8 @@ class GeotiffIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return OverlayIcon(
+    return const OverlayIcon(
       icon: AIcons.geo,
-      size: context.select<GridThemeData, double>((t) => t.iconSize),
     );
   }
 }
@@ -71,9 +70,8 @@ class SphericalImageIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return OverlayIcon(
+    return const OverlayIcon(
       icon: AIcons.threeSixty,
-      size: context.select<GridThemeData, double>((t) => t.iconSize),
     );
   }
 }
@@ -83,9 +81,8 @@ class GpsIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return OverlayIcon(
+    return const OverlayIcon(
       icon: AIcons.location,
-      size: context.select<GridThemeData, double>((t) => t.iconSize),
     );
   }
 }
@@ -95,15 +92,30 @@ class RawIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return OverlayIcon(
+    return const OverlayIcon(
       icon: AIcons.raw,
-      size: context.select<GridThemeData, double>((t) => t.iconSize),
+    );
+  }
+}
+
+class MotionPhotoIcon extends StatelessWidget {
+  const MotionPhotoIcon({Key? key}) : super(key: key);
+
+  static const scale = .8;
+
+  @override
+  Widget build(BuildContext context) {
+    return const OverlayIcon(
+      icon: AIcons.motionPhoto,
+      iconScale: scale,
     );
   }
 }
 
 class MultiPageIcon extends StatelessWidget {
   final AvesEntry entry;
+
+  static const scale = .8;
 
   const MultiPageIcon({
     Key? key,
@@ -112,27 +124,19 @@ class MultiPageIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    IconData icon;
     String? text;
-    if (entry.isMotionPhoto) {
-      icon = AIcons.motionPhoto;
-    } else {
-      if (entry.isBurst) {
-        text = '${entry.burstEntries?.length}';
-      }
-      icon = AIcons.multiPage;
+    if (entry.isBurst) {
+      text = '${entry.burstEntries?.length}';
     }
-    final gridTheme = context.watch<GridThemeData>();
     final child = OverlayIcon(
-      icon: icon,
-      size: gridTheme.iconSize,
-      iconScale: .8,
+      icon: AIcons.multiPage,
+      iconScale: scale,
       text: text,
     );
     return DefaultTextStyle(
       style: TextStyle(
         color: Colors.grey.shade200,
-        fontSize: gridTheme.fontSize,
+        fontSize: context.select<GridThemeData, double>((t) => t.fontSize),
       ),
       child: child,
     );
@@ -141,21 +145,25 @@ class MultiPageIcon extends StatelessWidget {
 
 class OverlayIcon extends StatelessWidget {
   final IconData icon;
-  final double size;
   final String? text;
   final double iconScale;
 
   const OverlayIcon({
     Key? key,
     required this.icon,
-    required this.size,
     this.iconScale = 1,
     this.text,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final iconChild = Icon(icon, size: size);
+    final size = context.select<GridThemeData, double>((t) => t.iconSize);
+    final iconChild = Icon(
+      icon,
+      size: size,
+      // consistent with the color used for the text next to it
+      color: DefaultTextStyle.of(context).style.color,
+    );
     final iconBox = SizedBox(
       width: size,
       height: size,
@@ -169,7 +177,7 @@ class OverlayIcon extends StatelessWidget {
     );
 
     return Container(
-      margin: const EdgeInsets.all(1),
+      margin: const EdgeInsets.only(left: 1, right: 1, bottom: 1),
       padding: text != null ? EdgeInsets.only(right: size / 4) : null,
       decoration: BoxDecoration(
         color: const Color(0xBB000000),

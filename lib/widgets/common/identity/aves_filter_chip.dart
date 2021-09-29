@@ -4,10 +4,12 @@ import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/filters/tag.dart';
+import 'package:aves/model/settings/accessibility_animations.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/basic/menu.dart';
+import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -16,16 +18,30 @@ import 'package:provider/provider.dart';
 typedef FilterCallback = void Function(CollectionFilter filter);
 typedef OffsetFilterCallback = void Function(BuildContext context, CollectionFilter filter, Offset tapPosition);
 
-enum HeroType { always, onTap, never }
+enum HeroType { always, onTap }
+
+@immutable
+class AvesFilterDecoration {
+  final Widget widget;
+  final Radius radius;
+
+  const AvesFilterDecoration({
+    required this.widget,
+    required this.radius,
+  });
+
+  BorderRadius get textBorderRadius => BorderRadius.vertical(bottom: radius);
+
+  BorderRadius get chipBorderRadius => BorderRadius.all(radius);
+}
 
 class AvesFilterChip extends StatefulWidget {
   final CollectionFilter filter;
   final bool removable;
   final bool showGenericIcon;
-  final Widget? background;
+  final AvesFilterDecoration? decoration;
   final String? banner;
   final Widget? details;
-  final BorderRadius? borderRadius;
   final double padding;
   final HeroType heroType;
   final FilterCallback? onTap;
@@ -37,16 +53,18 @@ class AvesFilterChip extends StatefulWidget {
   static const double minChipHeight = kMinInteractiveDimension;
   static const double minChipWidth = 80;
   static const double maxChipWidth = 160;
+  static const double iconSize = 18;
+  static const double fontSize = 14;
+  static const double decoratedContentVerticalPadding = 5;
 
   const AvesFilterChip({
     Key? key,
     required this.filter,
     this.removable = false,
     this.showGenericIcon = true,
-    this.background,
+    this.decoration,
     this.banner,
     this.details,
-    this.borderRadius,
     this.padding = 6.0,
     this.heroType = HeroType.onTap,
     this.onTap,
@@ -82,7 +100,8 @@ class AvesFilterChip extends StatefulWidget {
       );
       if (selectedAction != null) {
         // wait for the popup menu to hide before proceeding with the action
-        Future.delayed(Durations.popupMenuAnimation * timeDilation, () => ChipActionDelegate().onActionSelected(context, filter, selectedAction));
+        await Future.delayed(Durations.popupMenuAnimation * timeDilation);
+        ChipActionDelegate().onActionSelected(context, filter, selectedAction);
       }
     }
   }
@@ -139,15 +158,15 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
 
   @override
   Widget build(BuildContext context) {
+    final chipBackground = Theme.of(context).scaffoldBackgroundColor;
     final textScaleFactor = MediaQuery.textScaleFactorOf(context);
-    final iconSize = 20 * textScaleFactor;
-
-    final hasBackground = widget.background != null;
-    final leading = filter.iconBuilder(context, iconSize, showGenericIcon: widget.showGenericIcon, embossed: hasBackground);
+    final iconSize = AvesFilterChip.iconSize * textScaleFactor;
+    final leading = filter.iconBuilder(context, iconSize, showGenericIcon: widget.showGenericIcon);
     final trailing = widget.removable ? Icon(AIcons.clear, size: iconSize) : null;
 
+    final decoration = widget.decoration;
     Widget content = Row(
-      mainAxisSize: hasBackground ? MainAxisSize.max : MainAxisSize.min,
+      mainAxisSize: decoration != null ? MainAxisSize.max : MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         if (leading != null) ...[
@@ -157,6 +176,9 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
         Flexible(
           child: Text(
             filter.getLabel(context),
+            style: const TextStyle(
+              fontSize: AvesFilterChip.fontSize,
+            ),
             softWrap: false,
             overflow: TextOverflow.fade,
             maxLines: 1,
@@ -169,36 +191,37 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
       ],
     );
 
-    if (widget.details != null) {
+    final details = widget.details;
+    if (details != null) {
       content = Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           content,
-          Flexible(child: widget.details!),
+          Flexible(child: details),
         ],
       );
     }
 
-    content = Padding(
-      padding: EdgeInsets.symmetric(horizontal: padding * 2, vertical: 2),
-      child: content,
-    );
-
-    if (hasBackground) {
-      content = Center(
-        child: ColoredBox(
-          color: Colors.black54,
-          child: DefaultTextStyle(
-            style: Theme.of(context).textTheme.bodyText2!.copyWith(
-                  shadows: Constants.embossShadows,
-                ),
+    if (decoration != null) {
+      content = Align(
+        alignment: Alignment.bottomCenter,
+        child: ClipRRect(
+          borderRadius: decoration.textBorderRadius,
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: padding * 2, vertical: AvesFilterChip.decoratedContentVerticalPadding),
+            color: chipBackground,
             child: content,
           ),
         ),
       );
+    } else {
+      content = Padding(
+        padding: EdgeInsets.symmetric(horizontal: padding * 2, vertical: 2),
+        child: content,
+      );
     }
 
-    final borderRadius = widget.borderRadius ?? const BorderRadius.all(Radius.circular(AvesFilterChip.defaultRadius));
+    final borderRadius = decoration?.chipBorderRadius ?? const BorderRadius.all(Radius.circular(AvesFilterChip.defaultRadius));
     final banner = widget.banner;
     Widget chip = Container(
       constraints: const BoxConstraints(
@@ -209,13 +232,13 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
       child: Stack(
         fit: StackFit.passthrough,
         children: [
-          if (hasBackground)
+          if (decoration != null)
             ClipRRect(
-              borderRadius: borderRadius,
-              child: widget.background,
+              borderRadius: decoration.chipBorderRadius,
+              child: decoration.widget,
             ),
           Material(
-            color: hasBackground ? Colors.transparent : Theme.of(context).scaffoldBackgroundColor,
+            color: decoration != null ? Colors.transparent : chipBackground,
             shape: RoundedRectangleBorder(
               borderRadius: borderRadius,
             ),
@@ -247,7 +270,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
                     ),
                     position: DecorationPosition.foreground,
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      padding: EdgeInsets.symmetric(vertical: decoration != null ? 0 : 8),
                       child: content,
                     ),
                   );
@@ -264,7 +287,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
                   child: Banner(
                     message: banner.toUpperCase(),
                     location: BannerLocation.topStart,
-                    color: Theme.of(context).accentColor,
+                    color: Theme.of(context).colorScheme.secondary,
                     child: const SizedBox(),
                   ),
                 ),
@@ -274,13 +297,16 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
       ),
     );
 
-    if (widget.heroType == HeroType.always || widget.heroType == HeroType.onTap && _tapped) {
+    final animate = context.select<Settings, bool>((v) => v.accessibilityAnimations.animate);
+    if (animate && (widget.heroType == HeroType.always || widget.heroType == HeroType.onTap && _tapped)) {
       chip = Hero(
         tag: filter,
         transitionOnUserGestures: true,
-        child: DefaultTextStyle(
-          style: const TextStyle(),
-          child: chip,
+        child: MediaQueryDataProvider(
+          child: DefaultTextStyle(
+            style: const TextStyle(),
+            child: chip,
+          ),
         ),
       );
     }

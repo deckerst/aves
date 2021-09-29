@@ -3,6 +3,21 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [v1.5.2] - 2021-09-29
+### Added
+- Map: show items for bounds, open items in viewer, tap gesture to toggle fullscreen
+- Info: remove metadata (Exif, XMP, etc.)
+- Accessibility: support "time to take action" and "remove animations" settings
+
+### Changed
+- upgraded Flutter to stable v2.5.1
+- faster collection loading when launching the app
+- Collection: changed color & scale of thumbnail icons to match text
+- Albums / Countries / Tags: changed layout, with label below cover
+
+### Fixed
+- album bookmarks & pins were reset when rescanning items
+
 ## [v1.5.1] - 2021-09-08
 ### Added
 - About: bug reporting instructions
@@ -71,7 +86,7 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - improved SVG support with a different rendering engine
 - changed logo
-- upgraded flutter to stable v2.2.3
+- upgraded Flutter to stable v2.2.3
 - migrated to sound null safety
 - viewer: parallax effect when scrolling
 

@@ -3,7 +3,7 @@ import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/metadata/catalog.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums.dart';
-import 'package:aves/services/services.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
@@ -13,11 +13,11 @@ mixin TagMixin on SourceBase {
   List<String> sortedTags = List.unmodifiable([]);
 
   Future<void> loadCatalogMetadata() async {
-    final stopwatch = Stopwatch()..start();
+    // final stopwatch = Stopwatch()..start();
     final saved = await metadataDb.loadMetadataEntries();
     final idMap = entryById;
     saved.forEach((metadata) => idMap[metadata.contentId]?.catalogMetadata = metadata);
-    debugPrint('$runtimeType loadCatalogMetadata complete in ${stopwatch.elapsed.inMilliseconds}ms for ${saved.length} entries');
+    // debugPrint('$runtimeType loadCatalogMetadata complete in ${stopwatch.elapsed.inMilliseconds}ms for ${saved.length} entries');
     onCatalogMetadataChanged();
   }
 
@@ -70,6 +70,8 @@ mixin TagMixin on SourceBase {
   final Map<String, AvesEntry?> _filterRecentEntryMap = {};
 
   void invalidateTagFilterSummary([Set<AvesEntry>? entries]) {
+    if (_filterEntryCountMap.isEmpty && _filterRecentEntryMap.isEmpty) return;
+
     Set<String>? tags;
     if (entries == null) {
       _filterEntryCountMap.clear();

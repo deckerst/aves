@@ -13,8 +13,6 @@ extension ExtraVideoLoopMode on VideoLoopMode {
         return context.l10n.videoLoopModeShortOnly;
       case VideoLoopMode.always:
         return context.l10n.videoLoopModeAlways;
-      default:
-        return toString();
     }
   }
 

@@ -4,13 +4,14 @@ import 'dart:typed_data';
 import 'package:aves/model/actions/settings_actions.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/ref/mime_types.dart';
-import 'package:aves/services/services.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/basic/menu.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
+import 'package:aves/widgets/settings/accessibility/accessibility.dart';
 import 'package:aves/widgets/settings/language/language.dart';
 import 'package:aves/widgets/settings/navigation/navigation.dart';
 import 'package:aves/widgets/settings/privacy/privacy.dart';
@@ -21,6 +22,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class SettingsPage extends StatefulWidget {
   static const routeName = '/settings';
@@ -37,6 +39,7 @@ class _SettingsPageState extends State<SettingsPage> with FeedbackMixin {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final durations = context.watch<DurationsData>();
     return MediaQueryDataProvider(
       child: Scaffold(
         appBar: AppBar(
@@ -56,9 +59,10 @@ class _SettingsPageState extends State<SettingsPage> with FeedbackMixin {
                     ),
                   ];
                 },
-                onSelected: (action) {
+                onSelected: (action) async {
                   // wait for the popup menu to hide before proceeding with the action
-                  Future.delayed(Durations.popupMenuAnimation * timeDilation, () => _onActionSelected(action));
+                  await Future.delayed(Durations.popupMenuAnimation * timeDilation);
+                  _onActionSelected(action);
                 },
               ),
             ),
@@ -76,8 +80,8 @@ class _SettingsPageState extends State<SettingsPage> with FeedbackMixin {
               child: ListView(
                 padding: const EdgeInsets.all(8),
                 children: AnimationConfiguration.toStaggeredList(
-                  duration: Durations.staggeredAnimation,
-                  delay: Durations.staggeredAnimationDelay,
+                  duration: durations.staggeredAnimation,
+                  delay: durations.staggeredAnimationDelay * timeDilation,
                   childAnimationBuilder: (child) => SlideAnimation(
                     verticalOffset: 50.0,
                     child: FadeInAnimation(
@@ -90,6 +94,7 @@ class _SettingsPageState extends State<SettingsPage> with FeedbackMixin {
                     ViewerSection(expandedNotifier: _expandedNotifier),
                     VideoSection(expandedNotifier: _expandedNotifier),
                     PrivacySection(expandedNotifier: _expandedNotifier),
+                    AccessibilitySection(expandedNotifier: _expandedNotifier),
                     LanguageSection(expandedNotifier: _expandedNotifier),
                   ],
                 ),

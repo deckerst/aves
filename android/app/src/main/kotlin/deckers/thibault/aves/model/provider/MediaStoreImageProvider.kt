@@ -5,6 +5,7 @@ import android.app.Activity
 import android.app.RecoverableSecurityException
 import android.content.ContentUris
 import android.content.Context
+import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
@@ -27,6 +28,9 @@ import java.io.File
 import java.util.*
 import java.util.concurrent.CompletableFuture
 import kotlin.collections.ArrayList
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
 class MediaStoreImageProvider : ImageProvider() {
     fun fetchAll(context: Context, knownEntries: Map<Int, Int?>, handleNewEntry: NewEntryHandler) {
@@ -39,28 +43,40 @@ class MediaStoreImageProvider : ImageProvider() {
     }
 
     override fun fetchSingle(context: Context, uri: Uri, sourceMimeType: String?, callback: ImageOpCallback) {
+        var found = false
+        val fetched = arrayListOf<FieldMap>()
         val id = uri.tryParseId()
         val onSuccess = fun(entry: FieldMap) {
             entry["uri"] = uri.toString()
-            callback.onSuccess(entry)
+            fetched.add(entry)
         }
         val alwaysValid = { _: Int, _: Int -> true }
         if (id != null) {
-            if (sourceMimeType == null || isImage(sourceMimeType)) {
+            if (!found && (sourceMimeType == null || isImage(sourceMimeType))) {
                 val contentUri = ContentUris.withAppendedId(IMAGE_CONTENT_URI, id)
-                if (fetchFrom(context, alwaysValid, onSuccess, contentUri, IMAGE_PROJECTION)) return
+                found = fetchFrom(context, alwaysValid, onSuccess, contentUri, IMAGE_PROJECTION)
             }
-            if (sourceMimeType == null || isVideo(sourceMimeType)) {
+            if (!found && (sourceMimeType == null || isVideo(sourceMimeType))) {
                 val contentUri = ContentUris.withAppendedId(VIDEO_CONTENT_URI, id)
-                if (fetchFrom(context, alwaysValid, onSuccess, contentUri, VIDEO_PROJECTION)) return
+                found = fetchFrom(context, alwaysValid, onSuccess, contentUri, VIDEO_PROJECTION)
             }
         }
-        // the uri can be a file media URI (e.g. "content://0@media/external/file/30050")
-        // without an equivalent image/video if it is shared from a file browser
-        // but the file is not publicly visible
-        if (fetchFrom(context, alwaysValid, onSuccess, uri, BASE_PROJECTION, fileMimeType = sourceMimeType)) return
+        if (!found) {
+            // the uri can be a file media URI (e.g. "content://0@media/external/file/30050")
+            // without an equivalent image/video if it is shared from a file browser
+            // but the file is not publicly visible
+            found = fetchFrom(context, alwaysValid, onSuccess, uri, BASE_PROJECTION, fileMimeType = sourceMimeType)
+        }
 
-        callback.onFailure(Exception("failed to fetch entry at uri=$uri"))
+        if (found && fetched.isNotEmpty()) {
+            if (fetched.size == 1) {
+                callback.onSuccess(fetched.first())
+            } else {
+                callback.onFailure(Exception("found ${fetched.size} entries at uri=$uri"))
+            }
+        } else {
+            callback.onFailure(Exception("failed to fetch entry at uri=$uri"))
+        }
     }
 
     fun checkObsoleteContentIds(context: Context, knownContentIds: List<Int>): List<Int> {
@@ -82,7 +98,7 @@ class MediaStoreImageProvider : ImageProvider() {
         }
         check(context, IMAGE_CONTENT_URI)
         check(context, VIDEO_CONTENT_URI)
-        return knownContentIds.filter { id: Int -> !foundContentIds.contains(id) }.toList()
+        return knownContentIds.subtract(foundContentIds).toList()
     }
 
     fun checkObsoletePaths(context: Context, knownPathById: Map<Int, String>): List<Int> {
@@ -361,6 +377,90 @@ class MediaStoreImageProvider : ImageProvider() {
             put("deletedSource", deletedSource)
         }
     }
+
+    override fun scanPostMetadataEdit(context: Context, path: String, uri: Uri, mimeType: String, newFields: HashMap<String, Any?>, callback: ImageOpCallback) {
+        MediaScannerConnection.scanFile(context, arrayOf(path), arrayOf(mimeType)) { _, _ ->
+            val projection = arrayOf(
+                MediaStore.MediaColumns.DATE_MODIFIED,
+                MediaStore.MediaColumns.SIZE,
+            )
+            try {
+                val cursor = context.contentResolver.query(uri, projection, null, null, null)
+                if (cursor != null && cursor.moveToFirst()) {
+                    cursor.getColumnIndex(MediaStore.MediaColumns.DATE_MODIFIED).let { if (it != -1) newFields["dateModifiedSecs"] = cursor.getInt(it) }
+                    cursor.getColumnIndex(MediaStore.MediaColumns.SIZE).let { if (it != -1) newFields["sizeBytes"] = cursor.getLong(it) }
+                    cursor.close()
+                }
+            } catch (e: Exception) {
+                callback.onFailure(e)
+                return@scanFile
+            }
+            callback.onSuccess(newFields)
+        }
+    }
+
+    override fun scanObsoletePath(context: Context, path: String, mimeType: String) {
+        MediaScannerConnection.scanFile(context, arrayOf(path), arrayOf(mimeType), null)
+    }
+
+    suspend fun scanNewPath(context: Context, path: String, mimeType: String): FieldMap =
+        suspendCoroutine { cont ->
+            MediaScannerConnection.scanFile(context, arrayOf(path), arrayOf(mimeType)) { _, newUri: Uri? ->
+                fun scanUri(uri: Uri?): FieldMap? {
+                    uri ?: return null
+
+                    // we retrieve updated fields as the renamed/moved file became a new entry in the Media Store
+                    val projection = arrayOf(
+                        MediaStore.MediaColumns.DATE_MODIFIED,
+                        MediaStore.MediaColumns.DISPLAY_NAME,
+                        MediaStore.MediaColumns.TITLE,
+                    )
+                    try {
+                        val cursor = context.contentResolver.query(uri, projection, null, null, null)
+                        if (cursor != null && cursor.moveToFirst()) {
+                            val newFields = HashMap<String, Any?>()
+                            newFields["uri"] = uri.toString()
+                            newFields["contentId"] = uri.tryParseId()
+                            newFields["path"] = path
+                            cursor.getColumnIndex(MediaStore.MediaColumns.DATE_MODIFIED).let { if (it != -1) newFields["dateModifiedSecs"] = cursor.getInt(it) }
+                            cursor.getColumnIndex(MediaStore.MediaColumns.DISPLAY_NAME).let { if (it != -1) newFields["displayName"] = cursor.getString(it) }
+                            cursor.getColumnIndex(MediaStore.MediaColumns.TITLE).let { if (it != -1) newFields["title"] = cursor.getString(it) }
+                            cursor.close()
+                            return newFields
+                        }
+                    } catch (e: Exception) {
+                        Log.w(LOG_TAG, "failed to scan uri=$uri", e)
+                    }
+                    return null
+                }
+
+                if (newUri == null) {
+                    cont.resumeWithException(Exception("failed to get URI of item at path=$path"))
+                    return@scanFile
+                }
+
+                var contentUri: Uri? = null
+                // `newURI` is possibly a file media URI (e.g. "content://media/12a9-8b42/file/62872")
+                // but we need an image/video media URI (e.g. "content://media/external/images/media/62872")
+                val contentId = newUri.tryParseId()
+                if (contentId != null) {
+                    if (isImage(mimeType)) {
+                        contentUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentId)
+                    } else if (isVideo(mimeType)) {
+                        contentUri = ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, contentId)
+                    }
+                }
+
+                // prefer image/video content URI, fallback to original URI (possibly a file content URI)
+                val newFields = scanUri(contentUri) ?: scanUri(newUri)
+
+                if (newFields != null) {
+                    cont.resume(newFields)
+                } else {
+                    cont.resumeWithException(Exception("failed to get item details from provider at contentUri=$contentUri (from newUri=$newUri)"))
+                }
+            }
+        }
 
     companion object {
         private val LOG_TAG = LogUtils.createTag<MediaStoreImageProvider>()

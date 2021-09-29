@@ -4,12 +4,14 @@ class EmptyContent extends StatelessWidget {
   final IconData? icon;
   final String text;
   final AlignmentGeometry alignment;
+  final double fontSize;
 
   const EmptyContent({
     Key? key,
     this.icon,
     required this.text,
     this.alignment = const FractionalOffset(.5, .35),
+    this.fontSize = 22,
   }) : super(key: key);
 
   @override
@@ -30,10 +32,11 @@ class EmptyContent extends StatelessWidget {
           ],
           Text(
             text,
-            style: const TextStyle(
+            style: TextStyle(
               color: color,
-              fontSize: 22,
+              fontSize: fontSize,
             ),
+            textAlign: TextAlign.center,
           ),
         ],
       ),

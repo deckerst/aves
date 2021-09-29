@@ -19,14 +19,16 @@ class ScalerMetadata<T> {
 
 class GridScaleGestureDetector<T> extends StatefulWidget {
   final GlobalKey scrollableKey;
-  final Widget Function(Offset center, double extent, Widget child) gridBuilder;
-  final Widget Function(T item, double extent) scaledBuilder;
+  final double Function(double width) heightForWidth;
+  final Widget Function(Offset center, Size tileSize, Widget child) gridBuilder;
+  final Widget Function(T item, Size tileSize) scaledBuilder;
   final Object Function(T item)? highlightItem;
   final Widget child;
 
   const GridScaleGestureDetector({
     Key? key,
     required this.scrollableKey,
+    required this.heightForWidth,
     required this.gridBuilder,
     required this.scaledBuilder,
     this.highlightItem,
@@ -38,9 +40,10 @@ class GridScaleGestureDetector<T> extends StatefulWidget {
 }
 
 class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T>> {
-  double? _startExtent, _extentMin, _extentMax;
+  Size? _startSize;
+  double? _extentMin, _extentMax;
   bool _applyingScale = false;
-  ValueNotifier<double>? _scaledExtentNotifier;
+  ValueNotifier<Size>? _scaledSizeNotifier;
   OverlayEntry? _overlayEntry;
   ScalerMetadata<T>? _metadata;
 
@@ -63,8 +66,8 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T
         // abort if we cannot find an image to show on overlay
         if (renderMetaData == null) return;
         _metadata = renderMetaData.metaData;
-        _startExtent = renderMetaData.size.width;
-        _scaledExtentNotifier = ValueNotifier(_startExtent!);
+        _startSize = renderMetaData.size;
+        _scaledSizeNotifier = ValueNotifier(_startSize!);
 
         // not the same as `MediaQuery.size.width`, because of screen insets/padding
         final gridWidth = scrollableBox.size.width;
@@ -73,33 +76,33 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T
         _extentMin = tileExtentController.effectiveExtentMin;
         _extentMax = tileExtentController.effectiveExtentMax;
 
-        final halfExtent = _startExtent! / 2;
-        final thumbnailCenter = renderMetaData.localToGlobal(Offset(halfExtent, halfExtent));
+        final halfSize = _startSize! / 2;
+        final thumbnailCenter = renderMetaData.localToGlobal(Offset(halfSize.width, halfSize.height));
         _overlayEntry = OverlayEntry(
           builder: (context) => ScaleOverlay(
-            builder: (extent) => SizedBox(
-              width: extent,
-              height: extent,
+            builder: (scaledTileSize) => SizedBox.fromSize(
+              size: scaledTileSize,
               child: GridTheme(
-                extent: extent,
-                child: widget.scaledBuilder(_metadata!.item, extent),
+                extent: scaledTileSize.width,
+                child: widget.scaledBuilder(_metadata!.item, scaledTileSize),
               ),
             ),
             center: thumbnailCenter,
             viewportWidth: gridWidth,
             gridBuilder: widget.gridBuilder,
-            scaledExtentNotifier: _scaledExtentNotifier!,
+            scaledSizeNotifier: _scaledSizeNotifier!,
           ),
         );
         Overlay.of(scrollableContext)!.insert(_overlayEntry!);
       },
       onScaleUpdate: (details) {
-        if (_scaledExtentNotifier == null) return;
+        if (_scaledSizeNotifier == null) return;
         final s = details.scale;
-        _scaledExtentNotifier!.value = (_startExtent! * s).clamp(_extentMin!, _extentMax!);
+        final scaledWidth = (_startSize!.width * s).clamp(_extentMin!, _extentMax!);
+        _scaledSizeNotifier!.value = Size(scaledWidth, widget.heightForWidth(scaledWidth));
       },
       onScaleEnd: (details) {
-        if (_scaledExtentNotifier == null) return;
+        if (_scaledSizeNotifier == null) return;
         if (_overlayEntry != null) {
           _overlayEntry!.remove();
           _overlayEntry = null;
@@ -109,8 +112,8 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T
         final tileExtentController = context.read<TileExtentController>();
         final oldExtent = tileExtentController.extentNotifier.value;
         // sanitize and update grid layout if necessary
-        final newExtent = tileExtentController.setUserPreferredExtent(_scaledExtentNotifier!.value);
-        _scaledExtentNotifier = null;
+        final newExtent = tileExtentController.setUserPreferredExtent(_scaledSizeNotifier!.value.width);
+        _scaledSizeNotifier = null;
         if (newExtent == oldExtent) {
           _applyingScale = false;
         } else {
@@ -138,18 +141,18 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T
 }
 
 class ScaleOverlay extends StatefulWidget {
-  final Widget Function(double extent) builder;
+  final Widget Function(Size scaledTileSize) builder;
   final Offset center;
   final double viewportWidth;
-  final ValueNotifier<double> scaledExtentNotifier;
-  final Widget Function(Offset center, double extent, Widget child) gridBuilder;
+  final ValueNotifier<Size> scaledSizeNotifier;
+  final Widget Function(Offset center, Size extent, Widget child) gridBuilder;
 
   const ScaleOverlay({
     Key? key,
     required this.builder,
     required this.center,
     required this.viewportWidth,
-    required this.scaledExtentNotifier,
+    required this.scaledSizeNotifier,
     required this.gridBuilder,
   }) : super(key: key);
 
@@ -197,26 +200,28 @@ class _ScaleOverlayState extends State<ScaleOverlay> {
                     ),
                   ),
             duration: Durations.collectionScalingBackgroundAnimation,
-            child: ValueListenableBuilder<double>(
-              valueListenable: widget.scaledExtentNotifier,
-              builder: (context, extent, child) {
+            child: ValueListenableBuilder<Size>(
+              valueListenable: widget.scaledSizeNotifier,
+              builder: (context, scaledSize, child) {
+                final width = scaledSize.width;
+                final height = scaledSize.height;
                 // keep scaled thumbnail within the screen
                 final xMin = context.select<MediaQueryData, double>((mq) => mq.padding.left);
                 final xMax = xMin + gridWidth;
                 var dx = .0;
-                if (center.dx - extent / 2 < xMin) {
-                  dx = xMin - (center.dx - extent / 2);
-                } else if (center.dx + extent / 2 > xMax) {
-                  dx = xMax - (center.dx + extent / 2);
+                if (center.dx - width / 2 < xMin) {
+                  dx = xMin - (center.dx - width / 2);
+                } else if (center.dx + width / 2 > xMax) {
+                  dx = xMax - (center.dx + width / 2);
                 }
                 final clampedCenter = center.translate(dx, 0);
 
-                var child = widget.builder(extent);
+                var child = widget.builder(scaledSize);
                 child = Stack(
                   children: [
                     Positioned(
-                      left: clampedCenter.dx - extent / 2,
-                      top: clampedCenter.dy - extent / 2,
+                      left: clampedCenter.dx - width / 2,
+                      top: clampedCenter.dy - height / 2,
                       child: DefaultTextStyle(
                         style: const TextStyle(),
                         child: child,
@@ -224,7 +229,7 @@ class _ScaleOverlayState extends State<ScaleOverlay> {
                     ),
                   ],
                 );
-                child = widget.gridBuilder(clampedCenter, extent, child);
+                child = widget.gridBuilder(clampedCenter, scaledSize, child);
                 return child;
               },
             ),
@@ -237,13 +242,14 @@ class _ScaleOverlayState extends State<ScaleOverlay> {
 
 class GridPainter extends CustomPainter {
   final Offset center;
-  final double extent, spacing, borderWidth;
+  final Size tileSize;
+  final double spacing, borderWidth;
   final Radius borderRadius;
   final Color color;
 
   const GridPainter({
     required this.center,
-    required this.extent,
+    required this.tileSize,
     required this.spacing,
     required this.borderWidth,
     required this.borderRadius,
@@ -252,12 +258,15 @@ class GridPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    final tileWidth = tileSize.width;
+    final tileHeight = tileSize.height;
+
     final strokePaint = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = borderWidth
       ..shader = ui.Gradient.radial(
         center,
-        extent * 2,
+        tileWidth * 2,
         [
           color,
           Colors.transparent,
@@ -271,17 +280,18 @@ class GridPainter extends CustomPainter {
       ..style = PaintingStyle.fill
       ..color = color.withOpacity(.25);
 
-    final delta = extent + spacing;
+    final deltaX = tileWidth + spacing;
+    final deltaY = tileHeight + spacing;
     for (var i = -2; i <= 2; i++) {
-      final dx = delta * i;
+      final dx = deltaX * i;
       for (var j = -2; j <= 2; j++) {
         if (i == 0 && j == 0) continue;
-        final dy = delta * j;
+        final dy = deltaY * j;
         final rect = RRect.fromRectAndRadius(
           Rect.fromCenter(
             center: center + Offset(dx, dy),
-            width: extent,
-            height: extent,
+            width: tileWidth,
+            height: tileHeight,
           ),
           borderRadius,
         );

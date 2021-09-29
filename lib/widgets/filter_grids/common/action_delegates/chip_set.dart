@@ -4,6 +4,7 @@ import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/selection.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums.dart';
 import 'package:aves/theme/durations.dart';
@@ -110,6 +111,12 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
     }
   }
 
+  Iterable<AvesEntry> _selectedEntries(BuildContext context, Set<dynamic> filters) {
+    final source = context.read<CollectionSource>();
+    final visibleEntries = source.visibleEntries;
+    return filters.isEmpty ? visibleEntries : visibleEntries.where((entry) => filters.any((f) => f.test(entry)));
+  }
+
   Future<void> _showSortDialog(BuildContext context) async {
     final factor = await showDialog<ChipSortFactor>(
       context: context,
@@ -131,30 +138,29 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
   }
 
   void _goToMap(BuildContext context, Set<T> filters) {
-    final source = context.read<CollectionSource>();
-    final entries = filters.isEmpty ? source.visibleEntries : source.visibleEntries.where((entry) => filters.any((f) => f.test(entry)));
     Navigator.push(
       context,
       MaterialPageRoute(
         settings: const RouteSettings(name: MapPage.routeName),
         builder: (context) => MapPage(
-          entries: entries.where((entry) => entry.hasGps).toList(),
+          collection: CollectionLens(
+            source: context.read<CollectionSource>(),
+            fixedSelection: _selectedEntries(context, filters).where((entry) => entry.hasGps).toList(),
+          ),
         ),
       ),
     );
   }
 
   void _goToStats(BuildContext context, Set<T> filters) {
-    final source = context.read<CollectionSource>();
-    final entries = filters.isEmpty ? source.visibleEntries : source.visibleEntries.where((entry) => filters.any((f) => f.test(entry)));
     Navigator.push(
       context,
       MaterialPageRoute(
         settings: const RouteSettings(name: StatsPage.routeName),
         builder: (context) {
           return StatsPage(
-            entries: entries.toSet(),
-            source: source,
+            entries: _selectedEntries(context, filters).toSet(),
+            source: context.read<CollectionSource>(),
           );
         },
       ),

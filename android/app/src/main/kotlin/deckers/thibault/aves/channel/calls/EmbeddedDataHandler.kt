@@ -27,8 +27,8 @@ import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.MimeTypes.extensionFor
 import deckers.thibault.aves.utils.MimeTypes.isImage
-import deckers.thibault.aves.utils.MimeTypes.isSupportedByExifInterface
-import deckers.thibault.aves.utils.MimeTypes.isSupportedByMetadataExtractor
+import deckers.thibault.aves.utils.MimeTypes.canReadWithExifInterface
+import deckers.thibault.aves.utils.MimeTypes.canReadWithMetadataExtractor
 import deckers.thibault.aves.utils.MimeTypes.isVideo
 import deckers.thibault.aves.utils.StorageUtils
 import io.flutter.plugin.common.MethodCall
@@ -62,7 +62,7 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
         }
 
         val thumbnails = ArrayList<ByteArray>()
-        if (isSupportedByExifInterface(mimeType)) {
+        if (canReadWithExifInterface(mimeType)) {
             try {
                 Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
                     @Suppress("BlockingMethodInNonBlockingContext")
@@ -150,7 +150,7 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
             return
         }
 
-        if (isSupportedByMetadataExtractor(mimeType)) {
+        if (canReadWithMetadataExtractor(mimeType)) {
             try {
                 Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
                     val metadata = ImageMetadataReader.readMetadata(input)
@@ -217,7 +217,7 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
                         result.success(resultFields)
                     }
 
-                    override fun onFailure(throwable: Throwable) = result.error("copyEmbeddedBytes-failure", "failed to get entry for uri=$uri mime=$mimeType", "${throwable.message}\n${throwable.stackTraceToString()}")
+                    override fun onFailure(throwable: Throwable) = result.error("copyEmbeddedBytes-failure", "failed to get entry for uri=$uri mime=$mimeType", throwable.message)
                 })
             }
         } else {

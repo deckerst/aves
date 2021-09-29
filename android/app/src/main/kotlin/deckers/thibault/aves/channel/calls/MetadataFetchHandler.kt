@@ -54,8 +54,8 @@ import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.MimeTypes.isHeic
 import deckers.thibault.aves.utils.MimeTypes.isImage
-import deckers.thibault.aves.utils.MimeTypes.isSupportedByExifInterface
-import deckers.thibault.aves.utils.MimeTypes.isSupportedByMetadataExtractor
+import deckers.thibault.aves.utils.MimeTypes.canReadWithExifInterface
+import deckers.thibault.aves.utils.MimeTypes.canReadWithMetadataExtractor
 import deckers.thibault.aves.utils.MimeTypes.isVideo
 import deckers.thibault.aves.utils.MimeTypes.tiffExtensionPattern
 import deckers.thibault.aves.utils.StorageUtils
@@ -70,7 +70,7 @@ import java.text.ParseException
 import java.util.*
 import kotlin.math.roundToLong
 
-class MetadataHandler(private val context: Context) : MethodCallHandler {
+class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
             "getAllMetadata" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getAllMetadata) }
@@ -97,7 +97,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
         var foundExif = false
         var foundXmp = false
 
-        if (isSupportedByMetadataExtractor(mimeType)) {
+        if (canReadWithMetadataExtractor(mimeType)) {
             try {
                 Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
                     val metadata = ImageMetadataReader.readMetadata(input)
@@ -225,7 +225,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
             }
         }
 
-        if (!foundExif && isSupportedByExifInterface(mimeType)) {
+        if (!foundExif && canReadWithExifInterface(mimeType)) {
             // fallback to read EXIF via ExifInterface
             try {
                 Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
@@ -337,7 +337,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
         var flags = (metadataMap[KEY_FLAGS] ?: 0) as Int
         var foundExif = false
 
-        if (isSupportedByMetadataExtractor(mimeType)) {
+        if (canReadWithMetadataExtractor(mimeType)) {
             try {
                 Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
                     val metadata = ImageMetadataReader.readMetadata(input)
@@ -480,7 +480,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
             }
         }
 
-        if (!foundExif && isSupportedByExifInterface(mimeType)) {
+        if (!foundExif && canReadWithExifInterface(mimeType)) {
             // fallback to read EXIF via ExifInterface
             try {
                 Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
@@ -584,7 +584,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
         }
 
         var foundExif = false
-        if (isSupportedByMetadataExtractor(mimeType)) {
+        if (canReadWithMetadataExtractor(mimeType)) {
             try {
                 Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
                     val metadata = ImageMetadataReader.readMetadata(input)
@@ -603,7 +603,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
             }
         }
 
-        if (!foundExif && isSupportedByExifInterface(mimeType)) {
+        if (!foundExif && canReadWithExifInterface(mimeType)) {
             // fallback to read EXIF via ExifInterface
             try {
                 Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
@@ -654,7 +654,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
             return
         }
 
-        if (isSupportedByMetadataExtractor(mimeType)) {
+        if (canReadWithMetadataExtractor(mimeType)) {
             try {
                 Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
                     val metadata = ImageMetadataReader.readMetadata(input)
@@ -755,8 +755,8 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
     }
 
     companion object {
-        private val LOG_TAG = LogUtils.createTag<MetadataHandler>()
-        const val CHANNEL = "deckers.thibault/aves/metadata"
+        private val LOG_TAG = LogUtils.createTag<MetadataFetchHandler>()
+        const val CHANNEL = "deckers.thibault/aves/metadata_fetch"
 
         private val allMetadataRedundantDirNames = setOf(
             "MP4",
