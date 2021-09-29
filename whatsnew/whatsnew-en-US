@@ -1,9 +1,8 @@
 Thanks for using Aves!
-v1.5.1:
-- fixed hanging app for collections with specific video formats
-- added bug reporting instructions
-v1.5.0:
+v1.5.2:
 - faster launch
-- edit Exif dates
-- customize quick actions when selecting pictures
+- UI changes for collection thumbnails and albums
+- accessibility support for settings "time to take action" and "remove animations"
+- open images and videos from the map
+- remove metadata from images
 Full changelog available on GitHub

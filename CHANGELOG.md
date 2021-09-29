@@ -2,10 +2,12 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+
+## [v1.5.2] - 2021-09-29
 ### Added
 - Map: show items for bounds, open items in viewer, tap gesture to toggle fullscreen
 - Info: remove metadata (Exif, XMP, etc.)
-- Accessibility: support "time to take action" settings
+- Accessibility: support "time to take action" and "remove animations" settings
 
 ### Changed
 - upgraded Flutter to stable v2.5.1
