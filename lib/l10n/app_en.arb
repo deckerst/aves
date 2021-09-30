@@ -688,8 +688,8 @@
 
   "settingsSectionViewer": "Viewer",
   "@settingsSectionViewer": {},
-  "settingsImageBackground": "Image background",
-  "@settingsImageBackground": {},
+  "settingsViewerShowOverlayOnOpening": "Show overlay on opening",
+  "@settingsViewerShowOverlayOnOpening": {},
   "settingsViewerShowMinimap": "Show minimap",
   "@settingsViewerShowMinimap": {},
   "settingsViewerShowInformation": "Show information",
@@ -702,6 +702,8 @@
   "@settingsViewerEnableOverlayBlurEffect": {},
   "settingsViewerUseCutout": "Use cutout area",
   "@settingsViewerUseCutout": {},
+  "settingsImageBackground": "Image background",
+  "@settingsImageBackground": {},
 
   "settingsViewerQuickActionsTile": "Quick actions",
   "@settingsViewerQuickActionsTile": {},

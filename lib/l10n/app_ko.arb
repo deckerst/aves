@@ -330,13 +330,14 @@
   "settingsCollectionSelectionQuickActionEditorBanner": "버튼을 길게 누른 후 이동하여 항목 선택할 때 표시될 버튼을 선택하세요.",
 
   "settingsSectionViewer": "뷰어",
-  "settingsImageBackground": "사진 배경",
+  "settingsViewerShowOverlayOnOpening": "열릴 때 오버레이 표시",
   "settingsViewerShowMinimap": "미니맵 표시",
   "settingsViewerShowInformation": "상세 정보 표시",
   "settingsViewerShowInformationSubtitle": "제목, 날짜, 장소 등 표시",
   "settingsViewerShowShootingDetails": "촬영 정보 표시",
   "settingsViewerEnableOverlayBlurEffect": "오버레이 흐림 효과",
   "settingsViewerUseCutout": "컷아웃 영역 사용",
+  "settingsImageBackground": "사진 배경",
 
   "settingsViewerQuickActionsTile": "빠른 작업",
   "settingsViewerQuickActionEditorTitle": "빠른 작업",

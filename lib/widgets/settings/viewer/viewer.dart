@@ -33,6 +33,14 @@ class ViewerSection extends StatelessWidget {
       children: [
         const ViewerActionsTile(),
         Selector<Settings, bool>(
+          selector: (context, s) => s.showOverlayOnOpening,
+          builder: (context, current, child) => SwitchListTile(
+            value: current,
+            onChanged: (v) => settings.showOverlayOnOpening = v,
+            title: Text(context.l10n.settingsViewerShowOverlayOnOpening),
+          ),
+        ),
+        Selector<Settings, bool>(
           selector: (context, s) => s.showOverlayMinimap,
           builder: (context, current, child) => SwitchListTile(
             value: current,
