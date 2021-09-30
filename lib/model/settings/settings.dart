@@ -73,6 +73,7 @@ class Settings extends ChangeNotifier {
 
   // viewer
   static const viewerQuickActionsKey = 'viewer_quick_actions';
+  static const showOverlayOnOpeningKey = 'show_overlay_on_opening';
   static const showOverlayMinimapKey = 'show_overlay_minimap';
   static const showOverlayInfoKey = 'show_overlay_info';
   static const showOverlayShootingDetailsKey = 'show_overlay_shooting_details';
@@ -295,6 +296,10 @@ class Settings extends ChangeNotifier {
   List<EntryAction> get viewerQuickActions => getEnumListOrDefault(viewerQuickActionsKey, SettingsDefaults.viewerQuickActions, EntryAction.values);
 
   set viewerQuickActions(List<EntryAction> newValue) => setAndNotify(viewerQuickActionsKey, newValue.map((v) => v.toString()).toList());
+
+  bool get showOverlayOnOpening => getBoolOrDefault(showOverlayOnOpeningKey, SettingsDefaults.showOverlayOnOpening);
+
+  set showOverlayOnOpening(bool newValue) => setAndNotify(showOverlayOnOpeningKey, newValue);
 
   bool get showOverlayMinimap => getBoolOrDefault(showOverlayMinimapKey, SettingsDefaults.showOverlayMinimap);
 
@@ -540,6 +545,7 @@ class Settings extends ChangeNotifier {
             case showThumbnailMotionPhotoKey:
             case showThumbnailRawKey:
             case showThumbnailVideoDurationKey:
+            case showOverlayOnOpeningKey:
             case showOverlayMinimapKey:
             case showOverlayInfoKey:
             case showOverlayShootingDetailsKey:

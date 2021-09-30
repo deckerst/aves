@@ -118,6 +118,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
       parent: _overlayAnimationController,
       curve: Curves.easeOutQuad,
     ));
+    _overlayVisible.value = settings.showOverlayOnOpening;
     _overlayVisible.addListener(_onOverlayVisibleChange);
     _videoActionDelegate = VideoActionDelegate(
       collection: collection,

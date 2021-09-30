@@ -54,6 +54,7 @@ class SettingsDefaults {
     EntryAction.share,
     EntryAction.rotateScreen,
   ];
+  static const showOverlayOnOpening = true;
   static const showOverlayMinimap = false;
   static const showOverlayInfo = true;
   static const showOverlayShootingDetails = false;
