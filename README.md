@@ -25,6 +25,8 @@ It scans your media collection to identify **motion photos**, **panoramas** (aka
 
 Aves integrates with Android (from **API 20 to 31**, i.e. from Lollipop to S) with features such as **app shortcuts** and **global search** handling. It also works as a **media viewer and picker**.
 
+<img src="https://raw.githubusercontent.com/deckerst/aves_extra/main/screenshots/S10/3-S10-info__basic_.png" alt='Info (basic) screenshot' height="400" /><img src="https://raw.githubusercontent.com/deckerst/aves_extra/main/screenshots/S10/4-S10-info__metadata_.png" alt='Info (metadata) screenshot' height="400" /><img src="https://raw.githubusercontent.com/deckerst/aves_extra/main/screenshots/S10/6-S10-countries.png" alt='Countries screenshot' height="400" />
+
 ## Permissions
 
 Aves requires a few permissions to do its job:

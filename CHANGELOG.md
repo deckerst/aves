@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
-## [v1.5.2] - 2021-09-29
+## [v1.5.3] - 2021-09-30
 ### Added
 - Map: show items for bounds, open items in viewer, tap gesture to toggle fullscreen
 - Info: remove metadata (Exif, XMP, etc.)
@@ -17,6 +17,8 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 - album bookmarks & pins were reset when rescanning items
+
+## [v1.5.2] - 2021-09-29 [YANKED]
 
 ## [v1.5.1] - 2021-09-08
 ### Added
