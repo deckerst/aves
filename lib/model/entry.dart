@@ -160,6 +160,7 @@ class AvesEntry {
 
   String? get path => _path;
 
+  // directory path, without the trailing separator
   String? get directory {
     _directory ??= path != null ? pContext.dirname(path!) : null;
     return _directory;
@@ -170,6 +171,7 @@ class AvesEntry {
     return _filename;
   }
 
+  // file extension, including the `.`
   String? get extension {
     _extension ??= path != null ? pContext.extension(path!) : null;
     return _extension;
