@@ -83,7 +83,7 @@ class _MultiEntryScrollerState extends State<MultiEntryScroller> with AutomaticK
   Widget _buildViewer(AvesEntry mainEntry, {AvesEntry? pageEntry}) {
     return EntryPageView(
       // key is expected by test driver
-      key: const Key('imageview'),
+      key: const Key('image_view'),
       mainEntry: mainEntry,
       pageEntry: pageEntry ?? mainEntry,
       onDisposed: () => widget.onViewDisposed(mainEntry, pageEntry),
