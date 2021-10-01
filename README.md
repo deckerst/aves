@@ -39,5 +39,8 @@ Aves requires a few permissions to do its job:
 
 Create a file named `<app dir>/android/key.properties`. It should contain a reference to a keystore for app signing, and other necessary credentials. See `<app dir>/android/key_template.properties` for the expected keys.
 
+## Donations
+Some users have expressed the wish to financially support the project. I haven't set up any sponsorship system, but you can send contributions [here](https://paypal.me/ThibaultDeckers). Thanks! ❤️
+
 [Version badge]: https://img.shields.io/github/v/release/deckerst/aves?include_prereleases&sort=semver
 [Build badge]: https://img.shields.io/github/workflow/status/deckerst/aves/Quality%20check
