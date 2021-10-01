@@ -207,6 +207,8 @@ class _MapPageContentState extends State<MapPageContent> with SingleTickerProvid
       navigationButton: MapNavigationButton.back,
       scale: _overlayScale,
       child: GeoMap(
+        // key is expected by test driver
+        key: const Key('map_view'),
         controller: _mapController,
         entries: entries,
         initialEntry: widget.initialEntry,

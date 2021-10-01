@@ -200,17 +200,8 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
                 final otherViewEnabled = (!isSelecting && hasItems) || (isSelecting && hasSelection);
 
                 return [
-                  _toMenuItem(
-                    EntrySetAction.sort,
-                    // key is expected by test driver
-                    key: const Key('menu-sort'),
-                  ),
-                  if (groupable)
-                    _toMenuItem(
-                      EntrySetAction.group,
-                      // key is expected by test driver
-                      key: const Key('menu-group'),
-                    ),
+                  _toMenuItem(EntrySetAction.sort),
+                  if (groupable) _toMenuItem(EntrySetAction.group),
                   if (appMode == AppMode.main) ...[
                     if (!isSelecting)
                       _toMenuItem(
@@ -254,9 +245,10 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     ];
   }
 
-  PopupMenuItem<EntrySetAction> _toMenuItem(EntrySetAction action, {Key? key, bool enabled = true}) {
+  PopupMenuItem<EntrySetAction> _toMenuItem(EntrySetAction action, {bool enabled = true}) {
     return PopupMenuItem(
-      key: key,
+      // key is expected by test driver (e.g. 'menu-sort', 'menu-group', 'menu-map')
+      key: Key('menu-${action.toString().substring('EntrySetAction.'.length)}'),
       value: action,
       enabled: enabled,
       child: MenuRow(text: action.getText(context), icon: action.getIcon()),
