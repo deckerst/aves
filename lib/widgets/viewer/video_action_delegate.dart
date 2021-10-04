@@ -5,6 +5,7 @@ import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/highlight.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/services/common/services.dart';
+import 'package:aves/services/media/enums.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
@@ -91,6 +92,7 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       exif: exif,
       bytes: bytes,
       destinationAlbum: destinationAlbum,
+      nameConflictStrategy: NameConflictStrategy.rename,
     );
     final success = newFields.isNotEmpty;
 

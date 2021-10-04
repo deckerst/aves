@@ -13,6 +13,7 @@ import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/android_app_service.dart';
 import 'package:aves/services/common/image_op_events.dart';
 import 'package:aves/services/common/services.dart';
+import 'package:aves/services/media/enums.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
@@ -208,6 +209,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         selection,
         mimeType: MimeTypes.jpeg,
         destinationAlbum: destinationAlbum,
+        nameConflictStrategy: NameConflictStrategy.rename,
       ),
       itemCount: selectionCount,
       onDone: (processed) {

@@ -193,6 +193,13 @@
   "mapStyleStamenWatercolor": "Stamen Watercolor",
   "@mapStyleStamenWatercolor": {},
 
+  "nameConflictStrategyRename": "Rename",
+  "@nameConflictStrategyRename": {},
+  "nameConflictStrategyReplace": "Replace",
+  "@nameConflictStrategyReplace": {},
+  "nameConflictStrategySkip": "Skip",
+  "@nameConflictStrategySkip": {},
+
   "keepScreenOnNever": "Never",
   "@keepScreenOnNever": {},
   "keepScreenOnViewerOnly": "Viewer page only",
@@ -272,6 +279,11 @@
       }
     }
   },
+
+  "nameConflictDialogSingleSourceMessage": "Some files in the destination folder have the same name.",
+  "@nameConflictDialogSingleSourceMessage": {},
+  "nameConflictDialogMultipleSourceMessage": "Some files have the same name.",
+  "@nameConflictDialogMultipleSourceMessage": {},
 
   "addShortcutDialogLabel": "Shortcut label",
   "@addShortcutDialogLabel": {},

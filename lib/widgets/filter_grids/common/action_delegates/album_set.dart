@@ -10,6 +10,7 @@ import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums.dart';
 import 'package:aves/services/common/image_op_events.dart';
 import 'package:aves/services/common/services.dart';
+import 'package:aves/services/media/enums.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -226,7 +227,13 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> {
     source.pauseMonitoring();
     showOpReport<MoveOpEvent>(
       context: context,
-      opStream: mediaFileService.move(todoEntries, copy: false, destinationAlbum: destinationAlbum),
+      opStream: mediaFileService.move(
+        todoEntries,
+        copy: false,
+        destinationAlbum: destinationAlbum,
+        // there should be no file conflict, as the target directory itself does not exist
+        nameConflictStrategy: NameConflictStrategy.rename,
+      ),
       itemCount: todoCount,
       onDone: (processed) async {
         final movedOps = processed.where((e) => e.success).toSet();
