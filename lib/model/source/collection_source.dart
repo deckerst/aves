@@ -215,6 +215,8 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
             uri: newFields['uri'] as String?,
             path: newFields['path'] as String?,
             contentId: newFields['contentId'] as int?,
+            // title can change when moved files are automatically renamed to avoid conflict
+            title: newFields['title'] as String?,
             dateModifiedSecs: newFields['dateModifiedSecs'] as int?,
           ));
         }

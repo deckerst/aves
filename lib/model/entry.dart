@@ -76,6 +76,7 @@ class AvesEntry {
     String? uri,
     String? path,
     int? contentId,
+    String? title,
     int? dateModifiedSecs,
     List<AvesEntry>? burstEntries,
   }) {
@@ -90,7 +91,7 @@ class AvesEntry {
       height: height,
       sourceRotationDegrees: sourceRotationDegrees,
       sizeBytes: sizeBytes,
-      sourceTitle: sourceTitle,
+      sourceTitle: title ?? sourceTitle,
       dateModifiedSecs: dateModifiedSecs ?? this.dateModifiedSecs,
       sourceDateTakenMillis: sourceDateTakenMillis,
       durationMillis: durationMillis,

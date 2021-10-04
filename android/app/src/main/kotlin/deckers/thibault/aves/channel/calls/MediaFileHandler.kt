@@ -11,6 +11,7 @@ import deckers.thibault.aves.channel.calls.fetchers.SvgRegionFetcher
 import deckers.thibault.aves.channel.calls.fetchers.ThumbnailFetcher
 import deckers.thibault.aves.channel.calls.fetchers.TiffRegionFetcher
 import deckers.thibault.aves.model.FieldMap
+import deckers.thibault.aves.model.NameConflictStrategy
 import deckers.thibault.aves.model.provider.ImageProvider.ImageOpCallback
 import deckers.thibault.aves.model.provider.ImageProviderFactory.getProvider
 import deckers.thibault.aves.utils.MimeTypes
@@ -144,7 +145,8 @@ class MediaFileHandler(private val activity: Activity) : MethodCallHandler {
         val exifFields = call.argument<FieldMap>("exif") ?: HashMap()
         val bytes = call.argument<ByteArray>("bytes")
         var destinationDir = call.argument<String>("destinationPath")
-        if (uri == null || desiredName == null || bytes == null || destinationDir == null) {
+        val nameConflictStrategy = NameConflictStrategy.get(call.argument<String>("nameConflictStrategy"))
+        if (uri == null || desiredName == null || bytes == null || destinationDir == null || nameConflictStrategy == null) {
             result.error("captureFrame-args", "failed because of missing arguments", null)
             return
         }
@@ -156,7 +158,7 @@ class MediaFileHandler(private val activity: Activity) : MethodCallHandler {
         }
 
         destinationDir = ensureTrailingSeparator(destinationDir)
-        provider.captureFrame(activity, desiredName, exifFields, bytes, destinationDir, object : ImageOpCallback {
+        provider.captureFrame(activity, desiredName, exifFields, bytes, destinationDir, nameConflictStrategy, object : ImageOpCallback {
             override fun onSuccess(fields: FieldMap) = result.success(fields)
             override fun onFailure(throwable: Throwable) = result.error("captureFrame-failure", "failed to capture frame for uri=$uri", throwable.message)
         })

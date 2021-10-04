@@ -97,6 +97,10 @@
   "mapStyleStamenToner": "Stamen 토너",
   "mapStyleStamenWatercolor": "Stamen 수채화",
 
+  "nameConflictStrategyRename": "이름 변경",
+  "nameConflictStrategyReplace": "대체",
+  "nameConflictStrategySkip": "건너뛰기",
+
   "keepScreenOnNever": "자동 꺼짐",
   "keepScreenOnViewerOnly": "뷰어 이용 시 작동",
   "keepScreenOnAlways": "항상 켜짐",
@@ -120,6 +124,9 @@
   "restrictedAccessDialogMessage": "“{volume}”의 {directory}에 있는 파일의 접근이 제한됩니다.\n\n기본으로 설치된 갤러리나 파일 관리 앱을 사용해서 다른 폴더로 파일을 이동하세요.",
   "notEnoughSpaceDialogTitle": "저장공간 부족",
   "notEnoughSpaceDialogMessage": "“{volume}”에 필요 공간은 {neededSize}인데 사용 가능한 용량은 {freeSize}만 남아있습니다.",
+
+  "nameConflictDialogSingleSourceMessage": "이동할 폴더에 이름이 같은 파일이 있습니다.",
+  "nameConflictDialogMultipleSourceMessage": "이름이 같은 파일이 있습니다.",
 
   "addShortcutDialogLabel": "바로가기 라벨",
   "addShortcutButtonLabel": "추가",

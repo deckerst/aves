@@ -14,6 +14,7 @@ import com.commonsware.cwac.document.DocumentFileCompat
 import deckers.thibault.aves.MainActivity.Companion.DELETE_PERMISSION_REQUEST
 import deckers.thibault.aves.model.AvesEntry
 import deckers.thibault.aves.model.FieldMap
+import deckers.thibault.aves.model.NameConflictStrategy
 import deckers.thibault.aves.model.SourceEntry
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
@@ -270,6 +271,7 @@ class MediaStoreImageProvider : ImageProvider() {
         activity: Activity,
         copy: Boolean,
         destinationDir: String,
+        nameConflictStrategy: NameConflictStrategy,
         entries: List<AvesEntry>,
         callback: ImageOpCallback,
     ) {
@@ -306,7 +308,14 @@ class MediaStoreImageProvider : ImageProvider() {
                 // - the Media Store only allows inserting in specific primary directories ("DCIM", "Pictures") when using scoped storage
                 try {
                     val newFields = moveSingleByTreeDocAndScan(
-                        activity, sourcePath, sourceUri, destinationDir, destinationDirDocFile, mimeType, copy,
+                        activity = activity,
+                        sourcePath = sourcePath,
+                        sourceUri = sourceUri,
+                        destinationDir = destinationDir,
+                        destinationDirDocFile = destinationDirDocFile,
+                        nameConflictStrategy = nameConflictStrategy,
+                        mimeType = mimeType,
+                        copy = copy,
                     )
                     result["newFields"] = newFields
                     result["success"] = true
@@ -324,6 +333,7 @@ class MediaStoreImageProvider : ImageProvider() {
         sourceUri: Uri,
         destinationDir: String,
         destinationDirDocFile: DocumentFileCompat,
+        nameConflictStrategy: NameConflictStrategy,
         mimeType: String,
         copy: Boolean,
     ): FieldMap {
@@ -336,17 +346,20 @@ class MediaStoreImageProvider : ImageProvider() {
 
         val sourceFileName = sourceFile.name
         val desiredNameWithoutExtension = sourceFileName.replaceFirst("[.][^.]+$".toRegex(), "")
-
-        if (File(destinationDir, sourceFileName).exists()) {
-            throw Exception("file with name=$sourceFileName already exists in destination directory")
-        }
+        val targetNameWithoutExtension = resolveTargetFileNameWithoutExtension(
+            activity = activity,
+            dir = destinationDir,
+            desiredNameWithoutExtension = desiredNameWithoutExtension,
+            extension = MimeTypes.extensionFor(mimeType),
+            conflictStrategy = nameConflictStrategy,
+        ) ?: return skippedFieldMap
 
         // the file created from a `TreeDocumentFile` is also a `TreeDocumentFile`
         // but in order to open an output stream to it, we need to use a `SingleDocumentFile`
         // through a document URI, not a tree URI
         // note that `DocumentFile.getParentFile()` returns null if we did not pick a tree first
         @Suppress("BlockingMethodInNonBlockingContext")
-        val destinationTreeFile = destinationDirDocFile.createFile(mimeType, desiredNameWithoutExtension)
+        val destinationTreeFile = destinationDirDocFile.createFile(mimeType, targetNameWithoutExtension)
         val destinationDocFile = DocumentFileCompat.fromSingleUri(activity, destinationTreeFile.uri)
 
         // `DocumentsContract.moveDocument()` needs `sourceParentDocumentUri`, which could be different for each entry
@@ -445,9 +458,9 @@ class MediaStoreImageProvider : ImageProvider() {
                 val contentId = newUri.tryParseId()
                 if (contentId != null) {
                     if (isImage(mimeType)) {
-                        contentUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentId)
+                        contentUri = ContentUris.withAppendedId(IMAGE_CONTENT_URI, contentId)
                     } else if (isVideo(mimeType)) {
-                        contentUri = ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, contentId)
+                        contentUri = ContentUris.withAppendedId(VIDEO_CONTENT_URI, contentId)
                     }
                 }
 
@@ -461,6 +474,29 @@ class MediaStoreImageProvider : ImageProvider() {
                 }
             }
         }
+
+    fun getContentUriForPath(context: Context, path: String): Uri? {
+        val projection = arrayOf(MediaStore.MediaColumns._ID)
+        val selection = "${MediaColumns.PATH} = ?"
+        val selectionArgs = arrayOf(path)
+
+        fun check(context: Context, contentUri: Uri): Uri? {
+            var mediaContentUri: Uri? = null
+            try {
+                val cursor = context.contentResolver.query(contentUri, projection, selection, selectionArgs, null)
+                if (cursor != null && cursor.moveToFirst()) {
+                    cursor.getColumnIndex(MediaStore.MediaColumns._ID).let {
+                        if (it != -1) mediaContentUri = ContentUris.withAppendedId(contentUri, cursor.getLong(it))
+                    }
+                    cursor.close()
+                }
+            } catch (e: Exception) {
+                Log.e(LOG_TAG, "failed to get URI for contentUri=$contentUri path=$path", e)
+            }
+            return mediaContentUri
+        }
+        return check(context, IMAGE_CONTENT_URI) ?: check(context, VIDEO_CONTENT_URI)
+    }
 
     companion object {
         private val LOG_TAG = LogUtils.createTag<MediaStoreImageProvider>()

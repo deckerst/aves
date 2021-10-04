@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:aves/model/actions/entry_set_actions.dart';
 import 'package:aves/model/actions/move_type.dart';
@@ -11,6 +12,7 @@ import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/android_app_service.dart';
 import 'package:aves/services/common/image_op_events.dart';
 import 'package:aves/services/common/services.dart';
+import 'package:aves/services/media/enums.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
@@ -19,6 +21,7 @@ import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
 import 'package:aves/widgets/common/action_mixins/size_aware.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
+import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
 import 'package:aves/widgets/filter_grids/album_pick.dart';
 import 'package:aves/widgets/map/map_page.dart';
 import 'package:aves/widgets/stats/stats_page.dart';
@@ -78,6 +81,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
   }
 
   Future<void> _moveSelection(BuildContext context, {required MoveType moveType}) async {
+    final l10n = context.l10n;
     final source = context.read<CollectionSource>();
     final selection = context.read<Selection<AvesEntry>>();
     final selectedItems = _getExpandedSelectedItems(selection);
@@ -119,13 +123,44 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     final todoCount = todoEntries.length;
     assert(todoCount > 0);
 
+    final destinationDirectory = Directory(destinationAlbum);
+    final names = [
+      ...todoEntries.map((v) => '${v.filenameWithoutExtension}${v.extension}'),
+      // do not guard up front based on directory existence,
+      // as conflicts could be within moved entries scattered across multiple albums
+      if (await destinationDirectory.exists()) ...destinationDirectory.listSync().map((v) => pContext.basename(v.path)),
+    ];
+    final uniqueNames = names.toSet();
+    var nameConflictStrategy = NameConflictStrategy.rename;
+    if (uniqueNames.length < names.length) {
+      final value = await showDialog<NameConflictStrategy>(
+        context: context,
+        builder: (context) {
+          return AvesSelectionDialog<NameConflictStrategy>(
+            initialValue: nameConflictStrategy,
+            options: Map.fromEntries(NameConflictStrategy.values.map((v) => MapEntry(v, v.getName(context)))),
+            message: selectionDirs.length == 1 ? l10n.nameConflictDialogSingleSourceMessage : l10n.nameConflictDialogMultipleSourceMessage,
+            confirmationButtonLabel: l10n.continueButtonLabel,
+          );
+        },
+      );
+      if (value == null) return;
+      nameConflictStrategy = value;
+    }
+
     source.pauseMonitoring();
     showOpReport<MoveOpEvent>(
       context: context,
-      opStream: mediaFileService.move(todoEntries, copy: copy, destinationAlbum: destinationAlbum),
+      opStream: mediaFileService.move(
+        todoEntries,
+        copy: copy,
+        destinationAlbum: destinationAlbum,
+        nameConflictStrategy: nameConflictStrategy,
+      ),
       itemCount: todoCount,
       onDone: (processed) async {
-        final movedOps = processed.where((e) => e.success).toSet();
+        final successOps = processed.where((e) => e.success).toSet();
+        final movedOps = successOps.where((e) => !e.newFields.containsKey('skipped')).toSet();
         await source.updateAfterMove(
           todoEntries: todoEntries,
           copy: copy,
@@ -140,50 +175,51 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
           await storageService.deleteEmptyDirectories(selectionDirs);
         }
 
-        final l10n = context.l10n;
-        final movedCount = movedOps.length;
-        if (movedCount < todoCount) {
-          final count = todoCount - movedCount;
+        final successCount = successOps.length;
+        if (successCount < todoCount) {
+          final count = todoCount - successCount;
           showFeedback(context, copy ? l10n.collectionCopyFailureFeedback(count) : l10n.collectionMoveFailureFeedback(count));
         } else {
-          final count = movedCount;
+          final count = movedOps.length;
           showFeedback(
             context,
             copy ? l10n.collectionCopySuccessFeedback(count) : l10n.collectionMoveSuccessFeedback(count),
-            SnackBarAction(
-              label: context.l10n.showButtonLabel,
-              onPressed: () async {
-                final highlightInfo = context.read<HighlightInfo>();
-                final collection = context.read<CollectionLens>();
-                var targetCollection = collection;
-                if (collection.filters.any((f) => f is AlbumFilter)) {
-                  final filter = AlbumFilter(destinationAlbum, source.getAlbumDisplayName(context, destinationAlbum));
-                  // we could simply add the filter to the current collection
-                  // but navigating makes the change less jarring
-                  targetCollection = CollectionLens(
-                    source: collection.source,
-                    filters: collection.filters,
-                  )..addFilter(filter);
-                  unawaited(Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      settings: const RouteSettings(name: CollectionPage.routeName),
-                      builder: (context) => CollectionPage(
-                        collection: targetCollection,
-                      ),
-                    ),
-                  ));
-                  final delayDuration = context.read<DurationsData>().staggeredAnimationPageTarget;
-                  await Future.delayed(delayDuration);
-                }
-                await Future.delayed(Durations.highlightScrollInitDelay);
-                final newUris = movedOps.map((v) => v.newFields['uri'] as String?).toSet();
-                final targetEntry = targetCollection.sortedEntries.firstWhereOrNull((entry) => newUris.contains(entry.uri));
-                if (targetEntry != null) {
-                  highlightInfo.trackItem(targetEntry, highlightItem: targetEntry);
-                }
-              },
-            ),
+            count > 0
+                ? SnackBarAction(
+                    label: l10n.showButtonLabel,
+                    onPressed: () async {
+                      final highlightInfo = context.read<HighlightInfo>();
+                      final collection = context.read<CollectionLens>();
+                      var targetCollection = collection;
+                      if (collection.filters.any((f) => f is AlbumFilter)) {
+                        final filter = AlbumFilter(destinationAlbum, source.getAlbumDisplayName(context, destinationAlbum));
+                        // we could simply add the filter to the current collection
+                        // but navigating makes the change less jarring
+                        targetCollection = CollectionLens(
+                          source: collection.source,
+                          filters: collection.filters,
+                        )..addFilter(filter);
+                        unawaited(Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            settings: const RouteSettings(name: CollectionPage.routeName),
+                            builder: (context) => CollectionPage(
+                              collection: targetCollection,
+                            ),
+                          ),
+                        ));
+                        final delayDuration = context.read<DurationsData>().staggeredAnimationPageTarget;
+                        await Future.delayed(delayDuration);
+                      }
+                      await Future.delayed(Durations.highlightScrollInitDelay);
+                      final newUris = movedOps.map((v) => v.newFields['uri'] as String?).toSet();
+                      final targetEntry = targetCollection.sortedEntries.firstWhereOrNull((entry) => newUris.contains(entry.uri));
+                      if (targetEntry != null) {
+                        highlightInfo.trackItem(targetEntry, highlightItem: targetEntry);
+                      }
+                    },
+                  )
+                : null,
           );
         }
       },

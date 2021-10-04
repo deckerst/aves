@@ -7,6 +7,7 @@ import android.os.Looper
 import android.util.Log
 import deckers.thibault.aves.model.AvesEntry
 import deckers.thibault.aves.model.FieldMap
+import deckers.thibault.aves.model.NameConflictStrategy
 import deckers.thibault.aves.model.provider.ImageProvider.ImageOpCallback
 import deckers.thibault.aves.model.provider.ImageProviderFactory.getProvider
 import deckers.thibault.aves.utils.LogUtils
@@ -123,7 +124,8 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
 
         var destinationDir = arguments["destinationPath"] as String?
         val mimeType = arguments["mimeType"] as String?
-        if (destinationDir == null || mimeType == null) {
+        val nameConflictStrategy = NameConflictStrategy.get(arguments["nameConflictStrategy"] as String?)
+        if (destinationDir == null || mimeType == null || nameConflictStrategy == null) {
             error("export-args", "failed because of missing arguments", null)
             return
         }
@@ -138,7 +140,7 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
 
         destinationDir = StorageUtils.ensureTrailingSeparator(destinationDir)
         val entries = entryMapList.map(::AvesEntry)
-        provider.exportMultiple(activity, mimeType, destinationDir, entries, object : ImageOpCallback {
+        provider.exportMultiple(activity, mimeType, destinationDir, entries, nameConflictStrategy, object : ImageOpCallback {
             override fun onSuccess(fields: FieldMap) = success(fields)
             override fun onFailure(throwable: Throwable) = error("export-failure", "failed to export entries", throwable)
         })
@@ -153,7 +155,8 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
 
         val copy = arguments["copy"] as Boolean?
         var destinationDir = arguments["destinationPath"] as String?
-        if (copy == null || destinationDir == null) {
+        val nameConflictStrategy = NameConflictStrategy.get(arguments["nameConflictStrategy"] as String?)
+        if (copy == null || destinationDir == null || nameConflictStrategy == null) {
             error("move-args", "failed because of missing arguments", null)
             return
         }
@@ -168,7 +171,7 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
 
         destinationDir = StorageUtils.ensureTrailingSeparator(destinationDir)
         val entries = entryMapList.map(::AvesEntry)
-        provider.moveMultiple(activity, copy, destinationDir, entries, object : ImageOpCallback {
+        provider.moveMultiple(activity, copy, destinationDir, nameConflictStrategy, entries, object : ImageOpCallback {
             override fun onSuccess(fields: FieldMap) = success(fields)
             override fun onFailure(throwable: Throwable) = error("move-failure", "failed to move entries", throwable)
         })
