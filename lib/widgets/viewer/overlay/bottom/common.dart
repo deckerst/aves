@@ -11,6 +11,7 @@ import 'package:aves/theme/format.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/common/extensions/media_query.dart';
 import 'package:aves/widgets/common/fx/blurred.dart';
 import 'package:aves/widgets/viewer/multipage/controller.dart';
 import 'package:aves/widgets/viewer/overlay/bottom/multipage.dart';
@@ -92,14 +93,20 @@ class _ViewerBottomOverlayState extends State<ViewerBottomOverlay> {
           final viewPadding = widget.viewPadding ?? mqViewPadding;
           final availableWidth = mqWidth - viewPadding.horizontal;
 
-          return Container(
-            color: hasEdgeContent ? overlayBackgroundColor(blurred: blurred) : Colors.transparent,
-            padding: EdgeInsets.only(
-              left: max(viewInsets.left, viewPadding.left),
-              top: 0,
-              right: max(viewInsets.right, viewPadding.right),
-              bottom: max(viewInsets.bottom, viewPadding.bottom),
-            ),
+          return Selector<MediaQueryData, double>(
+            selector: (context, mq) => max(mq.effectiveBottomPadding, mq.systemGestureInsets.bottom),
+            builder: (context, mqPaddingBottom, child) {
+              return Container(
+                color: hasEdgeContent ? overlayBackgroundColor(blurred: blurred) : Colors.transparent,
+                padding: EdgeInsets.only(
+                  left: max(viewInsets.left, viewPadding.left),
+                  top: 0,
+                  right: max(viewInsets.right, viewPadding.right),
+                  bottom: mqPaddingBottom,
+                ),
+                child: child,
+              );
+            },
             child: FutureBuilder<OverlayMetadata?>(
               future: _detailLoader,
               builder: (context, snapshot) {
