@@ -1,7 +1,7 @@
 package deckers.thibault.aves.model
 
 enum class NameConflictStrategy {
-    SKIP, REPLACE, RENAME;
+    RENAME, REPLACE, SKIP;
 
     companion object {
         fun get(name: String?): NameConflictStrategy? {
