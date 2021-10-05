@@ -248,7 +248,7 @@ class _MapPageContentState extends State<MapPageContent> with SingleTickerProvid
                   return ThumbnailScroller(
                     availableWidth: mqWidth,
                     entryCount: regionEntries.length,
-                    entryBuilder: (index) => regionEntries[index],
+                    entryBuilder: (index) => index < regionEntries.length ? regionEntries[index] : null,
                     indexNotifier: _selectedIndexNotifier,
                     onTap: _onThumbnailTap,
                     heroTagger: (entry) => Object.hashAll([regionCollection?.id, entry.uri]),

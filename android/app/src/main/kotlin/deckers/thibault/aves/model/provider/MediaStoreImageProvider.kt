@@ -339,9 +339,9 @@ class MediaStoreImageProvider : ImageProvider() {
     ): FieldMap {
         val sourceFile = File(sourcePath)
         val sourceDir = sourceFile.parent?.let { ensureTrailingSeparator(it) }
-        if (sourceDir == destinationDir) {
-            if (copy) throw Exception("file at path=$sourcePath is already in destination directory")
-            return HashMap<String, Any?>()
+        if (sourceDir == destinationDir && !(copy && nameConflictStrategy == NameConflictStrategy.RENAME)) {
+            // nothing to do unless it's a renamed copy
+            return skippedFieldMap
         }
 
         val sourceFileName = sourceFile.name
