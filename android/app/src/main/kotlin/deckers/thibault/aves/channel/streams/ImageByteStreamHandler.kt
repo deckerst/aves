@@ -109,7 +109,7 @@ class ImageByteStreamHandler(private val activity: Activity, private val argumen
     private fun streamImageAsIs(uri: Uri, mimeType: String) {
         try {
             StorageUtils.openInputStream(activity, uri)?.use { input -> streamBytes(input) }
-        } catch (e: IOException) {
+        } catch (e: Exception) {
             error("streamImage-image-read-exception", "failed to get image for mimeType=$mimeType uri=$uri", e.message)
         }
     }
