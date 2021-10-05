@@ -72,6 +72,7 @@ class _HomePageState extends State<HomePage> {
     final intentData = widget.intentData ?? await ViewerService.getIntentData();
     if (intentData.isNotEmpty) {
       final action = intentData['action'];
+      await reportService.log('Intent action=$action');
       switch (action) {
         case 'view':
           _viewerEntry = await _initViewerEntry(

@@ -448,10 +448,9 @@ object StorageUtils {
         val effectiveUri = getOriginalUri(context, uri)
         return try {
             context.contentResolver.openInputStream(effectiveUri)
-        } catch (e: FileNotFoundException) {
-            Log.w(LOG_TAG, "failed to find file at uri=$effectiveUri")
-            null
-        } catch (e: SecurityException) {
+        } catch (e: Exception) {
+            // among various other exceptions,
+            // opening a file marked pending and owned by another package throws an `IllegalStateException`
             Log.w(LOG_TAG, "failed to open file at uri=$effectiveUri", e)
             null
         }
