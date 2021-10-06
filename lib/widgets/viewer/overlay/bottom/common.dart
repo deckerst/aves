@@ -78,7 +78,8 @@ class _ViewerBottomOverlayState extends State<ViewerBottomOverlay> {
 
   @override
   Widget build(BuildContext context) {
-    final hasEdgeContent = settings.showOverlayInfo || multiPageController != null;
+    final showOverlayInfo = settings.showOverlayInfo;
+    final hasEdgeContent = showOverlayInfo || multiPageController != null;
     final blurred = settings.enableOverlayBlurEffect;
     return BlurredRect(
       enabled: hasEdgeContent && blurred,
@@ -94,7 +95,7 @@ class _ViewerBottomOverlayState extends State<ViewerBottomOverlay> {
           final availableWidth = mqWidth - viewPadding.horizontal;
 
           return Selector<MediaQueryData, double>(
-            selector: (context, mq) => max(mq.effectiveBottomPadding, mq.systemGestureInsets.bottom),
+            selector: (context, mq) => max(mq.effectiveBottomPadding, showOverlayInfo ? 0 : mq.systemGestureInsets.bottom),
             builder: (context, mqPaddingBottom, child) {
               return Container(
                 color: hasEdgeContent ? overlayBackgroundColor(blurred: blurred) : Colors.transparent,
