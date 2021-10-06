@@ -13,6 +13,7 @@ class TransitionImage extends StatefulWidget {
   final double? width, height;
   final ValueListenable<double> animation;
   final bool gaplessPlayback = false;
+  final Color? background;
 
   const TransitionImage({
     Key? key,
@@ -20,6 +21,7 @@ class TransitionImage extends StatefulWidget {
     required this.animation,
     this.width,
     this.height,
+    this.background,
   }) : super(key: key);
 
   @override
@@ -136,10 +138,10 @@ class _TransitionImageState extends State<TransitionImage> {
       valueListenable: widget.animation,
       builder: (context, t, child) => CustomPaint(
         painter: _TransitionImagePainter(
-          // AssetImage(name).resolve(configuration)
           image: _imageInfo?.image,
           scale: _imageInfo?.scale ?? 1.0,
           t: t,
+          background: widget.background,
         ),
       ),
     );
@@ -150,11 +152,13 @@ class _TransitionImagePainter extends CustomPainter {
   final ui.Image? image;
   final double scale;
   final double t;
+  final Color? background;
 
   const _TransitionImagePainter({
     required this.image,
     required this.scale,
     required this.t,
+    this.background,
   });
 
   @override
@@ -185,6 +189,9 @@ class _TransitionImagePainter extends CustomPainter {
       sourceSize,
       Offset.zero & inputSize,
     );
+    if (background != null) {
+      canvas.drawRect(destinationRect, Paint()..color = background!);
+    }
     canvas.drawImageRect(image!, sourceRect, destinationRect, paint);
   }
 

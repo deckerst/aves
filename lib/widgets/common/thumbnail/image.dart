@@ -232,12 +232,15 @@ class _ThumbnailImageState extends State<ThumbnailImage> {
           );
 
     if (animate && widget.heroTag != null) {
+      final background = settings.imageBackground;
+      final backgroundColor = background.isColor? background.color : null;
       image = Hero(
         tag: widget.heroTag!,
         flightShuttleBuilder: (flight, animation, direction, fromHero, toHero) {
           return TransitionImage(
             image: entry.bestCachedThumbnail,
             animation: animation,
+            background: backgroundColor,
           );
         },
         transitionOnUserGestures: true,
