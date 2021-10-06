@@ -151,6 +151,7 @@ class _EntryLeafletMapState extends State<EntryLeafletMap> with TickerProviderSt
       options: MapOptions(
         center: bounds.center,
         zoom: bounds.zoom,
+        rotation: bounds.rotation,
         minZoom: widget.minZoom,
         maxZoom: widget.maxZoom,
         // TODO TLAD [map] as of flutter_map v0.14.0, `doubleTapZoom` does not move when zoom is already maximal

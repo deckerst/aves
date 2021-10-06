@@ -171,13 +171,14 @@ class _EntryGoogleMapState extends State<EntryGoogleMap> with WidgetsBindingObse
             builder: (context, dotEntry, child) {
               return GoogleMap(
                 initialCameraPosition: CameraPosition(
+                  bearing: -bounds.rotation,
                   target: _toGoogleLatLng(bounds.center),
                   zoom: bounds.zoom,
                 ),
                 onMapCreated: (controller) async {
                   _googleMapController = controller;
                   final zoom = await controller.getZoomLevel();
-                  await _updateVisibleRegion(zoom: zoom, rotation: 0);
+                  await _updateVisibleRegion(zoom: zoom, rotation: bounds.rotation);
                   setState(() {});
                 },
                 // compass disabled to use provider agnostic controls
