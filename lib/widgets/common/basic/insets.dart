@@ -21,7 +21,11 @@ class BottomGestureAreaProtector extends StatelessWidget {
           right: 0,
           bottom: 0,
           height: systemGestureBottom,
-          child: const AbsorbPointer(),
+          child: GestureDetector(
+            // absorb vertical gestures only
+            onVerticalDragDown: (details) {},
+            behavior: HitTestBehavior.translucent,
+          ),
         );
       },
     );
