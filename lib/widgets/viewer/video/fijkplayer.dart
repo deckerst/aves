@@ -32,7 +32,7 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
   @override
   final double minSpeed = .5;
 
-  // android.media.AudioTrack fails with speed > 2
+  // ijkplayer configures `AudioTrack` buffer for a maximum speed of 2
   @override
   final double maxSpeed = 2;
 
@@ -178,7 +178,10 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
 
     // `soundtouch`: enable SoundTouch
     // default: 0, in [0, 1]
-    // slowed down videos with SoundTouch enabled have a weird wobbly audio
+    // `SoundTouch` cannot be enabled/disabled after video is `prepared`
+    // When `SoundTouch` is enabled:
+    // - slowed down videos have a weird wobbly audio
+    // - we can set speeds higher than the `AudioTrack` limit of 2
     options.setPlayerOption('soundtouch', 0);
 
     // `subtitle`: decode subtitle stream
