@@ -82,6 +82,7 @@ class SettingsDefaults {
   static const infoMapStyle = EntryMapStyle.stamenWatercolor; // `infoMapStyle` has a contextual default value
   static const infoMapZoom = 12.0;
   static const coordinateFormat = CoordinateFormat.dms;
+  static const unitSystem = UnitSystem.metric;
 
   // rendering
   static const imageBackground = EntryBackground.white;

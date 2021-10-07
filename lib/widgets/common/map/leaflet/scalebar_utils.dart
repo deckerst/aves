@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:latlong2/latlong.dart';
 
 class ScaleBarUtils {
-  static LatLng calculateEndingGlobalCoordinates(LatLng start, double startBearing, double distance) {
+  static LatLng calculateEndingGlobalCoordinates(LatLng start, double startBearing, double distanceMeters) {
     var mSemiMajorAxis = 6378137.0; //WGS84 major axis
     var mSemiMinorAxis = (1.0 - 1.0 / 298.257223563) * 6378137.0;
     var mFlattening = 1.0 / 298.257223563;
@@ -18,7 +18,7 @@ class ScaleBarUtils {
     var alpha1 = degToRadian(startBearing);
     var cosAlpha1 = cos(alpha1);
     var sinAlpha1 = sin(alpha1);
-    var s = distance;
+    var s = distanceMeters;
     var tanU1 = (1.0 - f) * tan(phi1);
     var cosU1 = 1.0 / sqrt(1.0 + tanU1 * tanU1);
     var sinU1 = tanU1 * cosU1;

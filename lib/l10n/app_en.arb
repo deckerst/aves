@@ -173,6 +173,11 @@
   "coordinateFormatDecimal": "Decimal degrees",
   "@coordinateFormatDecimal": {},
 
+  "unitSystemMetric": "Metric",
+  "@unitSystemMetric": {},
+  "unitSystemImperial": "Imperial",
+  "@unitSystemImperial": {},
+
   "videoLoopModeNever": "Never",
   "@videoLoopModeNever": {},
   "videoLoopModeShortOnly": "Short videos only",
@@ -835,6 +840,10 @@
   "@settingsCoordinateFormatTile": {},
   "settingsCoordinateFormatTitle": "Coordinate Format",
   "@settingsCoordinateFormatTitle": {},
+  "settingsUnitSystemTile": "Units",
+  "@settingsUnitSystemTile": {},
+  "settingsUnitSystemTitle": "Units",
+  "@settingsUnitSystemTitle": {},
 
   "statsPageTitle": "Stats",
   "@statsPageTitle": {},

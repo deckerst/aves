@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/settings/enums.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/debouncer.dart';
 import 'package:aves/widgets/common/map/buttons.dart';
@@ -163,7 +164,9 @@ class _EntryLeafletMapState extends State<EntryLeafletMap> with TickerProviderSt
       mapController: _leafletMapController,
       nonRotatedChildren: [
         ScaleLayerWidget(
-          options: ScaleLayerOptions(),
+          options: ScaleLayerOptions(
+            unitSystem: settings.unitSystem,
+          ),
         ),
       ],
       children: [

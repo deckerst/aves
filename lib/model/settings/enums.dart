@@ -13,4 +13,6 @@ enum EntryMapStyle { googleNormal, googleHybrid, googleTerrain, osmHot, stamenTo
 
 enum KeepScreenOn { never, viewerOnly, always }
 
+enum UnitSystem { metric, imperial }
+
 enum VideoLoopMode { never, shortOnly, always }
