@@ -98,6 +98,7 @@ class Settings extends ChangeNotifier {
   static const infoMapStyleKey = 'info_map_style';
   static const infoMapZoomKey = 'info_map_zoom';
   static const coordinateFormatKey = 'coordinates_format';
+  static const unitSystemKey = 'unit_system';
 
   // rendering
   static const imageBackgroundKey = 'image_background';
@@ -379,6 +380,10 @@ class Settings extends ChangeNotifier {
 
   set coordinateFormat(CoordinateFormat newValue) => setAndNotify(coordinateFormatKey, newValue.toString());
 
+  UnitSystem get unitSystem => getEnumOrDefault(unitSystemKey, SettingsDefaults.unitSystem, UnitSystem.values);
+
+  set unitSystem(UnitSystem newValue) => setAndNotify(unitSystemKey, newValue.toString());
+
   // rendering
 
   EntryBackground get imageBackground => getEnumOrDefault(imageBackgroundKey, SettingsDefaults.imageBackground, EntryBackground.values);
@@ -574,6 +579,7 @@ class Settings extends ChangeNotifier {
             case subtitleTextAlignmentKey:
             case infoMapStyleKey:
             case coordinateFormatKey:
+            case unitSystemKey:
             case imageBackgroundKey:
             case accessibilityAnimationsKey:
             case timeToTakeActionKey:

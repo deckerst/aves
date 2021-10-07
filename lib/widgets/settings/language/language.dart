@@ -1,6 +1,7 @@
 import 'package:aves/model/settings/coordinate_format.dart';
 import 'package:aves/model/settings/enums.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/model/settings/unit_system.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/color_utils.dart';
 import 'package:aves/utils/constants.dart';
@@ -23,6 +24,7 @@ class LanguageSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final currentCoordinateFormat = context.select<Settings, CoordinateFormat>((s) => s.coordinateFormat);
+    final currentUnitSystem = context.select<Settings, UnitSystem>((s) => s.unitSystem);
 
     return AvesExpansionTile(
       // use a fixed value instead of the title to identify this expansion tile
@@ -52,6 +54,23 @@ class LanguageSection extends StatelessWidget {
             );
             if (value != null) {
               settings.coordinateFormat = value;
+            }
+          },
+        ),
+        ListTile(
+          title: Text(context.l10n.settingsUnitSystemTile),
+          subtitle: Text(currentUnitSystem.getName(context)),
+          onTap: () async {
+            final value = await showDialog<UnitSystem>(
+              context: context,
+              builder: (context) => AvesSelectionDialog<UnitSystem>(
+                initialValue: currentUnitSystem,
+                options: Map.fromEntries(UnitSystem.values.map((v) => MapEntry(v, v.getName(context)))),
+                title: context.l10n.settingsUnitSystemTitle,
+              ),
+            );
+            if (value != null) {
+              settings.unitSystem = value;
             }
           },
         ),

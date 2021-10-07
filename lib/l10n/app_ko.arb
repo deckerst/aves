@@ -86,6 +86,9 @@
   "coordinateFormatDms": "도분초",
   "coordinateFormatDecimal": "소수점",
 
+  "unitSystemMetric": "미터법",
+  "unitSystemImperial": "야드파운드법",
+
   "videoLoopModeNever": "반복 안 함",
   "videoLoopModeShortOnly": "짧은 동영상만 반복",
   "videoLoopModeAlways": "항상 반복",
@@ -409,6 +412,8 @@
   "settingsLanguage": "언어",
   "settingsCoordinateFormatTile": "좌표 표현",
   "settingsCoordinateFormatTitle": "좌표 표현",
+  "settingsUnitSystemTile": "단위법",
+  "settingsUnitSystemTitle": "단위법",
 
   "statsPageTitle": "통계",
   "statsImage": "{count, plural, other{사진}}",
