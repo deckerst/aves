@@ -1,5 +1,6 @@
 import 'package:aves/model/availability.dart';
 import 'package:aves/model/metadata_db.dart';
+import 'package:aves/services/android_app_service.dart';
 import 'package:aves/services/device_service.dart';
 import 'package:aves/services/media/embedded_data_service.dart';
 import 'package:aves/services/media/media_file_service.dart';
@@ -18,6 +19,7 @@ final p.Context pContext = getIt<p.Context>();
 final AvesAvailability availability = getIt<AvesAvailability>();
 final MetadataDb metadataDb = getIt<MetadataDb>();
 
+final AndroidAppService androidAppService = getIt<AndroidAppService>();
 final DeviceService deviceService = getIt<DeviceService>();
 final EmbeddedDataService embeddedDataService = getIt<EmbeddedDataService>();
 final MediaFileService mediaFileService = getIt<MediaFileService>();
@@ -33,6 +35,7 @@ void initPlatformServices() {
   getIt.registerLazySingleton<AvesAvailability>(() => LiveAvesAvailability());
   getIt.registerLazySingleton<MetadataDb>(() => SqfliteMetadataDb());
 
+  getIt.registerLazySingleton<AndroidAppService>(() => PlatformAndroidAppService());
   getIt.registerLazySingleton<DeviceService>(() => PlatformDeviceService());
   getIt.registerLazySingleton<EmbeddedDataService>(() => PlatformEmbeddedDataService());
   getIt.registerLazySingleton<MediaFileService>(() => PlatformMediaFileService());

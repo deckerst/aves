@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:aves/model/actions/video_actions.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/settings/settings.dart';
-import 'package:aves/services/android_app_service.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/format.dart';
 import 'package:aves/theme/icons.dart';
@@ -74,7 +74,7 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
                 scale: scale,
                 child: IconButton(
                   icon: const Icon(AIcons.openOutside),
-                  onPressed: () => AndroidAppService.open(entry.uri, entry.mimeTypeAnySubtype),
+                  onPressed: () => androidAppService.open(entry.uri, entry.mimeTypeAnySubtype),
                   tooltip: context.l10n.viewerOpenTooltip,
                 ),
               ),
