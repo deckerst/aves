@@ -1,4 +1,6 @@
 import 'package:aves/model/entry.dart';
+import 'package:aves/model/settings/accessibility_animations.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/widgets/common/magnifier/pan/gesture_detector_scope.dart';
 import 'package:aves/widgets/common/magnifier/pan/scroll_physics.dart';
@@ -54,19 +56,27 @@ class _MultiEntryScrollerState extends State<MultiEntryScroller> with AutomaticK
                 )
               : _buildViewer(mainEntry);
 
-          child = AnimatedBuilder(
-            animation: pageController,
-            builder: (context, child) {
-              // parallax scrolling
-              double dx = 0;
-              if (pageController.hasClients && pageController.position.haveDimensions) {
-                final delta = pageController.page! - index;
-                dx = delta * pageController.position.viewportDimension / 2;
-              }
-              return Transform.translate(
-                offset: Offset(dx, 0),
-                child: child,
-              );
+          child = Selector<Settings, bool>(
+            selector: (context, s) => s.accessibilityAnimations.animate,
+            builder: (context, animate, child) {
+              return animate
+                  ? AnimatedBuilder(
+                      animation: pageController,
+                      builder: (context, child) {
+                        // parallax scrolling
+                        double dx = 0;
+                        if (pageController.hasClients && pageController.position.haveDimensions) {
+                          final delta = pageController.page! - index;
+                          dx = delta * pageController.position.viewportDimension / 2;
+                        }
+                        return Transform.translate(
+                          offset: Offset(dx, 0),
+                          child: child,
+                        );
+                      },
+                      child: child,
+                    )
+                  : child!;
             },
             child: child,
           );
