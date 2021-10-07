@@ -8,6 +8,7 @@ import 'package:aves/model/metadata_db.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/enums.dart';
 import 'package:aves/model/source/media_store_source.dart';
+import 'package:aves/services/android_app_service.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/device_service.dart';
 import 'package:aves/services/media/media_file_service.dart';
@@ -21,6 +22,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
 
+import '../fake/android_app_service.dart';
 import '../fake/availability.dart';
 import '../fake/device_service.dart';
 import '../fake/media_file_service.dart';
@@ -42,6 +44,7 @@ void main() {
     getIt.registerLazySingleton<AvesAvailability>(() => FakeAvesAvailability());
     getIt.registerLazySingleton<MetadataDb>(() => FakeMetadataDb());
 
+    getIt.registerLazySingleton<AndroidAppService>(() => FakeAndroidAppService());
     getIt.registerLazySingleton<DeviceService>(() => FakeDeviceService());
     getIt.registerLazySingleton<MediaFileService>(() => FakeMediaFileService());
     getIt.registerLazySingleton<MediaStoreService>(() => FakeMediaStoreService());

@@ -9,7 +9,6 @@ import 'package:aves/model/highlight.dart';
 import 'package:aves/model/selection.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
-import 'package:aves/services/android_app_service.dart';
 import 'package:aves/services/common/image_op_events.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/media/enums.dart';
@@ -66,7 +65,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
   void _share(BuildContext context) {
     final selection = context.read<Selection<AvesEntry>>();
     final selectedItems = _getExpandedSelectedItems(selection);
-    AndroidAppService.shareEntries(selectedItems).then((success) {
+    androidAppService.shareEntries(selectedItems).then((success) {
       if (!success) showNoMatchingAppDialog(context);
     });
   }

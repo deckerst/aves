@@ -10,7 +10,6 @@ import 'package:aves/model/highlight.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/ref/mime_types.dart';
-import 'package:aves/services/android_app_service.dart';
 import 'package:aves/services/common/image_op_events.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/media/enums.dart';
@@ -39,7 +38,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         entry.toggleFavourite();
         break;
       case EntryAction.copyToClipboard:
-        AndroidAppService.copyToClipboard(entry.uri, entry.bestTitle).then((success) {
+        androidAppService.copyToClipboard(entry.uri, entry.bestTitle).then((success) {
           showFeedback(context, success ? context.l10n.genericSuccessFeedback : context.l10n.genericFailureFeedback);
         });
         break;
@@ -68,17 +67,17 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         _flip(context, entry);
         break;
       case EntryAction.edit:
-        AndroidAppService.edit(entry.uri, entry.mimeType).then((success) {
+        androidAppService.edit(entry.uri, entry.mimeType).then((success) {
           if (!success) showNoMatchingAppDialog(context);
         });
         break;
       case EntryAction.open:
-        AndroidAppService.open(entry.uri, entry.mimeTypeAnySubtype).then((success) {
+        androidAppService.open(entry.uri, entry.mimeTypeAnySubtype).then((success) {
           if (!success) showNoMatchingAppDialog(context);
         });
         break;
       case EntryAction.openMap:
-        AndroidAppService.openMap(entry.latLng!).then((success) {
+        androidAppService.openMap(entry.latLng!).then((success) {
           if (!success) showNoMatchingAppDialog(context);
         });
         break;
@@ -86,12 +85,12 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         _rotateScreen(context);
         break;
       case EntryAction.setAs:
-        AndroidAppService.setAs(entry.uri, entry.mimeType).then((success) {
+        androidAppService.setAs(entry.uri, entry.mimeType).then((success) {
           if (!success) showNoMatchingAppDialog(context);
         });
         break;
       case EntryAction.share:
-        AndroidAppService.shareEntries({entry}).then((success) {
+        androidAppService.shareEntries({entry}).then((success) {
           if (!success) showNoMatchingAppDialog(context);
         });
         break;

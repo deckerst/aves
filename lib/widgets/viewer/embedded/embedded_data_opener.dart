@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:aves/model/entry.dart';
 import 'package:aves/ref/mime_types.dart';
-import 'package:aves/services/android_app_service.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/behaviour/routes.dart';
@@ -56,10 +55,10 @@ class EmbeddedDataOpener extends StatelessWidget with FeedbackMixin {
     final uri = fields['uri']!;
     if (!MimeTypes.isImage(mimeType) && !MimeTypes.isVideo(mimeType)) {
       // open with another app
-      unawaited(AndroidAppService.open(uri, mimeType).then((success) {
+      unawaited(androidAppService.open(uri, mimeType).then((success) {
         if (!success) {
           // fallback to sharing, so that the file can be saved somewhere
-          AndroidAppService.shareSingle(uri, mimeType).then((success) {
+          androidAppService.shareSingle(uri, mimeType).then((success) {
             if (!success) showNoMatchingAppDialog(context);
           });
         }
