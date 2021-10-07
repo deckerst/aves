@@ -142,7 +142,7 @@ class Settings extends ChangeNotifier {
   Future<void> setContextualDefaults() async {
     // performance
     final performanceClass = await deviceService.getPerformanceClass();
-    enableOverlayBlurEffect = performanceClass >= 30;
+    enableOverlayBlurEffect = performanceClass >= 29;
 
     // availability
     final hasPlayServices = await availability.hasPlayServices;

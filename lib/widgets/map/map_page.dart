@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:aves/model/entry.dart';
+import 'package:aves/model/filters/coordinate.dart';
+import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/highlight.dart';
 import 'package:aves/model/settings/enums.dart';
 import 'package:aves/model/settings/map_style.dart';
@@ -8,6 +10,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/debouncer.dart';
+import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/behaviour/routes.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
@@ -20,6 +23,7 @@ import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/common/thumbnail/scroller.dart';
 import 'package:aves/widgets/map/map_info_row.dart';
 import 'package:aves/widgets/viewer/entry_viewer_page.dart';
+import 'package:aves/widgets/viewer/info/notifications.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -87,9 +91,9 @@ class _MapPageContentState extends State<MapPageContent> with SingleTickerProvid
   late AnimationController _overlayAnimationController;
   late Animation<double> _overlayScale, _scrollerSize;
 
-  List<AvesEntry> get entries => widget.collection.sortedEntries;
-
   CollectionLens? get regionCollection => _regionCollectionNotifier.value;
+
+  CollectionLens get openingCollection => widget.collection;
 
   @override
   void initState() {
@@ -154,49 +158,55 @@ class _MapPageContentState extends State<MapPageContent> with SingleTickerProvid
 
   @override
   Widget build(BuildContext context) {
-    return Selector<Settings, EntryMapStyle>(
-      selector: (context, s) => s.infoMapStyle,
-      builder: (context, mapStyle, child) {
-        late Widget scroller;
-        if (mapStyle.isGoogleMaps) {
-          // the Google map widget is too heavy for a smooth resizing animation
-          // so we just toggle visibility when overlay animation is done
-          scroller = ValueListenableBuilder<double>(
-            valueListenable: _overlayAnimationController,
-            builder: (context, animation, child) {
-              return Visibility(
-                visible: !_overlayAnimationController.isDismissed,
-                child: child!,
-              );
-            },
-            child: child,
-          );
-        } else {
-          // the Leaflet map widget is light enough for a smooth resizing animation
-          scroller = FadeTransition(
-            opacity: _scrollerSize,
-            child: SizeTransition(
-              sizeFactor: _scrollerSize,
-              axisAlignment: 1.0,
-              child: child,
-            ),
-          );
-        }
-
-        return Column(
-          children: [
-            Expanded(child: _buildMap()),
-            scroller,
-          ],
-        );
+    return NotificationListener<FilterSelectedNotification>(
+      onNotification: (notification) {
+        _goToCollection(notification.filter);
+        return true;
       },
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const SizedBox(height: 8),
-          const Divider(height: 0),
-          _buildScroller(),
-        ],
+      child: Selector<Settings, EntryMapStyle>(
+        selector: (context, s) => s.infoMapStyle,
+        builder: (context, mapStyle, child) {
+          late Widget scroller;
+          if (mapStyle.isGoogleMaps) {
+            // the Google map widget is too heavy for a smooth resizing animation
+            // so we just toggle visibility when overlay animation is done
+            scroller = ValueListenableBuilder<double>(
+              valueListenable: _overlayAnimationController,
+              builder: (context, animation, child) {
+                return Visibility(
+                  visible: !_overlayAnimationController.isDismissed,
+                  child: child!,
+                );
+              },
+              child: child,
+            );
+          } else {
+            // the Leaflet map widget is light enough for a smooth resizing animation
+            scroller = FadeTransition(
+              opacity: _scrollerSize,
+              child: SizeTransition(
+                sizeFactor: _scrollerSize,
+                axisAlignment: 1.0,
+                child: child,
+              ),
+            );
+          }
+
+          return Column(
+            children: [
+              Expanded(child: _buildMap()),
+              scroller,
+            ],
+          );
+        },
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: 8),
+            const Divider(height: 0),
+            _buildScroller(),
+          ],
+        ),
       ),
     );
   }
@@ -204,13 +214,14 @@ class _MapPageContentState extends State<MapPageContent> with SingleTickerProvid
   Widget _buildMap() {
     return MapTheme(
       interactive: true,
+      showCoordinateFilter: true,
       navigationButton: MapNavigationButton.back,
       scale: _overlayScale,
       child: GeoMap(
         // key is expected by test driver
         key: const Key('map_view'),
         controller: _mapController,
-        entries: entries,
+        entries: openingCollection.sortedEntries,
         initialEntry: widget.initialEntry,
         isAnimatingNotifier: _isPageAnimatingNotifier,
         dotEntryNotifier: _dotEntryNotifier,
@@ -285,9 +296,13 @@ class _MapPageContentState extends State<MapPageContent> with SingleTickerProvid
     }
 
     _regionCollectionNotifier.value = CollectionLens(
-      source: widget.collection.source,
+      source: openingCollection.source,
       listenToSource: false,
-      fixedSelection: entries.where((entry) => bounds.contains(entry.latLng!)).toList(),
+      fixedSelection: openingCollection.sortedEntries,
+      filters: [
+        ...openingCollection.filters.whereNot((v) => v is CoordinateFilter),
+        CoordinateFilter(bounds.sw, bounds.ne),
+      ],
     );
 
     // get entries from the new collection, so the entry order is the same
@@ -342,6 +357,24 @@ class _MapPageContentState extends State<MapPageContent> with SingleTickerProvid
           );
         },
       ),
+    );
+  }
+
+  void _goToCollection(CollectionFilter filter) {
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        settings: const RouteSettings(name: CollectionPage.routeName),
+        builder: (context) {
+          return CollectionPage(
+            collection: CollectionLens(
+              source: openingCollection.source,
+              filters: openingCollection.filters,
+            )..addFilter(filter),
+          );
+        },
+      ),
+      (route) => false,
     );
   }
 

@@ -1,4 +1,5 @@
 import 'package:aves/model/filters/album.dart';
+import 'package:aves/model/filters/coordinate.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/location.dart';
@@ -8,6 +9,7 @@ import 'package:aves/model/filters/query.dart';
 import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/filters/type.dart';
 import 'package:aves/services/common/services.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:path/path.dart' as p;
 import 'package:test/test.dart';
 
@@ -29,6 +31,9 @@ void main() {
 
     const album = AlbumFilter('path/to/album', 'album');
     expect(album, jsonRoundTrip(album));
+
+    final bounds = CoordinateFilter(LatLng(29.979167, 28.223615), LatLng(36.451000, 31.134167));
+    expect(bounds, jsonRoundTrip(bounds));
 
     const fav = FavouriteFilter.instance;
     expect(fav, jsonRoundTrip(fav));

@@ -86,6 +86,7 @@ class _LocationSectionState extends State<LocationSection> {
         if (widget.showTitle) const SectionRow(icon: AIcons.location),
         MapTheme(
           interactive: false,
+          showCoordinateFilter: false,
           navigationButton: MapNavigationButton.map,
           visualDensity: VisualDensity.compact,
           mapHeight: 200,
