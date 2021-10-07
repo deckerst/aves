@@ -110,7 +110,7 @@ class _AddressRowState extends State<_AddressRow> {
           child: Container(
             alignment: AlignmentDirectional.centerStart,
             // addresses can include non-latin scripts with inconsistent line height,
-            // which is especially an issue for relayout/painting of heavy Google maps,
+            // which is especially an issue for relayout/painting of heavy Google map,
             // so we give extra height to give breathing room to the text and stabilize layout
             height: Theme.of(context).textTheme.bodyText2!.fontSize! * context.select<MediaQueryData, double>((mq) => mq.textScaleFactor) * 2,
             child: ValueListenableBuilder<String?>(

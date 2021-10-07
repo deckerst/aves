@@ -348,7 +348,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       // we compute the default name beforehand
       // because some filter labels need localization
       final sortedFilters = List<CollectionFilter>.from(filters)..sort();
-      defaultName = sortedFilters.first.getLabel(context);
+      defaultName = sortedFilters.first.getLabel(context).replaceAll('\n', ' ');
     }
     final result = await showDialog<Tuple2<AvesEntry?, String>>(
       context: context,

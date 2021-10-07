@@ -63,5 +63,19 @@ class ZoomedBounds extends Equatable {
     );
   }
 
+  ZoomedBounds copyWith({
+    LatLng? sw,
+    LatLng? ne,
+    double? zoom,
+    double? rotation,
+  }) {
+    return ZoomedBounds(
+      sw: sw ?? this.sw,
+      ne: ne ?? this.ne,
+      zoom: zoom ?? this.zoom,
+      rotation: rotation ?? this.rotation,
+    );
+  }
+
   bool contains(LatLng point) => GeoUtils.contains(sw, ne, point);
 }
