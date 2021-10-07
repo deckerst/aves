@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:aves/geo/countries.dart';
 import 'package:aves/model/entry_cache.dart';
@@ -177,6 +178,8 @@ class AvesEntry {
     _extension ??= path != null ? pContext.extension(path!) : null;
     return _extension;
   }
+
+  bool get isMissingAtPath => path != null && !File(path!).existsSync();
 
   // the MIME type reported by the Media Store is unreliable
   // so we use the one found during cataloguing if possible

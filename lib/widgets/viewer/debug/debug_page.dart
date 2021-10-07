@@ -68,6 +68,7 @@ class ViewerDebugPage extends StatelessWidget {
             'sourceTitle': entry.sourceTitle ?? '',
             'sourceMimeType': entry.sourceMimeType,
             'mimeType': entry.mimeType,
+            'isMissingAtPath': '${entry.isMissingAtPath}',
           },
         ),
         const Divider(),

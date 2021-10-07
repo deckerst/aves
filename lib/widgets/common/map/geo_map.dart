@@ -57,7 +57,7 @@ class GeoMap extends StatefulWidget {
 }
 
 class _GeoMapState extends State<GeoMap> {
-  // as of google_maps_flutter v2.0.6, Google Maps initialization is blocking
+  // as of google_maps_flutter v2.0.6, Google map initialization is blocking
   // cf https://github.com/flutter/flutter/issues/28493
   // it is especially severe the first time, but still significant afterwards
   // so we prevent loading it while scrolling or animating
@@ -68,14 +68,21 @@ class _GeoMapState extends State<GeoMap> {
 
   List<AvesEntry> get entries => widget.entries;
 
+  // cap initial zoom to avoid a zoom change
+  // when toggling overlay on Google map initial state
+  static const double minInitialZoom = 3;
+
   @override
   void initState() {
     super.initState();
     final initialEntry = widget.initialEntry;
     final points = (initialEntry != null ? [initialEntry] : entries).map((v) => v.latLng!).toSet();
-    _boundsNotifier = ValueNotifier(ZoomedBounds.fromPoints(
+    final bounds = ZoomedBounds.fromPoints(
       points: points.isNotEmpty ? points : {Constants.wonders[Random().nextInt(Constants.wonders.length)]},
       collocationZoom: settings.infoMapZoom,
+    );
+    _boundsNotifier = ValueNotifier(bounds.copyWith(
+      zoom: max(bounds.zoom, minInitialZoom),
     ));
     _defaultMarkerCluster = _buildFluster();
   }

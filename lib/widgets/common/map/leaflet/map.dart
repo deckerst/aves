@@ -66,7 +66,7 @@ class _EntryLeafletMapState extends State<EntryLeafletMap> with TickerProviderSt
 
   ZoomedBounds get bounds => boundsNotifier.value;
 
-  // duration should match the uncustomizable Google Maps duration
+  // duration should match the uncustomizable Google map duration
   static const _cameraAnimationDuration = Duration(milliseconds: 600);
 
   @override

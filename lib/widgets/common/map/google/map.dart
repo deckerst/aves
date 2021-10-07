@@ -109,7 +109,7 @@ class _EntryGoogleMapState extends State<EntryGoogleMap> with WidgetsBindingObse
       case AppLifecycleState.detached:
         break;
       case AppLifecycleState.resumed:
-        // workaround for blank Google Maps when resuming app
+        // workaround for blank Google map when resuming app
         // cf https://github.com/flutter/flutter/issues/40284
         _googleMapController?.setMapStyle(null);
         break;
