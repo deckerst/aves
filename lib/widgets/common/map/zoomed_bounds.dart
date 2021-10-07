@@ -13,7 +13,7 @@ class ZoomedBounds extends Equatable {
   // returns [southwestLng, southwestLat, northeastLng, northeastLat], as expected by Fluster
   List<double> get boundingBox => [sw.longitude, sw.latitude, ne.longitude, ne.latitude];
 
-  LatLng get center => getLatLngCenter([sw, ne]);
+  LatLng get center => GeoUtils.getLatLngCenter([sw, ne]);
 
   @override
   List<Object?> get props => [sw, ne, zoom, rotation];
@@ -63,13 +63,5 @@ class ZoomedBounds extends Equatable {
     );
   }
 
-  bool contains(LatLng point) {
-    final lat = point.latitude;
-    final lng = point.longitude;
-    final south = sw.latitude;
-    final north = ne.latitude;
-    final west = sw.longitude;
-    final east = ne.longitude;
-    return (south <= lat && lat <= north) && (west <= east ? (west <= lng && lng <= east) : (west <= lng || lng <= east));
-  }
+  bool contains(LatLng point) => GeoUtils.contains(sw, ne, point);
 }

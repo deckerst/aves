@@ -37,12 +37,11 @@ class AvesFilterDecoration {
 
 class AvesFilterChip extends StatefulWidget {
   final CollectionFilter filter;
-  final bool removable;
-  final bool showGenericIcon;
+  final bool removable, showGenericIcon, useFilterColor;
   final AvesFilterDecoration? decoration;
   final String? banner;
   final Widget? details;
-  final double padding;
+  final double padding, maxWidth;
   final HeroType heroType;
   final FilterCallback? onTap;
   final OffsetFilterCallback? onLongPress;
@@ -52,7 +51,7 @@ class AvesFilterChip extends StatefulWidget {
   static const double outlineWidth = 2;
   static const double minChipHeight = kMinInteractiveDimension;
   static const double minChipWidth = 80;
-  static const double maxChipWidth = 160;
+  static const double defaultMaxChipWidth = 160;
   static const double iconSize = 18;
   static const double fontSize = 14;
   static const double decoratedContentVerticalPadding = 5;
@@ -62,10 +61,12 @@ class AvesFilterChip extends StatefulWidget {
     required this.filter,
     this.removable = false,
     this.showGenericIcon = true,
+    this.useFilterColor = true,
     this.decoration,
     this.banner,
     this.details,
     this.padding = 6.0,
+    this.maxWidth = defaultMaxChipWidth,
     this.heroType = HeroType.onTap,
     this.onTap,
     this.onLongPress = showDefaultLongPressMenu,
@@ -181,7 +182,6 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
             ),
             softWrap: false,
             overflow: TextOverflow.fade,
-            maxLines: 1,
           ),
         ),
         if (trailing != null) ...[
@@ -216,7 +216,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
       );
     } else {
       content = Padding(
-        padding: EdgeInsets.symmetric(horizontal: padding * 2, vertical: 2),
+        padding: EdgeInsets.symmetric(horizontal: padding * 2),
         child: content,
       );
     }
@@ -224,9 +224,9 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
     final borderRadius = decoration?.chipBorderRadius ?? const BorderRadius.all(Radius.circular(AvesFilterChip.defaultRadius));
     final banner = widget.banner;
     Widget chip = Container(
-      constraints: const BoxConstraints(
+      constraints: BoxConstraints(
         minWidth: AvesFilterChip.minChipWidth,
-        maxWidth: AvesFilterChip.maxChipWidth,
+        maxWidth: widget.maxWidth,
         minHeight: AvesFilterChip.minChipHeight,
       ),
       child: Stack(
@@ -263,16 +263,13 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
                   return DecoratedBox(
                     decoration: BoxDecoration(
                       border: Border.fromBorderSide(BorderSide(
-                        color: _outlineColor,
+                        color: widget.useFilterColor ? _outlineColor : AvesFilterChip.defaultOutlineColor,
                         width: AvesFilterChip.outlineWidth,
                       )),
                       borderRadius: borderRadius,
                     ),
                     position: DecorationPosition.foreground,
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: decoration != null ? 0 : 8),
-                      child: content,
-                    ),
+                    child: content,
                   );
                 },
               ),

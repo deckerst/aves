@@ -1,4 +1,4 @@
-import 'package:aves/geo/format.dart';
+import 'package:aves/utils/geo_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/widgets.dart';
 import 'package:latlong2/latlong.dart';
@@ -15,10 +15,10 @@ extension ExtraCoordinateFormat on CoordinateFormat {
     }
   }
 
-  String format(LatLng latLng) {
+  String format(LatLng latLng, {bool minuteSecondPadding = false, int dmsSecondDecimals = 2}) {
     switch (this) {
       case CoordinateFormat.dms:
-        return toDMS(latLng).join(', ');
+        return GeoUtils.toDMS(latLng, minuteSecondPadding: minuteSecondPadding, secondDecimals: dmsSecondDecimals).join(', ');
       case CoordinateFormat.decimal:
         return [latLng.latitude, latLng.longitude].map((n) => n.toStringAsFixed(6)).join(', ');
     }

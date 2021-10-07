@@ -96,7 +96,7 @@ class _GeoMapState extends State<GeoMap> {
         if (points.length != geoEntry.pointsSize) {
           // `Fluster.points()` method does not always return all the points contained in a cluster
           // the higher `nodeSize` is, the higher the chance to get all the points (i.e. as many as the cluster `pointsSize`)
-          _slowMarkerCluster ??= _buildFluster(nodeSize: smallestPowerOf2(widget.entries.length));
+          _slowMarkerCluster ??= _buildFluster(nodeSize: smallestPowerOf2(entries.length));
           points = _slowMarkerCluster!.points(clusterId);
           assert(points.length == geoEntry.pointsSize, 'got ${points.length}/${geoEntry.pointsSize} for geoEntry=$geoEntry');
         }
