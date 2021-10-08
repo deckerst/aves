@@ -426,7 +426,7 @@ class AvesEntry {
     _xmpSubjects = null;
     metadataChangeNotifier.notifyListeners();
 
-    _onImageChanged(oldDateModifiedSecs, oldRotationDegrees, oldIsFlipped);
+    _onVisualFieldChanged(oldDateModifiedSecs, oldRotationDegrees, oldIsFlipped);
   }
 
   void clearMetadata() {
@@ -614,9 +614,13 @@ class AvesEntry {
 
     final updated = await mediaFileService.getEntry(uri, mimeType);
     if (updated != null) {
+      final oldDateModifiedSecs = dateModifiedSecs;
+      final oldRotationDegrees = rotationDegrees;
+      final oldIsFlipped = isFlipped;
       await _applyNewFields(updated.toMap(), persist: persist);
       await catalog(background: false, persist: persist);
       await locate(background: false);
+      await _onVisualFieldChanged(oldDateModifiedSecs, oldRotationDegrees, oldIsFlipped);
     }
   }
 
@@ -628,7 +632,7 @@ class AvesEntry {
     final oldRotationDegrees = rotationDegrees;
     final oldIsFlipped = isFlipped;
     await _applyNewFields(newFields, persist: persist);
-    await _onImageChanged(oldDateModifiedSecs, oldRotationDegrees, oldIsFlipped);
+    await _onVisualFieldChanged(oldDateModifiedSecs, oldRotationDegrees, oldIsFlipped);
     return true;
   }
 
@@ -640,7 +644,7 @@ class AvesEntry {
     final oldRotationDegrees = rotationDegrees;
     final oldIsFlipped = isFlipped;
     await _applyNewFields(newFields, persist: persist);
-    await _onImageChanged(oldDateModifiedSecs, oldRotationDegrees, oldIsFlipped);
+    await _onVisualFieldChanged(oldDateModifiedSecs, oldRotationDegrees, oldIsFlipped);
     return true;
   }
 
@@ -669,7 +673,7 @@ class AvesEntry {
   }
 
   // when the entry image itself changed (e.g. after rotation)
-  Future<void> _onImageChanged(int? oldDateModifiedSecs, int oldRotationDegrees, bool oldIsFlipped) async {
+  Future<void> _onVisualFieldChanged(int? oldDateModifiedSecs, int oldRotationDegrees, bool oldIsFlipped) async {
     if (oldDateModifiedSecs != dateModifiedSecs || oldRotationDegrees != rotationDegrees || oldIsFlipped != isFlipped) {
       await EntryCache.evict(uri, mimeType, oldDateModifiedSecs, oldRotationDegrees, oldIsFlipped);
       imageChangeNotifier.notifyListeners();
