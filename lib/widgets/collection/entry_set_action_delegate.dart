@@ -288,6 +288,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       MaterialPageRoute(
         settings: const RouteSettings(name: MapPage.routeName),
         builder: (context) => MapPage(
+          // need collection with fresh ID to prevent hero from scroller on Map page to Collection page
           collection: CollectionLens(
             source: collection.source,
             filters: collection.filters,

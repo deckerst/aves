@@ -221,6 +221,7 @@ class _MapPageContentState extends State<MapPageContent> with SingleTickerProvid
         // key is expected by test driver
         key: const Key('map_view'),
         controller: _mapController,
+        collectionListenable: openingCollection,
         entries: openingCollection.sortedEntries,
         initialEntry: widget.initialEntry,
         isAnimatingNotifier: _isPageAnimatingNotifier,
@@ -255,15 +256,21 @@ class _MapPageContentState extends State<MapPageContent> with SingleTickerProvid
               builder: (context, mqWidth, child) => ValueListenableBuilder<CollectionLens?>(
                 valueListenable: _regionCollectionNotifier,
                 builder: (context, regionCollection, child) {
-                  final regionEntries = regionCollection?.sortedEntries ?? [];
-                  return ThumbnailScroller(
-                    availableWidth: mqWidth,
-                    entryCount: regionEntries.length,
-                    entryBuilder: (index) => index < regionEntries.length ? regionEntries[index] : null,
-                    indexNotifier: _selectedIndexNotifier,
-                    onTap: _onThumbnailTap,
-                    heroTagger: (entry) => Object.hashAll([regionCollection?.id, entry.uri]),
-                    highlightable: true,
+                  return AnimatedBuilder(
+                    // update when entries are added/removed
+                    animation: regionCollection ?? ChangeNotifier(),
+                    builder: (context, child) {
+                      final regionEntries = regionCollection?.sortedEntries ?? [];
+                      return ThumbnailScroller(
+                        availableWidth: mqWidth,
+                        entryCount: regionEntries.length,
+                        entryBuilder: (index) => index < regionEntries.length ? regionEntries[index] : null,
+                        indexNotifier: _selectedIndexNotifier,
+                        onTap: _onThumbnailTap,
+                        heroTagger: (entry) => Object.hashAll([regionCollection?.id, entry.uri]),
+                        highlightable: true,
+                      );
+                    },
                   );
                 },
               ),
@@ -295,14 +302,11 @@ class _MapPageContentState extends State<MapPageContent> with SingleTickerProvid
       selectedEntry = selectedIndex != null && selectedIndex < regionEntries.length ? regionEntries[selectedIndex] : null;
     }
 
-    _regionCollectionNotifier.value = CollectionLens(
-      source: openingCollection.source,
-      listenToSource: false,
-      fixedSelection: openingCollection.sortedEntries,
-      filters: [
+    _regionCollectionNotifier.value = openingCollection.copyWith(
+      filters: {
         ...openingCollection.filters.whereNot((v) => v is CoordinateFilter),
         CoordinateFilter(bounds.sw, bounds.ne),
-      ],
+      },
     );
 
     // get entries from the new collection, so the entry order is the same
@@ -352,7 +356,9 @@ class _MapPageContentState extends State<MapPageContent> with SingleTickerProvid
         settings: const RouteSettings(name: EntryViewerPage.routeName),
         pageBuilder: (context, a, sa) {
           return EntryViewerPage(
-            collection: regionCollection,
+            collection: regionCollection?.copyWith(
+              listenToSource: false,
+            ),
             initialEntry: initialEntry,
           );
         },

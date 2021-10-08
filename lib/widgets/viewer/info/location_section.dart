@@ -126,8 +126,8 @@ class _LocationSectionState extends State<LocationSection> {
       MaterialPageRoute(
         settings: const RouteSettings(name: MapPage.routeName),
         builder: (context) => MapPage(
-          collection: CollectionLens(
-            source: baseCollection.source,
+          collection: baseCollection.copyWith(
+            listenToSource: true,
             fixedSelection: baseCollection.sortedEntries.where((entry) => entry.hasGps).toList(),
           ),
           initialEntry: entry,

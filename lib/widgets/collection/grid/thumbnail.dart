@@ -73,10 +73,7 @@ class InteractiveThumbnail extends StatelessWidget {
       TransparentMaterialPageRoute(
         settings: const RouteSettings(name: EntryViewerPage.routeName),
         pageBuilder: (context, a, sa) {
-          final viewerCollection = CollectionLens(
-            source: collection.source,
-            filters: collection.filters,
-            id: collection.id,
+          final viewerCollection = collection.copyWith(
             listenToSource: false,
           );
           assert(viewerCollection.sortedEntries.map((e) => e.contentId).contains(entry.contentId));
