@@ -23,6 +23,7 @@ import 'package:provider/provider.dart';
 
 class EntryLeafletMap extends StatefulWidget {
   final AvesMapController? controller;
+  final Listenable clusterListenable;
   final ValueNotifier<ZoomedBounds> boundsNotifier;
   final double minZoom, maxZoom;
   final EntryMapStyle style;
@@ -38,6 +39,7 @@ class EntryLeafletMap extends StatefulWidget {
   const EntryLeafletMap({
     Key? key,
     this.controller,
+    required this.clusterListenable,
     required this.boundsNotifier,
     this.minZoom = 0,
     this.maxZoom = 22,
@@ -96,11 +98,13 @@ class _EntryLeafletMapState extends State<EntryLeafletMap> with TickerProviderSt
       _subscriptions.add(avesMapController.moveCommands.listen((event) => _moveTo(event.latLng)));
     }
     _subscriptions.add(_leafletMapController.mapEventStream.listen((event) => _updateVisibleRegion()));
-    boundsNotifier.addListener(_onBoundsChange);
+    widget.clusterListenable.addListener(_updateMarkers);
+    widget.boundsNotifier.addListener(_onBoundsChange);
   }
 
   void _unregisterWidget(EntryLeafletMap widget) {
-    boundsNotifier.removeListener(_onBoundsChange);
+    widget.clusterListenable.removeListener(_updateMarkers);
+    widget.boundsNotifier.removeListener(_onBoundsChange);
     _subscriptions
       ..forEach((sub) => sub.cancel())
       ..clear();
@@ -216,6 +220,10 @@ class _EntryLeafletMapState extends State<EntryLeafletMap> with TickerProviderSt
   void _onIdle() {
     if (!mounted) return;
     widget.controller?.notifyIdle(bounds);
+    _updateMarkers();
+  }
+
+  void _updateMarkers() {
     setState(() => _geoEntryByMarkerKey = widget.markerClusterBuilder());
   }
 
