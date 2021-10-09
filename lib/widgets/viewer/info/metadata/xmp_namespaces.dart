@@ -4,6 +4,7 @@ import 'package:aves/utils/constants.dart';
 import 'package:aves/utils/string_utils.dart';
 import 'package:aves/widgets/common/identity/highlight_title.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
+import 'package:aves/widgets/viewer/info/metadata/xmp_ns/crs.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_ns/darktable.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_ns/exif.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_ns/google.dart';
@@ -31,6 +32,8 @@ class XmpNamespace extends Equatable {
     switch (namespace) {
       case XmpBasicNamespace.ns:
         return XmpBasicNamespace(rawProps);
+      case XmpCrsNamespace.ns:
+        return XmpCrsNamespace(rawProps);
       case XmpDarktableNamespace.ns:
         return XmpDarktableNamespace(rawProps);
       case XmpExifNamespace.ns:

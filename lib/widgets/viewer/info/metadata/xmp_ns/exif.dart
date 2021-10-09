@@ -8,9 +8,6 @@ class XmpExifNamespace extends XmpNamespace {
   const XmpExifNamespace(Map<String, String> rawProps) : super(ns, rawProps);
 
   @override
-  String get displayTitle => 'Exif';
-
-  @override
   String formatValue(XmpProp prop) {
     final v = prop.value;
     switch (prop.path) {
