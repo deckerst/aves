@@ -6,9 +6,13 @@ class XmpCrsNamespace extends XmpNamespace {
   static const ns = 'crs';
 
   static final cgbcPattern = RegExp(ns + r':CircularGradientBasedCorrections\[(\d+)\]/(.*)');
+  static final gbcPattern = RegExp(ns + r':GradientBasedCorrections\[(\d+)\]/(.*)');
+  static final pbcPattern = RegExp(ns + r':PaintBasedCorrections\[(\d+)\]/(.*)');
   static final lookPattern = RegExp(ns + r':Look/(.*)');
 
   final cgbc = <int, Map<String, String>>{};
+  final gbc = <int, Map<String, String>>{};
+  final pbc = <int, Map<String, String>>{};
   final look = <String, String>{};
 
   XmpCrsNamespace(Map<String, String> rawProps) : super(ns, rawProps);
@@ -16,21 +20,33 @@ class XmpCrsNamespace extends XmpNamespace {
   @override
   bool extractData(XmpProp prop) {
     final hasStructs = extractStruct(prop, lookPattern, look);
-    final hasIndexedStructs = extractIndexedStruct(prop, cgbcPattern, cgbc);
+    var hasIndexedStructs = extractIndexedStruct(prop, cgbcPattern, cgbc);
+    hasIndexedStructs |= extractIndexedStruct(prop, gbcPattern, gbc);
+    hasIndexedStructs |= extractIndexedStruct(prop, pbcPattern, pbc);
     return hasStructs || hasIndexedStructs;
   }
 
   @override
   List<Widget> buildFromExtractedData() => [
+        if (cgbc.isNotEmpty)
+          XmpStructArrayCard(
+            title: 'Circular Gradient Based Corrections',
+            structByIndex: cgbc,
+          ),
+        if (gbc.isNotEmpty)
+          XmpStructArrayCard(
+            title: 'Gradient Based Corrections',
+            structByIndex: gbc,
+          ),
         if (look.isNotEmpty)
           XmpStructCard(
             title: 'Look',
             struct: look,
           ),
-        if (cgbc.isNotEmpty)
+        if (pbc.isNotEmpty)
           XmpStructArrayCard(
-            title: 'Circular Gradient Based Corrections',
-            structByIndex: cgbc,
+            title: 'Paint Based Corrections',
+            structByIndex: pbc,
           ),
       ];
 }
