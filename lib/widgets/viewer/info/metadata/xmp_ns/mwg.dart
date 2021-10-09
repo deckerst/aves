@@ -6,16 +6,13 @@ import 'package:flutter/widgets.dart';
 class XmpMgwRegionsNamespace extends XmpNamespace {
   static const ns = 'mwg-rs';
 
-  static final dimensionsPattern = RegExp(r'mwg-rs:Regions/mwg-rs:AppliedToDimensions/(.*)');
-  static final regionListPattern = RegExp(r'mwg-rs:Regions/mwg-rs:RegionList\[(\d+)\]/(.*)');
+  static final dimensionsPattern = RegExp(ns + r':Regions/mwg-rs:AppliedToDimensions/(.*)');
+  static final regionListPattern = RegExp(ns + r':Regions/mwg-rs:RegionList\[(\d+)\]/(.*)');
 
   final dimensions = <String, String>{};
   final regionList = <int, Map<String, String>>{};
 
   XmpMgwRegionsNamespace(Map<String, String> rawProps) : super(ns, rawProps);
-
-  @override
-  String get displayTitle => 'Regions';
 
   @override
   bool extractData(XmpProp prop) {

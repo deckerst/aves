@@ -8,9 +8,6 @@ class XmpPhotoshopNamespace extends XmpNamespace {
   const XmpPhotoshopNamespace(Map<String, String> rawProps) : super(ns, rawProps);
 
   @override
-  String get displayTitle => 'Photoshop';
-
-  @override
   String formatValue(XmpProp prop) {
     final value = prop.value;
     switch (prop.path) {
