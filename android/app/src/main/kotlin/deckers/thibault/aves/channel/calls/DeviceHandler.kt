@@ -22,8 +22,11 @@ class DeviceHandler : MethodCallHandler {
 
     private fun getPerformanceClass(@Suppress("UNUSED_PARAMETER") call: MethodCall, result: MethodChannel.Result) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            result.success(Build.VERSION.MEDIA_PERFORMANCE_CLASS)
-            return
+            val performanceClass = Build.VERSION.MEDIA_PERFORMANCE_CLASS
+            if (performanceClass > 0) {
+                result.success(performanceClass)
+                return
+            }
         }
         result.success(Build.VERSION.SDK_INT)
     }
