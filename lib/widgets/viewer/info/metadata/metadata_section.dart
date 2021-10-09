@@ -40,9 +40,9 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> {
 
   ValueNotifier<Map<String, MetadataDirectory>> get metadataNotifier => widget.metadataNotifier;
 
-  // directory names may contain the name of their parent directory
-  // if so, they are separated by this character
-  static const parentChildSeparator = '/';
+  // directory names may contain the name of their parent directory (as prefix + '/')
+  // directory names may contain an index (as suffix in '[]')
+  static final directoryNamePattern = RegExp(r'^((?<parent>.*?)/)?(?<name>.*?)(\[(?<index>\d+)\])?$');
 
   @override
   void initState() {
@@ -138,14 +138,27 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> {
       var directoryName = dirKV.key as String;
 
       String? parent;
-      final parts = directoryName.split(parentChildSeparator);
-      if (parts.length > 1) {
-        parent = parts[0];
-        directoryName = parts[1];
+      int? index;
+      final match = directoryNamePattern.firstMatch(directoryName);
+      if (match != null) {
+        parent = match.namedGroup('parent');
+        final nameMatch = match.namedGroup('name');
+        if (nameMatch != null) {
+          directoryName = nameMatch;
+        }
+        final indexMatch = match.namedGroup('index');
+        if (indexMatch != null) {
+          index = int.tryParse(indexMatch);
+        }
       }
 
       final rawTags = dirKV.value as Map;
-      return MetadataDirectory(directoryName, parent, _toSortedTags(rawTags));
+      return MetadataDirectory(
+        directoryName,
+        _toSortedTags(rawTags),
+        parent: parent,
+        index: index,
+      );
     }).toList();
 
     if (entry.isVideo || (entry.mimeType == MimeTypes.heif && entry.isMultiPage)) {
@@ -156,6 +169,9 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> {
       var title = dir.name;
       if (directories.where((dir) => dir.name == title).length > 1 && dir.parent?.isNotEmpty == true) {
         title = '${dir.parent}/$title';
+      }
+      if (dir.index != null) {
+        title += ' ${dir.index}';
       }
       return MapEntry(title, dir);
     }).toList()
@@ -171,7 +187,7 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> {
     final formattedMediaTags = VideoMetadataFormatter.formatInfo(mediaInfo);
     if (formattedMediaTags.isNotEmpty) {
       // overwrite generic directory found from the platform side
-      directories.add(MetadataDirectory(MetadataDirectory.mediaDirectory, null, _toSortedTags(formattedMediaTags)));
+      directories.add(MetadataDirectory(MetadataDirectory.mediaDirectory, _toSortedTags(formattedMediaTags)));
     }
 
     if (mediaInfo.containsKey(Keys.streams)) {
@@ -210,7 +226,7 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> {
           final formattedStreamTags = VideoMetadataFormatter.formatInfo(stream);
           if (formattedStreamTags.isNotEmpty) {
             final color = stringToColor(typeText);
-            directories.add(MetadataDirectory(dirName, null, _toSortedTags(formattedStreamTags), color: color));
+            directories.add(MetadataDirectory(dirName, _toSortedTags(formattedStreamTags), color: color));
           }
         }
       }
@@ -232,7 +248,7 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> {
             final names = value.whereNotNull().toSet().toList()..sort(compareAsciiUpperCase);
             return MapEntry(key, '$count items: ${names.join(', ')}');
           });
-          directories.add(MetadataDirectory('Attachments', null, _toSortedTags(rawTags)));
+          directories.add(MetadataDirectory('Attachments', _toSortedTags(rawTags)));
         }
       }
     }
@@ -254,6 +270,7 @@ class MetadataDirectory {
   final String name;
   final Color? color;
   final String? parent;
+  final int? index;
   final SplayTreeMap<String, String> allTags;
   final SplayTreeMap<String, String> tags;
 
@@ -265,14 +282,22 @@ class MetadataDirectory {
 
   const MetadataDirectory(
     this.name,
-    this.parent,
     this.allTags, {
     SplayTreeMap<String, String>? tags,
     this.color,
+    this.parent,
+    this.index,
   }) : tags = tags ?? allTags;
 
   MetadataDirectory filterKeys(bool Function(String key) testKey) {
     final filteredTags = SplayTreeMap.of(Map.fromEntries(allTags.entries.where((kv) => testKey(kv.key))));
-    return MetadataDirectory(name, parent, tags, tags: filteredTags, color: color);
+    return MetadataDirectory(
+      name,
+      tags,
+      tags: filteredTags,
+      color: color,
+      parent: parent,
+      index: index,
+    );
   }
 }
