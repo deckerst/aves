@@ -38,7 +38,7 @@ class MediaStoreSource extends CollectionSource {
     }
     await loadDates();
     _initialized = true;
-    debugPrint('$runtimeType init done, elapsed=${stopwatch.elapsed}');
+    debugPrint('$runtimeType init complete in ${stopwatch.elapsed.inMilliseconds}ms');
   }
 
   @override

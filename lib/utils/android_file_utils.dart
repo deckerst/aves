@@ -1,5 +1,4 @@
 import 'package:aves/services/common/services.dart';
-import 'package:aves/utils/change_notifier.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
@@ -15,7 +14,7 @@ class AndroidFileUtils {
   List<String> _potentialAppDirs = [];
   bool _initialized = false;
 
-  AChangeNotifier appNameChangeNotifier = AChangeNotifier();
+  ValueNotifier<bool> areAppNamesReadyNotifier = ValueNotifier(false);
 
   Iterable<Package> get _launcherPackages => _packages.where((package) => package.categoryLauncher);
 
@@ -35,15 +34,15 @@ class AndroidFileUtils {
     // from Aves
     videoCapturesPath = pContext.join(dcimPath, 'Video Captures');
 
-    // include package fetching in initialization
-    // to avoid app album color flickering
+    _initialized = true;
+  }
+
+  Future<void> initAppNames() async {
     if (_packages.isEmpty) {
       _packages = await androidAppService.getPackages();
       _potentialAppDirs = _launcherPackages.expand((package) => package.potentialDirs).toList();
-      appNameChangeNotifier.notifyListeners();
+      areAppNamesReadyNotifier.value = true;
     }
-
-    _initialized = true;
   }
 
   bool isCameraPath(String path) => path.startsWith(dcimPath) && (path.endsWith('${separator}Camera') || path.endsWith('${separator}100ANDRO'));
