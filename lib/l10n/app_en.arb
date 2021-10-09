@@ -344,6 +344,9 @@
     }
   },
 
+  "exportEntryDialogFormat": "Format:",
+  "@exportEntryDialogFormat": {},
+
   "renameEntryDialogLabel": "New name",
   "@renameEntryDialogLabel": {},
 

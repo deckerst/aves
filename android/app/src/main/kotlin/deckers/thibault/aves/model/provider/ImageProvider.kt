@@ -67,7 +67,7 @@ abstract class ImageProvider {
         callback: ImageOpCallback,
     ) {
         if (!supportedExportMimeTypes.contains(imageExportMimeType)) {
-            throw Exception("unsupported export MIME type=$imageExportMimeType")
+            callback.onFailure(Exception("unsupported export MIME type=$imageExportMimeType"))
         }
 
         val destinationDirDocFile = createDirectoryIfAbsent(activity, destinationDir)
@@ -198,6 +198,12 @@ abstract class ImageProvider {
                         bitmap.compress(format, quality, output)
                     }
                 }
+            } catch (e: Exception) {
+                // remove empty file
+                if (destinationDocFile.exists()) {
+                    destinationDocFile.delete()
+                }
+                throw e
             } finally {
                 Glide.with(activity).clear(target)
             }

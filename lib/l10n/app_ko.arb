@@ -156,6 +156,8 @@
   "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, other{이 앨범의 항목 {count}개를 삭제하시겠습니까?}}",
   "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, other{이 앨범들의 항목 {count}개를 삭제하시겠습니까?}}",
 
+  "exportEntryDialogFormat": "형식:",
+
   "renameEntryDialogLabel": "이름",
 
   "editEntryDateDialogTitle": "날짜 및 시간",
