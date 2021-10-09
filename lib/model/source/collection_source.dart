@@ -254,6 +254,8 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
 
   Future<void> refresh();
 
+  Future<Set<String>> refreshUris(Set<String> changedUris);
+
   Future<void> rescan(Set<AvesEntry> entries);
 
   Future<void> refreshMetadata(Set<AvesEntry> entries) async {

@@ -5,8 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class AvesDialog extends AlertDialog {
-  static const contentHorizontalPadding = EdgeInsets.symmetric(horizontal: 24);
-  static const borderWidth = 1.0;
+  static const EdgeInsets contentHorizontalPadding = EdgeInsets.symmetric(horizontal: 24);
+  static const double controlCaptionPadding = 16;
+  static const double borderWidth = 1.0;
 
   AvesDialog({
     Key? key,

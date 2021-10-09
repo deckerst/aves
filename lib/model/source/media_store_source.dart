@@ -127,6 +127,7 @@ class MediaStoreSource extends CollectionSource {
   // 2) registered in the Media Store but still being processed by their owner in a temporary location
   // For example, when taking a picture with a Galaxy S10e default camera app, querying the Media Store
   // sometimes yields an entry with its temporary path: `/data/sec/camera/!@#$%^..._temp.jpg`
+  @override
   Future<Set<String>> refreshUris(Set<String> changedUris) async {
     if (!_initialized || !isMonitoring) return changedUris;
 
