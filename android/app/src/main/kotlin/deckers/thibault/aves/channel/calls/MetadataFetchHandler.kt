@@ -52,10 +52,10 @@ import deckers.thibault.aves.metadata.XMP.isPanorama
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
-import deckers.thibault.aves.utils.MimeTypes.isHeic
-import deckers.thibault.aves.utils.MimeTypes.isImage
 import deckers.thibault.aves.utils.MimeTypes.canReadWithExifInterface
 import deckers.thibault.aves.utils.MimeTypes.canReadWithMetadataExtractor
+import deckers.thibault.aves.utils.MimeTypes.isHeic
+import deckers.thibault.aves.utils.MimeTypes.isImage
 import deckers.thibault.aves.utils.MimeTypes.isVideo
 import deckers.thibault.aves.utils.MimeTypes.tiffExtensionPattern
 import deckers.thibault.aves.utils.StorageUtils
@@ -104,113 +104,125 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                     foundExif = metadata.containsDirectoryOfType(ExifDirectoryBase::class.java)
                     foundXmp = metadata.containsDirectoryOfType(XmpDirectory::class.java)
                     val uuidDirCount = HashMap<String, Int>()
-                    for (dir in metadata.directories.filter {
+                    val dirByName = metadata.directories.filter {
                         it.tagCount > 0
                                 && it !is FileTypeDirectory
                                 && it !is AviDirectory
-                    }) {
-                        // directory name
-                        var dirName = dir.name
-                        if (dir is Mp4UuidBoxDirectory) {
-                            val uuid = dir.getString(Mp4UuidBoxDirectory.TAG_UUID).substringBefore('-')
-                            dirName += " $uuid"
-
-                            val count = uuidDirCount[uuid] ?: 0
-                            uuidDirCount[uuid] = count + 1
-                            if (count > 0) {
-                                dirName += " ($count)"
-                            }
-                        }
+                    }.groupBy { dir -> dir.name }
+                    for (dirEntry in dirByName) {
+                        val baseDirName = dirEntry.key
 
                         // exclude directories known to be redundant with info derived on the Dart side
                         // they are excluded by name instead of runtime type because excluding `Mp4Directory`
                         // would also exclude derived directories, such as `Mp4UuidBoxDirectory`
-                        if (allMetadataRedundantDirNames.contains(dirName)) continue
+                        if (allMetadataRedundantDirNames.contains(baseDirName)) continue
 
-                        // optional parent to distinguish child directories of the same type
-                        dir.parent?.name?.let { dirName = "$it/$dirName" }
+                        val sameNameDirs = dirEntry.value
+                        val sameNameDirCount = sameNameDirs.size
+                        for (dirIndex in 0 until sameNameDirCount) {
+                            val dir = sameNameDirs[dirIndex]
 
-                        val dirMap = metadataMap[dirName] ?: HashMap()
-                        metadataMap[dirName] = dirMap
+                            // directory name
+                            var thisDirName = baseDirName
+                            if (dir is Mp4UuidBoxDirectory) {
+                                val uuid = dir.getString(Mp4UuidBoxDirectory.TAG_UUID).substringBefore('-')
+                                thisDirName += " $uuid"
 
-                        // tags
-                        val tags = dir.tags
-                        if (mimeType == MimeTypes.TIFF && (dir is ExifIFD0Directory || dir is ExifThumbnailDirectory)) {
-                            fun tagMapper(it: Tag): Pair<String, String> {
-                                val name = if (it.hasTagName()) {
-                                    it.tagName
+                                val count = uuidDirCount[uuid] ?: 0
+                                uuidDirCount[uuid] = count + 1
+                                if (count > 0) {
+                                    thisDirName += " ($count)"
+                                }
+                            } else if (sameNameDirCount > 1 && !allMetadataMergeableDirNames.contains(baseDirName)) {
+                                // optional count for multiple directories of the same type
+                                thisDirName = "$thisDirName[${dirIndex + 1}]"
+                            }
+
+                            // optional parent to distinguish child directories of the same type
+                            dir.parent?.name?.let { thisDirName = "$it/$thisDirName" }
+
+                            val dirMap = metadataMap[thisDirName] ?: HashMap()
+                            metadataMap[thisDirName] = dirMap
+
+                            // tags
+                            val tags = dir.tags
+                            if (mimeType == MimeTypes.TIFF && (dir is ExifIFD0Directory || dir is ExifThumbnailDirectory)) {
+                                fun tagMapper(it: Tag): Pair<String, String> {
+                                    val name = if (it.hasTagName()) {
+                                        it.tagName
+                                    } else {
+                                        TiffTags.getTagName(it.tagType) ?: it.tagName
+                                    }
+                                    return Pair(name, it.description)
+                                }
+
+                                if (dir is ExifIFD0Directory && dir.isGeoTiff()) {
+                                    // split GeoTIFF tags in their own directory
+                                    val byGeoTiff = tags.groupBy { TiffTags.isGeoTiffTag(it.tagType) }
+                                    metadataMap["GeoTIFF"] = HashMap<String, String>().apply {
+                                        byGeoTiff[true]?.map { tagMapper(it) }?.let { putAll(it) }
+                                    }
+                                    byGeoTiff[false]?.map { tagMapper(it) }?.let { dirMap.putAll(it) }
                                 } else {
-                                    TiffTags.getTagName(it.tagType) ?: it.tagName
+                                    dirMap.putAll(tags.map { tagMapper(it) })
                                 }
-                                return Pair(name, it.description)
-                            }
-
-                            if (dir is ExifIFD0Directory && dir.isGeoTiff()) {
-                                // split GeoTIFF tags in their own directory
-                                val byGeoTiff = tags.groupBy { TiffTags.isGeoTiffTag(it.tagType) }
-                                metadataMap["GeoTIFF"] = HashMap<String, String>().apply {
-                                    byGeoTiff[true]?.map { tagMapper(it) }?.let { putAll(it) }
-                                }
-                                byGeoTiff[false]?.map { tagMapper(it) }?.let { dirMap.putAll(it) }
                             } else {
-                                dirMap.putAll(tags.map { tagMapper(it) })
+                                dirMap.putAll(tags.map { Pair(it.tagName, it.description) })
                             }
-                        } else {
-                            dirMap.putAll(tags.map { Pair(it.tagName, it.description) })
-                        }
-                        if (dir is XmpDirectory) {
-                            try {
-                                for (prop in dir.xmpMeta) {
-                                    if (prop is XMPPropertyInfo) {
-                                        val path = prop.path
-                                        if (path?.isNotEmpty() == true) {
-                                            val value = if (XMP.isDataPath(path)) "[skipped]" else prop.value
-                                            if (value?.isNotEmpty() == true) {
-                                                dirMap[path] = value
+                            if (dir is XmpDirectory) {
+                                try {
+                                    for (prop in dir.xmpMeta) {
+                                        if (prop is XMPPropertyInfo) {
+                                            val path = prop.path
+                                            if (path?.isNotEmpty() == true) {
+                                                val value = if (XMP.isDataPath(path)) "[skipped]" else prop.value
+                                                if (value?.isNotEmpty() == true) {
+                                                    dirMap[path] = value
+                                                }
                                             }
                                         }
                                     }
+                                } catch (e: XMPException) {
+                                    Log.w(LOG_TAG, "failed to read XMP directory for uri=$uri", e)
                                 }
-                            } catch (e: XMPException) {
-                                Log.w(LOG_TAG, "failed to read XMP directory for uri=$uri", e)
+                                // remove this stat as it is not actual XMP data
+                                dirMap.remove(dir.getTagName(XmpDirectory.TAG_XMP_VALUE_COUNT))
                             }
-                            // remove this stat as it is not actual XMP data
-                            dirMap.remove(dir.getTagName(XmpDirectory.TAG_XMP_VALUE_COUNT))
-                        }
 
-                        if (dir is Mp4UuidBoxDirectory) {
-                            when (dir.getString(Mp4UuidBoxDirectory.TAG_UUID)) {
-                                GSpherical.SPHERICAL_VIDEO_V1_UUID -> {
-                                    val bytes = dir.getByteArray(Mp4UuidBoxDirectory.TAG_USER_DATA)
-                                    metadataMap["Spherical Video"] = HashMap(GSpherical(bytes).describe())
-                                    metadataMap.remove(dirName)
-                                }
-                                QuickTimeMetadata.PROF_UUID -> {
-                                    // redundant with info derived on the Dart side
-                                    metadataMap.remove(dirName)
-                                }
-                                QuickTimeMetadata.USMT_UUID -> {
-                                    val bytes = dir.getByteArray(Mp4UuidBoxDirectory.TAG_USER_DATA)
-                                    val blocks = QuickTimeMetadata.parseUuidUsmt(bytes)
-                                    if (blocks.isNotEmpty()) {
-                                        metadataMap.remove(dirName)
-                                        dirName = "QuickTime User Media"
-                                        val usmt = metadataMap[dirName] ?: HashMap()
-                                        metadataMap[dirName] = usmt
+                            if (dir is Mp4UuidBoxDirectory) {
+                                when (dir.getString(Mp4UuidBoxDirectory.TAG_UUID)) {
+                                    GSpherical.SPHERICAL_VIDEO_V1_UUID -> {
+                                        val bytes = dir.getByteArray(Mp4UuidBoxDirectory.TAG_USER_DATA)
+                                        metadataMap["Spherical Video"] = HashMap(GSpherical(bytes).describe())
+                                        metadataMap.remove(thisDirName)
+                                    }
+                                    QuickTimeMetadata.PROF_UUID -> {
+                                        // redundant with info derived on the Dart side
+                                        metadataMap.remove(thisDirName)
+                                    }
+                                    QuickTimeMetadata.USMT_UUID -> {
+                                        val bytes = dir.getByteArray(Mp4UuidBoxDirectory.TAG_USER_DATA)
+                                        val blocks = QuickTimeMetadata.parseUuidUsmt(bytes)
+                                        if (blocks.isNotEmpty()) {
+                                            metadataMap.remove(thisDirName)
+                                            thisDirName = "QuickTime User Media"
+                                            val usmt = metadataMap[thisDirName] ?: HashMap()
+                                            metadataMap[thisDirName] = usmt
 
-                                        blocks.forEach {
-                                            var key = it.type
-                                            var value = it.value
-                                            val language = it.language
+                                            blocks.forEach {
+                                                var key = it.type
+                                                var value = it.value
+                                                val language = it.language
 
-                                            var i = 0
-                                            while (usmt.containsKey(key)) {
-                                                key = it.type + " (${++i})"
+                                                var i = 0
+                                                while (usmt.containsKey(key)) {
+                                                    key = it.type + " (${++i})"
+                                                }
+                                                if (language != "und") {
+                                                    value += " ($language)"
+                                                }
+                                                usmt[key] = value
                                             }
-                                            if (language != "und") {
-                                                value += " ($language)"
-                                            }
-                                            usmt[key] = value
                                         }
                                     }
                                 }
@@ -766,6 +778,16 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             "QuickTime",
             "QuickTime Sound",
             "QuickTime Video",
+        )
+        private val allMetadataMergeableDirNames = setOf(
+            "Exif SubIFD",
+            "GIF Control",
+            "GIF Image",
+            "HEIF",
+            "ICC Profile",
+            "IPTC",
+            "WebP",
+            "XMP",
         )
 
         // catalog metadata
