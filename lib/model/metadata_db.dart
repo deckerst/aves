@@ -98,7 +98,6 @@ class SqfliteMetadataDb implements MetadataDb {
 
   @override
   Future<void> init() async {
-    debugPrint('$runtimeType init');
     _database = openDatabase(
       await path,
       onCreate: (db, version) async {

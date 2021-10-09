@@ -55,6 +55,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) => const Scaffold();
 
   Future<void> _setup() async {
+    final stopwatch = Stopwatch()..start();
     final permissions = await [
       Permission.storage,
       // to access media with unredacted metadata with scoped storage (Android 10+)
@@ -66,6 +67,7 @@ class _HomePageState extends State<HomePage> {
     }
 
     await androidFileUtils.init();
+    unawaited(androidFileUtils.initAppNames());
 
     var appMode = AppMode.main;
     final intentData = widget.intentData ?? await ViewerService.getIntentData();
@@ -107,6 +109,7 @@ class _HomePageState extends State<HomePage> {
     unawaited(reportService.setCustomKey('app_mode', appMode.toString()));
 
     if (appMode != AppMode.view) {
+      debugPrint('Storage check complete in ${stopwatch.elapsed.inMilliseconds}ms');
       final source = context.read<CollectionSource>();
       await source.init();
       unawaited(source.refresh());

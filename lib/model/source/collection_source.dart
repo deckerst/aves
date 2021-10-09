@@ -70,9 +70,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
   late Map<int?, int?> _savedDates;
 
   Future<void> loadDates() async {
-    final stopwatch = Stopwatch()..start();
     _savedDates = Map.unmodifiable(await metadataDb.loadDates());
-    debugPrint('$runtimeType loadDates complete in ${stopwatch.elapsed.inMilliseconds}ms for ${_savedDates.length} entries');
   }
 
   Iterable<AvesEntry> _applyHiddenFilters(Iterable<AvesEntry> entries) {
