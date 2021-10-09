@@ -26,6 +26,7 @@ class XMP {
     'GPano': 'Google Panorama',
     'illustrator': 'Illustrator',
     'Iptc4xmpCore': 'IPTC Core',
+    'Iptc4xmpExt': 'IPTC Extension',
     'lr': 'Lightroom',
     'MicrosoftPhoto': 'Microsoft Photo',
     'mwg-rs': 'Regions',
