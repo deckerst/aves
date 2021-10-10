@@ -12,6 +12,7 @@ import androidx.exifinterface.media.ExifInterface
 import com.adobe.internal.xmp.XMPException
 import com.adobe.internal.xmp.properties.XMPPropertyInfo
 import com.drew.imaging.ImageMetadataReader
+import com.drew.lang.KeyValuePair
 import com.drew.lang.Rational
 import com.drew.metadata.Tag
 import com.drew.metadata.avi.AviDirectory
@@ -66,6 +67,7 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.nio.charset.StandardCharsets
 import java.text.ParseException
 import java.util.*
 import kotlin.math.roundToLong
@@ -165,6 +167,22 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                                     byGeoTiff[false]?.map { tagMapper(it) }?.let { dirMap.putAll(it) }
                                 } else {
                                     dirMap.putAll(tags.map { tagMapper(it) })
+                                }
+                            } else if (dir is PngDirectory) {
+                                for (tag in tags) {
+                                    val tagType = tag.tagType
+                                    if (tagType == PngDirectory.TAG_TEXTUAL_DATA) {
+                                        val pairs = dir.getObject(tagType) as List<*>
+                                        dirMap.putAll(pairs.map {
+                                            val kv = it as KeyValuePair
+                                            // PNG spec says encoding charset is always Latin-1 / ISO-8859-1
+                                            // but in practice UTF-8 is sometimes used in PNG-iTXt chunks
+                                            val charset = if (baseDirName == "PNG-iTXt") StandardCharsets.UTF_8 else kv.value.charset
+                                            Pair(kv.key, String(kv.value.bytes, charset))
+                                        })
+                                    } else {
+                                        dirMap[tag.tagName] = tag.description
+                                    }
                                 }
                             } else {
                                 dirMap.putAll(tags.map { Pair(it.tagName, it.description) })
