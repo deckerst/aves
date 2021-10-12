@@ -122,7 +122,7 @@ abstract class ImageProvider {
 
         var desiredNameWithoutExtension = if (sourceEntry.path != null) {
             val sourceFileName = File(sourceEntry.path).name
-            sourceFileName.replaceFirst("[.][^.]+$".toRegex(), "")
+            sourceFileName.replaceFirst(FILE_EXTENSION_PATTERN, "")
         } else {
             sourceUri.lastPathSegment!!
         }
@@ -764,6 +764,8 @@ abstract class ImageProvider {
 
     companion object {
         private val LOG_TAG = LogUtils.createTag<ImageProvider>()
+
+        val FILE_EXTENSION_PATTERN = Regex("[.][^.]+$")
 
         val supportedExportMimeTypes = listOf(MimeTypes.BMP, MimeTypes.JPEG, MimeTypes.PNG, MimeTypes.WEBP)
 

@@ -345,7 +345,7 @@ class MediaStoreImageProvider : ImageProvider() {
         }
 
         val sourceFileName = sourceFile.name
-        val desiredNameWithoutExtension = sourceFileName.replaceFirst("[.][^.]+$".toRegex(), "")
+        val desiredNameWithoutExtension = sourceFileName.replaceFirst(FILE_EXTENSION_PATTERN, "")
         val targetNameWithoutExtension = resolveTargetFileNameWithoutExtension(
             activity = activity,
             dir = destinationDir,
