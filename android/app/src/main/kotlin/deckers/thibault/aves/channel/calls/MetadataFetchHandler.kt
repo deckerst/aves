@@ -34,16 +34,20 @@ import deckers.thibault.aves.metadata.ExifInterfaceHelper.getSafeRational
 import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper.getSafeDateMillis
 import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper.getSafeDescription
 import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper.getSafeInt
+import deckers.thibault.aves.metadata.Metadata.DIR_PNG_TEXTUAL_DATA
 import deckers.thibault.aves.metadata.Metadata.getRotationDegreesForExifCode
 import deckers.thibault.aves.metadata.Metadata.isFlippedForExifCode
+import deckers.thibault.aves.metadata.MetadataExtractorHelper.PNG_ITXT_DIR_NAME
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.PNG_LAST_MODIFICATION_TIME_FORMAT
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.PNG_TIME_DIR_NAME
+import deckers.thibault.aves.metadata.MetadataExtractorHelper.extractPngProfile
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeBoolean
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeDateMillis
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeInt
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeRational
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeString
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.isGeoTiff
+import deckers.thibault.aves.metadata.MetadataExtractorHelper.isPngTextDir
 import deckers.thibault.aves.metadata.XMP.getSafeDateMillis
 import deckers.thibault.aves.metadata.XMP.getSafeInt
 import deckers.thibault.aves.metadata.XMP.getSafeLocalizedText
@@ -53,12 +57,12 @@ import deckers.thibault.aves.metadata.XMP.isPanorama
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
+import deckers.thibault.aves.utils.MimeTypes.TIFF_EXTENSION_PATTERN
 import deckers.thibault.aves.utils.MimeTypes.canReadWithExifInterface
 import deckers.thibault.aves.utils.MimeTypes.canReadWithMetadataExtractor
 import deckers.thibault.aves.utils.MimeTypes.isHeic
 import deckers.thibault.aves.utils.MimeTypes.isImage
 import deckers.thibault.aves.utils.MimeTypes.isVideo
-import deckers.thibault.aves.utils.MimeTypes.tiffExtensionPattern
 import deckers.thibault.aves.utils.StorageUtils
 import deckers.thibault.aves.utils.UriUtils.tryParseId
 import io.flutter.plugin.common.MethodCall
@@ -143,7 +147,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                             // optional parent to distinguish child directories of the same type
                             dir.parent?.name?.let { thisDirName = "$it/$thisDirName" }
 
-                            val dirMap = metadataMap[thisDirName] ?: HashMap()
+                            var dirMap = metadataMap[thisDirName] ?: HashMap()
                             metadataMap[thisDirName] = dirMap
 
                             // tags
@@ -168,18 +172,35 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                                 } else {
                                     dirMap.putAll(tags.map { tagMapper(it) })
                                 }
-                            } else if (dir is PngDirectory) {
+                            } else if (dir.isPngTextDir()) {
+                                metadataMap.remove(thisDirName)
+                                dirMap = metadataMap[DIR_PNG_TEXTUAL_DATA] ?: HashMap()
+                                metadataMap[DIR_PNG_TEXTUAL_DATA] = dirMap
+
                                 for (tag in tags) {
                                     val tagType = tag.tagType
                                     if (tagType == PngDirectory.TAG_TEXTUAL_DATA) {
                                         val pairs = dir.getObject(tagType) as List<*>
-                                        dirMap.putAll(pairs.map {
-                                            val kv = it as KeyValuePair
-                                            // PNG spec says encoding charset is always Latin-1 / ISO-8859-1
-                                            // but in practice UTF-8 is sometimes used in PNG-iTXt chunks
-                                            val charset = if (baseDirName == "PNG-iTXt") StandardCharsets.UTF_8 else kv.value.charset
-                                            Pair(kv.key, String(kv.value.bytes, charset))
-                                        })
+                                        val textPairs = pairs.map { pair ->
+                                            val kv = pair as KeyValuePair
+                                            val key = kv.key
+                                            // `PNG-iTXt` uses UTF-8, contrary to `PNG-tEXt` and `PNG-zTXt` using Latin-1 / ISO-8859-1
+                                            val charset = if (baseDirName == PNG_ITXT_DIR_NAME) StandardCharsets.UTF_8 else kv.value.charset
+                                            val valueString = String(kv.value.bytes, charset)
+                                            val dirs = extractPngProfile(key, valueString)
+                                            if (dirs?.any() == true) {
+                                                dirs.forEach { profileDir ->
+                                                    val profileDirName = profileDir.name
+                                                    val profileDirMap = metadataMap[profileDirName] ?: HashMap()
+                                                    metadataMap[profileDirName] = profileDirMap
+                                                    profileDirMap.putAll(profileDir.tags.map { Pair(it.tagName, it.description) })
+                                                }
+                                                null
+                                            } else {
+                                                Pair(key, valueString)
+                                            }
+                                        }
+                                        dirMap.putAll(textPairs.filterNotNull())
                                     } else {
                                         dirMap[tag.tagName] = tag.description
                                     }
@@ -383,7 +404,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                         // In the end, `metadata-extractor` is the most reliable, except for `tiff` (false positives, false negatives),
                         // in which case we trust the file extension
                         // cf https://github.com/drewnoakes/metadata-extractor/issues/296
-                        if (path?.matches(tiffExtensionPattern) == true) {
+                        if (path?.matches(TIFF_EXTENSION_PATTERN) == true) {
                             metadataMap[KEY_MIME_TYPE] = MimeTypes.TIFF
                         } else {
                             dir.getSafeString(FileTypeDirectory.TAG_DETECTED_FILE_MIME_TYPE) {

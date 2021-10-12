@@ -170,7 +170,7 @@ class ImageByteStreamHandler(private val activity: Activity, private val argumen
     private fun toErrorDetails(e: Exception): String? {
         val errorDetails = e.message
         return if (errorDetails?.isNotEmpty() == true) {
-            errorDetails.split("\n".toRegex(), 2).first()
+            errorDetails.split(Regex("\n"), 2).first()
         } else {
             errorDetails
         }

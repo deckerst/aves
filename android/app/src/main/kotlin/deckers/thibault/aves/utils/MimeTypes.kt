@@ -180,5 +180,5 @@ object MimeTypes {
         else -> null
     }
 
-    val tiffExtensionPattern = Regex(".*\\.tiff?", RegexOption.IGNORE_CASE)
+    val TIFF_EXTENSION_PATTERN = Regex(".*\\.tiff?", RegexOption.IGNORE_CASE)
 }

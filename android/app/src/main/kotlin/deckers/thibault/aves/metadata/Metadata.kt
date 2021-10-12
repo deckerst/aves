@@ -17,6 +17,8 @@ import java.util.regex.Pattern
 object Metadata {
     private val LOG_TAG = LogUtils.createTag<Metadata>()
 
+    const val IPTC_MARKER_BYTE: Byte = 0x1c
+
     // Pattern to extract latitude & longitude from a video location tag (cf ISO 6709)
     // Examples:
     // "+37.5090+127.0243/" (Samsung)
@@ -31,6 +33,7 @@ object Metadata {
     const val DIR_XMP = "XMP" // from metadata-extractor
     const val DIR_MEDIA = "Media" // custom
     const val DIR_COVER_ART = "Cover" // custom
+    const val DIR_PNG_TEXTUAL_DATA = "PNG Textual Data" // custom
 
     // types of metadata
     const val TYPE_EXIF = "exif"

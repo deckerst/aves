@@ -29,6 +29,9 @@ import java.util.regex.Pattern
 object StorageUtils {
     private val LOG_TAG = LogUtils.createTag<StorageUtils>()
 
+    private const val TREE_URI_ROOT = "content://com.android.externalstorage.documents/tree/"
+    private val TREE_URI_PATH_PATTERN = Pattern.compile("(.*?):(.*)")
+
     /**
      * Volume paths
      */
@@ -269,8 +272,8 @@ object StorageUtils {
     // content://com.android.externalstorage.documents/tree/primary%3A              -> /storage/emulated/0/
     // content://com.android.externalstorage.documents/tree/10F9-3F13%3APictures    -> /storage/10F9-3F13/Pictures/
     fun convertTreeUriToDirPath(context: Context, treeUri: Uri): String? {
-        val encoded = treeUri.toString().substring("content://com.android.externalstorage.documents/tree/".length)
-        val matcher = Pattern.compile("(.*?):(.*)").matcher(Uri.decode(encoded))
+        val encoded = treeUri.toString().substring(TREE_URI_ROOT.length)
+        val matcher = TREE_URI_PATH_PATTERN.matcher(Uri.decode(encoded))
         with(matcher) {
             if (find()) {
                 val uuid = group(1)
