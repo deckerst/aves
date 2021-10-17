@@ -434,17 +434,18 @@ class AvesEntry {
     addressDetails = null;
   }
 
-  Future<void> catalog({bool background = false, bool persist = true, bool force = false}) async {
+  Future<void> catalog({required bool background, required bool persist, required bool force}) async {
     if (isCatalogued && !force) return;
     if (isSvg) {
       // vector image sizing is not essential, so we should not spend time for it during loading
       // but it is useful anyway (for aspect ratios etc.) so we size them during cataloguing
       final size = await SvgMetadataService.getSize(this);
       if (size != null) {
-        await _applyNewFields({
+        final fields = {
           'width': size.width.ceil(),
           'height': size.height.ceil(),
-        }, persist: persist);
+        };
+        await _applyNewFields(fields, persist: persist);
       }
       catalogMetadata = CatalogMetadata(contentId: contentId);
     } else {
@@ -468,17 +469,17 @@ class AvesEntry {
     addressChangeNotifier.notifyListeners();
   }
 
-  Future<void> locate({required bool background}) async {
+  Future<void> locate({required bool background, required bool force}) async {
     if (!hasGps) return;
-    await _locateCountry();
+    await _locateCountry(force: force);
     if (await availability.canLocatePlaces) {
-      await locatePlace(background: background);
+      await locatePlace(background: background, force: force);
     }
   }
 
   // quick reverse geocoding to find the country, using an offline asset
-  Future<void> _locateCountry() async {
-    if (!hasGps || hasAddress) return;
+  Future<void> _locateCountry({required bool force}) async {
+    if (!hasGps || (hasAddress && !force)) return;
     final countryCode = await countryTopology.countryCode(latLng!);
     setCountry(countryCode);
   }
@@ -500,8 +501,8 @@ class AvesEntry {
   }
 
   // full reverse geocoding, requiring Play Services and some connectivity
-  Future<void> locatePlace({required bool background}) async {
-    if (!hasGps || hasFineAddress) return;
+  Future<void> locatePlace({required bool background, required bool force}) async {
+    if (!hasGps || (hasFineAddress && !force)) return;
     try {
       Future<List<Address>> call() => GeocodingService.getAddress(latLng!, geocoderLocale);
       final addresses = await (background
@@ -564,6 +565,10 @@ class AvesEntry {
       }.any((s) => s != null && s.toUpperCase().contains(query));
 
   Future<void> _applyNewFields(Map newFields, {required bool persist}) async {
+    final oldDateModifiedSecs = this.dateModifiedSecs;
+    final oldRotationDegrees = this.rotationDegrees;
+    final oldIsFlipped = this.isFlipped;
+
     final uri = newFields['uri'];
     if (uri is String) this.uri = uri;
     final path = newFields['path'];
@@ -599,10 +604,11 @@ class AvesEntry {
       if (catalogMetadata != null) await metadataDb.saveMetadata({catalogMetadata!});
     }
 
+    await _onVisualFieldChanged(oldDateModifiedSecs, oldRotationDegrees, oldIsFlipped);
     metadataChangeNotifier.notifyListeners();
   }
 
-  Future<void> refresh({required bool persist}) async {
+  Future<void> refresh({required bool background, required bool persist, required bool force}) async {
     _catalogMetadata = null;
     _addressDetails = null;
     _bestDate = null;
@@ -614,13 +620,9 @@ class AvesEntry {
 
     final updated = await mediaFileService.getEntry(uri, mimeType);
     if (updated != null) {
-      final oldDateModifiedSecs = dateModifiedSecs;
-      final oldRotationDegrees = rotationDegrees;
-      final oldIsFlipped = isFlipped;
       await _applyNewFields(updated.toMap(), persist: persist);
-      await catalog(background: false, persist: persist);
-      await locate(background: false);
-      await _onVisualFieldChanged(oldDateModifiedSecs, oldRotationDegrees, oldIsFlipped);
+      await catalog(background: background, persist: persist, force: force);
+      await locate(background: background, force: force);
     }
   }
 
@@ -628,11 +630,7 @@ class AvesEntry {
     final newFields = await metadataEditService.rotate(this, clockwise: clockwise);
     if (newFields.isEmpty) return false;
 
-    final oldDateModifiedSecs = dateModifiedSecs;
-    final oldRotationDegrees = rotationDegrees;
-    final oldIsFlipped = isFlipped;
     await _applyNewFields(newFields, persist: persist);
-    await _onVisualFieldChanged(oldDateModifiedSecs, oldRotationDegrees, oldIsFlipped);
     return true;
   }
 
@@ -640,11 +638,7 @@ class AvesEntry {
     final newFields = await metadataEditService.flip(this);
     if (newFields.isEmpty) return false;
 
-    final oldDateModifiedSecs = dateModifiedSecs;
-    final oldRotationDegrees = rotationDegrees;
-    final oldIsFlipped = isFlipped;
     await _applyNewFields(newFields, persist: persist);
-    await _onVisualFieldChanged(oldDateModifiedSecs, oldRotationDegrees, oldIsFlipped);
     return true;
   }
 

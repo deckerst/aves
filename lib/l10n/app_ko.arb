@@ -27,7 +27,8 @@
 
   "sourceStateLoading": "로딩 중",
   "sourceStateCataloguing": "분석 중",
-  "sourceStateLocating": "장소 찾는 중",
+  "sourceStateLocatingCountries": "국가 찾는 중",
+  "sourceStateLocatingPlaces": "장소 찾는 중",
 
   "chipActionDelete": "삭제",
   "chipActionGoToAlbumPage": "앨범 페이지에서 보기",

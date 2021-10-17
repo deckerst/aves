@@ -170,7 +170,6 @@ class SqfliteMetadataDb implements MetadataDb {
   Future<void> removeIds(Set<int> contentIds, {required bool metadataOnly}) async {
     if (contentIds.isEmpty) return;
 
-    // final stopwatch = Stopwatch()..start();
     final db = await _database;
     // using array in `whereArgs` and using it with `where contentId IN ?` is a pain, so we prefer `batch` instead
     final batch = db.batch();
@@ -187,7 +186,6 @@ class SqfliteMetadataDb implements MetadataDb {
       }
     });
     await batch.commit(noResult: true);
-    // debugPrint('$runtimeType removeIds complete in ${stopwatch.elapsed.inMilliseconds}ms for ${contentIds.length} entries');
   }
 
   // entries
@@ -201,11 +199,9 @@ class SqfliteMetadataDb implements MetadataDb {
 
   @override
   Future<Set<AvesEntry>> loadEntries() async {
-    // final stopwatch = Stopwatch()..start();
     final db = await _database;
     final maps = await db.query(entryTable);
     final entries = maps.map((map) => AvesEntry.fromMap(map)).toSet();
-    // debugPrint('$runtimeType loadEntries complete in ${stopwatch.elapsed.inMilliseconds}ms for ${entries.length} entries');
     return entries;
   }
 

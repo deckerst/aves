@@ -39,6 +39,11 @@ class DebugSettingsSection extends StatelessWidget {
               title: const Text('hasAcceptedTerms'),
             ),
             SwitchListTile(
+              value: settings.canUseAnalysisService,
+              onChanged: (v) => settings.canUseAnalysisService = v,
+              title: const Text('canUseAnalysisService'),
+            ),
+            SwitchListTile(
               value: settings.videoShowRawTimedText,
               onChanged: (v) => settings.videoShowRawTimedText = v,
               title: const Text('videoShowRawTimedText'),

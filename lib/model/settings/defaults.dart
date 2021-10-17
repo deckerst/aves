@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 class SettingsDefaults {
   // app
   static const hasAcceptedTerms = false;
+  static const canUseAnalysisService = true;
   static const isErrorReportingEnabled = false;
   static const mustBackTwiceToExit = true;
   static const keepScreenOn = KeepScreenOn.viewerOnly;

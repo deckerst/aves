@@ -1,6 +1,6 @@
 package deckers.thibault.aves.channel.streams
 
-import android.app.Activity
+import android.content.Context
 import android.net.Uri
 import android.os.Handler
 import android.os.Looper
@@ -16,8 +16,8 @@ import deckers.thibault.aves.utils.BitmapUtils.applyExifOrientation
 import deckers.thibault.aves.utils.BitmapUtils.getBytes
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
-import deckers.thibault.aves.utils.MimeTypes.isHeic
 import deckers.thibault.aves.utils.MimeTypes.canDecodeWithFlutter
+import deckers.thibault.aves.utils.MimeTypes.isHeic
 import deckers.thibault.aves.utils.MimeTypes.isVideo
 import deckers.thibault.aves.utils.MimeTypes.needRotationAfterGlide
 import deckers.thibault.aves.utils.StorageUtils
@@ -26,10 +26,9 @@ import io.flutter.plugin.common.EventChannel.EventSink
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import java.io.IOException
 import java.io.InputStream
 
-class ImageByteStreamHandler(private val activity: Activity, private val arguments: Any?) : EventChannel.StreamHandler {
+class ImageByteStreamHandler(private val context: Context, private val arguments: Any?) : EventChannel.StreamHandler {
     private lateinit var eventSink: EventSink
     private lateinit var handler: Handler
 
@@ -108,7 +107,7 @@ class ImageByteStreamHandler(private val activity: Activity, private val argumen
 
     private fun streamImageAsIs(uri: Uri, mimeType: String) {
         try {
-            StorageUtils.openInputStream(activity, uri)?.use { input -> streamBytes(input) }
+            StorageUtils.openInputStream(context, uri)?.use { input -> streamBytes(input) }
         } catch (e: Exception) {
             error("streamImage-image-read-exception", "failed to get image for mimeType=$mimeType uri=$uri", e.message)
         }
@@ -116,14 +115,14 @@ class ImageByteStreamHandler(private val activity: Activity, private val argumen
 
     private suspend fun streamImageByGlide(uri: Uri, pageId: Int?, mimeType: String, rotationDegrees: Int, isFlipped: Boolean) {
         val model: Any = if (isHeic(mimeType) && pageId != null) {
-            MultiTrackImage(activity, uri, pageId)
+            MultiTrackImage(context, uri, pageId)
         } else if (mimeType == MimeTypes.TIFF) {
-            TiffImage(activity, uri, pageId)
+            TiffImage(context, uri, pageId)
         } else {
             StorageUtils.getGlideSafeUri(uri, mimeType)
         }
 
-        val target = Glide.with(activity)
+        val target = Glide.with(context)
             .asBitmap()
             .apply(glideOptions)
             .load(model)
@@ -132,7 +131,7 @@ class ImageByteStreamHandler(private val activity: Activity, private val argumen
             @Suppress("BlockingMethodInNonBlockingContext")
             var bitmap = target.get()
             if (needRotationAfterGlide(mimeType)) {
-                bitmap = applyExifOrientation(activity, bitmap, rotationDegrees, isFlipped)
+                bitmap = applyExifOrientation(context, bitmap, rotationDegrees, isFlipped)
             }
             if (bitmap != null) {
                 success(bitmap.getBytes(MimeTypes.canHaveAlpha(mimeType), recycle = false))
@@ -142,15 +141,15 @@ class ImageByteStreamHandler(private val activity: Activity, private val argumen
         } catch (e: Exception) {
             error("streamImage-image-decode-exception", "failed to get image for mimeType=$mimeType uri=$uri model=$model", toErrorDetails(e))
         } finally {
-            Glide.with(activity).clear(target)
+            Glide.with(context).clear(target)
         }
     }
 
     private suspend fun streamVideoByGlide(uri: Uri, mimeType: String) {
-        val target = Glide.with(activity)
+        val target = Glide.with(context)
             .asBitmap()
             .apply(glideOptions)
-            .load(VideoThumbnail(activity, uri))
+            .load(VideoThumbnail(context, uri))
             .submit()
         try {
             @Suppress("BlockingMethodInNonBlockingContext")
@@ -163,7 +162,7 @@ class ImageByteStreamHandler(private val activity: Activity, private val argumen
         } catch (e: Exception) {
             error("streamImage-video-exception", "failed to get image for mimeType=$mimeType uri=$uri", e.message)
         } finally {
-            Glide.with(activity).clear(target)
+            Glide.with(context).clear(target)
         }
     }
 

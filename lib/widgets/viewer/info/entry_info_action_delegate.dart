@@ -40,9 +40,9 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin {
     final success = await apply();
     if (success) {
       if (_isMainMode(context) && source != null) {
-        await source.refreshMetadata({entry});
+        await source.refreshEntry(entry);
       } else {
-        await entry.refresh(persist: false);
+        await entry.refresh(background: false, persist: false, force: true);
       }
       showFeedback(context, l10n.genericSuccessFeedback);
     } else {

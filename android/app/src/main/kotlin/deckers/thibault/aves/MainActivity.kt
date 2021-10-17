@@ -27,7 +27,9 @@ class MainActivity : FlutterActivity() {
     private lateinit var mediaStoreChangeStreamHandler: MediaStoreChangeStreamHandler
     private lateinit var settingsChangeStreamHandler: SettingsChangeStreamHandler
     private lateinit var intentStreamHandler: IntentStreamHandler
+    private lateinit var analysisStreamHandler: AnalysisStreamHandler
     private lateinit var intentDataMap: MutableMap<String, Any?>
+    private lateinit var analysisHandler: AnalysisHandler
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.i(LOG_TAG, "onCreate intent=$intent")
@@ -52,24 +54,30 @@ class MainActivity : FlutterActivity() {
         val messenger = flutterEngine!!.dartExecutor.binaryMessenger
 
         // dart -> platform -> dart
-        MethodChannel(messenger, AccessibilityHandler.CHANNEL).setMethodCallHandler(AccessibilityHandler(this))
+        // - need Context
+        analysisHandler = AnalysisHandler(this, ::onAnalysisCompleted)
+        MethodChannel(messenger, AnalysisHandler.CHANNEL).setMethodCallHandler(analysisHandler)
         MethodChannel(messenger, AppAdapterHandler.CHANNEL).setMethodCallHandler(AppAdapterHandler(this))
         MethodChannel(messenger, DebugHandler.CHANNEL).setMethodCallHandler(DebugHandler(this))
         MethodChannel(messenger, DeviceHandler.CHANNEL).setMethodCallHandler(DeviceHandler())
         MethodChannel(messenger, EmbeddedDataHandler.CHANNEL).setMethodCallHandler(EmbeddedDataHandler(this))
         MethodChannel(messenger, GeocodingHandler.CHANNEL).setMethodCallHandler(GeocodingHandler(this))
         MethodChannel(messenger, GlobalSearchHandler.CHANNEL).setMethodCallHandler(GlobalSearchHandler(this))
-        MethodChannel(messenger, MediaFileHandler.CHANNEL).setMethodCallHandler(MediaFileHandler(this))
         MethodChannel(messenger, MediaStoreHandler.CHANNEL).setMethodCallHandler(MediaStoreHandler(this))
-        MethodChannel(messenger, MetadataEditHandler.CHANNEL).setMethodCallHandler(MetadataEditHandler(this))
         MethodChannel(messenger, MetadataFetchHandler.CHANNEL).setMethodCallHandler(MetadataFetchHandler(this))
         MethodChannel(messenger, StorageHandler.CHANNEL).setMethodCallHandler(StorageHandler(this))
+        // - need Activity
+        MethodChannel(messenger, AccessibilityHandler.CHANNEL).setMethodCallHandler(AccessibilityHandler(this))
+        MethodChannel(messenger, MediaFileHandler.CHANNEL).setMethodCallHandler(MediaFileHandler(this))
+        MethodChannel(messenger, MetadataEditHandler.CHANNEL).setMethodCallHandler(MetadataEditHandler(this))
         MethodChannel(messenger, WindowHandler.CHANNEL).setMethodCallHandler(WindowHandler(this))
 
         // result streaming: dart -> platform ->->-> dart
+        // - need Context
         StreamsChannel(messenger, ImageByteStreamHandler.CHANNEL).setStreamHandlerFactory { args -> ImageByteStreamHandler(this, args) }
-        StreamsChannel(messenger, ImageOpStreamHandler.CHANNEL).setStreamHandlerFactory { args -> ImageOpStreamHandler(this, args) }
         StreamsChannel(messenger, MediaStoreStreamHandler.CHANNEL).setStreamHandlerFactory { args -> MediaStoreStreamHandler(this, args) }
+        // - need Activity
+        StreamsChannel(messenger, ImageOpStreamHandler.CHANNEL).setStreamHandlerFactory { args -> ImageOpStreamHandler(this, args) }
         StreamsChannel(messenger, StorageAccessStreamHandler.CHANNEL).setStreamHandlerFactory { args -> StorageAccessStreamHandler(this, args) }
 
         // change monitoring: platform -> dart
@@ -98,6 +106,11 @@ class MainActivity : FlutterActivity() {
         }
 
         // notification: platform -> dart
+        analysisStreamHandler = AnalysisStreamHandler().apply {
+            EventChannel(messenger, AnalysisStreamHandler.CHANNEL).setStreamHandler(this)
+        }
+
+        // notification: platform -> dart
         errorStreamHandler = ErrorStreamHandler().apply {
             EventChannel(messenger, ErrorStreamHandler.CHANNEL).setStreamHandler(this)
         }
@@ -107,7 +120,20 @@ class MainActivity : FlutterActivity() {
         }
     }
 
+    override fun onStart() {
+        Log.i(LOG_TAG, "onStart")
+        super.onStart()
+        analysisHandler.attachToActivity()
+    }
+
+    override fun onStop() {
+        Log.i(LOG_TAG, "onStop")
+        analysisHandler.detachFromActivity()
+        super.onStop()
+    }
+
     override fun onDestroy() {
+        Log.i(LOG_TAG, "onDestroy")
         mediaStoreChangeStreamHandler.dispose()
         settingsChangeStreamHandler.dispose()
         super.onDestroy()
@@ -252,6 +278,10 @@ class MainActivity : FlutterActivity() {
         ShortcutManagerCompat.setDynamicShortcuts(this, listOf(videos, search))
     }
 
+    private fun onAnalysisCompleted() {
+        analysisStreamHandler.notifyCompletion()
+    }
+
     companion object {
         private val LOG_TAG = LogUtils.createTag<MainActivity>()
         const val VIEWER_CHANNEL = "deckers.thibault/aves/viewer"
@@ -261,6 +291,7 @@ class MainActivity : FlutterActivity() {
         const val CREATE_FILE_REQUEST = 3
         const val OPEN_FILE_REQUEST = 4
         const val SELECT_DIRECTORY_REQUEST = 5
+        const val OPEN_FROM_ANALYSIS_SERVICE = 6
 
         // request code to pending runnable
         val pendingStorageAccessResultHandlers = ConcurrentHashMap<Int, PendingStorageAccessResultHandler>()

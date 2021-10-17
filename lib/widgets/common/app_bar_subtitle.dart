@@ -1,5 +1,6 @@
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums.dart';
+import 'package:aves/model/source/source_state.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/material.dart';
@@ -56,43 +57,29 @@ class SourceStateSubtitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String? subtitle;
-    switch (source.stateNotifier.value) {
-      case SourceState.loading:
-        subtitle = context.l10n.sourceStateLoading;
-        break;
-      case SourceState.cataloguing:
-        subtitle = context.l10n.sourceStateCataloguing;
-        break;
-      case SourceState.locating:
-        subtitle = context.l10n.sourceStateLocating;
-        break;
-      case SourceState.ready:
-      default:
-        break;
-    }
-    final subtitleStyle = Theme.of(context).textTheme.caption;
-    return subtitle == null
-        ? const SizedBox.shrink()
-        : Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(subtitle, style: subtitleStyle),
-              StreamBuilder<ProgressEvent>(
-                stream: source.progressStream,
-                builder: (context, snapshot) {
-                  if (snapshot.hasError || !snapshot.hasData) return const SizedBox.shrink();
-                  final progress = snapshot.data!;
-                  return Padding(
-                    padding: const EdgeInsetsDirectional.only(start: 8),
-                    child: Text(
-                      '${progress.done}/${progress.total}',
-                      style: subtitleStyle!.copyWith(color: Colors.white30),
-                    ),
-                  );
-                },
+    final sourceState = source.stateNotifier.value;
+    final subtitle = sourceState.getName(context.l10n);
+    if (subtitle == null) return const SizedBox();
+
+    final subtitleStyle = Theme.of(context).textTheme.caption!;
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(subtitle, style: subtitleStyle),
+        ValueListenableBuilder<ProgressEvent>(
+          valueListenable: source.progressNotifier,
+          builder: (context, progress, snapshot) {
+            if (progress.total == 0 || sourceState == SourceState.locatingCountries) return const SizedBox();
+            return Padding(
+              padding: const EdgeInsetsDirectional.only(start: 8),
+              child: Text(
+                '${progress.done}/${progress.total}',
+                style: subtitleStyle.copyWith(color: Colors.white30),
               ),
-            ],
-          );
+            );
+          },
+        ),
+      ],
+    );
   }
 }

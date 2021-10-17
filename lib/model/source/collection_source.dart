@@ -9,9 +9,11 @@ import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/album.dart';
+import 'package:aves/model/source/analysis_controller.dart';
 import 'package:aves/model/source/enums.dart';
 import 'package:aves/model/source/location.dart';
 import 'package:aves/model/source/tag.dart';
+import 'package:aves/services/analysis_service.dart';
 import 'package:aves/services/common/image_op_events.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:collection/collection.dart';
@@ -29,14 +31,14 @@ mixin SourceBase {
 
   ValueNotifier<SourceState> stateNotifier = ValueNotifier(SourceState.ready);
 
-  final StreamController<ProgressEvent> _progressStreamController = StreamController.broadcast();
+  ValueNotifier<ProgressEvent> progressNotifier = ValueNotifier(const ProgressEvent(done: 0, total: 0));
 
-  Stream<ProgressEvent> get progressStream => _progressStreamController.stream;
-
-  void setProgress({required int done, required int total}) => _progressStreamController.add(ProgressEvent(done: done, total: total));
+  void setProgress({required int done, required int total}) => progressNotifier.value = ProgressEvent(done: done, total: total);
 }
 
 abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagMixin {
+  static const _analysisServiceOpCountThreshold = 400;
+
   final EventBus _eventBus = EventBus();
 
   @override
@@ -86,6 +88,15 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
     invalidateTagFilterSummary(entries);
   }
 
+  void updateDerivedFilters([Set<AvesEntry>? entries]) {
+    _invalidate(entries);
+    // it is possible for entries hidden by a filter type, to have an impact on other types
+    // e.g. given a sole entry for country C and tag T, hiding T should make C disappear too
+    updateDirectories();
+    updateLocations();
+    updateTags();
+  }
+
   void addEntries(Set<AvesEntry> entries) {
     if (entries.isEmpty) return;
 
@@ -113,11 +124,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
 
     entries.forEach((v) => _entryById.remove(v.contentId));
     _rawEntries.removeAll(entries);
-    _invalidate(entries);
-
-    cleanEmptyAlbums(entries.map((entry) => entry.directory).toSet());
-    updateLocations();
-    updateTags();
+    updateDerivedFilters(entries);
     eventBus.fire(EntryRemovedEvent(entries));
   }
 
@@ -252,20 +259,43 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
 
   Future<void> init();
 
-  Future<void> refresh();
+  Future<void> refresh({AnalysisController? analysisController});
 
-  Future<Set<String>> refreshUris(Set<String> changedUris);
+  Future<Set<String>> refreshUris(Set<String> changedUris, {AnalysisController? analysisController});
 
-  Future<void> rescan(Set<AvesEntry> entries);
+  Future<void> refreshEntry(AvesEntry entry) async {
+    await entry.refresh(background: false, persist: true, force: true);
+    updateDerivedFilters({entry});
+    eventBus.fire(EntryRefreshedEvent({entry}));
+  }
 
-  Future<void> refreshMetadata(Set<AvesEntry> entries) async {
-    await Future.forEach<AvesEntry>(entries, (entry) => entry.refresh(persist: true));
-
-    _invalidate(entries);
-    updateLocations();
-    updateTags();
-
-    eventBus.fire(EntryRefreshedEvent(entries));
+  Future<void> analyze(AnalysisController? analysisController, Set<AvesEntry> candidateEntries) async {
+    final todoEntries = visibleEntries;
+    final _analysisController = analysisController ?? AnalysisController();
+    if (!_analysisController.isStopping) {
+      late bool startAnalysisService;
+      if (_analysisController.canStartService && settings.canUseAnalysisService) {
+        final force = _analysisController.force;
+        var opCount = 0;
+        opCount += (force ? todoEntries : todoEntries.where(TagMixin.catalogEntriesTest)).length;
+        opCount += (force ? todoEntries.where((entry) => entry.hasGps) : todoEntries.where(LocationMixin.locateCountriesTest)).length;
+        if (await availability.canLocatePlaces) {
+          opCount += (force ? todoEntries.where((entry) => entry.hasGps) : todoEntries.where(LocationMixin.locatePlacesTest)).length;
+        }
+        startAnalysisService = opCount > _analysisServiceOpCountThreshold;
+      } else {
+        startAnalysisService = false;
+      }
+      if (startAnalysisService) {
+        await AnalysisService.startService();
+      } else {
+        await catalogEntries(_analysisController, candidateEntries);
+        updateDerivedFilters(candidateEntries);
+        await locateEntries(_analysisController, candidateEntries);
+        updateDerivedFilters(candidateEntries);
+      }
+    }
+    stateNotifier.value = SourceState.ready;
   }
 
   // monitoring
@@ -312,46 +342,45 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
       settings.searchHistory = settings.searchHistory..removeWhere(filters.contains);
     }
     settings.hiddenFilters = hiddenFilters;
-
-    _invalidate();
-    // it is possible for entries hidden by a filter type, to have an impact on other types
-    // e.g. given a sole entry for country C and tag T, hiding T should make C disappear too
-    updateDirectories();
-    updateLocations();
-    updateTags();
-
+    updateDerivedFilters();
     eventBus.fire(FilterVisibilityChangedEvent(filters, visible));
 
     if (visible) {
-      refreshMetadata(visibleEntries.where((entry) => filters.any((f) => f.test(entry))).toSet());
+      final candidateEntries = visibleEntries.where((entry) => filters.any((f) => f.test(entry))).toSet();
+      analyze(null, candidateEntries);
     }
   }
 }
 
+@immutable
 class EntryAddedEvent {
   final Set<AvesEntry>? entries;
 
   const EntryAddedEvent([this.entries]);
 }
 
+@immutable
 class EntryRemovedEvent {
   final Set<AvesEntry> entries;
 
   const EntryRemovedEvent(this.entries);
 }
 
+@immutable
 class EntryMovedEvent {
   final Set<AvesEntry> entries;
 
   const EntryMovedEvent(this.entries);
 }
 
+@immutable
 class EntryRefreshedEvent {
   final Set<AvesEntry> entries;
 
   const EntryRefreshedEvent(this.entries);
 }
 
+@immutable
 class FilterVisibilityChangedEvent {
   final Set<CollectionFilter> filters;
   final bool visible;
@@ -359,6 +388,7 @@ class FilterVisibilityChangedEvent {
   const FilterVisibilityChangedEvent(this.filters, this.visible);
 }
 
+@immutable
 class ProgressEvent {
   final int done, total;
 
