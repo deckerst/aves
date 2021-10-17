@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:aves/services/common/services.dart';
 import 'package:flutter/foundation.dart';
@@ -9,12 +10,12 @@ class GeocodingService {
   static const platform = MethodChannel('deckers.thibault/aves/geocoding');
 
   // geocoding requires Google Play Services
-  static Future<List<Address>> getAddress(LatLng coordinates, String locale) async {
+  static Future<List<Address>> getAddress(LatLng coordinates, Locale locale) async {
     try {
       final result = await platform.invokeMethod('getAddress', <String, dynamic>{
         'latitude': coordinates.latitude,
         'longitude': coordinates.longitude,
-        'locale': locale,
+        'locale': locale.toString(),
         // we only really need one address, but sometimes the native geocoder
         // returns nothing with `maxResults` of 1, but succeeds with `maxResults` of 2+
         'maxResults': 2,

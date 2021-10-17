@@ -264,7 +264,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
   Future<Set<String>> refreshUris(Set<String> changedUris, {AnalysisController? analysisController});
 
   Future<void> refreshEntry(AvesEntry entry) async {
-    await entry.refresh(background: false, persist: true, force: true);
+    await entry.refresh(background: false, persist: true, force: true, geocoderLocale: settings.appliedLocale);
     updateDerivedFilters({entry});
     eventBus.fire(EntryRefreshedEvent({entry}));
   }

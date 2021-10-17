@@ -147,7 +147,7 @@ class _AddressRowState extends State<_AddressRow> {
 
   Future<String?> _getAddressLine(AvesEntry? entry) async {
     if (entry != null && await availability.canLocatePlaces) {
-      final addresses = await GeocodingService.getAddress(entry.latLng!, entry.geocoderLocale);
+      final addresses = await GeocodingService.getAddress(entry.latLng!, settings.appliedLocale);
       if (addresses.isNotEmpty) {
         final address = addresses.first;
         return address.addressLine;
