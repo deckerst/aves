@@ -98,9 +98,7 @@ class Analyzer {
     debugPrint('$runtimeType start');
     _serviceStateNotifier.value = AnalyzerState.running;
 
-    final preferredLocale = settings.locale;
-    final appLocale = basicLocaleListResolution(preferredLocale != null ? [preferredLocale] : null, AppLocalizations.supportedLocales);
-    _l10n = await AppLocalizations.delegate.load(appLocale);
+    _l10n = await AppLocalizations.delegate.load(settings.appliedLocale);
 
     _controller.stopSignal.value = false;
     await _source.init();

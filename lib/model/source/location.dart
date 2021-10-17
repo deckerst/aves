@@ -4,6 +4,7 @@ import 'package:aves/geo/countries.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/metadata/address.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/analysis_controller.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums.dart';
@@ -110,7 +111,7 @@ mixin LocationMixin on SourceBase {
       if (knownLocations.containsKey(latLng)) {
         entry.addressDetails = knownLocations[latLng]?.copyWith(contentId: entry.contentId);
       } else {
-        await entry.locatePlace(background: true, force: force);
+        await entry.locatePlace(background: true, force: force, geocoderLocale: settings.appliedLocale);
         // it is intended to insert `null` if the geocoder failed,
         // so that we skip geocoding of following entries with the same coordinates
         knownLocations[latLng] = entry.addressDetails;
@@ -153,9 +154,15 @@ mixin LocationMixin on SourceBase {
     // so we merge countries by code, keeping only one name for each code
     final countriesByCode = Map.fromEntries(locations.map((address) {
       final code = address.countryCode;
-      return code?.isNotEmpty == true ? MapEntry(code, address.countryName) : null;
+      if (code == null || code.isEmpty) return null;
+      return MapEntry(code, address.countryName);
     }).whereNotNull());
-    final updatedCountries = countriesByCode.entries.map((kv) => '${kv.value}${LocationFilter.locationSeparator}${kv.key}').toList()..sort(compareAsciiUpperCase);
+    final updatedCountries = countriesByCode.entries.map((kv) {
+      final code = kv.key;
+      final name = kv.value;
+      return '${name != null && name.isNotEmpty ? name : code}${LocationFilter.locationSeparator}$code';
+    }).toList()
+      ..sort(compareAsciiUpperCase);
     if (!listEquals(updatedCountries, sortedCountries)) {
       sortedCountries = List.unmodifiable(updatedCountries);
       invalidateCountryFilterSummary();

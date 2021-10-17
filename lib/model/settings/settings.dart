@@ -15,6 +15,7 @@ import 'package:aves/services/common/services.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final Settings settings = Settings._private();
@@ -202,6 +203,17 @@ class Settings extends ChangeNotifier {
       ].join(localeSeparator);
     }
     setAndNotify(localeKey, tag);
+    _appliedLocale = null;
+  }
+
+  Locale? _appliedLocale;
+
+  Locale get appliedLocale {
+    if (_appliedLocale == null) {
+      final preferredLocale = locale;
+      _appliedLocale = basicLocaleListResolution(preferredLocale != null ? [preferredLocale] : null, AppLocalizations.supportedLocales);
+    }
+    return _appliedLocale!;
   }
 
   bool get mustBackTwiceToExit => getBoolOrDefault(mustBackTwiceToExitKey, SettingsDefaults.mustBackTwiceToExit);

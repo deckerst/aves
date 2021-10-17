@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:aves/model/entry.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/magnifier/pan/scroll_physics.dart';
@@ -169,7 +170,7 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
       // so that we can display the address instead of coordinates
       // even when initial collection locating has not reached this entry yet
       await _entry.catalog(background: false, persist: true, force: false);
-      await _entry.locate(background: false, force: false);
+      await _entry.locate(background: false, force: false, geocoderLocale: settings.appliedLocale);
     } else {
       Navigator.pop(context);
     }

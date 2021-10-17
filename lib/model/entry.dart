@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:aves/geo/countries.dart';
 import 'package:aves/model/entry_cache.dart';
@@ -9,7 +10,6 @@ import 'package:aves/model/metadata/catalog.dart';
 import 'package:aves/model/metadata/date_modifier.dart';
 import 'package:aves/model/metadata/enums.dart';
 import 'package:aves/model/multipage.dart';
-import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/video/metadata.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/service_policy.dart';
@@ -21,7 +21,6 @@ import 'package:aves/utils/change_notifier.dart';
 import 'package:collection/collection.dart';
 import 'package:country_code/country_code.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 
 class AvesEntry {
@@ -469,11 +468,11 @@ class AvesEntry {
     addressChangeNotifier.notifyListeners();
   }
 
-  Future<void> locate({required bool background, required bool force}) async {
+  Future<void> locate({required bool background, required bool force, required Locale geocoderLocale}) async {
     if (!hasGps) return;
     await _locateCountry(force: force);
     if (await availability.canLocatePlaces) {
-      await locatePlace(background: background, force: force);
+      await locatePlace(background: background, force: force, geocoderLocale: geocoderLocale);
     }
   }
 
@@ -493,15 +492,8 @@ class AvesEntry {
     );
   }
 
-  String? _geocoderLocale;
-
-  String get geocoderLocale {
-    _geocoderLocale ??= (settings.locale ?? WidgetsBinding.instance!.window.locale).toString();
-    return _geocoderLocale!;
-  }
-
   // full reverse geocoding, requiring Play Services and some connectivity
-  Future<void> locatePlace({required bool background, required bool force}) async {
+  Future<void> locatePlace({required bool background, required bool force, required Locale geocoderLocale}) async {
     if (!hasGps || (hasFineAddress && !force)) return;
     try {
       Future<List<Address>> call() => GeocodingService.getAddress(latLng!, geocoderLocale);
@@ -531,7 +523,7 @@ class AvesEntry {
     }
   }
 
-  Future<String?> findAddressLine() async {
+  Future<String?> findAddressLine({required Locale geocoderLocale}) async {
     if (!hasGps) return null;
 
     try {
@@ -608,7 +600,7 @@ class AvesEntry {
     metadataChangeNotifier.notifyListeners();
   }
 
-  Future<void> refresh({required bool background, required bool persist, required bool force}) async {
+  Future<void> refresh({required bool background, required bool persist, required bool force, required Locale geocoderLocale}) async {
     _catalogMetadata = null;
     _addressDetails = null;
     _bestDate = null;
@@ -622,7 +614,7 @@ class AvesEntry {
     if (updated != null) {
       await _applyNewFields(updated.toMap(), persist: persist);
       await catalog(background: background, persist: persist, force: force);
-      await locate(background: background, force: force);
+      await locate(background: background, force: force, geocoderLocale: geocoderLocale);
     }
   }
 
