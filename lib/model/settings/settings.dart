@@ -27,9 +27,7 @@ class Settings extends ChangeNotifier {
 
   static SharedPreferences? _prefs;
 
-  Settings._private() {
-    _platformSettingsChangeChannel.receiveBroadcastStream().listen((event) => _onPlatformSettingsChange(event as Map?));
-  }
+  Settings._private();
 
   static const Set<String> internalKeys = {
     hasAcceptedTermsKey,
@@ -41,6 +39,7 @@ class Settings extends ChangeNotifier {
 
   // app
   static const hasAcceptedTermsKey = 'has_accepted_terms';
+  static const canUseAnalysisServiceKey = 'can_use_analysis_service';
   static const isErrorReportingEnabledKey = 'is_crashlytics_enabled';
   static const localeKey = 'locale';
   static const mustBackTwiceToExitKey = 'must_back_twice_to_exit';
@@ -124,12 +123,16 @@ class Settings extends ChangeNotifier {
   bool get initialized => _prefs != null;
 
   Future<void> init({
+    required bool monitorPlatformSettings,
     bool isRotationLocked = false,
     bool areAnimationsRemoved = false,
   }) async {
     _prefs = await SharedPreferences.getInstance();
     _isRotationLocked = isRotationLocked;
     _areAnimationsRemoved = areAnimationsRemoved;
+    if (monitorPlatformSettings) {
+      _platformSettingsChangeChannel.receiveBroadcastStream().listen((event) => _onPlatformSettingsChange(event as Map?));
+    }
   }
 
   Future<void> reset({required bool includeInternalKeys}) async {
@@ -164,6 +167,10 @@ class Settings extends ChangeNotifier {
   bool get hasAcceptedTerms => getBoolOrDefault(hasAcceptedTermsKey, SettingsDefaults.hasAcceptedTerms);
 
   set hasAcceptedTerms(bool newValue) => setAndNotify(hasAcceptedTermsKey, newValue);
+
+  bool get canUseAnalysisService => getBoolOrDefault(canUseAnalysisServiceKey, SettingsDefaults.canUseAnalysisService);
+
+  set canUseAnalysisService(bool newValue) => setAndNotify(canUseAnalysisServiceKey, newValue);
 
   bool get isErrorReportingEnabled => getBoolOrDefault(isErrorReportingEnabledKey, SettingsDefaults.isErrorReportingEnabled);
 

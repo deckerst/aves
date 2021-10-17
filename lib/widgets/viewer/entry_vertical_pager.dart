@@ -158,16 +158,18 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
   }
 
   // when the entry changed (e.g. by scrolling through the PageView, or if the entry got deleted)
-  void _onEntryChanged() {
+  Future<void> _onEntryChanged() async {
     _oldEntry?.imageChangeNotifier.removeListener(_onImageChanged);
     _oldEntry = entry;
 
-    if (entry != null) {
-      entry!.imageChangeNotifier.addListener(_onImageChanged);
+    final _entry = entry;
+    if (_entry != null) {
+      _entry.imageChangeNotifier.addListener(_onImageChanged);
       // make sure to locate the entry,
       // so that we can display the address instead of coordinates
       // even when initial collection locating has not reached this entry yet
-      entry!.catalog(background: false).then((_) => entry!.locate(background: false));
+      await _entry.catalog(background: false, persist: true, force: false);
+      await _entry.locate(background: false, force: false);
     } else {
       Navigator.pop(context);
     }

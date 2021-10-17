@@ -16,7 +16,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class IjkPlayerAvesVideoController extends AvesVideoController {
-  static bool _staticInitialized = false;
   late FijkPlayer _instance;
   final List<StreamSubscription> _subscriptions = [];
   final StreamController<FijkValue> _valueStreamController = StreamController.broadcast();
@@ -55,10 +54,6 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
   static const gifLikeBitRateThreshold = 2 << 18; // 512kB/s (4Mb/s)
 
   IjkPlayerAvesVideoController(AvesEntry entry) : super(entry) {
-    if (!_staticInitialized) {
-      FijkLog.setLevel(FijkLogLevel.Warn);
-      _staticInitialized = true;
-    }
     _instance = FijkPlayer();
     _valueStream.map((value) => value.videoRenderStart).firstWhere((v) => v, orElse: () => false).then(
           (started) => canCaptureFrameNotifier.value = started,

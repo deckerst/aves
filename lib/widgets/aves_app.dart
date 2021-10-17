@@ -19,6 +19,7 @@ import 'package:aves/widgets/common/providers/highlight_info_provider.dart';
 import 'package:aves/widgets/home_page.dart';
 import 'package:aves/widgets/welcome_page.dart';
 import 'package:equatable/equatable.dart';
+import 'package:fijkplayer/fijkplayer.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -46,6 +47,7 @@ class _AvesAppState extends State<AvesApp> {
   List<NavigatorObserver> _navigatorObservers = [];
   final EventChannel _mediaStoreChangeChannel = const EventChannel('deckers.thibault/aves/media_store_change');
   final EventChannel _newIntentChannel = const EventChannel('deckers.thibault/aves/intent');
+  final EventChannel _analysisCompletionChannel = const EventChannel('deckers.thibault/aves/analysis_events');
   final EventChannel _errorChannel = const EventChannel('deckers.thibault/aves/error');
   final GlobalKey<NavigatorState> _navigatorKey = GlobalKey(debugLabel: 'app-navigator');
 
@@ -58,6 +60,7 @@ class _AvesAppState extends State<AvesApp> {
     _appSetup = _setup();
     _mediaStoreChangeChannel.receiveBroadcastStream().listen((event) => _onMediaStoreChange(event as String?));
     _newIntentChannel.receiveBroadcastStream().listen((event) => _onNewIntent(event as Map?));
+    _analysisCompletionChannel.receiveBroadcastStream().listen((event) => _onAnalysisCompletion());
     _errorChannel.receiveBroadcastStream().listen((event) => _onError(event as String?));
   }
 
@@ -144,9 +147,11 @@ class _AvesAppState extends State<AvesApp> {
 
   Future<void> _setup() async {
     await settings.init(
+      monitorPlatformSettings: true,
       isRotationLocked: await windowService.isRotationLocked(),
       areAnimationsRemoved: await AccessibilityService.areAnimationsRemoved(),
     );
+    FijkLog.setLevel(FijkLogLevel.Warn);
 
     // keep screen on
     settings.updateStream.where((key) => key == Settings.keepScreenOnKey).listen(
@@ -190,6 +195,13 @@ class _AvesAppState extends State<AvesApp> {
       settings: const RouteSettings(name: HomePage.routeName),
       builder: (_) => getFirstPage(intentData: intentData),
     ));
+  }
+
+  Future<void> _onAnalysisCompletion() async {
+    debugPrint('Analysis completed');
+    await _mediaStoreSource.loadCatalogMetadata();
+    await _mediaStoreSource.loadAddresses();
+    _mediaStoreSource.updateDerivedFilters();
   }
 
   void _onMediaStoreChange(String? uri) {

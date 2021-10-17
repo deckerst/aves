@@ -1,6 +1,6 @@
 package deckers.thibault.aves.channel.calls
 
-import android.app.Activity
+import android.content.Context
 import android.media.MediaScannerConnection
 import android.net.Uri
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
@@ -12,7 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-class MediaStoreHandler(private val activity: Activity) : MethodCallHandler {
+class MediaStoreHandler(private val context: Context) : MethodCallHandler {
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
             "checkObsoleteContentIds" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::checkObsoleteContentIds) }
@@ -28,7 +28,7 @@ class MediaStoreHandler(private val activity: Activity) : MethodCallHandler {
             result.error("checkObsoleteContentIds-args", "failed because of missing arguments", null)
             return
         }
-        result.success(MediaStoreImageProvider().checkObsoleteContentIds(activity, knownContentIds))
+        result.success(MediaStoreImageProvider().checkObsoleteContentIds(context, knownContentIds))
     }
 
     private fun checkObsoletePaths(call: MethodCall, result: MethodChannel.Result) {
@@ -37,13 +37,13 @@ class MediaStoreHandler(private val activity: Activity) : MethodCallHandler {
             result.error("checkObsoletePaths-args", "failed because of missing arguments", null)
             return
         }
-        result.success(MediaStoreImageProvider().checkObsoletePaths(activity, knownPathById))
+        result.success(MediaStoreImageProvider().checkObsoletePaths(context, knownPathById))
     }
 
     private fun scanFile(call: MethodCall, result: MethodChannel.Result) {
         val path = call.argument<String>("path")
         val mimeType = call.argument<String>("mimeType")
-        MediaScannerConnection.scanFile(activity, arrayOf(path), arrayOf(mimeType)) { _, uri: Uri? -> result.success(uri?.toString()) }
+        MediaScannerConnection.scanFile(context, arrayOf(path), arrayOf(mimeType)) { _, uri: Uri? -> result.success(uri?.toString()) }
     }
 
     companion object {

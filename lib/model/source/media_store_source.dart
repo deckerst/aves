@@ -5,6 +5,7 @@ import 'package:aves/model/covers.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/favourites.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/model/source/analysis_controller.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums.dart';
 import 'package:aves/services/common/services.dart';
@@ -42,7 +43,7 @@ class MediaStoreSource extends CollectionSource {
   }
 
   @override
-  Future<void> refresh() async {
+  Future<void> refresh({AnalysisController? analysisController}) async {
     assert(_initialized);
     debugPrint('$runtimeType refresh start');
     final stopwatch = Stopwatch()..start();
@@ -59,10 +60,10 @@ class MediaStoreSource extends CollectionSource {
     // show known entries
     debugPrint('$runtimeType refresh ${stopwatch.elapsed} add known entries');
     addEntries(oldEntries);
-    debugPrint('$runtimeType refresh ${stopwatch.elapsed} load catalog metadata');
+    debugPrint('$runtimeType refresh ${stopwatch.elapsed} load metadata');
     await loadCatalogMetadata();
-    debugPrint('$runtimeType refresh ${stopwatch.elapsed} load address metadata');
     await loadAddresses();
+    updateDerivedFilters();
 
     // clean up obsolete entries
     debugPrint('$runtimeType refresh ${stopwatch.elapsed} remove obsolete entries');
@@ -110,11 +111,7 @@ class MediaStoreSource extends CollectionSource {
           updateDirectories();
         }
 
-        debugPrint('$runtimeType refresh ${stopwatch.elapsed} catalog entries');
-        await catalogEntries();
-        debugPrint('$runtimeType refresh ${stopwatch.elapsed} locate entries');
-        await locateEntries();
-        stateNotifier.value = SourceState.ready;
+        await analyze(analysisController, visibleEntries);
 
         debugPrint('$runtimeType refresh ${stopwatch.elapsed} done for ${oldEntries.length} known, ${allNewEntries.length} new, ${obsoleteContentIds.length} obsolete');
       },
@@ -128,7 +125,7 @@ class MediaStoreSource extends CollectionSource {
   // For example, when taking a picture with a Galaxy S10e default camera app, querying the Media Store
   // sometimes yields an entry with its temporary path: `/data/sec/camera/!@#$%^..._temp.jpg`
   @override
-  Future<Set<String>> refreshUris(Set<String> changedUris) async {
+  Future<Set<String>> refreshUris(Set<String> changedUris, {AnalysisController? analysisController}) async {
     if (!_initialized || !isMonitoring) return changedUris;
 
     debugPrint('$runtimeType refreshUris ${changedUris.length} uris');
@@ -181,18 +178,10 @@ class MediaStoreSource extends CollectionSource {
       addEntries(newEntries);
       await metadataDb.saveEntries(newEntries);
       cleanEmptyAlbums(existingDirectories);
-      await catalogEntries();
-      await locateEntries();
-      stateNotifier.value = SourceState.ready;
+
+      await analyze(analysisController, newEntries);
     }
 
     return tempUris;
-  }
-
-  @override
-  Future<void> rescan(Set<AvesEntry> entries) async {
-    final contentIds = entries.map((entry) => entry.contentId).whereNotNull().toSet();
-    await metadataDb.removeIds(contentIds, metadataOnly: true);
-    return refresh();
   }
 }

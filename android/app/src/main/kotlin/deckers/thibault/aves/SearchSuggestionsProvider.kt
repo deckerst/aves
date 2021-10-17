@@ -2,24 +2,21 @@ package deckers.thibault.aves
 
 import android.app.SearchManager
 import android.content.ContentProvider
-import android.content.ContentResolver
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
 import android.database.MatrixCursor
 import android.net.Uri
 import android.os.Build
-import android.os.Handler
 import android.util.Log
 import deckers.thibault.aves.model.FieldMap
+import deckers.thibault.aves.utils.ContextUtils.resourceUri
+import deckers.thibault.aves.utils.ContextUtils.runOnUiThread
+import deckers.thibault.aves.utils.FlutterUtils
 import deckers.thibault.aves.utils.LogUtils
-import io.flutter.FlutterInjector
 import io.flutter.embedding.engine.FlutterEngine
-import io.flutter.embedding.engine.dart.DartExecutor
-import io.flutter.embedding.engine.loader.FlutterLoader
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
-import io.flutter.view.FlutterCallbackInformation
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -71,7 +68,9 @@ class SearchSuggestionsProvider : MethodChannel.MethodCallHandler, ContentProvid
 
     private suspend fun getSuggestions(context: Context, query: String): List<FieldMap> {
         if (backgroundFlutterEngine == null) {
-            initFlutterEngine(context)
+            FlutterUtils.initFlutterEngine(context, SHARED_PREFERENCES_KEY, CALLBACK_HANDLE_KEY) {
+                backgroundFlutterEngine = it
+            }
         }
 
         val messenger = backgroundFlutterEngine!!.dartExecutor.binaryMessenger
@@ -133,60 +132,5 @@ class SearchSuggestionsProvider : MethodChannel.MethodCallHandler, ContentProvid
         const val CALLBACK_HANDLE_KEY = "callback_handle"
 
         private var backgroundFlutterEngine: FlutterEngine? = null
-
-        private suspend fun initFlutterEngine(context: Context) {
-            val callbackHandle = context.getSharedPreferences(SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE).getLong(CALLBACK_HANDLE_KEY, 0)
-            if (callbackHandle == 0L) {
-                Log.e(LOG_TAG, "failed to retrieve registered callback handle")
-                return
-            }
-
-            lateinit var flutterLoader: FlutterLoader
-            context.runOnUiThread {
-                // initialization must happen on the main thread
-                flutterLoader = FlutterInjector.instance().flutterLoader().apply {
-                    startInitialization(context)
-                    ensureInitializationComplete(context, null)
-                }
-            }
-
-            val callbackInfo = FlutterCallbackInformation.lookupCallbackInformation(callbackHandle)
-            if (callbackInfo == null) {
-                Log.e(LOG_TAG, "failed to find callback information")
-                return
-            }
-
-            val args = DartExecutor.DartCallback(
-                context.assets,
-                flutterLoader.findAppBundlePath(),
-                callbackInfo
-            )
-            context.runOnUiThread {
-                // initialization must happen on the main thread
-                backgroundFlutterEngine = FlutterEngine(context).apply {
-                    dartExecutor.executeDartCallback(args)
-                }
-            }
-        }
-
-        // convenience methods
-
-        private suspend fun Context.runOnUiThread(r: Runnable) {
-            suspendCoroutine<Boolean> { cont ->
-                Handler(mainLooper).post {
-                    r.run()
-                    cont.resume(true)
-                }
-            }
-        }
-
-        private fun Context.resourceUri(resourceId: Int): Uri = with(resources) {
-            Uri.Builder()
-                .scheme(ContentResolver.SCHEME_ANDROID_RESOURCE)
-                .authority(getResourcePackageName(resourceId))
-                .appendPath(getResourceTypeName(resourceId))
-                .appendPath(getResourceEntryName(resourceId))
-                .build()
-        }
     }
 }

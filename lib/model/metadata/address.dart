@@ -1,12 +1,16 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 @immutable
-class AddressDetails {
+class AddressDetails extends Equatable {
   final int? contentId;
   final String? countryCode, countryName, adminArea, locality;
 
   String? get place => locality != null && locality!.isNotEmpty ? locality : adminArea;
+
+  @override
+  List<Object?> get props => [contentId, countryCode, countryName, adminArea, locality];
 
   const AddressDetails({
     this.contentId,
@@ -45,7 +49,4 @@ class AddressDetails {
         'adminArea': adminArea,
         'locality': locality,
       };
-
-  @override
-  String toString() => '$runtimeType#${shortHash(this)}{contentId=$contentId, countryCode=$countryCode, countryName=$countryName, adminArea=$adminArea, locality=$locality}';
 }

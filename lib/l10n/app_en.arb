@@ -62,8 +62,10 @@
   "@sourceStateLoading": {},
   "sourceStateCataloguing": "Cataloguing",
   "@sourceStateCataloguing": {},
-  "sourceStateLocating": "Locating",
-  "@sourceStateLocating": {},
+  "sourceStateLocatingCountries": "Locating countries",
+  "@sourceStateLocatingCountries": {},
+  "sourceStateLocatingPlaces": "Locating places",
+  "@sourceStateLocatingPlaces": {},
 
   "chipActionDelete": "Delete",
   "@chipActionDelete": {},

@@ -16,6 +16,7 @@
     https://developer.android.com/preview/privacy/storage#media-files-raw-paths
     -->
 
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <!-- request write permission until Q (29) included, because scoped storage is unusable -->
     <uses-permission
@@ -122,6 +123,10 @@
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
         </activity>
+        <service
+            android:name=".AnalysisService"
+            android:description="@string/analysis_service_description"
+            android:exported="false" />
 
         <!-- file provider to share files having a file:// URI -->
         <provider

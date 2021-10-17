@@ -2,9 +2,7 @@ package deckers.thibault.aves.metadata
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import androidx.exifinterface.media.ExifInterface
-import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.StorageUtils
 import java.io.File
@@ -15,8 +13,6 @@ import java.util.*
 import java.util.regex.Pattern
 
 object Metadata {
-    private val LOG_TAG = LogUtils.createTag<Metadata>()
-
     const val IPTC_MARKER_BYTE: Byte = 0x1c
 
     // Pattern to extract latitude & longitude from a video location tag (cf ISO 6709)
@@ -138,7 +134,6 @@ object Metadata {
                 } else {
                     // make a preview from the beginning of the file,
                     // hoping the metadata is accessible in the copied chunk
-                    Log.d(LOG_TAG, "use a preview for uri=$uri mimeType=$mimeType size=$sizeBytes")
                     var previewFile = previewFiles[uri]
                     if (previewFile == null) {
                         previewFile = createPreviewFile(context, uri)
