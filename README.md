@@ -35,12 +35,28 @@ Aves requires a few permissions to do its job:
 - **have network access**: necessary for the map view, and most likely for precise reverse geocoding too,
 - **view network connections**: checking for connection states allows Aves to gracefully degrade features that depend on internet.
 
+## Contributing
+
+### Issues
+
+[Bug reports](https://github.com/deckerst/aves/issues/new?assignees=&labels=type%3Abug&template=bug_report.md&title=) and [feature requests](https://github.com/deckerst/aves/issues/new?assignees=&labels=type%3Afeature&template=feature_request.md&title=) are welcome. Questions too, though you could also ask them in [Discussions](https://github.com/deckerst/aves/discussions).
+
+### Code
+
+At this stage this project does *not* accept PRs, except for translations.
+
+### Translations
+
+If you want to translate this app in your language and share the result, feel free to open a PR or send the translation by [email](mailto:gallery.aves@gmail.com). You can find some localization notes in [pubspec.yaml](https://github.com/deckerst/aves/blob/develop/pubspec.yaml). English, Korean and French (soon™) are already handled.
+
+### Donations
+Some users have expressed the wish to financially support the project. I haven't set up any sponsorship system, but you can send contributions [here](https://paypal.me/ThibaultDeckers). Thanks! ❤️
+
 ## Project Setup
 
-Create a file named `<app dir>/android/key.properties`. It should contain a reference to a keystore for app signing, and other necessary credentials. See `<app dir>/android/key_template.properties` for the expected keys.
+To build the project, create a file named `<app dir>/android/key.properties`. It should contain a reference to a keystore for app signing, and other necessary credentials. See [key_template.properties](https://github.com/deckerst/aves/blob/develop/android/key_template.properties) for the expected keys.
 
-## Donations
-Some users have expressed the wish to financially support the project. I haven't set up any sponsorship system, but you can send contributions [here](https://paypal.me/ThibaultDeckers). Thanks! ❤️
+You can run the app with `flutter run --flavor universal`.
 
 [Version badge]: https://img.shields.io/github/v/release/deckerst/aves?include_prereleases&sort=semver
 [Build badge]: https://img.shields.io/github/workflow/status/deckerst/aves/Quality%20check
