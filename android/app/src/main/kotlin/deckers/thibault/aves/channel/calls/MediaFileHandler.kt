@@ -35,7 +35,6 @@ class MediaFileHandler(private val activity: Activity) : MethodCallHandler {
             "getThumbnail" -> GlobalScope.launch(Dispatchers.IO) { safeSuspend(call, result, ::getThumbnail) }
             "getRegion" -> GlobalScope.launch(Dispatchers.IO) { safeSuspend(call, result, ::getRegion) }
             "captureFrame" -> GlobalScope.launch(Dispatchers.IO) { safeSuspend(call, result, ::captureFrame) }
-            "rename" -> GlobalScope.launch(Dispatchers.IO) { safeSuspend(call, result, ::rename) }
             "clearSizedThumbnailDiskCache" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::clearSizedThumbnailDiskCache) }
             else -> result.notImplemented()
         }
@@ -161,34 +160,6 @@ class MediaFileHandler(private val activity: Activity) : MethodCallHandler {
         provider.captureFrame(activity, desiredName, exifFields, bytes, destinationDir, nameConflictStrategy, object : ImageOpCallback {
             override fun onSuccess(fields: FieldMap) = result.success(fields)
             override fun onFailure(throwable: Throwable) = result.error("captureFrame-failure", "failed to capture frame for uri=$uri", throwable.message)
-        })
-    }
-
-    private suspend fun rename(call: MethodCall, result: MethodChannel.Result) {
-        val entryMap = call.argument<FieldMap>("entry")
-        val newName = call.argument<String>("newName")
-        if (entryMap == null || newName == null) {
-            result.error("rename-args", "failed because of missing arguments", null)
-            return
-        }
-
-        val uri = (entryMap["uri"] as String?)?.let { Uri.parse(it) }
-        val path = entryMap["path"] as String?
-        val mimeType = entryMap["mimeType"] as String?
-        if (uri == null || path == null || mimeType == null) {
-            result.error("rename-args", "failed because entry fields are missing", null)
-            return
-        }
-
-        val provider = getProvider(uri)
-        if (provider == null) {
-            result.error("rename-provider", "failed to find provider for uri=$uri", null)
-            return
-        }
-
-        provider.rename(activity, path, uri, mimeType, newName, object : ImageOpCallback {
-            override fun onSuccess(fields: FieldMap) = result.success(fields)
-            override fun onFailure(throwable: Throwable) = result.error("rename-failure", "failed to rename", throwable.message)
         })
     }
 

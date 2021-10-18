@@ -46,7 +46,7 @@ object MultiPage {
                 val format = extractor.getTrackFormat(i)
                 format.getString(MediaFormat.KEY_MIME)?.let { mime ->
                     val trackMime = if (mime == MediaFormat.MIMETYPE_IMAGE_ANDROID_HEIC) MimeTypes.HEIC else mime
-                    val track = hashMapOf<String, Any?>(
+                    val track: FieldMap = hashMapOf(
                         KEY_PAGE to i,
                         KEY_MIME_TYPE to trackMime,
                     )
@@ -106,7 +106,7 @@ object MultiPage {
                             val format = extractor.getTrackFormat(i)
                             format.getString(MediaFormat.KEY_MIME)?.let { mime ->
                                 if (MimeTypes.isVideo(mime)) {
-                                    val track = hashMapOf<String, Any?>(
+                                    val track: FieldMap = hashMapOf(
                                         KEY_PAGE to trackCount++,
                                         KEY_MIME_TYPE to MimeTypes.MP4,
                                         KEY_IS_DEFAULT to false,

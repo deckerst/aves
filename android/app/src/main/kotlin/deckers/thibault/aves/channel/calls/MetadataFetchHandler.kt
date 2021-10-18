@@ -709,7 +709,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             try {
                 Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
                     val metadata = ImageMetadataReader.readMetadata(input)
-                    val fields = hashMapOf<String, Any?>(
+                    val fields: FieldMap = hashMapOf(
                         "projectionType" to XMP.GPANO_PROJECTION_TYPE_DEFAULT,
                     )
                     for (dir in metadata.getDirectoriesOfType(XmpDirectory::class.java)) {

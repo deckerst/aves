@@ -45,6 +45,7 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
             "delete" -> GlobalScope.launch(Dispatchers.IO) { delete() }
             "export" -> GlobalScope.launch(Dispatchers.IO) { export() }
             "move" -> GlobalScope.launch(Dispatchers.IO) { move() }
+            "rename" -> GlobalScope.launch(Dispatchers.IO) { rename() }
             else -> endOfStream()
         }
     }
@@ -100,7 +101,7 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
             val uri = (entryMap["uri"] as String?)?.let { Uri.parse(it) }
             val path = entryMap["path"] as String?
             if (uri != null) {
-                val result = hashMapOf<String, Any?>(
+                val result: FieldMap = hashMapOf(
                     "uri" to uri.toString(),
                 )
                 try {
@@ -174,6 +175,34 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
         provider.moveMultiple(activity, copy, destinationDir, nameConflictStrategy, entries, object : ImageOpCallback {
             override fun onSuccess(fields: FieldMap) = success(fields)
             override fun onFailure(throwable: Throwable) = error("move-failure", "failed to move entries", throwable)
+        })
+        endOfStream()
+    }
+
+    private suspend fun rename() {
+        if (arguments !is Map<*, *> || entryMapList.isEmpty()) {
+            endOfStream()
+            return
+        }
+
+        val newName = arguments["newName"] as String?
+        if (newName == null) {
+            error("rename-args", "failed because of missing arguments", null)
+            return
+        }
+
+        // assume same provider for all entries
+        val firstEntry = entryMapList.first()
+        val provider = (firstEntry["uri"] as String?)?.let { Uri.parse(it) }?.let { getProvider(it) }
+        if (provider == null) {
+            error("rename-provider", "failed to find provider for entry=$firstEntry", null)
+            return
+        }
+
+        val entries = entryMapList.map(::AvesEntry)
+        provider.renameMultiple(activity, newName, entries, object : ImageOpCallback {
+            override fun onSuccess(fields: FieldMap) = success(fields)
+            override fun onFailure(throwable: Throwable) = error("rename-failure", "failed to rename", throwable.message)
         })
         endOfStream()
     }
