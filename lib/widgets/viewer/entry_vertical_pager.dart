@@ -176,12 +176,16 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
     }
 
     // needed to refresh when entry changes but the page does not (e.g. on page deletion)
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   // when the entry image itself changed (e.g. after rotation)
   void _onImageChanged() async {
     // rebuild to refresh the Image inside ImagePage
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 }
