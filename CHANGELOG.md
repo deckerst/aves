@@ -4,9 +4,25 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+
+- Collection: use a foreground service when scanning many items
+- Collection: ask to rename/replace/skip when moving items with name conflict
+- Map: filter to view items from a specific region in the Collection page
+- Viewer: option to show/hide overlay on opening
+- Info: improved display for PNG text metadata, XMP and others
+- Export: output format selection
+
 ### Changed
 
-- upgraded Flutter to stable v2.5.2
+- upgraded Flutter to stable v2.5.3
+- use build flavors to generate universal or split APKs
+
+### Fixed
+
+- hide root album of hidden path
+- gesture & spacing handling for Android 10+ navigation gestures
+- renaming was leaving behind obsolete items in some cases
 
 ## [v1.5.3] - 2021-09-30
 
