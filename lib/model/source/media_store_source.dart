@@ -111,7 +111,12 @@ class MediaStoreSource extends CollectionSource {
           updateDirectories();
         }
 
-        await analyze(analysisController, visibleEntries);
+        Set<AvesEntry>? analysisEntries;
+        final analysisIds = analysisController?.contentIds;
+        if (analysisIds != null) {
+          analysisEntries = visibleEntries.where((entry) => analysisIds.contains(entry.contentId)).toSet();
+        }
+        await analyze(analysisController, entries: analysisEntries);
 
         debugPrint('$runtimeType refresh ${stopwatch.elapsed} done for ${oldEntries.length} known, ${allNewEntries.length} new, ${obsoleteContentIds.length} obsolete');
       },
@@ -179,7 +184,7 @@ class MediaStoreSource extends CollectionSource {
       await metadataDb.saveEntries(newEntries);
       cleanEmptyAlbums(existingDirectories);
 
-      await analyze(analysisController, newEntries);
+      await analyze(analysisController, entries: newEntries);
     }
 
     return tempUris;

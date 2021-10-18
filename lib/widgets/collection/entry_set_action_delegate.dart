@@ -76,8 +76,8 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     final selection = context.read<Selection<AvesEntry>>();
     final selectedItems = _getExpandedSelectedItems(selection);
 
-    final controller = AnalysisController(canStartService: false, force: true);
-    source.analyze(controller, selectedItems);
+    final controller = AnalysisController(canStartService: true, force: true);
+    source.analyze(controller, entries: selectedItems);
 
     selection.browse();
   }

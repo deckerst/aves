@@ -44,10 +44,21 @@ class AnalysisHandler(private val activity: Activity, private val onAnalysisComp
         result.success(true)
     }
 
-    private fun startAnalysis(@Suppress("UNUSED_PARAMETER") call: MethodCall, result: MethodChannel.Result) {
+    private fun startAnalysis(call: MethodCall, result: MethodChannel.Result) {
+        val force = call.argument<Boolean>("force")
+        if (force == null) {
+            result.error("startAnalysis-args", "failed because of missing arguments", null)
+            return
+        }
+
+        // can be null or empty
+        val contentIds = call.argument<List<Int>>("contentIds");
+
         if (!activity.isMyServiceRunning(AnalysisService::class.java)) {
             val intent = Intent(activity, AnalysisService::class.java)
             intent.putExtra(AnalysisService.KEY_COMMAND, AnalysisService.COMMAND_START)
+            intent.putExtra(AnalysisService.KEY_CONTENT_IDS, contentIds?.toIntArray())
+            intent.putExtra(AnalysisService.KEY_FORCE, force)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 activity.startForegroundService(intent)
             } else {

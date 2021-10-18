@@ -25,9 +25,12 @@ class AnalysisService {
     }
   }
 
-  static Future<void> startService() async {
+  static Future<void> startService({required bool force, List<int>? contentIds}) async {
     try {
-      await platform.invokeMethod('startService');
+      await platform.invokeMethod('startService', <String, dynamic>{
+        'contentIds': contentIds,
+        'force': force,
+      });
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
     }
@@ -48,7 +51,7 @@ Future<void> _init() async {
   _channel.setMethodCallHandler((call) {
     switch (call.method) {
       case 'start':
-        analyzer.start();
+        analyzer.start(call.arguments);
         return Future.value(true);
       case 'stop':
         analyzer.stop();
@@ -69,7 +72,7 @@ enum AnalyzerState { running, stopping, stopped }
 class Analyzer {
   late AppLocalizations _l10n;
   final ValueNotifier<AnalyzerState> _serviceStateNotifier = ValueNotifier<AnalyzerState>(AnalyzerState.stopped);
-  final AnalysisController _controller = AnalysisController(canStartService: false, stopSignal: ValueNotifier(false));
+  AnalysisController? _controller;
   Timer? _notificationUpdateTimer;
   final _source = MediaStoreSource();
 
@@ -94,13 +97,23 @@ class Analyzer {
     _stopUpdateTimer();
   }
 
-  Future<void> start() async {
+  Future<void> start(dynamic args) async {
     debugPrint('$runtimeType start');
-    _serviceStateNotifier.value = AnalyzerState.running;
+    List<int>? contentIds;
+    var force = false;
+    if (args is Map) {
+      contentIds = (args['contentIds'] as List?)?.cast<int>();
+      force = args['force'] ?? false;
+    }
+    _controller = AnalysisController(
+      canStartService: false,
+      contentIds: contentIds,
+      force: force,
+      stopSignal: ValueNotifier(false),
+    );
 
     _l10n = await AppLocalizations.delegate.load(settings.appliedLocale);
-
-    _controller.stopSignal.value = false;
+    _serviceStateNotifier.value = AnalyzerState.running;
     await _source.init();
     unawaited(_source.refresh(analysisController: _controller));
 
@@ -126,7 +139,7 @@ class Analyzer {
         _serviceStateNotifier.value = AnalyzerState.stopped;
         break;
       case AnalyzerState.stopped:
-        _controller.stopSignal.value = true;
+        _controller?.stopSignal.value = true;
         _stopUpdateTimer();
         break;
     }
