@@ -104,9 +104,9 @@ class _AppDebugPageState extends State<AppDebugPage> {
           },
           child: const Text('Source full refresh'),
         ),
-        const ElevatedButton(
-          onPressed: AnalysisService.startService,
-          child: Text('Start analysis service'),
+        ElevatedButton(
+          onPressed: () => AnalysisService.startService(force: false),
+          child: const Text('Start analysis service'),
         ),
         const Divider(),
         Padding(

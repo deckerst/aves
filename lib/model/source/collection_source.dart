@@ -37,8 +37,6 @@ mixin SourceBase {
 }
 
 abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagMixin {
-  static const _analysisServiceOpCountThreshold = 400;
-
   final EventBus _eventBus = EventBus();
 
   @override
@@ -269,30 +267,39 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
     eventBus.fire(EntryRefreshedEvent({entry}));
   }
 
-  Future<void> analyze(AnalysisController? analysisController, Set<AvesEntry> candidateEntries) async {
-    final todoEntries = visibleEntries;
+  Future<void> analyze(AnalysisController? analysisController, {Set<AvesEntry>? entries}) async {
+    final todoEntries = entries ?? visibleEntries;
     final _analysisController = analysisController ?? AnalysisController();
+    final force = _analysisController.force;
     if (!_analysisController.isStopping) {
-      late bool startAnalysisService;
+      var startAnalysisService = false;
       if (_analysisController.canStartService && settings.canUseAnalysisService) {
-        final force = _analysisController.force;
-        var opCount = 0;
-        opCount += (force ? todoEntries : todoEntries.where(TagMixin.catalogEntriesTest)).length;
-        opCount += (force ? todoEntries.where((entry) => entry.hasGps) : todoEntries.where(LocationMixin.locateCountriesTest)).length;
-        if (await availability.canLocatePlaces) {
-          opCount += (force ? todoEntries.where((entry) => entry.hasGps) : todoEntries.where(LocationMixin.locatePlacesTest)).length;
+        // cataloguing
+        if (!startAnalysisService) {
+          final opCount = (force ? todoEntries : todoEntries.where(TagMixin.catalogEntriesTest)).length;
+          if (opCount > TagMixin.commitCountThreshold) {
+            startAnalysisService = true;
+          }
         }
-        startAnalysisService = opCount > _analysisServiceOpCountThreshold;
-      } else {
-        startAnalysisService = false;
+        // ignore locating countries
+        // locating places
+        if (!startAnalysisService && await availability.canLocatePlaces) {
+          final opCount = (force ? todoEntries.where((entry) => entry.hasGps) : todoEntries.where(LocationMixin.locatePlacesTest)).length;
+          if (opCount > LocationMixin.commitCountThreshold) {
+            startAnalysisService = true;
+          }
+        }
       }
       if (startAnalysisService) {
-        await AnalysisService.startService();
+        await AnalysisService.startService(
+          force: force,
+          contentIds: entries?.map((entry) => entry.contentId).whereNotNull().toList(),
+        );
       } else {
-        await catalogEntries(_analysisController, candidateEntries);
-        updateDerivedFilters(candidateEntries);
-        await locateEntries(_analysisController, candidateEntries);
-        updateDerivedFilters(candidateEntries);
+        await catalogEntries(_analysisController, todoEntries);
+        updateDerivedFilters(todoEntries);
+        await locateEntries(_analysisController, todoEntries);
+        updateDerivedFilters(todoEntries);
       }
     }
     stateNotifier.value = SourceState.ready;
@@ -347,7 +354,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
 
     if (visible) {
       final candidateEntries = visibleEntries.where((entry) => filters.any((f) => f.test(entry))).toSet();
-      analyze(null, candidateEntries);
+      analyze(null, entries: candidateEntries);
     }
   }
 }

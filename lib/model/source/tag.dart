@@ -9,7 +9,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
 mixin TagMixin on SourceBase {
-  static const _commitCountThreshold = 400;
+  static const commitCountThreshold = 400;
   static const _stopCheckCountThreshold = 100;
 
   List<String> sortedTags = List.unmodifiable([]);
@@ -41,7 +41,7 @@ mixin TagMixin on SourceBase {
       await entry.catalog(background: true, persist: true, force: force);
       if (entry.isCatalogued) {
         newMetadata.add(entry.catalogMetadata!);
-        if (newMetadata.length >= _commitCountThreshold) {
+        if (newMetadata.length >= commitCountThreshold) {
           await metadataDb.saveMetadata(Set.unmodifiable(newMetadata));
           onCatalogMetadataChanged();
           newMetadata.clear();

@@ -14,8 +14,8 @@ import 'package:flutter/foundation.dart';
 import 'package:tuple/tuple.dart';
 
 mixin LocationMixin on SourceBase {
-  static const _commitCountThreshold = 80;
-  static const _stopCheckCountThreshold = 20;
+  static const commitCountThreshold = 200;
+  static const _stopCheckCountThreshold = 50;
 
   List<String> sortedCountries = List.unmodifiable([]);
   List<String> sortedPlaces = List.unmodifiable([]);
@@ -118,7 +118,7 @@ mixin LocationMixin on SourceBase {
       }
       if (entry.hasFineAddress) {
         newAddresses.add(entry.addressDetails!);
-        if (newAddresses.length >= _commitCountThreshold) {
+        if (newAddresses.length >= commitCountThreshold) {
           await metadataDb.saveAddresses(Set.unmodifiable(newAddresses));
           onAddressMetadataChanged();
           newAddresses.clear();

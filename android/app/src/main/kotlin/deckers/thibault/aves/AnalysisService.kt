@@ -157,12 +157,17 @@ class AnalysisService : MethodChannel.MethodCallHandler, Service() {
         override fun handleMessage(msg: Message) {
             val context = this@AnalysisService
             val data = msg.data
-            Log.d(LOG_TAG, "handleMessage data=$data")
             when (data.getString(KEY_COMMAND)) {
                 COMMAND_START -> {
                     runBlocking {
                         context.runOnUiThread {
-                            backgroundChannel?.invokeMethod("start", null)
+                            val contentIds = data.get(KEY_CONTENT_IDS)?.takeIf { it is IntArray }?.let { (it as IntArray).toList() }
+                            backgroundChannel?.invokeMethod(
+                                "start", hashMapOf(
+                                    "contentIds" to contentIds,
+                                    "force" to data.getBoolean(KEY_FORCE),
+                                )
+                            )
                         }
                     }
                 }
@@ -194,6 +199,8 @@ class AnalysisService : MethodChannel.MethodCallHandler, Service() {
         const val KEY_COMMAND = "command"
         const val COMMAND_START = "start"
         const val COMMAND_STOP = "stop"
+        const val KEY_CONTENT_IDS = "content_ids"
+        const val KEY_FORCE = "force"
     }
 }
 
