@@ -84,6 +84,11 @@ abstract class MediaFileService {
     required NameConflictStrategy nameConflictStrategy,
   });
 
+  Stream<MoveOpEvent> rename(
+    Iterable<AvesEntry> entries, {
+    required String newName,
+  });
+
   Future<Map<String, dynamic>> captureFrame(
     AvesEntry entry, {
     required String desiredName,
@@ -92,8 +97,6 @@ abstract class MediaFileService {
     required String destinationAlbum,
     required NameConflictStrategy nameConflictStrategy,
   });
-
-  Future<Map<String, dynamic>> rename(AvesEntry entry, String newName);
 }
 
 class PlatformMediaFileService implements MediaFileService {
@@ -347,6 +350,23 @@ class PlatformMediaFileService implements MediaFileService {
   }
 
   @override
+  Stream<MoveOpEvent> rename(
+    Iterable<AvesEntry> entries, {
+    required String newName,
+  }) {
+    try {
+      return _opStreamChannel.receiveBroadcastStream(<String, dynamic>{
+        'op': 'rename',
+        'entries': entries.map(_toPlatformEntryMap).toList(),
+        'newName': newName,
+      }).map((event) => MoveOpEvent.fromMap(event));
+    } on PlatformException catch (e, stack) {
+      reportService.recordError(e, stack);
+      return Stream.error(e);
+    }
+  }
+
+  @override
   Future<Map<String, dynamic>> captureFrame(
     AvesEntry entry, {
     required String desiredName,
@@ -363,21 +383,6 @@ class PlatformMediaFileService implements MediaFileService {
         'bytes': bytes,
         'destinationPath': destinationAlbum,
         'nameConflictStrategy': nameConflictStrategy.toPlatform(),
-      });
-      if (result != null) return (result as Map).cast<String, dynamic>();
-    } on PlatformException catch (e, stack) {
-      await reportService.recordError(e, stack);
-    }
-    return {};
-  }
-
-  @override
-  Future<Map<String, dynamic>> rename(AvesEntry entry, String newName) async {
-    try {
-      // returns map with: 'contentId' 'path' 'title' 'uri' (all optional)
-      final result = await platform.invokeMethod('rename', <String, dynamic>{
-        'entry': _toPlatformEntryMap(entry),
-        'newName': newName,
       });
       if (result != null) return (result as Map).cast<String, dynamic>();
     } on PlatformException catch (e, stack) {

@@ -223,6 +223,23 @@ class MediaStoreImageProvider : ImageProvider() {
         return found
     }
 
+    private fun hasEntry(context: Context, contentUri: Uri): Boolean {
+        var found = false
+        val projection = arrayOf(MediaStore.MediaColumns._ID)
+        try {
+            val cursor = context.contentResolver.query(contentUri, projection, null, null, null)
+            if (cursor != null) {
+                while (cursor.moveToNext()) {
+                    found = true
+                }
+                cursor.close()
+            }
+        } catch (e: Exception) {
+            Log.e(LOG_TAG, "failed to get entry at contentUri=$contentUri", e)
+        }
+        return found
+    }
+
     private fun needSize(mimeType: String) = MimeTypes.SVG != mimeType
 
     // `uri` is a media URI, not a document URI
@@ -286,7 +303,7 @@ class MediaStoreImageProvider : ImageProvider() {
             val sourcePath = entry.path
             val mimeType = entry.mimeType
 
-            val result = hashMapOf<String, Any?>(
+            val result: FieldMap = hashMapOf(
                 "uri" to sourceUri.toString(),
                 "success" to false,
             )
@@ -389,6 +406,90 @@ class MediaStoreImageProvider : ImageProvider() {
         return scanNewPath(activity, destinationFullPath, mimeType).apply {
             put("deletedSource", deletedSource)
         }
+    }
+
+    override suspend fun renameMultiple(
+        activity: Activity,
+        newFileName: String,
+        entries: List<AvesEntry>,
+        callback: ImageOpCallback,
+    ) {
+        for (entry in entries) {
+            val sourceUri = entry.uri
+            val sourcePath = entry.path
+            val mimeType = entry.mimeType
+
+            val result: FieldMap = hashMapOf(
+                "uri" to sourceUri.toString(),
+                "success" to false,
+            )
+
+            if (sourcePath != null) {
+                try {
+                    val newFields = renameSingle(
+                        activity = activity,
+                        oldPath = sourcePath,
+                        oldMediaUri = sourceUri,
+                        newFileName = newFileName,
+                        mimeType = mimeType,
+                    )
+                    result["newFields"] = newFields
+                    result["success"] = true
+                } catch (e: Exception) {
+                    Log.w(LOG_TAG, "failed to rename to newFileName=$newFileName entry with sourcePath=$sourcePath", e)
+                }
+            }
+            callback.onSuccess(result)
+        }
+    }
+
+    private suspend fun renameSingle(
+        activity: Activity,
+        oldPath: String,
+        oldMediaUri: Uri,
+        newFileName: String,
+        mimeType: String,
+    ): FieldMap {
+        val oldFile = File(oldPath)
+        val newFile = File(oldFile.parent, newFileName)
+        if (oldFile == newFile) {
+            // nothing to do
+            return skippedFieldMap
+        }
+
+        @Suppress("BlockingMethodInNonBlockingContext")
+        val renamed = getDocumentFile(activity, oldPath, oldMediaUri)?.renameTo(newFileName) ?: false
+        if (!renamed) {
+            throw Exception("failed to rename entry at path=$oldPath")
+        }
+
+        // renaming may be successful and the file at the old path no longer exists
+        // but, in some situations, scanning the old path does not clear the Media Store entry
+        // e.g. for media owned by another package in the Download folder on API 29
+
+        // for higher chance of accurate obsolete item check, keep this order:
+        // 1) scan obsolete item,
+        // 2) scan current item,
+        // 3) check obsolete item in Media Store
+
+        scanObsoletePath(activity, oldPath, mimeType)
+        val newFields = scanNewPath(activity, newFile.path, mimeType)
+
+        var deletedSource = !hasEntry(activity, oldMediaUri)
+        if (!deletedSource) {
+            Log.w(LOG_TAG, "renaming item at uri=$oldMediaUri to newFileName=$newFileName did not clear the MediaStore entry for obsolete path=$oldPath")
+
+            // delete obsolete entry
+            try {
+                delete(activity, oldMediaUri, oldPath)
+                deletedSource = true
+            } catch (e: Exception) {
+                Log.w(LOG_TAG, "failed to delete entry with path=$oldPath", e)
+            }
+        }
+        newFields["deletedSource"] = deletedSource
+
+        return newFields
     }
 
     override fun scanPostMetadataEdit(context: Context, path: String, uri: Uri, mimeType: String, newFields: HashMap<String, Any?>, callback: ImageOpCallback) {

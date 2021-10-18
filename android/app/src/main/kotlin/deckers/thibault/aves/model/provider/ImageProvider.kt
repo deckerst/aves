@@ -32,7 +32,6 @@ import deckers.thibault.aves.utils.StorageUtils.createDirectoryIfAbsent
 import deckers.thibault.aves.utils.StorageUtils.getDocumentFile
 import java.io.ByteArrayInputStream
 import java.io.File
-import java.io.FileNotFoundException
 import java.io.IOException
 import java.util.*
 import kotlin.collections.HashMap
@@ -48,6 +47,10 @@ abstract class ImageProvider {
 
     open suspend fun moveMultiple(activity: Activity, copy: Boolean, destinationDir: String, nameConflictStrategy: NameConflictStrategy, entries: List<AvesEntry>, callback: ImageOpCallback) {
         callback.onFailure(UnsupportedOperationException("`moveMultiple` is not supported by this image provider"))
+    }
+
+    open suspend fun renameMultiple(activity: Activity, newFileName: String, entries: List<AvesEntry>, callback: ImageOpCallback) {
+        callback.onFailure(UnsupportedOperationException("`renameMultiple` is not supported by this image provider"))
     }
 
     open fun scanPostMetadataEdit(context: Context, path: String, uri: Uri, mimeType: String, newFields: HashMap<String, Any?>, callback: ImageOpCallback) {
@@ -81,7 +84,7 @@ abstract class ImageProvider {
             val sourcePath = entry.path
             val pageId = entry.pageId
 
-            val result = hashMapOf<String, Any?>(
+            val result: FieldMap = hashMapOf(
                 "uri" to sourceUri.toString(),
                 "pageId" to pageId,
                 "success" to false,
@@ -368,36 +371,6 @@ abstract class ImageProvider {
                     desiredNameWithoutExtension
                 }
             }
-        }
-    }
-
-    suspend fun rename(context: Context, oldPath: String, oldMediaUri: Uri, mimeType: String, newFilename: String, callback: ImageOpCallback) {
-        val oldFile = File(oldPath)
-        val newFile = File(oldFile.parent, newFilename)
-        if (oldFile == newFile) {
-            Log.w(LOG_TAG, "new name and old name are the same, path=$oldPath")
-            callback.onSuccess(HashMap())
-            return
-        }
-
-        val df = getDocumentFile(context, oldPath, oldMediaUri)
-        try {
-            @Suppress("BlockingMethodInNonBlockingContext")
-            val renamed = df != null && df.renameTo(newFilename)
-            if (!renamed) {
-                callback.onFailure(Exception("failed to rename entry at path=$oldPath"))
-                return
-            }
-        } catch (e: FileNotFoundException) {
-            callback.onFailure(e)
-            return
-        }
-
-        scanObsoletePath(context, oldPath, mimeType)
-        try {
-            callback.onSuccess(MediaStoreImageProvider().scanNewPath(context, newFile.path, mimeType))
-        } catch (e: Exception) {
-            callback.onFailure(e)
         }
     }
 
