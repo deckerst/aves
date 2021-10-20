@@ -76,7 +76,7 @@ internal class ContentImageProvider : ImageProvider() {
     companion object {
         private val LOG_TAG = LogUtils.createTag<ContentImageProvider>()
 
-        @Suppress("DEPRECATION")
+        @Suppress("deprecation")
         const val PATH = MediaStore.MediaColumns.DATA
 
         private val projection = arrayOf(

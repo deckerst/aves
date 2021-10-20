@@ -8,20 +8,40 @@ import 'package:flutter/material.dart';
 
 mixin PermissionAwareMixin {
   Future<bool> checkStoragePermission(BuildContext context, Set<AvesEntry> entries) {
-    return checkStoragePermissionForAlbums(context, entries.map((e) => e.directory).whereNotNull().toSet());
+    return checkStoragePermissionForAlbums(context, entries.map((e) => e.directory).whereNotNull().toSet(), entries: entries);
   }
 
-  Future<bool> checkStoragePermissionForAlbums(BuildContext context, Set<String> albumPaths) async {
+  Future<bool> checkStoragePermissionForAlbums(BuildContext context, Set<String> albumPaths, {Set<AvesEntry>? entries}) async {
     final restrictedDirs = await storageService.getRestrictedDirectories();
     while (true) {
       final dirs = await storageService.getInaccessibleDirectories(albumPaths);
-      if (dirs.isEmpty) return true;
 
-      final restrictedInaccessibleDir = dirs.firstWhereOrNull(restrictedDirs.contains);
-      if (restrictedInaccessibleDir != null) {
-        await showRestrictedDirectoryDialog(context, restrictedInaccessibleDir);
-        return false;
+      final restrictedInaccessibleDirs = dirs.where(restrictedDirs.contains).toSet();
+      if (restrictedInaccessibleDirs.isNotEmpty) {
+        if (entries != null && await storageService.canRequestMediaFileAccess()) {
+          // request media file access for items in restricted directories
+          final uris = <String>[], mimeTypes = <String>[];
+          entries.where((entry) {
+            final dir = entry.directory;
+            return dir != null && restrictedInaccessibleDirs.contains(VolumeRelativeDirectory.fromPath(dir));
+          }).forEach((entry) {
+            uris.add(entry.uri);
+            mimeTypes.add(entry.mimeType);
+          });
+          final granted = await storageService.requestMediaFileAccess(uris, mimeTypes);
+          if (!granted) return false;
+        } else if (entries == null && await storageService.canInsertMedia(restrictedInaccessibleDirs)) {
+          // insertion in restricted directories
+        } else {
+          // cannot proceed further
+          await showRestrictedDirectoryDialog(context, restrictedInaccessibleDirs.first);
+          return false;
+        }
+        // clear restricted directories
+        dirs.removeAll(restrictedInaccessibleDirs);
       }
+
+      if (dirs.isEmpty) return true;
 
       final dir = dirs.first;
       final confirmed = await showDialog<bool>(
@@ -49,7 +69,7 @@ mixin PermissionAwareMixin {
       // abort if the user cancels in Flutter
       if (confirmed == null || !confirmed) return false;
 
-      final granted = await storageService.requestVolumeAccess(dir.volumePath);
+      final granted = await storageService.requestDirectoryAccess(dir.volumePath);
       if (!granted) {
         // abort if the user denies access from the native dialog
         return false;

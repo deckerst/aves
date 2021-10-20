@@ -36,7 +36,7 @@ object ContextUtils {
     fun Context.isMyServiceRunning(serviceClass: Class<out Service>): Boolean {
         val am = this.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager?
         am ?: return false
-        @Suppress("DEPRECATION")
+        @Suppress("deprecation")
         return am.getRunningServices(Integer.MAX_VALUE).any { it.service.className == serviceClass.name }
     }
 }

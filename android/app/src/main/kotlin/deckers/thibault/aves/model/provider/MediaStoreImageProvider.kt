@@ -4,26 +4,29 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.RecoverableSecurityException
 import android.content.ContentUris
+import android.content.ContentValues
 import android.content.Context
 import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Build
+import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
+import androidx.annotation.RequiresApi
 import com.commonsware.cwac.document.DocumentFileCompat
-import deckers.thibault.aves.MainActivity.Companion.DELETE_PERMISSION_REQUEST
+import deckers.thibault.aves.MainActivity
+import deckers.thibault.aves.MainActivity.Companion.DELETE_SINGLE_PERMISSION_REQUEST
 import deckers.thibault.aves.model.AvesEntry
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.model.NameConflictStrategy
 import deckers.thibault.aves.model.SourceEntry
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
+import deckers.thibault.aves.utils.MimeTypes.extensionFor
 import deckers.thibault.aves.utils.MimeTypes.isImage
 import deckers.thibault.aves.utils.MimeTypes.isVideo
-import deckers.thibault.aves.utils.StorageUtils.createDirectoryIfAbsent
-import deckers.thibault.aves.utils.StorageUtils.ensureTrailingSeparator
-import deckers.thibault.aves.utils.StorageUtils.getDocumentFile
-import deckers.thibault.aves.utils.StorageUtils.requireAccessPermission
+import deckers.thibault.aves.utils.StorageUtils
+import deckers.thibault.aves.utils.StorageUtils.PathSegments
 import deckers.thibault.aves.utils.UriUtils.tryParseId
 import java.io.File
 import java.util.*
@@ -243,37 +246,44 @@ class MediaStoreImageProvider : ImageProvider() {
     private fun needSize(mimeType: String) = MimeTypes.SVG != mimeType
 
     // `uri` is a media URI, not a document URI
-    override suspend fun delete(activity: Activity, uri: Uri, path: String?) {
-        path ?: throw Exception("failed to delete file because path is null")
+    override suspend fun delete(activity: Activity, uri: Uri, path: String?, mimeType: String) {
+        if (!(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
+                    && isMediaUriPermissionGranted(activity, uri, mimeType))
+        ) {
+            // if the file is on SD card, calling the content resolver `delete()`
+            // removes the entry from the Media Store but it doesn't delete the file,
+            // even when the app has the permission, so we manually delete the document file
+            path ?: throw Exception("failed to delete file because path is null")
+            if (File(path).exists() && StorageUtils.requireAccessPermission(activity, path)) {
+                Log.d(LOG_TAG, "delete document at uri=$uri path=$path")
+                val df = StorageUtils.getDocumentFile(activity, path, uri)
 
-        if (File(path).exists() && requireAccessPermission(activity, path)) {
-            // if the file is on SD card, calling the content resolver `delete()` removes the entry from the Media Store
-            // but it doesn't delete the file, even if the app has the permission
-            val df = getDocumentFile(activity, path, uri)
-
-            @Suppress("BlockingMethodInNonBlockingContext")
-            if (df != null && df.delete()) return
-            throw Exception("failed to delete file with df=$df")
+                @Suppress("BlockingMethodInNonBlockingContext")
+                if (df != null && df.delete()) return
+                throw Exception("failed to delete file with df=$df")
+            }
         }
 
         try {
+            Log.d(LOG_TAG, "delete content at uri=$uri")
             if (activity.contentResolver.delete(uri, null, null) > 0) return
         } catch (securityException: SecurityException) {
             // even if the app has access permission granted on the containing directory,
             // the delete request may yield a `RecoverableSecurityException` on Android 10+
             // when the underlying file no longer exists and this is an orphaned entry in the Media Store
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                Log.w(LOG_TAG, "caught a security exception when attempting to delete uri=$uri", securityException)
                 val rse = securityException as? RecoverableSecurityException ?: throw securityException
                 val intentSender = rse.userAction.actionIntent.intentSender
 
                 // request user permission for this item
-                pendingDeleteCompleter = CompletableFuture<Boolean>()
-                activity.startIntentSenderForResult(intentSender, DELETE_PERMISSION_REQUEST, null, 0, 0, 0, null)
-                val granted = pendingDeleteCompleter!!.join()
+                MainActivity.pendingScopedStoragePermissionCompleter = CompletableFuture<Boolean>()
+                activity.startIntentSenderForResult(intentSender, DELETE_SINGLE_PERMISSION_REQUEST, null, 0, 0, 0, null)
+                val granted = MainActivity.pendingScopedStoragePermissionCompleter!!.join()
 
-                pendingDeleteCompleter = null
+                MainActivity.pendingScopedStoragePermissionCompleter = null
                 if (granted) {
-                    delete(activity, uri, path)
+                    delete(activity, uri, path, mimeType)
                 } else {
                     throw Exception("failed to get delete permission")
                 }
@@ -287,14 +297,14 @@ class MediaStoreImageProvider : ImageProvider() {
     override suspend fun moveMultiple(
         activity: Activity,
         copy: Boolean,
-        destinationDir: String,
+        targetDir: String,
         nameConflictStrategy: NameConflictStrategy,
         entries: List<AvesEntry>,
         callback: ImageOpCallback,
     ) {
-        val destinationDirDocFile = createDirectoryIfAbsent(activity, destinationDir)
-        if (destinationDirDocFile == null) {
-            callback.onFailure(Exception("failed to create directory at path=$destinationDir"))
+        val targetDirDocFile = StorageUtils.createDirectoryDocIfAbsent(activity, targetDir)
+        if (!File(targetDir).exists()) {
+            callback.onFailure(Exception("failed to create directory at path=$targetDir"))
             return
         }
 
@@ -324,12 +334,12 @@ class MediaStoreImageProvider : ImageProvider() {
                 // - there is no documentation regarding support for usage with removable storage
                 // - the Media Store only allows inserting in specific primary directories ("DCIM", "Pictures") when using scoped storage
                 try {
-                    val newFields = moveSingleByTreeDocAndScan(
+                    val newFields = moveSingle(
                         activity = activity,
                         sourcePath = sourcePath,
                         sourceUri = sourceUri,
-                        destinationDir = destinationDir,
-                        destinationDirDocFile = destinationDirDocFile,
+                        targetDir = targetDir,
+                        targetDirDocFile = targetDirDocFile,
                         nameConflictStrategy = nameConflictStrategy,
                         mimeType = mimeType,
                         copy = copy,
@@ -337,26 +347,26 @@ class MediaStoreImageProvider : ImageProvider() {
                     result["newFields"] = newFields
                     result["success"] = true
                 } catch (e: Exception) {
-                    Log.w(LOG_TAG, "failed to move to destinationDir=$destinationDir entry with sourcePath=$sourcePath", e)
+                    Log.w(LOG_TAG, "failed to move to targetDir=$targetDir entry with sourcePath=$sourcePath", e)
                 }
             }
             callback.onSuccess(result)
         }
     }
 
-    private suspend fun moveSingleByTreeDocAndScan(
+    private suspend fun moveSingle(
         activity: Activity,
         sourcePath: String,
         sourceUri: Uri,
-        destinationDir: String,
-        destinationDirDocFile: DocumentFileCompat,
+        targetDir: String,
+        targetDirDocFile: DocumentFileCompat?,
         nameConflictStrategy: NameConflictStrategy,
         mimeType: String,
         copy: Boolean,
     ): FieldMap {
         val sourceFile = File(sourcePath)
-        val sourceDir = sourceFile.parent?.let { ensureTrailingSeparator(it) }
-        if (sourceDir == destinationDir && !(copy && nameConflictStrategy == NameConflictStrategy.RENAME)) {
+        val sourceDir = sourceFile.parent?.let { StorageUtils.ensureTrailingSeparator(it) }
+        if (sourceDir == targetDir && !(copy && nameConflictStrategy == NameConflictStrategy.RENAME)) {
             // nothing to do unless it's a renamed copy
             return skippedFieldMap
         }
@@ -365,47 +375,98 @@ class MediaStoreImageProvider : ImageProvider() {
         val desiredNameWithoutExtension = sourceFileName.replaceFirst(FILE_EXTENSION_PATTERN, "")
         val targetNameWithoutExtension = resolveTargetFileNameWithoutExtension(
             activity = activity,
-            dir = destinationDir,
+            dir = targetDir,
             desiredNameWithoutExtension = desiredNameWithoutExtension,
-            extension = MimeTypes.extensionFor(mimeType),
+            mimeType = mimeType,
             conflictStrategy = nameConflictStrategy,
         ) ?: return skippedFieldMap
 
-        // the file created from a `TreeDocumentFile` is also a `TreeDocumentFile`
-        // but in order to open an output stream to it, we need to use a `SingleDocumentFile`
-        // through a document URI, not a tree URI
-        // note that `DocumentFile.getParentFile()` returns null if we did not pick a tree first
-        @Suppress("BlockingMethodInNonBlockingContext")
-        val destinationTreeFile = destinationDirDocFile.createFile(mimeType, targetNameWithoutExtension)
-        val destinationDocFile = DocumentFileCompat.fromSingleUri(activity, destinationTreeFile.uri)
+        return moveSingleByTreeDoc(
+            activity = activity,
+            mimeType = mimeType,
+            sourceUri = sourceUri,
+            sourcePath = sourcePath,
+            targetDir = targetDir,
+            targetDirDocFile = targetDirDocFile,
+            targetNameWithoutExtension = targetNameWithoutExtension,
+            copy = copy
+        )
+    }
 
+    private suspend fun moveSingleByTreeDoc(
+        activity: Activity,
+        mimeType: String,
+        sourceUri: Uri,
+        sourcePath: String,
+        targetDir: String,
+        targetDirDocFile: DocumentFileCompat?,
+        targetNameWithoutExtension: String,
+        copy: Boolean
+    ): FieldMap {
         // `DocumentsContract.moveDocument()` needs `sourceParentDocumentUri`, which could be different for each entry
         // `DocumentsContract.copyDocument()` yields "Unsupported call: android:copyDocument"
-        // when used with entry URI as `sourceDocumentUri`, and destinationDirDocFile URI as `targetParentDocumentUri`
+        // when used with entry URI as `sourceDocumentUri`, and targetDirDocFile URI as `targetParentDocumentUri`
         val source = DocumentFileCompat.fromSingleUri(activity, sourceUri)
-        @Suppress("BlockingMethodInNonBlockingContext")
-        source.copyTo(destinationDocFile)
 
-        // the source file name and the created document file name can be different when:
-        // - a file with the same name already exists, some implementations give a suffix like ` (1)`, some *do not*
-        // - the original extension does not match the extension added by the underlying provider
-        val fileName = destinationDocFile.name
-        val destinationFullPath = destinationDir + fileName
+        val targetPath = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && isDownloadDir(activity, targetDir)) {
+            val targetFileName = "$targetNameWithoutExtension${extensionFor(mimeType)}"
+            val values = ContentValues().apply {
+                put(MediaStore.MediaColumns.DISPLAY_NAME, targetFileName)
+                put(MediaStore.MediaColumns.IS_PENDING, 1)
+            }
+            val resolver = activity.contentResolver
+            val uri = resolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values)
 
-        var deletedSource = false
+            uri?.let {
+                @Suppress("BlockingMethodInNonBlockingContext")
+                resolver.openOutputStream(uri)?.use { output ->
+                    source.copyTo(output)
+                }
+                values.clear()
+                values.put(MediaStore.MediaColumns.IS_PENDING, 0)
+                resolver.update(uri, values, null, null)
+            } ?: throw Exception("MediaStore failed for some reason")
+
+            File(targetDir, targetFileName).path
+        } else {
+            targetDirDocFile ?: throw Exception("failed to get tree doc for directory at path=$targetDir")
+
+            // the file created from a `TreeDocumentFile` is also a `TreeDocumentFile`
+            // but in order to open an output stream to it, we need to use a `SingleDocumentFile`
+            // through a document URI, not a tree URI
+            // note that `DocumentFile.getParentFile()` returns null if we did not pick a tree first
+            @Suppress("BlockingMethodInNonBlockingContext")
+            val targetTreeFile = targetDirDocFile.createFile(mimeType, targetNameWithoutExtension)
+            val targetDocFile = DocumentFileCompat.fromSingleUri(activity, targetTreeFile.uri)
+
+            @Suppress("BlockingMethodInNonBlockingContext")
+            source.copyTo(targetDocFile)
+
+            // the source file name and the created document file name can be different when:
+            // - a file with the same name already exists, some implementations give a suffix like ` (1)`, some *do not*
+            // - the original extension does not match the extension added by the underlying provider
+            val fileName = targetDocFile.name
+            targetDir + fileName
+        }
+
         if (!copy) {
             // delete original entry
             try {
-                delete(activity, sourceUri, sourcePath)
-                deletedSource = true
+                delete(activity, sourceUri, sourcePath, mimeType)
             } catch (e: Exception) {
                 Log.w(LOG_TAG, "failed to delete entry with path=$sourcePath", e)
             }
         }
 
-        return scanNewPath(activity, destinationFullPath, mimeType).apply {
-            put("deletedSource", deletedSource)
+        return scanNewPath(activity, targetPath, mimeType)
+    }
+
+    private fun isDownloadDir(context: Context, dirPath: String): Boolean {
+        var relativeDir = PathSegments(context, dirPath).relativeDir ?: ""
+        if (relativeDir.endsWith(File.separator)) {
+            relativeDir = relativeDir.substring(0, relativeDir.length - 1)
         }
+        return relativeDir == Environment.DIRECTORY_DOWNLOADS
     }
 
     override suspend fun renameMultiple(
@@ -428,10 +489,10 @@ class MediaStoreImageProvider : ImageProvider() {
                 try {
                     val newFields = renameSingle(
                         activity = activity,
-                        oldPath = sourcePath,
-                        oldMediaUri = sourceUri,
-                        newFileName = newFileName,
                         mimeType = mimeType,
+                        oldMediaUri = sourceUri,
+                        oldPath = sourcePath,
+                        newFileName = newFileName,
                     )
                     result["newFields"] = newFields
                     result["success"] = true
@@ -445,10 +506,10 @@ class MediaStoreImageProvider : ImageProvider() {
 
     private suspend fun renameSingle(
         activity: Activity,
-        oldPath: String,
-        oldMediaUri: Uri,
-        newFileName: String,
         mimeType: String,
+        oldMediaUri: Uri,
+        oldPath: String,
+        newFileName: String,
     ): FieldMap {
         val oldFile = File(oldPath)
         val newFile = File(oldFile.parent, newFileName)
@@ -457,17 +518,61 @@ class MediaStoreImageProvider : ImageProvider() {
             return skippedFieldMap
         }
 
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
+            && isMediaUriPermissionGranted(activity, oldMediaUri, mimeType)
+        ) {
+            renameSingleByMediaStore(activity, mimeType, oldMediaUri, newFile)
+        } else {
+            renameSingleByTreeDoc(activity, mimeType, oldMediaUri, oldPath, newFile)
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.Q)
+    private suspend fun renameSingleByMediaStore(
+        activity: Activity,
+        mimeType: String,
+        mediaUri: Uri,
+        newFile: File
+    ): FieldMap {
+        val uri = StorageUtils.getMediaStoreScopedStorageSafeUri(mediaUri, mimeType)
+
+        // `IS_PENDING` is necessary for `TITLE`, not for `DISPLAY_NAME`
+        val tempValues = ContentValues().apply { put(MediaStore.MediaColumns.IS_PENDING, 1) }
+        if (activity.contentResolver.update(uri, tempValues, null, null) == 0) {
+            throw Exception("failed to update fields for uri=$uri")
+        }
+
+        val finalValues = ContentValues().apply {
+            put(MediaStore.MediaColumns.DISPLAY_NAME, newFile.name)
+            // scanning the new file will not automatically update `TITLE`
+            put(MediaStore.MediaColumns.TITLE, newFile.nameWithoutExtension)
+            put(MediaStore.MediaColumns.IS_PENDING, 0)
+        }
+        if (activity.contentResolver.update(uri, finalValues, null, null) == 0) {
+            throw Exception("failed to update fields for uri=$uri")
+        }
+
+        // URI should not change
+        return scanNewPath(activity, newFile.path, mimeType)
+    }
+
+    private suspend fun renameSingleByTreeDoc(
+        activity: Activity,
+        mimeType: String,
+        oldMediaUri: Uri,
+        oldPath: String,
+        newFile: File
+    ): FieldMap {
+        Log.d(LOG_TAG, "rename document at uri=$oldMediaUri path=$oldPath")
         @Suppress("BlockingMethodInNonBlockingContext")
-        val renamed = getDocumentFile(activity, oldPath, oldMediaUri)?.renameTo(newFileName) ?: false
+        val renamed = StorageUtils.getDocumentFile(activity, oldPath, oldMediaUri)?.renameTo(newFile.name) ?: false
         if (!renamed) {
             throw Exception("failed to rename entry at path=$oldPath")
         }
 
-        // renaming may be successful and the file at the old path no longer exists
-        // but, in some situations, scanning the old path does not clear the Media Store entry
-        // e.g. for media owned by another package in the Download folder on API 29
-
-        // for higher chance of accurate obsolete item check, keep this order:
+        // Renaming may be successful and the file at the old path no longer exists
+        // but, in some situations, scanning the old path does not clear the Media Store entry.
+        // For higher chance of accurate obsolete item check, keep this order:
         // 1) scan obsolete item,
         // 2) scan current item,
         // 3) check obsolete item in Media Store
@@ -475,19 +580,24 @@ class MediaStoreImageProvider : ImageProvider() {
         scanObsoletePath(activity, oldPath, mimeType)
         val newFields = scanNewPath(activity, newFile.path, mimeType)
 
-        var deletedSource = !hasEntry(activity, oldMediaUri)
-        if (!deletedSource) {
-            Log.w(LOG_TAG, "renaming item at uri=$oldMediaUri to newFileName=$newFileName did not clear the MediaStore entry for obsolete path=$oldPath")
+        if (hasEntry(activity, oldMediaUri)) {
+            Log.w(LOG_TAG, "renaming item at uri=$oldMediaUri to newFile=$newFile did not clear the MediaStore entry for obsolete path=$oldPath")
 
-            // delete obsolete entry
-            try {
-                delete(activity, oldMediaUri, oldPath)
-                deletedSource = true
-            } catch (e: Exception) {
-                Log.w(LOG_TAG, "failed to delete entry with path=$oldPath", e)
+            // On Android Q (emulator/Mi9TPro), the concept of owner package disrupts renaming and the Media Store keeps an obsolete entry,
+            // but we use legacy external storage, so at least we do not have to deal with a `RecoverableSecurityException`
+            // when deleting this obsolete entry which is not backed by a file anymore.
+            // On Android R (S10e), everything seems fine!
+            // On Android S (emulator), renaming always leaves an obsolete entry whatever the owner package,
+            // and we get a `RecoverableSecurityException` if we attempt to delete this obsolete entry,
+            // but the entry seems to be cleaned later automatically by the Media Store anyway.
+            if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
+                try {
+                    delete(activity, oldMediaUri, oldPath, mimeType)
+                } catch (e: Exception) {
+                    Log.w(LOG_TAG, "failed to delete entry with path=$oldPath", e)
+                }
             }
         }
-        newFields["deletedSource"] = deletedSource
 
         return newFields
     }
@@ -631,8 +741,6 @@ class MediaStoreImageProvider : ImageProvider() {
                 MediaStore.MediaColumns.ORIENTATION,
             ) else emptyArray()
         )
-
-        var pendingDeleteCompleter: CompletableFuture<Boolean>? = null
     }
 }
 
@@ -650,7 +758,7 @@ object MediaColumns {
     @SuppressLint("InlinedApi")
     const val DURATION = MediaStore.MediaColumns.DURATION
 
-    @Suppress("DEPRECATION")
+    @Suppress("deprecation")
     const val PATH = MediaStore.MediaColumns.DATA
 }
 

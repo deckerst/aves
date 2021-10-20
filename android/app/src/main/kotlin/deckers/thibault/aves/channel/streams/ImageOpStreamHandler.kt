@@ -29,7 +29,7 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
     init {
         if (arguments is Map<*, *>) {
             op = arguments["op"] as String?
-            @Suppress("UNCHECKED_CAST")
+            @Suppress("unchecked_cast")
             val rawEntries = arguments["entries"] as List<FieldMap>?
             if (rawEntries != null) {
                 entryMapList.addAll(rawEntries)
@@ -100,12 +100,13 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
         for (entryMap in entryMapList) {
             val uri = (entryMap["uri"] as String?)?.let { Uri.parse(it) }
             val path = entryMap["path"] as String?
-            if (uri != null) {
+            val mimeType = entryMap["mimeType"] as String?
+            if (uri != null && mimeType != null) {
                 val result: FieldMap = hashMapOf(
                     "uri" to uri.toString(),
                 )
                 try {
-                    provider.delete(activity, uri, path)
+                    provider.delete(activity, uri, path, mimeType)
                     result["success"] = true
                 } catch (e: Exception) {
                     Log.w(LOG_TAG, "failed to delete entry with path=$path", e)

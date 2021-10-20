@@ -14,7 +14,6 @@ import 'package:aves/services/common/image_op_events.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/media/enums.dart';
 import 'package:aves/theme/durations.dart';
-import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
@@ -87,21 +86,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     final source = context.read<CollectionSource>();
     final selection = context.read<Selection<AvesEntry>>();
     final selectedItems = _getExpandedSelectedItems(selection);
-
     final selectionDirs = selectedItems.map((e) => e.directory).whereNotNull().toSet();
-    if (moveType == MoveType.move) {
-      // check whether moving is possible given OS restrictions,
-      // before asking to pick a destination album
-      final restrictedDirs = await storageService.getRestrictedDirectories();
-      for (final selectionDir in selectionDirs) {
-        final dir = VolumeRelativeDirectory.fromPath(selectionDir);
-        if (dir == null) return;
-        if (restrictedDirs.contains(dir)) {
-          await showRestrictedDirectoryDialog(context, dir);
-          return;
-        }
-      }
-    }
 
     final destinationAlbum = await Navigator.push(
       context,
@@ -113,7 +98,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     if (destinationAlbum == null || destinationAlbum.isEmpty) return;
     if (!await checkStoragePermissionForAlbums(context, {destinationAlbum})) return;
 
-    if (moveType == MoveType.move && !await checkStoragePermissionForAlbums(context, selectionDirs)) return;
+    if (moveType == MoveType.move && !await checkStoragePermissionForAlbums(context, selectionDirs, entries: selectedItems)) return;
 
     if (!await checkFreeSpaceForMove(context, selectedItems, destinationAlbum, moveType)) return;
 
@@ -256,7 +241,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     );
     if (confirmed == null || !confirmed) return;
 
-    if (!await checkStoragePermissionForAlbums(context, selectionDirs)) return;
+    if (!await checkStoragePermissionForAlbums(context, selectionDirs, entries: selectedItems)) return;
 
     source.pauseMonitoring();
     showOpReport<ImageOpEvent>(

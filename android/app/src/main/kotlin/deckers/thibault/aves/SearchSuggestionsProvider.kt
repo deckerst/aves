@@ -85,7 +85,7 @@ class SearchSuggestionsProvider : MethodChannel.MethodCallHandler, ContentProvid
                         "locale" to Locale.getDefault().toString(),
                     ), object : MethodChannel.Result {
                         override fun success(result: Any?) {
-                            @Suppress("UNCHECKED_CAST")
+                            @Suppress("unchecked_cast")
                             cont.resume(result as List<FieldMap>)
                         }
 

@@ -180,6 +180,11 @@ class VolumeRelativeDirectory extends Equatable {
     );
   }
 
+  Map<String, dynamic> toMap() => {
+    'volumePath': volumePath,
+    'relativeDir': relativeDir,
+  };
+
   // prefer static method over a null returning factory constructor
   static VolumeRelativeDirectory? fromPath(String dirPath) {
     final volume = androidFileUtils.getStorageVolume(dirPath);
