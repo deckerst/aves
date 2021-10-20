@@ -15,12 +15,12 @@ import androidx.core.graphics.drawable.IconCompat
 import app.loup.streams_channel.StreamsChannel
 import deckers.thibault.aves.channel.calls.*
 import deckers.thibault.aves.channel.streams.*
-import deckers.thibault.aves.model.provider.MediaStoreImageProvider
 import deckers.thibault.aves.utils.LogUtils
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
+import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ConcurrentHashMap
 
 class MainActivity : FlutterActivity() {
@@ -148,7 +148,8 @@ class MainActivity : FlutterActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             DOCUMENT_TREE_ACCESS_REQUEST -> onDocumentTreeAccessResult(data, resultCode, requestCode)
-            DELETE_PERMISSION_REQUEST -> onDeletePermissionResult(resultCode)
+            DELETE_SINGLE_PERMISSION_REQUEST,
+            MEDIA_WRITE_BULK_PERMISSION_REQUEST -> onScopedStoragePermissionResult(resultCode)
             CREATE_FILE_REQUEST,
             OPEN_FILE_REQUEST,
             SELECT_DIRECTORY_REQUEST -> onStorageAccessResult(requestCode, data?.data)
@@ -173,10 +174,9 @@ class MainActivity : FlutterActivity() {
         onStorageAccessResult(requestCode, treeUri)
     }
 
-    private fun onDeletePermissionResult(resultCode: Int) {
-        // delete permission may be requested on Android 10+ only
+    private fun onScopedStoragePermissionResult(resultCode: Int) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            MediaStoreImageProvider.pendingDeleteCompleter?.complete(resultCode == RESULT_OK)
+            pendingScopedStoragePermissionCompleter?.complete(resultCode == RESULT_OK)
         }
     }
 
@@ -287,14 +287,17 @@ class MainActivity : FlutterActivity() {
         const val VIEWER_CHANNEL = "deckers.thibault/aves/viewer"
         const val EXTRA_STRING_ARRAY_SEPARATOR = "###"
         const val DOCUMENT_TREE_ACCESS_REQUEST = 1
-        const val DELETE_PERMISSION_REQUEST = 2
+        const val OPEN_FROM_ANALYSIS_SERVICE = 2
         const val CREATE_FILE_REQUEST = 3
         const val OPEN_FILE_REQUEST = 4
         const val SELECT_DIRECTORY_REQUEST = 5
-        const val OPEN_FROM_ANALYSIS_SERVICE = 6
+        const val DELETE_SINGLE_PERMISSION_REQUEST = 6
+        const val MEDIA_WRITE_BULK_PERMISSION_REQUEST = 7
 
         // request code to pending runnable
         val pendingStorageAccessResultHandlers = ConcurrentHashMap<Int, PendingStorageAccessResultHandler>()
+
+        var pendingScopedStoragePermissionCompleter: CompletableFuture<Boolean>? = null
 
         private fun onStorageAccessResult(requestCode: Int, uri: Uri?) {
             Log.d(LOG_TAG, "onStorageAccessResult with requestCode=$requestCode, uri=$uri")

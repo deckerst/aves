@@ -23,8 +23,15 @@ abstract class StorageService {
   // returns number of deleted directories
   Future<int> deleteEmptyDirectories(Iterable<String> dirPaths);
 
-  // returns whether user granted access to volume root at `volumePath`
-  Future<bool> requestVolumeAccess(String volumePath);
+  // returns whether user granted access to a directory of his choosing
+  Future<bool> requestDirectoryAccess(String volumePath);
+
+  Future<bool> canRequestMediaFileAccess();
+
+  Future<bool> canInsertMedia(Set<VolumeRelativeDirectory> directories);
+
+  // returns whether user granted access to URIs
+  Future<bool> requestMediaFileAccess(List<String> uris, List<String> mimeTypes);
 
   // return whether operation succeeded (`null` if user cancelled)
   Future<bool?> createFile(String name, String mimeType, Uint8List bytes);
@@ -127,14 +134,62 @@ class PlatformStorageService implements StorageService {
     return 0;
   }
 
-  // returns whether user granted access to volume root at `volumePath`
   @override
-  Future<bool> requestVolumeAccess(String volumePath) async {
+  Future<bool> canRequestMediaFileAccess() async {
+    try {
+      final result = await platform.invokeMethod('canRequestMediaFileBulkAccess');
+      if (result != null) return result as bool;
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
+    return false;
+  }
+
+  @override
+  Future<bool> canInsertMedia(Set<VolumeRelativeDirectory> directories) async {
+    try {
+      final result = await platform.invokeMethod('canInsertMedia', <String, dynamic>{
+        'directories': directories.map((v) => v.toMap()).toList(),
+      });
+      if (result != null) return result as bool;
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
+    return false;
+  }
+
+  // returns whether user granted access to a directory of his choosing
+  @override
+  Future<bool> requestDirectoryAccess(String volumePath) async {
     try {
       final completer = Completer<bool>();
       storageAccessChannel.receiveBroadcastStream(<String, dynamic>{
-        'op': 'requestVolumeAccess',
+        'op': 'requestDirectoryAccess',
         'path': volumePath,
+      }).listen(
+        (data) => completer.complete(data as bool),
+        onError: completer.completeError,
+        onDone: () {
+          if (!completer.isCompleted) completer.complete(false);
+        },
+        cancelOnError: true,
+      );
+      return completer.future;
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
+    return false;
+  }
+
+  // returns whether user granted access to URIs
+  @override
+  Future<bool> requestMediaFileAccess(List<String> uris, List<String> mimeTypes) async {
+    try {
+      final completer = Completer<bool>();
+      storageAccessChannel.receiveBroadcastStream(<String, dynamic>{
+        'op': 'requestMediaFileAccess',
+        'uris': uris,
+        'mimeTypes': mimeTypes,
       }).listen(
         (data) => completer.complete(data as bool),
         onError: completer.completeError,

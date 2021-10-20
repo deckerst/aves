@@ -2,6 +2,7 @@ package deckers.thibault.aves.channel.streams
 
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
@@ -39,7 +40,8 @@ class StorageAccessStreamHandler(private val activity: Activity, arguments: Any?
         handler = Handler(Looper.getMainLooper())
 
         when (op) {
-            "requestVolumeAccess" -> GlobalScope.launch(Dispatchers.IO) { requestVolumeAccess() }
+            "requestDirectoryAccess" -> GlobalScope.launch(Dispatchers.IO) { requestDirectoryAccess() }
+            "requestMediaFileAccess" -> GlobalScope.launch(Dispatchers.IO) { requestMediaFileAccess() }
             "createFile" -> GlobalScope.launch(Dispatchers.IO) { createFile() }
             "openFile" -> GlobalScope.launch(Dispatchers.IO) { openFile() }
             "selectDirectory" -> GlobalScope.launch(Dispatchers.IO) { selectDirectory() }
@@ -47,25 +49,47 @@ class StorageAccessStreamHandler(private val activity: Activity, arguments: Any?
         }
     }
 
-    private fun requestVolumeAccess() {
+    private fun requestDirectoryAccess() {
         val path = args["path"] as String?
         if (path == null) {
-            error("requestVolumeAccess-args", "failed because of missing arguments", null)
+            error("requestDirectoryAccess-args", "failed because of missing arguments", null)
             return
         }
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            error("requestVolumeAccess-unsupported", "volume access is not allowed before Android Lollipop", null)
+            error("requestDirectoryAccess-unsupported", "directory access is not allowed before Android Lollipop", null)
             return
         }
 
-        PermissionManager.requestVolumeAccess(activity, path, {
+        PermissionManager.requestDirectoryAccess(activity, path, {
             success(true)
             endOfStream()
         }, {
             success(false)
             endOfStream()
         })
+    }
+
+    private fun requestMediaFileAccess() {
+        val uris = (args["uris"] as List<*>?)?.mapNotNull { if (it is String) Uri.parse(it) else null }
+        val mimeTypes = (args["mimeTypes"] as List<*>?)?.mapNotNull { if (it is String) it else null }
+        if (uris == null || uris.isEmpty() || mimeTypes == null || mimeTypes.size != uris.size) {
+            error("requestMediaFileAccess-args", "failed because of missing arguments", null)
+            return
+        }
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+            error("requestMediaFileAccess-unsupported", "media file bulk access is not allowed before Android R", null)
+            return
+        }
+
+        try {
+            val granted = PermissionManager.requestMediaFileAccess(activity, uris, mimeTypes)
+            success(granted)
+        } catch (e: Exception) {
+            error("requestMediaFileAccess-request", "failed to request access to uris=$uris", e.message)
+        }
+        endOfStream()
     }
 
     private fun createFile() {

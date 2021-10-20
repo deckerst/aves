@@ -40,7 +40,7 @@ class WindowHandler(private val activity: Activity) : MethodCallHandler {
         result.success(null)
     }
 
-    private fun isRotationLocked(@Suppress("UNUSED_PARAMETER") call: MethodCall, result: MethodChannel.Result) {
+    private fun isRotationLocked(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
         var locked = false
         try {
             locked = Settings.System.getInt(activity.contentResolver, Settings.System.ACCELEROMETER_ROTATION) == 0
@@ -60,7 +60,7 @@ class WindowHandler(private val activity: Activity) : MethodCallHandler {
         result.success(true)
     }
 
-    private fun canSetCutoutMode(@Suppress("UNUSED_PARAMETER") call: MethodCall, result: MethodChannel.Result) {
+    private fun canSetCutoutMode(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
         result.success(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
     }
 

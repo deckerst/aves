@@ -163,7 +163,7 @@ class MediaFileHandler(private val activity: Activity) : MethodCallHandler {
         })
     }
 
-    private fun clearSizedThumbnailDiskCache(@Suppress("UNUSED_PARAMETER") call: MethodCall, result: MethodChannel.Result) {
+    private fun clearSizedThumbnailDiskCache(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
         Glide.get(activity).clearDiskCache()
         result.success(null)
     }

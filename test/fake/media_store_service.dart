@@ -49,7 +49,6 @@ class FakeMediaStoreService extends Fake implements MediaStoreService {
       success: true,
       uri: entry.uri,
       newFields: {
-        'deletedSource': true,
         'uri': 'content://media/external/images/media/$newContentId',
         'contentId': newContentId,
         'path': entry.path!.replaceFirst(sourceAlbum, destinationAlbum),
