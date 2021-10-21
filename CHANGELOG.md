@@ -12,6 +12,8 @@ All notable changes to this project will be documented in this file.
 - Viewer: option to show/hide overlay on opening
 - Info: improved display for PNG text metadata, XMP and others
 - Export: output format selection
+- Search: added raw filter
+- Support modifying files in the Download folder on Android 11+
 
 ### Changed
 
@@ -23,6 +25,7 @@ All notable changes to this project will be documented in this file.
 - hide root album of hidden path
 - gesture & spacing handling for Android 10+ navigation gestures
 - renaming was leaving behind obsolete items in some cases
+- speeding up videos on Xiaomi devices
 
 ## [v1.5.3] - 2021-09-30
 

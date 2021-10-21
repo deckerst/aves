@@ -1,8 +1,6 @@
-Thanks for using Aves!
-v1.5.3:
-- faster launch
-- UI changes for collection thumbnails and albums
-- accessibility support for settings "time to take action" and "remove animations"
-- open images and videos from the map
-- remove metadata from images
+Thanks for using Aves! In v1.5.4:
+- modify files in the Download folder on Android 11
+- choose to rename, replace or skip when moving items with name conflict
+- show images for a specific region from the Map page
+- scanning many items is now happening in a service
 Full changelog available on GitHub
