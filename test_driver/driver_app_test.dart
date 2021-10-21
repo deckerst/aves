@@ -34,6 +34,7 @@ void main() {
     visitSettings();
     sortCollection();
     groupCollection();
+    visitMap();
     selectFirstAlbum();
     searchAlbum();
     showViewer();
@@ -119,6 +120,30 @@ void groupCollection() {
   });
 }
 
+void visitMap() {
+  test('[collection] visit map', () async {
+    await driver.tap(find.byValueKey('appbar-menu-button'));
+    await driver.waitUntilNoTransientCallbacks();
+
+    await driver.tap(find.byValueKey('menu-map'));
+    // wait for heavy Google map initialization
+    await Future.delayed(const Duration(seconds: 3));
+
+    final mapView = find.byValueKey('map_view');
+
+    print('* hide overlay');
+    await driver.tap(mapView);
+    await Future.delayed(const Duration(seconds: 2));
+
+    print('* show overlay');
+    await driver.tap(mapView);
+    await Future.delayed(const Duration(seconds: 2));
+
+    await pressDeviceBackButton();
+    await driver.waitUntilNoTransientCallbacks();
+  });
+}
+
 void selectFirstAlbum() {
   test('[collection] select first album', () async {
     await driver.tap(find.byValueKey('appbar-leading-button'));
@@ -183,7 +208,7 @@ void goToNextImage() {
 
 void toggleOverlay() {
   test('[viewer] toggle overlay', () async {
-    final imageView = find.byValueKey('imageview');
+    final imageView = find.byValueKey('image_view');
 
     print('* hide overlay');
     await driver.tap(imageView);
@@ -197,7 +222,7 @@ void toggleOverlay() {
 
 void zoom() {
   test('[viewer] zoom cycle', () async {
-    final imageView = find.byValueKey('imageview');
+    final imageView = find.byValueKey('image_view');
 
     await driver.doubleTap(imageView);
     await Future.delayed(const Duration(seconds: 1));
@@ -244,7 +269,7 @@ void showInfoMetadata() {
 
 void scrollOffImage() {
   test('[viewer] scroll off', () async {
-    await driver.scroll(find.byValueKey('imageview'), 0, 800, const Duration(milliseconds: 600));
+    await driver.scroll(find.byValueKey('image_view'), 0, 800, const Duration(milliseconds: 600));
     await Future.delayed(const Duration(seconds: 1));
   });
 }

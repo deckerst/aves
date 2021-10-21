@@ -6,6 +6,7 @@ import android.os.Environment
 import android.os.storage.StorageManager
 import androidx.core.os.EnvironmentCompat
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
+import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.utils.PermissionManager
 import deckers.thibault.aves.utils.StorageUtils.getPrimaryVolumePath
 import deckers.thibault.aves.utils.StorageUtils.getVolumePaths
@@ -28,11 +29,13 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
             "getRestrictedDirectories" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getRestrictedDirectories) }
             "revokeDirectoryAccess" -> safe(call, result, ::revokeDirectoryAccess)
             "deleteEmptyDirectories" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::deleteEmptyDirectories) }
+            "canRequestMediaFileBulkAccess" -> safe(call, result, ::canRequestMediaFileBulkAccess)
+            "canInsertMedia" -> safe(call, result, ::canInsertMedia)
             else -> result.notImplemented()
         }
     }
 
-    private fun getStorageVolumes(@Suppress("UNUSED_PARAMETER") call: MethodCall, result: MethodChannel.Result) {
+    private fun getStorageVolumes(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
         val volumes = ArrayList<Map<String, Any>>()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             val sm = context.getSystemService(Context.STORAGE_SERVICE) as? StorageManager
@@ -100,7 +103,7 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
         }
     }
 
-    private fun getGrantedDirectories(@Suppress("UNUSED_PARAMETER") call: MethodCall, result: MethodChannel.Result) {
+    private fun getGrantedDirectories(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
         result.success(ArrayList(PermissionManager.getGrantedDirs(context)))
     }
 
@@ -114,7 +117,7 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
         result.success(PermissionManager.getInaccessibleDirectories(context, dirPaths))
     }
 
-    private fun getRestrictedDirectories(@Suppress("UNUSED_PARAMETER") call: MethodCall, result: MethodChannel.Result) {
+    private fun getRestrictedDirectories(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
         result.success(PermissionManager.getRestrictedDirectories(context))
     }
 
@@ -153,6 +156,20 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
             }
         }
         result.success(deleted)
+    }
+
+    private fun canRequestMediaFileBulkAccess(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
+        result.success(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
+    }
+
+    private fun canInsertMedia(call: MethodCall, result: MethodChannel.Result) {
+        val directories = call.argument<List<FieldMap>>("directories")
+        if (directories == null) {
+            result.error("canInsertMedia-args", "failed because of missing arguments", null)
+            return
+        }
+
+        result.success(PermissionManager.canInsertByMediaStore(directories))
     }
 
     companion object {

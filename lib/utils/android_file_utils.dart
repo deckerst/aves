@@ -1,6 +1,4 @@
-import 'package:aves/services/android_app_service.dart';
 import 'package:aves/services/common/services.dart';
-import 'package:aves/utils/change_notifier.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
@@ -16,7 +14,7 @@ class AndroidFileUtils {
   List<String> _potentialAppDirs = [];
   bool _initialized = false;
 
-  AChangeNotifier appNameChangeNotifier = AChangeNotifier();
+  ValueNotifier<bool> areAppNamesReadyNotifier = ValueNotifier(false);
 
   Iterable<Package> get _launcherPackages => _packages.where((package) => package.categoryLauncher);
 
@@ -41,9 +39,9 @@ class AndroidFileUtils {
 
   Future<void> initAppNames() async {
     if (_packages.isEmpty) {
-      _packages = await AndroidAppService.getPackages();
+      _packages = await androidAppService.getPackages();
       _potentialAppDirs = _launcherPackages.expand((package) => package.potentialDirs).toList();
-      appNameChangeNotifier.notifyListeners();
+      areAppNamesReadyNotifier.value = true;
     }
   }
 
@@ -181,6 +179,11 @@ class VolumeRelativeDirectory extends Equatable {
       relativeDir: map['relativeDir'] ?? '',
     );
   }
+
+  Map<String, dynamic> toMap() => {
+    'volumePath': volumePath,
+    'relativeDir': relativeDir,
+  };
 
   // prefer static method over a null returning factory constructor
   static VolumeRelativeDirectory? fromPath(String dirPath) {

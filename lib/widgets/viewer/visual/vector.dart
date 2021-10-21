@@ -101,6 +101,8 @@ class _VectorImageViewState extends State<VectorImageView> {
 
   @override
   Widget build(BuildContext context) {
+    if (_displaySize == Size.zero) return widget.errorBuilder(context, 'Not sized', null);
+
     return ValueListenableBuilder<ViewState>(
       valueListenable: viewStateNotifier,
       builder: (context, viewState, child) {

@@ -86,6 +86,7 @@ class _LocationSectionState extends State<LocationSection> {
         if (widget.showTitle) const SectionRow(icon: AIcons.location),
         MapTheme(
           interactive: false,
+          showCoordinateFilter: false,
           navigationButton: MapNavigationButton.map,
           visualDensity: VisualDensity.compact,
           mapHeight: 200,
@@ -125,8 +126,8 @@ class _LocationSectionState extends State<LocationSection> {
       MaterialPageRoute(
         settings: const RouteSettings(name: MapPage.routeName),
         builder: (context) => MapPage(
-          collection: CollectionLens(
-            source: baseCollection.source,
+          collection: baseCollection.copyWith(
+            listenToSource: true,
             fixedSelection: baseCollection.sortedEntries.where((entry) => entry.hasGps).toList(),
           ),
           initialEntry: entry,
@@ -157,7 +158,7 @@ class _AddressInfoGroupState extends State<_AddressInfoGroup> {
     super.initState();
     _addressLineLoader = availability.canLocatePlaces.then((connected) {
       if (connected) {
-        return entry.findAddressLine();
+        return entry.findAddressLine(geocoderLocale: settings.appliedLocale);
       }
       return null;
     });

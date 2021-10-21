@@ -9,7 +9,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums.dart';
-import 'package:aves/services/android_app_service.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/collection/entry_set_action_delegate.dart';
 import 'package:aves/widgets/collection/filter_bar.dart';
@@ -61,7 +61,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       vsync: this,
     );
     _isSelectingNotifier.addListener(_onActivityChange);
-    _canAddShortcutsLoader = AndroidAppService.canPinToHomeScreen();
+    _canAddShortcutsLoader = androidAppService.canPinToHomeScreen();
     _registerWidget(widget);
     WidgetsBinding.instance!.addPostFrameCallback((_) => _onFilterChanged());
   }
@@ -200,17 +200,8 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
                 final otherViewEnabled = (!isSelecting && hasItems) || (isSelecting && hasSelection);
 
                 return [
-                  _toMenuItem(
-                    EntrySetAction.sort,
-                    // key is expected by test driver
-                    key: const Key('menu-sort'),
-                  ),
-                  if (groupable)
-                    _toMenuItem(
-                      EntrySetAction.group,
-                      // key is expected by test driver
-                      key: const Key('menu-group'),
-                    ),
+                  _toMenuItem(EntrySetAction.sort),
+                  if (groupable) _toMenuItem(EntrySetAction.group),
                   if (appMode == AppMode.main) ...[
                     if (!isSelecting)
                       _toMenuItem(
@@ -254,9 +245,10 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     ];
   }
 
-  PopupMenuItem<EntrySetAction> _toMenuItem(EntrySetAction action, {Key? key, bool enabled = true}) {
+  PopupMenuItem<EntrySetAction> _toMenuItem(EntrySetAction action, {bool enabled = true}) {
     return PopupMenuItem(
-      key: key,
+      // key is expected by test driver (e.g. 'menu-sort', 'menu-group', 'menu-map')
+      key: Key('menu-${action.toString().substring('EntrySetAction.'.length)}'),
       value: action,
       enabled: enabled,
       child: MenuRow(text: action.getText(context), icon: action.getIcon()),
@@ -356,7 +348,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       // we compute the default name beforehand
       // because some filter labels need localization
       final sortedFilters = List<CollectionFilter>.from(filters)..sort();
-      defaultName = sortedFilters.first.getLabel(context);
+      defaultName = sortedFilters.first.getLabel(context).replaceAll('\n', ' ');
     }
     final result = await showDialog<Tuple2<AvesEntry?, String>>(
       context: context,
@@ -371,7 +363,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     final name = result.item2;
     if (name.isEmpty) return;
 
-    unawaited(AndroidAppService.pinToHomeScreen(name, coverEntry, filters));
+    unawaited(androidAppService.pinToHomeScreen(name, coverEntry, filters));
   }
 
   void _goToSearch() {

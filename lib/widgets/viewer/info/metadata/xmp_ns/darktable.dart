@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 class XmpDarktableNamespace extends XmpNamespace {
   static const ns = 'darktable';
 
-  static final historyPattern = RegExp(r'darktable:history\[(\d+)\]/(.*)');
+  static final historyPattern = RegExp(ns + r':history\[(\d+)\]/(.*)');
 
   final history = <int, Map<String, String>>{};
 

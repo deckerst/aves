@@ -15,6 +15,7 @@ import 'package:aves/services/common/services.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final Settings settings = Settings._private();
@@ -27,9 +28,7 @@ class Settings extends ChangeNotifier {
 
   static SharedPreferences? _prefs;
 
-  Settings._private() {
-    _platformSettingsChangeChannel.receiveBroadcastStream().listen((event) => _onPlatformSettingsChange(event as Map?));
-  }
+  Settings._private();
 
   static const Set<String> internalKeys = {
     hasAcceptedTermsKey,
@@ -41,6 +40,7 @@ class Settings extends ChangeNotifier {
 
   // app
   static const hasAcceptedTermsKey = 'has_accepted_terms';
+  static const canUseAnalysisServiceKey = 'can_use_analysis_service';
   static const isErrorReportingEnabledKey = 'is_crashlytics_enabled';
   static const localeKey = 'locale';
   static const mustBackTwiceToExitKey = 'must_back_twice_to_exit';
@@ -73,6 +73,7 @@ class Settings extends ChangeNotifier {
 
   // viewer
   static const viewerQuickActionsKey = 'viewer_quick_actions';
+  static const showOverlayOnOpeningKey = 'show_overlay_on_opening';
   static const showOverlayMinimapKey = 'show_overlay_minimap';
   static const showOverlayInfoKey = 'show_overlay_info';
   static const showOverlayShootingDetailsKey = 'show_overlay_shooting_details';
@@ -97,6 +98,7 @@ class Settings extends ChangeNotifier {
   static const infoMapStyleKey = 'info_map_style';
   static const infoMapZoomKey = 'info_map_zoom';
   static const coordinateFormatKey = 'coordinates_format';
+  static const unitSystemKey = 'unit_system';
 
   // rendering
   static const imageBackgroundKey = 'image_background';
@@ -122,12 +124,16 @@ class Settings extends ChangeNotifier {
   bool get initialized => _prefs != null;
 
   Future<void> init({
+    required bool monitorPlatformSettings,
     bool isRotationLocked = false,
     bool areAnimationsRemoved = false,
   }) async {
     _prefs = await SharedPreferences.getInstance();
     _isRotationLocked = isRotationLocked;
     _areAnimationsRemoved = areAnimationsRemoved;
+    if (monitorPlatformSettings) {
+      _platformSettingsChangeChannel.receiveBroadcastStream().listen((event) => _onPlatformSettingsChange(event as Map?));
+    }
   }
 
   Future<void> reset({required bool includeInternalKeys}) async {
@@ -141,7 +147,7 @@ class Settings extends ChangeNotifier {
   Future<void> setContextualDefaults() async {
     // performance
     final performanceClass = await deviceService.getPerformanceClass();
-    enableOverlayBlurEffect = performanceClass >= 30;
+    enableOverlayBlurEffect = performanceClass >= 29;
 
     // availability
     final hasPlayServices = await availability.hasPlayServices;
@@ -162,6 +168,10 @@ class Settings extends ChangeNotifier {
   bool get hasAcceptedTerms => getBoolOrDefault(hasAcceptedTermsKey, SettingsDefaults.hasAcceptedTerms);
 
   set hasAcceptedTerms(bool newValue) => setAndNotify(hasAcceptedTermsKey, newValue);
+
+  bool get canUseAnalysisService => getBoolOrDefault(canUseAnalysisServiceKey, SettingsDefaults.canUseAnalysisService);
+
+  set canUseAnalysisService(bool newValue) => setAndNotify(canUseAnalysisServiceKey, newValue);
 
   bool get isErrorReportingEnabled => getBoolOrDefault(isErrorReportingEnabledKey, SettingsDefaults.isErrorReportingEnabled);
 
@@ -193,6 +203,17 @@ class Settings extends ChangeNotifier {
       ].join(localeSeparator);
     }
     setAndNotify(localeKey, tag);
+    _appliedLocale = null;
+  }
+
+  Locale? _appliedLocale;
+
+  Locale get appliedLocale {
+    if (_appliedLocale == null) {
+      final preferredLocale = locale;
+      _appliedLocale = basicLocaleListResolution(preferredLocale != null ? [preferredLocale] : null, AppLocalizations.supportedLocales);
+    }
+    return _appliedLocale!;
   }
 
   bool get mustBackTwiceToExit => getBoolOrDefault(mustBackTwiceToExitKey, SettingsDefaults.mustBackTwiceToExit);
@@ -296,6 +317,10 @@ class Settings extends ChangeNotifier {
 
   set viewerQuickActions(List<EntryAction> newValue) => setAndNotify(viewerQuickActionsKey, newValue.map((v) => v.toString()).toList());
 
+  bool get showOverlayOnOpening => getBoolOrDefault(showOverlayOnOpeningKey, SettingsDefaults.showOverlayOnOpening);
+
+  set showOverlayOnOpening(bool newValue) => setAndNotify(showOverlayOnOpeningKey, newValue);
+
   bool get showOverlayMinimap => getBoolOrDefault(showOverlayMinimapKey, SettingsDefaults.showOverlayMinimap);
 
   set showOverlayMinimap(bool newValue) => setAndNotify(showOverlayMinimapKey, newValue);
@@ -373,6 +398,10 @@ class Settings extends ChangeNotifier {
   CoordinateFormat get coordinateFormat => getEnumOrDefault(coordinateFormatKey, SettingsDefaults.coordinateFormat, CoordinateFormat.values);
 
   set coordinateFormat(CoordinateFormat newValue) => setAndNotify(coordinateFormatKey, newValue.toString());
+
+  UnitSystem get unitSystem => getEnumOrDefault(unitSystemKey, SettingsDefaults.unitSystem, UnitSystem.values);
+
+  set unitSystem(UnitSystem newValue) => setAndNotify(unitSystemKey, newValue.toString());
 
   // rendering
 
@@ -540,6 +569,7 @@ class Settings extends ChangeNotifier {
             case showThumbnailMotionPhotoKey:
             case showThumbnailRawKey:
             case showThumbnailVideoDurationKey:
+            case showOverlayOnOpeningKey:
             case showOverlayMinimapKey:
             case showOverlayInfoKey:
             case showOverlayShootingDetailsKey:
@@ -568,6 +598,7 @@ class Settings extends ChangeNotifier {
             case subtitleTextAlignmentKey:
             case infoMapStyleKey:
             case coordinateFormatKey:
+            case unitSystemKey:
             case imageBackgroundKey:
             case accessibilityAnimationsKey:
             case timeToTakeActionKey:

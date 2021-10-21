@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 enum MapNavigationButton { back, map }
 
 class MapTheme extends StatelessWidget {
-  final bool interactive;
+  final bool interactive, showCoordinateFilter;
   final MapNavigationButton navigationButton;
   final Animation<double> scale;
   final VisualDensity? visualDensity;
@@ -15,6 +15,7 @@ class MapTheme extends StatelessWidget {
   const MapTheme({
     Key? key,
     required this.interactive,
+    required this.showCoordinateFilter,
     required this.navigationButton,
     this.scale = kAlwaysCompleteAnimation,
     this.visualDensity,
@@ -28,6 +29,7 @@ class MapTheme extends StatelessWidget {
       update: (context, settings, __) {
         return MapThemeData(
           interactive: interactive,
+          showCoordinateFilter: showCoordinateFilter,
           navigationButton: navigationButton,
           scale: scale,
           visualDensity: visualDensity,
@@ -40,7 +42,7 @@ class MapTheme extends StatelessWidget {
 }
 
 class MapThemeData {
-  final bool interactive;
+  final bool interactive, showCoordinateFilter;
   final MapNavigationButton navigationButton;
   final Animation<double> scale;
   final VisualDensity? visualDensity;
@@ -48,6 +50,7 @@ class MapThemeData {
 
   const MapThemeData({
     required this.interactive,
+    required this.showCoordinateFilter,
     required this.navigationButton,
     required this.scale,
     required this.visualDensity,

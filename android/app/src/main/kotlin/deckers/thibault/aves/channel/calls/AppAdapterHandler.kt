@@ -53,7 +53,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
         }
     }
 
-    private fun getPackages(@Suppress("UNUSED_PARAMETER") call: MethodCall, result: MethodChannel.Result) {
+    private fun getPackages(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
         val packages = HashMap<String, FieldMap>()
 
         fun addPackageDetails(intent: Intent) {
@@ -76,7 +76,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
                             // The following methods do not work:
                             // - `resources.getConfiguration().setLocale(...)`
                             // - getting a package manager from a custom context with `context.createConfigurationContext(config)`
-                            @Suppress("DEPRECATION")
+                            @Suppress("deprecation")
                             resources.updateConfiguration(englishConfig, resources.displayMetrics)
                             englishLabel = resources.getString(labelRes)
                         } catch (e: Exception) {
@@ -321,7 +321,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
 
     private fun isPinSupported() = ShortcutManagerCompat.isRequestPinShortcutSupported(context)
 
-    private fun canPin(@Suppress("UNUSED_PARAMETER") call: MethodCall, result: MethodChannel.Result) {
+    private fun canPin(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
         result.success(isPinSupported())
     }
 

@@ -9,9 +9,11 @@ import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/album.dart';
+import 'package:aves/model/source/analysis_controller.dart';
 import 'package:aves/model/source/enums.dart';
 import 'package:aves/model/source/location.dart';
 import 'package:aves/model/source/tag.dart';
+import 'package:aves/services/analysis_service.dart';
 import 'package:aves/services/common/image_op_events.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:collection/collection.dart';
@@ -29,11 +31,9 @@ mixin SourceBase {
 
   ValueNotifier<SourceState> stateNotifier = ValueNotifier(SourceState.ready);
 
-  final StreamController<ProgressEvent> _progressStreamController = StreamController.broadcast();
+  ValueNotifier<ProgressEvent> progressNotifier = ValueNotifier(const ProgressEvent(done: 0, total: 0));
 
-  Stream<ProgressEvent> get progressStream => _progressStreamController.stream;
-
-  void setProgress({required int done, required int total}) => _progressStreamController.add(ProgressEvent(done: done, total: total));
+  void setProgress({required int done, required int total}) => progressNotifier.value = ProgressEvent(done: done, total: total);
 }
 
 abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagMixin {
@@ -70,9 +70,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
   late Map<int?, int?> _savedDates;
 
   Future<void> loadDates() async {
-    final stopwatch = Stopwatch()..start();
     _savedDates = Map.unmodifiable(await metadataDb.loadDates());
-    debugPrint('$runtimeType loadDates complete in ${stopwatch.elapsed.inMilliseconds}ms for ${_savedDates.length} entries');
   }
 
   Iterable<AvesEntry> _applyHiddenFilters(Iterable<AvesEntry> entries) {
@@ -86,6 +84,15 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
     invalidateAlbumFilterSummary(entries: entries);
     invalidateCountryFilterSummary(entries);
     invalidateTagFilterSummary(entries);
+  }
+
+  void updateDerivedFilters([Set<AvesEntry>? entries]) {
+    _invalidate(entries);
+    // it is possible for entries hidden by a filter type, to have an impact on other types
+    // e.g. given a sole entry for country C and tag T, hiding T should make C disappear too
+    updateDirectories();
+    updateLocations();
+    updateTags();
   }
 
   void addEntries(Set<AvesEntry> entries) {
@@ -115,11 +122,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
 
     entries.forEach((v) => _entryById.remove(v.contentId));
     _rawEntries.removeAll(entries);
-    _invalidate(entries);
-
-    cleanEmptyAlbums(entries.map((entry) => entry.directory).toSet());
-    updateLocations();
-    updateTags();
+    updateDerivedFilters(entries);
     eventBus.fire(EntryRemovedEvent(entries));
   }
 
@@ -159,13 +162,34 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
 
   Future<bool> renameEntry(AvesEntry entry, String newName, {required bool persist}) async {
     if (newName == entry.filenameWithoutExtension) return true;
-    final newFields = await mediaFileService.rename(entry, '$newName${entry.extension}');
-    if (newFields.isEmpty) return false;
 
-    await _moveEntry(entry, newFields, persist: persist);
-    entry.metadataChangeNotifier.notifyListeners();
-    eventBus.fire(EntryMovedEvent({entry}));
-    return true;
+    pauseMonitoring();
+    final completer = Completer<bool>();
+    final processed = <MoveOpEvent>{};
+    mediaFileService.rename({entry}, newName: '$newName${entry.extension}').listen(
+      processed.add,
+      onError: (error) => reportService.recordError('renameEntry failed with error=$error', null),
+      onDone: () async {
+        final successOps = processed.where((e) => e.success).toSet();
+        if (successOps.isEmpty) {
+          completer.complete(false);
+          return;
+        }
+        final newFields = successOps.first.newFields;
+        if (newFields.isEmpty) {
+          completer.complete(false);
+          return;
+        }
+        await _moveEntry(entry, newFields, persist: persist);
+        entry.metadataChangeNotifier.notifyListeners();
+        eventBus.fire(EntryMovedEvent({entry}));
+        completer.complete(true);
+      },
+    );
+
+    final success = await completer.future;
+    resumeMonitoring();
+    return success;
   }
 
   Future<void> renameAlbum(String sourceAlbum, String destinationAlbum, Set<AvesEntry> todoEntries, Set<MoveOpEvent> movedOps) async {
@@ -215,6 +239,8 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
             uri: newFields['uri'] as String?,
             path: newFields['path'] as String?,
             contentId: newFields['contentId'] as int?,
+            // title can change when moved files are automatically renamed to avoid conflict
+            title: newFields['title'] as String?,
             dateModifiedSecs: newFields['dateModifiedSecs'] as int?,
           ));
         }
@@ -252,18 +278,52 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
 
   Future<void> init();
 
-  Future<void> refresh();
+  Future<void> refresh({AnalysisController? analysisController});
 
-  Future<void> rescan(Set<AvesEntry> entries);
+  Future<Set<String>> refreshUris(Set<String> changedUris, {AnalysisController? analysisController});
 
-  Future<void> refreshMetadata(Set<AvesEntry> entries) async {
-    await Future.forEach<AvesEntry>(entries, (entry) => entry.refresh(persist: true));
+  Future<void> refreshEntry(AvesEntry entry) async {
+    await entry.refresh(background: false, persist: true, force: true, geocoderLocale: settings.appliedLocale);
+    updateDerivedFilters({entry});
+    eventBus.fire(EntryRefreshedEvent({entry}));
+  }
 
-    _invalidate(entries);
-    updateLocations();
-    updateTags();
-
-    eventBus.fire(EntryRefreshedEvent(entries));
+  Future<void> analyze(AnalysisController? analysisController, {Set<AvesEntry>? entries}) async {
+    final todoEntries = entries ?? visibleEntries;
+    final _analysisController = analysisController ?? AnalysisController();
+    final force = _analysisController.force;
+    if (!_analysisController.isStopping) {
+      var startAnalysisService = false;
+      if (_analysisController.canStartService && settings.canUseAnalysisService) {
+        // cataloguing
+        if (!startAnalysisService) {
+          final opCount = (force ? todoEntries : todoEntries.where(TagMixin.catalogEntriesTest)).length;
+          if (opCount > TagMixin.commitCountThreshold) {
+            startAnalysisService = true;
+          }
+        }
+        // ignore locating countries
+        // locating places
+        if (!startAnalysisService && await availability.canLocatePlaces) {
+          final opCount = (force ? todoEntries.where((entry) => entry.hasGps) : todoEntries.where(LocationMixin.locatePlacesTest)).length;
+          if (opCount > LocationMixin.commitCountThreshold) {
+            startAnalysisService = true;
+          }
+        }
+      }
+      if (startAnalysisService) {
+        await AnalysisService.startService(
+          force: force,
+          contentIds: entries?.map((entry) => entry.contentId).whereNotNull().toList(),
+        );
+      } else {
+        await catalogEntries(_analysisController, todoEntries);
+        updateDerivedFilters(todoEntries);
+        await locateEntries(_analysisController, todoEntries);
+        updateDerivedFilters(todoEntries);
+      }
+    }
+    stateNotifier.value = SourceState.ready;
   }
 
   // monitoring
@@ -310,46 +370,45 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
       settings.searchHistory = settings.searchHistory..removeWhere(filters.contains);
     }
     settings.hiddenFilters = hiddenFilters;
-
-    _invalidate();
-    // it is possible for entries hidden by a filter type, to have an impact on other types
-    // e.g. given a sole entry for country C and tag T, hiding T should make C disappear too
-    updateDirectories();
-    updateLocations();
-    updateTags();
-
+    updateDerivedFilters();
     eventBus.fire(FilterVisibilityChangedEvent(filters, visible));
 
     if (visible) {
-      refreshMetadata(visibleEntries.where((entry) => filters.any((f) => f.test(entry))).toSet());
+      final candidateEntries = visibleEntries.where((entry) => filters.any((f) => f.test(entry))).toSet();
+      analyze(null, entries: candidateEntries);
     }
   }
 }
 
+@immutable
 class EntryAddedEvent {
   final Set<AvesEntry>? entries;
 
   const EntryAddedEvent([this.entries]);
 }
 
+@immutable
 class EntryRemovedEvent {
   final Set<AvesEntry> entries;
 
   const EntryRemovedEvent(this.entries);
 }
 
+@immutable
 class EntryMovedEvent {
   final Set<AvesEntry> entries;
 
   const EntryMovedEvent(this.entries);
 }
 
+@immutable
 class EntryRefreshedEvent {
   final Set<AvesEntry> entries;
 
   const EntryRefreshedEvent(this.entries);
 }
 
+@immutable
 class FilterVisibilityChangedEvent {
   final Set<CollectionFilter> filters;
   final bool visible;
@@ -357,6 +416,7 @@ class FilterVisibilityChangedEvent {
   const FilterVisibilityChangedEvent(this.filters, this.visible);
 }
 
+@immutable
 class ProgressEvent {
   final int done, total;
 

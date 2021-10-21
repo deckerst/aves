@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:aves/model/actions/video_actions.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/settings/settings.dart';
-import 'package:aves/services/android_app_service.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/format.dart';
 import 'package:aves/theme/icons.dart';
@@ -74,7 +74,7 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
                 scale: scale,
                 child: IconButton(
                   icon: const Icon(AIcons.openOutside),
-                  onPressed: () => AndroidAppService.open(entry.uri, entry.mimeTypeAnySubtype),
+                  onPressed: () => androidAppService.open(entry.uri, entry.mimeTypeAnySubtype),
                   tooltip: context.l10n.viewerOpenTooltip,
                 ),
               ),
@@ -119,6 +119,7 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
   Widget _buildProgressBar() {
     const progressBarBorderRadius = 123.0;
     final blurred = settings.enableOverlayBlurEffect;
+    const textStyle = TextStyle(shadows: Constants.embossShadows);
     return SizeTransition(
       sizeFactor: scale,
       child: BlurredRRect(
@@ -138,50 +139,62 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
           onHorizontalDragEnd: (details) {
             if (_playingOnDragStart) controller!.play();
           },
-          child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16) + const EdgeInsets.only(bottom: 16),
-            decoration: BoxDecoration(
-              color: overlayBackgroundColor(blurred: blurred),
-              border: AvesBorder.border,
-              borderRadius: const BorderRadius.all(Radius.circular(progressBarBorderRadius)),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(
+              minHeight: kMinInteractiveDimension,
             ),
-            child: Column(
-              key: _progressBarKey,
-              children: [
-                Row(
-                  children: [
-                    StreamBuilder<int>(
+            child: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
+              decoration: BoxDecoration(
+                color: overlayBackgroundColor(blurred: blurred),
+                border: AvesBorder.border,
+                borderRadius: const BorderRadius.all(Radius.circular(progressBarBorderRadius)),
+              ),
+              child: Column(
+                key: _progressBarKey,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    children: [
+                      StreamBuilder<int>(
+                          stream: positionStream,
+                          builder: (context, snapshot) {
+                            // do not use stream snapshot because it is obsolete when switching between videos
+                            final position = controller?.currentPosition.floor() ?? 0;
+                            return Text(
+                              formatFriendlyDuration(Duration(milliseconds: position)),
+                              style: textStyle,
+                            );
+                          }),
+                      const Spacer(),
+                      Text(
+                        entry.durationText,
+                        style: textStyle,
+                      ),
+                    ],
+                  ),
+                  ClipRRect(
+                    borderRadius: const BorderRadius.all(Radius.circular(4)),
+                    child: StreamBuilder<int>(
                         stream: positionStream,
                         builder: (context, snapshot) {
                           // do not use stream snapshot because it is obsolete when switching between videos
-                          final position = controller?.currentPosition.floor() ?? 0;
-                          return Text(
-                            formatFriendlyDuration(Duration(milliseconds: position)),
-                            style: const TextStyle(shadows: Constants.embossShadows),
+                          var progress = controller?.progress ?? 0.0;
+                          if (!progress.isFinite) progress = 0.0;
+                          return LinearProgressIndicator(
+                            value: progress,
+                            backgroundColor: Colors.grey.shade700,
                           );
                         }),
-                    const Spacer(),
-                    Text(
-                      entry.durationText,
-                      style: const TextStyle(shadows: Constants.embossShadows),
-                    ),
-                  ],
-                ),
-                ClipRRect(
-                  borderRadius: const BorderRadius.all(Radius.circular(4)),
-                  child: StreamBuilder<int>(
-                      stream: positionStream,
-                      builder: (context, snapshot) {
-                        // do not use stream snapshot because it is obsolete when switching between videos
-                        var progress = controller?.progress ?? 0.0;
-                        if (!progress.isFinite) progress = 0.0;
-                        return LinearProgressIndicator(
-                          value: progress,
-                          backgroundColor: Colors.grey.shade700,
-                        );
-                      }),
-                ),
-              ],
+                  ),
+                  const Text(
+                    // fake text below to match the height of the text above and center the whole thing
+                    '',
+                    style: textStyle,
+                  ),
+                ],
+              ),
             ),
           ),
         ),

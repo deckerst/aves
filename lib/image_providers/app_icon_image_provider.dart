@@ -1,6 +1,6 @@
 import 'dart:ui' as ui show Codec;
 
-import 'package:aves/services/android_app_service.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
@@ -39,7 +39,7 @@ class AppIconImage extends ImageProvider<AppIconImageKey> {
 
   Future<ui.Codec> _loadAsync(AppIconImageKey key, DecoderCallback decode) async {
     try {
-      final bytes = await AndroidAppService.getAppIcon(key.packageName, key.size);
+      final bytes = await androidAppService.getAppIcon(key.packageName, key.size);
       return await decode(bytes.isEmpty ? kTransparentImage : bytes);
     } catch (error) {
       debugPrint('$runtimeType _loadAsync failed with packageName=$packageName, error=$error');

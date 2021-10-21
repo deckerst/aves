@@ -22,7 +22,7 @@ class AccessibilityHandler(private val activity: Activity) : MethodCallHandler {
         }
     }
 
-    private fun areAnimationsRemoved(@Suppress("UNUSED_PARAMETER") call: MethodCall, result: MethodChannel.Result) {
+    private fun areAnimationsRemoved(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
         var removed = false
         try {
             removed = Settings.Global.getFloat(activity.contentResolver, Settings.Global.TRANSITION_ANIMATION_SCALE) == 0f
@@ -32,7 +32,7 @@ class AccessibilityHandler(private val activity: Activity) : MethodCallHandler {
         result.success(removed)
     }
 
-    private fun hasRecommendedTimeouts(@Suppress("UNUSED_PARAMETER") call: MethodCall, result: MethodChannel.Result) {
+    private fun hasRecommendedTimeouts(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
         result.success(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
     }
 

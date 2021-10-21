@@ -9,6 +9,7 @@ import com.drew.imaging.ImageMetadataReader
 import com.drew.metadata.file.FileTypeDirectory
 import deckers.thibault.aves.metadata.Metadata
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeString
+import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.model.SourceEntry
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
@@ -47,16 +48,16 @@ internal class ContentImageProvider : ImageProvider() {
             return
         }
 
-        val map = hashMapOf<String, Any?>(
+        val fields: FieldMap = hashMapOf(
             "uri" to uri.toString(),
             "sourceMimeType" to mimeType,
         )
         try {
             val cursor = context.contentResolver.query(uri, projection, null, null, null)
             if (cursor != null && cursor.moveToFirst()) {
-                cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME).let { if (it != -1) map["title"] = cursor.getString(it) }
-                cursor.getColumnIndex(OpenableColumns.SIZE).let { if (it != -1) map["sizeBytes"] = cursor.getLong(it) }
-                cursor.getColumnIndex(PATH).let { if (it != -1) map["path"] = cursor.getString(it) }
+                cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME).let { if (it != -1) fields["title"] = cursor.getString(it) }
+                cursor.getColumnIndex(OpenableColumns.SIZE).let { if (it != -1) fields["sizeBytes"] = cursor.getLong(it) }
+                cursor.getColumnIndex(PATH).let { if (it != -1) fields["path"] = cursor.getString(it) }
                 cursor.close()
             }
         } catch (e: Exception) {
@@ -64,7 +65,7 @@ internal class ContentImageProvider : ImageProvider() {
             return
         }
 
-        val entry = SourceEntry(map).fillPreCatalogMetadata(context)
+        val entry = SourceEntry(fields).fillPreCatalogMetadata(context)
         if (entry.isSized || entry.isSvg || entry.isVideo) {
             callback.onSuccess(entry.toMap())
         } else {
@@ -75,7 +76,7 @@ internal class ContentImageProvider : ImageProvider() {
     companion object {
         private val LOG_TAG = LogUtils.createTag<ContentImageProvider>()
 
-        @Suppress("DEPRECATION")
+        @Suppress("deprecation")
         const val PATH = MediaStore.MediaColumns.DATA
 
         private val projection = arrayOf(

@@ -10,6 +10,7 @@ class TypeFilter extends CollectionFilter {
   static const _geotiff = 'geotiff'; // subset of `image/tiff`
   static const _motionPhoto = 'motion_photo'; // subset of `image/jpeg`
   static const _panorama = 'panorama'; // subset of images
+  static const _raw = 'raw'; // specific image formats
   static const _sphericalVideo = 'spherical_video'; // subset of videos
 
   final String itemType;
@@ -20,6 +21,7 @@ class TypeFilter extends CollectionFilter {
   static final geotiff = TypeFilter._private(_geotiff);
   static final motionPhoto = TypeFilter._private(_motionPhoto);
   static final panorama = TypeFilter._private(_panorama);
+  static final raw = TypeFilter._private(_raw);
   static final sphericalVideo = TypeFilter._private(_sphericalVideo);
 
   @override
@@ -42,6 +44,10 @@ class TypeFilter extends CollectionFilter {
       case _panorama:
         _test = (entry) => entry.isImage && entry.is360;
         _icon = AIcons.threeSixty;
+        break;
+      case _raw:
+        _test = (entry) => entry.isRaw;
+        _icon = AIcons.raw;
         break;
       case _sphericalVideo:
         _test = (entry) => entry.isVideo && entry.is360;
@@ -76,6 +82,8 @@ class TypeFilter extends CollectionFilter {
         return context.l10n.filterTypeMotionPhotoLabel;
       case _panorama:
         return context.l10n.filterTypePanoramaLabel;
+      case _raw:
+        return context.l10n.filterTypeRawLabel;
       case _sphericalVideo:
         return context.l10n.filterTypeSphericalVideoLabel;
       case _geotiff:

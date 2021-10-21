@@ -1,14 +1,26 @@
 package deckers.thibault.aves.metadata
 
 import com.drew.lang.Rational
+import com.drew.lang.SequentialByteArrayReader
 import com.drew.metadata.Directory
 import com.drew.metadata.exif.ExifIFD0Directory
+import com.drew.metadata.iptc.IptcReader
+import com.drew.metadata.png.PngDirectory
 import java.text.SimpleDateFormat
 import java.util.*
 
 object MetadataExtractorHelper {
+    const val PNG_ITXT_DIR_NAME = "PNG-iTXt"
+    private const val PNG_TEXT_DIR_NAME = "PNG-tEXt"
     const val PNG_TIME_DIR_NAME = "PNG-tIME"
+    private const val PNG_ZTXT_DIR_NAME = "PNG-zTXt"
+
     val PNG_LAST_MODIFICATION_TIME_FORMAT = SimpleDateFormat("yyyy:MM:dd HH:mm:ss", Locale.ROOT)
+
+    // Pattern to extract profile name, length, and text data
+    // of raw profiles (EXIF, IPTC, etc.) in PNG `zTXt` chunks
+    // e.g. "iptc [...] 114 [...] 3842494d040400[...]"
+    private val PNG_RAW_PROFILE_PATTERN = Regex("^\\n(.*?)\\n\\s*(\\d+)\\n(.*)", RegexOption.DOT_MATCHES_ALL)
 
     // extensions
 
@@ -58,5 +70,46 @@ object MetadataExtractorHelper {
         if ((modelTransformation && modelPixelScale) || (modelPixelScale && !modelTiepoint)) return false
 
         return true
+    }
+
+    // PNG
+
+    fun Directory.isPngTextDir(): Boolean = this is PngDirectory && setOf(PNG_ITXT_DIR_NAME, PNG_TEXT_DIR_NAME, PNG_ZTXT_DIR_NAME).contains(this.name)
+
+    fun extractPngProfile(key: String, valueString: String): Iterable<Directory>? {
+        when (key) {
+            "Raw profile type iptc" -> {
+                val match = PNG_RAW_PROFILE_PATTERN.matchEntire(valueString)
+                if (match != null) {
+                    val dataString = match.groupValues[3]
+                    val hexString = dataString.replace(Regex("[\\r\\n]"), "")
+                    val dataBytes = hexStringToByteArray(hexString)
+                    if (dataBytes != null) {
+                        val start = dataBytes.indexOf(Metadata.IPTC_MARKER_BYTE)
+                        if (start != -1) {
+                            val segmentBytes = dataBytes.copyOfRange(fromIndex = start, toIndex = dataBytes.size - start)
+                            val metadata = com.drew.metadata.Metadata()
+                            IptcReader().extract(SequentialByteArrayReader(segmentBytes), metadata, segmentBytes.size.toLong())
+                            return metadata.directories
+                        }
+                    }
+                }
+            }
+        }
+        return null
+    }
+
+    // convenience methods
+
+    private fun hexStringToByteArray(hexString: String): ByteArray? {
+        if (hexString.length % 2 != 0) return null
+
+        val dataBytes = ByteArray(hexString.length / 2)
+        var i = 0
+        while (i < hexString.length) {
+            dataBytes[i / 2] = hexString.substring(i, i + 2).toByte(16)
+            i += 2
+        }
+        return dataBytes
     }
 }

@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:io';
+import 'dart:ui';
 
 import 'package:aves/geo/countries.dart';
 import 'package:aves/model/entry_cache.dart';
@@ -8,7 +10,6 @@ import 'package:aves/model/metadata/catalog.dart';
 import 'package:aves/model/metadata/date_modifier.dart';
 import 'package:aves/model/metadata/enums.dart';
 import 'package:aves/model/multipage.dart';
-import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/video/metadata.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/service_policy.dart';
@@ -20,7 +21,6 @@ import 'package:aves/utils/change_notifier.dart';
 import 'package:collection/collection.dart';
 import 'package:country_code/country_code.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 
 class AvesEntry {
@@ -76,6 +76,7 @@ class AvesEntry {
     String? uri,
     String? path,
     int? contentId,
+    String? title,
     int? dateModifiedSecs,
     List<AvesEntry>? burstEntries,
   }) {
@@ -90,7 +91,7 @@ class AvesEntry {
       height: height,
       sourceRotationDegrees: sourceRotationDegrees,
       sizeBytes: sizeBytes,
-      sourceTitle: sourceTitle,
+      sourceTitle: title ?? sourceTitle,
       dateModifiedSecs: dateModifiedSecs ?? this.dateModifiedSecs,
       sourceDateTakenMillis: sourceDateTakenMillis,
       durationMillis: durationMillis,
@@ -160,6 +161,7 @@ class AvesEntry {
 
   String? get path => _path;
 
+  // directory path, without the trailing separator
   String? get directory {
     _directory ??= path != null ? pContext.dirname(path!) : null;
     return _directory;
@@ -170,10 +172,13 @@ class AvesEntry {
     return _filename;
   }
 
+  // file extension, including the `.`
   String? get extension {
     _extension ??= path != null ? pContext.extension(path!) : null;
     return _extension;
   }
+
+  bool get isMissingAtPath => path != null && !File(path!).existsSync();
 
   // the MIME type reported by the Media Store is unreliable
   // so we use the one found during cataloguing if possible
@@ -420,7 +425,7 @@ class AvesEntry {
     _xmpSubjects = null;
     metadataChangeNotifier.notifyListeners();
 
-    _onImageChanged(oldDateModifiedSecs, oldRotationDegrees, oldIsFlipped);
+    _onVisualFieldChanged(oldDateModifiedSecs, oldRotationDegrees, oldIsFlipped);
   }
 
   void clearMetadata() {
@@ -428,17 +433,18 @@ class AvesEntry {
     addressDetails = null;
   }
 
-  Future<void> catalog({bool background = false, bool persist = true, bool force = false}) async {
+  Future<void> catalog({required bool background, required bool persist, required bool force}) async {
     if (isCatalogued && !force) return;
     if (isSvg) {
       // vector image sizing is not essential, so we should not spend time for it during loading
       // but it is useful anyway (for aspect ratios etc.) so we size them during cataloguing
       final size = await SvgMetadataService.getSize(this);
       if (size != null) {
-        await _applyNewFields({
+        final fields = {
           'width': size.width.ceil(),
           'height': size.height.ceil(),
-        }, persist: persist);
+        };
+        await _applyNewFields(fields, persist: persist);
       }
       catalogMetadata = CatalogMetadata(contentId: contentId);
     } else {
@@ -462,17 +468,17 @@ class AvesEntry {
     addressChangeNotifier.notifyListeners();
   }
 
-  Future<void> locate({required bool background}) async {
+  Future<void> locate({required bool background, required bool force, required Locale geocoderLocale}) async {
     if (!hasGps) return;
-    await _locateCountry();
+    await _locateCountry(force: force);
     if (await availability.canLocatePlaces) {
-      await locatePlace(background: background);
+      await locatePlace(background: background, force: force, geocoderLocale: geocoderLocale);
     }
   }
 
   // quick reverse geocoding to find the country, using an offline asset
-  Future<void> _locateCountry() async {
-    if (!hasGps || hasAddress) return;
+  Future<void> _locateCountry({required bool force}) async {
+    if (!hasGps || (hasAddress && !force)) return;
     final countryCode = await countryTopology.countryCode(latLng!);
     setCountry(countryCode);
   }
@@ -486,16 +492,9 @@ class AvesEntry {
     );
   }
 
-  String? _geocoderLocale;
-
-  String get geocoderLocale {
-    _geocoderLocale ??= (settings.locale ?? WidgetsBinding.instance!.window.locale).toString();
-    return _geocoderLocale!;
-  }
-
   // full reverse geocoding, requiring Play Services and some connectivity
-  Future<void> locatePlace({required bool background}) async {
-    if (!hasGps || hasFineAddress) return;
+  Future<void> locatePlace({required bool background, required bool force, required Locale geocoderLocale}) async {
+    if (!hasGps || (hasFineAddress && !force)) return;
     try {
       Future<List<Address>> call() => GeocodingService.getAddress(latLng!, geocoderLocale);
       final addresses = await (background
@@ -524,7 +523,7 @@ class AvesEntry {
     }
   }
 
-  Future<String?> findAddressLine() async {
+  Future<String?> findAddressLine({required Locale geocoderLocale}) async {
     if (!hasGps) return null;
 
     try {
@@ -558,6 +557,10 @@ class AvesEntry {
       }.any((s) => s != null && s.toUpperCase().contains(query));
 
   Future<void> _applyNewFields(Map newFields, {required bool persist}) async {
+    final oldDateModifiedSecs = this.dateModifiedSecs;
+    final oldRotationDegrees = this.rotationDegrees;
+    final oldIsFlipped = this.isFlipped;
+
     final uri = newFields['uri'];
     if (uri is String) this.uri = uri;
     final path = newFields['path'];
@@ -593,10 +596,11 @@ class AvesEntry {
       if (catalogMetadata != null) await metadataDb.saveMetadata({catalogMetadata!});
     }
 
+    await _onVisualFieldChanged(oldDateModifiedSecs, oldRotationDegrees, oldIsFlipped);
     metadataChangeNotifier.notifyListeners();
   }
 
-  Future<void> refresh({required bool persist}) async {
+  Future<void> refresh({required bool background, required bool persist, required bool force, required Locale geocoderLocale}) async {
     _catalogMetadata = null;
     _addressDetails = null;
     _bestDate = null;
@@ -609,8 +613,8 @@ class AvesEntry {
     final updated = await mediaFileService.getEntry(uri, mimeType);
     if (updated != null) {
       await _applyNewFields(updated.toMap(), persist: persist);
-      await catalog(background: false, persist: persist);
-      await locate(background: false);
+      await catalog(background: background, persist: persist, force: force);
+      await locate(background: background, force: force, geocoderLocale: geocoderLocale);
     }
   }
 
@@ -618,11 +622,7 @@ class AvesEntry {
     final newFields = await metadataEditService.rotate(this, clockwise: clockwise);
     if (newFields.isEmpty) return false;
 
-    final oldDateModifiedSecs = dateModifiedSecs;
-    final oldRotationDegrees = rotationDegrees;
-    final oldIsFlipped = isFlipped;
     await _applyNewFields(newFields, persist: persist);
-    await _onImageChanged(oldDateModifiedSecs, oldRotationDegrees, oldIsFlipped);
     return true;
   }
 
@@ -630,11 +630,7 @@ class AvesEntry {
     final newFields = await metadataEditService.flip(this);
     if (newFields.isEmpty) return false;
 
-    final oldDateModifiedSecs = dateModifiedSecs;
-    final oldRotationDegrees = rotationDegrees;
-    final oldIsFlipped = isFlipped;
     await _applyNewFields(newFields, persist: persist);
-    await _onImageChanged(oldDateModifiedSecs, oldRotationDegrees, oldIsFlipped);
     return true;
   }
 
@@ -663,7 +659,7 @@ class AvesEntry {
   }
 
   // when the entry image itself changed (e.g. after rotation)
-  Future<void> _onImageChanged(int? oldDateModifiedSecs, int oldRotationDegrees, bool oldIsFlipped) async {
+  Future<void> _onVisualFieldChanged(int? oldDateModifiedSecs, int oldRotationDegrees, bool oldIsFlipped) async {
     if (oldDateModifiedSecs != dateModifiedSecs || oldRotationDegrees != rotationDegrees || oldIsFlipped != isFlipped) {
       await EntryCache.evict(uri, mimeType, oldDateModifiedSecs, oldRotationDegrees, oldIsFlipped);
       imageChangeNotifier.notifyListeners();

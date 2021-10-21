@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 
-// generate bitmap from widget, for Google Maps
+// generate bitmap from widget, for Google map
 class MarkerGeneratorWidget<T extends Key> extends StatefulWidget {
   final List<Widget> markers;
   final bool Function(T markerKey) isReadyToRender;

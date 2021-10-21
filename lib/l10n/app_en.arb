@@ -62,8 +62,10 @@
   "@sourceStateLoading": {},
   "sourceStateCataloguing": "Cataloguing",
   "@sourceStateCataloguing": {},
-  "sourceStateLocating": "Locating",
-  "@sourceStateLocating": {},
+  "sourceStateLocatingCountries": "Locating countries",
+  "@sourceStateLocatingCountries": {},
+  "sourceStateLocatingPlaces": "Locating places",
+  "@sourceStateLocatingPlaces": {},
 
   "chipActionDelete": "Delete",
   "@chipActionDelete": {},
@@ -159,6 +161,8 @@
   "@filterTypeMotionPhotoLabel": {},
   "filterTypePanoramaLabel": "Panorama",
   "@filterTypePanoramaLabel": {},
+  "filterTypeRawLabel": "Raw",
+  "@filterTypeRawLabel": {},
   "filterTypeSphericalVideoLabel": "360° Video",
   "@filterTypeSphericalVideoLabel": {},
   "filterTypeGeotiffLabel": "GeoTIFF",
@@ -172,6 +176,11 @@
   "@coordinateFormatDms": {},
   "coordinateFormatDecimal": "Decimal degrees",
   "@coordinateFormatDecimal": {},
+
+  "unitSystemMetric": "Metric",
+  "@unitSystemMetric": {},
+  "unitSystemImperial": "Imperial",
+  "@unitSystemImperial": {},
 
   "videoLoopModeNever": "Never",
   "@videoLoopModeNever": {},
@@ -192,6 +201,13 @@
   "@mapStyleStamenToner": {},
   "mapStyleStamenWatercolor": "Stamen Watercolor",
   "@mapStyleStamenWatercolor": {},
+
+  "nameConflictStrategyRename": "Rename",
+  "@nameConflictStrategyRename": {},
+  "nameConflictStrategyReplace": "Replace",
+  "@nameConflictStrategyReplace": {},
+  "nameConflictStrategySkip": "Skip",
+  "@nameConflictStrategySkip": {},
 
   "keepScreenOnNever": "Never",
   "@keepScreenOnNever": {},
@@ -273,6 +289,11 @@
     }
   },
 
+  "nameConflictDialogSingleSourceMessage": "Some files in the destination folder have the same name.",
+  "@nameConflictDialogSingleSourceMessage": {},
+  "nameConflictDialogMultipleSourceMessage": "Some files have the same name.",
+  "@nameConflictDialogMultipleSourceMessage": {},
+
   "addShortcutDialogLabel": "Shortcut label",
   "@addShortcutDialogLabel": {},
   "addShortcutButtonLabel": "ADD",
@@ -326,6 +347,9 @@
       "count": {}
     }
   },
+
+  "exportEntryDialogFormat": "Format:",
+  "@exportEntryDialogFormat": {},
 
   "renameEntryDialogLabel": "New name",
   "@renameEntryDialogLabel": {},
@@ -555,6 +579,8 @@
   "@drawerCollectionMotionPhotos": {},
   "drawerCollectionPanoramas": "Panoramas",
   "@drawerCollectionPanoramas": {},
+  "drawerCollectionRaws": "Raw photos",
+  "@drawerCollectionRaws": {},
   "drawerCollectionSphericalVideos": "360° Videos",
   "@drawerCollectionSphericalVideos": {},
 
@@ -688,8 +714,8 @@
 
   "settingsSectionViewer": "Viewer",
   "@settingsSectionViewer": {},
-  "settingsImageBackground": "Image background",
-  "@settingsImageBackground": {},
+  "settingsViewerShowOverlayOnOpening": "Show overlay on opening",
+  "@settingsViewerShowOverlayOnOpening": {},
   "settingsViewerShowMinimap": "Show minimap",
   "@settingsViewerShowMinimap": {},
   "settingsViewerShowInformation": "Show information",
@@ -702,6 +728,8 @@
   "@settingsViewerEnableOverlayBlurEffect": {},
   "settingsViewerUseCutout": "Use cutout area",
   "@settingsViewerUseCutout": {},
+  "settingsImageBackground": "Image background",
+  "@settingsImageBackground": {},
 
   "settingsViewerQuickActionsTile": "Quick actions",
   "@settingsViewerQuickActionsTile": {},
@@ -821,6 +849,10 @@
   "@settingsCoordinateFormatTile": {},
   "settingsCoordinateFormatTitle": "Coordinate Format",
   "@settingsCoordinateFormatTitle": {},
+  "settingsUnitSystemTile": "Units",
+  "@settingsUnitSystemTile": {},
+  "settingsUnitSystemTitle": "Units",
+  "@settingsUnitSystemTitle": {},
 
   "statsPageTitle": "Stats",
   "@statsPageTitle": {},

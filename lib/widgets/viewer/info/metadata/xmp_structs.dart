@@ -59,11 +59,11 @@ class _XmpStructArrayCardState extends State<XmpStructArrayCard> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Flexible(
+                Expanded(
                   child: HighlightTitle(
                     title: '${widget.title} ${_index + 1}',
-                    color: Colors.transparent,
                     selectable: true,
+                    showHighlight: false,
                   ),
                 ),
                 IconButton(
@@ -128,8 +128,8 @@ class XmpStructCard extends StatelessWidget {
           children: [
             HighlightTitle(
               title: title,
-              color: Colors.transparent,
               selectable: true,
+              showHighlight: false,
             ),
             InfoRowGroup(
               info: struct,

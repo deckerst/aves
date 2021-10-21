@@ -46,6 +46,7 @@ class AIcons {
   static const IconData flip = Icons.flip_outlined;
   static const IconData favourite = Icons.favorite_border;
   static const IconData favouriteActive = Icons.favorite;
+  static const IconData geoBounds = Icons.public_outlined;
   static const IconData goUp = Icons.arrow_upward_outlined;
   static const IconData group = Icons.group_work_outlined;
   static const IconData hide = Icons.visibility_off_outlined;

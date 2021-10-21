@@ -60,7 +60,7 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
         }
     }
 
-    private fun getContextDirs(@Suppress("UNUSED_PARAMETER") call: MethodCall, result: MethodChannel.Result) {
+    private fun getContextDirs(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
         val dirs = hashMapOf(
             "cacheDir" to context.cacheDir,
             "filesDir" to context.filesDir,
@@ -83,7 +83,7 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
         result.success(dirs)
     }
 
-    private fun getEnv(@Suppress("UNUSED_PARAMETER") call: MethodCall, result: MethodChannel.Result) {
+    private fun getEnv(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
         result.success(System.getenv())
     }
 

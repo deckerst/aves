@@ -3,24 +3,35 @@ package deckers.thibault.aves.utils
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Binder
 import android.os.Build
 import android.os.Environment
 import android.os.storage.StorageManager
+import android.provider.MediaStore
 import android.util.Log
 import androidx.annotation.RequiresApi
 import deckers.thibault.aves.MainActivity
 import deckers.thibault.aves.PendingStorageAccessResultHandler
+import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.utils.StorageUtils.PathSegments
 import java.io.File
 import java.util.*
+import java.util.concurrent.CompletableFuture
 import kotlin.collections.ArrayList
 
 object PermissionManager {
     private val LOG_TAG = LogUtils.createTag<PermissionManager>()
 
+    private val MEDIA_STORE_INSERTION_PRIMARY_DIRS = listOf(
+        Environment.DIRECTORY_DCIM,
+        Environment.DIRECTORY_DOWNLOADS,
+        Environment.DIRECTORY_PICTURES,
+    )
+
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-    fun requestVolumeAccess(activity: Activity, path: String, onGranted: (uri: Uri) -> Unit, onDenied: () -> Unit) {
+    fun requestDirectoryAccess(activity: Activity, path: String, onGranted: (uri: Uri) -> Unit, onDenied: () -> Unit) {
         Log.i(LOG_TAG, "request user to select and grant access permission to path=$path")
 
         var intent: Intent? = null
@@ -41,6 +52,35 @@ object PermissionManager {
             Log.e(LOG_TAG, "failed to resolve activity for intent=$intent")
             onDenied()
         }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.R)
+    fun requestMediaFileAccess(activity: Activity, uris: List<Uri>, mimeTypes: List<String>): Boolean {
+        val safeUris = uris.mapIndexed { index, uri -> StorageUtils.getMediaStoreScopedStorageSafeUri(uri, mimeTypes[index]) }
+
+        val todoUris = ArrayList<Uri>()
+        val pid = Binder.getCallingPid()
+        val uid = Binder.getCallingUid()
+        val flags = Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            activity.checkUriPermissions(safeUris, pid, uid, flags)
+        } else {
+            safeUris.map { activity.checkUriPermission(it, pid, uid, flags) }.toIntArray()
+        }.forEachIndexed { index, permission ->
+            if (permission != PackageManager.PERMISSION_GRANTED) {
+                todoUris.add(safeUris[index])
+            }
+        }
+        if (todoUris.isEmpty()) return true
+
+        Log.i(LOG_TAG, "request user to select and grant access permission to uris=$todoUris")
+        val intentSender = MediaStore.createWriteRequest(activity.contentResolver, safeUris).intentSender
+        MainActivity.pendingScopedStoragePermissionCompleter = CompletableFuture<Boolean>()
+        activity.startIntentSenderForResult(intentSender, MainActivity.MEDIA_WRITE_BULK_PERMISSION_REQUEST, null, 0, 0, 0, null)
+        val granted = MainActivity.pendingScopedStoragePermissionCompleter!!.join()
+        MainActivity.pendingScopedStoragePermissionCompleter = null
+
+        return granted
     }
 
     fun getGrantedDirForPath(context: Context, anyPath: String): String? {
@@ -128,6 +168,18 @@ object PermissionManager {
             })
         }
         return dirs
+    }
+
+    fun canInsertByMediaStore(directories: List<FieldMap>): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            directories.all {
+                val relativeDir = it["relativeDir"] as String
+                val segments = relativeDir.split(File.separator)
+                segments.isNotEmpty() && MEDIA_STORE_INSERTION_PRIMARY_DIRS.contains(segments.first())
+            }
+        } else {
+            true
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)

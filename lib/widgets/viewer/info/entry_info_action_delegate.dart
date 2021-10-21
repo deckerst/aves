@@ -3,6 +3,7 @@ import 'package:aves/model/actions/entry_info_actions.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/metadata/date_modifier.dart';
 import 'package:aves/model/metadata/enums.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
@@ -40,9 +41,9 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin {
     final success = await apply();
     if (success) {
       if (_isMainMode(context) && source != null) {
-        await source.refreshMetadata({entry});
+        await source.refreshEntry(entry);
       } else {
-        await entry.refresh(persist: false);
+        await entry.refresh(background: false, persist: false, force: true, geocoderLocale: settings.appliedLocale);
       }
       showFeedback(context, l10n.genericSuccessFeedback);
     } else {

@@ -23,11 +23,15 @@ import deckers.thibault.aves.utils.UriUtils.tryParseId
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.InputStream
+import java.io.OutputStream
 import java.util.*
 import java.util.regex.Pattern
 
 object StorageUtils {
     private val LOG_TAG = LogUtils.createTag<StorageUtils>()
+
+    private const val TREE_URI_ROOT = "content://com.android.externalstorage.documents/tree/"
+    private val TREE_URI_PATH_PATTERN = Pattern.compile("(.*?):(.*)")
 
     /**
      * Volume paths
@@ -269,8 +273,8 @@ object StorageUtils {
     // content://com.android.externalstorage.documents/tree/primary%3A              -> /storage/emulated/0/
     // content://com.android.externalstorage.documents/tree/10F9-3F13%3APictures    -> /storage/10F9-3F13/Pictures/
     fun convertTreeUriToDirPath(context: Context, treeUri: Uri): String? {
-        val encoded = treeUri.toString().substring("content://com.android.externalstorage.documents/tree/".length)
-        val matcher = Pattern.compile("(.*?):(.*)").matcher(Uri.decode(encoded))
+        val encoded = treeUri.toString().substring(TREE_URI_ROOT.length)
+        val matcher = TREE_URI_PATH_PATTERN.matcher(Uri.decode(encoded))
         with(matcher) {
             if (find()) {
                 val uuid = group(1)
@@ -329,7 +333,7 @@ object StorageUtils {
 
     // returns the directory `DocumentFile` (from tree URI when scoped storage is required, `File` otherwise)
     // returns null if directory does not exist and could not be created
-    fun createDirectoryIfAbsent(context: Context, dirPath: String): DocumentFileCompat? {
+    fun createDirectoryDocIfAbsent(context: Context, dirPath: String): DocumentFileCompat? {
         val cleanDirPath = ensureTrailingSeparator(dirPath)
         return if (requireAccessPermission(context, cleanDirPath) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             val grantedDir = getGrantedDirForPath(context, cleanDirPath) ?: return null
@@ -427,7 +431,14 @@ object StorageUtils {
     // This loader relies on `MediaStore.setRequireOriginal` but this yields a `SecurityException`
     // for some content URIs (e.g. `content://media/external_primary/downloads/...`)
     // so we build a typical `images` or `videos` content URI from the original content ID.
-    fun getGlideSafeUri(uri: Uri, mimeType: String): Uri {
+    fun getGlideSafeUri(uri: Uri, mimeType: String): Uri = normalizeMediaUri(uri, mimeType)
+
+    // requesting access or writing to some MediaStore content URIs
+    // e.g. `content://0@media/...`, `content://media/external_primary/downloads/...`
+    // yields an exception with `All requested items must be referenced by specific ID`
+    fun getMediaStoreScopedStorageSafeUri(uri: Uri, mimeType: String): Uri = normalizeMediaUri(uri, mimeType)
+
+    private fun normalizeMediaUri(uri: Uri, mimeType: String): Uri {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && isMediaStoreContentUri(uri)) {
             // we cannot safely apply this to a file content URI, as it may point to a file not indexed
             // by the Media Store (via `.nomedia`), and therefore has no matching image/video content URI
@@ -439,7 +450,11 @@ object StorageUtils {
                         else -> uri
                     }
                 }
+            } else if (uri.userInfo != null) {
+                // strip user info, if any
+                return Uri.parse(uri.toString().replaceFirst("${uri.userInfo}@", ""))
             }
+
         }
         return uri
     }
@@ -448,11 +463,22 @@ object StorageUtils {
         val effectiveUri = getOriginalUri(context, uri)
         return try {
             context.contentResolver.openInputStream(effectiveUri)
-        } catch (e: FileNotFoundException) {
-            Log.w(LOG_TAG, "failed to find file at uri=$effectiveUri")
+        } catch (e: Exception) {
+            // among various other exceptions,
+            // opening a file marked pending and owned by another package throws an `IllegalStateException`
+            Log.w(LOG_TAG, "failed to open input stream for uri=$uri effectiveUri=$effectiveUri", e)
             null
-        } catch (e: SecurityException) {
-            Log.w(LOG_TAG, "failed to open file at uri=$effectiveUri", e)
+        }
+    }
+
+    fun openOutputStream(context: Context, uri: Uri, mimeType: String): OutputStream? {
+        val effectiveUri = getMediaStoreScopedStorageSafeUri(uri, mimeType)
+        return try {
+            context.contentResolver.openOutputStream(effectiveUri)
+        } catch (e: Exception) {
+            // among various other exceptions,
+            // opening a file marked pending and owned by another package throws an `IllegalStateException`
+            Log.w(LOG_TAG, "failed to open output stream for uri=$uri effectiveUri=$effectiveUri", e)
             null
         }
     }
@@ -467,7 +493,7 @@ object StorageUtils {
             }
         } catch (e: Exception) {
             // unsupported format
-            Log.w(LOG_TAG, "failed to initialize MediaMetadataRetriever for uri=$uri")
+            Log.w(LOG_TAG, "failed to initialize MediaMetadataRetriever for uri=$uri effectiveUri=$effectiveUri")
             null
         }
     }
@@ -482,7 +508,7 @@ object StorageUtils {
     class PathSegments(context: Context, fullPath: String) {
         var volumePath: String? = null // `volumePath` with trailing "/"
         var relativeDir: String? = null // `relativeDir` with trailing "/"
-        private var fileName: String? = null // null for directories
+        var fileName: String? = null // null for directories
 
         init {
             volumePath = getVolumePath(context, fullPath)

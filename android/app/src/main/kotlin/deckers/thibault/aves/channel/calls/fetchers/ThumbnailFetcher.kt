@@ -79,7 +79,7 @@ class ThumbnailFetcher internal constructor(
         } else {
             var errorDetails: String? = exception?.message
             if (errorDetails?.isNotEmpty() == true) {
-                errorDetails = errorDetails.split("\n".toRegex(), 2).first()
+                errorDetails = errorDetails.split(Regex("\n"), 2).first()
             }
             result.error("getThumbnail-null", "failed to get thumbnail for mimeType=$mimeType uri=$uri", errorDetails)
         }
@@ -99,10 +99,10 @@ class ThumbnailFetcher internal constructor(
         val contentId = uri.tryParseId() ?: return null
         val resolver = context.contentResolver
         return if (isVideo(mimeType)) {
-            @Suppress("DEPRECATION")
+            @Suppress("deprecation")
             MediaStore.Video.Thumbnails.getThumbnail(resolver, contentId, MediaStore.Video.Thumbnails.MINI_KIND, null)
         } else {
-            @Suppress("DEPRECATION")
+            @Suppress("deprecation")
             var bitmap = MediaStore.Images.Thumbnails.getThumbnail(resolver, contentId, MediaStore.Images.Thumbnails.MINI_KIND, null)
             // from Android Q, returned thumbnail is already rotated according to EXIF orientation
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q && bitmap != null) {

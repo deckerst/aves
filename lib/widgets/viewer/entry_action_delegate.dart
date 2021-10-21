@@ -9,10 +9,9 @@ import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/highlight.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
-import 'package:aves/ref/mime_types.dart';
-import 'package:aves/services/android_app_service.dart';
 import 'package:aves/services/common/image_op_events.dart';
 import 'package:aves/services/common/services.dart';
+import 'package:aves/services/media/enums.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
@@ -20,6 +19,7 @@ import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
 import 'package:aves/widgets/common/action_mixins/size_aware.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
+import 'package:aves/widgets/dialogs/export_entry_dialog.dart';
 import 'package:aves/widgets/dialogs/rename_entry_dialog.dart';
 import 'package:aves/widgets/filter_grids/album_pick.dart';
 import 'package:aves/widgets/viewer/debug/debug_page.dart';
@@ -38,7 +38,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         entry.toggleFavourite();
         break;
       case EntryAction.copyToClipboard:
-        AndroidAppService.copyToClipboard(entry.uri, entry.bestTitle).then((success) {
+        androidAppService.copyToClipboard(entry.uri, entry.bestTitle).then((success) {
           showFeedback(context, success ? context.l10n.genericSuccessFeedback : context.l10n.genericFailureFeedback);
         });
         break;
@@ -67,17 +67,17 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         _flip(context, entry);
         break;
       case EntryAction.edit:
-        AndroidAppService.edit(entry.uri, entry.mimeType).then((success) {
+        androidAppService.edit(entry.uri, entry.mimeType).then((success) {
           if (!success) showNoMatchingAppDialog(context);
         });
         break;
       case EntryAction.open:
-        AndroidAppService.open(entry.uri, entry.mimeTypeAnySubtype).then((success) {
+        androidAppService.open(entry.uri, entry.mimeTypeAnySubtype).then((success) {
           if (!success) showNoMatchingAppDialog(context);
         });
         break;
       case EntryAction.openMap:
-        AndroidAppService.openMap(entry.latLng!).then((success) {
+        androidAppService.openMap(entry.latLng!).then((success) {
           if (!success) showNoMatchingAppDialog(context);
         });
         break;
@@ -85,12 +85,12 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         _rotateScreen(context);
         break;
       case EntryAction.setAs:
-        AndroidAppService.setAs(entry.uri, entry.mimeType).then((success) {
+        androidAppService.setAs(entry.uri, entry.mimeType).then((success) {
           if (!success) showNoMatchingAppDialog(context);
         });
         break;
       case EntryAction.share:
-        AndroidAppService.shareEntries({entry}).then((success) {
+        androidAppService.shareEntries({entry}).then((success) {
           if (!success) showNoMatchingAppDialog(context);
         });
         break;
@@ -185,6 +185,12 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
 
     if (!await checkFreeSpaceForMove(context, {entry}, destinationAlbum, MoveType.export)) return;
 
+    final mimeType = await showDialog<String>(
+      context: context,
+      builder: (context) => ExportEntryDialog(entry: entry),
+    );
+    if (mimeType == null) return;
+
     final selection = <AvesEntry>{};
     if (entry.isMultiPage) {
       final multiPageInfo = await entry.getMultiPageInfo();
@@ -201,20 +207,26 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     }
 
     final selectionCount = selection.length;
+    source.pauseMonitoring();
     showOpReport<ExportOpEvent>(
       context: context,
       // TODO TLAD [SVG] export separately from raster images (sending bytes, like frame captures)
       opStream: mediaFileService.export(
         selection,
-        mimeType: MimeTypes.jpeg,
+        mimeType: mimeType,
         destinationAlbum: destinationAlbum,
+        nameConflictStrategy: NameConflictStrategy.rename,
       ),
       itemCount: selectionCount,
       onDone: (processed) {
-        final movedOps = processed.where((e) => e.success);
-        final movedCount = movedOps.length;
+        final exportOps = processed.where((e) => e.success);
+        final exportCount = exportOps.length;
         final isMainMode = context.read<ValueNotifier<AppMode>>().value == AppMode.main;
-        final showAction = isMainMode && movedCount > 0
+
+        source.resumeMonitoring();
+        source.refreshUris(exportOps.map((v) => v.newFields['uri'] as String?).whereNotNull().toSet());
+
+        final showAction = isMainMode && exportCount > 0
             ? SnackBarAction(
                 label: context.l10n.showButtonLabel,
                 onPressed: () async {
@@ -235,7 +247,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
                   ));
                   final delayDuration = context.read<DurationsData>().staggeredAnimationPageTarget;
                   await Future.delayed(delayDuration + Durations.highlightScrollInitDelay);
-                  final newUris = movedOps.map((v) => v.newFields['uri'] as String?).toSet();
+                  final newUris = exportOps.map((v) => v.newFields['uri'] as String?).toSet();
                   final targetEntry = targetCollection.sortedEntries.firstWhereOrNull((entry) => newUris.contains(entry.uri));
                   if (targetEntry != null) {
                     highlightInfo.trackItem(targetEntry, highlightItem: targetEntry);
@@ -243,8 +255,8 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
                 },
               )
             : null;
-        if (movedCount < selectionCount) {
-          final count = selectionCount - movedCount;
+        if (exportCount < selectionCount) {
+          final count = selectionCount - exportCount;
           showFeedback(
             context,
             context.l10n.collectionExportFailureFeedback(count),

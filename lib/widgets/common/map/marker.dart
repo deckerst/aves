@@ -39,7 +39,7 @@ class ImageMarker extends StatelessWidget {
           )
         : const SizedBox();
 
-    // need to be sized for the Google Maps marker generator
+    // need to be sized for the Google map marker generator
     child = SizedBox(
       width: extent,
       height: extent,

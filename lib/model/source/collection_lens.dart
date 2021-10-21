@@ -46,8 +46,8 @@ class CollectionLens with ChangeNotifier {
     id ??= hashCode;
     if (listenToSource) {
       final sourceEvents = source.eventBus;
-      _subscriptions.add(sourceEvents.on<EntryAddedEvent>().listen((e) => onEntryAdded(e.entries)));
-      _subscriptions.add(sourceEvents.on<EntryRemovedEvent>().listen((e) => onEntryRemoved(e.entries)));
+      _subscriptions.add(sourceEvents.on<EntryAddedEvent>().listen((e) => _onEntryAdded(e.entries)));
+      _subscriptions.add(sourceEvents.on<EntryRemovedEvent>().listen((e) => _onEntryRemoved(e.entries)));
       _subscriptions.add(sourceEvents.on<EntryMovedEvent>().listen((e) => _refresh()));
       _subscriptions.add(sourceEvents.on<EntryRefreshedEvent>().listen((e) => _refresh()));
       _subscriptions.add(sourceEvents.on<FilterVisibilityChangedEvent>().listen((e) => _refresh()));
@@ -72,6 +72,20 @@ class CollectionLens with ChangeNotifier {
     settings.removeListener(_onSettingsChanged);
     super.dispose();
   }
+
+  CollectionLens copyWith({
+    CollectionSource? source,
+    Set<CollectionFilter>? filters,
+    bool? listenToSource,
+    List<AvesEntry>? fixedSelection,
+  }) =>
+      CollectionLens(
+        source: source ?? this.source,
+        filters: filters ?? this.filters,
+        id: id,
+        listenToSource: listenToSource ?? this.listenToSource,
+        fixedSelection: fixedSelection ?? this.fixedSelection,
+      );
 
   bool get isEmpty => _filteredSortedEntries.isEmpty;
 
@@ -103,16 +117,16 @@ class CollectionLens with ChangeNotifier {
       filters.removeWhere((old) => old.category == filter.category);
     }
     filters.add(filter);
-    onFilterChanged();
+    _onFilterChanged();
   }
 
   void removeFilter(CollectionFilter filter) {
     if (!filters.contains(filter)) return;
     filters.remove(filter);
-    onFilterChanged();
+    _onFilterChanged();
   }
 
-  void onFilterChanged() {
+  void _onFilterChanged() {
     _refresh();
     filterChangeNotifier.notifyListeners();
   }
@@ -229,11 +243,11 @@ class CollectionLens with ChangeNotifier {
     }
   }
 
-  void onEntryAdded(Set<AvesEntry>? entries) {
+  void _onEntryAdded(Set<AvesEntry>? entries) {
     _refresh();
   }
 
-  void onEntryRemoved(Set<AvesEntry> entries) {
+  void _onEntryRemoved(Set<AvesEntry> entries) {
     if (groupBursts) {
       // find impacted burst groups
       final obsoleteBurstEntries = <AvesEntry>{};
@@ -256,6 +270,7 @@ class CollectionLens with ChangeNotifier {
     // we should remove obsolete entries and sections
     // but do not apply sort/section
     // as section order change would surprise the user while browsing
+    fixedSelection?.removeWhere(entries.contains);
     _filteredSortedEntries.removeWhere(entries.contains);
     _sortedEntries?.removeWhere(entries.contains);
     sections.forEach((key, sectionEntries) => sectionEntries.removeWhere(entries.contains));

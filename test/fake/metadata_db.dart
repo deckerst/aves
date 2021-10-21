@@ -40,6 +40,9 @@ class FakeMetadataDb extends Fake implements MetadataDb {
   Future<List<AddressDetails>> loadAddresses() => SynchronousFuture([]);
 
   @override
+  Future<void> saveAddresses(Set<AddressDetails> addresses) => SynchronousFuture(null);
+
+  @override
   Future<void> updateAddressId(int oldId, AddressDetails? address) => SynchronousFuture(null);
 
   @override

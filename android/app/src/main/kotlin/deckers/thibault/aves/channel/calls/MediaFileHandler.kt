@@ -11,6 +11,7 @@ import deckers.thibault.aves.channel.calls.fetchers.SvgRegionFetcher
 import deckers.thibault.aves.channel.calls.fetchers.ThumbnailFetcher
 import deckers.thibault.aves.channel.calls.fetchers.TiffRegionFetcher
 import deckers.thibault.aves.model.FieldMap
+import deckers.thibault.aves.model.NameConflictStrategy
 import deckers.thibault.aves.model.provider.ImageProvider.ImageOpCallback
 import deckers.thibault.aves.model.provider.ImageProviderFactory.getProvider
 import deckers.thibault.aves.utils.MimeTypes
@@ -34,7 +35,6 @@ class MediaFileHandler(private val activity: Activity) : MethodCallHandler {
             "getThumbnail" -> GlobalScope.launch(Dispatchers.IO) { safeSuspend(call, result, ::getThumbnail) }
             "getRegion" -> GlobalScope.launch(Dispatchers.IO) { safeSuspend(call, result, ::getRegion) }
             "captureFrame" -> GlobalScope.launch(Dispatchers.IO) { safeSuspend(call, result, ::captureFrame) }
-            "rename" -> GlobalScope.launch(Dispatchers.IO) { safeSuspend(call, result, ::rename) }
             "clearSizedThumbnailDiskCache" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::clearSizedThumbnailDiskCache) }
             else -> result.notImplemented()
         }
@@ -144,7 +144,8 @@ class MediaFileHandler(private val activity: Activity) : MethodCallHandler {
         val exifFields = call.argument<FieldMap>("exif") ?: HashMap()
         val bytes = call.argument<ByteArray>("bytes")
         var destinationDir = call.argument<String>("destinationPath")
-        if (uri == null || desiredName == null || bytes == null || destinationDir == null) {
+        val nameConflictStrategy = NameConflictStrategy.get(call.argument<String>("nameConflictStrategy"))
+        if (uri == null || desiredName == null || bytes == null || destinationDir == null || nameConflictStrategy == null) {
             result.error("captureFrame-args", "failed because of missing arguments", null)
             return
         }
@@ -156,41 +157,13 @@ class MediaFileHandler(private val activity: Activity) : MethodCallHandler {
         }
 
         destinationDir = ensureTrailingSeparator(destinationDir)
-        provider.captureFrame(activity, desiredName, exifFields, bytes, destinationDir, object : ImageOpCallback {
+        provider.captureFrame(activity, desiredName, exifFields, bytes, destinationDir, nameConflictStrategy, object : ImageOpCallback {
             override fun onSuccess(fields: FieldMap) = result.success(fields)
             override fun onFailure(throwable: Throwable) = result.error("captureFrame-failure", "failed to capture frame for uri=$uri", throwable.message)
         })
     }
 
-    private suspend fun rename(call: MethodCall, result: MethodChannel.Result) {
-        val entryMap = call.argument<FieldMap>("entry")
-        val newName = call.argument<String>("newName")
-        if (entryMap == null || newName == null) {
-            result.error("rename-args", "failed because of missing arguments", null)
-            return
-        }
-
-        val uri = (entryMap["uri"] as String?)?.let { Uri.parse(it) }
-        val path = entryMap["path"] as String?
-        val mimeType = entryMap["mimeType"] as String?
-        if (uri == null || path == null || mimeType == null) {
-            result.error("rename-args", "failed because entry fields are missing", null)
-            return
-        }
-
-        val provider = getProvider(uri)
-        if (provider == null) {
-            result.error("rename-provider", "failed to find provider for uri=$uri", null)
-            return
-        }
-
-        provider.rename(activity, path, uri, mimeType, newName, object : ImageOpCallback {
-            override fun onSuccess(fields: FieldMap) = result.success(fields)
-            override fun onFailure(throwable: Throwable) = result.error("rename-failure", "failed to rename", throwable.message)
-        })
-    }
-
-    private fun clearSizedThumbnailDiskCache(@Suppress("UNUSED_PARAMETER") call: MethodCall, result: MethodChannel.Result) {
+    private fun clearSizedThumbnailDiskCache(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
         Glide.get(activity).clearDiskCache()
         result.success(null)
     }

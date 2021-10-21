@@ -7,6 +7,7 @@ import android.os.Looper
 import android.util.Log
 import deckers.thibault.aves.model.AvesEntry
 import deckers.thibault.aves.model.FieldMap
+import deckers.thibault.aves.model.NameConflictStrategy
 import deckers.thibault.aves.model.provider.ImageProvider.ImageOpCallback
 import deckers.thibault.aves.model.provider.ImageProviderFactory.getProvider
 import deckers.thibault.aves.utils.LogUtils
@@ -28,7 +29,7 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
     init {
         if (arguments is Map<*, *>) {
             op = arguments["op"] as String?
-            @Suppress("UNCHECKED_CAST")
+            @Suppress("unchecked_cast")
             val rawEntries = arguments["entries"] as List<FieldMap>?
             if (rawEntries != null) {
                 entryMapList.addAll(rawEntries)
@@ -44,6 +45,7 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
             "delete" -> GlobalScope.launch(Dispatchers.IO) { delete() }
             "export" -> GlobalScope.launch(Dispatchers.IO) { export() }
             "move" -> GlobalScope.launch(Dispatchers.IO) { move() }
+            "rename" -> GlobalScope.launch(Dispatchers.IO) { rename() }
             else -> endOfStream()
         }
     }
@@ -98,12 +100,13 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
         for (entryMap in entryMapList) {
             val uri = (entryMap["uri"] as String?)?.let { Uri.parse(it) }
             val path = entryMap["path"] as String?
-            if (uri != null) {
-                val result = hashMapOf<String, Any?>(
+            val mimeType = entryMap["mimeType"] as String?
+            if (uri != null && mimeType != null) {
+                val result: FieldMap = hashMapOf(
                     "uri" to uri.toString(),
                 )
                 try {
-                    provider.delete(activity, uri, path)
+                    provider.delete(activity, uri, path, mimeType)
                     result["success"] = true
                 } catch (e: Exception) {
                     Log.w(LOG_TAG, "failed to delete entry with path=$path", e)
@@ -123,7 +126,8 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
 
         var destinationDir = arguments["destinationPath"] as String?
         val mimeType = arguments["mimeType"] as String?
-        if (destinationDir == null || mimeType == null) {
+        val nameConflictStrategy = NameConflictStrategy.get(arguments["nameConflictStrategy"] as String?)
+        if (destinationDir == null || mimeType == null || nameConflictStrategy == null) {
             error("export-args", "failed because of missing arguments", null)
             return
         }
@@ -138,7 +142,7 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
 
         destinationDir = StorageUtils.ensureTrailingSeparator(destinationDir)
         val entries = entryMapList.map(::AvesEntry)
-        provider.exportMultiple(activity, mimeType, destinationDir, entries, object : ImageOpCallback {
+        provider.exportMultiple(activity, mimeType, destinationDir, entries, nameConflictStrategy, object : ImageOpCallback {
             override fun onSuccess(fields: FieldMap) = success(fields)
             override fun onFailure(throwable: Throwable) = error("export-failure", "failed to export entries", throwable)
         })
@@ -153,7 +157,8 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
 
         val copy = arguments["copy"] as Boolean?
         var destinationDir = arguments["destinationPath"] as String?
-        if (copy == null || destinationDir == null) {
+        val nameConflictStrategy = NameConflictStrategy.get(arguments["nameConflictStrategy"] as String?)
+        if (copy == null || destinationDir == null || nameConflictStrategy == null) {
             error("move-args", "failed because of missing arguments", null)
             return
         }
@@ -168,9 +173,37 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
 
         destinationDir = StorageUtils.ensureTrailingSeparator(destinationDir)
         val entries = entryMapList.map(::AvesEntry)
-        provider.moveMultiple(activity, copy, destinationDir, entries, object : ImageOpCallback {
+        provider.moveMultiple(activity, copy, destinationDir, nameConflictStrategy, entries, object : ImageOpCallback {
             override fun onSuccess(fields: FieldMap) = success(fields)
             override fun onFailure(throwable: Throwable) = error("move-failure", "failed to move entries", throwable)
+        })
+        endOfStream()
+    }
+
+    private suspend fun rename() {
+        if (arguments !is Map<*, *> || entryMapList.isEmpty()) {
+            endOfStream()
+            return
+        }
+
+        val newName = arguments["newName"] as String?
+        if (newName == null) {
+            error("rename-args", "failed because of missing arguments", null)
+            return
+        }
+
+        // assume same provider for all entries
+        val firstEntry = entryMapList.first()
+        val provider = (firstEntry["uri"] as String?)?.let { Uri.parse(it) }?.let { getProvider(it) }
+        if (provider == null) {
+            error("rename-provider", "failed to find provider for entry=$firstEntry", null)
+            return
+        }
+
+        val entries = entryMapList.map(::AvesEntry)
+        provider.renameMultiple(activity, newName, entries, object : ImageOpCallback {
+            override fun onSuccess(fields: FieldMap) = success(fields)
+            override fun onFailure(throwable: Throwable) = error("rename-failure", "failed to rename", throwable.message)
         })
         endOfStream()
     }

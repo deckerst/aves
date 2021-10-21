@@ -1,14 +1,31 @@
 // cf photoshop:ColorMode
 // cf https://github.com/adobe/xmp-docs/blob/master/XMPNamespaces/photoshop.md
 import 'package:aves/widgets/viewer/info/metadata/xmp_namespaces.dart';
+import 'package:aves/widgets/viewer/info/metadata/xmp_structs.dart';
+import 'package:flutter/widgets.dart';
 
 class XmpPhotoshopNamespace extends XmpNamespace {
   static const ns = 'photoshop';
 
-  const XmpPhotoshopNamespace(Map<String, String> rawProps) : super(ns, rawProps);
+  static final textLayersPattern = RegExp(ns + r':TextLayers\[(\d+)\]/(.*)');
+
+  final textLayers = <int, Map<String, String>>{};
+
+  XmpPhotoshopNamespace(Map<String, String> rawProps) : super(ns, rawProps);
 
   @override
-  String get displayTitle => 'Photoshop';
+  bool extractData(XmpProp prop) {
+    return extractIndexedStruct(prop, textLayersPattern, textLayers);
+  }
+
+  @override
+  List<Widget> buildFromExtractedData() => [
+        if (textLayers.isNotEmpty)
+          XmpStructArrayCard(
+            title: 'Text Layers',
+            structByIndex: textLayers,
+          ),
+      ];
 
   @override
   String formatValue(XmpProp prop) {

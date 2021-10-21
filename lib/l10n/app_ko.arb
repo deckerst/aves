@@ -27,7 +27,8 @@
 
   "sourceStateLoading": "로딩 중",
   "sourceStateCataloguing": "분석 중",
-  "sourceStateLocating": "장소 찾는 중",
+  "sourceStateLocatingCountries": "국가 찾는 중",
+  "sourceStateLocatingPlaces": "장소 찾는 중",
 
   "chipActionDelete": "삭제",
   "chipActionGoToAlbumPage": "앨범 페이지에서 보기",
@@ -78,6 +79,7 @@
   "filterTypeAnimatedLabel": "애니메이션",
   "filterTypeMotionPhotoLabel": "모션 포토",
   "filterTypePanoramaLabel": "파노라마",
+  "filterTypeRawLabel": "Raw",
   "filterTypeSphericalVideoLabel": "360° 동영상",
   "filterTypeGeotiffLabel": "GeoTIFF",
   "filterMimeImageLabel": "사진",
@@ -85,6 +87,9 @@
 
   "coordinateFormatDms": "도분초",
   "coordinateFormatDecimal": "소수점",
+
+  "unitSystemMetric": "미터법",
+  "unitSystemImperial": "야드파운드법",
 
   "videoLoopModeNever": "반복 안 함",
   "videoLoopModeShortOnly": "짧은 동영상만 반복",
@@ -96,6 +101,10 @@
   "mapStyleOsmHot": "Humanitarian OSM",
   "mapStyleStamenToner": "Stamen 토너",
   "mapStyleStamenWatercolor": "Stamen 수채화",
+
+  "nameConflictStrategyRename": "이름 변경",
+  "nameConflictStrategyReplace": "대체",
+  "nameConflictStrategySkip": "건너뛰기",
 
   "keepScreenOnNever": "자동 꺼짐",
   "keepScreenOnViewerOnly": "뷰어 이용 시 작동",
@@ -121,6 +130,9 @@
   "notEnoughSpaceDialogTitle": "저장공간 부족",
   "notEnoughSpaceDialogMessage": "“{volume}”에 필요 공간은 {neededSize}인데 사용 가능한 용량은 {freeSize}만 남아있습니다.",
 
+  "nameConflictDialogSingleSourceMessage": "이동할 폴더에 이름이 같은 파일이 있습니다.",
+  "nameConflictDialogMultipleSourceMessage": "이름이 같은 파일이 있습니다.",
+
   "addShortcutDialogLabel": "바로가기 라벨",
   "addShortcutButtonLabel": "추가",
 
@@ -145,6 +157,8 @@
 
   "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, other{이 앨범의 항목 {count}개를 삭제하시겠습니까?}}",
   "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, other{이 앨범들의 항목 {count}개를 삭제하시겠습니까?}}",
+
+  "exportEntryDialogFormat": "형식:",
 
   "renameEntryDialogLabel": "이름",
 
@@ -256,6 +270,7 @@
   "drawerCollectionVideos": "동영상",
   "drawerCollectionMotionPhotos": "모션 포토",
   "drawerCollectionPanoramas": "파노라마",
+  "drawerCollectionRaws": "Raw 이미지",
   "drawerCollectionSphericalVideos": "360° 동영상",
 
   "chipSortTitle": "정렬",
@@ -330,13 +345,14 @@
   "settingsCollectionSelectionQuickActionEditorBanner": "버튼을 길게 누른 후 이동하여 항목 선택할 때 표시될 버튼을 선택하세요.",
 
   "settingsSectionViewer": "뷰어",
-  "settingsImageBackground": "사진 배경",
+  "settingsViewerShowOverlayOnOpening": "열릴 때 오버레이 표시",
   "settingsViewerShowMinimap": "미니맵 표시",
   "settingsViewerShowInformation": "상세 정보 표시",
   "settingsViewerShowInformationSubtitle": "제목, 날짜, 장소 등 표시",
   "settingsViewerShowShootingDetails": "촬영 정보 표시",
   "settingsViewerEnableOverlayBlurEffect": "오버레이 흐림 효과",
   "settingsViewerUseCutout": "컷아웃 영역 사용",
+  "settingsImageBackground": "이미지 배경",
 
   "settingsViewerQuickActionsTile": "빠른 작업",
   "settingsViewerQuickActionEditorTitle": "빠른 작업",
@@ -401,6 +417,8 @@
   "settingsLanguage": "언어",
   "settingsCoordinateFormatTile": "좌표 표현",
   "settingsCoordinateFormatTitle": "좌표 표현",
+  "settingsUnitSystemTile": "단위법",
+  "settingsUnitSystemTitle": "단위법",
 
   "statsPageTitle": "통계",
   "statsImage": "{count, plural, other{사진}}",
