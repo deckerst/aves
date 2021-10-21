@@ -32,6 +32,7 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
   final double minSpeed = .5;
 
   // ijkplayer configures `AudioTrack` buffer for a maximum speed of 2
+  // but `SoundTouch` can go higher
   @override
   final double maxSpeed = 2;
 
@@ -89,6 +90,13 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
   }
 
   Future<void> _init({int startMillis = 0}) async {
+    if (isReady) {
+      _stopListening();
+      await _instance.release();
+      _instance = FijkPlayer();
+      _startListening();
+    }
+
     sarNotifier.value = 1;
     _applyOptions(startMillis);
 
@@ -177,7 +185,7 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
     // When `SoundTouch` is enabled:
     // - slowed down videos have a weird wobbly audio
     // - we can set speeds higher than the `AudioTrack` limit of 2
-    options.setPlayerOption('soundtouch', 0);
+    options.setPlayerOption('soundtouch', _needSoundTouch(speed) ? 1 : 0);
 
     // `subtitle`: decode subtitle stream
     // default: 0, in [0, 1]
@@ -323,9 +331,17 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
   @override
   set speed(double speed) {
     if (speed <= 0 || _speed == speed) return;
+    final optionChange = _needSoundTouch(speed) != _needSoundTouch(_speed);
     _speed = speed;
-    _applySpeed();
+
+    if (optionChange) {
+      _init(startMillis: currentPosition);
+    } else {
+      _applySpeed();
+    }
   }
+
+  bool _needSoundTouch(double speed) => speed > 1;
 
   // TODO TLAD [video] bug: setting speed fails when there is no audio stream or audio is disabled
   void _applySpeed() => _instance.setSpeed(speed);
