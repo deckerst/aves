@@ -9,6 +9,7 @@ import 'package:aves/services/common/image_op_events.dart';
 import 'package:aves/services/common/output_buffer.dart';
 import 'package:aves/services/common/service_policy.dart';
 import 'package:aves/services/common/services.dart';
+import 'package:aves/services/media/enums.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:streams_channel/streams_channel.dart';
@@ -73,12 +74,19 @@ abstract class MediaFileService {
     Iterable<AvesEntry> entries, {
     required bool copy,
     required String destinationAlbum,
+    required NameConflictStrategy nameConflictStrategy,
   });
 
   Stream<ExportOpEvent> export(
     Iterable<AvesEntry> entries, {
     required String mimeType,
     required String destinationAlbum,
+    required NameConflictStrategy nameConflictStrategy,
+  });
+
+  Stream<MoveOpEvent> rename(
+    Iterable<AvesEntry> entries, {
+    required String newName,
   });
 
   Future<Map<String, dynamic>> captureFrame(
@@ -87,9 +95,8 @@ abstract class MediaFileService {
     required Map<String, dynamic> exif,
     required Uint8List bytes,
     required String destinationAlbum,
+    required NameConflictStrategy nameConflictStrategy,
   });
-
-  Future<Map<String, dynamic>> rename(AvesEntry entry, String newName);
 }
 
 class PlatformMediaFileService implements MediaFileService {
@@ -305,6 +312,7 @@ class PlatformMediaFileService implements MediaFileService {
     Iterable<AvesEntry> entries, {
     required bool copy,
     required String destinationAlbum,
+    required NameConflictStrategy nameConflictStrategy,
   }) {
     try {
       return _opStreamChannel.receiveBroadcastStream(<String, dynamic>{
@@ -312,6 +320,7 @@ class PlatformMediaFileService implements MediaFileService {
         'entries': entries.map(_toPlatformEntryMap).toList(),
         'copy': copy,
         'destinationPath': destinationAlbum,
+        'nameConflictStrategy': nameConflictStrategy.toPlatform(),
       }).map((event) => MoveOpEvent.fromMap(event));
     } on PlatformException catch (e, stack) {
       reportService.recordError(e, stack);
@@ -324,6 +333,7 @@ class PlatformMediaFileService implements MediaFileService {
     Iterable<AvesEntry> entries, {
     required String mimeType,
     required String destinationAlbum,
+    required NameConflictStrategy nameConflictStrategy,
   }) {
     try {
       return _opStreamChannel.receiveBroadcastStream(<String, dynamic>{
@@ -331,7 +341,25 @@ class PlatformMediaFileService implements MediaFileService {
         'entries': entries.map(_toPlatformEntryMap).toList(),
         'mimeType': mimeType,
         'destinationPath': destinationAlbum,
+        'nameConflictStrategy': nameConflictStrategy.toPlatform(),
       }).map((event) => ExportOpEvent.fromMap(event));
+    } on PlatformException catch (e, stack) {
+      reportService.recordError(e, stack);
+      return Stream.error(e);
+    }
+  }
+
+  @override
+  Stream<MoveOpEvent> rename(
+    Iterable<AvesEntry> entries, {
+    required String newName,
+  }) {
+    try {
+      return _opStreamChannel.receiveBroadcastStream(<String, dynamic>{
+        'op': 'rename',
+        'entries': entries.map(_toPlatformEntryMap).toList(),
+        'newName': newName,
+      }).map((event) => MoveOpEvent.fromMap(event));
     } on PlatformException catch (e, stack) {
       reportService.recordError(e, stack);
       return Stream.error(e);
@@ -345,6 +373,7 @@ class PlatformMediaFileService implements MediaFileService {
     required Map<String, dynamic> exif,
     required Uint8List bytes,
     required String destinationAlbum,
+    required NameConflictStrategy nameConflictStrategy,
   }) async {
     try {
       final result = await platform.invokeMethod('captureFrame', <String, dynamic>{
@@ -353,21 +382,7 @@ class PlatformMediaFileService implements MediaFileService {
         'exif': exif,
         'bytes': bytes,
         'destinationPath': destinationAlbum,
-      });
-      if (result != null) return (result as Map).cast<String, dynamic>();
-    } on PlatformException catch (e, stack) {
-      await reportService.recordError(e, stack);
-    }
-    return {};
-  }
-
-  @override
-  Future<Map<String, dynamic>> rename(AvesEntry entry, String newName) async {
-    try {
-      // returns map with: 'contentId' 'path' 'title' 'uri' (all optional)
-      final result = await platform.invokeMethod('rename', <String, dynamic>{
-        'entry': _toPlatformEntryMap(entry),
-        'newName': newName,
+        'nameConflictStrategy': nameConflictStrategy.toPlatform(),
       });
       if (result != null) return (result as Map).cast<String, dynamic>();
     } on PlatformException catch (e, stack) {

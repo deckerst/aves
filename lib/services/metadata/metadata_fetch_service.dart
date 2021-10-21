@@ -40,7 +40,9 @@ class PlatformMetadataFetchService implements MetadataFetchService {
       });
       if (result != null) return result as Map;
     } on PlatformException catch (e, stack) {
-      await reportService.recordError(e, stack);
+      if (!entry.isMissingAtPath) {
+        await reportService.recordError(e, stack);
+      }
     }
     return {};
   }
@@ -118,7 +120,9 @@ class PlatformMetadataFetchService implements MetadataFetchService {
       }
       return MultiPageInfo.fromPageMaps(entry, pageMaps);
     } on PlatformException catch (e, stack) {
-      await reportService.recordError(e, stack);
+      if (!entry.isMissingAtPath) {
+        await reportService.recordError(e, stack);
+      }
     }
     return null;
   }

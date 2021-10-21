@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:aves/model/entry.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/magnifier/pan/scroll_physics.dart';
@@ -158,27 +159,33 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
   }
 
   // when the entry changed (e.g. by scrolling through the PageView, or if the entry got deleted)
-  void _onEntryChanged() {
+  Future<void> _onEntryChanged() async {
     _oldEntry?.imageChangeNotifier.removeListener(_onImageChanged);
     _oldEntry = entry;
 
-    if (entry != null) {
-      entry!.imageChangeNotifier.addListener(_onImageChanged);
+    final _entry = entry;
+    if (_entry != null) {
+      _entry.imageChangeNotifier.addListener(_onImageChanged);
       // make sure to locate the entry,
       // so that we can display the address instead of coordinates
       // even when initial collection locating has not reached this entry yet
-      entry!.catalog(background: false).then((_) => entry!.locate(background: false));
+      await _entry.catalog(background: false, persist: true, force: false);
+      await _entry.locate(background: false, force: false, geocoderLocale: settings.appliedLocale);
     } else {
       Navigator.pop(context);
     }
 
     // needed to refresh when entry changes but the page does not (e.g. on page deletion)
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   // when the entry image itself changed (e.g. after rotation)
   void _onImageChanged() async {
     // rebuild to refresh the Image inside ImagePage
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 }

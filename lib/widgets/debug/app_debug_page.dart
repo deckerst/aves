@@ -1,5 +1,6 @@
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/source/collection_source.dart';
+import 'package:aves/services/analysis_service.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/debug/android_apps.dart';
@@ -102,6 +103,10 @@ class _AppDebugPageState extends State<AppDebugPage> {
             await source.refresh();
           },
           child: const Text('Source full refresh'),
+        ),
+        ElevatedButton(
+          onPressed: () => AnalysisService.startService(force: false),
+          child: const Text('Start analysis service'),
         ),
         const Divider(),
         Padding(

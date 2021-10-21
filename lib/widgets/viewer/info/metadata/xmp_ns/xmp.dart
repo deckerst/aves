@@ -9,15 +9,12 @@ import 'package:flutter/material.dart';
 class XmpBasicNamespace extends XmpNamespace {
   static const ns = 'xmp';
 
-  static final thumbnailsPattern = RegExp(r'xmp:Thumbnails\[(\d+)\]/(.*)');
+  static final thumbnailsPattern = RegExp(ns + r':Thumbnails\[(\d+)\]/(.*)');
   static const thumbnailDataDisplayKey = 'Image';
 
   final thumbnails = <int, Map<String, String>>{};
 
   XmpBasicNamespace(Map<String, String> rawProps) : super(ns, rawProps);
-
-  @override
-  String get displayTitle => 'Basic';
 
   @override
   bool extractData(XmpProp prop) => extractIndexedStruct(prop, thumbnailsPattern, thumbnails);
@@ -51,10 +48,10 @@ class XmpMMNamespace extends XmpNamespace {
   static const didPrefix = 'xmp.did:';
   static const iidPrefix = 'xmp.iid:';
 
-  static final derivedFromPattern = RegExp(r'xmpMM:DerivedFrom/(.*)');
-  static final historyPattern = RegExp(r'xmpMM:History\[(\d+)\]/(.*)');
-  static final ingredientsPattern = RegExp(r'xmpMM:Ingredients\[(\d+)\]/(.*)');
-  static final pantryPattern = RegExp(r'xmpMM:Pantry\[(\d+)\]/(.*)');
+  static final derivedFromPattern = RegExp(ns + r':DerivedFrom/(.*)');
+  static final historyPattern = RegExp(ns + r':History\[(\d+)\]/(.*)');
+  static final ingredientsPattern = RegExp(ns + r':Ingredients\[(\d+)\]/(.*)');
+  static final pantryPattern = RegExp(ns + r':Pantry\[(\d+)\]/(.*)');
 
   final derivedFrom = <String, String>{};
   final history = <int, Map<String, String>>{};
@@ -62,9 +59,6 @@ class XmpMMNamespace extends XmpNamespace {
   final pantry = <int, Map<String, String>>{};
 
   XmpMMNamespace(Map<String, String> rawProps) : super(ns, rawProps);
-
-  @override
-  String get displayTitle => 'Media Management';
 
   @override
   bool extractData(XmpProp prop) {

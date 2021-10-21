@@ -1,11 +1,9 @@
 package deckers.thibault.aves.channel.calls
 
-import android.app.Activity
+import android.annotation.SuppressLint
 import android.content.Context
-import android.util.Log
 import deckers.thibault.aves.SearchSuggestionsProvider
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
-import deckers.thibault.aves.utils.LogUtils
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
@@ -13,7 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-class GlobalSearchHandler(private val context: Activity) : MethodCallHandler {
+class GlobalSearchHandler(private val context: Context) : MethodCallHandler {
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
             "registerCallback" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::registerCallback) }
@@ -21,6 +19,7 @@ class GlobalSearchHandler(private val context: Activity) : MethodCallHandler {
         }
     }
 
+    @SuppressLint("CommitPrefEdits")
     private fun registerCallback(call: MethodCall, result: MethodChannel.Result) {
         val callbackHandle = call.argument<Number>("callbackHandle")?.toLong()
         if (callbackHandle == null) {
@@ -36,7 +35,6 @@ class GlobalSearchHandler(private val context: Activity) : MethodCallHandler {
     }
 
     companion object {
-        private val LOG_TAG = LogUtils.createTag<GlobalSearchHandler>()
         const val CHANNEL = "deckers.thibault/aves/global_search"
     }
 }

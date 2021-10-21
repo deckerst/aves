@@ -6,6 +6,7 @@ import 'package:aves/model/settings/map_style.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
+import 'package:aves/utils/change_notifier.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/utils/math_utils.dart';
 import 'package:aves/widgets/common/map/attribution.dart';
@@ -27,6 +28,7 @@ import 'package:provider/provider.dart';
 
 class GeoMap extends StatefulWidget {
   final AvesMapController? controller;
+  final Listenable? collectionListenable;
   final List<AvesEntry> entries;
   final AvesEntry? initialEntry;
   final ValueNotifier<bool> isAnimatingNotifier;
@@ -42,6 +44,7 @@ class GeoMap extends StatefulWidget {
   const GeoMap({
     Key? key,
     this.controller,
+    this.collectionListenable,
     required this.entries,
     this.initialEntry,
     required this.isAnimatingNotifier,
@@ -57,27 +60,57 @@ class GeoMap extends StatefulWidget {
 }
 
 class _GeoMapState extends State<GeoMap> {
-  // as of google_maps_flutter v2.0.6, Google Maps initialization is blocking
+  // as of google_maps_flutter v2.0.6, Google map initialization is blocking
   // cf https://github.com/flutter/flutter/issues/28493
   // it is especially severe the first time, but still significant afterwards
   // so we prevent loading it while scrolling or animating
   bool _googleMapsLoaded = false;
   late final ValueNotifier<ZoomedBounds> _boundsNotifier;
-  late final Fluster<GeoEntry> _defaultMarkerCluster;
+  Fluster<GeoEntry>? _defaultMarkerCluster;
   Fluster<GeoEntry>? _slowMarkerCluster;
+  final AChangeNotifier _clusterChangeNotifier = AChangeNotifier();
 
   List<AvesEntry> get entries => widget.entries;
+
+  // cap initial zoom to avoid a zoom change
+  // when toggling overlay on Google map initial state
+  static const double minInitialZoom = 3;
 
   @override
   void initState() {
     super.initState();
     final initialEntry = widget.initialEntry;
     final points = (initialEntry != null ? [initialEntry] : entries).map((v) => v.latLng!).toSet();
-    _boundsNotifier = ValueNotifier(ZoomedBounds.fromPoints(
+    final bounds = ZoomedBounds.fromPoints(
       points: points.isNotEmpty ? points : {Constants.wonders[Random().nextInt(Constants.wonders.length)]},
       collocationZoom: settings.infoMapZoom,
+    );
+    _boundsNotifier = ValueNotifier(bounds.copyWith(
+      zoom: max(bounds.zoom, minInitialZoom),
     ));
-    _defaultMarkerCluster = _buildFluster();
+    _registerWidget(widget);
+    _onCollectionChanged();
+  }
+
+  @override
+  void didUpdateWidget(covariant GeoMap oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _unregisterWidget(oldWidget);
+    _registerWidget(widget);
+  }
+
+  @override
+  void dispose() {
+    _unregisterWidget(widget);
+    super.dispose();
+  }
+
+  void _registerWidget(GeoMap widget) {
+    widget.collectionListenable?.addListener(_onCollectionChanged);
+  }
+
+  void _unregisterWidget(GeoMap widget) {
+    widget.collectionListenable?.removeListener(_onCollectionChanged);
   }
 
   @override
@@ -92,11 +125,11 @@ class _GeoMapState extends State<GeoMap> {
           return {geoEntry.entry!};
         }
 
-        var points = _defaultMarkerCluster.points(clusterId);
+        var points = _defaultMarkerCluster?.points(clusterId) ?? [];
         if (points.length != geoEntry.pointsSize) {
           // `Fluster.points()` method does not always return all the points contained in a cluster
           // the higher `nodeSize` is, the higher the chance to get all the points (i.e. as many as the cluster `pointsSize`)
-          _slowMarkerCluster ??= _buildFluster(nodeSize: smallestPowerOf2(widget.entries.length));
+          _slowMarkerCluster ??= _buildFluster(nodeSize: smallestPowerOf2(entries.length));
           points = _slowMarkerCluster!.points(clusterId);
           assert(points.length == geoEntry.pointsSize, 'got ${points.length}/${geoEntry.pointsSize} for geoEntry=$geoEntry');
         }
@@ -137,6 +170,7 @@ class _GeoMapState extends State<GeoMap> {
             Widget child = isGoogleMaps
                 ? EntryGoogleMap(
                     controller: widget.controller,
+                    clusterListenable: _clusterChangeNotifier,
                     boundsNotifier: _boundsNotifier,
                     minZoom: 0,
                     maxZoom: 20,
@@ -151,6 +185,7 @@ class _GeoMapState extends State<GeoMap> {
                   )
                 : EntryLeafletMap(
                     controller: widget.controller,
+                    clusterListenable: _clusterChangeNotifier,
                     boundsNotifier: _boundsNotifier,
                     minZoom: 2,
                     maxZoom: 16,
@@ -230,6 +265,12 @@ class _GeoMapState extends State<GeoMap> {
     );
   }
 
+  void _onCollectionChanged() {
+    _defaultMarkerCluster = _buildFluster();
+    _slowMarkerCluster = null;
+    _clusterChangeNotifier.notifyListeners();
+  }
+
   Fluster<GeoEntry> _buildFluster({int nodeSize = 64}) {
     final markers = entries.map((entry) {
       final latLng = entry.latLng!;
@@ -259,7 +300,7 @@ class _GeoMapState extends State<GeoMap> {
 
   Map<MarkerKey, GeoEntry> _buildMarkerClusters() {
     final bounds = _boundsNotifier.value;
-    final geoEntries = _defaultMarkerCluster.clusters(bounds.boundingBox, bounds.zoom.round());
+    final geoEntries = _defaultMarkerCluster?.clusters(bounds.boundingBox, bounds.zoom.round()) ?? [];
     return Map.fromEntries(geoEntries.map((v) {
       if (v.isCluster!) {
         final uri = v.childMarkerId;

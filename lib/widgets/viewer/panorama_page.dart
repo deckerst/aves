@@ -1,9 +1,12 @@
+import 'dart:math';
+
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/entry_images.dart';
 import 'package:aves/model/panorama.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/common/extensions/media_query.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/viewer/overlay/common.dart';
 import 'package:flutter/foundation.dart';
@@ -70,7 +73,7 @@ class _PanoramaPageState extends State<PanoramaPage> {
                     croppedFullWidth: info.hasCroppedArea ? info.fullPanoSize!.width : 1.0,
                     croppedFullHeight: info.hasCroppedArea ? info.fullPanoSize!.height : 1.0,
                     onTap: (longitude, latitude, tilt) => _overlayVisible.value = !_overlayVisible.value,
-                    child: child as Image?,
+                    child: child as Image,
                   );
                 },
                 child: Image(
@@ -78,8 +81,8 @@ class _PanoramaPageState extends State<PanoramaPage> {
                 ),
               ),
               Positioned(
-                bottom: 0,
                 right: 0,
+                bottom: 0,
                 child: TooltipTheme(
                   data: TooltipTheme.of(context).copyWith(
                     preferBelow: false,
@@ -89,24 +92,29 @@ class _PanoramaPageState extends State<PanoramaPage> {
                     builder: (context, overlayVisible, child) {
                       return Visibility(
                         visible: overlayVisible,
-                        child: Selector<MediaQueryData, EdgeInsets>(
-                          selector: (context, mq) => mq.viewPadding + mq.viewInsets,
-                          builder: (context, mqPadding, child) {
-                            return Padding(
-                              padding: const EdgeInsets.all(8) + EdgeInsets.only(right: mqPadding.right, bottom: mqPadding.bottom),
-                              child: OverlayButton(
-                                child: ValueListenableBuilder<SensorControl>(
-                                    valueListenable: _sensorControl,
-                                    builder: (context, sensorControl, child) {
-                                      return IconButton(
-                                        icon: Icon(sensorControl == SensorControl.None ? AIcons.sensorControl : AIcons.sensorControlOff),
-                                        onPressed: _toggleSensor,
-                                        tooltip: sensorControl == SensorControl.None ? context.l10n.panoramaEnableSensorControl : context.l10n.panoramaDisableSensorControl,
-                                      );
-                                    }),
+                        child: Selector<MediaQueryData, double>(
+                          selector: (context, mq) => max(mq.effectiveBottomPadding, mq.systemGestureInsets.bottom),
+                          builder: (context, mqPaddingBottom, child) {
+                            return SafeArea(
+                              bottom: false,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8) + EdgeInsets.only(bottom: mqPaddingBottom),
+                                child: child,
                               ),
                             );
                           },
+                          child: OverlayButton(
+                            child: ValueListenableBuilder<SensorControl>(
+                              valueListenable: _sensorControl,
+                              builder: (context, sensorControl, child) {
+                                return IconButton(
+                                  icon: Icon(sensorControl == SensorControl.None ? AIcons.sensorControl : AIcons.sensorControlOff),
+                                  onPressed: _toggleSensor,
+                                  tooltip: sensorControl == SensorControl.None ? context.l10n.panoramaEnableSensorControl : context.l10n.panoramaDisableSensorControl,
+                                );
+                              },
+                            ),
+                          ),
                         ),
                       );
                     },

@@ -2,10 +2,14 @@ package deckers.thibault.aves.model.provider
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
+import android.os.Binder
 import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.exifinterface.media.ExifInterface
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
@@ -21,31 +25,34 @@ import deckers.thibault.aves.metadata.PixyMetaHelper.xmpDocString
 import deckers.thibault.aves.model.AvesEntry
 import deckers.thibault.aves.model.ExifOrientationOp
 import deckers.thibault.aves.model.FieldMap
+import deckers.thibault.aves.model.NameConflictStrategy
 import deckers.thibault.aves.utils.*
 import deckers.thibault.aves.utils.MimeTypes.canEditExif
 import deckers.thibault.aves.utils.MimeTypes.canEditXmp
 import deckers.thibault.aves.utils.MimeTypes.canRemoveMetadata
 import deckers.thibault.aves.utils.MimeTypes.extensionFor
 import deckers.thibault.aves.utils.MimeTypes.isVideo
-import deckers.thibault.aves.utils.StorageUtils.createDirectoryIfAbsent
-import deckers.thibault.aves.utils.StorageUtils.getDocumentFile
 import java.io.ByteArrayInputStream
 import java.io.File
-import java.io.FileNotFoundException
 import java.io.IOException
 import java.util.*
+import kotlin.collections.HashMap
 
 abstract class ImageProvider {
     open fun fetchSingle(context: Context, uri: Uri, sourceMimeType: String?, callback: ImageOpCallback) {
         callback.onFailure(UnsupportedOperationException("`fetchSingle` is not supported by this image provider"))
     }
 
-    open suspend fun delete(activity: Activity, uri: Uri, path: String?) {
+    open suspend fun delete(activity: Activity, uri: Uri, path: String?, mimeType: String) {
         throw UnsupportedOperationException("`delete` is not supported by this image provider")
     }
 
-    open suspend fun moveMultiple(activity: Activity, copy: Boolean, destinationDir: String, entries: List<AvesEntry>, callback: ImageOpCallback) {
+    open suspend fun moveMultiple(activity: Activity, copy: Boolean, targetDir: String, nameConflictStrategy: NameConflictStrategy, entries: List<AvesEntry>, callback: ImageOpCallback) {
         callback.onFailure(UnsupportedOperationException("`moveMultiple` is not supported by this image provider"))
+    }
+
+    open suspend fun renameMultiple(activity: Activity, newFileName: String, entries: List<AvesEntry>, callback: ImageOpCallback) {
+        callback.onFailure(UnsupportedOperationException("`renameMultiple` is not supported by this image provider"))
     }
 
     open fun scanPostMetadataEdit(context: Context, path: String, uri: Uri, mimeType: String, newFields: HashMap<String, Any?>, callback: ImageOpCallback) {
@@ -57,19 +64,26 @@ abstract class ImageProvider {
     }
 
     suspend fun exportMultiple(
-        context: Context,
+        activity: Activity,
         imageExportMimeType: String,
-        destinationDir: String,
+        targetDir: String,
         entries: List<AvesEntry>,
+        nameConflictStrategy: NameConflictStrategy,
         callback: ImageOpCallback,
     ) {
         if (!supportedExportMimeTypes.contains(imageExportMimeType)) {
-            throw Exception("unsupported export MIME type=$imageExportMimeType")
+            callback.onFailure(Exception("unsupported export MIME type=$imageExportMimeType"))
         }
 
-        val destinationDirDocFile = createDirectoryIfAbsent(context, destinationDir)
-        if (destinationDirDocFile == null) {
-            callback.onFailure(Exception("failed to create directory at path=$destinationDir"))
+        val targetDirDocFile = StorageUtils.createDirectoryDocIfAbsent(activity, targetDir)
+        if (!File(targetDir).exists()) {
+            callback.onFailure(Exception("failed to create directory at path=$targetDir"))
+            return
+        }
+
+        // TODO TLAD [storage] allow inserting by Media Store
+        if (targetDirDocFile == null) {
+            callback.onFailure(Exception("failed to get tree doc for directory at path=$targetDir"))
             return
         }
 
@@ -78,7 +92,7 @@ abstract class ImageProvider {
             val sourcePath = entry.path
             val pageId = entry.pageId
 
-            val result = hashMapOf<String, Any?>(
+            val result: FieldMap = hashMapOf(
                 "uri" to sourceUri.toString(),
                 "pageId" to pageId,
                 "success" to false,
@@ -88,16 +102,17 @@ abstract class ImageProvider {
             val exportMimeType = if (isVideo(sourceMimeType)) sourceMimeType else imageExportMimeType
             try {
                 val newFields = exportSingleByTreeDocAndScan(
-                    context = context,
+                    activity = activity,
                     sourceEntry = entry,
-                    destinationDir = destinationDir,
-                    destinationDirDocFile = destinationDirDocFile,
+                    targetDir = targetDir,
+                    targetDirDocFile = targetDirDocFile,
+                    nameConflictStrategy = nameConflictStrategy,
                     exportMimeType = exportMimeType,
                 )
                 result["newFields"] = newFields
                 result["success"] = true
             } catch (e: Exception) {
-                Log.w(LOG_TAG, "failed to export to destinationDir=$destinationDir entry with sourcePath=$sourcePath pageId=$pageId", e)
+                Log.w(LOG_TAG, "failed to export to targetDir=$targetDir entry with sourcePath=$sourcePath pageId=$pageId", e)
             }
             callback.onSuccess(result)
         }
@@ -105,10 +120,11 @@ abstract class ImageProvider {
 
     @Suppress("BlockingMethodInNonBlockingContext")
     private suspend fun exportSingleByTreeDocAndScan(
-        context: Context,
+        activity: Activity,
         sourceEntry: AvesEntry,
-        destinationDir: String,
-        destinationDirDocFile: DocumentFileCompat,
+        targetDir: String,
+        targetDirDocFile: DocumentFileCompat,
+        nameConflictStrategy: NameConflictStrategy,
         exportMimeType: String,
     ): FieldMap {
         val sourceMimeType = sourceEntry.mimeType
@@ -117,7 +133,7 @@ abstract class ImageProvider {
 
         var desiredNameWithoutExtension = if (sourceEntry.path != null) {
             val sourceFileName = File(sourceEntry.path).name
-            sourceFileName.replaceFirst("[.][^.]+$".toRegex(), "")
+            sourceFileName.replaceFirst(FILE_EXTENSION_PATTERN, "")
         } else {
             sourceUri.lastPathSegment!!
         }
@@ -125,23 +141,29 @@ abstract class ImageProvider {
             val page = if (sourceMimeType == MimeTypes.TIFF) pageId + 1 else pageId
             desiredNameWithoutExtension += "_${page.toString().padStart(3, '0')}"
         }
-        val availableNameWithoutExtension = findAvailableFileNameWithoutExtension(destinationDir, desiredNameWithoutExtension, extensionFor(exportMimeType))
+        val targetNameWithoutExtension = resolveTargetFileNameWithoutExtension(
+            activity = activity,
+            dir = targetDir,
+            desiredNameWithoutExtension = desiredNameWithoutExtension,
+            mimeType = exportMimeType,
+            conflictStrategy = nameConflictStrategy,
+        ) ?: return skippedFieldMap
 
         // the file created from a `TreeDocumentFile` is also a `TreeDocumentFile`
         // but in order to open an output stream to it, we need to use a `SingleDocumentFile`
         // through a document URI, not a tree URI
         // note that `DocumentFile.getParentFile()` returns null if we did not pick a tree first
-        val destinationTreeFile = destinationDirDocFile.createFile(exportMimeType, availableNameWithoutExtension)
-        val destinationDocFile = DocumentFileCompat.fromSingleUri(context, destinationTreeFile.uri)
+        val targetTreeFile = targetDirDocFile.createFile(exportMimeType, targetNameWithoutExtension)
+        val targetDocFile = DocumentFileCompat.fromSingleUri(activity, targetTreeFile.uri)
 
         if (isVideo(sourceMimeType)) {
-            val sourceDocFile = DocumentFileCompat.fromSingleUri(context, sourceUri)
-            sourceDocFile.copyTo(destinationDocFile)
+            val sourceDocFile = DocumentFileCompat.fromSingleUri(activity, sourceUri)
+            sourceDocFile.copyTo(targetDocFile)
         } else {
             val model: Any = if (MimeTypes.isHeic(sourceMimeType) && pageId != null) {
-                MultiTrackImage(context, sourceUri, pageId)
+                MultiTrackImage(activity, sourceUri, pageId)
             } else if (sourceMimeType == MimeTypes.TIFF) {
-                TiffImage(context, sourceUri, pageId)
+                TiffImage(activity, sourceUri, pageId)
             } else {
                 StorageUtils.getGlideSafeUri(sourceUri, sourceMimeType)
             }
@@ -152,7 +174,7 @@ abstract class ImageProvider {
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .skipMemoryCache(true)
 
-            val target = Glide.with(context)
+            val target = Glide.with(activity)
                 .asBitmap()
                 .apply(glideOptions)
                 .load(model)
@@ -160,11 +182,11 @@ abstract class ImageProvider {
             try {
                 var bitmap = target.get()
                 if (MimeTypes.needRotationAfterGlide(sourceMimeType)) {
-                    bitmap = BitmapUtils.applyExifOrientation(context, bitmap, sourceEntry.rotationDegrees, sourceEntry.isFlipped)
+                    bitmap = BitmapUtils.applyExifOrientation(activity, bitmap, sourceEntry.rotationDegrees, sourceEntry.isFlipped)
                 }
                 bitmap ?: throw Exception("failed to get image for mimeType=$sourceMimeType uri=$sourceUri page=$pageId")
 
-                destinationDocFile.openOutputStream().use { output ->
+                targetDocFile.openOutputStream().use { output ->
                     if (exportMimeType == MimeTypes.BMP) {
                         BmpWriter.writeRGB24(bitmap, output)
                     } else {
@@ -179,7 +201,7 @@ abstract class ImageProvider {
                                     Bitmap.CompressFormat.WEBP_LOSSY
                                 }
                             } else {
-                                @Suppress("DEPRECATION")
+                                @Suppress("deprecation")
                                 Bitmap.CompressFormat.WEBP
                             }
                             else -> throw Exception("unsupported export MIME type=$exportMimeType")
@@ -187,45 +209,75 @@ abstract class ImageProvider {
                         bitmap.compress(format, quality, output)
                     }
                 }
+            } catch (e: Exception) {
+                // remove empty file
+                if (targetDocFile.exists()) {
+                    targetDocFile.delete()
+                }
+                throw e
             } finally {
-                Glide.with(context).clear(target)
+                Glide.with(activity).clear(target)
             }
         }
 
-        val fileName = destinationDocFile.name
-        val destinationFullPath = destinationDir + fileName
+        val fileName = targetDocFile.name
+        val targetFullPath = targetDir + fileName
 
-        return MediaStoreImageProvider().scanNewPath(context, destinationFullPath, exportMimeType)
+        return MediaStoreImageProvider().scanNewPath(activity, targetFullPath, exportMimeType)
     }
 
     @Suppress("BlockingMethodInNonBlockingContext")
     suspend fun captureFrame(
-        context: Context,
+        activity: Activity,
         desiredNameWithoutExtension: String,
         exifFields: FieldMap,
         bytes: ByteArray,
-        destinationDir: String,
+        targetDir: String,
+        nameConflictStrategy: NameConflictStrategy,
         callback: ImageOpCallback,
     ) {
-        val destinationDirDocFile = createDirectoryIfAbsent(context, destinationDir)
-        if (destinationDirDocFile == null) {
-            callback.onFailure(Exception("failed to create directory at path=$destinationDir"))
+        val targetDirDocFile = StorageUtils.createDirectoryDocIfAbsent(activity, targetDir)
+        if (!File(targetDir).exists()) {
+            callback.onFailure(Exception("failed to create directory at path=$targetDir"))
+            return
+        }
+
+        // TODO TLAD [storage] allow inserting by Media Store
+        if (targetDirDocFile == null) {
+            callback.onFailure(Exception("failed to get tree doc for directory at path=$targetDir"))
             return
         }
 
         val captureMimeType = MimeTypes.JPEG
-        val availableNameWithoutExtension = findAvailableFileNameWithoutExtension(destinationDir, desiredNameWithoutExtension, extensionFor(captureMimeType))
+        val targetNameWithoutExtension = try {
+            resolveTargetFileNameWithoutExtension(
+                activity = activity,
+                dir = targetDir,
+                desiredNameWithoutExtension = desiredNameWithoutExtension,
+                mimeType = captureMimeType,
+                conflictStrategy = nameConflictStrategy,
+            )
+        } catch (e: Exception) {
+            callback.onFailure(e)
+            return
+        }
+
+        if (targetNameWithoutExtension == null) {
+            // skip it
+            callback.onSuccess(skippedFieldMap)
+            return
+        }
 
         // the file created from a `TreeDocumentFile` is also a `TreeDocumentFile`
         // but in order to open an output stream to it, we need to use a `SingleDocumentFile`
         // through a document URI, not a tree URI
         // note that `DocumentFile.getParentFile()` returns null if we did not pick a tree first
-        val destinationTreeFile = destinationDirDocFile.createFile(captureMimeType, availableNameWithoutExtension)
-        val destinationDocFile = DocumentFileCompat.fromSingleUri(context, destinationTreeFile.uri)
+        val targetTreeFile = targetDirDocFile.createFile(captureMimeType, targetNameWithoutExtension)
+        val targetDocFile = DocumentFileCompat.fromSingleUri(activity, targetTreeFile.uri)
 
         try {
             if (exifFields.isEmpty()) {
-                destinationDocFile.openOutputStream().use { output ->
+                targetDocFile.openOutputStream().use { output ->
                     output.write(bytes)
                 }
             } else {
@@ -284,55 +336,56 @@ abstract class ImageProvider {
                 exif.saveAttributes()
 
                 // copy the edited temporary file back to the original
-                DocumentFileCompat.fromFile(editableFile).copyTo(destinationDocFile)
+                DocumentFileCompat.fromFile(editableFile).copyTo(targetDocFile)
             }
 
-            val fileName = destinationDocFile.name
-            val destinationFullPath = destinationDir + fileName
-            val newFields = MediaStoreImageProvider().scanNewPath(context, destinationFullPath, captureMimeType)
+            val fileName = targetDocFile.name
+            val targetFullPath = targetDir + fileName
+            val newFields = MediaStoreImageProvider().scanNewPath(activity, targetFullPath, captureMimeType)
             callback.onSuccess(newFields)
         } catch (e: Exception) {
             callback.onFailure(e)
         }
     }
 
-    private fun findAvailableFileNameWithoutExtension(dir: String, desiredNameWithoutExtension: String, extension: String?): String {
-        var nameWithoutExtension = desiredNameWithoutExtension
-        var i = 0
-        while (File(dir, "$nameWithoutExtension$extension").exists()) {
-            i++
-            nameWithoutExtension = "$desiredNameWithoutExtension ($i)"
-        }
-        return nameWithoutExtension
-    }
-
-    suspend fun rename(context: Context, oldPath: String, oldMediaUri: Uri, mimeType: String, newFilename: String, callback: ImageOpCallback) {
-        val oldFile = File(oldPath)
-        val newFile = File(oldFile.parent, newFilename)
-        if (oldFile == newFile) {
-            Log.w(LOG_TAG, "new name and old name are the same, path=$oldPath")
-            callback.onSuccess(HashMap())
-            return
-        }
-
-        val df = getDocumentFile(context, oldPath, oldMediaUri)
-        try {
-            @Suppress("BlockingMethodInNonBlockingContext")
-            val renamed = df != null && df.renameTo(newFilename)
-            if (!renamed) {
-                callback.onFailure(Exception("failed to rename entry at path=$oldPath"))
-                return
+    // returns available name to use, or `null` to skip it
+    suspend fun resolveTargetFileNameWithoutExtension(
+        activity: Activity,
+        dir: String,
+        desiredNameWithoutExtension: String,
+        mimeType: String,
+        conflictStrategy: NameConflictStrategy,
+    ): String? {
+        val extension = extensionFor(mimeType)
+        val targetFile = File(dir, "$desiredNameWithoutExtension$extension")
+        return when (conflictStrategy) {
+            NameConflictStrategy.RENAME -> {
+                var nameWithoutExtension = desiredNameWithoutExtension
+                var i = 0
+                while (File(dir, "$nameWithoutExtension$extension").exists()) {
+                    i++
+                    nameWithoutExtension = "$desiredNameWithoutExtension ($i)"
+                }
+                nameWithoutExtension
             }
-        } catch (e: FileNotFoundException) {
-            callback.onFailure(e)
-            return
-        }
-
-        scanObsoletePath(context, oldPath, mimeType)
-        try {
-            callback.onSuccess(MediaStoreImageProvider().scanNewPath(context, newFile.path, mimeType))
-        } catch (e: Exception) {
-            callback.onFailure(e)
+            NameConflictStrategy.REPLACE -> {
+                if (targetFile.exists()) {
+                    val path = targetFile.path
+                    MediaStoreImageProvider().apply {
+                        val uri = getContentUriForPath(activity, path)
+                        uri ?: throw Exception("failed to find content URI for path=$path")
+                        delete(activity, uri, path, mimeType)
+                    }
+                }
+                desiredNameWithoutExtension
+            }
+            NameConflictStrategy.SKIP -> {
+                if (targetFile.exists()) {
+                    null
+                } else {
+                    desiredNameWithoutExtension
+                }
+            }
         }
     }
 
@@ -347,12 +400,6 @@ abstract class ImageProvider {
     ): Boolean {
         if (!canEditExif(mimeType)) {
             callback.onFailure(UnsupportedOperationException("unsupported mimeType=$mimeType"))
-            return false
-        }
-
-        val originalDocumentFile = getDocumentFile(context, path, uri)
-        if (originalDocumentFile == null) {
-            callback.onFailure(Exception("failed to get document file for path=$path, uri=$uri"))
             return false
         }
 
@@ -381,7 +428,7 @@ abstract class ImageProvider {
                         }
                     } else {
                         // copy original file to a temporary file for editing
-                        originalDocumentFile.openInputStream().use { imageInput ->
+                        StorageUtils.openInputStream(context, uri)?.use { imageInput ->
                             imageInput.copyTo(output)
                         }
                     }
@@ -401,7 +448,7 @@ abstract class ImageProvider {
             }
 
             // copy the edited temporary file back to the original
-            DocumentFileCompat.fromFile(editableFile).copyTo(originalDocumentFile)
+            copyTo(context, mimeType, sourceFile = editableFile, targetUri = uri, targetPath = path)
 
             if (!checkTrailerOffset(context, path, uri, mimeType, videoSize, editableFile, callback)) {
                 return false
@@ -428,18 +475,12 @@ abstract class ImageProvider {
             return false
         }
 
-        val originalDocumentFile = getDocumentFile(context, path, uri)
-        if (originalDocumentFile == null) {
-            callback.onFailure(Exception("failed to get document file for path=$path, uri=$uri"))
-            return false
-        }
-
         val originalFileSize = File(path).length()
         val videoSize = MultiPage.getMotionPhotoOffset(context, uri, mimeType, originalFileSize)?.let { it.toInt() + trailerDiff }
         val editableFile = File.createTempFile("aves", null).apply {
             deleteOnExit()
             try {
-                val xmp = originalDocumentFile.openInputStream().use { input -> PixyMetaHelper.getXmp(input) }
+                val xmp = StorageUtils.openInputStream(context, uri)?.use { input -> PixyMetaHelper.getXmp(input) }
                 if (xmp == null) {
                     callback.onFailure(Exception("failed to find XMP for path=$path, uri=$uri"))
                     return false
@@ -447,7 +488,7 @@ abstract class ImageProvider {
 
                 outputStream().use { output ->
                     // reopen input to read from start
-                    originalDocumentFile.openInputStream().use { input ->
+                    StorageUtils.openInputStream(context, uri)?.use { input ->
                         val editedXmpString = edit(xmp.xmpDocString())
                         val extendedXmpString = if (xmp.hasExtendedXmp()) xmp.extendedXmpDocString() else null
                         PixyMetaHelper.setXmp(input, output, editedXmpString, extendedXmpString)
@@ -461,7 +502,7 @@ abstract class ImageProvider {
 
         try {
             // copy the edited temporary file back to the original
-            DocumentFileCompat.fromFile(editableFile).copyTo(originalDocumentFile)
+            copyTo(context, mimeType, sourceFile = editableFile, targetUri = uri, targetPath = path)
 
             if (!checkTrailerOffset(context, path, uri, mimeType, videoSize, editableFile, callback)) {
                 return false
@@ -476,7 +517,7 @@ abstract class ImageProvider {
 
     // A few bytes are sometimes appended when writing to a document output stream.
     // In that case, we need to adjust the trailer video offset accordingly and rewrite the file.
-    // return whether the file at `path` is fine
+    // returns whether the file at `path` is fine
     private fun checkTrailerOffset(
         context: Context,
         path: String,
@@ -635,7 +676,7 @@ abstract class ImageProvider {
         }
 
         if (success) {
-            scanPostMetadataEdit(context, path, uri, mimeType, HashMap<String, Any?>(), callback)
+            scanPostMetadataEdit(context, path, uri, mimeType, HashMap(), callback)
         }
     }
 
@@ -652,12 +693,6 @@ abstract class ImageProvider {
             return
         }
 
-        val originalDocumentFile = getDocumentFile(context, path, uri)
-        if (originalDocumentFile == null) {
-            callback.onFailure(Exception("failed to get document file for path=$path, uri=$uri"))
-            return
-        }
-
         val originalFileSize = File(path).length()
         val videoSize = MultiPage.getMotionPhotoOffset(context, uri, mimeType, originalFileSize)?.toInt()
         val editableFile = File.createTempFile("aves", null).apply {
@@ -665,7 +700,7 @@ abstract class ImageProvider {
             try {
                 outputStream().use { output ->
                     // reopen input to read from start
-                    originalDocumentFile.openInputStream().use { input ->
+                    StorageUtils.openInputStream(context, uri)?.use { input ->
                         PixyMetaHelper.removeMetadata(input, output, types)
                     }
                 }
@@ -678,7 +713,7 @@ abstract class ImageProvider {
 
         try {
             // copy the edited temporary file back to the original
-            DocumentFileCompat.fromFile(editableFile).copyTo(originalDocumentFile)
+            copyTo(context, mimeType, sourceFile = editableFile, targetUri = uri, targetPath = path)
 
             if (!types.contains(Metadata.TYPE_XMP) && !checkTrailerOffset(context, path, uri, mimeType, videoSize, editableFile, callback)) {
                 return
@@ -692,6 +727,22 @@ abstract class ImageProvider {
         scanPostMetadataEdit(context, path, uri, mimeType, newFields, callback)
     }
 
+    private fun copyTo(
+        context: Context,
+        mimeType: String,
+        sourceFile: File,
+        targetUri: Uri,
+        targetPath: String
+    ) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && isMediaUriPermissionGranted(context, targetUri, mimeType)) {
+            val targetStream = StorageUtils.openOutputStream(context, targetUri, mimeType) ?: throw Exception("failed to open output stream for uri=$targetUri")
+            DocumentFileCompat.fromFile(sourceFile).copyTo(targetStream)
+        } else {
+            val targetDocumentFile = StorageUtils.getDocumentFile(context, targetPath, targetUri) ?: throw Exception("failed to get document file for path=$targetPath, uri=$targetUri")
+            DocumentFileCompat.fromFile(sourceFile).copyTo(targetDocumentFile)
+        }
+    }
+
     interface ImageOpCallback {
         fun onSuccess(fields: FieldMap)
         fun onFailure(throwable: Throwable)
@@ -700,6 +751,21 @@ abstract class ImageProvider {
     companion object {
         private val LOG_TAG = LogUtils.createTag<ImageProvider>()
 
+        val FILE_EXTENSION_PATTERN = Regex("[.][^.]+$")
+
         val supportedExportMimeTypes = listOf(MimeTypes.BMP, MimeTypes.JPEG, MimeTypes.PNG, MimeTypes.WEBP)
+
+        // used when skipping a move/creation op because the target file already exists
+        val skippedFieldMap: HashMap<String, Any?> = hashMapOf("skipped" to true)
+
+        @RequiresApi(Build.VERSION_CODES.Q)
+        fun isMediaUriPermissionGranted(context: Context, uri: Uri, mimeType: String): Boolean {
+            val safeUri = StorageUtils.getMediaStoreScopedStorageSafeUri(uri, mimeType)
+
+            val pid = Binder.getCallingPid()
+            val uid = Binder.getCallingUid()
+            val flags = Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+            return context.checkUriPermission(safeUri, pid, uid, flags) == PackageManager.PERMISSION_GRANTED
+        }
     }
 }

@@ -16,7 +16,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class IjkPlayerAvesVideoController extends AvesVideoController {
-  static bool _staticInitialized = false;
   late FijkPlayer _instance;
   final List<StreamSubscription> _subscriptions = [];
   final StreamController<FijkValue> _valueStreamController = StreamController.broadcast();
@@ -32,7 +31,8 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
   @override
   final double minSpeed = .5;
 
-  // android.media.AudioTrack fails with speed > 2
+  // ijkplayer configures `AudioTrack` buffer for a maximum speed of 2
+  // but `SoundTouch` can go higher
   @override
   final double maxSpeed = 2;
 
@@ -55,10 +55,6 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
   static const gifLikeBitRateThreshold = 2 << 18; // 512kB/s (4Mb/s)
 
   IjkPlayerAvesVideoController(AvesEntry entry) : super(entry) {
-    if (!_staticInitialized) {
-      FijkLog.setLevel(FijkLogLevel.Warn);
-      _staticInitialized = true;
-    }
     _instance = FijkPlayer();
     _valueStream.map((value) => value.videoRenderStart).firstWhere((v) => v, orElse: () => false).then(
           (started) => canCaptureFrameNotifier.value = started,
@@ -94,6 +90,13 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
   }
 
   Future<void> _init({int startMillis = 0}) async {
+    if (isReady) {
+      _stopListening();
+      await _instance.release();
+      _instance = FijkPlayer();
+      _startListening();
+    }
+
     sarNotifier.value = 1;
     _applyOptions(startMillis);
 
@@ -178,8 +181,11 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
 
     // `soundtouch`: enable SoundTouch
     // default: 0, in [0, 1]
-    // slowed down videos with SoundTouch enabled have a weird wobbly audio
-    options.setPlayerOption('soundtouch', 0);
+    // `SoundTouch` cannot be enabled/disabled after video is `prepared`
+    // When `SoundTouch` is enabled:
+    // - slowed down videos have a weird wobbly audio
+    // - we can set speeds higher than the `AudioTrack` limit of 2
+    options.setPlayerOption('soundtouch', _needSoundTouch(speed) ? 1 : 0);
 
     // `subtitle`: decode subtitle stream
     // default: 0, in [0, 1]
@@ -325,9 +331,17 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
   @override
   set speed(double speed) {
     if (speed <= 0 || _speed == speed) return;
+    final optionChange = _needSoundTouch(speed) != _needSoundTouch(_speed);
     _speed = speed;
-    _applySpeed();
+
+    if (optionChange) {
+      _init(startMillis: currentPosition);
+    } else {
+      _applySpeed();
+    }
   }
+
+  bool _needSoundTouch(double speed) => speed > 1;
 
   // TODO TLAD [video] bug: setting speed fails when there is no audio stream or audio is disabled
   void _applySpeed() => _instance.setSpeed(speed);

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/settings/enums.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/debouncer.dart';
 import 'package:aves/widgets/common/map/buttons.dart';
@@ -22,6 +23,7 @@ import 'package:provider/provider.dart';
 
 class EntryLeafletMap extends StatefulWidget {
   final AvesMapController? controller;
+  final Listenable clusterListenable;
   final ValueNotifier<ZoomedBounds> boundsNotifier;
   final double minZoom, maxZoom;
   final EntryMapStyle style;
@@ -37,6 +39,7 @@ class EntryLeafletMap extends StatefulWidget {
   const EntryLeafletMap({
     Key? key,
     this.controller,
+    required this.clusterListenable,
     required this.boundsNotifier,
     this.minZoom = 0,
     this.maxZoom = 22,
@@ -66,7 +69,7 @@ class _EntryLeafletMapState extends State<EntryLeafletMap> with TickerProviderSt
 
   ZoomedBounds get bounds => boundsNotifier.value;
 
-  // duration should match the uncustomizable Google Maps duration
+  // duration should match the uncustomizable Google map duration
   static const _cameraAnimationDuration = Duration(milliseconds: 600);
 
   @override
@@ -95,11 +98,13 @@ class _EntryLeafletMapState extends State<EntryLeafletMap> with TickerProviderSt
       _subscriptions.add(avesMapController.moveCommands.listen((event) => _moveTo(event.latLng)));
     }
     _subscriptions.add(_leafletMapController.mapEventStream.listen((event) => _updateVisibleRegion()));
-    boundsNotifier.addListener(_onBoundsChange);
+    widget.clusterListenable.addListener(_updateMarkers);
+    widget.boundsNotifier.addListener(_onBoundsChange);
   }
 
   void _unregisterWidget(EntryLeafletMap widget) {
-    boundsNotifier.removeListener(_onBoundsChange);
+    widget.clusterListenable.removeListener(_updateMarkers);
+    widget.boundsNotifier.removeListener(_onBoundsChange);
     _subscriptions
       ..forEach((sub) => sub.cancel())
       ..clear();
@@ -151,6 +156,7 @@ class _EntryLeafletMapState extends State<EntryLeafletMap> with TickerProviderSt
       options: MapOptions(
         center: bounds.center,
         zoom: bounds.zoom,
+        rotation: bounds.rotation,
         minZoom: widget.minZoom,
         maxZoom: widget.maxZoom,
         // TODO TLAD [map] as of flutter_map v0.14.0, `doubleTapZoom` does not move when zoom is already maximal
@@ -162,7 +168,9 @@ class _EntryLeafletMapState extends State<EntryLeafletMap> with TickerProviderSt
       mapController: _leafletMapController,
       nonRotatedChildren: [
         ScaleLayerWidget(
-          options: ScaleLayerOptions(),
+          options: ScaleLayerOptions(
+            unitSystem: settings.unitSystem,
+          ),
         ),
       ],
       children: [
@@ -212,6 +220,10 @@ class _EntryLeafletMapState extends State<EntryLeafletMap> with TickerProviderSt
   void _onIdle() {
     if (!mounted) return;
     widget.controller?.notifyIdle(bounds);
+    _updateMarkers();
+  }
+
+  void _updateMarkers() {
     setState(() => _geoEntryByMarkerKey = widget.markerClusterBuilder());
   }
 

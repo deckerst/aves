@@ -16,14 +16,17 @@ class DeviceHandler : MethodCallHandler {
         }
     }
 
-    private fun getDefaultTimeZone(@Suppress("UNUSED_PARAMETER") call: MethodCall, result: MethodChannel.Result) {
+    private fun getDefaultTimeZone(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
         result.success(TimeZone.getDefault().id)
     }
 
-    private fun getPerformanceClass(@Suppress("UNUSED_PARAMETER") call: MethodCall, result: MethodChannel.Result) {
+    private fun getPerformanceClass(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            result.success(Build.VERSION.MEDIA_PERFORMANCE_CLASS)
-            return
+            val performanceClass = Build.VERSION.MEDIA_PERFORMANCE_CLASS
+            if (performanceClass > 0) {
+                result.success(performanceClass)
+                return
+            }
         }
         result.success(Build.VERSION.SDK_INT)
     }

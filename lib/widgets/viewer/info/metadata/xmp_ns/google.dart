@@ -39,9 +39,6 @@ class XmpGAudioNamespace extends XmpGoogleNamespace {
 
   @override
   List<Tuple2<String, String>> get dataProps => const [Tuple2('$ns:Data', '$ns:Mime')];
-
-  @override
-  String get displayTitle => 'Google Audio';
 }
 
 class XmpGDepthNamespace extends XmpGoogleNamespace {
@@ -54,9 +51,6 @@ class XmpGDepthNamespace extends XmpGoogleNamespace {
         Tuple2('$ns:Data', '$ns:Mime'),
         Tuple2('$ns:Confidence', '$ns:ConfidenceMime'),
       ];
-
-  @override
-  String get displayTitle => 'Google Depth';
 }
 
 class XmpGImageNamespace extends XmpGoogleNamespace {
@@ -66,7 +60,4 @@ class XmpGImageNamespace extends XmpGoogleNamespace {
 
   @override
   List<Tuple2<String, String>> get dataProps => const [Tuple2('$ns:Data', '$ns:Mime')];
-
-  @override
-  String get displayTitle => 'Google Image';
 }

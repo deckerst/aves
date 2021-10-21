@@ -21,7 +21,7 @@ class MediaStoreStreamHandler(private val context: Context, arguments: Any?) : E
 
     init {
         if (arguments is Map<*, *>) {
-            @Suppress("UNCHECKED_CAST")
+            @Suppress("unchecked_cast")
             knownEntries = arguments["knownEntries"] as Map<Int, Int?>?
         }
     }

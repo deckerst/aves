@@ -5,6 +5,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 class FakeMetadataFetchService extends Fake implements MetadataFetchService {
+  final Map<AvesEntry, CatalogMetadata> _metaMap = {};
+
+  void setUp(AvesEntry entry, CatalogMetadata metadata) => _metaMap[entry] = metadata;
+
   @override
-  Future<CatalogMetadata?> getCatalogMetadata(AvesEntry entry, {bool background = false}) => SynchronousFuture(null);
+  Future<CatalogMetadata?> getCatalogMetadata(AvesEntry entry, {bool background = false}) => SynchronousFuture(_metaMap[entry]);
 }

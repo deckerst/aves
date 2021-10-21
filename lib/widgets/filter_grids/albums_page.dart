@@ -32,9 +32,9 @@ class AlbumListPage extends StatelessWidget {
         return !(eq.equals(t1.item1, t2.item1) && eq.equals(t1.item2, t2.item2) && eq.equals(t1.item3, t2.item3));
       },
       builder: (context, s, child) {
-        return AnimatedBuilder(
-          animation: androidFileUtils.appNameChangeNotifier,
-          builder: (context, child) => StreamBuilder(
+        return ValueListenableBuilder<bool>(
+          valueListenable: androidFileUtils.areAppNamesReadyNotifier,
+          builder: (context, areAppNamesReady, child) => StreamBuilder(
             stream: source.eventBus.on<AlbumsChangedEvent>(),
             builder: (context, snapshot) {
               final gridItems = getAlbumGridItems(context, source);

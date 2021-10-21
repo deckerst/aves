@@ -1,6 +1,7 @@
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/metadata/catalog.dart';
+import 'package:aves/model/source/analysis_controller.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums.dart';
 import 'package:aves/services/common/services.dart';
@@ -8,22 +9,25 @@ import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
 mixin TagMixin on SourceBase {
-  static const _commitCountThreshold = 300;
+  static const commitCountThreshold = 400;
+  static const _stopCheckCountThreshold = 100;
 
   List<String> sortedTags = List.unmodifiable([]);
 
   Future<void> loadCatalogMetadata() async {
-    // final stopwatch = Stopwatch()..start();
     final saved = await metadataDb.loadMetadataEntries();
     final idMap = entryById;
     saved.forEach((metadata) => idMap[metadata.contentId]?.catalogMetadata = metadata);
-    // debugPrint('$runtimeType loadCatalogMetadata complete in ${stopwatch.elapsed.inMilliseconds}ms for ${saved.length} entries');
     onCatalogMetadataChanged();
   }
 
-  Future<void> catalogEntries() async {
-//    final stopwatch = Stopwatch()..start();
-    final todo = visibleEntries.where((entry) => !entry.isCatalogued).toList();
+  static bool catalogEntriesTest(AvesEntry entry) => !entry.isCatalogued;
+
+  Future<void> catalogEntries(AnalysisController controller, Set<AvesEntry> candidateEntries) async {
+    if (controller.isStopping) return;
+
+    final force = controller.force;
+    final todo = force ? candidateEntries : candidateEntries.where(catalogEntriesTest).toSet();
     if (todo.isEmpty) return;
 
     stateNotifier.value = SourceState.cataloguing;
@@ -31,22 +35,26 @@ mixin TagMixin on SourceBase {
     final progressTotal = todo.length;
     setProgress(done: progressDone, total: progressTotal);
 
-    final newMetadata = <CatalogMetadata>[];
-    await Future.forEach<AvesEntry>(todo, (entry) async {
-      await entry.catalog(background: true);
+    var stopCheckCount = 0;
+    final newMetadata = <CatalogMetadata>{};
+    for (final entry in todo) {
+      await entry.catalog(background: true, persist: true, force: force);
       if (entry.isCatalogued) {
         newMetadata.add(entry.catalogMetadata!);
-        if (newMetadata.length >= _commitCountThreshold) {
-          await metadataDb.saveMetadata(Set.of(newMetadata));
+        if (newMetadata.length >= commitCountThreshold) {
+          await metadataDb.saveMetadata(Set.unmodifiable(newMetadata));
           onCatalogMetadataChanged();
           newMetadata.clear();
         }
+        if (++stopCheckCount >= _stopCheckCountThreshold) {
+          stopCheckCount = 0;
+          if (controller.isStopping) return;
+        }
       }
       setProgress(done: ++progressDone, total: progressTotal);
-    });
-    await metadataDb.saveMetadata(Set.of(newMetadata));
+    }
+    await metadataDb.saveMetadata(Set.unmodifiable(newMetadata));
     onCatalogMetadataChanged();
-//    debugPrint('$runtimeType catalogEntries complete in ${stopwatch.elapsed.inSeconds}s');
   }
 
   void onCatalogMetadataChanged() {

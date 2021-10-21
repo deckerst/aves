@@ -96,7 +96,14 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
   Widget _buildChip(BuildContext context, CollectionSource source) {
     final entry = coverEntry ?? source.coverEntry(filter);
     final titlePadding = min<double>(4.0, extent / 32);
+    Key? chipKey;
+    if (filter is AlbumFilter) {
+      // when we asynchronously fetch installed app names,
+      // album filters themselves do not change, but decoration derived from it does
+      chipKey = ValueKey(androidFileUtils.areAppNamesReadyNotifier.value);
+    }
     return AvesFilterChip(
+      key: chipKey,
       filter: filter,
       showGenericIcon: false,
       decoration: AvesFilterDecoration(

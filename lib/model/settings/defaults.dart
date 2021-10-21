@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 class SettingsDefaults {
   // app
   static const hasAcceptedTerms = false;
+  static const canUseAnalysisService = true;
   static const isErrorReportingEnabled = false;
   static const mustBackTwiceToExit = true;
   static const keepScreenOn = KeepScreenOn.viewerOnly;
@@ -54,6 +55,7 @@ class SettingsDefaults {
     EntryAction.share,
     EntryAction.rotateScreen,
   ];
+  static const showOverlayOnOpening = true;
   static const showOverlayMinimap = false;
   static const showOverlayInfo = true;
   static const showOverlayShootingDetails = false;
@@ -81,6 +83,7 @@ class SettingsDefaults {
   static const infoMapStyle = EntryMapStyle.stamenWatercolor; // `infoMapStyle` has a contextual default value
   static const infoMapZoom = 12.0;
   static const coordinateFormat = CoordinateFormat.dms;
+  static const unitSystem = UnitSystem.metric;
 
   // rendering
   static const imageBackground = EntryBackground.white;

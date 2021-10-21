@@ -7,6 +7,7 @@ import 'package:aves/model/settings/home_page.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
+import 'package:aves/services/analysis_service.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/global_search.dart';
 import 'package:aves/services/viewer_service.dart';
@@ -55,6 +56,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) => const Scaffold();
 
   Future<void> _setup() async {
+    final stopwatch = Stopwatch()..start();
     final permissions = await [
       Permission.storage,
       // to access media with unredacted metadata with scoped storage (Android 10+)
@@ -72,6 +74,7 @@ class _HomePageState extends State<HomePage> {
     final intentData = widget.intentData ?? await ViewerService.getIntentData();
     if (intentData.isNotEmpty) {
       final action = intentData['action'];
+      await reportService.log('Intent action=$action');
       switch (action) {
         case 'view':
           _viewerEntry = await _initViewerEntry(
@@ -107,10 +110,12 @@ class _HomePageState extends State<HomePage> {
     unawaited(reportService.setCustomKey('app_mode', appMode.toString()));
 
     if (appMode != AppMode.view) {
+      debugPrint('Storage check complete in ${stopwatch.elapsed.inMilliseconds}ms');
+      unawaited(GlobalSearch.registerCallback());
+      unawaited(AnalysisService.registerCallback());
       final source = context.read<CollectionSource>();
       await source.init();
       unawaited(source.refresh());
-      unawaited(GlobalSearch.registerCallback());
     }
 
     // `pushReplacement` is not enough in some edge cases
@@ -126,7 +131,7 @@ class _HomePageState extends State<HomePage> {
     final entry = await mediaFileService.getEntry(uri, mimeType);
     if (entry != null) {
       // cataloguing is essential for coordinates and video rotation
-      await entry.catalog(background: false, persist: false);
+      await entry.catalog(background: false, persist: false, force: false);
     }
     return entry;
   }

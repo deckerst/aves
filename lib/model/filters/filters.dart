@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/album.dart';
+import 'package:aves/model/filters/coordinate.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/filters/mime.dart';
@@ -24,6 +25,7 @@ abstract class CollectionFilter extends Equatable implements Comparable<Collecti
     TypeFilter.type,
     AlbumFilter.type,
     LocationFilter.type,
+    CoordinateFilter.type,
     TagFilter.type,
     PathFilter.type,
   ];
@@ -35,20 +37,22 @@ abstract class CollectionFilter extends Equatable implements Comparable<Collecti
       switch (type) {
         case AlbumFilter.type:
           return AlbumFilter.fromMap(jsonMap);
+        case CoordinateFilter.type:
+          return CoordinateFilter.fromMap(jsonMap);
         case FavouriteFilter.type:
           return FavouriteFilter.instance;
         case LocationFilter.type:
           return LocationFilter.fromMap(jsonMap);
-        case TypeFilter.type:
-          return TypeFilter.fromMap(jsonMap);
         case MimeFilter.type:
           return MimeFilter.fromMap(jsonMap);
+        case PathFilter.type:
+          return PathFilter.fromMap(jsonMap);
         case QueryFilter.type:
           return QueryFilter.fromMap(jsonMap);
         case TagFilter.type:
           return TagFilter.fromMap(jsonMap);
-        case PathFilter.type:
-          return PathFilter.fromMap(jsonMap);
+        case TypeFilter.type:
+          return TypeFilter.fromMap(jsonMap);
       }
     }
     debugPrint('failed to parse filter from json=$jsonString');

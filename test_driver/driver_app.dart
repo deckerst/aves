@@ -26,7 +26,7 @@ void main() {
 }
 
 Future<void> configureAndLaunch() async {
-  await settings.init();
+  await settings.init(monitorPlatformSettings: false);
   settings
     ..keepScreenOn = KeepScreenOn.always
     ..hasAcceptedTerms = false

@@ -77,6 +77,21 @@ android {
         }
     }
 
+    // the "splitting" dimension and its flavors are only for building purposes:
+    // NDK ABI filters are not compatible with split APK generation
+    // but we want to generate both a universal APK without x86 libs, and split APKs
+    flavorDimensions "splitting"
+
+    productFlavors {
+        universal {
+            dimension "splitting"
+        }
+
+        byAbi {
+            dimension "splitting"
+        }
+    }
+
     buildTypes {
         debug {
             applicationIdSuffix ".debug"
@@ -87,18 +102,22 @@ android {
             resValue 'string', 'search_provider', "${appId}.profile.search_provider"
         }
         release {
-            // specify architectures, to specifically exclude native libs for x86,
-            // which lead to: UnsatisfiedLinkError...couldn't find "libflutter.so"
-            // cf https://github.com/flutter/flutter/issues/37566#issuecomment-640879500
-            ndk {
-                abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86_64'
-            }
-
             signingConfig signingConfigs.release
-
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+
+        def runTasks = gradle.startParameter.taskNames.toString().toLowerCase()
+        if (runTasks.contains("universal")) {
+            release {
+                // specify architectures, to specifically exclude native libs for x86,
+                // which lead to: UnsatisfiedLinkError...couldn't find "libflutter.so"
+                // cf https://github.com/flutter/flutter/issues/37566#issuecomment-640879500
+                ndk {
+                    abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86_64'
+                }
+            }
         }
     }
 }
@@ -120,10 +139,10 @@ dependencies {
     implementation 'com.caverock:androidsvg-aar:1.4'
     implementation 'com.commonsware.cwac:document:0.4.1'
     implementation 'com.drewnoakes:metadata-extractor:2.16.0'
-    // https://jitpack.io/p/deckerst/Android-TiffBitmapFactory
-    implementation 'com.github.deckerst:Android-TiffBitmapFactory:876e53870a' // forked, built by JitPack
-    // https://jitpack.io/p/deckerst/pixymeta-android
-    implementation 'com.github.deckerst:pixymeta-android:0bea51ead2' // forked, built by JitPack
+    // forked, built by JitPack, cf https://jitpack.io/p/deckerst/Android-TiffBitmapFactory
+    implementation 'com.github.deckerst:Android-TiffBitmapFactory:876e53870a'
+    // forked, built by JitPack, cf https://jitpack.io/p/deckerst/pixymeta-android
+    implementation 'com.github.deckerst:pixymeta-android:0bea51ead2'
     implementation 'com.github.bumptech.glide:glide:4.12.0'
 
     kapt 'androidx.annotation:annotation:1.2.0'

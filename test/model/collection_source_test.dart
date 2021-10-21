@@ -4,10 +4,14 @@ import 'package:aves/model/availability.dart';
 import 'package:aves/model/covers.dart';
 import 'package:aves/model/favourites.dart';
 import 'package:aves/model/filters/album.dart';
+import 'package:aves/model/filters/tag.dart';
+import 'package:aves/model/metadata/address.dart';
+import 'package:aves/model/metadata/catalog.dart';
 import 'package:aves/model/metadata_db.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/enums.dart';
 import 'package:aves/model/source/media_store_source.dart';
+import 'package:aves/services/android_app_service.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/device_service.dart';
 import 'package:aves/services/media/media_file_service.dart';
@@ -19,8 +23,10 @@ import 'package:aves/services/window_service.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:path/path.dart' as p;
 
+import '../fake/android_app_service.dart';
 import '../fake/availability.dart';
 import '../fake/device_service.dart';
 import '../fake/media_file_service.dart';
@@ -36,12 +42,20 @@ void main() {
   const sourceAlbum = '${FakeStorageService.primaryPath}Pictures/source';
   const destinationAlbum = '${FakeStorageService.primaryPath}Pictures/destination';
 
+  const aTag = 'sometag';
+  final australiaLatLng = LatLng(-26, 141);
+  const australiaAddress = AddressDetails(
+    countryCode: 'AU',
+    countryName: 'AUS',
+  );
+
   setUp(() async {
     // specify Posix style path context for consistent behaviour when running tests on Windows
     getIt.registerLazySingleton<p.Context>(() => p.Context(style: p.Style.posix));
     getIt.registerLazySingleton<AvesAvailability>(() => FakeAvesAvailability());
     getIt.registerLazySingleton<MetadataDb>(() => FakeMetadataDb());
 
+    getIt.registerLazySingleton<AndroidAppService>(() => FakeAndroidAppService());
     getIt.registerLazySingleton<DeviceService>(() => FakeDeviceService());
     getIt.registerLazySingleton<MediaFileService>(() => FakeMediaFileService());
     getIt.registerLazySingleton<MediaStoreService>(() => FakeMediaStoreService());
@@ -50,7 +64,8 @@ void main() {
     getIt.registerLazySingleton<StorageService>(() => FakeStorageService());
     getIt.registerLazySingleton<WindowService>(() => FakeWindowService());
 
-    await settings.init();
+    await settings.init(monitorPlatformSettings: false);
+    settings.canUseAnalysisService = false;
   });
 
   tearDown(() async {
@@ -70,6 +85,57 @@ void main() {
     await readyCompleter.future;
     return source;
   }
+
+  test('album/country/tag hidden on launch when their items are hidden by entry prop', () async {
+    settings.hiddenFilters = {const AlbumFilter(testAlbum, 'whatever')};
+
+    final image1 = FakeMediaStoreService.newImage(testAlbum, 'image1');
+    (mediaStoreService as FakeMediaStoreService).entries = {
+      image1,
+    };
+    (metadataFetchService as FakeMetadataFetchService).setUp(
+      image1,
+      CatalogMetadata(
+        contentId: image1.contentId,
+        xmpSubjects: aTag,
+        latitude: australiaLatLng.latitude,
+        longitude: australiaLatLng.longitude,
+      ),
+    );
+
+    final source = await _initSource();
+    expect(source.rawAlbums.length, 0);
+    expect(source.sortedCountries.length, 0);
+    expect(source.sortedTags.length, 0);
+  });
+
+  test('album/country/tag hidden on launch when their items are hidden by metadata', () async {
+    settings.hiddenFilters = {TagFilter(aTag)};
+
+    final image1 = FakeMediaStoreService.newImage(testAlbum, 'image1');
+    (mediaStoreService as FakeMediaStoreService).entries = {
+      image1,
+    };
+    (metadataFetchService as FakeMetadataFetchService).setUp(
+      image1,
+      CatalogMetadata(
+        contentId: image1.contentId,
+        xmpSubjects: aTag,
+        latitude: australiaLatLng.latitude,
+        longitude: australiaLatLng.longitude,
+      ),
+    );
+    expect(image1.xmpSubjects, []);
+
+    final source = await _initSource();
+    expect(image1.xmpSubjects, [aTag]);
+    expect(image1.addressDetails, australiaAddress.copyWith(contentId: image1.contentId));
+
+    expect(source.visibleEntries.length, 0);
+    expect(source.rawAlbums.length, 0);
+    expect(source.sortedCountries.length, 0);
+    expect(source.sortedTags.length, 0);
+  });
 
   test('add/remove favourite entry', () async {
     final image1 = FakeMediaStoreService.newImage(testAlbum, 'image1');
