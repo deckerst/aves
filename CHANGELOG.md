@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [v1.5.4] - 2021-10-21
+
 ### Added
 
 - Collection: use a foreground service when scanning many items
