@@ -40,6 +40,7 @@ class CollectionSearchDelegate {
     TypeFilter.panorama,
     TypeFilter.sphericalVideo,
     TypeFilter.geotiff,
+    TypeFilter.raw,
     MimeFilter(MimeTypes.svg),
   ];
 

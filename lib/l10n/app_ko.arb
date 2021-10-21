@@ -79,6 +79,7 @@
   "filterTypeAnimatedLabel": "애니메이션",
   "filterTypeMotionPhotoLabel": "모션 포토",
   "filterTypePanoramaLabel": "파노라마",
+  "filterTypeRawLabel": "Raw",
   "filterTypeSphericalVideoLabel": "360° 동영상",
   "filterTypeGeotiffLabel": "GeoTIFF",
   "filterMimeImageLabel": "사진",
@@ -269,6 +270,7 @@
   "drawerCollectionVideos": "동영상",
   "drawerCollectionMotionPhotos": "모션 포토",
   "drawerCollectionPanoramas": "파노라마",
+  "drawerCollectionRaws": "Raw 이미지",
   "drawerCollectionSphericalVideos": "360° 동영상",
 
   "chipSortTitle": "정렬",
@@ -350,7 +352,7 @@
   "settingsViewerShowShootingDetails": "촬영 정보 표시",
   "settingsViewerEnableOverlayBlurEffect": "오버레이 흐림 효과",
   "settingsViewerUseCutout": "컷아웃 영역 사용",
-  "settingsImageBackground": "사진 배경",
+  "settingsImageBackground": "이미지 배경",
 
   "settingsViewerQuickActionsTile": "빠른 작업",
   "settingsViewerQuickActionEditorTitle": "빠른 작업",

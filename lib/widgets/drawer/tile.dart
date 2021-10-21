@@ -48,6 +48,7 @@ class DrawerFilterTitle extends StatelessWidget {
       if (filter == MimeFilter.video) return l10n.drawerCollectionVideos;
       if (filter == TypeFilter.motionPhoto) return l10n.drawerCollectionMotionPhotos;
       if (filter == TypeFilter.panorama) return l10n.drawerCollectionPanoramas;
+      if (filter == TypeFilter.raw) return l10n.drawerCollectionRaws;
       if (filter == TypeFilter.sphericalVideo) return l10n.drawerCollectionSphericalVideos;
       return filter.getLabel(context);
     }

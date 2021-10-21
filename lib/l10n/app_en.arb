@@ -161,6 +161,8 @@
   "@filterTypeMotionPhotoLabel": {},
   "filterTypePanoramaLabel": "Panorama",
   "@filterTypePanoramaLabel": {},
+  "filterTypeRawLabel": "Raw",
+  "@filterTypeRawLabel": {},
   "filterTypeSphericalVideoLabel": "360° Video",
   "@filterTypeSphericalVideoLabel": {},
   "filterTypeGeotiffLabel": "GeoTIFF",
@@ -577,6 +579,8 @@
   "@drawerCollectionMotionPhotos": {},
   "drawerCollectionPanoramas": "Panoramas",
   "@drawerCollectionPanoramas": {},
+  "drawerCollectionRaws": "Raw photos",
+  "@drawerCollectionRaws": {},
   "drawerCollectionSphericalVideos": "360° Videos",
   "@drawerCollectionSphericalVideos": {},
 
