@@ -1,3 +1,8 @@
+library aves_report_platform;
+
+import 'dart:async';
+
+import 'package:aves_report/aves_report.dart';
 import 'package:collection/collection.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -5,32 +10,18 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:stack_trace/stack_trace.dart';
 
-abstract class ReportService {
-  Future<void> init();
-
-  bool get isCollectionEnabled;
-
-  Future<void> setCollectionEnabled(bool enabled);
-
-  Future<void> log(String message);
-
-  Future<void> setCustomKey(String key, Object value);
-
-  Future<void> setCustomKeys(Map<String, Object> map);
-
-  Future<void> recordError(dynamic exception, StackTrace? stack);
-
-  Future<void> recordFlutterError(FlutterErrorDetails flutterErrorDetails);
-}
-
-class CrashlyticsReportService extends ReportService {
+class PlatformReportService extends ReportService {
   FirebaseCrashlytics get _instance => FirebaseCrashlytics.instance;
 
   @override
   Future<void> init() => Firebase.initializeApp();
 
   @override
-  bool get isCollectionEnabled => _instance.isCrashlyticsCollectionEnabled;
+  Map<String, String> get state => {
+        'Reporter': 'Crashlytics',
+        'Firebase data collection enabled': '${Firebase.app().isAutomaticDataCollectionEnabled}',
+        'Crashlytics collection enabled': '${_instance.isCrashlyticsCollectionEnabled}',
+      };
 
   @override
   Future<void> setCollectionEnabled(bool enabled) async {

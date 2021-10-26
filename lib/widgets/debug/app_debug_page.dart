@@ -50,7 +50,7 @@ class _AppDebugPageState extends State<AppDebugPage> {
               const DebugAndroidEnvironmentSection(),
               const DebugCacheSection(),
               const DebugAppDatabaseSection(),
-              const DebugFirebaseSection(),
+              const DebugErrorReportingSection(),
               const DebugSettingsSection(),
               const DebugStorageSection(),
             ],

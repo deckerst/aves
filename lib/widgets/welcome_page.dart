@@ -1,3 +1,4 @@
+import 'package:aves/app_flavor.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/basic/labeled_checkbox.dart';
@@ -100,16 +101,18 @@ class _WelcomePageState extends State<WelcomePage> {
   }
 
   List<Widget> _buildBottomControls(BuildContext context) {
+    final canEnableErrorReporting = context.select<AppFlavor, bool>((v) => v.canEnableErrorReporting);
     final checkboxes = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        LabeledCheckbox(
-          value: settings.isErrorReportingEnabled,
-          onChanged: (v) {
-            if (v != null) setState(() => settings.isErrorReportingEnabled = v);
-          },
-          text: context.l10n.welcomeCrashReportToggle,
-        ),
+        if (canEnableErrorReporting)
+          LabeledCheckbox(
+            value: settings.isErrorReportingEnabled,
+            onChanged: (v) {
+              if (v != null) setState(() => settings.isErrorReportingEnabled = v);
+            },
+            text: context.l10n.welcomeCrashReportToggle,
+          ),
         LabeledCheckbox(
           // key is expected by test driver
           key: const Key('agree-checkbox'),

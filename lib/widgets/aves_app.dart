@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:aves/app_flavor.dart';
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/settings/accessibility_animations.dart';
 import 'package:aves/model/settings/screen_on.dart';
@@ -29,7 +30,12 @@ import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
 class AvesApp extends StatefulWidget {
-  const AvesApp({Key? key}) : super(key: key);
+  final AppFlavor flavor;
+
+  const AvesApp({
+    Key? key,
+    required this.flavor,
+  }) : super(key: key);
 
   @override
   _AvesAppState createState() => _AvesAppState();
@@ -68,59 +74,62 @@ class _AvesAppState extends State<AvesApp> {
   Widget build(BuildContext context) {
     // place the settings provider above `MaterialApp`
     // so it can be used during navigation transitions
-    return ChangeNotifierProvider<Settings>.value(
-      value: settings,
-      child: ListenableProvider<ValueNotifier<AppMode>>.value(
-        value: appModeNotifier,
-        child: Provider<CollectionSource>.value(
-          value: _mediaStoreSource,
-          child: DurationsProvider(
-            child: HighlightInfoProvider(
-              child: OverlaySupport(
-                child: FutureBuilder<void>(
-                  future: _appSetup,
-                  builder: (context, snapshot) {
-                    final initialized = !snapshot.hasError && snapshot.connectionState == ConnectionState.done;
-                    final home = initialized
-                        ? getFirstPage()
-                        : Scaffold(
-                            body: snapshot.hasError ? _buildError(snapshot.error!) : const SizedBox(),
+    return Provider<AppFlavor>.value(
+      value: widget.flavor,
+      child: ChangeNotifierProvider<Settings>.value(
+        value: settings,
+        child: ListenableProvider<ValueNotifier<AppMode>>.value(
+          value: appModeNotifier,
+          child: Provider<CollectionSource>.value(
+            value: _mediaStoreSource,
+            child: DurationsProvider(
+              child: HighlightInfoProvider(
+                child: OverlaySupport(
+                  child: FutureBuilder<void>(
+                    future: _appSetup,
+                    builder: (context, snapshot) {
+                      final initialized = !snapshot.hasError && snapshot.connectionState == ConnectionState.done;
+                      final home = initialized
+                          ? getFirstPage()
+                          : Scaffold(
+                              body: snapshot.hasError ? _buildError(snapshot.error!) : const SizedBox(),
+                            );
+                      return Selector<Settings, Tuple2<Locale?, bool>>(
+                        selector: (context, s) => Tuple2(s.locale, s.initialized ? s.accessibilityAnimations.animate : true),
+                        builder: (context, s, child) {
+                          final settingsLocale = s.item1;
+                          final areAnimationsEnabled = s.item2;
+                          return MaterialApp(
+                            navigatorKey: _navigatorKey,
+                            home: home,
+                            navigatorObservers: _navigatorObservers,
+                            builder: (context, child) {
+                              if (!areAnimationsEnabled) {
+                                child = Theme(
+                                  data: Theme.of(context).copyWith(
+                                    // strip page transitions used by `MaterialPageRoute`
+                                    pageTransitionsTheme: DirectPageTransitionsTheme(),
+                                  ),
+                                  child: child!,
+                                );
+                              }
+                              return child!;
+                            },
+                            onGenerateTitle: (context) => context.l10n.appName,
+                            darkTheme: Themes.darkTheme,
+                            themeMode: ThemeMode.dark,
+                            locale: settingsLocale,
+                            localizationsDelegates: const [
+                              ...AppLocalizations.localizationsDelegates,
+                            ],
+                            supportedLocales: AppLocalizations.supportedLocales,
+                            // checkerboardRasterCacheImages: true,
+                            // checkerboardOffscreenLayers: true,
                           );
-                    return Selector<Settings, Tuple2<Locale?, bool>>(
-                      selector: (context, s) => Tuple2(s.locale, s.initialized ? s.accessibilityAnimations.animate : true),
-                      builder: (context, s, child) {
-                        final settingsLocale = s.item1;
-                        final areAnimationsEnabled = s.item2;
-                        return MaterialApp(
-                          navigatorKey: _navigatorKey,
-                          home: home,
-                          navigatorObservers: _navigatorObservers,
-                          builder: (context, child) {
-                            if (!areAnimationsEnabled) {
-                              child = Theme(
-                                data: Theme.of(context).copyWith(
-                                  // strip page transitions used by `MaterialPageRoute`
-                                  pageTransitionsTheme: DirectPageTransitionsTheme(),
-                                ),
-                                child: child!,
-                              );
-                            }
-                            return child!;
-                          },
-                          onGenerateTitle: (context) => context.l10n.appName,
-                          darkTheme: Themes.darkTheme,
-                          themeMode: ThemeMode.dark,
-                          locale: settingsLocale,
-                          localizationsDelegates: const [
-                            ...AppLocalizations.localizationsDelegates,
-                          ],
-                          supportedLocales: AppLocalizations.supportedLocales,
-                          // checkerboardRasterCacheImages: true,
-                          // checkerboardOffscreenLayers: true,
-                        );
-                      },
-                    );
-                  },
+                        },
+                      );
+                    },
+                  ),
                 ),
               ),
             ),

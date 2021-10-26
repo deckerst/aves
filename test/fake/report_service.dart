@@ -1,4 +1,4 @@
-import 'package:aves/services/report_service.dart';
+import 'package:aves_report/aves_report.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -7,7 +7,7 @@ class FakeReportService extends ReportService {
   Future<void> init() => SynchronousFuture(null);
 
   @override
-  bool get isCollectionEnabled => false;
+  Map<String, String> get state => {};
 
   @override
   Future<void> setCollectionEnabled(bool enabled) => SynchronousFuture(null);

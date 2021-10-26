@@ -1,10 +1,11 @@
 import 'dart:isolate';
 
+import 'package:aves/app_flavor.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/aves_app.dart';
 import 'package:flutter/material.dart';
 
-void main() {
+void mainCommon(AppFlavor flavor) {
 //  HttpClient.enableTimelineLogging = true; // enable network traffic logging
 //  debugPrintGestureArenaDiagnostics = true;
 
@@ -27,5 +28,5 @@ void main() {
     reportService.recordError(errorAndStacktrace.first, errorAndStacktrace.last);
   }).sendPort);
 
-  runApp(const AvesApp());
+  runApp(AvesApp(flavor: flavor));
 }
