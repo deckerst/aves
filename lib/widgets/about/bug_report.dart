@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:aves/app_flavor.dart';
 import 'package:aves/flutter_version.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/services.dart';
@@ -33,7 +34,7 @@ class _BugReportState extends State<BugReport> with FeedbackMixin {
   @override
   void initState() {
     super.initState();
-    _infoLoader = _getInfo();
+    _infoLoader = _getInfo(context);
   }
 
   @override
@@ -123,12 +124,13 @@ class _BugReportState extends State<BugReport> with FeedbackMixin {
     );
   }
 
-  Future<String> _getInfo() async {
+  Future<String> _getInfo(BuildContext context) async {
     final packageInfo = await PackageInfo.fromPlatform();
     final androidInfo = await DeviceInfoPlugin().androidInfo;
     final hasPlayServices = await availability.hasPlayServices;
+    final flavor = context.read<AppFlavor>().toString().split('.')[1];
     return [
-      'Aves version: ${packageInfo.version} (Build ${packageInfo.buildNumber})',
+      'Aves version: ${packageInfo.version}-$flavor (Build ${packageInfo.buildNumber})',
       'Flutter version: ${version['frameworkVersion']} (Channel ${version['channel']})',
       'Android version: ${androidInfo.version.release} (SDK ${androidInfo.version.sdkInt})',
       'Device: ${androidInfo.manufacturer} ${androidInfo.model}',

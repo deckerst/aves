@@ -1,3 +1,4 @@
+import 'package:aves/app_flavor.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/color_utils.dart';
@@ -20,8 +21,7 @@ class PrivacySection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currentIsErrorReportingEnabled = context.select<Settings, bool>((s) => s.isErrorReportingEnabled);
-    final currentSaveSearchHistory = context.select<Settings, bool>((s) => s.saveSearchHistory);
+    final canEnableErrorReporting = context.select<AppFlavor, bool>((v) => v.canEnableErrorReporting);
 
     return AvesExpansionTile(
       leading: SettingsTileLeading(
@@ -32,20 +32,27 @@ class PrivacySection extends StatelessWidget {
       expandedNotifier: expandedNotifier,
       showHighlight: false,
       children: [
-        SwitchListTile(
-          value: currentIsErrorReportingEnabled,
-          onChanged: (v) => settings.isErrorReportingEnabled = v,
-          title: Text(context.l10n.settingsEnableErrorReporting),
-        ),
-        SwitchListTile(
-          value: currentSaveSearchHistory,
-          onChanged: (v) {
-            settings.saveSearchHistory = v;
-            if (!v) {
-              settings.searchHistory = [];
-            }
-          },
-          title: Text(context.l10n.settingsSaveSearchHistory),
+        if (canEnableErrorReporting)
+          Selector<Settings, bool>(
+            selector: (context, s) => s.isErrorReportingEnabled,
+            builder: (context, current, child) => SwitchListTile(
+              value: current,
+              onChanged: (v) => settings.isErrorReportingEnabled = v,
+              title: Text(context.l10n.settingsEnableErrorReporting),
+            ),
+          ),
+        Selector<Settings, bool>(
+          selector: (context, s) => s.saveSearchHistory,
+          builder: (context, current, child) => SwitchListTile(
+            value: current,
+            onChanged: (v) {
+              settings.saveSearchHistory = v;
+              if (!v) {
+                settings.searchHistory = [];
+              }
+            },
+            title: Text(context.l10n.settingsSaveSearchHistory),
+          ),
         ),
         const HiddenFilterTile(),
         const HiddenPathTile(),

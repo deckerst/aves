@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:aves/app_flavor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:latlong2/latlong.dart';
@@ -86,7 +87,7 @@ class Constants {
     ),
   ];
 
-  static const List<Dependency> flutterPlugins = [
+  static const List<Dependency> _flutterPluginsCommon = [
     Dependency(
       name: 'Connectivity Plus',
       license: 'BSD 3-Clause',
@@ -98,11 +99,6 @@ class Constants {
       license: 'BSD 3-Clause',
       licenseUrl: 'https://github.com/fluttercommunity/plus_plugins/blob/main/packages/device_info_plus/device_info_plus/LICENSE',
       sourceUrl: 'https://github.com/fluttercommunity/plus_plugins/tree/main/packages/device_info_plus',
-    ),
-    Dependency(
-      name: 'FlutterFire (Core, Crashlytics)',
-      license: 'BSD 3-Clause',
-      sourceUrl: 'https://github.com/FirebaseExtended/flutterfire',
     ),
     Dependency(
       name: 'fijkplayer (Aves fork)',
@@ -159,6 +155,19 @@ class Constants {
       sourceUrl: 'https://github.com/flutter/plugins/tree/master/packages/url_launcher/url_launcher',
     ),
   ];
+
+  static const List<Dependency> _flutterPluginsPlayOnly = [
+    Dependency(
+      name: 'FlutterFire (Core, Crashlytics)',
+      license: 'BSD 3-Clause',
+      sourceUrl: 'https://github.com/FirebaseExtended/flutterfire',
+    ),
+  ];
+
+  static List<Dependency> flutterPlugins(AppFlavor flavor) => [
+        ..._flutterPluginsCommon,
+        if (flavor == AppFlavor.play) ..._flutterPluginsPlayOnly,
+      ];
 
   static const List<Dependency> flutterPackages = [
     Dependency(

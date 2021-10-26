@@ -50,13 +50,22 @@ At this stage this project does *not* accept PRs, except for translations.
 If you want to translate this app in your language and share the result, feel free to open a PR or send the translation by [email](mailto:gallery.aves@gmail.com). You can find some localization notes in [pubspec.yaml](https://github.com/deckerst/aves/blob/develop/pubspec.yaml). English, Korean and French (soon™) are already handled.
 
 ### Donations
+
 Some users have expressed the wish to financially support the project. I haven't set up any sponsorship system, but you can send contributions [here](https://paypal.me/ThibaultDeckers). Thanks! ❤️
 
 ## Project Setup
 
+Before running or building the app, update the dependencies for the desired flavor:
+```
+# (cd scripts/; ./apply_flavor_play.sh)
+```
+
 To build the project, create a file named `<app dir>/android/key.properties`. It should contain a reference to a keystore for app signing, and other necessary credentials. See [key_template.properties](https://github.com/deckerst/aves/blob/develop/android/key_template.properties) for the expected keys.
 
-You can run the app with `flutter run --flavor universal`.
+To run the app:
+```
+# flutter run -t lib/main_play.dart --flavor play
+```
 
 [Version badge]: https://img.shields.io/github/v/release/deckerst/aves?include_prereleases&sort=semver
 [Build badge]: https://img.shields.io/github/workflow/status/deckerst/aves/Quality%20check

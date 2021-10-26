@@ -7,14 +7,14 @@ packages:
       name: _fe_analyzer_shared
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "29.0.0"
+    version: "30.0.0"
   analyzer:
     dependency: transitive
     description:
       name: analyzer
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.6.0"
+    version: "2.7.0"
   archive:
     dependency: transitive
     description:
@@ -36,6 +36,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.8.1"
+  aves_report:
+    dependency: "direct main"
+    description:
+      path: "plugins/aves_report"
+      relative: true
+    source: path
+    version: "0.0.1"
+  aves_report_platform:
+    dependency: "direct main"
+    description:
+      path: "plugins/aves_report_crashlytics"
+      relative: true
+    source: path
+    version: "0.0.1"
   barcode:
     dependency: transitive
     description:
@@ -288,12 +302,12 @@ packages:
     source: hosted
     version: "6.1.2"
   firebase_core:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: firebase_core
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.7.0"
+    version: "1.8.0"
   firebase_core_platform_interface:
     dependency: transitive
     description:
@@ -309,19 +323,19 @@ packages:
     source: hosted
     version: "1.1.0"
   firebase_crashlytics:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: firebase_crashlytics
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.2.3"
+    version: "2.2.4"
   firebase_crashlytics_platform_interface:
     dependency: transitive
     description:
       name: firebase_crashlytics_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.1.3"
+    version: "3.1.4"
   flex_color_picker:
     dependency: "direct main"
     description:
@@ -385,14 +399,14 @@ packages:
       name: flutter_markdown
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.6.7"
+    version: "0.6.8"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
       name: flutter_plugin_android_lifecycle
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.3"
+    version: "2.0.4"
   flutter_staggered_animations:
     dependency: "direct main"
     description:
@@ -435,7 +449,7 @@ packages:
       name: github
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "8.2.1"
+    version: "8.2.3"
   glob:
     dependency: transitive
     description:
@@ -596,7 +610,7 @@ packages:
       name: mime
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.0"
+    version: "1.0.1"
   motion_sensors:
     dependency: transitive
     description:
@@ -736,7 +750,7 @@ packages:
       name: pdf
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.6.0"
+    version: "3.6.1"
   pedantic:
     dependency: transitive
     description:
@@ -1163,7 +1177,7 @@ packages:
       name: win32
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.2.9"
+    version: "2.2.10"
   wkt_parser:
     dependency: transitive
     description:

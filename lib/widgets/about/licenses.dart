@@ -1,3 +1,4 @@
+import 'package:aves/app_flavor.dart';
 import 'package:aves/ref/brand_colors.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/basic/link_chip.dart';
@@ -6,6 +7,7 @@ import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/common/identity/buttons.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class Licenses extends StatefulWidget {
   const Licenses({Key? key}) : super(key: key);
@@ -22,7 +24,7 @@ class _LicensesState extends State<Licenses> {
   void initState() {
     super.initState();
     _platform = List<Dependency>.from(Constants.androidDependencies);
-    _flutterPlugins = List<Dependency>.from(Constants.flutterPlugins);
+    _flutterPlugins = List<Dependency>.from(Constants.flutterPlugins(context.read<AppFlavor>()));
     _flutterPackages = List<Dependency>.from(Constants.flutterPackages);
     _dartPackages = List<Dependency>.from(Constants.dartPackages);
     _sortPackages();

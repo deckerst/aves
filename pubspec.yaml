@@ -7,11 +7,16 @@ publish_to: none
 environment:
   sdk: '>=2.14.0 <3.0.0'
 
+# use `scripts/apply_flavor_{flavor}.sh` to set the right dependencies for the flavor
 dependencies:
   flutter:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
+  aves_report:
+    path: plugins/aves_report
+  aves_report_platform:
+    path: plugins/aves_report_crashlytics
 # TODO TLAD as of 2021/10/18, latest version (v0.11.0) is incompatible with Flutter v2.5
   charts_flutter:
     git:
@@ -33,8 +38,6 @@ dependencies:
     git:
       url: git://github.com/deckerst/fijkplayer.git
       ref: aves
-  firebase_core:
-  firebase_crashlytics:
   flex_color_picker:
   fluster:
   flutter_highlight:
@@ -116,7 +119,7 @@ flutter:
 # Test driver
 
 # run (any device):
-# % flutter drive --flavor universal -t test_driver/driver_app.dart --profile
+# % flutter drive --flavor play -t test_driver/driver_play.dart --profile
 
 # capture shaders in profile mode (real device only):
-# % flutter drive --flavor universal -t test_driver/driver_app.dart --profile --cache-sksl --write-sksl-on-exit shaders.sksl.json
+# % flutter drive --flavor play -t test_driver/driver_play.dart --profile --cache-sksl --write-sksl-on-exit shaders.sksl.json

@@ -2,11 +2,10 @@ import 'package:aves/services/android_debug_service.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
-class DebugFirebaseSection extends StatelessWidget {
-  const DebugFirebaseSection({Key? key}) : super(key: key);
+class DebugErrorReportingSection extends StatelessWidget {
+  const DebugErrorReportingSection({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -51,10 +50,7 @@ class DebugFirebaseSection extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
           child: InfoRowGroup(
-            info: {
-              'Firebase data collection enabled': '${Firebase.app().isAutomaticDataCollectionEnabled}',
-              'Crashlytics collection enabled': '${reportService.isCollectionEnabled}',
-            },
+            info: reportService.state,
           ),
         )
       ],
