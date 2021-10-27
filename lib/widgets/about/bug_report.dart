@@ -133,6 +133,7 @@ class _BugReportState extends State<BugReport> with FeedbackMixin {
       'Aves version: ${packageInfo.version}-$flavor (Build ${packageInfo.buildNumber})',
       'Flutter version: ${version['frameworkVersion']} (Channel ${version['channel']})',
       'Android version: ${androidInfo.version.release} (SDK ${androidInfo.version.sdkInt})',
+      'Android build: ${androidInfo.display}',
       'Device: ${androidInfo.manufacturer} ${androidInfo.model}',
       'Google Play services: ${hasPlayServices ? 'ready' : 'not available'}',
     ].join('\n');
