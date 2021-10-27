@@ -72,7 +72,9 @@ class PlatformMetadataFetchService implements MetadataFetchService {
         result['contentId'] = entry.contentId;
         return CatalogMetadata.fromMap(result);
       } on PlatformException catch (e, stack) {
-        await reportService.recordError(e, stack);
+        if (!entry.isMissingAtPath) {
+          await reportService.recordError(e, stack);
+        }
       }
       return null;
     }
@@ -98,7 +100,9 @@ class PlatformMetadataFetchService implements MetadataFetchService {
       }) as Map;
       return OverlayMetadata.fromMap(result);
     } on PlatformException catch (e, stack) {
-      await reportService.recordError(e, stack);
+      if (!entry.isMissingAtPath) {
+        await reportService.recordError(e, stack);
+      }
     }
     return null;
   }
@@ -140,7 +144,9 @@ class PlatformMetadataFetchService implements MetadataFetchService {
       }) as Map;
       return PanoramaInfo.fromMap(result);
     } on PlatformException catch (e, stack) {
-      await reportService.recordError(e, stack);
+      if (!entry.isMissingAtPath) {
+        await reportService.recordError(e, stack);
+      }
     }
     return null;
   }
@@ -173,7 +179,9 @@ class PlatformMetadataFetchService implements MetadataFetchService {
         'prop': prop,
       });
     } on PlatformException catch (e, stack) {
-      await reportService.recordError(e, stack);
+      if (!entry.isMissingAtPath) {
+        await reportService.recordError(e, stack);
+      }
     }
     return null;
   }
