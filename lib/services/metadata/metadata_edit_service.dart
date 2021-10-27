@@ -44,7 +44,9 @@ class PlatformMetadataEditService implements MetadataEditService {
       });
       if (result != null) return (result as Map).cast<String, dynamic>();
     } on PlatformException catch (e, stack) {
-      await reportService.recordError(e, stack);
+      if (!entry.isMissingAtPath) {
+        await reportService.recordError(e, stack);
+      }
     }
     return {};
   }
@@ -58,7 +60,9 @@ class PlatformMetadataEditService implements MetadataEditService {
       });
       if (result != null) return (result as Map).cast<String, dynamic>();
     } on PlatformException catch (e, stack) {
-      await reportService.recordError(e, stack);
+      if (!entry.isMissingAtPath) {
+        await reportService.recordError(e, stack);
+      }
     }
     return {};
   }
@@ -74,7 +78,9 @@ class PlatformMetadataEditService implements MetadataEditService {
       });
       if (result != null) return (result as Map).cast<String, dynamic>();
     } on PlatformException catch (e, stack) {
-      await reportService.recordError(e, stack);
+      if (!entry.isMissingAtPath) {
+        await reportService.recordError(e, stack);
+      }
     }
     return {};
   }
@@ -88,7 +94,9 @@ class PlatformMetadataEditService implements MetadataEditService {
       });
       if (result != null) return (result as Map).cast<String, dynamic>();
     } on PlatformException catch (e, stack) {
-      await reportService.recordError(e, stack);
+      if (!entry.isMissingAtPath) {
+        await reportService.recordError(e, stack);
+      }
     }
     return {};
   }
