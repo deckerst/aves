@@ -54,7 +54,6 @@ class MagnifierController {
 
   bool get isZooming => scaleState.state == ScaleState.zoomedIn || scaleState.state == ScaleState.zoomedOut;
 
-  /// Closes streams and removes eventual listeners.
   void dispose() {
     _stateStreamController.close();
     _scaleBoundariesStreamController.close();
@@ -83,19 +82,19 @@ class MagnifierController {
 
     previousScaleState = _currentScaleState;
     _currentScaleState = ScaleStateChange(state: newValue, source: source, childFocalPoint: childFocalPoint);
-    _scaleStateChangeStreamController.sink.add(scaleState);
+    _scaleStateChangeStreamController.add(scaleState);
   }
 
   void _setState(MagnifierState state) {
     if (_currentState == state) return;
     _currentState = state;
-    _stateStreamController.sink.add(state);
+    _stateStreamController.add(state);
   }
 
   void setScaleBoundaries(ScaleBoundaries scaleBoundaries) {
     if (_scaleBoundaries == scaleBoundaries) return;
     _scaleBoundaries = scaleBoundaries;
-    _scaleBoundariesStreamController.sink.add(scaleBoundaries);
+    _scaleBoundariesStreamController.add(scaleBoundaries);
 
     if (!isZooming) {
       update(
@@ -108,7 +107,7 @@ class MagnifierController {
   void _setScaleState(ScaleStateChange scaleState) {
     if (_currentScaleState == scaleState) return;
     _currentScaleState = scaleState;
-    _scaleStateChangeStreamController.sink.add(_currentScaleState);
+    _scaleStateChangeStreamController.add(_currentScaleState);
   }
 
   double? getScaleForScaleState(ScaleState scaleState) {

@@ -19,7 +19,6 @@ import com.bumptech.glide.module.LibraryGlideModule
 import com.bumptech.glide.signature.ObjectKey
 import deckers.thibault.aves.metadata.MultiTrackMedia
 
-
 @GlideModule
 class MultiTrackImageGlideModule : LibraryGlideModule() {
     override fun registerComponents(context: Context, glide: Glide, registry: Registry) {
