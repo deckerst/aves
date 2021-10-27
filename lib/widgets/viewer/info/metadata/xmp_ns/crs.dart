@@ -8,11 +8,13 @@ class XmpCrsNamespace extends XmpNamespace {
   static final cgbcPattern = RegExp(ns + r':CircularGradientBasedCorrections\[(\d+)\]/(.*)');
   static final gbcPattern = RegExp(ns + r':GradientBasedCorrections\[(\d+)\]/(.*)');
   static final pbcPattern = RegExp(ns + r':PaintBasedCorrections\[(\d+)\]/(.*)');
+  static final retouchAreasPattern = RegExp(ns + r':RetouchAreas\[(\d+)\]/(.*)');
   static final lookPattern = RegExp(ns + r':Look/(.*)');
 
   final cgbc = <int, Map<String, String>>{};
   final gbc = <int, Map<String, String>>{};
   final pbc = <int, Map<String, String>>{};
+  final retouchAreas = <int, Map<String, String>>{};
   final look = <String, String>{};
 
   XmpCrsNamespace(Map<String, String> rawProps) : super(ns, rawProps);
@@ -23,6 +25,7 @@ class XmpCrsNamespace extends XmpNamespace {
     var hasIndexedStructs = extractIndexedStruct(prop, cgbcPattern, cgbc);
     hasIndexedStructs |= extractIndexedStruct(prop, gbcPattern, gbc);
     hasIndexedStructs |= extractIndexedStruct(prop, pbcPattern, pbc);
+    hasIndexedStructs |= extractIndexedStruct(prop, retouchAreasPattern, retouchAreas);
     return hasStructs || hasIndexedStructs;
   }
 
@@ -47,6 +50,11 @@ class XmpCrsNamespace extends XmpNamespace {
           XmpStructArrayCard(
             title: 'Paint Based Corrections',
             structByIndex: pbc,
+          ),
+        if (retouchAreas.isNotEmpty)
+          XmpStructArrayCard(
+            title: 'Retouch Areas',
+            structByIndex: retouchAreas,
           ),
       ];
 }
