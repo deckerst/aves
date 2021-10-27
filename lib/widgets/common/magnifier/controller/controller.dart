@@ -12,6 +12,7 @@ class MagnifierController {
   final StreamController<ScaleBoundaries> _scaleBoundariesStreamController = StreamController.broadcast();
   final StreamController<ScaleStateChange> _scaleStateChangeStreamController = StreamController.broadcast();
 
+  bool _disposed = false;
   late MagnifierState _currentState, initial, previousState;
   ScaleBoundaries? _scaleBoundaries;
   late ScaleStateChange _currentScaleState, previousScaleState;
@@ -55,6 +56,7 @@ class MagnifierController {
   bool get isZooming => scaleState.state == ScaleState.zoomedIn || scaleState.state == ScaleState.zoomedOut;
 
   void dispose() {
+    _disposed = true;
     _stateStreamController.close();
     _scaleBoundariesStreamController.close();
     _scaleStateChangeStreamController.close();
@@ -78,7 +80,7 @@ class MagnifierController {
   }
 
   void setScaleState(ScaleState newValue, ChangeSource source, {Offset? childFocalPoint}) {
-    if (_currentScaleState.state == newValue) return;
+    if (_disposed || _currentScaleState.state == newValue) return;
 
     previousScaleState = _currentScaleState;
     _currentScaleState = ScaleStateChange(state: newValue, source: source, childFocalPoint: childFocalPoint);
@@ -86,13 +88,15 @@ class MagnifierController {
   }
 
   void _setState(MagnifierState state) {
-    if (_currentState == state) return;
+    if (_disposed || _currentState == state) return;
+
     _currentState = state;
     _stateStreamController.add(state);
   }
 
   void setScaleBoundaries(ScaleBoundaries scaleBoundaries) {
-    if (_scaleBoundaries == scaleBoundaries) return;
+    if (_disposed || _scaleBoundaries == scaleBoundaries) return;
+
     _scaleBoundaries = scaleBoundaries;
     _scaleBoundariesStreamController.add(scaleBoundaries);
 
@@ -105,7 +109,8 @@ class MagnifierController {
   }
 
   void _setScaleState(ScaleStateChange scaleState) {
-    if (_currentScaleState == scaleState) return;
+    if (_disposed || _currentScaleState == scaleState) return;
+
     _currentScaleState = scaleState;
     _scaleStateChangeStreamController.add(_currentScaleState);
   }
