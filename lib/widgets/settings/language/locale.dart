@@ -46,6 +46,8 @@ class LocaleTile extends StatelessWidget {
         return 'English';
       case 'ko':
         return '한국어';
+      case 'ru':
+        return 'Русский';
     }
     return locale.toString();
   }
