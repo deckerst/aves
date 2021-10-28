@@ -395,8 +395,10 @@ class _DateRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final locale = context.l10n.localeName;
+    final use24hour = context.select<MediaQueryData, bool>((v) => v.alwaysUse24HourFormat);
+
     final date = entry.bestDate;
-    final dateText = date != null ? formatDateTime(date, locale) : Constants.overlayUnknown;
+    final dateText = date != null ? formatDateTime(date, locale, use24hour) : Constants.overlayUnknown;
     final resolutionText = entry.isSvg
         ? entry.aspectRatioText
         : entry.isSized

@@ -17,6 +17,7 @@ import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class BasicSection extends StatelessWidget {
   final AvesEntry entry;
@@ -41,6 +42,7 @@ class BasicSection extends StatelessWidget {
     final l10n = context.l10n;
     final infoUnknown = l10n.viewerInfoUnknown;
     final locale = l10n.localeName;
+    final use24hour = context.select<MediaQueryData, bool>((v) => v.alwaysUse24HourFormat);
 
     return AnimatedBuilder(
         animation: entry.metadataChangeNotifier,
@@ -49,7 +51,7 @@ class BasicSection extends StatelessWidget {
           // inserting ZWSP (\u200B) between characters does help, but it messes with width and height computation (another Flutter issue)
           final title = entry.bestTitle ?? infoUnknown;
           final date = entry.bestDate;
-          final dateText = date != null ? formatDateTime(date, locale) : infoUnknown;
+          final dateText = date != null ? formatDateTime(date, locale, use24hour) : infoUnknown;
           final showResolution = !entry.isSvg && entry.isSized;
           final sizeText = entry.sizeBytes != null ? formatFilesize(entry.sizeBytes!) : infoUnknown;
           final path = entry.path;
