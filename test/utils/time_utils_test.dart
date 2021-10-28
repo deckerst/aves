@@ -17,13 +17,15 @@ void main() {
   });
 
   test('Parse dates', () {
-    expect(parseUnknownDateFormat('1600995564713'), DateTime(2020, 09, 25, 09, 59, 24, 713));
-    expect(parseUnknownDateFormat('pre1600995564713suf'), DateTime(2020, 09, 25, 09, 59, 24, 713));
+    final localOffset = DateTime.now().timeZoneOffset;
 
-    expect(parseUnknownDateFormat('1600995564'), DateTime(2020, 09, 25, 09, 59, 24, 0));
-    expect(parseUnknownDateFormat('pre1600995564suf'), DateTime(2020, 09, 25, 09, 59, 24, 0));
+    expect(parseUnknownDateFormat('1600995564713'), DateTime(2020, 09, 25, 0, 59, 24, 713).add(localOffset));
+    expect(parseUnknownDateFormat('pre1600995564713suf'), DateTime(2020, 09, 25, 0, 59, 24, 713).add(localOffset));
 
-    expect(parseUnknownDateFormat('IMG_20210901_142523_783'), DateTime(2021, 09, 1, 14, 25, 23, 783));
-    expect(parseUnknownDateFormat('Screenshot_20211028-115056_Aves'), DateTime(2021, 10, 28, 11, 50, 56, 0));
+    expect(parseUnknownDateFormat('1600995564'), DateTime(2020, 09, 25, 0, 59, 24, 0).add(localOffset));
+    expect(parseUnknownDateFormat('pre1600995564suf'), DateTime(2020, 09, 25, 0, 59, 24, 0).add(localOffset));
+
+    expect(parseUnknownDateFormat('IMG_20210901_142523_783'), DateTime(2021, 09, 1, 5, 25, 23, 783).add(localOffset));
+    expect(parseUnknownDateFormat('Screenshot_20211028-115056_Aves'), DateTime(2021, 10, 28, 2, 50, 56, 0).add(localOffset));
   });
 }
