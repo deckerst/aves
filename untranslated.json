@@ -1,5 +1,10 @@
 {
+  "ko": [
+    "editEntryDateDialogFromTitle"
+  ],
+
   "ru": [
+    "editEntryDateDialogFromTitle",
     "aboutCreditsTranslators"
   ]
 }
