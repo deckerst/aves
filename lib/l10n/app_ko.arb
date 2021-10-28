@@ -422,8 +422,6 @@
   "settingsUnitSystemTitle": "단위법",
 
   "statsPageTitle": "통계",
-  "statsImage": "{count, plural, other{사진}}",
-  "statsVideo": "{count, plural, other{동영상}}",
   "statsWithGps": "{count, plural, other{{count}개 위치가 있음}}",
   "statsTopCountries": "국가 랭킹",
   "statsTopPlaces": "장소 랭킹",

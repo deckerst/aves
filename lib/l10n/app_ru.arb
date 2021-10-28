@@ -5,8 +5,8 @@
   "welcomeTermsToggle": "Я согласен с условиями и положениями",
   "itemCount": "{count, plural, =1{1 объект} few{{count} объекта} other{{count} объектов}}",
 
-  "timeSeconds": "{seconds, plural, =1{1 секунда} few{{count} секунды} other{{seconds} секунд}}",
-  "timeMinutes": "{minutes, plural, =1{1 минута} few{{count} минуты}other{{minutes} минут}}",
+  "timeSeconds": "{seconds, plural, =1{1 секунда} few{{seconds} секунды} other{{seconds} секунд}}",
+  "timeMinutes": "{minutes, plural, =1{1 минута} few{{minutes} минуты} other{{minutes} минут}}",
 
   "applyButtonLabel": "ПРИМЕНИТЬ",
   "deleteButtonLabel": "УДАЛИТЬ",
@@ -217,7 +217,6 @@
   "aboutCredits": "Благодарности",
   "aboutCreditsWorldAtlas1": "Это приложение использует файл TopoJSON из",
   "aboutCreditsWorldAtlas2": "под лицензией ISC.",
-  "aboutCreditsTranslators": "Translators:",
 
   "aboutLicenses": "Лицензии с открытым исходным кодом",
   "aboutLicensesBanner": "Это приложение использует следующие пакеты и библиотеки с открытым исходным кодом.",
@@ -252,7 +251,7 @@
   "dateYesterday": "Вчера",
   "dateThisMonth": "В этом месяце",
   "collectionDeleteFailureFeedback": "{count, plural, =1{Не удалось удалить 1 объект} few{Не удалось удалить {count} объекта} other{Не удалось удалить {count} объектов}}",
-  "collectionCopyFailureFeedback": "{count, plural, =1{Не удалось скопировать 1 объект} few{Не удалось скопировать {count} объекта}} other{Не удалось скопировать {count} объектов}}",
+  "collectionCopyFailureFeedback": "{count, plural, =1{Не удалось скопировать 1 объект} few{Не удалось скопировать {count} объекта} other{Не удалось скопировать {count} объектов}}",
   "collectionMoveFailureFeedback": "{count, plural, =1{Не удалось переместить 1 объект} few{Не удалось переместить {count} объекта} other{Не удалось переместить {count} объектов}}",
   "collectionExportFailureFeedback": "{count, plural, =1{Не удалось экспортировать 1 страницу} few{Не удалось экспортировать {count} страницы} other{Не удалось экспортировать {count} страниц}}",
   "collectionCopySuccessFeedback": "{count, plural, =1{Скопирован 1 объект} few{Скопировано {count} объекта} other{Скопировано {count} объектов}}",
@@ -422,8 +421,6 @@
   "settingsUnitSystemTitle": "Единицы измерения",
 
   "statsPageTitle": "Статистика",
-  "statsImage": "{count, plural, =1{изображение} few{изображения} other{изображений)}}",
-  "statsVideo": "{count, plural, =1{видео} few{видео} other{видео}}",
   "statsWithGps": "{count, plural, =1{1 объект с местоположением} few{{count} объекта с местоположением} other{{count} объектов с местоположением}}",
   "statsTopCountries": "Топ стран",
   "statsTopPlaces": "Топ локаций",

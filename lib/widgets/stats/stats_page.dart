@@ -22,6 +22,7 @@ import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
@@ -78,8 +79,8 @@ class StatsPage extends StatelessWidget {
         alignment: WrapAlignment.center,
         crossAxisAlignment: WrapCrossAlignment.center,
         children: [
-          _buildMimeDonut(context, (sum) => context.l10n.statsImage(sum), imagesByMimeTypes, animate),
-          _buildMimeDonut(context, (sum) => context.l10n.statsVideo(sum), videoByMimeTypes, animate),
+          _buildMimeDonut(context, AIcons.image, imagesByMimeTypes, animate),
+          _buildMimeDonut(context, AIcons.video, videoByMimeTypes, animate),
         ],
       );
 
@@ -108,7 +109,10 @@ class StatsPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 8),
-            Text(context.l10n.statsWithGps(withGpsCount)),
+            Text(
+              context.l10n.statsWithGps(withGpsCount),
+              textAlign: TextAlign.center,
+            ),
           ],
         ),
       );
@@ -136,7 +140,7 @@ class StatsPage extends StatelessWidget {
 
   Widget _buildMimeDonut(
     BuildContext context,
-    String Function(int) label,
+    IconData icon,
     Map<String, int> byMimeTypes,
     bool animate,
   ) {
@@ -180,9 +184,15 @@ class StatsPage extends StatelessWidget {
               ),
             ),
             Center(
-              child: Text(
-                '$sum\n${label(sum)}',
-                textAlign: TextAlign.center,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(icon),
+                  Text(
+                    '$sum',
+                    textAlign: TextAlign.center,
+                  ),
+                ],
               ),
             ),
           ],

@@ -858,18 +858,6 @@
 
   "statsPageTitle": "Stats",
   "@statsPageTitle": {},
-  "statsImage": "{count, plural, =1{image} other{images}}",
-  "@statsImage": {
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "statsVideo": "{count, plural, =1{video} other{videos}}",
-  "@statsVideo": {
-    "placeholders": {
-      "count": {}
-    }
-  },
   "statsWithGps": "{count, plural, =1{1 item with location} other{{count} items with location}}",
   "@statsWithGps": {
     "placeholders": {
