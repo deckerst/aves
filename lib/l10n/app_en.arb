@@ -360,6 +360,8 @@
   "@editEntryDateDialogSet": {},
   "editEntryDateDialogShift": "Shift",
   "@editEntryDateDialogShift": {},
+  "editEntryDateDialogFromTitle": "From title",
+  "@editEntryDateDialogFromTitle": {},
   "editEntryDateDialogClear": "Clear",
   "@editEntryDateDialogClear": {},
   "editEntryDateDialogFieldSelection": "Field selection",
