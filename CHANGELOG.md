@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+
+- Russian translation (thanks D3ZOXY)
+
+### Changed
+
+- use build flavors to match distribution channels: `play` (same as original) and `izzy` (no Crashlytics)
+- use 12/24 hour format settings from device to display times
+
 ## [v1.5.4] - 2021-10-21
 
 ### Added
