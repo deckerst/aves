@@ -223,6 +223,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
                           title: context.l10n.collectionActionEdit,
                           items: [
                             _toMenuItem(EntrySetAction.editDate, enabled: hasSelection),
+                            _toMenuItem(EntrySetAction.removeMetadata, enabled: hasSelection),
                           ],
                         ),
                       ),
@@ -303,6 +304,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       case EntrySetAction.map:
       case EntrySetAction.stats:
       case EntrySetAction.editDate:
+      case EntrySetAction.removeMetadata:
         _actionDelegate.onActionSelected(context, action);
         break;
       case EntrySetAction.select:

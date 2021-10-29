@@ -388,7 +388,7 @@
   "removeEntryMetadataDialogMore": "More",
   "@removeEntryMetadataDialogMore": {},
 
-  "removeEntryMetadataMotionPhotoXmpWarningDialogMessage":  "XMP is required to play the video inside this motion photo. Are you sure you want to remove it?",
+  "removeEntryMetadataMotionPhotoXmpWarningDialogMessage": "XMP is required to play the video inside a motion photo. Are you sure you want to remove it?",
   "@removeEntryMetadataMotionPhotoXmpWarningDialogMessage": {},
 
   "videoSpeedDialogLabel": "Playback speed",

@@ -21,6 +21,7 @@ enum EntrySetAction {
   move,
   rescan,
   editDate,
+  removeMetadata,
 }
 
 class EntrySetActions {
@@ -70,6 +71,8 @@ extension ExtraEntrySetAction on EntrySetAction {
         return context.l10n.collectionActionRescan;
       case EntrySetAction.editDate:
         return context.l10n.entryInfoActionEditDate;
+      case EntrySetAction.removeMetadata:
+        return context.l10n.entryInfoActionRemoveMetadata;
     }
   }
 
@@ -111,6 +114,8 @@ extension ExtraEntrySetAction on EntrySetAction {
         return AIcons.refresh;
       case EntrySetAction.editDate:
         return AIcons.date;
+      case EntrySetAction.removeMetadata:
+        return AIcons.clear;
     }
   }
 }
