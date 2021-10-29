@@ -636,7 +636,7 @@ class AvesEntry {
   }
 
   Future<bool> editDate(DateModifier modifier) async {
-    if (modifier.action == DateEditAction.fromTitle) {
+    if (modifier.action == DateEditAction.extractFromTitle) {
       final _title = bestTitle;
       if (_title == null) return false;
       final date = parseUnknownDateFormat(_title);

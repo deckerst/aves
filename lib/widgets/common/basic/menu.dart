@@ -1,4 +1,6 @@
+import 'package:aves/theme/durations.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class MenuRow extends StatelessWidget {
   final String text;
@@ -43,5 +45,77 @@ class MenuIconTheme extends StatelessWidget {
       ),
       child: child,
     );
+  }
+}
+
+class PopupMenuItemExpansionPanel<T> extends StatefulWidget {
+  final bool enabled;
+  final IconData icon;
+  final String title;
+  final List<PopupMenuItem<T>> items;
+
+  const PopupMenuItemExpansionPanel({
+    Key? key,
+    this.enabled = true,
+    required this.icon,
+    required this.title,
+    required this.items,
+  }) : super(key: key);
+
+  @override
+  _PopupMenuItemExpansionPanelState createState() => _PopupMenuItemExpansionPanelState<T>();
+}
+
+class _PopupMenuItemExpansionPanelState<T> extends State<PopupMenuItemExpansionPanel<T>> {
+  bool _isExpanded = false;
+
+  // ref `_kMenuHorizontalPadding` used in `PopupMenuItem`
+  static const double _horizontalPadding = 16;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    var style = PopupMenuTheme.of(context).textStyle ?? theme.textTheme.subtitle1!;
+    if (!widget.enabled) {
+      style = style.copyWith(color: theme.disabledColor);
+    }
+    final animationDuration = context.select<DurationsData, Duration>((v) => v.expansionTileAnimation);
+
+    Widget child = ExpansionPanelList(
+      expansionCallback: (index, isExpanded) {
+        setState(() => _isExpanded = !isExpanded);
+      },
+      animationDuration: animationDuration,
+      expandedHeaderPadding: EdgeInsets.zero,
+      elevation: 0,
+      children: [
+        ExpansionPanel(
+          headerBuilder: (context, isExpanded) => DefaultTextStyle(
+            style: style,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: _horizontalPadding),
+              child: MenuRow(
+                text: widget.title,
+                icon: Icon(widget.icon),
+              ),
+            ),
+          ),
+          body: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const PopupMenuDivider(height: 0),
+              ...widget.items,
+              const PopupMenuDivider(height: 0),
+            ],
+          ),
+          isExpanded: _isExpanded,
+          canTapOnHeader: true,
+        ),
+      ],
+    );
+    if (!widget.enabled) {
+      child = IgnorePointer(child: child);
+    }
+    return child;
   }
 }

@@ -11,6 +11,7 @@ import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
+import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/collection/entry_set_action_delegate.dart';
 import 'package:aves/widgets/collection/filter_bar.dart';
 import 'package:aves/widgets/common/app_bar_subtitle.dart';
@@ -143,14 +144,16 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   }
 
   Widget? _buildAppBarTitle(bool isSelecting) {
+    final l10n = context.l10n;
+
     if (isSelecting) {
       return Selector<Selection<AvesEntry>, int>(
         selector: (context, selection) => selection.selectedItems.length,
-        builder: (context, count, child) => Text(context.l10n.collectionSelectionPageTitle(count)),
+        builder: (context, count, child) => Text(l10n.collectionSelectionPageTitle(count)),
       );
     } else {
       final appMode = context.watch<ValueNotifier<AppMode>>().value;
-      Widget title = Text(appMode.isPicking ? context.l10n.collectionPickPageTitle : context.l10n.collectionPageTitle);
+      Widget title = Text(appMode.isPicking ? l10n.collectionPickPageTitle : l10n.collectionPageTitle);
       if (appMode == AppMode.main) {
         title = SourceStateAwareAppBarTitle(
           title: title,
@@ -209,7 +212,21 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
                         enabled: hasItems,
                       ),
                     const PopupMenuDivider(),
-                    if (isSelecting) ...EntrySetActions.selection.where((v) => !selectionQuickActions.contains(v)).map((v) => _toMenuItem(v, enabled: hasSelection)),
+                    if (isSelecting) ...[
+                      ...EntrySetActions.selection.where((v) => !selectionQuickActions.contains(v)).map((v) => _toMenuItem(v, enabled: hasSelection)),
+                      PopupMenuItem(
+                        enabled: hasSelection,
+                        padding: EdgeInsets.zero,
+                        child: PopupMenuItemExpansionPanel<EntrySetAction>(
+                          enabled: hasSelection,
+                          icon: AIcons.edit,
+                          title: context.l10n.collectionActionEdit,
+                          items: [
+                            _toMenuItem(EntrySetAction.editDate, enabled: hasSelection),
+                          ],
+                        ),
+                      ),
+                    ],
                     if (!isSelecting)
                       ...[
                         EntrySetAction.map,
@@ -285,6 +302,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       case EntrySetAction.rescan:
       case EntrySetAction.map:
       case EntrySetAction.stats:
+      case EntrySetAction.editDate:
         _actionDelegate.onActionSelected(context, action);
         break;
       case EntrySetAction.select:
@@ -302,16 +320,19 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       case EntrySetAction.group:
         final value = await showDialog<EntryGroupFactor>(
           context: context,
-          builder: (context) => AvesSelectionDialog<EntryGroupFactor>(
-            initialValue: settings.collectionSectionFactor,
-            options: {
-              EntryGroupFactor.album: context.l10n.collectionGroupAlbum,
-              EntryGroupFactor.month: context.l10n.collectionGroupMonth,
-              EntryGroupFactor.day: context.l10n.collectionGroupDay,
-              EntryGroupFactor.none: context.l10n.collectionGroupNone,
-            },
-            title: context.l10n.collectionGroupTitle,
-          ),
+          builder: (context) {
+            final l10n = context.l10n;
+            return AvesSelectionDialog<EntryGroupFactor>(
+              initialValue: settings.collectionSectionFactor,
+              options: {
+                EntryGroupFactor.album: l10n.collectionGroupAlbum,
+                EntryGroupFactor.month: l10n.collectionGroupMonth,
+                EntryGroupFactor.day: l10n.collectionGroupDay,
+                EntryGroupFactor.none: l10n.collectionGroupNone,
+              },
+              title: l10n.collectionGroupTitle,
+            );
+          },
         );
         // wait for the dialog to hide as applying the change may block the UI
         await Future.delayed(Durations.dialogTransitionAnimation * timeDilation);

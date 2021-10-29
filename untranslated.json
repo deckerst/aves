@@ -1,10 +1,20 @@
 {
   "ko": [
-    "editEntryDateDialogFromTitle"
+    "unsupportedTypeDialogTitle",
+    "unsupportedTypeDialogMessage",
+    "editEntryDateDialogExtractFromTitle",
+    "collectionActionEdit",
+    "collectionEditFailureFeedback",
+    "collectionEditSuccessFeedback"
   ],
 
   "ru": [
-    "editEntryDateDialogFromTitle",
-    "aboutCreditsTranslators"
+    "unsupportedTypeDialogTitle",
+    "unsupportedTypeDialogMessage",
+    "editEntryDateDialogExtractFromTitle",
+    "aboutCreditsTranslators",
+    "collectionActionEdit",
+    "collectionEditFailureFeedback",
+    "collectionEditSuccessFeedback"
   ]
 }

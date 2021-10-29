@@ -289,6 +289,18 @@
     }
   },
 
+  "unsupportedTypeDialogTitle": "Unsupported Types",
+  "@unsupportedTypeDialogTitle": {},
+  "unsupportedTypeDialogMessage": "{count, plural, =1{This operation is not supported for items of the following type: {types}.} other{This operation is not supported for items of the following types: {types}.}}",
+  "@unsupportedTypeDialogMessage": {
+    "placeholders": {
+      "count": {},
+      "types": {
+        "type": "String"
+      }
+    }
+  },
+
   "nameConflictDialogSingleSourceMessage": "Some files in the destination folder have the same name.",
   "@nameConflictDialogSingleSourceMessage": {},
   "nameConflictDialogMultipleSourceMessage": "Some files have the same name.",
@@ -360,8 +372,8 @@
   "@editEntryDateDialogSet": {},
   "editEntryDateDialogShift": "Shift",
   "@editEntryDateDialogShift": {},
-  "editEntryDateDialogFromTitle": "From title",
-  "@editEntryDateDialogFromTitle": {},
+  "editEntryDateDialogExtractFromTitle": "Extract from title",
+  "@editEntryDateDialogExtractFromTitle": {},
   "editEntryDateDialogClear": "Clear",
   "@editEntryDateDialogClear": {},
   "editEntryDateDialogFieldSelection": "Field selection",
@@ -493,6 +505,8 @@
   "@collectionActionMove": {},
   "collectionActionRescan": "Rescan",
   "@collectionActionRescan": {},
+  "collectionActionEdit": "Edit",
+  "@collectionActionEdit": {},
 
   "collectionSortTitle": "Sort",
   "@collectionSortTitle": {},
@@ -540,6 +554,12 @@
       "count": {}
     }
   },
+  "collectionEditFailureFeedback": "{count, plural, =1{Failed to edit 1 item} other{Failed to edit {count} items}}",
+  "@collectionEditFailureFeedback": {
+    "placeholders": {
+      "count": {}
+    }
+  },
   "collectionExportFailureFeedback": "{count, plural, =1{Failed to export 1 page} other{Failed to export {count} pages}}",
   "@collectionExportFailureFeedback": {
     "placeholders": {
@@ -554,6 +574,12 @@
   },
   "collectionMoveSuccessFeedback": "{count, plural, =1{Moved 1 item} other{Moved {count} items}}",
   "@collectionMoveSuccessFeedback": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "collectionEditSuccessFeedback": "{count, plural, =1{Edited 1 item} other{Edited {count} items}}",
+  "@collectionEditSuccessFeedback": {
     "placeholders": {
       "count": {}
     }

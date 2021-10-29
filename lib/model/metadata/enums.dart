@@ -8,7 +8,7 @@ enum MetadataField {
 enum DateEditAction {
   set,
   shift,
-  fromTitle,
+  extractFromTitle,
   clear,
 }
 

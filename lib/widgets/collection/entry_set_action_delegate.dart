@@ -6,6 +6,7 @@ import 'package:aves/model/actions/move_type.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/highlight.dart';
+import 'package:aves/model/metadata/date_modifier.dart';
 import 'package:aves/model/selection.dart';
 import 'package:aves/model/source/analysis_controller.dart';
 import 'package:aves/model/source/collection_lens.dart';
@@ -14,6 +15,7 @@ import 'package:aves/services/common/image_op_events.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/media/enums.dart';
 import 'package:aves/theme/durations.dart';
+import 'package:aves/utils/mime_utils.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
@@ -21,6 +23,7 @@ import 'package:aves/widgets/common/action_mixins/size_aware.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
+import 'package:aves/widgets/dialogs/edit_entry_date_dialog.dart';
 import 'package:aves/widgets/filter_grids/album_pick.dart';
 import 'package:aves/widgets/map/map_page.dart';
 import 'package:aves/widgets/stats/stats_page.dart';
@@ -46,6 +49,9 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
         break;
       case EntrySetAction.rescan:
         _rescan(context);
+        break;
+      case EntrySetAction.editDate:
+        _editDate(context);
         break;
       case EntrySetAction.map:
         _goToMap(context);
@@ -79,6 +85,59 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     source.analyze(controller, entries: selectedItems);
 
     selection.browse();
+  }
+
+  Future<void> _showDeleteDialog(BuildContext context) async {
+    final source = context.read<CollectionSource>();
+    final selection = context.read<Selection<AvesEntry>>();
+    final selectedItems = _getExpandedSelectedItems(selection);
+    final selectionDirs = selectedItems.map((e) => e.directory).whereNotNull().toSet();
+    final todoCount = selectedItems.length;
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AvesDialog(
+          context: context,
+          content: Text(context.l10n.deleteEntriesConfirmationDialogMessage(todoCount)),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: Text(context.l10n.deleteButtonLabel),
+            ),
+          ],
+        );
+      },
+    );
+    if (confirmed == null || !confirmed) return;
+
+    if (!await checkStoragePermissionForAlbums(context, selectionDirs, entries: selectedItems)) return;
+
+    source.pauseMonitoring();
+    showOpReport<ImageOpEvent>(
+      context: context,
+      opStream: mediaFileService.delete(selectedItems),
+      itemCount: todoCount,
+      onDone: (processed) async {
+        final deletedUris = processed.where((event) => event.success).map((event) => event.uri).toSet();
+        await source.removeEntries(deletedUris);
+        selection.browse();
+        source.resumeMonitoring();
+
+        final deletedCount = deletedUris.length;
+        if (deletedCount < todoCount) {
+          final count = todoCount - deletedCount;
+          showFeedback(context, context.l10n.collectionDeleteFailureFeedback(count));
+        }
+
+        // cleanup
+        await storageService.deleteEmptyDirectories(selectionDirs);
+      },
+    );
   }
 
   Future<void> _moveSelection(BuildContext context, {required MoveType moveType}) async {
@@ -213,55 +272,74 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     );
   }
 
-  Future<void> _showDeleteDialog(BuildContext context) async {
+  Future<void> _editDate(BuildContext context) async {
+    final l10n = context.l10n;
     final source = context.read<CollectionSource>();
     final selection = context.read<Selection<AvesEntry>>();
     final selectedItems = _getExpandedSelectedItems(selection);
-    final selectionDirs = selectedItems.map((e) => e.directory).whereNotNull().toSet();
-    final todoCount = selectedItems.length;
 
-    final confirmed = await showDialog<bool>(
+    final bySupported = groupBy<AvesEntry, bool>(selectedItems, (entry) => entry.canEditExif);
+    final todoEntries = (bySupported[true] ?? []).toSet();
+    final unsupportedItems = (bySupported[false] ?? []);
+    if (unsupportedItems.isNotEmpty) {
+      final unsupportedTypes = unsupportedItems.map((entry) => entry.mimeType).toSet().map(MimeUtils.displayType).toList()..sort();
+      final confirmed = await showDialog<bool>(
+        context: context,
+        builder: (context) {
+          return AvesDialog(
+            context: context,
+            title: l10n.unsupportedTypeDialogTitle,
+            content: Text(l10n.unsupportedTypeDialogMessage(unsupportedTypes.length, unsupportedTypes.join(', '))),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
+              ),
+              if (todoEntries.isNotEmpty)
+                TextButton(
+                  onPressed: () => Navigator.pop(context, true),
+                  child: Text(l10n.continueButtonLabel),
+                ),
+            ],
+          );
+        },
+      );
+      if (confirmed == null || !confirmed) return;
+    }
+
+    final selectionDirs = todoEntries.map((e) => e.directory).whereNotNull().toSet();
+    final todoCount = todoEntries.length;
+
+    final modifier = await showDialog<DateModifier>(
       context: context,
-      builder: (context) {
-        return AvesDialog(
-          context: context,
-          content: Text(context.l10n.deleteEntriesConfirmationDialogMessage(todoCount)),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
-            ),
-            TextButton(
-              onPressed: () => Navigator.pop(context, true),
-              child: Text(context.l10n.deleteButtonLabel),
-            ),
-          ],
-        );
-      },
+      builder: (context) => EditEntryDateDialog(entry: todoEntries.first),
     );
-    if (confirmed == null || !confirmed) return;
+    if (modifier == null) return;
 
-    if (!await checkStoragePermissionForAlbums(context, selectionDirs, entries: selectedItems)) return;
+    if (!await checkStoragePermissionForAlbums(context, selectionDirs, entries: todoEntries)) return;
 
     source.pauseMonitoring();
     showOpReport<ImageOpEvent>(
       context: context,
-      opStream: mediaFileService.delete(selectedItems),
+      opStream: Stream.fromIterable(todoEntries).asyncMap((entry) async {
+        final success = await entry.editDate(modifier);
+        return ImageOpEvent(success: success, uri: entry.uri);
+      }).asBroadcastStream(),
       itemCount: todoCount,
       onDone: (processed) async {
-        final deletedUris = processed.where((event) => event.success).map((event) => event.uri).toSet();
-        await source.removeEntries(deletedUris);
+        final successOps = processed.where((e) => e.success).toSet();
         selection.browse();
         source.resumeMonitoring();
+        unawaited(source.refreshUris(successOps.map((v) => v.uri).toSet()));
 
-        final deletedCount = deletedUris.length;
-        if (deletedCount < todoCount) {
-          final count = todoCount - deletedCount;
-          showFeedback(context, context.l10n.collectionDeleteFailureFeedback(count));
+        final successCount = successOps.length;
+        if (successCount < todoCount) {
+          final count = todoCount - successCount;
+          showFeedback(context, l10n.collectionEditFailureFeedback(count));
+        } else {
+          final count = successCount;
+          showFeedback(context, l10n.collectionEditSuccessFeedback(count));
         }
-
-        // cleanup
-        await storageService.deleteEmptyDirectories(selectionDirs);
       },
     );
   }
