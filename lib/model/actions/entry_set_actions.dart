@@ -20,6 +20,7 @@ enum EntrySetAction {
   copy,
   move,
   rescan,
+  editDate,
 }
 
 class EntrySetActions {
@@ -67,6 +68,8 @@ extension ExtraEntrySetAction on EntrySetAction {
         return context.l10n.collectionActionMove;
       case EntrySetAction.rescan:
         return context.l10n.collectionActionRescan;
+      case EntrySetAction.editDate:
+        return context.l10n.entryInfoActionEditDate;
     }
   }
 
@@ -106,6 +109,8 @@ extension ExtraEntrySetAction on EntrySetAction {
         return AIcons.move;
       case EntrySetAction.rescan:
         return AIcons.refresh;
+      case EntrySetAction.editDate:
+        return AIcons.date;
     }
   }
 }

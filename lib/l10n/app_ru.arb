@@ -139,7 +139,7 @@
   "noMatchingAppDialogTitle": "Нет подходящего приложения",
   "noMatchingAppDialogMessage": "Нет приложений, которые могли бы с этим справиться.",
 
-  "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{Вы уверены, что хотите удалить этот объект?} few{Вы уверены, что хотите удалить эти {count} объекта?} other{Вы уверены, что хотите удалить эти {count} объектов)?}}",
+  "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{Вы уверены, что хотите удалить этот объект?} few{Вы уверены, что хотите удалить эти {count} объекта?} other{Вы уверены, что хотите удалить эти {count} объектов?}}",
 
   "setCoverDialogTitle": "Установить обложку",
   "setCoverDialogLatest": "Последний объект",
@@ -228,7 +228,7 @@
 
   "collectionPageTitle": "Коллекция",
   "collectionPickPageTitle": "Выбрать",
-  "collectionSelectionPageTitle": "{count, plural, =0{Выберите объекты} =1{1 объект} few{{count} объекта} other{{count} объектов)}}",
+  "collectionSelectionPageTitle": "{count, plural, =0{Выберите объекты} =1{1 объект} few{{count} объекта} other{{count} объектов}}",
 
   "collectionActionAddShortcut": "Добавить ярлык",
   "collectionActionCopy": "Скопировать в альбом",

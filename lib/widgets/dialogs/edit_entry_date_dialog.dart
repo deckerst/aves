@@ -106,11 +106,11 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
               ),
             ],
           );
-          final fromTitleTile = RadioListTile<DateEditAction>(
-            value: DateEditAction.fromTitle,
+          final extractFromTitleTile = RadioListTile<DateEditAction>(
+            value: DateEditAction.extractFromTitle,
             groupValue: _action,
             onChanged: _updateAction,
-            title: _tileText(l10n.editEntryDateDialogFromTitle),
+            title: _tileText(l10n.editEntryDateDialogExtractFromTitle),
           );
           final clearTile = RadioListTile<DateEditAction>(
             value: DateEditAction.clear,
@@ -134,7 +134,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
               scrollableContent: [
                 setTile,
                 shiftTile,
-                fromTitleTile,
+                extractFromTitleTile,
                 clearTile,
                 Padding(
                   padding: const EdgeInsets.only(bottom: 1),
@@ -250,7 +250,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
       case DateEditAction.shift:
         modifier = DateModifier(_action, _fields, shiftMinutes: _shiftMinutes);
         break;
-      case DateEditAction.fromTitle:
+      case DateEditAction.extractFromTitle:
       case DateEditAction.clear:
         modifier = DateModifier(_action, _fields);
         break;
