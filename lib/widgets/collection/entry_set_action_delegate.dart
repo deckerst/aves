@@ -6,7 +6,6 @@ import 'package:aves/model/actions/move_type.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/highlight.dart';
-import 'package:aves/model/metadata/date_modifier.dart';
 import 'package:aves/model/selection.dart';
 import 'package:aves/model/source/analysis_controller.dart';
 import 'package:aves/model/source/collection_lens.dart';
@@ -17,13 +16,13 @@ import 'package:aves/services/media/enums.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/mime_utils.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
+import 'package:aves/widgets/common/action_mixins/entry_editor.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
 import 'package:aves/widgets/common/action_mixins/size_aware.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
-import 'package:aves/widgets/dialogs/edit_entry_date_dialog.dart';
 import 'package:aves/widgets/filter_grids/album_pick.dart';
 import 'package:aves/widgets/map/map_page.dart';
 import 'package:aves/widgets/stats/stats_page.dart';
@@ -32,7 +31,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
-class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
+class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
   void onActionSelected(BuildContext context, EntrySetAction action) {
     switch (action) {
       case EntrySetAction.share:
@@ -52,6 +51,9 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
         break;
       case EntrySetAction.editDate:
         _editDate(context);
+        break;
+      case EntrySetAction.removeMetadata:
+        _removeMetadata(context);
         break;
       case EntrySetAction.map:
         _goToMap(context);
@@ -163,15 +165,15 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
 
     // do not directly use selection when moving and post-processing items
     // as source monitoring may remove obsolete items from the original selection
-    final todoEntries = selectedItems.toSet();
+    final todoItems = selectedItems.toSet();
 
     final copy = moveType == MoveType.copy;
-    final todoCount = todoEntries.length;
+    final todoCount = todoItems.length;
     assert(todoCount > 0);
 
     final destinationDirectory = Directory(destinationAlbum);
     final names = [
-      ...todoEntries.map((v) => '${v.filenameWithoutExtension}${v.extension}'),
+      ...todoItems.map((v) => '${v.filenameWithoutExtension}${v.extension}'),
       // do not guard up front based on directory existence,
       // as conflicts could be within moved entries scattered across multiple albums
       if (await destinationDirectory.exists()) ...destinationDirectory.listSync().map((v) => pContext.basename(v.path)),
@@ -198,7 +200,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     showOpReport<MoveOpEvent>(
       context: context,
       opStream: mediaFileService.move(
-        todoEntries,
+        todoItems,
         copy: copy,
         destinationAlbum: destinationAlbum,
         nameConflictStrategy: nameConflictStrategy,
@@ -208,7 +210,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
         final successOps = processed.where((e) => e.success).toSet();
         final movedOps = successOps.where((e) => !e.newFields.containsKey('skipped')).toSet();
         await source.updateAfterMove(
-          todoEntries: todoEntries,
+          todoEntries: todoItems,
           copy: copy,
           destinationAlbum: destinationAlbum,
           movedOps: movedOps,
@@ -272,57 +274,23 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     );
   }
 
-  Future<void> _editDate(BuildContext context) async {
-    final l10n = context.l10n;
+  Future<void> _edit(
+    BuildContext context,
+    Selection<AvesEntry> selection,
+    Set<AvesEntry> todoItems,
+    Future<bool> Function(AvesEntry entry) op,
+  ) async {
+    final selectionDirs = todoItems.map((e) => e.directory).whereNotNull().toSet();
+    final todoCount = todoItems.length;
+
+    if (!await checkStoragePermissionForAlbums(context, selectionDirs, entries: todoItems)) return;
+
     final source = context.read<CollectionSource>();
-    final selection = context.read<Selection<AvesEntry>>();
-    final selectedItems = _getExpandedSelectedItems(selection);
-
-    final bySupported = groupBy<AvesEntry, bool>(selectedItems, (entry) => entry.canEditExif);
-    final todoEntries = (bySupported[true] ?? []).toSet();
-    final unsupportedItems = (bySupported[false] ?? []);
-    if (unsupportedItems.isNotEmpty) {
-      final unsupportedTypes = unsupportedItems.map((entry) => entry.mimeType).toSet().map(MimeUtils.displayType).toList()..sort();
-      final confirmed = await showDialog<bool>(
-        context: context,
-        builder: (context) {
-          return AvesDialog(
-            context: context,
-            title: l10n.unsupportedTypeDialogTitle,
-            content: Text(l10n.unsupportedTypeDialogMessage(unsupportedTypes.length, unsupportedTypes.join(', '))),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
-              ),
-              if (todoEntries.isNotEmpty)
-                TextButton(
-                  onPressed: () => Navigator.pop(context, true),
-                  child: Text(l10n.continueButtonLabel),
-                ),
-            ],
-          );
-        },
-      );
-      if (confirmed == null || !confirmed) return;
-    }
-
-    final selectionDirs = todoEntries.map((e) => e.directory).whereNotNull().toSet();
-    final todoCount = todoEntries.length;
-
-    final modifier = await showDialog<DateModifier>(
-      context: context,
-      builder: (context) => EditEntryDateDialog(entry: todoEntries.first),
-    );
-    if (modifier == null) return;
-
-    if (!await checkStoragePermissionForAlbums(context, selectionDirs, entries: todoEntries)) return;
-
     source.pauseMonitoring();
     showOpReport<ImageOpEvent>(
       context: context,
-      opStream: Stream.fromIterable(todoEntries).asyncMap((entry) async {
-        final success = await entry.editDate(modifier);
+      opStream: Stream.fromIterable(todoItems).asyncMap((entry) async {
+        final success = await op(entry);
         return ImageOpEvent(success: success, uri: entry.uri);
       }).asBroadcastStream(),
       itemCount: todoCount,
@@ -332,6 +300,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
         source.resumeMonitoring();
         unawaited(source.refreshUris(successOps.map((v) => v.uri).toSet()));
 
+        final l10n = context.l10n;
         final successCount = successOps.length;
         if (successCount < todoCount) {
           final count = todoCount - successCount;
@@ -342,6 +311,71 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
         }
       },
     );
+  }
+
+  Future<bool> _checkEditableFormats(
+    BuildContext context, {
+    required Set<AvesEntry> supported,
+    required Set<AvesEntry> unsupported,
+  }) async {
+    if (unsupported.isEmpty) return true;
+
+    final unsupportedTypes = unsupported.map((entry) => entry.mimeType).toSet().map(MimeUtils.displayType).toList()..sort();
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        final l10n = context.l10n;
+        return AvesDialog(
+          context: context,
+          title: l10n.unsupportedTypeDialogTitle,
+          content: Text(l10n.unsupportedTypeDialogMessage(unsupportedTypes.length, unsupportedTypes.join(', '))),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
+            ),
+            if (supported.isNotEmpty)
+              TextButton(
+                onPressed: () => Navigator.pop(context, true),
+                child: Text(l10n.continueButtonLabel),
+              ),
+          ],
+        );
+      },
+    );
+    if (confirmed == null || !confirmed) return false;
+
+    return true;
+  }
+
+  Future<void> _editDate(BuildContext context) async {
+    final selection = context.read<Selection<AvesEntry>>();
+    final selectedItems = _getExpandedSelectedItems(selection);
+
+    final bySupported = groupBy<AvesEntry, bool>(selectedItems, (entry) => entry.canEditExif);
+    final todoItems = (bySupported[true] ?? []).toSet();
+    final unsupported = (bySupported[false] ?? []).toSet();
+    if (!await _checkEditableFormats(context, supported: todoItems, unsupported: unsupported)) return;
+
+    final modifier = await selectDateModifier(context, todoItems);
+    if (modifier == null) return;
+
+    await _edit(context, selection, todoItems, (entry) => entry.editDate(modifier));
+  }
+
+  Future<void> _removeMetadata(BuildContext context) async {
+    final selection = context.read<Selection<AvesEntry>>();
+    final selectedItems = _getExpandedSelectedItems(selection);
+
+    final bySupported = groupBy<AvesEntry, bool>(selectedItems, (entry) => entry.canRemoveMetadata);
+    final todoItems = (bySupported[true] ?? []).toSet();
+    final unsupported = (bySupported[false] ?? []).toSet();
+    if (!await _checkEditableFormats(context, supported: todoItems, unsupported: unsupported)) return;
+
+    final types = await selectMetadataToRemove(context, todoItems);
+    if (types == null) return;
+
+    await _edit(context, selection, todoItems, (entry) => entry.removeMetadata(types));
   }
 
   void _goToMap(BuildContext context) {

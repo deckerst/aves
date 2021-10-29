@@ -1,20 +1,16 @@
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/actions/entry_info_actions.dart';
 import 'package:aves/model/entry.dart';
-import 'package:aves/model/metadata/date_modifier.dart';
-import 'package:aves/model/metadata/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
+import 'package:aves/widgets/common/action_mixins/entry_editor.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:aves/widgets/dialogs/aves_dialog.dart';
-import 'package:aves/widgets/dialogs/edit_entry_date_dialog.dart';
-import 'package:aves/widgets/dialogs/remove_entry_metadata_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin {
+class EntryInfoActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwareMixin {
   final AvesEntry entry;
 
   const EntryInfoActionDelegate(this.entry);
@@ -22,10 +18,10 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin {
   void onActionSelected(BuildContext context, EntryInfoAction action) async {
     switch (action) {
       case EntryInfoAction.editDate:
-        await _showDateEditDialog(context);
+        await _editDate(context);
         break;
       case EntryInfoAction.removeMetadata:
-        await _showMetadataRemovalDialog(context);
+        await _removeMetadata(context);
         break;
     }
   }
@@ -52,45 +48,16 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin {
     source?.resumeMonitoring();
   }
 
-  Future<void> _showDateEditDialog(BuildContext context) async {
-    final modifier = await showDialog<DateModifier>(
-      context: context,
-      builder: (context) => EditEntryDateDialog(entry: entry),
-    );
+  Future<void> _editDate(BuildContext context) async {
+    final modifier = await selectDateModifier(context, {entry});
     if (modifier == null) return;
 
     await _edit(context, () => entry.editDate(modifier));
   }
 
-  Future<void> _showMetadataRemovalDialog(BuildContext context) async {
-    final types = await showDialog<Set<MetadataType>>(
-      context: context,
-      builder: (context) => RemoveEntryMetadataDialog(entry: entry),
-    );
-    if (types == null || types.isEmpty) return;
-
-    if (entry.isMotionPhoto && types.contains(MetadataType.xmp)) {
-      final proceed = await showDialog<bool>(
-        context: context,
-        builder: (context) {
-          return AvesDialog(
-            context: context,
-            content: Text(context.l10n.removeEntryMetadataMotionPhotoXmpWarningDialogMessage),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
-              ),
-              TextButton(
-                onPressed: () => Navigator.pop(context, true),
-                child: Text(context.l10n.applyButtonLabel),
-              ),
-            ],
-          );
-        },
-      );
-      if (proceed == null || !proceed) return;
-    }
+  Future<void> _removeMetadata(BuildContext context) async {
+    final types = await selectMetadataToRemove(context, {entry});
+    if (types == null) return;
 
     await _edit(context, () => entry.removeMetadata(types));
   }
