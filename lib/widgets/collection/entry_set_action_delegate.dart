@@ -49,6 +49,15 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
       case EntrySetAction.rescan:
         _rescan(context);
         break;
+      case EntrySetAction.rotateCCW:
+        _rotate(context, clockwise: false);
+        break;
+      case EntrySetAction.rotateCW:
+        _rotate(context, clockwise: true);
+        break;
+      case EntrySetAction.flip:
+        _flip(context);
+        break;
       case EntrySetAction.editDate:
         _editDate(context);
         break;
@@ -313,12 +322,16 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
     );
   }
 
-  Future<bool> _checkEditableFormats(
+  Future<Set<AvesEntry>?> _getEditableItems(
     BuildContext context, {
-    required Set<AvesEntry> supported,
-    required Set<AvesEntry> unsupported,
+    required Set<AvesEntry> selectedItems,
+    required bool Function(AvesEntry entry) canEdit,
   }) async {
-    if (unsupported.isEmpty) return true;
+    final bySupported = groupBy<AvesEntry, bool>(selectedItems, canEdit);
+    final supported = (bySupported[true] ?? []).toSet();
+    final unsupported = (bySupported[false] ?? []).toSet();
+
+    if (unsupported.isEmpty) return supported;
 
     final unsupportedTypes = unsupported.map((entry) => entry.mimeType).toSet().map(MimeUtils.displayType).toList()..sort();
     final confirmed = await showDialog<bool>(
@@ -343,19 +356,37 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
         );
       },
     );
-    if (confirmed == null || !confirmed) return false;
+    if (confirmed == null || !confirmed) return null;
 
-    return true;
+    return supported;
+  }
+
+  Future<void> _rotate(BuildContext context, {required bool clockwise}) async {
+    final selection = context.read<Selection<AvesEntry>>();
+    final selectedItems = _getExpandedSelectedItems(selection);
+
+    final todoItems = await _getEditableItems(context, selectedItems: selectedItems, canEdit: (entry) => entry.canRotateAndFlip);
+    if (todoItems == null || todoItems.isEmpty) return;
+
+    await _edit(context, selection, todoItems, (entry) => entry.rotate(clockwise: clockwise, persist: true));
+  }
+
+  Future<void> _flip(BuildContext context) async {
+    final selection = context.read<Selection<AvesEntry>>();
+    final selectedItems = _getExpandedSelectedItems(selection);
+
+    final todoItems = await _getEditableItems(context, selectedItems: selectedItems, canEdit: (entry) => entry.canRotateAndFlip);
+    if (todoItems == null || todoItems.isEmpty) return;
+
+    await _edit(context, selection, todoItems, (entry) => entry.flip(persist: true));
   }
 
   Future<void> _editDate(BuildContext context) async {
     final selection = context.read<Selection<AvesEntry>>();
     final selectedItems = _getExpandedSelectedItems(selection);
 
-    final bySupported = groupBy<AvesEntry, bool>(selectedItems, (entry) => entry.canEditExif);
-    final todoItems = (bySupported[true] ?? []).toSet();
-    final unsupported = (bySupported[false] ?? []).toSet();
-    if (!await _checkEditableFormats(context, supported: todoItems, unsupported: unsupported)) return;
+    final todoItems = await _getEditableItems(context, selectedItems: selectedItems, canEdit: (entry) => entry.canEditExif);
+    if (todoItems == null || todoItems.isEmpty) return;
 
     final modifier = await selectDateModifier(context, todoItems);
     if (modifier == null) return;
@@ -367,13 +398,11 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
     final selection = context.read<Selection<AvesEntry>>();
     final selectedItems = _getExpandedSelectedItems(selection);
 
-    final bySupported = groupBy<AvesEntry, bool>(selectedItems, (entry) => entry.canRemoveMetadata);
-    final todoItems = (bySupported[true] ?? []).toSet();
-    final unsupported = (bySupported[false] ?? []).toSet();
-    if (!await _checkEditableFormats(context, supported: todoItems, unsupported: unsupported)) return;
+    final todoItems = await _getEditableItems(context, selectedItems: selectedItems, canEdit: (entry) => entry.canRemoveMetadata);
+    if (todoItems == null || todoItems.isEmpty) return;
 
     final types = await selectMetadataToRemove(context, todoItems);
-    if (types == null) return;
+    if (types == null || types.isEmpty) return;
 
     await _edit(context, selection, todoItems, (entry) => entry.removeMetadata(types));
   }

@@ -222,6 +222,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
                           icon: AIcons.edit,
                           title: context.l10n.collectionActionEdit,
                           items: [
+                            _buildRotateAndFlipMenuItems(context, enabled: hasSelection),
                             _toMenuItem(EntrySetAction.editDate, enabled: hasSelection),
                             _toMenuItem(EntrySetAction.removeMetadata, enabled: hasSelection),
                           ],
@@ -273,6 +274,41 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     );
   }
 
+  PopupMenuItem<EntrySetAction> _buildRotateAndFlipMenuItems(BuildContext context, {required bool enabled}) {
+    Widget buildDivider() => const SizedBox(
+          height: 16,
+          child: VerticalDivider(
+            width: 1,
+            thickness: 1,
+          ),
+        );
+
+    Widget buildItem(EntrySetAction action) => Expanded(
+          child: PopupMenuItem(
+            value: action,
+            enabled: enabled,
+            child: Tooltip(
+              message: action.getText(context),
+              child: Center(child: action.getIcon()),
+            ),
+          ),
+        );
+
+    return PopupMenuItem(
+      child: Row(
+        children: [
+          buildDivider(),
+          buildItem(EntrySetAction.rotateCCW),
+          buildDivider(),
+          buildItem(EntrySetAction.rotateCW),
+          buildDivider(),
+          buildItem(EntrySetAction.flip),
+          buildDivider(),
+        ],
+      ),
+    );
+  }
+
   void _onActivityChange() {
     if (context.read<Selection<AvesEntry>>().isSelecting) {
       _browseToSelectAnimation.forward();
@@ -303,6 +339,9 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       case EntrySetAction.rescan:
       case EntrySetAction.map:
       case EntrySetAction.stats:
+      case EntrySetAction.rotateCCW:
+      case EntrySetAction.rotateCW:
+      case EntrySetAction.flip:
       case EntrySetAction.editDate:
       case EntrySetAction.removeMetadata:
         _actionDelegate.onActionSelected(context, action);
