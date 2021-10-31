@@ -20,6 +20,9 @@ enum EntrySetAction {
   copy,
   move,
   rescan,
+  rotateCCW,
+  rotateCW,
+  flip,
   editDate,
   removeMetadata,
 }
@@ -69,6 +72,12 @@ extension ExtraEntrySetAction on EntrySetAction {
         return context.l10n.collectionActionMove;
       case EntrySetAction.rescan:
         return context.l10n.collectionActionRescan;
+      case EntrySetAction.rotateCCW:
+        return context.l10n.entryActionRotateCCW;
+      case EntrySetAction.rotateCW:
+        return context.l10n.entryActionRotateCW;
+      case EntrySetAction.flip:
+        return context.l10n.entryActionFlip;
       case EntrySetAction.editDate:
         return context.l10n.entryInfoActionEditDate;
       case EntrySetAction.removeMetadata:
@@ -112,6 +121,12 @@ extension ExtraEntrySetAction on EntrySetAction {
         return AIcons.move;
       case EntrySetAction.rescan:
         return AIcons.refresh;
+      case EntrySetAction.rotateCCW:
+        return AIcons.rotateLeft;
+      case EntrySetAction.rotateCW:
+        return AIcons.rotateRight;
+      case EntrySetAction.flip:
+        return AIcons.flip;
       case EntrySetAction.editDate:
         return AIcons.date;
       case EntrySetAction.removeMetadata:
