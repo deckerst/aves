@@ -5,7 +5,10 @@
     "editEntryDateDialogExtractFromTitle",
     "collectionActionEdit",
     "collectionEditFailureFeedback",
-    "collectionEditSuccessFeedback"
+    "collectionEditSuccessFeedback",
+    "settingsCollectionBrowsingQuickActionsTile",
+    "settingsCollectionBrowsingQuickActionEditorTitle",
+    "settingsCollectionBrowsingQuickActionEditorBanner"
   ],
 
   "ru": [
@@ -15,6 +18,9 @@
     "aboutCreditsTranslators",
     "collectionActionEdit",
     "collectionEditFailureFeedback",
-    "collectionEditSuccessFeedback"
+    "collectionEditSuccessFeedback",
+    "settingsCollectionBrowsingQuickActionsTile",
+    "settingsCollectionBrowsingQuickActionEditorTitle",
+    "settingsCollectionBrowsingQuickActionEditorBanner"
   ]
 }
