@@ -4,19 +4,19 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/settings/common/quick_actions/editor_page.dart';
 import 'package:flutter/material.dart';
 
-class SelectionActionsTile extends StatelessWidget {
-  const SelectionActionsTile({Key? key}) : super(key: key);
+class BrowsingActionsTile extends StatelessWidget {
+  const BrowsingActionsTile({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(context.l10n.settingsCollectionSelectionQuickActionsTile),
+      title: Text(context.l10n.settingsCollectionBrowsingQuickActionsTile),
       onTap: () {
         Navigator.push(
           context,
           MaterialPageRoute(
-            settings: const RouteSettings(name: SelectionActionEditorPage.routeName),
-            builder: (context) => const SelectionActionEditorPage(),
+            settings: const RouteSettings(name: BrowsingActionEditorPage.routeName),
+            builder: (context) => const BrowsingActionEditorPage(),
           ),
         );
       },
@@ -24,21 +24,21 @@ class SelectionActionsTile extends StatelessWidget {
   }
 }
 
-class SelectionActionEditorPage extends StatelessWidget {
-  static const routeName = '/settings/collection_selection_actions';
+class BrowsingActionEditorPage extends StatelessWidget {
+  static const routeName = '/settings/collection_browsing_actions';
 
-  const SelectionActionEditorPage({Key? key}) : super(key: key);
+  const BrowsingActionEditorPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return QuickActionEditorPage<EntrySetAction>(
-      title: context.l10n.settingsCollectionSelectionQuickActionEditorTitle,
-      bannerText: context.l10n.settingsCollectionSelectionQuickActionEditorBanner,
-      allAvailableActions: EntrySetActions.selection,
+      title: context.l10n.settingsCollectionBrowsingQuickActionEditorTitle,
+      bannerText: context.l10n.settingsCollectionBrowsingQuickActionEditorBanner,
+      allAvailableActions: EntrySetActions.browsing,
       actionIcon: (action) => action.getIcon(),
       actionText: (context, action) => action.getText(context),
-      load: () => settings.collectionSelectionQuickActions.toList(),
-      save: (actions) => settings.collectionSelectionQuickActions = actions,
+      load: () => settings.collectionBrowsingQuickActions.toList(),
+      save: (actions) => settings.collectionBrowsingQuickActions = actions,
     );
   }
 }
