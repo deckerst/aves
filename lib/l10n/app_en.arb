@@ -735,6 +735,13 @@
   "settingsThumbnailShowVideoDuration": "Show video duration",
   "@settingsThumbnailShowVideoDuration": {},
 
+  "settingsCollectionBrowsingQuickActionsTile": "Quick actions for item browsing",
+  "@settingsCollectionBrowsingQuickActionsTile": {},
+  "settingsCollectionBrowsingQuickActionEditorTitle": "Quick Actions",
+  "@settingsCollectionBrowsingQuickActionEditorTitle": {},
+  "settingsCollectionBrowsingQuickActionEditorBanner": "Touch and hold to move buttons and select which actions are displayed when browsing items.",
+  "@settingsCollectionBrowsingQuickActionEditorBanner": {},
+
   "settingsCollectionSelectionQuickActionsTile": "Quick actions for item selection",
   "@settingsCollectionSelectionQuickActionsTile": {},
   "settingsCollectionSelectionQuickActionEditorTitle": "Quick Actions",

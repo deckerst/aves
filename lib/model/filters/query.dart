@@ -1,3 +1,4 @@
+import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
@@ -19,7 +20,7 @@ class QueryFilter extends CollectionFilter {
 
   QueryFilter(this.query, {this.colorful = true}) {
     var upQuery = query.toUpperCase();
-    if (upQuery.startsWith('ID=')) {
+    if (upQuery.startsWith('id:')) {
       final id = int.tryParse(upQuery.substring(3));
       _test = (entry) => entry.contentId == id;
       return;
@@ -37,7 +38,9 @@ class QueryFilter extends CollectionFilter {
       upQuery = matches.first.group(1)!;
     }
 
-    _test = not ? (entry) => !entry.search(upQuery) : (entry) => entry.search(upQuery);
+    // default to title search
+    bool testTitle(AvesEntry entry) => entry.bestTitle?.toUpperCase().contains(upQuery) == true;
+    _test = not ? (entry) => !testTitle(entry) : testTitle;
   }
 
   QueryFilter.fromMap(Map<String, dynamic> json)

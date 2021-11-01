@@ -30,7 +30,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
 
   set sortFactor(ChipSortFactor factor);
 
-  bool isValid(Set<T> filters, ChipSetAction action) {
+  bool isVisible(ChipSetAction action, Set<T> filters) {
     final hasSelection = filters.isNotEmpty;
     switch (action) {
       case ChipSetAction.createAlbum:
@@ -46,7 +46,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
     }
   }
 
-  bool canApply(Set<T> filters, ChipSetAction action) {
+  bool canApply(ChipSetAction action, Set<T> filters) {
     switch (action) {
       // general
       case ChipSetAction.sort:

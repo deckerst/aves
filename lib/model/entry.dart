@@ -549,14 +549,6 @@ class AvesEntry {
     }.whereNotNull().where((v) => v.isNotEmpty).join(', ');
   }
 
-  bool search(String query) => {
-        bestTitle,
-        _catalogMetadata?.xmpSubjects,
-        _addressDetails?.countryName,
-        _addressDetails?.adminArea,
-        _addressDetails?.locality,
-      }.any((s) => s != null && s.toUpperCase().contains(query));
-
   Future<void> _applyNewFields(Map newFields, {required bool persist}) async {
     final oldDateModifiedSecs = this.dateModifiedSecs;
     final oldRotationDegrees = this.rotationDegrees;

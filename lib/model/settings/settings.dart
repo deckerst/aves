@@ -57,6 +57,7 @@ class Settings extends ChangeNotifier {
   // collection
   static const collectionGroupFactorKey = 'collection_group_factor';
   static const collectionSortFactorKey = 'collection_sort_factor';
+  static const collectionBrowsingQuickActionsKey = 'collection_browsing_quick_actions';
   static const collectionSelectionQuickActionsKey = 'collection_selection_quick_actions';
   static const showThumbnailLocationKey = 'show_thumbnail_location';
   static const showThumbnailMotionPhotoKey = 'show_thumbnail_motion_photo';
@@ -264,6 +265,10 @@ class Settings extends ChangeNotifier {
   EntrySortFactor get collectionSortFactor => getEnumOrDefault(collectionSortFactorKey, SettingsDefaults.collectionSortFactor, EntrySortFactor.values);
 
   set collectionSortFactor(EntrySortFactor newValue) => setAndNotify(collectionSortFactorKey, newValue.toString());
+
+  List<EntrySetAction> get collectionBrowsingQuickActions => getEnumListOrDefault(collectionBrowsingQuickActionsKey, SettingsDefaults.collectionBrowsingQuickActions, EntrySetAction.values);
+
+  set collectionBrowsingQuickActions(List<EntrySetAction> newValue) => setAndNotify(collectionBrowsingQuickActionsKey, newValue.map((v) => v.toString()).toList());
 
   List<EntrySetAction> get collectionSelectionQuickActions => getEnumListOrDefault(collectionSelectionQuickActionsKey, SettingsDefaults.collectionSelectionQuickActions, EntrySetAction.values);
 
@@ -613,6 +618,7 @@ class Settings extends ChangeNotifier {
             case drawerPageBookmarksKey:
             case pinnedFiltersKey:
             case hiddenFiltersKey:
+            case collectionBrowsingQuickActionsKey:
             case collectionSelectionQuickActionsKey:
             case viewerQuickActionsKey:
             case videoQuickActionsKey:
