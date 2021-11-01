@@ -1,15 +1,18 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:aves/app_mode.dart';
 import 'package:aves/model/actions/entry_set_actions.dart';
 import 'package:aves/model/actions/move_type.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/album.dart';
+import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/highlight.dart';
 import 'package:aves/model/selection.dart';
 import 'package:aves/model/source/analysis_controller.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
+import 'package:aves/model/source/enums.dart';
 import 'package:aves/services/common/image_op_events.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/media/enums.dart';
@@ -21,19 +24,129 @@ import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
 import 'package:aves/widgets/common/action_mixins/size_aware.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/dialogs/add_shortcut_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
 import 'package:aves/widgets/filter_grids/album_pick.dart';
 import 'package:aves/widgets/map/map_page.dart';
+import 'package:aves/widgets/search/search_delegate.dart';
 import 'package:aves/widgets/stats/stats_page.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
+import 'package:tuple/tuple.dart';
 
 class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
+  bool isVisible(
+    EntrySetAction action, {
+    required AppMode appMode,
+    required bool isSelecting,
+    required bool supportShortcuts,
+    required EntrySortFactor sortFactor,
+    required int itemCount,
+    required int selectedItemCount,
+  }) {
+    switch (action) {
+      // general
+      case EntrySetAction.sort:
+        return true;
+      case EntrySetAction.group:
+        return sortFactor == EntrySortFactor.date;
+      case EntrySetAction.select:
+        return appMode.canSelect && !isSelecting;
+      case EntrySetAction.selectAll:
+        return isSelecting && selectedItemCount < itemCount;
+      case EntrySetAction.selectNone:
+        return isSelecting && selectedItemCount == itemCount;
+      // browsing
+      case EntrySetAction.search:
+        return appMode.canSearch && !isSelecting;
+      case EntrySetAction.addShortcut:
+        return appMode == AppMode.main && !isSelecting && supportShortcuts;
+      // browsing or selecting
+      case EntrySetAction.map:
+      case EntrySetAction.stats:
+        return appMode == AppMode.main;
+      // selecting
+      case EntrySetAction.share:
+      case EntrySetAction.delete:
+      case EntrySetAction.copy:
+      case EntrySetAction.move:
+      case EntrySetAction.rescan:
+      case EntrySetAction.rotateCCW:
+      case EntrySetAction.rotateCW:
+      case EntrySetAction.flip:
+      case EntrySetAction.editDate:
+      case EntrySetAction.removeMetadata:
+        return appMode == AppMode.main && isSelecting;
+    }
+  }
+
+  bool canApply(
+    EntrySetAction action, {
+    required bool isSelecting,
+    required int itemCount,
+    required int selectedItemCount,
+  }) {
+    final hasItems = itemCount > 0;
+    final hasSelection = selectedItemCount > 0;
+
+    switch (action) {
+      case EntrySetAction.sort:
+      case EntrySetAction.group:
+        return true;
+      case EntrySetAction.select:
+        return hasItems;
+      case EntrySetAction.selectAll:
+        return selectedItemCount < itemCount;
+      case EntrySetAction.selectNone:
+        return hasSelection;
+      case EntrySetAction.search:
+      case EntrySetAction.addShortcut:
+        return true;
+      case EntrySetAction.map:
+      case EntrySetAction.stats:
+        return (!isSelecting && hasItems) || (isSelecting && hasSelection);
+      // selecting
+      case EntrySetAction.share:
+      case EntrySetAction.delete:
+      case EntrySetAction.copy:
+      case EntrySetAction.move:
+      case EntrySetAction.rescan:
+      case EntrySetAction.rotateCCW:
+      case EntrySetAction.rotateCW:
+      case EntrySetAction.flip:
+      case EntrySetAction.editDate:
+      case EntrySetAction.removeMetadata:
+        return hasSelection;
+    }
+  }
+
   void onActionSelected(BuildContext context, EntrySetAction action) {
     switch (action) {
+      // general
+      case EntrySetAction.sort:
+      case EntrySetAction.group:
+      case EntrySetAction.select:
+      case EntrySetAction.selectAll:
+      case EntrySetAction.selectNone:
+        break;
+      // browsing
+      case EntrySetAction.search:
+        _goToSearch(context);
+        break;
+      case EntrySetAction.addShortcut:
+        _addShortcut(context);
+        break;
+      // browsing or selecting
+      case EntrySetAction.map:
+        _goToMap(context);
+        break;
+      case EntrySetAction.stats:
+        _goToStats(context);
+        break;
+      // selecting
       case EntrySetAction.share:
         _share(context);
         break;
@@ -63,14 +176,6 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
         break;
       case EntrySetAction.removeMetadata:
         _removeMetadata(context);
-        break;
-      case EntrySetAction.map:
-        _goToMap(context);
-        break;
-      case EntrySetAction.stats:
-        _goToStats(context);
-        break;
-      default:
         break;
     }
   }
@@ -444,5 +549,46 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
         ),
       ),
     );
+  }
+
+  void _goToSearch(BuildContext context) {
+    final collection = context.read<CollectionLens>();
+
+    Navigator.push(
+      context,
+      SearchPageRoute(
+        delegate: CollectionSearchDelegate(
+          source: collection.source,
+          parentCollection: collection,
+        ),
+      ),
+    );
+  }
+
+  Future<void> _addShortcut(BuildContext context) async {
+    final collection = context.read<CollectionLens>();
+    final filters = collection.filters;
+
+    String? defaultName;
+    if (filters.isNotEmpty) {
+      // we compute the default name beforehand
+      // because some filter labels need localization
+      final sortedFilters = List<CollectionFilter>.from(filters)..sort();
+      defaultName = sortedFilters.first.getLabel(context).replaceAll('\n', ' ');
+    }
+    final result = await showDialog<Tuple2<AvesEntry?, String>>(
+      context: context,
+      builder: (context) => AddShortcutDialog(
+        collection: collection,
+        defaultName: defaultName ?? '',
+      ),
+    );
+    if (result == null) return;
+
+    final coverEntry = result.item1;
+    final name = result.item2;
+    if (name.isEmpty) return;
+
+    unawaited(androidAppService.pinToHomeScreen(name, coverEntry, filters));
   }
 }

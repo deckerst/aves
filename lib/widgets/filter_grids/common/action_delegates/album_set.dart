@@ -39,19 +39,19 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> {
   set sortFactor(ChipSortFactor factor) => settings.albumSortFactor = factor;
 
   @override
-  bool isValid(Set<AlbumFilter> filters, ChipSetAction action) {
+  bool isVisible(ChipSetAction action, Set<AlbumFilter> filters) {
     switch (action) {
       case ChipSetAction.createAlbum:
       case ChipSetAction.delete:
       case ChipSetAction.rename:
         return true;
       default:
-        return super.isValid(filters, action);
+        return super.isVisible(action, filters);
     }
   }
 
   @override
-  bool canApply(Set<AlbumFilter> filters, ChipSetAction action) {
+  bool canApply(ChipSetAction action, Set<AlbumFilter> filters) {
     switch (action) {
       case ChipSetAction.rename:
         {
@@ -61,7 +61,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> {
           return dir != null && dir.relativeDir.isNotEmpty;
         }
       default:
-        return super.canApply(filters, action);
+        return super.canApply(action, filters);
     }
   }
 

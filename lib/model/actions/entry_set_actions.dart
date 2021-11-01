@@ -1,6 +1,6 @@
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 
 enum EntrySetAction {
   // general
@@ -9,12 +9,13 @@ enum EntrySetAction {
   select,
   selectAll,
   selectNone,
-  // all
+  // browsing
+  search,
   addShortcut,
-  // all or entry selection
+  // browsing or selecting
   map,
   stats,
-  // entry selection
+  // selecting
   share,
   delete,
   copy,
@@ -28,6 +29,21 @@ enum EntrySetAction {
 }
 
 class EntrySetActions {
+  static const general = [
+    EntrySetAction.sort,
+    EntrySetAction.group,
+    EntrySetAction.select,
+    EntrySetAction.selectAll,
+    EntrySetAction.selectNone,
+  ];
+
+  static const browsing = [
+    EntrySetAction.search,
+    EntrySetAction.addShortcut,
+    EntrySetAction.map,
+    EntrySetAction.stats,
+  ];
+
   static const selection = [
     EntrySetAction.share,
     EntrySetAction.delete,
@@ -36,6 +52,7 @@ class EntrySetActions {
     EntrySetAction.rescan,
     EntrySetAction.map,
     EntrySetAction.stats,
+    // editing actions are in their subsection
   ];
 }
 
@@ -53,15 +70,17 @@ extension ExtraEntrySetAction on EntrySetAction {
         return context.l10n.menuActionSelectAll;
       case EntrySetAction.selectNone:
         return context.l10n.menuActionSelectNone;
-      // all
+      // browsing
+      case EntrySetAction.search:
+        return MaterialLocalizations.of(context).searchFieldLabel;
       case EntrySetAction.addShortcut:
         return context.l10n.collectionActionAddShortcut;
-      // all or entry selection
+      // browsing or selecting
       case EntrySetAction.map:
         return context.l10n.menuActionMap;
       case EntrySetAction.stats:
         return context.l10n.menuActionStats;
-      // entry selection
+      // selecting
       case EntrySetAction.share:
         return context.l10n.entryActionShare;
       case EntrySetAction.delete:
@@ -102,15 +121,17 @@ extension ExtraEntrySetAction on EntrySetAction {
         return AIcons.selected;
       case EntrySetAction.selectNone:
         return AIcons.unselected;
-      // all
+      // browsing
+      case EntrySetAction.search:
+        return AIcons.search;
       case EntrySetAction.addShortcut:
         return AIcons.addShortcut;
-      // all or entry selection
+      // browsing or selecting
       case EntrySetAction.map:
         return AIcons.map;
       case EntrySetAction.stats:
         return AIcons.stats;
-      // entry selection
+      // selecting
       case EntrySetAction.share:
         return AIcons.share;
       case EntrySetAction.delete:

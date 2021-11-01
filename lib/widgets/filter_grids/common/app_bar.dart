@@ -133,7 +133,7 @@ class _FilterGridAppBarState<T extends CollectionFilter> extends State<FilterGri
     PopupMenuItem<ChipSetAction> toMenuItem(ChipSetAction action, {bool enabled = true}) {
       return PopupMenuItem(
         value: action,
-        enabled: enabled && actionDelegate.canApply(selectedFilters, action),
+        enabled: enabled && actionDelegate.canApply(action, selectedFilters),
         child: MenuRow(text: action.getText(context), icon: action.getIcon()),
       );
     }
@@ -151,10 +151,10 @@ class _FilterGridAppBarState<T extends CollectionFilter> extends State<FilterGri
     final buttonActions = <Widget>[];
     if (isSelecting) {
       final selectedFilters = selection.selectedItems.map((v) => v.filter).toSet();
-      final validActions = filterSelectionActions.where((action) => actionDelegate.isValid(selectedFilters, action)).toList();
-      buttonActions.addAll(validActions.take(buttonActionCount).map(
+      final visibleActions = filterSelectionActions.where((action) => actionDelegate.isVisible(action, selectedFilters)).toList();
+      buttonActions.addAll(visibleActions.take(buttonActionCount).map(
         (action) {
-          final enabled = actionDelegate.canApply(selectedFilters, action);
+          final enabled = actionDelegate.canApply(action, selectedFilters);
           return IconButton(
             icon: action.getIcon(),
             onPressed: enabled ? () => applyAction(action) : null,
@@ -162,7 +162,7 @@ class _FilterGridAppBarState<T extends CollectionFilter> extends State<FilterGri
           );
         },
       ));
-      selectionRowActions.addAll(validActions.skip(buttonActionCount));
+      selectionRowActions.addAll(visibleActions.skip(buttonActionCount));
     } else if (appMode.canSearch) {
       buttonActions.add(CollectionSearchButton(source: source));
     }
@@ -202,7 +202,7 @@ class _FilterGridAppBarState<T extends CollectionFilter> extends State<FilterGri
                   enabled: otherViewEnabled,
                 ),
               ]);
-              if (!isSelecting && actionDelegate.isValid(selectedFilters, ChipSetAction.createAlbum)) {
+              if (!isSelecting && actionDelegate.isVisible(ChipSetAction.createAlbum, selectedFilters)) {
                 menuItems.addAll([
                   const PopupMenuDivider(),
                   toMenuItem(ChipSetAction.createAlbum),
