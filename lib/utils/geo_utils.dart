@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
 
 class GeoUtils {
-  static String _decimal2sexagesimal(final double degDecimal, final bool minuteSecondPadding, final int secondDecimals) {
+  static String decimal2sexagesimal(final double degDecimal, final bool minuteSecondPadding, final int secondDecimals) {
     List<int> _split(final double value) {
       // NumberFormat is necessary to create digit after comma if the value
       // has no decimal point (only necessary for browser)
@@ -30,16 +30,6 @@ class GeoUtils {
     }
 
     return '$deg° $minText′ $secText″';
-  }
-
-  // returns coordinates formatted as DMS, e.g. ['41° 24′ 12.2″ N', '2° 10′ 26.5″ E']
-  static List<String> toDMS(LatLng latLng, {bool minuteSecondPadding = false, int secondDecimals = 2}) {
-    final lat = latLng.latitude;
-    final lng = latLng.longitude;
-    return [
-      '${_decimal2sexagesimal(lat, minuteSecondPadding, secondDecimals)} ${lat < 0 ? 'S' : 'N'}',
-      '${_decimal2sexagesimal(lng, minuteSecondPadding, secondDecimals)} ${lng < 0 ? 'W' : 'E'}',
-    ];
   }
 
   static LatLng getLatLngCenter(List<LatLng> points) {

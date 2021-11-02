@@ -87,6 +87,11 @@
 
   "coordinateFormatDms": "도분초",
   "coordinateFormatDecimal": "소수점",
+  "coordinateDms": "{direction} {coordinate}",
+  "coordinateDmsNorth": "북위",
+  "coordinateDmsSouth": "남위",
+  "coordinateDmsEast": "동경",
+  "coordinateDmsWest": "서경",
 
   "unitSystemMetric": "미터법",
   "unitSystemImperial": "야드파운드법",

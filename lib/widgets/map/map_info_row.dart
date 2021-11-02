@@ -121,7 +121,7 @@ class _AddressRowState extends State<_AddressRow> {
                         ? Constants.overlayUnknown
                         : entry.hasAddress
                             ? entry.shortAddress
-                            : settings.coordinateFormat.format(entry.latLng!));
+                            : settings.coordinateFormat.format(context.l10n, entry.latLng!));
                 return Text(
                   location,
                   strutStyle: Constants.overflowStrutStyle,
