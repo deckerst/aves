@@ -345,8 +345,8 @@
   "settingsThumbnailShowRawIcon": "Показать значок RAW-файла",
   "settingsThumbnailShowVideoDuration": "Показывать продолжительность видео",
 
-  "settingsCollectionSelectionQuickActionsTile": "Быстрые действия с объектами",
-  "settingsCollectionSelectionQuickActionEditorTitle": "Быстрые действия",
+  "settingsCollectionQuickActionsTile": "Быстрые действия",
+  "settingsCollectionQuickActionEditorTitle": "Быстрые действия",
   "settingsCollectionSelectionQuickActionEditorBanner": "Нажмите и удерживайте, чтобы переместить кнопки и выбрать, какие действия будут отображаться при выборе элементов.",
 
   "settingsSectionViewer": "Просмотрщик",
