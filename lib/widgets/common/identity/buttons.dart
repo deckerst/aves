@@ -14,9 +14,16 @@ class AvesOutlinedButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final style = ButtonStyle(
-      side: MaterialStateProperty.all<BorderSide>(BorderSide(color: Theme.of(context).colorScheme.secondary)),
-      foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+      side: MaterialStateProperty.resolveWith<BorderSide>((states) {
+        return BorderSide(
+          color: states.contains(MaterialState.disabled) ? theme.disabledColor : theme.colorScheme.secondary,
+        );
+      }),
+      foregroundColor: MaterialStateProperty.resolveWith<Color>((states) {
+        return states.contains(MaterialState.disabled) ? theme.disabledColor : Colors.white;
+      }),
     );
     return icon != null
         ? OutlinedButton.icon(

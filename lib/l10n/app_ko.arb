@@ -1,7 +1,7 @@
 {
   "appName": "아베스",
   "welcomeMessage": "아베스 사용을 환영합니다",
-  "welcomeCrashReportToggle": "오류 보고서를 보내는 것에 동의합니다 (선택)",
+  "welcomeOptional": "선택",
   "welcomeTermsToggle": "이용약관에 동의합니다",
   "itemCount": "{count, plural, other{{count}개}}",
 
@@ -393,7 +393,7 @@
   "settingsSubtitleThemeTextAlignmentRight": "오른쪽",
 
   "settingsSectionPrivacy": "개인정보 보호",
-  "settingsEnableErrorReporting": "오류 보고서 보내기",
+  "settingsAllowErrorReporting": "오류 보고서 보내기",
   "settingsSaveSearchHistory": "검색기록",
 
   "settingsHiddenFiltersTile": "숨겨진 필터",

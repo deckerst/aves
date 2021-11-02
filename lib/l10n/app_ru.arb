@@ -1,7 +1,7 @@
 {
   "appName": "Aves",
   "welcomeMessage": "Добро пожаловать в Aves",
-  "welcomeCrashReportToggle": "Разрешить анонимную отправку ошибок (опционально)",
+  "welcomeOptional": "Опционально",
   "welcomeTermsToggle": "Я согласен с условиями и положениями",
   "itemCount": "{count, plural, =1{1 объект} few{{count} объекта} other{{count} объектов}}",
 
@@ -392,7 +392,7 @@
   "settingsSubtitleThemeTextAlignmentRight": "По правой стороне",
 
   "settingsSectionPrivacy": "Конфиденциальность",
-  "settingsEnableErrorReporting": "Разрешить анонимную отправку логов",
+  "settingsAllowErrorReporting": "Разрешить анонимную отправку логов",
   "settingsSaveSearchHistory": "Сохранять историю поиска",
 
   "settingsHiddenFiltersTile": "Скрытые фильтры",
