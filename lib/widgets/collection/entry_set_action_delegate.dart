@@ -151,13 +151,13 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
         _share(context);
         break;
       case EntrySetAction.delete:
-        _showDeleteDialog(context);
+        _delete(context);
         break;
       case EntrySetAction.copy:
-        _moveSelection(context, moveType: MoveType.copy);
+        _move(context, moveType: MoveType.copy);
         break;
       case EntrySetAction.move:
-        _moveSelection(context, moveType: MoveType.move);
+        _move(context, moveType: MoveType.move);
         break;
       case EntrySetAction.rescan:
         _rescan(context);
@@ -203,7 +203,7 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
     selection.browse();
   }
 
-  Future<void> _showDeleteDialog(BuildContext context) async {
+  Future<void> _delete(BuildContext context) async {
     final source = context.read<CollectionSource>();
     final selection = context.read<Selection<AvesEntry>>();
     final selectedItems = _getExpandedSelectedItems(selection);
@@ -256,7 +256,7 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
     );
   }
 
-  Future<void> _moveSelection(BuildContext context, {required MoveType moveType}) async {
+  Future<void> _move(BuildContext context, {required MoveType moveType}) async {
     final l10n = context.l10n;
     final source = context.read<CollectionSource>();
     final selection = context.read<Selection<AvesEntry>>();

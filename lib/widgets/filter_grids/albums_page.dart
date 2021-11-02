@@ -42,7 +42,6 @@ class AlbumListPage extends StatelessWidget {
                 source: source,
                 title: context.l10n.albumPageTitle,
                 sortFactor: settings.albumSortFactor,
-                groupable: true,
                 showHeaders: settings.albumGroupFactor != AlbumChipGroupFactor.none,
                 actionDelegate: AlbumChipSetActionDelegate(gridItems),
                 filterSections: groupToSections(context, source, gridItems),
