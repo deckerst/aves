@@ -1,10 +1,12 @@
 import 'dart:io';
 
+import 'package:aves/app_mode.dart';
 import 'package:aves/model/actions/chip_set_actions.dart';
 import 'package:aves/model/actions/move_type.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/highlight.dart';
+import 'package:aves/model/selection.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums.dart';
@@ -39,29 +41,54 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> {
   set sortFactor(ChipSortFactor factor) => settings.albumSortFactor = factor;
 
   @override
-  bool isVisible(ChipSetAction action, Set<AlbumFilter> filters) {
+  bool isVisible(
+    ChipSetAction action, {
+    required AppMode appMode,
+    required bool isSelecting,
+    required int itemCount,
+    required Set<AlbumFilter> selectedFilters,
+  }) {
     switch (action) {
+      case ChipSetAction.group:
+        return true;
       case ChipSetAction.createAlbum:
+        return appMode == AppMode.main && !isSelecting;
       case ChipSetAction.delete:
       case ChipSetAction.rename:
-        return true;
+        return appMode == AppMode.main && isSelecting;
       default:
-        return super.isVisible(action, filters);
+        return super.isVisible(
+          action,
+          appMode: appMode,
+          isSelecting: isSelecting,
+          itemCount: itemCount,
+          selectedFilters: selectedFilters,
+        );
     }
   }
 
   @override
-  bool canApply(ChipSetAction action, Set<AlbumFilter> filters) {
+  bool canApply(
+    ChipSetAction action, {
+    required bool isSelecting,
+    required int itemCount,
+    required Set<AlbumFilter> selectedFilters,
+  }) {
     switch (action) {
       case ChipSetAction.rename:
         {
-          if (filters.length != 1) return false;
+          if (selectedFilters.length != 1) return false;
           // do not allow renaming volume root
-          final dir = VolumeRelativeDirectory.fromPath(filters.first.album);
+          final dir = VolumeRelativeDirectory.fromPath(selectedFilters.first.album);
           return dir != null && dir.relativeDir.isNotEmpty;
         }
       default:
-        return super.canApply(action, filters);
+        return super.canApply(
+          action,
+          isSelecting: isSelecting,
+          itemCount: itemCount,
+          selectedFilters: selectedFilters,
+        );
     }
   }
 
@@ -70,18 +97,18 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> {
     switch (action) {
       // general
       case ChipSetAction.group:
-        _showGroupDialog(context);
+        _group(context);
         break;
       case ChipSetAction.createAlbum:
         _createAlbum(context);
         break;
       // single/multiple filters
       case ChipSetAction.delete:
-        _showDeleteDialog(context, filters);
+        _delete(context, filters);
         break;
       // single filter
       case ChipSetAction.rename:
-        _showRenameDialog(context, filters.first);
+        _rename(context, filters.first);
         break;
       default:
         break;
@@ -89,7 +116,9 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> {
     super.onActionSelected(context, filters, action);
   }
 
-  Future<void> _showGroupDialog(BuildContext context) async {
+  void _browse(BuildContext context) => context.read<Selection<FilterGridItem<AlbumFilter>>>().browse();
+
+  Future<void> _group(BuildContext context) async {
     final factor = await showDialog<AlbumChipGroupFactor>(
       context: context,
       builder: (context) => AvesSelectionDialog<AlbumChipGroupFactor>(
@@ -129,7 +158,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> {
     }
   }
 
-  Future<void> _showDeleteDialog(BuildContext context, Set<AlbumFilter> filters) async {
+  Future<void> _delete(BuildContext context, Set<AlbumFilter> filters) async {
     final l10n = context.l10n;
     final messenger = ScaffoldMessenger.of(context);
     final source = context.read<CollectionSource>();
@@ -173,6 +202,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> {
       onDone: (processed) async {
         final deletedUris = processed.where((event) => event.success).map((event) => event.uri).toSet();
         await source.removeEntries(deletedUris);
+        _browse(context);
         source.resumeMonitoring();
 
         final deletedCount = deletedUris.length;
@@ -187,7 +217,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> {
     );
   }
 
-  Future<void> _showRenameDialog(BuildContext context, AlbumFilter filter) async {
+  Future<void> _rename(BuildContext context, AlbumFilter filter) async {
     final l10n = context.l10n;
     final messenger = ScaffoldMessenger.of(context);
     final source = context.read<CollectionSource>();
@@ -238,6 +268,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> {
       onDone: (processed) async {
         final movedOps = processed.where((e) => e.success).toSet();
         await source.renameAlbum(album, destinationAlbum, todoEntries, movedOps);
+        _browse(context);
         source.resumeMonitoring();
 
         final movedCount = movedOps.length;

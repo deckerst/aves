@@ -15,8 +15,8 @@ class FilterNavigationPage<T extends CollectionFilter> extends StatelessWidget {
   final CollectionSource source;
   final String title;
   final ChipSortFactor sortFactor;
-  final bool groupable, showHeaders;
-  final ChipSetActionDelegate actionDelegate;
+  final bool showHeaders;
+  final ChipSetActionDelegate<T> actionDelegate;
   final Map<ChipSectionKey, List<FilterGridItem<T>>> filterSections;
   final Set<T>? newFilters;
   final Widget Function() emptyBuilder;
@@ -26,7 +26,6 @@ class FilterNavigationPage<T extends CollectionFilter> extends StatelessWidget {
     required this.source,
     required this.title,
     required this.sortFactor,
-    this.groupable = false,
     this.showHeaders = false,
     required this.actionDelegate,
     required this.filterSections,
@@ -43,7 +42,6 @@ class FilterNavigationPage<T extends CollectionFilter> extends StatelessWidget {
             source: source,
             title: title,
             actionDelegate: actionDelegate,
-            groupable: groupable,
             isEmpty: filterSections.isEmpty,
           ),
           sections: filterSections,

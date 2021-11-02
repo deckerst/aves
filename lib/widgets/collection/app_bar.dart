@@ -201,12 +201,12 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
 
     final browsingQuickActions = settings.collectionBrowsingQuickActions;
     final selectionQuickActions = settings.collectionSelectionQuickActions;
-    final quickActions = (isSelecting ? selectionQuickActions : browsingQuickActions).where(isVisible).map(
+    final quickActionButtons = (isSelecting ? selectionQuickActions : browsingQuickActions).where(isVisible).map(
           (action) => _toActionButton(action, enabled: canApply(action)),
         );
 
     return [
-      ...quickActions,
+      ...quickActionButtons,
       MenuIconTheme(
         child: PopupMenuButton<EntrySetAction>(
           // key is expected by test driver
@@ -252,7 +252,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
           onSelected: (action) async {
             // wait for the popup menu to hide before proceeding with the action
             await Future.delayed(Durations.popupMenuAnimation * timeDilation);
-            await _onCollectionActionSelected(action);
+            await _onActionSelected(action);
           },
         ),
       ),
@@ -262,16 +262,16 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   // key is expected by test driver (e.g. 'menu-sort', 'menu-group', 'menu-map')
   Key _getActionKey(EntrySetAction action) => Key('menu-${action.toString().substring('EntrySetAction.'.length)}');
 
-  Widget _toActionButton(EntrySetAction action, {bool enabled = true}) {
+  Widget _toActionButton(EntrySetAction action, {required bool enabled}) {
     return IconButton(
       key: _getActionKey(action),
       icon: action.getIcon(),
-      onPressed: enabled ? () => _onCollectionActionSelected(action) : null,
+      onPressed: enabled ? () => _onActionSelected(action) : null,
       tooltip: action.getText(context),
     );
   }
 
-  PopupMenuItem<EntrySetAction> _toMenuItem(EntrySetAction action, {bool enabled = true}) {
+  PopupMenuItem<EntrySetAction> _toMenuItem(EntrySetAction action, {required bool enabled}) {
     return PopupMenuItem(
       key: _getActionKey(action),
       value: action,
@@ -339,7 +339,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     }
   }
 
-  Future<void> _onCollectionActionSelected(EntrySetAction action) async {
+  Future<void> _onActionSelected(EntrySetAction action) async {
     switch (action) {
       // general
       case EntrySetAction.sort:

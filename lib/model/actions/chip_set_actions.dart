@@ -1,6 +1,6 @@
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 
 enum ChipSetAction {
   // general
@@ -9,18 +9,48 @@ enum ChipSetAction {
   select,
   selectAll,
   selectNone,
+  // browsing
+  search,
   createAlbum,
-  // all or filter selection
+  // browsing or selecting
   map,
   stats,
-  // single/multiple filter selection
+  // selecting (single/multiple filters)
   delete,
   hide,
   pin,
   unpin,
-  // single filter selection
+  // selecting (single filter)
   rename,
   setCover,
+}
+
+class ChipSetActions {
+  static const general = [
+    ChipSetAction.sort,
+    ChipSetAction.group,
+    ChipSetAction.select,
+    ChipSetAction.selectAll,
+    ChipSetAction.selectNone,
+  ];
+
+  static const browsing = [
+    ChipSetAction.search,
+    ChipSetAction.createAlbum,
+    ChipSetAction.map,
+    ChipSetAction.stats,
+  ];
+
+  static const selection = [
+    ChipSetAction.setCover,
+    ChipSetAction.pin,
+    ChipSetAction.unpin,
+    ChipSetAction.delete,
+    ChipSetAction.rename,
+    ChipSetAction.hide,
+    ChipSetAction.map,
+    ChipSetAction.stats,
+  ];
 }
 
 extension ExtraChipSetAction on ChipSetAction {
@@ -37,13 +67,17 @@ extension ExtraChipSetAction on ChipSetAction {
         return context.l10n.menuActionSelectAll;
       case ChipSetAction.selectNone:
         return context.l10n.menuActionSelectNone;
+      // browsing
+      case ChipSetAction.search:
+        return MaterialLocalizations.of(context).searchFieldLabel;
+      case ChipSetAction.createAlbum:
+        return context.l10n.chipActionCreateAlbum;
+      // browsing or selecting
       case ChipSetAction.map:
         return context.l10n.menuActionMap;
       case ChipSetAction.stats:
         return context.l10n.menuActionStats;
-      case ChipSetAction.createAlbum:
-        return context.l10n.chipActionCreateAlbum;
-      // single/multiple filters
+      // selecting (single/multiple filters)
       case ChipSetAction.delete:
         return context.l10n.chipActionDelete;
       case ChipSetAction.hide:
@@ -52,7 +86,7 @@ extension ExtraChipSetAction on ChipSetAction {
         return context.l10n.chipActionPin;
       case ChipSetAction.unpin:
         return context.l10n.chipActionUnpin;
-      // single filter
+      // selecting (single filter)
       case ChipSetAction.rename:
         return context.l10n.chipActionRename;
       case ChipSetAction.setCover:
@@ -77,13 +111,17 @@ extension ExtraChipSetAction on ChipSetAction {
         return AIcons.selected;
       case ChipSetAction.selectNone:
         return AIcons.unselected;
+      // browsing
+      case ChipSetAction.search:
+        return AIcons.search;
+      case ChipSetAction.createAlbum:
+        return AIcons.add;
+      // browsing or selecting
       case ChipSetAction.map:
         return AIcons.map;
       case ChipSetAction.stats:
         return AIcons.stats;
-      case ChipSetAction.createAlbum:
-        return AIcons.add;
-      // single/multiple filters
+      // selecting (single/multiple filters)
       case ChipSetAction.delete:
         return AIcons.delete;
       case ChipSetAction.hide:
@@ -92,7 +130,7 @@ extension ExtraChipSetAction on ChipSetAction {
         return AIcons.pin;
       case ChipSetAction.unpin:
         return AIcons.unpin;
-      // single filter
+      // selecting (single filter)
       case ChipSetAction.rename:
         return AIcons.rename;
       case ChipSetAction.setCover:
