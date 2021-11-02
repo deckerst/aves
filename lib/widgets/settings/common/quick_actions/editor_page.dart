@@ -15,7 +15,7 @@ import 'package:aves/widgets/viewer/overlay/common.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-class QuickActionEditorPage<T extends Object> extends StatefulWidget {
+class QuickActionEditorPage<T extends Object> extends StatelessWidget {
   final String title, bannerText;
   final List<T> allAvailableActions;
   final Widget? Function(T action) actionIcon;
@@ -35,10 +35,50 @@ class QuickActionEditorPage<T extends Object> extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _QuickActionEditorPageState createState() => _QuickActionEditorPageState<T>();
+  Widget build(BuildContext context) {
+    return MediaQueryDataProvider(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(title),
+        ),
+        body: SafeArea(
+          child: QuickActionEditorBody(
+            bannerText: bannerText,
+            allAvailableActions: allAvailableActions,
+            actionIcon: actionIcon,
+            actionText: actionText,
+            load: load,
+            save: save,
+          ),
+        ),
+      ),
+    );
+  }
 }
 
-class _QuickActionEditorPageState<T extends Object> extends State<QuickActionEditorPage<T>> {
+class QuickActionEditorBody<T extends Object> extends StatefulWidget {
+  final String bannerText;
+  final List<T> allAvailableActions;
+  final Widget? Function(T action) actionIcon;
+  final String Function(BuildContext context, T action) actionText;
+  final List<T> Function() load;
+  final void Function(List<T> actions) save;
+
+  const QuickActionEditorBody({
+    Key? key,
+    required this.bannerText,
+    required this.allAvailableActions,
+    required this.actionIcon,
+    required this.actionText,
+    required this.load,
+    required this.save,
+  }) : super(key: key);
+
+  @override
+  _QuickActionEditorBodyState createState() => _QuickActionEditorBodyState<T>();
+}
+
+class _QuickActionEditorBodyState<T extends Object> extends State<QuickActionEditorBody<T>> with AutomaticKeepAliveClientMixin {
   final GlobalKey<AnimatedListState> _animatedListKey = GlobalKey(debugLabel: 'quick-actions-animated-list');
   Timer? _targetLeavingTimer;
   late List<T> _quickActions;
@@ -77,6 +117,8 @@ class _QuickActionEditorPageState<T extends Object> extends State<QuickActionEdi
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     final header = QuickActionButton<T>(
       placement: QuickActionPlacement.header,
       panelHighlight: _quickActionHighlight,
@@ -95,135 +137,126 @@ class _QuickActionEditorPageState<T extends Object> extends State<QuickActionEdi
       removeAction: _removeQuickAction,
       onTargetLeave: _onQuickActionTargetLeave,
     );
-    return MediaQueryDataProvider(
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(widget.title),
-        ),
-        body: WillPopScope(
-          onWillPop: () {
-            widget.save(_quickActions);
-            return SynchronousFuture(true);
-          },
-          child: SafeArea(
-            child: ListView(
+    return WillPopScope(
+      onWillPop: () {
+        widget.save(_quickActions);
+        return SynchronousFuture(true);
+      },
+      child: ListView(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+            child: Row(
               children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                  child: Row(
-                    children: [
-                      const Icon(AIcons.info),
-                      const SizedBox(width: 16),
-                      Expanded(child: Text(widget.bannerText)),
-                    ],
-                  ),
-                ),
-                const Divider(),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Text(
-                    context.l10n.settingsViewerQuickActionEditorDisplayedButtons,
-                    style: Constants.titleTextStyle,
-                  ),
-                ),
-                ValueListenableBuilder<bool>(
-                  valueListenable: _quickActionHighlight,
-                  builder: (context, highlight, child) => ActionPanel(
-                    highlight: highlight,
-                    child: child!,
-                  ),
-                  child: SizedBox(
-                    height: OverlayButton.getSize(context) + quickActionVerticalPadding * 2,
-                    child: Stack(
-                      children: [
-                        Positioned.fill(
-                          child: FractionallySizedBox(
-                            alignment: Alignment.centerLeft,
-                            widthFactor: .5,
-                            child: header,
-                          ),
-                        ),
-                        Positioned.fill(
-                          child: FractionallySizedBox(
-                            alignment: Alignment.centerRight,
-                            widthFactor: .5,
-                            child: footer,
-                          ),
-                        ),
-                        Container(
-                          alignment: Alignment.center,
-                          child: AnimatedList(
-                            key: _animatedListKey,
-                            initialItemCount: _quickActions.length,
-                            scrollDirection: Axis.horizontal,
-                            shrinkWrap: true,
-                            padding: EdgeInsets.zero,
-                            itemBuilder: (context, index, animation) {
-                              if (index >= _quickActions.length) return const SizedBox();
-                              final action = _quickActions[index];
-                              return QuickActionButton<T>(
-                                placement: QuickActionPlacement.action,
-                                action: action,
-                                panelHighlight: _quickActionHighlight,
-                                draggedQuickAction: _draggedQuickAction,
-                                draggedAvailableAction: _draggedAvailableAction,
-                                insertAction: _insertQuickAction,
-                                removeAction: _removeQuickAction,
-                                onTargetLeave: _onQuickActionTargetLeave,
-                                draggableFeedbackBuilder: (action) => ActionButton(
-                                  text: widget.actionText(context, action),
-                                  icon: widget.actionIcon(action),
-                                  showCaption: false,
-                                ),
-                                child: _buildQuickActionButton(action, animation),
-                              );
-                            },
-                          ),
-                        ),
-                        AnimatedBuilder(
-                          animation: _quickActionsChangeNotifier,
-                          builder: (context, child) => _quickActions.isEmpty
-                              ? Center(
-                                  child: Text(
-                                    context.l10n.settingsViewerQuickActionEmpty,
-                                    style: Theme.of(context).textTheme.caption,
-                                  ),
-                                )
-                              : const SizedBox(),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Text(
-                    context.l10n.settingsViewerQuickActionEditorAvailableButtons,
-                    style: Constants.titleTextStyle,
-                  ),
-                ),
-                ValueListenableBuilder<bool>(
-                  valueListenable: _availableActionHighlight,
-                  builder: (context, highlight, child) => ActionPanel(
-                    highlight: highlight,
-                    child: child!,
-                  ),
-                  child: AvailableActionPanel<T>(
-                    allActions: widget.allAvailableActions,
-                    quickActions: _quickActions,
-                    quickActionsChangeNotifier: _quickActionsChangeNotifier,
-                    panelHighlight: _availableActionHighlight,
-                    draggedQuickAction: _draggedQuickAction,
-                    draggedAvailableAction: _draggedAvailableAction,
-                    removeQuickAction: _removeQuickAction,
-                    actionIcon: widget.actionIcon,
-                    actionText: widget.actionText,
-                  ),
-                ),
+                const Icon(AIcons.info),
+                const SizedBox(width: 16),
+                Expanded(child: Text(widget.bannerText)),
               ],
             ),
           ),
-        ),
+          const Divider(),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Text(
+              context.l10n.settingsViewerQuickActionEditorDisplayedButtons,
+              style: Constants.titleTextStyle,
+            ),
+          ),
+          ValueListenableBuilder<bool>(
+            valueListenable: _quickActionHighlight,
+            builder: (context, highlight, child) => ActionPanel(
+              highlight: highlight,
+              child: child!,
+            ),
+            child: SizedBox(
+              height: OverlayButton.getSize(context) + quickActionVerticalPadding * 2,
+              child: Stack(
+                children: [
+                  Positioned.fill(
+                    child: FractionallySizedBox(
+                      alignment: Alignment.centerLeft,
+                      widthFactor: .5,
+                      child: header,
+                    ),
+                  ),
+                  Positioned.fill(
+                    child: FractionallySizedBox(
+                      alignment: Alignment.centerRight,
+                      widthFactor: .5,
+                      child: footer,
+                    ),
+                  ),
+                  Container(
+                    alignment: Alignment.center,
+                    child: AnimatedList(
+                      key: _animatedListKey,
+                      initialItemCount: _quickActions.length,
+                      scrollDirection: Axis.horizontal,
+                      shrinkWrap: true,
+                      padding: EdgeInsets.zero,
+                      itemBuilder: (context, index, animation) {
+                        if (index >= _quickActions.length) return const SizedBox();
+                        final action = _quickActions[index];
+                        return QuickActionButton<T>(
+                          placement: QuickActionPlacement.action,
+                          action: action,
+                          panelHighlight: _quickActionHighlight,
+                          draggedQuickAction: _draggedQuickAction,
+                          draggedAvailableAction: _draggedAvailableAction,
+                          insertAction: _insertQuickAction,
+                          removeAction: _removeQuickAction,
+                          onTargetLeave: _onQuickActionTargetLeave,
+                          draggableFeedbackBuilder: (action) => ActionButton(
+                            text: widget.actionText(context, action),
+                            icon: widget.actionIcon(action),
+                            showCaption: false,
+                          ),
+                          child: _buildQuickActionButton(action, animation),
+                        );
+                      },
+                    ),
+                  ),
+                  AnimatedBuilder(
+                    animation: _quickActionsChangeNotifier,
+                    builder: (context, child) => _quickActions.isEmpty
+                        ? Center(
+                            child: Text(
+                              context.l10n.settingsViewerQuickActionEmpty,
+                              style: Theme.of(context).textTheme.caption,
+                            ),
+                          )
+                        : const SizedBox(),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Text(
+              context.l10n.settingsViewerQuickActionEditorAvailableButtons,
+              style: Constants.titleTextStyle,
+            ),
+          ),
+          ValueListenableBuilder<bool>(
+            valueListenable: _availableActionHighlight,
+            builder: (context, highlight, child) => ActionPanel(
+              highlight: highlight,
+              child: child!,
+            ),
+            child: AvailableActionPanel<T>(
+              allActions: widget.allAvailableActions,
+              quickActions: _quickActions,
+              quickActionsChangeNotifier: _quickActionsChangeNotifier,
+              panelHighlight: _availableActionHighlight,
+              draggedQuickAction: _draggedQuickAction,
+              draggedAvailableAction: _draggedAvailableAction,
+              removeQuickAction: _removeQuickAction,
+              actionIcon: widget.actionIcon,
+              actionText: widget.actionText,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -284,7 +317,7 @@ class _QuickActionEditorPageState<T extends Object> extends State<QuickActionEdi
         axis: Axis.horizontal,
         sizeFactor: animation,
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: _QuickActionEditorPageState.quickActionVerticalPadding, horizontal: 4),
+          padding: const EdgeInsets.symmetric(vertical: _QuickActionEditorBodyState.quickActionVerticalPadding, horizontal: 4),
           child: OverlayButton(
             child: IconButton(
               icon: widget.actionIcon(action) ?? const SizedBox(),
@@ -309,4 +342,7 @@ class _QuickActionEditorPageState<T extends Object> extends State<QuickActionEdi
 
     return child;
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

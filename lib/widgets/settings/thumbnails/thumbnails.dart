@@ -6,8 +6,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/common/identity/aves_icons.dart';
 import 'package:aves/widgets/settings/common/tile_leading.dart';
-import 'package:aves/widgets/settings/thumbnails/browsing_actions_editor.dart';
-import 'package:aves/widgets/settings/thumbnails/selection_actions_editor.dart';
+import 'package:aves/widgets/settings/thumbnails/collection_actions_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -38,8 +37,7 @@ class ThumbnailsSection extends StatelessWidget {
       expandedNotifier: expandedNotifier,
       showHighlight: false,
       children: [
-        const BrowsingActionsTile(),
-        const SelectionActionsTile(),
+        const CollectionActionsTile(),
         SwitchListTile(
           value: currentShowThumbnailLocation,
           onChanged: (v) => settings.showThumbnailLocation = v,

@@ -243,6 +243,7 @@
   "collectionActionCopy": "앨범으로 복사",
   "collectionActionMove": "앨범으로 이동",
   "collectionActionRescan": "새로 분석",
+  "collectionActionEdit": "편집",
 
   "collectionSortTitle": "정렬",
   "collectionSortDate": "날짜",
@@ -262,9 +263,11 @@
   "collectionDeleteFailureFeedback": "{count, plural, other{항목 {count}개를 삭제하지 못했습니다}}",
   "collectionCopyFailureFeedback": "{count, plural, other{항목 {count}개를 복사하지 못했습니다}}",
   "collectionMoveFailureFeedback": "{count, plural, other{항목 {count}개를 이동하지 못했습니다}}",
+  "collectionEditFailureFeedback": "{count, plural, other{항목 {count}개를 편집하지 못했습니다}}",
   "collectionExportFailureFeedback": "{count, plural, other{항목 {count}개를 내보내지 못했습니다}}",
   "collectionCopySuccessFeedback": "{count, plural, other{항목 {count}개를 복사했습니다}}",
   "collectionMoveSuccessFeedback": "{count, plural, other{항목 {count}개를 이동했습니다}}",
+  "collectionEditSuccessFeedback": "{count, plural, other{항목 {count}개를 편집했습니다}}",
 
   "collectionEmptyFavourites": "즐겨찾기가 없습니다",
   "collectionEmptyVideos": "동영상이 없습니다",
@@ -349,8 +352,8 @@
   "settingsThumbnailShowRawIcon": "Raw 아이콘 표시",
   "settingsThumbnailShowVideoDuration": "동영상 길이 표시",
 
-  "settingsCollectionSelectionQuickActionsTile": "항목 선택의 빠른 작업",
-  "settingsCollectionSelectionQuickActionEditorTitle": "빠른 작업",
+  "settingsCollectionQuickActionsTile": "빠른 작업",
+  "settingsCollectionQuickActionEditorTitle": "빠른 작업",
   "settingsCollectionSelectionQuickActionEditorBanner": "버튼을 길게 누른 후 이동하여 항목 선택할 때 표시될 버튼을 선택하세요.",
 
   "settingsSectionViewer": "뷰어",
