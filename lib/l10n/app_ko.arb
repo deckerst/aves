@@ -203,6 +203,7 @@
   "aboutPageTitle": "앱 정보",
   "aboutLinkSources": "소스 코드",
   "aboutLinkLicense": "라이선스",
+  "aboutLinkPolicy": "개인정보 보호정책",
 
   "aboutUpdate": "업데이트 사용 가능",
   "aboutUpdateLinks1": "앱의 최신 버전을",
@@ -231,6 +232,8 @@
   "aboutLicensesFlutterPackages": "플러터 패키지",
   "aboutLicensesDartPackages": "다트 패키지",
   "aboutLicensesShowAllButtonLabel": "라이선스 모두 보기",
+
+  "policyPageTitle": "개인정보 보호정책",
 
   "collectionPageTitle": "미디어",
   "collectionPickPageTitle": "항목 선택",

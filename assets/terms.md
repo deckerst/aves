@@ -8,7 +8,7 @@ You must use the app for legal, authorized and acceptable purposes.
 
 The app is released “as-is”, without any warranty, responsibility or liability. Use of the app is at your own risk.
 
-## Privacy policy
+## Privacy Policy
 
 The app does not collect any personal data. We never have access to your photos and videos. This also means that we cannot get them back for you if you delete them without backing them up.
 

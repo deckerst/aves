@@ -451,6 +451,8 @@
   "@aboutLinkSources": {},
   "aboutLinkLicense": "License",
   "@aboutLinkLicense": {},
+  "aboutLinkPolicy": "Privacy Policy",
+  "@aboutLinkPolicy": {},
 
   "aboutUpdate": "New Version Available",
   "@aboutUpdate": {},
@@ -503,6 +505,9 @@
   "@aboutLicensesDartPackages": {},
   "aboutLicensesShowAllButtonLabel": "Show All Licenses",
   "@aboutLicensesShowAllButtonLabel": {},
+
+  "policyPageTitle": "Privacy Policy",
+  "@policyPageTitle": {},
 
   "collectionPageTitle": "Collection",
   "@collectionPageTitle": {},

@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/constants.dart';
+import 'package:aves/widgets/about/policy_page.dart';
 import 'package:aves/widgets/common/basic/link_chip.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_logo.dart';
@@ -66,16 +67,18 @@ class _AppReferenceState extends State<AppReference> {
   }
 
   Widget _buildLinks() {
+    final l10n = context.l10n;
     return Wrap(
-      crossAxisAlignment: WrapCrossAlignment.center,
+      alignment: WrapAlignment.center,
       spacing: 16,
+      crossAxisAlignment: WrapCrossAlignment.center,
       children: [
         LinkChip(
           leading: const Icon(
             AIcons.github,
             size: 24,
           ),
-          text: context.l10n.aboutLinkSources,
+          text: l10n.aboutLinkSources,
           url: Constants.avesGithub,
         ),
         LinkChip(
@@ -83,10 +86,28 @@ class _AppReferenceState extends State<AppReference> {
             AIcons.legal,
             size: 22,
           ),
-          text: context.l10n.aboutLinkLicense,
+          text: l10n.aboutLinkLicense,
           url: '${Constants.avesGithub}/blob/main/LICENSE',
         ),
+        LinkChip(
+          leading: const Icon(
+            AIcons.privacy,
+            size: 22,
+          ),
+          text: l10n.aboutLinkPolicy,
+          onTap: _goToPolicyPage,
+        ),
       ],
+    );
+  }
+
+  void _goToPolicyPage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        settings: const RouteSettings(name: PolicyPage.routeName),
+        builder: (context) => const PolicyPage(),
+      ),
     );
   }
 }
