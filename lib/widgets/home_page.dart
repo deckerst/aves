@@ -68,7 +68,9 @@ class _HomePageState extends State<HomePage> {
     }
 
     await androidFileUtils.init();
-    unawaited(androidFileUtils.initAppNames());
+    if (settings.isInstalledAppAccessAllowed) {
+      unawaited(androidFileUtils.initAppNames());
+    }
 
     var appMode = AppMode.main;
     final intentData = widget.intentData ?? await ViewerService.getIntentData();

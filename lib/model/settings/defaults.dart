@@ -14,7 +14,9 @@ class SettingsDefaults {
   // app
   static const hasAcceptedTerms = false;
   static const canUseAnalysisService = true;
-  static const isErrorReportingEnabled = false;
+  // TODO TLAD currently opt-out for transition (v1.5.4 -> vNext), should make it opt-in for vNext+1
+  static const isInstalledAppAccessAllowed = true;
+  static const isErrorReportingAllowed = false;
   static const mustBackTwiceToExit = true;
   static const keepScreenOn = KeepScreenOn.viewerOnly;
   static const homePage = HomePageSetting.collection;

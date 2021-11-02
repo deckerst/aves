@@ -32,13 +32,22 @@ class PrivacySection extends StatelessWidget {
       expandedNotifier: expandedNotifier,
       showHighlight: false,
       children: [
+        Selector<Settings, bool>(
+          selector: (context, s) => s.isInstalledAppAccessAllowed,
+          builder: (context, current, child) => SwitchListTile(
+            value: current,
+            onChanged: (v) => settings.isInstalledAppAccessAllowed = v,
+            title: Text(context.l10n.settingsAllowInstalledAppAccess),
+            subtitle: Text(context.l10n.settingsAllowInstalledAppAccessSubtitle),
+          ),
+        ),
         if (canEnableErrorReporting)
           Selector<Settings, bool>(
-            selector: (context, s) => s.isErrorReportingEnabled,
+            selector: (context, s) => s.isErrorReportingAllowed,
             builder: (context, current, child) => SwitchListTile(
               value: current,
-              onChanged: (v) => settings.isErrorReportingEnabled = v,
-              title: Text(context.l10n.settingsEnableErrorReporting),
+              onChanged: (v) => settings.isErrorReportingAllowed = v,
+              title: Text(context.l10n.settingsAllowErrorReporting),
             ),
           ),
         Selector<Settings, bool>(

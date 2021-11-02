@@ -30,7 +30,7 @@ Future<void> configureAndLaunch() async {
   settings
     ..keepScreenOn = KeepScreenOn.always
     ..hasAcceptedTerms = false
-    ..isErrorReportingEnabled = false
+    ..isErrorReportingAllowed = false
     ..locale = const Locale('en')
     ..homePage = HomePageSetting.collection
     ..imageBackground = EntryBackground.checkered;

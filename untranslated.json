@@ -8,7 +8,9 @@
     "collectionEditSuccessFeedback",
     "settingsCollectionBrowsingQuickActionsTile",
     "settingsCollectionBrowsingQuickActionEditorTitle",
-    "settingsCollectionBrowsingQuickActionEditorBanner"
+    "settingsCollectionBrowsingQuickActionEditorBanner",
+    "settingsAllowInstalledAppAccess",
+    "settingsAllowInstalledAppAccessSubtitle"
   ],
 
   "ru": [
@@ -21,6 +23,8 @@
     "collectionEditSuccessFeedback",
     "settingsCollectionBrowsingQuickActionsTile",
     "settingsCollectionBrowsingQuickActionEditorTitle",
-    "settingsCollectionBrowsingQuickActionEditorBanner"
+    "settingsCollectionBrowsingQuickActionEditorBanner",
+    "settingsAllowInstalledAppAccess",
+    "settingsAllowInstalledAppAccessSubtitle"
   ]
 }

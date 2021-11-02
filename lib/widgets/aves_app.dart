@@ -12,6 +12,7 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/themes.dart';
+import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/debouncer.dart';
 import 'package:aves/widgets/common/behaviour/route_tracker.dart';
 import 'package:aves/widgets/common/behaviour/routes.dart';
@@ -168,12 +169,23 @@ class _AvesAppState extends State<AvesApp> {
         );
     settings.keepScreenOn.apply();
 
+    // installed app access
+    settings.updateStream.where((key) => key == Settings.isInstalledAppAccessAllowedKey).listen(
+      (_) {
+        if (settings.isInstalledAppAccessAllowed) {
+          androidFileUtils.initAppNames();
+        } else {
+          androidFileUtils.resetAppNames();
+        }
+      },
+    );
+
     // error reporting
     await reportService.init();
-    settings.updateStream.where((key) => key == Settings.isErrorReportingEnabledKey).listen(
-          (_) => reportService.setCollectionEnabled(settings.isErrorReportingEnabled),
+    settings.updateStream.where((key) => key == Settings.isErrorReportingAllowedKey).listen(
+          (_) => reportService.setCollectionEnabled(settings.isErrorReportingAllowed),
         );
-    await reportService.setCollectionEnabled(settings.isErrorReportingEnabled);
+    await reportService.setCollectionEnabled(settings.isErrorReportingAllowed);
 
     FlutterError.onError = reportService.recordFlutterError;
     final now = DateTime.now();
