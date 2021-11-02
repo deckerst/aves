@@ -87,6 +87,11 @@
 
   "coordinateFormatDms": "Градусы, минуты и секунды",
   "coordinateFormatDecimal": "Десятичные градусы",
+  "coordinateDms": "{coordinate} {direction}",
+  "coordinateDmsNorth": "с. ш.",
+  "coordinateDmsSouth": "ю. ш.",
+  "coordinateDmsEast": "в. д.",
+  "coordinateDmsWest": "з. д.",
 
   "unitSystemMetric": "Метрические",
   "unitSystemImperial": "Имперские",

@@ -176,6 +176,25 @@
   "@coordinateFormatDms": {},
   "coordinateFormatDecimal": "Decimal degrees",
   "@coordinateFormatDecimal": {},
+  "coordinateDms": "{coordinate} {direction}",
+  "@coordinateDms": {
+    "placeholders": {
+      "coordinate": {
+        "type": "String"
+      },
+      "direction": {
+        "type": "String"
+      }
+    }
+  },
+  "coordinateDmsNorth": "N",
+  "@coordinateDmsNorth": {},
+  "coordinateDmsSouth": "S",
+  "@coordinateDmsSouth": {},
+  "coordinateDmsEast": "E",
+  "@coordinateDmsEast": {},
+  "coordinateDmsWest": "W",
+  "@coordinateDmsWest": {},
 
   "unitSystemMetric": "Metric",
   "@unitSystemMetric": {},
