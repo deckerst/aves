@@ -523,15 +523,11 @@ class MediaStoreImageProvider : ImageProvider() {
     ): FieldMap {
         val oldFile = File(oldPath)
         val newFile = File(oldFile.parent, newFileName)
-        if (oldFile == newFile) {
-            // nothing to do
-            return skippedFieldMap
-        }
-
-        return if (isMediaUriPermissionGranted(activity, oldMediaUri, mimeType)) {
-            renameSingleByMediaStore(activity, mimeType, oldMediaUri, newFile)
-        } else {
-            renameSingleByTreeDoc(activity, mimeType, oldMediaUri, oldPath, newFile)
+        return when {
+            oldFile == newFile -> skippedFieldMap
+            StorageUtils.canEditByFile(activity, oldPath) -> renameSingleByFile(activity, mimeType, oldPath, newFile)
+            isMediaUriPermissionGranted(activity, oldMediaUri, mimeType) -> renameSingleByMediaStore(activity, mimeType, oldMediaUri, newFile)
+            else -> renameSingleByTreeDoc(activity, mimeType, oldMediaUri, oldPath, newFile)
         }
     }
 
@@ -580,39 +576,25 @@ class MediaStoreImageProvider : ImageProvider() {
         @Suppress("BlockingMethodInNonBlockingContext")
         val renamed = StorageUtils.getDocumentFile(activity, oldPath, oldMediaUri)?.renameTo(newFile.name) ?: false
         if (!renamed) {
-            throw Exception("failed to rename entry at path=$oldPath")
+            throw Exception("failed to rename document at path=$oldPath")
         }
-
-        // Renaming may be successful and the file at the old path no longer exists
-        // but, in some situations, scanning the old path does not clear the Media Store entry.
-        // For higher chance of accurate obsolete item check, keep this order:
-        // 1) scan obsolete item,
-        // 2) scan current item,
-        // 3) check obsolete item in Media Store
-
         scanObsoletePath(activity, oldPath, mimeType)
-        val newFields = scanNewPath(activity, newFile.path, mimeType)
+        return scanNewPath(activity, newFile.path, mimeType)
+    }
 
-        if (hasEntry(activity, oldMediaUri)) {
-            Log.w(LOG_TAG, "renaming item at uri=$oldMediaUri to newFile=$newFile did not clear the MediaStore entry for obsolete path=$oldPath")
-
-            // On Android Q (emulator/Mi9TPro), the concept of owner package disrupts renaming and the Media Store keeps an obsolete entry,
-            // but we use legacy external storage, so at least we do not have to deal with a `RecoverableSecurityException`
-            // when deleting this obsolete entry which is not backed by a file anymore.
-            // On Android R (S10e), everything seems fine!
-            // On Android S (emulator), renaming always leaves an obsolete entry whatever the owner package,
-            // and we get a `RecoverableSecurityException` if we attempt to delete this obsolete entry,
-            // but the entry seems to be cleaned later automatically by the Media Store anyway.
-            if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
-                try {
-                    delete(activity, oldMediaUri, oldPath, mimeType)
-                } catch (e: Exception) {
-                    Log.w(LOG_TAG, "failed to delete entry with path=$oldPath", e)
-                }
-            }
+    private suspend fun renameSingleByFile(
+        activity: Activity,
+        mimeType: String,
+        oldPath: String,
+        newFile: File
+    ): FieldMap {
+        Log.d(LOG_TAG, "rename file at path=$oldPath")
+        val renamed = File(oldPath).renameTo(newFile)
+        if (!renamed) {
+            throw Exception("failed to rename file at path=$oldPath")
         }
-
-        return newFields
+        scanObsoletePath(activity, oldPath, mimeType)
+        return scanNewPath(activity, newFile.path, mimeType)
     }
 
     override fun scanPostMetadataEdit(context: Context, path: String, uri: Uri, mimeType: String, newFields: HashMap<String, Any?>, callback: ImageOpCallback) {
