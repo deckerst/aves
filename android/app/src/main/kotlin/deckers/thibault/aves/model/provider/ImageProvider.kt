@@ -9,7 +9,6 @@ import android.net.Uri
 import android.os.Binder
 import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.exifinterface.media.ExifInterface
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
@@ -734,7 +733,7 @@ abstract class ImageProvider {
         targetUri: Uri,
         targetPath: String
     ) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && isMediaUriPermissionGranted(context, targetUri, mimeType)) {
+        if (isMediaUriPermissionGranted(context, targetUri, mimeType)) {
             val targetStream = StorageUtils.openOutputStream(context, targetUri, mimeType) ?: throw Exception("failed to open output stream for uri=$targetUri")
             DocumentFileCompat.fromFile(sourceFile).copyTo(targetStream)
         } else {
@@ -758,14 +757,17 @@ abstract class ImageProvider {
         // used when skipping a move/creation op because the target file already exists
         val skippedFieldMap: HashMap<String, Any?> = hashMapOf("skipped" to true)
 
-        @RequiresApi(Build.VERSION_CODES.Q)
         fun isMediaUriPermissionGranted(context: Context, uri: Uri, mimeType: String): Boolean {
-            val safeUri = StorageUtils.getMediaStoreScopedStorageSafeUri(uri, mimeType)
+            return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                val safeUri = StorageUtils.getMediaStoreScopedStorageSafeUri(uri, mimeType)
 
-            val pid = Binder.getCallingPid()
-            val uid = Binder.getCallingUid()
-            val flags = Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-            return context.checkUriPermission(safeUri, pid, uid, flags) == PackageManager.PERMISSION_GRANTED
+                val pid = Binder.getCallingPid()
+                val uid = Binder.getCallingUid()
+                val flags = Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                context.checkUriPermission(safeUri, pid, uid, flags) == PackageManager.PERMISSION_GRANTED
+            } else {
+                false
+            }
         }
     }
 }
