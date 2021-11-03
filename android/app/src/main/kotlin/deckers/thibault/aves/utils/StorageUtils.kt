@@ -394,6 +394,8 @@ object StorageUtils {
      * Misc
      */
 
+    fun canEditByFile(context: Context, path: String) = !requireAccessPermission(context, path)
+
     fun requireAccessPermission(context: Context, anyPath: String): Boolean {
         // on Android R, we should always require access permission, even on primary volume
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
