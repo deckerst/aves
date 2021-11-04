@@ -69,6 +69,9 @@ class _HomePageState extends State<HomePage> {
 
     await androidFileUtils.init();
     if (settings.isInstalledAppAccessAllowed) {
+      // TODO TLAD transition code (it's unset in v1.5.4), remove in a later release
+      settings.isInstalledAppAccessAllowed = settings.isInstalledAppAccessAllowed;
+
       unawaited(androidFileUtils.initAppNames());
     }
 
