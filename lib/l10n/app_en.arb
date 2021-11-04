@@ -520,6 +520,10 @@
     }
   },
 
+  "collectionActionShowTitleSearch": "Show title filter",
+  "@collectionActionShowTitleSearch": {},
+  "collectionActionHideTitleSearch": "Hide title filter",
+  "@collectionActionHideTitleSearch": {},
   "collectionActionAddShortcut": "Add shortcut",
   "@collectionActionAddShortcut": {},
   "collectionActionCopy": "Copy to album",
@@ -530,6 +534,9 @@
   "@collectionActionRescan": {},
   "collectionActionEdit": "Edit",
   "@collectionActionEdit": {},
+
+  "collectionSearchTitlesHintText": "Search titles",
+  "@collectionSearchTitlesHintText": {},
 
   "collectionSortTitle": "Sort",
   "@collectionSortTitle": {},

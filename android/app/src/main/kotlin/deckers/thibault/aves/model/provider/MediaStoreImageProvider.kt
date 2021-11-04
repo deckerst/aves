@@ -225,23 +225,6 @@ class MediaStoreImageProvider : ImageProvider() {
         return found
     }
 
-    private fun hasEntry(context: Context, contentUri: Uri): Boolean {
-        var found = false
-        val projection = arrayOf(MediaStore.MediaColumns._ID)
-        try {
-            val cursor = context.contentResolver.query(contentUri, projection, null, null, null)
-            if (cursor != null) {
-                while (cursor.moveToNext()) {
-                    found = true
-                }
-                cursor.close()
-            }
-        } catch (e: Exception) {
-            Log.e(LOG_TAG, "failed to get entry at contentUri=$contentUri", e)
-        }
-        return found
-    }
-
     private fun needSize(mimeType: String) = MimeTypes.SVG != mimeType
 
     // `uri` is a media URI, not a document URI

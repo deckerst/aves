@@ -37,7 +37,7 @@ class SettingsDefaults {
   static const collectionSectionFactor = EntryGroupFactor.month;
   static const collectionSortFactor = EntrySortFactor.date;
   static const collectionBrowsingQuickActions = [
-    EntrySetAction.search,
+    EntrySetAction.searchCollection,
   ];
   static const collectionSelectionQuickActions = [
     EntrySetAction.share,

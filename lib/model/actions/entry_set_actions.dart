@@ -10,7 +10,8 @@ enum EntrySetAction {
   selectAll,
   selectNone,
   // browsing
-  search,
+  searchCollection,
+  toggleTitleSearch,
   addShortcut,
   // browsing or selecting
   map,
@@ -38,7 +39,8 @@ class EntrySetActions {
   ];
 
   static const browsing = [
-    EntrySetAction.search,
+    EntrySetAction.searchCollection,
+    EntrySetAction.toggleTitleSearch,
     EntrySetAction.addShortcut,
     EntrySetAction.map,
     EntrySetAction.stats,
@@ -71,8 +73,11 @@ extension ExtraEntrySetAction on EntrySetAction {
       case EntrySetAction.selectNone:
         return context.l10n.menuActionSelectNone;
       // browsing
-      case EntrySetAction.search:
+      case EntrySetAction.searchCollection:
         return MaterialLocalizations.of(context).searchFieldLabel;
+      case EntrySetAction.toggleTitleSearch:
+        // different data depending on toggle state
+        return context.l10n.collectionActionShowTitleSearch;
       case EntrySetAction.addShortcut:
         return context.l10n.collectionActionAddShortcut;
       // browsing or selecting
@@ -122,8 +127,11 @@ extension ExtraEntrySetAction on EntrySetAction {
       case EntrySetAction.selectNone:
         return AIcons.unselected;
       // browsing
-      case EntrySetAction.search:
+      case EntrySetAction.searchCollection:
         return AIcons.search;
+      case EntrySetAction.toggleTitleSearch:
+        // different data depending on toggle state
+        return AIcons.filter;
       case EntrySetAction.addShortcut:
         return AIcons.addShortcut;
       // browsing or selecting
