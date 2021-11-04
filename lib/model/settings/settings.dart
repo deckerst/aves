@@ -175,7 +175,8 @@ class Settings extends ChangeNotifier {
 
   set canUseAnalysisService(bool newValue) => setAndNotify(canUseAnalysisServiceKey, newValue);
 
-  bool get isInstalledAppAccessAllowed => getBoolOrDefault(isInstalledAppAccessAllowedKey, SettingsDefaults.isInstalledAppAccessAllowed);
+  // TODO TLAD use `true` for transition (it's unset in v1.5.4), but replace by `SettingsDefaults.isInstalledAppAccessAllowed` in a later release
+  bool get isInstalledAppAccessAllowed => getBoolOrDefault(isInstalledAppAccessAllowedKey, true);
 
   set isInstalledAppAccessAllowed(bool newValue) => setAndNotify(isInstalledAppAccessAllowedKey, newValue);
 

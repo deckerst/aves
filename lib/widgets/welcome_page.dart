@@ -1,4 +1,5 @@
 import 'package:aves/app_flavor.dart';
+import 'package:aves/model/settings/defaults.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/basic/markdown_container.dart';
@@ -30,6 +31,10 @@ class _WelcomePageState extends State<WelcomePage> {
     super.initState();
     settings.setContextualDefaults();
     _termsLoader = rootBundle.loadString('assets/terms.md');
+    // explicitly set consent values to current defaults
+    // so they are not subject to future default changes
+    settings.isInstalledAppAccessAllowed = SettingsDefaults.isInstalledAppAccessAllowed;
+    settings.isErrorReportingAllowed = SettingsDefaults.isErrorReportingAllowed;
   }
 
   @override
