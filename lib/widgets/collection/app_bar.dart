@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/actions/entry_set_actions.dart';
 import 'package:aves/model/entry.dart';
+import 'package:aves/model/filters/query.dart';
+import 'package:aves/model/query.dart';
 import 'package:aves/model/selection.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
@@ -13,6 +15,7 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/collection/entry_set_action_delegate.dart';
 import 'package:aves/widgets/collection/filter_bar.dart';
+import 'package:aves/widgets/collection/query_bar.dart';
 import 'package:aves/widgets/common/app_bar_subtitle.dart';
 import 'package:aves/widgets/common/app_bar_title.dart';
 import 'package:aves/widgets/common/basic/menu.dart';
@@ -40,20 +43,27 @@ class CollectionAppBar extends StatefulWidget {
 }
 
 class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerProviderStateMixin {
+  final List<StreamSubscription> _subscriptions = [];
   final EntrySetActionDelegate _actionDelegate = EntrySetActionDelegate();
   late AnimationController _browseToSelectAnimation;
   late Future<bool> _canAddShortcutsLoader;
   final ValueNotifier<bool> _isSelectingNotifier = ValueNotifier(false);
+  final FocusNode _queryBarFocusNode = FocusNode();
+  late final Listenable _queryFocusRequestNotifier;
 
   CollectionLens get collection => widget.collection;
 
   CollectionSource get source => collection.source;
 
-  bool get hasFilters => collection.filters.isNotEmpty;
+  bool get showFilterBar => collection.filters.any((v) => !(v is QueryFilter && v.live));
 
   @override
   void initState() {
     super.initState();
+    final query = context.read<Query>();
+    _subscriptions.add(query.enabledStream.listen((e) => _updateAppBarHeight()));
+    _queryFocusRequestNotifier = query.focusRequestNotifier;
+    _queryFocusRequestNotifier.addListener(_onQueryFocusRequest);
     _browseToSelectAnimation = AnimationController(
       duration: context.read<DurationsData>().iconAnimation,
       vsync: this,
@@ -74,8 +84,12 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   @override
   void dispose() {
     _unregisterWidget(widget);
+    _queryFocusRequestNotifier.removeListener(_onQueryFocusRequest);
     _isSelectingNotifier.removeListener(_onActivityChange);
     _browseToSelectAnimation.dispose();
+    _subscriptions
+      ..forEach((sub) => sub.cancel())
+      ..clear();
     super.dispose();
   }
 
@@ -90,37 +104,53 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   @override
   Widget build(BuildContext context) {
     final appMode = context.watch<ValueNotifier<AppMode>>().value;
-    return Selector<Selection<AvesEntry>, Tuple2<bool, int>>(
-      selector: (context, selection) => Tuple2(selection.isSelecting, selection.selectedItems.length),
-      builder: (context, s, child) {
-        final isSelecting = s.item1;
-        final selectedItemCount = s.item2;
-        _isSelectingNotifier.value = isSelecting;
-        return AnimatedBuilder(
-          animation: collection.filterChangeNotifier,
-          builder: (context, child) {
-            final removableFilters = appMode != AppMode.pickInternal;
-            return FutureBuilder<bool>(
-              future: _canAddShortcutsLoader,
-              builder: (context, snapshot) {
-                final canAddShortcuts = snapshot.data ?? false;
-                return SliverAppBar(
-                  leading: appMode.hasDrawer ? _buildAppBarLeading(isSelecting) : null,
-                  title: _buildAppBarTitle(isSelecting),
-                  actions: _buildActions(
-                    isSelecting: isSelecting,
-                    selectedItemCount: selectedItemCount,
-                    supportShortcuts: canAddShortcuts,
-                  ),
-                  bottom: hasFilters
-                      ? FilterBar(
-                          filters: collection.filters,
-                          removable: removableFilters,
-                          onTap: removableFilters ? collection.removeFilter : null,
-                        )
-                      : null,
-                  titleSpacing: 0,
-                  floating: true,
+    return FutureBuilder<bool>(
+      future: _canAddShortcutsLoader,
+      builder: (context, snapshot) {
+        final canAddShortcuts = snapshot.data ?? false;
+        return Selector<Selection<AvesEntry>, Tuple2<bool, int>>(
+          selector: (context, selection) => Tuple2(selection.isSelecting, selection.selectedItems.length),
+          builder: (context, s, child) {
+            final isSelecting = s.item1;
+            final selectedItemCount = s.item2;
+            _isSelectingNotifier.value = isSelecting;
+            return AnimatedBuilder(
+              animation: collection.filterChangeNotifier,
+              builder: (context, child) {
+                final removableFilters = appMode != AppMode.pickInternal;
+                return Selector<Query, bool>(
+                  selector: (context, query) => query.enabled,
+                  builder: (context, queryEnabled, child) {
+                    return SliverAppBar(
+                      leading: appMode.hasDrawer ? _buildAppBarLeading(isSelecting) : null,
+                      title: _buildAppBarTitle(isSelecting),
+                      actions: _buildActions(
+                        isSelecting: isSelecting,
+                        selectedItemCount: selectedItemCount,
+                        supportShortcuts: canAddShortcuts,
+                      ),
+                      bottom: PreferredSize(
+                        preferredSize: Size.fromHeight(appBarBottomHeight),
+                        child: Column(
+                          children: [
+                            if (showFilterBar)
+                              FilterBar(
+                                filters: collection.filters.where((v) => !(v is QueryFilter && v.live)).toSet(),
+                                removable: removableFilters,
+                                onTap: removableFilters ? collection.removeFilter : null,
+                              ),
+                            if (queryEnabled)
+                              EntryQueryBar(
+                                queryNotifier: context.select<Query, ValueNotifier<String>>((query) => query.queryNotifier),
+                                focusNode: _queryBarFocusNode,
+                              )
+                          ],
+                        ),
+                      ),
+                      titleSpacing: 0,
+                      floating: true,
+                    );
+                  },
                 );
               },
             );
@@ -128,6 +158,11 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
         );
       },
     );
+  }
+
+  double get appBarBottomHeight {
+    final hasQuery = context.read<Query>().enabled;
+    return (showFilterBar ? FilterBar.preferredHeight : .0) + (hasQuery ? EntryQueryBar.preferredHeight : .0);
   }
 
   Widget _buildAppBarLeading(bool isSelecting) {
@@ -263,20 +298,46 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   Key _getActionKey(EntrySetAction action) => Key('menu-${action.toString().substring('EntrySetAction.'.length)}');
 
   Widget _toActionButton(EntrySetAction action, {required bool enabled}) {
-    return IconButton(
-      key: _getActionKey(action),
-      icon: action.getIcon(),
-      onPressed: enabled ? () => _onActionSelected(action) : null,
-      tooltip: action.getText(context),
-    );
+    final onPressed = enabled ? () => _onActionSelected(action) : null;
+    switch (action) {
+      case EntrySetAction.toggleTitleSearch:
+        return Selector<Query, bool>(
+          selector: (context, query) => query.enabled,
+          builder: (context, queryEnabled, child) {
+            return _TitleSearchToggler(
+              queryEnabled: queryEnabled,
+              onPressed: onPressed,
+            );
+          },
+        );
+      default:
+        return IconButton(
+          key: _getActionKey(action),
+          icon: action.getIcon(),
+          onPressed: onPressed,
+          tooltip: action.getText(context),
+        );
+    }
   }
 
   PopupMenuItem<EntrySetAction> _toMenuItem(EntrySetAction action, {required bool enabled}) {
+    late Widget child;
+    switch (action) {
+      case EntrySetAction.toggleTitleSearch:
+        child = _TitleSearchToggler(
+          queryEnabled: context.read<Query>().enabled,
+          isMenuItem: true,
+        );
+        break;
+      default:
+        child = MenuRow(text: action.getText(context), icon: action.getIcon());
+        break;
+    }
     return PopupMenuItem(
       key: _getActionKey(action),
       value: action,
       enabled: enabled,
-      child: MenuRow(text: action.getText(context), icon: action.getIcon()),
+      child: child,
     );
   }
 
@@ -327,10 +388,10 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   }
 
   void _onFilterChanged() {
-    widget.appBarHeightNotifier.value = kToolbarHeight + (hasFilters ? FilterBar.preferredHeight : 0);
+    _updateAppBarHeight();
 
-    if (hasFilters) {
-      final filters = collection.filters;
+    final filters = collection.filters;
+    if (filters.isNotEmpty) {
       final selection = context.read<Selection<AvesEntry>>();
       if (selection.isSelecting) {
         final toRemove = selection.selectedItems.where((entry) => !filters.every((f) => f.test(entry))).toSet();
@@ -338,6 +399,10 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       }
     }
   }
+
+  void _onQueryFocusRequest() => _queryBarFocusNode.requestFocus();
+
+  void _updateAppBarHeight() => widget.appBarHeightNotifier.value = kToolbarHeight + appBarBottomHeight;
 
   Future<void> _onActionSelected(EntrySetAction action) async {
     switch (action) {
@@ -358,7 +423,8 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
         context.read<Selection<AvesEntry>>().clearSelection();
         break;
       // browsing
-      case EntrySetAction.search:
+      case EntrySetAction.searchCollection:
+      case EntrySetAction.toggleTitleSearch:
       case EntrySetAction.addShortcut:
       // browsing or selecting
       case EntrySetAction.map:
@@ -433,5 +499,32 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
         ),
       ),
     );
+  }
+}
+
+class _TitleSearchToggler extends StatelessWidget {
+  final bool queryEnabled, isMenuItem;
+  final VoidCallback? onPressed;
+
+  const _TitleSearchToggler({
+    required this.queryEnabled,
+    this.isMenuItem = false,
+    this.onPressed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final icon = Icon(queryEnabled ? AIcons.filterOff : AIcons.filter);
+    final text = queryEnabled ? context.l10n.collectionActionHideTitleSearch : context.l10n.collectionActionShowTitleSearch;
+    return isMenuItem
+        ? MenuRow(
+            text: text,
+            icon: icon,
+          )
+        : IconButton(
+            icon: icon,
+            onPressed: onPressed,
+            tooltip: text,
+          );
   }
 }

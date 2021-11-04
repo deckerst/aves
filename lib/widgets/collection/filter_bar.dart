@@ -3,7 +3,7 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:flutter/material.dart';
 
-class FilterBar extends StatefulWidget implements PreferredSizeWidget {
+class FilterBar extends StatefulWidget {
   static const double verticalPadding = 16;
   static const double preferredHeight = AvesFilterChip.minChipHeight + verticalPadding;
 
@@ -18,9 +18,6 @@ class FilterBar extends StatefulWidget implements PreferredSizeWidget {
     this.onTap,
   })  : filters = List<CollectionFilter>.from(filters)..sort(),
         super(key: key);
-
-  @override
-  final Size preferredSize = const Size.fromHeight(preferredHeight);
 
   @override
   _FilterBarState createState() => _FilterBarState();

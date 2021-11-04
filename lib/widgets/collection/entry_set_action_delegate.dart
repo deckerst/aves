@@ -8,6 +8,7 @@ import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/highlight.dart';
+import 'package:aves/model/query.dart';
 import 'package:aves/model/selection.dart';
 import 'package:aves/model/source/analysis_controller.dart';
 import 'package:aves/model/source/collection_lens.dart';
@@ -60,8 +61,10 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
       case EntrySetAction.selectNone:
         return isSelecting && selectedItemCount == itemCount;
       // browsing
-      case EntrySetAction.search:
+      case EntrySetAction.searchCollection:
         return appMode.canSearch && !isSelecting;
+      case EntrySetAction.toggleTitleSearch:
+        return !isSelecting;
       case EntrySetAction.addShortcut:
         return appMode == AppMode.main && !isSelecting && supportShortcuts;
       // browsing or selecting
@@ -102,7 +105,8 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
         return selectedItemCount < itemCount;
       case EntrySetAction.selectNone:
         return hasSelection;
-      case EntrySetAction.search:
+      case EntrySetAction.searchCollection:
+      case EntrySetAction.toggleTitleSearch:
       case EntrySetAction.addShortcut:
         return true;
       case EntrySetAction.map:
@@ -133,8 +137,11 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
       case EntrySetAction.selectNone:
         break;
       // browsing
-      case EntrySetAction.search:
+      case EntrySetAction.searchCollection:
         _goToSearch(context);
+        break;
+      case EntrySetAction.toggleTitleSearch:
+        context.read<Query>().toggle();
         break;
       case EntrySetAction.addShortcut:
         _addShortcut(context);

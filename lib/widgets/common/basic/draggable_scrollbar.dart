@@ -244,7 +244,8 @@ class _DraggableScrollbarState extends State<DraggableScrollbar> with TickerProv
     // when the user is not dragging the thumb
     if (!_isDragInProcess) {
       if (notification is ScrollUpdateNotification) {
-        _thumbOffsetNotifier.value = (scrollMetrics.pixels / scrollMetrics.maxScrollExtent * thumbMaxScrollExtent).clamp(thumbMinScrollExtent, thumbMaxScrollExtent);
+        final scrollExtent = (scrollMetrics.pixels / scrollMetrics.maxScrollExtent * thumbMaxScrollExtent);
+        _thumbOffsetNotifier.value = thumbMaxScrollExtent > thumbMinScrollExtent ? scrollExtent.clamp(thumbMinScrollExtent, thumbMaxScrollExtent) : thumbMinScrollExtent;
       }
 
       if (notification is ScrollUpdateNotification || notification is OverscrollNotification) {

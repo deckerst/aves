@@ -12,15 +12,15 @@ class QueryFilter extends CollectionFilter {
   static final RegExp exactRegex = RegExp('^"(.*)"\$');
 
   final String query;
-  final bool colorful;
+  final bool colorful, live;
   late final EntryFilter _test;
 
   @override
-  List<Object?> get props => [query];
+  List<Object?> get props => [query, live];
 
-  QueryFilter(this.query, {this.colorful = true}) {
+  QueryFilter(this.query, {this.colorful = true, this.live = false}) {
     var upQuery = query.toUpperCase();
-    if (upQuery.startsWith('id:')) {
+    if (upQuery.startsWith('ID:')) {
       final id = int.tryParse(upQuery.substring(3));
       _test = (entry) => entry.contentId == id;
       return;
