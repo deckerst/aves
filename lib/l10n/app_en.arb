@@ -941,8 +941,6 @@
 
   "viewerOpenPanoramaButtonLabel": "OPEN PANORAMA",
   "@viewerOpenPanoramaButtonLabel": {},
-  "viewerOpenTooltip": "Open",
-  "@viewerOpenTooltip": {},
   "viewerErrorUnknown": "Oops!",
   "@viewerErrorUnknown": {},
   "viewerErrorDoesNotExist": "The file no longer exists.",

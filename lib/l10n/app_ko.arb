@@ -439,7 +439,6 @@
   "statsTopTags": "태그 랭킹",
 
   "viewerOpenPanoramaButtonLabel": "파노라마 열기",
-  "viewerOpenTooltip": "열기",
   "viewerErrorUnknown": "아이구!",
   "viewerErrorDoesNotExist": "파일이 존재하지 않습니다.",
 

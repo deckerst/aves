@@ -43,6 +43,10 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       case VideoAction.captureFrame:
         _captureFrame(context, controller);
         break;
+      case VideoAction.playOutside:
+        final entry = controller.entry;
+        androidAppService.open(entry.uri, entry.mimeTypeAnySubtype);
+        break;
       case VideoAction.replay10:
         if (controller.isReady) controller.seekTo(controller.currentPosition - 10000);
         break;
