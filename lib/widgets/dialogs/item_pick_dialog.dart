@@ -5,6 +5,7 @@ import 'package:aves/widgets/collection/collection_grid.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
+import 'package:aves/widgets/common/providers/query_provider.dart';
 import 'package:aves/widgets/common/providers/selection_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -39,13 +40,15 @@ class _ItemPickDialogState extends State<ItemPickDialog> {
       child: MediaQueryDataProvider(
         child: Scaffold(
           body: SelectionProvider<AvesEntry>(
-            child: GestureAreaProtectorStack(
-              child: SafeArea(
-                bottom: false,
-                child: ChangeNotifierProvider<CollectionLens>.value(
-                  value: collection,
-                  child: const CollectionGrid(
-                    settingsRouteKey: CollectionPage.routeName,
+            child: QueryProvider(
+              child: GestureAreaProtectorStack(
+                child: SafeArea(
+                  bottom: false,
+                  child: ChangeNotifierProvider<CollectionLens>.value(
+                    value: collection,
+                    child: const CollectionGrid(
+                      settingsRouteKey: CollectionPage.routeName,
+                    ),
                   ),
                 ),
               ),
