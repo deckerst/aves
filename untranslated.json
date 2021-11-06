@@ -1,21 +1,4 @@
 {
-  "ko": [
-    "unsupportedTypeDialogTitle",
-    "unsupportedTypeDialogMessage",
-    "videoResumeDialogMessage",
-    "videoStartOverButtonLabel",
-    "videoResumeButtonLabel",
-    "editEntryDateDialogExtractFromTitle",
-    "collectionActionShowTitleSearch",
-    "collectionActionHideTitleSearch",
-    "collectionSearchTitlesHintText",
-    "settingsCollectionQuickActionTabBrowsing",
-    "settingsCollectionQuickActionTabSelecting",
-    "settingsCollectionBrowsingQuickActionEditorBanner",
-    "settingsAllowInstalledAppAccess",
-    "settingsAllowInstalledAppAccessSubtitle"
-  ],
-
   "ru": [
     "unsupportedTypeDialogTitle",
     "unsupportedTypeDialogMessage",
