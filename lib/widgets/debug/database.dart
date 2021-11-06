@@ -3,6 +3,7 @@ import 'package:aves/model/entry.dart';
 import 'package:aves/model/favourites.dart';
 import 'package:aves/model/metadata/address.dart';
 import 'package:aves/model/metadata/catalog.dart';
+import 'package:aves/model/video_playback.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
@@ -23,6 +24,7 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
   late Future<List<AddressDetails>> _dbAddressLoader;
   late Future<Set<FavouriteRow>> _dbFavouritesLoader;
   late Future<Set<CoverRow>> _dbCoversLoader;
+  late Future<Set<VideoPlaybackRow>> _dbVideoPlaybackLoader;
 
   @override
   void initState() {
@@ -188,6 +190,27 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                   );
                 },
               ),
+              FutureBuilder<Set>(
+                future: _dbVideoPlaybackLoader,
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) return Text(snapshot.error.toString());
+
+                  if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
+
+                  return Row(
+                    children: [
+                      Expanded(
+                        child: Text('video playback rows: ${snapshot.data!.length}'),
+                      ),
+                      const SizedBox(width: 8),
+                      ElevatedButton(
+                        onPressed: () => metadataDb.clearVideoPlayback().then((_) => _startDbReport()),
+                        child: const Text('Clear'),
+                      ),
+                    ],
+                  );
+                },
+              ),
             ],
           ),
         ),
@@ -197,12 +220,13 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
 
   void _startDbReport() {
     _dbFileSizeLoader = metadataDb.dbFileSize();
-    _dbEntryLoader = metadataDb.loadEntries();
+    _dbEntryLoader = metadataDb.loadAllEntries();
     _dbDateLoader = metadataDb.loadDates();
-    _dbMetadataLoader = metadataDb.loadMetadataEntries();
-    _dbAddressLoader = metadataDb.loadAddresses();
-    _dbFavouritesLoader = metadataDb.loadFavourites();
-    _dbCoversLoader = metadataDb.loadCovers();
+    _dbMetadataLoader = metadataDb.loadAllMetadataEntries();
+    _dbAddressLoader = metadataDb.loadAllAddresses();
+    _dbFavouritesLoader = metadataDb.loadAllFavourites();
+    _dbCoversLoader = metadataDb.loadAllCovers();
+    _dbVideoPlaybackLoader = metadataDb.loadAllVideoPlayback();
     setState(() {});
   }
 

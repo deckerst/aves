@@ -1,6 +1,7 @@
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/metadata/address.dart';
 import 'package:aves/model/metadata/catalog.dart';
+import 'package:aves/model/video_playback.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:collection/collection.dart';
@@ -23,6 +24,7 @@ class _DbTabState extends State<DbTab> {
   late Future<AvesEntry?> _dbEntryLoader;
   late Future<CatalogMetadata?> _dbMetadataLoader;
   late Future<AddressDetails?> _dbAddressLoader;
+  late Future<VideoPlaybackRow?> _dbVideoPlaybackLoader;
 
   AvesEntry get entry => widget.entry;
 
@@ -35,9 +37,10 @@ class _DbTabState extends State<DbTab> {
   void _loadDatabase() {
     final contentId = entry.contentId;
     _dbDateLoader = metadataDb.loadDates().then((values) => values[contentId]);
-    _dbEntryLoader = metadataDb.loadEntries().then((values) => values.firstWhereOrNull((row) => row.contentId == contentId));
-    _dbMetadataLoader = metadataDb.loadMetadataEntries().then((values) => values.firstWhereOrNull((row) => row.contentId == contentId));
-    _dbAddressLoader = metadataDb.loadAddresses().then((values) => values.firstWhereOrNull((row) => row.contentId == contentId));
+    _dbEntryLoader = metadataDb.loadAllEntries().then((values) => values.firstWhereOrNull((row) => row.contentId == contentId));
+    _dbMetadataLoader = metadataDb.loadAllMetadataEntries().then((values) => values.firstWhereOrNull((row) => row.contentId == contentId));
+    _dbAddressLoader = metadataDb.loadAllAddresses().then((values) => values.firstWhereOrNull((row) => row.contentId == contentId));
+    _dbVideoPlaybackLoader = metadataDb.loadVideoPlayback(contentId);
     setState(() {});
   }
 
@@ -144,6 +147,27 @@ class _DbTabState extends State<DbTab> {
                       'countryName': data.countryName ?? '',
                       'adminArea': data.adminArea ?? '',
                       'locality': data.locality ?? '',
+                    },
+                  ),
+              ],
+            );
+          },
+        ),
+        const SizedBox(height: 16),
+        FutureBuilder<VideoPlaybackRow?>(
+          future: _dbVideoPlaybackLoader,
+          builder: (context, snapshot) {
+            if (snapshot.hasError) return Text(snapshot.error.toString());
+            if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
+            final data = snapshot.data;
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('DB video playback:${data == null ? ' no row' : ''}'),
+                if (data != null)
+                  InfoRowGroup(
+                    info: {
+                      'resumeTimeMillis': '${data.resumeTimeMillis}',
                     },
                   ),
               ],

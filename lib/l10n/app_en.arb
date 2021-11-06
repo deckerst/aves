@@ -341,6 +341,17 @@
     }
   },
 
+  "videoResumeDialogMessage": "Do you want to resume playing at {time}?",
+  "@videoResumeDialogMessage": {
+    "placeholders": {
+      "time": {}
+    }
+  },
+  "videoStartOverButtonLabel": "START OVER",
+  "@videoStartOverButtonLabel": {},
+  "videoResumeButtonLabel": "RESUME",
+  "@videoResumeButtonLabel": {},
+
   "setCoverDialogTitle": "Set Cover",
   "@setCoverDialogTitle": {},
   "setCoverDialogLatest": "Latest item",
