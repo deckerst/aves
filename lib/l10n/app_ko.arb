@@ -135,6 +135,9 @@
   "notEnoughSpaceDialogTitle": "저장공간 부족",
   "notEnoughSpaceDialogMessage": "“{volume}”에 필요 공간은 {neededSize}인데 사용 가능한 용량은 {freeSize}만 남아있습니다.",
 
+  "unsupportedTypeDialogTitle": "미지원 형식",
+  "unsupportedTypeDialogMessage": "{count, plural, other{이 작업은 다음 항목의 형식을 지원하지 않습니다: {types}.}}",
+
   "nameConflictDialogSingleSourceMessage": "이동할 폴더에 이름이 같은 파일이 있습니다.",
   "nameConflictDialogMultipleSourceMessage": "이름이 같은 파일이 있습니다.",
 
@@ -145,6 +148,10 @@
   "noMatchingAppDialogMessage": "이 작업을 처리할 수 있는 앱이 없습니다.",
 
   "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{이 항목을 삭제하시겠습니까?} other{항목 {count}개를 삭제하시겠습니까?}}",
+
+  "videoResumeDialogMessage": "{time}부터 재개하시겠습니까?",
+  "videoStartOverButtonLabel": "처음부터",
+  "videoResumeButtonLabel": "재개",
 
   "setCoverDialogTitle": "대표 이미지 변경",
   "setCoverDialogLatest": "최근 항목",
@@ -170,6 +177,7 @@
   "editEntryDateDialogTitle": "날짜 및 시간",
   "editEntryDateDialogSet": "편집",
   "editEntryDateDialogShift": "시간 이동",
+  "editEntryDateDialogExtractFromTitle": "제목에서 추출",
   "editEntryDateDialogClear": "삭제",
   "editEntryDateDialogFieldSelection": "필드 선택",
   "editEntryDateDialogHours": "시간",
@@ -239,11 +247,15 @@
   "collectionPickPageTitle": "항목 선택",
   "collectionSelectionPageTitle": "{count, plural, =0{항목 선택} other{{count}개}}",
 
+  "collectionActionShowTitleSearch": "제목 필터 보기",
+  "collectionActionHideTitleSearch": "제목 필터 숨기기",
   "collectionActionAddShortcut": "홈 화면에 추가",
   "collectionActionCopy": "앨범으로 복사",
   "collectionActionMove": "앨범으로 이동",
   "collectionActionRescan": "새로 분석",
   "collectionActionEdit": "편집",
+
+  "collectionSearchTitlesHintText": "제목 검색",
 
   "collectionSortTitle": "정렬",
   "collectionSortDate": "날짜",
@@ -354,6 +366,9 @@
 
   "settingsCollectionQuickActionsTile": "빠른 작업",
   "settingsCollectionQuickActionEditorTitle": "빠른 작업",
+  "settingsCollectionQuickActionTabBrowsing": "탐색 시",
+  "settingsCollectionQuickActionTabSelecting": "선택 시",
+  "settingsCollectionBrowsingQuickActionEditorBanner": "버튼을 길게 누른 후 이동하여 항목 탐색할 때 표시될 버튼을 선택하세요.",
   "settingsCollectionSelectionQuickActionEditorBanner": "버튼을 길게 누른 후 이동하여 항목 선택할 때 표시될 버튼을 선택하세요.",
 
   "settingsSectionViewer": "뷰어",
@@ -399,6 +414,8 @@
   "settingsSubtitleThemeTextAlignmentRight": "오른쪽",
 
   "settingsSectionPrivacy": "개인정보 보호",
+  "settingsAllowInstalledAppAccess": "설치된 앱의 목록 접근 허용",
+  "settingsAllowInstalledAppAccessSubtitle": "앨범 표시 개선을 위해",
   "settingsAllowErrorReporting": "오류 보고서 보내기",
   "settingsSaveSearchHistory": "검색기록",
 
