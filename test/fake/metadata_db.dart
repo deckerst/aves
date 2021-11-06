@@ -80,4 +80,12 @@ class FakeMetadataDb extends Fake implements MetadataDb {
 
   @override
   Future<void> removeCovers(Set<CollectionFilter> filters) => SynchronousFuture(null);
+
+  // video playback
+
+  @override
+  Future<void> updateVideoPlaybackId(int oldId, int? newId) => SynchronousFuture(null);
+
+  @override
+  Future<void> removeVideoPlayback(Set<int> contentIds) => SynchronousFuture(null);
 }

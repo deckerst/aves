@@ -288,7 +288,7 @@ packages:
     description:
       path: "."
       ref: aves
-      resolved-ref: "1d10ebbdcd71a2d9970dd6cd1f3cf6315bb686e6"
+      resolved-ref: "44569361c251cc4ced0ff845b02c64ceeaebb957"
       url: "git://github.com/deckerst/fijkplayer.git"
     source: git
     version: "0.10.0"
@@ -305,35 +305,35 @@ packages:
       name: firebase_core
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.9.0"
+    version: "1.10.0"
   firebase_core_platform_interface:
     dependency: transitive
     description:
       name: firebase_core_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.0.1"
+    version: "4.1.0"
   firebase_core_web:
     dependency: transitive
     description:
       name: firebase_core_web
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.0"
+    version: "1.2.0"
   firebase_crashlytics:
     dependency: transitive
     description:
       name: firebase_crashlytics
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.2.5"
+    version: "2.3.0"
   firebase_crashlytics_platform_interface:
     dependency: transitive
     description:
       name: firebase_crashlytics_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.1.5"
+    version: "3.1.6"
   flex_color_picker:
     dependency: "direct main"
     description:
