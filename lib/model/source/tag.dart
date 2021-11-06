@@ -15,7 +15,7 @@ mixin TagMixin on SourceBase {
   List<String> sortedTags = List.unmodifiable([]);
 
   Future<void> loadCatalogMetadata() async {
-    final saved = await metadataDb.loadMetadataEntries();
+    final saved = await metadataDb.loadAllMetadataEntries();
     final idMap = entryById;
     saved.forEach((metadata) => idMap[metadata.contentId]?.catalogMetadata = metadata);
     onCatalogMetadataChanged();

@@ -7,6 +7,7 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/metadata/address.dart';
 import 'package:aves/model/metadata/catalog.dart';
 import 'package:aves/model/metadata_db_upgrade.dart';
+import 'package:aves/model/video_playback.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
@@ -25,7 +26,7 @@ abstract class MetadataDb {
 
   Future<void> clearEntries();
 
-  Future<Set<AvesEntry>> loadEntries();
+  Future<Set<AvesEntry>> loadAllEntries();
 
   Future<void> saveEntries(Iterable<AvesEntry> entries);
 
@@ -43,7 +44,7 @@ abstract class MetadataDb {
 
   Future<void> clearMetadataEntries();
 
-  Future<List<CatalogMetadata>> loadMetadataEntries();
+  Future<List<CatalogMetadata>> loadAllMetadataEntries();
 
   Future<void> saveMetadata(Set<CatalogMetadata> metadataEntries);
 
@@ -53,7 +54,7 @@ abstract class MetadataDb {
 
   Future<void> clearAddresses();
 
-  Future<List<AddressDetails>> loadAddresses();
+  Future<List<AddressDetails>> loadAllAddresses();
 
   Future<void> saveAddresses(Set<AddressDetails> addresses);
 
@@ -63,7 +64,7 @@ abstract class MetadataDb {
 
   Future<void> clearFavourites();
 
-  Future<Set<FavouriteRow>> loadFavourites();
+  Future<Set<FavouriteRow>> loadAllFavourites();
 
   Future<void> addFavourites(Iterable<FavouriteRow> rows);
 
@@ -75,13 +76,27 @@ abstract class MetadataDb {
 
   Future<void> clearCovers();
 
-  Future<Set<CoverRow>> loadCovers();
+  Future<Set<CoverRow>> loadAllCovers();
 
   Future<void> addCovers(Iterable<CoverRow> rows);
 
   Future<void> updateCoverEntryId(int oldId, CoverRow row);
 
   Future<void> removeCovers(Set<CollectionFilter> filters);
+
+  // video playback
+
+  Future<void> clearVideoPlayback();
+
+  Future<Set<VideoPlaybackRow>> loadAllVideoPlayback();
+
+  Future<VideoPlaybackRow?> loadVideoPlayback(int? contentId);
+
+  Future<void> addVideoPlayback(Set<VideoPlaybackRow> rows);
+
+  Future<void> updateVideoPlaybackId(int oldId, int? newId);
+
+  Future<void> removeVideoPlayback(Set<int> contentIds);
 }
 
 class SqfliteMetadataDb implements MetadataDb {
@@ -95,6 +110,7 @@ class SqfliteMetadataDb implements MetadataDb {
   static const addressTable = 'address';
   static const favouriteTable = 'favourites';
   static const coverTable = 'covers';
+  static const videoPlaybackTable = 'videoPlayback';
 
   @override
   Future<void> init() async {
@@ -146,9 +162,13 @@ class SqfliteMetadataDb implements MetadataDb {
             'filter TEXT PRIMARY KEY'
             ', contentId INTEGER'
             ')');
+        await db.execute('CREATE TABLE $videoPlaybackTable('
+            'contentId INTEGER PRIMARY KEY'
+            ', resumeTimeMillis INTEGER'
+            ')');
       },
       onUpgrade: MetadataDbUpgrader.upgradeDb,
-      version: 4,
+      version: 5,
     );
   }
 
@@ -183,6 +203,7 @@ class SqfliteMetadataDb implements MetadataDb {
       if (!metadataOnly) {
         batch.delete(favouriteTable, where: where, whereArgs: whereArgs);
         batch.delete(coverTable, where: where, whereArgs: whereArgs);
+        batch.delete(videoPlaybackTable, where: where, whereArgs: whereArgs);
       }
     });
     await batch.commit(noResult: true);
@@ -194,11 +215,11 @@ class SqfliteMetadataDb implements MetadataDb {
   Future<void> clearEntries() async {
     final db = await _database;
     final count = await db.delete(entryTable, where: '1');
-    debugPrint('$runtimeType clearEntries deleted $count entries');
+    debugPrint('$runtimeType clearEntries deleted $count rows');
   }
 
   @override
-  Future<Set<AvesEntry>> loadEntries() async {
+  Future<Set<AvesEntry>> loadAllEntries() async {
     final db = await _database;
     final maps = await db.query(entryTable);
     final entries = maps.map((map) => AvesEntry.fromMap(map)).toSet();
@@ -252,7 +273,7 @@ class SqfliteMetadataDb implements MetadataDb {
   Future<void> clearDates() async {
     final db = await _database;
     final count = await db.delete(dateTakenTable, where: '1');
-    debugPrint('$runtimeType clearDates deleted $count entries');
+    debugPrint('$runtimeType clearDates deleted $count rows');
   }
 
   @override
@@ -269,11 +290,11 @@ class SqfliteMetadataDb implements MetadataDb {
   Future<void> clearMetadataEntries() async {
     final db = await _database;
     final count = await db.delete(metadataTable, where: '1');
-    debugPrint('$runtimeType clearMetadataEntries deleted $count entries');
+    debugPrint('$runtimeType clearMetadataEntries deleted $count rows');
   }
 
   @override
-  Future<List<CatalogMetadata>> loadMetadataEntries() async {
+  Future<List<CatalogMetadata>> loadAllMetadataEntries() async {
     final db = await _database;
     final maps = await db.query(metadataTable);
     final metadataEntries = maps.map((map) => CatalogMetadata.fromMap(map)).toList();
@@ -330,11 +351,11 @@ class SqfliteMetadataDb implements MetadataDb {
   Future<void> clearAddresses() async {
     final db = await _database;
     final count = await db.delete(addressTable, where: '1');
-    debugPrint('$runtimeType clearAddresses deleted $count entries');
+    debugPrint('$runtimeType clearAddresses deleted $count rows');
   }
 
   @override
-  Future<List<AddressDetails>> loadAddresses() async {
+  Future<List<AddressDetails>> loadAllAddresses() async {
     final db = await _database;
     final maps = await db.query(addressTable);
     final addresses = maps.map((map) => AddressDetails.fromMap(map)).toList();
@@ -376,11 +397,11 @@ class SqfliteMetadataDb implements MetadataDb {
   Future<void> clearFavourites() async {
     final db = await _database;
     final count = await db.delete(favouriteTable, where: '1');
-    debugPrint('$runtimeType clearFavourites deleted $count entries');
+    debugPrint('$runtimeType clearFavourites deleted $count rows');
   }
 
   @override
-  Future<Set<FavouriteRow>> loadFavourites() async {
+  Future<Set<FavouriteRow>> loadAllFavourites() async {
     final db = await _database;
     final maps = await db.query(favouriteTable);
     final rows = maps.map((map) => FavouriteRow.fromMap(map)).toSet();
@@ -432,11 +453,11 @@ class SqfliteMetadataDb implements MetadataDb {
   Future<void> clearCovers() async {
     final db = await _database;
     final count = await db.delete(coverTable, where: '1');
-    debugPrint('$runtimeType clearCovers deleted $count entries');
+    debugPrint('$runtimeType clearCovers deleted $count rows');
   }
 
   @override
-  Future<Set<CoverRow>> loadCovers() async {
+  Future<Set<CoverRow>> loadAllCovers() async {
     final db = await _database;
     final maps = await db.query(coverTable);
     final rows = maps.map(CoverRow.fromMap).whereNotNull().toSet();
@@ -446,6 +467,7 @@ class SqfliteMetadataDb implements MetadataDb {
   @override
   Future<void> addCovers(Iterable<CoverRow> rows) async {
     if (rows.isEmpty) return;
+
     final db = await _database;
     final batch = db.batch();
     rows.forEach((row) => _batchInsertCover(batch, row));
@@ -477,6 +499,73 @@ class SqfliteMetadataDb implements MetadataDb {
     // using array in `whereArgs` and using it with `where filter IN ?` is a pain, so we prefer `batch` instead
     final batch = db.batch();
     filters.forEach((filter) => batch.delete(coverTable, where: 'filter = ?', whereArgs: [filter.toJson()]));
+    await batch.commit(noResult: true);
+  }
+
+  // video playback
+
+  @override
+  Future<void> clearVideoPlayback() async {
+    final db = await _database;
+    final count = await db.delete(videoPlaybackTable, where: '1');
+    debugPrint('$runtimeType clearVideoPlayback deleted $count rows');
+  }
+
+  @override
+  Future<Set<VideoPlaybackRow>> loadAllVideoPlayback() async {
+    final db = await _database;
+    final maps = await db.query(videoPlaybackTable);
+    final rows = maps.map(VideoPlaybackRow.fromMap).whereNotNull().toSet();
+    return rows;
+  }
+
+  @override
+  Future<VideoPlaybackRow?> loadVideoPlayback(int? contentId) async {
+    if (contentId == null) return null;
+
+    final db = await _database;
+    final maps = await db.query(videoPlaybackTable, where: 'contentId = ?', whereArgs: [contentId]);
+    if (maps.isEmpty) return null;
+
+    return VideoPlaybackRow.fromMap(maps.first);
+  }
+
+  @override
+  Future<void> addVideoPlayback(Set<VideoPlaybackRow> rows) async {
+    if (rows.isEmpty) return;
+
+    final db = await _database;
+    final batch = db.batch();
+    rows.forEach((row) => _batchInsertVideoPlayback(batch, row));
+    await batch.commit(noResult: true);
+  }
+
+  void _batchInsertVideoPlayback(Batch batch, VideoPlaybackRow row) {
+    batch.insert(
+      videoPlaybackTable,
+      row.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  @override
+  Future<void> updateVideoPlaybackId(int oldId, int? newId) async {
+    if (newId != null) {
+      final db = await _database;
+      await db.update(videoPlaybackTable, {'contentId': newId}, where: 'contentId = ?', whereArgs: [oldId]);
+    } else {
+      await removeVideoPlayback({oldId});
+    }
+  }
+
+  @override
+  Future<void> removeVideoPlayback(Set<int> contentIds) async {
+    if (contentIds.isEmpty) return;
+
+    final db = await _database;
+    // using array in `whereArgs` and using it with `where filter IN ?` is a pain, so we prefer `batch` instead
+    final batch = db.batch();
+    contentIds.forEach((id) => batch.delete(videoPlaybackTable, where: 'contentId = ?', whereArgs: [id]));
     await batch.commit(noResult: true);
   }
 }

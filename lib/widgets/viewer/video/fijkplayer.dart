@@ -69,6 +69,7 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
 
   @override
   Future<void> dispose() async {
+    await super.dispose();
     _initialPlayTimer?.cancel();
     _stopListening();
     await _valueStreamController.close();

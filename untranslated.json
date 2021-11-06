@@ -2,6 +2,9 @@
   "ko": [
     "unsupportedTypeDialogTitle",
     "unsupportedTypeDialogMessage",
+    "videoResumeDialogMessage",
+    "videoStartOverButtonLabel",
+    "videoResumeButtonLabel",
     "editEntryDateDialogExtractFromTitle",
     "collectionActionShowTitleSearch",
     "collectionActionHideTitleSearch",
@@ -16,6 +19,9 @@
   "ru": [
     "unsupportedTypeDialogTitle",
     "unsupportedTypeDialogMessage",
+    "videoResumeDialogMessage",
+    "videoStartOverButtonLabel",
+    "videoResumeButtonLabel",
     "editEntryDateDialogExtractFromTitle",
     "aboutLinkPolicy",
     "aboutCreditsTranslators",

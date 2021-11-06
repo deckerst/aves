@@ -6,6 +6,7 @@ class MetadataDbUpgrader {
   static const entryTable = SqfliteMetadataDb.entryTable;
   static const metadataTable = SqfliteMetadataDb.metadataTable;
   static const coverTable = SqfliteMetadataDb.coverTable;
+  static const videoPlaybackTable = SqfliteMetadataDb.videoPlaybackTable;
 
   // warning: "ALTER TABLE ... RENAME COLUMN ..." is not supported
   // on SQLite <3.25.0, bundled on older Android devices
@@ -20,6 +21,9 @@ class MetadataDbUpgrader {
           break;
         case 3:
           await _upgradeFrom3(db);
+          break;
+        case 4:
+          await _upgradeFrom4(db);
           break;
       }
       oldVersion++;
@@ -107,6 +111,14 @@ class MetadataDbUpgrader {
     await db.execute('CREATE TABLE $coverTable('
         'filter TEXT PRIMARY KEY'
         ', contentId INTEGER'
+        ')');
+  }
+
+  static Future<void> _upgradeFrom4(Database db) async {
+    debugPrint('upgrading DB from v4');
+    await db.execute('CREATE TABLE $videoPlaybackTable('
+        'contentId INTEGER PRIMARY KEY'
+        ', resumeTimeMillis INTEGER'
         ')');
   }
 }
