@@ -31,8 +31,13 @@ class _WelcomePageState extends State<WelcomePage> {
     super.initState();
     settings.setContextualDefaults();
     _termsLoader = rootBundle.loadString('assets/terms.md');
-    // explicitly set consent values to current defaults
-    // so they are not subject to future default changes
+    WidgetsBinding.instance!.addPostFrameCallback((_) => _initWelcomeSettings());
+  }
+
+  // explicitly set consent values to current defaults
+  // so they are not subject to future default changes
+  void _initWelcomeSettings() {
+    // this should be done outside of `initState`/`build`
     settings.isInstalledAppAccessAllowed = SettingsDefaults.isInstalledAppAccessAllowed;
     settings.isErrorReportingAllowed = SettingsDefaults.isErrorReportingAllowed;
   }
