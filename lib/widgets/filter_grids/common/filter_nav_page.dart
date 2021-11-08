@@ -70,7 +70,7 @@ class FilterNavigationPage<T extends CollectionFilter> extends StatelessWidget {
         builder: (context) => CollectionPage(
           collection: CollectionLens(
             source: source,
-            filters: [filter],
+            filters: {filter},
           ),
         ),
       ),

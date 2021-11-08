@@ -295,7 +295,7 @@ class StatsPage extends StatelessWidget {
         builder: (context) => CollectionPage(
           collection: CollectionLens(
             source: source,
-            filters: [filter],
+            filters: {filter},
           ),
         ),
       ),

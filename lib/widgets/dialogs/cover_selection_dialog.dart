@@ -123,7 +123,7 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
         builder: (context) => ItemPickDialog(
           collection: CollectionLens(
             source: context.read<CollectionSource>(),
-            filters: [filter],
+            filters: {filter},
           ),
         ),
         fullscreenDialog: true,
