@@ -31,13 +31,18 @@ object PermissionManager {
     )
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-    fun requestDirectoryAccess(activity: Activity, path: String, onGranted: (uri: Uri) -> Unit, onDenied: () -> Unit) {
+    suspend fun requestDirectoryAccess(activity: Activity, path: String, onGranted: (uri: Uri) -> Unit, onDenied: () -> Unit) {
         Log.i(LOG_TAG, "request user to select and grant access permission to path=$path")
 
         var intent: Intent? = null
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             val sm = activity.getSystemService(Context.STORAGE_SERVICE) as? StorageManager
-            intent = sm?.getStorageVolume(File(path))?.createOpenDocumentTreeIntent()
+            val storageVolume = sm?.getStorageVolume(File(path))
+            if (storageVolume != null) {
+                intent = storageVolume.createOpenDocumentTreeIntent()
+            } else {
+                MainActivity.notifyError("failed to get storage volume for path=$path on volumes=${sm?.storageVolumes?.joinToString(", ")}")
+            }
         }
 
         // fallback to basic open document tree intent
@@ -49,7 +54,7 @@ object PermissionManager {
             MainActivity.pendingStorageAccessResultHandlers[MainActivity.DOCUMENT_TREE_ACCESS_REQUEST] = PendingStorageAccessResultHandler(path, onGranted, onDenied)
             activity.startActivityForResult(intent, MainActivity.DOCUMENT_TREE_ACCESS_REQUEST)
         } else {
-            Log.e(LOG_TAG, "failed to resolve activity for intent=$intent")
+            MainActivity.notifyError("failed to resolve activity for intent=$intent")
             onDenied()
         }
     }

@@ -12,7 +12,6 @@ import android.text.format.DateFormat
 import android.util.Log
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.utils.ContextUtils.resourceUri
-import deckers.thibault.aves.utils.ContextUtils.runOnUiThread
 import deckers.thibault.aves.utils.FlutterUtils
 import deckers.thibault.aves.utils.LogUtils
 import io.flutter.embedding.engine.FlutterEngine
@@ -80,7 +79,7 @@ class SearchSuggestionsProvider : MethodChannel.MethodCallHandler, ContentProvid
 
         return suspendCoroutine { cont ->
             GlobalScope.launch {
-                context.runOnUiThread {
+                FlutterUtils.runOnUiThread {
                     backgroundChannel.invokeMethod("getSuggestions", hashMapOf(
                         "query" to query,
                         "locale" to Locale.getDefault().toString(),

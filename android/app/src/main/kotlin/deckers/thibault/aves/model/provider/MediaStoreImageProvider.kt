@@ -323,6 +323,7 @@ class MediaStoreImageProvider : ImageProvider() {
                 // with a path, and retrieve its content URI, but:
                 // - the Media Store isolates content by storage volume (e.g. `MediaStore.Images.Media.getContentUri(volumeName)`)
                 // - the volume name should be lower case, not exactly as the `StorageVolume` UUID
+                //   cf new method in API 30 `StorageVolume.getMediaStoreVolumeName()`
                 // - inserting on a removable volume works on API 29, but not on API 25 nor 26 (on which API/devices does it work?)
                 // - there is no documentation regarding support for usage with removable storage
                 // - the Media Store only allows inserting in specific primary directories ("DCIM", "Pictures") when using scoped storage
