@@ -1,5 +1,6 @@
 package deckers.thibault.aves.channel.streams
 
+import deckers.thibault.aves.utils.FlutterUtils
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.EventChannel.EventSink
 
@@ -15,8 +16,10 @@ class ErrorStreamHandler : EventChannel.StreamHandler {
 
     override fun onCancel(arguments: Any?) {}
 
-    fun notifyError(error: String) {
-        eventSink?.success(error)
+    suspend fun notifyError(error: String) {
+        FlutterUtils.runOnUiThread {
+            eventSink?.success(error)
+        }
     }
 
     companion object {
