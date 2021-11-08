@@ -37,7 +37,7 @@ class CollectionLens with ChangeNotifier {
 
   CollectionLens({
     required this.source,
-    Iterable<CollectionFilter?>? filters,
+    Set<CollectionFilter?>? filters,
     this.id,
     this.listenToSource = true,
     this.fixedSelection,

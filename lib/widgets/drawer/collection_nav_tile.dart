@@ -50,7 +50,7 @@ class CollectionNavTile extends StatelessWidget {
         builder: (context) => CollectionPage(
           collection: CollectionLens(
             source: context.read<CollectionSource>(),
-            filters: [filter],
+            filters: {filter},
           ),
         ),
       ),
