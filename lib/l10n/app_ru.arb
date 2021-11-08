@@ -135,6 +135,9 @@
   "notEnoughSpaceDialogTitle": "Недостаточно свободного места.",
   "notEnoughSpaceDialogMessage": "Для завершения этой операции требуется {neededSize} свободного места на «{volume}», но осталось только {freeSize}.",
 
+  "unsupportedTypeDialogTitle": "Неподдерживаемые форматы",
+  "unsupportedTypeDialogMessage": "{count, plural, =1{Эта операция не поддерживается для объектов следующего формата: {types}.} other{Эта операция не поддерживается для объектов следующих форматов: {types}.}}",
+
   "nameConflictDialogSingleSourceMessage": "Некоторые файлы в папке назначения имеют одно и то же имя.",
   "nameConflictDialogMultipleSourceMessage": "Некоторые файлы имеют одно и то же имя.",
 
@@ -145,6 +148,10 @@
   "noMatchingAppDialogMessage": "Нет приложений, которые могли бы с этим справиться.",
 
   "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{Вы уверены, что хотите удалить этот объект?} few{Вы уверены, что хотите удалить эти {count} объекта?} other{Вы уверены, что хотите удалить эти {count} объектов?}}",
+
+  "videoResumeDialogMessage": "Хотите ли вы возобновить воспроизведение на {time}?",
+  "videoStartOverButtonLabel": "ВОСПРОИЗВЕСТИ СНАЧАЛА",
+  "videoResumeButtonLabel": "ПРОДОЛЖИТЬ",
 
   "setCoverDialogTitle": "Установить обложку",
   "setCoverDialogLatest": "Последний объект",
@@ -170,6 +177,7 @@
   "editEntryDateDialogTitle": "Дата и время",
   "editEntryDateDialogSet": "Задать",
   "editEntryDateDialogShift": "Сдвиг",
+  "editEntryDateDialogExtractFromTitle": "Извлечь из названия",
   "editEntryDateDialogClear": "Очистить",
   "editEntryDateDialogFieldSelection": "Выбор поля",
   "editEntryDateDialogHours": "Часов",
@@ -201,8 +209,9 @@
   "menuActionStats": "Статистика",
 
   "aboutPageTitle": "О нас",
-  "aboutLinkSources": "Источники",
+  "aboutLinkSources": "Исходники",
   "aboutLinkLicense": "Лицензия",
+  "aboutLinkPolicy": "Политика конфиденциальности",
 
   "aboutUpdate": "Доступна новая версия",
   "aboutUpdateLinks1": "Новая версия Aves доступна на",
@@ -222,6 +231,7 @@
   "aboutCredits": "Благодарности",
   "aboutCreditsWorldAtlas1": "Это приложение использует файл TopoJSON из",
   "aboutCreditsWorldAtlas2": "под лицензией ISC.",
+  "aboutCreditsTranslators": "Переводчики:",
 
   "aboutLicenses": "Лицензии с открытым исходным кодом",
   "aboutLicensesBanner": "Это приложение использует следующие пакеты и библиотеки с открытым исходным кодом.",
@@ -231,14 +241,21 @@
   "aboutLicensesDartPackages": "Пакеты Dart",
   "aboutLicensesShowAllButtonLabel": "Показать все лицензии",
 
+  "policyPageTitle": "Политика конфиденциальности",
+
   "collectionPageTitle": "Коллекция",
   "collectionPickPageTitle": "Выбрать",
   "collectionSelectionPageTitle": "{count, plural, =0{Выберите объекты} =1{1 объект} few{{count} объекта} other{{count} объектов}}",
 
+  "collectionActionShowTitleSearch": "Показать фильтр заголовка",
+  "collectionActionHideTitleSearch": "Скрыть фильтр заголовка",
   "collectionActionAddShortcut": "Добавить ярлык",
   "collectionActionCopy": "Скопировать в альбом",
   "collectionActionMove": "Переместить в альбом",
   "collectionActionRescan": "Пересканировать",
+  "collectionActionEdit": "Изменить",
+
+  "collectionSearchTitlesHintText": "Поиск заголовков",
 
   "collectionSortTitle": "Сортировка",
   "collectionSortDate": "По дате",
@@ -258,9 +275,11 @@
   "collectionDeleteFailureFeedback": "{count, plural, =1{Не удалось удалить 1 объект} few{Не удалось удалить {count} объекта} other{Не удалось удалить {count} объектов}}",
   "collectionCopyFailureFeedback": "{count, plural, =1{Не удалось скопировать 1 объект} few{Не удалось скопировать {count} объекта} other{Не удалось скопировать {count} объектов}}",
   "collectionMoveFailureFeedback": "{count, plural, =1{Не удалось переместить 1 объект} few{Не удалось переместить {count} объекта} other{Не удалось переместить {count} объектов}}",
+  "collectionEditFailureFeedback": "{count, plural, =1{Не удалось изменить 1 объект} few{Не удалось изменить {count} объекта} other{Не удалось изменить {count} объектов}}",
   "collectionExportFailureFeedback": "{count, plural, =1{Не удалось экспортировать 1 страницу} few{Не удалось экспортировать {count} страницы} other{Не удалось экспортировать {count} страниц}}",
   "collectionCopySuccessFeedback": "{count, plural, =1{Скопирован 1 объект} few{Скопировано {count} объекта} other{Скопировано {count} объектов}}",
   "collectionMoveSuccessFeedback": "{count, plural, =1{Перемещен 1 объект} few{Перемещено {count} объекта} other{Перемещено {count} объектов}}",
+  "collectionEditSuccessFeedback": "{count, plural, =1{Изменён 1 объект} few{Изменено {count} объекта} other{Изменено {count} объектов}}",
 
   "collectionEmptyFavourites": "Нет избранных",
   "collectionEmptyVideos": "Нет видео",
@@ -347,6 +366,9 @@
 
   "settingsCollectionQuickActionsTile": "Быстрые действия",
   "settingsCollectionQuickActionEditorTitle": "Быстрые действия",
+  "settingsCollectionQuickActionTabBrowsing": "Просмотр",
+  "settingsCollectionQuickActionTabSelecting": "Выбор",
+  "settingsCollectionBrowsingQuickActionEditorBanner": "Коснитесь и удерживайте для перемещения кнопок и выбора действий, отображаемых при просмотре объектов.",
   "settingsCollectionSelectionQuickActionEditorBanner": "Нажмите и удерживайте, чтобы переместить кнопки и выбрать, какие действия будут отображаться при выборе элементов.",
 
   "settingsSectionViewer": "Просмотрщик",
@@ -392,6 +414,8 @@
   "settingsSubtitleThemeTextAlignmentRight": "По правой стороне",
 
   "settingsSectionPrivacy": "Конфиденциальность",
+  "settingsAllowInstalledAppAccess": "Разрешить доступ к библиотеке приложения",
+  "settingsAllowInstalledAppAccessSubtitle": "Используется для улучшения отображения альбома",
   "settingsAllowErrorReporting": "Разрешить анонимную отправку логов",
   "settingsSaveSearchHistory": "Сохранять историю поиска",
 
