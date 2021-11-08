@@ -1,13 +1,16 @@
 package deckers.thibault.aves.utils
 
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
-import deckers.thibault.aves.utils.ContextUtils.runOnUiThread
 import io.flutter.FlutterInjector
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.engine.dart.DartExecutor
 import io.flutter.embedding.engine.loader.FlutterLoader
 import io.flutter.view.FlutterCallbackInformation
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 object FlutterUtils {
     private val LOG_TAG = LogUtils.createTag<FlutterUtils>()
@@ -20,7 +23,7 @@ object FlutterUtils {
         }
 
         lateinit var flutterLoader: FlutterLoader
-        context.runOnUiThread {
+        FlutterUtils.runOnUiThread {
             // initialization must happen on the main thread
             flutterLoader = FlutterInjector.instance().flutterLoader().apply {
                 startInitialization(context)
@@ -39,11 +42,25 @@ object FlutterUtils {
             flutterLoader.findAppBundlePath(),
             callbackInfo
         )
-        context.runOnUiThread {
+        runOnUiThread {
             val engine = FlutterEngine(context).apply {
                 dartExecutor.executeDartCallback(args)
             }
             engineSetter(engine)
+        }
+    }
+
+    suspend fun runOnUiThread(r: Runnable) {
+        val mainLooper = Looper.getMainLooper()
+        if (Looper.myLooper() != mainLooper) {
+            suspendCoroutine<Boolean> { cont ->
+                Handler(mainLooper).post {
+                    r.run()
+                    cont.resume(true)
+                }
+            }
+        } else {
+            r.run()
         }
     }
 }

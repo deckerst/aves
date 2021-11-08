@@ -15,7 +15,7 @@ class Covers with ChangeNotifier {
   Covers._private();
 
   Future<void> init() async {
-    _rows = await metadataDb.loadCovers();
+    _rows = await metadataDb.loadAllCovers();
   }
 
   int get count => _rows.length;

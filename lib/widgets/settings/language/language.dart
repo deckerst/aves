@@ -23,6 +23,7 @@ class LanguageSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final currentCoordinateFormat = context.select<Settings, CoordinateFormat>((s) => s.coordinateFormat);
     final currentUnitSystem = context.select<Settings, UnitSystem>((s) => s.unitSystem);
 
@@ -34,13 +35,13 @@ class LanguageSection extends StatelessWidget {
         icon: AIcons.language,
         color: stringToColor('Language'),
       ),
-      title: context.l10n.settingsSectionLanguage,
+      title: l10n.settingsSectionLanguage,
       expandedNotifier: expandedNotifier,
       showHighlight: false,
       children: [
         const LocaleTile(),
         ListTile(
-          title: Text(context.l10n.settingsCoordinateFormatTile),
+          title: Text(l10n.settingsCoordinateFormatTile),
           subtitle: Text(currentCoordinateFormat.getName(context)),
           onTap: () async {
             final value = await showDialog<CoordinateFormat>(
@@ -48,8 +49,8 @@ class LanguageSection extends StatelessWidget {
               builder: (context) => AvesSelectionDialog<CoordinateFormat>(
                 initialValue: currentCoordinateFormat,
                 options: Map.fromEntries(CoordinateFormat.values.map((v) => MapEntry(v, v.getName(context)))),
-                optionSubtitleBuilder: (value) => value.format(Constants.pointNemo),
-                title: context.l10n.settingsCoordinateFormatTitle,
+                optionSubtitleBuilder: (value) => value.format(l10n, Constants.pointNemo),
+                title: l10n.settingsCoordinateFormatTitle,
               ),
             );
             if (value != null) {
@@ -58,7 +59,7 @@ class LanguageSection extends StatelessWidget {
           },
         ),
         ListTile(
-          title: Text(context.l10n.settingsUnitSystemTile),
+          title: Text(l10n.settingsUnitSystemTile),
           subtitle: Text(currentUnitSystem.getName(context)),
           onTap: () async {
             final value = await showDialog<UnitSystem>(
@@ -66,7 +67,7 @@ class LanguageSection extends StatelessWidget {
               builder: (context) => AvesSelectionDialog<UnitSystem>(
                 initialValue: currentUnitSystem,
                 options: Map.fromEntries(UnitSystem.values.map((v) => MapEntry(v, v.getName(context)))),
-                title: context.l10n.settingsUnitSystemTitle,
+                title: l10n.settingsUnitSystemTitle,
               ),
             );
             if (value != null) {

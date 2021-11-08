@@ -12,7 +12,6 @@ import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
-import androidx.annotation.RequiresApi
 import com.commonsware.cwac.document.DocumentFileCompat
 import deckers.thibault.aves.MainActivity
 import deckers.thibault.aves.MainActivity.Companion.DELETE_SINGLE_PERMISSION_REQUEST
@@ -226,47 +225,42 @@ class MediaStoreImageProvider : ImageProvider() {
         return found
     }
 
-    private fun hasEntry(context: Context, contentUri: Uri): Boolean {
-        var found = false
-        val projection = arrayOf(MediaStore.MediaColumns._ID)
-        try {
-            val cursor = context.contentResolver.query(contentUri, projection, null, null, null)
-            if (cursor != null) {
-                while (cursor.moveToNext()) {
-                    found = true
-                }
-                cursor.close()
-            }
-        } catch (e: Exception) {
-            Log.e(LOG_TAG, "failed to get entry at contentUri=$contentUri", e)
-        }
-        return found
-    }
-
     private fun needSize(mimeType: String) = MimeTypes.SVG != mimeType
 
     // `uri` is a media URI, not a document URI
     override suspend fun delete(activity: Activity, uri: Uri, path: String?, mimeType: String) {
-        if (!(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
-                    && isMediaUriPermissionGranted(activity, uri, mimeType))
-        ) {
-            // if the file is on SD card, calling the content resolver `delete()`
-            // removes the entry from the Media Store but it doesn't delete the file,
-            // even when the app has the permission, so we manually delete the document file
-            path ?: throw Exception("failed to delete file because path is null")
-            if (File(path).exists() && StorageUtils.requireAccessPermission(activity, path)) {
+        path ?: throw Exception("failed to delete file because path is null")
+
+        val file = File(path)
+        if (file.exists()) {
+            if (StorageUtils.canEditByFile(activity, path)) {
+                Log.d(LOG_TAG, "delete file at uri=$uri path=$path")
+                if (file.delete()) {
+                    scanObsoletePath(activity, path, mimeType)
+                    return
+                }
+            } else if (!isMediaUriPermissionGranted(activity, uri, mimeType)
+                && StorageUtils.requireAccessPermission(activity, path)
+            ) {
+                // if the file is on SD card, calling the content resolver `delete()`
+                // removes the entry from the Media Store but it doesn't delete the file,
+                // even when the app has the permission, so we manually delete the document file
                 Log.d(LOG_TAG, "delete document at uri=$uri path=$path")
                 val df = StorageUtils.getDocumentFile(activity, path, uri)
 
                 @Suppress("BlockingMethodInNonBlockingContext")
-                if (df != null && df.delete()) return
-                throw Exception("failed to delete file with df=$df")
+                if (df != null && df.delete()) {
+                    scanObsoletePath(activity, path, mimeType)
+                    return
+                }
+                throw Exception("failed to delete document with df=$df")
             }
         }
 
         try {
-            Log.d(LOG_TAG, "delete content at uri=$uri")
+            Log.d(LOG_TAG, "delete content at uri=$uri path=$path")
             if (activity.contentResolver.delete(uri, null, null) > 0) return
+            throw Exception("failed to delete row from content provider")
         } catch (securityException: SecurityException) {
             // even if the app has access permission granted on the containing directory,
             // the delete request may yield a `RecoverableSecurityException` on Android 10+
@@ -291,7 +285,6 @@ class MediaStoreImageProvider : ImageProvider() {
                 throw securityException
             }
         }
-        throw Exception("failed to delete row from content provider")
     }
 
     override suspend fun moveMultiple(
@@ -330,6 +323,7 @@ class MediaStoreImageProvider : ImageProvider() {
                 // with a path, and retrieve its content URI, but:
                 // - the Media Store isolates content by storage volume (e.g. `MediaStore.Images.Media.getContentUri(volumeName)`)
                 // - the volume name should be lower case, not exactly as the `StorageVolume` UUID
+                //   cf new method in API 30 `StorageVolume.getMediaStoreVolumeName()`
                 // - inserting on a removable volume works on API 29, but not on API 25 nor 26 (on which API/devices does it work?)
                 // - there is no documentation regarding support for usage with removable storage
                 // - the Media Store only allows inserting in specific primary directories ("DCIM", "Pictures") when using scoped storage
@@ -513,31 +507,30 @@ class MediaStoreImageProvider : ImageProvider() {
     ): FieldMap {
         val oldFile = File(oldPath)
         val newFile = File(oldFile.parent, newFileName)
-        if (oldFile == newFile) {
-            // nothing to do
-            return skippedFieldMap
-        }
-
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
-            && isMediaUriPermissionGranted(activity, oldMediaUri, mimeType)
-        ) {
-            renameSingleByMediaStore(activity, mimeType, oldMediaUri, newFile)
-        } else {
-            renameSingleByTreeDoc(activity, mimeType, oldMediaUri, oldPath, newFile)
+        return when {
+            oldFile == newFile -> skippedFieldMap
+            StorageUtils.canEditByFile(activity, oldPath) -> renameSingleByFile(activity, mimeType, oldPath, newFile)
+            isMediaUriPermissionGranted(activity, oldMediaUri, mimeType) -> renameSingleByMediaStore(activity, mimeType, oldMediaUri, newFile)
+            else -> renameSingleByTreeDoc(activity, mimeType, oldMediaUri, oldPath, newFile)
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.Q)
     private suspend fun renameSingleByMediaStore(
         activity: Activity,
         mimeType: String,
         mediaUri: Uri,
         newFile: File
     ): FieldMap {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            throw Exception("unsupported Android version")
+        }
+
         val uri = StorageUtils.getMediaStoreScopedStorageSafeUri(mediaUri, mimeType)
 
         // `IS_PENDING` is necessary for `TITLE`, not for `DISPLAY_NAME`
-        val tempValues = ContentValues().apply { put(MediaStore.MediaColumns.IS_PENDING, 1) }
+        val tempValues = ContentValues().apply {
+            put(MediaStore.MediaColumns.IS_PENDING, 1)
+        }
         if (activity.contentResolver.update(uri, tempValues, null, null) == 0) {
             throw Exception("failed to update fields for uri=$uri")
         }
@@ -567,39 +560,25 @@ class MediaStoreImageProvider : ImageProvider() {
         @Suppress("BlockingMethodInNonBlockingContext")
         val renamed = StorageUtils.getDocumentFile(activity, oldPath, oldMediaUri)?.renameTo(newFile.name) ?: false
         if (!renamed) {
-            throw Exception("failed to rename entry at path=$oldPath")
+            throw Exception("failed to rename document at path=$oldPath")
         }
-
-        // Renaming may be successful and the file at the old path no longer exists
-        // but, in some situations, scanning the old path does not clear the Media Store entry.
-        // For higher chance of accurate obsolete item check, keep this order:
-        // 1) scan obsolete item,
-        // 2) scan current item,
-        // 3) check obsolete item in Media Store
-
         scanObsoletePath(activity, oldPath, mimeType)
-        val newFields = scanNewPath(activity, newFile.path, mimeType)
+        return scanNewPath(activity, newFile.path, mimeType)
+    }
 
-        if (hasEntry(activity, oldMediaUri)) {
-            Log.w(LOG_TAG, "renaming item at uri=$oldMediaUri to newFile=$newFile did not clear the MediaStore entry for obsolete path=$oldPath")
-
-            // On Android Q (emulator/Mi9TPro), the concept of owner package disrupts renaming and the Media Store keeps an obsolete entry,
-            // but we use legacy external storage, so at least we do not have to deal with a `RecoverableSecurityException`
-            // when deleting this obsolete entry which is not backed by a file anymore.
-            // On Android R (S10e), everything seems fine!
-            // On Android S (emulator), renaming always leaves an obsolete entry whatever the owner package,
-            // and we get a `RecoverableSecurityException` if we attempt to delete this obsolete entry,
-            // but the entry seems to be cleaned later automatically by the Media Store anyway.
-            if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
-                try {
-                    delete(activity, oldMediaUri, oldPath, mimeType)
-                } catch (e: Exception) {
-                    Log.w(LOG_TAG, "failed to delete entry with path=$oldPath", e)
-                }
-            }
+    private suspend fun renameSingleByFile(
+        activity: Activity,
+        mimeType: String,
+        oldPath: String,
+        newFile: File
+    ): FieldMap {
+        Log.d(LOG_TAG, "rename file at path=$oldPath")
+        val renamed = File(oldPath).renameTo(newFile)
+        if (!renamed) {
+            throw Exception("failed to rename file at path=$oldPath")
         }
-
-        return newFields
+        scanObsoletePath(activity, oldPath, mimeType)
+        return scanNewPath(activity, newFile.path, mimeType)
     }
 
     override fun scanPostMetadataEdit(context: Context, path: String, uri: Uri, mimeType: String, newFields: HashMap<String, Any?>, callback: ImageOpCallback) {
@@ -658,30 +637,29 @@ class MediaStoreImageProvider : ImageProvider() {
                     return null
                 }
 
-                if (newUri == null) {
-                    cont.resumeWithException(Exception("failed to get URI of item at path=$path"))
-                    return@scanFile
-                }
-
-                var contentUri: Uri? = null
-                // `newURI` is possibly a file media URI (e.g. "content://media/12a9-8b42/file/62872")
-                // but we need an image/video media URI (e.g. "content://media/external/images/media/62872")
-                val contentId = newUri.tryParseId()
-                if (contentId != null) {
-                    if (isImage(mimeType)) {
-                        contentUri = ContentUris.withAppendedId(IMAGE_CONTENT_URI, contentId)
-                    } else if (isVideo(mimeType)) {
-                        contentUri = ContentUris.withAppendedId(VIDEO_CONTENT_URI, contentId)
+                if (newUri != null) {
+                    var contentUri: Uri? = null
+                    // `newURI` is possibly a file media URI (e.g. "content://media/12a9-8b42/file/62872")
+                    // but we need an image/video media URI (e.g. "content://media/external/images/media/62872")
+                    val contentId = newUri.tryParseId()
+                    if (contentId != null) {
+                        if (isImage(mimeType)) {
+                            contentUri = ContentUris.withAppendedId(IMAGE_CONTENT_URI, contentId)
+                        } else if (isVideo(mimeType)) {
+                            contentUri = ContentUris.withAppendedId(VIDEO_CONTENT_URI, contentId)
+                        }
                     }
-                }
 
-                // prefer image/video content URI, fallback to original URI (possibly a file content URI)
-                val newFields = scanUri(contentUri) ?: scanUri(newUri)
+                    // prefer image/video content URI, fallback to original URI (possibly a file content URI)
+                    val newFields = scanUri(contentUri) ?: scanUri(newUri)
 
-                if (newFields != null) {
-                    cont.resume(newFields)
+                    if (newFields != null) {
+                        cont.resume(newFields)
+                    } else {
+                        cont.resumeWithException(Exception("failed to get item details from provider at contentUri=$contentUri (from newUri=$newUri)"))
+                    }
                 } else {
-                    cont.resumeWithException(Exception("failed to get item details from provider at contentUri=$contentUri (from newUri=$newUri)"))
+                    cont.resumeWithException(Exception("failed to get URI of item at path=$path"))
                 }
             }
         }

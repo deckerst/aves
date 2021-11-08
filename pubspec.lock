@@ -7,14 +7,14 @@ packages:
       name: _fe_analyzer_shared
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "29.0.0"
+    version: "30.0.0"
   analyzer:
     dependency: transitive
     description:
       name: analyzer
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.6.0"
+    version: "2.7.0"
   archive:
     dependency: transitive
     description:
@@ -36,6 +36,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.8.1"
+  aves_report:
+    dependency: "direct main"
+    description:
+      path: "plugins/aves_report"
+      relative: true
+    source: path
+    version: "0.0.1"
+  aves_report_platform:
+    dependency: "direct main"
+    description:
+      path: "plugins/aves_report_crashlytics"
+      relative: true
+    source: path
+    version: "0.0.1"
   barcode:
     dependency: transitive
     description:
@@ -70,16 +84,14 @@ packages:
       name: charts_common
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.11.0"
+    version: "0.12.0"
   charts_flutter:
     dependency: "direct main"
     description:
-      path: charts_flutter
-      ref: HEAD
-      resolved-ref: "30477090290b348ed3101bc13017aae465f59017"
-      url: "git://github.com/google/charts.git"
-    source: git
-    version: "0.11.0"
+      name: charts_flutter
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.12.0"
   cli_util:
     dependency: transitive
     description:
@@ -198,7 +210,7 @@ packages:
       name: device_info_plus
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.1.0"
+    version: "3.1.1"
   device_info_plus_linux:
     dependency: transitive
     description:
@@ -219,7 +231,7 @@ packages:
       name: device_info_plus_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.2.0"
+    version: "2.2.1"
   device_info_plus_web:
     dependency: transitive
     description:
@@ -276,7 +288,7 @@ packages:
     description:
       path: "."
       ref: aves
-      resolved-ref: "1d10ebbdcd71a2d9970dd6cd1f3cf6315bb686e6"
+      resolved-ref: "44569361c251cc4ced0ff845b02c64ceeaebb957"
       url: "git://github.com/deckerst/fijkplayer.git"
     source: git
     version: "0.10.0"
@@ -288,40 +300,40 @@ packages:
     source: hosted
     version: "6.1.2"
   firebase_core:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: firebase_core
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.7.0"
+    version: "1.10.0"
   firebase_core_platform_interface:
     dependency: transitive
     description:
       name: firebase_core_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.0.1"
+    version: "4.1.0"
   firebase_core_web:
     dependency: transitive
     description:
       name: firebase_core_web
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.0"
+    version: "1.2.0"
   firebase_crashlytics:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: firebase_crashlytics
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.2.3"
+    version: "2.3.0"
   firebase_crashlytics_platform_interface:
     dependency: transitive
     description:
       name: firebase_crashlytics_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.1.3"
+    version: "3.1.6"
   flex_color_picker:
     dependency: "direct main"
     description:
@@ -385,14 +397,14 @@ packages:
       name: flutter_markdown
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.6.7"
+    version: "0.6.8"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
       name: flutter_plugin_android_lifecycle
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.3"
+    version: "2.0.4"
   flutter_staggered_animations:
     dependency: "direct main"
     description:
@@ -435,7 +447,7 @@ packages:
       name: github
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "8.2.1"
+    version: "8.2.3"
   glob:
     dependency: transitive
     description:
@@ -456,7 +468,7 @@ packages:
       name: google_maps_flutter
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.11"
+    version: "2.1.0"
   google_maps_flutter_platform_interface:
     dependency: transitive
     description:
@@ -596,7 +608,7 @@ packages:
       name: mime
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.0"
+    version: "1.0.1"
   motion_sensors:
     dependency: transitive
     description:
@@ -736,7 +748,7 @@ packages:
       name: pdf
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.6.0"
+    version: "3.6.1"
   pedantic:
     dependency: transitive
     description:
@@ -757,7 +769,7 @@ packages:
       name: permission_handler
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "8.2.5"
+    version: "8.2.6"
   permission_handler_platform_interface:
     dependency: transitive
     description:
@@ -1163,7 +1175,7 @@ packages:
       name: win32
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.2.9"
+    version: "2.2.10"
   wkt_parser:
     dependency: transitive
     description:

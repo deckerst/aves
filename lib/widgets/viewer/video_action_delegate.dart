@@ -43,6 +43,10 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       case VideoAction.captureFrame:
         _captureFrame(context, controller);
         break;
+      case VideoAction.playOutside:
+        final entry = controller.entry;
+        androidAppService.open(entry.uri, entry.mimeTypeAnySubtype);
+        break;
       case VideoAction.replay10:
         if (controller.isReady) controller.seekTo(controller.currentPosition - 10000);
         break;
@@ -181,7 +185,12 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     if (controller.isPlaying) {
       await controller.pause();
     } else {
-      await controller.play();
+      final resumeTimeMillis = await controller.getResumeTime(context);
+      if (resumeTimeMillis != null) {
+        await controller.seekTo(resumeTimeMillis);
+      } else {
+        await controller.play();
+      }
       // hide overlay
       _overlayHidingTimer = Timer(context.read<DurationsData>().iconAnimation + Durations.videoOverlayHideDelay, () {
         const ToggleOverlayNotification(visible: false).dispatch(context);

@@ -1,7 +1,7 @@
 {
   "appName": "아베스",
   "welcomeMessage": "아베스 사용을 환영합니다",
-  "welcomeCrashReportToggle": "오류 보고서를 보내는 것에 동의합니다 (선택)",
+  "welcomeOptional": "선택",
   "welcomeTermsToggle": "이용약관에 동의합니다",
   "itemCount": "{count, plural, other{{count}개}}",
 
@@ -87,6 +87,11 @@
 
   "coordinateFormatDms": "도분초",
   "coordinateFormatDecimal": "소수점",
+  "coordinateDms": "{direction} {coordinate}",
+  "coordinateDmsNorth": "북위",
+  "coordinateDmsSouth": "남위",
+  "coordinateDmsEast": "동경",
+  "coordinateDmsWest": "서경",
 
   "unitSystemMetric": "미터법",
   "unitSystemImperial": "야드파운드법",
@@ -130,6 +135,9 @@
   "notEnoughSpaceDialogTitle": "저장공간 부족",
   "notEnoughSpaceDialogMessage": "“{volume}”에 필요 공간은 {neededSize}인데 사용 가능한 용량은 {freeSize}만 남아있습니다.",
 
+  "unsupportedTypeDialogTitle": "미지원 형식",
+  "unsupportedTypeDialogMessage": "{count, plural, other{이 작업은 다음 항목의 형식을 지원하지 않습니다: {types}.}}",
+
   "nameConflictDialogSingleSourceMessage": "이동할 폴더에 이름이 같은 파일이 있습니다.",
   "nameConflictDialogMultipleSourceMessage": "이름이 같은 파일이 있습니다.",
 
@@ -140,6 +148,10 @@
   "noMatchingAppDialogMessage": "이 작업을 처리할 수 있는 앱이 없습니다.",
 
   "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{이 항목을 삭제하시겠습니까?} other{항목 {count}개를 삭제하시겠습니까?}}",
+
+  "videoResumeDialogMessage": "{time}부터 재개하시겠습니까?",
+  "videoStartOverButtonLabel": "처음부터",
+  "videoResumeButtonLabel": "재개",
 
   "setCoverDialogTitle": "대표 이미지 변경",
   "setCoverDialogLatest": "최근 항목",
@@ -165,6 +177,7 @@
   "editEntryDateDialogTitle": "날짜 및 시간",
   "editEntryDateDialogSet": "편집",
   "editEntryDateDialogShift": "시간 이동",
+  "editEntryDateDialogExtractFromTitle": "제목에서 추출",
   "editEntryDateDialogClear": "삭제",
   "editEntryDateDialogFieldSelection": "필드 선택",
   "editEntryDateDialogHours": "시간",
@@ -173,7 +186,7 @@
   "removeEntryMetadataDialogTitle": "메타데이터 삭제",
   "removeEntryMetadataDialogMore": "더 보기",
 
-  "removeEntryMetadataMotionPhotoXmpWarningDialogMessage":  "XMP가 있어야 모션 포토에 포함되는 동영상을 재생할 수 있습니다. 삭제하시겠습니까?",
+  "removeEntryMetadataMotionPhotoXmpWarningDialogMessage": "XMP가 있어야 모션 포토에 포함되는 동영상을 재생할 수 있습니다. 삭제하시겠습니까?",
 
   "videoSpeedDialogLabel": "재생 배속",
 
@@ -198,6 +211,7 @@
   "aboutPageTitle": "앱 정보",
   "aboutLinkSources": "소스 코드",
   "aboutLinkLicense": "라이선스",
+  "aboutLinkPolicy": "개인정보 보호정책",
 
   "aboutUpdate": "업데이트 사용 가능",
   "aboutUpdateLinks1": "앱의 최신 버전을",
@@ -217,6 +231,7 @@
   "aboutCredits": "크레딧",
   "aboutCreditsWorldAtlas1": "이 앱은",
   "aboutCreditsWorldAtlas2": "의 TopoJSON 파일(ISC 라이선스)을 이용합니다.",
+  "aboutCreditsTranslators": "번역가:",
 
   "aboutLicenses": "오픈 소스 라이선스",
   "aboutLicensesBanner": "이 앱은 다음의 오픈 소스 패키지와 라이브러리를 이용합니다.",
@@ -226,14 +241,21 @@
   "aboutLicensesDartPackages": "다트 패키지",
   "aboutLicensesShowAllButtonLabel": "라이선스 모두 보기",
 
+  "policyPageTitle": "개인정보 보호정책",
+
   "collectionPageTitle": "미디어",
   "collectionPickPageTitle": "항목 선택",
   "collectionSelectionPageTitle": "{count, plural, =0{항목 선택} other{{count}개}}",
 
+  "collectionActionShowTitleSearch": "제목 필터 보기",
+  "collectionActionHideTitleSearch": "제목 필터 숨기기",
   "collectionActionAddShortcut": "홈 화면에 추가",
   "collectionActionCopy": "앨범으로 복사",
   "collectionActionMove": "앨범으로 이동",
   "collectionActionRescan": "새로 분석",
+  "collectionActionEdit": "편집",
+
+  "collectionSearchTitlesHintText": "제목 검색",
 
   "collectionSortTitle": "정렬",
   "collectionSortDate": "날짜",
@@ -253,9 +275,11 @@
   "collectionDeleteFailureFeedback": "{count, plural, other{항목 {count}개를 삭제하지 못했습니다}}",
   "collectionCopyFailureFeedback": "{count, plural, other{항목 {count}개를 복사하지 못했습니다}}",
   "collectionMoveFailureFeedback": "{count, plural, other{항목 {count}개를 이동하지 못했습니다}}",
+  "collectionEditFailureFeedback": "{count, plural, other{항목 {count}개를 편집하지 못했습니다}}",
   "collectionExportFailureFeedback": "{count, plural, other{항목 {count}개를 내보내지 못했습니다}}",
   "collectionCopySuccessFeedback": "{count, plural, other{항목 {count}개를 복사했습니다}}",
   "collectionMoveSuccessFeedback": "{count, plural, other{항목 {count}개를 이동했습니다}}",
+  "collectionEditSuccessFeedback": "{count, plural, other{항목 {count}개를 편집했습니다}}",
 
   "collectionEmptyFavourites": "즐겨찾기가 없습니다",
   "collectionEmptyVideos": "동영상이 없습니다",
@@ -340,8 +364,11 @@
   "settingsThumbnailShowRawIcon": "Raw 아이콘 표시",
   "settingsThumbnailShowVideoDuration": "동영상 길이 표시",
 
-  "settingsCollectionSelectionQuickActionsTile": "항목 선택의 빠른 작업",
-  "settingsCollectionSelectionQuickActionEditorTitle": "빠른 작업",
+  "settingsCollectionQuickActionsTile": "빠른 작업",
+  "settingsCollectionQuickActionEditorTitle": "빠른 작업",
+  "settingsCollectionQuickActionTabBrowsing": "탐색 시",
+  "settingsCollectionQuickActionTabSelecting": "선택 시",
+  "settingsCollectionBrowsingQuickActionEditorBanner": "버튼을 길게 누른 후 이동하여 항목 탐색할 때 표시될 버튼을 선택하세요.",
   "settingsCollectionSelectionQuickActionEditorBanner": "버튼을 길게 누른 후 이동하여 항목 선택할 때 표시될 버튼을 선택하세요.",
 
   "settingsSectionViewer": "뷰어",
@@ -387,7 +414,9 @@
   "settingsSubtitleThemeTextAlignmentRight": "오른쪽",
 
   "settingsSectionPrivacy": "개인정보 보호",
-  "settingsEnableErrorReporting": "오류 보고서 보내기",
+  "settingsAllowInstalledAppAccess": "설치된 앱의 목록 접근 허용",
+  "settingsAllowInstalledAppAccessSubtitle": "앨범 표시 개선을 위해",
+  "settingsAllowErrorReporting": "오류 보고서 보내기",
   "settingsSaveSearchHistory": "검색기록",
 
   "settingsHiddenFiltersTile": "숨겨진 필터",
@@ -421,15 +450,12 @@
   "settingsUnitSystemTitle": "단위법",
 
   "statsPageTitle": "통계",
-  "statsImage": "{count, plural, other{사진}}",
-  "statsVideo": "{count, plural, other{동영상}}",
   "statsWithGps": "{count, plural, other{{count}개 위치가 있음}}",
   "statsTopCountries": "국가 랭킹",
   "statsTopPlaces": "장소 랭킹",
   "statsTopTags": "태그 랭킹",
 
   "viewerOpenPanoramaButtonLabel": "파노라마 열기",
-  "viewerOpenTooltip": "열기",
   "viewerErrorUnknown": "아이구!",
   "viewerErrorDoesNotExist": "파일이 존재하지 않습니다.",
 

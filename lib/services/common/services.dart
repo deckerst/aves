@@ -7,9 +7,10 @@ import 'package:aves/services/media/media_file_service.dart';
 import 'package:aves/services/media/media_store_service.dart';
 import 'package:aves/services/metadata/metadata_edit_service.dart';
 import 'package:aves/services/metadata/metadata_fetch_service.dart';
-import 'package:aves/services/report_service.dart';
 import 'package:aves/services/storage_service.dart';
 import 'package:aves/services/window_service.dart';
+import 'package:aves_report/aves_report.dart';
+import 'package:aves_report_platform/aves_report_platform.dart';
 import 'package:get_it/get_it.dart';
 import 'package:path/path.dart' as p;
 
@@ -42,7 +43,7 @@ void initPlatformServices() {
   getIt.registerLazySingleton<MediaStoreService>(() => PlatformMediaStoreService());
   getIt.registerLazySingleton<MetadataEditService>(() => PlatformMetadataEditService());
   getIt.registerLazySingleton<MetadataFetchService>(() => PlatformMetadataFetchService());
-  getIt.registerLazySingleton<ReportService>(() => CrashlyticsReportService());
+  getIt.registerLazySingleton<ReportService>(() => PlatformReportService());
   getIt.registerLazySingleton<StorageService>(() => PlatformStorageService());
   getIt.registerLazySingleton<WindowService>(() => PlatformWindowService());
 }

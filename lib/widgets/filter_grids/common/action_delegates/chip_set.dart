@@ -1,3 +1,4 @@
+import 'package:aves/app_mode.dart';
 import 'package:aves/model/actions/chip_set_actions.dart';
 import 'package:aves/model/covers.dart';
 import 'package:aves/model/entry.dart';
@@ -16,6 +17,7 @@ import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
 import 'package:aves/widgets/dialogs/cover_selection_dialog.dart';
 import 'package:aves/widgets/map/map_page.dart';
+import 'package:aves/widgets/search/search_delegate.dart';
 import 'package:aves/widgets/stats/stats_page.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -30,23 +32,63 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
 
   set sortFactor(ChipSortFactor factor);
 
-  bool isValid(Set<T> filters, ChipSetAction action) {
-    final hasSelection = filters.isNotEmpty;
+  bool isVisible(
+    ChipSetAction action, {
+    required AppMode appMode,
+    required bool isSelecting,
+    required int itemCount,
+    required Set<T> selectedFilters,
+  }) {
+    final selectedItemCount = selectedFilters.length;
+    final hasSelection = selectedFilters.isNotEmpty;
     switch (action) {
+      // general
+      case ChipSetAction.sort:
+        return true;
+      case ChipSetAction.group:
+        return false;
+      case ChipSetAction.select:
+        return appMode.canSelect && !isSelecting;
+      case ChipSetAction.selectAll:
+        return isSelecting && selectedItemCount < itemCount;
+      case ChipSetAction.selectNone:
+        return isSelecting && selectedItemCount == itemCount;
+      // browsing
+      case ChipSetAction.search:
+        return appMode.canSearch && !isSelecting;
       case ChipSetAction.createAlbum:
+        return false;
+      // browsing or selecting
+      case ChipSetAction.map:
+      case ChipSetAction.stats:
+        return appMode == AppMode.main;
+      // selecting (single/multiple filters)
       case ChipSetAction.delete:
+        return false;
+      case ChipSetAction.hide:
+        return appMode == AppMode.main;
+      case ChipSetAction.pin:
+        return !hasSelection || !settings.pinnedFilters.containsAll(selectedFilters);
+      case ChipSetAction.unpin:
+        return hasSelection && settings.pinnedFilters.containsAll(selectedFilters);
+      // selecting (single filter)
       case ChipSetAction.rename:
         return false;
-      case ChipSetAction.pin:
-        return !hasSelection || !settings.pinnedFilters.containsAll(filters);
-      case ChipSetAction.unpin:
-        return hasSelection && settings.pinnedFilters.containsAll(filters);
-      default:
-        return true;
+      case ChipSetAction.setCover:
+        return appMode == AppMode.main;
     }
   }
 
-  bool canApply(Set<T> filters, ChipSetAction action) {
+  bool canApply(
+    ChipSetAction action, {
+    required bool isSelecting,
+    required int itemCount,
+    required Set<T> selectedFilters,
+  }) {
+    final selectedItemCount = selectedFilters.length;
+    final hasItems = itemCount > 0;
+    final hasSelection = selectedItemCount > 0;
+
     switch (action) {
       // general
       case ChipSetAction.sort:
@@ -54,20 +96,24 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
       case ChipSetAction.select:
       case ChipSetAction.selectAll:
       case ChipSetAction.selectNone:
-      case ChipSetAction.map:
-      case ChipSetAction.stats:
+      // browsing
+      case ChipSetAction.search:
       case ChipSetAction.createAlbum:
         return true;
-      // single/multiple filters
+      // browsing or selecting
+      case ChipSetAction.map:
+      case ChipSetAction.stats:
+        return (!isSelecting && hasItems) || (isSelecting && hasSelection);
+      // selecting (single/multiple filters)
       case ChipSetAction.delete:
       case ChipSetAction.hide:
       case ChipSetAction.pin:
       case ChipSetAction.unpin:
-        return filters.isNotEmpty;
-      // single filter
+        return hasSelection;
+      // selecting (single filter)
       case ChipSetAction.rename:
       case ChipSetAction.setCover:
-        return filters.length == 1;
+        return selectedItemCount == 1;
     }
   }
 
@@ -77,11 +123,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
       case ChipSetAction.sort:
         _showSortDialog(context);
         break;
-      case ChipSetAction.map:
-        _goToMap(context, filters);
-        break;
-      case ChipSetAction.stats:
-        _goToStats(context, filters);
+      case ChipSetAction.group:
         break;
       case ChipSetAction.select:
         context.read<Selection<FilterGridItem<T>>>().select();
@@ -92,24 +134,43 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
       case ChipSetAction.selectNone:
         context.read<Selection<FilterGridItem<T>>>().clearSelection();
         break;
-      // single/multiple filters
-      case ChipSetAction.pin:
-        settings.pinnedFilters = settings.pinnedFilters..addAll(filters);
+      // browsing
+      case ChipSetAction.search:
+        _goToSearch(context);
         break;
-      case ChipSetAction.unpin:
-        settings.pinnedFilters = settings.pinnedFilters..removeAll(filters);
+      case ChipSetAction.createAlbum:
+        break;
+      // browsing or selecting
+      case ChipSetAction.map:
+        _goToMap(context, filters);
+        break;
+      case ChipSetAction.stats:
+        _goToStats(context, filters);
+        break;
+      // selecting (single/multiple filters)
+      case ChipSetAction.delete:
         break;
       case ChipSetAction.hide:
         _hide(context, filters);
         break;
-      // single filter
-      case ChipSetAction.setCover:
-        _showCoverSelectionDialog(context, filters.first);
+      case ChipSetAction.pin:
+        settings.pinnedFilters = settings.pinnedFilters..addAll(filters);
+        _browse(context);
         break;
-      default:
+      case ChipSetAction.unpin:
+        settings.pinnedFilters = settings.pinnedFilters..removeAll(filters);
+        _browse(context);
+        break;
+      // selecting (single filter)
+      case ChipSetAction.rename:
+        break;
+      case ChipSetAction.setCover:
+        _setCover(context, filters.first);
         break;
     }
   }
+
+  void _browse(BuildContext context) => context.read<Selection<FilterGridItem<T>>>().browse();
 
   Iterable<AvesEntry> _selectedEntries(BuildContext context, Set<dynamic> filters) {
     final source = context.read<CollectionSource>();
@@ -167,6 +228,17 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
     );
   }
 
+  void _goToSearch(BuildContext context) {
+    Navigator.push(
+      context,
+      SearchPageRoute(
+        delegate: CollectionSearchDelegate(
+          source: context.read<CollectionSource>(),
+        ),
+      ),
+    );
+  }
+
   Future<void> _hide(BuildContext context, Set<T> filters) async {
     final confirmed = await showDialog<bool>(
       context: context,
@@ -191,9 +263,11 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
 
     final source = context.read<CollectionSource>();
     source.changeFilterVisibility(filters, false);
+
+    _browse(context);
   }
 
-  void _showCoverSelectionDialog(BuildContext context, T filter) async {
+  void _setCover(BuildContext context, T filter) async {
     final contentId = covers.coverContentId(filter);
     final customEntry = context.read<CollectionSource>().visibleEntries.firstWhereOrNull((entry) => entry.contentId == contentId);
     final coverSelection = await showDialog<Tuple2<bool, AvesEntry?>>(
@@ -207,5 +281,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
 
     final isCustom = coverSelection.item1;
     await covers.set(filter, isCustom ? coverSelection.item2?.contentId : null);
+
+    _browse(context);
   }
 }

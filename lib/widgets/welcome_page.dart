@@ -1,18 +1,19 @@
+import 'package:aves/app_flavor.dart';
+import 'package:aves/model/settings/defaults.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
-import 'package:aves/widgets/common/basic/labeled_checkbox.dart';
+import 'package:aves/widgets/common/basic/markdown_container.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_logo.dart';
+import 'package:aves/widgets/common/identity/buttons.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/home_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class WelcomePage extends StatefulWidget {
   const WelcomePage({Key? key}) : super(key: key);
@@ -30,6 +31,15 @@ class _WelcomePageState extends State<WelcomePage> {
     super.initState();
     settings.setContextualDefaults();
     _termsLoader = rootBundle.loadString('assets/terms.md');
+    WidgetsBinding.instance!.addPostFrameCallback((_) => _initWelcomeSettings());
+  }
+
+  // explicitly set consent values to current defaults
+  // so they are not subject to future default changes
+  void _initWelcomeSettings() {
+    // this should be done outside of `initState`/`build`
+    settings.isInstalledAppAccessAllowed = SettingsDefaults.isInstalledAppAccessAllowed;
+    settings.isErrorReportingAllowed = SettingsDefaults.isErrorReportingAllowed;
   }
 
   @override
@@ -37,15 +47,14 @@ class _WelcomePageState extends State<WelcomePage> {
     return MediaQueryDataProvider(
       child: Scaffold(
         body: SafeArea(
-          child: Container(
-            alignment: Alignment.center,
-            padding: const EdgeInsets.all(16.0),
+          child: Center(
             child: FutureBuilder<String>(
               future: _termsLoader,
               builder: (context, snapshot) {
-                if (snapshot.hasError || snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
+                if (snapshot.hasError || snapshot.connectionState != ConnectionState.done) return const SizedBox();
                 final terms = snapshot.data!;
                 final durations = context.watch<DurationsData>();
+                final isPortrait = context.select<MediaQueryData, Orientation>((mq) => mq.orientation) == Orientation.portrait;
                 return Column(
                   mainAxisSize: MainAxisSize.min,
                   children: _toStaggeredList(
@@ -58,10 +67,29 @@ class _WelcomePageState extends State<WelcomePage> {
                       ),
                     ),
                     children: [
-                      ..._buildTop(context),
-                      Flexible(child: _buildTerms(terms)),
-                      const SizedBox(height: 16),
-                      ..._buildBottomControls(context),
+                      ..._buildHeader(context, isPortrait: isPortrait),
+                      if (isPortrait) ...[
+                        Flexible(child: MarkdownContainer(data: terms)),
+                        const SizedBox(height: 16),
+                        ..._buildControls(context),
+                      ] else
+                        Flexible(
+                          child: Row(
+                            children: [
+                              Flexible(
+                                  child: Padding(
+                                padding: const EdgeInsets.only(bottom: 8),
+                                child: MarkdownContainer(data: terms),
+                              )),
+                              Flexible(
+                                child: ListView(
+                                  // shrinkWrap: true,
+                                  children: _buildControls(context),
+                                ),
+                              )
+                            ],
+                          ),
+                        )
                     ],
                   ),
                 );
@@ -73,13 +101,15 @@ class _WelcomePageState extends State<WelcomePage> {
     );
   }
 
-  List<Widget> _buildTop(BuildContext context) {
+  List<Widget> _buildHeader(BuildContext context, {required bool isPortrait}) {
     final message = Text(
       context.l10n.welcomeMessage,
       style: Theme.of(context).textTheme.headline5,
     );
+    final padding = isPortrait ? 16.0 : 8.0;
     return [
-      ...(context.select<MediaQueryData, Orientation>((mq) => mq.orientation) == Orientation.portrait
+      SizedBox(height: padding),
+      ...(isPortrait
           ? [
               const AvesLogo(size: 64),
               const SizedBox(height: 16),
@@ -95,36 +125,50 @@ class _WelcomePageState extends State<WelcomePage> {
                 ],
               )
             ]),
-      const SizedBox(height: 16),
+      SizedBox(height: padding),
     ];
   }
 
-  List<Widget> _buildBottomControls(BuildContext context) {
-    final checkboxes = Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        LabeledCheckbox(
-          value: settings.isErrorReportingEnabled,
-          onChanged: (v) {
-            if (v != null) setState(() => settings.isErrorReportingEnabled = v);
-          },
-          text: context.l10n.welcomeCrashReportToggle,
-        ),
-        LabeledCheckbox(
-          // key is expected by test driver
-          key: const Key('agree-checkbox'),
-          value: _hasAcceptedTerms,
-          onChanged: (v) {
-            if (v != null) setState(() => _hasAcceptedTerms = v);
-          },
-          text: context.l10n.welcomeTermsToggle,
-        ),
-      ],
+  List<Widget> _buildControls(BuildContext context) {
+    final l10n = context.l10n;
+    final canEnableErrorReporting = context.select<AppFlavor, bool>((v) => v.canEnableErrorReporting);
+    const contentPadding = EdgeInsets.symmetric(horizontal: 8);
+    final switches = ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: MarkdownContainer.maxWidth),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SwitchListTile(
+            value: settings.isInstalledAppAccessAllowed,
+            onChanged: (v) => setState(() => settings.isInstalledAppAccessAllowed = v),
+            title: Text(l10n.settingsAllowInstalledAppAccess),
+            subtitle: Text([l10n.welcomeOptional, l10n.settingsAllowInstalledAppAccessSubtitle].join(' • ')),
+            contentPadding: contentPadding,
+          ),
+          if (canEnableErrorReporting)
+            SwitchListTile(
+              value: settings.isErrorReportingAllowed,
+              onChanged: (v) => setState(() => settings.isErrorReportingAllowed = v),
+              title: Text(l10n.settingsAllowErrorReporting),
+              subtitle: Text(l10n.welcomeOptional),
+              contentPadding: contentPadding,
+            ),
+          SwitchListTile(
+            // key is expected by test driver
+            key: const Key('agree-checkbox'),
+            value: _hasAcceptedTerms,
+            onChanged: (v) => setState(() => _hasAcceptedTerms = v),
+            title: Text(l10n.welcomeTermsToggle),
+            contentPadding: contentPadding,
+          ),
+        ],
+      ),
     );
 
-    final button = ElevatedButton(
+    final button = AvesOutlinedButton(
       // key is expected by test driver
       key: const Key('continue-button'),
+      label: context.l10n.continueButtonLabel,
       onPressed: _hasAcceptedTerms
           ? () {
               settings.hasAcceptedTerms = true;
@@ -137,60 +181,13 @@ class _WelcomePageState extends State<WelcomePage> {
               );
             }
           : null,
-      child: Text(context.l10n.continueButtonLabel),
     );
 
-    return context.select<MediaQueryData, Orientation>((mq) => mq.orientation) == Orientation.portrait
-        ? [
-            checkboxes,
-            button,
-          ]
-        : [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                checkboxes,
-                const Spacer(),
-                button,
-              ],
-            ),
-          ];
-  }
-
-  Widget _buildTerms(String terms) {
-    return Container(
-      decoration: const BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(16)),
-        color: Colors.white10,
-      ),
-      constraints: const BoxConstraints(maxWidth: 460),
-      child: ClipRRect(
-        borderRadius: const BorderRadius.all(Radius.circular(16)),
-        child: Theme(
-          data: Theme.of(context).copyWith(
-            scrollbarTheme: const ScrollbarThemeData(
-              isAlwaysShown: true,
-              radius: Radius.circular(16),
-              crossAxisMargin: 6,
-              mainAxisMargin: 16,
-              interactive: true,
-            ),
-          ),
-          child: Scrollbar(
-            child: Markdown(
-              data: terms,
-              selectable: true,
-              onTapLink: (text, href, title) async {
-                if (href != null && await canLaunch(href)) {
-                  await launch(href);
-                }
-              },
-              shrinkWrap: true,
-            ),
-          ),
-        ),
-      ),
-    );
+    return [
+      switches,
+      Center(child: button),
+      const SizedBox(height: 8),
+    ];
   }
 
   // as of flutter_staggered_animations v0.1.2, `AnimationConfiguration.toStaggeredList` does not handle `Flexible` widgets

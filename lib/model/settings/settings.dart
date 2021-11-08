@@ -41,7 +41,8 @@ class Settings extends ChangeNotifier {
   // app
   static const hasAcceptedTermsKey = 'has_accepted_terms';
   static const canUseAnalysisServiceKey = 'can_use_analysis_service';
-  static const isErrorReportingEnabledKey = 'is_crashlytics_enabled';
+  static const isInstalledAppAccessAllowedKey = 'is_installed_app_access_allowed';
+  static const isErrorReportingAllowedKey = 'is_crashlytics_enabled';
   static const localeKey = 'locale';
   static const mustBackTwiceToExitKey = 'must_back_twice_to_exit';
   static const keepScreenOnKey = 'keep_screen_on';
@@ -57,6 +58,7 @@ class Settings extends ChangeNotifier {
   // collection
   static const collectionGroupFactorKey = 'collection_group_factor';
   static const collectionSortFactorKey = 'collection_sort_factor';
+  static const collectionBrowsingQuickActionsKey = 'collection_browsing_quick_actions';
   static const collectionSelectionQuickActionsKey = 'collection_selection_quick_actions';
   static const showThumbnailLocationKey = 'show_thumbnail_location';
   static const showThumbnailMotionPhotoKey = 'show_thumbnail_motion_photo';
@@ -173,9 +175,14 @@ class Settings extends ChangeNotifier {
 
   set canUseAnalysisService(bool newValue) => setAndNotify(canUseAnalysisServiceKey, newValue);
 
-  bool get isErrorReportingEnabled => getBoolOrDefault(isErrorReportingEnabledKey, SettingsDefaults.isErrorReportingEnabled);
+  // TODO TLAD use `true` for transition (it's unset in v1.5.4), but replace by `SettingsDefaults.isInstalledAppAccessAllowed` in a later release
+  bool get isInstalledAppAccessAllowed => getBoolOrDefault(isInstalledAppAccessAllowedKey, true);
 
-  set isErrorReportingEnabled(bool newValue) => setAndNotify(isErrorReportingEnabledKey, newValue);
+  set isInstalledAppAccessAllowed(bool newValue) => setAndNotify(isInstalledAppAccessAllowedKey, newValue);
+
+  bool get isErrorReportingAllowed => getBoolOrDefault(isErrorReportingAllowedKey, SettingsDefaults.isErrorReportingAllowed);
+
+  set isErrorReportingAllowed(bool newValue) => setAndNotify(isErrorReportingAllowedKey, newValue);
 
   static const localeSeparator = '-';
 
@@ -264,6 +271,10 @@ class Settings extends ChangeNotifier {
   EntrySortFactor get collectionSortFactor => getEnumOrDefault(collectionSortFactorKey, SettingsDefaults.collectionSortFactor, EntrySortFactor.values);
 
   set collectionSortFactor(EntrySortFactor newValue) => setAndNotify(collectionSortFactorKey, newValue.toString());
+
+  List<EntrySetAction> get collectionBrowsingQuickActions => getEnumListOrDefault(collectionBrowsingQuickActionsKey, SettingsDefaults.collectionBrowsingQuickActions, EntrySetAction.values);
+
+  set collectionBrowsingQuickActions(List<EntrySetAction> newValue) => setAndNotify(collectionBrowsingQuickActionsKey, newValue.map((v) => v.toString()).toList());
 
   List<EntrySetAction> get collectionSelectionQuickActions => getEnumListOrDefault(collectionSelectionQuickActionsKey, SettingsDefaults.collectionSelectionQuickActions, EntrySetAction.values);
 
@@ -563,7 +574,8 @@ class Settings extends ChangeNotifier {
                 debugPrint('failed to import key=$key, value=$value is not a double');
               }
               break;
-            case isErrorReportingEnabledKey:
+            case isInstalledAppAccessAllowedKey:
+            case isErrorReportingAllowedKey:
             case mustBackTwiceToExitKey:
             case showThumbnailLocationKey:
             case showThumbnailMotionPhotoKey:
@@ -613,6 +625,7 @@ class Settings extends ChangeNotifier {
             case drawerPageBookmarksKey:
             case pinnedFiltersKey:
             case hiddenFiltersKey:
+            case collectionBrowsingQuickActionsKey:
             case collectionSelectionQuickActionsKey:
             case viewerQuickActionsKey:
             case videoQuickActionsKey:

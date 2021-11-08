@@ -2,8 +2,6 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'kotlin-kapt'
-    id 'com.google.gms.google-services'
-    id 'com.google.firebase.crashlytics'
 }
 
 def appId = "deckers.thibault.aves"
@@ -77,18 +75,25 @@ android {
         }
     }
 
-    // the "splitting" dimension and its flavors are only for building purposes:
-    // NDK ABI filters are not compatible with split APK generation
-    // but we want to generate both a universal APK without x86 libs, and split APKs
-    flavorDimensions "splitting"
+    flavorDimensions "store"
 
     productFlavors {
-        universal {
-            dimension "splitting"
+        play {
+            // Google Play
+            dimension "store"
+            ext.useCrashlytics = true
+            // generate a universal APK without x86 native libs
+            ext.useNdkAbiFilters = true
         }
 
-        byAbi {
-            dimension "splitting"
+        izzy {
+            // IzzyOnDroid
+            // check offending libraries with `scanapk`
+            // cf https://android.izzysoft.de/articles/named/app-modules-2
+            dimension "store"
+            ext.useCrashlytics = false
+            // generate APK by ABI, but NDK ABI filters are incompatible with split APK generation
+            ext.useNdkAbiFilters = false
         }
     }
 
@@ -108,14 +113,16 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
 
-        def runTasks = gradle.startParameter.taskNames.toString().toLowerCase()
-        if (runTasks.contains("universal")) {
-            release {
-                // specify architectures, to specifically exclude native libs for x86,
-                // which lead to: UnsatisfiedLinkError...couldn't find "libflutter.so"
-                // cf https://github.com/flutter/flutter/issues/37566#issuecomment-640879500
-                ndk {
-                    abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86_64'
+        android.productFlavors.each { flavor ->
+            def tasks = gradle.startParameter.taskNames.toString().toLowerCase()
+            if (tasks.contains(flavor.name) && flavor.ext.useNdkAbiFilters) {
+                release {
+                    // specify architectures, to specifically exclude native libs for x86,
+                    // which lead to: UnsatisfiedLinkError...couldn't find "libflutter.so"
+                    // cf https://github.com/flutter/flutter/issues/37566#issuecomment-640879500
+                    ndk {
+                        abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86_64'
+                    }
                 }
             }
         }
@@ -132,7 +139,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.1'
     implementation 'androidx.core:core-ktx:1.6.0'
     implementation 'androidx.exifinterface:exifinterface:1.3.3'
     implementation 'androidx.multidex:multidex:2.0.1'
@@ -149,4 +156,13 @@ dependencies {
     kapt 'com.github.bumptech.glide:compiler:4.12.0'
 
     compileOnly rootProject.findProject(':streams_channel')
+}
+
+android.productFlavors.each { flavor ->
+    def tasks = gradle.startParameter.taskRequests.toString().toLowerCase()
+    if (tasks.contains(flavor.name) && flavor.ext.useCrashlytics) {
+        println("Building flavor with Crashlytics [${flavor.name}] - applying plugin")
+        apply plugin: 'com.google.gms.google-services'
+        apply plugin: 'com.google.firebase.crashlytics'
+    }
 }

@@ -1,6 +1,11 @@
 import 'dart:typed_data';
 
 import 'package:aves/model/entry.dart';
+import 'package:aves/model/video_playback.dart';
+import 'package:aves/services/common/services.dart';
+import 'package:aves/theme/format.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -11,7 +16,65 @@ abstract class AvesVideoController {
 
   AvesVideoController(AvesEntry entry) : _entry = entry;
 
-  Future<void> dispose();
+  static const resumeTimeSaveMinProgress = .05;
+  static const resumeTimeSaveMaxProgress = .95;
+  static const resumeTimeSaveMinDuration = Duration(minutes: 2);
+
+  @mustCallSuper
+  Future<void> dispose() async {
+    await _savePlaybackState();
+  }
+
+  Future<void> _savePlaybackState() async {
+    final contentId = entry.contentId;
+    if (contentId == null || !isReady || duration < resumeTimeSaveMinDuration.inMilliseconds) return;
+
+    final _progress = progress;
+    if (resumeTimeSaveMinProgress < _progress && _progress < resumeTimeSaveMaxProgress) {
+      await metadataDb.addVideoPlayback({
+        VideoPlaybackRow(
+          contentId: contentId,
+          resumeTimeMillis: currentPosition,
+        )
+      });
+    } else {
+      await metadataDb.removeVideoPlayback({contentId});
+    }
+  }
+
+  Future<int?> getResumeTime(BuildContext context) async {
+    final contentId = entry.contentId;
+    if (contentId == null) return null;
+
+    final playback = await metadataDb.loadVideoPlayback(contentId);
+    final resumeTime = playback?.resumeTimeMillis ?? 0;
+    if (resumeTime == 0) return null;
+
+    // clear on retrieval
+    await metadataDb.removeVideoPlayback({contentId});
+
+    final resume = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AvesDialog(
+          context: context,
+          content: Text(context.l10n.videoResumeDialogMessage(formatFriendlyDuration(Duration(milliseconds: resumeTime)))),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(context.l10n.videoStartOverButtonLabel),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: Text(context.l10n.videoResumeButtonLabel),
+            ),
+          ],
+        );
+      },
+    );
+    if (resume == null || !resume) return 0;
+    return resumeTime;
+  }
 
   Future<void> play();
 

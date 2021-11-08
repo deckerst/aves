@@ -15,8 +15,10 @@ class FakeMetadataDb extends Fake implements MetadataDb {
   @override
   Future<void> removeIds(Set<int> contentIds, {required bool metadataOnly}) => SynchronousFuture(null);
 
+  // entries
+
   @override
-  Future<Set<AvesEntry>> loadEntries() => SynchronousFuture({});
+  Future<Set<AvesEntry>> loadAllEntries() => SynchronousFuture({});
 
   @override
   Future<void> saveEntries(Iterable<AvesEntry> entries) => SynchronousFuture(null);
@@ -24,11 +26,15 @@ class FakeMetadataDb extends Fake implements MetadataDb {
   @override
   Future<void> updateEntryId(int oldId, AvesEntry entry) => SynchronousFuture(null);
 
+  // date taken
+
   @override
   Future<Map<int?, int?>> loadDates() => SynchronousFuture({});
 
+  // catalog metadata
+
   @override
-  Future<List<CatalogMetadata>> loadMetadataEntries() => SynchronousFuture([]);
+  Future<List<CatalogMetadata>> loadAllMetadataEntries() => SynchronousFuture([]);
 
   @override
   Future<void> saveMetadata(Set<CatalogMetadata> metadataEntries) => SynchronousFuture(null);
@@ -36,8 +42,10 @@ class FakeMetadataDb extends Fake implements MetadataDb {
   @override
   Future<void> updateMetadataId(int oldId, CatalogMetadata? metadata) => SynchronousFuture(null);
 
+  // address
+
   @override
-  Future<List<AddressDetails>> loadAddresses() => SynchronousFuture([]);
+  Future<List<AddressDetails>> loadAllAddresses() => SynchronousFuture([]);
 
   @override
   Future<void> saveAddresses(Set<AddressDetails> addresses) => SynchronousFuture(null);
@@ -45,8 +53,10 @@ class FakeMetadataDb extends Fake implements MetadataDb {
   @override
   Future<void> updateAddressId(int oldId, AddressDetails? address) => SynchronousFuture(null);
 
+  // favourites
+
   @override
-  Future<Set<FavouriteRow>> loadFavourites() => SynchronousFuture({});
+  Future<Set<FavouriteRow>> loadAllFavourites() => SynchronousFuture({});
 
   @override
   Future<void> addFavourites(Iterable<FavouriteRow> rows) => SynchronousFuture(null);
@@ -57,8 +67,10 @@ class FakeMetadataDb extends Fake implements MetadataDb {
   @override
   Future<void> removeFavourites(Iterable<FavouriteRow> rows) => SynchronousFuture(null);
 
+  // covers
+
   @override
-  Future<Set<CoverRow>> loadCovers() => SynchronousFuture({});
+  Future<Set<CoverRow>> loadAllCovers() => SynchronousFuture({});
 
   @override
   Future<void> addCovers(Iterable<CoverRow> rows) => SynchronousFuture(null);
@@ -68,4 +80,12 @@ class FakeMetadataDb extends Fake implements MetadataDb {
 
   @override
   Future<void> removeCovers(Set<CollectionFilter> filters) => SynchronousFuture(null);
+
+  // video playback
+
+  @override
+  Future<void> updateVideoPlaybackId(int oldId, int? newId) => SynchronousFuture(null);
+
+  @override
+  Future<void> removeVideoPlayback(Set<int> contentIds) => SynchronousFuture(null);
 }

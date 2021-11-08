@@ -21,7 +21,7 @@ mixin LocationMixin on SourceBase {
   List<String> sortedPlaces = List.unmodifiable([]);
 
   Future<void> loadAddresses() async {
-    final saved = await metadataDb.loadAddresses();
+    final saved = await metadataDb.loadAllAddresses();
     final idMap = entryById;
     saved.forEach((metadata) => idMap[metadata.contentId]?.addressDetails = metadata);
     onAddressMetadataChanged();

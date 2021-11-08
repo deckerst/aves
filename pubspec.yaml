@@ -1,22 +1,23 @@
 name: aves
 description: A visual media gallery and metadata explorer app.
 repository: https://github.com/deckerst/aves
-version: 1.5.4+58
+version: 1.5.5+59
 publish_to: none
 
 environment:
   sdk: '>=2.14.0 <3.0.0'
 
+# use `scripts/apply_flavor_{flavor}.sh` to set the right dependencies for the flavor
 dependencies:
   flutter:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-# TODO TLAD as of 2021/10/18, latest version (v0.11.0) is incompatible with Flutter v2.5
+  aves_report:
+    path: plugins/aves_report
+  aves_report_platform:
+    path: plugins/aves_report_crashlytics
   charts_flutter:
-    git:
-      url: git://github.com/google/charts.git
-      path: charts_flutter
   collection:
   connectivity_plus:
   country_code:
@@ -33,8 +34,6 @@ dependencies:
     git:
       url: git://github.com/deckerst/fijkplayer.git
       ref: aves
-  firebase_core:
-  firebase_crashlytics:
   flex_color_picker:
   fluster:
   flutter_highlight:
@@ -105,8 +104,6 @@ flutter:
 # language files:
 # - /lib/l10n/app_{language}.arb
 # - /android/app/src/main/res/values-{language}/strings.xml
-# - /android/app/src/debug/res/values-{language}/strings.xml (optional)
-# - /android/app/src/profile/res/values-{language}/strings.xml (optional)
 # - edit locale name resolution for language setting
 
 # generate `AppLocalizations`
@@ -116,7 +113,7 @@ flutter:
 # Test driver
 
 # run (any device):
-# % flutter drive --flavor universal -t test_driver/driver_app.dart --profile
+# % flutter drive --flavor play -t test_driver/driver_play.dart --profile
 
 # capture shaders in profile mode (real device only):
-# % flutter drive --flavor universal -t test_driver/driver_app.dart --profile --cache-sksl --write-sksl-on-exit shaders.sksl.json
+# % flutter drive --flavor play -t test_driver/driver_play.dart --profile --cache-sksl --write-sksl-on-exit shaders.sksl.json

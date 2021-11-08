@@ -32,17 +32,20 @@ class _VideoSpeedDialogState extends State<VideoSpeedDialog> {
   Widget build(BuildContext context) {
     return AvesDialog(
       context: context,
+      horizontalContentPadding: 4,
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              const SizedBox(width: 24),
-              Text(context.l10n.videoSpeedDialogLabel),
-              const SizedBox(width: 16),
-              Text('x$_speed'),
-            ],
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Wrap(
+              children: [
+                Text(context.l10n.videoSpeedDialogLabel),
+                const SizedBox(width: 16),
+                Text('x$_speed'),
+              ],
+            ),
           ),
           const SizedBox(height: 16),
           Slider(

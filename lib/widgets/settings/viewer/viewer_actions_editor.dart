@@ -39,9 +39,9 @@ class ViewerActionEditorPage extends StatelessWidget {
     EntryAction.copyToClipboard,
     EntryAction.print,
     EntryAction.rotateScreen,
-    EntryAction.flip,
     EntryAction.rotateCCW,
     EntryAction.rotateCW,
+    EntryAction.flip,
   ];
 
   @override

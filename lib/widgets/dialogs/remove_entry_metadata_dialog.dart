@@ -1,7 +1,5 @@
-import 'package:aves/model/entry.dart';
 import 'package:aves/model/metadata/enums.dart';
 import 'package:aves/ref/brand_colors.dart';
-import 'package:aves/ref/mime_types.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/color_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -14,11 +12,11 @@ import 'package:provider/provider.dart';
 import 'aves_dialog.dart';
 
 class RemoveEntryMetadataDialog extends StatefulWidget {
-  final AvesEntry entry;
+  final bool showJpegTypes;
 
   const RemoveEntryMetadataDialog({
     Key? key,
-    required this.entry,
+    required this.showJpegTypes,
   }) : super(key: key);
 
   @override
@@ -31,14 +29,12 @@ class _RemoveEntryMetadataDialogState extends State<RemoveEntryMetadataDialog> {
   bool _showMore = false;
   final ValueNotifier<bool> _isValidNotifier = ValueNotifier(false);
 
-  AvesEntry get entry => widget.entry;
-
   @override
   void initState() {
     super.initState();
     final byMain = groupBy([
       ...MetadataTypes.common,
-      if (entry.mimeType == MimeTypes.jpeg) ...MetadataTypes.jpeg,
+      if (widget.showJpegTypes) ...MetadataTypes.jpeg,
     ], MetadataTypes.main.contains);
     _mainOptions = (byMain[true] ?? [])..sort(_compareTypeText);
     _moreOptions = (byMain[false] ?? [])..sort(_compareTypeText);

@@ -119,6 +119,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
     final entries = _rawEntries.where((entry) => uris.contains(entry.uri)).toSet();
     await favourites.remove(entries);
     await covers.removeEntries(entries);
+    await metadataDb.removeVideoPlayback(entries.map((entry) => entry.contentId).whereNotNull().toSet());
 
     entries.forEach((v) => _entryById.remove(v.contentId));
     _rawEntries.removeAll(entries);
@@ -157,6 +158,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
       await metadataDb.updateAddressId(oldContentId, entry.addressDetails);
       await favourites.moveEntry(oldContentId, entry);
       await covers.moveEntry(oldContentId, entry);
+      await metadataDb.updateVideoPlaybackId(oldContentId, entry.contentId);
     }
   }
 

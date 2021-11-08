@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:aves/model/actions/video_actions.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/settings/settings.dart';
-import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/format.dart';
 import 'package:aves/theme/icons.dart';
@@ -73,9 +72,9 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
               child: OverlayButton(
                 scale: scale,
                 child: IconButton(
-                  icon: const Icon(AIcons.openOutside),
-                  onPressed: () => androidAppService.open(entry.uri, entry.mimeTypeAnySubtype),
-                  tooltip: context.l10n.viewerOpenTooltip,
+                  icon: VideoAction.playOutside.getIcon(),
+                  onPressed: () => widget.onActionSelected(VideoAction.playOutside),
+                  tooltip: VideoAction.playOutside.getText(context),
                 ),
               ),
             );
@@ -292,6 +291,7 @@ class _ButtonRow extends StatelessWidget {
           onPressed: onPressed,
         );
         break;
+      case VideoAction.playOutside:
       case VideoAction.replay10:
       case VideoAction.skip10:
       case VideoAction.settings:
@@ -323,6 +323,7 @@ class _ButtonRow extends StatelessWidget {
       case VideoAction.setSpeed:
         enabled = controller?.canSetSpeedNotifier.value ?? false;
         break;
+      case VideoAction.playOutside:
       case VideoAction.replay10:
       case VideoAction.skip10:
       case VideoAction.settings:
@@ -340,6 +341,7 @@ class _ButtonRow extends StatelessWidget {
         );
         break;
       case VideoAction.captureFrame:
+      case VideoAction.playOutside:
       case VideoAction.replay10:
       case VideoAction.skip10:
       case VideoAction.selectStreams:

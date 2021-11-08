@@ -18,6 +18,7 @@ import 'package:aves/services/geocoding_service.dart';
 import 'package:aves/services/metadata/svg_metadata_service.dart';
 import 'package:aves/theme/format.dart';
 import 'package:aves/utils/change_notifier.dart';
+import 'package:aves/utils/time_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:country_code/country_code.dart';
 import 'package:flutter/foundation.dart';
@@ -548,14 +549,6 @@ class AvesEntry {
     }.whereNotNull().where((v) => v.isNotEmpty).join(', ');
   }
 
-  bool search(String query) => {
-        bestTitle,
-        _catalogMetadata?.xmpSubjects,
-        _addressDetails?.countryName,
-        _addressDetails?.adminArea,
-        _addressDetails?.locality,
-      }.any((s) => s != null && s.toUpperCase().contains(query));
-
   Future<void> _applyNewFields(Map newFields, {required bool persist}) async {
     final oldDateModifiedSecs = this.dateModifiedSecs;
     final oldRotationDegrees = this.rotationDegrees;
@@ -635,6 +628,16 @@ class AvesEntry {
   }
 
   Future<bool> editDate(DateModifier modifier) async {
+    if (modifier.action == DateEditAction.extractFromTitle) {
+      final _title = bestTitle;
+      if (_title == null) return false;
+      final date = parseUnknownDateFormat(_title);
+      if (date == null) {
+        await reportService.recordError('failed to parse date from title=$_title', null);
+        return false;
+      }
+      modifier = DateModifier(DateEditAction.set, modifier.fields, dateTime: date);
+    }
     final newFields = await metadataEditService.editDate(this, modifier);
     return newFields.isNotEmpty;
   }
