@@ -1,6 +1,6 @@
-Thanks for using Aves! In v1.5.4:
-- modify files in the Download folder on Android 11
-- choose to rename, replace or skip when moving items with name conflict
-- show images for a specific region from the Map page
-- scanning many items is now happening in a service
+Thanks for using Aves! In v1.5.5:
+- modify items in bulk (rotation, date, metadata removal)
+- filter items by title
+- enjoy the app in Russian
+Note: the video thumbnails are modified. Clearing the app cache may be necessary.
 Full changelog available on GitHub
