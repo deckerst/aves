@@ -94,18 +94,34 @@ class _ThumbnailImageState extends State<ThumbnailImage> {
 
     _lastException = null;
     _providers.clear();
+
+    final highQuality = entry.getThumbnail(extent: extent);
+    ThumbnailProvider? lowQuality;
+    if (widget.progressive && !entry.isSvg) {
+      if (entry.isVideo) {
+        // previously fetched thumbnail
+        final cached = entry.bestCachedThumbnail;
+        final lowQualityExtent = cached.key.extent;
+        if (lowQualityExtent > 0 && lowQualityExtent != extent) {
+          lowQuality = cached;
+        }
+      } else {
+        // default platform thumbnail
+        lowQuality = entry.getThumbnail();
+      }
+    }
     _providers.addAll([
-      if (widget.progressive && !entry.isSvg)
+      if (lowQuality != null)
         _ConditionalImageProvider(
           ScrollAwareImageProvider(
             context: _scrollAwareContext,
-            imageProvider: entry.getThumbnail(),
+            imageProvider: lowQuality,
           ),
         ),
       _ConditionalImageProvider(
         ScrollAwareImageProvider(
           context: _scrollAwareContext,
-          imageProvider: entry.getThumbnail(extent: extent),
+          imageProvider: highQuality,
         ),
         _needSizedProvider,
       ),
@@ -233,7 +249,7 @@ class _ThumbnailImageState extends State<ThumbnailImage> {
 
     if (animate && widget.heroTag != null) {
       final background = settings.imageBackground;
-      final backgroundColor = background.isColor? background.color : null;
+      final backgroundColor = background.isColor ? background.color : null;
       image = Hero(
         tag: widget.heroTag!,
         flightShuttleBuilder: (flight, animation, direction, fromHero, toHero) {
