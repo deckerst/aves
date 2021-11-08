@@ -47,6 +47,9 @@ Future<List<Map<String, String?>>> _getSuggestions(dynamic args) async {
   if (args is Map) {
     final query = args['query'];
     final locale = args['locale'];
+    final use24hour = args['use24hour'];
+    debugPrint('getSuggestions query=$query, locale=$locale use24hour=$use24hour');
+
     if (query is String && locale is String) {
       final entries = await metadataDb.searchEntries(query, limit: 9);
       suggestions.addAll(entries.map((entry) {
@@ -55,7 +58,7 @@ Future<List<Map<String, String?>>> _getSuggestions(dynamic args) async {
           'data': entry.uri,
           'mimeType': entry.mimeType,
           'title': entry.bestTitle,
-          'subtitle': date != null ? formatDateTime(date, locale) : null,
+          'subtitle': date != null ? formatDateTime(date, locale, use24hour) : null,
           'iconUri': entry.uri,
         };
       }));

@@ -18,10 +18,8 @@ import 'package:aves/widgets/dialogs/create_album_dialog.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/album_set.dart';
 import 'package:aves/widgets/filter_grids/common/filter_grid_page.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
@@ -96,7 +94,7 @@ class AlbumPickAppBar extends StatelessWidget {
   final AlbumChipSetActionDelegate actionDelegate;
   final ValueNotifier<String> queryNotifier;
 
-  static const preferredHeight = kToolbarHeight + AlbumFilterBar.preferredHeight;
+  static const preferredHeight = kToolbarHeight + AlbumQueryBar.preferredHeight;
 
   const AlbumPickAppBar({
     Key? key,
@@ -127,8 +125,8 @@ class AlbumPickAppBar extends StatelessWidget {
         title: Text(title()),
         source: source,
       ),
-      bottom: AlbumFilterBar(
-        filterNotifier: queryNotifier,
+      bottom: AlbumQueryBar(
+        queryNotifier: queryNotifier,
       ),
       actions: [
         if (moveType != null)
@@ -176,14 +174,14 @@ class AlbumPickAppBar extends StatelessWidget {
   }
 }
 
-class AlbumFilterBar extends StatelessWidget implements PreferredSizeWidget {
-  final ValueNotifier<String> filterNotifier;
+class AlbumQueryBar extends StatelessWidget implements PreferredSizeWidget {
+  final ValueNotifier<String> queryNotifier;
 
   static const preferredHeight = kToolbarHeight;
 
-  const AlbumFilterBar({
+  const AlbumQueryBar({
     Key? key,
-    required this.filterNotifier,
+    required this.queryNotifier,
   }) : super(key: key);
 
   @override
@@ -192,10 +190,10 @@ class AlbumFilterBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: AlbumFilterBar.preferredHeight,
+      height: AlbumQueryBar.preferredHeight,
       alignment: Alignment.topCenter,
       child: QueryBar(
-        filterNotifier: filterNotifier,
+        queryNotifier: queryNotifier,
       ),
     );
   }

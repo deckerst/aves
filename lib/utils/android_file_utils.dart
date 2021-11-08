@@ -39,10 +39,17 @@ class AndroidFileUtils {
 
   Future<void> initAppNames() async {
     if (_packages.isEmpty) {
+      debugPrint('Access installed app inventory');
       _packages = await androidAppService.getPackages();
       _potentialAppDirs = _launcherPackages.expand((package) => package.potentialDirs).toList();
       areAppNamesReadyNotifier.value = true;
     }
+  }
+
+  Future<void> resetAppNames() async {
+    _packages.clear();
+    _potentialAppDirs.clear();
+    areAppNamesReadyNotifier.value = false;
   }
 
   bool isCameraPath(String path) => path.startsWith(dcimPath) && (path.endsWith('${separator}Camera') || path.endsWith('${separator}100ANDRO'));
@@ -181,9 +188,9 @@ class VolumeRelativeDirectory extends Equatable {
   }
 
   Map<String, dynamic> toMap() => {
-    'volumePath': volumePath,
-    'relativeDir': relativeDir,
-  };
+        'volumePath': volumePath,
+        'relativeDir': relativeDir,
+      };
 
   // prefer static method over a null returning factory constructor
   static VolumeRelativeDirectory? fromPath(String dirPath) {

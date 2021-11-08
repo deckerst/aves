@@ -5,12 +5,12 @@ import 'package:provider/provider.dart';
 
 class Durations {
   // Flutter animations (with margin)
-  static const popupMenuAnimation = Duration(milliseconds: 300 + 10); // ref `_kMenuDuration` used in `_PopupMenuRoute`
+  static const popupMenuAnimation = Duration(milliseconds: 300 + 20); // ref `_kMenuDuration` used in `_PopupMenuRoute`
   // page transition duration also available via `ModalRoute.of(context)!.transitionDuration * timeDilation`
-  static const pageTransitionAnimation = Duration(milliseconds: 300 + 10); // ref `transitionDuration` used in `MaterialRouteTransitionMixin`
-  static const dialogTransitionAnimation = Duration(milliseconds: 150 + 10); // ref `transitionDuration` used in `DialogRoute`
-  static const drawerTransitionAnimation = Duration(milliseconds: 246 + 10); // ref `_kBaseSettleDuration` used in `DrawerControllerState`
-  static const toggleableTransitionAnimation = Duration(milliseconds: 200 + 10); // ref `_kToggleDuration` used in `ToggleableStateMixin`
+  static const pageTransitionAnimation = Duration(milliseconds: 300 + 20); // ref `transitionDuration` used in `MaterialRouteTransitionMixin`
+  static const dialogTransitionAnimation = Duration(milliseconds: 150 + 20); // ref `transitionDuration` used in `DialogRoute`
+  static const drawerTransitionAnimation = Duration(milliseconds: 246 + 20); // ref `_kBaseSettleDuration` used in `DrawerControllerState`
+  static const toggleableTransitionAnimation = Duration(milliseconds: 200 + 20); // ref `_kToggleDuration` used in `ToggleableStateMixin`
 
   // common animations
   static const sweeperOpacityAnimation = Duration(milliseconds: 150);

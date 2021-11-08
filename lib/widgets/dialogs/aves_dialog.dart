@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class AvesDialog extends AlertDialog {
-  static const EdgeInsets contentHorizontalPadding = EdgeInsets.symmetric(horizontal: 24);
+  static const double defaultHorizontalContentPadding = 24;
   static const double controlCaptionPadding = 16;
   static const double borderWidth = 1.0;
 
@@ -16,6 +16,7 @@ class AvesDialog extends AlertDialog {
     ScrollController? scrollController,
     List<Widget>? scrollableContent,
     bool hasScrollBar = true,
+    double horizontalContentPadding = defaultHorizontalContentPadding,
     Widget? content,
     required List<Widget> actions,
   })  : assert((scrollableContent != null) ^ (content != null)),
@@ -34,7 +35,7 @@ class AvesDialog extends AlertDialog {
           // and overflow feedback ignores the dialog shape,
           // so we restrict scrolling to the content instead
           content: _buildContent(context, scrollController, scrollableContent, hasScrollBar, content),
-          contentPadding: scrollableContent != null ? EdgeInsets.zero : const EdgeInsets.fromLTRB(24, 20, 24, 0),
+          contentPadding: scrollableContent != null ? EdgeInsets.zero : EdgeInsets.fromLTRB(horizontalContentPadding, 20, horizontalContentPadding, 0),
           actions: actions,
           actionsPadding: const EdgeInsets.symmetric(horizontal: 8),
           shape: RoundedRectangleBorder(
@@ -115,7 +116,7 @@ class DialogTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.center,
-      padding: const EdgeInsets.symmetric(vertical: 20),
+      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
       decoration: BoxDecoration(
         border: Border(
           bottom: Divider.createBorderSide(context, width: AvesDialog.borderWidth),
@@ -127,6 +128,7 @@ class DialogTitle extends StatelessWidget {
           fontWeight: FontWeight.normal,
           fontFeatures: [FontFeature.enable('smcp')],
         ),
+        textAlign: TextAlign.center,
       ),
     );
   }

@@ -14,7 +14,8 @@ class SettingsDefaults {
   // app
   static const hasAcceptedTerms = false;
   static const canUseAnalysisService = true;
-  static const isErrorReportingEnabled = false;
+  static const isInstalledAppAccessAllowed = false;
+  static const isErrorReportingAllowed = false;
   static const mustBackTwiceToExit = true;
   static const keepScreenOn = KeepScreenOn.viewerOnly;
   static const homePage = HomePageSetting.collection;
@@ -34,6 +35,9 @@ class SettingsDefaults {
   // collection
   static const collectionSectionFactor = EntryGroupFactor.month;
   static const collectionSortFactor = EntrySortFactor.date;
+  static const collectionBrowsingQuickActions = [
+    EntrySetAction.searchCollection,
+  ];
   static const collectionSelectionQuickActions = [
     EntrySetAction.share,
     EntrySetAction.delete,

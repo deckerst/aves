@@ -7,11 +7,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class QueryBar extends StatefulWidget {
-  final ValueNotifier<String> filterNotifier;
+  final ValueNotifier<String> queryNotifier;
+  final FocusNode? focusNode;
+  final IconData? icon;
+  final String? hintText;
+  final bool editable;
 
   const QueryBar({
     Key? key,
-    required this.filterNotifier,
+    required this.queryNotifier,
+    this.focusNode,
+    this.icon,
+    this.hintText,
+    this.editable = true,
   }) : super(key: key);
 
   @override
@@ -22,22 +30,24 @@ class _QueryBarState extends State<QueryBar> {
   final Debouncer _debouncer = Debouncer(delay: Durations.searchDebounceDelay);
   late TextEditingController _controller;
 
-  ValueNotifier<String> get filterNotifier => widget.filterNotifier;
+  ValueNotifier<String> get queryNotifier => widget.queryNotifier;
 
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController(text: filterNotifier.value);
+    _controller = TextEditingController(text: queryNotifier.value);
   }
 
   @override
   Widget build(BuildContext context) {
     final clearButton = IconButton(
       icon: const Icon(AIcons.clear),
-      onPressed: () {
-        _controller.clear();
-        filterNotifier.value = '';
-      },
+      onPressed: widget.editable
+          ? () {
+              _controller.clear();
+              queryNotifier.value = '';
+            }
+          : null,
       tooltip: context.l10n.clearTooltip,
     );
 
@@ -47,16 +57,18 @@ class _QueryBarState extends State<QueryBar> {
         Expanded(
           child: TextField(
             controller: _controller,
+            focusNode: widget.focusNode ?? FocusNode(),
             decoration: InputDecoration(
-              icon: const Padding(
-                padding: EdgeInsetsDirectional.only(start: 16),
-                child: Icon(AIcons.search),
+              icon: Padding(
+                padding: const EdgeInsetsDirectional.only(start: 16),
+                child: Icon(widget.icon ?? AIcons.filter),
               ),
-              hintText: MaterialLocalizations.of(context).searchFieldLabel,
+              hintText: widget.hintText ?? MaterialLocalizations.of(context).searchFieldLabel,
               hintStyle: Theme.of(context).inputDecorationTheme.hintStyle,
             ),
             textInputAction: TextInputAction.search,
-            onChanged: (s) => _debouncer(() => filterNotifier.value = s),
+            onChanged: (s) => _debouncer(() => queryNotifier.value = s.trim()),
+            enabled: widget.editable,
           ),
         ),
         ConstrainedBox(
@@ -73,7 +85,7 @@ class _QueryBarState extends State<QueryBar> {
                   child: child,
                 ),
               ),
-              child: value.text.isNotEmpty ? clearButton : const SizedBox.shrink(),
+              child: value.text.isNotEmpty ? clearButton : const SizedBox(),
             ),
           ),
         )

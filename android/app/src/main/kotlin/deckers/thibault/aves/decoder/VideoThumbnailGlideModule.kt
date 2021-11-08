@@ -3,7 +3,6 @@ package deckers.thibault.aves.decoder
 import android.content.Context
 import android.media.MediaMetadataRetriever
 import android.net.Uri
-import android.os.Build
 import com.bumptech.glide.Glide
 import com.bumptech.glide.Priority
 import com.bumptech.glide.Registry
@@ -58,16 +57,13 @@ internal class VideoThumbnailFetcher(private val model: VideoThumbnail) : DataFe
                 try {
                     var bytes = retriever.embeddedPicture
                     if (bytes == null) {
-                        // try to match the thumbnails returned by the content resolver / Media Store
-                        // the following strategies are from empirical evidence from a few test devices:
-                        // - API 29: sync frame closest to the middle
-                        // - API 26/27: default representative frame at any time position
+                        // there is no consistent strategy across devices to match
+                        // the thumbnails returned by the content resolver / Media Store
+                        // so we derive one in an arbitrary way
                         var timeMillis: Long? = null
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                            val durationMillis = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)?.toLongOrNull()
-                            if (durationMillis != null) {
-                                timeMillis = durationMillis / 2
-                            }
+                        val durationMillis = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)?.toLongOrNull()
+                        if (durationMillis != null) {
+                            timeMillis = if (durationMillis < 15000) 0 else 15000
                         }
                         val frame = if (timeMillis != null) {
                             retriever.getFrameAtTime(timeMillis * 1000)

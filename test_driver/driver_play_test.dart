@@ -169,7 +169,7 @@ void selectFirstAlbum() {
 
 void searchAlbum() {
   test('[collection] search album', () async {
-    await driver.tap(find.byValueKey('search-button'));
+    await driver.tap(find.byValueKey('menu-search'));
     await driver.waitUntilNoTransientCallbacks();
 
     const albumPath = targetPicturesDirEmulated;

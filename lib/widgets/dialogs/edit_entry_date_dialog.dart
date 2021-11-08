@@ -5,6 +5,7 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/format.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -44,125 +45,141 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = context.l10n;
-    void _updateAction(DateEditAction? action) {
-      if (action == null) return;
-      setState(() => _action = action);
-    }
+    return MediaQueryDataProvider(
+      child: Builder(
+        builder: (context) {
+          final l10n = context.l10n;
+          final locale = l10n.localeName;
+          final use24hour = context.select<MediaQueryData, bool>((v) => v.alwaysUse24HourFormat);
 
-    Widget _tileText(String text) => Text(
-          text,
-          softWrap: false,
-          overflow: TextOverflow.fade,
-          maxLines: 1,
-        );
+          void _updateAction(DateEditAction? action) {
+            if (action == null) return;
+            setState(() => _action = action);
+          }
 
-    final setTile = Row(
-      children: [
-        Expanded(
-          child: RadioListTile<DateEditAction>(
-            value: DateEditAction.set,
+          Widget _tileText(String text) => Text(
+                text,
+                softWrap: false,
+                overflow: TextOverflow.fade,
+                maxLines: 1,
+              );
+
+          final setTile = Row(
+            children: [
+              Expanded(
+                child: RadioListTile<DateEditAction>(
+                  value: DateEditAction.set,
+                  groupValue: _action,
+                  onChanged: _updateAction,
+                  title: _tileText(l10n.editEntryDateDialogSet),
+                  subtitle: Text(formatDateTime(_dateTime, locale, use24hour)),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsetsDirectional.only(end: 12),
+                child: IconButton(
+                  icon: const Icon(AIcons.edit),
+                  onPressed: _action == DateEditAction.set ? _editDate : null,
+                  tooltip: l10n.changeTooltip,
+                ),
+              ),
+            ],
+          );
+          final shiftTile = Row(
+            children: [
+              Expanded(
+                child: RadioListTile<DateEditAction>(
+                  value: DateEditAction.shift,
+                  groupValue: _action,
+                  onChanged: _updateAction,
+                  title: _tileText(l10n.editEntryDateDialogShift),
+                  subtitle: Text(_formatShiftDuration()),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsetsDirectional.only(end: 12),
+                child: IconButton(
+                  icon: const Icon(AIcons.edit),
+                  onPressed: _action == DateEditAction.shift ? _editShift : null,
+                  tooltip: l10n.changeTooltip,
+                ),
+              ),
+            ],
+          );
+          final extractFromTitleTile = RadioListTile<DateEditAction>(
+            value: DateEditAction.extractFromTitle,
             groupValue: _action,
             onChanged: _updateAction,
-            title: _tileText(l10n.editEntryDateDialogSet),
-            subtitle: Text(formatDateTime(_dateTime, l10n.localeName)),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsetsDirectional.only(end: 12),
-          child: IconButton(
-            icon: const Icon(AIcons.edit),
-            onPressed: _action == DateEditAction.set ? _editDate : null,
-            tooltip: l10n.changeTooltip,
-          ),
-        ),
-      ],
-    );
-    final shiftTile = Row(
-      children: [
-        Expanded(
-          child: RadioListTile<DateEditAction>(
-            value: DateEditAction.shift,
+            title: _tileText(l10n.editEntryDateDialogExtractFromTitle),
+          );
+          final clearTile = RadioListTile<DateEditAction>(
+            value: DateEditAction.clear,
             groupValue: _action,
             onChanged: _updateAction,
-            title: _tileText(l10n.editEntryDateDialogShift),
-            subtitle: Text(_formatShiftDuration()),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsetsDirectional.only(end: 12),
-          child: IconButton(
-            icon: const Icon(AIcons.edit),
-            onPressed: _action == DateEditAction.shift ? _editShift : null,
-            tooltip: l10n.changeTooltip,
-          ),
-        ),
-      ],
-    );
-    final clearTile = RadioListTile<DateEditAction>(
-      value: DateEditAction.clear,
-      groupValue: _action,
-      onChanged: _updateAction,
-      title: _tileText(l10n.editEntryDateDialogClear),
-    );
+            title: _tileText(l10n.editEntryDateDialogClear),
+          );
 
-    final animationDuration = context.select<DurationsData, Duration>((v) => v.expansionTileAnimation);
-    final theme = Theme.of(context);
-    return Theme(
-      data: theme.copyWith(
-        textTheme: theme.textTheme.copyWith(
-          // dense style font for tile subtitles, without modifying title font
-          bodyText2: const TextStyle(fontSize: 12),
-        ),
-      ),
-      child: AvesDialog(
-        context: context,
-        title: l10n.editEntryDateDialogTitle,
-        scrollableContent: [
-          setTile,
-          shiftTile,
-          clearTile,
-          Padding(
-            padding: const EdgeInsets.only(bottom: 1),
-            child: ExpansionPanelList(
-              expansionCallback: (index, isExpanded) {
-                setState(() => _showOptions = !isExpanded);
-              },
-              animationDuration: animationDuration,
-              expandedHeaderPadding: EdgeInsets.zero,
-              elevation: 0,
-              children: [
-                ExpansionPanel(
-                  headerBuilder: (context, isExpanded) => ListTile(
-                    title: Text(l10n.editEntryDateDialogFieldSelection),
+          final animationDuration = context.select<DurationsData, Duration>((v) => v.expansionTileAnimation);
+          final theme = Theme.of(context);
+          return Theme(
+            data: theme.copyWith(
+              textTheme: theme.textTheme.copyWith(
+                // dense style font for tile subtitles, without modifying title font
+                bodyText2: const TextStyle(fontSize: 12),
+              ),
+            ),
+            child: AvesDialog(
+              context: context,
+              title: l10n.editEntryDateDialogTitle,
+              scrollableContent: [
+                setTile,
+                shiftTile,
+                extractFromTitleTile,
+                clearTile,
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 1),
+                  child: ExpansionPanelList(
+                    expansionCallback: (index, isExpanded) {
+                      setState(() => _showOptions = !isExpanded);
+                    },
+                    animationDuration: animationDuration,
+                    expandedHeaderPadding: EdgeInsets.zero,
+                    elevation: 0,
+                    children: [
+                      ExpansionPanel(
+                        headerBuilder: (context, isExpanded) => ListTile(
+                          title: Text(l10n.editEntryDateDialogFieldSelection),
+                        ),
+                        body: Column(
+                          children: DateModifier.allDateFields
+                              .map((field) => SwitchListTile(
+                                    value: _fields.contains(field),
+                                    onChanged: (selected) => setState(() => selected ? _fields.add(field) : _fields.remove(field)),
+                                    title: Text(_fieldTitle(field)),
+                                  ))
+                              .toList(),
+                        ),
+                        isExpanded: _showOptions,
+                        canTapOnHeader: true,
+                        backgroundColor: Theme.of(context).dialogBackgroundColor,
+                      ),
+                    ],
                   ),
-                  body: Column(
-                    children: DateModifier.allDateFields
-                        .map((field) => SwitchListTile(
-                              value: _fields.contains(field),
-                              onChanged: (selected) => setState(() => selected ? _fields.add(field) : _fields.remove(field)),
-                              title: Text(_fieldTitle(field)),
-                            ))
-                        .toList(),
-                  ),
-                  isExpanded: _showOptions,
-                  canTapOnHeader: true,
-                  backgroundColor: Theme.of(context).dialogBackgroundColor,
+                ),
+              ],
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
+                ),
+                TextButton(
+                  onPressed: () => _submit(context),
+                  child: Text(l10n.applyButtonLabel),
                 ),
               ],
             ),
-          ),
-        ],
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
-          ),
-          TextButton(
-            onPressed: () => _submit(context),
-            child: Text(l10n.applyButtonLabel),
-          ),
-        ],
+          );
+        },
       ),
     );
   }
@@ -233,6 +250,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
       case DateEditAction.shift:
         modifier = DateModifier(_action, _fields, shiftMinutes: _shiftMinutes);
         break;
+      case DateEditAction.extractFromTitle:
       case DateEditAction.clear:
         modifier = DateModifier(_action, _fields);
         break;

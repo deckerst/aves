@@ -12,7 +12,7 @@ class Favourites with ChangeNotifier {
   Favourites._private();
 
   Future<void> init() async {
-    _rows = await metadataDb.loadFavourites();
+    _rows = await metadataDb.loadAllFavourites();
   }
 
   int get count => _rows.length;

@@ -137,6 +137,8 @@ object MimeTypes {
 
     // extensions
 
+    // among other refs:
+    // - https://android.googlesource.com/platform/external/mime-support/+/refs/heads/master/mime.types
     fun extensionFor(mimeType: String): String? = when (mimeType) {
         ARW -> ".arw"
         AVI, AVI_VND -> ".avi"

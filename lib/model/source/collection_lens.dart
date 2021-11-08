@@ -7,6 +7,7 @@ import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/location.dart';
+import 'package:aves/model/filters/query.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/location.dart';
@@ -36,7 +37,7 @@ class CollectionLens with ChangeNotifier {
 
   CollectionLens({
     required this.source,
-    Iterable<CollectionFilter?>? filters,
+    Set<CollectionFilter?>? filters,
     this.id,
     this.listenToSource = true,
     this.fixedSelection,
@@ -123,6 +124,14 @@ class CollectionLens with ChangeNotifier {
   void removeFilter(CollectionFilter filter) {
     if (!filters.contains(filter)) return;
     filters.remove(filter);
+    _onFilterChanged();
+  }
+
+  void setLiveQuery(String query) {
+    filters.removeWhere((v) => v is QueryFilter && v.live);
+    if (query.isNotEmpty) {
+      filters.add(QueryFilter(query, live: true));
+    }
     _onFilterChanged();
   }
 

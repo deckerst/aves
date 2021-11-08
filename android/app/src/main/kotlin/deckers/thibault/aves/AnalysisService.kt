@@ -17,7 +17,6 @@ import deckers.thibault.aves.channel.calls.MediaStoreHandler
 import deckers.thibault.aves.channel.calls.MetadataFetchHandler
 import deckers.thibault.aves.channel.streams.ImageByteStreamHandler
 import deckers.thibault.aves.channel.streams.MediaStoreStreamHandler
-import deckers.thibault.aves.utils.ContextUtils.runOnUiThread
 import deckers.thibault.aves.utils.FlutterUtils
 import deckers.thibault.aves.utils.LogUtils
 import io.flutter.embedding.engine.FlutterEngine
@@ -155,12 +154,11 @@ class AnalysisService : MethodChannel.MethodCallHandler, Service() {
 
     private inner class ServiceHandler(looper: Looper) : Handler(looper) {
         override fun handleMessage(msg: Message) {
-            val context = this@AnalysisService
             val data = msg.data
             when (data.getString(KEY_COMMAND)) {
                 COMMAND_START -> {
                     runBlocking {
-                        context.runOnUiThread {
+                        FlutterUtils.runOnUiThread {
                             val contentIds = data.get(KEY_CONTENT_IDS)?.takeIf { it is IntArray }?.let { (it as IntArray).toList() }
                             backgroundChannel?.invokeMethod(
                                 "start", hashMapOf(
@@ -174,7 +172,7 @@ class AnalysisService : MethodChannel.MethodCallHandler, Service() {
                 COMMAND_STOP -> {
                     // unconditionally stop the service
                     runBlocking {
-                        context.runOnUiThread {
+                        FlutterUtils.runOnUiThread {
                             backgroundChannel?.invokeMethod("stop", null)
                         }
                     }

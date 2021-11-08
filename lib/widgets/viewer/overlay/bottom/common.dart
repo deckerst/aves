@@ -323,7 +323,7 @@ class _LocationRow extends AnimatedWidget {
 
   @override
   Widget build(BuildContext context) {
-    final location = entry.hasAddress ? entry.shortAddress : settings.coordinateFormat.format(entry.latLng!);
+    final location = entry.hasAddress ? entry.shortAddress : settings.coordinateFormat.format(context.l10n, entry.latLng!);
     return Row(
       children: [
         const DecoratedIcon(AIcons.location, shadows: Constants.embossShadows, size: _iconSize),
@@ -395,8 +395,10 @@ class _DateRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final locale = context.l10n.localeName;
+    final use24hour = context.select<MediaQueryData, bool>((v) => v.alwaysUse24HourFormat);
+
     final date = entry.bestDate;
-    final dateText = date != null ? formatDateTime(date, locale) : Constants.overlayUnknown;
+    final dateText = date != null ? formatDateTime(date, locale, use24hour) : Constants.overlayUnknown;
     final resolutionText = entry.isSvg
         ? entry.aspectRatioText
         : entry.isSized

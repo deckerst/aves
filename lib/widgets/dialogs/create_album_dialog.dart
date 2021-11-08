@@ -44,6 +44,8 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
 
   @override
   Widget build(BuildContext context) {
+    const contentHorizontalPadding = EdgeInsets.symmetric(horizontal: AvesDialog.defaultHorizontalContentPadding);
+
     final volumeTiles = <Widget>[];
     if (_allVolumes.length > 1) {
       final byPrimary = groupBy<StorageVolume, bool>(_allVolumes, (volume) => volume.isPrimary);
@@ -52,7 +54,7 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
       final otherVolumes = (byPrimary[false] ?? [])..sort(compare);
       volumeTiles.addAll([
         Padding(
-          padding: AvesDialog.contentHorizontalPadding + const EdgeInsets.only(top: 20),
+          padding: contentHorizontalPadding + const EdgeInsets.only(top: 20),
           child: Text(context.l10n.newAlbumDialogStorageLabel),
         ),
         ...primaryVolumes.map((volume) => _buildVolumeTile(context, volume)),
@@ -68,7 +70,7 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
       scrollableContent: [
         ...volumeTiles,
         Padding(
-          padding: AvesDialog.contentHorizontalPadding + const EdgeInsets.only(bottom: 8),
+          padding: contentHorizontalPadding + const EdgeInsets.only(bottom: 8),
           child: ValueListenableBuilder<bool>(
               valueListenable: _existsNotifier,
               builder: (context, exists, child) {

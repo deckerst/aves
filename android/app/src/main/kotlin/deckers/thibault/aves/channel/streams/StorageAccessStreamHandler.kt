@@ -49,7 +49,7 @@ class StorageAccessStreamHandler(private val activity: Activity, arguments: Any?
         }
     }
 
-    private fun requestDirectoryAccess() {
+    private suspend fun requestDirectoryAccess() {
         val path = args["path"] as String?
         if (path == null) {
             error("requestDirectoryAccess-args", "failed because of missing arguments", null)

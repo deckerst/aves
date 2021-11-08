@@ -8,6 +8,10 @@ import 'package:flutter/material.dart';
 class AboutCredits extends StatelessWidget {
   const AboutCredits({Key? key}) : super(key: key);
 
+  static const translations = [
+    'Русский: D3ZOXY',
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -36,6 +40,14 @@ class AboutCredits extends StatelessWidget {
                 ),
                 TextSpan(text: context.l10n.aboutCreditsWorldAtlas2),
               ],
+            ),
+          ),
+          const SizedBox(height: 16),
+          Text(context.l10n.aboutCreditsTranslators),
+          ...translations.map(
+            (line) => Padding(
+              padding: const EdgeInsetsDirectional.only(start: 8, top: 8),
+              child: Text(line),
             ),
           ),
           const SizedBox(height: 16),

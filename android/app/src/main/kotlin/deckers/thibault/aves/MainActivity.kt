@@ -311,7 +311,10 @@ class MainActivity : FlutterActivity() {
 
         var errorStreamHandler: ErrorStreamHandler? = null
 
-        fun notifyError(error: String) = errorStreamHandler?.notifyError(error)
+        suspend fun notifyError(error: String) {
+            Log.e(LOG_TAG, "notifyError error=$error")
+            errorStreamHandler?.notifyError(error)
+        }
     }
 }
 

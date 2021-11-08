@@ -50,9 +50,15 @@ jobs:
           echo "${{ secrets.KEY_JKS }}" > release.keystore.asc
           gpg -d --passphrase "${{ secrets.KEY_JKS_PASSPHRASE }}" --batch release.keystore.asc > $AVES_STORE_FILE
           rm release.keystore.asc
-          flutter build appbundle --flavor universal --bundle-sksl-path shaders_2.5.3.sksl.json
-          flutter build apk --flavor universal --bundle-sksl-path shaders_2.5.3.sksl.json
-          flutter build apk --flavor byAbi --split-per-abi --bundle-sksl-path shaders_2.5.3.sksl.json
+          mkdir outputs
+          (cd scripts/; ./apply_flavor_play.sh)
+          flutter build appbundle -t lib/main_play.dart --flavor play --bundle-sksl-path shaders_2.5.3.sksl.json
+          cp build/app/outputs/bundle/playRelease/*.aab outputs
+          flutter build apk -t lib/main_play.dart --flavor play --bundle-sksl-path shaders_2.5.3.sksl.json
+          cp build/app/outputs/apk/play/release/*.apk outputs
+          (cd scripts/; ./apply_flavor_izzy.sh)
+          flutter build apk -t lib/main_izzy.dart --flavor izzy --split-per-abi --bundle-sksl-path shaders_2.5.3.sksl.json
+          cp build/app/outputs/apk/izzy/release/*.apk outputs
           rm $AVES_STORE_FILE
         env:
           AVES_STORE_FILE: ${{ github.workspace }}/key.jks
@@ -64,14 +70,14 @@ jobs:
       - name: Create a release with the APK and App Bundle.
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "build/app/outputs/bundle/universalRelease/*.aab,build/app/outputs/apk/universal/release/*.apk,build/app/outputs/apk/byAbi/release/*.apk"
+          artifacts: "outputs/*"
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload app bundle
         uses: actions/upload-artifact@v2
         with:
           name: appbundle
-          path: build/app/outputs/bundle/universalRelease/app-universal-release.aab
+          path: outputs/app-play-release.aab
 
   release:
     name: Create beta release on Play Store.
@@ -90,7 +96,7 @@ jobs:
         with:
           serviceAccountJsonPlainText: ${{ secrets.PLAYSTORE_ACCOUNT_KEY }}
           packageName: deckers.thibault.aves
-          releaseFiles: app-universal-release.aab
+          releaseFiles: app-play-release.aab
           track: beta
           status: completed
           whatsNewDirectory: whatsnew

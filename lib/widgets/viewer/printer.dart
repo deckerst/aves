@@ -60,7 +60,7 @@ class EntryPrinter with FeedbackMixin {
           for (var page = 0; page < pageCount; page++) {
             final pageEntry = multiPageInfo.getPageEntryByIndex(page);
             _addPdfPage(await _buildPageImage(pageEntry));
-            streamController.sink.add(pageEntry);
+            streamController.add(pageEntry);
           }
           await streamController.close();
         }

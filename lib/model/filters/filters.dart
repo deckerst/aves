@@ -31,29 +31,33 @@ abstract class CollectionFilter extends Equatable implements Comparable<Collecti
   ];
 
   static CollectionFilter? fromJson(String jsonString) {
-    final jsonMap = jsonDecode(jsonString);
-    if (jsonMap is Map<String, dynamic>) {
-      final type = jsonMap['type'];
-      switch (type) {
-        case AlbumFilter.type:
-          return AlbumFilter.fromMap(jsonMap);
-        case CoordinateFilter.type:
-          return CoordinateFilter.fromMap(jsonMap);
-        case FavouriteFilter.type:
-          return FavouriteFilter.instance;
-        case LocationFilter.type:
-          return LocationFilter.fromMap(jsonMap);
-        case MimeFilter.type:
-          return MimeFilter.fromMap(jsonMap);
-        case PathFilter.type:
-          return PathFilter.fromMap(jsonMap);
-        case QueryFilter.type:
-          return QueryFilter.fromMap(jsonMap);
-        case TagFilter.type:
-          return TagFilter.fromMap(jsonMap);
-        case TypeFilter.type:
-          return TypeFilter.fromMap(jsonMap);
+    try {
+      final jsonMap = jsonDecode(jsonString);
+      if (jsonMap is Map<String, dynamic>) {
+        final type = jsonMap['type'];
+        switch (type) {
+          case AlbumFilter.type:
+            return AlbumFilter.fromMap(jsonMap);
+          case CoordinateFilter.type:
+            return CoordinateFilter.fromMap(jsonMap);
+          case FavouriteFilter.type:
+            return FavouriteFilter.instance;
+          case LocationFilter.type:
+            return LocationFilter.fromMap(jsonMap);
+          case MimeFilter.type:
+            return MimeFilter.fromMap(jsonMap);
+          case PathFilter.type:
+            return PathFilter.fromMap(jsonMap);
+          case QueryFilter.type:
+            return QueryFilter.fromMap(jsonMap);
+          case TagFilter.type:
+            return TagFilter.fromMap(jsonMap);
+          case TypeFilter.type:
+            return TypeFilter.fromMap(jsonMap);
+        }
       }
+    } catch (error, stack) {
+      debugPrint('failed to parse filter from json=$jsonString error=$error\n$stack');
     }
     debugPrint('failed to parse filter from json=$jsonString');
     return null;

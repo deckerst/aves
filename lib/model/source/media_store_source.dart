@@ -51,7 +51,7 @@ class MediaStoreSource extends CollectionSource {
     clearEntries();
 
     debugPrint('$runtimeType refresh ${stopwatch.elapsed} fetch known entries');
-    final oldEntries = await metadataDb.loadEntries();
+    final oldEntries = await metadataDb.loadAllEntries();
     debugPrint('$runtimeType refresh ${stopwatch.elapsed} check obsolete entries');
     final knownDateById = Map.fromEntries(oldEntries.map((entry) => MapEntry(entry.contentId!, entry.dateModifiedSecs!)));
     final obsoleteContentIds = (await mediaStoreService.checkObsoleteContentIds(knownDateById.keys.toList())).toSet();

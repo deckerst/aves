@@ -5,6 +5,7 @@ import 'package:aves/widgets/collection/collection_grid.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/behaviour/double_back_pop.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
+import 'package:aves/widgets/common/providers/query_provider.dart';
 import 'package:aves/widgets/common/providers/selection_provider.dart';
 import 'package:aves/widgets/drawer/app_drawer.dart';
 import 'package:flutter/foundation.dart';
@@ -39,25 +40,27 @@ class _CollectionPageState extends State<CollectionPage> {
     return MediaQueryDataProvider(
       child: Scaffold(
         body: SelectionProvider<AvesEntry>(
-          child: Builder(
-            builder: (context) => WillPopScope(
-              onWillPop: () {
-                final selection = context.read<Selection<AvesEntry>>();
-                if (selection.isSelecting) {
-                  selection.browse();
-                  return SynchronousFuture(false);
-                }
-                return SynchronousFuture(true);
-              },
-              child: DoubleBackPopScope(
-                child: GestureAreaProtectorStack(
-                  child: SafeArea(
-                    bottom: false,
-                    child: ChangeNotifierProvider<CollectionLens>.value(
-                      value: collection,
-                      child: const CollectionGrid(
-                        // key is expected by test driver
-                        key: Key('collection-grid'),
+          child: QueryProvider(
+            child: Builder(
+              builder: (context) => WillPopScope(
+                onWillPop: () {
+                  final selection = context.read<Selection<AvesEntry>>();
+                  if (selection.isSelecting) {
+                    selection.browse();
+                    return SynchronousFuture(false);
+                  }
+                  return SynchronousFuture(true);
+                },
+                child: DoubleBackPopScope(
+                  child: GestureAreaProtectorStack(
+                    child: SafeArea(
+                      bottom: false,
+                      child: ChangeNotifierProvider<CollectionLens>.value(
+                        value: collection,
+                        child: const CollectionGrid(
+                          // key is expected by test driver
+                          key: Key('collection-grid'),
+                        ),
                       ),
                     ),
                   ),

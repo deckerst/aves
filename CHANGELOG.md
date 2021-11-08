@@ -4,6 +4,29 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [v1.5.5] - 2021-11-08
+
+### Added
+
+- Russian translation (thanks D3ZOXY)
+- Info: set date from title
+- Collection: bulk editing (rotation, date setting, metadata removal)
+- Collection: custom quick actions for item browsing
+- Collection: live title filter
+- About: link to privacy policy
+- Video: quick action to play video in other app
+- Video: resume playback
+
+### Changed
+
+- use build flavors to match distribution channels: `play` (same as original) and `izzy` (no Crashlytics)
+- use 12/24 hour format settings from device to display times
+- Privacy: consent request on first launch for installed app inventory access
+- use File API to rename and delete items, when possible (primary storage, Android <11)
+- Video: changed video thumbnail strategy
+
+## [v1.5.4] - 2021-10-21
+
 ### Added
 
 - Collection: use a foreground service when scanning many items

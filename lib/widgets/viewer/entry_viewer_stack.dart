@@ -597,7 +597,8 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
     setState(() {});
 
     if (settings.enableVideoAutoPlay) {
-      await _playVideo(controller, () => entry == _entryNotifier.value);
+      final resumeTimeMillis = await controller.getResumeTime(context);
+      await _playVideo(controller, () => entry == _entryNotifier.value, resumeTimeMillis: resumeTimeMillis);
     }
   }
 
@@ -649,13 +650,17 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
     }
   }
 
-  Future<void> _playVideo(AvesVideoController videoController, bool Function() isCurrent) async {
+  Future<void> _playVideo(AvesVideoController videoController, bool Function() isCurrent, {int? resumeTimeMillis}) async {
     // video decoding may fail or have initial artifacts when the player initializes
     // during this widget initialization (because of the page transition and hero animation?)
     // so we play after a delay for increased stability
     await Future.delayed(const Duration(milliseconds: 300) * timeDilation);
 
-    await videoController.play();
+    if (resumeTimeMillis != null) {
+      await videoController.seekTo(resumeTimeMillis);
+    } else {
+      await videoController.play();
+    }
 
     // playing controllers are paused when the entry changes,
     // but the controller may still be preparing (not yet playing) when this happens

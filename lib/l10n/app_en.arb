@@ -3,8 +3,7 @@
   "@appName": {},
   "welcomeMessage": "Welcome to Aves",
   "@welcomeMessage": {},
-  "welcomeCrashReportToggle": "Allow anonymous error reporting (optional)",
-  "@welcomeCrashReportToggle": {},
+  "welcomeOptional": "Optional",
   "welcomeTermsToggle": "I agree to the terms and conditions",
   "@welcomeTermsToggle": {},
   "itemCount": "{count, plural, =1{1 item} other{{count} items}}",
@@ -176,6 +175,25 @@
   "@coordinateFormatDms": {},
   "coordinateFormatDecimal": "Decimal degrees",
   "@coordinateFormatDecimal": {},
+  "coordinateDms": "{coordinate} {direction}",
+  "@coordinateDms": {
+    "placeholders": {
+      "coordinate": {
+        "type": "String"
+      },
+      "direction": {
+        "type": "String"
+      }
+    }
+  },
+  "coordinateDmsNorth": "N",
+  "@coordinateDmsNorth": {},
+  "coordinateDmsSouth": "S",
+  "@coordinateDmsSouth": {},
+  "coordinateDmsEast": "E",
+  "@coordinateDmsEast": {},
+  "coordinateDmsWest": "W",
+  "@coordinateDmsWest": {},
 
   "unitSystemMetric": "Metric",
   "@unitSystemMetric": {},
@@ -289,6 +307,18 @@
     }
   },
 
+  "unsupportedTypeDialogTitle": "Unsupported Types",
+  "@unsupportedTypeDialogTitle": {},
+  "unsupportedTypeDialogMessage": "{count, plural, =1{This operation is not supported for items of the following type: {types}.} other{This operation is not supported for items of the following types: {types}.}}",
+  "@unsupportedTypeDialogMessage": {
+    "placeholders": {
+      "count": {},
+      "types": {
+        "type": "String"
+      }
+    }
+  },
+
   "nameConflictDialogSingleSourceMessage": "Some files in the destination folder have the same name.",
   "@nameConflictDialogSingleSourceMessage": {},
   "nameConflictDialogMultipleSourceMessage": "Some files have the same name.",
@@ -310,6 +340,17 @@
       "count": {}
     }
   },
+
+  "videoResumeDialogMessage": "Do you want to resume playing at {time}?",
+  "@videoResumeDialogMessage": {
+    "placeholders": {
+      "time": {}
+    }
+  },
+  "videoStartOverButtonLabel": "START OVER",
+  "@videoStartOverButtonLabel": {},
+  "videoResumeButtonLabel": "RESUME",
+  "@videoResumeButtonLabel": {},
 
   "setCoverDialogTitle": "Set Cover",
   "@setCoverDialogTitle": {},
@@ -360,6 +401,8 @@
   "@editEntryDateDialogSet": {},
   "editEntryDateDialogShift": "Shift",
   "@editEntryDateDialogShift": {},
+  "editEntryDateDialogExtractFromTitle": "Extract from title",
+  "@editEntryDateDialogExtractFromTitle": {},
   "editEntryDateDialogClear": "Clear",
   "@editEntryDateDialogClear": {},
   "editEntryDateDialogFieldSelection": "Field selection",
@@ -374,7 +417,7 @@
   "removeEntryMetadataDialogMore": "More",
   "@removeEntryMetadataDialogMore": {},
 
-  "removeEntryMetadataMotionPhotoXmpWarningDialogMessage":  "XMP is required to play the video inside this motion photo. Are you sure you want to remove it?",
+  "removeEntryMetadataMotionPhotoXmpWarningDialogMessage": "XMP is required to play the video inside a motion photo. Are you sure you want to remove it?",
   "@removeEntryMetadataMotionPhotoXmpWarningDialogMessage": {},
 
   "videoSpeedDialogLabel": "Playback speed",
@@ -419,6 +462,8 @@
   "@aboutLinkSources": {},
   "aboutLinkLicense": "License",
   "@aboutLinkLicense": {},
+  "aboutLinkPolicy": "Privacy Policy",
+  "@aboutLinkPolicy": {},
 
   "aboutUpdate": "New Version Available",
   "@aboutUpdate": {},
@@ -454,6 +499,8 @@
   "@aboutCreditsWorldAtlas1": {},
   "aboutCreditsWorldAtlas2": "under ISC License.",
   "@aboutCreditsWorldAtlas2": {},
+  "aboutCreditsTranslators": "Translators:",
+  "@aboutCreditsTranslators": {},
 
   "aboutLicenses": "Open-Source Licenses",
   "@aboutLicenses": {},
@@ -470,6 +517,9 @@
   "aboutLicensesShowAllButtonLabel": "Show All Licenses",
   "@aboutLicensesShowAllButtonLabel": {},
 
+  "policyPageTitle": "Privacy Policy",
+  "@policyPageTitle": {},
+
   "collectionPageTitle": "Collection",
   "@collectionPageTitle": {},
   "collectionPickPageTitle": "Pick",
@@ -481,6 +531,10 @@
     }
   },
 
+  "collectionActionShowTitleSearch": "Show title filter",
+  "@collectionActionShowTitleSearch": {},
+  "collectionActionHideTitleSearch": "Hide title filter",
+  "@collectionActionHideTitleSearch": {},
   "collectionActionAddShortcut": "Add shortcut",
   "@collectionActionAddShortcut": {},
   "collectionActionCopy": "Copy to album",
@@ -489,6 +543,11 @@
   "@collectionActionMove": {},
   "collectionActionRescan": "Rescan",
   "@collectionActionRescan": {},
+  "collectionActionEdit": "Edit",
+  "@collectionActionEdit": {},
+
+  "collectionSearchTitlesHintText": "Search titles",
+  "@collectionSearchTitlesHintText": {},
 
   "collectionSortTitle": "Sort",
   "@collectionSortTitle": {},
@@ -536,6 +595,12 @@
       "count": {}
     }
   },
+  "collectionEditFailureFeedback": "{count, plural, =1{Failed to edit 1 item} other{Failed to edit {count} items}}",
+  "@collectionEditFailureFeedback": {
+    "placeholders": {
+      "count": {}
+    }
+  },
   "collectionExportFailureFeedback": "{count, plural, =1{Failed to export 1 page} other{Failed to export {count} pages}}",
   "@collectionExportFailureFeedback": {
     "placeholders": {
@@ -550,6 +615,12 @@
   },
   "collectionMoveSuccessFeedback": "{count, plural, =1{Moved 1 item} other{Moved {count} items}}",
   "@collectionMoveSuccessFeedback": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "collectionEditSuccessFeedback": "{count, plural, =1{Edited 1 item} other{Edited {count} items}}",
+  "@collectionEditSuccessFeedback": {
     "placeholders": {
       "count": {}
     }
@@ -705,10 +776,16 @@
   "settingsThumbnailShowVideoDuration": "Show video duration",
   "@settingsThumbnailShowVideoDuration": {},
 
-  "settingsCollectionSelectionQuickActionsTile": "Quick actions for item selection",
-  "@settingsCollectionSelectionQuickActionsTile": {},
-  "settingsCollectionSelectionQuickActionEditorTitle": "Quick Actions",
-  "@settingsCollectionSelectionQuickActionEditorTitle": {},
+  "settingsCollectionQuickActionsTile": "Quick actions",
+  "@settingsCollectionQuickActionsTile": {},
+  "settingsCollectionQuickActionEditorTitle": "Quick Actions",
+  "@settingsCollectionQuickActionEditorTitle": {},
+  "settingsCollectionQuickActionTabBrowsing": "Browsing",
+  "@settingsCollectionQuickActionTabBrowsing": {},
+  "settingsCollectionQuickActionTabSelecting": "Selecting",
+  "@settingsCollectionQuickActionTabSelecting": {},
+  "settingsCollectionBrowsingQuickActionEditorBanner": "Touch and hold to move buttons and select which actions are displayed when browsing items.",
+  "@settingsCollectionBrowsingQuickActionEditorBanner": {},
   "settingsCollectionSelectionQuickActionEditorBanner": "Touch and hold to move buttons and select which actions are displayed when selecting items.",
   "@settingsCollectionSelectionQuickActionEditorBanner": {},
 
@@ -794,8 +871,12 @@
 
   "settingsSectionPrivacy": "Privacy",
   "@settingsSectionPrivacy": {},
-  "settingsEnableErrorReporting": "Allow anonymous error reporting",
-  "@settingsEnableErrorReporting": {},
+  "settingsAllowInstalledAppAccess": "Allow access to app inventory",
+  "@settingsAllowInstalledAppAccess": {},
+  "settingsAllowInstalledAppAccessSubtitle": "Used to improve album display",
+  "@settingsAllowInstalledAppAccessSubtitle": {},
+  "settingsAllowErrorReporting": "Allow anonymous error reporting",
+  "@settingsAllowErrorReporting": {},
   "settingsSaveSearchHistory": "Save search history",
   "@settingsSaveSearchHistory": {},
 
@@ -856,18 +937,6 @@
 
   "statsPageTitle": "Stats",
   "@statsPageTitle": {},
-  "statsImage": "{count, plural, =1{image} other{images}}",
-  "@statsImage": {
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "statsVideo": "{count, plural, =1{video} other{videos}}",
-  "@statsVideo": {
-    "placeholders": {
-      "count": {}
-    }
-  },
   "statsWithGps": "{count, plural, =1{1 item with location} other{{count} items with location}}",
   "@statsWithGps": {
     "placeholders": {
@@ -883,8 +952,6 @@
 
   "viewerOpenPanoramaButtonLabel": "OPEN PANORAMA",
   "@viewerOpenPanoramaButtonLabel": {},
-  "viewerOpenTooltip": "Open",
-  "@viewerOpenTooltip": {},
   "viewerErrorUnknown": "Oops!",
   "@viewerErrorUnknown": {},
   "viewerErrorDoesNotExist": "The file no longer exists.",

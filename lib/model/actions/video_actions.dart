@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 
 enum VideoAction {
   captureFrame,
+  playOutside,
   replay10,
   skip10,
   selectStreams,
@@ -21,6 +22,7 @@ class VideoActions {
     VideoAction.selectStreams,
     VideoAction.replay10,
     VideoAction.skip10,
+    VideoAction.playOutside,
     VideoAction.settings,
   ];
 }
@@ -30,6 +32,8 @@ extension ExtraVideoAction on VideoAction {
     switch (this) {
       case VideoAction.captureFrame:
         return context.l10n.videoActionCaptureFrame;
+      case VideoAction.playOutside:
+        return context.l10n.entryActionOpen;
       case VideoAction.replay10:
         return context.l10n.videoActionReplay10;
       case VideoAction.skip10:
@@ -54,6 +58,8 @@ extension ExtraVideoAction on VideoAction {
     switch (this) {
       case VideoAction.captureFrame:
         return AIcons.captureFrame;
+      case VideoAction.playOutside:
+        return AIcons.openOutside;
       case VideoAction.replay10:
         return AIcons.replay10;
       case VideoAction.skip10:

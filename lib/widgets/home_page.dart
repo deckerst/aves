@@ -41,7 +41,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   AvesEntry? _viewerEntry;
   String? _shortcutRouteName, _shortcutSearchQuery;
-  List<String>? _shortcutFilters;
+  Set<String>? _shortcutFilters;
 
   static const allowedShortcutRoutes = [CollectionPage.routeName, AlbumListPage.routeName, SearchPage.routeName];
 
@@ -68,7 +68,12 @@ class _HomePageState extends State<HomePage> {
     }
 
     await androidFileUtils.init();
-    unawaited(androidFileUtils.initAppNames());
+    if (settings.isInstalledAppAccessAllowed) {
+      // TODO TLAD transition code (it's unset in v1.5.4), remove in a later release
+      settings.isInstalledAppAccessAllowed = settings.isInstalledAppAccessAllowed;
+
+      unawaited(androidFileUtils.initAppNames());
+    }
 
     var appMode = AppMode.main;
     final intentData = widget.intentData ?? await ViewerService.getIntentData();
@@ -103,7 +108,7 @@ class _HomePageState extends State<HomePage> {
             _shortcutRouteName = extraRoute;
           }
           final extraFilters = intentData['filters'];
-          _shortcutFilters = extraFilters != null ? (extraFilters as List).cast<String>() : null;
+          _shortcutFilters = extraFilters != null ? (extraFilters as List).cast<String>().toSet() : null;
       }
     }
     context.read<ValueNotifier<AppMode>>().value = appMode;
@@ -147,12 +152,12 @@ class _HomePageState extends State<HomePage> {
     }
 
     String routeName;
-    Iterable<CollectionFilter?>? filters;
+    Set<CollectionFilter?>? filters;
     if (appMode == AppMode.pickExternal) {
       routeName = CollectionPage.routeName;
     } else {
       routeName = _shortcutRouteName ?? settings.homePage.routeName;
-      filters = (_shortcutFilters ?? []).map(CollectionFilter.fromJson);
+      filters = (_shortcutFilters ?? {}).map(CollectionFilter.fromJson).toSet();
     }
     final source = context.read<CollectionSource>();
     switch (routeName) {

@@ -53,11 +53,12 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
   static const initialPlayDelay = Duration(milliseconds: 100);
   static const gifLikeVideoDurationThreshold = Duration(seconds: 10);
   static const gifLikeBitRateThreshold = 2 << 18; // 512kB/s (4Mb/s)
+  static const captureFrameEnabled = true;
 
   IjkPlayerAvesVideoController(AvesEntry entry) : super(entry) {
     _instance = FijkPlayer();
     _valueStream.map((value) => value.videoRenderStart).firstWhere((v) => v, orElse: () => false).then(
-          (started) => canCaptureFrameNotifier.value = started,
+          (started) => canCaptureFrameNotifier.value = captureFrameEnabled && started,
           onError: (error) {},
         );
     _valueStream.map((value) => value.audioRenderStart).firstWhere((v) => v, orElse: () => false).then(
@@ -69,6 +70,7 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
 
   @override
   Future<void> dispose() async {
+    await super.dispose();
     _initialPlayTimer?.cancel();
     _stopListening();
     await _valueStreamController.close();
@@ -144,7 +146,7 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
     // default: 0, in [0, 1]
     // cf https://fijkplayer.befovy.com/docs/zh/host-option.html
     // there is a performance cost, and it should be set up before playing
-    options.setHostOption('enable-snapshot', 1);
+    options.setHostOption('enable-snapshot', captureFrameEnabled ? 1 : 0);
 
     // `accurate-seek-timeout`: accurate seek timeout
     // default: 5000 ms, in [0, 5000]

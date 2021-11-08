@@ -1,3 +1,4 @@
+import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
@@ -11,15 +12,15 @@ class QueryFilter extends CollectionFilter {
   static final RegExp exactRegex = RegExp('^"(.*)"\$');
 
   final String query;
-  final bool colorful;
+  final bool colorful, live;
   late final EntryFilter _test;
 
   @override
-  List<Object?> get props => [query];
+  List<Object?> get props => [query, live];
 
-  QueryFilter(this.query, {this.colorful = true}) {
+  QueryFilter(this.query, {this.colorful = true, this.live = false}) {
     var upQuery = query.toUpperCase();
-    if (upQuery.startsWith('ID=')) {
+    if (upQuery.startsWith('ID:')) {
       final id = int.tryParse(upQuery.substring(3));
       _test = (entry) => entry.contentId == id;
       return;
@@ -37,7 +38,9 @@ class QueryFilter extends CollectionFilter {
       upQuery = matches.first.group(1)!;
     }
 
-    _test = not ? (entry) => !entry.search(upQuery) : (entry) => entry.search(upQuery);
+    // default to title search
+    bool testTitle(AvesEntry entry) => entry.bestTitle?.toUpperCase().contains(upQuery) == true;
+    _test = not ? (entry) => !testTitle(entry) : testTitle;
   }
 
   QueryFilter.fromMap(Map<String, dynamic> json)

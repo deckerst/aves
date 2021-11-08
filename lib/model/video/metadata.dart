@@ -22,6 +22,7 @@ import 'package:flutter/foundation.dart';
 
 class VideoMetadataFormatter {
   static final _epoch = DateTime.fromMillisecondsSinceEpoch(0, isUtc: true);
+  static final _anotherDatePattern = RegExp(r'(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})');
   static final _durationPattern = RegExp(r'(\d+):(\d+):(\d+)(.\d+)');
   static final _locationPattern = RegExp(r'([+-][.0-9]+)');
   static final Map<String, String> _codecNames = {
@@ -80,19 +81,16 @@ class VideoMetadataFormatter {
   static Future<CatalogMetadata?> getCatalogMetadata(AvesEntry entry) async {
     final mediaInfo = await getVideoMetadata(entry);
 
-    int? dateMillis;
-
     bool isDefined(dynamic value) => value is String && value != '0';
 
     var dateString = mediaInfo[Keys.date];
     if (!isDefined(dateString)) {
       dateString = mediaInfo[Keys.creationTime];
     }
+    int? dateMillis;
     if (isDefined(dateString)) {
-      final date = DateTime.tryParse(dateString);
-      if (date != null) {
-        dateMillis = date.millisecondsSinceEpoch;
-      } else {
+      dateMillis = parseVideoDate(dateString);
+      if (dateMillis == null) {
         await reportService.recordError('getCatalogMetadata failed to parse date=$dateString for mimeType=${entry.mimeType} entry=$entry', null);
       }
     }
@@ -104,6 +102,33 @@ class VideoMetadataFormatter {
     }
 
     return entry.catalogMetadata;
+  }
+
+  static int? parseVideoDate(String dateString) {
+    final date = DateTime.tryParse(dateString);
+    if (date != null) {
+      return date.millisecondsSinceEpoch;
+    }
+
+    // `DateTime` does not recognize:
+    // - `UTC 2021-05-30 19:14:21`
+
+    final match = _anotherDatePattern.firstMatch(dateString);
+    if (match != null) {
+      final year = int.tryParse(match.group(1)!);
+      final month = int.tryParse(match.group(2)!);
+      final day = int.tryParse(match.group(3)!);
+      final hour = int.tryParse(match.group(4)!);
+      final minute = int.tryParse(match.group(5)!);
+      final second = int.tryParse(match.group(6)!);
+
+      if (year != null && month != null && day != null && hour != null && minute != null && second != null) {
+        final date = DateTime(year, month, day, hour, minute, second, 0);
+        return date.millisecondsSinceEpoch;
+      }
+    }
+
+    return null;
   }
 
   // pattern to extract optional language code suffix, e.g. 'location-eng'
