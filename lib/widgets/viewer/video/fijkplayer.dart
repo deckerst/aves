@@ -25,7 +25,6 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
   final List<StreamSummary> _streams = [];
   Timer? _initialPlayTimer;
   double _speed = 1;
-  bool captureFrameEnabled = false;
 
   // audio/video get out of sync with speed < .5
   // the video stream plays at .5 but the audio is slowed as requested
@@ -54,10 +53,9 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
   static const initialPlayDelay = Duration(milliseconds: 100);
   static const gifLikeVideoDurationThreshold = Duration(seconds: 10);
   static const gifLikeBitRateThreshold = 2 << 18; // 512kB/s (4Mb/s)
+  static const captureFrameEnabled = true;
 
   IjkPlayerAvesVideoController(AvesEntry entry) : super(entry) {
-    captureFrameEnabled = settings.enableVideoFrameCapture;
-
     _instance = FijkPlayer();
     _valueStream.map((value) => value.videoRenderStart).firstWhere((v) => v, orElse: () => false).then(
           (started) => canCaptureFrameNotifier.value = captureFrameEnabled && started,
