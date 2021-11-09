@@ -4,6 +4,7 @@ import 'package:aves/services/analysis_service.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/debug/android_apps.dart';
+import 'package:aves/widgets/debug/android_codecs.dart';
 import 'package:aves/widgets/debug/android_dirs.dart';
 import 'package:aves/widgets/debug/android_env.dart';
 import 'package:aves/widgets/debug/cache.dart';
@@ -46,6 +47,7 @@ class _AppDebugPageState extends State<AppDebugPage> {
             children: [
               _buildGeneralTabView(),
               const DebugAndroidAppSection(),
+              const DebugAndroidCodecSection(),
               const DebugAndroidDirSection(),
               const DebugAndroidEnvironmentSection(),
               const DebugCacheSection(),
