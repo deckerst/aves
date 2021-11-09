@@ -1,4 +1,5 @@
 import 'package:aves/services/android_debug_service.dart';
+import 'package:aves/widgets/common/basic/query_bar.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/common/identity/highlight_title.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
@@ -14,6 +15,7 @@ class DebugAndroidCodecSection extends StatefulWidget {
 
 class _DebugAndroidCodecSectionState extends State<DebugAndroidCodecSection> with AutomaticKeepAliveClientMixin {
   late Future<List<Map>> _loader;
+  final ValueNotifier<String> _queryNotifier = ValueNotifier('');
 
   @override
   void initState() {
@@ -42,18 +44,25 @@ class _DebugAndroidCodecSectionState extends State<DebugAndroidCodecSection> wit
               final byEncoder = groupBy<Map<String, String>, bool>(codecs, (v) => v['isEncoder'] == 'true');
               final decoders = byEncoder[false] ?? [];
               final encoders = byEncoder[true] ?? [];
-              Widget _toCodecColumn(List<Map<String, String>> codecs) => Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: codecs
-                        .expand((v) => [
-                              InfoRowGroup(info: Map.fromEntries(v.entries.where((kv) => kv.key != 'isEncoder'))),
-                              const Divider(),
-                            ])
-                        .toList(),
+              Widget _toCodecColumn(List<Map<String, String>> codecs) => ValueListenableBuilder<String>(
+                    valueListenable: _queryNotifier,
+                    builder: (context, query, child) => Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: codecs.expand((v) {
+                        final types = v['supportedTypes'];
+                        return (query.isEmpty || types == null || types.contains(query))
+                            ? [
+                                InfoRowGroup(info: Map.fromEntries(v.entries.where((kv) => kv.key != 'isEncoder'))),
+                                const Divider(),
+                              ]
+                            : <Widget>[];
+                      }).toList(),
+                    ),
                   );
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  QueryBar(queryNotifier: _queryNotifier),
                   const HighlightTitle(title: 'Decoders'),
                   _toCodecColumn(decoders),
                   const HighlightTitle(title: 'Encoders'),
