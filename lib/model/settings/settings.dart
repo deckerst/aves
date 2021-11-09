@@ -85,7 +85,6 @@ class Settings extends ChangeNotifier {
   // video
   static const videoQuickActionsKey = 'video_quick_actions';
   static const enableVideoHardwareAccelerationKey = 'video_hwaccel_mediacodec';
-  static const enableVideoFrameCaptureKey = 'video_enable_snapshot';
   static const enableVideoAutoPlayKey = 'video_auto_play';
   static const videoLoopModeKey = 'video_loop';
   static const videoShowRawTimedTextKey = 'video_show_raw_timed_text';
@@ -363,10 +362,6 @@ class Settings extends ChangeNotifier {
 
   set enableVideoHardwareAcceleration(bool newValue) => setAndNotify(enableVideoHardwareAccelerationKey, newValue);
 
-  bool get enableVideoFrameCapture => getBoolOrDefault(enableVideoFrameCaptureKey, true);
-
-  set enableVideoFrameCapture(bool newValue) => setAndNotify(enableVideoFrameCaptureKey, newValue);
-
   bool get enableVideoAutoPlay => getBoolOrDefault(enableVideoAutoPlayKey, SettingsDefaults.enableVideoAutoPlay);
 
   set enableVideoAutoPlay(bool newValue) => setAndNotify(enableVideoAutoPlayKey, newValue);
@@ -593,7 +588,6 @@ class Settings extends ChangeNotifier {
             case enableOverlayBlurEffectKey:
             case viewerUseCutoutKey:
             case enableVideoHardwareAccelerationKey:
-            case enableVideoFrameCaptureKey:
             case enableVideoAutoPlayKey:
             case subtitleShowOutlineKey:
             case saveSearchHistoryKey:

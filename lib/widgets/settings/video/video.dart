@@ -45,15 +45,6 @@ class VideoSection extends StatelessWidget {
         onChanged: (v) => settings.enableVideoHardwareAcceleration = v,
         title: Text(context.l10n.settingsVideoEnableHardwareAcceleration),
       ),
-      Selector<Settings, bool>(
-        selector: (context, s) => s.enableVideoFrameCapture,
-        builder: (context, current, child) => SwitchListTile(
-          value: current,
-          onChanged: (v) => settings.enableVideoFrameCapture = v,
-          // TODO TLAD l10n
-          title: Text('enable frame capture'),
-        ),
-      ),
       SwitchListTile(
         value: currentEnableVideoAutoPlay,
         onChanged: (v) => settings.enableVideoAutoPlay = v,
