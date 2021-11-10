@@ -59,7 +59,14 @@ If you want to translate this app in your language and share the result, feel fr
 
 ### Donations
 
-Some users have expressed the wish to financially support the project. I haven't set up any sponsorship system, but you can send contributions [here](https://paypal.me/ThibaultDeckers). Thanks! ❤️
+Some users have expressed the wish to financially support the project. Thanks! ❤️
+
+[<img src="https://raw.githubusercontent.com/deckerst/common/main/assets/paypal-badge-cropped.png"
+      alt='Donate with PayPal'
+      height="40">](https://paypal.me/ThibaultDeckers)
+[<img src="https://liberapay.com/assets/widgets/donate.svg"
+      alt='Donate using Liberapay'
+      height="40">](https://liberapay.com/deckerst/donate)
 
 ## Project Setup
 
