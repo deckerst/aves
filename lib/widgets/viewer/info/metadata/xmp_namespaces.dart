@@ -32,6 +32,8 @@ class XmpNamespace extends Equatable {
     switch (namespace) {
       case XmpBasicNamespace.ns:
         return XmpBasicNamespace(rawProps);
+      case XmpContainer.ns:
+        return XmpContainer(rawProps);
       case XmpCrsNamespace.ns:
         return XmpCrsNamespace(rawProps);
       case XmpDarktableNamespace.ns:
