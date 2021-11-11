@@ -225,18 +225,53 @@ class MediaStoreImageProvider : ImageProvider() {
         return found
     }
 
+    private fun hasEntry(context: Context, contentUri: Uri): Boolean {
+        var found = false
+        val projection = arrayOf(MediaStore.MediaColumns._ID)
+        try {
+            val cursor = context.contentResolver.query(contentUri, projection, null, null, null)
+            if (cursor != null) {
+                while (cursor.moveToNext()) {
+                    found = true
+                }
+                cursor.close()
+            }
+        } catch (e: Exception) {
+            Log.e(LOG_TAG, "failed to get entry at contentUri=$contentUri", e)
+        }
+        return found
+    }
+
     private fun needSize(mimeType: String) = MimeTypes.SVG != mimeType
 
     // `uri` is a media URI, not a document URI
     override suspend fun delete(activity: Activity, uri: Uri, path: String?, mimeType: String) {
         path ?: throw Exception("failed to delete file because path is null")
 
+        // the following situations are possible:
+        // - there is an entry in the Media Store and there is a file on storage
+        // - there is an entry in the Media Store but there is no longer a file on storage
+        // - there is no entry in the Media Store but there is a file on storage
         val file = File(path)
-        if (file.exists()) {
+        val fileExists = file.exists()
+
+        if (fileExists) {
             if (StorageUtils.canEditByFile(activity, path)) {
-                Log.d(LOG_TAG, "delete file at uri=$uri path=$path")
-                if (file.delete()) {
-                    scanObsoletePath(activity, path, mimeType)
+                if (hasEntry(activity, uri)) {
+                    Log.d(LOG_TAG, "delete content at uri=$uri path=$path")
+                    activity.contentResolver.delete(uri, null, null)
+                }
+                // in theory, deleting via content resolver should remove the file on storage
+                // in practice, the file may still be there afterwards
+                if (file.exists()) {
+                    Log.d(LOG_TAG, "delete file at uri=$uri path=$path")
+                    if (file.delete()) {
+                        // in theory, scanning an obsolete path should remove the entry from the Media Store
+                        // in practice, the entry may still be there afterwards
+                        scanObsoletePath(activity, path, mimeType)
+                        return
+                    }
+                } else {
                     return
                 }
             } else if (!isMediaUriPermissionGranted(activity, uri, mimeType)
@@ -245,7 +280,7 @@ class MediaStoreImageProvider : ImageProvider() {
                 // if the file is on SD card, calling the content resolver `delete()`
                 // removes the entry from the Media Store but it doesn't delete the file,
                 // even when the app has the permission, so we manually delete the document file
-                Log.d(LOG_TAG, "delete document at uri=$uri path=$path")
+                Log.d(LOG_TAG, "delete document (fileExists=$fileExists) at uri=$uri path=$path")
                 val df = StorageUtils.getDocumentFile(activity, path, uri)
 
                 @Suppress("BlockingMethodInNonBlockingContext")
@@ -258,9 +293,12 @@ class MediaStoreImageProvider : ImageProvider() {
         }
 
         try {
-            Log.d(LOG_TAG, "delete content at uri=$uri path=$path")
+            Log.d(LOG_TAG, "delete content (fileExists=$fileExists) at uri=$uri path=$path")
             if (activity.contentResolver.delete(uri, null, null) > 0) return
-            throw Exception("failed to delete row from content provider")
+
+            if (hasEntry(activity, uri) || file.exists()) {
+                throw Exception("failed to delete row from content provider")
+            }
         } catch (securityException: SecurityException) {
             // even if the app has access permission granted on the containing directory,
             // the delete request may yield a `RecoverableSecurityException` on Android 10+
