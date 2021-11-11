@@ -72,7 +72,7 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     final positionMillis = controller.currentPosition;
     final bytes = await controller.captureFrame();
 
-    final destinationAlbum = androidFileUtils.videoCapturesPath;
+    final destinationAlbum = androidFileUtils.avesVideoCapturesPath;
     if (!await checkStoragePermissionForAlbums(context, {destinationAlbum})) return;
 
     if (!await checkFreeSpace(context, bytes.length, destinationAlbum)) return;
