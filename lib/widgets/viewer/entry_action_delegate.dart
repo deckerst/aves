@@ -18,6 +18,7 @@ import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
 import 'package:aves/widgets/common/action_mixins/size_aware.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/dialogs/add_shortcut_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/export_entry_dialog.dart';
 import 'package:aves/widgets/dialogs/rename_entry_dialog.dart';
@@ -30,12 +31,13 @@ import 'package:aves/widgets/viewer/source_viewer_page.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tuple/tuple.dart';
 
 class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
   void onActionSelected(BuildContext context, AvesEntry entry, EntryAction action) {
     switch (action) {
-      case EntryAction.toggleFavourite:
-        entry.toggleFavourite();
+      case EntryAction.addShortcut:
+        _addShortcut(context, entry);
         break;
       case EntryAction.copyToClipboard:
         androidAppService.copyToClipboard(entry.uri, entry.bestTitle).then((success) {
@@ -43,10 +45,10 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         });
         break;
       case EntryAction.delete:
-        _showDeleteDialog(context, entry);
+        _delete(context, entry);
         break;
       case EntryAction.export:
-        _showExportDialog(context, entry);
+        _export(context, entry);
         break;
       case EntryAction.info:
         ShowInfoNotification().dispatch(context);
@@ -55,8 +57,17 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         EntryPrinter(entry).print(context);
         break;
       case EntryAction.rename:
-        _showRenameDialog(context, entry);
+        _rename(context, entry);
         break;
+      case EntryAction.share:
+        androidAppService.shareEntries({entry}).then((success) {
+          if (!success) showNoMatchingAppDialog(context);
+        });
+        break;
+      case EntryAction.toggleFavourite:
+        entry.toggleFavourite();
+        break;
+      // raster
       case EntryAction.rotateCCW:
         _rotate(context, entry, clockwise: false);
         break;
@@ -66,6 +77,15 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       case EntryAction.flip:
         _flip(context, entry);
         break;
+      // vector
+      case EntryAction.viewSource:
+        _goToSourceViewer(context, entry);
+        break;
+      // motion photo
+      case EntryAction.viewMotionPhotoVideo:
+        OpenEmbeddedDataNotification.motionPhotoVideo().dispatch(context);
+        break;
+      // external
       case EntryAction.edit:
         androidAppService.edit(entry.uri, entry.mimeType).then((success) {
           if (!success) showNoMatchingAppDialog(context);
@@ -81,29 +101,35 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
           if (!success) showNoMatchingAppDialog(context);
         });
         break;
-      case EntryAction.rotateScreen:
-        _rotateScreen(context);
-        break;
       case EntryAction.setAs:
         androidAppService.setAs(entry.uri, entry.mimeType).then((success) {
           if (!success) showNoMatchingAppDialog(context);
         });
         break;
-      case EntryAction.share:
-        androidAppService.shareEntries({entry}).then((success) {
-          if (!success) showNoMatchingAppDialog(context);
-        });
+      // platform
+      case EntryAction.rotateScreen:
+        _rotateScreen(context);
         break;
-      case EntryAction.viewSource:
-        _goToSourceViewer(context, entry);
-        break;
-      case EntryAction.viewMotionPhotoVideo:
-        OpenEmbeddedDataNotification.motionPhotoVideo().dispatch(context);
-        break;
+      // debug
       case EntryAction.debug:
         _goToDebug(context, entry);
         break;
     }
+  }
+
+  Future<void> _addShortcut(BuildContext context, AvesEntry entry) async {
+    final result = await showDialog<Tuple2<AvesEntry?, String>>(
+      context: context,
+      builder: (context) => AddShortcutDialog(
+        defaultName: entry.bestTitle ?? '',
+      ),
+    );
+    if (result == null) return;
+
+    final name = result.item2;
+    if (name.isEmpty) return;
+
+    unawaited(androidAppService.pinToHomeScreen(name, entry, uri: entry.uri));
   }
 
   Future<void> _flip(BuildContext context, AvesEntry entry) async {
@@ -131,7 +157,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     }
   }
 
-  Future<void> _showDeleteDialog(BuildContext context, AvesEntry entry) async {
+  Future<void> _delete(BuildContext context, AvesEntry entry) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) {
@@ -166,7 +192,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     }
   }
 
-  Future<void> _showExportDialog(BuildContext context, AvesEntry entry) async {
+  Future<void> _export(BuildContext context, AvesEntry entry) async {
     final source = context.read<CollectionSource>();
     if (!source.initialized) {
       await source.init();
@@ -273,7 +299,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     );
   }
 
-  Future<void> _showRenameDialog(BuildContext context, AvesEntry entry) async {
+  Future<void> _rename(BuildContext context, AvesEntry entry) async {
     final newName = await showDialog<String>(
       context: context,
       builder: (context) => RenameEntryDialog(entry: entry),

@@ -586,8 +586,8 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
     final result = await showDialog<Tuple2<AvesEntry?, String>>(
       context: context,
       builder: (context) => AddShortcutDialog(
-        collection: collection,
         defaultName: defaultName ?? '',
+        collection: collection,
       ),
     );
     if (result == null) return;
@@ -596,6 +596,6 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
     final name = result.item2;
     if (name.isEmpty) return;
 
-    unawaited(androidAppService.pinToHomeScreen(name, coverEntry, filters));
+    unawaited(androidAppService.pinToHomeScreen(name, coverEntry, filters: filters));
   }
 }

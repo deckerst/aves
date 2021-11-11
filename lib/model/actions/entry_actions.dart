@@ -4,6 +4,8 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/widgets.dart';
 
 enum EntryAction {
+  addShortcut,
+  copyToClipboard,
   delete,
   export,
   info,
@@ -20,7 +22,6 @@ enum EntryAction {
   // motion photo,
   viewMotionPhotoVideo,
   // external
-  copyToClipboard,
   edit,
   open,
   openMap,
@@ -39,6 +40,7 @@ class EntryActions {
     EntryAction.delete,
     EntryAction.rename,
     EntryAction.export,
+    EntryAction.addShortcut,
     EntryAction.copyToClipboard,
     EntryAction.print,
     EntryAction.viewSource,
@@ -63,9 +65,8 @@ class EntryActions {
 extension ExtraEntryAction on EntryAction {
   String getText(BuildContext context) {
     switch (this) {
-      case EntryAction.toggleFavourite:
-        // different data depending on toggle state
-        return context.l10n.entryActionAddFavourite;
+      case EntryAction.addShortcut:
+        return context.l10n.collectionActionAddShortcut;
       case EntryAction.copyToClipboard:
         return context.l10n.entryActionCopyToClipboard;
       case EntryAction.delete:
@@ -74,12 +75,15 @@ extension ExtraEntryAction on EntryAction {
         return context.l10n.entryActionExport;
       case EntryAction.info:
         return context.l10n.entryActionInfo;
-      case EntryAction.rename:
-        return context.l10n.entryActionRename;
       case EntryAction.print:
         return context.l10n.entryActionPrint;
+      case EntryAction.rename:
+        return context.l10n.entryActionRename;
       case EntryAction.share:
         return context.l10n.entryActionShare;
+      case EntryAction.toggleFavourite:
+        // different data depending on toggle state
+        return context.l10n.entryActionAddFavourite;
       // raster
       case EntryAction.rotateCCW:
         return context.l10n.entryActionRotateCCW;
@@ -98,10 +102,10 @@ extension ExtraEntryAction on EntryAction {
         return context.l10n.entryActionEdit;
       case EntryAction.open:
         return context.l10n.entryActionOpen;
-      case EntryAction.setAs:
-        return context.l10n.entryActionSetAs;
       case EntryAction.openMap:
         return context.l10n.entryActionOpenMap;
+      case EntryAction.setAs:
+        return context.l10n.entryActionSetAs;
       // platform
       case EntryAction.rotateScreen:
         return context.l10n.entryActionRotateScreen;
@@ -129,9 +133,8 @@ extension ExtraEntryAction on EntryAction {
 
   IconData? getIconData() {
     switch (this) {
-      case EntryAction.toggleFavourite:
-        // different data depending on toggle state
-        return AIcons.favourite;
+      case EntryAction.addShortcut:
+        return AIcons.addShortcut;
       case EntryAction.copyToClipboard:
         return AIcons.clipboard;
       case EntryAction.delete:
@@ -140,12 +143,15 @@ extension ExtraEntryAction on EntryAction {
         return AIcons.saveAs;
       case EntryAction.info:
         return AIcons.info;
-      case EntryAction.rename:
-        return AIcons.rename;
       case EntryAction.print:
         return AIcons.print;
+      case EntryAction.rename:
+        return AIcons.rename;
       case EntryAction.share:
         return AIcons.share;
+      case EntryAction.toggleFavourite:
+        // different data depending on toggle state
+        return AIcons.favourite;
       // raster
       case EntryAction.rotateCCW:
         return AIcons.rotateLeft;
@@ -162,8 +168,8 @@ extension ExtraEntryAction on EntryAction {
       // external
       case EntryAction.edit:
       case EntryAction.open:
-      case EntryAction.setAs:
       case EntryAction.openMap:
+      case EntryAction.setAs:
         return null;
       // platform
       case EntryAction.rotateScreen:

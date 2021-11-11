@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+
+- Viewer: action to add shortcut to media item
+
+### Fixed
+
+- video playback was not using hardware-accelerated codecs on recent devices
+
 ## [v1.5.5] - 2021-11-08
 
 ### Added
