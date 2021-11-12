@@ -55,14 +55,16 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T
         // when scaling ends and we apply the new extent, so we prevent this
         // until we scaled and scrolled to the tile in the new grid
         if (_applyingScale) return;
+
+        final tileExtentController = context.read<TileExtentController>();
+
         final scrollableContext = widget.scrollableKey.currentContext!;
         final scrollableBox = scrollableContext.findRenderObject() as RenderBox;
-        final result = BoxHitTestResult();
-        scrollableBox.hitTest(result, position: details.localFocalPoint);
-
-        // find `RenderObject`s at the gesture focal point
-        U? firstOf<U>(BoxHitTestResult result) => result.path.firstWhereOrNull((el) => el.target is U)?.target as U?;
-        final renderMetaData = firstOf<RenderMetaData>(result);
+        final renderMetaData = _getClosestRenderMetadata(
+          box: scrollableBox,
+          localFocalPoint: details.localFocalPoint,
+          spacing: tileExtentController.spacing,
+        );
         // abort if we cannot find an image to show on overlay
         if (renderMetaData == null) return;
         _metadata = renderMetaData.metaData;
@@ -72,7 +74,6 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T
         // not the same as `MediaQuery.size.width`, because of screen insets/padding
         final gridWidth = scrollableBox.size.width;
 
-        final tileExtentController = context.read<TileExtentController>();
         _extentMin = tileExtentController.effectiveExtentMin;
         _extentMax = tileExtentController.effectiveExtentMax;
 
@@ -137,6 +138,25 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T
         child: widget.child,
       ),
     );
+  }
+
+  RenderMetaData? _getClosestRenderMetadata({
+    required RenderBox box,
+    required Offset localFocalPoint,
+    required double spacing,
+  }) {
+    var position = localFocalPoint;
+    while (position.dx > 0 && position.dy > 0) {
+      final result = BoxHitTestResult();
+      box.hitTest(result, position: position);
+
+      // find `RenderObject`s at the gesture focal point
+      U? firstOf<U>(BoxHitTestResult result) => result.path.firstWhereOrNull((el) => el.target is U)?.target as U?;
+      final renderMetaData = firstOf<RenderMetaData>(result);
+      if (renderMetaData != null) return renderMetaData;
+      position = position.translate(-spacing, -spacing);
+    }
+    return null;
   }
 }
 
