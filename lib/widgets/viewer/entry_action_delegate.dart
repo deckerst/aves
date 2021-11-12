@@ -24,7 +24,6 @@ import 'package:aves/widgets/dialogs/export_entry_dialog.dart';
 import 'package:aves/widgets/dialogs/rename_entry_dialog.dart';
 import 'package:aves/widgets/filter_grids/album_pick.dart';
 import 'package:aves/widgets/viewer/debug/debug_page.dart';
-import 'package:aves/widgets/viewer/embedded/notifications.dart';
 import 'package:aves/widgets/viewer/info/notifications.dart';
 import 'package:aves/widgets/viewer/printer.dart';
 import 'package:aves/widgets/viewer/source_viewer_page.dart';
@@ -80,10 +79,6 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       // vector
       case EntryAction.viewSource:
         _goToSourceViewer(context, entry);
-        break;
-      // motion photo
-      case EntryAction.viewMotionPhotoVideo:
-        OpenEmbeddedDataNotification.motionPhotoVideo().dispatch(context);
         break;
       // external
       case EntryAction.edit:

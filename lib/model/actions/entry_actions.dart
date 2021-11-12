@@ -19,8 +19,6 @@ enum EntryAction {
   flip,
   // vector
   viewSource,
-  // motion photo,
-  viewMotionPhotoVideo,
   // external
   edit,
   open,
@@ -44,7 +42,6 @@ class EntryActions {
     EntryAction.copyToClipboard,
     EntryAction.print,
     EntryAction.viewSource,
-    EntryAction.viewMotionPhotoVideo,
     EntryAction.rotateScreen,
   ];
 
@@ -94,9 +91,6 @@ extension ExtraEntryAction on EntryAction {
       // vector
       case EntryAction.viewSource:
         return context.l10n.entryActionViewSource;
-      // motion photo
-      case EntryAction.viewMotionPhotoVideo:
-        return context.l10n.entryActionViewMotionPhotoVideo;
       // external
       case EntryAction.edit:
         return context.l10n.entryActionEdit;
@@ -162,9 +156,6 @@ extension ExtraEntryAction on EntryAction {
       // vector
       case EntryAction.viewSource:
         return AIcons.vector;
-      // motion photo
-      case EntryAction.viewMotionPhotoVideo:
-        return AIcons.motionPhoto;
       // external
       case EntryAction.edit:
       case EntryAction.open:
