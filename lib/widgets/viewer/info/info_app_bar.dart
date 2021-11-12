@@ -25,6 +25,9 @@ class InfoAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final actionDelegate = EntryInfoActionDelegate(entry);
+    final menuActions = EntryInfoActions.all.where(actionDelegate.isVisible);
+
     return SliverAppBar(
       leading: IconButton(
         // key is expected by test driver
@@ -46,30 +49,25 @@ class InfoAppBar extends StatelessWidget {
         if (entry.canEdit)
           MenuIconTheme(
             child: PopupMenuButton<EntryInfoAction>(
-              itemBuilder: (context) {
-                return [
-                  PopupMenuItem(
-                    value: EntryInfoAction.editDate,
-                    enabled: entry.canEditExif,
-                    child: MenuRow(text: context.l10n.entryInfoActionEditDate, icon: const Icon(AIcons.date)),
-                  ),
-                  PopupMenuItem(
-                    value: EntryInfoAction.removeMetadata,
-                    enabled: entry.canRemoveMetadata,
-                    child: MenuRow(text: context.l10n.entryInfoActionRemoveMetadata, icon: const Icon(AIcons.clear)),
-                  ),
-                ];
-              },
+              itemBuilder: (context) => menuActions.map((action) => _toMenuItem(context, action, enabled: actionDelegate.canApply(action))).toList(),
               onSelected: (action) async {
                 // wait for the popup menu to hide before proceeding with the action
                 await Future.delayed(Durations.popupMenuAnimation * timeDilation);
-                EntryInfoActionDelegate(entry).onActionSelected(context, action);
+                actionDelegate.onActionSelected(context, action);
               },
             ),
           ),
       ],
       titleSpacing: 0,
       floating: true,
+    );
+  }
+
+  PopupMenuItem<EntryInfoAction> _toMenuItem(BuildContext context, EntryInfoAction action, {required bool enabled}) {
+    return PopupMenuItem(
+      value: action,
+      enabled: enabled,
+      child: MenuRow(text: action.getText(context), icon: action.getIcon()),
     );
   }
 
