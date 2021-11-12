@@ -1,0 +1,10 @@
+In v1.5.6:
+- fixed video playback ignoring hardware-accelerated codecs on recent devices
+- partially fixed deleted files leaving ghost items on some devices
+- you can now create shortcuts to a specific media item, not only collections
+In v1.5.5:
+- modify items in bulk (rotation, date, metadata removal)
+- filter items by title
+- enjoy the app in Russian
+Note: the video thumbnails are modified. Clearing the app cache may be necessary.
+Full changelog available on GitHub

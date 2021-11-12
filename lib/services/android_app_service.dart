@@ -31,7 +31,7 @@ abstract class AndroidAppService {
 
   Future<bool> canPinToHomeScreen();
 
-  Future<void> pinToHomeScreen(String label, AvesEntry? entry, Set<CollectionFilter> filters);
+  Future<void> pinToHomeScreen(String label, AvesEntry? coverEntry, {Set<CollectionFilter>? filters, String? uri});
 }
 
 class PlatformAndroidAppService implements AndroidAppService {
@@ -194,17 +194,17 @@ class PlatformAndroidAppService implements AndroidAppService {
   }
 
   @override
-  Future<void> pinToHomeScreen(String label, AvesEntry? entry, Set<CollectionFilter> filters) async {
+  Future<void> pinToHomeScreen(String label, AvesEntry? coverEntry, {Set<CollectionFilter>? filters, String? uri}) async {
     Uint8List? iconBytes;
-    if (entry != null) {
-      final size = entry.isVideo ? 0.0 : 256.0;
+    if (coverEntry != null) {
+      final size = coverEntry.isVideo ? 0.0 : 256.0;
       iconBytes = await mediaFileService.getThumbnail(
-        uri: entry.uri,
-        mimeType: entry.mimeType,
-        pageId: entry.pageId,
-        rotationDegrees: entry.rotationDegrees,
-        isFlipped: entry.isFlipped,
-        dateModifiedSecs: entry.dateModifiedSecs,
+        uri: coverEntry.uri,
+        mimeType: coverEntry.mimeType,
+        pageId: coverEntry.pageId,
+        rotationDegrees: coverEntry.rotationDegrees,
+        isFlipped: coverEntry.isFlipped,
+        dateModifiedSecs: coverEntry.dateModifiedSecs,
         extent: size,
       );
     }
@@ -212,7 +212,8 @@ class PlatformAndroidAppService implements AndroidAppService {
       await platform.invokeMethod('pin', <String, dynamic>{
         'label': label,
         'iconBytes': iconBytes,
-        'filters': filters.map((filter) => filter.toJson()).toList(),
+        'filters': filters?.map((filter) => filter.toJson()).toList(),
+        'uri': uri,
       });
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);

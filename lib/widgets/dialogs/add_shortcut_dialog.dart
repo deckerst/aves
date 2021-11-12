@@ -1,6 +1,5 @@
 import 'package:aves/model/covers.dart';
 import 'package:aves/model/entry.dart';
-import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
@@ -14,13 +13,13 @@ import 'package:tuple/tuple.dart';
 import 'aves_dialog.dart';
 
 class AddShortcutDialog extends StatefulWidget {
-  final CollectionLens collection;
+  final CollectionLens? collection;
   final String defaultName;
 
   const AddShortcutDialog({
     Key? key,
-    required this.collection,
     required this.defaultName,
+    this.collection,
   }) : super(key: key);
 
   @override
@@ -32,17 +31,16 @@ class _AddShortcutDialogState extends State<AddShortcutDialog> {
   final ValueNotifier<bool> _isValidNotifier = ValueNotifier(false);
   AvesEntry? _coverEntry;
 
-  CollectionLens get collection => widget.collection;
-
-  Set<CollectionFilter> get filters => collection.filters;
-
   @override
   void initState() {
     super.initState();
-    final entries = collection.sortedEntries;
-    if (entries.isNotEmpty) {
-      final coverEntries = filters.map(covers.coverContentId).whereNotNull().map((id) => entries.firstWhereOrNull((entry) => entry.contentId == id)).whereNotNull();
-      _coverEntry = coverEntries.firstOrNull ?? entries.first;
+    final _collection = widget.collection;
+    if (_collection != null) {
+      final entries = _collection.sortedEntries;
+      if (entries.isNotEmpty) {
+        final coverEntries = _collection.filters.map(covers.coverContentId).whereNotNull().map((id) => entries.firstWhereOrNull((entry) => entry.contentId == id)).whereNotNull();
+        _coverEntry = coverEntries.firstOrNull ?? entries.first;
+      }
     }
     _nameController.text = widget.defaultName;
     _validate();
@@ -123,14 +121,17 @@ class _AddShortcutDialogState extends State<AddShortcutDialog> {
   }
 
   Future<void> _pickEntry() async {
+    final _collection = widget.collection;
+    if (_collection == null) return;
+
     final entry = await Navigator.push(
       context,
       MaterialPageRoute(
         settings: const RouteSettings(name: ItemPickDialog.routeName),
         builder: (context) => ItemPickDialog(
           collection: CollectionLens(
-            source: collection.source,
-            filters: filters,
+            source: _collection.source,
+            filters: _collection.filters,
           ),
         ),
         fullscreenDialog: true,

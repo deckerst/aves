@@ -7,6 +7,7 @@ import 'package:aves/widgets/common/action_mixins/entry_editor.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/viewer/embedded/notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -15,13 +16,43 @@ class EntryInfoActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAw
 
   const EntryInfoActionDelegate(this.entry);
 
+  bool isVisible(EntryInfoAction action) {
+    switch (action) {
+      // general
+      case EntryInfoAction.editDate:
+      case EntryInfoAction.removeMetadata:
+        return true;
+      // motion photo
+      case EntryInfoAction.viewMotionPhotoVideo:
+        return entry.isMotionPhoto;
+    }
+  }
+
+  bool canApply(EntryInfoAction action) {
+    switch (action) {
+      // general
+      case EntryInfoAction.editDate:
+        return entry.canEditExif;
+      case EntryInfoAction.removeMetadata:
+        return entry.canRemoveMetadata;
+      // motion photo
+      case EntryInfoAction.viewMotionPhotoVideo:
+        return true;
+    }
+  }
+
   void onActionSelected(BuildContext context, EntryInfoAction action) async {
     switch (action) {
+      // general
       case EntryInfoAction.editDate:
         await _editDate(context);
         break;
       case EntryInfoAction.removeMetadata:
         await _removeMetadata(context);
+        break;
+      // motion photo
+      case EntryInfoAction.viewMotionPhotoVideo:
+        OpenEmbeddedDataNotification.motionPhotoVideo().dispatch(context);
         break;
     }
   }

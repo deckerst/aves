@@ -2,7 +2,9 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/viewer/embedded/notifications.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_namespaces.dart';
+import 'package:aves/widgets/viewer/info/metadata/xmp_structs.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter/widgets.dart';
 import 'package:tuple/tuple.dart';
 
 abstract class XmpGoogleNamespace extends XmpNamespace {
@@ -60,4 +62,26 @@ class XmpGImageNamespace extends XmpGoogleNamespace {
 
   @override
   List<Tuple2<String, String>> get dataProps => const [Tuple2('$ns:Data', '$ns:Mime')];
+}
+
+class XmpContainer extends XmpNamespace {
+  static const ns = 'Container';
+
+  static final directoryPattern = RegExp('$ns:Directory\\[(\\d+)\\]/$ns:Item/(.*)');
+
+  final directories = <int, Map<String, String>>{};
+
+  XmpContainer(Map<String, String> rawProps) : super(ns, rawProps);
+
+  @override
+  bool extractData(XmpProp prop) => extractIndexedStruct(prop, directoryPattern, directories);
+
+  @override
+  List<Widget> buildFromExtractedData() => [
+        if (directories.isNotEmpty)
+          XmpStructArrayCard(
+            title: 'Directory Item',
+            structByIndex: directories,
+          ),
+      ];
 }

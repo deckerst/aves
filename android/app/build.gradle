@@ -140,7 +140,7 @@ repositories {
 
 dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.1'
-    implementation 'androidx.core:core-ktx:1.6.0'
+    implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.exifinterface:exifinterface:1.3.3'
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'com.caverock:androidsvg-aar:1.4'
@@ -152,7 +152,7 @@ dependencies {
     implementation 'com.github.deckerst:pixymeta-android:0bea51ead2'
     implementation 'com.github.bumptech.glide:glide:4.12.0'
 
-    kapt 'androidx.annotation:annotation:1.2.0'
+    kapt 'androidx.annotation:annotation:1.3.0'
     kapt 'com.github.bumptech.glide:compiler:4.12.0'
 
     compileOnly rootProject.findProject(':streams_channel')
