@@ -190,7 +190,8 @@ class _TransitionImagePainter extends CustomPainter {
       Offset.zero & inputSize,
     );
     if (background != null) {
-      canvas.drawRect(destinationRect, Paint()..color = background!);
+      // deflate to avoid background artifact around opaque image
+      canvas.drawRect(destinationRect.deflate(1), Paint()..color = background!);
     }
     canvas.drawImageRect(image!, sourceRect, destinationRect, paint);
   }
