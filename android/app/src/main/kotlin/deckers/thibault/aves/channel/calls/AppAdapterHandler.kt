@@ -329,7 +329,8 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
         val label = call.argument<String>("label")
         val iconBytes = call.argument<ByteArray>("iconBytes")
         val filters = call.argument<List<String>>("filters")
-        if (label == null || filters == null) {
+        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        if (label == null || (filters == null && uri == null)) {
             result.error("pin-args", "failed because of missing arguments", null)
             return
         }
@@ -356,12 +357,19 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
             icon = IconCompat.createWithResource(context, if (supportAdaptiveIcon) R.mipmap.ic_shortcut_collection else R.drawable.ic_shortcut_collection)
         }
 
-        val intent = Intent(Intent.ACTION_MAIN, null, context, MainActivity::class.java)
-            .putExtra("page", "/collection")
-            .putExtra("filters", filters.toTypedArray())
-            // on API 25, `String[]` or `ArrayList` extras are null when using the shortcut
-            // so we use a joined `String` as fallback
-            .putExtra("filtersString", filters.joinToString(MainActivity.EXTRA_STRING_ARRAY_SEPARATOR))
+        val intent = when {
+            uri != null -> Intent(Intent.ACTION_VIEW, uri, context, MainActivity::class.java)
+            filters != null -> Intent(Intent.ACTION_MAIN, null, context, MainActivity::class.java)
+                .putExtra("page", "/collection")
+                .putExtra("filters", filters.toTypedArray())
+                // on API 25, `String[]` or `ArrayList` extras are null when using the shortcut
+                // so we use a joined `String` as fallback
+                .putExtra("filtersString", filters.joinToString(MainActivity.EXTRA_STRING_ARRAY_SEPARATOR))
+            else -> {
+                result.error("pin-intent", "failed to build intent", null)
+                return
+            }
+        }
 
         // multiple shortcuts sharing the same ID cannot be created with different labels or icons
         // so we provide a unique ID for each one, and let the user manage duplicates (i.e. same filter set), if any

@@ -8,7 +8,8 @@ import 'package:flutter/widgets.dart';
 final AndroidFileUtils androidFileUtils = AndroidFileUtils._private();
 
 class AndroidFileUtils {
-  late final String separator, primaryStorage, dcimPath, downloadPath, moviesPath, picturesPath, videoCapturesPath;
+  late final String separator, primaryStorage, dcimPath, downloadPath, moviesPath, picturesPath, avesVideoCapturesPath;
+  late final Set<String> videoCapturesPaths;
   Set<StorageVolume> storageVolumes = {};
   Set<Package> _packages = {};
   List<String> _potentialAppDirs = [];
@@ -31,8 +32,13 @@ class AndroidFileUtils {
     downloadPath = pContext.join(primaryStorage, 'Download');
     moviesPath = pContext.join(primaryStorage, 'Movies');
     picturesPath = pContext.join(primaryStorage, 'Pictures');
-    // from Aves
-    videoCapturesPath = pContext.join(dcimPath, 'Video Captures');
+    avesVideoCapturesPath = pContext.join(dcimPath, 'Videocaptures');
+    videoCapturesPaths = {
+      // from Samsung
+      pContext.join(dcimPath, 'Video Captures'),
+      // from Aves
+      avesVideoCapturesPath,
+    };
 
     _initialized = true;
   }
@@ -58,7 +64,7 @@ class AndroidFileUtils {
 
   bool isScreenRecordingsPath(String path) => (path.startsWith(dcimPath) || path.startsWith(moviesPath)) && (path.endsWith('${separator}Screen recordings') || path.endsWith('${separator}ScreenRecords'));
 
-  bool isVideoCapturesPath(String path) => path == videoCapturesPath;
+  bool isVideoCapturesPath(String path) => videoCapturesPaths.contains(path);
 
   bool isDownloadPath(String path) => path == downloadPath;
 

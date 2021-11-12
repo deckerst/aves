@@ -1,0 +1,5 @@
+<i>Aves</i> kann alle Arten von Bildern und Videos verarbeiten, einschließlich Ihrer typischen JPEGs und MP4s, aber auch exotischere Dinge wie <b>mehrseitige TIFFs, SVGs, alte AVIs und mehr</b>! Es scannt Ihre Mediensammlung, um <b>Bewegungsfotos</b>, <b>Panoramen</b> (auch bekannt als Panoramaaufnahmen), <b>360°-Videos</b> sowie <b>GeoTIFF-Dateien</b> zu identifizieren.
+
+<b>Navigation und Suche</b> ist ein wichtiger Bestandteil von <i>Aves</i>. Das Ziel besteht darin, dass Benutzer problemlos von Alben zu Fotos zu Tags zu Karten usw. wechseln können.
+
+<i>Aves</i> lässt sich mit Android (von <b>API 20 bis 31</b>, d. h. von Lollipop bis S) mit Funktionen wie <b>App-Verknüpfungen</b> und <b>globaler Suche</b> integrieren. Es funktioniert auch als <b>Medienbetrachter und -auswahl</b>.

@@ -4,6 +4,8 @@ import android.content.ContentUris
 import android.content.Context
 import android.database.Cursor
 import android.graphics.BitmapFactory
+import android.media.MediaCodecInfo
+import android.media.MediaCodecList
 import android.net.Uri
 import android.os.Build
 import android.os.Handler
@@ -47,6 +49,7 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
             "safeExceptionInCoroutine" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result) { _, _ -> throw TestException() } }
 
             "getContextDirs" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getContextDirs) }
+            "getCodecs" -> safe(call, result, ::getCodecs)
             "getEnv" -> safe(call, result, ::getEnv)
 
             "getBitmapFactoryInfo" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getBitmapFactoryInfo) }
@@ -81,6 +84,40 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
         }.mapValues { it.value?.path }
 
         result.success(dirs)
+    }
+
+    private fun getCodecs(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
+        val codecs = ArrayList<FieldMap>()
+
+        fun getFields(info: MediaCodecInfo): FieldMap {
+            val fields: FieldMap = hashMapOf(
+                "name" to info.name,
+                "isEncoder" to info.isEncoder,
+                "supportedTypes" to info.supportedTypes.joinToString(", "),
+            )
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                if (info.canonicalName != info.name) fields["canonicalName"] = info.canonicalName
+                if (info.isAlias) fields["isAlias"] to info.isAlias
+                if (info.isHardwareAccelerated) fields["isHardwareAccelerated"] to info.isHardwareAccelerated
+                if (info.isSoftwareOnly) fields["isSoftwareOnly"] to info.isSoftwareOnly
+                if (info.isVendor) fields["isVendor"] to info.isVendor
+            }
+            return fields
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            codecs.addAll(MediaCodecList(MediaCodecList.REGULAR_CODECS).codecInfos.map(::getFields))
+        } else {
+            @Suppress("deprecation")
+            val count = MediaCodecList.getCodecCount()
+            for (i in 0 until count) {
+                @Suppress("deprecation")
+                val info = MediaCodecList.getCodecInfoAt(i)
+                codecs.add(getFields(info))
+            }
+        }
+
+        result.success(codecs)
     }
 
     private fun getEnv(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {

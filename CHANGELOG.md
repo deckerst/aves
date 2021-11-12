@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [v1.5.6] - 2021-11-12
+
+### Added
+
+- Viewer: action to add shortcut to media item
+
+### Changed
+
+- Albums / Countries / Tags: use a 3 column layout by default
+
+### Fixed
+
+- video playback was not using hardware-accelerated codecs on recent devices
+- partial fix to deleting/moving file in a clean way on some devices
+
 ## [v1.5.5] - 2021-11-08
 
 ### Added

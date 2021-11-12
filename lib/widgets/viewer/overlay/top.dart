@@ -65,7 +65,7 @@ class ViewerTopOverlay extends StatelessWidget {
   Widget _buildOverlay(BuildContext context, int availableCount, AvesEntry mainEntry, {AvesEntry? pageEntry}) {
     pageEntry ??= mainEntry;
 
-    bool _canDo(EntryAction action) {
+    bool _isVisible(EntryAction action) {
       final targetEntry = EntryActions.pageActions.contains(action) ? pageEntry! : mainEntry;
       switch (action) {
         case EntryAction.toggleFavourite:
@@ -84,10 +84,9 @@ class ViewerTopOverlay extends StatelessWidget {
           return targetEntry.hasGps;
         case EntryAction.viewSource:
           return targetEntry.isSvg;
-        case EntryAction.viewMotionPhotoVideo:
-          return targetEntry.isMotionPhoto;
         case EntryAction.rotateScreen:
           return settings.isRotationLocked;
+        case EntryAction.addShortcut:
         case EntryAction.copyToClipboard:
         case EntryAction.edit:
         case EntryAction.info:
@@ -103,9 +102,9 @@ class ViewerTopOverlay extends StatelessWidget {
     final buttonRow = Selector<Settings, bool>(
       selector: (context, s) => s.isRotationLocked,
       builder: (context, s, child) {
-        final quickActions = settings.viewerQuickActions.where(_canDo).take(availableCount - 1).toList();
-        final inAppActions = EntryActions.inApp.where((action) => !quickActions.contains(action)).where(_canDo).toList();
-        final externalAppActions = EntryActions.externalApp.where(_canDo).toList();
+        final quickActions = settings.viewerQuickActions.where(_isVisible).take(availableCount - 1).toList();
+        final inAppActions = EntryActions.inApp.where((action) => !quickActions.contains(action)).where(_isVisible).toList();
+        final externalAppActions = EntryActions.externalApp.where(_isVisible).toList();
         return _TopOverlayRow(
           quickActions: quickActions,
           inAppActions: inAppActions,
@@ -208,6 +207,7 @@ class _TopOverlayRow extends StatelessWidget {
           onPressed: onPressed,
         );
         break;
+      case EntryAction.addShortcut:
       case EntryAction.copyToClipboard:
       case EntryAction.delete:
       case EntryAction.export:
@@ -220,7 +220,6 @@ class _TopOverlayRow extends StatelessWidget {
       case EntryAction.share:
       case EntryAction.rotateScreen:
       case EntryAction.viewSource:
-      case EntryAction.viewMotionPhotoVideo:
         child = IconButton(
           icon: action.getIcon() ?? const SizedBox(),
           onPressed: onPressed,

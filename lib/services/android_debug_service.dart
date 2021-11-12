@@ -56,6 +56,16 @@ class AndroidDebugService {
     return {};
   }
 
+  static Future<List<Map>> getCodecs() async {
+    try {
+      final result = await platform.invokeMethod('getCodecs');
+      if (result != null) return (result as List).cast<Map>();
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
+    return [];
+  }
+
   static Future<Map> getEnv() async {
     try {
       final result = await platform.invokeMethod('getEnv');
