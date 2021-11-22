@@ -14,9 +14,9 @@ class TagFilter extends CollectionFilter {
 
   TagFilter(this.tag) {
     if (tag.isEmpty) {
-      _test = (entry) => entry.xmpSubjects.isEmpty;
+      _test = (entry) => entry.tags.isEmpty;
     } else {
-      _test = (entry) => entry.xmpSubjects.contains(tag);
+      _test = (entry) => entry.tags.contains(tag);
     }
   }
 

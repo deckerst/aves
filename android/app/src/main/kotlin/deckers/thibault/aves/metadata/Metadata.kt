@@ -32,12 +32,12 @@ object Metadata {
     const val DIR_PNG_TEXTUAL_DATA = "PNG Textual Data" // custom
 
     // types of metadata
+    const val TYPE_COMMENT = "comment"
     const val TYPE_EXIF = "exif"
     const val TYPE_ICC_PROFILE = "icc_profile"
     const val TYPE_IPTC = "iptc"
     const val TYPE_JFIF = "jfif"
     const val TYPE_JPEG_ADOBE = "jpeg_adobe"
-    const val TYPE_JPEG_COMMENT = "jpeg_comment"
     const val TYPE_JPEG_DUCKY = "jpeg_ducky"
     const val TYPE_PHOTOSHOP_IRB = "photoshop_irb"
     const val TYPE_XMP = "xmp"

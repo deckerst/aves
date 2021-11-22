@@ -53,6 +53,8 @@
   "@hideTooltip": {},
   "removeTooltip": "Remove",
   "@removeTooltip": {},
+  "resetButtonTooltip": "Reset",
+  "@resetButtonTooltip": {},
 
   "doubleBackExitMessage": "Tap “back” again to exit.",
   "@doubleBackExitMessage": {},
@@ -145,6 +147,8 @@
 
   "entryInfoActionEditDate": "Edit date & time",
   "@entryInfoActionEditDate": {},
+  "entryInfoActionEditTags": "Edit tags",
+  "@entryInfoActionEditTags": {},
   "entryInfoActionRemoveMetadata": "Remove metadata",
   "@entryInfoActionRemoveMetadata": {},
 
@@ -1025,6 +1029,13 @@
   "@viewerInfoSearchSuggestionResolution": {},
   "viewerInfoSearchSuggestionRights": "Rights",
   "@viewerInfoSearchSuggestionRights": {},
+
+  "tagEditorPageTitle": "Edit Tags",
+  "@tagEditorPageTitle": {},
+  "tagEditorPageNewTagFieldLabel": "New tag",
+  "@tagEditorPageNewTagFieldLabel": {},
+  "tagEditorPageAddTagTooltip": "Add tag",
+  "@tagEditorPageAddTagTooltip": {},
 
   "panoramaEnableSensorControl": "Enable sensor control",
   "@panoramaEnableSensorControl": {},

@@ -10,6 +10,8 @@ import android.provider.MediaStore
 import android.util.Log
 import androidx.exifinterface.media.ExifInterface
 import com.adobe.internal.xmp.XMPException
+import com.adobe.internal.xmp.XMPMetaFactory
+import com.adobe.internal.xmp.options.SerializeOptions
 import com.adobe.internal.xmp.properties.XMPPropertyInfo
 import com.drew.imaging.ImageMetadataReader
 import com.drew.lang.KeyValuePair
@@ -84,6 +86,8 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             "getOverlayMetadata" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getOverlayMetadata) }
             "getMultiPageInfo" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getMultiPageInfo) }
             "getPanoramaInfo" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getPanoramaInfo) }
+            "getIptc" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getIptc) }
+            "getXmp" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getXmp) }
             "hasContentResolverProp" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::hasContentResolverProp) }
             "getContentResolverProp" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getContentResolverProp) }
             else -> result.notImplemented()
@@ -734,6 +738,59 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         result.error("getPanoramaInfo-empty", "failed to read XMP for mimeType=$mimeType uri=$uri", null)
     }
 
+    private fun getIptc(call: MethodCall, result: MethodChannel.Result) {
+        val mimeType = call.argument<String>("mimeType")
+        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        if (mimeType == null || uri == null) {
+            result.error("getIptc-args", "failed because of missing arguments", null)
+            return
+        }
+
+        if (MimeTypes.canReadWithPixyMeta(mimeType)) {
+            try {
+                StorageUtils.openInputStream(context, uri)?.use { input ->
+                    val iptcDataList = PixyMetaHelper.getIptc(input)
+                    result.success(iptcDataList)
+                    return
+                }
+            } catch (e: Exception) {
+                result.error("getIptc-exception", "failed to read IPTC for mimeType=$mimeType uri=$uri", e.message)
+                return
+            }
+        }
+
+        result.success(null)
+    }
+
+    private fun getXmp(call: MethodCall, result: MethodChannel.Result) {
+        val mimeType = call.argument<String>("mimeType")
+        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
+        if (mimeType == null || uri == null) {
+            result.error("getXmp-args", "failed because of missing arguments", null)
+            return
+        }
+
+        if (canReadWithMetadataExtractor(mimeType)) {
+            try {
+                Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
+                    val metadata = ImageMetadataReader.readMetadata(input)
+                    val xmpStrings = metadata.getDirectoriesOfType(XmpDirectory::class.java).map { XMPMetaFactory.serializeToString(it.xmpMeta, xmpSerializeOptions) }.filterNotNull()
+                    result.success(xmpStrings.toMutableList())
+                    return
+                }
+            } catch (e: Exception) {
+                result.error("getXmp-exception", "failed to read XMP for mimeType=$mimeType uri=$uri", e.message)
+                return
+            } catch (e: NoClassDefFoundError) {
+                result.error("getXmp-error", "failed to read XMP for mimeType=$mimeType uri=$uri", e.message)
+                return
+            }
+        }
+
+        result.success(null)
+    }
+
     private fun hasContentResolverProp(call: MethodCall, result: MethodChannel.Result) {
         val prop = call.argument<String>("prop")
         if (prop == null) {
@@ -828,6 +885,11 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             "WebP",
             "XMP",
         )
+
+        private val xmpSerializeOptions = SerializeOptions().apply {
+            omitPacketWrapper = true // e.g. <?xpacket begin="..." id="W5M0MpCehiHzreSzNTczkc9d"?>...<?xpacket end="r"?>
+            omitXmpMetaElement = false // e.g. <x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core Test.SNAPSHOT">...</x:xmpmeta>
+        }
 
         // catalog metadata
         private const val KEY_MIME_TYPE = "mimeType"

@@ -9,7 +9,7 @@ import 'package:aves/model/entry_cache.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
 
-extension ExtraAvesEntry on AvesEntry {
+extension ExtraAvesEntryImages on AvesEntry {
   bool isThumbnailReady({double extent = 0}) => _isReady(_getThumbnailProviderKey(extent));
 
   ThumbnailProvider getThumbnail({double extent = 0}) {

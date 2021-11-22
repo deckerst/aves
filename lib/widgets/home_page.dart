@@ -136,7 +136,7 @@ class _HomePageState extends State<HomePage> {
     final entry = await mediaFileService.getEntry(uri, mimeType);
     if (entry != null) {
       // cataloguing is essential for coordinates and video rotation
-      await entry.catalog(background: false, persist: false, force: false);
+      await entry.catalog(background: false, force: false, persist: false);
     }
     return entry;
   }
