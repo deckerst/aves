@@ -9,7 +9,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'aves_dialog.dart';
+import '../aves_dialog.dart';
 
 class RemoveEntryMetadataDialog extends StatefulWidget {
   final bool showJpegTypes;

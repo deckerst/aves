@@ -169,7 +169,7 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
       // make sure to locate the entry,
       // so that we can display the address instead of coordinates
       // even when initial collection locating has not reached this entry yet
-      await _entry.catalog(background: false, persist: true, force: false);
+      await _entry.catalog(background: false, force: false, persist: true);
       await _entry.locate(background: false, force: false, geocoderLocale: settings.appliedLocale);
     } else {
       Navigator.pop(context);

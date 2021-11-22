@@ -40,7 +40,7 @@ class AvesFilterChip extends StatefulWidget {
   final bool removable, showGenericIcon, useFilterColor;
   final AvesFilterDecoration? decoration;
   final String? banner;
-  final Widget? details;
+  final Widget? leadingOverride, details;
   final double padding, maxWidth;
   final HeroType heroType;
   final FilterCallback? onTap;
@@ -64,6 +64,7 @@ class AvesFilterChip extends StatefulWidget {
     this.useFilterColor = true,
     this.decoration,
     this.banner,
+    this.leadingOverride,
     this.details,
     this.padding = 6.0,
     this.maxWidth = defaultMaxChipWidth,
@@ -162,7 +163,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
     final chipBackground = Theme.of(context).scaffoldBackgroundColor;
     final textScaleFactor = MediaQuery.textScaleFactorOf(context);
     final iconSize = AvesFilterChip.iconSize * textScaleFactor;
-    final leading = filter.iconBuilder(context, iconSize, showGenericIcon: widget.showGenericIcon);
+    final leading = widget.leadingOverride ?? filter.iconBuilder(context, iconSize, showGenericIcon: widget.showGenericIcon);
     final trailing = widget.removable ? Icon(AIcons.clear, size: iconSize) : null;
 
     final decoration = widget.decoration;

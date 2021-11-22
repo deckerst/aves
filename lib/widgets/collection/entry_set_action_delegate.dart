@@ -5,6 +5,7 @@ import 'package:aves/app_mode.dart';
 import 'package:aves/model/actions/entry_set_actions.dart';
 import 'package:aves/model/actions/move_type.dart';
 import 'package:aves/model/entry.dart';
+import 'package:aves/model/entry_xmp_iptc.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/highlight.dart';
@@ -81,6 +82,7 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
       case EntrySetAction.rotateCW:
       case EntrySetAction.flip:
       case EntrySetAction.editDate:
+      case EntrySetAction.editTags:
       case EntrySetAction.removeMetadata:
         return appMode == AppMode.main && isSelecting;
     }
@@ -122,6 +124,7 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
       case EntrySetAction.rotateCW:
       case EntrySetAction.flip:
       case EntrySetAction.editDate:
+      case EntrySetAction.editTags:
       case EntrySetAction.removeMetadata:
         return hasSelection;
     }
@@ -180,6 +183,9 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
         break;
       case EntrySetAction.editDate:
         _editDate(context);
+        break;
+      case EntrySetAction.editTags:
+        _editTags(context);
         break;
       case EntrySetAction.removeMetadata:
         _removeMetadata(context);
@@ -399,7 +405,7 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
     BuildContext context,
     Selection<AvesEntry> selection,
     Set<AvesEntry> todoItems,
-    Future<bool> Function(AvesEntry entry) op,
+    Future<Set<EntryDataType>> Function(AvesEntry entry) op,
   ) async {
     final selectionDirs = todoItems.map((e) => e.directory).whereNotNull().toSet();
     final todoCount = todoItems.length;
@@ -411,8 +417,8 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
     showOpReport<ImageOpEvent>(
       context: context,
       opStream: Stream.fromIterable(todoItems).asyncMap((entry) async {
-        final success = await op(entry);
-        return ImageOpEvent(success: success, uri: entry.uri);
+        final dataTypes = await op(entry);
+        return ImageOpEvent(success: dataTypes.isNotEmpty, uri: entry.uri);
       }).asBroadcastStream(),
       itemCount: todoCount,
       onDone: (processed) async {
@@ -470,6 +476,8 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
     );
     if (confirmed == null || !confirmed) return null;
 
+    // wait for the dialog to hide as applying the change may block the UI
+    await Future.delayed(Durations.dialogTransitionAnimation);
     return supported;
   }
 
@@ -497,13 +505,35 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
     final selection = context.read<Selection<AvesEntry>>();
     final selectedItems = _getExpandedSelectedItems(selection);
 
-    final todoItems = await _getEditableItems(context, selectedItems: selectedItems, canEdit: (entry) => entry.canEditExif);
+    final todoItems = await _getEditableItems(context, selectedItems: selectedItems, canEdit: (entry) => entry.canEditDate);
     if (todoItems == null || todoItems.isEmpty) return;
 
     final modifier = await selectDateModifier(context, todoItems);
     if (modifier == null) return;
 
     await _edit(context, selection, todoItems, (entry) => entry.editDate(modifier));
+  }
+
+  Future<void> _editTags(BuildContext context) async {
+    final selection = context.read<Selection<AvesEntry>>();
+    final selectedItems = _getExpandedSelectedItems(selection);
+
+    final todoItems = await _getEditableItems(context, selectedItems: selectedItems, canEdit: (entry) => entry.canEditTags);
+    if (todoItems == null || todoItems.isEmpty) return;
+
+    final newTagsByEntry = await selectTags(context, todoItems);
+    if (newTagsByEntry == null) return;
+
+    // only process modified items
+    todoItems.removeWhere((entry) {
+      final newTags = newTagsByEntry[entry] ?? entry.tags;
+      final currentTags = entry.tags;
+      return newTags.length == currentTags.length && newTags.every(currentTags.contains);
+    });
+
+    if (todoItems.isEmpty) return;
+
+    await _edit(context, selection, todoItems, (entry) => entry.editTags(newTagsByEntry[entry]!));
   }
 
   Future<void> _removeMetadata(BuildContext context) async {

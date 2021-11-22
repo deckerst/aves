@@ -20,7 +20,7 @@ abstract class MetadataDb {
 
   Future<void> reset();
 
-  Future<void> removeIds(Set<int> contentIds, {required bool metadataOnly});
+  Future<void> removeIds(Set<int> contentIds, {Set<EntryDataType>? dataTypes});
 
   // entries
 
@@ -187,8 +187,10 @@ class SqfliteMetadataDb implements MetadataDb {
   }
 
   @override
-  Future<void> removeIds(Set<int> contentIds, {required bool metadataOnly}) async {
+  Future<void> removeIds(Set<int> contentIds, {Set<EntryDataType>? dataTypes}) async {
     if (contentIds.isEmpty) return;
+
+    final _dataTypes = dataTypes ?? EntryDataType.values.toSet();
 
     final db = await _database;
     // using array in `whereArgs` and using it with `where contentId IN ?` is a pain, so we prefer `batch` instead
@@ -196,11 +198,17 @@ class SqfliteMetadataDb implements MetadataDb {
     const where = 'contentId = ?';
     contentIds.forEach((id) {
       final whereArgs = [id];
-      batch.delete(entryTable, where: where, whereArgs: whereArgs);
-      batch.delete(dateTakenTable, where: where, whereArgs: whereArgs);
-      batch.delete(metadataTable, where: where, whereArgs: whereArgs);
-      batch.delete(addressTable, where: where, whereArgs: whereArgs);
-      if (!metadataOnly) {
+      if (_dataTypes.contains(EntryDataType.basic)) {
+        batch.delete(entryTable, where: where, whereArgs: whereArgs);
+      }
+      if (_dataTypes.contains(EntryDataType.catalog)) {
+        batch.delete(dateTakenTable, where: where, whereArgs: whereArgs);
+        batch.delete(metadataTable, where: where, whereArgs: whereArgs);
+      }
+      if (_dataTypes.contains(EntryDataType.address)) {
+        batch.delete(addressTable, where: where, whereArgs: whereArgs);
+      }
+      if (_dataTypes.contains(EntryDataType.references)) {
         batch.delete(favouriteTable, where: where, whereArgs: whereArgs);
         batch.delete(coverTable, where: where, whereArgs: whereArgs);
         batch.delete(videoPlaybackTable, where: where, whereArgs: whereArgs);

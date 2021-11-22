@@ -27,10 +27,10 @@ import 'package:provider/provider.dart';
 class CollectionSearchDelegate {
   final CollectionSource source;
   final CollectionLens? parentCollection;
-  final ValueNotifier<String?> expandedSectionNotifier = ValueNotifier(null);
+  final ValueNotifier<String?> _expandedSectionNotifier = ValueNotifier(null);
   final bool canPop;
 
-  static const searchHistoryCount = 10;
+  static const int searchHistoryCount = 10;
   static final typeFilters = [
     FavouriteFilter.instance,
     MimeFilter.image,
@@ -90,7 +90,7 @@ class CollectionSearchDelegate {
     bool containQuery(String s) => s.toUpperCase().contains(upQuery);
     return SafeArea(
       child: ValueListenableBuilder<String?>(
-          valueListenable: expandedSectionNotifier,
+          valueListenable: _expandedSectionNotifier,
           builder: (context, expandedSection, child) {
             final queryFilter = _buildQueryFilter(false);
             return Selector<Settings, Set<CollectionFilter>>(
@@ -195,9 +195,10 @@ class CollectionSearchDelegate {
     return ExpandableFilterRow(
       title: title,
       filters: filters,
-      expandedNotifier: expandedSectionNotifier,
+      expandedNotifier: _expandedSectionNotifier,
       heroTypeBuilder: heroTypeBuilder,
       onTap: (filter) => _select(context, filter is QueryFilter ? QueryFilter(filter.query) : filter),
+      onLongPress: AvesFilterChip.showDefaultLongPressMenu,
     );
   }
 

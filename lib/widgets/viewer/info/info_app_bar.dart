@@ -13,19 +13,20 @@ import 'package:flutter/scheduler.dart';
 
 class InfoAppBar extends StatelessWidget {
   final AvesEntry entry;
+  final EntryInfoActionDelegate actionDelegate;
   final ValueNotifier<Map<String, MetadataDirectory>> metadataNotifier;
   final VoidCallback onBackPressed;
 
   const InfoAppBar({
     Key? key,
     required this.entry,
+    required this.actionDelegate,
     required this.metadataNotifier,
     required this.onBackPressed,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final actionDelegate = EntryInfoActionDelegate(entry);
     final menuActions = EntryInfoActions.all.where(actionDelegate.isVisible);
 
     return SliverAppBar(

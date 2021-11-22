@@ -38,7 +38,7 @@ mixin TagMixin on SourceBase {
     var stopCheckCount = 0;
     final newMetadata = <CatalogMetadata>{};
     for (final entry in todo) {
-      await entry.catalog(background: true, persist: true, force: force);
+      await entry.catalog(background: true, force: force, persist: true);
       if (entry.isCatalogued) {
         newMetadata.add(entry.catalogMetadata!);
         if (newMetadata.length >= commitCountThreshold) {
@@ -63,7 +63,7 @@ mixin TagMixin on SourceBase {
   }
 
   void updateTags() {
-    final updatedTags = visibleEntries.expand((entry) => entry.xmpSubjects).toSet().toList()..sort(compareAsciiUpperCase);
+    final updatedTags = visibleEntries.expand((entry) => entry.tags).toSet().toList()..sort(compareAsciiUpperCase);
     if (!listEquals(updatedTags, sortedTags)) {
       sortedTags = List.unmodifiable(updatedTags);
       invalidateTagFilterSummary();
@@ -85,7 +85,7 @@ mixin TagMixin on SourceBase {
       _filterEntryCountMap.clear();
       _filterRecentEntryMap.clear();
     } else {
-      tags = entries.where((entry) => entry.isCatalogued).expand((entry) => entry.xmpSubjects).toSet();
+      tags = entries.where((entry) => entry.isCatalogued).expand((entry) => entry.tags).toSet();
       tags.forEach(_filterEntryCountMap.remove);
     }
     eventBus.fire(TagSummaryInvalidatedEvent(tags));

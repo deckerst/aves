@@ -24,6 +24,8 @@ import 'package:country_code/country_code.dart';
 import 'package:flutter/foundation.dart';
 import 'package:latlong2/latlong.dart';
 
+enum EntryDataType { basic, catalog, address, references }
+
 class AvesEntry {
   String uri;
   String? _path, _directory, _filename, _extension;
@@ -235,6 +237,10 @@ class AvesEntry {
 
   bool get canEdit => path != null;
 
+  bool get canEditDate => canEdit && canEditExif;
+
+  bool get canEditTags => canEdit && canEditXmp;
+
   bool get canRotateAndFlip => canEdit && canEditExif;
 
   // as of androidx.exifinterface:exifinterface:1.3.3
@@ -244,6 +250,30 @@ class AvesEntry {
       case MimeTypes.jpeg:
       case MimeTypes.png:
       case MimeTypes.webp:
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  // as of latest PixyMeta
+  bool get canEditIptc {
+    switch (mimeType.toLowerCase()) {
+      case MimeTypes.jpeg:
+      case MimeTypes.tiff:
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  // as of latest PixyMeta
+  bool get canEditXmp {
+    switch (mimeType.toLowerCase()) {
+      case MimeTypes.gif:
+      case MimeTypes.jpeg:
+      case MimeTypes.png:
+      case MimeTypes.tiff:
         return true;
       default:
         return false;
@@ -394,11 +424,11 @@ class AvesEntry {
 
   LatLng? get latLng => hasGps ? LatLng(_catalogMetadata!.latitude!, _catalogMetadata!.longitude!) : null;
 
-  List<String>? _xmpSubjects;
+  Set<String>? _tags;
 
-  List<String> get xmpSubjects {
-    _xmpSubjects ??= _catalogMetadata?.xmpSubjects?.split(';').where((tag) => tag.isNotEmpty).toList() ?? [];
-    return _xmpSubjects!;
+  Set<String> get tags {
+    _tags ??= _catalogMetadata?.xmpSubjects?.split(';').where((tag) => tag.isNotEmpty).toSet() ?? {};
+    return _tags!;
   }
 
   String? _bestTitle;
@@ -423,7 +453,7 @@ class AvesEntry {
     catalogDateMillis = newMetadata?.dateMillis;
     _catalogMetadata = newMetadata;
     _bestTitle = null;
-    _xmpSubjects = null;
+    _tags = null;
     metadataChangeNotifier.notifyListeners();
 
     _onVisualFieldChanged(oldDateModifiedSecs, oldRotationDegrees, oldIsFlipped);
@@ -434,7 +464,7 @@ class AvesEntry {
     addressDetails = null;
   }
 
-  Future<void> catalog({required bool background, required bool persist, required bool force}) async {
+  Future<void> catalog({required bool background, required bool force, required bool persist}) async {
     if (isCatalogued && !force) return;
     if (isSvg) {
       // vector image sizing is not essential, so we should not spend time for it during loading
@@ -593,58 +623,80 @@ class AvesEntry {
     metadataChangeNotifier.notifyListeners();
   }
 
-  Future<void> refresh({required bool background, required bool persist, required bool force, required Locale geocoderLocale}) async {
-    _catalogMetadata = null;
-    _addressDetails = null;
+  Future<void> refresh({
+    required bool background,
+    required bool persist,
+    required Set<EntryDataType> dataTypes,
+    required Locale geocoderLocale,
+  }) async {
+    // clear derived fields
     _bestDate = null;
     _bestTitle = null;
-    _xmpSubjects = null;
+    _tags = null;
+
     if (persist) {
-      await metadataDb.removeIds({contentId!}, metadataOnly: true);
+      await metadataDb.removeIds({contentId!}, dataTypes: dataTypes);
     }
 
-    final updated = await mediaFileService.getEntry(uri, mimeType);
-    if (updated != null) {
-      await _applyNewFields(updated.toMap(), persist: persist);
-      await catalog(background: background, persist: persist, force: force);
-      await locate(background: background, force: force, geocoderLocale: geocoderLocale);
+    final updatedEntry = await mediaFileService.getEntry(uri, mimeType);
+    if (updatedEntry != null) {
+      await _applyNewFields(updatedEntry.toMap(), persist: persist);
     }
+    await catalog(background: background, force: dataTypes.contains(EntryDataType.catalog), persist: persist);
+    await locate(background: background, force: dataTypes.contains(EntryDataType.address), geocoderLocale: geocoderLocale);
   }
 
-  Future<bool> rotate({required bool clockwise, required bool persist}) async {
+  Future<Set<EntryDataType>> rotate({required bool clockwise, required bool persist}) async {
     final newFields = await metadataEditService.rotate(this, clockwise: clockwise);
-    if (newFields.isEmpty) return false;
+    if (newFields.isEmpty) return {};
 
     await _applyNewFields(newFields, persist: persist);
-    return true;
+    return {
+      EntryDataType.basic,
+      EntryDataType.catalog,
+    };
   }
 
-  Future<bool> flip({required bool persist}) async {
+  Future<Set<EntryDataType>> flip({required bool persist}) async {
     final newFields = await metadataEditService.flip(this);
-    if (newFields.isEmpty) return false;
+    if (newFields.isEmpty) return {};
 
     await _applyNewFields(newFields, persist: persist);
-    return true;
+    return {
+      EntryDataType.basic,
+      EntryDataType.catalog,
+    };
   }
 
-  Future<bool> editDate(DateModifier modifier) async {
+  Future<Set<EntryDataType>> editDate(DateModifier modifier) async {
     if (modifier.action == DateEditAction.extractFromTitle) {
       final _title = bestTitle;
-      if (_title == null) return false;
+      if (_title == null) return {};
       final date = parseUnknownDateFormat(_title);
       if (date == null) {
         await reportService.recordError('failed to parse date from title=$_title', null);
-        return false;
+        return {};
       }
       modifier = DateModifier(DateEditAction.set, modifier.fields, dateTime: date);
     }
     final newFields = await metadataEditService.editDate(this, modifier);
-    return newFields.isNotEmpty;
+    return newFields.isEmpty
+        ? {}
+        : {
+            EntryDataType.basic,
+            EntryDataType.catalog,
+          };
   }
 
-  Future<bool> removeMetadata(Set<MetadataType> types) async {
+  Future<Set<EntryDataType>> removeMetadata(Set<MetadataType> types) async {
     final newFields = await metadataEditService.removeTypes(this, types);
-    return newFields.isNotEmpty;
+    return newFields.isEmpty
+        ? {}
+        : {
+            EntryDataType.basic,
+            EntryDataType.catalog,
+            EntryDataType.address,
+          };
   }
 
   Future<bool> delete() {

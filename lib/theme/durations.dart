@@ -46,6 +46,7 @@ class Durations {
   // info animations
   static const mapStyleSwitchAnimation = Duration(milliseconds: 300);
   static const xmpStructArrayCardTransition = Duration(milliseconds: 300);
+  static const tagEditorTransition = Duration(milliseconds: 200);
 
   // settings animations
   static const quickActionListAnimation = Duration(milliseconds: 200);

@@ -1,4 +1,5 @@
 import 'package:aves/image_providers/app_icon_image_provider.dart';
+import 'package:aves/model/actions/entry_info_actions.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/favourites.dart';
 import 'package:aves/model/filters/album.dart';
@@ -9,11 +10,13 @@ import 'package:aves/model/filters/type.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/format.dart';
+import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
+import 'package:aves/widgets/viewer/info/entry_info_action_delegate.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -22,12 +25,16 @@ import 'package:provider/provider.dart';
 class BasicSection extends StatelessWidget {
   final AvesEntry entry;
   final CollectionLens? collection;
+  final EntryInfoActionDelegate actionDelegate;
+  final ValueNotifier<bool> isEditingTagNotifier;
   final FilterCallback onFilter;
 
   const BasicSection({
     Key? key,
     required this.entry,
     this.collection,
+    required this.actionDelegate,
+    required this.isEditingTagNotifier,
     required this.onFilter,
   }) : super(key: key);
 
@@ -80,7 +87,7 @@ class BasicSection extends StatelessWidget {
   }
 
   Widget _buildChips(BuildContext context) {
-    final tags = entry.xmpSubjects..sort(compareAsciiUpperCase);
+    final tags = entry.tags.toList()..sort(compareAsciiUpperCase);
     final album = entry.directory;
     final filters = {
       MimeFilter(entry.mimeType),
@@ -101,19 +108,60 @@ class BasicSection extends StatelessWidget {
           ...filters,
           if (entry.isFavourite) FavouriteFilter.instance,
         ]..sort();
-        if (effectiveFilters.isEmpty) return const SizedBox.shrink();
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AvesFilterChip.outlineWidth / 2) + const EdgeInsets.only(top: 8),
-          child: Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: effectiveFilters
-                .map((filter) => AvesFilterChip(
-                      filter: filter,
-                      onTap: onFilter,
-                    ))
-                .toList(),
-          ),
+
+        final children = <Widget>[
+          ...effectiveFilters.map((filter) => AvesFilterChip(
+                filter: filter,
+                onTap: onFilter,
+              )),
+          if (actionDelegate.canApply(EntryInfoAction.editTags)) _buildEditTagButton(context),
+        ];
+
+        return children.isEmpty
+            ? const SizedBox()
+            : Padding(
+                padding: const EdgeInsets.symmetric(horizontal: AvesFilterChip.outlineWidth / 2) + const EdgeInsets.only(top: 8),
+                child: Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: children,
+                ),
+              );
+      },
+    );
+  }
+
+  Widget _buildEditTagButton(BuildContext context) {
+    const action = EntryInfoAction.editTags;
+    return ValueListenableBuilder<bool>(
+      valueListenable: isEditingTagNotifier,
+      builder: (context, isEditing, child) {
+        return Stack(
+          children: [
+            DecoratedBox(
+              decoration: const BoxDecoration(
+                border: Border.fromBorderSide(BorderSide(
+                  color: AvesFilterChip.defaultOutlineColor,
+                  width: AvesFilterChip.outlineWidth,
+                )),
+                borderRadius: BorderRadius.all(Radius.circular(AvesFilterChip.defaultRadius)),
+              ),
+              child: IconButton(
+                icon: const Icon(AIcons.addTag),
+                onPressed: isEditing ? null : () => actionDelegate.onActionSelected(context, action),
+                tooltip: action.getText(context),
+              ),
+            ),
+            if (isEditing)
+              const Positioned.fill(
+                child: Padding(
+                  padding: EdgeInsets.all(1.0),
+                  child: CircularProgressIndicator(
+                    strokeWidth: AvesFilterChip.outlineWidth,
+                  ),
+                ),
+              ),
+          ],
         );
       },
     );

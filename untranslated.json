@@ -1,1 +1,17 @@
-{}
+{
+  "ko": [
+    "resetButtonTooltip",
+    "entryInfoActionEditTags",
+    "tagEditorPageTitle",
+    "tagEditorPageNewTagFieldLabel",
+    "tagEditorPageAddTagTooltip"
+  ],
+
+  "ru": [
+    "resetButtonTooltip",
+    "entryInfoActionEditTags",
+    "tagEditorPageTitle",
+    "tagEditorPageNewTagFieldLabel",
+    "tagEditorPageAddTagTooltip"
+  ]
+}

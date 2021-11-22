@@ -13,6 +13,8 @@ enum DateEditAction {
 }
 
 enum MetadataType {
+  // JPEG COM marker or GIF comment
+  comment,
   // Exif: https://en.wikipedia.org/wiki/Exif
   exif,
   // ICC profile: https://en.wikipedia.org/wiki/ICC_profile
@@ -23,8 +25,6 @@ enum MetadataType {
   jfif,
   // JPEG APP14 / Adobe: https://www.exiftool.org/TagNames/JPEG.html#Adobe
   jpegAdobe,
-  // JPEG COM marker
-  jpegComment,
   // JPEG APP12 / Ducky: https://www.exiftool.org/TagNames/APP12.html#Ducky
   jpegDucky,
   // Photoshop IRB: https://www.adobe.com/devnet-apps/photoshop/fileformatashtml/
@@ -42,6 +42,7 @@ class MetadataTypes {
   static const common = {
     MetadataType.exif,
     MetadataType.xmp,
+    MetadataType.comment,
     MetadataType.iccProfile,
     MetadataType.iptc,
     MetadataType.photoshopIrb,
@@ -50,7 +51,6 @@ class MetadataTypes {
   static const jpeg = {
     MetadataType.jfif,
     MetadataType.jpegAdobe,
-    MetadataType.jpegComment,
     MetadataType.jpegDucky,
   };
 }
@@ -59,6 +59,8 @@ extension ExtraMetadataType on MetadataType {
   // match `ExifInterface` directory names
   String getText() {
     switch (this) {
+      case MetadataType.comment:
+        return 'Comment';
       case MetadataType.exif:
         return 'Exif';
       case MetadataType.iccProfile:
@@ -69,8 +71,6 @@ extension ExtraMetadataType on MetadataType {
         return 'JFIF';
       case MetadataType.jpegAdobe:
         return 'Adobe JPEG';
-      case MetadataType.jpegComment:
-        return 'JpegComment';
       case MetadataType.jpegDucky:
         return 'Ducky';
       case MetadataType.photoshopIrb:

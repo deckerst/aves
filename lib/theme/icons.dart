@@ -33,6 +33,7 @@ class AIcons {
   // actions
   static const IconData add = Icons.add_circle_outline;
   static const IconData addShortcut = Icons.add_to_home_screen_outlined;
+  static const IconData addTag = MdiIcons.tagPlusOutline;
   static const IconData replay10 = Icons.replay_10_outlined;
   static const IconData skip10 = Icons.forward_10_outlined;
   static const IconData captureFrame = Icons.screenshot_outlined;
@@ -66,6 +67,7 @@ class AIcons {
   static const IconData print = Icons.print_outlined;
   static const IconData refresh = Icons.refresh_outlined;
   static const IconData rename = Icons.title_outlined;
+  static const IconData reset = Icons.restart_alt_outlined;
   static const IconData rotateLeft = Icons.rotate_left_outlined;
   static const IconData rotateRight = Icons.rotate_right_outlined;
   static const IconData rotateScreen = Icons.screen_rotation_outlined;
