@@ -156,7 +156,7 @@ class _TagEditorPageState extends State<TagEditorPage> {
                       ),
                       const Divider(height: 1),
                       _FilterRow(
-                        title: l10n.searchSectionRecent,
+                        title: l10n.tagEditorSectionRecent,
                         filters: recentFilters,
                         expandedNotifier: _expandedSectionNotifier,
                         onTap: _addTag,

@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+
+- add and remove tags to JPEG/GIF/PNG/TIFF images
+- French translation
+
 ## [v1.5.6] - 2021-11-12
 
 ### Added
