@@ -186,7 +186,7 @@
   "removeEntryMetadataDialogTitle": "메타데이터 삭제",
   "removeEntryMetadataDialogMore": "더 보기",
 
-  "removeEntryMetadataMotionPhotoXmpWarningDialogMessage": "XMP가 있어야 모션 포토에 포함되는 동영상을 재생할 수 있습니다. 삭제하시겠습니까?",
+  "removeEntryMetadataMotionPhotoXmpWarningDialogMessage": "XMP가 있어야 모션 포토에 포함되는 동영상을 재생할 수 있습니다.\n\n삭제하시겠습니까?",
 
   "videoSpeedDialogLabel": "재생 배속",
 
@@ -292,6 +292,7 @@
   "drawerCollectionFavourites": "즐겨찾기",
   "drawerCollectionImages": "사진",
   "drawerCollectionVideos": "동영상",
+  "drawerCollectionAnimated": "애니메이션",
   "drawerCollectionMotionPhotos": "모션 포토",
   "drawerCollectionPanoramas": "파노라마",
   "drawerCollectionRaws": "Raw 이미지",
@@ -495,6 +496,8 @@
   "viewerInfoSearchSuggestionDimensions": "크기",
   "viewerInfoSearchSuggestionResolution": "해상도",
   "viewerInfoSearchSuggestionRights": "권리",
+
+  "tagEditorSectionRecent": "최근 이용기록",
 
   "panoramaEnableSensorControl": "센서 제어 활성화",
   "panoramaDisableSensorControl": "센서 제어 비활성화",

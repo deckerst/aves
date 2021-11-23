@@ -421,7 +421,7 @@
   "removeEntryMetadataDialogMore": "More",
   "@removeEntryMetadataDialogMore": {},
 
-  "removeEntryMetadataMotionPhotoXmpWarningDialogMessage": "XMP is required to play the video inside a motion photo. Are you sure you want to remove it?",
+  "removeEntryMetadataMotionPhotoXmpWarningDialogMessage": "XMP is required to play the video inside a motion photo.\n\nAre you sure you want to remove it?",
   "@removeEntryMetadataMotionPhotoXmpWarningDialogMessage": {},
 
   "videoSpeedDialogLabel": "Playback speed",
@@ -650,6 +650,8 @@
   "@drawerCollectionImages": {},
   "drawerCollectionVideos": "Videos",
   "@drawerCollectionVideos": {},
+  "drawerCollectionAnimated": "Animated",
+  "@drawerCollectionAnimated": {},
   "drawerCollectionMotionPhotos": "Motion photos",
   "@drawerCollectionMotionPhotos": {},
   "drawerCollectionPanoramas": "Panoramas",
@@ -1036,6 +1038,8 @@
   "@tagEditorPageNewTagFieldLabel": {},
   "tagEditorPageAddTagTooltip": "Add tag",
   "@tagEditorPageAddTagTooltip": {},
+  "tagEditorSectionRecent": "Recent",
+  "@tagEditorSectionRecent": {},
 
   "panoramaEnableSensorControl": "Enable sensor control",
   "@panoramaEnableSensorControl": {},

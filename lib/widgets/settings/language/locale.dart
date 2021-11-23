@@ -44,6 +44,8 @@ class LocaleTile extends StatelessWidget {
     switch (locale.languageCode) {
       case 'en':
         return 'English';
+      case 'fr':
+        return 'Français';
       case 'ko':
         return '한국어';
       case 'ru':

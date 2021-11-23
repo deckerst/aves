@@ -186,7 +186,7 @@
   "removeEntryMetadataDialogTitle": "Удаление метаданных",
   "removeEntryMetadataDialogMore": "Дополнительно",
 
-  "removeEntryMetadataMotionPhotoXmpWarningDialogMessage": "Для воспроизведения видео внутри этой живой фотографии требуется XMP профиль. Вы уверены, что хотите удалить его?",
+  "removeEntryMetadataMotionPhotoXmpWarningDialogMessage": "Для воспроизведения видео внутри этой живой фотографии требуется XMP профиль.\n\nВы уверены, что хотите удалить его?",
 
   "videoSpeedDialogLabel": "Скорость воспроизведения",
 
@@ -292,6 +292,7 @@
   "drawerCollectionFavourites": "Избранное",
   "drawerCollectionImages": "Изображения",
   "drawerCollectionVideos": "Видео",
+  "drawerCollectionAnimated": "GIF",
   "drawerCollectionMotionPhotos": "Живые фото",
   "drawerCollectionPanoramas": "Панорамы",
   "drawerCollectionRaws": "RAW",
@@ -495,6 +496,8 @@
   "viewerInfoSearchSuggestionDimensions": "Измерения",
   "viewerInfoSearchSuggestionResolution": "Разрешение",
   "viewerInfoSearchSuggestionRights": "Права",
+
+  "tagEditorSectionRecent": "Недавние",
 
   "panoramaEnableSensorControl": "Включить сенсорное управление",
   "panoramaDisableSensorControl": "Отключить сенсорное управление",
