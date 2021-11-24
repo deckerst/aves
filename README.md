@@ -29,7 +29,7 @@ It scans your media collection to identify **motion photos**, **panoramas** (aka
 
 **Navigation and search** is an important part of Aves. The goal is for users to easily flow from albums to photos to tags to maps, etc.
 
-Aves integrates with Android (from **API 20 to 31**, i.e. from Lollipop to S) with features such as **app shortcuts** and **global search** handling. It also works as a **media viewer and picker**.
+Aves integrates with Android (from **API 19 to 31**, i.e. from KitKat to S) with features such as **app shortcuts** and **global search** handling. It also works as a **media viewer and picker**.
 
 ## Screenshots
 
@@ -80,6 +80,11 @@ To build the project, create a file named `<app dir>/android/key.properties`. It
 To run the app:
 ```
 # flutter run -t lib/main_play.dart --flavor play
+```
+
+To run the app on API 19 emulators:
+```
+# flutter run -t lib/main_play.dart --flavor play --enable-software-rendering
 ```
 
 [Version badge]: https://img.shields.io/github/v/release/deckerst/aves?include_prereleases&sort=semver

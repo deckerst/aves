@@ -27,7 +27,7 @@ class AccessibilityHandler(private val activity: Activity) : MethodCallHandler {
         try {
             removed = Settings.Global.getFloat(activity.contentResolver, Settings.Global.TRANSITION_ANIMATION_SCALE) == 0f
         } catch (e: Exception) {
-            Log.w(LOG_TAG, "failed to get settings", e)
+            Log.w(LOG_TAG, "failed to get settings with error=${e.message}", null)
         }
         result.success(removed)
     }

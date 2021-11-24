@@ -4,21 +4,12 @@
     android:installLocation="auto">
 
     <!--
-    Scoped storage for primary storage is unusable on Android Q,
-    because users are required to confirm each file to be edited or deleted.
-    These items can only be deleted one by one after catching
-    a `RecoverableSecurityException` and requesting permission for each.
-
-    Android R improvements:
-    - bulk changes (e.g. `createDeleteRequest`):
-    https://developer.android.com/preview/privacy/storage#media-file-access
-    - raw path access:
-    https://developer.android.com/preview/privacy/storage#media-files-raw-paths
+    Scoped storage on Android Q is inconvenient because users need to confirm edition on each individual file.
+    So we request `WRITE_EXTERNAL_STORAGE` until Q (29), and enable `requestLegacyExternalStorage`
     -->
 
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <!-- request write permission until Q (29) included, because scoped storage is unusable -->
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="29"
@@ -33,6 +24,9 @@
 
     <!-- for API < 26 -->
     <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
+
+    <!-- allow install on API 19, but Google Maps is from API 20 -->
+    <uses-sdk tools:overrideLibrary="io.flutter.plugins.googlemaps" />
 
     <!-- from Android R, we should define <queries> to make other apps visible to this app -->
     <queries>
