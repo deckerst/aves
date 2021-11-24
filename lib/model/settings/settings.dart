@@ -152,8 +152,8 @@ class Settings extends ChangeNotifier {
     enableOverlayBlurEffect = performanceClass >= 29;
 
     // availability
-    final hasPlayServices = await availability.hasPlayServices;
-    if (hasPlayServices) {
+    final canUseGoogleMaps = await availability.canUseGoogleMaps;
+    if (canUseGoogleMaps) {
       infoMapStyle = EntryMapStyle.googleNormal;
     } else {
       final styles = EntryMapStyle.values.whereNot((v) => v.isGoogleMaps).toList();

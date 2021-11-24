@@ -56,7 +56,7 @@ class SettingsChangeStreamHandler(private val context: Context) : EventChannel.S
                 }
 
             } catch (e: Exception) {
-                Log.w(LOG_TAG, "failed to get settings", e)
+                Log.w(LOG_TAG, "failed to get settings with error=${e.message}", null)
             }
             return changed
         }

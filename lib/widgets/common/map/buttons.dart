@@ -135,8 +135,8 @@ class MapButtonPanel extends StatelessWidget {
                       child: MapOverlayButton(
                         icon: const Icon(AIcons.layers),
                         onPressed: () async {
-                          final hasPlayServices = await availability.hasPlayServices;
-                          final availableStyles = EntryMapStyle.values.where((style) => !style.isGoogleMaps || hasPlayServices);
+                          final canUseGoogleMaps = await availability.canUseGoogleMaps;
+                          final availableStyles = EntryMapStyle.values.where((style) => !style.isGoogleMaps || canUseGoogleMaps);
                           final preferredStyle = settings.infoMapStyle;
                           final initialStyle = availableStyles.contains(preferredStyle) ? preferredStyle : availableStyles.first;
                           final style = await showDialog<EntryMapStyle>(

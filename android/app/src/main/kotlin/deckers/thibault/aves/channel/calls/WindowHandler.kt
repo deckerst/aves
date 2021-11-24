@@ -45,7 +45,7 @@ class WindowHandler(private val activity: Activity) : MethodCallHandler {
         try {
             locked = Settings.System.getInt(activity.contentResolver, Settings.System.ACCELEROMETER_ROTATION) == 0
         } catch (e: Exception) {
-            Log.w(LOG_TAG, "failed to get settings", e)
+            Log.w(LOG_TAG, "failed to get settings with error=${e.message}", null)
         }
         result.success(locked)
     }
