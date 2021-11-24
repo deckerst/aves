@@ -55,7 +55,13 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
   static const gifLikeBitRateThreshold = 2 << 18; // 512kB/s (4Mb/s)
   static const captureFrameEnabled = true;
 
-  IjkPlayerAvesVideoController(AvesEntry entry) : super(entry) {
+  IjkPlayerAvesVideoController(
+    AvesEntry entry, {
+    required bool persistPlayback,
+  }) : super(
+          entry,
+          persistPlayback: persistPlayback,
+        ) {
     _instance = FijkPlayer();
     _valueStream.map((value) => value.videoRenderStart).firstWhere((v) => v, orElse: () => false).then(
           (started) => canCaptureFrameNotifier.value = captureFrameEnabled && started,

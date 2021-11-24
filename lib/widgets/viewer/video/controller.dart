@@ -11,10 +11,11 @@ import 'package:flutter/material.dart';
 
 abstract class AvesVideoController {
   final AvesEntry _entry;
+  final bool persistPlayback;
 
   AvesEntry get entry => _entry;
 
-  AvesVideoController(AvesEntry entry) : _entry = entry;
+  AvesVideoController(AvesEntry entry, {required this.persistPlayback}) : _entry = entry;
 
   static const resumeTimeSaveMinProgress = .05;
   static const resumeTimeSaveMaxProgress = .95;
@@ -29,22 +30,26 @@ abstract class AvesVideoController {
     final contentId = entry.contentId;
     if (contentId == null || !isReady || duration < resumeTimeSaveMinDuration.inMilliseconds) return;
 
-    final _progress = progress;
-    if (resumeTimeSaveMinProgress < _progress && _progress < resumeTimeSaveMaxProgress) {
-      await metadataDb.addVideoPlayback({
-        VideoPlaybackRow(
-          contentId: contentId,
-          resumeTimeMillis: currentPosition,
-        )
-      });
-    } else {
-      await metadataDb.removeVideoPlayback({contentId});
+    if (persistPlayback) {
+      final _progress = progress;
+      if (resumeTimeSaveMinProgress < _progress && _progress < resumeTimeSaveMaxProgress) {
+        await metadataDb.addVideoPlayback({
+          VideoPlaybackRow(
+            contentId: contentId,
+            resumeTimeMillis: currentPosition,
+          )
+        });
+      } else {
+        await metadataDb.removeVideoPlayback({contentId});
+      }
     }
   }
 
   Future<int?> getResumeTime(BuildContext context) async {
     final contentId = entry.contentId;
     if (contentId == null) return null;
+
+    if (!persistPlayback) return null;
 
     final playback = await metadataDb.loadVideoPlayback(contentId);
     final resumeTime = playback?.resumeTimeMillis ?? 0;

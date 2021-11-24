@@ -5,8 +5,11 @@ import 'package:collection/collection.dart';
 
 class VideoConductor {
   final List<AvesVideoController> _controllers = [];
+  final bool persistPlayback;
 
   static const maxControllerCount = 3;
+
+  VideoConductor({required this.persistPlayback});
 
   Future<void> dispose() async {
     await Future.forEach<AvesVideoController>(_controllers, (controller) => controller.dispose());
@@ -18,7 +21,7 @@ class VideoConductor {
     if (controller != null) {
       _controllers.remove(controller);
     } else {
-      controller = IjkPlayerAvesVideoController(entry);
+      controller = IjkPlayerAvesVideoController(entry, persistPlayback: persistPlayback);
     }
     _controllers.insert(0, controller);
     while (_controllers.length > maxControllerCount) {
