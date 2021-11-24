@@ -79,7 +79,7 @@ class _HomePageState extends State<HomePage> {
     final intentData = widget.intentData ?? await ViewerService.getIntentData();
     if (intentData.isNotEmpty) {
       final action = intentData['action'];
-      await reportService.log('Intent action=$action');
+      await reportService.log('Intent data=$intentData');
       switch (action) {
         case 'view':
           _viewerEntry = await _initViewerEntry(
@@ -133,6 +133,10 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<AvesEntry?> _initViewerEntry({required String uri, required String? mimeType}) async {
+    if (uri.startsWith('/')) {
+      // convert this file path to a proper URI
+      uri = Uri.file(uri).toString();
+    }
     final entry = await mediaFileService.getEntry(uri, mimeType);
     if (entry != null) {
       // cataloguing is essential for coordinates and video rotation

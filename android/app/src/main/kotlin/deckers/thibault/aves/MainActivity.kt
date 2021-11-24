@@ -183,45 +183,45 @@ class MainActivity : FlutterActivity() {
     private fun extractIntentData(intent: Intent?): MutableMap<String, Any?> {
         when (intent?.action) {
             Intent.ACTION_MAIN -> {
-                intent.getStringExtra("page")?.let { page ->
-                    var filters = intent.getStringArrayExtra("filters")?.toList()
+                intent.getStringExtra(SHORTCUT_KEY_PAGE)?.let { page ->
+                    var filters = intent.getStringArrayExtra(SHORTCUT_KEY_FILTERS_ARRAY)?.toList()
                     if (filters == null) {
                         // fallback for shortcuts created on API < 26
-                        val filterString = intent.getStringExtra("filtersString")
+                        val filterString = intent.getStringExtra(SHORTCUT_KEY_FILTERS_STRING)
                         if (filterString != null) {
                             filters = filterString.split(EXTRA_STRING_ARRAY_SEPARATOR)
                         }
                     }
                     return hashMapOf(
-                        "page" to page,
-                        "filters" to filters,
+                        INTENT_DATA_KEY_PAGE to page,
+                        INTENT_DATA_KEY_FILTERS to filters,
                     )
                 }
             }
             Intent.ACTION_VIEW, Intent.ACTION_SEND, "com.android.camera.action.REVIEW" -> {
                 (intent.data ?: (intent.getParcelableExtra<Parcelable>(Intent.EXTRA_STREAM) as? Uri))?.let { uri ->
                     return hashMapOf(
-                        "action" to "view",
-                        "uri" to uri.toString(),
-                        "mimeType" to intent.type, // MIME type is optional
+                        INTENT_DATA_KEY_ACTION to INTENT_ACTION_VIEW,
+                        INTENT_DATA_KEY_MIME_TYPE to intent.type, // MIME type is optional
+                        INTENT_DATA_KEY_URI to uri.toString(),
                     )
                 }
             }
             Intent.ACTION_GET_CONTENT, Intent.ACTION_PICK -> {
                 return hashMapOf(
-                    "action" to "pick",
-                    "mimeType" to intent.type,
+                    INTENT_DATA_KEY_ACTION to INTENT_ACTION_PICK,
+                    INTENT_DATA_KEY_MIME_TYPE to intent.type,
                 )
             }
             Intent.ACTION_SEARCH -> {
                 val viewUri = intent.dataString
                 return if (viewUri != null) hashMapOf(
-                    "action" to "view",
-                    "uri" to viewUri,
-                    "mimeType" to intent.getStringExtra(SearchManager.EXTRA_DATA_KEY),
+                    INTENT_DATA_KEY_ACTION to INTENT_ACTION_VIEW,
+                    INTENT_DATA_KEY_MIME_TYPE to intent.getStringExtra(SearchManager.EXTRA_DATA_KEY),
+                    INTENT_DATA_KEY_URI to viewUri,
                 ) else hashMapOf(
-                    "action" to "search",
-                    "query" to intent.getStringExtra(SearchManager.QUERY),
+                    INTENT_DATA_KEY_ACTION to INTENT_ACTION_SEARCH,
+                    INTENT_DATA_KEY_QUERY to intent.getStringExtra(SearchManager.QUERY),
                 )
             }
             Intent.ACTION_RUN -> {
@@ -261,7 +261,7 @@ class MainActivity : FlutterActivity() {
             .setIcon(IconCompat.createWithResource(this, if (supportAdaptiveIcon) R.mipmap.ic_shortcut_search else R.drawable.ic_shortcut_search))
             .setIntent(
                 Intent(Intent.ACTION_MAIN, null, this, MainActivity::class.java)
-                    .putExtra("page", "/search")
+                    .putExtra(SHORTCUT_KEY_PAGE, "/search")
             )
             .build()
 
@@ -270,7 +270,7 @@ class MainActivity : FlutterActivity() {
             .setIcon(IconCompat.createWithResource(this, if (supportAdaptiveIcon) R.mipmap.ic_shortcut_movie else R.drawable.ic_shortcut_movie))
             .setIntent(
                 Intent(Intent.ACTION_MAIN, null, this, MainActivity::class.java)
-                    .putExtra("page", "/collection")
+                    .putExtra(SHORTCUT_KEY_PAGE, "/collection")
                     .putExtra("filters", arrayOf("{\"type\":\"mime\",\"mime\":\"video/*\"}"))
             )
             .build()
@@ -293,6 +293,21 @@ class MainActivity : FlutterActivity() {
         const val SELECT_DIRECTORY_REQUEST = 5
         const val DELETE_SINGLE_PERMISSION_REQUEST = 6
         const val MEDIA_WRITE_BULK_PERMISSION_REQUEST = 7
+
+        const val INTENT_DATA_KEY_ACTION = "action"
+        const val INTENT_DATA_KEY_FILTERS = "filters"
+        const val INTENT_DATA_KEY_MIME_TYPE = "mimeType"
+        const val INTENT_DATA_KEY_PAGE = "page"
+        const val INTENT_DATA_KEY_URI = "uri"
+        const val INTENT_DATA_KEY_QUERY = "query"
+
+        const val INTENT_ACTION_PICK = "pick"
+        const val INTENT_ACTION_SEARCH = "search"
+        const val INTENT_ACTION_VIEW = "view"
+
+        const val SHORTCUT_KEY_PAGE = "page"
+        const val SHORTCUT_KEY_FILTERS_ARRAY = "filters"
+        const val SHORTCUT_KEY_FILTERS_STRING = "filtersString"
 
         // request code to pending runnable
         val pendingStorageAccessResultHandlers = ConcurrentHashMap<Int, PendingStorageAccessResultHandler>()
