@@ -375,13 +375,8 @@
   "settingsCollectionSelectionQuickActionEditorBanner": "Maintenez votre doigt appuyé pour déplacer les boutons et choisir les actions affichées lors de la sélection d’éléments.",
 
   "settingsSectionViewer": "Visionneuse",
-  "settingsViewerShowOverlayOnOpening": "Afficher les incrustations à l’ouverture",
-  "settingsViewerShowMinimap": "Afficher la mini-carte",
-  "settingsViewerShowInformation": "Afficher les détails",
-  "settingsViewerShowInformationSubtitle": "Afficher les titre, date, lieu, etc.",
-  "settingsViewerShowShootingDetails": "Afficher les détails de prise de vue",
-  "settingsViewerEnableOverlayBlurEffect": "Effets de flou des incrustations",
   "settingsViewerUseCutout": "Utiliser la zone d’encoche",
+  "settingsViewerMaximumBrightness": "Luminosité maximale",
   "settingsImageBackground": "Arrière-plan de l’image",
 
   "settingsViewerQuickActionsTile": "Actions rapides",
@@ -390,6 +385,15 @@
   "settingsViewerQuickActionEditorDisplayedButtons": "Boutons affichés",
   "settingsViewerQuickActionEditorAvailableButtons": "Boutons disponibles",
   "settingsViewerQuickActionEmpty": "Aucun bouton",
+
+  "settingsViewerOverlayTile": "Incrustations",
+  "settingsViewerOverlayTitle": "Incrustations",
+  "settingsViewerShowOverlayOnOpening": "Afficher à l’ouverture",
+  "settingsViewerShowMinimap": "Afficher la mini-carte",
+  "settingsViewerShowInformation": "Afficher les détails",
+  "settingsViewerShowInformationSubtitle": "Afficher les titre, date, lieu, etc.",
+  "settingsViewerShowShootingDetails": "Afficher les détails de prise de vue",
+  "settingsViewerEnableOverlayBlurEffect": "Effets de flou",
 
   "settingsVideoPageTitle": "Réglages vidéo",
   "settingsSectionVideo": "Vidéo",

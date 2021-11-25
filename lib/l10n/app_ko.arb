@@ -22,6 +22,7 @@
   "showTooltip": "보기",
   "hideTooltip": "숨기기",
   "removeTooltip": "제거",
+  "resetButtonTooltip": "복원",
 
   "doubleBackExitMessage": "종료하려면 한번 더 누르세요.",
 
@@ -373,13 +374,8 @@
   "settingsCollectionSelectionQuickActionEditorBanner": "버튼을 길게 누른 후 이동하여 항목 선택할 때 표시될 버튼을 선택하세요.",
 
   "settingsSectionViewer": "뷰어",
-  "settingsViewerShowOverlayOnOpening": "열릴 때 오버레이 표시",
-  "settingsViewerShowMinimap": "미니맵 표시",
-  "settingsViewerShowInformation": "상세 정보 표시",
-  "settingsViewerShowInformationSubtitle": "제목, 날짜, 장소 등 표시",
-  "settingsViewerShowShootingDetails": "촬영 정보 표시",
-  "settingsViewerEnableOverlayBlurEffect": "오버레이 흐림 효과",
   "settingsViewerUseCutout": "컷아웃 영역 사용",
+  "settingsViewerMaximumBrightness": "최대 밝기",
   "settingsImageBackground": "이미지 배경",
 
   "settingsViewerQuickActionsTile": "빠른 작업",
@@ -388,6 +384,15 @@
   "settingsViewerQuickActionEditorDisplayedButtons": "표시될 버튼",
   "settingsViewerQuickActionEditorAvailableButtons": "추가 가능한 버튼",
   "settingsViewerQuickActionEmpty": "버튼이 없습니다",
+
+  "settingsViewerOverlayTile": "오버레이",
+  "settingsViewerOverlayTitle": "오버레이",
+  "settingsViewerShowOverlayOnOpening": "열릴 때 표시",
+  "settingsViewerShowMinimap": "미니맵 표시",
+  "settingsViewerShowInformation": "상세 정보 표시",
+  "settingsViewerShowInformationSubtitle": "제목, 날짜, 장소 등 표시",
+  "settingsViewerShowShootingDetails": "촬영 정보 표시",
+  "settingsViewerEnableOverlayBlurEffect": "흐림 효과",
 
   "settingsVideoPageTitle": "동영상 설정",
   "settingsSectionVideo": "동영상",
