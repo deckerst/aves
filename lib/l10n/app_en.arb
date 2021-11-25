@@ -505,6 +505,17 @@
   "@aboutCreditsWorldAtlas2": {},
   "aboutCreditsTranslators": "Translators:",
   "@aboutCreditsTranslators": {},
+  "aboutCreditsTranslatorLine": "{language}: {names}",
+  "@aboutCreditsTranslatorLine": {
+    "placeholders": {
+      "language": {
+        "type": "String"
+      },
+      "names": {
+        "type": "String"
+      }
+    }
+  },
 
   "aboutLicenses": "Open-Source Licenses",
   "@aboutLicenses": {},
@@ -893,8 +904,11 @@
   "settingsSaveSearchHistory": "Save search history",
   "@settingsSaveSearchHistory": {},
 
-  "settingsHiddenFiltersTile": "Hidden filters",
-  "@settingsHiddenFiltersTile": {},
+  "settingsHiddenItemsTile": "Hidden items",
+  "@settingsHiddenItemsTile": {},
+  "settingsHiddenItemsTitle": "Hidden Items",
+  "@settingsHiddenItemsTitle": {},
+
   "settingsHiddenFiltersTitle": "Hidden Filters",
   "@settingsHiddenFiltersTitle": {},
   "settingsHiddenFiltersBanner": "Photos and videos matching hidden filters will not appear in your collection.",
@@ -902,14 +916,10 @@
   "settingsHiddenFiltersEmpty": "No hidden filters",
   "@settingsHiddenFiltersEmpty": {},
 
-  "settingsHiddenPathsTile": "Hidden paths",
-  "@settingsHiddenPathsTile": {},
   "settingsHiddenPathsTitle": "Hidden Paths",
   "@settingsHiddenPathsTitle": {},
   "settingsHiddenPathsBanner": "Photos and videos in these folders, or any of their subfolders, will not appear in your collection.",
   "@settingsHiddenPathsBanner": {},
-  "settingsHiddenPathsEmpty": "No hidden paths",
-  "@settingsHiddenPathsEmpty": {},
   "addPathTooltip": "Add path",
   "@addPathTooltip": {},
 

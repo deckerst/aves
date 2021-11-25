@@ -154,7 +154,7 @@ class _TagEditorPageState extends State<TagEditorPage> {
                           duration: Durations.tagEditorTransition,
                         ),
                       ),
-                      const Divider(height: 1),
+                      const Divider(height: 0),
                       _FilterRow(
                         title: l10n.tagEditorSectionRecent,
                         filters: recentFilters,
