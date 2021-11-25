@@ -13,6 +13,7 @@ dependencies:
     path: ../aves_report
   firebase_core:
   firebase_crashlytics:
+  stack_trace:
 
 dev_dependencies:
   flutter_lints:

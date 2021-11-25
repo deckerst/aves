@@ -373,12 +373,6 @@
   "settingsCollectionSelectionQuickActionEditorBanner": "Нажмите и удерживайте, чтобы переместить кнопки и выбрать, какие действия будут отображаться при выборе элементов.",
 
   "settingsSectionViewer": "Просмотрщик",
-  "settingsViewerShowOverlayOnOpening": "Показывать наложение при открытии",
-  "settingsViewerShowMinimap": "Показать миникарту",
-  "settingsViewerShowInformation": "Показывать информацию",
-  "settingsViewerShowInformationSubtitle": "Показать название, дату, местоположение и т.д.",
-  "settingsViewerShowShootingDetails": "Показать детали съёмки",
-  "settingsViewerEnableOverlayBlurEffect": "Наложение эффекта размытия",
   "settingsViewerUseCutout": "Использовать область выреза",
   "settingsImageBackground": "Фон изображения",
 
@@ -388,6 +382,15 @@
   "settingsViewerQuickActionEditorDisplayedButtons": "Отображаемые кнопки",
   "settingsViewerQuickActionEditorAvailableButtons": "Доступные кнопки",
   "settingsViewerQuickActionEmpty": "Нет кнопок",
+
+  "settingsViewerOverlayTile": "Наложение",
+  "settingsViewerOverlayTitle": "Наложение",
+  "settingsViewerShowOverlayOnOpening": "Показывать наложение при открытии",
+  "settingsViewerShowMinimap": "Показать миникарту",
+  "settingsViewerShowInformation": "Показывать информацию",
+  "settingsViewerShowInformationSubtitle": "Показать название, дату, местоположение и т.д.",
+  "settingsViewerShowShootingDetails": "Показать детали съёмки",
+  "settingsViewerEnableOverlayBlurEffect": "Наложение эффекта размытия",
 
   "settingsVideoPageTitle": "Настройки видео",
   "settingsSectionVideo": "Видео",

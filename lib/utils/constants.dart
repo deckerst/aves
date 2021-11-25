@@ -133,6 +133,11 @@ class Constants {
       sourceUrl: 'https://github.com/DavBfr/dart_pdf',
     ),
     Dependency(
+      name: 'Screen Brightness',
+      license: 'MIT',
+      sourceUrl: 'https://github.com/aaassseee/screen_brightness',
+    ),
+    Dependency(
       name: 'Shared Preferences',
       license: 'BSD 3-Clause',
       licenseUrl: 'https://github.com/flutter/plugins/blob/master/packages/shared_preferences/shared_preferences/LICENSE',

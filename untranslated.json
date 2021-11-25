@@ -1,6 +1,5 @@
 {
   "ko": [
-    "resetButtonTooltip",
     "entryInfoActionEditTags",
     "tagEditorPageTitle",
     "tagEditorPageNewTagFieldLabel",
@@ -10,6 +9,7 @@
   "ru": [
     "resetButtonTooltip",
     "entryInfoActionEditTags",
+    "settingsViewerMaximumBrightness",
     "tagEditorPageTitle",
     "tagEditorPageNewTagFieldLabel",
     "tagEditorPageAddTagTooltip"

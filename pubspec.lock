@@ -861,6 +861,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.1+1"
+  screen_brightness:
+    dependency: "direct main"
+    description:
+      name: screen_brightness
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.1"
+  screen_brightness_platform_interface:
+    dependency: transitive
+    description:
+      name: screen_brightness_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.2"
   shared_preferences:
     dependency: "direct main"
     description:
@@ -986,7 +1000,7 @@ packages:
     source: hosted
     version: "2.0.1+1"
   stack_trace:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: stack_trace
       url: "https://pub.dartlang.org"
