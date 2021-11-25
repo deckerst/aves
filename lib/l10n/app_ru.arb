@@ -232,6 +232,7 @@
   "aboutCreditsWorldAtlas1": "Это приложение использует файл TopoJSON из",
   "aboutCreditsWorldAtlas2": "под лицензией ISC.",
   "aboutCreditsTranslators": "Переводчики:",
+  "aboutCreditsTranslatorLine": "{language}: {names}",
 
   "aboutLicenses": "Лицензии с открытым исходным кодом",
   "aboutLicensesBanner": "Это приложение использует следующие пакеты и библиотеки с открытым исходным кодом.",
@@ -423,15 +424,12 @@
   "settingsAllowErrorReporting": "Разрешить анонимную отправку логов",
   "settingsSaveSearchHistory": "Сохранять историю поиска",
 
-  "settingsHiddenFiltersTile": "Скрытые фильтры",
   "settingsHiddenFiltersTitle": "Скрытые фильтры",
   "settingsHiddenFiltersBanner": "Фотографии и видео, соответствующие скрытым фильтрам, не появятся в вашей коллекции.",
   "settingsHiddenFiltersEmpty": "Нет скрытых фильтров",
 
-  "settingsHiddenPathsTile": "Скрытые каталоги",
   "settingsHiddenPathsTitle": "Скрытые каталоги",
   "settingsHiddenPathsBanner": "Фотографии и видео в этих каталогах или любых их вложенных каталогах не будут отображаться в вашей коллекции.",
-  "settingsHiddenPathsEmpty": "Нет скрытых каталогов",
   "addPathTooltip": "Добавить каталог",
 
   "settingsStorageAccessTile": "Доступ к хранилищу",

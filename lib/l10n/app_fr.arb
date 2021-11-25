@@ -24,7 +24,7 @@
   "removeTooltip": "Supprimer",
   "resetButtonTooltip": "Réinitialiser",
 
-  "doubleBackExitMessage": "Presser «\u00A0retour\u00A0» à nouveau pour quitter.",
+  "doubleBackExitMessage": "Pressez «\u00A0retour\u00A0» à nouveau pour quitter.",
 
   "sourceStateLoading": "Chargement",
   "sourceStateCataloguing": "Classification",
@@ -233,7 +233,8 @@
   "aboutCredits": "Remerciements",
   "aboutCreditsWorldAtlas1": "Cette app utilise un fichier TopoJSON de ",
   "aboutCreditsWorldAtlas2": "sous licence ISC.",
-  "aboutCreditsTranslators": "Traducteurs:",
+  "aboutCreditsTranslators": "Traducteurs :",
+  "aboutCreditsTranslatorLine": "{language} : {names}",
 
   "aboutLicenses": "Licences open-source",
   "aboutLicensesBanner": "Cette app utilise ces librairies et packages open-source.",
@@ -426,15 +427,15 @@
   "settingsAllowErrorReporting": "Autoriser l’envoi de rapports d’erreur",
   "settingsSaveSearchHistory": "Maintenir un historique des recherches",
 
-  "settingsHiddenFiltersTile": "Filtres masqués",
+  "settingsHiddenItemsTile": "Éléments masqués",
+  "settingsHiddenItemsTitle": "Éléments masqués",
+
   "settingsHiddenFiltersTitle": "Filtres masqués",
   "settingsHiddenFiltersBanner": "Les images et vidéos correspondantes aux filtres masqués n’apparaîtront pas dans votre collection.",
   "settingsHiddenFiltersEmpty": "Aucun filtre masqué",
 
-  "settingsHiddenPathsTile": "Chemins masqués",
   "settingsHiddenPathsTitle": "Chemins masqués",
   "settingsHiddenPathsBanner": "Les images et vidéos dans ces dossiers, ou leurs sous-dossiers, n’apparaîtront pas dans votre collection.",
-  "settingsHiddenPathsEmpty": "Aucun chemin masqué",
   "addPathTooltip": "Ajouter un chemin",
 
   "settingsStorageAccessTile": "Accès au stockage",

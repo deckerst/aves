@@ -10,6 +10,8 @@
     "resetButtonTooltip",
     "entryInfoActionEditTags",
     "settingsViewerMaximumBrightness",
+    "settingsHiddenItemsTile",
+    "settingsHiddenItemsTitle",
     "tagEditorPageTitle",
     "tagEditorPageNewTagFieldLabel",
     "tagEditorPageAddTagTooltip"

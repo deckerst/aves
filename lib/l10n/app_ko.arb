@@ -233,6 +233,7 @@
   "aboutCreditsWorldAtlas1": "이 앱은",
   "aboutCreditsWorldAtlas2": "의 TopoJSON 파일(ISC 라이선스)을 이용합니다.",
   "aboutCreditsTranslators": "번역가:",
+  "aboutCreditsTranslatorLine": "{language}: {names}",
 
   "aboutLicenses": "오픈 소스 라이선스",
   "aboutLicensesBanner": "이 앱은 다음의 오픈 소스 패키지와 라이브러리를 이용합니다.",
@@ -425,15 +426,15 @@
   "settingsAllowErrorReporting": "오류 보고서 보내기",
   "settingsSaveSearchHistory": "검색기록",
 
-  "settingsHiddenFiltersTile": "숨겨진 필터",
+  "settingsHiddenItemsTile": "숨겨진 항목",
+  "settingsHiddenItemsTitle": "숨겨진 항목",
+
   "settingsHiddenFiltersTitle": "숨겨진 필터",
   "settingsHiddenFiltersBanner": "이 필터에 맞는 사진과 동영상이 숨겨지고 있으며 이 앱에서 보여지지 않을 것입니다.",
   "settingsHiddenFiltersEmpty": "숨겨진 필터가 없습니다",
 
-  "settingsHiddenPathsTile": "숨겨진 경로",
   "settingsHiddenPathsTitle": "숨겨진 경로",
   "settingsHiddenPathsBanner": "이 경로에 있는 사진과 동영상이 숨겨지고 있으며 이 앱에서 보여지지 않을 것입니다.",
-  "settingsHiddenPathsEmpty": "숨겨진 경로가 없습니다",
   "addPathTooltip": "경로 추가",
 
   "settingsStorageAccessTile": "저장공간 접근",
