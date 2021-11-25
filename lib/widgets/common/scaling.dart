@@ -2,10 +2,12 @@ import 'dart:ui' as ui;
 
 import 'package:aves/model/highlight.dart';
 import 'package:aves/theme/durations.dart';
+import 'package:aves/widgets/common/behaviour/eager_scale_gesture_recognizer.dart';
 import 'package:aves/widgets/common/grid/theme.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
@@ -49,95 +51,116 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onScaleStart: (details) {
-        // the gesture detector wrongly detects a new scaling gesture
-        // when scaling ends and we apply the new extent, so we prevent this
-        // until we scaled and scrolled to the tile in the new grid
-        if (_applyingScale) return;
+    final child = GestureDetector(
+      // Horizontal/vertical drag gestures are interpreted as scaling
+      // if they are not handled by `onHorizontalDragStart`/`onVerticalDragStart`
+      // at the scaling `GestureDetector` level, or handled beforehand down the widget tree.
+      // Setting `onHorizontalDragStart`, `onVerticalDragStart`, and `onScaleStart`
+      // all at once is not allowed, so we use another `GestureDetector` for that.
+      onVerticalDragStart: (details) {},
+      onHorizontalDragStart: (details) {},
+      child: widget.child,
+    );
 
-        final tileExtentController = context.read<TileExtentController>();
+    // as of Flutter v2.5.3, `ScaleGestureRecognizer` does not work well
+    // when combined with the `VerticalDragGestureRecognizer` inside a `GridView`,
+    // so it is modified to eagerly accept the gesture
+    // when multiple pointers are involved, and take priority over drag gestures.
+    return RawGestureDetector(
+      gestures: <Type, GestureRecognizerFactory>{
+        EagerScaleGestureRecognizer: GestureRecognizerFactoryWithHandlers<EagerScaleGestureRecognizer>(
+          () => EagerScaleGestureRecognizer(debugOwner: this),
+          (instance) {
+            instance
+              ..onStart = _onScaleStart
+              ..onUpdate = _onScaleUpdate
+              ..onEnd = _onScaleEnd
+              ..dragStartBehavior = DragStartBehavior.start;
+          },
+        ),
+      },
+      child: child,
+    );
+  }
 
-        final scrollableContext = widget.scrollableKey.currentContext!;
-        final scrollableBox = scrollableContext.findRenderObject() as RenderBox;
-        final renderMetaData = _getClosestRenderMetadata(
-          box: scrollableBox,
-          localFocalPoint: details.localFocalPoint,
-          spacing: tileExtentController.spacing,
-        );
-        // abort if we cannot find an image to show on overlay
-        if (renderMetaData == null) return;
-        _metadata = renderMetaData.metaData;
-        _startSize = renderMetaData.size;
-        _scaledSizeNotifier = ValueNotifier(_startSize!);
+  void _onScaleStart(ScaleStartDetails details) {
+    // the gesture detector wrongly detects a new scaling gesture
+    // when scaling ends and we apply the new extent, so we prevent this
+    // until we scaled and scrolled to the tile in the new grid
+    if (_applyingScale) return;
 
-        // not the same as `MediaQuery.size.width`, because of screen insets/padding
-        final gridWidth = scrollableBox.size.width;
+    final tileExtentController = context.read<TileExtentController>();
 
-        _extentMin = tileExtentController.effectiveExtentMin;
-        _extentMax = tileExtentController.effectiveExtentMax;
+    final scrollableContext = widget.scrollableKey.currentContext!;
+    final scrollableBox = scrollableContext.findRenderObject() as RenderBox;
+    final renderMetaData = _getClosestRenderMetadata(
+      box: scrollableBox,
+      localFocalPoint: details.localFocalPoint,
+      spacing: tileExtentController.spacing,
+    );
+    // abort if we cannot find an image to show on overlay
+    if (renderMetaData == null) return;
+    _metadata = renderMetaData.metaData;
+    _startSize = renderMetaData.size;
+    _scaledSizeNotifier = ValueNotifier(_startSize!);
 
-        final halfSize = _startSize! / 2;
-        final thumbnailCenter = renderMetaData.localToGlobal(Offset(halfSize.width, halfSize.height));
-        _overlayEntry = OverlayEntry(
-          builder: (context) => ScaleOverlay(
-            builder: (scaledTileSize) => SizedBox.fromSize(
-              size: scaledTileSize,
-              child: GridTheme(
-                extent: scaledTileSize.width,
-                child: widget.scaledBuilder(_metadata!.item, scaledTileSize),
-              ),
-            ),
-            center: thumbnailCenter,
-            viewportWidth: gridWidth,
-            gridBuilder: widget.gridBuilder,
-            scaledSizeNotifier: _scaledSizeNotifier!,
+    // not the same as `MediaQuery.size.width`, because of screen insets/padding
+    final gridWidth = scrollableBox.size.width;
+
+    _extentMin = tileExtentController.effectiveExtentMin;
+    _extentMax = tileExtentController.effectiveExtentMax;
+
+    final halfSize = _startSize! / 2;
+    final thumbnailCenter = renderMetaData.localToGlobal(Offset(halfSize.width, halfSize.height));
+    _overlayEntry = OverlayEntry(
+      builder: (context) => ScaleOverlay(
+        builder: (scaledTileSize) => SizedBox.fromSize(
+          size: scaledTileSize,
+          child: GridTheme(
+            extent: scaledTileSize.width,
+            child: widget.scaledBuilder(_metadata!.item, scaledTileSize),
           ),
-        );
-        Overlay.of(scrollableContext)!.insert(_overlayEntry!);
-      },
-      onScaleUpdate: (details) {
-        if (_scaledSizeNotifier == null) return;
-        final s = details.scale;
-        final scaledWidth = (_startSize!.width * s).clamp(_extentMin!, _extentMax!);
-        _scaledSizeNotifier!.value = Size(scaledWidth, widget.heightForWidth(scaledWidth));
-      },
-      onScaleEnd: (details) {
-        if (_scaledSizeNotifier == null) return;
-        if (_overlayEntry != null) {
-          _overlayEntry!.remove();
-          _overlayEntry = null;
-        }
-
-        _applyingScale = true;
-        final tileExtentController = context.read<TileExtentController>();
-        final oldExtent = tileExtentController.extentNotifier.value;
-        // sanitize and update grid layout if necessary
-        final newExtent = tileExtentController.setUserPreferredExtent(_scaledSizeNotifier!.value.width);
-        _scaledSizeNotifier = null;
-        if (newExtent == oldExtent) {
-          _applyingScale = false;
-        } else {
-          // scroll to show the focal point thumbnail at its new position
-          WidgetsBinding.instance!.addPostFrameCallback((_) {
-            final trackItem = _metadata!.item;
-            final highlightItem = widget.highlightItem?.call(trackItem) ?? trackItem;
-            context.read<HighlightInfo>().trackItem(trackItem, animate: false, highlightItem: highlightItem);
-            _applyingScale = false;
-          });
-        }
-      },
-      child: GestureDetector(
-        // Horizontal/vertical drag gestures are interpreted as scaling
-        // if they are not handled by `onHorizontalDragStart`/`onVerticalDragStart`
-        // at the scaling `GestureDetector` level, or handled beforehand down the widget tree.
-        // Setting `onHorizontalDragStart`, `onVerticalDragStart`, and `onScaleStart`
-        // all at once is not allowed, so we use another `GestureDetector` for that.
-        onVerticalDragStart: (details) {},
-        onHorizontalDragStart: (details) {},
-        child: widget.child,
+        ),
+        center: thumbnailCenter,
+        viewportWidth: gridWidth,
+        gridBuilder: widget.gridBuilder,
+        scaledSizeNotifier: _scaledSizeNotifier!,
       ),
     );
+    Overlay.of(scrollableContext)!.insert(_overlayEntry!);
+  }
+
+  void _onScaleUpdate(ScaleUpdateDetails details) {
+    if (_scaledSizeNotifier == null) return;
+    final s = details.scale;
+    final scaledWidth = (_startSize!.width * s).clamp(_extentMin!, _extentMax!);
+    _scaledSizeNotifier!.value = Size(scaledWidth, widget.heightForWidth(scaledWidth));
+  }
+
+  void _onScaleEnd(ScaleEndDetails details) {
+    if (_scaledSizeNotifier == null) return;
+    if (_overlayEntry != null) {
+      _overlayEntry!.remove();
+      _overlayEntry = null;
+    }
+
+    _applyingScale = true;
+    final tileExtentController = context.read<TileExtentController>();
+    final oldExtent = tileExtentController.extentNotifier.value;
+    // sanitize and update grid layout if necessary
+    final newExtent = tileExtentController.setUserPreferredExtent(_scaledSizeNotifier!.value.width);
+    _scaledSizeNotifier = null;
+    if (newExtent == oldExtent) {
+      _applyingScale = false;
+    } else {
+      // scroll to show the focal point thumbnail at its new position
+      WidgetsBinding.instance!.addPostFrameCallback((_) {
+        final trackItem = _metadata!.item;
+        final highlightItem = widget.highlightItem?.call(trackItem) ?? trackItem;
+        context.read<HighlightInfo>().trackItem(trackItem, animate: false, highlightItem: highlightItem);
+        _applyingScale = false;
+      });
+    }
   }
 
   RenderMetaData? _getClosestRenderMetadata({

@@ -15,9 +15,9 @@ import 'package:aves/model/source/tag.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
+import 'package:aves/widgets/common/expandable_filter_row.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
-import 'package:aves/widgets/search/expandable_filter_row.dart';
 import 'package:aves/widgets/search/search_page.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -273,7 +273,7 @@ class CollectionSearchDelegate {
     focusNode?.unfocus();
   }
 
-  // adapted from `SearchDelegate`
+  // adapted from Flutter `SearchDelegate` in `/material/search.dart`
 
   void showResults(BuildContext context) {
     focusNode?.unfocus();
@@ -311,10 +311,10 @@ class CollectionSearchDelegate {
   SearchPageRoute? route;
 }
 
-// adapted from `SearchDelegate`
+// adapted from Flutter `_SearchBody` in `/material/search.dart`
 enum SearchBody { suggestions, results }
 
-// adapted from `SearchDelegate`
+// adapted from Flutter `_SearchPageRoute` in `/material/search.dart`
 class SearchPageRoute<T> extends PageRoute<T> {
   SearchPageRoute({
     required this.delegate,

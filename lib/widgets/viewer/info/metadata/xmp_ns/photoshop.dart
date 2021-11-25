@@ -1,9 +1,8 @@
-// cf photoshop:ColorMode
-// cf https://github.com/adobe/xmp-docs/blob/master/XMPNamespaces/photoshop.md
 import 'package:aves/widgets/viewer/info/metadata/xmp_namespaces.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_structs.dart';
 import 'package:flutter/widgets.dart';
 
+// cf https://github.com/adobe/xmp-docs/blob/master/XMPNamespaces/photoshop.md
 class XmpPhotoshopNamespace extends XmpNamespace {
   static const ns = 'photoshop';
 

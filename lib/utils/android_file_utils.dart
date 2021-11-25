@@ -32,10 +32,10 @@ class AndroidFileUtils {
     downloadPath = pContext.join(primaryStorage, 'Download');
     moviesPath = pContext.join(primaryStorage, 'Movies');
     picturesPath = pContext.join(primaryStorage, 'Pictures');
-    avesVideoCapturesPath = pContext.join(dcimPath, 'Videocaptures');
+    avesVideoCapturesPath = pContext.join(dcimPath, 'Video Captures');
     videoCapturesPaths = {
       // from Samsung
-      pContext.join(dcimPath, 'Video Captures'),
+      pContext.join(dcimPath, 'Videocaptures'),
       // from Aves
       avesVideoCapturesPath,
     };

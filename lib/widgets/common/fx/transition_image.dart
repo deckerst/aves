@@ -3,7 +3,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-// adapted from `RawImage`, `paintImage()` from `DecorationImagePainter`, etc.
+// adapted from Flutter `RawImage`, `paintImage()` from `DecorationImagePainter`, etc.
 // to transition between 2 different fits during hero animation:
 // - BoxFit.cover at t=0
 // - BoxFit.contain at t=1

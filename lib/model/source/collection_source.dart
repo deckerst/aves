@@ -11,6 +11,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/album.dart';
 import 'package:aves/model/source/analysis_controller.dart';
 import 'package:aves/model/source/enums.dart';
+import 'package:aves/model/source/events.dart';
 import 'package:aves/model/source/location.dart';
 import 'package:aves/model/source/tag.dart';
 import 'package:aves/services/analysis_service.dart';
@@ -183,7 +184,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
           return;
         }
         await _moveEntry(entry, newFields, persist: persist);
-        entry.metadataChangeNotifier.notifyListeners();
+        entry.metadataChangeNotifier.notify();
         eventBus.fire(EntryMovedEvent({entry}));
         completer.complete(true);
       },
@@ -380,47 +381,4 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
       analyze(null, entries: candidateEntries);
     }
   }
-}
-
-@immutable
-class EntryAddedEvent {
-  final Set<AvesEntry>? entries;
-
-  const EntryAddedEvent([this.entries]);
-}
-
-@immutable
-class EntryRemovedEvent {
-  final Set<AvesEntry> entries;
-
-  const EntryRemovedEvent(this.entries);
-}
-
-@immutable
-class EntryMovedEvent {
-  final Set<AvesEntry> entries;
-
-  const EntryMovedEvent(this.entries);
-}
-
-@immutable
-class EntryRefreshedEvent {
-  final Set<AvesEntry> entries;
-
-  const EntryRefreshedEvent(this.entries);
-}
-
-@immutable
-class FilterVisibilityChangedEvent {
-  final Set<CollectionFilter> filters;
-  final bool visible;
-
-  const FilterVisibilityChangedEvent(this.filters, this.visible);
-}
-
-@immutable
-class ProgressEvent {
-  final int done, total;
-
-  const ProgressEvent({required this.done, required this.total});
 }

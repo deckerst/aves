@@ -7,7 +7,7 @@ import 'package:aves/widgets/common/magnifier/scale/state.dart';
 import 'package:flutter/material.dart';
 
 /*
-  `Magnifier` is derived from `photo_view` package v0.9.2:
+  adapted from package `photo_view` v0.9.2:
   - removed image related aspects to focus on a general purpose pan/scale viewer (à la `InteractiveViewer`)
   - removed rotation and many customization parameters
   - removed ignorable/ignoring partial notifiers

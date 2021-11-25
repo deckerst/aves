@@ -12,7 +12,7 @@ import 'package:provider/provider.dart';
 // With the multiple `SliverGrid` solution, thumbnails at the beginning of each sections are built even though they are offscreen
 // because of `RenderSliverMultiBoxAdaptor.addInitialChild` called by `RenderSliverGrid.performLayout` (line 547), as of Flutter v1.17.0.
 // cf https://github.com/flutter/flutter/issues/49027
-// adapted from `RenderSliverFixedExtentBoxAdaptor`
+// adapted from Flutter `RenderSliverFixedExtentBoxAdaptor` in `/rendering/sliver_fixed_extent_list.dart`
 class SectionedListSliver<T> extends StatelessWidget {
   const SectionedListSliver({Key? key}) : super(key: key);
 
