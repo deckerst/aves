@@ -86,7 +86,7 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
 
   void _startListening() {
     _instance.addListener(_onValueChanged);
-    _subscriptions.add(_valueStream.where((value) => value.state == FijkState.completed).listen((_) => _completedNotifier.notifyListeners()));
+    _subscriptions.add(_valueStream.where((value) => value.state == FijkState.completed).listen((_) => _completedNotifier.notify()));
     _subscriptions.add(_instance.onTimedText.listen(_timedTextStreamController.add));
   }
 

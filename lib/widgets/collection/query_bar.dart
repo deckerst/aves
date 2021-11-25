@@ -42,8 +42,6 @@ class _EntryQueryBarState extends State<EntryQueryBar> {
     super.dispose();
   }
 
-  // TODO TLAD focus on text field when enabled (`autofocus` is unusable)
-  // TODO TLAD lose focus on navigation to viewer?
   void _registerWidget(EntryQueryBar widget) {
     widget.queryNotifier.addListener(_onQueryChanged);
   }

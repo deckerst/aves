@@ -454,7 +454,7 @@ class AvesEntry {
     _catalogMetadata = newMetadata;
     _bestTitle = null;
     _tags = null;
-    metadataChangeNotifier.notifyListeners();
+    metadataChangeNotifier.notify();
 
     _onVisualFieldChanged(oldDateModifiedSecs, oldRotationDegrees, oldIsFlipped);
   }
@@ -496,7 +496,7 @@ class AvesEntry {
 
   set addressDetails(AddressDetails? newAddress) {
     _addressDetails = newAddress;
-    addressChangeNotifier.notifyListeners();
+    addressChangeNotifier.notify();
   }
 
   Future<void> locate({required bool background, required bool force, required Locale geocoderLocale}) async {
@@ -620,7 +620,7 @@ class AvesEntry {
     }
 
     await _onVisualFieldChanged(oldDateModifiedSecs, oldRotationDegrees, oldIsFlipped);
-    metadataChangeNotifier.notifyListeners();
+    metadataChangeNotifier.notify();
   }
 
   Future<void> refresh({
@@ -717,7 +717,7 @@ class AvesEntry {
   Future<void> _onVisualFieldChanged(int? oldDateModifiedSecs, int oldRotationDegrees, bool oldIsFlipped) async {
     if (oldDateModifiedSecs != dateModifiedSecs || oldRotationDegrees != rotationDegrees || oldIsFlipped != isFlipped) {
       await EntryCache.evict(uri, mimeType, oldDateModifiedSecs, oldRotationDegrees, oldIsFlipped);
-      imageChangeNotifier.notifyListeners();
+      imageChangeNotifier.notify();
     }
   }
 

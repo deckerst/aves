@@ -390,7 +390,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
     if (!_isEntryTracked && _verticalPager.page?.floor() == transitionPage) {
       _trackEntry();
     }
-    _verticalScrollNotifier.notifyListeners();
+    _verticalScrollNotifier.notify();
   }
 
   void _goToCollection(CollectionFilter filter) {

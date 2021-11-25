@@ -134,7 +134,7 @@ class _EntryGoogleMapState extends State<EntryGoogleMap> with WidgetsBindingObse
           isReadyToRender: (key) => key.entry.isThumbnailReady(extent: GeoMap.markerImageExtent),
           onRendered: (key, bitmap) {
             _markerBitmaps[key] = bitmap;
-            _markerBitmapChangeNotifier.notifyListeners();
+            _markerBitmapChangeNotifier.notify();
           },
         ),
         MapDecorator(

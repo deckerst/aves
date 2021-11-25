@@ -1,26 +1,9 @@
 import 'package:flutter/foundation.dart';
 
-// reimplemented ChangeNotifier so that it can be used anywhere, not just as a mixin
-class AChangeNotifier implements Listenable {
-  ObserverList<VoidCallback>? _listeners = ObserverList<VoidCallback>();
-
-  @override
-  void addListener(VoidCallback listener) => _listeners!.add(listener);
-
-  @override
-  void removeListener(VoidCallback listener) => _listeners!.remove(listener);
-
-  void dispose() => _listeners = null;
-
-  void notifyListeners() {
-    if (_listeners == null) return;
-    final localListeners = List<VoidCallback>.from(_listeners!);
-    for (final listener in localListeners) {
-      try {
-        if (_listeners!.contains(listener)) listener();
-      } catch (error, stack) {
-        debugPrint('$runtimeType failed to notify listeners with error=$error\n$stack');
-      }
-    }
+// `ChangeNotifier` wrapper so that it can be used anywhere, not just as a mixin
+class AChangeNotifier extends ChangeNotifier {
+  void notify() {
+    // why is this protected?
+    super.notifyListeners();
   }
 }
