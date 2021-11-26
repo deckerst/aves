@@ -4,6 +4,13 @@ import 'package:aves/utils/change_notifier.dart';
 import 'package:flutter/foundation.dart';
 
 class Query extends ChangeNotifier {
+  Query({required String? initialValue}) {
+    if (initialValue != null && initialValue.isNotEmpty) {
+      _enabled = true;
+      queryNotifier.value = initialValue;
+    }
+  }
+
   bool _enabled = false;
 
   bool get enabled => _enabled;

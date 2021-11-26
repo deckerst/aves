@@ -296,7 +296,8 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   }
 
   // key is expected by test driver (e.g. 'menu-sort', 'menu-group', 'menu-map')
-  Key _getActionKey(EntrySetAction action) => Key('menu-${action.toString().substring('EntrySetAction.'.length)}');
+  // TODO TLAD [dart 2.15] replace `describeEnum()` by `enum.name`
+  Key _getActionKey(EntrySetAction action) => Key('menu-${describeEnum(action)}');
 
   Widget _toActionButton(EntrySetAction action, {required bool enabled}) {
     final onPressed = enabled ? () => _onActionSelected(action) : null;
