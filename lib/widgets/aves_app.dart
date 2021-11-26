@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui';
 
 import 'package:aves/app_flavor.dart';
@@ -27,11 +28,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:overlay_support/overlay_support.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
 class AvesApp extends StatefulWidget {
   final AppFlavor flavor;
+
+  static String userAgent = '';
 
   const AvesApp({
     Key? key,
@@ -161,6 +165,7 @@ class _AvesAppState extends State<AvesApp> {
       isRotationLocked: await windowService.isRotationLocked(),
       areAnimationsRemoved: await AccessibilityService.areAnimationsRemoved(),
     );
+    unawaited(_initUserAgent());
     FijkLog.setLevel(FijkLogLevel.Warn);
 
     // keep screen on
@@ -203,6 +208,11 @@ class _AvesAppState extends State<AvesApp> {
     _navigatorObservers = [
       ReportingRouteTracker(),
     ];
+  }
+
+  Future<void> _initUserAgent() async {
+    final info = await PackageInfo.fromPlatform();
+    AvesApp.userAgent = '${info.packageName}/${info.version}';
   }
 
   void _onNewIntent(Map? intentData) {
