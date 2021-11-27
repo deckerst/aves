@@ -7,12 +7,14 @@ class XmpCrsNamespace extends XmpNamespace {
 
   static final cgbcPattern = RegExp(ns + r':CircularGradientBasedCorrections\[(\d+)\]/(.*)');
   static final gbcPattern = RegExp(ns + r':GradientBasedCorrections\[(\d+)\]/(.*)');
+  static final mgbcPattern = RegExp(ns + r':MaskGroupBasedCorrections\[(\d+)\]/(.*)');
   static final pbcPattern = RegExp(ns + r':PaintBasedCorrections\[(\d+)\]/(.*)');
   static final retouchAreasPattern = RegExp(ns + r':RetouchAreas\[(\d+)\]/(.*)');
   static final lookPattern = RegExp(ns + r':Look/(.*)');
 
   final cgbc = <int, Map<String, String>>{};
   final gbc = <int, Map<String, String>>{};
+  final mgbc = <int, Map<String, String>>{};
   final pbc = <int, Map<String, String>>{};
   final retouchAreas = <int, Map<String, String>>{};
   final look = <String, String>{};
@@ -24,6 +26,7 @@ class XmpCrsNamespace extends XmpNamespace {
     final hasStructs = extractStruct(prop, lookPattern, look);
     var hasIndexedStructs = extractIndexedStruct(prop, cgbcPattern, cgbc);
     hasIndexedStructs |= extractIndexedStruct(prop, gbcPattern, gbc);
+    hasIndexedStructs |= extractIndexedStruct(prop, mgbcPattern, mgbc);
     hasIndexedStructs |= extractIndexedStruct(prop, pbcPattern, pbc);
     hasIndexedStructs |= extractIndexedStruct(prop, retouchAreasPattern, retouchAreas);
     return hasStructs || hasIndexedStructs;
@@ -45,6 +48,11 @@ class XmpCrsNamespace extends XmpNamespace {
           XmpStructCard(
             title: 'Look',
             struct: look,
+          ),
+        if (mgbc.isNotEmpty)
+          XmpStructArrayCard(
+            title: 'Mask Group Based Corrections',
+            structByIndex: mgbc,
           ),
         if (pbc.isNotEmpty)
           XmpStructArrayCard(
