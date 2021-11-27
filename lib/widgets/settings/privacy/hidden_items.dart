@@ -2,14 +2,16 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/path.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
-import 'package:aves/services/common/services.dart';
+import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/identity/buttons.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
+import 'package:aves/widgets/settings/privacy/file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
@@ -164,7 +166,15 @@ class _HiddenPaths extends StatelessWidget {
               icon: const Icon(AIcons.add),
               label: context.l10n.addPathTooltip,
               onPressed: () async {
-                final path = await storageService.selectDirectory();
+                final path = await Navigator.push(
+                  context,
+                  MaterialPageRoute<String>(
+                    settings: const RouteSettings(name: FilePicker.routeName),
+                    builder: (context) => const FilePicker(),
+                  ),
+                );
+                // wait for the dialog to hide as applying the change may block the UI
+                await Future.delayed(Durations.pageTransitionAnimation * timeDilation);
                 if (path != null && path.isNotEmpty) {
                   context.read<CollectionSource>().changeFilterVisibility({PathFilter(path)}, false);
                 }

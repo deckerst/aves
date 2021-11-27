@@ -117,6 +117,9 @@ class Settings extends ChangeNotifier {
   // version
   static const lastVersionCheckDateKey = 'last_version_check_date';
 
+  // file picker
+  static const filePickerShowHiddenFilesKey = 'file_picker_show_hidden_files';
+
   // platform settings
   // cf Android `Settings.System.ACCELEROMETER_ROTATION`
   static const platformAccelerometerRotationKey = 'accelerometer_rotation';
@@ -451,6 +454,12 @@ class Settings extends ChangeNotifier {
 
   set lastVersionCheckDate(DateTime newValue) => setAndNotify(lastVersionCheckDateKey, newValue.millisecondsSinceEpoch);
 
+  // file picker
+
+  bool get filePickerShowHiddenFiles => getBoolOrDefault(filePickerShowHiddenFilesKey, SettingsDefaults.filePickerShowHiddenFiles);
+
+  set filePickerShowHiddenFiles(bool newValue) => setAndNotify(filePickerShowHiddenFilesKey, newValue);
+
   // convenience methods
 
   // ignore: avoid_positional_boolean_parameters
@@ -597,6 +606,7 @@ class Settings extends ChangeNotifier {
             case enableVideoAutoPlayKey:
             case subtitleShowOutlineKey:
             case saveSearchHistoryKey:
+            case filePickerShowHiddenFilesKey:
               if (value is bool) {
                 _prefs!.setBool(key, value);
               } else {

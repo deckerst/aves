@@ -503,5 +503,11 @@
   "panoramaEnableSensorControl": "Включить сенсорное управление",
   "panoramaDisableSensorControl": "Отключить сенсорное управление",
 
-  "sourceViewerPageTitle": "Источник"
+  "sourceViewerPageTitle": "Источник",
+
+  "filePickerShowHiddenFiles": "Показывать скрытые файлы",
+  "filePickerDoNotShowHiddenFiles": "Не показывать скрытые файлы",
+  "filePickerOpenFrom": "Открыть",
+  "filePickerNoItems": "Ничего нет.",
+  "filePickerUseThisFolder": "Использовать эту папку"
 }

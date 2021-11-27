@@ -1064,5 +1064,16 @@
   "@panoramaDisableSensorControl": {},
 
   "sourceViewerPageTitle": "Source",
-  "@sourceViewerPageTitle": {}
+  "@sourceViewerPageTitle": {},
+
+  "filePickerShowHiddenFiles": "Show hidden files",
+  "@filePickerShowHiddenFiles": {},
+  "filePickerDoNotShowHiddenFiles": "Don’t show hidden files",
+  "@filePickerDoNotShowHiddenFiles": {},
+  "filePickerOpenFrom": "Open from",
+  "@filePickerOpenFrom": {},
+  "filePickerNoItems": "No items",
+  "@filePickerNoItems": {},
+  "filePickerUseThisFolder": "Use this folder",
+  "@filePickerUseThisFolder": {}
 }
