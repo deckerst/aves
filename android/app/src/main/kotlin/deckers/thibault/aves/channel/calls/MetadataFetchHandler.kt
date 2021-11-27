@@ -775,7 +775,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             try {
                 Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
                     val metadata = ImageMetadataReader.readMetadata(input)
-                    val xmpStrings = metadata.getDirectoriesOfType(XmpDirectory::class.java).map { XMPMetaFactory.serializeToString(it.xmpMeta, xmpSerializeOptions) }.filterNotNull()
+                    val xmpStrings = metadata.getDirectoriesOfType(XmpDirectory::class.java).mapNotNull { XMPMetaFactory.serializeToString(it.xmpMeta, xmpSerializeOptions) }
                     result.success(xmpStrings.toMutableList())
                     return
                 }
