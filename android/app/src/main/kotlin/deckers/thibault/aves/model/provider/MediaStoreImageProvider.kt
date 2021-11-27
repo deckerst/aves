@@ -83,7 +83,7 @@ class MediaStoreImageProvider : ImageProvider() {
     }
 
     fun checkObsoleteContentIds(context: Context, knownContentIds: List<Int>): List<Int> {
-        val foundContentIds = ArrayList<Int>()
+        val foundContentIds = HashSet<Int>()
         fun check(context: Context, contentUri: Uri) {
             val projection = arrayOf(MediaStore.MediaColumns._ID)
             try {
