@@ -513,5 +513,11 @@
   "panoramaDisableSensorControl": "Désactiver le contrôle par capteurs",
 
   "sourceViewerPageTitle": "Code source",
-  "@sourceViewerPageTitle": {}
+  "@sourceViewerPageTitle": {},
+
+  "filePickerShowHiddenFiles": "Afficher les fichiers masqués",
+  "filePickerDoNotShowHiddenFiles": "Ne pas afficher les fichiers masqués",
+  "filePickerOpenFrom": "Ouvrir à partir de",
+  "filePickerNoItems": "Aucun élément",
+  "filePickerUseThisFolder": "Utiliser ce dossier"
 }

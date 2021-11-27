@@ -508,5 +508,11 @@
   "panoramaEnableSensorControl": "센서 제어 활성화",
   "panoramaDisableSensorControl": "센서 제어 비활성화",
 
-  "sourceViewerPageTitle": "소스 코드"
+  "sourceViewerPageTitle": "소스 코드",
+
+  "filePickerShowHiddenFiles": "숨겨진 파일 표시",
+  "filePickerDoNotShowHiddenFiles": "숨겨진 파일 표시 안함",
+  "filePickerOpenFrom": "다음에서 열기:",
+  "filePickerNoItems": "항목 없음",
+  "filePickerUseThisFolder": "이 폴더 사용"
 }

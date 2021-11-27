@@ -151,8 +151,7 @@ class MainActivity : FlutterActivity() {
             DELETE_SINGLE_PERMISSION_REQUEST,
             MEDIA_WRITE_BULK_PERMISSION_REQUEST -> onScopedStoragePermissionResult(resultCode)
             CREATE_FILE_REQUEST,
-            OPEN_FILE_REQUEST,
-            SELECT_DIRECTORY_REQUEST -> onStorageAccessResult(requestCode, data?.data)
+            OPEN_FILE_REQUEST -> onStorageAccessResult(requestCode, data?.data)
         }
     }
 
@@ -290,9 +289,8 @@ class MainActivity : FlutterActivity() {
         const val OPEN_FROM_ANALYSIS_SERVICE = 2
         const val CREATE_FILE_REQUEST = 3
         const val OPEN_FILE_REQUEST = 4
-        const val SELECT_DIRECTORY_REQUEST = 5
-        const val DELETE_SINGLE_PERMISSION_REQUEST = 6
-        const val MEDIA_WRITE_BULK_PERMISSION_REQUEST = 7
+        const val DELETE_SINGLE_PERMISSION_REQUEST = 5
+        const val MEDIA_WRITE_BULK_PERMISSION_REQUEST = 6
 
         const val INTENT_DATA_KEY_ACTION = "action"
         const val INTENT_DATA_KEY_FILTERS = "filters"
