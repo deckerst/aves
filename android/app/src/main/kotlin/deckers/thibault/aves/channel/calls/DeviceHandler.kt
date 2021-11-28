@@ -20,15 +20,21 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
     }
 
     private fun getCapabilities(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
-        result.success(hashMapOf(
-            "canGrantDirectoryAccess" to (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP),
-            "canPinShortcut" to ShortcutManagerCompat.isRequestPinShortcutSupported(context),
-            "canPrint" to (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT),
-            // as of google_maps_flutter v2.1.1, minSDK is 20 because of default PlatformView usage,
-            // but using hybrid composition would make it usable on API 19 too,
-            // cf https://github.com/flutter/flutter/issues/23728
-            "canRenderGoogleMaps" to (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH),
-        ))
+        val sdkInt = Build.VERSION.SDK_INT
+        result.success(
+            hashMapOf(
+                "canGrantDirectoryAccess" to (sdkInt >= Build.VERSION_CODES.LOLLIPOP),
+                "canPinShortcut" to ShortcutManagerCompat.isRequestPinShortcutSupported(context),
+                "canPrint" to (sdkInt >= Build.VERSION_CODES.KITKAT),
+                "canRenderEmojis" to (sdkInt >= Build.VERSION_CODES.LOLLIPOP),
+                // as of google_maps_flutter v2.1.1, minSDK is 20 because of default PlatformView usage,
+                // but using hybrid composition would make it usable on API 19 too,
+                // cf https://github.com/flutter/flutter/issues/23728
+                "canRenderGoogleMaps" to (sdkInt >= Build.VERSION_CODES.KITKAT_WATCH),
+                "hasFilePicker" to (sdkInt >= Build.VERSION_CODES.KITKAT),
+                "showPinShortcutFeedback" to (sdkInt >= Build.VERSION_CODES.O),
+            )
+        )
     }
 
     private fun getDefaultTimeZone(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {

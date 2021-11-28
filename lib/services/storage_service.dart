@@ -172,7 +172,8 @@ class PlatformStorageService implements StorageService {
         },
         cancelOnError: true,
       );
-      return completer.future;
+      // `await` here, so that `completeError` will be caught below
+      return await completer.future;
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
     }
@@ -196,7 +197,8 @@ class PlatformStorageService implements StorageService {
         },
         cancelOnError: true,
       );
-      return completer.future;
+      // `await` here, so that `completeError` will be caught below
+      return await completer.future;
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
     }
@@ -220,7 +222,8 @@ class PlatformStorageService implements StorageService {
         },
         cancelOnError: true,
       );
-      return completer.future;
+      // `await` here, so that `completeError` will be caught below
+      return await completer.future;
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
     }
@@ -247,7 +250,8 @@ class PlatformStorageService implements StorageService {
         },
         cancelOnError: true,
       );
-      return completer.future;
+      // `await` here, so that `completeError` will be caught below
+      return await completer.future;
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
     }

@@ -31,6 +31,8 @@ abstract class CollectionFilter extends Equatable implements Comparable<Collecti
   ];
 
   static CollectionFilter? fromJson(String jsonString) {
+    if (jsonString.isEmpty) return null;
+
     try {
       final jsonMap = jsonDecode(jsonString);
       if (jsonMap is Map<String, dynamic>) {

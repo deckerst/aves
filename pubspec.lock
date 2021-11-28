@@ -1025,7 +1025,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: d644fedd9cb79a45b1b92788880e81b846a69d9b
+      resolved-ref: fba50f0e380d8cbd6a5bbda32f97a9c5e4d033e2
       url: "git://github.com/deckerst/aves_streams_channel.git"
     source: git
     version: "0.3.0"
@@ -1203,7 +1203,7 @@ packages:
       name: win32
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.3.0"
+    version: "2.3.1"
   wkt_parser:
     dependency: transitive
     description:

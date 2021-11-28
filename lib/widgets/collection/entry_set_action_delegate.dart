@@ -626,6 +626,9 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
     final name = result.item2;
     if (name.isEmpty) return;
 
-    unawaited(androidAppService.pinToHomeScreen(name, coverEntry, filters: filters));
+    await androidAppService.pinToHomeScreen(name, coverEntry, filters: filters);
+    if (!device.showPinShortcutFeedback) {
+      showFeedback(context, context.l10n.genericSuccessFeedback);
+    }
   }
 }
