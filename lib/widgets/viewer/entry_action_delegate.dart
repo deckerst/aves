@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/actions/move_type.dart';
+import 'package:aves/model/device.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/highlight.dart';
@@ -124,7 +125,10 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     final name = result.item2;
     if (name.isEmpty) return;
 
-    unawaited(androidAppService.pinToHomeScreen(name, entry, uri: entry.uri));
+    await androidAppService.pinToHomeScreen(name, entry, uri: entry.uri);
+    if (!device.showPinShortcutFeedback) {
+      showFeedback(context, context.l10n.genericSuccessFeedback);
+    }
   }
 
   Future<void> _flip(BuildContext context, AvesEntry entry) async {

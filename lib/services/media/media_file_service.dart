@@ -159,7 +159,7 @@ class PlatformMediaFileService implements MediaFileService {
     int? pageId,
     int? expectedContentLength,
     BytesReceivedCallback? onBytesReceived,
-  }) {
+  }) async {
     try {
       final completer = Completer<Uint8List>.sync();
       final sink = OutputBuffer();
@@ -191,11 +191,12 @@ class PlatformMediaFileService implements MediaFileService {
         },
         cancelOnError: true,
       );
-      return completer.future;
+      // `await` here, so that `completeError` will be caught below
+      return await completer.future;
     } on PlatformException catch (e, stack) {
-      reportService.recordError(e, stack);
+      await reportService.recordError(e, stack);
     }
-    return Future.sync(() => Uint8List(0));
+    return Uint8List(0);
   }
 
   @override

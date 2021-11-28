@@ -1,3 +1,4 @@
+import 'package:aves/model/device.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -58,15 +59,17 @@ class LocationFilter extends CollectionFilter {
 
   @override
   Widget iconBuilder(BuildContext context, double size, {bool showGenericIcon = true, bool embossed = false}) {
-    final flag = countryCodeToFlag(_countryCode);
-    // as of Flutter v1.22.3, emoji shadows are rendered as colorful duplicates,
-    // not filled with the shadow color as expected, so we remove them
-    if (flag != null) {
-      return Text(
-        flag,
-        style: TextStyle(fontSize: size, shadows: const []),
-        textScaleFactor: 1.0,
-      );
+    if (_countryCode != null && device.canRenderEmojis) {
+      final flag = countryCodeToFlag(_countryCode);
+      // as of Flutter v1.22.3, emoji shadows are rendered as colorful duplicates,
+      // not filled with the shadow color as expected, so we remove them
+      if (flag != null) {
+        return Text(
+          flag,
+          style: TextStyle(fontSize: size, shadows: const []),
+          textScaleFactor: 1.0,
+        );
+      }
     }
     return Icon(_location.isEmpty ? AIcons.locationOff : AIcons.location, size: size);
   }

@@ -88,6 +88,7 @@ class ViewerTopOverlay extends StatelessWidget {
         case EntryAction.rotateScreen:
           return settings.isRotationLocked;
         case EntryAction.addShortcut:
+          return device.canPinShortcut;
         case EntryAction.copyToClipboard:
         case EntryAction.edit:
         case EntryAction.info:

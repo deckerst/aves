@@ -23,7 +23,6 @@ import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import kotlinx.coroutines.runBlocking
-import java.util.*
 
 class AnalysisService : MethodChannel.MethodCallHandler, Service() {
     private var backgroundFlutterEngine: FlutterEngine? = null
@@ -141,11 +140,12 @@ class AnalysisService : MethodChannel.MethodCallHandler, Service() {
             getString(R.string.analysis_notification_action_stop),
             stopServiceIntent
         ).build()
+        val icon = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) R.drawable.ic_notification else R.mipmap.ic_launcher_round
         return NotificationCompat.Builder(this, CHANNEL_ANALYSIS)
             .setContentTitle(title ?: getText(R.string.analysis_notification_default_title))
             .setContentText(message)
             .setBadgeIconType(NotificationCompat.BADGE_ICON_NONE)
-            .setSmallIcon(R.drawable.ic_notification)
+            .setSmallIcon(icon)
             .setContentIntent(openAppIntent)
             .setPriority(NotificationCompat.PRIORITY_LOW)
             .addAction(stopAction)

@@ -62,7 +62,14 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
         fun addPackageDetails(intent: Intent) {
             // apps tend to use their name in English when creating directories
             // so we get their names in English as well as the current locale
-            val englishConfig = Configuration().apply { setLocale(Locale.ENGLISH) }
+            val englishConfig = Configuration().apply {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                    setLocale(Locale.ENGLISH)
+                } else {
+                    @Suppress("deprecation")
+                    locale = Locale.ENGLISH
+                }
+            }
 
             val pm = context.packageManager
             for (resolveInfo in pm.queryIntentActivities(intent, 0)) {
