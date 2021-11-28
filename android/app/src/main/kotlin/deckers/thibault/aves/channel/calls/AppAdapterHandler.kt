@@ -51,8 +51,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
             "openMap" -> safe(call, result, ::openMap)
             "setAs" -> safe(call, result, ::setAs)
             "share" -> safe(call, result, ::share)
-            "canPin" -> safe(call, result, ::canPin)
-            "pin" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::pin) }
+            "pinShortcut" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::pinShortcut) }
             else -> result.notImplemented()
         }
     }
@@ -323,13 +322,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
 
     // shortcuts
 
-    private fun isPinSupported() = ShortcutManagerCompat.isRequestPinShortcutSupported(context)
-
-    private fun canPin(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
-        result.success(isPinSupported())
-    }
-
-    private fun pin(call: MethodCall, result: MethodChannel.Result) {
+    private fun pinShortcut(call: MethodCall, result: MethodChannel.Result) {
         val label = call.argument<String>("label")
         val iconBytes = call.argument<ByteArray>("iconBytes")
         val filters = call.argument<List<String>>("filters")
@@ -339,7 +332,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
             return
         }
 
-        if (!isPinSupported()) {
+        if (!ShortcutManagerCompat.isRequestPinShortcutSupported(context)) {
             result.error("pin-unsupported", "failed because the launcher does not support pinning shortcuts", null)
             return
         }

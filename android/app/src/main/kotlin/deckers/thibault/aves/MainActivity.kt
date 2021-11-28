@@ -59,7 +59,7 @@ class MainActivity : FlutterActivity() {
         MethodChannel(messenger, AnalysisHandler.CHANNEL).setMethodCallHandler(analysisHandler)
         MethodChannel(messenger, AppAdapterHandler.CHANNEL).setMethodCallHandler(AppAdapterHandler(this))
         MethodChannel(messenger, DebugHandler.CHANNEL).setMethodCallHandler(DebugHandler(this))
-        MethodChannel(messenger, DeviceHandler.CHANNEL).setMethodCallHandler(DeviceHandler())
+        MethodChannel(messenger, DeviceHandler.CHANNEL).setMethodCallHandler(DeviceHandler(this))
         MethodChannel(messenger, EmbeddedDataHandler.CHANNEL).setMethodCallHandler(EmbeddedDataHandler(this))
         MethodChannel(messenger, GeocodingHandler.CHANNEL).setMethodCallHandler(GeocodingHandler(this))
         MethodChannel(messenger, GlobalSearchHandler.CHANNEL).setMethodCallHandler(GlobalSearchHandler(this))
@@ -163,11 +163,13 @@ class MainActivity : FlutterActivity() {
             return
         }
 
-        // save access permissions across reboots
-        val takeFlags = (data.flags
-                and (Intent.FLAG_GRANT_READ_URI_PERMISSION
-                or Intent.FLAG_GRANT_WRITE_URI_PERMISSION))
-        contentResolver.takePersistableUriPermission(treeUri, takeFlags)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            // save access permissions across reboots
+            val takeFlags = (data.flags
+                    and (Intent.FLAG_GRANT_READ_URI_PERMISSION
+                    or Intent.FLAG_GRANT_WRITE_URI_PERMISSION))
+            contentResolver.takePersistableUriPermission(treeUri, takeFlags)
+        }
 
         // resume pending action
         onStorageAccessResult(requestCode, treeUri)

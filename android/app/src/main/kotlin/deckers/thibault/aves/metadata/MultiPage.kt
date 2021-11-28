@@ -54,9 +54,11 @@ object MultiPage {
                     // do not use `MediaFormat.KEY_TRACK_ID` as it is actually not unique between tracks
                     // e.g. there could be both a video track and an image track with KEY_TRACK_ID == 1
 
-                    format.getSafeInt(MediaFormat.KEY_IS_DEFAULT) { track[KEY_IS_DEFAULT] = it != 0 }
                     format.getSafeInt(MediaFormat.KEY_WIDTH) { track[KEY_WIDTH] = it }
                     format.getSafeInt(MediaFormat.KEY_HEIGHT) { track[KEY_HEIGHT] = it }
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                        format.getSafeInt(MediaFormat.KEY_IS_DEFAULT) { track[KEY_IS_DEFAULT] = it != 0 }
+                    }
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                         format.getSafeInt(MediaFormat.KEY_ROTATION) { track[KEY_ROTATION_DEGREES] = it }
                     }

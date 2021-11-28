@@ -44,7 +44,7 @@ class AnalysisService : MethodChannel.MethodCallHandler, Service() {
 
         val messenger = backgroundFlutterEngine!!.dartExecutor.binaryMessenger
         // channels for analysis
-        MethodChannel(messenger, DeviceHandler.CHANNEL).setMethodCallHandler(DeviceHandler())
+        MethodChannel(messenger, DeviceHandler.CHANNEL).setMethodCallHandler(DeviceHandler(this))
         MethodChannel(messenger, GeocodingHandler.CHANNEL).setMethodCallHandler(GeocodingHandler(this))
         MethodChannel(messenger, MediaStoreHandler.CHANNEL).setMethodCallHandler(MediaStoreHandler(this))
         MethodChannel(messenger, MetadataFetchHandler.CHANNEL).setMethodCallHandler(MetadataFetchHandler(this))

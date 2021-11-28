@@ -6,7 +6,6 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/math_utils.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:latlong2/latlong.dart';
 
@@ -28,8 +27,6 @@ abstract class AndroidAppService {
   Future<bool> shareEntries(Iterable<AvesEntry> entries);
 
   Future<bool> shareSingle(String uri, String mimeType);
-
-  Future<bool> canPinToHomeScreen();
 
   Future<void> pinToHomeScreen(String label, AvesEntry? coverEntry, {Set<CollectionFilter>? filters, String? uri});
 }
@@ -174,25 +171,6 @@ class PlatformAndroidAppService implements AndroidAppService {
 
   // app shortcuts
 
-  // this ability will not change over the lifetime of the app
-  bool? _canPin;
-
-  @override
-  Future<bool> canPinToHomeScreen() async {
-    if (_canPin != null) return SynchronousFuture(_canPin!);
-
-    try {
-      final result = await platform.invokeMethod('canPin');
-      if (result != null) {
-        _canPin = result;
-        return result;
-      }
-    } on PlatformException catch (e, stack) {
-      await reportService.recordError(e, stack);
-    }
-    return false;
-  }
-
   @override
   Future<void> pinToHomeScreen(String label, AvesEntry? coverEntry, {Set<CollectionFilter>? filters, String? uri}) async {
     Uint8List? iconBytes;
@@ -209,7 +187,7 @@ class PlatformAndroidAppService implements AndroidAppService {
       );
     }
     try {
-      await platform.invokeMethod('pin', <String, dynamic>{
+      await platform.invokeMethod('pinShortcut', <String, dynamic>{
         'label': label,
         'iconBytes': iconBytes,
         'filters': filters?.map((filter) => filter.toJson()).toList(),

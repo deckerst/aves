@@ -73,6 +73,7 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets
 import java.text.ParseException
 import java.util.*
@@ -189,7 +190,15 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                                             val kv = pair as KeyValuePair
                                             val key = kv.key
                                             // `PNG-iTXt` uses UTF-8, contrary to `PNG-tEXt` and `PNG-zTXt` using Latin-1 / ISO-8859-1
-                                            val charset = if (baseDirName == PNG_ITXT_DIR_NAME) StandardCharsets.UTF_8 else kv.value.charset
+                                            val charset = if (baseDirName == PNG_ITXT_DIR_NAME) {
+                                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                                                    StandardCharsets.UTF_8
+                                                } else {
+                                                    Charset.forName("UTF-8")
+                                                }
+                                            } else {
+                                                kv.value.charset
+                                            }
                                             val valueString = String(kv.value.bytes, charset)
                                             val dirs = extractPngProfile(key, valueString)
                                             if (dirs?.any() == true) {

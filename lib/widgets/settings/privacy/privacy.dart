@@ -1,4 +1,5 @@
 import 'package:aves/app_flavor.dart';
+import 'package:aves/model/device.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/color_utils.dart';
@@ -63,7 +64,7 @@ class PrivacySection extends StatelessWidget {
           ),
         ),
         const HiddenItemsTile(),
-        const StorageAccessTile(),
+        if (device.canGrantDirectoryAccess) const StorageAccessTile(),
       ],
     );
   }
