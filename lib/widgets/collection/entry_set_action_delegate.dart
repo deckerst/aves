@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/actions/entry_set_actions.dart';
 import 'package:aves/model/actions/move_type.dart';
+import 'package:aves/model/device.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/entry_xmp_iptc.dart';
 import 'package:aves/model/filters/album.dart';
@@ -44,7 +45,6 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
     EntrySetAction action, {
     required AppMode appMode,
     required bool isSelecting,
-    required bool supportShortcuts,
     required EntrySortFactor sortFactor,
     required int itemCount,
     required int selectedItemCount,
@@ -67,7 +67,7 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
       case EntrySetAction.toggleTitleSearch:
         return !isSelecting;
       case EntrySetAction.addShortcut:
-        return appMode == AppMode.main && !isSelecting && supportShortcuts;
+        return appMode == AppMode.main && !isSelecting && device.canPinShortcut;
       // browsing or selecting
       case EntrySetAction.map:
       case EntrySetAction.stats:

@@ -91,6 +91,12 @@ class StorageAccessStreamHandler(private val activity: Activity, arguments: Any?
     }
 
     private fun createFile() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+            // TODO TLAD [<=API18] create file
+            error("createFile-sdk", "unsupported SDK version=${Build.VERSION.SDK_INT}", null)
+            return
+        }
+
         val name = args["name"] as String?
         val mimeType = args["mimeType"] as String?
         val bytes = args["bytes"] as ByteArray?
@@ -128,6 +134,12 @@ class StorageAccessStreamHandler(private val activity: Activity, arguments: Any?
 
 
     private fun openFile() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+            // TODO TLAD [<=API18] open file
+            error("openFile-sdk", "unsupported SDK version=${Build.VERSION.SDK_INT}", null)
+            return
+        }
+
         val mimeType = args["mimeType"] as String?
         if (mimeType == null) {
             error("openFile-args", "failed because of missing arguments", null)

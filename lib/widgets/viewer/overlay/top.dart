@@ -1,4 +1,5 @@
 import 'package:aves/model/actions/entry_actions.dart';
+import 'package:aves/model/device.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/favourites.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -79,7 +80,7 @@ class ViewerTopOverlay extends StatelessWidget {
           return targetEntry.canRotateAndFlip;
         case EntryAction.export:
         case EntryAction.print:
-          return !targetEntry.isVideo;
+          return !targetEntry.isVideo && device.canPrint;
         case EntryAction.openMap:
           return targetEntry.hasGps;
         case EntryAction.viewSource:

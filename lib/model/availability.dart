@@ -1,7 +1,7 @@
+import 'package:aves/model/device.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:github/github.dart';
@@ -62,12 +62,8 @@ class LiveAvesAvailability implements AvesAvailability {
   @override
   Future<bool> get canLocatePlaces => Future.wait<bool>([isConnected, hasPlayServices]).then((results) => results.every((result) => result));
 
-  // as of google_maps_flutter v2.1.1, minSDK is 20 because of default PlatformView usage,
-  // but using hybrid composition would make it usable on 19 too, cf https://github.com/flutter/flutter/issues/23728
-  Future<bool> get _isUseGoogleMapRenderingSupported => DeviceInfoPlugin().androidInfo.then((androidInfo) => (androidInfo.version.sdkInt ?? 0) >= 20);
-
   @override
-  Future<bool> get canUseGoogleMaps => Future.wait<bool>([_isUseGoogleMapRenderingSupported, hasPlayServices]).then((results) => results.every((result) => result));
+  Future<bool> get canUseGoogleMaps async => device.canRenderGoogleMaps && await hasPlayServices;
 
   @override
   Future<bool> get isNewVersionAvailable async {

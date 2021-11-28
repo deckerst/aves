@@ -1,4 +1,4 @@
-import 'package:aves/widgets/aves_app.dart';
+import 'package:aves/model/device.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:provider/provider.dart';
@@ -53,7 +53,7 @@ class StamenWatercolorLayer extends StatelessWidget {
 
 class _NetworkTileProvider extends NetworkTileProvider {
   final Map<String, String> headers = {
-    'User-Agent': AvesApp.userAgent,
+    'User-Agent': device.userAgent,
   };
 
   _NetworkTileProvider();
