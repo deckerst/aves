@@ -12,6 +12,7 @@ import 'package:aves/widgets/common/app_bar_subtitle.dart';
 import 'package:aves/widgets/common/basic/menu.dart';
 import 'package:aves/widgets/common/basic/query_bar.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
 import 'package:aves/widgets/common/providers/selection_provider.dart';
 import 'package:aves/widgets/dialogs/filter_editors/create_album_dialog.dart';
@@ -79,6 +80,7 @@ class _AlbumPickPageState extends State<AlbumPickPage> {
                   text: context.l10n.albumEmpty,
                 ),
                 onTap: (filter) => Navigator.pop<String>(context, (filter as AlbumFilter).album),
+                heroType: HeroType.never,
               ),
             );
           },

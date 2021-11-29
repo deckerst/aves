@@ -26,7 +26,7 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
                 "canGrantDirectoryAccess" to (sdkInt >= Build.VERSION_CODES.LOLLIPOP),
                 "canPinShortcut" to ShortcutManagerCompat.isRequestPinShortcutSupported(context),
                 "canPrint" to (sdkInt >= Build.VERSION_CODES.KITKAT),
-                "canRenderEmojis" to (sdkInt >= Build.VERSION_CODES.LOLLIPOP),
+                "canRenderFlagEmojis" to (sdkInt >= Build.VERSION_CODES.LOLLIPOP),
                 // as of google_maps_flutter v2.1.1, minSDK is 20 because of default PlatformView usage,
                 // but using hybrid composition would make it usable on API 19 too,
                 // cf https://github.com/flutter/flutter/issues/23728

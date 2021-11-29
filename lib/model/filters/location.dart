@@ -59,7 +59,7 @@ class LocationFilter extends CollectionFilter {
 
   @override
   Widget iconBuilder(BuildContext context, double size, {bool showGenericIcon = true, bool embossed = false}) {
-    if (_countryCode != null && device.canRenderEmojis) {
+    if (_countryCode != null && device.canRenderFlagEmojis) {
       final flag = countryCodeToFlag(_countryCode);
       // as of Flutter v1.22.3, emoji shadows are rendered as colorful duplicates,
       // not filled with the shadow color as expected, so we remove them

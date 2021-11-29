@@ -5,7 +5,7 @@ final Device device = Device._private();
 
 class Device {
   late final String _userAgent;
-  late final bool _canGrantDirectoryAccess, _canPinShortcut, _canPrint, _canRenderEmojis, _canRenderGoogleMaps;
+  late final bool _canGrantDirectoryAccess, _canPinShortcut, _canPrint, _canRenderFlagEmojis, _canRenderGoogleMaps;
   late final bool _hasFilePicker, _showPinShortcutFeedback;
 
   String get userAgent => _userAgent;
@@ -16,7 +16,7 @@ class Device {
 
   bool get canPrint => _canPrint;
 
-  bool get canRenderEmojis => _canRenderEmojis;
+  bool get canRenderFlagEmojis => _canRenderFlagEmojis;
 
   bool get canRenderGoogleMaps => _canRenderGoogleMaps;
 
@@ -35,7 +35,7 @@ class Device {
     _canGrantDirectoryAccess = capabilities['canGrantDirectoryAccess'] ?? false;
     _canPinShortcut = capabilities['canPinShortcut'] ?? false;
     _canPrint = capabilities['canPrint'] ?? false;
-    _canRenderEmojis = capabilities['canRenderEmojis'] ?? false;
+    _canRenderFlagEmojis = capabilities['canRenderFlagEmojis'] ?? false;
     _canRenderGoogleMaps = capabilities['canRenderGoogleMaps'] ?? false;
     _hasFilePicker = capabilities['hasFilePicker'] ?? false;
     _showPinShortcutFeedback = capabilities['showPinShortcutFeedback'] ?? false;

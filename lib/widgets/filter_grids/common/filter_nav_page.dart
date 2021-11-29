@@ -3,6 +3,7 @@ import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
+import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/providers/selection_provider.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip_set.dart';
 import 'package:aves/widgets/filter_grids/common/app_bar.dart';
@@ -57,6 +58,7 @@ class FilterNavigationPage<T extends CollectionFilter> extends StatelessWidget {
             },
           ),
           onTap: (filter) => _goToCollection(context, filter),
+          heroType: HeroType.onTap,
         ),
       ),
     );

@@ -28,6 +28,7 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
   final bool pinned;
   final String? banner;
   final FilterCallback? onTap;
+  final HeroType heroType;
 
   const CoveredFilterChip({
     Key? key,
@@ -38,6 +39,7 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
     this.pinned = false,
     this.banner,
     this.onTap,
+    this.heroType = HeroType.onTap,
   })  : thumbnailExtent = thumbnailExtent ?? extent,
         super(key: key);
 
@@ -138,6 +140,7 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
       banner: banner,
       details: _buildDetails(source, filter),
       padding: titlePadding,
+      heroType: heroType,
       onTap: onTap,
       onLongPress: null,
     );
