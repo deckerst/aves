@@ -1,3 +1,4 @@
+import 'package:aves/model/actions/move_type.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:flutter/foundation.dart';
@@ -18,9 +19,10 @@ class EntryRemovedEvent {
 
 @immutable
 class EntryMovedEvent {
+  final MoveType type;
   final Set<AvesEntry> entries;
 
-  const EntryMovedEvent(this.entries);
+  const EntryMovedEvent(this.type, this.entries);
 }
 
 @immutable

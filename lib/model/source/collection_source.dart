@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:aves/model/actions/move_type.dart';
 import 'package:aves/model/covers.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/favourites.dart';
@@ -187,7 +188,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
         }
         await _moveEntry(entry, newFields, persist: persist);
         entry.metadataChangeNotifier.notify();
-        eventBus.fire(EntryMovedEvent({entry}));
+        eventBus.fire(EntryMovedEvent(MoveType.move, {entry}));
         completer.complete(true);
       },
     );
@@ -278,7 +279,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
     }
     invalidateAlbumFilterSummary(directories: fromAlbums);
     _invalidate(movedEntries);
-    eventBus.fire(EntryMovedEvent(movedEntries));
+    eventBus.fire(EntryMovedEvent(copy ? MoveType.copy : MoveType.move, movedEntries));
   }
 
   bool get initialized => false;
