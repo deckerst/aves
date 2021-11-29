@@ -18,7 +18,7 @@ import 'package:provider/provider.dart';
 typedef FilterCallback = void Function(CollectionFilter filter);
 typedef OffsetFilterCallback = void Function(BuildContext context, CollectionFilter filter, Offset tapPosition);
 
-enum HeroType { always, onTap }
+enum HeroType { always, onTap, never }
 
 @immutable
 class AvesFilterDecoration {

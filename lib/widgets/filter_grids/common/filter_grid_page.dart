@@ -51,6 +51,7 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
   final QueryTest<T>? applyQuery;
   final Widget Function() emptyBuilder;
   final FilterCallback onTap;
+  final HeroType heroType;
 
   const FilterGridPage({
     Key? key,
@@ -66,6 +67,7 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
     this.applyQuery,
     required this.emptyBuilder,
     required this.onTap,
+    required this.heroType,
   }) : super(key: key);
 
   static const Color detailColor = Color(0xFFE0E0E0);
@@ -104,6 +106,7 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
                     applyQuery: applyQuery,
                     emptyBuilder: emptyBuilder,
                     onTap: onTap,
+                    heroType: heroType,
                   ),
                 ),
               ),
@@ -129,6 +132,7 @@ class FilterGrid<T extends CollectionFilter> extends StatefulWidget {
   final QueryTest<T>? applyQuery;
   final Widget Function() emptyBuilder;
   final FilterCallback onTap;
+  final HeroType heroType;
 
   const FilterGrid({
     Key? key,
@@ -144,6 +148,7 @@ class FilterGrid<T extends CollectionFilter> extends StatefulWidget {
     required this.applyQuery,
     required this.emptyBuilder,
     required this.onTap,
+    required this.heroType,
   }) : super(key: key);
 
   @override
@@ -181,6 +186,7 @@ class _FilterGridState<T extends CollectionFilter> extends State<FilterGrid<T>> 
         applyQuery: widget.applyQuery,
         emptyBuilder: widget.emptyBuilder,
         onTap: widget.onTap,
+        heroType: widget.heroType,
       ),
     );
   }
@@ -196,6 +202,7 @@ class _FilterGridContent<T extends CollectionFilter> extends StatelessWidget {
   final Widget Function() emptyBuilder;
   final QueryTest<T>? applyQuery;
   final FilterCallback onTap;
+  final HeroType heroType;
 
   final ValueNotifier<double> _appBarHeightNotifier = ValueNotifier(0);
 
@@ -212,6 +219,7 @@ class _FilterGridContent<T extends CollectionFilter> extends StatelessWidget {
     required this.applyQuery,
     required this.emptyBuilder,
     required this.onTap,
+    required this.heroType,
   }) : super(key: key) {
     _appBarHeightNotifier.value = appBarHeight;
   }
@@ -275,6 +283,7 @@ class _FilterGridContent<T extends CollectionFilter> extends StatelessWidget {
                                 pinned: pinnedFilters.contains(filter),
                                 banner: newFilters.contains(filter) ? context.l10n.newFilterBanner : null,
                                 onTap: onTap,
+                                heroType: heroType,
                               ),
                             ),
                           );
@@ -432,6 +441,7 @@ class _FilterScaler<T extends CollectionFilter> extends StatelessWidget {
           extent: tileSize.width,
           thumbnailExtent: context.read<TileExtentController>().effectiveExtentMax,
           pinned: pinnedFilters.contains(filter),
+          heroType: HeroType.never,
         );
       },
       highlightItem: (item) => item.filter,
