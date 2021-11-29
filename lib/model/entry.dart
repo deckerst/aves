@@ -438,12 +438,14 @@ class AvesEntry {
     return _bestTitle;
   }
 
-  CatalogMetadata? get catalogMetadata => _catalogMetadata;
+  int? get catalogDateMillis => _catalogDateMillis;
 
   set catalogDateMillis(int? dateMillis) {
     _catalogDateMillis = dateMillis;
     _bestDate = null;
   }
+
+  CatalogMetadata? get catalogMetadata => _catalogMetadata;
 
   set catalogMetadata(CatalogMetadata? newMetadata) {
     final oldDateModifiedSecs = dateModifiedSecs;
