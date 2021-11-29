@@ -5,6 +5,7 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/viewer/debug/db.dart';
 import 'package:aves/widgets/viewer/debug/metadata.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
@@ -59,6 +60,7 @@ class ViewerDebugPage extends StatelessWidget {
       children: [
         InfoRowGroup(
           info: {
+            'hash': '#${shortHash(entry)}',
             'uri': entry.uri,
             'contentId': '${entry.contentId}',
             'path': entry.path ?? '',
@@ -74,6 +76,7 @@ class ViewerDebugPage extends StatelessWidget {
         const Divider(),
         InfoRowGroup(
           info: {
+            'catalogDateMillis': toDateValue(entry.catalogDateMillis),
             'dateModifiedSecs': toDateValue(entry.dateModifiedSecs, factor: 1000),
             'sourceDateTakenMillis': toDateValue(entry.sourceDateTakenMillis),
             'bestDate': '${entry.bestDate}',

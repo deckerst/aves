@@ -105,7 +105,9 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
       _rawEntries.removeWhere((entry) => newContentIds.contains(entry.contentId));
     }
 
-    entries.forEach((entry) => entry.catalogDateMillis = _savedDates[entry.contentId]);
+    entries.where((entry) => entry.catalogDateMillis == null).forEach((entry) {
+      entry.catalogDateMillis = _savedDates[entry.contentId];
+    });
 
     _entryById.addAll(newIdMapEntries);
     _rawEntries.addAll(entries);
@@ -246,6 +248,8 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
             title: newFields['title'] as String?,
             dateModifiedSecs: newFields['dateModifiedSecs'] as int?,
           ));
+        } else {
+          debugPrint('failed to find source entry with uri=$sourceUri');
         }
       });
       await metadataDb.saveEntries(movedEntries);
