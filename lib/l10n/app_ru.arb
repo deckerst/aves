@@ -424,6 +424,9 @@
   "settingsAllowErrorReporting": "Разрешить анонимную отправку логов",
   "settingsSaveSearchHistory": "Сохранять историю поиска",
 
+  "settingsHiddenItemsTile": "Скрытые объекты",
+  "settingsHiddenItemsTitle": "Скрытые объекты",
+
   "settingsHiddenFiltersTitle": "Скрытые фильтры",
   "settingsHiddenFiltersBanner": "Фотографии и видео, соответствующие скрытым фильтрам, не появятся в вашей коллекции.",
   "settingsHiddenFiltersEmpty": "Нет скрытых фильтров",
