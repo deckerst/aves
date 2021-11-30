@@ -12,7 +12,6 @@ import 'package:aves/model/source/tag.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/android_file_utils.dart';
-import 'package:aves/utils/color_utils.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/thumbnail/image.dart';
@@ -118,17 +117,22 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
             );
           },
           child: entry == null
-              ? Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        Colors.white,
-                        stringToColor(filter.getLabel(context)),
-                      ],
-                    ),
-                  ),
+              ? FutureBuilder<Color>(
+                  future: filter.color(context),
+                  builder: (context, snapshot) {
+                    return Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            Colors.white,
+                            snapshot.data ?? Colors.white,
+                          ],
+                        ),
+                      ),
+                    );
+                  },
                 )
               : ThumbnailImage(
                   entry: entry,

@@ -81,7 +81,9 @@ class VideoMetadataFormatter {
   static Future<CatalogMetadata?> getCatalogMetadata(AvesEntry entry) async {
     final mediaInfo = await getVideoMetadata(entry);
 
-    bool isDefined(dynamic value) => value is String && value != '0';
+    // only consider values with at least 8 characters (yyyymmdd),
+    // ignoring unset values like `0`, as well as year values like `2021`
+    bool isDefined(dynamic value) => value is String && value.length >= 8;
 
     var dateString = mediaInfo[Keys.date];
     if (!isDefined(dateString)) {
@@ -112,6 +114,7 @@ class VideoMetadataFormatter {
 
     // `DateTime` does not recognize:
     // - `UTC 2021-05-30 19:14:21`
+    // - `2021`
 
     final match = _anotherDatePattern.firstMatch(dateString);
     if (match != null) {

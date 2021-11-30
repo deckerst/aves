@@ -72,6 +72,7 @@
   "videoActionSettings": "설정",
 
   "entryInfoActionEditDate": "날짜와 시간 수정",
+  "entryInfoActionEditTags": "태그 수정",
   "entryInfoActionRemoveMetadata": "메타데이터 삭제",
 
   "filterFavouriteLabel": "즐겨찾기",
@@ -503,6 +504,9 @@
   "viewerInfoSearchSuggestionResolution": "해상도",
   "viewerInfoSearchSuggestionRights": "권리",
 
+  "tagEditorPageTitle": "태그 수정",
+  "tagEditorPageNewTagFieldLabel": "새 태그",
+  "tagEditorPageAddTagTooltip": "태그 추가",
   "tagEditorSectionRecent": "최근 이용기록",
 
   "panoramaEnableSensorControl": "센서 제어 활성화",

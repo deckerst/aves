@@ -1,17 +1,8 @@
 {
-  "ko": [
-    "entryInfoActionEditTags",
-    "tagEditorPageTitle",
-    "tagEditorPageNewTagFieldLabel",
-    "tagEditorPageAddTagTooltip"
-  ],
-
   "ru": [
     "resetButtonTooltip",
     "entryInfoActionEditTags",
     "settingsViewerMaximumBrightness",
-    "settingsHiddenItemsTile",
-    "settingsHiddenItemsTitle",
     "tagEditorPageTitle",
     "tagEditorPageNewTagFieldLabel",
     "tagEditorPageAddTagTooltip"
