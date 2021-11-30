@@ -636,16 +636,16 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             return
         }
 
-        val saveExposureTime: (value: Rational) -> Unit = {
+        val saveExposureTime = fun(value: Rational) {
             // `TAG_EXPOSURE_TIME` as a string is sometimes a ratio, sometimes a decimal
             // so we explicitly request it as a rational (e.g. 1/100, 1/14, 71428571/1000000000, 4000/1000, 2000000000/500000000)
             // and process it to make sure the numerator is `1` when the ratio value is less than 1
-            val num = it.numerator
-            val denom = it.denominator
+            val num = value.numerator
+            val denom = value.denominator
             metadataMap[KEY_EXPOSURE_TIME] = when {
-                num >= denom -> "${it.toSimpleString(true)}″"
+                num >= denom -> "${value.toSimpleString(true)}″"
                 num != 1L && num != 0L -> Rational(1, (denom / num.toDouble()).roundToLong()).toString()
-                else -> it.toString()
+                else -> value.toString()
             }
         }
 

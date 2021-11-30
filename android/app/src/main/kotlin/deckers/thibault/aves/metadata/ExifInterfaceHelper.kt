@@ -223,7 +223,9 @@ object ExifInterfaceHelper {
         val dirs = DirType.values().map { Pair(it, it.createDirectory()) }.toMap()
 
         // exclude Exif directory when it only includes image size
-        val isUselessExif: (Map<String, String>) -> Boolean = { it.size == 2 && it.containsKey("Image Height") && it.containsKey("Image Width") }
+        val isUselessExif = fun(it: Map<String, String>): Boolean {
+            return it.size == 2 && it.containsKey("Image Height") && it.containsKey("Image Width")
+        }
 
         return HashMap<String, Map<String, String>>().apply {
             put("Exif", describeDir(exif, dirs, baseTags).takeUnless(isUselessExif) ?: hashMapOf())
