@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:aves/model/entry.dart';
+import 'package:aves/model/entry_images.dart';
 import 'package:aves/model/settings/accessibility_animations.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
@@ -46,6 +47,9 @@ class _EntryPageViewState extends State<EntryPageView> {
   late ValueNotifier<ViewState> _viewStateNotifier;
   late MagnifierController _magnifierController;
   final List<StreamSubscription> _subscriptions = [];
+  ImageStream? _videoCoverStream;
+  late ImageStreamListener _videoCoverStreamListener;
+  final ValueNotifier<ImageInfo?> _videoCoverInfoNotifier = ValueNotifier(null);
 
   AvesEntry get mainEntry => widget.mainEntry;
 
@@ -83,9 +87,17 @@ class _EntryPageViewState extends State<EntryPageView> {
     _magnifierController = MagnifierController();
     _subscriptions.add(_magnifierController.stateStream.listen(_onViewStateChanged));
     _subscriptions.add(_magnifierController.scaleBoundariesStream.listen(_onViewScaleBoundariesChanged));
+    if (entry.isVideo) {
+      _videoCoverStreamListener = ImageStreamListener((image, _) => _videoCoverInfoNotifier.value = image);
+      _videoCoverStream = entry.uriImage.resolve(ImageConfiguration.empty);
+      _videoCoverStream!.addListener(_videoCoverStreamListener);
+    }
   }
 
   void _unregisterWidget() {
+    _videoCoverStream?.removeListener(_videoCoverStreamListener);
+    _videoCoverStream = null;
+    _videoCoverInfoNotifier.value = null;
     _magnifierController.dispose();
     _subscriptions
       ..forEach((sub) => sub.cancel())
@@ -202,14 +214,32 @@ class _EntryPageViewState extends State<EntryPageView> {
                 opacity: showCover ? 1 : 0,
                 curve: Curves.easeInCirc,
                 duration: Durations.viewerVideoPlayerTransition,
-                child: GestureDetector(
-                  onTap: _onTap,
-                  child: ThumbnailImage(
-                    entry: entry,
-                    extent: context.select<MediaQueryData, double>((mq) => mq.size.shortestSide),
-                    fit: BoxFit.contain,
-                    showLoadingBackground: false,
-                  ),
+                child: ValueListenableBuilder<ImageInfo?>(
+                  valueListenable: _videoCoverInfoNotifier,
+                  builder: (context, videoCoverInfo, child) {
+                    if (videoCoverInfo == null) {
+                      return GestureDetector(
+                        onTap: _onTap,
+                        child: ThumbnailImage(
+                          entry: entry,
+                          extent: context.select<MediaQueryData, double>((mq) => mq.size.shortestSide),
+                          fit: BoxFit.contain,
+                          showLoadingBackground: false,
+                        ),
+                      );
+                    }
+
+                    // full cover image
+                    return _buildMagnifier(
+                      displaySize: Size(
+                        videoCoverInfo.image.width.toDouble(),
+                        videoCoverInfo.image.height.toDouble(),
+                      ),
+                      child: Image(
+                        image: entry.uriImage,
+                      ),
+                    );
+                  },
                 ),
               ),
             );
