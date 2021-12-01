@@ -21,7 +21,7 @@ dependencies:
   collection:
   connectivity_plus:
   country_code:
-# TODO TLAD as of 2021/10/18, null safe version is pre-release
+# TODO TLAD as of 2021/12/01, null safe version is pre-release
   custom_rounded_rectangle_border: '>=0.2.0-nullsafety.0'
   decorated_icon:
   device_info_plus:
@@ -50,7 +50,7 @@ dependencies:
   overlay_support:
   package_info_plus:
   palette_generator:
-# TODO TLAD as of 2021/10/18, latest version (v0.4.1) has this issue: https://github.com/zesage/panorama/issues/25
+# TODO TLAD as of 2021/12/01, latest version (v0.4.1) has this issue: https://github.com/zesage/panorama/issues/25
   panorama: 0.4.0
   pdf:
   percent_indicator:
