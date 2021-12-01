@@ -23,6 +23,7 @@ import 'package:aves/widgets/viewer/visual/state.dart';
 import 'package:aves/widgets/viewer/visual/subtitle/subtitle.dart';
 import 'package:aves/widgets/viewer/visual/vector.dart';
 import 'package:aves/widgets/viewer/visual/video.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -50,6 +51,13 @@ class _EntryPageViewState extends State<EntryPageView> {
   ImageStream? _videoCoverStream;
   late ImageStreamListener _videoCoverStreamListener;
   final ValueNotifier<ImageInfo?> _videoCoverInfoNotifier = ValueNotifier(null);
+
+  MagnifierController? _dismissedCoverMagnifierController;
+
+  MagnifierController get dismissedCoverMagnifierController {
+    _dismissedCoverMagnifierController ??= MagnifierController();
+    return _dismissedCoverMagnifierController!;
+  }
 
   AvesEntry get mainEntry => widget.mainEntry;
 
@@ -176,91 +184,110 @@ class _EntryPageViewState extends State<EntryPageView> {
   Widget _buildVideoView() {
     final videoController = context.read<VideoConductor>().getController(entry);
     if (videoController == null) return const SizedBox();
-    return Stack(
-      fit: StackFit.expand,
-      children: [
-        ValueListenableBuilder<double>(
-            valueListenable: videoController.sarNotifier,
-            builder: (context, sar, child) {
-              return Stack(
-                children: [
-                  _buildMagnifier(
-                    displaySize: entry.videoDisplaySize(sar),
-                    child: VideoView(
-                      entry: entry,
-                      controller: videoController,
-                    ),
+    return ValueListenableBuilder<double>(
+      valueListenable: videoController.sarNotifier,
+      builder: (context, sar, child) {
+        final videoDisplaySize = entry.videoDisplaySize(sar);
+        return Stack(
+          fit: StackFit.expand,
+          children: [
+            Stack(
+              children: [
+                _buildMagnifier(
+                  displaySize: videoDisplaySize,
+                  child: VideoView(
+                    entry: entry,
+                    controller: videoController,
                   ),
+                ),
+                VideoSubtitles(
+                  controller: videoController,
+                  viewStateNotifier: _viewStateNotifier,
+                ),
+                if (settings.videoShowRawTimedText)
                   VideoSubtitles(
                     controller: videoController,
                     viewStateNotifier: _viewStateNotifier,
+                    debugMode: true,
                   ),
-                  if (settings.videoShowRawTimedText)
-                    VideoSubtitles(
-                      controller: videoController,
-                      viewStateNotifier: _viewStateNotifier,
-                      debugMode: true,
-                    ),
-                ],
-              );
-            }),
-        // fade out image to ease transition with the player
-        StreamBuilder<VideoStatus>(
-          stream: videoController.statusStream,
-          builder: (context, snapshot) {
-            final showCover = !videoController.isReady;
-            return IgnorePointer(
-              ignoring: !showCover,
-              child: AnimatedOpacity(
-                opacity: showCover ? 1 : 0,
-                curve: Curves.easeInCirc,
-                duration: Durations.viewerVideoPlayerTransition,
-                child: ValueListenableBuilder<ImageInfo?>(
-                  valueListenable: _videoCoverInfoNotifier,
-                  builder: (context, videoCoverInfo, child) {
-                    if (videoCoverInfo == null) {
-                      return GestureDetector(
-                        onTap: _onTap,
-                        child: ThumbnailImage(
-                          entry: entry,
-                          extent: context.select<MediaQueryData, double>((mq) => mq.size.shortestSide),
-                          fit: BoxFit.contain,
-                          showLoadingBackground: false,
-                        ),
-                      );
-                    }
+              ],
+            ),
+            _buildVideoCover(videoController, videoDisplaySize),
+          ],
+        );
+      },
+    );
+  }
 
-                    // full cover image
-                    return _buildMagnifier(
-                      displaySize: Size(
-                        videoCoverInfo.image.width.toDouble(),
-                        videoCoverInfo.image.height.toDouble(),
-                      ),
-                      child: Image(
-                        image: entry.uriImage,
-                      ),
-                    );
-                  },
-                ),
-              ),
-            );
-          },
-        ),
-      ],
+  StreamBuilder<VideoStatus> _buildVideoCover(AvesVideoController videoController, Size videoDisplaySize) {
+    // fade out image to ease transition with the player
+    return StreamBuilder<VideoStatus>(
+      stream: videoController.statusStream,
+      builder: (context, snapshot) {
+        final showCover = !videoController.isReady;
+        return IgnorePointer(
+          ignoring: !showCover,
+          child: AnimatedOpacity(
+            opacity: showCover ? 1 : 0,
+            curve: Curves.easeInCirc,
+            duration: Durations.viewerVideoPlayerTransition,
+            child: ValueListenableBuilder<ImageInfo?>(
+              valueListenable: _videoCoverInfoNotifier,
+              builder: (context, videoCoverInfo, child) {
+                if (videoCoverInfo != null) {
+                  // full cover image may have a different size and different aspect ratio
+                  final coverSize = Size(
+                    videoCoverInfo.image.width.toDouble(),
+                    videoCoverInfo.image.height.toDouble(),
+                  );
+                  // when the cover is the same size as the video itself
+                  // (which is often the case when the cover is not embedded but just a frame),
+                  // we can reuse the same magnifier and preserve its state when switching from cover to video
+                  final coverController = showCover || coverSize == videoDisplaySize ? _magnifierController : dismissedCoverMagnifierController;
+                  return _buildMagnifier(
+                    controller: coverController,
+                    displaySize: coverSize,
+                    child: Image(
+                      image: entry.uriImage,
+                    ),
+                  );
+                }
+
+                // default to cached thumbnail, if any
+                final extent = entry.cachedThumbnails.firstOrNull?.key.extent;
+                if (extent != null && extent > 0) {
+                  return GestureDetector(
+                    onTap: _onTap,
+                    child: ThumbnailImage(
+                      entry: entry,
+                      extent: extent,
+                      fit: BoxFit.contain,
+                      showLoadingBackground: false,
+                    ),
+                  );
+                }
+
+                return const SizedBox();
+              },
+            ),
+          ),
+        );
+      },
     );
   }
 
   Widget _buildMagnifier({
+    MagnifierController? controller,
+    Size? displaySize,
     ScaleLevel maxScale = maxScale,
     ScaleStateCycle scaleStateCycle = defaultScaleStateCycle,
     bool applyScale = true,
-    Size? displaySize,
     required Widget child,
   }) {
     return Magnifier(
       // key includes modified date to refresh when the image is modified by metadata (e.g. rotated)
       key: ValueKey('${entry.uri}_${entry.pageId}_${entry.dateModifiedSecs}'),
-      controller: _magnifierController,
+      controller: controller ?? _magnifierController,
       childSize: displaySize ?? entry.displaySize,
       minScale: minScale,
       maxScale: maxScale,

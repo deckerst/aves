@@ -18,13 +18,14 @@ class MagnifierController {
   late ScaleStateChange _currentScaleState, previousScaleState;
 
   MagnifierController({
-    Offset initialPosition = Offset.zero,
+    MagnifierState? initialState,
   }) : super() {
-    initial = MagnifierState(
-      position: initialPosition,
-      scale: null,
-      source: ChangeSource.internal,
-    );
+    initial = initialState ??
+        const MagnifierState(
+          position: Offset.zero,
+          scale: null,
+          source: ChangeSource.internal,
+        );
     previousState = initial;
     _currentState = initial;
     _setState(initial);
