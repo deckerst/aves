@@ -4,11 +4,25 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [v1.5.7] - 2021-12-01
+
 ### Added
 
 - add and remove tags to JPEG/GIF/PNG/TIFF images
 - French translation
-- restored support for Android KitKat (without Google Maps)
+- support for Android KitKat (without Google Maps)
+- Viewer: maximum brightness option
+
+### Changed
+
+- Settings: select hidden path directory with a custom file picker instead of the native SAF one
+- Viewer: video cover (before playing the video) is now loaded at original resolution and can be zoomed
+
+### Fixed
+
+- pinch-to-zoom gesture on thumbnails was difficult to trigger
+- double-tap gesture in the viewer was ignored in some cases
+- copied items had the wrong date
 
 ## [v1.5.6] - 2021-11-12
 
