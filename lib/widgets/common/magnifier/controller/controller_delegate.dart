@@ -31,9 +31,16 @@ mixin MagnifierControllerDelegate on State<MagnifierCore> {
 
   final List<StreamSubscription> _subscriptions = [];
 
-  void startListeners() {
-    _subscriptions.add(controller.stateStream.listen(_onMagnifierStateChange));
-    _subscriptions.add(controller.scaleStateChangeStream.listen(_onScaleStateChange));
+  void registerDelegate(MagnifierCore widget) {
+    _subscriptions.add(widget.controller.stateStream.listen(_onMagnifierStateChange));
+    _subscriptions.add(widget.controller.scaleStateChangeStream.listen(_onScaleStateChange));
+  }
+
+  void unregisterDelegate(MagnifierCore oldWidget) {
+    _animateScale = null;
+    _subscriptions
+      ..forEach((sub) => sub.cancel())
+      ..clear();
   }
 
   void _onScaleStateChange(ScaleStateChange scaleStateChange) {
@@ -180,14 +187,6 @@ mixin MagnifierControllerDelegate on State<MagnifierCore> {
     }
 
     return Offset(finalX, finalY);
-  }
-
-  @override
-  void dispose() {
-    _animateScale = null;
-    _subscriptions.forEach((sub) => sub.cancel());
-    _subscriptions.clear();
-    super.dispose();
   }
 }
 

@@ -62,7 +62,7 @@ class _EntryPageViewState extends State<EntryPageView> {
   @override
   void initState() {
     super.initState();
-    _registerWidget();
+    _registerWidget(widget);
   }
 
   @override
@@ -70,19 +70,20 @@ class _EntryPageViewState extends State<EntryPageView> {
     super.didUpdateWidget(oldWidget);
 
     if (oldWidget.pageEntry != widget.pageEntry) {
-      _unregisterWidget();
-      _registerWidget();
+      _unregisterWidget(oldWidget);
+      _registerWidget(widget);
     }
   }
 
   @override
   void dispose() {
-    _unregisterWidget();
+    _unregisterWidget(widget);
     widget.onDisposed?.call();
     super.dispose();
   }
 
-  void _registerWidget() {
+  void _registerWidget(EntryPageView widget) {
+    final entry = widget.pageEntry;
     _viewStateNotifier = context.read<ViewStateConductor>().getOrCreateController(entry);
     _magnifierController = MagnifierController();
     _subscriptions.add(_magnifierController.stateStream.listen(_onViewStateChanged));
@@ -94,7 +95,7 @@ class _EntryPageViewState extends State<EntryPageView> {
     }
   }
 
-  void _unregisterWidget() {
+  void _unregisterWidget(EntryPageView oldWidget) {
     _videoCoverStream?.removeListener(_videoCoverStreamListener);
     _videoCoverStream = null;
     _videoCoverInfoNotifier.value = null;
