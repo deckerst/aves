@@ -1,3 +1,4 @@
+import 'package:aves/model/device.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -16,6 +17,8 @@ abstract class AvesAvailability {
   Future<bool> get hasPlayServices;
 
   Future<bool> get canLocatePlaces;
+
+  Future<bool> get canUseGoogleMaps;
 
   Future<bool> get isNewVersionAvailable;
 }
@@ -58,6 +61,9 @@ class LiveAvesAvailability implements AvesAvailability {
   // local geocoding with `geocoder` requires Play Services
   @override
   Future<bool> get canLocatePlaces => Future.wait<bool>([isConnected, hasPlayServices]).then((results) => results.every((result) => result));
+
+  @override
+  Future<bool> get canUseGoogleMaps async => device.canRenderGoogleMaps && await hasPlayServices;
 
   @override
   Future<bool> get isNewVersionAvailable async {

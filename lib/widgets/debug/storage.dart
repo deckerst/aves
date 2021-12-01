@@ -46,7 +46,7 @@ class _DebugStorageSectionState extends State<DebugStorageSection> with Automati
                   'isPrimary': '${v.isPrimary}',
                   'isRemovable': '${v.isRemovable}',
                   'state': v.state,
-                  if (freeSpace != null) 'freeSpace': formatFilesize(freeSpace),
+                  if (freeSpace != null) 'freeSpace': formatFileSize('en_US', freeSpace),
                 },
               ),
             ),

@@ -1,1 +1,10 @@
-{}
+{
+  "ru": [
+    "resetButtonTooltip",
+    "entryInfoActionEditTags",
+    "settingsViewerMaximumBrightness",
+    "tagEditorPageTitle",
+    "tagEditorPageNewTagFieldLabel",
+    "tagEditorPageAddTagTooltip"
+  ]
+}

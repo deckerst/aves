@@ -23,7 +23,7 @@ object XMP {
     private const val GAUDIO_SCHEMA_NS = "http://ns.google.com/photos/1.0/audio/"
     const val GCAMERA_SCHEMA_NS = "http://ns.google.com/photos/1.0/camera/"
     private const val GDEPTH_SCHEMA_NS = "http://ns.google.com/photos/1.0/depthmap/"
-    const val GIMAGE_SCHEMA_NS = "http://ns.google.com/photos/1.0/image/"
+    private const val GIMAGE_SCHEMA_NS = "http://ns.google.com/photos/1.0/image/"
     const val CONTAINER_SCHEMA_NS = "http://ns.google.com/photos/1.0/container/"
     private const val CONTAINER_ITEM_SCHEMA_NS = "http://ns.google.com/photos/1.0/container/item/"
 

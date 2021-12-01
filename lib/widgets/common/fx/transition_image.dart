@@ -3,7 +3,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-// adapted from `RawImage`, `paintImage()` from `DecorationImagePainter`, etc.
+// adapted from Flutter `RawImage`, `paintImage()` from `DecorationImagePainter`, etc.
 // to transition between 2 different fits during hero animation:
 // - BoxFit.cover at t=0
 // - BoxFit.contain at t=1
@@ -190,7 +190,8 @@ class _TransitionImagePainter extends CustomPainter {
       Offset.zero & inputSize,
     );
     if (background != null) {
-      canvas.drawRect(destinationRect, Paint()..color = background!);
+      // deflate to avoid background artifact around opaque image
+      canvas.drawRect(destinationRect.deflate(1), Paint()..color = background!);
     }
     canvas.drawImageRect(image!, sourceRect, destinationRect, paint);
   }

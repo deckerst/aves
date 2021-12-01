@@ -7,10 +7,10 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/settings/common/tile_leading.dart';
 import 'package:aves/widgets/settings/viewer/entry_background.dart';
+import 'package:aves/widgets/settings/viewer/overlay.dart';
 import 'package:aves/widgets/settings/viewer/viewer_actions_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tuple/tuple.dart';
 
 class ViewerSection extends StatelessWidget {
   final ValueNotifier<String?> expandedNotifier;
@@ -32,52 +32,16 @@ class ViewerSection extends StatelessWidget {
       showHighlight: false,
       children: [
         const ViewerActionsTile(),
-        Selector<Settings, bool>(
-          selector: (context, s) => s.showOverlayOnOpening,
-          builder: (context, current, child) => SwitchListTile(
-            value: current,
-            onChanged: (v) => settings.showOverlayOnOpening = v,
-            title: Text(context.l10n.settingsViewerShowOverlayOnOpening),
-          ),
-        ),
-        Selector<Settings, bool>(
-          selector: (context, s) => s.showOverlayMinimap,
-          builder: (context, current, child) => SwitchListTile(
-            value: current,
-            onChanged: (v) => settings.showOverlayMinimap = v,
-            title: Text(context.l10n.settingsViewerShowMinimap),
-          ),
-        ),
-        Selector<Settings, bool>(
-          selector: (context, s) => s.showOverlayInfo,
-          builder: (context, current, child) => SwitchListTile(
-            value: current,
-            onChanged: (v) => settings.showOverlayInfo = v,
-            title: Text(context.l10n.settingsViewerShowInformation),
-            subtitle: Text(context.l10n.settingsViewerShowInformationSubtitle),
-          ),
-        ),
-        Selector<Settings, Tuple2<bool, bool>>(
-          selector: (context, s) => Tuple2(s.showOverlayInfo, s.showOverlayShootingDetails),
-          builder: (context, s, child) {
-            final showInfo = s.item1;
-            final current = s.item2;
-            return SwitchListTile(
-              value: current,
-              onChanged: showInfo ? (v) => settings.showOverlayShootingDetails = v : null,
-              title: Text(context.l10n.settingsViewerShowShootingDetails),
-            );
-          },
-        ),
-        Selector<Settings, bool>(
-          selector: (context, s) => s.enableOverlayBlurEffect,
-          builder: (context, current, child) => SwitchListTile(
-            value: current,
-            onChanged: (v) => settings.enableOverlayBlurEffect = v,
-            title: Text(context.l10n.settingsViewerEnableOverlayBlurEffect),
-          ),
-        ),
+        const ViewerOverlayTile(),
         const _CutoutModeSwitch(),
+        Selector<Settings, bool>(
+          selector: (context, s) => s.viewerMaxBrightness,
+          builder: (context, current, child) => SwitchListTile(
+            value: current,
+            onChanged: (v) => settings.viewerMaxBrightness = v,
+            title: Text(context.l10n.settingsViewerMaximumBrightness),
+          ),
+        ),
         Selector<Settings, EntryBackground>(
           selector: (context, s) => s.imageBackground,
           builder: (context, current, child) => ListTile(

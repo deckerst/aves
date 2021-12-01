@@ -34,6 +34,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:screen_brightness/screen_brightness.dart';
 
 class EntryViewerStack extends StatefulWidget {
   final CollectionLens? collection;
@@ -82,6 +83,9 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
     super.initState();
     if (!settings.viewerUseCutout) {
       windowService.setCutoutMode(false);
+    }
+    if (settings.viewerMaxBrightness) {
+      ScreenBrightness().setScreenBrightness(1);
     }
     if (settings.keepScreenOn == KeepScreenOn.viewerOnly) {
       windowService.keepScreenOn(true);
@@ -390,7 +394,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
     if (!_isEntryTracked && _verticalPager.page?.floor() == transitionPage) {
       _trackEntry();
     }
-    _verticalScrollNotifier.notifyListeners();
+    _verticalScrollNotifier.notify();
   }
 
   void _goToCollection(CollectionFilter filter) {
@@ -520,6 +524,9 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
   void _onLeave() {
     if (!settings.viewerUseCutout) {
       windowService.setCutoutMode(true);
+    }
+    if (settings.viewerMaxBrightness) {
+      ScreenBrightness().resetScreenBrightness();
     }
     if (settings.keepScreenOn == KeepScreenOn.viewerOnly) {
       windowService.keepScreenOn(false);

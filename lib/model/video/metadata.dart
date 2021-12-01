@@ -81,7 +81,9 @@ class VideoMetadataFormatter {
   static Future<CatalogMetadata?> getCatalogMetadata(AvesEntry entry) async {
     final mediaInfo = await getVideoMetadata(entry);
 
-    bool isDefined(dynamic value) => value is String && value != '0';
+    // only consider values with at least 8 characters (yyyymmdd),
+    // ignoring unset values like `0`, as well as year values like `2021`
+    bool isDefined(dynamic value) => value is String && value.length >= 8;
 
     var dateString = mediaInfo[Keys.date];
     if (!isDefined(dateString)) {
@@ -112,6 +114,7 @@ class VideoMetadataFormatter {
 
     // `DateTime` does not recognize:
     // - `UTC 2021-05-30 19:14:21`
+    // - `2021`
 
     final match = _anotherDatePattern.firstMatch(dateString);
     if (match != null) {
@@ -371,7 +374,7 @@ class VideoMetadataFormatter {
 
   static String _formatFilesize(String value) {
     final size = int.tryParse(value);
-    return size != null ? formatFilesize(size) : value;
+    return size != null ? formatFileSize('en_US', size) : value;
   }
 
   static String _formatLanguage(String value) {
@@ -396,20 +399,10 @@ class VideoMetadataFormatter {
       if (parsed == null) return size;
       size = parsed;
     }
+
     const divider = 1000;
-
     if (size < divider) return '$size $unit';
-
-    if (size < divider * divider && size % divider == 0) {
-      return '${(size / divider).toStringAsFixed(0)} K$unit';
-    }
-    if (size < divider * divider) {
-      return '${(size / divider).toStringAsFixed(round)} K$unit';
-    }
-
-    if (size < divider * divider * divider && size % divider == 0) {
-      return '${(size / (divider * divider)).toStringAsFixed(0)} M$unit';
-    }
+    if (size < divider * divider) return '${(size / divider).toStringAsFixed(round)} K$unit';
     return '${(size / divider / divider).toStringAsFixed(round)} M$unit';
   }
 }

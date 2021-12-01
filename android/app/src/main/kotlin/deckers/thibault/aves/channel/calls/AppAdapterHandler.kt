@@ -18,6 +18,10 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.request.RequestOptions
 import deckers.thibault.aves.MainActivity
+import deckers.thibault.aves.MainActivity.Companion.EXTRA_STRING_ARRAY_SEPARATOR
+import deckers.thibault.aves.MainActivity.Companion.SHORTCUT_KEY_FILTERS_ARRAY
+import deckers.thibault.aves.MainActivity.Companion.SHORTCUT_KEY_FILTERS_STRING
+import deckers.thibault.aves.MainActivity.Companion.SHORTCUT_KEY_PAGE
 import deckers.thibault.aves.R
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safeSuspend
@@ -47,8 +51,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
             "openMap" -> safe(call, result, ::openMap)
             "setAs" -> safe(call, result, ::setAs)
             "share" -> safe(call, result, ::share)
-            "canPin" -> safe(call, result, ::canPin)
-            "pin" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::pin) }
+            "pinShortcut" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::pinShortcut) }
             else -> result.notImplemented()
         }
     }
@@ -59,7 +62,14 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
         fun addPackageDetails(intent: Intent) {
             // apps tend to use their name in English when creating directories
             // so we get their names in English as well as the current locale
-            val englishConfig = Configuration().apply { setLocale(Locale.ENGLISH) }
+            val englishConfig = Configuration().apply {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                    setLocale(Locale.ENGLISH)
+                } else {
+                    @Suppress("deprecation")
+                    locale = Locale.ENGLISH
+                }
+            }
 
             val pm = context.packageManager
             for (resolveInfo in pm.queryIntentActivities(intent, 0)) {
@@ -319,13 +329,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
 
     // shortcuts
 
-    private fun isPinSupported() = ShortcutManagerCompat.isRequestPinShortcutSupported(context)
-
-    private fun canPin(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
-        result.success(isPinSupported())
-    }
-
-    private fun pin(call: MethodCall, result: MethodChannel.Result) {
+    private fun pinShortcut(call: MethodCall, result: MethodChannel.Result) {
         val label = call.argument<String>("label")
         val iconBytes = call.argument<ByteArray>("iconBytes")
         val filters = call.argument<List<String>>("filters")
@@ -335,7 +339,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
             return
         }
 
-        if (!isPinSupported()) {
+        if (!ShortcutManagerCompat.isRequestPinShortcutSupported(context)) {
             result.error("pin-unsupported", "failed because the launcher does not support pinning shortcuts", null)
             return
         }
@@ -360,11 +364,11 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
         val intent = when {
             uri != null -> Intent(Intent.ACTION_VIEW, uri, context, MainActivity::class.java)
             filters != null -> Intent(Intent.ACTION_MAIN, null, context, MainActivity::class.java)
-                .putExtra("page", "/collection")
-                .putExtra("filters", filters.toTypedArray())
+                .putExtra(SHORTCUT_KEY_PAGE, "/collection")
+                .putExtra(SHORTCUT_KEY_FILTERS_ARRAY, filters.toTypedArray())
                 // on API 25, `String[]` or `ArrayList` extras are null when using the shortcut
                 // so we use a joined `String` as fallback
-                .putExtra("filtersString", filters.joinToString(MainActivity.EXTRA_STRING_ARRAY_SEPARATOR))
+                .putExtra(SHORTCUT_KEY_FILTERS_STRING, filters.joinToString(EXTRA_STRING_ARRAY_SEPARATOR))
             else -> {
                 result.error("pin-intent", "failed to build intent", null)
                 return

@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.BitmapFactory
 import android.media.MediaMetadataRetriever
 import android.net.Uri
+import android.os.Build
 import androidx.exifinterface.media.ExifInterface
 import com.drew.imaging.ImageMetadataReader
 import com.drew.metadata.avi.AviDirectory
@@ -135,10 +136,12 @@ class SourceEntry {
         try {
             retriever.getSafeInt(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH) { width = it }
             retriever.getSafeInt(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT) { height = it }
-            retriever.getSafeInt(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION) { sourceRotationDegrees = it }
             retriever.getSafeLong(MediaMetadataRetriever.METADATA_KEY_DURATION) { durationMillis = it }
             retriever.getSafeDateMillis(MediaMetadataRetriever.METADATA_KEY_DATE) { sourceDateTakenMillis = it }
             retriever.getSafeString(MediaMetadataRetriever.METADATA_KEY_TITLE) { title = it }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                retriever.getSafeInt(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION) { sourceRotationDegrees = it }
+            }
         } catch (e: Exception) {
             // ignore
         } finally {

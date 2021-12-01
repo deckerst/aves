@@ -11,7 +11,6 @@ import deckers.thibault.aves.MainActivity
 import deckers.thibault.aves.PendingStorageAccessResultHandler
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.PermissionManager
-import deckers.thibault.aves.utils.StorageUtils
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.EventChannel.EventSink
 import kotlinx.coroutines.Dispatchers
@@ -44,7 +43,6 @@ class StorageAccessStreamHandler(private val activity: Activity, arguments: Any?
             "requestMediaFileAccess" -> GlobalScope.launch(Dispatchers.IO) { requestMediaFileAccess() }
             "createFile" -> GlobalScope.launch(Dispatchers.IO) { createFile() }
             "openFile" -> GlobalScope.launch(Dispatchers.IO) { openFile() }
-            "selectDirectory" -> GlobalScope.launch(Dispatchers.IO) { selectDirectory() }
             else -> endOfStream()
         }
     }
@@ -93,6 +91,12 @@ class StorageAccessStreamHandler(private val activity: Activity, arguments: Any?
     }
 
     private fun createFile() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+            // TODO TLAD [<=API18] create file
+            error("createFile-sdk", "unsupported SDK version=${Build.VERSION.SDK_INT}", null)
+            return
+        }
+
         val name = args["name"] as String?
         val mimeType = args["mimeType"] as String?
         val bytes = args["bytes"] as ByteArray?
@@ -130,6 +134,12 @@ class StorageAccessStreamHandler(private val activity: Activity, arguments: Any?
 
 
     private fun openFile() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+            // TODO TLAD [<=API18] open file
+            error("openFile-sdk", "unsupported SDK version=${Build.VERSION.SDK_INT}", null)
+            return
+        }
+
         val mimeType = args["mimeType"] as String?
         if (mimeType == null) {
             error("openFile-args", "failed because of missing arguments", null)
@@ -156,24 +166,6 @@ class StorageAccessStreamHandler(private val activity: Activity, arguments: Any?
             endOfStream()
         })
         activity.startActivityForResult(intent, MainActivity.OPEN_FILE_REQUEST)
-    }
-
-    private fun selectDirectory() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
-
-            MainActivity.pendingStorageAccessResultHandlers[MainActivity.SELECT_DIRECTORY_REQUEST] = PendingStorageAccessResultHandler(null, { uri ->
-                success(StorageUtils.convertTreeUriToDirPath(activity, uri))
-                endOfStream()
-            }, {
-                success(null)
-                endOfStream()
-            })
-            activity.startActivityForResult(intent, MainActivity.SELECT_DIRECTORY_REQUEST)
-        } else {
-            success(null)
-            endOfStream()
-        }
     }
 
     override fun onCancel(arguments: Any?) {}

@@ -53,6 +53,8 @@
   "@hideTooltip": {},
   "removeTooltip": "Remove",
   "@removeTooltip": {},
+  "resetButtonTooltip": "Reset",
+  "@resetButtonTooltip": {},
 
   "doubleBackExitMessage": "Tap “back” again to exit.",
   "@doubleBackExitMessage": {},
@@ -145,6 +147,8 @@
 
   "entryInfoActionEditDate": "Edit date & time",
   "@entryInfoActionEditDate": {},
+  "entryInfoActionEditTags": "Edit tags",
+  "@entryInfoActionEditTags": {},
   "entryInfoActionRemoveMetadata": "Remove metadata",
   "@entryInfoActionRemoveMetadata": {},
 
@@ -417,7 +421,7 @@
   "removeEntryMetadataDialogMore": "More",
   "@removeEntryMetadataDialogMore": {},
 
-  "removeEntryMetadataMotionPhotoXmpWarningDialogMessage": "XMP is required to play the video inside a motion photo. Are you sure you want to remove it?",
+  "removeEntryMetadataMotionPhotoXmpWarningDialogMessage": "XMP is required to play the video inside a motion photo.\n\nAre you sure you want to remove it?",
   "@removeEntryMetadataMotionPhotoXmpWarningDialogMessage": {},
 
   "videoSpeedDialogLabel": "Playback speed",
@@ -501,6 +505,17 @@
   "@aboutCreditsWorldAtlas2": {},
   "aboutCreditsTranslators": "Translators:",
   "@aboutCreditsTranslators": {},
+  "aboutCreditsTranslatorLine": "{language}: {names}",
+  "@aboutCreditsTranslatorLine": {
+    "placeholders": {
+      "language": {
+        "type": "String"
+      },
+      "names": {
+        "type": "String"
+      }
+    }
+  },
 
   "aboutLicenses": "Open-Source Licenses",
   "@aboutLicenses": {},
@@ -646,6 +661,8 @@
   "@drawerCollectionImages": {},
   "drawerCollectionVideos": "Videos",
   "@drawerCollectionVideos": {},
+  "drawerCollectionAnimated": "Animated",
+  "@drawerCollectionAnimated": {},
   "drawerCollectionMotionPhotos": "Motion photos",
   "@drawerCollectionMotionPhotos": {},
   "drawerCollectionPanoramas": "Panoramas",
@@ -791,20 +808,10 @@
 
   "settingsSectionViewer": "Viewer",
   "@settingsSectionViewer": {},
-  "settingsViewerShowOverlayOnOpening": "Show overlay on opening",
-  "@settingsViewerShowOverlayOnOpening": {},
-  "settingsViewerShowMinimap": "Show minimap",
-  "@settingsViewerShowMinimap": {},
-  "settingsViewerShowInformation": "Show information",
-  "@settingsViewerShowInformation": {},
-  "settingsViewerShowInformationSubtitle": "Show title, date, location, etc.",
-  "@settingsViewerShowInformationSubtitle": {},
-  "settingsViewerShowShootingDetails": "Show shooting details",
-  "@settingsViewerShowShootingDetails": {},
-  "settingsViewerEnableOverlayBlurEffect": "Overlay blur effect",
-  "@settingsViewerEnableOverlayBlurEffect": {},
   "settingsViewerUseCutout": "Use cutout area",
   "@settingsViewerUseCutout": {},
+  "settingsViewerMaximumBrightness": "Maximum brightness",
+  "@settingsViewerMaximumBrightness": {},
   "settingsImageBackground": "Image background",
   "@settingsImageBackground": {},
 
@@ -820,6 +827,23 @@
   "@settingsViewerQuickActionEditorAvailableButtons": {},
   "settingsViewerQuickActionEmpty": "No buttons",
   "@settingsViewerQuickActionEmpty": {},
+
+  "settingsViewerOverlayTile": "Overlay",
+  "@settingsViewerOverlayTile": {},
+  "settingsViewerOverlayTitle": "Overlay",
+  "@settingsViewerOverlayTitle": {},
+  "settingsViewerShowOverlayOnOpening": "Show on opening",
+  "@settingsViewerShowOverlayOnOpening": {},
+  "settingsViewerShowMinimap": "Show minimap",
+  "@settingsViewerShowMinimap": {},
+  "settingsViewerShowInformation": "Show information",
+  "@settingsViewerShowInformation": {},
+  "settingsViewerShowInformationSubtitle": "Show title, date, location, etc.",
+  "@settingsViewerShowInformationSubtitle": {},
+  "settingsViewerShowShootingDetails": "Show shooting details",
+  "@settingsViewerShowShootingDetails": {},
+  "settingsViewerEnableOverlayBlurEffect": "Blur effect",
+  "@settingsViewerEnableOverlayBlurEffect": {},
 
   "settingsVideoPageTitle": "Video Settings",
   "@settingsVideoPageTitle": {},
@@ -880,8 +904,11 @@
   "settingsSaveSearchHistory": "Save search history",
   "@settingsSaveSearchHistory": {},
 
-  "settingsHiddenFiltersTile": "Hidden filters",
-  "@settingsHiddenFiltersTile": {},
+  "settingsHiddenItemsTile": "Hidden items",
+  "@settingsHiddenItemsTile": {},
+  "settingsHiddenItemsTitle": "Hidden Items",
+  "@settingsHiddenItemsTitle": {},
+
   "settingsHiddenFiltersTitle": "Hidden Filters",
   "@settingsHiddenFiltersTitle": {},
   "settingsHiddenFiltersBanner": "Photos and videos matching hidden filters will not appear in your collection.",
@@ -889,14 +916,10 @@
   "settingsHiddenFiltersEmpty": "No hidden filters",
   "@settingsHiddenFiltersEmpty": {},
 
-  "settingsHiddenPathsTile": "Hidden paths",
-  "@settingsHiddenPathsTile": {},
   "settingsHiddenPathsTitle": "Hidden Paths",
   "@settingsHiddenPathsTitle": {},
   "settingsHiddenPathsBanner": "Photos and videos in these folders, or any of their subfolders, will not appear in your collection.",
   "@settingsHiddenPathsBanner": {},
-  "settingsHiddenPathsEmpty": "No hidden paths",
-  "@settingsHiddenPathsEmpty": {},
   "addPathTooltip": "Add path",
   "@addPathTooltip": {},
 
@@ -1026,11 +1049,31 @@
   "viewerInfoSearchSuggestionRights": "Rights",
   "@viewerInfoSearchSuggestionRights": {},
 
+  "tagEditorPageTitle": "Edit Tags",
+  "@tagEditorPageTitle": {},
+  "tagEditorPageNewTagFieldLabel": "New tag",
+  "@tagEditorPageNewTagFieldLabel": {},
+  "tagEditorPageAddTagTooltip": "Add tag",
+  "@tagEditorPageAddTagTooltip": {},
+  "tagEditorSectionRecent": "Recent",
+  "@tagEditorSectionRecent": {},
+
   "panoramaEnableSensorControl": "Enable sensor control",
   "@panoramaEnableSensorControl": {},
   "panoramaDisableSensorControl": "Disable sensor control",
   "@panoramaDisableSensorControl": {},
 
   "sourceViewerPageTitle": "Source",
-  "@sourceViewerPageTitle": {}
+  "@sourceViewerPageTitle": {},
+
+  "filePickerShowHiddenFiles": "Show hidden files",
+  "@filePickerShowHiddenFiles": {},
+  "filePickerDoNotShowHiddenFiles": "Don’t show hidden files",
+  "@filePickerDoNotShowHiddenFiles": {},
+  "filePickerOpenFrom": "Open from",
+  "@filePickerOpenFrom": {},
+  "filePickerNoItems": "No items",
+  "@filePickerNoItems": {},
+  "filePickerUseThisFolder": "Use this folder",
+  "@filePickerUseThisFolder": {}
 }

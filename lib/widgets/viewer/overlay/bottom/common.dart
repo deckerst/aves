@@ -20,6 +20,7 @@ import 'package:aves/widgets/viewer/page_entry_builder.dart';
 import 'package:decorated_icon/decorated_icon.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
@@ -423,14 +424,25 @@ class _ShootingRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final locale = context.l10n.localeName;
+
+    final aperture = details.aperture;
+    final apertureText = aperture != null ? 'ƒ/${NumberFormat('0.0', locale).format(aperture)}' : Constants.overlayUnknown;
+
+    final focalLength = details.focalLength;
+    final focalLengthText = focalLength != null ? '${NumberFormat('0.#', locale).format(focalLength)} mm' : Constants.overlayUnknown;
+
+    final iso = details.iso;
+    final isoText = iso != null ? 'ISO$iso' : Constants.overlayUnknown;
+
     return Row(
       children: [
         const DecoratedIcon(AIcons.shooting, shadows: Constants.embossShadows, size: _iconSize),
         const SizedBox(width: _iconPadding),
-        Expanded(child: Text(details.aperture ?? Constants.overlayUnknown, strutStyle: Constants.overflowStrutStyle)),
+        Expanded(child: Text(apertureText, strutStyle: Constants.overflowStrutStyle)),
         Expanded(child: Text(details.exposureTime ?? Constants.overlayUnknown, strutStyle: Constants.overflowStrutStyle)),
-        Expanded(child: Text(details.focalLength ?? Constants.overlayUnknown, strutStyle: Constants.overflowStrutStyle)),
-        Expanded(child: Text(details.iso ?? Constants.overlayUnknown, strutStyle: Constants.overflowStrutStyle)),
+        Expanded(child: Text(focalLengthText, strutStyle: Constants.overflowStrutStyle)),
+        Expanded(child: Text(isoText, strutStyle: Constants.overflowStrutStyle)),
       ],
     );
   }

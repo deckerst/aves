@@ -81,6 +81,7 @@ class Settings extends ChangeNotifier {
   static const showOverlayShootingDetailsKey = 'show_overlay_shooting_details';
   static const enableOverlayBlurEffectKey = 'enable_overlay_blur_effect';
   static const viewerUseCutoutKey = 'viewer_use_cutout';
+  static const viewerMaxBrightnessKey = 'viewer_max_brightness';
 
   // video
   static const videoQuickActionsKey = 'video_quick_actions';
@@ -115,6 +116,9 @@ class Settings extends ChangeNotifier {
 
   // version
   static const lastVersionCheckDateKey = 'last_version_check_date';
+
+  // file picker
+  static const filePickerShowHiddenFilesKey = 'file_picker_show_hidden_files';
 
   // platform settings
   // cf Android `Settings.System.ACCELEROMETER_ROTATION`
@@ -152,8 +156,8 @@ class Settings extends ChangeNotifier {
     enableOverlayBlurEffect = performanceClass >= 29;
 
     // availability
-    final hasPlayServices = await availability.hasPlayServices;
-    if (hasPlayServices) {
+    final canUseGoogleMaps = await availability.canUseGoogleMaps;
+    if (canUseGoogleMaps) {
       infoMapStyle = EntryMapStyle.googleNormal;
     } else {
       final styles = EntryMapStyle.values.whereNot((v) => v.isGoogleMaps).toList();
@@ -352,6 +356,10 @@ class Settings extends ChangeNotifier {
 
   set viewerUseCutout(bool newValue) => setAndNotify(viewerUseCutoutKey, newValue);
 
+  bool get viewerMaxBrightness => getBoolOrDefault(viewerMaxBrightnessKey, SettingsDefaults.viewerMaxBrightness);
+
+  set viewerMaxBrightness(bool newValue) => setAndNotify(viewerMaxBrightnessKey, newValue);
+
   // video
 
   List<VideoAction> get videoQuickActions => getEnumListOrDefault(videoQuickActionsKey, SettingsDefaults.videoQuickActions, VideoAction.values);
@@ -445,6 +453,12 @@ class Settings extends ChangeNotifier {
   DateTime get lastVersionCheckDate => DateTime.fromMillisecondsSinceEpoch(_prefs!.getInt(lastVersionCheckDateKey) ?? 0);
 
   set lastVersionCheckDate(DateTime newValue) => setAndNotify(lastVersionCheckDateKey, newValue.millisecondsSinceEpoch);
+
+  // file picker
+
+  bool get filePickerShowHiddenFiles => getBoolOrDefault(filePickerShowHiddenFilesKey, SettingsDefaults.filePickerShowHiddenFiles);
+
+  set filePickerShowHiddenFiles(bool newValue) => setAndNotify(filePickerShowHiddenFilesKey, newValue);
 
   // convenience methods
 
@@ -587,10 +601,12 @@ class Settings extends ChangeNotifier {
             case showOverlayShootingDetailsKey:
             case enableOverlayBlurEffectKey:
             case viewerUseCutoutKey:
+            case viewerMaxBrightnessKey:
             case enableVideoHardwareAccelerationKey:
             case enableVideoAutoPlayKey:
             case subtitleShowOutlineKey:
             case saveSearchHistoryKey:
+            case filePickerShowHiddenFilesKey:
               if (value is bool) {
                 _prefs!.setBool(key, value);
               } else {

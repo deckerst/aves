@@ -12,30 +12,25 @@ import 'package:flutter/widgets.dart';
 /// Internal widget in which controls all animations lifecycle, core responses
 /// to user gestures, updates to the controller state and mounts the entire Layout
 class MagnifierCore extends StatefulWidget {
+  final MagnifierController controller;
+  final ScaleStateCycle scaleStateCycle;
+  final bool applyScale;
+  final double panInertia;
+  final MagnifierTapCallback? onTap;
+  final Widget child;
+
   const MagnifierCore({
     Key? key,
-    required this.child,
-    required this.onTap,
     required this.controller,
     required this.scaleStateCycle,
     required this.applyScale,
     this.panInertia = .2,
+    required this.onTap,
+    required this.child,
   }) : super(key: key);
 
-  final Widget child;
-
-  final MagnifierController controller;
-  final ScaleStateCycle scaleStateCycle;
-
-  final MagnifierTapCallback? onTap;
-
-  final bool applyScale;
-  final double panInertia;
-
   @override
-  State<StatefulWidget> createState() {
-    return _MagnifierCoreState();
-  }
+  State<StatefulWidget> createState() => _MagnifierCoreState();
 }
 
 class _MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateMixin, MagnifierControllerDelegate, CornerHitDetector {
@@ -51,6 +46,45 @@ class _MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateM
   late Animation<Offset> _positionAnimation;
 
   ScaleBoundaries? cachedScaleBoundaries;
+
+  @override
+  void initState() {
+    super.initState();
+    _scaleAnimationController = AnimationController(vsync: this)
+      ..addListener(handleScaleAnimation)
+      ..addStatusListener(onAnimationStatus);
+    _positionAnimationController = AnimationController(vsync: this)..addListener(handlePositionAnimate);
+    _registerWidget(widget);
+  }
+
+  @override
+  void didUpdateWidget(covariant MagnifierCore oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.controller != widget.controller) {
+      _unregisterWidget(oldWidget);
+      _registerWidget(widget);
+    }
+  }
+
+  @override
+  void dispose() {
+    _unregisterWidget(widget);
+    _scaleAnimationController.dispose();
+    _positionAnimationController.dispose();
+    super.dispose();
+  }
+
+  void _registerWidget(MagnifierCore widget) {
+    registerDelegate(widget);
+    cachedScaleBoundaries = widget.controller.scaleBoundaries;
+    setScaleStateUpdateAnimation(animateOnScaleStateUpdate);
+  }
+
+  void _unregisterWidget(MagnifierCore oldWidget) {
+    unregisterDelegate(oldWidget);
+    cachedScaleBoundaries = null;
+  }
 
   void handleScaleAnimation() {
     setScale(_scaleAnimation.value, ChangeSource.animation);
@@ -202,31 +236,9 @@ class _MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateM
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _scaleAnimationController = AnimationController(vsync: this)..addListener(handleScaleAnimation);
-    _scaleAnimationController.addStatusListener(onAnimationStatus);
-
-    _positionAnimationController = AnimationController(vsync: this)..addListener(handlePositionAnimate);
-
-    startListeners();
-    setScaleStateUpdateAnimation(animateOnScaleStateUpdate);
-
-    cachedScaleBoundaries = widget.controller.scaleBoundaries;
-  }
-
   void animateOnScaleStateUpdate(double? prevScale, double? nextScale, Offset nextPosition) {
     animateScale(prevScale, nextScale);
     animatePosition(controller.position, nextPosition);
-  }
-
-  @override
-  void dispose() {
-    _scaleAnimationController.removeStatusListener(onAnimationStatus);
-    _scaleAnimationController.dispose();
-    _positionAnimationController.dispose();
-    super.dispose();
   }
 
   @override

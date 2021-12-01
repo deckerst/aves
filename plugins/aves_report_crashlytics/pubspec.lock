@@ -115,7 +115,7 @@ packages:
     source: sdk
     version: "0.0.99"
   stack_trace:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: stack_trace
       url: "https://pub.dartlang.org"

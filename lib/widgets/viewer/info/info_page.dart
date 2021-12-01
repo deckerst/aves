@@ -1,3 +1,7 @@
+import 'dart:async';
+
+import 'package:aves/model/actions/entry_info_actions.dart';
+import 'package:aves/model/actions/events.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/source/collection_lens.dart';
@@ -6,6 +10,7 @@ import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/viewer/embedded/embedded_data_opener.dart';
 import 'package:aves/widgets/viewer/info/basic_section.dart';
+import 'package:aves/widgets/viewer/info/entry_info_action_delegate.dart';
 import 'package:aves/widgets/viewer/info/info_app_bar.dart';
 import 'package:aves/widgets/viewer/info/location_section.dart';
 import 'package:aves/widgets/viewer/info/metadata/metadata_section.dart';
@@ -142,19 +147,57 @@ class _InfoPageContent extends StatefulWidget {
 }
 
 class _InfoPageContentState extends State<_InfoPageContent> {
-  static const horizontalPadding = EdgeInsets.symmetric(horizontal: 8);
-
+  final List<StreamSubscription> _subscriptions = [];
+  late EntryInfoActionDelegate _actionDelegate;
   final ValueNotifier<Map<String, MetadataDirectory>> _metadataNotifier = ValueNotifier({});
+  final ValueNotifier<bool> _isEditingTagNotifier = ValueNotifier(false);
+
+  static const horizontalPadding = EdgeInsets.symmetric(horizontal: 8);
 
   CollectionLens? get collection => widget.collection;
 
   AvesEntry get entry => widget.entry;
 
   @override
+  void initState() {
+    super.initState();
+    _registerWidget(widget);
+  }
+
+  @override
+  void didUpdateWidget(covariant _InfoPageContent oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.entry != widget.entry) {
+      _unregisterWidget(oldWidget);
+      _registerWidget(widget);
+    }
+  }
+
+  @override
+  void dispose() {
+    _unregisterWidget(widget);
+    super.dispose();
+  }
+
+  void _registerWidget(_InfoPageContent widget) {
+    _actionDelegate = EntryInfoActionDelegate(widget.entry);
+    _subscriptions.add(_actionDelegate.eventStream.listen(_onActionDelegateEvent));
+  }
+
+  void _unregisterWidget(_InfoPageContent widget) {
+    _subscriptions
+      ..forEach((sub) => sub.cancel())
+      ..clear();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final basicSection = BasicSection(
       entry: entry,
       collection: collection,
+      actionDelegate: _actionDelegate,
+      isEditingTagNotifier: _isEditingTagNotifier,
       onFilter: _goToCollection,
     );
     final locationAtTop = widget.split && entry.hasGps;
@@ -194,6 +237,7 @@ class _InfoPageContentState extends State<_InfoPageContent> {
       slivers: [
         InfoAppBar(
           entry: entry,
+          actionDelegate: _actionDelegate,
           metadataNotifier: _metadataNotifier,
           onBackPressed: widget.goToViewer,
         ),
@@ -208,6 +252,18 @@ class _InfoPageContentState extends State<_InfoPageContent> {
         const BottomPaddingSliver(),
       ],
     );
+  }
+
+  void _onActionDelegateEvent(ActionEvent<EntryInfoAction> event) {
+    if (event.action == EntryInfoAction.editTags) {
+      Future.delayed(Durations.dialogTransitionAnimation).then((_) {
+        if (event is ActionStartedEvent) {
+          _isEditingTagNotifier.value = true;
+        } else if (event is ActionEndedEvent) {
+          _isEditingTagNotifier.value = false;
+        }
+      });
+    }
   }
 
   void _goToCollection(CollectionFilter filter) {

@@ -1,5 +1,6 @@
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/entry.dart';
+import 'package:aves/model/filters/query.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/widgets/collection/collection_grid.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
@@ -9,6 +10,7 @@ import 'package:aves/widgets/common/providers/query_provider.dart';
 import 'package:aves/widgets/common/providers/selection_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:collection/collection.dart';
 
 class ItemPickDialog extends StatefulWidget {
   static const routeName = '/item_pick';
@@ -35,12 +37,14 @@ class _ItemPickDialogState extends State<ItemPickDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final liveFilter = collection.filters.firstWhereOrNull((v) => v is QueryFilter && v.live) as QueryFilter?;
     return ListenableProvider<ValueNotifier<AppMode>>.value(
       value: ValueNotifier(AppMode.pickInternal),
       child: MediaQueryDataProvider(
         child: Scaffold(
           body: SelectionProvider<AvesEntry>(
             child: QueryProvider(
+              initialQuery: liveFilter?.query,
               child: GestureAreaProtectorStack(
                 child: SafeArea(
                   bottom: false,

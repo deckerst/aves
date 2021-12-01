@@ -110,7 +110,16 @@ object MimeTypes {
     }
 
     // as of latest PixyMeta
-    fun canEditXmp(mimeType: String) = canReadWithPixyMeta(mimeType)
+    fun canEditIptc(mimeType: String) = when (mimeType) {
+        JPEG, TIFF -> true
+        else -> false
+    }
+
+    // as of latest PixyMeta
+    fun canEditXmp(mimeType: String) = when (mimeType) {
+        JPEG, TIFF, PNG, GIF -> true
+        else -> false
+    }
 
     // as of latest PixyMeta
     fun canRemoveMetadata(mimeType: String) = when (mimeType) {

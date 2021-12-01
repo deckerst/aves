@@ -23,7 +23,7 @@ object FlutterUtils {
         }
 
         lateinit var flutterLoader: FlutterLoader
-        FlutterUtils.runOnUiThread {
+        runOnUiThread {
             // initialization must happen on the main thread
             flutterLoader = FlutterInjector.instance().flutterLoader().apply {
                 startInitialization(context)

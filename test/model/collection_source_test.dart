@@ -125,10 +125,10 @@ void main() {
         longitude: australiaLatLng.longitude,
       ),
     );
-    expect(image1.xmpSubjects, []);
+    expect(image1.tags, <String>{});
 
     final source = await _initSource();
-    expect(image1.xmpSubjects, [aTag]);
+    expect(image1.tags, {aTag});
     expect(image1.addressDetails, australiaAddress.copyWith(contentId: image1.contentId));
 
     expect(source.visibleEntries.length, 0);

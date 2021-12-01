@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -12,6 +13,7 @@ import 'package:aves/widgets/viewer/info/notifications.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:screen_brightness/screen_brightness.dart';
 
 class ViewerVerticalPageView extends StatefulWidget {
   final CollectionLens? collection;
@@ -42,6 +44,7 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
   final ValueNotifier<bool> _isVerticallyScrollingNotifier = ValueNotifier(false);
   Timer? _verticalScrollMonitoringTimer;
   AvesEntry? _oldEntry;
+  Future<double>? _systemBrightness;
 
   CollectionLens? get collection => widget.collection;
 
@@ -49,10 +52,16 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
 
   AvesEntry? get entry => widget.entryNotifier.value;
 
+  static const double maximumBrightness = 1.0;
+
   @override
   void initState() {
     super.initState();
     _registerWidget(widget);
+
+    if (settings.viewerMaxBrightness) {
+      _systemBrightness = ScreenBrightness().system;
+    }
   }
 
   @override
@@ -144,8 +153,17 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
   }
 
   void _onVerticalPageControllerChanged() {
-    final opacity = min(1.0, widget.verticalPager.page!);
+    final page = widget.verticalPager.page!;
+
+    final opacity = min(1.0, page);
     _backgroundColorNotifier.value = _backgroundColorNotifier.value.withOpacity(opacity * opacity);
+
+    if (page <= 1 && settings.viewerMaxBrightness) {
+      _systemBrightness?.then((system) {
+        final transition = max(system, lerpDouble(system, maximumBrightness, page / 2)!);
+        ScreenBrightness().setScreenBrightness(transition);
+      });
+    }
 
     _isVerticallyScrollingNotifier.value = true;
     _stopScrollMonitoringTimer();
@@ -169,7 +187,7 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
       // make sure to locate the entry,
       // so that we can display the address instead of coordinates
       // even when initial collection locating has not reached this entry yet
-      await _entry.catalog(background: false, persist: true, force: false);
+      await _entry.catalog(background: false, force: false, persist: true);
       await _entry.locate(background: false, force: false, geocoderLocale: settings.appliedLocale);
     } else {
       Navigator.pop(context);

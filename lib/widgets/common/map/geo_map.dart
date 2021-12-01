@@ -268,7 +268,7 @@ class _GeoMapState extends State<GeoMap> {
   void _onCollectionChanged() {
     _defaultMarkerCluster = _buildFluster();
     _slowMarkerCluster = null;
-    _clusterChangeNotifier.notifyListeners();
+    _clusterChangeNotifier.notify();
   }
 
   Fluster<GeoEntry> _buildFluster({int nodeSize = 64}) {

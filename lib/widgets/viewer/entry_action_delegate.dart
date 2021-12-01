@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/actions/move_type.dart';
+import 'package:aves/model/device.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/highlight.dart';
@@ -20,8 +21,8 @@ import 'package:aves/widgets/common/action_mixins/size_aware.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/add_shortcut_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
+import 'package:aves/widgets/dialogs/entry_editors/rename_entry_dialog.dart';
 import 'package:aves/widgets/dialogs/export_entry_dialog.dart';
-import 'package:aves/widgets/dialogs/rename_entry_dialog.dart';
 import 'package:aves/widgets/filter_grids/album_pick.dart';
 import 'package:aves/widgets/viewer/debug/debug_page.dart';
 import 'package:aves/widgets/viewer/info/notifications.dart';
@@ -124,21 +125,24 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     final name = result.item2;
     if (name.isEmpty) return;
 
-    unawaited(androidAppService.pinToHomeScreen(name, entry, uri: entry.uri));
+    await androidAppService.pinToHomeScreen(name, entry, uri: entry.uri);
+    if (!device.showPinShortcutFeedback) {
+      showFeedback(context, context.l10n.genericSuccessFeedback);
+    }
   }
 
   Future<void> _flip(BuildContext context, AvesEntry entry) async {
     if (!await checkStoragePermission(context, {entry})) return;
 
-    final success = await entry.flip(persist: _isMainMode(context));
-    if (!success) showFeedback(context, context.l10n.genericFailureFeedback);
+    final dataTypes = await entry.flip(persist: _isMainMode(context));
+    if (dataTypes.isEmpty) showFeedback(context, context.l10n.genericFailureFeedback);
   }
 
   Future<void> _rotate(BuildContext context, AvesEntry entry, {required bool clockwise}) async {
     if (!await checkStoragePermission(context, {entry})) return;
 
-    final success = await entry.rotate(clockwise: clockwise, persist: _isMainMode(context));
-    if (!success) showFeedback(context, context.l10n.genericFailureFeedback);
+    final dataTypes = await entry.rotate(clockwise: clockwise, persist: _isMainMode(context));
+    if (dataTypes.isEmpty) showFeedback(context, context.l10n.genericFailureFeedback);
   }
 
   Future<void> _rotateScreen(BuildContext context) async {

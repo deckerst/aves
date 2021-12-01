@@ -52,7 +52,7 @@ class AnalysisHandler(private val activity: Activity, private val onAnalysisComp
         }
 
         // can be null or empty
-        val contentIds = call.argument<List<Int>>("contentIds");
+        val contentIds = call.argument<List<Int>>("contentIds")
 
         if (!activity.isMyServiceRunning(AnalysisService::class.java)) {
             val intent = Intent(activity, AnalysisService::class.java)

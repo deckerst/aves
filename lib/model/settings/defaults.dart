@@ -65,6 +65,7 @@ class SettingsDefaults {
   static const showOverlayShootingDetails = false;
   static const enableOverlayBlurEffect = true; // `enableOverlayBlurEffect` has a contextual default value
   static const viewerUseCutout = true;
+  static const viewerMaxBrightness = false;
 
   // video
   static const videoQuickActions = [
@@ -98,4 +99,7 @@ class SettingsDefaults {
   // accessibility
   static const accessibilityAnimations = AccessibilityAnimations.system;
   static const timeToTakeAction = AccessibilityTimeout.appDefault; // `timeToTakeAction` has a contextual default value
+
+  // file picker
+  static const filePickerShowHiddenFiles = false;
 }

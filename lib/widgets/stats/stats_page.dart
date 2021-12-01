@@ -56,7 +56,7 @@ class StatsPage extends StatelessWidget {
           entryCountPerPlace[place] = (entryCountPerPlace[place] ?? 0) + 1;
         }
       }
-      entry.xmpSubjects.forEach((tag) {
+      entry.tags.forEach((tag) {
         entryCountPerTag[tag] = (entryCountPerTag[tag] ?? 0) + 1;
       });
     });

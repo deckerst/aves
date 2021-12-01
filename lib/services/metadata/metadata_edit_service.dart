@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:aves/model/entry.dart';
+import 'package:aves/model/entry_xmp_iptc.dart';
 import 'package:aves/model/metadata/date_modifier.dart';
 import 'package:aves/model/metadata/enums.dart';
 import 'package:aves/services/common/services.dart';
@@ -12,6 +13,10 @@ abstract class MetadataEditService {
   Future<Map<String, dynamic>> flip(AvesEntry entry);
 
   Future<Map<String, dynamic>> editDate(AvesEntry entry, DateModifier modifier);
+
+  Future<Map<String, dynamic>> setIptc(AvesEntry entry, List<Map<String, dynamic>>? iptc, {required bool postEditScan});
+
+  Future<Map<String, dynamic>> setXmp(AvesEntry entry, AvesXmp? xmp);
 
   Future<Map<String, dynamic>> removeTypes(AvesEntry entry, Set<MetadataType> types);
 }
@@ -86,6 +91,40 @@ class PlatformMetadataEditService implements MetadataEditService {
   }
 
   @override
+  Future<Map<String, dynamic>> setIptc(AvesEntry entry, List<Map<String, dynamic>>? iptc, {required bool postEditScan}) async {
+    try {
+      final result = await platform.invokeMethod('setIptc', <String, dynamic>{
+        'entry': _toPlatformEntryMap(entry),
+        'iptc': iptc,
+        'postEditScan': postEditScan,
+      });
+      if (result != null) return (result as Map).cast<String, dynamic>();
+    } on PlatformException catch (e, stack) {
+      if (!entry.isMissingAtPath) {
+        await reportService.recordError(e, stack);
+      }
+    }
+    return {};
+  }
+
+  @override
+  Future<Map<String, dynamic>> setXmp(AvesEntry entry, AvesXmp? xmp) async {
+    try {
+      final result = await platform.invokeMethod('setXmp', <String, dynamic>{
+        'entry': _toPlatformEntryMap(entry),
+        'xmp': xmp?.xmpString,
+        'extendedXmp': xmp?.extendedXmpString,
+      });
+      if (result != null) return (result as Map).cast<String, dynamic>();
+    } on PlatformException catch (e, stack) {
+      if (!entry.isMissingAtPath) {
+        await reportService.recordError(e, stack);
+      }
+    }
+    return {};
+  }
+
+  @override
   Future<Map<String, dynamic>> removeTypes(AvesEntry entry, Set<MetadataType> types) async {
     try {
       final result = await platform.invokeMethod('removeTypes', <String, dynamic>{
@@ -116,6 +155,8 @@ class PlatformMetadataEditService implements MetadataEditService {
 
   String _toPlatformMetadataType(MetadataType type) {
     switch (type) {
+      case MetadataType.comment:
+        return 'comment';
       case MetadataType.exif:
         return 'exif';
       case MetadataType.iccProfile:
@@ -126,8 +167,6 @@ class PlatformMetadataEditService implements MetadataEditService {
         return 'jfif';
       case MetadataType.jpegAdobe:
         return 'jpeg_adobe';
-      case MetadataType.jpegComment:
-        return 'jpeg_comment';
       case MetadataType.jpegDucky:
         return 'jpeg_ducky';
       case MetadataType.photoshopIrb:

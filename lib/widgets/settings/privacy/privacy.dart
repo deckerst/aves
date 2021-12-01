@@ -1,4 +1,5 @@
 import 'package:aves/app_flavor.dart';
+import 'package:aves/model/device.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/color_utils.dart';
@@ -6,8 +7,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/settings/common/tile_leading.dart';
 import 'package:aves/widgets/settings/privacy/access_grants.dart';
-import 'package:aves/widgets/settings/privacy/hidden_filters.dart';
-import 'package:aves/widgets/settings/privacy/hidden_paths.dart';
+import 'package:aves/widgets/settings/privacy/hidden_items.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -63,9 +63,8 @@ class PrivacySection extends StatelessWidget {
             title: Text(context.l10n.settingsSaveSearchHistory),
           ),
         ),
-        const HiddenFilterTile(),
-        const HiddenPathTile(),
-        const StorageAccessTile(),
+        const HiddenItemsTile(),
+        if (device.canGrantDirectoryAccess) const StorageAccessTile(),
       ],
     );
   }
