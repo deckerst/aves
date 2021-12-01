@@ -60,7 +60,7 @@ class BasicSection extends StatelessWidget {
           final date = entry.bestDate;
           final dateText = date != null ? formatDateTime(date, locale, use24hour) : infoUnknown;
           final showResolution = !entry.isSvg && entry.isSized;
-          final sizeText = entry.sizeBytes != null ? formatFilesize(entry.sizeBytes!) : infoUnknown;
+          final sizeText = entry.sizeBytes != null ? formatFileSize(locale, entry.sizeBytes!) : infoUnknown;
           final path = entry.path;
 
           return Column(

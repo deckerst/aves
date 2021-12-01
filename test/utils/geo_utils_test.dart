@@ -12,6 +12,9 @@ void main() {
     expect(ExtraCoordinateFormat.toDMS(l10n, LatLng(-38.6965891, 175.9830047)), ['38° 41′ 47.72″ S', '175° 58′ 58.82″ E']); // Taupo
     expect(ExtraCoordinateFormat.toDMS(l10n, LatLng(-64.249391, -56.6556145)), ['64° 14′ 57.81″ S', '56° 39′ 20.21″ W']); // Marambio
     expect(ExtraCoordinateFormat.toDMS(l10n, LatLng(0, 0)), ['0° 0′ 0.00″ N', '0° 0′ 0.00″ E']);
+    expect(ExtraCoordinateFormat.toDMS(l10n, LatLng(0, 0), minuteSecondPadding: true), ['0° 00′ 00.00″ N', '0° 00′ 00.00″ E']);
+    expect(ExtraCoordinateFormat.toDMS(l10n, LatLng(0, 0), secondDecimals: 0), ['0° 0′ 0″ N', '0° 0′ 0″ E']);
+    expect(ExtraCoordinateFormat.toDMS(l10n, LatLng(0, 0), secondDecimals: 4), ['0° 0′ 0.0000″ N', '0° 0′ 0.0000″ E']);
   });
 
   test('bounds center', () {

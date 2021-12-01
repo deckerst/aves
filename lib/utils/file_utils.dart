@@ -1,38 +1,16 @@
-String formatFilesize(int size, {int round = 2}) {
-  var divider = 1024;
+import 'package:intl/intl.dart';
 
-  if (size < divider) return '$size B';
+const _kiloDivider = 1024;
+const _megaDivider = _kiloDivider * _kiloDivider;
+const _gigaDivider = _megaDivider * _kiloDivider;
+const _teraDivider = _gigaDivider * _kiloDivider;
 
-  if (size < divider * divider && size % divider == 0) {
-    return '${(size / divider).toStringAsFixed(0)} KB';
-  }
-  if (size < divider * divider) {
-    return '${(size / divider).toStringAsFixed(round)} KB';
-  }
+String formatFileSize(String locale, int size, {int round = 2}) {
+  if (size < _kiloDivider) return '$size B';
 
-  if (size < divider * divider * divider && size % divider == 0) {
-    return '${(size / (divider * divider)).toStringAsFixed(0)} MB';
-  }
-  if (size < divider * divider * divider) {
-    return '${(size / divider / divider).toStringAsFixed(round)} MB';
-  }
-
-  if (size < divider * divider * divider * divider && size % divider == 0) {
-    return '${(size / (divider * divider * divider)).toStringAsFixed(0)} GB';
-  }
-  if (size < divider * divider * divider * divider) {
-    return '${(size / divider / divider / divider).toStringAsFixed(round)} GB';
-  }
-
-  if (size < divider * divider * divider * divider * divider && size % divider == 0) {
-    return '${(size / divider / divider / divider / divider).toStringAsFixed(0)} TB';
-  }
-  if (size < divider * divider * divider * divider * divider) {
-    return '${(size / divider / divider / divider / divider).toStringAsFixed(round)} TB';
-  }
-
-  if (size < divider * divider * divider * divider * divider * divider && size % divider == 0) {
-    return '${(size / divider / divider / divider / divider / divider).toStringAsFixed(0)} PB';
-  }
-  return '${(size / divider / divider / divider / divider / divider).toStringAsFixed(round)} PB';
+  final formatter = NumberFormat('0${round > 0 ? '.${'0' * round}' : ''}', locale);
+  if (size < _megaDivider) return '${formatter.format(size / _kiloDivider)} KB';
+  if (size < _gigaDivider) return '${formatter.format(size / _megaDivider)} MB';
+  if (size < _teraDivider) return '${formatter.format(size / _gigaDivider)} GB';
+  return '${formatter.format(size / _teraDivider)} TB';
 }

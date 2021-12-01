@@ -53,7 +53,7 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                   return Row(
                     children: [
                       Expanded(
-                        child: Text('DB file size: ${formatFilesize(snapshot.data!)}'),
+                        child: Text('DB file size: ${formatFileSize('en_US', snapshot.data!)}'),
                       ),
                       const SizedBox(width: 8),
                       ElevatedButton(

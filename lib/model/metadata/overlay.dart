@@ -1,20 +1,23 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
-import 'package:intl/intl.dart';
 
-class OverlayMetadata {
-  final String? aperture, exposureTime, focalLength, iso;
+@immutable
+class OverlayMetadata extends Equatable {
+  final double? aperture, focalLength;
+  final String? exposureTime;
+  final int? iso;
 
-  static final apertureFormat = NumberFormat('0.0', 'en_US');
-  static final focalLengthFormat = NumberFormat('0.#', 'en_US');
+  @override
+  List<Object?> get props => [aperture, exposureTime, focalLength, iso];
 
-  OverlayMetadata({
-    double? aperture,
+  bool get isEmpty => aperture == null && exposureTime == null && focalLength == null && iso == null;
+
+  const OverlayMetadata({
+    this.aperture,
     this.exposureTime,
-    double? focalLength,
-    int? iso,
-  })  : aperture = aperture != null ? 'ƒ/${apertureFormat.format(aperture)}' : null,
-        focalLength = focalLength != null ? '${focalLengthFormat.format(focalLength)} mm' : null,
-        iso = iso != null ? 'ISO$iso' : null;
+    this.focalLength,
+    this.iso,
+  });
 
   factory OverlayMetadata.fromMap(Map map) {
     return OverlayMetadata(
@@ -24,9 +27,4 @@ class OverlayMetadata {
       iso: map['iso'] as int?,
     );
   }
-
-  bool get isEmpty => aperture == null && exposureTime == null && focalLength == null && iso == null;
-
-  @override
-  String toString() => '$runtimeType#${shortHash(this)}{aperture=$aperture, exposureTime=$exposureTime, focalLength=$focalLength, iso=$iso}';
 }
