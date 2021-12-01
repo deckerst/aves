@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 /*
-  This is derived from `draggable_scrollbar` package v0.0.4:
+  adapted from package `draggable_scrollbar` v0.0.4:
   - removed default thumb builders
   - allow any `ScrollView` as child
   - allow any `Widget` as label content

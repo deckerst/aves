@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory
 import android.graphics.BitmapRegionDecoder
 import android.graphics.Rect
 import android.net.Uri
+import android.os.Build
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -68,7 +69,12 @@ class RegionFetcher internal constructor(
             if (currentDecoderRef == null) {
                 val newDecoder = StorageUtils.openInputStream(context, uri)?.use { input ->
                     @Suppress("BlockingMethodInNonBlockingContext")
-                    BitmapRegionDecoder.newInstance(input, false)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                        BitmapRegionDecoder.newInstance(input)
+                    } else {
+                        @Suppress("deprecation")
+                        BitmapRegionDecoder.newInstance(input, false)
+                    }
                 }
                 if (newDecoder == null) {
                     result.error("getRegion-read-null", "failed to open file for uri=$uri regionRect=$regionRect", null)

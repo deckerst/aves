@@ -66,7 +66,9 @@ class AlbumFilter extends CollectionFilter {
         return PaletteGenerator.fromImageProvider(
           AppIconImage(packageName: packageName, size: 24),
         ).then((palette) async {
-          final color = palette.dominantColor?.color ?? (await super.color(context));
+          // `dominantColor` is most representative but can have low contrast with a dark background
+          // `vibrantColor` is usually representative and has good contrast with a dark background
+          final color = palette.vibrantColor?.color ?? (await super.color(context));
           _appColors[album] = color;
           return color;
         });

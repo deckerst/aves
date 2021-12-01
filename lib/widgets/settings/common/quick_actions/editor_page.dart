@@ -145,7 +145,7 @@ class _QuickActionEditorBodyState<T extends Object> extends State<QuickActionEdi
       child: ListView(
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+            padding: const EdgeInsets.all(16),
             child: Row(
               children: [
                 const Icon(AIcons.info),
@@ -154,9 +154,9 @@ class _QuickActionEditorBodyState<T extends Object> extends State<QuickActionEdi
               ],
             ),
           ),
-          const Divider(),
+          const Divider(height: 0),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.only(left: 16, top: 16, right: 16),
             child: Text(
               context.l10n.settingsViewerQuickActionEditorDisplayedButtons,
               style: Constants.titleTextStyle,
@@ -290,7 +290,7 @@ class _QuickActionEditorBodyState<T extends Object> extends State<QuickActionEdi
       targetIndex,
       duration: Durations.quickActionListAnimation,
     );
-    _quickActionsChangeNotifier.notifyListeners();
+    _quickActionsChangeNotifier.notify();
     Future.delayed(Durations.quickActionListAnimation).then((value) => _reordering = false);
     return true;
   }
@@ -305,7 +305,7 @@ class _QuickActionEditorBodyState<T extends Object> extends State<QuickActionEdi
       (context, animation) => DraggedPlaceholder(child: _buildQuickActionButton(action, animation)),
       duration: Durations.quickActionListAnimation,
     );
-    _quickActionsChangeNotifier.notifyListeners();
+    _quickActionsChangeNotifier.notify();
     return true;
   }
 

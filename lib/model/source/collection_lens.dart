@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:collection';
 
+import 'package:aves/model/actions/move_type.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/favourites.dart';
 import 'package:aves/model/filters/album.dart';
@@ -10,6 +11,7 @@ import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/filters/query.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
+import 'package:aves/model/source/events.dart';
 import 'package:aves/model/source/location.dart';
 import 'package:aves/model/source/section_keys.dart';
 import 'package:aves/model/source/tag.dart';
@@ -49,7 +51,12 @@ class CollectionLens with ChangeNotifier {
       final sourceEvents = source.eventBus;
       _subscriptions.add(sourceEvents.on<EntryAddedEvent>().listen((e) => _onEntryAdded(e.entries)));
       _subscriptions.add(sourceEvents.on<EntryRemovedEvent>().listen((e) => _onEntryRemoved(e.entries)));
-      _subscriptions.add(sourceEvents.on<EntryMovedEvent>().listen((e) => _refresh()));
+      _subscriptions.add(sourceEvents.on<EntryMovedEvent>().listen((e) {
+        if (e.type == MoveType.move) {
+          // refreshing copied items is already handled via `EntryAddedEvent`s
+          _refresh();
+        }
+      }));
       _subscriptions.add(sourceEvents.on<EntryRefreshedEvent>().listen((e) => _refresh()));
       _subscriptions.add(sourceEvents.on<FilterVisibilityChangedEvent>().listen((e) => _refresh()));
       _subscriptions.add(sourceEvents.on<CatalogMetadataChangedEvent>().listen((e) => _refresh()));

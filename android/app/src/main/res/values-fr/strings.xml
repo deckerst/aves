@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Aves</string>
+    <string name="search_shortcut_short_label">Recherche</string>
+    <string name="videos_shortcut_short_label">Vidéos</string>
+    <string name="analysis_channel_name">Analyse des images</string>
+    <string name="analysis_service_description">Analyse des images &amp; vidéos</string>
+    <string name="analysis_notification_default_title">Analyse des images</string>
+    <string name="analysis_notification_action_stop">Annuler</string>
+</resources>

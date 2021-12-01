@@ -8,7 +8,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-import 'aves_dialog.dart';
+import '../aves_dialog.dart';
 
 class CreateAlbumDialog extends StatefulWidget {
   const CreateAlbumDialog({Key? key}) : super(key: key);

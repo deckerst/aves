@@ -3,6 +3,7 @@ package deckers.thibault.aves.channel.streams
 import android.content.Context
 import android.database.ContentObserver
 import android.net.Uri
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
@@ -32,12 +33,13 @@ class SettingsChangeStreamHandler(private val context: Context) : EventChannel.S
 
         override fun onChange(selfChange: Boolean, uri: Uri?) {
             if (update()) {
-                success(
-                    hashMapOf(
-                        Settings.System.ACCELEROMETER_ROTATION to accelerometerRotation,
-                        Settings.Global.TRANSITION_ANIMATION_SCALE to transitionAnimationScale,
-                    )
+                val settings: FieldMap = hashMapOf(
+                    Settings.System.ACCELEROMETER_ROTATION to accelerometerRotation,
                 )
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                    settings[Settings.Global.TRANSITION_ANIMATION_SCALE] = transitionAnimationScale
+                }
+                success(settings)
             }
         }
 
@@ -49,14 +51,15 @@ class SettingsChangeStreamHandler(private val context: Context) : EventChannel.S
                     accelerometerRotation = newAccelerometerRotation
                     changed = true
                 }
-                val newTransitionAnimationScale = Settings.Global.getFloat(context.contentResolver, Settings.Global.TRANSITION_ANIMATION_SCALE)
-                if (transitionAnimationScale != newTransitionAnimationScale) {
-                    transitionAnimationScale = newTransitionAnimationScale
-                    changed = true
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                    val newTransitionAnimationScale = Settings.Global.getFloat(context.contentResolver, Settings.Global.TRANSITION_ANIMATION_SCALE)
+                    if (transitionAnimationScale != newTransitionAnimationScale) {
+                        transitionAnimationScale = newTransitionAnimationScale
+                        changed = true
+                    }
                 }
-
             } catch (e: Exception) {
-                Log.w(LOG_TAG, "failed to get settings", e)
+                Log.w(LOG_TAG, "failed to get settings with error=${e.message}", null)
             }
             return changed
         }

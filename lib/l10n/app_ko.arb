@@ -22,6 +22,7 @@
   "showTooltip": "보기",
   "hideTooltip": "숨기기",
   "removeTooltip": "제거",
+  "resetButtonTooltip": "복원",
 
   "doubleBackExitMessage": "종료하려면 한번 더 누르세요.",
 
@@ -71,6 +72,7 @@
   "videoActionSettings": "설정",
 
   "entryInfoActionEditDate": "날짜와 시간 수정",
+  "entryInfoActionEditTags": "태그 수정",
   "entryInfoActionRemoveMetadata": "메타데이터 삭제",
 
   "filterFavouriteLabel": "즐겨찾기",
@@ -186,7 +188,7 @@
   "removeEntryMetadataDialogTitle": "메타데이터 삭제",
   "removeEntryMetadataDialogMore": "더 보기",
 
-  "removeEntryMetadataMotionPhotoXmpWarningDialogMessage": "XMP가 있어야 모션 포토에 포함되는 동영상을 재생할 수 있습니다. 삭제하시겠습니까?",
+  "removeEntryMetadataMotionPhotoXmpWarningDialogMessage": "XMP가 있어야 모션 포토에 포함되는 동영상을 재생할 수 있습니다.\n\n삭제하시겠습니까?",
 
   "videoSpeedDialogLabel": "재생 배속",
 
@@ -232,6 +234,7 @@
   "aboutCreditsWorldAtlas1": "이 앱은",
   "aboutCreditsWorldAtlas2": "의 TopoJSON 파일(ISC 라이선스)을 이용합니다.",
   "aboutCreditsTranslators": "번역가:",
+  "aboutCreditsTranslatorLine": "{language}: {names}",
 
   "aboutLicenses": "오픈 소스 라이선스",
   "aboutLicensesBanner": "이 앱은 다음의 오픈 소스 패키지와 라이브러리를 이용합니다.",
@@ -292,6 +295,7 @@
   "drawerCollectionFavourites": "즐겨찾기",
   "drawerCollectionImages": "사진",
   "drawerCollectionVideos": "동영상",
+  "drawerCollectionAnimated": "애니메이션",
   "drawerCollectionMotionPhotos": "모션 포토",
   "drawerCollectionPanoramas": "파노라마",
   "drawerCollectionRaws": "Raw 이미지",
@@ -372,13 +376,8 @@
   "settingsCollectionSelectionQuickActionEditorBanner": "버튼을 길게 누른 후 이동하여 항목 선택할 때 표시될 버튼을 선택하세요.",
 
   "settingsSectionViewer": "뷰어",
-  "settingsViewerShowOverlayOnOpening": "열릴 때 오버레이 표시",
-  "settingsViewerShowMinimap": "미니맵 표시",
-  "settingsViewerShowInformation": "상세 정보 표시",
-  "settingsViewerShowInformationSubtitle": "제목, 날짜, 장소 등 표시",
-  "settingsViewerShowShootingDetails": "촬영 정보 표시",
-  "settingsViewerEnableOverlayBlurEffect": "오버레이 흐림 효과",
   "settingsViewerUseCutout": "컷아웃 영역 사용",
+  "settingsViewerMaximumBrightness": "최대 밝기",
   "settingsImageBackground": "이미지 배경",
 
   "settingsViewerQuickActionsTile": "빠른 작업",
@@ -387,6 +386,15 @@
   "settingsViewerQuickActionEditorDisplayedButtons": "표시될 버튼",
   "settingsViewerQuickActionEditorAvailableButtons": "추가 가능한 버튼",
   "settingsViewerQuickActionEmpty": "버튼이 없습니다",
+
+  "settingsViewerOverlayTile": "오버레이",
+  "settingsViewerOverlayTitle": "오버레이",
+  "settingsViewerShowOverlayOnOpening": "열릴 때 표시",
+  "settingsViewerShowMinimap": "미니맵 표시",
+  "settingsViewerShowInformation": "상세 정보 표시",
+  "settingsViewerShowInformationSubtitle": "제목, 날짜, 장소 등 표시",
+  "settingsViewerShowShootingDetails": "촬영 정보 표시",
+  "settingsViewerEnableOverlayBlurEffect": "흐림 효과",
 
   "settingsVideoPageTitle": "동영상 설정",
   "settingsSectionVideo": "동영상",
@@ -419,15 +427,15 @@
   "settingsAllowErrorReporting": "오류 보고서 보내기",
   "settingsSaveSearchHistory": "검색기록",
 
-  "settingsHiddenFiltersTile": "숨겨진 필터",
+  "settingsHiddenItemsTile": "숨겨진 항목",
+  "settingsHiddenItemsTitle": "숨겨진 항목",
+
   "settingsHiddenFiltersTitle": "숨겨진 필터",
   "settingsHiddenFiltersBanner": "이 필터에 맞는 사진과 동영상이 숨겨지고 있으며 이 앱에서 보여지지 않을 것입니다.",
   "settingsHiddenFiltersEmpty": "숨겨진 필터가 없습니다",
 
-  "settingsHiddenPathsTile": "숨겨진 경로",
   "settingsHiddenPathsTitle": "숨겨진 경로",
   "settingsHiddenPathsBanner": "이 경로에 있는 사진과 동영상이 숨겨지고 있으며 이 앱에서 보여지지 않을 것입니다.",
-  "settingsHiddenPathsEmpty": "숨겨진 경로가 없습니다",
   "addPathTooltip": "경로 추가",
 
   "settingsStorageAccessTile": "저장공간 접근",
@@ -496,8 +504,19 @@
   "viewerInfoSearchSuggestionResolution": "해상도",
   "viewerInfoSearchSuggestionRights": "권리",
 
+  "tagEditorPageTitle": "태그 수정",
+  "tagEditorPageNewTagFieldLabel": "새 태그",
+  "tagEditorPageAddTagTooltip": "태그 추가",
+  "tagEditorSectionRecent": "최근 이용기록",
+
   "panoramaEnableSensorControl": "센서 제어 활성화",
   "panoramaDisableSensorControl": "센서 제어 비활성화",
 
-  "sourceViewerPageTitle": "소스 코드"
+  "sourceViewerPageTitle": "소스 코드",
+
+  "filePickerShowHiddenFiles": "숨겨진 파일 표시",
+  "filePickerDoNotShowHiddenFiles": "숨겨진 파일 표시 안함",
+  "filePickerOpenFrom": "다음에서 열기:",
+  "filePickerNoItems": "항목 없음",
+  "filePickerUseThisFolder": "이 폴더 사용"
 }

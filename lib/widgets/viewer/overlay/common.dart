@@ -75,7 +75,6 @@ class OverlayTextButton extends StatelessWidget {
             shape: MaterialStateProperty.all<OutlinedBorder>(const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(_borderRadius)),
             )),
-            // shape: MaterialStateProperty.all<OutlinedBorder>(CircleBorder()),
           ),
           child: Text(buttonLabel),
         ),

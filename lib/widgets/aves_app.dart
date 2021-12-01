@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'dart:ui';
 
 import 'package:aves/app_flavor.dart';
 import 'package:aves/app_mode.dart';
+import 'package:aves/model/device.dart';
 import 'package:aves/model/settings/accessibility_animations.dart';
 import 'package:aves/model/settings/screen_on.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -161,6 +163,7 @@ class _AvesAppState extends State<AvesApp> {
       isRotationLocked: await windowService.isRotationLocked(),
       areAnimationsRemoved: await AccessibilityService.areAnimationsRemoved(),
     );
+    await device.init();
     FijkLog.setLevel(FijkLogLevel.Warn);
 
     // keep screen on

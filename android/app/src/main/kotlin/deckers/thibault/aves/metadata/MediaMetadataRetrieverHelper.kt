@@ -27,11 +27,13 @@ object MediaMetadataRetrieverHelper {
         MediaMetadataRetriever.METADATA_KEY_NUM_TRACKS to "Number of Tracks",
         MediaMetadataRetriever.METADATA_KEY_TITLE to "Title",
         MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT to "Video Height",
-        MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION to "Video Rotation",
         MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH to "Video Width",
         MediaMetadataRetriever.METADATA_KEY_WRITER to "Writer",
         MediaMetadataRetriever.METADATA_KEY_YEAR to "Year",
     ).apply {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            put(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION, "Video Rotation")
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             put(MediaMetadataRetriever.METADATA_KEY_CAPTURE_FRAMERATE, "Capture Framerate")
         }

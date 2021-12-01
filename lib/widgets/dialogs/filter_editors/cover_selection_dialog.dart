@@ -4,6 +4,7 @@ import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/item_pick_dialog.dart';
@@ -96,6 +97,7 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
                   extent: extent,
                   coverEntry: _isCustom ? _customEntry : _recentEntry,
                   onTap: (filter) => _pickEntry(),
+                  heroType: HeroType.never,
                 ),
               ),
             ],

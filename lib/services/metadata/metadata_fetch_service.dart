@@ -1,4 +1,5 @@
 import 'package:aves/model/entry.dart';
+import 'package:aves/model/entry_xmp_iptc.dart';
 import 'package:aves/model/metadata/catalog.dart';
 import 'package:aves/model/metadata/overlay.dart';
 import 'package:aves/model/multipage.dart';
@@ -19,6 +20,10 @@ abstract class MetadataFetchService {
   Future<MultiPageInfo?> getMultiPageInfo(AvesEntry entry);
 
   Future<PanoramaInfo?> getPanoramaInfo(AvesEntry entry);
+
+  Future<List<Map<String, dynamic>>?> getIptc(AvesEntry entry);
+
+  Future<AvesXmp?> getXmp(AvesEntry entry);
 
   Future<bool> hasContentResolverProp(String prop);
 
@@ -143,6 +148,39 @@ class PlatformMetadataFetchService implements MetadataFetchService {
         'sizeBytes': entry.sizeBytes,
       }) as Map;
       return PanoramaInfo.fromMap(result);
+    } on PlatformException catch (e, stack) {
+      if (!entry.isMissingAtPath) {
+        await reportService.recordError(e, stack);
+      }
+    }
+    return null;
+  }
+
+  @override
+  Future<List<Map<String, dynamic>>?> getIptc(AvesEntry entry) async {
+    try {
+      final result = await platform.invokeMethod('getIptc', <String, dynamic>{
+        'mimeType': entry.mimeType,
+        'uri': entry.uri,
+      });
+      if (result != null) return (result as List).cast<Map>().map((fields) => fields.cast<String, dynamic>()).toList();
+    } on PlatformException catch (e, stack) {
+      if (!entry.isMissingAtPath) {
+        await reportService.recordError(e, stack);
+      }
+    }
+    return null;
+  }
+
+  @override
+  Future<AvesXmp?> getXmp(AvesEntry entry) async {
+    try {
+      final result = await platform.invokeMethod('getXmp', <String, dynamic>{
+        'mimeType': entry.mimeType,
+        'uri': entry.uri,
+        'sizeBytes': entry.sizeBytes,
+      });
+      if (result != null) return AvesXmp.fromList((result as List).cast<String>());
     } on PlatformException catch (e, stack) {
       if (!entry.isMissingAtPath) {
         await reportService.recordError(e, stack);

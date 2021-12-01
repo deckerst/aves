@@ -45,15 +45,15 @@ class MediaStoreImageProvider : ImageProvider() {
         fetchFrom(context, isModified, handleNewEntry, VIDEO_CONTENT_URI, VIDEO_PROJECTION)
     }
 
+    // the provided URI can point to the wrong media collection,
+    // e.g. a GIF image with the URI `content://media/external/video/media/[ID]`
+    // so the effective entry URI may not match the provided URI
     override fun fetchSingle(context: Context, uri: Uri, sourceMimeType: String?, callback: ImageOpCallback) {
         var found = false
         val fetched = arrayListOf<FieldMap>()
         val id = uri.tryParseId()
-        val onSuccess = fun(entry: FieldMap) {
-            entry["uri"] = uri.toString()
-            fetched.add(entry)
-        }
-        val alwaysValid = { _: Int, _: Int -> true }
+        val alwaysValid: NewEntryChecker = fun(_: Int, _: Int): Boolean = true
+        val onSuccess: NewEntryHandler = fun(entry: FieldMap) { fetched.add(entry) }
         if (id != null) {
             if (!found && (sourceMimeType == null || isImage(sourceMimeType))) {
                 val contentUri = ContentUris.withAppendedId(IMAGE_CONTENT_URI, id)
@@ -83,7 +83,7 @@ class MediaStoreImageProvider : ImageProvider() {
     }
 
     fun checkObsoleteContentIds(context: Context, knownContentIds: List<Int>): List<Int> {
-        val foundContentIds = ArrayList<Int>()
+        val foundContentIds = HashSet<Int>()
         fun check(context: Context, contentUri: Uri) {
             val projection = arrayOf(MediaStore.MediaColumns._ID)
             try {

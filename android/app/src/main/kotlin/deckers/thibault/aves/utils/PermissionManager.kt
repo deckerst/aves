@@ -142,39 +142,6 @@ object PermissionManager {
         }
     }
 
-    fun getRestrictedDirectories(context: Context): List<Map<String, String>> {
-        val dirs = ArrayList<Map<String, String>>()
-        val sdkInt = Build.VERSION.SDK_INT
-
-        if (sdkInt >= Build.VERSION_CODES.R) {
-            // cf https://developer.android.com/about/versions/11/privacy/storage#directory-access
-            val volumePaths = StorageUtils.getVolumePaths(context)
-            dirs.addAll(volumePaths.map {
-                hashMapOf(
-                    "volumePath" to it,
-                    "relativeDir" to "",
-                )
-            })
-            dirs.addAll(volumePaths.map {
-                hashMapOf(
-                    "volumePath" to it,
-                    "relativeDir" to Environment.DIRECTORY_DOWNLOADS,
-                )
-            })
-        } else if (sdkInt == Build.VERSION_CODES.KITKAT || sdkInt == Build.VERSION_CODES.KITKAT_WATCH) {
-            // no SD card volume access on KitKat
-            val primaryVolume = StorageUtils.getPrimaryVolumePath(context)
-            val nonPrimaryVolumes = StorageUtils.getVolumePaths(context).filter { it != primaryVolume }
-            dirs.addAll(nonPrimaryVolumes.map {
-                hashMapOf(
-                    "volumePath" to it,
-                    "relativeDir" to "",
-                )
-            })
-        }
-        return dirs
-    }
-
     fun canInsertByMediaStore(directories: List<FieldMap>): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             directories.all {
@@ -195,12 +162,14 @@ object PermissionManager {
         } ?: false
     }
 
-    // returns paths matching URIs granted by the user
+    // returns paths matching directory URIs granted by the user
     fun getGrantedDirs(context: Context): Set<String> {
         val grantedDirs = HashSet<String>()
-        for (uriPermission in context.contentResolver.persistedUriPermissions) {
-            val dirPath = StorageUtils.convertTreeUriToDirPath(context, uriPermission.uri)
-            dirPath?.let { grantedDirs.add(it) }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            for (uriPermission in context.contentResolver.persistedUriPermissions) {
+                val dirPath = StorageUtils.convertTreeUriToDirPath(context, uriPermission.uri)
+                dirPath?.let { grantedDirs.add(it) }
+            }
         }
         return grantedDirs
     }
@@ -208,11 +177,51 @@ object PermissionManager {
     // returns paths accessible to the app (granted by the user or by default)
     private fun getAccessibleDirs(context: Context): Set<String> {
         val accessibleDirs = HashSet(getGrantedDirs(context))
-        // from Android R, we no longer have access permission by default on primary volume
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
+
+        // until API 18 / Android 4.3 / Jelly Bean MR2, removable storage is accessible by default like primary storage
+        // from API 19 / Android 4.4 / KitKat, removable storage requires access permission, at the file level
+        // from API 21 / Android 5.0 / Lollipop, removable storage requires access permission, but directory access grant is possible
+        // from API 30 / Android 11 / R, any storage requires access permission
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            accessibleDirs.addAll(StorageUtils.getVolumePaths(context))
+        } else if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
             accessibleDirs.add(StorageUtils.getPrimaryVolumePath(context))
         }
         return accessibleDirs
+    }
+
+    fun getRestrictedDirectories(context: Context): List<Map<String, String>> {
+        val dirs = ArrayList<Map<String, String>>()
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            // cf https://developer.android.com/about/versions/11/privacy/storage#directory-access
+            val volumePaths = StorageUtils.getVolumePaths(context)
+            dirs.addAll(volumePaths.map {
+                hashMapOf(
+                    "volumePath" to it,
+                    "relativeDir" to "",
+                )
+            })
+            dirs.addAll(volumePaths.map {
+                hashMapOf(
+                    "volumePath" to it,
+                    "relativeDir" to Environment.DIRECTORY_DOWNLOADS,
+                )
+            })
+        } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT
+            || Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT_WATCH) {
+            // removable storage requires access permission, at the file level
+            // without directory access, we consider the whole volume restricted
+            val primaryVolume = StorageUtils.getPrimaryVolumePath(context)
+            val nonPrimaryVolumes = StorageUtils.getVolumePaths(context).filter { it != primaryVolume }
+            dirs.addAll(nonPrimaryVolumes.map {
+                hashMapOf(
+                    "volumePath" to it,
+                    "relativeDir" to "",
+                )
+            })
+        }
+        return dirs
     }
 
     // As of Android R, `MediaStore.getDocumentUri` fails if any of the persisted
@@ -234,6 +243,7 @@ object PermissionManager {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     private fun releaseUriPermission(context: Context, it: Uri) {
         val flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
         context.contentResolver.releasePersistableUriPermission(it, flags)

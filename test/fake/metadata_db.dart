@@ -13,7 +13,7 @@ class FakeMetadataDb extends Fake implements MetadataDb {
   Future<void> init() => SynchronousFuture(null);
 
   @override
-  Future<void> removeIds(Set<int> contentIds, {required bool metadataOnly}) => SynchronousFuture(null);
+  Future<void> removeIds(Set<int> contentIds, {Set<EntryDataType>? dataTypes}) => SynchronousFuture(null);
 
   // entries
 

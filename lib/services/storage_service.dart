@@ -37,8 +37,6 @@ abstract class StorageService {
   Future<bool?> createFile(String name, String mimeType, Uint8List bytes);
 
   Future<Uint8List> openFile(String mimeType);
-
-  Future<String?> selectDirectory();
 }
 
 class PlatformStorageService implements StorageService {
@@ -174,7 +172,8 @@ class PlatformStorageService implements StorageService {
         },
         cancelOnError: true,
       );
-      return completer.future;
+      // `await` here, so that `completeError` will be caught below
+      return await completer.future;
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
     }
@@ -198,7 +197,8 @@ class PlatformStorageService implements StorageService {
         },
         cancelOnError: true,
       );
-      return completer.future;
+      // `await` here, so that `completeError` will be caught below
+      return await completer.future;
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
     }
@@ -222,7 +222,8 @@ class PlatformStorageService implements StorageService {
         },
         cancelOnError: true,
       );
-      return completer.future;
+      // `await` here, so that `completeError` will be caught below
+      return await completer.future;
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
     }
@@ -249,31 +250,11 @@ class PlatformStorageService implements StorageService {
         },
         cancelOnError: true,
       );
-      return completer.future;
+      // `await` here, so that `completeError` will be caught below
+      return await completer.future;
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
     }
     return Uint8List(0);
-  }
-
-  @override
-  Future<String?> selectDirectory() async {
-    try {
-      final completer = Completer<String?>();
-      storageAccessChannel.receiveBroadcastStream(<String, dynamic>{
-        'op': 'selectDirectory',
-      }).listen(
-        (data) => completer.complete(data as String?),
-        onError: completer.completeError,
-        onDone: () {
-          if (!completer.isCompleted) completer.complete(null);
-        },
-        cancelOnError: true,
-      );
-      return completer.future;
-    } on PlatformException catch (e, stack) {
-      await reportService.recordError(e, stack);
-    }
-    return null;
   }
 }

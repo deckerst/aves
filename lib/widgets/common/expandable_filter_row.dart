@@ -9,16 +9,20 @@ class ExpandableFilterRow extends StatelessWidget {
   final String? title;
   final Iterable<CollectionFilter> filters;
   final ValueNotifier<String?> expandedNotifier;
+  final bool showGenericIcon;
   final HeroType Function(CollectionFilter filter)? heroTypeBuilder;
   final FilterCallback onTap;
+  final OffsetFilterCallback? onLongPress;
 
   const ExpandableFilterRow({
     Key? key,
     this.title,
     required this.filters,
     required this.expandedNotifier,
+    this.showGenericIcon = true,
     this.heroTypeBuilder,
     required this.onTap,
+    required this.onLongPress,
   }) : super(key: key);
 
   static const double horizontalPadding = 8;
@@ -109,8 +113,10 @@ class ExpandableFilterRow extends StatelessWidget {
       // key `album-{path}` is expected by test driver
       key: Key(filter.key),
       filter: filter,
+      showGenericIcon: showGenericIcon,
       heroType: heroTypeBuilder?.call(filter) ?? HeroType.onTap,
       onTap: onTap,
+      onLongPress: onLongPress,
     );
   }
 }

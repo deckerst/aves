@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:aves/model/actions/move_type.dart';
 import 'package:aves/model/covers.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/favourites.dart';
@@ -11,6 +12,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/album.dart';
 import 'package:aves/model/source/analysis_controller.dart';
 import 'package:aves/model/source/enums.dart';
+import 'package:aves/model/source/events.dart';
 import 'package:aves/model/source/location.dart';
 import 'package:aves/model/source/tag.dart';
 import 'package:aves/services/analysis_service.dart';
@@ -104,7 +106,9 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
       _rawEntries.removeWhere((entry) => newContentIds.contains(entry.contentId));
     }
 
-    entries.forEach((entry) => entry.catalogDateMillis = _savedDates[entry.contentId]);
+    entries.where((entry) => entry.catalogDateMillis == null).forEach((entry) {
+      entry.catalogDateMillis = _savedDates[entry.contentId];
+    });
 
     _entryById.addAll(newIdMapEntries);
     _rawEntries.addAll(entries);
@@ -183,8 +187,8 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
           return;
         }
         await _moveEntry(entry, newFields, persist: persist);
-        entry.metadataChangeNotifier.notifyListeners();
-        eventBus.fire(EntryMovedEvent({entry}));
+        entry.metadataChangeNotifier.notify();
+        eventBus.fire(EntryMovedEvent(MoveType.move, {entry}));
         completer.complete(true);
       },
     );
@@ -245,6 +249,8 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
             title: newFields['title'] as String?,
             dateModifiedSecs: newFields['dateModifiedSecs'] as int?,
           ));
+        } else {
+          debugPrint('failed to find source entry with uri=$sourceUri');
         }
       });
       await metadataDb.saveEntries(movedEntries);
@@ -273,7 +279,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
     }
     invalidateAlbumFilterSummary(directories: fromAlbums);
     _invalidate(movedEntries);
-    eventBus.fire(EntryMovedEvent(movedEntries));
+    eventBus.fire(EntryMovedEvent(copy ? MoveType.copy : MoveType.move, movedEntries));
   }
 
   bool get initialized => false;
@@ -284,8 +290,8 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
 
   Future<Set<String>> refreshUris(Set<String> changedUris, {AnalysisController? analysisController});
 
-  Future<void> refreshEntry(AvesEntry entry) async {
-    await entry.refresh(background: false, persist: true, force: true, geocoderLocale: settings.appliedLocale);
+  Future<void> refreshEntry(AvesEntry entry, Set<EntryDataType> dataTypes) async {
+    await entry.refresh(background: false, persist: true, dataTypes: dataTypes, geocoderLocale: settings.appliedLocale);
     updateDerivedFilters({entry});
     eventBus.fire(EntryRefreshedEvent({entry}));
   }
@@ -380,47 +386,4 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
       analyze(null, entries: candidateEntries);
     }
   }
-}
-
-@immutable
-class EntryAddedEvent {
-  final Set<AvesEntry>? entries;
-
-  const EntryAddedEvent([this.entries]);
-}
-
-@immutable
-class EntryRemovedEvent {
-  final Set<AvesEntry> entries;
-
-  const EntryRemovedEvent(this.entries);
-}
-
-@immutable
-class EntryMovedEvent {
-  final Set<AvesEntry> entries;
-
-  const EntryMovedEvent(this.entries);
-}
-
-@immutable
-class EntryRefreshedEvent {
-  final Set<AvesEntry> entries;
-
-  const EntryRefreshedEvent(this.entries);
-}
-
-@immutable
-class FilterVisibilityChangedEvent {
-  final Set<CollectionFilter> filters;
-  final bool visible;
-
-  const FilterVisibilityChangedEvent(this.filters, this.visible);
-}
-
-@immutable
-class ProgressEvent {
-  final int done, total;
-
-  const ProgressEvent({required this.done, required this.total});
 }

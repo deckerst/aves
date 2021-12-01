@@ -55,7 +55,13 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
   static const gifLikeBitRateThreshold = 2 << 18; // 512kB/s (4Mb/s)
   static const captureFrameEnabled = true;
 
-  IjkPlayerAvesVideoController(AvesEntry entry) : super(entry) {
+  IjkPlayerAvesVideoController(
+    AvesEntry entry, {
+    required bool persistPlayback,
+  }) : super(
+          entry,
+          persistPlayback: persistPlayback,
+        ) {
     _instance = FijkPlayer();
     _valueStream.map((value) => value.videoRenderStart).firstWhere((v) => v, orElse: () => false).then(
           (started) => canCaptureFrameNotifier.value = captureFrameEnabled && started,
@@ -80,7 +86,7 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
 
   void _startListening() {
     _instance.addListener(_onValueChanged);
-    _subscriptions.add(_valueStream.where((value) => value.state == FijkState.completed).listen((_) => _completedNotifier.notifyListeners()));
+    _subscriptions.add(_valueStream.where((value) => value.state == FijkState.completed).listen((_) => _completedNotifier.notify()));
     _subscriptions.add(_instance.onTimedText.listen(_timedTextStreamController.add));
   }
 

@@ -1,33 +1,23 @@
 import 'dart:math';
 
-import 'package:aves/utils/math_utils.dart';
 import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
 
 class GeoUtils {
-  static String decimal2sexagesimal(final double degDecimal, final bool minuteSecondPadding, final int secondDecimals) {
-    List<int> _split(final double value) {
-      // NumberFormat is necessary to create digit after comma if the value
-      // has no decimal point (only necessary for browser)
-      final tmp = NumberFormat('0.0#####').format(roundToPrecision(value, decimals: 10)).split('.');
-      return <int>[
-        int.parse(tmp[0]).abs(),
-        int.parse(tmp[1]),
-      ];
-    }
-
-    final deg = _split(degDecimal)[0];
-    final minDecimal = (degDecimal.abs() - deg) * 60;
-    final min = _split(minDecimal)[0];
+  static String decimal2sexagesimal(
+    double degDecimal,
+    bool minuteSecondPadding,
+    int secondDecimals,
+    String locale,
+  ) {
+    final degAbs = degDecimal.abs();
+    final deg = degAbs.toInt();
+    final minDecimal = (degAbs - deg) * 60;
+    final min = minDecimal.toInt();
     final sec = (minDecimal - min) * 60;
 
-    final secRounded = roundToPrecision(sec, decimals: secondDecimals);
-    var minText = '$min';
-    var secText = secRounded.toStringAsFixed(secondDecimals);
-    if (minuteSecondPadding) {
-      minText = minText.padLeft(2, '0');
-      secText = secText.padLeft(secondDecimals > 0 ? 3 + secondDecimals : 2, '0');
-    }
+    var minText = NumberFormat('0' * (minuteSecondPadding ? 2 : 1), locale).format(min);
+    var secText = NumberFormat('${'0' * (minuteSecondPadding ? 2 : 1)}${secondDecimals > 0 ? '.${'0' * secondDecimals}' : ''}', locale).format(sec);
 
     return '$deg° $minText′ $secText″';
   }

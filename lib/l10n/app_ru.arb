@@ -186,7 +186,7 @@
   "removeEntryMetadataDialogTitle": "Удаление метаданных",
   "removeEntryMetadataDialogMore": "Дополнительно",
 
-  "removeEntryMetadataMotionPhotoXmpWarningDialogMessage": "Для воспроизведения видео внутри этой живой фотографии требуется XMP профиль. Вы уверены, что хотите удалить его?",
+  "removeEntryMetadataMotionPhotoXmpWarningDialogMessage": "Для воспроизведения видео внутри этой живой фотографии требуется XMP профиль.\n\nВы уверены, что хотите удалить его?",
 
   "videoSpeedDialogLabel": "Скорость воспроизведения",
 
@@ -232,6 +232,7 @@
   "aboutCreditsWorldAtlas1": "Это приложение использует файл TopoJSON из",
   "aboutCreditsWorldAtlas2": "под лицензией ISC.",
   "aboutCreditsTranslators": "Переводчики:",
+  "aboutCreditsTranslatorLine": "{language}: {names}",
 
   "aboutLicenses": "Лицензии с открытым исходным кодом",
   "aboutLicensesBanner": "Это приложение использует следующие пакеты и библиотеки с открытым исходным кодом.",
@@ -292,6 +293,7 @@
   "drawerCollectionFavourites": "Избранное",
   "drawerCollectionImages": "Изображения",
   "drawerCollectionVideos": "Видео",
+  "drawerCollectionAnimated": "GIF",
   "drawerCollectionMotionPhotos": "Живые фото",
   "drawerCollectionPanoramas": "Панорамы",
   "drawerCollectionRaws": "RAW",
@@ -372,12 +374,6 @@
   "settingsCollectionSelectionQuickActionEditorBanner": "Нажмите и удерживайте, чтобы переместить кнопки и выбрать, какие действия будут отображаться при выборе элементов.",
 
   "settingsSectionViewer": "Просмотрщик",
-  "settingsViewerShowOverlayOnOpening": "Показывать наложение при открытии",
-  "settingsViewerShowMinimap": "Показать миникарту",
-  "settingsViewerShowInformation": "Показывать информацию",
-  "settingsViewerShowInformationSubtitle": "Показать название, дату, местоположение и т.д.",
-  "settingsViewerShowShootingDetails": "Показать детали съёмки",
-  "settingsViewerEnableOverlayBlurEffect": "Наложение эффекта размытия",
   "settingsViewerUseCutout": "Использовать область выреза",
   "settingsImageBackground": "Фон изображения",
 
@@ -387,6 +383,15 @@
   "settingsViewerQuickActionEditorDisplayedButtons": "Отображаемые кнопки",
   "settingsViewerQuickActionEditorAvailableButtons": "Доступные кнопки",
   "settingsViewerQuickActionEmpty": "Нет кнопок",
+
+  "settingsViewerOverlayTile": "Наложение",
+  "settingsViewerOverlayTitle": "Наложение",
+  "settingsViewerShowOverlayOnOpening": "Показывать наложение при открытии",
+  "settingsViewerShowMinimap": "Показать миникарту",
+  "settingsViewerShowInformation": "Показывать информацию",
+  "settingsViewerShowInformationSubtitle": "Показать название, дату, местоположение и т.д.",
+  "settingsViewerShowShootingDetails": "Показать детали съёмки",
+  "settingsViewerEnableOverlayBlurEffect": "Наложение эффекта размытия",
 
   "settingsVideoPageTitle": "Настройки видео",
   "settingsSectionVideo": "Видео",
@@ -419,15 +424,15 @@
   "settingsAllowErrorReporting": "Разрешить анонимную отправку логов",
   "settingsSaveSearchHistory": "Сохранять историю поиска",
 
-  "settingsHiddenFiltersTile": "Скрытые фильтры",
+  "settingsHiddenItemsTile": "Скрытые объекты",
+  "settingsHiddenItemsTitle": "Скрытые объекты",
+
   "settingsHiddenFiltersTitle": "Скрытые фильтры",
   "settingsHiddenFiltersBanner": "Фотографии и видео, соответствующие скрытым фильтрам, не появятся в вашей коллекции.",
   "settingsHiddenFiltersEmpty": "Нет скрытых фильтров",
 
-  "settingsHiddenPathsTile": "Скрытые каталоги",
   "settingsHiddenPathsTitle": "Скрытые каталоги",
   "settingsHiddenPathsBanner": "Фотографии и видео в этих каталогах или любых их вложенных каталогах не будут отображаться в вашей коллекции.",
-  "settingsHiddenPathsEmpty": "Нет скрытых каталогов",
   "addPathTooltip": "Добавить каталог",
 
   "settingsStorageAccessTile": "Доступ к хранилищу",
@@ -496,8 +501,16 @@
   "viewerInfoSearchSuggestionResolution": "Разрешение",
   "viewerInfoSearchSuggestionRights": "Права",
 
+  "tagEditorSectionRecent": "Недавние",
+
   "panoramaEnableSensorControl": "Включить сенсорное управление",
   "panoramaDisableSensorControl": "Отключить сенсорное управление",
 
-  "sourceViewerPageTitle": "Источник"
+  "sourceViewerPageTitle": "Источник",
+
+  "filePickerShowHiddenFiles": "Показывать скрытые файлы",
+  "filePickerDoNotShowHiddenFiles": "Не показывать скрытые файлы",
+  "filePickerOpenFrom": "Открыть",
+  "filePickerNoItems": "Ничего нет.",
+  "filePickerUseThisFolder": "Использовать эту папку"
 }

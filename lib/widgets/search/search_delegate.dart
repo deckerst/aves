@@ -15,9 +15,9 @@ import 'package:aves/model/source/tag.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
+import 'package:aves/widgets/common/expandable_filter_row.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
-import 'package:aves/widgets/search/expandable_filter_row.dart';
 import 'package:aves/widgets/search/search_page.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -27,10 +27,10 @@ import 'package:provider/provider.dart';
 class CollectionSearchDelegate {
   final CollectionSource source;
   final CollectionLens? parentCollection;
-  final ValueNotifier<String?> expandedSectionNotifier = ValueNotifier(null);
+  final ValueNotifier<String?> _expandedSectionNotifier = ValueNotifier(null);
   final bool canPop;
 
-  static const searchHistoryCount = 10;
+  static const int searchHistoryCount = 10;
   static final typeFilters = [
     FavouriteFilter.instance,
     MimeFilter.image,
@@ -90,7 +90,7 @@ class CollectionSearchDelegate {
     bool containQuery(String s) => s.toUpperCase().contains(upQuery);
     return SafeArea(
       child: ValueListenableBuilder<String?>(
-          valueListenable: expandedSectionNotifier,
+          valueListenable: _expandedSectionNotifier,
           builder: (context, expandedSection, child) {
             final queryFilter = _buildQueryFilter(false);
             return Selector<Settings, Set<CollectionFilter>>(
@@ -195,9 +195,10 @@ class CollectionSearchDelegate {
     return ExpandableFilterRow(
       title: title,
       filters: filters,
-      expandedNotifier: expandedSectionNotifier,
+      expandedNotifier: _expandedSectionNotifier,
       heroTypeBuilder: heroTypeBuilder,
       onTap: (filter) => _select(context, filter is QueryFilter ? QueryFilter(filter.query) : filter),
+      onLongPress: AvesFilterChip.showDefaultLongPressMenu,
     );
   }
 
@@ -272,7 +273,7 @@ class CollectionSearchDelegate {
     focusNode?.unfocus();
   }
 
-  // adapted from `SearchDelegate`
+  // adapted from Flutter `SearchDelegate` in `/material/search.dart`
 
   void showResults(BuildContext context) {
     focusNode?.unfocus();
@@ -310,10 +311,10 @@ class CollectionSearchDelegate {
   SearchPageRoute? route;
 }
 
-// adapted from `SearchDelegate`
+// adapted from Flutter `_SearchBody` in `/material/search.dart`
 enum SearchBody { suggestions, results }
 
-// adapted from `SearchDelegate`
+// adapted from Flutter `_SearchPageRoute` in `/material/search.dart`
 class SearchPageRoute<T> extends PageRoute<T> {
   SearchPageRoute({
     required this.delegate,

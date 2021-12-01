@@ -67,7 +67,7 @@ class MediaStoreSource extends CollectionSource {
 
     // clean up obsolete entries
     debugPrint('$runtimeType refresh ${stopwatch.elapsed} remove obsolete entries');
-    await metadataDb.removeIds(obsoleteContentIds, metadataOnly: false);
+    await metadataDb.removeIds(obsoleteContentIds);
 
     // verify paths because some apps move files without updating their `last modified date`
     debugPrint('$runtimeType refresh ${stopwatch.elapsed} check obsolete paths');
