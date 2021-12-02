@@ -22,6 +22,7 @@
   "showTooltip": "Показать",
   "hideTooltip": "Скрыть",
   "removeTooltip": "Удалить",
+  "resetButtonTooltip": "Сбросить",
 
   "doubleBackExitMessage": "Нажмите «назад» еще раз, чтобы выйти.",
 
@@ -71,6 +72,7 @@
   "videoActionSettings": "Настройки",
 
   "entryInfoActionEditDate": "Изменить дату и время",
+  "entryInfoActionEditTags": "Изменить теги",
   "entryInfoActionRemoveMetadata": "Удалить метаданные",
 
   "filterFavouriteLabel": "Избранное",
@@ -126,10 +128,10 @@
 
   "storageVolumeDescriptionFallbackPrimary": "Внутренняя память",
   "storageVolumeDescriptionFallbackNonPrimary": "SD-карта",
-  "rootDirectoryDescription": "корень",
-  "otherDirectoryDescription": "“{name}” каталог",
+  "rootDirectoryDescription": "корневой каталог",
+  "otherDirectoryDescription": "каталог «{name}»",
   "storageAccessDialogTitle": "Доступ к хранилищу",
-  "storageAccessDialogMessage": "Пожалуйста, выберите каталог {directory} на накопителе «{volume}» на следующем экране, чтобы предоставить этому приложению доступ к нему.",
+  "storageAccessDialogMessage": "Пожалуйста, выберите {directory} на накопителе «{volume}» на следующем экране, чтобы предоставить этому приложению доступ к нему.",
   "restrictedAccessDialogTitle": "Ограниченный доступ",
   "restrictedAccessDialogMessage": "Этому приложению не разрешается изменять файлы в каталоге {directory} накопителя «{volume}».\n\nПожалуйста, используйте предустановленный файловый менеджер или галерею, чтобы переместить элементы в другой каталог.",
   "notEnoughSpaceDialogTitle": "Недостаточно свободного места.",
@@ -375,6 +377,7 @@
 
   "settingsSectionViewer": "Просмотрщик",
   "settingsViewerUseCutout": "Использовать область выреза",
+  "settingsViewerMaximumBrightness": "Максимальная яркость",
   "settingsImageBackground": "Фон изображения",
 
   "settingsViewerQuickActionsTile": "Быстрые действия",
@@ -501,6 +504,9 @@
   "viewerInfoSearchSuggestionResolution": "Разрешение",
   "viewerInfoSearchSuggestionRights": "Права",
 
+  "tagEditorPageTitle": "Изменить теги",
+  "tagEditorPageNewTagFieldLabel": "Новый тег",
+  "tagEditorPageAddTagTooltip": "Добавить тег",
   "tagEditorSectionRecent": "Недавние",
 
   "panoramaEnableSensorControl": "Включить сенсорное управление",
