@@ -71,6 +71,7 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           artifacts: "outputs/*"
+          body: "[Changelog](https://github.com/${{ github.repository }}/blob/develop/CHANGELOG.md#${{ github.ref_name }})"
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload app bundle
