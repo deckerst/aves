@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
-## [v1.5.7] - 2021-12-01
+## <a id="v1.5.7"></a>[v1.5.7] - 2021-12-01
 
 ### Added
 
@@ -24,7 +24,7 @@ All notable changes to this project will be documented in this file.
 - double-tap gesture in the viewer was ignored in some cases
 - copied items had the wrong date
 
-## [v1.5.6] - 2021-11-12
+## <a id="v1.5.6"></a>[v1.5.6] - 2021-11-12
 
 ### Added
 
