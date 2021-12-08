@@ -194,7 +194,9 @@ class PlatformMediaFileService implements MediaFileService {
       // `await` here, so that `completeError` will be caught below
       return await completer.future;
     } on PlatformException catch (e, stack) {
-      await reportService.recordError(e, stack);
+      if (!MimeTypes.knownMediaTypes.contains(mimeType)) {
+        await reportService.recordError(e, stack);
+      }
     }
     return Uint8List(0);
   }
