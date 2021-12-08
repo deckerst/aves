@@ -1,0 +1,97 @@
+import 'package:aves/app_mode.dart';
+import 'package:aves/image_providers/app_icon_image_provider.dart';
+import 'package:aves/model/entry.dart';
+import 'package:aves/model/settings/settings.dart';
+import 'package:aves/services/common/services.dart';
+import 'package:aves/utils/android_file_utils.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/viewer/info/common.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+class OwnerProp extends StatefulWidget {
+  final AvesEntry entry;
+
+  const OwnerProp({
+    Key? key,
+    required this.entry,
+  }) : super(key: key);
+
+  @override
+  _OwnerPropState createState() => _OwnerPropState();
+}
+
+class _OwnerPropState extends State<OwnerProp> {
+  Future<String?> _ownerPackageLoader = SynchronousFuture(null);
+  Future<void> _appNameLoader = SynchronousFuture(null);
+
+  AvesEntry get entry => widget.entry;
+
+  static const ownerPackageNamePropKey = 'owner_package_name';
+  static const iconSize = 20.0;
+
+  @override
+  void initState() {
+    super.initState();
+    final isMediaContent = entry.uri.startsWith('content://media/external/');
+    if (isMediaContent) {
+      _ownerPackageLoader = metadataFetchService.hasContentResolverProp(ownerPackageNamePropKey).then((exists) {
+        return exists ? metadataFetchService.getContentResolverProp(entry, ownerPackageNamePropKey) : SynchronousFuture(null);
+      });
+      final isViewerMode = context.read<ValueNotifier<AppMode>>().value == AppMode.view;
+      if (isViewerMode && settings.isInstalledAppAccessAllowed) {
+        _appNameLoader = androidFileUtils.initAppNames();
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<String?>(
+      future: _ownerPackageLoader,
+      builder: (context, snapshot) {
+        final ownerPackage = snapshot.data;
+        if (ownerPackage == null) return const SizedBox();
+
+        return FutureBuilder<void>(
+          future: _appNameLoader,
+          builder: (context, snapshot) {
+            final appName = androidFileUtils.getCurrentAppName(ownerPackage) ?? ownerPackage;
+            // as of Flutter v2.5.3, `SelectableText` cannot contain `WidgetSpan`
+            // so we use a basic `Text` instead
+            // TODO TLAD 2021/10/26 other `InlineSpan` now possible thanks to https://github.com/flutter/flutter/pull/92295
+            return Text.rich(
+              TextSpan(
+                children: [
+                  TextSpan(
+                    text: context.l10n.viewerInfoLabelOwner,
+                    style: InfoRowGroup.keyStyle,
+                  ),
+                  WidgetSpan(
+                    alignment: PlaceholderAlignment.middle,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4),
+                      child: Image(
+                        image: AppIconImage(
+                          packageName: ownerPackage,
+                          size: iconSize,
+                        ),
+                        width: iconSize,
+                        height: iconSize,
+                      ),
+                    ),
+                  ),
+                  TextSpan(
+                    text: appName,
+                    style: InfoRowGroup.baseStyle,
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+}

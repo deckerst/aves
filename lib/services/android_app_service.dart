@@ -44,6 +44,10 @@ class PlatformAndroidAppService implements AndroidAppService {
       if (kakaoTalk != null) {
         kakaoTalk.ownedDirs.add('KakaoTalkDownload');
       }
+      final imagingEdge = packages.firstWhereOrNull((package) => package.packageName == 'com.sony.playmemories.mobile');
+      if (imagingEdge != null) {
+        imagingEdge.ownedDirs.add('Imaging Edge Mobile');
+      }
       return packages;
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);

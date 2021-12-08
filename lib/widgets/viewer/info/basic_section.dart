@@ -1,4 +1,3 @@
-import 'package:aves/image_providers/app_icon_image_provider.dart';
 import 'package:aves/model/actions/entry_info_actions.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/favourites.dart';
@@ -8,15 +7,14 @@ import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/filters/type.dart';
 import 'package:aves/model/source/collection_lens.dart';
-import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/format.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:aves/widgets/viewer/info/entry_info_action_delegate.dart';
+import 'package:aves/widgets/viewer/info/owner.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -171,81 +169,5 @@ class BasicSection extends StatelessWidget {
     return {
       context.l10n.viewerInfoLabelDuration: entry.durationText,
     };
-  }
-}
-
-class OwnerProp extends StatefulWidget {
-  final AvesEntry entry;
-
-  const OwnerProp({
-    Key? key,
-    required this.entry,
-  }) : super(key: key);
-
-  @override
-  _OwnerPropState createState() => _OwnerPropState();
-}
-
-class _OwnerPropState extends State<OwnerProp> {
-  late Future<String?> _ownerPackageFuture;
-
-  AvesEntry get entry => widget.entry;
-
-  static const ownerPackageNamePropKey = 'owner_package_name';
-  static const iconSize = 20.0;
-
-  @override
-  void initState() {
-    super.initState();
-    final isMediaContent = entry.uri.startsWith('content://media/external/');
-    if (isMediaContent) {
-      _ownerPackageFuture = metadataFetchService.hasContentResolverProp(ownerPackageNamePropKey).then((exists) {
-        return exists ? metadataFetchService.getContentResolverProp(entry, ownerPackageNamePropKey) : SynchronousFuture(null);
-      });
-    } else {
-      _ownerPackageFuture = SynchronousFuture(null);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder<String?>(
-      future: _ownerPackageFuture,
-      builder: (context, snapshot) {
-        final ownerPackage = snapshot.data;
-        if (ownerPackage == null) return const SizedBox();
-        final appName = androidFileUtils.getCurrentAppName(ownerPackage) ?? ownerPackage;
-        // as of Flutter v1.22.6, `SelectableText` cannot contain `WidgetSpan`
-        // so we use a basic `Text` instead
-        return Text.rich(
-          TextSpan(
-            children: [
-              TextSpan(
-                text: context.l10n.viewerInfoLabelOwner,
-                style: InfoRowGroup.keyStyle,
-              ),
-              WidgetSpan(
-                alignment: PlaceholderAlignment.middle,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 4),
-                  child: Image(
-                    image: AppIconImage(
-                      packageName: ownerPackage,
-                      size: iconSize,
-                    ),
-                    width: iconSize,
-                    height: iconSize,
-                  ),
-                ),
-              ),
-              TextSpan(
-                text: appName,
-                style: InfoRowGroup.baseStyle,
-              ),
-            ],
-          ),
-        );
-      },
-    );
   }
 }
