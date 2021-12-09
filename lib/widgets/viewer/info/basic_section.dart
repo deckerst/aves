@@ -16,7 +16,6 @@ import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:aves/widgets/viewer/info/entry_info_action_delegate.dart';
 import 'package:aves/widgets/viewer/info/owner.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

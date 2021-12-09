@@ -5,7 +5,6 @@ import 'package:aves/model/highlight.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/grid/section_layout.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

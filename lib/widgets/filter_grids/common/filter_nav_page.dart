@@ -9,7 +9,6 @@ import 'package:aves/widgets/filter_grids/common/action_delegates/chip_set.dart'
 import 'package:aves/widgets/filter_grids/common/app_bar.dart';
 import 'package:aves/widgets/filter_grids/common/filter_grid_page.dart';
 import 'package:aves/widgets/filter_grids/common/section_keys.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class FilterNavigationPage<T extends CollectionFilter> extends StatelessWidget {
