@@ -13,6 +13,7 @@ class XMP {
     'crs': 'Camera Raw Settings',
     'dc': 'Dublin Core',
     'drone-dji': 'DJI Drone',
+    'dwc': 'Darwin Core',
     'exif': 'Exif',
     'exifEX': 'Exif Ex',
     'GettyImagesGIFT': 'Getty Images',
