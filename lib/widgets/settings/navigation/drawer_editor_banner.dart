@@ -1,6 +1,5 @@
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class DrawerEditorBanner extends StatelessWidget {

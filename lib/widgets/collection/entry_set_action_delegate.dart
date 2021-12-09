@@ -36,7 +36,6 @@ import 'package:aves/widgets/search/search_delegate.dart';
 import 'package:aves/widgets/stats/stats_page.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 

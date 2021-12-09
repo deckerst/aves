@@ -21,7 +21,7 @@ packages:
       name: archive
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.1.2"
+    version: "3.1.6"
   args:
     dependency: transitive
     description:
@@ -35,7 +35,7 @@ packages:
       name: async
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.8.1"
+    version: "2.8.2"
   aves_report:
     dependency: "direct main"
     description:
@@ -56,7 +56,7 @@ packages:
       name: barcode
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.0"
+    version: "2.2.0"
   boolean_selector:
     dependency: transitive
     description:
@@ -70,7 +70,7 @@ packages:
       name: characters
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.0"
+    version: "1.2.0"
   charcode:
     dependency: transitive
     description:
@@ -305,35 +305,35 @@ packages:
       name: firebase_core
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.10.0"
+    version: "1.10.5"
   firebase_core_platform_interface:
     dependency: transitive
     description:
       name: firebase_core_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.1.0"
+    version: "4.2.2"
   firebase_core_web:
     dependency: transitive
     description:
       name: firebase_core_web
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.2.0"
+    version: "1.5.2"
   firebase_crashlytics:
     dependency: transitive
     description:
       name: firebase_crashlytics
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.3.0"
+    version: "2.4.3"
   firebase_crashlytics_platform_interface:
     dependency: transitive
     description:
       name: firebase_crashlytics_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.1.6"
+    version: "3.1.10"
   flex_color_picker:
     dependency: "direct main"
     description:
@@ -580,14 +580,14 @@ packages:
       name: matcher
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.12.10"
+    version: "0.12.11"
   material_design_icons_flutter:
     dependency: "direct main"
     description:
       name: material_design_icons_flutter
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.0.6295"
+    version: "5.0.6595"
   meta:
     dependency: transitive
     description:
@@ -720,7 +720,7 @@ packages:
       name: path_parsing
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.1"
+    version: "1.0.0"
   path_provider_linux:
     dependency: transitive
     description:
@@ -748,7 +748,7 @@ packages:
       name: pdf
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.6.3"
+    version: "3.6.5"
   pedantic:
     dependency: transitive
     description:
@@ -790,7 +790,7 @@ packages:
       name: platform
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.0"
+    version: "3.0.2"
   plugin_platform_interface:
     dependency: transitive
     description:
@@ -818,14 +818,14 @@ packages:
       name: printing
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.6.3"
+    version: "5.6.6"
   process:
     dependency: transitive
     description:
       name: process
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.2.3"
+    version: "4.2.4"
   proj4dart:
     dependency: transitive
     description:
@@ -853,7 +853,7 @@ packages:
       name: qr
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.0"
+    version: "3.0.0"
   quiver:
     dependency: transitive
     description:
@@ -867,7 +867,21 @@ packages:
       name: screen_brightness
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.1"
+    version: "0.1.2+2"
+  screen_brightness_android:
+    dependency: transitive
+    description:
+      name: screen_brightness_android
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.1"
+  screen_brightness_ios:
+    dependency: transitive
+    description:
+      name: screen_brightness_ios
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.2"
   screen_brightness_platform_interface:
     dependency: transitive
     description:
@@ -991,7 +1005,7 @@ packages:
       name: sqflite
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.0+4"
+    version: "2.0.1"
   sqflite_common:
     dependency: transitive
     description:
@@ -1063,21 +1077,21 @@ packages:
       name: test
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.17.10"
+    version: "1.17.12"
   test_api:
     dependency: transitive
     description:
       name: test_api
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.4.2"
+    version: "0.4.3"
   test_core:
     dependency: transitive
     description:
       name: test_core
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.4.0"
+    version: "0.4.2"
   transparent_image:
     dependency: "direct main"
     description:
@@ -1168,7 +1182,7 @@ packages:
       name: vector_math
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.0"
+    version: "2.1.1"
   version:
     dependency: "direct main"
     description:
@@ -1182,7 +1196,7 @@ packages:
       name: vm_service
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "7.1.1"
+    version: "7.3.0"
   watcher:
     dependency: transitive
     description:

@@ -6,7 +6,6 @@ import 'package:aves/utils/math_utils.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
 import 'package:aves/widgets/common/grid/section_layout.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 
 class GridSelectionGestureDetector<T> extends StatefulWidget {

@@ -1,7 +1,6 @@
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/settings/navigation/drawer_editor_banner.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 typedef ItemWidgetBuilder<T> = Widget Function(T item);

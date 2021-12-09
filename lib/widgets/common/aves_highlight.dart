@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:highlight/highlight.dart' show highlight, Node;
 
 // adapted from package `flutter_highlight` v0.7.0 `HighlightView`

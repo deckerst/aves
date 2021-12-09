@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:aves/image_providers/app_icon_image_provider.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/theme/icons.dart';

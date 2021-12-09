@@ -2,7 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## <a id="unreleased"></a>[Unreleased]
+
+### Added
+
+- moving or deleting multiple items can be cancelled
+
+### Changed
+
+- upgraded Flutter to stable v2.8.0
 
 ## <a id="v1.5.7"></a>[v1.5.7] - 2021-12-01
 

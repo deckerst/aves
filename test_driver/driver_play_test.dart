@@ -57,7 +57,8 @@ void agreeToTerms() {
 
     await driver.scroll(find.text('Terms of Service'), 0, -300, const Duration(milliseconds: 500));
 
-    await driver.tap(find.byValueKey('agree-checkbox'));
+    await driver.tap(find.byValueKey('apps-checkbox'));
+    await driver.tap(find.byValueKey('terms-checkbox'));
     await Future.delayed(const Duration(seconds: 1));
 
     await driver.tap(find.byValueKey('continue-button'));
@@ -169,7 +170,7 @@ void selectFirstAlbum() {
 
 void searchAlbum() {
   test('[collection] search album', () async {
-    await driver.tap(find.byValueKey('menu-search'));
+    await driver.tap(find.byValueKey('menu-searchCollection'));
     await driver.waitUntilNoTransientCallbacks();
 
     const albumPath = targetPicturesDirEmulated;

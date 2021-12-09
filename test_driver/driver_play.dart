@@ -33,6 +33,7 @@ Future<void> configureAndLaunch() async {
     ..isErrorReportingAllowed = false
     ..locale = const Locale('en')
     ..homePage = HomePageSetting.collection
+    ..infoMapStyle = EntryMapStyle.googleNormal
     ..imageBackground = EntryBackground.checkered;
 
   app.main();

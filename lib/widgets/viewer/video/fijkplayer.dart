@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:math';
 import 'dart:typed_data';
-import 'dart:ui';
 
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -12,7 +11,6 @@ import 'package:aves/utils/change_notifier.dart';
 import 'package:aves/widgets/viewer/video/controller.dart';
 import 'package:collection/collection.dart';
 import 'package:fijkplayer/fijkplayer.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class IjkPlayerAvesVideoController extends AvesVideoController {
