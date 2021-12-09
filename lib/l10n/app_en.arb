@@ -39,6 +39,8 @@
   "continueButtonLabel": "CONTINUE",
   "@continueButtonLabel": {},
 
+  "cancelTooltip": "Cancel",
+  "@cancelTooltip": {},
   "changeTooltip": "Change",
   "@changeTooltip": {},
   "clearTooltip": "Clear",

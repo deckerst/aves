@@ -15,6 +15,7 @@
   "hideButtonLabel": "숨기기",
   "continueButtonLabel": "다음",
 
+  "cancelTooltip": "취소",
   "changeTooltip": "변경",
   "clearTooltip": "초기화",
   "previousTooltip": "이전",

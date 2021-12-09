@@ -15,6 +15,7 @@
   "hideButtonLabel": "MASQUER",
   "continueButtonLabel": "CONTINUER",
 
+  "cancelTooltip": "Annuler",
   "changeTooltip": "Modifier",
   "clearTooltip": "Effacer",
   "previousTooltip": "Précédent",

@@ -3,65 +3,87 @@ import 'package:flutter/foundation.dart';
 
 @immutable
 class ImageOpEvent extends Equatable {
-  final bool success;
+  final bool success, skipped;
   final String uri;
 
   @override
-  List<Object?> get props => [success, uri];
+  List<Object?> get props => [success, skipped, uri];
 
   const ImageOpEvent({
     required this.success,
+    required this.skipped,
     required this.uri,
   });
 
   factory ImageOpEvent.fromMap(Map map) {
+    final skipped = map['skipped'] ?? false;
     return ImageOpEvent(
-      success: map['success'] ?? false,
+      success: (map['success'] ?? false) || skipped,
+      skipped: skipped,
       uri: map['uri'],
     );
   }
 }
 
+@immutable
 class MoveOpEvent extends ImageOpEvent {
   final Map newFields;
 
-  const MoveOpEvent({required bool success, required String uri, required this.newFields})
-      : super(
+  @override
+  List<Object?> get props => [success, skipped, uri, newFields];
+
+  const MoveOpEvent({
+    required bool success,
+    required bool skipped,
+    required String uri,
+    required this.newFields,
+  }) : super(
           success: success,
+          skipped: skipped,
           uri: uri,
         );
 
   factory MoveOpEvent.fromMap(Map map) {
+    final newFields = map['newFields'] ?? {};
+    final skipped = (map['skipped'] ?? false) || (newFields['skipped'] ?? false);
     return MoveOpEvent(
-      success: map['success'] ?? false,
+      success: (map['success'] ?? false) || skipped,
+      skipped: skipped,
       uri: map['uri'],
-      newFields: map['newFields'] ?? {},
+      newFields: newFields,
     );
   }
-
-  @override
-  String toString() => '$runtimeType#${shortHash(this)}{success=$success, uri=$uri, newFields=$newFields}';
 }
 
+@immutable
 class ExportOpEvent extends MoveOpEvent {
   final int? pageId;
 
   @override
-  List<Object?> get props => [success, uri, pageId];
+  List<Object?> get props => [success, skipped, uri, pageId, newFields];
 
-  const ExportOpEvent({required bool success, required String uri, this.pageId, required Map newFields})
-      : super(
+  const ExportOpEvent({
+    required bool success,
+    required bool skipped,
+    required String uri,
+    this.pageId,
+    required Map newFields,
+  }) : super(
           success: success,
+          skipped: skipped,
           uri: uri,
           newFields: newFields,
         );
 
   factory ExportOpEvent.fromMap(Map map) {
+    final newFields = map['newFields'] ?? {};
+    final skipped = (map['skipped'] ?? false) || (newFields['skipped'] ?? false);
     return ExportOpEvent(
-      success: map['success'] ?? false,
+      success: (map['success'] ?? false) || skipped,
+      skipped: skipped,
       uri: map['uri'],
       pageId: map['pageId'],
-      newFields: map['newFields'] ?? {},
+      newFields: newFields,
     );
   }
 }

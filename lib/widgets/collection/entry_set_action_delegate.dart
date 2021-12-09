@@ -247,19 +247,23 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
     if (!await checkStoragePermissionForAlbums(context, selectionDirs, entries: selectedItems)) return;
 
     source.pauseMonitoring();
+    final opId = mediaFileService.newOpId;
     showOpReport<ImageOpEvent>(
       context: context,
-      opStream: mediaFileService.delete(selectedItems),
+      opStream: mediaFileService.delete(opId: opId, entries: selectedItems),
       itemCount: todoCount,
+      onCancel: () => mediaFileService.cancelFileOp(opId),
       onDone: (processed) async {
-        final deletedUris = processed.where((event) => event.success).map((event) => event.uri).toSet();
+        final successOps = processed.where((e) => e.success).toSet();
+        final deletedOps = successOps.where((e) => !e.skipped).toSet();
+        final deletedUris = deletedOps.map((event) => event.uri).toSet();
         await source.removeEntries(deletedUris);
         selection.browse();
         source.resumeMonitoring();
 
-        final deletedCount = deletedUris.length;
-        if (deletedCount < todoCount) {
-          final count = todoCount - deletedCount;
+        final successCount = successOps.length;
+        if (successCount < todoCount) {
+          final count = todoCount - successCount;
           showFeedback(context, context.l10n.collectionDeleteFailureFeedback(count));
         }
 
@@ -324,18 +328,21 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
     }
 
     source.pauseMonitoring();
+    final opId = mediaFileService.newOpId;
     showOpReport<MoveOpEvent>(
       context: context,
       opStream: mediaFileService.move(
-        todoItems,
+        opId: opId,
+        entries: todoItems,
         copy: copy,
         destinationAlbum: destinationAlbum,
         nameConflictStrategy: nameConflictStrategy,
       ),
       itemCount: todoCount,
+      onCancel: () => mediaFileService.cancelFileOp(opId),
       onDone: (processed) async {
         final successOps = processed.where((e) => e.success).toSet();
-        final movedOps = successOps.where((e) => !e.newFields.containsKey('skipped')).toSet();
+        final movedOps = successOps.where((e) => !e.skipped).toSet();
         await source.updateAfterMove(
           todoEntries: todoItems,
           copy: copy,
@@ -417,15 +424,17 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
     showOpReport<ImageOpEvent>(
       context: context,
       opStream: Stream.fromIterable(todoItems).asyncMap((entry) async {
+        // TODO TLAD [cancel] allow cancelling edit op
         final dataTypes = await op(entry);
-        return ImageOpEvent(success: dataTypes.isNotEmpty, uri: entry.uri);
+        return ImageOpEvent(success: dataTypes.isNotEmpty, skipped: false, uri: entry.uri);
       }).asBroadcastStream(),
       itemCount: todoCount,
       onDone: (processed) async {
         final successOps = processed.where((e) => e.success).toSet();
+        final editedOps = successOps.where((e) => !e.skipped).toSet();
         selection.browse();
         source.resumeMonitoring();
-        unawaited(source.refreshUris(successOps.map((v) => v.uri).toSet()));
+        unawaited(source.refreshUris(editedOps.map((v) => v.uri).toSet()));
 
         final l10n = context.l10n;
         final successCount = successOps.length;
