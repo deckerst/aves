@@ -331,6 +331,7 @@ class MediaStoreImageProvider : ImageProvider() {
         targetDir: String,
         nameConflictStrategy: NameConflictStrategy,
         entries: List<AvesEntry>,
+        isCancelledOp: CancelCheck,
         callback: ImageOpCallback,
     ) {
         val targetDirDocFile = StorageUtils.createDirectoryDocIfAbsent(activity, targetDir)
@@ -366,7 +367,7 @@ class MediaStoreImageProvider : ImageProvider() {
                 // - there is no documentation regarding support for usage with removable storage
                 // - the Media Store only allows inserting in specific primary directories ("DCIM", "Pictures") when using scoped storage
                 try {
-                    val newFields = moveSingle(
+                    val newFields = if (isCancelledOp()) skippedFieldMap else moveSingle(
                         activity = activity,
                         sourcePath = sourcePath,
                         sourceUri = sourceUri,
@@ -505,6 +506,7 @@ class MediaStoreImageProvider : ImageProvider() {
         activity: Activity,
         newFileName: String,
         entries: List<AvesEntry>,
+        isCancelledOp: CancelCheck,
         callback: ImageOpCallback,
     ) {
         for (entry in entries) {
@@ -519,7 +521,7 @@ class MediaStoreImageProvider : ImageProvider() {
 
             if (sourcePath != null) {
                 try {
-                    val newFields = renameSingle(
+                    val newFields = if (isCancelledOp()) skippedFieldMap else renameSingle(
                         activity = activity,
                         mimeType = mimeType,
                         oldMediaUri = sourceUri,

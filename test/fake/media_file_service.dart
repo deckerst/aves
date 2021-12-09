@@ -15,6 +15,7 @@ class FakeMediaFileService extends Fake implements MediaFileService {
     final entry = entries.first;
     return Stream.value(MoveOpEvent(
       success: true,
+      skipped: false,
       uri: entry.uri,
       newFields: {
         'uri': 'content://media/external/images/media/$contentId',

@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import deckers.thibault.aves.channel.calls.MediaFileHandler.Companion.cancelledOps
 import deckers.thibault.aves.model.AvesEntry
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.model.NameConflictStrategy
@@ -24,11 +25,13 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
     private lateinit var handler: Handler
 
     private var op: String? = null
+    private var opId: String? = null
     private val entryMapList = ArrayList<FieldMap>()
 
     init {
         if (arguments is Map<*, *>) {
             op = arguments["op"] as String?
+            opId = arguments["id"] as String?
             @Suppress("unchecked_cast")
             val rawEntries = arguments["entries"] as List<FieldMap>?
             if (rawEntries != null) {
@@ -74,6 +77,7 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
     }
 
     private fun endOfStream() {
+        cancelledOps.remove(opId)
         handler.post {
             try {
                 eventSink.endOfStream()
@@ -97,14 +101,18 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
             return
         }
 
-        for (entryMap in entryMapList) {
-            val uri = (entryMap["uri"] as String?)?.let { Uri.parse(it) }
-            val path = entryMap["path"] as String?
-            val mimeType = entryMap["mimeType"] as String?
-            if (uri != null && mimeType != null) {
-                val result: FieldMap = hashMapOf(
-                    "uri" to uri.toString(),
-                )
+        val entries = entryMapList.map(::AvesEntry)
+        for (entry in entries) {
+            val uri = entry.uri
+            val path = entry.path
+            val mimeType = entry.mimeType
+
+            val result: FieldMap = hashMapOf(
+                "uri" to uri.toString(),
+            )
+            if (isCancelledOp()) {
+                result["skipped"] = true
+            } else {
                 try {
                     provider.delete(activity, uri, path, mimeType)
                     result["success"] = true
@@ -112,8 +120,8 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
                     Log.w(LOG_TAG, "failed to delete entry with path=$path", e)
                     result["success"] = false
                 }
-                success(result)
             }
+            success(result)
         }
         endOfStream()
     }
@@ -173,7 +181,7 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
 
         destinationDir = StorageUtils.ensureTrailingSeparator(destinationDir)
         val entries = entryMapList.map(::AvesEntry)
-        provider.moveMultiple(activity, copy, destinationDir, nameConflictStrategy, entries, object : ImageOpCallback {
+        provider.moveMultiple(activity, copy, destinationDir, nameConflictStrategy, entries, ::isCancelledOp, object : ImageOpCallback {
             override fun onSuccess(fields: FieldMap) = success(fields)
             override fun onFailure(throwable: Throwable) = error("move-failure", "failed to move entries", throwable)
         })
@@ -201,12 +209,14 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
         }
 
         val entries = entryMapList.map(::AvesEntry)
-        provider.renameMultiple(activity, newName, entries, object : ImageOpCallback {
+        provider.renameMultiple(activity, newName, entries, ::isCancelledOp, object : ImageOpCallback {
             override fun onSuccess(fields: FieldMap) = success(fields)
             override fun onFailure(throwable: Throwable) = error("rename-failure", "failed to rename", throwable.message)
         })
         endOfStream()
     }
+
+    private fun isCancelledOp() = cancelledOps.contains(opId)
 
     companion object {
         private val LOG_TAG = LogUtils.createTag<ImageOpStreamHandler>()

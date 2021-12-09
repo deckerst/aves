@@ -6,6 +6,9 @@ import 'package:aves/model/settings/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/accessibility_service.dart';
 import 'package:aves/theme/durations.dart';
+import 'package:aves/theme/icons.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
@@ -60,13 +63,16 @@ mixin FeedbackMixin {
     required BuildContext context,
     required Stream<T> opStream,
     required int itemCount,
+    VoidCallback? onCancel,
     void Function(Set<T> processed)? onDone,
   }) {
     late OverlayEntry _opReportOverlayEntry;
+    // TODO TLAD prevent current page/state pop by `back` button when there is file op report overlay
     _opReportOverlayEntry = OverlayEntry(
       builder: (context) => ReportOverlay<T>(
         opStream: opStream,
         itemCount: itemCount,
+        onCancel: onCancel,
         onDone: (processed) {
           _opReportOverlayEntry.remove();
           onDone?.call(processed);
@@ -80,12 +86,14 @@ mixin FeedbackMixin {
 class ReportOverlay<T> extends StatefulWidget {
   final Stream<T> opStream;
   final int itemCount;
+  final VoidCallback? onCancel;
   final void Function(Set<T> processed) onDone;
 
   const ReportOverlay({
     Key? key,
     required this.opStream,
     required this.itemCount,
+    required this.onCancel,
     required this.onDone,
   }) : super(key: key);
 
@@ -136,56 +144,71 @@ class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerPr
   @override
   Widget build(BuildContext context) {
     final progressColor = Theme.of(context).colorScheme.secondary;
-    return AbsorbPointer(
-      child: StreamBuilder<T>(
-        stream: opStream,
-        builder: (context, snapshot) {
-          final processedCount = processed.length.toDouble();
-          final total = widget.itemCount;
-          assert(processedCount <= total);
-          final percent = min(1.0, processedCount / total);
-          final animate = context.select<Settings, bool>((v) => v.accessibilityAnimations.animate);
-          return FadeTransition(
-            opacity: _animation,
-            child: Container(
-              decoration: const BoxDecoration(
-                gradient: RadialGradient(
-                  colors: [
-                    Colors.black,
-                    Colors.black54,
-                  ],
-                ),
-              ),
-              child: Center(
-                child: Stack(
-                  children: [
-                    if (animate)
-                      Container(
-                        width: radius,
-                        height: radius,
-                        padding: const EdgeInsets.all(strokeWidth / 2),
-                        child: CircularProgressIndicator(
-                          color: progressColor.withOpacity(.1),
-                          strokeWidth: strokeWidth,
-                        ),
-                      ),
-                    CircularPercentIndicator(
-                      percent: percent,
-                      lineWidth: strokeWidth,
-                      radius: radius,
-                      backgroundColor: Colors.white24,
-                      progressColor: progressColor,
-                      animation: animate,
-                      center: Text(NumberFormat.percentPattern().format(percent)),
-                      animateFromLastPercent: true,
-                    ),
-                  ],
-                ),
+    return StreamBuilder<T>(
+      stream: opStream,
+      builder: (context, snapshot) {
+        final processedCount = processed.length.toDouble();
+        final total = widget.itemCount;
+        final percent = min(1.0, processedCount / total);
+        final animate = context.select<Settings, bool>((v) => v.accessibilityAnimations.animate);
+        return FadeTransition(
+          opacity: _animation,
+          child: Container(
+            decoration: const BoxDecoration(
+              gradient: RadialGradient(
+                colors: [
+                  Colors.black,
+                  Colors.black54,
+                ],
               ),
             ),
-          );
-        },
-      ),
+            child: Center(
+              child: Stack(
+                children: [
+                  if (animate)
+                    Container(
+                      width: radius,
+                      height: radius,
+                      padding: const EdgeInsets.all(strokeWidth / 2),
+                      child: CircularProgressIndicator(
+                        color: progressColor.withOpacity(.1),
+                        strokeWidth: strokeWidth,
+                      ),
+                    ),
+                  CircularPercentIndicator(
+                    percent: percent,
+                    lineWidth: strokeWidth,
+                    radius: radius,
+                    backgroundColor: Colors.white24,
+                    progressColor: progressColor,
+                    animation: animate,
+                    center: Text(
+                      NumberFormat.percentPattern().format(percent),
+                      style: const TextStyle(fontSize: 18),
+                    ),
+                    animateFromLastPercent: true,
+                  ),
+                  if (widget.onCancel != null)
+                    Material(
+                      color: Colors.transparent,
+                      child: SizedBox.square(
+                        dimension: radius,
+                        child: Align(
+                          alignment: const FractionalOffset(0.5, 0.8),
+                          child: IconButton(
+                            icon: const Icon(AIcons.cancel),
+                            onPressed: widget.onCancel,
+                            tooltip: context.l10n.cancelTooltip,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

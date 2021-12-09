@@ -15,6 +15,7 @@
   "hideButtonLabel": "СКРЫТЬ",
   "continueButtonLabel": "ПРОДОЛЖИТЬ",
 
+  "cancelTooltip": "Отмена",
   "changeTooltip": "Изменить",
   "clearTooltip": "Очистить",
   "previousTooltip": "Предыдущий",

@@ -195,19 +195,23 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> {
     if (!await checkStoragePermissionForAlbums(context, filledAlbums)) return;
 
     source.pauseMonitoring();
+    final opId = mediaFileService.newOpId;
     showOpReport<ImageOpEvent>(
       context: context,
-      opStream: mediaFileService.delete(todoEntries),
+      opStream: mediaFileService.delete(opId: opId, entries: todoEntries),
       itemCount: todoCount,
+      onCancel: () => mediaFileService.cancelFileOp(opId),
       onDone: (processed) async {
-        final deletedUris = processed.where((event) => event.success).map((event) => event.uri).toSet();
+        final successOps = processed.where((event) => event.success);
+        final deletedOps = successOps.where((e) => !e.skipped).toSet();
+        final deletedUris = deletedOps.map((event) => event.uri).toSet();
         await source.removeEntries(deletedUris);
         _browse(context);
         source.resumeMonitoring();
 
-        final deletedCount = deletedUris.length;
-        if (deletedCount < todoCount) {
-          final count = todoCount - deletedCount;
+        final successCount = successOps.length;
+        if (successCount < todoCount) {
+          final count = todoCount - successCount;
           showFeedbackWithMessenger(context, messenger, l10n.collectionDeleteFailureFeedback(count));
         }
 
@@ -255,25 +259,29 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> {
     }
 
     source.pauseMonitoring();
+    final opId = mediaFileService.newOpId;
     showOpReport<MoveOpEvent>(
       context: context,
       opStream: mediaFileService.move(
-        todoEntries,
+        opId: opId,
+        entries: todoEntries,
         copy: false,
         destinationAlbum: destinationAlbum,
         // there should be no file conflict, as the target directory itself does not exist
         nameConflictStrategy: NameConflictStrategy.rename,
       ),
       itemCount: todoCount,
+      onCancel: () => mediaFileService.cancelFileOp(opId),
       onDone: (processed) async {
-        final movedOps = processed.where((e) => e.success).toSet();
+        final successOps = processed.where((e) => e.success).toSet();
+        final movedOps = successOps.where((e) => !e.skipped).toSet();
         await source.renameAlbum(album, destinationAlbum, todoEntries, movedOps);
         _browse(context);
         source.resumeMonitoring();
 
-        final movedCount = movedOps.length;
-        if (movedCount < todoCount) {
-          final count = todoCount - movedCount;
+        final successCount = successOps.length;
+        if (successCount < todoCount) {
+          final count = todoCount - successCount;
           showFeedbackWithMessenger(context, messenger, l10n.collectionMoveFailureFeedback(count));
         } else {
           showFeedbackWithMessenger(context, messenger, l10n.genericSuccessFeedback);

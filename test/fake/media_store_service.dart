@@ -47,6 +47,7 @@ class FakeMediaStoreService extends Fake implements MediaStoreService {
     final newContentId = nextContentId;
     return MoveOpEvent(
       success: true,
+      skipped: false,
       uri: entry.uri,
       newFields: {
         'uri': 'content://media/external/images/media/$newContentId',

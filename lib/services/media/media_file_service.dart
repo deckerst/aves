@@ -15,6 +15,8 @@ import 'package:flutter/services.dart';
 import 'package:streams_channel/streams_channel.dart';
 
 abstract class MediaFileService {
+  String get newOpId;
+
   Future<AvesEntry?> getEntry(String uri, String? mimeType);
 
   Future<Uint8List> getSvg(
@@ -68,10 +70,16 @@ abstract class MediaFileService {
 
   Future<T>? resumeLoading<T>(Object taskKey);
 
-  Stream<ImageOpEvent> delete(Iterable<AvesEntry> entries);
+  Future<void> cancelFileOp(String opId);
 
-  Stream<MoveOpEvent> move(
-    Iterable<AvesEntry> entries, {
+  Stream<ImageOpEvent> delete({
+    String? opId,
+    required Iterable<AvesEntry> entries,
+  });
+
+  Stream<MoveOpEvent> move({
+    String? opId,
+    required Iterable<AvesEntry> entries,
     required bool copy,
     required String destinationAlbum,
     required NameConflictStrategy nameConflictStrategy,
@@ -119,6 +127,9 @@ class PlatformMediaFileService implements MediaFileService {
       'sizeBytes': entry.sizeBytes,
     };
   }
+
+  @override
+  String get newOpId => DateTime.now().millisecondsSinceEpoch.toString();
 
   @override
   Future<AvesEntry?> getEntry(String uri, String? mimeType) async {
@@ -298,10 +309,25 @@ class PlatformMediaFileService implements MediaFileService {
   Future<T>? resumeLoading<T>(Object taskKey) => servicePolicy.resume<T>(taskKey);
 
   @override
-  Stream<ImageOpEvent> delete(Iterable<AvesEntry> entries) {
+  Future<void> cancelFileOp(String opId) async {
+    try {
+      await platform.invokeMethod('cancelFileOp', <String, dynamic>{
+        'opId': opId,
+      });
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
+  }
+
+  @override
+  Stream<ImageOpEvent> delete({
+    String? opId,
+    required Iterable<AvesEntry> entries,
+  }) {
     try {
       return _opStreamChannel.receiveBroadcastStream(<String, dynamic>{
         'op': 'delete',
+        'id': opId,
         'entries': entries.map(_toPlatformEntryMap).toList(),
       }).map((event) => ImageOpEvent.fromMap(event));
     } on PlatformException catch (e, stack) {
@@ -311,8 +337,9 @@ class PlatformMediaFileService implements MediaFileService {
   }
 
   @override
-  Stream<MoveOpEvent> move(
-    Iterable<AvesEntry> entries, {
+  Stream<MoveOpEvent> move({
+    String? opId,
+    required Iterable<AvesEntry> entries,
     required bool copy,
     required String destinationAlbum,
     required NameConflictStrategy nameConflictStrategy,
@@ -320,6 +347,7 @@ class PlatformMediaFileService implements MediaFileService {
     try {
       return _opStreamChannel.receiveBroadcastStream(<String, dynamic>{
         'op': 'move',
+        'id': opId,
         'entries': entries.map(_toPlatformEntryMap).toList(),
         'copy': copy,
         'destinationPath': destinationAlbum,

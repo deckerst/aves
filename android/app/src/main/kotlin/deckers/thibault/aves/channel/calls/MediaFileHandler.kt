@@ -3,6 +3,7 @@ package deckers.thibault.aves.channel.calls
 import android.app.Activity
 import android.graphics.Rect
 import android.net.Uri
+import android.util.Log
 import com.bumptech.glide.Glide
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safeSuspend
@@ -14,6 +15,7 @@ import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.model.NameConflictStrategy
 import deckers.thibault.aves.model.provider.ImageProvider.ImageOpCallback
 import deckers.thibault.aves.model.provider.ImageProviderFactory.getProvider
+import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.StorageUtils.ensureTrailingSeparator
 import io.flutter.plugin.common.MethodCall
@@ -34,6 +36,7 @@ class MediaFileHandler(private val activity: Activity) : MethodCallHandler {
             "getEntry" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getEntry) }
             "getThumbnail" -> GlobalScope.launch(Dispatchers.IO) { safeSuspend(call, result, ::getThumbnail) }
             "getRegion" -> GlobalScope.launch(Dispatchers.IO) { safeSuspend(call, result, ::getRegion) }
+            "cancelFileOp" -> safe(call, result, ::cancelFileOp)
             "captureFrame" -> GlobalScope.launch(Dispatchers.IO) { safeSuspend(call, result, ::captureFrame) }
             "clearSizedThumbnailDiskCache" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::clearSizedThumbnailDiskCache) }
             else -> result.notImplemented()
@@ -138,6 +141,19 @@ class MediaFileHandler(private val activity: Activity) : MethodCallHandler {
         }
     }
 
+    private fun cancelFileOp(call: MethodCall, result: MethodChannel.Result) {
+        val opId = call.argument<String>("opId")
+        if (opId == null) {
+            result.error("cancelFileOp-args", "failed because of missing arguments", null)
+            return
+        }
+
+        Log.i(LOG_TAG, "cancelling file op $opId")
+        cancelledOps.add(opId)
+
+        result.success(null)
+    }
+
     private suspend fun captureFrame(call: MethodCall, result: MethodChannel.Result) {
         val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
         val desiredName = call.argument<String>("desiredName")
@@ -169,6 +185,9 @@ class MediaFileHandler(private val activity: Activity) : MethodCallHandler {
     }
 
     companion object {
+        private val LOG_TAG = LogUtils.createTag<MediaFileHandler>()
         const val CHANNEL = "deckers.thibault/aves/media_file"
+
+        val cancelledOps = HashSet<String>()
     }
 }
