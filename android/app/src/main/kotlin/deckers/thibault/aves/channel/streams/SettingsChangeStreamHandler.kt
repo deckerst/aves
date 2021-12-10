@@ -1,5 +1,6 @@
 package deckers.thibault.aves.channel.streams
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.database.ContentObserver
 import android.net.Uri
@@ -36,6 +37,7 @@ class SettingsChangeStreamHandler(private val context: Context) : EventChannel.S
                 val settings: FieldMap = hashMapOf(
                     Settings.System.ACCELEROMETER_ROTATION to accelerometerRotation,
                 )
+                @SuppressLint("ObsoleteSdkInt")
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
                     settings[Settings.Global.TRANSITION_ANIMATION_SCALE] = transitionAnimationScale
                 }
@@ -51,6 +53,7 @@ class SettingsChangeStreamHandler(private val context: Context) : EventChannel.S
                     accelerometerRotation = newAccelerometerRotation
                     changed = true
                 }
+                @SuppressLint("ObsoleteSdkInt")
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
                     val newTransitionAnimationScale = Settings.Global.getFloat(context.contentResolver, Settings.Global.TRANSITION_ANIMATION_SCALE)
                     if (transitionAnimationScale != newTransitionAnimationScale) {

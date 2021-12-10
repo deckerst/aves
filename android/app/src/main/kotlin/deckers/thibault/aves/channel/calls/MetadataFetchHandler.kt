@@ -96,7 +96,6 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         }
     }
 
-    @SuppressLint("ObsoleteSdkInt")
     private fun getAllMetadata(call: MethodCall, result: MethodChannel.Result) {
         val mimeType = call.argument<String>("mimeType")
         val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
@@ -193,6 +192,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                                             val key = kv.key
                                             // `PNG-iTXt` uses UTF-8, contrary to `PNG-tEXt` and `PNG-zTXt` using Latin-1 / ISO-8859-1
                                             val charset = if (baseDirName == PNG_ITXT_DIR_NAME) {
+                                                @SuppressLint("ObsoleteSdkInt")
                                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                                                     StandardCharsets.UTF_8
                                                 } else {
@@ -577,7 +577,6 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         metadataMap[KEY_FLAGS] = flags
     }
 
-    @SuppressLint("ObsoleteSdkInt")
     private fun getMultimediaCatalogMetadataByMediaMetadataRetriever(
         uri: Uri,
         mimeType: String,
@@ -587,6 +586,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
 
         var flags = (metadataMap[KEY_FLAGS] ?: 0) as Int
         try {
+            @SuppressLint("ObsoleteSdkInt")
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
                 retriever.getSafeInt(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION) { metadataMap[KEY_ROTATION_DEGREES] = it }
             }

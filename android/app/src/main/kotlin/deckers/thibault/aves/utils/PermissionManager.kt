@@ -1,5 +1,6 @@
 package deckers.thibault.aves.utils
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -182,6 +183,7 @@ object PermissionManager {
         // from API 19 / Android 4.4 / KitKat, removable storage requires access permission, at the file level
         // from API 21 / Android 5.0 / Lollipop, removable storage requires access permission, but directory access grant is possible
         // from API 30 / Android 11 / R, any storage requires access permission
+        @SuppressLint("ObsoleteSdkInt")
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             accessibleDirs.addAll(StorageUtils.getVolumePaths(context))
         } else if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {

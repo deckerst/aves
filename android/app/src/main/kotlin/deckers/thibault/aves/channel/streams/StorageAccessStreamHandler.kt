@@ -92,8 +92,8 @@ class StorageAccessStreamHandler(private val activity: Activity, arguments: Any?
         endOfStream()
     }
 
-    @SuppressLint("ObsoleteSdkInt")
     private fun createFile() {
+        @SuppressLint("ObsoleteSdkInt")
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
             error("createFile-sdk", "unsupported SDK version=${Build.VERSION.SDK_INT}", null)
             return
@@ -135,8 +135,8 @@ class StorageAccessStreamHandler(private val activity: Activity, arguments: Any?
     }
 
 
-    @SuppressLint("ObsoleteSdkInt")
     private suspend fun openFile() {
+        @SuppressLint("ObsoleteSdkInt")
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
             error("openFile-sdk", "unsupported SDK version=${Build.VERSION.SDK_INT}", null)
             return
