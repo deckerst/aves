@@ -49,6 +49,7 @@ object MimeTypes {
 
     private const val AVI = "video/avi"
     private const val AVI_VND = "video/vnd.avi"
+    const val DVD = "video/dvd"
     private const val MKV = "video/x-matroska"
     private const val MOV = "video/quicktime"
     private const val MP2T = "video/mp2t"
