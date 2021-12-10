@@ -8,6 +8,7 @@ import 'package:aves/services/accessibility_service.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
@@ -65,20 +66,19 @@ mixin FeedbackMixin {
     VoidCallback? onCancel,
     void Function(Set<T> processed)? onDone,
   }) {
-    late OverlayEntry _opReportOverlayEntry;
-    // TODO TLAD prevent current page/state pop by `back` button when there is file op report overlay
-    _opReportOverlayEntry = OverlayEntry(
+    showDialog(
+      context: context,
+      barrierDismissible: false,
       builder: (context) => ReportOverlay<T>(
         opStream: opStream,
         itemCount: itemCount,
         onCancel: onCancel,
         onDone: (processed) {
-          _opReportOverlayEntry.remove();
+          Navigator.of(context).pop();
           onDone?.call(processed);
         },
       ),
     );
-    Overlay.of(context)!.insert(_opReportOverlayEntry);
   }
 }
 
@@ -107,8 +107,9 @@ class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerPr
 
   Stream<T> get opStream => widget.opStream;
 
+  static const fontSize = 18.0;
   static const radius = 160.0;
-  static const strokeWidth = 16.0;
+  static const strokeWidth = 8.0;
 
   @override
   void initState() {
@@ -143,71 +144,74 @@ class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerPr
   @override
   Widget build(BuildContext context) {
     final progressColor = Theme.of(context).colorScheme.secondary;
-    return StreamBuilder<T>(
-      stream: opStream,
-      builder: (context, snapshot) {
-        final processedCount = processed.length.toDouble();
-        final total = widget.itemCount;
-        final percent = min(1.0, processedCount / total);
-        final animate = context.select<Settings, bool>((v) => v.accessibilityAnimations.animate);
-        return FadeTransition(
-          opacity: _animation,
-          child: Container(
-            decoration: const BoxDecoration(
-              gradient: RadialGradient(
-                colors: [
-                  Colors.black,
-                  Colors.black54,
-                ],
-              ),
-            ),
-            child: Center(
-              child: Stack(
-                children: [
-                  if (animate)
-                    Container(
+    final animate = context.select<Settings, bool>((v) => v.accessibilityAnimations.animate);
+    return WillPopScope(
+      onWillPop: () => SynchronousFuture(false),
+      child: StreamBuilder<T>(
+        stream: opStream,
+        builder: (context, snapshot) {
+          final processedCount = processed.length.toDouble();
+          final total = widget.itemCount;
+          final percent = min(1.0, processedCount / total);
+          return FadeTransition(
+            opacity: _animation,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Container(
+                  width: radius + 2,
+                  height: radius + 2,
+                  decoration: const BoxDecoration(
+                    color: Color(0xBB000000),
+                    shape: BoxShape.circle,
+                  ),
+                ),
+                if (animate)
+                  Container(
+                    width: radius,
+                    height: radius,
+                    padding: const EdgeInsets.all(strokeWidth / 2),
+                    child: CircularProgressIndicator(
+                      color: progressColor.withOpacity(.1),
+                      strokeWidth: strokeWidth,
+                    ),
+                  ),
+                CircularPercentIndicator(
+                  percent: percent,
+                  lineWidth: strokeWidth,
+                  radius: radius,
+                  backgroundColor: Colors.white24,
+                  progressColor: progressColor,
+                  animation: animate,
+                  center: Text(
+                    NumberFormat.percentPattern().format(percent),
+                    style: const TextStyle(fontSize: fontSize),
+                  ),
+                  animateFromLastPercent: true,
+                ),
+                if (widget.onCancel != null)
+                  Material(
+                    color: Colors.transparent,
+                    child: Container(
                       width: radius,
                       height: radius,
-                      padding: const EdgeInsets.all(strokeWidth / 2),
-                      child: CircularProgressIndicator(
-                        color: progressColor.withOpacity(.1),
-                        strokeWidth: strokeWidth,
-                      ),
-                    ),
-                  CircularPercentIndicator(
-                    percent: percent,
-                    lineWidth: strokeWidth,
-                    radius: radius,
-                    backgroundColor: Colors.white24,
-                    progressColor: progressColor,
-                    animation: animate,
-                    center: Text(
-                      NumberFormat.percentPattern().format(percent),
-                      style: const TextStyle(fontSize: 18),
-                    ),
-                    animateFromLastPercent: true,
-                  ),
-                  if (widget.onCancel != null)
-                    Material(
-                      color: Colors.transparent,
-                      child: SizedBox.square(
-                        dimension: radius,
-                        child: Align(
-                          alignment: const FractionalOffset(0.5, 0.8),
-                          child: IconButton(
-                            icon: const Icon(AIcons.cancel),
-                            onPressed: widget.onCancel,
-                            tooltip: context.l10n.cancelTooltip,
-                          ),
+                      margin: const EdgeInsets.only(top: fontSize),
+                      alignment: const FractionalOffset(0.5, 0.75),
+                      child: Tooltip(
+                        message: context.l10n.cancelTooltip,
+                        preferBelow: false,
+                        child: IconButton(
+                          icon: const Icon(AIcons.cancel),
+                          onPressed: widget.onCancel,
                         ),
                       ),
                     ),
-                ],
-              ),
+                  ),
+              ],
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }
