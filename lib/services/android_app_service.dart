@@ -144,7 +144,7 @@ class PlatformAndroidAppService implements AndroidAppService {
 
   @override
   Future<bool> shareEntries(Iterable<AvesEntry> entries) async {
-    // loosen mime type to a generic one, so we can share with badly defined apps
+    // loosen MIME type to a generic one, so we can share with badly defined apps
     // e.g. Google Lens declares receiving "image/jpeg" only, but it can actually handle more formats
     final urisByMimeType = groupBy<AvesEntry, String>(entries, (e) => e.mimeTypeAnySubtype).map((k, v) => MapEntry(k, v.map((e) => e.uri).toList()));
     try {
