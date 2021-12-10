@@ -3,7 +3,7 @@ package deckers.thibault.aves.utils
 import androidx.exifinterface.media.ExifInterface
 
 object MimeTypes {
-    const val ANY = "*/*";
+    const val ANY = "*/*"
 
     // generic raster
     const val BMP = "image/bmp"
