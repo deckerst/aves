@@ -161,7 +161,7 @@ class SourceEntry {
             Metadata.openSafeInputStream(context, uri, sourceMimeType, sizeBytes)?.use { input ->
                 val metadata = ImageMetadataReader.readMetadata(input)
 
-                // do not switch on specific mime types, as the reported mime type could be wrong
+                // do not switch on specific MIME types, as the reported MIME type could be wrong
                 // (e.g. PNG registered as JPG)
                 if (isVideo) {
                     for (dir in metadata.getDirectoriesOfType(AviDirectory::class.java)) {

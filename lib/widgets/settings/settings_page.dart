@@ -123,7 +123,9 @@ class _SettingsPageState extends State<SettingsPage> with FeedbackMixin {
         }
         break;
       case SettingsAction.import:
-        final bytes = await storageService.openFile(MimeTypes.json);
+        // specifying the JSON MIME type to restrict openable files is correct in theory,
+        // but older devices (e.g. SM-P580, API 27) that do not recognize JSON files as such would filter them out
+        final bytes = await storageService.openFile();
         if (bytes.isNotEmpty) {
           try {
             await settings.fromJson(utf8.decode(bytes));

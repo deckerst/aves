@@ -175,7 +175,7 @@ class MediaStoreImageProvider : ImageProvider() {
                         // but for single items, `contentUri` already contains the ID
                         val itemUri = if (contentUriContainsId) contentUri else ContentUris.withAppendedId(contentUri, contentId.toLong())
                         // `mimeType` can be registered as null for file media URIs with unsupported media types (e.g. TIFF on old devices)
-                        // in that case we try to use the mime type provided along the URI
+                        // in that case we try to use the MIME type provided along the URI
                         val mimeType: String? = cursor.getString(mimeTypeColumn) ?: fileMimeType
                         val width = cursor.getInt(widthColumn)
                         val height = cursor.getInt(heightColumn)

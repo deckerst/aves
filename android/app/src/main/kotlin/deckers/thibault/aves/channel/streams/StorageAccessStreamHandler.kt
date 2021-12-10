@@ -1,5 +1,6 @@
 package deckers.thibault.aves.channel.streams
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
@@ -10,6 +11,7 @@ import android.util.Log
 import deckers.thibault.aves.MainActivity
 import deckers.thibault.aves.PendingStorageAccessResultHandler
 import deckers.thibault.aves.utils.LogUtils
+import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.PermissionManager
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.EventChannel.EventSink
@@ -90,9 +92,9 @@ class StorageAccessStreamHandler(private val activity: Activity, arguments: Any?
         endOfStream()
     }
 
+    @SuppressLint("ObsoleteSdkInt")
     private fun createFile() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-            // TODO TLAD [<=API18] create file
             error("createFile-sdk", "unsupported SDK version=${Build.VERSION.SDK_INT}", null)
             return
         }
@@ -133,24 +135,16 @@ class StorageAccessStreamHandler(private val activity: Activity, arguments: Any?
     }
 
 
-    private fun openFile() {
+    @SuppressLint("ObsoleteSdkInt")
+    private suspend fun openFile() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-            // TODO TLAD [<=API18] open file
             error("openFile-sdk", "unsupported SDK version=${Build.VERSION.SDK_INT}", null)
             return
         }
 
-        val mimeType = args["mimeType"] as String?
-        if (mimeType == null) {
-            error("openFile-args", "failed because of missing arguments", null)
-            return
-        }
+        val mimeType = args["mimeType"] as String? // optional
 
-        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
-            addCategory(Intent.CATEGORY_OPENABLE)
-            type = mimeType
-        }
-        MainActivity.pendingStorageAccessResultHandlers[MainActivity.OPEN_FILE_REQUEST] = PendingStorageAccessResultHandler(null, { uri ->
+        fun onGranted(uri: Uri) {
             GlobalScope.launch(Dispatchers.IO) {
                 activity.contentResolver.openInputStream(uri)?.use { input ->
                     val buffer = ByteArray(BUFFER_SIZE)
@@ -161,11 +155,24 @@ class StorageAccessStreamHandler(private val activity: Activity, arguments: Any?
                     endOfStream()
                 }
             }
-        }, {
+        }
+
+        fun onDenied() {
             success(ByteArray(0))
             endOfStream()
-        })
-        activity.startActivityForResult(intent, MainActivity.OPEN_FILE_REQUEST)
+        }
+
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+            addCategory(Intent.CATEGORY_OPENABLE)
+            setTypeAndNormalize(mimeType ?: MimeTypes.ANY)
+        }
+        if (intent.resolveActivity(activity.packageManager) != null) {
+            MainActivity.pendingStorageAccessResultHandlers[MainActivity.OPEN_FILE_REQUEST] = PendingStorageAccessResultHandler(null, ::onGranted, ::onDenied)
+            activity.startActivityForResult(intent, MainActivity.OPEN_FILE_REQUEST)
+        } else {
+            MainActivity.notifyError("failed to resolve activity for intent=$intent")
+            onDenied()
+        }
     }
 
     override fun onCancel(arguments: Any?) {}

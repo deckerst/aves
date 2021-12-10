@@ -36,7 +36,7 @@ abstract class StorageService {
   // return whether operation succeeded (`null` if user cancelled)
   Future<bool?> createFile(String name, String mimeType, Uint8List bytes);
 
-  Future<Uint8List> openFile(String mimeType);
+  Future<Uint8List> openFile([String? mimeType]);
 }
 
 class PlatformStorageService implements StorageService {
@@ -231,7 +231,7 @@ class PlatformStorageService implements StorageService {
   }
 
   @override
-  Future<Uint8List> openFile(String mimeType) async {
+  Future<Uint8List> openFile([String? mimeType]) async {
     try {
       final completer = Completer<Uint8List>.sync();
       final sink = OutputBuffer();

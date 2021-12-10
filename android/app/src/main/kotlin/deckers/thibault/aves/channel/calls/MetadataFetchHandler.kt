@@ -411,8 +411,8 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
 
                     // File type
                     for (dir in metadata.getDirectoriesOfType(FileTypeDirectory::class.java)) {
-                        // * `metadata-extractor` sometimes detects the wrong mime type (e.g. `pef` file as `tiff`, `mpeg` as `dvd`)
-                        // * the content resolver / media store sometimes reports the wrong mime type (e.g. `png` file as `jpeg`, `tiff` as `srw`)
+                        // * `metadata-extractor` sometimes detects the wrong MIME type (e.g. `pef` file as `tiff`, `mpeg` as `dvd`)
+                        // * the content resolver / media store sometimes reports the wrong MIME type (e.g. `png` file as `jpeg`, `tiff` as `srw`)
                         // * `context.getContentResolver().getType()` sometimes returns an incorrect value
                         // * `MediaMetadataRetriever.setDataSource()` sometimes fails with `status = 0x80000000`
                         // * file extension is unreliable
