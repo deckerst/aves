@@ -420,14 +420,19 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
 
     final source = context.read<CollectionSource>();
     source.pauseMonitoring();
+    var cancelled = false;
     showOpReport<ImageOpEvent>(
       context: context,
       opStream: Stream.fromIterable(todoItems).asyncMap((entry) async {
-        // TODO TLAD [cancel] allow cancelling edit op
-        final dataTypes = await op(entry);
-        return ImageOpEvent(success: dataTypes.isNotEmpty, skipped: false, uri: entry.uri);
+        if (cancelled) {
+          return ImageOpEvent(success: true, skipped: true, uri: entry.uri);
+        } else {
+          final dataTypes = await op(entry);
+          return ImageOpEvent(success: dataTypes.isNotEmpty, skipped: false, uri: entry.uri);
+        }
       }).asBroadcastStream(),
       itemCount: todoCount,
+      onCancel: () => cancelled = true,
       onDone: (processed) async {
         final successOps = processed.where((e) => e.success).toSet();
         final editedOps = successOps.where((e) => !e.skipped).toSet();
@@ -441,7 +446,7 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
           final count = todoCount - successCount;
           showFeedback(context, l10n.collectionEditFailureFeedback(count));
         } else {
-          final count = successCount;
+          final count = editedOps.length;
           showFeedback(context, l10n.collectionEditSuccessFeedback(count));
         }
       },
