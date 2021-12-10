@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
-- moving or deleting multiple items can be cancelled
+- moving, editing or deleting multiple items can be cancelled
 
 ### Changed
 
