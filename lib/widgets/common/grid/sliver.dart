@@ -97,13 +97,9 @@ class _RenderSliverKnownExtentBoxAdaptor extends RenderSliverMultiBoxAdaptor {
     double? leadingScrollOffset,
     double? trailingScrollOffset,
   }) {
-    return childManager.estimateMaxScrollOffset(
-      constraints,
-      firstIndex: firstIndex,
-      lastIndex: lastIndex,
-      leadingScrollOffset: leadingScrollOffset,
-      trailingScrollOffset: trailingScrollOffset,
-    );
+    // default implementation is an estimation via `childManager.estimateMaxScrollOffset()`
+    // but we have the accurate offset via pre-computed section layouts
+    return _sectionLayouts.last.maxOffset;
   }
 
   double computeMaxScrollOffset(SliverConstraints constraints) {
