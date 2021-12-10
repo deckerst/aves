@@ -139,6 +139,8 @@ class AlbumPickAppBar extends StatelessWidget {
                 context: context,
                 builder: (context) => const CreateAlbumDialog(),
               );
+              // wait for the dialog to hide as applying the change may block the UI
+              await Future.delayed(Durations.dialogTransitionAnimation * timeDilation);
               if (newAlbum != null && newAlbum.isNotEmpty) {
                 Navigator.pop<String>(context, newAlbum);
               }
