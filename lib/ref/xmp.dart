@@ -9,6 +9,8 @@ class XMP {
     'aux': 'Exif Aux',
     'avm': 'Astronomy Visualization',
     'Camera': 'Camera',
+    'cc': 'Creative Commons',
+    'crd': 'Camera Raw Defaults',
     'creatorAtom': 'After Effects',
     'crs': 'Camera Raw Settings',
     'dc': 'Dublin Core',

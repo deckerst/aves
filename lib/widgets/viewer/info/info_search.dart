@@ -57,7 +57,7 @@ class InfoSearchDelegate extends SearchDelegate {
       l10n.viewerInfoSearchSuggestionDescription: 'abstract or description or comment or textual',
       l10n.viewerInfoSearchSuggestionDimensions: 'width or height or dimension or framesize or imagelength',
       l10n.viewerInfoSearchSuggestionResolution: 'resolution',
-      l10n.viewerInfoSearchSuggestionRights: 'rights or copyright or artist or creator or by-line or credit -tool',
+      l10n.viewerInfoSearchSuggestionRights: 'rights or copyright or attribution or license or artist or creator or by-line or credit -tool',
     };
     return ListView(
       children: suggestions.entries
