@@ -8,6 +8,7 @@ import 'package:aves/widgets/common/basic/menu.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/buttons.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
+import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/settings/privacy/file_picker/crumb_line.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
@@ -61,75 +62,77 @@ class _FilePickerState extends State<FilePicker> {
         setState(() {});
         return SynchronousFuture(false);
       },
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(_getTitle(context)),
-          actions: [
-            MenuIconTheme(
-              child: PopupMenuButton<_PickerAction>(
-                itemBuilder: (context) {
-                  return [
-                    PopupMenuItem(
-                      value: _PickerAction.toggleHiddenView,
-                      child: MenuRow(text: showHidden ? l10n.filePickerDoNotShowHiddenFiles : l10n.filePickerShowHiddenFiles),
-                    ),
-                  ];
-                },
-                onSelected: (action) async {
-                  // wait for the popup menu to hide before proceeding with the action
-                  await Future.delayed(Durations.popupMenuAnimation * timeDilation);
-                  switch (action) {
-                    case _PickerAction.toggleHiddenView:
-                      settings.filePickerShowHiddenFiles = !showHidden;
-                      setState(() {});
-                      break;
-                  }
-                },
-              ),
-            ),
-          ],
-        ),
-        drawer: _buildDrawer(context),
-        body: SafeArea(
-          child: Column(
-            children: [
-              SizedBox(
-                height: kMinInteractiveDimension,
-                child: CrumbLine(
-                  directory: _directory,
-                  onTap: (path) {
-                    _goTo(path);
-                    setState(() {});
+      child: MediaQueryDataProvider(
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text(_getTitle(context)),
+            actions: [
+              MenuIconTheme(
+                child: PopupMenuButton<_PickerAction>(
+                  itemBuilder: (context) {
+                    return [
+                      PopupMenuItem(
+                        value: _PickerAction.toggleHiddenView,
+                        child: MenuRow(text: showHidden ? l10n.filePickerDoNotShowHiddenFiles : l10n.filePickerShowHiddenFiles),
+                      ),
+                    ];
+                  },
+                  onSelected: (action) async {
+                    // wait for the popup menu to hide before proceeding with the action
+                    await Future.delayed(Durations.popupMenuAnimation * timeDilation);
+                    switch (action) {
+                      case _PickerAction.toggleHiddenView:
+                        settings.filePickerShowHiddenFiles = !showHidden;
+                        setState(() {});
+                        break;
+                    }
                   },
                 ),
               ),
-              const Divider(height: 0),
-              Expanded(
-                child: visibleContents == null
-                    ? const SizedBox()
-                    : visibleContents.isEmpty
-                        ? Center(
-                            child: EmptyContent(
-                              icon: AIcons.folder,
-                              text: l10n.filePickerNoItems,
-                            ),
-                          )
-                        : ListView.builder(
-                            itemCount: visibleContents.length,
-                            itemBuilder: (context, index) {
-                              return index < visibleContents.length ? _buildContentLine(context, visibleContents[index]) : const SizedBox();
-                            },
-                          ),
-              ),
-              const Divider(height: 0),
-              Padding(
-                padding: const EdgeInsets.all(8),
-                child: AvesOutlinedButton(
-                  label: l10n.filePickerUseThisFolder,
-                  onPressed: () => Navigator.pop(context, currentDirectoryPath),
-                ),
-              ),
             ],
+          ),
+          drawer: _buildDrawer(context),
+          body: SafeArea(
+            child: Column(
+              children: [
+                SizedBox(
+                  height: kMinInteractiveDimension,
+                  child: CrumbLine(
+                    directory: _directory,
+                    onTap: (path) {
+                      _goTo(path);
+                      setState(() {});
+                    },
+                  ),
+                ),
+                const Divider(height: 0),
+                Expanded(
+                  child: visibleContents == null
+                      ? const SizedBox()
+                      : visibleContents.isEmpty
+                          ? Center(
+                              child: EmptyContent(
+                                icon: AIcons.folder,
+                                text: l10n.filePickerNoItems,
+                              ),
+                            )
+                          : ListView.builder(
+                              itemCount: visibleContents.length,
+                              itemBuilder: (context, index) {
+                                return index < visibleContents.length ? _buildContentLine(context, visibleContents[index]) : const SizedBox();
+                              },
+                            ),
+                ),
+                const Divider(height: 0),
+                Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: AvesOutlinedButton(
+                    label: l10n.filePickerUseThisFolder,
+                    onPressed: () => Navigator.pop(context, currentDirectoryPath),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

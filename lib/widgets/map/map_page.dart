@@ -284,6 +284,7 @@ class _MapPageContentState extends State<MapPageContent> with SingleTickerProvid
               return regionCollection != null && regionCollection.isEmpty
                   ? EmptyContent(
                       text: context.l10n.mapEmptyRegion,
+                      alignment: Alignment.center,
                       fontSize: 18,
                     )
                   : const SizedBox();
