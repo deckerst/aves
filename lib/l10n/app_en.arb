@@ -447,10 +447,8 @@
   "genericFailureFeedback": "Failed",
   "@genericFailureFeedback": {},
 
-  "menuActionSort": "Sort",
-  "@menuActionSort": {},
-  "menuActionGroup": "Group",
-  "@menuActionGroup": {},
+  "menuActionConfigureView": "View",
+  "@menuActionConfigureView": {},
   "menuActionSelect": "Select",
   "@menuActionSelect": {},
   "menuActionSelectAll": "Select all",
@@ -461,6 +459,18 @@
   "@menuActionMap": {},
   "menuActionStats": "Stats",
   "@menuActionStats": {},
+
+  "viewDialogTabSort": "Sort",
+  "@viewDialogTabSort": {},
+  "viewDialogTabGroup": "Group",
+  "@viewDialogTabGroup": {},
+  "viewDialogTabLayout": "Layout",
+  "@viewDialogTabLayout": {},
+
+  "tileLayoutGrid": "Grid",
+  "@tileLayoutGrid": {},
+  "tileLayoutList": "List",
+  "@tileLayoutList": {},
 
   "aboutPageTitle": "About",
   "@aboutPageTitle": {},
@@ -566,8 +576,6 @@
   "collectionSearchTitlesHintText": "Search titles",
   "@collectionSearchTitlesHintText": {},
 
-  "collectionSortTitle": "Sort",
-  "@collectionSortTitle": {},
   "collectionSortDate": "By date",
   "@collectionSortDate": {},
   "collectionSortSize": "By size",
@@ -575,8 +583,6 @@
   "collectionSortName": "By album & file name",
   "@collectionSortName": {},
 
-  "collectionGroupTitle": "Group",
-  "@collectionGroupTitle": {},
   "collectionGroupAlbum": "By album",
   "@collectionGroupAlbum": {},
   "collectionGroupMonth": "By month",
@@ -674,8 +680,6 @@
   "drawerCollectionSphericalVideos": "360° Videos",
   "@drawerCollectionSphericalVideos": {},
 
-  "chipSortTitle": "Sort",
-  "@chipSortTitle": {},
   "chipSortDate": "By date",
   "@chipSortDate": {},
   "chipSortName": "By name",
@@ -683,8 +687,6 @@
   "chipSortCount": "By item count",
   "@chipSortCount": {},
 
-  "albumGroupTitle": "Group",
-  "@albumGroupTitle": {},
   "albumGroupTier": "By tier",
   "@albumGroupTier": {},
   "albumGroupVolume": "By storage volume",

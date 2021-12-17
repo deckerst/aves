@@ -17,14 +17,16 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
-import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
 import 'package:aves/widgets/dialogs/filter_editors/create_album_dialog.dart';
 import 'package:aves/widgets/dialogs/filter_editors/rename_album_dialog.dart';
+import 'package:aves/widgets/dialogs/tile_view_dialog.dart';
+import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip_set.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
+import 'package:tuple/tuple.dart';
 
 class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> {
   final Iterable<FilterGridItem<AlbumFilter>> _items;
@@ -41,6 +43,12 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> {
   set sortFactor(ChipSortFactor factor) => settings.albumSortFactor = factor;
 
   @override
+  TileLayout get tileLayout => settings.getTileLayout(AlbumListPage.routeName);
+
+  @override
+  set tileLayout(TileLayout tileLayout) => settings.setTileLayout(AlbumListPage.routeName, tileLayout);
+
+  @override
   bool isVisible(
     ChipSetAction action, {
     required AppMode appMode,
@@ -49,8 +57,6 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> {
     required Set<AlbumFilter> selectedFilters,
   }) {
     switch (action) {
-      case ChipSetAction.group:
-        return true;
       case ChipSetAction.createAlbum:
         return appMode == AppMode.main && !isSelecting;
       case ChipSetAction.delete:
@@ -96,9 +102,6 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> {
   void onActionSelected(BuildContext context, Set<AlbumFilter> filters, ChipSetAction action) {
     switch (action) {
       // general
-      case ChipSetAction.group:
-        _group(context);
-        break;
       case ChipSetAction.createAlbum:
         _createAlbum(context);
         break;
@@ -118,23 +121,42 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> {
 
   void _browse(BuildContext context) => context.read<Selection<FilterGridItem<AlbumFilter>>>().browse();
 
-  Future<void> _group(BuildContext context) async {
-    final factor = await showDialog<AlbumChipGroupFactor>(
+  @override
+  Future<void> configureView(BuildContext context) async {
+    final initialValue = Tuple3(
+      sortFactor,
+      settings.albumGroupFactor,
+      tileLayout,
+    );
+    final value = await showDialog<Tuple3<ChipSortFactor?, AlbumChipGroupFactor?, TileLayout?>>(
       context: context,
-      builder: (context) => AvesSelectionDialog<AlbumChipGroupFactor>(
-        initialValue: settings.albumGroupFactor,
-        options: {
-          AlbumChipGroupFactor.importance: context.l10n.albumGroupTier,
-          AlbumChipGroupFactor.volume: context.l10n.albumGroupVolume,
-          AlbumChipGroupFactor.none: context.l10n.albumGroupNone,
-        },
-        title: context.l10n.albumGroupTitle,
-      ),
+      builder: (context) {
+        final l10n = context.l10n;
+        return TileViewDialog<ChipSortFactor, AlbumChipGroupFactor, TileLayout>(
+          initialValue: initialValue,
+          sortOptions: {
+            ChipSortFactor.date: context.l10n.chipSortDate,
+            ChipSortFactor.name: context.l10n.chipSortName,
+            ChipSortFactor.count: context.l10n.chipSortCount,
+          },
+          groupOptions: {
+            AlbumChipGroupFactor.importance: context.l10n.albumGroupTier,
+            AlbumChipGroupFactor.volume: context.l10n.albumGroupVolume,
+            AlbumChipGroupFactor.none: context.l10n.albumGroupNone,
+          },
+          layoutOptions: {
+            TileLayout.grid: l10n.tileLayoutGrid,
+            TileLayout.list: l10n.tileLayoutList,
+          },
+        );
+      },
     );
     // wait for the dialog to hide as applying the change may block the UI
     await Future.delayed(Durations.dialogTransitionAnimation * timeDilation);
-    if (factor != null) {
-      settings.albumGroupFactor = factor;
+    if (value != null && initialValue != value) {
+      sortFactor = value.item1!;
+      settings.albumGroupFactor = value.item2!;
+      tileLayout = value.item3!;
     }
   }
 
@@ -172,7 +194,6 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> {
       context: context,
       builder: (context) {
         return AvesDialog(
-          context: context,
           content: Text(filters.length == 1 ? l10n.deleteSingleAlbumConfirmationDialogMessage(todoCount) : l10n.deleteMultiAlbumConfirmationDialogMessage(todoCount)),
           actions: [
             TextButton(

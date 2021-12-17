@@ -58,15 +58,13 @@ class LocationFilter extends CollectionFilter {
   String getLabel(BuildContext context) => _location.isEmpty ? context.l10n.filterLocationEmptyLabel : _location;
 
   @override
-  Widget iconBuilder(BuildContext context, double size, {bool showGenericIcon = true, bool embossed = false}) {
+  Widget iconBuilder(BuildContext context, double size, {bool showGenericIcon = true}) {
     if (_countryCode != null && device.canRenderFlagEmojis) {
       final flag = countryCodeToFlag(_countryCode);
-      // as of Flutter v1.22.3, emoji shadows are rendered as colorful duplicates,
-      // not filled with the shadow color as expected, so we remove them
       if (flag != null) {
         return Text(
           flag,
-          style: TextStyle(fontSize: size, shadows: const []),
+          style: TextStyle(fontSize: size),
           textScaleFactor: 1.0,
         );
       }

@@ -68,7 +68,7 @@ class MimeFilter extends CollectionFilter {
   }
 
   @override
-  Widget iconBuilder(BuildContext context, double size, {bool showGenericIcon = true, bool embossed = false}) => Icon(_icon, size: size);
+  Widget iconBuilder(BuildContext context, double size, {bool showGenericIcon = true}) => Icon(_icon, size: size);
 
   @override
   String get category => type;

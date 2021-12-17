@@ -41,7 +41,6 @@ class _RenameEntryDialogState extends State<RenameEntryDialog> {
   @override
   Widget build(BuildContext context) {
     return AvesDialog(
-      context: context,
       content: TextField(
         controller: _nameController,
         decoration: InputDecoration(

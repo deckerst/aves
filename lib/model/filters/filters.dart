@@ -81,7 +81,7 @@ abstract class CollectionFilter extends Equatable implements Comparable<Collecti
 
   String getTooltip(BuildContext context) => getLabel(context);
 
-  Widget? iconBuilder(BuildContext context, double size, {bool showGenericIcon = true, bool embossed = false}) => null;
+  Widget? iconBuilder(BuildContext context, double size, {bool showGenericIcon = true}) => null;
 
   Future<Color> color(BuildContext context) => SynchronousFuture(stringToColor(getLabel(context)));
 

@@ -63,20 +63,9 @@ class _DrawerAlbumTabState extends State<DrawerAlbumTab> {
           icon: const Icon(AIcons.add),
           label: context.l10n.settingsNavigationDrawerAddAlbum,
           onPressed: () async {
-            final source = context.read<CollectionSource>();
-            final album = await Navigator.push(
-              context,
-              MaterialPageRoute<String>(
-                settings: const RouteSettings(name: AlbumPickPage.routeName),
-                builder: (context) => AlbumPickPage(source: source, moveType: null),
-              ),
-            );
-
-            if (album == null || album.isEmpty) return;
-
-            setState(() {
-              widget.items.add(album);
-            });
+            final album = await pickAlbum(context: context, moveType: null);
+            if (album == null) return;
+            setState(() => widget.items.add(album));
           },
         )
       ],

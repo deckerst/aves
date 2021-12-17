@@ -203,13 +203,14 @@
   "genericSuccessFeedback": "Выполнено!",
   "genericFailureFeedback": "Не удалось",
 
-  "menuActionSort": "Сортировка",
-  "menuActionGroup": "Группировка",
   "menuActionSelect": "Выбрать",
   "menuActionSelectAll": "Выбрать все",
   "menuActionSelectNone": "Снять выделение",
   "menuActionMap": "Карта",
   "menuActionStats": "Статистика",
+
+  "viewDialogTabSort": "Сортировка",
+  "viewDialogTabGroup": "Группировка",
 
   "aboutPageTitle": "О нас",
   "aboutLinkSources": "Исходники",
@@ -261,12 +262,10 @@
 
   "collectionSearchTitlesHintText": "Поиск заголовков",
 
-  "collectionSortTitle": "Сортировка",
   "collectionSortDate": "По дате",
   "collectionSortSize": "По размеру",
   "collectionSortName": "По имени альбома и файла",
 
-  "collectionGroupTitle": "Группировка",
   "collectionGroupAlbum": "По альбому",
   "collectionGroupMonth": "По месяцу",
   "collectionGroupDay": "По дню",
@@ -302,12 +301,10 @@
   "drawerCollectionRaws": "RAW",
   "drawerCollectionSphericalVideos": "360° видео",
 
-  "chipSortTitle": "Сортировка",
   "chipSortDate": "По дате",
   "chipSortName": "По названию",
   "chipSortCount": "По количеству объектов",
 
-  "albumGroupTitle": "Группировка",
   "albumGroupTier": "По уровню",
   "albumGroupVolume": "По накопителю",
   "albumGroupNone": "Не группировать",

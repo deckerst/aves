@@ -63,7 +63,6 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
     }
 
     return AvesDialog(
-      context: context,
       title: context.l10n.newAlbumDialogTitle,
       scrollController: _scrollController,
       scrollableContent: [

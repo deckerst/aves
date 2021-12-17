@@ -19,6 +19,7 @@ class SettingsDefaults {
   static const mustBackTwiceToExit = true;
   static const keepScreenOn = KeepScreenOn.viewerOnly;
   static const homePage = HomePageSetting.collection;
+  static const tileLayout = TileLayout.grid;
 
   // drawer
   static final drawerTypeBookmarks = [

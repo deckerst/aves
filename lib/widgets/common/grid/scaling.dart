@@ -1,6 +1,7 @@
 import 'dart:ui' as ui;
 
 import 'package:aves/model/highlight.dart';
+import 'package:aves/model/source/enums.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/behaviour/eager_scale_gesture_recognizer.dart';
 import 'package:aves/widgets/common/grid/theme.dart';
@@ -21,6 +22,7 @@ class ScalerMetadata<T> {
 
 class GridScaleGestureDetector<T> extends StatefulWidget {
   final GlobalKey scrollableKey;
+  final TileLayout tileLayout;
   final double Function(double width) heightForWidth;
   final Widget Function(Offset center, Size tileSize, Widget child) gridBuilder;
   final Widget Function(T item, Size tileSize) scaledBuilder;
@@ -30,6 +32,7 @@ class GridScaleGestureDetector<T> extends StatefulWidget {
   const GridScaleGestureDetector({
     Key? key,
     required this.scrollableKey,
+    required this.tileLayout,
     required this.heightForWidth,
     required this.gridBuilder,
     required this.scaledBuilder,
@@ -111,17 +114,29 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T
     _extentMax = tileExtentController.effectiveExtentMax;
 
     final halfSize = _startSize! / 2;
-    final thumbnailCenter = renderMetaData.localToGlobal(Offset(halfSize.width, halfSize.height));
+    final tileCenter = renderMetaData.localToGlobal(Offset(halfSize.width, halfSize.height));
     _overlayEntry = OverlayEntry(
-      builder: (context) => ScaleOverlay(
-        builder: (scaledTileSize) => SizedBox.fromSize(
-          size: scaledTileSize,
-          child: GridTheme(
-            extent: scaledTileSize.width,
-            child: widget.scaledBuilder(_metadata!.item, scaledTileSize),
-          ),
-        ),
-        center: thumbnailCenter,
+      builder: (context) => _ScaleOverlay(
+        builder: (scaledTileSize) {
+          late final double themeExtent;
+          switch (widget.tileLayout) {
+            case TileLayout.grid:
+              themeExtent = scaledTileSize.width;
+              break;
+            case TileLayout.list:
+              themeExtent = scaledTileSize.height;
+              break;
+          }
+          return SizedBox.fromSize(
+            size: scaledTileSize,
+            child: GridTheme(
+              extent: themeExtent,
+              child: widget.scaledBuilder(_metadata!.item, scaledTileSize),
+            ),
+          );
+        },
+        tileLayout: widget.tileLayout,
+        center: tileCenter,
         viewportWidth: gridWidth,
         gridBuilder: widget.gridBuilder,
         scaledSizeNotifier: _scaledSizeNotifier!,
@@ -133,8 +148,16 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T
   void _onScaleUpdate(ScaleUpdateDetails details) {
     if (_scaledSizeNotifier == null) return;
     final s = details.scale;
-    final scaledWidth = (_startSize!.width * s).clamp(_extentMin!, _extentMax!);
-    _scaledSizeNotifier!.value = Size(scaledWidth, widget.heightForWidth(scaledWidth));
+    switch (widget.tileLayout) {
+      case TileLayout.grid:
+        final scaledWidth = (_startSize!.width * s).clamp(_extentMin!, _extentMax!);
+        _scaledSizeNotifier!.value = Size(scaledWidth, widget.heightForWidth(scaledWidth));
+        break;
+      case TileLayout.list:
+        final scaledHeight = (_startSize!.height * s).clamp(_extentMin!, _extentMax!);
+        _scaledSizeNotifier!.value = Size(_startSize!.width, scaledHeight);
+        break;
+    }
   }
 
   void _onScaleEnd(ScaleEndDetails details) {
@@ -148,7 +171,16 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T
     final tileExtentController = context.read<TileExtentController>();
     final oldExtent = tileExtentController.extentNotifier.value;
     // sanitize and update grid layout if necessary
-    final newExtent = tileExtentController.setUserPreferredExtent(_scaledSizeNotifier!.value.width);
+    late final double preferredExtent;
+    switch (widget.tileLayout) {
+      case TileLayout.grid:
+        preferredExtent = _scaledSizeNotifier!.value.width;
+        break;
+      case TileLayout.list:
+        preferredExtent = _scaledSizeNotifier!.value.height;
+        break;
+    }
+    final newExtent = tileExtentController.setUserPreferredExtent(preferredExtent);
     _scaledSizeNotifier = null;
     if (newExtent == oldExtent) {
       _applyingScale = false;
@@ -183,16 +215,18 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T
   }
 }
 
-class ScaleOverlay extends StatefulWidget {
+class _ScaleOverlay extends StatefulWidget {
   final Widget Function(Size scaledTileSize) builder;
+  final TileLayout tileLayout;
   final Offset center;
   final double viewportWidth;
   final ValueNotifier<Size> scaledSizeNotifier;
-  final Widget Function(Offset center, Size extent, Widget child) gridBuilder;
+  final Widget Function(Offset center, Size tileSize, Widget child) gridBuilder;
 
-  const ScaleOverlay({
+  const _ScaleOverlay({
     Key? key,
     required this.builder,
+    required this.tileLayout,
     required this.center,
     required this.viewportWidth,
     required this.scaledSizeNotifier,
@@ -203,7 +237,7 @@ class ScaleOverlay extends StatefulWidget {
   _ScaleOverlayState createState() => _ScaleOverlayState();
 }
 
-class _ScaleOverlayState extends State<ScaleOverlay> {
+class _ScaleOverlayState extends State<_ScaleOverlay> {
   bool _init = false;
 
   Offset get center => widget.center;
@@ -222,26 +256,7 @@ class _ScaleOverlayState extends State<ScaleOverlay> {
       child: Builder(
         builder: (context) => IgnorePointer(
           child: AnimatedContainer(
-            decoration: _init
-                ? BoxDecoration(
-                    gradient: RadialGradient(
-                      center: FractionalOffset.fromOffsetAndSize(center, context.select<MediaQueryData, Size>((mq) => mq.size)),
-                      radius: 1,
-                      colors: const [
-                        Colors.black,
-                        Colors.black54,
-                      ],
-                    ),
-                  )
-                : const BoxDecoration(
-                    // provide dummy gradient to lerp to the other one during animation
-                    gradient: RadialGradient(
-                      colors: [
-                        Colors.transparent,
-                        Colors.transparent,
-                      ],
-                    ),
-                  ),
+            decoration: _buildBackgroundDecoration(context),
             duration: Durations.collectionScalingBackgroundAnimation,
             child: ValueListenableBuilder<Size>(
               valueListenable: widget.scaledSizeNotifier,
@@ -281,17 +296,53 @@ class _ScaleOverlayState extends State<ScaleOverlay> {
       ),
     );
   }
+
+  BoxDecoration _buildBackgroundDecoration(BuildContext context) {
+    late final Offset gradientCenter;
+    switch (widget.tileLayout) {
+      case TileLayout.grid:
+        gradientCenter = center;
+        break;
+      case TileLayout.list:
+        gradientCenter = Offset(0, center.dy);
+        break;
+    }
+
+    return _init
+        ? BoxDecoration(
+            gradient: RadialGradient(
+              center: FractionalOffset.fromOffsetAndSize(gradientCenter, context.select<MediaQueryData, Size>((mq) => mq.size)),
+              radius: 1,
+              colors: const [
+                Colors.black,
+                Colors.black54,
+                // Colors.amber,
+              ],
+            ),
+          )
+        : const BoxDecoration(
+            // provide dummy gradient to lerp to the other one during animation
+            gradient: RadialGradient(
+              colors: [
+                Colors.transparent,
+                Colors.transparent,
+              ],
+            ),
+          );
+  }
 }
 
 class GridPainter extends CustomPainter {
-  final Offset center;
+  final TileLayout tileLayout;
+  final Offset tileCenter;
   final Size tileSize;
   final double spacing, borderWidth;
   final Radius borderRadius;
   final Color color;
 
   const GridPainter({
-    required this.center,
+    required this.tileLayout,
+    required this.tileCenter,
     required this.tileSize,
     required this.spacing,
     required this.borderWidth,
@@ -301,40 +352,73 @@ class GridPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final tileWidth = tileSize.width;
-    final tileHeight = tileSize.height;
-
+    late final Offset chipCenter;
+    late final Size chipSize;
+    late final int deltaColumn;
+    late final Shader strokeShader;
+    switch (tileLayout) {
+      case TileLayout.grid:
+        chipCenter = tileCenter;
+        chipSize = tileSize;
+        deltaColumn = 2;
+        strokeShader = ui.Gradient.radial(
+          tileCenter,
+          chipSize.shortestSide * 2,
+          [
+            color,
+            Colors.transparent,
+          ],
+          [
+            .8,
+            1,
+          ],
+        );
+        break;
+      case TileLayout.list:
+        chipSize = Size.square(tileSize.shortestSide);
+        chipCenter = Offset(chipSize.width / 2, tileCenter.dy);
+        deltaColumn = 0;
+        strokeShader = ui.Gradient.linear(
+          tileCenter - Offset(0, chipSize.shortestSide * 3),
+          tileCenter + Offset(0, chipSize.shortestSide * 3),
+          [
+            Colors.transparent,
+            color,
+            color,
+            Colors.transparent,
+          ],
+          [
+            0,
+            .2,
+            .8,
+            1,
+          ],
+        );
+        break;
+    }
     final strokePaint = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = borderWidth
-      ..shader = ui.Gradient.radial(
-        center,
-        tileWidth * 2,
-        [
-          color,
-          Colors.transparent,
-        ],
-        [
-          .8,
-          1,
-        ],
-      );
+      ..shader = strokeShader;
     final fillPaint = Paint()
       ..style = PaintingStyle.fill
       ..color = color.withOpacity(.25);
 
-    final deltaX = tileWidth + spacing;
-    final deltaY = tileHeight + spacing;
-    for (var i = -2; i <= 2; i++) {
+    final chipWidth = chipSize.width;
+    final chipHeight = chipSize.height;
+
+    final deltaX = tileSize.width + spacing;
+    final deltaY = tileSize.height + spacing;
+    for (var i = -deltaColumn; i <= deltaColumn; i++) {
       final dx = deltaX * i;
       for (var j = -2; j <= 2; j++) {
         if (i == 0 && j == 0) continue;
         final dy = deltaY * j;
         final rect = RRect.fromRectAndRadius(
           Rect.fromCenter(
-            center: center + Offset(dx, dy),
-            width: tileWidth,
-            height: tileHeight,
+            center: chipCenter + Offset(dx, dy),
+            width: chipWidth - borderWidth,
+            height: chipHeight - borderWidth,
           ),
           borderRadius,
         );

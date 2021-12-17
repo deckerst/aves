@@ -56,7 +56,7 @@ class CoordinateFilter extends CollectionFilter {
   String getLabel(BuildContext context) => _formatBounds(context.l10n, context.read<Settings>().coordinateFormat);
 
   @override
-  Widget iconBuilder(BuildContext context, double size, {bool showGenericIcon = true, bool embossed = false}) => Icon(AIcons.geoBounds, size: size);
+  Widget iconBuilder(BuildContext context, double size, {bool showGenericIcon = true}) => Icon(AIcons.geoBounds, size: size);
 
   @override
   String get category => type;

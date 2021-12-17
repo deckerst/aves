@@ -49,6 +49,7 @@ class Settings extends ChangeNotifier {
   static const homePageKey = 'home_page';
   static const catalogTimeZoneKey = 'catalog_time_zone';
   static const tileExtentPrefixKey = 'tile_extent_';
+  static const tileLayoutPrefixKey = 'tile_layout_';
 
   // drawer
   static const drawerTypeBookmarksKey = 'drawer_type_bookmarks';
@@ -246,6 +247,10 @@ class Settings extends ChangeNotifier {
   double getTileExtent(String routeName) => _prefs!.getDouble(tileExtentPrefixKey + routeName) ?? 0;
 
   void setTileExtent(String routeName, double newValue) => setAndNotify(tileExtentPrefixKey + routeName, newValue);
+
+  TileLayout getTileLayout(String routeName) => getEnumOrDefault(tileLayoutPrefixKey + routeName, SettingsDefaults.tileLayout, TileLayout.values);
+
+  void setTileLayout(String routeName, TileLayout newValue) => setAndNotify(tileLayoutPrefixKey + routeName, newValue.toString());
 
   // drawer
 
@@ -569,6 +574,12 @@ class Settings extends ChangeNotifier {
             _prefs!.setDouble(key, value);
           } else {
             debugPrint('failed to import key=$key, value=$value is not a double');
+          }
+        } else if (key.startsWith(tileLayoutPrefixKey)) {
+          if (value is String) {
+            _prefs!.setString(key, value);
+          } else {
+            debugPrint('failed to import key=$key, value=$value is not a string');
           }
         } else {
           switch (key) {

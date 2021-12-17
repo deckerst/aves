@@ -12,11 +12,9 @@ import 'package:aves/model/source/tag.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/android_file_utils.dart';
-import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/thumbnail/image.dart';
 import 'package:aves/widgets/filter_grids/common/filter_grid_page.dart';
-import 'package:decorated_icon/decorated_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -24,7 +22,7 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
   final T filter;
   final double extent, thumbnailExtent;
   final AvesEntry? coverEntry;
-  final bool pinned;
+  final bool showText, pinned;
   final String? banner;
   final FilterCallback? onTap;
   final HeroType heroType;
@@ -35,6 +33,7 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
     required this.extent,
     double? thumbnailExtent,
     this.coverEntry,
+    this.showText = true,
     this.pinned = false,
     this.banner,
     this.onTap,
@@ -42,11 +41,14 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
   })  : thumbnailExtent = thumbnailExtent ?? extent,
         super(key: key);
 
-  static double tileHeight({required double extent, required double textScaleFactor}) {
-    return extent + infoHeight(extent: extent, textScaleFactor: textScaleFactor);
+  static double tileHeight({required double extent, required double textScaleFactor, required bool showText}) {
+    return extent + infoHeight(extent: extent, textScaleFactor: textScaleFactor, showText: showText);
   }
 
-  static double infoHeight({required double extent, required double textScaleFactor}) {
+  // info includes title and content details
+  static double infoHeight({required double extent, required double textScaleFactor, required bool showText}) {
+    if (!showText) return 0;
+
     // height can actually be a little larger or smaller, when info includes icons or non-latin scripts
     // but it's not worth measuring text metrics, as the widget is flexible enough to absorb the difference
     return (AvesFilterChip.fontSize + detailFontSize(extent) + 4) * textScaleFactor + AvesFilterChip.decoratedContentVerticalPadding * 2;
@@ -106,13 +108,20 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
     return AvesFilterChip(
       key: chipKey,
       filter: filter,
+      showText: showText,
       showGenericIcon: false,
       decoration: AvesFilterDecoration(
         widget: Selector<MediaQueryData, double>(
           selector: (context, mq) => mq.textScaleFactor,
           builder: (context, textScaleFactor, child) {
             return Padding(
-              padding: EdgeInsets.only(bottom: infoHeight(extent: extent, textScaleFactor: textScaleFactor)),
+              padding: EdgeInsets.only(
+                bottom: infoHeight(
+                  extent: extent,
+                  textScaleFactor: textScaleFactor,
+                  showText: showText,
+                ),
+              ),
               child: child,
             );
           },
@@ -142,7 +151,7 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
         radius: radius(extent),
       ),
       banner: banner,
-      details: _buildDetails(source, filter),
+      details: showText ? _buildDetails(source, filter) : null,
       padding: titlePadding,
       heroType: heroType,
       onTap: onTap,
@@ -161,10 +170,9 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
           AnimatedPadding(
             padding: EdgeInsets.only(right: padding),
             duration: Durations.chipDecorationAnimation,
-            child: DecoratedIcon(
+            child: Icon(
               AIcons.pin,
               color: FilterGridPage.detailColor,
-              shadows: Constants.embossShadows,
               size: iconSize,
             ),
           ),
@@ -172,10 +180,9 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
           AnimatedPadding(
             padding: EdgeInsets.only(right: padding),
             duration: Durations.chipDecorationAnimation,
-            child: DecoratedIcon(
+            child: Icon(
               AIcons.removableStorage,
               color: FilterGridPage.detailColor,
-              shadows: Constants.embossShadows,
               size: iconSize,
             ),
           ),

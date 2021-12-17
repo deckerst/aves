@@ -50,10 +50,8 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
   }) {
     switch (action) {
       // general
-      case EntrySetAction.sort:
+      case EntrySetAction.configureView:
         return true;
-      case EntrySetAction.group:
-        return sortFactor == EntrySortFactor.date;
       case EntrySetAction.select:
         return appMode.canSelect && !isSelecting;
       case EntrySetAction.selectAll:
@@ -97,8 +95,7 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
     final hasSelection = selectedItemCount > 0;
 
     switch (action) {
-      case EntrySetAction.sort:
-      case EntrySetAction.group:
+      case EntrySetAction.configureView:
         return true;
       case EntrySetAction.select:
         return hasItems;
@@ -132,8 +129,7 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
   void onActionSelected(BuildContext context, EntrySetAction action) {
     switch (action) {
       // general
-      case EntrySetAction.sort:
-      case EntrySetAction.group:
+      case EntrySetAction.configureView:
       case EntrySetAction.select:
       case EntrySetAction.selectAll:
       case EntrySetAction.selectNone:
@@ -226,7 +222,6 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
       context: context,
       builder: (context) {
         return AvesDialog(
-          context: context,
           content: Text(context.l10n.deleteEntriesConfirmationDialogMessage(todoCount)),
           actions: [
             TextButton(
@@ -274,19 +269,12 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
 
   Future<void> _move(BuildContext context, {required MoveType moveType}) async {
     final l10n = context.l10n;
-    final source = context.read<CollectionSource>();
     final selection = context.read<Selection<AvesEntry>>();
     final selectedItems = _getExpandedSelectedItems(selection);
     final selectionDirs = selectedItems.map((e) => e.directory).whereNotNull().toSet();
 
-    final destinationAlbum = await Navigator.push(
-      context,
-      MaterialPageRoute<String>(
-        settings: const RouteSettings(name: AlbumPickPage.routeName),
-        builder: (context) => AlbumPickPage(source: source, moveType: moveType),
-      ),
-    );
-    if (destinationAlbum == null || destinationAlbum.isEmpty) return;
+    final destinationAlbum = await pickAlbum(context: context, moveType: moveType);
+    if (destinationAlbum == null) return;
     if (!await checkStoragePermissionForAlbums(context, {destinationAlbum})) return;
 
     if (moveType == MoveType.move && !await checkStoragePermissionForAlbums(context, selectionDirs, entries: selectedItems)) return;
@@ -326,6 +314,7 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
       nameConflictStrategy = value;
     }
 
+    final source = context.read<CollectionSource>();
     source.pauseMonitoring();
     final opId = mediaFileService.newOpId;
     showOpReport<MoveOpEvent>(
@@ -470,7 +459,6 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
       builder: (context) {
         final l10n = context.l10n;
         return AvesDialog(
-          context: context,
           title: l10n.unsupportedTypeDialogTitle,
           content: Text(l10n.unsupportedTypeDialogMessage(unsupportedTypes.length, unsupportedTypes.join(', '))),
           actions: [

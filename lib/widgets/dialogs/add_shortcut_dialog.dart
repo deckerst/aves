@@ -60,7 +60,6 @@ class _AddShortcutDialogState extends State<AddShortcutDialog> {
           final shortestSide = context.select<MediaQueryData, double>((mq) => mq.size.shortestSide);
           final extent = (shortestSide / 3.0).clamp(60.0, 160.0);
           return AvesDialog(
-            context: context,
             scrollableContent: [
               if (_coverEntry != null)
                 Container(
