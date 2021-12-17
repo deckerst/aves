@@ -33,7 +33,6 @@ class _ExportEntryDialogState extends State<ExportEntryDialog> {
   @override
   Widget build(BuildContext context) {
     return AvesDialog(
-      context: context,
       content: Row(
         mainAxisSize: MainAxisSize.min,
         children: [

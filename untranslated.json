@@ -1,1 +1,8 @@
-{}
+{
+  "ru": [
+    "menuActionConfigureView",
+    "viewDialogTabLayout",
+    "tileLayoutGrid",
+    "tileLayoutList"
+  ]
+}

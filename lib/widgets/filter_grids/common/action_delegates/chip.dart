@@ -35,7 +35,6 @@ class ChipActionDelegate {
       context: context,
       builder: (context) {
         return AvesDialog(
-          context: context,
           content: Text(context.l10n.hideFilterConfirmationDialogMessage),
           actions: [
             TextButton(

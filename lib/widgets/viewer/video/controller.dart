@@ -62,7 +62,6 @@ abstract class AvesVideoController {
       context: context,
       builder: (context) {
         return AvesDialog(
-          context: context,
           content: Text(context.l10n.videoResumeDialogMessage(formatFriendlyDuration(Duration(milliseconds: resumeTime)))),
           actions: [
             TextButton(

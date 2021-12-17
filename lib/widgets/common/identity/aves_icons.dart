@@ -2,9 +2,7 @@ import 'package:aves/image_providers/app_icon_image_provider.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/android_file_utils.dart';
-import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/grid/theme.dart';
-import 'package:decorated_icon/decorated_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -201,25 +199,9 @@ class IconUtils {
     required BuildContext context,
     required String albumPath,
     double? size,
-    bool embossed = false,
   }) {
     size ??= IconTheme.of(context).size;
-    Widget buildIcon(IconData icon) => embossed
-        ? MediaQuery(
-            // `DecoratedIcon` internally uses `Text`,
-            // which size depends on the ambient `textScaleFactor`
-            // but we already accommodate for it upstream
-            data: context.read<MediaQueryData>().copyWith(textScaleFactor: 1.0),
-            child: DecoratedIcon(
-              icon,
-              shadows: Constants.embossShadows,
-              size: size,
-            ),
-          )
-        : Icon(
-            icon,
-            size: size,
-          );
+    Widget buildIcon(IconData icon) => Icon(icon, size: size);
     switch (androidFileUtils.getAlbumType(albumPath)) {
       case AlbumType.camera:
         return buildIcon(AIcons.cameraAlbum);

@@ -12,6 +12,7 @@ import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/collection/entry_set_action_delegate.dart';
 import 'package:aves/widgets/collection/filter_bar.dart';
 import 'package:aves/widgets/collection/query_bar.dart';
@@ -19,7 +20,7 @@ import 'package:aves/widgets/common/app_bar_subtitle.dart';
 import 'package:aves/widgets/common/app_bar_title.dart';
 import 'package:aves/widgets/common/basic/menu.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
+import 'package:aves/widgets/dialogs/tile_view_dialog.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -395,11 +396,8 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   Future<void> _onActionSelected(EntrySetAction action) async {
     switch (action) {
       // general
-      case EntrySetAction.sort:
-        await _sort();
-        break;
-      case EntrySetAction.group:
-        await _group();
+      case EntrySetAction.configureView:
+        await _configureView();
         break;
       case EntrySetAction.select:
         context.read<Selection<AvesEntry>>().select();
@@ -434,47 +432,42 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     }
   }
 
-  Future<void> _sort() async {
-    final value = await showDialog<EntrySortFactor>(
-      context: context,
-      builder: (context) => AvesSelectionDialog<EntrySortFactor>(
-        initialValue: settings.collectionSortFactor,
-        options: {
-          EntrySortFactor.date: context.l10n.collectionSortDate,
-          EntrySortFactor.size: context.l10n.collectionSortSize,
-          EntrySortFactor.name: context.l10n.collectionSortName,
-        },
-        title: context.l10n.collectionSortTitle,
-      ),
+  Future<void> _configureView() async {
+    final initialValue = Tuple3(
+      settings.collectionSortFactor,
+      settings.collectionSectionFactor,
+      settings.getTileLayout(CollectionPage.routeName),
     );
-    // wait for the dialog to hide as applying the change may block the UI
-    await Future.delayed(Durations.dialogTransitionAnimation * timeDilation);
-    if (value != null) {
-      settings.collectionSortFactor = value;
-    }
-  }
-
-  Future<void> _group() async {
-    final value = await showDialog<EntryGroupFactor>(
+    final value = await showDialog<Tuple3<EntrySortFactor?, EntryGroupFactor?, TileLayout?>>(
       context: context,
       builder: (context) {
         final l10n = context.l10n;
-        return AvesSelectionDialog<EntryGroupFactor>(
-          initialValue: settings.collectionSectionFactor,
-          options: {
+        return TileViewDialog<EntrySortFactor, EntryGroupFactor, TileLayout>(
+          initialValue: initialValue,
+          sortOptions: {
+            EntrySortFactor.date: l10n.collectionSortDate,
+            EntrySortFactor.size: l10n.collectionSortSize,
+            EntrySortFactor.name: l10n.collectionSortName,
+          },
+          groupOptions: {
             EntryGroupFactor.album: l10n.collectionGroupAlbum,
             EntryGroupFactor.month: l10n.collectionGroupMonth,
             EntryGroupFactor.day: l10n.collectionGroupDay,
             EntryGroupFactor.none: l10n.collectionGroupNone,
           },
-          title: l10n.collectionGroupTitle,
+          layoutOptions: {
+            TileLayout.grid: l10n.tileLayoutGrid,
+            TileLayout.list: l10n.tileLayoutList,
+          },
         );
       },
     );
     // wait for the dialog to hide as applying the change may block the UI
     await Future.delayed(Durations.dialogTransitionAnimation * timeDilation);
-    if (value != null) {
-      settings.collectionSectionFactor = value;
+    if (value != null && initialValue != value) {
+      settings.collectionSortFactor = value.item1!;
+      settings.collectionSectionFactor = value.item2!;
+      settings.setTileLayout(CollectionPage.routeName, value.item3!);
     }
   }
 

@@ -46,7 +46,6 @@ class _RemoveEntryMetadataDialogState extends State<RemoveEntryMetadataDialog> {
     final l10n = context.l10n;
     final animationDuration = context.select<DurationsData, Duration>((v) => v.expansionTileAnimation);
     return AvesDialog(
-      context: context,
       title: l10n.removeEntryMetadataDialogTitle,
       scrollableContent: [
         ..._mainOptions.map(_toTile),

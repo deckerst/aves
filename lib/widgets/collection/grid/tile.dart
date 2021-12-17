@@ -2,32 +2,36 @@ import 'package:aves/app_mode.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/selection.dart';
 import 'package:aves/model/source/collection_lens.dart';
+import 'package:aves/model/source/enums.dart';
 import 'package:aves/services/viewer_service.dart';
+import 'package:aves/widgets/collection/grid/list_details.dart';
+import 'package:aves/widgets/collection/grid/list_details_theme.dart';
 import 'package:aves/widgets/common/behaviour/routes.dart';
-import 'package:aves/widgets/common/scaling.dart';
+import 'package:aves/widgets/common/grid/scaling.dart';
 import 'package:aves/widgets/common/thumbnail/decorated.dart';
 import 'package:aves/widgets/viewer/entry_viewer_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class InteractiveThumbnail extends StatelessWidget {
+class InteractiveTile extends StatelessWidget {
   final CollectionLens collection;
   final AvesEntry entry;
-  final double tileExtent;
+  final double thumbnailExtent;
+  final TileLayout tileLayout;
   final ValueNotifier<bool>? isScrollingNotifier;
 
-  const InteractiveThumbnail({
+  const InteractiveTile({
     Key? key,
     required this.collection,
     required this.entry,
-    required this.tileExtent,
+    required this.thumbnailExtent,
+    required this.tileLayout,
     this.isScrollingNotifier,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      key: ValueKey(entry.uri),
+    return InkWell(
       onTap: () {
         final appMode = context.read<ValueNotifier<AppMode>>().value;
         switch (appMode) {
@@ -51,13 +55,13 @@ class InteractiveThumbnail extends StatelessWidget {
       },
       child: MetaData(
         metaData: ScalerMetadata(entry),
-        child: DecoratedThumbnail(
+        child: Tile(
           entry: entry,
-          tileExtent: tileExtent,
-          // when the user is scrolling faster than we can retrieve the thumbnails,
-          // the retrieval task queue can pile up for thumbnails that got disposed
-          // in this case we pause the image retrieval task to get it out of the queue
-          cancellableNotifier: isScrollingNotifier,
+          thumbnailExtent: thumbnailExtent,
+          tileLayout: tileLayout,
+          selectable: true,
+          highlightable: true,
+          isScrollingNotifier: isScrollingNotifier,
           // hero tag should include a collection identifier, so that it animates
           // between different views of the entry in the same collection (e.g. thumbnails <-> viewer)
           // but not between different collection instances, even with the same attributes (e.g. reloading collection page via drawer)
@@ -85,4 +89,59 @@ class InteractiveThumbnail extends StatelessWidget {
       ),
     );
   }
+}
+
+class Tile extends StatelessWidget {
+  final AvesEntry entry;
+  final double thumbnailExtent;
+  final TileLayout tileLayout;
+  final bool selectable, highlightable;
+  final ValueNotifier<bool>? isScrollingNotifier;
+  final Object? Function()? heroTagger;
+
+  const Tile({
+    Key? key,
+    required this.entry,
+    required this.thumbnailExtent,
+    required this.tileLayout,
+    this.selectable = false,
+    this.highlightable = false,
+    this.isScrollingNotifier,
+    this.heroTagger,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    switch (tileLayout) {
+      case TileLayout.grid:
+        return _buildThumbnail();
+      case TileLayout.list:
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            SizedBox.square(
+              dimension: context.select<EntryListDetailsThemeData, double>((v) => v.extent),
+              child: _buildThumbnail(),
+            ),
+            Expanded(
+              child: EntryListDetails(
+                entry: entry,
+              ),
+            ),
+          ],
+        );
+    }
+  }
+
+  Widget _buildThumbnail() => DecoratedThumbnail(
+        entry: entry,
+        tileExtent: thumbnailExtent,
+        // when the user is scrolling faster than we can retrieve the thumbnails,
+        // the retrieval task queue can pile up for thumbnails that got disposed
+        // in this case we pause the image retrieval task to get it out of the queue
+        cancellableNotifier: isScrollingNotifier,
+        selectable: selectable,
+        highlightable: highlightable,
+        heroTagger: heroTagger,
+      );
 }

@@ -129,7 +129,6 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
               ),
             ),
             child: AvesDialog(
-              context: context,
               title: l10n.editEntryDateDialogTitle,
               scrollableContent: [
                 setTile,
@@ -289,7 +288,6 @@ class _TimeShiftDialogState extends State<TimeShiftDialog> {
   Widget build(BuildContext context) {
     const textStyle = TextStyle(fontSize: 34);
     return AvesDialog(
-      context: context,
       scrollableContent: [
         Center(
           child: Padding(

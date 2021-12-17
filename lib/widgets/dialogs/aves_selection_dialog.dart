@@ -40,7 +40,6 @@ class _AvesSelectionDialogState<T> extends State<AvesSelectionDialog<T>> {
     final confirmationButtonLabel = widget.confirmationButtonLabel;
     final needConfirmation = confirmationButtonLabel != null;
     return AvesDialog(
-      context: context,
       title: widget.title,
       scrollableContent: [
         if (message != null)

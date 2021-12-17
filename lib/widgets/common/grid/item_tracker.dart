@@ -2,21 +2,45 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:aves/model/highlight.dart';
+import 'package:aves/model/source/enums.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/grid/section_layout.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-mixin GridItemTrackerMixin<T, U extends StatefulWidget> on State<U>, WidgetsBindingObserver {
-  ValueNotifier<double> get appBarHeightNotifier;
+class GridItemTracker<T> extends StatefulWidget {
+  final GlobalKey scrollableKey;
+  final ValueNotifier<double> appBarHeightNotifier;
+  final TileLayout tileLayout;
+  final ScrollController scrollController;
+  final Widget child;
 
-  ScrollController get scrollController;
+  const GridItemTracker({
+    Key? key,
+    required this.scrollableKey,
+    required this.appBarHeightNotifier,
+    required this.tileLayout,
+    required this.scrollController,
+    required this.child,
+  }) : super(key: key);
 
-  GlobalKey get scrollableKey;
+  @override
+  _GridItemTrackerState createState() => _GridItemTrackerState<T>();
+}
+
+class _GridItemTrackerState<T> extends State<GridItemTracker<T>> with WidgetsBindingObserver {
+  ValueNotifier<double> get appBarHeightNotifier => widget.appBarHeightNotifier;
+
+  ScrollController get scrollController => widget.scrollController;
+
+  @override
+  Widget build(BuildContext context) {
+    return widget.child;
+  }
 
   Size get scrollableSize {
-    final scrollableContext = scrollableKey.currentContext!;
+    final scrollableContext = widget.scrollableKey.currentContext!;
     return (scrollableContext.findRenderObject() as RenderBox).size;
   }
 
@@ -43,9 +67,25 @@ mixin GridItemTrackerMixin<T, U extends StatefulWidget> on State<U>, WidgetsBind
   }
 
   @override
-  void didUpdateWidget(covariant oldWidget) {
+  void didUpdateWidget(covariant GridItemTracker<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
+    if (oldWidget.tileLayout != widget.tileLayout) {
+      _onLayoutChange();
+    }
     _saveLayoutMetrics();
+  }
+
+  @override
+  void didChangeMetrics() {
+    // the order of `WidgetsBindingObserver` metrics change notification is unreliable
+    // w.r.t. the `MediaQuery` update, and consequentially to this widget update:
+    // `WidgetsBindingObserver` is notified mostly before, sometimes after, the widget update
+    final orientation = _windowOrientation;
+    if (_lastOrientation != orientation) {
+      _lastOrientation = orientation;
+      _onLayoutChange();
+      _saveLayoutMetrics();
+    }
   }
 
   @override
@@ -95,18 +135,9 @@ mixin GridItemTrackerMixin<T, U extends StatefulWidget> on State<U>, WidgetsBind
     }
   }
 
-  @override
-  void didChangeMetrics() {
-    final orientation = _windowOrientation;
-    if (_lastOrientation != orientation) {
-      _lastOrientation = orientation;
-      _onWindowOrientationChange();
-    }
-  }
-
   Future<void> _saveLayoutMetrics() async {
     // use a delay to obtain current layout metrics
-    // so that we can handle window orientation change beforehand with the previous metrics,
+    // so that we can handle window orientation change with the previous metrics,
     // regardless of the `MediaQuery`/`WidgetsBindingObserver` order uncertainty
     await Future.delayed(const Duration(milliseconds: 500));
 
@@ -116,10 +147,10 @@ mixin GridItemTrackerMixin<T, U extends StatefulWidget> on State<U>, WidgetsBind
     }
   }
 
-  // the order of `WidgetsBindingObserver` metrics change notification is unreliable
-  // w.r.t. the `MediaQuery` update, and consequentially to this widget update
-  // `WidgetsBindingObserver` is notified mostly before, sometimes after, the widget update
-  void _onWindowOrientationChange() {
+  void _onLayoutChange() {
+    // do not track when view shows top edge
+    if (scrollController.offset == 0) return;
+
     final layout = _lastSectionedListLayout;
     final halfSize = _lastScrollableSize / 2;
     final center = Offset(

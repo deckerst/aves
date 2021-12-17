@@ -32,6 +32,11 @@ class AIcons {
   static const IconData tag = Icons.local_offer_outlined;
   static const IconData tagOff = MdiIcons.tagOffOutline;
 
+  // view
+  static const IconData group = Icons.group_work_outlined;
+  static const IconData layout = Icons.grid_view_outlined;
+  static const IconData sort = Icons.sort_outlined;
+
   // actions
   static const IconData add = Icons.add_circle_outline;
   static const IconData addShortcut = Icons.add_to_home_screen_outlined;
@@ -54,7 +59,6 @@ class AIcons {
   static const IconData filterOff = MdiIcons.filterOffOutline;
   static const IconData geoBounds = Icons.public_outlined;
   static const IconData goUp = Icons.arrow_upward_outlined;
-  static const IconData group = Icons.group_work_outlined;
   static const IconData hide = Icons.visibility_off_outlined;
   static const IconData import = MdiIcons.fileImportOutline;
   static const IconData info = Icons.info_outlined;
@@ -80,7 +84,6 @@ class AIcons {
   static const IconData setCover = MdiIcons.imageEditOutline;
   static const IconData share = Icons.share_outlined;
   static const IconData show = Icons.visibility_outlined;
-  static const IconData sort = Icons.sort_outlined;
   static const IconData speed = Icons.speed_outlined;
   static const IconData stats = Icons.pie_chart_outlined;
   static const IconData streams = Icons.translate_outlined;
@@ -88,6 +91,7 @@ class AIcons {
   static const IconData streamAudio = Icons.audiotrack_outlined;
   static const IconData streamText = Icons.closed_caption_outlined;
   static const IconData videoSettings = Icons.video_settings_outlined;
+  static const IconData view = Icons.grid_view_outlined;
   static const IconData zoomIn = Icons.add_outlined;
   static const IconData zoomOut = Icons.remove_outlined;
   static const IconData collapse = Icons.expand_less_outlined;

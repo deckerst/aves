@@ -161,7 +161,6 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       context: context,
       builder: (context) {
         return AvesDialog(
-          context: context,
           content: Text(context.l10n.deleteEntriesConfirmationDialogMessage(1)),
           actions: [
             TextButton(
@@ -197,15 +196,8 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       await source.init();
       unawaited(source.refresh());
     }
-    final destinationAlbum = await Navigator.push(
-      context,
-      MaterialPageRoute<String>(
-        settings: const RouteSettings(name: AlbumPickPage.routeName),
-        builder: (context) => AlbumPickPage(source: source, moveType: MoveType.export),
-      ),
-    );
-
-    if (destinationAlbum == null || destinationAlbum.isEmpty) return;
+    final destinationAlbum = await pickAlbum(context: context, moveType: MoveType.export);
+    if (destinationAlbum == null) return;
     if (!await checkStoragePermissionForAlbums(context, {destinationAlbum})) return;
 
     if (!await checkFreeSpaceForMove(context, {entry}, destinationAlbum, MoveType.export)) return;

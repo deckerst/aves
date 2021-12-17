@@ -4,8 +4,7 @@ import 'package:flutter/material.dart';
 
 enum ChipSetAction {
   // general
-  sort,
-  group,
+  configureView,
   select,
   selectAll,
   selectNone,
@@ -27,8 +26,7 @@ enum ChipSetAction {
 
 class ChipSetActions {
   static const general = [
-    ChipSetAction.sort,
-    ChipSetAction.group,
+    ChipSetAction.configureView,
     ChipSetAction.select,
     ChipSetAction.selectAll,
     ChipSetAction.selectNone,
@@ -57,10 +55,8 @@ extension ExtraChipSetAction on ChipSetAction {
   String getText(BuildContext context) {
     switch (this) {
       // general
-      case ChipSetAction.sort:
-        return context.l10n.menuActionSort;
-      case ChipSetAction.group:
-        return context.l10n.menuActionGroup;
+      case ChipSetAction.configureView:
+        return context.l10n.menuActionConfigureView;
       case ChipSetAction.select:
         return context.l10n.menuActionSelect;
       case ChipSetAction.selectAll:
@@ -101,10 +97,8 @@ extension ExtraChipSetAction on ChipSetAction {
   IconData _getIconData() {
     switch (this) {
       // general
-      case ChipSetAction.sort:
-        return AIcons.sort;
-      case ChipSetAction.group:
-        return AIcons.group;
+      case ChipSetAction.configureView:
+        return AIcons.view;
       case ChipSetAction.select:
         return AIcons.select;
       case ChipSetAction.selectAll:

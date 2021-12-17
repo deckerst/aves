@@ -3,64 +3,66 @@ import 'dart:ui';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/material.dart';
 
-class AvesDialog extends AlertDialog {
+class AvesDialog extends StatelessWidget {
+  final String? title;
+  final ScrollController? scrollController;
+  final List<Widget>? scrollableContent;
+  final bool hasScrollBar;
+  final double horizontalContentPadding;
+  final Widget? content;
+  final List<Widget> actions;
+
   static const double defaultHorizontalContentPadding = 24;
   static const double controlCaptionPadding = 16;
   static const double borderWidth = 1.0;
 
-  AvesDialog({
+  const AvesDialog({
     Key? key,
-    required BuildContext context,
-    String? title,
-    ScrollController? scrollController,
-    List<Widget>? scrollableContent,
-    bool hasScrollBar = true,
-    double horizontalContentPadding = defaultHorizontalContentPadding,
-    Widget? content,
-    required List<Widget> actions,
+    this.title,
+    this.scrollController,
+    this.scrollableContent,
+    this.hasScrollBar = true,
+    this.horizontalContentPadding = defaultHorizontalContentPadding,
+    this.content,
+    required this.actions,
   })  : assert((scrollableContent != null) ^ (content != null)),
-        super(
-          key: key,
-          title: title != null
-              ? Padding(
-                  // padding to avoid transparent border overlapping
-                  padding: const EdgeInsets.symmetric(horizontal: borderWidth),
-                  child: DialogTitle(title: title),
-                )
-              : null,
-          titlePadding: EdgeInsets.zero,
-          // the `scrollable` flag of `AlertDialog` makes it
-          // scroll both the title and the content together,
-          // and overflow feedback ignores the dialog shape,
-          // so we restrict scrolling to the content instead
-          content: _buildContent(context, scrollController, scrollableContent, hasScrollBar, content),
-          contentPadding: scrollableContent != null ? EdgeInsets.zero : EdgeInsets.fromLTRB(horizontalContentPadding, 20, horizontalContentPadding, 0),
-          actions: actions,
-          actionsPadding: const EdgeInsets.symmetric(horizontal: 8),
-          shape: RoundedRectangleBorder(
-            side: Divider.createBorderSide(context, width: borderWidth),
-            borderRadius: const BorderRadius.all(Radius.circular(24)),
-          ),
-        );
+        super(key: key);
 
-  static Widget _buildContent(
-    BuildContext context,
-    ScrollController? scrollController,
-    List<Widget>? scrollableContent,
-    bool hasScrollBar,
-    Widget? content,
-  ) {
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: title != null
+          ? Padding(
+              // padding to avoid transparent border overlapping
+              padding: const EdgeInsets.symmetric(horizontal: borderWidth),
+              child: DialogTitle(title: title!),
+            )
+          : null,
+      titlePadding: EdgeInsets.zero,
+      // the `scrollable` flag of `AlertDialog` makes it
+      // scroll both the title and the content together,
+      // and overflow feedback ignores the dialog shape,
+      // so we restrict scrolling to the content instead
+      content: _buildContent(context),
+      contentPadding: scrollableContent != null ? EdgeInsets.zero : EdgeInsets.fromLTRB(horizontalContentPadding, 20, horizontalContentPadding, 0),
+      actions: actions,
+      actionsPadding: const EdgeInsets.symmetric(horizontal: 8),
+      shape: shape(context),
+    );
+  }
+
+  Widget _buildContent(BuildContext context) {
     if (content != null) {
-      return content;
+      return content!;
     }
 
     if (scrollableContent != null) {
-      scrollController ??= ScrollController();
+      final _scrollController = scrollController ?? ScrollController();
 
       Widget child = ListView(
-        controller: scrollController,
+        controller: _scrollController,
         shrinkWrap: true,
-        children: scrollableContent,
+        children: scrollableContent!,
       );
 
       if (hasScrollBar) {
@@ -75,7 +77,7 @@ class AvesDialog extends AlertDialog {
             ),
           ),
           child: Scrollbar(
-            controller: scrollController,
+            controller: _scrollController,
             child: child,
           ),
         );
@@ -89,17 +91,28 @@ class AvesDialog extends AlertDialog {
         // but the `ListView` viewport does not have one
         width: 1,
         child: DecoratedBox(
-          decoration: BoxDecoration(
-            border: Border(
-              bottom: Divider.createBorderSide(context, width: borderWidth),
-            ),
-          ),
+          decoration: contentDecoration(context),
           child: child,
         ),
       );
     }
 
     return const SizedBox();
+  }
+
+  static Decoration contentDecoration(BuildContext context) => BoxDecoration(
+        border: Border(
+          bottom: Divider.createBorderSide(context, width: borderWidth),
+        ),
+      );
+
+  static const Radius cornerRadius = Radius.circular(24);
+
+  static ShapeBorder shape(BuildContext context) {
+    return RoundedRectangleBorder(
+      side: Divider.createBorderSide(context, width: borderWidth),
+      borderRadius: const BorderRadius.all(cornerRadius),
+    );
   }
 }
 
@@ -116,11 +129,7 @@ class DialogTitle extends StatelessWidget {
     return Container(
       alignment: Alignment.center,
       padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: Divider.createBorderSide(context, width: AvesDialog.borderWidth),
-        ),
-      ),
+      decoration: AvesDialog.contentDecoration(context),
       child: Text(
         title,
         style: const TextStyle(
@@ -138,7 +147,6 @@ void showNoMatchingAppDialog(BuildContext context) {
     context: context,
     builder: (context) {
       return AvesDialog(
-        context: context,
         title: context.l10n.noMatchingAppDialogTitle,
         content: Text(context.l10n.noMatchingAppDialogMessage),
         actions: [

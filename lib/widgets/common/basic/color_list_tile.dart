@@ -71,7 +71,6 @@ class _ColorPickerDialogState extends State<ColorPickerDialog> {
   @override
   Widget build(BuildContext context) {
     return AvesDialog(
-      context: context,
       scrollableContent: [
         ColorPicker(
           color: color,

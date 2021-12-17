@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 
 class Constants {
-  // as of Flutter v1.22.3, overflowing `Text` miscalculates height and some text (e.g. 'Å') is clipped
+  // as of Flutter v2.8.0, overflowing `Text` miscalculates height and some text (e.g. 'Å') is clipped
   // so we give it a `strutStyle` with a slightly larger height
   static const overflowStrutStyle = StrutStyle(height: 1.3);
 

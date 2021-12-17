@@ -80,7 +80,6 @@ mixin SizeAwareMixin {
         final freeSize = formatFileSize(locale, free);
         final volume = destinationVolume.getDescription(context);
         return AvesDialog(
-          context: context,
           title: l10n.notEnoughSpaceDialogTitle,
           content: Text(l10n.notEnoughSpaceDialogMessage(neededSize, freeSize, volume)),
           actions: [

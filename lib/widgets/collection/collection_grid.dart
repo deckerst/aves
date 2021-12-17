@@ -4,6 +4,7 @@ import 'package:aves/app_mode.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/mime.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/enums.dart';
 import 'package:aves/ref/mime_types.dart';
@@ -11,21 +12,22 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/collection/app_bar.dart';
 import 'package:aves/widgets/collection/draggable_thumb_label.dart';
+import 'package:aves/widgets/collection/grid/list_details_theme.dart';
 import 'package:aves/widgets/collection/grid/section_layout.dart';
-import 'package:aves/widgets/collection/grid/thumbnail.dart';
+import 'package:aves/widgets/collection/grid/tile.dart';
 import 'package:aves/widgets/common/basic/draggable_scrollbar.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/behaviour/sloppy_scroll_physics.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
 import 'package:aves/widgets/common/grid/item_tracker.dart';
+import 'package:aves/widgets/common/grid/scaling.dart';
 import 'package:aves/widgets/common/grid/selector.dart';
 import 'package:aves/widgets/common/grid/sliver.dart';
 import 'package:aves/widgets/common/grid/theme.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
 import 'package:aves/widgets/common/identity/scroll_thumb.dart';
 import 'package:aves/widgets/common/providers/tile_extent_controller_provider.dart';
-import 'package:aves/widgets/common/scaling.dart';
 import 'package:aves/widgets/common/thumbnail/decorated.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
 import 'package:flutter/material.dart';
@@ -74,11 +76,13 @@ class _CollectionGridContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final settingsRouteKey = context.read<TileExtentController>().settingsRouteKey;
+    final tileLayout = context.select<Settings, TileLayout>((s) => s.getTileLayout(settingsRouteKey));
     return Consumer<CollectionLens>(
       builder: (context, collection, child) {
         final sectionedListLayoutProvider = ValueListenableBuilder<double>(
           valueListenable: context.select<TileExtentController, ValueNotifier<double>>((controller) => controller.extentNotifier),
-          builder: (context, tileExtent, child) {
+          builder: (context, thumbnailExtent, child) {
             return Selector<TileExtentController, Tuple3<double, int, double>>(
               selector: (context, c) => Tuple3(c.viewportSize.width, c.columnCount, c.spacing),
               builder: (context, c, child) {
@@ -89,22 +93,27 @@ class _CollectionGridContent extends StatelessWidget {
                 final target = context.read<DurationsData>().staggeredAnimationPageTarget;
                 final tileAnimationDelay = context.read<TileExtentController>().getTileAnimationDelay(target);
                 return GridTheme(
-                  extent: tileExtent,
-                  child: SectionedEntryListLayoutProvider(
-                    collection: collection,
-                    scrollableWidth: scrollableWidth,
-                    columnCount: columnCount,
-                    spacing: tileSpacing,
-                    tileExtent: tileExtent,
-                    tileBuilder: (entry) => InteractiveThumbnail(
-                      key: ValueKey(entry.contentId),
+                  extent: thumbnailExtent,
+                  child: EntryListDetailsTheme(
+                    extent: thumbnailExtent,
+                    child: SectionedEntryListLayoutProvider(
                       collection: collection,
-                      entry: entry,
-                      tileExtent: tileExtent,
-                      isScrollingNotifier: _isScrollingNotifier,
+                      scrollableWidth: scrollableWidth,
+                      tileLayout: tileLayout,
+                      columnCount: columnCount,
+                      spacing: tileSpacing,
+                      tileExtent: thumbnailExtent,
+                      tileBuilder: (entry) => InteractiveTile(
+                        key: ValueKey(entry.contentId),
+                        collection: collection,
+                        entry: entry,
+                        thumbnailExtent: thumbnailExtent,
+                        tileLayout: tileLayout,
+                        isScrollingNotifier: _isScrollingNotifier,
+                      ),
+                      tileAnimationDelay: tileAnimationDelay,
+                      child: child!,
                     ),
-                    tileAnimationDelay: tileAnimationDelay,
-                    child: child!,
                   ),
                 );
               },
@@ -115,6 +124,7 @@ class _CollectionGridContent extends StatelessWidget {
             collection: collection,
             isScrollingNotifier: _isScrollingNotifier,
             scrollController: PrimaryScrollController.of(context)!,
+            tileLayout: tileLayout,
           ),
         );
         return sectionedListLayoutProvider;
@@ -127,27 +137,28 @@ class _CollectionSectionedContent extends StatefulWidget {
   final CollectionLens collection;
   final ValueNotifier<bool> isScrollingNotifier;
   final ScrollController scrollController;
+  final TileLayout tileLayout;
 
   const _CollectionSectionedContent({
     required this.collection,
     required this.isScrollingNotifier,
     required this.scrollController,
+    required this.tileLayout,
   });
 
   @override
   _CollectionSectionedContentState createState() => _CollectionSectionedContentState();
 }
 
-class _CollectionSectionedContentState extends State<_CollectionSectionedContent> with WidgetsBindingObserver, GridItemTrackerMixin<AvesEntry, _CollectionSectionedContent> {
+class _CollectionSectionedContentState extends State<_CollectionSectionedContent> {
   CollectionLens get collection => widget.collection;
 
-  @override
+  TileLayout get tileLayout => widget.tileLayout;
+
   ScrollController get scrollController => widget.scrollController;
 
-  @override
   final ValueNotifier<double> appBarHeightNotifier = ValueNotifier(0);
 
-  @override
   final GlobalKey scrollableKey = GlobalKey(debugLabel: 'thumbnail-collection-scrollable');
 
   @override
@@ -169,6 +180,7 @@ class _CollectionSectionedContentState extends State<_CollectionSectionedContent
     final scaler = _CollectionScaler(
       scrollableKey: scrollableKey,
       appBarHeightNotifier: appBarHeightNotifier,
+      tileLayout: tileLayout,
       child: scrollView,
     );
 
@@ -181,18 +193,26 @@ class _CollectionSectionedContentState extends State<_CollectionSectionedContent
       child: scaler,
     );
 
-    return selector;
+    return GridItemTracker<AvesEntry>(
+      scrollableKey: scrollableKey,
+      tileLayout: tileLayout,
+      appBarHeightNotifier: appBarHeightNotifier,
+      scrollController: scrollController,
+      child: selector,
+    );
   }
 }
 
 class _CollectionScaler extends StatelessWidget {
   final GlobalKey scrollableKey;
   final ValueNotifier<double> appBarHeightNotifier;
+  final TileLayout tileLayout;
   final Widget child;
 
   const _CollectionScaler({
     required this.scrollableKey,
     required this.appBarHeightNotifier,
+    required this.tileLayout,
     required this.child,
   });
 
@@ -201,10 +221,12 @@ class _CollectionScaler extends StatelessWidget {
     final tileSpacing = context.select<TileExtentController, double>((controller) => controller.spacing);
     return GridScaleGestureDetector<AvesEntry>(
       scrollableKey: scrollableKey,
+      tileLayout: tileLayout,
       heightForWidth: (width) => width,
       gridBuilder: (center, tileSize, child) => CustomPaint(
         painter: GridPainter(
-          center: center,
+          tileLayout: tileLayout,
+          tileCenter: center,
           tileSize: tileSize,
           spacing: tileSpacing,
           borderWidth: DecoratedThumbnail.borderWidth,
@@ -213,11 +235,13 @@ class _CollectionScaler extends StatelessWidget {
         ),
         child: child,
       ),
-      scaledBuilder: (entry, tileSize) => DecoratedThumbnail(
-        entry: entry,
-        tileExtent: context.read<TileExtentController>().effectiveExtentMax,
-        selectable: false,
-        highlightable: false,
+      scaledBuilder: (entry, tileSize) => EntryListDetailsTheme(
+        extent: tileSize.height,
+        child: Tile(
+          entry: entry,
+          thumbnailExtent: context.read<TileExtentController>().effectiveExtentMax,
+          tileLayout: tileLayout,
+        ),
       ),
       child: child,
     );

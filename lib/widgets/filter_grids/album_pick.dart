@@ -1,3 +1,4 @@
+import 'package:aves/app_mode.dart';
 import 'package:aves/model/actions/chip_set_actions.dart';
 import 'package:aves/model/actions/move_type.dart';
 import 'package:aves/model/filters/album.dart';
@@ -24,6 +25,21 @@ import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
+Future<String?> pickAlbum({
+  required BuildContext context,
+  required MoveType? moveType,
+}) async {
+  final source = context.read<CollectionSource>();
+  final filter = await Navigator.push(
+    context,
+    MaterialPageRoute<AlbumFilter>(
+      settings: const RouteSettings(name: AlbumPickPage.routeName),
+      builder: (context) => AlbumPickPage(source: source, moveType: moveType),
+    ),
+  );
+  return filter?.album;
+}
+
 class AlbumPickPage extends StatefulWidget {
   static const routeName = '/album_pick';
 
@@ -47,45 +63,47 @@ class _AlbumPickPageState extends State<AlbumPickPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Selector<Settings, Tuple2<AlbumChipGroupFactor, ChipSortFactor>>(
-      selector: (context, s) => Tuple2(s.albumGroupFactor, s.albumSortFactor),
-      builder: (context, s, child) {
-        return StreamBuilder(
-          stream: source.eventBus.on<AlbumsChangedEvent>(),
-          builder: (context, snapshot) {
-            final gridItems = AlbumListPage.getAlbumGridItems(context, source);
-            return SelectionProvider<FilterGridItem<AlbumFilter>>(
-              child: FilterGridPage<AlbumFilter>(
-                settingsRouteKey: AlbumListPage.routeName,
-                appBar: AlbumPickAppBar(
-                  source: source,
-                  moveType: widget.moveType,
-                  actionDelegate: AlbumChipSetActionDelegate(gridItems),
+    return ListenableProvider<ValueNotifier<AppMode>>.value(
+      value: ValueNotifier(AppMode.pickInternal),
+      child: Selector<Settings, Tuple2<AlbumChipGroupFactor, ChipSortFactor>>(
+        selector: (context, s) => Tuple2(s.albumGroupFactor, s.albumSortFactor),
+        builder: (context, s, child) {
+          return StreamBuilder(
+            stream: source.eventBus.on<AlbumsChangedEvent>(),
+            builder: (context, snapshot) {
+              final gridItems = AlbumListPage.getAlbumGridItems(context, source);
+              return SelectionProvider<FilterGridItem<AlbumFilter>>(
+                child: FilterGridPage<AlbumFilter>(
+                  settingsRouteKey: AlbumListPage.routeName,
+                  appBar: AlbumPickAppBar(
+                    source: source,
+                    moveType: widget.moveType,
+                    actionDelegate: AlbumChipSetActionDelegate(gridItems),
+                    queryNotifier: _queryNotifier,
+                  ),
+                  appBarHeight: AlbumPickAppBar.preferredHeight,
+                  sections: AlbumListPage.groupToSections(context, source, gridItems),
+                  newFilters: source.getNewAlbumFilters(context),
+                  sortFactor: settings.albumSortFactor,
+                  showHeaders: settings.albumGroupFactor != AlbumChipGroupFactor.none,
+                  selectable: false,
                   queryNotifier: _queryNotifier,
+                  applyQuery: (filters, query) {
+                    if (query.isEmpty) return filters;
+                    query = query.toUpperCase();
+                    return filters.where((item) => (item.filter.displayName ?? item.filter.album).toUpperCase().contains(query)).toList();
+                  },
+                  emptyBuilder: () => EmptyContent(
+                    icon: AIcons.album,
+                    text: context.l10n.albumEmpty,
+                  ),
+                  heroType: HeroType.never,
                 ),
-                appBarHeight: AlbumPickAppBar.preferredHeight,
-                sections: AlbumListPage.groupToSections(context, source, gridItems),
-                newFilters: source.getNewAlbumFilters(context),
-                sortFactor: settings.albumSortFactor,
-                showHeaders: settings.albumGroupFactor != AlbumChipGroupFactor.none,
-                selectable: false,
-                queryNotifier: _queryNotifier,
-                applyQuery: (filters, query) {
-                  if (query.isEmpty) return filters;
-                  query = query.toUpperCase();
-                  return filters.where((item) => (item.filter.displayName ?? item.filter.album).toUpperCase().contains(query)).toList();
-                },
-                emptyBuilder: () => EmptyContent(
-                  icon: AIcons.album,
-                  text: context.l10n.albumEmpty,
-                ),
-                onTap: (filter) => Navigator.pop<String>(context, (filter as AlbumFilter).album),
-                heroType: HeroType.never,
-              ),
-            );
-          },
-        );
-      },
+              );
+            },
+          );
+        },
+      ),
     );
   }
 }
@@ -152,12 +170,8 @@ class AlbumPickAppBar extends StatelessWidget {
             itemBuilder: (context) {
               return [
                 PopupMenuItem(
-                  value: ChipSetAction.sort,
-                  child: MenuRow(text: context.l10n.menuActionSort, icon: const Icon(AIcons.sort)),
-                ),
-                PopupMenuItem(
-                  value: ChipSetAction.group,
-                  child: MenuRow(text: context.l10n.menuActionGroup, icon: const Icon(AIcons.group)),
+                  value: ChipSetAction.configureView,
+                  child: MenuRow(text: context.l10n.menuActionConfigureView, icon: const Icon(AIcons.view)),
                 ),
               ];
             },
