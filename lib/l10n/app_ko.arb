@@ -203,7 +203,7 @@
   "genericSuccessFeedback": "정상 처리됐습니다",
   "genericFailureFeedback": "오류가 발생했습니다",
 
-  "menuActionConfigureView": "뷰 설정",
+  "menuActionConfigureView": "보기 설정",
   "menuActionSelect": "선택",
   "menuActionSelectAll": "모두 선택",
   "menuActionSelectNone": "모두 해제",
@@ -214,7 +214,7 @@
   "viewDialogTabGroup": "묶음",
   "viewDialogTabLayout": "배치",
 
-  "tileLayoutGrid": "그리드",
+  "tileLayoutGrid": "바둑판",
   "tileLayoutList": "목록",
 
   "aboutPageTitle": "앱 정보",
