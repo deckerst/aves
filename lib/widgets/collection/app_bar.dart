@@ -283,7 +283,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     ];
   }
 
-  // key is expected by test driver (e.g. 'menu-sort', 'menu-group', 'menu-map')
+  // key is expected by test driver (e.g. 'menu-configureView', 'menu-map')
   Key _getActionKey(EntrySetAction action) => Key('menu-${action.name}');
 
   Widget _toActionButton(EntrySetAction action, {required bool enabled}) {

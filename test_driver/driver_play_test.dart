@@ -12,6 +12,13 @@ import 'utils/driver_extension.dart';
 
 late FlutterDriver driver;
 
+extension ExtraFlutterDriver on FlutterDriver {
+  Future<void> tapKeyAndWait(String key) async {
+    await driver.tap(find.byValueKey(key));
+    await driver.waitUntilNoTransientCallbacks();
+  }
+}
+
 void main() {
   group('[Aves app]', () {
     setUpAll(() async {
@@ -61,8 +68,7 @@ void agreeToTerms() {
     await driver.tap(find.byValueKey('terms-checkbox'));
     await Future.delayed(const Duration(seconds: 1));
 
-    await driver.tap(find.byValueKey('continue-button'));
-    await driver.waitUntilNoTransientCallbacks();
+    await driver.tapKeyAndWait('continue-button');
 
     // wait for collection loading
     await driver.waitForCondition(const NoPendingPlatformMessages());
@@ -71,11 +77,8 @@ void agreeToTerms() {
 
 void visitAbout() {
   test('[collection] visit about page', () async {
-    await driver.tap(find.byValueKey('appbar-leading-button'));
-    await driver.waitUntilNoTransientCallbacks();
-
-    await driver.tap(find.byValueKey('drawer-about-button'));
-    await driver.waitUntilNoTransientCallbacks();
+    await driver.tapKeyAndWait('appbar-leading-button');
+    await driver.tapKeyAndWait('drawer-about-button');
 
     await pressDeviceBackButton();
     await driver.waitUntilNoTransientCallbacks();
@@ -84,11 +87,8 @@ void visitAbout() {
 
 void visitSettings() {
   test('[collection] visit settings page', () async {
-    await driver.tap(find.byValueKey('appbar-leading-button'));
-    await driver.waitUntilNoTransientCallbacks();
-
-    await driver.tap(find.byValueKey('drawer-settings-button'));
-    await driver.waitUntilNoTransientCallbacks();
+    await driver.tapKeyAndWait('appbar-leading-button');
+    await driver.tapKeyAndWait('drawer-settings-button');
 
     await pressDeviceBackButton();
     await driver.waitUntilNoTransientCallbacks();
@@ -97,34 +97,27 @@ void visitSettings() {
 
 void sortCollection() {
   test('[collection] sort', () async {
-    await driver.tap(find.byValueKey('appbar-menu-button'));
-    await driver.waitUntilNoTransientCallbacks();
-
-    await driver.tap(find.byValueKey('menu-sort'));
-    await driver.waitUntilNoTransientCallbacks();
-
-    await driver.tap(find.byValueKey(EntrySortFactor.date.toString()));
-    await driver.waitUntilNoTransientCallbacks();
+    await driver.tapKeyAndWait('appbar-menu-button');
+    await driver.tapKeyAndWait('menu-configureView');
+    await driver.tapKeyAndWait('tab-sort');
+    await driver.tapKeyAndWait(EntrySortFactor.date.toString());
+    await driver.tapKeyAndWait('button-apply');
   });
 }
 
 void groupCollection() {
   test('[collection] group', () async {
-    await driver.tap(find.byValueKey('appbar-menu-button'));
-    await driver.waitUntilNoTransientCallbacks();
-
-    await driver.tap(find.byValueKey('menu-group'));
-    await driver.waitUntilNoTransientCallbacks();
-
-    await driver.tap(find.byValueKey(EntryGroupFactor.album.toString()));
-    await driver.waitUntilNoTransientCallbacks();
+    await driver.tapKeyAndWait('appbar-menu-button');
+    await driver.tapKeyAndWait('menu-configureView');
+    await driver.tapKeyAndWait('tab-group');
+    await driver.tapKeyAndWait(EntryGroupFactor.album.toString());
+    await driver.tapKeyAndWait('button-apply');
   });
 }
 
 void visitMap() {
   test('[collection] visit map', () async {
-    await driver.tap(find.byValueKey('appbar-menu-button'));
-    await driver.waitUntilNoTransientCallbacks();
+    await driver.tapKeyAndWait('appbar-menu-button');
 
     await driver.tap(find.byValueKey('menu-map'));
     // wait for heavy Google map initialization
@@ -147,12 +140,9 @@ void visitMap() {
 
 void selectFirstAlbum() {
   test('[collection] select first album', () async {
-    await driver.tap(find.byValueKey('appbar-leading-button'));
-    await driver.waitUntilNoTransientCallbacks();
-
+    await driver.tapKeyAndWait('appbar-leading-button');
     // prefix must match `AlbumListPage.routeName`
-    await driver.tap(find.byValueKey('/albums-tile'));
-    await driver.waitUntilNoTransientCallbacks();
+    await driver.tapKeyAndWait('/albums-tile');
 
     // wait for collection loading
     await driver.waitForCondition(const NoPendingPlatformMessages());
@@ -170,8 +160,7 @@ void selectFirstAlbum() {
 
 void searchAlbum() {
   test('[collection] search album', () async {
-    await driver.tap(find.byValueKey('menu-searchCollection'));
-    await driver.waitUntilNoTransientCallbacks();
+    await driver.tapKeyAndWait('menu-searchCollection');
 
     const albumPath = targetPicturesDirEmulated;
     final albumDisplayName = p.split(albumPath).last;
@@ -263,8 +252,7 @@ void showInfoMetadata() {
     await Future.delayed(const Duration(seconds: 1));
 
     print('* back to image');
-    await driver.tap(find.byValueKey('back-button'));
-    await driver.waitUntilNoTransientCallbacks();
+    await driver.tapKeyAndWait('back-button');
   });
 }
 
