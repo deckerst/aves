@@ -78,7 +78,7 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
     final tabs = <Tuple2<Tab, Widget>>[
       if (sortOptions.isNotEmpty)
         Tuple2(
-          _buildTab(context, AIcons.sort, l10n.viewDialogTabSort),
+          _buildTab(context, const Key('tab-sort'), AIcons.sort, l10n.viewDialogTabSort),
           Column(
             children: sortOptions.entries
                 .map((kv) => _buildRadioListTile<S>(
@@ -92,7 +92,7 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
         ),
       if (groupOptions.isNotEmpty)
         Tuple2(
-          _buildTab(context, AIcons.group, l10n.viewDialogTabGroup, color: canGroup ? null : Theme.of(context).disabledColor),
+          _buildTab(context, const Key('tab-group'), AIcons.group, l10n.viewDialogTabGroup, color: canGroup ? null : Theme.of(context).disabledColor),
           Column(
             children: groupOptions.entries
                 .map((kv) => _buildRadioListTile<G>(
@@ -106,7 +106,7 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
         ),
       if (layoutOptions.isNotEmpty)
         Tuple2(
-          _buildTab(context, AIcons.layout, l10n.viewDialogTabLayout),
+          _buildTab(context, const Key('tab-layout'), AIcons.layout, l10n.viewDialogTabLayout),
           Column(
             children: layoutOptions.entries
                 .map((kv) => _buildRadioListTile<L>(
@@ -176,6 +176,7 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
             child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
           ),
           TextButton(
+            key: const Key('button-apply'),
             onPressed: () => Navigator.pop(context, Tuple3(_selectedSort, _selectedGroup, _selectedLayout)),
             child: Text(l10n.applyButtonLabel),
           )
@@ -209,12 +210,13 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
     );
   }
 
-  Tab _buildTab(BuildContext context, IconData icon, String text, {Color? color}) {
+  Tab _buildTab(BuildContext context, Key key, IconData icon, String text, {Color? color}) {
     // cannot use `IconTheme` over `TabBar` to change size,
     // because `TabBar` does so internally
     final textScaleFactor = MediaQuery.textScaleFactorOf(context);
     final iconSize = IconTheme.of(context).size! * textScaleFactor;
     return Tab(
+      key: key,
       height: tabBarHeight(context),
       child: Column(
         mainAxisSize: MainAxisSize.min,
