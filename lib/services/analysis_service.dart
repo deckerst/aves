@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:ui';
 
+import 'package:aves/l10n/l10n.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/analysis_controller.dart';
 import 'package:aves/model/source/enums.dart';
@@ -10,7 +11,6 @@ import 'package:aves/services/common/services.dart';
 import 'package:fijkplayer/fijkplayer.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AnalysisService {
   static const platform = MethodChannel('deckers.thibault/aves/analysis');

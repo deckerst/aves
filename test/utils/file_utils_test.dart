@@ -1,5 +1,5 @@
+import 'package:aves/l10n/l10n.dart';
 import 'package:aves/utils/file_utils.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:test/test.dart';
 
 void main() {
