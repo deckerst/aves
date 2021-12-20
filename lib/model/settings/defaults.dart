@@ -67,6 +67,7 @@ class SettingsDefaults {
   static const enableOverlayBlurEffect = true; // `enableOverlayBlurEffect` has a contextual default value
   static const viewerUseCutout = true;
   static const viewerMaxBrightness = false;
+  static const enableMotionPhotoAutoPlay = false;
 
   // video
   static const videoQuickActions = [

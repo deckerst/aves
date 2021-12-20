@@ -630,7 +630,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
       // auto play/pause when changing page
       Future<void> _onPageChange() async {
         await _pauseVideoControllers();
-        if (settings.enableVideoAutoPlay) {
+        if (settings.enableVideoAutoPlay || (entry.isMotionPhoto && settings.enableMotionPhotoAutoPlay)) {
           final page = multiPageController.page;
           final pageInfo = multiPageInfo.getByIndex(page)!;
           if (pageInfo.isVideo) {
@@ -644,6 +644,13 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
       _multiPageControllerPageListeners[multiPageController] = _onPageChange;
       multiPageController.pageNotifier.addListener(_onPageChange);
       await _onPageChange();
+
+      if (entry.isMotionPhoto && settings.enableMotionPhotoAutoPlay) {
+        await Future.delayed(Durations.motionPhotoAutoPlayDelay);
+        if (entry == _entryNotifier.value) {
+          multiPageController.page = 1;
+        }
+      }
     }
   }
 

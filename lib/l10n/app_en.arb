@@ -816,6 +816,8 @@
   "@settingsViewerUseCutout": {},
   "settingsViewerMaximumBrightness": "Maximum brightness",
   "@settingsViewerMaximumBrightness": {},
+  "settingsMotionPhotoAutoPlay": "Auto play motion photos",
+  "@settingsMotionPhotoAutoPlay": {},
   "settingsImageBackground": "Image background",
   "@settingsImageBackground": {},
 

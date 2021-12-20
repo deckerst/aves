@@ -381,6 +381,7 @@
   "settingsSectionViewer": "Visionneuse",
   "settingsViewerUseCutout": "Utiliser la zone d’encoche",
   "settingsViewerMaximumBrightness": "Luminosité maximale",
+  "settingsMotionPhotoAutoPlay": "Lecture automatique des photos animées",
   "settingsImageBackground": "Arrière-plan de l’image",
 
   "settingsViewerQuickActionsTile": "Actions rapides",
