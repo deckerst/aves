@@ -1,5 +1,5 @@
+import 'package:aves/l10n/l10n.dart';
 import 'package:aves/model/source/enums.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 extension ExtraSourceState on SourceState {
   String? getName(AppLocalizations l10n) {

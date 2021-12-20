@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:aves/l10n/l10n.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -7,7 +8,6 @@ import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
 class LocaleTile extends StatelessWidget {
