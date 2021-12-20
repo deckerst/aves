@@ -18,7 +18,17 @@ mixin FeedbackMixin {
   void dismissFeedback(BuildContext context) => ScaffoldMessenger.of(context).hideCurrentSnackBar();
 
   void showFeedback(BuildContext context, String message, [SnackBarAction? action]) {
-    showFeedbackWithMessenger(context, ScaffoldMessenger.of(context), message, action);
+    ScaffoldMessengerState? scaffoldMessenger;
+    try {
+      scaffoldMessenger = ScaffoldMessenger.of(context);
+    } catch (e) {
+      // minor issue: the page triggering this feedback likely
+      // allows the user to navigate away and they did so
+      debugPrint('failed to find ScaffoldMessenger in context');
+    }
+    if (scaffoldMessenger != null) {
+      showFeedbackWithMessenger(context, scaffoldMessenger, message, action);
+    }
   }
 
   // provide the messenger if feedback happens as the widget is disposed
