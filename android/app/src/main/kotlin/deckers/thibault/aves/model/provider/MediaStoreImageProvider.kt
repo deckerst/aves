@@ -565,6 +565,7 @@ class MediaStoreImageProvider : ImageProvider() {
             throw Exception("unsupported Android version")
         }
 
+        Log.d(LOG_TAG, "rename content at uri=$mediaUri")
         val uri = StorageUtils.getMediaStoreScopedStorageSafeUri(mediaUri, mimeType)
 
         // `IS_PENDING` is necessary for `TITLE`, not for `DISPLAY_NAME`

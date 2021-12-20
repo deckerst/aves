@@ -381,6 +381,7 @@
   "settingsSectionViewer": "뷰어",
   "settingsViewerUseCutout": "컷아웃 영역 사용",
   "settingsViewerMaximumBrightness": "최대 밝기",
+  "settingsMotionPhotoAutoPlay": "모션 포토 자동 재생",
   "settingsImageBackground": "이미지 배경",
 
   "settingsViewerQuickActionsTile": "빠른 작업",

@@ -83,6 +83,8 @@ class Settings extends ChangeNotifier {
   static const enableOverlayBlurEffectKey = 'enable_overlay_blur_effect';
   static const viewerUseCutoutKey = 'viewer_use_cutout';
   static const viewerMaxBrightnessKey = 'viewer_max_brightness';
+  static const enableMotionPhotoAutoPlayKey = 'motion_photo_auto_play';
+  static const imageBackgroundKey = 'image_background';
 
   // video
   static const videoQuickActionsKey = 'video_quick_actions';
@@ -103,9 +105,6 @@ class Settings extends ChangeNotifier {
   static const infoMapZoomKey = 'info_map_zoom';
   static const coordinateFormatKey = 'coordinates_format';
   static const unitSystemKey = 'unit_system';
-
-  // rendering
-  static const imageBackgroundKey = 'image_background';
 
   // search
   static const saveSearchHistoryKey = 'save_search_history';
@@ -365,6 +364,14 @@ class Settings extends ChangeNotifier {
 
   set viewerMaxBrightness(bool newValue) => setAndNotify(viewerMaxBrightnessKey, newValue);
 
+  bool get enableMotionPhotoAutoPlay => getBoolOrDefault(enableMotionPhotoAutoPlayKey, SettingsDefaults.enableMotionPhotoAutoPlay);
+
+  set enableMotionPhotoAutoPlay(bool newValue) => setAndNotify(enableMotionPhotoAutoPlayKey, newValue);
+
+  EntryBackground get imageBackground => getEnumOrDefault(imageBackgroundKey, SettingsDefaults.imageBackground, EntryBackground.values);
+
+  set imageBackground(EntryBackground newValue) => setAndNotify(imageBackgroundKey, newValue.toString());
+
   // video
 
   List<VideoAction> get videoQuickActions => getEnumListOrDefault(videoQuickActionsKey, SettingsDefaults.videoQuickActions, VideoAction.values);
@@ -426,12 +433,6 @@ class Settings extends ChangeNotifier {
   UnitSystem get unitSystem => getEnumOrDefault(unitSystemKey, SettingsDefaults.unitSystem, UnitSystem.values);
 
   set unitSystem(UnitSystem newValue) => setAndNotify(unitSystemKey, newValue.toString());
-
-  // rendering
-
-  EntryBackground get imageBackground => getEnumOrDefault(imageBackgroundKey, SettingsDefaults.imageBackground, EntryBackground.values);
-
-  set imageBackground(EntryBackground newValue) => setAndNotify(imageBackgroundKey, newValue.toString());
 
   // search
 
@@ -613,6 +614,7 @@ class Settings extends ChangeNotifier {
             case enableOverlayBlurEffectKey:
             case viewerUseCutoutKey:
             case viewerMaxBrightnessKey:
+            case enableMotionPhotoAutoPlayKey:
             case enableVideoHardwareAccelerationKey:
             case enableVideoAutoPlayKey:
             case subtitleShowOutlineKey:
@@ -633,12 +635,12 @@ class Settings extends ChangeNotifier {
             case albumSortFactorKey:
             case countrySortFactorKey:
             case tagSortFactorKey:
+            case imageBackgroundKey:
             case videoLoopModeKey:
             case subtitleTextAlignmentKey:
             case infoMapStyleKey:
             case coordinateFormatKey:
             case unitSystemKey:
-            case imageBackgroundKey:
             case accessibilityAnimationsKey:
             case timeToTakeActionKey:
               if (value is String) {

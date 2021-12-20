@@ -3,6 +3,7 @@
     "menuActionConfigureView",
     "viewDialogTabLayout",
     "tileLayoutGrid",
-    "tileLayoutList"
+    "tileLayoutList",
+    "settingsMotionPhotoAutoPlay"
   ]
 }
