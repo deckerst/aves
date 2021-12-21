@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:aves/services/common/services.dart';
 import 'package:flutter/services.dart';
 
@@ -5,6 +7,8 @@ abstract class DeviceService {
   Future<Map<String, dynamic>> getCapabilities();
 
   Future<String?> getDefaultTimeZone();
+
+  Future<List<Locale>> getLocales();
 
   Future<int> getPerformanceClass();
 }
@@ -31,6 +35,26 @@ class PlatformDeviceService implements DeviceService {
       await reportService.recordError(e, stack);
     }
     return null;
+  }
+
+  @override
+  Future<List<Locale>> getLocales() async {
+    try {
+      final result = await platform.invokeMethod('getLocales');
+      if (result != null) {
+        return (result as List).cast<Map>().map((tags) {
+          final language = tags['language'] as String?;
+          final country = tags['country'] as String?;
+          return Locale(
+            language ?? 'und',
+            (country != null && country.isEmpty) ? null : country,
+          );
+        }).toList();
+      }
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
+    return [];
   }
 
   @override
