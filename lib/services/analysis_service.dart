@@ -112,6 +112,7 @@ class Analyzer {
       stopSignal: ValueNotifier(false),
     );
 
+    settings.systemLocalesFallback = await deviceService.getLocales();
     _l10n = await AppLocalizations.delegate.load(settings.appliedLocale);
     _serviceStateNotifier.value = AnalyzerState.running;
     await _source.init();

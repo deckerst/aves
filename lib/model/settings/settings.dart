@@ -217,12 +217,26 @@ class Settings extends ChangeNotifier {
     _appliedLocale = null;
   }
 
+  List<Locale> _systemLocalesFallback = [];
+
+  set systemLocalesFallback(List<Locale> locales) => _systemLocalesFallback = locales;
+
   Locale? _appliedLocale;
 
   Locale get appliedLocale {
     if (_appliedLocale == null) {
-      final preferredLocale = locale;
-      _appliedLocale = basicLocaleListResolution(preferredLocale != null ? [preferredLocale] : null, AppLocalizations.supportedLocales);
+      final _locale = locale;
+      final preferredLocales = <Locale>[];
+      if (_locale != null) {
+        preferredLocales.add(_locale);
+      } else {
+        preferredLocales.addAll(WidgetsBinding.instance!.window.locales);
+        if (preferredLocales.isEmpty) {
+          // the `window` locales may be empty in a window-less service context
+          preferredLocales.addAll(_systemLocalesFallback);
+        }
+      }
+      _appliedLocale = basicLocaleListResolution(preferredLocales, AppLocalizations.supportedLocales);
     }
     return _appliedLocale!;
   }

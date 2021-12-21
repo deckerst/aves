@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:ui';
 
 import 'package:aves/app_flavor.dart';
 import 'package:aves/app_mode.dart';
@@ -122,9 +121,7 @@ class _AvesAppState extends State<AvesApp> {
                             darkTheme: Themes.darkTheme,
                             themeMode: ThemeMode.dark,
                             locale: settingsLocale,
-                            localizationsDelegates: const [
-                              ...AppLocalizations.localizationsDelegates,
-                            ],
+                            localizationsDelegates: AppLocalizations.localizationsDelegates,
                             supportedLocales: AppLocalizations.supportedLocales,
                             // checkerboardRasterCacheImages: true,
                             // checkerboardOffscreenLayers: true,
@@ -200,7 +197,7 @@ class _AvesAppState extends State<AvesApp> {
               ? 'profile'
               : 'debug',
       'has_play_services': hasPlayServices,
-      'locales': window.locales.join(', '),
+      'locales': WidgetsBinding.instance!.window.locales.join(', '),
       'time_zone': '${now.timeZoneName} (${now.timeZoneOffset})',
     });
     _navigatorObservers = [
