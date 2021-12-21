@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 - Collection / Albums / Countries / Tags: list view (scalable like the grid view)
 - moving, editing or deleting multiple items can be cancelled
 - Viewer: option to auto play motion photos (after a small delay to show first the high-res photo)
+- German translation (thanks JanWaldhorn)
 
 ### Changed
 

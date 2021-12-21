@@ -47,6 +47,8 @@ class LocaleTile extends StatelessWidget {
     // the package `flutter_localized_locales` has the answer for all locales
     // but it comes with 3 MB of assets
     switch (locale.languageCode) {
+      case 'de':
+        return 'Deutsch';
       case 'en':
         return 'English';
       case 'fr':
