@@ -203,6 +203,7 @@
   "genericSuccessFeedback": "Выполнено!",
   "genericFailureFeedback": "Не удалось",
 
+  "menuActionConfigureView": "Вид",
   "menuActionSelect": "Выбрать",
   "menuActionSelectAll": "Выбрать все",
   "menuActionSelectNone": "Снять выделение",
@@ -211,6 +212,10 @@
 
   "viewDialogTabSort": "Сортировка",
   "viewDialogTabGroup": "Группировка",
+  "viewDialogTabLayout": "Макет",
+
+  "tileLayoutGrid": "Сетка",
+  "tileLayoutList": "Список",
 
   "aboutPageTitle": "О нас",
   "aboutLinkSources": "Исходники",
@@ -376,6 +381,7 @@
   "settingsSectionViewer": "Просмотрщик",
   "settingsViewerUseCutout": "Использовать область выреза",
   "settingsViewerMaximumBrightness": "Максимальная яркость",
+  "settingsMotionPhotoAutoPlay": "Автовоспроизведение «Живых фото»",
   "settingsImageBackground": "Фон изображения",
 
   "settingsViewerQuickActionsTile": "Быстрые действия",
