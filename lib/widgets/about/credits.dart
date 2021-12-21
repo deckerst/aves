@@ -7,6 +7,7 @@ class AboutCredits extends StatelessWidget {
   const AboutCredits({Key? key}) : super(key: key);
 
   static const translators = {
+    'Deutsch': 'JanWaldhorn',
     'Русский': 'D3ZOXY',
   };
 
