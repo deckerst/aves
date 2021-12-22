@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
-## <a id="v1.5.8"></a>[v1.5.8] - 2021-12-22
+## <a id="v1.5.9"></a>[v1.5.9] - 2021-12-22
 
 ### Added
 
@@ -21,6 +21,9 @@ All notable changes to this project will be documented in this file.
 
 - Collection: more consistent scroll bar thumb position to match the viewport
 - Settings: fixed file selection to import settings on older devices
+- Viewer: UI mode switch for Android <10
+
+## <a id="v1.5.8"></a>[v1.5.8] - 2021-12-22 [YANKED]
 
 ## <a id="v1.5.7"></a>[v1.5.7] - 2021-12-01
 
