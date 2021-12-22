@@ -42,6 +42,7 @@ class MetadataDirTile extends StatelessWidget {
     if (dirName == MetadataDirectory.xmpDirectory) {
       return XmpDirTile(
         entry: entry,
+        title: title,
         tags: tags,
         expandedNotifier: expandedDirectoryNotifier,
         initiallyExpanded: initiallyExpanded,

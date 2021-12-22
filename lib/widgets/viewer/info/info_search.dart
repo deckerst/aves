@@ -2,6 +2,7 @@ import 'package:aves/model/entry.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
+import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/viewer/embedded/embedded_data_opener.dart';
 import 'package:aves/widgets/viewer/info/metadata/metadata_dir_tile.dart';
 import 'package:aves/widgets/viewer/info/metadata/metadata_section.dart';
@@ -54,10 +55,10 @@ class InfoSearchDelegate extends SearchDelegate {
     final l10n = context.l10n;
     final suggestions = {
       l10n.viewerInfoSearchSuggestionDate: 'date or time or when -timer -uptime -exposure -timeline',
-      l10n.viewerInfoSearchSuggestionDescription: 'abstract or description or comment or textual',
+      l10n.viewerInfoSearchSuggestionDescription: 'abstract or description or comment or textual or title',
       l10n.viewerInfoSearchSuggestionDimensions: 'width or height or dimension or framesize or imagelength',
       l10n.viewerInfoSearchSuggestionResolution: 'resolution',
-      l10n.viewerInfoSearchSuggestionRights: 'rights or copyright or artist or creator or by-line or credit -tool',
+      l10n.viewerInfoSearchSuggestionRights: 'rights or copyright or attribution or license or artist or creator or by-line or credit -tool',
     };
     return ListView(
       children: suggestions.entries
@@ -104,20 +105,22 @@ class InfoSearchDelegate extends SearchDelegate {
               showThumbnails: false,
             ))
         .toList();
-    return SafeArea(
-      child: tiles.isEmpty
-          ? EmptyContent(
-              icon: AIcons.info,
-              text: context.l10n.viewerInfoSearchEmpty,
-            )
-          : EmbeddedDataOpener(
-              entry: entry,
-              child: ListView.builder(
-                padding: const EdgeInsets.all(8),
-                itemBuilder: (context, index) => tiles[index],
-                itemCount: tiles.length,
+    return MediaQueryDataProvider(
+      child: SafeArea(
+        child: tiles.isEmpty
+            ? EmptyContent(
+                icon: AIcons.info,
+                text: context.l10n.viewerInfoSearchEmpty,
+              )
+            : EmbeddedDataOpener(
+                entry: entry,
+                child: ListView.builder(
+                  padding: const EdgeInsets.all(8),
+                  itemBuilder: (context, index) => tiles[index],
+                  itemCount: tiles.length,
+                ),
               ),
-            ),
+      ),
     );
   }
 }

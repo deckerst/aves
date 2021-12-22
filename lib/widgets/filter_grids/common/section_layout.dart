@@ -1,4 +1,5 @@
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/source/enums.dart';
 import 'package:aves/model/source/section_keys.dart';
 import 'package:aves/widgets/common/grid/section_layout.dart';
 import 'package:aves/widgets/filter_grids/common/section_header.dart';
@@ -11,6 +12,7 @@ class SectionedFilterListLayoutProvider<T extends CollectionFilter> extends Sect
     required this.sections,
     required this.showHeaders,
     required double scrollableWidth,
+    required TileLayout tileLayout,
     required int columnCount,
     required double spacing,
     required double tileWidth,
@@ -21,6 +23,7 @@ class SectionedFilterListLayoutProvider<T extends CollectionFilter> extends Sect
   }) : super(
           key: key,
           scrollableWidth: scrollableWidth,
+          tileLayout: tileLayout,
           columnCount: columnCount,
           spacing: spacing,
           tileWidth: tileWidth,

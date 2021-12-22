@@ -176,7 +176,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
       processed.add,
       onError: (error) => reportService.recordError('renameEntry failed with error=$error', null),
       onDone: () async {
-        final successOps = processed.where((e) => e.success).toSet();
+        final successOps = processed.where((e) => e.success && !e.skipped).toSet();
         if (successOps.isEmpty) {
           completer.complete(false);
           return;

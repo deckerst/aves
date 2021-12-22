@@ -3,7 +3,7 @@ package deckers.thibault.aves.utils
 import androidx.exifinterface.media.ExifInterface
 
 object MimeTypes {
-    private const val IMAGE = "image"
+    const val ANY = "*/*"
 
     // generic raster
     const val BMP = "image/bmp"
@@ -45,10 +45,9 @@ object MimeTypes {
     // vector
     const val SVG = "image/svg+xml"
 
-    private const val VIDEO = "video"
-
     private const val AVI = "video/avi"
     private const val AVI_VND = "video/vnd.avi"
+    const val DVD = "video/dvd"
     private const val MKV = "video/x-matroska"
     private const val MOV = "video/quicktime"
     private const val MP2T = "video/mp2t"
@@ -57,9 +56,9 @@ object MimeTypes {
     private const val OGV = "video/ogg"
     private const val WEBM = "video/webm"
 
-    fun isImage(mimeType: String?) = mimeType != null && mimeType.startsWith(IMAGE)
+    fun isImage(mimeType: String?) = mimeType != null && mimeType.startsWith("image")
 
-    fun isVideo(mimeType: String?) = mimeType != null && mimeType.startsWith(VIDEO)
+    fun isVideo(mimeType: String?) = mimeType != null && mimeType.startsWith("video")
 
     fun isHeic(mimeType: String?) = mimeType != null && (mimeType == HEIC || mimeType == HEIF)
 

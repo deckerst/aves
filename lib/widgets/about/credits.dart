@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/basic/link_chip.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -9,6 +7,7 @@ class AboutCredits extends StatelessWidget {
   const AboutCredits({Key? key}) : super(key: key);
 
   static const translators = {
+    'Deutsch': 'JanWaldhorn',
     'Русский': 'D3ZOXY',
   };
 

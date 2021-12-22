@@ -175,7 +175,7 @@ class MediaStoreImageProvider : ImageProvider() {
                         // but for single items, `contentUri` already contains the ID
                         val itemUri = if (contentUriContainsId) contentUri else ContentUris.withAppendedId(contentUri, contentId.toLong())
                         // `mimeType` can be registered as null for file media URIs with unsupported media types (e.g. TIFF on old devices)
-                        // in that case we try to use the mime type provided along the URI
+                        // in that case we try to use the MIME type provided along the URI
                         val mimeType: String? = cursor.getString(mimeTypeColumn) ?: fileMimeType
                         val width = cursor.getInt(widthColumn)
                         val height = cursor.getInt(heightColumn)
@@ -331,6 +331,7 @@ class MediaStoreImageProvider : ImageProvider() {
         targetDir: String,
         nameConflictStrategy: NameConflictStrategy,
         entries: List<AvesEntry>,
+        isCancelledOp: CancelCheck,
         callback: ImageOpCallback,
     ) {
         val targetDirDocFile = StorageUtils.createDirectoryDocIfAbsent(activity, targetDir)
@@ -366,7 +367,7 @@ class MediaStoreImageProvider : ImageProvider() {
                 // - there is no documentation regarding support for usage with removable storage
                 // - the Media Store only allows inserting in specific primary directories ("DCIM", "Pictures") when using scoped storage
                 try {
-                    val newFields = moveSingle(
+                    val newFields = if (isCancelledOp()) skippedFieldMap else moveSingle(
                         activity = activity,
                         sourcePath = sourcePath,
                         sourceUri = sourceUri,
@@ -505,6 +506,7 @@ class MediaStoreImageProvider : ImageProvider() {
         activity: Activity,
         newFileName: String,
         entries: List<AvesEntry>,
+        isCancelledOp: CancelCheck,
         callback: ImageOpCallback,
     ) {
         for (entry in entries) {
@@ -519,7 +521,7 @@ class MediaStoreImageProvider : ImageProvider() {
 
             if (sourcePath != null) {
                 try {
-                    val newFields = renameSingle(
+                    val newFields = if (isCancelledOp()) skippedFieldMap else renameSingle(
                         activity = activity,
                         mimeType = mimeType,
                         oldMediaUri = sourceUri,
@@ -563,6 +565,7 @@ class MediaStoreImageProvider : ImageProvider() {
             throw Exception("unsupported Android version")
         }
 
+        Log.d(LOG_TAG, "rename content at uri=$mediaUri")
         val uri = StorageUtils.getMediaStoreScopedStorageSafeUri(mediaUri, mimeType)
 
         // `IS_PENDING` is necessary for `TITLE`, not for `DISPLAY_NAME`

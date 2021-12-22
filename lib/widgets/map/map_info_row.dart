@@ -104,7 +104,7 @@ class _AddressRowState extends State<_AddressRow> {
       mainAxisSize: MainAxisSize.min,
       children: [
         const SizedBox(width: MapInfoRow.iconPadding),
-        const DecoratedIcon(AIcons.location, shadows: Constants.embossShadows, size: MapInfoRow.iconSize),
+        const DecoratedIcon(AIcons.location, size: MapInfoRow.iconSize),
         const SizedBox(width: MapInfoRow.iconPadding),
         Expanded(
           child: Container(
@@ -175,7 +175,7 @@ class _DateRow extends StatelessWidget {
     return Row(
       children: [
         const SizedBox(width: MapInfoRow.iconPadding),
-        const DecoratedIcon(AIcons.date, shadows: Constants.embossShadows, size: MapInfoRow.iconSize),
+        const DecoratedIcon(AIcons.date, size: MapInfoRow.iconSize),
         const SizedBox(width: MapInfoRow.iconPadding),
         Text(
           dateText,

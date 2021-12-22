@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:aves/model/entry.dart';
 import 'package:aves/ref/xmp.dart';
+import 'package:aves/utils/color_utils.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_namespaces.dart';
 import 'package:collection/collection.dart';
@@ -9,6 +10,7 @@ import 'package:flutter/material.dart';
 
 class XmpDirTile extends StatefulWidget {
   final AvesEntry entry;
+  final String title;
   final SplayTreeMap<String, String> tags;
   final ValueNotifier<String?>? expandedNotifier;
   final bool initiallyExpanded;
@@ -16,6 +18,7 @@ class XmpDirTile extends StatefulWidget {
   const XmpDirTile({
     Key? key,
     required this.entry,
+    required this.title,
     required this.tags,
     required this.expandedNotifier,
     required this.initiallyExpanded,
@@ -38,7 +41,9 @@ class _XmpDirTileState extends State<XmpDirTile> {
     }).entries.map((kv) => XmpNamespace.create(kv.key, Map.fromEntries(kv.value))).toList()
       ..sort((a, b) => compareAsciiUpperCase(a.displayTitle, b.displayTitle));
     return AvesExpansionTile(
-      title: 'XMP',
+      // title may contain parent to distinguish multiple XMP directories
+      title: widget.title,
+      color: stringToColor('XMP'),
       expandedNotifier: widget.expandedNotifier,
       initiallyExpanded: widget.initiallyExpanded,
       children: [

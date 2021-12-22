@@ -44,12 +44,11 @@ class AlbumFilter extends CollectionFilter {
   String getTooltip(BuildContext context) => album;
 
   @override
-  Widget? iconBuilder(BuildContext context, double size, {bool showGenericIcon = true, bool embossed = false}) {
+  Widget? iconBuilder(BuildContext context, double size, {bool showGenericIcon = true}) {
     return IconUtils.getAlbumIcon(
           context: context,
           albumPath: album,
           size: size,
-          embossed: embossed,
         ) ??
         (showGenericIcon ? Icon(AIcons.album, size: size) : null);
   }

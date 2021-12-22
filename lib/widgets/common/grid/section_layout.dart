@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:aves/model/source/enums.dart';
 import 'package:aves/model/source/section_keys.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:collection/collection.dart';
@@ -12,6 +13,7 @@ import 'package:provider/provider.dart';
 
 abstract class SectionedListLayoutProvider<T> extends StatelessWidget {
   final double scrollableWidth;
+  final TileLayout tileLayout;
   final int columnCount;
   final double spacing, tileWidth, tileHeight;
   final Widget Function(T item) tileBuilder;
@@ -21,14 +23,17 @@ abstract class SectionedListLayoutProvider<T> extends StatelessWidget {
   const SectionedListLayoutProvider({
     Key? key,
     required this.scrollableWidth,
-    required this.columnCount,
+    required this.tileLayout,
+    required int columnCount,
     required this.spacing,
-    required this.tileWidth,
+    required double tileWidth,
     required this.tileHeight,
     required this.tileBuilder,
     required this.tileAnimationDelay,
     required this.child,
   })  : assert(scrollableWidth != 0),
+        columnCount = tileLayout == TileLayout.list ? 1 : columnCount,
+        tileWidth = tileLayout == TileLayout.list ? scrollableWidth : tileWidth,
         super(key: key);
 
   @override

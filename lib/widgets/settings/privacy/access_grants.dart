@@ -2,6 +2,7 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
+import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:flutter/material.dart';
 
 class StorageAccessTile extends StatelessWidget {
@@ -47,12 +48,13 @@ class _StorageAccessPageState extends State<StorageAccessPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(context.l10n.settingsStorageAccessTitle),
-      ),
-      body: SafeArea(
-        child: FutureBuilder<List<String>>(
+    return MediaQueryDataProvider(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(context.l10n.settingsStorageAccessTitle),
+        ),
+        body: SafeArea(
+          child: FutureBuilder<List<String>>(
             future: _pathLoader,
             builder: (context, snapshot) {
               if (snapshot.hasError) {
@@ -99,7 +101,9 @@ class _StorageAccessPageState extends State<StorageAccessPage> {
                       )),
                 ],
               );
-            }),
+            },
+          ),
+        ),
       ),
     );
   }

@@ -15,6 +15,7 @@
   "hideButtonLabel": "숨기기",
   "continueButtonLabel": "다음",
 
+  "cancelTooltip": "취소",
   "changeTooltip": "변경",
   "clearTooltip": "초기화",
   "previousTooltip": "이전",
@@ -202,13 +203,19 @@
   "genericSuccessFeedback": "정상 처리됐습니다",
   "genericFailureFeedback": "오류가 발생했습니다",
 
-  "menuActionSort": "정렬",
-  "menuActionGroup": "묶음",
+  "menuActionConfigureView": "보기 설정",
   "menuActionSelect": "선택",
   "menuActionSelectAll": "모두 선택",
   "menuActionSelectNone": "모두 해제",
   "menuActionMap": "지도",
   "menuActionStats": "통계",
+
+  "viewDialogTabSort": "정렬",
+  "viewDialogTabGroup": "묶음",
+  "viewDialogTabLayout": "배치",
+
+  "tileLayoutGrid": "바둑판",
+  "tileLayoutList": "목록",
 
   "aboutPageTitle": "앱 정보",
   "aboutLinkSources": "소스 코드",
@@ -260,12 +267,10 @@
 
   "collectionSearchTitlesHintText": "제목 검색",
 
-  "collectionSortTitle": "정렬",
   "collectionSortDate": "날짜",
   "collectionSortSize": "크기",
   "collectionSortName": "이름",
 
-  "collectionGroupTitle": "묶음",
   "collectionGroupAlbum": "앨범별로",
   "collectionGroupMonth": "월별로",
   "collectionGroupDay": "날짜별로",
@@ -301,12 +306,10 @@
   "drawerCollectionRaws": "Raw 이미지",
   "drawerCollectionSphericalVideos": "360° 동영상",
 
-  "chipSortTitle": "정렬",
   "chipSortDate": "날짜",
   "chipSortName": "이름",
   "chipSortCount": "항목수",
 
-  "albumGroupTitle": "묶음",
   "albumGroupTier": "단계별로",
   "albumGroupVolume": "저장공간별로",
   "albumGroupNone": "묶음 없음",
@@ -378,6 +381,7 @@
   "settingsSectionViewer": "뷰어",
   "settingsViewerUseCutout": "컷아웃 영역 사용",
   "settingsViewerMaximumBrightness": "최대 밝기",
+  "settingsMotionPhotoAutoPlay": "모션 포토 자동 재생",
   "settingsImageBackground": "이미지 배경",
 
   "settingsViewerQuickActionsTile": "빠른 작업",

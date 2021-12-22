@@ -15,6 +15,7 @@
   "hideButtonLabel": "MASQUER",
   "continueButtonLabel": "CONTINUER",
 
+  "cancelTooltip": "Annuler",
   "changeTooltip": "Modifier",
   "clearTooltip": "Effacer",
   "previousTooltip": "Précédent",
@@ -202,13 +203,19 @@
   "genericSuccessFeedback": "Succès !",
   "genericFailureFeedback": "Échec",
 
-  "menuActionSort": "Trier",
-  "menuActionGroup": "Grouper",
+  "menuActionConfigureView": "Vue",
   "menuActionSelect": "Sélectionner",
   "menuActionSelectAll": "Tout sélectionner",
   "menuActionSelectNone": "Tout désélectionner",
   "menuActionMap": "Carte",
   "menuActionStats": "Statistiques",
+
+  "viewDialogTabSort": "Tri",
+  "viewDialogTabGroup": "Groupes",
+  "viewDialogTabLayout": "Vue",
+
+  "tileLayoutGrid": "Grille",
+  "tileLayoutList": "Liste",
 
   "aboutPageTitle": "À propos",
   "aboutLinkSources": "Sources",
@@ -260,12 +267,10 @@
 
   "collectionSearchTitlesHintText": "Recherche de titres",
 
-  "collectionSortTitle": "Trier",
   "collectionSortDate": "par date",
   "collectionSortSize": "par taille",
-  "collectionSortName": "alphabétiquement",
+  "collectionSortName": "alphabétique",
 
-  "collectionGroupTitle": "Grouper",
   "collectionGroupAlbum": "par album",
   "collectionGroupMonth": "par mois",
   "collectionGroupDay": "par jour",
@@ -301,12 +306,10 @@
   "drawerCollectionRaws": "Photos Raw",
   "drawerCollectionSphericalVideos": "Vidéos à 360°",
 
-  "chipSortTitle": "Trier",
   "chipSortDate": "par date",
-  "chipSortName": "par nom",
+  "chipSortName": "alphabétique",
   "chipSortCount": "par nombre d’éléments",
 
-  "albumGroupTitle": "Grouper",
   "albumGroupTier": "par importance",
   "albumGroupVolume": "par volume de stockage",
   "albumGroupNone": "ne pas grouper",
@@ -378,6 +381,7 @@
   "settingsSectionViewer": "Visionneuse",
   "settingsViewerUseCutout": "Utiliser la zone d’encoche",
   "settingsViewerMaximumBrightness": "Luminosité maximale",
+  "settingsMotionPhotoAutoPlay": "Lecture automatique des photos animées",
   "settingsImageBackground": "Arrière-plan de l’image",
 
   "settingsViewerQuickActionsTile": "Actions rapides",
@@ -513,7 +517,6 @@
   "panoramaDisableSensorControl": "Désactiver le contrôle par capteurs",
 
   "sourceViewerPageTitle": "Code source",
-  "@sourceViewerPageTitle": {},
 
   "filePickerShowHiddenFiles": "Afficher les fichiers masqués",
   "filePickerDoNotShowHiddenFiles": "Ne pas afficher les fichiers masqués",

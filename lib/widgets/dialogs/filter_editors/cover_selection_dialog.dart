@@ -4,11 +4,9 @@ import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/item_pick_dialog.dart';
-import 'package:aves/widgets/filter_grids/common/covered_filter_chip.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
@@ -29,14 +27,13 @@ class CoverSelectionDialog extends StatefulWidget {
 
 class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
   late bool _isCustom;
-  AvesEntry? _customEntry, _recentEntry;
+  AvesEntry? _customEntry;
 
   CollectionFilter get filter => widget.filter;
 
   @override
   void initState() {
     super.initState();
-    _recentEntry = context.read<CollectionSource>().recentEntry(filter);
     _customEntry = widget.customEntry;
     _isCustom = _customEntry != null;
   }
@@ -47,10 +44,7 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
       child: Builder(
         builder: (context) {
           final l10n = context.l10n;
-          final shortestSide = context.select<MediaQueryData, double>((mq) => mq.size.shortestSide);
-          final extent = (shortestSide / 3.0).clamp(60.0, 160.0);
           return AvesDialog(
-            context: context,
             title: l10n.setCoverDialogTitle,
             scrollableContent: [
               ...[false, true].map(
@@ -88,17 +82,6 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
                         : title,
                   );
                 },
-              ),
-              Container(
-                alignment: Alignment.center,
-                padding: const EdgeInsets.only(bottom: 16),
-                child: CoveredFilterChip(
-                  filter: filter,
-                  extent: extent,
-                  coverEntry: _isCustom ? _customEntry : _recentEntry,
-                  onTap: (filter) => _pickEntry(),
-                  heroType: HeroType.never,
-                ),
               ),
             ],
             actions: [

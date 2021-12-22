@@ -1,5 +1,6 @@
 package deckers.thibault.aves.metadata
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.media.MediaExtractor
 import android.media.MediaFormat
@@ -56,6 +57,7 @@ object MultiPage {
 
                     format.getSafeInt(MediaFormat.KEY_WIDTH) { track[KEY_WIDTH] = it }
                     format.getSafeInt(MediaFormat.KEY_HEIGHT) { track[KEY_HEIGHT] = it }
+                    @SuppressLint("ObsoleteSdkInt")
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                         format.getSafeInt(MediaFormat.KEY_IS_DEFAULT) { track[KEY_IS_DEFAULT] = it != 0 }
                     }

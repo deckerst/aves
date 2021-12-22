@@ -10,9 +10,7 @@ import 'package:aves/widgets/common/magnifier/pan/scroll_physics.dart';
 import 'package:aves/widgets/viewer/entry_horizontal_pager.dart';
 import 'package:aves/widgets/viewer/info/info_page.dart';
 import 'package:aves/widgets/viewer/info/notifications.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:screen_brightness/screen_brightness.dart';
 
 class ViewerVerticalPageView extends StatefulWidget {

@@ -11,7 +11,6 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 mixin SizeAwareMixin {
   Future<bool> checkFreeSpaceForMove(
@@ -81,7 +80,6 @@ mixin SizeAwareMixin {
         final freeSize = formatFileSize(locale, free);
         final volume = destinationVolume.getDescription(context);
         return AvesDialog(
-          context: context,
           title: l10n.notEnoughSpaceDialogTitle,
           content: Text(l10n.notEnoughSpaceDialogMessage(neededSize, freeSize, volume)),
           actions: [

@@ -1,6 +1,5 @@
 import 'package:aves/widgets/common/basic/reselectable_radio_list_tile.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 import 'aves_dialog.dart';
 
@@ -41,7 +40,6 @@ class _AvesSelectionDialogState<T> extends State<AvesSelectionDialog<T>> {
     final confirmationButtonLabel = widget.confirmationButtonLabel;
     final needConfirmation = confirmationButtonLabel != null;
     return AvesDialog(
-      context: context,
       title: widget.title,
       scrollableContent: [
         if (message != null)

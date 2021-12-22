@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:aves/l10n/l10n.dart';
 import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/actions/entry_set_actions.dart';
 import 'package:aves/model/actions/video_actions.dart';
@@ -15,7 +16,6 @@ import 'package:aves/services/common/services.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final Settings settings = Settings._private();
@@ -49,6 +49,7 @@ class Settings extends ChangeNotifier {
   static const homePageKey = 'home_page';
   static const catalogTimeZoneKey = 'catalog_time_zone';
   static const tileExtentPrefixKey = 'tile_extent_';
+  static const tileLayoutPrefixKey = 'tile_layout_';
 
   // drawer
   static const drawerTypeBookmarksKey = 'drawer_type_bookmarks';
@@ -82,6 +83,8 @@ class Settings extends ChangeNotifier {
   static const enableOverlayBlurEffectKey = 'enable_overlay_blur_effect';
   static const viewerUseCutoutKey = 'viewer_use_cutout';
   static const viewerMaxBrightnessKey = 'viewer_max_brightness';
+  static const enableMotionPhotoAutoPlayKey = 'motion_photo_auto_play';
+  static const imageBackgroundKey = 'image_background';
 
   // video
   static const videoQuickActionsKey = 'video_quick_actions';
@@ -102,9 +105,6 @@ class Settings extends ChangeNotifier {
   static const infoMapZoomKey = 'info_map_zoom';
   static const coordinateFormatKey = 'coordinates_format';
   static const unitSystemKey = 'unit_system';
-
-  // rendering
-  static const imageBackgroundKey = 'image_background';
 
   // search
   static const saveSearchHistoryKey = 'save_search_history';
@@ -217,12 +217,26 @@ class Settings extends ChangeNotifier {
     _appliedLocale = null;
   }
 
+  List<Locale> _systemLocalesFallback = [];
+
+  set systemLocalesFallback(List<Locale> locales) => _systemLocalesFallback = locales;
+
   Locale? _appliedLocale;
 
   Locale get appliedLocale {
     if (_appliedLocale == null) {
-      final preferredLocale = locale;
-      _appliedLocale = basicLocaleListResolution(preferredLocale != null ? [preferredLocale] : null, AppLocalizations.supportedLocales);
+      final _locale = locale;
+      final preferredLocales = <Locale>[];
+      if (_locale != null) {
+        preferredLocales.add(_locale);
+      } else {
+        preferredLocales.addAll(WidgetsBinding.instance!.window.locales);
+        if (preferredLocales.isEmpty) {
+          // the `window` locales may be empty in a window-less service context
+          preferredLocales.addAll(_systemLocalesFallback);
+        }
+      }
+      _appliedLocale = basicLocaleListResolution(preferredLocales, AppLocalizations.supportedLocales);
     }
     return _appliedLocale!;
   }
@@ -246,6 +260,10 @@ class Settings extends ChangeNotifier {
   double getTileExtent(String routeName) => _prefs!.getDouble(tileExtentPrefixKey + routeName) ?? 0;
 
   void setTileExtent(String routeName, double newValue) => setAndNotify(tileExtentPrefixKey + routeName, newValue);
+
+  TileLayout getTileLayout(String routeName) => getEnumOrDefault(tileLayoutPrefixKey + routeName, SettingsDefaults.tileLayout, TileLayout.values);
+
+  void setTileLayout(String routeName, TileLayout newValue) => setAndNotify(tileLayoutPrefixKey + routeName, newValue.toString());
 
   // drawer
 
@@ -360,6 +378,14 @@ class Settings extends ChangeNotifier {
 
   set viewerMaxBrightness(bool newValue) => setAndNotify(viewerMaxBrightnessKey, newValue);
 
+  bool get enableMotionPhotoAutoPlay => getBoolOrDefault(enableMotionPhotoAutoPlayKey, SettingsDefaults.enableMotionPhotoAutoPlay);
+
+  set enableMotionPhotoAutoPlay(bool newValue) => setAndNotify(enableMotionPhotoAutoPlayKey, newValue);
+
+  EntryBackground get imageBackground => getEnumOrDefault(imageBackgroundKey, SettingsDefaults.imageBackground, EntryBackground.values);
+
+  set imageBackground(EntryBackground newValue) => setAndNotify(imageBackgroundKey, newValue.toString());
+
   // video
 
   List<VideoAction> get videoQuickActions => getEnumListOrDefault(videoQuickActionsKey, SettingsDefaults.videoQuickActions, VideoAction.values);
@@ -421,12 +447,6 @@ class Settings extends ChangeNotifier {
   UnitSystem get unitSystem => getEnumOrDefault(unitSystemKey, SettingsDefaults.unitSystem, UnitSystem.values);
 
   set unitSystem(UnitSystem newValue) => setAndNotify(unitSystemKey, newValue.toString());
-
-  // rendering
-
-  EntryBackground get imageBackground => getEnumOrDefault(imageBackgroundKey, SettingsDefaults.imageBackground, EntryBackground.values);
-
-  set imageBackground(EntryBackground newValue) => setAndNotify(imageBackgroundKey, newValue.toString());
 
   // search
 
@@ -570,6 +590,12 @@ class Settings extends ChangeNotifier {
           } else {
             debugPrint('failed to import key=$key, value=$value is not a double');
           }
+        } else if (key.startsWith(tileLayoutPrefixKey)) {
+          if (value is String) {
+            _prefs!.setString(key, value);
+          } else {
+            debugPrint('failed to import key=$key, value=$value is not a string');
+          }
         } else {
           switch (key) {
             case subtitleTextColorKey:
@@ -602,6 +628,7 @@ class Settings extends ChangeNotifier {
             case enableOverlayBlurEffectKey:
             case viewerUseCutoutKey:
             case viewerMaxBrightnessKey:
+            case enableMotionPhotoAutoPlayKey:
             case enableVideoHardwareAccelerationKey:
             case enableVideoAutoPlayKey:
             case subtitleShowOutlineKey:
@@ -622,12 +649,12 @@ class Settings extends ChangeNotifier {
             case albumSortFactorKey:
             case countrySortFactorKey:
             case tagSortFactorKey:
+            case imageBackgroundKey:
             case videoLoopModeKey:
             case subtitleTextAlignmentKey:
             case infoMapStyleKey:
             case coordinateFormatKey:
             case unitSystemKey:
-            case imageBackgroundKey:
             case accessibilityAnimationsKey:
             case timeToTakeActionKey:
               if (value is String) {

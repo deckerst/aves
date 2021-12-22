@@ -50,7 +50,6 @@ mixin PermissionAwareMixin {
           final directory = dir.relativeDir.isEmpty ? context.l10n.rootDirectoryDescription : context.l10n.otherDirectoryDescription(dir.relativeDir);
           final volume = dir.getVolumeDescription(context);
           return AvesDialog(
-            context: context,
             title: context.l10n.storageAccessDialogTitle,
             content: Text(context.l10n.storageAccessDialogMessage(directory, volume)),
             actions: [
@@ -84,7 +83,6 @@ mixin PermissionAwareMixin {
         final directory = dir.relativeDir.isEmpty ? context.l10n.rootDirectoryDescription : context.l10n.otherDirectoryDescription(dir.relativeDir);
         final volume = dir.getVolumeDescription(context);
         return AvesDialog(
-          context: context,
           title: context.l10n.restrictedAccessDialogTitle,
           content: Text(context.l10n.restrictedAccessDialogMessage(directory, volume)),
           actions: [

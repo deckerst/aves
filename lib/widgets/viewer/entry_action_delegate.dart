@@ -161,7 +161,6 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       context: context,
       builder: (context) {
         return AvesDialog(
-          context: context,
           content: Text(context.l10n.deleteEntriesConfirmationDialogMessage(1)),
           actions: [
             TextButton(
@@ -197,15 +196,8 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       await source.init();
       unawaited(source.refresh());
     }
-    final destinationAlbum = await Navigator.push(
-      context,
-      MaterialPageRoute<String>(
-        settings: const RouteSettings(name: AlbumPickPage.routeName),
-        builder: (context) => AlbumPickPage(source: source, moveType: MoveType.export),
-      ),
-    );
-
-    if (destinationAlbum == null || destinationAlbum.isEmpty) return;
+    final destinationAlbum = await pickAlbum(context: context, moveType: MoveType.export);
+    if (destinationAlbum == null) return;
     if (!await checkStoragePermissionForAlbums(context, {destinationAlbum})) return;
 
     if (!await checkFreeSpaceForMove(context, {entry}, destinationAlbum, MoveType.export)) return;
@@ -244,14 +236,15 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       ),
       itemCount: selectionCount,
       onDone: (processed) {
-        final exportOps = processed.where((e) => e.success);
-        final exportCount = exportOps.length;
+        final successOps = processed.where((e) => e.success).toSet();
+        final exportedOps = successOps.where((e) => !e.skipped).toSet();
+        final newUris = exportedOps.map((v) => v.newFields['uri'] as String?).whereNotNull().toSet();
         final isMainMode = context.read<ValueNotifier<AppMode>>().value == AppMode.main;
 
         source.resumeMonitoring();
-        source.refreshUris(exportOps.map((v) => v.newFields['uri'] as String?).whereNotNull().toSet());
+        source.refreshUris(newUris);
 
-        final showAction = isMainMode && exportCount > 0
+        final showAction = isMainMode && newUris.isNotEmpty
             ? SnackBarAction(
                 label: context.l10n.showButtonLabel,
                 onPressed: () async {
@@ -272,7 +265,6 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
                   ));
                   final delayDuration = context.read<DurationsData>().staggeredAnimationPageTarget;
                   await Future.delayed(delayDuration + Durations.highlightScrollInitDelay);
-                  final newUris = exportOps.map((v) => v.newFields['uri'] as String?).toSet();
                   final targetEntry = targetCollection.sortedEntries.firstWhereOrNull((entry) => newUris.contains(entry.uri));
                   if (targetEntry != null) {
                     highlightInfo.trackItem(targetEntry, highlightItem: targetEntry);
@@ -280,8 +272,9 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
                 },
               )
             : null;
-        if (exportCount < selectionCount) {
-          final count = selectionCount - exportCount;
+        final successCount = successOps.length;
+        if (successCount < selectionCount) {
+          final count = selectionCount - successCount;
           showFeedback(
             context,
             context.l10n.collectionExportFailureFeedback(count),

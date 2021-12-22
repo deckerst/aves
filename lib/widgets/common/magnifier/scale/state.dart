@@ -1,8 +1,5 @@
-import 'dart:ui';
-
 import 'package:aves/widgets/common/magnifier/controller/state.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 @immutable

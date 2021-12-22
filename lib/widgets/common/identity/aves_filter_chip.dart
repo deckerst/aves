@@ -37,7 +37,7 @@ class AvesFilterDecoration {
 
 class AvesFilterChip extends StatefulWidget {
   final CollectionFilter filter;
-  final bool removable, showGenericIcon, useFilterColor;
+  final bool removable, showText, showGenericIcon, useFilterColor;
   final AvesFilterDecoration? decoration;
   final String? banner;
   final Widget? leadingOverride, details;
@@ -60,6 +60,7 @@ class AvesFilterChip extends StatefulWidget {
     Key? key,
     required this.filter,
     this.removable = false,
+    this.showText = true,
     this.showGenericIcon = true,
     this.useFilterColor = true,
     this.decoration,
@@ -160,66 +161,70 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
 
   @override
   Widget build(BuildContext context) {
-    final chipBackground = Theme.of(context).scaffoldBackgroundColor;
-    final textScaleFactor = MediaQuery.textScaleFactorOf(context);
-    final iconSize = AvesFilterChip.iconSize * textScaleFactor;
-    final leading = widget.leadingOverride ?? filter.iconBuilder(context, iconSize, showGenericIcon: widget.showGenericIcon);
-    final trailing = widget.removable ? Icon(AIcons.clear, size: iconSize) : null;
-
     final decoration = widget.decoration;
-    Widget content = Row(
-      mainAxisSize: decoration != null ? MainAxisSize.max : MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        if (leading != null) ...[
-          leading,
-          SizedBox(width: padding),
-        ],
-        Flexible(
-          child: Text(
-            filter.getLabel(context),
-            style: const TextStyle(
-              fontSize: AvesFilterChip.fontSize,
-            ),
-            softWrap: false,
-            overflow: TextOverflow.fade,
-          ),
-        ),
-        if (trailing != null) ...[
-          SizedBox(width: padding),
-          trailing,
-        ],
-      ],
-    );
+    final chipBackground = Theme.of(context).scaffoldBackgroundColor;
 
-    final details = widget.details;
-    if (details != null) {
-      content = Column(
-        mainAxisSize: MainAxisSize.min,
+    Widget? content;
+    if (widget.showText) {
+      final textScaleFactor = MediaQuery.textScaleFactorOf(context);
+      final iconSize = AvesFilterChip.iconSize * textScaleFactor;
+      final leading = widget.leadingOverride ?? filter.iconBuilder(context, iconSize, showGenericIcon: widget.showGenericIcon);
+      final trailing = widget.removable ? Icon(AIcons.clear, size: iconSize) : null;
+
+      content = Row(
+        mainAxisSize: decoration != null ? MainAxisSize.max : MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          content,
-          Flexible(child: details),
+          if (leading != null) ...[
+            leading,
+            SizedBox(width: padding),
+          ],
+          Flexible(
+            child: Text(
+              filter.getLabel(context),
+              style: const TextStyle(
+                fontSize: AvesFilterChip.fontSize,
+              ),
+              softWrap: false,
+              overflow: TextOverflow.fade,
+            ),
+          ),
+          if (trailing != null) ...[
+            SizedBox(width: padding),
+            trailing,
+          ],
         ],
       );
-    }
 
-    if (decoration != null) {
-      content = Align(
-        alignment: Alignment.bottomCenter,
-        child: ClipRRect(
-          borderRadius: decoration.textBorderRadius,
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: padding * 2, vertical: AvesFilterChip.decoratedContentVerticalPadding),
-            color: chipBackground,
-            child: content,
+      final details = widget.details;
+      if (details != null) {
+        content = Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            content,
+            Flexible(child: details),
+          ],
+        );
+      }
+
+      if (decoration != null) {
+        content = Align(
+          alignment: Alignment.bottomCenter,
+          child: ClipRRect(
+            borderRadius: decoration.textBorderRadius,
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: padding * 2, vertical: AvesFilterChip.decoratedContentVerticalPadding),
+              color: chipBackground,
+              child: content,
+            ),
           ),
-        ),
-      );
-    } else {
-      content = Padding(
-        padding: EdgeInsets.symmetric(horizontal: padding * 2),
-        child: content,
-      );
+        );
+      } else {
+        content = Padding(
+          padding: EdgeInsets.symmetric(horizontal: padding * 2),
+          child: content,
+        );
+      }
     }
 
     final borderRadius = decoration?.chipBorderRadius ?? const BorderRadius.all(Radius.circular(AvesFilterChip.defaultRadius));
@@ -244,7 +249,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
               borderRadius: borderRadius,
             ),
             child: InkWell(
-              // as of Flutter v1.22.5, `InkWell` does not have `onLongPressStart` like `GestureDetector`,
+              // as of Flutter v2.8.0, `InkWell` does not have `onLongPressStart` like `GestureDetector`,
               // so we get the long press details from the tap instead
               onTapDown: onLongPress != null ? (details) => _tapPosition = details.globalPosition : null,
               onTap: onTap != null

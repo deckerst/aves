@@ -47,11 +47,25 @@ abstract class ImageProvider {
         throw UnsupportedOperationException("`delete` is not supported by this image provider")
     }
 
-    open suspend fun moveMultiple(activity: Activity, copy: Boolean, targetDir: String, nameConflictStrategy: NameConflictStrategy, entries: List<AvesEntry>, callback: ImageOpCallback) {
+    open suspend fun moveMultiple(
+        activity: Activity,
+        copy: Boolean,
+        targetDir: String,
+        nameConflictStrategy: NameConflictStrategy,
+        entries: List<AvesEntry>,
+        isCancelledOp: CancelCheck,
+        callback: ImageOpCallback,
+    ) {
         callback.onFailure(UnsupportedOperationException("`moveMultiple` is not supported by this image provider"))
     }
 
-    open suspend fun renameMultiple(activity: Activity, newFileName: String, entries: List<AvesEntry>, callback: ImageOpCallback) {
+    open suspend fun renameMultiple(
+        activity: Activity,
+        newFileName: String,
+        entries: List<AvesEntry>,
+        isCancelledOp: CancelCheck,
+        callback: ImageOpCallback,
+    ) {
         callback.onFailure(UnsupportedOperationException("`renameMultiple` is not supported by this image provider"))
     }
 
@@ -937,3 +951,5 @@ abstract class ImageProvider {
         }
     }
 }
+
+typealias CancelCheck = () -> Boolean

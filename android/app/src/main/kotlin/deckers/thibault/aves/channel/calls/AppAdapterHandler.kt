@@ -1,5 +1,6 @@
 package deckers.thibault.aves.channel.calls
 
+import android.annotation.SuppressLint
 import android.content.*
 import android.content.pm.ApplicationInfo
 import android.content.res.Configuration
@@ -63,6 +64,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
             // apps tend to use their name in English when creating directories
             // so we get their names in English as well as the current locale
             val englishConfig = Configuration().apply {
+                @SuppressLint("ObsoleteSdkInt")
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
                     setLocale(Locale.ENGLISH)
                 } else {
@@ -272,13 +274,13 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
         } else {
             var mimeType = "*/*"
             if (mimeTypes.size == 1) {
-                // items have the same mime type & subtype
+                // items have the same MIME type & subtype
                 mimeType = mimeTypes.first()
             } else {
                 // items have different subtypes
                 val mimeTypeTypes = mimeTypes.map { it.split("/") }.distinct()
                 if (mimeTypeTypes.size == 1) {
-                    // items have the same mime type
+                    // items have the same MIME type
                     mimeType = "${mimeTypeTypes.first()}/*"
                 }
             }

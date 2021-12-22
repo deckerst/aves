@@ -4,7 +4,6 @@ import 'package:aves/model/entry.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/grid/theme.dart';
 import 'package:aves/widgets/common/thumbnail/decorated.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class ThumbnailScroller extends StatefulWidget {

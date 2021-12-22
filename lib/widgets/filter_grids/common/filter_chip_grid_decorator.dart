@@ -7,12 +7,15 @@ import 'package:flutter/widgets.dart';
 class FilterChipGridDecorator<T extends CollectionFilter, U extends FilterGridItem<T>> extends StatelessWidget {
   final U gridItem;
   final double extent;
+  final bool selectable, highlightable;
   final Widget child;
 
   const FilterChipGridDecorator({
     Key? key,
     required this.gridItem,
     required this.extent,
+    this.selectable = true,
+    this.highlightable = true,
     required this.child,
   }) : super(key: key);
 
@@ -26,16 +29,18 @@ class FilterChipGridDecorator<T extends CollectionFilter, U extends FilterGridIt
         fit: StackFit.passthrough,
         children: [
           child,
-          GridItemSelectionOverlay<FilterGridItem<T>>(
-            item: gridItem,
-            borderRadius: borderRadius,
-            padding: EdgeInsets.all(extent / 24),
-          ),
-          ChipHighlightOverlay(
-            filter: gridItem.filter,
-            extent: extent,
-            borderRadius: borderRadius,
-          ),
+          if (selectable)
+            GridItemSelectionOverlay<FilterGridItem<T>>(
+              item: gridItem,
+              borderRadius: borderRadius,
+              padding: EdgeInsets.all(extent / 24),
+            ),
+          if (highlightable)
+            ChipHighlightOverlay(
+              filter: gridItem.filter,
+              extent: extent,
+              borderRadius: borderRadius,
+            ),
         ],
       ),
     );

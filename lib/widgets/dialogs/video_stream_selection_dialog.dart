@@ -47,7 +47,6 @@ class _VideoStreamSelectionDialogState extends State<VideoStreamSelectionDialog>
     final canSelectText = _textStreams.length > 1;
     final canSelect = canSelectVideo || canSelectAudio || canSelectText;
     return AvesDialog(
-      context: context,
       content: canSelect ? null : Text(context.l10n.videoStreamSelectionDialogNoSelection),
       scrollableContent: canSelect
           ? [

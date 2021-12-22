@@ -14,8 +14,8 @@ import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
 import 'package:aves/widgets/common/action_mixins/size_aware.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
-import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
 import 'package:aves/widgets/dialogs/filter_editors/cover_selection_dialog.dart';
+import 'package:aves/widgets/dialogs/tile_view_dialog.dart';
 import 'package:aves/widgets/map/map_page.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
 import 'package:aves/widgets/stats/stats_page.dart';
@@ -32,6 +32,10 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
 
   set sortFactor(ChipSortFactor factor);
 
+  TileLayout get tileLayout;
+
+  set tileLayout(TileLayout tileLayout);
+
   bool isVisible(
     ChipSetAction action, {
     required AppMode appMode,
@@ -43,10 +47,8 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
     final hasSelection = selectedFilters.isNotEmpty;
     switch (action) {
       // general
-      case ChipSetAction.sort:
+      case ChipSetAction.configureView:
         return true;
-      case ChipSetAction.group:
-        return false;
       case ChipSetAction.select:
         return appMode.canSelect && !isSelecting;
       case ChipSetAction.selectAll:
@@ -91,8 +93,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
 
     switch (action) {
       // general
-      case ChipSetAction.sort:
-      case ChipSetAction.group:
+      case ChipSetAction.configureView:
       case ChipSetAction.select:
       case ChipSetAction.selectAll:
       case ChipSetAction.selectNone:
@@ -120,10 +121,8 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
   void onActionSelected(BuildContext context, Set<T> filters, ChipSetAction action) {
     switch (action) {
       // general
-      case ChipSetAction.sort:
-        _showSortDialog(context);
-        break;
-      case ChipSetAction.group:
+      case ChipSetAction.configureView:
+        configureView(context);
         break;
       case ChipSetAction.select:
         context.read<Selection<FilterGridItem<T>>>().select();
@@ -178,23 +177,35 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
     return filters.isEmpty ? visibleEntries : visibleEntries.where((entry) => filters.any((f) => f.test(entry)));
   }
 
-  Future<void> _showSortDialog(BuildContext context) async {
-    final factor = await showDialog<ChipSortFactor>(
+  Future<void> configureView(BuildContext context) async {
+    final initialValue = Tuple3(
+      sortFactor,
+      null,
+      tileLayout,
+    );
+    final value = await showDialog<Tuple3<ChipSortFactor?, void, TileLayout?>>(
       context: context,
-      builder: (context) => AvesSelectionDialog<ChipSortFactor>(
-        initialValue: sortFactor,
-        options: {
-          ChipSortFactor.date: context.l10n.chipSortDate,
-          ChipSortFactor.name: context.l10n.chipSortName,
-          ChipSortFactor.count: context.l10n.chipSortCount,
-        },
-        title: context.l10n.chipSortTitle,
-      ),
+      builder: (context) {
+        final l10n = context.l10n;
+        return TileViewDialog<ChipSortFactor, void, TileLayout>(
+          initialValue: initialValue,
+          sortOptions: {
+            ChipSortFactor.date: context.l10n.chipSortDate,
+            ChipSortFactor.name: context.l10n.chipSortName,
+            ChipSortFactor.count: context.l10n.chipSortCount,
+          },
+          layoutOptions: {
+            TileLayout.grid: l10n.tileLayoutGrid,
+            TileLayout.list: l10n.tileLayoutList,
+          },
+        );
+      },
     );
     // wait for the dialog to hide as applying the change may block the UI
     await Future.delayed(Durations.dialogTransitionAnimation * timeDilation);
-    if (factor != null) {
-      sortFactor = factor;
+    if (value != null && initialValue != value) {
+      sortFactor = value.item1!;
+      tileLayout = value.item3!;
     }
   }
 
@@ -244,7 +255,6 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
       context: context,
       builder: (context) {
         return AvesDialog(
-          context: context,
           content: Text(context.l10n.hideFilterConfirmationDialogMessage),
           actions: [
             TextButton(

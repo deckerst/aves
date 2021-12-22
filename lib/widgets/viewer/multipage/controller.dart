@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/multipage.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 
 class MultiPageController {
   final AvesEntry entry;

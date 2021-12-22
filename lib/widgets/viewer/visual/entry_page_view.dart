@@ -63,6 +63,9 @@ class _EntryPageViewState extends State<EntryPageView> {
 
   AvesEntry get entry => widget.pageEntry;
 
+  // use the high res photo as cover for the video part of a motion photo
+  ImageProvider get videoCoverUriImage => mainEntry.isMotionPhoto ? mainEntry.uriImage : entry.uriImage;
+
   static const initialScale = ScaleLevel(ref: ScaleReference.contained);
   static const minScale = ScaleLevel(ref: ScaleReference.contained);
   static const maxScale = ScaleLevel(factor: 2.0);
@@ -98,7 +101,7 @@ class _EntryPageViewState extends State<EntryPageView> {
     _subscriptions.add(_magnifierController.scaleBoundariesStream.listen(_onViewScaleBoundariesChanged));
     if (entry.isVideo) {
       _videoCoverStreamListener = ImageStreamListener((image, _) => _videoCoverInfoNotifier.value = image);
-      _videoCoverStream = entry.uriImage.resolve(ImageConfiguration.empty);
+      _videoCoverStream = videoCoverUriImage.resolve(ImageConfiguration.empty);
       _videoCoverStream!.addListener(_videoCoverStreamListener);
     }
   }
@@ -248,7 +251,7 @@ class _EntryPageViewState extends State<EntryPageView> {
                     controller: coverController,
                     displaySize: coverSize,
                     child: Image(
-                      image: entry.uriImage,
+                      image: videoCoverUriImage,
                     ),
                   );
                 }

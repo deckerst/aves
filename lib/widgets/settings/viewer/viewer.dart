@@ -42,6 +42,14 @@ class ViewerSection extends StatelessWidget {
             title: Text(context.l10n.settingsViewerMaximumBrightness),
           ),
         ),
+        Selector<Settings, bool>(
+          selector: (context, s) => s.enableMotionPhotoAutoPlay,
+          builder: (context, current, child) => SwitchListTile(
+            value: current,
+            onChanged: (v) => settings.enableMotionPhotoAutoPlay = v,
+            title: Text(context.l10n.settingsMotionPhotoAutoPlay),
+          ),
+        ),
         Selector<Settings, EntryBackground>(
           selector: (context, s) => s.imageBackground,
           builder: (context, current, child) => ListTile(

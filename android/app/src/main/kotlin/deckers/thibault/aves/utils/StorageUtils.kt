@@ -93,7 +93,6 @@ object StorageUtils {
         }
     }
 
-    @SuppressLint("ObsoleteSdkInt")
     private fun findVolumePaths(context: Context): Array<String> {
         // Final set of paths
         val paths = HashSet<String>()

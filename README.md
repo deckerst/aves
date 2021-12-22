@@ -35,6 +35,10 @@ Aves integrates with Android (from **API 19 to 31**, i.e. from KitKat to S) with
 
 <img src="https://raw.githubusercontent.com/deckerst/aves_extra/main/screenshots/S10/1-S10-collection.png" alt='Collection screenshot' height="400" /><img src="https://raw.githubusercontent.com/deckerst/aves_extra/main/screenshots/S10/2-S10-viewer.png" alt='Image screenshot' height="400" /><img src="https://raw.githubusercontent.com/deckerst/aves_extra/main/screenshots/S10/5-S10-stats.png" alt='Stats screenshot' height="400" /><img src="https://raw.githubusercontent.com/deckerst/aves_extra/main/screenshots/S10/3-S10-info__basic_.png" alt='Info (basic) screenshot' height="400" /><img src="https://raw.githubusercontent.com/deckerst/aves_extra/main/screenshots/S10/4-S10-info__metadata_.png" alt='Info (metadata) screenshot' height="400" /><img src="https://raw.githubusercontent.com/deckerst/aves_extra/main/screenshots/S10/6-S10-countries.png" alt='Countries screenshot' height="400" />
 
+## Changelog
+
+The list of changes for past and future releases is available [here](https://github.com/deckerst/aves/blob/develop/CHANGELOG.md).
+
 ## Permissions
 
 Aves requires a few permissions to do its job:

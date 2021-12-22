@@ -6,6 +6,9 @@ import 'package:aves/model/settings/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/accessibility_service.dart';
 import 'package:aves/theme/durations.dart';
+import 'package:aves/theme/icons.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
@@ -15,7 +18,17 @@ mixin FeedbackMixin {
   void dismissFeedback(BuildContext context) => ScaffoldMessenger.of(context).hideCurrentSnackBar();
 
   void showFeedback(BuildContext context, String message, [SnackBarAction? action]) {
-    showFeedbackWithMessenger(context, ScaffoldMessenger.of(context), message, action);
+    ScaffoldMessengerState? scaffoldMessenger;
+    try {
+      scaffoldMessenger = ScaffoldMessenger.of(context);
+    } catch (e) {
+      // minor issue: the page triggering this feedback likely
+      // allows the user to navigate away and they did so
+      debugPrint('failed to find ScaffoldMessenger in context');
+    }
+    if (scaffoldMessenger != null) {
+      showFeedbackWithMessenger(context, scaffoldMessenger, message, action);
+    }
   }
 
   // provide the messenger if feedback happens as the widget is disposed
@@ -60,32 +73,36 @@ mixin FeedbackMixin {
     required BuildContext context,
     required Stream<T> opStream,
     required int itemCount,
+    VoidCallback? onCancel,
     void Function(Set<T> processed)? onDone,
   }) {
-    late OverlayEntry _opReportOverlayEntry;
-    _opReportOverlayEntry = OverlayEntry(
+    showDialog(
+      context: context,
+      barrierDismissible: false,
       builder: (context) => ReportOverlay<T>(
         opStream: opStream,
         itemCount: itemCount,
+        onCancel: onCancel,
         onDone: (processed) {
-          _opReportOverlayEntry.remove();
+          Navigator.of(context).pop();
           onDone?.call(processed);
         },
       ),
     );
-    Overlay.of(context)!.insert(_opReportOverlayEntry);
   }
 }
 
 class ReportOverlay<T> extends StatefulWidget {
   final Stream<T> opStream;
   final int itemCount;
+  final VoidCallback? onCancel;
   final void Function(Set<T> processed) onDone;
 
   const ReportOverlay({
     Key? key,
     required this.opStream,
     required this.itemCount,
+    required this.onCancel,
     required this.onDone,
   }) : super(key: key);
 
@@ -100,8 +117,9 @@ class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerPr
 
   Stream<T> get opStream => widget.opStream;
 
+  static const fontSize = 18.0;
   static const radius = 160.0;
-  static const strokeWidth = 16.0;
+  static const strokeWidth = 8.0;
 
   @override
   void initState() {
@@ -136,52 +154,70 @@ class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerPr
   @override
   Widget build(BuildContext context) {
     final progressColor = Theme.of(context).colorScheme.secondary;
-    return AbsorbPointer(
+    final animate = context.select<Settings, bool>((v) => v.accessibilityAnimations.animate);
+    return WillPopScope(
+      onWillPop: () => SynchronousFuture(false),
       child: StreamBuilder<T>(
         stream: opStream,
         builder: (context, snapshot) {
           final processedCount = processed.length.toDouble();
           final total = widget.itemCount;
-          assert(processedCount <= total);
           final percent = min(1.0, processedCount / total);
-          final animate = context.select<Settings, bool>((v) => v.accessibilityAnimations.animate);
           return FadeTransition(
             opacity: _animation,
-            child: Container(
-              decoration: const BoxDecoration(
-                gradient: RadialGradient(
-                  colors: [
-                    Colors.black,
-                    Colors.black54,
-                  ],
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Container(
+                  width: radius + 2,
+                  height: radius + 2,
+                  decoration: const BoxDecoration(
+                    color: Color(0xBB000000),
+                    shape: BoxShape.circle,
+                  ),
                 ),
-              ),
-              child: Center(
-                child: Stack(
-                  children: [
-                    if (animate)
-                      Container(
-                        width: radius,
-                        height: radius,
-                        padding: const EdgeInsets.all(strokeWidth / 2),
-                        child: CircularProgressIndicator(
-                          color: progressColor.withOpacity(.1),
-                          strokeWidth: strokeWidth,
+                if (animate)
+                  Container(
+                    width: radius,
+                    height: radius,
+                    padding: const EdgeInsets.all(strokeWidth / 2),
+                    child: CircularProgressIndicator(
+                      color: progressColor.withOpacity(.1),
+                      strokeWidth: strokeWidth,
+                    ),
+                  ),
+                CircularPercentIndicator(
+                  percent: percent,
+                  lineWidth: strokeWidth,
+                  radius: radius,
+                  backgroundColor: Colors.white24,
+                  progressColor: progressColor,
+                  animation: animate,
+                  center: Text(
+                    NumberFormat.percentPattern().format(percent),
+                    style: const TextStyle(fontSize: fontSize),
+                  ),
+                  animateFromLastPercent: true,
+                ),
+                if (widget.onCancel != null)
+                  Material(
+                    color: Colors.transparent,
+                    child: Container(
+                      width: radius,
+                      height: radius,
+                      margin: const EdgeInsets.only(top: fontSize),
+                      alignment: const FractionalOffset(0.5, 0.75),
+                      child: Tooltip(
+                        message: context.l10n.cancelTooltip,
+                        preferBelow: false,
+                        child: IconButton(
+                          icon: const Icon(AIcons.cancel),
+                          onPressed: widget.onCancel,
                         ),
                       ),
-                    CircularPercentIndicator(
-                      percent: percent,
-                      lineWidth: strokeWidth,
-                      radius: radius,
-                      backgroundColor: Colors.white24,
-                      progressColor: progressColor,
-                      animation: animate,
-                      center: Text(NumberFormat.percentPattern().format(percent)),
-                      animateFromLastPercent: true,
                     ),
-                  ],
-                ),
-              ),
+                  ),
+              ],
             ),
           );
         },

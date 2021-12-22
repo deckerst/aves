@@ -14,6 +14,7 @@ class MimeTypes {
 
   static const art = 'image/x-jg';
   static const djvu = 'image/vnd.djvu';
+  static const jxl = 'image/jxl';
   static const psdVnd = 'image/vnd.adobe.photoshop';
   static const psdX = 'image/x-photoshop';
 
@@ -47,6 +48,7 @@ class MimeTypes {
   static const mp2t = 'video/mp2t'; // .m2ts, .ts
   static const mp2ts = 'video/mp2ts'; // .ts (prefer `mp2t` when possible)
   static const mp4 = 'video/mp4';
+  static const mpeg = 'video/mpeg';
   static const ogv = 'video/ogg';
   static const webm = 'video/webm';
 
@@ -55,6 +57,7 @@ class MimeTypes {
 
   // JB2, JPC, JPX?
   static const octetStream = 'application/octet-stream';
+  static const zip = 'application/zip';
 
   // groups
 
@@ -64,11 +67,11 @@ class MimeTypes {
   static const Set<String> rawImages = {arw, cr2, crw, dcr, dng, erf, k25, kdc, mrw, nef, nrw, orf, pef, raf, raw, rw2, sr2, srf, srw, x3f};
 
   // TODO TLAD [codec] make it dynamic if it depends on OS/lib versions
-  static const Set<String> undecodableImages = {art, crw, djvu, psdVnd, psdX, octetStream};
+  static const Set<String> undecodableImages = {art, crw, djvu, jxl, psdVnd, psdX, octetStream, zip};
 
   static const Set<String> _knownOpaqueImages = {heic, heif, jpeg};
 
-  static const Set<String> _knownVideos = {avi, aviVnd, mkv, mov, mp2t, mp2ts, mp4, ogv, webm};
+  static const Set<String> _knownVideos = {avi, aviVnd, mkv, mov, mp2t, mp2ts, mp4, mpeg, ogv, webm};
 
   static final Set<String> knownMediaTypes = {..._knownOpaqueImages, ...alphaImages, ...rawImages, ...undecodableImages, ..._knownVideos};
 
