@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.5.8"></a>[v1.5.8] - 2021-12-22
+
 ### Added
 
 - Collection / Albums / Countries / Tags: list view (scalable like the grid view)
