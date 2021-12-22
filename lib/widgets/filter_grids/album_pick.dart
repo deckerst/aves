@@ -33,20 +33,20 @@ Future<String?> pickAlbum({
   final filter = await Navigator.push(
     context,
     MaterialPageRoute<AlbumFilter>(
-      settings: const RouteSettings(name: AlbumPickPage.routeName),
-      builder: (context) => AlbumPickPage(source: source, moveType: moveType),
+      settings: const RouteSettings(name: _AlbumPickPage.routeName),
+      builder: (context) => _AlbumPickPage(source: source, moveType: moveType),
     ),
   );
   return filter?.album;
 }
 
-class AlbumPickPage extends StatefulWidget {
+class _AlbumPickPage extends StatefulWidget {
   static const routeName = '/album_pick';
 
   final CollectionSource source;
   final MoveType? moveType;
 
-  const AlbumPickPage({
+  const _AlbumPickPage({
     Key? key,
     required this.source,
     required this.moveType,
@@ -56,7 +56,7 @@ class AlbumPickPage extends StatefulWidget {
   _AlbumPickPageState createState() => _AlbumPickPageState();
 }
 
-class _AlbumPickPageState extends State<AlbumPickPage> {
+class _AlbumPickPageState extends State<_AlbumPickPage> {
   final _queryNotifier = ValueNotifier('');
 
   CollectionSource get source => widget.source;
@@ -75,13 +75,13 @@ class _AlbumPickPageState extends State<AlbumPickPage> {
               return SelectionProvider<FilterGridItem<AlbumFilter>>(
                 child: FilterGridPage<AlbumFilter>(
                   settingsRouteKey: AlbumListPage.routeName,
-                  appBar: AlbumPickAppBar(
+                  appBar: _AlbumPickAppBar(
                     source: source,
                     moveType: widget.moveType,
                     actionDelegate: AlbumChipSetActionDelegate(gridItems),
                     queryNotifier: _queryNotifier,
                   ),
-                  appBarHeight: AlbumPickAppBar.preferredHeight,
+                  appBarHeight: _AlbumPickAppBar.preferredHeight,
                   sections: AlbumListPage.groupToSections(context, source, gridItems),
                   newFilters: source.getNewAlbumFilters(context),
                   sortFactor: settings.albumSortFactor,
@@ -108,15 +108,15 @@ class _AlbumPickPageState extends State<AlbumPickPage> {
   }
 }
 
-class AlbumPickAppBar extends StatelessWidget {
+class _AlbumPickAppBar extends StatelessWidget {
   final CollectionSource source;
   final MoveType? moveType;
   final AlbumChipSetActionDelegate actionDelegate;
   final ValueNotifier<String> queryNotifier;
 
-  static const preferredHeight = kToolbarHeight + AlbumQueryBar.preferredHeight;
+  static const preferredHeight = kToolbarHeight + _AlbumQueryBar.preferredHeight;
 
-  const AlbumPickAppBar({
+  const _AlbumPickAppBar({
     Key? key,
     required this.source,
     required this.moveType,
@@ -145,7 +145,7 @@ class AlbumPickAppBar extends StatelessWidget {
         title: Text(title()),
         source: source,
       ),
-      bottom: AlbumQueryBar(
+      bottom: _AlbumQueryBar(
         queryNotifier: queryNotifier,
       ),
       actions: [
@@ -160,7 +160,7 @@ class AlbumPickAppBar extends StatelessWidget {
               // wait for the dialog to hide as applying the change may block the UI
               await Future.delayed(Durations.dialogTransitionAnimation * timeDilation);
               if (newAlbum != null && newAlbum.isNotEmpty) {
-                Navigator.pop<String>(context, newAlbum);
+                Navigator.pop<AlbumFilter>(context, AlbumFilter(newAlbum, source.getAlbumDisplayName(context, newAlbum)));
               }
             },
             tooltip: context.l10n.createAlbumTooltip,
@@ -192,12 +192,12 @@ class AlbumPickAppBar extends StatelessWidget {
   }
 }
 
-class AlbumQueryBar extends StatelessWidget implements PreferredSizeWidget {
+class _AlbumQueryBar extends StatelessWidget implements PreferredSizeWidget {
   final ValueNotifier<String> queryNotifier;
 
   static const preferredHeight = kToolbarHeight;
 
-  const AlbumQueryBar({
+  const _AlbumQueryBar({
     Key? key,
     required this.queryNotifier,
   }) : super(key: key);
@@ -208,7 +208,7 @@ class AlbumQueryBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: AlbumQueryBar.preferredHeight,
+      height: _AlbumQueryBar.preferredHeight,
       alignment: Alignment.topCenter,
       child: QueryBar(
         queryNotifier: queryNotifier,
