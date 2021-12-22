@@ -1,5 +1,6 @@
 package deckers.thibault.aves.channel.calls
 
+import android.annotation.SuppressLint
 import android.content.ContentUris
 import android.content.Context
 import android.database.Cursor
@@ -191,6 +192,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                                             val key = kv.key
                                             // `PNG-iTXt` uses UTF-8, contrary to `PNG-tEXt` and `PNG-zTXt` using Latin-1 / ISO-8859-1
                                             val charset = if (baseDirName == PNG_ITXT_DIR_NAME) {
+                                                @SuppressLint("ObsoleteSdkInt")
                                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                                                     StandardCharsets.UTF_8
                                                 } else {
@@ -409,19 +411,19 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
 
                     // File type
                     for (dir in metadata.getDirectoriesOfType(FileTypeDirectory::class.java)) {
-                        // * `metadata-extractor` sometimes detects the wrong mime type (e.g. `pef` file as `tiff`)
-                        // * the content resolver / media store sometimes reports the wrong mime type (e.g. `png` file as `jpeg`, `tiff` as `srw`)
+                        // * `metadata-extractor` sometimes detects the wrong MIME type (e.g. `pef` file as `tiff`, `mpeg` as `dvd`)
+                        // * the content resolver / media store sometimes reports the wrong MIME type (e.g. `png` file as `jpeg`, `tiff` as `srw`)
                         // * `context.getContentResolver().getType()` sometimes returns an incorrect value
                         // * `MediaMetadataRetriever.setDataSource()` sometimes fails with `status = 0x80000000`
                         // * file extension is unreliable
-                        // In the end, `metadata-extractor` is the most reliable, except for `tiff` (false positives, false negatives),
+                        // In the end, `metadata-extractor` is the most reliable, except for `tiff`/`dvd` (false positives, false negatives),
                         // in which case we trust the file extension
                         // cf https://github.com/drewnoakes/metadata-extractor/issues/296
                         if (path?.matches(TIFF_EXTENSION_PATTERN) == true) {
                             metadataMap[KEY_MIME_TYPE] = MimeTypes.TIFF
                         } else {
                             dir.getSafeString(FileTypeDirectory.TAG_DETECTED_FILE_MIME_TYPE) {
-                                if (it != MimeTypes.TIFF) {
+                                if (it != MimeTypes.TIFF && it != MimeTypes.DVD) {
                                     metadataMap[KEY_MIME_TYPE] = it
                                 }
                             }
@@ -584,6 +586,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
 
         var flags = (metadataMap[KEY_FLAGS] ?: 0) as Int
         try {
+            @SuppressLint("ObsoleteSdkInt")
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
                 retriever.getSafeInt(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION) { metadataMap[KEY_ROTATION_DEGREES] = it }
             }

@@ -19,6 +19,7 @@ class SettingsDefaults {
   static const mustBackTwiceToExit = true;
   static const keepScreenOn = KeepScreenOn.viewerOnly;
   static const homePage = HomePageSetting.collection;
+  static const tileLayout = TileLayout.grid;
 
   // drawer
   static final drawerTypeBookmarks = [
@@ -66,6 +67,7 @@ class SettingsDefaults {
   static const enableOverlayBlurEffect = true; // `enableOverlayBlurEffect` has a contextual default value
   static const viewerUseCutout = true;
   static const viewerMaxBrightness = false;
+  static const enableMotionPhotoAutoPlay = false;
 
   // video
   static const videoQuickActions = [

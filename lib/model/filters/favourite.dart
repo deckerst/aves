@@ -3,7 +3,6 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class FavouriteFilter extends CollectionFilter {
   static const type = 'favourite';
@@ -30,7 +29,7 @@ class FavouriteFilter extends CollectionFilter {
   String getLabel(BuildContext context) => context.l10n.filterFavouriteLabel;
 
   @override
-  Widget iconBuilder(BuildContext context, double size, {bool showGenericIcon = true, bool embossed = false}) => Icon(AIcons.favourite, size: size);
+  Widget iconBuilder(BuildContext context, double size, {bool showGenericIcon = true}) => Icon(AIcons.favourite, size: size);
 
   @override
   Future<Color> color(BuildContext context) => SynchronousFuture(Colors.red);

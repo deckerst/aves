@@ -133,7 +133,7 @@ class AndroidDebugService {
 
   static Future<Map> getMetadataExtractorSummary(AvesEntry entry) async {
     try {
-      // returns map with the mime type and tag count for each directory found by `metadata-extractor`
+      // returns map with the MIME type and tag count for each directory found by `metadata-extractor`
       final result = await platform.invokeMethod('getMetadataExtractorSummary', <String, dynamic>{
         'mimeType': entry.mimeType,
         'uri': entry.uri,

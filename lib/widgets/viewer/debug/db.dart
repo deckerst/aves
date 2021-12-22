@@ -53,7 +53,7 @@ class _DbTabState extends State<DbTab> {
           future: _dbDateLoader,
           builder: (context, snapshot) {
             if (snapshot.hasError) return Text(snapshot.error.toString());
-            if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
+            if (snapshot.connectionState != ConnectionState.done) return const SizedBox();
             final data = snapshot.data;
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -74,7 +74,7 @@ class _DbTabState extends State<DbTab> {
           future: _dbEntryLoader,
           builder: (context, snapshot) {
             if (snapshot.hasError) return Text(snapshot.error.toString());
-            if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
+            if (snapshot.connectionState != ConnectionState.done) return const SizedBox();
             final data = snapshot.data;
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -105,7 +105,7 @@ class _DbTabState extends State<DbTab> {
           future: _dbMetadataLoader,
           builder: (context, snapshot) {
             if (snapshot.hasError) return Text(snapshot.error.toString());
-            if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
+            if (snapshot.connectionState != ConnectionState.done) return const SizedBox();
             final data = snapshot.data;
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -134,7 +134,7 @@ class _DbTabState extends State<DbTab> {
           future: _dbAddressLoader,
           builder: (context, snapshot) {
             if (snapshot.hasError) return Text(snapshot.error.toString());
-            if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
+            if (snapshot.connectionState != ConnectionState.done) return const SizedBox();
             final data = snapshot.data;
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -158,7 +158,7 @@ class _DbTabState extends State<DbTab> {
           future: _dbVideoPlaybackLoader,
           builder: (context, snapshot) {
             if (snapshot.hasError) return Text(snapshot.error.toString());
-            if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
+            if (snapshot.connectionState != ConnectionState.done) return const SizedBox();
             final data = snapshot.data;
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,

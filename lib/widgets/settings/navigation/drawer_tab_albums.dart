@@ -6,7 +6,6 @@ import 'package:aves/widgets/common/identity/buttons.dart';
 import 'package:aves/widgets/drawer/tile.dart';
 import 'package:aves/widgets/filter_grids/album_pick.dart';
 import 'package:aves/widgets/settings/navigation/drawer_editor_banner.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -64,20 +63,9 @@ class _DrawerAlbumTabState extends State<DrawerAlbumTab> {
           icon: const Icon(AIcons.add),
           label: context.l10n.settingsNavigationDrawerAddAlbum,
           onPressed: () async {
-            final source = context.read<CollectionSource>();
-            final album = await Navigator.push(
-              context,
-              MaterialPageRoute<String>(
-                settings: const RouteSettings(name: AlbumPickPage.routeName),
-                builder: (context) => AlbumPickPage(source: source, moveType: null),
-              ),
-            );
-
-            if (album == null || album.isEmpty) return;
-
-            setState(() {
-              widget.items.add(album);
-            });
+            final album = await pickAlbum(context: context, moveType: null);
+            if (album == null) return;
+            setState(() => widget.items.add(album));
           },
         )
       ],

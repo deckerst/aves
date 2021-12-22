@@ -2,9 +2,27 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## <a id="unreleased"></a>[Unreleased]
 
-## [v1.5.7] - 2021-12-01
+## <a id="v1.5.8"></a>[v1.5.8] - 2021-12-22
+
+### Added
+
+- Collection / Albums / Countries / Tags: list view (scalable like the grid view)
+- moving, editing or deleting multiple items can be cancelled
+- Viewer: option to auto play motion photos (after a small delay to show first the high-res photo)
+- German translation (thanks JanWaldhorn)
+
+### Changed
+
+- upgraded Flutter to stable v2.8.1
+
+### Fixed
+
+- Collection: more consistent scroll bar thumb position to match the viewport
+- Settings: fixed file selection to import settings on older devices
+
+## <a id="v1.5.7"></a>[v1.5.7] - 2021-12-01
 
 ### Added
 
@@ -24,7 +42,7 @@ All notable changes to this project will be documented in this file.
 - double-tap gesture in the viewer was ignored in some cases
 - copied items had the wrong date
 
-## [v1.5.6] - 2021-11-12
+## <a id="v1.5.6"></a>[v1.5.6] - 2021-11-12
 
 ### Added
 

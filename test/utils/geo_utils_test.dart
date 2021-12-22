@@ -1,6 +1,6 @@
+import 'package:aves/l10n/l10n.dart';
 import 'package:aves/model/settings/coordinate_format.dart';
 import 'package:aves/utils/geo_utils.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:test/test.dart';
 

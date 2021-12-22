@@ -1,5 +1,6 @@
 package deckers.thibault.aves.channel.calls
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.os.Build
@@ -24,6 +25,7 @@ class AccessibilityHandler(private val activity: Activity) : MethodCallHandler {
 
     private fun areAnimationsRemoved(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
         var removed = false
+        @SuppressLint("ObsoleteSdkInt")
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             try {
                 removed = Settings.Global.getFloat(activity.contentResolver, Settings.Global.TRANSITION_ANIMATION_SCALE) == 0f

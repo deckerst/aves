@@ -3,7 +3,6 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:github/github.dart';
 import 'package:google_api_availability/google_api_availability.dart';
 import 'package:package_info_plus/package_info_plus.dart';

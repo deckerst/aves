@@ -8,7 +8,6 @@ import 'package:aves/widgets/common/identity/aves_logo.dart';
 import 'package:aves/widgets/common/identity/buttons.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/home_page.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
@@ -139,6 +138,7 @@ class _WelcomePageState extends State<WelcomePage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SwitchListTile(
+            key: const Key('apps-checkbox'),
             value: settings.isInstalledAppAccessAllowed,
             onChanged: (v) => setState(() => settings.isInstalledAppAccessAllowed = v),
             title: Text(l10n.settingsAllowInstalledAppAccess),
@@ -155,7 +155,7 @@ class _WelcomePageState extends State<WelcomePage> {
             ),
           SwitchListTile(
             // key is expected by test driver
-            key: const Key('agree-checkbox'),
+            key: const Key('terms-checkbox'),
             value: _hasAcceptedTerms,
             onChanged: (v) => setState(() => _hasAcceptedTerms = v),
             title: Text(l10n.welcomeTermsToggle),

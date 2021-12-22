@@ -9,7 +9,6 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/viewer/embedded/notifications.dart';
 import 'package:aves/widgets/viewer/entry_viewer_page.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class EmbeddedDataOpener extends StatelessWidget with FeedbackMixin {

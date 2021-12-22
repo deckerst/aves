@@ -1,5 +1,6 @@
 package deckers.thibault.aves.metadata
 
+import android.annotation.SuppressLint
 import android.media.MediaFormat
 import android.media.MediaMetadataRetriever
 import android.os.Build
@@ -31,6 +32,7 @@ object MediaMetadataRetrieverHelper {
         MediaMetadataRetriever.METADATA_KEY_WRITER to "Writer",
         MediaMetadataRetriever.METADATA_KEY_YEAR to "Year",
     ).apply {
+        @SuppressLint("ObsoleteSdkInt")
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             put(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION, "Video Rotation")
         }

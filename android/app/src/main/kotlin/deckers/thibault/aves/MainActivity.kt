@@ -155,7 +155,7 @@ class MainActivity : FlutterActivity() {
         }
     }
 
-    @SuppressLint("WrongConstant")
+    @SuppressLint("WrongConstant", "ObsoleteSdkInt")
     private fun onDocumentTreeAccessResult(data: Intent?, resultCode: Int, requestCode: Int) {
         val treeUri = data?.data
         if (resultCode != RESULT_OK || treeUri == null) {

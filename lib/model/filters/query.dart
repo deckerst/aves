@@ -64,7 +64,7 @@ class QueryFilter extends CollectionFilter {
   String get universalLabel => query;
 
   @override
-  Widget iconBuilder(BuildContext context, double size, {bool showGenericIcon = true, bool embossed = false}) => Icon(AIcons.text, size: size);
+  Widget iconBuilder(BuildContext context, double size, {bool showGenericIcon = true}) => Icon(AIcons.text, size: size);
 
   @override
   Future<Color> color(BuildContext context) => colorful ? super.color(context) : SynchronousFuture(AvesFilterChip.defaultOutlineColor);

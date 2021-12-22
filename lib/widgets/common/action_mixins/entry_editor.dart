@@ -55,7 +55,6 @@ mixin EntryEditorMixin {
         context: context,
         builder: (context) {
           return AvesDialog(
-            context: context,
             content: Text(context.l10n.removeEntryMetadataMotionPhotoXmpWarningDialogMessage),
             actions: [
               TextButton(

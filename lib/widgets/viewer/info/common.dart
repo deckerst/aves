@@ -121,8 +121,9 @@ class _InfoRowGroupState extends State<InfoRowGroup> {
                       value = '$value\n';
                     }
 
-                    // as of Flutter v1.22.6, `SelectableText` cannot contain `WidgetSpan`
+                    // as of Flutter v2.5.3, `SelectableText` cannot contain `WidgetSpan`
                     // so we add padding using multiple hair spaces instead
+                    // TODO TLAD 2021/10/26 other `InlineSpan` now possible thanks to https://github.com/flutter/flutter/pull/92295
                     final thisSpaceSize = max(0.0, (baseValueX - keySizes[key]!)) + InfoRowGroup.keyValuePadding;
                     final spaceCount = (100 * thisSpaceSize / baseSpaceWidth).round();
 

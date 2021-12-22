@@ -4,8 +4,7 @@ import 'package:flutter/material.dart';
 
 enum EntrySetAction {
   // general
-  sort,
-  group,
+  configureView,
   select,
   selectAll,
   selectNone,
@@ -32,8 +31,7 @@ enum EntrySetAction {
 
 class EntrySetActions {
   static const general = [
-    EntrySetAction.sort,
-    EntrySetAction.group,
+    EntrySetAction.configureView,
     EntrySetAction.select,
     EntrySetAction.selectAll,
     EntrySetAction.selectNone,
@@ -63,10 +61,8 @@ extension ExtraEntrySetAction on EntrySetAction {
   String getText(BuildContext context) {
     switch (this) {
       // general
-      case EntrySetAction.sort:
-        return context.l10n.menuActionSort;
-      case EntrySetAction.group:
-        return context.l10n.menuActionGroup;
+      case EntrySetAction.configureView:
+        return context.l10n.menuActionConfigureView;
       case EntrySetAction.select:
         return context.l10n.menuActionSelect;
       case EntrySetAction.selectAll:
@@ -119,10 +115,8 @@ extension ExtraEntrySetAction on EntrySetAction {
   IconData _getIconData() {
     switch (this) {
       // general
-      case EntrySetAction.sort:
-        return AIcons.sort;
-      case EntrySetAction.group:
-        return AIcons.group;
+      case EntrySetAction.configureView:
+        return AIcons.view;
       case EntrySetAction.select:
         return AIcons.select;
       case EntrySetAction.selectAll:

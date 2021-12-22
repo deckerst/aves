@@ -4,7 +4,6 @@ import 'package:aves/model/entry.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/utils/string_utils.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:xml/xml.dart';
 
