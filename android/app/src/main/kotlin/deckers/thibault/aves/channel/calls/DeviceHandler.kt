@@ -36,6 +36,7 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
                 "canRenderGoogleMaps" to (sdkInt >= Build.VERSION_CODES.KITKAT_WATCH),
                 "hasFilePicker" to (sdkInt >= Build.VERSION_CODES.KITKAT),
                 "showPinShortcutFeedback" to (sdkInt >= Build.VERSION_CODES.O),
+                "supportEdgeToEdgeUIMode" to (sdkInt >= Build.VERSION_CODES.Q),
             )
         )
     }
