@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:aves/model/device.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/highlight.dart';
@@ -538,7 +539,13 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
 
   // system UI
 
-  static void _showSystemUI() => SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+  static void _showSystemUI() {
+    if (device.supportEdgeToEdgeUIMode) {
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    } else {
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values);
+    }
+  }
 
   static void _hideSystemUI() => SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
 
