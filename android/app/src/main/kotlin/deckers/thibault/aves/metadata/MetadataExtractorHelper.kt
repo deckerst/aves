@@ -87,7 +87,7 @@ object MetadataExtractorHelper {
                     if (dataBytes != null) {
                         val start = dataBytes.indexOf(Metadata.IPTC_MARKER_BYTE)
                         if (start != -1) {
-                            val segmentBytes = dataBytes.copyOfRange(fromIndex = start, toIndex = dataBytes.size - start)
+                            val segmentBytes = dataBytes.copyOfRange(fromIndex = start, toIndex = dataBytes.size)
                             val metadata = com.drew.metadata.Metadata()
                             IptcReader().extract(SequentialByteArrayReader(segmentBytes), metadata, segmentBytes.size.toLong())
                             return metadata.directories
