@@ -92,6 +92,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             "getXmp" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getXmp) }
             "hasContentResolverProp" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::hasContentResolverProp) }
             "getContentResolverProp" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getContentResolverProp) }
+            "getDate" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getDate) }
             else -> result.notImplemented()
         }
     }
@@ -874,6 +875,57 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         }
         cursor.close()
         result.success(value?.toString())
+    }
+
+    private fun getDate(call: MethodCall, result: MethodChannel.Result) {
+        val mimeType = call.argument<String>("mimeType")
+        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
+        val field = call.argument<String>("field")
+        if (mimeType == null || uri == null || field == null) {
+            result.error("getDate-args", "failed because of missing arguments", null)
+            return
+        }
+
+        var dateMillis: Long? = null
+        if (canReadWithMetadataExtractor(mimeType)) {
+            try {
+                Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
+                    val metadata = ImageMetadataReader.readMetadata(input)
+                    val tag = when (field) {
+                        ExifInterface.TAG_DATETIME -> ExifDirectoryBase.TAG_DATETIME
+                        ExifInterface.TAG_DATETIME_DIGITIZED -> ExifDirectoryBase.TAG_DATETIME_DIGITIZED
+                        ExifInterface.TAG_DATETIME_ORIGINAL -> ExifDirectoryBase.TAG_DATETIME_ORIGINAL
+                        ExifInterface.TAG_GPS_DATESTAMP -> GpsDirectory.TAG_DATE_STAMP
+                        else -> {
+                            result.error("getDate-field", "unsupported ExifInterface field=$field", null)
+                            return
+                        }
+                    }
+
+                    when (tag) {
+                        ExifDirectoryBase.TAG_DATETIME,
+                        ExifDirectoryBase.TAG_DATETIME_DIGITIZED,
+                        ExifDirectoryBase.TAG_DATETIME_ORIGINAL -> {
+                            for (dir in metadata.getDirectoriesOfType(ExifDirectoryBase::class.java)) {
+                                dir.getSafeDateMillis(tag) { dateMillis = it }
+                            }
+                        }
+                        GpsDirectory.TAG_DATE_STAMP -> {
+                            for (dir in metadata.getDirectoriesOfType(GpsDirectory::class.java)) {
+                                dir.gpsDate?.let { dateMillis = it.time }
+                            }
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                Log.w(LOG_TAG, "failed to get metadata by metadata-extractor for mimeType=$mimeType uri=$uri", e)
+            } catch (e: NoClassDefFoundError) {
+                Log.w(LOG_TAG, "failed to get metadata by metadata-extractor for mimeType=$mimeType uri=$uri", e)
+            }
+        }
+
+        result.success(dateMillis)
     }
 
     companion object {
