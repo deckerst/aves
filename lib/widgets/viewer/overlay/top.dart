@@ -9,7 +9,7 @@ import 'package:aves/widgets/common/basic/menu.dart';
 import 'package:aves/widgets/common/basic/popup_menu_button.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/sweeper.dart';
-import 'package:aves/widgets/viewer/entry_action_delegate.dart';
+import 'package:aves/widgets/viewer/action/entry_action_delegate.dart';
 import 'package:aves/widgets/viewer/multipage/conductor.dart';
 import 'package:aves/widgets/viewer/overlay/common.dart';
 import 'package:aves/widgets/viewer/overlay/minimap.dart';
@@ -312,7 +312,7 @@ class _TopOverlayRow extends StatelessWidget {
         }
       }
     }
-    EntryActionDelegate().onActionSelected(context, targetEntry, action);
+    EntryActionDelegate(targetEntry).onActionSelected(context, action);
   }
 }
 

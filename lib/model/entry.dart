@@ -648,26 +648,28 @@ class AvesEntry {
     await locate(background: background, force: dataTypes.contains(EntryDataType.address), geocoderLocale: geocoderLocale);
   }
 
-  Future<Set<EntryDataType>> rotate({required bool clockwise, required bool persist}) async {
-    final newFields = await metadataEditService.rotate(this, clockwise: clockwise);
-    if (newFields.isEmpty) return {};
+  Future<Set<EntryDataType>> _changeOrientation(Future<Map<String, dynamic>> Function() apply) async {
+    final dataTypes = await setMetadataDateIfMissing();
 
-    await _applyNewFields(newFields, persist: persist);
-    return {
-      EntryDataType.basic,
-      EntryDataType.catalog,
-    };
+    final newFields = await apply();
+    // applying fields is only useful for a smoother visual change,
+    // as proper refreshing and persistence happens at the caller level
+    await _applyNewFields(newFields, persist: false);
+    if (newFields.isNotEmpty) {
+      dataTypes.addAll({
+        EntryDataType.basic,
+        EntryDataType.catalog,
+      });
+    }
+    return dataTypes;
   }
 
-  Future<Set<EntryDataType>> flip({required bool persist}) async {
-    final newFields = await metadataEditService.flip(this);
-    if (newFields.isEmpty) return {};
+  Future<Set<EntryDataType>> rotate({required bool clockwise}) {
+    return _changeOrientation(() => metadataEditService.rotate(this, clockwise: clockwise));
+  }
 
-    await _applyNewFields(newFields, persist: persist);
-    return {
-      EntryDataType.basic,
-      EntryDataType.catalog,
-    };
+  Future<Set<EntryDataType>> flip() {
+    return _changeOrientation(() => metadataEditService.flip(this));
   }
 
   Future<Set<EntryDataType>> editDate(DateModifier modifier) async {
@@ -728,6 +730,25 @@ class AvesEntry {
             EntryDataType.basic,
             EntryDataType.catalog,
           };
+  }
+
+  // when editing a file that has no metadata date,
+  // we will set one, using the file modified date, if any
+  Future<Set<EntryDataType>> setMetadataDateIfMissing() async {
+    if (path == null) return {};
+
+    // make sure entry is catalogued before we check whether is has a metadata date
+    if (!isCatalogued) {
+      await catalog(background: false, force: false, persist: true);
+    }
+    final metadataDate = catalogMetadata?.dateMillis;
+    if (metadataDate != null && metadataDate > 0) return {};
+
+    return await editDate(const DateModifier(
+      DateEditAction.set,
+      {MetadataField.exifDateOriginal},
+      setSource: DateSetSource.fileModifiedDate,
+    ));
   }
 
   Future<Set<EntryDataType>> removeMetadata(Set<MetadataType> types) async {

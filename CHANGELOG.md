@@ -8,6 +8,11 @@ All notable changes to this project will be documented in this file.
 
 - Info: option to set date from other fields
 
+### Changed
+
+- editing an item orientation or tags automatically sets a metadata date (from the file modified
+  date), if it is missing
+
 ## <a id="v1.5.9"></a>[v1.5.9] - 2021-12-22
 
 ### Added
@@ -41,7 +46,8 @@ All notable changes to this project will be documented in this file.
 ### Changed
 
 - Settings: select hidden path directory with a custom file picker instead of the native SAF one
-- Viewer: video cover (before playing the video) is now loaded at original resolution and can be zoomed
+- Viewer: video cover (before playing the video) is now loaded at original resolution and can be
+  zoomed
 
 ### Fixed
 
@@ -79,7 +85,8 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
-- use build flavors to match distribution channels: `play` (same as original) and `izzy` (no Crashlytics)
+- use build flavors to match distribution channels: `play` (same as original) and `izzy` (no
+  Crashlytics)
 - use 12/24 hour format settings from device to display times
 - Privacy: consent request on first launch for installed app inventory access
 - use File API to rename and delete items, when possible (primary storage, Android <11)

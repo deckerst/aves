@@ -43,6 +43,8 @@ extension ExtraAvesEntryXmpIptc on AvesEntry {
   static String prefixOf(String ns) => nsDefaultPrefixes[ns] ?? '';
 
   Future<Set<EntryDataType>> editTags(Set<String> tags) async {
+    final dataTypes = await setMetadataDateIfMissing();
+
     final xmp = await metadataFetchService.getXmp(this);
     final extendedXmpString = xmp?.extendedXmpString;
 
@@ -118,7 +120,10 @@ extension ExtraAvesEntryXmpIptc on AvesEntry {
     }
 
     final newFields = await metadataEditService.setXmp(this, editedXmp);
-    return newFields.isEmpty ? {} : {EntryDataType.catalog};
+    if (newFields.isNotEmpty) {
+      dataTypes.add(EntryDataType.catalog);
+    }
+    return dataTypes;
   }
 
   Future<void> _setIptcKeywords(List<Map<String, dynamic>> iptc, Set<String> tags) async {
