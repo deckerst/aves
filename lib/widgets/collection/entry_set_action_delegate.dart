@@ -489,7 +489,7 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
     final todoItems = await _getEditableItems(context, selectedItems: selectedItems, canEdit: (entry) => entry.canRotateAndFlip);
     if (todoItems == null || todoItems.isEmpty) return;
 
-    await _edit(context, selection, todoItems, (entry) => entry.rotate(clockwise: clockwise, persist: true));
+    await _edit(context, selection, todoItems, (entry) => entry.rotate(clockwise: clockwise));
   }
 
   Future<void> _flip(BuildContext context) async {
@@ -499,7 +499,7 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
     final todoItems = await _getEditableItems(context, selectedItems: selectedItems, canEdit: (entry) => entry.canRotateAndFlip);
     if (todoItems == null || todoItems.isEmpty) return;
 
-    await _edit(context, selection, todoItems, (entry) => entry.flip(persist: true));
+    await _edit(context, selection, todoItems, (entry) => entry.flip());
   }
 
   Future<void> _editDate(BuildContext context) async {
