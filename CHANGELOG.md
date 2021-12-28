@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Added
+
+- Info: option to set date from other fields
+
 ## <a id="v1.5.9"></a>[v1.5.9] - 2021-12-22
 
 ### Added

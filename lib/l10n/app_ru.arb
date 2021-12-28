@@ -180,9 +180,7 @@
   "editEntryDateDialogTitle": "Дата и время",
   "editEntryDateDialogSet": "Задать",
   "editEntryDateDialogShift": "Сдвиг",
-  "editEntryDateDialogExtractFromTitle": "Извлечь из названия",
   "editEntryDateDialogClear": "Очистить",
-  "editEntryDateDialogFieldSelection": "Выбор поля",
   "editEntryDateDialogHours": "Часов",
   "editEntryDateDialogMinutes": "Минут",
 

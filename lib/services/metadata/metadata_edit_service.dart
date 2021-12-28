@@ -77,9 +77,9 @@ class PlatformMetadataEditService implements MetadataEditService {
     try {
       final result = await platform.invokeMethod('editDate', <String, dynamic>{
         'entry': _toPlatformEntryMap(entry),
-        'dateMillis': modifier.dateTime?.millisecondsSinceEpoch,
+        'dateMillis': modifier.setDateTime?.millisecondsSinceEpoch,
         'shiftMinutes': modifier.shiftMinutes,
-        'fields': modifier.fields.map(_toExifInterfaceTag).toList(),
+        'fields': modifier.fields.map((v) => v.toExifInterfaceTag()).toList(),
       });
       if (result != null) return (result as Map).cast<String, dynamic>();
     } on PlatformException catch (e, stack) {
@@ -138,19 +138,6 @@ class PlatformMetadataEditService implements MetadataEditService {
       }
     }
     return {};
-  }
-
-  String _toExifInterfaceTag(MetadataField field) {
-    switch (field) {
-      case MetadataField.exifDate:
-        return 'DateTime';
-      case MetadataField.exifDateOriginal:
-        return 'DateTimeOriginal';
-      case MetadataField.exifDateDigitized:
-        return 'DateTimeDigitized';
-      case MetadataField.exifGpsDate:
-        return 'GPSDateStamp';
-    }
   }
 
   String _toPlatformMetadataType(MetadataType type) {

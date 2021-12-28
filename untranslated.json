@@ -1,1 +1,17 @@
-{}
+{
+  "de": [
+    "editEntryDateDialogSourceFieldLabel",
+    "editEntryDateDialogSourceCustomDate",
+    "editEntryDateDialogSourceTitle",
+    "editEntryDateDialogSourceFileModifiedDate",
+    "editEntryDateDialogTargetFieldsHeader"
+  ],
+
+  "ru": [
+    "editEntryDateDialogSourceFieldLabel",
+    "editEntryDateDialogSourceCustomDate",
+    "editEntryDateDialogSourceTitle",
+    "editEntryDateDialogSourceFileModifiedDate",
+    "editEntryDateDialogTargetFieldsHeader"
+  ]
+}

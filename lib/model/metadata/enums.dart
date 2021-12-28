@@ -8,8 +8,17 @@ enum MetadataField {
 enum DateEditAction {
   set,
   shift,
-  extractFromTitle,
   clear,
+}
+
+enum DateSetSource {
+  custom,
+  title,
+  fileModifiedDate,
+  exifDate,
+  exifDateOriginal,
+  exifDateDigitized,
+  exifGpsDate,
 }
 
 enum MetadataType {
@@ -77,6 +86,40 @@ extension ExtraMetadataType on MetadataType {
         return 'Photoshop';
       case MetadataType.xmp:
         return 'XMP';
+    }
+  }
+}
+
+extension ExtraMetadataField on MetadataField {
+  String toExifInterfaceTag() {
+    switch (this) {
+      case MetadataField.exifDate:
+        return 'DateTime';
+      case MetadataField.exifDateOriginal:
+        return 'DateTimeOriginal';
+      case MetadataField.exifDateDigitized:
+        return 'DateTimeDigitized';
+      case MetadataField.exifGpsDate:
+        return 'GPSDateStamp';
+    }
+  }
+}
+
+extension ExtraDateSetSource on DateSetSource {
+  MetadataField? toMetadataField() {
+    switch (this) {
+      case DateSetSource.custom:
+      case DateSetSource.title:
+      case DateSetSource.fileModifiedDate:
+        return null;
+      case DateSetSource.exifDate:
+        return MetadataField.exifDate;
+      case DateSetSource.exifDateOriginal:
+        return MetadataField.exifDateOriginal;
+      case DateSetSource.exifDateDigitized:
+        return MetadataField.exifDateDigitized;
+      case DateSetSource.exifGpsDate:
+        return MetadataField.exifGpsDate;
     }
   }
 }

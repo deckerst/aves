@@ -4,7 +4,7 @@ import 'package:flutter/widgets.dart';
 
 @immutable
 class DateModifier {
-  static const allDateFields = [
+  static const writableDateFields = [
     MetadataField.exifDate,
     MetadataField.exifDateOriginal,
     MetadataField.exifDateDigitized,
@@ -13,8 +13,15 @@ class DateModifier {
 
   final DateEditAction action;
   final Set<MetadataField> fields;
-  final DateTime? dateTime;
+  final DateSetSource? setSource;
+  final DateTime? setDateTime;
   final int? shiftMinutes;
 
-  const DateModifier(this.action, this.fields, {this.dateTime, this.shiftMinutes});
+  const DateModifier(
+    this.action,
+    this.fields, {
+    this.setSource,
+    this.setDateTime,
+    this.shiftMinutes,
+  });
 }

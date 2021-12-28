@@ -671,15 +671,55 @@ class AvesEntry {
   }
 
   Future<Set<EntryDataType>> editDate(DateModifier modifier) async {
-    if (modifier.action == DateEditAction.extractFromTitle) {
-      final _title = bestTitle;
-      if (_title == null) return {};
-      final date = parseUnknownDateFormat(_title);
-      if (date == null) {
-        await reportService.recordError('failed to parse date from title=$_title', null);
+    final action = modifier.action;
+    if (action == DateEditAction.set) {
+      final source = modifier.setSource;
+      if (source == null) {
+        await reportService.recordError('edit date with action=$action but source is null', null);
         return {};
       }
-      modifier = DateModifier(DateEditAction.set, modifier.fields, dateTime: date);
+
+      switch (source) {
+        case DateSetSource.title:
+          final _title = bestTitle;
+          if (_title == null) return {};
+          final date = parseUnknownDateFormat(_title);
+          if (date == null) {
+            await reportService.recordError('failed to parse date from title=$_title', null);
+            return {};
+          }
+          modifier = DateModifier(DateEditAction.set, modifier.fields, setDateTime: date);
+          break;
+        case DateSetSource.fileModifiedDate:
+          final _path = path;
+          if (_path == null) {
+            await reportService.recordError('edit date with action=$action, source=$source but entry has no path, uri=$uri', null);
+            return {};
+          }
+          try {
+            final fileModifiedDate = await File(_path).lastModified();
+            modifier = DateModifier(DateEditAction.set, modifier.fields, setDateTime: fileModifiedDate);
+          } on FileSystemException catch (error, stack) {
+            await reportService.recordError(error, stack);
+            return {};
+          }
+          break;
+        case DateSetSource.custom:
+          break;
+        default:
+          final field = source.toMetadataField();
+          if (field == null) {
+            await reportService.recordError('failed to get field for action=$action, source=$source, uri=$uri', null);
+            return {};
+          }
+          final fieldDate = await metadataFetchService.getDate(this, field);
+          if (fieldDate == null) {
+            await reportService.recordError('failed to get date for field=$field, source=$source, uri=$uri', null);
+            return {};
+          }
+          modifier = DateModifier(DateEditAction.set, modifier.fields, setDateTime: fieldDate);
+          break;
+      }
     }
     final newFields = await metadataEditService.editDate(this, modifier);
     return newFields.isEmpty
