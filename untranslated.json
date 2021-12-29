@@ -1,10 +1,14 @@
 {
   "de": [
+    "filterRatingUnratedLabel",
+    "filterRatingRejectedLabel",
     "editEntryDateDialogSourceFieldLabel",
     "editEntryDateDialogSourceCustomDate",
     "editEntryDateDialogSourceTitle",
     "editEntryDateDialogSourceFileModifiedDate",
     "editEntryDateDialogTargetFieldsHeader",
+    "collectionSortRating",
+    "searchSectionRating",
     "settingsThumbnailShowRatingIcon"
   ],
 
@@ -17,11 +21,15 @@
   ],
 
   "ru": [
+    "filterRatingUnratedLabel",
+    "filterRatingRejectedLabel",
     "editEntryDateDialogSourceFieldLabel",
     "editEntryDateDialogSourceCustomDate",
     "editEntryDateDialogSourceTitle",
     "editEntryDateDialogSourceFileModifiedDate",
     "editEntryDateDialogTargetFieldsHeader",
+    "collectionSortRating",
+    "searchSectionRating",
     "settingsThumbnailShowRatingIcon"
   ]
 }
