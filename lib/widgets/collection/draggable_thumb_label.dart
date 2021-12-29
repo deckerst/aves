@@ -1,4 +1,5 @@
 import 'package:aves/model/entry.dart';
+import 'package:aves/model/filters/rating.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums.dart';
@@ -46,6 +47,11 @@ class CollectionDraggableThumbLabel extends StatelessWidget {
             return [
               if (_showAlbumName(context, entry)) _getAlbumName(context, entry),
               if (entry.bestTitle != null) entry.bestTitle!,
+            ];
+          case EntrySortFactor.rating:
+            return [
+              RatingFilter.formatRating(context, entry.rating),
+              DraggableThumbLabel.formatMonthThumbLabel(context, entry.bestDate),
             ];
           case EntrySortFactor.size:
             return [

@@ -15,7 +15,6 @@ import 'package:aves/model/selection.dart';
 import 'package:aves/model/source/analysis_controller.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
-import 'package:aves/model/source/enums.dart';
 import 'package:aves/services/common/image_op_events.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/media/enums.dart';
@@ -44,7 +43,6 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
     EntrySetAction action, {
     required AppMode appMode,
     required bool isSelecting,
-    required EntrySortFactor sortFactor,
     required int itemCount,
     required int selectedItemCount,
   }) {

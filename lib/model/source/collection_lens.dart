@@ -9,6 +9,7 @@ import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/filters/query.dart';
+import 'package:aves/model/filters/rating.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/events.dart';
@@ -108,15 +109,27 @@ class CollectionLens with ChangeNotifier {
   }
 
   bool get showHeaders {
-    if (sortFactor == EntrySortFactor.size) return false;
+    bool showAlbumHeaders() => !filters.any((f) => f is AlbumFilter);
 
-    if (sortFactor == EntrySortFactor.date && sectionFactor == EntryGroupFactor.none) return false;
-
-    final albumSections = sortFactor == EntrySortFactor.name || (sortFactor == EntrySortFactor.date && sectionFactor == EntryGroupFactor.album);
-    final filterByAlbum = filters.any((f) => f is AlbumFilter);
-    if (albumSections && filterByAlbum) return false;
-
-    return true;
+    switch (sortFactor) {
+      case EntrySortFactor.date:
+        switch (sectionFactor) {
+          case EntryGroupFactor.none:
+            return false;
+          case EntryGroupFactor.album:
+            return showAlbumHeaders();
+          case EntryGroupFactor.month:
+            return true;
+          case EntryGroupFactor.day:
+            return true;
+        }
+      case EntrySortFactor.name:
+        return showAlbumHeaders();
+      case EntrySortFactor.rating:
+        return !filters.any((f) => f is RatingFilter);
+      case EntrySortFactor.size:
+        return false;
+    }
   }
 
   void addFilter(CollectionFilter filter) {
@@ -181,11 +194,14 @@ class CollectionLens with ChangeNotifier {
       case EntrySortFactor.date:
         _filteredSortedEntries.sort(AvesEntry.compareByDate);
         break;
-      case EntrySortFactor.size:
-        _filteredSortedEntries.sort(AvesEntry.compareBySize);
-        break;
       case EntrySortFactor.name:
         _filteredSortedEntries.sort(AvesEntry.compareByName);
+        break;
+      case EntrySortFactor.rating:
+        _filteredSortedEntries.sort(AvesEntry.compareByRating);
+        break;
+      case EntrySortFactor.size:
+        _filteredSortedEntries.sort(AvesEntry.compareBySize);
         break;
     }
   }
@@ -210,14 +226,17 @@ class CollectionLens with ChangeNotifier {
             break;
         }
         break;
+      case EntrySortFactor.name:
+        final byAlbum = groupBy<AvesEntry, EntryAlbumSectionKey>(_filteredSortedEntries, (entry) => EntryAlbumSectionKey(entry.directory));
+        sections = SplayTreeMap<EntryAlbumSectionKey, List<AvesEntry>>.of(byAlbum, (a, b) => source.compareAlbumsByName(a.directory!, b.directory!));
+        break;
+      case EntrySortFactor.rating:
+        sections = groupBy<AvesEntry, EntryRatingSectionKey>(_filteredSortedEntries, (entry) => EntryRatingSectionKey(entry.rating));
+        break;
       case EntrySortFactor.size:
         sections = Map.fromEntries([
           MapEntry(const SectionKey(), _filteredSortedEntries),
         ]);
-        break;
-      case EntrySortFactor.name:
-        final byAlbum = groupBy<AvesEntry, EntryAlbumSectionKey>(_filteredSortedEntries, (entry) => EntryAlbumSectionKey(entry.directory));
-        sections = SplayTreeMap<EntryAlbumSectionKey, List<AvesEntry>>.of(byAlbum, (a, b) => source.compareAlbumsByName(a.directory!, b.directory!));
         break;
     }
     sections = Map.unmodifiable(sections);

@@ -25,7 +25,7 @@ class ThumbnailEntryOverlay extends StatelessWidget {
       else if (entry.isAnimated)
         const AnimatedImageIcon()
       else ...[
-        if (entry.rating != null && context.select<GridThemeData, bool>((t) => t.showRating)) RatingIcon(entry: entry),
+        if (entry.rating != 0 && context.select<GridThemeData, bool>((t) => t.showRating)) RatingIcon(entry: entry),
         if (entry.isRaw && context.select<GridThemeData, bool>((t) => t.showRaw)) const RawIcon(),
         if (entry.isGeotiff) const GeotiffIcon(),
         if (entry.is360) const SphericalImageIcon(),

@@ -5,10 +5,11 @@ class CatalogMetadata {
   final int? contentId, dateMillis;
   final bool isAnimated, isGeotiff, is360, isMultiPage;
   bool isFlipped;
-  int? rating, rotationDegrees;
+  int? rotationDegrees;
   final String? mimeType, xmpSubjects, xmpTitleDescription;
   double? latitude, longitude;
   Address? address;
+  int rating;
 
   static const double _precisionErrorTolerance = 1e-9;
   static const _isAnimatedMask = 1 << 0;
@@ -31,7 +32,7 @@ class CatalogMetadata {
     this.xmpTitleDescription,
     double? latitude,
     double? longitude,
-    this.rating,
+    this.rating = 0,
   }) {
     // Geocoder throws an `IllegalArgumentException` when a coordinate has a funky value like `1.7056881853375E7`
     // We also exclude zero coordinates, taking into account precision errors (e.g. {5.952380952380953e-11,-2.7777777777777777e-10}),
@@ -89,8 +90,7 @@ class CatalogMetadata {
       xmpTitleDescription: map['xmpTitleDescription'] ?? '',
       latitude: map['latitude'],
       longitude: map['longitude'],
-      // `rotationDegrees` should default to `null`, not 0
-      rating: map['rating'],
+      rating: map['rating'] ?? 0,
     );
   }
 

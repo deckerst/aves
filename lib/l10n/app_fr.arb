@@ -79,6 +79,8 @@
   "filterFavouriteLabel": "Favori",
   "filterLocationEmptyLabel": "Sans lieu",
   "filterTagEmptyLabel": "Sans libellé",
+  "filterRatingUnratedLabel": "Sans notation",
+  "filterRatingRejectedLabel": "Rejeté",
   "filterTypeAnimatedLabel": "Animation",
   "filterTypeMotionPhotoLabel": "Photo animée",
   "filterTypePanoramaLabel": "Panorama",
@@ -273,6 +275,7 @@
   "collectionSortDate": "par date",
   "collectionSortSize": "par taille",
   "collectionSortName": "alphabétique",
+  "collectionSortRating": "par notation",
 
   "collectionGroupAlbum": "par album",
   "collectionGroupMonth": "par mois",
@@ -346,6 +349,7 @@
   "searchSectionCountries": "Pays",
   "searchSectionPlaces": "Lieux",
   "searchSectionTags": "Libellés",
+  "searchSectionRating": "Notations",
 
   "settingsPageTitle": "Réglages",
   "settingsSystemDefault": "Système",

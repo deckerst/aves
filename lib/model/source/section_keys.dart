@@ -23,3 +23,12 @@ class EntryDateSectionKey extends SectionKey with EquatableMixin {
 
   const EntryDateSectionKey(this.date);
 }
+
+class EntryRatingSectionKey extends SectionKey with EquatableMixin {
+  final int rating;
+
+  @override
+  List<Object?> get props => [rating];
+
+  const EntryRatingSectionKey(this.rating);
+}

@@ -79,6 +79,8 @@
   "filterFavouriteLabel": "즐겨찾기",
   "filterLocationEmptyLabel": "장소 없음",
   "filterTagEmptyLabel": "태그 없음",
+  "filterRatingUnratedLabel": "별점 없음",
+  "filterRatingRejectedLabel": "거부됨",
   "filterTypeAnimatedLabel": "애니메이션",
   "filterTypeMotionPhotoLabel": "모션 포토",
   "filterTypePanoramaLabel": "파노라마",
@@ -273,6 +275,7 @@
   "collectionSortDate": "날짜",
   "collectionSortSize": "크기",
   "collectionSortName": "이름",
+  "collectionSortRating": "별점",
 
   "collectionGroupAlbum": "앨범별로",
   "collectionGroupMonth": "월별로",
@@ -346,6 +349,7 @@
   "searchSectionCountries": "국가",
   "searchSectionPlaces": "장소",
   "searchSectionTags": "태그",
+  "searchSectionRating": "별점",
 
   "settingsPageTitle": "설정",
   "settingsSystemDefault": "시스템",

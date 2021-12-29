@@ -94,6 +94,8 @@
   "filterFavouriteLabel": "Favourite",
   "filterLocationEmptyLabel": "Unlocated",
   "filterTagEmptyLabel": "Untagged",
+  "filterRatingUnratedLabel": "Unrated",
+  "filterRatingRejectedLabel": "Rejected",
   "filterTypeAnimatedLabel": "Animated",
   "filterTypeMotionPhotoLabel": "Motion Photo",
   "filterTypePanoramaLabel": "Panorama",
@@ -381,6 +383,7 @@
   "collectionSortDate": "By date",
   "collectionSortSize": "By size",
   "collectionSortName": "By album & file name",
+  "collectionSortRating": "By rating",
 
   "collectionGroupAlbum": "By album",
   "collectionGroupMonth": "By month",
@@ -494,6 +497,7 @@
   "searchSectionCountries": "Countries",
   "searchSectionPlaces": "Places",
   "searchSectionTags": "Tags",
+  "searchSectionRating": "Ratings",
 
   "settingsPageTitle": "Settings",
   "settingsSystemDefault": "System",

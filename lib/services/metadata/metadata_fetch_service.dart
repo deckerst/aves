@@ -66,7 +66,7 @@ class PlatformMetadataFetchService implements MetadataFetchService {
         // 'dateMillis': date taken in milliseconds since Epoch (long)
         // 'isAnimated': animated gif/webp (bool)
         // 'isFlipped': flipped according to EXIF orientation (bool)
-        // 'rating': rating in [1,5] (int)
+        // 'rating': rating in [-1,5] (int)
         // 'rotationDegrees': rotation degrees according to EXIF orientation or other metadata (int)
         // 'latitude': latitude (double)
         // 'longitude': longitude (double)

@@ -316,7 +316,6 @@ class _ScaleOverlayState extends State<_ScaleOverlay> {
               colors: const [
                 Colors.black,
                 Colors.black54,
-                // Colors.amber,
               ],
             ),
           )

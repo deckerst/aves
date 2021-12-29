@@ -361,7 +361,7 @@ class AvesEntry {
     return _bestDate;
   }
 
-  int? get rating => _catalogMetadata?.rating;
+  int get rating => _catalogMetadata?.rating ?? 0;
 
   int get rotationDegrees => _catalogMetadata?.rotationDegrees ?? sourceRotationDegrees;
 
@@ -861,14 +861,6 @@ class AvesEntry {
     return c != 0 ? c : compareAsciiUpperCase(a.extension ?? '', b.extension ?? '');
   }
 
-  // compare by:
-  // 1) size descending
-  // 2) name ascending
-  static int compareBySize(AvesEntry a, AvesEntry b) {
-    final c = (b.sizeBytes ?? 0).compareTo(a.sizeBytes ?? 0);
-    return c != 0 ? c : compareByName(a, b);
-  }
-
   static final _epoch = DateTime.fromMillisecondsSinceEpoch(0);
 
   // compare by:
@@ -878,5 +870,21 @@ class AvesEntry {
     var c = (b.bestDate ?? _epoch).compareTo(a.bestDate ?? _epoch);
     if (c != 0) return c;
     return compareByName(b, a);
+  }
+
+  // compare by:
+  // 1) rating descending
+  // 2) date descending
+  static int compareByRating(AvesEntry a, AvesEntry b) {
+    final c = b.rating.compareTo(a.rating);
+    return c != 0 ? c : compareByDate(a, b);
+  }
+
+  // compare by:
+  // 1) size descending
+  // 2) date descending
+  static int compareBySize(AvesEntry a, AvesEntry b) {
+    final c = (b.sizeBytes ?? 0).compareTo(a.sizeBytes ?? 0);
+    return c != 0 ? c : compareByDate(a, b);
   }
 }

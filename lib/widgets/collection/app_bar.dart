@@ -210,7 +210,6 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
           action,
           appMode: appMode,
           isSelecting: isSelecting,
-          sortFactor: collection.sortFactor,
           itemCount: collection.entryCount,
           selectedItemCount: selectedItemCount,
         );
@@ -448,6 +447,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
             EntrySortFactor.date: l10n.collectionSortDate,
             EntrySortFactor.size: l10n.collectionSortSize,
             EntrySortFactor.name: l10n.collectionSortName,
+            EntrySortFactor.rating: l10n.collectionSortRating,
           },
           groupOptions: {
             EntryGroupFactor.album: l10n.collectionGroupAlbum,

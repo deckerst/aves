@@ -4,6 +4,7 @@ import 'package:aves/model/favourites.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/mime.dart';
+import 'package:aves/model/filters/rating.dart';
 import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/filters/type.dart';
 import 'package:aves/model/source/collection_lens.dart';
@@ -75,29 +76,10 @@ class BasicSection extends StatelessWidget {
                 },
               ),
               OwnerProp(entry: entry),
-              _buildRatingRow(),
               _buildChips(context),
             ],
           );
         });
-  }
-
-  Widget _buildRatingRow() {
-    final rating = entry.rating;
-    return rating != null
-        ? Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            child: Row(
-              children: List.generate(
-                5,
-                (i) => Icon(
-                  Icons.star,
-                  color: rating > i ? Colors.amber : Colors.grey[800],
-                ),
-              ),
-            ),
-          )
-        : const SizedBox();
   }
 
   Widget _buildChips(BuildContext context) {
@@ -113,6 +95,7 @@ class BasicSection extends StatelessWidget {
       if (entry.isVideo && entry.is360) TypeFilter.sphericalVideo,
       if (entry.isVideo && !entry.is360) MimeFilter.video,
       if (album != null) AlbumFilter(album, collection?.source.getAlbumDisplayName(context, album)),
+      if (entry.rating != 0) RatingFilter(entry.rating),
       ...tags.map((tag) => TagFilter(tag)),
     };
     return AnimatedBuilder(

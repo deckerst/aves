@@ -480,15 +480,15 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                                 }
                             }
 
-                            xmpMeta.getSafeInt(XMP.XMP_SCHEMA_NS, XMP.XMP_RATING_PROP_NAME) { if (it in RATING_RANGE) metadataMap[KEY_RATING] = it }
+                            xmpMeta.getSafeInt(XMP.XMP_SCHEMA_NS, XMP.XMP_RATING_PROP_NAME) { metadataMap[KEY_RATING] = it }
                             if (!metadataMap.containsKey(KEY_RATING)) {
                                 xmpMeta.getSafeInt(XMP.MICROSOFTPHOTO_SCHEMA_NS, XMP.MS_RATING_PROP_NAME) { percentRating ->
                                     // values of 1,25,50,75,99% correspond to 1,2,3,4,5 stars
                                     val standardRating = (percentRating / 25f).roundToInt() + 1
-                                    if (standardRating in RATING_RANGE) metadataMap[KEY_RATING] = standardRating
+                                    metadataMap[KEY_RATING] = standardRating
                                 }
                                 if (!metadataMap.containsKey(KEY_RATING)) {
-                                    xmpMeta.getSafeInt(XMP.ACDSEE_SCHEMA_NS, XMP.ACDSEE_RATING_PROP_NAME) { if (it in RATING_RANGE) metadataMap[KEY_RATING] = it }
+                                    xmpMeta.getSafeInt(XMP.ACDSEE_SCHEMA_NS, XMP.ACDSEE_RATING_PROP_NAME) { metadataMap[KEY_RATING] = it }
                                 }
                             }
 
@@ -991,7 +991,6 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         private const val MASK_IS_360 = 1 shl 3
         private const val MASK_IS_MULTIPAGE = 1 shl 4
         private const val XMP_SUBJECTS_SEPARATOR = ";"
-        private val RATING_RANGE = 1..5
 
         // overlay metadata
         private const val KEY_APERTURE = "aperture"

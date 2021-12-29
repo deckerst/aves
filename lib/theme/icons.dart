@@ -22,6 +22,8 @@ class AIcons {
   static const IconData locationOff = Icons.location_off_outlined;
   static const IconData mainStorage = Icons.smartphone_outlined;
   static const IconData privacy = MdiIcons.shieldAccountOutline;
+  static const IconData ratingRejected = MdiIcons.starRemoveOutline;
+  static const IconData ratingUnrated = MdiIcons.starOffOutline;
   static const IconData raw = Icons.raw_on_outlined;
   static const IconData shooting = Icons.camera_outlined;
   static const IconData removableStorage = Icons.sd_storage_outlined;
