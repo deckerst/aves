@@ -45,6 +45,7 @@ class SettingsDefaults {
   ];
   static const showThumbnailLocation = true;
   static const showThumbnailMotionPhoto = true;
+  static const showThumbnailRating = true;
   static const showThumbnailRaw = true;
   static const showThumbnailVideoDuration = true;
 

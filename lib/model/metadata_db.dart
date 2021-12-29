@@ -145,6 +145,7 @@ class SqfliteMetadataDb implements MetadataDb {
             ', xmpTitleDescription TEXT'
             ', latitude REAL'
             ', longitude REAL'
+            ', rating INTEGER'
             ')');
         await db.execute('CREATE TABLE $addressTable('
             'contentId INTEGER PRIMARY KEY'
@@ -168,7 +169,7 @@ class SqfliteMetadataDb implements MetadataDb {
             ')');
       },
       onUpgrade: MetadataDbUpgrader.upgradeDb,
-      version: 5,
+      version: 6,
     );
   }
 

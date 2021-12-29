@@ -25,6 +25,9 @@ class MetadataDbUpgrader {
         case 4:
           await _upgradeFrom4(db);
           break;
+        case 5:
+          await _upgradeFrom5(db);
+          break;
       }
       oldVersion++;
     }
@@ -120,5 +123,10 @@ class MetadataDbUpgrader {
         'contentId INTEGER PRIMARY KEY'
         ', resumeTimeMillis INTEGER'
         ')');
+  }
+
+  static Future<void> _upgradeFrom5(Database db) async {
+    debugPrint('upgrading DB from v5');
+    await db.execute('ALTER TABLE $metadataTable ADD COLUMN rating INTEGER;');
   }
 }

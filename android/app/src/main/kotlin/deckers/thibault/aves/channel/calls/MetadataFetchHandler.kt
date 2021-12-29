@@ -78,6 +78,7 @@ import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets
 import java.text.ParseException
 import java.util.*
+import kotlin.math.roundToInt
 import kotlin.math.roundToLong
 
 class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
@@ -374,6 +375,10 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
     // set `KEY_XMP_SUBJECTS` from these fields (by precedence):
     // - ME / XMP / dc:subject
     // - ME / IPTC / keywords
+    // set `KEY_RATING` from these fields (by precedence):
+    // - ME / XMP / xmp:Rating
+    // - ME / XMP / MicrosoftPhoto:Rating
+    // - ME / XMP / acdsee:rating
     private fun getCatalogMetadata(call: MethodCall, result: MethodChannel.Result) {
         val mimeType = call.argument<String>("mimeType")
         val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
@@ -459,19 +464,31 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                     for (dir in metadata.getDirectoriesOfType(XmpDirectory::class.java)) {
                         val xmpMeta = dir.xmpMeta
                         try {
-                            if (xmpMeta.doesPropertyExist(XMP.DC_SCHEMA_NS, XMP.SUBJECT_PROP_NAME)) {
-                                val count = xmpMeta.countArrayItems(XMP.DC_SCHEMA_NS, XMP.SUBJECT_PROP_NAME)
-                                val values = (1 until count + 1).map { xmpMeta.getArrayItem(XMP.DC_SCHEMA_NS, XMP.SUBJECT_PROP_NAME, it).value }
+                            if (xmpMeta.doesPropertyExist(XMP.DC_SCHEMA_NS, XMP.DC_SUBJECT_PROP_NAME)) {
+                                val count = xmpMeta.countArrayItems(XMP.DC_SCHEMA_NS, XMP.DC_SUBJECT_PROP_NAME)
+                                val values = (1 until count + 1).map { xmpMeta.getArrayItem(XMP.DC_SCHEMA_NS, XMP.DC_SUBJECT_PROP_NAME, it).value }
                                 metadataMap[KEY_XMP_SUBJECTS] = values.joinToString(XMP_SUBJECTS_SEPARATOR)
                             }
-                            xmpMeta.getSafeLocalizedText(XMP.DC_SCHEMA_NS, XMP.TITLE_PROP_NAME, acceptBlank = false) { metadataMap[KEY_XMP_TITLE_DESCRIPTION] = it }
+                            xmpMeta.getSafeLocalizedText(XMP.DC_SCHEMA_NS, XMP.DC_TITLE_PROP_NAME, acceptBlank = false) { metadataMap[KEY_XMP_TITLE_DESCRIPTION] = it }
                             if (!metadataMap.containsKey(KEY_XMP_TITLE_DESCRIPTION)) {
-                                xmpMeta.getSafeLocalizedText(XMP.DC_SCHEMA_NS, XMP.DESCRIPTION_PROP_NAME, acceptBlank = false) { metadataMap[KEY_XMP_TITLE_DESCRIPTION] = it }
+                                xmpMeta.getSafeLocalizedText(XMP.DC_SCHEMA_NS, XMP.DC_DESCRIPTION_PROP_NAME, acceptBlank = false) { metadataMap[KEY_XMP_TITLE_DESCRIPTION] = it }
                             }
                             if (!metadataMap.containsKey(KEY_DATE_MILLIS)) {
-                                xmpMeta.getSafeDateMillis(XMP.XMP_SCHEMA_NS, XMP.CREATE_DATE_PROP_NAME) { metadataMap[KEY_DATE_MILLIS] = it }
+                                xmpMeta.getSafeDateMillis(XMP.XMP_SCHEMA_NS, XMP.XMP_CREATE_DATE_PROP_NAME) { metadataMap[KEY_DATE_MILLIS] = it }
                                 if (!metadataMap.containsKey(KEY_DATE_MILLIS)) {
                                     xmpMeta.getSafeDateMillis(XMP.PHOTOSHOP_SCHEMA_NS, XMP.PS_DATE_CREATED_PROP_NAME) { metadataMap[KEY_DATE_MILLIS] = it }
+                                }
+                            }
+
+                            xmpMeta.getSafeInt(XMP.XMP_SCHEMA_NS, XMP.XMP_RATING_PROP_NAME) { if (it in RATING_RANGE) metadataMap[KEY_RATING] = it }
+                            if (!metadataMap.containsKey(KEY_RATING)) {
+                                xmpMeta.getSafeInt(XMP.MICROSOFTPHOTO_SCHEMA_NS, XMP.MS_RATING_PROP_NAME) { percentRating ->
+                                    // values of 1,25,50,75,99% correspond to 1,2,3,4,5 stars
+                                    val standardRating = (percentRating / 25f).roundToInt() + 1
+                                    if (standardRating in RATING_RANGE) metadataMap[KEY_RATING] = standardRating
+                                }
+                                if (!metadataMap.containsKey(KEY_RATING)) {
+                                    xmpMeta.getSafeInt(XMP.ACDSEE_SCHEMA_NS, XMP.ACDSEE_RATING_PROP_NAME) { if (it in RATING_RANGE) metadataMap[KEY_RATING] = it }
                                 }
                             }
 
@@ -966,6 +983,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         private const val KEY_LONGITUDE = "longitude"
         private const val KEY_XMP_SUBJECTS = "xmpSubjects"
         private const val KEY_XMP_TITLE_DESCRIPTION = "xmpTitleDescription"
+        private const val KEY_RATING = "rating"
 
         private const val MASK_IS_ANIMATED = 1 shl 0
         private const val MASK_IS_FLIPPED = 1 shl 1
@@ -973,6 +991,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         private const val MASK_IS_360 = 1 shl 3
         private const val MASK_IS_MULTIPAGE = 1 shl 4
         private const val XMP_SUBJECTS_SEPARATOR = ";"
+        private val RATING_RANGE = 1..5
 
         // overlay metadata
         private const val KEY_APERTURE = "aperture"
