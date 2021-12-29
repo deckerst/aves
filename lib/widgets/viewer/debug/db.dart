@@ -123,6 +123,7 @@ class _DbTabState extends State<DbTab> {
                       'longitude': '${data.longitude}',
                       'xmpSubjects': data.xmpSubjects ?? '',
                       'xmpTitleDescription': data.xmpTitleDescription ?? '',
+                      'rating': '${data.rating}',
                     },
                   ),
               ],

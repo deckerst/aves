@@ -111,8 +111,9 @@ class AIcons {
   static const IconData geo = Icons.language_outlined;
   static const IconData motionPhoto = Icons.motion_photos_on_outlined;
   static const IconData multiPage = Icons.burst_mode_outlined;
-  static const IconData videoThumb = Icons.play_circle_outline;
+  static const IconData rating = Icons.star_border_outlined;
   static const IconData threeSixty = Icons.threesixty_outlined;
+  static const IconData videoThumb = Icons.play_circle_outline;
   static const IconData selected = Icons.check_circle_outline;
   static const IconData unselected = Icons.radio_button_unchecked;
 

@@ -63,6 +63,7 @@ class Settings extends ChangeNotifier {
   static const collectionSelectionQuickActionsKey = 'collection_selection_quick_actions';
   static const showThumbnailLocationKey = 'show_thumbnail_location';
   static const showThumbnailMotionPhotoKey = 'show_thumbnail_motion_photo';
+  static const showThumbnailRatingKey = 'show_thumbnail_rating';
   static const showThumbnailRawKey = 'show_thumbnail_raw';
   static const showThumbnailVideoDurationKey = 'show_thumbnail_video_duration';
 
@@ -309,6 +310,10 @@ class Settings extends ChangeNotifier {
   bool get showThumbnailMotionPhoto => getBoolOrDefault(showThumbnailMotionPhotoKey, SettingsDefaults.showThumbnailMotionPhoto);
 
   set showThumbnailMotionPhoto(bool newValue) => setAndNotify(showThumbnailMotionPhotoKey, newValue);
+
+  bool get showThumbnailRating => getBoolOrDefault(showThumbnailRatingKey, SettingsDefaults.showThumbnailRating);
+
+  set showThumbnailRating(bool newValue) => setAndNotify(showThumbnailRatingKey, newValue);
 
   bool get showThumbnailRaw => getBoolOrDefault(showThumbnailRawKey, SettingsDefaults.showThumbnailRaw);
 
@@ -619,6 +624,7 @@ class Settings extends ChangeNotifier {
             case mustBackTwiceToExitKey:
             case showThumbnailLocationKey:
             case showThumbnailMotionPhotoKey:
+            case showThumbnailRatingKey:
             case showThumbnailRawKey:
             case showThumbnailVideoDurationKey:
             case showOverlayOnOpeningKey:

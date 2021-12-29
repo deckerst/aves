@@ -4,7 +4,16 @@
     "editEntryDateDialogSourceCustomDate",
     "editEntryDateDialogSourceTitle",
     "editEntryDateDialogSourceFileModifiedDate",
-    "editEntryDateDialogTargetFieldsHeader"
+    "editEntryDateDialogTargetFieldsHeader",
+    "settingsThumbnailShowRatingIcon"
+  ],
+
+  "fr": [
+    "settingsThumbnailShowRatingIcon"
+  ],
+
+  "ko": [
+    "settingsThumbnailShowRatingIcon"
   ],
 
   "ru": [
@@ -12,6 +21,7 @@
     "editEntryDateDialogSourceCustomDate",
     "editEntryDateDialogSourceTitle",
     "editEntryDateDialogSourceFileModifiedDate",
-    "editEntryDateDialogTargetFieldsHeader"
+    "editEntryDateDialogTargetFieldsHeader",
+    "settingsThumbnailShowRatingIcon"
   ]
 }

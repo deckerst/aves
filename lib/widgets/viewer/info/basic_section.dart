@@ -12,8 +12,8 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
-import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:aves/widgets/viewer/action/entry_info_action_delegate.dart';
+import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:aves/widgets/viewer/info/owner.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -74,13 +74,30 @@ class BasicSection extends StatelessWidget {
                   if (path != null) l10n.viewerInfoLabelPath: path,
                 },
               ),
-              OwnerProp(
-                entry: entry,
-              ),
+              OwnerProp(entry: entry),
+              _buildRatingRow(),
               _buildChips(context),
             ],
           );
         });
+  }
+
+  Widget _buildRatingRow() {
+    final rating = entry.rating;
+    return rating != null
+        ? Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: Row(
+              children: List.generate(
+                5,
+                (i) => Icon(
+                  Icons.star,
+                  color: rating > i ? Colors.amber : Colors.grey[800],
+                ),
+              ),
+            ),
+          )
+        : const SizedBox();
   }
 
   Widget _buildChips(BuildContext context) {

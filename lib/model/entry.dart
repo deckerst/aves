@@ -361,6 +361,8 @@ class AvesEntry {
     return _bestDate;
   }
 
+  int? get rating => _catalogMetadata?.rating;
+
   int get rotationDegrees => _catalogMetadata?.rotationDegrees ?? sourceRotationDegrees;
 
   set rotationDegrees(int rotationDegrees) {
