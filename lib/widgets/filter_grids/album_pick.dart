@@ -16,6 +16,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
 import 'package:aves/widgets/common/providers/selection_provider.dart';
+import 'package:aves/widgets/common/sliver_app_bar_title.dart';
 import 'package:aves/widgets/dialogs/filter_editors/create_album_dialog.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/album_set.dart';
@@ -141,9 +142,11 @@ class _AlbumPickAppBar extends StatelessWidget {
 
     return SliverAppBar(
       leading: const BackButton(),
-      title: SourceStateAwareAppBarTitle(
-        title: Text(title()),
-        source: source,
+      title: SliverAppBarTitleWrapper(
+        child: SourceStateAwareAppBarTitle(
+          title: Text(title()),
+          source: source,
+        ),
       ),
       bottom: _AlbumQueryBar(
         queryNotifier: queryNotifier,

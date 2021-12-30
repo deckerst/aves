@@ -8,6 +8,7 @@ import 'package:aves/widgets/common/app_bar_subtitle.dart';
 import 'package:aves/widgets/common/app_bar_title.dart';
 import 'package:aves/widgets/common/basic/menu.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/common/sliver_app_bar_title.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip_set.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
 import 'package:flutter/material.dart';
@@ -74,7 +75,9 @@ class _FilterGridAppBarState<T extends CollectionFilter> extends State<FilterGri
     _isSelectingNotifier.value = isSelecting;
     return SliverAppBar(
       leading: appMode.hasDrawer ? _buildAppBarLeading(isSelecting) : null,
-      title: _buildAppBarTitle(isSelecting),
+      title: SliverAppBarTitleWrapper(
+        child: _buildAppBarTitle(isSelecting),
+      ),
       actions: _buildActions(appMode, selection),
       titleSpacing: 0,
       floating: true,
@@ -103,7 +106,7 @@ class _FilterGridAppBarState<T extends CollectionFilter> extends State<FilterGri
     );
   }
 
-  Widget? _buildAppBarTitle(bool isSelecting) {
+  Widget _buildAppBarTitle(bool isSelecting) {
     if (isSelecting) {
       return Selector<Selection<FilterGridItem<T>>, int>(
         selector: (context, selection) => selection.selectedItems.length,
