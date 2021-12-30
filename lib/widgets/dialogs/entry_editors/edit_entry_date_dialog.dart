@@ -24,8 +24,8 @@ class EditEntryDateDialog extends StatefulWidget {
 }
 
 class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
-  DateEditAction _action = DateEditAction.set;
-  DateSetSource _setSource = DateSetSource.custom;
+  DateEditAction _action = DateEditAction.setCustom;
+  DateFieldSource _copyFieldSource = DateFieldSource.fileModifiedDate;
   late DateTime _setDateTime;
   late ValueNotifier<int> _shiftHour, _shiftMinute;
   late ValueNotifier<String> _shiftSign;
@@ -96,7 +96,8 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
                   key: ValueKey(_action),
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    if (_action == DateEditAction.set) ..._buildSetContent(context),
+                    if (_action == DateEditAction.setCustom) _buildSetCustomContent(context),
+                    if (_action == DateEditAction.copyField) _buildCopyFieldContent(context),
                     if (_action == DateEditAction.shift) _buildShiftContent(context),
                   ],
                 ),
@@ -128,67 +129,52 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
         ),
       );
 
-  List<Widget> _buildSetContent(BuildContext context) {
+  Widget _buildSetCustomContent(BuildContext context) {
     final l10n = context.l10n;
     final locale = l10n.localeName;
     final use24hour = context.select<MediaQueryData, bool>((v) => v.alwaysUse24HourFormat);
 
-    return [
-      Padding(
-        padding: const EdgeInsets.only(left: 16, right: 16),
-        child: Row(
-          children: [
-            Text(l10n.editEntryDateDialogSourceFieldLabel),
-            const SizedBox(width: 8),
-            Expanded(
-              child: DropdownButton<DateSetSource>(
-                items: DateSetSource.values
-                    .map((v) => DropdownMenuItem<DateSetSource>(
-                          value: v,
-                          child: Text(_setSourceText(context, v)),
-                        ))
-                    .toList(),
-                selectedItemBuilder: (context) => DateSetSource.values
-                    .map((v) => DropdownMenuItem<DateSetSource>(
-                          value: v,
-                          child: Text(
-                            _setSourceText(context, v),
-                            softWrap: false,
-                            overflow: TextOverflow.fade,
-                          ),
-                        ))
-                    .toList(),
-                value: _setSource,
-                onChanged: (v) => setState(() => _setSource = v!),
-                isExpanded: true,
-                dropdownColor: dropdownColor,
-              ),
-            ),
-          ],
-        ),
+    return Padding(
+      padding: const EdgeInsets.only(left: 16, top: 4, right: 12),
+      child: Row(
+        children: [
+          Expanded(child: Text(formatDateTime(_setDateTime, locale, use24hour))),
+          IconButton(
+            icon: const Icon(AIcons.edit),
+            onPressed: _editDate,
+            tooltip: l10n.changeTooltip,
+          ),
+        ],
       ),
-      AnimatedSwitcher(
-        duration: context.read<DurationsData>().formTransition,
-        switchInCurve: Curves.easeInOutCubic,
-        switchOutCurve: Curves.easeInOutCubic,
-        transitionBuilder: _formTransitionBuilder,
-        child: _setSource == DateSetSource.custom
-            ? Padding(
-                padding: const EdgeInsets.only(left: 16, right: 12),
-                child: Row(
-                  children: [
-                    Expanded(child: Text(formatDateTime(_setDateTime, locale, use24hour))),
-                    IconButton(
-                      icon: const Icon(AIcons.edit),
-                      onPressed: _editDate,
-                      tooltip: l10n.changeTooltip,
-                    ),
-                  ],
-                ),
-              )
-            : const SizedBox(),
+    );
+  }
+
+  Widget _buildCopyFieldContent(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: DropdownButton<DateFieldSource>(
+        items: DateFieldSource.values
+            .map((v) => DropdownMenuItem<DateFieldSource>(
+                  value: v,
+                  child: Text(_setSourceText(context, v)),
+                ))
+            .toList(),
+        selectedItemBuilder: (context) => DateFieldSource.values
+            .map((v) => DropdownMenuItem<DateFieldSource>(
+                  value: v,
+                  child: Text(
+                    _setSourceText(context, v),
+                    softWrap: false,
+                    overflow: TextOverflow.fade,
+                  ),
+                ))
+            .toList(),
+        value: _copyFieldSource,
+        onChanged: (v) => setState(() => _copyFieldSource = v!),
+        isExpanded: true,
+        dropdownColor: dropdownColor,
       ),
-    ];
+    );
   }
 
   Widget _buildShiftContent(BuildContext context) {
@@ -283,8 +269,12 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
   String _actionText(BuildContext context, DateEditAction action) {
     final l10n = context.l10n;
     switch (action) {
-      case DateEditAction.set:
-        return l10n.editEntryDateDialogSet;
+      case DateEditAction.setCustom:
+        return l10n.editEntryDateDialogSetCustom;
+      case DateEditAction.copyField:
+        return l10n.editEntryDateDialogCopyField;
+      case DateEditAction.extractFromTitle:
+        return l10n.editEntryDateDialogExtractFromTitle;
       case DateEditAction.shift:
         return l10n.editEntryDateDialogShift;
       case DateEditAction.clear:
@@ -292,22 +282,18 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
     }
   }
 
-  String _setSourceText(BuildContext context, DateSetSource source) {
+  String _setSourceText(BuildContext context, DateFieldSource source) {
     final l10n = context.l10n;
     switch (source) {
-      case DateSetSource.custom:
-        return l10n.editEntryDateDialogSourceCustomDate;
-      case DateSetSource.title:
-        return l10n.editEntryDateDialogSourceTitle;
-      case DateSetSource.fileModifiedDate:
+      case DateFieldSource.fileModifiedDate:
         return l10n.editEntryDateDialogSourceFileModifiedDate;
-      case DateSetSource.exifDate:
+      case DateFieldSource.exifDate:
         return 'Exif date';
-      case DateSetSource.exifDateOriginal:
+      case DateFieldSource.exifDateOriginal:
         return 'Exif original date';
-      case DateSetSource.exifDateDigitized:
+      case DateFieldSource.exifDateDigitized:
         return 'Exif digitized date';
-      case DateSetSource.exifGpsDate:
+      case DateFieldSource.exifGpsDate:
         return 'Exif GPS date';
     }
   }
@@ -350,20 +336,21 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
         ));
   }
 
-  void _submit(BuildContext context) {
-    late DateModifier modifier;
+  DateModifier _getModifier() {
     switch (_action) {
-      case DateEditAction.set:
-        modifier = DateModifier(_action, _fields, setSource: _setSource, setDateTime: _setDateTime);
-        break;
+      case DateEditAction.setCustom:
+        return DateModifier.setCustom(_fields, _setDateTime);
+      case DateEditAction.copyField:
+        return DateModifier.copyField(_fields, _copyFieldSource);
+      case DateEditAction.extractFromTitle:
+        return DateModifier.extractFromTitle(_fields);
       case DateEditAction.shift:
         final shiftTotalMinutes = (_shiftHour.value * 60 + _shiftMinute.value) * (_shiftSign.value == '+' ? 1 : -1);
-        modifier = DateModifier(_action, _fields, shiftMinutes: shiftTotalMinutes);
-        break;
+        return DateModifier.shift(_fields, shiftTotalMinutes);
       case DateEditAction.clear:
-        modifier = DateModifier(_action, _fields);
-        break;
+        return DateModifier.clear(_fields);
     }
-    Navigator.pop(context, modifier);
   }
+
+  void _submit(BuildContext context) => Navigator.pop(context, _getModifier());
 }

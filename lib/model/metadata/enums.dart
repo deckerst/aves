@@ -6,14 +6,14 @@ enum MetadataField {
 }
 
 enum DateEditAction {
-  set,
+  setCustom,
+  copyField,
+  extractFromTitle,
   shift,
   clear,
 }
 
-enum DateSetSource {
-  custom,
-  title,
+enum DateFieldSource {
   fileModifiedDate,
   exifDate,
   exifDateOriginal,
@@ -105,20 +105,18 @@ extension ExtraMetadataField on MetadataField {
   }
 }
 
-extension ExtraDateSetSource on DateSetSource {
+extension ExtraDateFieldSource on DateFieldSource {
   MetadataField? toMetadataField() {
     switch (this) {
-      case DateSetSource.custom:
-      case DateSetSource.title:
-      case DateSetSource.fileModifiedDate:
+      case DateFieldSource.fileModifiedDate:
         return null;
-      case DateSetSource.exifDate:
+      case DateFieldSource.exifDate:
         return MetadataField.exifDate;
-      case DateSetSource.exifDateOriginal:
+      case DateFieldSource.exifDateOriginal:
         return MetadataField.exifDateOriginal;
-      case DateSetSource.exifDateDigitized:
+      case DateFieldSource.exifDateDigitized:
         return MetadataField.exifDateDigitized;
-      case DateSetSource.exifGpsDate:
+      case DateFieldSource.exifGpsDate:
         return MetadataField.exifGpsDate;
     }
   }
