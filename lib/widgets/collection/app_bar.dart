@@ -20,6 +20,7 @@ import 'package:aves/widgets/common/app_bar_subtitle.dart';
 import 'package:aves/widgets/common/app_bar_title.dart';
 import 'package:aves/widgets/common/basic/menu.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/common/sliver_app_bar_title.dart';
 import 'package:aves/widgets/dialogs/tile_view_dialog.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
 import 'package:flutter/material.dart';
@@ -116,7 +117,9 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
               builder: (context, queryEnabled, child) {
                 return SliverAppBar(
                   leading: appMode.hasDrawer ? _buildAppBarLeading(isSelecting) : null,
-                  title: _buildAppBarTitle(isSelecting),
+                  title: SliverAppBarTitleWrapper(
+                    child: _buildAppBarTitle(isSelecting),
+                  ),
                   actions: _buildActions(
                     isSelecting: isSelecting,
                     selectedItemCount: selectedItemCount,
@@ -177,7 +180,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     );
   }
 
-  Widget? _buildAppBarTitle(bool isSelecting) {
+  Widget _buildAppBarTitle(bool isSelecting) {
     final l10n = context.l10n;
 
     if (isSelecting) {

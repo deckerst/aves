@@ -5,6 +5,7 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/app_bar_title.dart';
 import 'package:aves/widgets/common/basic/menu.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/common/sliver_app_bar_title.dart';
 import 'package:aves/widgets/viewer/action/entry_info_action_delegate.dart';
 import 'package:aves/widgets/viewer/info/info_search.dart';
 import 'package:aves/widgets/viewer/info/metadata/metadata_section.dart';
@@ -37,9 +38,11 @@ class InfoAppBar extends StatelessWidget {
         onPressed: onBackPressed,
         tooltip: context.l10n.viewerInfoBackToViewerTooltip,
       ),
-      title: InteractiveAppBarTitle(
-        onTap: () => _goToSearch(context),
-        child: Text(context.l10n.viewerInfoPageTitle),
+      title: SliverAppBarTitleWrapper(
+        child: InteractiveAppBarTitle(
+          onTap: () => _goToSearch(context),
+          child: Text(context.l10n.viewerInfoPageTitle),
+        ),
       ),
       actions: [
         IconButton(
