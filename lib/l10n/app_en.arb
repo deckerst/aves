@@ -204,6 +204,8 @@
       }
     }
   },
+  "missingSystemFilePickerDialogTitle": "Missing System File Picker",
+  "missingSystemFilePickerDialogMessage": "The system file picker is missing or disabled. Please enable it and try again.",
 
   "unsupportedTypeDialogTitle": "Unsupported Types",
   "unsupportedTypeDialogMessage": "{count, plural, =1{This operation is not supported for items of the following type: {types}.} other{This operation is not supported for items of the following types: {types}.}}",

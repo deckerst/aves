@@ -170,7 +170,7 @@ class StorageAccessStreamHandler(private val activity: Activity, arguments: Any?
             MainActivity.pendingStorageAccessResultHandlers[MainActivity.OPEN_FILE_REQUEST] = PendingStorageAccessResultHandler(null, ::onGranted, ::onDenied)
             activity.startActivityForResult(intent, MainActivity.OPEN_FILE_REQUEST)
         } else {
-            MainActivity.notifyError("failed to resolve activity for intent=$intent")
+            MainActivity.notifyError("failed to resolve activity for intent=$intent extras=${intent.extras}")
             onDenied()
         }
     }

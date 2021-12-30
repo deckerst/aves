@@ -51,7 +51,7 @@ class _DebugAndroidAppSectionState extends State<DebugAndroidAppSection> with Au
                     return ValueListenableBuilder<String>(
                       valueListenable: _queryNotifier,
                       builder: (context, query, child) {
-                        if ({package.packageName, ...package.potentialDirs}.none((v) => v.contains(query))) {
+                        if ({package.packageName, ...package.potentialDirs}.none((v) => v.toLowerCase().contains(query.toLowerCase()))) {
                           return const SizedBox();
                         }
                         return Text.rich(

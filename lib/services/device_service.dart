@@ -11,6 +11,8 @@ abstract class DeviceService {
   Future<List<Locale>> getLocales();
 
   Future<int> getPerformanceClass();
+
+  Future<bool> isSystemFilePickerEnabled();
 }
 
 class PlatformDeviceService implements DeviceService {
@@ -60,12 +62,22 @@ class PlatformDeviceService implements DeviceService {
   @override
   Future<int> getPerformanceClass() async {
     try {
-      await platform.invokeMethod('getPerformanceClass');
       final result = await platform.invokeMethod('getPerformanceClass');
       if (result != null) return result as int;
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
     }
     return 0;
+  }
+
+  @override
+  Future<bool> isSystemFilePickerEnabled() async {
+    try {
+      final result = await platform.invokeMethod('isSystemFilePickerEnabled');
+      if (result != null) return result as bool;
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
+    return false;
   }
 }

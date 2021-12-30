@@ -1,6 +1,7 @@
 package deckers.thibault.aves.channel.calls
 
 import android.content.Context
+import android.content.Intent
 import android.content.res.Resources
 import android.os.Build
 import androidx.core.content.pm.ShortcutManagerCompat
@@ -18,6 +19,7 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
             "getDefaultTimeZone" -> safe(call, result, ::getDefaultTimeZone)
             "getLocales" -> safe(call, result, ::getLocales)
             "getPerformanceClass" -> safe(call, result, ::getPerformanceClass)
+            "isSystemFilePickerEnabled" -> safe(call, result, ::isSystemFilePickerEnabled)
             else -> result.notImplemented()
         }
     }
@@ -34,7 +36,6 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
                 // but using hybrid composition would make it usable on API 19 too,
                 // cf https://github.com/flutter/flutter/issues/23728
                 "canRenderGoogleMaps" to (sdkInt >= Build.VERSION_CODES.KITKAT_WATCH),
-                "hasFilePicker" to (sdkInt >= Build.VERSION_CODES.KITKAT),
                 "showPinShortcutFeedback" to (sdkInt >= Build.VERSION_CODES.O),
                 "supportEdgeToEdgeUIMode" to (sdkInt >= Build.VERSION_CODES.Q),
             )
@@ -80,6 +81,15 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
             }
         }
         result.success(Build.VERSION.SDK_INT)
+    }
+
+    private fun isSystemFilePickerEnabled(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
+        val enabled = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).resolveActivity(context.packageManager) != null
+        } else {
+            false
+        }
+        result.success(enabled)
     }
 
     companion object {
