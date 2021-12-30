@@ -22,7 +22,7 @@ import 'package:flutter/foundation.dart';
 
 class VideoMetadataFormatter {
   static final _epoch = DateTime.fromMillisecondsSinceEpoch(0, isUtc: true);
-  static final _anotherDatePattern = RegExp(r'(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})');
+  static final _anotherDatePattern = RegExp(r'(\d{4})[-/](\d{2})[-/](\d{2}) (\d{2}):(\d{2}):(\d{2})');
   static final _durationPattern = RegExp(r'(\d+):(\d+):(\d+)(.\d+)');
   static final _locationPattern = RegExp(r'([+-][.0-9]+)');
   static final Map<String, String> _codecNames = {
@@ -112,9 +112,10 @@ class VideoMetadataFormatter {
       return date.millisecondsSinceEpoch;
     }
 
-    // `DateTime` does not recognize:
+    // `DateTime` does not recognize these values found in the wild:
     // - `UTC 2021-05-30 19:14:21`
-    // - `2021`
+    // - `2021/10/31 21:23:17`
+    // - `2021` (not enough to build a date)
 
     final match = _anotherDatePattern.firstMatch(dateString);
     if (match != null) {

@@ -9,15 +9,7 @@
     "editEntryDateDialogTargetFieldsHeader",
     "collectionSortRating",
     "searchSectionRating",
-    "settingsThumbnailShowRatingIcon"
-  ],
-
-  "fr": [
-    "settingsThumbnailShowRatingIcon"
-  ],
-
-  "ko": [
-    "settingsThumbnailShowRatingIcon"
+    "settingsThumbnailShowRating"
   ],
 
   "ru": [
@@ -30,6 +22,6 @@
     "editEntryDateDialogTargetFieldsHeader",
     "collectionSortRating",
     "searchSectionRating",
-    "settingsThumbnailShowRatingIcon"
+    "settingsThumbnailShowRating"
   ]
 }
