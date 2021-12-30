@@ -523,7 +523,7 @@
   "settingsSectionThumbnails": "Thumbnails",
   "settingsThumbnailShowLocationIcon": "Show location icon",
   "settingsThumbnailShowMotionPhotoIcon": "Show motion photo icon",
-  "settingsThumbnailShowRatingIcon": "Show rating icon",
+  "settingsThumbnailShowRating": "Show rating",
   "settingsThumbnailShowRawIcon": "Show raw icon",
   "settingsThumbnailShowVideoDuration": "Show video duration",
 

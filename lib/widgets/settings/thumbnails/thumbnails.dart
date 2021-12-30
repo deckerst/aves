@@ -83,7 +83,7 @@ class ThumbnailsSection extends StatelessWidget {
             onChanged: (v) => settings.showThumbnailRating = v,
             title: Row(
               children: [
-                Expanded(child: Text(context.l10n.settingsThumbnailShowRatingIcon)),
+                Expanded(child: Text(context.l10n.settingsThumbnailShowRating)),
                 AnimatedOpacity(
                   opacity: opacityFor(current),
                   duration: Durations.toggleableTransitionAnimation,

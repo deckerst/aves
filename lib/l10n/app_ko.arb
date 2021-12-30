@@ -72,7 +72,7 @@
   "videoActionSetSpeed": "재생 배속",
   "videoActionSettings": "설정",
 
-  "entryInfoActionEditDate": "날짜와 시간 수정",
+  "entryInfoActionEditDate": "날짜 및 시간 수정",
   "entryInfoActionEditTags": "태그 수정",
   "entryInfoActionRemoveMetadata": "메타데이터 삭제",
 
@@ -375,6 +375,7 @@
   "settingsSectionThumbnails": "섬네일",
   "settingsThumbnailShowLocationIcon": "위치 아이콘 표시",
   "settingsThumbnailShowMotionPhotoIcon": "모션 포토 아이콘 표시",
+  "settingsThumbnailShowRating": "별점 표시",
   "settingsThumbnailShowRawIcon": "Raw 아이콘 표시",
   "settingsThumbnailShowVideoDuration": "동영상 길이 표시",
 

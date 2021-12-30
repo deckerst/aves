@@ -375,6 +375,7 @@
   "settingsSectionThumbnails": "Vignettes",
   "settingsThumbnailShowLocationIcon": "Afficher l’icône de lieu",
   "settingsThumbnailShowMotionPhotoIcon": "Afficher l’icône de photo animée",
+  "settingsThumbnailShowRating": "Afficher la notation",
   "settingsThumbnailShowRawIcon": "Afficher l’icône de photo raw",
   "settingsThumbnailShowVideoDuration": "Afficher la durée de la vidéo",
 
