@@ -2,6 +2,8 @@
   "de": [
     "filterRatingUnratedLabel",
     "filterRatingRejectedLabel",
+    "missingSystemFilePickerDialogTitle",
+    "missingSystemFilePickerDialogMessage",
     "editEntryDateDialogSourceFieldLabel",
     "editEntryDateDialogSourceCustomDate",
     "editEntryDateDialogSourceTitle",
@@ -12,9 +14,21 @@
     "settingsThumbnailShowRating"
   ],
 
+  "fr": [
+    "missingSystemFilePickerDialogTitle",
+    "missingSystemFilePickerDialogMessage"
+  ],
+
+  "ko": [
+    "missingSystemFilePickerDialogTitle",
+    "missingSystemFilePickerDialogMessage"
+  ],
+
   "ru": [
     "filterRatingUnratedLabel",
     "filterRatingRejectedLabel",
+    "missingSystemFilePickerDialogTitle",
+    "missingSystemFilePickerDialogMessage",
     "editEntryDateDialogSourceFieldLabel",
     "editEntryDateDialogSourceCustomDate",
     "editEntryDateDialogSourceTitle",
