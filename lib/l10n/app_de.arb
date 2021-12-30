@@ -178,7 +178,7 @@
   "renameEntryDialogLabel": "Neuer Name",
 
   "editEntryDateDialogTitle": "Datum & Uhrzeit",
-  "editEntryDateDialogSet": "Festlegen",
+  "editEntryDateDialogExtractFromTitle": "Auszug aus dem Titel",
   "editEntryDateDialogShift": "Verschieben",
   "editEntryDateDialogClear": "Aufräumen",
   "editEntryDateDialogHours": "Stunden",

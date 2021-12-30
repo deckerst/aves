@@ -18,7 +18,9 @@ final _unixStampMillisPattern = RegExp(r'\d{13}');
 final _unixStampSecPattern = RegExp(r'\d{10}');
 final _plainPattern = RegExp(r'(\d{8})([_-\s](\d{6})([_-\s](\d{3}))?)?');
 
-DateTime? parseUnknownDateFormat(String s) {
+DateTime? parseUnknownDateFormat(String? s) {
+  if (s == null) return null;
+
   var match = _unixStampMillisPattern.firstMatch(s);
   if (match != null) {
     final stampString = match.group(0);

@@ -183,7 +183,7 @@ class CollectionSearchDelegate {
                       _buildFilterRow(
                         context: context,
                         title: context.l10n.searchSectionRating,
-                        filters: [0, 5, 4, 3, 2, 1, -1].map((rating) => RatingFilter(rating)).toList(),
+                        filters: [0, 5, 4, 3, 2, 1, -1].map((rating) => RatingFilter(rating)).where((f) => containQuery(f.getLabel(context))).toList(),
                       ),
                     ],
                   );

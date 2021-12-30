@@ -178,7 +178,7 @@
   "renameEntryDialogLabel": "Новое название",
 
   "editEntryDateDialogTitle": "Дата и время",
-  "editEntryDateDialogSet": "Задать",
+  "editEntryDateDialogExtractFromTitle": "Извлечь из названия",
   "editEntryDateDialogShift": "Сдвиг",
   "editEntryDateDialogClear": "Очистить",
   "editEntryDateDialogHours": "Часов",

@@ -675,55 +675,42 @@ class AvesEntry {
   }
 
   Future<Set<EntryDataType>> editDate(DateModifier modifier) async {
-    final action = modifier.action;
-    if (action == DateEditAction.set) {
-      final source = modifier.setSource;
-      if (source == null) {
-        await reportService.recordError('edit date with action=$action but source is null', null);
-        return {};
-      }
-
-      switch (source) {
-        case DateSetSource.title:
-          final _title = bestTitle;
-          if (_title == null) return {};
-          final date = parseUnknownDateFormat(_title);
-          if (date == null) {
-            await reportService.recordError('failed to parse date from title=$_title', null);
-            return {};
+    switch (modifier.action) {
+      case DateEditAction.copyField:
+        DateTime? date;
+        final source = modifier.copyFieldSource;
+        if (source != null) {
+          switch (source) {
+            case DateFieldSource.fileModifiedDate:
+              try {
+                date = path != null ? await File(path!).lastModified() : null;
+              } on FileSystemException catch (_) {}
+              break;
+            default:
+              date = await metadataFetchService.getDate(this, source.toMetadataField()!);
+              break;
           }
-          modifier = DateModifier(DateEditAction.set, modifier.fields, setDateTime: date);
-          break;
-        case DateSetSource.fileModifiedDate:
-          final _path = path;
-          if (_path == null) {
-            await reportService.recordError('edit date with action=$action, source=$source but entry has no path, uri=$uri', null);
-            return {};
-          }
-          try {
-            final fileModifiedDate = await File(_path).lastModified();
-            modifier = DateModifier(DateEditAction.set, modifier.fields, setDateTime: fileModifiedDate);
-          } on FileSystemException catch (error, stack) {
-            await reportService.recordError(error, stack);
-            return {};
-          }
-          break;
-        case DateSetSource.custom:
-          break;
-        default:
-          final field = source.toMetadataField();
-          if (field == null) {
-            await reportService.recordError('failed to get field for action=$action, source=$source, uri=$uri', null);
-            return {};
-          }
-          final fieldDate = await metadataFetchService.getDate(this, field);
-          if (fieldDate == null) {
-            await reportService.recordError('failed to get date for field=$field, source=$source, uri=$uri', null);
-            return {};
-          }
-          modifier = DateModifier(DateEditAction.set, modifier.fields, setDateTime: fieldDate);
-          break;
-      }
+        }
+        if (date != null) {
+          modifier = DateModifier.setCustom(modifier.fields, date);
+        } else {
+          await reportService.recordError('failed to get date for modifier=$modifier, uri=$uri', null);
+          return {};
+        }
+        break;
+      case DateEditAction.extractFromTitle:
+        final date = parseUnknownDateFormat(bestTitle);
+        if (date != null) {
+          modifier = DateModifier.setCustom(modifier.fields, date);
+        } else {
+          await reportService.recordError('failed to get date for modifier=$modifier, uri=$uri', null);
+          return {};
+        }
+        break;
+      case DateEditAction.setCustom:
+      case DateEditAction.shift:
+      case DateEditAction.clear:
+        break;
     }
     final newFields = await metadataEditService.editDate(this, modifier);
     return newFields.isEmpty
@@ -746,10 +733,9 @@ class AvesEntry {
     final metadataDate = catalogMetadata?.dateMillis;
     if (metadataDate != null && metadataDate > 0) return {};
 
-    return await editDate(const DateModifier(
-      DateEditAction.set,
-      {MetadataField.exifDateOriginal},
-      setSource: DateSetSource.fileModifiedDate,
+    return await editDate(DateModifier.copyField(
+      const {MetadataField.exifDateOriginal},
+      DateFieldSource.fileModifiedDate,
     ));
   }
 
