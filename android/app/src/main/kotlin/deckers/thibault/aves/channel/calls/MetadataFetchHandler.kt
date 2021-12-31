@@ -19,7 +19,10 @@ import com.drew.lang.KeyValuePair
 import com.drew.lang.Rational
 import com.drew.metadata.Tag
 import com.drew.metadata.avi.AviDirectory
-import com.drew.metadata.exif.*
+import com.drew.metadata.exif.ExifDirectoryBase
+import com.drew.metadata.exif.ExifIFD0Directory
+import com.drew.metadata.exif.ExifSubIFDDirectory
+import com.drew.metadata.exif.GpsDirectory
 import com.drew.metadata.file.FileTypeDirectory
 import com.drew.metadata.gif.GifAnimationDirectory
 import com.drew.metadata.iptc.IptcDirectory
@@ -160,25 +163,16 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
 
                             // tags
                             val tags = dir.tags
-                            if (mimeType == MimeTypes.TIFF && (dir is ExifIFD0Directory || dir is ExifThumbnailDirectory)) {
-                                fun tagMapper(it: Tag): Pair<String, String> {
-                                    val name = if (it.hasTagName()) {
-                                        it.tagName
-                                    } else {
-                                        TiffTags.getTagName(it.tagType) ?: it.tagName
-                                    }
-                                    return Pair(name, it.description)
-                                }
-
-                                if (dir is ExifIFD0Directory && dir.isGeoTiff()) {
+                            if (dir is ExifDirectoryBase) {
+                                if (dir.isGeoTiff()) {
                                     // split GeoTIFF tags in their own directory
-                                    val byGeoTiff = tags.groupBy { TiffTags.isGeoTiffTag(it.tagType) }
+                                    val byGeoTiff = tags.groupBy { ExifTags.isGeoTiffTag(it.tagType) }
                                     metadataMap["GeoTIFF"] = HashMap<String, String>().apply {
-                                        byGeoTiff[true]?.map { tagMapper(it) }?.let { putAll(it) }
+                                        byGeoTiff[true]?.map { exifTagMapper(it) }?.let { putAll(it) }
                                     }
-                                    byGeoTiff[false]?.map { tagMapper(it) }?.let { dirMap.putAll(it) }
+                                    byGeoTiff[false]?.map { exifTagMapper(it) }?.let { dirMap.putAll(it) }
                                 } else {
-                                    dirMap.putAll(tags.map { tagMapper(it) })
+                                    dirMap.putAll(tags.map { exifTagMapper(it) })
                                 }
                             } else if (dir.isPngTextDir()) {
                                 metadataMap.remove(thisDirName)
@@ -210,7 +204,12 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                                                     val profileDirName = "${dir.name}/${profileDir.name}"
                                                     val profileDirMap = metadataMap[profileDirName] ?: HashMap()
                                                     metadataMap[profileDirName] = profileDirMap
-                                                    profileDirMap.putAll(profileDir.tags.map { Pair(it.tagName, it.description) })
+                                                    val profileTags = profileDir.tags
+                                                    if (profileDir is ExifDirectoryBase) {
+                                                        profileDirMap.putAll(profileTags.map { exifTagMapper(it) })
+                                                    } else {
+                                                        profileDirMap.putAll(profileTags.map { Pair(it.tagName, it.description) })
+                                                    }
                                                 }
                                                 null
                                             } else {
@@ -972,6 +971,15 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         private val xmpSerializeOptions = SerializeOptions().apply {
             omitPacketWrapper = true // e.g. <?xpacket begin="..." id="W5M0MpCehiHzreSzNTczkc9d"?>...<?xpacket end="r"?>
             omitXmpMetaElement = false // e.g. <x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core Test.SNAPSHOT">...</x:xmpmeta>
+        }
+
+        private fun exifTagMapper(it: Tag): Pair<String, String> {
+            val name = if (it.hasTagName()) {
+                it.tagName
+            } else {
+                ExifTags.getTagName(it.tagType) ?: it.tagName
+            }
+            return Pair(name, it.description)
         }
 
         // catalog metadata

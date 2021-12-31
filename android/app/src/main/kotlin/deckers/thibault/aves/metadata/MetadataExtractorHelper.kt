@@ -5,6 +5,7 @@ import com.drew.lang.ByteArrayReader
 import com.drew.lang.Rational
 import com.drew.lang.SequentialByteArrayReader
 import com.drew.metadata.Directory
+import com.drew.metadata.exif.ExifDirectoryBase
 import com.drew.metadata.exif.ExifIFD0Directory
 import com.drew.metadata.exif.ExifReader
 import com.drew.metadata.iptc.IptcReader
@@ -68,14 +69,14 @@ object MetadataExtractorHelper {
     - If the ModelTransformationTag is included in an IFD, then a ModelPixelScaleTag SHALL NOT be included
     - If the ModelPixelScaleTag is included in an IFD, then a ModelTiepointTag SHALL also be included.
      */
-    fun ExifIFD0Directory.isGeoTiff(): Boolean {
-        if (!this.containsTag(TiffTags.TAG_GEO_KEY_DIRECTORY)) return false
+    fun ExifDirectoryBase.isGeoTiff(): Boolean {
+        if (!this.containsTag(ExifTags.TAG_GEO_KEY_DIRECTORY)) return false
 
-        val modelTiepoint = this.containsTag(TiffTags.TAG_MODEL_TIEPOINT)
-        val modelTransformation = this.containsTag(TiffTags.TAG_MODEL_TRANSFORMATION)
+        val modelTiepoint = this.containsTag(ExifTags.TAG_MODEL_TIEPOINT)
+        val modelTransformation = this.containsTag(ExifTags.TAG_MODEL_TRANSFORMATION)
         if (!modelTiepoint && !modelTransformation) return false
 
-        val modelPixelScale = this.containsTag(TiffTags.TAG_MODEL_PIXEL_SCALE)
+        val modelPixelScale = this.containsTag(ExifTags.TAG_MODEL_PIXEL_SCALE)
         if ((modelTransformation && modelPixelScale) || (modelPixelScale && !modelTiepoint)) return false
 
         return true

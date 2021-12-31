@@ -1,6 +1,7 @@
 package deckers.thibault.aves.metadata
 
-object TiffTags {
+// Exif tags missing from `metadata-extractor`
+object ExifTags {
     // XPosition
     // Tag = 286 (011E.H)
     private const val TAG_X_POSITION = 0x011e
@@ -31,6 +32,12 @@ object TiffTags {
     // SAMPLEFORMAT_COMPLEXINT	    5 // complex signed int
     // SAMPLEFORMAT_COMPLEXIEEEFP	6 // complex ieee floating
     private const val TAG_SAMPLE_FORMAT = 0x0153
+
+
+    // Rating tag used by Windows, value in percent
+    // Tag = 18249 (4749.H)
+    // Type = SHORT
+    private const val TAG_RATING_PERCENT = 0x4749
 
     /*
     SGI
@@ -125,6 +132,7 @@ object TiffTags {
         TAG_COLOR_MAP to "Color Map",
         TAG_EXTRA_SAMPLES to "Extra Samples",
         TAG_SAMPLE_FORMAT to "Sample Format",
+        TAG_RATING_PERCENT to "Rating Percent",
         // SGI
         TAG_MATTEING to "Matteing",
         // GeoTIFF
