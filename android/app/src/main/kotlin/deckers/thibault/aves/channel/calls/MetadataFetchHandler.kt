@@ -207,7 +207,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                                             val dirs = extractPngProfile(key, valueString)
                                             if (dirs?.any() == true) {
                                                 dirs.forEach { profileDir ->
-                                                    val profileDirName = profileDir.name
+                                                    val profileDirName = "${dir.name}/${profileDir.name}"
                                                     val profileDirMap = metadataMap[profileDirName] ?: HashMap()
                                                     metadataMap[profileDirName] = profileDirMap
                                                     profileDirMap.putAll(profileDir.tags.map { Pair(it.tagName, it.description) })
