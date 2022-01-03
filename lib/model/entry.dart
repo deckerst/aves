@@ -239,6 +239,8 @@ class AvesEntry {
 
   bool get canEditDate => canEdit && canEditExif;
 
+  bool get canEditRating => canEdit && canEditXmp;
+
   bool get canEditTags => canEdit && canEditXmp;
 
   bool get canRotateAndFlip => canEdit && canEditExif;
@@ -709,7 +711,7 @@ class AvesEntry {
         break;
       case DateEditAction.setCustom:
       case DateEditAction.shift:
-      case DateEditAction.clear:
+      case DateEditAction.remove:
         break;
     }
     final newFields = await metadataEditService.editDate(this, modifier);
@@ -733,10 +735,14 @@ class AvesEntry {
     final metadataDate = catalogMetadata?.dateMillis;
     if (metadataDate != null && metadataDate > 0) return {};
 
-    return await editDate(DateModifier.copyField(
-      const {MetadataField.exifDateOriginal},
-      DateFieldSource.fileModifiedDate,
-    ));
+    if (canEditExif) {
+      return await editDate(DateModifier.copyField(
+        const {MetadataField.exifDateOriginal},
+        DateFieldSource.fileModifiedDate,
+      ));
+    }
+    // TODO TLAD [metadata] set XMP / xmp:CreateDate
+    return {};
   }
 
   Future<Set<EntryDataType>> removeMetadata(Set<MetadataType> types) async {

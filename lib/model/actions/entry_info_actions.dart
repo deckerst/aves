@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 enum EntryInfoAction {
   // general
   editDate,
+  editRating,
   editTags,
   removeMetadata,
   // motion photo
@@ -14,6 +15,7 @@ enum EntryInfoAction {
 class EntryInfoActions {
   static const all = [
     EntryInfoAction.editDate,
+    EntryInfoAction.editRating,
     EntryInfoAction.editTags,
     EntryInfoAction.removeMetadata,
     EntryInfoAction.viewMotionPhotoVideo,
@@ -26,6 +28,8 @@ extension ExtraEntryInfoAction on EntryInfoAction {
       // general
       case EntryInfoAction.editDate:
         return context.l10n.entryInfoActionEditDate;
+      case EntryInfoAction.editRating:
+        return context.l10n.entryInfoActionEditRating;
       case EntryInfoAction.editTags:
         return context.l10n.entryInfoActionEditTags;
       case EntryInfoAction.removeMetadata:
@@ -45,6 +49,8 @@ extension ExtraEntryInfoAction on EntryInfoAction {
       // general
       case EntryInfoAction.editDate:
         return AIcons.date;
+      case EntryInfoAction.editRating:
+        return AIcons.rating;
       case EntryInfoAction.editTags:
         return AIcons.addTag;
       case EntryInfoAction.removeMetadata:

@@ -22,7 +22,7 @@
   "nextTooltip": "다음",
   "showTooltip": "보기",
   "hideTooltip": "숨기기",
-  "removeTooltip": "제거",
+  "actionRemove": "제거",
   "resetButtonTooltip": "복원",
 
   "doubleBackExitMessage": "종료하려면 한번 더 누르세요.",
@@ -184,7 +184,6 @@
   "editEntryDateDialogCopyField": "다른 날짜에서 지정",
   "editEntryDateDialogExtractFromTitle": "제목에서 추출",
   "editEntryDateDialogShift": "시간 이동",
-  "editEntryDateDialogClear": "삭제",
   "editEntryDateDialogSourceFileModifiedDate": "파일 수정한 날짜",
   "editEntryDateDialogTargetFieldsHeader": "수정할 필드",
   "editEntryDateDialogHours": "시간",

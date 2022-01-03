@@ -1,5 +1,4 @@
 import 'package:aves/model/entry.dart';
-import 'package:aves/model/entry_xmp_iptc.dart';
 import 'package:aves/model/metadata/catalog.dart';
 import 'package:aves/model/metadata/enums.dart';
 import 'package:aves/model/metadata/overlay.dart';
@@ -7,6 +6,7 @@ import 'package:aves/model/multipage.dart';
 import 'package:aves/model/panorama.dart';
 import 'package:aves/services/common/service_policy.dart';
 import 'package:aves/services/common/services.dart';
+import 'package:aves/services/metadata/xmp.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 

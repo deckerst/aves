@@ -41,7 +41,7 @@ class DateModifier {
     return DateModifier._private(DateEditAction.shift, fields, shiftMinutes: shiftMinutes);
   }
 
-  factory DateModifier.clear(Set<MetadataField> fields) {
-    return DateModifier._private(DateEditAction.clear, fields);
+  factory DateModifier.remove(Set<MetadataField> fields) {
+    return DateModifier._private(DateEditAction.remove, fields);
   }
 }

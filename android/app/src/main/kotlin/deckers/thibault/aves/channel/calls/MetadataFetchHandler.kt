@@ -118,8 +118,8 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             try {
                 Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
                     val metadata = ImageMetadataReader.readMetadata(input)
-                    foundExif = metadata.containsDirectoryOfType(ExifDirectoryBase::class.java)
-                    foundXmp = metadata.containsDirectoryOfType(XmpDirectory::class.java)
+                    foundExif = metadata.directories.any { it is ExifDirectoryBase && it.tagCount > 0 }
+                    foundXmp = metadata.directories.any { it is XmpDirectory && it.tagCount > 0 }
                     val uuidDirCount = HashMap<String, Int>()
                     val dirByName = metadata.directories.filter {
                         it.tagCount > 0
@@ -358,26 +358,22 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         return dirMap
     }
 
-    // legend: ME=MetadataExtractor, EI=ExifInterface, MMR=MediaMetadataRetriever
     // set `KEY_DATE_MILLIS` from these fields (by precedence):
-    // - ME / Exif / DATETIME_ORIGINAL
-    // - ME / Exif / DATETIME
-    // - EI / Exif / DATETIME_ORIGINAL
-    // - EI / Exif / DATETIME
-    // - ME / XMP / xmp:CreateDate
-    // - ME / XMP / photoshop:DateCreated
-    // - ME / PNG / TIME / LAST_MODIFICATION_TIME
-    // - MMR / METADATA_KEY_DATE
+    // - Exif / DATETIME_ORIGINAL
+    // - Exif / DATETIME
+    // - XMP / xmp:CreateDate
+    // - XMP / photoshop:DateCreated
+    // - PNG / TIME / LAST_MODIFICATION_TIME
+    // - Video / METADATA_KEY_DATE
     // set `KEY_XMP_TITLE_DESCRIPTION` from these fields (by precedence):
-    // - ME / XMP / dc:title
-    // - ME / XMP / dc:description
+    // - XMP / dc:title
+    // - XMP / dc:description
     // set `KEY_XMP_SUBJECTS` from these fields (by precedence):
-    // - ME / XMP / dc:subject
-    // - ME / IPTC / keywords
+    // - XMP / dc:subject
+    // - IPTC / keywords
     // set `KEY_RATING` from these fields (by precedence):
-    // - ME / XMP / xmp:Rating
-    // - ME / XMP / MicrosoftPhoto:Rating
-    // - ME / XMP / acdsee:rating
+    // - XMP / xmp:Rating
+    // - XMP / MicrosoftPhoto:Rating
     private fun getCatalogMetadata(call: MethodCall, result: MethodChannel.Result) {
         val mimeType = call.argument<String>("mimeType")
         val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
@@ -412,7 +408,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             try {
                 Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
                     val metadata = ImageMetadataReader.readMetadata(input)
-                    foundExif = metadata.containsDirectoryOfType(ExifDirectoryBase::class.java)
+                    foundExif = metadata.directories.any { it is ExifDirectoryBase && it.tagCount > 0 }
 
                     // File type
                     for (dir in metadata.getDirectoriesOfType(FileTypeDirectory::class.java)) {
@@ -437,13 +433,13 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
 
                     // EXIF
                     for (dir in metadata.getDirectoriesOfType(ExifSubIFDDirectory::class.java)) {
-                        dir.getSafeDateMillis(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL) { metadataMap[KEY_DATE_MILLIS] = it }
+                        dir.getSafeDateMillis(ExifDirectoryBase.TAG_DATETIME_ORIGINAL) { metadataMap[KEY_DATE_MILLIS] = it }
                     }
                     for (dir in metadata.getDirectoriesOfType(ExifIFD0Directory::class.java)) {
                         if (!metadataMap.containsKey(KEY_DATE_MILLIS)) {
-                            dir.getSafeDateMillis(ExifIFD0Directory.TAG_DATETIME) { metadataMap[KEY_DATE_MILLIS] = it }
+                            dir.getSafeDateMillis(ExifDirectoryBase.TAG_DATETIME) { metadataMap[KEY_DATE_MILLIS] = it }
                         }
-                        dir.getSafeInt(ExifIFD0Directory.TAG_ORIENTATION) {
+                        dir.getSafeInt(ExifDirectoryBase.TAG_ORIENTATION) {
                             val orientation = it
                             if (isFlippedForExifCode(orientation)) flags = flags or MASK_IS_FLIPPED
                             metadataMap[KEY_ROTATION_DEGREES] = getRotationDegreesForExifCode(orientation)
@@ -485,9 +481,6 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                                     // values of 1,25,50,75,99% correspond to 1,2,3,4,5 stars
                                     val standardRating = (percentRating / 25f).roundToInt() + 1
                                     metadataMap[KEY_RATING] = standardRating
-                                }
-                                if (!metadataMap.containsKey(KEY_RATING)) {
-                                    xmpMeta.getSafeInt(XMP.ACDSEE_SCHEMA_NS, XMP.ACDSEE_RATING_PROP_NAME) { metadataMap[KEY_RATING] = it }
                                 }
                             }
 
@@ -676,10 +669,10 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                     val metadata = ImageMetadataReader.readMetadata(input)
                     for (dir in metadata.getDirectoriesOfType(ExifSubIFDDirectory::class.java)) {
                         foundExif = true
-                        dir.getSafeRational(ExifSubIFDDirectory.TAG_FNUMBER) { metadataMap[KEY_APERTURE] = it.numerator.toDouble() / it.denominator }
-                        dir.getSafeRational(ExifSubIFDDirectory.TAG_EXPOSURE_TIME, saveExposureTime)
-                        dir.getSafeRational(ExifSubIFDDirectory.TAG_FOCAL_LENGTH) { metadataMap[KEY_FOCAL_LENGTH] = it.numerator.toDouble() / it.denominator }
-                        dir.getSafeInt(ExifSubIFDDirectory.TAG_ISO_EQUIVALENT) { metadataMap[KEY_ISO] = it }
+                        dir.getSafeRational(ExifDirectoryBase.TAG_FNUMBER) { metadataMap[KEY_APERTURE] = it.numerator.toDouble() / it.denominator }
+                        dir.getSafeRational(ExifDirectoryBase.TAG_EXPOSURE_TIME, saveExposureTime)
+                        dir.getSafeRational(ExifDirectoryBase.TAG_FOCAL_LENGTH) { metadataMap[KEY_FOCAL_LENGTH] = it.numerator.toDouble() / it.denominator }
+                        dir.getSafeInt(ExifDirectoryBase.TAG_ISO_EQUIVALENT) { metadataMap[KEY_ISO] = it }
                     }
                 }
             } catch (e: Exception) {

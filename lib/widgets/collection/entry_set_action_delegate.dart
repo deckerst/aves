@@ -6,7 +6,7 @@ import 'package:aves/model/actions/entry_set_actions.dart';
 import 'package:aves/model/actions/move_type.dart';
 import 'package:aves/model/device.dart';
 import 'package:aves/model/entry.dart';
-import 'package:aves/model/entry_xmp_iptc.dart';
+import 'package:aves/model/entry_metadata_edition.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/highlight.dart';
@@ -77,6 +77,7 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
       case EntrySetAction.rotateCW:
       case EntrySetAction.flip:
       case EntrySetAction.editDate:
+      case EntrySetAction.editRating:
       case EntrySetAction.editTags:
       case EntrySetAction.removeMetadata:
         return appMode == AppMode.main && isSelecting;
@@ -118,6 +119,7 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
       case EntrySetAction.rotateCW:
       case EntrySetAction.flip:
       case EntrySetAction.editDate:
+      case EntrySetAction.editRating:
       case EntrySetAction.editTags:
       case EntrySetAction.removeMetadata:
         return hasSelection;
@@ -176,6 +178,9 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
         break;
       case EntrySetAction.editDate:
         _editDate(context);
+        break;
+      case EntrySetAction.editRating:
+        _editRating(context);
         break;
       case EntrySetAction.editTags:
         _editTags(context);
@@ -511,6 +516,19 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
     if (modifier == null) return;
 
     await _edit(context, selection, todoItems, (entry) => entry.editDate(modifier));
+  }
+
+  Future<void> _editRating(BuildContext context) async {
+    final selection = context.read<Selection<AvesEntry>>();
+    final selectedItems = _getExpandedSelectedItems(selection);
+
+    final todoItems = await _getEditableItems(context, selectedItems: selectedItems, canEdit: (entry) => entry.canEditRating);
+    if (todoItems == null || todoItems.isEmpty) return;
+
+    final rating = await selectRating(context, todoItems);
+    if (rating == null) return;
+
+    await _edit(context, selection, todoItems, (entry) => entry.editRating(rating));
   }
 
   Future<void> _editTags(BuildContext context) async {

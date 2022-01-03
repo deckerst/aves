@@ -14,7 +14,6 @@ object XMP {
 
     // standard namespaces
     // cf com.adobe.internal.xmp.XMPConst
-    const val ACDSEE_SCHEMA_NS = "http://ns.acdsee.com/iptc/1.0/"
     const val DC_SCHEMA_NS = "http://purl.org/dc/elements/1.1/"
     const val MICROSOFTPHOTO_SCHEMA_NS = "http://ns.microsoft.com/photo/1.0/"
     const val PHOTOSHOP_SCHEMA_NS = "http://ns.adobe.com/photoshop/1.0/"
@@ -29,7 +28,6 @@ object XMP {
     const val CONTAINER_SCHEMA_NS = "http://ns.google.com/photos/1.0/container/"
     private const val CONTAINER_ITEM_SCHEMA_NS = "http://ns.google.com/photos/1.0/container/item/"
 
-    const val ACDSEE_RATING_PROP_NAME = "acdsee:rating"
     const val DC_DESCRIPTION_PROP_NAME = "dc:description"
     const val DC_SUBJECT_PROP_NAME = "dc:subject"
     const val DC_TITLE_PROP_NAME = "dc:title"
