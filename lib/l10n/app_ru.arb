@@ -22,7 +22,7 @@
   "nextTooltip": "Следующий",
   "showTooltip": "Показать",
   "hideTooltip": "Скрыть",
-  "removeTooltip": "Удалить",
+  "actionRemove": "Удалить",
   "resetButtonTooltip": "Сбросить",
 
   "doubleBackExitMessage": "Нажмите «назад» еще раз, чтобы выйти.",
@@ -180,7 +180,6 @@
   "editEntryDateDialogTitle": "Дата и время",
   "editEntryDateDialogExtractFromTitle": "Извлечь из названия",
   "editEntryDateDialogShift": "Сдвиг",
-  "editEntryDateDialogClear": "Очистить",
   "editEntryDateDialogHours": "Часов",
   "editEntryDateDialogMinutes": "Минут",
 

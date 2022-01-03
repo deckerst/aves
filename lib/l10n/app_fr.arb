@@ -22,7 +22,7 @@
   "nextTooltip": "Suivant",
   "showTooltip": "Afficher",
   "hideTooltip": "Masquer",
-  "removeTooltip": "Supprimer",
+  "actionRemove": "Supprimer",
   "resetButtonTooltip": "Réinitialiser",
 
   "doubleBackExitMessage": "Pressez «\u00A0retour\u00A0» à nouveau pour quitter.",
@@ -184,7 +184,6 @@
   "editEntryDateDialogCopyField": "Copier d'une autre date",
   "editEntryDateDialogExtractFromTitle": "Extraire du titre",
   "editEntryDateDialogShift": "Décaler",
-  "editEntryDateDialogClear": "Effacer",
   "editEntryDateDialogSourceFileModifiedDate": "Date de modification du fichier",
   "editEntryDateDialogTargetFieldsHeader": "Champs à modifier",
   "editEntryDateDialogHours": "Heures",

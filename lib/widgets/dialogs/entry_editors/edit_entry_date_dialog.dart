@@ -277,8 +277,8 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
         return l10n.editEntryDateDialogExtractFromTitle;
       case DateEditAction.shift:
         return l10n.editEntryDateDialogShift;
-      case DateEditAction.clear:
-        return l10n.editEntryDateDialogClear;
+      case DateEditAction.remove:
+        return l10n.actionRemove;
     }
   }
 
@@ -347,8 +347,8 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
       case DateEditAction.shift:
         final shiftTotalMinutes = (_shiftHour.value * 60 + _shiftMinute.value) * (_shiftSign.value == '+' ? 1 : -1);
         return DateModifier.shift(_fields, shiftTotalMinutes);
-      case DateEditAction.clear:
-        return DateModifier.clear(_fields);
+      case DateEditAction.remove:
+        return DateModifier.remove(_fields);
     }
   }
 

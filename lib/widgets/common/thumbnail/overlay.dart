@@ -20,12 +20,12 @@ class ThumbnailEntryOverlay extends StatelessWidget {
   Widget build(BuildContext context) {
     final children = [
       if (entry.hasGps && context.select<GridThemeData, bool>((t) => t.showLocation)) const GpsIcon(),
+      if (entry.rating != 0 && context.select<GridThemeData, bool>((t) => t.showRating)) RatingIcon(entry: entry),
       if (entry.isVideo)
         VideoIcon(entry: entry)
       else if (entry.isAnimated)
         const AnimatedImageIcon()
       else ...[
-        if (entry.rating != 0 && context.select<GridThemeData, bool>((t) => t.showRating)) RatingIcon(entry: entry),
         if (entry.isRaw && context.select<GridThemeData, bool>((t) => t.showRaw)) const RawIcon(),
         if (entry.isGeotiff) const GeotiffIcon(),
         if (entry.is360) const SphericalImageIcon(),

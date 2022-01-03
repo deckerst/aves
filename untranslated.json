@@ -1,5 +1,6 @@
 {
   "de": [
+    "entryInfoActionEditRating",
     "filterRatingUnratedLabel",
     "filterRatingRejectedLabel",
     "missingSystemFilePickerDialogTitle",
@@ -8,22 +9,28 @@
     "editEntryDateDialogCopyField",
     "editEntryDateDialogSourceFileModifiedDate",
     "editEntryDateDialogTargetFieldsHeader",
+    "editEntryRatingDialogTitle",
     "collectionSortRating",
     "searchSectionRating",
     "settingsThumbnailShowRating"
   ],
 
   "fr": [
+    "entryInfoActionEditRating",
     "missingSystemFilePickerDialogTitle",
-    "missingSystemFilePickerDialogMessage"
+    "missingSystemFilePickerDialogMessage",
+    "editEntryRatingDialogTitle"
   ],
 
   "ko": [
+    "entryInfoActionEditRating",
     "missingSystemFilePickerDialogTitle",
-    "missingSystemFilePickerDialogMessage"
+    "missingSystemFilePickerDialogMessage",
+    "editEntryRatingDialogTitle"
   ],
 
   "ru": [
+    "entryInfoActionEditRating",
     "filterRatingUnratedLabel",
     "filterRatingRejectedLabel",
     "missingSystemFilePickerDialogTitle",
@@ -32,6 +39,7 @@
     "editEntryDateDialogCopyField",
     "editEntryDateDialogSourceFileModifiedDate",
     "editEntryDateDialogTargetFieldsHeader",
+    "editEntryRatingDialogTitle",
     "collectionSortRating",
     "searchSectionRating",
     "settingsThumbnailShowRating"

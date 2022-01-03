@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:aves/model/actions/entry_info_actions.dart';
 import 'package:aves/model/actions/events.dart';
 import 'package:aves/model/entry.dart';
-import 'package:aves/model/entry_xmp_iptc.dart';
+import 'package:aves/model/entry_metadata_edition.dart';
 import 'package:aves/widgets/common/action_mixins/entry_editor.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
@@ -25,6 +25,7 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
     switch (action) {
       // general
       case EntryInfoAction.editDate:
+      case EntryInfoAction.editRating:
       case EntryInfoAction.editTags:
       case EntryInfoAction.removeMetadata:
         return true;
@@ -39,6 +40,8 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
       // general
       case EntryInfoAction.editDate:
         return entry.canEditDate;
+      case EntryInfoAction.editRating:
+        return entry.canEditRating;
       case EntryInfoAction.editTags:
         return entry.canEditTags;
       case EntryInfoAction.removeMetadata:
@@ -55,6 +58,9 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
       // general
       case EntryInfoAction.editDate:
         await _editDate(context);
+        break;
+      case EntryInfoAction.editRating:
+        await _editRating(context);
         break;
       case EntryInfoAction.editTags:
         await _editTags(context);
@@ -75,6 +81,13 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
     if (modifier == null) return;
 
     await edit(context, () => entry.editDate(modifier));
+  }
+
+  Future<void> _editRating(BuildContext context) async {
+    final rating = await selectRating(context, {entry});
+    if (rating == null) return;
+
+    await edit(context, () => entry.editRating(rating));
   }
 
   Future<void> _editTags(BuildContext context) async {

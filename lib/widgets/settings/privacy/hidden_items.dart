@@ -154,7 +154,7 @@ class _HiddenPaths extends StatelessWidget {
                           onPressed: () {
                             context.read<CollectionSource>().changeFilterVisibility({pathFilter}, true);
                           },
-                          tooltip: context.l10n.removeTooltip,
+                          tooltip: context.l10n.actionRemove,
                         ),
                       )),
                 ],

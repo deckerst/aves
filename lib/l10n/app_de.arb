@@ -22,7 +22,7 @@
   "nextTooltip": "Nächste",
   "showTooltip": "Anzeigen",
   "hideTooltip": "Ausblenden",
-  "removeTooltip": "Entfernen",
+  "actionRemove": "Entfernen",
   "resetButtonTooltip": "Zurücksetzen",
 
   "doubleBackExitMessage": "Tippen Sie zum Verlassen erneut auf „Zurück“.",
@@ -180,7 +180,6 @@
   "editEntryDateDialogTitle": "Datum & Uhrzeit",
   "editEntryDateDialogExtractFromTitle": "Auszug aus dem Titel",
   "editEntryDateDialogShift": "Verschieben",
-  "editEntryDateDialogClear": "Aufräumen",
   "editEntryDateDialogHours": "Stunden",
   "editEntryDateDialogMinutes": "Minuten",
 

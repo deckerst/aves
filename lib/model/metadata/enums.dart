@@ -10,7 +10,7 @@ enum DateEditAction {
   copyField,
   extractFromTitle,
   shift,
-  clear,
+  remove,
 }
 
 enum DateFieldSource {
@@ -65,7 +65,7 @@ class MetadataTypes {
 }
 
 extension ExtraMetadataType on MetadataType {
-  // match `ExifInterface` directory names
+  // match `metadata-extractor` directory names
   String getText() {
     switch (this) {
       case MetadataType.comment:

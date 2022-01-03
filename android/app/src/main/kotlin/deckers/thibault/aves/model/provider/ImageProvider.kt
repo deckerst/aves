@@ -800,63 +800,47 @@ abstract class ImageProvider {
         }
     }
 
-    fun setIptc(
+    fun editMetadata(
         context: Context,
         path: String,
         uri: Uri,
         mimeType: String,
-        postEditScan: Boolean,
+        modifier: FieldMap,
         callback: ImageOpCallback,
-        iptc: List<FieldMap>? = null,
     ) {
-        val newFields = HashMap<String, Any?>()
+        if (modifier.containsKey("iptc")) {
+            val iptc = (modifier["iptc"] as List<*>?)?.filterIsInstance<FieldMap>()
+            if (!editIptc(
+                    context = context,
+                    path = path,
+                    uri = uri,
+                    mimeType = mimeType,
+                    callback = callback,
+                    iptc = iptc,
+                )
+            ) return
+        }
 
-        val success = editIptc(
-            context = context,
-            path = path,
-            uri = uri,
-            mimeType = mimeType,
-            callback = callback,
-            iptc = iptc,
-        )
-
-        if (success) {
-            if (postEditScan) {
-                scanPostMetadataEdit(context, path, uri, mimeType, newFields, callback)
-            } else {
-                callback.onSuccess(HashMap())
+        if (modifier.containsKey("xmp")) {
+            val xmp = modifier["xmp"] as Map<*, *>?
+            if (xmp != null) {
+                val coreXmp = xmp["xmp"] as String?
+                val extendedXmp = xmp["extendedXmp"] as String?
+                if (!editXmp(
+                        context = context,
+                        path = path,
+                        uri = uri,
+                        mimeType = mimeType,
+                        callback = callback,
+                        coreXmp = coreXmp,
+                        extendedXmp = extendedXmp,
+                    )
+                ) return
             }
-        } else {
-            callback.onFailure(Exception("failed to set IPTC"))
         }
-    }
 
-    fun setXmp(
-        context: Context,
-        path: String,
-        uri: Uri,
-        mimeType: String,
-        callback: ImageOpCallback,
-        coreXmp: String? = null,
-        extendedXmp: String? = null,
-    ) {
         val newFields = HashMap<String, Any?>()
-
-        val success = editXmp(
-            context = context,
-            path = path,
-            uri = uri,
-            mimeType = mimeType,
-            callback = callback,
-            coreXmp = coreXmp,
-            extendedXmp = extendedXmp,
-        )
-
-        if (success) {
-            scanPostMetadataEdit(context, path, uri, mimeType, newFields, callback)
-        } else {
-            callback.onFailure(Exception("failed to set XMP"))
-        }
+        scanPostMetadataEdit(context, path, uri, mimeType, newFields, callback)
     }
 
     fun removeMetadataTypes(

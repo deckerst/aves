@@ -259,6 +259,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
                       _buildRotateAndFlipMenuItems(context, canApply: canApply),
                       ...[
                         EntrySetAction.editDate,
+                        EntrySetAction.editRating,
                         EntrySetAction.editTags,
                         EntrySetAction.removeMetadata,
                       ].map((action) => _toMenuItem(action, enabled: canApply(action))),
@@ -427,6 +428,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       case EntrySetAction.rotateCW:
       case EntrySetAction.flip:
       case EntrySetAction.editDate:
+      case EntrySetAction.editRating:
       case EntrySetAction.editTags:
       case EntrySetAction.removeMetadata:
         _actionDelegate.onActionSelected(context, action);

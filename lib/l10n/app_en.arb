@@ -37,7 +37,7 @@
   "nextTooltip": "Next",
   "showTooltip": "Show",
   "hideTooltip": "Hide",
-  "removeTooltip": "Remove",
+  "actionRemove": "Remove",
   "resetButtonTooltip": "Reset",
 
   "doubleBackExitMessage": "Tap “back” again to exit.",
@@ -88,6 +88,7 @@
   "videoActionSettings": "Settings",
 
   "entryInfoActionEditDate": "Edit date & time",
+  "entryInfoActionEditRating": "Edit rating",
   "entryInfoActionEditTags": "Edit tags",
   "entryInfoActionRemoveMetadata": "Remove metadata",
 
@@ -279,11 +280,12 @@
   "editEntryDateDialogCopyField": "Set from other date",
   "editEntryDateDialogExtractFromTitle": "Extract from title",
   "editEntryDateDialogShift": "Shift",
-  "editEntryDateDialogClear": "Clear",
   "editEntryDateDialogSourceFileModifiedDate": "File modified date",
   "editEntryDateDialogTargetFieldsHeader": "Fields to modify",
   "editEntryDateDialogHours": "Hours",
   "editEntryDateDialogMinutes": "Minutes",
+
+  "editEntryRatingDialogTitle": "Rating",
 
   "removeEntryMetadataDialogTitle": "Metadata Removal",
   "removeEntryMetadataDialogMore": "More",

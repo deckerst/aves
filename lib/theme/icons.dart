@@ -22,6 +22,8 @@ class AIcons {
   static const IconData locationOff = Icons.location_off_outlined;
   static const IconData mainStorage = Icons.smartphone_outlined;
   static const IconData privacy = MdiIcons.shieldAccountOutline;
+  static const IconData rating = Icons.star_border_outlined;
+  static const IconData ratingFull = Icons.star;
   static const IconData ratingRejected = MdiIcons.starMinusOutline;
   static const IconData ratingUnrated = MdiIcons.starOffOutline;
   static const IconData raw = Icons.raw_on_outlined;
@@ -113,7 +115,6 @@ class AIcons {
   static const IconData geo = Icons.language_outlined;
   static const IconData motionPhoto = Icons.motion_photos_on_outlined;
   static const IconData multiPage = Icons.burst_mode_outlined;
-  static const IconData rating = Icons.star_border_outlined;
   static const IconData threeSixty = Icons.threesixty_outlined;
   static const IconData videoThumb = Icons.play_circle_outline;
   static const IconData selected = Icons.check_circle_outline;
