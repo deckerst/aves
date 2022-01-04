@@ -403,132 +403,132 @@
       "count": {}
     }
   },
-  "collectionCopyFailureFeedback": "{count, plural, =1{Failed to copy 1 item} other{Failed to copy {count} items}}",
+  "collectionCopyFailureFeedback": "{count, plural, =1{Error al copiar 1 item} other{Error al copiar {count} elementos}}",
   "@collectionCopyFailureFeedback": {
     "placeholders": {
       "count": {}
     }
   },
-  "collectionMoveFailureFeedback": "{count, plural, =1{Failed to move 1 item} other{Failed to move {count} items}}",
+  "collectionMoveFailureFeedback": "{count, plural, =1{Error al mover 1 elemento} other{Error al mover {count} elementos}}",
   "@collectionMoveFailureFeedback": {
     "placeholders": {
       "count": {}
     }
   },
-  "collectionEditFailureFeedback": "{count, plural, =1{Failed to edit 1 item} other{Failed to edit {count} items}}",
+  "collectionEditFailureFeedback": "{count, plural, =1{Error al editar 1 elemento} other{Error al editar {count} elementos}}",
   "@collectionEditFailureFeedback": {
     "placeholders": {
       "count": {}
     }
   },
-  "collectionExportFailureFeedback": "{count, plural, =1{Failed to export 1 page} other{Failed to export {count} pages}}",
+  "collectionExportFailureFeedback": "{count, plural, =1{Error al exportar 1 página} other{Error al exportar {count} páginas}}",
   "@collectionExportFailureFeedback": {
     "placeholders": {
       "count": {}
     }
   },
-  "collectionCopySuccessFeedback": "{count, plural, =1{Copied 1 item} other{Copied {count} items}}",
+  "collectionCopySuccessFeedback": "{count, plural, =1{1 elemento copiado} other{Copiados{count} elementos}}",
   "@collectionCopySuccessFeedback": {
     "placeholders": {
       "count": {}
     }
   },
-  "collectionMoveSuccessFeedback": "{count, plural, =1{Moved 1 item} other{Moved {count} items}}",
+  "collectionMoveSuccessFeedback": "{count, plural, =1{1 elemento movido} other{Movidos {count} elementos}}",
   "@collectionMoveSuccessFeedback": {
     "placeholders": {
       "count": {}
     }
   },
-  "collectionEditSuccessFeedback": "{count, plural, =1{Edited 1 item} other{Edited {count} items}}",
+  "collectionEditSuccessFeedback": "{count, plural, =1{1 elemento editado} other{Editados {count} elementos}}",
   "@collectionEditSuccessFeedback": {
     "placeholders": {
       "count": {}
     }
   },
 
-  "collectionEmptyFavourites": "No favourites",
-  "collectionEmptyVideos": "No videos",
-  "collectionEmptyImages": "No images",
+  "collectionEmptyFavourites": "Sin favoritos",
+  "collectionEmptyVideos": "Sin videos",
+  "collectionEmptyImages": "Sin imágenes",
 
-  "collectionSelectSectionTooltip": "Select section",
-  "collectionDeselectSectionTooltip": "Deselect section",
+  "collectionSelectSectionTooltip": "Seleccionar sección",
+  "collectionDeselectSectionTooltip": "Deseleccionar sección",
 
-  "drawerCollectionAll": "All collection",
-  "drawerCollectionFavourites": "Favourites",
-  "drawerCollectionImages": "Images",
+  "drawerCollectionAll": "Toda la colección",
+  "drawerCollectionFavourites": "Favoritos",
+  "drawerCollectionImages": "Imágenes",
   "drawerCollectionVideos": "Videos",
-  "drawerCollectionAnimated": "Animated",
-  "drawerCollectionMotionPhotos": "Motion photos",
-  "drawerCollectionPanoramas": "Panoramas",
-  "drawerCollectionRaws": "Raw photos",
-  "drawerCollectionSphericalVideos": "360° Videos",
+  "drawerCollectionAnimated": "Animaciones",
+  "drawerCollectionMotionPhotos": "Fotos en movimiento",
+  "drawerCollectionPanoramas": "Panorámicas",
+  "drawerCollectionRaws": "Fotos sin procesar",
+  "drawerCollectionSphericalVideos": "Videos en 360°",
 
-  "chipSortDate": "By date",
-  "chipSortName": "By name",
-  "chipSortCount": "By item count",
+  "chipSortDate": "Por fecha",
+  "chipSortName": "Por nombre",
+  "chipSortCount": "Por número de elementos",
 
-  "albumGroupTier": "By tier",
-  "albumGroupVolume": "By storage volume",
-  "albumGroupNone": "Do not group",
+  "albumGroupTier": "Por nivel",
+  "albumGroupVolume": "Por volumen de almacenamiento",
+  "albumGroupNone": "No agrupar",
 
-  "albumPickPageTitleCopy": "Copy to Album",
-  "albumPickPageTitleExport": "Export to Album",
-  "albumPickPageTitleMove": "Move to Album",
-  "albumPickPageTitlePick": "Pick Album",
+  "albumPickPageTitleCopy": "Copiar a álbum",
+  "albumPickPageTitleExport": "Exportar a álbum",
+  "albumPickPageTitleMove": "Mover a álbum",
+  "albumPickPageTitlePick": "Elegir álbum",
 
-  "albumCamera": "Camera",
-  "albumDownload": "Download",
-  "albumScreenshots": "Screenshots",
-  "albumScreenRecordings": "Screen recordings",
-  "albumVideoCaptures": "Video Captures",
+  "albumCamera": "Cámara",
+  "albumDownload": "Descargar",
+  "albumScreenshots": "Capturas de pantalla",
+  "albumScreenRecordings": "Grabaciones de pantalla",
+  "albumVideoCaptures": "Capturas en video",
 
-  "albumPageTitle": "Albums",
-  "albumEmpty": "No albums",
-  "createAlbumTooltip": "Create album",
-  "createAlbumButtonLabel": "CREATE",
-  "newFilterBanner": "new",
+  "albumPageTitle": "Álbumes",
+  "albumEmpty": "Sin álbumes",
+  "createAlbumTooltip": "Crear álbum",
+  "createAlbumButtonLabel": "CREAR",
+  "newFilterBanner": "nuevo",
 
-  "countryPageTitle": "Countries",
-  "countryEmpty": "No countries",
+  "countryPageTitle": "Países",
+  "countryEmpty": "Sin países",
 
-  "tagPageTitle": "Tags",
-  "tagEmpty": "No tags",
+  "tagPageTitle": "Etiquetas",
+  "tagEmpty": "Sin etiquetas",
 
-  "searchCollectionFieldHint": "Search collection",
-  "searchSectionRecent": "Recent",
-  "searchSectionAlbums": "Albums",
-  "searchSectionCountries": "Countries",
-  "searchSectionPlaces": "Places",
-  "searchSectionTags": "Tags",
-  "searchSectionRating": "Ratings",
+  "searchCollectionFieldHint": "Buscar en colección",
+  "searchSectionRecent": "Reciente",
+  "searchSectionAlbums": "Álbumes",
+  "searchSectionCountries": "Países",
+  "searchSectionPlaces": "Lugares",
+  "searchSectionTags": "Etiquetas",
+  "searchSectionRating": "Clasificaciones",
 
-  "settingsPageTitle": "Settings",
-  "settingsSystemDefault": "System",
-  "settingsDefault": "Default",
+  "settingsPageTitle": "Ajustes",
+  "settingsSystemDefault": "Sistema",
+  "settingsDefault": "Restablecer",
 
-  "settingsActionExport": "Export",
-  "settingsActionImport": "Import",
+  "settingsActionExport": "Exportar",
+  "settingsActionImport": "Importar",
 
-  "settingsSectionNavigation": "Navigation",
-  "settingsHome": "Home",
-  "settingsKeepScreenOnTile": "Keep screen on",
-  "settingsKeepScreenOnTitle": "Keep Screen On",
-  "settingsDoubleBackExit": "Tap “back” twice to exit",
+  "settingsSectionNavigation": "Navegación",
+  "settingsHome": "Inicio",
+  "settingsKeepScreenOnTile": "Mantener pantalla encendida",
+  "settingsKeepScreenOnTitle": "Mantener pantalla encendida",
+  "settingsDoubleBackExit": "Presione “atrás” dos veces para salir",
 
-  "settingsNavigationDrawerTile": "Navigation menu",
-  "settingsNavigationDrawerEditorTitle": "Navigation Menu",
-  "settingsNavigationDrawerBanner": "Touch and hold to move and reorder menu items.",
-  "settingsNavigationDrawerTabTypes": "Types",
-  "settingsNavigationDrawerTabAlbums": "Albums",
-  "settingsNavigationDrawerTabPages": "Pages",
-  "settingsNavigationDrawerAddAlbum": "Add album",
+  "settingsNavigationDrawerTile": "Menú de navegación",
+  "settingsNavigationDrawerEditorTitle": "Menú de navegación",
+  "settingsNavigationDrawerBanner": "Toque y mantenga para mover y reordenar elementos del menú.",
+  "settingsNavigationDrawerTabTypes": "Tipos",
+  "settingsNavigationDrawerTabAlbums": "Álbumes",
+  "settingsNavigationDrawerTabPages": "Páginas",
+  "settingsNavigationDrawerAddAlbum": "Agregar álbum",
 
-  "settingsSectionThumbnails": "Thumbnails",
-  "settingsThumbnailShowLocationIcon": "Show location icon",
-  "settingsThumbnailShowMotionPhotoIcon": "Show motion photo icon",
-  "settingsThumbnailShowRating": "Show rating",
-  "settingsThumbnailShowRawIcon": "Show raw icon",
-  "settingsThumbnailShowVideoDuration": "Show video duration",
+  "settingsSectionThumbnails": "Miniaturas",
+  "settingsThumbnailShowLocationIcon": "Mostrar icono de ubicación",
+  "settingsThumbnailShowMotionPhotoIcon": "Mostrar icono de foto en movimiento",
+  "settingsThumbnailShowRating": "Mostrar clasificación",
+  "settingsThumbnailShowRawIcon": "Mostrar icono de sin procesar",
+  "settingsThumbnailShowVideoDuration": "Mostrar duración de video",
 
   "settingsCollectionQuickActionsTile": "Quick actions",
   "settingsCollectionQuickActionEditorTitle": "Quick Actions",
