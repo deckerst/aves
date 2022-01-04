@@ -277,7 +277,7 @@
 
   "editEntryDateDialogTitle": "Date & Time",
   "editEntryDateDialogSetCustom": "Set custom date",
-  "editEntryDateDialogCopyField": "Set from other date",
+  "editEntryDateDialogCopyField": "Copy from other date",
   "editEntryDateDialogExtractFromTitle": "Extract from title",
   "editEntryDateDialogShift": "Shift",
   "editEntryDateDialogSourceFileModifiedDate": "File modified date",

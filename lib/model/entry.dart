@@ -234,7 +234,7 @@ class AvesEntry {
 
   bool get canEdit => path != null;
 
-  bool get canEditDate => canEdit && canEditExif;
+  bool get canEditDate => canEdit && (canEditExif || canEditXmp);
 
   bool get canEditRating => canEdit && canEditXmp;
 

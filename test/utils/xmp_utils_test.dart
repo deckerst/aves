@@ -13,6 +13,15 @@ void main() {
         )
       : null;
 
+  List<XmlNode> _getDescriptions(String xmpString) {
+    final xmpDoc = XmlDocument.parse(xmpString);
+    final root = xmpDoc.rootElement;
+    final rdf = root.getElement(XMP.rdfRoot, namespace: Namespaces.rdf);
+    return rdf!.children.where((node) {
+      return node is XmlElement && node.name.local == XMP.rdfDescription && node.name.namespaceUri == Namespaces.rdf;
+    }).toList();
+  }
+
   const inMultiDescriptionRatings = '''
 <x:xmpmeta xmlns:x="adobe:ns:meta/">
   <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
@@ -78,6 +87,12 @@ void main() {
   </rdf:RDF>
 </x:xmpmeta>
 ''';
+
+  test('Get string', () async {
+    expect(XMP.getString(_getDescriptions(inRatingAttribute), XMP.xmpRating, namespace: Namespaces.xmp), '5');
+    expect(XMP.getString(_getDescriptions(inRatingElement), XMP.xmpRating, namespace: Namespaces.xmp), '5');
+    expect(XMP.getString(_getDescriptions(inSubjects), XMP.xmpRating, namespace: Namespaces.xmp), null);
+  });
 
   test('Set tags without existing XMP', () async {
     final modifyDate = DateTime.now();

@@ -79,6 +79,21 @@ class XMP {
 
   static String toXmpDate(DateTime date) => '${DateFormat('yyyy-MM-ddTHH:mm:ss').format(date)}${_xmpTimeZoneDesignator(date)}';
 
+  static String? getString(
+    List<XmlNode> nodes,
+    String name, {
+    required String namespace,
+  }) {
+    for (final node in nodes) {
+      final attribute = node.getAttribute(name, namespace: namespace);
+      if (attribute != null) return attribute;
+
+      final element = node.getElement(name, namespace: namespace);
+      if (element != null) return element.innerText;
+    }
+    return null;
+  }
+
   static void _addNamespaces(XmlNode node, Map<String, String> namespaces) => namespaces.forEach((uri, prefix) => node.setAttribute('$xmlnsPrefix:$prefix', uri));
 
   // remove elements and attributes
