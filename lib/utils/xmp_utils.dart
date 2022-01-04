@@ -37,6 +37,7 @@ class XMP {
   // attributes
   static const xXmptk = 'xmptk';
   static const rdfAbout = 'about';
+  static const xmpCreateDate = 'CreateDate';
   static const xmpMetadataDate = 'MetadataDate';
   static const xmpModifyDate = 'ModifyDate';
   static const xmpNoteHasExtendedXMP = 'HasExtendedXMP';

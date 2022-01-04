@@ -7,8 +7,6 @@ import 'package:aves/model/entry_cache.dart';
 import 'package:aves/model/favourites.dart';
 import 'package:aves/model/metadata/address.dart';
 import 'package:aves/model/metadata/catalog.dart';
-import 'package:aves/model/metadata/date_modifier.dart';
-import 'package:aves/model/metadata/enums.dart';
 import 'package:aves/model/multipage.dart';
 import 'package:aves/model/video/metadata.dart';
 import 'package:aves/ref/mime_types.dart';
@@ -18,7 +16,6 @@ import 'package:aves/services/geocoding_service.dart';
 import 'package:aves/services/metadata/svg_metadata_service.dart';
 import 'package:aves/theme/format.dart';
 import 'package:aves/utils/change_notifier.dart';
-import 'package:aves/utils/time_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:country_code/country_code.dart';
 import 'package:flutter/foundation.dart';
@@ -481,14 +478,14 @@ class AvesEntry {
           'width': size.width.ceil(),
           'height': size.height.ceil(),
         };
-        await _applyNewFields(fields, persist: persist);
+        await applyNewFields(fields, persist: persist);
       }
       catalogMetadata = CatalogMetadata(contentId: contentId);
     } else {
       if (isVideo && (!isSized || durationMillis == 0)) {
         // exotic video that is not sized during loading
         final fields = await VideoMetadataFormatter.getLoadingMetadata(this);
-        await _applyNewFields(fields, persist: persist);
+        await applyNewFields(fields, persist: persist);
       }
       catalogMetadata = await metadataFetchService.getCatalogMetadata(this, background: background);
 
@@ -585,7 +582,7 @@ class AvesEntry {
     }.whereNotNull().where((v) => v.isNotEmpty).join(', ');
   }
 
-  Future<void> _applyNewFields(Map newFields, {required bool persist}) async {
+  Future<void> applyNewFields(Map newFields, {required bool persist}) async {
     final oldDateModifiedSecs = this.dateModifiedSecs;
     final oldRotationDegrees = this.rotationDegrees;
     final oldIsFlipped = this.isFlipped;
@@ -646,114 +643,10 @@ class AvesEntry {
 
     final updatedEntry = await mediaFileService.getEntry(uri, mimeType);
     if (updatedEntry != null) {
-      await _applyNewFields(updatedEntry.toMap(), persist: persist);
+      await applyNewFields(updatedEntry.toMap(), persist: persist);
     }
     await catalog(background: background, force: dataTypes.contains(EntryDataType.catalog), persist: persist);
     await locate(background: background, force: dataTypes.contains(EntryDataType.address), geocoderLocale: geocoderLocale);
-  }
-
-  Future<Set<EntryDataType>> _changeOrientation(Future<Map<String, dynamic>> Function() apply) async {
-    final dataTypes = await setMetadataDateIfMissing();
-
-    final newFields = await apply();
-    // applying fields is only useful for a smoother visual change,
-    // as proper refreshing and persistence happens at the caller level
-    await _applyNewFields(newFields, persist: false);
-    if (newFields.isNotEmpty) {
-      dataTypes.addAll({
-        EntryDataType.basic,
-        EntryDataType.catalog,
-      });
-    }
-    return dataTypes;
-  }
-
-  Future<Set<EntryDataType>> rotate({required bool clockwise}) {
-    return _changeOrientation(() => metadataEditService.rotate(this, clockwise: clockwise));
-  }
-
-  Future<Set<EntryDataType>> flip() {
-    return _changeOrientation(() => metadataEditService.flip(this));
-  }
-
-  Future<Set<EntryDataType>> editDate(DateModifier modifier) async {
-    switch (modifier.action) {
-      case DateEditAction.copyField:
-        DateTime? date;
-        final source = modifier.copyFieldSource;
-        if (source != null) {
-          switch (source) {
-            case DateFieldSource.fileModifiedDate:
-              try {
-                date = path != null ? await File(path!).lastModified() : null;
-              } on FileSystemException catch (_) {}
-              break;
-            default:
-              date = await metadataFetchService.getDate(this, source.toMetadataField()!);
-              break;
-          }
-        }
-        if (date != null) {
-          modifier = DateModifier.setCustom(modifier.fields, date);
-        } else {
-          await reportService.recordError('failed to get date for modifier=$modifier, uri=$uri', null);
-          return {};
-        }
-        break;
-      case DateEditAction.extractFromTitle:
-        final date = parseUnknownDateFormat(bestTitle);
-        if (date != null) {
-          modifier = DateModifier.setCustom(modifier.fields, date);
-        } else {
-          await reportService.recordError('failed to get date for modifier=$modifier, uri=$uri', null);
-          return {};
-        }
-        break;
-      case DateEditAction.setCustom:
-      case DateEditAction.shift:
-      case DateEditAction.remove:
-        break;
-    }
-    final newFields = await metadataEditService.editDate(this, modifier);
-    return newFields.isEmpty
-        ? {}
-        : {
-            EntryDataType.basic,
-            EntryDataType.catalog,
-          };
-  }
-
-  // when editing a file that has no metadata date,
-  // we will set one, using the file modified date, if any
-  Future<Set<EntryDataType>> setMetadataDateIfMissing() async {
-    if (path == null) return {};
-
-    // make sure entry is catalogued before we check whether is has a metadata date
-    if (!isCatalogued) {
-      await catalog(background: false, force: false, persist: true);
-    }
-    final metadataDate = catalogMetadata?.dateMillis;
-    if (metadataDate != null && metadataDate > 0) return {};
-
-    if (canEditExif) {
-      return await editDate(DateModifier.copyField(
-        const {MetadataField.exifDateOriginal},
-        DateFieldSource.fileModifiedDate,
-      ));
-    }
-    // TODO TLAD [metadata] set XMP / xmp:CreateDate
-    return {};
-  }
-
-  Future<Set<EntryDataType>> removeMetadata(Set<MetadataType> types) async {
-    final newFields = await metadataEditService.removeTypes(this, types);
-    return newFields.isEmpty
-        ? {}
-        : {
-            EntryDataType.basic,
-            EntryDataType.catalog,
-            EntryDataType.address,
-          };
   }
 
   Future<bool> delete() {
