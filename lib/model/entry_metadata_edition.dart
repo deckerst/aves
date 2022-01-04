@@ -14,66 +14,69 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:xml/xml.dart';
 
 extension ExtraAvesEntryMetadataEdition on AvesEntry {
-  Future<Set<EntryDataType>> editDate(DateModifier modifier) async {
-    switch (modifier.action) {
-      case DateEditAction.copyField:
-        DateTime? date;
-        final source = modifier.copyFieldSource;
-        if (source != null) {
-          switch (source) {
-            case DateFieldSource.fileModifiedDate:
-              try {
-                date = path != null ? await File(path!).lastModified() : null;
-              } on FileSystemException catch (_) {}
+  Future<Set<EntryDataType>> editDate(DateModifier userModifier) async {
+    final Set<EntryDataType> dataTypes = {};
+
+    final appliedModifier = await _applyDateModifierToEntry(userModifier);
+    if (appliedModifier == null) {
+      await reportService.recordError('failed to get date for modifier=$userModifier, uri=$uri', null);
+      return {};
+    }
+
+    if (canEditExif && appliedModifier.fields.any((v) => v.type == MetadataType.exif)) {
+      final newFields = await metadataEditService.editExifDate(this, appliedModifier);
+      if (newFields.isNotEmpty) {
+        dataTypes.addAll({
+          EntryDataType.basic,
+          EntryDataType.catalog,
+        });
+      }
+    }
+
+    if (canEditXmp && appliedModifier.fields.any((v) => v.type == MetadataType.xmp)) {
+      final metadata = {
+        MetadataType.xmp: await _editXmp((descriptions) {
+          switch (appliedModifier.action) {
+            case DateEditAction.setCustom:
+            case DateEditAction.copyField:
+            case DateEditAction.extractFromTitle:
+              editCreateDateXmp(descriptions, appliedModifier.setDateTime);
               break;
-            default:
-              date = await metadataFetchService.getDate(this, source.toMetadataField()!);
+            case DateEditAction.shift:
+              final xmpDate = XMP.getString(descriptions, XMP.xmpCreateDate, namespace: Namespaces.xmp);
+              if (xmpDate != null) {
+                final date = DateTime.tryParse(xmpDate);
+                if (date != null) {
+                  // TODO TLAD [date] DateTime.tryParse converts to UTC time, losing the time zone offset
+                  final shiftedDate = date.add(Duration(minutes: appliedModifier.shiftMinutes!));
+                  editCreateDateXmp(descriptions, shiftedDate);
+                } else {
+                  reportService.recordError('failed to parse XMP date=$xmpDate', null);
+                }
+              }
+              break;
+            case DateEditAction.remove:
+              editCreateDateXmp(descriptions, null);
               break;
           }
-        }
-        if (date != null) {
-          modifier = DateModifier.setCustom(modifier.fields, date);
-        } else {
-          await reportService.recordError('failed to get date for modifier=$modifier, uri=$uri', null);
-          return {};
-        }
-        break;
-      case DateEditAction.extractFromTitle:
-        final date = parseUnknownDateFormat(bestTitle);
-        if (date != null) {
-          modifier = DateModifier.setCustom(modifier.fields, date);
-        } else {
-          await reportService.recordError('failed to get date for modifier=$modifier, uri=$uri', null);
-          return {};
-        }
-        break;
-      case DateEditAction.setCustom:
-      case DateEditAction.shift:
-      case DateEditAction.remove:
-        break;
+        }),
+      };
+      final newFields = await metadataEditService.editMetadata(this, metadata);
+      if (newFields.isNotEmpty) {
+        dataTypes.addAll({
+          EntryDataType.basic,
+          EntryDataType.catalog,
+        });
+      }
     }
-    final newFields = await metadataEditService.editDate(this, modifier);
-    return newFields.isEmpty
-        ? {}
-        : {
-            EntryDataType.basic,
-            EntryDataType.catalog,
-          };
+
+    return dataTypes;
   }
 
   Future<Set<EntryDataType>> _changeOrientation(Future<Map<String, dynamic>> Function() apply) async {
     final Set<EntryDataType> dataTypes = {};
 
-    // when editing a file that has no metadata date,
-    // we will set one, using the file modified date, if any
-    var missingDate = await _getMissingMetadataDate();
-    if (missingDate != null && canEditExif) {
-      dataTypes.addAll(await editDate(DateModifier.setCustom(
-        const {MetadataField.exifDateOriginal},
-        missingDate,
-      )));
-      missingDate = null;
-    }
+    await _missingDateCheckAndExifEdit(dataTypes);
 
     final newFields = await apply();
     // applying fields is only useful for a smoother visual change,
@@ -103,16 +106,7 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
     final Set<EntryDataType> dataTypes = {};
     final Map<MetadataType, dynamic> metadata = {};
 
-    // when editing a file that has no metadata date,
-    // we will set one, using the file modified date, if any
-    var missingDate = await _getMissingMetadataDate();
-    if (missingDate != null && canEditExif) {
-      dataTypes.addAll(await editDate(DateModifier.setCustom(
-        const {MetadataField.exifDateOriginal},
-        missingDate,
-      )));
-      missingDate = null;
-    }
+    final missingDate = await _missingDateCheckAndExifEdit(dataTypes);
 
     if (canEditIptc) {
       final iptc = await metadataFetchService.getIptc(this);
@@ -125,8 +119,7 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
     if (canEditXmp) {
       metadata[MetadataType.xmp] = await _editXmp((descriptions) {
         if (missingDate != null) {
-          editDateXmp(descriptions, missingDate!);
-          missingDate = null;
+          editCreateDateXmp(descriptions, missingDate);
         }
         editTagsXmp(descriptions, tags);
       });
@@ -150,22 +143,12 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
     final Set<EntryDataType> dataTypes = {};
     final Map<MetadataType, dynamic> metadata = {};
 
-    // when editing a file that has no metadata date,
-    // we will set one, using the file modified date, if any
-    var missingDate = await _getMissingMetadataDate();
-    if (missingDate != null && canEditExif) {
-      dataTypes.addAll(await editDate(DateModifier.setCustom(
-        const {MetadataField.exifDateOriginal},
-        missingDate,
-      )));
-      missingDate = null;
-    }
+    final missingDate = await _missingDateCheckAndExifEdit(dataTypes);
 
     if (canEditXmp) {
       metadata[MetadataType.xmp] = await _editXmp((descriptions) {
         if (missingDate != null) {
-          editDateXmp(descriptions, missingDate!);
-          missingDate = null;
+          editCreateDateXmp(descriptions, missingDate);
         }
         editRatingXmp(descriptions, rating);
       });
@@ -190,11 +173,11 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
   }
 
   @visibleForTesting
-  static void editDateXmp(List<XmlNode> descriptions, DateTime date) {
+  static void editCreateDateXmp(List<XmlNode> descriptions, DateTime? date) {
     XMP.setAttribute(
       descriptions,
       XMP.xmpCreateDate,
-      XMP.toXmpDate(date),
+      date != null ? XMP.toXmpDate(date) : null,
       namespace: Namespaces.xmp,
       strat: XmpEditStrategy.always,
     );
@@ -241,19 +224,69 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
 
   // convenience
 
-  Future<DateTime?> _getMissingMetadataDate() async {
+  // This method checks whether the item already has a metadata date,
+  // and adds a date (the file modified date) via Exif if possible.
+  // It returns a date if the caller needs to add it via other metadata types (e.g. XMP).
+  Future<DateTime?> _missingDateCheckAndExifEdit(Set<EntryDataType> dataTypes) async {
     if (path == null) return null;
 
     // make sure entry is catalogued before we check whether is has a metadata date
     if (!isCatalogued) {
       await catalog(background: false, force: false, persist: true);
     }
-    final metadataDate = catalogMetadata?.dateMillis;
-    if (metadataDate != null && metadataDate > 0) return null;
+    final dateMillis = catalogMetadata?.dateMillis;
+    if (dateMillis != null && dateMillis > 0) return null;
 
+    late DateTime date;
     try {
-      return await File(path!).lastModified();
-    } on FileSystemException catch (_) {}
+      date = await File(path!).lastModified();
+    } on FileSystemException catch (_) {
+      return null;
+    }
+
+    if (canEditExif) {
+      final newFields = await metadataEditService.editExifDate(this, DateModifier.setCustom(const {MetadataField.exifDateOriginal}, date));
+      if (newFields.isNotEmpty) {
+        dataTypes.addAll({
+          EntryDataType.basic,
+          EntryDataType.catalog,
+        });
+        return null;
+      }
+    }
+
+    return date;
+  }
+
+  Future<DateModifier?> _applyDateModifierToEntry(DateModifier modifier) async {
+    Set<MetadataField> mainMetadataDate() => {canEditExif ? MetadataField.exifDateOriginal : MetadataField.xmpCreateDate};
+
+    switch (modifier.action) {
+      case DateEditAction.copyField:
+        DateTime? date;
+        final source = modifier.copyFieldSource;
+        if (source != null) {
+          switch (source) {
+            case DateFieldSource.fileModifiedDate:
+              try {
+                date = path != null ? await File(path!).lastModified() : null;
+              } on FileSystemException catch (_) {}
+              break;
+            default:
+              date = await metadataFetchService.getDate(this, source.toMetadataField()!);
+              break;
+          }
+        }
+        return date != null ? DateModifier.setCustom(mainMetadataDate(), date) : null;
+      case DateEditAction.extractFromTitle:
+        final date = parseUnknownDateFormat(bestTitle);
+        return date != null ? DateModifier.setCustom(mainMetadataDate(), date) : null;
+      case DateEditAction.setCustom:
+        return DateModifier.setCustom(mainMetadataDate(), modifier.setDateTime!);
+      case DateEditAction.shift:
+      case DateEditAction.remove:
+        return modifier;
+    }
   }
 
   Future<Map<String, String?>> _editXmp(void Function(List<XmlNode> descriptions) apply) async {

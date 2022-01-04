@@ -9,6 +9,7 @@ class DateModifier {
     MetadataField.exifDateOriginal,
     MetadataField.exifDateDigitized,
     MetadataField.exifGpsDate,
+    MetadataField.xmpCreateDate,
   ];
 
   final DateEditAction action;

@@ -30,11 +30,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
   late ValueNotifier<int> _shiftHour, _shiftMinute;
   late ValueNotifier<String> _shiftSign;
   bool _showOptions = false;
-  final Set<MetadataField> _fields = {
-    MetadataField.exifDate,
-    MetadataField.exifDateDigitized,
-    MetadataField.exifDateOriginal,
-  };
+  final Set<MetadataField> _fields = {...DateModifier.writableDateFields};
 
   // use a different shade to avoid having the same background
   // on the dialog (using the theme `dialogBackgroundColor`)
@@ -99,10 +95,10 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
                     if (_action == DateEditAction.setCustom) _buildSetCustomContent(context),
                     if (_action == DateEditAction.copyField) _buildCopyFieldContent(context),
                     if (_action == DateEditAction.shift) _buildShiftContent(context),
+                    (_action == DateEditAction.shift || _action == DateEditAction.remove)? _buildDestinationFields(context): const SizedBox(height: 8),
                   ],
                 ),
               ),
-              _buildDestinationFields(context),
             ],
             actions: [
               TextButton(
@@ -135,7 +131,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
     final use24hour = context.select<MediaQueryData, bool>((v) => v.alwaysUse24HourFormat);
 
     return Padding(
-      padding: const EdgeInsets.only(left: 16, top: 4, right: 12),
+      padding: const EdgeInsets.only(left: 16, right: 8),
       child: Row(
         children: [
           Expanded(child: Text(formatDateTime(_setDateTime, locale, use24hour))),
@@ -151,7 +147,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
 
   Widget _buildCopyFieldContent(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.only(left: 16, top: 0, right: 16),
       child: DropdownButton<DateFieldSource>(
         items: DateFieldSource.values
             .map((v) => DropdownMenuItem<DateFieldSource>(
@@ -308,6 +304,8 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
         return 'Exif digitized date';
       case MetadataField.exifGpsDate:
         return 'Exif GPS date';
+      case MetadataField.xmpCreateDate:
+        return 'XMP xmp:CreateDate';
     }
   }
 
@@ -337,13 +335,16 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
   }
 
   DateModifier _getModifier() {
+    // fields to modify are only set for the `shift` and `remove` actions,
+    // as the effective fields for the other actions will depend on
+    // whether each item supports Exif edition
     switch (_action) {
       case DateEditAction.setCustom:
-        return DateModifier.setCustom(_fields, _setDateTime);
+        return DateModifier.setCustom(const {}, _setDateTime);
       case DateEditAction.copyField:
-        return DateModifier.copyField(_fields, _copyFieldSource);
+        return DateModifier.copyField(const {}, _copyFieldSource);
       case DateEditAction.extractFromTitle:
-        return DateModifier.extractFromTitle(_fields);
+        return DateModifier.extractFromTitle(const {});
       case DateEditAction.shift:
         final shiftTotalMinutes = (_shiftHour.value * 60 + _shiftMinute.value) * (_shiftSign.value == '+' ? 1 : -1);
         return DateModifier.shift(_fields, shiftTotalMinutes);

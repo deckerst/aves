@@ -3,6 +3,7 @@ enum MetadataField {
   exifDateOriginal,
   exifDateDigitized,
   exifGpsDate,
+  xmpCreateDate,
 }
 
 enum DateEditAction {
@@ -91,7 +92,19 @@ extension ExtraMetadataType on MetadataType {
 }
 
 extension ExtraMetadataField on MetadataField {
-  String toExifInterfaceTag() {
+  MetadataType get type {
+    switch (this) {
+      case MetadataField.exifDate:
+      case MetadataField.exifDateOriginal:
+      case MetadataField.exifDateDigitized:
+      case MetadataField.exifGpsDate:
+        return MetadataType.exif;
+      case MetadataField.xmpCreateDate:
+        return MetadataType.xmp;
+    }
+  }
+
+  String? toExifInterfaceTag() {
     switch (this) {
       case MetadataField.exifDate:
         return 'DateTime';
@@ -101,6 +114,8 @@ extension ExtraMetadataField on MetadataField {
         return 'DateTimeDigitized';
       case MetadataField.exifGpsDate:
         return 'GPSDateStamp';
+      case MetadataField.xmpCreateDate:
+        return null;
     }
   }
 }

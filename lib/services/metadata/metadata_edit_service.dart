@@ -4,6 +4,7 @@ import 'package:aves/model/entry.dart';
 import 'package:aves/model/metadata/date_modifier.dart';
 import 'package:aves/model/metadata/enums.dart';
 import 'package:aves/services/common/services.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
 
 abstract class MetadataEditService {
@@ -11,7 +12,7 @@ abstract class MetadataEditService {
 
   Future<Map<String, dynamic>> flip(AvesEntry entry);
 
-  Future<Map<String, dynamic>> editDate(AvesEntry entry, DateModifier modifier);
+  Future<Map<String, dynamic>> editExifDate(AvesEntry entry, DateModifier modifier);
 
   Future<Map<String, dynamic>> editMetadata(AvesEntry entry, Map<MetadataType, dynamic> modifier);
 
@@ -70,13 +71,13 @@ class PlatformMetadataEditService implements MetadataEditService {
   }
 
   @override
-  Future<Map<String, dynamic>> editDate(AvesEntry entry, DateModifier modifier) async {
+  Future<Map<String, dynamic>> editExifDate(AvesEntry entry, DateModifier modifier) async {
     try {
       final result = await platform.invokeMethod('editDate', <String, dynamic>{
         'entry': _toPlatformEntryMap(entry),
         'dateMillis': modifier.setDateTime?.millisecondsSinceEpoch,
         'shiftMinutes': modifier.shiftMinutes,
-        'fields': modifier.fields.map((v) => v.toExifInterfaceTag()).toList(),
+        'fields': modifier.fields.where((v) => v.type == MetadataType.exif).map((v) => v.toExifInterfaceTag()).whereNotNull().toList(),
       });
       if (result != null) return (result as Map).cast<String, dynamic>();
     } on PlatformException catch (e, stack) {
