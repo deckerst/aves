@@ -371,6 +371,7 @@
   "settingsNavigationDrawerAddAlbum": "앨범 추가",
 
   "settingsSectionThumbnails": "섬네일",
+  "settingsThumbnailShowFavouriteIcon": "즐겨찾기 아이콘 표시",
   "settingsThumbnailShowLocationIcon": "위치 아이콘 표시",
   "settingsThumbnailShowMotionPhotoIcon": "모션 포토 아이콘 표시",
   "settingsThumbnailShowRating": "별점 표시",

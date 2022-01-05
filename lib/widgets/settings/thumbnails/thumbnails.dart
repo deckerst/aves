@@ -34,6 +34,29 @@ class ThumbnailsSection extends StatelessWidget {
       children: [
         const CollectionActionsTile(),
         Selector<Settings, bool>(
+          selector: (context, s) => s.showThumbnailFavourite,
+          builder: (context, current, child) => SwitchListTile(
+            value: current,
+            onChanged: (v) => settings.showThumbnailFavourite = v,
+            title: Row(
+              children: [
+                Expanded(child: Text(context.l10n.settingsThumbnailShowFavouriteIcon)),
+                AnimatedOpacity(
+                  opacity: opacityFor(current),
+                  duration: Durations.toggleableTransitionAnimation,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: iconSize * (1 - FavouriteIcon.scale) / 2),
+                    child: Icon(
+                      AIcons.favourite,
+                      size: iconSize * FavouriteIcon.scale,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        Selector<Settings, bool>(
           selector: (context, s) => s.showThumbnailLocation,
           builder: (context, current, child) => SwitchListTile(
             value: current,

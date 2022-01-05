@@ -1,14 +1,11 @@
 import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/device.dart';
 import 'package:aves/model/entry.dart';
-import 'package:aves/model/favourites.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
-import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/basic/menu.dart';
 import 'package:aves/widgets/common/basic/popup_menu_button.dart';
-import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:aves/widgets/common/fx/sweeper.dart';
+import 'package:aves/widgets/common/favourite_toggler.dart';
 import 'package:aves/widgets/viewer/action/entry_action_delegate.dart';
 import 'package:aves/widgets/viewer/multipage/conductor.dart';
 import 'package:aves/widgets/viewer/overlay/common.dart';
@@ -204,8 +201,8 @@ class _TopOverlayRow extends StatelessWidget {
     void onPressed() => _onActionSelected(context, action);
     switch (action) {
       case EntryAction.toggleFavourite:
-        child = _FavouriteToggler(
-          entry: favouriteTargetEntry,
+        child = FavouriteToggler(
+          entries: {favouriteTargetEntry},
           onPressed: onPressed,
         );
         break;
@@ -251,8 +248,8 @@ class _TopOverlayRow extends StatelessWidget {
     switch (action) {
       // in app actions
       case EntryAction.toggleFavourite:
-        child = _FavouriteToggler(
-          entry: favouriteTargetEntry,
+        child = FavouriteToggler(
+          entries: {favouriteTargetEntry},
           isMenuItem: true,
         );
         break;
@@ -313,82 +310,5 @@ class _TopOverlayRow extends StatelessWidget {
       }
     }
     EntryActionDelegate(targetEntry).onActionSelected(context, action);
-  }
-}
-
-class _FavouriteToggler extends StatefulWidget {
-  final AvesEntry entry;
-  final bool isMenuItem;
-  final VoidCallback? onPressed;
-
-  const _FavouriteToggler({
-    required this.entry,
-    this.isMenuItem = false,
-    this.onPressed,
-  });
-
-  @override
-  _FavouriteTogglerState createState() => _FavouriteTogglerState();
-}
-
-class _FavouriteTogglerState extends State<_FavouriteToggler> {
-  final ValueNotifier<bool> isFavouriteNotifier = ValueNotifier(false);
-
-  @override
-  void initState() {
-    super.initState();
-    favourites.addListener(_onChanged);
-    _onChanged();
-  }
-
-  @override
-  void didUpdateWidget(covariant _FavouriteToggler oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    _onChanged();
-  }
-
-  @override
-  void dispose() {
-    favourites.removeListener(_onChanged);
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return ValueListenableBuilder<bool>(
-      valueListenable: isFavouriteNotifier,
-      builder: (context, isFavourite, child) {
-        if (widget.isMenuItem) {
-          return isFavourite
-              ? MenuRow(
-                  text: context.l10n.entryActionRemoveFavourite,
-                  icon: const Icon(AIcons.favouriteActive),
-                )
-              : MenuRow(
-                  text: context.l10n.entryActionAddFavourite,
-                  icon: const Icon(AIcons.favourite),
-                );
-        }
-        return Stack(
-          alignment: Alignment.center,
-          children: [
-            IconButton(
-              icon: Icon(isFavourite ? AIcons.favouriteActive : AIcons.favourite),
-              onPressed: widget.onPressed,
-              tooltip: isFavourite ? context.l10n.entryActionRemoveFavourite : context.l10n.entryActionAddFavourite,
-            ),
-            Sweeper(
-              key: ValueKey(widget.entry),
-              builder: (context) => const Icon(AIcons.favourite, color: Colors.redAccent),
-              toggledNotifier: isFavouriteNotifier,
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _onChanged() {
-    isFavouriteNotifier.value = widget.entry.isFavourite;
   }
 }

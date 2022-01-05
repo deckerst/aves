@@ -21,6 +21,7 @@ enum EntrySetAction {
   copy,
   move,
   rescan,
+  toggleFavourite,
   rotateCCW,
   rotateCW,
   flip,
@@ -51,6 +52,7 @@ class EntrySetActions {
     EntrySetAction.delete,
     EntrySetAction.copy,
     EntrySetAction.move,
+    EntrySetAction.toggleFavourite,
     EntrySetAction.rescan,
     EntrySetAction.map,
     EntrySetAction.stats,
@@ -94,6 +96,9 @@ extension ExtraEntrySetAction on EntrySetAction {
         return context.l10n.collectionActionMove;
       case EntrySetAction.rescan:
         return context.l10n.collectionActionRescan;
+      case EntrySetAction.toggleFavourite:
+        // different data depending on toggle state
+        return context.l10n.entryActionAddFavourite;
       case EntrySetAction.rotateCCW:
         return context.l10n.entryActionRotateCCW;
       case EntrySetAction.rotateCW:
@@ -150,6 +155,9 @@ extension ExtraEntrySetAction on EntrySetAction {
         return AIcons.move;
       case EntrySetAction.rescan:
         return AIcons.refresh;
+      case EntrySetAction.toggleFavourite:
+        // different data depending on toggle state
+        return AIcons.favourite;
       case EntrySetAction.rotateCCW:
         return AIcons.rotateLeft;
       case EntrySetAction.rotateCW:

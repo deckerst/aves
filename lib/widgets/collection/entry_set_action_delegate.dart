@@ -7,6 +7,7 @@ import 'package:aves/model/actions/move_type.dart';
 import 'package:aves/model/device.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/entry_metadata_edition.dart';
+import 'package:aves/model/favourites.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/highlight.dart';
@@ -73,6 +74,7 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
       case EntrySetAction.copy:
       case EntrySetAction.move:
       case EntrySetAction.rescan:
+      case EntrySetAction.toggleFavourite:
       case EntrySetAction.rotateCCW:
       case EntrySetAction.rotateCW:
       case EntrySetAction.flip:
@@ -115,6 +117,7 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
       case EntrySetAction.copy:
       case EntrySetAction.move:
       case EntrySetAction.rescan:
+      case EntrySetAction.toggleFavourite:
       case EntrySetAction.rotateCCW:
       case EntrySetAction.rotateCW:
       case EntrySetAction.flip:
@@ -167,6 +170,9 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
       case EntrySetAction.rescan:
         _rescan(context);
         break;
+      case EntrySetAction.toggleFavourite:
+        _toggleFavourite(context);
+        break;
       case EntrySetAction.rotateCCW:
         _rotate(context, clockwise: false);
         break;
@@ -210,6 +216,18 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
 
     final controller = AnalysisController(canStartService: true, force: true);
     source.analyze(controller, entries: selectedItems);
+
+    selection.browse();
+  }
+
+  Future<void> _toggleFavourite(BuildContext context) async {
+    final selection = context.read<Selection<AvesEntry>>();
+    final selectedItems = _getExpandedSelectedItems(selection);
+    if (selectedItems.every((entry) => entry.isFavourite)) {
+      await favourites.remove(selectedItems);
+    } else {
+      await favourites.add(selectedItems);
+    }
 
     selection.browse();
   }
