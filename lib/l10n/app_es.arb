@@ -85,7 +85,7 @@
   "filterTypeAnimatedLabel": "Animado",
   "filterTypeMotionPhotoLabel": "Foto en movimiento",
   "filterTypePanoramaLabel": "Panorámica",
-  "filterTypeRawLabel": "Sin procesar",
+  "filterTypeRawLabel": "Raw",
   "filterTypeSphericalVideoLabel": "Video en 360°",
   "filterTypeGeotiffLabel": "GeoTIFF",
   "filterMimeImageLabel": "Imagen",
@@ -132,7 +132,7 @@
 
   "storageVolumeDescriptionFallbackPrimary": "Almacenamiento interno",
   "storageVolumeDescriptionFallbackNonPrimary": "Tarjeta de memoria",
-  "rootDirectoryDescription": "Directorio raíz",
+  "rootDirectoryDescription": "el directorio raíz",
   "otherDirectoryDescription": "Directorio “{name}”",
   "storageAccessDialogTitle": "Acceso al almacenamiento",
   "storageAccessDialogMessage": "Por favor seleccione {directory} en “{volume}” en la siguiente pantalla para permitir a esta aplicación tener acceso.",
@@ -269,7 +269,7 @@
   "collectionActionShowTitleSearch": "Mostrar títulos",
   "collectionActionHideTitleSearch": "Ocultar títulos",
   "collectionActionAddShortcut": "Agregar atajo",
-  "collectionActionCopy": "Copiar a álbum,
+  "collectionActionCopy": "Copiar a álbum",
   "collectionActionMove": "Mover a álbum",
   "collectionActionRescan": "Volver a buscar",
   "collectionActionEdit": "Editar",
@@ -313,7 +313,7 @@
   "drawerCollectionAnimated": "Animaciones",
   "drawerCollectionMotionPhotos": "Fotos en movimiento",
   "drawerCollectionPanoramas": "Panorámicas",
-  "drawerCollectionRaws": "Fotos sin procesar",
+  "drawerCollectionRaws": "Fotos Raw",
   "drawerCollectionSphericalVideos": "Videos en 360°",
 
   "chipSortDate": "Por fecha",
@@ -380,7 +380,7 @@
   "settingsThumbnailShowLocationIcon": "Mostrar icono de ubicación",
   "settingsThumbnailShowMotionPhotoIcon": "Mostrar icono de foto en movimiento",
   "settingsThumbnailShowRating": "Mostrar clasificación",
-  "settingsThumbnailShowRawIcon": "Mostrar icono de sin procesar",
+  "settingsThumbnailShowRawIcon": "Mostrar icono Raw",
   "settingsThumbnailShowVideoDuration": "Mostrar duración de video",
 
   "settingsCollectionQuickActionsTile": "Acciones rápidas",
@@ -474,7 +474,7 @@
   "settingsUnitSystemTitle": "Unidades",
 
   "statsPageTitle": "Stats",
-  "statsWithGps": "{count, plural, =1{1 elemento con ubicación} otros{{count} elementos con ubicación}}",
+  "statsWithGps": "{count, plural, =1{1 elemento con ubicación} other{{count} elementos con ubicación}}",
   "statsTopCountries": "Países principales",
   "statsTopPlaces": "Lugares principales",
   "statsTopTags": "Etiquetas principales",
@@ -491,7 +491,7 @@
   "viewerInfoLabelDate": "Fecha",
   "viewerInfoLabelResolution": "Resolución",
   "viewerInfoLabelSize": "Tamaño",
-  "viewerInfoLabelUri": "Identificador de Recurso Uniforme",
+  "viewerInfoLabelUri": "URI",
   "viewerInfoLabelPath": "Ubicación",
   "viewerInfoLabelDuration": "Duración",
   "viewerInfoLabelOwner": "Propiedad de",
@@ -528,7 +528,7 @@
   "panoramaEnableSensorControl": "Activar control de sensores",
   "panoramaDisableSensorControl": "Desactivar control de sensores",
 
-  "sourceViewerPageTitle": ""Fuente"",
+  "sourceViewerPageTitle": "Fuente",
 
   "filePickerShowHiddenFiles": "Mostrar archivos ocultos",
   "filePickerDoNotShowHiddenFiles": "No mostrar archivos ocultos",
