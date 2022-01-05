@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/entry.dart';
+import 'package:aves/model/favourites.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -103,13 +104,18 @@ class _CollectionGridContent extends StatelessWidget {
                       columnCount: columnCount,
                       spacing: tileSpacing,
                       tileExtent: thumbnailExtent,
-                      tileBuilder: (entry) => InteractiveTile(
-                        key: ValueKey(entry.contentId),
-                        collection: collection,
-                        entry: entry,
-                        thumbnailExtent: thumbnailExtent,
-                        tileLayout: tileLayout,
-                        isScrollingNotifier: _isScrollingNotifier,
+                      tileBuilder: (entry) => AnimatedBuilder(
+                        animation: favourites,
+                        builder: (context, child) {
+                          return InteractiveTile(
+                            key: ValueKey(entry.contentId),
+                            collection: collection,
+                            entry: entry,
+                            thumbnailExtent: thumbnailExtent,
+                            tileLayout: tileLayout,
+                            isScrollingNotifier: _isScrollingNotifier,
+                          );
+                        },
                       ),
                       tileAnimationDelay: tileAnimationDelay,
                       child: child!,

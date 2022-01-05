@@ -72,6 +72,20 @@ class SphericalImageIcon extends StatelessWidget {
   }
 }
 
+class FavouriteIcon extends StatelessWidget {
+  const FavouriteIcon({Key? key}) : super(key: key);
+
+  static const scale = .9;
+
+  @override
+  Widget build(BuildContext context) {
+    return const OverlayIcon(
+      icon: AIcons.favourite,
+      iconScale: scale,
+    );
+  }
+}
+
 class GpsIcon extends StatelessWidget {
   const GpsIcon({Key? key}) : super(key: key);
 

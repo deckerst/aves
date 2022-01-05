@@ -524,6 +524,7 @@
   "settingsNavigationDrawerAddAlbum": "Add album",
 
   "settingsSectionThumbnails": "Thumbnails",
+  "settingsThumbnailShowFavouriteIcon": "Show favourite icon",
   "settingsThumbnailShowLocationIcon": "Show location icon",
   "settingsThumbnailShowMotionPhotoIcon": "Show motion photo icon",
   "settingsThumbnailShowRating": "Show rating",

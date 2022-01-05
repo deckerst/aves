@@ -685,13 +685,13 @@ class AvesEntry {
 
   Future<void> addToFavourites() async {
     if (!isFavourite) {
-      await favourites.add([this]);
+      await favourites.add({this});
     }
   }
 
   Future<void> removeFromFavourites() async {
     if (isFavourite) {
-      await favourites.remove([this]);
+      await favourites.remove({this});
     }
   }
 

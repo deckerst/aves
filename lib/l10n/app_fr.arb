@@ -371,6 +371,7 @@
   "settingsNavigationDrawerAddAlbum": "Ajouter un album",
 
   "settingsSectionThumbnails": "Vignettes",
+  "settingsThumbnailShowFavouriteIcon": "Afficher l’icône de favori",
   "settingsThumbnailShowLocationIcon": "Afficher l’icône de lieu",
   "settingsThumbnailShowMotionPhotoIcon": "Afficher l’icône de photo animée",
   "settingsThumbnailShowRating": "Afficher la notation",

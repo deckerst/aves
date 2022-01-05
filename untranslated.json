@@ -12,6 +12,7 @@
     "editEntryRatingDialogTitle",
     "collectionSortRating",
     "searchSectionRating",
+    "settingsThumbnailShowFavouriteIcon",
     "settingsThumbnailShowRating"
   ],
 
@@ -42,6 +43,7 @@
     "editEntryRatingDialogTitle",
     "collectionSortRating",
     "searchSectionRating",
+    "settingsThumbnailShowFavouriteIcon",
     "settingsThumbnailShowRating"
   ]
 }

@@ -43,6 +43,7 @@ class SettingsDefaults {
     EntrySetAction.share,
     EntrySetAction.delete,
   ];
+  static const showThumbnailFavourite = true;
   static const showThumbnailLocation = true;
   static const showThumbnailMotionPhoto = true;
   static const showThumbnailRating = true;
