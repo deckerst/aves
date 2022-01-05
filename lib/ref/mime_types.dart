@@ -2,6 +2,7 @@ class MimeTypes {
   static const anyImage = 'image/*';
 
   static const bmp = 'image/bmp';
+  static const bmpX = 'image/x-ms-bmp';
   static const gif = 'image/gif';
   static const heic = 'image/heic';
   static const heif = 'image/heif';
@@ -43,6 +44,8 @@ class MimeTypes {
 
   static const avi = 'video/avi';
   static const aviVnd = 'video/vnd.avi';
+  static const flv = 'video/flv';
+  static const flvX = 'video/x-flv';
   static const mkv = 'video/x-matroska';
   static const mov = 'video/quicktime';
   static const mp2t = 'video/mp2t'; // .m2ts, .ts
@@ -62,7 +65,7 @@ class MimeTypes {
   // groups
 
   // formats that support transparency
-  static const Set<String> alphaImages = {bmp, gif, ico, png, svg, tiff, webp};
+  static const Set<String> alphaImages = {bmp, bmpX, gif, ico, png, svg, tiff, webp};
 
   static const Set<String> rawImages = {arw, cr2, crw, dcr, dng, erf, k25, kdc, mrw, nef, nrw, orf, pef, raf, raw, rw2, sr2, srf, srw, x3f};
 
@@ -71,11 +74,33 @@ class MimeTypes {
 
   static const Set<String> _knownOpaqueImages = {heic, heif, jpeg};
 
-  static const Set<String> _knownVideos = {avi, aviVnd, mkv, mov, mp2t, mp2ts, mp4, mpeg, ogv, webm};
+  static const Set<String> _knownVideos = {avi, aviVnd, flv, flvX, mkv, mov, mp2t, mp2ts, mp4, mpeg, ogv, webm};
 
   static final Set<String> knownMediaTypes = {..._knownOpaqueImages, ...alphaImages, ...rawImages, ...undecodableImages, ..._knownVideos};
 
   static bool isImage(String mimeType) => mimeType.startsWith('image');
 
   static bool isVideo(String mimeType) => mimeType.startsWith('video');
+
+  static bool refersToSameType(String a, b) {
+    switch (a) {
+      case avi:
+      case aviVnd:
+        return [avi, aviVnd].contains(b);
+      case bmp:
+      case bmpX:
+        return [bmp, bmpX].contains(b);
+      case flv:
+      case flvX:
+        return [flv, flvX].contains(b);
+      case heic:
+      case heif:
+        return [heic, heif].contains(b);
+      case psdVnd:
+      case psdX:
+        return [psdVnd, psdX].contains(b);
+      default:
+        return a == b;
+    }
+  }
 }
