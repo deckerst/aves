@@ -4,25 +4,10 @@
   "welcomeOptional": "Opcional",
   "welcomeTermsToggle": "Acepto los términos y condiciones",
   "itemCount": "{count, plural, =1{1 elemento} other{{count} elementos}}",
-  "@itemCount": {
-    "placeholders": {
-      "count": {}
-    }
-  },
-
+  
   "timeSeconds": "{seconds, plural, =1{1 segundo} other{{seconds} segundos}}",
-  "@timeSeconds": {
-    "placeholders": {
-      "seconds": {}
-    }
-  },
   "timeMinutes": "{minutes, plural, =1{1 minuto} other{{minutes} minutos}}",
-  "@timeMinutes": {
-    "placeholders": {
-      "minutes": {}
-    }
-  },
-
+  
   "applyButtonLabel": "APLICAR",
   "deleteButtonLabel": "BORRAR",
   "nextButtonLabel": "SIGUIENTE",
@@ -109,16 +94,6 @@
   "coordinateFormatDms": "GMS",
   "coordinateFormatDecimal": "Grados decimales",
   "coordinateDms": "{coordinate} {direction}",
-  "@coordinateDms": {
-    "placeholders": {
-      "coordinate": {
-        "type": "String"
-      },
-      "direction": {
-        "type": "String"
-      }
-    }
-  },
   "coordinateDmsNorth": "N",
   "coordinateDmsSouth": "S",
   "coordinateDmsEast": "E",
@@ -159,66 +134,19 @@
   "storageVolumeDescriptionFallbackNonPrimary": "Tarjeta de memoria",
   "rootDirectoryDescription": "Directorio raíz",
   "otherDirectoryDescription": "Directorio “{name}”",
-  "@otherDirectoryDescription": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
   "storageAccessDialogTitle": "Acceso al almacenamiento",
   "storageAccessDialogMessage": "Por favor seleccione {directory} en “{volume}” en la siguiente pantalla para permitir a esta aplicación tener acceso.",
-  "@storageAccessDialogMessage": {
-    "placeholders": {
-      "directory": {
-        "type": "String"
-      },
-      "volume": {
-        "type": "String"
-      }
-    }
-  },
   "restrictedAccessDialogTitle": "Acceso restringido",
   "restrictedAccessDialogMessage": "Esta aplicación no tiene permiso para modificar archivos de {directory} en “{volume}”.\n\nPor favor use un gestor de archivos o la aplicación de galería preinstalada para mover los elementos a otro directorio.",
-  "@restrictedAccessDialogMessage": {
-    "placeholders": {
-      "directory": {
-        "type": "String"
-      },
-      "volume": {
-        "type": "String"
-      }
-    }
-  },
   "notEnoughSpaceDialogTitle": "Espacio insuficiente",
   "notEnoughSpaceDialogMessage": "Esta operación necesita {neededSize} de espacio libre en “{volume}” para completarse, pero sólo hay {freeSize} disponible.",
-  "@notEnoughSpaceDialogMessage": {
-    "placeholders": {
-      "neededSize": {
-        "type": "String"
-      },
-      "freeSize": {
-        "type": "String"
-      },
-      "volume": {
-        "type": "String"
-      }
-    }
-  },
+  
   "missingSystemFilePickerDialogTitle": "Selector de archivos del sistema no disponible",
   "missingSystemFilePickerDialogMessage": "El selector de archivos del sistema no se encuentra disponible o fue deshabilitado. Por favor habilítelo e intente nuevamente.",
 
   "unsupportedTypeDialogTitle": "Tipos de archivo incompatibles",
   "unsupportedTypeDialogMessage": "{count, plural, =1{Esta operación no está disponible para un elemento del siguiente tipo: {types}.} other{Esta operación no está disponible para elementos de los siguientes tipos: {types}.}}",
-  "@unsupportedTypeDialogMessage": {
-    "placeholders": {
-      "count": {},
-      "types": {
-        "type": "String"
-      }
-    }
-  },
-
+  
   "nameConflictDialogSingleSourceMessage": "Algunos archivos en el directorio de destino tienen el mismo nombre.",
   "nameConflictDialogMultipleSourceMessage": "Algunos archivos tienen el mismo nombre.",
 
@@ -229,18 +157,8 @@
   "noMatchingAppDialogMessage": "No se encontraron aplicaciones para manejar esto.",
 
   "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{¿Está seguro de borrar este elemento?} other{¿Está seguro de querer borrar {count} elementos?}}",
-  "@deleteEntriesConfirmationDialogMessage": {
-    "placeholders": {
-      "count": {}
-    }
-  },
 
   "videoResumeDialogMessage": "¿Desea reanudar la reproducción a las {time}?",
-  "@videoResumeDialogMessage": {
-    "placeholders": {
-      "time": {}
-    }
-  },
   "videoStartOverButtonLabel": "VOLVER A EMPEZAR",
   "videoResumeButtonLabel": "REANUDAR",
 
@@ -259,18 +177,8 @@
   "renameAlbumDialogLabelAlreadyExistsHelper": "El directorio ya existe",
 
   "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{¿Está seguro de que desea borrar este álbum y un elemento?} other{¿Está seguro de que desea borrar este álbum y sus {count} elementos?}}",
-  "@deleteSingleAlbumConfirmationDialogMessage": {
-    "placeholders": {
-      "count": {}
-    }
-  },
   "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{¿Está seguro de que desea borrar estos álbumes y un elemento?} other{¿Está seguro de que desea borrar estos álbumes y sus {count} elementos?}}",
-  "@deleteMultiAlbumConfirmationDialogMessage": {
-    "placeholders": {
-      "count": {}
-    }
-  },
-
+ 
   "exportEntryDialogFormat": "Formato:",
 
   "renameEntryDialogLabel": "Renombrar",
@@ -343,17 +251,7 @@
   "aboutCreditsWorldAtlas2": "bajo licencia ISC.",
   "aboutCreditsTranslators": "Traductores:",
   "aboutCreditsTranslatorLine": "{language}: {names}",
-  "@aboutCreditsTranslatorLine": {
-    "placeholders": {
-      "language": {
-        "type": "String"
-      },
-      "names": {
-        "type": "String"
-      }
-    }
-  },
-
+  
   "aboutLicenses": "Licencias de código abierto",
   "aboutLicensesBanner": "Esta aplicación usa los siguientes paquetes y librerías de código abierto.",
   "aboutLicensesAndroidLibraries": "Librerías de Android",
@@ -367,11 +265,6 @@
   "collectionPageTitle": "Colección",
   "collectionPickPageTitle": "Elegir",
   "collectionSelectionPageTitle": "{count, plural, =0{Seleccionar} =1{1 elemento} other{{count} elementos}}",
-  "@collectionSelectionPageTitle": {
-    "placeholders": {
-      "count": {}
-    }
-  },
 
   "collectionActionShowTitleSearch": "Mostrar títulos",
   "collectionActionHideTitleSearch": "Ocultar títulos",
@@ -398,53 +291,13 @@
   "dateYesterday": "Ayer",
   "dateThisMonth": "Este mes",
   "collectionDeleteFailureFeedback": "{count, plural, =1{Error al borrar 1 elemento} other{Error al borrar {count} elementos}}",
-  "@collectionDeleteFailureFeedback": {
-    "placeholders": {
-      "count": {}
-    }
-  },
   "collectionCopyFailureFeedback": "{count, plural, =1{Error al copiar 1 item} other{Error al copiar {count} elementos}}",
-  "@collectionCopyFailureFeedback": {
-    "placeholders": {
-      "count": {}
-    }
-  },
   "collectionMoveFailureFeedback": "{count, plural, =1{Error al mover 1 elemento} other{Error al mover {count} elementos}}",
-  "@collectionMoveFailureFeedback": {
-    "placeholders": {
-      "count": {}
-    }
-  },
   "collectionEditFailureFeedback": "{count, plural, =1{Error al editar 1 elemento} other{Error al editar {count} elementos}}",
-  "@collectionEditFailureFeedback": {
-    "placeholders": {
-      "count": {}
-    }
-  },
   "collectionExportFailureFeedback": "{count, plural, =1{Error al exportar 1 página} other{Error al exportar {count} páginas}}",
-  "@collectionExportFailureFeedback": {
-    "placeholders": {
-      "count": {}
-    }
-  },
   "collectionCopySuccessFeedback": "{count, plural, =1{1 elemento copiado} other{Copiados{count} elementos}}",
-  "@collectionCopySuccessFeedback": {
-    "placeholders": {
-      "count": {}
-    }
-  },
   "collectionMoveSuccessFeedback": "{count, plural, =1{1 elemento movido} other{Movidos {count} elementos}}",
-  "@collectionMoveSuccessFeedback": {
-    "placeholders": {
-      "count": {}
-    }
-  },
   "collectionEditSuccessFeedback": "{count, plural, =1{1 elemento editado} other{Editados {count} elementos}}",
-  "@collectionEditSuccessFeedback": {
-    "placeholders": {
-      "count": {}
-    }
-  },
 
   "collectionEmptyFavourites": "Sin favoritos",
   "collectionEmptyVideos": "Sin videos",
@@ -530,162 +383,157 @@
   "settingsThumbnailShowRawIcon": "Mostrar icono de sin procesar",
   "settingsThumbnailShowVideoDuration": "Mostrar duración de video",
 
-  "settingsCollectionQuickActionsTile": "Quick actions",
-  "settingsCollectionQuickActionEditorTitle": "Quick Actions",
-  "settingsCollectionQuickActionTabBrowsing": "Browsing",
-  "settingsCollectionQuickActionTabSelecting": "Selecting",
-  "settingsCollectionBrowsingQuickActionEditorBanner": "Touch and hold to move buttons and select which actions are displayed when browsing items.",
-  "settingsCollectionSelectionQuickActionEditorBanner": "Touch and hold to move buttons and select which actions are displayed when selecting items.",
+  "settingsCollectionQuickActionsTile": "Acciones rápidas",
+  "settingsCollectionQuickActionEditorTitle": "Acciones rápidas",
+  "settingsCollectionQuickActionTabBrowsing": "Búsqueda",
+  "settingsCollectionQuickActionTabSelecting": "Selección",
+  "settingsCollectionBrowsingQuickActionEditorBanner": "Toque y mantenga para mover botones y seleccionar cuáles acciones se muestran mientras busca elementos.",
+  "settingsCollectionSelectionQuickActionEditorBanner": "Toque y mantenga para mover botones y seleccionar cuáles acciones se muestran mientras selecciona elementos.",
 
-  "settingsSectionViewer": "Viewer",
-  "settingsViewerUseCutout": "Use cutout area",
-  "settingsViewerMaximumBrightness": "Maximum brightness",
-  "settingsMotionPhotoAutoPlay": "Auto play motion photos",
-  "settingsImageBackground": "Image background",
+  "settingsSectionViewer": "Visor",
+  "settingsViewerUseCutout": "Usar área recortada",
+  "settingsViewerMaximumBrightness": "Brillo máximo",
+  "settingsMotionPhotoAutoPlay": "Reproducir automáticamente fotos en movimiento",
+  "settingsImageBackground": "Imagen de fondo",
 
-  "settingsViewerQuickActionsTile": "Quick actions",
-  "settingsViewerQuickActionEditorTitle": "Quick Actions",
-  "settingsViewerQuickActionEditorBanner": "Touch and hold to move buttons and select which actions are displayed in the viewer.",
-  "settingsViewerQuickActionEditorDisplayedButtons": "Displayed Buttons",
-  "settingsViewerQuickActionEditorAvailableButtons": "Available Buttons",
-  "settingsViewerQuickActionEmpty": "No buttons",
+  "settingsViewerQuickActionsTile": "Acciones rápidas",
+  "settingsViewerQuickActionEditorTitle": "Acciones rápidas",
+  "settingsViewerQuickActionEditorBanner": "Toque y mantenga para mover botones y seleccionar cuáles acciones se muestran en el visor.",
+  "settingsViewerQuickActionEditorDisplayedButtons": "Botones mostrados",
+  "settingsViewerQuickActionEditorAvailableButtons": "Botones disponibles",
+  "settingsViewerQuickActionEmpty": "Sin botones",
 
-  "settingsViewerOverlayTile": "Overlay",
-  "settingsViewerOverlayTitle": "Overlay",
-  "settingsViewerShowOverlayOnOpening": "Show on opening",
-  "settingsViewerShowMinimap": "Show minimap",
-  "settingsViewerShowInformation": "Show information",
-  "settingsViewerShowInformationSubtitle": "Show title, date, location, etc.",
-  "settingsViewerShowShootingDetails": "Show shooting details",
-  "settingsViewerEnableOverlayBlurEffect": "Blur effect",
+  "settingsViewerOverlayTile": "Incrustaciones",
+  "settingsViewerOverlayTitle": "Incrustaciones",
+  "settingsViewerShowOverlayOnOpening": "Mostrar durante apertura",
+  "settingsViewerShowMinimap": "Mostrar mapa en miniatura",
+  "settingsViewerShowInformation": "Mostrar información",
+  "settingsViewerShowInformationSubtitle": "Mostrar título, fecha, ubicación, etc.",
+  "settingsViewerShowShootingDetails": "Mostrar detalles de toma",
+  "settingsViewerEnableOverlayBlurEffect": "Efecto de difuminado",
 
-  "settingsVideoPageTitle": "Video Settings",
+  "settingsVideoPageTitle": "Ajustes de video",
   "settingsSectionVideo": "Video",
-  "settingsVideoShowVideos": "Show videos",
-  "settingsVideoEnableHardwareAcceleration": "Hardware acceleration",
-  "settingsVideoEnableAutoPlay": "Auto play",
-  "settingsVideoLoopModeTile": "Loop mode",
-  "settingsVideoLoopModeTitle": "Loop Mode",
-  "settingsVideoQuickActionsTile": "Quick actions for videos",
-  "settingsVideoQuickActionEditorTitle": "Quick Actions",
+  "settingsVideoShowVideos": "Mostrar videos",
+  "settingsVideoEnableHardwareAcceleration": "Aceleración por hardware",
+  "settingsVideoEnableAutoPlay": "Reproducción automática",
+  "settingsVideoLoopModeTile": "Modo bucle",
+  "settingsVideoLoopModeTitle": "Modo bucle",
+  "settingsVideoQuickActionsTile": "Acciones rápidas para videos",
+  "settingsVideoQuickActionEditorTitle": "Acciones rápidas",
 
-  "settingsSubtitleThemeTile": "Subtitles",
-  "settingsSubtitleThemeTitle": "Subtitles",
-  "settingsSubtitleThemeSample": "This is a sample.",
-  "settingsSubtitleThemeTextAlignmentTile": "Text alignment",
-  "settingsSubtitleThemeTextAlignmentTitle": "Text Alignment",
-  "settingsSubtitleThemeTextSize": "Text size",
-  "settingsSubtitleThemeShowOutline": "Show outline and shadow",
-  "settingsSubtitleThemeTextColor": "Text color",
-  "settingsSubtitleThemeTextOpacity": "Text opacity",
-  "settingsSubtitleThemeBackgroundColor": "Background color",
-  "settingsSubtitleThemeBackgroundOpacity": "Background opacity",
-  "settingsSubtitleThemeTextAlignmentLeft": "Left",
-  "settingsSubtitleThemeTextAlignmentCenter": "Center",
-  "settingsSubtitleThemeTextAlignmentRight": "Right",
+  "settingsSubtitleThemeTile": "Subtítulos",
+  "settingsSubtitleThemeTitle": "Subtítulos",
+  "settingsSubtitleThemeSample": "Esto es un ejemplo.",
+  "settingsSubtitleThemeTextAlignmentTile": "Alineación de texto",
+  "settingsSubtitleThemeTextAlignmentTitle": "Alineación de texto",
+  "settingsSubtitleThemeTextSize": "Tamaño de texto",
+  "settingsSubtitleThemeShowOutline": "Mostrar contorno y sombra",
+  "settingsSubtitleThemeTextColor": "Color de texto",
+  "settingsSubtitleThemeTextOpacity": "Opacidad de texto",
+  "settingsSubtitleThemeBackgroundColor": "Color de fondo",
+  "settingsSubtitleThemeBackgroundOpacity": "Opacidad de fondo",
+  "settingsSubtitleThemeTextAlignmentLeft": "Izquierda",
+  "settingsSubtitleThemeTextAlignmentCenter": "Centro",
+  "settingsSubtitleThemeTextAlignmentRight": "Derecha",
 
-  "settingsSectionPrivacy": "Privacy",
-  "settingsAllowInstalledAppAccess": "Allow access to app inventory",
-  "settingsAllowInstalledAppAccessSubtitle": "Used to improve album display",
-  "settingsAllowErrorReporting": "Allow anonymous error reporting",
-  "settingsSaveSearchHistory": "Save search history",
+  "settingsSectionPrivacy": "Privacidad",
+  "settingsAllowInstalledAppAccess": "Permita el acceso a lista de aplicaciones",
+  "settingsAllowInstalledAppAccessSubtitle": "Usado para mejorar los álbumes mostrados",
+  "settingsAllowErrorReporting": "Permitir reporte de errores anónimo",
+  "settingsSaveSearchHistory": "Guardar historial de búsqueda",
 
-  "settingsHiddenItemsTile": "Hidden items",
-  "settingsHiddenItemsTitle": "Hidden Items",
+  "settingsHiddenItemsTile": "Elementos ocultos",
+  "settingsHiddenItemsTitle": "Elementos ocultos",
 
-  "settingsHiddenFiltersTitle": "Hidden Filters",
-  "settingsHiddenFiltersBanner": "Photos and videos matching hidden filters will not appear in your collection.",
-  "settingsHiddenFiltersEmpty": "No hidden filters",
+  "settingsHiddenFiltersTitle": "Filtros",
+  "settingsHiddenFiltersBanner": "Fotos y videos que concuerden con los filtros no aparecerán en su colección.",
+  "settingsHiddenFiltersEmpty": "Sin filtros",
 
-  "settingsHiddenPathsTitle": "Hidden Paths",
-  "settingsHiddenPathsBanner": "Photos and videos in these folders, or any of their subfolders, will not appear in your collection.",
-  "addPathTooltip": "Add path",
+  "settingsHiddenPathsTitle": "Ubicaciones ocultas",
+  "settingsHiddenPathsBanner": "Fotos y videos que se encuentren en estos directorios y cualquiera de sus subdirectorios no aparecerán en su colección.",
+  "addPathTooltip": "Añadir ubicación",
 
-  "settingsStorageAccessTile": "Storage access",
-  "settingsStorageAccessTitle": "Storage Access",
-  "settingsStorageAccessBanner": "Some directories require an explicit access grant to modify files in them. You can review here directories to which you previously gave access.",
-  "settingsStorageAccessEmpty": "No access grants",
-  "settingsStorageAccessRevokeTooltip": "Revoke",
+  "settingsStorageAccessTile": "Acceso al almacenamiento",
+  "settingsStorageAccessTitle": "Acceso al almacenamiento",
+  "settingsStorageAccessBanner": "Algunos directorios requieren un permiso de acceso explícito para que sea posible modificar los archivos que contienen. Puede revisar los directorios con permiso aquí.",
+  "settingsStorageAccessEmpty": "Sin permisos de acceso",
+  "settingsStorageAccessRevokeTooltip": "Revocar",
 
-  "settingsSectionAccessibility": "Accessibility",
-  "settingsRemoveAnimationsTile": "Remove animations",
-  "settingsRemoveAnimationsTitle": "Remove Animations",
-  "settingsTimeToTakeActionTile": "Time to take action",
-  "settingsTimeToTakeActionTitle": "Time to Take Action",
+  "settingsSectionAccessibility": "Accesibilidad",
+  "settingsRemoveAnimationsTile": "Remover animaciones",
+  "settingsRemoveAnimationsTitle": "Remove animaciones",
+  "settingsTimeToTakeActionTile": "Hora de entrar en acción",
+  "settingsTimeToTakeActionTitle": "Hora de entrar en acción",
 
-  "settingsSectionLanguage": "Language & Formats",
-  "settingsLanguage": "Language",
-  "settingsCoordinateFormatTile": "Coordinate format",
-  "settingsCoordinateFormatTitle": "Coordinate Format",
-  "settingsUnitSystemTile": "Units",
-  "settingsUnitSystemTitle": "Units",
+  "settingsSectionLanguage": "Idioma y formatos",
+  "settingsLanguage": "Idioma",
+  "settingsCoordinateFormatTile": "Formato de coordenadas",
+  "settingsCoordinateFormatTitle": "Formato de coordenadas",
+  "settingsUnitSystemTile": "Unidades",
+  "settingsUnitSystemTitle": "Unidades",
 
   "statsPageTitle": "Stats",
-  "statsWithGps": "{count, plural, =1{1 item with location} other{{count} items with location}}",
-  "@statsWithGps": {
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "statsTopCountries": "Top Countries",
-  "statsTopPlaces": "Top Places",
-  "statsTopTags": "Top Tags",
+  "statsWithGps": "{count, plural, =1{1 elemento con ubicación} otros{{count} elementos con ubicación}}",
+  "statsTopCountries": "Países principales",
+  "statsTopPlaces": "Lugares principales",
+  "statsTopTags": "Etiquetas principales",
 
-  "viewerOpenPanoramaButtonLabel": "OPEN PANORAMA",
-  "viewerErrorUnknown": "Oops!",
-  "viewerErrorDoesNotExist": "The file no longer exists.",
+  "viewerOpenPanoramaButtonLabel": "ABRIR PANORÁMICA",
+  "viewerErrorUnknown": "¡Ups!",
+  "viewerErrorDoesNotExist": "El archivo no existe.",
 
-  "viewerInfoPageTitle": "Info",
-  "viewerInfoBackToViewerTooltip": "Back to viewer",
+  "viewerInfoPageTitle": "Información",
+  "viewerInfoBackToViewerTooltip": "Regresar al visor",
 
-  "viewerInfoUnknown": "unknown",
-  "viewerInfoLabelTitle": "Title",
-  "viewerInfoLabelDate": "Date",
-  "viewerInfoLabelResolution": "Resolution",
-  "viewerInfoLabelSize": "Size",
-  "viewerInfoLabelUri": "URI",
-  "viewerInfoLabelPath": "Path",
-  "viewerInfoLabelDuration": "Duration",
-  "viewerInfoLabelOwner": "Owned by",
-  "viewerInfoLabelCoordinates": "Coordinates",
-  "viewerInfoLabelAddress": "Address",
+  "viewerInfoUnknown": "Desconocido",
+  "viewerInfoLabelTitle": "Título",
+  "viewerInfoLabelDate": "Fecha",
+  "viewerInfoLabelResolution": "Resolución",
+  "viewerInfoLabelSize": "Tamaño",
+  "viewerInfoLabelUri": "Identificador de Recurso Uniforme",
+  "viewerInfoLabelPath": "Ubicación",
+  "viewerInfoLabelDuration": "Duración",
+  "viewerInfoLabelOwner": "Propiedad de",
+  "viewerInfoLabelCoordinates": "Coordinadas",
+  "viewerInfoLabelAddress": "Dirección",
 
-  "mapStyleTitle": "Map Style",
-  "mapStyleTooltip": "Select map style",
-  "mapZoomInTooltip": "Zoom in",
-  "mapZoomOutTooltip": "Zoom out",
-  "mapPointNorthUpTooltip": "Point north up",
-  "mapAttributionOsmHot": "Map data © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors • Tiles by [HOT](https://www.hotosm.org/) • Hosted by [OSM France](https://openstreetmap.fr/)",
-  "mapAttributionStamen": "Map data © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors • Tiles by [Stamen Design](http://stamen.com), [CC BY 3.0](http://creativecommons.org/licenses/by/3.0)",
-  "openMapPageTooltip": "View on Map page",
-  "mapEmptyRegion": "No images in this region",
+  "mapStyleTitle": "Estilo de mapa",
+  "mapStyleTooltip": "Selección de estilo de mapa",
+  "mapZoomInTooltip": "Acercar",
+  "mapZoomOutTooltip": "Alejar",
+  "mapPointNorthUpTooltip": "Apuntar el Norte hacia arriba",
+  "mapAttributionOsmHot": "Datos de mapas © [OpenStreetMap](https://www.openstreetmap.org/copyright) contribuidores • Teselas por [HOT](https://www.hotosm.org/) • Alojador por [OSM France](https://openstreetmap.fr/)",
+  "mapAttributionStamen": "Datos de mapas © [OpenStreetMap](https://www.openstreetmap.org/copyright) contribuidores • Teselas por [Stamen Design](http://stamen.com), [CC BY 3.0](http://creativecommons.org/licenses/by/3.0)",
+  "openMapPageTooltip": "Ver en página del mapa",
+  "mapEmptyRegion": "Sin imágenes en esta región",
 
-  "viewerInfoOpenEmbeddedFailureFeedback": "Failed to extract embedded data",
-  "viewerInfoOpenLinkText": "Open",
-  "viewerInfoViewXmlLinkText": "View XML",
+  "viewerInfoOpenEmbeddedFailureFeedback": "Fallo al extraer datos embutidos",
+  "viewerInfoOpenLinkText": "Abrir",
+  "viewerInfoViewXmlLinkText": "Ver XML",
 
-  "viewerInfoSearchFieldLabel": "Search metadata",
-  "viewerInfoSearchEmpty": "No matching keys",
-  "viewerInfoSearchSuggestionDate": "Date & time",
-  "viewerInfoSearchSuggestionDescription": "Description",
-  "viewerInfoSearchSuggestionDimensions": "Dimensions",
-  "viewerInfoSearchSuggestionResolution": "Resolution",
-  "viewerInfoSearchSuggestionRights": "Rights",
+  "viewerInfoSearchFieldLabel": "Buscar metadatos",
+  "viewerInfoSearchEmpty": "Sin claves concordantes",
+  "viewerInfoSearchSuggestionDate": "Fecha y hora",
+  "viewerInfoSearchSuggestionDescription": "Descripción",
+  "viewerInfoSearchSuggestionDimensions": "Dimensiones",
+  "viewerInfoSearchSuggestionResolution": "Resolución",
+  "viewerInfoSearchSuggestionRights": "Derechos",
 
-  "tagEditorPageTitle": "Edit Tags",
-  "tagEditorPageNewTagFieldLabel": "New tag",
-  "tagEditorPageAddTagTooltip": "Add tag",
-  "tagEditorSectionRecent": "Recent",
+  "tagEditorPageTitle": "Editar Etiquetas",
+  "tagEditorPageNewTagFieldLabel": "Nueva etiqueta",
+  "tagEditorPageAddTagTooltip": "Añadir etiqueta",
+  "tagEditorSectionRecent": "Reciente",
 
-  "panoramaEnableSensorControl": "Enable sensor control",
-  "panoramaDisableSensorControl": "Disable sensor control",
+  "panoramaEnableSensorControl": "Activar control de sensores",
+  "panoramaDisableSensorControl": "Desactivar control de sensores",
 
-  "sourceViewerPageTitle": "Source",
+  "sourceViewerPageTitle": ""Fuente"",
 
-  "filePickerShowHiddenFiles": "Show hidden files",
-  "filePickerDoNotShowHiddenFiles": "Don’t show hidden files",
-  "filePickerOpenFrom": "Open from",
-  "filePickerNoItems": "No items",
-  "filePickerUseThisFolder": "Use this folder",
+  "filePickerShowHiddenFiles": "Mostrar archivos ocultos",
+  "filePickerDoNotShowHiddenFiles": "No mostrar archivos ocultos",
+  "filePickerOpenFrom": "Abrir desde",
+  "filePickerNoItems": "Sin elementos",
+  "filePickerUseThisFolder": "Usar esta carpeta",
   "@filePickerUseThisFolder": {}
 }
