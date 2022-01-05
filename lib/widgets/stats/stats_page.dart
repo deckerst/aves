@@ -4,6 +4,7 @@ import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/filters/mime.dart';
+import 'package:aves/model/filters/rating.dart';
 import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/settings/accessibility_animations.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -33,6 +34,7 @@ class StatsPage extends StatelessWidget {
   final CollectionLens? parentCollection;
   final Set<AvesEntry> entries;
   final Map<String, int> entryCountPerCountry = {}, entryCountPerPlace = {}, entryCountPerTag = {};
+  final Map<int, int> entryCountPerRating = Map.fromEntries(List.generate(7, (i) => MapEntry(5 - i, 0)));
 
   static const mimeDonutMinWidth = 124.0;
 
@@ -55,9 +57,13 @@ class StatsPage extends StatelessWidget {
           entryCountPerPlace[place] = (entryCountPerPlace[place] ?? 0) + 1;
         }
       }
+
       entry.tags.forEach((tag) {
         entryCountPerTag[tag] = (entryCountPerTag[tag] ?? 0) + 1;
       });
+
+      final rating = entry.rating;
+      entryCountPerRating[rating] = (entryCountPerRating[rating] ?? 0) + 1;
     });
   }
 
@@ -115,13 +121,15 @@ class StatsPage extends StatelessWidget {
           ],
         ),
       );
+      final showRatings = entryCountPerRating.entries.any((kv) => kv.key != 0 && kv.value > 0);
       child = ListView(
         children: [
           mimeDonuts,
           locationIndicator,
-          ..._buildTopFilters(context, context.l10n.statsTopCountries, entryCountPerCountry, (s) => LocationFilter(LocationLevel.country, s)),
-          ..._buildTopFilters(context, context.l10n.statsTopPlaces, entryCountPerPlace, (s) => LocationFilter(LocationLevel.place, s)),
-          ..._buildTopFilters(context, context.l10n.statsTopTags, entryCountPerTag, (s) => TagFilter(s)),
+          ..._buildFilterSection<String>(context, context.l10n.statsTopCountries, entryCountPerCountry, (v) => LocationFilter(LocationLevel.country, v)),
+          ..._buildFilterSection<String>(context, context.l10n.statsTopPlaces, entryCountPerPlace, (v) => LocationFilter(LocationLevel.place, v)),
+          ..._buildFilterSection<String>(context, context.l10n.statsTopTags, entryCountPerTag, (v) => TagFilter(v)),
+          if (showRatings) ..._buildFilterSection<int>(context, context.l10n.searchSectionRating, entryCountPerRating, (v) => RatingFilter(v), sortByCount: false, maxRowCount: null),
         ],
       );
     }
@@ -243,12 +251,14 @@ class StatsPage extends StatelessWidget {
     });
   }
 
-  List<Widget> _buildTopFilters(
+  List<Widget> _buildFilterSection<T extends Comparable>(
     BuildContext context,
     String title,
-    Map<String, int> entryCountMap,
-    CollectionFilter Function(String key) filterBuilder,
-  ) {
+    Map<T, int> entryCountMap,
+    CollectionFilter Function(T key) filterBuilder, {
+    bool sortByCount = true,
+    int? maxRowCount = 5,
+  }) {
     if (entryCountMap.isEmpty) return [];
 
     return [
@@ -263,6 +273,8 @@ class StatsPage extends StatelessWidget {
         totalEntryCount: entries.length,
         entryCountMap: entryCountMap,
         filterBuilder: filterBuilder,
+        sortByCount: sortByCount,
+        maxRowCount: maxRowCount,
         onFilterSelection: (filter) => _onFilterSelection(context, filter),
       ),
     ];
