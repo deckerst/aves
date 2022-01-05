@@ -2,15 +2,16 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/utils/color_utils.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
-class FilterTable extends StatelessWidget {
+class FilterTable<T extends Comparable> extends StatelessWidget {
   final int totalEntryCount;
-  final Map<String, int> entryCountMap;
-  final CollectionFilter Function(String key) filterBuilder;
+  final Map<T, int> entryCountMap;
+  final CollectionFilter Function(T key) filterBuilder;
+  final bool sortByCount;
+  final int? maxRowCount;
   final FilterCallback onFilterSelection;
 
   const FilterTable({
@@ -18,6 +19,8 @@ class FilterTable extends StatelessWidget {
     required this.totalEntryCount,
     required this.entryCountMap,
     required this.filterBuilder,
+    required this.sortByCount,
+    required this.maxRowCount,
     required this.onFilterSelection,
   }) : super(key: key);
 
@@ -27,11 +30,13 @@ class FilterTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final sortedEntries = entryCountMap.entries.toList()
-      ..sort((kv1, kv2) {
+    final sortedEntries = entryCountMap.entries.toList();
+    if (sortByCount) {
+      sortedEntries.sort((kv1, kv2) {
         final c = kv2.value.compareTo(kv1.value);
-        return c != 0 ? c : compareAsciiUpperCase(kv1.key, kv2.key);
+        return c != 0 ? c : kv1.key.compareTo(kv2.key);
       });
+    }
 
     final textScaleFactor = MediaQuery.textScaleFactorOf(context);
     final lineHeight = 16 * textScaleFactor;
@@ -41,8 +46,9 @@ class FilterTable extends StatelessWidget {
       child: LayoutBuilder(
         builder: (context, constraints) {
           final showPercentIndicator = constraints.maxWidth - (chipWidth + countWidth) > percentIndicatorMinWidth;
+          final displayedEntries = maxRowCount != null ? sortedEntries.take(maxRowCount!) : sortedEntries;
           return Table(
-            children: sortedEntries.take(5).map((kv) {
+            children: displayedEntries.map((kv) {
               final filter = filterBuilder(kv.key);
               final label = filter.getLabel(context);
               final count = kv.value;
