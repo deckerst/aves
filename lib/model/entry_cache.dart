@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:aves/image_providers/thumbnail_provider.dart';
 import 'package:aves/image_providers/uri_image_provider.dart';
+import 'package:flutter/foundation.dart';
 
 class EntryCache {
   // ordered descending
@@ -19,9 +20,11 @@ class EntryCache {
     String uri,
     String mimeType,
     int? dateModifiedSecs,
-    int oldRotationDegrees,
-    bool oldIsFlipped,
+    int rotationDegrees,
+    bool isFlipped,
   ) async {
+    debugPrint('Evict cached images for uri=$uri, mimeType=$mimeType, dateModifiedSecs=$dateModifiedSecs, rotationDegrees=$rotationDegrees, isFlipped=$isFlipped');
+
     // TODO TLAD provide pageId parameter for multi page items, if someday image editing features are added for them
     int? pageId;
 
@@ -30,8 +33,8 @@ class EntryCache {
       uri: uri,
       mimeType: mimeType,
       pageId: pageId,
-      rotationDegrees: oldRotationDegrees,
-      isFlipped: oldIsFlipped,
+      rotationDegrees: rotationDegrees,
+      isFlipped: isFlipped,
     ).evict();
 
     // evict low quality thumbnail (without specified extents)
@@ -40,8 +43,8 @@ class EntryCache {
       mimeType: mimeType,
       pageId: pageId,
       dateModifiedSecs: dateModifiedSecs ?? 0,
-      rotationDegrees: oldRotationDegrees,
-      isFlipped: oldIsFlipped,
+      rotationDegrees: rotationDegrees,
+      isFlipped: isFlipped,
     )).evict();
 
     await Future.forEach<double>(
@@ -51,8 +54,8 @@ class EntryCache {
               mimeType: mimeType,
               pageId: pageId,
               dateModifiedSecs: dateModifiedSecs ?? 0,
-              rotationDegrees: oldRotationDegrees,
-              isFlipped: oldIsFlipped,
+              rotationDegrees: rotationDegrees,
+              isFlipped: isFlipped,
               extent: extent,
             )).evict());
   }

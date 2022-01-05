@@ -449,6 +449,7 @@ class AvesEntry {
   CatalogMetadata? get catalogMetadata => _catalogMetadata;
 
   set catalogMetadata(CatalogMetadata? newMetadata) {
+    final oldMimeType = mimeType;
     final oldDateModifiedSecs = dateModifiedSecs;
     final oldRotationDegrees = rotationDegrees;
     final oldIsFlipped = isFlipped;
@@ -459,7 +460,7 @@ class AvesEntry {
     _tags = null;
     metadataChangeNotifier.notify();
 
-    _onVisualFieldChanged(oldDateModifiedSecs, oldRotationDegrees, oldIsFlipped);
+    _onVisualFieldChanged(oldMimeType, oldDateModifiedSecs, oldRotationDegrees, oldIsFlipped);
   }
 
   void clearMetadata() {
@@ -583,6 +584,7 @@ class AvesEntry {
   }
 
   Future<void> applyNewFields(Map newFields, {required bool persist}) async {
+    final oldMimeType = mimeType;
     final oldDateModifiedSecs = this.dateModifiedSecs;
     final oldRotationDegrees = this.rotationDegrees;
     final oldIsFlipped = this.isFlipped;
@@ -622,7 +624,7 @@ class AvesEntry {
       if (catalogMetadata != null) await metadataDb.saveMetadata({catalogMetadata!});
     }
 
-    await _onVisualFieldChanged(oldDateModifiedSecs, oldRotationDegrees, oldIsFlipped);
+    await _onVisualFieldChanged(oldMimeType, oldDateModifiedSecs, oldRotationDegrees, oldIsFlipped);
     metadataChangeNotifier.notify();
   }
 
@@ -663,10 +665,10 @@ class AvesEntry {
     return completer.future;
   }
 
-  // when the entry image itself changed (e.g. after rotation)
-  Future<void> _onVisualFieldChanged(int? oldDateModifiedSecs, int oldRotationDegrees, bool oldIsFlipped) async {
-    if (oldDateModifiedSecs != dateModifiedSecs || oldRotationDegrees != rotationDegrees || oldIsFlipped != isFlipped) {
-      await EntryCache.evict(uri, mimeType, oldDateModifiedSecs, oldRotationDegrees, oldIsFlipped);
+  // when the MIME type or the image itself changed (e.g. after rotation)
+  Future<void> _onVisualFieldChanged(String oldMimeType, int? oldDateModifiedSecs, int oldRotationDegrees, bool oldIsFlipped) async {
+    if ((!MimeTypes.refersToSameType(oldMimeType, mimeType) && !MimeTypes.isVideo(oldMimeType)) || oldDateModifiedSecs != dateModifiedSecs || oldRotationDegrees != rotationDegrees || oldIsFlipped != isFlipped) {
+      await EntryCache.evict(uri, oldMimeType, oldDateModifiedSecs, oldRotationDegrees, oldIsFlipped);
       imageChangeNotifier.notify();
     }
   }
