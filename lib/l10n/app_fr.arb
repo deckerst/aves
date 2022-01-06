@@ -73,6 +73,7 @@
   "videoActionSettings": "Préférences",
 
   "entryInfoActionEditDate": "Modifier la date",
+  "entryInfoActionEditRating": "Modifier la notation",
   "entryInfoActionEditTags": "Modifier les libellés",
   "entryInfoActionRemoveMetadata": "Retirer les métadonnées",
 
@@ -188,6 +189,8 @@
   "editEntryDateDialogTargetFieldsHeader": "Champs à modifier",
   "editEntryDateDialogHours": "Heures",
   "editEntryDateDialogMinutes": "Minutes",
+
+  "editEntryRatingDialogTitle": "Notation",
 
   "removeEntryMetadataDialogTitle": "Retrait de métadonnées",
   "removeEntryMetadataDialogMore": "Voir plus",

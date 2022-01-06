@@ -73,12 +73,15 @@
   "videoActionSettings": "Настройки",
 
   "entryInfoActionEditDate": "Изменить дату и время",
+  "entryInfoActionEditRating": "Изменить рейтинг",
   "entryInfoActionEditTags": "Изменить теги",
   "entryInfoActionRemoveMetadata": "Удалить метаданные",
 
   "filterFavouriteLabel": "Избранное",
   "filterLocationEmptyLabel": "Без местоположения",
   "filterTagEmptyLabel": "Без тегов",
+  "filterRatingUnratedLabel": "Без рейтинга",
+  "filterRatingRejectedLabel": "Отклонённые",
   "filterTypeAnimatedLabel": "GIF",
   "filterTypeMotionPhotoLabel": "Живое фото",
   "filterTypePanoramaLabel": "Панорама",
@@ -137,6 +140,8 @@
   "restrictedAccessDialogMessage": "Этому приложению не разрешается изменять файлы в каталоге {directory} накопителя «{volume}».\n\nПожалуйста, используйте предустановленный файловый менеджер или галерею, чтобы переместить элементы в другой каталог.",
   "notEnoughSpaceDialogTitle": "Недостаточно свободного места.",
   "notEnoughSpaceDialogMessage": "Для завершения этой операции требуется {neededSize} свободного места на «{volume}», но осталось только {freeSize}.",
+  "missingSystemFilePickerDialogTitle": "Отсутствует системное приложение выбора файлов",
+  "missingSystemFilePickerDialogMessage": "Системное приложение выбора файлов отсутствует или отключено. Пожалуйста, включите его и повторите попытку.",
 
   "unsupportedTypeDialogTitle": "Неподдерживаемые форматы",
   "unsupportedTypeDialogMessage": "{count, plural, =1{Эта операция не поддерживается для объектов следующего формата: {types}.} other{Эта операция не поддерживается для объектов следующих форматов: {types}.}}",
@@ -178,10 +183,16 @@
   "renameEntryDialogLabel": "Новое название",
 
   "editEntryDateDialogTitle": "Дата и время",
+  "editEntryDateDialogSetCustom": "Задайте дату",
+  "editEntryDateDialogCopyField": "Копировать с другой даты",
   "editEntryDateDialogExtractFromTitle": "Извлечь из названия",
   "editEntryDateDialogShift": "Сдвиг",
+  "editEntryDateDialogSourceFileModifiedDate": "Дата изменения файла",
+  "editEntryDateDialogTargetFieldsHeader": "Поля для изменения",
   "editEntryDateDialogHours": "Часов",
   "editEntryDateDialogMinutes": "Минут",
+
+  "editEntryRatingDialogTitle": "Рейтинг",
 
   "removeEntryMetadataDialogTitle": "Удаление метаданных",
   "removeEntryMetadataDialogMore": "Дополнительно",
@@ -267,6 +278,7 @@
   "collectionSortDate": "По дате",
   "collectionSortSize": "По размеру",
   "collectionSortName": "По имени альбома и файла",
+  "collectionSortRating": "По рейтингу",
 
   "collectionGroupAlbum": "По альбому",
   "collectionGroupMonth": "По месяцу",
@@ -340,6 +352,7 @@
   "searchSectionCountries": "Страны",
   "searchSectionPlaces": "Локации",
   "searchSectionTags": "Теги",
+  "searchSectionRating": "Рейтинги",
 
   "settingsPageTitle": "Настройки",
   "settingsSystemDefault": "Система",
@@ -365,6 +378,7 @@
   "settingsSectionThumbnails": "Эскизы",
   "settingsThumbnailShowLocationIcon": "Показать значок местоположения",
   "settingsThumbnailShowMotionPhotoIcon": "Показать значок живого фото",
+  "settingsThumbnailShowRating": "Показывать рейтинг",
   "settingsThumbnailShowRawIcon": "Показать значок RAW-файла",
   "settingsThumbnailShowVideoDuration": "Показывать продолжительность видео",
 

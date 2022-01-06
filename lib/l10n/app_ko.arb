@@ -73,6 +73,7 @@
   "videoActionSettings": "설정",
 
   "entryInfoActionEditDate": "날짜 및 시간 수정",
+  "entryInfoActionEditRating": "별점 수정",
   "entryInfoActionEditTags": "태그 수정",
   "entryInfoActionRemoveMetadata": "메타데이터 삭제",
 
@@ -188,6 +189,8 @@
   "editEntryDateDialogTargetFieldsHeader": "수정할 필드",
   "editEntryDateDialogHours": "시간",
   "editEntryDateDialogMinutes": "분",
+
+  "editEntryRatingDialogTitle": "별점",
 
   "removeEntryMetadataDialogTitle": "메타데이터 삭제",
   "removeEntryMetadataDialogMore": "더 보기",

@@ -73,12 +73,15 @@
   "videoActionSettings": "Einstellungen",
 
   "entryInfoActionEditDate": "Datum & Uhrzeit bearbeiten",
+  "entryInfoActionEditRating": "Bewertung bearbeiten",
   "entryInfoActionEditTags": "Tags bearbeiten",
   "entryInfoActionRemoveMetadata": "Metadaten entfernen",
 
   "filterFavouriteLabel": "Favorit",
   "filterLocationEmptyLabel": "Ungeortet",
   "filterTagEmptyLabel": "Unmarkiert",
+  "filterRatingUnratedLabel": "Nicht bewertet",
+  "filterRatingRejectedLabel": "Verworfen",
   "filterTypeAnimatedLabel": "Animationen",
   "filterTypeMotionPhotoLabel": "Bewegtes Foto",
   "filterTypePanoramaLabel": "Panorama",
@@ -137,6 +140,8 @@
   "restrictedAccessDialogMessage": "Diese Anwendung darf keine Dateien im {directory} von „{volume}“ verändern.\n\nBitte verwenden Sie einen vorinstallierten Dateimanager oder eine Galerie-App, um die Objekte in ein anderes Verzeichnis zu verschieben.",
   "notEnoughSpaceDialogTitle": "Nicht genug Platz",
   "notEnoughSpaceDialogMessage": "Diese Operation benötigt {neededSize} freien Platz auf „{volume}“, um abgeschlossen zu werden, aber es ist nur noch {freeSize} übrig.",
+  "missingSystemFilePickerDialogTitle": "Fehlender System-Dateiauswahldialog",
+  "missingSystemFilePickerDialogMessage": "Der System-Dateiauswahldialog fehlt oder ist deaktiviert. Bitte aktivieren Sie ihn und versuchen Sie es erneut.",
 
   "unsupportedTypeDialogTitle": "Nicht unterstützte Typen",
   "unsupportedTypeDialogMessage": " {count, plural, =1{Dieser Vorgang wird für Elemente des folgenden Typs nicht unterstützt: {types}.} other{Dieser Vorgang wird für Elemente der folgenden Typen nicht unterstützt: {types}.}}",
@@ -178,10 +183,16 @@
   "renameEntryDialogLabel": "Neuer Name",
 
   "editEntryDateDialogTitle": "Datum & Uhrzeit",
+  "editEntryDateDialogSetCustom": "Benutzerdefiniertes Datum einstellen",
+  "editEntryDateDialogCopyField": "Von anderem Datum kopieren",
   "editEntryDateDialogExtractFromTitle": "Auszug aus dem Titel",
   "editEntryDateDialogShift": "Verschieben",
+  "editEntryDateDialogSourceFileModifiedDate": "Änderungsdatum der Datei",
+  "editEntryDateDialogTargetFieldsHeader": "Zu ändernde Felder",
   "editEntryDateDialogHours": "Stunden",
   "editEntryDateDialogMinutes": "Minuten",
+
+  "editEntryRatingDialogTitle": "Bewertung",
 
   "removeEntryMetadataDialogTitle": "Entfernung von Metadaten",
   "removeEntryMetadataDialogMore": "Mehr",
@@ -267,6 +278,7 @@
   "collectionSortDate": "Nach Datum",
   "collectionSortSize": "Nach Größe",
   "collectionSortName": "Nach Album & Dateiname",
+  "collectionSortRating": "Nach Bewertung",
 
   "collectionGroupAlbum": "Nach Album",
   "collectionGroupMonth": "Nach Monat",
@@ -340,6 +352,7 @@
   "searchSectionCountries": "Länder",
   "searchSectionPlaces": "Orte",
   "searchSectionTags": "Tags",
+  "searchSectionRating": "Bewertungen",
 
   "settingsPageTitle": "Einstellungen",
   "settingsSystemDefault": "System",
@@ -365,6 +378,7 @@
   "settingsSectionThumbnails": "Vorschaubilder",
   "settingsThumbnailShowLocationIcon": "Standort-Symbol anzeigen",
   "settingsThumbnailShowMotionPhotoIcon": "Bewegungsfoto-Symbol anzeigen",
+  "settingsThumbnailShowRating": "Bewertung anzeigen",
   "settingsThumbnailShowRawIcon": "Rohdaten-Symbol anzeigen",
   "settingsThumbnailShowVideoDuration": "Videodauer anzeigen",
 

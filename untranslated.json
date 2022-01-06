@@ -1,49 +1,23 @@
 {
   "de": [
-    "entryInfoActionEditRating",
-    "filterRatingUnratedLabel",
-    "filterRatingRejectedLabel",
-    "missingSystemFilePickerDialogTitle",
-    "missingSystemFilePickerDialogMessage",
-    "editEntryDateDialogSetCustom",
-    "editEntryDateDialogCopyField",
-    "editEntryDateDialogSourceFileModifiedDate",
-    "editEntryDateDialogTargetFieldsHeader",
-    "editEntryRatingDialogTitle",
-    "collectionSortRating",
-    "searchSectionRating",
-    "settingsThumbnailShowFavouriteIcon",
-    "settingsThumbnailShowRating"
+    "settingsThumbnailShowFavouriteIcon"
+  ],
+
+  "es": [
+    "settingsThumbnailShowFavouriteIcon"
   ],
 
   "fr": [
-    "entryInfoActionEditRating",
     "missingSystemFilePickerDialogTitle",
-    "missingSystemFilePickerDialogMessage",
-    "editEntryRatingDialogTitle"
+    "missingSystemFilePickerDialogMessage"
   ],
 
   "ko": [
-    "entryInfoActionEditRating",
     "missingSystemFilePickerDialogTitle",
-    "missingSystemFilePickerDialogMessage",
-    "editEntryRatingDialogTitle"
+    "missingSystemFilePickerDialogMessage"
   ],
 
   "ru": [
-    "entryInfoActionEditRating",
-    "filterRatingUnratedLabel",
-    "filterRatingRejectedLabel",
-    "missingSystemFilePickerDialogTitle",
-    "missingSystemFilePickerDialogMessage",
-    "editEntryDateDialogSetCustom",
-    "editEntryDateDialogCopyField",
-    "editEntryDateDialogSourceFileModifiedDate",
-    "editEntryDateDialogTargetFieldsHeader",
-    "editEntryRatingDialogTitle",
-    "collectionSortRating",
-    "searchSectionRating",
-    "settingsThumbnailShowFavouriteIcon",
-    "settingsThumbnailShowRating"
+    "settingsThumbnailShowFavouriteIcon"
   ]
 }

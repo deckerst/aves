@@ -112,10 +112,12 @@
   "@coordinateDms": {
     "placeholders": {
       "coordinate": {
-        "type": "String"
+        "type": "String",
+        "example": "38° 41′ 47.72″"
       },
       "direction": {
-        "type": "String"
+        "type": "String",
+        "example": "S"
       }
     }
   },
@@ -162,7 +164,9 @@
   "@otherDirectoryDescription": {
     "placeholders": {
       "name": {
-        "type": "String"
+        "type": "String",
+        "example": "Pictures",
+        "description": "the name of a specific directory"
       }
     }
   },
@@ -171,10 +175,13 @@
   "@storageAccessDialogMessage": {
     "placeholders": {
       "directory": {
-        "type": "String"
+        "type": "String",
+        "description": "the name of a directory, using the output of `rootDirectoryDescription` or `otherDirectoryDescription`"
       },
       "volume": {
-        "type": "String"
+        "type": "String",
+        "example": "SD card",
+        "description": "the name of a storage volume"
       }
     }
   },
@@ -183,10 +190,13 @@
   "@restrictedAccessDialogMessage": {
     "placeholders": {
       "directory": {
-        "type": "String"
+        "type": "String",
+        "description": "the name of a directory, using the output of `rootDirectoryDescription` or `otherDirectoryDescription`"
       },
       "volume": {
-        "type": "String"
+        "type": "String",
+        "example": "SD card",
+        "description": "the name of a storage volume"
       }
     }
   },
@@ -195,13 +205,17 @@
   "@notEnoughSpaceDialogMessage": {
     "placeholders": {
       "neededSize": {
-        "type": "String"
+        "type": "String",
+        "example": "314 MB"
       },
       "freeSize": {
-        "type": "String"
+        "type": "String",
+        "example": "123 MB"
       },
       "volume": {
-        "type": "String"
+        "type": "String",
+        "example": "SD card",
+        "description": "the name of a storage volume"
       }
     }
   },
@@ -214,7 +228,9 @@
     "placeholders": {
       "count": {},
       "types": {
-        "type": "String"
+        "type": "String",
+        "example": "GIF, TIFF, MP4",
+        "description": "a list of unsupported types"
       }
     }
   },
@@ -238,7 +254,10 @@
   "videoResumeDialogMessage": "Do you want to resume playing at {time}?",
   "@videoResumeDialogMessage": {
     "placeholders": {
-      "time": {}
+      "time": {
+        "type": "String",
+        "example": "13:37"
+      }
     }
   },
   "videoStartOverButtonLabel": "START OVER",
@@ -346,10 +365,12 @@
   "@aboutCreditsTranslatorLine": {
     "placeholders": {
       "language": {
-        "type": "String"
+        "type": "String",
+        "example": "Sumerian"
       },
       "names": {
-        "type": "String"
+        "type": "String",
+        "example": "Reggie Lampert"
       }
     }
   },
