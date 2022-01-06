@@ -50,9 +50,9 @@ extension ExtraEntryInfoAction on EntryInfoAction {
       case EntryInfoAction.editDate:
         return AIcons.date;
       case EntryInfoAction.editRating:
-        return AIcons.rating;
+        return AIcons.editRating;
       case EntryInfoAction.editTags:
-        return AIcons.addTag;
+        return AIcons.editTags;
       case EntryInfoAction.removeMetadata:
         return AIcons.clear;
       // motion photo

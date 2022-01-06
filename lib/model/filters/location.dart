@@ -69,7 +69,7 @@ class LocationFilter extends CollectionFilter {
         );
       }
     }
-    return Icon(_location.isEmpty ? AIcons.locationOff : AIcons.location, size: size);
+    return Icon(_location.isEmpty ? AIcons.locationUnlocated : AIcons.location, size: size);
   }
 
   @override
