@@ -167,9 +167,9 @@ extension ExtraEntrySetAction on EntrySetAction {
       case EntrySetAction.editDate:
         return AIcons.date;
       case EntrySetAction.editRating:
-        return AIcons.rating;
+        return AIcons.editRating;
       case EntrySetAction.editTags:
-        return AIcons.addTag;
+        return AIcons.editTags;
       case EntrySetAction.removeMetadata:
         return AIcons.clear;
     }

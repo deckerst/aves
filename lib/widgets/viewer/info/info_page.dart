@@ -150,7 +150,7 @@ class _InfoPageContentState extends State<_InfoPageContent> {
   final List<StreamSubscription> _subscriptions = [];
   late EntryInfoActionDelegate _actionDelegate;
   final ValueNotifier<Map<String, MetadataDirectory>> _metadataNotifier = ValueNotifier({});
-  final ValueNotifier<bool> _isEditingTagNotifier = ValueNotifier(false);
+  final ValueNotifier<EntryInfoAction?> _isEditingMetadataNotifier = ValueNotifier(null);
 
   static const horizontalPadding = EdgeInsets.symmetric(horizontal: 8);
 
@@ -197,7 +197,7 @@ class _InfoPageContentState extends State<_InfoPageContent> {
       entry: entry,
       collection: collection,
       actionDelegate: _actionDelegate,
-      isEditingTagNotifier: _isEditingTagNotifier,
+      isEditingMetadataNotifier: _isEditingMetadataNotifier,
       onFilter: _goToCollection,
     );
     final locationAtTop = widget.split && entry.hasGps;
@@ -255,15 +255,13 @@ class _InfoPageContentState extends State<_InfoPageContent> {
   }
 
   void _onActionDelegateEvent(ActionEvent<EntryInfoAction> event) {
-    if (event.action == EntryInfoAction.editTags) {
-      Future.delayed(Durations.dialogTransitionAnimation).then((_) {
-        if (event is ActionStartedEvent) {
-          _isEditingTagNotifier.value = true;
-        } else if (event is ActionEndedEvent) {
-          _isEditingTagNotifier.value = false;
-        }
-      });
-    }
+    Future.delayed(Durations.dialogTransitionAnimation).then((_) {
+      if (event is ActionStartedEvent) {
+        _isEditingMetadataNotifier.value = event.action;
+      } else if (event is ActionEndedEvent) {
+        _isEditingMetadataNotifier.value = null;
+      }
+    });
   }
 
   void _goToCollection(CollectionFilter filter) {
