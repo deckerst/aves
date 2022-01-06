@@ -1,0 +1,5 @@
+<i>Aves</i> puede manejar todo tipo de imágenes y videos, incluyendo los típicos JPEG y MP4, pero además cosas mas exóticas como <b>TIFF multipágina, SVG, viejos AVI y más</b>! Inspecciona su colección multimedia para identificar <b>fotos en movimiento</b>, <b>panoramas</b> (conocidas como fotos esféricas), <b>videos en 360°</b> y también archivos <b>GeoTIFF</b>.
+
+La <b>navegación y búsqueda</b> son partes importantes de <i>Aves</i>. Su propósito es que los usuarios puedan fácimente ir de álbumes a fotos, etiquetas, mapas, etc.
+
+<i>Aves</i> se integra con Android (desde <b>API 19 a 31</b>, por ej. desde KitKat hasta S) con características como <b>vínculos de aplicación</b> y manejo de <b>búsqueda global</b>. También funciona como un <b>visor y seleccionador multimedia</b>.
