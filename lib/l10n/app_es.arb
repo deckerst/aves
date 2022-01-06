@@ -25,7 +25,7 @@
   "actionRemove": "Remover",
   "resetButtonTooltip": "Restablecer",
 
-  "doubleBackExitMessage": "Presione “atrás” nuevamente para salir.",
+  "doubleBackExitMessage": "Presione «atrás» nuevamente para salir.",
 
   "sourceStateLoading": "Cargando",
   "sourceStateCataloguing": "Catalogando",
@@ -133,13 +133,13 @@
   "storageVolumeDescriptionFallbackPrimary": "Almacenamiento interno",
   "storageVolumeDescriptionFallbackNonPrimary": "Tarjeta de memoria",
   "rootDirectoryDescription": "el directorio raíz",
-  "otherDirectoryDescription": "Directorio “{name}”",
+  "otherDirectoryDescription": "el directorio «{name}»",
   "storageAccessDialogTitle": "Acceso al almacenamiento",
-  "storageAccessDialogMessage": "Por favor seleccione {directory} en “{volume}” en la siguiente pantalla para permitir a esta aplicación tener acceso.",
+  "storageAccessDialogMessage": "Por favor seleccione {directory} en «{volume}» en la siguiente pantalla para permitir a esta aplicación tener acceso.",
   "restrictedAccessDialogTitle": "Acceso restringido",
-  "restrictedAccessDialogMessage": "Esta aplicación no tiene permiso para modificar archivos de {directory} en “{volume}”.\n\nPor favor use un gestor de archivos o la aplicación de galería preinstalada para mover los elementos a otro directorio.",
+  "restrictedAccessDialogMessage": "Esta aplicación no tiene permiso para modificar archivos de {directory} en «{volume}».\n\nPor favor use un gestor de archivos o la aplicación de galería preinstalada para mover los elementos a otro directorio.",
   "notEnoughSpaceDialogTitle": "Espacio insuficiente",
-  "notEnoughSpaceDialogMessage": "Esta operación necesita {neededSize} de espacio libre en “{volume}” para completarse, pero sólo hay {freeSize} disponible.",
+  "notEnoughSpaceDialogMessage": "Esta operación necesita {neededSize} de espacio libre en «{volume}» para completarse, pero sólo hay {freeSize} disponible.",
   
   "missingSystemFilePickerDialogTitle": "Selector de archivos del sistema no disponible",
   "missingSystemFilePickerDialogMessage": "El selector de archivos del sistema no se encuentra disponible o fue deshabilitado. Por favor habilítelo e intente nuevamente.",
@@ -166,7 +166,7 @@
   "setCoverDialogLatest": "Elemento más reciente",
   "setCoverDialogCustom": "Personalizado",
 
-  "hideFilterConfirmationDialogMessage": "Fotos y videos que concuerden serán ocultados de su colección. Puede volver a mostrarlos desde los ajustes de “Privacidad”.\n\n¿Está seguro de que desea ocultarlos?",
+  "hideFilterConfirmationDialogMessage": "Fotos y videos que concuerden serán ocultados de su colección. Puede volver a mostrarlos desde los ajustes de «Privacidad».\n\n¿Está seguro de que desea ocultarlos?",
 
   "newAlbumDialogTitle": "Álbum nuevo",
   "newAlbumDialogNameLabel": "Nombre del álbum",
@@ -366,7 +366,7 @@
   "settingsHome": "Inicio",
   "settingsKeepScreenOnTile": "Mantener pantalla encendida",
   "settingsKeepScreenOnTitle": "Mantener pantalla encendida",
-  "settingsDoubleBackExit": "Presione “atrás” dos veces para salir",
+  "settingsDoubleBackExit": "Presione «atrás» dos veces para salir",
 
   "settingsNavigationDrawerTile": "Menú de navegación",
   "settingsNavigationDrawerEditorTitle": "Menú de navegación",
@@ -503,7 +503,7 @@
   "mapZoomInTooltip": "Acercar",
   "mapZoomOutTooltip": "Alejar",
   "mapPointNorthUpTooltip": "Apuntar el Norte hacia arriba",
-  "mapAttributionOsmHot": "Datos de mapas © [OpenStreetMap](https://www.openstreetmap.org/copyright) contribuidores • Teselas por [HOT](https://www.hotosm.org/) • Alojador por [OSM France](https://openstreetmap.fr/)",
+  "mapAttributionOsmHot": "Datos de mapas © [OpenStreetMap](https://www.openstreetmap.org/copyright) contribuidores • Teselas por [HOT](https://www.hotosm.org/) • Alojado por [OSM France](https://openstreetmap.fr/)",
   "mapAttributionStamen": "Datos de mapas © [OpenStreetMap](https://www.openstreetmap.org/copyright) contribuidores • Teselas por [Stamen Design](http://stamen.com), [CC BY 3.0](http://creativecommons.org/licenses/by/3.0)",
   "openMapPageTooltip": "Ver en página del mapa",
   "mapEmptyRegion": "Sin imágenes en esta región",

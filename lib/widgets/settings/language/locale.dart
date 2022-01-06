@@ -52,7 +52,7 @@ class LocaleTile extends StatelessWidget {
       case 'en':
         return 'English';
       case 'es':
-        return "Español";
+        return 'Español';
       case 'fr':
         return 'Français';
       case 'ko':

@@ -6,12 +6,20 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
+- Collection: toggle favourites in bulk
+- Info: edit ratings of JPG/GIF/PNG/TIFF images via XMP
+- Info: edit date of GIF images via XMP
 - Info: option to set date from other fields
+- Spanish translation (thanks n-berenice)
 
 ### Changed
 
-- editing an item orientation or tags automatically sets a metadata date (from the file modified
-  date), if it is missing
+- editing an item orientation, rating or tags automatically sets a metadata date (from the file
+  modified date), if it is missing
+
+### Fixed
+
+- Exif and IPTC raw profile extraction from PNG in some cases
 
 ## <a id="v1.5.9"></a>[v1.5.9] - 2021-12-22
 
