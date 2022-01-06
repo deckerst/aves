@@ -8,7 +8,7 @@ class AboutCredits extends StatelessWidget {
 
   static const translators = {
     'Deutsch': 'JanWaldhorn',
-    'Español': 'n-berenice',
+    'Español (México)': 'n-berenice',
     'Русский': 'D3ZOXY',
   };
 
