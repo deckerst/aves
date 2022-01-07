@@ -377,6 +377,7 @@
   "settingsNavigationDrawerAddAlbum": "Agregar álbum",
 
   "settingsSectionThumbnails": "Miniaturas",
+  "settingsThumbnailShowFavouriteIcon": "Mostrar icono de favoritos",
   "settingsThumbnailShowLocationIcon": "Mostrar icono de ubicación",
   "settingsThumbnailShowMotionPhotoIcon": "Mostrar icono de foto en movimiento",
   "settingsThumbnailShowRating": "Mostrar clasificación",
