@@ -5,6 +5,7 @@ import 'package:aves/ref/mime_types.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/entry_editors/edit_entry_date_dialog.dart';
+import 'package:aves/widgets/dialogs/entry_editors/edit_entry_rating_dialog.dart';
 import 'package:aves/widgets/dialogs/entry_editors/edit_entry_tags_dialog.dart';
 import 'package:aves/widgets/dialogs/entry_editors/remove_entry_metadata_dialog.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +21,18 @@ mixin EntryEditorMixin {
       ),
     );
     return modifier;
+  }
+
+  Future<int?> selectRating(BuildContext context, Set<AvesEntry> entries) async {
+    if (entries.isEmpty) return null;
+
+    final rating = await showDialog<int?>(
+      context: context,
+      builder: (context) => EditEntryRatingDialog(
+        entry: entries.first,
+      ),
+    );
+    return rating;
   }
 
   Future<Map<AvesEntry, Set<String>>?> selectTags(BuildContext context, Set<AvesEntry> entries) async {

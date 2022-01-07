@@ -2,11 +2,13 @@ import 'dart:async';
 
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/entry.dart';
+import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/home_page.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
+import 'package:aves/model/source/enums.dart';
 import 'package:aves/services/analysis_service.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/global_search.dart';
@@ -18,6 +20,7 @@ import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
 import 'package:aves/widgets/search/search_page.dart';
 import 'package:aves/widgets/viewer/entry_viewer_page.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -114,7 +117,7 @@ class _HomePageState extends State<HomePage> {
     context.read<ValueNotifier<AppMode>>().value = appMode;
     unawaited(reportService.setCustomKey('app_mode', appMode.toString()));
 
-    if (appMode != AppMode.view) {
+    if (appMode != AppMode.view || _isViewerSourceable(_viewerEntry!)) {
       debugPrint('Storage check complete in ${stopwatch.elapsed.inMilliseconds}ms');
       unawaited(GlobalSearch.registerCallback());
       unawaited(AnalysisService.registerCallback());
@@ -127,10 +130,12 @@ class _HomePageState extends State<HomePage> {
     // e.g. when opening the viewer in `view` mode should replace a viewer in `main` mode
     unawaited(Navigator.pushAndRemoveUntil(
       context,
-      _getRedirectRoute(appMode),
+      await _getRedirectRoute(appMode),
       (route) => false,
     ));
   }
+
+  bool _isViewerSourceable(AvesEntry viewerEntry) => viewerEntry.directory != null && !settings.hiddenFilters.any((filter) => filter.test(viewerEntry));
 
   Future<AvesEntry?> _initViewerEntry({required String uri, required String? mimeType}) async {
     if (uri.startsWith('/')) {
@@ -145,13 +150,50 @@ class _HomePageState extends State<HomePage> {
     return entry;
   }
 
-  Route _getRedirectRoute(AppMode appMode) {
+  Future<Route> _getRedirectRoute(AppMode appMode) async {
     if (appMode == AppMode.view) {
+      AvesEntry viewerEntry = _viewerEntry!;
+      CollectionLens? collection;
+
+      final source = context.read<CollectionSource>();
+      if (source.initialized) {
+        final album = viewerEntry.directory;
+        if (album != null) {
+          // wait for collection to pass the `loading` state
+          final completer = Completer();
+          void _onSourceStateChanged() {
+            if (source.stateNotifier.value != SourceState.loading) {
+              source.stateNotifier.removeListener(_onSourceStateChanged);
+              completer.complete();
+            }
+          }
+
+          source.stateNotifier.addListener(_onSourceStateChanged);
+          await completer.future;
+
+          collection = CollectionLens(
+            source: source,
+            filters: {AlbumFilter(album, source.getAlbumDisplayName(context, album))},
+          );
+          final viewerEntryPath = viewerEntry.path;
+          final collectionEntry = collection.sortedEntries.firstWhereOrNull((entry) => entry.path == viewerEntryPath);
+          if (collectionEntry != null) {
+            viewerEntry = collectionEntry;
+          } else {
+            debugPrint('collection does not contain viewerEntry=$viewerEntry');
+            collection = null;
+          }
+        }
+      }
+
       return DirectMaterialPageRoute(
         settings: const RouteSettings(name: EntryViewerPage.routeName),
-        builder: (_) => EntryViewerPage(
-          initialEntry: _viewerEntry!,
-        ),
+        builder: (_) {
+          return EntryViewerPage(
+            collection: collection,
+            initialEntry: viewerEntry,
+          );
+        },
       );
     }
 

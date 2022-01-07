@@ -72,6 +72,20 @@ class SphericalImageIcon extends StatelessWidget {
   }
 }
 
+class FavouriteIcon extends StatelessWidget {
+  const FavouriteIcon({Key? key}) : super(key: key);
+
+  static const scale = .9;
+
+  @override
+  Widget build(BuildContext context) {
+    return const OverlayIcon(
+      icon: AIcons.favourite,
+      iconScale: scale,
+    );
+  }
+}
+
 class GpsIcon extends StatelessWidget {
   const GpsIcon({Key? key}) : super(key: key);
 
@@ -135,6 +149,30 @@ class MultiPageIcon extends StatelessWidget {
         fontSize: context.select<GridThemeData, double>((t) => t.fontSize),
       ),
       child: child,
+    );
+  }
+}
+
+class RatingIcon extends StatelessWidget {
+  final AvesEntry entry;
+
+  const RatingIcon({
+    Key? key,
+    required this.entry,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final gridTheme = context.watch<GridThemeData>();
+    return DefaultTextStyle(
+      style: TextStyle(
+        color: Colors.grey.shade200,
+        fontSize: gridTheme.fontSize,
+      ),
+      child: OverlayIcon(
+        icon: AIcons.rating,
+        text: '${entry.rating}',
+      ),
     );
   }
 }

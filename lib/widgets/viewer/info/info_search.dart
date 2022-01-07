@@ -54,8 +54,8 @@ class InfoSearchDelegate extends SearchDelegate {
   Widget buildSuggestions(BuildContext context) {
     final l10n = context.l10n;
     final suggestions = {
-      l10n.viewerInfoSearchSuggestionDate: 'date or time or when -timer -uptime -exposure -timeline',
-      l10n.viewerInfoSearchSuggestionDescription: 'abstract or description or comment or textual or title',
+      l10n.viewerInfoSearchSuggestionDate: 'date or time or when -timer -uptime -exposure -timeline -verbatim',
+      l10n.viewerInfoSearchSuggestionDescription: 'abstract or description or comment or textual or title -line',
       l10n.viewerInfoSearchSuggestionDimensions: 'width or height or dimension or framesize or imagelength',
       l10n.viewerInfoSearchSuggestionResolution: 'resolution',
       l10n.viewerInfoSearchSuggestionRights: 'rights or copyright or attribution or license or artist or creator or by-line or credit -tool',

@@ -4,6 +4,7 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/query.dart';
+import 'package:aves/model/filters/rating.dart';
 import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/filters/type.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -179,6 +180,11 @@ class CollectionSearchDelegate {
                               ],
                             );
                           }),
+                      _buildFilterRow(
+                        context: context,
+                        title: context.l10n.searchSectionRating,
+                        filters: [0, 5, 4, 3, 2, 1, -1].map((rating) => RatingFilter(rating)).where((f) => containQuery(f.getLabel(context))).toList(),
+                      ),
                     ],
                   );
                 });

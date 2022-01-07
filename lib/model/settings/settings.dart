@@ -61,8 +61,10 @@ class Settings extends ChangeNotifier {
   static const collectionSortFactorKey = 'collection_sort_factor';
   static const collectionBrowsingQuickActionsKey = 'collection_browsing_quick_actions';
   static const collectionSelectionQuickActionsKey = 'collection_selection_quick_actions';
+  static const showThumbnailFavouriteKey = 'show_thumbnail_favourite';
   static const showThumbnailLocationKey = 'show_thumbnail_location';
   static const showThumbnailMotionPhotoKey = 'show_thumbnail_motion_photo';
+  static const showThumbnailRatingKey = 'show_thumbnail_rating';
   static const showThumbnailRawKey = 'show_thumbnail_raw';
   static const showThumbnailVideoDurationKey = 'show_thumbnail_video_duration';
 
@@ -302,6 +304,10 @@ class Settings extends ChangeNotifier {
 
   set collectionSelectionQuickActions(List<EntrySetAction> newValue) => setAndNotify(collectionSelectionQuickActionsKey, newValue.map((v) => v.toString()).toList());
 
+  bool get showThumbnailFavourite => getBoolOrDefault(showThumbnailFavouriteKey, SettingsDefaults.showThumbnailFavourite);
+
+  set showThumbnailFavourite(bool newValue) => setAndNotify(showThumbnailFavouriteKey, newValue);
+
   bool get showThumbnailLocation => getBoolOrDefault(showThumbnailLocationKey, SettingsDefaults.showThumbnailLocation);
 
   set showThumbnailLocation(bool newValue) => setAndNotify(showThumbnailLocationKey, newValue);
@@ -309,6 +315,10 @@ class Settings extends ChangeNotifier {
   bool get showThumbnailMotionPhoto => getBoolOrDefault(showThumbnailMotionPhotoKey, SettingsDefaults.showThumbnailMotionPhoto);
 
   set showThumbnailMotionPhoto(bool newValue) => setAndNotify(showThumbnailMotionPhotoKey, newValue);
+
+  bool get showThumbnailRating => getBoolOrDefault(showThumbnailRatingKey, SettingsDefaults.showThumbnailRating);
+
+  set showThumbnailRating(bool newValue) => setAndNotify(showThumbnailRatingKey, newValue);
 
   bool get showThumbnailRaw => getBoolOrDefault(showThumbnailRawKey, SettingsDefaults.showThumbnailRaw);
 
@@ -617,8 +627,10 @@ class Settings extends ChangeNotifier {
             case isInstalledAppAccessAllowedKey:
             case isErrorReportingAllowedKey:
             case mustBackTwiceToExitKey:
+            case showThumbnailFavouriteKey:
             case showThumbnailLocationKey:
             case showThumbnailMotionPhotoKey:
+            case showThumbnailRatingKey:
             case showThumbnailRawKey:
             case showThumbnailVideoDurationKey:
             case showOverlayOnOpeningKey:

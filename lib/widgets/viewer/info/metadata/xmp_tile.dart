@@ -1,8 +1,8 @@
 import 'dart:collection';
 
 import 'package:aves/model/entry.dart';
-import 'package:aves/ref/xmp.dart';
 import 'package:aves/utils/color_utils.dart';
+import 'package:aves/utils/xmp_utils.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_namespaces.dart';
 import 'package:collection/collection.dart';

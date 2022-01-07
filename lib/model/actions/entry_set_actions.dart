@@ -21,10 +21,12 @@ enum EntrySetAction {
   copy,
   move,
   rescan,
+  toggleFavourite,
   rotateCCW,
   rotateCW,
   flip,
   editDate,
+  editRating,
   editTags,
   removeMetadata,
 }
@@ -50,6 +52,7 @@ class EntrySetActions {
     EntrySetAction.delete,
     EntrySetAction.copy,
     EntrySetAction.move,
+    EntrySetAction.toggleFavourite,
     EntrySetAction.rescan,
     EntrySetAction.map,
     EntrySetAction.stats,
@@ -93,6 +96,9 @@ extension ExtraEntrySetAction on EntrySetAction {
         return context.l10n.collectionActionMove;
       case EntrySetAction.rescan:
         return context.l10n.collectionActionRescan;
+      case EntrySetAction.toggleFavourite:
+        // different data depending on toggle state
+        return context.l10n.entryActionAddFavourite;
       case EntrySetAction.rotateCCW:
         return context.l10n.entryActionRotateCCW;
       case EntrySetAction.rotateCW:
@@ -101,6 +107,8 @@ extension ExtraEntrySetAction on EntrySetAction {
         return context.l10n.entryActionFlip;
       case EntrySetAction.editDate:
         return context.l10n.entryInfoActionEditDate;
+      case EntrySetAction.editRating:
+        return context.l10n.entryInfoActionEditRating;
       case EntrySetAction.editTags:
         return context.l10n.entryInfoActionEditTags;
       case EntrySetAction.removeMetadata:
@@ -147,6 +155,9 @@ extension ExtraEntrySetAction on EntrySetAction {
         return AIcons.move;
       case EntrySetAction.rescan:
         return AIcons.refresh;
+      case EntrySetAction.toggleFavourite:
+        // different data depending on toggle state
+        return AIcons.favourite;
       case EntrySetAction.rotateCCW:
         return AIcons.rotateLeft;
       case EntrySetAction.rotateCW:
@@ -155,8 +166,10 @@ extension ExtraEntrySetAction on EntrySetAction {
         return AIcons.flip;
       case EntrySetAction.editDate:
         return AIcons.date;
+      case EntrySetAction.editRating:
+        return AIcons.editRating;
       case EntrySetAction.editTags:
-        return AIcons.addTag;
+        return AIcons.editTags;
       case EntrySetAction.removeMetadata:
         return AIcons.clear;
     }

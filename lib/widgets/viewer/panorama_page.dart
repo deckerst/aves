@@ -109,7 +109,7 @@ class _PanoramaPageState extends State<PanoramaPage> {
                               valueListenable: _sensorControl,
                               builder: (context, sensorControl, child) {
                                 return IconButton(
-                                  icon: Icon(sensorControl == SensorControl.None ? AIcons.sensorControl : AIcons.sensorControlOff),
+                                  icon: Icon(sensorControl == SensorControl.None ? AIcons.sensorControlEnabled : AIcons.sensorControlDisabled),
                                   onPressed: _toggleSensor,
                                   tooltip: sensorControl == SensorControl.None ? context.l10n.panoramaEnableSensorControl : context.l10n.panoramaDisableSensorControl,
                                 );

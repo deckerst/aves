@@ -7,6 +7,7 @@ import 'package:aves/model/source/enums.dart';
 import 'package:aves/model/source/section_keys.dart';
 import 'package:aves/widgets/collection/grid/headers/album.dart';
 import 'package:aves/widgets/collection/grid/headers/date.dart';
+import 'package:aves/widgets/collection/grid/headers/rating.dart';
 import 'package:aves/widgets/common/grid/header.dart';
 import 'package:flutter/material.dart';
 
@@ -49,6 +50,8 @@ class CollectionSectionHeader extends StatelessWidget {
         break;
       case EntrySortFactor.name:
         return _buildAlbumHeader(context);
+      case EntrySortFactor.rating:
+        return RatingSectionHeader<AvesEntry>(key: ValueKey(sectionKey), rating: (sectionKey as EntryRatingSectionKey).rating);
       case EntrySortFactor.size:
         break;
     }

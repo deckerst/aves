@@ -4,16 +4,16 @@ import 'package:aves/model/favourites.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/mime.dart';
+import 'package:aves/model/filters/rating.dart';
 import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/filters/type.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/theme/format.dart';
-import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
+import 'package:aves/widgets/viewer/action/entry_info_action_delegate.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
-import 'package:aves/widgets/viewer/info/entry_info_action_delegate.dart';
 import 'package:aves/widgets/viewer/info/owner.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +23,7 @@ class BasicSection extends StatelessWidget {
   final AvesEntry entry;
   final CollectionLens? collection;
   final EntryInfoActionDelegate actionDelegate;
-  final ValueNotifier<bool> isEditingTagNotifier;
+  final ValueNotifier<EntryInfoAction?> isEditingMetadataNotifier;
   final FilterCallback onFilter;
 
   const BasicSection({
@@ -31,7 +31,7 @@ class BasicSection extends StatelessWidget {
     required this.entry,
     this.collection,
     required this.actionDelegate,
-    required this.isEditingTagNotifier,
+    required this.isEditingMetadataNotifier,
     required this.onFilter,
   }) : super(key: key);
 
@@ -74,10 +74,9 @@ class BasicSection extends StatelessWidget {
                   if (path != null) l10n.viewerInfoLabelPath: path,
                 },
               ),
-              OwnerProp(
-                entry: entry,
-              ),
+              OwnerProp(entry: entry),
               _buildChips(context),
+              _buildEditButtons(context),
             ],
           );
         });
@@ -96,6 +95,7 @@ class BasicSection extends StatelessWidget {
       if (entry.isVideo && entry.is360) TypeFilter.sphericalVideo,
       if (entry.isVideo && !entry.is360) MimeFilter.video,
       if (album != null) AlbumFilter(album, collection?.source.getAlbumDisplayName(context, album)),
+      if (entry.rating != 0) RatingFilter(entry.rating),
       ...tags.map((tag) => TagFilter(tag)),
     };
     return AnimatedBuilder(
@@ -106,58 +106,78 @@ class BasicSection extends StatelessWidget {
           if (entry.isFavourite) FavouriteFilter.instance,
         ]..sort();
 
-        final children = <Widget>[
-          ...effectiveFilters.map((filter) => AvesFilterChip(
-                filter: filter,
-                onTap: onFilter,
-              )),
-          if (actionDelegate.canApply(EntryInfoAction.editTags)) _buildEditTagButton(context),
-        ];
-
-        return children.isEmpty
-            ? const SizedBox()
-            : Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AvesFilterChip.outlineWidth / 2) + const EdgeInsets.only(top: 8),
-                child: Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: children,
-                ),
-              );
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: AvesFilterChip.outlineWidth / 2) + const EdgeInsets.only(top: 8),
+          child: Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: effectiveFilters
+                .map((filter) => AvesFilterChip(
+                      filter: filter,
+                      onTap: onFilter,
+                    ))
+                .toList(),
+          ),
+        );
       },
     );
   }
 
-  Widget _buildEditTagButton(BuildContext context) {
-    const action = EntryInfoAction.editTags;
-    return ValueListenableBuilder<bool>(
-      valueListenable: isEditingTagNotifier,
-      builder: (context, isEditing, child) {
+  Widget _buildEditButtons(BuildContext context) {
+    final children = [
+      EntryInfoAction.editRating,
+      EntryInfoAction.editTags,
+    ].where(actionDelegate.canApply).map((v) => _buildEditMetadataButton(context, v)).toList();
+
+    return children.isEmpty
+        ? const SizedBox()
+        : TooltipTheme(
+            data: TooltipTheme.of(context).copyWith(
+              preferBelow: false,
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: AvesFilterChip.outlineWidth / 2) + const EdgeInsets.only(top: 8),
+              child: Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: children,
+              ),
+            ),
+          );
+  }
+
+  Widget _buildEditMetadataButton(BuildContext context, EntryInfoAction action) {
+    return ValueListenableBuilder<EntryInfoAction?>(
+      valueListenable: isEditingMetadataNotifier,
+      builder: (context, editingAction, child) {
+        final isEditing = editingAction != null;
         return Stack(
           children: [
             DecoratedBox(
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 border: Border.fromBorderSide(BorderSide(
-                  color: AvesFilterChip.defaultOutlineColor,
+                  color: isEditing ? Theme.of(context).disabledColor : AvesFilterChip.defaultOutlineColor,
                   width: AvesFilterChip.outlineWidth,
                 )),
-                borderRadius: BorderRadius.all(Radius.circular(AvesFilterChip.defaultRadius)),
+                borderRadius: const BorderRadius.all(Radius.circular(AvesFilterChip.defaultRadius)),
               ),
               child: IconButton(
-                icon: const Icon(AIcons.addTag),
+                icon: action.getIcon(),
                 onPressed: isEditing ? null : () => actionDelegate.onActionSelected(context, action),
                 tooltip: action.getText(context),
               ),
             ),
-            if (isEditing)
-              const Positioned.fill(
-                child: Padding(
+            Positioned.fill(
+              child: Visibility(
+                visible: editingAction == action,
+                child: const Padding(
                   padding: EdgeInsets.all(1.0),
                   child: CircularProgressIndicator(
                     strokeWidth: AvesFilterChip.outlineWidth,
                   ),
                 ),
               ),
+            ),
           ],
         );
       },

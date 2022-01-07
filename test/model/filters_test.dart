@@ -6,6 +6,7 @@ import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/path.dart';
 import 'package:aves/model/filters/query.dart';
+import 'package:aves/model/filters/rating.dart';
 import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/filters/type.dart';
 import 'package:aves/services/common/services.dart';
@@ -49,6 +50,9 @@ void main() {
 
     final query = QueryFilter('some query');
     expect(query, jsonRoundTrip(query));
+
+    const rating = RatingFilter(3);
+    expect(rating, jsonRoundTrip(rating));
 
     final tag = TagFilter('some tag');
     expect(tag, jsonRoundTrip(tag));

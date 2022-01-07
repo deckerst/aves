@@ -6,6 +6,7 @@ import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/actions/move_type.dart';
 import 'package:aves/model/device.dart';
 import 'package:aves/model/entry.dart';
+import 'package:aves/model/entry_metadata_edition.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/highlight.dart';
 import 'package:aves/model/source/collection_lens.dart';
@@ -24,20 +25,26 @@ import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/entry_editors/rename_entry_dialog.dart';
 import 'package:aves/widgets/dialogs/export_entry_dialog.dart';
 import 'package:aves/widgets/filter_grids/album_pick.dart';
+import 'package:aves/widgets/viewer/action/printer.dart';
+import 'package:aves/widgets/viewer/action/single_entry_editor.dart';
 import 'package:aves/widgets/viewer/debug/debug_page.dart';
 import 'package:aves/widgets/viewer/info/notifications.dart';
-import 'package:aves/widgets/viewer/printer.dart';
 import 'package:aves/widgets/viewer/source_viewer_page.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
-class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
-  void onActionSelected(BuildContext context, AvesEntry entry, EntryAction action) {
+class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMixin, SingleEntryEditorMixin {
+  @override
+  final AvesEntry entry;
+
+  EntryActionDelegate(this.entry);
+
+  void onActionSelected(BuildContext context, EntryAction action) {
     switch (action) {
       case EntryAction.addShortcut:
-        _addShortcut(context, entry);
+        _addShortcut(context);
         break;
       case EntryAction.copyToClipboard:
         androidAppService.copyToClipboard(entry.uri, entry.bestTitle).then((success) {
@@ -45,10 +52,10 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         });
         break;
       case EntryAction.delete:
-        _delete(context, entry);
+        _delete(context);
         break;
       case EntryAction.export:
-        _export(context, entry);
+        _export(context);
         break;
       case EntryAction.info:
         ShowInfoNotification().dispatch(context);
@@ -57,7 +64,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         EntryPrinter(entry).print(context);
         break;
       case EntryAction.rename:
-        _rename(context, entry);
+        _rename(context);
         break;
       case EntryAction.share:
         androidAppService.shareEntries({entry}).then((success) {
@@ -69,17 +76,17 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         break;
       // raster
       case EntryAction.rotateCCW:
-        _rotate(context, entry, clockwise: false);
+        _rotate(context, clockwise: false);
         break;
       case EntryAction.rotateCW:
-        _rotate(context, entry, clockwise: true);
+        _rotate(context, clockwise: true);
         break;
       case EntryAction.flip:
-        _flip(context, entry);
+        _flip(context);
         break;
       // vector
       case EntryAction.viewSource:
-        _goToSourceViewer(context, entry);
+        _goToSourceViewer(context);
         break;
       // external
       case EntryAction.edit:
@@ -108,12 +115,12 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         break;
       // debug
       case EntryAction.debug:
-        _goToDebug(context, entry);
+        _goToDebug(context);
         break;
     }
   }
 
-  Future<void> _addShortcut(BuildContext context, AvesEntry entry) async {
+  Future<void> _addShortcut(BuildContext context) async {
     final result = await showDialog<Tuple2<AvesEntry?, String>>(
       context: context,
       builder: (context) => AddShortcutDialog(
@@ -131,18 +138,12 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     }
   }
 
-  Future<void> _flip(BuildContext context, AvesEntry entry) async {
-    if (!await checkStoragePermission(context, {entry})) return;
-
-    final dataTypes = await entry.flip(persist: _isMainMode(context));
-    if (dataTypes.isEmpty) showFeedback(context, context.l10n.genericFailureFeedback);
+  Future<void> _flip(BuildContext context) async {
+    await edit(context, entry.flip);
   }
 
-  Future<void> _rotate(BuildContext context, AvesEntry entry, {required bool clockwise}) async {
-    if (!await checkStoragePermission(context, {entry})) return;
-
-    final dataTypes = await entry.rotate(clockwise: clockwise, persist: _isMainMode(context));
-    if (dataTypes.isEmpty) showFeedback(context, context.l10n.genericFailureFeedback);
+  Future<void> _rotate(BuildContext context, {required bool clockwise}) async {
+    await edit(context, () => entry.rotate(clockwise: clockwise));
   }
 
   Future<void> _rotateScreen(BuildContext context) async {
@@ -156,7 +157,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     }
   }
 
-  Future<void> _delete(BuildContext context, AvesEntry entry) async {
+  Future<void> _delete(BuildContext context) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) {
@@ -190,7 +191,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     }
   }
 
-  Future<void> _export(BuildContext context, AvesEntry entry) async {
+  Future<void> _export(BuildContext context) async {
     final source = context.read<CollectionSource>();
     if (!source.initialized) {
       await source.init();
@@ -291,7 +292,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     );
   }
 
-  Future<void> _rename(BuildContext context, AvesEntry entry) async {
+  Future<void> _rename(BuildContext context) async {
     final newName = await showDialog<String>(
       context: context,
       builder: (context) => RenameEntryDialog(entry: entry),
@@ -311,7 +312,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
 
   bool _isMainMode(BuildContext context) => context.read<ValueNotifier<AppMode>>().value == AppMode.main;
 
-  void _goToSourceViewer(BuildContext context, AvesEntry entry) {
+  void _goToSourceViewer(BuildContext context) {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -323,7 +324,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     );
   }
 
-  void _goToDebug(BuildContext context, AvesEntry entry) {
+  void _goToDebug(BuildContext context) {
     Navigator.push(
       context,
       MaterialPageRoute(

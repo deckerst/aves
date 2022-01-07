@@ -50,7 +50,8 @@ class ThumbnailProvider extends ImageProvider<ThumbnailProviderKey> {
       }
       return await decode(bytes);
     } catch (error) {
-      debugPrint('$runtimeType _loadAsync failed with uri=$uri, error=$error');
+      // loading may fail if the provided MIME type is incorrect (e.g. the Media Store may report a JPEG as a TIFF)
+      debugPrint('$runtimeType _loadAsync failed with mimeType=$mimeType, uri=$uri, error=$error');
       throw StateError('$mimeType decoding failed (page $pageId)');
     }
   }

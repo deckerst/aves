@@ -19,18 +19,22 @@ class AIcons {
   static const IconData home = Icons.home_outlined;
   static const IconData language = Icons.translate_outlined;
   static const IconData location = Icons.place_outlined;
-  static const IconData locationOff = Icons.location_off_outlined;
+  static const IconData locationUnlocated = Icons.location_off_outlined;
   static const IconData mainStorage = Icons.smartphone_outlined;
   static const IconData privacy = MdiIcons.shieldAccountOutline;
+  static const IconData rating = Icons.star_border_outlined;
+  static const IconData ratingFull = Icons.star;
+  static const IconData ratingRejected = MdiIcons.starMinusOutline;
+  static const IconData ratingUnrated = MdiIcons.starOffOutline;
   static const IconData raw = Icons.raw_on_outlined;
   static const IconData shooting = Icons.camera_outlined;
   static const IconData removableStorage = Icons.sd_storage_outlined;
-  static const IconData sensorControl = Icons.explore_outlined;
-  static const IconData sensorControlOff = Icons.explore_off_outlined;
+  static const IconData sensorControlEnabled = Icons.explore_outlined;
+  static const IconData sensorControlDisabled = Icons.explore_off_outlined;
   static const IconData settings = Icons.settings_outlined;
   static const IconData text = Icons.format_quote_outlined;
   static const IconData tag = Icons.local_offer_outlined;
-  static const IconData tagOff = MdiIcons.tagOffOutline;
+  static const IconData tagUntagged = MdiIcons.tagOffOutline;
 
   // view
   static const IconData group = Icons.group_work_outlined;
@@ -40,7 +44,6 @@ class AIcons {
   // actions
   static const IconData add = Icons.add_circle_outline;
   static const IconData addShortcut = Icons.add_to_home_screen_outlined;
-  static const IconData addTag = MdiIcons.tagPlusOutline;
   static const IconData cancel = Icons.cancel_outlined;
   static const IconData replay10 = Icons.replay_10_outlined;
   static const IconData skip10 = Icons.forward_10_outlined;
@@ -51,6 +54,8 @@ class AIcons {
   static const IconData debug = Icons.whatshot_outlined;
   static const IconData delete = Icons.delete_outlined;
   static const IconData edit = Icons.edit_outlined;
+  static const IconData editRating = MdiIcons.starPlusOutline;
+  static const IconData editTags = MdiIcons.tagPlusOutline;
   static const IconData export = MdiIcons.fileExportOutline;
   static const IconData flip = Icons.flip_outlined;
   static const IconData favourite = Icons.favorite_border;
@@ -111,8 +116,8 @@ class AIcons {
   static const IconData geo = Icons.language_outlined;
   static const IconData motionPhoto = Icons.motion_photos_on_outlined;
   static const IconData multiPage = Icons.burst_mode_outlined;
-  static const IconData videoThumb = Icons.play_circle_outline;
   static const IconData threeSixty = Icons.threesixty_outlined;
+  static const IconData videoThumb = Icons.play_circle_outline;
   static const IconData selected = Icons.check_circle_outline;
   static const IconData unselected = Icons.radio_button_unchecked;
 

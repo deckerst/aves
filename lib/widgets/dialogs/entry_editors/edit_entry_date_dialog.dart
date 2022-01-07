@@ -4,12 +4,12 @@ import 'package:aves/model/metadata/enums.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/format.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/widgets/common/basic/wheel.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
+import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-import '../aves_dialog.dart';
 
 class EditEntryDateDialog extends StatefulWidget {
   final AvesEntry entry;
@@ -24,170 +24,274 @@ class EditEntryDateDialog extends StatefulWidget {
 }
 
 class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
-  DateEditAction _action = DateEditAction.set;
-  late Set<MetadataField> _fields;
-  late DateTime _dateTime;
-  int _shiftMinutes = 60;
+  DateEditAction _action = DateEditAction.setCustom;
+  DateFieldSource _copyFieldSource = DateFieldSource.fileModifiedDate;
+  late DateTime _setDateTime;
+  late ValueNotifier<int> _shiftHour, _shiftMinute;
+  late ValueNotifier<String> _shiftSign;
   bool _showOptions = false;
+  final Set<MetadataField> _fields = {...DateModifier.writableDateFields};
 
-  AvesEntry get entry => widget.entry;
+  // use a different shade to avoid having the same background
+  // on the dialog (using the theme `dialogBackgroundColor`)
+  // and on the dropdown (using the theme `canvasColor`)
+  static final dropdownColor = Colors.grey.shade800;
 
   @override
   void initState() {
     super.initState();
-    _fields = {
-      MetadataField.exifDate,
-      MetadataField.exifDateDigitized,
-      MetadataField.exifDateOriginal,
-    };
-    _dateTime = entry.bestDate ?? DateTime.now();
+    _initSet();
+    _initShift(60);
+  }
+
+  void _initSet() {
+    _setDateTime = widget.entry.bestDate ?? DateTime.now();
+  }
+
+  void _initShift(int initialMinutes) {
+    final abs = initialMinutes.abs();
+    _shiftHour = ValueNotifier(abs ~/ 60);
+    _shiftMinute = ValueNotifier(abs % 60);
+    _shiftSign = ValueNotifier(initialMinutes.isNegative ? '-' : '+');
   }
 
   @override
   Widget build(BuildContext context) {
     return MediaQueryDataProvider(
-      child: Builder(
-        builder: (context) {
+      child: TooltipTheme(
+        data: TooltipTheme.of(context).copyWith(
+          preferBelow: false,
+        ),
+        child: Builder(builder: (context) {
           final l10n = context.l10n;
-          final locale = l10n.localeName;
-          final use24hour = context.select<MediaQueryData, bool>((v) => v.alwaysUse24HourFormat);
 
-          void _updateAction(DateEditAction? action) {
-            if (action == null) return;
-            setState(() => _action = action);
-          }
-
-          Widget _tileText(String text) => Text(
-                text,
-                softWrap: false,
-                overflow: TextOverflow.fade,
-                maxLines: 1,
-              );
-
-          final setTile = Row(
-            children: [
-              Expanded(
-                child: RadioListTile<DateEditAction>(
-                  value: DateEditAction.set,
-                  groupValue: _action,
-                  onChanged: _updateAction,
-                  title: _tileText(l10n.editEntryDateDialogSet),
-                  subtitle: Text(formatDateTime(_dateTime, locale, use24hour)),
+          return AvesDialog(
+            title: l10n.editEntryDateDialogTitle,
+            scrollableContent: [
+              Padding(
+                padding: const EdgeInsets.only(left: 16, top: 8, right: 16),
+                child: DropdownButton<DateEditAction>(
+                  items: DateEditAction.values
+                      .map((v) => DropdownMenuItem<DateEditAction>(
+                            value: v,
+                            child: Text(_actionText(context, v)),
+                          ))
+                      .toList(),
+                  value: _action,
+                  onChanged: (v) => setState(() => _action = v!),
+                  isExpanded: true,
+                  dropdownColor: dropdownColor,
                 ),
               ),
-              Padding(
-                padding: const EdgeInsetsDirectional.only(end: 12),
-                child: IconButton(
-                  icon: const Icon(AIcons.edit),
-                  onPressed: _action == DateEditAction.set ? _editDate : null,
-                  tooltip: l10n.changeTooltip,
+              AnimatedSwitcher(
+                duration: context.read<DurationsData>().formTransition,
+                switchInCurve: Curves.easeInOutCubic,
+                switchOutCurve: Curves.easeInOutCubic,
+                transitionBuilder: _formTransitionBuilder,
+                child: Column(
+                  key: ValueKey(_action),
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (_action == DateEditAction.setCustom) _buildSetCustomContent(context),
+                    if (_action == DateEditAction.copyField) _buildCopyFieldContent(context),
+                    if (_action == DateEditAction.shift) _buildShiftContent(context),
+                    (_action == DateEditAction.shift || _action == DateEditAction.remove)? _buildDestinationFields(context): const SizedBox(height: 8),
+                  ],
                 ),
               ),
             ],
-          );
-          final shiftTile = Row(
-            children: [
-              Expanded(
-                child: RadioListTile<DateEditAction>(
-                  value: DateEditAction.shift,
-                  groupValue: _action,
-                  onChanged: _updateAction,
-                  title: _tileText(l10n.editEntryDateDialogShift),
-                  subtitle: Text(_formatShiftDuration()),
-                ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
               ),
-              Padding(
-                padding: const EdgeInsetsDirectional.only(end: 12),
-                child: IconButton(
-                  icon: const Icon(AIcons.edit),
-                  onPressed: _action == DateEditAction.shift ? _editShift : null,
-                  tooltip: l10n.changeTooltip,
-                ),
+              TextButton(
+                onPressed: () => _submit(context),
+                child: Text(l10n.applyButtonLabel),
               ),
             ],
           );
-          final extractFromTitleTile = RadioListTile<DateEditAction>(
-            value: DateEditAction.extractFromTitle,
-            groupValue: _action,
-            onChanged: _updateAction,
-            title: _tileText(l10n.editEntryDateDialogExtractFromTitle),
-          );
-          final clearTile = RadioListTile<DateEditAction>(
-            value: DateEditAction.clear,
-            groupValue: _action,
-            onChanged: _updateAction,
-            title: _tileText(l10n.editEntryDateDialogClear),
-          );
-
-          final animationDuration = context.select<DurationsData, Duration>((v) => v.expansionTileAnimation);
-          final theme = Theme.of(context);
-          return Theme(
-            data: theme.copyWith(
-              textTheme: theme.textTheme.copyWith(
-                // dense style font for tile subtitles, without modifying title font
-                bodyText2: const TextStyle(fontSize: 12),
-              ),
-            ),
-            child: AvesDialog(
-              title: l10n.editEntryDateDialogTitle,
-              scrollableContent: [
-                setTile,
-                shiftTile,
-                extractFromTitleTile,
-                clearTile,
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 1),
-                  child: ExpansionPanelList(
-                    expansionCallback: (index, isExpanded) {
-                      setState(() => _showOptions = !isExpanded);
-                    },
-                    animationDuration: animationDuration,
-                    expandedHeaderPadding: EdgeInsets.zero,
-                    elevation: 0,
-                    children: [
-                      ExpansionPanel(
-                        headerBuilder: (context, isExpanded) => ListTile(
-                          title: Text(l10n.editEntryDateDialogFieldSelection),
-                        ),
-                        body: Column(
-                          children: DateModifier.allDateFields
-                              .map((field) => SwitchListTile(
-                                    value: _fields.contains(field),
-                                    onChanged: (selected) => setState(() => selected ? _fields.add(field) : _fields.remove(field)),
-                                    title: Text(_fieldTitle(field)),
-                                  ))
-                              .toList(),
-                        ),
-                        isExpanded: _showOptions,
-                        canTapOnHeader: true,
-                        backgroundColor: Theme.of(context).dialogBackgroundColor,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
-                ),
-                TextButton(
-                  onPressed: () => _submit(context),
-                  child: Text(l10n.applyButtonLabel),
-                ),
-              ],
-            ),
-          );
-        },
+        }),
       ),
     );
   }
 
-  String _formatShiftDuration() {
-    final abs = _shiftMinutes.abs();
-    final h = abs ~/ 60;
-    final m = abs % 60;
-    return '${_shiftMinutes.isNegative ? '-' : '+'}$h:${m.toString().padLeft(2, '0')}';
+  Widget _formTransitionBuilder(Widget child, Animation<double> animation) => FadeTransition(
+        opacity: animation,
+        child: SizeTransition(
+          sizeFactor: animation,
+          axisAlignment: -1,
+          child: child,
+        ),
+      );
+
+  Widget _buildSetCustomContent(BuildContext context) {
+    final l10n = context.l10n;
+    final locale = l10n.localeName;
+    final use24hour = context.select<MediaQueryData, bool>((v) => v.alwaysUse24HourFormat);
+
+    return Padding(
+      padding: const EdgeInsets.only(left: 16, right: 8),
+      child: Row(
+        children: [
+          Expanded(child: Text(formatDateTime(_setDateTime, locale, use24hour))),
+          IconButton(
+            icon: const Icon(AIcons.edit),
+            onPressed: _editDate,
+            tooltip: l10n.changeTooltip,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCopyFieldContent(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 16, top: 0, right: 16),
+      child: DropdownButton<DateFieldSource>(
+        items: DateFieldSource.values
+            .map((v) => DropdownMenuItem<DateFieldSource>(
+                  value: v,
+                  child: Text(_setSourceText(context, v)),
+                ))
+            .toList(),
+        selectedItemBuilder: (context) => DateFieldSource.values
+            .map((v) => DropdownMenuItem<DateFieldSource>(
+                  value: v,
+                  child: Text(
+                    _setSourceText(context, v),
+                    softWrap: false,
+                    overflow: TextOverflow.fade,
+                  ),
+                ))
+            .toList(),
+        value: _copyFieldSource,
+        onChanged: (v) => setState(() => _copyFieldSource = v!),
+        isExpanded: true,
+        dropdownColor: dropdownColor,
+      ),
+    );
+  }
+
+  Widget _buildShiftContent(BuildContext context) {
+    const textStyle = TextStyle(fontSize: 34);
+    return Center(
+      child: Table(
+        children: [
+          TableRow(
+            children: [
+              const SizedBox(),
+              Center(child: Text(context.l10n.editEntryDateDialogHours)),
+              const SizedBox(),
+              Center(child: Text(context.l10n.editEntryDateDialogMinutes)),
+            ],
+          ),
+          TableRow(
+            children: [
+              WheelSelector(
+                valueNotifier: _shiftSign,
+                values: const ['+', '-'],
+                textStyle: textStyle,
+                textAlign: TextAlign.center,
+              ),
+              Align(
+                alignment: Alignment.centerRight,
+                child: WheelSelector(
+                  valueNotifier: _shiftHour,
+                  values: List.generate(24, (i) => i),
+                  textStyle: textStyle,
+                  textAlign: TextAlign.end,
+                ),
+              ),
+              const Padding(
+                padding: EdgeInsets.only(bottom: 2),
+                child: Text(
+                  ':',
+                  style: textStyle,
+                ),
+              ),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: WheelSelector(
+                  valueNotifier: _shiftMinute,
+                  values: List.generate(60, (i) => i),
+                  textStyle: textStyle,
+                  textAlign: TextAlign.end,
+                ),
+              ),
+            ],
+          )
+        ],
+        defaultColumnWidth: const IntrinsicColumnWidth(),
+        defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+      ),
+    );
+  }
+
+  Widget _buildDestinationFields(BuildContext context) {
+    return Padding(
+      // small padding as a workaround to show dialog action divider
+      padding: const EdgeInsets.only(bottom: 1),
+      child: ExpansionPanelList(
+        expansionCallback: (index, isExpanded) {
+          setState(() => _showOptions = !isExpanded);
+        },
+        animationDuration: context.read<DurationsData>().expansionTileAnimation,
+        expandedHeaderPadding: EdgeInsets.zero,
+        elevation: 0,
+        children: [
+          ExpansionPanel(
+            headerBuilder: (context, isExpanded) => ListTile(
+              title: Text(context.l10n.editEntryDateDialogTargetFieldsHeader),
+            ),
+            body: Column(
+              children: DateModifier.writableDateFields
+                  .map((field) => SwitchListTile(
+                        value: _fields.contains(field),
+                        onChanged: (selected) => setState(() => selected ? _fields.add(field) : _fields.remove(field)),
+                        title: Text(_fieldTitle(field)),
+                      ))
+                  .toList(),
+            ),
+            isExpanded: _showOptions,
+            canTapOnHeader: true,
+            backgroundColor: Colors.transparent,
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _actionText(BuildContext context, DateEditAction action) {
+    final l10n = context.l10n;
+    switch (action) {
+      case DateEditAction.setCustom:
+        return l10n.editEntryDateDialogSetCustom;
+      case DateEditAction.copyField:
+        return l10n.editEntryDateDialogCopyField;
+      case DateEditAction.extractFromTitle:
+        return l10n.editEntryDateDialogExtractFromTitle;
+      case DateEditAction.shift:
+        return l10n.editEntryDateDialogShift;
+      case DateEditAction.remove:
+        return l10n.actionRemove;
+    }
+  }
+
+  String _setSourceText(BuildContext context, DateFieldSource source) {
+    final l10n = context.l10n;
+    switch (source) {
+      case DateFieldSource.fileModifiedDate:
+        return l10n.editEntryDateDialogSourceFileModifiedDate;
+      case DateFieldSource.exifDate:
+        return 'Exif date';
+      case DateFieldSource.exifDateOriginal:
+        return 'Exif original date';
+      case DateFieldSource.exifDateDigitized:
+        return 'Exif digitized date';
+      case DateFieldSource.exifGpsDate:
+        return 'Exif GPS date';
+    }
   }
 
   String _fieldTitle(MetadataField field) {
@@ -200,13 +304,15 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
         return 'Exif digitized date';
       case MetadataField.exifGpsDate:
         return 'Exif GPS date';
+      case MetadataField.xmpCreateDate:
+        return 'XMP xmp:CreateDate';
     }
   }
 
   Future<void> _editDate() async {
     final _date = await showDatePicker(
       context: context,
-      initialDate: _dateTime,
+      initialDate: _setDateTime,
       firstDate: DateTime(0),
       lastDate: DateTime.now(),
       confirmText: context.l10n.nextButtonLabel,
@@ -215,11 +321,11 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
 
     final _time = await showTimePicker(
       context: context,
-      initialTime: TimeOfDay.fromDateTime(_dateTime),
+      initialTime: TimeOfDay.fromDateTime(_setDateTime),
     );
     if (_time == null) return;
 
-    setState(() => _dateTime = DateTime(
+    setState(() => _setDateTime = DateTime(
           _date.year,
           _date.month,
           _date.day,
@@ -228,214 +334,24 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
         ));
   }
 
-  void _editShift() async {
-    final picked = await showDialog<int>(
-      context: context,
-      builder: (context) => TimeShiftDialog(
-        initialShiftMinutes: _shiftMinutes,
-      ),
-    );
-    if (picked == null) return;
-
-    setState(() => _shiftMinutes = picked);
-  }
-
-  void _submit(BuildContext context) {
-    late DateModifier modifier;
+  DateModifier _getModifier() {
+    // fields to modify are only set for the `shift` and `remove` actions,
+    // as the effective fields for the other actions will depend on
+    // whether each item supports Exif edition
     switch (_action) {
-      case DateEditAction.set:
-        modifier = DateModifier(_action, _fields, dateTime: _dateTime);
-        break;
-      case DateEditAction.shift:
-        modifier = DateModifier(_action, _fields, shiftMinutes: _shiftMinutes);
-        break;
+      case DateEditAction.setCustom:
+        return DateModifier.setCustom(const {}, _setDateTime);
+      case DateEditAction.copyField:
+        return DateModifier.copyField(const {}, _copyFieldSource);
       case DateEditAction.extractFromTitle:
-      case DateEditAction.clear:
-        modifier = DateModifier(_action, _fields);
-        break;
+        return DateModifier.extractFromTitle(const {});
+      case DateEditAction.shift:
+        final shiftTotalMinutes = (_shiftHour.value * 60 + _shiftMinute.value) * (_shiftSign.value == '+' ? 1 : -1);
+        return DateModifier.shift(_fields, shiftTotalMinutes);
+      case DateEditAction.remove:
+        return DateModifier.remove(_fields);
     }
-    Navigator.pop(context, modifier);
-  }
-}
-
-class TimeShiftDialog extends StatefulWidget {
-  final int initialShiftMinutes;
-
-  const TimeShiftDialog({
-    Key? key,
-    required this.initialShiftMinutes,
-  }) : super(key: key);
-
-  @override
-  _TimeShiftDialogState createState() => _TimeShiftDialogState();
-}
-
-class _TimeShiftDialogState extends State<TimeShiftDialog> {
-  late ValueNotifier<int> _hour, _minute;
-  late ValueNotifier<String> _sign;
-
-  @override
-  void initState() {
-    super.initState();
-    final initial = widget.initialShiftMinutes;
-    final abs = initial.abs();
-    _hour = ValueNotifier(abs ~/ 60);
-    _minute = ValueNotifier(abs % 60);
-    _sign = ValueNotifier(initial.isNegative ? '-' : '+');
   }
 
-  @override
-  Widget build(BuildContext context) {
-    const textStyle = TextStyle(fontSize: 34);
-    return AvesDialog(
-      scrollableContent: [
-        Center(
-          child: Padding(
-            padding: const EdgeInsets.only(top: 8),
-            child: Table(
-              children: [
-                TableRow(
-                  children: [
-                    const SizedBox(),
-                    Center(child: Text(context.l10n.editEntryDateDialogHours)),
-                    const SizedBox(),
-                    Center(child: Text(context.l10n.editEntryDateDialogMinutes)),
-                  ],
-                ),
-                TableRow(
-                  children: [
-                    _Wheel(
-                      valueNotifier: _sign,
-                      values: const ['+', '-'],
-                      textStyle: textStyle,
-                      textAlign: TextAlign.center,
-                    ),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: _Wheel(
-                        valueNotifier: _hour,
-                        values: List.generate(24, (i) => i),
-                        textStyle: textStyle,
-                        textAlign: TextAlign.end,
-                      ),
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.only(bottom: 2),
-                      child: Text(
-                        ':',
-                        style: textStyle,
-                      ),
-                    ),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: _Wheel(
-                        valueNotifier: _minute,
-                        values: List.generate(60, (i) => i),
-                        textStyle: textStyle,
-                        textAlign: TextAlign.end,
-                      ),
-                    ),
-                  ],
-                )
-              ],
-              defaultColumnWidth: const IntrinsicColumnWidth(),
-              defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-            ),
-          ),
-        ),
-      ],
-      hasScrollBar: false,
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
-        ),
-        TextButton(
-          onPressed: () => Navigator.pop(context, (_hour.value * 60 + _minute.value) * (_sign.value == '+' ? 1 : -1)),
-          child: Text(MaterialLocalizations.of(context).okButtonLabel),
-        ),
-      ],
-    );
-  }
-}
-
-class _Wheel<T> extends StatefulWidget {
-  final ValueNotifier<T> valueNotifier;
-  final List<T> values;
-  final TextStyle textStyle;
-  final TextAlign textAlign;
-
-  const _Wheel({
-    Key? key,
-    required this.valueNotifier,
-    required this.values,
-    required this.textStyle,
-    required this.textAlign,
-  }) : super(key: key);
-
-  @override
-  _WheelState createState() => _WheelState<T>();
-}
-
-class _WheelState<T> extends State<_Wheel<T>> {
-  late final ScrollController _controller;
-
-  static const itemSize = Size(40, 40);
-
-  ValueNotifier<T> get valueNotifier => widget.valueNotifier;
-
-  List<T> get values => widget.values;
-
-  @override
-  void initState() {
-    super.initState();
-    var indexOf = values.indexOf(valueNotifier.value);
-    _controller = FixedExtentScrollController(
-      initialItem: indexOf,
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final background = Theme.of(context).dialogBackgroundColor;
-    final foreground = DefaultTextStyle.of(context).style.color!;
-
-    return Padding(
-      padding: const EdgeInsets.all(8),
-      child: SizedBox(
-        width: itemSize.width,
-        height: itemSize.height * 3,
-        child: ShaderMask(
-          shaderCallback: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              background,
-              foreground,
-              foreground,
-              background,
-            ],
-          ).createShader,
-          child: ListWheelScrollView(
-            controller: _controller,
-            physics: const FixedExtentScrollPhysics(parent: BouncingScrollPhysics()),
-            diameterRatio: 1.2,
-            itemExtent: itemSize.height,
-            squeeze: 1.3,
-            onSelectedItemChanged: (i) => valueNotifier.value = values[i],
-            children: values
-                .map((i) => SizedBox.fromSize(
-                      size: itemSize,
-                      child: Text(
-                        '$i',
-                        textAlign: widget.textAlign,
-                        style: widget.textStyle,
-                      ),
-                    ))
-                .toList(),
-          ),
-        ),
-      ),
-    );
-  }
+  void _submit(BuildContext context) => Navigator.pop(context, _getModifier());
 }

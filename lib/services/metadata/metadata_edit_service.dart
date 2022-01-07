@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:aves/model/entry.dart';
-import 'package:aves/model/entry_xmp_iptc.dart';
 import 'package:aves/model/metadata/date_modifier.dart';
 import 'package:aves/model/metadata/enums.dart';
 import 'package:aves/services/common/services.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
 
 abstract class MetadataEditService {
@@ -12,11 +12,9 @@ abstract class MetadataEditService {
 
   Future<Map<String, dynamic>> flip(AvesEntry entry);
 
-  Future<Map<String, dynamic>> editDate(AvesEntry entry, DateModifier modifier);
+  Future<Map<String, dynamic>> editExifDate(AvesEntry entry, DateModifier modifier);
 
-  Future<Map<String, dynamic>> setIptc(AvesEntry entry, List<Map<String, dynamic>>? iptc, {required bool postEditScan});
-
-  Future<Map<String, dynamic>> setXmp(AvesEntry entry, AvesXmp? xmp);
+  Future<Map<String, dynamic>> editMetadata(AvesEntry entry, Map<MetadataType, dynamic> modifier);
 
   Future<Map<String, dynamic>> removeTypes(AvesEntry entry, Set<MetadataType> types);
 }
@@ -73,13 +71,13 @@ class PlatformMetadataEditService implements MetadataEditService {
   }
 
   @override
-  Future<Map<String, dynamic>> editDate(AvesEntry entry, DateModifier modifier) async {
+  Future<Map<String, dynamic>> editExifDate(AvesEntry entry, DateModifier modifier) async {
     try {
       final result = await platform.invokeMethod('editDate', <String, dynamic>{
         'entry': _toPlatformEntryMap(entry),
-        'dateMillis': modifier.dateTime?.millisecondsSinceEpoch,
+        'dateMillis': modifier.setDateTime?.millisecondsSinceEpoch,
         'shiftMinutes': modifier.shiftMinutes,
-        'fields': modifier.fields.map(_toExifInterfaceTag).toList(),
+        'fields': modifier.fields.where((v) => v.type == MetadataType.exif).map((v) => v.toExifInterfaceTag()).whereNotNull().toList(),
       });
       if (result != null) return (result as Map).cast<String, dynamic>();
     } on PlatformException catch (e, stack) {
@@ -91,29 +89,11 @@ class PlatformMetadataEditService implements MetadataEditService {
   }
 
   @override
-  Future<Map<String, dynamic>> setIptc(AvesEntry entry, List<Map<String, dynamic>>? iptc, {required bool postEditScan}) async {
+  Future<Map<String, dynamic>> editMetadata(AvesEntry entry, Map<MetadataType, dynamic> metadata) async {
     try {
-      final result = await platform.invokeMethod('setIptc', <String, dynamic>{
+      final result = await platform.invokeMethod('editMetadata', <String, dynamic>{
         'entry': _toPlatformEntryMap(entry),
-        'iptc': iptc,
-        'postEditScan': postEditScan,
-      });
-      if (result != null) return (result as Map).cast<String, dynamic>();
-    } on PlatformException catch (e, stack) {
-      if (!entry.isMissingAtPath) {
-        await reportService.recordError(e, stack);
-      }
-    }
-    return {};
-  }
-
-  @override
-  Future<Map<String, dynamic>> setXmp(AvesEntry entry, AvesXmp? xmp) async {
-    try {
-      final result = await platform.invokeMethod('setXmp', <String, dynamic>{
-        'entry': _toPlatformEntryMap(entry),
-        'xmp': xmp?.xmpString,
-        'extendedXmp': xmp?.extendedXmpString,
+        'metadata': metadata.map((type, value) => MapEntry(_toPlatformMetadataType(type), value)),
       });
       if (result != null) return (result as Map).cast<String, dynamic>();
     } on PlatformException catch (e, stack) {
@@ -138,19 +118,6 @@ class PlatformMetadataEditService implements MetadataEditService {
       }
     }
     return {};
-  }
-
-  String _toExifInterfaceTag(MetadataField field) {
-    switch (field) {
-      case MetadataField.exifDate:
-        return 'DateTime';
-      case MetadataField.exifDateOriginal:
-        return 'DateTimeOriginal';
-      case MetadataField.exifDateDigitized:
-        return 'DateTimeDigitized';
-      case MetadataField.exifGpsDate:
-        return 'GPSDateStamp';
-    }
   }
 
   String _toPlatformMetadataType(MetadataType type) {

@@ -47,11 +47,12 @@ mixin PermissionAwareMixin {
       final confirmed = await showDialog<bool>(
         context: context,
         builder: (context) {
-          final directory = dir.relativeDir.isEmpty ? context.l10n.rootDirectoryDescription : context.l10n.otherDirectoryDescription(dir.relativeDir);
+          final l10n = context.l10n;
+          final directory = dir.relativeDir.isEmpty ? l10n.rootDirectoryDescription : l10n.otherDirectoryDescription(dir.relativeDir);
           final volume = dir.getVolumeDescription(context);
           return AvesDialog(
-            title: context.l10n.storageAccessDialogTitle,
-            content: Text(context.l10n.storageAccessDialogMessage(directory, volume)),
+            title: l10n.storageAccessDialogTitle,
+            content: Text(l10n.storageAccessDialogMessage(directory, volume)),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
@@ -67,6 +68,26 @@ mixin PermissionAwareMixin {
       );
       // abort if the user cancels in Flutter
       if (confirmed == null || !confirmed) return false;
+
+      if (!await deviceService.isSystemFilePickerEnabled()) {
+        await showDialog(
+          context: context,
+          builder: (context) {
+            final l10n = context.l10n;
+            return AvesDialog(
+              title: l10n.missingSystemFilePickerDialogTitle,
+              content: Text(l10n.missingSystemFilePickerDialogMessage),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text(MaterialLocalizations.of(context).okButtonLabel),
+                ),
+              ],
+            );
+          },
+        );
+        return false;
+      }
 
       final granted = await storageService.requestDirectoryAccess(dir.volumePath);
       if (!granted) {

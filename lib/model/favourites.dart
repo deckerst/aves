@@ -21,7 +21,7 @@ class Favourites with ChangeNotifier {
 
   FavouriteRow _entryToRow(AvesEntry entry) => FavouriteRow(contentId: entry.contentId!, path: entry.path!);
 
-  Future<void> add(Iterable<AvesEntry> entries) async {
+  Future<void> add(Set<AvesEntry> entries) async {
     final newRows = entries.map(_entryToRow);
 
     await metadataDb.addFavourites(newRows);
@@ -30,7 +30,7 @@ class Favourites with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> remove(Iterable<AvesEntry> entries) async {
+  Future<void> remove(Set<AvesEntry> entries) async {
     final contentIds = entries.map((entry) => entry.contentId).toSet();
     final removedRows = _rows.where((row) => contentIds.contains(row.contentId)).toSet();
 
