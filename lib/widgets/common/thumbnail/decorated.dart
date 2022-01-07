@@ -13,7 +13,7 @@ class DecoratedThumbnail extends StatelessWidget {
   final Object? Function()? heroTagger;
 
   static final Color borderColor = Colors.grey.shade700;
-  static final double borderWidth = AvesBorder.borderWidth;
+  static final double borderWidth = AvesBorder.straightBorderWidth;
 
   const DecoratedThumbnail({
     Key? key,
@@ -27,12 +27,10 @@ class DecoratedThumbnail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final imageExtent = tileExtent - borderWidth * 2;
-
     final isSvg = entry.isSvg;
     Widget child = ThumbnailImage(
       entry: entry,
-      extent: imageExtent,
+      extent: tileExtent,
       cancellableNotifier: cancellableNotifier,
       heroTag: heroTagger?.call(),
     );
@@ -42,13 +40,19 @@ class DecoratedThumbnail extends StatelessWidget {
       children: [
         child,
         if (!isSvg) ThumbnailEntryOverlay(entry: entry),
-        if (selectable) GridItemSelectionOverlay(item: entry),
+        if (selectable)
+          GridItemSelectionOverlay<AvesEntry>(
+            item: entry,
+            padding: const EdgeInsets.all(2),
+          ),
         if (highlightable) ThumbnailHighlightOverlay(entry: entry),
       ],
     );
 
     return Container(
-      decoration: BoxDecoration(
+      // `decoration` with sub logical pixel width yields scintillating borders
+      // so we use `foregroundDecoration` instead
+      foregroundDecoration: BoxDecoration(
         border: Border.fromBorderSide(BorderSide(
           color: borderColor,
           width: borderWidth,

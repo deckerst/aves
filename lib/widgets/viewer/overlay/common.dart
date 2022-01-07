@@ -38,7 +38,7 @@ class OverlayButton extends StatelessWidget {
   }
 
   // icon (24) + icon padding (8) + button padding (16) + border (1 or 2)
-  static double getSize(BuildContext context) => 48.0 + AvesBorder.borderWidth * 2;
+  static double getSize(BuildContext context) => 48.0 + AvesBorder.curvedBorderWidth * 2;
 }
 
 class OverlayTextButton extends StatelessWidget {
@@ -71,7 +71,7 @@ class OverlayTextButton extends StatelessWidget {
             foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
             overlayColor: MaterialStateProperty.all<Color>(Colors.white.withOpacity(0.12)),
             minimumSize: _minSize,
-            side: MaterialStateProperty.all<BorderSide>(AvesBorder.side),
+            side: MaterialStateProperty.all<BorderSide>(AvesBorder.curvedSide),
             shape: MaterialStateProperty.all<OutlinedBorder>(const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(_borderRadius)),
             )),
