@@ -183,7 +183,7 @@
   "renameEntryDialogLabel": "Neuer Name",
 
   "editEntryDateDialogTitle": "Datum & Uhrzeit",
-  "editEntryDateDialogSetCustom": "Benutzerdefiniertes Datum einstellen",
+  "editEntryDateDialogSetCustom": "Datum einstellen",
   "editEntryDateDialogCopyField": "Von anderem Datum kopieren",
   "editEntryDateDialogExtractFromTitle": "Auszug aus dem Titel",
   "editEntryDateDialogShift": "Verschieben",
