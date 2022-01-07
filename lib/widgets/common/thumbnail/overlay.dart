@@ -28,7 +28,7 @@ class ThumbnailEntryOverlay extends StatelessWidget {
         const AnimatedImageIcon()
       else ...[
         if (entry.isRaw && context.select<GridThemeData, bool>((t) => t.showRaw)) const RawIcon(),
-        if (entry.isGeotiff) const GeotiffIcon(),
+        if (entry.isGeotiff) const GeoTiffIcon(),
         if (entry.is360) const SphericalImageIcon(),
       ],
       if (entry.isMultiPage) ...[
@@ -36,7 +36,7 @@ class ThumbnailEntryOverlay extends StatelessWidget {
         if (!entry.isMotionPhoto) MultiPageIcon(entry: entry),
       ],
     ];
-    if (children.isEmpty) return const SizedBox.shrink();
+    if (children.isEmpty) return const SizedBox();
     if (children.length == 1) return children.first;
     return Column(
       mainAxisSize: MainAxisSize.min,
