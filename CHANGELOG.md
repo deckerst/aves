@@ -16,6 +16,8 @@ All notable changes to this project will be documented in this file.
 
 - editing an item orientation, rating or tags automatically sets a metadata date (from the file
   modified date), if it is missing
+- Viewer: when opening an item from another app, it is now possible to scroll to other items in the
+  album
 
 ### Fixed
 
