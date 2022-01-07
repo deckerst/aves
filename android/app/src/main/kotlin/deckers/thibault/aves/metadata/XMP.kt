@@ -15,6 +15,7 @@ object XMP {
     // standard namespaces
     // cf com.adobe.internal.xmp.XMPConst
     const val DC_SCHEMA_NS = "http://purl.org/dc/elements/1.1/"
+    const val MICROSOFTPHOTO_SCHEMA_NS = "http://ns.microsoft.com/photo/1.0/"
     const val PHOTOSHOP_SCHEMA_NS = "http://ns.adobe.com/photoshop/1.0/"
     const val XMP_SCHEMA_NS = "http://ns.adobe.com/xap/1.0/"
     private const val XMP_GIMG_SCHEMA_NS = "http://ns.adobe.com/xap/1.0/g/img/"
@@ -27,11 +28,13 @@ object XMP {
     const val CONTAINER_SCHEMA_NS = "http://ns.google.com/photos/1.0/container/"
     private const val CONTAINER_ITEM_SCHEMA_NS = "http://ns.google.com/photos/1.0/container/item/"
 
-    const val SUBJECT_PROP_NAME = "dc:subject"
-    const val TITLE_PROP_NAME = "dc:title"
-    const val DESCRIPTION_PROP_NAME = "dc:description"
+    const val DC_DESCRIPTION_PROP_NAME = "dc:description"
+    const val DC_SUBJECT_PROP_NAME = "dc:subject"
+    const val DC_TITLE_PROP_NAME = "dc:title"
+    const val MS_RATING_PROP_NAME = "MicrosoftPhoto:Rating"
     const val PS_DATE_CREATED_PROP_NAME = "photoshop:DateCreated"
-    const val CREATE_DATE_PROP_NAME = "xmp:CreateDate"
+    const val XMP_CREATE_DATE_PROP_NAME = "xmp:CreateDate"
+    const val XMP_RATING_PROP_NAME = "xmp:Rating"
 
     private const val GENERIC_LANG = ""
     private const val SPECIFIC_LANG = "en-US"

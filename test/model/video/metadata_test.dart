@@ -7,5 +7,6 @@ void main() {
 
     expect(VideoMetadataFormatter.parseVideoDate('2011-05-08T03:46+09:00'), DateTime(2011, 5, 7, 18, 46).add(localOffset).millisecondsSinceEpoch);
     expect(VideoMetadataFormatter.parseVideoDate('UTC 2021-05-30 19:14:21'), DateTime(2021, 5, 30, 19, 14, 21).millisecondsSinceEpoch);
+    expect(VideoMetadataFormatter.parseVideoDate('2021/10/31 21:23:17'), DateTime(2021, 10, 31, 21, 23, 17).millisecondsSinceEpoch);
   });
 }

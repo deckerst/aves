@@ -22,7 +22,7 @@
   "nextTooltip": "Suivant",
   "showTooltip": "Afficher",
   "hideTooltip": "Masquer",
-  "removeTooltip": "Supprimer",
+  "actionRemove": "Supprimer",
   "resetButtonTooltip": "Réinitialiser",
 
   "doubleBackExitMessage": "Pressez «\u00A0retour\u00A0» à nouveau pour quitter.",
@@ -73,12 +73,15 @@
   "videoActionSettings": "Préférences",
 
   "entryInfoActionEditDate": "Modifier la date",
+  "entryInfoActionEditRating": "Modifier la notation",
   "entryInfoActionEditTags": "Modifier les libellés",
   "entryInfoActionRemoveMetadata": "Retirer les métadonnées",
 
   "filterFavouriteLabel": "Favori",
   "filterLocationEmptyLabel": "Sans lieu",
   "filterTagEmptyLabel": "Sans libellé",
+  "filterRatingUnratedLabel": "Sans notation",
+  "filterRatingRejectedLabel": "Rejeté",
   "filterTypeAnimatedLabel": "Animation",
   "filterTypeMotionPhotoLabel": "Photo animée",
   "filterTypePanoramaLabel": "Panorama",
@@ -137,6 +140,8 @@
   "restrictedAccessDialogMessage": "Cette app ne peut pas modifier les fichiers du {directory} de «\u00A0{volume}\u00A0».\n\nVeuillez utiliser une app pré-installée pour déplacer les fichiers vers un autre dossier.",
   "notEnoughSpaceDialogTitle": "Espace insuffisant",
   "notEnoughSpaceDialogMessage": "Cette opération nécessite {neededSize} d’espace disponible sur «\u00A0{volume}\u00A0», mais il ne reste que {freeSize}.",
+  "missingSystemFilePickerDialogTitle": "Sélecteur de fichiers désactivé",
+  "missingSystemFilePickerDialogMessage": "Le sélecteur de fichiers du système est absent ou désactivé. Veuillez le réactiver et réessayer.",
 
   "unsupportedTypeDialogTitle": "Formats non supportés",
   "unsupportedTypeDialogMessage": "{count, plural, =1{Cette opération n’est pas disponible pour les fichiers au format suivant : {types}.} other{Cette opération n’est pas disponible pour les fichiers aux formats suivants : {types}.}}",
@@ -178,13 +183,16 @@
   "renameEntryDialogLabel": "Nouveau nom",
 
   "editEntryDateDialogTitle": "Date & Heure",
-  "editEntryDateDialogSet": "Régler",
-  "editEntryDateDialogShift": "Décaler",
+  "editEntryDateDialogSetCustom": "Régler une date personnalisée",
+  "editEntryDateDialogCopyField": "Copier d'une autre date",
   "editEntryDateDialogExtractFromTitle": "Extraire du titre",
-  "editEntryDateDialogClear": "Effacer",
-  "editEntryDateDialogFieldSelection": "Champs affectés",
+  "editEntryDateDialogShift": "Décaler",
+  "editEntryDateDialogSourceFileModifiedDate": "Date de modification du fichier",
+  "editEntryDateDialogTargetFieldsHeader": "Champs à modifier",
   "editEntryDateDialogHours": "Heures",
   "editEntryDateDialogMinutes": "Minutes",
+
+  "editEntryRatingDialogTitle": "Notation",
 
   "removeEntryMetadataDialogTitle": "Retrait de métadonnées",
   "removeEntryMetadataDialogMore": "Voir plus",
@@ -270,6 +278,7 @@
   "collectionSortDate": "par date",
   "collectionSortSize": "par taille",
   "collectionSortName": "alphabétique",
+  "collectionSortRating": "par notation",
 
   "collectionGroupAlbum": "par album",
   "collectionGroupMonth": "par mois",
@@ -343,6 +352,7 @@
   "searchSectionCountries": "Pays",
   "searchSectionPlaces": "Lieux",
   "searchSectionTags": "Libellés",
+  "searchSectionRating": "Notations",
 
   "settingsPageTitle": "Réglages",
   "settingsSystemDefault": "Système",
@@ -366,8 +376,10 @@
   "settingsNavigationDrawerAddAlbum": "Ajouter un album",
 
   "settingsSectionThumbnails": "Vignettes",
+  "settingsThumbnailShowFavouriteIcon": "Afficher l’icône de favori",
   "settingsThumbnailShowLocationIcon": "Afficher l’icône de lieu",
   "settingsThumbnailShowMotionPhotoIcon": "Afficher l’icône de photo animée",
+  "settingsThumbnailShowRating": "Afficher la notation",
   "settingsThumbnailShowRawIcon": "Afficher l’icône de photo raw",
   "settingsThumbnailShowVideoDuration": "Afficher la durée de la vidéo",
 

@@ -20,11 +20,6 @@ class ThumbnailsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currentShowThumbnailLocation = context.select<Settings, bool>((s) => s.showThumbnailLocation);
-    final currentShowThumbnailMotionPhoto = context.select<Settings, bool>((s) => s.showThumbnailMotionPhoto);
-    final currentShowThumbnailRaw = context.select<Settings, bool>((s) => s.showThumbnailRaw);
-    final currentShowThumbnailVideoDuration = context.select<Settings, bool>((s) => s.showThumbnailVideoDuration);
-
     final iconSize = IconTheme.of(context).size! * MediaQuery.textScaleFactorOf(context);
     double opacityFor(bool enabled) => enabled ? 1 : .2;
 
@@ -38,64 +33,119 @@ class ThumbnailsSection extends StatelessWidget {
       showHighlight: false,
       children: [
         const CollectionActionsTile(),
-        SwitchListTile(
-          value: currentShowThumbnailLocation,
-          onChanged: (v) => settings.showThumbnailLocation = v,
-          title: Row(
-            children: [
-              Expanded(child: Text(context.l10n.settingsThumbnailShowLocationIcon)),
-              AnimatedOpacity(
-                opacity: opacityFor(currentShowThumbnailLocation),
-                duration: Durations.toggleableTransitionAnimation,
-                child: Icon(
-                  AIcons.location,
-                  size: iconSize,
-                ),
-              ),
-            ],
-          ),
-        ),
-        SwitchListTile(
-          value: currentShowThumbnailMotionPhoto,
-          onChanged: (v) => settings.showThumbnailMotionPhoto = v,
-          title: Row(
-            children: [
-              Expanded(child: Text(context.l10n.settingsThumbnailShowMotionPhotoIcon)),
-              AnimatedOpacity(
-                opacity: opacityFor(currentShowThumbnailMotionPhoto),
-                duration: Durations.toggleableTransitionAnimation,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: iconSize * (1 - MotionPhotoIcon.scale) / 2),
-                  child: Icon(
-                    AIcons.motionPhoto,
-                    size: iconSize * MotionPhotoIcon.scale,
+        Selector<Settings, bool>(
+          selector: (context, s) => s.showThumbnailFavourite,
+          builder: (context, current, child) => SwitchListTile(
+            value: current,
+            onChanged: (v) => settings.showThumbnailFavourite = v,
+            title: Row(
+              children: [
+                Expanded(child: Text(context.l10n.settingsThumbnailShowFavouriteIcon)),
+                AnimatedOpacity(
+                  opacity: opacityFor(current),
+                  duration: Durations.toggleableTransitionAnimation,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: iconSize * (1 - FavouriteIcon.scale) / 2),
+                    child: Icon(
+                      AIcons.favourite,
+                      size: iconSize * FavouriteIcon.scale,
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
-        SwitchListTile(
-          value: currentShowThumbnailRaw,
-          onChanged: (v) => settings.showThumbnailRaw = v,
-          title: Row(
-            children: [
-              Expanded(child: Text(context.l10n.settingsThumbnailShowRawIcon)),
-              AnimatedOpacity(
-                opacity: opacityFor(currentShowThumbnailRaw),
-                duration: Durations.toggleableTransitionAnimation,
-                child: Icon(
-                  AIcons.raw,
-                  size: iconSize,
+        Selector<Settings, bool>(
+          selector: (context, s) => s.showThumbnailLocation,
+          builder: (context, current, child) => SwitchListTile(
+            value: current,
+            onChanged: (v) => settings.showThumbnailLocation = v,
+            title: Row(
+              children: [
+                Expanded(child: Text(context.l10n.settingsThumbnailShowLocationIcon)),
+                AnimatedOpacity(
+                  opacity: opacityFor(current),
+                  duration: Durations.toggleableTransitionAnimation,
+                  child: Icon(
+                    AIcons.location,
+                    size: iconSize,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
-        SwitchListTile(
-          value: currentShowThumbnailVideoDuration,
-          onChanged: (v) => settings.showThumbnailVideoDuration = v,
-          title: Text(context.l10n.settingsThumbnailShowVideoDuration),
+        Selector<Settings, bool>(
+          selector: (context, s) => s.showThumbnailMotionPhoto,
+          builder: (context, current, child) => SwitchListTile(
+            value: current,
+            onChanged: (v) => settings.showThumbnailMotionPhoto = v,
+            title: Row(
+              children: [
+                Expanded(child: Text(context.l10n.settingsThumbnailShowMotionPhotoIcon)),
+                AnimatedOpacity(
+                  opacity: opacityFor(current),
+                  duration: Durations.toggleableTransitionAnimation,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: iconSize * (1 - MotionPhotoIcon.scale) / 2),
+                    child: Icon(
+                      AIcons.motionPhoto,
+                      size: iconSize * MotionPhotoIcon.scale,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        Selector<Settings, bool>(
+          selector: (context, s) => s.showThumbnailRating,
+          builder: (context, current, child) => SwitchListTile(
+            value: current,
+            onChanged: (v) => settings.showThumbnailRating = v,
+            title: Row(
+              children: [
+                Expanded(child: Text(context.l10n.settingsThumbnailShowRating)),
+                AnimatedOpacity(
+                  opacity: opacityFor(current),
+                  duration: Durations.toggleableTransitionAnimation,
+                  child: Icon(
+                    AIcons.rating,
+                    size: iconSize,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        Selector<Settings, bool>(
+          selector: (context, s) => s.showThumbnailRaw,
+          builder: (context, current, child) => SwitchListTile(
+            value: current,
+            onChanged: (v) => settings.showThumbnailRaw = v,
+            title: Row(
+              children: [
+                Expanded(child: Text(context.l10n.settingsThumbnailShowRawIcon)),
+                AnimatedOpacity(
+                  opacity: opacityFor(current),
+                  duration: Durations.toggleableTransitionAnimation,
+                  child: Icon(
+                    AIcons.raw,
+                    size: iconSize,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        Selector<Settings, bool>(
+          selector: (context, s) => s.showThumbnailVideoDuration,
+          builder: (context, current, child) => SwitchListTile(
+            value: current,
+            onChanged: (v) => settings.showThumbnailVideoDuration = v,
+            title: Text(context.l10n.settingsThumbnailShowVideoDuration),
+          ),
         ),
       ],
     );

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Aves</string>
+    <string name="search_shortcut_short_label">Búsqueda</string>
+    <string name="videos_shortcut_short_label">Videos</string>
+    <string name="analysis_channel_name">Explorar medios</string>
+    <string name="analysis_service_description">Explorar imágenes &amp; videos</string>
+    <string name="analysis_notification_default_title">Explorando medios</string>
+    <string name="analysis_notification_action_stop">Anular</string>
+</resources>

@@ -37,7 +37,7 @@
   "nextTooltip": "Next",
   "showTooltip": "Show",
   "hideTooltip": "Hide",
-  "removeTooltip": "Remove",
+  "actionRemove": "Remove",
   "resetButtonTooltip": "Reset",
 
   "doubleBackExitMessage": "Tap “back” again to exit.",
@@ -88,12 +88,15 @@
   "videoActionSettings": "Settings",
 
   "entryInfoActionEditDate": "Edit date & time",
+  "entryInfoActionEditRating": "Edit rating",
   "entryInfoActionEditTags": "Edit tags",
   "entryInfoActionRemoveMetadata": "Remove metadata",
 
   "filterFavouriteLabel": "Favourite",
   "filterLocationEmptyLabel": "Unlocated",
   "filterTagEmptyLabel": "Untagged",
+  "filterRatingUnratedLabel": "Unrated",
+  "filterRatingRejectedLabel": "Rejected",
   "filterTypeAnimatedLabel": "Animated",
   "filterTypeMotionPhotoLabel": "Motion Photo",
   "filterTypePanoramaLabel": "Panorama",
@@ -109,10 +112,12 @@
   "@coordinateDms": {
     "placeholders": {
       "coordinate": {
-        "type": "String"
+        "type": "String",
+        "example": "38° 41′ 47.72″"
       },
       "direction": {
-        "type": "String"
+        "type": "String",
+        "example": "S"
       }
     }
   },
@@ -159,7 +164,9 @@
   "@otherDirectoryDescription": {
     "placeholders": {
       "name": {
-        "type": "String"
+        "type": "String",
+        "example": "Pictures",
+        "description": "the name of a specific directory"
       }
     }
   },
@@ -168,10 +175,13 @@
   "@storageAccessDialogMessage": {
     "placeholders": {
       "directory": {
-        "type": "String"
+        "type": "String",
+        "description": "the name of a directory, using the output of `rootDirectoryDescription` or `otherDirectoryDescription`"
       },
       "volume": {
-        "type": "String"
+        "type": "String",
+        "example": "SD card",
+        "description": "the name of a storage volume"
       }
     }
   },
@@ -180,10 +190,13 @@
   "@restrictedAccessDialogMessage": {
     "placeholders": {
       "directory": {
-        "type": "String"
+        "type": "String",
+        "description": "the name of a directory, using the output of `rootDirectoryDescription` or `otherDirectoryDescription`"
       },
       "volume": {
-        "type": "String"
+        "type": "String",
+        "example": "SD card",
+        "description": "the name of a storage volume"
       }
     }
   },
@@ -192,16 +205,22 @@
   "@notEnoughSpaceDialogMessage": {
     "placeholders": {
       "neededSize": {
-        "type": "String"
+        "type": "String",
+        "example": "314 MB"
       },
       "freeSize": {
-        "type": "String"
+        "type": "String",
+        "example": "123 MB"
       },
       "volume": {
-        "type": "String"
+        "type": "String",
+        "example": "SD card",
+        "description": "the name of a storage volume"
       }
     }
   },
+  "missingSystemFilePickerDialogTitle": "Missing System File Picker",
+  "missingSystemFilePickerDialogMessage": "The system file picker is missing or disabled. Please enable it and try again.",
 
   "unsupportedTypeDialogTitle": "Unsupported Types",
   "unsupportedTypeDialogMessage": "{count, plural, =1{This operation is not supported for items of the following type: {types}.} other{This operation is not supported for items of the following types: {types}.}}",
@@ -209,7 +228,9 @@
     "placeholders": {
       "count": {},
       "types": {
-        "type": "String"
+        "type": "String",
+        "example": "GIF, TIFF, MP4",
+        "description": "a list of unsupported types"
       }
     }
   },
@@ -233,7 +254,10 @@
   "videoResumeDialogMessage": "Do you want to resume playing at {time}?",
   "@videoResumeDialogMessage": {
     "placeholders": {
-      "time": {}
+      "time": {
+        "type": "String",
+        "example": "13:37"
+      }
     }
   },
   "videoStartOverButtonLabel": "START OVER",
@@ -271,13 +295,16 @@
   "renameEntryDialogLabel": "New name",
 
   "editEntryDateDialogTitle": "Date & Time",
-  "editEntryDateDialogSet": "Set",
-  "editEntryDateDialogShift": "Shift",
+  "editEntryDateDialogSetCustom": "Set custom date",
+  "editEntryDateDialogCopyField": "Copy from other date",
   "editEntryDateDialogExtractFromTitle": "Extract from title",
-  "editEntryDateDialogClear": "Clear",
-  "editEntryDateDialogFieldSelection": "Field selection",
+  "editEntryDateDialogShift": "Shift",
+  "editEntryDateDialogSourceFileModifiedDate": "File modified date",
+  "editEntryDateDialogTargetFieldsHeader": "Fields to modify",
   "editEntryDateDialogHours": "Hours",
   "editEntryDateDialogMinutes": "Minutes",
+
+  "editEntryRatingDialogTitle": "Rating",
 
   "removeEntryMetadataDialogTitle": "Metadata Removal",
   "removeEntryMetadataDialogMore": "More",
@@ -338,10 +365,12 @@
   "@aboutCreditsTranslatorLine": {
     "placeholders": {
       "language": {
-        "type": "String"
+        "type": "String",
+        "example": "Sumerian"
       },
       "names": {
-        "type": "String"
+        "type": "String",
+        "example": "Reggie Lampert"
       }
     }
   },
@@ -378,6 +407,7 @@
   "collectionSortDate": "By date",
   "collectionSortSize": "By size",
   "collectionSortName": "By album & file name",
+  "collectionSortRating": "By rating",
 
   "collectionGroupAlbum": "By album",
   "collectionGroupMonth": "By month",
@@ -491,6 +521,7 @@
   "searchSectionCountries": "Countries",
   "searchSectionPlaces": "Places",
   "searchSectionTags": "Tags",
+  "searchSectionRating": "Ratings",
 
   "settingsPageTitle": "Settings",
   "settingsSystemDefault": "System",
@@ -514,8 +545,10 @@
   "settingsNavigationDrawerAddAlbum": "Add album",
 
   "settingsSectionThumbnails": "Thumbnails",
+  "settingsThumbnailShowFavouriteIcon": "Show favourite icon",
   "settingsThumbnailShowLocationIcon": "Show location icon",
   "settingsThumbnailShowMotionPhotoIcon": "Show motion photo icon",
+  "settingsThumbnailShowRating": "Show rating",
   "settingsThumbnailShowRawIcon": "Show raw icon",
   "settingsThumbnailShowVideoDuration": "Show video duration",
 

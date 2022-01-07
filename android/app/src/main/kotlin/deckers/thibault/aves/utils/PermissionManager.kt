@@ -55,7 +55,7 @@ object PermissionManager {
             MainActivity.pendingStorageAccessResultHandlers[MainActivity.DOCUMENT_TREE_ACCESS_REQUEST] = PendingStorageAccessResultHandler(path, onGranted, onDenied)
             activity.startActivityForResult(intent, MainActivity.DOCUMENT_TREE_ACCESS_REQUEST)
         } else {
-            MainActivity.notifyError("failed to resolve activity for intent=$intent")
+            MainActivity.notifyError("failed to resolve activity for intent=$intent extras=${intent.extras}")
             onDenied()
         }
     }

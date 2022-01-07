@@ -9,6 +9,7 @@ class CatalogMetadata {
   final String? mimeType, xmpSubjects, xmpTitleDescription;
   double? latitude, longitude;
   Address? address;
+  int rating;
 
   static const double _precisionErrorTolerance = 1e-9;
   static const _isAnimatedMask = 1 << 0;
@@ -31,6 +32,7 @@ class CatalogMetadata {
     this.xmpTitleDescription,
     double? latitude,
     double? longitude,
+    this.rating = 0,
   }) {
     // Geocoder throws an `IllegalArgumentException` when a coordinate has a funky value like `1.7056881853375E7`
     // We also exclude zero coordinates, taking into account precision errors (e.g. {5.952380952380953e-11,-2.7777777777777777e-10}),
@@ -67,6 +69,7 @@ class CatalogMetadata {
       xmpTitleDescription: xmpTitleDescription,
       latitude: latitude,
       longitude: longitude,
+      rating: rating,
     );
   }
 
@@ -87,6 +90,7 @@ class CatalogMetadata {
       xmpTitleDescription: map['xmpTitleDescription'] ?? '',
       latitude: map['latitude'],
       longitude: map['longitude'],
+      rating: map['rating'] ?? 0,
     );
   }
 
@@ -100,8 +104,9 @@ class CatalogMetadata {
         'xmpTitleDescription': xmpTitleDescription,
         'latitude': latitude,
         'longitude': longitude,
+        'rating': rating,
       };
 
   @override
-  String toString() => '$runtimeType#${shortHash(this)}{contentId=$contentId, mimeType=$mimeType, dateMillis=$dateMillis, isAnimated=$isAnimated, isFlipped=$isFlipped, isGeotiff=$isGeotiff, is360=$is360, isMultiPage=$isMultiPage, rotationDegrees=$rotationDegrees, latitude=$latitude, longitude=$longitude, xmpSubjects=$xmpSubjects, xmpTitleDescription=$xmpTitleDescription}';
+  String toString() => '$runtimeType#${shortHash(this)}{contentId=$contentId, mimeType=$mimeType, dateMillis=$dateMillis, isAnimated=$isAnimated, isFlipped=$isFlipped, isGeotiff=$isGeotiff, is360=$is360, isMultiPage=$isMultiPage, rotationDegrees=$rotationDegrees, xmpSubjects=$xmpSubjects, xmpTitleDescription=$xmpTitleDescription, latitude=$latitude, longitude=$longitude, rating=$rating}';
 }

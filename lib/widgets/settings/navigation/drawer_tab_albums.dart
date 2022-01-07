@@ -43,7 +43,7 @@ class _DrawerAlbumTabState extends State<DrawerAlbumTab> {
                   onPressed: () {
                     setState(() => widget.items.remove(album));
                   },
-                  tooltip: context.l10n.removeTooltip,
+                  tooltip: context.l10n.actionRemove,
                 ),
               );
             },

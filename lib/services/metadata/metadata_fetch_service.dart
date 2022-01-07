@@ -1,11 +1,12 @@
 import 'package:aves/model/entry.dart';
-import 'package:aves/model/entry_xmp_iptc.dart';
 import 'package:aves/model/metadata/catalog.dart';
+import 'package:aves/model/metadata/enums.dart';
 import 'package:aves/model/metadata/overlay.dart';
 import 'package:aves/model/multipage.dart';
 import 'package:aves/model/panorama.dart';
 import 'package:aves/services/common/service_policy.dart';
 import 'package:aves/services/common/services.dart';
+import 'package:aves/services/metadata/xmp.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
@@ -28,6 +29,8 @@ abstract class MetadataFetchService {
   Future<bool> hasContentResolverProp(String prop);
 
   Future<String?> getContentResolverProp(AvesEntry entry, String prop);
+
+  Future<DateTime?> getDate(AvesEntry entry, MetadataField field);
 }
 
 class PlatformMetadataFetchService implements MetadataFetchService {
@@ -63,6 +66,7 @@ class PlatformMetadataFetchService implements MetadataFetchService {
         // 'dateMillis': date taken in milliseconds since Epoch (long)
         // 'isAnimated': animated gif/webp (bool)
         // 'isFlipped': flipped according to EXIF orientation (bool)
+        // 'rating': rating in [-1,5] (int)
         // 'rotationDegrees': rotation degrees according to EXIF orientation or other metadata (int)
         // 'latitude': latitude (double)
         // 'longitude': longitude (double)
@@ -216,6 +220,24 @@ class PlatformMetadataFetchService implements MetadataFetchService {
         'uri': entry.uri,
         'prop': prop,
       });
+    } on PlatformException catch (e, stack) {
+      if (!entry.isMissingAtPath) {
+        await reportService.recordError(e, stack);
+      }
+    }
+    return null;
+  }
+
+  @override
+  Future<DateTime?> getDate(AvesEntry entry, MetadataField field) async {
+    try {
+      final result = await platform.invokeMethod('getDate', <String, dynamic>{
+        'mimeType': entry.mimeType,
+        'uri': entry.uri,
+        'sizeBytes': entry.sizeBytes,
+        'field': field.toExifInterfaceTag(),
+      });
+      if (result is int) return DateTime.fromMillisecondsSinceEpoch(result);
     } on PlatformException catch (e, stack) {
       if (!entry.isMissingAtPath) {
         await reportService.recordError(e, stack);

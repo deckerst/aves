@@ -69,7 +69,7 @@ class _RemoveEntryMetadataDialogState extends State<RemoveEntryMetadataDialog> {
                   ),
                   isExpanded: _showMore,
                   canTapOnHeader: true,
-                  backgroundColor: Theme.of(context).dialogBackgroundColor,
+                  backgroundColor: Colors.transparent,
                 ),
               ],
             ),

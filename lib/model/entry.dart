@@ -7,8 +7,6 @@ import 'package:aves/model/entry_cache.dart';
 import 'package:aves/model/favourites.dart';
 import 'package:aves/model/metadata/address.dart';
 import 'package:aves/model/metadata/catalog.dart';
-import 'package:aves/model/metadata/date_modifier.dart';
-import 'package:aves/model/metadata/enums.dart';
 import 'package:aves/model/multipage.dart';
 import 'package:aves/model/video/metadata.dart';
 import 'package:aves/ref/mime_types.dart';
@@ -18,7 +16,6 @@ import 'package:aves/services/geocoding_service.dart';
 import 'package:aves/services/metadata/svg_metadata_service.dart';
 import 'package:aves/theme/format.dart';
 import 'package:aves/utils/change_notifier.dart';
-import 'package:aves/utils/time_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:country_code/country_code.dart';
 import 'package:flutter/foundation.dart';
@@ -237,7 +234,9 @@ class AvesEntry {
 
   bool get canEdit => path != null;
 
-  bool get canEditDate => canEdit && canEditExif;
+  bool get canEditDate => canEdit && (canEditExif || canEditXmp);
+
+  bool get canEditRating => canEdit && canEditXmp;
 
   bool get canEditTags => canEdit && canEditXmp;
 
@@ -361,6 +360,8 @@ class AvesEntry {
     return _bestDate;
   }
 
+  int get rating => _catalogMetadata?.rating ?? 0;
+
   int get rotationDegrees => _catalogMetadata?.rotationDegrees ?? sourceRotationDegrees;
 
   set rotationDegrees(int rotationDegrees) {
@@ -448,6 +449,7 @@ class AvesEntry {
   CatalogMetadata? get catalogMetadata => _catalogMetadata;
 
   set catalogMetadata(CatalogMetadata? newMetadata) {
+    final oldMimeType = mimeType;
     final oldDateModifiedSecs = dateModifiedSecs;
     final oldRotationDegrees = rotationDegrees;
     final oldIsFlipped = isFlipped;
@@ -458,7 +460,7 @@ class AvesEntry {
     _tags = null;
     metadataChangeNotifier.notify();
 
-    _onVisualFieldChanged(oldDateModifiedSecs, oldRotationDegrees, oldIsFlipped);
+    _onVisualFieldChanged(oldMimeType, oldDateModifiedSecs, oldRotationDegrees, oldIsFlipped);
   }
 
   void clearMetadata() {
@@ -477,14 +479,14 @@ class AvesEntry {
           'width': size.width.ceil(),
           'height': size.height.ceil(),
         };
-        await _applyNewFields(fields, persist: persist);
+        await applyNewFields(fields, persist: persist);
       }
       catalogMetadata = CatalogMetadata(contentId: contentId);
     } else {
       if (isVideo && (!isSized || durationMillis == 0)) {
         // exotic video that is not sized during loading
         final fields = await VideoMetadataFormatter.getLoadingMetadata(this);
-        await _applyNewFields(fields, persist: persist);
+        await applyNewFields(fields, persist: persist);
       }
       catalogMetadata = await metadataFetchService.getCatalogMetadata(this, background: background);
 
@@ -581,7 +583,8 @@ class AvesEntry {
     }.whereNotNull().where((v) => v.isNotEmpty).join(', ');
   }
 
-  Future<void> _applyNewFields(Map newFields, {required bool persist}) async {
+  Future<void> applyNewFields(Map newFields, {required bool persist}) async {
+    final oldMimeType = mimeType;
     final oldDateModifiedSecs = this.dateModifiedSecs;
     final oldRotationDegrees = this.rotationDegrees;
     final oldIsFlipped = this.isFlipped;
@@ -621,7 +624,7 @@ class AvesEntry {
       if (catalogMetadata != null) await metadataDb.saveMetadata({catalogMetadata!});
     }
 
-    await _onVisualFieldChanged(oldDateModifiedSecs, oldRotationDegrees, oldIsFlipped);
+    await _onVisualFieldChanged(oldMimeType, oldDateModifiedSecs, oldRotationDegrees, oldIsFlipped);
     metadataChangeNotifier.notify();
   }
 
@@ -642,63 +645,10 @@ class AvesEntry {
 
     final updatedEntry = await mediaFileService.getEntry(uri, mimeType);
     if (updatedEntry != null) {
-      await _applyNewFields(updatedEntry.toMap(), persist: persist);
+      await applyNewFields(updatedEntry.toMap(), persist: persist);
     }
     await catalog(background: background, force: dataTypes.contains(EntryDataType.catalog), persist: persist);
     await locate(background: background, force: dataTypes.contains(EntryDataType.address), geocoderLocale: geocoderLocale);
-  }
-
-  Future<Set<EntryDataType>> rotate({required bool clockwise, required bool persist}) async {
-    final newFields = await metadataEditService.rotate(this, clockwise: clockwise);
-    if (newFields.isEmpty) return {};
-
-    await _applyNewFields(newFields, persist: persist);
-    return {
-      EntryDataType.basic,
-      EntryDataType.catalog,
-    };
-  }
-
-  Future<Set<EntryDataType>> flip({required bool persist}) async {
-    final newFields = await metadataEditService.flip(this);
-    if (newFields.isEmpty) return {};
-
-    await _applyNewFields(newFields, persist: persist);
-    return {
-      EntryDataType.basic,
-      EntryDataType.catalog,
-    };
-  }
-
-  Future<Set<EntryDataType>> editDate(DateModifier modifier) async {
-    if (modifier.action == DateEditAction.extractFromTitle) {
-      final _title = bestTitle;
-      if (_title == null) return {};
-      final date = parseUnknownDateFormat(_title);
-      if (date == null) {
-        await reportService.recordError('failed to parse date from title=$_title', null);
-        return {};
-      }
-      modifier = DateModifier(DateEditAction.set, modifier.fields, dateTime: date);
-    }
-    final newFields = await metadataEditService.editDate(this, modifier);
-    return newFields.isEmpty
-        ? {}
-        : {
-            EntryDataType.basic,
-            EntryDataType.catalog,
-          };
-  }
-
-  Future<Set<EntryDataType>> removeMetadata(Set<MetadataType> types) async {
-    final newFields = await metadataEditService.removeTypes(this, types);
-    return newFields.isEmpty
-        ? {}
-        : {
-            EntryDataType.basic,
-            EntryDataType.catalog,
-            EntryDataType.address,
-          };
   }
 
   Future<bool> delete() {
@@ -715,10 +665,10 @@ class AvesEntry {
     return completer.future;
   }
 
-  // when the entry image itself changed (e.g. after rotation)
-  Future<void> _onVisualFieldChanged(int? oldDateModifiedSecs, int oldRotationDegrees, bool oldIsFlipped) async {
-    if (oldDateModifiedSecs != dateModifiedSecs || oldRotationDegrees != rotationDegrees || oldIsFlipped != isFlipped) {
-      await EntryCache.evict(uri, mimeType, oldDateModifiedSecs, oldRotationDegrees, oldIsFlipped);
+  // when the MIME type or the image itself changed (e.g. after rotation)
+  Future<void> _onVisualFieldChanged(String oldMimeType, int? oldDateModifiedSecs, int oldRotationDegrees, bool oldIsFlipped) async {
+    if ((!MimeTypes.refersToSameType(oldMimeType, mimeType) && !MimeTypes.isVideo(oldMimeType)) || oldDateModifiedSecs != dateModifiedSecs || oldRotationDegrees != rotationDegrees || oldIsFlipped != isFlipped) {
+      await EntryCache.evict(uri, oldMimeType, oldDateModifiedSecs, oldRotationDegrees, oldIsFlipped);
       imageChangeNotifier.notify();
     }
   }
@@ -735,13 +685,13 @@ class AvesEntry {
 
   Future<void> addToFavourites() async {
     if (!isFavourite) {
-      await favourites.add([this]);
+      await favourites.add({this});
     }
   }
 
   Future<void> removeFromFavourites() async {
     if (isFavourite) {
-      await favourites.remove([this]);
+      await favourites.remove({this});
     }
   }
 
@@ -798,14 +748,6 @@ class AvesEntry {
     return c != 0 ? c : compareAsciiUpperCase(a.extension ?? '', b.extension ?? '');
   }
 
-  // compare by:
-  // 1) size descending
-  // 2) name ascending
-  static int compareBySize(AvesEntry a, AvesEntry b) {
-    final c = (b.sizeBytes ?? 0).compareTo(a.sizeBytes ?? 0);
-    return c != 0 ? c : compareByName(a, b);
-  }
-
   static final _epoch = DateTime.fromMillisecondsSinceEpoch(0);
 
   // compare by:
@@ -815,5 +757,21 @@ class AvesEntry {
     var c = (b.bestDate ?? _epoch).compareTo(a.bestDate ?? _epoch);
     if (c != 0) return c;
     return compareByName(b, a);
+  }
+
+  // compare by:
+  // 1) rating descending
+  // 2) date descending
+  static int compareByRating(AvesEntry a, AvesEntry b) {
+    final c = b.rating.compareTo(a.rating);
+    return c != 0 ? c : compareByDate(a, b);
+  }
+
+  // compare by:
+  // 1) size descending
+  // 2) date descending
+  static int compareBySize(AvesEntry a, AvesEntry b) {
+    final c = (b.sizeBytes ?? 0).compareTo(a.sizeBytes ?? 0);
+    return c != 0 ? c : compareByDate(a, b);
   }
 }

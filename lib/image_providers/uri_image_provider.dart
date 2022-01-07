@@ -68,6 +68,7 @@ class UriImage extends ImageProvider<UriImage> with EquatableMixin {
       }
       return await decode(bytes);
     } catch (error) {
+      // loading may fail if the provided MIME type is incorrect (e.g. the Media Store may report a JPEG as a TIFF)
       debugPrint('$runtimeType _loadAsync failed with mimeType=$mimeType, uri=$uri, error=$error');
       throw StateError('$mimeType decoding failed (page $pageId)');
     } finally {

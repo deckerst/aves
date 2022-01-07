@@ -106,6 +106,12 @@ class _AvesAppState extends State<AvesApp> {
                             home: home,
                             navigatorObservers: _navigatorObservers,
                             builder: (context, child) {
+                              // Flutter has various page transition implementations for Android:
+                              // - `FadeUpwardsPageTransitionsBuilder` on Oreo / API 27 and below
+                              // - `OpenUpwardsPageTransitionsBuilder` on Pie / API 28
+                              // - `ZoomPageTransitionsBuilder` on Android 10 / API 29 and above
+                              // As of Flutter v2.8.1, `FadeUpwardsPageTransitionsBuilder` is the default, regardless of versions.
+                              // In practice, `ZoomPageTransitionsBuilder` feels unstable when transitioning from Album to Collection.
                               if (!areAnimationsEnabled) {
                                 child = Theme(
                                   data: Theme.of(context).copyWith(

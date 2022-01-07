@@ -1,8 +1,12 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 
 @immutable
-class ActionEvent<T> {
+class ActionEvent<T> extends Equatable {
   final T action;
+
+  @override
+  List<Object?> get props => [action];
 
   const ActionEvent(this.action);
 }

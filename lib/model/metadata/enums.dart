@@ -3,13 +3,23 @@ enum MetadataField {
   exifDateOriginal,
   exifDateDigitized,
   exifGpsDate,
+  xmpCreateDate,
 }
 
 enum DateEditAction {
-  set,
-  shift,
+  setCustom,
+  copyField,
   extractFromTitle,
-  clear,
+  shift,
+  remove,
+}
+
+enum DateFieldSource {
+  fileModifiedDate,
+  exifDate,
+  exifDateOriginal,
+  exifDateDigitized,
+  exifGpsDate,
 }
 
 enum MetadataType {
@@ -56,7 +66,7 @@ class MetadataTypes {
 }
 
 extension ExtraMetadataType on MetadataType {
-  // match `ExifInterface` directory names
+  // match `metadata-extractor` directory names
   String getText() {
     switch (this) {
       case MetadataType.comment:
@@ -77,6 +87,52 @@ extension ExtraMetadataType on MetadataType {
         return 'Photoshop';
       case MetadataType.xmp:
         return 'XMP';
+    }
+  }
+}
+
+extension ExtraMetadataField on MetadataField {
+  MetadataType get type {
+    switch (this) {
+      case MetadataField.exifDate:
+      case MetadataField.exifDateOriginal:
+      case MetadataField.exifDateDigitized:
+      case MetadataField.exifGpsDate:
+        return MetadataType.exif;
+      case MetadataField.xmpCreateDate:
+        return MetadataType.xmp;
+    }
+  }
+
+  String? toExifInterfaceTag() {
+    switch (this) {
+      case MetadataField.exifDate:
+        return 'DateTime';
+      case MetadataField.exifDateOriginal:
+        return 'DateTimeOriginal';
+      case MetadataField.exifDateDigitized:
+        return 'DateTimeDigitized';
+      case MetadataField.exifGpsDate:
+        return 'GPSDateStamp';
+      case MetadataField.xmpCreateDate:
+        return null;
+    }
+  }
+}
+
+extension ExtraDateFieldSource on DateFieldSource {
+  MetadataField? toMetadataField() {
+    switch (this) {
+      case DateFieldSource.fileModifiedDate:
+        return null;
+      case DateFieldSource.exifDate:
+        return MetadataField.exifDate;
+      case DateFieldSource.exifDateOriginal:
+        return MetadataField.exifDateOriginal;
+      case DateFieldSource.exifDateDigitized:
+        return MetadataField.exifDateDigitized;
+      case DateFieldSource.exifGpsDate:
+        return MetadataField.exifGpsDate;
     }
   }
 }

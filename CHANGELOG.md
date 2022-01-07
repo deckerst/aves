@@ -4,6 +4,27 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.5.10"></a>[v1.5.10] - 2022-01-07
+
+### Added
+
+- Collection: toggle favourites in bulk
+- Info: edit ratings of JPG/GIF/PNG/TIFF images via XMP
+- Info: edit date of GIF images via XMP
+- Info: option to set date from other fields
+- Spanish translation (thanks n-berenice)
+
+### Changed
+
+- editing an item orientation, rating or tags automatically sets a metadata date (from the file
+  modified date), if it is missing
+- Viewer: when opening an item from another app, it is now possible to scroll to other items in the
+  album
+
+### Fixed
+
+- Exif and IPTC raw profile extraction from PNG in some cases
+
 ## <a id="v1.5.9"></a>[v1.5.9] - 2021-12-22
 
 ### Added
@@ -37,7 +58,8 @@ All notable changes to this project will be documented in this file.
 ### Changed
 
 - Settings: select hidden path directory with a custom file picker instead of the native SAF one
-- Viewer: video cover (before playing the video) is now loaded at original resolution and can be zoomed
+- Viewer: video cover (before playing the video) is now loaded at original resolution and can be
+  zoomed
 
 ### Fixed
 
@@ -75,7 +97,8 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
-- use build flavors to match distribution channels: `play` (same as original) and `izzy` (no Crashlytics)
+- use build flavors to match distribution channels: `play` (same as original) and `izzy` (no
+  Crashlytics)
 - use 12/24 hour format settings from device to display times
 - Privacy: consent request on first launch for installed app inventory access
 - use File API to rename and delete items, when possible (primary storage, Android <11)

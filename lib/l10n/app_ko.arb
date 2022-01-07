@@ -22,7 +22,7 @@
   "nextTooltip": "다음",
   "showTooltip": "보기",
   "hideTooltip": "숨기기",
-  "removeTooltip": "제거",
+  "actionRemove": "제거",
   "resetButtonTooltip": "복원",
 
   "doubleBackExitMessage": "종료하려면 한번 더 누르세요.",
@@ -72,13 +72,16 @@
   "videoActionSetSpeed": "재생 배속",
   "videoActionSettings": "설정",
 
-  "entryInfoActionEditDate": "날짜와 시간 수정",
+  "entryInfoActionEditDate": "날짜 및 시간 수정",
+  "entryInfoActionEditRating": "별점 수정",
   "entryInfoActionEditTags": "태그 수정",
   "entryInfoActionRemoveMetadata": "메타데이터 삭제",
 
   "filterFavouriteLabel": "즐겨찾기",
   "filterLocationEmptyLabel": "장소 없음",
   "filterTagEmptyLabel": "태그 없음",
+  "filterRatingUnratedLabel": "별점 없음",
+  "filterRatingRejectedLabel": "거부됨",
   "filterTypeAnimatedLabel": "애니메이션",
   "filterTypeMotionPhotoLabel": "모션 포토",
   "filterTypePanoramaLabel": "파노라마",
@@ -137,6 +140,8 @@
   "restrictedAccessDialogMessage": "“{volume}”의 {directory}에 있는 파일의 접근이 제한됩니다.\n\n기본으로 설치된 갤러리나 파일 관리 앱을 사용해서 다른 폴더로 파일을 이동하세요.",
   "notEnoughSpaceDialogTitle": "저장공간 부족",
   "notEnoughSpaceDialogMessage": "“{volume}”에 필요 공간은 {neededSize}인데 사용 가능한 용량은 {freeSize}만 남아있습니다.",
+  "missingSystemFilePickerDialogTitle": "기본 파일 선택기 없음",
+  "missingSystemFilePickerDialogMessage": "기본 파일 선택기가 없거나 비활성화딥니다. 파일 선택기를 켜고 다시 시도하세요.",
 
   "unsupportedTypeDialogTitle": "미지원 형식",
   "unsupportedTypeDialogMessage": "{count, plural, other{이 작업은 다음 항목의 형식을 지원하지 않습니다: {types}.}}",
@@ -178,13 +183,16 @@
   "renameEntryDialogLabel": "이름",
 
   "editEntryDateDialogTitle": "날짜 및 시간",
-  "editEntryDateDialogSet": "편집",
-  "editEntryDateDialogShift": "시간 이동",
+  "editEntryDateDialogSetCustom": "지정 날짜로 편집",
+  "editEntryDateDialogCopyField": "다른 날짜에서 지정",
   "editEntryDateDialogExtractFromTitle": "제목에서 추출",
-  "editEntryDateDialogClear": "삭제",
-  "editEntryDateDialogFieldSelection": "필드 선택",
+  "editEntryDateDialogShift": "시간 이동",
+  "editEntryDateDialogSourceFileModifiedDate": "파일 수정한 날짜",
+  "editEntryDateDialogTargetFieldsHeader": "수정할 필드",
   "editEntryDateDialogHours": "시간",
   "editEntryDateDialogMinutes": "분",
+
+  "editEntryRatingDialogTitle": "별점",
 
   "removeEntryMetadataDialogTitle": "메타데이터 삭제",
   "removeEntryMetadataDialogMore": "더 보기",
@@ -270,6 +278,7 @@
   "collectionSortDate": "날짜",
   "collectionSortSize": "크기",
   "collectionSortName": "이름",
+  "collectionSortRating": "별점",
 
   "collectionGroupAlbum": "앨범별로",
   "collectionGroupMonth": "월별로",
@@ -343,6 +352,7 @@
   "searchSectionCountries": "국가",
   "searchSectionPlaces": "장소",
   "searchSectionTags": "태그",
+  "searchSectionRating": "별점",
 
   "settingsPageTitle": "설정",
   "settingsSystemDefault": "시스템",
@@ -366,8 +376,10 @@
   "settingsNavigationDrawerAddAlbum": "앨범 추가",
 
   "settingsSectionThumbnails": "섬네일",
+  "settingsThumbnailShowFavouriteIcon": "즐겨찾기 아이콘 표시",
   "settingsThumbnailShowLocationIcon": "위치 아이콘 표시",
   "settingsThumbnailShowMotionPhotoIcon": "모션 포토 아이콘 표시",
+  "settingsThumbnailShowRating": "별점 표시",
   "settingsThumbnailShowRawIcon": "Raw 아이콘 표시",
   "settingsThumbnailShowVideoDuration": "동영상 길이 표시",
 

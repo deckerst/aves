@@ -20,8 +20,7 @@ class MetadataEditHandler(private val activity: Activity) : MethodCallHandler {
             "rotate" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::rotate) }
             "flip" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::flip) }
             "editDate" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::editDate) }
-            "setIptc" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::setIptc) }
-            "setXmp" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::setXmp) }
+            "editMetadata" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::editMetadata) }
             "removeTypes" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::removeTypes) }
             else -> result.notImplemented()
         }
@@ -99,12 +98,11 @@ class MetadataEditHandler(private val activity: Activity) : MethodCallHandler {
         })
     }
 
-    private fun setIptc(call: MethodCall, result: MethodChannel.Result) {
-        val iptc = call.argument<List<FieldMap>>("iptc")
+    private fun editMetadata(call: MethodCall, result: MethodChannel.Result) {
+        val metadata = call.argument<FieldMap>("metadata")
         val entryMap = call.argument<FieldMap>("entry")
-        val postEditScan = call.argument<Boolean>("postEditScan")
-        if (entryMap == null || postEditScan == null) {
-            result.error("setIptc-args", "failed because of missing arguments", null)
+        if (entryMap == null || metadata == null) {
+            result.error("editMetadata-args", "failed because of missing arguments", null)
             return
         }
 
@@ -112,48 +110,19 @@ class MetadataEditHandler(private val activity: Activity) : MethodCallHandler {
         val path = entryMap["path"] as String?
         val mimeType = entryMap["mimeType"] as String?
         if (uri == null || path == null || mimeType == null) {
-            result.error("setIptc-args", "failed because entry fields are missing", null)
+            result.error("editMetadata-args", "failed because entry fields are missing", null)
             return
         }
 
         val provider = getProvider(uri)
         if (provider == null) {
-            result.error("setIptc-provider", "failed to find provider for uri=$uri", null)
+            result.error("editMetadata-provider", "failed to find provider for uri=$uri", null)
             return
         }
 
-        provider.setIptc(activity, path, uri, mimeType, postEditScan, iptc = iptc, callback = object : ImageOpCallback {
+        provider.editMetadata(activity, path, uri, mimeType, metadata, callback = object : ImageOpCallback {
             override fun onSuccess(fields: FieldMap) = result.success(fields)
-            override fun onFailure(throwable: Throwable) = result.error("setIptc-failure", "failed to set IPTC for mimeType=$mimeType uri=$uri", throwable.message)
-        })
-    }
-
-    private fun setXmp(call: MethodCall, result: MethodChannel.Result) {
-        val xmp = call.argument<String>("xmp")
-        val extendedXmp = call.argument<String>("extendedXmp")
-        val entryMap = call.argument<FieldMap>("entry")
-        if (entryMap == null) {
-            result.error("setXmp-args", "failed because of missing arguments", null)
-            return
-        }
-
-        val uri = (entryMap["uri"] as String?)?.let { Uri.parse(it) }
-        val path = entryMap["path"] as String?
-        val mimeType = entryMap["mimeType"] as String?
-        if (uri == null || path == null || mimeType == null) {
-            result.error("setXmp-args", "failed because entry fields are missing", null)
-            return
-        }
-
-        val provider = getProvider(uri)
-        if (provider == null) {
-            result.error("setXmp-provider", "failed to find provider for uri=$uri", null)
-            return
-        }
-
-        provider.setXmp(activity, path, uri, mimeType, coreXmp = xmp, extendedXmp = extendedXmp, callback = object : ImageOpCallback {
-            override fun onSuccess(fields: FieldMap) = result.success(fields)
-            override fun onFailure(throwable: Throwable) = result.error("setXmp-failure", "failed to set XMP for mimeType=$mimeType uri=$uri", throwable.message)
+            override fun onFailure(throwable: Throwable) = result.error("editMetadata-failure", "failed to edit metadata for mimeType=$mimeType uri=$uri", throwable.message)
         })
     }
 

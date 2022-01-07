@@ -34,9 +34,11 @@ class Themes {
         fontFeatures: [FontFeature.enable('smcp')],
       ),
     ),
-    colorScheme: const ColorScheme.dark(
+    colorScheme: ColorScheme.dark(
       primary: _accentColor,
       secondary: _accentColor,
+      // surface color is used as background for the date picker header
+      surface: Colors.grey.shade800,
       onPrimary: Colors.white,
       onSecondary: Colors.white,
     ),

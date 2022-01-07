@@ -6,7 +6,8 @@ import 'package:aves/model/actions/entry_set_actions.dart';
 import 'package:aves/model/actions/move_type.dart';
 import 'package:aves/model/device.dart';
 import 'package:aves/model/entry.dart';
-import 'package:aves/model/entry_xmp_iptc.dart';
+import 'package:aves/model/entry_metadata_edition.dart';
+import 'package:aves/model/favourites.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/highlight.dart';
@@ -15,7 +16,6 @@ import 'package:aves/model/selection.dart';
 import 'package:aves/model/source/analysis_controller.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
-import 'package:aves/model/source/enums.dart';
 import 'package:aves/services/common/image_op_events.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/media/enums.dart';
@@ -44,7 +44,6 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
     EntrySetAction action, {
     required AppMode appMode,
     required bool isSelecting,
-    required EntrySortFactor sortFactor,
     required int itemCount,
     required int selectedItemCount,
   }) {
@@ -75,10 +74,12 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
       case EntrySetAction.copy:
       case EntrySetAction.move:
       case EntrySetAction.rescan:
+      case EntrySetAction.toggleFavourite:
       case EntrySetAction.rotateCCW:
       case EntrySetAction.rotateCW:
       case EntrySetAction.flip:
       case EntrySetAction.editDate:
+      case EntrySetAction.editRating:
       case EntrySetAction.editTags:
       case EntrySetAction.removeMetadata:
         return appMode == AppMode.main && isSelecting;
@@ -116,10 +117,12 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
       case EntrySetAction.copy:
       case EntrySetAction.move:
       case EntrySetAction.rescan:
+      case EntrySetAction.toggleFavourite:
       case EntrySetAction.rotateCCW:
       case EntrySetAction.rotateCW:
       case EntrySetAction.flip:
       case EntrySetAction.editDate:
+      case EntrySetAction.editRating:
       case EntrySetAction.editTags:
       case EntrySetAction.removeMetadata:
         return hasSelection;
@@ -167,6 +170,9 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
       case EntrySetAction.rescan:
         _rescan(context);
         break;
+      case EntrySetAction.toggleFavourite:
+        _toggleFavourite(context);
+        break;
       case EntrySetAction.rotateCCW:
         _rotate(context, clockwise: false);
         break;
@@ -178,6 +184,9 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
         break;
       case EntrySetAction.editDate:
         _editDate(context);
+        break;
+      case EntrySetAction.editRating:
+        _editRating(context);
         break;
       case EntrySetAction.editTags:
         _editTags(context);
@@ -207,6 +216,18 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
 
     final controller = AnalysisController(canStartService: true, force: true);
     source.analyze(controller, entries: selectedItems);
+
+    selection.browse();
+  }
+
+  Future<void> _toggleFavourite(BuildContext context) async {
+    final selection = context.read<Selection<AvesEntry>>();
+    final selectedItems = _getExpandedSelectedItems(selection);
+    if (selectedItems.every((entry) => entry.isFavourite)) {
+      await favourites.remove(selectedItems);
+    } else {
+      await favourites.add(selectedItems);
+    }
 
     selection.browse();
   }
@@ -489,7 +510,7 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
     final todoItems = await _getEditableItems(context, selectedItems: selectedItems, canEdit: (entry) => entry.canRotateAndFlip);
     if (todoItems == null || todoItems.isEmpty) return;
 
-    await _edit(context, selection, todoItems, (entry) => entry.rotate(clockwise: clockwise, persist: true));
+    await _edit(context, selection, todoItems, (entry) => entry.rotate(clockwise: clockwise));
   }
 
   Future<void> _flip(BuildContext context) async {
@@ -499,7 +520,7 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
     final todoItems = await _getEditableItems(context, selectedItems: selectedItems, canEdit: (entry) => entry.canRotateAndFlip);
     if (todoItems == null || todoItems.isEmpty) return;
 
-    await _edit(context, selection, todoItems, (entry) => entry.flip(persist: true));
+    await _edit(context, selection, todoItems, (entry) => entry.flip());
   }
 
   Future<void> _editDate(BuildContext context) async {
@@ -513,6 +534,19 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
     if (modifier == null) return;
 
     await _edit(context, selection, todoItems, (entry) => entry.editDate(modifier));
+  }
+
+  Future<void> _editRating(BuildContext context) async {
+    final selection = context.read<Selection<AvesEntry>>();
+    final selectedItems = _getExpandedSelectedItems(selection);
+
+    final todoItems = await _getEditableItems(context, selectedItems: selectedItems, canEdit: (entry) => entry.canEditRating);
+    if (todoItems == null || todoItems.isEmpty) return;
+
+    final rating = await selectRating(context, todoItems);
+    if (rating == null) return;
+
+    await _edit(context, selection, todoItems, (entry) => entry.editRating(rating));
   }
 
   Future<void> _editTags(BuildContext context) async {

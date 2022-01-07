@@ -1,6 +1,7 @@
 import 'package:aves/image_providers/app_icon_image_provider.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/utils/android_file_utils.dart';
+import 'package:aves/widgets/common/basic/query_bar.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:collection/collection.dart';
@@ -15,6 +16,7 @@ class DebugAndroidAppSection extends StatefulWidget {
 
 class _DebugAndroidAppSectionState extends State<DebugAndroidAppSection> with AutomaticKeepAliveClientMixin {
   late Future<Set<Package>> _loader;
+  final ValueNotifier<String> _queryNotifier = ValueNotifier('');
 
   static const iconSize = 20.0;
 
@@ -43,53 +45,64 @@ class _DebugAndroidAppSectionState extends State<DebugAndroidAppSection> with Au
               final disabledTheme = enabledTheme.merge(const IconThemeData(opacity: .2));
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: packages.map((package) {
-                  return Text.rich(
-                    TextSpan(
-                      children: [
-                        WidgetSpan(
-                          alignment: PlaceholderAlignment.middle,
-                          child: Image(
-                            image: AppIconImage(
-                              packageName: package.packageName,
-                              size: iconSize,
-                            ),
-                            width: iconSize,
-                            height: iconSize,
+                children: [
+                  QueryBar(queryNotifier: _queryNotifier),
+                  ...packages.map((package) {
+                    return ValueListenableBuilder<String>(
+                      valueListenable: _queryNotifier,
+                      builder: (context, query, child) {
+                        if ({package.packageName, ...package.potentialDirs}.none((v) => v.toLowerCase().contains(query.toLowerCase()))) {
+                          return const SizedBox();
+                        }
+                        return Text.rich(
+                          TextSpan(
+                            children: [
+                              WidgetSpan(
+                                alignment: PlaceholderAlignment.middle,
+                                child: Image(
+                                  image: AppIconImage(
+                                    packageName: package.packageName,
+                                    size: iconSize,
+                                  ),
+                                  width: iconSize,
+                                  height: iconSize,
+                                ),
+                              ),
+                              TextSpan(
+                                text: ' ${package.packageName}\n',
+                                style: InfoRowGroup.keyStyle,
+                              ),
+                              WidgetSpan(
+                                alignment: PlaceholderAlignment.middle,
+                                child: IconTheme(
+                                  data: package.categoryLauncher ? enabledTheme : disabledTheme,
+                                  child: const Icon(
+                                    Icons.launch_outlined,
+                                    size: iconSize,
+                                  ),
+                                ),
+                              ),
+                              WidgetSpan(
+                                alignment: PlaceholderAlignment.middle,
+                                child: IconTheme(
+                                  data: package.isSystem ? enabledTheme : disabledTheme,
+                                  child: const Icon(
+                                    Icons.android,
+                                    size: iconSize,
+                                  ),
+                                ),
+                              ),
+                              TextSpan(
+                                text: ' ${package.potentialDirs.join(', ')}\n',
+                                style: InfoRowGroup.baseStyle,
+                              ),
+                            ],
                           ),
-                        ),
-                        TextSpan(
-                          text: ' ${package.packageName}\n',
-                          style: InfoRowGroup.keyStyle,
-                        ),
-                        WidgetSpan(
-                          alignment: PlaceholderAlignment.middle,
-                          child: IconTheme(
-                            data: package.categoryLauncher ? enabledTheme : disabledTheme,
-                            child: const Icon(
-                              Icons.launch_outlined,
-                              size: iconSize,
-                            ),
-                          ),
-                        ),
-                        WidgetSpan(
-                          alignment: PlaceholderAlignment.middle,
-                          child: IconTheme(
-                            data: package.isSystem ? enabledTheme : disabledTheme,
-                            child: const Icon(
-                              Icons.android,
-                              size: iconSize,
-                            ),
-                          ),
-                        ),
-                        TextSpan(
-                          text: ' ${package.potentialDirs.join(', ')}\n',
-                          style: InfoRowGroup.baseStyle,
-                        ),
-                      ],
-                    ),
-                  );
-                }).toList(),
+                        );
+                      },
+                    );
+                  })
+                ],
               );
             },
           ),
