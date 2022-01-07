@@ -140,6 +140,8 @@
   "restrictedAccessDialogMessage": "Cette app ne peut pas modifier les fichiers du {directory} de «\u00A0{volume}\u00A0».\n\nVeuillez utiliser une app pré-installée pour déplacer les fichiers vers un autre dossier.",
   "notEnoughSpaceDialogTitle": "Espace insuffisant",
   "notEnoughSpaceDialogMessage": "Cette opération nécessite {neededSize} d’espace disponible sur «\u00A0{volume}\u00A0», mais il ne reste que {freeSize}.",
+  "missingSystemFilePickerDialogTitle": "Sélecteur de fichiers désactivé",
+  "missingSystemFilePickerDialogMessage": "Le sélecteur de fichiers du système est absent ou désactivé. Veuillez le réactiver et réessayer.",
 
   "unsupportedTypeDialogTitle": "Formats non supportés",
   "unsupportedTypeDialogMessage": "{count, plural, =1{Cette opération n’est pas disponible pour les fichiers au format suivant : {types}.} other{Cette opération n’est pas disponible pour les fichiers aux formats suivants : {types}.}}",
