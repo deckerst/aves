@@ -31,6 +31,7 @@ Future<void> configureAndLaunch() async {
     ..keepScreenOn = KeepScreenOn.always
     ..hasAcceptedTerms = false
     ..isErrorReportingAllowed = false
+    ..isInstalledAppAccessAllowed = true
     ..locale = const Locale('en')
     ..homePage = HomePageSetting.collection
     ..infoMapStyle = EntryMapStyle.googleNormal

@@ -18,6 +18,8 @@ class LocaleTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      // key is expected by test driver
+      key: const Key('tile-language'),
       title: Text(context.l10n.settingsLanguage),
       subtitle: Selector<Settings, Locale?>(
         selector: (context, s) => settings.locale,
