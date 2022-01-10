@@ -1,9 +1,10 @@
 import 'package:aves/model/metadata/enums.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 @immutable
-class DateModifier {
+class DateModifier extends Equatable {
   static const writableDateFields = [
     MetadataField.exifDate,
     MetadataField.exifDateOriginal,
@@ -17,6 +18,9 @@ class DateModifier {
   final DateTime? setDateTime;
   final DateFieldSource? copyFieldSource;
   final int? shiftMinutes;
+
+  @override
+  List<Object?> get props => [action, fields, setDateTime, copyFieldSource, shiftMinutes];
 
   const DateModifier._private(
     this.action,
