@@ -162,6 +162,6 @@ class _BugReportState extends State<BugReport> with FeedbackMixin {
   }
 
   Future<void> _goToGithub() async {
-    await launch('${Constants.avesGithub}/issues/new');
+    await launch('${Constants.avesGithub}/issues/new?labels=type%3Abug&template=bug_report.md');
   }
 }

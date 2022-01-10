@@ -272,7 +272,9 @@ object StorageUtils {
     // content://com.android.externalstorage.documents/tree/primary%3A              -> /storage/emulated/0/
     // content://com.android.externalstorage.documents/tree/10F9-3F13%3APictures    -> /storage/10F9-3F13/Pictures/
     fun convertTreeUriToDirPath(context: Context, treeUri: Uri): String? {
-        val encoded = treeUri.toString().substring(TREE_URI_ROOT.length)
+        val treeUriString = treeUri.toString()
+        if (treeUriString.length <= TREE_URI_ROOT.length) return null
+        val encoded = treeUriString.substring(TREE_URI_ROOT.length)
         val matcher = TREE_URI_PATH_PATTERN.matcher(Uri.decode(encoded))
         with(matcher) {
             if (find()) {

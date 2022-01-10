@@ -95,7 +95,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
                     if (_action == DateEditAction.setCustom) _buildSetCustomContent(context),
                     if (_action == DateEditAction.copyField) _buildCopyFieldContent(context),
                     if (_action == DateEditAction.shift) _buildShiftContent(context),
-                    (_action == DateEditAction.shift || _action == DateEditAction.remove)? _buildDestinationFields(context): const SizedBox(height: 8),
+                    (_action == DateEditAction.shift || _action == DateEditAction.remove) ? _buildDestinationFields(context) : const SizedBox(height: 8),
                   ],
                 ),
               ),
