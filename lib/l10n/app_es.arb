@@ -463,9 +463,9 @@
 
   "settingsSectionAccessibility": "Accesibilidad",
   "settingsRemoveAnimationsTile": "Remover animaciones",
-  "settingsRemoveAnimationsTitle": "Remove animaciones",
-  "settingsTimeToTakeActionTile": "Hora de entrar en acción",
-  "settingsTimeToTakeActionTitle": "Hora de entrar en acción",
+  "settingsRemoveAnimationsTitle": "Remover animaciones",
+  "settingsTimeToTakeActionTile": "Retraso para ejecutar una acción",
+  "settingsTimeToTakeActionTitle": "Retraso para ejecutar una acción",
 
   "settingsSectionLanguage": "Idioma y formatos",
   "settingsLanguage": "Idioma",
