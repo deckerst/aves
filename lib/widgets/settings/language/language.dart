@@ -28,6 +28,8 @@ class LanguageSection extends StatelessWidget {
     final currentUnitSystem = context.select<Settings, UnitSystem>((s) => s.unitSystem);
 
     return AvesExpansionTile(
+      // key is expected by test driver
+      key: const Key('section-language'),
       // use a fixed value instead of the title to identify this expansion tile
       // so that the tile state is kept when the language is modified
       value: 'language',

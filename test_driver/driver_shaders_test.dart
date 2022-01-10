@@ -12,22 +12,19 @@ import 'utils/driver_extension.dart';
 
 late FlutterDriver driver;
 
-extension ExtraFlutterDriver on FlutterDriver {
-  Future<void> tapKeyAndWait(String key) async {
-    await driver.tap(find.byValueKey(key));
-    await driver.waitUntilNoTransientCallbacks();
-  }
-}
-
 void main() {
   group('[Aves app]', () {
     setUpAll(() async {
       await copyContent(sourcePicturesDir, targetPicturesDir);
-      await grantPermissions('deckers.thibault.aves.debug', [
-        'android.permission.READ_EXTERNAL_STORAGE',
-        'android.permission.WRITE_EXTERNAL_STORAGE',
-        'android.permission.ACCESS_MEDIA_LOCATION',
-      ]);
+      await Future.forEach<String>(
+          [
+            'deckers.thibault.aves.debug',
+            'deckers.thibault.aves.profile',
+          ],
+          (package) => grantPermissions(package, [
+                'android.permission.READ_EXTERNAL_STORAGE',
+                'android.permission.ACCESS_MEDIA_LOCATION',
+              ]));
       driver = await FlutterDriver.connect();
     });
 

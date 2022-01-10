@@ -201,6 +201,8 @@ class _AppDrawerState extends State<AppDrawer> {
     return typeBookmarks
         .where((filter) => !hiddenFilters.contains(filter))
         .map((filter) => CollectionNavTile(
+              // key is expected by test driver
+              key: Key('drawer-type-${filter?.key}'),
               leading: DrawerFilterIcon(filter: filter),
               title: DrawerFilterTitle(filter: filter),
               filter: filter,
@@ -257,6 +259,8 @@ class _AppDrawerState extends State<AppDrawer> {
         }
 
         return PageNavTile(
+          // key is expected by test driver
+          key: Key('drawer-page-$route'),
           trailing: trailing,
           routeName: route,
           pageBuilder: pageBuilder ?? (_) => const SizedBox(),

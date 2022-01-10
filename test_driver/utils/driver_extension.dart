@@ -8,4 +8,9 @@ extension ExtraFlutterDriver on FlutterDriver {
     await Future.delayed(doubleTapDelay);
     await tap(finder, timeout: timeout);
   }
+
+  Future<void> tapKeyAndWait(String key) async {
+    await tap(find.byValueKey(key));
+    await waitUntilNoTransientCallbacks();
+  }
 }
