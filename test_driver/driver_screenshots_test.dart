@@ -2,19 +2,26 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:aves/widgets/debug/app_debug_action.dart';
+import 'package:aves/widgets/settings/language/locales.dart';
 import 'package:flutter_driver/flutter_driver.dart';
 import 'package:test/test.dart';
 
+import 'common_test.dart';
 import 'utils/adb_utils.dart';
 import 'utils/driver_extension.dart';
 
 late FlutterDriver driver;
+String _languageCode = '';
+
+const outputDirectory = 'screenshots';
 
 void main() {
   group('[Aves app]', () {
     setUpAll(() async {
-      await Directory(directory).create();
+      await Directory(outputDirectory).create();
 
+      await copyContent(coversSourcePicturesDir, coversTargetPicturesDir);
       await Future.forEach<String>(
           [
             'deckers.thibault.aves.debug',
@@ -28,16 +35,16 @@ void main() {
     });
 
     tearDownAll(() async {
+      await removeDirectory(coversTargetPicturesDir);
       unawaited(driver.close());
     });
 
-    [
-      'de',
-      'en',
-      // TODO TLAD other locales
-    ].forEach((v) async {
-      setLanguage(v);
+    test('scan media dir', () => driver.scanMediaDir(coversTargetPicturesDirEmulated));
+    SupportedLocales.languagesByLanguageCode.keys.forEach((languageCode) {
+      setLanguage(languageCode);
+      configureCollectionVisibility(AppDebugAction.prepScreenshotThumbnails);
       collection();
+      configureCollectionVisibility(AppDebugAction.prepScreenshotStats);
       viewer();
       info();
       stats();
@@ -46,24 +53,44 @@ void main() {
   }, timeout: const Timeout(Duration(seconds: 30)));
 }
 
-const directory = 'screenshots';
-String screenshotLocale = '';
+Future<void> _search(String query, String chipKey) async {
+  await driver.tapKeyAndWait('menu-searchCollection');
+  await driver.tap(find.byType('TextField'));
+  await driver.enterText(query);
+  final chip = find.byValueKey(chipKey);
+  await driver.waitFor(chip);
+  await driver.tap(chip);
+  await driver.waitUntilNoTransientCallbacks();
+}
 
-Future<void> takeScreenshot(FlutterDriver driver, String name) async {
+Future<void> _takeScreenshot(FlutterDriver driver, String name) async {
   final pixels = await driver.screenshot();
-  final file = File('$directory/$screenshotLocale-$name.png');
+  final file = File('$outputDirectory/$_languageCode-$name.png');
   await file.writeAsBytes(pixels);
   print('* saved screenshot to ${file.path}');
 }
 
-void setLanguage(String locale) {
+void setLanguage(String languageCode) {
   test('set language', () async {
     await driver.tapKeyAndWait('appbar-leading-button');
     await driver.tapKeyAndWait('drawer-settings-button');
     await driver.tapKeyAndWait('section-language');
     await driver.tapKeyAndWait('tile-language');
-    await driver.tapKeyAndWait(locale);
-    screenshotLocale = locale;
+    await driver.tapKeyAndWait(languageCode);
+    _languageCode = languageCode;
+
+    await pressDeviceBackButton();
+    await driver.waitUntilNoTransientCallbacks();
+  });
+}
+
+void configureCollectionVisibility(AppDebugAction action) {
+  test('configure collection visibility', () async {
+    await driver.tapKeyAndWait('appbar-leading-button');
+    await driver.tapKeyAndWait('drawer-debug');
+
+    await driver.tapKeyAndWait('appbar-menu-button');
+    await driver.tapKeyAndWait('menu-${action.name}');
 
     await pressDeviceBackButton();
     await driver.waitUntilNoTransientCallbacks();
@@ -72,12 +99,12 @@ void setLanguage(String locale) {
 
 void collection() {
   test('1. Collection', () async {
-    // TODO TLAD hidden filters: reverse of TagFilter('aves-screenshot-collection')
-
     await driver.tapKeyAndWait('appbar-leading-button');
-    await driver.tapKeyAndWait('drawer-type-null');
+    await driver.tapKeyAndWait('drawer-type-favourite');
+    await _search('birds', 'tag-birds');
+    await _search('South Korea', 'tag-South Korea');
 
-    await takeScreenshot(driver, '1-collection');
+    await _takeScreenshot(driver, '1-collection');
   });
 }
 
@@ -85,13 +112,9 @@ void viewer() {
   test('2. Viewer', () async {
     const query = 'Singapore 087 Zoo - Douc langur';
 
-    await driver.tapKeyAndWait('menu-searchCollection');
-    await driver.tap(find.byType('TextField'));
-    await driver.enterText(query);
-    final queryChip = find.byValueKey('query-$query');
-    await driver.waitFor(queryChip);
-    await driver.tap(queryChip);
-    await driver.waitUntilNoTransientCallbacks();
+    await driver.tapKeyAndWait('appbar-leading-button');
+    await driver.tapKeyAndWait('drawer-type-null');
+    await _search(query, 'query-$query');
 
     // delay to avoid flaky descendant resolution
     await Future.delayed(const Duration(seconds: 2));
@@ -107,7 +130,7 @@ void viewer() {
     await driver.doubleTap(imageView);
     await Future.delayed(const Duration(seconds: 1));
 
-    await takeScreenshot(driver, '2-viewer');
+    await _takeScreenshot(driver, '2-viewer');
   });
 }
 
@@ -118,7 +141,7 @@ void info() {
     await driver.scroll(verticalPageView, 0, -600, const Duration(milliseconds: 400));
     await Future.delayed(const Duration(seconds: 2));
 
-    await takeScreenshot(driver, '3-info-basic');
+    await _takeScreenshot(driver, '3-info-basic');
 
     await driver.scroll(verticalPageView, 0, -800, const Duration(milliseconds: 600));
     await Future.delayed(const Duration(seconds: 1));
@@ -130,7 +153,7 @@ void info() {
     await driver.tap(gpsTile);
     await driver.waitUntilNoTransientCallbacks();
 
-    await takeScreenshot(driver, '3-info-metadata');
+    await _takeScreenshot(driver, '3-info-metadata');
 
     await pressDeviceBackButton();
     await driver.waitUntilNoTransientCallbacks();
@@ -142,15 +165,13 @@ void info() {
 
 void stats() {
   test('5. Stats', () async {
-    // TODO TLAD hidden filters: PathFilter('/storage/emulated/0/Pictures/Dev')
-
     await driver.tapKeyAndWait('appbar-leading-button');
     await driver.tapKeyAndWait('drawer-type-null');
 
     await driver.tapKeyAndWait('appbar-menu-button');
     await driver.tapKeyAndWait('menu-stats');
 
-    await takeScreenshot(driver, '5-stats');
+    await _takeScreenshot(driver, '5-stats');
 
     await pressDeviceBackButton();
     await driver.waitUntilNoTransientCallbacks();
@@ -159,15 +180,9 @@ void stats() {
 
 void countries() {
   test('6. Countries', () async {
-    // TODO TLAD hidden filters: reverse of TagFilter('aves-screenshot-collection')
-    // TODO TLAD OR 1) set country covers, 2) hidden filters: PathFilter('/storage/emulated/0/Pictures/Dev')
-
     await driver.tapKeyAndWait('appbar-leading-button');
     await driver.tapKeyAndWait('drawer-page-/countries');
 
-    await takeScreenshot(driver, '6-countries');
-
-    await pressDeviceBackButton();
-    await driver.waitUntilNoTransientCallbacks();
+    await _takeScreenshot(driver, '6-countries');
   });
 }

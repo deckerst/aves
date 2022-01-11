@@ -1,4 +1,5 @@
 import 'package:aves/main_play.dart' as app;
+import 'package:aves/model/settings/defaults.dart';
 import 'package:aves/model/settings/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/enums.dart';
@@ -6,15 +7,10 @@ import 'package:aves/widgets/filter_grids/countries_page.dart';
 import 'package:flutter_driver/driver_extension.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-void main() {
-  enableFlutterDriverExtension();
-
-  // something like `configure().then((_) => app.main());` does not behave as expected
-  // and starts the app without waiting for `configure` to complete
-  configureAndLaunch();
-}
+void main() => configureAndLaunch();
 
 Future<void> configureAndLaunch() async {
+  enableFlutterDriverExtension();
   await settings.init(monitorPlatformSettings: false);
   settings
     // app
@@ -25,7 +21,15 @@ Future<void> configureAndLaunch() async {
     ..homePage = HomePageSetting.collection
     ..setTileExtent(CountryListPage.routeName, 112)
     ..setTileLayout(CountryListPage.routeName, TileLayout.grid)
+    // collection
+    ..collectionSectionFactor = EntryGroupFactor.month
+    ..collectionSortFactor = EntrySortFactor.date
+    ..collectionBrowsingQuickActions = SettingsDefaults.collectionBrowsingQuickActions
+    ..showThumbnailFavourite = false
+    ..showThumbnailLocation = false
+    ..hiddenFilters = {}
     // viewer
+    ..viewerQuickActions = SettingsDefaults.viewerQuickActions
     ..showOverlayOnOpening = true
     ..showOverlayMinimap = false
     ..showOverlayInfo = true
@@ -37,8 +41,5 @@ Future<void> configureAndLaunch() async {
     ..infoMapZoom = 11
     ..coordinateFormat = CoordinateFormat.dms
     ..unitSystem = UnitSystem.metric;
-
-  // TODO TLAD covers.set(LocationFilter(LocationLevel.country, location), contentId)
-
   app.main();
 }

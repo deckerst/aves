@@ -182,8 +182,9 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
           Flexible(
             child: Text(
               filter.getLabel(context),
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: AvesFilterChip.fontSize,
+                decoration: filter.not ? TextDecoration.lineThrough : null,
               ),
               softWrap: false,
               overflow: TextOverflow.fade,

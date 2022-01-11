@@ -45,5 +45,6 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
-# temporary output for screenshot generation
+# screenshot generation
+/test_driver/assets/screenshots/
 /screenshots/
