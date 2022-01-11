@@ -5,6 +5,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
+import 'package:aves/widgets/settings/language/locales.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -48,21 +49,7 @@ class LocaleTile extends StatelessWidget {
   String _getLocaleName(Locale locale) {
     // the package `flutter_localized_locales` has the answer for all locales
     // but it comes with 3 MB of assets
-    switch (locale.languageCode) {
-      case 'de':
-        return 'Deutsch';
-      case 'en':
-        return 'English';
-      case 'es':
-        return 'Español (México)';
-      case 'fr':
-        return 'Français';
-      case 'ko':
-        return '한국어';
-      case 'ru':
-        return 'Русский';
-    }
-    return locale.toString();
+    return SupportedLocales.languagesByLanguageCode[locale.languageCode] ?? locale.toString();
   }
 
   LinkedHashMap<Locale, String> _getLocaleOptions(BuildContext context) {

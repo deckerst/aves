@@ -314,7 +314,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
       context: context,
       initialDate: _setDateTime,
       firstDate: DateTime(0),
-      lastDate: DateTime.now(),
+      lastDate: DateTime(2100),
       confirmText: context.l10n.nextButtonLabel,
     );
     if (_date == null) return;

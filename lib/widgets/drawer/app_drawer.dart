@@ -270,6 +270,8 @@ class _AppDrawerState extends State<AppDrawer> {
   }
 
   Widget get debugTile => PageNavTile(
+        // key is expected by test driver
+        key: const Key('drawer-debug'),
         topLevel: false,
         routeName: AppDebugPage.routeName,
         pageBuilder: (_) => const AppDebugPage(),

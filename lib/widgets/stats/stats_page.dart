@@ -15,6 +15,7 @@ import 'package:aves/utils/color_utils.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/utils/mime_utils.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
+import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
@@ -138,8 +139,11 @@ class StatsPage extends StatelessWidget {
         appBar: AppBar(
           title: Text(context.l10n.statsPageTitle),
         ),
-        body: SafeArea(
-          child: child,
+        body: GestureAreaProtectorStack(
+          child: SafeArea(
+            bottom: false,
+            child: child,
+          ),
         ),
       ),
     );

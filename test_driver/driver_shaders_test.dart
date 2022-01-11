@@ -6,7 +6,7 @@ import 'package:flutter_driver/flutter_driver.dart';
 import 'package:path/path.dart' as p;
 import 'package:test/test.dart';
 
-import 'constants.dart';
+import 'common_test.dart';
 import 'utils/adb_utils.dart';
 import 'utils/driver_extension.dart';
 
@@ -15,7 +15,7 @@ late FlutterDriver driver;
 void main() {
   group('[Aves app]', () {
     setUpAll(() async {
-      await copyContent(sourcePicturesDir, targetPicturesDir);
+      await copyContent(shadersSourcePicturesDir, shadersTargetPicturesDir);
       await Future.forEach<String>(
           [
             'deckers.thibault.aves.debug',
@@ -29,10 +29,11 @@ void main() {
     });
 
     tearDownAll(() async {
-      await removeDirectory(targetPicturesDir);
+      await removeDirectory(shadersTargetPicturesDir);
       unawaited(driver.close());
     });
 
+    test('scan media dir', () => driver.scanMediaDir(shadersTargetPicturesDirEmulated));
     agreeToTerms();
     visitAbout();
     visitSettings();
@@ -159,7 +160,7 @@ void searchAlbum() {
   test('[collection] search album', () async {
     await driver.tapKeyAndWait('menu-searchCollection');
 
-    const albumPath = targetPicturesDirEmulated;
+    const albumPath = shadersTargetPicturesDirEmulated;
     final albumDisplayName = p.split(albumPath).last;
     await driver.tap(find.byType('TextField'));
     await driver.enterText(albumDisplayName);

@@ -104,7 +104,7 @@ flutter:
 # language files:
 # - /lib/l10n/app_{language}.arb
 # - /android/app/src/main/res/values-{language}/strings.xml
-# - edit locale name resolution for language setting
+# - edit locale name in /lib/widgets/settings/language/locales.dart
 
 # generate `AppLocalizations`
 # % flutter gen-l10n
