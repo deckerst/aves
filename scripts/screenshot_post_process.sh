@@ -28,10 +28,10 @@ for source in raw/*/*; do
   fi
 done
 
-# izzy: scale down
+# izzy: scale down + fastlane folder structure
 for source in overlay/*/*; do
   if [[ -f "$source" ]]; then
-    target=${source/overlay/izzy}
+    target=$(echo "$source" | sed -e 's/overlay\/\(.*\)\//izzy\/\1\/images\/phoneScreenshots\//g')
     echo "$source -> $target"
     mkdir -p "$(dirname "$target")"
     convert -resize 350x "$source" "$target"

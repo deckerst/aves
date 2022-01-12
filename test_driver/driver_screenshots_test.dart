@@ -14,11 +14,14 @@ import 'utils/driver_extension.dart';
 late FlutterDriver driver;
 String _languageCode = '';
 
+final languageCodes = SupportedLocales.languagesByLanguageCode.keys;
 const outputDirectory = 'screenshots/raw';
 
 void main() {
   group('[Aves app]', () {
     setUpAll(() async {
+      await Future.forEach(languageCodes, (languageCode) => Directory('$outputDirectory/$languageCode').create(recursive: true));
+
       await copyContent(screenshotsSourceDir, screenshotsTargetDirAdb);
       await Future.forEach<String>(
           [
@@ -38,8 +41,8 @@ void main() {
     });
 
     test('scan media dir', () => driver.scanMediaDir(screenshotsTargetDirAndroid));
-    SupportedLocales.languagesByLanguageCode.keys.forEach((languageCode) async {
-      await Directory('$outputDirectory/$_languageCode').create(recursive: true);
+
+    languageCodes.forEach((languageCode) {
       setLanguage(languageCode);
       configureCollectionVisibility(AppDebugAction.prepScreenshotThumbnails);
       collection();
@@ -141,7 +144,7 @@ void info() {
 
     await _takeScreenshot(driver, '3');
 
-    await driver.scroll(verticalPageView, 0, -750, const Duration(milliseconds: 600));
+    await driver.scroll(verticalPageView, 0, -680, const Duration(milliseconds: 600));
     await Future.delayed(const Duration(seconds: 1));
 
     final gpsTile = find.descendant(
