@@ -14,13 +14,11 @@ import 'utils/driver_extension.dart';
 late FlutterDriver driver;
 String _languageCode = '';
 
-const outputDirectory = 'screenshots';
+const outputDirectory = 'screenshots/raw';
 
 void main() {
   group('[Aves app]', () {
     setUpAll(() async {
-      await Directory(outputDirectory).create();
-
       await copyContent(screenshotsSourceDir, screenshotsTargetDirAdb);
       await Future.forEach<String>(
           [
@@ -40,7 +38,8 @@ void main() {
     });
 
     test('scan media dir', () => driver.scanMediaDir(screenshotsTargetDirAndroid));
-    SupportedLocales.languagesByLanguageCode.keys.forEach((languageCode) {
+    SupportedLocales.languagesByLanguageCode.keys.forEach((languageCode) async {
+      await Directory('$outputDirectory/$_languageCode').create(recursive: true);
       setLanguage(languageCode);
       configureCollectionVisibility(AppDebugAction.prepScreenshotThumbnails);
       collection();
@@ -65,7 +64,7 @@ Future<void> _search(String query, String chipKey) async {
 
 Future<void> _takeScreenshot(FlutterDriver driver, String name) async {
   final pixels = await driver.screenshot();
-  final file = File('$outputDirectory/$_languageCode-$name.png');
+  final file = File('$outputDirectory/$_languageCode/$name.png');
   await file.writeAsBytes(pixels);
   print('* saved screenshot to ${file.path}');
 }
@@ -104,7 +103,7 @@ void collection() {
     await _search('birds', 'tag-birds');
     await _search('South Korea', 'tag-South Korea');
 
-    await _takeScreenshot(driver, '1-collection');
+    await _takeScreenshot(driver, '1');
   });
 }
 
@@ -129,7 +128,7 @@ void viewer() {
     await driver.doubleTap(imageView);
     await Future.delayed(const Duration(seconds: 1));
 
-    await _takeScreenshot(driver, '2-viewer');
+    await _takeScreenshot(driver, '2');
   });
 }
 
@@ -140,9 +139,9 @@ void info() {
     await driver.scroll(verticalPageView, 0, -600, const Duration(milliseconds: 400));
     await Future.delayed(const Duration(seconds: 2));
 
-    await _takeScreenshot(driver, '3-info-basic');
+    await _takeScreenshot(driver, '3');
 
-    await driver.scroll(verticalPageView, 0, -800, const Duration(milliseconds: 600));
+    await driver.scroll(verticalPageView, 0, -750, const Duration(milliseconds: 600));
     await Future.delayed(const Duration(seconds: 1));
 
     final gpsTile = find.descendant(
@@ -152,7 +151,7 @@ void info() {
     await driver.tap(gpsTile);
     await driver.waitUntilNoTransientCallbacks();
 
-    await _takeScreenshot(driver, '3-info-metadata');
+    await _takeScreenshot(driver, '4');
 
     await pressDeviceBackButton();
     await driver.waitUntilNoTransientCallbacks();
@@ -170,7 +169,7 @@ void stats() {
     await driver.tapKeyAndWait('appbar-menu-button');
     await driver.tapKeyAndWait('menu-stats');
 
-    await _takeScreenshot(driver, '5-stats');
+    await _takeScreenshot(driver, '5');
 
     await pressDeviceBackButton();
     await driver.waitUntilNoTransientCallbacks();
@@ -182,6 +181,6 @@ void countries() {
     await driver.tapKeyAndWait('appbar-leading-button');
     await driver.tapKeyAndWait('drawer-page-/countries');
 
-    await _takeScreenshot(driver, '6-countries');
+    await _takeScreenshot(driver, '6');
   });
 }
