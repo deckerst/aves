@@ -15,7 +15,7 @@ late FlutterDriver driver;
 void main() {
   group('[Aves app]', () {
     setUpAll(() async {
-      await copyContent(shadersSourcePicturesDir, shadersTargetPicturesDir);
+      await copyContent(shadersSourceDir, shadersTargetDirAdb);
       await Future.forEach<String>(
           [
             'deckers.thibault.aves.debug',
@@ -29,11 +29,11 @@ void main() {
     });
 
     tearDownAll(() async {
-      await removeDirectory(shadersTargetPicturesDir);
+      await removeDirectory(shadersTargetDirAdb);
       unawaited(driver.close());
     });
 
-    test('scan media dir', () => driver.scanMediaDir(shadersTargetPicturesDirEmulated));
+    test('scan media dir', () => driver.scanMediaDir(shadersTargetDirAndroid));
     agreeToTerms();
     visitAbout();
     visitSettings();
@@ -160,7 +160,7 @@ void searchAlbum() {
   test('[collection] search album', () async {
     await driver.tapKeyAndWait('menu-searchCollection');
 
-    const albumPath = shadersTargetPicturesDirEmulated;
+    const albumPath = shadersTargetDirAndroid;
     final albumDisplayName = p.split(albumPath).last;
     await driver.tap(find.byType('TextField'));
     await driver.enterText(albumDisplayName);

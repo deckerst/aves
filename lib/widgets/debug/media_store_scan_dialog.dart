@@ -35,7 +35,7 @@ class _MediaStoreScanDirDialogState extends State<MediaStoreScanDirDialog> {
                   final dir = _pathController.text;
                   if (dir.isNotEmpty) {
                     setState(() => _processing = true);
-                    await Future.forEach<FileSystemEntity>(Directory(dir).listSync(), (file) async {
+                    await Future.forEach<FileSystemEntity>(Directory(dir).listSync(recursive: true), (file) async {
                       if (file is File) {
                         final mimeType = MimeTypes.forExtension(p.extension(file.path));
                         await mediaStoreService.scanFile(file.path, mimeType!);
