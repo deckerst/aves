@@ -38,7 +38,7 @@ Future<void> configureAndLaunch() async {
     ..viewerUseCutout = true
     // info
     ..infoMapStyle = EntryMapStyle.stamenWatercolor
-    ..infoMapZoom = 11
+    ..infoMapZoom = 13
     ..coordinateFormat = CoordinateFormat.dms
     ..unitSystem = UnitSystem.metric;
   app.main();

@@ -21,7 +21,7 @@ void main() {
     setUpAll(() async {
       await Directory(outputDirectory).create();
 
-      await copyContent(coversSourcePicturesDir, coversTargetPicturesDir);
+      await copyContent(screenshotsSourceDir, screenshotsTargetDirAdb);
       await Future.forEach<String>(
           [
             'deckers.thibault.aves.debug',
@@ -35,11 +35,11 @@ void main() {
     });
 
     tearDownAll(() async {
-      await removeDirectory(coversTargetPicturesDir);
+      await removeDirectory(screenshotsTargetDirAdb);
       unawaited(driver.close());
     });
 
-    test('scan media dir', () => driver.scanMediaDir(coversTargetPicturesDirEmulated));
+    test('scan media dir', () => driver.scanMediaDir(screenshotsTargetDirAndroid));
     SupportedLocales.languagesByLanguageCode.keys.forEach((languageCode) {
       setLanguage(languageCode);
       configureCollectionVisibility(AppDebugAction.prepScreenshotThumbnails);
@@ -110,11 +110,10 @@ void collection() {
 
 void viewer() {
   test('2. Viewer', () async {
-    const query = 'Singapore 087 Zoo - Douc langur';
-
     await driver.tapKeyAndWait('appbar-leading-button');
     await driver.tapKeyAndWait('drawer-type-null');
-    await _search(query, 'query-$query');
+
+    await _search('viewer', 'album-$screenshotsTargetDirAndroid/viewer');
 
     // delay to avoid flaky descendant resolution
     await Future.delayed(const Duration(seconds: 2));

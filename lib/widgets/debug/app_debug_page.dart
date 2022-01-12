@@ -184,6 +184,17 @@ class _AppDebugPageState extends State<AppDebugPage> {
           builder: (context) => const MediaStoreScanDirDialog(),
         );
         break;
+      case AppDebugAction.greenScreen:
+        await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const Scaffold(
+              backgroundColor: Colors.green,
+              body: SizedBox(),
+            ),
+          ),
+        );
+        break;
     }
   }
 }
