@@ -59,7 +59,7 @@ At this stage this project does *not* accept PRs, except for translations.
 
 ### Translations
 
-If you want to translate this app in your language and share the result, feel free to open a PR or send the translation by [email](mailto:gallery.aves@gmail.com). Here is a [guide](https://github.com/deckerst/aves/wiki/Contributing-to-Translations). English, Korean and French are already handled by me. Russian, German and Spanish are handled by generous volunteers.
+If you want to translate this app in your language and share the result, [there is a guide](https://github.com/deckerst/aves/wiki/Contributing-to-Translations). English, Korean and French are already handled by me. Russian, German and Spanish are handled by generous volunteers.
 
 ### Donations
 
