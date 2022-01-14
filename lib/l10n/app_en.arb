@@ -708,6 +708,5 @@
   "filePickerDoNotShowHiddenFiles": "Don’t show hidden files",
   "filePickerOpenFrom": "Open from",
   "filePickerNoItems": "No items",
-  "filePickerUseThisFolder": "Use this folder",
-  "@filePickerUseThisFolder": {}
+  "filePickerUseThisFolder": "Use this folder"
 }

@@ -110,8 +110,8 @@
   "mapStyleGoogleHybrid": "구글 지도 (위성)",
   "mapStyleGoogleTerrain": "구글 지도 (지형)",
   "mapStyleOsmHot": "Humanitarian OSM",
-  "mapStyleStamenToner": "Stamen 토너",
-  "mapStyleStamenWatercolor": "Stamen 수채화",
+  "mapStyleStamenToner": "Stamen Toner (토너)",
+  "mapStyleStamenWatercolor": "Stamen Watercolor (수채화)",
 
   "nameConflictStrategyRename": "이름 변경",
   "nameConflictStrategyReplace": "대체",

@@ -110,8 +110,8 @@
   "mapStyleGoogleHybrid": "Google Maps (Satellite)",
   "mapStyleGoogleTerrain": "Google Maps (Relief)",
   "mapStyleOsmHot": "OSM Humanitaire",
-  "mapStyleStamenToner": "Stamen Toner",
-  "mapStyleStamenWatercolor": "Stamen Watercolor",
+  "mapStyleStamenToner": "Stamen Toner (Monochrome)",
+  "mapStyleStamenWatercolor": "Stamen Watercolor (Aquarelle)",
 
   "nameConflictStrategyRename": "Renommer",
   "nameConflictStrategyReplace": "Remplacer",

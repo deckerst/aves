@@ -110,8 +110,8 @@
   "mapStyleGoogleHybrid": "Mapas de Google (Híbrido)",
   "mapStyleGoogleTerrain": "Mapas de Google (Superficie)",
   "mapStyleOsmHot": "OSM Humanitario",
-  "mapStyleStamenToner": "Stamen Monocromático (Toner)",
-  "mapStyleStamenWatercolor": "Stamen Acuarela (Watercolor)",
+  "mapStyleStamenToner": "Stamen Toner (Monocromático)",
+  "mapStyleStamenWatercolor": "Stamen Watercolor (Acuarela)",
 
   "nameConflictStrategyRename": "Renombrar",
   "nameConflictStrategyReplace": "Reemplazar",
@@ -535,6 +535,5 @@
   "filePickerDoNotShowHiddenFiles": "No mostrar archivos ocultos",
   "filePickerOpenFrom": "Abrir desde",
   "filePickerNoItems": "Sin elementos",
-  "filePickerUseThisFolder": "Usar esta carpeta",
-  "@filePickerUseThisFolder": {}
+  "filePickerUseThisFolder": "Usar esta carpeta"
 }
