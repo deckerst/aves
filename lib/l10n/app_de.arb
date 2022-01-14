@@ -111,7 +111,7 @@
   "mapStyleGoogleTerrain": "Google Maps (Gelände)",
   "mapStyleOsmHot": "Humanitäres OSM",
   "mapStyleStamenToner": "Stamen Toner (SchwarzWeiß)",
-  "mapStyleStamenWatercolor": "Stamen Aquarell",
+  "mapStyleStamenWatercolor": "Stamen Watercolor (Aquarell)",
 
   "nameConflictStrategyRename": "Umbenennen",
   "nameConflictStrategyReplace": "Ersetzen Sie",
