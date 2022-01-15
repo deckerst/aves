@@ -133,6 +133,7 @@ abstract class SectionedListLayoutProvider<T> extends StatelessWidget {
       width: tileWidth,
       height: tileHeight,
       spacing: spacing,
+      textDirection: Directionality.of(context),
       children: children,
     );
   }
@@ -283,12 +284,14 @@ class SectionLayout extends Equatable {
 
 class _GridRow extends MultiChildRenderObjectWidget {
   final double width, height, spacing;
+  final TextDirection textDirection;
 
   _GridRow({
     Key? key,
     required this.width,
     required this.height,
     required this.spacing,
+    required this.textDirection,
     required List<Widget> children,
   }) : super(key: key, children: children);
 
@@ -298,6 +301,7 @@ class _GridRow extends MultiChildRenderObjectWidget {
       width: width,
       height: height,
       spacing: spacing,
+      textDirection: textDirection,
     );
   }
 
@@ -306,6 +310,7 @@ class _GridRow extends MultiChildRenderObjectWidget {
     renderObject.width = width;
     renderObject.height = height;
     renderObject.spacing = spacing;
+    renderObject.textDirection = textDirection;
   }
 
   @override
@@ -314,6 +319,7 @@ class _GridRow extends MultiChildRenderObjectWidget {
     properties.add(DoubleProperty('width', width));
     properties.add(DoubleProperty('height', height));
     properties.add(DoubleProperty('spacing', spacing));
+    properties.add(EnumProperty<TextDirection>('textDirection', textDirection));
   }
 }
 
@@ -325,9 +331,11 @@ class _RenderGridRow extends RenderBox with ContainerRenderObjectMixin<RenderBox
     required double width,
     required double height,
     required double spacing,
+    required TextDirection textDirection,
   })  : _width = width,
         _height = height,
-        _spacing = spacing {
+        _spacing = spacing,
+        _textDirection = textDirection {
     addAll(children);
   }
 
@@ -355,6 +363,15 @@ class _RenderGridRow extends RenderBox with ContainerRenderObjectMixin<RenderBox
   set spacing(double value) {
     if (_spacing == value) return;
     _spacing = value;
+    markNeedsLayout();
+  }
+
+  TextDirection get textDirection => _textDirection;
+  TextDirection _textDirection;
+
+  set textDirection(TextDirection value) {
+    if (_textDirection == value) return;
+    _textDirection = value;
     markNeedsLayout();
   }
 
@@ -388,12 +405,14 @@ class _RenderGridRow extends RenderBox with ContainerRenderObjectMixin<RenderBox
     }
     size = Size(constraints.maxWidth, height);
     final childConstraints = BoxConstraints.tight(Size(width, height));
-    var offset = Offset.zero;
+    final flipMainAxis = textDirection == TextDirection.rtl;
+    var offset = Offset(flipMainAxis ? size.width - width : 0, 0);
+    final dx = (flipMainAxis ? -1 : 1) * (width + spacing);
     while (child != null) {
       child.layout(childConstraints, parentUsesSize: false);
       final childParentData = child.parentData! as _GridRowParentData;
       childParentData.offset = offset;
-      offset += Offset(width + spacing, 0);
+      offset += Offset(dx, 0);
       child = childParentData.nextSibling;
     }
   }
@@ -419,5 +438,6 @@ class _RenderGridRow extends RenderBox with ContainerRenderObjectMixin<RenderBox
     properties.add(DoubleProperty('width', width));
     properties.add(DoubleProperty('height', height));
     properties.add(DoubleProperty('spacing', spacing));
+    properties.add(EnumProperty<TextDirection>('textDirection', textDirection));
   }
 }

@@ -58,10 +58,7 @@ class _OwnerPropState extends State<OwnerProp> {
           future: _appNameLoader,
           builder: (context, snapshot) {
             final appName = androidFileUtils.getCurrentAppName(ownerPackage) ?? ownerPackage;
-            // as of Flutter v2.5.3, `SelectableText` cannot contain `WidgetSpan`
-            // so we use a basic `Text` instead
-            // TODO TLAD 2021/10/26 other `InlineSpan` now possible thanks to https://github.com/flutter/flutter/pull/92295
-            return Text.rich(
+            return SelectableText.rich(
               TextSpan(
                 children: [
                   TextSpan(

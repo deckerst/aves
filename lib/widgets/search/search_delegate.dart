@@ -16,6 +16,7 @@ import 'package:aves/model/source/tag.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
+import 'package:aves/widgets/common/animated_icons_fix.dart';
 import 'package:aves/widgets/common/expandable_filter_row.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
@@ -60,8 +61,9 @@ class CollectionSearchDelegate {
     // so the leading may mistakenly switch to the close button
     return canPop
         ? IconButton(
-            icon: AnimatedIcon(
-              icon: AnimatedIcons.menu_arrow,
+            // TODO TLAD [rtl] replace to regular `AnimatedIcon` when this is fixed: https://github.com/flutter/flutter/issues/60521
+            icon: AnimatedIconFixIssue60521(
+              icon: AnimatedIconsFixIssue60521.menu_arrow,
               progress: transitionAnimation,
             ),
             onPressed: () => _goBack(context),

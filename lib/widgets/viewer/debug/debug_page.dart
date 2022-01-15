@@ -28,18 +28,21 @@ class ViewerDebugPage extends StatelessWidget {
       Tuple2(const Tab(icon: Icon(AIcons.android)), MetadataTab(entry: entry)),
       Tuple2(const Tab(icon: Icon(AIcons.image)), _buildThumbnailsTabView()),
     ];
-    return DefaultTabController(
-      length: tabs.length,
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Debug'),
-          bottom: TabBar(
-            tabs: tabs.map((t) => t.item1).toList(),
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: DefaultTabController(
+        length: tabs.length,
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Text('Debug'),
+            bottom: TabBar(
+              tabs: tabs.map((t) => t.item1).toList(),
+            ),
           ),
-        ),
-        body: SafeArea(
-          child: TabBarView(
-            children: tabs.map((t) => t.item2).toList(),
+          body: SafeArea(
+            child: TabBarView(
+              children: tabs.map((t) => t.item2).toList(),
+            ),
           ),
         ),
       ),
