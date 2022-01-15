@@ -89,6 +89,8 @@ void setLanguage(String languageCode) {
 void configureCollectionVisibility(AppDebugAction action) {
   test('configure collection visibility', () async {
     await driver.tapKeyAndWait('appbar-leading-button');
+    final verticalPageView = find.byValueKey('drawer-scrollview');
+    await driver.scroll(verticalPageView, 0, -600, const Duration(milliseconds: 400));
     await driver.tapKeyAndWait('drawer-debug');
 
     await driver.tapKeyAndWait('appbar-menu-button');
@@ -140,7 +142,7 @@ void info() {
     final verticalPageView = find.byValueKey('vertical-pageview');
 
     await driver.scroll(verticalPageView, 0, -600, const Duration(milliseconds: 400));
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 3));
 
     await _takeScreenshot(driver, '3');
 

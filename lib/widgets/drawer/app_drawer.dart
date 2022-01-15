@@ -74,6 +74,8 @@ class _AppDrawerState extends State<AppDrawer> {
           builder: (context, mqPaddingBottom, child) {
             final iconTheme = IconTheme.of(context);
             return SingleChildScrollView(
+              // key is expected by test driver
+              key: const Key('drawer-scrollview'),
               padding: EdgeInsets.only(bottom: mqPaddingBottom),
               child: IconTheme(
                 data: iconTheme.copyWith(
