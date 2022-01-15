@@ -445,6 +445,7 @@ class _FilterScaler<T extends CollectionFilter> extends StatelessWidget {
           borderWidth: AvesFilterChip.outlineWidth,
           borderRadius: CoveredFilterChip.radius(tileSize.shortestSide),
           color: Colors.grey.shade700,
+          textDirection: Directionality.of(context),
         ),
         child: child,
       ),

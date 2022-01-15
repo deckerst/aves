@@ -238,6 +238,7 @@ class _CollectionScaler extends StatelessWidget {
           borderWidth: DecoratedThumbnail.borderWidth,
           borderRadius: Radius.zero,
           color: DecoratedThumbnail.borderColor,
+          textDirection: Directionality.of(context),
         ),
         child: child,
       ),

@@ -116,7 +116,7 @@ class ScrollLabel extends StatelessWidget {
     return FadeTransition(
       opacity: animation,
       child: Container(
-        margin: const EdgeInsets.only(right: 12.0),
+        margin: const EdgeInsetsDirectional.only(end: 12.0),
         child: Material(
           elevation: 4.0,
           color: backgroundColor,
@@ -350,8 +350,8 @@ class SlideFadeTransition extends StatelessWidget {
       builder: (context, child) => animation.value == 0.0 ? Container() : child!,
       child: SlideTransition(
         position: Tween(
-          begin: const Offset(0.3, 0.0),
-          end: const Offset(0.0, 0.0),
+          begin: Offset((Directionality.of(context) == TextDirection.ltr ? 1 : -1) * .3, 0),
+          end: Offset.zero,
         ).animate(animation),
         child: FadeTransition(
           opacity: animation,

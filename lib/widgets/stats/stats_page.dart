@@ -24,7 +24,7 @@ import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:intl/intl.dart' as intl;
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
 
@@ -100,18 +100,22 @@ class StatsPage extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            LinearPercentIndicator(
-              percent: withGpsPercent,
-              lineHeight: lineHeight,
-              backgroundColor: Colors.white24,
-              progressColor: Theme.of(context).colorScheme.secondary,
-              animation: animate,
-              leading: const Icon(AIcons.location),
-              // right padding to match leading, so that inside label is aligned with outside label below
-              padding: EdgeInsets.symmetric(horizontal: lineHeight) + const EdgeInsets.only(right: 24),
-              center: Text(
-                NumberFormat.percentPattern().format(withGpsPercent),
-                style: const TextStyle(shadows: Constants.embossShadows),
+            Padding(
+              // end padding to match leading, so that inside label is aligned with outside label below
+              padding: const EdgeInsetsDirectional.only(end: 24),
+              child: LinearPercentIndicator(
+                percent: withGpsPercent,
+                lineHeight: lineHeight,
+                backgroundColor: Colors.white24,
+                progressColor: Theme.of(context).colorScheme.secondary,
+                animation: animate,
+                isRTL: Directionality.of(context) == TextDirection.rtl,
+                leading: const Icon(AIcons.location),
+                padding: EdgeInsets.symmetric(horizontal: lineHeight),
+                center: Text(
+                  intl.NumberFormat.percentPattern().format(withGpsPercent),
+                  style: const TextStyle(shadows: Constants.embossShadows),
+                ),
               ),
             ),
             const SizedBox(height: 8),

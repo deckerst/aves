@@ -304,7 +304,7 @@ class _ScaleOverlayState extends State<_ScaleOverlay> {
         gradientCenter = center;
         break;
       case TileLayout.list:
-        gradientCenter = Offset(0, center.dy);
+        gradientCenter = Offset(Directionality.of(context) == TextDirection.rtl ? gridWidth : 0, center.dy);
         break;
     }
 
@@ -338,6 +338,7 @@ class GridPainter extends CustomPainter {
   final double spacing, borderWidth;
   final Radius borderRadius;
   final Color color;
+  final TextDirection textDirection;
 
   const GridPainter({
     required this.tileLayout,
@@ -347,6 +348,7 @@ class GridPainter extends CustomPainter {
     required this.borderWidth,
     required this.borderRadius,
     required this.color,
+    required this.textDirection,
   });
 
   @override
@@ -375,7 +377,8 @@ class GridPainter extends CustomPainter {
         break;
       case TileLayout.list:
         chipSize = Size.square(tileSize.shortestSide);
-        chipCenter = Offset(chipSize.width / 2, tileCenter.dy);
+        final chipCenterToEdge = chipSize.width / 2;
+        chipCenter = Offset(textDirection == TextDirection.rtl ? size.width - chipCenterToEdge : chipCenterToEdge, tileCenter.dy);
         deltaColumn = 0;
         strokeShader = ui.Gradient.linear(
           tileCenter - Offset(0, chipSize.shortestSide * 3),
