@@ -1,3 +1,5 @@
+import 'package:aves/services/common/services.dart';
+
 extension ExtraDateTime on DateTime {
   bool isAtSameYearAs(DateTime? other) => year == other?.year;
 
@@ -14,6 +16,8 @@ extension ExtraDateTime on DateTime {
   bool get isThisYear => isAtSameYearAs(DateTime.now());
 }
 
+final epoch = DateTime.fromMillisecondsSinceEpoch(0, isUtc: true);
+
 final _unixStampMillisPattern = RegExp(r'\d{13}');
 final _unixStampSecPattern = RegExp(r'\d{10}');
 final _plainPattern = RegExp(r'(\d{8})([_-\s](\d{6})([_-\s](\d{3}))?)?');
@@ -23,22 +27,32 @@ DateTime? parseUnknownDateFormat(String? s) {
 
   var match = _unixStampMillisPattern.firstMatch(s);
   if (match != null) {
-    final stampString = match.group(0);
-    if (stampString != null) {
-      final stampMillis = int.tryParse(stampString);
+    final stampMillisString = match.group(0);
+    if (stampMillisString != null) {
+      final stampMillis = int.tryParse(stampMillisString);
       if (stampMillis != null) {
-        return DateTime.fromMillisecondsSinceEpoch(stampMillis, isUtc: false);
+        try {
+          return DateTime.fromMillisecondsSinceEpoch(stampMillis, isUtc: false);
+        } catch (e, stack) {
+          // date millis may be out of range
+          reportService.recordError(e, stack);
+        }
       }
     }
   }
 
   match = _unixStampSecPattern.firstMatch(s);
   if (match != null) {
-    final stampString = match.group(0);
-    if (stampString != null) {
-      final stampMillis = int.tryParse(stampString);
-      if (stampMillis != null) {
-        return DateTime.fromMillisecondsSinceEpoch(stampMillis * 1000, isUtc: false);
+    final stampSecString = match.group(0);
+    if (stampSecString != null) {
+      final stampSec = int.tryParse(stampSecString);
+      if (stampSec != null) {
+        try {
+          return DateTime.fromMillisecondsSinceEpoch(stampSec * 1000, isUtc: false);
+        } catch (e, stack) {
+          // date millis may be out of range
+          reportService.recordError(e, stack);
+        }
       }
     }
   }

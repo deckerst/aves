@@ -57,7 +57,11 @@ class _MetadataTabState extends State<MetadataTab> {
           if (secondTimestampKeys.contains(key)) {
             v *= 1000;
           }
-          value += ' (${DateTime.fromMillisecondsSinceEpoch(v)})';
+          try {
+            value += ' (${DateTime.fromMillisecondsSinceEpoch(v)})';
+          } catch (e) {
+            value += ' (invalid DateTime})';
+          }
         }
         if (key == 'xmp' && v != null && v is Uint8List) {
           value = String.fromCharCodes(v);
