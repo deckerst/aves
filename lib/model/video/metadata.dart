@@ -15,13 +15,13 @@ import 'package:aves/theme/format.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/utils/math_utils.dart';
 import 'package:aves/utils/string_utils.dart';
+import 'package:aves/utils/time_utils.dart';
 import 'package:aves/widgets/viewer/video/fijkplayer.dart';
 import 'package:collection/collection.dart';
 import 'package:fijkplayer/fijkplayer.dart';
 import 'package:flutter/foundation.dart';
 
 class VideoMetadataFormatter {
-  static final _epoch = DateTime.fromMillisecondsSinceEpoch(0, isUtc: true);
   static final _anotherDatePattern = RegExp(r'(\d{4})[-/](\d{2})[-/](\d{2}) (\d{2}):(\d{2}):(\d{2})');
   static final _durationPattern = RegExp(r'(\d+):(\d+):(\d+)(.\d+)');
   static final _locationPattern = RegExp(r'([+-][.0-9]+)');
@@ -349,7 +349,7 @@ class VideoMetadataFormatter {
   static String? _formatDate(String value) {
     final date = DateTime.tryParse(value);
     if (date == null) return value;
-    if (date == _epoch) return null;
+    if (date == epoch) return null;
     return date.toIso8601String();
   }
 

@@ -53,7 +53,11 @@ class ViewerDebugPage extends StatelessWidget {
     String toDateValue(int? time, {int factor = 1}) {
       var value = '$time';
       if (time != null && time > 0) {
-        value += ' (${DateTime.fromMillisecondsSinceEpoch(time * factor)})';
+        try {
+          value += ' (${DateTime.fromMillisecondsSinceEpoch(time * factor)})';
+        } catch (e) {
+          value += ' (invalid DateTime})';
+        }
       }
       return value;
     }

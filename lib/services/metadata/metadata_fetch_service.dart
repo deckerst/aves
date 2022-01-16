@@ -237,7 +237,14 @@ class PlatformMetadataFetchService implements MetadataFetchService {
         'sizeBytes': entry.sizeBytes,
         'field': field.toExifInterfaceTag(),
       });
-      if (result is int) return DateTime.fromMillisecondsSinceEpoch(result);
+      if (result is int) {
+        try {
+          return DateTime.fromMillisecondsSinceEpoch(result);
+        } catch (e, stack) {
+          // date millis may be out of range
+          await reportService.recordError(e, stack);
+        }
+      }
     } on PlatformException catch (e, stack) {
       if (!entry.isMissingAtPath) {
         await reportService.recordError(e, stack);

@@ -76,18 +76,18 @@ class _RenderSliverKnownExtentBoxAdaptor extends RenderSliverMultiBoxAdaptor {
 
   SectionLayout? sectionAtIndex(int index) => sectionLayouts.firstWhereOrNull((section) => section.hasChild(index));
 
-  SectionLayout sectionAtOffset(double scrollOffset) => sectionLayouts.firstWhere((section) => section.hasChildAtOffset(scrollOffset), orElse: () => sectionLayouts.last);
+  SectionLayout? sectionAtOffset(double scrollOffset) => sectionLayouts.firstWhereOrNull((section) => section.hasChildAtOffset(scrollOffset)) ?? sectionLayouts.lastOrNull;
 
   double indexToLayoutOffset(int index) {
     return (sectionAtIndex(index) ?? sectionLayouts.last).indexToLayoutOffset(index);
   }
 
   int getMinChildIndexForScrollOffset(double scrollOffset) {
-    return sectionAtOffset(scrollOffset).getMinChildIndexForScrollOffset(scrollOffset);
+    return sectionAtOffset(scrollOffset)?.getMinChildIndexForScrollOffset(scrollOffset) ?? 0;
   }
 
   int getMaxChildIndexForScrollOffset(double scrollOffset) {
-    return sectionAtOffset(scrollOffset).getMaxChildIndexForScrollOffset(scrollOffset);
+    return sectionAtOffset(scrollOffset)?.getMaxChildIndexForScrollOffset(scrollOffset) ?? 0;
   }
 
   double estimateMaxScrollOffset(
