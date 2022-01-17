@@ -142,7 +142,8 @@ void info() {
     final verticalPageView = find.byValueKey('vertical-pageview');
 
     await driver.scroll(verticalPageView, 0, -600, const Duration(milliseconds: 400));
-    await Future.delayed(const Duration(seconds: 3));
+    // tiles may take time to load
+    await Future.delayed(const Duration(seconds: 5));
 
     await _takeScreenshot(driver, '3');
 

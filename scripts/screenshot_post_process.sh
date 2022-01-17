@@ -7,9 +7,9 @@
 # - ImageMagick 6
 # - raw screenshots sized at 1080x2280 in `/screenshots/raw`
 
-DEVICE_OVERLAY=~/code/aves_extra/screenshots/device_overlay_s10e.png
+DEVICE_OVERLAY_LTR=~/code/aves_extra/screenshots/device_overlay_s10e_ltr.png
 DEVICE_FRAME=~/code/aves_extra/screenshots/device_frame_s10e.png
-# DEVICE_FRAME: dimensions of DEVICE_FRAME
+# FRAME_SIZE: dimensions of DEVICE_FRAME
 FRAME_SIZE=1142x2410
 # FRAME_OFFSET: offset for content in DEVICE_FRAME
 FRAME_OFFSET=31x53
@@ -24,7 +24,7 @@ for source in raw/*/*; do
     target=${source/raw/overlay}
     echo "$source -> $target"
     mkdir -p "$(dirname "$target")"
-    convert "$source" $DEVICE_OVERLAY -composite "$target"
+    convert "$source" $DEVICE_OVERLAY_LTR -composite "$target"
   fi
 done
 
@@ -55,5 +55,15 @@ for source in framed/*/*; do
     echo "$source -> $target"
     mkdir -p "$(dirname "$target")"
     convert "$source" -gravity center -background transparent -extent $PLAY_SIZE "$target"
+  fi
+done
+
+# readme: scale down
+for source in framed/en/*; do
+  if [[ -f "$source" ]]; then
+    target=${source/framed/readme}
+    echo "$source -> $target"
+    mkdir -p "$(dirname "$target")"
+    convert -resize 250x "$source" "$target"
   fi
 done
