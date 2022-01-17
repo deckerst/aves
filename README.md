@@ -37,27 +37,27 @@ Aves integrates with Android (from **API 19 to 31**, i.e. from KitKat to S) with
 
 [<img src="https://raw.githubusercontent.com/deckerst/aves_extra/main/screenshots/readme/en/1.png"
       alt='Collection screenshot'
-      width="150" />](https://raw.githubusercontent.com/deckerst/aves_extra/main/screenshots/play/en/1.png)
+      width="130" />](https://raw.githubusercontent.com/deckerst/aves_extra/main/screenshots/play/en/1.png)
 [<img
       src="https://raw.githubusercontent.com/deckerst/aves_extra/main/screenshots/readme/en/2.png"
       alt='Image screenshot'
-      width="150" />](https://raw.githubusercontent.com/deckerst/aves_extra/main/screenshots/play/en/2.png)
+      width="130" />](https://raw.githubusercontent.com/deckerst/aves_extra/main/screenshots/play/en/2.png)
 [<img
       src="https://raw.githubusercontent.com/deckerst/aves_extra/main/screenshots/readme/en/5.png"
       alt='Stats screenshot'
-      width="150" />](https://raw.githubusercontent.com/deckerst/aves_extra/main/screenshots/play/en/5.png)
+      width="130" />](https://raw.githubusercontent.com/deckerst/aves_extra/main/screenshots/play/en/5.png)
 [<img
       src="https://raw.githubusercontent.com/deckerst/aves_extra/main/screenshots/readme/en/3.png"
       alt='Info (basic) screenshot'
-      width="150" />](https://raw.githubusercontent.com/deckerst/aves_extra/main/screenshots/play/en/3.png)
+      width="130" />](https://raw.githubusercontent.com/deckerst/aves_extra/main/screenshots/play/en/3.png)
 [<img
       src="https://raw.githubusercontent.com/deckerst/aves_extra/main/screenshots/readme/en/4.png"
       alt='Info (metadata) screenshot'
-      width="150" />](https://raw.githubusercontent.com/deckerst/aves_extra/main/screenshots/play/en/4.png)
+      width="130" />](https://raw.githubusercontent.com/deckerst/aves_extra/main/screenshots/play/en/4.png)
 [<img
       src="https://raw.githubusercontent.com/deckerst/aves_extra/main/screenshots/readme/en/6.png"
       alt='Countries screenshot'
-      width="150" />](https://raw.githubusercontent.com/deckerst/aves_extra/main/screenshots/play/en/6.png)
+      width="130" />](https://raw.githubusercontent.com/deckerst/aves_extra/main/screenshots/play/en/6.png)
 
 <div align="left">
 
