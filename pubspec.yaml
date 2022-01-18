@@ -41,7 +41,6 @@ dependencies:
   flutter_markdown:
   flutter_staggered_animations:
   get_it:
-  github:
   google_api_availability:
   google_maps_flutter:
   intl:
@@ -66,7 +65,6 @@ dependencies:
   transparent_image:
   tuple:
   url_launcher:
-  version:
   xml:
 
 dev_dependencies:

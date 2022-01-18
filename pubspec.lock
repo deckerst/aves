@@ -441,13 +441,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "7.2.0"
-  github:
-    dependency: "direct main"
-    description:
-      name: github
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "9.0.0"
   glob:
     dependency: transitive
     description:
@@ -532,13 +525,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.6.3"
-  json_annotation:
-    dependency: transitive
-    description:
-      name: json_annotation
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "4.4.0"
   latlong2:
     dependency: "direct main"
     description:
@@ -1183,13 +1169,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.1"
-  version:
-    dependency: "direct main"
-    description:
-      name: version
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.0"
   vm_service:
     dependency: transitive
     description:

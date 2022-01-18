@@ -8,6 +8,15 @@ All notable changes to this project will be documented in this file.
 
 - Portuguese translation (thanks Jonatas De Almeida Barros)
 
+### Removed
+
+- new version check
+
+### Fixed
+
+- loading when system locale uses non-western arabic numerals
+- handling timestamps provided in 10^-8 s (18 digits)
+
 ## <a id="v1.5.10"></a>[v1.5.10] - 2022-01-07
 
 ### Added
