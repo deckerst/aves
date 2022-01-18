@@ -80,6 +80,14 @@ object StorageUtils {
         return pathSteps.iterator()
     }
 
+    private fun appSpecificVolumePath(file: File?): String? {
+        file ?: return null
+        val appSpecificPath = file.absolutePath
+        val relativePathStartIndex = appSpecificPath.indexOf("Android/data")
+        if (relativePathStartIndex < 0) return null
+        return appSpecificPath.substring(0, relativePathStartIndex)
+    }
+
     private fun findPrimaryVolumePath(context: Context): String? {
         // we want:
         // /storage/emulated/0/
@@ -87,10 +95,7 @@ object StorageUtils {
         // /storage/emulated/0
         // `context.getExternalFilesDir(null)` yields:
         // /storage/emulated/0/Android/data/{package_name}/files
-        return context.getExternalFilesDir(null)?.let {
-            val appSpecificPath = it.absolutePath
-            return appSpecificPath.substring(0, appSpecificPath.indexOf("Android/data"))
-        }
+        return appSpecificVolumePath(context.getExternalFilesDir(null))
     }
 
     private fun findVolumePaths(context: Context): Array<String> {
@@ -119,11 +124,7 @@ object StorageUtils {
                         }
                     }
                 } while (!validFiles)
-                for (file in files) {
-                    val appSpecificAbsolutePath = file.absolutePath
-                    val emulatedRootPath = appSpecificAbsolutePath.substring(0, appSpecificAbsolutePath.indexOf("Android/data"))
-                    paths.add(emulatedRootPath)
-                }
+                paths.addAll(files.mapNotNull(::appSpecificVolumePath))
             } else {
                 // Primary physical SD-CARD (not emulated)
                 val rawExternalStorage = System.getenv("EXTERNAL_STORAGE") ?: ""
