@@ -22,7 +22,7 @@ class GeocodingService {
       });
       return (result as List).cast<Map>().map((map) => Address.fromMap(map)).toList();
     } on PlatformException catch (e, stack) {
-      if (e.code != 'getAddress-empty') {
+      if (e.code != 'getAddress-empty' && e.code != 'getAddress-network') {
         await reportService.recordError(e, stack);
       }
     }

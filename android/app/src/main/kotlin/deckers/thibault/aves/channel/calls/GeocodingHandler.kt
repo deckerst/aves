@@ -9,6 +9,7 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.io.IOException
 import java.util.*
 
 // as of 2021/03/10, geocoding packages exist but:
@@ -50,6 +51,10 @@ class GeocodingHandler(private val context: Context) : MethodCallHandler {
 
         val addresses = try {
             geocoder!!.getFromLocation(latitude, longitude, maxResults) ?: ArrayList()
+        } catch (e: IOException) {
+            // `grpc failed`, etc.
+            result.error("getAddress-network", "failed to get address because of network issues", e.message)
+            return
         } catch (e: Exception) {
             result.error("getAddress-exception", "failed to get address", e.message)
             return

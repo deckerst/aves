@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import 'package:aves/app_flavor.dart';
 import 'package:aves/flutter_version.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
@@ -71,16 +72,33 @@ class _BugReportState extends State<BugReport> with FeedbackMixin {
                     final info = snapshot.data;
                     if (info == null) return const SizedBox();
                     return Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: Colors.grey.shade800,
-                          border: Border.all(
-                            color: Colors.white,
-                          ),
-                          borderRadius: const BorderRadius.all(Radius.circular(8)),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade800,
+                        border: Border.all(
+                          color: Colors.white,
                         ),
-                        margin: const EdgeInsets.symmetric(vertical: 8),
-                        child: SelectableText(info));
+                        borderRadius: const BorderRadius.all(Radius.circular(8)),
+                      ),
+                      constraints: const BoxConstraints(maxHeight: 100),
+                      margin: const EdgeInsets.symmetric(vertical: 8),
+                      child: Theme(
+                        data: Theme.of(context).copyWith(
+                          scrollbarTheme: const ScrollbarThemeData(
+                            isAlwaysShown: true,
+                            radius: Radius.circular(16),
+                            crossAxisMargin: 6,
+                            mainAxisMargin: 6,
+                            interactive: true,
+                          ),
+                        ),
+                        child: Scrollbar(
+                          child: Padding(
+                            padding: const EdgeInsetsDirectional.only(start: 8, end: 16),
+                            child: SelectableText(info),
+                          ),
+                        ),
+                      ),
+                    );
                   },
                 ),
                 _buildStep(3, l10n.aboutBugReportInstruction, l10n.aboutBugReportButton, _goToGithub),
@@ -136,6 +154,8 @@ class _BugReportState extends State<BugReport> with FeedbackMixin {
       'Android build: ${androidInfo.display}',
       'Device: ${androidInfo.manufacturer} ${androidInfo.model}',
       'Google Play services: ${hasPlayServices ? 'ready' : 'not available'}',
+      'System locales: ${WidgetsBinding.instance!.window.locales.join(', ')}',
+      'Aves locale: ${settings.locale} -> ${settings.appliedLocale}',
     ].join('\n');
   }
 
