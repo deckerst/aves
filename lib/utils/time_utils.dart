@@ -1,4 +1,4 @@
-import 'package:aves/services/common/services.dart';
+import 'package:flutter/foundation.dart';
 
 extension ExtraDateTime on DateTime {
   bool isAtSameYearAs(DateTime? other) => year == other?.year;
@@ -18,6 +18,26 @@ extension ExtraDateTime on DateTime {
 
 final epoch = DateTime.fromMillisecondsSinceEpoch(0, isUtc: true);
 
+// Overflowing timestamps that are supposed to be in milliseconds
+// will be retried after stripping extra digits.
+const _millisMaxDigits = 13; // 13 digits can go up to 2286/11/20
+
+DateTime? dateTimeFromMillis(int? millis, {bool isUtc = false}) {
+  if (millis == null || millis == 0) return null;
+  try {
+    return DateTime.fromMillisecondsSinceEpoch(millis, isUtc: isUtc);
+  } catch (e) {
+    // `DateTime`s can represent time values that are at a distance of at most 100,000,000
+    // days from epoch (1970-01-01 UTC): -271821-04-20 to 275760-09-13.
+    debugPrint('failed to build DateTime from timestamp in millis=$millis');
+  }
+  final digits = '$millis'.length;
+  if (digits > _millisMaxDigits) {
+    millis = int.tryParse('$millis'.substring(0, _millisMaxDigits));
+    return dateTimeFromMillis(millis, isUtc: isUtc);
+  }
+}
+
 final _unixStampMillisPattern = RegExp(r'\d{13}');
 final _unixStampSecPattern = RegExp(r'\d{10}');
 final _plainPattern = RegExp(r'(\d{8})([_-\s](\d{6})([_-\s](\d{3}))?)?');
@@ -31,12 +51,7 @@ DateTime? parseUnknownDateFormat(String? s) {
     if (stampMillisString != null) {
       final stampMillis = int.tryParse(stampMillisString);
       if (stampMillis != null) {
-        try {
-          return DateTime.fromMillisecondsSinceEpoch(stampMillis, isUtc: false);
-        } catch (e, stack) {
-          // date millis may be out of range
-          reportService.recordError(e, stack);
-        }
+        return dateTimeFromMillis(stampMillis, isUtc: false);
       }
     }
   }
@@ -47,12 +62,7 @@ DateTime? parseUnknownDateFormat(String? s) {
     if (stampSecString != null) {
       final stampSec = int.tryParse(stampSecString);
       if (stampSec != null) {
-        try {
-          return DateTime.fromMillisecondsSinceEpoch(stampSec * 1000, isUtc: false);
-        } catch (e, stack) {
-          // date millis may be out of range
-          reportService.recordError(e, stack);
-        }
+        return dateTimeFromMillis(stampSec * 1000, isUtc: false);
       }
     }
   }

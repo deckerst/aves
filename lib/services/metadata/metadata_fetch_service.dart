@@ -7,6 +7,7 @@ import 'package:aves/model/panorama.dart';
 import 'package:aves/services/common/service_policy.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/metadata/xmp.dart';
+import 'package:aves/utils/time_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
@@ -238,12 +239,7 @@ class PlatformMetadataFetchService implements MetadataFetchService {
         'field': field.toExifInterfaceTag(),
       });
       if (result is int) {
-        try {
-          return DateTime.fromMillisecondsSinceEpoch(result);
-        } catch (e, stack) {
-          // date millis may be out of range
-          await reportService.recordError(e, stack);
-        }
+        return dateTimeFromMillis(result, isUtc: false);
       }
     } on PlatformException catch (e, stack) {
       if (!entry.isMissingAtPath) {
