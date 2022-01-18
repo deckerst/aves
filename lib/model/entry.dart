@@ -349,20 +349,7 @@ class AvesEntry {
   DateTime? _bestDate;
 
   DateTime? get bestDate {
-    if (_bestDate == null) {
-      try {
-        if ((_catalogDateMillis ?? 0) > 0) {
-          _bestDate = DateTime.fromMillisecondsSinceEpoch(_catalogDateMillis!);
-        } else if ((sourceDateTakenMillis ?? 0) > 0) {
-          _bestDate = DateTime.fromMillisecondsSinceEpoch(sourceDateTakenMillis!);
-        } else if ((dateModifiedSecs ?? 0) > 0) {
-          _bestDate = DateTime.fromMillisecondsSinceEpoch(dateModifiedSecs! * 1000);
-        }
-      } catch (e, stack) {
-        // date millis may be out of range
-        reportService.recordError(e, stack);
-      }
-    }
+    _bestDate ??= dateTimeFromMillis(_catalogDateMillis) ?? dateTimeFromMillis(sourceDateTakenMillis) ?? dateTimeFromMillis((dateModifiedSecs ?? 0) * 1000);
     return _bestDate;
   }
 
