@@ -230,13 +230,6 @@
   "aboutLinkLicense": "라이선스",
   "aboutLinkPolicy": "개인정보 보호정책",
 
-  "aboutUpdate": "업데이트 사용 가능",
-  "aboutUpdateLinks1": "앱의 최신 버전을",
-  "aboutUpdateLinks2": "와",
-  "aboutUpdateLinks3": "에서 다운로드 사용 가능합니다.",
-  "aboutUpdateGitHub": "깃허브",
-  "aboutUpdateGooglePlay": "구글 플레이",
-
   "aboutBug": "버그 보고",
   "aboutBugSaveLogInstruction": "앱 로그를 파일에 저장하기",
   "aboutBugSaveLogButton": "저장",

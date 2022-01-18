@@ -35,7 +35,6 @@ class Settings extends ChangeNotifier {
     catalogTimeZoneKey,
     videoShowRawTimedTextKey,
     searchHistoryKey,
-    lastVersionCheckDateKey,
   };
 
   // app
@@ -115,9 +114,6 @@ class Settings extends ChangeNotifier {
   // accessibility
   static const accessibilityAnimationsKey = 'accessibility_animations';
   static const timeToTakeActionKey = 'time_to_take_action';
-
-  // version
-  static const lastVersionCheckDateKey = 'last_version_check_date';
 
   // file picker
   static const filePickerShowHiddenFilesKey = 'file_picker_show_hidden_files';
@@ -477,12 +473,6 @@ class Settings extends ChangeNotifier {
   AccessibilityTimeout get timeToTakeAction => getEnumOrDefault(timeToTakeActionKey, SettingsDefaults.timeToTakeAction, AccessibilityTimeout.values);
 
   set timeToTakeAction(AccessibilityTimeout newValue) => setAndNotify(timeToTakeActionKey, newValue.toString());
-
-  // version
-
-  DateTime get lastVersionCheckDate => DateTime.fromMillisecondsSinceEpoch(_prefs!.getInt(lastVersionCheckDateKey) ?? 0);
-
-  set lastVersionCheckDate(DateTime newValue) => setAndNotify(lastVersionCheckDateKey, newValue.millisecondsSinceEpoch);
 
   // file picker
 

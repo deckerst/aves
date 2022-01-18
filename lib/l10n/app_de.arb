@@ -230,13 +230,6 @@
   "aboutLinkLicense": "Lizenz",
   "aboutLinkPolicy": "Datenschutzrichtlinie",
 
-  "aboutUpdate": "Neue Version verfügbar",
-  "aboutUpdateLinks1": "Eine neue Version von Aves ist verfügbar unter",
-  "aboutUpdateLinks2": "und",
-  "aboutUpdateLinks3": ".",
-  "aboutUpdateGitHub": "github",
-  "aboutUpdateGooglePlay": "Google Play",
-
   "aboutBug": "Fehlerbericht",
   "aboutBugSaveLogInstruction": "Anwendungsprotokolle in einer Datei speichern",
   "aboutBugSaveLogButton": "Speichern",

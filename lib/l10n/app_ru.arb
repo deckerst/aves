@@ -230,13 +230,6 @@
   "aboutLinkLicense": "Лицензия",
   "aboutLinkPolicy": "Политика конфиденциальности",
 
-  "aboutUpdate": "Доступна новая версия",
-  "aboutUpdateLinks1": "Новая версия Aves доступна на",
-  "aboutUpdateLinks2": "и",
-  "aboutUpdateLinks3": ".",
-  "aboutUpdateGitHub": "GitHub",
-  "aboutUpdateGooglePlay": "Play Маркет",
-
   "aboutBug": "Отчет об ошибке",
   "aboutBugSaveLogInstruction": "Сохраните логи приложения в файл",
   "aboutBugSaveLogButton": "Сохранить",
