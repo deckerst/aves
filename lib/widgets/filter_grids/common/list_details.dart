@@ -54,7 +54,7 @@ class FilterListDetails<T extends CollectionFilter> extends StatelessWidget {
                       padding: const EdgeInsets.only(right: FilterListDetailsTheme.titleIconPadding),
                       child: IconTheme(
                         data: IconThemeData(color: detailsTheme.titleStyle.color),
-                        child: leading!,
+                        child: leading,
                       ),
                     ),
                   ),

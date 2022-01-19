@@ -53,7 +53,7 @@ class TagListPage extends StatelessWidget {
   }
 
   List<FilterGridItem<TagFilter>> _getGridItems(CollectionSource source) {
-    final filters = source.sortedTags.map((tag) => TagFilter(tag)).toSet();
+    final filters = source.sortedTags.map(TagFilter.new).toSet();
 
     return FilterNavigationPage.sort(settings.tagSortFactor, source, filters);
   }

@@ -40,7 +40,7 @@
   "chipActionPin": "Fijar",
   "chipActionUnpin": "Dejar de fijar",
   "chipActionRename": "Renombrar",
-  "chipActionSetCover": "Elegir portada",
+  "chipActionSetCover": "Elegir carátula",
   "chipActionCreateAlbum": "Crear álbum",
 
   "entryActionCopyToClipboard": "Copiar al portapapeles",
@@ -354,6 +354,10 @@
 
   "settingsActionExport": "Exportar",
   "settingsActionImport": "Importar",
+
+  "appExportCovers": "Carátulas",
+  "appExportFavourites": "Favoritos",
+  "appExportSettings": "Ajustes",
 
   "settingsSectionNavigation": "Navegación",
   "settingsHome": "Inicio",

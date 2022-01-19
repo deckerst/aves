@@ -52,17 +52,17 @@ void main() {
   setUp(() async {
     // specify Posix style path context for consistent behaviour when running tests on Windows
     getIt.registerLazySingleton<p.Context>(() => p.Context(style: p.Style.posix));
-    getIt.registerLazySingleton<AvesAvailability>(() => FakeAvesAvailability());
-    getIt.registerLazySingleton<MetadataDb>(() => FakeMetadataDb());
+    getIt.registerLazySingleton<AvesAvailability>(FakeAvesAvailability.new);
+    getIt.registerLazySingleton<MetadataDb>(FakeMetadataDb.new);
 
-    getIt.registerLazySingleton<AndroidAppService>(() => FakeAndroidAppService());
-    getIt.registerLazySingleton<DeviceService>(() => FakeDeviceService());
-    getIt.registerLazySingleton<MediaFileService>(() => FakeMediaFileService());
-    getIt.registerLazySingleton<MediaStoreService>(() => FakeMediaStoreService());
-    getIt.registerLazySingleton<MetadataFetchService>(() => FakeMetadataFetchService());
-    getIt.registerLazySingleton<ReportService>(() => FakeReportService());
-    getIt.registerLazySingleton<StorageService>(() => FakeStorageService());
-    getIt.registerLazySingleton<WindowService>(() => FakeWindowService());
+    getIt.registerLazySingleton<AndroidAppService>(FakeAndroidAppService.new);
+    getIt.registerLazySingleton<DeviceService>(FakeDeviceService.new);
+    getIt.registerLazySingleton<MediaFileService>(FakeMediaFileService.new);
+    getIt.registerLazySingleton<MediaStoreService>(FakeMediaStoreService.new);
+    getIt.registerLazySingleton<MetadataFetchService>(FakeMetadataFetchService.new);
+    getIt.registerLazySingleton<ReportService>(FakeReportService.new);
+    getIt.registerLazySingleton<StorageService>(FakeStorageService.new);
+    getIt.registerLazySingleton<WindowService>(FakeWindowService.new);
 
     await settings.init(monitorPlatformSettings: false);
     settings.canUseAnalysisService = false;

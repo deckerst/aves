@@ -47,7 +47,7 @@ class PlatformStorageService implements StorageService {
   Future<Set<StorageVolume>> getStorageVolumes() async {
     try {
       final result = await platform.invokeMethod('getStorageVolumes');
-      return (result as List).cast<Map>().map((map) => StorageVolume.fromMap(map)).toSet();
+      return (result as List).cast<Map>().map(StorageVolume.fromMap).toSet();
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
     }

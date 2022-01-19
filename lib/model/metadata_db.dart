@@ -231,7 +231,7 @@ class SqfliteMetadataDb implements MetadataDb {
   Future<Set<AvesEntry>> loadAllEntries() async {
     final db = await _database;
     final maps = await db.query(entryTable);
-    final entries = maps.map((map) => AvesEntry.fromMap(map)).toSet();
+    final entries = maps.map(AvesEntry.fromMap).toSet();
     return entries;
   }
 
@@ -273,7 +273,7 @@ class SqfliteMetadataDb implements MetadataDb {
       orderBy: 'sourceDateTakenMillis DESC',
       limit: limit,
     );
-    return maps.map((map) => AvesEntry.fromMap(map)).toSet();
+    return maps.map(AvesEntry.fromMap).toSet();
   }
 
   // date taken
@@ -306,7 +306,7 @@ class SqfliteMetadataDb implements MetadataDb {
   Future<List<CatalogMetadata>> loadAllMetadataEntries() async {
     final db = await _database;
     final maps = await db.query(metadataTable);
-    final metadataEntries = maps.map((map) => CatalogMetadata.fromMap(map)).toList();
+    final metadataEntries = maps.map(CatalogMetadata.fromMap).toList();
     return metadataEntries;
   }
 
@@ -367,7 +367,7 @@ class SqfliteMetadataDb implements MetadataDb {
   Future<List<AddressDetails>> loadAllAddresses() async {
     final db = await _database;
     final maps = await db.query(addressTable);
-    final addresses = maps.map((map) => AddressDetails.fromMap(map)).toList();
+    final addresses = maps.map(AddressDetails.fromMap).toList();
     return addresses;
   }
 
@@ -413,7 +413,7 @@ class SqfliteMetadataDb implements MetadataDb {
   Future<Set<FavouriteRow>> loadAllFavourites() async {
     final db = await _database;
     final maps = await db.query(favouriteTable);
-    final rows = maps.map((map) => FavouriteRow.fromMap(map)).toSet();
+    final rows = maps.map(FavouriteRow.fromMap).toSet();
     return rows;
   }
 

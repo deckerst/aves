@@ -32,18 +32,18 @@ final StorageService storageService = getIt<StorageService>();
 final WindowService windowService = getIt<WindowService>();
 
 void initPlatformServices() {
-  getIt.registerLazySingleton<p.Context>(() => p.Context());
-  getIt.registerLazySingleton<AvesAvailability>(() => LiveAvesAvailability());
-  getIt.registerLazySingleton<MetadataDb>(() => SqfliteMetadataDb());
+  getIt.registerLazySingleton<p.Context>(p.Context.new);
+  getIt.registerLazySingleton<AvesAvailability>(LiveAvesAvailability.new);
+  getIt.registerLazySingleton<MetadataDb>(SqfliteMetadataDb.new);
 
-  getIt.registerLazySingleton<AndroidAppService>(() => PlatformAndroidAppService());
-  getIt.registerLazySingleton<DeviceService>(() => PlatformDeviceService());
-  getIt.registerLazySingleton<EmbeddedDataService>(() => PlatformEmbeddedDataService());
-  getIt.registerLazySingleton<MediaFileService>(() => PlatformMediaFileService());
-  getIt.registerLazySingleton<MediaStoreService>(() => PlatformMediaStoreService());
-  getIt.registerLazySingleton<MetadataEditService>(() => PlatformMetadataEditService());
-  getIt.registerLazySingleton<MetadataFetchService>(() => PlatformMetadataFetchService());
-  getIt.registerLazySingleton<ReportService>(() => PlatformReportService());
-  getIt.registerLazySingleton<StorageService>(() => PlatformStorageService());
-  getIt.registerLazySingleton<WindowService>(() => PlatformWindowService());
+  getIt.registerLazySingleton<AndroidAppService>(PlatformAndroidAppService.new);
+  getIt.registerLazySingleton<DeviceService>(PlatformDeviceService.new);
+  getIt.registerLazySingleton<EmbeddedDataService>(PlatformEmbeddedDataService.new);
+  getIt.registerLazySingleton<MediaFileService>(PlatformMediaFileService.new);
+  getIt.registerLazySingleton<MediaStoreService>(PlatformMediaStoreService.new);
+  getIt.registerLazySingleton<MetadataEditService>(PlatformMetadataEditService.new);
+  getIt.registerLazySingleton<MetadataFetchService>(PlatformMetadataFetchService.new);
+  getIt.registerLazySingleton<ReportService>(PlatformReportService.new);
+  getIt.registerLazySingleton<StorageService>(PlatformStorageService.new);
+  getIt.registerLazySingleton<WindowService>(PlatformWindowService.new);
 }

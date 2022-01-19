@@ -133,8 +133,8 @@ class StatsPage extends StatelessWidget {
           locationIndicator,
           ..._buildFilterSection<String>(context, context.l10n.statsTopCountries, entryCountPerCountry, (v) => LocationFilter(LocationLevel.country, v)),
           ..._buildFilterSection<String>(context, context.l10n.statsTopPlaces, entryCountPerPlace, (v) => LocationFilter(LocationLevel.place, v)),
-          ..._buildFilterSection<String>(context, context.l10n.statsTopTags, entryCountPerTag, (v) => TagFilter(v)),
-          if (showRatings) ..._buildFilterSection<int>(context, context.l10n.searchSectionRating, entryCountPerRating, (v) => RatingFilter(v), sortByCount: false, maxRowCount: null),
+          ..._buildFilterSection<String>(context, context.l10n.statsTopTags, entryCountPerTag, TagFilter.new),
+          if (showRatings) ..._buildFilterSection<int>(context, context.l10n.searchSectionRating, entryCountPerRating, RatingFilter.new, sortByCount: false, maxRowCount: null),
         ],
       );
     }
