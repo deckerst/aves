@@ -11,7 +11,7 @@ void main() {
     // specify Posix style path context for consistent behaviour when running tests on Windows
     getIt.registerLazySingleton<p.Context>(() => p.Context(style: p.Style.posix));
 
-    getIt.registerLazySingleton<StorageService>(() => FakeStorageService());
+    getIt.registerLazySingleton<StorageService>(FakeStorageService.new);
 
     await androidFileUtils.init();
   });

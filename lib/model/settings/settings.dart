@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:math';
 
 import 'package:aves/l10n/l10n.dart';
@@ -570,12 +569,11 @@ class Settings extends ChangeNotifier {
 
   // import/export
 
-  String toJson() => jsonEncode(Map.fromEntries(
+  Map<String, dynamic> export() => Map.fromEntries(
         _prefs!.getKeys().whereNot(internalKeys.contains).map((k) => MapEntry(k, _prefs!.get(k))),
-      ));
+      );
 
-  Future<void> fromJson(String jsonString) async {
-    final jsonMap = jsonDecode(jsonString);
+  Future<void> import(dynamic jsonMap) async {
     if (jsonMap is Map<String, dynamic>) {
       // clear to restore defaults
       await reset(includeInternalKeys: false);

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/android_file_utils.dart';
@@ -14,7 +15,6 @@ import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:path/path.dart' as p;
 
 class FilePicker extends StatefulWidget {
   static const routeName = '/file_picker';
@@ -31,7 +31,7 @@ class _FilePickerState extends State<FilePicker> {
 
   Set<StorageVolume> get volumes => androidFileUtils.storageVolumes;
 
-  String get currentDirectoryPath => p.join(_directory.volumePath, _directory.relativeDir);
+  String get currentDirectoryPath => pContext.join(_directory.volumePath, _directory.relativeDir);
 
   @override
   void initState() {
@@ -48,7 +48,7 @@ class _FilePickerState extends State<FilePicker> {
       if (showHidden) {
         return true;
       } else {
-        final isHidden = p.split(v.path).last.startsWith('.');
+        final isHidden = pContext.split(v.path).last.startsWith('.');
         return !isHidden;
       }
     }).toList();
@@ -57,7 +57,7 @@ class _FilePickerState extends State<FilePicker> {
         if (_directory.relativeDir.isEmpty) {
           return SynchronousFuture(true);
         }
-        final parent = p.dirname(currentDirectoryPath);
+        final parent = pContext.dirname(currentDirectoryPath);
         _goTo(parent);
         setState(() {});
         return SynchronousFuture(false);
@@ -143,7 +143,7 @@ class _FilePickerState extends State<FilePicker> {
     if (_directory.relativeDir.isEmpty) {
       return _directory.getVolumeDescription(context);
     }
-    return p.split(_directory.relativeDir).last;
+    return pContext.split(_directory.relativeDir).last;
   }
 
   Widget _buildDrawer(BuildContext context) {
@@ -179,7 +179,7 @@ class _FilePickerState extends State<FilePicker> {
   Widget _buildContentLine(BuildContext context, FileSystemEntity content) {
     return ListTile(
       leading: const Icon(AIcons.folder),
-      title: Text(p.split(content.path).last),
+      title: Text(pContext.split(content.path).last),
       onTap: () {
         _goTo(content.path);
         setState(() {});
@@ -197,7 +197,7 @@ class _FilePickerState extends State<FilePicker> {
         contents.add(entity);
       }
     }, onDone: () {
-      _contents = contents..sort((a, b) => compareAsciiUpperCase(p.split(a.path).last, p.split(b.path).last));
+      _contents = contents..sort((a, b) => compareAsciiUpperCase(pContext.split(a.path).last, pContext.split(b.path).last));
       setState(() {});
     });
   }

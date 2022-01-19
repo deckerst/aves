@@ -354,6 +354,10 @@
   "settingsActionExport": "내보내기",
   "settingsActionImport": "가져오기",
 
+  "appExportCovers": "대표 이미지",
+  "appExportFavourites": "즐겨찾기",
+  "appExportSettings": "설정",
+
   "settingsSectionNavigation": "탐색",
   "settingsHome": "홈",
   "settingsKeepScreenOnTile": "화면 자동 꺼짐 방지",

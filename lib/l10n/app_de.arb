@@ -354,6 +354,10 @@
   "settingsActionExport": "Exportieren",
   "settingsActionImport": "Importieren",
 
+  "appExportCovers": "Titelbilder",
+  "appExportFavourites": "Favoriten",
+  "appExportSettings": "Einstellungen",
+
   "settingsSectionNavigation": "Navigation",
   "settingsHome": "Startseite",
   "settingsKeepScreenOnTile": "Bildschirm eingeschaltet lassen",

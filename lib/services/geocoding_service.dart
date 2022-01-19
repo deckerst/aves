@@ -20,7 +20,7 @@ class GeocodingService {
         // returns nothing with `maxResults` of 1, but succeeds with `maxResults` of 2+
         'maxResults': 2,
       });
-      return (result as List).cast<Map>().map((map) => Address.fromMap(map)).toList();
+      return (result as List).cast<Map>().map(Address.fromMap).toList();
     } on PlatformException catch (e, stack) {
       if (e.code != 'getAddress-empty' && e.code != 'getAddress-network') {
         await reportService.recordError(e, stack);

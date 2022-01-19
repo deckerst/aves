@@ -354,6 +354,10 @@
   "settingsActionExport": "Exportar",
   "settingsActionImport": "Importar",
 
+  "appExportCovers": "Capas",
+  "appExportFavourites": "Favoritos",
+  "appExportSettings": "Configurações",
+
   "settingsSectionNavigation": "Navegação",
   "settingsHome": "Início",
   "settingsKeepScreenOnTile": "Manter a tela ligada",

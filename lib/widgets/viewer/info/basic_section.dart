@@ -96,7 +96,7 @@ class BasicSection extends StatelessWidget {
       if (entry.isVideo && !entry.is360) MimeFilter.video,
       if (album != null) AlbumFilter(album, collection?.source.getAlbumDisplayName(context, album)),
       if (entry.rating != 0) RatingFilter(entry.rating),
-      ...tags.map((tag) => TagFilter(tag)),
+      ...tags.map(TagFilter.new),
     };
     return AnimatedBuilder(
       animation: favourites,

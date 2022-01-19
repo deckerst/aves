@@ -293,7 +293,7 @@ class _GeoMapState extends State<GeoMap> {
       // node size: 64 by default, higher means faster indexing but slower search
       nodeSize: nodeSize,
       points: markers,
-      createCluster: (base, lng, lat) => GeoEntry.createCluster(base, lng, lat),
+      createCluster: GeoEntry.createCluster,
     );
   }
 

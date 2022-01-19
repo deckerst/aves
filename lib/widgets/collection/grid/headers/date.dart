@@ -65,7 +65,7 @@ class MonthSectionHeader<T> extends StatelessWidget {
     if (date == null) return l10n.sectionUnknown;
     if (date.isThisMonth) return l10n.dateThisMonth;
     final locale = l10n.localeName;
-    final localized = date.isThisYear? DateFormat.MMMM(locale).format(date) : DateFormat.yMMMM(locale).format(date);
+    final localized = date.isThisYear ? DateFormat.MMMM(locale).format(date) : DateFormat.yMMMM(locale).format(date);
     return '${localized.substring(0, 1).toUpperCase()}${localized.substring(1)}';
   }
 

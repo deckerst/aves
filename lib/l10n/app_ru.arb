@@ -354,6 +354,9 @@
   "settingsActionExport": "Экспорт",
   "settingsActionImport": "Импорт",
 
+  "appExportFavourites": "Избранное",
+  "appExportSettings": "Настройки",
+
   "settingsSectionNavigation": "Навигация",
   "settingsHome": "Домашний каталог",
   "settingsKeepScreenOnTile": "Держать экран включенным",

@@ -325,11 +325,14 @@ class PlatformMediaFileService implements MediaFileService {
     required Iterable<AvesEntry> entries,
   }) {
     try {
-      return _opStreamChannel.receiveBroadcastStream(<String, dynamic>{
-        'op': 'delete',
-        'id': opId,
-        'entries': entries.map(_toPlatformEntryMap).toList(),
-      }).map((event) => ImageOpEvent.fromMap(event));
+      return _opStreamChannel
+          .receiveBroadcastStream(<String, dynamic>{
+            'op': 'delete',
+            'id': opId,
+            'entries': entries.map(_toPlatformEntryMap).toList(),
+          })
+          .where((event) => event is Map)
+          .map((event) => ImageOpEvent.fromMap(event as Map));
     } on PlatformException catch (e, stack) {
       reportService.recordError(e, stack);
       return Stream.error(e);
@@ -345,14 +348,17 @@ class PlatformMediaFileService implements MediaFileService {
     required NameConflictStrategy nameConflictStrategy,
   }) {
     try {
-      return _opStreamChannel.receiveBroadcastStream(<String, dynamic>{
-        'op': 'move',
-        'id': opId,
-        'entries': entries.map(_toPlatformEntryMap).toList(),
-        'copy': copy,
-        'destinationPath': destinationAlbum,
-        'nameConflictStrategy': nameConflictStrategy.toPlatform(),
-      }).map((event) => MoveOpEvent.fromMap(event));
+      return _opStreamChannel
+          .receiveBroadcastStream(<String, dynamic>{
+            'op': 'move',
+            'id': opId,
+            'entries': entries.map(_toPlatformEntryMap).toList(),
+            'copy': copy,
+            'destinationPath': destinationAlbum,
+            'nameConflictStrategy': nameConflictStrategy.toPlatform(),
+          })
+          .where((event) => event is Map)
+          .map((event) => MoveOpEvent.fromMap(event as Map));
     } on PlatformException catch (e, stack) {
       reportService.recordError(e, stack);
       return Stream.error(e);
@@ -367,13 +373,16 @@ class PlatformMediaFileService implements MediaFileService {
     required NameConflictStrategy nameConflictStrategy,
   }) {
     try {
-      return _opStreamChannel.receiveBroadcastStream(<String, dynamic>{
-        'op': 'export',
-        'entries': entries.map(_toPlatformEntryMap).toList(),
-        'mimeType': mimeType,
-        'destinationPath': destinationAlbum,
-        'nameConflictStrategy': nameConflictStrategy.toPlatform(),
-      }).map((event) => ExportOpEvent.fromMap(event));
+      return _opStreamChannel
+          .receiveBroadcastStream(<String, dynamic>{
+            'op': 'export',
+            'entries': entries.map(_toPlatformEntryMap).toList(),
+            'mimeType': mimeType,
+            'destinationPath': destinationAlbum,
+            'nameConflictStrategy': nameConflictStrategy.toPlatform(),
+          })
+          .where((event) => event is Map)
+          .map((event) => ExportOpEvent.fromMap(event as Map));
     } on PlatformException catch (e, stack) {
       reportService.recordError(e, stack);
       return Stream.error(e);
@@ -386,11 +395,14 @@ class PlatformMediaFileService implements MediaFileService {
     required String newName,
   }) {
     try {
-      return _opStreamChannel.receiveBroadcastStream(<String, dynamic>{
-        'op': 'rename',
-        'entries': entries.map(_toPlatformEntryMap).toList(),
-        'newName': newName,
-      }).map((event) => MoveOpEvent.fromMap(event));
+      return _opStreamChannel
+          .receiveBroadcastStream(<String, dynamic>{
+            'op': 'rename',
+            'entries': entries.map(_toPlatformEntryMap).toList(),
+            'newName': newName,
+          })
+          .where((event) => event is Map)
+          .map((event) => MoveOpEvent.fromMap(event as Map));
     } on PlatformException catch (e, stack) {
       reportService.recordError(e, stack);
       return Stream.error(e);

@@ -171,7 +171,7 @@ class CollectionSearchDelegate {
                       StreamBuilder(
                           stream: source.eventBus.on<TagsChangedEvent>(),
                           builder: (context, snapshot) {
-                            final filters = source.sortedTags.where(containQuery).map((s) => TagFilter(s));
+                            final filters = source.sortedTags.where(containQuery).map(TagFilter.new);
                             final noFilter = TagFilter('');
                             return _buildFilterRow(
                               context: context,
@@ -185,7 +185,7 @@ class CollectionSearchDelegate {
                       _buildFilterRow(
                         context: context,
                         title: context.l10n.searchSectionRating,
-                        filters: [0, 5, 4, 3, 2, 1, -1].map((rating) => RatingFilter(rating)).where((f) => containQuery(f.getLabel(context))).toList(),
+                        filters: [0, 5, 4, 3, 2, 1, -1].map(RatingFilter.new).where((f) => containQuery(f.getLabel(context))).toList(),
                       ),
                     ],
                   );

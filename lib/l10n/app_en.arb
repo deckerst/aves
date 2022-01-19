@@ -523,6 +523,10 @@
   "settingsActionExport": "Export",
   "settingsActionImport": "Import",
 
+  "appExportCovers": "Covers",
+  "appExportFavourites": "Favourites",
+  "appExportSettings": "Settings",
+
   "settingsSectionNavigation": "Navigation",
   "settingsHome": "Home",
   "settingsKeepScreenOnTile": "Keep screen on",
