@@ -16,6 +16,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.commonsware.cwac.document.DocumentFileCompat
 import deckers.thibault.aves.decoder.MultiTrackImage
+import deckers.thibault.aves.decoder.SvgImage
 import deckers.thibault.aves.decoder.TiffImage
 import deckers.thibault.aves.metadata.*
 import deckers.thibault.aves.metadata.ExifInterfaceHelper.getSafeDateMillis
@@ -82,6 +83,8 @@ abstract class ImageProvider {
         imageExportMimeType: String,
         targetDir: String,
         entries: List<AvesEntry>,
+        width: Int,
+        height: Int,
         nameConflictStrategy: NameConflictStrategy,
         callback: ImageOpCallback,
     ) {
@@ -120,6 +123,8 @@ abstract class ImageProvider {
                     sourceEntry = entry,
                     targetDir = targetDir,
                     targetDirDocFile = targetDirDocFile,
+                    width = width,
+                    height = height,
                     nameConflictStrategy = nameConflictStrategy,
                     exportMimeType = exportMimeType,
                 )
@@ -138,6 +143,8 @@ abstract class ImageProvider {
         sourceEntry: AvesEntry,
         targetDir: String,
         targetDirDocFile: DocumentFileCompat,
+        width: Int,
+        height: Int,
         nameConflictStrategy: NameConflictStrategy,
         exportMimeType: String,
     ): FieldMap {
@@ -178,6 +185,8 @@ abstract class ImageProvider {
                 MultiTrackImage(activity, sourceUri, pageId)
             } else if (sourceMimeType == MimeTypes.TIFF) {
                 TiffImage(activity, sourceUri, pageId)
+            } else if (sourceMimeType == MimeTypes.SVG) {
+                SvgImage(activity, sourceUri)
             } else {
                 StorageUtils.getGlideSafeUri(sourceUri, sourceMimeType)
             }
@@ -192,7 +201,7 @@ abstract class ImageProvider {
                 .asBitmap()
                 .apply(glideOptions)
                 .load(model)
-                .submit()
+                .submit(width, height)
             try {
                 var bitmap = target.get()
                 if (MimeTypes.needRotationAfterGlide(sourceMimeType)) {

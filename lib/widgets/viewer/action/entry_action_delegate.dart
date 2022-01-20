@@ -14,6 +14,7 @@ import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/common/image_op_events.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/media/enums.dart';
+import 'package:aves/services/media/media_file_service.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
@@ -203,11 +204,11 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
 
     if (!await checkFreeSpaceForMove(context, {entry}, destinationAlbum, MoveType.export)) return;
 
-    final mimeType = await showDialog<String>(
+    final options = await showDialog<EntryExportOptions>(
       context: context,
       builder: (context) => ExportEntryDialog(entry: entry),
     );
-    if (mimeType == null) return;
+    if (options == null) return;
 
     final selection = <AvesEntry>{};
     if (entry.isMultiPage) {
@@ -231,7 +232,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       // TODO TLAD [SVG] export separately from raster images (sending bytes, like frame captures)
       opStream: mediaFileService.export(
         selection,
-        mimeType: mimeType,
+        options: options,
         destinationAlbum: destinationAlbum,
         nameConflictStrategy: NameConflictStrategy.rename,
       ),

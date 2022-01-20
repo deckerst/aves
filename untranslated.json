@@ -1,5 +1,22 @@
 {
+  "de": [
+    "exportEntryDialogWidth",
+    "exportEntryDialogHeight"
+  ],
+
+  "es": [
+    "exportEntryDialogWidth",
+    "exportEntryDialogHeight"
+  ],
+
+  "pt": [
+    "exportEntryDialogWidth",
+    "exportEntryDialogHeight"
+  ],
+
   "ru": [
+    "exportEntryDialogWidth",
+    "exportEntryDialogHeight",
     "appExportCovers",
     "settingsThumbnailShowFavouriteIcon"
   ]

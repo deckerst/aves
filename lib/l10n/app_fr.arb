@@ -179,6 +179,8 @@
   "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{Voulez-vous vraiment supprimer ces albums et leur élément ?} other{Voulez-vous vraiment supprimer ces albums et leurs {count} éléments ?}}",
 
   "exportEntryDialogFormat": "Format :",
+  "exportEntryDialogWidth": "Largeur",
+  "exportEntryDialogHeight": "Hauteur",
 
   "renameEntryDialogLabel": "Nouveau nom",
 
