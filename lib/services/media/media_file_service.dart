@@ -10,6 +10,7 @@ import 'package:aves/services/common/output_buffer.dart';
 import 'package:aves/services/common/service_policy.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/media/enums.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:streams_channel/streams_channel.dart';
@@ -87,7 +88,7 @@ abstract class MediaFileService {
 
   Stream<ExportOpEvent> export(
     Iterable<AvesEntry> entries, {
-    required String mimeType,
+    required EntryExportOptions options,
     required String destinationAlbum,
     required NameConflictStrategy nameConflictStrategy,
   });
@@ -368,7 +369,7 @@ class PlatformMediaFileService implements MediaFileService {
   @override
   Stream<ExportOpEvent> export(
     Iterable<AvesEntry> entries, {
-    required String mimeType,
+    required EntryExportOptions options,
     required String destinationAlbum,
     required NameConflictStrategy nameConflictStrategy,
   }) {
@@ -377,7 +378,9 @@ class PlatformMediaFileService implements MediaFileService {
           .receiveBroadcastStream(<String, dynamic>{
             'op': 'export',
             'entries': entries.map(_toPlatformEntryMap).toList(),
-            'mimeType': mimeType,
+            'mimeType': options.mimeType,
+            'width': options.width,
+            'height': options.height,
             'destinationPath': destinationAlbum,
             'nameConflictStrategy': nameConflictStrategy.toPlatform(),
           })
@@ -433,4 +436,19 @@ class PlatformMediaFileService implements MediaFileService {
     }
     return {};
   }
+}
+
+@immutable
+class EntryExportOptions extends Equatable {
+  final String mimeType;
+  final int width, height;
+
+  @override
+  List<Object?> get props => [mimeType, width, height];
+
+  const EntryExportOptions({
+    required this.mimeType,
+    required this.width,
+    required this.height,
+  });
 }

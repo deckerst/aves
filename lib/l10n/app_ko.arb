@@ -179,6 +179,8 @@
   "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, other{이 앨범들의 항목 {count}개를 삭제하시겠습니까?}}",
 
   "exportEntryDialogFormat": "형식:",
+  "exportEntryDialogWidth": "가로",
+  "exportEntryDialogHeight": "세로",
 
   "renameEntryDialogLabel": "이름",
 

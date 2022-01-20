@@ -293,7 +293,10 @@ class _GeoMapState extends State<GeoMap> {
       // node size: 64 by default, higher means faster indexing but slower search
       nodeSize: nodeSize,
       points: markers,
-      createCluster: GeoEntry.createCluster,
+      // use lambda instead of tear-off because of runtime exception when using
+      // `T Function(BaseCluster, double, double)` for `T Function(BaseCluster?, double?, double?)`
+      // ignore: unnecessary_lambdas
+      createCluster: (base, lng, lat) => GeoEntry.createCluster(base, lng, lat),
     );
   }
 
