@@ -13,6 +13,7 @@ import androidx.exifinterface.media.ExifInterface
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.FutureTarget
 import com.bumptech.glide.request.RequestOptions
 import com.commonsware.cwac.document.DocumentFileCompat
 import deckers.thibault.aves.decoder.MultiTrackImage
@@ -36,6 +37,7 @@ import deckers.thibault.aves.utils.MimeTypes.isVideo
 import java.io.ByteArrayInputStream
 import java.io.File
 import java.io.IOException
+import java.io.OutputStream
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -98,12 +100,6 @@ abstract class ImageProvider {
             return
         }
 
-        // TODO TLAD [storage] allow inserting by Media Store
-        if (targetDirDocFile == null) {
-            callback.onFailure(Exception("failed to get tree doc for directory at path=$targetDir"))
-            return
-        }
-
         for (entry in entries) {
             val sourceUri = entry.uri
             val sourcePath = entry.path
@@ -118,7 +114,7 @@ abstract class ImageProvider {
             val sourceMimeType = entry.mimeType
             val exportMimeType = if (isVideo(sourceMimeType)) sourceMimeType else imageExportMimeType
             try {
-                val newFields = exportSingleByTreeDocAndScan(
+                val newFields = exportSingle(
                     activity = activity,
                     sourceEntry = entry,
                     targetDir = targetDir,
@@ -138,11 +134,11 @@ abstract class ImageProvider {
     }
 
     @Suppress("BlockingMethodInNonBlockingContext")
-    private suspend fun exportSingleByTreeDocAndScan(
+    private suspend fun exportSingle(
         activity: Activity,
         sourceEntry: AvesEntry,
         targetDir: String,
-        targetDirDocFile: DocumentFileCompat,
+        targetDirDocFile: DocumentFileCompat?,
         width: Int,
         height: Int,
         nameConflictStrategy: NameConflictStrategy,
@@ -170,46 +166,46 @@ abstract class ImageProvider {
             conflictStrategy = nameConflictStrategy,
         ) ?: return skippedFieldMap
 
-        // the file created from a `TreeDocumentFile` is also a `TreeDocumentFile`
-        // but in order to open an output stream to it, we need to use a `SingleDocumentFile`
-        // through a document URI, not a tree URI
-        // note that `DocumentFile.getParentFile()` returns null if we did not pick a tree first
-        val targetTreeFile = targetDirDocFile.createFile(exportMimeType, targetNameWithoutExtension)
-        val targetDocFile = DocumentFileCompat.fromSingleUri(activity, targetTreeFile.uri)
-
-        if (isVideo(sourceMimeType)) {
-            val sourceDocFile = DocumentFileCompat.fromSingleUri(activity, sourceUri)
-            sourceDocFile.copyTo(targetDocFile)
-        } else {
-            val model: Any = if (MimeTypes.isHeic(sourceMimeType) && pageId != null) {
-                MultiTrackImage(activity, sourceUri, pageId)
-            } else if (sourceMimeType == MimeTypes.TIFF) {
-                TiffImage(activity, sourceUri, pageId)
-            } else if (sourceMimeType == MimeTypes.SVG) {
-                SvgImage(activity, sourceUri)
+        val targetMimeType: String
+        val write: (OutputStream) -> Unit
+        var target: FutureTarget<Bitmap>? = null
+        try {
+            if (isVideo(sourceMimeType)) {
+                targetMimeType = sourceMimeType
+                write = { output ->
+                    val sourceDocFile = DocumentFileCompat.fromSingleUri(activity, sourceUri)
+                    sourceDocFile.copyTo(output)
+                }
             } else {
-                StorageUtils.getGlideSafeUri(sourceUri, sourceMimeType)
-            }
+                val model: Any = if (MimeTypes.isHeic(sourceMimeType) && pageId != null) {
+                    MultiTrackImage(activity, sourceUri, pageId)
+                } else if (sourceMimeType == MimeTypes.TIFF) {
+                    TiffImage(activity, sourceUri, pageId)
+                } else if (sourceMimeType == MimeTypes.SVG) {
+                    SvgImage(activity, sourceUri)
+                } else {
+                    StorageUtils.getGlideSafeUri(sourceUri, sourceMimeType)
+                }
 
-            // request a fresh image with the highest quality format
-            val glideOptions = RequestOptions()
-                .format(DecodeFormat.PREFER_ARGB_8888)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .skipMemoryCache(true)
+                // request a fresh image with the highest quality format
+                val glideOptions = RequestOptions()
+                    .format(DecodeFormat.PREFER_ARGB_8888)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .skipMemoryCache(true)
 
-            val target = Glide.with(activity)
-                .asBitmap()
-                .apply(glideOptions)
-                .load(model)
-                .submit(width, height)
-            try {
+                target = Glide.with(activity)
+                    .asBitmap()
+                    .apply(glideOptions)
+                    .load(model)
+                    .submit(width, height)
                 var bitmap = target.get()
                 if (MimeTypes.needRotationAfterGlide(sourceMimeType)) {
                     bitmap = BitmapUtils.applyExifOrientation(activity, bitmap, sourceEntry.rotationDegrees, sourceEntry.isFlipped)
                 }
                 bitmap ?: throw Exception("failed to get image for mimeType=$sourceMimeType uri=$sourceUri page=$pageId")
 
-                targetDocFile.openOutputStream().use { output ->
+                targetMimeType = exportMimeType
+                write = { output ->
                     if (exportMimeType == MimeTypes.BMP) {
                         BmpWriter.writeRGB24(bitmap, output)
                     } else {
@@ -232,21 +228,23 @@ abstract class ImageProvider {
                         bitmap.compress(format, quality, output)
                     }
                 }
-            } catch (e: Exception) {
-                // remove empty file
-                if (targetDocFile.exists()) {
-                    targetDocFile.delete()
-                }
-                throw e
-            } finally {
-                Glide.with(activity).clear(target)
             }
+
+            val mediaStoreImageProvider = MediaStoreImageProvider()
+            val targetPath = mediaStoreImageProvider.createSingle(
+                activity = activity,
+                mimeType = targetMimeType,
+                targetDir = targetDir,
+                targetDirDocFile = targetDirDocFile,
+                targetNameWithoutExtension = targetNameWithoutExtension,
+                write = write,
+            )
+            return mediaStoreImageProvider.scanNewPath(activity, targetPath, exportMimeType)
+        } finally {
+            // clearing Glide target should happen after effectively writing the bitmap
+            Glide.with(activity).clear(target)
         }
 
-        val fileName = targetDocFile.name
-        val targetFullPath = targetDir + fileName
-
-        return MediaStoreImageProvider().scanNewPath(activity, targetFullPath, exportMimeType)
     }
 
     @Suppress("BlockingMethodInNonBlockingContext")
