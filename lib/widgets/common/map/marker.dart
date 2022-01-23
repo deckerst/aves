@@ -1,4 +1,5 @@
 import 'package:aves/model/entry.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/thumbnail/image.dart';
 import 'package:custom_rounded_rectangle_border/custom_rounded_rectangle_border.dart';
 import 'package:flutter/material.dart';
@@ -82,18 +83,31 @@ class ImageMarker extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 2),
             decoration: ShapeDecoration(
               color: Theme.of(context).colorScheme.secondary,
-              shape: const CustomRoundedRectangleBorder(
-                leftSide: borderSide,
-                rightSide: borderSide,
-                topSide: borderSide,
-                bottomSide: borderSide,
-                topLeftCornerSide: borderSide,
-                bottomRightCornerSide: borderSide,
-                borderRadius: BorderRadius.only(
-                  topLeft: innerRadius,
-                  bottomRight: innerRadius,
-                ),
-              ),
+              shape: context.isRtl
+                  ? const CustomRoundedRectangleBorder(
+                      leftSide: borderSide,
+                      rightSide: borderSide,
+                      topSide: borderSide,
+                      bottomSide: borderSide,
+                      topRightCornerSide: borderSide,
+                      bottomLeftCornerSide: borderSide,
+                      borderRadius: BorderRadius.only(
+                        topRight: innerRadius,
+                        bottomLeft: innerRadius,
+                      ),
+                    )
+                  : const CustomRoundedRectangleBorder(
+                      leftSide: borderSide,
+                      rightSide: borderSide,
+                      topSide: borderSide,
+                      bottomSide: borderSide,
+                      topLeftCornerSide: borderSide,
+                      bottomRightCornerSide: borderSide,
+                      borderRadius: BorderRadius.only(
+                        topLeft: innerRadius,
+                        bottomRight: innerRadius,
+                      ),
+                    ),
             ),
             child: Text(
               '$count',

@@ -7,6 +7,7 @@
 
   "timeSeconds": "{seconds, plural, other{{seconds}초}}",
   "timeMinutes": "{minutes, plural, other{{minutes}분}}",
+  "focalLength": "{length} mm",
 
   "applyButtonLabel": "확인",
   "deleteButtonLabel": "삭제",

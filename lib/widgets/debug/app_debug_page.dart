@@ -46,45 +46,48 @@ class _AppDebugPageState extends State<AppDebugPage> {
   @override
   Widget build(BuildContext context) {
     return MediaQueryDataProvider(
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Debug'),
-          actions: [
-            MenuIconTheme(
-              child: PopupMenuButton<AppDebugAction>(
-                // key is expected by test driver
-                key: const Key('appbar-menu-button'),
-                itemBuilder: (context) => AppDebugAction.values
-                    .map((v) => PopupMenuItem(
-                          // key is expected by test driver
-                          key: Key('menu-${v.name}'),
-                          value: v,
-                          child: MenuRow(text: v.name),
-                        ))
-                    .toList(),
-                onSelected: (action) async {
-                  // wait for the popup menu to hide before proceeding with the action
-                  await Future.delayed(Durations.popupMenuAnimation * timeDilation);
-                  unawaited(_onActionSelected(action));
-                },
+      child: Directionality(
+        textDirection: TextDirection.ltr,
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Text('Debug'),
+            actions: [
+              MenuIconTheme(
+                child: PopupMenuButton<AppDebugAction>(
+                  // key is expected by test driver
+                  key: const Key('appbar-menu-button'),
+                  itemBuilder: (context) => AppDebugAction.values
+                      .map((v) => PopupMenuItem(
+                            // key is expected by test driver
+                            key: Key('menu-${v.name}'),
+                            value: v,
+                            child: MenuRow(text: v.name),
+                          ))
+                      .toList(),
+                  onSelected: (action) async {
+                    // wait for the popup menu to hide before proceeding with the action
+                    await Future.delayed(Durations.popupMenuAnimation * timeDilation);
+                    unawaited(_onActionSelected(action));
+                  },
+                ),
               ),
-            ),
-          ],
-        ),
-        body: SafeArea(
-          child: ListView(
-            padding: const EdgeInsets.all(8),
-            children: [
-              _buildGeneralTabView(),
-              const DebugAndroidAppSection(),
-              const DebugAndroidCodecSection(),
-              const DebugAndroidDirSection(),
-              const DebugCacheSection(),
-              const DebugAppDatabaseSection(),
-              const DebugErrorReportingSection(),
-              const DebugSettingsSection(),
-              const DebugStorageSection(),
             ],
+          ),
+          body: SafeArea(
+            child: ListView(
+              padding: const EdgeInsets.all(8),
+              children: [
+                _buildGeneralTabView(),
+                const DebugAndroidAppSection(),
+                const DebugAndroidCodecSection(),
+                const DebugAndroidDirSection(),
+                const DebugCacheSection(),
+                const DebugAppDatabaseSection(),
+                const DebugErrorReportingSection(),
+                const DebugSettingsSection(),
+                const DebugStorageSection(),
+              ],
+            ),
           ),
         ),
       ),

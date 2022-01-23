@@ -4,6 +4,7 @@ import 'package:aves/model/highlight.dart';
 import 'package:aves/model/source/enums.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/behaviour/eager_scale_gesture_recognizer.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/grid/theme.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
@@ -304,7 +305,7 @@ class _ScaleOverlayState extends State<_ScaleOverlay> {
         gradientCenter = center;
         break;
       case TileLayout.list:
-        gradientCenter = Offset(Directionality.of(context) == TextDirection.rtl ? gridWidth : 0, center.dy);
+        gradientCenter = Offset(context.isRtl ? gridWidth : 0, center.dy);
         break;
     }
 

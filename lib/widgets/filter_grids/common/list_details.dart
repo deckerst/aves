@@ -51,7 +51,7 @@ class FilterListDetails<T extends CollectionFilter> extends StatelessWidget {
                   WidgetSpan(
                     alignment: PlaceholderAlignment.middle,
                     child: Padding(
-                      padding: const EdgeInsets.only(right: FilterListDetailsTheme.titleIconPadding),
+                      padding: const EdgeInsetsDirectional.only(end: FilterListDetailsTheme.titleIconPadding),
                       child: IconTheme(
                         data: IconThemeData(color: detailsTheme.titleStyle.color),
                         child: leading,
@@ -127,7 +127,7 @@ class FilterListDetails<T extends CollectionFilter> extends StatelessWidget {
         children: leadingIcons
             .mapIndexed((i, child) => i > 0
                 ? Padding(
-                    padding: const EdgeInsets.only(left: 8),
+                    padding: const EdgeInsetsDirectional.only(start: 8),
                     child: child,
                   )
                 : child)

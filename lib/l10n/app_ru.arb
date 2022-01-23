@@ -7,6 +7,7 @@
 
   "timeSeconds": "{seconds, plural, =1{1 секунда} few{{seconds} секунды} other{{seconds} секунд}}",
   "timeMinutes": "{minutes, plural, =1{1 минута} few{{minutes} минуты} other{{minutes} минут}}",
+  "focalLength": "{length} mm",
 
   "applyButtonLabel": "ПРИМЕНИТЬ",
   "deleteButtonLabel": "УДАЛИТЬ",

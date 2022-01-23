@@ -131,7 +131,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
     final use24hour = context.select<MediaQueryData, bool>((v) => v.alwaysUse24HourFormat);
 
     return Padding(
-      padding: const EdgeInsets.only(left: 16, right: 8),
+      padding: const EdgeInsetsDirectional.only(start: 16, end: 8),
       child: Row(
         children: [
           Expanded(child: Text(formatDateTime(_setDateTime, locale, use24hour))),
@@ -177,6 +177,8 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
     const textStyle = TextStyle(fontSize: 34);
     return Center(
       child: Table(
+        // even when ambient direction is RTL, time is displayed in LTR
+        textDirection: TextDirection.ltr,
         children: [
           TableRow(
             children: [

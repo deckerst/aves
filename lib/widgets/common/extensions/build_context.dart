@@ -5,4 +5,6 @@ extension ExtraContext on BuildContext {
   String? get currentRouteName => ModalRoute.of(this)?.settings.name;
 
   AppLocalizations get l10n => AppLocalizations.of(this)!;
+
+  bool get isRtl => Directionality.of(this) == TextDirection.rtl;
 }
