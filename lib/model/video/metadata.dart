@@ -22,7 +22,8 @@ import 'package:fijkplayer/fijkplayer.dart';
 import 'package:flutter/foundation.dart';
 
 class VideoMetadataFormatter {
-  static final _anotherDatePattern = RegExp(r'(\d{4})[-/](\d{2})[-/](\d{2}) (\d{2}):(\d{2}):(\d{2})');
+  static final _dateY4M2D2H2m2s2Pattern = RegExp(r'(\d{4})[-/](\d{2})[-/](\d{2}) (\d{2}):(\d{2}):(\d{2})');
+  static final _dateY4M2D2H2m2s2APmPattern = RegExp(r'(\d{4})[-/](\d{2})[-/](\d{2})T(\d+):(\d+):(\d+) ([ap]m)Z');
   static final _durationPattern = RegExp(r'(\d+):(\d+):(\d+)(.\d+)');
   static final _locationPattern = RegExp(r'([+-][.0-9]+)');
   static final Map<String, String> _codecNames = {
@@ -115,9 +116,10 @@ class VideoMetadataFormatter {
     // `DateTime` does not recognize these values found in the wild:
     // - `UTC 2021-05-30 19:14:21`
     // - `2021/10/31 21:23:17`
+    // - `2021-09-10T7:14:49 pmZ`
     // - `2021` (not enough to build a date)
 
-    final match = _anotherDatePattern.firstMatch(dateString);
+    var match = _dateY4M2D2H2m2s2Pattern.firstMatch(dateString);
     if (match != null) {
       final year = int.tryParse(match.group(1)!);
       final month = int.tryParse(match.group(2)!);
@@ -128,6 +130,22 @@ class VideoMetadataFormatter {
 
       if (year != null && month != null && day != null && hour != null && minute != null && second != null) {
         final date = DateTime(year, month, day, hour, minute, second, 0);
+        return date.millisecondsSinceEpoch;
+      }
+    }
+
+    match = _dateY4M2D2H2m2s2APmPattern.firstMatch(dateString);
+    if (match != null) {
+      final year = int.tryParse(match.group(1)!);
+      final month = int.tryParse(match.group(2)!);
+      final day = int.tryParse(match.group(3)!);
+      final hour = int.tryParse(match.group(4)!);
+      final minute = int.tryParse(match.group(5)!);
+      final second = int.tryParse(match.group(6)!);
+      final pm = match.group(7) == 'pm';
+
+      if (year != null && month != null && day != null && hour != null && minute != null && second != null) {
+        final date = DateTime(year, month, day, hour + (pm ? 12 : 0), minute, second, 0);
         return date.millisecondsSinceEpoch;
       }
     }

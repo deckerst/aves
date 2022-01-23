@@ -6,6 +6,8 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
+- Viewer: resize option when exporting
+- Settings: export/import covers & favourites along with settings
 - Portuguese translation (thanks Jonatas De Almeida Barros)
 
 ### Removed
@@ -16,6 +18,8 @@ All notable changes to this project will be documented in this file.
 
 - loading when system locale uses non-western arabic numerals
 - handling timestamps provided in 10^-8 s (18 digits)
+- Viewer: SVG export
+- Viewer: sending to editing app on some environments
 
 ## <a id="v1.5.10"></a>[v1.5.10] - 2022-01-07
 
