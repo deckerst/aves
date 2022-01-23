@@ -7,6 +7,7 @@
 
   "timeSeconds": "{seconds, plural, =1{1 seconde} other{{seconds} secondes}}",
   "timeMinutes": "{minutes, plural, =1{1 minute} other{{minutes} minutes}}",
+  "focalLength": "{length} mm",
 
   "applyButtonLabel": "ENREGISTRER",
   "deleteButtonLabel": "SUPPRIMER",

@@ -191,6 +191,7 @@ class SectionedListLayout<T> {
     required this.sectionLayouts,
   });
 
+  // return tile rectangle in layout space, i.e. x=0 is start
   Rect? getTileRect(T item) {
     final MapEntry<SectionKey?, List<T>>? section = sections.entries.firstWhereOrNull((kv) => kv.value.contains(item));
     if (section == null) return null;
@@ -211,6 +212,7 @@ class SectionedListLayout<T> {
 
   SectionLayout? getSectionAt(double offsetY) => sectionLayouts.firstWhereOrNull((sl) => offsetY < sl.maxOffset);
 
+  // `position` in layout space, i.e. x=0 is start
   T? getItemAt(Offset position) {
     var dy = position.dy;
     final sectionLayout = getSectionAt(dy);

@@ -109,7 +109,7 @@ class StatsPage extends StatelessWidget {
                 backgroundColor: Colors.white24,
                 progressColor: Theme.of(context).colorScheme.secondary,
                 animation: animate,
-                isRTL: Directionality.of(context) == TextDirection.rtl,
+                isRTL: context.isRtl,
                 leading: const Icon(AIcons.location),
                 padding: EdgeInsets.symmetric(horizontal: lineHeight),
                 center: Text(
@@ -221,23 +221,25 @@ class StatsPage extends StatelessWidget {
           children: seriesData
               .map((d) => GestureDetector(
                     onTap: () => _onFilterSelection(context, MimeFilter(d.mimeType)),
-                    child: Text.rich(
-                      TextSpan(
-                        children: [
-                          WidgetSpan(
-                            alignment: PlaceholderAlignment.middle,
-                            child: Padding(
-                              padding: const EdgeInsetsDirectional.only(end: 8),
-                              child: Icon(AIcons.disc, color: d.color),
-                            ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(AIcons.disc, color: d.color),
+                        const SizedBox(width: 8),
+                        Flexible(
+                          child: Text(
+                            d.displayText,
+                            overflow: TextOverflow.fade,
+                            softWrap: false,
+                            maxLines: 1,
                           ),
-                          TextSpan(text: '${d.displayText}   '),
-                          TextSpan(text: '${d.entryCount}', style: const TextStyle(color: Colors.white70)),
-                        ],
-                      ),
-                      overflow: TextOverflow.fade,
-                      softWrap: false,
-                      maxLines: 1,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          '${d.entryCount}',
+                          style: const TextStyle(color: Colors.white70),
+                        ),
+                      ],
                     ),
                   ))
               .toList(),

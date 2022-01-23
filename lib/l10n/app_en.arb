@@ -22,6 +22,15 @@
       "minutes": {}
     }
   },
+  "focalLength": "{length} mm",
+  "@focalLength": {
+    "placeholders": {
+      "length": {
+        "type": "String",
+        "example": "5.4"
+      }
+    }
+  },
 
   "applyButtonLabel": "APPLY",
   "deleteButtonLabel": "DELETE",

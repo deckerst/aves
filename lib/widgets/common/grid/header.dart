@@ -30,37 +30,6 @@ class SectionHeader<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final spans = [
-      WidgetSpan(
-        alignment: widgetSpanAlignment,
-        child: _SectionSelectableLeading<T>(
-          selectable: selectable,
-          sectionKey: sectionKey,
-          browsingBuilder: leading != null
-              ? (context) => Container(
-                    padding: const EdgeInsetsDirectional.only(end: 8, bottom: 4),
-                    width: leadingDimension,
-                    height: leadingDimension,
-                    child: leading,
-                  )
-              : null,
-          onPressed: selectable ? () => _toggleSectionSelection(context) : null,
-        ),
-      ),
-      TextSpan(
-        text: title,
-        style: Constants.titleTextStyle,
-      ),
-      if (trailing != null)
-        WidgetSpan(
-          alignment: widgetSpanAlignment,
-          child: Container(
-            padding: const EdgeInsetsDirectional.only(start: 8, bottom: 2),
-            child: trailing,
-          ),
-        ),
-    ];
-
     return Container(
       alignment: AlignmentDirectional.centerStart,
       padding: padding,
@@ -68,13 +37,38 @@ class SectionHeader<T> extends StatelessWidget {
       child: GestureDetector(
         onTap: selectable ? () => _toggleSectionSelection(context) : null,
         child: Text.rich(
-          // bidi with optional surrounding widget spans is tricky
-          // so we use LTR direction for the rich text itself and reverse the spans if necessary
-          // TODO TLAD [rtl] revisit this solution as it is failing for multiline headers
           TextSpan(
-            children: Directionality.of(context) == TextDirection.ltr ? spans : spans.reversed.toList(),
+            children: [
+              WidgetSpan(
+                alignment: widgetSpanAlignment,
+                child: _SectionSelectableLeading<T>(
+                  selectable: selectable,
+                  sectionKey: sectionKey,
+                  browsingBuilder: leading != null
+                      ? (context) => Container(
+                            padding: const EdgeInsetsDirectional.only(end: 8, bottom: 4),
+                            width: leadingDimension,
+                            height: leadingDimension,
+                            child: leading,
+                          )
+                      : null,
+                  onPressed: selectable ? () => _toggleSectionSelection(context) : null,
+                ),
+              ),
+              TextSpan(
+                text: title,
+                style: Constants.titleTextStyle,
+              ),
+              if (trailing != null)
+                WidgetSpan(
+                  alignment: widgetSpanAlignment,
+                  child: Container(
+                    padding: const EdgeInsetsDirectional.only(start: 8, bottom: 2),
+                    child: trailing,
+                  ),
+                ),
+            ],
           ),
-          textDirection: TextDirection.ltr,
         ),
       ),
     );

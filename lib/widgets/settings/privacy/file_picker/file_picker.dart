@@ -5,6 +5,7 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/android_file_utils.dart';
+import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/basic/menu.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/buttons.dart';
@@ -179,7 +180,7 @@ class _FilePickerState extends State<FilePicker> {
   Widget _buildContentLine(BuildContext context, FileSystemEntity content) {
     return ListTile(
       leading: const Icon(AIcons.folder),
-      title: Text(pContext.split(content.path).last),
+      title: Text('${Constants.fsi}${pContext.split(content.path).last}${Constants.pdi}'),
       onTap: () {
         _goTo(content.path);
         setState(() {});

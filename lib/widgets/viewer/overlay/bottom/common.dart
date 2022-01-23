@@ -358,7 +358,7 @@ class _PositionTitleRow extends StatelessWidget {
         [
           if (collectionPosition != null) collectionPosition,
           if (pagePosition != null) pagePosition,
-          if (title != null) title,
+          if (title != null) '${Constants.fsi}$title${Constants.pdi}',
         ].join(separator),
         strutStyle: Constants.overflowStrutStyle);
 
@@ -430,7 +430,7 @@ class _ShootingRow extends StatelessWidget {
     final apertureText = aperture != null ? 'ƒ/${NumberFormat('0.0', locale).format(aperture)}' : Constants.overlayUnknown;
 
     final focalLength = details.focalLength;
-    final focalLengthText = focalLength != null ? '${NumberFormat('0.#', locale).format(focalLength)} mm' : Constants.overlayUnknown;
+    final focalLengthText = focalLength != null ? context.l10n.focalLength(NumberFormat('0.#', locale).format(focalLength)) : Constants.overlayUnknown;
 
     final iso = details.iso;
     final isoText = iso != null ? 'ISO$iso' : Constants.overlayUnknown;

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/material.dart';
 
 /*
@@ -9,6 +10,8 @@ import 'package:flutter/material.dart';
   - allow any `Widget` as label content
   - moved out constraints responsibility
   - various extent & thumb positioning fixes
+  - null safety
+  - directionality aware
  */
 
 /// Build the Scroll Thumb and label using the current configuration
@@ -350,7 +353,7 @@ class SlideFadeTransition extends StatelessWidget {
       builder: (context, child) => animation.value == 0.0 ? Container() : child!,
       child: SlideTransition(
         position: Tween(
-          begin: Offset((Directionality.of(context) == TextDirection.ltr ? 1 : -1) * .3, 0),
+          begin: Offset((context.isRtl ? -1 : 1) * .3, 0),
           end: Offset.zero,
         ).animate(animation),
         child: FadeTransition(
