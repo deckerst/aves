@@ -181,7 +181,7 @@ class _InfoPageContentState extends State<_InfoPageContent> {
   }
 
   void _registerWidget(_InfoPageContent widget) {
-    _actionDelegate = EntryInfoActionDelegate(widget.entry);
+    _actionDelegate = EntryInfoActionDelegate(widget.entry, collection);
     _subscriptions.add(_actionDelegate.eventStream.listen(_onActionDelegateEvent));
   }
 

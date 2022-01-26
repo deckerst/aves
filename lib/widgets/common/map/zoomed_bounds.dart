@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:aves/utils/geo_utils.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
 @immutable
@@ -13,7 +14,17 @@ class ZoomedBounds extends Equatable {
   // returns [southwestLng, southwestLat, northeastLng, northeastLat], as expected by Fluster
   List<double> get boundingBox => [sw.longitude, sw.latitude, ne.longitude, ne.latitude];
 
-  LatLng get center => GeoUtils.getLatLngCenter([sw, ne]);
+  // Map services (Google Maps, OpenStreetMap) use the spherical Mercator projection (EPSG 3857).
+  static const _crs = Epsg3857();
+
+  // The projected center appears visually in the middle of the bounds.
+  LatLng get projectedCenter {
+    final swPoint = _crs.latLngToPoint(sw, zoom);
+    final nePoint = _crs.latLngToPoint(ne, zoom);
+    // assume no padding around bounds
+    final projectedCenter = _crs.pointToLatLng((swPoint + nePoint) / 2, zoom);
+    return projectedCenter ?? GeoUtils.getLatLngCenter([sw, ne]);
+  }
 
   @override
   List<Object?> get props => [sw, ne, zoom, rotation];

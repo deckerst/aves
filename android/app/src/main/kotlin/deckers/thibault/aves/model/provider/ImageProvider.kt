@@ -815,6 +815,55 @@ abstract class ImageProvider {
         modifier: FieldMap,
         callback: ImageOpCallback,
     ) {
+        if (modifier.containsKey("exif")) {
+            val fields = modifier["exif"] as Map<*, *>?
+            if (fields != null && fields.isNotEmpty()) {
+                if (!editExif(context, path, uri, mimeType, callback) { exif ->
+                        var setLocation = false
+                        fields.forEach { kv ->
+                            val tag = kv.key as String?
+                            if (tag != null) {
+                                val value = kv.value
+                                if (value == null) {
+                                    // remove attribute
+                                    exif.setAttribute(tag, value)
+                                } else {
+                                    when (tag) {
+                                        ExifInterface.TAG_GPS_LATITUDE,
+                                        ExifInterface.TAG_GPS_LATITUDE_REF,
+                                        ExifInterface.TAG_GPS_LONGITUDE,
+                                        ExifInterface.TAG_GPS_LONGITUDE_REF -> {
+                                            setLocation = true
+                                        }
+                                        else -> {
+                                            if (value is String) {
+                                                exif.setAttribute(tag, value)
+                                            } else {
+                                                Log.w(LOG_TAG, "failed to set Exif attribute $tag because value=$value is not a string")
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        if (setLocation) {
+                            val latAbs = (fields[ExifInterface.TAG_GPS_LATITUDE] as Number?)?.toDouble()
+                            val latRef = fields[ExifInterface.TAG_GPS_LATITUDE_REF] as String?
+                            val lngAbs = (fields[ExifInterface.TAG_GPS_LONGITUDE] as Number?)?.toDouble()
+                            val lngRef = fields[ExifInterface.TAG_GPS_LONGITUDE_REF] as String?
+                            if (latAbs != null && latRef != null && lngAbs != null && lngRef != null) {
+                                val latitude = if (latRef == ExifInterface.LATITUDE_SOUTH) -latAbs else latAbs
+                                val longitude = if (lngRef == ExifInterface.LONGITUDE_WEST) -lngAbs else lngAbs
+                                exif.setLatLong(latitude, longitude)
+                            } else {
+                                Log.w(LOG_TAG, "failed to set Exif location with latAbs=$latAbs, latRef=$latRef, lngAbs=$lngAbs, lngRef=$lngRef")
+                            }
+                        }
+                        exif.saveAttributes()
+                    }) return
+            }
+        }
+
         if (modifier.containsKey("iptc")) {
             val iptc = (modifier["iptc"] as List<*>?)?.filterIsInstance<FieldMap>()
             if (!editIptc(

@@ -84,8 +84,8 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
     _visibleEntries = null;
     _sortedEntriesByDate = null;
     invalidateAlbumFilterSummary(entries: entries);
-    invalidateCountryFilterSummary(entries);
-    invalidateTagFilterSummary(entries);
+    invalidateCountryFilterSummary(entries: entries);
+    invalidateTagFilterSummary(entries: entries);
   }
 
   void updateDerivedFilters([Set<AvesEntry>? entries]) {
@@ -292,6 +292,18 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
 
   Future<void> refreshEntry(AvesEntry entry, Set<EntryDataType> dataTypes) async {
     await entry.refresh(background: false, persist: true, dataTypes: dataTypes, geocoderLocale: settings.appliedLocale);
+
+    // update/delete in DB
+    final contentId = entry.contentId!;
+    if (dataTypes.contains(EntryDataType.catalog)) {
+      await metadataDb.updateMetadataId(contentId, entry.catalogMetadata);
+      onCatalogMetadataChanged();
+    }
+    if (dataTypes.contains(EntryDataType.address)) {
+      await metadataDb.updateAddressId(contentId, entry.addressDetails);
+      onAddressMetadataChanged();
+    }
+
     updateDerivedFilters({entry});
     eventBus.fire(EntryRefreshedEvent({entry}));
   }
