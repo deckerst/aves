@@ -70,7 +70,7 @@ class _RenameEntryDialogState extends State<RenameEntryDialog> {
               child: Text(context.l10n.applyButtonLabel),
             );
           },
-        )
+        ),
       ],
     );
   }

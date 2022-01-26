@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:typed_data';
 
-import 'package:aves/model/entry.dart';
 import 'package:aves/model/entry_images.dart';
 import 'package:aves/model/settings/enums.dart';
 import 'package:aves/utils/change_notifier.dart';
@@ -27,9 +26,9 @@ class EntryGoogleMap extends StatefulWidget {
   final EntryMapStyle style;
   final MarkerClusterBuilder markerClusterBuilder;
   final MarkerWidgetBuilder markerWidgetBuilder;
-  final ValueNotifier<AvesEntry?>? dotEntryNotifier;
+  final ValueNotifier<ll.LatLng?>? dotLocationNotifier;
   final UserZoomChangeCallback? onUserZoomChange;
-  final VoidCallback? onMapTap;
+  final void Function(ll.LatLng location)? onMapTap;
   final void Function(GeoEntry geoEntry)? onMarkerTap;
   final MapOpener? openMapPage;
 
@@ -43,7 +42,7 @@ class EntryGoogleMap extends StatefulWidget {
     required this.style,
     required this.markerClusterBuilder,
     required this.markerWidgetBuilder,
-    required this.dotEntryNotifier,
+    required this.dotLocationNotifier,
     this.onUserZoomChange,
     this.onMapTap,
     this.onMarkerTap,
@@ -170,13 +169,13 @@ class _EntryGoogleMapState extends State<EntryGoogleMap> with WidgetsBindingObse
         });
 
         final interactive = context.select<MapThemeData, bool>((v) => v.interactive);
-        return ValueListenableBuilder<AvesEntry?>(
-          valueListenable: widget.dotEntryNotifier ?? ValueNotifier(null),
-          builder: (context, dotEntry, child) {
+        return ValueListenableBuilder<ll.LatLng?>(
+          valueListenable: widget.dotLocationNotifier ?? ValueNotifier(null),
+          builder: (context, dotLocation, child) {
             return GoogleMap(
               initialCameraPosition: CameraPosition(
                 bearing: -bounds.rotation,
-                target: _toGoogleLatLng(bounds.center),
+                target: _toGoogleLatLng(bounds.projectedCenter),
                 zoom: bounds.zoom,
               ),
               onMapCreated: (controller) async {
@@ -205,19 +204,19 @@ class _EntryGoogleMapState extends State<EntryGoogleMap> with WidgetsBindingObse
               myLocationButtonEnabled: false,
               markers: {
                 ...markers,
-                if (dotEntry != null && _dotMarkerBitmap != null)
+                if (dotLocation != null && _dotMarkerBitmap != null)
                   Marker(
                     markerId: const MarkerId('dot'),
                     anchor: const Offset(.5, .5),
                     consumeTapEvents: true,
                     icon: BitmapDescriptor.fromBytes(_dotMarkerBitmap!),
-                    position: _toGoogleLatLng(dotEntry.latLng!),
+                    position: _toGoogleLatLng(dotLocation),
                     zIndex: 1,
                   )
               },
               onCameraMove: (position) => _updateVisibleRegion(zoom: position.zoom, rotation: -position.bearing),
               onCameraIdle: _onIdle,
-              onTap: (position) => widget.onMapTap?.call(),
+              onTap: (position) => widget.onMapTap?.call(_fromGoogleLatLng(position)),
             );
           },
         );
@@ -243,8 +242,8 @@ class _EntryGoogleMapState extends State<EntryGoogleMap> with WidgetsBindingObse
       final sw = bounds.southwest;
       final ne = bounds.northeast;
       boundsNotifier.value = ZoomedBounds(
-        sw: ll.LatLng(sw.latitude, sw.longitude),
-        ne: ll.LatLng(ne.latitude, ne.longitude),
+        sw: _fromGoogleLatLng(sw),
+        ne: _fromGoogleLatLng(ne),
         zoom: zoom,
         rotation: rotation,
       );
@@ -262,7 +261,7 @@ class _EntryGoogleMapState extends State<EntryGoogleMap> with WidgetsBindingObse
     if (controller == null) return;
 
     await controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-      target: _toGoogleLatLng(bounds.center),
+      target: _toGoogleLatLng(bounds.projectedCenter),
       zoom: bounds.zoom,
     )));
   }
@@ -283,7 +282,9 @@ class _EntryGoogleMapState extends State<EntryGoogleMap> with WidgetsBindingObse
   }
 
   // `LatLng` used by `google_maps_flutter` is not the one from `latlong2` package
-  LatLng _toGoogleLatLng(ll.LatLng latLng) => LatLng(latLng.latitude, latLng.longitude);
+  LatLng _toGoogleLatLng(ll.LatLng location) => LatLng(location.latitude, location.longitude);
+
+  ll.LatLng _fromGoogleLatLng(LatLng location) => ll.LatLng(location.latitude, location.longitude);
 
   MapType _toMapType(EntryMapStyle style) {
     switch (style) {

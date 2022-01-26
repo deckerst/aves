@@ -1,4 +1,5 @@
 import 'package:aves/model/metadata/enums.dart';
+import 'package:aves/model/metadata/fields.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
@@ -9,7 +10,7 @@ class DateModifier extends Equatable {
     MetadataField.exifDate,
     MetadataField.exifDateOriginal,
     MetadataField.exifDateDigitized,
-    MetadataField.exifGpsDate,
+    MetadataField.exifGpsDatestamp,
     MetadataField.xmpCreateDate,
   ];
 

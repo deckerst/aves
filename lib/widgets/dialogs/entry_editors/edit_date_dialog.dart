@@ -1,6 +1,7 @@
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/metadata/date_modifier.dart';
 import 'package:aves/model/metadata/enums.dart';
+import 'package:aves/model/metadata/fields.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/format.dart';
 import 'package:aves/theme/icons.dart';
@@ -304,10 +305,12 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
         return 'Exif original date';
       case MetadataField.exifDateDigitized:
         return 'Exif digitized date';
-      case MetadataField.exifGpsDate:
+      case MetadataField.exifGpsDatestamp:
         return 'Exif GPS date';
       case MetadataField.xmpCreateDate:
         return 'XMP xmp:CreateDate';
+      default:
+        return field.name;
     }
   }
 

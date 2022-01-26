@@ -1,6 +1,6 @@
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/metadata/catalog.dart';
-import 'package:aves/model/metadata/enums.dart';
+import 'package:aves/model/metadata/fields.dart';
 import 'package:aves/model/metadata/overlay.dart';
 import 'package:aves/model/multipage.dart';
 import 'package:aves/model/panorama.dart';
@@ -236,7 +236,7 @@ class PlatformMetadataFetchService implements MetadataFetchService {
         'mimeType': entry.mimeType,
         'uri': entry.uri,
         'sizeBytes': entry.sizeBytes,
-        'field': field.toExifInterfaceTag(),
+        'field': field.exifInterfaceTag,
       });
       if (result is int) {
         return dateTimeFromMillis(result, isUtc: false);

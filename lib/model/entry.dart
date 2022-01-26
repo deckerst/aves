@@ -237,6 +237,8 @@ class AvesEntry {
 
   bool get canEditDate => canEdit && (canEditExif || canEditXmp);
 
+  bool get canEditLocation => canEdit && canEditExif;
+
   bool get canEditRating => canEdit && canEditXmp;
 
   bool get canEditTags => canEdit && canEditXmp;
@@ -497,10 +499,13 @@ class AvesEntry {
   }
 
   Future<void> locate({required bool background, required bool force, required Locale geocoderLocale}) async {
-    if (!hasGps) return;
-    await _locateCountry(force: force);
-    if (await availability.canLocatePlaces) {
-      await locatePlace(background: background, force: force, geocoderLocale: geocoderLocale);
+    if (hasGps) {
+      await _locateCountry(force: force);
+      if (await availability.canLocatePlaces) {
+        await locatePlace(background: background, force: force, geocoderLocale: geocoderLocale);
+      }
+    } else {
+      addressDetails = null;
     }
   }
 

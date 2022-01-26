@@ -23,7 +23,7 @@ import 'package:aves/widgets/common/action_mixins/size_aware.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/add_shortcut_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
-import 'package:aves/widgets/dialogs/entry_editors/rename_entry_dialog.dart';
+import 'package:aves/widgets/dialogs/entry_editors/rename_dialog.dart';
 import 'package:aves/widgets/dialogs/export_entry_dialog.dart';
 import 'package:aves/widgets/filter_grids/album_pick.dart';
 import 'package:aves/widgets/viewer/action/printer.dart';

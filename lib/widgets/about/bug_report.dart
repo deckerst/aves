@@ -29,6 +29,7 @@ class BugReport extends StatefulWidget {
 }
 
 class _BugReportState extends State<BugReport> with FeedbackMixin {
+  final ScrollController _infoScrollController = ScrollController();
   late Future<String> _infoLoader;
   bool _showInstructions = false;
 
@@ -92,8 +93,14 @@ class _BugReportState extends State<BugReport> with FeedbackMixin {
                           ),
                         ),
                         child: Scrollbar(
-                          child: Padding(
-                            padding: const EdgeInsetsDirectional.only(start: 8, end: 16),
+                          // when using `Scrollbar.isAlwaysShown`, a controller must be provided
+                          // and used by both the `Scrollbar` and the `Scrollable`, but
+                          // as of Flutter v2.8.1, `SelectableText` does not allow passing the `scrollController`
+                          // so we wrap it in a `SingleChildScrollView`
+                          controller: _infoScrollController,
+                          child: SingleChildScrollView(
+                            padding: const EdgeInsetsDirectional.only(start: 8, top: 4, end: 16, bottom: 4),
+                            controller: _infoScrollController,
                             child: SelectableText(info),
                           ),
                         ),
@@ -136,7 +143,7 @@ class _BugReportState extends State<BugReport> with FeedbackMixin {
           AvesOutlinedButton(
             label: buttonText,
             onPressed: onPressed,
-          )
+          ),
         ],
       ),
     );

@@ -97,6 +97,7 @@
   "videoActionSettings": "Settings",
 
   "entryInfoActionEditDate": "Edit date & time",
+  "entryInfoActionEditLocation": "Edit location",
   "entryInfoActionEditRating": "Edit rating",
   "entryInfoActionEditTags": "Edit tags",
   "entryInfoActionRemoveMetadata": "Remove metadata",
@@ -314,6 +315,13 @@
   "editEntryDateDialogTargetFieldsHeader": "Fields to modify",
   "editEntryDateDialogHours": "Hours",
   "editEntryDateDialogMinutes": "Minutes",
+
+  "editEntryLocationDialogTitle": "Location",
+  "editEntryLocationDialogChooseOnMapTooltip": "Choose on map",
+  "editEntryLocationDialogLatitude": "Latitude",
+  "editEntryLocationDialogLongitude": "Longitude",
+
+  "locationPickerUseThisLocationButton": "Use this location",
 
   "editEntryRatingDialogTitle": "Rating",
 

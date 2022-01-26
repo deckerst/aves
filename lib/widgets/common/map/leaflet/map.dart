@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:aves/model/entry.dart';
 import 'package:aves/model/settings/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
@@ -29,10 +28,10 @@ class EntryLeafletMap extends StatefulWidget {
   final EntryMapStyle style;
   final MarkerClusterBuilder markerClusterBuilder;
   final MarkerWidgetBuilder markerWidgetBuilder;
-  final ValueNotifier<AvesEntry?>? dotEntryNotifier;
+  final ValueNotifier<LatLng?>? dotLocationNotifier;
   final Size markerSize, dotMarkerSize;
   final UserZoomChangeCallback? onUserZoomChange;
-  final VoidCallback? onMapTap;
+  final void Function(LatLng location)? onMapTap;
   final void Function(GeoEntry geoEntry)? onMarkerTap;
   final MapOpener? openMapPage;
 
@@ -46,7 +45,7 @@ class EntryLeafletMap extends StatefulWidget {
     required this.style,
     required this.markerClusterBuilder,
     required this.markerWidgetBuilder,
-    required this.dotEntryNotifier,
+    required this.dotLocationNotifier,
     required this.markerSize,
     required this.dotMarkerSize,
     this.onUserZoomChange,
@@ -154,7 +153,7 @@ class _EntryLeafletMapState extends State<EntryLeafletMap> with TickerProviderSt
 
     return FlutterMap(
       options: MapOptions(
-        center: bounds.center,
+        center: bounds.projectedCenter,
         zoom: bounds.zoom,
         rotation: bounds.rotation,
         minZoom: widget.minZoom,
@@ -162,7 +161,7 @@ class _EntryLeafletMapState extends State<EntryLeafletMap> with TickerProviderSt
         // TODO TLAD [map] as of flutter_map v0.14.0, `doubleTapZoom` does not move when zoom is already maximal
         // this could be worked around with https://github.com/fleaflet/flutter_map/pull/960
         interactiveFlags: interactive ? InteractiveFlag.all : InteractiveFlag.none,
-        onTap: (tapPosition, point) => widget.onMapTap?.call(),
+        onTap: (tapPosition, point) => widget.onMapTap?.call(point),
         controller: _leafletMapController,
       ),
       mapController: _leafletMapController,
@@ -182,14 +181,14 @@ class _EntryLeafletMapState extends State<EntryLeafletMap> with TickerProviderSt
             rotateAlignment: Alignment.bottomCenter,
           ),
         ),
-        ValueListenableBuilder<AvesEntry?>(
-          valueListenable: widget.dotEntryNotifier ?? ValueNotifier(null),
-          builder: (context, dotEntry, child) => MarkerLayerWidget(
+        ValueListenableBuilder<LatLng?>(
+          valueListenable: widget.dotLocationNotifier ?? ValueNotifier(null),
+          builder: (context, dotLocation, child) => MarkerLayerWidget(
             options: MarkerLayerOptions(
               markers: [
-                if (dotEntry != null)
+                if (dotLocation != null)
                   Marker(
-                    point: dotEntry.latLng!,
+                    point: dotLocation,
                     builder: (context) => const DotMarker(),
                     width: dotMarkerSize.width,
                     height: dotMarkerSize.height,
