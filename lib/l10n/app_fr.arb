@@ -74,6 +74,7 @@
   "videoActionSettings": "Préférences",
 
   "entryInfoActionEditDate": "Modifier la date",
+  "entryInfoActionEditLocation": "Modifier le lieu",
   "entryInfoActionEditRating": "Modifier la notation",
   "entryInfoActionEditTags": "Modifier les libellés",
   "entryInfoActionRemoveMetadata": "Retirer les métadonnées",
@@ -194,6 +195,13 @@
   "editEntryDateDialogTargetFieldsHeader": "Champs à modifier",
   "editEntryDateDialogHours": "Heures",
   "editEntryDateDialogMinutes": "Minutes",
+
+  "editEntryLocationDialogTitle": "Lieu",
+  "editEntryLocationDialogChooseOnMapTooltip": "Sélectionner sur la carte",
+  "editEntryLocationDialogLatitude": "Latitude",
+  "editEntryLocationDialogLongitude": "Longitude",
+
+  "locationPickerUseThisLocationButton": "Utiliser ce lieu",
 
   "editEntryRatingDialogTitle": "Notation",
 

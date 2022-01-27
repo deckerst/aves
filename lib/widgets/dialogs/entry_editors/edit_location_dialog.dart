@@ -1,6 +1,7 @@
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
@@ -29,7 +30,7 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> {
   final FocusNode _latitudeFocusNode = FocusNode(), _longitudeFocusNode = FocusNode();
   final ValueNotifier<bool> _isValidNotifier = ValueNotifier(false);
 
-  static const _coordinateFormat = '0.000000';
+  NumberFormat get coordinateFormatter => NumberFormat('0.000000', context.l10n.localeName);
 
   @override
   void initState() {
@@ -79,6 +80,7 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> {
                             focusNode: _latitudeFocusNode,
                             decoration: InputDecoration(
                               labelText: context.l10n.editEntryLocationDialogLatitude,
+                              hintText: coordinateFormatter.format(Constants.pointNemo.latitude),
                             ),
                             onChanged: (_) => _validate(),
                           ),
@@ -87,6 +89,7 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> {
                             focusNode: _longitudeFocusNode,
                             decoration: InputDecoration(
                               labelText: context.l10n.editEntryLocationDialogLongitude,
+                              hintText: coordinateFormatter.format(Constants.pointNemo.longitude),
                             ),
                             onChanged: (_) => _validate(),
                           ),
@@ -149,10 +152,8 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> {
   }
 
   void _setLocation(BuildContext context, LatLng? latLng) {
-    final locale = context.l10n.localeName;
-    final formatter = NumberFormat(_coordinateFormat, locale);
-    _latitudeController.text = latLng != null ? formatter.format(latLng.latitude) : '';
-    _longitudeController.text = latLng != null ? formatter.format(latLng.longitude) : '';
+    _latitudeController.text = latLng != null ? coordinateFormatter.format(latLng.latitude) : '';
+    _longitudeController.text = latLng != null ? coordinateFormatter.format(latLng.longitude) : '';
     setState(() {
       _action = _LocationAction.set;
       _validate();
@@ -187,11 +188,9 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> {
   }
 
   LatLng? _parseLatLng() {
-    final locale = context.l10n.localeName;
-    final formatter = NumberFormat(_coordinateFormat, locale);
     double? tryParse(String text) {
       try {
-        return double.tryParse(text) ?? (formatter.parse(text).toDouble());
+        return double.tryParse(text) ?? (coordinateFormatter.parse(text).toDouble());
       } catch (e) {
         // ignore
         return null;

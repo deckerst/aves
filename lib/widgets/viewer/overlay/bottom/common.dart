@@ -324,7 +324,17 @@ class _LocationRow extends AnimatedWidget {
 
   @override
   Widget build(BuildContext context) {
-    final location = entry.hasAddress ? entry.shortAddress : settings.coordinateFormat.format(context.l10n, entry.latLng!);
+    late final String location;
+    if (entry.hasAddress) {
+      location = entry.shortAddress;
+    } else {
+      final latLng = entry.latLng;
+      if (latLng != null) {
+        location = settings.coordinateFormat.format(context.l10n, latLng);
+      } else {
+        location = '';
+      }
+    }
     return Row(
       children: [
         const DecoratedIcon(AIcons.location, shadows: Constants.embossShadows, size: _iconSize),
