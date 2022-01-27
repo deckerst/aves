@@ -7,6 +7,7 @@
 
   "timeSeconds": "{seconds, plural, =1{1 секунда} few{{seconds} секунды} other{{seconds} секунд}}",
   "timeMinutes": "{minutes, plural, =1{1 минута} few{{minutes} минуты} other{{minutes} минут}}",
+  "focalLength": "{length} mm",
 
   "applyButtonLabel": "ПРИМЕНИТЬ",
   "deleteButtonLabel": "УДАЛИТЬ",
@@ -230,13 +231,6 @@
   "aboutLinkLicense": "Лицензия",
   "aboutLinkPolicy": "Политика конфиденциальности",
 
-  "aboutUpdate": "Доступна новая версия",
-  "aboutUpdateLinks1": "Новая версия Aves доступна на",
-  "aboutUpdateLinks2": "и",
-  "aboutUpdateLinks3": ".",
-  "aboutUpdateGitHub": "GitHub",
-  "aboutUpdateGooglePlay": "Play Маркет",
-
   "aboutBug": "Отчет об ошибке",
   "aboutBugSaveLogInstruction": "Сохраните логи приложения в файл",
   "aboutBugSaveLogButton": "Сохранить",
@@ -360,6 +354,9 @@
 
   "settingsActionExport": "Экспорт",
   "settingsActionImport": "Импорт",
+
+  "appExportFavourites": "Избранное",
+  "appExportSettings": "Настройки",
 
   "settingsSectionNavigation": "Навигация",
   "settingsHome": "Домашний каталог",

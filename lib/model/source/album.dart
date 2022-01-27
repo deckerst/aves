@@ -146,9 +146,14 @@ mixin AlbumMixin on SourceBase {
       _filterEntryCountMap.clear();
       _filterRecentEntryMap.clear();
     } else {
-      directories ??= entries!.map((entry) => entry.directory).toSet();
-      directories.forEach(_filterEntryCountMap.remove);
-      directories.forEach(_filterRecentEntryMap.remove);
+      directories ??= {};
+      if (entries != null) {
+        directories.addAll(entries.map((entry) => entry.directory).whereNotNull());
+      }
+      directories.forEach((directory) {
+        _filterEntryCountMap.remove(directory);
+        _filterRecentEntryMap.remove(directory);
+      });
     }
     eventBus.fire(AlbumSummaryInvalidatedEvent(directories));
   }

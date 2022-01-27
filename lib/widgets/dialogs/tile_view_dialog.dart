@@ -131,9 +131,8 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
             // crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Material(
-                borderRadius: const BorderRadius.only(
-                  topLeft: AvesDialog.cornerRadius,
-                  topRight: AvesDialog.cornerRadius,
+                borderRadius: const BorderRadius.vertical(
+                  top: AvesDialog.cornerRadius,
                 ),
                 clipBehavior: Clip.antiAlias,
                 child: TabBar(

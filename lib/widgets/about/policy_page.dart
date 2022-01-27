@@ -17,10 +17,13 @@ class PolicyPage extends StatefulWidget {
 class _PolicyPageState extends State<PolicyPage> {
   late Future<String> _termsLoader;
 
+  static const termsPath = 'assets/terms.md';
+  static const termsDirection = TextDirection.ltr;
+
   @override
   void initState() {
     super.initState();
-    _termsLoader = rootBundle.loadString('assets/terms.md');
+    _termsLoader = rootBundle.loadString(termsPath);
   }
 
   @override
@@ -38,7 +41,10 @@ class _PolicyPageState extends State<PolicyPage> {
               final terms = snapshot.data!;
               return Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8),
-                child: MarkdownContainer(data: terms),
+                child: MarkdownContainer(
+                  data: terms,
+                  textDirection: termsDirection,
+                ),
               );
             },
           ),

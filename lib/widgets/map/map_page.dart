@@ -27,6 +27,7 @@ import 'package:aves/widgets/viewer/info/notifications.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 
 class MapPage extends StatelessWidget {
@@ -54,7 +55,7 @@ class MapPage extends StatelessWidget {
             top: false,
             right: false,
             bottom: true,
-            child: MapPageContent(
+            child: _Content(
               collection: collection,
               initialEntry: initialEntry,
             ),
@@ -65,26 +66,27 @@ class MapPage extends StatelessWidget {
   }
 }
 
-class MapPageContent extends StatefulWidget {
+class _Content extends StatefulWidget {
   final CollectionLens collection;
   final AvesEntry? initialEntry;
 
-  const MapPageContent({
+  const _Content({
     Key? key,
     required this.collection,
     this.initialEntry,
   }) : super(key: key);
 
   @override
-  _MapPageContentState createState() => _MapPageContentState();
+  _ContentState createState() => _ContentState();
 }
 
-class _MapPageContentState extends State<MapPageContent> with SingleTickerProviderStateMixin {
+class _ContentState extends State<_Content> with SingleTickerProviderStateMixin {
   final List<StreamSubscription> _subscriptions = [];
   final AvesMapController _mapController = AvesMapController();
   late final ValueNotifier<bool> _isPageAnimatingNotifier;
   final ValueNotifier<int?> _selectedIndexNotifier = ValueNotifier(0);
   final ValueNotifier<CollectionLens?> _regionCollectionNotifier = ValueNotifier(null);
+  final ValueNotifier<LatLng?> _dotLocationNotifier = ValueNotifier(null);
   final ValueNotifier<AvesEntry?> _dotEntryNotifier = ValueNotifier(null), _infoEntryNotifier = ValueNotifier(null);
   final Debouncer _infoDebouncer = Debouncer(delay: Durations.mapInfoDebounceDelay);
   final ValueNotifier<bool> _overlayVisible = ValueNotifier(true);
@@ -223,11 +225,11 @@ class _MapPageContentState extends State<MapPageContent> with SingleTickerProvid
         controller: _mapController,
         collectionListenable: openingCollection,
         entries: openingCollection.sortedEntries,
-        initialEntry: widget.initialEntry,
+        initialCenter: widget.initialEntry?.latLng,
         isAnimatingNotifier: _isPageAnimatingNotifier,
-        dotEntryNotifier: _dotEntryNotifier,
-        onMapTap: _toggleOverlay,
-        onMarkerTap: (markerEntry, getClusterEntries) async {
+        dotLocationNotifier: _dotLocationNotifier,
+        onMapTap: (_) => _toggleOverlay(),
+        onMarkerTap: (averageLocation, markerEntry, getClusterEntries) async {
           final index = regionCollection?.sortedEntries.indexOf(markerEntry);
           if (index != null && _selectedIndexNotifier.value != index) {
             _selectedIndexNotifier.value = index;
@@ -337,7 +339,10 @@ class _MapPageContentState extends State<MapPageContent> with SingleTickerProvid
 
   void _onThumbnailIndexChange() => _onEntrySelected(_getRegionEntry(_selectedIndexNotifier.value));
 
-  void _onEntrySelected(AvesEntry? selectedEntry) => _dotEntryNotifier.value = selectedEntry;
+  void _onEntrySelected(AvesEntry? selectedEntry) {
+    _dotLocationNotifier.value = selectedEntry?.latLng;
+    _dotEntryNotifier.value = selectedEntry;
+  }
 
   void _updateInfoEntry() {
     final selectedEntry = _dotEntryNotifier.value;

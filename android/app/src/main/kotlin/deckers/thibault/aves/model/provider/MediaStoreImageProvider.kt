@@ -28,6 +28,7 @@ import deckers.thibault.aves.utils.StorageUtils
 import deckers.thibault.aves.utils.StorageUtils.PathSegments
 import deckers.thibault.aves.utils.UriUtils.tryParseId
 import java.io.File
+import java.io.OutputStream
 import java.util.*
 import java.util.concurrent.CompletableFuture
 import kotlin.collections.ArrayList
@@ -414,34 +415,39 @@ class MediaStoreImageProvider : ImageProvider() {
             conflictStrategy = nameConflictStrategy,
         ) ?: return skippedFieldMap
 
-        return moveSingleByTreeDoc(
+        val sourceDocFile = DocumentFileCompat.fromSingleUri(activity, sourceUri)
+        val targetPath = createSingle(
             activity = activity,
             mimeType = mimeType,
-            sourceUri = sourceUri,
-            sourcePath = sourcePath,
             targetDir = targetDir,
             targetDirDocFile = targetDirDocFile,
             targetNameWithoutExtension = targetNameWithoutExtension,
-            copy = copy
-        )
+        ) { output: OutputStream -> sourceDocFile.copyTo(output) }
+
+        if (!copy) {
+            // delete original entry
+            try {
+                delete(activity, sourceUri, sourcePath, mimeType)
+            } catch (e: Exception) {
+                Log.w(LOG_TAG, "failed to delete entry with path=$sourcePath", e)
+            }
+        }
+
+        return scanNewPath(activity, targetPath, mimeType)
     }
 
-    private suspend fun moveSingleByTreeDoc(
+    // `DocumentsContract.moveDocument()` needs `sourceParentDocumentUri`, which could be different for each entry
+    // `DocumentsContract.copyDocument()` yields "Unsupported call: android:copyDocument"
+    // when used with entry URI as `sourceDocumentUri`, and targetDirDocFile URI as `targetParentDocumentUri`
+    fun createSingle(
         activity: Activity,
         mimeType: String,
-        sourceUri: Uri,
-        sourcePath: String,
         targetDir: String,
         targetDirDocFile: DocumentFileCompat?,
         targetNameWithoutExtension: String,
-        copy: Boolean
-    ): FieldMap {
-        // `DocumentsContract.moveDocument()` needs `sourceParentDocumentUri`, which could be different for each entry
-        // `DocumentsContract.copyDocument()` yields "Unsupported call: android:copyDocument"
-        // when used with entry URI as `sourceDocumentUri`, and targetDirDocFile URI as `targetParentDocumentUri`
-        val source = DocumentFileCompat.fromSingleUri(activity, sourceUri)
-
-        val targetPath = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && isDownloadDir(activity, targetDir)) {
+        write: (OutputStream) -> Unit,
+    ): String {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && isDownloadDir(activity, targetDir)) {
             val targetFileName = "$targetNameWithoutExtension${extensionFor(mimeType)}"
             val values = ContentValues().apply {
                 put(MediaStore.MediaColumns.DISPLAY_NAME, targetFileName)
@@ -451,10 +457,7 @@ class MediaStoreImageProvider : ImageProvider() {
             val uri = resolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values)
 
             uri?.let {
-                @Suppress("BlockingMethodInNonBlockingContext")
-                resolver.openOutputStream(uri)?.use { output ->
-                    source.copyTo(output)
-                }
+                resolver.openOutputStream(uri)?.use(write)
                 values.clear()
                 values.put(MediaStore.MediaColumns.IS_PENDING, 0)
                 resolver.update(uri, values, null, null)
@@ -468,12 +471,18 @@ class MediaStoreImageProvider : ImageProvider() {
             // but in order to open an output stream to it, we need to use a `SingleDocumentFile`
             // through a document URI, not a tree URI
             // note that `DocumentFile.getParentFile()` returns null if we did not pick a tree first
-            @Suppress("BlockingMethodInNonBlockingContext")
             val targetTreeFile = targetDirDocFile.createFile(mimeType, targetNameWithoutExtension)
             val targetDocFile = DocumentFileCompat.fromSingleUri(activity, targetTreeFile.uri)
 
-            @Suppress("BlockingMethodInNonBlockingContext")
-            source.copyTo(targetDocFile)
+            try {
+                targetDocFile.openOutputStream().use(write)
+            } catch (e: Exception) {
+                // remove empty file
+                if (targetDocFile.exists()) {
+                    targetDocFile.delete()
+                }
+                throw e
+            }
 
             // the source file name and the created document file name can be different when:
             // - a file with the same name already exists, some implementations give a suffix like ` (1)`, some *do not*
@@ -481,17 +490,6 @@ class MediaStoreImageProvider : ImageProvider() {
             val fileName = targetDocFile.name
             targetDir + fileName
         }
-
-        if (!copy) {
-            // delete original entry
-            try {
-                delete(activity, sourceUri, sourcePath, mimeType)
-            } catch (e: Exception) {
-                Log.w(LOG_TAG, "failed to delete entry with path=$sourcePath", e)
-            }
-        }
-
-        return scanNewPath(activity, targetPath, mimeType)
     }
 
     private fun isDownloadDir(context: Context, dirPath: String): Boolean {

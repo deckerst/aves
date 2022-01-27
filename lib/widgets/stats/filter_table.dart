@@ -1,9 +1,10 @@
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/utils/color_utils.dart';
 import 'package:aves/utils/constants.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:intl/intl.dart' as intl;
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class FilterTable<T extends Comparable> extends StatelessWidget {
@@ -40,6 +41,7 @@ class FilterTable<T extends Comparable> extends StatelessWidget {
 
     final textScaleFactor = MediaQuery.textScaleFactorOf(context);
     final lineHeight = 16 * textScaleFactor;
+    final isRtl = context.isRtl;
 
     return Padding(
       padding: const EdgeInsetsDirectional.only(start: AvesFilterChip.outlineWidth / 2 + 6, end: 8),
@@ -73,9 +75,10 @@ class FilterTable<T extends Comparable> extends StatelessWidget {
                       backgroundColor: Colors.white24,
                       progressColor: stringToColor(label),
                       animation: true,
+                      isRTL: isRtl,
                       padding: EdgeInsets.symmetric(horizontal: lineHeight),
                       center: Text(
-                        NumberFormat.percentPattern().format(percent),
+                        intl.NumberFormat.percentPattern().format(percent),
                         style: const TextStyle(shadows: Constants.embossShadows),
                       ),
                     ),

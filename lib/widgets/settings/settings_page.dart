@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:aves/model/actions/settings_actions.dart';
-import 'package:aves/model/settings/settings.dart';
+import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
@@ -12,12 +12,15 @@ import 'package:aves/widgets/common/basic/menu.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/settings/accessibility/accessibility.dart';
+import 'package:aves/widgets/settings/app_export/items.dart';
+import 'package:aves/widgets/settings/app_export/selection_dialog.dart';
 import 'package:aves/widgets/settings/language/language.dart';
 import 'package:aves/widgets/settings/navigation/navigation.dart';
 import 'package:aves/widgets/settings/privacy/privacy.dart';
 import 'package:aves/widgets/settings/thumbnails/thumbnails.dart';
 import 'package:aves/widgets/settings/video/video.dart';
 import 'package:aves/widgets/settings/viewer/viewer.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -106,13 +109,32 @@ class _SettingsPageState extends State<SettingsPage> with FeedbackMixin {
     );
   }
 
+  static const String exportVersionKey = 'version';
+  static const int exportVersion = 1;
+
   void _onActionSelected(SettingsAction action) async {
+    final source = context.read<CollectionSource>();
     switch (action) {
       case SettingsAction.export:
+        final toExport = await showDialog<Set<AppExportItem>>(
+          context: context,
+          builder: (context) => AppExportItemSelectionDialog(
+            title: context.l10n.settingsActionExport,
+          ),
+        );
+        if (toExport == null || toExport.isEmpty) return;
+
+        final allMap = Map.fromEntries(toExport.map((v) {
+          final jsonMap = v.export(source);
+          return jsonMap != null ? MapEntry(v.name, jsonMap) : null;
+        }).whereNotNull());
+        allMap[exportVersionKey] = exportVersion;
+        final allJsonString = jsonEncode(allMap);
+
         final success = await storageService.createFile(
           'aves-settings-${DateFormat('yyyyMMdd_HHmmss').format(DateTime.now())}.json',
           MimeTypes.json,
-          Uint8List.fromList(utf8.encode(settings.toJson())),
+          Uint8List.fromList(utf8.encode(allJsonString)),
         );
         if (success != null) {
           if (success) {
@@ -128,10 +150,44 @@ class _SettingsPageState extends State<SettingsPage> with FeedbackMixin {
         final bytes = await storageService.openFile();
         if (bytes.isNotEmpty) {
           try {
-            await settings.fromJson(utf8.decode(bytes));
+            final allJsonString = utf8.decode(bytes);
+            final allJsonMap = jsonDecode(allJsonString);
+
+            final version = allJsonMap[exportVersionKey];
+            final importable = <AppExportItem, dynamic>{};
+            if (version == null) {
+              // backwards compatibility before versioning
+              importable[AppExportItem.settings] = allJsonMap;
+            } else {
+              if (allJsonMap is! Map) {
+                debugPrint('failed to import app json=$allJsonMap');
+                showFeedback(context, context.l10n.genericFailureFeedback);
+                return;
+              }
+              allJsonMap.keys.where((v) => v != exportVersionKey).forEach((k) {
+                try {
+                  importable[AppExportItem.values.byName(k)] = allJsonMap[k];
+                } catch (error, stack) {
+                  debugPrint('failed to identify import app item=$k with error=$error\n$stack');
+                }
+              });
+            }
+
+            final toImport = await showDialog<Set<AppExportItem>>(
+              context: context,
+              builder: (context) => AppExportItemSelectionDialog(
+                title: context.l10n.settingsActionImport,
+                selectableItems: importable.keys.toSet(),
+              ),
+            );
+            if (toImport == null || toImport.isEmpty) return;
+
+            await Future.forEach<AppExportItem>(toImport, (item) async {
+              return item.import(importable[item], source);
+            });
             showFeedback(context, context.l10n.genericSuccessFeedback);
           } catch (error) {
-            debugPrint('failed to import settings, error=$error');
+            debugPrint('failed to import app json, error=$error');
             showFeedback(context, context.l10n.genericFailureFeedback);
           }
         }

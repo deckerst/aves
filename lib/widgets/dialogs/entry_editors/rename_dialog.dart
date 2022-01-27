@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:aves/model/entry.dart';
 import 'package:aves/services/common/services.dart';
+import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/material.dart';
 
@@ -40,12 +41,17 @@ class _RenameEntryDialogState extends State<RenameEntryDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final isRtl = context.isRtl;
+    final extensionSuffixText = '${Constants.fsi}${entry.extension}${Constants.pdi}';
     return AvesDialog(
       content: TextField(
         controller: _nameController,
         decoration: InputDecoration(
           labelText: context.l10n.renameEntryDialogLabel,
-          suffixText: entry.extension,
+          // decoration prefix and suffix follow directionality
+          // but the file extension should always be on the right
+          prefixText: isRtl ? extensionSuffixText : null,
+          suffixText: isRtl ? null : extensionSuffixText,
         ),
         autofocus: true,
         onChanged: (_) => _validate(),
@@ -64,7 +70,7 @@ class _RenameEntryDialogState extends State<RenameEntryDialog> {
               child: Text(context.l10n.applyButtonLabel),
             );
           },
-        )
+        ),
       ],
     );
   }

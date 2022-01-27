@@ -1,14 +1,23 @@
+import 'dart:async';
+
 import 'package:aves/model/entry.dart';
+import 'package:aves/model/favourites.dart';
+import 'package:aves/model/filters/path.dart';
+import 'package:aves/model/filters/tag.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/analysis_service.dart';
+import 'package:aves/theme/durations.dart';
+import 'package:aves/widgets/common/basic/menu.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/debug/android_apps.dart';
 import 'package:aves/widgets/debug/android_codecs.dart';
 import 'package:aves/widgets/debug/android_dirs.dart';
-import 'package:aves/widgets/debug/android_env.dart';
+import 'package:aves/widgets/debug/app_debug_action.dart';
 import 'package:aves/widgets/debug/cache.dart';
 import 'package:aves/widgets/debug/database.dart';
+import 'package:aves/widgets/debug/media_store_scan_dialog.dart';
 import 'package:aves/widgets/debug/overlay.dart';
 import 'package:aves/widgets/debug/report.dart';
 import 'package:aves/widgets/debug/settings.dart';
@@ -37,25 +46,48 @@ class _AppDebugPageState extends State<AppDebugPage> {
   @override
   Widget build(BuildContext context) {
     return MediaQueryDataProvider(
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Debug'),
-        ),
-        body: SafeArea(
-          child: ListView(
-            padding: const EdgeInsets.all(8),
-            children: [
-              _buildGeneralTabView(),
-              const DebugAndroidAppSection(),
-              const DebugAndroidCodecSection(),
-              const DebugAndroidDirSection(),
-              const DebugAndroidEnvironmentSection(),
-              const DebugCacheSection(),
-              const DebugAppDatabaseSection(),
-              const DebugErrorReportingSection(),
-              const DebugSettingsSection(),
-              const DebugStorageSection(),
+      child: Directionality(
+        textDirection: TextDirection.ltr,
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Text('Debug'),
+            actions: [
+              MenuIconTheme(
+                child: PopupMenuButton<AppDebugAction>(
+                  // key is expected by test driver
+                  key: const Key('appbar-menu-button'),
+                  itemBuilder: (context) => AppDebugAction.values
+                      .map((v) => PopupMenuItem(
+                            // key is expected by test driver
+                            key: Key('menu-${v.name}'),
+                            value: v,
+                            child: MenuRow(text: v.name),
+                          ))
+                      .toList(),
+                  onSelected: (action) async {
+                    // wait for the popup menu to hide before proceeding with the action
+                    await Future.delayed(Durations.popupMenuAnimation * timeDilation);
+                    unawaited(_onActionSelected(action));
+                  },
+                ),
+              ),
             ],
+          ),
+          body: SafeArea(
+            child: ListView(
+              padding: const EdgeInsets.all(8),
+              children: [
+                _buildGeneralTabView(),
+                const DebugAndroidAppSection(),
+                const DebugAndroidCodecSection(),
+                const DebugAndroidDirSection(),
+                const DebugCacheSection(),
+                const DebugAppDatabaseSection(),
+                const DebugErrorReportingSection(),
+                const DebugSettingsSection(),
+                const DebugStorageSection(),
+              ],
+            ),
           ),
         ),
       ),
@@ -126,5 +158,46 @@ class _AppDebugPageState extends State<AppDebugPage> {
         ),
       ],
     );
+  }
+
+  Future<void> _onActionSelected(AppDebugAction action) async {
+    switch (action) {
+      case AppDebugAction.prepScreenshotThumbnails:
+        final source = context.read<CollectionSource>();
+        source.changeFilterVisibility(settings.hiddenFilters, true);
+        source.changeFilterVisibility({
+          TagFilter('aves-thumbnail', not: true),
+        }, false);
+        await favourites.clear();
+        await favourites.add(source.visibleEntries);
+        break;
+      case AppDebugAction.prepScreenshotStats:
+        final source = context.read<CollectionSource>();
+        source.changeFilterVisibility(settings.hiddenFilters, true);
+        source.changeFilterVisibility({
+          PathFilter('/storage/emulated/0/Pictures/Dev'),
+        }, false);
+        break;
+      case AppDebugAction.mediaStoreScanDir:
+        // scan files copied from test assets
+        // we do it via the app instead of broadcasting via ADB
+        // because `MEDIA_SCANNER_SCAN_FILE` intent got deprecated in API 29
+        await showDialog<String>(
+          context: context,
+          builder: (context) => const MediaStoreScanDirDialog(),
+        );
+        break;
+      case AppDebugAction.greenScreen:
+        await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const Scaffold(
+              backgroundColor: Colors.green,
+              body: SizedBox(),
+            ),
+          ),
+        );
+        break;
+    }
   }
 }

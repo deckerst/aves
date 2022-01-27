@@ -26,6 +26,7 @@ enum EntrySetAction {
   rotateCW,
   flip,
   editDate,
+  editLocation,
   editRating,
   editTags,
   removeMetadata,
@@ -107,6 +108,8 @@ extension ExtraEntrySetAction on EntrySetAction {
         return context.l10n.entryActionFlip;
       case EntrySetAction.editDate:
         return context.l10n.entryInfoActionEditDate;
+      case EntrySetAction.editLocation:
+        return context.l10n.entryInfoActionEditLocation;
       case EntrySetAction.editRating:
         return context.l10n.entryInfoActionEditRating;
       case EntrySetAction.editTags:
@@ -166,6 +169,8 @@ extension ExtraEntrySetAction on EntrySetAction {
         return AIcons.flip;
       case EntrySetAction.editDate:
         return AIcons.date;
+      case EntrySetAction.editLocation:
+        return AIcons.location;
       case EntrySetAction.editRating:
         return AIcons.editRating;
       case EntrySetAction.editTags:

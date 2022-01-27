@@ -6,6 +6,26 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
+- Info: edit location of JPG/PNG/WEBP/DNG images via Exif
+- Viewer: resize option when exporting
+- Settings: export/import covers & favourites along with settings
+- Portuguese translation (thanks Jonatas De Almeida Barros)
+
+### Removed
+
+- new version check
+
+### Fixed
+
+- loading when system locale uses non-western arabic numerals
+- handling timestamps provided in 10^-8 s (18 digits)
+- Viewer: SVG export
+- Viewer: sending to editing app on some environments
+
+## <a id="v1.5.10"></a>[v1.5.10] - 2022-01-07
+
+### Added
+
 - Collection: toggle favourites in bulk
 - Info: edit ratings of JPG/GIF/PNG/TIFF images via XMP
 - Info: edit date of GIF images via XMP
@@ -16,6 +36,8 @@ All notable changes to this project will be documented in this file.
 
 - editing an item orientation, rating or tags automatically sets a metadata date (from the file
   modified date), if it is missing
+- Viewer: when opening an item from another app, it is now possible to scroll to other items in the
+  album
 
 ### Fixed
 

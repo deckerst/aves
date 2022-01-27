@@ -1,5 +1,7 @@
 import 'package:aves/model/entry.dart';
+import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/common/services.dart';
+import 'package:aves/utils/android_file_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/widgets.dart';
@@ -16,6 +18,8 @@ class Favourites with ChangeNotifier {
   }
 
   int get count => _rows.length;
+
+  Set<int> get all => Set.unmodifiable(_rows.map((v) => v.contentId));
 
   bool isFavourite(AvesEntry entry) => _rows.any((row) => row.contentId == entry.contentId);
 
@@ -58,6 +62,56 @@ class Favourites with ChangeNotifier {
     _rows.clear();
 
     notifyListeners();
+  }
+
+  // import/export
+
+  Map<String, List<String>>? export(CollectionSource source) {
+    final visibleEntries = source.visibleEntries;
+    final ids = favourites.all;
+    final paths = visibleEntries.where((entry) => ids.contains(entry.contentId)).map((entry) => entry.path).whereNotNull().toSet();
+    final byVolume = groupBy<String, StorageVolume?>(paths, androidFileUtils.getStorageVolume);
+    final jsonMap = Map.fromEntries(byVolume.entries.map((kv) {
+      final volume = kv.key?.path;
+      if (volume == null) return null;
+      final rootLength = volume.length;
+      final relativePaths = kv.value.map((v) => v.substring(rootLength)).toList();
+      return MapEntry(volume, relativePaths);
+    }).whereNotNull());
+    return jsonMap.isNotEmpty ? jsonMap : null;
+  }
+
+  void import(dynamic jsonMap, CollectionSource source) {
+    if (jsonMap is! Map) {
+      debugPrint('failed to import favourites for jsonMap=$jsonMap');
+      return;
+    }
+
+    final visibleEntries = source.visibleEntries;
+    final foundEntries = <AvesEntry>{};
+    final missedPaths = <String>{};
+    jsonMap.forEach((volume, relativePaths) {
+      if (volume is String && relativePaths is List) {
+        relativePaths.forEach((relativePath) {
+          final path = pContext.join(volume, relativePath);
+          final entry = visibleEntries.firstWhereOrNull((entry) => entry.path == path);
+          if (entry != null) {
+            foundEntries.add(entry);
+          } else {
+            missedPaths.add(path);
+          }
+        });
+      } else {
+        debugPrint('failed to import favourites for volume=$volume, relativePaths=${relativePaths.runtimeType}');
+      }
+
+      if (foundEntries.isNotEmpty) {
+        favourites.add(foundEntries);
+      }
+      if (missedPaths.isNotEmpty) {
+        debugPrint('failed to import favourites with ${missedPaths.length} missed paths');
+      }
+    });
   }
 }
 

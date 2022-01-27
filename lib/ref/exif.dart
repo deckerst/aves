@@ -1,4 +1,11 @@
 class Exif {
+  // constants used by GPS related Exif tags
+  // they are locale independent
+  static const String latitudeNorth = 'N';
+  static const String latitudeSouth = 'S';
+  static const String longitudeEast = 'E';
+  static const String longitudeWest = 'W';
+
   static String getColorSpaceDescription(String valueString) {
     final value = int.tryParse(valueString);
     if (value == null) return valueString;

@@ -1,7 +1,7 @@
+import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:path/path.dart' as p;
 
 class CrumbLine extends StatefulWidget {
   final VolumeRelativeDirectory directory;
@@ -42,7 +42,7 @@ class _CrumbLineState extends State<CrumbLine> {
   Widget build(BuildContext context) {
     List<String> parts = [
       directory.getVolumeDescription(context),
-      ...p.split(directory.relativeDir),
+      ...pContext.split(directory.relativeDir),
     ];
     final crumbStyle = Theme.of(context).textTheme.bodyText2;
     final crumbColor = crumbStyle!.color!.withOpacity(.4);
@@ -76,7 +76,7 @@ class _CrumbLineState extends State<CrumbLine> {
           }
           return GestureDetector(
             onTap: () {
-              final path = p.joinAll([
+              final path = pContext.joinAll([
                 directory.volumePath,
                 ...parts.skip(1).take(index),
               ]);

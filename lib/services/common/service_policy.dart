@@ -66,7 +66,7 @@ class ServicePolicy {
     }
   }
 
-  LinkedHashMap<Object, _Task> _getQueue(int priority) => _queues.putIfAbsent(priority, () => LinkedHashMap());
+  LinkedHashMap<Object, _Task> _getQueue(int priority) => _queues.putIfAbsent(priority, LinkedHashMap.new);
 
   void _pickNext() {
     _notifyQueueState();

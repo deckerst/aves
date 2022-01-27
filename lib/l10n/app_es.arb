@@ -4,10 +4,11 @@
   "welcomeOptional": "Opcional",
   "welcomeTermsToggle": "Acepto los términos y condiciones",
   "itemCount": "{count, plural, =1{1 elemento} other{{count} elementos}}",
-  
+
   "timeSeconds": "{seconds, plural, =1{1 segundo} other{{seconds} segundos}}",
   "timeMinutes": "{minutes, plural, =1{1 minuto} other{{minutes} minutos}}",
-  
+  "focalLength": "{length} mm",
+
   "applyButtonLabel": "APLICAR",
   "deleteButtonLabel": "BORRAR",
   "nextButtonLabel": "SIGUIENTE",
@@ -40,7 +41,7 @@
   "chipActionPin": "Fijar",
   "chipActionUnpin": "Dejar de fijar",
   "chipActionRename": "Renombrar",
-  "chipActionSetCover": "Elegir portada",
+  "chipActionSetCover": "Elegir carátula",
   "chipActionCreateAlbum": "Crear álbum",
 
   "entryActionCopyToClipboard": "Copiar al portapapeles",
@@ -110,8 +111,8 @@
   "mapStyleGoogleHybrid": "Mapas de Google (Híbrido)",
   "mapStyleGoogleTerrain": "Mapas de Google (Superficie)",
   "mapStyleOsmHot": "OSM Humanitario",
-  "mapStyleStamenToner": "Stamen Monocromático (Toner)",
-  "mapStyleStamenWatercolor": "Stamen Acuarela (Watercolor)",
+  "mapStyleStamenToner": "Stamen Toner (Monocromático)",
+  "mapStyleStamenWatercolor": "Stamen Watercolor (Acuarela)",
 
   "nameConflictStrategyRename": "Renombrar",
   "nameConflictStrategyReplace": "Reemplazar",
@@ -140,13 +141,13 @@
   "restrictedAccessDialogMessage": "Esta aplicación no tiene permiso para modificar archivos de {directory} en «{volume}».\n\nPor favor use un gestor de archivos o la aplicación de galería preinstalada para mover los elementos a otro directorio.",
   "notEnoughSpaceDialogTitle": "Espacio insuficiente",
   "notEnoughSpaceDialogMessage": "Esta operación necesita {neededSize} de espacio libre en «{volume}» para completarse, pero sólo hay {freeSize} disponible.",
-  
+
   "missingSystemFilePickerDialogTitle": "Selector de archivos del sistema no disponible",
   "missingSystemFilePickerDialogMessage": "El selector de archivos del sistema no se encuentra disponible o fue deshabilitado. Por favor habilítelo e intente nuevamente.",
 
   "unsupportedTypeDialogTitle": "Tipos de archivo incompatibles",
   "unsupportedTypeDialogMessage": "{count, plural, =1{Esta operación no está disponible para un elemento del siguiente tipo: {types}.} other{Esta operación no está disponible para elementos de los siguientes tipos: {types}.}}",
-  
+
   "nameConflictDialogSingleSourceMessage": "Algunos archivos en el directorio de destino tienen el mismo nombre.",
   "nameConflictDialogMultipleSourceMessage": "Algunos archivos tienen el mismo nombre.",
 
@@ -231,13 +232,6 @@
   "aboutLinkLicense": "Licencia",
   "aboutLinkPolicy": "Política de privacidad",
 
-  "aboutUpdate": "Nueva versión disponible",
-  "aboutUpdateLinks1": "Una nueva versión de Aves se encuentra disponible en",
-  "aboutUpdateLinks2": "y",
-  "aboutUpdateLinks3": ".",
-  "aboutUpdateGitHub": "GitHub",
-  "aboutUpdateGooglePlay": "Google Play",
-
   "aboutBug": "Reporte de errores",
   "aboutBugSaveLogInstruction": "Guardar registros de la aplicación a un archivo",
   "aboutBugSaveLogButton": "Guardar",
@@ -251,7 +245,7 @@
   "aboutCreditsWorldAtlas2": "bajo licencia ISC.",
   "aboutCreditsTranslators": "Traductores:",
   "aboutCreditsTranslatorLine": "{language}: {names}",
-  
+
   "aboutLicenses": "Licencias de código abierto",
   "aboutLicensesBanner": "Esta aplicación usa los siguientes paquetes y librerías de código abierto.",
   "aboutLicensesAndroidLibraries": "Librerías de Android",
@@ -361,6 +355,10 @@
 
   "settingsActionExport": "Exportar",
   "settingsActionImport": "Importar",
+
+  "appExportCovers": "Carátulas",
+  "appExportFavourites": "Favoritos",
+  "appExportSettings": "Ajustes",
 
   "settingsSectionNavigation": "Navegación",
   "settingsHome": "Inicio",
@@ -535,6 +533,5 @@
   "filePickerDoNotShowHiddenFiles": "No mostrar archivos ocultos",
   "filePickerOpenFrom": "Abrir desde",
   "filePickerNoItems": "Sin elementos",
-  "filePickerUseThisFolder": "Usar esta carpeta",
-  "@filePickerUseThisFolder": {}
+  "filePickerUseThisFolder": "Usar esta carpeta"
 }

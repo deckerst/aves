@@ -28,5 +28,10 @@ void mainCommon(AppFlavor flavor) {
     reportService.recordError(errorAndStacktrace.first, errorAndStacktrace.last);
   }).sendPort);
 
+  // Errors during the widget build phase will show by default:
+  // - in debug mode: error on red background
+  // - in release mode: plain grey background
+  // This can be modified via `ErrorWidget.builder`
+
   runApp(AvesApp(flavor: flavor));
 }

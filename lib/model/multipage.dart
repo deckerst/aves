@@ -36,7 +36,7 @@ class MultiPageInfo {
   factory MultiPageInfo.fromPageMaps(AvesEntry mainEntry, List<Map> pageMaps) {
     return MultiPageInfo(
       mainEntry: mainEntry,
-      pages: pageMaps.map((page) => SinglePageInfo.fromMap(page)).toList(),
+      pages: pageMaps.map(SinglePageInfo.fromMap).toList(),
     );
   }
 

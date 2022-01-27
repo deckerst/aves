@@ -174,14 +174,14 @@ class _QuickActionEditorBodyState<T extends Object> extends State<QuickActionEdi
                 children: [
                   Positioned.fill(
                     child: FractionallySizedBox(
-                      alignment: Alignment.centerLeft,
+                      alignment: AlignmentDirectional.centerStart,
                       widthFactor: .5,
                       child: header,
                     ),
                   ),
                   Positioned.fill(
                     child: FractionallySizedBox(
-                      alignment: Alignment.centerRight,
+                      alignment: AlignmentDirectional.centerEnd,
                       widthFactor: .5,
                       child: footer,
                     ),

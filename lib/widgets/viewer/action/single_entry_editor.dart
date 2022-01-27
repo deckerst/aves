@@ -32,7 +32,20 @@ mixin SingleEntryEditorMixin on FeedbackMixin, PermissionAwareMixin {
     try {
       if (success) {
         if (isMainMode && source != null) {
+          Set<String> obsoleteTags = entry.tags;
+          String? obsoleteCountryCode = entry.addressDetails?.countryCode;
+
           await source.refreshEntry(entry, dataTypes);
+
+          // invalidate filters derived from values before edition
+          // this invalidation must happen after the source is refreshed,
+          // otherwise filter chips may eagerly rebuild in between with the old state
+          if (obsoleteCountryCode != null) {
+            source.invalidateCountryFilterSummary(countryCodes: {obsoleteCountryCode});
+          }
+          if (obsoleteTags.isNotEmpty) {
+            source.invalidateTagFilterSummary(tags: obsoleteTags);
+          }
         } else {
           await entry.refresh(background: false, persist: false, dataTypes: dataTypes, geocoderLocale: settings.appliedLocale);
         }

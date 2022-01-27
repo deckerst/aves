@@ -3,10 +3,11 @@
   "welcomeMessage": "Willkommen bei Aves",
   "welcomeOptional": "Optional",
   "welcomeTermsToggle": "Ich stimme den Bedingungen und Konditionen zu",
-  "itemCount": " {count, plural, =1{1 Element} other{{count} Elemente}}",
+  "itemCount": "{count, plural, =1{1 Element} other{{count} Elemente}}",
 
-  "timeSeconds": " {seconds, plural, =1{1 Sekunde} other{{seconds} Sekunde}}",
-  "timeMinutes": " {minutes, plural, =1{1 Minute} other{{minutes} Minuten}}",
+  "timeSeconds": "{seconds, plural, =1{1 Sekunde} other{{seconds} Sekunde}}",
+  "timeMinutes": "{minutes, plural, =1{1 Minute} other{{minutes} Minuten}}",
+  "focalLength": "{length} mm",
 
   "applyButtonLabel": "ANWENDEN",
   "deleteButtonLabel": "LÖSCHEN",
@@ -93,7 +94,7 @@
 
   "coordinateFormatDms": "GMS",
   "coordinateFormatDecimal": "Dezimalgrad",
-  "coordinateDms": " {coordinate} {direction}",
+  "coordinateDms": "{coordinate} {direction}",
   "coordinateDmsNorth": "N",
   "coordinateDmsSouth": "s",
   "coordinateDmsEast": "O",
@@ -111,7 +112,7 @@
   "mapStyleGoogleTerrain": "Google Maps (Gelände)",
   "mapStyleOsmHot": "Humanitäres OSM",
   "mapStyleStamenToner": "Stamen Toner (SchwarzWeiß)",
-  "mapStyleStamenWatercolor": "Stamen Aquarell",
+  "mapStyleStamenWatercolor": "Stamen Watercolor (Aquarell)",
 
   "nameConflictStrategyRename": "Umbenennen",
   "nameConflictStrategyReplace": "Ersetzen Sie",
@@ -144,7 +145,7 @@
   "missingSystemFilePickerDialogMessage": "Der System-Dateiauswahldialog fehlt oder ist deaktiviert. Bitte aktivieren Sie ihn und versuchen Sie es erneut.",
 
   "unsupportedTypeDialogTitle": "Nicht unterstützte Typen",
-  "unsupportedTypeDialogMessage": " {count, plural, =1{Dieser Vorgang wird für Elemente des folgenden Typs nicht unterstützt: {types}.} other{Dieser Vorgang wird für Elemente der folgenden Typen nicht unterstützt: {types}.}}",
+  "unsupportedTypeDialogMessage": "{count, plural, =1{Dieser Vorgang wird für Elemente des folgenden Typs nicht unterstützt: {types}.} other{Dieser Vorgang wird für Elemente der folgenden Typen nicht unterstützt: {types}.}}",
 
   "nameConflictDialogSingleSourceMessage": "Einige Dateien im Zielordner haben den gleichen Namen.",
   "nameConflictDialogMultipleSourceMessage": "Einige Dateien haben denselben Namen.",
@@ -155,7 +156,7 @@
   "noMatchingAppDialogTitle": "Keine passende App",
   "noMatchingAppDialogMessage": "Es gibt keine Anwendungen, die dies bewältigen können.",
 
-  "deleteEntriesConfirmationDialogMessage": " {count, plural, =1{Sind Sie sicher, dass Sie dieses Element löschen möchten?} other{Sind Sie sicher, dass Sie diese {count} Elemente löschen möchten?}}",
+  "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{Sind Sie sicher, dass Sie dieses Element löschen möchten?} other{Sind Sie sicher, dass Sie diese {count} Elemente löschen möchten?}}",
 
   "videoResumeDialogMessage": "Möchten Sie bei {time} weiter abspielen?",
   "videoStartOverButtonLabel": "NEU BEGINNEN",
@@ -175,15 +176,15 @@
   "renameAlbumDialogLabel": "Neuer Name",
   "renameAlbumDialogLabelAlreadyExistsHelper": "Verzeichnis existiert bereits",
 
-  "deleteSingleAlbumConfirmationDialogMessage": " {count, plural, =1{Sind Sie sicher, dass Sie dieses Album und ihren Inhalt löschen möchten?} other{Sind Sie sicher, dass Sie dieses Album und deren {count} Elemente löschen möchten?}}",
-  "deleteMultiAlbumConfirmationDialogMessage": " {count, plural, =1{Sind Sie sicher, dass Sie diese Alben und ihren Inhalt löschen möchten?} other{Sind Sie sicher, dass Sie diese Alben und deren {count} Elemente löschen möchten?}}",
+  "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{Sind Sie sicher, dass Sie dieses Album und ihren Inhalt löschen möchten?} other{Sind Sie sicher, dass Sie dieses Album und deren {count} Elemente löschen möchten?}}",
+  "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{Sind Sie sicher, dass Sie diese Alben und ihren Inhalt löschen möchten?} other{Sind Sie sicher, dass Sie diese Alben und deren {count} Elemente löschen möchten?}}",
 
   "exportEntryDialogFormat": "Format:",
 
   "renameEntryDialogLabel": "Neuer Name",
 
   "editEntryDateDialogTitle": "Datum & Uhrzeit",
-  "editEntryDateDialogSetCustom": "Benutzerdefiniertes Datum einstellen",
+  "editEntryDateDialogSetCustom": "Datum einstellen",
   "editEntryDateDialogCopyField": "Von anderem Datum kopieren",
   "editEntryDateDialogExtractFromTitle": "Auszug aus dem Titel",
   "editEntryDateDialogShift": "Verschieben",
@@ -230,13 +231,6 @@
   "aboutLinkLicense": "Lizenz",
   "aboutLinkPolicy": "Datenschutzrichtlinie",
 
-  "aboutUpdate": "Neue Version verfügbar",
-  "aboutUpdateLinks1": "Eine neue Version von Aves ist verfügbar unter",
-  "aboutUpdateLinks2": "und",
-  "aboutUpdateLinks3": ".",
-  "aboutUpdateGitHub": "github",
-  "aboutUpdateGooglePlay": "Google Play",
-
   "aboutBug": "Fehlerbericht",
   "aboutBugSaveLogInstruction": "Anwendungsprotokolle in einer Datei speichern",
   "aboutBugSaveLogButton": "Speichern",
@@ -263,7 +257,7 @@
 
   "collectionPageTitle": "Sammlung",
   "collectionPickPageTitle": "Wähle",
-  "collectionSelectionPageTitle": " {count, plural, =0{Elemente auswählen} =1{1 Element} other{{count} Elemente}}",
+  "collectionSelectionPageTitle": "{count, plural, =0{Elemente auswählen} =1{1 Element} other{{count} Elemente}}",
 
   "collectionActionShowTitleSearch": "Titelfilter anzeigen",
   "collectionActionHideTitleSearch": "Titelfilter ausblenden",
@@ -289,14 +283,14 @@
   "dateToday": "Heute",
   "dateYesterday": "Gestern",
   "dateThisMonth": "Diesen Monat",
-  "collectionDeleteFailureFeedback": " {count, plural, =1{1 Element konnte nicht gelöscht werden} other{{count} Elemente konnten nicht gelöscht werden}}",
-  "collectionCopyFailureFeedback": " {count, plural, =1{1 Element konnte nicht kopiert werden} other{{count} Element konnten nicht kopiert werden}}",
-  "collectionMoveFailureFeedback": " {count, plural, =1{1 Element konnte nicht verschoben werden} other{{count} Elemente konnten nicht verschoben werden}}",
-  "collectionEditFailureFeedback": " {count, plural, =1{1 Element konnte nicht bearbeitet werden} other{{count} 1 Elemente konnten nicht bearbeitet werden}}",
-  "collectionExportFailureFeedback": " {count, plural, =1{1 Seite konnte nicht exportiert werden} other{{count} Seiten konnten nicht exportiert werden}}",
-  "collectionCopySuccessFeedback": " {count, plural, =1{1 Element kopier} other{ {count} Elemente kopiert}}",
-  "collectionMoveSuccessFeedback": " {count, plural, =1{1 Element verschoben} other{{count} Elemente verschoben}}",
-  "collectionEditSuccessFeedback": " {count, plural, =1{1 Element bearbeitet} other{ {count} Elemente bearbeitet}}",
+  "collectionDeleteFailureFeedback": "{count, plural, =1{1 Element konnte nicht gelöscht werden} other{{count} Elemente konnten nicht gelöscht werden}}",
+  "collectionCopyFailureFeedback": "{count, plural, =1{1 Element konnte nicht kopiert werden} other{{count} Element konnten nicht kopiert werden}}",
+  "collectionMoveFailureFeedback": "{count, plural, =1{1 Element konnte nicht verschoben werden} other{{count} Elemente konnten nicht verschoben werden}}",
+  "collectionEditFailureFeedback": "{count, plural, =1{1 Element konnte nicht bearbeitet werden} other{{count} 1 Elemente konnten nicht bearbeitet werden}}",
+  "collectionExportFailureFeedback": "{count, plural, =1{1 Seite konnte nicht exportiert werden} other{{count} Seiten konnten nicht exportiert werden}}",
+  "collectionCopySuccessFeedback": "{count, plural, =1{1 Element kopier} other{ {count} Elemente kopiert}}",
+  "collectionMoveSuccessFeedback": "{count, plural, =1{1 Element verschoben} other{{count} Elemente verschoben}}",
+  "collectionEditSuccessFeedback": "{count, plural, =1{1 Element bearbeitet} other{ {count} Elemente bearbeitet}}",
 
   "collectionEmptyFavourites": "Keine Favoriten",
   "collectionEmptyVideos": "Keine Videos",
@@ -360,6 +354,10 @@
 
   "settingsActionExport": "Exportieren",
   "settingsActionImport": "Importieren",
+
+  "appExportCovers": "Titelbilder",
+  "appExportFavourites": "Favoriten",
+  "appExportSettings": "Einstellungen",
 
   "settingsSectionNavigation": "Navigation",
   "settingsHome": "Startseite",
@@ -474,7 +472,7 @@
   "settingsUnitSystemTitle": "Einheiten",
 
   "statsPageTitle": "Statistiken",
-  "statsWithGps": " {count, plural, =1{1 Element mit Standort} other{{count} Elemente mit Standort}}",
+  "statsWithGps": "{count, plural, =1{1 Element mit Standort} other{{count} Elemente mit Standort}}",
   "statsTopCountries": "Top-Länder",
   "statsTopPlaces": "Top-Plätze",
   "statsTopTags": "Top-Tags",

@@ -320,7 +320,7 @@ class _OverlayCoordinateFilterChipState extends State<_OverlayCoordinateFilterCh
                     filter: filter,
                     useFilterColor: false,
                     maxWidth: double.infinity,
-                    onTap: (filter) => FilterSelectedNotification(CoordinateFilter(bounds.sw, bounds.ne)  ).dispatch(context),
+                    onTap: (filter) => FilterSelectedNotification(CoordinateFilter(bounds.sw, bounds.ne)).dispatch(context),
                   ),
                 ),
               );

@@ -21,16 +21,20 @@ import 'package:flutter/widgets.dart';
 abstract class CollectionFilter extends Equatable implements Comparable<CollectionFilter> {
   static const List<String> categoryOrder = [
     QueryFilter.type,
-    FavouriteFilter.type,
     MimeFilter.type,
-    TypeFilter.type,
     AlbumFilter.type,
+    TypeFilter.type,
     LocationFilter.type,
     CoordinateFilter.type,
+    FavouriteFilter.type,
     RatingFilter.type,
     TagFilter.type,
     PathFilter.type,
   ];
+
+  final bool not;
+
+  const CollectionFilter({this.not = false});
 
   static CollectionFilter? fromJson(String jsonString) {
     if (jsonString.isEmpty) return null;
@@ -68,8 +72,6 @@ abstract class CollectionFilter extends Equatable implements Comparable<Collecti
     debugPrint('failed to parse filter from json=$jsonString');
     return null;
   }
-
-  const CollectionFilter();
 
   Map<String, dynamic> toMap();
 

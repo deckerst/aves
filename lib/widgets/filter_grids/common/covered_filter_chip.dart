@@ -168,7 +168,7 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
       children: [
         if (pinned)
           AnimatedPadding(
-            padding: EdgeInsets.only(right: padding),
+            padding: EdgeInsetsDirectional.only(end: padding),
             duration: Durations.chipDecorationAnimation,
             child: Icon(
               AIcons.pin,
@@ -178,7 +178,7 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
           ),
         if (filter is AlbumFilter && androidFileUtils.isOnRemovableStorage(filter.album))
           AnimatedPadding(
-            padding: EdgeInsets.only(right: padding),
+            padding: EdgeInsetsDirectional.only(end: padding),
             duration: Durations.chipDecorationAnimation,
             child: Icon(
               AIcons.removableStorage,

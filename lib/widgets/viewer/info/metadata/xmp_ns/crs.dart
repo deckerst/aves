@@ -11,6 +11,7 @@ class XmpCrsNamespace extends XmpNamespace {
   static final pbcPattern = RegExp(ns + r':PaintBasedCorrections\[(\d+)\]/(.*)');
   static final retouchAreasPattern = RegExp(ns + r':RetouchAreas\[(\d+)\]/(.*)');
   static final lookPattern = RegExp(ns + r':Look/(.*)');
+  static final rmmiPattern = RegExp(ns + r':RangeMaskMapInfo/' + ns + r':RangeMaskMapInfo/(.*)');
 
   final cgbc = <int, Map<String, String>>{};
   final gbc = <int, Map<String, String>>{};
@@ -18,12 +19,14 @@ class XmpCrsNamespace extends XmpNamespace {
   final pbc = <int, Map<String, String>>{};
   final retouchAreas = <int, Map<String, String>>{};
   final look = <String, String>{};
+  final rmmi = <String, String>{};
 
   XmpCrsNamespace(Map<String, String> rawProps) : super(ns, rawProps);
 
   @override
   bool extractData(XmpProp prop) {
-    final hasStructs = extractStruct(prop, lookPattern, look);
+    var hasStructs = extractStruct(prop, lookPattern, look);
+    hasStructs |= extractStruct(prop, rmmiPattern, rmmi);
     var hasIndexedStructs = extractIndexedStruct(prop, cgbcPattern, cgbc);
     hasIndexedStructs |= extractIndexedStruct(prop, gbcPattern, gbc);
     hasIndexedStructs |= extractIndexedStruct(prop, mgbcPattern, mgbc);
@@ -58,6 +61,11 @@ class XmpCrsNamespace extends XmpNamespace {
           XmpStructArrayCard(
             title: 'Paint Based Corrections',
             structByIndex: pbc,
+          ),
+        if (rmmi.isNotEmpty)
+          XmpStructCard(
+            title: 'Range Mask Map Info',
+            struct: rmmi,
           ),
         if (retouchAreas.isNotEmpty)
           XmpStructArrayCard(
