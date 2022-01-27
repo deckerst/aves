@@ -79,6 +79,7 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
       case EntrySetAction.rotateCW:
       case EntrySetAction.flip:
       case EntrySetAction.editDate:
+      case EntrySetAction.editLocation:
       case EntrySetAction.editRating:
       case EntrySetAction.editTags:
       case EntrySetAction.removeMetadata:
@@ -122,6 +123,7 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
       case EntrySetAction.rotateCW:
       case EntrySetAction.flip:
       case EntrySetAction.editDate:
+      case EntrySetAction.editLocation:
       case EntrySetAction.editRating:
       case EntrySetAction.editTags:
       case EntrySetAction.removeMetadata:
@@ -184,6 +186,9 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
         break;
       case EntrySetAction.editDate:
         _editDate(context);
+        break;
+      case EntrySetAction.editLocation:
+        _editLocation(context);
         break;
       case EntrySetAction.editRating:
         _editRating(context);
@@ -428,6 +433,9 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
 
     if (!await checkStoragePermissionForAlbums(context, selectionDirs, entries: todoItems)) return;
 
+    Set<String> obsoleteTags = todoItems.expand((entry) => entry.tags).toSet();
+    Set<String> obsoleteCountryCodes = todoItems.where((entry) => entry.hasAddress).map((entry) => entry.addressDetails?.countryCode).whereNotNull().toSet();
+
     final source = context.read<CollectionSource>();
     source.pauseMonitoring();
     var cancelled = false;
@@ -448,7 +456,18 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
         final editedOps = successOps.where((e) => !e.skipped).toSet();
         selection.browse();
         source.resumeMonitoring();
-        unawaited(source.refreshUris(editedOps.map((v) => v.uri).toSet()));
+
+        unawaited(source.refreshUris(editedOps.map((v) => v.uri).toSet()).then((_) {
+          // invalidate filters derived from values before edition
+          // this invalidation must happen after the source is refreshed,
+          // otherwise filter chips may eagerly rebuild in between with the old state
+          if (obsoleteCountryCodes.isNotEmpty) {
+            source.invalidateCountryFilterSummary(countryCodes: obsoleteCountryCodes);
+          }
+          if (obsoleteTags.isNotEmpty) {
+            source.invalidateTagFilterSummary(tags: obsoleteTags);
+          }
+        }));
 
         final l10n = context.l10n;
         final successCount = successOps.length;
@@ -534,6 +553,20 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
     if (modifier == null) return;
 
     await _edit(context, selection, todoItems, (entry) => entry.editDate(modifier));
+  }
+
+  Future<void> _editLocation(BuildContext context) async {
+    final collection = context.read<CollectionLens>();
+    final selection = context.read<Selection<AvesEntry>>();
+    final selectedItems = _getExpandedSelectedItems(selection);
+
+    final todoItems = await _getEditableItems(context, selectedItems: selectedItems, canEdit: (entry) => entry.canEditLocation);
+    if (todoItems == null || todoItems.isEmpty) return;
+
+    final location = await selectLocation(context, todoItems, collection);
+    if (location == null) return;
+
+    await _edit(context, selection, todoItems, (entry) => entry.editLocation(location));
   }
 
   Future<void> _editRating(BuildContext context) async {

@@ -30,6 +30,12 @@ mixin LocationMixin on SourceBase {
   Future<void> locateEntries(AnalysisController controller, Set<AvesEntry> candidateEntries) async {
     await _locateCountries(controller, candidateEntries);
     await _locatePlaces(controller, candidateEntries);
+
+    final unlocatedIds = candidateEntries.where((entry) => !entry.hasGps).map((entry) => entry.contentId).whereNotNull().toSet();
+    if (unlocatedIds.isNotEmpty) {
+      await metadataDb.removeIds(unlocatedIds, dataTypes: {EntryDataType.address});
+      onAddressMetadataChanged();
+    }
   }
 
   static bool locateCountriesTest(AvesEntry entry) => entry.hasGps && !entry.hasAddress;

@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
+- Info: edit location of JPG/PNG/WEBP/DNG images via Exif
 - Viewer: resize option when exporting
 - Settings: export/import covers & favourites along with settings
 - Portuguese translation (thanks Jonatas De Almeida Barros)

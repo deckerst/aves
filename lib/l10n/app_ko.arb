@@ -74,6 +74,7 @@
   "videoActionSettings": "설정",
 
   "entryInfoActionEditDate": "날짜 및 시간 수정",
+  "entryInfoActionEditLocation": "위치 수정",
   "entryInfoActionEditRating": "별점 수정",
   "entryInfoActionEditTags": "태그 수정",
   "entryInfoActionRemoveMetadata": "메타데이터 삭제",
@@ -194,6 +195,13 @@
   "editEntryDateDialogTargetFieldsHeader": "수정할 필드",
   "editEntryDateDialogHours": "시간",
   "editEntryDateDialogMinutes": "분",
+
+  "editEntryLocationDialogTitle": "위치",
+  "editEntryLocationDialogChooseOnMapTooltip": "지도에서 선택",
+  "editEntryLocationDialogLatitude": "위도",
+  "editEntryLocationDialogLongitude": "경도",
+
+  "locationPickerUseThisLocationButton": "이 위치 사용",
 
   "editEntryRatingDialogTitle": "별점",
 

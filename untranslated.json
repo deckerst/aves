@@ -21,24 +21,6 @@
     "locationPickerUseThisLocationButton"
   ],
 
-  "fr": [
-    "entryInfoActionEditLocation",
-    "editEntryLocationDialogTitle",
-    "editEntryLocationDialogChooseOnMapTooltip",
-    "editEntryLocationDialogLatitude",
-    "editEntryLocationDialogLongitude",
-    "locationPickerUseThisLocationButton"
-  ],
-
-  "ko": [
-    "entryInfoActionEditLocation",
-    "editEntryLocationDialogTitle",
-    "editEntryLocationDialogChooseOnMapTooltip",
-    "editEntryLocationDialogLatitude",
-    "editEntryLocationDialogLongitude",
-    "locationPickerUseThisLocationButton"
-  ],
-
   "pt": [
     "entryInfoActionEditLocation",
     "exportEntryDialogWidth",

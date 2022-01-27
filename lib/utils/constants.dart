@@ -25,6 +25,7 @@ class Constants {
   // Bidi fun, cf https://www.unicode.org/reports/tr9/
   // First Strong Isolate
   static const fsi = '\u2068';
+
   // Pop Directional Isolate
   static const pdi = '\u2069';
 
