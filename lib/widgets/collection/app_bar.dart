@@ -429,12 +429,12 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       // browsing or selecting
       case EntrySetAction.map:
       case EntrySetAction.stats:
+      case EntrySetAction.rescan:
       // selecting
       case EntrySetAction.share:
       case EntrySetAction.delete:
       case EntrySetAction.copy:
       case EntrySetAction.move:
-      case EntrySetAction.rescan:
       case EntrySetAction.toggleFavourite:
       case EntrySetAction.rotateCCW:
       case EntrySetAction.rotateCW:

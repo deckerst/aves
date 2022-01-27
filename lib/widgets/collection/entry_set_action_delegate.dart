@@ -67,13 +67,13 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
       // browsing or selecting
       case EntrySetAction.map:
       case EntrySetAction.stats:
+      case EntrySetAction.rescan:
         return appMode == AppMode.main;
       // selecting
       case EntrySetAction.share:
       case EntrySetAction.delete:
       case EntrySetAction.copy:
       case EntrySetAction.move:
-      case EntrySetAction.rescan:
       case EntrySetAction.toggleFavourite:
       case EntrySetAction.rotateCCW:
       case EntrySetAction.rotateCW:
@@ -111,13 +111,13 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
         return true;
       case EntrySetAction.map:
       case EntrySetAction.stats:
+      case EntrySetAction.rescan:
         return (!isSelecting && hasItems) || (isSelecting && hasSelection);
       // selecting
       case EntrySetAction.share:
       case EntrySetAction.delete:
       case EntrySetAction.copy:
       case EntrySetAction.move:
-      case EntrySetAction.rescan:
       case EntrySetAction.toggleFavourite:
       case EntrySetAction.rotateCCW:
       case EntrySetAction.rotateCW:
@@ -156,6 +156,9 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
       case EntrySetAction.stats:
         _goToStats(context);
         break;
+      case EntrySetAction.rescan:
+        _rescan(context);
+        break;
       // selecting
       case EntrySetAction.share:
         _share(context);
@@ -168,9 +171,6 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
         break;
       case EntrySetAction.move:
         _move(context, moveType: MoveType.move);
-        break;
-      case EntrySetAction.rescan:
-        _rescan(context);
         break;
       case EntrySetAction.toggleFavourite:
         _toggleFavourite(context);
@@ -215,12 +215,12 @@ class EntrySetActionDelegate with EntryEditorMixin, FeedbackMixin, PermissionAwa
   }
 
   void _rescan(BuildContext context) {
-    final source = context.read<CollectionSource>();
     final selection = context.read<Selection<AvesEntry>>();
-    final selectedItems = _getExpandedSelectedItems(selection);
+    final collection = context.read<CollectionLens>();
+    final entries = (selection.isSelecting ? _getExpandedSelectedItems(selection) : collection.sortedEntries.toSet());
 
     final controller = AnalysisController(canStartService: true, force: true);
-    source.analyze(controller, entries: selectedItems);
+    collection.source.analyze(controller, entries: entries);
 
     selection.browse();
   }
