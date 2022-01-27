@@ -74,6 +74,7 @@
   "videoActionSettings": "Configurações",
 
   "entryInfoActionEditDate": "Editar data e hora",
+  "entryInfoActionEditLocation": "Editar localização",
   "entryInfoActionEditRating": "Editar classificação",
   "entryInfoActionEditTags": "Editar etiquetas",
   "entryInfoActionRemoveMetadata": "Remover metadados",
@@ -180,6 +181,8 @@
   "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{Tem certeza de que deseja excluir estes álbuns e seus itens?} other{Tem certeza de que deseja excluir estes álbuns e seus {count} itens?}}",
 
   "exportEntryDialogFormat": "Formato:",
+  "exportEntryDialogWidth": "Largura",
+  "exportEntryDialogHeight": "Altura",
 
   "renameEntryDialogLabel": "Novo nome",
 
@@ -192,6 +195,13 @@
   "editEntryDateDialogTargetFieldsHeader": "Campos para modificar",
   "editEntryDateDialogHours": "Horas",
   "editEntryDateDialogMinutes": "Minutos",
+
+  "editEntryLocationDialogTitle": "Localização",
+  "editEntryLocationDialogChooseOnMapTooltip": "Escolha no mapa",
+  "editEntryLocationDialogLatitude": "Latitude",
+  "editEntryLocationDialogLongitude": "Longitude",
+
+  "locationPickerUseThisLocationButton": "Usar essa localização",
 
   "editEntryRatingDialogTitle": "Avaliação",
 
