@@ -37,8 +37,10 @@ class _FilePickerState extends State<FilePicker> {
   @override
   void initState() {
     super.initState();
-    final primaryVolume = volumes.firstWhere((v) => v.isPrimary);
-    _goTo(primaryVolume.path);
+    final primaryVolume = volumes.firstWhereOrNull((v) => v.isPrimary);
+    if (primaryVolume != null) {
+      _goTo(primaryVolume.path);
+    }
   }
 
   @override
