@@ -23,13 +23,13 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
   final ValueNotifier<bool> _existsNotifier = ValueNotifier(false);
   final ValueNotifier<bool> _isValidNotifier = ValueNotifier(false);
   late Set<StorageVolume> _allVolumes;
-  late StorageVolume _primaryVolume, _selectedVolume;
+  late StorageVolume? _primaryVolume, _selectedVolume;
 
   @override
   void initState() {
     super.initState();
     _allVolumes = androidFileUtils.storageVolumes;
-    _primaryVolume = _allVolumes.firstWhere((volume) => volume.isPrimary, orElse: () => _allVolumes.first);
+    _primaryVolume = _allVolumes.firstWhereOrNull((volume) => volume.isPrimary) ?? _allVolumes.firstOrNull;
     _selectedVolume = _primaryVolume;
     _nameFieldFocusNode.addListener(_onFocus);
   }
@@ -144,8 +144,9 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
   }
 
   String _buildAlbumPath(String name) {
-    if (name.isEmpty) return '';
-    return pContext.join(_selectedVolume.path, 'Pictures', name);
+    final selectedVolume = _selectedVolume;
+    if (selectedVolume == null || name.isEmpty) return '';
+    return pContext.join(selectedVolume.path, 'Pictures', name);
   }
 
   Future<void> _validate() async {
