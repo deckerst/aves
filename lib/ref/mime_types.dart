@@ -103,4 +103,13 @@ class MimeTypes {
         return a == b;
     }
   }
+
+  static String? forExtension(String extension) {
+    switch (extension) {
+      case '.jpg':
+        return jpeg;
+      case '.svg':
+        return svg;
+    }
+  }
 }

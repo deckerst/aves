@@ -384,6 +384,7 @@ class _FilterSectionedContentState<T extends CollectionFilter> extends State<_Fi
 
     final isMainMode = context.select<ValueNotifier<AppMode>, bool>((vn) => vn.value == AppMode.main);
     final selector = GridSelectionGestureDetector<FilterGridItem<T>>(
+      scrollableKey: scrollableKey,
       selectable: isMainMode && widget.selectable,
       items: visibleSections.values.expand((v) => v).toList(),
       scrollController: scrollController,
@@ -445,6 +446,7 @@ class _FilterScaler<T extends CollectionFilter> extends StatelessWidget {
           borderWidth: AvesFilterChip.outlineWidth,
           borderRadius: CoveredFilterChip.radius(tileSize.shortestSide),
           color: Colors.grey.shade700,
+          textDirection: Directionality.of(context),
         ),
         child: child,
       ),

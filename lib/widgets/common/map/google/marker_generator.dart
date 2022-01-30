@@ -107,9 +107,14 @@ class _MarkerGeneratorItem<T extends Key> {
       state = MarkerGeneratorItemState.rendering;
       final boundary = _globalKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
       if (boundary.hasSize && boundary.size != Size.zero) {
-        final image = await boundary.toImage(pixelRatio: ui.window.devicePixelRatio);
-        final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
-        bytes = byteData?.buffer.asUint8List();
+        try {
+          final image = await boundary.toImage(pixelRatio: ui.window.devicePixelRatio);
+          final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+          bytes = byteData?.buffer.asUint8List();
+        } catch (error) {
+          // happens when widget is offscreen
+          debugPrint('failed to render image for key=$_globalKey with error=$error');
+        }
       }
       state = bytes != null ? MarkerGeneratorItemState.done : MarkerGeneratorItemState.waiting;
     }

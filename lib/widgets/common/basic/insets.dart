@@ -33,6 +33,8 @@ class SideGestureAreaProtector extends StatelessWidget {
   Widget build(BuildContext context) {
     return Positioned.fill(
       child: Row(
+        // `systemGestureInsets` are not directional
+        textDirection: TextDirection.ltr,
         children: [
           SizedBox(
             width: context.select<MediaQueryData, double>((mq) => mq.systemGestureInsets.left),

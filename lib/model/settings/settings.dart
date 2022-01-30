@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:math';
 
 import 'package:aves/l10n/l10n.dart';
@@ -35,7 +34,6 @@ class Settings extends ChangeNotifier {
     catalogTimeZoneKey,
     videoShowRawTimedTextKey,
     searchHistoryKey,
-    lastVersionCheckDateKey,
   };
 
   // app
@@ -115,9 +113,6 @@ class Settings extends ChangeNotifier {
   // accessibility
   static const accessibilityAnimationsKey = 'accessibility_animations';
   static const timeToTakeActionKey = 'time_to_take_action';
-
-  // version
-  static const lastVersionCheckDateKey = 'last_version_check_date';
 
   // file picker
   static const filePickerShowHiddenFilesKey = 'file_picker_show_hidden_files';
@@ -478,12 +473,6 @@ class Settings extends ChangeNotifier {
 
   set timeToTakeAction(AccessibilityTimeout newValue) => setAndNotify(timeToTakeActionKey, newValue.toString());
 
-  // version
-
-  DateTime get lastVersionCheckDate => DateTime.fromMillisecondsSinceEpoch(_prefs!.getInt(lastVersionCheckDateKey) ?? 0);
-
-  set lastVersionCheckDate(DateTime newValue) => setAndNotify(lastVersionCheckDateKey, newValue.millisecondsSinceEpoch);
-
   // file picker
 
   bool get filePickerShowHiddenFiles => getBoolOrDefault(filePickerShowHiddenFilesKey, SettingsDefaults.filePickerShowHiddenFiles);
@@ -580,12 +569,11 @@ class Settings extends ChangeNotifier {
 
   // import/export
 
-  String toJson() => jsonEncode(Map.fromEntries(
+  Map<String, dynamic> export() => Map.fromEntries(
         _prefs!.getKeys().whereNot(internalKeys.contains).map((k) => MapEntry(k, _prefs!.get(k))),
-      ));
+      );
 
-  Future<void> fromJson(String jsonString) async {
-    final jsonMap = jsonDecode(jsonString);
+  Future<void> import(dynamic jsonMap) async {
     if (jsonMap is Map<String, dynamic>) {
       // clear to restore defaults
       await reset(includeInternalKeys: false);

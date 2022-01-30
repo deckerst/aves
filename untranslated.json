@@ -1,5 +1,12 @@
 {
-  "ru": [
-    "settingsThumbnailShowFavouriteIcon"
+  "es": [
+    "entryInfoActionEditLocation",
+    "exportEntryDialogWidth",
+    "exportEntryDialogHeight",
+    "editEntryLocationDialogTitle",
+    "editEntryLocationDialogChooseOnMapTooltip",
+    "editEntryLocationDialogLatitude",
+    "editEntryLocationDialogLongitude",
+    "locationPickerUseThisLocationButton"
   ]
 }

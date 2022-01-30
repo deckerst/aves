@@ -7,6 +7,7 @@
 
   "timeSeconds": "{seconds, plural, =1{1 seconde} other{{seconds} secondes}}",
   "timeMinutes": "{minutes, plural, =1{1 minute} other{{minutes} minutes}}",
+  "focalLength": "{length} mm",
 
   "applyButtonLabel": "ENREGISTRER",
   "deleteButtonLabel": "SUPPRIMER",
@@ -73,6 +74,7 @@
   "videoActionSettings": "Préférences",
 
   "entryInfoActionEditDate": "Modifier la date",
+  "entryInfoActionEditLocation": "Modifier le lieu",
   "entryInfoActionEditRating": "Modifier la notation",
   "entryInfoActionEditTags": "Modifier les libellés",
   "entryInfoActionRemoveMetadata": "Retirer les métadonnées",
@@ -110,8 +112,8 @@
   "mapStyleGoogleHybrid": "Google Maps (Satellite)",
   "mapStyleGoogleTerrain": "Google Maps (Relief)",
   "mapStyleOsmHot": "OSM Humanitaire",
-  "mapStyleStamenToner": "Stamen Toner",
-  "mapStyleStamenWatercolor": "Stamen Watercolor",
+  "mapStyleStamenToner": "Stamen Toner (Monochrome)",
+  "mapStyleStamenWatercolor": "Stamen Watercolor (Aquarelle)",
 
   "nameConflictStrategyRename": "Renommer",
   "nameConflictStrategyReplace": "Remplacer",
@@ -179,6 +181,8 @@
   "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{Voulez-vous vraiment supprimer ces albums et leur élément ?} other{Voulez-vous vraiment supprimer ces albums et leurs {count} éléments ?}}",
 
   "exportEntryDialogFormat": "Format :",
+  "exportEntryDialogWidth": "Largeur",
+  "exportEntryDialogHeight": "Hauteur",
 
   "renameEntryDialogLabel": "Nouveau nom",
 
@@ -191,6 +195,13 @@
   "editEntryDateDialogTargetFieldsHeader": "Champs à modifier",
   "editEntryDateDialogHours": "Heures",
   "editEntryDateDialogMinutes": "Minutes",
+
+  "editEntryLocationDialogTitle": "Lieu",
+  "editEntryLocationDialogChooseOnMapTooltip": "Sélectionner sur la carte",
+  "editEntryLocationDialogLatitude": "Latitude",
+  "editEntryLocationDialogLongitude": "Longitude",
+
+  "locationPickerUseThisLocationButton": "Utiliser ce lieu",
 
   "editEntryRatingDialogTitle": "Notation",
 
@@ -229,13 +240,6 @@
   "aboutLinkSources": "Sources",
   "aboutLinkLicense": "Licence",
   "aboutLinkPolicy": "Politique de confidentialité",
-
-  "aboutUpdate": "Nouvelle Version",
-  "aboutUpdateLinks1": "Une nouvelle version d’Aves est disponible sur",
-  "aboutUpdateLinks2": "et",
-  "aboutUpdateLinks3": ".",
-  "aboutUpdateGitHub": "GitHub",
-  "aboutUpdateGooglePlay": "Google Play",
 
   "aboutBug": "Rapports d’erreur",
   "aboutBugSaveLogInstruction": "Sauvegarder les logs de l’app vers un fichier",
@@ -360,6 +364,10 @@
 
   "settingsActionExport": "Exporter",
   "settingsActionImport": "Importer",
+
+  "appExportCovers": "Couvertures",
+  "appExportFavourites": "Favoris",
+  "appExportSettings": "Réglages",
 
   "settingsSectionNavigation": "Navigation",
   "settingsHome": "Page d’accueil",

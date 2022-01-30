@@ -4,12 +4,15 @@ import 'dart:io';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/metadata/date_modifier.dart';
 import 'package:aves/model/metadata/enums.dart';
+import 'package:aves/model/metadata/fields.dart';
+import 'package:aves/ref/exif.dart';
 import 'package:aves/ref/iptc.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/metadata/xmp.dart';
 import 'package:aves/utils/time_utils.dart';
 import 'package:aves/utils/xmp_utils.dart';
 import 'package:flutter/foundation.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:xml/xml.dart';
 
@@ -70,6 +73,40 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
       }
     }
 
+    return dataTypes;
+  }
+
+  Future<Set<EntryDataType>> editLocation(LatLng? latLng) async {
+    final Set<EntryDataType> dataTypes = {};
+
+    await _missingDateCheckAndExifEdit(dataTypes);
+
+    // clear every GPS field
+    final exifFields = Map<MetadataField, dynamic>.fromEntries(MetadataFields.exifGpsFields.map((k) => MapEntry(k, null)));
+    // add latitude & longitude, if any
+    if (latLng != null) {
+      final latitude = latLng.latitude;
+      final longitude = latLng.longitude;
+      if (latitude != 0 && longitude != 0) {
+        exifFields.addAll({
+          MetadataField.exifGpsLatitude: latitude.abs(),
+          MetadataField.exifGpsLatitudeRef: latitude >= 0 ? Exif.latitudeNorth : Exif.latitudeSouth,
+          MetadataField.exifGpsLongitude: longitude.abs(),
+          MetadataField.exifGpsLongitudeRef: longitude >= 0 ? Exif.longitudeEast : Exif.longitudeWest,
+        });
+      }
+    }
+
+    final metadata = {
+      MetadataType.exif: Map<String, dynamic>.fromEntries(exifFields.entries.map((kv) => MapEntry(kv.key.exifInterfaceTag!, kv.value))),
+    };
+    final newFields = await metadataEditService.editMetadata(this, metadata);
+    if (newFields.isNotEmpty) {
+      dataTypes.addAll({
+        EntryDataType.catalog,
+        EntryDataType.address,
+      });
+    }
     return dataTypes;
   }
 

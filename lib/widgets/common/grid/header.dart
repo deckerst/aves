@@ -25,8 +25,6 @@ class SectionHeader<T> extends StatelessWidget {
   }) : super(key: key);
 
   static const leadingDimension = 32.0;
-  static const leadingPadding = EdgeInsets.only(right: 8, bottom: 4);
-  static const trailingPadding = EdgeInsets.only(left: 8, bottom: 2);
   static const padding = EdgeInsets.all(16);
   static const widgetSpanAlignment = PlaceholderAlignment.middle;
 
@@ -48,7 +46,7 @@ class SectionHeader<T> extends StatelessWidget {
                   sectionKey: sectionKey,
                   browsingBuilder: leading != null
                       ? (context) => Container(
-                            padding: leadingPadding,
+                            padding: const EdgeInsetsDirectional.only(end: 8, bottom: 4),
                             width: leadingDimension,
                             height: leadingDimension,
                             child: leading,
@@ -65,7 +63,7 @@ class SectionHeader<T> extends StatelessWidget {
                 WidgetSpan(
                   alignment: widgetSpanAlignment,
                   child: Container(
-                    padding: trailingPadding,
+                    padding: const EdgeInsetsDirectional.only(start: 8, bottom: 2),
                     child: trailing,
                   ),
                 ),
@@ -100,7 +98,7 @@ class SectionHeader<T> extends StatelessWidget {
     final para = RenderParagraph(
       TextSpan(
         children: [
-          // as of Flutter v1.22.3, `RenderParagraph` fails to lay out `WidgetSpan` offscreen
+          // as of Flutter v2.8.1, `RenderParagraph` fails to lay out `WidgetSpan` offscreen
           // so we use a hair space times a magic number to match width
           TextSpan(
             // 23 hair spaces match a width of 40.0

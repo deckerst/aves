@@ -5,7 +5,6 @@ import 'package:aves/model/source/album.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/location.dart';
 import 'package:aves/model/source/tag.dart';
-import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/android_file_utils.dart';
@@ -25,11 +24,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class AppDrawer extends StatefulWidget {
+class AppDrawer extends StatelessWidget {
   const AppDrawer({Key? key}) : super(key: key);
-
-  @override
-  _AppDrawerState createState() => _AppDrawerState();
 
   static List<String> getDefaultAlbums(BuildContext context) {
     final source = context.read<CollectionSource>();
@@ -40,26 +36,14 @@ class AppDrawer extends StatefulWidget {
       ..sort(source.compareAlbumsByName);
     return specialAlbums;
   }
-}
-
-class _AppDrawerState extends State<AppDrawer> {
-  late Future<bool> _newVersionLoader;
-
-  CollectionSource get source => context.read<CollectionSource>();
-
-  @override
-  void initState() {
-    super.initState();
-    _newVersionLoader = availability.isNewVersionAvailable;
-  }
 
   @override
   Widget build(BuildContext context) {
     final drawerItems = <Widget>[
       _buildHeader(context),
       ..._buildTypeLinks(),
-      _buildAlbumLinks(),
-      ..._buildPageLinks(),
+      _buildAlbumLinks(context),
+      ..._buildPageLinks(context),
       if (!kReleaseMode) ...[
         const Divider(),
         debugTile,
@@ -74,6 +58,8 @@ class _AppDrawerState extends State<AppDrawer> {
           builder: (context, mqPaddingBottom, child) {
             final iconTheme = IconTheme.of(context);
             return SingleChildScrollView(
+              // key is expected by test driver
+              key: const Key('drawer-scrollview'),
               padding: EdgeInsets.only(bottom: mqPaddingBottom),
               child: IconTheme(
                 data: iconTheme.copyWith(
@@ -146,38 +132,7 @@ class _AppDrawerState extends State<AppDrawer> {
                     key: const Key('drawer-about-button'),
                     onPressed: () => goTo(AboutPage.routeName, (_) => const AboutPage()),
                     icon: const Icon(AIcons.info),
-                    label: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(context.l10n.aboutPageTitle),
-                        FutureBuilder<bool>(
-                          future: _newVersionLoader,
-                          builder: (context, snapshot) {
-                            final newVersion = snapshot.data == true;
-                            final badgeSize = 8.0 * MediaQuery.textScaleFactorOf(context);
-                            return AnimatedOpacity(
-                              duration: Durations.newsBadgeAnimation,
-                              opacity: newVersion ? 1 : 0,
-                              child: Padding(
-                                padding: const EdgeInsetsDirectional.only(start: 2),
-                                child: DecoratedBox(
-                                  decoration: BoxDecoration(
-                                    border: const Border.fromBorderSide(BorderSide(color: Colors.white70)),
-                                    borderRadius: BorderRadius.all(Radius.circular(badgeSize)),
-                                  ),
-                                  child: Icon(
-                                    Icons.circle,
-                                    size: badgeSize,
-                                    color: Colors.red,
-                                  ),
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      ],
-                    ),
+                    label: Text(context.l10n.aboutPageTitle),
                   ),
                   OutlinedButton.icon(
                     // key is expected by test driver
@@ -201,6 +156,8 @@ class _AppDrawerState extends State<AppDrawer> {
     return typeBookmarks
         .where((filter) => !hiddenFilters.contains(filter))
         .map((filter) => CollectionNavTile(
+              // key is expected by test driver
+              key: Key('drawer-type-${filter?.key}'),
               leading: DrawerFilterIcon(filter: filter),
               title: DrawerFilterTitle(filter: filter),
               filter: filter,
@@ -208,7 +165,8 @@ class _AppDrawerState extends State<AppDrawer> {
         .toList();
   }
 
-  Widget _buildAlbumLinks() {
+  Widget _buildAlbumLinks(BuildContext context) {
+    final source = context.read<CollectionSource>();
     return StreamBuilder(
         stream: source.eventBus.on<AlbumsChangedEvent>(),
         builder: (context, snapshot) {
@@ -223,10 +181,11 @@ class _AppDrawerState extends State<AppDrawer> {
         });
   }
 
-  List<Widget> _buildPageLinks() {
+  List<Widget> _buildPageLinks(BuildContext context) {
     final pageBookmarks = settings.drawerPageBookmarks;
     if (pageBookmarks.isEmpty) return [];
 
+    final source = context.read<CollectionSource>();
     return [
       const Divider(),
       ...pageBookmarks.map((route) {
@@ -257,6 +216,8 @@ class _AppDrawerState extends State<AppDrawer> {
         }
 
         return PageNavTile(
+          // key is expected by test driver
+          key: Key('drawer-page-$route'),
           trailing: trailing,
           routeName: route,
           pageBuilder: pageBuilder ?? (_) => const SizedBox(),
@@ -266,6 +227,8 @@ class _AppDrawerState extends State<AppDrawer> {
   }
 
   Widget get debugTile => PageNavTile(
+        // key is expected by test driver
+        key: const Key('drawer-debug'),
         topLevel: false,
         routeName: AppDebugPage.routeName,
         pageBuilder: (_) => const AppDebugPage(),

@@ -80,77 +80,87 @@ object StorageUtils {
         return pathSteps.iterator()
     }
 
+    private fun appSpecificVolumePath(file: File?): String? {
+        file ?: return null
+        val appSpecificPath = file.absolutePath
+        val relativePathStartIndex = appSpecificPath.indexOf("Android/data")
+        if (relativePathStartIndex < 0) return null
+        return appSpecificPath.substring(0, relativePathStartIndex)
+    }
+
     private fun findPrimaryVolumePath(context: Context): String? {
-        // we want:
-        // /storage/emulated/0/
-        // `Environment.getExternalStorageDirectory()` (deprecated) yields:
-        // /storage/emulated/0
-        // `context.getExternalFilesDir(null)` yields:
-        // /storage/emulated/0/Android/data/{package_name}/files
-        return context.getExternalFilesDir(null)?.let {
-            val appSpecificPath = it.absolutePath
-            return appSpecificPath.substring(0, appSpecificPath.indexOf("Android/data"))
+        try {
+            // we want:
+            // /storage/emulated/0/
+            // `Environment.getExternalStorageDirectory()` (deprecated) yields:
+            // /storage/emulated/0
+            // `context.getExternalFilesDir(null)` yields:
+            // /storage/emulated/0/Android/data/{package_name}/files
+            return appSpecificVolumePath(context.getExternalFilesDir(null))
+        } catch (e: Exception) {
+            Log.e(LOG_TAG, "failed to find primary volume path", e)
         }
+        return null
     }
 
     private fun findVolumePaths(context: Context): Array<String> {
         // Final set of paths
         val paths = HashSet<String>()
 
-        // Primary emulated SD-CARD
-        val rawEmulatedStorageTarget = System.getenv("EMULATED_STORAGE_TARGET") ?: ""
-        if (TextUtils.isEmpty(rawEmulatedStorageTarget)) {
-            // fix of empty raw emulated storage on marshmallow
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                lateinit var files: List<File>
-                var validFiles: Boolean
-                do {
-                    // `getExternalFilesDirs` sometimes include `null` when called right after getting read access
-                    // (e.g. on API 30 emulator) so we retry until the file system is ready
-                    val externalFilesDirs = context.getExternalFilesDirs(null)
-                    validFiles = !externalFilesDirs.contains(null)
-                    if (validFiles) {
-                        files = externalFilesDirs.filterNotNull()
-                    } else {
-                        try {
-                            Thread.sleep(100)
-                        } catch (e: InterruptedException) {
-                            Log.e(LOG_TAG, "insomnia", e)
+        try {
+            // Primary emulated SD-CARD
+            val rawEmulatedStorageTarget = System.getenv("EMULATED_STORAGE_TARGET") ?: ""
+            if (TextUtils.isEmpty(rawEmulatedStorageTarget)) {
+                // fix of empty raw emulated storage on marshmallow
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    lateinit var files: List<File>
+                    var validFiles: Boolean
+                    do {
+                        // `getExternalFilesDirs` sometimes include `null` when called right after getting read access
+                        // (e.g. on API 30 emulator) so we retry until the file system is ready
+                        val externalFilesDirs = context.getExternalFilesDirs(null)
+                        validFiles = !externalFilesDirs.contains(null)
+                        if (validFiles) {
+                            files = externalFilesDirs.filterNotNull()
+                        } else {
+                            try {
+                                Thread.sleep(100)
+                            } catch (e: InterruptedException) {
+                                Log.e(LOG_TAG, "insomnia", e)
+                            }
                         }
-                    }
-                } while (!validFiles)
-                for (file in files) {
-                    val appSpecificAbsolutePath = file.absolutePath
-                    val emulatedRootPath = appSpecificAbsolutePath.substring(0, appSpecificAbsolutePath.indexOf("Android/data"))
-                    paths.add(emulatedRootPath)
-                }
-            } else {
-                // Primary physical SD-CARD (not emulated)
-                val rawExternalStorage = System.getenv("EXTERNAL_STORAGE") ?: ""
-
-                // Device has physical external storage; use plain paths.
-                if (TextUtils.isEmpty(rawExternalStorage)) {
-                    // EXTERNAL_STORAGE undefined; falling back to default.
-                    paths.addAll(physicalPaths)
+                    } while (!validFiles)
+                    paths.addAll(files.mapNotNull(::appSpecificVolumePath))
                 } else {
-                    paths.add(rawExternalStorage)
+                    // Primary physical SD-CARD (not emulated)
+                    val rawExternalStorage = System.getenv("EXTERNAL_STORAGE") ?: ""
+
+                    // Device has physical external storage; use plain paths.
+                    if (TextUtils.isEmpty(rawExternalStorage)) {
+                        // EXTERNAL_STORAGE undefined; falling back to default.
+                        paths.addAll(physicalPaths)
+                    } else {
+                        paths.add(rawExternalStorage)
+                    }
+                }
+            } else {
+                // Device has emulated storage; external storage paths should have userId burned into them.
+                // /storage/emulated/[0,1,2,...]/
+                val path = getPrimaryVolumePath(context)
+                val rawUserId = path.split(File.separator).lastOrNull(String::isNotEmpty)?.takeIf { TextUtils.isDigitsOnly(it) } ?: ""
+                if (rawUserId.isEmpty()) {
+                    paths.add(rawEmulatedStorageTarget)
+                } else {
+                    paths.add(rawEmulatedStorageTarget + File.separator + rawUserId)
                 }
             }
-        } else {
-            // Device has emulated storage; external storage paths should have userId burned into them.
-            // /storage/emulated/[0,1,2,...]/
-            val path = getPrimaryVolumePath(context)
-            val rawUserId = path.split(File.separator).lastOrNull(String::isNotEmpty)?.takeIf { TextUtils.isDigitsOnly(it) } ?: ""
-            if (rawUserId.isEmpty()) {
-                paths.add(rawEmulatedStorageTarget)
-            } else {
-                paths.add(rawEmulatedStorageTarget + File.separator + rawUserId)
-            }
-        }
 
-        // All Secondary SD-CARDs (all exclude primary) separated by ":"
-        System.getenv("SECONDARY_STORAGE")?.let { secondaryStorages ->
-            paths.addAll(secondaryStorages.split(File.pathSeparator).filter { it.isNotEmpty() })
+            // All Secondary SD-CARDs (all exclude primary) separated by ":"
+            System.getenv("SECONDARY_STORAGE")?.let { secondaryStorages ->
+                paths.addAll(secondaryStorages.split(File.pathSeparator).filter { it.isNotEmpty() })
+            }
+        } catch (e: Exception) {
+            Log.e(LOG_TAG, "failed to find volume paths", e)
         }
 
         return paths.map { ensureTrailingSeparator(it) }.toTypedArray()
@@ -272,7 +282,9 @@ object StorageUtils {
     // content://com.android.externalstorage.documents/tree/primary%3A              -> /storage/emulated/0/
     // content://com.android.externalstorage.documents/tree/10F9-3F13%3APictures    -> /storage/10F9-3F13/Pictures/
     fun convertTreeUriToDirPath(context: Context, treeUri: Uri): String? {
-        val encoded = treeUri.toString().substring(TREE_URI_ROOT.length)
+        val treeUriString = treeUri.toString()
+        if (treeUriString.length <= TREE_URI_ROOT.length) return null
+        val encoded = treeUriString.substring(TREE_URI_ROOT.length)
         val matcher = TREE_URI_PATH_PATTERN.matcher(Uri.decode(encoded))
         with(matcher) {
             if (find()) {

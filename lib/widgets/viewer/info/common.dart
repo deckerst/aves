@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -79,7 +80,6 @@ class _InfoRowGroupState extends State<InfoRowGroup> {
     // compute the size of keys and space in order to align values
     final textScaleFactor = MediaQuery.textScaleFactorOf(context);
     final keySizes = Map.fromEntries(keyValues.keys.map((key) => MapEntry(key, _getSpanWidth(TextSpan(text: key, style: InfoRowGroup.keyStyle), textScaleFactor))));
-    final baseSpaceWidth = _getSpanWidth(TextSpan(text: '\u200A' * 100, style: InfoRowGroup.baseStyle), textScaleFactor);
 
     final lastKey = keyValues.keys.last;
     return LayoutBuilder(
@@ -88,56 +88,51 @@ class _InfoRowGroupState extends State<InfoRowGroup> {
         final maxBaseValueX = constraints.maxWidth / 3;
         final baseValueX = keySizes.values.where((size) => size < maxBaseValueX).fold(0.0, max);
 
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SelectableText.rich(
-              TextSpan(
-                children: keyValues.entries.expand(
-                  (kv) {
-                    final key = kv.key;
-                    String value;
-                    TextStyle? style;
-                    GestureRecognizer? recognizer;
+        return SelectableText.rich(
+          TextSpan(
+            children: keyValues.entries.expand(
+              (kv) {
+                final key = kv.key;
+                String value;
+                TextStyle? style;
+                GestureRecognizer? recognizer;
 
-                    if (linkHandlers?.containsKey(key) == true) {
-                      final handler = linkHandlers![key]!;
-                      value = handler.linkText(context);
-                      // open link on tap
-                      recognizer = TapGestureRecognizer()..onTap = () => handler.onTap(context);
-                      style = InfoRowGroup.linkStyle;
-                    } else {
-                      value = kv.value;
-                      // long values are clipped, and made expandable by tapping them
-                      final showPreviewOnly = maxValueLength > 0 && value.length > maxValueLength && !_expandedKeys.contains(key);
-                      if (showPreviewOnly) {
-                        value = '${value.substring(0, maxValueLength)}…';
-                        // show full value on tap
-                        recognizer = TapGestureRecognizer()..onTap = () => setState(() => _expandedKeys.add(key));
-                      }
-                    }
+                if (linkHandlers?.containsKey(key) == true) {
+                  final handler = linkHandlers![key]!;
+                  value = handler.linkText(context);
+                  // open link on tap
+                  recognizer = TapGestureRecognizer()..onTap = () => handler.onTap(context);
+                  style = InfoRowGroup.linkStyle;
+                } else {
+                  value = kv.value;
+                  // long values are clipped, and made expandable by tapping them
+                  final showPreviewOnly = maxValueLength > 0 && value.length > maxValueLength && !_expandedKeys.contains(key);
+                  if (showPreviewOnly) {
+                    value = '${value.substring(0, maxValueLength)}…';
+                    // show full value on tap
+                    recognizer = TapGestureRecognizer()..onTap = () => setState(() => _expandedKeys.add(key));
+                  }
+                }
 
-                    if (key != lastKey) {
-                      value = '$value\n';
-                    }
+                if (key != lastKey) {
+                  value = '$value\n';
+                }
 
-                    // as of Flutter v2.5.3, `SelectableText` cannot contain `WidgetSpan`
-                    // so we add padding using multiple hair spaces instead
-                    // TODO TLAD 2021/10/26 other `InlineSpan` now possible thanks to https://github.com/flutter/flutter/pull/92295
-                    final thisSpaceSize = max(0.0, (baseValueX - keySizes[key]!)) + InfoRowGroup.keyValuePadding;
-                    final spaceCount = (100 * thisSpaceSize / baseSpaceWidth).round();
+                final thisSpaceSize = max(0.0, (baseValueX - keySizes[key]!)) + InfoRowGroup.keyValuePadding;
 
-                    return [
-                      TextSpan(text: key, style: InfoRowGroup.keyStyle),
-                      TextSpan(text: '\u200A' * spaceCount),
-                      TextSpan(text: value, style: style, recognizer: recognizer),
-                    ];
-                  },
-                ).toList(),
-              ),
-              style: InfoRowGroup.baseStyle,
-            ),
-          ],
+                // each text span embeds and pops a Bidi isolate,
+                // so that layout of the spans follows the directionality of the locale
+                // (e.g. keys on the right for RTL locale, whatever the key intrinsic directionality)
+                // and each span respects the directionality of its inner text only
+                return [
+                  TextSpan(text: '${Constants.fsi}$key${Constants.pdi}', style: InfoRowGroup.keyStyle),
+                  WidgetSpan(child: SizedBox(width: thisSpaceSize)),
+                  TextSpan(text: '${Constants.fsi}$value${Constants.pdi}', style: style, recognizer: recognizer),
+                ];
+              },
+            ).toList(),
+          ),
+          style: InfoRowGroup.baseStyle,
         );
       },
     );

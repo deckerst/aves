@@ -22,6 +22,15 @@
       "minutes": {}
     }
   },
+  "focalLength": "{length} mm",
+  "@focalLength": {
+    "placeholders": {
+      "length": {
+        "type": "String",
+        "example": "5.4"
+      }
+    }
+  },
 
   "applyButtonLabel": "APPLY",
   "deleteButtonLabel": "DELETE",
@@ -88,6 +97,7 @@
   "videoActionSettings": "Settings",
 
   "entryInfoActionEditDate": "Edit date & time",
+  "entryInfoActionEditLocation": "Edit location",
   "entryInfoActionEditRating": "Edit rating",
   "entryInfoActionEditTags": "Edit tags",
   "entryInfoActionRemoveMetadata": "Remove metadata",
@@ -291,6 +301,8 @@
   },
 
   "exportEntryDialogFormat": "Format:",
+  "exportEntryDialogWidth": "Width",
+  "exportEntryDialogHeight": "Height",
 
   "renameEntryDialogLabel": "New name",
 
@@ -303,6 +315,13 @@
   "editEntryDateDialogTargetFieldsHeader": "Fields to modify",
   "editEntryDateDialogHours": "Hours",
   "editEntryDateDialogMinutes": "Minutes",
+
+  "editEntryLocationDialogTitle": "Location",
+  "editEntryLocationDialogChooseOnMapTooltip": "Choose on map",
+  "editEntryLocationDialogLatitude": "Latitude",
+  "editEntryLocationDialogLongitude": "Longitude",
+
+  "locationPickerUseThisLocationButton": "Use this location",
 
   "editEntryRatingDialogTitle": "Rating",
 
@@ -341,13 +360,6 @@
   "aboutLinkSources": "Sources",
   "aboutLinkLicense": "License",
   "aboutLinkPolicy": "Privacy Policy",
-
-  "aboutUpdate": "New Version Available",
-  "aboutUpdateLinks1": "A new version of Aves is available on",
-  "aboutUpdateLinks2": "and",
-  "aboutUpdateLinks3": ".",
-  "aboutUpdateGitHub": "GitHub",
-  "aboutUpdateGooglePlay": "Google Play",
 
   "aboutBug": "Bug Report",
   "aboutBugSaveLogInstruction": "Save app logs to a file",
@@ -530,6 +542,10 @@
   "settingsActionExport": "Export",
   "settingsActionImport": "Import",
 
+  "appExportCovers": "Covers",
+  "appExportFavourites": "Favourites",
+  "appExportSettings": "Settings",
+
   "settingsSectionNavigation": "Navigation",
   "settingsHome": "Home",
   "settingsKeepScreenOnTile": "Keep screen on",
@@ -708,6 +724,5 @@
   "filePickerDoNotShowHiddenFiles": "Don’t show hidden files",
   "filePickerOpenFrom": "Open from",
   "filePickerNoItems": "No items",
-  "filePickerUseThisFolder": "Use this folder",
-  "@filePickerUseThisFolder": {}
+  "filePickerUseThisFolder": "Use this folder"
 }

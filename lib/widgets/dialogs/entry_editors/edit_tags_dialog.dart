@@ -77,8 +77,8 @@ class _TagEditorPageState extends State<TagEditorPage> {
                 builder: (context, value, child) {
                   final upQuery = value.text.trim().toUpperCase();
                   bool containQuery(String s) => s.toUpperCase().contains(upQuery);
-                  final recentFilters = _recentTags.where(containQuery).map((v) => TagFilter(v)).toList();
-                  final topTagFilters = _topTags.where(containQuery).map((v) => TagFilter(v)).toList();
+                  final recentFilters = _recentTags.where(containQuery).map(TagFilter.new).toList();
+                  final topTagFilters = _topTags.where(containQuery).map(TagFilter.new).toList();
                   return ListView(
                     children: [
                       Padding(

@@ -6,7 +6,6 @@ import com.drew.lang.Rational
 import com.drew.lang.SequentialByteArrayReader
 import com.drew.metadata.Directory
 import com.drew.metadata.exif.ExifDirectoryBase
-import com.drew.metadata.exif.ExifIFD0Directory
 import com.drew.metadata.exif.ExifReader
 import com.drew.metadata.iptc.IptcReader
 import com.drew.metadata.png.PngDirectory

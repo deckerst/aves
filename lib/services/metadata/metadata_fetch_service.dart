@@ -1,12 +1,13 @@
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/metadata/catalog.dart';
-import 'package:aves/model/metadata/enums.dart';
+import 'package:aves/model/metadata/fields.dart';
 import 'package:aves/model/metadata/overlay.dart';
 import 'package:aves/model/multipage.dart';
 import 'package:aves/model/panorama.dart';
 import 'package:aves/services/common/service_policy.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/metadata/xmp.dart';
+import 'package:aves/utils/time_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
@@ -235,9 +236,11 @@ class PlatformMetadataFetchService implements MetadataFetchService {
         'mimeType': entry.mimeType,
         'uri': entry.uri,
         'sizeBytes': entry.sizeBytes,
-        'field': field.toExifInterfaceTag(),
+        'field': field.exifInterfaceTag,
       });
-      if (result is int) return DateTime.fromMillisecondsSinceEpoch(result);
+      if (result is int) {
+        return dateTimeFromMillis(result, isUtc: false);
+      }
     } on PlatformException catch (e, stack) {
       if (!entry.isMissingAtPath) {
         await reportService.recordError(e, stack);

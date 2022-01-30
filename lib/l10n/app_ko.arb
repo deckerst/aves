@@ -7,6 +7,7 @@
 
   "timeSeconds": "{seconds, plural, other{{seconds}초}}",
   "timeMinutes": "{minutes, plural, other{{minutes}분}}",
+  "focalLength": "{length} mm",
 
   "applyButtonLabel": "확인",
   "deleteButtonLabel": "삭제",
@@ -73,6 +74,7 @@
   "videoActionSettings": "설정",
 
   "entryInfoActionEditDate": "날짜 및 시간 수정",
+  "entryInfoActionEditLocation": "위치 수정",
   "entryInfoActionEditRating": "별점 수정",
   "entryInfoActionEditTags": "태그 수정",
   "entryInfoActionRemoveMetadata": "메타데이터 삭제",
@@ -110,8 +112,8 @@
   "mapStyleGoogleHybrid": "구글 지도 (위성)",
   "mapStyleGoogleTerrain": "구글 지도 (지형)",
   "mapStyleOsmHot": "Humanitarian OSM",
-  "mapStyleStamenToner": "Stamen 토너",
-  "mapStyleStamenWatercolor": "Stamen 수채화",
+  "mapStyleStamenToner": "Stamen Toner (토너)",
+  "mapStyleStamenWatercolor": "Stamen Watercolor (수채화)",
 
   "nameConflictStrategyRename": "이름 변경",
   "nameConflictStrategyReplace": "대체",
@@ -179,6 +181,8 @@
   "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, other{이 앨범들의 항목 {count}개를 삭제하시겠습니까?}}",
 
   "exportEntryDialogFormat": "형식:",
+  "exportEntryDialogWidth": "가로",
+  "exportEntryDialogHeight": "세로",
 
   "renameEntryDialogLabel": "이름",
 
@@ -191,6 +195,13 @@
   "editEntryDateDialogTargetFieldsHeader": "수정할 필드",
   "editEntryDateDialogHours": "시간",
   "editEntryDateDialogMinutes": "분",
+
+  "editEntryLocationDialogTitle": "위치",
+  "editEntryLocationDialogChooseOnMapTooltip": "지도에서 선택",
+  "editEntryLocationDialogLatitude": "위도",
+  "editEntryLocationDialogLongitude": "경도",
+
+  "locationPickerUseThisLocationButton": "이 위치 사용",
 
   "editEntryRatingDialogTitle": "별점",
 
@@ -229,13 +240,6 @@
   "aboutLinkSources": "소스 코드",
   "aboutLinkLicense": "라이선스",
   "aboutLinkPolicy": "개인정보 보호정책",
-
-  "aboutUpdate": "업데이트 사용 가능",
-  "aboutUpdateLinks1": "앱의 최신 버전을",
-  "aboutUpdateLinks2": "와",
-  "aboutUpdateLinks3": "에서 다운로드 사용 가능합니다.",
-  "aboutUpdateGitHub": "깃허브",
-  "aboutUpdateGooglePlay": "구글 플레이",
 
   "aboutBug": "버그 보고",
   "aboutBugSaveLogInstruction": "앱 로그를 파일에 저장하기",
@@ -360,6 +364,10 @@
 
   "settingsActionExport": "내보내기",
   "settingsActionImport": "가져오기",
+
+  "appExportCovers": "대표 이미지",
+  "appExportFavourites": "즐겨찾기",
+  "appExportSettings": "설정",
 
   "settingsSectionNavigation": "탐색",
   "settingsHome": "홈",

@@ -25,11 +25,14 @@ class _WelcomePageState extends State<WelcomePage> {
   bool _hasAcceptedTerms = false;
   late Future<String> _termsLoader;
 
+  static const termsPath = 'assets/terms.md';
+  static const termsDirection = TextDirection.ltr;
+
   @override
   void initState() {
     super.initState();
     settings.setContextualDefaults();
-    _termsLoader = rootBundle.loadString('assets/terms.md');
+    _termsLoader = rootBundle.loadString(termsPath);
     WidgetsBinding.instance!.addPostFrameCallback((_) => _initWelcomeSettings());
   }
 
@@ -68,7 +71,12 @@ class _WelcomePageState extends State<WelcomePage> {
                     children: [
                       ..._buildHeader(context, isPortrait: isPortrait),
                       if (isPortrait) ...[
-                        Flexible(child: MarkdownContainer(data: terms)),
+                        Flexible(
+                          child: MarkdownContainer(
+                            data: terms,
+                            textDirection: termsDirection,
+                          ),
+                        ),
                         const SizedBox(height: 16),
                         ..._buildControls(context),
                       ] else
@@ -76,16 +84,19 @@ class _WelcomePageState extends State<WelcomePage> {
                           child: Row(
                             children: [
                               Flexible(
-                                  child: Padding(
-                                padding: const EdgeInsets.only(bottom: 8),
-                                child: MarkdownContainer(data: terms),
-                              )),
+                                child: Padding(
+                                  padding: const EdgeInsets.only(bottom: 8),
+                                  child: MarkdownContainer(
+                                    data: terms,
+                                    textDirection: termsDirection,
+                                  ),
+                                ),
+                              ),
                               Flexible(
                                 child: ListView(
-                                  // shrinkWrap: true,
                                   children: _buildControls(context),
                                 ),
-                              )
+                              ),
                             ],
                           ),
                         )
