@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.5.11"></a>[v1.5.11] - 2022-01-30
+
 ### Added
 
 - Collection / Info: edit location of JPG/PNG/WEBP/DNG images via Exif
