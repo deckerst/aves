@@ -7,6 +7,7 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
+import 'package:aves/widgets/common/map/controller.dart';
 import 'package:aves/widgets/common/map/geo_map.dart';
 import 'package:aves/widgets/common/map/theme.dart';
 import 'package:aves/widgets/map/map_page.dart';
@@ -34,6 +35,8 @@ class LocationSection extends StatefulWidget {
 }
 
 class _LocationSectionState extends State<LocationSection> {
+  final AvesMapController _mapController = AvesMapController();
+
   CollectionLens? get collection => widget.collection;
 
   AvesEntry get entry => widget.entry;
@@ -58,27 +61,16 @@ class _LocationSectionState extends State<LocationSection> {
   }
 
   void _registerWidget(LocationSection widget) {
-    widget.entry.metadataChangeNotifier.addListener(_handleChange);
-    widget.entry.addressChangeNotifier.addListener(_handleChange);
+    widget.entry.metadataChangeNotifier.addListener(_onMetadataChange);
   }
 
   void _unregisterWidget(LocationSection widget) {
-    widget.entry.metadataChangeNotifier.removeListener(_handleChange);
-    widget.entry.addressChangeNotifier.removeListener(_handleChange);
+    widget.entry.metadataChangeNotifier.removeListener(_onMetadataChange);
   }
 
   @override
   Widget build(BuildContext context) {
     if (!entry.hasGps) return const SizedBox();
-
-    final filters = <LocationFilter>[];
-    if (entry.hasAddress) {
-      final address = entry.addressDetails!;
-      final country = address.countryName;
-      if (country != null && country.isNotEmpty) filters.add(LocationFilter(LocationLevel.country, '$country${LocationFilter.locationSeparator}${address.countryCode}'));
-      final place = address.place;
-      if (place != null && place.isNotEmpty) filters.add(LocationFilter(LocationLevel.place, place));
-    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -91,28 +83,48 @@ class _LocationSectionState extends State<LocationSection> {
           visualDensity: VisualDensity.compact,
           mapHeight: 200,
           child: GeoMap(
+            controller: _mapController,
             entries: [entry],
             isAnimatingNotifier: widget.isScrollingNotifier,
             onUserZoomChange: (zoom) => settings.infoMapZoom = zoom,
-            onMarkerTap: collection != null ? (_, __) => _openMapPage(context) : null,
+            onMarkerTap: collection != null ? (_, __, ___) => _openMapPage(context) : null,
             openMapPage: collection != null ? _openMapPage : null,
           ),
         ),
-        _AddressInfoGroup(entry: entry),
-        if (filters.isNotEmpty)
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AvesFilterChip.outlineWidth / 2) + const EdgeInsets.only(top: 8),
-            child: Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: filters
-                  .map((filter) => AvesFilterChip(
-                        filter: filter,
-                        onTap: widget.onFilter,
-                      ))
-                  .toList(),
-            ),
-          ),
+        AnimatedBuilder(
+          animation: entry.addressChangeNotifier,
+          builder: (context, child) {
+            final filters = <LocationFilter>[];
+            if (entry.hasAddress) {
+              final address = entry.addressDetails!;
+              final country = address.countryName;
+              if (country != null && country.isNotEmpty) filters.add(LocationFilter(LocationLevel.country, '$country${LocationFilter.locationSeparator}${address.countryCode}'));
+              final place = address.place;
+              if (place != null && place.isNotEmpty) filters.add(LocationFilter(LocationLevel.place, place));
+            }
+
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _AddressInfoGroup(entry: entry),
+                if (filters.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: AvesFilterChip.outlineWidth / 2) + const EdgeInsets.only(top: 8),
+                    child: Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: filters
+                          .map((filter) => AvesFilterChip(
+                                filter: filter,
+                                onTap: widget.onFilter,
+                              ))
+                          .toList(),
+                    ),
+                  ),
+              ],
+            );
+          },
+        ),
       ],
     );
   }
@@ -136,7 +148,15 @@ class _LocationSectionState extends State<LocationSection> {
     );
   }
 
-  void _handleChange() => setState(() {});
+  void _onMetadataChange() {
+    setState(() {});
+
+    final location = entry.latLng;
+    if (location != null) {
+      _mapController.notifyMarkerLocationChange();
+      _mapController.moveTo(location);
+    }
+  }
 }
 
 class _AddressInfoGroup extends StatefulWidget {

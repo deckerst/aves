@@ -134,8 +134,10 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
 
         var destinationDir = arguments["destinationPath"] as String?
         val mimeType = arguments["mimeType"] as String?
+        val width = arguments["width"] as Int?
+        val height = arguments["height"] as Int?
         val nameConflictStrategy = NameConflictStrategy.get(arguments["nameConflictStrategy"] as String?)
-        if (destinationDir == null || mimeType == null || nameConflictStrategy == null) {
+        if (destinationDir == null || mimeType == null || width == null || height == null || nameConflictStrategy == null) {
             error("export-args", "failed because of missing arguments", null)
             return
         }
@@ -150,7 +152,7 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
 
         destinationDir = StorageUtils.ensureTrailingSeparator(destinationDir)
         val entries = entryMapList.map(::AvesEntry)
-        provider.exportMultiple(activity, mimeType, destinationDir, entries, nameConflictStrategy, object : ImageOpCallback {
+        provider.exportMultiple(activity, mimeType, destinationDir, entries, width, height, nameConflictStrategy, object : ImageOpCallback {
             override fun onSuccess(fields: FieldMap) = success(fields)
             override fun onFailure(throwable: Throwable) = error("export-failure", "failed to export entries", throwable)
         })

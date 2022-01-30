@@ -10,6 +10,7 @@ import 'package:aves/services/common/output_buffer.dart';
 import 'package:aves/services/common/service_policy.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/media/enums.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:streams_channel/streams_channel.dart';
@@ -87,7 +88,7 @@ abstract class MediaFileService {
 
   Stream<ExportOpEvent> export(
     Iterable<AvesEntry> entries, {
-    required String mimeType,
+    required EntryExportOptions options,
     required String destinationAlbum,
     required NameConflictStrategy nameConflictStrategy,
   });
@@ -325,11 +326,14 @@ class PlatformMediaFileService implements MediaFileService {
     required Iterable<AvesEntry> entries,
   }) {
     try {
-      return _opStreamChannel.receiveBroadcastStream(<String, dynamic>{
-        'op': 'delete',
-        'id': opId,
-        'entries': entries.map(_toPlatformEntryMap).toList(),
-      }).map((event) => ImageOpEvent.fromMap(event));
+      return _opStreamChannel
+          .receiveBroadcastStream(<String, dynamic>{
+            'op': 'delete',
+            'id': opId,
+            'entries': entries.map(_toPlatformEntryMap).toList(),
+          })
+          .where((event) => event is Map)
+          .map((event) => ImageOpEvent.fromMap(event as Map));
     } on PlatformException catch (e, stack) {
       reportService.recordError(e, stack);
       return Stream.error(e);
@@ -345,14 +349,17 @@ class PlatformMediaFileService implements MediaFileService {
     required NameConflictStrategy nameConflictStrategy,
   }) {
     try {
-      return _opStreamChannel.receiveBroadcastStream(<String, dynamic>{
-        'op': 'move',
-        'id': opId,
-        'entries': entries.map(_toPlatformEntryMap).toList(),
-        'copy': copy,
-        'destinationPath': destinationAlbum,
-        'nameConflictStrategy': nameConflictStrategy.toPlatform(),
-      }).map((event) => MoveOpEvent.fromMap(event));
+      return _opStreamChannel
+          .receiveBroadcastStream(<String, dynamic>{
+            'op': 'move',
+            'id': opId,
+            'entries': entries.map(_toPlatformEntryMap).toList(),
+            'copy': copy,
+            'destinationPath': destinationAlbum,
+            'nameConflictStrategy': nameConflictStrategy.toPlatform(),
+          })
+          .where((event) => event is Map)
+          .map((event) => MoveOpEvent.fromMap(event as Map));
     } on PlatformException catch (e, stack) {
       reportService.recordError(e, stack);
       return Stream.error(e);
@@ -362,18 +369,23 @@ class PlatformMediaFileService implements MediaFileService {
   @override
   Stream<ExportOpEvent> export(
     Iterable<AvesEntry> entries, {
-    required String mimeType,
+    required EntryExportOptions options,
     required String destinationAlbum,
     required NameConflictStrategy nameConflictStrategy,
   }) {
     try {
-      return _opStreamChannel.receiveBroadcastStream(<String, dynamic>{
-        'op': 'export',
-        'entries': entries.map(_toPlatformEntryMap).toList(),
-        'mimeType': mimeType,
-        'destinationPath': destinationAlbum,
-        'nameConflictStrategy': nameConflictStrategy.toPlatform(),
-      }).map((event) => ExportOpEvent.fromMap(event));
+      return _opStreamChannel
+          .receiveBroadcastStream(<String, dynamic>{
+            'op': 'export',
+            'entries': entries.map(_toPlatformEntryMap).toList(),
+            'mimeType': options.mimeType,
+            'width': options.width,
+            'height': options.height,
+            'destinationPath': destinationAlbum,
+            'nameConflictStrategy': nameConflictStrategy.toPlatform(),
+          })
+          .where((event) => event is Map)
+          .map((event) => ExportOpEvent.fromMap(event as Map));
     } on PlatformException catch (e, stack) {
       reportService.recordError(e, stack);
       return Stream.error(e);
@@ -386,11 +398,14 @@ class PlatformMediaFileService implements MediaFileService {
     required String newName,
   }) {
     try {
-      return _opStreamChannel.receiveBroadcastStream(<String, dynamic>{
-        'op': 'rename',
-        'entries': entries.map(_toPlatformEntryMap).toList(),
-        'newName': newName,
-      }).map((event) => MoveOpEvent.fromMap(event));
+      return _opStreamChannel
+          .receiveBroadcastStream(<String, dynamic>{
+            'op': 'rename',
+            'entries': entries.map(_toPlatformEntryMap).toList(),
+            'newName': newName,
+          })
+          .where((event) => event is Map)
+          .map((event) => MoveOpEvent.fromMap(event as Map));
     } on PlatformException catch (e, stack) {
       reportService.recordError(e, stack);
       return Stream.error(e);
@@ -421,4 +436,19 @@ class PlatformMediaFileService implements MediaFileService {
     }
     return {};
   }
+}
+
+@immutable
+class EntryExportOptions extends Equatable {
+  final String mimeType;
+  final int width, height;
+
+  @override
+  List<Object?> get props => [mimeType, width, height];
+
+  const EntryExportOptions({
+    required this.mimeType,
+    required this.width,
+    required this.height,
+  });
 }

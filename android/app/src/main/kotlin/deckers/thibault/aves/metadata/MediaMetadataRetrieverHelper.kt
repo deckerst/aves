@@ -102,8 +102,8 @@ object MediaMetadataRetrieverHelper {
         val symbol = "bit/s"
 
         if (size < divider) return "$size $symbol"
-        if (size < divider * divider) return "${String.format("%.2f", size.toDouble() / divider)} K$symbol"
-        return "${String.format("%.2f", size.toDouble() / divider / divider)} M$symbol"
+        if (size < divider * divider) return "${String.format(Locale.getDefault(), "%.2f", size.toDouble() / divider)} K$symbol"
+        return "${String.format(Locale.getDefault(), "%.2f", size.toDouble() / divider / divider)} M$symbol"
     }
 
     fun MediaMetadataRetriever.getSafeDescription(tag: Int, save: (value: String) -> Unit) {

@@ -162,6 +162,7 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
 
     // `enable-accurate-seek`: enable accurate seek
     // default: 0, in [0, 1]
+    // ignore: dead_code
     options.setPlayerOption('enable-accurate-seek', accurateSeekEnabled ? 1 : 0);
 
     // `min-frames`: minimal frames to stop pre-reading

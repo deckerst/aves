@@ -6,6 +6,7 @@ import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/grid/scaling.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/filter_grids/common/covered_filter_chip.dart';
@@ -178,8 +179,11 @@ class FilterTile<T extends CollectionFilter> extends StatelessWidget {
           ],
         );
         if (onTap != null) {
+          // larger than the chip corner radius, so ink effects will be effectively clipped from the leading chip corners
+          const radius = Radius.circular(123);
           child = InkWell(
-            borderRadius: const BorderRadius.only(topLeft: Radius.circular(123), bottomLeft: Radius.circular(123)),
+            // as of Flutter v2.8.1, `InkWell` does not use `BorderRadiusGeometry`
+            borderRadius: context.isRtl ? const BorderRadius.only(topRight: radius, bottomRight: radius) : const BorderRadius.only(topLeft: radius, bottomLeft: radius),
             onTap: onTap,
             child: child,
           );

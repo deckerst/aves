@@ -29,11 +29,37 @@ It scans your media collection to identify **motion photos**, **panoramas** (aka
 
 **Navigation and search** is an important part of Aves. The goal is for users to easily flow from albums to photos to tags to maps, etc.
 
-Aves integrates with Android (from **API 19 to 31**, i.e. from KitKat to S) with features such as **app shortcuts** and **global search** handling. It also works as a **media viewer and picker**.
+Aves integrates with Android (from **API 19 to 32**, i.e. from KitKat to Android 12L) with features such as **app shortcuts** and **global search** handling. It also works as a **media viewer and picker**.
 
 ## Screenshots
 
-<img src="https://raw.githubusercontent.com/deckerst/aves_extra/main/screenshots/S10/1-S10-collection.png" alt='Collection screenshot' height="400" /><img src="https://raw.githubusercontent.com/deckerst/aves_extra/main/screenshots/S10/2-S10-viewer.png" alt='Image screenshot' height="400" /><img src="https://raw.githubusercontent.com/deckerst/aves_extra/main/screenshots/S10/5-S10-stats.png" alt='Stats screenshot' height="400" /><img src="https://raw.githubusercontent.com/deckerst/aves_extra/main/screenshots/S10/3-S10-info__basic_.png" alt='Info (basic) screenshot' height="400" /><img src="https://raw.githubusercontent.com/deckerst/aves_extra/main/screenshots/S10/4-S10-info__metadata_.png" alt='Info (metadata) screenshot' height="400" /><img src="https://raw.githubusercontent.com/deckerst/aves_extra/main/screenshots/S10/6-S10-countries.png" alt='Countries screenshot' height="400" />
+<div align="center">
+
+[<img src="https://raw.githubusercontent.com/deckerst/aves_extra/main/screenshots/readme/en/1.png"
+      alt='Collection screenshot'
+      width="130" />](https://raw.githubusercontent.com/deckerst/aves_extra/main/screenshots/play/en/1.png)
+[<img
+      src="https://raw.githubusercontent.com/deckerst/aves_extra/main/screenshots/readme/en/2.png"
+      alt='Image screenshot'
+      width="130" />](https://raw.githubusercontent.com/deckerst/aves_extra/main/screenshots/play/en/2.png)
+[<img
+      src="https://raw.githubusercontent.com/deckerst/aves_extra/main/screenshots/readme/en/5.png"
+      alt='Stats screenshot'
+      width="130" />](https://raw.githubusercontent.com/deckerst/aves_extra/main/screenshots/play/en/5.png)
+[<img
+      src="https://raw.githubusercontent.com/deckerst/aves_extra/main/screenshots/readme/en/3.png"
+      alt='Info (basic) screenshot'
+      width="130" />](https://raw.githubusercontent.com/deckerst/aves_extra/main/screenshots/play/en/3.png)
+[<img
+      src="https://raw.githubusercontent.com/deckerst/aves_extra/main/screenshots/readme/en/4.png"
+      alt='Info (metadata) screenshot'
+      width="130" />](https://raw.githubusercontent.com/deckerst/aves_extra/main/screenshots/play/en/4.png)
+[<img
+      src="https://raw.githubusercontent.com/deckerst/aves_extra/main/screenshots/readme/en/6.png"
+      alt='Countries screenshot'
+      width="130" />](https://raw.githubusercontent.com/deckerst/aves_extra/main/screenshots/play/en/6.png)
+
+<div align="left">
 
 ## Changelog
 
@@ -59,7 +85,7 @@ At this stage this project does *not* accept PRs, except for translations.
 
 ### Translations
 
-If you want to translate this app in your language and share the result, feel free to open a PR or send the translation by [email](mailto:gallery.aves@gmail.com). You can find some localization notes in [pubspec.yaml](https://github.com/deckerst/aves/blob/develop/pubspec.yaml). English, Korean and French are already handled by me. Russian, German and Spanish are handled by generous volunteers.
+If you want to translate this app in your language and share the result, [there is a guide](https://github.com/deckerst/aves/wiki/Contributing-to-Translations). English, Korean and French are already handled by me. Russian, German and Spanish are handled by generous volunteers.
 
 ### Donations
 

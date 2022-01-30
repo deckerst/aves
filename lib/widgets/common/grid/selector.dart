@@ -3,12 +3,14 @@ import 'dart:math';
 
 import 'package:aves/model/selection.dart';
 import 'package:aves/utils/math_utils.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
 import 'package:aves/widgets/common/grid/section_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class GridSelectionGestureDetector<T> extends StatefulWidget {
+  final GlobalKey scrollableKey;
   final bool selectable;
   final List<T> items;
   final ScrollController scrollController;
@@ -17,6 +19,7 @@ class GridSelectionGestureDetector<T> extends StatefulWidget {
 
   const GridSelectionGestureDetector({
     Key? key,
+    required this.scrollableKey,
     this.selectable = true,
     required this.items,
     required this.scrollController,
@@ -41,6 +44,13 @@ class _GridSelectionGestureDetectorState<T> extends State<GridSelectionGestureDe
   ScrollController get scrollController => widget.scrollController;
 
   double get appBarHeight => widget.appBarHeightNotifier.value;
+
+  double get scrollableWidth {
+    final scrollableContext = widget.scrollableKey.currentContext!;
+    final scrollableBox = scrollableContext.findRenderObject() as RenderBox;
+    // not the same as `MediaQuery.size.width`, because of screen insets/padding
+    return scrollableBox.size.width;
+  }
 
   static const double scrollEdgeRatio = .15;
   static const double scrollMaxPixelPerSecond = 600.0;
@@ -147,7 +157,7 @@ class _GridSelectionGestureDetectorState<T> extends State<GridSelectionGestureDe
     // so we use custom layout computation instead to find the item.
     final offset = Offset(0, scrollController.offset - appBarHeight) + localPosition;
     final sectionedListLayout = context.read<SectionedListLayout<T>>();
-    return sectionedListLayout.getItemAt(offset);
+    return sectionedListLayout.getItemAt(context.isRtl ? Offset(scrollableWidth - offset.dx, offset.dy) : offset);
   }
 
   void _toggleSelectionToIndex(int toIndex) {

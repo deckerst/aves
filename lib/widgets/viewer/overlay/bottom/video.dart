@@ -175,17 +175,21 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
                   ),
                   ClipRRect(
                     borderRadius: const BorderRadius.all(Radius.circular(4)),
-                    child: StreamBuilder<int>(
-                        stream: positionStream,
-                        builder: (context, snapshot) {
-                          // do not use stream snapshot because it is obsolete when switching between videos
-                          var progress = controller?.progress ?? 0.0;
-                          if (!progress.isFinite) progress = 0.0;
-                          return LinearProgressIndicator(
-                            value: progress,
-                            backgroundColor: Colors.grey.shade700,
-                          );
-                        }),
+                    child: Directionality(
+                      // force directionality for `LinearProgressIndicator`
+                      textDirection: TextDirection.ltr,
+                      child: StreamBuilder<int>(
+                          stream: positionStream,
+                          builder: (context, snapshot) {
+                            // do not use stream snapshot because it is obsolete when switching between videos
+                            var progress = controller?.progress ?? 0.0;
+                            if (!progress.isFinite) progress = 0.0;
+                            return LinearProgressIndicator(
+                              value: progress,
+                              backgroundColor: Colors.grey.shade700,
+                            );
+                          }),
+                    ),
                   ),
                   const Text(
                     // fake text below to match the height of the text above and center the whole thing

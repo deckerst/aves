@@ -1,12 +1,7 @@
 import 'package:aves/model/device.dart';
-import 'package:aves/model/settings/settings.dart';
-import 'package:aves/theme/durations.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
-import 'package:github/github.dart';
 import 'package:google_api_availability/google_api_availability.dart';
-import 'package:package_info_plus/package_info_plus.dart';
-import 'package:version/version.dart';
 
 abstract class AvesAvailability {
   void onResume();
@@ -18,12 +13,10 @@ abstract class AvesAvailability {
   Future<bool> get canLocatePlaces;
 
   Future<bool> get canUseGoogleMaps;
-
-  Future<bool> get isNewVersionAvailable;
 }
 
 class LiveAvesAvailability implements AvesAvailability {
-  bool? _isConnected, _hasPlayServices, _isNewVersionAvailable;
+  bool? _isConnected, _hasPlayServices;
 
   LiveAvesAvailability() {
     Connectivity().onConnectivityChanged.listen(_updateConnectivityFromResult);
@@ -63,30 +56,4 @@ class LiveAvesAvailability implements AvesAvailability {
 
   @override
   Future<bool> get canUseGoogleMaps async => device.canRenderGoogleMaps && await hasPlayServices;
-
-  @override
-  Future<bool> get isNewVersionAvailable async {
-    if (_isNewVersionAvailable != null) return SynchronousFuture(_isNewVersionAvailable!);
-
-    final now = DateTime.now();
-    final dueDate = settings.lastVersionCheckDate.add(Durations.lastVersionCheckInterval);
-    if (now.isBefore(dueDate)) {
-      _isNewVersionAvailable = false;
-      return SynchronousFuture(_isNewVersionAvailable!);
-    }
-
-    if (!(await isConnected)) return false;
-
-    Version version(String s) => Version.parse(s.replaceFirst('v', ''));
-    final currentTag = (await PackageInfo.fromPlatform()).version;
-    final latestTag = (await GitHub().repositories.getLatestRelease(RepositorySlug('deckerst', 'aves'))).tagName!;
-    _isNewVersionAvailable = version(latestTag) > version(currentTag);
-    if (_isNewVersionAvailable!) {
-      debugPrint('Aves $latestTag is available on github');
-    } else {
-      debugPrint('Aves $currentTag is the latest version');
-      settings.lastVersionCheckDate = now;
-    }
-    return _isNewVersionAvailable!;
-  }
 }

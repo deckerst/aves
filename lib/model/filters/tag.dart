@@ -12,23 +12,25 @@ class TagFilter extends CollectionFilter {
   @override
   List<Object?> get props => [tag];
 
-  TagFilter(this.tag) {
+  TagFilter(this.tag, {bool not = false}) : super(not: not) {
     if (tag.isEmpty) {
-      _test = (entry) => entry.tags.isEmpty;
+      _test = not ? (entry) => entry.tags.isNotEmpty : (entry) => entry.tags.isEmpty;
     } else {
-      _test = (entry) => entry.tags.contains(tag);
+      _test = not ? (entry) => !entry.tags.contains(tag) : (entry) => entry.tags.contains(tag);
     }
   }
 
   TagFilter.fromMap(Map<String, dynamic> json)
       : this(
           json['tag'],
+          not: json['not'] ?? false,
         );
 
   @override
   Map<String, dynamic> toMap() => {
         'type': type,
         'tag': tag,
+        'not': not,
       };
 
   @override

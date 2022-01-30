@@ -25,27 +25,27 @@ import kotlin.math.ceil
 @GlideModule
 class SvgGlideModule : LibraryGlideModule() {
     override fun registerComponents(context: Context, glide: Glide, registry: Registry) {
-        registry.append(SvgThumbnail::class.java, Bitmap::class.java, SvgLoader.Factory())
+        registry.append(SvgImage::class.java, Bitmap::class.java, SvgLoader.Factory())
     }
 }
 
-class SvgThumbnail(val context: Context, val uri: Uri)
+class SvgImage(val context: Context, val uri: Uri)
 
-internal class SvgLoader : ModelLoader<SvgThumbnail, Bitmap> {
-    override fun buildLoadData(model: SvgThumbnail, width: Int, height: Int, options: Options): ModelLoader.LoadData<Bitmap> {
+internal class SvgLoader : ModelLoader<SvgImage, Bitmap> {
+    override fun buildLoadData(model: SvgImage, width: Int, height: Int, options: Options): ModelLoader.LoadData<Bitmap> {
         return ModelLoader.LoadData(ObjectKey(model.uri), SvgFetcher(model, width, height))
     }
 
-    override fun handles(model: SvgThumbnail): Boolean = true
+    override fun handles(model: SvgImage): Boolean = true
 
-    internal class Factory : ModelLoaderFactory<SvgThumbnail, Bitmap> {
-        override fun build(multiFactory: MultiModelLoaderFactory): ModelLoader<SvgThumbnail, Bitmap> = SvgLoader()
+    internal class Factory : ModelLoaderFactory<SvgImage, Bitmap> {
+        override fun build(multiFactory: MultiModelLoaderFactory): ModelLoader<SvgImage, Bitmap> = SvgLoader()
 
         override fun teardown() {}
     }
 }
 
-internal class SvgFetcher(val model: SvgThumbnail, val width: Int, val height: Int) : DataFetcher<Bitmap> {
+internal class SvgFetcher(val model: SvgImage, val width: Int, val height: Int) : DataFetcher<Bitmap> {
     override fun loadData(priority: Priority, callback: DataFetcher.DataCallback<in Bitmap>) {
         val context = model.context
         val uri = model.uri

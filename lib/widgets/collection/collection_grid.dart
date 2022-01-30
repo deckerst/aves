@@ -192,6 +192,7 @@ class _CollectionSectionedContentState extends State<_CollectionSectionedContent
 
     final isMainMode = context.select<ValueNotifier<AppMode>, bool>((vn) => vn.value == AppMode.main);
     final selector = GridSelectionGestureDetector(
+      scrollableKey: scrollableKey,
       selectable: isMainMode,
       items: collection.sortedEntries,
       scrollController: scrollController,
@@ -238,6 +239,7 @@ class _CollectionScaler extends StatelessWidget {
           borderWidth: DecoratedThumbnail.borderWidth,
           borderRadius: Radius.zero,
           color: DecoratedThumbnail.borderColor,
+          textDirection: Directionality.of(context),
         ),
         child: child,
       ),

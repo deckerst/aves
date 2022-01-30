@@ -16,6 +16,7 @@ import 'package:aves/model/source/tag.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
+import 'package:aves/widgets/common/animated_icons_fix.dart';
 import 'package:aves/widgets/common/expandable_filter_row.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
@@ -60,8 +61,9 @@ class CollectionSearchDelegate {
     // so the leading may mistakenly switch to the close button
     return canPop
         ? IconButton(
-            icon: AnimatedIcon(
-              icon: AnimatedIcons.menu_arrow,
+            // TODO TLAD [rtl] replace to regular `AnimatedIcon` when this is fixed: https://github.com/flutter/flutter/issues/60521
+            icon: AnimatedIconFixIssue60521(
+              icon: AnimatedIconsFixIssue60521.menu_arrow,
               progress: transitionAnimation,
             ),
             onPressed: () => _goBack(context),
@@ -169,7 +171,7 @@ class CollectionSearchDelegate {
                       StreamBuilder(
                           stream: source.eventBus.on<TagsChangedEvent>(),
                           builder: (context, snapshot) {
-                            final filters = source.sortedTags.where(containQuery).map((s) => TagFilter(s));
+                            final filters = source.sortedTags.where(containQuery).map(TagFilter.new);
                             final noFilter = TagFilter('');
                             return _buildFilterRow(
                               context: context,
@@ -183,7 +185,7 @@ class CollectionSearchDelegate {
                       _buildFilterRow(
                         context: context,
                         title: context.l10n.searchSectionRating,
-                        filters: [0, 5, 4, 3, 2, 1, -1].map((rating) => RatingFilter(rating)).where((f) => containQuery(f.getLabel(context))).toList(),
+                        filters: [0, 5, 4, 3, 2, 1, -1].map(RatingFilter.new).where((f) => containQuery(f.getLabel(context))).toList(),
                       ),
                     ],
                   );

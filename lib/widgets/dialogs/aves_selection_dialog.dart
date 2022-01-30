@@ -57,7 +57,7 @@ class _AvesSelectionDialogState<T> extends State<AvesSelectionDialog<T>> {
         if (needConfirmation)
           TextButton(
             onPressed: () => Navigator.pop(context, _selectedValue),
-            child: Text(confirmationButtonLabel!),
+            child: Text(confirmationButtonLabel),
           ),
       ],
     );

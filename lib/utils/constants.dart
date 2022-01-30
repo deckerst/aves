@@ -22,6 +22,13 @@ class Constants {
     )
   ];
 
+  // Bidi fun, cf https://www.unicode.org/reports/tr9/
+  // First Strong Isolate
+  static const fsi = '\u2068';
+
+  // Pop Directional Isolate
+  static const pdi = '\u2069';
+
   static const overlayUnknown = '—'; // em dash
 
   static final pointNemo = LatLng(-48.876667, -123.393333);
@@ -291,11 +298,6 @@ class Constants {
       sourceUrl: 'https://github.com/fluttercommunity/get_it',
     ),
     Dependency(
-      name: 'GitHub',
-      license: 'MIT',
-      sourceUrl: 'https://github.com/SpinlockLabs/github.dart',
-    ),
-    Dependency(
       name: 'Intl',
       license: 'BSD 3-Clause',
       sourceUrl: 'https://github.com/dart-lang/intl',
@@ -324,11 +326,6 @@ class Constants {
       name: 'Tuple',
       license: 'BSD 2-Clause',
       sourceUrl: 'https://github.com/google/tuple.dart',
-    ),
-    Dependency(
-      name: 'Version',
-      license: 'BSD 3-Clause',
-      sourceUrl: 'https://github.com/dartninja/version',
     ),
     Dependency(
       name: 'XML',

@@ -6,36 +6,34 @@ import 'package:flutter_driver/flutter_driver.dart';
 import 'package:path/path.dart' as p;
 import 'package:test/test.dart';
 
-import 'constants.dart';
+import 'common_test.dart';
 import 'utils/adb_utils.dart';
 import 'utils/driver_extension.dart';
 
 late FlutterDriver driver;
 
-extension ExtraFlutterDriver on FlutterDriver {
-  Future<void> tapKeyAndWait(String key) async {
-    await driver.tap(find.byValueKey(key));
-    await driver.waitUntilNoTransientCallbacks();
-  }
-}
-
 void main() {
   group('[Aves app]', () {
     setUpAll(() async {
-      await copyContent(sourcePicturesDir, targetPicturesDir);
-      await grantPermissions('deckers.thibault.aves.debug', [
-        'android.permission.READ_EXTERNAL_STORAGE',
-        'android.permission.WRITE_EXTERNAL_STORAGE',
-        'android.permission.ACCESS_MEDIA_LOCATION',
-      ]);
+      await copyContent(shadersSourceDir, shadersTargetDirAdb);
+      await Future.forEach<String>(
+          [
+            'deckers.thibault.aves.debug',
+            'deckers.thibault.aves.profile',
+          ],
+          (package) => grantPermissions(package, [
+                'android.permission.READ_EXTERNAL_STORAGE',
+                'android.permission.ACCESS_MEDIA_LOCATION',
+              ]));
       driver = await FlutterDriver.connect();
     });
 
     tearDownAll(() async {
-      await removeDirectory(targetPicturesDir);
+      await removeDirectory(shadersTargetDirAdb);
       unawaited(driver.close());
     });
 
+    test('scan media dir', () => driver.scanMediaDir(shadersTargetDirAndroid));
     agreeToTerms();
     visitAbout();
     visitSettings();
@@ -162,7 +160,7 @@ void searchAlbum() {
   test('[collection] search album', () async {
     await driver.tapKeyAndWait('menu-searchCollection');
 
-    const albumPath = targetPicturesDirEmulated;
+    const albumPath = shadersTargetDirAndroid;
     final albumDisplayName = p.split(albumPath).last;
     await driver.tap(find.byType('TextField'));
     await driver.enterText(albumDisplayName);

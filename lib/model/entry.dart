@@ -16,6 +16,7 @@ import 'package:aves/services/geocoding_service.dart';
 import 'package:aves/services/metadata/svg_metadata_service.dart';
 import 'package:aves/theme/format.dart';
 import 'package:aves/utils/change_notifier.dart';
+import 'package:aves/utils/time_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:country_code/country_code.dart';
 import 'package:flutter/foundation.dart';
@@ -236,6 +237,8 @@ class AvesEntry {
 
   bool get canEditDate => canEdit && (canEditExif || canEditXmp);
 
+  bool get canEditLocation => canEdit && canEditExif;
+
   bool get canEditRating => canEdit && canEditXmp;
 
   bool get canEditTags => canEdit && canEditXmp;
@@ -348,15 +351,7 @@ class AvesEntry {
   DateTime? _bestDate;
 
   DateTime? get bestDate {
-    if (_bestDate == null) {
-      if ((_catalogDateMillis ?? 0) > 0) {
-        _bestDate = DateTime.fromMillisecondsSinceEpoch(_catalogDateMillis!);
-      } else if ((sourceDateTakenMillis ?? 0) > 0) {
-        _bestDate = DateTime.fromMillisecondsSinceEpoch(sourceDateTakenMillis!);
-      } else if ((dateModifiedSecs ?? 0) > 0) {
-        _bestDate = DateTime.fromMillisecondsSinceEpoch(dateModifiedSecs! * 1000);
-      }
-    }
+    _bestDate ??= dateTimeFromMillis(_catalogDateMillis) ?? dateTimeFromMillis(sourceDateTakenMillis) ?? dateTimeFromMillis((dateModifiedSecs ?? 0) * 1000);
     return _bestDate;
   }
 
@@ -504,10 +499,13 @@ class AvesEntry {
   }
 
   Future<void> locate({required bool background, required bool force, required Locale geocoderLocale}) async {
-    if (!hasGps) return;
-    await _locateCountry(force: force);
-    if (await availability.canLocatePlaces) {
-      await locatePlace(background: background, force: force, geocoderLocale: geocoderLocale);
+    if (hasGps) {
+      await _locateCountry(force: force);
+      if (await availability.canLocatePlaces) {
+        await locatePlace(background: background, force: force, geocoderLocale: geocoderLocale);
+      }
+    } else {
+      addressDetails = null;
     }
   }
 
@@ -748,13 +746,11 @@ class AvesEntry {
     return c != 0 ? c : compareAsciiUpperCase(a.extension ?? '', b.extension ?? '');
   }
 
-  static final _epoch = DateTime.fromMillisecondsSinceEpoch(0);
-
   // compare by:
   // 1) date descending
   // 2) name descending
   static int compareByDate(AvesEntry a, AvesEntry b) {
-    var c = (b.bestDate ?? _epoch).compareTo(a.bestDate ?? _epoch);
+    var c = (b.bestDate ?? epoch).compareTo(a.bestDate ?? epoch);
     if (c != 0) return c;
     return compareByName(b, a);
   }

@@ -20,9 +20,6 @@ class Durations {
   static const appBarTitleAnimation = Duration(milliseconds: 300);
   static const appBarActionChangeAnimation = Duration(milliseconds: 200);
 
-  // drawer
-  static const newsBadgeAnimation = Duration(milliseconds: 200);
-
   // filter grids animations
   static const chipDecorationAnimation = Duration(milliseconds: 200);
   static const highlightScrollAnimationMinMillis = 400;
@@ -68,9 +65,6 @@ class Durations {
   static const contentChangeDebounceDelay = Duration(milliseconds: 1000);
   static const mapInfoDebounceDelay = Duration(milliseconds: 150);
   static const mapIdleDebounceDelay = Duration(milliseconds: 100);
-
-  // app life
-  static const lastVersionCheckInterval = Duration(days: 7);
 }
 
 class DurationsProvider extends StatelessWidget {

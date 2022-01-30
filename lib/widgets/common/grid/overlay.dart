@@ -30,8 +30,9 @@ class GridItemSelectionOverlay<T> extends StatelessWidget {
                   ? OverlayIcon(
                       key: ValueKey(isSelected),
                       icon: isSelected ? AIcons.selected : AIcons.unselected,
+                      margin: EdgeInsets.zero,
                     )
-                  : const SizedBox.shrink();
+                  : const SizedBox();
               child = AnimatedSwitcher(
                 duration: duration,
                 switchInCurve: Curves.easeOutBack,

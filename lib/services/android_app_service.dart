@@ -38,7 +38,7 @@ class PlatformAndroidAppService implements AndroidAppService {
   Future<Set<Package>> getPackages() async {
     try {
       final result = await platform.invokeMethod('getPackages');
-      final packages = (result as List).cast<Map>().map((map) => Package.fromMap(map)).toSet();
+      final packages = (result as List).cast<Map>().map(Package.fromMap).toSet();
       // additional info for known directories
       final kakaoTalk = packages.firstWhereOrNull((package) => package.packageName == 'com.kakao.talk');
       if (kakaoTalk != null) {

@@ -13,9 +13,11 @@ import androidx.exifinterface.media.ExifInterface
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.FutureTarget
 import com.bumptech.glide.request.RequestOptions
 import com.commonsware.cwac.document.DocumentFileCompat
 import deckers.thibault.aves.decoder.MultiTrackImage
+import deckers.thibault.aves.decoder.SvgImage
 import deckers.thibault.aves.decoder.TiffImage
 import deckers.thibault.aves.metadata.*
 import deckers.thibault.aves.metadata.ExifInterfaceHelper.getSafeDateMillis
@@ -35,6 +37,7 @@ import deckers.thibault.aves.utils.MimeTypes.isVideo
 import java.io.ByteArrayInputStream
 import java.io.File
 import java.io.IOException
+import java.io.OutputStream
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -82,6 +85,8 @@ abstract class ImageProvider {
         imageExportMimeType: String,
         targetDir: String,
         entries: List<AvesEntry>,
+        width: Int,
+        height: Int,
         nameConflictStrategy: NameConflictStrategy,
         callback: ImageOpCallback,
     ) {
@@ -92,12 +97,6 @@ abstract class ImageProvider {
         val targetDirDocFile = StorageUtils.createDirectoryDocIfAbsent(activity, targetDir)
         if (!File(targetDir).exists()) {
             callback.onFailure(Exception("failed to create directory at path=$targetDir"))
-            return
-        }
-
-        // TODO TLAD [storage] allow inserting by Media Store
-        if (targetDirDocFile == null) {
-            callback.onFailure(Exception("failed to get tree doc for directory at path=$targetDir"))
             return
         }
 
@@ -115,11 +114,13 @@ abstract class ImageProvider {
             val sourceMimeType = entry.mimeType
             val exportMimeType = if (isVideo(sourceMimeType)) sourceMimeType else imageExportMimeType
             try {
-                val newFields = exportSingleByTreeDocAndScan(
+                val newFields = exportSingle(
                     activity = activity,
                     sourceEntry = entry,
                     targetDir = targetDir,
                     targetDirDocFile = targetDirDocFile,
+                    width = width,
+                    height = height,
                     nameConflictStrategy = nameConflictStrategy,
                     exportMimeType = exportMimeType,
                 )
@@ -133,11 +134,13 @@ abstract class ImageProvider {
     }
 
     @Suppress("BlockingMethodInNonBlockingContext")
-    private suspend fun exportSingleByTreeDocAndScan(
+    private suspend fun exportSingle(
         activity: Activity,
         sourceEntry: AvesEntry,
         targetDir: String,
-        targetDirDocFile: DocumentFileCompat,
+        targetDirDocFile: DocumentFileCompat?,
+        width: Int,
+        height: Int,
         nameConflictStrategy: NameConflictStrategy,
         exportMimeType: String,
     ): FieldMap {
@@ -163,44 +166,46 @@ abstract class ImageProvider {
             conflictStrategy = nameConflictStrategy,
         ) ?: return skippedFieldMap
 
-        // the file created from a `TreeDocumentFile` is also a `TreeDocumentFile`
-        // but in order to open an output stream to it, we need to use a `SingleDocumentFile`
-        // through a document URI, not a tree URI
-        // note that `DocumentFile.getParentFile()` returns null if we did not pick a tree first
-        val targetTreeFile = targetDirDocFile.createFile(exportMimeType, targetNameWithoutExtension)
-        val targetDocFile = DocumentFileCompat.fromSingleUri(activity, targetTreeFile.uri)
-
-        if (isVideo(sourceMimeType)) {
-            val sourceDocFile = DocumentFileCompat.fromSingleUri(activity, sourceUri)
-            sourceDocFile.copyTo(targetDocFile)
-        } else {
-            val model: Any = if (MimeTypes.isHeic(sourceMimeType) && pageId != null) {
-                MultiTrackImage(activity, sourceUri, pageId)
-            } else if (sourceMimeType == MimeTypes.TIFF) {
-                TiffImage(activity, sourceUri, pageId)
+        val targetMimeType: String
+        val write: (OutputStream) -> Unit
+        var target: FutureTarget<Bitmap>? = null
+        try {
+            if (isVideo(sourceMimeType)) {
+                targetMimeType = sourceMimeType
+                write = { output ->
+                    val sourceDocFile = DocumentFileCompat.fromSingleUri(activity, sourceUri)
+                    sourceDocFile.copyTo(output)
+                }
             } else {
-                StorageUtils.getGlideSafeUri(sourceUri, sourceMimeType)
-            }
+                val model: Any = if (MimeTypes.isHeic(sourceMimeType) && pageId != null) {
+                    MultiTrackImage(activity, sourceUri, pageId)
+                } else if (sourceMimeType == MimeTypes.TIFF) {
+                    TiffImage(activity, sourceUri, pageId)
+                } else if (sourceMimeType == MimeTypes.SVG) {
+                    SvgImage(activity, sourceUri)
+                } else {
+                    StorageUtils.getGlideSafeUri(sourceUri, sourceMimeType)
+                }
 
-            // request a fresh image with the highest quality format
-            val glideOptions = RequestOptions()
-                .format(DecodeFormat.PREFER_ARGB_8888)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .skipMemoryCache(true)
+                // request a fresh image with the highest quality format
+                val glideOptions = RequestOptions()
+                    .format(DecodeFormat.PREFER_ARGB_8888)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .skipMemoryCache(true)
 
-            val target = Glide.with(activity)
-                .asBitmap()
-                .apply(glideOptions)
-                .load(model)
-                .submit()
-            try {
+                target = Glide.with(activity)
+                    .asBitmap()
+                    .apply(glideOptions)
+                    .load(model)
+                    .submit(width, height)
                 var bitmap = target.get()
                 if (MimeTypes.needRotationAfterGlide(sourceMimeType)) {
                     bitmap = BitmapUtils.applyExifOrientation(activity, bitmap, sourceEntry.rotationDegrees, sourceEntry.isFlipped)
                 }
                 bitmap ?: throw Exception("failed to get image for mimeType=$sourceMimeType uri=$sourceUri page=$pageId")
 
-                targetDocFile.openOutputStream().use { output ->
+                targetMimeType = exportMimeType
+                write = { output ->
                     if (exportMimeType == MimeTypes.BMP) {
                         BmpWriter.writeRGB24(bitmap, output)
                     } else {
@@ -223,21 +228,23 @@ abstract class ImageProvider {
                         bitmap.compress(format, quality, output)
                     }
                 }
-            } catch (e: Exception) {
-                // remove empty file
-                if (targetDocFile.exists()) {
-                    targetDocFile.delete()
-                }
-                throw e
-            } finally {
-                Glide.with(activity).clear(target)
             }
+
+            val mediaStoreImageProvider = MediaStoreImageProvider()
+            val targetPath = mediaStoreImageProvider.createSingle(
+                activity = activity,
+                mimeType = targetMimeType,
+                targetDir = targetDir,
+                targetDirDocFile = targetDirDocFile,
+                targetNameWithoutExtension = targetNameWithoutExtension,
+                write = write,
+            )
+            return mediaStoreImageProvider.scanNewPath(activity, targetPath, exportMimeType)
+        } finally {
+            // clearing Glide target should happen after effectively writing the bitmap
+            Glide.with(activity).clear(target)
         }
 
-        val fileName = targetDocFile.name
-        val targetFullPath = targetDir + fileName
-
-        return MediaStoreImageProvider().scanNewPath(activity, targetFullPath, exportMimeType)
     }
 
     @Suppress("BlockingMethodInNonBlockingContext")
@@ -808,6 +815,55 @@ abstract class ImageProvider {
         modifier: FieldMap,
         callback: ImageOpCallback,
     ) {
+        if (modifier.containsKey("exif")) {
+            val fields = modifier["exif"] as Map<*, *>?
+            if (fields != null && fields.isNotEmpty()) {
+                if (!editExif(context, path, uri, mimeType, callback) { exif ->
+                        var setLocation = false
+                        fields.forEach { kv ->
+                            val tag = kv.key as String?
+                            if (tag != null) {
+                                val value = kv.value
+                                if (value == null) {
+                                    // remove attribute
+                                    exif.setAttribute(tag, value)
+                                } else {
+                                    when (tag) {
+                                        ExifInterface.TAG_GPS_LATITUDE,
+                                        ExifInterface.TAG_GPS_LATITUDE_REF,
+                                        ExifInterface.TAG_GPS_LONGITUDE,
+                                        ExifInterface.TAG_GPS_LONGITUDE_REF -> {
+                                            setLocation = true
+                                        }
+                                        else -> {
+                                            if (value is String) {
+                                                exif.setAttribute(tag, value)
+                                            } else {
+                                                Log.w(LOG_TAG, "failed to set Exif attribute $tag because value=$value is not a string")
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        if (setLocation) {
+                            val latAbs = (fields[ExifInterface.TAG_GPS_LATITUDE] as Number?)?.toDouble()
+                            val latRef = fields[ExifInterface.TAG_GPS_LATITUDE_REF] as String?
+                            val lngAbs = (fields[ExifInterface.TAG_GPS_LONGITUDE] as Number?)?.toDouble()
+                            val lngRef = fields[ExifInterface.TAG_GPS_LONGITUDE_REF] as String?
+                            if (latAbs != null && latRef != null && lngAbs != null && lngRef != null) {
+                                val latitude = if (latRef == ExifInterface.LATITUDE_SOUTH) -latAbs else latAbs
+                                val longitude = if (lngRef == ExifInterface.LONGITUDE_WEST) -lngAbs else lngAbs
+                                exif.setLatLong(latitude, longitude)
+                            } else {
+                                Log.w(LOG_TAG, "failed to set Exif location with latAbs=$latAbs, latRef=$latRef, lngAbs=$lngAbs, lngRef=$lngRef")
+                            }
+                        }
+                        exif.saveAttributes()
+                    }) return
+            }
+        }
+
         if (modifier.containsKey("iptc")) {
             val iptc = (modifier["iptc"] as List<*>?)?.filterIsInstance<FieldMap>()
             if (!editIptc(

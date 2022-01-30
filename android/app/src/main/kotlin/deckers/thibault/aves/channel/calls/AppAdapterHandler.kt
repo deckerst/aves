@@ -143,6 +143,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
                     .submit(size, size)
 
                 try {
+                    @Suppress("BlockingMethodInNonBlockingContext")
                     data = target.get()?.getBytes(canHaveAlpha = true, recycle = false)
                 } catch (e: Exception) {
                     Log.w(LOG_TAG, "failed to decode app icon for packageName=$packageName", e)
@@ -312,7 +313,16 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
             context.startActivity(Intent.createChooser(intent, title))
             return true
         } catch (e: SecurityException) {
-            Log.w(LOG_TAG, "failed to start activity chooser for intent=$intent", e)
+            if (intent.flags and Intent.FLAG_GRANT_WRITE_URI_PERMISSION != 0) {
+                // in some environments, providing the write flag yields a `SecurityException`:
+                // "UID XXXX does not have permission to content://XXXX"
+                // so we retry without it
+                Log.i(LOG_TAG, "retry intent=$intent without FLAG_GRANT_WRITE_URI_PERMISSION")
+                intent.flags = intent.flags and Intent.FLAG_GRANT_WRITE_URI_PERMISSION.inv()
+                return safeStartActivityChooser(title, intent)
+            } else {
+                Log.w(LOG_TAG, "failed to start activity chooser for intent=$intent", e)
+            }
         }
         return false
     }

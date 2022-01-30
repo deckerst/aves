@@ -67,7 +67,7 @@ class _DrawerAlbumTabState extends State<DrawerAlbumTab> {
             if (album == null) return;
             setState(() => widget.items.add(album));
           },
-        )
+        ),
       ],
     );
   }

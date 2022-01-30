@@ -4,6 +4,7 @@ import 'package:aves/model/actions/entry_info_actions.dart';
 import 'package:aves/model/actions/events.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/entry_metadata_edition.dart';
+import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/widgets/common/action_mixins/entry_editor.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
@@ -14,17 +15,19 @@ import 'package:flutter/material.dart';
 class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEditorMixin, SingleEntryEditorMixin {
   @override
   final AvesEntry entry;
+  final CollectionLens? collection;
 
   final StreamController<ActionEvent<EntryInfoAction>> _eventStreamController = StreamController<ActionEvent<EntryInfoAction>>.broadcast();
 
   Stream<ActionEvent<EntryInfoAction>> get eventStream => _eventStreamController.stream;
 
-  EntryInfoActionDelegate(this.entry);
+  EntryInfoActionDelegate(this.entry, this.collection);
 
   bool isVisible(EntryInfoAction action) {
     switch (action) {
       // general
       case EntryInfoAction.editDate:
+      case EntryInfoAction.editLocation:
       case EntryInfoAction.editRating:
       case EntryInfoAction.editTags:
       case EntryInfoAction.removeMetadata:
@@ -40,6 +43,8 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
       // general
       case EntryInfoAction.editDate:
         return entry.canEditDate;
+      case EntryInfoAction.editLocation:
+        return entry.canEditLocation;
       case EntryInfoAction.editRating:
         return entry.canEditRating;
       case EntryInfoAction.editTags:
@@ -58,6 +63,9 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
       // general
       case EntryInfoAction.editDate:
         await _editDate(context);
+        break;
+      case EntryInfoAction.editLocation:
+        await _editLocation(context);
         break;
       case EntryInfoAction.editRating:
         await _editRating(context);
@@ -81,6 +89,13 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
     if (modifier == null) return;
 
     await edit(context, () => entry.editDate(modifier));
+  }
+
+  Future<void> _editLocation(BuildContext context) async {
+    final location = await selectLocation(context, {entry}, collection);
+    if (location == null) return;
+
+    await edit(context, () => entry.editLocation(location));
   }
 
   Future<void> _editRating(BuildContext context) async {

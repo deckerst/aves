@@ -30,6 +30,12 @@ mixin LocationMixin on SourceBase {
   Future<void> locateEntries(AnalysisController controller, Set<AvesEntry> candidateEntries) async {
     await _locateCountries(controller, candidateEntries);
     await _locatePlaces(controller, candidateEntries);
+
+    final unlocatedIds = candidateEntries.where((entry) => !entry.hasGps).map((entry) => entry.contentId).whereNotNull().toSet();
+    if (unlocatedIds.isNotEmpty) {
+      await metadataDb.removeIds(unlocatedIds, dataTypes: {EntryDataType.address});
+      onAddressMetadataChanged();
+    }
   }
 
   static bool locateCountriesTest(AvesEntry entry) => entry.hasGps && !entry.hasAddress;
@@ -176,16 +182,21 @@ mixin LocationMixin on SourceBase {
   final Map<String, int> _filterEntryCountMap = {};
   final Map<String, AvesEntry?> _filterRecentEntryMap = {};
 
-  void invalidateCountryFilterSummary([Set<AvesEntry>? entries]) {
+  void invalidateCountryFilterSummary({Set<AvesEntry>? entries, Set<String>? countryCodes}) {
     if (_filterEntryCountMap.isEmpty && _filterRecentEntryMap.isEmpty) return;
 
-    Set<String>? countryCodes;
-    if (entries == null) {
+    if (entries == null && countryCodes == null) {
       _filterEntryCountMap.clear();
       _filterRecentEntryMap.clear();
     } else {
-      countryCodes = entries.where((entry) => entry.hasAddress).map((entry) => entry.addressDetails?.countryCode).whereNotNull().toSet();
-      countryCodes.forEach(_filterEntryCountMap.remove);
+      countryCodes ??= {};
+      if (entries != null) {
+        countryCodes.addAll(entries.where((entry) => entry.hasAddress).map((entry) => entry.addressDetails?.countryCode).whereNotNull());
+      }
+      countryCodes.forEach((countryCode) {
+        _filterEntryCountMap.remove(countryCode);
+        _filterRecentEntryMap.remove(countryCode);
+      });
     }
     eventBus.fire(CountrySummaryInvalidatedEvent(countryCodes));
   }

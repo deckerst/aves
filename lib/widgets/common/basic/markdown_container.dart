@@ -4,10 +4,12 @@ import 'package:url_launcher/url_launcher.dart';
 
 class MarkdownContainer extends StatelessWidget {
   final String data;
+  final TextDirection? textDirection;
 
   const MarkdownContainer({
     Key? key,
     required this.data,
+    this.textDirection,
   }) : super(key: key);
 
   static const double maxWidth = 460;
@@ -34,15 +36,18 @@ class MarkdownContainer extends StatelessWidget {
             ),
           ),
           child: Scrollbar(
-            child: Markdown(
-              data: data,
-              selectable: true,
-              onTapLink: (text, href, title) async {
-                if (href != null && await canLaunch(href)) {
-                  await launch(href);
-                }
-              },
-              shrinkWrap: true,
+            child: Directionality(
+              textDirection: textDirection ?? Directionality.of(context),
+              child: Markdown(
+                data: data,
+                selectable: true,
+                onTapLink: (text, href, title) async {
+                  if (href != null && await canLaunch(href)) {
+                    await launch(href);
+                  }
+                },
+                shrinkWrap: true,
+              ),
             ),
           ),
         ),

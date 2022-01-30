@@ -90,7 +90,7 @@ class _FilterBarState extends State<FilterBar> {
           initialItemCount: widget.filters.length,
           scrollDirection: Axis.horizontal,
           physics: const BouncingScrollPhysics(),
-          padding: const EdgeInsets.only(left: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 4),
           itemBuilder: (context, index, animation) {
             if (index >= widget.filters.length) return const SizedBox();
             return _buildChip(widget.filters.toList()[index]);
@@ -102,7 +102,7 @@ class _FilterBarState extends State<FilterBar> {
 
   Padding _buildChip(CollectionFilter filter) {
     return Padding(
-      padding: const EdgeInsets.only(right: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 4),
       child: Center(
         child: AvesFilterChip(
           key: ValueKey(filter),

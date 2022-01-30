@@ -1,6 +1,7 @@
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums.dart';
+import 'package:aves/utils/time_utils.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/providers/selection_provider.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip_set.dart';
@@ -63,7 +64,7 @@ class FilterNavigationPage<T extends CollectionFilter> extends StatelessWidget {
   }
 
   static int compareFiltersByDate(FilterGridItem<CollectionFilter> a, FilterGridItem<CollectionFilter> b) {
-    final c = (b.entry?.bestDate ?? DateTime.fromMillisecondsSinceEpoch(0)).compareTo(a.entry?.bestDate ?? DateTime.fromMillisecondsSinceEpoch(0));
+    final c = (b.entry?.bestDate ?? epoch).compareTo(a.entry?.bestDate ?? epoch);
     return c != 0 ? c : a.filter.compareTo(b.filter);
   }
 

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:aves/model/entry.dart';
@@ -23,17 +24,18 @@ import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fluster/fluster.dart';
 import 'package:flutter/material.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 
 class GeoMap extends StatefulWidget {
   final AvesMapController? controller;
   final Listenable? collectionListenable;
   final List<AvesEntry> entries;
-  final AvesEntry? initialEntry;
+  final LatLng? initialCenter;
   final ValueNotifier<bool> isAnimatingNotifier;
-  final ValueNotifier<AvesEntry?>? dotEntryNotifier;
+  final ValueNotifier<LatLng?>? dotLocationNotifier;
   final UserZoomChangeCallback? onUserZoomChange;
-  final VoidCallback? onMapTap;
+  final void Function(LatLng location)? onMapTap;
   final MarkerTapCallback? onMarkerTap;
   final MapOpener? openMapPage;
 
@@ -45,9 +47,9 @@ class GeoMap extends StatefulWidget {
     this.controller,
     this.collectionListenable,
     required this.entries,
-    this.initialEntry,
+    this.initialCenter,
     required this.isAnimatingNotifier,
-    this.dotEntryNotifier,
+    this.dotLocationNotifier,
     this.onUserZoomChange,
     this.onMapTap,
     this.onMarkerTap,
@@ -59,6 +61,8 @@ class GeoMap extends StatefulWidget {
 }
 
 class _GeoMapState extends State<GeoMap> {
+  final List<StreamSubscription> _subscriptions = [];
+
   // as of google_maps_flutter v2.0.6, Google map initialization is blocking
   // cf https://github.com/flutter/flutter/issues/28493
   // it is especially severe the first time, but still significant afterwards
@@ -78,15 +82,7 @@ class _GeoMapState extends State<GeoMap> {
   @override
   void initState() {
     super.initState();
-    final initialEntry = widget.initialEntry;
-    final points = (initialEntry != null ? [initialEntry] : entries).map((v) => v.latLng!).toSet();
-    final bounds = ZoomedBounds.fromPoints(
-      points: points.isNotEmpty ? points : {Constants.wonders[Random().nextInt(Constants.wonders.length)]},
-      collocationZoom: settings.infoMapZoom,
-    );
-    _boundsNotifier = ValueNotifier(bounds.copyWith(
-      zoom: max(bounds.zoom, minInitialZoom),
-    ));
+    _boundsNotifier = ValueNotifier(_initBounds());
     _registerWidget(widget);
     _onCollectionChanged();
   }
@@ -106,10 +102,17 @@ class _GeoMapState extends State<GeoMap> {
 
   void _registerWidget(GeoMap widget) {
     widget.collectionListenable?.addListener(_onCollectionChanged);
+    final controller = widget.controller;
+    if (controller != null) {
+      _subscriptions.add(controller.markerLocationChanges.listen((event) => _onCollectionChanged()));
+    }
   }
 
   void _unregisterWidget(GeoMap widget) {
     widget.collectionListenable?.removeListener(_onCollectionChanged);
+    _subscriptions
+      ..forEach((sub) => sub.cancel())
+      ..clear();
   }
 
   @override
@@ -119,6 +122,16 @@ class _GeoMapState extends State<GeoMap> {
       if (onTap == null) return;
 
       final clusterId = geoEntry.clusterId;
+      AvesEntry? markerEntry;
+      if (clusterId != null) {
+        final uri = geoEntry.childMarkerId;
+        markerEntry = entries.firstWhereOrNull((v) => v.uri == uri);
+      } else {
+        markerEntry = geoEntry.entry;
+      }
+
+      if (markerEntry == null) return;
+
       Set<AvesEntry> getClusterEntries() {
         if (clusterId == null) {
           return {geoEntry.entry!};
@@ -135,17 +148,8 @@ class _GeoMapState extends State<GeoMap> {
         return points.map((geoEntry) => geoEntry.entry!).toSet();
       }
 
-      AvesEntry? markerEntry;
-      if (clusterId != null) {
-        final uri = geoEntry.childMarkerId;
-        markerEntry = entries.firstWhereOrNull((v) => v.uri == uri);
-      } else {
-        markerEntry = geoEntry.entry;
-      }
-
-      if (markerEntry != null) {
-        onTap(markerEntry, getClusterEntries);
-      }
+      final clusterAverageLocation = LatLng(geoEntry.latitude!, geoEntry.longitude!);
+      onTap(clusterAverageLocation, markerEntry, getClusterEntries);
     }
 
     return FutureBuilder<bool>(
@@ -176,7 +180,7 @@ class _GeoMapState extends State<GeoMap> {
                     style: mapStyle,
                     markerClusterBuilder: _buildMarkerClusters,
                     markerWidgetBuilder: _buildMarkerWidget,
-                    dotEntryNotifier: widget.dotEntryNotifier,
+                    dotLocationNotifier: widget.dotLocationNotifier,
                     onUserZoomChange: widget.onUserZoomChange,
                     onMapTap: widget.onMapTap,
                     onMarkerTap: _onMarkerTap,
@@ -191,7 +195,7 @@ class _GeoMapState extends State<GeoMap> {
                     style: mapStyle,
                     markerClusterBuilder: _buildMarkerClusters,
                     markerWidgetBuilder: _buildMarkerWidget,
-                    dotEntryNotifier: widget.dotEntryNotifier,
+                    dotLocationNotifier: widget.dotLocationNotifier,
                     markerSize: Size(
                       GeoMap.markerImageExtent + ImageMarker.outerBorderWidth * 2,
                       GeoMap.markerImageExtent + ImageMarker.outerBorderWidth * 2 + GeoMap.markerArrowSize.height,
@@ -264,6 +268,18 @@ class _GeoMapState extends State<GeoMap> {
     );
   }
 
+  ZoomedBounds _initBounds() {
+    final initialCenter = widget.initialCenter;
+    final points = initialCenter != null ? {initialCenter} : entries.map((v) => v.latLng!).toSet();
+    final bounds = ZoomedBounds.fromPoints(
+      points: points.isNotEmpty ? points : {Constants.wonders[Random().nextInt(Constants.wonders.length)]},
+      collocationZoom: settings.infoMapZoom,
+    );
+    return bounds.copyWith(
+      zoom: max(bounds.zoom, minInitialZoom),
+    );
+  }
+
   void _onCollectionChanged() {
     _defaultMarkerCluster = _buildFluster();
     _slowMarkerCluster = null;
@@ -293,6 +309,9 @@ class _GeoMapState extends State<GeoMap> {
       // node size: 64 by default, higher means faster indexing but slower search
       nodeSize: nodeSize,
       points: markers,
+      // use lambda instead of tear-off because of runtime exception when using
+      // `T Function(BaseCluster, double, double)` for `T Function(BaseCluster?, double?, double?)`
+      // ignore: unnecessary_lambdas
       createCluster: (base, lng, lat) => GeoEntry.createCluster(base, lng, lat),
     );
   }
@@ -325,4 +344,4 @@ class MarkerKey extends LocalKey with EquatableMixin {
 typedef MarkerClusterBuilder = Map<MarkerKey, GeoEntry> Function();
 typedef MarkerWidgetBuilder = Widget Function(MarkerKey key);
 typedef UserZoomChangeCallback = void Function(double zoom);
-typedef MarkerTapCallback = void Function(AvesEntry markerEntry, Set<AvesEntry> Function() getClusterEntries);
+typedef MarkerTapCallback = void Function(LatLng averageLocation, AvesEntry markerEntry, Set<AvesEntry> Function() getClusterEntries);

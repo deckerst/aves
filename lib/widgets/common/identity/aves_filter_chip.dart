@@ -182,8 +182,9 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
           Flexible(
             child: Text(
               filter.getLabel(context),
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: AvesFilterChip.fontSize,
+                decoration: filter.not ? TextDecoration.lineThrough : null,
               ),
               softWrap: false,
               overflow: TextOverflow.fade,
@@ -282,20 +283,26 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
             ),
           ),
           if (banner != null)
-            LayoutBuilder(builder: (context, constraints) {
-              return ClipRRect(
-                borderRadius: borderRadius,
-                child: Transform(
-                  transform: Matrix4.identity().scaled((constraints.maxHeight / 90 - .4).clamp(.45, 1.0)),
-                  child: Banner(
-                    message: banner.toUpperCase(),
-                    location: BannerLocation.topStart,
-                    color: Theme.of(context).colorScheme.secondary,
-                    child: const SizedBox(),
+            LayoutBuilder(
+              builder: (context, constraints) {
+                return ClipRRect(
+                  borderRadius: borderRadius,
+                  child: Align(
+                    // align to corner the scaled down banner in RTL
+                    alignment: AlignmentDirectional.topStart,
+                    child: Transform(
+                      transform: Matrix4.identity().scaled((constraints.maxHeight / 90 - .4).clamp(.45, 1.0)),
+                      child: Banner(
+                        message: banner.toUpperCase(),
+                        location: BannerLocation.topStart,
+                        color: Theme.of(context).colorScheme.secondary,
+                        child: const SizedBox(),
+                      ),
+                    ),
                   ),
-                ),
-              );
-            }),
+                );
+              },
+            ),
         ],
       ),
     );

@@ -15,6 +15,7 @@ import 'package:aves/utils/color_utils.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/utils/mime_utils.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
+import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
@@ -23,7 +24,7 @@ import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:intl/intl.dart' as intl;
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
 
@@ -99,18 +100,22 @@ class StatsPage extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            LinearPercentIndicator(
-              percent: withGpsPercent,
-              lineHeight: lineHeight,
-              backgroundColor: Colors.white24,
-              progressColor: Theme.of(context).colorScheme.secondary,
-              animation: animate,
-              leading: const Icon(AIcons.location),
-              // right padding to match leading, so that inside label is aligned with outside label below
-              padding: EdgeInsets.symmetric(horizontal: lineHeight) + const EdgeInsets.only(right: 24),
-              center: Text(
-                NumberFormat.percentPattern().format(withGpsPercent),
-                style: const TextStyle(shadows: Constants.embossShadows),
+            Padding(
+              // end padding to match leading, so that inside label is aligned with outside label below
+              padding: const EdgeInsetsDirectional.only(end: 24),
+              child: LinearPercentIndicator(
+                percent: withGpsPercent,
+                lineHeight: lineHeight,
+                backgroundColor: Colors.white24,
+                progressColor: Theme.of(context).colorScheme.secondary,
+                animation: animate,
+                isRTL: context.isRtl,
+                leading: const Icon(AIcons.location),
+                padding: EdgeInsets.symmetric(horizontal: lineHeight),
+                center: Text(
+                  intl.NumberFormat.percentPattern().format(withGpsPercent),
+                  style: const TextStyle(shadows: Constants.embossShadows),
+                ),
               ),
             ),
             const SizedBox(height: 8),
@@ -128,8 +133,8 @@ class StatsPage extends StatelessWidget {
           locationIndicator,
           ..._buildFilterSection<String>(context, context.l10n.statsTopCountries, entryCountPerCountry, (v) => LocationFilter(LocationLevel.country, v)),
           ..._buildFilterSection<String>(context, context.l10n.statsTopPlaces, entryCountPerPlace, (v) => LocationFilter(LocationLevel.place, v)),
-          ..._buildFilterSection<String>(context, context.l10n.statsTopTags, entryCountPerTag, (v) => TagFilter(v)),
-          if (showRatings) ..._buildFilterSection<int>(context, context.l10n.searchSectionRating, entryCountPerRating, (v) => RatingFilter(v), sortByCount: false, maxRowCount: null),
+          ..._buildFilterSection<String>(context, context.l10n.statsTopTags, entryCountPerTag, TagFilter.new),
+          if (showRatings) ..._buildFilterSection<int>(context, context.l10n.searchSectionRating, entryCountPerRating, RatingFilter.new, sortByCount: false, maxRowCount: null),
         ],
       );
     }
@@ -138,8 +143,11 @@ class StatsPage extends StatelessWidget {
         appBar: AppBar(
           title: Text(context.l10n.statsPageTitle),
         ),
-        body: SafeArea(
-          child: child,
+        body: GestureAreaProtectorStack(
+          child: SafeArea(
+            bottom: false,
+            child: child,
+          ),
         ),
       ),
     );
@@ -213,23 +221,25 @@ class StatsPage extends StatelessWidget {
           children: seriesData
               .map((d) => GestureDetector(
                     onTap: () => _onFilterSelection(context, MimeFilter(d.mimeType)),
-                    child: Text.rich(
-                      TextSpan(
-                        children: [
-                          WidgetSpan(
-                            alignment: PlaceholderAlignment.middle,
-                            child: Padding(
-                              padding: const EdgeInsetsDirectional.only(end: 8),
-                              child: Icon(AIcons.disc, color: d.color),
-                            ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(AIcons.disc, color: d.color),
+                        const SizedBox(width: 8),
+                        Flexible(
+                          child: Text(
+                            d.displayText,
+                            overflow: TextOverflow.fade,
+                            softWrap: false,
+                            maxLines: 1,
                           ),
-                          TextSpan(text: '${d.displayText}   '),
-                          TextSpan(text: '${d.entryCount}', style: const TextStyle(color: Colors.white70)),
-                        ],
-                      ),
-                      overflow: TextOverflow.fade,
-                      softWrap: false,
-                      maxLines: 1,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          '${d.entryCount}',
+                          style: const TextStyle(color: Colors.white70),
+                        ),
+                      ],
                     ),
                   ))
               .toList(),

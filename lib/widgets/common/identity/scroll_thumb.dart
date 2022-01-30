@@ -15,7 +15,7 @@ ScrollThumbBuilder avesScrollThumbBuilder({
       borderRadius: BorderRadius.all(Radius.circular(12)),
     ),
     height: height,
-    margin: const EdgeInsets.only(right: .5),
+    margin: const EdgeInsetsDirectional.only(end: 1),
     padding: const EdgeInsets.all(2),
     child: ClipPath(
       clipper: ArrowClipper(),

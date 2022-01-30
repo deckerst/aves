@@ -220,7 +220,7 @@ object ExifInterfaceHelper {
         // initialize metadata-extractor directories that we will fill
         // by tags converted from the ExifInterface attributes
         // so that we can rely on metadata-extractor descriptions
-        val dirs = DirType.values().map { Pair(it, it.createDirectory()) }.toMap()
+        val dirs = DirType.values().associate { Pair(it, it.createDirectory()) }
 
         // exclude Exif directory when it only includes image size
         val isUselessExif = fun(it: Map<String, String>): Boolean {

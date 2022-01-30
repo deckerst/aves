@@ -50,9 +50,12 @@ class PlatformMediaStoreService implements MediaStoreService {
   @override
   Stream<AvesEntry> getEntries(Map<int, int> knownEntries) {
     try {
-      return _streamChannel.receiveBroadcastStream(<String, dynamic>{
-        'knownEntries': knownEntries,
-      }).map((event) => AvesEntry.fromMap(event));
+      return _streamChannel
+          .receiveBroadcastStream(<String, dynamic>{
+            'knownEntries': knownEntries,
+          })
+          .where((event) => event is Map)
+          .map((event) => AvesEntry.fromMap(event as Map));
     } on PlatformException catch (e, stack) {
       reportService.recordError(e, stack);
       return Stream.error(e);

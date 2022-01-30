@@ -50,8 +50,8 @@ class AnimatedImageIcon extends StatelessWidget {
   }
 }
 
-class GeotiffIcon extends StatelessWidget {
-  const GeotiffIcon({Key? key}) : super(key: key);
+class GeoTiffIcon extends StatelessWidget {
+  const GeoTiffIcon({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -181,12 +181,15 @@ class OverlayIcon extends StatelessWidget {
   final IconData icon;
   final String? text;
   final double iconScale;
+  final EdgeInsets margin;
 
   const OverlayIcon({
     Key? key,
     required this.icon,
     this.iconScale = 1,
     this.text,
+    // default margin for multiple icons in a `Column`
+    this.margin = const EdgeInsets.only(left: 1, right: 1, bottom: 1),
   }) : super(key: key);
 
   @override
@@ -211,8 +214,8 @@ class OverlayIcon extends StatelessWidget {
     );
 
     return Container(
-      margin: const EdgeInsets.only(left: 1, right: 1, bottom: 1),
-      padding: text != null ? EdgeInsets.only(right: size / 4) : null,
+      margin: margin,
+      padding: text != null ? EdgeInsetsDirectional.only(end: size / 4) : null,
       decoration: BoxDecoration(
         color: const Color(0xBB000000),
         borderRadius: BorderRadius.all(Radius.circular(size)),

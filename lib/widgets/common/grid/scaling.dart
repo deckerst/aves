@@ -4,6 +4,7 @@ import 'package:aves/model/highlight.dart';
 import 'package:aves/model/source/enums.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/behaviour/eager_scale_gesture_recognizer.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/grid/theme.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
@@ -304,7 +305,7 @@ class _ScaleOverlayState extends State<_ScaleOverlay> {
         gradientCenter = center;
         break;
       case TileLayout.list:
-        gradientCenter = Offset(0, center.dy);
+        gradientCenter = Offset(context.isRtl ? gridWidth : 0, center.dy);
         break;
     }
 
@@ -338,6 +339,7 @@ class GridPainter extends CustomPainter {
   final double spacing, borderWidth;
   final Radius borderRadius;
   final Color color;
+  final TextDirection textDirection;
 
   const GridPainter({
     required this.tileLayout,
@@ -347,6 +349,7 @@ class GridPainter extends CustomPainter {
     required this.borderWidth,
     required this.borderRadius,
     required this.color,
+    required this.textDirection,
   });
 
   @override
@@ -375,7 +378,8 @@ class GridPainter extends CustomPainter {
         break;
       case TileLayout.list:
         chipSize = Size.square(tileSize.shortestSide);
-        chipCenter = Offset(chipSize.width / 2, tileCenter.dy);
+        final chipCenterToEdge = chipSize.width / 2;
+        chipCenter = Offset(textDirection == TextDirection.rtl ? size.width - chipCenterToEdge : chipCenterToEdge, tileCenter.dy);
         deltaColumn = 0;
         strokeShader = ui.Gradient.linear(
           tileCenter - Offset(0, chipSize.shortestSide * 3),

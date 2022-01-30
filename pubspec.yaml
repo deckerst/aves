@@ -1,11 +1,16 @@
 name: aves
 description: A visual media gallery and metadata explorer app.
 repository: https://github.com/deckerst/aves
-version: 1.5.10+64
+# version bump checklist:
+# - pubspec version
+# - github changelog: /CHANGELOG.md
+# - play changelog:   /whatsnew/whatsnew-en-US
+# - izzy changelog:   /fastlane/metadata/android/en-US/changelogs/1XXX.txt
+version: 1.5.11+65
 publish_to: none
 
 environment:
-  sdk: '>=2.14.0 <3.0.0'
+  sdk: '>=2.15.0 <3.0.0'
 
 # use `scripts/apply_flavor_{flavor}.sh` to set the right dependencies for the flavor
 dependencies:
@@ -41,7 +46,6 @@ dependencies:
   flutter_markdown:
   flutter_staggered_animations:
   get_it:
-  github:
   google_api_availability:
   google_maps_flutter:
   intl:
@@ -66,7 +70,6 @@ dependencies:
   transparent_image:
   tuple:
   url_launcher:
-  version:
   xml:
 
 dev_dependencies:
@@ -104,7 +107,7 @@ flutter:
 # language files:
 # - /lib/l10n/app_{language}.arb
 # - /android/app/src/main/res/values-{language}/strings.xml
-# - edit locale name resolution for language setting
+# - edit locale name in /lib/widgets/settings/language/locales.dart
 
 # generate `AppLocalizations`
 # % flutter gen-l10n
@@ -112,11 +115,11 @@ flutter:
 ################################################################################
 # Test driver
 
-# run (any device):
-# % flutter drive --flavor play -t test_driver/driver_play.dart --profile
+# capture shaders (profile mode, real device only):
+# % flutter drive --flavor play -t test_driver/driver_shaders.dart --profile --cache-sksl --write-sksl-on-exit shaders.sksl.json
 
-# capture shaders in profile mode (real device only):
-# % flutter drive --flavor play -t test_driver/driver_play.dart --profile --cache-sksl --write-sksl-on-exit shaders.sksl.json
+# generate screenshots (profile mode, specific collection):
+# % flutter drive --flavor play -t test_driver/driver_screenshots.dart --profile
 
 ################################################################################
 # Adaptations

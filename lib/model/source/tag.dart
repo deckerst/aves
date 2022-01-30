@@ -77,16 +77,21 @@ mixin TagMixin on SourceBase {
   final Map<String, int> _filterEntryCountMap = {};
   final Map<String, AvesEntry?> _filterRecentEntryMap = {};
 
-  void invalidateTagFilterSummary([Set<AvesEntry>? entries]) {
+  void invalidateTagFilterSummary({Set<AvesEntry>? entries, Set<String>? tags}) {
     if (_filterEntryCountMap.isEmpty && _filterRecentEntryMap.isEmpty) return;
 
-    Set<String>? tags;
-    if (entries == null) {
+    if (entries == null && tags == null) {
       _filterEntryCountMap.clear();
       _filterRecentEntryMap.clear();
     } else {
-      tags = entries.where((entry) => entry.isCatalogued).expand((entry) => entry.tags).toSet();
-      tags.forEach(_filterEntryCountMap.remove);
+      tags ??= {};
+      if (entries != null) {
+        tags.addAll(entries.where((entry) => entry.isCatalogued).expand((entry) => entry.tags));
+      }
+      tags.forEach((tag) {
+        _filterEntryCountMap.remove(tag);
+        _filterRecentEntryMap.remove(tag);
+      });
     }
     eventBus.fire(TagSummaryInvalidatedEvent(tags));
   }
