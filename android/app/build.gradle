@@ -41,15 +41,12 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 32
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
     }
 
-    lintOptions {
-        disable 'InvalidPackage'
-    }
 
     defaultConfig {
         applicationId appId
@@ -60,7 +57,7 @@ android {
         // which implementation `DocumentBuilderImpl` is provided by the OS and is not customizable on Android,
         // but the implementation on API <19 is not robust enough and fails to build XMP documents
         minSdkVersion 19
-        targetSdkVersion 31
+        targetSdkVersion 32
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         manifestPlaceholders = [googleApiKey: keystoreProperties['googleApiKey']]
@@ -128,6 +125,9 @@ android {
                 }
             }
         }
+    }
+    lint {
+        disable 'InvalidPackage'
     }
 }
 
