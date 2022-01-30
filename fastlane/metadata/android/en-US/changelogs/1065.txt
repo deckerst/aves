@@ -1,4 +1,3 @@
-Thanks for using Aves!
 In v1.5.11:
 - edit locations of images
 - export SVGs to convert and resize them
