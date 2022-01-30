@@ -111,11 +111,13 @@ class StatsPage extends StatelessWidget {
                 animation: animate,
                 isRTL: context.isRtl,
                 leading: const Icon(AIcons.location),
-                padding: EdgeInsets.symmetric(horizontal: lineHeight),
+                // TODO TLAD handle low percents being rendered with wrong radius clip
+                barRadius: Radius.circular(lineHeight / 2),
                 center: Text(
                   intl.NumberFormat.percentPattern().format(withGpsPercent),
                   style: const TextStyle(shadows: Constants.embossShadows),
                 ),
+                padding: EdgeInsets.symmetric(horizontal: lineHeight),
               ),
             ),
             const SizedBox(height: 8),
