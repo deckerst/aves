@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 - Viewer: resize option when exporting
 - Settings: export/import covers & favourites along with settings
 - Collection: allow rescan when browsing
+- support Android 12L (API 32)
 - Portuguese translation (thanks Jonatas De Almeida Barros)
 
 ### Removed
