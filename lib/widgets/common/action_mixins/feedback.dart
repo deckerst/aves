@@ -279,7 +279,7 @@ class _FeedbackMessageState extends State<_FeedbackMessage> {
               CircularPercentIndicator(
                 percent: _percent,
                 lineWidth: 2,
-                radius: 32,
+                radius: 16,
                 // progress color is provided by the caller,
                 // because we cannot use the app context theme here
                 backgroundColor: widget.progressColor,
