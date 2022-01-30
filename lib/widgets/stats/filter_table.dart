@@ -76,11 +76,13 @@ class FilterTable<T extends Comparable> extends StatelessWidget {
                       progressColor: stringToColor(label),
                       animation: true,
                       isRTL: isRtl,
-                      padding: EdgeInsets.symmetric(horizontal: lineHeight),
+                      // TODO TLAD handle low percents being rendered with wrong radius clip
+                      barRadius: Radius.circular(lineHeight / 2),
                       center: Text(
                         intl.NumberFormat.percentPattern().format(percent),
                         style: const TextStyle(shadows: Constants.embossShadows),
                       ),
+                      padding: EdgeInsets.symmetric(horizontal: lineHeight),
                     ),
                   Text(
                     '$count',
