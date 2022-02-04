@@ -36,6 +36,7 @@ DateTime? dateTimeFromMillis(int? millis, {bool isUtc = false}) {
     millis = int.tryParse('$millis'.substring(0, _millisMaxDigits));
     return dateTimeFromMillis(millis, isUtc: isUtc);
   }
+  return null;
 }
 
 final _unixStampMillisPattern = RegExp(r'\d{13}');
@@ -93,4 +94,6 @@ DateTime? parseUnknownDateFormat(String? s) {
       }
     }
   }
+
+  return null;
 }
