@@ -17,6 +17,7 @@ import 'package:aves/services/media/enums.dart';
 import 'package:aves/services/media/media_file_service.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
+import 'package:aves/widgets/common/action_mixins/entry_storage.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
 import 'package:aves/widgets/common/action_mixins/size_aware.dart';
@@ -36,7 +37,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
-class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMixin, SingleEntryEditorMixin {
+class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMixin, SingleEntryEditorMixin, EntryStorageMixin {
   @override
   final AvesEntry entry;
 
@@ -55,17 +56,20 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       case EntryAction.delete:
         _delete(context);
         break;
-      case EntryAction.export:
-        _export(context);
-        break;
-      case EntryAction.info:
-        ShowInfoNotification().dispatch(context);
+      case EntryAction.convert:
+        _convert(context);
         break;
       case EntryAction.print:
         EntryPrinter(entry).print(context);
         break;
       case EntryAction.rename:
         _rename(context);
+        break;
+      case EntryAction.copy:
+        _move(context, moveType: MoveType.copy);
+        break;
+      case EntryAction.move:
+        _move(context, moveType: MoveType.move);
         break;
       case EntryAction.share:
         androidAppService.shareEntries({entry}).then((success) {
@@ -188,11 +192,17 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       if (source.initialized) {
         await source.removeEntries({entry.uri});
       }
-      EntryDeletedNotification(entry).dispatch(context);
+      EntryRemovedNotification(entry).dispatch(context);
     }
   }
 
-  Future<void> _export(BuildContext context) async {
+  Future<void> _convert(BuildContext context) async {
+    final options = await showDialog<EntryExportOptions>(
+      context: context,
+      builder: (context) => ExportEntryDialog(entry: entry),
+    );
+    if (options == null) return;
+
     final source = context.read<CollectionSource>();
     if (!source.initialized) {
       await source.init();
@@ -203,12 +213,6 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     if (!await checkStoragePermissionForAlbums(context, {destinationAlbum})) return;
 
     if (!await checkFreeSpaceForMove(context, {entry}, destinationAlbum, MoveType.export)) return;
-
-    final options = await showDialog<EntryExportOptions>(
-      context: context,
-      builder: (context) => ExportEntryDialog(entry: entry),
-    );
-    if (options == null) return;
 
     final selection = <AvesEntry>{};
     if (entry.isMultiPage) {
@@ -227,9 +231,8 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
 
     final selectionCount = selection.length;
     source.pauseMonitoring();
-    showOpReport<ExportOpEvent>(
+    await showOpReport<ExportOpEvent>(
       context: context,
-      // TODO TLAD [SVG] export separately from raster images (sending bytes, like frame captures)
       opStream: mediaFileService.export(
         selection,
         options: options,
@@ -290,6 +293,15 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
           );
         }
       },
+    );
+  }
+
+  Future<void> _move(BuildContext context, {required MoveType moveType}) async {
+    await move(
+      context,
+      moveType: moveType,
+      selectedItems: {entry},
+      onSuccess: moveType == MoveType.move ? () => EntryRemovedNotification(entry).dispatch(context) : null,
     );
   }
 

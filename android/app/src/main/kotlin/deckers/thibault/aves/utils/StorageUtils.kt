@@ -329,7 +329,7 @@ object StorageUtils {
 
                 // try to strip user info, if any
                 if (mediaUri.userInfo != null) {
-                    val genericMediaUri = Uri.parse(mediaUri.toString().replaceFirst("${mediaUri.userInfo}@", ""))
+                    val genericMediaUri = stripMediaUriUserInfo(mediaUri)
                     Log.d(LOG_TAG, "retry getDocumentFile for mediaUri=$mediaUri without userInfo: $genericMediaUri")
                     return getDocumentFile(context, anyPath, genericMediaUri)
                 }
@@ -442,35 +442,70 @@ object StorageUtils {
     // As of Glide v4.12.0, a special loader `QMediaStoreUriLoader` is automatically used
     // to work around a bug from Android Q where metadata redaction corrupts HEIC images.
     // This loader relies on `MediaStore.setRequireOriginal` but this yields a `SecurityException`
-    // for some content URIs (e.g. `content://media/external_primary/downloads/...`)
-    // so we build a typical `images` or `videos` content URI from the original content ID.
-    fun getGlideSafeUri(uri: Uri, mimeType: String): Uri = normalizeMediaUri(uri, mimeType)
-
-    // requesting access or writing to some MediaStore content URIs
-    // e.g. `content://0@media/...`, `content://media/external_primary/downloads/...`
-    // yields an exception with `All requested items must be referenced by specific ID`
-    fun getMediaStoreScopedStorageSafeUri(uri: Uri, mimeType: String): Uri = normalizeMediaUri(uri, mimeType)
-
-    private fun normalizeMediaUri(uri: Uri, mimeType: String): Uri {
+    // for some non image/video content URIs (e.g. `downloads`, `file`)
+    fun getGlideSafeUri(context: Context, uri: Uri, mimeType: String): Uri {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && isMediaStoreContentUri(uri)) {
-            // we cannot safely apply this to a file content URI, as it may point to a file not indexed
-            // by the Media Store (via `.nomedia`), and therefore has no matching image/video content URI
-            if (uri.path?.contains("/downloads/") == true) {
-                uri.tryParseId()?.let { id ->
-                    return when {
-                        isImage(mimeType) -> ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
-                        isVideo(mimeType) -> ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, id)
-                        else -> uri
+            val uriPath = uri.path
+            when {
+                uriPath?.contains("/downloads/") == true -> {
+                    // e.g. `content://media/external_primary/downloads/...`
+                    getMediaUriImageVideoUri(uri, mimeType)?.let { imageVideUri -> return imageVideUri }
+                }
+                uriPath?.contains("/file/") == true -> {
+                    // e.g. `content://media/external/file/...`
+                    // create an ad-hoc temporary file for decoding only
+                    File.createTempFile("aves", null).apply {
+                        deleteOnExit()
+                        try {
+                            outputStream().use { output ->
+                                openInputStream(context, uri)?.use { input ->
+                                    input.copyTo(output)
+                                }
+                            }
+                            return Uri.fromFile(this)
+                        } catch (e: Exception) {
+                            Log.e(LOG_TAG, "failed to create temporary file from uri=$uri", e)
+                        }
                     }
                 }
-            } else if (uri.userInfo != null) {
-                // strip user info, if any
-                return Uri.parse(uri.toString().replaceFirst("${uri.userInfo}@", ""))
+                uri.userInfo != null -> return stripMediaUriUserInfo(uri)
             }
-
         }
         return uri
     }
+
+    // requesting access or writing to some MediaStore content URIs
+    // yields an exception with `All requested items must be referenced by specific ID`
+    fun getMediaStoreScopedStorageSafeUri(uri: Uri, mimeType: String): Uri {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && isMediaStoreContentUri(uri)) {
+            val uriPath = uri.path
+            when {
+                uriPath?.contains("/downloads/") == true -> {
+                    // e.g. `content://media/external_primary/downloads/...`
+                    getMediaUriImageVideoUri(uri, mimeType)?.let { imageVideUri -> return imageVideUri }
+                }
+                uri.userInfo != null -> return stripMediaUriUserInfo(uri)
+            }
+        }
+        return uri
+    }
+
+    // Build a typical `images` or `videos` content URI from the original content ID.
+    // We cannot safely apply this to a `file` content URI, as it may point to a file not indexed
+    // by the Media Store (via `.nomedia`), and therefore has no matching image/video content URI.
+    private fun getMediaUriImageVideoUri(uri: Uri, mimeType: String): Uri? {
+        return uri.tryParseId()?.let { id ->
+            return when {
+                isImage(mimeType) -> ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
+                isVideo(mimeType) -> ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, id)
+                else -> uri
+            }
+        }
+    }
+
+    // strip user info, if any
+    // e.g. `content://0@media/...`
+    private fun stripMediaUriUserInfo(uri: Uri) = Uri.parse(uri.toString().replaceFirst("${uri.userInfo}@", ""))
 
     fun openInputStream(context: Context, uri: Uri): InputStream? {
         val effectiveUri = getOriginalUri(context, uri)

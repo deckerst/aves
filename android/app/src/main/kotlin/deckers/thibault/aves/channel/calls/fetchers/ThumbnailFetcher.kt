@@ -131,7 +131,7 @@ class ThumbnailFetcher internal constructor(
                 svgFetch -> SvgImage(context, uri)
                 tiffFetch -> TiffImage(context, uri, pageId)
                 multiTrackFetch -> MultiTrackImage(context, uri, pageId)
-                else -> StorageUtils.getGlideSafeUri(uri, mimeType)
+                else -> StorageUtils.getGlideSafeUri(context, uri, mimeType)
             }
             Glide.with(context)
                 .asBitmap()

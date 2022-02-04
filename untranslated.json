@@ -1,5 +1,10 @@
 {
+  "de": [
+    "entryActionConvert"
+  ],
+
   "es": [
+    "entryActionConvert",
     "entryInfoActionEditLocation",
     "exportEntryDialogWidth",
     "exportEntryDialogHeight",
@@ -8,5 +13,21 @@
     "editEntryLocationDialogLatitude",
     "editEntryLocationDialogLongitude",
     "locationPickerUseThisLocationButton"
+  ],
+
+  "fr": [
+    "entryActionConvert"
+  ],
+
+  "ko": [
+    "entryActionConvert"
+  ],
+
+  "pt": [
+    "entryActionConvert"
+  ],
+
+  "ru": [
+    "entryActionConvert"
   ]
 }

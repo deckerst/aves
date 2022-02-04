@@ -54,11 +54,11 @@ class _SettingsPageState extends State<SettingsPage> with FeedbackMixin {
                   return [
                     PopupMenuItem(
                       value: SettingsAction.export,
-                      child: MenuRow(text: context.l10n.settingsActionExport, icon: const Icon(AIcons.export)),
+                      child: MenuRow(text: context.l10n.settingsActionExport, icon: const Icon(AIcons.fileExport)),
                     ),
                     PopupMenuItem(
                       value: SettingsAction.import,
-                      child: MenuRow(text: context.l10n.settingsActionImport, icon: const Icon(AIcons.import)),
+                      child: MenuRow(text: context.l10n.settingsActionImport, icon: const Icon(AIcons.fileImport)),
                     ),
                   ];
                 },

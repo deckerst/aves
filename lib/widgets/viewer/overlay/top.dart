@@ -3,8 +3,10 @@ import 'package:aves/model/device.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
+import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/basic/menu.dart';
 import 'package:aves/widgets/common/basic/popup_menu_button.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/favourite_toggler.dart';
 import 'package:aves/widgets/viewer/action/entry_action_delegate.dart';
 import 'package:aves/widgets/viewer/multipage/conductor.dart';
@@ -13,6 +15,7 @@ import 'package:aves/widgets/viewer/overlay/minimap.dart';
 import 'package:aves/widgets/viewer/overlay/notifications.dart';
 import 'package:aves/widgets/viewer/page_entry_builder.dart';
 import 'package:aves/widgets/viewer/visual/conductor.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -70,12 +73,14 @@ class ViewerTopOverlay extends StatelessWidget {
           return canToggleFavourite;
         case EntryAction.delete:
         case EntryAction.rename:
+        case EntryAction.copy:
+        case EntryAction.move:
           return targetEntry.canEdit;
         case EntryAction.rotateCCW:
         case EntryAction.rotateCW:
         case EntryAction.flip:
           return targetEntry.canRotateAndFlip;
-        case EntryAction.export:
+        case EntryAction.convert:
         case EntryAction.print:
           return !targetEntry.isVideo && device.canPrint;
         case EntryAction.openMap:
@@ -88,7 +93,6 @@ class ViewerTopOverlay extends StatelessWidget {
           return device.canPinShortcut;
         case EntryAction.copyToClipboard:
         case EntryAction.edit:
-        case EntryAction.info:
         case EntryAction.open:
         case EntryAction.setAs:
         case EntryAction.share:
@@ -102,12 +106,12 @@ class ViewerTopOverlay extends StatelessWidget {
       selector: (context, s) => s.isRotationLocked,
       builder: (context, s, child) {
         final quickActions = settings.viewerQuickActions.where(_isVisible).take(availableCount - 1).toList();
-        final inAppActions = EntryActions.inApp.where((action) => !quickActions.contains(action)).where(_isVisible).toList();
-        final externalAppActions = EntryActions.externalApp.where(_isVisible).toList();
+        final topLevelActions = EntryActions.topLevel.where((action) => !quickActions.contains(action)).where(_isVisible).toList();
+        final exportActions = EntryActions.export.where((action) => !quickActions.contains(action)).where(_isVisible).toList();
         return _TopOverlayRow(
           quickActions: quickActions,
-          inAppActions: inAppActions,
-          externalAppActions: externalAppActions,
+          topLevelActions: topLevelActions,
+          exportActions: exportActions,
           scale: scale,
           mainEntry: mainEntry,
           pageEntry: pageEntry!,
@@ -138,7 +142,7 @@ class ViewerTopOverlay extends StatelessWidget {
 }
 
 class _TopOverlayRow extends StatelessWidget {
-  final List<EntryAction> quickActions, inAppActions, externalAppActions;
+  final List<EntryAction> quickActions, topLevelActions, exportActions;
   final Animation<double> scale;
   final AvesEntry mainEntry, pageEntry;
 
@@ -147,8 +151,8 @@ class _TopOverlayRow extends StatelessWidget {
   const _TopOverlayRow({
     Key? key,
     required this.quickActions,
-    required this.inAppActions,
-    required this.externalAppActions,
+    required this.topLevelActions,
+    required this.exportActions,
     required this.scale,
     required this.mainEntry,
     required this.pageEntry,
@@ -169,16 +173,30 @@ class _TopOverlayRow extends StatelessWidget {
           child: MenuIconTheme(
             child: AvesPopupMenuButton<EntryAction>(
               key: const Key('entry-menu-button'),
-              itemBuilder: (context) => [
-                ...inAppActions.map((action) => _buildPopupMenuItem(context, action)),
-                if (pageEntry.canRotateAndFlip) _buildRotateAndFlipMenuItems(context),
-                const PopupMenuDivider(),
-                ...externalAppActions.map((action) => _buildPopupMenuItem(context, action)),
-                if (!kReleaseMode) ...[
-                  const PopupMenuDivider(),
-                  _buildPopupMenuItem(context, EntryAction.debug),
-                ]
-              ],
+              itemBuilder: (context) {
+                final exportInternalActions = exportActions.whereNot(EntryActions.exportExternal.contains).toList();
+                final exportExternalActions = exportActions.where(EntryActions.exportExternal.contains).toList();
+                return [
+                  if (pageEntry.canRotateAndFlip) _buildRotateAndFlipMenuItems(context),
+                  ...topLevelActions.map((action) => _buildPopupMenuItem(context, action)),
+                  PopupMenuItem<EntryAction>(
+                    padding: EdgeInsets.zero,
+                    child: PopupMenuItemExpansionPanel<EntryAction>(
+                      icon: AIcons.export,
+                      title: context.l10n.entryActionExport,
+                      items: [
+                        ...exportInternalActions.map((action) => _buildPopupMenuItem(context, action)).toList(),
+                        if (exportInternalActions.isNotEmpty && exportExternalActions.isNotEmpty) const PopupMenuDivider(height: 0),
+                        ...exportExternalActions.map((action) => _buildPopupMenuItem(context, action)).toList(),
+                      ],
+                    ),
+                  ),
+                  if (!kReleaseMode) ...[
+                    const PopupMenuDivider(),
+                    _buildPopupMenuItem(context, EntryAction.debug),
+                  ]
+                ];
+              },
               onSelected: (action) {
                 // wait for the popup menu to hide before proceeding with the action
                 Future.delayed(Durations.popupMenuAnimation * timeDilation, () => _onActionSelected(context, action));
@@ -206,44 +224,24 @@ class _TopOverlayRow extends StatelessWidget {
           onPressed: onPressed,
         );
         break;
-      case EntryAction.addShortcut:
-      case EntryAction.copyToClipboard:
-      case EntryAction.delete:
-      case EntryAction.export:
-      case EntryAction.flip:
-      case EntryAction.info:
-      case EntryAction.print:
-      case EntryAction.rename:
-      case EntryAction.rotateCCW:
-      case EntryAction.rotateCW:
-      case EntryAction.share:
-      case EntryAction.rotateScreen:
-      case EntryAction.viewSource:
+      default:
         child = IconButton(
           icon: action.getIcon() ?? const SizedBox(),
           onPressed: onPressed,
           tooltip: action.getText(context),
         );
         break;
-      case EntryAction.openMap:
-      case EntryAction.open:
-      case EntryAction.edit:
-      case EntryAction.setAs:
-      case EntryAction.debug:
-        break;
     }
-    return child != null
-        ? Padding(
-            padding: const EdgeInsetsDirectional.only(end: ViewerTopOverlay.innerPadding),
-            child: OverlayButton(
-              scale: scale,
-              child: child,
-            ),
-          )
-        : const SizedBox.shrink();
+    return Padding(
+      padding: const EdgeInsetsDirectional.only(end: ViewerTopOverlay.innerPadding),
+      child: OverlayButton(
+        scale: scale,
+        child: child,
+      ),
+    );
   }
 
-  PopupMenuEntry<EntryAction> _buildPopupMenuItem(BuildContext context, EntryAction action) {
+  PopupMenuItem<EntryAction> _buildPopupMenuItem(BuildContext context, EntryAction action) {
     Widget? child;
     switch (action) {
       // in app actions
