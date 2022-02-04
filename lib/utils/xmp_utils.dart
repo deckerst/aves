@@ -283,6 +283,7 @@ class XMP {
       case -1:
         return '-1';
     }
+    return null;
   }
 }
 
