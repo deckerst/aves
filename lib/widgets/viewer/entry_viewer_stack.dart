@@ -195,8 +195,8 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
           onNotification: (dynamic notification) {
             if (notification is FilterSelectedNotification) {
               _goToCollection(notification.filter);
-            } else if (notification is EntryDeletedNotification) {
-              _onEntryDeleted(context, notification.entry);
+            } else if (notification is EntryRemovedNotification) {
+              _onEntryRemoved(context, notification.entry);
             }
             return false;
           },
@@ -453,7 +453,8 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
     _updateEntry();
   }
 
-  void _onEntryDeleted(BuildContext context, AvesEntry entry) {
+  void _onEntryRemoved(BuildContext context, AvesEntry entry) {
+    // deleted or moved to another album
     if (hasCollection) {
       final entries = collection!.sortedEntries;
       entries.remove(entry);

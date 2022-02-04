@@ -69,14 +69,14 @@ mixin FeedbackMixin {
 
   // report overlay for multiple operations
 
-  void showOpReport<T>({
+  Future<void> showOpReport<T>({
     required BuildContext context,
     required Stream<T> opStream,
     required int itemCount,
     VoidCallback? onCancel,
     void Function(Set<T> processed)? onDone,
   }) {
-    showDialog(
+    return showDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) => ReportOverlay<T>(

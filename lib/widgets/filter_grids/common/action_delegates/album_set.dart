@@ -217,7 +217,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> {
 
     source.pauseMonitoring();
     final opId = mediaFileService.newOpId;
-    showOpReport<ImageOpEvent>(
+    await showOpReport<ImageOpEvent>(
       context: context,
       opStream: mediaFileService.delete(opId: opId, entries: todoEntries),
       itemCount: todoCount,
@@ -281,7 +281,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> {
 
     source.pauseMonitoring();
     final opId = mediaFileService.newOpId;
-    showOpReport<MoveOpEvent>(
+    await showOpReport<MoveOpEvent>(
       context: context,
       opStream: mediaFileService.move(
         opId: opId,
