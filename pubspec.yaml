@@ -10,7 +10,7 @@ version: 1.5.11+65
 publish_to: none
 
 environment:
-  sdk: '>=2.15.0 <3.0.0'
+  sdk: '>=2.16.0 <3.0.0'
 
 # use `scripts/apply_flavor_{flavor}.sh` to set the right dependencies for the flavor
 dependencies:
