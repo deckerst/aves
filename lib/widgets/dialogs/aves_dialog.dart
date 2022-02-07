@@ -44,7 +44,7 @@ class AvesDialog extends StatelessWidget {
       // and overflow feedback ignores the dialog shape,
       // so we restrict scrolling to the content instead
       content: _buildContent(context),
-      contentPadding: scrollableContent != null ? EdgeInsets.zero : EdgeInsets.fromLTRB(horizontalContentPadding, 20, horizontalContentPadding, 0),
+      contentPadding: scrollableContent != null ? EdgeInsets.zero : EdgeInsets.only(left: horizontalContentPadding, top: 20, right: horizontalContentPadding),
       actions: actions,
       actionsPadding: const EdgeInsets.symmetric(horizontal: 8),
       shape: shape(context),

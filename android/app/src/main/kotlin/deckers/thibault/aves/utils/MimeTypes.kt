@@ -6,6 +6,7 @@ object MimeTypes {
     const val ANY = "*/*"
 
     // generic raster
+    private const val AVIF = "image/avif"
     const val BMP = "image/bmp"
     private const val DJVU = "image/vnd.djvu"
     const val GIF = "image/gif"
@@ -49,7 +50,7 @@ object MimeTypes {
     private const val AVI_VND = "video/vnd.avi"
     const val DVD = "video/dvd"
     private const val MKV = "video/x-matroska"
-    private const val MOV = "video/quicktime"
+    const val MOV = "video/quicktime"
     private const val MP2T = "video/mp2t"
     private const val MP2TS = "video/mp2ts"
     const val MP4 = "video/mp4"
@@ -72,7 +73,7 @@ object MimeTypes {
     // returns whether the specified MIME type represents
     // a raster image format that allows an alpha channel
     fun canHaveAlpha(mimeType: String?) = when (mimeType) {
-        BMP, GIF, ICO, PNG, SVG, TIFF, WEBP -> true
+        AVIF, BMP, GIF, ICO, PNG, SVG, TIFF, WEBP -> true
         else -> false
     }
 
@@ -150,6 +151,7 @@ object MimeTypes {
     fun extensionFor(mimeType: String): String? = when (mimeType) {
         ARW -> ".arw"
         AVI, AVI_VND -> ".avi"
+        AVIF -> ".avif"
         BMP -> ".bmp"
         CR2 -> ".cr2"
         CRW -> ".crw"
