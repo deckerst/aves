@@ -83,7 +83,7 @@ class _Content extends StatefulWidget {
 class _ContentState extends State<_Content> with SingleTickerProviderStateMixin {
   final List<StreamSubscription> _subscriptions = [];
   final AvesMapController _mapController = AvesMapController();
-  late final ValueNotifier<bool> _isPageAnimatingNotifier;
+  final ValueNotifier<bool> _isPageAnimatingNotifier = ValueNotifier(false);
   final ValueNotifier<int?> _selectedIndexNotifier = ValueNotifier(0);
   final ValueNotifier<CollectionLens?> _regionCollectionNotifier = ValueNotifier(null);
   final ValueNotifier<LatLng?> _dotLocationNotifier = ValueNotifier(null);
@@ -102,13 +102,11 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
     super.initState();
 
     if (settings.infoMapStyle.isGoogleMaps) {
-      _isPageAnimatingNotifier = ValueNotifier(true);
+      _isPageAnimatingNotifier.value = true;
       Future.delayed(Durations.pageTransitionAnimation * timeDilation).then((_) {
         if (!mounted) return;
         _isPageAnimatingNotifier.value = false;
       });
-    } else {
-      _isPageAnimatingNotifier = ValueNotifier(false);
     }
 
     _dotEntryNotifier.addListener(_updateInfoEntry);
