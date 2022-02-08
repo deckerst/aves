@@ -110,7 +110,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     return AnimatedBuilder(
       animation: collection.filterChangeNotifier,
       builder: (context, child) {
-        final removableFilters = appMode != AppMode.pickInternal;
+        final removableFilters = appMode != AppMode.pickMediaInternal;
         return Selector<Query, bool>(
           selector: (context, query) => query.enabled,
           builder: (context, queryEnabled, child) {
@@ -185,7 +185,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       );
     } else {
       final appMode = context.watch<ValueNotifier<AppMode>>().value;
-      Widget title = Text(appMode.isPicking ? l10n.collectionPickPageTitle : l10n.collectionPageTitle);
+      Widget title = Text(appMode.isPickingMedia ? l10n.collectionPickPageTitle : l10n.collectionPageTitle);
       if (appMode == AppMode.main) {
         title = SourceStateAwareAppBarTitle(
           title: title,

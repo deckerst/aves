@@ -51,6 +51,7 @@ class _InteractiveFilterTileState<T extends CollectionFilter> extends State<Inte
       final appMode = context.read<ValueNotifier<AppMode>>().value;
       switch (appMode) {
         case AppMode.main:
+        case AppMode.pickMediaExternal:
           final selection = context.read<Selection<FilterGridItem<T>>>();
           if (selection.isSelecting) {
             selection.toggleSelection(gridItem);
@@ -58,10 +59,10 @@ class _InteractiveFilterTileState<T extends CollectionFilter> extends State<Inte
             _goToCollection(context, filter);
           }
           break;
-        case AppMode.pickInternal:
+        case AppMode.pickFilterInternal:
           Navigator.pop<T>(context, filter);
           break;
-        case AppMode.pickExternal:
+        case AppMode.pickMediaInternal:
         case AppMode.view:
           break;
       }

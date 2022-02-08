@@ -43,12 +43,13 @@ class InteractiveTile extends StatelessWidget {
               _goToViewer(context);
             }
             break;
-          case AppMode.pickExternal:
+          case AppMode.pickMediaExternal:
             ViewerService.pick(entry.uri);
             break;
-          case AppMode.pickInternal:
+          case AppMode.pickMediaInternal:
             Navigator.pop(context, entry);
             break;
+          case AppMode.pickFilterInternal:
           case AppMode.view:
             break;
         }
