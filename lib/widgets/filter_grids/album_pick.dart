@@ -65,7 +65,7 @@ class _AlbumPickPageState extends State<_AlbumPickPage> {
   @override
   Widget build(BuildContext context) {
     return ListenableProvider<ValueNotifier<AppMode>>.value(
-      value: ValueNotifier(AppMode.pickInternal),
+      value: ValueNotifier(AppMode.pickFilterInternal),
       child: Selector<Settings, Tuple2<AlbumChipGroupFactor, ChipSortFactor>>(
         selector: (context, s) => Tuple2(s.albumGroupFactor, s.albumSortFactor),
         builder: (context, s, child) {

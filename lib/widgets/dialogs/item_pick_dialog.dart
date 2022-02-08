@@ -39,7 +39,7 @@ class _ItemPickDialogState extends State<ItemPickDialog> {
   Widget build(BuildContext context) {
     final liveFilter = collection.filters.firstWhereOrNull((v) => v is QueryFilter && v.live) as QueryFilter?;
     return ListenableProvider<ValueNotifier<AppMode>>.value(
-      value: ValueNotifier(AppMode.pickInternal),
+      value: ValueNotifier(AppMode.pickMediaInternal),
       child: MediaQueryDataProvider(
         child: Scaffold(
           body: SelectionProvider<AvesEntry>(

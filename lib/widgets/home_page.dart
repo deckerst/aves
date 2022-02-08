@@ -94,7 +94,7 @@ class _HomePageState extends State<HomePage> {
           }
           break;
         case 'pick':
-          appMode = AppMode.pickExternal;
+          appMode = AppMode.pickMediaExternal;
           // TODO TLAD apply pick mimetype(s)
           // some apps define multiple types, separated by a space (maybe other signs too, like `,` `;`?)
           String? pickMimeTypes = intentData['mimeType'];
@@ -199,7 +199,7 @@ class _HomePageState extends State<HomePage> {
 
     String routeName;
     Set<CollectionFilter?>? filters;
-    if (appMode == AppMode.pickExternal) {
+    if (appMode == AppMode.pickMediaExternal) {
       routeName = CollectionPage.routeName;
     } else {
       routeName = _shortcutRouteName ?? settings.homePage.routeName;
