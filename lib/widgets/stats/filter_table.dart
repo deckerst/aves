@@ -41,6 +41,7 @@ class FilterTable<T extends Comparable> extends StatelessWidget {
 
     final textScaleFactor = MediaQuery.textScaleFactorOf(context);
     final lineHeight = 16 * textScaleFactor;
+    final barRadius = Radius.circular(lineHeight / 2);
     final isRtl = context.isRtl;
 
     return Padding(
@@ -69,17 +70,26 @@ class FilterTable<T extends Comparable> extends StatelessWidget {
                     ),
                   ),
                   if (showPercentIndicator)
-                    LinearPercentIndicator(
-                      percent: percent,
-                      lineHeight: lineHeight,
-                      backgroundColor: Colors.white24,
-                      progressColor: stringToColor(label),
-                      animation: true,
-                      isRTL: isRtl,
+                    // as of percent_indicator v4.0.0, bar radius is not correctly applied to progress bar
+                    // when width is lower than height, so we clip it and handle padding outside
+                    Padding(
                       padding: EdgeInsets.symmetric(horizontal: lineHeight),
-                      center: Text(
-                        intl.NumberFormat.percentPattern().format(percent),
-                        style: const TextStyle(shadows: Constants.embossShadows),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.all(barRadius),
+                        child: LinearPercentIndicator(
+                          percent: percent,
+                          lineHeight: lineHeight,
+                          backgroundColor: Colors.white24,
+                          progressColor: stringToColor(label),
+                          animation: true,
+                          isRTL: isRtl,
+                          barRadius: barRadius,
+                          center: Text(
+                            intl.NumberFormat.percentPattern().format(percent),
+                            style: const TextStyle(shadows: Constants.embossShadows),
+                          ),
+                          padding: EdgeInsets.zero,
+                        ),
                       ),
                     ),
                   Text(

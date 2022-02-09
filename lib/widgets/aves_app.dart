@@ -158,15 +158,35 @@ class _AvesAppState extends State<AvesApp> {
     );
   }
 
+  // setup before the first page is displayed. keep it short
   Future<void> _setup() async {
+    final stopwatch = Stopwatch()..start();
+
+    // TODO TLAD [init] init settings/device w/o platform calls (first platform channel call takes ~800ms):
+    // 1) use cached values if any,
+    // 2a) call platform w/ delay if cached
+    // 2b) call platform w/o delay if not cached
+    // 3) cache platform call results across app restarts
+
+    await device.init();
+    final isRotationLocked = await windowService.isRotationLocked();
+    final areAnimationsRemoved = await AccessibilityService.areAnimationsRemoved();
+
+    // TODO TLAD [init] migrate settings away from `shared_preferences` to a platform-free solution
     await settings.init(
       monitorPlatformSettings: true,
-      isRotationLocked: await windowService.isRotationLocked(),
-      areAnimationsRemoved: await AccessibilityService.areAnimationsRemoved(),
+      isRotationLocked: isRotationLocked,
+      areAnimationsRemoved: areAnimationsRemoved,
     );
-    await device.init();
-    FijkLog.setLevel(FijkLogLevel.Warn);
+    _monitorSettings();
 
+    FijkLog.setLevel(FijkLogLevel.Warn);
+    unawaited(_setupErrorReporting());
+
+    debugPrint('App setup in ${stopwatch.elapsed.inMilliseconds}ms');
+  }
+
+  void _monitorSettings() {
     // keep screen on
     settings.updateStream.where((key) => key == Settings.keepScreenOnKey).listen(
           (_) => settings.keepScreenOn.apply(),
@@ -183,8 +203,9 @@ class _AvesAppState extends State<AvesApp> {
         }
       },
     );
+  }
 
-    // error reporting
+  Future<void> _setupErrorReporting() async {
     await reportService.init();
     settings.updateStream.where((key) => key == Settings.isErrorReportingAllowedKey).listen(
           (_) => reportService.setCollectionEnabled(settings.isErrorReportingAllowed),

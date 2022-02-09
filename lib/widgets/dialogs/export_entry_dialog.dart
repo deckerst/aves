@@ -51,12 +51,14 @@ class _ExportEntryDialogState extends State<ExportEntryDialog> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    const contentHorizontalPadding = EdgeInsets.symmetric(horizontal: AvesDialog.defaultHorizontalContentPadding);
+
     return AvesDialog(
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
+      scrollableContent: [
+        const SizedBox(height: 16),
+        Padding(
+          padding: contentHorizontalPadding,
+          child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(l10n.exportEntryDialogFormat),
@@ -77,7 +79,10 @@ class _ExportEntryDialogState extends State<ExportEntryDialog> {
               ),
             ],
           ),
-          Row(
+        ),
+        Padding(
+          padding: contentHorizontalPadding,
+          child: Row(
             crossAxisAlignment: CrossAxisAlignment.baseline,
             textBaseline: TextBaseline.alphabetic,
             children: [
@@ -108,8 +113,9 @@ class _ExportEntryDialogState extends State<ExportEntryDialog> {
               ),
             ],
           ),
-        ],
-      ),
+        ),
+        const SizedBox(height: 16),
+      ],
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),

@@ -1,16 +1,10 @@
 {
   "de": [
-    "entryInfoActionEditLocation",
-    "exportEntryDialogWidth",
-    "exportEntryDialogHeight",
-    "editEntryLocationDialogTitle",
-    "editEntryLocationDialogChooseOnMapTooltip",
-    "editEntryLocationDialogLatitude",
-    "editEntryLocationDialogLongitude",
-    "locationPickerUseThisLocationButton"
+    "entryActionConvert"
   ],
 
   "es": [
+    "entryActionConvert",
     "entryInfoActionEditLocation",
     "exportEntryDialogWidth",
     "exportEntryDialogHeight",
@@ -19,29 +13,21 @@
     "editEntryLocationDialogLatitude",
     "editEntryLocationDialogLongitude",
     "locationPickerUseThisLocationButton"
+  ],
+
+  "fr": [
+    "entryActionConvert"
+  ],
+
+  "ko": [
+    "entryActionConvert"
   ],
 
   "pt": [
-    "entryInfoActionEditLocation",
-    "exportEntryDialogWidth",
-    "exportEntryDialogHeight",
-    "editEntryLocationDialogTitle",
-    "editEntryLocationDialogChooseOnMapTooltip",
-    "editEntryLocationDialogLatitude",
-    "editEntryLocationDialogLongitude",
-    "locationPickerUseThisLocationButton"
+    "entryActionConvert"
   ],
 
   "ru": [
-    "entryInfoActionEditLocation",
-    "exportEntryDialogWidth",
-    "exportEntryDialogHeight",
-    "editEntryLocationDialogTitle",
-    "editEntryLocationDialogChooseOnMapTooltip",
-    "editEntryLocationDialogLatitude",
-    "editEntryLocationDialogLongitude",
-    "locationPickerUseThisLocationButton",
-    "appExportCovers",
-    "settingsThumbnailShowFavouriteIcon"
+    "entryActionConvert"
   ]
 }

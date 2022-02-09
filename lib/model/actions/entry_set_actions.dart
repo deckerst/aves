@@ -15,12 +15,12 @@ enum EntrySetAction {
   // browsing or selecting
   map,
   stats,
+  rescan,
   // selecting
   share,
   delete,
   copy,
   move,
-  rescan,
   toggleFavourite,
   rotateCCW,
   rotateCW,
@@ -46,6 +46,7 @@ class EntrySetActions {
     EntrySetAction.addShortcut,
     EntrySetAction.map,
     EntrySetAction.stats,
+    EntrySetAction.rescan,
   ];
 
   static const selection = [
@@ -54,9 +55,9 @@ class EntrySetActions {
     EntrySetAction.copy,
     EntrySetAction.move,
     EntrySetAction.toggleFavourite,
-    EntrySetAction.rescan,
     EntrySetAction.map,
     EntrySetAction.stats,
+    EntrySetAction.rescan,
     // editing actions are in their subsection
   ];
 }
@@ -86,6 +87,8 @@ extension ExtraEntrySetAction on EntrySetAction {
         return context.l10n.menuActionMap;
       case EntrySetAction.stats:
         return context.l10n.menuActionStats;
+      case EntrySetAction.rescan:
+        return context.l10n.collectionActionRescan;
       // selecting
       case EntrySetAction.share:
         return context.l10n.entryActionShare;
@@ -95,8 +98,6 @@ extension ExtraEntrySetAction on EntrySetAction {
         return context.l10n.collectionActionCopy;
       case EntrySetAction.move:
         return context.l10n.collectionActionMove;
-      case EntrySetAction.rescan:
-        return context.l10n.collectionActionRescan;
       case EntrySetAction.toggleFavourite:
         // different data depending on toggle state
         return context.l10n.entryActionAddFavourite;
@@ -147,6 +148,8 @@ extension ExtraEntrySetAction on EntrySetAction {
         return AIcons.map;
       case EntrySetAction.stats:
         return AIcons.stats;
+      case EntrySetAction.rescan:
+        return AIcons.refresh;
       // selecting
       case EntrySetAction.share:
         return AIcons.share;
@@ -156,8 +159,6 @@ extension ExtraEntrySetAction on EntrySetAction {
         return AIcons.copy;
       case EntrySetAction.move:
         return AIcons.move;
-      case EntrySetAction.rescan:
-        return AIcons.refresh;
       case EntrySetAction.toggleFavourite:
         // different data depending on toggle state
         return AIcons.favourite;

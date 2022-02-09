@@ -34,9 +34,9 @@
   "sourceStateLocatingPlaces": "Расположение локаций",
 
   "chipActionDelete": "Удалить",
-  "chipActionGoToAlbumPage": "Показывать в Альбомах",
-  "chipActionGoToCountryPage": "Показывать в Странах",
-  "chipActionGoToTagPage": "Показывать в тегах",
+  "chipActionGoToAlbumPage": "Показать в Альбомах",
+  "chipActionGoToCountryPage": "Показать в Странах",
+  "chipActionGoToTagPage": "Показать в тегах",
   "chipActionHide": "Скрыть",
   "chipActionPin": "Закрепить",
   "chipActionUnpin": "Открепить",
@@ -47,7 +47,6 @@
   "entryActionCopyToClipboard": "Скопировать в буфер обмена",
   "entryActionDelete": "Удалить",
   "entryActionExport": "Экспорт",
-  "entryActionInfo": "Информация",
   "entryActionRename": "Переименовать",
   "entryActionRotateCCW": "Повернуть против часовой стрелки",
   "entryActionRotateCW": "Повернуть по часовой стрелки",
@@ -56,10 +55,10 @@
   "entryActionShare": "Поделиться",
   "entryActionViewSource": "Посмотреть источник",
   "entryActionViewMotionPhotoVideo": "Открыть «Живые фото»",
-  "entryActionEdit": "Изменить с помощью…",
-  "entryActionOpen": "Открыть с помощью…",
-  "entryActionSetAs": "Установить как…",
-  "entryActionOpenMap": "Показать на карте…",
+  "entryActionEdit": "Изменить",
+  "entryActionOpen": "Открыть с помощью",
+  "entryActionSetAs": "Установить как",
+  "entryActionOpenMap": "Показать на карте",
   "entryActionRotateScreen": "Повернуть экран",
   "entryActionAddFavourite": "Добавить в избранное",
   "entryActionRemoveFavourite": "Удалить из избранного",
@@ -74,6 +73,7 @@
   "videoActionSettings": "Настройки",
 
   "entryInfoActionEditDate": "Изменить дату и время",
+  "entryInfoActionEditLocation": "Изменить местоположение",
   "entryInfoActionEditRating": "Изменить рейтинг",
   "entryInfoActionEditTags": "Изменить теги",
   "entryInfoActionRemoveMetadata": "Удалить метаданные",
@@ -82,7 +82,7 @@
   "filterLocationEmptyLabel": "Без местоположения",
   "filterTagEmptyLabel": "Без тегов",
   "filterRatingUnratedLabel": "Без рейтинга",
-  "filterRatingRejectedLabel": "Отклонённые",
+  "filterRatingRejectedLabel": "Отклонённое",
   "filterTypeAnimatedLabel": "GIF",
   "filterTypeMotionPhotoLabel": "Живое фото",
   "filterTypePanoramaLabel": "Панорама",
@@ -180,11 +180,13 @@
   "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{Вы уверены, что хотите удалить эти альбомы и их объекты?} few{Вы уверены, что хотите удалить эти альбомы и их {count} объекта?} other{Вы уверены, что хотите удалить эти альбомы и их {count} объектов?}}",
 
   "exportEntryDialogFormat": "Формат:",
+  "exportEntryDialogWidth": "Ширина",
+  "exportEntryDialogHeight": "Высота",
 
   "renameEntryDialogLabel": "Новое название",
 
   "editEntryDateDialogTitle": "Дата и время",
-  "editEntryDateDialogSetCustom": "Задайте дату",
+  "editEntryDateDialogSetCustom": "Установить дату",
   "editEntryDateDialogCopyField": "Копировать с другой даты",
   "editEntryDateDialogExtractFromTitle": "Извлечь из названия",
   "editEntryDateDialogShift": "Сдвиг",
@@ -192,6 +194,13 @@
   "editEntryDateDialogTargetFieldsHeader": "Поля для изменения",
   "editEntryDateDialogHours": "Часов",
   "editEntryDateDialogMinutes": "Минут",
+
+  "editEntryLocationDialogTitle": "Местоположение",
+  "editEntryLocationDialogChooseOnMapTooltip": "Выбрать на карте",
+  "editEntryLocationDialogLatitude": "Широта",
+  "editEntryLocationDialogLongitude": "Долгота",
+
+  "locationPickerUseThisLocationButton": "Использовать это местоположение",
 
   "editEntryRatingDialogTitle": "Рейтинг",
 
@@ -355,6 +364,7 @@
   "settingsActionExport": "Экспорт",
   "settingsActionImport": "Импорт",
 
+  "appExportCovers": "Обложки",
   "appExportFavourites": "Избранное",
   "appExportSettings": "Настройки",
 
@@ -362,7 +372,7 @@
   "settingsHome": "Домашний каталог",
   "settingsKeepScreenOnTile": "Держать экран включенным",
   "settingsKeepScreenOnTitle": "Держать экран включенным",
-  "settingsDoubleBackExit": "Дважды нажмите «назад», чтобы выйти",
+  "settingsDoubleBackExit": "Дважды нажмите «Назад», чтобы выйти",
 
   "settingsNavigationDrawerTile": "Навигационное меню",
   "settingsNavigationDrawerEditorTitle": "Навигационное меню",
@@ -373,11 +383,12 @@
   "settingsNavigationDrawerAddAlbum": "Добавить альбом",
 
   "settingsSectionThumbnails": "Эскизы",
+  "settingsThumbnailShowFavouriteIcon": "Показать значок избранного",
   "settingsThumbnailShowLocationIcon": "Показать значок местоположения",
-  "settingsThumbnailShowMotionPhotoIcon": "Показать значок живого фото",
-  "settingsThumbnailShowRating": "Показывать рейтинг",
+  "settingsThumbnailShowMotionPhotoIcon": "Показать значок «живого фото»",
+  "settingsThumbnailShowRating": "Показать рейтинг",
   "settingsThumbnailShowRawIcon": "Показать значок RAW-файла",
-  "settingsThumbnailShowVideoDuration": "Показывать продолжительность видео",
+  "settingsThumbnailShowVideoDuration": "Показать продолжительность видео",
 
   "settingsCollectionQuickActionsTile": "Быстрые действия",
   "settingsCollectionQuickActionEditorTitle": "Быстрые действия",
@@ -389,7 +400,7 @@
   "settingsSectionViewer": "Просмотрщик",
   "settingsViewerUseCutout": "Использовать область выреза",
   "settingsViewerMaximumBrightness": "Максимальная яркость",
-  "settingsMotionPhotoAutoPlay": "Автовоспроизведение «Живых фото»",
+  "settingsMotionPhotoAutoPlay": "Автовоспроизведение «живых фото»",
   "settingsImageBackground": "Фон изображения",
 
   "settingsViewerQuickActionsTile": "Быстрые действия",
@@ -401,26 +412,26 @@
 
   "settingsViewerOverlayTile": "Наложение",
   "settingsViewerOverlayTitle": "Наложение",
-  "settingsViewerShowOverlayOnOpening": "Показывать наложение при открытии",
+  "settingsViewerShowOverlayOnOpening": "Показать наложение при открытии",
   "settingsViewerShowMinimap": "Показать миникарту",
-  "settingsViewerShowInformation": "Показывать информацию",
+  "settingsViewerShowInformation": "Показать информацию",
   "settingsViewerShowInformationSubtitle": "Показать название, дату, местоположение и т.д.",
   "settingsViewerShowShootingDetails": "Показать детали съёмки",
   "settingsViewerEnableOverlayBlurEffect": "Наложение эффекта размытия",
 
   "settingsVideoPageTitle": "Настройки видео",
   "settingsSectionVideo": "Видео",
-  "settingsVideoShowVideos": "Показывать видео",
+  "settingsVideoShowVideos": "Показать видео",
   "settingsVideoEnableHardwareAcceleration": "Аппаратное ускорение",
   "settingsVideoEnableAutoPlay": "Автозапуск воспроизведения",
-  "settingsVideoLoopModeTile": "Цикличный режим",
+  "settingsVideoLoopModeTile": "Циклический режим",
   "settingsVideoLoopModeTitle": "Цикличный режим",
   "settingsVideoQuickActionsTile": "Быстрые действия для видео",
   "settingsVideoQuickActionEditorTitle": "Быстрые действия",
 
   "settingsSubtitleThemeTile": "Субтитры",
   "settingsSubtitleThemeTitle": "Субтитры",
-  "settingsSubtitleThemeSample": "Это образец.",
+  "settingsSubtitleThemeSample": "Образец.",
   "settingsSubtitleThemeTextAlignmentTile": "Выравнивание текста",
   "settingsSubtitleThemeTextAlignmentTitle": "Выравнивание текста",
   "settingsSubtitleThemeTextSize": "Размер текста",
@@ -435,7 +446,7 @@
 
   "settingsSectionPrivacy": "Конфиденциальность",
   "settingsAllowInstalledAppAccess": "Разрешить доступ к библиотеке приложения",
-  "settingsAllowInstalledAppAccessSubtitle": "Используется для улучшения отображения альбома",
+  "settingsAllowInstalledAppAccessSubtitle": "Используется для улучшения отображения альбомов",
   "settingsAllowErrorReporting": "Разрешить анонимную отправку логов",
   "settingsSaveSearchHistory": "Сохранять историю поиска",
 

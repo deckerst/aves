@@ -52,7 +52,7 @@ class PopupMenuItemExpansionPanel<T> extends StatefulWidget {
   final bool enabled;
   final IconData icon;
   final String title;
-  final List<PopupMenuItem<T>> items;
+  final List<PopupMenuEntry<T>> items;
 
   const PopupMenuItemExpansionPanel({
     Key? key,

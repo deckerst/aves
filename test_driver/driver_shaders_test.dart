@@ -33,8 +33,8 @@ void main() {
       unawaited(driver.close());
     });
 
-    test('scan media dir', () => driver.scanMediaDir(shadersTargetDirAndroid));
     agreeToTerms();
+    test('scan media dir', () => driver.scanMediaDir(shadersTargetDirAndroid));
     visitAbout();
     visitSettings();
     sortCollection();

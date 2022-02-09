@@ -133,7 +133,6 @@ abstract class ImageProvider {
         }
     }
 
-    @Suppress("BlockingMethodInNonBlockingContext")
     private suspend fun exportSingle(
         activity: Activity,
         sourceEntry: AvesEntry,
@@ -174,6 +173,7 @@ abstract class ImageProvider {
                 targetMimeType = sourceMimeType
                 write = { output ->
                     val sourceDocFile = DocumentFileCompat.fromSingleUri(activity, sourceUri)
+                    @Suppress("BlockingMethodInNonBlockingContext")
                     sourceDocFile.copyTo(output)
                 }
             } else {
@@ -184,7 +184,7 @@ abstract class ImageProvider {
                 } else if (sourceMimeType == MimeTypes.SVG) {
                     SvgImage(activity, sourceUri)
                 } else {
-                    StorageUtils.getGlideSafeUri(sourceUri, sourceMimeType)
+                    StorageUtils.getGlideSafeUri(activity, sourceUri, sourceMimeType)
                 }
 
                 // request a fresh image with the highest quality format
@@ -198,6 +198,7 @@ abstract class ImageProvider {
                     .apply(glideOptions)
                     .load(model)
                     .submit(width, height)
+                @Suppress("BlockingMethodInNonBlockingContext")
                 var bitmap = target.get()
                 if (MimeTypes.needRotationAfterGlide(sourceMimeType)) {
                     bitmap = BitmapUtils.applyExifOrientation(activity, bitmap, sourceEntry.rotationDegrees, sourceEntry.isFlipped)

@@ -69,14 +69,14 @@ mixin FeedbackMixin {
 
   // report overlay for multiple operations
 
-  void showOpReport<T>({
+  Future<void> showOpReport<T>({
     required BuildContext context,
     required Stream<T> opStream,
     required int itemCount,
     VoidCallback? onCancel,
     void Function(Set<T> processed)? onDone,
   }) {
-    showDialog(
+    return showDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) => ReportOverlay<T>(
@@ -118,7 +118,7 @@ class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerPr
   Stream<T> get opStream => widget.opStream;
 
   static const fontSize = 18.0;
-  static const radius = 160.0;
+  static const diameter = 160.0;
   static const strokeWidth = 8.0;
 
   @override
@@ -169,8 +169,8 @@ class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerPr
               alignment: Alignment.center,
               children: [
                 Container(
-                  width: radius + 2,
-                  height: radius + 2,
+                  width: diameter + 2,
+                  height: diameter + 2,
                   decoration: const BoxDecoration(
                     color: Color(0xBB000000),
                     shape: BoxShape.circle,
@@ -178,8 +178,8 @@ class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerPr
                 ),
                 if (animate)
                   Container(
-                    width: radius,
-                    height: radius,
+                    width: diameter,
+                    height: diameter,
                     padding: const EdgeInsets.all(strokeWidth / 2),
                     child: CircularProgressIndicator(
                       color: progressColor.withOpacity(.1),
@@ -189,7 +189,7 @@ class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerPr
                 CircularPercentIndicator(
                   percent: percent,
                   lineWidth: strokeWidth,
-                  radius: radius,
+                  radius: diameter / 2,
                   backgroundColor: Colors.white24,
                   progressColor: progressColor,
                   animation: animate,
@@ -203,8 +203,8 @@ class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerPr
                   Material(
                     color: Colors.transparent,
                     child: Container(
-                      width: radius,
-                      height: radius,
+                      width: diameter,
+                      height: diameter,
                       margin: const EdgeInsets.only(top: fontSize),
                       alignment: const FractionalOffset(0.5, 0.75),
                       child: Tooltip(
@@ -279,7 +279,7 @@ class _FeedbackMessageState extends State<_FeedbackMessage> {
               CircularPercentIndicator(
                 percent: _percent,
                 lineWidth: 2,
-                radius: 32,
+                radius: 16,
                 // progress color is provided by the caller,
                 // because we cannot use the app context theme here
                 backgroundColor: widget.progressColor,

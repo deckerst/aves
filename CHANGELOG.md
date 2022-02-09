@@ -4,11 +4,19 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Changed
+
+- upgraded Flutter to stable v2.10.0
+
+## <a id="v1.5.11"></a>[v1.5.11] - 2022-01-30
+
 ### Added
 
-- Info: edit location of JPG/PNG/WEBP/DNG images via Exif
+- Collection / Info: edit location of JPG/PNG/WEBP/DNG images via Exif
 - Viewer: resize option when exporting
 - Settings: export/import covers & favourites along with settings
+- Collection: allow rescan when browsing
+- support Android 12L (API 32)
 - Portuguese translation (thanks Jonatas De Almeida Barros)
 
 ### Removed
@@ -21,6 +29,7 @@ All notable changes to this project will be documented in this file.
 - handling timestamps provided in 10^-8 s (18 digits)
 - Viewer: SVG export
 - Viewer: sending to editing app on some environments
+- Map: projected center anchoring
 
 ## <a id="v1.5.10"></a>[v1.5.10] - 2022-01-07
 
