@@ -9,6 +9,8 @@ import 'package:aves/model/metadata/address.dart';
 import 'package:aves/model/metadata/catalog.dart';
 import 'package:aves/model/db/db_metadata.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/model/settings/store/store.dart';
+import 'package:aves/model/settings/store/store_shared_pref.dart';
 import 'package:aves/model/source/enums.dart';
 import 'package:aves/model/source/media_store_source.dart';
 import 'package:aves/services/android_app_service.dart';
@@ -54,6 +56,7 @@ void main() {
     getIt.registerLazySingleton<p.Context>(() => p.Context(style: p.Style.posix));
     getIt.registerLazySingleton<AvesAvailability>(FakeAvesAvailability.new);
     getIt.registerLazySingleton<MetadataDb>(FakeMetadataDb.new);
+    getIt.registerLazySingleton<SettingsStore>(SharedPrefSettingsStore.new);
 
     getIt.registerLazySingleton<AndroidAppService>(FakeAndroidAppService.new);
     getIt.registerLazySingleton<DeviceService>(FakeDeviceService.new);
