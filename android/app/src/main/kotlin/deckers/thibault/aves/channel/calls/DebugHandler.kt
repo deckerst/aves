@@ -32,12 +32,12 @@ import deckers.thibault.aves.utils.UriUtils.tryParseId
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
+import io.flutter.util.PathUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.beyka.tiffbitmapfactory.TiffBitmapFactory
 import java.io.IOException
-import java.util.*
 
 class DebugHandler(private val context: Context) : MethodCallHandler {
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
@@ -81,7 +81,16 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 put("dataDir", context.dataDir)
             }
-        }.mapValues { it.value?.path }
+        }.mapValues { it.value?.path }.toMutableMap()
+
+        // used by flutter plugin `path_provider`
+        dirs.putAll(
+            hashMapOf(
+                "flutter / cacheDir" to PathUtils.getCacheDirectory(context),
+                "flutter / dataDir" to PathUtils.getDataDirectory(context),
+                "flutter / filesDir" to PathUtils.getFilesDir(context),
+            )
+        )
 
         result.success(dirs)
     }

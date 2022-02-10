@@ -39,6 +39,11 @@ import 'package:tuple/tuple.dart';
 class CollectionGrid extends StatefulWidget {
   final String? settingsRouteKey;
 
+  static const int columnCountDefault = 4;
+  static const double extentMin = 46;
+  static const double extentMax = 300;
+  static const double spacing = 2;
+
   const CollectionGrid({
     Key? key,
     this.settingsRouteKey,
@@ -61,9 +66,10 @@ class _CollectionGridState extends State<CollectionGrid> {
   Widget build(BuildContext context) {
     _tileExtentController ??= TileExtentController(
       settingsRouteKey: widget.settingsRouteKey ?? context.currentRouteName!,
-      columnCountDefault: 4,
-      extentMin: 46,
-      spacing: 2,
+      columnCountDefault: CollectionGrid.columnCountDefault,
+      extentMin: CollectionGrid.extentMin,
+      extentMax: CollectionGrid.extentMax,
+      spacing: CollectionGrid.spacing,
     );
     return TileExtentControllerProvider(
       controller: _tileExtentController!,

@@ -68,7 +68,12 @@ class CollectionLens with ChangeNotifier {
       }));
       favourites.addListener(_onFavouritesChanged);
     }
-    settings.addListener(_onSettingsChanged);
+    _subscriptions.add(settings.updateStream
+        .where([
+          Settings.collectionSortFactorKey,
+          Settings.collectionGroupFactorKey,
+        ].contains)
+        .listen((_) => _onSettingsChanged()));
     _refresh();
   }
 
@@ -78,7 +83,6 @@ class CollectionLens with ChangeNotifier {
       ..forEach((sub) => sub.cancel())
       ..clear();
     favourites.removeListener(_onFavouritesChanged);
-    settings.removeListener(_onSettingsChanged);
     super.dispose();
   }
 

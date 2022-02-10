@@ -1,6 +1,6 @@
-import 'package:aves/model/settings/enums.dart';
-import 'package:aves/model/settings/home_page.dart';
-import 'package:aves/model/settings/screen_on.dart';
+import 'package:aves/model/settings/enums/enums.dart';
+import 'package:aves/model/settings/enums/home_page.dart';
+import 'package:aves/model/settings/enums/screen_on.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/color_utils.dart';

@@ -1,6 +1,6 @@
 import 'package:aves/model/filters/coordinate.dart';
-import 'package:aves/model/settings/enums.dart';
-import 'package:aves/model/settings/map_style.dart';
+import 'package:aves/model/settings/enums/enums.dart';
+import 'package:aves/model/settings/enums/map_style.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';

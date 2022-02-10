@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/entry_images.dart';
-import 'package:aves/model/settings/accessibility_animations.dart';
+import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/magnifier/controller/controller.dart';

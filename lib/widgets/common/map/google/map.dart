@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:aves/model/entry_images.dart';
-import 'package:aves/model/settings/enums.dart';
+import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/utils/change_notifier.dart';
 import 'package:aves/widgets/common/map/buttons.dart';
 import 'package:aves/widgets/common/map/controller.dart';

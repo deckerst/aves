@@ -39,6 +39,10 @@ mixin SourceBase {
 }
 
 abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagMixin {
+  CollectionSource() {
+    settings.updateStream.where((key) => key == Settings.localeKey).listen((_) => invalidateAlbumDisplayNames());
+  }
+
   final EventBus _eventBus = EventBus();
 
   @override
