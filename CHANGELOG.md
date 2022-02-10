@@ -4,9 +4,25 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Added
+
+- Viewer: actions to copy/move to album
+
 ### Changed
 
-- upgraded Flutter to stable v2.10.0
+- Viewer: action menu reorganization
+- Viewer: `Export` action renamed to `Convert`
+- Collection: improved performance for sort/group by name
+- load previous top items on startup
+- upgraded Flutter to stable v2.10.1
+
+### Removed
+
+- Map: connectivity check
+
+### Fixed
+
+- navigating from Album page when picking an item for another app
 
 ## <a id="v1.5.11"></a>[v1.5.11] - 2022-01-30
 
