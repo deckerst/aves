@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:aves/model/settings/accessibility_animations.dart';
-import 'package:aves/model/settings/enums.dart';
+import 'package:aves/model/settings/enums/accessibility_animations.dart';
+import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/accessibility_service.dart';
 import 'package:aves/theme/durations.dart';

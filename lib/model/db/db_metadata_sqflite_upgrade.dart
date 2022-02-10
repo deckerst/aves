@@ -1,4 +1,4 @@
-import 'package:aves/model/metadata_db.dart';
+import 'package:aves/model/db/db_metadata_sqflite.dart';
 import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
 

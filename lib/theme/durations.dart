@@ -1,4 +1,4 @@
-import 'package:aves/model/settings/accessibility_animations.dart';
+import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';

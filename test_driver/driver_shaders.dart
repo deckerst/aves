@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:aves/main_play.dart' as app;
-import 'package:aves/model/settings/enums.dart';
+import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:flutter_driver/driver_extension.dart';
 import 'package:flutter_test/flutter_test.dart';

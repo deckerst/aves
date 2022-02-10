@@ -4,7 +4,7 @@ import 'dart:typed_data';
 
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/settings/settings.dart';
-import 'package:aves/model/settings/video_loop_mode.dart';
+import 'package:aves/model/settings/enums/video_loop_mode.dart';
 import 'package:aves/model/video/keys.dart';
 import 'package:aves/model/video/metadata.dart';
 import 'package:aves/utils/change_notifier.dart';

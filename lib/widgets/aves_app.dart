@@ -1,12 +1,14 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:aves/app_flavor.dart';
 import 'package:aves/app_mode.dart';
 import 'package:aves/l10n/l10n.dart';
 import 'package:aves/model/device.dart';
-import 'package:aves/model/settings/accessibility_animations.dart';
-import 'package:aves/model/settings/screen_on.dart';
+import 'package:aves/model/settings/enums/accessibility_animations.dart';
+import 'package:aves/model/settings/enums/screen_on.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/media_store_source.dart';
 import 'package:aves/services/accessibility_service.dart';
@@ -16,12 +18,15 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/themes.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/debouncer.dart';
+import 'package:aves/widgets/collection/collection_grid.dart';
+import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/behaviour/route_tracker.dart';
 import 'package:aves/widgets/common/behaviour/routes.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/providers/highlight_info_provider.dart';
 import 'package:aves/widgets/home_page.dart';
 import 'package:aves/widgets/welcome_page.dart';
+import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fijkplayer/fijkplayer.dart';
 import 'package:flutter/foundation.dart';
@@ -43,7 +48,7 @@ class AvesApp extends StatefulWidget {
   _AvesAppState createState() => _AvesAppState();
 }
 
-class _AvesAppState extends State<AvesApp> {
+class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   final ValueNotifier<AppMode> appModeNotifier = ValueNotifier(AppMode.main);
   late Future<void> _appSetup;
   final _mediaStoreSource = MediaStoreSource();
@@ -70,6 +75,7 @@ class _AvesAppState extends State<AvesApp> {
     _newIntentChannel.receiveBroadcastStream().listen((event) => _onNewIntent(event as Map?));
     _analysisCompletionChannel.receiveBroadcastStream().listen((event) => _onAnalysisCompletion());
     _errorChannel.receiveBroadcastStream().listen((event) => _onError(event as String?));
+    WidgetsBinding.instance!.addObserver(this);
   }
 
   @override
@@ -158,26 +164,45 @@ class _AvesAppState extends State<AvesApp> {
     );
   }
 
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    debugPrint('$runtimeType lifecycle ${state.name}');
+    switch (state) {
+      case AppLifecycleState.inactive:
+        _saveTopEntries();
+        break;
+      case AppLifecycleState.paused:
+      case AppLifecycleState.detached:
+      case AppLifecycleState.resumed:
+        break;
+    }
+  }
+
+  // save IDs of entries visible at the top of the collection page with current layout settings
+  void _saveTopEntries() {
+    final stopwatch = Stopwatch()..start();
+    final screenSize = window.physicalSize / window.devicePixelRatio;
+    var tileExtent = settings.getTileExtent(CollectionPage.routeName);
+    if (tileExtent == 0) {
+      tileExtent = screenSize.shortestSide / CollectionGrid.columnCountDefault;
+    }
+    final rows = (screenSize.height / tileExtent).ceil();
+    final columns = (screenSize.width / tileExtent).ceil();
+    final count = rows * columns;
+    final collection = CollectionLens(source: _mediaStoreSource, listenToSource: false);
+    settings.topEntryIds = collection.sortedEntries.take(count).map((entry) => entry.contentId).whereNotNull().toList();
+    collection.dispose();
+    debugPrint('Saved $count top entries in ${stopwatch.elapsed.inMilliseconds}ms');
+  }
+
   // setup before the first page is displayed. keep it short
   Future<void> _setup() async {
     final stopwatch = Stopwatch()..start();
 
-    // TODO TLAD [init] init settings/device w/o platform calls (first platform channel call takes ~800ms):
-    // 1) use cached values if any,
-    // 2a) call platform w/ delay if cached
-    // 2b) call platform w/o delay if not cached
-    // 3) cache platform call results across app restarts
-
     await device.init();
-    final isRotationLocked = await windowService.isRotationLocked();
-    final areAnimationsRemoved = await AccessibilityService.areAnimationsRemoved();
-
-    // TODO TLAD [init] migrate settings away from `shared_preferences` to a platform-free solution
-    await settings.init(
-      monitorPlatformSettings: true,
-      isRotationLocked: isRotationLocked,
-      areAnimationsRemoved: areAnimationsRemoved,
-    );
+    await settings.init(monitorPlatformSettings: true);
+    settings.isRotationLocked = await windowService.isRotationLocked();
+    settings.areAnimationsRemoved = await AccessibilityService.areAnimationsRemoved();
     _monitorSettings();
 
     FijkLog.setLevel(FijkLogLevel.Warn);
@@ -187,22 +212,30 @@ class _AvesAppState extends State<AvesApp> {
   }
 
   void _monitorSettings() {
-    // keep screen on
-    settings.updateStream.where((key) => key == Settings.keepScreenOnKey).listen(
-          (_) => settings.keepScreenOn.apply(),
-        );
-    settings.keepScreenOn.apply();
+    void applyIsInstalledAppAccessAllowed() {
+      if (settings.isInstalledAppAccessAllowed) {
+        androidFileUtils.initAppNames();
+      } else {
+        androidFileUtils.resetAppNames();
+      }
+    }
 
-    // installed app access
-    settings.updateStream.where((key) => key == Settings.isInstalledAppAccessAllowedKey).listen(
-      (_) {
-        if (settings.isInstalledAppAccessAllowed) {
-          androidFileUtils.initAppNames();
-        } else {
-          androidFileUtils.resetAppNames();
-        }
-      },
-    );
+    void applyKeepScreenOn() {
+      settings.keepScreenOn.apply();
+    }
+
+    void applyIsRotationLocked() {
+      if (!settings.isRotationLocked) {
+        windowService.requestOrientation();
+      }
+    }
+
+    settings.updateStream.where((key) => key == Settings.isInstalledAppAccessAllowedKey).listen((_) => applyIsInstalledAppAccessAllowed());
+    settings.updateStream.where((key) => key == Settings.keepScreenOnKey).listen((_) => applyKeepScreenOn());
+    settings.updateStream.where((key) => key == Settings.platformAccelerometerRotationKey).listen((_) => applyIsRotationLocked());
+
+    applyKeepScreenOn();
+    applyIsRotationLocked();
   }
 
   Future<void> _setupErrorReporting() async {

@@ -3,7 +3,7 @@ import 'package:aves/model/actions/entry_set_actions.dart';
 import 'package:aves/model/actions/video_actions.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/mime.dart';
-import 'package:aves/model/settings/enums.dart';
+import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/source/enums.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/countries_page.dart';
@@ -106,4 +106,8 @@ class SettingsDefaults {
 
   // file picker
   static const filePickerShowHiddenFiles = false;
+
+  // platform settings
+  static const isRotationLocked = false;
+  static const areAnimationsRemoved = false;
 }

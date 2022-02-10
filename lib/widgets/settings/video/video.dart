@@ -1,7 +1,7 @@
 import 'package:aves/model/filters/mime.dart';
-import 'package:aves/model/settings/enums.dart';
+import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
-import 'package:aves/model/settings/video_loop_mode.dart';
+import 'package:aves/model/settings/enums/video_loop_mode.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/color_utils.dart';
