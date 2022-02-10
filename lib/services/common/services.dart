@@ -19,10 +19,12 @@ import 'package:path/path.dart' as p;
 
 final getIt = GetIt.instance;
 
+// fixed implementation is easier for test driver setup
+final SettingsStore settingsStore = SharedPrefSettingsStore();
+
 final p.Context pContext = getIt<p.Context>();
 final AvesAvailability availability = getIt<AvesAvailability>();
 final MetadataDb metadataDb = getIt<MetadataDb>();
-final SettingsStore settingsStore = getIt<SettingsStore>();
 
 final AndroidAppService androidAppService = getIt<AndroidAppService>();
 final DeviceService deviceService = getIt<DeviceService>();
@@ -39,7 +41,6 @@ void initPlatformServices() {
   getIt.registerLazySingleton<p.Context>(p.Context.new);
   getIt.registerLazySingleton<AvesAvailability>(LiveAvesAvailability.new);
   getIt.registerLazySingleton<MetadataDb>(SqfliteMetadataDb.new);
-  getIt.registerLazySingleton<SettingsStore>(SharedPrefSettingsStore.new);
 
   getIt.registerLazySingleton<AndroidAppService>(PlatformAndroidAppService.new);
   getIt.registerLazySingleton<DeviceService>(PlatformDeviceService.new);
