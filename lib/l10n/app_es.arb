@@ -46,6 +46,7 @@
 
   "entryActionCopyToClipboard": "Copiar al portapapeles",
   "entryActionDelete": "Borrar",
+  "entryActionConvert": "Convertir",
   "entryActionExport": "Exportar",
   "entryActionRename": "Renombrar",
   "entryActionRotateCCW": "Rotar en sentido antihorario",
@@ -73,6 +74,7 @@
   "videoActionSettings": "Ajustes",
 
   "entryInfoActionEditDate": "Editar fecha y hora",
+  "entryInfoActionEditLocation": "Editar ubicación",
   "entryInfoActionEditRating": "Editar clasificación",
   "entryInfoActionEditTags": "Editar etiquetas",
   "entryInfoActionRemoveMetadata": "Eliminar metadatos",
@@ -180,6 +182,8 @@
   "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{¿Está seguro de que desea borrar estos álbumes y un elemento?} other{¿Está seguro de que desea borrar estos álbumes y sus {count} elementos?}}",
  
   "exportEntryDialogFormat": "Formato:",
+  "exportEntryDialogWidth": "Anchura",
+  "exportEntryDialogHeight": "Altura",
 
   "renameEntryDialogLabel": "Renombrar",
 
@@ -192,6 +196,13 @@
   "editEntryDateDialogTargetFieldsHeader": "Campos a modificar",
   "editEntryDateDialogHours": "Horas",
   "editEntryDateDialogMinutes": "Minutos",
+
+  "editEntryLocationDialogTitle": "Ubicación",
+  "editEntryLocationDialogChooseOnMapTooltip": "Elegir en el mapa",
+  "editEntryLocationDialogLatitude": "Latitud",
+  "editEntryLocationDialogLongitude": "Longitud",
+
+  "locationPickerUseThisLocationButton": "Usar esta ubicación",
 
   "editEntryRatingDialogTitle": "Clasificación",
 
