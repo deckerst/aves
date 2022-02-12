@@ -4,7 +4,7 @@ import 'package:aves/model/favourites.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/metadata/address.dart';
 import 'package:aves/model/metadata/catalog.dart';
-import 'package:aves/model/metadata_db.dart';
+import 'package:aves/model/db/db_metadata.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 

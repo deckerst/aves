@@ -2,12 +2,12 @@ import 'dart:async';
 
 import 'package:aves/model/availability.dart';
 import 'package:aves/model/covers.dart';
+import 'package:aves/model/db/db_metadata.dart';
 import 'package:aves/model/favourites.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/metadata/address.dart';
 import 'package:aves/model/metadata/catalog.dart';
-import 'package:aves/model/metadata_db.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/enums.dart';
 import 'package:aves/model/source/media_store_source.dart';

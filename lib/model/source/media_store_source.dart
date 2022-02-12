@@ -50,12 +50,27 @@ class MediaStoreSource extends CollectionSource {
     stateNotifier.value = SourceState.loading;
     clearEntries();
 
+    final topIds = settings.topEntryIds;
+    late final Set<AvesEntry> topEntries;
+    if (topIds != null) {
+      debugPrint('$runtimeType refresh ${stopwatch.elapsed} load ${topIds.length} top entries');
+      topEntries = await metadataDb.loadEntries(topIds);
+      addEntries(topEntries);
+    } else {
+      topEntries = {};
+    }
+
     debugPrint('$runtimeType refresh ${stopwatch.elapsed} fetch known entries');
     final oldEntries = await metadataDb.loadAllEntries();
     debugPrint('$runtimeType refresh ${stopwatch.elapsed} check obsolete entries');
     final knownDateById = Map.fromEntries(oldEntries.map((entry) => MapEntry(entry.contentId!, entry.dateModifiedSecs!)));
     final obsoleteContentIds = (await mediaStoreService.checkObsoleteContentIds(knownDateById.keys.toList())).toSet();
     oldEntries.removeWhere((entry) => obsoleteContentIds.contains(entry.contentId));
+
+    if (topEntries.isNotEmpty) {
+      final obsoleteTopEntries = topEntries.where((entry) => obsoleteContentIds.contains(entry.contentId));
+      await removeEntries(obsoleteTopEntries.map((entry) => entry.uri).toSet());
+    }
 
     // show known entries
     debugPrint('$runtimeType refresh ${stopwatch.elapsed} add known entries');

@@ -7,15 +7,14 @@ import 'package:aves/model/actions/entry_set_actions.dart';
 import 'package:aves/model/actions/video_actions.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/defaults.dart';
-import 'package:aves/model/settings/enums.dart';
-import 'package:aves/model/settings/map_style.dart';
+import 'package:aves/model/settings/enums/enums.dart';
+import 'package:aves/model/settings/enums/map_style.dart';
 import 'package:aves/model/source/enums.dart';
 import 'package:aves/services/accessibility_service.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 final Settings settings = Settings._private();
 
@@ -25,8 +24,6 @@ class Settings extends ChangeNotifier {
 
   Stream<String> get updateStream => _updateStreamController.stream;
 
-  static SharedPreferences? _prefs;
-
   Settings._private();
 
   static const Set<String> internalKeys = {
@@ -34,6 +31,9 @@ class Settings extends ChangeNotifier {
     catalogTimeZoneKey,
     videoShowRawTimedTextKey,
     searchHistoryKey,
+    platformAccelerometerRotationKey,
+    platformTransitionAnimationScaleKey,
+    topEntryIdsKey,
   };
 
   // app
@@ -48,6 +48,7 @@ class Settings extends ChangeNotifier {
   static const catalogTimeZoneKey = 'catalog_time_zone';
   static const tileExtentPrefixKey = 'tile_extent_';
   static const tileLayoutPrefixKey = 'tile_layout_';
+  static const topEntryIdsKey = 'top_entry_ids';
 
   // drawer
   static const drawerTypeBookmarksKey = 'drawer_type_bookmarks';
@@ -124,16 +125,10 @@ class Settings extends ChangeNotifier {
   // cf Android `Settings.Global.TRANSITION_ANIMATION_SCALE`
   static const platformTransitionAnimationScaleKey = 'transition_animation_scale';
 
-  bool get initialized => _prefs != null;
+  bool get initialized => settingsStore.initialized;
 
-  Future<void> init({
-    required bool monitorPlatformSettings,
-    bool isRotationLocked = false,
-    bool areAnimationsRemoved = false,
-  }) async {
-    _prefs = await SharedPreferences.getInstance();
-    _isRotationLocked = isRotationLocked;
-    _areAnimationsRemoved = areAnimationsRemoved;
+  Future<void> init({required bool monitorPlatformSettings}) async {
+    await settingsStore.init();
     if (monitorPlatformSettings) {
       _platformSettingsChangeChannel.receiveBroadcastStream().listen((event) => _onPlatformSettingsChange(event as Map?));
     }
@@ -141,9 +136,9 @@ class Settings extends ChangeNotifier {
 
   Future<void> reset({required bool includeInternalKeys}) async {
     if (includeInternalKeys) {
-      await _prefs!.clear();
+      await settingsStore.clear();
     } else {
-      await Future.forEach<String>(_prefs!.getKeys().whereNot(internalKeys.contains), _prefs!.remove);
+      await Future.forEach<String>(settingsStore.getKeys().whereNot(Settings.internalKeys.contains), settingsStore.remove);
     }
   }
 
@@ -189,7 +184,7 @@ class Settings extends ChangeNotifier {
 
   Locale? get locale {
     // exceptionally allow getting locale before settings are initialized
-    final tag = _prefs?.getString(localeKey);
+    final tag = initialized ? getString(localeKey) : null;
     if (tag != null) {
       final codes = tag.split(localeSeparator);
       return Locale.fromSubtags(
@@ -250,11 +245,11 @@ class Settings extends ChangeNotifier {
 
   set homePage(HomePageSetting newValue) => setAndNotify(homePageKey, newValue.toString());
 
-  String get catalogTimeZone => _prefs!.getString(catalogTimeZoneKey) ?? '';
+  String get catalogTimeZone => getString(catalogTimeZoneKey) ?? '';
 
   set catalogTimeZone(String newValue) => setAndNotify(catalogTimeZoneKey, newValue);
 
-  double getTileExtent(String routeName) => _prefs!.getDouble(tileExtentPrefixKey + routeName) ?? 0;
+  double getTileExtent(String routeName) => getDouble(tileExtentPrefixKey + routeName) ?? 0;
 
   void setTileExtent(String routeName, double newValue) => setAndNotify(tileExtentPrefixKey + routeName, newValue);
 
@@ -262,10 +257,14 @@ class Settings extends ChangeNotifier {
 
   void setTileLayout(String routeName, TileLayout newValue) => setAndNotify(tileLayoutPrefixKey + routeName, newValue.toString());
 
+  List<int>? get topEntryIds => getStringList(topEntryIdsKey)?.map(int.tryParse).whereNotNull().toList();
+
+  set topEntryIds(List<int>? newValue) => setAndNotify(topEntryIdsKey, newValue?.map((id) => id.toString()).whereNotNull().toList());
+
   // drawer
 
   List<CollectionFilter?> get drawerTypeBookmarks =>
-      (_prefs!.getStringList(drawerTypeBookmarksKey))?.map((v) {
+      (getStringList(drawerTypeBookmarksKey))?.map((v) {
         if (v.isEmpty) return null;
         return CollectionFilter.fromJson(v);
       }).toList() ??
@@ -273,11 +272,11 @@ class Settings extends ChangeNotifier {
 
   set drawerTypeBookmarks(List<CollectionFilter?> newValue) => setAndNotify(drawerTypeBookmarksKey, newValue.map((filter) => filter?.toJson() ?? '').toList());
 
-  List<String>? get drawerAlbumBookmarks => _prefs!.getStringList(drawerAlbumBookmarksKey);
+  List<String>? get drawerAlbumBookmarks => getStringList(drawerAlbumBookmarksKey);
 
   set drawerAlbumBookmarks(List<String>? newValue) => setAndNotify(drawerAlbumBookmarksKey, newValue);
 
-  List<String> get drawerPageBookmarks => _prefs!.getStringList(drawerPageBookmarksKey) ?? SettingsDefaults.drawerPageBookmarks;
+  List<String> get drawerPageBookmarks => getStringList(drawerPageBookmarksKey) ?? SettingsDefaults.drawerPageBookmarks;
 
   set drawerPageBookmarks(List<String> newValue) => setAndNotify(drawerPageBookmarksKey, newValue);
 
@@ -341,11 +340,11 @@ class Settings extends ChangeNotifier {
 
   set tagSortFactor(ChipSortFactor newValue) => setAndNotify(tagSortFactorKey, newValue.toString());
 
-  Set<CollectionFilter> get pinnedFilters => (_prefs!.getStringList(pinnedFiltersKey) ?? []).map(CollectionFilter.fromJson).whereNotNull().toSet();
+  Set<CollectionFilter> get pinnedFilters => (getStringList(pinnedFiltersKey) ?? []).map(CollectionFilter.fromJson).whereNotNull().toSet();
 
   set pinnedFilters(Set<CollectionFilter> newValue) => setAndNotify(pinnedFiltersKey, newValue.map((filter) => filter.toJson()).toList());
 
-  Set<CollectionFilter> get hiddenFilters => (_prefs!.getStringList(hiddenFiltersKey) ?? []).map(CollectionFilter.fromJson).whereNotNull().toSet();
+  Set<CollectionFilter> get hiddenFilters => (getStringList(hiddenFiltersKey) ?? []).map(CollectionFilter.fromJson).whereNotNull().toSet();
 
   set hiddenFilters(Set<CollectionFilter> newValue) => setAndNotify(hiddenFiltersKey, newValue.map((filter) => filter.toJson()).toList());
 
@@ -415,7 +414,7 @@ class Settings extends ChangeNotifier {
 
   // subtitles
 
-  double get subtitleFontSize => _prefs!.getDouble(subtitleFontSizeKey) ?? SettingsDefaults.subtitleFontSize;
+  double get subtitleFontSize => getDouble(subtitleFontSizeKey) ?? SettingsDefaults.subtitleFontSize;
 
   set subtitleFontSize(double newValue) => setAndNotify(subtitleFontSizeKey, newValue);
 
@@ -427,11 +426,11 @@ class Settings extends ChangeNotifier {
 
   set subtitleShowOutline(bool newValue) => setAndNotify(subtitleShowOutlineKey, newValue);
 
-  Color get subtitleTextColor => Color(_prefs!.getInt(subtitleTextColorKey) ?? SettingsDefaults.subtitleTextColor.value);
+  Color get subtitleTextColor => Color(getInt(subtitleTextColorKey) ?? SettingsDefaults.subtitleTextColor.value);
 
   set subtitleTextColor(Color newValue) => setAndNotify(subtitleTextColorKey, newValue.value);
 
-  Color get subtitleBackgroundColor => Color(_prefs!.getInt(subtitleBackgroundColorKey) ?? SettingsDefaults.subtitleBackgroundColor.value);
+  Color get subtitleBackgroundColor => Color(getInt(subtitleBackgroundColorKey) ?? SettingsDefaults.subtitleBackgroundColor.value);
 
   set subtitleBackgroundColor(Color newValue) => setAndNotify(subtitleBackgroundColorKey, newValue.value);
 
@@ -441,7 +440,7 @@ class Settings extends ChangeNotifier {
 
   set infoMapStyle(EntryMapStyle newValue) => setAndNotify(infoMapStyleKey, newValue.toString());
 
-  double get infoMapZoom => _prefs!.getDouble(infoMapZoomKey) ?? SettingsDefaults.infoMapZoom;
+  double get infoMapZoom => getDouble(infoMapZoomKey) ?? SettingsDefaults.infoMapZoom;
 
   set infoMapZoom(double newValue) => setAndNotify(infoMapZoomKey, newValue);
 
@@ -459,7 +458,7 @@ class Settings extends ChangeNotifier {
 
   set saveSearchHistory(bool newValue) => setAndNotify(saveSearchHistoryKey, newValue);
 
-  List<CollectionFilter> get searchHistory => (_prefs!.getStringList(searchHistoryKey) ?? []).map(CollectionFilter.fromJson).whereNotNull().toList();
+  List<CollectionFilter> get searchHistory => (getStringList(searchHistoryKey) ?? []).map(CollectionFilter.fromJson).whereNotNull().toList();
 
   set searchHistory(List<CollectionFilter> newValue) => setAndNotify(searchHistoryKey, newValue.map((filter) => filter.toJson()).toList());
 
@@ -481,11 +480,19 @@ class Settings extends ChangeNotifier {
 
   // convenience methods
 
+  int? getInt(String key) => settingsStore.getInt(key);
+
+  double? getDouble(String key) => settingsStore.getDouble(key);
+
+  String? getString(String key) => settingsStore.getString(key);
+
+  List<String>? getStringList(String key) => settingsStore.getStringList(key);
+
   // ignore: avoid_positional_boolean_parameters
-  bool getBoolOrDefault(String key, bool defaultValue) => _prefs!.getBool(key) ?? defaultValue;
+  bool getBoolOrDefault(String key, bool defaultValue) => settingsStore.getBool(key) ?? defaultValue;
 
   T getEnumOrDefault<T>(String key, T defaultValue, Iterable<T> values) {
-    final valueString = _prefs!.getString(key);
+    final valueString = settingsStore.getString(key);
     for (final v in values) {
       if (v.toString() == valueString) {
         return v;
@@ -495,28 +502,28 @@ class Settings extends ChangeNotifier {
   }
 
   List<T> getEnumListOrDefault<T extends Object>(String key, List<T> defaultValue, Iterable<T> values) {
-    return _prefs!.getStringList(key)?.map((s) => values.firstWhereOrNull((v) => v.toString() == s)).whereNotNull().toList() ?? defaultValue;
+    return settingsStore.getStringList(key)?.map((s) => values.firstWhereOrNull((v) => v.toString() == s)).whereNotNull().toList() ?? defaultValue;
   }
 
   void setAndNotify(String key, dynamic newValue) {
-    var oldValue = _prefs!.get(key);
+    var oldValue = settingsStore.get(key);
     if (newValue == null) {
-      _prefs!.remove(key);
+      settingsStore.remove(key);
     } else if (newValue is String) {
-      oldValue = _prefs!.getString(key);
-      _prefs!.setString(key, newValue);
+      oldValue = settingsStore.getString(key);
+      settingsStore.setString(key, newValue);
     } else if (newValue is List<String>) {
-      oldValue = _prefs!.getStringList(key);
-      _prefs!.setStringList(key, newValue);
+      oldValue = settingsStore.getStringList(key);
+      settingsStore.setStringList(key, newValue);
     } else if (newValue is int) {
-      oldValue = _prefs!.getInt(key);
-      _prefs!.setInt(key, newValue);
+      oldValue = settingsStore.getInt(key);
+      settingsStore.setInt(key, newValue);
     } else if (newValue is double) {
-      oldValue = _prefs!.getDouble(key);
-      _prefs!.setDouble(key, newValue);
+      oldValue = settingsStore.getDouble(key);
+      settingsStore.setDouble(key, newValue);
     } else if (newValue is bool) {
-      oldValue = _prefs!.getBool(key);
-      _prefs!.setBool(key, newValue);
+      oldValue = settingsStore.getBool(key);
+      settingsStore.setBool(key, newValue);
     }
     if (oldValue != newValue) {
       _updateStreamController.add(key);
@@ -527,50 +534,33 @@ class Settings extends ChangeNotifier {
   // platform settings
 
   void _onPlatformSettingsChange(Map? fields) {
-    var changed = false;
     fields?.forEach((key, value) {
       switch (key) {
         case platformAccelerometerRotationKey:
           if (value is num) {
-            final newValue = value == 0;
-            if (_isRotationLocked != newValue) {
-              _isRotationLocked = newValue;
-              if (!_isRotationLocked) {
-                windowService.requestOrientation();
-              }
-              _updateStreamController.add(key);
-              changed = true;
-            }
+            isRotationLocked = value == 0;
           }
           break;
         case platformTransitionAnimationScaleKey:
           if (value is num) {
-            final newValue = value == 0;
-            if (_areAnimationsRemoved != newValue) {
-              _areAnimationsRemoved = newValue;
-              _updateStreamController.add(key);
-              changed = true;
-            }
+            areAnimationsRemoved = value == 0;
           }
       }
     });
-    if (changed) {
-      notifyListeners();
-    }
   }
 
-  bool _isRotationLocked = false;
+  bool get isRotationLocked => getBoolOrDefault(platformAccelerometerRotationKey, SettingsDefaults.isRotationLocked);
 
-  bool get isRotationLocked => _isRotationLocked;
+  set isRotationLocked(bool newValue) => setAndNotify(platformAccelerometerRotationKey, newValue);
 
-  bool _areAnimationsRemoved = false;
+  bool get areAnimationsRemoved => getBoolOrDefault(platformTransitionAnimationScaleKey, SettingsDefaults.areAnimationsRemoved);
 
-  bool get areAnimationsRemoved => _areAnimationsRemoved;
+  set areAnimationsRemoved(bool newValue) => setAndNotify(platformTransitionAnimationScaleKey, newValue);
 
   // import/export
 
   Map<String, dynamic> export() => Map.fromEntries(
-        _prefs!.getKeys().whereNot(internalKeys.contains).map((k) => MapEntry(k, _prefs!.get(k))),
+        settingsStore.getKeys().whereNot(internalKeys.contains).map((k) => MapEntry(k, settingsStore.get(k))),
       );
 
   Future<void> import(dynamic jsonMap) async {
@@ -581,16 +571,16 @@ class Settings extends ChangeNotifier {
       // apply user modifications
       jsonMap.forEach((key, value) {
         if (value == null) {
-          _prefs!.remove(key);
+          settingsStore.remove(key);
         } else if (key.startsWith(tileExtentPrefixKey)) {
           if (value is double) {
-            _prefs!.setDouble(key, value);
+            settingsStore.setDouble(key, value);
           } else {
             debugPrint('failed to import key=$key, value=$value is not a double');
           }
         } else if (key.startsWith(tileLayoutPrefixKey)) {
           if (value is String) {
-            _prefs!.setString(key, value);
+            settingsStore.setString(key, value);
           } else {
             debugPrint('failed to import key=$key, value=$value is not a string');
           }
@@ -599,7 +589,7 @@ class Settings extends ChangeNotifier {
             case subtitleTextColorKey:
             case subtitleBackgroundColorKey:
               if (value is int) {
-                _prefs!.setInt(key, value);
+                settingsStore.setInt(key, value);
               } else {
                 debugPrint('failed to import key=$key, value=$value is not an int');
               }
@@ -607,7 +597,7 @@ class Settings extends ChangeNotifier {
             case subtitleFontSizeKey:
             case infoMapZoomKey:
               if (value is double) {
-                _prefs!.setDouble(key, value);
+                settingsStore.setDouble(key, value);
               } else {
                 debugPrint('failed to import key=$key, value=$value is not a double');
               }
@@ -635,7 +625,7 @@ class Settings extends ChangeNotifier {
             case saveSearchHistoryKey:
             case filePickerShowHiddenFilesKey:
               if (value is bool) {
-                _prefs!.setBool(key, value);
+                settingsStore.setBool(key, value);
               } else {
                 debugPrint('failed to import key=$key, value=$value is not a bool');
               }
@@ -658,7 +648,7 @@ class Settings extends ChangeNotifier {
             case accessibilityAnimationsKey:
             case timeToTakeActionKey:
               if (value is String) {
-                _prefs!.setString(key, value);
+                settingsStore.setString(key, value);
               } else {
                 debugPrint('failed to import key=$key, value=$value is not a string');
               }
@@ -673,7 +663,7 @@ class Settings extends ChangeNotifier {
             case viewerQuickActionsKey:
             case videoQuickActionsKey:
               if (value is List) {
-                _prefs!.setStringList(key, value.cast<String>());
+                settingsStore.setStringList(key, value.cast<String>());
               } else {
                 debugPrint('failed to import key=$key, value=$value is not a list');
               }

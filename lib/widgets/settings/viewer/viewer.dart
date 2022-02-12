@@ -1,4 +1,4 @@
-import 'package:aves/model/settings/enums.dart';
+import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/icons.dart';
