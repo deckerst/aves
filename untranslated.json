@@ -20,28 +20,6 @@
     "settingsEnableBinSubtitle"
   ],
 
-  "fr": [
-    "timeDays",
-    "entryActionConvert",
-    "entryActionRestore",
-    "binEntriesConfirmationDialogMessage",
-    "collectionActionEmptyBin",
-    "binPageTitle",
-    "settingsEnableBin",
-    "settingsEnableBinSubtitle"
-  ],
-
-  "ko": [
-    "timeDays",
-    "entryActionConvert",
-    "entryActionRestore",
-    "binEntriesConfirmationDialogMessage",
-    "collectionActionEmptyBin",
-    "binPageTitle",
-    "settingsEnableBin",
-    "settingsEnableBinSubtitle"
-  ],
-
   "pt": [
     "timeDays",
     "entryActionConvert",
