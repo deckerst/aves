@@ -9,6 +9,7 @@ class AIcons {
 
   static const IconData accessibility = Icons.accessibility_new_outlined;
   static const IconData android = Icons.android;
+  static const IconData bin = Icons.delete_outlined;
   static const IconData broken = Icons.broken_image_outlined;
   static const IconData checked = Icons.done_outlined;
   static const IconData date = Icons.calendar_today_outlined;
@@ -45,8 +46,6 @@ class AIcons {
   static const IconData add = Icons.add_circle_outline;
   static const IconData addShortcut = Icons.add_to_home_screen_outlined;
   static const IconData cancel = Icons.cancel_outlined;
-  static const IconData replay10 = Icons.replay_10_outlined;
-  static const IconData skip10 = Icons.forward_10_outlined;
   static const IconData captureFrame = Icons.screenshot_outlined;
   static const IconData clear = Icons.clear_outlined;
   static const IconData clipboard = Icons.content_copy_outlined;
@@ -57,6 +56,7 @@ class AIcons {
   static const IconData edit = Icons.edit_outlined;
   static const IconData editRating = MdiIcons.starPlusOutline;
   static const IconData editTags = MdiIcons.tagPlusOutline;
+  static const IconData emptyBin = Icons.delete_sweep_outlined;
   static const IconData export = Icons.open_with_outlined;
   static const IconData fileExport = MdiIcons.fileExportOutline;
   static const IconData fileImport = MdiIcons.fileImportOutline;
@@ -81,7 +81,10 @@ class AIcons {
   static const IconData print = Icons.print_outlined;
   static const IconData refresh = Icons.refresh_outlined;
   static const IconData rename = Icons.title_outlined;
+  static const IconData replay10 = Icons.replay_10_outlined;
+  static const IconData skip10 = Icons.forward_10_outlined;
   static const IconData reset = Icons.restart_alt_outlined;
+  static const IconData restore = Icons.restore_outlined;
   static const IconData rotateLeft = Icons.rotate_left_outlined;
   static const IconData rotateRight = Icons.rotate_right_outlined;
   static const IconData rotateScreen = Icons.screen_rotation_outlined;

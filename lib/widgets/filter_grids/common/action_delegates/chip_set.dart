@@ -278,8 +278,8 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
   }
 
   void _setCover(BuildContext context, T filter) async {
-    final contentId = covers.coverContentId(filter);
-    final customEntry = context.read<CollectionSource>().visibleEntries.firstWhereOrNull((entry) => entry.contentId == contentId);
+    final entryId = covers.coverEntryId(filter);
+    final customEntry = context.read<CollectionSource>().visibleEntries.firstWhereOrNull((entry) => entry.id == entryId);
     final coverSelection = await showDialog<Tuple2<bool, AvesEntry?>>(
       context: context,
       builder: (context) => CoverSelectionDialog(
@@ -290,7 +290,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
     if (coverSelection == null) return;
 
     final isCustom = coverSelection.item1;
-    await covers.set(filter, isCustom ? coverSelection.item2?.contentId : null);
+    await covers.set(filter, isCustom ? coverSelection.item2?.id : null);
 
     _browse(context);
   }

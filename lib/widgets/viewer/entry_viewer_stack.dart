@@ -97,7 +97,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
     // so it is, strictly speaking, not contained in the lens used by the viewer,
     // but it can be found by content ID
     final initialEntry = widget.initialEntry;
-    final entry = entries.firstWhereOrNull((v) => v.contentId == initialEntry.contentId) ?? entries.firstOrNull;
+    final entry = entries.firstWhereOrNull((entry) => entry.id == initialEntry.id) ?? entries.firstOrNull;
     // opening hero, with viewer as target
     _heroInfoNotifier.value = HeroInfo(collection?.id, entry);
     _entryNotifier.value = entry;

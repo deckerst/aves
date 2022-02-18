@@ -1,4 +1,5 @@
 import 'package:aves/model/settings/store/store.dart';
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPrefSettingsStore implements SettingsStore {
@@ -9,7 +10,11 @@ class SharedPrefSettingsStore implements SettingsStore {
 
   @override
   Future<void> init() async {
-    _prefs = await SharedPreferences.getInstance();
+    try {
+      _prefs = await SharedPreferences.getInstance();
+    } catch (error, stack) {
+      debugPrint('$runtimeType init error=$error\n$stack');
+    }
   }
 
   @override

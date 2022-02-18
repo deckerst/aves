@@ -4,16 +4,16 @@ import 'package:flutter/widgets.dart';
 
 @immutable
 class AddressDetails extends Equatable {
-  final int? contentId;
+  final int id;
   final String? countryCode, countryName, adminArea, locality;
 
   String? get place => locality != null && locality!.isNotEmpty ? locality : adminArea;
 
   @override
-  List<Object?> get props => [contentId, countryCode, countryName, adminArea, locality];
+  List<Object?> get props => [id, countryCode, countryName, adminArea, locality];
 
   const AddressDetails({
-    this.contentId,
+    required this.id,
     this.countryCode,
     this.countryName,
     this.adminArea,
@@ -21,10 +21,10 @@ class AddressDetails extends Equatable {
   });
 
   AddressDetails copyWith({
-    int? contentId,
+    int? id,
   }) {
     return AddressDetails(
-      contentId: contentId ?? this.contentId,
+      id: id ?? this.id,
       countryCode: countryCode,
       countryName: countryName,
       adminArea: adminArea,
@@ -34,7 +34,7 @@ class AddressDetails extends Equatable {
 
   factory AddressDetails.fromMap(Map map) {
     return AddressDetails(
-      contentId: map['contentId'] as int?,
+      id: map['id'] as int,
       countryCode: map['countryCode'] as String?,
       countryName: map['countryName'] as String?,
       adminArea: map['adminArea'] as String?,
@@ -43,7 +43,7 @@ class AddressDetails extends Equatable {
   }
 
   Map<String, dynamic> toMap() => {
-        'contentId': contentId,
+        'id': id,
         'countryCode': countryCode,
         'countryName': countryName,
         'adminArea': adminArea,

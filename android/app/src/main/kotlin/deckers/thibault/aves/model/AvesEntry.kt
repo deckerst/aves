@@ -11,4 +11,6 @@ class AvesEntry(map: FieldMap) {
     val height = map["height"] as Int
     val rotationDegrees = map["rotationDegrees"] as Int
     val isFlipped = map["isFlipped"] as Boolean
+    val trashed = map["trashed"] as Boolean
+    val trashPath = map["trashPath"] as String?
 }

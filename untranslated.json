@@ -1,33 +1,66 @@
 {
   "de": [
-    "entryActionConvert"
+    "timeDays",
+    "entryActionConvert",
+    "entryActionRestore",
+    "binEntriesConfirmationDialogMessage",
+    "collectionActionEmptyBin",
+    "binPageTitle",
+    "settingsEnableBin",
+    "settingsEnableBinSubtitle"
   ],
 
   "es": [
-    "entryActionConvert",
-    "entryInfoActionEditLocation",
-    "exportEntryDialogWidth",
-    "exportEntryDialogHeight",
-    "editEntryLocationDialogTitle",
-    "editEntryLocationDialogChooseOnMapTooltip",
-    "editEntryLocationDialogLatitude",
-    "editEntryLocationDialogLongitude",
-    "locationPickerUseThisLocationButton"
+    "timeDays",
+    "entryActionRestore",
+    "binEntriesConfirmationDialogMessage",
+    "collectionActionEmptyBin",
+    "binPageTitle",
+    "settingsEnableBin",
+    "settingsEnableBinSubtitle"
   ],
 
   "fr": [
-    "entryActionConvert"
+    "timeDays",
+    "entryActionConvert",
+    "entryActionRestore",
+    "binEntriesConfirmationDialogMessage",
+    "collectionActionEmptyBin",
+    "binPageTitle",
+    "settingsEnableBin",
+    "settingsEnableBinSubtitle"
   ],
 
   "ko": [
-    "entryActionConvert"
+    "timeDays",
+    "entryActionConvert",
+    "entryActionRestore",
+    "binEntriesConfirmationDialogMessage",
+    "collectionActionEmptyBin",
+    "binPageTitle",
+    "settingsEnableBin",
+    "settingsEnableBinSubtitle"
   ],
 
   "pt": [
-    "entryActionConvert"
+    "timeDays",
+    "entryActionConvert",
+    "entryActionRestore",
+    "binEntriesConfirmationDialogMessage",
+    "collectionActionEmptyBin",
+    "binPageTitle",
+    "settingsEnableBin",
+    "settingsEnableBinSubtitle"
   ],
 
   "ru": [
-    "entryActionConvert"
+    "timeDays",
+    "entryActionConvert",
+    "entryActionRestore",
+    "binEntriesConfirmationDialogMessage",
+    "collectionActionEmptyBin",
+    "binPageTitle",
+    "settingsEnableBin",
+    "settingsEnableBinSubtitle"
   ]
 }

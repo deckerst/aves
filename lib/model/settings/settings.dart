@@ -111,6 +111,9 @@ class Settings extends ChangeNotifier {
   static const saveSearchHistoryKey = 'save_search_history';
   static const searchHistoryKey = 'search_history';
 
+  // bin
+  static const enableBinKey = 'enable_bin';
+
   // accessibility
   static const accessibilityAnimationsKey = 'accessibility_animations';
   static const timeToTakeActionKey = 'time_to_take_action';
@@ -461,6 +464,12 @@ class Settings extends ChangeNotifier {
   List<CollectionFilter> get searchHistory => (getStringList(searchHistoryKey) ?? []).map(CollectionFilter.fromJson).whereNotNull().toList();
 
   set searchHistory(List<CollectionFilter> newValue) => setAndNotify(searchHistoryKey, newValue.map((filter) => filter.toJson()).toList());
+
+  // bin
+
+  bool get enableBin => getBoolOrDefault(enableBinKey, SettingsDefaults.enableBin);
+
+  set enableBin(bool newValue) => setAndNotify(enableBinKey, newValue);
 
   // accessibility
 

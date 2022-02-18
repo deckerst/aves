@@ -305,6 +305,7 @@ class _RegionTile extends StatefulWidget {
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
+    properties.add(IntProperty('id', entry.id));
     properties.add(IntProperty('contentId', entry.contentId));
     properties.add(DiagnosticsProperty<Rect>('tileRect', tileRect));
     properties.add(DiagnosticsProperty<Rectangle<double>>('regionRect', regionRect));

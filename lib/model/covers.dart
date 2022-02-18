@@ -23,19 +23,19 @@ class Covers with ChangeNotifier {
 
   Set<CoverRow> get all => Set.unmodifiable(_rows);
 
-  int? coverContentId(CollectionFilter filter) => _rows.firstWhereOrNull((row) => row.filter == filter)?.contentId;
+  int? coverEntryId(CollectionFilter filter) => _rows.firstWhereOrNull((row) => row.filter == filter)?.entryId;
 
-  Future<void> set(CollectionFilter filter, int? contentId) async {
+  Future<void> set(CollectionFilter filter, int? entryId) async {
     // erase contextual properties from filters before saving them
     if (filter is AlbumFilter) {
       filter = AlbumFilter(filter.album, null);
     }
 
     _rows.removeWhere((row) => row.filter == filter);
-    if (contentId == null) {
+    if (entryId == null) {
       await metadataDb.removeCovers({filter});
     } else {
-      final row = CoverRow(filter: filter, contentId: contentId);
+      final row = CoverRow(filter: filter, entryId: entryId);
       _rows.add(row);
       await metadataDb.addCovers({row});
     }
@@ -43,28 +43,26 @@ class Covers with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> moveEntry(int oldContentId, AvesEntry entry) async {
-    final oldRows = _rows.where((row) => row.contentId == oldContentId).toSet();
-    if (oldRows.isEmpty) return;
-
-    for (final oldRow in oldRows) {
-      final filter = oldRow.filter;
-      _rows.remove(oldRow);
-      if (filter.test(entry)) {
-        final newRow = CoverRow(filter: filter, contentId: entry.contentId!);
-        await metadataDb.updateCoverEntryId(oldRow.contentId, newRow);
-        _rows.add(newRow);
-      } else {
-        await metadataDb.removeCovers({filter});
+  Future<void> moveEntry(AvesEntry entry, {required bool persist}) async {
+    final entryId = entry.id;
+    final rows = _rows.where((row) => row.entryId == entryId).toSet();
+    for (final row in rows) {
+      final filter = row.filter;
+      if (!filter.test(entry)) {
+        _rows.remove(row);
+        if (persist) {
+          await metadataDb.removeCovers({filter});
+        }
       }
     }
 
     notifyListeners();
   }
 
-  Future<void> removeEntries(Set<AvesEntry> entries) async {
-    final contentIds = entries.map((entry) => entry.contentId).toSet();
-    final removedRows = _rows.where((row) => contentIds.contains(row.contentId)).toSet();
+  Future<void> removeEntries(Set<AvesEntry> entries) => removeIds(entries.map((entry) => entry.id).toSet());
+
+  Future<void> removeIds(Set<int> entryIds) async {
+    final removedRows = _rows.where((row) => entryIds.contains(row.entryId)).toSet();
 
     await metadataDb.removeCovers(removedRows.map((row) => row.filter).toSet());
     _rows.removeAll(removedRows);
@@ -85,8 +83,8 @@ class Covers with ChangeNotifier {
     final visibleEntries = source.visibleEntries;
     final jsonList = covers.all
         .map((row) {
-          final id = row.contentId;
-          final path = visibleEntries.firstWhereOrNull((entry) => id == entry.contentId)?.path;
+          final entryId = row.entryId;
+          final path = visibleEntries.firstWhereOrNull((entry) => entryId == entry.id)?.path;
           if (path == null) return null;
 
           final volume = androidFileUtils.getStorageVolume(path)?.path;
@@ -124,7 +122,7 @@ class Covers with ChangeNotifier {
         final path = pContext.join(volume, relativePath);
         final entry = visibleEntries.firstWhereOrNull((entry) => entry.path == path && filter.test(entry));
         if (entry != null) {
-          covers.set(filter, entry.contentId);
+          covers.set(filter, entry.id);
         } else {
           debugPrint('failed to import cover for path=$path, filter=$filter');
         }
@@ -138,14 +136,14 @@ class Covers with ChangeNotifier {
 @immutable
 class CoverRow extends Equatable {
   final CollectionFilter filter;
-  final int contentId;
+  final int entryId;
 
   @override
-  List<Object?> get props => [filter, contentId];
+  List<Object?> get props => [filter, entryId];
 
   const CoverRow({
     required this.filter,
-    required this.contentId,
+    required this.entryId,
   });
 
   static CoverRow? fromMap(Map map) {
@@ -153,12 +151,12 @@ class CoverRow extends Equatable {
     if (filter == null) return null;
     return CoverRow(
       filter: filter,
-      contentId: map['contentId'],
+      entryId: map['entryId'],
     );
   }
 
   Map<String, dynamic> toMap() => {
         'filter': filter.toJson(),
-        'contentId': contentId,
+        'entryId': entryId,
       };
 }

@@ -52,12 +52,12 @@ class AnalysisHandler(private val activity: Activity, private val onAnalysisComp
         }
 
         // can be null or empty
-        val contentIds = call.argument<List<Int>>("contentIds")
+        val entryIds = call.argument<List<Int>>("entryIds")
 
         if (!activity.isMyServiceRunning(AnalysisService::class.java)) {
             val intent = Intent(activity, AnalysisService::class.java)
             intent.putExtra(AnalysisService.KEY_COMMAND, AnalysisService.COMMAND_START)
-            intent.putExtra(AnalysisService.KEY_CONTENT_IDS, contentIds?.toIntArray())
+            intent.putExtra(AnalysisService.KEY_ENTRY_IDS, entryIds?.toIntArray())
             intent.putExtra(AnalysisService.KEY_FORCE, force)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 activity.startForegroundService(intent)

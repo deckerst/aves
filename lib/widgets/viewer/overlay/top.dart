@@ -65,47 +65,62 @@ class ViewerTopOverlay extends StatelessWidget {
 
   Widget _buildOverlay(BuildContext context, int availableCount, AvesEntry mainEntry, {AvesEntry? pageEntry}) {
     pageEntry ??= mainEntry;
+    final trashed = mainEntry.trashed;
 
     bool _isVisible(EntryAction action) {
-      final targetEntry = EntryActions.pageActions.contains(action) ? pageEntry! : mainEntry;
-      switch (action) {
-        case EntryAction.toggleFavourite:
-          return canToggleFavourite;
-        case EntryAction.delete:
-        case EntryAction.rename:
-        case EntryAction.copy:
-        case EntryAction.move:
-          return targetEntry.canEdit;
-        case EntryAction.rotateCCW:
-        case EntryAction.rotateCW:
-        case EntryAction.flip:
-          return targetEntry.canRotateAndFlip;
-        case EntryAction.convert:
-        case EntryAction.print:
-          return !targetEntry.isVideo && device.canPrint;
-        case EntryAction.openMap:
-          return targetEntry.hasGps;
-        case EntryAction.viewSource:
-          return targetEntry.isSvg;
-        case EntryAction.rotateScreen:
-          return settings.isRotationLocked;
-        case EntryAction.addShortcut:
-          return device.canPinShortcut;
-        case EntryAction.copyToClipboard:
-        case EntryAction.edit:
-        case EntryAction.open:
-        case EntryAction.setAs:
-        case EntryAction.share:
-          return true;
-        case EntryAction.debug:
-          return kDebugMode;
+      if (trashed) {
+        switch (action) {
+          case EntryAction.delete:
+          case EntryAction.restore:
+            return true;
+          case EntryAction.debug:
+            return kDebugMode;
+          default:
+            return false;
+        }
+      } else {
+        final targetEntry = EntryActions.pageActions.contains(action) ? pageEntry! : mainEntry;
+        switch (action) {
+          case EntryAction.toggleFavourite:
+            return canToggleFavourite;
+          case EntryAction.delete:
+          case EntryAction.rename:
+          case EntryAction.copy:
+          case EntryAction.move:
+            return targetEntry.canEdit;
+          case EntryAction.rotateCCW:
+          case EntryAction.rotateCW:
+          case EntryAction.flip:
+            return targetEntry.canRotateAndFlip;
+          case EntryAction.convert:
+          case EntryAction.print:
+            return !targetEntry.isVideo && device.canPrint;
+          case EntryAction.openMap:
+            return targetEntry.hasGps;
+          case EntryAction.viewSource:
+            return targetEntry.isSvg;
+          case EntryAction.rotateScreen:
+            return settings.isRotationLocked;
+          case EntryAction.addShortcut:
+            return device.canPinShortcut;
+          case EntryAction.copyToClipboard:
+          case EntryAction.edit:
+          case EntryAction.open:
+          case EntryAction.setAs:
+          case EntryAction.share:
+            return true;
+          case EntryAction.restore:
+            return false;
+          case EntryAction.debug:
+            return kDebugMode;
+        }
       }
     }
 
     final buttonRow = Selector<Settings, bool>(
       selector: (context, s) => s.isRotationLocked,
       builder: (context, s, child) {
-        final quickActions = settings.viewerQuickActions.where(_isVisible).take(availableCount - 1).toList();
+        final quickActions = (trashed ? EntryActions.trashed : settings.viewerQuickActions).where(_isVisible).take(availableCount - 1).toList();
         final topLevelActions = EntryActions.topLevel.where((action) => !quickActions.contains(action)).where(_isVisible).toList();
         final exportActions = EntryActions.export.where((action) => !quickActions.contains(action)).where(_isVisible).toList();
         return _TopOverlayRow(
@@ -160,6 +175,7 @@ class _TopOverlayRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final hasOverflowMenu = pageEntry.canRotateAndFlip || topLevelActions.isNotEmpty || exportActions.isNotEmpty;
     return Row(
       children: [
         OverlayButton(
@@ -168,48 +184,50 @@ class _TopOverlayRow extends StatelessWidget {
         ),
         const Spacer(),
         ...quickActions.map((action) => _buildOverlayButton(context, action)),
-        OverlayButton(
-          scale: scale,
-          child: MenuIconTheme(
-            child: AvesPopupMenuButton<EntryAction>(
-              key: const Key('entry-menu-button'),
-              itemBuilder: (context) {
-                final exportInternalActions = exportActions.whereNot(EntryActions.exportExternal.contains).toList();
-                final exportExternalActions = exportActions.where(EntryActions.exportExternal.contains).toList();
-                return [
-                  if (pageEntry.canRotateAndFlip) _buildRotateAndFlipMenuItems(context),
-                  ...topLevelActions.map((action) => _buildPopupMenuItem(context, action)),
-                  PopupMenuItem<EntryAction>(
-                    padding: EdgeInsets.zero,
-                    child: PopupMenuItemExpansionPanel<EntryAction>(
-                      icon: AIcons.export,
-                      title: context.l10n.entryActionExport,
-                      items: [
-                        ...exportInternalActions.map((action) => _buildPopupMenuItem(context, action)).toList(),
-                        if (exportInternalActions.isNotEmpty && exportExternalActions.isNotEmpty) const PopupMenuDivider(height: 0),
-                        ...exportExternalActions.map((action) => _buildPopupMenuItem(context, action)).toList(),
-                      ],
-                    ),
-                  ),
-                  if (!kReleaseMode) ...[
-                    const PopupMenuDivider(),
-                    _buildPopupMenuItem(context, EntryAction.debug),
-                  ]
-                ];
-              },
-              onSelected: (action) {
-                // wait for the popup menu to hide before proceeding with the action
-                Future.delayed(Durations.popupMenuAnimation * timeDilation, () => _onActionSelected(context, action));
-              },
-              onMenuOpened: () {
-                // if the menu is opened while overlay is hiding,
-                // the popup menu button is disposed and menu items are ineffective,
-                // so we make sure overlay stays visible
-                const ToggleOverlayNotification(visible: true).dispatch(context);
-              },
+        if (hasOverflowMenu)
+          OverlayButton(
+            scale: scale,
+            child: MenuIconTheme(
+              child: AvesPopupMenuButton<EntryAction>(
+                key: const Key('entry-menu-button'),
+                itemBuilder: (context) {
+                  final exportInternalActions = exportActions.whereNot(EntryActions.exportExternal.contains).toList();
+                  final exportExternalActions = exportActions.where(EntryActions.exportExternal.contains).toList();
+                  return [
+                    if (pageEntry.canRotateAndFlip) _buildRotateAndFlipMenuItems(context),
+                    ...topLevelActions.map((action) => _buildPopupMenuItem(context, action)),
+                    if (exportActions.isNotEmpty)
+                      PopupMenuItem<EntryAction>(
+                        padding: EdgeInsets.zero,
+                        child: PopupMenuItemExpansionPanel<EntryAction>(
+                          icon: AIcons.export,
+                          title: context.l10n.entryActionExport,
+                          items: [
+                            ...exportInternalActions.map((action) => _buildPopupMenuItem(context, action)).toList(),
+                            if (exportInternalActions.isNotEmpty && exportExternalActions.isNotEmpty) const PopupMenuDivider(height: 0),
+                            ...exportExternalActions.map((action) => _buildPopupMenuItem(context, action)).toList(),
+                          ],
+                        ),
+                      ),
+                    if (!kReleaseMode) ...[
+                      const PopupMenuDivider(),
+                      _buildPopupMenuItem(context, EntryAction.debug),
+                    ]
+                  ];
+                },
+                onSelected: (action) {
+                  // wait for the popup menu to hide before proceeding with the action
+                  Future.delayed(Durations.popupMenuAnimation * timeDilation, () => _onActionSelected(context, action));
+                },
+                onMenuOpened: () {
+                  // if the menu is opened while overlay is hiding,
+                  // the popup menu button is disposed and menu items are ineffective,
+                  // so we make sure overlay stays visible
+                  const ToggleOverlayNotification(visible: true).dispatch(context);
+                },
+              ),
             ),
           ),
-        ),
       ],
     );
   }
@@ -226,7 +244,7 @@ class _TopOverlayRow extends StatelessWidget {
         break;
       default:
         child = IconButton(
-          icon: action.getIcon() ?? const SizedBox(),
+          icon: action.getIcon(),
           onPressed: onPressed,
           tooltip: action.getText(context),
         );

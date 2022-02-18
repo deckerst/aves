@@ -25,10 +25,10 @@ class AnalysisService {
     }
   }
 
-  static Future<void> startService({required bool force, List<int>? contentIds}) async {
+  static Future<void> startService({required bool force, List<int>? entryIds}) async {
     try {
       await platform.invokeMethod('startService', <String, dynamic>{
-        'contentIds': contentIds,
+        'entryIds': entryIds,
         'force': force,
       });
     } on PlatformException catch (e, stack) {
@@ -98,16 +98,16 @@ class Analyzer {
   }
 
   Future<void> start(dynamic args) async {
-    debugPrint('$runtimeType start');
-    List<int>? contentIds;
+    List<int>? entryIds;
     var force = false;
     if (args is Map) {
-      contentIds = (args['contentIds'] as List?)?.cast<int>();
+      entryIds = (args['entryIds'] as List?)?.cast<int>();
       force = args['force'] ?? false;
     }
+    debugPrint('$runtimeType start for ${entryIds?.length ?? 'all'} entries');
     _controller = AnalysisController(
       canStartService: false,
-      contentIds: contentIds,
+      entryIds: entryIds,
       force: force,
       stopSignal: ValueNotifier(false),
     );

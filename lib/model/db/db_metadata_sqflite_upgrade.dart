@@ -4,8 +4,12 @@ import 'package:sqflite/sqflite.dart';
 
 class MetadataDbUpgrader {
   static const entryTable = SqfliteMetadataDb.entryTable;
+  static const dateTakenTable = SqfliteMetadataDb.dateTakenTable;
   static const metadataTable = SqfliteMetadataDb.metadataTable;
+  static const addressTable = SqfliteMetadataDb.addressTable;
+  static const favouriteTable = SqfliteMetadataDb.favouriteTable;
   static const coverTable = SqfliteMetadataDb.coverTable;
+  static const trashTable = SqfliteMetadataDb.trashTable;
   static const videoPlaybackTable = SqfliteMetadataDb.videoPlaybackTable;
 
   // warning: "ALTER TABLE ... RENAME COLUMN ..." is not supported
@@ -27,6 +31,9 @@ class MetadataDbUpgrader {
           break;
         case 5:
           await _upgradeFrom5(db);
+          break;
+        case 6:
+          await _upgradeFrom6(db);
           break;
       }
       oldVersion++;
@@ -128,5 +135,138 @@ class MetadataDbUpgrader {
   static Future<void> _upgradeFrom5(Database db) async {
     debugPrint('upgrading DB from v5');
     await db.execute('ALTER TABLE $metadataTable ADD COLUMN rating INTEGER;');
+  }
+
+  static Future<void> _upgradeFrom6(Database db) async {
+    debugPrint('upgrading DB from v6');
+    // new primary key column `id` instead of `contentId`
+    // new column `trashed`
+    await db.transaction((txn) async {
+      const newEntryTable = '${entryTable}TEMP';
+      await db.execute('CREATE TABLE $newEntryTable('
+          'id INTEGER PRIMARY KEY'
+          ', contentId INTEGER'
+          ', uri TEXT'
+          ', path TEXT'
+          ', sourceMimeType TEXT'
+          ', width INTEGER'
+          ', height INTEGER'
+          ', sourceRotationDegrees INTEGER'
+          ', sizeBytes INTEGER'
+          ', title TEXT'
+          ', dateModifiedSecs INTEGER'
+          ', sourceDateTakenMillis INTEGER'
+          ', durationMillis INTEGER'
+          ', trashed INTEGER DEFAULT 0'
+          ')');
+      await db.rawInsert('INSERT INTO $newEntryTable(id,contentId,uri,path,sourceMimeType,width,height,sourceRotationDegrees,sizeBytes,title,dateModifiedSecs,sourceDateTakenMillis,durationMillis)'
+          ' SELECT contentId,contentId,uri,path,sourceMimeType,width,height,sourceRotationDegrees,sizeBytes,title,dateModifiedSecs,sourceDateTakenMillis,durationMillis'
+          ' FROM $entryTable;');
+      await db.execute('DROP TABLE $entryTable;');
+      await db.execute('ALTER TABLE $newEntryTable RENAME TO $entryTable;');
+    });
+
+    // rename column `contentId` to `id`
+    await db.transaction((txn) async {
+      const newDateTakenTable = '${dateTakenTable}TEMP';
+      await db.execute('CREATE TABLE $newDateTakenTable('
+          'id INTEGER PRIMARY KEY'
+          ', dateMillis INTEGER'
+          ')');
+      await db.rawInsert('INSERT INTO $newDateTakenTable(id,dateMillis)'
+          ' SELECT contentId,dateMillis'
+          ' FROM $dateTakenTable;');
+      await db.execute('DROP TABLE $dateTakenTable;');
+      await db.execute('ALTER TABLE $newDateTakenTable RENAME TO $dateTakenTable;');
+    });
+
+    // rename column `contentId` to `id`
+    await db.transaction((txn) async {
+      const newMetadataTable = '${metadataTable}TEMP';
+      await db.execute('CREATE TABLE $newMetadataTable('
+          'id INTEGER PRIMARY KEY'
+          ', mimeType TEXT'
+          ', dateMillis INTEGER'
+          ', flags INTEGER'
+          ', rotationDegrees INTEGER'
+          ', xmpSubjects TEXT'
+          ', xmpTitleDescription TEXT'
+          ', latitude REAL'
+          ', longitude REAL'
+          ', rating INTEGER'
+          ')');
+      await db.rawInsert('INSERT INTO $newMetadataTable(id,mimeType,dateMillis,flags,rotationDegrees,xmpSubjects,xmpTitleDescription,latitude,longitude,rating)'
+          ' SELECT contentId,mimeType,dateMillis,flags,rotationDegrees,xmpSubjects,xmpTitleDescription,latitude,longitude,rating'
+          ' FROM $metadataTable;');
+      await db.execute('DROP TABLE $metadataTable;');
+      await db.execute('ALTER TABLE $newMetadataTable RENAME TO $metadataTable;');
+    });
+
+    // rename column `contentId` to `id`
+    await db.transaction((txn) async {
+      const newAddressTable = '${addressTable}TEMP';
+      await db.execute('CREATE TABLE $newAddressTable('
+          'id INTEGER PRIMARY KEY'
+          ', addressLine TEXT'
+          ', countryCode TEXT'
+          ', countryName TEXT'
+          ', adminArea TEXT'
+          ', locality TEXT'
+          ')');
+      await db.rawInsert('INSERT INTO $newAddressTable(id,addressLine,countryCode,countryName,adminArea,locality)'
+          ' SELECT contentId,addressLine,countryCode,countryName,adminArea,locality'
+          ' FROM $addressTable;');
+      await db.execute('DROP TABLE $addressTable;');
+      await db.execute('ALTER TABLE $newAddressTable RENAME TO $addressTable;');
+    });
+
+    // rename column `contentId` to `id`
+    await db.transaction((txn) async {
+      const newVideoPlaybackTable = '${videoPlaybackTable}TEMP';
+      await db.execute('CREATE TABLE $newVideoPlaybackTable('
+          'id INTEGER PRIMARY KEY'
+          ', resumeTimeMillis INTEGER'
+          ')');
+      await db.rawInsert('INSERT INTO $newVideoPlaybackTable(id,resumeTimeMillis)'
+          ' SELECT contentId,resumeTimeMillis'
+          ' FROM $videoPlaybackTable;');
+      await db.execute('DROP TABLE $videoPlaybackTable;');
+      await db.execute('ALTER TABLE $newVideoPlaybackTable RENAME TO $videoPlaybackTable;');
+    });
+
+    // rename column `contentId` to `id`
+    // remove column `path`
+    await db.transaction((txn) async {
+      const newFavouriteTable = '${favouriteTable}TEMP';
+      await db.execute('CREATE TABLE $newFavouriteTable('
+          'id INTEGER PRIMARY KEY'
+          ')');
+      await db.rawInsert('INSERT INTO $newFavouriteTable(id)'
+          ' SELECT contentId'
+          ' FROM $favouriteTable;');
+      await db.execute('DROP TABLE $favouriteTable;');
+      await db.execute('ALTER TABLE $newFavouriteTable RENAME TO $favouriteTable;');
+    });
+
+    // rename column `contentId` to `entryId`
+    await db.transaction((txn) async {
+      const newCoverTable = '${coverTable}TEMP';
+      await db.execute('CREATE TABLE $newCoverTable('
+          'filter TEXT PRIMARY KEY'
+          ', entryId INTEGER'
+          ')');
+      await db.rawInsert('INSERT INTO $newCoverTable(filter,entryId)'
+          ' SELECT filter,contentId'
+          ' FROM $coverTable;');
+      await db.execute('DROP TABLE $coverTable;');
+      await db.execute('ALTER TABLE $newCoverTable RENAME TO $coverTable;');
+    });
+
+    // new table
+    await db.execute('CREATE TABLE $trashTable('
+        'id INTEGER PRIMARY KEY'
+        ', path TEXT'
+        ', dateMillis INTEGER'
+        ')');
   }
 }

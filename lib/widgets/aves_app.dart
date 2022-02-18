@@ -26,7 +26,6 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/providers/highlight_info_provider.dart';
 import 'package:aves/widgets/home_page.dart';
 import 'package:aves/widgets/welcome_page.dart';
-import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fijkplayer/fijkplayer.dart';
 import 'package:flutter/foundation.dart';
@@ -190,7 +189,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     final columns = (screenSize.width / tileExtent).ceil();
     final count = rows * columns;
     final collection = CollectionLens(source: _mediaStoreSource, listenToSource: false);
-    settings.topEntryIds = collection.sortedEntries.take(count).map((entry) => entry.contentId).whereNotNull().toList();
+    settings.topEntryIds = collection.sortedEntries.take(count).map((entry) => entry.id).toList();
     collection.dispose();
     debugPrint('Saved $count top entries in ${stopwatch.elapsed.inMilliseconds}ms');
   }

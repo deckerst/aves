@@ -100,6 +100,9 @@ class SettingsDefaults {
   // search
   static const saveSearchHistory = true;
 
+  // bin
+  static const enableBin = true;
+
   // accessibility
   static const accessibilityAnimations = AccessibilityAnimations.system;
   static const timeToTakeAction = AccessibilityTimeout.appDefault; // `timeToTakeAction` has a contextual default value

@@ -9,6 +9,7 @@ import 'package:aves/model/entry.dart';
 import 'package:aves/model/entry_metadata_edition.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/highlight.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/common/image_op_events.dart';
@@ -55,6 +56,9 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         break;
       case EntryAction.delete:
         _delete(context);
+        break;
+      case EntryAction.restore:
+        _move(context, moveType: MoveType.fromBin);
         break;
       case EntryAction.convert:
         _convert(context);
@@ -163,11 +167,17 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
   }
 
   Future<void> _delete(BuildContext context) async {
+    if (settings.enableBin && !entry.trashed) {
+      await _move(context, moveType: MoveType.toBin);
+      return;
+    }
+
+    final l10n = context.l10n;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) {
         return AvesDialog(
-          content: Text(context.l10n.deleteEntriesConfirmationDialogMessage(1)),
+          content: Text(l10n.deleteEntriesConfirmationDialogMessage(1)),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
@@ -175,7 +185,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
             ),
             TextButton(
               onPressed: () => Navigator.pop(context, true),
-              child: Text(context.l10n.deleteButtonLabel),
+              child: Text(l10n.deleteButtonLabel),
             ),
           ],
         );
@@ -186,11 +196,11 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     if (!await checkStoragePermission(context, {entry})) return;
 
     if (!await entry.delete()) {
-      showFeedback(context, context.l10n.genericFailureFeedback);
+      showFeedback(context, l10n.genericFailureFeedback);
     } else {
       final source = context.read<CollectionSource>();
       if (source.initialized) {
-        await source.removeEntries({entry.uri});
+        await source.removeEntries({entry.uri}, includeTrash: true);
       }
       EntryRemovedNotification(entry).dispatch(context);
     }
@@ -300,8 +310,14 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     await move(
       context,
       moveType: moveType,
-      selectedItems: {entry},
-      onSuccess: moveType == MoveType.move ? () => EntryRemovedNotification(entry).dispatch(context) : null,
+      entries: {entry},
+      onSuccess: {
+        MoveType.move,
+        MoveType.toBin,
+        MoveType.fromBin,
+      }.contains(moveType)
+          ? () => EntryRemovedNotification(entry).dispatch(context)
+          : null,
     );
   }
 

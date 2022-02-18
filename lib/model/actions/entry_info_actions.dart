@@ -1,4 +1,5 @@
 import 'package:aves/theme/icons.dart';
+import 'package:aves/theme/themes.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/widgets.dart';
 
@@ -11,6 +12,8 @@ enum EntryInfoAction {
   removeMetadata,
   // motion photo
   viewMotionPhotoVideo,
+  // debug
+  debug,
 }
 
 class EntryInfoActions {
@@ -41,11 +44,23 @@ extension ExtraEntryInfoAction on EntryInfoAction {
       // motion photo
       case EntryInfoAction.viewMotionPhotoVideo:
         return context.l10n.entryActionViewMotionPhotoVideo;
+      // debug
+      case EntryInfoAction.debug:
+        return 'Debug';
     }
   }
 
   Widget getIcon() {
-    return Icon(_getIconData());
+    final child = Icon(_getIconData());
+    switch (this) {
+      case EntryInfoAction.debug:
+        return ShaderMask(
+          shaderCallback: Themes.debugGradient.createShader,
+          child: child,
+        );
+      default:
+        return child;
+    }
   }
 
   IconData _getIconData() {
@@ -64,6 +79,9 @@ extension ExtraEntryInfoAction on EntryInfoAction {
       // motion photo
       case EntryInfoAction.viewMotionPhotoVideo:
         return AIcons.motionPhoto;
+      // debug
+      case EntryInfoAction.debug:
+        return AIcons.debug;
     }
   }
 }

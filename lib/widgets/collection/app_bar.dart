@@ -3,7 +3,9 @@ import 'dart:async';
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/actions/entry_set_actions.dart';
 import 'package:aves/model/entry.dart';
+import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/query.dart';
+import 'package:aves/model/filters/trash.dart';
 import 'package:aves/model/query.dart';
 import 'package:aves/model/selection.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -54,9 +56,13 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
 
   CollectionLens get collection => widget.collection;
 
+  bool get isTrash => collection.filters.contains(TrashFilter.instance);
+
   CollectionSource get source => collection.source;
 
-  bool get showFilterBar => collection.filters.any((v) => !(v is QueryFilter && v.live));
+  Set<CollectionFilter> get visibleFilters => collection.filters.where((v) => !(v is QueryFilter && v.live) && v is! TrashFilter).toSet();
+
+  bool get showFilterBar => visibleFilters.isNotEmpty;
 
   @override
   void initState() {
@@ -126,7 +132,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
                   children: [
                     if (showFilterBar)
                       FilterBar(
-                        filters: collection.filters.where((v) => !(v is QueryFilter && v.live)).toSet(),
+                        filters: visibleFilters,
                         removable: removableFilters,
                         onTap: removableFilters ? collection.removeFilter : null,
                       ),
@@ -185,7 +191,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       );
     } else {
       final appMode = context.watch<ValueNotifier<AppMode>>().value;
-      Widget title = Text(appMode.isPickingMedia ? l10n.collectionPickPageTitle : l10n.collectionPageTitle);
+      Widget title = Text(appMode.isPickingMedia ? l10n.collectionPickPageTitle : (isTrash ? l10n.binPageTitle : l10n.collectionPageTitle));
       if (appMode == AppMode.main) {
         title = SourceStateAwareAppBarTitle(
           title: title,
@@ -210,6 +216,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
           isSelecting: isSelecting,
           itemCount: collection.entryCount,
           selectedItemCount: selectedItemCount,
+          isTrash: isTrash,
         );
     bool canApply(EntrySetAction action) => _actionDelegate.canApply(
           action,
@@ -220,7 +227,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     final canApplyEditActions = selectedItemCount > 0;
 
     final browsingQuickActions = settings.collectionBrowsingQuickActions;
-    final selectionQuickActions = settings.collectionSelectionQuickActions;
+    final selectionQuickActions = isTrash ? [EntrySetAction.delete, EntrySetAction.restore] : settings.collectionSelectionQuickActions;
     final quickActionButtons = (isSelecting ? selectionQuickActions : browsingQuickActions).where(isVisible).map(
           (action) => _toActionButton(action, enabled: canApply(action), selection: selection),
         );
@@ -242,7 +249,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
               ...(isSelecting ? selectionMenuActions : browsingMenuActions).where(isVisible).map(
                     (action) => _toMenuItem(action, enabled: canApply(action), selection: selection),
                   ),
-              if (isSelecting)
+              if (isSelecting && !isTrash)
                 PopupMenuItem<EntrySetAction>(
                   enabled: canApplyEditActions,
                   padding: EdgeInsets.zero,
@@ -252,13 +259,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
                     title: context.l10n.collectionActionEdit,
                     items: [
                       _buildRotateAndFlipMenuItems(context, canApply: canApply),
-                      ...[
-                        EntrySetAction.editDate,
-                        EntrySetAction.editLocation,
-                        EntrySetAction.editRating,
-                        EntrySetAction.editTags,
-                        EntrySetAction.removeMetadata,
-                      ].map((action) => _toMenuItem(action, enabled: canApply(action), selection: selection)),
+                      ...EntrySetActions.edit.where(isVisible).map((action) => _toMenuItem(action, enabled: canApply(action), selection: selection)),
                     ],
                   ),
                 ),
@@ -430,9 +431,11 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       case EntrySetAction.map:
       case EntrySetAction.stats:
       case EntrySetAction.rescan:
+      case EntrySetAction.emptyBin:
       // selecting
       case EntrySetAction.share:
       case EntrySetAction.delete:
+      case EntrySetAction.restore:
       case EntrySetAction.copy:
       case EntrySetAction.move:
       case EntrySetAction.toggleFavourite:

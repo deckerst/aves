@@ -63,6 +63,20 @@ class PrivacySection extends StatelessWidget {
             title: Text(context.l10n.settingsSaveSearchHistory),
           ),
         ),
+        Selector<Settings, bool>(
+          selector: (context, s) => s.enableBin,
+          builder: (context, current, child) => SwitchListTile(
+            value: current,
+            onChanged: (v) {
+              settings.enableBin = v;
+              if (!v) {
+                settings.searchHistory = [];
+              }
+            },
+            title: Text(context.l10n.settingsEnableBin),
+            subtitle: Text(context.l10n.settingsEnableBinSubtitle),
+          ),
+        ),
         const HiddenItemsTile(),
         if (device.canGrantDirectoryAccess) const StorageAccessTile(),
       ],

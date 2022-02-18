@@ -67,14 +67,15 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
           final status = controller?.status ?? VideoStatus.idle;
           Widget child;
           if (status == VideoStatus.error) {
+            const action = VideoAction.playOutside;
             child = Align(
               alignment: AlignmentDirectional.centerEnd,
               child: OverlayButton(
                 scale: scale,
                 child: IconButton(
-                  icon: VideoAction.playOutside.getIcon(),
-                  onPressed: () => widget.onActionSelected(VideoAction.playOutside),
-                  tooltip: VideoAction.playOutside.getText(context),
+                  icon: action.getIcon(),
+                  onPressed: entry.trashed ? null : () => widget.onActionSelected(action),
+                  tooltip: action.getText(context),
                 ),
               ),
             );
@@ -327,12 +328,14 @@ class _ButtonRow extends StatelessWidget {
       case VideoAction.setSpeed:
         enabled = controller?.canSetSpeedNotifier.value ?? false;
         break;
-      case VideoAction.playOutside:
       case VideoAction.replay10:
       case VideoAction.skip10:
       case VideoAction.settings:
       case VideoAction.togglePlay:
         enabled = true;
+        break;
+      case VideoAction.playOutside:
+        enabled = !(controller?.entry.trashed ?? true);
         break;
     }
 

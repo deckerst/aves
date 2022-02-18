@@ -1,6 +1,10 @@
+import 'dart:async';
+
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/query.dart';
+import 'package:aves/model/filters/trash.dart';
 import 'package:aves/model/selection.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/widgets/collection/collection_grid.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
@@ -29,10 +33,25 @@ class CollectionPage extends StatefulWidget {
 }
 
 class _CollectionPageState extends State<CollectionPage> {
+  final List<StreamSubscription> _subscriptions = [];
+
   CollectionLens get collection => widget.collection;
 
   @override
+  void initState() {
+    super.initState();
+    _subscriptions.add(settings.updateStream.where((key) => key == Settings.enableBinKey).listen((_) {
+      if (!settings.enableBin) {
+        collection.removeFilter(TrashFilter.instance);
+      }
+    }));
+  }
+
+  @override
   void dispose() {
+    _subscriptions
+      ..forEach((sub) => sub.cancel())
+      ..clear();
     collection.dispose();
     super.dispose();
   }
@@ -64,6 +83,7 @@ class _CollectionPageState extends State<CollectionPage> {
                         child: const CollectionGrid(
                           // key is expected by test driver
                           key: Key('collection-grid'),
+                          settingsRouteKey: CollectionPage.routeName,
                         ),
                       ),
                     ),
@@ -73,7 +93,7 @@ class _CollectionPageState extends State<CollectionPage> {
             ),
           ),
         ),
-        drawer: const AppDrawer(),
+        drawer: AppDrawer(currentCollection: collection),
         resizeToAvoidBottomInset: false,
       ),
     );

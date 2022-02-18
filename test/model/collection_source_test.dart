@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:aves/model/actions/move_type.dart';
 import 'package:aves/model/availability.dart';
 import 'package:aves/model/covers.dart';
 import 'package:aves/model/db/db_metadata.dart';
@@ -45,6 +46,7 @@ void main() {
   const aTag = 'sometag';
   final australiaLatLng = LatLng(-26, 141);
   const australiaAddress = AddressDetails(
+    id: 0,
     countryCode: 'AU',
     countryName: 'AUS',
   );
@@ -96,7 +98,7 @@ void main() {
     (metadataFetchService as FakeMetadataFetchService).setUp(
       image1,
       CatalogMetadata(
-        contentId: image1.contentId,
+        id: image1.id,
         xmpSubjects: aTag,
         latitude: australiaLatLng.latitude,
         longitude: australiaLatLng.longitude,
@@ -119,7 +121,7 @@ void main() {
     (metadataFetchService as FakeMetadataFetchService).setUp(
       image1,
       CatalogMetadata(
-        contentId: image1.contentId,
+        id: image1.id,
         xmpSubjects: aTag,
         latitude: australiaLatLng.latitude,
         longitude: australiaLatLng.longitude,
@@ -129,7 +131,7 @@ void main() {
 
     final source = await _initSource();
     expect(image1.tags, {aTag});
-    expect(image1.addressDetails, australiaAddress.copyWith(contentId: image1.contentId));
+    expect(image1.addressDetails, australiaAddress.copyWith(id: image1.id));
 
     expect(source.visibleEntries.length, 0);
     expect(source.rawAlbums.length, 0);
@@ -168,15 +170,15 @@ void main() {
     const albumFilter = AlbumFilter(testAlbum, 'whatever');
     expect(albumFilter.test(image1), true);
     expect(covers.count, 0);
-    expect(covers.coverContentId(albumFilter), null);
+    expect(covers.coverEntryId(albumFilter), null);
 
-    await covers.set(albumFilter, image1.contentId);
+    await covers.set(albumFilter, image1.id);
     expect(covers.count, 1);
-    expect(covers.coverContentId(albumFilter), image1.contentId);
+    expect(covers.coverEntryId(albumFilter), image1.id);
 
     await covers.set(albumFilter, null);
     expect(covers.count, 0);
-    expect(covers.coverContentId(albumFilter), null);
+    expect(covers.coverEntryId(albumFilter), null);
   });
 
   test('favourites and covers are kept when renaming entries', () async {
@@ -188,13 +190,13 @@ void main() {
     final source = await _initSource();
     await image1.toggleFavourite();
     const albumFilter = AlbumFilter(testAlbum, 'whatever');
-    await covers.set(albumFilter, image1.contentId);
+    await covers.set(albumFilter, image1.id);
     await source.renameEntry(image1, 'image1b.jpg', persist: true);
 
     expect(favourites.count, 1);
     expect(image1.isFavourite, true);
     expect(covers.count, 1);
-    expect(covers.coverContentId(albumFilter), image1.contentId);
+    expect(covers.coverEntryId(albumFilter), image1.id);
   });
 
   test('favourites and covers are cleared when removing entries', () async {
@@ -206,13 +208,13 @@ void main() {
     final source = await _initSource();
     await image1.toggleFavourite();
     final albumFilter = AlbumFilter(image1.directory!, 'whatever');
-    await covers.set(albumFilter, image1.contentId);
-    await source.removeEntries({image1.uri});
+    await covers.set(albumFilter, image1.id);
+    await source.removeEntries({image1.uri}, includeTrash: true);
 
     expect(source.rawAlbums.length, 0);
     expect(favourites.count, 0);
     expect(covers.count, 0);
-    expect(covers.coverContentId(albumFilter), null);
+    expect(covers.coverEntryId(albumFilter), null);
   });
 
   test('albums are updated when moving entries', () async {
@@ -232,8 +234,8 @@ void main() {
 
     await source.updateAfterMove(
       todoEntries: {image1},
-      copy: false,
-      destinationAlbum: destinationAlbum,
+      moveType: MoveType.move,
+      destinationAlbums: {destinationAlbum},
       movedOps: {
         FakeMediaStoreService.moveOpEventFor(image1, sourceAlbum, destinationAlbum),
       },
@@ -256,8 +258,8 @@ void main() {
 
     await source.updateAfterMove(
       todoEntries: {image1},
-      copy: false,
-      destinationAlbum: destinationAlbum,
+      moveType: MoveType.move,
+      destinationAlbums: {destinationAlbum},
       movedOps: {
         FakeMediaStoreService.moveOpEventFor(image1, sourceAlbum, destinationAlbum),
       },
@@ -277,12 +279,12 @@ void main() {
     final source = await _initSource();
     expect(source.rawAlbums.length, 1);
     const sourceAlbumFilter = AlbumFilter(sourceAlbum, 'whatever');
-    await covers.set(sourceAlbumFilter, image1.contentId);
+    await covers.set(sourceAlbumFilter, image1.id);
 
     await source.updateAfterMove(
       todoEntries: {image1},
-      copy: false,
-      destinationAlbum: destinationAlbum,
+      moveType: MoveType.move,
+      destinationAlbums: {destinationAlbum},
       movedOps: {
         FakeMediaStoreService.moveOpEventFor(image1, sourceAlbum, destinationAlbum),
       },
@@ -290,7 +292,7 @@ void main() {
 
     expect(source.rawAlbums.length, 2);
     expect(covers.count, 0);
-    expect(covers.coverContentId(sourceAlbumFilter), null);
+    expect(covers.coverEntryId(sourceAlbumFilter), null);
   });
 
   test('favourites and covers are kept when renaming albums', () async {
@@ -302,7 +304,7 @@ void main() {
     final source = await _initSource();
     await image1.toggleFavourite();
     var albumFilter = const AlbumFilter(sourceAlbum, 'whatever');
-    await covers.set(albumFilter, image1.contentId);
+    await covers.set(albumFilter, image1.id);
     await source.renameAlbum(sourceAlbum, destinationAlbum, {
       image1
     }, {
@@ -313,7 +315,7 @@ void main() {
     expect(favourites.count, 1);
     expect(image1.isFavourite, true);
     expect(covers.count, 1);
-    expect(covers.coverContentId(albumFilter), image1.contentId);
+    expect(covers.coverEntryId(albumFilter), image1.id);
   });
 
   testWidgets('unique album names', (tester) async {
