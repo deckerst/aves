@@ -37,7 +37,20 @@ class CollectionNavTile extends StatelessWidget {
       child: ListTile(
         leading: leading,
         title: title,
-        trailing: trailing,
+        trailing: trailing != null
+            ? Builder(
+                builder: (context) {
+                  final trailingColor = IconTheme.of(context).color!.withOpacity(.6);
+                  return IconTheme.merge(
+                    data: IconThemeData(color: trailingColor),
+                    child: DefaultTextStyle.merge(
+                      style: TextStyle(color: trailingColor),
+                      child: trailing!,
+                    ),
+                  );
+                },
+              )
+            : null,
         dense: dense,
         onTap: () => _goToCollection(context),
         selected: context.currentRouteName == CollectionPage.routeName && isSelected(),
@@ -84,7 +97,6 @@ class AlbumNavTile extends StatelessWidget {
           ? const Icon(
               AIcons.removableStorage,
               size: 16,
-              color: Colors.grey,
             )
           : null,
       filter: filter,

@@ -29,7 +29,7 @@ mixin SizeAwareMixin {
     if (free == null) return true;
 
     late int needed;
-    int sumSize(sum, entry) => sum + entry.sizeBytes ?? 0;
+    int sumSize(sum, entry) => sum + (entry.sizeBytes ?? 0);
     switch (moveType) {
       case MoveType.copy:
       case MoveType.export:

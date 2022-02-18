@@ -81,6 +81,7 @@
   "entryInfoActionEditTags": "태그 수정",
   "entryInfoActionRemoveMetadata": "메타데이터 삭제",
 
+  "filterBinLabel": "휴지통",
   "filterFavouriteLabel": "즐겨찾기",
   "filterLocationEmptyLabel": "장소 없음",
   "filterTagEmptyLabel": "태그 없음",

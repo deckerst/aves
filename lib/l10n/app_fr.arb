@@ -81,6 +81,7 @@
   "entryInfoActionEditTags": "Modifier les libellés",
   "entryInfoActionRemoveMetadata": "Retirer les métadonnées",
 
+  "filterBinLabel": "Corbeille",
   "filterFavouriteLabel": "Favori",
   "filterLocationEmptyLabel": "Sans lieu",
   "filterTagEmptyLabel": "Sans libellé",
