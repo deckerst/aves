@@ -7,6 +7,7 @@
 
   "timeSeconds": "{seconds, plural, other{{seconds}초}}",
   "timeMinutes": "{minutes, plural, other{{minutes}분}}",
+  "timeDays": "{days, plural, other{{days}일}}",
   "focalLength": "{length} mm",
 
   "applyButtonLabel": "확인",
@@ -46,8 +47,10 @@
 
   "entryActionCopyToClipboard": "클립보드에 복사",
   "entryActionDelete": "삭제",
+  "entryActionConvert": "변환",
   "entryActionExport": "내보내기",
   "entryActionRename": "이름 변경",
+  "entryActionRestore": "복원",
   "entryActionRotateCCW": "좌회전",
   "entryActionRotateCW": "우회전",
   "entryActionFlip": "좌우 뒤집기",
@@ -156,6 +159,7 @@
   "noMatchingAppDialogTitle": "처리할 앱 없음",
   "noMatchingAppDialogMessage": "이 작업을 처리할 수 있는 앱이 없습니다.",
 
+  "binEntriesConfirmationDialogMessage": "{count, plural, =1{이 항목을 휴지통으로 이동하시겠습니까?} other{항목 {count}개를 휴지통으로 이동하시겠습니까?}}",
   "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{이 항목을 삭제하시겠습니까?} other{항목 {count}개를 삭제하시겠습니까?}}",
 
   "videoResumeDialogMessage": "{time}부터 재개하시겠습니까?",
@@ -271,6 +275,7 @@
   "collectionActionShowTitleSearch": "제목 필터 보기",
   "collectionActionHideTitleSearch": "제목 필터 숨기기",
   "collectionActionAddShortcut": "홈 화면에 추가",
+  "collectionActionEmptyBin": "휴지통 비우기",
   "collectionActionCopy": "앨범으로 복사",
   "collectionActionMove": "앨범으로 이동",
   "collectionActionRescan": "새로 분석",
@@ -348,6 +353,8 @@
 
   "tagPageTitle": "태그",
   "tagEmpty": "태그가 없습니다",
+
+  "binPageTitle": "휴지통",
 
   "searchCollectionFieldHint": "미디어 검색",
   "searchSectionRecent": "최근 검색기록",
@@ -449,6 +456,8 @@
   "settingsAllowInstalledAppAccessSubtitle": "앨범 표시 개선을 위해",
   "settingsAllowErrorReporting": "오류 보고서 보내기",
   "settingsSaveSearchHistory": "검색기록",
+  "settingsEnableBin": "휴지통 사용",
+  "settingsEnableBinSubtitle": "삭제한 항목을 30일 동안 보관하기",
 
   "settingsHiddenItemsTile": "숨겨진 항목",
   "settingsHiddenItemsTitle": "숨겨진 항목",

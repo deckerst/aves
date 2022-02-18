@@ -5,8 +5,9 @@
   "welcomeTermsToggle": "J’accepte les conditions d’utilisation",
   "itemCount": "{count, plural, =1{1 élément} other{{count} éléments}}",
 
-  "timeSeconds": "{seconds, plural, =1{1 seconde} other{{seconds} secondes}}",
-  "timeMinutes": "{minutes, plural, =1{1 minute} other{{minutes} minutes}}",
+  "timeSeconds": "{seconds, plural, =0{0 seconde} =1{1 seconde} other{{seconds} secondes}}",
+  "timeMinutes": "{minutes, plural, =0{0 minute} =1{1 minute} other{{minutes} minutes}}",
+  "timeDays": "{days, plural, =0{0 jour} =1{1 jour} other{{days} jours}}",
   "focalLength": "{length} mm",
 
   "applyButtonLabel": "ENREGISTRER",
@@ -46,8 +47,10 @@
 
   "entryActionCopyToClipboard": "Copier dans presse-papier",
   "entryActionDelete": "Supprimer",
+  "entryActionConvert": "Convertir",
   "entryActionExport": "Exporter",
   "entryActionRename": "Renommer",
+  "entryActionRestore": "Restaurer",
   "entryActionRotateCCW": "Pivoter à gauche",
   "entryActionRotateCW": "Pivoter à droite",
   "entryActionFlip": "Retourner horizontalement",
@@ -156,7 +159,8 @@
   "noMatchingAppDialogTitle": "App indisponible",
   "noMatchingAppDialogMessage": "Aucune app ne peut effectuer cette opération.",
 
-  "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{Voulez-vous vraiment supprimer cet élément ?} other{Voulez-vous vraiment supprimer ces {count} éléments ?}}",
+  "binEntriesConfirmationDialogMessage": "{count, plural, =1{Mettre cet élément à la corbeille ?} other{Mettre ces {count} éléments à la corbeille ?}}",
+  "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{Supprimer cet élément ?} other{Supprimer ces {count} éléments ?}}",
 
   "videoResumeDialogMessage": "Voulez-vous reprendre la lecture à {time} ?",
   "videoStartOverButtonLabel": "RECOMMENCER",
@@ -176,8 +180,8 @@
   "renameAlbumDialogLabel": "Nouveau nom",
   "renameAlbumDialogLabelAlreadyExistsHelper": "Le dossier existe déjà",
 
-  "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{Voulez-vous vraiment supprimer cet album et son élément ?} other{Voulez-vous vraiment supprimer cet album et ses {count} éléments ?}}",
-  "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{Voulez-vous vraiment supprimer ces albums et leur élément ?} other{Voulez-vous vraiment supprimer ces albums et leurs {count} éléments ?}}",
+  "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{Supprimer cet album et son élément ?} other{Supprimer cet album et ses {count} éléments ?}}",
+  "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{Supprimer ces albums et leur élément ?} other{Supprimer ces albums et leurs {count} éléments ?}}",
 
   "exportEntryDialogFormat": "Format :",
   "exportEntryDialogWidth": "Largeur",
@@ -271,6 +275,7 @@
   "collectionActionShowTitleSearch": "Filtrer les titres",
   "collectionActionHideTitleSearch": "Masquer le filtre",
   "collectionActionAddShortcut": "Créer un raccourci",
+  "collectionActionEmptyBin": "Vider la corbeille",
   "collectionActionCopy": "Copier vers l’album",
   "collectionActionMove": "Déplacer vers l’album",
   "collectionActionRescan": "Réanalyser",
@@ -348,6 +353,8 @@
 
   "tagPageTitle": "Libellés",
   "tagEmpty": "Aucun libellé",
+
+  "binPageTitle": "Corbeille",
 
   "searchCollectionFieldHint": "Recherche",
   "searchSectionRecent": "Historique",
@@ -449,6 +456,8 @@
   "settingsAllowInstalledAppAccessSubtitle": "Pour un affichage amélioré des albums",
   "settingsAllowErrorReporting": "Autoriser l’envoi de rapports d’erreur",
   "settingsSaveSearchHistory": "Maintenir un historique des recherches",
+  "settingsEnableBin": "Utiliser la corbeille",
+  "settingsEnableBinSubtitle": "Conserver les éléments supprimés pendant 30 jours",
 
   "settingsHiddenItemsTile": "Éléments masqués",
   "settingsHiddenItemsTitle": "Éléments masqués",

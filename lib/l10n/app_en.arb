@@ -261,13 +261,13 @@
   "noMatchingAppDialogTitle": "No Matching App",
   "noMatchingAppDialogMessage": "There are no apps that can handle this.",
 
-  "binEntriesConfirmationDialogMessage": "{count, plural, =1{Are you sure you want to move this item to the recycle bin?} other{Are you sure you want to move these {count} items to the recycle bin?}}",
+  "binEntriesConfirmationDialogMessage": "{count, plural, =1{Move this item to the recycle bin?} other{Move these {count} items to the recycle bin?}}",
   "@binEntriesConfirmationDialogMessage": {
     "placeholders": {
       "count": {}
     }
   },
-  "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{Are you sure you want to delete this item?} other{Are you sure you want to delete these {count} items?}}",
+  "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{Delete this item?} other{Delete these {count} items?}}",
   "@deleteEntriesConfirmationDialogMessage": {
     "placeholders": {
       "count": {}
@@ -300,13 +300,13 @@
   "renameAlbumDialogLabel": "New name",
   "renameAlbumDialogLabelAlreadyExistsHelper": "Directory already exists",
 
-  "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{Are you sure you want to delete this album and its item?} other{Are you sure you want to delete this album and its {count} items?}}",
+  "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{Delete this album and its item?} other{Delete this album and its {count} items?}}",
   "@deleteSingleAlbumConfirmationDialogMessage": {
     "placeholders": {
       "count": {}
     }
   },
-  "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{Are you sure you want to delete these albums and their item?} other{Are you sure you want to delete these albums and their {count} items?}}",
+  "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{Delete these albums and their item?} other{Delete these albums and their {count} items?}}",
   "@deleteMultiAlbumConfirmationDialogMessage": {
     "placeholders": {
       "count": {}
