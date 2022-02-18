@@ -42,15 +42,16 @@ class Settings extends ChangeNotifier {
   static const isInstalledAppAccessAllowedKey = 'is_installed_app_access_allowed';
   static const isErrorReportingAllowedKey = 'is_crashlytics_enabled';
   static const localeKey = 'locale';
-  static const mustBackTwiceToExitKey = 'must_back_twice_to_exit';
-  static const keepScreenOnKey = 'keep_screen_on';
-  static const homePageKey = 'home_page';
   static const catalogTimeZoneKey = 'catalog_time_zone';
   static const tileExtentPrefixKey = 'tile_extent_';
   static const tileLayoutPrefixKey = 'tile_layout_';
   static const topEntryIdsKey = 'top_entry_ids';
 
-  // drawer
+  // navigation
+  static const mustBackTwiceToExitKey = 'must_back_twice_to_exit';
+  static const keepScreenOnKey = 'keep_screen_on';
+  static const homePageKey = 'home_page';
+  static const confirmationDialogsKey = 'confirmation_dialogs';
   static const drawerTypeBookmarksKey = 'drawer_type_bookmarks';
   static const drawerAlbumBookmarksKey = 'drawer_album_bookmarks';
   static const drawerPageBookmarksKey = 'drawer_page_bookmarks';
@@ -236,18 +237,6 @@ class Settings extends ChangeNotifier {
     return _appliedLocale!;
   }
 
-  bool get mustBackTwiceToExit => getBoolOrDefault(mustBackTwiceToExitKey, SettingsDefaults.mustBackTwiceToExit);
-
-  set mustBackTwiceToExit(bool newValue) => setAndNotify(mustBackTwiceToExitKey, newValue);
-
-  KeepScreenOn get keepScreenOn => getEnumOrDefault(keepScreenOnKey, SettingsDefaults.keepScreenOn, KeepScreenOn.values);
-
-  set keepScreenOn(KeepScreenOn newValue) => setAndNotify(keepScreenOnKey, newValue.toString());
-
-  HomePageSetting get homePage => getEnumOrDefault(homePageKey, SettingsDefaults.homePage, HomePageSetting.values);
-
-  set homePage(HomePageSetting newValue) => setAndNotify(homePageKey, newValue.toString());
-
   String get catalogTimeZone => getString(catalogTimeZoneKey) ?? '';
 
   set catalogTimeZone(String newValue) => setAndNotify(catalogTimeZoneKey, newValue);
@@ -264,7 +253,23 @@ class Settings extends ChangeNotifier {
 
   set topEntryIds(List<int>? newValue) => setAndNotify(topEntryIdsKey, newValue?.map((id) => id.toString()).whereNotNull().toList());
 
-  // drawer
+  // navigation
+
+  bool get mustBackTwiceToExit => getBoolOrDefault(mustBackTwiceToExitKey, SettingsDefaults.mustBackTwiceToExit);
+
+  set mustBackTwiceToExit(bool newValue) => setAndNotify(mustBackTwiceToExitKey, newValue);
+
+  KeepScreenOn get keepScreenOn => getEnumOrDefault(keepScreenOnKey, SettingsDefaults.keepScreenOn, KeepScreenOn.values);
+
+  set keepScreenOn(KeepScreenOn newValue) => setAndNotify(keepScreenOnKey, newValue.toString());
+
+  HomePageSetting get homePage => getEnumOrDefault(homePageKey, SettingsDefaults.homePage, HomePageSetting.values);
+
+  set homePage(HomePageSetting newValue) => setAndNotify(homePageKey, newValue.toString());
+
+  List<ConfirmationDialog> get confirmationDialogs => getEnumListOrDefault(confirmationDialogsKey, SettingsDefaults.confirmationDialogs, ConfirmationDialog.values);
+
+  set confirmationDialogs(List<ConfirmationDialog> newValue) => setAndNotify(confirmationDialogsKey, newValue.map((v) => v.toString()).toList());
 
   List<CollectionFilter?> get drawerTypeBookmarks =>
       (getStringList(drawerTypeBookmarksKey))?.map((v) {
@@ -662,6 +667,7 @@ class Settings extends ChangeNotifier {
                 debugPrint('failed to import key=$key, value=$value is not a string');
               }
               break;
+            case confirmationDialogsKey:
             case drawerTypeBookmarksKey:
             case drawerAlbumBookmarksKey:
             case drawerPageBookmarksKey:

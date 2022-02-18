@@ -7,6 +7,7 @@ import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/trash.dart';
 import 'package:aves/model/highlight.dart';
+import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/common/image_op_events.dart';
@@ -19,7 +20,7 @@ import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
 import 'package:aves/widgets/common/action_mixins/size_aware.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:aves/widgets/dialogs/aves_dialog.dart';
+import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
 import 'package:aves/widgets/filter_grids/album_pick.dart';
 import 'package:collection/collection.dart';
@@ -41,25 +42,12 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
 
     final l10n = context.l10n;
     if (toBin) {
-      final confirmed = await showDialog<bool>(
+      if (!(await showConfirmationDialog(
         context: context,
-        builder: (context) {
-          return AvesDialog(
-            content: Text(l10n.binEntriesConfirmationDialogMessage(todoCount)),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
-              ),
-              TextButton(
-                onPressed: () => Navigator.pop(context, true),
-                child: Text(l10n.deleteButtonLabel),
-              ),
-            ],
-          );
-        },
-      );
-      if (confirmed == null || !confirmed) return;
+        type: ConfirmationDialog.moveToBin,
+        message: l10n.binEntriesConfirmationDialogMessage(todoCount),
+        confirmationButtonLabel: l10n.deleteButtonLabel,
+      ))) return;
     }
 
     final source = context.read<CollectionSource>();

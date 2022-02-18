@@ -10,6 +10,7 @@ import 'package:aves/model/favourites.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/query.dart';
 import 'package:aves/model/selection.dart';
+import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/analysis_controller.dart';
 import 'package:aves/model/source/collection_lens.dart';
@@ -24,6 +25,7 @@ import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
 import 'package:aves/widgets/common/action_mixins/size_aware.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/add_shortcut_dialog.dart';
+import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/map/map_page.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
@@ -262,25 +264,12 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     final selectionDirs = entries.map((e) => e.directory).whereNotNull().toSet();
     final todoCount = entries.length;
 
-    final confirmed = await showDialog<bool>(
+    if (!(await showConfirmationDialog(
       context: context,
-      builder: (context) {
-        return AvesDialog(
-          content: Text(l10n.deleteEntriesConfirmationDialogMessage(todoCount)),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
-            ),
-            TextButton(
-              onPressed: () => Navigator.pop(context, true),
-              child: Text(l10n.deleteButtonLabel),
-            ),
-          ],
-        );
-      },
-    );
-    if (confirmed == null || !confirmed) return;
+      type: ConfirmationDialog.delete,
+      message: l10n.deleteEntriesConfirmationDialogMessage(todoCount),
+      confirmationButtonLabel: l10n.deleteButtonLabel,
+    ))) return;
 
     if (!pureTrash && !await checkStoragePermissionForAlbums(context, selectionDirs, entries: entries)) return;
 

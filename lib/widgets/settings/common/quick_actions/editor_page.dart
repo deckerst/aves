@@ -97,7 +97,7 @@ class _QuickActionEditorBodyState<T extends Object> extends State<QuickActionEdi
   @override
   void initState() {
     super.initState();
-    _quickActions = widget.load();
+    _quickActions = widget.load().toList();
   }
 
   @override
