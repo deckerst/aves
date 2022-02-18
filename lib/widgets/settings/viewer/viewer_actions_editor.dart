@@ -44,7 +44,7 @@ class ViewerActionEditorPage extends StatelessWidget {
       allAvailableActions: allAvailableActions,
       actionIcon: (action) => action.getIcon(),
       actionText: (context, action) => action.getText(context),
-      load: () => settings.viewerQuickActions.toList(),
+      load: () => settings.viewerQuickActions,
       save: (actions) => settings.viewerQuickActions = actions,
     );
   }

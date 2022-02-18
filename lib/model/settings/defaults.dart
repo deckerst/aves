@@ -16,12 +16,13 @@ class SettingsDefaults {
   static const canUseAnalysisService = true;
   static const isInstalledAppAccessAllowed = false;
   static const isErrorReportingAllowed = false;
+  static const tileLayout = TileLayout.grid;
+
+  // navigation
   static const mustBackTwiceToExit = true;
   static const keepScreenOn = KeepScreenOn.viewerOnly;
   static const homePage = HomePageSetting.collection;
-  static const tileLayout = TileLayout.grid;
-
-  // drawer
+  static const confirmationDialogs = ConfirmationDialog.values;
   static final drawerTypeBookmarks = [
     null,
     MimeFilter.video,

@@ -56,6 +56,7 @@
   "resetButtonTooltip": "Reset",
 
   "doubleBackExitMessage": "Tap “back” again to exit.",
+  "doNotAskAgain": "Do not ask again",
 
   "sourceStateLoading": "Loading",
   "sourceStateCataloguing": "Cataloguing",
@@ -568,6 +569,11 @@
   "settingsKeepScreenOnTile": "Keep screen on",
   "settingsKeepScreenOnTitle": "Keep Screen On",
   "settingsDoubleBackExit": "Tap “back” twice to exit",
+
+  "settingsConfirmationDialogTile": "Confirmation dialogs",
+  "settingsConfirmationDialogTitle": "Confirmation Dialogs",
+  "settingsConfirmationDialogDeleteItems": "Ask before deleting items forever",
+  "settingsConfirmationDialogMoveToBinItems": "Ask before moving items to the recycle bin",
 
   "settingsNavigationDrawerTile": "Navigation menu",
   "settingsNavigationDrawerEditorTitle": "Navigation Menu",
