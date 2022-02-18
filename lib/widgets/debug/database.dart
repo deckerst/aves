@@ -3,6 +3,7 @@ import 'package:aves/model/entry.dart';
 import 'package:aves/model/favourites.dart';
 import 'package:aves/model/metadata/address.dart';
 import 'package:aves/model/metadata/catalog.dart';
+import 'package:aves/model/metadata/trash.dart';
 import 'package:aves/model/video_playback.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/utils/file_utils.dart';
@@ -21,7 +22,8 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
   late Future<Set<AvesEntry>> _dbEntryLoader;
   late Future<Map<int?, int?>> _dbDateLoader;
   late Future<List<CatalogMetadata>> _dbMetadataLoader;
-  late Future<List<AddressDetails>> _dbAddressLoader;
+  late Future<Set<AddressDetails>> _dbAddressLoader;
+  late Future<Set<TrashDetails>> _dbTrashLoader;
   late Future<Set<FavouriteRow>> _dbFavouritesLoader;
   late Future<Set<CoverRow>> _dbCoversLoader;
   late Future<Set<VideoPlaybackRow>> _dbVideoPlaybackLoader;
@@ -127,7 +129,7 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                   );
                 },
               ),
-              FutureBuilder<List>(
+              FutureBuilder<Set>(
                 future: _dbAddressLoader,
                 builder: (context, snapshot) {
                   if (snapshot.hasError) return Text(snapshot.error.toString());
@@ -142,6 +144,27 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                       const SizedBox(width: 8),
                       ElevatedButton(
                         onPressed: () => metadataDb.clearAddresses().then((_) => _startDbReport()),
+                        child: const Text('Clear'),
+                      ),
+                    ],
+                  );
+                },
+              ),
+              FutureBuilder<Set>(
+                future: _dbTrashLoader,
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) return Text(snapshot.error.toString());
+
+                  if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
+
+                  return Row(
+                    children: [
+                      Expanded(
+                        child: Text('trash rows: ${snapshot.data!.length}'),
+                      ),
+                      const SizedBox(width: 8),
+                      ElevatedButton(
+                        onPressed: () => metadataDb.clearTrashDetails().then((_) => _startDbReport()),
                         child: const Text('Clear'),
                       ),
                     ],
@@ -224,6 +247,7 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
     _dbDateLoader = metadataDb.loadDates();
     _dbMetadataLoader = metadataDb.loadAllMetadataEntries();
     _dbAddressLoader = metadataDb.loadAllAddresses();
+    _dbTrashLoader = metadataDb.loadAllTrashDetails();
     _dbFavouritesLoader = metadataDb.loadAllFavourites();
     _dbCoversLoader = metadataDb.loadAllCovers();
     _dbVideoPlaybackLoader = metadataDb.loadAllVideoPlayback();

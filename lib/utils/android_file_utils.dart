@@ -8,6 +8,8 @@ import 'package:flutter/widgets.dart';
 final AndroidFileUtils androidFileUtils = AndroidFileUtils._private();
 
 class AndroidFileUtils {
+  static const String trashDirPath = '#trash';
+
   late final String separator, primaryStorage, dcimPath, downloadPath, moviesPath, picturesPath, avesVideoCapturesPath;
   late final Set<String> videoCapturesPaths;
   Set<StorageVolume> storageVolumes = {};

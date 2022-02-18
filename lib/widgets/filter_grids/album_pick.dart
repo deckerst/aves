@@ -131,11 +131,13 @@ class _AlbumPickAppBar extends StatelessWidget {
       switch (moveType) {
         case MoveType.copy:
           return context.l10n.albumPickPageTitleCopy;
-        case MoveType.export:
-          return context.l10n.albumPickPageTitleExport;
         case MoveType.move:
           return context.l10n.albumPickPageTitleMove;
-        default:
+        case MoveType.export:
+          return context.l10n.albumPickPageTitleExport;
+        case MoveType.toBin:
+        case MoveType.fromBin:
+        case null:
           return context.l10n.albumPickPageTitlePick;
       }
     }

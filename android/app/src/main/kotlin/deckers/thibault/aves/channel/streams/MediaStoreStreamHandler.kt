@@ -9,20 +9,22 @@ import deckers.thibault.aves.model.provider.MediaStoreImageProvider
 import deckers.thibault.aves.utils.LogUtils
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.EventChannel.EventSink
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
 class MediaStoreStreamHandler(private val context: Context, arguments: Any?) : EventChannel.StreamHandler {
+    private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private lateinit var eventSink: EventSink
     private lateinit var handler: Handler
 
-    private var knownEntries: Map<Int, Int?>? = null
+    private var knownEntries: Map<Int?, Int?>? = null
 
     init {
         if (arguments is Map<*, *>) {
             @Suppress("unchecked_cast")
-            knownEntries = arguments["knownEntries"] as Map<Int, Int?>?
+            knownEntries = arguments["knownEntries"] as Map<Int?, Int?>?
         }
     }
 
@@ -30,7 +32,7 @@ class MediaStoreStreamHandler(private val context: Context, arguments: Any?) : E
         this.eventSink = eventSink
         handler = Handler(Looper.getMainLooper())
 
-        GlobalScope.launch(Dispatchers.IO) { fetchAll() }
+        ioScope.launch { fetchAll() }
     }
 
     override fun onCancel(arguments: Any?) {}

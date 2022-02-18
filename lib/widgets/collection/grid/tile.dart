@@ -66,7 +66,7 @@ class InteractiveTile extends StatelessWidget {
           // hero tag should include a collection identifier, so that it animates
           // between different views of the entry in the same collection (e.g. thumbnails <-> viewer)
           // but not between different collection instances, even with the same attributes (e.g. reloading collection page via drawer)
-          heroTagger: () => Object.hashAll([collection.id, entry.uri]),
+          heroTagger: () => Object.hashAll([collection.id, entry.id]),
         ),
       ),
     );
@@ -81,7 +81,7 @@ class InteractiveTile extends StatelessWidget {
           final viewerCollection = collection.copyWith(
             listenToSource: false,
           );
-          assert(viewerCollection.sortedEntries.map((e) => e.contentId).contains(entry.contentId));
+          assert(viewerCollection.sortedEntries.map((entry) => entry.id).contains(entry.id));
           return EntryViewerPage(
             collection: viewerCollection,
             initialEntry: entry,

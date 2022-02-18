@@ -69,6 +69,7 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
             "filesDir" to context.filesDir,
             "obbDir" to context.obbDir,
             "externalCacheDir" to context.externalCacheDir,
+            "externalFilesDir" to context.getExternalFilesDir(null),
         ).apply {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 putAll(
@@ -82,6 +83,8 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
                 put("dataDir", context.dataDir)
             }
         }.mapValues { it.value?.path }.toMutableMap()
+        dirs["externalCacheDirs"] = context.externalCacheDirs.joinToString { it.path }
+        dirs["externalFilesDirs"] = context.getExternalFilesDirs(null).joinToString { it.path }
 
         // used by flutter plugin `path_provider`
         dirs.putAll(

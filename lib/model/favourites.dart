@@ -19,11 +19,11 @@ class Favourites with ChangeNotifier {
 
   int get count => _rows.length;
 
-  Set<int> get all => Set.unmodifiable(_rows.map((v) => v.contentId));
+  Set<int> get all => Set.unmodifiable(_rows.map((v) => v.entryId));
 
-  bool isFavourite(AvesEntry entry) => _rows.any((row) => row.contentId == entry.contentId);
+  bool isFavourite(AvesEntry entry) => _rows.any((row) => row.entryId == entry.id);
 
-  FavouriteRow _entryToRow(AvesEntry entry) => FavouriteRow(contentId: entry.contentId!, path: entry.path!);
+  FavouriteRow _entryToRow(AvesEntry entry) => FavouriteRow(entryId: entry.id);
 
   Future<void> add(Set<AvesEntry> entries) async {
     final newRows = entries.map(_entryToRow);
@@ -34,25 +34,13 @@ class Favourites with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> remove(Set<AvesEntry> entries) async {
-    final contentIds = entries.map((entry) => entry.contentId).toSet();
-    final removedRows = _rows.where((row) => contentIds.contains(row.contentId)).toSet();
+  Future<void> removeEntries(Set<AvesEntry> entries) => removeIds(entries.map((entry) => entry.id).toSet());
+
+  Future<void> removeIds(Set<int> entryIds) async {
+    final removedRows = _rows.where((row) => entryIds.contains(row.entryId)).toSet();
 
     await metadataDb.removeFavourites(removedRows);
     removedRows.forEach(_rows.remove);
-
-    notifyListeners();
-  }
-
-  Future<void> moveEntry(int oldContentId, AvesEntry entry) async {
-    final oldRow = _rows.firstWhereOrNull((row) => row.contentId == oldContentId);
-    if (oldRow == null) return;
-
-    final newRow = _entryToRow(entry);
-
-    await metadataDb.updateFavouriteId(oldContentId, newRow);
-    _rows.remove(oldRow);
-    _rows.add(newRow);
 
     notifyListeners();
   }
@@ -69,7 +57,7 @@ class Favourites with ChangeNotifier {
   Map<String, List<String>>? export(CollectionSource source) {
     final visibleEntries = source.visibleEntries;
     final ids = favourites.all;
-    final paths = visibleEntries.where((entry) => ids.contains(entry.contentId)).map((entry) => entry.path).whereNotNull().toSet();
+    final paths = visibleEntries.where((entry) => ids.contains(entry.id)).map((entry) => entry.path).whereNotNull().toSet();
     final byVolume = groupBy<String, StorageVolume?>(paths, androidFileUtils.getStorageVolume);
     final jsonMap = Map.fromEntries(byVolume.entries.map((kv) {
       final volume = kv.key?.path;
@@ -117,26 +105,22 @@ class Favourites with ChangeNotifier {
 
 @immutable
 class FavouriteRow extends Equatable {
-  final int contentId;
-  final String path;
+  final int entryId;
 
   @override
-  List<Object?> get props => [contentId, path];
+  List<Object?> get props => [entryId];
 
   const FavouriteRow({
-    required this.contentId,
-    required this.path,
+    required this.entryId,
   });
 
   factory FavouriteRow.fromMap(Map map) {
     return FavouriteRow(
-      contentId: map['contentId'] ?? 0,
-      path: map['path'] ?? '',
+      entryId: map['id'] as int,
     );
   }
 
   Map<String, dynamic> toMap() => {
-        'contentId': contentId,
-        'path': path,
+        'id': entryId,
       };
 }

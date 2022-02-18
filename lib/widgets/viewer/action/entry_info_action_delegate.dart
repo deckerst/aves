@@ -9,7 +9,9 @@ import 'package:aves/widgets/common/action_mixins/entry_editor.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
 import 'package:aves/widgets/viewer/action/single_entry_editor.dart';
+import 'package:aves/widgets/viewer/debug/debug_page.dart';
 import 'package:aves/widgets/viewer/embedded/notifications.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEditorMixin, SingleEntryEditorMixin {
@@ -35,6 +37,9 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
       // motion photo
       case EntryInfoAction.viewMotionPhotoVideo:
         return entry.isMotionPhoto;
+      // debug
+      case EntryInfoAction.debug:
+        return kDebugMode;
     }
   }
 
@@ -53,6 +58,9 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
         return entry.canRemoveMetadata;
       // motion photo
       case EntryInfoAction.viewMotionPhotoVideo:
+        return true;
+      // debug
+      case EntryInfoAction.debug:
         return true;
     }
   }
@@ -79,6 +87,10 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
       // motion photo
       case EntryInfoAction.viewMotionPhotoVideo:
         OpenEmbeddedDataNotification.motionPhotoVideo().dispatch(context);
+        break;
+      // debug
+      case EntryInfoAction.debug:
+        _goToDebug(context);
         break;
     }
     _eventStreamController.add(ActionEndedEvent(action));
@@ -121,5 +133,15 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
     if (types == null) return;
 
     await edit(context, () => entry.removeMetadata(types));
+  }
+
+  void _goToDebug(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        settings: const RouteSettings(name: ViewerDebugPage.routeName),
+        builder: (context) => ViewerDebugPage(entry: entry),
+      ),
+    );
   }
 }

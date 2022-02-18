@@ -63,6 +63,8 @@ dependencies:
   provider:
   screen_brightness:
   shared_preferences:
+# TODO TLAD as of 2022/02/12, latest version (v2.0.11) fails to load from analysis service (target wrong channel?)
+  shared_preferences_android: 2.0.10
   sqflite:
   streams_channel:
     git:

@@ -2,6 +2,7 @@ import 'package:aves/image_providers/app_icon_image_provider.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/android_file_utils.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/grid/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -173,6 +174,31 @@ class RatingIcon extends StatelessWidget {
         icon: AIcons.rating,
         text: '${entry.rating}',
       ),
+    );
+  }
+}
+
+class TrashIcon extends StatelessWidget {
+  final int? trashDaysLeft;
+
+  const TrashIcon({
+    Key? key,
+    required this.trashDaysLeft,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final child = OverlayIcon(
+      icon: AIcons.bin,
+      text: trashDaysLeft != null ? context.l10n.timeDays(trashDaysLeft!) : null,
+    );
+
+    return DefaultTextStyle(
+      style: TextStyle(
+        color: Colors.grey.shade200,
+        fontSize: context.select<GridThemeData, double>((t) => t.fontSize),
+      ),
+      child: child,
     );
   }
 }

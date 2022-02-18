@@ -11,7 +11,7 @@ class FakeMediaFileService extends Fake implements MediaFileService {
     Iterable<AvesEntry> entries, {
     required String newName,
   }) {
-    final contentId = FakeMediaStoreService.nextContentId;
+    final contentId = FakeMediaStoreService.nextId;
     final entry = entries.first;
     return Stream.value(MoveOpEvent(
       success: true,

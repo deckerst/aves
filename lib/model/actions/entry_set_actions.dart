@@ -12,6 +12,7 @@ enum EntrySetAction {
   searchCollection,
   toggleTitleSearch,
   addShortcut,
+  emptyBin,
   // browsing or selecting
   map,
   stats,
@@ -19,6 +20,7 @@ enum EntrySetAction {
   // selecting
   share,
   delete,
+  restore,
   copy,
   move,
   toggleFavourite,
@@ -47,11 +49,13 @@ class EntrySetActions {
     EntrySetAction.map,
     EntrySetAction.stats,
     EntrySetAction.rescan,
+    EntrySetAction.emptyBin,
   ];
 
   static const selection = [
     EntrySetAction.share,
     EntrySetAction.delete,
+    EntrySetAction.restore,
     EntrySetAction.copy,
     EntrySetAction.move,
     EntrySetAction.toggleFavourite,
@@ -59,6 +63,14 @@ class EntrySetActions {
     EntrySetAction.stats,
     EntrySetAction.rescan,
     // editing actions are in their subsection
+  ];
+
+  static const edit = [
+    EntrySetAction.editDate,
+    EntrySetAction.editLocation,
+    EntrySetAction.editRating,
+    EntrySetAction.editTags,
+    EntrySetAction.removeMetadata,
   ];
 }
 
@@ -82,6 +94,8 @@ extension ExtraEntrySetAction on EntrySetAction {
         return context.l10n.collectionActionShowTitleSearch;
       case EntrySetAction.addShortcut:
         return context.l10n.collectionActionAddShortcut;
+      case EntrySetAction.emptyBin:
+        return context.l10n.collectionActionEmptyBin;
       // browsing or selecting
       case EntrySetAction.map:
         return context.l10n.menuActionMap;
@@ -94,6 +108,8 @@ extension ExtraEntrySetAction on EntrySetAction {
         return context.l10n.entryActionShare;
       case EntrySetAction.delete:
         return context.l10n.entryActionDelete;
+      case EntrySetAction.restore:
+        return context.l10n.entryActionRestore;
       case EntrySetAction.copy:
         return context.l10n.collectionActionCopy;
       case EntrySetAction.move:
@@ -143,6 +159,8 @@ extension ExtraEntrySetAction on EntrySetAction {
         return AIcons.filter;
       case EntrySetAction.addShortcut:
         return AIcons.addShortcut;
+      case EntrySetAction.emptyBin:
+        return AIcons.emptyBin;
       // browsing or selecting
       case EntrySetAction.map:
         return AIcons.map;
@@ -155,6 +173,8 @@ extension ExtraEntrySetAction on EntrySetAction {
         return AIcons.share;
       case EntrySetAction.delete:
         return AIcons.delete;
+      case EntrySetAction.restore:
+        return AIcons.restore;
       case EntrySetAction.copy:
         return AIcons.copy;
       case EntrySetAction.move:

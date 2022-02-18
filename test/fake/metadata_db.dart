@@ -1,19 +1,25 @@
 import 'package:aves/model/covers.dart';
+import 'package:aves/model/db/db_metadata.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/favourites.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/metadata/address.dart';
 import 'package:aves/model/metadata/catalog.dart';
-import 'package:aves/model/db/db_metadata.dart';
+import 'package:aves/model/metadata/trash.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 class FakeMetadataDb extends Fake implements MetadataDb {
+  static int _lastId = 0;
+
+  @override
+  int get nextId => ++_lastId;
+
   @override
   Future<void> init() => SynchronousFuture(null);
 
   @override
-  Future<void> removeIds(Set<int> contentIds, {Set<EntryDataType>? dataTypes}) => SynchronousFuture(null);
+  Future<void> removeIds(Set<int> ids, {Set<EntryDataType>? dataTypes}) => SynchronousFuture(null);
 
   // entries
 
@@ -24,7 +30,7 @@ class FakeMetadataDb extends Fake implements MetadataDb {
   Future<void> saveEntries(Iterable<AvesEntry> entries) => SynchronousFuture(null);
 
   @override
-  Future<void> updateEntryId(int oldId, AvesEntry entry) => SynchronousFuture(null);
+  Future<void> updateEntry(int id, AvesEntry entry) => SynchronousFuture(null);
 
   // date taken
 
@@ -40,18 +46,29 @@ class FakeMetadataDb extends Fake implements MetadataDb {
   Future<void> saveMetadata(Set<CatalogMetadata> metadataEntries) => SynchronousFuture(null);
 
   @override
-  Future<void> updateMetadataId(int oldId, CatalogMetadata? metadata) => SynchronousFuture(null);
+  Future<void> updateMetadata(int id, CatalogMetadata? metadata) => SynchronousFuture(null);
 
   // address
 
   @override
-  Future<List<AddressDetails>> loadAllAddresses() => SynchronousFuture([]);
+  Future<Set<AddressDetails>> loadAllAddresses() => SynchronousFuture({});
 
   @override
   Future<void> saveAddresses(Set<AddressDetails> addresses) => SynchronousFuture(null);
 
   @override
-  Future<void> updateAddressId(int oldId, AddressDetails? address) => SynchronousFuture(null);
+  Future<void> updateAddress(int id, AddressDetails? address) => SynchronousFuture(null);
+
+  // trash
+
+  @override
+  Future<void> clearTrashDetails() => SynchronousFuture(null);
+
+  @override
+  Future<Set<TrashDetails>> loadAllTrashDetails() => SynchronousFuture({});
+
+  @override
+  Future<void> updateTrash(int id, TrashDetails? details) => SynchronousFuture(null);
 
   // favourites
 
@@ -62,7 +79,7 @@ class FakeMetadataDb extends Fake implements MetadataDb {
   Future<void> addFavourites(Iterable<FavouriteRow> rows) => SynchronousFuture(null);
 
   @override
-  Future<void> updateFavouriteId(int oldId, FavouriteRow row) => SynchronousFuture(null);
+  Future<void> updateFavouriteId(int id, FavouriteRow row) => SynchronousFuture(null);
 
   @override
   Future<void> removeFavourites(Iterable<FavouriteRow> rows) => SynchronousFuture(null);
@@ -76,7 +93,7 @@ class FakeMetadataDb extends Fake implements MetadataDb {
   Future<void> addCovers(Iterable<CoverRow> rows) => SynchronousFuture(null);
 
   @override
-  Future<void> updateCoverEntryId(int oldId, CoverRow row) => SynchronousFuture(null);
+  Future<void> updateCoverEntryId(int id, CoverRow row) => SynchronousFuture(null);
 
   @override
   Future<void> removeCovers(Set<CollectionFilter> filters) => SynchronousFuture(null);
@@ -84,8 +101,5 @@ class FakeMetadataDb extends Fake implements MetadataDb {
   // video playback
 
   @override
-  Future<void> updateVideoPlaybackId(int oldId, int? newId) => SynchronousFuture(null);
-
-  @override
-  Future<void> removeVideoPlayback(Set<int> contentIds) => SynchronousFuture(null);
+  Future<void> removeVideoPlayback(Set<int> ids) => SynchronousFuture(null);
 }

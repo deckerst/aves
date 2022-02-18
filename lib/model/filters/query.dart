@@ -22,7 +22,7 @@ class QueryFilter extends CollectionFilter {
     var upQuery = query.toUpperCase();
     if (upQuery.startsWith('ID:')) {
       final id = int.tryParse(upQuery.substring(3));
-      _test = (entry) => entry.contentId == id;
+      _test = (entry) => entry.id == id;
       return;
     }
 

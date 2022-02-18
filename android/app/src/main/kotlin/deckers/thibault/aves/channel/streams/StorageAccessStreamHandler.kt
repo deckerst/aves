@@ -15,14 +15,13 @@ import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.PermissionManager
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.EventChannel.EventSink
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.io.FileOutputStream
 
 // starting activity to give access with the native dialog
 // breaks the regular `MethodChannel` so we use a stream channel instead
 class StorageAccessStreamHandler(private val activity: Activity, arguments: Any?) : EventChannel.StreamHandler {
+    private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private lateinit var eventSink: EventSink
     private lateinit var handler: Handler
 
@@ -41,10 +40,10 @@ class StorageAccessStreamHandler(private val activity: Activity, arguments: Any?
         handler = Handler(Looper.getMainLooper())
 
         when (op) {
-            "requestDirectoryAccess" -> GlobalScope.launch(Dispatchers.IO) { requestDirectoryAccess() }
-            "requestMediaFileAccess" -> GlobalScope.launch(Dispatchers.IO) { requestMediaFileAccess() }
-            "createFile" -> GlobalScope.launch(Dispatchers.IO) { createFile() }
-            "openFile" -> GlobalScope.launch(Dispatchers.IO) { openFile() }
+            "requestDirectoryAccess" -> ioScope.launch { requestDirectoryAccess() }
+            "requestMediaFileAccess" -> ioScope.launch { requestMediaFileAccess() }
+            "createFile" -> ioScope.launch { createFile() }
+            "openFile" -> ioScope.launch { openFile() }
             else -> endOfStream()
         }
     }

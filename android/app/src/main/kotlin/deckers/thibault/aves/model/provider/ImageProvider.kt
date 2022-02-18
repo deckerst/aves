@@ -39,7 +39,6 @@ import java.io.File
 import java.io.IOException
 import java.io.OutputStream
 import java.util.*
-import kotlin.collections.HashMap
 
 abstract class ImageProvider {
     open fun fetchSingle(context: Context, uri: Uri, sourceMimeType: String?, callback: ImageOpCallback) {
@@ -53,9 +52,8 @@ abstract class ImageProvider {
     open suspend fun moveMultiple(
         activity: Activity,
         copy: Boolean,
-        targetDir: String,
         nameConflictStrategy: NameConflictStrategy,
-        entries: List<AvesEntry>,
+        entriesByTargetDir: Map<String, List<AvesEntry>>,
         isCancelledOp: CancelCheck,
         callback: ImageOpCallback,
     ) {
@@ -245,7 +243,6 @@ abstract class ImageProvider {
             // clearing Glide target should happen after effectively writing the bitmap
             Glide.with(activity).clear(target)
         }
-
     }
 
     @Suppress("BlockingMethodInNonBlockingContext")

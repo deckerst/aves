@@ -15,6 +15,7 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/services/media/enums.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/android_file_utils.dart';
+import 'package:aves/widgets/common/action_mixins/entry_storage.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/filter_editors/create_album_dialog.dart';
@@ -28,7 +29,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
-class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> {
+class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with EntryStorageMixin {
   final Iterable<FilterGridItem<AlbumFilter>> _items;
 
   AlbumChipSetActionDelegate(Iterable<FilterGridItem<AlbumFilter>> items) : _items = items;
@@ -181,14 +182,29 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> {
   }
 
   Future<void> _delete(BuildContext context, Set<AlbumFilter> filters) async {
-    final l10n = context.l10n;
-    final messenger = ScaffoldMessenger.of(context);
     final source = context.read<CollectionSource>();
     final todoEntries = source.visibleEntries.where((entry) => filters.any((f) => f.test(entry))).toSet();
-    final todoCount = todoEntries.length;
     final todoAlbums = filters.map((v) => v.album).toSet();
     final filledAlbums = todoEntries.map((e) => e.directory).whereNotNull().toSet();
     final emptyAlbums = todoAlbums.whereNot(filledAlbums.contains).toSet();
+
+    if (settings.enableBin && filledAlbums.isNotEmpty) {
+      await move(
+        context,
+        moveType: MoveType.toBin,
+        entries: todoEntries,
+        onSuccess: () {
+          source.forgetNewAlbums(todoAlbums);
+          source.cleanEmptyAlbums(emptyAlbums);
+          _browse(context);
+        },
+      );
+      return;
+    }
+
+    final l10n = context.l10n;
+    final messenger = ScaffoldMessenger.of(context);
+    final todoCount = todoEntries.length;
 
     final confirmed = await showDialog<bool>(
       context: context,
@@ -226,7 +242,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> {
         final successOps = processed.where((event) => event.success);
         final deletedOps = successOps.where((e) => !e.skipped).toSet();
         final deletedUris = deletedOps.map((event) => event.uri).toSet();
-        await source.removeEntries(deletedUris);
+        await source.removeEntries(deletedUris, includeTrash: true);
         _browse(context);
         source.resumeMonitoring();
 
@@ -285,9 +301,8 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> {
       context: context,
       opStream: mediaFileService.move(
         opId: opId,
-        entries: todoEntries,
+        entriesByDestination: {destinationAlbum: todoEntries},
         copy: false,
-        destinationAlbum: destinationAlbum,
         // there should be no file conflict, as the target directory itself does not exist
         nameConflictStrategy: NameConflictStrategy.rename,
       ),

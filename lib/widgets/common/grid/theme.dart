@@ -6,13 +6,14 @@ import 'package:provider/provider.dart';
 
 class GridTheme extends StatelessWidget {
   final double extent;
-  final bool? showLocation;
+  final bool? showLocation, showTrash;
   final Widget child;
 
   const GridTheme({
     Key? key,
     required this.extent,
     this.showLocation,
+    this.showTrash,
     required this.child,
   }) : super(key: key);
 
@@ -33,6 +34,7 @@ class GridTheme extends StatelessWidget {
           showMotionPhoto: settings.showThumbnailMotionPhoto,
           showRating: settings.showThumbnailRating,
           showRaw: settings.showThumbnailRaw,
+          showTrash: showTrash ?? true,
           showVideoDuration: settings.showThumbnailVideoDuration,
         );
       },
@@ -43,7 +45,7 @@ class GridTheme extends StatelessWidget {
 
 class GridThemeData {
   final double iconSize, fontSize, highlightBorderWidth;
-  final bool showFavourite, showLocation, showMotionPhoto, showRating, showRaw, showVideoDuration;
+  final bool showFavourite, showLocation, showMotionPhoto, showRating, showRaw, showTrash, showVideoDuration;
 
   const GridThemeData({
     required this.iconSize,
@@ -54,6 +56,7 @@ class GridThemeData {
     required this.showMotionPhoto,
     required this.showRating,
     required this.showRaw,
+    required this.showTrash,
     required this.showVideoDuration,
   });
 }

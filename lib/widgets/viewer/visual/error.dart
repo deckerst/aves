@@ -49,6 +49,7 @@ class _ErrorViewState extends State<ErrorView> {
                 icon: exists ? AIcons.error : AIcons.broken,
                 text: exists ? context.l10n.viewerErrorUnknown : context.l10n.viewerErrorDoesNotExist,
                 alignment: Alignment.center,
+                safeBottom: false,
               );
             }),
       ),

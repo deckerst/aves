@@ -267,7 +267,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
                         entryBuilder: (index) => index < regionEntries.length ? regionEntries[index] : null,
                         indexNotifier: _selectedIndexNotifier,
                         onTap: _onThumbnailTap,
-                        heroTagger: (entry) => Object.hashAll([regionCollection?.id, entry.uri]),
+                        heroTagger: (entry) => Object.hashAll([regionCollection?.id, entry.id]),
                         highlightable: true,
                       );
                     },
