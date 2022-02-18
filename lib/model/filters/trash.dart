@@ -25,7 +25,7 @@ class TrashFilter extends CollectionFilter {
   String get universalLabel => type;
 
   @override
-  String getLabel(BuildContext context) => context.l10n.binPageTitle;
+  String getLabel(BuildContext context) => context.l10n.filterBinLabel;
 
   @override
   Widget iconBuilder(BuildContext context, double size, {bool showGenericIcon = true}) => Icon(AIcons.bin, size: size);

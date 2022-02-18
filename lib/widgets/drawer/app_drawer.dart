@@ -11,6 +11,7 @@ import 'package:aves/model/source/tag.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/android_file_utils.dart';
+import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/about/about_page.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
@@ -56,7 +57,7 @@ class AppDrawer extends StatelessWidget {
       ..._buildPageLinks(context),
       if (settings.enableBin) ...[
         const Divider(),
-        binTile,
+        binTile(context),
       ],
       if (!kReleaseMode) ...[
         const Divider(),
@@ -253,11 +254,15 @@ class AppDrawer extends StatelessWidget {
     ];
   }
 
-  Widget get binTile {
+  Widget binTile(BuildContext context) {
+    final source = context.read<CollectionSource>();
+    final trashSize = source.trashedEntries.fold<int>(0, (sum, entry) => sum + (entry.sizeBytes ?? 0));
+
     const filter = TrashFilter.instance;
     return CollectionNavTile(
       leading: const DrawerFilterIcon(filter: filter),
       title: const DrawerFilterTitle(filter: filter),
+      trailing: Text(formatFileSize(context.l10n.localeName, trashSize, round: 0)),
       filter: filter,
       isSelected: () => currentCollection?.filters.contains(filter) ?? false,
     );

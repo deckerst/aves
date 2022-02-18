@@ -109,6 +109,7 @@
   "entryInfoActionEditTags": "Edit tags",
   "entryInfoActionRemoveMetadata": "Remove metadata",
 
+  "filterBinLabel": "Recycle bin",
   "filterFavouriteLabel": "Favourite",
   "filterLocationEmptyLabel": "Unlocated",
   "filterTagEmptyLabel": "Untagged",
