@@ -271,7 +271,7 @@
 
   "collectionPageTitle": "미디어",
   "collectionPickPageTitle": "항목 선택",
-  "collectionSelectionPageTitle": "{count, plural, =0{항목 선택} other{{count}개}}",
+  "collectionSelectPageTitle": "항목 선택",
 
   "collectionActionShowTitleSearch": "제목 필터 보기",
   "collectionActionHideTitleSearch": "제목 필터 숨기기",

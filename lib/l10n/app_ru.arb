@@ -266,7 +266,7 @@
 
   "collectionPageTitle": "Коллекция",
   "collectionPickPageTitle": "Выбрать",
-  "collectionSelectionPageTitle": "{count, plural, =0{Выберите объекты} =1{1 объект} few{{count} объекта} other{{count} объектов}}",
+  "collectionSelectPageTitle": "Выберите объекты",
 
   "collectionActionShowTitleSearch": "Показать фильтр заголовка",
   "collectionActionHideTitleSearch": "Скрыть фильтр заголовка",
