@@ -17,15 +17,15 @@ import deckers.thibault.aves.utils.LogUtils
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 import java.util.*
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 class SearchSuggestionsProvider : MethodChannel.MethodCallHandler, ContentProvider() {
+    private val defaultScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+
     override fun query(uri: Uri, projection: Array<String>?, selection: String?, selectionArgs: Array<String>?, sortOrder: String?): Cursor? {
         return selectionArgs?.firstOrNull()?.let { query ->
             // Samsung Finder does not support:
@@ -79,7 +79,7 @@ class SearchSuggestionsProvider : MethodChannel.MethodCallHandler, ContentProvid
 
         try {
             return suspendCoroutine { cont ->
-                GlobalScope.launch {
+                defaultScope.launch {
                     FlutterUtils.runOnUiThread {
                         backgroundChannel.invokeMethod("getSuggestions", hashMapOf(
                             "query" to query,

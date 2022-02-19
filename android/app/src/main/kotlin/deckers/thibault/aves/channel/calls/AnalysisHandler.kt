@@ -16,14 +16,14 @@ import deckers.thibault.aves.utils.ContextUtils.isMyServiceRunning
 import deckers.thibault.aves.utils.LogUtils
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 class AnalysisHandler(private val activity: Activity, private val onAnalysisCompleted: () -> Unit) : MethodChannel.MethodCallHandler, AnalysisServiceListener {
+    private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
-            "registerCallback" -> GlobalScope.launch(Dispatchers.IO) { Coresult.safe(call, result, ::registerCallback) }
+            "registerCallback" -> ioScope.launch { Coresult.safe(call, result, ::registerCallback) }
             "startService" -> Coresult.safe(call, result, ::startAnalysis)
             else -> result.notImplemented()
         }

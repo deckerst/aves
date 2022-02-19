@@ -21,24 +21,23 @@ import deckers.thibault.aves.utils.StorageUtils.ensureTrailingSeparator
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kotlin.math.roundToInt
 
 class MediaFileHandler(private val activity: Activity) : MethodCallHandler {
+    private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private val density = activity.resources.displayMetrics.density
 
     private val regionFetcher = RegionFetcher(activity)
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
-            "getEntry" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getEntry) }
-            "getThumbnail" -> GlobalScope.launch(Dispatchers.IO) { safeSuspend(call, result, ::getThumbnail) }
-            "getRegion" -> GlobalScope.launch(Dispatchers.IO) { safeSuspend(call, result, ::getRegion) }
+            "getEntry" -> ioScope.launch { safe(call, result, ::getEntry) }
+            "getThumbnail" -> ioScope.launch { safeSuspend(call, result, ::getThumbnail) }
+            "getRegion" -> ioScope.launch { safeSuspend(call, result, ::getRegion) }
             "cancelFileOp" -> safe(call, result, ::cancelFileOp)
-            "captureFrame" -> GlobalScope.launch(Dispatchers.IO) { safeSuspend(call, result, ::captureFrame) }
-            "clearSizedThumbnailDiskCache" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::clearSizedThumbnailDiskCache) }
+            "captureFrame" -> ioScope.launch { safeSuspend(call, result, ::captureFrame) }
+            "clearSizedThumbnailDiskCache" -> ioScope.launch { safe(call, result, ::clearSizedThumbnailDiskCache) }
             else -> result.notImplemented()
         }
     }
