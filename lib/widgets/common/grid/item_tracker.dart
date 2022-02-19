@@ -148,6 +148,8 @@ class _GridItemTrackerState<T> extends State<GridItemTracker<T>> with WidgetsBin
   }
 
   void _onLayoutChange() {
+    if (scrollController.positions.length != 1) return;
+
     // do not track when view shows top edge
     if (scrollController.offset == 0) return;
 
