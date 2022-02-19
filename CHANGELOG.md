@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - Viewer: actions to copy/move to album
+- Indonesian translation (thanks MeFinity)
 
 ### Changed
 
