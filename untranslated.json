@@ -32,14 +32,6 @@
     "settingsEnableBinSubtitle"
   ],
 
-  "fr": [
-    "doNotAskAgain",
-    "settingsConfirmationDialogTile",
-    "settingsConfirmationDialogTitle",
-    "settingsConfirmationDialogDeleteItems",
-    "settingsConfirmationDialogMoveToBinItems"
-  ],
-
   "ko": [
     "doNotAskAgain",
     "settingsConfirmationDialogTile",

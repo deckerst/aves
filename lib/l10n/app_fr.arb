@@ -28,6 +28,7 @@
   "resetButtonTooltip": "Réinitialiser",
 
   "doubleBackExitMessage": "Pressez «\u00A0retour\u00A0» à nouveau pour quitter.",
+  "doNotAskAgain": "Ne pas demander de nouveau",
 
   "sourceStateLoading": "Chargement",
   "sourceStateCataloguing": "Classification",
@@ -192,7 +193,7 @@
 
   "editEntryDateDialogTitle": "Date & Heure",
   "editEntryDateDialogSetCustom": "Régler une date personnalisée",
-  "editEntryDateDialogCopyField": "Copier d'une autre date",
+  "editEntryDateDialogCopyField": "Copier d’une autre date",
   "editEntryDateDialogExtractFromTitle": "Extraire du titre",
   "editEntryDateDialogShift": "Décaler",
   "editEntryDateDialogSourceFileModifiedDate": "Date de modification du fichier",
@@ -381,6 +382,11 @@
   "settingsKeepScreenOnTile": "Maintenir l’écran allumé",
   "settingsKeepScreenOnTitle": "Allumage de l’écran",
   "settingsDoubleBackExit": "Presser «\u00A0retour\u00A0» 2 fois pour quitter",
+
+  "settingsConfirmationDialogTile": "Demandes de confirmation",
+  "settingsConfirmationDialogTitle": "Demandes de confirmation",
+  "settingsConfirmationDialogDeleteItems": "Suppression définitive d’éléments",
+  "settingsConfirmationDialogMoveToBinItems": "Mise d’éléments à la corbeille",
 
   "settingsNavigationDrawerTile": "Menu de navigation",
   "settingsNavigationDrawerEditorTitle": "Menu de navigation",
