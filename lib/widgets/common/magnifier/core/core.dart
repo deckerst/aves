@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:aves/widgets/common/magnifier/controller/controller.dart';
 import 'package:aves/widgets/common/magnifier/controller/controller_delegate.dart';
 import 'package:aves/widgets/common/magnifier/controller/state.dart';
@@ -132,7 +134,7 @@ class _MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateM
 
     updateScaleStateFromNewScale(newScale, ChangeSource.gesture);
     updateMultiple(
-      scale: newScale,
+      scale: max(0, newScale),
       position: newPosition,
       source: ChangeSource.gesture,
     );

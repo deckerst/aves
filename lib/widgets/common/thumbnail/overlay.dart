@@ -38,11 +38,13 @@ class ThumbnailEntryOverlay extends StatelessWidget {
       if (entry.trashed && context.select<GridThemeData, bool>((t) => t.showTrash)) TrashIcon(trashDaysLeft: entry.trashDaysLeft),
     ];
     if (children.isEmpty) return const SizedBox();
-    if (children.length == 1) return children.first;
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: children,
+    return Align(
+      alignment: AlignmentDirectional.bottomStart,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: children,
+      ),
     );
   }
 }

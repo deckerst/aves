@@ -71,6 +71,7 @@ class MagnifierController {
     position = position ?? this.position;
     scale = scale ?? this.scale;
     if (this.position == position && this.scale == scale) return;
+    assert((scale ?? 0) >= 0);
 
     previousState = currentState;
     _setState(MagnifierState(
@@ -127,7 +128,7 @@ class MagnifierController {
       case ScaleState.covering:
         return _clamp(ScaleLevel.scaleForCovering(scaleBoundaries.viewportSize, scaleBoundaries.childSize));
       case ScaleState.originalSize:
-        return _clamp(1.0);
+        return _clamp(scaleBoundaries.originalScale);
       default:
         return null;
     }

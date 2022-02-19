@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:aves/widgets/common/magnifier/controller/controller.dart';
@@ -41,11 +42,13 @@ class ScaleBoundaries extends Equatable {
     }
   }
 
-  double get minScale => _scaleForLevel(_minScale);
+  double get originalScale => 1.0 / window.devicePixelRatio;
 
-  double get maxScale => _scaleForLevel(_maxScale).clamp(minScale, double.infinity);
+  double get minScale => {_scaleForLevel(_minScale), originalScale, initialScale}.fold(double.infinity, min);
 
-  double get initialScale => _scaleForLevel(_initialScale).clamp(minScale, maxScale);
+  double get maxScale => {_scaleForLevel(_maxScale), originalScale, initialScale}.fold(0, max);
+
+  double get initialScale => _scaleForLevel(_initialScale);
 
   Offset get _viewportCenter => viewportSize.center(Offset.zero);
 
