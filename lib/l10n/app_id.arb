@@ -27,7 +27,7 @@
   "actionRemove": "Hapus",
   "resetButtonTooltip": "Ulang",
 
-  "doubleBackExitMessage": "Pencet “kembali” lagi untuk keluar.",
+  "doubleBackExitMessage": "Ketuk “kembali” lagi untuk keluar.",
   "doNotAskAgain": "Jangan tanya lagi",
 
   "sourceStateLoading": "Memuat",
@@ -277,7 +277,7 @@
   "collectionActionShowTitleSearch": "Tampilkan filter judul",
   "collectionActionHideTitleSearch": "Sembunyikan filter judul",
   "collectionActionAddShortcut": "Tambahkan pintasan",
-  "collectionActionEmptyBin": "Kosongkan sampah",
+  "collectionActionEmptyBin": "Kosongkan tong sampah",
   "collectionActionCopy": "Salin ke album",
   "collectionActionMove": "Pindah ke album",
   "collectionActionRescan": "Pindai ulang",
