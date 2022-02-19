@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
+- optional recycle bin to keep deleted items for 30 days
 - Viewer: actions to copy/move to album
 - Indonesian translation (thanks MeFinity)
 
@@ -13,6 +14,8 @@ All notable changes to this project will be documented in this file.
 
 - Viewer: action menu reorganization
 - Viewer: `Export` action renamed to `Convert`
+- Viewer: actual size zoom level respects device pixel ratio
+- Viewer: allow zooming out small items to actual size
 - Collection: improved performance for sort/group by name
 - load previous top items on startup
 - upgraded Flutter to stable v2.10.1
