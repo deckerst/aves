@@ -7,14 +7,14 @@ import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 class GlobalSearchHandler(private val context: Context) : MethodCallHandler {
+    private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
-            "registerCallback" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::registerCallback) }
+            "registerCallback" -> ioScope.launch { safe(call, result, ::registerCallback) }
             else -> result.notImplemented()
         }
     }

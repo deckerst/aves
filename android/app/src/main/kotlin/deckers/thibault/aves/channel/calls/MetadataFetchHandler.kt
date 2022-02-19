@@ -74,9 +74,7 @@ import deckers.thibault.aves.utils.UriUtils.tryParseId
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets
 import java.text.ParseException
@@ -84,18 +82,20 @@ import kotlin.math.roundToInt
 import kotlin.math.roundToLong
 
 class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
+    private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
-            "getAllMetadata" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getAllMetadata) }
-            "getCatalogMetadata" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getCatalogMetadata) }
-            "getOverlayMetadata" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getOverlayMetadata) }
-            "getMultiPageInfo" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getMultiPageInfo) }
-            "getPanoramaInfo" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getPanoramaInfo) }
-            "getIptc" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getIptc) }
-            "getXmp" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getXmp) }
-            "hasContentResolverProp" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::hasContentResolverProp) }
-            "getContentResolverProp" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getContentResolverProp) }
-            "getDate" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getDate) }
+            "getAllMetadata" -> ioScope.launch { safe(call, result, ::getAllMetadata) }
+            "getCatalogMetadata" -> ioScope.launch { safe(call, result, ::getCatalogMetadata) }
+            "getOverlayMetadata" -> ioScope.launch { safe(call, result, ::getOverlayMetadata) }
+            "getMultiPageInfo" -> ioScope.launch { safe(call, result, ::getMultiPageInfo) }
+            "getPanoramaInfo" -> ioScope.launch { safe(call, result, ::getPanoramaInfo) }
+            "getIptc" -> ioScope.launch { safe(call, result, ::getIptc) }
+            "getXmp" -> ioScope.launch { safe(call, result, ::getXmp) }
+            "hasContentResolverProp" -> ioScope.launch { safe(call, result, ::hasContentResolverProp) }
+            "getContentResolverProp" -> ioScope.launch { safe(call, result, ::getContentResolverProp) }
+            "getDate" -> ioScope.launch { safe(call, result, ::getDate) }
             else -> result.notImplemented()
         }
     }

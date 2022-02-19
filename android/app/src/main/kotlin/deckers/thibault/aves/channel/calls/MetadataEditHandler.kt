@@ -10,18 +10,18 @@ import deckers.thibault.aves.model.provider.ImageProviderFactory.getProvider
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 class MetadataEditHandler(private val activity: Activity) : MethodCallHandler {
+    private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
-            "rotate" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::rotate) }
-            "flip" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::flip) }
-            "editDate" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::editDate) }
-            "editMetadata" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::editMetadata) }
-            "removeTypes" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::removeTypes) }
+            "rotate" -> ioScope.launch { safe(call, result, ::rotate) }
+            "flip" -> ioScope.launch { safe(call, result, ::flip) }
+            "editDate" -> ioScope.launch { safe(call, result, ::editDate) }
+            "editMetadata" -> ioScope.launch { safe(call, result, ::editMetadata) }
+            "removeTypes" -> ioScope.launch { safe(call, result, ::removeTypes) }
             else -> result.notImplemented()
         }
     }
