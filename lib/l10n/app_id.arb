@@ -272,7 +272,7 @@
 
   "collectionPageTitle": "Koleksi",
   "collectionPickPageTitle": "Pilih",
-  "collectionSelectionPageTitle": "{count, plural, =0{Pilih benda} other{{count} benda}}",
+  "collectionSelectPageTitle": "Pilih benda",
 
   "collectionActionShowTitleSearch": "Tampilkan filter judul",
   "collectionActionHideTitleSearch": "Sembunyikan filter judul",

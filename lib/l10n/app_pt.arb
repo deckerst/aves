@@ -7,6 +7,7 @@
 
   "timeSeconds": "{seconds, plural, =1{1 segundo} other{{seconds} segundos}}",
   "timeMinutes": "{minutes, plural, =1{1 minuto} other{{minutes} minutos}}",
+  "timeDays": "{days, plural, =1{1 dia} other{{days} dias}}",
   "focalLength": "{length} mm",
 
   "applyButtonLabel": "APLIQUE",
@@ -27,6 +28,7 @@
   "resetButtonTooltip": "Resetar",
 
   "doubleBackExitMessage": "Toque em “voltar” novamente para sair.",
+  "doNotAskAgain": "Não pergunte novamente",
 
   "sourceStateLoading": "Carregando",
   "sourceStateCataloguing": "Catalogação",
@@ -48,6 +50,7 @@
   "entryActionDelete": "Excluir",
   "entryActionExport": "Exportar",
   "entryActionRename": "Renomear",
+  "entryActionRestore": "Restaurar",
   "entryActionRotateCCW": "Rotacionar para esquerda",
   "entryActionRotateCW": "Rotacionar para direita",
   "entryActionFlip": "Virar horizontalmente",
@@ -78,6 +81,7 @@
   "entryInfoActionEditTags": "Editar etiquetas",
   "entryInfoActionRemoveMetadata": "Remover metadados",
 
+  "filterBinLabel": "Lixeira",
   "filterFavouriteLabel": "Favorito",
   "filterLocationEmptyLabel": "Não localizado",
   "filterTagEmptyLabel": "Sem etiqueta",
@@ -156,6 +160,7 @@
   "noMatchingAppDialogTitle": "Nenhum aplicativo correspondente",
   "noMatchingAppDialogMessage": "Não há aplicativos que possam lidar com isso.",
 
+  "binEntriesConfirmationDialogMessage": "{count, plural, =1{Mover esse item para a lixeira?} other{Mova estes {count} itens para a lixeira?}}",
   "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{Tem certeza de que deseja excluir este item?} other{Tem certeza de que deseja excluir estes {count} itens?}}",
 
   "videoResumeDialogMessage": "Deseja continuar jogando em {time}?",
@@ -266,11 +271,12 @@
 
   "collectionPageTitle": "Coleção",
   "collectionPickPageTitle": "Escolher",
-  "collectionSelectionPageTitle": "{count, plural, =0{Selecionar itens} =1{1 item} other{{count} itens}}",
+  "collectionSelectPageTitle": "Selecionar itens",
 
   "collectionActionShowTitleSearch": "Mostrar filtro de título",
   "collectionActionHideTitleSearch": "Ocultar filtro de título",
   "collectionActionAddShortcut": "Adicionar atalho",
+  "collectionActionEmptyBin": "Caixa vazia",
   "collectionActionCopy": "Copiar para o álbum",
   "collectionActionMove": "Mover para o álbum",
   "collectionActionRescan": "Reexaminar",
@@ -349,6 +355,8 @@
   "tagPageTitle": "Etiquetas",
   "tagEmpty": "Sem etiquetas",
 
+  "binPageTitle": "Lixeira",
+
   "searchCollectionFieldHint": "Pesquisar coleção",
   "searchSectionRecent": "Recente",
   "searchSectionAlbums": "Álbuns",
@@ -373,6 +381,11 @@
   "settingsKeepScreenOnTile": "Manter a tela ligada",
   "settingsKeepScreenOnTitle": "Manter a tela ligada",
   "settingsDoubleBackExit": "Toque em “voltar” duas vezes para sair",
+
+  "settingsConfirmationDialogTile": "Caixas de diálogo de confirmação",
+  "settingsConfirmationDialogTitle": "Caixas de diálogo de confirmação",
+  "settingsConfirmationDialogDeleteItems": "Pergunte antes de excluir itens para sempre",
+  "settingsConfirmationDialogMoveToBinItems": "Pergunte antes de mover itens para a lixeira",
 
   "settingsNavigationDrawerTile": "Menu de navegação",
   "settingsNavigationDrawerEditorTitle": "Menu de navegação",
@@ -449,6 +462,8 @@
   "settingsAllowInstalledAppAccessSubtitle": "Usado para melhorar a exibição do álbum",
   "settingsAllowErrorReporting": "Permitir relatórios de erros anônimos",
   "settingsSaveSearchHistory": "Salvar histórico de pesquisa",
+  "settingsEnableBin": "Usar lixeira",
+  "settingsEnableBinSubtitle": "Manter itens excluídos por 30 dias",
 
   "settingsHiddenItemsTile": "Itens ocultos",
   "settingsHiddenItemsTitle": "Itens ocultos",

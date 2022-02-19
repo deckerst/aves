@@ -268,7 +268,7 @@
 
   "collectionPageTitle": "Colección",
   "collectionPickPageTitle": "Elegir",
-  "collectionSelectionPageTitle": "{count, plural, =0{Seleccionar} =1{1 elemento} other{{count} elementos}}",
+  "collectionSelectPageTitle": "Seleccionar",
 
   "collectionActionShowTitleSearch": "Mostrar filtros de títulos",
   "collectionActionHideTitleSearch": "Ocultar filtros de títulos",

@@ -414,12 +414,7 @@
 
   "collectionPageTitle": "Collection",
   "collectionPickPageTitle": "Pick",
-  "collectionSelectionPageTitle": "{count, plural, =0{Select items} =1{1 item} other{{count} items}}",
-  "@collectionSelectionPageTitle": {
-    "placeholders": {
-      "count": {}
-    }
-  },
+  "collectionSelectPageTitle": "Select items",
 
   "collectionActionShowTitleSearch": "Show title filter",
   "collectionActionHideTitleSearch": "Hide title filter",

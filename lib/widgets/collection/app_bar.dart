@@ -187,7 +187,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     if (isSelecting) {
       return Selector<Selection<AvesEntry>, int>(
         selector: (context, selection) => selection.selectedItems.length,
-        builder: (context, count, child) => Text(l10n.collectionSelectionPageTitle(count)),
+        builder: (context, count, child) => Text(count == 0 ? l10n.collectionSelectPageTitle : l10n.itemCount(count)),
       );
     } else {
       final appMode = context.watch<ValueNotifier<AppMode>>().value;

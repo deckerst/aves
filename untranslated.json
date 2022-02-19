@@ -1,19 +1,6 @@
 {
   "de": [
-    "timeDays",
-    "doNotAskAgain",
-    "entryActionConvert",
-    "entryActionRestore",
-    "filterBinLabel",
-    "binEntriesConfirmationDialogMessage",
-    "collectionActionEmptyBin",
-    "binPageTitle",
-    "settingsConfirmationDialogTile",
-    "settingsConfirmationDialogTitle",
-    "settingsConfirmationDialogDeleteItems",
-    "settingsConfirmationDialogMoveToBinItems",
-    "settingsEnableBin",
-    "settingsEnableBinSubtitle"
+    "entryActionConvert"
   ],
 
   "es": [
@@ -41,20 +28,7 @@
   ],
 
   "pt": [
-    "timeDays",
-    "doNotAskAgain",
-    "entryActionConvert",
-    "entryActionRestore",
-    "filterBinLabel",
-    "binEntriesConfirmationDialogMessage",
-    "collectionActionEmptyBin",
-    "binPageTitle",
-    "settingsConfirmationDialogTile",
-    "settingsConfirmationDialogTitle",
-    "settingsConfirmationDialogDeleteItems",
-    "settingsConfirmationDialogMoveToBinItems",
-    "settingsEnableBin",
-    "settingsEnableBinSubtitle"
+    "entryActionConvert"
   ],
 
   "ru": [
