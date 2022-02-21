@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:aves/app_mode.dart';
 import 'package:aves/model/actions/entry_info_actions.dart';
 import 'package:aves/model/actions/events.dart';
 import 'package:aves/model/entry.dart';
@@ -265,7 +266,8 @@ class _InfoPageContentState extends State<_InfoPageContent> {
   }
 
   void _goToCollection(CollectionFilter filter) {
-    if (collection == null) return;
+    final isMainMode = context.read<ValueNotifier<AppMode>>().value == AppMode.main;
+    if (!isMainMode || collection == null) return;
     FilterSelectedNotification(filter).dispatch(context);
   }
 }
