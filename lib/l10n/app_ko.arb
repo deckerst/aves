@@ -28,6 +28,7 @@
   "resetButtonTooltip": "복원",
 
   "doubleBackExitMessage": "종료하려면 한번 더 누르세요.",
+  "doNotAskAgain": "다시 묻지 않기",
 
   "sourceStateLoading": "로딩 중",
   "sourceStateCataloguing": "분석 중",
@@ -381,6 +382,11 @@
   "settingsKeepScreenOnTile": "화면 자동 꺼짐 방지",
   "settingsKeepScreenOnTitle": "화면 자동 꺼짐 방지",
   "settingsDoubleBackExit": "뒤로가기 두번 눌러 앱 종료하기",
+
+  "settingsConfirmationDialogTile": "확정 대화상자",
+  "settingsConfirmationDialogTitle": "확정 대화상자",
+  "settingsConfirmationDialogDeleteItems": "항목을 완전히 삭제 시",
+  "settingsConfirmationDialogMoveToBinItems": "항목을 휴지통으로 이동 시",
 
   "settingsNavigationDrawerTile": "탐색 메뉴",
   "settingsNavigationDrawerEditorTitle": "탐색 메뉴",

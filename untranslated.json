@@ -19,32 +19,11 @@
     "settingsEnableBinSubtitle"
   ],
 
-  "ko": [
-    "doNotAskAgain",
-    "settingsConfirmationDialogTile",
-    "settingsConfirmationDialogTitle",
-    "settingsConfirmationDialogDeleteItems",
-    "settingsConfirmationDialogMoveToBinItems"
-  ],
-
   "pt": [
     "entryActionConvert"
   ],
 
   "ru": [
-    "timeDays",
-    "doNotAskAgain",
-    "entryActionConvert",
-    "entryActionRestore",
-    "filterBinLabel",
-    "binEntriesConfirmationDialogMessage",
-    "collectionActionEmptyBin",
-    "binPageTitle",
-    "settingsConfirmationDialogTile",
-    "settingsConfirmationDialogTitle",
-    "settingsConfirmationDialogDeleteItems",
-    "settingsConfirmationDialogMoveToBinItems",
-    "settingsEnableBin",
-    "settingsEnableBinSubtitle"
+    "entryActionConvert"
   ]
 }
