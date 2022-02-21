@@ -118,7 +118,7 @@ mixin AlbumMixin on SourceBase {
   AvesEntry? albumRecentEntry(AlbumFilter filter) {
     return _filterRecentEntryMap.putIfAbsent(filter.album, () => sortedEntriesByDate.firstWhereOrNull(filter.test));
   }
-  
+
   // new albums
 
   void createAlbum(String directory) {
@@ -136,7 +136,7 @@ mixin AlbumMixin on SourceBase {
   void forgetNewAlbums(Set<String> directories) {
     _newAlbums.removeAll(directories);
   }
-  
+
   // display names
 
   final Map<String, String> _albumDisplayNamesWithContext = {}, _albumDisplayNamesWithoutContext = {};
@@ -152,18 +152,17 @@ mixin AlbumMixin on SourceBase {
 
     if (context != null) {
       final type = androidFileUtils.getAlbumType(dirPath);
-      final l10n = context.l10n;
       switch (type) {
         case AlbumType.camera:
-          return l10n.albumCamera;
+          return context.l10n.albumCamera;
         case AlbumType.download:
-          return l10n.albumDownload;
+          return context.l10n.albumDownload;
         case AlbumType.screenshots:
-          return l10n.albumScreenshots;
+          return context.l10n.albumScreenshots;
         case AlbumType.screenRecordings:
-          return l10n.albumScreenRecordings;
+          return context.l10n.albumScreenRecordings;
         case AlbumType.videoCaptures:
-          return l10n.albumVideoCaptures;
+          return context.l10n.albumVideoCaptures;
         case AlbumType.regular:
         case AlbumType.app:
           break;

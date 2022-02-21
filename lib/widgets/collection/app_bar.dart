@@ -120,32 +120,35 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
         return Selector<Query, bool>(
           selector: (context, query) => query.enabled,
           builder: (context, queryEnabled, child) {
-            return SliverAppBar(
-              leading: appMode.hasDrawer ? _buildAppBarLeading(isSelecting) : null,
-              title: SliverAppBarTitleWrapper(
-                child: _buildAppBarTitle(isSelecting),
-              ),
-              actions: _buildActions(selection),
-              bottom: PreferredSize(
-                preferredSize: Size.fromHeight(appBarBottomHeight),
-                child: Column(
-                  children: [
-                    if (showFilterBar)
-                      FilterBar(
-                        filters: visibleFilters,
-                        removable: removableFilters,
-                        onTap: removableFilters ? collection.removeFilter : null,
-                      ),
-                    if (queryEnabled)
-                      EntryQueryBar(
-                        queryNotifier: context.select<Query, ValueNotifier<String>>((query) => query.queryNotifier),
-                        focusNode: _queryBarFocusNode,
-                      )
-                  ],
+            return Selector<Settings, List<EntrySetAction>>(
+              selector: (context, s) => s.collectionBrowsingQuickActions,
+              builder: (context, _, child) => SliverAppBar(
+                leading: appMode.hasDrawer ? _buildAppBarLeading(isSelecting) : null,
+                title: SliverAppBarTitleWrapper(
+                  child: _buildAppBarTitle(isSelecting),
                 ),
+                actions: _buildActions(selection),
+                bottom: PreferredSize(
+                  preferredSize: Size.fromHeight(appBarBottomHeight),
+                  child: Column(
+                    children: [
+                      if (showFilterBar)
+                        FilterBar(
+                          filters: visibleFilters,
+                          removable: removableFilters,
+                          onTap: removableFilters ? collection.removeFilter : null,
+                        ),
+                      if (queryEnabled)
+                        EntryQueryBar(
+                          queryNotifier: context.select<Query, ValueNotifier<String>>((query) => query.queryNotifier),
+                          focusNode: _queryBarFocusNode,
+                        )
+                    ],
+                  ),
+                ),
+                titleSpacing: 0,
+                floating: true,
               ),
-              titleSpacing: 0,
-              floating: true,
             );
           },
         );
@@ -243,8 +246,8 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
                   (action) => _toMenuItem(action, enabled: canApply(action), selection: selection),
                 );
 
-            final browsingMenuActions = EntrySetActions.browsing.where((v) => !browsingQuickActions.contains(v));
-            final selectionMenuActions = EntrySetActions.selection.where((v) => !selectionQuickActions.contains(v));
+            final browsingMenuActions = EntrySetActions.pageBrowsing.where((v) => !browsingQuickActions.contains(v));
+            final selectionMenuActions = EntrySetActions.pageSelection.where((v) => !selectionQuickActions.contains(v));
             final contextualMenuItems = [
               ...(isSelecting ? selectionMenuActions : browsingMenuActions).where(isVisible).map(
                     (action) => _toMenuItem(action, enabled: canApply(action), selection: selection),
