@@ -1,6 +1,5 @@
 import 'package:aves/model/actions/move_type.dart';
 import 'package:aves/model/entry.dart';
-import 'package:aves/model/filters/filters.dart';
 import 'package:flutter/foundation.dart';
 
 @immutable
@@ -34,10 +33,7 @@ class EntryRefreshedEvent {
 
 @immutable
 class FilterVisibilityChangedEvent {
-  final Set<CollectionFilter> filters;
-  final bool visible;
-
-  const FilterVisibilityChangedEvent(this.filters, this.visible);
+  const FilterVisibilityChangedEvent();
 }
 
 @immutable

@@ -40,7 +40,7 @@ class _CollectionPageState extends State<CollectionPage> {
   @override
   void initState() {
     super.initState();
-    _subscriptions.add(settings.updateStream.where((key) => key == Settings.enableBinKey).listen((_) {
+    _subscriptions.add(settings.updateStream.where((event) => event.key == Settings.enableBinKey).listen((_) {
       if (!settings.enableBin) {
         collection.removeFilter(TrashFilter.instance);
       }

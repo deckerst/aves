@@ -45,7 +45,14 @@ mixin SourceBase {
 
 abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagMixin, TrashMixin {
   CollectionSource() {
-    settings.updateStream.where((key) => key == Settings.localeKey).listen((_) => invalidateAlbumDisplayNames());
+    settings.updateStream.where((event) => event.key == Settings.localeKey).listen((_) => invalidateAlbumDisplayNames());
+    settings.updateStream.where((event) => event.key == Settings.hiddenFiltersKey).listen((event) {
+      final oldValue = event.oldValue;
+      if (oldValue is List<String>?) {
+        final oldHiddenFilters = (oldValue ?? []).map(CollectionFilter.fromJson).whereNotNull().toSet();
+        _onFilterVisibilityChanged(oldHiddenFilters, settings.hiddenFilters);
+      }
+    });
   }
 
   final EventBus _eventBus = EventBus();
@@ -441,20 +448,13 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
     return recentEntry(filter);
   }
 
-  void changeFilterVisibility(Set<CollectionFilter> filters, bool visible) {
-    final hiddenFilters = settings.hiddenFilters;
-    if (visible) {
-      hiddenFilters.removeAll(filters);
-    } else {
-      hiddenFilters.addAll(filters);
-      settings.searchHistory = settings.searchHistory..removeWhere(filters.contains);
-    }
-    settings.hiddenFilters = hiddenFilters;
+  void _onFilterVisibilityChanged(Set<CollectionFilter> oldHiddenFilters, Set<CollectionFilter> currentHiddenFilters) {
     updateDerivedFilters();
-    eventBus.fire(FilterVisibilityChangedEvent(filters, visible));
+    eventBus.fire(const FilterVisibilityChangedEvent());
 
-    if (visible) {
-      final candidateEntries = visibleEntries.where((entry) => filters.any((f) => f.test(entry))).toSet();
+    final newlyVisibleFilters = oldHiddenFilters.whereNot(currentHiddenFilters.contains).toSet();
+    if (newlyVisibleFilters.isNotEmpty) {
+      final candidateEntries = visibleEntries.where((entry) => newlyVisibleFilters.any((f) => f.test(entry))).toSet();
       analyze(null, entries: candidateEntries);
     }
   }

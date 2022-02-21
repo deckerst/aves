@@ -2,7 +2,6 @@ import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/enums/video_loop_mode.dart';
 import 'package:aves/model/settings/settings.dart';
-import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -36,7 +35,7 @@ class VideoSection extends StatelessWidget {
       if (!standalonePage)
         SwitchListTile(
           value: currentShowVideos,
-          onChanged: (v) => context.read<CollectionSource>().changeFilterVisibility({MimeFilter.video}, v),
+          onChanged: (v) => settings.changeFilterVisibility({MimeFilter.video}, v),
           title: Text(context.l10n.settingsVideoShowVideos),
         ),
       const VideoActionsTile(),
