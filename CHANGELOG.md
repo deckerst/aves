@@ -18,6 +18,7 @@ All notable changes to this project will be documented in this file.
 - Viewer: allow zooming out small items to actual size
 - Collection: improved performance for sort/group by name
 - load previous top items on startup
+- locale independent colors for known filters
 - upgraded Flutter to stable v2.10.1
 
 ### Removed

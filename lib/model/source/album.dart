@@ -152,17 +152,18 @@ mixin AlbumMixin on SourceBase {
 
     if (context != null) {
       final type = androidFileUtils.getAlbumType(dirPath);
+      final l10n = context.l10n;
       switch (type) {
         case AlbumType.camera:
-          return context.l10n.albumCamera;
+          return l10n.albumCamera;
         case AlbumType.download:
-          return context.l10n.albumDownload;
+          return l10n.albumDownload;
         case AlbumType.screenshots:
-          return context.l10n.albumScreenshots;
+          return l10n.albumScreenshots;
         case AlbumType.screenRecordings:
-          return context.l10n.albumScreenRecordings;
+          return l10n.albumScreenRecordings;
         case AlbumType.videoCaptures:
-          return context.l10n.albumVideoCaptures;
+          return l10n.albumVideoCaptures;
         case AlbumType.regular:
         case AlbumType.app:
           break;

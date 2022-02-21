@@ -1,5 +1,5 @@
+import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/theme/themes.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/widgets.dart';
 
@@ -55,7 +55,7 @@ extension ExtraEntryInfoAction on EntryInfoAction {
     switch (this) {
       case EntryInfoAction.debug:
         return ShaderMask(
-          shaderCallback: Themes.debugGradient.createShader,
+          shaderCallback: AColors.debugGradient.createShader,
           child: child,
         );
       default:

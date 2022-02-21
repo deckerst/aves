@@ -1,5 +1,4 @@
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/utils/color_utils.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
@@ -53,7 +52,6 @@ class FilterTable<T extends Comparable> extends StatelessWidget {
           return Table(
             children: displayedEntries.map((kv) {
               final filter = filterBuilder(kv.key);
-              final label = filter.getLabel(context);
               final count = kv.value;
               final percent = count / totalEntryCount;
               return TableRow(
@@ -76,19 +74,25 @@ class FilterTable<T extends Comparable> extends StatelessWidget {
                       padding: EdgeInsets.symmetric(horizontal: lineHeight),
                       child: ClipRRect(
                         borderRadius: BorderRadius.all(barRadius),
-                        child: LinearPercentIndicator(
-                          percent: percent,
-                          lineHeight: lineHeight,
-                          backgroundColor: Colors.white24,
-                          progressColor: stringToColor(label),
-                          animation: true,
-                          isRTL: isRtl,
-                          barRadius: barRadius,
-                          center: Text(
-                            intl.NumberFormat.percentPattern().format(percent),
-                            style: const TextStyle(shadows: Constants.embossShadows),
-                          ),
-                          padding: EdgeInsets.zero,
+                        child: FutureBuilder<Color>(
+                          future: filter.color(context),
+                          builder: (context, snapshot) {
+                            final color = snapshot.data;
+                            return LinearPercentIndicator(
+                              percent: percent,
+                              lineHeight: lineHeight,
+                              backgroundColor: Colors.white24,
+                              progressColor: color,
+                              animation: true,
+                              isRTL: isRtl,
+                              barRadius: barRadius,
+                              center: Text(
+                                intl.NumberFormat.percentPattern().format(percent),
+                                style: const TextStyle(shadows: Constants.embossShadows),
+                              ),
+                              padding: EdgeInsets.zero,
+                            );
+                          },
                         ),
                       ),
                     ),

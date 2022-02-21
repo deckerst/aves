@@ -5,15 +5,6 @@ import 'package:flutter/material.dart';
 class Themes {
   static const _accentColor = Colors.indigoAccent;
 
-  static const debugGradient = LinearGradient(
-    begin: Alignment.bottomCenter,
-    end: Alignment.topCenter,
-    colors: [
-      Colors.red,
-      Colors.amber,
-    ],
-  );
-
   static final darkTheme = ThemeData(
     brightness: Brightness.dark,
     // canvas color is used as background for the drawer and popups
