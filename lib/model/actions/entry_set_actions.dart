@@ -42,7 +42,7 @@ class EntrySetActions {
     EntrySetAction.selectNone,
   ];
 
-  static const browsing = [
+  static const pageBrowsing = [
     EntrySetAction.searchCollection,
     EntrySetAction.toggleTitleSearch,
     EntrySetAction.addShortcut,
@@ -52,10 +52,33 @@ class EntrySetActions {
     EntrySetAction.emptyBin,
   ];
 
-  static const selection = [
+  // exclude bin related actions
+  static const collectionEditorBrowsing = [
+    EntrySetAction.searchCollection,
+    EntrySetAction.toggleTitleSearch,
+    EntrySetAction.addShortcut,
+    EntrySetAction.map,
+    EntrySetAction.stats,
+    EntrySetAction.rescan,
+  ];
+
+  static const pageSelection = [
     EntrySetAction.share,
     EntrySetAction.delete,
     EntrySetAction.restore,
+    EntrySetAction.copy,
+    EntrySetAction.move,
+    EntrySetAction.toggleFavourite,
+    EntrySetAction.map,
+    EntrySetAction.stats,
+    EntrySetAction.rescan,
+    // editing actions are in their subsection
+  ];
+
+  // exclude bin related actions
+  static const collectionEditorSelection = [
+    EntrySetAction.share,
+    EntrySetAction.delete,
     EntrySetAction.copy,
     EntrySetAction.move,
     EntrySetAction.toggleFavourite,
