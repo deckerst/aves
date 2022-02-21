@@ -2,8 +2,8 @@ import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/enums/home_page.dart';
 import 'package:aves/model/settings/enums/screen_on.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/utils/color_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
@@ -30,7 +30,7 @@ class NavigationSection extends StatelessWidget {
     return AvesExpansionTile(
       leading: SettingsTileLeading(
         icon: AIcons.home,
-        color: stringToColor('Navigation'),
+        color: AColors.navigation,
       ),
       title: context.l10n.settingsSectionNavigation,
       expandedNotifier: expandedNotifier,

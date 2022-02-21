@@ -1,8 +1,8 @@
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/common/services.dart';
+import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/utils/color_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/settings/common/tile_leading.dart';
@@ -25,7 +25,7 @@ class ViewerSection extends StatelessWidget {
     return AvesExpansionTile(
       leading: SettingsTileLeading(
         icon: AIcons.image,
-        color: stringToColor('Image'),
+        color: AColors.image,
       ),
       title: context.l10n.settingsSectionViewer,
       expandedNotifier: expandedNotifier,

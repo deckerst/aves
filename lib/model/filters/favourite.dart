@@ -1,4 +1,5 @@
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/foundation.dart';
@@ -32,7 +33,7 @@ class FavouriteFilter extends CollectionFilter {
   Widget iconBuilder(BuildContext context, double size, {bool showGenericIcon = true}) => Icon(AIcons.favourite, size: size);
 
   @override
-  Future<Color> color(BuildContext context) => SynchronousFuture(Colors.red);
+  Future<Color> color(BuildContext context) => SynchronousFuture(AColors.favourite);
 
   @override
   String get category => type;

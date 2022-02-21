@@ -324,7 +324,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
   }
 
   AvesEntry? _getRegionEntry(int? index) {
-    if (index != null && regionCollection != null) {
+    if (index != null && index >= 0 && regionCollection != null) {
       final regionEntries = regionCollection!.sortedEntries;
       if (index < regionEntries.length) {
         return regionEntries[index];

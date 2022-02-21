@@ -1,7 +1,7 @@
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/utils/color_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/common/identity/aves_icons.dart';
@@ -26,7 +26,7 @@ class ThumbnailsSection extends StatelessWidget {
     return AvesExpansionTile(
       leading: SettingsTileLeading(
         icon: AIcons.grid,
-        color: stringToColor('Thumbnails'),
+        color: AColors.thumbnails,
       ),
       title: context.l10n.settingsSectionThumbnails,
       expandedNotifier: expandedNotifier,
