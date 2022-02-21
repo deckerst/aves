@@ -79,10 +79,10 @@ class CollectionLens with ChangeNotifier {
       favourites.addListener(_onFavouritesChanged);
     }
     _subscriptions.add(settings.updateStream
-        .where([
-          Settings.collectionSortFactorKey,
-          Settings.collectionGroupFactorKey,
-        ].contains)
+        .where((event) => [
+              Settings.collectionSortFactorKey,
+              Settings.collectionGroupFactorKey,
+            ].contains(event.key))
         .listen((_) => _onSettingsChanged()));
     _refresh();
   }

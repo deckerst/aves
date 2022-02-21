@@ -132,7 +132,6 @@ class _AppDebugPageState extends State<AppDebugPage> {
         ),
         ElevatedButton(
           onPressed: () async {
-            final source = context.read<CollectionSource>();
             await source.init();
             await source.refresh();
           },
@@ -163,18 +162,16 @@ class _AppDebugPageState extends State<AppDebugPage> {
   Future<void> _onActionSelected(AppDebugAction action) async {
     switch (action) {
       case AppDebugAction.prepScreenshotThumbnails:
-        final source = context.read<CollectionSource>();
-        source.changeFilterVisibility(settings.hiddenFilters, true);
-        source.changeFilterVisibility({
+        settings.changeFilterVisibility(settings.hiddenFilters, true);
+        settings.changeFilterVisibility({
           TagFilter('aves-thumbnail', not: true),
         }, false);
         await favourites.clear();
         await favourites.add(source.visibleEntries);
         break;
       case AppDebugAction.prepScreenshotStats:
-        final source = context.read<CollectionSource>();
-        source.changeFilterVisibility(settings.hiddenFilters, true);
-        source.changeFilterVisibility({
+        settings.changeFilterVisibility(settings.hiddenFilters, true);
+        settings.changeFilterVisibility({
           PathFilter('/storage/emulated/0/Pictures/Dev'),
         }, false);
         break;

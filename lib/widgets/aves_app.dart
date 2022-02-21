@@ -229,9 +229,9 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
       }
     }
 
-    settings.updateStream.where((key) => key == Settings.isInstalledAppAccessAllowedKey).listen((_) => applyIsInstalledAppAccessAllowed());
-    settings.updateStream.where((key) => key == Settings.keepScreenOnKey).listen((_) => applyKeepScreenOn());
-    settings.updateStream.where((key) => key == Settings.platformAccelerometerRotationKey).listen((_) => applyIsRotationLocked());
+    settings.updateStream.where((event) => event.key == Settings.isInstalledAppAccessAllowedKey).listen((_) => applyIsInstalledAppAccessAllowed());
+    settings.updateStream.where((event) => event.key == Settings.keepScreenOnKey).listen((_) => applyKeepScreenOn());
+    settings.updateStream.where((event) => event.key == Settings.platformAccelerometerRotationKey).listen((_) => applyIsRotationLocked());
 
     applyKeepScreenOn();
     applyIsRotationLocked();
@@ -239,7 +239,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
 
   Future<void> _setupErrorReporting() async {
     await reportService.init();
-    settings.updateStream.where((key) => key == Settings.isErrorReportingAllowedKey).listen(
+    settings.updateStream.where((event) => event.key == Settings.isErrorReportingAllowedKey).listen(
           (_) => reportService.setCollectionEnabled(settings.isErrorReportingAllowed),
         );
     await reportService.setCollectionEnabled(settings.isErrorReportingAllowed);

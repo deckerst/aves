@@ -271,8 +271,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
     );
     if (confirmed == null || !confirmed) return;
 
-    final source = context.read<CollectionSource>();
-    source.changeFilterVisibility(filters, false);
+    settings.changeFilterVisibility(filters, false);
 
     _browse(context);
   }
