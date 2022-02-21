@@ -51,10 +51,9 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
     }
 
     final source = context.read<CollectionSource>();
-    if (!source.initialized) {
+    if (source.initState != SourceInitializationState.full) {
       // source may be uninitialized in viewer mode
       await source.init();
-      unawaited(source.refresh());
     }
 
     final entriesByDestination = <String, Set<AvesEntry>>{};

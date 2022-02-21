@@ -168,7 +168,16 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     debugPrint('$runtimeType lifecycle ${state.name}');
     switch (state) {
       case AppLifecycleState.inactive:
-        _saveTopEntries();
+        switch (appModeNotifier.value) {
+          case AppMode.main:
+          case AppMode.pickMediaExternal:
+            _saveTopEntries();
+            break;
+          case AppMode.pickMediaInternal:
+          case AppMode.pickFilterInternal:
+          case AppMode.view:
+            break;
+        }
         break;
       case AppLifecycleState.paused:
       case AppLifecycleState.detached:

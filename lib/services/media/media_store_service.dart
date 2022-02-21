@@ -11,7 +11,7 @@ abstract class MediaStoreService {
   Future<List<int>> checkObsoletePaths(Map<int?, String?> knownPathById);
 
   // knownEntries: map of contentId -> dateModifiedSecs
-  Stream<AvesEntry> getEntries(Map<int?, int?> knownEntries);
+  Stream<AvesEntry> getEntries(Map<int?, int?> knownEntries, {String? directory});
 
   // returns media URI
   Future<Uri?> scanFile(String path, String mimeType);
@@ -48,11 +48,12 @@ class PlatformMediaStoreService implements MediaStoreService {
   }
 
   @override
-  Stream<AvesEntry> getEntries(Map<int?, int?> knownEntries) {
+  Stream<AvesEntry> getEntries(Map<int?, int?> knownEntries, {String? directory}) {
     try {
       return _streamChannel
           .receiveBroadcastStream(<String, dynamic>{
             'knownEntries': knownEntries,
+            'directory': directory,
           })
           .where((event) => event is Map)
           .map((event) => AvesEntry.fromMap(event as Map));

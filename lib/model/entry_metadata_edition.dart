@@ -259,7 +259,7 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
     );
   }
 
-  // convenience
+  // convenience methods
 
   // This method checks whether the item already has a metadata date,
   // and adds a date (the file modified date) via Exif if possible.

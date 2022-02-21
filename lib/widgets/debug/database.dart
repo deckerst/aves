@@ -21,7 +21,7 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
   late Future<int> _dbFileSizeLoader;
   late Future<Set<AvesEntry>> _dbEntryLoader;
   late Future<Map<int?, int?>> _dbDateLoader;
-  late Future<List<CatalogMetadata>> _dbMetadataLoader;
+  late Future<Set<CatalogMetadata>> _dbMetadataLoader;
   late Future<Set<AddressDetails>> _dbAddressLoader;
   late Future<Set<TrashDetails>> _dbTrashLoader;
   late Future<Set<FavouriteRow>> _dbFavouritesLoader;
@@ -108,7 +108,7 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                   );
                 },
               ),
-              FutureBuilder<List>(
+              FutureBuilder<Set>(
                 future: _dbMetadataLoader,
                 builder: (context, snapshot) {
                   if (snapshot.hasError) return Text(snapshot.error.toString());
@@ -122,7 +122,7 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                       ),
                       const SizedBox(width: 8),
                       ElevatedButton(
-                        onPressed: () => metadataDb.clearMetadataEntries().then((_) => _startDbReport()),
+                        onPressed: () => metadataDb.clearCatalogMetadata().then((_) => _startDbReport()),
                         child: const Text('Clear'),
                       ),
                     ],
@@ -243,10 +243,10 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
 
   void _startDbReport() {
     _dbFileSizeLoader = metadataDb.dbFileSize();
-    _dbEntryLoader = metadataDb.loadAllEntries();
+    _dbEntryLoader = metadataDb.loadEntries();
     _dbDateLoader = metadataDb.loadDates();
-    _dbMetadataLoader = metadataDb.loadAllMetadataEntries();
-    _dbAddressLoader = metadataDb.loadAllAddresses();
+    _dbMetadataLoader = metadataDb.loadCatalogMetadata();
+    _dbAddressLoader = metadataDb.loadAddresses();
     _dbTrashLoader = metadataDb.loadAllTrashDetails();
     _dbFavouritesLoader = metadataDb.loadAllFavourites();
     _dbCoversLoader = metadataDb.loadAllCovers();

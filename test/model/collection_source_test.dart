@@ -83,7 +83,6 @@ void main() {
       }
     });
     await source.init();
-    await source.refresh();
     await readyCompleter.future;
     return source;
   }

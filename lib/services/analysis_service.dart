@@ -115,8 +115,7 @@ class Analyzer {
     settings.systemLocalesFallback = await deviceService.getLocales();
     _l10n = await AppLocalizations.delegate.load(settings.appliedLocale);
     _serviceStateNotifier.value = AnalyzerState.running;
-    await _source.init();
-    unawaited(_source.refresh(analysisController: _controller));
+    await _source.init(analysisController: _controller);
 
     _notificationUpdateTimer = Timer.periodic(notificationUpdateInterval, (_) async {
       if (!isRunning) return;

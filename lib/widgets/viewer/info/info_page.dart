@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:aves/app_mode.dart';
 import 'package:aves/model/actions/entry_info_actions.dart';
 import 'package:aves/model/actions/events.dart';
 import 'package:aves/model/entry.dart';
@@ -199,7 +198,7 @@ class _InfoPageContentState extends State<_InfoPageContent> {
       collection: collection,
       actionDelegate: _actionDelegate,
       isEditingMetadataNotifier: _isEditingMetadataNotifier,
-      onFilter: _goToCollection,
+      onFilter: _onFilter,
     );
     final locationAtTop = widget.split && entry.hasGps;
     final locationSection = LocationSection(
@@ -207,7 +206,7 @@ class _InfoPageContentState extends State<_InfoPageContent> {
       entry: entry,
       showTitle: !locationAtTop,
       isScrollingNotifier: widget.isScrollingNotifier,
-      onFilter: _goToCollection,
+      onFilter: _onFilter,
     );
     final basicAndLocationSliver = locationAtTop
         ? SliverToBoxAdapter(
@@ -265,9 +264,5 @@ class _InfoPageContentState extends State<_InfoPageContent> {
     });
   }
 
-  void _goToCollection(CollectionFilter filter) {
-    final isMainMode = context.read<ValueNotifier<AppMode>>().value == AppMode.main;
-    if (!isMainMode || collection == null) return;
-    FilterSelectedNotification(filter).dispatch(context);
-  }
+  void _onFilter(CollectionFilter filter) => FilterSelectedNotification(filter).dispatch(context);
 }

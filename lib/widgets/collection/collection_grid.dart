@@ -96,35 +96,46 @@ class _CollectionGridContent extends StatelessWidget {
                 final scrollableWidth = c.item1;
                 final columnCount = c.item2;
                 final tileSpacing = c.item3;
-                // do not listen for animation delay change
-                final target = context.read<DurationsData>().staggeredAnimationPageTarget;
-                final tileAnimationDelay = context.read<TileExtentController>().getTileAnimationDelay(target);
                 return GridTheme(
                   extent: thumbnailExtent,
                   child: EntryListDetailsTheme(
                     extent: thumbnailExtent,
-                    child: SectionedEntryListLayoutProvider(
-                      collection: collection,
-                      scrollableWidth: scrollableWidth,
-                      tileLayout: tileLayout,
-                      columnCount: columnCount,
-                      spacing: tileSpacing,
-                      tileExtent: thumbnailExtent,
-                      tileBuilder: (entry) => AnimatedBuilder(
-                        animation: favourites,
-                        builder: (context, child) {
-                          return InteractiveTile(
-                            key: ValueKey(entry.id),
-                            collection: collection,
-                            entry: entry,
-                            thumbnailExtent: thumbnailExtent,
-                            tileLayout: tileLayout,
-                            isScrollingNotifier: _isScrollingNotifier,
-                          );
-                        },
-                      ),
-                      tileAnimationDelay: tileAnimationDelay,
-                      child: child!,
+                    child: ValueListenableBuilder<SourceState>(
+                      valueListenable: collection.source.stateNotifier,
+                      builder: (context, sourceState, child) {
+                        late final Duration tileAnimationDelay;
+                        if (sourceState == SourceState.ready) {
+                          // do not listen for animation delay change
+                          final target = context.read<DurationsData>().staggeredAnimationPageTarget;
+                          tileAnimationDelay = context.read<TileExtentController>().getTileAnimationDelay(target);
+                        } else {
+                          tileAnimationDelay = Duration.zero;
+                        }
+                        return SectionedEntryListLayoutProvider(
+                          collection: collection,
+                          scrollableWidth: scrollableWidth,
+                          tileLayout: tileLayout,
+                          columnCount: columnCount,
+                          spacing: tileSpacing,
+                          tileExtent: thumbnailExtent,
+                          tileBuilder: (entry) => AnimatedBuilder(
+                            animation: favourites,
+                            builder: (context, child) {
+                              return InteractiveTile(
+                                key: ValueKey(entry.id),
+                                collection: collection,
+                                entry: entry,
+                                thumbnailExtent: thumbnailExtent,
+                                tileLayout: tileLayout,
+                                isScrollingNotifier: _isScrollingNotifier,
+                              );
+                            },
+                          ),
+                          tileAnimationDelay: tileAnimationDelay,
+                          child: child!,
+                        );
+                      },
+                      child: child,
                     ),
                   ),
                 );

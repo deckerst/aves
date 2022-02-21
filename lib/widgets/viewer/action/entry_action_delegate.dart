@@ -188,7 +188,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       showFeedback(context, l10n.genericFailureFeedback);
     } else {
       final source = context.read<CollectionSource>();
-      if (source.initialized) {
+      if (source.initState != SourceInitializationState.none) {
         await source.removeEntries({entry.uri}, includeTrash: true);
       }
       EntryRemovedNotification(entry).dispatch(context);
@@ -203,9 +203,8 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     if (options == null) return;
 
     final source = context.read<CollectionSource>();
-    if (!source.initialized) {
+    if (source.initState != SourceInitializationState.full) {
       await source.init();
-      unawaited(source.refresh());
     }
     final destinationAlbum = await pickAlbum(context: context, moveType: MoveType.export);
     if (destinationAlbum == null) return;

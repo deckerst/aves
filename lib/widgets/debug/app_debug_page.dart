@@ -8,6 +8,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/analysis_service.dart';
 import 'package:aves/theme/durations.dart';
+import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/common/basic/menu.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
@@ -131,11 +132,16 @@ class _AppDebugPageState extends State<AppDebugPage> {
           title: const Text('Show tasks overlay'),
         ),
         ElevatedButton(
-          onPressed: () async {
-            await source.init();
-            await source.refresh();
-          },
-          child: const Text('Source full refresh'),
+          onPressed: () => source.init(loadTopEntriesFirst: false),
+          child: const Text('Source refresh (top off)'),
+        ),
+        ElevatedButton(
+          onPressed: () => source.init(loadTopEntriesFirst: true),
+          child: const Text('Source refresh (top on)'),
+        ),
+        ElevatedButton(
+          onPressed: () => source.init(directory: '${androidFileUtils.dcimPath}/Camera'),
+          child: const Text('Source refresh (camera)'),
         ),
         ElevatedButton(
           onPressed: () => AnalysisService.startService(force: false),

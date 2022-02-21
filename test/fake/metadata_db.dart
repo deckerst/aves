@@ -19,12 +19,12 @@ class FakeMetadataDb extends Fake implements MetadataDb {
   Future<void> init() => SynchronousFuture(null);
 
   @override
-  Future<void> removeIds(Set<int> ids, {Set<EntryDataType>? dataTypes}) => SynchronousFuture(null);
+  Future<void> removeIds(Iterable<int> ids, {Set<EntryDataType>? dataTypes}) => SynchronousFuture(null);
 
   // entries
 
   @override
-  Future<Set<AvesEntry>> loadAllEntries() => SynchronousFuture({});
+  Future<Set<AvesEntry>> loadEntries({String? directory}) => SynchronousFuture({});
 
   @override
   Future<void> saveEntries(Iterable<AvesEntry> entries) => SynchronousFuture(null);
@@ -40,18 +40,18 @@ class FakeMetadataDb extends Fake implements MetadataDb {
   // catalog metadata
 
   @override
-  Future<List<CatalogMetadata>> loadAllMetadataEntries() => SynchronousFuture([]);
+  Future<Set<CatalogMetadata>> loadCatalogMetadata() => SynchronousFuture({});
 
   @override
-  Future<void> saveMetadata(Set<CatalogMetadata> metadataEntries) => SynchronousFuture(null);
+  Future<void> saveCatalogMetadata(Set<CatalogMetadata> metadataEntries) => SynchronousFuture(null);
 
   @override
-  Future<void> updateMetadata(int id, CatalogMetadata? metadata) => SynchronousFuture(null);
+  Future<void> updateCatalogMetadata(int id, CatalogMetadata? metadata) => SynchronousFuture(null);
 
   // address
 
   @override
-  Future<Set<AddressDetails>> loadAllAddresses() => SynchronousFuture({});
+  Future<Set<AddressDetails>> loadAddresses() => SynchronousFuture({});
 
   @override
   Future<void> saveAddresses(Set<AddressDetails> addresses) => SynchronousFuture(null);
@@ -101,5 +101,5 @@ class FakeMetadataDb extends Fake implements MetadataDb {
   // video playback
 
   @override
-  Future<void> removeVideoPlayback(Set<int> ids) => SynchronousFuture(null);
+  Future<void> removeVideoPlayback(Iterable<int> ids) => SynchronousFuture(null);
 }

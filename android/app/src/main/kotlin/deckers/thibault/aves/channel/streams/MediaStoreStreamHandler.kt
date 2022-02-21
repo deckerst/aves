@@ -20,11 +20,13 @@ class MediaStoreStreamHandler(private val context: Context, arguments: Any?) : E
     private lateinit var handler: Handler
 
     private var knownEntries: Map<Int?, Int?>? = null
+    private var directory: String? = null
 
     init {
         if (arguments is Map<*, *>) {
             @Suppress("unchecked_cast")
             knownEntries = arguments["knownEntries"] as Map<Int?, Int?>?
+            directory = arguments["directory"] as String?
         }
     }
 
@@ -58,7 +60,7 @@ class MediaStoreStreamHandler(private val context: Context, arguments: Any?) : E
     }
 
     private fun fetchAll() {
-        MediaStoreImageProvider().fetchAll(context, knownEntries ?: emptyMap()) { success(it) }
+        MediaStoreImageProvider().fetchAll(context, knownEntries ?: emptyMap(), directory) { success(it) }
         endOfStream()
     }
 
