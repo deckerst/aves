@@ -6,6 +6,7 @@ class SupportedLocales {
     'en': 'English',
     'es': 'Español (México)',
     'fr': 'Français',
+    'id': 'Bahasa Indonesia',
     'ko': '한국어',
     'pt': 'Português (Brasil)',
     'ru': 'Русский',

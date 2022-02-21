@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:aves/app_mode.dart';
 import 'package:aves/model/device.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/filters.dart';
@@ -97,7 +98,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
     // so it is, strictly speaking, not contained in the lens used by the viewer,
     // but it can be found by content ID
     final initialEntry = widget.initialEntry;
-    final entry = entries.firstWhereOrNull((v) => v.contentId == initialEntry.contentId) ?? entries.firstOrNull;
+    final entry = entries.firstWhereOrNull((entry) => entry.id == initialEntry.id) ?? entries.firstOrNull;
     // opening hero, with viewer as target
     _heroInfoNotifier.value = HeroInfo(collection?.id, entry);
     _entryNotifier.value = entry;
@@ -399,8 +400,12 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
   }
 
   void _goToCollection(CollectionFilter filter) {
+    final isMainMode = context.read<ValueNotifier<AppMode>>().value == AppMode.main;
+    if (!isMainMode) return;
+
     final baseCollection = collection;
     if (baseCollection == null) return;
+
     _onLeave();
     Navigator.pushAndRemoveUntil(
       context,

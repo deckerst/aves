@@ -34,20 +34,20 @@ import deckers.thibault.aves.utils.StorageUtils
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.io.File
 import java.io.InputStream
 import java.util.*
 
 class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
+    private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
-            "getExifThumbnails" -> GlobalScope.launch(Dispatchers.IO) { safeSuspend(call, result, ::getExifThumbnails) }
-            "extractMotionPhotoVideo" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::extractMotionPhotoVideo) }
-            "extractVideoEmbeddedPicture" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::extractVideoEmbeddedPicture) }
-            "extractXmpDataProp" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::extractXmpDataProp) }
+            "getExifThumbnails" -> ioScope.launch { safeSuspend(call, result, ::getExifThumbnails) }
+            "extractMotionPhotoVideo" -> ioScope.launch { safe(call, result, ::extractMotionPhotoVideo) }
+            "extractVideoEmbeddedPicture" -> ioScope.launch { safe(call, result, ::extractVideoEmbeddedPicture) }
+            "extractXmpDataProp" -> ioScope.launch { safe(call, result, ::extractXmpDataProp) }
             else -> result.notImplemented()
         }
     }
@@ -210,7 +210,7 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
             "mimeType" to mimeType,
         )
         if (isImage(mimeType) || isVideo(mimeType)) {
-            GlobalScope.launch(Dispatchers.IO) {
+            ioScope.launch {
                 ContentImageProvider().fetchSingle(context, uri, mimeType, object : ImageProvider.ImageOpCallback {
                     override fun onSuccess(fields: FieldMap) {
                         resultFields.putAll(fields)

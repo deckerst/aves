@@ -33,26 +33,26 @@ import deckers.thibault.aves.utils.LogUtils
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.io.File
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.math.roundToInt
 
 class AppAdapterHandler(private val context: Context) : MethodCallHandler {
+    private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
-            "getPackages" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getPackages) }
-            "getAppIcon" -> GlobalScope.launch(Dispatchers.IO) { safeSuspend(call, result, ::getAppIcon) }
-            "copyToClipboard" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::copyToClipboard) }
+            "getPackages" -> ioScope.launch { safe(call, result, ::getPackages) }
+            "getAppIcon" -> ioScope.launch { safeSuspend(call, result, ::getAppIcon) }
+            "copyToClipboard" -> ioScope.launch { safe(call, result, ::copyToClipboard) }
             "edit" -> safe(call, result, ::edit)
             "open" -> safe(call, result, ::open)
             "openMap" -> safe(call, result, ::openMap)
             "setAs" -> safe(call, result, ::setAs)
             "share" -> safe(call, result, ::share)
-            "pinShortcut" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::pinShortcut) }
+            "pinShortcut" -> ioScope.launch { safe(call, result, ::pinShortcut) }
             else -> result.notImplemented()
         }
     }

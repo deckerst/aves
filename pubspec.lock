@@ -883,12 +883,12 @@ packages:
     source: hosted
     version: "2.0.13"
   shared_preferences_android:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: shared_preferences_android
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.11"
+    version: "2.0.10"
   shared_preferences_ios:
     dependency: transitive
     description:

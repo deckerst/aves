@@ -20,9 +20,9 @@ final Settings settings = Settings._private();
 
 class Settings extends ChangeNotifier {
   final EventChannel _platformSettingsChangeChannel = const EventChannel('deckers.thibault/aves/settings_change');
-  final StreamController<String> _updateStreamController = StreamController<String>.broadcast();
+  final StreamController<SettingsChangedEvent> _updateStreamController = StreamController<SettingsChangedEvent>.broadcast();
 
-  Stream<String> get updateStream => _updateStreamController.stream;
+  Stream<SettingsChangedEvent> get updateStream => _updateStreamController.stream;
 
   Settings._private();
 
@@ -42,15 +42,16 @@ class Settings extends ChangeNotifier {
   static const isInstalledAppAccessAllowedKey = 'is_installed_app_access_allowed';
   static const isErrorReportingAllowedKey = 'is_crashlytics_enabled';
   static const localeKey = 'locale';
-  static const mustBackTwiceToExitKey = 'must_back_twice_to_exit';
-  static const keepScreenOnKey = 'keep_screen_on';
-  static const homePageKey = 'home_page';
   static const catalogTimeZoneKey = 'catalog_time_zone';
   static const tileExtentPrefixKey = 'tile_extent_';
   static const tileLayoutPrefixKey = 'tile_layout_';
   static const topEntryIdsKey = 'top_entry_ids';
 
-  // drawer
+  // navigation
+  static const mustBackTwiceToExitKey = 'must_back_twice_to_exit';
+  static const keepScreenOnKey = 'keep_screen_on';
+  static const homePageKey = 'home_page';
+  static const confirmationDialogsKey = 'confirmation_dialogs';
   static const drawerTypeBookmarksKey = 'drawer_type_bookmarks';
   static const drawerAlbumBookmarksKey = 'drawer_album_bookmarks';
   static const drawerPageBookmarksKey = 'drawer_page_bookmarks';
@@ -110,6 +111,9 @@ class Settings extends ChangeNotifier {
   // search
   static const saveSearchHistoryKey = 'save_search_history';
   static const searchHistoryKey = 'search_history';
+
+  // bin
+  static const enableBinKey = 'enable_bin';
 
   // accessibility
   static const accessibilityAnimationsKey = 'accessibility_animations';
@@ -233,18 +237,6 @@ class Settings extends ChangeNotifier {
     return _appliedLocale!;
   }
 
-  bool get mustBackTwiceToExit => getBoolOrDefault(mustBackTwiceToExitKey, SettingsDefaults.mustBackTwiceToExit);
-
-  set mustBackTwiceToExit(bool newValue) => setAndNotify(mustBackTwiceToExitKey, newValue);
-
-  KeepScreenOn get keepScreenOn => getEnumOrDefault(keepScreenOnKey, SettingsDefaults.keepScreenOn, KeepScreenOn.values);
-
-  set keepScreenOn(KeepScreenOn newValue) => setAndNotify(keepScreenOnKey, newValue.toString());
-
-  HomePageSetting get homePage => getEnumOrDefault(homePageKey, SettingsDefaults.homePage, HomePageSetting.values);
-
-  set homePage(HomePageSetting newValue) => setAndNotify(homePageKey, newValue.toString());
-
   String get catalogTimeZone => getString(catalogTimeZoneKey) ?? '';
 
   set catalogTimeZone(String newValue) => setAndNotify(catalogTimeZoneKey, newValue);
@@ -261,7 +253,23 @@ class Settings extends ChangeNotifier {
 
   set topEntryIds(List<int>? newValue) => setAndNotify(topEntryIdsKey, newValue?.map((id) => id.toString()).whereNotNull().toList());
 
-  // drawer
+  // navigation
+
+  bool get mustBackTwiceToExit => getBoolOrDefault(mustBackTwiceToExitKey, SettingsDefaults.mustBackTwiceToExit);
+
+  set mustBackTwiceToExit(bool newValue) => setAndNotify(mustBackTwiceToExitKey, newValue);
+
+  KeepScreenOn get keepScreenOn => getEnumOrDefault(keepScreenOnKey, SettingsDefaults.keepScreenOn, KeepScreenOn.values);
+
+  set keepScreenOn(KeepScreenOn newValue) => setAndNotify(keepScreenOnKey, newValue.toString());
+
+  HomePageSetting get homePage => getEnumOrDefault(homePageKey, SettingsDefaults.homePage, HomePageSetting.values);
+
+  set homePage(HomePageSetting newValue) => setAndNotify(homePageKey, newValue.toString());
+
+  List<ConfirmationDialog> get confirmationDialogs => getEnumListOrDefault(confirmationDialogsKey, SettingsDefaults.confirmationDialogs, ConfirmationDialog.values);
+
+  set confirmationDialogs(List<ConfirmationDialog> newValue) => setAndNotify(confirmationDialogsKey, newValue.map((v) => v.toString()).toList());
 
   List<CollectionFilter?> get drawerTypeBookmarks =>
       (getStringList(drawerTypeBookmarksKey))?.map((v) {
@@ -347,6 +355,17 @@ class Settings extends ChangeNotifier {
   Set<CollectionFilter> get hiddenFilters => (getStringList(hiddenFiltersKey) ?? []).map(CollectionFilter.fromJson).whereNotNull().toSet();
 
   set hiddenFilters(Set<CollectionFilter> newValue) => setAndNotify(hiddenFiltersKey, newValue.map((filter) => filter.toJson()).toList());
+
+  void changeFilterVisibility(Set<CollectionFilter> filters, bool visible) {
+    final _hiddenFilters = hiddenFilters;
+    if (visible) {
+      _hiddenFilters.removeAll(filters);
+    } else {
+      _hiddenFilters.addAll(filters);
+      searchHistory = searchHistory..removeWhere(filters.contains);
+    }
+    hiddenFilters = _hiddenFilters;
+  }
 
   // viewer
 
@@ -462,6 +481,12 @@ class Settings extends ChangeNotifier {
 
   set searchHistory(List<CollectionFilter> newValue) => setAndNotify(searchHistoryKey, newValue.map((filter) => filter.toJson()).toList());
 
+  // bin
+
+  bool get enableBin => getBoolOrDefault(enableBinKey, SettingsDefaults.enableBin);
+
+  set enableBin(bool newValue) => setAndNotify(enableBinKey, newValue);
+
   // accessibility
 
   AccessibilityAnimations get accessibilityAnimations => getEnumOrDefault(accessibilityAnimationsKey, SettingsDefaults.accessibilityAnimations, AccessibilityAnimations.values);
@@ -526,7 +551,7 @@ class Settings extends ChangeNotifier {
       settingsStore.setBool(key, newValue);
     }
     if (oldValue != newValue) {
-      _updateStreamController.add(key);
+      _updateStreamController.add(SettingsChangedEvent(key, oldValue, newValue));
       notifyListeners();
     }
   }
@@ -569,37 +594,39 @@ class Settings extends ChangeNotifier {
       await reset(includeInternalKeys: false);
 
       // apply user modifications
-      jsonMap.forEach((key, value) {
-        if (value == null) {
+      jsonMap.forEach((key, newValue) {
+        final oldValue = settingsStore.get(key);
+
+        if (newValue == null) {
           settingsStore.remove(key);
         } else if (key.startsWith(tileExtentPrefixKey)) {
-          if (value is double) {
-            settingsStore.setDouble(key, value);
+          if (newValue is double) {
+            settingsStore.setDouble(key, newValue);
           } else {
-            debugPrint('failed to import key=$key, value=$value is not a double');
+            debugPrint('failed to import key=$key, value=$newValue is not a double');
           }
         } else if (key.startsWith(tileLayoutPrefixKey)) {
-          if (value is String) {
-            settingsStore.setString(key, value);
+          if (newValue is String) {
+            settingsStore.setString(key, newValue);
           } else {
-            debugPrint('failed to import key=$key, value=$value is not a string');
+            debugPrint('failed to import key=$key, value=$newValue is not a string');
           }
         } else {
           switch (key) {
             case subtitleTextColorKey:
             case subtitleBackgroundColorKey:
-              if (value is int) {
-                settingsStore.setInt(key, value);
+              if (newValue is int) {
+                settingsStore.setInt(key, newValue);
               } else {
-                debugPrint('failed to import key=$key, value=$value is not an int');
+                debugPrint('failed to import key=$key, value=$newValue is not an int');
               }
               break;
             case subtitleFontSizeKey:
             case infoMapZoomKey:
-              if (value is double) {
-                settingsStore.setDouble(key, value);
+              if (newValue is double) {
+                settingsStore.setDouble(key, newValue);
               } else {
-                debugPrint('failed to import key=$key, value=$value is not a double');
+                debugPrint('failed to import key=$key, value=$newValue is not a double');
               }
               break;
             case isInstalledAppAccessAllowedKey:
@@ -624,10 +651,10 @@ class Settings extends ChangeNotifier {
             case subtitleShowOutlineKey:
             case saveSearchHistoryKey:
             case filePickerShowHiddenFilesKey:
-              if (value is bool) {
-                settingsStore.setBool(key, value);
+              if (newValue is bool) {
+                settingsStore.setBool(key, newValue);
               } else {
-                debugPrint('failed to import key=$key, value=$value is not a bool');
+                debugPrint('failed to import key=$key, value=$newValue is not a bool');
               }
               break;
             case localeKey:
@@ -647,12 +674,13 @@ class Settings extends ChangeNotifier {
             case unitSystemKey:
             case accessibilityAnimationsKey:
             case timeToTakeActionKey:
-              if (value is String) {
-                settingsStore.setString(key, value);
+              if (newValue is String) {
+                settingsStore.setString(key, newValue);
               } else {
-                debugPrint('failed to import key=$key, value=$value is not a string');
+                debugPrint('failed to import key=$key, value=$newValue is not a string');
               }
               break;
+            case confirmationDialogsKey:
             case drawerTypeBookmarksKey:
             case drawerAlbumBookmarksKey:
             case drawerPageBookmarksKey:
@@ -662,17 +690,29 @@ class Settings extends ChangeNotifier {
             case collectionSelectionQuickActionsKey:
             case viewerQuickActionsKey:
             case videoQuickActionsKey:
-              if (value is List) {
-                settingsStore.setStringList(key, value.cast<String>());
+              if (newValue is List) {
+                settingsStore.setStringList(key, newValue.cast<String>());
               } else {
-                debugPrint('failed to import key=$key, value=$value is not a list');
+                debugPrint('failed to import key=$key, value=$newValue is not a list');
               }
               break;
           }
         }
-        _updateStreamController.add(key);
+        if (oldValue != newValue) {
+          _updateStreamController.add(SettingsChangedEvent(key, oldValue, newValue));
+        }
       });
       notifyListeners();
     }
   }
+}
+
+@immutable
+class SettingsChangedEvent {
+  final String key;
+  final dynamic oldValue;
+  final dynamic newValue;
+
+  // old and new values as stored, e.g. `List<String>` for collections
+  const SettingsChangedEvent(this.key, this.oldValue, this.newValue);
 }

@@ -38,7 +38,7 @@ class _AddShortcutDialogState extends State<AddShortcutDialog> {
     if (_collection != null) {
       final entries = _collection.sortedEntries;
       if (entries.isNotEmpty) {
-        final coverEntries = _collection.filters.map(covers.coverContentId).whereNotNull().map((id) => entries.firstWhereOrNull((entry) => entry.contentId == id)).whereNotNull();
+        final coverEntries = _collection.filters.map(covers.coverEntryId).whereNotNull().map((id) => entries.firstWhereOrNull((entry) => entry.id == id)).whereNotNull();
         _coverEntry = coverEntries.firstOrNull ?? entries.first;
       }
     }

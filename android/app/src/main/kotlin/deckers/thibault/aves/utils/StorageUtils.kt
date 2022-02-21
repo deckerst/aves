@@ -33,6 +33,32 @@ object StorageUtils {
     private const val TREE_URI_ROOT = "content://com.android.externalstorage.documents/tree/"
     private val TREE_URI_PATH_PATTERN = Pattern.compile("(.*?):(.*)")
 
+    const val TRASH_PATH_PLACEHOLDER = "#trash"
+
+    private fun isAppFile(context: Context, path: String): Boolean {
+        return context.getExternalFilesDirs(null).any { filesDir -> path.startsWith(filesDir.path) }
+    }
+
+    private fun appExternalFilesDirFor(context: Context, path: String): File? {
+        val filesDirs = context.getExternalFilesDirs(null)
+        val volumePath = getVolumePath(context, path)
+        return volumePath?.let { filesDirs.firstOrNull { it.startsWith(volumePath) } } ?: filesDirs.first()
+    }
+
+    fun trashDirFor(context: Context, path: String): File? {
+        val filesDir = appExternalFilesDirFor(context, path)
+        if (filesDir == null) {
+            Log.e(LOG_TAG, "failed to find external files dir for path=$path")
+            return null
+        }
+        val trashDir = File(filesDir, "trash")
+        if (!trashDir.exists() && !trashDir.mkdirs()) {
+            Log.e(LOG_TAG, "failed to create directories at path=$trashDir")
+            return null
+        }
+        return trashDir
+    }
+
     /**
      * Volume paths
      */
@@ -408,10 +434,11 @@ object StorageUtils {
     fun canEditByFile(context: Context, path: String) = !requireAccessPermission(context, path)
 
     fun requireAccessPermission(context: Context, anyPath: String): Boolean {
+        if (isAppFile(context, anyPath)) return false
+
         // on Android R, we should always require access permission, even on primary volume
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
-            return true
-        }
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) return true
+
         val onPrimaryVolume = anyPath.startsWith(getPrimaryVolumePath(context))
         return !onPrimaryVolume
     }

@@ -9,6 +9,8 @@ import 'package:aves/model/entry.dart';
 import 'package:aves/model/entry_metadata_edition.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/highlight.dart';
+import 'package:aves/model/settings/enums/enums.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/common/image_op_events.dart';
@@ -23,6 +25,7 @@ import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
 import 'package:aves/widgets/common/action_mixins/size_aware.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/add_shortcut_dialog.dart';
+import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/entry_editors/rename_dialog.dart';
 import 'package:aves/widgets/dialogs/export_entry_dialog.dart';
@@ -55,6 +58,9 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         break;
       case EntryAction.delete:
         _delete(context);
+        break;
+      case EntryAction.restore:
+        _move(context, moveType: MoveType.fromBin);
         break;
       case EntryAction.convert:
         _convert(context);
@@ -163,34 +169,27 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
   }
 
   Future<void> _delete(BuildContext context) async {
-    final confirmed = await showDialog<bool>(
+    if (settings.enableBin && !entry.trashed) {
+      await _move(context, moveType: MoveType.toBin);
+      return;
+    }
+
+    final l10n = context.l10n;
+    if (!(await showConfirmationDialog(
       context: context,
-      builder: (context) {
-        return AvesDialog(
-          content: Text(context.l10n.deleteEntriesConfirmationDialogMessage(1)),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
-            ),
-            TextButton(
-              onPressed: () => Navigator.pop(context, true),
-              child: Text(context.l10n.deleteButtonLabel),
-            ),
-          ],
-        );
-      },
-    );
-    if (confirmed == null || !confirmed) return;
+      type: ConfirmationDialog.delete,
+      message: l10n.deleteEntriesConfirmationDialogMessage(1),
+      confirmationButtonLabel: l10n.deleteButtonLabel,
+    ))) return;
 
     if (!await checkStoragePermission(context, {entry})) return;
 
     if (!await entry.delete()) {
-      showFeedback(context, context.l10n.genericFailureFeedback);
+      showFeedback(context, l10n.genericFailureFeedback);
     } else {
       final source = context.read<CollectionSource>();
-      if (source.initialized) {
-        await source.removeEntries({entry.uri});
+      if (source.initState != SourceInitializationState.none) {
+        await source.removeEntries({entry.uri}, includeTrash: true);
       }
       EntryRemovedNotification(entry).dispatch(context);
     }
@@ -204,9 +203,8 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     if (options == null) return;
 
     final source = context.read<CollectionSource>();
-    if (!source.initialized) {
+    if (source.initState != SourceInitializationState.full) {
       await source.init();
-      unawaited(source.refresh());
     }
     final destinationAlbum = await pickAlbum(context: context, moveType: MoveType.export);
     if (destinationAlbum == null) return;
@@ -300,8 +298,14 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     await move(
       context,
       moveType: moveType,
-      selectedItems: {entry},
-      onSuccess: moveType == MoveType.move ? () => EntryRemovedNotification(entry).dispatch(context) : null,
+      entries: {entry},
+      onSuccess: {
+        MoveType.move,
+        MoveType.toBin,
+        MoveType.fromBin,
+      }.contains(moveType)
+          ? () => EntryRemovedNotification(entry).dispatch(context)
+          : null,
     );
   }
 

@@ -10,6 +10,7 @@ import 'package:aves/model/filters/path.dart';
 import 'package:aves/model/filters/query.dart';
 import 'package:aves/model/filters/rating.dart';
 import 'package:aves/model/filters/tag.dart';
+import 'package:aves/model/filters/trash.dart';
 import 'package:aves/model/filters/type.dart';
 import 'package:aves/utils/color_utils.dart';
 import 'package:collection/collection.dart';
@@ -20,6 +21,7 @@ import 'package:flutter/widgets.dart';
 @immutable
 abstract class CollectionFilter extends Equatable implements Comparable<CollectionFilter> {
   static const List<String> categoryOrder = [
+    TrashFilter.type,
     QueryFilter.type,
     MimeFilter.type,
     AlbumFilter.type,
@@ -64,6 +66,8 @@ abstract class CollectionFilter extends Equatable implements Comparable<Collecti
             return TagFilter.fromMap(jsonMap);
           case TypeFilter.type:
             return TypeFilter.fromMap(jsonMap);
+          case TrashFilter.type:
+            return TrashFilter.instance;
         }
       }
     } catch (error, stack) {

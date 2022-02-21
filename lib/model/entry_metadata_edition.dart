@@ -22,7 +22,7 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
 
     final appliedModifier = await _applyDateModifierToEntry(userModifier);
     if (appliedModifier == null) {
-      await reportService.recordError('failed to get date for modifier=$userModifier, uri=$uri', null);
+      await reportService.recordError('failed to get date for modifier=$userModifier, entry=$this', null);
       return {};
     }
 
@@ -259,7 +259,7 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
     );
   }
 
-  // convenience
+  // convenience methods
 
   // This method checks whether the item already has a metadata date,
   // and adds a date (the file modified date) via Exif if possible.

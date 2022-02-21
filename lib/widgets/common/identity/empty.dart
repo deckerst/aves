@@ -7,6 +7,7 @@ class EmptyContent extends StatelessWidget {
   final String text;
   final AlignmentGeometry alignment;
   final double fontSize;
+  final bool safeBottom;
 
   const EmptyContent({
     Key? key,
@@ -14,15 +15,18 @@ class EmptyContent extends StatelessWidget {
     required this.text,
     this.alignment = const FractionalOffset(.5, .35),
     this.fontSize = 22,
+    this.safeBottom = true,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     const color = Colors.blueGrey;
     return Padding(
-      padding: EdgeInsets.only(
-        bottom: context.select<MediaQueryData, double>((mq) => mq.effectiveBottomPadding),
-      ),
+      padding: safeBottom
+          ? EdgeInsets.only(
+              bottom: context.select<MediaQueryData, double>((mq) => mq.effectiveBottomPadding),
+            )
+          : EdgeInsets.zero,
       child: Align(
         alignment: alignment,
         child: Column(

@@ -7,6 +7,7 @@
 
   "timeSeconds": "{seconds, plural, =1{1 Sekunde} other{{seconds} Sekunde}}",
   "timeMinutes": "{minutes, plural, =1{1 Minute} other{{minutes} Minuten}}",
+  "timeDays": "{days, plural, =1{1 Tag} other{{days} Tage}}",
   "focalLength": "{length} mm",
 
   "applyButtonLabel": "ANWENDEN",
@@ -27,6 +28,7 @@
   "resetButtonTooltip": "Zurücksetzen",
 
   "doubleBackExitMessage": "Zum Verlassen erneut auf „Zurück“ tippen.",
+  "doNotAskAgain": "Nicht noch einmal fragen",
 
   "sourceStateLoading": "Laden",
   "sourceStateCataloguing": "Katalogisierung",
@@ -48,6 +50,7 @@
   "entryActionDelete": "Löschen",
   "entryActionExport": "Exportieren",
   "entryActionRename": "Umbenennen",
+  "entryActionRestore": "Wiederherstellen",
   "entryActionRotateCCW": "Drehen gegen den Uhrzeigersinn",
   "entryActionRotateCW": "Drehen im Uhrzeigersinn",
   "entryActionFlip": "Horizontal spiegeln",
@@ -78,6 +81,7 @@
   "entryInfoActionEditTags": "Tags bearbeiten",
   "entryInfoActionRemoveMetadata": "Metadaten entfernen",
 
+  "filterBinLabel": "Papierkorb",
   "filterFavouriteLabel": "Favorit",
   "filterLocationEmptyLabel": "Ungeortet",
   "filterTagEmptyLabel": "Unmarkiert",
@@ -156,6 +160,7 @@
   "noMatchingAppDialogTitle": "Keine passende App",
   "noMatchingAppDialogMessage": "Es gibt keine Anwendungen, die dies bewältigen können.",
 
+  "binEntriesConfirmationDialogMessage": "{count, plural, =1{Dieses Element in den Papierkorb verschieben?} other{Diese {count} Elemente in den Papierkorb verschieben?}}",
   "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{Sicher, dass dieses Element gelöscht werden soll?} other{Sicher, dass diese {count} Elemente gelöscht werden sollen?}}",
 
   "videoResumeDialogMessage": "Soll bei {time} weiter abspielt werden?",
@@ -266,11 +271,12 @@
 
   "collectionPageTitle": "Sammlung",
   "collectionPickPageTitle": "Wähle",
-  "collectionSelectionPageTitle": "{count, plural, =0{Elemente auswählen} =1{1 Element} other{{count} Elemente}}",
+  "collectionSelectPageTitle": "Elemente auswählen",
 
   "collectionActionShowTitleSearch": "Titelfilter anzeigen",
   "collectionActionHideTitleSearch": "Titelfilter ausblenden",
   "collectionActionAddShortcut": "Verknüpfung hinzufügen",
+  "collectionActionEmptyBin": "Papierkorb leeren",
   "collectionActionCopy": "In Album kopieren",
   "collectionActionMove": "Zum Album verschieben",
   "collectionActionRescan": "Neu scannen",
@@ -349,6 +355,8 @@
   "tagPageTitle": "Tags",
   "tagEmpty": "Keine Tags",
 
+  "binPageTitle": "Papierkorb",
+
   "searchCollectionFieldHint": "Sammlung durchsuchen",
   "searchSectionRecent": "Neueste",
   "searchSectionAlbums": "Alben",
@@ -373,6 +381,11 @@
   "settingsKeepScreenOnTile": "Bildschirm eingeschaltet lassen",
   "settingsKeepScreenOnTitle": "Bildschirm eingeschaltet lassen",
   "settingsDoubleBackExit": "Zum Verlassen zweimal „zurück“ tippen",
+
+  "settingsConfirmationDialogTile": "Bestätigungsdialoge",
+  "settingsConfirmationDialogTitle": "Bestätigungsdialoge",
+  "settingsConfirmationDialogDeleteItems": "Vor dem endgültigen Löschen von Elementen fragen",
+  "settingsConfirmationDialogMoveToBinItems": "Vor dem Verschieben von Elementen in den Papierkorb fragen",
 
   "settingsNavigationDrawerTile": "Menü Navigation",
   "settingsNavigationDrawerEditorTitle": "Menü Navigation",
@@ -449,6 +462,8 @@
   "settingsAllowInstalledAppAccessSubtitle": "zur Gruppierung von Bildern nach Apps",
   "settingsAllowErrorReporting": "Anonyme Fehlermeldungen zulassen",
   "settingsSaveSearchHistory": "Suchverlauf speichern",
+  "settingsEnableBin": "Papierkorb verwenden",
+  "settingsEnableBinSubtitle": "Gelöschte Elemente 30 Tage lang aufbewahren",
 
   "settingsHiddenItemsTile": "Versteckte Elemente",
   "settingsHiddenItemsTitle": "Versteckte Elemente",

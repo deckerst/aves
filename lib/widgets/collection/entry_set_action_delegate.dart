@@ -10,6 +10,8 @@ import 'package:aves/model/favourites.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/query.dart';
 import 'package:aves/model/selection.dart';
+import 'package:aves/model/settings/enums/enums.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/analysis_controller.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
@@ -23,6 +25,7 @@ import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
 import 'package:aves/widgets/common/action_mixins/size_aware.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/add_shortcut_dialog.dart';
+import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/map/map_page.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
@@ -41,6 +44,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     required bool isSelecting,
     required int itemCount,
     required int selectedItemCount,
+    required bool isTrash,
   }) {
     switch (action) {
       // general
@@ -58,15 +62,19 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       case EntrySetAction.toggleTitleSearch:
         return !isSelecting;
       case EntrySetAction.addShortcut:
-        return appMode == AppMode.main && !isSelecting && device.canPinShortcut;
+        return appMode == AppMode.main && !isSelecting && device.canPinShortcut && !isTrash;
+      case EntrySetAction.emptyBin:
+        return isTrash;
       // browsing or selecting
       case EntrySetAction.map:
       case EntrySetAction.stats:
-      case EntrySetAction.rescan:
         return appMode == AppMode.main;
+      case EntrySetAction.rescan:
+        return appMode == AppMode.main && !isTrash;
       // selecting
-      case EntrySetAction.share:
       case EntrySetAction.delete:
+        return appMode == AppMode.main && isSelecting;
+      case EntrySetAction.share:
       case EntrySetAction.copy:
       case EntrySetAction.move:
       case EntrySetAction.toggleFavourite:
@@ -78,7 +86,9 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       case EntrySetAction.editRating:
       case EntrySetAction.editTags:
       case EntrySetAction.removeMetadata:
-        return appMode == AppMode.main && isSelecting;
+        return appMode == AppMode.main && isSelecting && !isTrash;
+      case EntrySetAction.restore:
+        return appMode == AppMode.main && isSelecting && isTrash;
     }
   }
 
@@ -104,6 +114,8 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       case EntrySetAction.toggleTitleSearch:
       case EntrySetAction.addShortcut:
         return true;
+      case EntrySetAction.emptyBin:
+        return !isSelecting && hasItems;
       case EntrySetAction.map:
       case EntrySetAction.stats:
       case EntrySetAction.rescan:
@@ -111,6 +123,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       // selecting
       case EntrySetAction.share:
       case EntrySetAction.delete:
+      case EntrySetAction.restore:
       case EntrySetAction.copy:
       case EntrySetAction.move:
       case EntrySetAction.toggleFavourite:
@@ -159,7 +172,11 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
         _share(context);
         break;
       case EntrySetAction.delete:
+      case EntrySetAction.emptyBin:
         _delete(context);
+        break;
+      case EntrySetAction.restore:
+        _move(context, moveType: MoveType.fromBin);
         break;
       case EntrySetAction.copy:
         _move(context, moveType: MoveType.copy);
@@ -197,83 +214,77 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     }
   }
 
-  Set<AvesEntry> _getExpandedSelectedItems(Selection<AvesEntry> selection) {
-    return selection.selectedItems.expand((entry) => entry.burstEntries ?? {entry}).toSet();
+  Set<AvesEntry> _getTargetItems(BuildContext context) {
+    final selection = context.read<Selection<AvesEntry>>();
+    final groupedEntries = (selection.isSelecting ? selection.selectedItems : context.read<CollectionLens>().sortedEntries);
+    return groupedEntries.expand((entry) => entry.burstEntries ?? {entry}).toSet();
   }
 
   void _share(BuildContext context) {
-    final selection = context.read<Selection<AvesEntry>>();
-    final selectedItems = _getExpandedSelectedItems(selection);
-    androidAppService.shareEntries(selectedItems).then((success) {
+    final entries = _getTargetItems(context);
+    androidAppService.shareEntries(entries).then((success) {
       if (!success) showNoMatchingAppDialog(context);
     });
   }
 
   void _rescan(BuildContext context) {
-    final selection = context.read<Selection<AvesEntry>>();
-    final collection = context.read<CollectionLens>();
-    final entries = (selection.isSelecting ? _getExpandedSelectedItems(selection) : collection.sortedEntries.toSet());
+    final entries = _getTargetItems(context);
 
     final controller = AnalysisController(canStartService: true, force: true);
+    final collection = context.read<CollectionLens>();
     collection.source.analyze(controller, entries: entries);
 
+    final selection = context.read<Selection<AvesEntry>>();
     selection.browse();
   }
 
   Future<void> _toggleFavourite(BuildContext context) async {
-    final selection = context.read<Selection<AvesEntry>>();
-    final selectedItems = _getExpandedSelectedItems(selection);
-    if (selectedItems.every((entry) => entry.isFavourite)) {
-      await favourites.remove(selectedItems);
+    final entries = _getTargetItems(context);
+    if (entries.every((entry) => entry.isFavourite)) {
+      await favourites.removeEntries(entries);
     } else {
-      await favourites.add(selectedItems);
+      await favourites.add(entries);
     }
 
+    final selection = context.read<Selection<AvesEntry>>();
     selection.browse();
   }
 
   Future<void> _delete(BuildContext context) async {
+    final entries = _getTargetItems(context);
+
+    final pureTrash = entries.every((entry) => entry.trashed);
+    if (settings.enableBin && !pureTrash) {
+      await _move(context, moveType: MoveType.toBin);
+      return;
+    }
+
+    final l10n = context.l10n;
     final source = context.read<CollectionSource>();
-    final selection = context.read<Selection<AvesEntry>>();
-    final selectedItems = _getExpandedSelectedItems(selection);
-    final selectionDirs = selectedItems.map((e) => e.directory).whereNotNull().toSet();
-    final todoCount = selectedItems.length;
+    final selectionDirs = entries.map((e) => e.directory).whereNotNull().toSet();
+    final todoCount = entries.length;
 
-    final confirmed = await showDialog<bool>(
+    if (!(await showConfirmationDialog(
       context: context,
-      builder: (context) {
-        return AvesDialog(
-          content: Text(context.l10n.deleteEntriesConfirmationDialogMessage(todoCount)),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
-            ),
-            TextButton(
-              onPressed: () => Navigator.pop(context, true),
-              child: Text(context.l10n.deleteButtonLabel),
-            ),
-          ],
-        );
-      },
-    );
-    if (confirmed == null || !confirmed) return;
+      type: ConfirmationDialog.delete,
+      message: l10n.deleteEntriesConfirmationDialogMessage(todoCount),
+      confirmationButtonLabel: l10n.deleteButtonLabel,
+    ))) return;
 
-    if (!await checkStoragePermissionForAlbums(context, selectionDirs, entries: selectedItems)) return;
+    if (!pureTrash && !await checkStoragePermissionForAlbums(context, selectionDirs, entries: entries)) return;
 
     source.pauseMonitoring();
     final opId = mediaFileService.newOpId;
     await showOpReport<ImageOpEvent>(
       context: context,
-      opStream: mediaFileService.delete(opId: opId, entries: selectedItems),
+      opStream: mediaFileService.delete(opId: opId, entries: entries),
       itemCount: todoCount,
       onCancel: () => mediaFileService.cancelFileOp(opId),
       onDone: (processed) async {
         final successOps = processed.where((e) => e.success).toSet();
         final deletedOps = successOps.where((e) => !e.skipped).toSet();
         final deletedUris = deletedOps.map((event) => event.uri).toSet();
-        await source.removeEntries(deletedUris);
-        selection.browse();
+        await source.removeEntries(deletedUris, includeTrash: true);
         source.resumeMonitoring();
 
         final successCount = successOps.length;
@@ -286,18 +297,21 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
         await storageService.deleteEmptyDirectories(selectionDirs);
       },
     );
+
+    final selection = context.read<Selection<AvesEntry>>();
+    selection.browse();
   }
 
   Future<void> _move(BuildContext context, {required MoveType moveType}) async {
+    final entries = _getTargetItems(context);
+    await move(context, moveType: moveType, entries: entries);
+
     final selection = context.read<Selection<AvesEntry>>();
-    final selectedItems = _getExpandedSelectedItems(selection);
-    await move(context, moveType: moveType, selectedItems: selectedItems);
     selection.browse();
   }
 
   Future<void> _edit(
     BuildContext context,
-    Selection<AvesEntry> selection,
     Set<AvesEntry> todoItems,
     Future<Set<EntryDataType>> Function(AvesEntry entry) op,
   ) async {
@@ -327,7 +341,6 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       onDone: (processed) async {
         final successOps = processed.where((e) => e.success).toSet();
         final editedOps = successOps.where((e) => !e.skipped).toSet();
-        selection.browse();
         source.resumeMonitoring();
 
         unawaited(source.refreshUris(editedOps.map((v) => v.uri).toSet()).then((_) {
@@ -353,14 +366,15 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
         }
       },
     );
+    final selection = context.read<Selection<AvesEntry>>();
+    selection.browse();
   }
 
-  Future<Set<AvesEntry>?> _getEditableItems(
+  Future<Set<AvesEntry>?> _getEditableTargetItems(
     BuildContext context, {
-    required Set<AvesEntry> selectedItems,
     required bool Function(AvesEntry entry) canEdit,
   }) async {
-    final bySupported = groupBy<AvesEntry, bool>(selectedItems, canEdit);
+    final bySupported = groupBy<AvesEntry, bool>(_getTargetItems(context), canEdit);
     final supported = (bySupported[true] ?? []).toSet();
     final unsupported = (bySupported[false] ?? []).toSet();
 
@@ -396,70 +410,52 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
   }
 
   Future<void> _rotate(BuildContext context, {required bool clockwise}) async {
-    final selection = context.read<Selection<AvesEntry>>();
-    final selectedItems = _getExpandedSelectedItems(selection);
-
-    final todoItems = await _getEditableItems(context, selectedItems: selectedItems, canEdit: (entry) => entry.canRotateAndFlip);
+    final todoItems = await _getEditableTargetItems(context, canEdit: (entry) => entry.canRotateAndFlip);
     if (todoItems == null || todoItems.isEmpty) return;
 
-    await _edit(context, selection, todoItems, (entry) => entry.rotate(clockwise: clockwise));
+    await _edit(context, todoItems, (entry) => entry.rotate(clockwise: clockwise));
   }
 
   Future<void> _flip(BuildContext context) async {
-    final selection = context.read<Selection<AvesEntry>>();
-    final selectedItems = _getExpandedSelectedItems(selection);
-
-    final todoItems = await _getEditableItems(context, selectedItems: selectedItems, canEdit: (entry) => entry.canRotateAndFlip);
+    final todoItems = await _getEditableTargetItems(context, canEdit: (entry) => entry.canRotateAndFlip);
     if (todoItems == null || todoItems.isEmpty) return;
 
-    await _edit(context, selection, todoItems, (entry) => entry.flip());
+    await _edit(context, todoItems, (entry) => entry.flip());
   }
 
   Future<void> _editDate(BuildContext context) async {
-    final selection = context.read<Selection<AvesEntry>>();
-    final selectedItems = _getExpandedSelectedItems(selection);
-
-    final todoItems = await _getEditableItems(context, selectedItems: selectedItems, canEdit: (entry) => entry.canEditDate);
+    final todoItems = await _getEditableTargetItems(context, canEdit: (entry) => entry.canEditDate);
     if (todoItems == null || todoItems.isEmpty) return;
 
     final modifier = await selectDateModifier(context, todoItems);
     if (modifier == null) return;
 
-    await _edit(context, selection, todoItems, (entry) => entry.editDate(modifier));
+    await _edit(context, todoItems, (entry) => entry.editDate(modifier));
   }
 
   Future<void> _editLocation(BuildContext context) async {
-    final collection = context.read<CollectionLens>();
-    final selection = context.read<Selection<AvesEntry>>();
-    final selectedItems = _getExpandedSelectedItems(selection);
-
-    final todoItems = await _getEditableItems(context, selectedItems: selectedItems, canEdit: (entry) => entry.canEditLocation);
+    final todoItems = await _getEditableTargetItems(context, canEdit: (entry) => entry.canEditLocation);
     if (todoItems == null || todoItems.isEmpty) return;
 
+    final collection = context.read<CollectionLens>();
     final location = await selectLocation(context, todoItems, collection);
     if (location == null) return;
 
-    await _edit(context, selection, todoItems, (entry) => entry.editLocation(location));
+    await _edit(context, todoItems, (entry) => entry.editLocation(location));
   }
 
   Future<void> _editRating(BuildContext context) async {
-    final selection = context.read<Selection<AvesEntry>>();
-    final selectedItems = _getExpandedSelectedItems(selection);
-
-    final todoItems = await _getEditableItems(context, selectedItems: selectedItems, canEdit: (entry) => entry.canEditRating);
+    final todoItems = await _getEditableTargetItems(context, canEdit: (entry) => entry.canEditRating);
     if (todoItems == null || todoItems.isEmpty) return;
 
     final rating = await selectRating(context, todoItems);
     if (rating == null) return;
 
-    await _edit(context, selection, todoItems, (entry) => entry.editRating(rating));
+    await _edit(context, todoItems, (entry) => entry.editRating(rating));
   }
 
   Future<void> _editTags(BuildContext context) async {
-    final selection = context.read<Selection<AvesEntry>>();
-    final selectedItems = _getExpandedSelectedItems(selection);
-
-    final todoItems = await _getEditableItems(context, selectedItems: selectedItems, canEdit: (entry) => entry.canEditTags);
+    final todoItems = await _getEditableTargetItems(context, canEdit: (entry) => entry.canEditTags);
     if (todoItems == null || todoItems.isEmpty) return;
 
     final newTagsByEntry = await selectTags(context, todoItems);
@@ -474,26 +470,22 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
 
     if (todoItems.isEmpty) return;
 
-    await _edit(context, selection, todoItems, (entry) => entry.editTags(newTagsByEntry[entry]!));
+    await _edit(context, todoItems, (entry) => entry.editTags(newTagsByEntry[entry]!));
   }
 
   Future<void> _removeMetadata(BuildContext context) async {
-    final selection = context.read<Selection<AvesEntry>>();
-    final selectedItems = _getExpandedSelectedItems(selection);
-
-    final todoItems = await _getEditableItems(context, selectedItems: selectedItems, canEdit: (entry) => entry.canRemoveMetadata);
+    final todoItems = await _getEditableTargetItems(context, canEdit: (entry) => entry.canRemoveMetadata);
     if (todoItems == null || todoItems.isEmpty) return;
 
     final types = await selectMetadataToRemove(context, todoItems);
     if (types == null || types.isEmpty) return;
 
-    await _edit(context, selection, todoItems, (entry) => entry.removeMetadata(types));
+    await _edit(context, todoItems, (entry) => entry.removeMetadata(types));
   }
 
   void _goToMap(BuildContext context) {
-    final selection = context.read<Selection<AvesEntry>>();
     final collection = context.read<CollectionLens>();
-    final entries = (selection.isSelecting ? _getExpandedSelectedItems(selection) : collection.sortedEntries);
+    final entries = _getTargetItems(context);
 
     Navigator.push(
       context,
@@ -512,9 +504,8 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
   }
 
   void _goToStats(BuildContext context) {
-    final selection = context.read<Selection<AvesEntry>>();
     final collection = context.read<CollectionLens>();
-    final entries = selection.isSelecting ? _getExpandedSelectedItems(selection) : collection.sortedEntries.toSet();
+    final entries = _getTargetItems(context);
 
     Navigator.push(
       context,

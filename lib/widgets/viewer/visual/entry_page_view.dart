@@ -143,7 +143,7 @@ class _EntryPageViewState extends State<EntryPageView> {
     if (animate) {
       child = Consumer<HeroInfo?>(
         builder: (context, info, child) => Hero(
-          tag: info != null && info.entry == mainEntry ? Object.hashAll([info.collectionId, mainEntry.uri]) : hashCode,
+          tag: info != null && info.entry == mainEntry ? Object.hashAll([info.collectionId, mainEntry.id]) : hashCode,
           transitionOnUserGestures: true,
           child: child!,
         ),

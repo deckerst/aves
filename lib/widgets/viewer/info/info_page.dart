@@ -198,7 +198,7 @@ class _InfoPageContentState extends State<_InfoPageContent> {
       collection: collection,
       actionDelegate: _actionDelegate,
       isEditingMetadataNotifier: _isEditingMetadataNotifier,
-      onFilter: _goToCollection,
+      onFilter: _onFilter,
     );
     final locationAtTop = widget.split && entry.hasGps;
     final locationSection = LocationSection(
@@ -206,7 +206,7 @@ class _InfoPageContentState extends State<_InfoPageContent> {
       entry: entry,
       showTitle: !locationAtTop,
       isScrollingNotifier: widget.isScrollingNotifier,
-      onFilter: _goToCollection,
+      onFilter: _onFilter,
     );
     final basicAndLocationSliver = locationAtTop
         ? SliverToBoxAdapter(
@@ -264,8 +264,5 @@ class _InfoPageContentState extends State<_InfoPageContent> {
     });
   }
 
-  void _goToCollection(CollectionFilter filter) {
-    if (collection == null) return;
-    FilterSelectedNotification(filter).dispatch(context);
-  }
+  void _onFilter(CollectionFilter filter) => FilterSelectedNotification(filter).dispatch(context);
 }

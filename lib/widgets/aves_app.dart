@@ -26,7 +26,6 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/providers/highlight_info_provider.dart';
 import 'package:aves/widgets/home_page.dart';
 import 'package:aves/widgets/welcome_page.dart';
-import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fijkplayer/fijkplayer.dart';
 import 'package:flutter/foundation.dart';
@@ -169,7 +168,16 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     debugPrint('$runtimeType lifecycle ${state.name}');
     switch (state) {
       case AppLifecycleState.inactive:
-        _saveTopEntries();
+        switch (appModeNotifier.value) {
+          case AppMode.main:
+          case AppMode.pickMediaExternal:
+            _saveTopEntries();
+            break;
+          case AppMode.pickMediaInternal:
+          case AppMode.pickFilterInternal:
+          case AppMode.view:
+            break;
+        }
         break;
       case AppLifecycleState.paused:
       case AppLifecycleState.detached:
@@ -190,7 +198,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     final columns = (screenSize.width / tileExtent).ceil();
     final count = rows * columns;
     final collection = CollectionLens(source: _mediaStoreSource, listenToSource: false);
-    settings.topEntryIds = collection.sortedEntries.take(count).map((entry) => entry.contentId).whereNotNull().toList();
+    settings.topEntryIds = collection.sortedEntries.take(count).map((entry) => entry.id).toList();
     collection.dispose();
     debugPrint('Saved $count top entries in ${stopwatch.elapsed.inMilliseconds}ms');
   }
@@ -230,9 +238,9 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
       }
     }
 
-    settings.updateStream.where((key) => key == Settings.isInstalledAppAccessAllowedKey).listen((_) => applyIsInstalledAppAccessAllowed());
-    settings.updateStream.where((key) => key == Settings.keepScreenOnKey).listen((_) => applyKeepScreenOn());
-    settings.updateStream.where((key) => key == Settings.platformAccelerometerRotationKey).listen((_) => applyIsRotationLocked());
+    settings.updateStream.where((event) => event.key == Settings.isInstalledAppAccessAllowedKey).listen((_) => applyIsInstalledAppAccessAllowed());
+    settings.updateStream.where((event) => event.key == Settings.keepScreenOnKey).listen((_) => applyKeepScreenOn());
+    settings.updateStream.where((event) => event.key == Settings.platformAccelerometerRotationKey).listen((_) => applyIsRotationLocked());
 
     applyKeepScreenOn();
     applyIsRotationLocked();
@@ -240,7 +248,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
 
   Future<void> _setupErrorReporting() async {
     await reportService.init();
-    settings.updateStream.where((key) => key == Settings.isErrorReportingAllowedKey).listen(
+    settings.updateStream.where((event) => event.key == Settings.isErrorReportingAllowedKey).listen(
           (_) => reportService.setCollectionEnabled(settings.isErrorReportingAllowed),
         );
     await reportService.setCollectionEnabled(settings.isErrorReportingAllowed);

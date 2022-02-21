@@ -1,5 +1,5 @@
+import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/theme/themes.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/widgets.dart';
 
@@ -7,6 +7,7 @@ enum EntryAction {
   addShortcut,
   copyToClipboard,
   delete,
+  restore,
   convert,
   print,
   rename,
@@ -65,6 +66,12 @@ class EntryActions {
     EntryAction.rotateCW,
     EntryAction.flip,
   ];
+
+  static const trashed = [
+    EntryAction.delete,
+    EntryAction.restore,
+    EntryAction.debug,
+  ];
 }
 
 extension ExtraEntryAction on EntryAction {
@@ -76,6 +83,8 @@ extension ExtraEntryAction on EntryAction {
         return context.l10n.entryActionCopyToClipboard;
       case EntryAction.delete:
         return context.l10n.entryActionDelete;
+      case EntryAction.restore:
+        return context.l10n.entryActionRestore;
       case EntryAction.convert:
         return context.l10n.entryActionConvert;
       case EntryAction.print:
@@ -119,15 +128,12 @@ extension ExtraEntryAction on EntryAction {
     }
   }
 
-  Widget? getIcon() {
-    final icon = getIconData();
-    if (icon == null) return null;
-
-    final child = Icon(icon);
+  Widget getIcon() {
+    final child = Icon(getIconData());
     switch (this) {
       case EntryAction.debug:
         return ShaderMask(
-          shaderCallback: Themes.debugGradient.createShader,
+          shaderCallback: AColors.debugGradient.createShader,
           child: child,
         );
       default:
@@ -135,7 +141,7 @@ extension ExtraEntryAction on EntryAction {
     }
   }
 
-  IconData? getIconData() {
+  IconData getIconData() {
     switch (this) {
       case EntryAction.addShortcut:
         return AIcons.addShortcut;
@@ -143,6 +149,8 @@ extension ExtraEntryAction on EntryAction {
         return AIcons.clipboard;
       case EntryAction.delete:
         return AIcons.delete;
+      case EntryAction.restore:
+        return AIcons.restore;
       case EntryAction.convert:
         return AIcons.convert;
       case EntryAction.print:

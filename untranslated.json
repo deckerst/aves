@@ -4,23 +4,19 @@
   ],
 
   "es": [
-    "entryActionConvert",
-    "entryInfoActionEditLocation",
-    "exportEntryDialogWidth",
-    "exportEntryDialogHeight",
-    "editEntryLocationDialogTitle",
-    "editEntryLocationDialogChooseOnMapTooltip",
-    "editEntryLocationDialogLatitude",
-    "editEntryLocationDialogLongitude",
-    "locationPickerUseThisLocationButton"
-  ],
-
-  "fr": [
-    "entryActionConvert"
-  ],
-
-  "ko": [
-    "entryActionConvert"
+    "timeDays",
+    "doNotAskAgain",
+    "entryActionRestore",
+    "filterBinLabel",
+    "binEntriesConfirmationDialogMessage",
+    "collectionActionEmptyBin",
+    "binPageTitle",
+    "settingsConfirmationDialogTile",
+    "settingsConfirmationDialogTitle",
+    "settingsConfirmationDialogDeleteItems",
+    "settingsConfirmationDialogMoveToBinItems",
+    "settingsEnableBin",
+    "settingsEnableBinSubtitle"
   ],
 
   "pt": [

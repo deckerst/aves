@@ -4,6 +4,7 @@ import 'package:aves/app_mode.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/enums/home_page.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
@@ -116,14 +117,33 @@ class _HomePageState extends State<HomePage> {
     }
     context.read<ValueNotifier<AppMode>>().value = appMode;
     unawaited(reportService.setCustomKey('app_mode', appMode.toString()));
+    debugPrint('Storage check complete in ${stopwatch.elapsed.inMilliseconds}ms');
 
-    if (appMode != AppMode.view || _isViewerSourceable(_viewerEntry!)) {
-      debugPrint('Storage check complete in ${stopwatch.elapsed.inMilliseconds}ms');
-      unawaited(GlobalSearch.registerCallback());
-      unawaited(AnalysisService.registerCallback());
-      final source = context.read<CollectionSource>();
-      await source.init();
-      unawaited(source.refresh());
+    switch (appMode) {
+      case AppMode.main:
+      case AppMode.pickMediaExternal:
+        unawaited(GlobalSearch.registerCallback());
+        unawaited(AnalysisService.registerCallback());
+        final source = context.read<CollectionSource>();
+        await source.init(
+          loadTopEntriesFirst: settings.homePage == HomePageSetting.collection,
+        );
+        break;
+      case AppMode.view:
+        if (_isViewerSourceable(_viewerEntry)) {
+          final directory = _viewerEntry?.directory;
+          if (directory != null) {
+            unawaited(AnalysisService.registerCallback());
+            final source = context.read<CollectionSource>();
+            await source.init(
+              directory: directory,
+            );
+          }
+        }
+        break;
+      case AppMode.pickMediaInternal:
+      case AppMode.pickFilterInternal:
+        break;
     }
 
     // `pushReplacement` is not enough in some edge cases
@@ -135,7 +155,9 @@ class _HomePageState extends State<HomePage> {
     ));
   }
 
-  bool _isViewerSourceable(AvesEntry viewerEntry) => viewerEntry.directory != null && !settings.hiddenFilters.any((filter) => filter.test(viewerEntry));
+  bool _isViewerSourceable(AvesEntry? viewerEntry) {
+    return viewerEntry != null && viewerEntry.directory != null && !settings.hiddenFilters.any((filter) => filter.test(viewerEntry));
+  }
 
   Future<AvesEntry?> _initViewerEntry({required String uri, required String? mimeType}) async {
     if (uri.startsWith('/')) {
@@ -156,7 +178,7 @@ class _HomePageState extends State<HomePage> {
       CollectionLens? collection;
 
       final source = context.read<CollectionSource>();
-      if (source.initialized) {
+      if (source.initState != SourceInitializationState.none) {
         final album = viewerEntry.directory;
         if (album != null) {
           // wait for collection to pass the `loading` state
@@ -174,6 +196,11 @@ class _HomePageState extends State<HomePage> {
           collection = CollectionLens(
             source: source,
             filters: {AlbumFilter(album, source.getAlbumDisplayName(context, album))},
+            listenToSource: false,
+            // if we group bursts, opening a burst sub-entry should:
+            // - identify and select the containing main entry,
+            // - select the sub-entry in the Viewer page.
+            groupBursts: false,
           );
           final viewerEntryPath = viewerEntry.path;
           final collectionEntry = collection.sortedEntries.firstWhereOrNull((entry) => entry.path == viewerEntryPath);

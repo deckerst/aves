@@ -118,7 +118,7 @@ mixin AlbumMixin on SourceBase {
   AvesEntry? albumRecentEntry(AlbumFilter filter) {
     return _filterRecentEntryMap.putIfAbsent(filter.album, () => sortedEntriesByDate.firstWhereOrNull(filter.test));
   }
-  
+
   // new albums
 
   void createAlbum(String directory) {
@@ -136,7 +136,7 @@ mixin AlbumMixin on SourceBase {
   void forgetNewAlbums(Set<String> directories) {
     _newAlbums.removeAll(directories);
   }
-  
+
   // display names
 
   final Map<String, String> _albumDisplayNamesWithContext = {}, _albumDisplayNamesWithoutContext = {};

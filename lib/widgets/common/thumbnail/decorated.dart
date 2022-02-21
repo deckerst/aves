@@ -27,7 +27,6 @@ class DecoratedThumbnail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isSvg = entry.isSvg;
     Widget child = ThumbnailImage(
       entry: entry,
       extent: tileExtent,
@@ -36,10 +35,10 @@ class DecoratedThumbnail extends StatelessWidget {
     );
 
     child = Stack(
-      alignment: isSvg ? Alignment.center : AlignmentDirectional.bottomStart,
+      fit: StackFit.passthrough,
       children: [
         child,
-        if (!isSvg) ThumbnailEntryOverlay(entry: entry),
+        ThumbnailEntryOverlay(entry: entry),
         if (selectable)
           GridItemSelectionOverlay<AvesEntry>(
             item: entry,

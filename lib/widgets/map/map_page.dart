@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:aves/app_mode.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/coordinate.dart';
 import 'package:aves/model/filters/filters.dart';
@@ -267,7 +268,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
                         entryBuilder: (index) => index < regionEntries.length ? regionEntries[index] : null,
                         indexNotifier: _selectedIndexNotifier,
                         onTap: _onThumbnailTap,
-                        heroTagger: (entry) => Object.hashAll([regionCollection?.id, entry.uri]),
+                        heroTagger: (entry) => Object.hashAll([regionCollection?.id, entry.id]),
                         highlightable: true,
                       );
                     },
@@ -324,7 +325,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
   }
 
   AvesEntry? _getRegionEntry(int? index) {
-    if (index != null && regionCollection != null) {
+    if (index != null && index >= 0 && regionCollection != null) {
       final regionEntries = regionCollection!.sortedEntries;
       if (index < regionEntries.length) {
         return regionEntries[index];
@@ -371,6 +372,9 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
   }
 
   void _goToCollection(CollectionFilter filter) {
+    final isMainMode = context.read<ValueNotifier<AppMode>>().value == AppMode.main;
+    if (!isMainMode) return;
+
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
