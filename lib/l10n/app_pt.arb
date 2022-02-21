@@ -49,6 +49,7 @@
   "entryActionCopyToClipboard": "Copiar para área de transferência",
   "entryActionDelete": "Excluir",
   "entryActionExport": "Exportar",
+  "entryActionConvert": "Converter",
   "entryActionRename": "Renomear",
   "entryActionRestore": "Restaurar",
   "entryActionRotateCCW": "Rotacionar para esquerda",
