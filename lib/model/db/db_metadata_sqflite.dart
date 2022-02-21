@@ -119,7 +119,7 @@ class SqfliteMetadataDb implements MetadataDb {
   }
 
   @override
-  Future<void> removeIds(Set<int> ids, {Set<EntryDataType>? dataTypes}) async {
+  Future<void> removeIds(Iterable<int> ids, {Set<EntryDataType>? dataTypes}) async {
     if (ids.isEmpty) return;
 
     final _dataTypes = dataTypes ?? EntryDataType.values.toSet();
@@ -159,27 +159,19 @@ class SqfliteMetadataDb implements MetadataDb {
   }
 
   @override
-  Future<Set<AvesEntry>> loadAllEntries() async {
-    final rows = await _db.query(entryTable);
+  Future<Set<AvesEntry>> loadEntries({String? directory}) async {
+    String? where;
+    List<Object?>? whereArgs;
+    if (directory != null) {
+      where = 'path LIKE ?';
+      whereArgs = ['$directory%'];
+    }
+    final rows = await _db.query(entryTable, where: where, whereArgs: whereArgs);
     return rows.map(AvesEntry.fromMap).toSet();
   }
 
   @override
-  Future<Set<AvesEntry>> loadEntries(List<int> ids) async {
-    if (ids.isEmpty) return {};
-    final entries = <AvesEntry>{};
-    await Future.forEach(ids, (id) async {
-      final rows = await _db.query(
-        entryTable,
-        where: 'id = ?',
-        whereArgs: [id],
-      );
-      if (rows.isNotEmpty) {
-        entries.add(AvesEntry.fromMap(rows.first));
-      }
-    });
-    return entries;
-  }
+  Future<Set<AvesEntry>> loadEntriesById(Iterable<int> ids) => _getByIds(ids, entryTable, AvesEntry.fromMap);
 
   @override
   Future<void> saveEntries(Iterable<AvesEntry> entries) async {
@@ -236,19 +228,22 @@ class SqfliteMetadataDb implements MetadataDb {
   // catalog metadata
 
   @override
-  Future<void> clearMetadataEntries() async {
+  Future<void> clearCatalogMetadata() async {
     final count = await _db.delete(metadataTable, where: '1');
     debugPrint('$runtimeType clearMetadataEntries deleted $count rows');
   }
 
   @override
-  Future<List<CatalogMetadata>> loadAllMetadataEntries() async {
+  Future<Set<CatalogMetadata>> loadCatalogMetadata() async {
     final rows = await _db.query(metadataTable);
-    return rows.map(CatalogMetadata.fromMap).toList();
+    return rows.map(CatalogMetadata.fromMap).toSet();
   }
 
   @override
-  Future<void> saveMetadata(Set<CatalogMetadata> metadataEntries) async {
+  Future<Set<CatalogMetadata>> loadCatalogMetadataById(Iterable<int> ids) => _getByIds(ids, metadataTable, CatalogMetadata.fromMap);
+
+  @override
+  Future<void> saveCatalogMetadata(Set<CatalogMetadata> metadataEntries) async {
     if (metadataEntries.isEmpty) return;
     final stopwatch = Stopwatch()..start();
     try {
@@ -262,7 +257,7 @@ class SqfliteMetadataDb implements MetadataDb {
   }
 
   @override
-  Future<void> updateMetadata(int id, CatalogMetadata? metadata) async {
+  Future<void> updateCatalogMetadata(int id, CatalogMetadata? metadata) async {
     final batch = _db.batch();
     batch.delete(dateTakenTable, where: 'id = ?', whereArgs: [id]);
     batch.delete(metadataTable, where: 'id = ?', whereArgs: [id]);
@@ -298,10 +293,13 @@ class SqfliteMetadataDb implements MetadataDb {
   }
 
   @override
-  Future<Set<AddressDetails>> loadAllAddresses() async {
+  Future<Set<AddressDetails>> loadAddresses() async {
     final rows = await _db.query(addressTable);
     return rows.map(AddressDetails.fromMap).toSet();
   }
+
+  @override
+  Future<Set<AddressDetails>> loadAddressesById(Iterable<int> ids) => _getByIds(ids, addressTable, AddressDetails.fromMap);
 
   @override
   Future<void> saveAddresses(Set<AddressDetails> addresses) async {
@@ -502,12 +500,23 @@ class SqfliteMetadataDb implements MetadataDb {
   }
 
   @override
-  Future<void> removeVideoPlayback(Set<int> ids) async {
+  Future<void> removeVideoPlayback(Iterable<int> ids) async {
     if (ids.isEmpty) return;
 
     // using array in `whereArgs` and using it with `where filter IN ?` is a pain, so we prefer `batch` instead
     final batch = _db.batch();
     ids.forEach((id) => batch.delete(videoPlaybackTable, where: 'id = ?', whereArgs: [id]));
     await batch.commit(noResult: true);
+  }
+
+  // convenience methods
+
+  Future<Set<T>> _getByIds<T>(Iterable<int> ids, String table, T Function(Map<String, Object?> row) mapRow) async {
+    if (ids.isEmpty) return {};
+    final rows = await _db.query(
+      table,
+      where: 'id IN (${ids.join(',')})',
+    );
+    return rows.map(mapRow).toSet();
   }
 }

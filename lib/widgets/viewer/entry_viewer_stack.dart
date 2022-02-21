@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:aves/app_mode.dart';
 import 'package:aves/model/device.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/filters.dart';
@@ -399,8 +400,12 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
   }
 
   void _goToCollection(CollectionFilter filter) {
+    final isMainMode = context.read<ValueNotifier<AppMode>>().value == AppMode.main;
+    if (!isMainMode) return;
+
     final baseCollection = collection;
     if (baseCollection == null) return;
+
     _onLeave();
     Navigator.pushAndRemoveUntil(
       context,

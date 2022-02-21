@@ -16,21 +16,21 @@ abstract class MetadataDb {
 
   Future<void> reset();
 
-  Future<void> removeIds(Set<int> ids, {Set<EntryDataType>? dataTypes});
+  Future<void> removeIds(Iterable<int> ids, {Set<EntryDataType>? dataTypes});
 
   // entries
 
   Future<void> clearEntries();
 
-  Future<Set<AvesEntry>> loadAllEntries();
+  Future<Set<AvesEntry>> loadEntries({String? directory});
+
+  Future<Set<AvesEntry>> loadEntriesById(Iterable<int> ids);
 
   Future<void> saveEntries(Iterable<AvesEntry> entries);
 
   Future<void> updateEntry(int id, AvesEntry entry);
 
   Future<Set<AvesEntry>> searchEntries(String query, {int? limit});
-
-  Future<Set<AvesEntry>> loadEntries(List<int> ids);
 
   // date taken
 
@@ -40,19 +40,23 @@ abstract class MetadataDb {
 
   // catalog metadata
 
-  Future<void> clearMetadataEntries();
+  Future<void> clearCatalogMetadata();
 
-  Future<List<CatalogMetadata>> loadAllMetadataEntries();
+  Future<Set<CatalogMetadata>> loadCatalogMetadata();
 
-  Future<void> saveMetadata(Set<CatalogMetadata> metadataEntries);
+  Future<Set<CatalogMetadata>> loadCatalogMetadataById(Iterable<int> ids);
 
-  Future<void> updateMetadata(int id, CatalogMetadata? metadata);
+  Future<void> saveCatalogMetadata(Set<CatalogMetadata> metadataEntries);
+
+  Future<void> updateCatalogMetadata(int id, CatalogMetadata? metadata);
 
   // address
 
   Future<void> clearAddresses();
 
-  Future<Set<AddressDetails>> loadAllAddresses();
+  Future<Set<AddressDetails>> loadAddresses();
+
+  Future<Set<AddressDetails>> loadAddressesById(Iterable<int> ids);
 
   Future<void> saveAddresses(Set<AddressDetails> addresses);
 
@@ -100,5 +104,5 @@ abstract class MetadataDb {
 
   Future<void> addVideoPlayback(Set<VideoPlaybackRow> rows);
 
-  Future<void> removeVideoPlayback(Set<int> ids);
+  Future<void> removeVideoPlayback(Iterable<int> ids);
 }

@@ -37,13 +37,24 @@ import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 class MediaStoreImageProvider : ImageProvider() {
-    fun fetchAll(context: Context, knownEntries: Map<Int?, Int?>, handleNewEntry: NewEntryHandler) {
+    fun fetchAll(
+        context: Context,
+        knownEntries: Map<Int?, Int?>,
+        directory: String?,
+        handleNewEntry: NewEntryHandler,
+    ) {
         val isModified = fun(contentId: Int, dateModifiedSecs: Int): Boolean {
             val knownDate = knownEntries[contentId]
             return knownDate == null || knownDate < dateModifiedSecs
         }
-        fetchFrom(context, isModified, handleNewEntry, IMAGE_CONTENT_URI, IMAGE_PROJECTION)
-        fetchFrom(context, isModified, handleNewEntry, VIDEO_CONTENT_URI, VIDEO_PROJECTION)
+        var selection: String? = null
+        var selectionArgs: Array<String>? = null
+        if (directory != null) {
+            selection = "${MediaColumns.PATH} LIKE ?"
+            selectionArgs = arrayOf("${StorageUtils.ensureTrailingSeparator(directory)}%")
+        }
+        fetchFrom(context, isModified, handleNewEntry, IMAGE_CONTENT_URI, IMAGE_PROJECTION, selection = selection, selectionArgs = selectionArgs)
+        fetchFrom(context, isModified, handleNewEntry, VIDEO_CONTENT_URI, VIDEO_PROJECTION, selection = selection, selectionArgs = selectionArgs)
     }
 
     // the provided URI can point to the wrong media collection,
@@ -138,12 +149,14 @@ class MediaStoreImageProvider : ImageProvider() {
         handleNewEntry: NewEntryHandler,
         contentUri: Uri,
         projection: Array<String>,
+        selection: String? = null,
+        selectionArgs: Array<String>? = null,
         fileMimeType: String? = null,
     ): Boolean {
         var found = false
         val orderBy = "${MediaStore.MediaColumns.DATE_MODIFIED} DESC"
         try {
-            val cursor = context.contentResolver.query(contentUri, projection, null, null, orderBy)
+            val cursor = context.contentResolver.query(contentUri, projection, selection, selectionArgs, orderBy)
             if (cursor != null) {
                 val contentUriContainsId = when (contentUri) {
                     IMAGE_CONTENT_URI, VIDEO_CONTENT_URI -> false

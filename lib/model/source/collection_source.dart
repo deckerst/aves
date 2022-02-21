@@ -25,6 +25,8 @@ import 'package:collection/collection.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/foundation.dart';
 
+enum SourceInitializationState { none, directory, full }
+
 mixin SourceBase {
   EventBus get eventBus;
 
@@ -222,7 +224,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
     if (persist) {
       final id = entry.id;
       await metadataDb.updateEntry(id, entry);
-      await metadataDb.updateMetadata(id, entry.catalogMetadata);
+      await metadataDb.updateCatalogMetadata(id, entry.catalogMetadata);
       await metadataDb.updateAddress(id, entry.addressDetails);
       await metadataDb.updateTrash(id, entry.trashDetails);
     }
@@ -315,7 +317,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
         }
       });
       await metadataDb.saveEntries(movedEntries);
-      await metadataDb.saveMetadata(movedEntries.map((entry) => entry.catalogMetadata).whereNotNull().toSet());
+      await metadataDb.saveCatalogMetadata(movedEntries.map((entry) => entry.catalogMetadata).whereNotNull().toSet());
       await metadataDb.saveAddresses(movedEntries.map((entry) => entry.addressDetails).whereNotNull().toSet());
     } else {
       await Future.forEach<MoveOpEvent>(movedOps, (movedOp) async {
@@ -349,11 +351,13 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
     eventBus.fire(EntryMovedEvent(moveType, movedEntries));
   }
 
-  bool get initialized => false;
+  SourceInitializationState get initState => SourceInitializationState.none;
 
-  Future<void> init();
-
-  Future<void> refresh({AnalysisController? analysisController});
+  Future<void> init({
+    AnalysisController? analysisController,
+    String? directory,
+    bool loadTopEntriesFirst = false,
+  });
 
   Future<Set<String>> refreshUris(Set<String> changedUris, {AnalysisController? analysisController});
 
@@ -363,7 +367,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
     // update/delete in DB
     final id = entry.id;
     if (dataTypes.contains(EntryDataType.catalog)) {
-      await metadataDb.updateMetadata(id, entry.catalogMetadata);
+      await metadataDb.updateCatalogMetadata(id, entry.catalogMetadata);
       onCatalogMetadataChanged();
     }
     if (dataTypes.contains(EntryDataType.address)) {

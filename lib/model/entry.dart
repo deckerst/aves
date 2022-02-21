@@ -643,7 +643,7 @@ class AvesEntry {
 
     if (persist) {
       await metadataDb.saveEntries({this});
-      if (catalogMetadata != null) await metadataDb.saveMetadata({catalogMetadata!});
+      if (catalogMetadata != null) await metadataDb.saveCatalogMetadata({catalogMetadata!});
     }
 
     await _onVisualFieldChanged(oldMimeType, oldDateModifiedSecs, oldRotationDegrees, oldIsFlipped);

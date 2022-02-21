@@ -32,7 +32,7 @@ class CollectionLens with ChangeNotifier {
   final AChangeNotifier filterChangeNotifier = AChangeNotifier(), sortSectionChangeNotifier = AChangeNotifier();
   final List<StreamSubscription> _subscriptions = [];
   int? id;
-  bool listenToSource;
+  bool listenToSource, groupBursts;
   List<AvesEntry>? fixedSelection;
 
   List<AvesEntry> _filteredSortedEntries = [];
@@ -44,6 +44,7 @@ class CollectionLens with ChangeNotifier {
     Set<CollectionFilter?>? filters,
     this.id,
     this.listenToSource = true,
+    this.groupBursts = true,
     this.fixedSelection,
   })  : filters = (filters ?? {}).whereNotNull().toSet(),
         sectionFactor = settings.collectionSectionFactor,
@@ -173,8 +174,6 @@ class CollectionLens with ChangeNotifier {
     _refresh();
     filterChangeNotifier.notifyListeners();
   }
-
-  final bool groupBursts = true;
 
   void _applyFilters() {
     final entries = fixedSelection ?? (filters.contains(TrashFilter.instance) ? source.trashedEntries : source.visibleEntries);

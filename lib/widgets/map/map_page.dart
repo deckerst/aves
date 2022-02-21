@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:aves/app_mode.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/coordinate.dart';
 import 'package:aves/model/filters/filters.dart';
@@ -371,6 +372,9 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
   }
 
   void _goToCollection(CollectionFilter filter) {
+    final isMainMode = context.read<ValueNotifier<AppMode>>().value == AppMode.main;
+    if (!isMainMode) return;
+
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
