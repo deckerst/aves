@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:aves/main_play.dart' as app;
+import 'package:aves/model/settings/defaults.dart';
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:flutter_driver/driver_extension.dart';
@@ -19,6 +20,8 @@ Future<void> configureAndLaunch() async {
     ..locale = const Locale('en')
     ..keepScreenOn = KeepScreenOn.always
     ..homePage = HomePageSetting.collection
+    // collection
+    ..collectionBrowsingQuickActions = SettingsDefaults.collectionBrowsingQuickActions
     // viewer
     ..imageBackground = EntryBackground.checkered
     // info
