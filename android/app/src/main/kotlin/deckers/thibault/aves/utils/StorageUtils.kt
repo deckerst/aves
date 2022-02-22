@@ -294,10 +294,7 @@ object StorageUtils {
     fun convertDirPathToTreeUri(context: Context, dirPath: String): Uri? {
         val uuid = getVolumeUuidForTreeUri(context, dirPath)
         if (uuid != null) {
-            var relativeDir = PathSegments(context, dirPath).relativeDir ?: ""
-            if (relativeDir.endsWith(File.separator)) {
-                relativeDir = relativeDir.substring(0, relativeDir.length - 1)
-            }
+            val relativeDir = removeTrailingSeparator(PathSegments(context, dirPath).relativeDir ?: "")
             return DocumentsContract.buildTreeDocumentUri("com.android.externalstorage.documents", "$uuid:$relativeDir")
         }
         Log.e(LOG_TAG, "failed to convert dirPath=$dirPath to tree URI")
@@ -577,6 +574,10 @@ object StorageUtils {
 
     fun ensureTrailingSeparator(dirPath: String): String {
         return if (dirPath.endsWith(File.separator)) dirPath else dirPath + File.separator
+    }
+
+    fun removeTrailingSeparator(dirPath: String): String {
+        return if (dirPath.endsWith(File.separator)) dirPath.substring(0, dirPath.length - 1) else dirPath
     }
 
     // `fullPath` should match "volumePath + relativeDir + fileName"
