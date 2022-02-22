@@ -95,7 +95,7 @@ class AIcons {
   static const IconData share = Icons.share_outlined;
   static const IconData show = Icons.visibility_outlined;
   static const IconData speed = Icons.speed_outlined;
-  static const IconData stats = Icons.pie_chart_outlined;
+  static const IconData stats = Icons.pie_chart_outline_outlined;
   static const IconData streams = Icons.translate_outlined;
   static const IconData streamVideo = Icons.movie_outlined;
   static const IconData streamAudio = Icons.audiotrack_outlined;
