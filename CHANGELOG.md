@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.6.0"></a>[v1.6.0] - 2022-02-22
+
 ### Added
 
 - optional recycle bin to keep deleted items for 30 days
