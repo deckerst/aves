@@ -78,6 +78,8 @@ class MinimapPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    if (entrySize.width <= 0 || entrySize.height <= 0) return;
+
     final viewSize = entrySize * viewScale;
     if (viewSize.isEmpty) return;
 

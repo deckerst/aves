@@ -2,7 +2,8 @@ import 'package:aves/services/geocoding_service.dart';
 import 'package:flutter/foundation.dart';
 
 class CatalogMetadata {
-  final int? contentId, dateMillis;
+  final int id;
+  final int? dateMillis;
   final bool isAnimated, isGeotiff, is360, isMultiPage;
   bool isFlipped;
   int? rotationDegrees;
@@ -19,7 +20,7 @@ class CatalogMetadata {
   static const _isMultiPageMask = 1 << 4;
 
   CatalogMetadata({
-    this.contentId,
+    required this.id,
     this.mimeType,
     this.dateMillis,
     this.isAnimated = false,
@@ -49,14 +50,14 @@ class CatalogMetadata {
   }
 
   CatalogMetadata copyWith({
-    int? contentId,
+    int? id,
     String? mimeType,
     int? dateMillis,
     bool? isMultiPage,
     int? rotationDegrees,
   }) {
     return CatalogMetadata(
-      contentId: contentId ?? this.contentId,
+      id: id ?? this.id,
       mimeType: mimeType ?? this.mimeType,
       dateMillis: dateMillis ?? this.dateMillis,
       isAnimated: isAnimated,
@@ -76,7 +77,7 @@ class CatalogMetadata {
   factory CatalogMetadata.fromMap(Map map) {
     final flags = map['flags'] ?? 0;
     return CatalogMetadata(
-      contentId: map['contentId'],
+      id: map['id'],
       mimeType: map['mimeType'],
       dateMillis: map['dateMillis'] ?? 0,
       isAnimated: flags & _isAnimatedMask != 0,
@@ -95,7 +96,7 @@ class CatalogMetadata {
   }
 
   Map<String, dynamic> toMap() => {
-        'contentId': contentId,
+        'id': id,
         'mimeType': mimeType,
         'dateMillis': dateMillis,
         'flags': (isAnimated ? _isAnimatedMask : 0) | (isFlipped ? _isFlippedMask : 0) | (isGeotiff ? _isGeotiffMask : 0) | (is360 ? _is360Mask : 0) | (isMultiPage ? _isMultiPageMask : 0),
@@ -108,5 +109,5 @@ class CatalogMetadata {
       };
 
   @override
-  String toString() => '$runtimeType#${shortHash(this)}{contentId=$contentId, mimeType=$mimeType, dateMillis=$dateMillis, isAnimated=$isAnimated, isFlipped=$isFlipped, isGeotiff=$isGeotiff, is360=$is360, isMultiPage=$isMultiPage, rotationDegrees=$rotationDegrees, xmpSubjects=$xmpSubjects, xmpTitleDescription=$xmpTitleDescription, latitude=$latitude, longitude=$longitude, rating=$rating}';
+  String toString() => '$runtimeType#${shortHash(this)}{id=$id, mimeType=$mimeType, dateMillis=$dateMillis, isAnimated=$isAnimated, isFlipped=$isFlipped, isGeotiff=$isGeotiff, is360=$is360, isMultiPage=$isMultiPage, rotationDegrees=$rotationDegrees, xmpSubjects=$xmpSubjects, xmpTitleDescription=$xmpTitleDescription, latitude=$latitude, longitude=$longitude, rating=$rating}';
 }

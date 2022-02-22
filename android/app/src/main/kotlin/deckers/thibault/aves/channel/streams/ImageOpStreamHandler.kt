@@ -11,16 +11,19 @@ import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.model.NameConflictStrategy
 import deckers.thibault.aves.model.provider.ImageProvider.ImageOpCallback
 import deckers.thibault.aves.model.provider.ImageProviderFactory.getProvider
+import deckers.thibault.aves.model.provider.MediaStoreImageProvider
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.StorageUtils
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.EventChannel.EventSink
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
-import java.util.*
+import java.io.File
 
 class ImageOpStreamHandler(private val activity: Activity, private val arguments: Any?) : EventChannel.StreamHandler {
+    private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private lateinit var eventSink: EventSink
     private lateinit var handler: Handler
 
@@ -45,10 +48,10 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
         handler = Handler(Looper.getMainLooper())
 
         when (op) {
-            "delete" -> GlobalScope.launch(Dispatchers.IO) { delete() }
-            "export" -> GlobalScope.launch(Dispatchers.IO) { export() }
-            "move" -> GlobalScope.launch(Dispatchers.IO) { move() }
-            "rename" -> GlobalScope.launch(Dispatchers.IO) { rename() }
+            "delete" -> ioScope.launch { delete() }
+            "export" -> ioScope.launch { export() }
+            "move" -> ioScope.launch { move() }
+            "rename" -> ioScope.launch { rename() }
             else -> endOfStream()
         }
     }
@@ -103,12 +106,16 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
 
         val entries = entryMapList.map(::AvesEntry)
         for (entry in entries) {
-            val uri = entry.uri
-            val path = entry.path
             val mimeType = entry.mimeType
+            val trashed = entry.trashed
+
+            val uri = if (trashed) Uri.fromFile(File(entry.trashPath!!)) else entry.uri
+            val path = if (trashed) entry.trashPath else entry.path
 
             val result: FieldMap = hashMapOf(
-                "uri" to uri.toString(),
+                // `uri` should reference original content URI,
+                // so it is different with `sourceUri` when deleting trashed entries
+                "uri" to entry.uri.toString(),
             )
             if (isCancelledOp()) {
                 result["skipped"] = true
@@ -160,30 +167,34 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
     }
 
     private suspend fun move() {
-        if (arguments !is Map<*, *> || entryMapList.isEmpty()) {
+        if (arguments !is Map<*, *>) {
             endOfStream()
             return
         }
 
         val copy = arguments["copy"] as Boolean?
-        var destinationDir = arguments["destinationPath"] as String?
         val nameConflictStrategy = NameConflictStrategy.get(arguments["nameConflictStrategy"] as String?)
-        if (copy == null || destinationDir == null || nameConflictStrategy == null) {
+        val rawEntryMap = arguments["entriesByDestination"] as Map<*, *>?
+        if (copy == null || nameConflictStrategy == null || rawEntryMap == null || rawEntryMap.isEmpty()) {
             error("move-args", "failed because of missing arguments", null)
             return
         }
 
-        // assume same provider for all entries
-        val firstEntry = entryMapList.first()
-        val provider = (firstEntry["uri"] as String?)?.let { Uri.parse(it) }?.let { getProvider(it) }
-        if (provider == null) {
-            error("move-provider", "failed to find provider for entry=$firstEntry", null)
-            return
+        val entriesByTargetDir = HashMap<String, List<AvesEntry>>()
+        rawEntryMap.forEach {
+            var destinationDir = it.key as String
+            if (destinationDir != StorageUtils.TRASH_PATH_PLACEHOLDER) {
+                destinationDir = StorageUtils.ensureTrailingSeparator(destinationDir)
+            }
+            @Suppress("unchecked_cast")
+            val rawEntries = it.value as List<FieldMap>
+            entriesByTargetDir[destinationDir] = rawEntries.map(::AvesEntry)
         }
 
-        destinationDir = StorageUtils.ensureTrailingSeparator(destinationDir)
-        val entries = entryMapList.map(::AvesEntry)
-        provider.moveMultiple(activity, copy, destinationDir, nameConflictStrategy, entries, ::isCancelledOp, object : ImageOpCallback {
+        // always use Media Store (as we move from or to it)
+        val provider = MediaStoreImageProvider()
+
+        provider.moveMultiple(activity, copy, nameConflictStrategy, entriesByTargetDir, ::isCancelledOp, object : ImageOpCallback {
             override fun onSuccess(fields: FieldMap) = success(fields)
             override fun onFailure(throwable: Throwable) = error("move-failure", "failed to move entries", throwable)
         })

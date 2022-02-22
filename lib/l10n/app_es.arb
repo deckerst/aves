@@ -7,6 +7,7 @@
 
   "timeSeconds": "{seconds, plural, =1{1 segundo} other{{seconds} segundos}}",
   "timeMinutes": "{minutes, plural, =1{1 minuto} other{{minutes} minutos}}",
+  "timeDays": "{days, plural, =1{1 día} other{{days} días}}",
   "focalLength": "{length} mm",
 
   "applyButtonLabel": "APLICAR",
@@ -27,6 +28,7 @@
   "resetButtonTooltip": "Restablecer",
 
   "doubleBackExitMessage": "Presione «atrás» nuevamente para salir.",
+  "doNotAskAgain": "No preguntar nuevamente",
 
   "sourceStateLoading": "Cargando",
   "sourceStateCataloguing": "Catalogando",
@@ -46,9 +48,10 @@
 
   "entryActionCopyToClipboard": "Copiar al portapapeles",
   "entryActionDelete": "Borrar",
+  "entryActionConvert": "Convertir",
   "entryActionExport": "Exportar",
-  "entryActionInfo": "Información",
   "entryActionRename": "Renombrar",
+  "entryActionRestore": "Restaurar",
   "entryActionRotateCCW": "Rotar en sentido antihorario",
   "entryActionRotateCW": "Rotar en sentido horario",
   "entryActionFlip": "Voltear horizontalmente",
@@ -56,10 +59,10 @@
   "entryActionShare": "Compartir",
   "entryActionViewSource": "Ver fuente",
   "entryActionViewMotionPhotoVideo": "Abrir foto en movimiento",
-  "entryActionEdit": "Editar con…",
-  "entryActionOpen": "Abrir con…",
-  "entryActionSetAs": "Establecer como…",
-  "entryActionOpenMap": "Mostrar en aplicación de mapa…",
+  "entryActionEdit": "Editar",
+  "entryActionOpen": "Abrir con",
+  "entryActionSetAs": "Establecer como",
+  "entryActionOpenMap": "Mostrar en aplicación de mapa",
   "entryActionRotateScreen": "Rotar pantalla",
   "entryActionAddFavourite": "Agregar a favoritos",
   "entryActionRemoveFavourite": "Quitar de favoritos",
@@ -74,10 +77,12 @@
   "videoActionSettings": "Ajustes",
 
   "entryInfoActionEditDate": "Editar fecha y hora",
+  "entryInfoActionEditLocation": "Editar ubicación",
   "entryInfoActionEditRating": "Editar clasificación",
   "entryInfoActionEditTags": "Editar etiquetas",
   "entryInfoActionRemoveMetadata": "Eliminar metadatos",
 
+  "filterBinLabel": "Cesto de basura",
   "filterFavouriteLabel": "Favorito",
   "filterLocationEmptyLabel": "No localizado",
   "filterTagEmptyLabel": "Sin etiquetar",
@@ -157,6 +162,8 @@
   "noMatchingAppDialogTitle": "Sin aplicación compatible",
   "noMatchingAppDialogMessage": "No se encontraron aplicaciones para manejar esto.",
 
+  "binEntriesConfirmationDialogMessage": "{count, plural, =1{¿Mover este elemento al cesto de basura?} other{¿Mover estos {count} elementos al cesto de basura?}}",
+
   "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{¿Está seguro de borrar este elemento?} other{¿Está seguro de querer borrar {count} elementos?}}",
 
   "videoResumeDialogMessage": "¿Desea reanudar la reproducción a las {time}?",
@@ -181,6 +188,8 @@
   "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{¿Está seguro de que desea borrar estos álbumes y un elemento?} other{¿Está seguro de que desea borrar estos álbumes y sus {count} elementos?}}",
  
   "exportEntryDialogFormat": "Formato:",
+  "exportEntryDialogWidth": "Anchura",
+  "exportEntryDialogHeight": "Altura",
 
   "renameEntryDialogLabel": "Renombrar",
 
@@ -193,6 +202,13 @@
   "editEntryDateDialogTargetFieldsHeader": "Campos a modificar",
   "editEntryDateDialogHours": "Horas",
   "editEntryDateDialogMinutes": "Minutos",
+
+  "editEntryLocationDialogTitle": "Ubicación",
+  "editEntryLocationDialogChooseOnMapTooltip": "Elegir en el mapa",
+  "editEntryLocationDialogLatitude": "Latitud",
+  "editEntryLocationDialogLongitude": "Longitud",
+
+  "locationPickerUseThisLocationButton": "Usar esta ubicación",
 
   "editEntryRatingDialogTitle": "Clasificación",
 
@@ -258,11 +274,12 @@
 
   "collectionPageTitle": "Colección",
   "collectionPickPageTitle": "Elegir",
-  "collectionSelectionPageTitle": "{count, plural, =0{Seleccionar} =1{1 elemento} other{{count} elementos}}",
+  "collectionSelectPageTitle": "Seleccionar",
 
   "collectionActionShowTitleSearch": "Mostrar filtros de títulos",
   "collectionActionHideTitleSearch": "Ocultar filtros de títulos",
   "collectionActionAddShortcut": "Agregar atajo",
+  "collectionActionEmptyBin": "Vaciar cesto",
   "collectionActionCopy": "Copiar a álbum",
   "collectionActionMove": "Mover a álbum",
   "collectionActionRescan": "Volver a buscar",
@@ -341,6 +358,8 @@
   "tagPageTitle": "Etiquetas",
   "tagEmpty": "Sin etiquetas",
 
+  "binPageTitle": "Cesto de basura",
+
   "searchCollectionFieldHint": "Buscar en colección",
   "searchSectionRecent": "Reciente",
   "searchSectionAlbums": "Álbumes",
@@ -365,6 +384,11 @@
   "settingsKeepScreenOnTile": "Mantener pantalla encendida",
   "settingsKeepScreenOnTitle": "Mantener pantalla encendida",
   "settingsDoubleBackExit": "Presione «atrás» dos veces para salir",
+
+  "settingsConfirmationDialogTile": "Diálogos de confirmación",
+  "settingsConfirmationDialogTitle": "Diálogos de confirmación",
+  "settingsConfirmationDialogDeleteItems": "Preguntar antes de eliminar elementos permanentemente",
+  "settingsConfirmationDialogMoveToBinItems": "Preguntar antes de mover elementos al cesto de basura",
 
   "settingsNavigationDrawerTile": "Menú de navegación",
   "settingsNavigationDrawerEditorTitle": "Menú de navegación",
@@ -441,6 +465,8 @@
   "settingsAllowInstalledAppAccessSubtitle": "Usado para mejorar los álbumes mostrados",
   "settingsAllowErrorReporting": "Permitir reporte de errores anónimo",
   "settingsSaveSearchHistory": "Guardar historial de búsqueda",
+  "settingsEnableBin": "Usar cesto de basura",
+  "settingsEnableBinSubtitle": "Guardar los elementos eliminados por 30 días",
 
   "settingsHiddenItemsTile": "Elementos ocultos",
   "settingsHiddenItemsTitle": "Elementos ocultos",

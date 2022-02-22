@@ -26,56 +26,9 @@ mixin AlbumMixin on SourceBase {
     return compareAsciiUpperCase(va, vb);
   }
 
-  void _notifyAlbumChange() => eventBus.fire(AlbumsChangedEvent());
-
-  String getAlbumDisplayName(BuildContext? context, String dirPath) {
-    final separator = pContext.separator;
-    assert(!dirPath.endsWith(separator));
-
-    if (context != null) {
-      final type = androidFileUtils.getAlbumType(dirPath);
-      if (type == AlbumType.camera) return context.l10n.albumCamera;
-      if (type == AlbumType.download) return context.l10n.albumDownload;
-      if (type == AlbumType.screenshots) return context.l10n.albumScreenshots;
-      if (type == AlbumType.screenRecordings) return context.l10n.albumScreenRecordings;
-      if (type == AlbumType.videoCaptures) return context.l10n.albumVideoCaptures;
-    }
-
-    final dir = VolumeRelativeDirectory.fromPath(dirPath);
-    if (dir == null) return dirPath;
-
-    final relativeDir = dir.relativeDir;
-    if (relativeDir.isEmpty) {
-      final volume = androidFileUtils.getStorageVolume(dirPath)!;
-      return volume.getDescription(context);
-    }
-
-    String unique(String dirPath, Set<String?> others) {
-      final parts = pContext.split(dirPath);
-      for (var i = parts.length - 1; i > 0; i--) {
-        final name = pContext.joinAll(['', ...parts.skip(i)]);
-        final testName = '$separator$name';
-        if (others.every((item) => !item!.endsWith(testName))) return name;
-      }
-      return dirPath;
-    }
-
-    final otherAlbumsOnDevice = _directories.where((item) => item != dirPath).toSet();
-    final uniqueNameInDevice = unique(dirPath, otherAlbumsOnDevice);
-    if (uniqueNameInDevice.length <= relativeDir.length) {
-      return uniqueNameInDevice;
-    }
-
-    final volumePath = dir.volumePath;
-    String trimVolumePath(String? path) => path!.substring(dir.volumePath.length);
-    final otherAlbumsOnVolume = otherAlbumsOnDevice.where((path) => path!.startsWith(volumePath)).map(trimVolumePath).toSet();
-    final uniqueNameInVolume = unique(trimVolumePath(dirPath), otherAlbumsOnVolume);
-    final volume = androidFileUtils.getStorageVolume(dirPath)!;
-    if (volume.isPrimary) {
-      return uniqueNameInVolume;
-    } else {
-      return '$uniqueNameInVolume (${volume.getDescription(context)})';
-    }
+  void _onAlbumChanged() {
+    invalidateAlbumDisplayNames();
+    eventBus.fire(AlbumsChangedEvent());
   }
 
   Map<String, AvesEntry?> getAlbumEntries() {
@@ -109,7 +62,7 @@ mixin AlbumMixin on SourceBase {
   void addDirectories(Set<String?> albums) {
     if (!_directories.containsAll(albums)) {
       _directories.addAll(albums);
-      _notifyAlbumChange();
+      _onAlbumChanged();
     }
   }
 
@@ -117,7 +70,7 @@ mixin AlbumMixin on SourceBase {
     final emptyAlbums = (albums ?? _directories).where((v) => _isEmptyAlbum(v) && !_newAlbums.contains(v)).toSet();
     if (emptyAlbums.isNotEmpty) {
       _directories.removeAll(emptyAlbums);
-      _notifyAlbumChange();
+      _onAlbumChanged();
       invalidateAlbumFilterSummary(directories: emptyAlbums);
 
       final bookmarks = settings.drawerAlbumBookmarks;
@@ -166,6 +119,8 @@ mixin AlbumMixin on SourceBase {
     return _filterRecentEntryMap.putIfAbsent(filter.album, () => sortedEntriesByDate.firstWhereOrNull(filter.test));
   }
 
+  // new albums
+
   void createAlbum(String directory) {
     _newAlbums.add(directory);
     addDirectories({directory});
@@ -180,6 +135,80 @@ mixin AlbumMixin on SourceBase {
 
   void forgetNewAlbums(Set<String> directories) {
     _newAlbums.removeAll(directories);
+  }
+
+  // display names
+
+  final Map<String, String> _albumDisplayNamesWithContext = {}, _albumDisplayNamesWithoutContext = {};
+
+  void invalidateAlbumDisplayNames() {
+    _albumDisplayNamesWithContext.clear();
+    _albumDisplayNamesWithoutContext.clear();
+  }
+
+  String _computeDisplayName(BuildContext? context, String dirPath) {
+    final separator = pContext.separator;
+    assert(!dirPath.endsWith(separator));
+
+    if (context != null) {
+      final type = androidFileUtils.getAlbumType(dirPath);
+      switch (type) {
+        case AlbumType.camera:
+          return context.l10n.albumCamera;
+        case AlbumType.download:
+          return context.l10n.albumDownload;
+        case AlbumType.screenshots:
+          return context.l10n.albumScreenshots;
+        case AlbumType.screenRecordings:
+          return context.l10n.albumScreenRecordings;
+        case AlbumType.videoCaptures:
+          return context.l10n.albumVideoCaptures;
+        case AlbumType.regular:
+        case AlbumType.app:
+          break;
+      }
+    }
+
+    final dir = VolumeRelativeDirectory.fromPath(dirPath);
+    if (dir == null) return dirPath;
+
+    final relativeDir = dir.relativeDir;
+    if (relativeDir.isEmpty) {
+      final volume = androidFileUtils.getStorageVolume(dirPath)!;
+      return volume.getDescription(context);
+    }
+
+    String unique(String dirPath, Set<String?> others) {
+      final parts = pContext.split(dirPath);
+      for (var i = parts.length - 1; i > 0; i--) {
+        final name = pContext.joinAll(['', ...parts.skip(i)]);
+        final testName = '$separator$name';
+        if (others.every((item) => !item!.endsWith(testName))) return name;
+      }
+      return dirPath;
+    }
+
+    final otherAlbumsOnDevice = _directories.where((item) => item != dirPath).toSet();
+    final uniqueNameInDevice = unique(dirPath, otherAlbumsOnDevice);
+    if (uniqueNameInDevice.length <= relativeDir.length) {
+      return uniqueNameInDevice;
+    }
+
+    final volumePath = dir.volumePath;
+    String trimVolumePath(String? path) => path!.substring(dir.volumePath.length);
+    final otherAlbumsOnVolume = otherAlbumsOnDevice.where((path) => path!.startsWith(volumePath)).map(trimVolumePath).toSet();
+    final uniqueNameInVolume = unique(trimVolumePath(dirPath), otherAlbumsOnVolume);
+    final volume = androidFileUtils.getStorageVolume(dirPath)!;
+    if (volume.isPrimary) {
+      return uniqueNameInVolume;
+    } else {
+      return '$uniqueNameInVolume (${volume.getDescription(context)})';
+    }
+  }
+
+  String getAlbumDisplayName(BuildContext? context, String dirPath) {
+    final names = (context != null ? _albumDisplayNamesWithContext : _albumDisplayNamesWithoutContext);
+    return names.putIfAbsent(dirPath, () => _computeDisplayName(context, dirPath));
   }
 }
 

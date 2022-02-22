@@ -8,22 +8,25 @@ import deckers.thibault.aves.model.provider.MediaStoreImageProvider
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
 class MediaStoreHandler(private val context: Context) : MethodCallHandler {
+    private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
-            "checkObsoleteContentIds" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::checkObsoleteContentIds) }
-            "checkObsoletePaths" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::checkObsoletePaths) }
-            "scanFile" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::scanFile) }
+            "checkObsoleteContentIds" -> ioScope.launch { safe(call, result, ::checkObsoleteContentIds) }
+            "checkObsoletePaths" -> ioScope.launch { safe(call, result, ::checkObsoletePaths) }
+            "scanFile" -> ioScope.launch { safe(call, result, ::scanFile) }
             else -> result.notImplemented()
         }
     }
 
     private fun checkObsoleteContentIds(call: MethodCall, result: MethodChannel.Result) {
-        val knownContentIds = call.argument<List<Int>>("knownContentIds")
+        val knownContentIds = call.argument<List<Int?>>("knownContentIds")
         if (knownContentIds == null) {
             result.error("checkObsoleteContentIds-args", "failed because of missing arguments", null)
             return
@@ -32,7 +35,7 @@ class MediaStoreHandler(private val context: Context) : MethodCallHandler {
     }
 
     private fun checkObsoletePaths(call: MethodCall, result: MethodChannel.Result) {
-        val knownPathById = call.argument<Map<Int, String>>("knownPathById")
+        val knownPathById = call.argument<Map<Int?, String?>>("knownPathById")
         if (knownPathById == null) {
             result.error("checkObsoletePaths-args", "failed because of missing arguments", null)
             return

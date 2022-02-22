@@ -1,13 +1,14 @@
-import 'package:aves/model/settings/enums.dart';
-import 'package:aves/model/settings/home_page.dart';
-import 'package:aves/model/settings/screen_on.dart';
+import 'package:aves/model/settings/enums/enums.dart';
+import 'package:aves/model/settings/enums/home_page.dart';
+import 'package:aves/model/settings/enums/screen_on.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/utils/color_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
 import 'package:aves/widgets/settings/common/tile_leading.dart';
+import 'package:aves/widgets/settings/navigation/confirmation_dialogs.dart';
 import 'package:aves/widgets/settings/navigation/drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -29,7 +30,7 @@ class NavigationSection extends StatelessWidget {
     return AvesExpansionTile(
       leading: SettingsTileLeading(
         icon: AIcons.home,
-        color: stringToColor('Navigation'),
+        color: AColors.navigation,
       ),
       title: context.l10n.settingsSectionNavigation,
       expandedNotifier: expandedNotifier,
@@ -53,6 +54,7 @@ class NavigationSection extends StatelessWidget {
           },
         ),
         const NavigationDrawerTile(),
+        const ConfirmationDialogTile(),
         ListTile(
           title: Text(context.l10n.settingsKeepScreenOnTile),
           subtitle: Text(currentKeepScreenOn.getName(context)),

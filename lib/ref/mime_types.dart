@@ -111,5 +111,6 @@ class MimeTypes {
       case '.svg':
         return svg;
     }
+    return null;
   }
 }

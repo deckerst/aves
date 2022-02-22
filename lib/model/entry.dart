@@ -7,7 +7,9 @@ import 'package:aves/model/entry_cache.dart';
 import 'package:aves/model/favourites.dart';
 import 'package:aves/model/metadata/address.dart';
 import 'package:aves/model/metadata/catalog.dart';
+import 'package:aves/model/metadata/trash.dart';
 import 'package:aves/model/multipage.dart';
+import 'package:aves/model/source/trash.dart';
 import 'package:aves/model/video/metadata.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/service_policy.dart';
@@ -25,29 +27,27 @@ import 'package:latlong2/latlong.dart';
 enum EntryDataType { basic, catalog, address, references }
 
 class AvesEntry {
+  // `sizeBytes`, `dateModifiedSecs` can be missing in viewer mode
+  int id;
   String uri;
-  String? _path, _directory, _filename, _extension;
+  String? _path, _directory, _filename, _extension, _sourceTitle;
   int? pageId, contentId;
   final String sourceMimeType;
-  int width;
-  int height;
-  int sourceRotationDegrees;
-  int? sizeBytes;
-  String? _sourceTitle;
+  int width, height, sourceRotationDegrees;
+  int? sizeBytes, _dateModifiedSecs, sourceDateTakenMillis, _durationMillis;
+  bool trashed;
 
-  // `dateModifiedSecs` can be missing in viewer mode
-  int? _dateModifiedSecs;
-  int? sourceDateTakenMillis;
-  int? _durationMillis;
   int? _catalogDateMillis;
   CatalogMetadata? _catalogMetadata;
   AddressDetails? _addressDetails;
+  TrashDetails? trashDetails;
 
   List<AvesEntry>? burstEntries;
 
   final AChangeNotifier imageChangeNotifier = AChangeNotifier(), metadataChangeNotifier = AChangeNotifier(), addressChangeNotifier = AChangeNotifier();
 
   AvesEntry({
+    required int? id,
     required this.uri,
     required String? path,
     required this.contentId,
@@ -61,8 +61,9 @@ class AvesEntry {
     required int? dateModifiedSecs,
     required this.sourceDateTakenMillis,
     required int? durationMillis,
+    required this.trashed,
     this.burstEntries,
-  }) {
+  }) : id = id ?? 0 {
     this.path = path;
     this.sourceTitle = sourceTitle;
     this.dateModifiedSecs = dateModifiedSecs;
@@ -74,6 +75,7 @@ class AvesEntry {
   bool get canHaveAlpha => MimeTypes.alphaImages.contains(mimeType);
 
   AvesEntry copyWith({
+    int? id,
     String? uri,
     String? path,
     int? contentId,
@@ -81,11 +83,12 @@ class AvesEntry {
     int? dateModifiedSecs,
     List<AvesEntry>? burstEntries,
   }) {
-    final copyContentId = contentId ?? this.contentId;
+    final copyEntryId = id ?? this.id;
     final copied = AvesEntry(
+      id: copyEntryId,
       uri: uri ?? this.uri,
       path: path ?? this.path,
-      contentId: copyContentId,
+      contentId: contentId ?? this.contentId,
       pageId: null,
       sourceMimeType: sourceMimeType,
       width: width,
@@ -96,10 +99,12 @@ class AvesEntry {
       dateModifiedSecs: dateModifiedSecs ?? this.dateModifiedSecs,
       sourceDateTakenMillis: sourceDateTakenMillis,
       durationMillis: durationMillis,
+      trashed: trashed,
       burstEntries: burstEntries ?? this.burstEntries,
     )
-      ..catalogMetadata = _catalogMetadata?.copyWith(contentId: copyContentId)
-      ..addressDetails = _addressDetails?.copyWith(contentId: copyContentId);
+      ..catalogMetadata = _catalogMetadata?.copyWith(id: copyEntryId)
+      ..addressDetails = _addressDetails?.copyWith(id: copyEntryId)
+      ..trashDetails = trashDetails?.copyWith(id: copyEntryId);
 
     return copied;
   }
@@ -107,6 +112,7 @@ class AvesEntry {
   // from DB or platform source entry
   factory AvesEntry.fromMap(Map map) {
     return AvesEntry(
+      id: map['id'] as int?,
       uri: map['uri'] as String,
       path: map['path'] as String?,
       pageId: null,
@@ -120,12 +126,14 @@ class AvesEntry {
       dateModifiedSecs: map['dateModifiedSecs'] as int?,
       sourceDateTakenMillis: map['sourceDateTakenMillis'] as int?,
       durationMillis: map['durationMillis'] as int?,
+      trashed: (map['trashed'] as int? ?? 0) != 0,
     );
   }
 
   // for DB only
   Map<String, dynamic> toMap() {
     return {
+      'id': id,
       'uri': uri,
       'path': path,
       'contentId': contentId,
@@ -138,6 +146,7 @@ class AvesEntry {
       'dateModifiedSecs': dateModifiedSecs,
       'sourceDateTakenMillis': sourceDateTakenMillis,
       'durationMillis': durationMillis,
+      'trashed': trashed ? 1 : 0,
     };
   }
 
@@ -151,7 +160,7 @@ class AvesEntry {
   // so that we can reliably use instances in a `Set`, which requires consistent hash codes over time
 
   @override
-  String toString() => '$runtimeType#${shortHash(this)}{uri=$uri, path=$path, pageId=$pageId}';
+  String toString() => '$runtimeType#${shortHash(this)}{id=$id, uri=$uri, path=$path, pageId=$pageId}';
 
   set path(String? path) {
     _path = path;
@@ -179,7 +188,10 @@ class AvesEntry {
     return _extension;
   }
 
-  bool get isMissingAtPath => path != null && !File(path!).existsSync();
+  bool get isMissingAtPath {
+    final effectivePath = trashed ? trashDetails?.path : path;
+    return effectivePath != null && !File(effectivePath).existsSync();
+  }
 
   // the MIME type reported by the Media Store is unreliable
   // so we use the one found during cataloguing if possible
@@ -233,7 +245,7 @@ class AvesEntry {
 
   bool get is360 => _catalogMetadata?.is360 ?? false;
 
-  bool get canEdit => path != null;
+  bool get canEdit => path != null && !trashed;
 
   bool get canEditDate => canEdit && (canEditExif || canEditXmp);
 
@@ -408,6 +420,18 @@ class AvesEntry {
     return _durationText!;
   }
 
+  bool get isExpiredTrash {
+    final dateMillis = trashDetails?.dateMillis;
+    if (dateMillis == null) return false;
+    return DateTime.fromMillisecondsSinceEpoch(dateMillis).add(TrashMixin.binKeepDuration).isBefore(DateTime.now());
+  }
+
+  int? get trashDaysLeft {
+    final dateMillis = trashDetails?.dateMillis;
+    if (dateMillis == null) return null;
+    return DateTime.fromMillisecondsSinceEpoch(dateMillis).add(TrashMixin.binKeepDuration).difference(DateTime.now()).inDays;
+  }
+
   // returns whether this entry has GPS coordinates
   // (0, 0) coordinates are considered invalid, as it is likely a default value
   bool get hasGps => (_catalogMetadata?.latitude ?? 0) != 0 || (_catalogMetadata?.longitude ?? 0) != 0;
@@ -476,7 +500,7 @@ class AvesEntry {
         };
         await applyNewFields(fields, persist: persist);
       }
-      catalogMetadata = CatalogMetadata(contentId: contentId);
+      catalogMetadata = CatalogMetadata(id: id);
     } else {
       if (isVideo && (!isSized || durationMillis == 0)) {
         // exotic video that is not sized during loading
@@ -519,7 +543,7 @@ class AvesEntry {
   void setCountry(CountryCode? countryCode) {
     if (hasFineAddress || countryCode == null) return;
     addressDetails = AddressDetails(
-      contentId: contentId,
+      id: id,
       countryCode: countryCode.alpha2,
       countryName: countryCode.alpha3,
     );
@@ -542,7 +566,7 @@ class AvesEntry {
         final cn = address.countryName;
         final aa = address.adminArea;
         addressDetails = AddressDetails(
-          contentId: contentId,
+          id: id,
           countryCode: cc,
           countryName: cn,
           adminArea: aa,
@@ -619,7 +643,7 @@ class AvesEntry {
 
     if (persist) {
       await metadataDb.saveEntries({this});
-      if (catalogMetadata != null) await metadataDb.saveMetadata({catalogMetadata!});
+      if (catalogMetadata != null) await metadataDb.saveCatalogMetadata({catalogMetadata!});
     }
 
     await _onVisualFieldChanged(oldMimeType, oldDateModifiedSecs, oldRotationDegrees, oldIsFlipped);
@@ -638,7 +662,7 @@ class AvesEntry {
     _tags = null;
 
     if (persist) {
-      await metadataDb.removeIds({contentId!}, dataTypes: dataTypes);
+      await metadataDb.removeIds({id}, dataTypes: dataTypes);
     }
 
     final updatedEntry = await mediaFileService.getEntry(uri, mimeType);
@@ -689,7 +713,7 @@ class AvesEntry {
 
   Future<void> removeFromFavourites() async {
     if (isFavourite) {
-      await favourites.remove({this});
+      await favourites.removeEntries({this});
     }
   }
 
@@ -720,7 +744,7 @@ class AvesEntry {
         pages: burstEntries!
             .mapIndexed((index, entry) => SinglePageInfo(
                   index: index,
-                  pageId: entry.contentId!,
+                  pageId: entry.id,
                   isDefault: index == 0,
                   uri: entry.uri,
                   mimeType: entry.mimeType,

@@ -87,7 +87,11 @@ class MultiPageInfo {
     // and retrieve cached images for it
     final pageId = eraseDefaultPageId && pageInfo.isDefault ? null : pageInfo.pageId;
 
+    // dynamically extracted video is not in the trash like the original motion photo
+    final trashed = (mainEntry.isMotionPhoto && pageInfo.isVideo) ? false : mainEntry.trashed;
+
     return AvesEntry(
+      id: mainEntry.id,
       uri: pageInfo.uri ?? mainEntry.uri,
       path: mainEntry.path,
       contentId: mainEntry.contentId,
@@ -101,13 +105,15 @@ class MultiPageInfo {
       dateModifiedSecs: mainEntry.dateModifiedSecs,
       sourceDateTakenMillis: mainEntry.sourceDateTakenMillis,
       durationMillis: pageInfo.durationMillis ?? mainEntry.durationMillis,
+      trashed: trashed,
     )
       ..catalogMetadata = mainEntry.catalogMetadata?.copyWith(
         mimeType: pageInfo.mimeType,
         isMultiPage: false,
         rotationDegrees: pageInfo.rotationDegrees,
       )
-      ..addressDetails = mainEntry.addressDetails?.copyWith();
+      ..addressDetails = mainEntry.addressDetails?.copyWith()
+      ..trashDetails = trashed ? mainEntry.trashDetails : null;
   }
 
   @override

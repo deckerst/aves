@@ -9,27 +9,28 @@ class FakeMediaStoreService extends Fake implements MediaStoreService {
   Set<AvesEntry> entries = {};
 
   @override
-  Future<List<int>> checkObsoleteContentIds(List<int> knownContentIds) => SynchronousFuture([]);
+  Future<List<int>> checkObsoleteContentIds(List<int?> knownContentIds) => SynchronousFuture([]);
 
   @override
-  Future<List<int>> checkObsoletePaths(Map<int, String?> knownPathById) => SynchronousFuture([]);
+  Future<List<int>> checkObsoletePaths(Map<int?, String?> knownPathById) => SynchronousFuture([]);
 
   @override
-  Stream<AvesEntry> getEntries(Map<int, int> knownEntries) => Stream.fromIterable(entries);
+  Stream<AvesEntry> getEntries(Map<int?, int?> knownEntries, {String? directory}) => Stream.fromIterable(entries);
 
-  static var _lastContentId = 1;
+  static var _lastId = 1;
 
-  static int get nextContentId => _lastContentId++;
+  static int get nextId => _lastId++;
 
   static int get dateSecs => DateTime.now().millisecondsSinceEpoch ~/ 1000;
 
   static AvesEntry newImage(String album, String filenameWithoutExtension) {
-    final contentId = nextContentId;
+    final id = nextId;
     final date = dateSecs;
     return AvesEntry(
-      uri: 'content://media/external/images/media/$contentId',
-      contentId: contentId,
+      id: id,
+      uri: 'content://media/external/images/media/$id',
       path: '$album/$filenameWithoutExtension.jpg',
+      contentId: id,
       pageId: null,
       sourceMimeType: MimeTypes.jpeg,
       width: 360,
@@ -40,11 +41,12 @@ class FakeMediaStoreService extends Fake implements MediaStoreService {
       dateModifiedSecs: date,
       sourceDateTakenMillis: date,
       durationMillis: null,
+      trashed: false,
     );
   }
 
   static MoveOpEvent moveOpEventFor(AvesEntry entry, String sourceAlbum, String destinationAlbum) {
-    final newContentId = nextContentId;
+    final newContentId = nextId;
     return MoveOpEvent(
       success: true,
       skipped: false,

@@ -9,6 +9,8 @@ import 'package:aves/model/entry.dart';
 import 'package:aves/model/entry_metadata_edition.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/highlight.dart';
+import 'package:aves/model/settings/enums/enums.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/common/image_op_events.dart';
@@ -17,11 +19,13 @@ import 'package:aves/services/media/enums.dart';
 import 'package:aves/services/media/media_file_service.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
+import 'package:aves/widgets/common/action_mixins/entry_storage.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
 import 'package:aves/widgets/common/action_mixins/size_aware.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/add_shortcut_dialog.dart';
+import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/entry_editors/rename_dialog.dart';
 import 'package:aves/widgets/dialogs/export_entry_dialog.dart';
@@ -36,7 +40,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
-class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMixin, SingleEntryEditorMixin {
+class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMixin, SingleEntryEditorMixin, EntryStorageMixin {
   @override
   final AvesEntry entry;
 
@@ -55,17 +59,23 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       case EntryAction.delete:
         _delete(context);
         break;
-      case EntryAction.export:
-        _export(context);
+      case EntryAction.restore:
+        _move(context, moveType: MoveType.fromBin);
         break;
-      case EntryAction.info:
-        ShowInfoNotification().dispatch(context);
+      case EntryAction.convert:
+        _convert(context);
         break;
       case EntryAction.print:
         EntryPrinter(entry).print(context);
         break;
       case EntryAction.rename:
         _rename(context);
+        break;
+      case EntryAction.copy:
+        _move(context, moveType: MoveType.copy);
+        break;
+      case EntryAction.move:
+        _move(context, moveType: MoveType.move);
         break;
       case EntryAction.share:
         androidAppService.shareEntries({entry}).then((success) {
@@ -159,56 +169,48 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
   }
 
   Future<void> _delete(BuildContext context) async {
-    final confirmed = await showDialog<bool>(
+    if (settings.enableBin && !entry.trashed) {
+      await _move(context, moveType: MoveType.toBin);
+      return;
+    }
+
+    final l10n = context.l10n;
+    if (!(await showConfirmationDialog(
       context: context,
-      builder: (context) {
-        return AvesDialog(
-          content: Text(context.l10n.deleteEntriesConfirmationDialogMessage(1)),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
-            ),
-            TextButton(
-              onPressed: () => Navigator.pop(context, true),
-              child: Text(context.l10n.deleteButtonLabel),
-            ),
-          ],
-        );
-      },
-    );
-    if (confirmed == null || !confirmed) return;
+      type: ConfirmationDialog.delete,
+      message: l10n.deleteEntriesConfirmationDialogMessage(1),
+      confirmationButtonLabel: l10n.deleteButtonLabel,
+    ))) return;
 
     if (!await checkStoragePermission(context, {entry})) return;
 
     if (!await entry.delete()) {
-      showFeedback(context, context.l10n.genericFailureFeedback);
+      showFeedback(context, l10n.genericFailureFeedback);
     } else {
       final source = context.read<CollectionSource>();
-      if (source.initialized) {
-        await source.removeEntries({entry.uri});
+      if (source.initState != SourceInitializationState.none) {
+        await source.removeEntries({entry.uri}, includeTrash: true);
       }
-      EntryDeletedNotification(entry).dispatch(context);
+      EntryRemovedNotification(entry).dispatch(context);
     }
   }
 
-  Future<void> _export(BuildContext context) async {
+  Future<void> _convert(BuildContext context) async {
+    final options = await showDialog<EntryExportOptions>(
+      context: context,
+      builder: (context) => ExportEntryDialog(entry: entry),
+    );
+    if (options == null) return;
+
     final source = context.read<CollectionSource>();
-    if (!source.initialized) {
+    if (source.initState != SourceInitializationState.full) {
       await source.init();
-      unawaited(source.refresh());
     }
     final destinationAlbum = await pickAlbum(context: context, moveType: MoveType.export);
     if (destinationAlbum == null) return;
     if (!await checkStoragePermissionForAlbums(context, {destinationAlbum})) return;
 
     if (!await checkFreeSpaceForMove(context, {entry}, destinationAlbum, MoveType.export)) return;
-
-    final options = await showDialog<EntryExportOptions>(
-      context: context,
-      builder: (context) => ExportEntryDialog(entry: entry),
-    );
-    if (options == null) return;
 
     final selection = <AvesEntry>{};
     if (entry.isMultiPage) {
@@ -227,9 +229,8 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
 
     final selectionCount = selection.length;
     source.pauseMonitoring();
-    showOpReport<ExportOpEvent>(
+    await showOpReport<ExportOpEvent>(
       context: context,
-      // TODO TLAD [SVG] export separately from raster images (sending bytes, like frame captures)
       opStream: mediaFileService.export(
         selection,
         options: options,
@@ -290,6 +291,21 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
           );
         }
       },
+    );
+  }
+
+  Future<void> _move(BuildContext context, {required MoveType moveType}) async {
+    await move(
+      context,
+      moveType: moveType,
+      entries: {entry},
+      onSuccess: {
+        MoveType.move,
+        MoveType.toBin,
+        MoveType.fromBin,
+      }.contains(moveType)
+          ? () => EntryRemovedNotification(entry).dispatch(context)
+          : null,
     );
   }
 

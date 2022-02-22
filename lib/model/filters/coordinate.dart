@@ -1,7 +1,7 @@
 import 'package:aves/l10n/l10n.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/settings/coordinate_format.dart';
-import 'package:aves/model/settings/enums.dart';
+import 'package:aves/model/settings/enums/coordinate_format.dart';
+import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/geo_utils.dart';

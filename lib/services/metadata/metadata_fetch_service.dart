@@ -79,7 +79,7 @@ class PlatformMetadataFetchService implements MetadataFetchService {
           'path': entry.path,
           'sizeBytes': entry.sizeBytes,
         }) as Map;
-        result['contentId'] = entry.contentId;
+        result['id'] = entry.id;
         return CatalogMetadata.fromMap(result);
       } on PlatformException catch (e, stack) {
         if (!entry.isMissingAtPath) {

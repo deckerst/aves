@@ -16,14 +16,14 @@ import deckers.thibault.aves.utils.ContextUtils.isMyServiceRunning
 import deckers.thibault.aves.utils.LogUtils
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 class AnalysisHandler(private val activity: Activity, private val onAnalysisCompleted: () -> Unit) : MethodChannel.MethodCallHandler, AnalysisServiceListener {
+    private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
-            "registerCallback" -> GlobalScope.launch(Dispatchers.IO) { Coresult.safe(call, result, ::registerCallback) }
+            "registerCallback" -> ioScope.launch { Coresult.safe(call, result, ::registerCallback) }
             "startService" -> Coresult.safe(call, result, ::startAnalysis)
             else -> result.notImplemented()
         }
@@ -52,12 +52,12 @@ class AnalysisHandler(private val activity: Activity, private val onAnalysisComp
         }
 
         // can be null or empty
-        val contentIds = call.argument<List<Int>>("contentIds")
+        val entryIds = call.argument<List<Int>>("entryIds")
 
         if (!activity.isMyServiceRunning(AnalysisService::class.java)) {
             val intent = Intent(activity, AnalysisService::class.java)
             intent.putExtra(AnalysisService.KEY_COMMAND, AnalysisService.COMMAND_START)
-            intent.putExtra(AnalysisService.KEY_CONTENT_IDS, contentIds?.toIntArray())
+            intent.putExtra(AnalysisService.KEY_ENTRY_IDS, entryIds?.toIntArray())
             intent.putExtra(AnalysisService.KEY_FORCE, force)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 activity.startForegroundService(intent)

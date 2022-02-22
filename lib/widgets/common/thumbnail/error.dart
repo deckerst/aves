@@ -4,7 +4,6 @@ import 'dart:math';
 import 'package:aves/model/entry.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/mime_utils.dart';
-import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -58,14 +57,10 @@ class _ErrorThumbnailState extends State<ErrorThumbnail> {
                       textAlign: TextAlign.center,
                     );
                   })
-                : Tooltip(
-                    message: context.l10n.viewerErrorDoesNotExist,
-                    preferBelow: false,
-                    child: Icon(
-                      AIcons.broken,
-                      size: extent / 2,
-                      color: color,
-                    ),
+                : Icon(
+                    AIcons.broken,
+                    size: extent / 2,
+                    color: color,
                   );
           }
           return Container(

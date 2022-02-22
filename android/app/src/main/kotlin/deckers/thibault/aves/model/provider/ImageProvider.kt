@@ -39,7 +39,6 @@ import java.io.File
 import java.io.IOException
 import java.io.OutputStream
 import java.util.*
-import kotlin.collections.HashMap
 
 abstract class ImageProvider {
     open fun fetchSingle(context: Context, uri: Uri, sourceMimeType: String?, callback: ImageOpCallback) {
@@ -53,9 +52,8 @@ abstract class ImageProvider {
     open suspend fun moveMultiple(
         activity: Activity,
         copy: Boolean,
-        targetDir: String,
         nameConflictStrategy: NameConflictStrategy,
-        entries: List<AvesEntry>,
+        entriesByTargetDir: Map<String, List<AvesEntry>>,
         isCancelledOp: CancelCheck,
         callback: ImageOpCallback,
     ) {
@@ -133,7 +131,6 @@ abstract class ImageProvider {
         }
     }
 
-    @Suppress("BlockingMethodInNonBlockingContext")
     private suspend fun exportSingle(
         activity: Activity,
         sourceEntry: AvesEntry,
@@ -174,6 +171,7 @@ abstract class ImageProvider {
                 targetMimeType = sourceMimeType
                 write = { output ->
                     val sourceDocFile = DocumentFileCompat.fromSingleUri(activity, sourceUri)
+                    @Suppress("BlockingMethodInNonBlockingContext")
                     sourceDocFile.copyTo(output)
                 }
             } else {
@@ -184,7 +182,7 @@ abstract class ImageProvider {
                 } else if (sourceMimeType == MimeTypes.SVG) {
                     SvgImage(activity, sourceUri)
                 } else {
-                    StorageUtils.getGlideSafeUri(sourceUri, sourceMimeType)
+                    StorageUtils.getGlideSafeUri(activity, sourceUri, sourceMimeType)
                 }
 
                 // request a fresh image with the highest quality format
@@ -198,6 +196,7 @@ abstract class ImageProvider {
                     .apply(glideOptions)
                     .load(model)
                     .submit(width, height)
+                @Suppress("BlockingMethodInNonBlockingContext")
                 var bitmap = target.get()
                 if (MimeTypes.needRotationAfterGlide(sourceMimeType)) {
                     bitmap = BitmapUtils.applyExifOrientation(activity, bitmap, sourceEntry.rotationDegrees, sourceEntry.isFlipped)
@@ -244,7 +243,6 @@ abstract class ImageProvider {
             // clearing Glide target should happen after effectively writing the bitmap
             Glide.with(activity).clear(target)
         }
-
     }
 
     @Suppress("BlockingMethodInNonBlockingContext")

@@ -19,6 +19,8 @@ mixin SizeAwareMixin {
     String destinationAlbum,
     MoveType moveType,
   ) async {
+    if (moveType == MoveType.toBin) return true;
+
     // assume we have enough space if we cannot find the volume or its remaining free space
     final destinationVolume = androidFileUtils.getStorageVolume(destinationAlbum);
     if (destinationVolume == null) return true;
@@ -27,13 +29,15 @@ mixin SizeAwareMixin {
     if (free == null) return true;
 
     late int needed;
-    int sumSize(sum, entry) => sum + entry.sizeBytes ?? 0;
+    int sumSize(sum, entry) => sum + (entry.sizeBytes ?? 0);
     switch (moveType) {
       case MoveType.copy:
       case MoveType.export:
         needed = selection.fold(0, sumSize);
         break;
       case MoveType.move:
+      case MoveType.toBin:
+      case MoveType.fromBin:
         // when moving, we only need space for the entries that are not already on the destination volume
         final byVolume = groupBy<AvesEntry, StorageVolume?>(selection, (entry) => androidFileUtils.getStorageVolume(entry.path)).whereNotNullKey();
         final otherVolumes = byVolume.keys.where((volume) => volume != destinationVolume);

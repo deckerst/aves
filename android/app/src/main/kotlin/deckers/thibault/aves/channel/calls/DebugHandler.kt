@@ -32,33 +32,33 @@ import deckers.thibault.aves.utils.UriUtils.tryParseId
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import io.flutter.util.PathUtils
+import kotlinx.coroutines.*
 import org.beyka.tiffbitmapfactory.TiffBitmapFactory
 import java.io.IOException
-import java.util.*
 
 class DebugHandler(private val context: Context) : MethodCallHandler {
+    private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
             "crash" -> Handler(Looper.getMainLooper()).postDelayed({ throw TestException() }, 50)
             "exception" -> throw TestException()
             "safeException" -> safe(call, result) { _, _ -> throw TestException() }
-            "exceptionInCoroutine" -> GlobalScope.launch(Dispatchers.IO) { throw TestException() }
-            "safeExceptionInCoroutine" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result) { _, _ -> throw TestException() } }
+            "exceptionInCoroutine" -> ioScope.launch { throw TestException() }
+            "safeExceptionInCoroutine" -> ioScope.launch { safe(call, result) { _, _ -> throw TestException() } }
 
-            "getContextDirs" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getContextDirs) }
+            "getContextDirs" -> ioScope.launch { safe(call, result, ::getContextDirs) }
             "getCodecs" -> safe(call, result, ::getCodecs)
             "getEnv" -> safe(call, result, ::getEnv)
 
-            "getBitmapFactoryInfo" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getBitmapFactoryInfo) }
-            "getContentResolverMetadata" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getContentResolverMetadata) }
-            "getExifInterfaceMetadata" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getExifInterfaceMetadata) }
-            "getMediaMetadataRetrieverMetadata" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getMediaMetadataRetrieverMetadata) }
-            "getMetadataExtractorSummary" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getMetadataExtractorSummary) }
-            "getPixyMetadata" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getPixyMetadata) }
-            "getTiffStructure" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getTiffStructure) }
+            "getBitmapFactoryInfo" -> ioScope.launch { safe(call, result, ::getBitmapFactoryInfo) }
+            "getContentResolverMetadata" -> ioScope.launch { safe(call, result, ::getContentResolverMetadata) }
+            "getExifInterfaceMetadata" -> ioScope.launch { safe(call, result, ::getExifInterfaceMetadata) }
+            "getMediaMetadataRetrieverMetadata" -> ioScope.launch { safe(call, result, ::getMediaMetadataRetrieverMetadata) }
+            "getMetadataExtractorSummary" -> ioScope.launch { safe(call, result, ::getMetadataExtractorSummary) }
+            "getPixyMetadata" -> ioScope.launch { safe(call, result, ::getPixyMetadata) }
+            "getTiffStructure" -> ioScope.launch { safe(call, result, ::getTiffStructure) }
             else -> result.notImplemented()
         }
     }
@@ -69,6 +69,7 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
             "filesDir" to context.filesDir,
             "obbDir" to context.obbDir,
             "externalCacheDir" to context.externalCacheDir,
+            "externalFilesDir" to context.getExternalFilesDir(null),
         ).apply {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 putAll(
@@ -81,7 +82,18 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 put("dataDir", context.dataDir)
             }
-        }.mapValues { it.value?.path }
+        }.mapValues { it.value?.path }.toMutableMap()
+        dirs["externalCacheDirs"] = context.externalCacheDirs.joinToString { it.path }
+        dirs["externalFilesDirs"] = context.getExternalFilesDirs(null).joinToString { it.path }
+
+        // used by flutter plugin `path_provider`
+        dirs.putAll(
+            hashMapOf(
+                "flutter / cacheDir" to PathUtils.getCacheDirectory(context),
+                "flutter / dataDir" to PathUtils.getDataDirectory(context),
+                "flutter / filesDir" to PathUtils.getFilesDir(context),
+            )
+        )
 
         result.success(dirs)
     }

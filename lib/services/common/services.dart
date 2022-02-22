@@ -1,5 +1,8 @@
 import 'package:aves/model/availability.dart';
-import 'package:aves/model/metadata_db.dart';
+import 'package:aves/model/db/db_metadata.dart';
+import 'package:aves/model/db/db_metadata_sqflite.dart';
+import 'package:aves/model/settings/store/store.dart';
+import 'package:aves/model/settings/store/store_shared_pref.dart';
 import 'package:aves/services/android_app_service.dart';
 import 'package:aves/services/device_service.dart';
 import 'package:aves/services/media/embedded_data_service.dart';
@@ -15,6 +18,9 @@ import 'package:get_it/get_it.dart';
 import 'package:path/path.dart' as p;
 
 final getIt = GetIt.instance;
+
+// fixed implementation is easier for test driver setup
+final SettingsStore settingsStore = SharedPrefSettingsStore();
 
 final p.Context pContext = getIt<p.Context>();
 final AvesAvailability availability = getIt<AvesAvailability>();

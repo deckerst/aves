@@ -1,6 +1,6 @@
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/location.dart';
-import 'package:aves/model/settings/coordinate_format.dart';
+import 'package:aves/model/settings/enums/coordinate_format.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/services/common/services.dart';

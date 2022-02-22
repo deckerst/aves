@@ -9,6 +9,7 @@ import 'package:aves/widgets/common/sliver_app_bar_title.dart';
 import 'package:aves/widgets/viewer/action/entry_info_action_delegate.dart';
 import 'package:aves/widgets/viewer/info/info_search.dart';
 import 'package:aves/widgets/viewer/info/metadata/metadata_section.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
@@ -53,7 +54,13 @@ class InfoAppBar extends StatelessWidget {
         if (entry.canEdit)
           MenuIconTheme(
             child: PopupMenuButton<EntryInfoAction>(
-              itemBuilder: (context) => menuActions.map((action) => _toMenuItem(context, action, enabled: actionDelegate.canApply(action))).toList(),
+              itemBuilder: (context) => [
+                ...menuActions.map((action) => _toMenuItem(context, action, enabled: actionDelegate.canApply(action))),
+                if (!kReleaseMode) ...[
+                  const PopupMenuDivider(),
+                  _toMenuItem(context, EntryInfoAction.debug, enabled: true),
+                ]
+              ],
               onSelected: (action) async {
                 // wait for the popup menu to hide before proceeding with the action
                 await Future.delayed(Durations.popupMenuAnimation * timeDilation);

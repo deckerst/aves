@@ -23,12 +23,11 @@ import deckers.thibault.aves.utils.MimeTypes.needRotationAfterGlide
 import deckers.thibault.aves.utils.StorageUtils
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.EventChannel.EventSink
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.io.InputStream
 
 class ImageByteStreamHandler(private val context: Context, private val arguments: Any?) : EventChannel.StreamHandler {
+    private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private lateinit var eventSink: EventSink
     private lateinit var handler: Handler
 
@@ -36,7 +35,7 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
         this.eventSink = eventSink
         handler = Handler(Looper.getMainLooper())
 
-        GlobalScope.launch(Dispatchers.IO) { streamImage() }
+        ioScope.launch { streamImage() }
     }
 
     override fun onCancel(o: Any) {}
@@ -119,7 +118,7 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
         } else if (mimeType == MimeTypes.TIFF) {
             TiffImage(context, uri, pageId)
         } else {
-            StorageUtils.getGlideSafeUri(uri, mimeType)
+            StorageUtils.getGlideSafeUri(context, uri, mimeType)
         }
 
         val target = Glide.with(context)

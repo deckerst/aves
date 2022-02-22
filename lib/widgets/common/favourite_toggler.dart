@@ -1,5 +1,6 @@
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/favourites.dart';
+import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/basic/menu.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -72,7 +73,7 @@ class _FavouriteTogglerState extends State<FavouriteToggler> {
             ),
             Sweeper(
               key: ValueKey(entries.length == 1 ? entries.first : entries.length),
-              builder: (context) => const Icon(AIcons.favourite, color: Colors.redAccent),
+              builder: (context) => const Icon(AIcons.favourite, color: AColors.favourite),
               toggledNotifier: isFavouriteNotifier,
             ),
           ],

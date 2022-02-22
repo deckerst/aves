@@ -22,6 +22,12 @@
       "minutes": {}
     }
   },
+  "timeDays": "{days, plural, =1{1 day} other{{days} days}}",
+  "@timeDays": {
+    "placeholders": {
+      "days": {}
+    }
+  },
   "focalLength": "{length} mm",
   "@focalLength": {
     "placeholders": {
@@ -50,6 +56,7 @@
   "resetButtonTooltip": "Reset",
 
   "doubleBackExitMessage": "Tap “back” again to exit.",
+  "doNotAskAgain": "Do not ask again",
 
   "sourceStateLoading": "Loading",
   "sourceStateCataloguing": "Cataloguing",
@@ -69,9 +76,10 @@
 
   "entryActionCopyToClipboard": "Copy to clipboard",
   "entryActionDelete": "Delete",
+  "entryActionConvert": "Convert",
   "entryActionExport": "Export",
-  "entryActionInfo": "Info",
   "entryActionRename": "Rename",
+  "entryActionRestore": "Restore",
   "entryActionRotateCCW": "Rotate counterclockwise",
   "entryActionRotateCW": "Rotate clockwise",
   "entryActionFlip": "Flip horizontally",
@@ -79,10 +87,10 @@
   "entryActionShare": "Share",
   "entryActionViewSource": "View source",
   "entryActionViewMotionPhotoVideo": "Open Motion Photo",
-  "entryActionEdit": "Edit with…",
-  "entryActionOpen": "Open with…",
-  "entryActionSetAs": "Set as…",
-  "entryActionOpenMap": "Show in map app…",
+  "entryActionEdit": "Edit",
+  "entryActionOpen": "Open with",
+  "entryActionSetAs": "Set as",
+  "entryActionOpenMap": "Show in map app",
   "entryActionRotateScreen": "Rotate screen",
   "entryActionAddFavourite": "Add to favourites",
   "entryActionRemoveFavourite": "Remove from favourites",
@@ -102,6 +110,7 @@
   "entryInfoActionEditTags": "Edit tags",
   "entryInfoActionRemoveMetadata": "Remove metadata",
 
+  "filterBinLabel": "Recycle bin",
   "filterFavouriteLabel": "Favourite",
   "filterLocationEmptyLabel": "Unlocated",
   "filterTagEmptyLabel": "Untagged",
@@ -254,7 +263,13 @@
   "noMatchingAppDialogTitle": "No Matching App",
   "noMatchingAppDialogMessage": "There are no apps that can handle this.",
 
-  "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{Are you sure you want to delete this item?} other{Are you sure you want to delete these {count} items?}}",
+  "binEntriesConfirmationDialogMessage": "{count, plural, =1{Move this item to the recycle bin?} other{Move these {count} items to the recycle bin?}}",
+  "@binEntriesConfirmationDialogMessage": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{Delete this item?} other{Delete these {count} items?}}",
   "@deleteEntriesConfirmationDialogMessage": {
     "placeholders": {
       "count": {}
@@ -287,13 +302,13 @@
   "renameAlbumDialogLabel": "New name",
   "renameAlbumDialogLabelAlreadyExistsHelper": "Directory already exists",
 
-  "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{Are you sure you want to delete this album and its item?} other{Are you sure you want to delete this album and its {count} items?}}",
+  "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{Delete this album and its item?} other{Delete this album and its {count} items?}}",
   "@deleteSingleAlbumConfirmationDialogMessage": {
     "placeholders": {
       "count": {}
     }
   },
-  "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{Are you sure you want to delete these albums and their item?} other{Are you sure you want to delete these albums and their {count} items?}}",
+  "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{Delete these albums and their item?} other{Delete these albums and their {count} items?}}",
   "@deleteMultiAlbumConfirmationDialogMessage": {
     "placeholders": {
       "count": {}
@@ -399,16 +414,12 @@
 
   "collectionPageTitle": "Collection",
   "collectionPickPageTitle": "Pick",
-  "collectionSelectionPageTitle": "{count, plural, =0{Select items} =1{1 item} other{{count} items}}",
-  "@collectionSelectionPageTitle": {
-    "placeholders": {
-      "count": {}
-    }
-  },
+  "collectionSelectPageTitle": "Select items",
 
   "collectionActionShowTitleSearch": "Show title filter",
   "collectionActionHideTitleSearch": "Hide title filter",
   "collectionActionAddShortcut": "Add shortcut",
+  "collectionActionEmptyBin": "Empty bin",
   "collectionActionCopy": "Copy to album",
   "collectionActionMove": "Move to album",
   "collectionActionRescan": "Rescan",
@@ -527,6 +538,8 @@
   "tagPageTitle": "Tags",
   "tagEmpty": "No tags",
 
+  "binPageTitle": "Recycle Bin",
+
   "searchCollectionFieldHint": "Search collection",
   "searchSectionRecent": "Recent",
   "searchSectionAlbums": "Albums",
@@ -551,6 +564,11 @@
   "settingsKeepScreenOnTile": "Keep screen on",
   "settingsKeepScreenOnTitle": "Keep Screen On",
   "settingsDoubleBackExit": "Tap “back” twice to exit",
+
+  "settingsConfirmationDialogTile": "Confirmation dialogs",
+  "settingsConfirmationDialogTitle": "Confirmation Dialogs",
+  "settingsConfirmationDialogDeleteItems": "Ask before deleting items forever",
+  "settingsConfirmationDialogMoveToBinItems": "Ask before moving items to the recycle bin",
 
   "settingsNavigationDrawerTile": "Navigation menu",
   "settingsNavigationDrawerEditorTitle": "Navigation Menu",
@@ -627,6 +645,8 @@
   "settingsAllowInstalledAppAccessSubtitle": "Used to improve album display",
   "settingsAllowErrorReporting": "Allow anonymous error reporting",
   "settingsSaveSearchHistory": "Save search history",
+  "settingsEnableBin": "Use recycle bin",
+  "settingsEnableBinSubtitle": "Keep deleted items for 30 days",
 
   "settingsHiddenItemsTile": "Hidden items",
   "settingsHiddenItemsTitle": "Hidden Items",

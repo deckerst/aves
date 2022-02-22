@@ -1,7 +1,6 @@
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/path.dart';
 import 'package:aves/model/settings/settings.dart';
-import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -116,7 +115,7 @@ class _HiddenFilters extends StatelessWidget {
                     .map((filter) => AvesFilterChip(
                           filter: filter,
                           removable: true,
-                          onTap: (filter) => context.read<CollectionSource>().changeFilterVisibility({filter}, true),
+                          onTap: (filter) => settings.changeFilterVisibility({filter}, true),
                           onLongPress: null,
                         ))
                     .toList(),
@@ -152,7 +151,7 @@ class _HiddenPaths extends StatelessWidget {
                         trailing: IconButton(
                           icon: const Icon(AIcons.clear),
                           onPressed: () {
-                            context.read<CollectionSource>().changeFilterVisibility({pathFilter}, true);
+                            settings.changeFilterVisibility({pathFilter}, true);
                           },
                           tooltip: context.l10n.actionRemove,
                         ),
@@ -176,7 +175,7 @@ class _HiddenPaths extends StatelessWidget {
                 // wait for the dialog to hide as applying the change may block the UI
                 await Future.delayed(Durations.pageTransitionAnimation * timeDilation);
                 if (path != null && path.isNotEmpty) {
-                  context.read<CollectionSource>().changeFilterVisibility({PathFilter(path)}, false);
+                  settings.changeFilterVisibility({PathFilter(path)}, false);
                 }
               },
             ),

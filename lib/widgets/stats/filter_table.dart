@@ -1,5 +1,4 @@
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/utils/color_utils.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
@@ -41,6 +40,7 @@ class FilterTable<T extends Comparable> extends StatelessWidget {
 
     final textScaleFactor = MediaQuery.textScaleFactorOf(context);
     final lineHeight = 16 * textScaleFactor;
+    final barRadius = Radius.circular(lineHeight / 2);
     final isRtl = context.isRtl;
 
     return Padding(
@@ -52,7 +52,6 @@ class FilterTable<T extends Comparable> extends StatelessWidget {
           return Table(
             children: displayedEntries.map((kv) {
               final filter = filterBuilder(kv.key);
-              final label = filter.getLabel(context);
               final count = kv.value;
               final percent = count / totalEntryCount;
               return TableRow(
@@ -69,17 +68,32 @@ class FilterTable<T extends Comparable> extends StatelessWidget {
                     ),
                   ),
                   if (showPercentIndicator)
-                    LinearPercentIndicator(
-                      percent: percent,
-                      lineHeight: lineHeight,
-                      backgroundColor: Colors.white24,
-                      progressColor: stringToColor(label),
-                      animation: true,
-                      isRTL: isRtl,
+                    // as of percent_indicator v4.0.0, bar radius is not correctly applied to progress bar
+                    // when width is lower than height, so we clip it and handle padding outside
+                    Padding(
                       padding: EdgeInsets.symmetric(horizontal: lineHeight),
-                      center: Text(
-                        intl.NumberFormat.percentPattern().format(percent),
-                        style: const TextStyle(shadows: Constants.embossShadows),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.all(barRadius),
+                        child: FutureBuilder<Color>(
+                          future: filter.color(context),
+                          builder: (context, snapshot) {
+                            final color = snapshot.data;
+                            return LinearPercentIndicator(
+                              percent: percent,
+                              lineHeight: lineHeight,
+                              backgroundColor: Colors.white24,
+                              progressColor: color,
+                              animation: true,
+                              isRTL: isRtl,
+                              barRadius: barRadius,
+                              center: Text(
+                                intl.NumberFormat.percentPattern().format(percent),
+                                style: const TextStyle(shadows: Constants.embossShadows),
+                              ),
+                              padding: EdgeInsets.zero,
+                            );
+                          },
+                        ),
                       ),
                     ),
                   Text(

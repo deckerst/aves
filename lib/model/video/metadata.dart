@@ -99,7 +99,7 @@ class VideoMetadataFormatter {
     }
 
     if (dateMillis != null) {
-      return (entry.catalogMetadata ?? CatalogMetadata(contentId: entry.contentId)).copyWith(
+      return (entry.catalogMetadata ?? CatalogMetadata(id: entry.id)).copyWith(
         dateMillis: dateMillis,
       );
     }

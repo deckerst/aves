@@ -1,7 +1,7 @@
 import 'dart:collection';
 
 import 'package:aves/model/entry.dart';
-import 'package:aves/utils/color_utils.dart';
+import 'package:aves/theme/colors.dart';
 import 'package:aves/utils/xmp_utils.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_namespaces.dart';
@@ -43,7 +43,7 @@ class _XmpDirTileState extends State<XmpDirTile> {
     return AvesExpansionTile(
       // title may contain parent to distinguish multiple XMP directories
       title: widget.title,
-      color: stringToColor('XMP'),
+      color: AColors.xmp,
       expandedNotifier: widget.expandedNotifier,
       initiallyExpanded: widget.initiallyExpanded,
       children: [

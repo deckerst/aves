@@ -1,13 +1,17 @@
 import 'dart:ui';
 
+import 'package:aves/model/filters/album.dart';
+import 'package:aves/model/filters/trash.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/album.dart';
+import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/location.dart';
 import 'package:aves/model/source/tag.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/android_file_utils.dart';
+import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/about/about_page.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
@@ -20,12 +24,19 @@ import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/countries_page.dart';
 import 'package:aves/widgets/filter_grids/tags_page.dart';
 import 'package:aves/widgets/settings/settings_page.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class AppDrawer extends StatelessWidget {
-  const AppDrawer({Key? key}) : super(key: key);
+  // collection loaded in the `CollectionPage`, if any
+  final CollectionLens? currentCollection;
+
+  const AppDrawer({
+    Key? key,
+    this.currentCollection,
+  }) : super(key: key);
 
   static List<String> getDefaultAlbums(BuildContext context) {
     final source = context.read<CollectionSource>();
@@ -44,6 +55,10 @@ class AppDrawer extends StatelessWidget {
       ..._buildTypeLinks(),
       _buildAlbumLinks(context),
       ..._buildPageLinks(context),
+      if (settings.enableBin) ...[
+        const Divider(),
+        binTile(context),
+      ],
       if (!kReleaseMode) ...[
         const Divider(),
         debugTile,
@@ -153,6 +168,7 @@ class AppDrawer extends StatelessWidget {
   List<Widget> _buildTypeLinks() {
     final hiddenFilters = settings.hiddenFilters;
     final typeBookmarks = settings.drawerTypeBookmarks;
+    final currentFilters = currentCollection?.filters;
     return typeBookmarks
         .where((filter) => !hiddenFilters.contains(filter))
         .map((filter) => CollectionNavTile(
@@ -161,12 +177,17 @@ class AppDrawer extends StatelessWidget {
               leading: DrawerFilterIcon(filter: filter),
               title: DrawerFilterTitle(filter: filter),
               filter: filter,
+              isSelected: () {
+                if (currentFilters == null || currentFilters.length > 1) return false;
+                return currentFilters.firstOrNull == filter;
+              },
             ))
         .toList();
   }
 
   Widget _buildAlbumLinks(BuildContext context) {
     final source = context.read<CollectionSource>();
+    final currentFilters = currentCollection?.filters;
     return StreamBuilder(
         stream: source.eventBus.on<AlbumsChangedEvent>(),
         builder: (context, snapshot) {
@@ -175,7 +196,14 @@ class AppDrawer extends StatelessWidget {
           return Column(
             children: [
               const Divider(),
-              ...albums.map((album) => AlbumNavTile(album: album)),
+              ...albums.map((album) => AlbumNavTile(
+                    album: album,
+                    isSelected: () {
+                      if (currentFilters == null || currentFilters.length > 1) return false;
+                      final currentFilter = currentFilters.firstOrNull;
+                      return currentFilter is AlbumFilter && currentFilter.album == album;
+                    },
+                  )),
             ],
           );
         });
@@ -224,6 +252,20 @@ class AppDrawer extends StatelessWidget {
         );
       }),
     ];
+  }
+
+  Widget binTile(BuildContext context) {
+    final source = context.read<CollectionSource>();
+    final trashSize = source.trashedEntries.fold<int>(0, (sum, entry) => sum + (entry.sizeBytes ?? 0));
+
+    const filter = TrashFilter.instance;
+    return CollectionNavTile(
+      leading: const DrawerFilterIcon(filter: filter),
+      title: const DrawerFilterTitle(filter: filter),
+      trailing: Text(formatFileSize(context.l10n.localeName, trashSize, round: 0)),
+      filter: filter,
+      isSelected: () => currentCollection?.filters.contains(filter) ?? false,
+    );
   }
 
   Widget get debugTile => PageNavTile(

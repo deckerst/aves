@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:aves/model/settings/coordinate_format.dart';
-import 'package:aves/model/settings/map_style.dart';
+import 'package:aves/model/settings/enums/coordinate_format.dart';
+import 'package:aves/model/settings/enums/map_style.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/services/common/services.dart';

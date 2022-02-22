@@ -3,25 +3,25 @@ import 'package:flutter/foundation.dart';
 
 @immutable
 class VideoPlaybackRow extends Equatable {
-  final int contentId, resumeTimeMillis;
+  final int entryId, resumeTimeMillis;
 
   @override
-  List<Object?> get props => [contentId, resumeTimeMillis];
+  List<Object?> get props => [entryId, resumeTimeMillis];
 
   const VideoPlaybackRow({
-    required this.contentId,
+    required this.entryId,
     required this.resumeTimeMillis,
   });
 
   static VideoPlaybackRow? fromMap(Map map) {
     return VideoPlaybackRow(
-      contentId: map['contentId'],
+      entryId: map['id'],
       resumeTimeMillis: map['resumeTimeMillis'],
     );
   }
 
   Map<String, dynamic> toMap() => {
-        'contentId': contentId,
+        'id': entryId,
         'resumeTimeMillis': resumeTimeMillis,
       };
 }

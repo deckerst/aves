@@ -27,36 +27,34 @@ abstract class AvesVideoController {
   }
 
   Future<void> _savePlaybackState() async {
-    final contentId = entry.contentId;
-    if (contentId == null || !isReady || duration < resumeTimeSaveMinDuration.inMilliseconds) return;
+    final id = entry.id;
+    if (!isReady || duration < resumeTimeSaveMinDuration.inMilliseconds) return;
 
     if (persistPlayback) {
       final _progress = progress;
       if (resumeTimeSaveMinProgress < _progress && _progress < resumeTimeSaveMaxProgress) {
         await metadataDb.addVideoPlayback({
           VideoPlaybackRow(
-            contentId: contentId,
+            entryId: id,
             resumeTimeMillis: currentPosition,
           )
         });
       } else {
-        await metadataDb.removeVideoPlayback({contentId});
+        await metadataDb.removeVideoPlayback({id});
       }
     }
   }
 
   Future<int?> getResumeTime(BuildContext context) async {
-    final contentId = entry.contentId;
-    if (contentId == null) return null;
-
     if (!persistPlayback) return null;
 
-    final playback = await metadataDb.loadVideoPlayback(contentId);
+    final id = entry.id;
+    final playback = await metadataDb.loadVideoPlayback(id);
     final resumeTime = playback?.resumeTimeMillis ?? 0;
     if (resumeTime == 0) return null;
 
     // clear on retrieval
-    await metadataDb.removeVideoPlayback({contentId});
+    await metadataDb.removeVideoPlayback({id});
 
     final resume = await showDialog<bool>(
       context: context,

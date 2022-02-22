@@ -1,5 +1,5 @@
+import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/utils/color_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/settings/accessibility/remove_animations.dart';
@@ -20,7 +20,7 @@ class AccessibilitySection extends StatelessWidget {
     return AvesExpansionTile(
       leading: SettingsTileLeading(
         icon: AIcons.accessibility,
-        color: stringToColor('Accessibility'),
+        color: AColors.accessibility,
       ),
       title: context.l10n.settingsSectionAccessibility,
       expandedNotifier: expandedNotifier,

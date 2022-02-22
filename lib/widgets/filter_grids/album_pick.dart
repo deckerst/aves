@@ -65,7 +65,7 @@ class _AlbumPickPageState extends State<_AlbumPickPage> {
   @override
   Widget build(BuildContext context) {
     return ListenableProvider<ValueNotifier<AppMode>>.value(
-      value: ValueNotifier(AppMode.pickInternal),
+      value: ValueNotifier(AppMode.pickFilterInternal),
       child: Selector<Settings, Tuple2<AlbumChipGroupFactor, ChipSortFactor>>(
         selector: (context, s) => Tuple2(s.albumGroupFactor, s.albumSortFactor),
         builder: (context, s, child) {
@@ -131,11 +131,13 @@ class _AlbumPickAppBar extends StatelessWidget {
       switch (moveType) {
         case MoveType.copy:
           return context.l10n.albumPickPageTitleCopy;
-        case MoveType.export:
-          return context.l10n.albumPickPageTitleExport;
         case MoveType.move:
           return context.l10n.albumPickPageTitleMove;
-        default:
+        case MoveType.export:
+          return context.l10n.albumPickPageTitleExport;
+        case MoveType.toBin:
+        case MoveType.fromBin:
+        case null:
           return context.l10n.albumPickPageTitlePick;
       }
     }
