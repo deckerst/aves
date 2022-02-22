@@ -1,12 +1,14 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:aves/app_flavor.dart';
 import 'package:aves/app_mode.dart';
 import 'package:aves/l10n/l10n.dart';
 import 'package:aves/model/device.dart';
-import 'package:aves/model/settings/accessibility_animations.dart';
-import 'package:aves/model/settings/screen_on.dart';
+import 'package:aves/model/settings/enums/accessibility_animations.dart';
+import 'package:aves/model/settings/enums/screen_on.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/media_store_source.dart';
 import 'package:aves/services/accessibility_service.dart';
@@ -16,6 +18,8 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/themes.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/debouncer.dart';
+import 'package:aves/widgets/collection/collection_grid.dart';
+import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/behaviour/route_tracker.dart';
 import 'package:aves/widgets/common/behaviour/routes.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -43,7 +47,7 @@ class AvesApp extends StatefulWidget {
   _AvesAppState createState() => _AvesAppState();
 }
 
-class _AvesAppState extends State<AvesApp> {
+class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   final ValueNotifier<AppMode> appModeNotifier = ValueNotifier(AppMode.main);
   late Future<void> _appSetup;
   final _mediaStoreSource = MediaStoreSource();
@@ -70,6 +74,7 @@ class _AvesAppState extends State<AvesApp> {
     _newIntentChannel.receiveBroadcastStream().listen((event) => _onNewIntent(event as Map?));
     _analysisCompletionChannel.receiveBroadcastStream().listen((event) => _onAnalysisCompletion());
     _errorChannel.receiveBroadcastStream().listen((event) => _onError(event as String?));
+    WidgetsBinding.instance!.addObserver(this);
   }
 
   @override
@@ -158,35 +163,92 @@ class _AvesAppState extends State<AvesApp> {
     );
   }
 
-  Future<void> _setup() async {
-    await settings.init(
-      monitorPlatformSettings: true,
-      isRotationLocked: await windowService.isRotationLocked(),
-      areAnimationsRemoved: await AccessibilityService.areAnimationsRemoved(),
-    );
-    await device.init();
-    FijkLog.setLevel(FijkLogLevel.Warn);
-
-    // keep screen on
-    settings.updateStream.where((key) => key == Settings.keepScreenOnKey).listen(
-          (_) => settings.keepScreenOn.apply(),
-        );
-    settings.keepScreenOn.apply();
-
-    // installed app access
-    settings.updateStream.where((key) => key == Settings.isInstalledAppAccessAllowedKey).listen(
-      (_) {
-        if (settings.isInstalledAppAccessAllowed) {
-          androidFileUtils.initAppNames();
-        } else {
-          androidFileUtils.resetAppNames();
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    debugPrint('$runtimeType lifecycle ${state.name}');
+    switch (state) {
+      case AppLifecycleState.inactive:
+        switch (appModeNotifier.value) {
+          case AppMode.main:
+          case AppMode.pickMediaExternal:
+            _saveTopEntries();
+            break;
+          case AppMode.pickMediaInternal:
+          case AppMode.pickFilterInternal:
+          case AppMode.view:
+            break;
         }
-      },
-    );
+        break;
+      case AppLifecycleState.paused:
+      case AppLifecycleState.detached:
+      case AppLifecycleState.resumed:
+        break;
+    }
+  }
 
-    // error reporting
+  // save IDs of entries visible at the top of the collection page with current layout settings
+  void _saveTopEntries() {
+    final stopwatch = Stopwatch()..start();
+    final screenSize = window.physicalSize / window.devicePixelRatio;
+    var tileExtent = settings.getTileExtent(CollectionPage.routeName);
+    if (tileExtent == 0) {
+      tileExtent = screenSize.shortestSide / CollectionGrid.columnCountDefault;
+    }
+    final rows = (screenSize.height / tileExtent).ceil();
+    final columns = (screenSize.width / tileExtent).ceil();
+    final count = rows * columns;
+    final collection = CollectionLens(source: _mediaStoreSource, listenToSource: false);
+    settings.topEntryIds = collection.sortedEntries.take(count).map((entry) => entry.id).toList();
+    collection.dispose();
+    debugPrint('Saved $count top entries in ${stopwatch.elapsed.inMilliseconds}ms');
+  }
+
+  // setup before the first page is displayed. keep it short
+  Future<void> _setup() async {
+    final stopwatch = Stopwatch()..start();
+
+    await device.init();
+    await settings.init(monitorPlatformSettings: true);
+    settings.isRotationLocked = await windowService.isRotationLocked();
+    settings.areAnimationsRemoved = await AccessibilityService.areAnimationsRemoved();
+    _monitorSettings();
+
+    FijkLog.setLevel(FijkLogLevel.Warn);
+    unawaited(_setupErrorReporting());
+
+    debugPrint('App setup in ${stopwatch.elapsed.inMilliseconds}ms');
+  }
+
+  void _monitorSettings() {
+    void applyIsInstalledAppAccessAllowed() {
+      if (settings.isInstalledAppAccessAllowed) {
+        androidFileUtils.initAppNames();
+      } else {
+        androidFileUtils.resetAppNames();
+      }
+    }
+
+    void applyKeepScreenOn() {
+      settings.keepScreenOn.apply();
+    }
+
+    void applyIsRotationLocked() {
+      if (!settings.isRotationLocked) {
+        windowService.requestOrientation();
+      }
+    }
+
+    settings.updateStream.where((event) => event.key == Settings.isInstalledAppAccessAllowedKey).listen((_) => applyIsInstalledAppAccessAllowed());
+    settings.updateStream.where((event) => event.key == Settings.keepScreenOnKey).listen((_) => applyKeepScreenOn());
+    settings.updateStream.where((event) => event.key == Settings.platformAccelerometerRotationKey).listen((_) => applyIsRotationLocked());
+
+    applyKeepScreenOn();
+    applyIsRotationLocked();
+  }
+
+  Future<void> _setupErrorReporting() async {
     await reportService.init();
-    settings.updateStream.where((key) => key == Settings.isErrorReportingAllowedKey).listen(
+    settings.updateStream.where((event) => event.key == Settings.isErrorReportingAllowedKey).listen(
           (_) => reportService.setCollectionEnabled(settings.isErrorReportingAllowed),
         );
     await reportService.setCollectionEnabled(settings.isErrorReportingAllowed);

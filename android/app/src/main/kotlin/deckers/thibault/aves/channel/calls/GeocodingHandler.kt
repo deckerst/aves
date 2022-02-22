@@ -6,9 +6,7 @@ import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.io.IOException
 import java.util.*
 
@@ -16,11 +14,12 @@ import java.util.*
 // - `geocoder` is unmaintained
 // - `geocoding` method does not return `addressLine` (v2.0.0)
 class GeocodingHandler(private val context: Context) : MethodCallHandler {
+    private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private var geocoder: Geocoder? = null
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
-            "getAddress" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getAddress) }
+            "getAddress" -> ioScope.launch { safe(call, result, ::getAddress) }
             else -> result.notImplemented()
         }
     }

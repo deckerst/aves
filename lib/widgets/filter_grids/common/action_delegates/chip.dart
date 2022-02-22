@@ -1,7 +1,7 @@
 import 'package:aves/model/actions/chip_actions.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/highlight.dart';
-import 'package:aves/model/source/collection_source.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
@@ -51,8 +51,7 @@ class ChipActionDelegate {
     );
     if (confirmed == null || !confirmed) return;
 
-    final source = context.read<CollectionSource>();
-    source.changeFilterVisibility({filter}, false);
+    settings.changeFilterVisibility({filter}, false);
   }
 
   void _goTo(

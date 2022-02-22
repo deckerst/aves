@@ -1,6 +1,7 @@
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/metadata/address.dart';
 import 'package:aves/model/metadata/catalog.dart';
+import 'package:aves/model/metadata/trash.dart';
 import 'package:aves/model/video_playback.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
@@ -24,6 +25,7 @@ class _DbTabState extends State<DbTab> {
   late Future<AvesEntry?> _dbEntryLoader;
   late Future<CatalogMetadata?> _dbMetadataLoader;
   late Future<AddressDetails?> _dbAddressLoader;
+  late Future<TrashDetails?> _dbTrashDetailsLoader;
   late Future<VideoPlaybackRow?> _dbVideoPlaybackLoader;
 
   AvesEntry get entry => widget.entry;
@@ -35,12 +37,13 @@ class _DbTabState extends State<DbTab> {
   }
 
   void _loadDatabase() {
-    final contentId = entry.contentId;
-    _dbDateLoader = metadataDb.loadDates().then((values) => values[contentId]);
-    _dbEntryLoader = metadataDb.loadAllEntries().then((values) => values.firstWhereOrNull((row) => row.contentId == contentId));
-    _dbMetadataLoader = metadataDb.loadAllMetadataEntries().then((values) => values.firstWhereOrNull((row) => row.contentId == contentId));
-    _dbAddressLoader = metadataDb.loadAllAddresses().then((values) => values.firstWhereOrNull((row) => row.contentId == contentId));
-    _dbVideoPlaybackLoader = metadataDb.loadVideoPlayback(contentId);
+    final id = entry.id;
+    _dbDateLoader = metadataDb.loadDates().then((values) => values[id]);
+    _dbEntryLoader = metadataDb.loadEntries().then((values) => values.firstWhereOrNull((row) => row.id == id));
+    _dbMetadataLoader = metadataDb.loadCatalogMetadata().then((values) => values.firstWhereOrNull((row) => row.id == id));
+    _dbAddressLoader = metadataDb.loadAddresses().then((values) => values.firstWhereOrNull((row) => row.id == id));
+    _dbTrashDetailsLoader = metadataDb.loadAllTrashDetails().then((values) => values.firstWhereOrNull((row) => row.id == id));
+    _dbVideoPlaybackLoader = metadataDb.loadVideoPlayback(id);
     setState(() {});
   }
 
@@ -94,6 +97,7 @@ class _DbTabState extends State<DbTab> {
                       'dateModifiedSecs': '${data.dateModifiedSecs}',
                       'sourceDateTakenMillis': '${data.sourceDateTakenMillis}',
                       'durationMillis': '${data.durationMillis}',
+                      'trashed': '${data.trashed}',
                     },
                   ),
               ],
@@ -148,6 +152,28 @@ class _DbTabState extends State<DbTab> {
                       'countryName': data.countryName ?? '',
                       'adminArea': data.adminArea ?? '',
                       'locality': data.locality ?? '',
+                    },
+                  ),
+              ],
+            );
+          },
+        ),
+        const SizedBox(height: 16),
+        FutureBuilder<TrashDetails?>(
+          future: _dbTrashDetailsLoader,
+          builder: (context, snapshot) {
+            if (snapshot.hasError) return Text(snapshot.error.toString());
+            if (snapshot.connectionState != ConnectionState.done) return const SizedBox();
+            final data = snapshot.data;
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('DB trash details:${data == null ? ' no row' : ''}'),
+                if (data != null)
+                  InfoRowGroup(
+                    info: {
+                      'dateMillis': '${data.dateMillis}',
+                      'path': data.path,
                     },
                   ),
               ],

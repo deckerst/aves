@@ -13,22 +13,24 @@ import deckers.thibault.aves.utils.StorageUtils.getVolumePaths
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import java.io.File
-import java.util.*
 
 class StorageHandler(private val context: Context) : MethodCallHandler {
+    private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
-            "getStorageVolumes" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getStorageVolumes) }
-            "getFreeSpace" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getFreeSpace) }
-            "getGrantedDirectories" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getGrantedDirectories) }
-            "getInaccessibleDirectories" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getInaccessibleDirectories) }
-            "getRestrictedDirectories" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getRestrictedDirectories) }
+            "getStorageVolumes" -> ioScope.launch { safe(call, result, ::getStorageVolumes) }
+            "getFreeSpace" -> ioScope.launch { safe(call, result, ::getFreeSpace) }
+            "getGrantedDirectories" -> ioScope.launch { safe(call, result, ::getGrantedDirectories) }
+            "getInaccessibleDirectories" -> ioScope.launch { safe(call, result, ::getInaccessibleDirectories) }
+            "getRestrictedDirectories" -> ioScope.launch { safe(call, result, ::getRestrictedDirectories) }
             "revokeDirectoryAccess" -> safe(call, result, ::revokeDirectoryAccess)
-            "deleteEmptyDirectories" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::deleteEmptyDirectories) }
+            "deleteEmptyDirectories" -> ioScope.launch { safe(call, result, ::deleteEmptyDirectories) }
             "canRequestMediaFileBulkAccess" -> safe(call, result, ::canRequestMediaFileBulkAccess)
             "canInsertMedia" -> safe(call, result, ::canInsertMedia)
             else -> result.notImplemented()

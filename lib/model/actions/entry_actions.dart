@@ -1,5 +1,5 @@
+import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/theme/themes.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/widgets.dart';
 
@@ -7,10 +7,12 @@ enum EntryAction {
   addShortcut,
   copyToClipboard,
   delete,
-  export,
-  info,
+  restore,
+  convert,
   print,
   rename,
+  copy,
+  move,
   share,
   toggleFavourite,
   // raster
@@ -31,31 +33,44 @@ enum EntryAction {
 }
 
 class EntryActions {
-  static const inApp = [
-    EntryAction.info,
-    EntryAction.toggleFavourite,
+  static const topLevel = [
     EntryAction.share,
-    EntryAction.delete,
+    EntryAction.edit,
     EntryAction.rename,
-    EntryAction.export,
-    EntryAction.addShortcut,
-    EntryAction.copyToClipboard,
-    EntryAction.print,
+    EntryAction.delete,
+    EntryAction.copy,
+    EntryAction.move,
+    EntryAction.toggleFavourite,
     EntryAction.viewSource,
     EntryAction.rotateScreen,
   ];
 
-  static const externalApp = [
-    EntryAction.edit,
+  static const export = [
+    EntryAction.convert,
+    EntryAction.addShortcut,
+    EntryAction.copyToClipboard,
+    EntryAction.print,
     EntryAction.open,
-    EntryAction.setAs,
     EntryAction.openMap,
+    EntryAction.setAs,
+  ];
+
+  static const exportExternal = [
+    EntryAction.open,
+    EntryAction.openMap,
+    EntryAction.setAs,
   ];
 
   static const pageActions = [
     EntryAction.rotateCCW,
     EntryAction.rotateCW,
     EntryAction.flip,
+  ];
+
+  static const trashed = [
+    EntryAction.delete,
+    EntryAction.restore,
+    EntryAction.debug,
   ];
 }
 
@@ -68,14 +83,18 @@ extension ExtraEntryAction on EntryAction {
         return context.l10n.entryActionCopyToClipboard;
       case EntryAction.delete:
         return context.l10n.entryActionDelete;
-      case EntryAction.export:
-        return context.l10n.entryActionExport;
-      case EntryAction.info:
-        return context.l10n.entryActionInfo;
+      case EntryAction.restore:
+        return context.l10n.entryActionRestore;
+      case EntryAction.convert:
+        return context.l10n.entryActionConvert;
       case EntryAction.print:
         return context.l10n.entryActionPrint;
       case EntryAction.rename:
         return context.l10n.entryActionRename;
+      case EntryAction.copy:
+        return context.l10n.collectionActionCopy;
+      case EntryAction.move:
+        return context.l10n.collectionActionMove;
       case EntryAction.share:
         return context.l10n.entryActionShare;
       case EntryAction.toggleFavourite:
@@ -109,15 +128,12 @@ extension ExtraEntryAction on EntryAction {
     }
   }
 
-  Widget? getIcon() {
-    final icon = getIconData();
-    if (icon == null) return null;
-
-    final child = Icon(icon);
+  Widget getIcon() {
+    final child = Icon(getIconData());
     switch (this) {
       case EntryAction.debug:
         return ShaderMask(
-          shaderCallback: Themes.debugGradient.createShader,
+          shaderCallback: AColors.debugGradient.createShader,
           child: child,
         );
       default:
@@ -125,7 +141,7 @@ extension ExtraEntryAction on EntryAction {
     }
   }
 
-  IconData? getIconData() {
+  IconData getIconData() {
     switch (this) {
       case EntryAction.addShortcut:
         return AIcons.addShortcut;
@@ -133,14 +149,18 @@ extension ExtraEntryAction on EntryAction {
         return AIcons.clipboard;
       case EntryAction.delete:
         return AIcons.delete;
-      case EntryAction.export:
-        return AIcons.saveAs;
-      case EntryAction.info:
-        return AIcons.info;
+      case EntryAction.restore:
+        return AIcons.restore;
+      case EntryAction.convert:
+        return AIcons.convert;
       case EntryAction.print:
         return AIcons.print;
       case EntryAction.rename:
         return AIcons.rename;
+      case EntryAction.copy:
+        return AIcons.copy;
+      case EntryAction.move:
+        return AIcons.move;
       case EntryAction.share:
         return AIcons.share;
       case EntryAction.toggleFavourite:
@@ -158,10 +178,13 @@ extension ExtraEntryAction on EntryAction {
         return AIcons.vector;
       // external
       case EntryAction.edit:
+        return AIcons.edit;
       case EntryAction.open:
+        return AIcons.openOutside;
       case EntryAction.openMap:
+        return AIcons.map;
       case EntryAction.setAs:
-        return null;
+        return AIcons.setAs;
       // platform
       case EntryAction.rotateScreen:
         return AIcons.rotateScreen;

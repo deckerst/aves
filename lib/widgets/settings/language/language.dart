@@ -1,9 +1,9 @@
-import 'package:aves/model/settings/coordinate_format.dart';
-import 'package:aves/model/settings/enums.dart';
+import 'package:aves/model/settings/enums/coordinate_format.dart';
+import 'package:aves/model/settings/enums/enums.dart';
+import 'package:aves/model/settings/enums/unit_system.dart';
 import 'package:aves/model/settings/settings.dart';
-import 'package:aves/model/settings/unit_system.dart';
+import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/utils/color_utils.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
@@ -35,7 +35,7 @@ class LanguageSection extends StatelessWidget {
       value: 'language',
       leading: SettingsTileLeading(
         icon: AIcons.language,
-        color: stringToColor('Language'),
+        color: AColors.language,
       ),
       title: l10n.settingsSectionLanguage,
       expandedNotifier: expandedNotifier,

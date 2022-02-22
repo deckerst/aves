@@ -12,8 +12,9 @@ class FilterSelectedNotification extends Notification {
   const FilterSelectedNotification(this.filter);
 }
 
-class EntryDeletedNotification extends Notification {
+// deleted or moved to another album
+class EntryRemovedNotification extends Notification {
   final AvesEntry entry;
 
-  const EntryDeletedNotification(this.entry);
+  const EntryRemovedNotification(this.entry);
 }

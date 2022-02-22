@@ -5,6 +5,7 @@ import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/drawer/tile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -15,6 +16,7 @@ class CollectionNavTile extends StatelessWidget {
   final Widget? trailing;
   final bool dense;
   final CollectionFilter? filter;
+  final bool Function() isSelected;
 
   const CollectionNavTile({
     Key? key,
@@ -23,6 +25,7 @@ class CollectionNavTile extends StatelessWidget {
     this.trailing,
     bool? dense,
     required this.filter,
+    required this.isSelected,
   })  : dense = dense ?? false,
         super(key: key);
 
@@ -34,9 +37,23 @@ class CollectionNavTile extends StatelessWidget {
       child: ListTile(
         leading: leading,
         title: title,
-        trailing: trailing,
+        trailing: trailing != null
+            ? Builder(
+                builder: (context) {
+                  final trailingColor = IconTheme.of(context).color!.withOpacity(.6);
+                  return IconTheme.merge(
+                    data: IconThemeData(color: trailingColor),
+                    child: DefaultTextStyle.merge(
+                      style: TextStyle(color: trailingColor),
+                      child: trailing!,
+                    ),
+                  );
+                },
+              )
+            : null,
         dense: dense,
         onTap: () => _goToCollection(context),
+        selected: context.currentRouteName == CollectionPage.routeName && isSelected(),
       ),
     );
   }
@@ -61,10 +78,12 @@ class CollectionNavTile extends StatelessWidget {
 
 class AlbumNavTile extends StatelessWidget {
   final String album;
+  final bool Function() isSelected;
 
   const AlbumNavTile({
     Key? key,
     required this.album,
+    required this.isSelected,
   }) : super(key: key);
 
   @override
@@ -78,10 +97,10 @@ class AlbumNavTile extends StatelessWidget {
           ? const Icon(
               AIcons.removableStorage,
               size: 16,
-              color: Colors.grey,
             )
           : null,
       filter: filter,
+      isSelected: isSelected,
     );
   }
 }

@@ -3,6 +3,7 @@ package deckers.thibault.aves.model.provider
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.RecoverableSecurityException
+import android.content.ContentResolver
 import android.content.ContentUris
 import android.content.ContentValues
 import android.content.Context
@@ -26,24 +27,55 @@ import deckers.thibault.aves.utils.MimeTypes.isImage
 import deckers.thibault.aves.utils.MimeTypes.isVideo
 import deckers.thibault.aves.utils.StorageUtils
 import deckers.thibault.aves.utils.StorageUtils.PathSegments
+import deckers.thibault.aves.utils.StorageUtils.ensureTrailingSeparator
+import deckers.thibault.aves.utils.StorageUtils.removeTrailingSeparator
 import deckers.thibault.aves.utils.UriUtils.tryParseId
 import java.io.File
 import java.io.OutputStream
 import java.util.*
 import java.util.concurrent.CompletableFuture
-import kotlin.collections.ArrayList
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 class MediaStoreImageProvider : ImageProvider() {
-    fun fetchAll(context: Context, knownEntries: Map<Int, Int?>, handleNewEntry: NewEntryHandler) {
+    fun fetchAll(
+        context: Context,
+        knownEntries: Map<Int?, Int?>,
+        directory: String?,
+        handleNewEntry: NewEntryHandler,
+    ) {
         val isModified = fun(contentId: Int, dateModifiedSecs: Int): Boolean {
             val knownDate = knownEntries[contentId]
             return knownDate == null || knownDate < dateModifiedSecs
         }
-        fetchFrom(context, isModified, handleNewEntry, IMAGE_CONTENT_URI, IMAGE_PROJECTION)
-        fetchFrom(context, isModified, handleNewEntry, VIDEO_CONTENT_URI, VIDEO_PROJECTION)
+        val handleNew: NewEntryHandler
+        var selection: String? = null
+        var selectionArgs: Array<String>? = null
+        if (directory != null) {
+            val relativePathDirectory = ensureTrailingSeparator(directory)
+            val relativePath = PathSegments(context, relativePathDirectory).relativeDir
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && relativePath != null) {
+                selection = "${MediaStore.MediaColumns.RELATIVE_PATH} = ? AND ${MediaColumns.PATH} LIKE ?"
+                selectionArgs = arrayOf(relativePath, "relativePathDirectory%")
+            } else {
+                selection = "${MediaColumns.PATH} LIKE ?"
+                selectionArgs = arrayOf("$relativePathDirectory%")
+            }
+
+            val parentCheckDirectory = removeTrailingSeparator(directory)
+            handleNew = { entry ->
+                // skip entries in subfolders
+                val path = entry["path"] as String?
+                if (path != null && File(path).parent == parentCheckDirectory) {
+                    handleNewEntry(entry)
+                }
+            }
+        } else {
+            handleNew = handleNewEntry
+        }
+        fetchFrom(context, isModified, handleNew, IMAGE_CONTENT_URI, IMAGE_PROJECTION, selection, selectionArgs)
+        fetchFrom(context, isModified, handleNew, VIDEO_CONTENT_URI, VIDEO_PROJECTION, selection, selectionArgs)
     }
 
     // the provided URI can point to the wrong media collection,
@@ -83,7 +115,7 @@ class MediaStoreImageProvider : ImageProvider() {
         }
     }
 
-    fun checkObsoleteContentIds(context: Context, knownContentIds: List<Int>): List<Int> {
+    fun checkObsoleteContentIds(context: Context, knownContentIds: List<Int?>): List<Int> {
         val foundContentIds = HashSet<Int>()
         fun check(context: Context, contentUri: Uri) {
             val projection = arrayOf(MediaStore.MediaColumns._ID)
@@ -102,10 +134,10 @@ class MediaStoreImageProvider : ImageProvider() {
         }
         check(context, IMAGE_CONTENT_URI)
         check(context, VIDEO_CONTENT_URI)
-        return knownContentIds.subtract(foundContentIds).toList()
+        return knownContentIds.subtract(foundContentIds).filterNotNull().toList()
     }
 
-    fun checkObsoletePaths(context: Context, knownPathById: Map<Int, String>): List<Int> {
+    fun checkObsoletePaths(context: Context, knownPathById: Map<Int?, String?>): List<Int> {
         val obsoleteIds = ArrayList<Int>()
         fun check(context: Context, contentUri: Uri) {
             val projection = arrayOf(MediaStore.MediaColumns._ID, MediaColumns.PATH)
@@ -138,12 +170,14 @@ class MediaStoreImageProvider : ImageProvider() {
         handleNewEntry: NewEntryHandler,
         contentUri: Uri,
         projection: Array<String>,
+        selection: String? = null,
+        selectionArgs: Array<String>? = null,
         fileMimeType: String? = null,
     ): Boolean {
         var found = false
         val orderBy = "${MediaStore.MediaColumns.DATE_MODIFIED} DESC"
         try {
-            val cursor = context.contentResolver.query(contentUri, projection, null, null, orderBy)
+            val cursor = context.contentResolver.query(contentUri, projection, selection, selectionArgs, orderBy)
             if (cursor != null) {
                 val contentUriContainsId = when (contentUri) {
                     IMAGE_CONTENT_URI, VIDEO_CONTENT_URI -> false
@@ -291,6 +325,10 @@ class MediaStoreImageProvider : ImageProvider() {
                 }
                 throw Exception("failed to delete document with df=$df")
             }
+        } else if (uri.scheme?.lowercase(Locale.ROOT) == ContentResolver.SCHEME_FILE) {
+            val uriFilePath = File(uri.path!!).path
+            // URI and path both point to the same non existent path
+            if (uriFilePath == path) return
         }
 
         try {
@@ -329,84 +367,119 @@ class MediaStoreImageProvider : ImageProvider() {
     override suspend fun moveMultiple(
         activity: Activity,
         copy: Boolean,
-        targetDir: String,
         nameConflictStrategy: NameConflictStrategy,
-        entries: List<AvesEntry>,
+        entriesByTargetDir: Map<String, List<AvesEntry>>,
         isCancelledOp: CancelCheck,
         callback: ImageOpCallback,
     ) {
-        val targetDirDocFile = StorageUtils.createDirectoryDocIfAbsent(activity, targetDir)
-        if (!File(targetDir).exists()) {
-            callback.onFailure(Exception("failed to create directory at path=$targetDir"))
-            return
-        }
+        entriesByTargetDir.forEach { kv ->
+            val targetDir = kv.key
+            val entries = kv.value
 
-        for (entry in entries) {
-            val sourceUri = entry.uri
-            val sourcePath = entry.path
-            val mimeType = entry.mimeType
+            val toBin = targetDir == StorageUtils.TRASH_PATH_PLACEHOLDER
 
-            val result: FieldMap = hashMapOf(
-                "uri" to sourceUri.toString(),
-                "success" to false,
-            )
-
-            if (sourcePath != null) {
-                // on API 30 we cannot get access granted directly to a volume root from its document tree,
-                // but it is still less constraining to use tree document files than to rely on the Media Store
-                //
-                // Relying on `DocumentFile`, we can create an item via `DocumentFile.createFile()`, but:
-                // - we need to scan the file to get the Media Store content URI
-                // - the underlying document provider controls the new file name
-                //
-                // Relying on the Media Store, we can create an item via `ContentResolver.insert()`
-                // with a path, and retrieve its content URI, but:
-                // - the Media Store isolates content by storage volume (e.g. `MediaStore.Images.Media.getContentUri(volumeName)`)
-                // - the volume name should be lower case, not exactly as the `StorageVolume` UUID
-                //   cf new method in API 30 `StorageVolume.getMediaStoreVolumeName()`
-                // - inserting on a removable volume works on API 29, but not on API 25 nor 26 (on which API/devices does it work?)
-                // - there is no documentation regarding support for usage with removable storage
-                // - the Media Store only allows inserting in specific primary directories ("DCIM", "Pictures") when using scoped storage
-                try {
-                    val newFields = if (isCancelledOp()) skippedFieldMap else moveSingle(
-                        activity = activity,
-                        sourcePath = sourcePath,
-                        sourceUri = sourceUri,
-                        targetDir = targetDir,
-                        targetDirDocFile = targetDirDocFile,
-                        nameConflictStrategy = nameConflictStrategy,
-                        mimeType = mimeType,
-                        copy = copy,
-                    )
-                    result["newFields"] = newFields
-                    result["success"] = true
-                } catch (e: Exception) {
-                    Log.w(LOG_TAG, "failed to move to targetDir=$targetDir entry with sourcePath=$sourcePath", e)
+            var effectiveTargetDir: String? = null
+            var targetDirDocFile: DocumentFileCompat? = null
+            if (!toBin) {
+                effectiveTargetDir = targetDir
+                targetDirDocFile = StorageUtils.createDirectoryDocIfAbsent(activity, targetDir)
+                if (!File(targetDir).exists()) {
+                    callback.onFailure(Exception("failed to create directory at path=$targetDir"))
+                    return
                 }
             }
-            callback.onSuccess(result)
+
+            for (entry in entries) {
+                val mimeType = entry.mimeType
+                val trashed = entry.trashed
+
+                val sourceUri = if (trashed) Uri.fromFile(File(entry.trashPath!!)) else entry.uri
+                val sourcePath = if (trashed) entry.trashPath else entry.path
+
+                var desiredName: String? = null
+                if (trashed) {
+                    entry.path?.let { desiredName = File(it).name }
+                }
+
+                val result: FieldMap = hashMapOf(
+                    // `uri` should reference original content URI,
+                    // so it is different with `sourceUri` when recycling trashed entries
+                    "uri" to entry.uri.toString(),
+                    "success" to false,
+                )
+
+                if (sourcePath != null) {
+                    // on API 30 we cannot get access granted directly to a volume root from its document tree,
+                    // but it is still less constraining to use tree document files than to rely on the Media Store
+                    //
+                    // Relying on `DocumentFile`, we can create an item via `DocumentFile.createFile()`, but:
+                    // - we need to scan the file to get the Media Store content URI
+                    // - the underlying document provider controls the new file name
+                    //
+                    // Relying on the Media Store, we can create an item via `ContentResolver.insert()`
+                    // with a path, and retrieve its content URI, but:
+                    // - the Media Store isolates content by storage volume (e.g. `MediaStore.Images.Media.getContentUri(volumeName)`)
+                    // - the volume name should be lower case, not exactly as the `StorageVolume` UUID
+                    //   cf new method in API 30 `StorageVolume.getMediaStoreVolumeName()`
+                    // - inserting on a removable volume works on API 29, but not on API 25 nor 26 (on which API/devices does it work?)
+                    // - there is no documentation regarding support for usage with removable storage
+                    // - the Media Store only allows inserting in specific primary directories ("DCIM", "Pictures") when using scoped storage
+                    try {
+                        if (toBin) {
+                            val trashDir = StorageUtils.trashDirFor(activity, sourcePath)
+                            if (trashDir != null) {
+                                effectiveTargetDir = ensureTrailingSeparator(trashDir.path)
+                                targetDirDocFile = DocumentFileCompat.fromFile(trashDir)
+                            }
+                        }
+                        if (effectiveTargetDir != null) {
+                            val newFields = if (isCancelledOp()) skippedFieldMap else {
+                                val sourceFile = File(sourcePath)
+                                moveSingle(
+                                    activity = activity,
+                                    sourceFile = sourceFile,
+                                    sourceUri = sourceUri,
+                                    targetDir = effectiveTargetDir,
+                                    targetDirDocFile = targetDirDocFile,
+                                    desiredName = desiredName ?: sourceFile.name,
+                                    nameConflictStrategy = nameConflictStrategy,
+                                    mimeType = mimeType,
+                                    copy = copy,
+                                    toBin = toBin,
+                                )
+                            }
+                            result["newFields"] = newFields
+                            result["success"] = true
+                        }
+                    } catch (e: Exception) {
+                        Log.w(LOG_TAG, "failed to move to targetDir=$targetDir entry with sourcePath=$sourcePath", e)
+                    }
+                }
+                callback.onSuccess(result)
+            }
         }
     }
 
     private suspend fun moveSingle(
         activity: Activity,
-        sourcePath: String,
+        sourceFile: File,
         sourceUri: Uri,
         targetDir: String,
         targetDirDocFile: DocumentFileCompat?,
+        desiredName: String,
         nameConflictStrategy: NameConflictStrategy,
         mimeType: String,
         copy: Boolean,
+        toBin: Boolean,
     ): FieldMap {
-        val sourceFile = File(sourcePath)
-        val sourceDir = sourceFile.parent?.let { StorageUtils.ensureTrailingSeparator(it) }
+        val sourcePath = sourceFile.path
+        val sourceDir = sourceFile.parent?.let { ensureTrailingSeparator(it) }
         if (sourceDir == targetDir && !(copy && nameConflictStrategy == NameConflictStrategy.RENAME)) {
             // nothing to do unless it's a renamed copy
             return skippedFieldMap
         }
 
-        val sourceFileName = sourceFile.name
-        val desiredNameWithoutExtension = sourceFileName.replaceFirst(FILE_EXTENSION_PATTERN, "")
+        val desiredNameWithoutExtension = desiredName.replaceFirst(FILE_EXTENSION_PATTERN, "")
         val targetNameWithoutExtension = resolveTargetFileNameWithoutExtension(
             activity = activity,
             dir = targetDir,
@@ -432,7 +505,12 @@ class MediaStoreImageProvider : ImageProvider() {
                 Log.w(LOG_TAG, "failed to delete entry with path=$sourcePath", e)
             }
         }
-
+        if (toBin) {
+            return hashMapOf(
+                "trashed" to true,
+                "trashPath" to targetPath,
+            )
+        }
         return scanNewPath(activity, targetPath, mimeType)
     }
 
@@ -493,10 +571,7 @@ class MediaStoreImageProvider : ImageProvider() {
     }
 
     private fun isDownloadDir(context: Context, dirPath: String): Boolean {
-        var relativeDir = PathSegments(context, dirPath).relativeDir ?: ""
-        if (relativeDir.endsWith(File.separator)) {
-            relativeDir = relativeDir.substring(0, relativeDir.length - 1)
-        }
+        val relativeDir = removeTrailingSeparator(PathSegments(context, dirPath).relativeDir ?: "")
         return relativeDir == Environment.DIRECTORY_DOWNLOADS
     }
 

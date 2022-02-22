@@ -4,6 +4,33 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.6.0"></a>[v1.6.0] - 2022-02-22
+
+### Added
+
+- optional recycle bin to keep deleted items for 30 days
+- Viewer: actions to copy/move to album
+- Indonesian translation (thanks MeFinity)
+
+### Changed
+
+- Viewer: action menu reorganization
+- Viewer: `Export` action renamed to `Convert`
+- Viewer: actual size zoom level respects device pixel ratio
+- Viewer: allow zooming out small items to actual size
+- Collection: improved performance for sort/group by name
+- load previous top items on startup
+- locale independent colors for known filters
+- upgraded Flutter to stable v2.10.1
+
+### Removed
+
+- Map: connectivity check
+
+### Fixed
+
+- navigating from Album page when picking an item for another app
+
 ## <a id="v1.5.11"></a>[v1.5.11] - 2022-01-30
 
 ### Added

@@ -1,15 +1,16 @@
-import 'package:flutter/foundation.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/widgets.dart';
 
-class ViewState {
+@immutable
+class ViewState extends Equatable {
   final Offset position;
   final double? scale;
   final Size? viewportSize;
 
   static const ViewState zero = ViewState(Offset.zero, 0, null);
 
-  const ViewState(this.position, this.scale, this.viewportSize);
-
   @override
-  String toString() => '$runtimeType#${shortHash(this)}{position=$position, scale=$scale, viewportSize=$viewportSize}';
+  List<Object?> get props => [position, scale, viewportSize];
+
+  const ViewState(this.position, this.scale, this.viewportSize);
 }

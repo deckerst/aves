@@ -52,11 +52,11 @@ class EntryPrinter with FeedbackMixin {
         final pageCount = multiPageInfo.pageCount;
         if (pageCount > 1) {
           final streamController = StreamController<AvesEntry>.broadcast();
-          showOpReport<AvesEntry>(
+          unawaited(showOpReport<AvesEntry>(
             context: context,
             opStream: streamController.stream,
             itemCount: pageCount,
-          );
+          ));
           for (var page = 0; page < pageCount; page++) {
             final pageEntry = multiPageInfo.getPageEntryByIndex(page);
             _addPdfPage(await _buildPageImage(pageEntry));

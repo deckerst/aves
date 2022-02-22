@@ -80,9 +80,8 @@ abstract class MediaFileService {
 
   Stream<MoveOpEvent> move({
     String? opId,
-    required Iterable<AvesEntry> entries,
+    required Map<String, Iterable<AvesEntry>> entriesByDestination,
     required bool copy,
-    required String destinationAlbum,
     required NameConflictStrategy nameConflictStrategy,
   });
 
@@ -126,6 +125,8 @@ class PlatformMediaFileService implements MediaFileService {
       'isFlipped': entry.isFlipped,
       'dateModifiedSecs': entry.dateModifiedSecs,
       'sizeBytes': entry.sizeBytes,
+      'trashed': entry.trashed,
+      'trashPath': entry.trashDetails?.path,
     };
   }
 
@@ -343,9 +344,8 @@ class PlatformMediaFileService implements MediaFileService {
   @override
   Stream<MoveOpEvent> move({
     String? opId,
-    required Iterable<AvesEntry> entries,
+    required Map<String, Iterable<AvesEntry>> entriesByDestination,
     required bool copy,
-    required String destinationAlbum,
     required NameConflictStrategy nameConflictStrategy,
   }) {
     try {
@@ -353,9 +353,8 @@ class PlatformMediaFileService implements MediaFileService {
           .receiveBroadcastStream(<String, dynamic>{
             'op': 'move',
             'id': opId,
-            'entries': entries.map(_toPlatformEntryMap).toList(),
+            'entriesByDestination': entriesByDestination.map((destination, entries) => MapEntry(destination, entries.map(_toPlatformEntryMap).toList())),
             'copy': copy,
-            'destinationPath': destinationAlbum,
             'nameConflictStrategy': nameConflictStrategy.toPlatform(),
           })
           .where((event) => event is Map)

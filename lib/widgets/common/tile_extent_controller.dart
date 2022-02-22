@@ -20,7 +20,7 @@ class TileExtentController {
     this.columnCountMin = 2,
     required this.columnCountDefault,
     required this.extentMin,
-    this.extentMax = 300,
+    required this.extentMax,
     required this.spacing,
   }) {
     userPreferredExtent = settings.getTileExtent(settingsRouteKey);

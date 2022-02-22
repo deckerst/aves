@@ -1,12 +1,9 @@
 {
-  "es": [
-    "entryInfoActionEditLocation",
-    "exportEntryDialogWidth",
-    "exportEntryDialogHeight",
-    "editEntryLocationDialogTitle",
-    "editEntryLocationDialogChooseOnMapTooltip",
-    "editEntryLocationDialogLatitude",
-    "editEntryLocationDialogLongitude",
-    "locationPickerUseThisLocationButton"
+  "de": [
+    "entryActionConvert"
+  ],
+
+  "ru": [
+    "entryActionConvert"
   ]
 }

@@ -33,6 +33,32 @@ object StorageUtils {
     private const val TREE_URI_ROOT = "content://com.android.externalstorage.documents/tree/"
     private val TREE_URI_PATH_PATTERN = Pattern.compile("(.*?):(.*)")
 
+    const val TRASH_PATH_PLACEHOLDER = "#trash"
+
+    private fun isAppFile(context: Context, path: String): Boolean {
+        return context.getExternalFilesDirs(null).any { filesDir -> path.startsWith(filesDir.path) }
+    }
+
+    private fun appExternalFilesDirFor(context: Context, path: String): File? {
+        val filesDirs = context.getExternalFilesDirs(null)
+        val volumePath = getVolumePath(context, path)
+        return volumePath?.let { filesDirs.firstOrNull { it.startsWith(volumePath) } } ?: filesDirs.first()
+    }
+
+    fun trashDirFor(context: Context, path: String): File? {
+        val filesDir = appExternalFilesDirFor(context, path)
+        if (filesDir == null) {
+            Log.e(LOG_TAG, "failed to find external files dir for path=$path")
+            return null
+        }
+        val trashDir = File(filesDir, "trash")
+        if (!trashDir.exists() && !trashDir.mkdirs()) {
+            Log.e(LOG_TAG, "failed to create directories at path=$trashDir")
+            return null
+        }
+        return trashDir
+    }
+
     /**
      * Volume paths
      */
@@ -268,10 +294,7 @@ object StorageUtils {
     fun convertDirPathToTreeUri(context: Context, dirPath: String): Uri? {
         val uuid = getVolumeUuidForTreeUri(context, dirPath)
         if (uuid != null) {
-            var relativeDir = PathSegments(context, dirPath).relativeDir ?: ""
-            if (relativeDir.endsWith(File.separator)) {
-                relativeDir = relativeDir.substring(0, relativeDir.length - 1)
-            }
+            val relativeDir = removeTrailingSeparator(PathSegments(context, dirPath).relativeDir ?: "")
             return DocumentsContract.buildTreeDocumentUri("com.android.externalstorage.documents", "$uuid:$relativeDir")
         }
         Log.e(LOG_TAG, "failed to convert dirPath=$dirPath to tree URI")
@@ -329,7 +352,7 @@ object StorageUtils {
 
                 // try to strip user info, if any
                 if (mediaUri.userInfo != null) {
-                    val genericMediaUri = Uri.parse(mediaUri.toString().replaceFirst("${mediaUri.userInfo}@", ""))
+                    val genericMediaUri = stripMediaUriUserInfo(mediaUri)
                     Log.d(LOG_TAG, "retry getDocumentFile for mediaUri=$mediaUri without userInfo: $genericMediaUri")
                     return getDocumentFile(context, anyPath, genericMediaUri)
                 }
@@ -408,10 +431,11 @@ object StorageUtils {
     fun canEditByFile(context: Context, path: String) = !requireAccessPermission(context, path)
 
     fun requireAccessPermission(context: Context, anyPath: String): Boolean {
+        if (isAppFile(context, anyPath)) return false
+
         // on Android R, we should always require access permission, even on primary volume
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
-            return true
-        }
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) return true
+
         val onPrimaryVolume = anyPath.startsWith(getPrimaryVolumePath(context))
         return !onPrimaryVolume
     }
@@ -442,35 +466,70 @@ object StorageUtils {
     // As of Glide v4.12.0, a special loader `QMediaStoreUriLoader` is automatically used
     // to work around a bug from Android Q where metadata redaction corrupts HEIC images.
     // This loader relies on `MediaStore.setRequireOriginal` but this yields a `SecurityException`
-    // for some content URIs (e.g. `content://media/external_primary/downloads/...`)
-    // so we build a typical `images` or `videos` content URI from the original content ID.
-    fun getGlideSafeUri(uri: Uri, mimeType: String): Uri = normalizeMediaUri(uri, mimeType)
-
-    // requesting access or writing to some MediaStore content URIs
-    // e.g. `content://0@media/...`, `content://media/external_primary/downloads/...`
-    // yields an exception with `All requested items must be referenced by specific ID`
-    fun getMediaStoreScopedStorageSafeUri(uri: Uri, mimeType: String): Uri = normalizeMediaUri(uri, mimeType)
-
-    private fun normalizeMediaUri(uri: Uri, mimeType: String): Uri {
+    // for some non image/video content URIs (e.g. `downloads`, `file`)
+    fun getGlideSafeUri(context: Context, uri: Uri, mimeType: String): Uri {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && isMediaStoreContentUri(uri)) {
-            // we cannot safely apply this to a file content URI, as it may point to a file not indexed
-            // by the Media Store (via `.nomedia`), and therefore has no matching image/video content URI
-            if (uri.path?.contains("/downloads/") == true) {
-                uri.tryParseId()?.let { id ->
-                    return when {
-                        isImage(mimeType) -> ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
-                        isVideo(mimeType) -> ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, id)
-                        else -> uri
+            val uriPath = uri.path
+            when {
+                uriPath?.contains("/downloads/") == true -> {
+                    // e.g. `content://media/external_primary/downloads/...`
+                    getMediaUriImageVideoUri(uri, mimeType)?.let { imageVideUri -> return imageVideUri }
+                }
+                uriPath?.contains("/file/") == true -> {
+                    // e.g. `content://media/external/file/...`
+                    // create an ad-hoc temporary file for decoding only
+                    File.createTempFile("aves", null).apply {
+                        deleteOnExit()
+                        try {
+                            outputStream().use { output ->
+                                openInputStream(context, uri)?.use { input ->
+                                    input.copyTo(output)
+                                }
+                            }
+                            return Uri.fromFile(this)
+                        } catch (e: Exception) {
+                            Log.e(LOG_TAG, "failed to create temporary file from uri=$uri", e)
+                        }
                     }
                 }
-            } else if (uri.userInfo != null) {
-                // strip user info, if any
-                return Uri.parse(uri.toString().replaceFirst("${uri.userInfo}@", ""))
+                uri.userInfo != null -> return stripMediaUriUserInfo(uri)
             }
-
         }
         return uri
     }
+
+    // requesting access or writing to some MediaStore content URIs
+    // yields an exception with `All requested items must be referenced by specific ID`
+    fun getMediaStoreScopedStorageSafeUri(uri: Uri, mimeType: String): Uri {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && isMediaStoreContentUri(uri)) {
+            val uriPath = uri.path
+            when {
+                uriPath?.contains("/downloads/") == true -> {
+                    // e.g. `content://media/external_primary/downloads/...`
+                    getMediaUriImageVideoUri(uri, mimeType)?.let { imageVideUri -> return imageVideUri }
+                }
+                uri.userInfo != null -> return stripMediaUriUserInfo(uri)
+            }
+        }
+        return uri
+    }
+
+    // Build a typical `images` or `videos` content URI from the original content ID.
+    // We cannot safely apply this to a `file` content URI, as it may point to a file not indexed
+    // by the Media Store (via `.nomedia`), and therefore has no matching image/video content URI.
+    private fun getMediaUriImageVideoUri(uri: Uri, mimeType: String): Uri? {
+        return uri.tryParseId()?.let { id ->
+            return when {
+                isImage(mimeType) -> ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
+                isVideo(mimeType) -> ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, id)
+                else -> uri
+            }
+        }
+    }
+
+    // strip user info, if any
+    // e.g. `content://0@media/...`
+    private fun stripMediaUriUserInfo(uri: Uri) = Uri.parse(uri.toString().replaceFirst("${uri.userInfo}@", ""))
 
     fun openInputStream(context: Context, uri: Uri): InputStream? {
         val effectiveUri = getOriginalUri(context, uri)
@@ -515,6 +574,10 @@ object StorageUtils {
 
     fun ensureTrailingSeparator(dirPath: String): String {
         return if (dirPath.endsWith(File.separator)) dirPath else dirPath + File.separator
+    }
+
+    fun removeTrailingSeparator(dirPath: String): String {
+        return if (dirPath.endsWith(File.separator)) dirPath.substring(0, dirPath.length - 1) else dirPath
     }
 
     // `fullPath` should match "volumePath + relativeDir + fileName"

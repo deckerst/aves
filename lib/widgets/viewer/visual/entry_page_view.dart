@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/entry_images.dart';
-import 'package:aves/model/settings/accessibility_animations.dart';
+import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/magnifier/controller/controller.dart';
@@ -143,7 +143,7 @@ class _EntryPageViewState extends State<EntryPageView> {
     if (animate) {
       child = Consumer<HeroInfo?>(
         builder: (context, info, child) => Hero(
-          tag: info != null && info.entry == mainEntry ? Object.hashAll([info.collectionId, mainEntry.uri]) : hashCode,
+          tag: info != null && info.entry == mainEntry ? Object.hashAll([info.collectionId, mainEntry.id]) : hashCode,
           transitionOnUserGestures: true,
           child: child!,
         ),

@@ -15,14 +15,16 @@ import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.PermissionManager
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.EventChannel.EventSink
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import java.io.FileOutputStream
 
 // starting activity to give access with the native dialog
 // breaks the regular `MethodChannel` so we use a stream channel instead
 class StorageAccessStreamHandler(private val activity: Activity, arguments: Any?) : EventChannel.StreamHandler {
+    private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private lateinit var eventSink: EventSink
     private lateinit var handler: Handler
 
@@ -41,10 +43,10 @@ class StorageAccessStreamHandler(private val activity: Activity, arguments: Any?
         handler = Handler(Looper.getMainLooper())
 
         when (op) {
-            "requestDirectoryAccess" -> GlobalScope.launch(Dispatchers.IO) { requestDirectoryAccess() }
-            "requestMediaFileAccess" -> GlobalScope.launch(Dispatchers.IO) { requestMediaFileAccess() }
-            "createFile" -> GlobalScope.launch(Dispatchers.IO) { createFile() }
-            "openFile" -> GlobalScope.launch(Dispatchers.IO) { openFile() }
+            "requestDirectoryAccess" -> ioScope.launch { requestDirectoryAccess() }
+            "requestMediaFileAccess" -> ioScope.launch { requestMediaFileAccess() }
+            "createFile" -> ioScope.launch { createFile() }
+            "openFile" -> ioScope.launch { openFile() }
             else -> endOfStream()
         }
     }
@@ -113,7 +115,7 @@ class StorageAccessStreamHandler(private val activity: Activity, arguments: Any?
             putExtra(Intent.EXTRA_TITLE, name)
         }
         MainActivity.pendingStorageAccessResultHandlers[MainActivity.CREATE_FILE_REQUEST] = PendingStorageAccessResultHandler(null, { uri ->
-            GlobalScope.launch(Dispatchers.IO) {
+            ioScope.launch {
                 try {
                     activity.contentResolver.openOutputStream(uri)?.use { output ->
                         output as FileOutputStream
@@ -145,7 +147,7 @@ class StorageAccessStreamHandler(private val activity: Activity, arguments: Any?
         val mimeType = args["mimeType"] as String? // optional
 
         fun onGranted(uri: Uri) {
-            GlobalScope.launch(Dispatchers.IO) {
+            ioScope.launch {
                 activity.contentResolver.openInputStream(uri)?.use { input ->
                     val buffer = ByteArray(BUFFER_SIZE)
                     var len: Int

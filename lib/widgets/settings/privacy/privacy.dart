@@ -1,8 +1,8 @@
 import 'package:aves/app_flavor.dart';
 import 'package:aves/model/device.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/utils/color_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/settings/common/tile_leading.dart';
@@ -26,7 +26,7 @@ class PrivacySection extends StatelessWidget {
     return AvesExpansionTile(
       leading: SettingsTileLeading(
         icon: AIcons.privacy,
-        color: stringToColor('Privacy'),
+        color: AColors.privacy,
       ),
       title: context.l10n.settingsSectionPrivacy,
       expandedNotifier: expandedNotifier,
@@ -61,6 +61,20 @@ class PrivacySection extends StatelessWidget {
               }
             },
             title: Text(context.l10n.settingsSaveSearchHistory),
+          ),
+        ),
+        Selector<Settings, bool>(
+          selector: (context, s) => s.enableBin,
+          builder: (context, current, child) => SwitchListTile(
+            value: current,
+            onChanged: (v) {
+              settings.enableBin = v;
+              if (!v) {
+                settings.searchHistory = [];
+              }
+            },
+            title: Text(context.l10n.settingsEnableBin),
+            subtitle: Text(context.l10n.settingsEnableBinSubtitle),
           ),
         ),
         const HiddenItemsTile(),

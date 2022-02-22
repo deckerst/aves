@@ -164,6 +164,7 @@ class _FilterGridState<T extends CollectionFilter> extends State<FilterGrid<T>> 
       settingsRouteKey: widget.settingsRouteKey ?? context.currentRouteName!,
       columnCountDefault: 3,
       extentMin: 60,
+      extentMax: 300,
       spacing: 8,
     );
     return TileExtentControllerProvider(

@@ -2,10 +2,9 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:aves/model/entry.dart';
-import 'package:aves/model/settings/enums.dart';
-import 'package:aves/model/settings/map_style.dart';
+import 'package:aves/model/settings/enums/enums.dart';
+import 'package:aves/model/settings/enums/map_style.dart';
 import 'package:aves/model/settings/settings.dart';
-import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/change_notifier.dart';
 import 'package:aves/utils/constants.dart';
@@ -152,117 +151,111 @@ class _GeoMapState extends State<GeoMap> {
       onTap(clusterAverageLocation, markerEntry, getClusterEntries);
     }
 
-    return FutureBuilder<bool>(
-      future: availability.isConnected,
-      builder: (context, snapshot) {
-        if (snapshot.data != true) return const SizedBox();
-        return Selector<Settings, EntryMapStyle>(
-          selector: (context, s) => s.infoMapStyle,
-          builder: (context, mapStyle, child) {
-            final isGoogleMaps = mapStyle.isGoogleMaps;
-            final progressive = !isGoogleMaps;
-            Widget _buildMarkerWidget(MarkerKey key) => ImageMarker(
-                  key: key,
-                  entry: key.entry,
-                  count: key.count,
-                  extent: GeoMap.markerImageExtent,
-                  arrowSize: GeoMap.markerArrowSize,
-                  progressive: progressive,
-                );
+    return Selector<Settings, EntryMapStyle>(
+      selector: (context, s) => s.infoMapStyle,
+      builder: (context, mapStyle, child) {
+        final isGoogleMaps = mapStyle.isGoogleMaps;
+        final progressive = !isGoogleMaps;
+        Widget _buildMarkerWidget(MarkerKey key) => ImageMarker(
+              key: key,
+              entry: key.entry,
+              count: key.count,
+              extent: GeoMap.markerImageExtent,
+              arrowSize: GeoMap.markerArrowSize,
+              progressive: progressive,
+            );
 
-            Widget child = isGoogleMaps
-                ? EntryGoogleMap(
-                    controller: widget.controller,
-                    clusterListenable: _clusterChangeNotifier,
-                    boundsNotifier: _boundsNotifier,
-                    minZoom: 0,
-                    maxZoom: 20,
-                    style: mapStyle,
-                    markerClusterBuilder: _buildMarkerClusters,
-                    markerWidgetBuilder: _buildMarkerWidget,
-                    dotLocationNotifier: widget.dotLocationNotifier,
-                    onUserZoomChange: widget.onUserZoomChange,
-                    onMapTap: widget.onMapTap,
-                    onMarkerTap: _onMarkerTap,
-                    openMapPage: widget.openMapPage,
-                  )
-                : EntryLeafletMap(
-                    controller: widget.controller,
-                    clusterListenable: _clusterChangeNotifier,
-                    boundsNotifier: _boundsNotifier,
-                    minZoom: 2,
-                    maxZoom: 16,
-                    style: mapStyle,
-                    markerClusterBuilder: _buildMarkerClusters,
-                    markerWidgetBuilder: _buildMarkerWidget,
-                    dotLocationNotifier: widget.dotLocationNotifier,
-                    markerSize: Size(
-                      GeoMap.markerImageExtent + ImageMarker.outerBorderWidth * 2,
-                      GeoMap.markerImageExtent + ImageMarker.outerBorderWidth * 2 + GeoMap.markerArrowSize.height,
-                    ),
-                    dotMarkerSize: const Size(
-                      DotMarker.diameter + ImageMarker.outerBorderWidth * 2,
-                      DotMarker.diameter + ImageMarker.outerBorderWidth * 2,
-                    ),
-                    onUserZoomChange: widget.onUserZoomChange,
-                    onMapTap: widget.onMapTap,
-                    onMarkerTap: _onMarkerTap,
-                    openMapPage: widget.openMapPage,
-                  );
-
-            final mapHeight = context.select<MapThemeData, double?>((v) => v.mapHeight);
-            child = Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                mapHeight != null
-                    ? SizedBox(
-                        height: mapHeight,
-                        child: child,
-                      )
-                    : Expanded(child: child),
-                SafeArea(
-                  top: false,
-                  bottom: false,
-                  child: Attribution(style: mapStyle),
+        Widget child = isGoogleMaps
+            ? EntryGoogleMap(
+                controller: widget.controller,
+                clusterListenable: _clusterChangeNotifier,
+                boundsNotifier: _boundsNotifier,
+                minZoom: 0,
+                maxZoom: 20,
+                style: mapStyle,
+                markerClusterBuilder: _buildMarkerClusters,
+                markerWidgetBuilder: _buildMarkerWidget,
+                dotLocationNotifier: widget.dotLocationNotifier,
+                onUserZoomChange: widget.onUserZoomChange,
+                onMapTap: widget.onMapTap,
+                onMarkerTap: _onMarkerTap,
+                openMapPage: widget.openMapPage,
+              )
+            : EntryLeafletMap(
+                controller: widget.controller,
+                clusterListenable: _clusterChangeNotifier,
+                boundsNotifier: _boundsNotifier,
+                minZoom: 2,
+                maxZoom: 16,
+                style: mapStyle,
+                markerClusterBuilder: _buildMarkerClusters,
+                markerWidgetBuilder: _buildMarkerWidget,
+                dotLocationNotifier: widget.dotLocationNotifier,
+                markerSize: Size(
+                  GeoMap.markerImageExtent + ImageMarker.outerBorderWidth * 2,
+                  GeoMap.markerImageExtent + ImageMarker.outerBorderWidth * 2 + GeoMap.markerArrowSize.height,
                 ),
-              ],
-            );
+                dotMarkerSize: const Size(
+                  DotMarker.diameter + ImageMarker.outerBorderWidth * 2,
+                  DotMarker.diameter + ImageMarker.outerBorderWidth * 2,
+                ),
+                onUserZoomChange: widget.onUserZoomChange,
+                onMapTap: widget.onMapTap,
+                onMarkerTap: _onMarkerTap,
+                openMapPage: widget.openMapPage,
+              );
 
-            return AnimatedSize(
-              alignment: Alignment.topCenter,
-              curve: Curves.easeInOutCubic,
-              duration: Durations.mapStyleSwitchAnimation,
-              child: ValueListenableBuilder<bool>(
-                valueListenable: widget.isAnimatingNotifier,
-                builder: (context, animating, child) {
-                  if (!animating && isGoogleMaps) {
-                    _googleMapsLoaded = true;
-                  }
-                  Widget replacement = Stack(
-                    children: [
-                      const MapDecorator(),
-                      MapButtonPanel(
-                        boundsNotifier: _boundsNotifier,
-                        openMapPage: widget.openMapPage,
-                      ),
-                    ],
-                  );
-                  if (mapHeight != null) {
-                    replacement = SizedBox(
-                      height: mapHeight,
-                      child: replacement,
-                    );
-                  }
-                  return Visibility(
-                    visible: !isGoogleMaps || _googleMapsLoaded,
-                    replacement: replacement,
-                    child: child!,
-                  );
-                },
-                child: child,
-              ),
-            );
-          },
+        final mapHeight = context.select<MapThemeData, double?>((v) => v.mapHeight);
+        child = Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            mapHeight != null
+                ? SizedBox(
+                    height: mapHeight,
+                    child: child,
+                  )
+                : Expanded(child: child),
+            SafeArea(
+              top: false,
+              bottom: false,
+              child: Attribution(style: mapStyle),
+            ),
+          ],
+        );
+
+        return AnimatedSize(
+          alignment: Alignment.topCenter,
+          curve: Curves.easeInOutCubic,
+          duration: Durations.mapStyleSwitchAnimation,
+          child: ValueListenableBuilder<bool>(
+            valueListenable: widget.isAnimatingNotifier,
+            builder: (context, animating, child) {
+              if (!animating && isGoogleMaps) {
+                _googleMapsLoaded = true;
+              }
+              Widget replacement = Stack(
+                children: [
+                  const MapDecorator(),
+                  MapButtonPanel(
+                    boundsNotifier: _boundsNotifier,
+                    openMapPage: widget.openMapPage,
+                  ),
+                ],
+              );
+              if (mapHeight != null) {
+                replacement = SizedBox(
+                  height: mapHeight,
+                  child: replacement,
+                );
+              }
+              return Visibility(
+                visible: !isGoogleMaps || _googleMapsLoaded,
+                replacement: replacement,
+                child: child!,
+              );
+            },
+            child: child,
+          ),
         );
       },
     );

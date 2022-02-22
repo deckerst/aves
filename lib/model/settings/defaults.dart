@@ -3,7 +3,7 @@ import 'package:aves/model/actions/entry_set_actions.dart';
 import 'package:aves/model/actions/video_actions.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/mime.dart';
-import 'package:aves/model/settings/enums.dart';
+import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/source/enums.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/countries_page.dart';
@@ -16,12 +16,13 @@ class SettingsDefaults {
   static const canUseAnalysisService = true;
   static const isInstalledAppAccessAllowed = false;
   static const isErrorReportingAllowed = false;
+  static const tileLayout = TileLayout.grid;
+
+  // navigation
   static const mustBackTwiceToExit = true;
   static const keepScreenOn = KeepScreenOn.viewerOnly;
   static const homePage = HomePageSetting.collection;
-  static const tileLayout = TileLayout.grid;
-
-  // drawer
+  static const confirmationDialogs = ConfirmationDialog.values;
   static final drawerTypeBookmarks = [
     null,
     MimeFilter.video,
@@ -100,10 +101,17 @@ class SettingsDefaults {
   // search
   static const saveSearchHistory = true;
 
+  // bin
+  static const enableBin = true;
+
   // accessibility
   static const accessibilityAnimations = AccessibilityAnimations.system;
   static const timeToTakeAction = AccessibilityTimeout.appDefault; // `timeToTakeAction` has a contextual default value
 
   // file picker
   static const filePickerShowHiddenFiles = false;
+
+  // platform settings
+  static const isRotationLocked = false;
+  static const areAnimationsRemoved = false;
 }

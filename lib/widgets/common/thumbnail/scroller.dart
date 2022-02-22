@@ -86,6 +86,7 @@ class _ThumbnailScrollerState extends State<ThumbnailScroller> {
     return GridTheme(
       extent: extent,
       showLocation: false,
+      showTrash: false,
       child: SizedBox(
         height: extent,
         child: ListView.separated(

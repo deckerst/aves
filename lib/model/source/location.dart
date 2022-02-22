@@ -20,10 +20,10 @@ mixin LocationMixin on SourceBase {
   List<String> sortedCountries = List.unmodifiable([]);
   List<String> sortedPlaces = List.unmodifiable([]);
 
-  Future<void> loadAddresses() async {
-    final saved = await metadataDb.loadAllAddresses();
+  Future<void> loadAddresses({Set<int>? ids}) async {
+    final saved = await (ids != null ? metadataDb.loadAddressesById(ids) : metadataDb.loadAddresses());
     final idMap = entryById;
-    saved.forEach((metadata) => idMap[metadata.contentId]?.addressDetails = metadata);
+    saved.forEach((metadata) => idMap[metadata.id]?.addressDetails = metadata);
     onAddressMetadataChanged();
   }
 
@@ -31,7 +31,7 @@ mixin LocationMixin on SourceBase {
     await _locateCountries(controller, candidateEntries);
     await _locatePlaces(controller, candidateEntries);
 
-    final unlocatedIds = candidateEntries.where((entry) => !entry.hasGps).map((entry) => entry.contentId).whereNotNull().toSet();
+    final unlocatedIds = candidateEntries.where((entry) => !entry.hasGps).map((entry) => entry.id).toSet();
     if (unlocatedIds.isNotEmpty) {
       await metadataDb.removeIds(unlocatedIds, dataTypes: {EntryDataType.address});
       onAddressMetadataChanged();
@@ -115,7 +115,7 @@ mixin LocationMixin on SourceBase {
     for (final entry in todo) {
       final latLng = approximateLatLng(entry);
       if (knownLocations.containsKey(latLng)) {
-        entry.addressDetails = knownLocations[latLng]?.copyWith(contentId: entry.contentId);
+        entry.addressDetails = knownLocations[latLng]?.copyWith(id: entry.id);
       } else {
         await entry.locatePlace(background: true, force: force, geocoderLocale: settings.appliedLocale);
         // it is intended to insert `null` if the geocoder failed,

@@ -1,11 +1,12 @@
 import 'dart:async';
 
+import 'package:aves/app_mode.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/coordinate.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/highlight.dart';
-import 'package:aves/model/settings/enums.dart';
-import 'package:aves/model/settings/map_style.dart';
+import 'package:aves/model/settings/enums/enums.dart';
+import 'package:aves/model/settings/enums/map_style.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/theme/durations.dart';
@@ -83,7 +84,7 @@ class _Content extends StatefulWidget {
 class _ContentState extends State<_Content> with SingleTickerProviderStateMixin {
   final List<StreamSubscription> _subscriptions = [];
   final AvesMapController _mapController = AvesMapController();
-  late final ValueNotifier<bool> _isPageAnimatingNotifier;
+  final ValueNotifier<bool> _isPageAnimatingNotifier = ValueNotifier(false);
   final ValueNotifier<int?> _selectedIndexNotifier = ValueNotifier(0);
   final ValueNotifier<CollectionLens?> _regionCollectionNotifier = ValueNotifier(null);
   final ValueNotifier<LatLng?> _dotLocationNotifier = ValueNotifier(null);
@@ -102,13 +103,11 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
     super.initState();
 
     if (settings.infoMapStyle.isGoogleMaps) {
-      _isPageAnimatingNotifier = ValueNotifier(true);
+      _isPageAnimatingNotifier.value = true;
       Future.delayed(Durations.pageTransitionAnimation * timeDilation).then((_) {
         if (!mounted) return;
         _isPageAnimatingNotifier.value = false;
       });
-    } else {
-      _isPageAnimatingNotifier = ValueNotifier(false);
     }
 
     _dotEntryNotifier.addListener(_updateInfoEntry);
@@ -269,7 +268,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
                         entryBuilder: (index) => index < regionEntries.length ? regionEntries[index] : null,
                         indexNotifier: _selectedIndexNotifier,
                         onTap: _onThumbnailTap,
-                        heroTagger: (entry) => Object.hashAll([regionCollection?.id, entry.uri]),
+                        heroTagger: (entry) => Object.hashAll([regionCollection?.id, entry.id]),
                         highlightable: true,
                       );
                     },
@@ -326,7 +325,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
   }
 
   AvesEntry? _getRegionEntry(int? index) {
-    if (index != null && regionCollection != null) {
+    if (index != null && index >= 0 && regionCollection != null) {
       final regionEntries = regionCollection!.sortedEntries;
       if (index < regionEntries.length) {
         return regionEntries[index];
@@ -373,6 +372,9 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
   }
 
   void _goToCollection(CollectionFilter filter) {
+    final isMainMode = context.read<ValueNotifier<AppMode>>().value == AppMode.main;
+    if (!isMainMode) return;
+
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(

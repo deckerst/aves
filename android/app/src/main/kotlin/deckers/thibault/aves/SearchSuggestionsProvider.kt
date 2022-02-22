@@ -17,15 +17,15 @@ import deckers.thibault.aves.utils.LogUtils
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 import java.util.*
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 class SearchSuggestionsProvider : MethodChannel.MethodCallHandler, ContentProvider() {
+    private val defaultScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+
     override fun query(uri: Uri, projection: Array<String>?, selection: String?, selectionArgs: Array<String>?, sortOrder: String?): Cursor? {
         return selectionArgs?.firstOrNull()?.let { query ->
             // Samsung Finder does not support:
@@ -77,29 +77,34 @@ class SearchSuggestionsProvider : MethodChannel.MethodCallHandler, ContentProvid
         val backgroundChannel = MethodChannel(messenger, BACKGROUND_CHANNEL)
         backgroundChannel.setMethodCallHandler(this)
 
-        return suspendCoroutine { cont ->
-            GlobalScope.launch {
-                FlutterUtils.runOnUiThread {
-                    backgroundChannel.invokeMethod("getSuggestions", hashMapOf(
-                        "query" to query,
-                        "locale" to Locale.getDefault().toString(),
-                        "use24hour" to DateFormat.is24HourFormat(context),
-                    ), object : MethodChannel.Result {
-                        override fun success(result: Any?) {
-                            @Suppress("unchecked_cast")
-                            cont.resume(result as List<FieldMap>)
-                        }
+        try {
+            return suspendCoroutine { cont ->
+                defaultScope.launch {
+                    FlutterUtils.runOnUiThread {
+                        backgroundChannel.invokeMethod("getSuggestions", hashMapOf(
+                            "query" to query,
+                            "locale" to Locale.getDefault().toString(),
+                            "use24hour" to DateFormat.is24HourFormat(context),
+                        ), object : MethodChannel.Result {
+                            override fun success(result: Any?) {
+                                @Suppress("unchecked_cast")
+                                cont.resume(result as List<FieldMap>)
+                            }
 
-                        override fun error(errorCode: String, errorMessage: String?, errorDetails: Any?) {
-                            cont.resumeWithException(Exception("$errorCode: $errorMessage\n$errorDetails"))
-                        }
+                            override fun error(errorCode: String, errorMessage: String?, errorDetails: Any?) {
+                                cont.resumeWithException(Exception("$errorCode: $errorMessage\n$errorDetails"))
+                            }
 
-                        override fun notImplemented() {
-                            cont.resumeWithException(NotImplementedError("getSuggestions"))
-                        }
-                    })
+                            override fun notImplemented() {
+                                cont.resumeWithException(NotImplementedError("getSuggestions"))
+                            }
+                        })
+                    }
                 }
             }
+        } catch (e: Exception) {
+            Log.e(LOG_TAG, "failed to get suggestions", e)
+            return ArrayList()
         }
     }
 

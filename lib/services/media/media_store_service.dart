@@ -6,12 +6,12 @@ import 'package:flutter/services.dart';
 import 'package:streams_channel/streams_channel.dart';
 
 abstract class MediaStoreService {
-  Future<List<int>> checkObsoleteContentIds(List<int> knownContentIds);
+  Future<List<int>> checkObsoleteContentIds(List<int?> knownContentIds);
 
-  Future<List<int>> checkObsoletePaths(Map<int, String?> knownPathById);
+  Future<List<int>> checkObsoletePaths(Map<int?, String?> knownPathById);
 
   // knownEntries: map of contentId -> dateModifiedSecs
-  Stream<AvesEntry> getEntries(Map<int, int> knownEntries);
+  Stream<AvesEntry> getEntries(Map<int?, int?> knownEntries, {String? directory});
 
   // returns media URI
   Future<Uri?> scanFile(String path, String mimeType);
@@ -22,7 +22,7 @@ class PlatformMediaStoreService implements MediaStoreService {
   static final StreamsChannel _streamChannel = StreamsChannel('deckers.thibault/aves/media_store_stream');
 
   @override
-  Future<List<int>> checkObsoleteContentIds(List<int> knownContentIds) async {
+  Future<List<int>> checkObsoleteContentIds(List<int?> knownContentIds) async {
     try {
       final result = await platform.invokeMethod('checkObsoleteContentIds', <String, dynamic>{
         'knownContentIds': knownContentIds,
@@ -35,7 +35,7 @@ class PlatformMediaStoreService implements MediaStoreService {
   }
 
   @override
-  Future<List<int>> checkObsoletePaths(Map<int, String?> knownPathById) async {
+  Future<List<int>> checkObsoletePaths(Map<int?, String?> knownPathById) async {
     try {
       final result = await platform.invokeMethod('checkObsoletePaths', <String, dynamic>{
         'knownPathById': knownPathById,
@@ -48,11 +48,12 @@ class PlatformMediaStoreService implements MediaStoreService {
   }
 
   @override
-  Stream<AvesEntry> getEntries(Map<int, int> knownEntries) {
+  Stream<AvesEntry> getEntries(Map<int?, int?> knownEntries, {String? directory}) {
     try {
       return _streamChannel
           .receiveBroadcastStream(<String, dynamic>{
             'knownEntries': knownEntries,
+            'directory': directory,
           })
           .where((event) => event is Map)
           .map((event) => AvesEntry.fromMap(event as Map));

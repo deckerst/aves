@@ -37,7 +37,7 @@ class VideoActionEditorPage extends StatelessWidget {
       allAvailableActions: VideoActions.all,
       actionIcon: (action) => action.getIcon(),
       actionText: (context, action) => action.getText(context),
-      load: () => settings.videoQuickActions.toList(),
+      load: () => settings.videoQuickActions,
       save: (actions) => settings.videoQuickActions = actions,
     );
   }

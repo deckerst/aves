@@ -30,16 +30,7 @@ class ViewerActionEditorPage extends StatelessWidget {
   const ViewerActionEditorPage({Key? key}) : super(key: key);
 
   static const allAvailableActions = [
-    EntryAction.info,
-    EntryAction.toggleFavourite,
-    EntryAction.share,
-    EntryAction.delete,
-    EntryAction.rename,
-    EntryAction.export,
-    EntryAction.addShortcut,
-    EntryAction.copyToClipboard,
-    EntryAction.print,
-    EntryAction.rotateScreen,
+    ...EntryActions.topLevel,
     EntryAction.rotateCCW,
     EntryAction.rotateCW,
     EntryAction.flip,
@@ -53,7 +44,7 @@ class ViewerActionEditorPage extends StatelessWidget {
       allAvailableActions: allAvailableActions,
       actionIcon: (action) => action.getIcon(),
       actionText: (context, action) => action.getText(context),
-      load: () => settings.viewerQuickActions.toList(),
+      load: () => settings.viewerQuickActions,
       save: (actions) => settings.viewerQuickActions = actions,
     );
   }

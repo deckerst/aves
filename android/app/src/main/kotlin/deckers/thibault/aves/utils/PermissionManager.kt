@@ -18,9 +18,7 @@ import deckers.thibault.aves.PendingStorageAccessResultHandler
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.utils.StorageUtils.PathSegments
 import java.io.File
-import java.util.*
 import java.util.concurrent.CompletableFuture
-import kotlin.collections.ArrayList
 
 object PermissionManager {
     private val LOG_TAG = LogUtils.createTag<PermissionManager>()
@@ -94,11 +92,12 @@ object PermissionManager {
     }
 
     fun getInaccessibleDirectories(context: Context, dirPaths: List<String>): List<Map<String, String>> {
+        val concreteDirPaths = dirPaths.filter { it != StorageUtils.TRASH_PATH_PLACEHOLDER }
         val accessibleDirs = getAccessibleDirs(context)
 
         // find set of inaccessible directories for each volume
         val dirsPerVolume = HashMap<String, MutableSet<String>>()
-        for (dirPath in dirPaths.map { if (it.endsWith(File.separator)) it else it + File.separator }) {
+        for (dirPath in concreteDirPaths.map { if (it.endsWith(File.separator)) it else it + File.separator }) {
             if (accessibleDirs.none { dirPath.startsWith(it) }) {
                 // inaccessible dirs
                 val segments = PathSegments(context, dirPath)
@@ -211,7 +210,8 @@ object PermissionManager {
                 )
             })
         } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT
-            || Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT_WATCH) {
+            || Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT_WATCH
+        ) {
             // removable storage requires access permission, at the file level
             // without directory access, we consider the whole volume restricted
             val primaryVolume = StorageUtils.getPrimaryVolumePath(context)

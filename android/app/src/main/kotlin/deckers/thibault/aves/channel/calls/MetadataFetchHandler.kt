@@ -74,29 +74,28 @@ import deckers.thibault.aves.utils.UriUtils.tryParseId
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets
 import java.text.ParseException
-import java.util.*
 import kotlin.math.roundToInt
 import kotlin.math.roundToLong
 
 class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
+    private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
-            "getAllMetadata" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getAllMetadata) }
-            "getCatalogMetadata" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getCatalogMetadata) }
-            "getOverlayMetadata" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getOverlayMetadata) }
-            "getMultiPageInfo" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getMultiPageInfo) }
-            "getPanoramaInfo" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getPanoramaInfo) }
-            "getIptc" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getIptc) }
-            "getXmp" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getXmp) }
-            "hasContentResolverProp" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::hasContentResolverProp) }
-            "getContentResolverProp" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getContentResolverProp) }
-            "getDate" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getDate) }
+            "getAllMetadata" -> ioScope.launch { safe(call, result, ::getAllMetadata) }
+            "getCatalogMetadata" -> ioScope.launch { safe(call, result, ::getCatalogMetadata) }
+            "getOverlayMetadata" -> ioScope.launch { safe(call, result, ::getOverlayMetadata) }
+            "getMultiPageInfo" -> ioScope.launch { safe(call, result, ::getMultiPageInfo) }
+            "getPanoramaInfo" -> ioScope.launch { safe(call, result, ::getPanoramaInfo) }
+            "getIptc" -> ioScope.launch { safe(call, result, ::getIptc) }
+            "getXmp" -> ioScope.launch { safe(call, result, ::getXmp) }
+            "hasContentResolverProp" -> ioScope.launch { safe(call, result, ::hasContentResolverProp) }
+            "getContentResolverProp" -> ioScope.launch { safe(call, result, ::getContentResolverProp) }
+            "getDate" -> ioScope.launch { safe(call, result, ::getDate) }
             else -> result.notImplemented()
         }
     }
@@ -412,19 +411,19 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
 
                     // File type
                     for (dir in metadata.getDirectoriesOfType(FileTypeDirectory::class.java)) {
-                        // * `metadata-extractor` sometimes detects the wrong MIME type (e.g. `pef` file as `tiff`, `mpeg` as `dvd`)
+                        // * `metadata-extractor` sometimes detects the wrong MIME type (e.g. `pef` file as `tiff`, `mpeg` as `dvd`, `avif` as `mov`)
                         // * the content resolver / media store sometimes reports the wrong MIME type (e.g. `png` file as `jpeg`, `tiff` as `srw`)
                         // * `context.getContentResolver().getType()` sometimes returns an incorrect value
                         // * `MediaMetadataRetriever.setDataSource()` sometimes fails with `status = 0x80000000`
                         // * file extension is unreliable
-                        // In the end, `metadata-extractor` is the most reliable, except for `tiff`/`dvd` (false positives, false negatives),
+                        // In the end, `metadata-extractor` is the most reliable, except for `tiff`/`dvd`/`mov` (false positives, false negatives),
                         // in which case we trust the file extension
                         // cf https://github.com/drewnoakes/metadata-extractor/issues/296
                         if (path?.matches(TIFF_EXTENSION_PATTERN) == true) {
                             metadataMap[KEY_MIME_TYPE] = MimeTypes.TIFF
                         } else {
                             dir.getSafeString(FileTypeDirectory.TAG_DETECTED_FILE_MIME_TYPE) {
-                                if (it != MimeTypes.TIFF && it != MimeTypes.DVD) {
+                                if (it != MimeTypes.TIFF && it != MimeTypes.DVD && it != MimeTypes.MOV) {
                                     metadataMap[KEY_MIME_TYPE] = it
                                 }
                             }

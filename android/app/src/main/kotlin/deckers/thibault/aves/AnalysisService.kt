@@ -159,10 +159,10 @@ class AnalysisService : MethodChannel.MethodCallHandler, Service() {
                 COMMAND_START -> {
                     runBlocking {
                         FlutterUtils.runOnUiThread {
-                            val contentIds = data.get(KEY_CONTENT_IDS)?.takeIf { it is IntArray }?.let { (it as IntArray).toList() }
+                            val entryIds = data.get(KEY_ENTRY_IDS)?.takeIf { it is IntArray }?.let { (it as IntArray).toList() }
                             backgroundChannel?.invokeMethod(
                                 "start", hashMapOf(
-                                    "contentIds" to contentIds,
+                                    "entryIds" to entryIds,
                                     "force" to data.getBoolean(KEY_FORCE),
                                 )
                             )
@@ -197,7 +197,7 @@ class AnalysisService : MethodChannel.MethodCallHandler, Service() {
         const val KEY_COMMAND = "command"
         const val COMMAND_START = "start"
         const val COMMAND_STOP = "stop"
-        const val KEY_CONTENT_IDS = "content_ids"
+        const val KEY_ENTRY_IDS = "entry_ids"
         const val KEY_FORCE = "force"
     }
 }

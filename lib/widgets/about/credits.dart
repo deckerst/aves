@@ -7,6 +7,7 @@ class AboutCredits extends StatelessWidget {
   const AboutCredits({Key? key}) : super(key: key);
 
   static const translators = {
+    'Bahasa Indonesia': 'MeFinity',
     'Deutsch': 'JanWaldhorn',
     'Español (México)': 'n-berenice',
     'Português (Brasil)': 'Jonatas De Almeida Barros',

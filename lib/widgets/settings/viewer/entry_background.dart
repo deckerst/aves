@@ -1,5 +1,5 @@
-import 'package:aves/model/settings/entry_background.dart';
-import 'package:aves/model/settings/enums.dart';
+import 'package:aves/model/settings/enums/entry_background.dart';
+import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
 import 'package:aves/widgets/common/fx/checkered_decoration.dart';
 import 'package:flutter/material.dart';

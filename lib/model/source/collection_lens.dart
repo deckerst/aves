@@ -10,6 +10,7 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/filters/query.dart';
 import 'package:aves/model/filters/rating.dart';
+import 'package:aves/model/filters/trash.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/events.dart';
@@ -31,7 +32,7 @@ class CollectionLens with ChangeNotifier {
   final AChangeNotifier filterChangeNotifier = AChangeNotifier(), sortSectionChangeNotifier = AChangeNotifier();
   final List<StreamSubscription> _subscriptions = [];
   int? id;
-  bool listenToSource;
+  bool listenToSource, groupBursts;
   List<AvesEntry>? fixedSelection;
 
   List<AvesEntry> _filteredSortedEntries = [];
@@ -43,6 +44,7 @@ class CollectionLens with ChangeNotifier {
     Set<CollectionFilter?>? filters,
     this.id,
     this.listenToSource = true,
+    this.groupBursts = true,
     this.fixedSelection,
   })  : filters = (filters ?? {}).whereNotNull().toSet(),
         sectionFactor = settings.collectionSectionFactor,
@@ -53,9 +55,18 @@ class CollectionLens with ChangeNotifier {
       _subscriptions.add(sourceEvents.on<EntryAddedEvent>().listen((e) => _onEntryAdded(e.entries)));
       _subscriptions.add(sourceEvents.on<EntryRemovedEvent>().listen((e) => _onEntryRemoved(e.entries)));
       _subscriptions.add(sourceEvents.on<EntryMovedEvent>().listen((e) {
-        if (e.type == MoveType.move) {
-          // refreshing copied items is already handled via `EntryAddedEvent`s
-          _refresh();
+        switch (e.type) {
+          case MoveType.copy:
+          case MoveType.export:
+            // refreshing new items is already handled via `EntryAddedEvent`s
+            break;
+          case MoveType.move:
+          case MoveType.fromBin:
+            _refresh();
+            break;
+          case MoveType.toBin:
+            _onEntryRemoved(e.entries);
+            break;
         }
       }));
       _subscriptions.add(sourceEvents.on<EntryRefreshedEvent>().listen((e) => _refresh()));
@@ -68,7 +79,12 @@ class CollectionLens with ChangeNotifier {
       }));
       favourites.addListener(_onFavouritesChanged);
     }
-    settings.addListener(_onSettingsChanged);
+    _subscriptions.add(settings.updateStream
+        .where((event) => [
+              Settings.collectionSortFactorKey,
+              Settings.collectionGroupFactorKey,
+            ].contains(event.key))
+        .listen((_) => _onSettingsChanged()));
     _refresh();
   }
 
@@ -78,7 +94,6 @@ class CollectionLens with ChangeNotifier {
       ..forEach((sub) => sub.cancel())
       ..clear();
     favourites.removeListener(_onFavouritesChanged);
-    settings.removeListener(_onSettingsChanged);
     super.dispose();
   }
 
@@ -160,10 +175,8 @@ class CollectionLens with ChangeNotifier {
     filterChangeNotifier.notifyListeners();
   }
 
-  final bool groupBursts = true;
-
   void _applyFilters() {
-    final entries = fixedSelection ?? source.visibleEntries;
+    final entries = fixedSelection ?? (filters.contains(TrashFilter.instance) ? source.trashedEntries : source.visibleEntries);
     _filteredSortedEntries = List.of(filters.isEmpty ? entries : entries.where((entry) => filters.every((filter) => filter.test(entry))));
 
     if (groupBursts) {

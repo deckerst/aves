@@ -1,6 +1,8 @@
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 class TypeFilter extends CollectionFilter {
@@ -16,6 +18,7 @@ class TypeFilter extends CollectionFilter {
   final String itemType;
   late final EntryFilter _test;
   late final IconData _icon;
+  late final Color _color;
 
   static final animated = TypeFilter._private(_animated);
   static final geotiff = TypeFilter._private(_geotiff);
@@ -32,26 +35,32 @@ class TypeFilter extends CollectionFilter {
       case _animated:
         _test = (entry) => entry.isAnimated;
         _icon = AIcons.animated;
+        _color = AColors.animated;
         break;
       case _geotiff:
         _test = (entry) => entry.isGeotiff;
         _icon = AIcons.geo;
+        _color = AColors.geotiff;
         break;
       case _motionPhoto:
         _test = (entry) => entry.isMotionPhoto;
         _icon = AIcons.motionPhoto;
+        _color = AColors.motionPhoto;
         break;
       case _panorama:
         _test = (entry) => entry.isImage && entry.is360;
         _icon = AIcons.threeSixty;
+        _color = AColors.panorama;
         break;
       case _raw:
         _test = (entry) => entry.isRaw;
         _icon = AIcons.raw;
+        _color = AColors.raw;
         break;
       case _sphericalVideo:
         _test = (entry) => entry.isVideo && entry.is360;
         _icon = AIcons.threeSixty;
+        _color = AColors.sphericalVideo;
         break;
     }
   }
@@ -95,6 +104,9 @@ class TypeFilter extends CollectionFilter {
 
   @override
   Widget iconBuilder(BuildContext context, double size, {bool showGenericIcon = true}) => Icon(_icon, size: size);
+
+  @override
+  Future<Color> color(BuildContext context) => SynchronousFuture(_color);
 
   @override
   String get category => type;

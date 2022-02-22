@@ -1,10 +1,11 @@
 import 'dart:math';
 
+import 'package:aves/app_mode.dart';
 import 'package:aves/model/device.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/highlight.dart';
-import 'package:aves/model/settings/enums.dart';
+import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/services/common/services.dart';
@@ -97,7 +98,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
     // so it is, strictly speaking, not contained in the lens used by the viewer,
     // but it can be found by content ID
     final initialEntry = widget.initialEntry;
-    final entry = entries.firstWhereOrNull((v) => v.contentId == initialEntry.contentId) ?? entries.firstOrNull;
+    final entry = entries.firstWhereOrNull((entry) => entry.id == initialEntry.id) ?? entries.firstOrNull;
     // opening hero, with viewer as target
     _heroInfoNotifier.value = HeroInfo(collection?.id, entry);
     _entryNotifier.value = entry;
@@ -195,8 +196,8 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
           onNotification: (dynamic notification) {
             if (notification is FilterSelectedNotification) {
               _goToCollection(notification.filter);
-            } else if (notification is EntryDeletedNotification) {
-              _onEntryDeleted(context, notification.entry);
+            } else if (notification is EntryRemovedNotification) {
+              _onEntryRemoved(context, notification.entry);
             }
             return false;
           },
@@ -399,8 +400,12 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
   }
 
   void _goToCollection(CollectionFilter filter) {
+    final isMainMode = context.read<ValueNotifier<AppMode>>().value == AppMode.main;
+    if (!isMainMode) return;
+
     final baseCollection = collection;
     if (baseCollection == null) return;
+
     _onLeave();
     Navigator.pushAndRemoveUntil(
       context,
@@ -453,7 +458,8 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
     _updateEntry();
   }
 
-  void _onEntryDeleted(BuildContext context, AvesEntry entry) {
+  void _onEntryRemoved(BuildContext context, AvesEntry entry) {
+    // deleted or moved to another album
     if (hasCollection) {
       final entries = collection!.sortedEntries;
       entries.remove(entry);

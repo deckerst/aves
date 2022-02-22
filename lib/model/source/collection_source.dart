@@ -8,6 +8,8 @@ import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/filters/tag.dart';
+import 'package:aves/model/filters/trash.dart';
+import 'package:aves/model/metadata/trash.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/album.dart';
 import 'package:aves/model/source/analysis_controller.dart';
@@ -15,6 +17,7 @@ import 'package:aves/model/source/enums.dart';
 import 'package:aves/model/source/events.dart';
 import 'package:aves/model/source/location.dart';
 import 'package:aves/model/source/tag.dart';
+import 'package:aves/model/source/trash.dart';
 import 'package:aves/services/analysis_service.dart';
 import 'package:aves/services/common/image_op_events.dart';
 import 'package:aves/services/common/services.dart';
@@ -22,12 +25,16 @@ import 'package:collection/collection.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/foundation.dart';
 
+enum SourceInitializationState { none, directory, full }
+
 mixin SourceBase {
   EventBus get eventBus;
 
-  Map<int?, AvesEntry> get entryById;
+  Map<int, AvesEntry> get entryById;
 
   Set<AvesEntry> get visibleEntries;
+
+  Set<AvesEntry> get trashedEntries;
 
   List<AvesEntry> get sortedEntriesByDate;
 
@@ -38,27 +45,44 @@ mixin SourceBase {
   void setProgress({required int done, required int total}) => progressNotifier.value = ProgressEvent(done: done, total: total);
 }
 
-abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagMixin {
+abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagMixin, TrashMixin {
+  CollectionSource() {
+    settings.updateStream.where((event) => event.key == Settings.localeKey).listen((_) => invalidateAlbumDisplayNames());
+    settings.updateStream.where((event) => event.key == Settings.hiddenFiltersKey).listen((event) {
+      final oldValue = event.oldValue;
+      if (oldValue is List<String>?) {
+        final oldHiddenFilters = (oldValue ?? []).map(CollectionFilter.fromJson).whereNotNull().toSet();
+        _onFilterVisibilityChanged(oldHiddenFilters, settings.hiddenFilters);
+      }
+    });
+  }
+
   final EventBus _eventBus = EventBus();
 
   @override
   EventBus get eventBus => _eventBus;
 
-  final Map<int?, AvesEntry> _entryById = {};
+  final Map<int, AvesEntry> _entryById = {};
 
   @override
-  Map<int?, AvesEntry> get entryById => Map.unmodifiable(_entryById);
+  Map<int, AvesEntry> get entryById => Map.unmodifiable(_entryById);
 
   final Set<AvesEntry> _rawEntries = {};
 
   Set<AvesEntry> get allEntries => Set.unmodifiable(_rawEntries);
 
-  Set<AvesEntry>? _visibleEntries;
+  Set<AvesEntry>? _visibleEntries, _trashedEntries;
 
   @override
   Set<AvesEntry> get visibleEntries {
     _visibleEntries ??= Set.unmodifiable(_applyHiddenFilters(_rawEntries));
     return _visibleEntries!;
+  }
+
+  @override
+  Set<AvesEntry> get trashedEntries {
+    _trashedEntries ??= Set.unmodifiable(_applyTrashFilter(_rawEntries));
+    return _trashedEntries!;
   }
 
   List<AvesEntry>? _sortedEntriesByDate;
@@ -69,6 +93,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
     return _sortedEntriesByDate!;
   }
 
+  // known date by entry ID
   late Map<int?, int?> _savedDates;
 
   Future<void> loadDates() async {
@@ -76,12 +101,20 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
   }
 
   Iterable<AvesEntry> _applyHiddenFilters(Iterable<AvesEntry> entries) {
-    final hiddenFilters = settings.hiddenFilters;
-    return hiddenFilters.isEmpty ? entries : entries.where((entry) => !hiddenFilters.any((filter) => filter.test(entry)));
+    final hiddenFilters = {
+      TrashFilter.instance,
+      ...settings.hiddenFilters,
+    };
+    return entries.where((entry) => !hiddenFilters.any((filter) => filter.test(entry)));
+  }
+
+  Iterable<AvesEntry> _applyTrashFilter(Iterable<AvesEntry> entries) {
+    return entries.where(TrashFilter.instance.test);
   }
 
   void _invalidate([Set<AvesEntry>? entries]) {
     _visibleEntries = null;
+    _trashedEntries = null;
     _sortedEntriesByDate = null;
     invalidateAlbumFilterSummary(entries: entries);
     invalidateCountryFilterSummary(entries: entries);
@@ -100,14 +133,14 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
   void addEntries(Set<AvesEntry> entries) {
     if (entries.isEmpty) return;
 
-    final newIdMapEntries = Map.fromEntries(entries.map((v) => MapEntry(v.contentId, v)));
+    final newIdMapEntries = Map.fromEntries(entries.map((entry) => MapEntry(entry.id, entry)));
     if (_rawEntries.isNotEmpty) {
-      final newContentIds = newIdMapEntries.keys.toSet();
-      _rawEntries.removeWhere((entry) => newContentIds.contains(entry.contentId));
+      final newIds = newIdMapEntries.keys.toSet();
+      _rawEntries.removeWhere((entry) => newIds.contains(entry.id));
     }
 
     entries.where((entry) => entry.catalogDateMillis == null).forEach((entry) {
-      entry.catalogDateMillis = _savedDates[entry.contentId];
+      entry.catalogDateMillis = _savedDates[entry.id];
     });
 
     _entryById.addAll(newIdMapEntries);
@@ -118,14 +151,21 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
     eventBus.fire(EntryAddedEvent(entries));
   }
 
-  Future<void> removeEntries(Set<String> uris) async {
+  Future<void> removeEntries(Set<String> uris, {required bool includeTrash}) async {
     if (uris.isEmpty) return;
-    final entries = _rawEntries.where((entry) => uris.contains(entry.uri)).toSet();
-    await favourites.remove(entries);
-    await covers.removeEntries(entries);
-    await metadataDb.removeVideoPlayback(entries.map((entry) => entry.contentId).whereNotNull().toSet());
 
-    entries.forEach((v) => _entryById.remove(v.contentId));
+    final entries = _rawEntries.where((entry) => uris.contains(entry.uri)).toSet();
+    if (!includeTrash) {
+      entries.removeWhere(TrashFilter.instance.test);
+    }
+    if (entries.isEmpty) return;
+
+    final ids = entries.map((entry) => entry.id).toSet();
+    await favourites.removeIds(ids);
+    await covers.removeIds(ids);
+    await metadataDb.removeIds(ids);
+
+    ids.forEach((id) => _entryById.remove);
     _rawEntries.removeAll(entries);
     updateDerivedFilters(entries);
     eventBus.fire(EntryRemovedEvent(entries));
@@ -142,27 +182,51 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
   }
 
   Future<void> _moveEntry(AvesEntry entry, Map newFields, {required bool persist}) async {
-    final oldContentId = entry.contentId!;
-    final newContentId = newFields['contentId'] as int?;
+    newFields.keys.forEach((key) {
+      switch (key) {
+        case 'contentId':
+          entry.contentId = newFields['contentId'] as int?;
+          break;
+        case 'dateModifiedSecs':
+          // `dateModifiedSecs` changes when moving entries to another directory,
+          // but it does not change when renaming the containing directory
+          entry.dateModifiedSecs = newFields['dateModifiedSecs'] as int?;
+          break;
+        case 'path':
+          entry.path = newFields['path'] as String?;
+          break;
+        case 'title':
+          entry.sourceTitle = newFields['title'] as String?;
+          break;
+        case 'trashed':
+          final trashed = newFields['trashed'] as bool;
+          entry.trashed = trashed;
+          entry.trashDetails = trashed
+              ? TrashDetails(
+                  id: entry.id,
+                  path: newFields['trashPath'] as String,
+                  dateMillis: DateTime.now().millisecondsSinceEpoch,
+                )
+              : null;
+          break;
+        case 'uri':
+          entry.uri = newFields['uri'] as String;
+          break;
+      }
+    });
+    if (entry.trashed) {
+      entry.contentId = null;
+      entry.uri = 'file://${entry.trashDetails?.path}';
+    }
 
-    entry.contentId = newContentId;
-    // `dateModifiedSecs` changes when moving entries to another directory,
-    // but it does not change when renaming the containing directory
-    if (newFields.containsKey('dateModifiedSecs')) entry.dateModifiedSecs = newFields['dateModifiedSecs'] as int?;
-    if (newFields.containsKey('path')) entry.path = newFields['path'] as String?;
-    if (newFields.containsKey('uri')) entry.uri = newFields['uri'] as String;
-    if (newFields.containsKey('title')) entry.sourceTitle = newFields['title'] as String?;
-
-    entry.catalogMetadata = entry.catalogMetadata?.copyWith(contentId: newContentId);
-    entry.addressDetails = entry.addressDetails?.copyWith(contentId: newContentId);
+    await covers.moveEntry(entry, persist: persist);
 
     if (persist) {
-      await metadataDb.updateEntryId(oldContentId, entry);
-      await metadataDb.updateMetadataId(oldContentId, entry.catalogMetadata);
-      await metadataDb.updateAddressId(oldContentId, entry.addressDetails);
-      await favourites.moveEntry(oldContentId, entry);
-      await covers.moveEntry(oldContentId, entry);
-      await metadataDb.updateVideoPlaybackId(oldContentId, entry.contentId);
+      final id = entry.id;
+      await metadataDb.updateEntry(id, entry);
+      await metadataDb.updateCatalogMetadata(id, entry.catalogMetadata);
+      await metadataDb.updateAddress(id, entry.addressDetails);
+      await metadataDb.updateTrash(id, entry.trashDetails);
     }
   }
 
@@ -198,42 +262,40 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
     return success;
   }
 
-  Future<void> renameAlbum(String sourceAlbum, String destinationAlbum, Set<AvesEntry> todoEntries, Set<MoveOpEvent> movedOps) async {
+  Future<void> renameAlbum(String sourceAlbum, String destinationAlbum, Set<AvesEntry> entries, Set<MoveOpEvent> movedOps) async {
     final oldFilter = AlbumFilter(sourceAlbum, null);
-    final bookmarked = settings.drawerAlbumBookmarks?.contains(sourceAlbum) == true;
+    final newFilter = AlbumFilter(destinationAlbum, null);
+
+    final bookmark = settings.drawerAlbumBookmarks?.indexOf(sourceAlbum);
     final pinned = settings.pinnedFilters.contains(oldFilter);
-    final oldCoverContentId = covers.coverContentId(oldFilter);
-    final coverEntry = oldCoverContentId != null ? todoEntries.firstWhereOrNull((entry) => entry.contentId == oldCoverContentId) : null;
+    await covers.set(newFilter, covers.coverEntryId(oldFilter));
     renameNewAlbum(sourceAlbum, destinationAlbum);
     await updateAfterMove(
-      todoEntries: todoEntries,
-      copy: false,
-      destinationAlbum: destinationAlbum,
+      todoEntries: entries,
+      moveType: MoveType.move,
+      destinationAlbums: {destinationAlbum},
       movedOps: movedOps,
     );
-    // restore bookmark, pin and cover, as the obsolete album got removed and its associated state cleaned
-    final newFilter = AlbumFilter(destinationAlbum, null);
-    if (bookmarked) {
-      settings.drawerAlbumBookmarks = settings.drawerAlbumBookmarks?..add(destinationAlbum);
+    // restore bookmark and pin, as the obsolete album got removed and its associated state cleaned
+    if (bookmark != null && bookmark != -1) {
+      settings.drawerAlbumBookmarks = settings.drawerAlbumBookmarks?..insert(bookmark, destinationAlbum);
     }
     if (pinned) {
       settings.pinnedFilters = settings.pinnedFilters..add(newFilter);
-    }
-    if (coverEntry != null) {
-      await covers.set(newFilter, coverEntry.contentId);
     }
   }
 
   Future<void> updateAfterMove({
     required Set<AvesEntry> todoEntries,
-    required bool copy,
-    required String destinationAlbum,
+    required MoveType moveType,
+    required Set<String> destinationAlbums,
     required Set<MoveOpEvent> movedOps,
   }) async {
     if (movedOps.isEmpty) return;
 
     final fromAlbums = <String?>{};
     final movedEntries = <AvesEntry>{};
+    final copy = moveType == MoveType.copy;
     if (copy) {
       movedOps.forEach((movedOp) {
         final sourceUri = movedOp.uri;
@@ -242,6 +304,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
         if (sourceEntry != null) {
           fromAlbums.add(sourceEntry.directory);
           movedEntries.add(sourceEntry.copyWith(
+            id: metadataDb.nextId,
             uri: newFields['uri'] as String?,
             path: newFields['path'] as String?,
             contentId: newFields['contentId'] as int?,
@@ -254,7 +317,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
         }
       });
       await metadataDb.saveEntries(movedEntries);
-      await metadataDb.saveMetadata(movedEntries.map((entry) => entry.catalogMetadata).whereNotNull().toSet());
+      await metadataDb.saveCatalogMetadata(movedEntries.map((entry) => entry.catalogMetadata).whereNotNull().toSet());
       await metadataDb.saveAddresses(movedEntries.map((entry) => entry.addressDetails).whereNotNull().toSet());
     } else {
       await Future.forEach<MoveOpEvent>(movedOps, (movedOp) async {
@@ -263,7 +326,11 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
           final sourceUri = movedOp.uri;
           final entry = todoEntries.firstWhereOrNull((entry) => entry.uri == sourceUri);
           if (entry != null) {
-            fromAlbums.add(entry.directory);
+            if (moveType == MoveType.fromBin) {
+              newFields['trashed'] = false;
+            } else {
+              fromAlbums.add(entry.directory);
+            }
             movedEntries.add(entry);
             await _moveEntry(entry, newFields, persist: true);
           }
@@ -275,18 +342,22 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
       addEntries(movedEntries);
     } else {
       cleanEmptyAlbums(fromAlbums);
-      addDirectories({destinationAlbum});
+      if (moveType != MoveType.toBin) {
+        addDirectories(destinationAlbums);
+      }
     }
     invalidateAlbumFilterSummary(directories: fromAlbums);
     _invalidate(movedEntries);
-    eventBus.fire(EntryMovedEvent(copy ? MoveType.copy : MoveType.move, movedEntries));
+    eventBus.fire(EntryMovedEvent(moveType, movedEntries));
   }
 
-  bool get initialized => false;
+  SourceInitializationState get initState => SourceInitializationState.none;
 
-  Future<void> init();
-
-  Future<void> refresh({AnalysisController? analysisController});
+  Future<void> init({
+    AnalysisController? analysisController,
+    String? directory,
+    bool loadTopEntriesFirst = false,
+  });
 
   Future<Set<String>> refreshUris(Set<String> changedUris, {AnalysisController? analysisController});
 
@@ -294,13 +365,13 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
     await entry.refresh(background: false, persist: true, dataTypes: dataTypes, geocoderLocale: settings.appliedLocale);
 
     // update/delete in DB
-    final contentId = entry.contentId!;
+    final id = entry.id;
     if (dataTypes.contains(EntryDataType.catalog)) {
-      await metadataDb.updateMetadataId(contentId, entry.catalogMetadata);
+      await metadataDb.updateCatalogMetadata(id, entry.catalogMetadata);
       onCatalogMetadataChanged();
     }
     if (dataTypes.contains(EntryDataType.address)) {
-      await metadataDb.updateAddressId(contentId, entry.addressDetails);
+      await metadataDb.updateAddress(id, entry.addressDetails);
       onAddressMetadataChanged();
     }
 
@@ -334,7 +405,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
       if (startAnalysisService) {
         await AnalysisService.startService(
           force: force,
-          contentIds: entries?.map((entry) => entry.contentId).whereNotNull().toList(),
+          entryIds: entries?.map((entry) => entry.id).toList(),
         );
       } else {
         await catalogEntries(_analysisController, todoEntries);
@@ -373,28 +444,21 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
   }
 
   AvesEntry? coverEntry(CollectionFilter filter) {
-    final contentId = covers.coverContentId(filter);
-    if (contentId != null) {
-      final entry = visibleEntries.firstWhereOrNull((entry) => entry.contentId == contentId);
+    final id = covers.coverEntryId(filter);
+    if (id != null) {
+      final entry = visibleEntries.firstWhereOrNull((entry) => entry.id == id);
       if (entry != null) return entry;
     }
     return recentEntry(filter);
   }
 
-  void changeFilterVisibility(Set<CollectionFilter> filters, bool visible) {
-    final hiddenFilters = settings.hiddenFilters;
-    if (visible) {
-      hiddenFilters.removeAll(filters);
-    } else {
-      hiddenFilters.addAll(filters);
-      settings.searchHistory = settings.searchHistory..removeWhere(filters.contains);
-    }
-    settings.hiddenFilters = hiddenFilters;
+  void _onFilterVisibilityChanged(Set<CollectionFilter> oldHiddenFilters, Set<CollectionFilter> currentHiddenFilters) {
     updateDerivedFilters();
-    eventBus.fire(FilterVisibilityChangedEvent(filters, visible));
+    eventBus.fire(const FilterVisibilityChangedEvent());
 
-    if (visible) {
-      final candidateEntries = visibleEntries.where((entry) => filters.any((f) => f.test(entry))).toSet();
+    final newlyVisibleFilters = oldHiddenFilters.whereNot(currentHiddenFilters.contains).toSet();
+    if (newlyVisibleFilters.isNotEmpty) {
+      final candidateEntries = visibleEntries.where((entry) => newlyVisibleFilters.any((f) => f.test(entry))).toSet();
       analyze(null, entries: candidateEntries);
     }
   }

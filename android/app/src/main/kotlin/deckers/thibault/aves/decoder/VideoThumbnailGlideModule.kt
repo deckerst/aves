@@ -18,8 +18,9 @@ import com.bumptech.glide.module.LibraryGlideModule
 import com.bumptech.glide.signature.ObjectKey
 import deckers.thibault.aves.utils.BitmapUtils.getBytes
 import deckers.thibault.aves.utils.StorageUtils.openMetadataRetriever
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import java.io.ByteArrayInputStream
 import java.io.InputStream
@@ -48,8 +49,10 @@ internal class VideoThumbnailLoader : ModelLoader<VideoThumbnail, InputStream> {
 }
 
 internal class VideoThumbnailFetcher(private val model: VideoThumbnail) : DataFetcher<InputStream> {
+    private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
     override fun loadData(priority: Priority, callback: DataCallback<in InputStream>) {
-        GlobalScope.launch(Dispatchers.IO) {
+        ioScope.launch {
             val retriever = openMetadataRetriever(model.context, model.uri)
             if (retriever == null) {
                 callback.onLoadFailed(Exception("failed to initialize MediaMetadataRetriever for uri=${model.uri}"))

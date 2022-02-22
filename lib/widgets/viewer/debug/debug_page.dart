@@ -68,8 +68,9 @@ class ViewerDebugPage extends StatelessWidget {
         InfoRowGroup(
           info: {
             'hash': '#${shortHash(entry)}',
-            'uri': entry.uri,
+            'id': '${entry.id}',
             'contentId': '${entry.contentId}',
+            'uri': entry.uri,
             'path': entry.path ?? '',
             'directory': entry.directory ?? '',
             'filenameWithoutExtension': entry.filenameWithoutExtension ?? '',
@@ -77,6 +78,7 @@ class ViewerDebugPage extends StatelessWidget {
             'sourceTitle': entry.sourceTitle ?? '',
             'sourceMimeType': entry.sourceMimeType,
             'mimeType': entry.mimeType,
+            'trashed': '${entry.trashed}',
             'isMissingAtPath': '${entry.isMissingAtPath}',
           },
         ),

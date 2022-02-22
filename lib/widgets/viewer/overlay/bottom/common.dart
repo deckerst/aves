@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/metadata/overlay.dart';
 import 'package:aves/model/multipage.dart';
-import 'package:aves/model/settings/coordinate_format.dart';
+import 'package:aves/model/settings/enums/coordinate_format.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
@@ -384,7 +384,7 @@ class _PositionTitleRow extends StatelessWidget {
           // but fail to get information about these pages
           final pageCount = multiPageInfo.pageCount;
           if (pageCount > 0) {
-            final page = multiPageInfo.getById(entry.pageId ?? entry.contentId) ?? multiPageInfo.defaultPage;
+            final page = multiPageInfo.getById(entry.pageId ?? entry.id) ?? multiPageInfo.defaultPage;
             pagePosition = '${(page?.index ?? 0) + 1}/$pageCount';
           }
         }

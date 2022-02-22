@@ -62,7 +62,7 @@ class GSpherical(xmlBytes: ByteArray) {
         }
     }
 
-    fun describe(): Map<String, String?> = hashMapOf(
+    fun describe(): Map<String, String> = hashMapOf(
         "Spherical" to spherical.toString(),
         "Stitched" to stitched.toString(),
         "Stitching Software" to stitchingSoftware,
@@ -79,7 +79,7 @@ class GSpherical(xmlBytes: ByteArray) {
         "Cropped Area Image Height Pixels" to croppedAreaImageHeightPixels?.toString(),
         "Cropped Area Left Pixels" to croppedAreaLeftPixels?.toString(),
         "Cropped Area Top Pixels" to croppedAreaTopPixels?.toString(),
-    ).filterValues { it != null }
+    ).filterValues { it != null }.mapValues { it.value as String }
 
     companion object SphericalVideo {
         private val LOG_TAG = LogUtils.createTag<SphericalVideo>()

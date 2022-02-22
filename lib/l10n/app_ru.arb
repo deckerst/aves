@@ -7,6 +7,7 @@
 
   "timeSeconds": "{seconds, plural, =1{1 секунда} few{{seconds} секунды} other{{seconds} секунд}}",
   "timeMinutes": "{minutes, plural, =1{1 минута} few{{minutes} минуты} other{{minutes} минут}}",
+  "timeDays": "{days, plural, =1{1 день} few{{days} дня} other{{days} дней}}",
   "focalLength": "{length} mm",
 
   "applyButtonLabel": "ПРИМЕНИТЬ",
@@ -27,6 +28,7 @@
   "resetButtonTooltip": "Сбросить",
 
   "doubleBackExitMessage": "Нажмите «назад» еще раз, чтобы выйти.",
+  "doNotAskAgain": "Больше не спрашивать",
 
   "sourceStateLoading": "Загрузка",
   "sourceStateCataloguing": "Каталогизация",
@@ -47,8 +49,8 @@
   "entryActionCopyToClipboard": "Скопировать в буфер обмена",
   "entryActionDelete": "Удалить",
   "entryActionExport": "Экспорт",
-  "entryActionInfo": "Информация",
   "entryActionRename": "Переименовать",
+  "entryActionRestore": "Восстановить",
   "entryActionRotateCCW": "Повернуть против часовой стрелки",
   "entryActionRotateCW": "Повернуть по часовой стрелки",
   "entryActionFlip": "Отразить по горизонтали",
@@ -56,10 +58,10 @@
   "entryActionShare": "Поделиться",
   "entryActionViewSource": "Посмотреть источник",
   "entryActionViewMotionPhotoVideo": "Открыть «Живые фото»",
-  "entryActionEdit": "Изменить с помощью…",
-  "entryActionOpen": "Открыть с помощью…",
-  "entryActionSetAs": "Установить как…",
-  "entryActionOpenMap": "Показать на карте…",
+  "entryActionEdit": "Изменить",
+  "entryActionOpen": "Открыть с помощью",
+  "entryActionSetAs": "Установить как",
+  "entryActionOpenMap": "Показать на карте",
   "entryActionRotateScreen": "Повернуть экран",
   "entryActionAddFavourite": "Добавить в избранное",
   "entryActionRemoveFavourite": "Удалить из избранного",
@@ -79,6 +81,7 @@
   "entryInfoActionEditTags": "Изменить теги",
   "entryInfoActionRemoveMetadata": "Удалить метаданные",
 
+  "filterBinLabel": "Корзина",
   "filterFavouriteLabel": "Избранное",
   "filterLocationEmptyLabel": "Без местоположения",
   "filterTagEmptyLabel": "Без тегов",
@@ -157,6 +160,7 @@
   "noMatchingAppDialogTitle": "Нет подходящего приложения",
   "noMatchingAppDialogMessage": "Нет приложений, которые могли бы с этим справиться.",
 
+  "binEntriesConfirmationDialogMessage": "{count, plural, =1{Переместить этот элемент в корзину?} few{Переместить эти {count} элемента в корзину?} other{Переместить эти {count} элементов в корзину?}}",
   "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{Вы уверены, что хотите удалить этот объект?} few{Вы уверены, что хотите удалить эти {count} объекта?} other{Вы уверены, что хотите удалить эти {count} объектов?}}",
 
   "videoResumeDialogMessage": "Хотите ли вы возобновить воспроизведение на {time}?",
@@ -267,11 +271,12 @@
 
   "collectionPageTitle": "Коллекция",
   "collectionPickPageTitle": "Выбрать",
-  "collectionSelectionPageTitle": "{count, plural, =0{Выберите объекты} =1{1 объект} few{{count} объекта} other{{count} объектов}}",
+  "collectionSelectPageTitle": "Выберите объекты",
 
   "collectionActionShowTitleSearch": "Показать фильтр заголовка",
   "collectionActionHideTitleSearch": "Скрыть фильтр заголовка",
   "collectionActionAddShortcut": "Добавить ярлык",
+  "collectionActionEmptyBin": "Очистить корзину",
   "collectionActionCopy": "Скопировать в альбом",
   "collectionActionMove": "Переместить в альбом",
   "collectionActionRescan": "Пересканировать",
@@ -350,6 +355,8 @@
   "tagPageTitle": "Теги",
   "tagEmpty": "Нет тегов",
 
+  "binPageTitle": "Корзина",
+
   "searchCollectionFieldHint": "Поиск по коллекции",
   "searchSectionRecent": "Недавние",
   "searchSectionAlbums": "Альбомы",
@@ -374,6 +381,11 @@
   "settingsKeepScreenOnTile": "Держать экран включенным",
   "settingsKeepScreenOnTitle": "Держать экран включенным",
   "settingsDoubleBackExit": "Дважды нажмите «Назад», чтобы выйти",
+
+  "settingsConfirmationDialogTile": "Диалоги подтверждения",
+  "settingsConfirmationDialogTitle": "Диалоги подтверждения",
+  "settingsConfirmationDialogDeleteItems": "Спросить, прежде чем удалять элементы навсегда",
+  "settingsConfirmationDialogMoveToBinItems": "Спросить, прежде чем перемещать элементы в корзину",
 
   "settingsNavigationDrawerTile": "Навигационное меню",
   "settingsNavigationDrawerEditorTitle": "Навигационное меню",
@@ -450,6 +462,8 @@
   "settingsAllowInstalledAppAccessSubtitle": "Используется для улучшения отображения альбомов",
   "settingsAllowErrorReporting": "Разрешить анонимную отправку логов",
   "settingsSaveSearchHistory": "Сохранять историю поиска",
+  "settingsEnableBin": "Использовать корзину",
+  "settingsEnableBinSubtitle": "Хранить удалённые элементы в течение 30 дней",
 
   "settingsHiddenItemsTile": "Скрытые объекты",
   "settingsHiddenItemsTitle": "Скрытые объекты",

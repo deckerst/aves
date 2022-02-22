@@ -1,5 +1,5 @@
 import 'package:aves/model/entry.dart';
-import 'package:aves/model/settings/accessibility_animations.dart';
+import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/widgets/common/magnifier/pan/gesture_detector_scope.dart';

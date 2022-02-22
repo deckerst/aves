@@ -1,4 +1,4 @@
-import 'package:aves/model/settings/enums.dart';
+import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/widgets/common/basic/outlined_text.dart';
 import 'package:aves/widgets/common/map/leaflet/scalebar_utils.dart';
 import 'package:flutter/material.dart';
