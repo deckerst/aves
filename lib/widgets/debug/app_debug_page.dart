@@ -144,6 +144,10 @@ class _AppDebugPageState extends State<AppDebugPage> {
           child: const Text('Source refresh (camera)'),
         ),
         ElevatedButton(
+          onPressed: () => source.init(directory: androidFileUtils.picturesPath),
+          child: const Text('Source refresh (pictures)'),
+        ),
+        ElevatedButton(
           onPressed: () => AnalysisService.startService(force: false),
           child: const Text('Start analysis service'),
         ),

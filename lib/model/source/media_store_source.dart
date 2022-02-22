@@ -88,10 +88,11 @@ class MediaStoreSource extends CollectionSource {
     final knownContentIds = knownDateByContentId.keys.toList();
     final removedContentIds = (await mediaStoreService.checkObsoleteContentIds(knownContentIds)).toSet();
     if (topEntries.isNotEmpty) {
-      final obsoleteTopEntries = topEntries.where((entry) => removedContentIds.contains(entry.contentId));
-      await removeEntries(obsoleteTopEntries.map((entry) => entry.uri).toSet(), includeTrash: false);
+      final removedTopEntries = topEntries.where((entry) => removedContentIds.contains(entry.contentId));
+      await removeEntries(removedTopEntries.map((entry) => entry.uri).toSet(), includeTrash: false);
     }
-    knownEntries.removeWhere((entry) => removedContentIds.contains(entry.contentId));
+    final removedEntries = knownEntries.where((entry) => removedContentIds.contains(entry.contentId)).toSet();
+    knownEntries.removeAll(removedEntries);
 
     // show known entries
     debugPrint('$runtimeType refresh ${stopwatch.elapsed} add known entries');
@@ -109,8 +110,10 @@ class MediaStoreSource extends CollectionSource {
     }
 
     // clean up obsolete entries
-    debugPrint('$runtimeType refresh ${stopwatch.elapsed} remove obsolete entries');
-    await metadataDb.removeIds(removedContentIds);
+    if (removedEntries.isNotEmpty) {
+      debugPrint('$runtimeType refresh ${stopwatch.elapsed} remove obsolete entries');
+      await metadataDb.removeIds(removedEntries.map((entry) => entry.id));
+    }
 
     if (directory != null) {
       // trash
@@ -173,6 +176,7 @@ class MediaStoreSource extends CollectionSource {
           updateDirectories();
         }
 
+        debugPrint('$runtimeType refresh ${stopwatch.elapsed} analyze');
         Set<AvesEntry>? analysisEntries;
         final analysisIds = analysisController?.entryIds;
         if (analysisIds != null) {
@@ -180,7 +184,7 @@ class MediaStoreSource extends CollectionSource {
         }
         await analyze(analysisController, entries: analysisEntries);
 
-        debugPrint('$runtimeType refresh ${stopwatch.elapsed} done for ${knownEntries.length} known, ${allNewEntries.length} new, ${removedContentIds.length} obsolete');
+        debugPrint('$runtimeType refresh ${stopwatch.elapsed} done for ${knownEntries.length} known, ${allNewEntries.length} new, ${removedEntries.length} removed');
       },
       onError: (error) => debugPrint('$runtimeType stream error=$error'),
     );
