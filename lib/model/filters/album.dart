@@ -1,6 +1,7 @@
 import 'package:aves/image_providers/app_icon_image_provider.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/services/common/services.dart';
+import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/common/identity/aves_icons.dart';
@@ -57,21 +58,36 @@ class AlbumFilter extends CollectionFilter {
   Future<Color> color(BuildContext context) {
     // do not use async/await and rely on `SynchronousFuture`
     // to prevent rebuilding of the `FutureBuilder` listening on this future
-    if (androidFileUtils.getAlbumType(album) == AlbumType.app) {
-      if (_appColors.containsKey(album)) return SynchronousFuture(_appColors[album]!);
+    final albumType = androidFileUtils.getAlbumType(album);
+    switch (albumType) {
+      case AlbumType.regular:
+        break;
+      case AlbumType.app:
+        if (_appColors.containsKey(album)) return SynchronousFuture(_appColors[album]!);
 
-      final packageName = androidFileUtils.getAlbumAppPackageName(album);
-      if (packageName != null) {
-        return PaletteGenerator.fromImageProvider(
-          AppIconImage(packageName: packageName, size: 24),
-        ).then((palette) async {
-          // `dominantColor` is most representative but can have low contrast with a dark background
-          // `vibrantColor` is usually representative and has good contrast with a dark background
-          final color = palette.vibrantColor?.color ?? (await super.color(context));
-          _appColors[album] = color;
-          return color;
-        });
-      }
+        final packageName = androidFileUtils.getAlbumAppPackageName(album);
+        if (packageName != null) {
+          return PaletteGenerator.fromImageProvider(
+            AppIconImage(packageName: packageName, size: 24),
+          ).then((palette) async {
+            // `dominantColor` is most representative but can have low contrast with a dark background
+            // `vibrantColor` is usually representative and has good contrast with a dark background
+            final color = palette.vibrantColor?.color ?? (await super.color(context));
+            _appColors[album] = color;
+            return color;
+          });
+        }
+        break;
+      case AlbumType.camera:
+        return SynchronousFuture(AColors.albumCamera);
+      case AlbumType.download:
+        return SynchronousFuture(AColors.albumDownload);
+      case AlbumType.screenRecordings:
+        return SynchronousFuture(AColors.albumScreenRecordings);
+      case AlbumType.screenshots:
+        return SynchronousFuture(AColors.albumScreenshots);
+      case AlbumType.videoCaptures:
+        return SynchronousFuture(AColors.albumVideoCaptures);
     }
     return super.color(context);
   }
