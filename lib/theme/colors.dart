@@ -15,6 +15,13 @@ class AColors {
   static final raw = stringToColor('Raw');
   static final sphericalVideo = stringToColor('360° Video');
 
+  // albums
+  static final albumCamera = stringToColor('Camera');
+  static final albumDownload = stringToColor('Download');
+  static final albumScreenshots = stringToColor('Screenshots');
+  static final albumScreenRecordings = stringToColor('Screen recordings');
+  static final albumVideoCaptures = stringToColor('Video Captures');
+
   // info
   static final xmp = stringToColor('XMP');
 
