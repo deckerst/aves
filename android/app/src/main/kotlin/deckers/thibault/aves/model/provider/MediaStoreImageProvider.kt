@@ -393,7 +393,7 @@ class MediaStoreImageProvider : ImageProvider() {
                 val mimeType = entry.mimeType
                 val trashed = entry.trashed
 
-                val sourceUri = if (trashed) Uri.fromFile(File(entry.trashPath!!)) else entry.uri
+                val sourceUri = entry.uri
                 val sourcePath = if (trashed) entry.trashPath else entry.path
 
                 var desiredName: String? = null
@@ -402,9 +402,7 @@ class MediaStoreImageProvider : ImageProvider() {
                 }
 
                 val result: FieldMap = hashMapOf(
-                    // `uri` should reference original content URI,
-                    // so it is different with `sourceUri` when recycling trashed entries
-                    "uri" to entry.uri.toString(),
+                    "uri" to sourceUri.toString(),
                     "success" to false,
                 )
 

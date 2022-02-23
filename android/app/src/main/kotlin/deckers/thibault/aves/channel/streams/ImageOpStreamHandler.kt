@@ -20,7 +20,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
-import java.io.File
 
 class ImageOpStreamHandler(private val activity: Activity, private val arguments: Any?) : EventChannel.StreamHandler {
     private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
@@ -109,13 +108,11 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
             val mimeType = entry.mimeType
             val trashed = entry.trashed
 
-            val uri = if (trashed) Uri.fromFile(File(entry.trashPath!!)) else entry.uri
+            val uri = entry.uri
             val path = if (trashed) entry.trashPath else entry.path
 
             val result: FieldMap = hashMapOf(
-                // `uri` should reference original content URI,
-                // so it is different with `sourceUri` when deleting trashed entries
-                "uri" to entry.uri.toString(),
+                "uri" to uri.toString(),
             )
             if (isCancelledOp()) {
                 result["skipped"] = true

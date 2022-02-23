@@ -78,8 +78,15 @@ class ViewerDebugPage extends StatelessWidget {
             'sourceTitle': entry.sourceTitle ?? '',
             'sourceMimeType': entry.sourceMimeType,
             'mimeType': entry.mimeType,
-            'trashed': '${entry.trashed}',
             'isMissingAtPath': '${entry.isMissingAtPath}',
+          },
+        ),
+        const Divider(),
+        InfoRowGroup(
+          info: {
+            'trashed': '${entry.trashed}',
+            'trashPath': '${entry.trashDetails?.path}',
+            'trashDateMillis': '${entry.trashDetails?.dateMillis}',
           },
         ),
         const Divider(),
