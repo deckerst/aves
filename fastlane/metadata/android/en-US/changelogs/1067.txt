@@ -1,4 +1,3 @@
-Thanks for using Aves!
 In v1.6.1:
 - recycle bin
 - view small and large images at their actual size
