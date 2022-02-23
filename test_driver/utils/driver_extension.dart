@@ -19,6 +19,7 @@ extension ExtraFlutterDriver on FlutterDriver {
 
   Future<void> scanMediaDir(String dir) async {
     await tapKeyAndWait('appbar-leading-button');
+    await scroll(find.byValueKey('drawer-settings-button'), 0, -500, const Duration(milliseconds: 500));
     await tapKeyAndWait('drawer-debug');
 
     await tapKeyAndWait('appbar-menu-button');
