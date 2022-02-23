@@ -107,15 +107,7 @@ class MediaStoreSource extends CollectionSource {
       await loadCatalogMetadata();
       await loadAddresses();
       updateDerivedFilters();
-    }
 
-    // clean up obsolete entries
-    if (removedEntries.isNotEmpty) {
-      debugPrint('$runtimeType refresh ${stopwatch.elapsed} remove obsolete entries');
-      await metadataDb.removeIds(removedEntries.map((entry) => entry.id));
-    }
-
-    if (directory != null) {
       // trash
       await loadTrashDetails();
       unawaited(deleteExpiredTrash().then(
@@ -127,6 +119,12 @@ class MediaStoreSource extends CollectionSource {
         },
         onError: (error) => debugPrint('failed to evict expired trash error=$error'),
       ));
+    }
+
+    // clean up obsolete entries
+    if (removedEntries.isNotEmpty) {
+      debugPrint('$runtimeType refresh ${stopwatch.elapsed} remove obsolete entries');
+      await metadataDb.removeIds(removedEntries.map((entry) => entry.id));
     }
 
     // verify paths because some apps move files without updating their `last modified date`
