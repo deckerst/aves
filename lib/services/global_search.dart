@@ -51,7 +51,7 @@ Future<List<Map<String, String?>>> _getSuggestions(dynamic args) async {
     debugPrint('getSuggestions query=$query, locale=$locale use24hour=$use24hour');
 
     if (query is String && locale is String) {
-      final entries = await metadataDb.searchEntries(query, limit: 9);
+      final entries = await metadataDb.searchLiveEntries(query, limit: 9);
       suggestions.addAll(entries.map((entry) {
         final date = entry.bestDate;
         return {
