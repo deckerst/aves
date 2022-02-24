@@ -198,32 +198,34 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
               _goToCollection(notification.filter);
             } else if (notification is EntryRemovedNotification) {
               _onEntryRemoved(context, notification.entry);
-            }
-            return false;
-          },
-          child: NotificationListener<ToggleOverlayNotification>(
-            onNotification: (notification) {
+            } else if (notification is ToggleOverlayNotification) {
               _overlayVisible.value = notification.visible ?? !_overlayVisible.value;
-              return true;
-            },
-            child: Stack(
-              children: [
-                ViewerVerticalPageView(
-                  collection: collection,
-                  entryNotifier: _entryNotifier,
-                  verticalPager: _verticalPager,
-                  horizontalPager: _horizontalPager,
-                  onVerticalPageChanged: _onVerticalPageChanged,
-                  onHorizontalPageChanged: _onHorizontalPageChanged,
-                  onImagePageRequested: () => _goToVerticalPage(imagePage),
-                  onViewDisposed: (mainEntry, pageEntry) => viewStateConductor.reset(pageEntry ?? mainEntry),
-                ),
-                _buildTopOverlay(),
-                _buildBottomOverlay(),
-                const SideGestureAreaProtector(),
-                const BottomGestureAreaProtector(),
-              ],
-            ),
+            } else if (notification is ShowInfoNotification) {
+              // remove focus, if any, to prevent viewer shortcuts activation from the Info page
+              FocusManager.instance.primaryFocus?.unfocus();
+              _goToVerticalPage(infoPage);
+            } else {
+              return false;
+            }
+            return true;
+          },
+          child: Stack(
+            children: [
+              ViewerVerticalPageView(
+                collection: collection,
+                entryNotifier: _entryNotifier,
+                verticalPager: _verticalPager,
+                horizontalPager: _horizontalPager,
+                onVerticalPageChanged: _onVerticalPageChanged,
+                onHorizontalPageChanged: _onHorizontalPageChanged,
+                onImagePageRequested: () => _goToVerticalPage(imagePage),
+                onViewDisposed: (mainEntry, pageEntry) => viewStateConductor.reset(pageEntry ?? mainEntry),
+              ),
+              _buildTopOverlay(),
+              _buildBottomOverlay(),
+              const SideGestureAreaProtector(),
+              const BottomGestureAreaProtector(),
+            ],
           ),
         ),
       ),
@@ -249,18 +251,12 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
           );
         }
 
-        return NotificationListener<ShowInfoNotification>(
-          onNotification: (notification) {
-            _goToVerticalPage(infoPage);
-            return true;
-          },
-          child: mainEntry.isMultiPage
-              ? PageEntryBuilder(
-                  multiPageController: context.read<MultiPageConductor>().getController(mainEntry),
-                  builder: (pageEntry) => _buildContent(pageEntry: pageEntry),
-                )
-              : _buildContent(),
-        );
+        return mainEntry.isMultiPage
+            ? PageEntryBuilder(
+                multiPageController: context.read<MultiPageConductor>().getController(mainEntry),
+                builder: (pageEntry) => _buildContent(pageEntry: pageEntry),
+              )
+            : _buildContent();
       },
     );
 
