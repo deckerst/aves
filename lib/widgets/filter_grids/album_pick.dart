@@ -31,6 +31,10 @@ Future<String?> pickAlbum({
   required MoveType? moveType,
 }) async {
   final source = context.read<CollectionSource>();
+  if (source.initState != SourceInitializationState.full) {
+    // source may not be fully initialized in view mode
+    await source.init();
+  }
   final filter = await Navigator.push(
     context,
     MaterialPageRoute<AlbumFilter>(
