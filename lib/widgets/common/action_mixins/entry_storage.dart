@@ -50,12 +50,6 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
       ))) return;
     }
 
-    final source = context.read<CollectionSource>();
-    if (source.initState != SourceInitializationState.full) {
-      // source may be uninitialized in viewer mode
-      await source.init();
-    }
-
     final entriesByDestination = <String, Set<AvesEntry>>{};
     switch (moveType) {
       case MoveType.copy:
@@ -116,6 +110,7 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
       }
     }
 
+    final source = context.read<CollectionSource>();
     source.pauseMonitoring();
     final opId = mediaFileService.newOpId;
     await showOpReport<MoveOpEvent>(
