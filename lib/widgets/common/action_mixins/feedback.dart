@@ -84,7 +84,7 @@ mixin FeedbackMixin {
         itemCount: itemCount,
         onCancel: onCancel,
         onDone: (processed) {
-          Navigator.of(context).pop();
+          Navigator.pop(context);
           onDone?.call(processed);
         },
       ),
