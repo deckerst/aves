@@ -459,11 +459,14 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
     if (hasCollection) {
       final entries = collection!.sortedEntries;
       entries.remove(entry);
-      if (entries.isEmpty) {
-        Navigator.pop(context);
-      } else {
+      if (entries.isNotEmpty) {
         _onCollectionChange();
+        return;
       }
+    }
+
+    if (Navigator.canPop(context)) {
+      Navigator.pop(context);
     } else {
       // leave viewer
       SystemNavigator.pop();
