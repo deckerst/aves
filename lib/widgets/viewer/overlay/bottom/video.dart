@@ -85,23 +85,28 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
               builder: (context, mqWidth, child) {
                 final buttonWidth = OverlayButton.getSize(context);
                 final availableCount = ((mqWidth - outerPadding * 2) / (buttonWidth + innerPadding)).floor();
-                final quickActions = settings.videoQuickActions.take(availableCount - 1).toList();
-                final menuActions = VideoActions.all.where((action) => !quickActions.contains(action)).toList();
-                return Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    _ButtonRow(
-                      quickActions: quickActions,
-                      menuActions: menuActions,
-                      scale: scale,
-                      controller: controller,
-                      onActionSelected: widget.onActionSelected,
-                      onActionMenuOpened: widget.onActionMenuOpened,
-                    ),
-                    const SizedBox(height: 8),
-                    _buildProgressBar(),
-                  ],
+                return Selector<Settings, List<VideoAction>>(
+                  selector: (context, s) => s.videoQuickActions,
+                  builder: (context, videoQuickActions, child) {
+                    final quickActions = videoQuickActions.take(availableCount - 1).toList();
+                    final menuActions = VideoActions.all.where((action) => !quickActions.contains(action)).toList();
+                    return Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        _ButtonRow(
+                          quickActions: quickActions,
+                          menuActions: menuActions,
+                          scale: scale,
+                          controller: controller,
+                          onActionSelected: widget.onActionSelected,
+                          onActionMenuOpened: widget.onActionMenuOpened,
+                        ),
+                        const SizedBox(height: 8),
+                        _buildProgressBar(),
+                      ],
+                    );
+                  },
                 );
               },
             );
