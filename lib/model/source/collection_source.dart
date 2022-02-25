@@ -338,13 +338,19 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
       });
     }
 
-    if (copy) {
-      addEntries(movedEntries);
-    } else {
-      cleanEmptyAlbums(fromAlbums);
-      if (moveType != MoveType.toBin) {
+    switch(moveType) {
+      case MoveType.copy:
+        addEntries(movedEntries);
+        break;
+      case MoveType.move:
+      case MoveType.export:
+        cleanEmptyAlbums(fromAlbums);
         addDirectories(destinationAlbums);
-      }
+        break;
+      case MoveType.toBin:
+      case MoveType.fromBin:
+        updateDerivedFilters(movedEntries);
+        break;
     }
     invalidateAlbumFilterSummary(directories: fromAlbums);
     _invalidate(movedEntries);
