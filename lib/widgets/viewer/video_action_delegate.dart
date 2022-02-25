@@ -60,7 +60,7 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         _showSpeedDialog(context, controller);
         break;
       case VideoAction.settings:
-        _showSettings(context);
+        _showSettings(context, controller);
         break;
       case VideoAction.togglePlay:
         _togglePlayPause(context, controller);
@@ -171,14 +171,25 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     controller.speed = newSpeed;
   }
 
-  void _showSettings(BuildContext context) {
-    Navigator.push(
+  Future<void> _showSettings(BuildContext context, AvesVideoController controller) async {
+    int? resumePosition;
+    if (controller.isPlaying) {
+      resumePosition = controller.currentPosition;
+      await controller.pause();
+    }
+    await Navigator.push(
       context,
       MaterialPageRoute(
         settings: const RouteSettings(name: VideoSettingsPage.routeName),
         builder: (context) => const VideoSettingsPage(),
       ),
     );
+    if (resumePosition != null) {
+      if (!controller.isReady) {
+        await controller.seekTo(resumePosition);
+      }
+      await controller.play();
+    }
   }
 
   Future<void> _togglePlayPause(BuildContext context, AvesVideoController controller) async {

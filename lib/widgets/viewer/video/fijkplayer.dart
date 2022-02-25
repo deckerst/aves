@@ -86,6 +86,12 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
     _instance.addListener(_onValueChanged);
     _subscriptions.add(_valueStream.where((value) => value.state == FijkState.completed).listen((_) => _completedNotifier.notify()));
     _subscriptions.add(_instance.onTimedText.listen(_timedTextStreamController.add));
+    _subscriptions.add(settings.updateStream
+        .where((event) => {
+              Settings.enableVideoHardwareAccelerationKey,
+              Settings.videoLoopModeKey,
+            }.contains(event.key))
+        .listen((_) => _instance.reset()));
   }
 
   void _stopListening() {
@@ -104,6 +110,7 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
     }
 
     sarNotifier.value = 1;
+    _streams.clear();
     _applyOptions(startMillis);
 
     // calling `setDataSource()` with `autoPlay` starts as soon as possible, but often yields initial artifacts
@@ -342,8 +349,7 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
     _speed = speed;
 
     if (optionChange) {
-      final sar = sarNotifier.value;
-      _init(startMillis: currentPosition).then((_) => sarNotifier.value = sar);
+      _init(startMillis: currentPosition);
     } else {
       _applySpeed();
     }
