@@ -305,15 +305,17 @@ class _EntryPageViewState extends State<EntryPageView> {
   void _onTap() => const ToggleOverlayNotification().dispatch(context);
 
   void _onViewStateChanged(MagnifierState v) {
-    final current = _viewStateNotifier.value;
-    final viewState = ViewState(v.position, v.scale, current.viewportSize);
-    _viewStateNotifier.value = viewState;
+    _viewStateNotifier.value = _viewStateNotifier.value.copyWith(
+      position: v.position,
+      scale: v.scale,
+    );
   }
 
   void _onViewScaleBoundariesChanged(ScaleBoundaries v) {
-    final current = _viewStateNotifier.value;
-    final viewState = ViewState(current.position, current.scale, v.viewportSize);
-    _viewStateNotifier.value = viewState;
+    _viewStateNotifier.value = _viewStateNotifier.value.copyWith(
+      viewportSize: v.viewportSize,
+      contentSize: v.childSize,
+    );
   }
 
   static ScaleState _vectorScaleStateCycle(ScaleState actual) {
