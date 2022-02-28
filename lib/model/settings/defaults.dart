@@ -67,6 +67,7 @@ class SettingsDefaults {
   static const showOverlayMinimap = false;
   static const showOverlayInfo = true;
   static const showOverlayShootingDetails = false;
+  static const showOverlayThumbnailPreview = false;
   static const enableOverlayBlurEffect = true; // `enableOverlayBlurEffect` has a contextual default value
   static const viewerUseCutout = true;
   static const viewerMaxBrightness = false;

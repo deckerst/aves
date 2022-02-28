@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 enum EmbeddedDataSource { motionPhotoVideo, videoCover, xmp }
 
+@immutable
 class OpenEmbeddedDataNotification extends Notification {
   final EmbeddedDataSource source;
   final String? propPath;

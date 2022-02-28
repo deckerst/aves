@@ -613,6 +613,7 @@
   "settingsViewerShowInformation": "Show information",
   "settingsViewerShowInformationSubtitle": "Show title, date, location, etc.",
   "settingsViewerShowShootingDetails": "Show shooting details",
+  "settingsViewerShowOverlayThumbnailPreview": "Show thumbnail preview",
   "settingsViewerEnableOverlayBlurEffect": "Blur effect",
 
   "settingsVideoPageTitle": "Video Settings",
