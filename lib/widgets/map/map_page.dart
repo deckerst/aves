@@ -302,7 +302,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
     if (regionCollection != null) {
       final regionEntries = regionCollection!.sortedEntries;
       final selectedIndex = _selectedIndexNotifier.value;
-      selectedEntry = selectedIndex != null && selectedIndex < regionEntries.length ? regionEntries[selectedIndex] : null;
+      selectedEntry = selectedIndex != null && 0 <= selectedIndex && selectedIndex < regionEntries.length ? regionEntries[selectedIndex] : null;
     }
 
     _regionCollectionNotifier.value = openingCollection.copyWith(
