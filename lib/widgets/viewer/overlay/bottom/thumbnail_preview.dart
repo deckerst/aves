@@ -56,7 +56,7 @@ class _ViewerThumbnailPreviewState extends State<ViewerThumbnailPreview> {
     return ThumbnailScroller(
       availableWidth: widget.availableWidth,
       entryCount: entryCount,
-      entryBuilder: (index) => index < entryCount ? entries[index] : null,
+      entryBuilder: (index) => 0 <= index && index < entryCount ? entries[index] : null,
       indexNotifier: _entryIndexNotifier,
       onTap: (index) => ViewEntryNotification(index: index).dispatch(context),
     );
