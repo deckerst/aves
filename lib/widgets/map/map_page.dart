@@ -270,6 +270,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
                         onTap: _onThumbnailTap,
                         heroTagger: (entry) => Object.hashAll([regionCollection?.id, entry.id]),
                         highlightable: true,
+                        showLocation: false,
                       );
                     },
                   );

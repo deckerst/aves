@@ -49,6 +49,7 @@ dependencies:
   google_api_availability:
   google_maps_flutter:
   intl:
+  known_extents_list_view_builder:
   latlong2:
   material_design_icons_flutter:
   overlay_support:

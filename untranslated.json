@@ -1,9 +1,31 @@
 {
   "de": [
-    "entryActionConvert"
+    "entryActionConvert",
+    "settingsViewerShowOverlayThumbnailPreview"
+  ],
+
+  "es": [
+    "settingsViewerShowOverlayThumbnailPreview"
+  ],
+
+  "fr": [
+    "settingsViewerShowOverlayThumbnailPreview"
+  ],
+
+  "id": [
+    "settingsViewerShowOverlayThumbnailPreview"
+  ],
+
+  "ko": [
+    "settingsViewerShowOverlayThumbnailPreview"
+  ],
+
+  "pt": [
+    "settingsViewerShowOverlayThumbnailPreview"
   ],
 
   "ru": [
-    "entryActionConvert"
+    "entryActionConvert",
+    "settingsViewerShowOverlayThumbnailPreview"
   ]
 }

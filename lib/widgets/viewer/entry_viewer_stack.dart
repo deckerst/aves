@@ -204,6 +204,11 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
               // remove focus, if any, to prevent viewer shortcuts activation from the Info page
               FocusManager.instance.primaryFocus?.unfocus();
               _goToVerticalPage(infoPage);
+            } else if (notification is ViewEntryNotification) {
+              final index = notification.index;
+              if (_currentHorizontalPage != index) {
+                _horizontalPager.jumpToPage(index);
+              }
             } else {
               return false;
             }

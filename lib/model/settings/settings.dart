@@ -82,6 +82,7 @@ class Settings extends ChangeNotifier {
   static const showOverlayMinimapKey = 'show_overlay_minimap';
   static const showOverlayInfoKey = 'show_overlay_info';
   static const showOverlayShootingDetailsKey = 'show_overlay_shooting_details';
+  static const showOverlayThumbnailPreviewKey = 'show_overlay_thumbnail_preview';
   static const enableOverlayBlurEffectKey = 'enable_overlay_blur_effect';
   static const viewerUseCutoutKey = 'viewer_use_cutout';
   static const viewerMaxBrightnessKey = 'viewer_max_brightness';
@@ -389,6 +390,10 @@ class Settings extends ChangeNotifier {
 
   set showOverlayShootingDetails(bool newValue) => setAndNotify(showOverlayShootingDetailsKey, newValue);
 
+  bool get showOverlayThumbnailPreview => getBoolOrDefault(showOverlayThumbnailPreviewKey, SettingsDefaults.showOverlayThumbnailPreview);
+
+  set showOverlayThumbnailPreview(bool newValue) => setAndNotify(showOverlayThumbnailPreviewKey, newValue);
+
   bool get enableOverlayBlurEffect => getBoolOrDefault(enableOverlayBlurEffectKey, SettingsDefaults.enableOverlayBlurEffect);
 
   set enableOverlayBlurEffect(bool newValue) => setAndNotify(enableOverlayBlurEffectKey, newValue);
@@ -642,6 +647,7 @@ class Settings extends ChangeNotifier {
             case showOverlayMinimapKey:
             case showOverlayInfoKey:
             case showOverlayShootingDetailsKey:
+            case showOverlayThumbnailPreviewKey:
             case enableOverlayBlurEffectKey:
             case viewerUseCutoutKey:
             case viewerMaxBrightnessKey:
