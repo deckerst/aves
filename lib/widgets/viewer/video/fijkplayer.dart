@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:aves/model/entry.dart';
@@ -301,7 +300,7 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
 
   @override
   Future<void> seekTo(int targetMillis) async {
-    targetMillis = max(0, targetMillis);
+    targetMillis = targetMillis.clamp(0, duration);
     if (isReady) {
       await _instance.seekTo(targetMillis);
     } else {

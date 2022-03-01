@@ -1,31 +1,52 @@
 {
   "de": [
     "entryActionConvert",
-    "settingsViewerShowOverlayThumbnails"
+    "settingsViewerShowOverlayThumbnails",
+    "settingsGesturesTile",
+    "settingsGesturesTitle",
+    "settingsVideoGestureSideDoubleTapSeek"
   ],
 
   "es": [
-    "settingsViewerShowOverlayThumbnails"
+    "settingsViewerShowOverlayThumbnails",
+    "settingsGesturesTile",
+    "settingsGesturesTitle",
+    "settingsVideoGestureSideDoubleTapSeek"
   ],
 
   "fr": [
-    "settingsViewerShowOverlayThumbnails"
+    "settingsViewerShowOverlayThumbnails",
+    "settingsGesturesTile",
+    "settingsGesturesTitle",
+    "settingsVideoGestureSideDoubleTapSeek"
   ],
 
   "id": [
-    "settingsViewerShowOverlayThumbnails"
+    "settingsViewerShowOverlayThumbnails",
+    "settingsGesturesTile",
+    "settingsGesturesTitle",
+    "settingsVideoGestureSideDoubleTapSeek"
   ],
 
   "ko": [
-    "settingsViewerShowOverlayThumbnails"
+    "settingsViewerShowOverlayThumbnails",
+    "settingsGesturesTile",
+    "settingsGesturesTitle",
+    "settingsVideoGestureSideDoubleTapSeek"
   ],
 
   "pt": [
-    "settingsViewerShowOverlayThumbnails"
+    "settingsViewerShowOverlayThumbnails",
+    "settingsGesturesTile",
+    "settingsGesturesTitle",
+    "settingsVideoGestureSideDoubleTapSeek"
   ],
 
   "ru": [
     "entryActionConvert",
-    "settingsViewerShowOverlayThumbnails"
+    "settingsViewerShowOverlayThumbnails",
+    "settingsGesturesTile",
+    "settingsGesturesTitle",
+    "settingsVideoGestureSideDoubleTapSeek"
   ]
 }

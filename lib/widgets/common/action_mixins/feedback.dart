@@ -294,3 +294,70 @@ class _FeedbackMessageState extends State<_FeedbackMessage> {
           );
   }
 }
+
+class ActionFeedback extends StatefulWidget {
+  final Widget? child;
+
+  const ActionFeedback({
+    Key? key,
+    required this.child,
+  }) : super(key: key);
+
+  @override
+  _ActionFeedbackState createState() => _ActionFeedbackState();
+}
+
+class _ActionFeedbackState extends State<ActionFeedback> with SingleTickerProviderStateMixin {
+  late final AnimationController _animationController;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      duration: Durations.viewerActionFeedbackAnimation,
+      vsync: this,
+    );
+  }
+
+  @override
+  void didUpdateWidget(covariant ActionFeedback oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.child != widget.child) {
+      _animationController.reset();
+      if (widget.child != null) {
+        _animationController.forward();
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return IgnorePointer(
+      child: Center(
+        child: AnimatedBuilder(
+          animation: _animationController,
+          builder: (context, child) {
+            final t = _animationController.value;
+            final opacity = Curves.easeOutQuad.transform(t > .5 ? (1 - t) * 2 : t * 2);
+            final scale = Curves.slowMiddle.transform(t) * 2;
+            return Opacity(
+              opacity: opacity,
+              child: Transform.scale(
+                scale: scale,
+                child: child,
+              ),
+            );
+          },
+          child: widget.child,
+        ),
+      ),
+    );
+  }
+}
