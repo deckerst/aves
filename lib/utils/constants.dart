@@ -228,11 +228,6 @@ class Constants {
       sourceUrl: 'https://github.com/mobiten/flutter_staggered_animations',
     ),
     Dependency(
-      name: 'Known Extents List View Builder',
-      license: 'BSD 3-Clause',
-      sourceUrl: 'https://github.com/bendelonlee/known_extents_list_view_builder',
-    ),
-    Dependency(
       name: 'Material Design Icons Flutter',
       license: 'MIT',
       sourceUrl: 'https://github.com/ziofat/material_design_icons_flutter',
