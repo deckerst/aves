@@ -74,67 +74,47 @@ class _ViewerBottomOverlayState extends State<ViewerBottomOverlay> {
 
   @override
   Widget build(BuildContext context) {
-    final showOverlayInfo = settings.showOverlayInfo;
-    final hasEdgeContent = showOverlayInfo || multiPageController != null;
+    final hasEdgeContent = settings.showOverlayThumbnailPreview || settings.showOverlayInfo || multiPageController != null;
     final blurred = settings.enableOverlayBlurEffect;
     return BlurredRect(
       enabled: hasEdgeContent && blurred,
-      child: Selector<MediaQueryData, Tuple3<double, EdgeInsets, EdgeInsets>>(
-        selector: (context, mq) => Tuple3(mq.size.width, mq.viewInsets, mq.viewPadding),
-        builder: (context, mq, child) {
-          final mqWidth = mq.item1;
-          final mqViewInsets = mq.item2;
-          final mqViewPadding = mq.item3;
-
-          final viewInsets = widget.viewInsets ?? mqViewInsets;
-          final viewPadding = widget.viewPadding ?? mqViewPadding;
-          final availableWidth = mqWidth - viewPadding.horizontal;
-
-          return Selector<MediaQueryData, double>(
-            selector: (context, mq) => max(mq.effectiveBottomPadding, showOverlayInfo ? 0 : mq.systemGestureInsets.bottom),
-            builder: (context, mqPaddingBottom, child) {
-              return Container(
-                color: hasEdgeContent ? overlayBackgroundColor(blurred: blurred) : Colors.transparent,
-                padding: EdgeInsets.only(
-                  left: max(viewInsets.left, viewPadding.left),
-                  top: 0,
-                  right: max(viewInsets.right, viewPadding.right),
-                  bottom: mqPaddingBottom,
-                ),
-                child: child,
-              );
-            },
-            child: FutureBuilder<OverlayMetadata?>(
-              future: _detailLoader,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.done && !snapshot.hasError) {
-                  _lastDetails = snapshot.data;
-                  _lastEntry = entry;
-                }
-                if (_lastEntry == null) return const SizedBox();
-                final mainEntry = _lastEntry!;
-
-                Widget _buildContent({AvesEntry? pageEntry}) => _BottomOverlayContent(
-                      entries: entries,
-                      index: widget.index,
-                      mainEntry: mainEntry,
-                      pageEntry: pageEntry ?? mainEntry,
-                      details: _lastDetails,
-                      showPosition: widget.showPosition,
-                      safeWidth: availableWidth,
-                      multiPageController: multiPageController,
-                    );
-
-                return multiPageController != null
-                    ? PageEntryBuilder(
-                        multiPageController: multiPageController!,
-                        builder: (pageEntry) => _buildContent(pageEntry: pageEntry),
-                      )
-                    : _buildContent();
-              },
-            ),
+      child: Selector<MediaQueryData, double>(
+        selector: (context, mq) => max(mq.effectiveBottomPadding, mq.systemGestureInsets.bottom),
+        builder: (context, mqPaddingBottom, child) {
+          return Container(
+            color: hasEdgeContent ? overlayBackgroundColor(blurred: blurred) : Colors.transparent,
+            padding: EdgeInsets.only(bottom: mqPaddingBottom),
+            child: child,
           );
         },
+        child: FutureBuilder<OverlayMetadata?>(
+          future: _detailLoader,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done && !snapshot.hasError) {
+              _lastDetails = snapshot.data;
+              _lastEntry = entry;
+            }
+            if (_lastEntry == null) return const SizedBox();
+            final mainEntry = _lastEntry!;
+
+            Widget _buildContent({AvesEntry? pageEntry}) => _BottomOverlayContent(
+                  entries: entries,
+                  index: widget.index,
+                  mainEntry: mainEntry,
+                  pageEntry: pageEntry ?? mainEntry,
+                  details: _lastDetails,
+                  showPosition: widget.showPosition,
+                  multiPageController: multiPageController,
+                );
+
+            return multiPageController != null
+                ? PageEntryBuilder(
+                    multiPageController: multiPageController!,
+                    builder: (pageEntry) => _buildContent(pageEntry: pageEntry),
+                  )
+                : _buildContent();
+          },
+        ),
       ),
     );
   }
@@ -146,7 +126,6 @@ class _BottomOverlayContent extends AnimatedWidget {
   final AvesEntry mainEntry, pageEntry;
   final OverlayMetadata? details;
   final bool showPosition;
-  final double safeWidth;
   final MultiPageController? multiPageController;
 
   _BottomOverlayContent({
@@ -157,7 +136,6 @@ class _BottomOverlayContent extends AnimatedWidget {
     required this.pageEntry,
     required this.details,
     required this.showPosition,
-    required this.safeWidth,
     required this.multiPageController,
   }) : super(
           key: key,
@@ -176,33 +154,46 @@ class _BottomOverlayContent extends AnimatedWidget {
       softWrap: false,
       overflow: TextOverflow.fade,
       maxLines: 1,
-      child: SizedBox(
-        width: safeWidth,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (mainEntry.isMultiPage && multiPageController != null)
-              MultiPageOverlay(
-                controller: multiPageController!,
-                availableWidth: safeWidth,
-              ),
-            if (settings.showOverlayInfo)
-              ViewerDetailOverlay(
-                pageEntry: pageEntry,
-                details: details,
-                position: showPosition ? '${index + 1}/${entries.length}' : null,
-                availableWidth: safeWidth,
-                multiPageController: multiPageController,
-              ),
-            if (settings.showOverlayThumbnailPreview)
-              ViewerThumbnailPreview(
-                availableWidth: safeWidth,
-                displayedIndex: index,
-                entries: entries,
-              ),
-          ],
-        ),
+      child: Selector<MediaQueryData, double>(
+        selector: (context, mq) => mq.size.width,
+        builder: (context, mqWidth, child) {
+          return SizedBox(
+            width: mqWidth,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (mainEntry.isMultiPage && multiPageController != null)
+                  MultiPageOverlay(
+                    controller: multiPageController!,
+                    availableWidth: mqWidth,
+                  ),
+                if (settings.showOverlayInfo)
+                  SafeArea(
+                    top: false,
+                    bottom: false,
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        return ViewerDetailOverlay(
+                          pageEntry: pageEntry,
+                          details: details,
+                          position: showPosition ? '${index + 1}/${entries.length}' : null,
+                          availableWidth: constraints.maxWidth,
+                          multiPageController: multiPageController,
+                        );
+                      },
+                    ),
+                  ),
+                if (settings.showOverlayThumbnailPreview)
+                  ViewerThumbnailPreview(
+                    availableWidth: mqWidth,
+                    displayedIndex: index,
+                    entries: entries,
+                  ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }
