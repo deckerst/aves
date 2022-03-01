@@ -9,6 +9,7 @@ import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
 import 'package:aves/widgets/settings/common/tile_leading.dart';
+import 'package:aves/widgets/settings/video/gestures.dart';
 import 'package:aves/widgets/settings/video/subtitle_theme.dart';
 import 'package:aves/widgets/settings/video/video_actions_editor.dart';
 import 'package:flutter/material.dart';
@@ -73,6 +74,7 @@ class VideoSection extends StatelessWidget {
           },
         ),
       ),
+      const VideoGesturesTile(),
       const SubtitleThemeTile(),
     ];
 

@@ -39,6 +39,7 @@ class Durations {
   static const thumbnailScrollerScrollAnimation = Duration(milliseconds: 200);
   static const thumbnailScrollerShadeAnimation = Duration(milliseconds: 150);
   static const viewerVideoPlayerTransition = Duration(milliseconds: 500);
+  static const viewerActionFeedbackAnimation = Duration(milliseconds: 800);
 
   // info animations
   static const mapStyleSwitchAnimation = Duration(milliseconds: 300);

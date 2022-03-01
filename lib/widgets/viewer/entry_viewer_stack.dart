@@ -209,6 +209,10 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
               if (_currentHorizontalPage != index) {
                 _horizontalPager.jumpToPage(index);
               }
+            } else if (notification is VideoGestureNotification) {
+              final controller = notification.controller;
+              final action = notification.action;
+              _videoActionDelegate.onActionSelected(context, controller, action);
             } else {
               return false;
             }

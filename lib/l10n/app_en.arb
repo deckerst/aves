@@ -92,8 +92,8 @@
   "entryActionSetAs": "Set as",
   "entryActionOpenMap": "Show in map app",
   "entryActionRotateScreen": "Rotate screen",
-  "entryActionAddFavourite": "Add to favourites",
-  "entryActionRemoveFavourite": "Remove from favourites",
+  "entryActionAddFavourite": "Add to favorites",
+  "entryActionRemoveFavourite": "Remove from favorites",
 
   "videoActionCaptureFrame": "Capture frame",
   "videoActionPause": "Pause",
@@ -111,7 +111,7 @@
   "entryInfoActionRemoveMetadata": "Remove metadata",
 
   "filterBinLabel": "Recycle bin",
-  "filterFavouriteLabel": "Favourite",
+  "filterFavouriteLabel": "Favorite",
   "filterLocationEmptyLabel": "Unlocated",
   "filterTagEmptyLabel": "Untagged",
   "filterRatingUnratedLabel": "Unrated",
@@ -490,7 +490,7 @@
     }
   },
 
-  "collectionEmptyFavourites": "No favourites",
+  "collectionEmptyFavourites": "No favorites",
   "collectionEmptyVideos": "No videos",
   "collectionEmptyImages": "No images",
 
@@ -498,7 +498,7 @@
   "collectionDeselectSectionTooltip": "Deselect section",
 
   "drawerCollectionAll": "All collection",
-  "drawerCollectionFavourites": "Favourites",
+  "drawerCollectionFavourites": "Favorites",
   "drawerCollectionImages": "Images",
   "drawerCollectionVideos": "Videos",
   "drawerCollectionAnimated": "Animated",
@@ -556,7 +556,7 @@
   "settingsActionImport": "Import",
 
   "appExportCovers": "Covers",
-  "appExportFavourites": "Favourites",
+  "appExportFavourites": "Favorites",
   "appExportSettings": "Settings",
 
   "settingsSectionNavigation": "Navigation",
@@ -579,7 +579,7 @@
   "settingsNavigationDrawerAddAlbum": "Add album",
 
   "settingsSectionThumbnails": "Thumbnails",
-  "settingsThumbnailShowFavouriteIcon": "Show favourite icon",
+  "settingsThumbnailShowFavouriteIcon": "Show favorite icon",
   "settingsThumbnailShowLocationIcon": "Show location icon",
   "settingsThumbnailShowMotionPhotoIcon": "Show motion photo icon",
   "settingsThumbnailShowRating": "Show rating",
@@ -640,6 +640,10 @@
   "settingsSubtitleThemeTextAlignmentLeft": "Left",
   "settingsSubtitleThemeTextAlignmentCenter": "Center",
   "settingsSubtitleThemeTextAlignmentRight": "Right",
+
+  "settingsGesturesTile": "Gestures",
+  "settingsGesturesTitle": "Gestures",
+  "settingsVideoGestureSideDoubleTapSeek": "Double tap on screen edges to seek backward/forward",
 
   "settingsSectionPrivacy": "Privacy",
   "settingsAllowInstalledAppAccess": "Allow access to app inventory",

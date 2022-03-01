@@ -82,6 +82,7 @@ class SettingsDefaults {
   static const enableVideoAutoPlay = false;
   static const videoLoopMode = VideoLoopMode.shortOnly;
   static const videoShowRawTimedText = false;
+  static const videoGestureSideDoubleTapSeek = true;
 
   // subtitles
   static const subtitleFontSize = 20.0;

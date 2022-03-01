@@ -159,9 +159,7 @@ extension ExtraEntrySetAction on EntrySetAction {
     }
   }
 
-  Widget getIcon() {
-    return Icon(_getIconData());
-  }
+  Widget getIcon() => Icon(_getIconData());
 
   IconData _getIconData() {
     switch (this) {

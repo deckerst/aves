@@ -28,7 +28,7 @@ class SubtitleThemeTile extends StatelessWidget {
 }
 
 class SubtitleThemePage extends StatelessWidget {
-  static const routeName = '/settings/subtitle_theme';
+  static const routeName = '/settings/video/subtitle_theme';
 
   static const textAlignOptions = [TextAlign.left, TextAlign.center, TextAlign.right];
 
