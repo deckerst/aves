@@ -248,7 +248,7 @@ class _OverlayCoordinateFilterChip extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _OverlayCoordinateFilterChipState createState() => _OverlayCoordinateFilterChipState();
+  State<_OverlayCoordinateFilterChip> createState() => _OverlayCoordinateFilterChipState();
 }
 
 class _OverlayCoordinateFilterChipState extends State<_OverlayCoordinateFilterChip> {

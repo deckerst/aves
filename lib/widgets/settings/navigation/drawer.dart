@@ -39,7 +39,7 @@ class NavigationDrawerEditorPage extends StatefulWidget {
   const NavigationDrawerEditorPage({Key? key}) : super(key: key);
 
   @override
-  _NavigationDrawerEditorPageState createState() => _NavigationDrawerEditorPageState();
+  State<NavigationDrawerEditorPage> createState() => _NavigationDrawerEditorPageState();
 }
 
 class _NavigationDrawerEditorPageState extends State<NavigationDrawerEditorPage> {

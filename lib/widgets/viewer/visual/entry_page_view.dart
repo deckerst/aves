@@ -45,7 +45,7 @@ class EntryPageView extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _EntryPageViewState createState() => _EntryPageViewState();
+  State<EntryPageView> createState() => _EntryPageViewState();
 }
 
 class _EntryPageViewState extends State<EntryPageView> {

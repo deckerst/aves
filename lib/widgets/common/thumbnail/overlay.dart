@@ -58,7 +58,7 @@ class ThumbnailHighlightOverlay extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _ThumbnailHighlightOverlayState createState() => _ThumbnailHighlightOverlayState();
+  State<ThumbnailHighlightOverlay> createState() => _ThumbnailHighlightOverlayState();
 }
 
 class _ThumbnailHighlightOverlayState extends State<ThumbnailHighlightOverlay> {

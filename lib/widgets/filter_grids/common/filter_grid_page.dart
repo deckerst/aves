@@ -146,7 +146,7 @@ class FilterGrid<T extends CollectionFilter> extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _FilterGridState createState() => _FilterGridState<T>();
+  State<FilterGrid<T>> createState() => _FilterGridState<T>();
 }
 
 class _FilterGridState<T extends CollectionFilter> extends State<FilterGrid<T>> {
@@ -338,7 +338,7 @@ class _FilterSectionedContent<T extends CollectionFilter> extends StatefulWidget
   });
 
   @override
-  _FilterSectionedContentState createState() => _FilterSectionedContentState<T>();
+  State<_FilterSectionedContent<T>> createState() => _FilterSectionedContentState<T>();
 }
 
 class _FilterSectionedContentState<T extends CollectionFilter> extends State<_FilterSectionedContent<T>> {

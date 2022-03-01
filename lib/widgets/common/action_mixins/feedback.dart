@@ -107,7 +107,7 @@ class ReportOverlay<T> extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _ReportOverlayState createState() => _ReportOverlayState<T>();
+  State<ReportOverlay<T>> createState() => _ReportOverlayState<T>();
 }
 
 class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerProviderStateMixin {
@@ -239,7 +239,7 @@ class _FeedbackMessage extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _FeedbackMessageState createState() => _FeedbackMessageState();
+  State<_FeedbackMessage> createState() => _FeedbackMessageState();
 }
 
 class _FeedbackMessageState extends State<_FeedbackMessage> {
@@ -304,7 +304,7 @@ class ActionFeedback extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _ActionFeedbackState createState() => _ActionFeedbackState();
+  State<ActionFeedback> createState() => _ActionFeedbackState();
 }
 
 class _ActionFeedbackState extends State<ActionFeedback> with SingleTickerProviderStateMixin {

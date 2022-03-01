@@ -49,7 +49,7 @@ class EntryViewerStack extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _EntryViewerStackState createState() => _EntryViewerStackState();
+  State<EntryViewerStack> createState() => _EntryViewerStackState();
 }
 
 class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin, SingleTickerProviderStateMixin, WidgetsBindingObserver {

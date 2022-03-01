@@ -78,7 +78,7 @@ class _Content extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _ContentState createState() => _ContentState();
+  State<_Content> createState() => _ContentState();
 }
 
 class _ContentState extends State<_Content> with SingleTickerProviderStateMixin {

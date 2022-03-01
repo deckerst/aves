@@ -11,7 +11,7 @@ class PolicyPage extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _PolicyPageState createState() => _PolicyPageState();
+  State<PolicyPage> createState() => _PolicyPageState();
 }
 
 class _PolicyPageState extends State<PolicyPage> {

@@ -25,7 +25,7 @@ class XmpStructArrayCard extends StatefulWidget {
   }
 
   @override
-  _XmpStructArrayCardState createState() => _XmpStructArrayCardState();
+  State<XmpStructArrayCard> createState() => _XmpStructArrayCardState();
 }
 
 class _XmpStructArrayCardState extends State<XmpStructArrayCard> {

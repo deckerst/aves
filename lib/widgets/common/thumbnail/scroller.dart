@@ -30,7 +30,7 @@ class ThumbnailScroller extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _ThumbnailScrollerState createState() => _ThumbnailScrollerState();
+  State<ThumbnailScroller> createState() => _ThumbnailScrollerState();
 }
 
 class _ThumbnailScrollerState extends State<ThumbnailScroller> {

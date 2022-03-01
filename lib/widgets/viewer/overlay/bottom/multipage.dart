@@ -16,7 +16,7 @@ class MultiPageOverlay extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _MultiPageOverlayState createState() => _MultiPageOverlayState();
+  State<MultiPageOverlay> createState() => _MultiPageOverlayState();
 }
 
 class _MultiPageOverlayState extends State<MultiPageOverlay> {

@@ -25,7 +25,7 @@ class TransitionImage extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _TransitionImageState createState() => _TransitionImageState();
+  State<TransitionImage> createState() => _TransitionImageState();
 }
 
 class _TransitionImageState extends State<TransitionImage> {

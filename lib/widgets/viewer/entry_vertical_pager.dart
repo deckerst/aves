@@ -35,7 +35,7 @@ class ViewerVerticalPageView extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _ViewerVerticalPageViewState createState() => _ViewerVerticalPageViewState();
+  State<ViewerVerticalPageView> createState() => _ViewerVerticalPageViewState();
 }
 
 class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {

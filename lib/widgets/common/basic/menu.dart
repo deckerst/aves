@@ -63,7 +63,7 @@ class PopupMenuItemExpansionPanel<T> extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _PopupMenuItemExpansionPanelState createState() => _PopupMenuItemExpansionPanelState<T>();
+  State<PopupMenuItemExpansionPanel<T>> createState() => _PopupMenuItemExpansionPanelState<T>();
 }
 
 class _PopupMenuItemExpansionPanelState<T> extends State<PopupMenuItemExpansionPanel<T>> {

@@ -18,7 +18,7 @@ class DrawerAlbumTab extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _DrawerAlbumTabState createState() => _DrawerAlbumTabState();
+  State<DrawerAlbumTab> createState() => _DrawerAlbumTabState();
 }
 
 class _DrawerAlbumTabState extends State<DrawerAlbumTab> {

@@ -11,7 +11,7 @@ class TimeToTakeActionTile extends StatefulWidget {
   const TimeToTakeActionTile({Key? key}) : super(key: key);
 
   @override
-  _TimeToTakeActionTileState createState() => _TimeToTakeActionTileState();
+  State<TimeToTakeActionTile> createState() => _TimeToTakeActionTileState();
 }
 
 class _TimeToTakeActionTileState extends State<TimeToTakeActionTile> {

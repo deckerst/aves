@@ -7,7 +7,7 @@ class DebugCacheSection extends StatefulWidget {
   const DebugCacheSection({Key? key}) : super(key: key);
 
   @override
-  _DebugCacheSectionState createState() => _DebugCacheSectionState();
+  State<DebugCacheSection> createState() => _DebugCacheSectionState();
 }
 
 class _DebugCacheSectionState extends State<DebugCacheSection> with AutomaticKeepAliveClientMixin {

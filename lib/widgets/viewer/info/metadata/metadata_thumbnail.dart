@@ -15,7 +15,7 @@ class MetadataThumbnails extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _MetadataThumbnailsState createState() => _MetadataThumbnailsState();
+  State<MetadataThumbnails> createState() => _MetadataThumbnailsState();
 }
 
 class _MetadataThumbnailsState extends State<MetadataThumbnails> {

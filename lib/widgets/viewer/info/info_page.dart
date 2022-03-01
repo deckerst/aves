@@ -143,7 +143,7 @@ class _InfoPageContent extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _InfoPageContentState createState() => _InfoPageContentState();
+  State<_InfoPageContent> createState() => _InfoPageContentState();
 }
 
 class _InfoPageContentState extends State<_InfoPageContent> {

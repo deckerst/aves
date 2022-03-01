@@ -19,7 +19,7 @@ class OwnerProp extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _OwnerPropState createState() => _OwnerPropState();
+  State<OwnerProp> createState() => _OwnerPropState();
 }
 
 class _OwnerPropState extends State<OwnerProp> {

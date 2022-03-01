@@ -33,7 +33,7 @@ class InteractiveFilterTile<T extends CollectionFilter> extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _InteractiveFilterTileState createState() => _InteractiveFilterTileState<T>();
+  State<InteractiveFilterTile<T>> createState() => _InteractiveFilterTileState<T>();
 }
 
 class _InteractiveFilterTileState<T extends CollectionFilter> extends State<InteractiveFilterTile<T>> {

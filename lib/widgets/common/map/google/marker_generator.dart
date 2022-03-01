@@ -21,7 +21,7 @@ class MarkerGeneratorWidget<T extends Key> extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _MarkerGeneratorWidgetState createState() => _MarkerGeneratorWidgetState<T>();
+  State<MarkerGeneratorWidget<T>> createState() => _MarkerGeneratorWidgetState<T>();
 }
 
 class _MarkerGeneratorWidgetState<T extends Key> extends State<MarkerGeneratorWidget<T>> {

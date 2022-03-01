@@ -15,7 +15,7 @@ class EntryBackgroundSelector extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _EntryBackgroundSelectorState createState() => _EntryBackgroundSelectorState();
+  State<EntryBackgroundSelector> createState() => _EntryBackgroundSelectorState();
 }
 
 class _EntryBackgroundSelectorState extends State<EntryBackgroundSelector> {

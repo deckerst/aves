@@ -36,7 +36,7 @@ class AvesConfirmationDialog extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _AvesConfirmationDialogState createState() => _AvesConfirmationDialogState();
+  State<AvesConfirmationDialog> createState() => _AvesConfirmationDialogState();
 }
 
 class _AvesConfirmationDialogState extends State<AvesConfirmationDialog> {

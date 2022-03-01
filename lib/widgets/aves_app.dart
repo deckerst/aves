@@ -44,7 +44,7 @@ class AvesApp extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _AvesAppState createState() => _AvesAppState();
+  State<AvesApp> createState() => _AvesAppState();
 }
 
 class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {

@@ -23,7 +23,7 @@ class ItemPickDialog extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _ItemPickDialogState createState() => _ItemPickDialogState();
+  State<ItemPickDialog> createState() => _ItemPickDialogState();
 }
 
 class _ItemPickDialogState extends State<ItemPickDialog> {

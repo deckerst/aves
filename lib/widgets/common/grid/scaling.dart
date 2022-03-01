@@ -42,7 +42,7 @@ class GridScaleGestureDetector<T> extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _GridScaleGestureDetectorState createState() => _GridScaleGestureDetectorState<T>();
+  State<GridScaleGestureDetector<T>> createState() => _GridScaleGestureDetectorState<T>();
 }
 
 class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T>> {
@@ -235,7 +235,7 @@ class _ScaleOverlay extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _ScaleOverlayState createState() => _ScaleOverlayState();
+  State<_ScaleOverlay> createState() => _ScaleOverlayState();
 }
 
 class _ScaleOverlayState extends State<_ScaleOverlay> {

@@ -22,7 +22,7 @@ class AvesSelectionDialog<T> extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _AvesSelectionDialogState<T> createState() => _AvesSelectionDialogState<T>();
+  State<AvesSelectionDialog<T>> createState() => _AvesSelectionDialogState<T>();
 }
 
 class _AvesSelectionDialogState<T> extends State<AvesSelectionDialog<T>> {

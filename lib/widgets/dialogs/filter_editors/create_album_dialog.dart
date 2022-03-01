@@ -13,7 +13,7 @@ class CreateAlbumDialog extends StatefulWidget {
   const CreateAlbumDialog({Key? key}) : super(key: key);
 
   @override
-  _CreateAlbumDialogState createState() => _CreateAlbumDialogState();
+  State<CreateAlbumDialog> createState() => _CreateAlbumDialogState();
 }
 
 class _CreateAlbumDialogState extends State<CreateAlbumDialog> {

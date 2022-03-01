@@ -9,7 +9,7 @@ class MediaStoreScanDirDialog extends StatefulWidget {
   const MediaStoreScanDirDialog({Key? key}) : super(key: key);
 
   @override
-  _MediaStoreScanDirDialogState createState() => _MediaStoreScanDirDialogState();
+  State<MediaStoreScanDirDialog> createState() => _MediaStoreScanDirDialogState();
 }
 
 class _MediaStoreScanDirDialogState extends State<MediaStoreScanDirDialog> {

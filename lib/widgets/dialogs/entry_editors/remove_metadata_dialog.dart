@@ -20,7 +20,7 @@ class RemoveEntryMetadataDialog extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _RemoveEntryMetadataDialogState createState() => _RemoveEntryMetadataDialogState();
+  State<RemoveEntryMetadataDialog> createState() => _RemoveEntryMetadataDialogState();
 }
 
 class _RemoveEntryMetadataDialogState extends State<RemoveEntryMetadataDialog> {
