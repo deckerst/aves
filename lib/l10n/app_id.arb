@@ -44,9 +44,9 @@
   "chipActionUnpin": "Lepas sematan dari atas",
   "chipActionRename": "Ganti nama",
   "chipActionSetCover": "Setel sampul",
-  "chipActionCreateAlbum": "Membuat album",
+  "chipActionCreateAlbum": "Buat album",
 
-  "entryActionCopyToClipboard": "Salinan ke papan",
+  "entryActionCopyToClipboard": "Salin ke papan klip",
   "entryActionDelete": "Hapus",
   "entryActionConvert": "Ubah",
   "entryActionExport": "Ekspor",
@@ -70,7 +70,7 @@
   "videoActionCaptureFrame": "Tangkap bingkai",
   "videoActionPause": "Henti",
   "videoActionPlay": "Mainkan",
-  "videoActionReplay10": "Mundur 10 detik",
+  "videoActionReplay10": "Mundurkan 10 detik",
   "videoActionSkip10": "Majukan 10 detik",
   "videoActionSelectStreams": "Pilih trek",
   "videoActionSetSpeed": "Kecepatan pemutaran",
@@ -84,7 +84,7 @@
 
   "filterBinLabel": "Tong sampah",
   "filterFavouriteLabel": "Favorit",
-  "filterLocationEmptyLabel": "Lokasi Tidak ditemukan",
+  "filterLocationEmptyLabel": "Lokasi yang tidak ditemukan",
   "filterTagEmptyLabel": "Tidak ditag",
   "filterRatingUnratedLabel": "Belum diberi peringkat",
   "filterRatingRejectedLabel": "Ditolak",
@@ -161,7 +161,7 @@
   "noMatchingAppDialogTitle": "Tidak Ada Aplikasi Yang Cocok",
   "noMatchingAppDialogMessage": "Tidak ada aplikasi yang cocok untuk menangani ini.",
 
-  "binEntriesConfirmationDialogMessage": "{count, plural, =1{Pindah benda ini ke tong sampah?} other{Pindah {count} benda ke tempat sampah?}}",
+  "binEntriesConfirmationDialogMessage": "{count, plural, =1{Pindahkan benda ini ke tong sampah?} other{Pindahkan {count} benda ke tempat sampah?}}",
   "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{Anda yakin ingin menghapus benda ini?} other{Apakah Anda yakin ingin menghapus {count} benda?}}",
 
   "videoResumeDialogMessage": "Apakah Anda ingin melanjutkan di {time}?",
@@ -224,10 +224,10 @@
   "videoStreamSelectionDialogTrack": "Trek",
   "videoStreamSelectionDialogNoSelection": "Tidak ada Trek yang lain.",
 
-  "genericSuccessFeedback": "Sukses!",
+  "genericSuccessFeedback": "Selesai!",
   "genericFailureFeedback": "Gagal",
 
-  "menuActionConfigureView": "Lihat",
+  "menuActionConfigureView": "Tata letak",
   "menuActionSelect": "Pilih",
   "menuActionSelectAll": "Pilih semua",
   "menuActionSelectNone": "Pilih tidak ada",
@@ -261,7 +261,7 @@
   "aboutCreditsTranslatorLine": "{language}: {names}",
 
   "aboutLicenses": "Lisensi Sumber Terbuka",
-  "aboutLicensesBanner": "Aplikasi ini menggunakan paket dan pustaka sumber terbuka berikut.",
+  "aboutLicensesBanner": "Aplikasi ini menggunakan paket dan perpustakaan sumber terbuka berikut.",
   "aboutLicensesAndroidLibraries": "Perpustakaan Android",
   "aboutLicensesFlutterPlugins": "Plugin Flutter",
   "aboutLicensesFlutterPackages": "Paket Flutter",
@@ -305,7 +305,7 @@
   "collectionEditFailureFeedback": "{count, plural, other{Gagal untuk mengubah {count} benda}}",
   "collectionExportFailureFeedback": "{count, plural, other{Gagal untuk mengekspor {count} halaman}}",
   "collectionCopySuccessFeedback": "{count, plural, other{Menyalin {count} benda}}",
-  "collectionMoveSuccessFeedback": "{count, plural, other{Menggerakkan {count} benda}}",
+  "collectionMoveSuccessFeedback": "{count, plural, other{{count} benda terpindah}}",
   "collectionEditSuccessFeedback": "{count, plural, other{Mengubah {count} benda}}",
 
   "collectionEmptyFavourites": "Tidak ada favorit",
@@ -386,7 +386,7 @@
   "settingsConfirmationDialogTile": "Dialog konfirmasi",
   "settingsConfirmationDialogTitle": "Dialog Konfirmasi",
   "settingsConfirmationDialogDeleteItems": "Tanya sebelum menghapus benda selamanya",
-  "settingsConfirmationDialogMoveToBinItems": "Tanya sebelum memindahkan benda ke tempat sampah",
+  "settingsConfirmationDialogMoveToBinItems": "Tanya sebelum memindahkan benda ke tong sampah",
   "settingsNavigationDrawerTile": "Menu navigasi",
   "settingsNavigationDrawerEditorTitle": "Menu Navigasi",
   "settingsNavigationDrawerBanner": "Sentuh dan tahan untuk memindahkan dan menyusun ulang benda menu.",
@@ -460,7 +460,7 @@
   "settingsSectionPrivacy": "Privasi",
   "settingsAllowInstalledAppAccess": "Izinkan akses ke inventori aplikasi",
   "settingsAllowInstalledAppAccessSubtitle": "Digunakan untuk meningkatkan tampilan album",
-  "settingsAllowErrorReporting": "Izinkan pelaporan kesalahan anonim",
+  "settingsAllowErrorReporting": "Izinkan pelaporan kesalahan secara anonim",
   "settingsSaveSearchHistory": "Simpan riwayat pencarian",
   "settingsEnableBin": "Gunakan tong sampah",
   "settingsEnableBinSubtitle": "Simpan benda yang dihapus selama 30 hari",
@@ -478,14 +478,14 @@
 
   "settingsStorageAccessTile": "Akses penyimpanan",
   "settingsStorageAccessTitle": "Akses Penyimpanan",
-  "settingsStorageAccessBanner": "Beberapa direktori memerlukan pemberian akses eksplisit untuk memodifikasi file di dalamnya. Anda dapat meninjau di sini direktori yang sebelumnya Anda beri akses.",
+  "settingsStorageAccessBanner": "Beberapa direktori memerlukan pemberian akses eksplisit untuk memodifikasi file di dalamnya. Anda dapat meninjau direktori yang anda beri akses sebelumnya di sini.",
   "settingsStorageAccessEmpty": "Tidak ada akses",
   "settingsStorageAccessRevokeTooltip": "Tarik kembali",
 
   "settingsSectionAccessibility": "Aksesibilitas",
   "settingsRemoveAnimationsTile": "Hapus animasi",
   "settingsRemoveAnimationsTitle": "Hapus Animasi",
-  "settingsTimeToTakeActionTile": "Saatnya untuk mengambil tindakan",
+  "settingsTimeToTakeActionTile": "Waktu untuk mengambil tindakan",
   "settingsTimeToTakeActionTitle": "Saatnya Bertindak",
 
   "settingsSectionLanguage": "Bahasa & Format",
