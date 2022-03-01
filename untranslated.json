@@ -1,31 +1,31 @@
 {
   "de": [
     "entryActionConvert",
-    "settingsViewerShowOverlayThumbnailPreview"
+    "settingsViewerShowOverlayThumbnails"
   ],
 
   "es": [
-    "settingsViewerShowOverlayThumbnailPreview"
+    "settingsViewerShowOverlayThumbnails"
   ],
 
   "fr": [
-    "settingsViewerShowOverlayThumbnailPreview"
+    "settingsViewerShowOverlayThumbnails"
   ],
 
   "id": [
-    "settingsViewerShowOverlayThumbnailPreview"
+    "settingsViewerShowOverlayThumbnails"
   ],
 
   "ko": [
-    "settingsViewerShowOverlayThumbnailPreview"
+    "settingsViewerShowOverlayThumbnails"
   ],
 
   "pt": [
-    "settingsViewerShowOverlayThumbnailPreview"
+    "settingsViewerShowOverlayThumbnails"
   ],
 
   "ru": [
     "entryActionConvert",
-    "settingsViewerShowOverlayThumbnailPreview"
+    "settingsViewerShowOverlayThumbnails"
   ]
 }
