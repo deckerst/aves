@@ -25,7 +25,7 @@ class XmpDirTile extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _XmpDirTileState createState() => _XmpDirTileState();
+  State<XmpDirTile> createState() => _XmpDirTileState();
 }
 
 class _XmpDirTileState extends State<XmpDirTile> {

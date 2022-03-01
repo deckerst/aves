@@ -11,7 +11,7 @@ class DebugAndroidAppSection extends StatefulWidget {
   const DebugAndroidAppSection({Key? key}) : super(key: key);
 
   @override
-  _DebugAndroidAppSectionState createState() => _DebugAndroidAppSectionState();
+  State<DebugAndroidAppSection> createState() => _DebugAndroidAppSectionState();
 }
 
 class _DebugAndroidAppSectionState extends State<DebugAndroidAppSection> with AutomaticKeepAliveClientMixin {

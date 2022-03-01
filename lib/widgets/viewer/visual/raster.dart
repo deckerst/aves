@@ -28,7 +28,7 @@ class RasterImageView extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _RasterImageViewState createState() => _RasterImageViewState();
+  State<RasterImageView> createState() => _RasterImageViewState();
 }
 
 class _RasterImageViewState extends State<RasterImageView> {
@@ -345,7 +345,7 @@ class _RegionTile extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _RegionTileState createState() => _RegionTileState();
+  State<_RegionTile> createState() => _RegionTileState();
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {

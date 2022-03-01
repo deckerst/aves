@@ -15,7 +15,7 @@ class AppExportItemSelectionDialog extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _AppExportItemSelectionDialogState createState() => _AppExportItemSelectionDialogState();
+  State<AppExportItemSelectionDialog> createState() => _AppExportItemSelectionDialogState();
 }
 
 class _AppExportItemSelectionDialogState extends State<AppExportItemSelectionDialog> {

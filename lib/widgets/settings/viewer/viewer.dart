@@ -69,7 +69,7 @@ class _CutoutModeSwitch extends StatefulWidget {
   const _CutoutModeSwitch({Key? key}) : super(key: key);
 
   @override
-  _CutoutModeSwitchState createState() => _CutoutModeSwitchState();
+  State<_CutoutModeSwitch> createState() => _CutoutModeSwitchState();
 }
 
 class _CutoutModeSwitchState extends State<_CutoutModeSwitch> {

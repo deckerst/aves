@@ -30,7 +30,7 @@ class PanoramaPage extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _PanoramaPageState createState() => _PanoramaPageState();
+  State<PanoramaPage> createState() => _PanoramaPageState();
 }
 
 class _PanoramaPageState extends State<PanoramaPage> {

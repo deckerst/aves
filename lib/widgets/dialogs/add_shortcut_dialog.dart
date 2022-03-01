@@ -23,7 +23,7 @@ class AddShortcutDialog extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _AddShortcutDialogState createState() => _AddShortcutDialogState();
+  State<AddShortcutDialog> createState() => _AddShortcutDialogState();
 }
 
 class _AddShortcutDialogState extends State<AddShortcutDialog> {

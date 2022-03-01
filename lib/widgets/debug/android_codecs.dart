@@ -10,7 +10,7 @@ class DebugAndroidCodecSection extends StatefulWidget {
   const DebugAndroidCodecSection({Key? key}) : super(key: key);
 
   @override
-  _DebugAndroidCodecSectionState createState() => _DebugAndroidCodecSectionState();
+  State<DebugAndroidCodecSection> createState() => _DebugAndroidCodecSectionState();
 }
 
 class _DebugAndroidCodecSectionState extends State<DebugAndroidCodecSection> with AutomaticKeepAliveClientMixin {

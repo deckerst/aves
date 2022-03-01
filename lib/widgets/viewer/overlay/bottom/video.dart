@@ -383,7 +383,7 @@ class _PlayToggler extends StatefulWidget {
   });
 
   @override
-  _PlayTogglerState createState() => _PlayTogglerState();
+  State<_PlayToggler> createState() => _PlayTogglerState();
 }
 
 class _PlayTogglerState extends State<_PlayToggler> with SingleTickerProviderStateMixin {

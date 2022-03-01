@@ -31,7 +31,7 @@ class StorageAccessPage extends StatefulWidget {
   const StorageAccessPage({Key? key}) : super(key: key);
 
   @override
-  _StorageAccessPageState createState() => _StorageAccessPageState();
+  State<StorageAccessPage> createState() => _StorageAccessPageState();
 }
 
 class _StorageAccessPageState extends State<StorageAccessPage> {

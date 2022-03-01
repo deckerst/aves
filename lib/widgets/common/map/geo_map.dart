@@ -56,7 +56,7 @@ class GeoMap extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _GeoMapState createState() => _GeoMapState();
+  State<GeoMap> createState() => _GeoMapState();
 }
 
 class _GeoMapState extends State<GeoMap> {

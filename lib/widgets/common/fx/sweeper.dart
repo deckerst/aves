@@ -26,7 +26,7 @@ class Sweeper extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _SweeperState createState() => _SweeperState();
+  State<Sweeper> createState() => _SweeperState();
 }
 
 class _SweeperState extends State<Sweeper> with SingleTickerProviderStateMixin {

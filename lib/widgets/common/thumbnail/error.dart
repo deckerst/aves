@@ -18,7 +18,7 @@ class ErrorThumbnail extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _ErrorThumbnailState createState() => _ErrorThumbnailState();
+  State<ErrorThumbnail> createState() => _ErrorThumbnailState();
 }
 
 class _ErrorThumbnailState extends State<ErrorThumbnail> {

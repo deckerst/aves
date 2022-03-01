@@ -31,7 +31,7 @@ class MagnifierGestureDetector extends StatefulWidget {
   final Widget? child;
 
   @override
-  _MagnifierGestureDetectorState createState() => _MagnifierGestureDetectorState();
+  State<MagnifierGestureDetector> createState() => _MagnifierGestureDetectorState();
 }
 
 class _MagnifierGestureDetectorState extends State<MagnifierGestureDetector> {

@@ -19,7 +19,7 @@ class ChipHighlightOverlay extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _ChipHighlightOverlayState createState() => _ChipHighlightOverlayState();
+  State<ChipHighlightOverlay> createState() => _ChipHighlightOverlayState();
 }
 
 class _ChipHighlightOverlayState extends State<ChipHighlightOverlay> {

@@ -17,7 +17,7 @@ class DbTab extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _DbTabState createState() => _DbTabState();
+  State<DbTab> createState() => _DbTabState();
 }
 
 class _DbTabState extends State<DbTab> {

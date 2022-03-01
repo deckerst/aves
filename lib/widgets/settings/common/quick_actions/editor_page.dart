@@ -75,7 +75,7 @@ class QuickActionEditorBody<T extends Object> extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _QuickActionEditorBodyState createState() => _QuickActionEditorBodyState<T>();
+  State<QuickActionEditorBody<T>> createState() => _QuickActionEditorBodyState<T>();
 }
 
 class _QuickActionEditorBodyState<T extends Object> extends State<QuickActionEditorBody<T>> with AutomaticKeepAliveClientMixin {

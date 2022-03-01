@@ -25,7 +25,7 @@ class BugReport extends StatefulWidget {
   const BugReport({Key? key}) : super(key: key);
 
   @override
-  _BugReportState createState() => _BugReportState();
+  State<BugReport> createState() => _BugReportState();
 }
 
 class _BugReportState extends State<BugReport> with FeedbackMixin {

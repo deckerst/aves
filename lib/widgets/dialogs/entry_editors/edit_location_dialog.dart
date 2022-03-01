@@ -21,7 +21,7 @@ class EditEntryLocationDialog extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _EditEntryLocationDialogState createState() => _EditEntryLocationDialogState();
+  State<EditEntryLocationDialog> createState() => _EditEntryLocationDialogState();
 }
 
 class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> {

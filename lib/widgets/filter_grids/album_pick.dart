@@ -58,7 +58,7 @@ class _AlbumPickPage extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _AlbumPickPageState createState() => _AlbumPickPageState();
+  State<_AlbumPickPage> createState() => _AlbumPickPageState();
 }
 
 class _AlbumPickPageState extends State<_AlbumPickPage> {

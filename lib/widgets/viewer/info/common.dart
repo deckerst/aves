@@ -61,7 +61,7 @@ class InfoRowGroup extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _InfoRowGroupState createState() => _InfoRowGroupState();
+  State<InfoRowGroup> createState() => _InfoRowGroupState();
 }
 
 class _InfoRowGroupState extends State<InfoRowGroup> {

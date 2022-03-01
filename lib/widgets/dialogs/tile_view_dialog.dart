@@ -24,7 +24,7 @@ class TileViewDialog<S, G, L> extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _TileViewDialogState createState() => _TileViewDialogState<S, G, L>();
+  State<TileViewDialog> createState() => _TileViewDialogState<S, G, L>();
 }
 
 class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with SingleTickerProviderStateMixin {

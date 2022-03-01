@@ -18,7 +18,7 @@ class ViewerThumbnailPreview extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _ViewerThumbnailPreviewState createState() => _ViewerThumbnailPreviewState();
+  State<ViewerThumbnailPreview> createState() => _ViewerThumbnailPreviewState();
 }
 
 class _ViewerThumbnailPreviewState extends State<ViewerThumbnailPreview> {

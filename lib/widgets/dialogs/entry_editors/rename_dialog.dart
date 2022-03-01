@@ -17,7 +17,7 @@ class RenameEntryDialog extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _RenameEntryDialogState createState() => _RenameEntryDialogState();
+  State<RenameEntryDialog> createState() => _RenameEntryDialogState();
 }
 
 class _RenameEntryDialogState extends State<RenameEntryDialog> {
