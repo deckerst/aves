@@ -51,7 +51,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   final ValueNotifier<AppMode> appModeNotifier = ValueNotifier(AppMode.main);
   late Future<void> _appSetup;
   final _mediaStoreSource = MediaStoreSource();
-  final Debouncer _mediaStoreChangeDebouncer = Debouncer(delay: Durations.contentChangeDebounceDelay);
+  final Debouncer _mediaStoreChangeDebouncer = Debouncer(delay: Durations.mediaContentChangeDebounceDelay);
   final Set<String> changedUris = {};
 
   // observers are not registered when using the same list object with different items

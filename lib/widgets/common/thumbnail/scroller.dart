@@ -3,10 +3,10 @@ import 'dart:math';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
+import 'package:aves/widgets/common/behaviour/known_extent_scroll_physics.dart';
 import 'package:aves/widgets/common/grid/theme.dart';
 import 'package:aves/widgets/common/thumbnail/decorated.dart';
 import 'package:flutter/material.dart';
-import 'package:known_extents_list_view_builder/known_extents_list_view_builder.dart';
 
 class ThumbnailScroller extends StatefulWidget {
   final double availableWidth;
@@ -38,8 +38,9 @@ class _ThumbnailScrollerState extends State<ThumbnailScroller> {
   late ScrollController _scrollController;
   bool _isAnimating = false, _isScrolling = false;
 
-  static const double extent = 48;
+  static const double thumbnailExtent = 48;
   static const double separatorWidth = 2;
+  static const double itemExtent = thumbnailExtent + separatorWidth;
 
   int get entryCount => widget.entryCount;
 
@@ -82,73 +83,71 @@ class _ThumbnailScrollerState extends State<ThumbnailScroller> {
 
   @override
   Widget build(BuildContext context) {
-    final marginWidth = max(0.0, (widget.availableWidth - extent) / 2 - separatorWidth);
-    final horizontalMargin = SizedBox(width: marginWidth);
-
-    const regularExtent = extent + separatorWidth;
-    final itemExtents = List.generate(entryCount, (index) => regularExtent)
-      ..insert(entryCount, marginWidth)
-      ..insert(0, marginWidth + separatorWidth);
+    final marginWidth = max(0.0, (widget.availableWidth - thumbnailExtent) / 2 - separatorWidth);
+    final padding = EdgeInsets.only(left: marginWidth + separatorWidth, right: marginWidth);
 
     return GridTheme(
-      extent: extent,
+      extent: thumbnailExtent,
       showLocation: widget.showLocation && settings.showThumbnailLocation,
       showTrash: false,
       child: SizedBox(
-        height: extent,
-        // as of Flutter v2.10.2, using `jumpTo` with a `ListView` is prohibitively inefficient
-        // for large lists of items with variable height, so we use a `KnownExtentsListView` instead
-        child: KnownExtentsListView.builder(
-          itemExtents: itemExtents,
+        height: thumbnailExtent,
+        child: ListView.builder(
           scrollDirection: Axis.horizontal,
           controller: _scrollController,
-          // default padding in scroll direction matches `MediaQuery.viewPadding`,
-          // but we already accommodate for it, so make sure horizontal padding is 0
-          padding: EdgeInsets.zero,
-          itemBuilder: (context, index) {
-            if (index == 0 || index == entryCount + 1) return horizontalMargin;
-            final page = index - 1;
-            final pageEntry = widget.entryBuilder(page);
-            if (pageEntry == null) return const SizedBox();
-
-            return Stack(
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    indexNotifier.value = page;
-                    widget.onTap?.call(page);
-                  },
-                  child: DecoratedThumbnail(
-                    entry: pageEntry,
-                    tileExtent: extent,
-                    // the retrieval task queue can pile up for thumbnails of heavy pages
-                    // (e.g. thumbnails of 15MP HEIF images inside 100MB+ HEIC containers)
-                    // so we cancel these requests when possible
-                    cancellableNotifier: _cancellableNotifier,
-                    selectable: false,
-                    highlightable: widget.highlightable,
-                    heroTagger: () => widget.heroTagger?.call(pageEntry),
-                  ),
-                ),
-                IgnorePointer(
-                  child: ValueListenableBuilder<int?>(
-                    valueListenable: indexNotifier,
-                    builder: (context, currentIndex, child) {
-                      return AnimatedContainer(
-                        color: currentIndex == page ? Colors.transparent : Colors.black45,
-                        width: extent,
-                        height: extent,
-                        duration: Durations.thumbnailScrollerShadeAnimation,
-                      );
-                    },
-                  ),
-                ),
-              ],
-            );
-          },
-          itemCount: entryCount + 2,
+          // as of Flutter v2.10.2, `FixedExtentScrollController` can only be used with `ListWheelScrollView`
+          // and `FixedExtentScrollPhysics` can only be used with Scrollables that uses the `FixedExtentScrollController`
+          // so we use `KnownExtentScrollPhysics`, adapted from `FixedExtentScrollPhysics` without the constraints
+          physics: KnownExtentScrollPhysics(
+            indexToScrollOffset: indexToScrollOffset,
+            scrollOffsetToIndex: scrollOffsetToIndex,
+          ),
+          padding: padding,
+          itemExtent: itemExtent,
+          itemBuilder: (context, index) => _buildThumbnail(index),
+          itemCount: entryCount,
         ),
       ),
+    );
+  }
+
+  Widget _buildThumbnail(int index) {
+    final pageEntry = widget.entryBuilder(index);
+    if (pageEntry == null) return const SizedBox();
+
+    return Stack(
+      children: [
+        GestureDetector(
+          onTap: () {
+            indexNotifier.value = index;
+            widget.onTap?.call(index);
+          },
+          child: DecoratedThumbnail(
+            entry: pageEntry,
+            tileExtent: thumbnailExtent,
+            // the retrieval task queue can pile up for thumbnails of heavy pages
+            // (e.g. thumbnails of 15MP HEIF images inside 100MB+ HEIC containers)
+            // so we cancel these requests when possible
+            cancellableNotifier: _cancellableNotifier,
+            selectable: false,
+            highlightable: widget.highlightable,
+            heroTagger: () => widget.heroTagger?.call(pageEntry),
+          ),
+        ),
+        IgnorePointer(
+          child: ValueListenableBuilder<int?>(
+            valueListenable: indexNotifier,
+            builder: (context, currentIndex, child) {
+              return AnimatedContainer(
+                color: currentIndex == index ? Colors.transparent : Colors.black45,
+                width: thumbnailExtent,
+                height: thumbnailExtent,
+                duration: Durations.thumbnailScrollerShadeAnimation,
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 
@@ -189,7 +188,7 @@ class _ThumbnailScrollerState extends State<ThumbnailScroller> {
     _isScrolling = false;
   }
 
-  double indexToScrollOffset(int index) => index * (extent + separatorWidth);
+  double indexToScrollOffset(int index) => index * itemExtent;
 
-  int scrollOffsetToIndex(double offset) => (offset / (extent + separatorWidth)).round();
+  int scrollOffsetToIndex(double offset) => (offset / itemExtent).round();
 }

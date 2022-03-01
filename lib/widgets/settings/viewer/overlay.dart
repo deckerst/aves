@@ -80,7 +80,7 @@ class ViewerOverlayPage extends StatelessWidget {
               builder: (context, current, child) => SwitchListTile(
                 value: current,
                 onChanged: (v) => settings.showOverlayThumbnailPreview = v,
-                title: Text(context.l10n.settingsViewerShowOverlayThumbnailPreview),
+                title: Text(context.l10n.settingsViewerShowOverlayThumbnails),
               ),
             ),
             Selector<Settings, bool>(

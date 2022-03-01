@@ -49,7 +49,6 @@ dependencies:
   google_api_availability:
   google_maps_flutter:
   intl:
-  known_extents_list_view_builder:
   latlong2:
   material_design_icons_flutter:
   overlay_support:
@@ -141,6 +140,9 @@ flutter:
 #
 #  `EagerScaleGestureRecognizer` in `/widgets/common/behaviour/eager_scale_gesture_recognizer.dart`
 #  adapts from Flutter `ScaleGestureRecognizer` in `/gestures/scale.dart`
+#
+#  `KnownExtentScrollPhysics` in `/widgets/common/behaviour/known_extent_scroll_physics.dart`
+#  adapts from Flutter `FixedExtentScrollPhysics` in `/widgets/list_wheel_scroll_view.dart`
 #
 #  `TransitionImage` in `/widgets/common/fx/transition_image.dart`
 #  adapts from Flutter `RawImage` in `/widgets/basic.dart` and `DecorationImagePainter` in `/painting/decoration_image.dart`
