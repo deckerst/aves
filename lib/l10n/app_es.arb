@@ -112,6 +112,11 @@
   "videoLoopModeShortOnly": "Sólo videos cortos",
   "videoLoopModeAlways": "Siempre",
 
+  "videoControlsNone": "Ninguno",
+  "videoControlsPlay": "Reproducir",
+  "videoControlsPlaySeek": "Reproducir y buscar",
+  "videoControlsPlayOutside": "Reproducir externamente",
+
   "mapStyleGoogleNormal": "Mapas de Google",
   "mapStyleGoogleHybrid": "Mapas de Google (Híbrido)",
   "mapStyleGoogleTerrain": "Mapas de Google (Superficie)",
@@ -433,6 +438,7 @@
   "settingsViewerShowInformation": "Mostrar información",
   "settingsViewerShowInformationSubtitle": "Mostrar título, fecha, ubicación, etc.",
   "settingsViewerShowShootingDetails": "Mostrar detalles de toma",
+   "settingsViewerShowOverlayThumbnails": "Mostrar miniaturas",
   "settingsViewerEnableOverlayBlurEffect": "Efecto de difuminado",
 
   "settingsVideoPageTitle": "Ajustes de video",
@@ -459,6 +465,13 @@
   "settingsSubtitleThemeTextAlignmentLeft": "Izquierda",
   "settingsSubtitleThemeTextAlignmentCenter": "Centro",
   "settingsSubtitleThemeTextAlignmentRight": "Derecha",
+
+  "settingsVideoControlsTile": "Controles",
+  "settingsVideoControlsTitle": "Controles",
+  "settingsVideoButtonsTile": "Botones",
+  "settingsVideoButtonsTitle": "Botones",
+  "settingsVideoGestureDoubleTapTogglePlay": "Doble toque para reproducir/pausar",
+  "settingsVideoGestureSideDoubleTapSeek": "Doble toque en los bordes de la pantalla para buscar atrás/adelante",
 
   "settingsSectionPrivacy": "Privacidad",
   "settingsAllowInstalledAppAccess": "Permita el acceso a lista de aplicaciones",
