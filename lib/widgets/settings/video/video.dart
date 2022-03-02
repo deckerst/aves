@@ -9,6 +9,7 @@ import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
 import 'package:aves/widgets/settings/common/tile_leading.dart';
+import 'package:aves/widgets/settings/video/controls.dart';
 import 'package:aves/widgets/settings/video/subtitle_theme.dart';
 import 'package:aves/widgets/settings/video/video_actions_editor.dart';
 import 'package:flutter/material.dart';
@@ -26,46 +27,50 @@ class VideoSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currentShowVideos = context.select<Settings, bool>((s) => !s.hiddenFilters.contains(MimeFilter.video));
-    final currentEnableVideoHardwareAcceleration = context.select<Settings, bool>((s) => s.enableVideoHardwareAcceleration);
-    final currentEnableVideoAutoPlay = context.select<Settings, bool>((s) => s.enableVideoAutoPlay);
-    final currentVideoLoopMode = context.select<Settings, VideoLoopMode>((s) => s.videoLoopMode);
-
     final children = [
       if (!standalonePage)
-        SwitchListTile(
-          value: currentShowVideos,
-          onChanged: (v) => settings.changeFilterVisibility({MimeFilter.video}, v),
-          title: Text(context.l10n.settingsVideoShowVideos),
+        Selector<Settings, bool>(
+          selector: (context, s) => !s.hiddenFilters.contains(MimeFilter.video),
+          builder: (context, current, child) => SwitchListTile(
+            value: current,
+            onChanged: (v) => settings.changeFilterVisibility({MimeFilter.video}, v),
+            title: Text(context.l10n.settingsVideoShowVideos),
+          ),
         ),
       const VideoActionsTile(),
-      SwitchListTile(
-        value: currentEnableVideoHardwareAcceleration,
-        onChanged: (v) => settings.enableVideoHardwareAcceleration = v,
-        title: Text(context.l10n.settingsVideoEnableHardwareAcceleration),
+      Selector<Settings, bool>(
+        selector: (context, s) => s.enableVideoHardwareAcceleration,
+        builder: (context, current, child) => SwitchListTile(
+          value: current,
+          onChanged: (v) => settings.enableVideoHardwareAcceleration = v,
+          title: Text(context.l10n.settingsVideoEnableHardwareAcceleration),
+        ),
       ),
-      SwitchListTile(
-        value: currentEnableVideoAutoPlay,
-        onChanged: (v) => settings.enableVideoAutoPlay = v,
-        title: Text(context.l10n.settingsVideoEnableAutoPlay),
+      Selector<Settings, bool>(
+        selector: (context, s) => s.enableVideoAutoPlay,
+        builder: (context, current, child) => SwitchListTile(
+          value: current,
+          onChanged: (v) => settings.enableVideoAutoPlay = v,
+          title: Text(context.l10n.settingsVideoEnableAutoPlay),
+        ),
       ),
-      ListTile(
-        title: Text(context.l10n.settingsVideoLoopModeTile),
-        subtitle: Text(currentVideoLoopMode.getName(context)),
-        onTap: () async {
-          final value = await showDialog<VideoLoopMode>(
+      Selector<Settings, VideoLoopMode>(
+        selector: (context, s) => s.videoLoopMode,
+        builder: (context, current, child) => ListTile(
+          title: Text(context.l10n.settingsVideoLoopModeTile),
+          subtitle: Text(current.getName(context)),
+          onTap: () => showSelectionDialog<VideoLoopMode>(
             context: context,
             builder: (context) => AvesSelectionDialog<VideoLoopMode>(
-              initialValue: currentVideoLoopMode,
+              initialValue: current,
               options: Map.fromEntries(VideoLoopMode.values.map((v) => MapEntry(v, v.getName(context)))),
               title: context.l10n.settingsVideoLoopModeTitle,
             ),
-          );
-          if (value != null) {
-            settings.videoLoopMode = value;
-          }
-        },
+            onSelection: (v) => settings.videoLoopMode = v,
+          ),
+        ),
       ),
+      const VideoControlsTile(),
       const SubtitleThemeTile(),
     ];
 

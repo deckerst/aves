@@ -31,7 +31,7 @@ class FilterGridAppBar<T extends CollectionFilter> extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _FilterGridAppBarState createState() => _FilterGridAppBarState<T>();
+  State<FilterGridAppBar<T>> createState() => _FilterGridAppBarState<T>();
 }
 
 class _FilterGridAppBarState<T extends CollectionFilter> extends State<FilterGridAppBar<T>> with SingleTickerProviderStateMixin {

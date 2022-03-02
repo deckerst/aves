@@ -6,7 +6,7 @@ repository: https://github.com/deckerst/aves
 # - github changelog: /CHANGELOG.md
 # - play changelog:   /whatsnew/whatsnew-en-US
 # - izzy changelog:   /fastlane/metadata/android/en-US/changelogs/1XXX.txt
-version: 1.5.11+65
+version: 1.6.1+67
 publish_to: none
 
 environment:
@@ -26,7 +26,7 @@ dependencies:
   collection:
   connectivity_plus:
   country_code:
-# TODO TLAD as of 2022/01/30, null safe version is pre-release
+# TODO TLAD as of 2022/02/22, null safe version is pre-release
   custom_rounded_rectangle_border: '>=0.2.0-nullsafety.0'
   decorated_icon:
   device_info_plus:
@@ -54,7 +54,7 @@ dependencies:
   overlay_support:
   package_info_plus:
   palette_generator:
-# TODO TLAD as of 2022/01/30, latest version (v0.4.1) has this issue: https://github.com/zesage/panorama/issues/25
+# TODO TLAD as of 2022/02/22, latest version (v0.4.1) has this issue: https://github.com/zesage/panorama/issues/25
   panorama: 0.4.0
   pdf:
   percent_indicator:
@@ -63,7 +63,7 @@ dependencies:
   provider:
   screen_brightness:
   shared_preferences:
-# TODO TLAD as of 2022/02/12, latest version (v2.0.11) fails to load from analysis service (target wrong channel?)
+# TODO TLAD as of 2022/02/22, latest version (v2.0.11) fails to load from analysis service (target wrong channel?)
   shared_preferences_android: 2.0.10
   sqflite:
   streams_channel:
@@ -140,6 +140,9 @@ flutter:
 #
 #  `EagerScaleGestureRecognizer` in `/widgets/common/behaviour/eager_scale_gesture_recognizer.dart`
 #  adapts from Flutter `ScaleGestureRecognizer` in `/gestures/scale.dart`
+#
+#  `KnownExtentScrollPhysics` in `/widgets/common/behaviour/known_extent_scroll_physics.dart`
+#  adapts from Flutter `FixedExtentScrollPhysics` in `/widgets/list_wheel_scroll_view.dart`
 #
 #  `TransitionImage` in `/widgets/common/fx/transition_image.dart`
 #  adapts from Flutter `RawImage` in `/widgets/basic.dart` and `DecorationImagePainter` in `/painting/decoration_image.dart`

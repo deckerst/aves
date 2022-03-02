@@ -19,7 +19,7 @@ class EntryQueryBar extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _EntryQueryBarState createState() => _EntryQueryBarState();
+  State<EntryQueryBar> createState() => _EntryQueryBarState();
 }
 
 class _EntryQueryBarState extends State<EntryQueryBar> {

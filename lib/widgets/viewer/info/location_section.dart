@@ -31,7 +31,7 @@ class LocationSection extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _LocationSectionState createState() => _LocationSectionState();
+  State<LocationSection> createState() => _LocationSectionState();
 }
 
 class _LocationSectionState extends State<LocationSection> {
@@ -165,7 +165,7 @@ class _AddressInfoGroup extends StatefulWidget {
   const _AddressInfoGroup({required this.entry});
 
   @override
-  _AddressInfoGroupState createState() => _AddressInfoGroupState();
+  State<_AddressInfoGroup> createState() => _AddressInfoGroupState();
 }
 
 class _AddressInfoGroupState extends State<_AddressInfoGroup> {

@@ -16,7 +16,7 @@ class ExportEntryDialog extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _ExportEntryDialogState createState() => _ExportEntryDialogState();
+  State<ExportEntryDialog> createState() => _ExportEntryDialogState();
 }
 
 class _ExportEntryDialogState extends State<ExportEntryDialog> {

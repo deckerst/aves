@@ -22,7 +22,7 @@ import 'package:aves/widgets/viewer/multipage/conductor.dart';
 import 'package:aves/widgets/viewer/multipage/controller.dart';
 import 'package:aves/widgets/viewer/overlay/bottom/common.dart';
 import 'package:aves/widgets/viewer/overlay/bottom/panorama.dart';
-import 'package:aves/widgets/viewer/overlay/bottom/video.dart';
+import 'package:aves/widgets/viewer/overlay/bottom/video/video.dart';
 import 'package:aves/widgets/viewer/overlay/notifications.dart';
 import 'package:aves/widgets/viewer/overlay/top.dart';
 import 'package:aves/widgets/viewer/page_entry_builder.dart';
@@ -49,7 +49,7 @@ class EntryViewerStack extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _EntryViewerStackState createState() => _EntryViewerStackState();
+  State<EntryViewerStack> createState() => _EntryViewerStackState();
 }
 
 class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin, SingleTickerProviderStateMixin, WidgetsBindingObserver {
@@ -198,32 +198,43 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
               _goToCollection(notification.filter);
             } else if (notification is EntryRemovedNotification) {
               _onEntryRemoved(context, notification.entry);
-            }
-            return false;
-          },
-          child: NotificationListener<ToggleOverlayNotification>(
-            onNotification: (notification) {
+            } else if (notification is ToggleOverlayNotification) {
               _overlayVisible.value = notification.visible ?? !_overlayVisible.value;
-              return true;
-            },
-            child: Stack(
-              children: [
-                ViewerVerticalPageView(
-                  collection: collection,
-                  entryNotifier: _entryNotifier,
-                  verticalPager: _verticalPager,
-                  horizontalPager: _horizontalPager,
-                  onVerticalPageChanged: _onVerticalPageChanged,
-                  onHorizontalPageChanged: _onHorizontalPageChanged,
-                  onImagePageRequested: () => _goToVerticalPage(imagePage),
-                  onViewDisposed: (mainEntry, pageEntry) => viewStateConductor.reset(pageEntry ?? mainEntry),
-                ),
-                _buildTopOverlay(),
-                _buildBottomOverlay(),
-                const SideGestureAreaProtector(),
-                const BottomGestureAreaProtector(),
-              ],
-            ),
+            } else if (notification is ShowInfoNotification) {
+              // remove focus, if any, to prevent viewer shortcuts activation from the Info page
+              FocusManager.instance.primaryFocus?.unfocus();
+              _goToVerticalPage(infoPage);
+            } else if (notification is ViewEntryNotification) {
+              final index = notification.index;
+              if (_currentHorizontalPage != index) {
+                _horizontalPager.jumpToPage(index);
+              }
+            } else if (notification is VideoGestureNotification) {
+              final controller = notification.controller;
+              final action = notification.action;
+              _videoActionDelegate.onActionSelected(context, controller, action);
+            } else {
+              return false;
+            }
+            return true;
+          },
+          child: Stack(
+            children: [
+              ViewerVerticalPageView(
+                collection: collection,
+                entryNotifier: _entryNotifier,
+                verticalPager: _verticalPager,
+                horizontalPager: _horizontalPager,
+                onVerticalPageChanged: _onVerticalPageChanged,
+                onHorizontalPageChanged: _onHorizontalPageChanged,
+                onImagePageRequested: () => _goToVerticalPage(imagePage),
+                onViewDisposed: (mainEntry, pageEntry) => viewStateConductor.reset(pageEntry ?? mainEntry),
+              ),
+              _buildTopOverlay(),
+              _buildBottomOverlay(),
+              const SideGestureAreaProtector(),
+              const BottomGestureAreaProtector(),
+            ],
           ),
         ),
       ),
@@ -249,18 +260,12 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
           );
         }
 
-        return NotificationListener<ShowInfoNotification>(
-          onNotification: (notification) {
-            _goToVerticalPage(infoPage);
-            return true;
-          },
-          child: mainEntry.isMultiPage
-              ? PageEntryBuilder(
-                  multiPageController: context.read<MultiPageConductor>().getController(mainEntry),
-                  builder: (pageEntry) => _buildContent(pageEntry: pageEntry),
-                )
-              : _buildContent(),
-        );
+        return mainEntry.isMultiPage
+            ? PageEntryBuilder(
+                multiPageController: context.read<MultiPageConductor>().getController(mainEntry),
+                builder: (pageEntry) => _buildContent(pageEntry: pageEntry),
+              )
+            : _buildContent();
       },
     );
 
@@ -463,11 +468,14 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
     if (hasCollection) {
       final entries = collection!.sortedEntries;
       entries.remove(entry);
-      if (entries.isEmpty) {
-        Navigator.pop(context);
-      } else {
+      if (entries.isNotEmpty) {
         _onCollectionChange();
+        return;
       }
+    }
+
+    if (Navigator.canPop(context)) {
+      Navigator.pop(context);
     } else {
       // leave viewer
       SystemNavigator.pop();

@@ -14,7 +14,7 @@ class EditEntryRatingDialog extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _EditEntryRatingDialogState createState() => _EditEntryRatingDialogState();
+  State<EditEntryRatingDialog> createState() => _EditEntryRatingDialogState();
 }
 
 class _EditEntryRatingDialogState extends State<EditEntryRatingDialog> {

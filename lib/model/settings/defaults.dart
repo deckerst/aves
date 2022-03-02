@@ -67,6 +67,7 @@ class SettingsDefaults {
   static const showOverlayMinimap = false;
   static const showOverlayInfo = true;
   static const showOverlayShootingDetails = false;
+  static const showOverlayThumbnailPreview = false;
   static const enableOverlayBlurEffect = true; // `enableOverlayBlurEffect` has a contextual default value
   static const viewerUseCutout = true;
   static const viewerMaxBrightness = false;
@@ -81,6 +82,9 @@ class SettingsDefaults {
   static const enableVideoAutoPlay = false;
   static const videoLoopMode = VideoLoopMode.shortOnly;
   static const videoShowRawTimedText = false;
+  static const videoControls = VideoControls.play;
+  static const videoGestureDoubleTapTogglePlay = false;
+  static const videoGestureSideDoubleTapSeek = true;
 
   // subtitles
   static const subtitleFontSize = 20.0;

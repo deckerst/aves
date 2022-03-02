@@ -1,10 +1,9 @@
 import 'dart:async';
-import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:aves/model/entry.dart';
-import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/settings/enums/video_loop_mode.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/video/keys.dart';
 import 'package:aves/model/video/metadata.dart';
 import 'package:aves/utils/change_notifier.dart';
@@ -86,6 +85,12 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
     _instance.addListener(_onValueChanged);
     _subscriptions.add(_valueStream.where((value) => value.state == FijkState.completed).listen((_) => _completedNotifier.notify()));
     _subscriptions.add(_instance.onTimedText.listen(_timedTextStreamController.add));
+    _subscriptions.add(settings.updateStream
+        .where((event) => {
+              Settings.enableVideoHardwareAccelerationKey,
+              Settings.videoLoopModeKey,
+            }.contains(event.key))
+        .listen((_) => _instance.reset()));
   }
 
   void _stopListening() {
@@ -104,6 +109,7 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
     }
 
     sarNotifier.value = 1;
+    _streams.clear();
     _applyOptions(startMillis);
 
     // calling `setDataSource()` with `autoPlay` starts as soon as possible, but often yields initial artifacts
@@ -294,7 +300,7 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
 
   @override
   Future<void> seekTo(int targetMillis) async {
-    targetMillis = max(0, targetMillis);
+    targetMillis = targetMillis.clamp(0, duration);
     if (isReady) {
       await _instance.seekTo(targetMillis);
     } else {

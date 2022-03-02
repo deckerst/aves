@@ -22,7 +22,7 @@ class CoverSelectionDialog extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _CoverSelectionDialogState createState() => _CoverSelectionDialogState();
+  State<CoverSelectionDialog> createState() => _CoverSelectionDialogState();
 }
 
 class _CoverSelectionDialogState extends State<CoverSelectionDialog> {

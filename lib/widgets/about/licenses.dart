@@ -13,7 +13,7 @@ class Licenses extends StatefulWidget {
   const Licenses({Key? key}) : super(key: key);
 
   @override
-  _LicensesState createState() => _LicensesState();
+  State<Licenses> createState() => _LicensesState();
 }
 
 class _LicensesState extends State<Licenses> {

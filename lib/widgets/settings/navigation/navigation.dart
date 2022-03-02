@@ -39,38 +39,30 @@ class NavigationSection extends StatelessWidget {
         ListTile(
           title: Text(context.l10n.settingsHome),
           subtitle: Text(currentHomePage.getName(context)),
-          onTap: () async {
-            final value = await showDialog<HomePageSetting>(
-              context: context,
-              builder: (context) => AvesSelectionDialog<HomePageSetting>(
-                initialValue: currentHomePage,
-                options: Map.fromEntries(HomePageSetting.values.map((v) => MapEntry(v, v.getName(context)))),
-                title: context.l10n.settingsHome,
-              ),
-            );
-            if (value != null) {
-              settings.homePage = value;
-            }
-          },
+          onTap: () => showSelectionDialog<HomePageSetting>(
+            context: context,
+            builder: (context) => AvesSelectionDialog<HomePageSetting>(
+              initialValue: currentHomePage,
+              options: Map.fromEntries(HomePageSetting.values.map((v) => MapEntry(v, v.getName(context)))),
+              title: context.l10n.settingsHome,
+            ),
+            onSelection: (v) => settings.homePage = v,
+          ),
         ),
         const NavigationDrawerTile(),
         const ConfirmationDialogTile(),
         ListTile(
           title: Text(context.l10n.settingsKeepScreenOnTile),
           subtitle: Text(currentKeepScreenOn.getName(context)),
-          onTap: () async {
-            final value = await showDialog<KeepScreenOn>(
-              context: context,
-              builder: (context) => AvesSelectionDialog<KeepScreenOn>(
-                initialValue: currentKeepScreenOn,
-                options: Map.fromEntries(KeepScreenOn.values.map((v) => MapEntry(v, v.getName(context)))),
-                title: context.l10n.settingsKeepScreenOnTitle,
-              ),
-            );
-            if (value != null) {
-              settings.keepScreenOn = value;
-            }
-          },
+          onTap: () => showSelectionDialog<KeepScreenOn>(
+            context: context,
+            builder: (context) => AvesSelectionDialog<KeepScreenOn>(
+              initialValue: currentKeepScreenOn,
+              options: Map.fromEntries(KeepScreenOn.values.map((v) => MapEntry(v, v.getName(context)))),
+              title: context.l10n.settingsKeepScreenOnTitle,
+            ),
+            onSelection: (v) => settings.keepScreenOn = v,
+          ),
         ),
         SwitchListTile(
           value: currentMustBackTwiceToExit,

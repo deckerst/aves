@@ -11,6 +11,7 @@ import 'package:aves/widgets/viewer/entry_horizontal_pager.dart';
 import 'package:aves/widgets/viewer/info/info_page.dart';
 import 'package:aves/widgets/viewer/info/notifications.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:screen_brightness/screen_brightness.dart';
 
 class ViewerVerticalPageView extends StatefulWidget {
@@ -34,7 +35,7 @@ class ViewerVerticalPageView extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _ViewerVerticalPageViewState createState() => _ViewerVerticalPageViewState();
+  State<ViewerVerticalPageView> createState() => _ViewerVerticalPageViewState();
 }
 
 class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
@@ -93,18 +94,7 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
     // fake page for opacity transition between collection and viewer
     const transitionPage = SizedBox();
 
-    final imagePage = hasCollection
-        ? MultiEntryScroller(
-            collection: collection!,
-            pageController: widget.horizontalPager,
-            onPageChanged: widget.onHorizontalPageChanged,
-            onViewDisposed: widget.onViewDisposed,
-          )
-        : entry != null
-            ? SingleEntryScroller(
-                entry: entry!,
-              )
-            : const SizedBox();
+    final imagePage = _buildImagePage();
 
     final infoPage = NotificationListener<ShowImageNotification>(
       onNotification: (notification) {
@@ -148,6 +138,58 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
         children: pages,
       ),
     );
+  }
+
+  Widget _buildImagePage() {
+    Widget? child;
+    Map<ShortcutActivator, Intent>? shortcuts;
+
+    if (hasCollection) {
+      child = MultiEntryScroller(
+        collection: collection!,
+        pageController: widget.horizontalPager,
+        onPageChanged: widget.onHorizontalPageChanged,
+        onViewDisposed: widget.onViewDisposed,
+      );
+      shortcuts = const {
+        SingleActivator(LogicalKeyboardKey.arrowLeft): ShowPreviousIntent(),
+        SingleActivator(LogicalKeyboardKey.arrowRight): ShowNextIntent(),
+        SingleActivator(LogicalKeyboardKey.arrowUp): LeaveIntent(),
+        SingleActivator(LogicalKeyboardKey.arrowDown): ShowInfoIntent(),
+      };
+    } else if (entry != null) {
+      child = SingleEntryScroller(
+        entry: entry!,
+      );
+      shortcuts = const {
+        SingleActivator(LogicalKeyboardKey.arrowUp): LeaveIntent(),
+        SingleActivator(LogicalKeyboardKey.arrowDown): ShowInfoIntent(),
+      };
+    }
+    if (child != null) {
+      return FocusableActionDetector(
+        autofocus: true,
+        shortcuts: shortcuts,
+        actions: {
+          ShowPreviousIntent: CallbackAction<Intent>(onInvoke: (intent) => _jumpHorizontalPage(-1)),
+          ShowNextIntent: CallbackAction<Intent>(onInvoke: (intent) => _jumpHorizontalPage(1)),
+          LeaveIntent: CallbackAction<Intent>(onInvoke: (intent) => Navigator.pop(context)),
+          ShowInfoIntent: CallbackAction<Intent>(onInvoke: (intent) => ShowInfoNotification().dispatch(context)),
+        },
+        child: child,
+      );
+    }
+    return const SizedBox();
+  }
+
+  void _jumpHorizontalPage(int delta) {
+    final pageController = widget.horizontalPager;
+    final page = pageController.page?.round();
+    final _collection = collection;
+    if (page != null && _collection != null) {
+      final target = (page + delta).clamp(0, _collection.entryCount - 1);
+      pageController.jumpToPage(target);
+    }
   }
 
   void _onVerticalPageControllerChanged() {
@@ -204,4 +246,22 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
       setState(() {});
     }
   }
+}
+
+// keyboard shortcut intents
+
+class ShowPreviousIntent extends Intent {
+  const ShowPreviousIntent();
+}
+
+class ShowNextIntent extends Intent {
+  const ShowNextIntent();
+}
+
+class LeaveIntent extends Intent {
+  const LeaveIntent();
+}
+
+class ShowInfoIntent extends Intent {
+  const ShowInfoIntent();
 }

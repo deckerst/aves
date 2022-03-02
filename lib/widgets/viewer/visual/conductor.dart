@@ -29,15 +29,16 @@ class ViewStateConductor {
         // try to initialize the view state to match magnifier initial state
         const initialScale = ScaleLevel(ref: ScaleReference.contained);
         final initialValue = ViewState(
-          Offset.zero,
-          ScaleBoundaries(
+          position: Offset.zero,
+          scale: ScaleBoundaries(
             minScale: initialScale,
             maxScale: initialScale,
             initialScale: initialScale,
             viewportSize: _viewportSize,
             childSize: entry.displaySize,
           ).initialScale,
-          _viewportSize,
+          viewportSize: _viewportSize,
+          contentSize: entry.displaySize,
         );
         controller = Tuple2(entry.uri, ValueNotifier<ViewState>(initialValue));
       }

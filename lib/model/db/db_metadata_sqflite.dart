@@ -160,13 +160,28 @@ class SqfliteMetadataDb implements MetadataDb {
 
   @override
   Future<Set<AvesEntry>> loadEntries({String? directory}) async {
-    String? where;
-    List<Object?>? whereArgs;
     if (directory != null) {
-      where = 'path LIKE ?';
-      whereArgs = ['$directory%'];
+      final separator = pContext.separator;
+      if (!directory.endsWith(separator)) {
+        directory = '$directory$separator';
+      }
+
+      const where = 'path LIKE ?';
+      final whereArgs = ['$directory%'];
+      final rows = await _db.query(entryTable, where: where, whereArgs: whereArgs);
+
+      final dirLength = directory.length;
+      return rows
+          .whereNot((row) {
+            // skip entries in subfolders
+            final path = row['path'] as String?;
+            return path == null || path.substring(dirLength).contains(separator);
+          })
+          .map(AvesEntry.fromMap)
+          .toSet();
     }
-    final rows = await _db.query(entryTable, where: where, whereArgs: whereArgs);
+
+    final rows = await _db.query(entryTable);
     return rows.map(AvesEntry.fromMap).toSet();
   }
 
@@ -200,11 +215,11 @@ class SqfliteMetadataDb implements MetadataDb {
   }
 
   @override
-  Future<Set<AvesEntry>> searchEntries(String query, {int? limit}) async {
+  Future<Set<AvesEntry>> searchLiveEntries(String query, {int? limit}) async {
     final rows = await _db.query(
       entryTable,
-      where: 'title LIKE ?',
-      whereArgs: ['%$query%'],
+      where: 'title LIKE ? AND trashed = ?',
+      whereArgs: ['%$query%', 0],
       orderBy: 'sourceDateTakenMillis DESC',
       limit: limit,
     );

@@ -27,6 +27,8 @@ import deckers.thibault.aves.utils.MimeTypes.isImage
 import deckers.thibault.aves.utils.MimeTypes.isVideo
 import deckers.thibault.aves.utils.StorageUtils
 import deckers.thibault.aves.utils.StorageUtils.PathSegments
+import deckers.thibault.aves.utils.StorageUtils.ensureTrailingSeparator
+import deckers.thibault.aves.utils.StorageUtils.removeTrailingSeparator
 import deckers.thibault.aves.utils.UriUtils.tryParseId
 import java.io.File
 import java.io.OutputStream
@@ -47,14 +49,33 @@ class MediaStoreImageProvider : ImageProvider() {
             val knownDate = knownEntries[contentId]
             return knownDate == null || knownDate < dateModifiedSecs
         }
+        val handleNew: NewEntryHandler
         var selection: String? = null
         var selectionArgs: Array<String>? = null
         if (directory != null) {
-            selection = "${MediaColumns.PATH} LIKE ?"
-            selectionArgs = arrayOf("${StorageUtils.ensureTrailingSeparator(directory)}%")
+            val relativePathDirectory = ensureTrailingSeparator(directory)
+            val relativePath = PathSegments(context, relativePathDirectory).relativeDir
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && relativePath != null) {
+                selection = "${MediaStore.MediaColumns.RELATIVE_PATH} = ? AND ${MediaColumns.PATH} LIKE ?"
+                selectionArgs = arrayOf(relativePath, "relativePathDirectory%")
+            } else {
+                selection = "${MediaColumns.PATH} LIKE ?"
+                selectionArgs = arrayOf("$relativePathDirectory%")
+            }
+
+            val parentCheckDirectory = removeTrailingSeparator(directory)
+            handleNew = { entry ->
+                // skip entries in subfolders
+                val path = entry["path"] as String?
+                if (path != null && File(path).parent == parentCheckDirectory) {
+                    handleNewEntry(entry)
+                }
+            }
+        } else {
+            handleNew = handleNewEntry
         }
-        fetchFrom(context, isModified, handleNewEntry, IMAGE_CONTENT_URI, IMAGE_PROJECTION, selection = selection, selectionArgs = selectionArgs)
-        fetchFrom(context, isModified, handleNewEntry, VIDEO_CONTENT_URI, VIDEO_PROJECTION, selection = selection, selectionArgs = selectionArgs)
+        fetchFrom(context, isModified, handleNew, IMAGE_CONTENT_URI, IMAGE_PROJECTION, selection, selectionArgs)
+        fetchFrom(context, isModified, handleNew, VIDEO_CONTENT_URI, VIDEO_PROJECTION, selection, selectionArgs)
     }
 
     // the provided URI can point to the wrong media collection,
@@ -372,7 +393,7 @@ class MediaStoreImageProvider : ImageProvider() {
                 val mimeType = entry.mimeType
                 val trashed = entry.trashed
 
-                val sourceUri = if (trashed) Uri.fromFile(File(entry.trashPath!!)) else entry.uri
+                val sourceUri = entry.uri
                 val sourcePath = if (trashed) entry.trashPath else entry.path
 
                 var desiredName: String? = null
@@ -381,9 +402,7 @@ class MediaStoreImageProvider : ImageProvider() {
                 }
 
                 val result: FieldMap = hashMapOf(
-                    // `uri` should reference original content URI,
-                    // so it is different with `sourceUri` when recycling trashed entries
-                    "uri" to entry.uri.toString(),
+                    "uri" to sourceUri.toString(),
                     "success" to false,
                 )
 
@@ -407,7 +426,7 @@ class MediaStoreImageProvider : ImageProvider() {
                         if (toBin) {
                             val trashDir = StorageUtils.trashDirFor(activity, sourcePath)
                             if (trashDir != null) {
-                                effectiveTargetDir = StorageUtils.ensureTrailingSeparator(trashDir.path)
+                                effectiveTargetDir = ensureTrailingSeparator(trashDir.path)
                                 targetDirDocFile = DocumentFileCompat.fromFile(trashDir)
                             }
                         }
@@ -452,7 +471,7 @@ class MediaStoreImageProvider : ImageProvider() {
         toBin: Boolean,
     ): FieldMap {
         val sourcePath = sourceFile.path
-        val sourceDir = sourceFile.parent?.let { StorageUtils.ensureTrailingSeparator(it) }
+        val sourceDir = sourceFile.parent?.let { ensureTrailingSeparator(it) }
         if (sourceDir == targetDir && !(copy && nameConflictStrategy == NameConflictStrategy.RENAME)) {
             // nothing to do unless it's a renamed copy
             return skippedFieldMap
@@ -550,10 +569,7 @@ class MediaStoreImageProvider : ImageProvider() {
     }
 
     private fun isDownloadDir(context: Context, dirPath: String): Boolean {
-        var relativeDir = PathSegments(context, dirPath).relativeDir ?: ""
-        if (relativeDir.endsWith(File.separator)) {
-            relativeDir = relativeDir.substring(0, relativeDir.length - 1)
-        }
+        val relativeDir = removeTrailingSeparator(PathSegments(context, dirPath).relativeDir ?: "")
         return relativeDir == Environment.DIRECTORY_DOWNLOADS
     }
 

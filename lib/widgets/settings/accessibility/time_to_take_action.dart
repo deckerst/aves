@@ -11,7 +11,7 @@ class TimeToTakeActionTile extends StatefulWidget {
   const TimeToTakeActionTile({Key? key}) : super(key: key);
 
   @override
-  _TimeToTakeActionTileState createState() => _TimeToTakeActionTileState();
+  State<TimeToTakeActionTile> createState() => _TimeToTakeActionTileState();
 }
 
 class _TimeToTakeActionTileState extends State<TimeToTakeActionTile> {
@@ -36,19 +36,15 @@ class _TimeToTakeActionTileState extends State<TimeToTakeActionTile> {
         return ListTile(
           title: Text(context.l10n.settingsTimeToTakeActionTile),
           subtitle: Text(currentTimeToTakeAction.getName(context)),
-          onTap: () async {
-            final value = await showDialog<AccessibilityTimeout>(
-              context: context,
-              builder: (context) => AvesSelectionDialog<AccessibilityTimeout>(
-                initialValue: currentTimeToTakeAction,
-                options: Map.fromEntries(optionValues.map((v) => MapEntry(v, v.getName(context)))),
-                title: context.l10n.settingsTimeToTakeActionTitle,
-              ),
-            );
-            if (value != null) {
-              settings.timeToTakeAction = value;
-            }
-          },
+          onTap: () => showSelectionDialog<AccessibilityTimeout>(
+            context: context,
+            builder: (context) => AvesSelectionDialog<AccessibilityTimeout>(
+              initialValue: currentTimeToTakeAction,
+              options: Map.fromEntries(optionValues.map((v) => MapEntry(v, v.getName(context)))),
+              title: context.l10n.settingsTimeToTakeActionTitle,
+            ),
+            onSelection: (v) => settings.timeToTakeAction = v,
+          ),
         );
       },
     );

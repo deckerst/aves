@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.6.1"></a>[v1.6.1] - 2022-02-23
+
 ### Added
 
 - optional recycle bin to keep deleted items for 30 days
@@ -19,7 +21,7 @@ All notable changes to this project will be documented in this file.
 - Collection: improved performance for sort/group by name
 - load previous top items on startup
 - locale independent colors for known filters
-- upgraded Flutter to stable v2.10.1
+- upgraded Flutter to stable v2.10.2
 
 ### Removed
 
@@ -28,6 +30,8 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 
 - navigating from Album page when picking an item for another app
+
+## <a id="v1.6.0"></a>[v1.6.0] - 2022-02-22 [YANKED]
 
 ## <a id="v1.5.11"></a>[v1.5.11] - 2022-01-30
 

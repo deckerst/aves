@@ -85,12 +85,14 @@ class MediaStoreSource extends CollectionSource {
 
     debugPrint('$runtimeType refresh ${stopwatch.elapsed} check obsolete entries');
     final knownDateByContentId = Map.fromEntries(knownLiveEntries.map((entry) => MapEntry(entry.contentId, entry.dateModifiedSecs)));
-    final obsoleteContentIds = (await mediaStoreService.checkObsoleteContentIds(knownDateByContentId.keys.toList())).toSet();
+    final knownContentIds = knownDateByContentId.keys.toList();
+    final removedContentIds = (await mediaStoreService.checkObsoleteContentIds(knownContentIds)).toSet();
     if (topEntries.isNotEmpty) {
-      final obsoleteTopEntries = topEntries.where((entry) => obsoleteContentIds.contains(entry.contentId));
-      await removeEntries(obsoleteTopEntries.map((entry) => entry.uri).toSet(), includeTrash: false);
+      final removedTopEntries = topEntries.where((entry) => removedContentIds.contains(entry.contentId));
+      await removeEntries(removedTopEntries.map((entry) => entry.uri).toSet(), includeTrash: false);
     }
-    knownEntries.removeWhere((entry) => obsoleteContentIds.contains(entry.contentId));
+    final removedEntries = knownEntries.where((entry) => removedContentIds.contains(entry.contentId)).toSet();
+    knownEntries.removeAll(removedEntries);
 
     // show known entries
     debugPrint('$runtimeType refresh ${stopwatch.elapsed} add known entries');
@@ -105,13 +107,7 @@ class MediaStoreSource extends CollectionSource {
       await loadCatalogMetadata();
       await loadAddresses();
       updateDerivedFilters();
-    }
 
-    // clean up obsolete entries
-    debugPrint('$runtimeType refresh ${stopwatch.elapsed} remove obsolete entries');
-    await metadataDb.removeIds(obsoleteContentIds);
-
-    if (directory != null) {
       // trash
       await loadTrashDetails();
       unawaited(deleteExpiredTrash().then(
@@ -123,6 +119,12 @@ class MediaStoreSource extends CollectionSource {
         },
         onError: (error) => debugPrint('failed to evict expired trash error=$error'),
       ));
+    }
+
+    // clean up obsolete entries
+    if (removedEntries.isNotEmpty) {
+      debugPrint('$runtimeType refresh ${stopwatch.elapsed} remove obsolete entries');
+      await metadataDb.removeIds(removedEntries.map((entry) => entry.id));
     }
 
     // verify paths because some apps move files without updating their `last modified date`
@@ -148,7 +150,11 @@ class MediaStoreSource extends CollectionSource {
 
     mediaStoreService.getEntries(knownDateByContentId, directory: directory).listen(
       (entry) {
-        entry.id = metadataDb.nextId;
+        // when discovering modified entry with known content ID,
+        // reuse known entry ID to overwrite it while preserving favourites, etc.
+        final contentId = entry.contentId;
+        entry.id = (knownContentIds.contains(contentId) ? knownLiveEntries.firstWhereOrNull((entry) => entry.contentId == contentId)?.id : null) ?? metadataDb.nextId;
+
         pendingNewEntries.add(entry);
         if (pendingNewEntries.length >= refreshCount) {
           refreshCount = min(refreshCount * 10, refreshCountMax);
@@ -168,6 +174,7 @@ class MediaStoreSource extends CollectionSource {
           updateDirectories();
         }
 
+        debugPrint('$runtimeType refresh ${stopwatch.elapsed} analyze');
         Set<AvesEntry>? analysisEntries;
         final analysisIds = analysisController?.entryIds;
         if (analysisIds != null) {
@@ -175,7 +182,7 @@ class MediaStoreSource extends CollectionSource {
         }
         await analyze(analysisController, entries: analysisEntries);
 
-        debugPrint('$runtimeType refresh ${stopwatch.elapsed} done for ${knownEntries.length} known, ${allNewEntries.length} new, ${obsoleteContentIds.length} obsolete');
+        debugPrint('$runtimeType refresh ${stopwatch.elapsed} done for ${knownEntries.length} known, ${allNewEntries.length} new, ${removedEntries.length} removed');
       },
       onError: (error) => debugPrint('$runtimeType stream error=$error'),
     );

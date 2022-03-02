@@ -202,10 +202,6 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     );
     if (options == null) return;
 
-    final source = context.read<CollectionSource>();
-    if (source.initState != SourceInitializationState.full) {
-      await source.init();
-    }
     final destinationAlbum = await pickAlbum(context: context, moveType: MoveType.export);
     if (destinationAlbum == null) return;
     if (!await checkStoragePermissionForAlbums(context, {destinationAlbum})) return;
@@ -228,6 +224,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     }
 
     final selectionCount = selection.length;
+    final source = context.read<CollectionSource>();
     source.pauseMonitoring();
     await showOpReport<ExportOpEvent>(
       context: context,

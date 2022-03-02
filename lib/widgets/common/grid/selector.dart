@@ -28,7 +28,7 @@ class GridSelectionGestureDetector<T> extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _GridSelectionGestureDetectorState createState() => _GridSelectionGestureDetectorState<T>();
+  State<GridSelectionGestureDetector<T>> createState() => _GridSelectionGestureDetectorState<T>();
 }
 
 class _GridSelectionGestureDetectorState<T> extends State<GridSelectionGestureDetector<T>> {

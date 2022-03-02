@@ -18,7 +18,7 @@ class ErrorView extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _ErrorViewState createState() => _ErrorViewState();
+  State<ErrorView> createState() => _ErrorViewState();
 }
 
 class _ErrorViewState extends State<ErrorView> {

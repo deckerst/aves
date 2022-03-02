@@ -1,10 +1,13 @@
 import 'dart:async';
 
+import 'package:aves/model/actions/video_actions.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/entry_images.dart';
 import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
+import 'package:aves/theme/icons.dart';
+import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/magnifier/controller/controller.dart';
 import 'package:aves/widgets/common/magnifier/controller/state.dart';
 import 'package:aves/widgets/common/magnifier/magnifier.dart';
@@ -24,6 +27,7 @@ import 'package:aves/widgets/viewer/visual/subtitle/subtitle.dart';
 import 'package:aves/widgets/viewer/visual/vector.dart';
 import 'package:aves/widgets/viewer/visual/video.dart';
 import 'package:collection/collection.dart';
+import 'package:decorated_icon/decorated_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -41,7 +45,7 @@ class EntryPageView extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _EntryPageViewState createState() => _EntryPageViewState();
+  State<EntryPageView> createState() => _EntryPageViewState();
 }
 
 class _EntryPageViewState extends State<EntryPageView> {
@@ -51,6 +55,7 @@ class _EntryPageViewState extends State<EntryPageView> {
   ImageStream? _videoCoverStream;
   late ImageStreamListener _videoCoverStreamListener;
   final ValueNotifier<ImageInfo?> _videoCoverInfoNotifier = ValueNotifier(null);
+  final ValueNotifier<Widget?> _actionFeedbackChildNotifier = ValueNotifier(null);
 
   MagnifierController? _dismissedCoverMagnifierController;
 
@@ -187,10 +192,46 @@ class _EntryPageViewState extends State<EntryPageView> {
   Widget _buildVideoView() {
     final videoController = context.read<VideoConductor>().getController(entry);
     if (videoController == null) return const SizedBox();
+
+    Positioned _buildDoubleTapDetector(
+      VideoAction action, {
+      double widthFactor = 1,
+      AlignmentGeometry alignment = Alignment.center,
+      IconData? Function()? icon,
+    }) {
+      return Positioned.fill(
+        child: FractionallySizedBox(
+          alignment: alignment,
+          widthFactor: widthFactor,
+          child: GestureDetector(
+            onDoubleTap: () {
+              _actionFeedbackChildNotifier.value = DecoratedIcon(
+                icon?.call() ?? action.getIconData(),
+                size: 48,
+                shadows: const [
+                  Shadow(
+                    color: Colors.black,
+                    blurRadius: 4,
+                  )
+                ],
+              );
+              VideoGestureNotification(
+                controller: videoController,
+                action: action,
+              ).dispatch(context);
+            },
+          ),
+        ),
+      );
+    }
+
     return ValueListenableBuilder<double>(
       valueListenable: videoController.sarNotifier,
       builder: (context, sar, child) {
         final videoDisplaySize = entry.videoDisplaySize(sar);
+        final playGesture = settings.videoGestureDoubleTapTogglePlay;
+        final seekGesture = settings.videoGestureSideDoubleTapSeek;
+        final useActionGesture = playGesture || seekGesture;
         return Stack(
           fit: StackFit.expand,
           children: [
@@ -212,6 +253,22 @@ class _EntryPageViewState extends State<EntryPageView> {
                     controller: videoController,
                     viewStateNotifier: _viewStateNotifier,
                     debugMode: true,
+                  ),
+                if (playGesture)
+                  _buildDoubleTapDetector(
+                    VideoAction.togglePlay,
+                    icon: () => videoController.isPlaying ? AIcons.pause : AIcons.play,
+                  ),
+                if (seekGesture) ...[
+                  _buildDoubleTapDetector(VideoAction.replay10, widthFactor: .25, alignment: Alignment.centerLeft),
+                  _buildDoubleTapDetector(VideoAction.skip10, widthFactor: .25, alignment: Alignment.centerRight),
+                ],
+                if (useActionGesture)
+                  ValueListenableBuilder<Widget?>(
+                    valueListenable: _actionFeedbackChildNotifier,
+                    builder: (context, feedbackChild, child) => ActionFeedback(
+                      child: feedbackChild,
+                    ),
                   ),
               ],
             ),
@@ -305,15 +362,17 @@ class _EntryPageViewState extends State<EntryPageView> {
   void _onTap() => const ToggleOverlayNotification().dispatch(context);
 
   void _onViewStateChanged(MagnifierState v) {
-    final current = _viewStateNotifier.value;
-    final viewState = ViewState(v.position, v.scale, current.viewportSize);
-    _viewStateNotifier.value = viewState;
+    _viewStateNotifier.value = _viewStateNotifier.value.copyWith(
+      position: v.position,
+      scale: v.scale,
+    );
   }
 
   void _onViewScaleBoundariesChanged(ScaleBoundaries v) {
-    final current = _viewStateNotifier.value;
-    final viewState = ViewState(current.position, current.scale, v.viewportSize);
-    _viewStateNotifier.value = viewState;
+    _viewStateNotifier.value = _viewStateNotifier.value.copyWith(
+      viewportSize: v.viewportSize,
+      contentSize: v.childSize,
+    );
   }
 
   static ScaleState _vectorScaleStateCycle(ScaleState actual) {

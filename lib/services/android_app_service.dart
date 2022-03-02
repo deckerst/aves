@@ -34,20 +34,24 @@ abstract class AndroidAppService {
 class PlatformAndroidAppService implements AndroidAppService {
   static const platform = MethodChannel('deckers.thibault/aves/app');
 
+  static final knownAppDirs = {
+    'com.kakao.talk': {'KakaoTalkDownload'},
+    'com.sony.playmemories.mobile': {'Imaging Edge Mobile'},
+    'nekox.messenger': {'NekoX'},
+  };
+
   @override
   Future<Set<Package>> getPackages() async {
     try {
       final result = await platform.invokeMethod('getPackages');
       final packages = (result as List).cast<Map>().map(Package.fromMap).toSet();
       // additional info for known directories
-      final kakaoTalk = packages.firstWhereOrNull((package) => package.packageName == 'com.kakao.talk');
-      if (kakaoTalk != null) {
-        kakaoTalk.ownedDirs.add('KakaoTalkDownload');
-      }
-      final imagingEdge = packages.firstWhereOrNull((package) => package.packageName == 'com.sony.playmemories.mobile');
-      if (imagingEdge != null) {
-        imagingEdge.ownedDirs.add('Imaging Edge Mobile');
-      }
+      knownAppDirs.forEach((packageName, dirs) {
+        final package = packages.firstWhereOrNull((package) => package.packageName == packageName);
+        if (package != null) {
+          package.ownedDirs.addAll(dirs);
+        }
+      });
       return packages;
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);

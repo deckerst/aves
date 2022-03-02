@@ -9,7 +9,7 @@ class DebugStorageSection extends StatefulWidget {
   const DebugStorageSection({Key? key}) : super(key: key);
 
   @override
-  _DebugStorageSectionState createState() => _DebugStorageSectionState();
+  State<DebugStorageSection> createState() => _DebugStorageSectionState();
 }
 
 class _DebugStorageSectionState extends State<DebugStorageSection> with AutomaticKeepAliveClientMixin {
