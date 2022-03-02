@@ -4,14 +4,10 @@ import 'package:aves/model/actions/video_actions.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
-import 'package:aves/theme/format.dart';
-import 'package:aves/theme/icons.dart';
-import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/basic/menu.dart';
 import 'package:aves/widgets/common/basic/popup_menu_button.dart';
-import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:aves/widgets/common/fx/blurred.dart';
-import 'package:aves/widgets/common/fx/borders.dart';
+import 'package:aves/widgets/viewer/overlay/bottom/video/controls.dart';
+import 'package:aves/widgets/viewer/overlay/bottom/video/progress_bar.dart';
 import 'package:aves/widgets/viewer/overlay/common.dart';
 import 'package:aves/widgets/viewer/video/controller.dart';
 import 'package:flutter/foundation.dart';
@@ -40,9 +36,6 @@ class VideoControlOverlay extends StatefulWidget {
 }
 
 class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTickerProviderStateMixin {
-  final GlobalKey _progressBarKey = GlobalKey(debugLabel: 'video-progress-bar');
-  bool _playingOnDragStart = false;
-
   AvesEntry get entry => widget.entry;
 
   Animation<double> get scale => widget.scale;
@@ -89,7 +82,7 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
                   selector: (context, s) => s.videoQuickActions,
                   builder: (context, videoQuickActions, child) {
                     final quickActions = videoQuickActions.take(availableCount - 1).toList();
-                    final menuActions = VideoActions.all.where((action) => !quickActions.contains(action)).toList();
+                    final menuActions = VideoActions.menu.where((action) => !quickActions.contains(action)).toList();
                     return Column(
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.end,
@@ -103,7 +96,21 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
                           onActionMenuOpened: widget.onActionMenuOpened,
                         ),
                         const SizedBox(height: 8),
-                        _buildProgressBar(),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: VideoProgressBar(
+                                controller: controller,
+                                scale: scale,
+                              ),
+                            ),
+                            VideoControlRow(
+                              controller: controller,
+                              scale: scale,
+                              onActionSelected: widget.onActionSelected,
+                            ),
+                          ],
+                        ),
                       ],
                     );
                   },
@@ -119,104 +126,6 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
             child: child,
           );
         });
-  }
-
-  Widget _buildProgressBar() {
-    const progressBarBorderRadius = 123.0;
-    final blurred = settings.enableOverlayBlurEffect;
-    const textStyle = TextStyle(shadows: Constants.embossShadows);
-    return SizeTransition(
-      sizeFactor: scale,
-      child: BlurredRRect(
-        enabled: blurred,
-        borderRadius: progressBarBorderRadius,
-        child: GestureDetector(
-          onTapDown: (details) {
-            _seekFromTap(details.globalPosition);
-          },
-          onHorizontalDragStart: (details) {
-            _playingOnDragStart = isPlaying;
-            if (_playingOnDragStart) controller!.pause();
-          },
-          onHorizontalDragUpdate: (details) {
-            _seekFromTap(details.globalPosition);
-          },
-          onHorizontalDragEnd: (details) {
-            if (_playingOnDragStart) controller!.play();
-          },
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(
-              minHeight: kMinInteractiveDimension,
-            ),
-            child: Container(
-              alignment: Alignment.center,
-              padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
-              decoration: BoxDecoration(
-                color: overlayBackgroundColor(blurred: blurred),
-                border: AvesBorder.border,
-                borderRadius: const BorderRadius.all(Radius.circular(progressBarBorderRadius)),
-              ),
-              child: Column(
-                key: _progressBarKey,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(
-                    children: [
-                      StreamBuilder<int>(
-                          stream: positionStream,
-                          builder: (context, snapshot) {
-                            // do not use stream snapshot because it is obsolete when switching between videos
-                            final position = controller?.currentPosition.floor() ?? 0;
-                            return Text(
-                              formatFriendlyDuration(Duration(milliseconds: position)),
-                              style: textStyle,
-                            );
-                          }),
-                      const Spacer(),
-                      Text(
-                        entry.durationText,
-                        style: textStyle,
-                      ),
-                    ],
-                  ),
-                  ClipRRect(
-                    borderRadius: const BorderRadius.all(Radius.circular(4)),
-                    child: Directionality(
-                      // force directionality for `LinearProgressIndicator`
-                      textDirection: TextDirection.ltr,
-                      child: StreamBuilder<int>(
-                          stream: positionStream,
-                          builder: (context, snapshot) {
-                            // do not use stream snapshot because it is obsolete when switching between videos
-                            var progress = controller?.progress ?? 0.0;
-                            if (!progress.isFinite) progress = 0.0;
-                            return LinearProgressIndicator(
-                              value: progress,
-                              backgroundColor: Colors.grey.shade700,
-                            );
-                          }),
-                    ),
-                  ),
-                  const Text(
-                    // fake text below to match the height of the text above and center the whole thing
-                    '',
-                    style: textStyle,
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  void _seekFromTap(Offset globalPosition) async {
-    if (controller == null) return;
-    final keyContext = _progressBarKey.currentContext!;
-    final box = keyContext.findRenderObject() as RenderBox;
-    final localPosition = box.globalToLocal(globalPosition);
-    await controller!.seekToProgress(localPosition.dx / box.size.width);
   }
 }
 
@@ -296,7 +205,7 @@ class _ButtonRow extends StatelessWidget {
         child = _buildFromListenable(controller?.canSetSpeedNotifier);
         break;
       case VideoAction.togglePlay:
-        child = _PlayToggler(
+        child = PlayToggler(
           controller: controller,
           onPressed: onPressed,
         );
@@ -347,7 +256,7 @@ class _ButtonRow extends StatelessWidget {
     Widget? child;
     switch (action) {
       case VideoAction.togglePlay:
-        child = _PlayToggler(
+        child = PlayToggler(
           controller: controller,
           isMenuItem: true,
         );
@@ -368,99 +277,5 @@ class _ButtonRow extends StatelessWidget {
       enabled: enabled,
       child: child,
     );
-  }
-}
-
-class _PlayToggler extends StatefulWidget {
-  final AvesVideoController? controller;
-  final bool isMenuItem;
-  final VoidCallback? onPressed;
-
-  const _PlayToggler({
-    required this.controller,
-    this.isMenuItem = false,
-    this.onPressed,
-  });
-
-  @override
-  State<_PlayToggler> createState() => _PlayTogglerState();
-}
-
-class _PlayTogglerState extends State<_PlayToggler> with SingleTickerProviderStateMixin {
-  final List<StreamSubscription> _subscriptions = [];
-  late AnimationController _playPauseAnimation;
-
-  AvesVideoController? get controller => widget.controller;
-
-  bool get isPlaying => controller?.isPlaying ?? false;
-
-  @override
-  void initState() {
-    super.initState();
-    _playPauseAnimation = AnimationController(
-      duration: context.read<DurationsData>().iconAnimation,
-      vsync: this,
-    );
-    _registerWidget(widget);
-  }
-
-  @override
-  void didUpdateWidget(covariant _PlayToggler oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    _unregisterWidget(oldWidget);
-    _registerWidget(widget);
-  }
-
-  @override
-  void dispose() {
-    _unregisterWidget(widget);
-    _playPauseAnimation.dispose();
-    super.dispose();
-  }
-
-  void _registerWidget(_PlayToggler widget) {
-    final controller = widget.controller;
-    if (controller != null) {
-      _subscriptions.add(controller.statusStream.listen(_onStatusChange));
-      _onStatusChange(controller.status);
-    }
-  }
-
-  void _unregisterWidget(_PlayToggler widget) {
-    _subscriptions
-      ..forEach((sub) => sub.cancel())
-      ..clear();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (widget.isMenuItem) {
-      return isPlaying
-          ? MenuRow(
-              text: context.l10n.videoActionPause,
-              icon: const Icon(AIcons.pause),
-            )
-          : MenuRow(
-              text: context.l10n.videoActionPlay,
-              icon: const Icon(AIcons.play),
-            );
-    }
-    return IconButton(
-      icon: AnimatedIcon(
-        icon: AnimatedIcons.play_pause,
-        progress: _playPauseAnimation,
-      ),
-      onPressed: widget.onPressed,
-      tooltip: isPlaying ? context.l10n.videoActionPause : context.l10n.videoActionPlay,
-    );
-  }
-
-  void _onStatusChange(VideoStatus status) {
-    final status = _playPauseAnimation.status;
-    if (isPlaying && status != AnimationStatus.forward && status != AnimationStatus.completed) {
-      _playPauseAnimation.forward();
-    } else if (!isPlaying && status != AnimationStatus.reverse && status != AnimationStatus.dismissed) {
-      _playPauseAnimation.reverse();
-    }
   }
 }

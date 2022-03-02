@@ -82,6 +82,7 @@ class SettingsDefaults {
   static const enableVideoAutoPlay = false;
   static const videoLoopMode = VideoLoopMode.shortOnly;
   static const videoShowRawTimedText = false;
+  static const videoControls = VideoControls.play;
   static const videoGestureDoubleTapTogglePlay = false;
   static const videoGestureSideDoubleTapSeek = true;
 

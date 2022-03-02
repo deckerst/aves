@@ -34,7 +34,7 @@ class VideoActionEditorPage extends StatelessWidget {
     return QuickActionEditorPage<VideoAction>(
       title: context.l10n.settingsVideoQuickActionEditorTitle,
       bannerText: context.l10n.settingsViewerQuickActionEditorBanner,
-      allAvailableActions: VideoActions.all,
+      allAvailableActions: VideoActions.menu,
       actionIcon: (action) => action.getIcon(),
       actionText: (context, action) => action.getText(context),
       load: () => settings.videoQuickActions,

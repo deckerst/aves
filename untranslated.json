@@ -1,58 +1,100 @@
 {
   "de": [
     "entryActionConvert",
+    "videoControlsNone",
+    "videoControlsPlay",
+    "videoControlsPlaySeek",
+    "videoControlsPlayOutside",
     "settingsViewerShowOverlayThumbnails",
-    "settingsGesturesTile",
-    "settingsGesturesTitle",
+    "settingsVideoControlsTile",
+    "settingsVideoControlsTitle",
+    "settingsVideoButtonsTile",
+    "settingsVideoButtonsTitle",
     "settingsVideoGestureDoubleTapTogglePlay",
     "settingsVideoGestureSideDoubleTapSeek"
   ],
 
   "es": [
+    "videoControlsNone",
+    "videoControlsPlay",
+    "videoControlsPlaySeek",
+    "videoControlsPlayOutside",
     "settingsViewerShowOverlayThumbnails",
-    "settingsGesturesTile",
-    "settingsGesturesTitle",
+    "settingsVideoControlsTile",
+    "settingsVideoControlsTitle",
+    "settingsVideoButtonsTile",
+    "settingsVideoButtonsTitle",
     "settingsVideoGestureDoubleTapTogglePlay",
     "settingsVideoGestureSideDoubleTapSeek"
   ],
 
   "fr": [
+    "videoControlsNone",
+    "videoControlsPlay",
+    "videoControlsPlaySeek",
+    "videoControlsPlayOutside",
     "settingsViewerShowOverlayThumbnails",
-    "settingsGesturesTile",
-    "settingsGesturesTitle",
+    "settingsVideoControlsTile",
+    "settingsVideoControlsTitle",
+    "settingsVideoButtonsTile",
+    "settingsVideoButtonsTitle",
     "settingsVideoGestureDoubleTapTogglePlay",
     "settingsVideoGestureSideDoubleTapSeek"
   ],
 
   "id": [
+    "videoControlsNone",
+    "videoControlsPlay",
+    "videoControlsPlaySeek",
+    "videoControlsPlayOutside",
     "settingsViewerShowOverlayThumbnails",
-    "settingsGesturesTile",
-    "settingsGesturesTitle",
+    "settingsVideoControlsTile",
+    "settingsVideoControlsTitle",
+    "settingsVideoButtonsTile",
+    "settingsVideoButtonsTitle",
     "settingsVideoGestureDoubleTapTogglePlay",
     "settingsVideoGestureSideDoubleTapSeek"
   ],
 
   "ko": [
+    "videoControlsNone",
+    "videoControlsPlay",
+    "videoControlsPlaySeek",
+    "videoControlsPlayOutside",
     "settingsViewerShowOverlayThumbnails",
-    "settingsGesturesTile",
-    "settingsGesturesTitle",
+    "settingsVideoControlsTile",
+    "settingsVideoControlsTitle",
+    "settingsVideoButtonsTile",
+    "settingsVideoButtonsTitle",
     "settingsVideoGestureDoubleTapTogglePlay",
     "settingsVideoGestureSideDoubleTapSeek"
   ],
 
   "pt": [
+    "videoControlsNone",
+    "videoControlsPlay",
+    "videoControlsPlaySeek",
+    "videoControlsPlayOutside",
     "settingsViewerShowOverlayThumbnails",
-    "settingsGesturesTile",
-    "settingsGesturesTitle",
+    "settingsVideoControlsTile",
+    "settingsVideoControlsTitle",
+    "settingsVideoButtonsTile",
+    "settingsVideoButtonsTitle",
     "settingsVideoGestureDoubleTapTogglePlay",
     "settingsVideoGestureSideDoubleTapSeek"
   ],
 
   "ru": [
     "entryActionConvert",
+    "videoControlsNone",
+    "videoControlsPlay",
+    "videoControlsPlaySeek",
+    "videoControlsPlayOutside",
     "settingsViewerShowOverlayThumbnails",
-    "settingsGesturesTile",
-    "settingsGesturesTitle",
+    "settingsVideoControlsTile",
+    "settingsVideoControlsTitle",
+    "settingsVideoButtonsTile",
+    "settingsVideoButtonsTitle",
     "settingsVideoGestureDoubleTapTogglePlay",
     "settingsVideoGestureSideDoubleTapSeek"
   ]

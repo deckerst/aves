@@ -45,37 +45,29 @@ class LanguageSection extends StatelessWidget {
         ListTile(
           title: Text(l10n.settingsCoordinateFormatTile),
           subtitle: Text(currentCoordinateFormat.getName(context)),
-          onTap: () async {
-            final value = await showDialog<CoordinateFormat>(
-              context: context,
-              builder: (context) => AvesSelectionDialog<CoordinateFormat>(
-                initialValue: currentCoordinateFormat,
-                options: Map.fromEntries(CoordinateFormat.values.map((v) => MapEntry(v, v.getName(context)))),
-                optionSubtitleBuilder: (value) => value.format(l10n, Constants.pointNemo),
-                title: l10n.settingsCoordinateFormatTitle,
-              ),
-            );
-            if (value != null) {
-              settings.coordinateFormat = value;
-            }
-          },
+          onTap: () => showSelectionDialog<CoordinateFormat>(
+            context: context,
+            builder: (context) => AvesSelectionDialog<CoordinateFormat>(
+              initialValue: currentCoordinateFormat,
+              options: Map.fromEntries(CoordinateFormat.values.map((v) => MapEntry(v, v.getName(context)))),
+              optionSubtitleBuilder: (value) => value.format(l10n, Constants.pointNemo),
+              title: l10n.settingsCoordinateFormatTitle,
+            ),
+            onSelection: (v) => settings.coordinateFormat = v,
+          ),
         ),
         ListTile(
           title: Text(l10n.settingsUnitSystemTile),
           subtitle: Text(currentUnitSystem.getName(context)),
-          onTap: () async {
-            final value = await showDialog<UnitSystem>(
-              context: context,
-              builder: (context) => AvesSelectionDialog<UnitSystem>(
-                initialValue: currentUnitSystem,
-                options: Map.fromEntries(UnitSystem.values.map((v) => MapEntry(v, v.getName(context)))),
-                title: l10n.settingsUnitSystemTitle,
-              ),
-            );
-            if (value != null) {
-              settings.unitSystem = value;
-            }
-          },
+          onTap: () => showSelectionDialog<UnitSystem>(
+            context: context,
+            builder: (context) => AvesSelectionDialog<UnitSystem>(
+              initialValue: currentUnitSystem,
+              options: Map.fromEntries(UnitSystem.values.map((v) => MapEntry(v, v.getName(context)))),
+              title: l10n.settingsUnitSystemTitle,
+            ),
+            onSelection: (v) => settings.unitSystem = v,
+          ),
         ),
       ],
     );

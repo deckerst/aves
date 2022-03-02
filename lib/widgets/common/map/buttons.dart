@@ -17,7 +17,6 @@ import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
 import 'package:aves/widgets/viewer/info/notifications.dart';
 import 'package:aves/widgets/viewer/overlay/common.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 
@@ -139,21 +138,15 @@ class MapButtonPanel extends StatelessWidget {
                           final availableStyles = EntryMapStyle.values.where((style) => !style.isGoogleMaps || canUseGoogleMaps);
                           final preferredStyle = settings.infoMapStyle;
                           final initialStyle = availableStyles.contains(preferredStyle) ? preferredStyle : availableStyles.first;
-                          final style = await showDialog<EntryMapStyle>(
+                          await showSelectionDialog<EntryMapStyle>(
                             context: context,
-                            builder: (context) {
-                              return AvesSelectionDialog<EntryMapStyle>(
-                                initialValue: initialStyle,
-                                options: Map.fromEntries(availableStyles.map((v) => MapEntry(v, v.getName(context)))),
-                                title: context.l10n.mapStyleTitle,
-                              );
-                            },
+                            builder: (context) => AvesSelectionDialog<EntryMapStyle>(
+                              initialValue: initialStyle,
+                              options: Map.fromEntries(availableStyles.map((v) => MapEntry(v, v.getName(context)))),
+                              title: context.l10n.mapStyleTitle,
+                            ),
+                            onSelection: (v) => settings.infoMapStyle = v,
                           );
-                          // wait for the dialog to hide as applying the change may block the UI
-                          await Future.delayed(Durations.dialogTransitionAnimation * timeDilation);
-                          if (style != null && style != settings.infoMapStyle) {
-                            settings.infoMapStyle = style;
-                          }
                         },
                         tooltip: context.l10n.mapStyleTooltip,
                       ),
@@ -313,7 +306,7 @@ class _OverlayCoordinateFilterChipState extends State<_OverlayCoordinateFilterCh
               );
               return Padding(
                 padding: EdgeInsets.all(widget.padding),
-                child: BlurredRRect(
+                child: BlurredRRect.all(
                   enabled: blurred,
                   borderRadius: AvesFilterChip.defaultRadius,
                   child: AvesFilterChip(

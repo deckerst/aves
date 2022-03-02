@@ -2,13 +2,11 @@ import 'dart:collection';
 
 import 'package:aves/l10n/l10n.dart';
 import 'package:aves/model/settings/settings.dart';
-import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
 import 'package:aves/widgets/settings/language/locales.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 
 class LocaleTile extends StatelessWidget {
@@ -28,21 +26,15 @@ class LocaleTile extends StatelessWidget {
           return Text(locale == null ? context.l10n.settingsSystemDefault : _getLocaleName(locale));
         },
       ),
-      onTap: () async {
-        final value = await showDialog<Locale>(
-          context: context,
-          builder: (context) => AvesSelectionDialog<Locale>(
-            initialValue: settings.locale ?? _systemLocaleOption,
-            options: _getLocaleOptions(context),
-            title: context.l10n.settingsLanguage,
-          ),
-        );
-        // wait for the dialog to hide as applying the change may block the UI
-        await Future.delayed(Durations.dialogTransitionAnimation * timeDilation);
-        if (value != null) {
-          settings.locale = value == _systemLocaleOption ? null : value;
-        }
-      },
+      onTap: () => showSelectionDialog<Locale>(
+        context: context,
+        builder: (context) => AvesSelectionDialog<Locale>(
+          initialValue: settings.locale ?? _systemLocaleOption,
+          options: _getLocaleOptions(context),
+          title: context.l10n.settingsLanguage,
+        ),
+        onSelection: (v) => settings.locale = v == _systemLocaleOption ? null : v,
+      ),
     );
   }
 

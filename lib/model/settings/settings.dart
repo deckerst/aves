@@ -95,6 +95,7 @@ class Settings extends ChangeNotifier {
   static const enableVideoAutoPlayKey = 'video_auto_play';
   static const videoLoopModeKey = 'video_loop';
   static const videoShowRawTimedTextKey = 'video_show_raw_timed_text';
+  static const videoControlsKey = 'video_controls';
   static const videoGestureDoubleTapTogglePlayKey = 'video_gesture_double_tap_toggle_play';
   static const videoGestureSideDoubleTapSeekKey = 'video_gesture_side_double_tap_skip';
 
@@ -438,6 +439,10 @@ class Settings extends ChangeNotifier {
 
   set videoShowRawTimedText(bool newValue) => setAndNotify(videoShowRawTimedTextKey, newValue);
 
+  VideoControls get videoControls => getEnumOrDefault(videoControlsKey, SettingsDefaults.videoControls, VideoControls.values);
+
+  set videoControls(VideoControls newValue) => setAndNotify(videoControlsKey, newValue.toString());
+
   bool get videoGestureDoubleTapTogglePlay => getBoolOrDefault(videoGestureDoubleTapTogglePlayKey, SettingsDefaults.videoGestureDoubleTapTogglePlay);
 
   set videoGestureDoubleTapTogglePlay(bool newValue) => setAndNotify(videoGestureDoubleTapTogglePlayKey, newValue);
@@ -686,6 +691,7 @@ class Settings extends ChangeNotifier {
             case tagSortFactorKey:
             case imageBackgroundKey:
             case videoLoopModeKey:
+            case videoControlsKey:
             case subtitleTextAlignmentKey:
             case infoMapStyleKey:
             case coordinateFormatKey:

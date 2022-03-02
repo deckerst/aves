@@ -7,11 +7,13 @@ Color overlayBackgroundColor({required bool blurred}) => blurred ? Colors.black2
 
 class OverlayButton extends StatelessWidget {
   final Animation<double> scale;
+  final BorderRadius? borderRadius;
   final Widget child;
 
   const OverlayButton({
     Key? key,
     this.scale = kAlwaysCompleteAnimation,
+    this.borderRadius,
     required this.child,
   }) : super(key: key);
 
@@ -20,20 +22,37 @@ class OverlayButton extends StatelessWidget {
     final blurred = settings.enableOverlayBlurEffect;
     return ScaleTransition(
       scale: scale,
-      child: BlurredOval(
-        enabled: blurred,
-        child: Material(
-          type: MaterialType.circle,
-          color: overlayBackgroundColor(blurred: blurred),
-          child: Ink(
-            decoration: BoxDecoration(
-              border: AvesBorder.border,
-              shape: BoxShape.circle,
+      child: borderRadius != null
+          ? BlurredRRect(
+              enabled: blurred,
+              borderRadius: borderRadius,
+              child: Material(
+                type: MaterialType.button,
+                borderRadius: borderRadius,
+                color: overlayBackgroundColor(blurred: blurred),
+                child: Ink(
+                  decoration: BoxDecoration(
+                    border: AvesBorder.border,
+                    borderRadius: borderRadius,
+                  ),
+                  child: child,
+                ),
+              ),
+            )
+          : BlurredOval(
+              enabled: blurred,
+              child: Material(
+                type: MaterialType.circle,
+                color: overlayBackgroundColor(blurred: blurred),
+                child: Ink(
+                  decoration: BoxDecoration(
+                    border: AvesBorder.border,
+                    shape: BoxShape.circle,
+                  ),
+                  child: child,
+                ),
+              ),
             ),
-            child: child,
-          ),
-        ),
-      ),
     );
   }
 
@@ -61,7 +80,7 @@ class OverlayTextButton extends StatelessWidget {
     final blurred = settings.enableOverlayBlurEffect;
     return SizeTransition(
       sizeFactor: scale,
-      child: BlurredRRect(
+      child: BlurredRRect.all(
         enabled: blurred,
         borderRadius: _borderRadius,
         child: OutlinedButton(

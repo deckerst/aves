@@ -9,7 +9,7 @@ import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
 import 'package:aves/widgets/settings/common/tile_leading.dart';
-import 'package:aves/widgets/settings/video/gestures.dart';
+import 'package:aves/widgets/settings/video/controls.dart';
 import 'package:aves/widgets/settings/video/subtitle_theme.dart';
 import 'package:aves/widgets/settings/video/video_actions_editor.dart';
 import 'package:flutter/material.dart';
@@ -59,22 +59,18 @@ class VideoSection extends StatelessWidget {
         builder: (context, current, child) => ListTile(
           title: Text(context.l10n.settingsVideoLoopModeTile),
           subtitle: Text(current.getName(context)),
-          onTap: () async {
-            final value = await showDialog<VideoLoopMode>(
-              context: context,
-              builder: (context) => AvesSelectionDialog<VideoLoopMode>(
-                initialValue: current,
-                options: Map.fromEntries(VideoLoopMode.values.map((v) => MapEntry(v, v.getName(context)))),
-                title: context.l10n.settingsVideoLoopModeTitle,
-              ),
-            );
-            if (value != null) {
-              settings.videoLoopMode = value;
-            }
-          },
+          onTap: () => showSelectionDialog<VideoLoopMode>(
+            context: context,
+            builder: (context) => AvesSelectionDialog<VideoLoopMode>(
+              initialValue: current,
+              options: Map.fromEntries(VideoLoopMode.values.map((v) => MapEntry(v, v.getName(context)))),
+              title: context.l10n.settingsVideoLoopModeTitle,
+            ),
+            onSelection: (v) => settings.videoLoopMode = v,
+          ),
         ),
       ),
-      const VideoGesturesTile(),
+      const VideoControlsTile(),
       const SubtitleThemeTile(),
     ];
 
