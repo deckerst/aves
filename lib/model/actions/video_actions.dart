@@ -3,26 +3,24 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/widgets.dart';
 
 enum VideoAction {
-  captureFrame,
+  // controls
   playOutside,
   replay10,
   skip10,
+  togglePlay,
+  // menu
+  captureFrame,
   selectStreams,
   setSpeed,
   settings,
-  togglePlay,
   // TODO TLAD [video] toggle mute
 }
 
 class VideoActions {
-  static const all = [
-    VideoAction.togglePlay,
+  static const menu = [
     VideoAction.captureFrame,
     VideoAction.setSpeed,
     VideoAction.selectStreams,
-    VideoAction.replay10,
-    VideoAction.skip10,
-    VideoAction.playOutside,
     VideoAction.settings,
   ];
 }

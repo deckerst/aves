@@ -29,7 +29,7 @@ class BlurredRect extends StatelessWidget {
 
 class BlurredRRect extends StatelessWidget {
   final bool enabled;
-  final double borderRadius;
+  final BorderRadius? borderRadius;
   final Widget child;
 
   const BlurredRRect({
@@ -39,17 +39,31 @@ class BlurredRRect extends StatelessWidget {
     required this.child,
   }) : super(key: key);
 
+  factory BlurredRRect.all({
+    Key? key,
+    bool enabled = true,
+    required double borderRadius,
+    required Widget child,
+  }) {
+    return BlurredRRect(
+      key: key,
+      enabled: enabled,
+      borderRadius: BorderRadius.all(Radius.circular(borderRadius)),
+      child: child,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return enabled
-        ? ClipRRect(
-            borderRadius: BorderRadius.all(Radius.circular(borderRadius)),
-            child: BackdropFilter(
+    return ClipRRect(
+      borderRadius: borderRadius,
+      child: enabled
+          ? BackdropFilter(
               filter: _filter,
               child: child,
-            ),
-          )
-        : child;
+            )
+          : child,
+    );
   }
 }
 

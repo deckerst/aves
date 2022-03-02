@@ -22,7 +22,7 @@ import 'package:aves/widgets/viewer/multipage/conductor.dart';
 import 'package:aves/widgets/viewer/multipage/controller.dart';
 import 'package:aves/widgets/viewer/overlay/bottom/common.dart';
 import 'package:aves/widgets/viewer/overlay/bottom/panorama.dart';
-import 'package:aves/widgets/viewer/overlay/bottom/video.dart';
+import 'package:aves/widgets/viewer/overlay/bottom/video/video.dart';
 import 'package:aves/widgets/viewer/overlay/notifications.dart';
 import 'package:aves/widgets/viewer/overlay/top.dart';
 import 'package:aves/widgets/viewer/page_entry_builder.dart';

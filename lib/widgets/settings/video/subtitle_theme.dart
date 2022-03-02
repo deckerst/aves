@@ -57,19 +57,15 @@ class SubtitleThemePage extends StatelessWidget {
                       ListTile(
                         title: Text(context.l10n.settingsSubtitleThemeTextAlignmentTile),
                         subtitle: Text(_getTextAlignName(context, settings.subtitleTextAlignment)),
-                        onTap: () async {
-                          final value = await showDialog<TextAlign>(
-                            context: context,
-                            builder: (context) => AvesSelectionDialog<TextAlign>(
-                              initialValue: settings.subtitleTextAlignment,
-                              options: Map.fromEntries(textAlignOptions.map((v) => MapEntry(v, _getTextAlignName(context, v)))),
-                              title: context.l10n.settingsSubtitleThemeTextAlignmentTitle,
-                            ),
-                          );
-                          if (value != null) {
-                            settings.subtitleTextAlignment = value;
-                          }
-                        },
+                        onTap: () => showSelectionDialog<TextAlign>(
+                          context: context,
+                          builder: (context) => AvesSelectionDialog<TextAlign>(
+                            initialValue: settings.subtitleTextAlignment,
+                            options: Map.fromEntries(textAlignOptions.map((v) => MapEntry(v, _getTextAlignName(context, v)))),
+                            title: context.l10n.settingsSubtitleThemeTextAlignmentTitle,
+                          ),
+                          onSelection: (v) => settings.subtitleTextAlignment = v,
+                        ),
                       ),
                       SliderListTile(
                         title: context.l10n.settingsSubtitleThemeTextSize,

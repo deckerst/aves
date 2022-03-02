@@ -152,6 +152,11 @@
   "videoLoopModeShortOnly": "Short videos only",
   "videoLoopModeAlways": "Always",
 
+  "videoControlsNone": "None",
+  "videoControlsPlay": "Play",
+  "videoControlsPlaySeek": "Play & seek",
+  "videoControlsPlayOutside": "Play outside",
+
   "mapStyleGoogleNormal": "Google Maps",
   "mapStyleGoogleHybrid": "Google Maps (Hybrid)",
   "mapStyleGoogleTerrain": "Google Maps (Terrain)",
@@ -641,8 +646,10 @@
   "settingsSubtitleThemeTextAlignmentCenter": "Center",
   "settingsSubtitleThemeTextAlignmentRight": "Right",
 
-  "settingsGesturesTile": "Gestures",
-  "settingsGesturesTitle": "Gestures",
+  "settingsVideoControlsTile": "Controls",
+  "settingsVideoControlsTitle": "Controls",
+  "settingsVideoButtonsTile": "Buttons",
+  "settingsVideoButtonsTitle": "Buttons",
   "settingsVideoGestureDoubleTapTogglePlay": "Double tap to play/pause",
   "settingsVideoGestureSideDoubleTapSeek": "Double tap on screen edges to seek backward/forward",
 

@@ -96,14 +96,12 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
       if (uniqueNames.length < names.length) {
         final value = await showDialog<NameConflictStrategy>(
           context: context,
-          builder: (context) {
-            return AvesSelectionDialog<NameConflictStrategy>(
-              initialValue: nameConflictStrategy,
-              options: Map.fromEntries(NameConflictStrategy.values.map((v) => MapEntry(v, v.getName(context)))),
-              message: originAlbums.length == 1 ? l10n.nameConflictDialogSingleSourceMessage : l10n.nameConflictDialogMultipleSourceMessage,
-              confirmationButtonLabel: l10n.continueButtonLabel,
-            );
-          },
+          builder: (context) => AvesSelectionDialog<NameConflictStrategy>(
+            initialValue: nameConflictStrategy,
+            options: Map.fromEntries(NameConflictStrategy.values.map((v) => MapEntry(v, v.getName(context)))),
+            message: originAlbums.length == 1 ? l10n.nameConflictDialogSingleSourceMessage : l10n.nameConflictDialogMultipleSourceMessage,
+            confirmationButtonLabel: l10n.continueButtonLabel,
+          ),
         );
         if (value == null) return;
         nameConflictStrategy = value;
