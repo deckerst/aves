@@ -38,6 +38,14 @@ class VideoGesturesPage extends StatelessWidget {
         child: ListView(
           children: [
             Selector<Settings, bool>(
+              selector: (context, s) => s.videoGestureDoubleTapTogglePlay,
+              builder: (context, current, child) => SwitchListTile(
+                value: current,
+                onChanged: (v) => settings.videoGestureDoubleTapTogglePlay = v,
+                title: Text(context.l10n.settingsVideoGestureDoubleTapTogglePlay),
+              ),
+            ),
+            Selector<Settings, bool>(
               selector: (context, s) => s.videoGestureSideDoubleTapSeek,
               builder: (context, current, child) => SwitchListTile(
                 value: current,

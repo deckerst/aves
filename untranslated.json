@@ -4,6 +4,7 @@
     "settingsViewerShowOverlayThumbnails",
     "settingsGesturesTile",
     "settingsGesturesTitle",
+    "settingsVideoGestureDoubleTapTogglePlay",
     "settingsVideoGestureSideDoubleTapSeek"
   ],
 
@@ -11,6 +12,7 @@
     "settingsViewerShowOverlayThumbnails",
     "settingsGesturesTile",
     "settingsGesturesTitle",
+    "settingsVideoGestureDoubleTapTogglePlay",
     "settingsVideoGestureSideDoubleTapSeek"
   ],
 
@@ -18,6 +20,7 @@
     "settingsViewerShowOverlayThumbnails",
     "settingsGesturesTile",
     "settingsGesturesTitle",
+    "settingsVideoGestureDoubleTapTogglePlay",
     "settingsVideoGestureSideDoubleTapSeek"
   ],
 
@@ -25,6 +28,7 @@
     "settingsViewerShowOverlayThumbnails",
     "settingsGesturesTile",
     "settingsGesturesTitle",
+    "settingsVideoGestureDoubleTapTogglePlay",
     "settingsVideoGestureSideDoubleTapSeek"
   ],
 
@@ -32,6 +36,7 @@
     "settingsViewerShowOverlayThumbnails",
     "settingsGesturesTile",
     "settingsGesturesTitle",
+    "settingsVideoGestureDoubleTapTogglePlay",
     "settingsVideoGestureSideDoubleTapSeek"
   ],
 
@@ -39,6 +44,7 @@
     "settingsViewerShowOverlayThumbnails",
     "settingsGesturesTile",
     "settingsGesturesTitle",
+    "settingsVideoGestureDoubleTapTogglePlay",
     "settingsVideoGestureSideDoubleTapSeek"
   ],
 
@@ -47,6 +53,7 @@
     "settingsViewerShowOverlayThumbnails",
     "settingsGesturesTile",
     "settingsGesturesTitle",
+    "settingsVideoGestureDoubleTapTogglePlay",
     "settingsVideoGestureSideDoubleTapSeek"
   ]
 }
