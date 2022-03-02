@@ -643,6 +643,7 @@
 
   "settingsGesturesTile": "Gestures",
   "settingsGesturesTitle": "Gestures",
+  "settingsVideoGestureDoubleTapTogglePlay": "Double tap to play/pause",
   "settingsVideoGestureSideDoubleTapSeek": "Double tap on screen edges to seek backward/forward",
 
   "settingsSectionPrivacy": "Privacy",

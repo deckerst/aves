@@ -95,6 +95,7 @@ class Settings extends ChangeNotifier {
   static const enableVideoAutoPlayKey = 'video_auto_play';
   static const videoLoopModeKey = 'video_loop';
   static const videoShowRawTimedTextKey = 'video_show_raw_timed_text';
+  static const videoGestureDoubleTapTogglePlayKey = 'video_gesture_double_tap_toggle_play';
   static const videoGestureSideDoubleTapSeekKey = 'video_gesture_side_double_tap_skip';
 
   // subtitles
@@ -437,6 +438,10 @@ class Settings extends ChangeNotifier {
 
   set videoShowRawTimedText(bool newValue) => setAndNotify(videoShowRawTimedTextKey, newValue);
 
+  bool get videoGestureDoubleTapTogglePlay => getBoolOrDefault(videoGestureDoubleTapTogglePlayKey, SettingsDefaults.videoGestureDoubleTapTogglePlay);
+
+  set videoGestureDoubleTapTogglePlay(bool newValue) => setAndNotify(videoGestureDoubleTapTogglePlayKey, newValue);
+
   bool get videoGestureSideDoubleTapSeek => getBoolOrDefault(videoGestureSideDoubleTapSeekKey, SettingsDefaults.videoGestureSideDoubleTapSeek);
 
   set videoGestureSideDoubleTapSeek(bool newValue) => setAndNotify(videoGestureSideDoubleTapSeekKey, newValue);
@@ -659,6 +664,7 @@ class Settings extends ChangeNotifier {
             case enableMotionPhotoAutoPlayKey:
             case enableVideoHardwareAccelerationKey:
             case enableVideoAutoPlayKey:
+            case videoGestureDoubleTapTogglePlayKey:
             case videoGestureSideDoubleTapSeekKey:
             case subtitleShowOutlineKey:
             case saveSearchHistoryKey:
