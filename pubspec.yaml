@@ -58,7 +58,10 @@ dependencies:
   panorama: 0.4.0
   pdf:
   percent_indicator:
-  permission_handler:
+# TODO TLAD as of 2022/03/03, latest version (permission_handler v9.2.0 + permission_handler_android v9.0.2)
+# includes a bad PR: https://github.com/Baseflow/flutter-permission-handler/pull/765
+# that broke writing on the main storage on Android Q when targeting a later release
+  permission_handler: 8.3.0
   printing:
   provider:
   screen_brightness:
