@@ -1,4 +1,4 @@
-import 'package:aves/model/actions/video_actions.dart';
+import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/widgets/viewer/video/controller.dart';
 import 'package:flutter/material.dart';
 
@@ -17,11 +17,11 @@ class ViewEntryNotification extends Notification {
 }
 
 @immutable
-class VideoGestureNotification extends Notification {
+class VideoActionNotification extends Notification {
   final AvesVideoController controller;
-  final VideoAction action;
+  final EntryAction action;
 
-  const VideoGestureNotification({
+  const VideoActionNotification({
     required this.controller,
     required this.action,
   });

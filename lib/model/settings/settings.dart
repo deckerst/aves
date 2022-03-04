@@ -4,7 +4,6 @@ import 'dart:math';
 import 'package:aves/l10n/l10n.dart';
 import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/actions/entry_set_actions.dart';
-import 'package:aves/model/actions/video_actions.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/defaults.dart';
 import 'package:aves/model/settings/enums/enums.dart';
@@ -90,7 +89,6 @@ class Settings extends ChangeNotifier {
   static const imageBackgroundKey = 'image_background';
 
   // video
-  static const videoQuickActionsKey = 'video_quick_actions';
   static const enableVideoHardwareAccelerationKey = 'video_hwaccel_mediacodec';
   static const enableVideoAutoPlayKey = 'video_auto_play';
   static const videoLoopModeKey = 'video_loop';
@@ -419,10 +417,6 @@ class Settings extends ChangeNotifier {
 
   // video
 
-  List<VideoAction> get videoQuickActions => getEnumListOrDefault(videoQuickActionsKey, SettingsDefaults.videoQuickActions, VideoAction.values);
-
-  set videoQuickActions(List<VideoAction> newValue) => setAndNotify(videoQuickActionsKey, newValue.map((v) => v.toString()).toList());
-
   bool get enableVideoHardwareAcceleration => getBoolOrDefault(enableVideoHardwareAccelerationKey, SettingsDefaults.enableVideoHardwareAcceleration);
 
   set enableVideoHardwareAcceleration(bool newValue) => setAndNotify(enableVideoHardwareAccelerationKey, newValue);
@@ -713,7 +707,6 @@ class Settings extends ChangeNotifier {
             case collectionBrowsingQuickActionsKey:
             case collectionSelectionQuickActionsKey:
             case viewerQuickActionsKey:
-            case videoQuickActionsKey:
               if (newValue is List) {
                 settingsStore.setStringList(key, newValue.cast<String>());
               } else {

@@ -1,6 +1,5 @@
 import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/actions/entry_set_actions.dart';
-import 'package:aves/model/actions/video_actions.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/settings/enums/enums.dart';
@@ -74,10 +73,6 @@ class SettingsDefaults {
   static const enableMotionPhotoAutoPlay = false;
 
   // video
-  static const videoQuickActions = [
-    VideoAction.replay10,
-    VideoAction.togglePlay,
-  ];
   static const enableVideoHardwareAcceleration = true;
   static const enableVideoAutoPlay = false;
   static const videoLoopMode = VideoLoopMode.shortOnly;
