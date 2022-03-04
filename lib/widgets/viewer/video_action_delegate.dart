@@ -57,10 +57,10 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         _togglePlayPause(context, controller);
         break;
       case EntryAction.videoReplay10:
-        if (controller.isReady) controller.seekTo(controller.currentPosition - 10000);
+        controller.seekTo(controller.currentPosition - 10000);
         break;
       case EntryAction.videoSkip10:
-        if (controller.isReady) controller.seekTo(controller.currentPosition + 10000);
+        controller.seekTo(controller.currentPosition + 10000);
         break;
       case EntryAction.open:
         final entry = controller.entry;
