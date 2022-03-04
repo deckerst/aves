@@ -68,6 +68,8 @@
   "entryActionRemoveFavourite": "Retirer des favoris",
 
   "videoActionCaptureFrame": "Capturer l’image",
+  "videoActionMute": "Couper le son",
+  "videoActionUnmute": "Rétablir le son",
   "videoActionPause": "Pause",
   "videoActionPlay": "Lire",
   "videoActionReplay10": "Reculer de 10 secondes",
@@ -111,6 +113,11 @@
   "videoLoopModeNever": "Jamais",
   "videoLoopModeShortOnly": "Courtes vidéos seulement",
   "videoLoopModeAlways": "Toujours",
+
+  "videoControlsPlay": "Lecture",
+  "videoControlsPlaySeek": "Lecture & déplacement",
+  "videoControlsPlayOutside": "Ouvrir avec un autre lecteur",
+  "videoControlsNone": "Aucun",
 
   "mapStyleGoogleNormal": "Google Maps",
   "mapStyleGoogleHybrid": "Google Maps (Satellite)",
@@ -213,7 +220,7 @@
   "removeEntryMetadataDialogTitle": "Retrait de métadonnées",
   "removeEntryMetadataDialogMore": "Voir plus",
 
-  "removeEntryMetadataMotionPhotoXmpWarningDialogMessage": "Les métadonnées XMP sont nécessaires pour jouer la vidéo d’une photo animée.\n\nVoulez-vous vraiment les supprimer ?",
+  "removeEntryMetadataMotionPhotoXmpWarningDialogMessage": "Les métadonnées XMP sont nécessaires pour lire la vidéo d’une photo animée.\n\nVoulez-vous vraiment les supprimer ?",
 
   "videoSpeedDialogLabel": "Vitesse de lecture",
 
@@ -431,6 +438,7 @@
   "settingsViewerShowInformation": "Afficher les détails",
   "settingsViewerShowInformationSubtitle": "Afficher les titre, date, lieu, etc.",
   "settingsViewerShowShootingDetails": "Afficher les détails de prise de vue",
+  "settingsViewerShowOverlayThumbnails": "Afficher les vignettes",
   "settingsViewerEnableOverlayBlurEffect": "Effets de flou",
 
   "settingsVideoPageTitle": "Réglages vidéo",
@@ -455,6 +463,13 @@
   "settingsSubtitleThemeTextAlignmentLeft": "gauche",
   "settingsSubtitleThemeTextAlignmentCenter": "centré",
   "settingsSubtitleThemeTextAlignmentRight": "droite",
+
+  "settingsVideoControlsTile": "Contrôles",
+  "settingsVideoControlsTitle": "Contrôles",
+  "settingsVideoButtonsTile": "Boutons",
+  "settingsVideoButtonsTitle": "Boutons",
+  "settingsVideoGestureDoubleTapTogglePlay": "Appuyer deux fois pour lire ou mettre en pause",
+  "settingsVideoGestureSideDoubleTapSeek": "Appuyer deux fois sur les bords de l’écran pour reculer ou avancer",
 
   "settingsSectionPrivacy": "Confidentialité",
   "settingsAllowInstalledAppAccess": "Autoriser l’accès à l’inventaire des apps",

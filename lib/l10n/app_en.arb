@@ -154,10 +154,10 @@
   "videoLoopModeShortOnly": "Short videos only",
   "videoLoopModeAlways": "Always",
 
-  "videoControlsNone": "None",
   "videoControlsPlay": "Play",
   "videoControlsPlaySeek": "Play & seek",
   "videoControlsPlayOutside": "Open with other player",
+  "videoControlsNone": "None",
 
   "mapStyleGoogleNormal": "Google Maps",
   "mapStyleGoogleHybrid": "Google Maps (Hybrid)",

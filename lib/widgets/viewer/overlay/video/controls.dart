@@ -28,8 +28,6 @@ class VideoControlRow extends StatelessWidget {
       selector: (context, s) => s.videoControls,
       builder: (context, videoControls, child) {
         switch (videoControls) {
-          case VideoControls.none:
-            return const SizedBox();
           case VideoControls.play:
             return Padding(
               padding: const EdgeInsetsDirectional.only(start: padding),
@@ -70,6 +68,8 @@ class VideoControlRow extends StatelessWidget {
               padding: const EdgeInsetsDirectional.only(start: padding),
               child: _buildIconButton(context, EntryAction.open, enabled: !trashed),
             );
+          case VideoControls.none:
+            return const SizedBox();
         }
       },
     );
