@@ -92,6 +92,8 @@ abstract class AvesVideoController {
 
   Stream<VideoStatus> get statusStream;
 
+  Stream<double> get volumeStream;
+
   bool get isReady;
 
   bool get isPlaying => status == VideoStatus.playing;
@@ -111,11 +113,15 @@ abstract class AvesVideoController {
 
   ValueNotifier<bool> get canCaptureFrameNotifier;
 
+  ValueNotifier<bool> get canMuteNotifier;
+
   ValueNotifier<bool> get canSetSpeedNotifier;
 
   ValueNotifier<bool> get canSelectStreamNotifier;
 
   ValueNotifier<double> get sarNotifier;
+
+  bool get isMuted;
 
   double get speed;
 
@@ -132,6 +138,8 @@ abstract class AvesVideoController {
   List<StreamSummary> get streams;
 
   Future<Uint8List> captureFrame();
+
+  Future<void> toggleMute();
 
   Widget buildPlayerWidget(BuildContext context);
 }
