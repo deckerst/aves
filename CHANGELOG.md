@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Added
+
+- Viewer: optional thumbnail preview
+- Viewer: optional video gestures to play/seek
+
+### Changed
+
+- Viewer: overlay reorganization
+- upgraded Flutter to stable v2.10.3
+
+### Fixed
+
+- storage write access for Android <11
+- various bin related fixes
+- Viewer: apply video settings change without leaving the viewer
+
 ## <a id="v1.6.1"></a>[v1.6.1] - 2022-02-23
 
 ### Added
