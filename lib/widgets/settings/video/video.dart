@@ -11,7 +11,6 @@ import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
 import 'package:aves/widgets/settings/common/tile_leading.dart';
 import 'package:aves/widgets/settings/video/controls.dart';
 import 'package:aves/widgets/settings/video/subtitle_theme.dart';
-import 'package:aves/widgets/settings/video/video_actions_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -37,7 +36,6 @@ class VideoSection extends StatelessWidget {
             title: Text(context.l10n.settingsVideoShowVideos),
           ),
         ),
-      const VideoActionsTile(),
       Selector<Settings, bool>(
         selector: (context, s) => s.enableVideoHardwareAcceleration,
         builder: (context, current, child) => SwitchListTile(

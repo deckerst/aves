@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:aves/model/actions/video_actions.dart';
+import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
@@ -15,7 +15,7 @@ import 'package:provider/provider.dart';
 class VideoControlRow extends StatelessWidget {
   final AvesVideoController? controller;
   final Animation<double> scale;
-  final Function(VideoAction value) onActionSelected;
+  final Function(EntryAction value) onActionSelected;
 
   static const double padding = 8;
   static const Radius radius = Radius.circular(123);
@@ -41,7 +41,7 @@ class VideoControlRow extends StatelessWidget {
               child: _buildOverlayButton(
                 child: PlayToggler(
                   controller: controller,
-                  onPressed: () => onActionSelected(VideoAction.togglePlay),
+                  onPressed: () => onActionSelected(EntryAction.videoTogglePlay),
                 ),
               ),
             );
@@ -52,30 +52,28 @@ class VideoControlRow extends StatelessWidget {
                 const SizedBox(width: padding),
                 _buildIconButton(
                   context,
-                  VideoAction.replay10,
+                  EntryAction.videoReplay10,
                   borderRadius: const BorderRadius.only(topLeft: radius, bottomLeft: radius),
                 ),
                 _buildOverlayButton(
                   child: PlayToggler(
                     controller: controller,
-                    onPressed: () => onActionSelected(VideoAction.togglePlay),
+                    onPressed: () => onActionSelected(EntryAction.videoTogglePlay),
                   ),
                   borderRadius: const BorderRadius.all(Radius.zero),
                 ),
                 _buildIconButton(
                   context,
-                  VideoAction.skip10,
+                  EntryAction.videoSkip10,
                   borderRadius: const BorderRadius.only(topRight: radius, bottomRight: radius),
                 ),
               ],
             );
           case VideoControls.playOutside:
+            final trashed = controller?.entry.trashed ?? false;
             return Padding(
               padding: const EdgeInsetsDirectional.only(start: padding),
-              child: _buildIconButton(
-                context,
-                VideoAction.playOutside,
-              ),
+              child: _buildIconButton(context, EntryAction.open, enabled: !trashed),
             );
         }
       },
@@ -94,14 +92,15 @@ class VideoControlRow extends StatelessWidget {
 
   Widget _buildIconButton(
     BuildContext context,
-    VideoAction action, {
+    EntryAction action, {
+    bool enabled = true,
     BorderRadius? borderRadius,
   }) =>
       _buildOverlayButton(
         borderRadius: borderRadius,
         child: IconButton(
           icon: action.getIcon(),
-          onPressed: () => onActionSelected(action),
+          onPressed: enabled ? () => onActionSelected(action) : null,
           tooltip: action.getText(context),
         ),
       );

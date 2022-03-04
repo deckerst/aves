@@ -47,14 +47,6 @@ class ViewerOverlayPage extends StatelessWidget {
               ),
             ),
             Selector<Settings, bool>(
-              selector: (context, s) => s.showOverlayMinimap,
-              builder: (context, current, child) => SwitchListTile(
-                value: current,
-                onChanged: (v) => settings.showOverlayMinimap = v,
-                title: Text(context.l10n.settingsViewerShowMinimap),
-              ),
-            ),
-            Selector<Settings, bool>(
               selector: (context, s) => s.showOverlayInfo,
               builder: (context, current, child) => SwitchListTile(
                 value: current,
@@ -74,6 +66,14 @@ class ViewerOverlayPage extends StatelessWidget {
                   title: Text(context.l10n.settingsViewerShowShootingDetails),
                 );
               },
+            ),
+            Selector<Settings, bool>(
+              selector: (context, s) => s.showOverlayMinimap,
+              builder: (context, current, child) => SwitchListTile(
+                value: current,
+                onChanged: (v) => settings.showOverlayMinimap = v,
+                title: Text(context.l10n.settingsViewerShowMinimap),
+              ),
             ),
             Selector<Settings, bool>(
               selector: (context, s) => s.showOverlayThumbnailPreview,

@@ -34,7 +34,9 @@ import 'package:aves/widgets/viewer/action/printer.dart';
 import 'package:aves/widgets/viewer/action/single_entry_editor.dart';
 import 'package:aves/widgets/viewer/debug/debug_page.dart';
 import 'package:aves/widgets/viewer/info/notifications.dart';
+import 'package:aves/widgets/viewer/overlay/notifications.dart';
 import 'package:aves/widgets/viewer/source_viewer_page.dart';
+import 'package:aves/widgets/viewer/video/conductor.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -99,7 +101,19 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       case EntryAction.viewSource:
         _goToSourceViewer(context);
         break;
-      // external
+      // video
+      case EntryAction.videoCaptureFrame:
+      case EntryAction.videoSelectStreams:
+      case EntryAction.videoSetSpeed:
+      case EntryAction.videoSettings:
+      case EntryAction.videoTogglePlay:
+      case EntryAction.videoReplay10:
+      case EntryAction.videoSkip10:
+        final controller = context.read<VideoConductor>().getController(entry);
+        if (controller != null) {
+          VideoActionNotification(controller: controller, action: action).dispatch(context);
+        }
+        break;
       case EntryAction.edit:
         androidAppService.edit(entry.uri, entry.mimeType).then((success) {
           if (!success) showNoMatchingAppDialog(context);

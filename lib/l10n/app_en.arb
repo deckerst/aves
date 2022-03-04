@@ -155,7 +155,7 @@
   "videoControlsNone": "None",
   "videoControlsPlay": "Play",
   "videoControlsPlaySeek": "Play & seek",
-  "videoControlsPlayOutside": "Play outside",
+  "videoControlsPlayOutside": "Open with other player",
 
   "mapStyleGoogleNormal": "Google Maps",
   "mapStyleGoogleHybrid": "Google Maps (Hybrid)",
@@ -628,8 +628,6 @@
   "settingsVideoEnableAutoPlay": "Auto play",
   "settingsVideoLoopModeTile": "Loop mode",
   "settingsVideoLoopModeTitle": "Loop Mode",
-  "settingsVideoQuickActionsTile": "Quick actions for videos",
-  "settingsVideoQuickActionEditorTitle": "Quick Actions",
 
   "settingsSubtitleThemeTile": "Subtitles",
   "settingsSubtitleThemeTitle": "Subtitles",

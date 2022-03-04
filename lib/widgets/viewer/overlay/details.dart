@@ -5,13 +5,16 @@ import 'package:aves/model/metadata/overlay.dart';
 import 'package:aves/model/multipage.dart';
 import 'package:aves/model/settings/enums/coordinate_format.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/format.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/viewer/multipage/controller.dart';
+import 'package:aves/widgets/viewer/page_entry_builder.dart';
 import 'package:decorated_icon/decorated_icon.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -21,7 +24,98 @@ const double _iconSize = 16.0;
 const double _interRowPadding = 2.0;
 const double _subRowMinWidth = 300.0;
 
-class ViewerDetailOverlay extends StatelessWidget {
+class ViewerDetailOverlay extends StatefulWidget {
+  final List<AvesEntry> entries;
+  final int index;
+  final bool hasCollection;
+  final MultiPageController? multiPageController;
+
+  const ViewerDetailOverlay({
+    Key? key,
+    required this.entries,
+    required this.index,
+    required this.hasCollection,
+    required this.multiPageController,
+  }) : super(key: key);
+
+  @override
+  State<ViewerDetailOverlay> createState() => _ViewerDetailOverlayState();
+}
+
+class _ViewerDetailOverlayState extends State<ViewerDetailOverlay> {
+  List<AvesEntry> get entries => widget.entries;
+
+  AvesEntry? get entry {
+    final index = widget.index;
+    return index < entries.length ? entries[index] : null;
+  }
+
+  late Future<OverlayMetadata?> _detailLoader;
+  AvesEntry? _lastEntry;
+  OverlayMetadata? _lastDetails;
+
+  @override
+  void initState() {
+    super.initState();
+    _initDetailLoader();
+  }
+
+  @override
+  void didUpdateWidget(covariant ViewerDetailOverlay oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (entry != _lastEntry) {
+      _initDetailLoader();
+    }
+  }
+
+  void _initDetailLoader() {
+    final requestEntry = entry;
+    _detailLoader = requestEntry != null ? metadataFetchService.getOverlayMetadata(requestEntry) : SynchronousFuture(null);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      top: false,
+      bottom: false,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final availableWidth = constraints.maxWidth;
+
+          return FutureBuilder<OverlayMetadata?>(
+            future: _detailLoader,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done && !snapshot.hasError) {
+                _lastDetails = snapshot.data;
+                _lastEntry = entry;
+              }
+              if (_lastEntry == null) return const SizedBox();
+              final mainEntry = _lastEntry!;
+
+              final multiPageController = widget.multiPageController;
+              Widget _buildContent({AvesEntry? pageEntry}) => ViewerDetailOverlayContent(
+                    pageEntry: pageEntry ?? mainEntry,
+                    details: _lastDetails,
+                    position: widget.hasCollection ? '${widget.index + 1}/${entries.length}' : null,
+                    availableWidth: availableWidth,
+                    multiPageController: multiPageController,
+                  );
+
+              return multiPageController != null
+                  ? PageEntryBuilder(
+                      multiPageController: multiPageController,
+                      builder: (pageEntry) => _buildContent(pageEntry: pageEntry),
+                    )
+                  : _buildContent();
+            },
+          );
+        },
+      ),
+    );
+  }
+}
+
+class ViewerDetailOverlayContent extends StatelessWidget {
   final AvesEntry pageEntry;
   final OverlayMetadata? details;
   final String? position;
@@ -30,7 +124,7 @@ class ViewerDetailOverlay extends StatelessWidget {
 
   static const padding = EdgeInsets.symmetric(vertical: 4, horizontal: 8);
 
-  const ViewerDetailOverlay({
+  const ViewerDetailOverlayContent({
     Key? key,
     required this.pageEntry,
     required this.details,
@@ -46,49 +140,57 @@ class ViewerDetailOverlay extends StatelessWidget {
     final hasShootingDetails = details != null && !details!.isEmpty && settings.showOverlayShootingDetails;
     final animationDuration = context.select<DurationsData, Duration>((v) => v.viewerOverlayChangeAnimation);
 
-    return Padding(
-      padding: padding,
-      child: Selector<MediaQueryData, Orientation>(
-        selector: (context, mq) => mq.orientation,
-        builder: (context, orientation, child) {
-          final twoColumns = orientation == Orientation.landscape && infoMaxWidth / 2 > _subRowMinWidth;
-          final subRowWidth = twoColumns ? min(_subRowMinWidth, infoMaxWidth / 2) : infoMaxWidth;
+    return DefaultTextStyle(
+      style: Theme.of(context).textTheme.bodyText2!.copyWith(
+            shadows: Constants.embossShadows,
+          ),
+      softWrap: false,
+      overflow: TextOverflow.fade,
+      maxLines: 1,
+      child: Padding(
+        padding: padding,
+        child: Selector<MediaQueryData, Orientation>(
+          selector: (context, mq) => mq.orientation,
+          builder: (context, orientation, child) {
+            final twoColumns = orientation == Orientation.landscape && infoMaxWidth / 2 > _subRowMinWidth;
+            final subRowWidth = twoColumns ? min(_subRowMinWidth, infoMaxWidth / 2) : infoMaxWidth;
 
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (positionTitle.isNotEmpty) positionTitle,
-              _buildSoloLocationRow(animationDuration),
-              if (twoColumns)
-                Padding(
-                  padding: const EdgeInsets.only(top: _interRowPadding),
-                  child: Row(
-                    children: [
-                      SizedBox(
-                          width: subRowWidth,
-                          child: _DateRow(
-                            entry: pageEntry,
-                            multiPageController: multiPageController,
-                          )),
-                      _buildDuoShootingRow(subRowWidth, hasShootingDetails, animationDuration),
-                    ],
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (positionTitle.isNotEmpty) positionTitle,
+                if (twoColumns)
+                  Padding(
+                    padding: const EdgeInsets.only(top: _interRowPadding),
+                    child: Row(
+                      children: [
+                        SizedBox(
+                            width: subRowWidth,
+                            child: _DateRow(
+                              entry: pageEntry,
+                              multiPageController: multiPageController,
+                            )),
+                        _buildDuoShootingRow(subRowWidth, hasShootingDetails, animationDuration),
+                      ],
+                    ),
+                  )
+                else ...[
+                  Container(
+                    padding: const EdgeInsets.only(top: _interRowPadding),
+                    width: subRowWidth,
+                    child: _DateRow(
+                      entry: pageEntry,
+                      multiPageController: multiPageController,
+                    ),
                   ),
-                )
-              else ...[
-                Container(
-                  padding: const EdgeInsets.only(top: _interRowPadding),
-                  width: subRowWidth,
-                  child: _DateRow(
-                    entry: pageEntry,
-                    multiPageController: multiPageController,
-                  ),
-                ),
-                _buildSoloShootingRow(subRowWidth, hasShootingDetails, animationDuration),
+                  _buildSoloShootingRow(subRowWidth, hasShootingDetails, animationDuration),
+                ],
+                _buildSoloLocationRow(animationDuration),
               ],
-            ],
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }

@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:aves/model/actions/video_actions.dart';
+import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/highlight.dart';
 import 'package:aves/model/source/collection_lens.dart';
@@ -13,6 +13,7 @@ import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
 import 'package:aves/widgets/common/action_mixins/size_aware.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/video_speed_dialog.dart';
 import 'package:aves/widgets/dialogs/video_stream_selection_dialog.dart';
 import 'package:aves/widgets/settings/video/video.dart';
@@ -34,37 +35,41 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     stopOverlayHidingTimer();
   }
 
-  void onActionSelected(BuildContext context, AvesVideoController controller, VideoAction action) {
+  void onActionSelected(BuildContext context, AvesVideoController controller, EntryAction action) {
     // make sure overlay is not disappearing when selecting an action
     stopOverlayHidingTimer();
     const ToggleOverlayNotification(visible: true).dispatch(context);
 
     switch (action) {
-      case VideoAction.captureFrame:
+      case EntryAction.videoCaptureFrame:
         _captureFrame(context, controller);
         break;
-      case VideoAction.playOutside:
-        final entry = controller.entry;
-        androidAppService.open(entry.uri, entry.mimeTypeAnySubtype);
-        break;
-      case VideoAction.replay10:
-        if (controller.isReady) controller.seekTo(controller.currentPosition - 10000);
-        break;
-      case VideoAction.skip10:
-        if (controller.isReady) controller.seekTo(controller.currentPosition + 10000);
-        break;
-      case VideoAction.selectStreams:
+      case EntryAction.videoSelectStreams:
         _showStreamSelectionDialog(context, controller);
         break;
-      case VideoAction.setSpeed:
+      case EntryAction.videoSetSpeed:
         _showSpeedDialog(context, controller);
         break;
-      case VideoAction.settings:
+      case EntryAction.videoSettings:
         _showSettings(context, controller);
         break;
-      case VideoAction.togglePlay:
+      case EntryAction.videoTogglePlay:
         _togglePlayPause(context, controller);
         break;
+      case EntryAction.videoReplay10:
+        if (controller.isReady) controller.seekTo(controller.currentPosition - 10000);
+        break;
+      case EntryAction.videoSkip10:
+        if (controller.isReady) controller.seekTo(controller.currentPosition + 10000);
+        break;
+      case EntryAction.open:
+        final entry = controller.entry;
+        androidAppService.open(entry.uri, entry.mimeTypeAnySubtype).then((success) {
+          if (!success) showNoMatchingAppDialog(context);
+        });
+        break;
+      default:
+        throw UnsupportedError('$action is not a video action');
     }
   }
 

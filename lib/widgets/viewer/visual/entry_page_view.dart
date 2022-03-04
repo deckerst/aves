@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:aves/model/actions/video_actions.dart';
+import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/entry_images.dart';
 import 'package:aves/model/settings/enums/accessibility_animations.dart';
@@ -194,7 +194,7 @@ class _EntryPageViewState extends State<EntryPageView> {
     if (videoController == null) return const SizedBox();
 
     Positioned _buildDoubleTapDetector(
-      VideoAction action, {
+      EntryAction action, {
       double widthFactor = 1,
       AlignmentGeometry alignment = Alignment.center,
       IconData? Function()? icon,
@@ -215,7 +215,7 @@ class _EntryPageViewState extends State<EntryPageView> {
                   )
                 ],
               );
-              VideoGestureNotification(
+              VideoActionNotification(
                 controller: videoController,
                 action: action,
               ).dispatch(context);
@@ -256,12 +256,12 @@ class _EntryPageViewState extends State<EntryPageView> {
                   ),
                 if (playGesture)
                   _buildDoubleTapDetector(
-                    VideoAction.togglePlay,
+                    EntryAction.videoTogglePlay,
                     icon: () => videoController.isPlaying ? AIcons.pause : AIcons.play,
                   ),
                 if (seekGesture) ...[
-                  _buildDoubleTapDetector(VideoAction.replay10, widthFactor: .25, alignment: Alignment.centerLeft),
-                  _buildDoubleTapDetector(VideoAction.skip10, widthFactor: .25, alignment: Alignment.centerRight),
+                  _buildDoubleTapDetector(EntryAction.videoReplay10, widthFactor: .25, alignment: Alignment.centerLeft),
+                  _buildDoubleTapDetector(EntryAction.videoSkip10, widthFactor: .25, alignment: Alignment.centerRight),
                 ],
                 if (useActionGesture)
                   ValueListenableBuilder<Widget?>(
