@@ -39,6 +39,7 @@ class ViewerActionEditorPage extends StatelessWidget {
     EntryAction.toggleFavourite,
     EntryAction.rotateScreen,
     EntryAction.videoCaptureFrame,
+    EntryAction.videoToggleMute,
     EntryAction.videoSetSpeed,
     EntryAction.videoSelectStreams,
     EntryAction.viewSource,

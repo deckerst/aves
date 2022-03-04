@@ -12,7 +12,8 @@ import 'package:aves/widgets/viewer/action/entry_action_delegate.dart';
 import 'package:aves/widgets/viewer/multipage/conductor.dart';
 import 'package:aves/widgets/viewer/overlay/common.dart';
 import 'package:aves/widgets/viewer/overlay/notifications.dart';
-import 'package:aves/widgets/viewer/overlay/video/controls.dart';
+import 'package:aves/widgets/viewer/overlay/video/mute_toggler.dart';
+import 'package:aves/widgets/viewer/overlay/video/play_toggler.dart';
 import 'package:aves/widgets/viewer/video/conductor.dart';
 import 'package:aves/widgets/viewer/video/controller.dart';
 import 'package:collection/collection.dart';
@@ -75,6 +76,7 @@ class ViewerButtonRow extends StatelessWidget {
           case EntryAction.viewSource:
             return targetEntry.isSvg;
           case EntryAction.videoCaptureFrame:
+          case EntryAction.videoToggleMute:
           case EntryAction.videoSelectStreams:
           case EntryAction.videoSetSpeed:
           case EntryAction.videoSettings:
@@ -252,6 +254,12 @@ class ViewerButtonRowContent extends StatelessWidget {
           onPressed: onPressed,
         );
         break;
+      case EntryAction.videoToggleMute:
+        child = MuteToggler(
+          controller: videoController,
+          onPressed: onPressed,
+        );
+        break;
       case EntryAction.videoTogglePlay:
         child = PlayToggler(
           controller: videoController,
@@ -290,6 +298,9 @@ class ViewerButtonRowContent extends StatelessWidget {
       case EntryAction.videoCaptureFrame:
         enabled = videoController?.canCaptureFrameNotifier.value ?? false;
         break;
+      case EntryAction.videoToggleMute:
+        enabled = videoController?.canMuteNotifier.value ?? false;
+        break;
       case EntryAction.videoSelectStreams:
         enabled = videoController?.canSelectStreamNotifier.value ?? false;
         break;
@@ -306,6 +317,12 @@ class ViewerButtonRowContent extends StatelessWidget {
       case EntryAction.toggleFavourite:
         child = FavouriteToggler(
           entries: {favouriteTargetEntry},
+          isMenuItem: true,
+        );
+        break;
+      case EntryAction.videoToggleMute:
+        child = MuteToggler(
+          controller: videoController,
           isMenuItem: true,
         );
         break;

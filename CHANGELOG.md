@@ -7,7 +7,8 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - Viewer: optional thumbnail preview
-- Viewer: optional video gestures to play/seek
+- Video: optional gestures to play/seek
+- Video: mute action
 
 ### Changed
 

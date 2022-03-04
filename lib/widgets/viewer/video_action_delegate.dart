@@ -44,6 +44,9 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       case EntryAction.videoCaptureFrame:
         _captureFrame(context, controller);
         break;
+      case EntryAction.videoToggleMute:
+        controller.toggleMute();
+        break;
       case EntryAction.videoSelectStreams:
         _showStreamSelectionDialog(context, controller);
         break;

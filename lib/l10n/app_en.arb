@@ -96,6 +96,8 @@
   "entryActionRemoveFavourite": "Remove from favorites",
 
   "videoActionCaptureFrame": "Capture frame",
+  "videoActionMute": "Mute",
+  "videoActionUnmute": "Unmute",
   "videoActionPause": "Pause",
   "videoActionPlay": "Play",
   "videoActionReplay10": "Seek backward 10 seconds",

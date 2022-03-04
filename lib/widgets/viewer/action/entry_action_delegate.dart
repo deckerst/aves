@@ -103,6 +103,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         break;
       // video
       case EntryAction.videoCaptureFrame:
+      case EntryAction.videoToggleMute:
       case EntryAction.videoSelectStreams:
       case EntryAction.videoSetSpeed:
       case EntryAction.videoSettings:
