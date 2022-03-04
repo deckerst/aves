@@ -30,6 +30,7 @@ import 'package:collection/collection.dart';
 import 'package:decorated_icon/decorated_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tuple/tuple.dart';
 
 class EntryPageView extends StatefulWidget {
   final AvesEntry mainEntry, pageEntry;
@@ -173,7 +174,7 @@ class _EntryPageViewState extends State<EntryPageView> {
   }
 
   Widget _buildSvgView() {
-    var child = _buildMagnifier(
+    return _buildMagnifier(
       maxScale: const ScaleLevel(factor: 25),
       scaleStateCycle: _vectorScaleStateCycle,
       applyScale: false,
@@ -186,25 +187,25 @@ class _EntryPageViewState extends State<EntryPageView> {
         ),
       ),
     );
-    return child;
   }
 
   Widget _buildVideoView() {
     final videoController = context.read<VideoConductor>().getController(entry);
     if (videoController == null) return const SizedBox();
 
-    Positioned _buildDoubleTapDetector(
-      EntryAction action, {
-      double widthFactor = 1,
-      AlignmentGeometry alignment = Alignment.center,
-      IconData? Function()? icon,
-    }) {
-      return Positioned.fill(
-        child: FractionallySizedBox(
-          alignment: alignment,
-          widthFactor: widthFactor,
-          child: GestureDetector(
-            onDoubleTap: () {
+    return ValueListenableBuilder<double>(
+      valueListenable: videoController.sarNotifier,
+      builder: (context, sar, child) {
+        final videoDisplaySize = entry.videoDisplaySize(sar);
+
+        return Selector<Settings, Tuple2<bool, bool>>(
+          selector: (context, s) => Tuple2(s.videoGestureDoubleTapTogglePlay, s.videoGestureSideDoubleTapSeek),
+          builder: (context, s, child) {
+            final playGesture = s.item1;
+            final seekGesture = s.item2;
+            final useActionGesture = playGesture || seekGesture;
+
+            void _applyAction(EntryAction action, {IconData? Function()? icon}) {
               _actionFeedbackChildNotifier.value = DecoratedIcon(
                 icon?.call() ?? action.getIconData(),
                 size: 48,
@@ -219,67 +220,81 @@ class _EntryPageViewState extends State<EntryPageView> {
                 controller: videoController,
                 action: action,
               ).dispatch(context);
-            },
-          ),
-        ),
-      );
-    }
+            }
 
-    return ValueListenableBuilder<double>(
-      valueListenable: videoController.sarNotifier,
-      builder: (context, sar, child) {
-        final videoDisplaySize = entry.videoDisplaySize(sar);
-        final playGesture = settings.videoGestureDoubleTapTogglePlay;
-        final seekGesture = settings.videoGestureSideDoubleTapSeek;
-        final useActionGesture = playGesture || seekGesture;
-        return Stack(
-          fit: StackFit.expand,
-          children: [
-            Stack(
+            MagnifierDoubleTapCallback? _onDoubleTap = useActionGesture
+                ? (alignment) {
+                    final x = alignment.x;
+                    if (seekGesture) {
+                      if (x < .25) {
+                        _applyAction(EntryAction.videoReplay10);
+                        return true;
+                      } else if (x > .75) {
+                        _applyAction(EntryAction.videoSkip10);
+                        return true;
+                      }
+                    }
+                    if (playGesture) {
+                      _applyAction(
+                        EntryAction.videoTogglePlay,
+                        icon: () => videoController.isPlaying ? AIcons.pause : AIcons.play,
+                      );
+                      return true;
+                    }
+                    return false;
+                  }
+                : null;
+
+            return Stack(
+              fit: StackFit.expand,
               children: [
-                _buildMagnifier(
-                  displaySize: videoDisplaySize,
-                  child: VideoView(
-                    entry: entry,
-                    controller: videoController,
-                  ),
-                ),
-                VideoSubtitles(
-                  controller: videoController,
-                  viewStateNotifier: _viewStateNotifier,
-                ),
-                if (settings.videoShowRawTimedText)
-                  VideoSubtitles(
-                    controller: videoController,
-                    viewStateNotifier: _viewStateNotifier,
-                    debugMode: true,
-                  ),
-                if (playGesture)
-                  _buildDoubleTapDetector(
-                    EntryAction.videoTogglePlay,
-                    icon: () => videoController.isPlaying ? AIcons.pause : AIcons.play,
-                  ),
-                if (seekGesture) ...[
-                  _buildDoubleTapDetector(EntryAction.videoReplay10, widthFactor: .25, alignment: Alignment.centerLeft),
-                  _buildDoubleTapDetector(EntryAction.videoSkip10, widthFactor: .25, alignment: Alignment.centerRight),
-                ],
-                if (useActionGesture)
-                  ValueListenableBuilder<Widget?>(
-                    valueListenable: _actionFeedbackChildNotifier,
-                    builder: (context, feedbackChild, child) => ActionFeedback(
-                      child: feedbackChild,
+                Stack(
+                  children: [
+                    _buildMagnifier(
+                      displaySize: videoDisplaySize,
+                      onDoubleTap: _onDoubleTap,
+                      child: VideoView(
+                        entry: entry,
+                        controller: videoController,
+                      ),
                     ),
-                  ),
+                    VideoSubtitles(
+                      controller: videoController,
+                      viewStateNotifier: _viewStateNotifier,
+                    ),
+                    if (settings.videoShowRawTimedText)
+                      VideoSubtitles(
+                        controller: videoController,
+                        viewStateNotifier: _viewStateNotifier,
+                        debugMode: true,
+                      ),
+                    if (useActionGesture)
+                      ValueListenableBuilder<Widget?>(
+                        valueListenable: _actionFeedbackChildNotifier,
+                        builder: (context, feedbackChild, child) => ActionFeedback(
+                          child: feedbackChild,
+                        ),
+                      ),
+                  ],
+                ),
+                _buildVideoCover(
+                  videoController: videoController,
+                  videoDisplaySize: videoDisplaySize,
+                  onDoubleTap: _onDoubleTap,
+                ),
               ],
-            ),
-            _buildVideoCover(videoController, videoDisplaySize),
-          ],
+            );
+          },
         );
       },
     );
   }
 
-  StreamBuilder<VideoStatus> _buildVideoCover(AvesVideoController videoController, Size videoDisplaySize) {
+  StreamBuilder<VideoStatus> _buildVideoCover({
+    required AvesVideoController videoController,
+    required Size videoDisplaySize,
+    required MagnifierDoubleTapCallback? onDoubleTap,
+  }) {
     // fade out image to ease transition with the player
     return StreamBuilder<VideoStatus>(
       stream: videoController.statusStream,
@@ -307,6 +322,7 @@ class _EntryPageViewState extends State<EntryPageView> {
                   return _buildMagnifier(
                     controller: coverController,
                     displaySize: coverSize,
+                    onDoubleTap: onDoubleTap,
                     child: Image(
                       image: videoCoverUriImage,
                     ),
@@ -342,6 +358,7 @@ class _EntryPageViewState extends State<EntryPageView> {
     ScaleLevel maxScale = maxScale,
     ScaleStateCycle scaleStateCycle = defaultScaleStateCycle,
     bool applyScale = true,
+    MagnifierDoubleTapCallback? onDoubleTap,
     required Widget child,
   }) {
     return Magnifier(
@@ -355,6 +372,7 @@ class _EntryPageViewState extends State<EntryPageView> {
       scaleStateCycle: scaleStateCycle,
       applyScale: applyScale,
       onTap: (c, d, s, o) => _onTap(),
+      onDoubleTap: onDoubleTap,
       child: child,
     );
   }
