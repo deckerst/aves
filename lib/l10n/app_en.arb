@@ -155,7 +155,7 @@
   "videoLoopModeAlways": "Always",
 
   "videoControlsPlay": "Play",
-  "videoControlsPlaySeek": "Play & seek",
+  "videoControlsPlaySeek": "Play & seek backward/forward",
   "videoControlsPlayOutside": "Open with other player",
   "videoControlsNone": "None",
 
