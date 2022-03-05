@@ -115,7 +115,7 @@
   "videoLoopModeAlways": "항상 반복",
 
   "videoControlsPlay": "재생",
-  "videoControlsPlaySeek": "재생 및 탐색",
+  "videoControlsPlaySeek": "재생 및 앞뒤로 가기",
   "videoControlsPlayOutside": "다른 앱에서 열기",
   "videoControlsNone": "없음",
 
@@ -469,7 +469,7 @@
   "settingsVideoButtonsTile": "버튼",
   "settingsVideoButtonsTitle": "버튼",
   "settingsVideoGestureDoubleTapTogglePlay": "두 번 탭해서 재생이나 일시정지하기",
-  "settingsVideoGestureSideDoubleTapSeek": "화면 측면에서 두 번 탭해서 탐색하기",
+  "settingsVideoGestureSideDoubleTapSeek": "화면 측면에서 두 번 탭해서 앞뒤로 가기",
 
   "settingsSectionPrivacy": "개인정보 보호",
   "settingsAllowInstalledAppAccess": "설치된 앱의 목록 접근 허용",
