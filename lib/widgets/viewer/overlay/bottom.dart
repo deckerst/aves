@@ -136,13 +136,23 @@ class _BottomOverlayContentState extends State<_BottomOverlayContent> {
           return Selector<MediaQueryData, double>(
             selector: (context, mq) => mq.size.width,
             builder: (context, mqWidth, child) {
+              final viewerButtonRow = ViewerButtonRow(
+                mainEntry: mainEntry,
+                pageEntry: pageEntry,
+                scale: _buttonScale,
+                canToggleFavourite: widget.hasCollection,
+              );
+
+              final showMultiPageOverlay = mainEntry.isMultiPage && multiPageController != null;
+              final collapsedPageScroller = mainEntry.isMotionPhoto;
+
               return SizedBox(
                 width: mqWidth,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    if (mainEntry.isMultiPage && multiPageController != null)
+                    if (showMultiPageOverlay && !collapsedPageScroller)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 8),
                         child: FadeTransition(
@@ -150,15 +160,30 @@ class _BottomOverlayContentState extends State<_BottomOverlayContent> {
                           child: MultiPageOverlay(
                             controller: multiPageController,
                             availableWidth: mqWidth,
+                            scrollable: true,
                           ),
                         ),
                       ),
-                    ViewerButtonRow(
-                      mainEntry: mainEntry,
-                      pageEntry: pageEntry,
-                      scale: _buttonScale,
-                      canToggleFavourite: widget.hasCollection,
-                    ),
+                    (showMultiPageOverlay && collapsedPageScroller)
+                        ? Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              SafeArea(
+                                top: false,
+                                bottom: false,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(bottom: 8),
+                                  child: MultiPageOverlay(
+                                    controller: multiPageController,
+                                    availableWidth: mqWidth,
+                                    scrollable: false,
+                                  ),
+                                ),
+                              ),
+                              Expanded(child: viewerButtonRow),
+                            ],
+                          )
+                        : viewerButtonRow,
                     if (settings.showOverlayThumbnailPreview)
                       FadeTransition(
                         opacity: _thumbnailOpacity,
