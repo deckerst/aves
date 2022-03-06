@@ -8,11 +8,13 @@ import 'package:provider/provider.dart';
 class MultiPageOverlay extends StatefulWidget {
   final MultiPageController controller;
   final double availableWidth;
+  final bool scrollable;
 
   const MultiPageOverlay({
     Key? key,
     required this.controller,
     required this.availableWidth,
+    required this.scrollable,
   }) : super(key: key);
 
   @override
@@ -66,6 +68,7 @@ class _MultiPageOverlayState extends State<MultiPageOverlay> {
           entryCount: multiPageInfo?.pageCount ?? 0,
           entryBuilder: (page) => multiPageInfo?.getPageEntryByIndex(page),
           indexNotifier: controller.pageNotifier,
+          scrollable: widget.scrollable,
         );
       },
     );

@@ -105,11 +105,10 @@ class ViewerButtonRow extends StatelessWidget {
     return SafeArea(
       top: false,
       bottom: false,
-      child: Selector<MediaQueryData, double>(
-        selector: (context, mq) => mq.size.width - mq.padding.horizontal,
-        builder: (context, mqWidth, child) {
+      child: LayoutBuilder(
+        builder: (context, constraints) {
           final buttonWidth = OverlayButton.getSize(context);
-          final availableCount = ((mqWidth - outerPadding * 2) / (buttonWidth + innerPadding)).floor();
+          final availableCount = ((constraints.maxWidth - outerPadding * 2) / (buttonWidth + innerPadding)).floor();
           return Selector<Settings, bool>(
             selector: (context, s) => s.isRotationLocked,
             builder: (context, s, child) {

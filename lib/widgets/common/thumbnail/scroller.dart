@@ -15,7 +15,7 @@ class ThumbnailScroller extends StatefulWidget {
   final ValueNotifier<int?> indexNotifier;
   final void Function(int index)? onTap;
   final Object? Function(AvesEntry entry)? heroTagger;
-  final bool highlightable, showLocation;
+  final bool scrollable, highlightable, showLocation;
 
   const ThumbnailScroller({
     Key? key,
@@ -27,6 +27,7 @@ class ThumbnailScroller extends StatefulWidget {
     this.heroTagger,
     this.highlightable = false,
     this.showLocation = true,
+    this.scrollable = true,
   }) : super(key: key);
 
   @override
@@ -45,6 +46,10 @@ class _ThumbnailScrollerState extends State<ThumbnailScroller> {
   int get entryCount => widget.entryCount;
 
   ValueNotifier<int?> get indexNotifier => widget.indexNotifier;
+
+  bool get scrollable => widget.scrollable;
+
+  static double widthFor(int pageCount) => pageCount == 0 ? 0 : pageCount * thumbnailExtent + (pageCount - 1) * separatorWidth;
 
   @override
   void initState() {
@@ -84,13 +89,14 @@ class _ThumbnailScrollerState extends State<ThumbnailScroller> {
   @override
   Widget build(BuildContext context) {
     final marginWidth = max(0.0, (widget.availableWidth - thumbnailExtent) / 2 - separatorWidth);
-    final padding = EdgeInsets.only(left: marginWidth + separatorWidth, right: marginWidth);
+    final padding = scrollable ? EdgeInsets.only(left: marginWidth + separatorWidth, right: marginWidth) : EdgeInsets.zero;
 
     return GridTheme(
       extent: thumbnailExtent,
       showLocation: widget.showLocation && settings.showThumbnailLocation,
       showTrash: false,
       child: SizedBox(
+        width: scrollable ? null : widthFor(entryCount),
         height: thumbnailExtent,
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
@@ -98,10 +104,12 @@ class _ThumbnailScrollerState extends State<ThumbnailScroller> {
           // as of Flutter v2.10.2, `FixedExtentScrollController` can only be used with `ListWheelScrollView`
           // and `FixedExtentScrollPhysics` can only be used with Scrollables that uses the `FixedExtentScrollController`
           // so we use `KnownExtentScrollPhysics`, adapted from `FixedExtentScrollPhysics` without the constraints
-          physics: KnownExtentScrollPhysics(
-            indexToScrollOffset: indexToScrollOffset,
-            scrollOffsetToIndex: scrollOffsetToIndex,
-          ),
+          physics: scrollable
+              ? KnownExtentScrollPhysics(
+                  indexToScrollOffset: indexToScrollOffset,
+                  scrollOffsetToIndex: scrollOffsetToIndex,
+                )
+              : const NeverScrollableScrollPhysics(),
           padding: padding,
           itemExtent: itemExtent,
           itemBuilder: (context, index) => _buildThumbnail(index),
@@ -152,6 +160,8 @@ class _ThumbnailScrollerState extends State<ThumbnailScroller> {
   }
 
   Future<void> _goTo(int index) async {
+    if (!scrollable) return;
+
     final targetOffset = indexToScrollOffset(index);
     final offsetDelta = (targetOffset - _scrollController.offset).abs();
 
