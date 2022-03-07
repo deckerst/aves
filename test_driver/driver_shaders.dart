@@ -23,6 +23,12 @@ Future<void> configureAndLaunch() async {
     // collection
     ..collectionBrowsingQuickActions = SettingsDefaults.collectionBrowsingQuickActions
     // viewer
+    ..showOverlayOnOpening = true
+    ..showOverlayMinimap = true
+    ..showOverlayInfo = true
+    ..showOverlayShootingDetails = true
+    ..showOverlayThumbnailPreview = true
+    ..enableOverlayBlurEffect = true
     ..imageBackground = EntryBackground.checkered
     // info
     ..infoMapStyle = EntryMapStyle.googleNormal;

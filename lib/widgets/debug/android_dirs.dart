@@ -9,7 +9,7 @@ class DebugAndroidDirSection extends StatefulWidget {
   const DebugAndroidDirSection({Key? key}) : super(key: key);
 
   @override
-  _DebugAndroidDirSectionState createState() => _DebugAndroidDirSectionState();
+  State<DebugAndroidDirSection> createState() => _DebugAndroidDirSectionState();
 }
 
 class _DebugAndroidDirSectionState extends State<DebugAndroidDirSection> with AutomaticKeepAliveClientMixin {

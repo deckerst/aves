@@ -1,9 +1,22 @@
 {
-  "de": [
-    "entryActionConvert"
+  "es": [
+    "videoActionMute",
+    "videoActionUnmute"
   ],
 
-  "ru": [
-    "entryActionConvert"
+  "id": [
+    "videoActionMute",
+    "videoActionUnmute",
+    "videoControlsPlay",
+    "videoControlsPlaySeek",
+    "videoControlsPlayOutside",
+    "videoControlsNone",
+    "settingsViewerShowOverlayThumbnails",
+    "settingsVideoControlsTile",
+    "settingsVideoControlsTitle",
+    "settingsVideoButtonsTile",
+    "settingsVideoButtonsTitle",
+    "settingsVideoGestureDoubleTapTogglePlay",
+    "settingsVideoGestureSideDoubleTapSeek"
   ]
 }

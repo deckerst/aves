@@ -1,6 +1,7 @@
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/basic/link_chip.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:flutter/material.dart';
 
 class AboutCredits extends StatelessWidget {
@@ -12,6 +13,7 @@ class AboutCredits extends StatelessWidget {
     'Español (México)': 'n-berenice',
     'Português (Brasil)': 'Jonatas De Almeida Barros',
     'Русский': 'D3ZOXY',
+    '日本語': 'Maki',
   };
 
   @override
@@ -45,16 +47,14 @@ class AboutCredits extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(height: 16),
-          Text(l10n.aboutCreditsTranslators),
-          ...translators.entries.map(
-            (kv) {
-              return Padding(
-                padding: const EdgeInsetsDirectional.only(start: 8, top: 8),
-                child: Text(l10n.aboutCreditsTranslatorLine(kv.key, kv.value)),
-              );
-            },
+          ConstrainedBox(
+            constraints: const BoxConstraints(minHeight: 48),
+            child: Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: Text(l10n.aboutCreditsTranslators, style: Constants.titleTextStyle),
+            ),
           ),
+          const InfoRowGroup(info: translators),
           const SizedBox(height: 16),
         ],
       ),

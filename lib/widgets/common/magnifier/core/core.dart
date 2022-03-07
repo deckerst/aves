@@ -19,6 +19,7 @@ class MagnifierCore extends StatefulWidget {
   final bool applyScale;
   final double panInertia;
   final MagnifierTapCallback? onTap;
+  final MagnifierDoubleTapCallback? onDoubleTap;
   final Widget child;
 
   const MagnifierCore({
@@ -27,7 +28,8 @@ class MagnifierCore extends StatefulWidget {
     required this.scaleStateCycle,
     required this.applyScale,
     this.panInertia = .2,
-    required this.onTap,
+    this.onTap,
+    this.onDoubleTap,
     required this.child,
   }) : super(key: key);
 
@@ -204,6 +206,12 @@ class _MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateM
 
   void onDoubleTap(TapDownDetails details) {
     final viewportTapPosition = details.localPosition;
+    if (widget.onDoubleTap != null) {
+      final viewportSize = scaleBoundaries.viewportSize;
+      final alignment = Alignment(viewportTapPosition.dx / viewportSize.width, viewportTapPosition.dy / viewportSize.height);
+      if (widget.onDoubleTap?.call(alignment) == true) return;
+    }
+
     final childTapPosition = scaleBoundaries.viewportToChildPosition(controller, viewportTapPosition);
     nextScaleState(ChangeSource.gesture, childFocalPoint: childTapPosition);
   }

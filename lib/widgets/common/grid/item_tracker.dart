@@ -26,7 +26,7 @@ class GridItemTracker<T> extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _GridItemTrackerState createState() => _GridItemTrackerState<T>();
+  State<GridItemTracker<T>> createState() => _GridItemTrackerState<T>();
 }
 
 class _GridItemTrackerState<T> extends State<GridItemTracker<T>> with WidgetsBindingObserver {

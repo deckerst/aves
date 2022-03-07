@@ -20,7 +20,7 @@ class DrawerFixedListTab<T> extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _DrawerFixedListTabState<T> createState() => _DrawerFixedListTabState<T>();
+  State<DrawerFixedListTab<T>> createState() => _DrawerFixedListTabState<T>();
 }
 
 class _DrawerFixedListTabState<T> extends State<DrawerFixedListTab<T>> {

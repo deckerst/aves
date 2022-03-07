@@ -78,7 +78,7 @@ class _Content extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _ContentState createState() => _ContentState();
+  State<_Content> createState() => _ContentState();
 }
 
 class _ContentState extends State<_Content> with SingleTickerProviderStateMixin {
@@ -270,6 +270,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
                         onTap: _onThumbnailTap,
                         heroTagger: (entry) => Object.hashAll([regionCollection?.id, entry.id]),
                         highlightable: true,
+                        showLocation: false,
                       );
                     },
                   );
@@ -301,7 +302,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
     if (regionCollection != null) {
       final regionEntries = regionCollection!.sortedEntries;
       final selectedIndex = _selectedIndexNotifier.value;
-      selectedEntry = selectedIndex != null && selectedIndex < regionEntries.length ? regionEntries[selectedIndex] : null;
+      selectedEntry = selectedIndex != null && 0 <= selectedIndex && selectedIndex < regionEntries.length ? regionEntries[selectedIndex] : null;
     }
 
     _regionCollectionNotifier.value = openingCollection.copyWith(

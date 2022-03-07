@@ -37,7 +37,7 @@ class ThumbnailImage extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _ThumbnailImageState createState() => _ThumbnailImageState();
+  State<ThumbnailImage> createState() => _ThumbnailImageState();
 }
 
 class _ThumbnailImageState extends State<ThumbnailImage> {

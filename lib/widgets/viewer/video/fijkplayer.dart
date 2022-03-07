@@ -1,10 +1,9 @@
 import 'dart:async';
-import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:aves/model/entry.dart';
-import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/settings/enums/video_loop_mode.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/video/keys.dart';
 import 'package:aves/model/video/metadata.dart';
 import 'package:aves/utils/change_notifier.dart';
@@ -18,11 +17,13 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
   final List<StreamSubscription> _subscriptions = [];
   final StreamController<FijkValue> _valueStreamController = StreamController.broadcast();
   final StreamController<String?> _timedTextStreamController = StreamController.broadcast();
+  final StreamController<double> _volumeStreamController = StreamController.broadcast();
   final AChangeNotifier _completedNotifier = AChangeNotifier();
   Offset _macroBlockCrop = Offset.zero;
   final List<StreamSummary> _streams = [];
   Timer? _initialPlayTimer;
   double _speed = 1;
+  double _volume = 1;
 
   // audio/video get out of sync with speed < .5
   // the video stream plays at .5 but the audio is slowed as requested
@@ -36,6 +37,9 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
 
   @override
   final ValueNotifier<bool> canCaptureFrameNotifier = ValueNotifier(false);
+
+  @override
+  final ValueNotifier<bool> canMuteNotifier = ValueNotifier(false);
 
   @override
   final ValueNotifier<bool> canSetSpeedNotifier = ValueNotifier(false);
@@ -62,13 +66,18 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
         ) {
     _instance = FijkPlayer();
     _valueStream.map((value) => value.videoRenderStart).firstWhere((v) => v, orElse: () => false).then(
-          (started) => canCaptureFrameNotifier.value = captureFrameEnabled && started,
-          onError: (error) {},
-        );
+      (started) {
+        canCaptureFrameNotifier.value = captureFrameEnabled && started;
+      },
+      onError: (error) {},
+    );
     _valueStream.map((value) => value.audioRenderStart).firstWhere((v) => v, orElse: () => false).then(
-          (started) => canSetSpeedNotifier.value = started,
-          onError: (error) {},
-        );
+      (started) {
+        canMuteNotifier.value = started;
+        canSetSpeedNotifier.value = started;
+      },
+      onError: (error) {},
+    );
     _startListening();
   }
 
@@ -86,6 +95,12 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
     _instance.addListener(_onValueChanged);
     _subscriptions.add(_valueStream.where((value) => value.state == FijkState.completed).listen((_) => _completedNotifier.notify()));
     _subscriptions.add(_instance.onTimedText.listen(_timedTextStreamController.add));
+    _subscriptions.add(settings.updateStream
+        .where((event) => {
+              Settings.enableVideoHardwareAccelerationKey,
+              Settings.videoLoopModeKey,
+            }.contains(event.key))
+        .listen((_) => _instance.reset()));
   }
 
   void _stopListening() {
@@ -104,13 +119,15 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
     }
 
     sarNotifier.value = 1;
+    _streams.clear();
     _applyOptions(startMillis);
 
     // calling `setDataSource()` with `autoPlay` starts as soon as possible, but often yields initial artifacts
     // so we introduce a small delay after the player is declared `prepared`, before playing
     await _instance.setDataSourceUntilPrepared(entry.uri);
+    await _applyVolume();
     if (speed != 1) {
-      _applySpeed();
+      await _applySpeed();
     }
     _initialPlayTimer = Timer(initialPlayDelay, play);
   }
@@ -294,7 +311,7 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
 
   @override
   Future<void> seekTo(int targetMillis) async {
-    targetMillis = max(0, targetMillis);
+    targetMillis = targetMillis.clamp(0, duration);
     if (isReady) {
       await _instance.seekTo(targetMillis);
     } else {
@@ -312,6 +329,9 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
 
   @override
   Stream<VideoStatus> get statusStream => _valueStream.map((value) => value.state.toAves);
+
+  @override
+  Stream<double> get volumeStream => _volumeStreamController.stream;
 
   @override
   bool get isReady => _instance.isPlayable();
@@ -333,6 +353,18 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
   Stream<String?> get timedTextStream => _timedTextStreamController.stream;
 
   @override
+  bool get isMuted => _volume == 0;
+
+  @override
+  Future<void> toggleMute() async {
+    _volume = isMuted ? 1 : 0;
+    _volumeStreamController.add(_volume);
+    await _applyVolume();
+  }
+
+  Future<void> _applyVolume() => _instance.setVolume(_volume);
+
+  @override
   double get speed => _speed;
 
   @override
@@ -351,7 +383,7 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
   bool _needSoundTouch(double speed) => speed > 1;
 
   // TODO TLAD [video] bug: setting speed fails when there is no audio stream or audio is disabled
-  void _applySpeed() => _instance.setSpeed(speed);
+  Future<void> _applySpeed() => _instance.setSpeed(speed);
 
   // When a stream is selected, the video accelerates to catch up with it.
   // The duration of this acceleration phase depends on the player `min-frames` parameter.

@@ -18,3 +18,5 @@ enum KeepScreenOn { never, viewerOnly, always }
 enum UnitSystem { metric, imperial }
 
 enum VideoLoopMode { never, shortOnly, always }
+
+enum VideoControls { play, playSeek, playOutside, none }

@@ -50,12 +50,6 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
       ))) return;
     }
 
-    final source = context.read<CollectionSource>();
-    if (source.initState != SourceInitializationState.full) {
-      // source may be uninitialized in viewer mode
-      await source.init();
-    }
-
     final entriesByDestination = <String, Set<AvesEntry>>{};
     switch (moveType) {
       case MoveType.copy:
@@ -102,20 +96,19 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
       if (uniqueNames.length < names.length) {
         final value = await showDialog<NameConflictStrategy>(
           context: context,
-          builder: (context) {
-            return AvesSelectionDialog<NameConflictStrategy>(
-              initialValue: nameConflictStrategy,
-              options: Map.fromEntries(NameConflictStrategy.values.map((v) => MapEntry(v, v.getName(context)))),
-              message: originAlbums.length == 1 ? l10n.nameConflictDialogSingleSourceMessage : l10n.nameConflictDialogMultipleSourceMessage,
-              confirmationButtonLabel: l10n.continueButtonLabel,
-            );
-          },
+          builder: (context) => AvesSelectionDialog<NameConflictStrategy>(
+            initialValue: nameConflictStrategy,
+            options: Map.fromEntries(NameConflictStrategy.values.map((v) => MapEntry(v, v.getName(context)))),
+            message: originAlbums.length == 1 ? l10n.nameConflictDialogSingleSourceMessage : l10n.nameConflictDialogMultipleSourceMessage,
+            confirmationButtonLabel: l10n.continueButtonLabel,
+          ),
         );
         if (value == null) return;
         nameConflictStrategy = value;
       }
     }
 
+    final source = context.read<CollectionSource>();
     source.pauseMonitoring();
     final opId = mediaFileService.newOpId;
     await showOpReport<MoveOpEvent>(

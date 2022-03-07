@@ -48,6 +48,7 @@
 
   "entryActionCopyToClipboard": "In die Zwischenablage kopieren",
   "entryActionDelete": "Löschen",
+  "entryActionConvert": "Konvertieren",
   "entryActionExport": "Exportieren",
   "entryActionRename": "Umbenennen",
   "entryActionRestore": "Wiederherstellen",
@@ -67,6 +68,8 @@
   "entryActionRemoveFavourite": "Aus Favoriten entfernen",
 
   "videoActionCaptureFrame": "Frame aufnehmen",
+  "videoActionMute": "Audio deaktivieren",
+  "videoActionUnmute": "Audio aktiveren",
   "videoActionPause": "Pause",
   "videoActionPlay": "Spielen",
   "videoActionReplay10": "10 Sekunden rückwärts springen",
@@ -110,6 +113,11 @@
   "videoLoopModeNever": "Niemals",
   "videoLoopModeShortOnly": "Nur kurze Videos",
   "videoLoopModeAlways": "Immer",
+
+  "videoControlsPlay": "Abspielen/Pausieren",
+  "videoControlsPlaySeek": "Abspielen/Pausieren & Sprung-Schaltflächen",
+  "videoControlsPlayOutside": "Mit anderem Video-Player öffnen",
+  "videoControlsNone": "Keine Schaltflächen",
 
   "mapStyleGoogleNormal": "Google Maps",
   "mapStyleGoogleHybrid": "Google Maps (Hybrid)",
@@ -256,8 +264,7 @@
   "aboutCredits": "Credits",
   "aboutCreditsWorldAtlas1": "Diese Anwendung verwendet eine TopoJSON-Datei von",
   "aboutCreditsWorldAtlas2": "unter ISC-Lizenz.",
-  "aboutCreditsTranslators": "Übersetzer:",
-  "aboutCreditsTranslatorLine": "{language}: {names}",
+  "aboutCreditsTranslators": "Übersetzer",
 
   "aboutLicenses": "Open-Source-Lizenzen",
   "aboutLicensesBanner": "Diese Anwendung verwendet die folgenden Open-Source-Pakete und -Bibliotheken.",
@@ -430,6 +437,7 @@
   "settingsViewerShowInformation": "Informationen anzeigen",
   "settingsViewerShowInformationSubtitle": "Titel, Datum, Ort, etc. anzeigen.",
   "settingsViewerShowShootingDetails": "Aufnahmedetails anzeigen",
+  "settingsViewerShowOverlayThumbnails": "Vorschaubilder anzeigen",
   "settingsViewerEnableOverlayBlurEffect": "Unschärfe-Effekt",
 
   "settingsVideoPageTitle": "Video-Einstellungen",
@@ -439,8 +447,6 @@
   "settingsVideoEnableAutoPlay": "Automatische Wiedergabe",
   "settingsVideoLoopModeTile": "Schleifen-Modus",
   "settingsVideoLoopModeTitle": "Schleifen-Modus",
-  "settingsVideoQuickActionsTile": "Schnelle Aktionen für Videos",
-  "settingsVideoQuickActionEditorTitle": "Schnelle Aktionen",
 
   "settingsSubtitleThemeTile": "Untertitel",
   "settingsSubtitleThemeTitle": "Untertitel",
@@ -456,6 +462,13 @@
   "settingsSubtitleThemeTextAlignmentLeft": "Links",
   "settingsSubtitleThemeTextAlignmentCenter": "Zentrum",
   "settingsSubtitleThemeTextAlignmentRight": "Rechts",
+
+  "settingsVideoControlsTile": "Steuerung",
+  "settingsVideoControlsTitle": "Steuerung",
+  "settingsVideoButtonsTile": "Schaltflächen",
+  "settingsVideoButtonsTitle": "Schaltflächen",
+  "settingsVideoGestureDoubleTapTogglePlay": "Doppeltippen zum Abspielen/Pausieren",
+  "settingsVideoGestureSideDoubleTapSeek": "Doppeltippen auf die Bildschirmränder zum Rückwärts-/Vorwärtsspringen",
 
   "settingsSectionPrivacy": "Datenschutz",
   "settingsAllowInstalledAppAccess": "Zugriff auf die Liste der installierten Apps",

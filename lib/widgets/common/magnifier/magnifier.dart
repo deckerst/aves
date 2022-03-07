@@ -29,6 +29,7 @@ class Magnifier extends StatelessWidget {
     this.scaleStateCycle = defaultScaleStateCycle,
     this.applyScale = true,
     this.onTap,
+    this.onDoubleTap,
     required this.child,
   }) : super(key: key);
 
@@ -49,6 +50,7 @@ class Magnifier extends StatelessWidget {
   final ScaleStateCycle scaleStateCycle;
   final bool applyScale;
   final MagnifierTapCallback? onTap;
+  final MagnifierDoubleTapCallback? onDoubleTap;
   final Widget child;
 
   @override
@@ -68,6 +70,7 @@ class Magnifier extends StatelessWidget {
           scaleStateCycle: scaleStateCycle,
           applyScale: applyScale,
           onTap: onTap,
+          onDoubleTap: onDoubleTap,
           child: child,
         );
       },
@@ -80,4 +83,8 @@ typedef MagnifierTapCallback = Function(
   TapUpDetails details,
   MagnifierState state,
   Offset childTapPosition,
+);
+
+typedef MagnifierDoubleTapCallback = bool Function(
+  Alignment alignment,
 );

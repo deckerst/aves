@@ -17,7 +17,7 @@ class VideoStreamSelectionDialog extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _VideoStreamSelectionDialogState createState() => _VideoStreamSelectionDialogState();
+  State<VideoStreamSelectionDialog> createState() => _VideoStreamSelectionDialogState();
 }
 
 class _VideoStreamSelectionDialogState extends State<VideoStreamSelectionDialog> {

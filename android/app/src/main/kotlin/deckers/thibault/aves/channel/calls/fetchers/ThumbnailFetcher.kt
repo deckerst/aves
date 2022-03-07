@@ -59,7 +59,11 @@ class ThumbnailFetcher internal constructor(
                 // As of Android R, the Media Store content resolver may return a thumbnail
                 // that is automatically rotated according to EXIF orientation, but not flipped,
                 // so we skip this step for flipped entries.
-                bitmap = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) getByResolver() else getByMediaStore()
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    bitmap = getByResolver()
+                } else if (StorageUtils.isMediaStoreContentUri(uri)) {
+                    bitmap = getByMediaStore()
+                }
             }
         } catch (e: Exception) {
             exception = e

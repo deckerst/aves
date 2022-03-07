@@ -4,7 +4,6 @@ import 'dart:math';
 import 'package:aves/l10n/l10n.dart';
 import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/actions/entry_set_actions.dart';
-import 'package:aves/model/actions/video_actions.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/defaults.dart';
 import 'package:aves/model/settings/enums/enums.dart';
@@ -82,6 +81,7 @@ class Settings extends ChangeNotifier {
   static const showOverlayMinimapKey = 'show_overlay_minimap';
   static const showOverlayInfoKey = 'show_overlay_info';
   static const showOverlayShootingDetailsKey = 'show_overlay_shooting_details';
+  static const showOverlayThumbnailPreviewKey = 'show_overlay_thumbnail_preview';
   static const enableOverlayBlurEffectKey = 'enable_overlay_blur_effect';
   static const viewerUseCutoutKey = 'viewer_use_cutout';
   static const viewerMaxBrightnessKey = 'viewer_max_brightness';
@@ -89,11 +89,13 @@ class Settings extends ChangeNotifier {
   static const imageBackgroundKey = 'image_background';
 
   // video
-  static const videoQuickActionsKey = 'video_quick_actions';
   static const enableVideoHardwareAccelerationKey = 'video_hwaccel_mediacodec';
   static const enableVideoAutoPlayKey = 'video_auto_play';
   static const videoLoopModeKey = 'video_loop';
   static const videoShowRawTimedTextKey = 'video_show_raw_timed_text';
+  static const videoControlsKey = 'video_controls';
+  static const videoGestureDoubleTapTogglePlayKey = 'video_gesture_double_tap_toggle_play';
+  static const videoGestureSideDoubleTapSeekKey = 'video_gesture_side_double_tap_skip';
 
   // subtitles
   static const subtitleFontSizeKey = 'subtitle_font_size';
@@ -389,6 +391,10 @@ class Settings extends ChangeNotifier {
 
   set showOverlayShootingDetails(bool newValue) => setAndNotify(showOverlayShootingDetailsKey, newValue);
 
+  bool get showOverlayThumbnailPreview => getBoolOrDefault(showOverlayThumbnailPreviewKey, SettingsDefaults.showOverlayThumbnailPreview);
+
+  set showOverlayThumbnailPreview(bool newValue) => setAndNotify(showOverlayThumbnailPreviewKey, newValue);
+
   bool get enableOverlayBlurEffect => getBoolOrDefault(enableOverlayBlurEffectKey, SettingsDefaults.enableOverlayBlurEffect);
 
   set enableOverlayBlurEffect(bool newValue) => setAndNotify(enableOverlayBlurEffectKey, newValue);
@@ -411,10 +417,6 @@ class Settings extends ChangeNotifier {
 
   // video
 
-  List<VideoAction> get videoQuickActions => getEnumListOrDefault(videoQuickActionsKey, SettingsDefaults.videoQuickActions, VideoAction.values);
-
-  set videoQuickActions(List<VideoAction> newValue) => setAndNotify(videoQuickActionsKey, newValue.map((v) => v.toString()).toList());
-
   bool get enableVideoHardwareAcceleration => getBoolOrDefault(enableVideoHardwareAccelerationKey, SettingsDefaults.enableVideoHardwareAcceleration);
 
   set enableVideoHardwareAcceleration(bool newValue) => setAndNotify(enableVideoHardwareAccelerationKey, newValue);
@@ -430,6 +432,18 @@ class Settings extends ChangeNotifier {
   bool get videoShowRawTimedText => getBoolOrDefault(videoShowRawTimedTextKey, SettingsDefaults.videoShowRawTimedText);
 
   set videoShowRawTimedText(bool newValue) => setAndNotify(videoShowRawTimedTextKey, newValue);
+
+  VideoControls get videoControls => getEnumOrDefault(videoControlsKey, SettingsDefaults.videoControls, VideoControls.values);
+
+  set videoControls(VideoControls newValue) => setAndNotify(videoControlsKey, newValue.toString());
+
+  bool get videoGestureDoubleTapTogglePlay => getBoolOrDefault(videoGestureDoubleTapTogglePlayKey, SettingsDefaults.videoGestureDoubleTapTogglePlay);
+
+  set videoGestureDoubleTapTogglePlay(bool newValue) => setAndNotify(videoGestureDoubleTapTogglePlayKey, newValue);
+
+  bool get videoGestureSideDoubleTapSeek => getBoolOrDefault(videoGestureSideDoubleTapSeekKey, SettingsDefaults.videoGestureSideDoubleTapSeek);
+
+  set videoGestureSideDoubleTapSeek(bool newValue) => setAndNotify(videoGestureSideDoubleTapSeekKey, newValue);
 
   // subtitles
 
@@ -642,12 +656,15 @@ class Settings extends ChangeNotifier {
             case showOverlayMinimapKey:
             case showOverlayInfoKey:
             case showOverlayShootingDetailsKey:
+            case showOverlayThumbnailPreviewKey:
             case enableOverlayBlurEffectKey:
             case viewerUseCutoutKey:
             case viewerMaxBrightnessKey:
             case enableMotionPhotoAutoPlayKey:
             case enableVideoHardwareAccelerationKey:
             case enableVideoAutoPlayKey:
+            case videoGestureDoubleTapTogglePlayKey:
+            case videoGestureSideDoubleTapSeekKey:
             case subtitleShowOutlineKey:
             case saveSearchHistoryKey:
             case filePickerShowHiddenFilesKey:
@@ -668,6 +685,7 @@ class Settings extends ChangeNotifier {
             case tagSortFactorKey:
             case imageBackgroundKey:
             case videoLoopModeKey:
+            case videoControlsKey:
             case subtitleTextAlignmentKey:
             case infoMapStyleKey:
             case coordinateFormatKey:
@@ -689,7 +707,6 @@ class Settings extends ChangeNotifier {
             case collectionBrowsingQuickActionsKey:
             case collectionSelectionQuickActionsKey:
             case viewerQuickActionsKey:
-            case videoQuickActionsKey:
               if (newValue is List) {
                 settingsStore.setStringList(key, newValue.cast<String>());
               } else {

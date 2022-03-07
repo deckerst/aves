@@ -13,7 +13,7 @@ class AppReference extends StatefulWidget {
   const AppReference({Key? key}) : super(key: key);
 
   @override
-  _AppReferenceState createState() => _AppReferenceState();
+  State<AppReference> createState() => _AppReferenceState();
 }
 
 class _AppReferenceState extends State<AppReference> {

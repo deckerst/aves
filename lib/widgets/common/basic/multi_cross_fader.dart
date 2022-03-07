@@ -16,7 +16,7 @@ class MultiCrossFader extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _MultiCrossFaderState createState() => _MultiCrossFaderState();
+  State<MultiCrossFader> createState() => _MultiCrossFaderState();
 }
 
 class _MultiCrossFaderState extends State<MultiCrossFader> {

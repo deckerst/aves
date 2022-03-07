@@ -50,7 +50,7 @@ class CollectionGrid extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _CollectionGridState createState() => _CollectionGridState();
+  State<CollectionGrid> createState() => _CollectionGridState();
 }
 
 class _CollectionGridState extends State<CollectionGrid> {
@@ -170,7 +170,7 @@ class _CollectionSectionedContent extends StatefulWidget {
   });
 
   @override
-  _CollectionSectionedContentState createState() => _CollectionSectionedContentState();
+  State<_CollectionSectionedContent> createState() => _CollectionSectionedContentState();
 }
 
 class _CollectionSectionedContentState extends State<_CollectionSectionedContent> {
@@ -291,7 +291,7 @@ class _CollectionScrollView extends StatefulWidget {
   });
 
   @override
-  _CollectionScrollViewState createState() => _CollectionScrollViewState();
+  State<_CollectionScrollView> createState() => _CollectionScrollViewState();
 }
 
 class _CollectionScrollViewState extends State<_CollectionScrollView> {

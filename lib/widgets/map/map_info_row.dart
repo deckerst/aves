@@ -77,7 +77,7 @@ class _AddressRow extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _AddressRowState createState() => _AddressRowState();
+  State<_AddressRow> createState() => _AddressRowState();
 }
 
 class _AddressRowState extends State<_AddressRow> {

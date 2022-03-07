@@ -24,7 +24,7 @@ class TagEditorPage extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _TagEditorPageState createState() => _TagEditorPageState();
+  State<TagEditorPage> createState() => _TagEditorPageState();
 }
 
 class _TagEditorPageState extends State<TagEditorPage> {

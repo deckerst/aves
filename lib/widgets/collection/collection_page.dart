@@ -29,7 +29,7 @@ class CollectionPage extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _CollectionPageState createState() => _CollectionPageState();
+  State<CollectionPage> createState() => _CollectionPageState();
 }
 
 class _CollectionPageState extends State<CollectionPage> {

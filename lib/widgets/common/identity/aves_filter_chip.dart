@@ -110,7 +110,7 @@ class AvesFilterChip extends StatefulWidget {
   }
 
   @override
-  _AvesFilterChipState createState() => _AvesFilterChipState();
+  State<AvesFilterChip> createState() => _AvesFilterChipState();
 }
 
 class _AvesFilterChipState extends State<AvesFilterChip> {

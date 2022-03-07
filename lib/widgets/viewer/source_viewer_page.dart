@@ -14,7 +14,7 @@ class SourceViewerPage extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _SourceViewerPageState createState() => _SourceViewerPageState();
+  State<SourceViewerPage> createState() => _SourceViewerPageState();
 }
 
 class _SourceViewerPageState extends State<SourceViewerPage> {

@@ -1,7 +1,25 @@
+import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/basic/reselectable_radio_list_tile.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 
 import 'aves_dialog.dart';
+
+Future<void> showSelectionDialog<T>({
+  required BuildContext context,
+  required WidgetBuilder builder,
+  required void Function(T value) onSelection,
+}) async {
+  final value = await showDialog<T>(
+    context: context,
+    builder: builder,
+  );
+  // wait for the dialog to hide as applying the change may block the UI
+  await Future.delayed(Durations.dialogTransitionAnimation * timeDilation);
+  if (value != null) {
+    onSelection(value);
+  }
+}
 
 typedef TextBuilder<T> = String Function(T value);
 
@@ -10,6 +28,7 @@ class AvesSelectionDialog<T> extends StatefulWidget {
   final Map<T, String> options;
   final TextBuilder<T>? optionSubtitleBuilder;
   final String? title, message, confirmationButtonLabel;
+  final bool? dense;
 
   const AvesSelectionDialog({
     Key? key,
@@ -19,10 +38,11 @@ class AvesSelectionDialog<T> extends StatefulWidget {
     this.title,
     this.message,
     this.confirmationButtonLabel,
+    this.dense,
   }) : super(key: key);
 
   @override
-  _AvesSelectionDialogState<T> createState() => _AvesSelectionDialogState<T>();
+  State<AvesSelectionDialog<T>> createState() => _AvesSelectionDialogState<T>();
 }
 
 class _AvesSelectionDialogState<T> extends State<AvesSelectionDialog<T>> {
@@ -92,6 +112,7 @@ class _AvesSelectionDialogState<T> extends State<AvesSelectionDialog<T>> {
               maxLines: 1,
             )
           : null,
+      dense: widget.dense,
     );
   }
 }

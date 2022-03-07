@@ -28,7 +28,7 @@ class VectorImageView extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _VectorImageViewState createState() => _VectorImageViewState();
+  State<VectorImageView> createState() => _VectorImageViewState();
 }
 
 class _VectorImageViewState extends State<VectorImageView> {
@@ -300,7 +300,7 @@ class _RegionTile extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _RegionTileState createState() => _RegionTileState();
+  State<_RegionTile> createState() => _RegionTileState();
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
