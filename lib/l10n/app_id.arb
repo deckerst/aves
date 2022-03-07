@@ -257,8 +257,7 @@
   "aboutCredits": "Kredit",
   "aboutCreditsWorldAtlas1": "Aplikasi ini menggunakan file TopoJSON dari",
   "aboutCreditsWorldAtlas2": "dibawah Lisensi ISC.",
-  "aboutCreditsTranslators": "Penerjemah:",
-  "aboutCreditsTranslatorLine": "{language}: {names}",
+  "aboutCreditsTranslators": "Penerjemah",
 
   "aboutLicenses": "Lisensi Sumber Terbuka",
   "aboutLicensesBanner": "Aplikasi ini menggunakan paket dan perpustakaan sumber terbuka berikut.",

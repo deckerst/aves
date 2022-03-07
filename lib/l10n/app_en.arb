@@ -394,20 +394,7 @@
   "aboutCredits": "Credits",
   "aboutCreditsWorldAtlas1": "This app uses a TopoJSON file from",
   "aboutCreditsWorldAtlas2": "under ISC License.",
-  "aboutCreditsTranslators": "Translators:",
-  "aboutCreditsTranslatorLine": "{language}: {names}",
-  "@aboutCreditsTranslatorLine": {
-    "placeholders": {
-      "language": {
-        "type": "String",
-        "example": "Sumerian"
-      },
-      "names": {
-        "type": "String",
-        "example": "Reggie Lampert"
-      }
-    }
-  },
+  "aboutCreditsTranslators": "Translators",
 
   "aboutLicenses": "Open-Source Licenses",
   "aboutLicensesBanner": "This app uses the following open-source packages and libraries.",
