@@ -264,8 +264,7 @@
   "aboutCredits": "Благодарности",
   "aboutCreditsWorldAtlas1": "Это приложение использует файл TopoJSON из",
   "aboutCreditsWorldAtlas2": "под лицензией ISC.",
-  "aboutCreditsTranslators": "Переводчики:",
-  "aboutCreditsTranslatorLine": "{language}: {names}",
+  "aboutCreditsTranslators": "Переводчики",
 
   "aboutLicenses": "Лицензии с открытым исходным кодом",
   "aboutLicensesBanner": "Это приложение использует следующие пакеты и библиотеки с открытым исходным кодом.",

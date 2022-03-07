@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 - Viewer: optional thumbnail preview
 - Video: optional gestures to play/seek
 - Video: mute action
+- Japanese translation (thanks Maki)
 
 ### Changed
 

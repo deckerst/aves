@@ -264,8 +264,7 @@
   "aboutCredits": "Credits",
   "aboutCreditsWorldAtlas1": "Diese Anwendung verwendet eine TopoJSON-Datei von",
   "aboutCreditsWorldAtlas2": "unter ISC-Lizenz.",
-  "aboutCreditsTranslators": "Übersetzer:",
-  "aboutCreditsTranslatorLine": "{language}: {names}",
+  "aboutCreditsTranslators": "Übersetzer",
 
   "aboutLicenses": "Open-Source-Lizenzen",
   "aboutLicensesBanner": "Diese Anwendung verwendet die folgenden Open-Source-Pakete und -Bibliotheken.",
