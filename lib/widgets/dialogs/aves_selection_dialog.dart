@@ -28,6 +28,7 @@ class AvesSelectionDialog<T> extends StatefulWidget {
   final Map<T, String> options;
   final TextBuilder<T>? optionSubtitleBuilder;
   final String? title, message, confirmationButtonLabel;
+  final bool? dense;
 
   const AvesSelectionDialog({
     Key? key,
@@ -37,6 +38,7 @@ class AvesSelectionDialog<T> extends StatefulWidget {
     this.title,
     this.message,
     this.confirmationButtonLabel,
+    this.dense,
   }) : super(key: key);
 
   @override
@@ -110,6 +112,7 @@ class _AvesSelectionDialogState<T> extends State<AvesSelectionDialog<T>> {
               maxLines: 1,
             )
           : null,
+      dense: widget.dense,
     );
   }
 }
