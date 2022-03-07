@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.6.2"></a>[v1.6.2] - 2022-03-07
+
 ### Added
 
 - Viewer: optional thumbnail preview
