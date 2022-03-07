@@ -10,7 +10,7 @@ import 'package:aves/widgets/viewer/info/metadata/xmp_ns/dwc.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_ns/exif.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_ns/google.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_ns/iptc.dart';
-import 'package:aves/widgets/viewer/info/metadata/xmp_ns/iptc4xmpExt.dart';
+import 'package:aves/widgets/viewer/info/metadata/xmp_ns/iptc4xmpext.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_ns/mwg.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_ns/photoshop.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_ns/tiff.dart';
