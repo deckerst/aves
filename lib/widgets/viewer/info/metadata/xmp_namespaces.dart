@@ -10,6 +10,7 @@ import 'package:aves/widgets/viewer/info/metadata/xmp_ns/dwc.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_ns/exif.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_ns/google.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_ns/iptc.dart';
+import 'package:aves/widgets/viewer/info/metadata/xmp_ns/iptc4xmpExt.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_ns/mwg.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_ns/photoshop.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_ns/tiff.dart';
@@ -51,6 +52,8 @@ class XmpNamespace extends Equatable {
         return XmpGImageNamespace(rawProps);
       case XmpIptcCoreNamespace.ns:
         return XmpIptcCoreNamespace(rawProps);
+      case XmpIptc4xmpExtNamespace.ns:
+        return XmpIptc4xmpExtNamespace(rawProps);
       case XmpMgwRegionsNamespace.ns:
         return XmpMgwRegionsNamespace(rawProps);
       case XmpMMNamespace.ns:
@@ -97,6 +100,7 @@ class XmpNamespace extends Equatable {
     'lr': 'Lightroom',
     'MicrosoftPhoto': 'Microsoft Photo',
     'mwg-rs': 'Regions',
+    'nga': 'National Gallery of Art',
     'panorama': 'Panorama',
     'PanoStudioXMP': 'PanoramaStudio',
     'pdf': 'PDF',
