@@ -72,6 +72,8 @@ class AIcons {
   static const IconData layers = Icons.layers_outlined;
   static const IconData map = Icons.map_outlined;
   static const IconData move = MdiIcons.fileMoveOutline;
+  static const IconData mute = Icons.volume_off_outlined;
+  static const IconData unmute = Icons.volume_up_outlined;
   static const IconData newTier = Icons.fiber_new_outlined;
   static const IconData openOutside = Icons.open_in_new_outlined;
   static const IconData pin = Icons.push_pin_outlined;

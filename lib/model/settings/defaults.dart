@@ -1,6 +1,5 @@
 import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/actions/entry_set_actions.dart';
-import 'package:aves/model/actions/video_actions.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/settings/enums/enums.dart';
@@ -67,20 +66,20 @@ class SettingsDefaults {
   static const showOverlayMinimap = false;
   static const showOverlayInfo = true;
   static const showOverlayShootingDetails = false;
+  static const showOverlayThumbnailPreview = false;
   static const enableOverlayBlurEffect = true; // `enableOverlayBlurEffect` has a contextual default value
   static const viewerUseCutout = true;
   static const viewerMaxBrightness = false;
   static const enableMotionPhotoAutoPlay = false;
 
   // video
-  static const videoQuickActions = [
-    VideoAction.replay10,
-    VideoAction.togglePlay,
-  ];
   static const enableVideoHardwareAcceleration = true;
   static const enableVideoAutoPlay = false;
   static const videoLoopMode = VideoLoopMode.shortOnly;
   static const videoShowRawTimedText = false;
+  static const videoControls = VideoControls.play;
+  static const videoGestureDoubleTapTogglePlay = false;
+  static const videoGestureSideDoubleTapSeek = true;
 
   // subtitles
   static const subtitleFontSize = 20.0;

@@ -14,7 +14,7 @@ class VideoSpeedDialog extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _VideoSpeedDialogState createState() => _VideoSpeedDialogState();
+  State<VideoSpeedDialog> createState() => _VideoSpeedDialogState();
 }
 
 class _VideoSpeedDialogState extends State<VideoSpeedDialog> {

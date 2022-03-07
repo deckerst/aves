@@ -21,7 +21,7 @@ class EditEntryDateDialog extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _EditEntryDateDialogState createState() => _EditEntryDateDialogState();
+  State<EditEntryDateDialog> createState() => _EditEntryDateDialogState();
 }
 
 class _EditEntryDateDialogState extends State<EditEntryDateDialog> {

@@ -21,7 +21,7 @@ class QueryBar extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _QueryBarState createState() => _QueryBarState();
+  State<QueryBar> createState() => _QueryBarState();
 }
 
 class _QueryBarState extends State<QueryBar> {

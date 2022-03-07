@@ -68,6 +68,8 @@
   "entryActionRemoveFavourite": "즐겨찾기에서 삭제",
 
   "videoActionCaptureFrame": "프레임 캡처",
+  "videoActionMute": "음소거",
+  "videoActionUnmute": "음소거 해제",
   "videoActionPause": "일시정지",
   "videoActionPlay": "재생",
   "videoActionReplay10": "10초 뒤로 탐색",
@@ -111,6 +113,11 @@
   "videoLoopModeNever": "반복 안 함",
   "videoLoopModeShortOnly": "짧은 동영상만 반복",
   "videoLoopModeAlways": "항상 반복",
+
+  "videoControlsPlay": "재생",
+  "videoControlsPlaySeek": "재생 및 앞뒤로 가기",
+  "videoControlsPlayOutside": "다른 앱에서 열기",
+  "videoControlsNone": "없음",
 
   "mapStyleGoogleNormal": "구글 지도",
   "mapStyleGoogleHybrid": "구글 지도 (위성)",
@@ -257,8 +264,7 @@
   "aboutCredits": "크레딧",
   "aboutCreditsWorldAtlas1": "이 앱은",
   "aboutCreditsWorldAtlas2": "의 TopoJSON 파일(ISC 라이선스)을 이용합니다.",
-  "aboutCreditsTranslators": "번역가:",
-  "aboutCreditsTranslatorLine": "{language}: {names}",
+  "aboutCreditsTranslators": "번역가",
 
   "aboutLicenses": "오픈 소스 라이선스",
   "aboutLicensesBanner": "이 앱은 다음의 오픈 소스 패키지와 라이브러리를 이용합니다.",
@@ -431,6 +437,7 @@
   "settingsViewerShowInformation": "상세 정보 표시",
   "settingsViewerShowInformationSubtitle": "제목, 날짜, 장소 등 표시",
   "settingsViewerShowShootingDetails": "촬영 정보 표시",
+  "settingsViewerShowOverlayThumbnails": "섬네일 표시",
   "settingsViewerEnableOverlayBlurEffect": "흐림 효과",
 
   "settingsVideoPageTitle": "동영상 설정",
@@ -440,8 +447,6 @@
   "settingsVideoEnableAutoPlay": "자동 재생",
   "settingsVideoLoopModeTile": "반복 모드",
   "settingsVideoLoopModeTitle": "반복 모드",
-  "settingsVideoQuickActionsTile": "동영상의 빠른 작업",
-  "settingsVideoQuickActionEditorTitle": "빠른 작업",
 
   "settingsSubtitleThemeTile": "자막",
   "settingsSubtitleThemeTitle": "자막",
@@ -457,6 +462,13 @@
   "settingsSubtitleThemeTextAlignmentLeft": "왼쪽",
   "settingsSubtitleThemeTextAlignmentCenter": "가운데",
   "settingsSubtitleThemeTextAlignmentRight": "오른쪽",
+
+  "settingsVideoControlsTile": "제어",
+  "settingsVideoControlsTitle": "제어",
+  "settingsVideoButtonsTile": "버튼",
+  "settingsVideoButtonsTitle": "버튼",
+  "settingsVideoGestureDoubleTapTogglePlay": "두 번 탭해서 재생이나 일시정지하기",
+  "settingsVideoGestureSideDoubleTapSeek": "화면 측면에서 두 번 탭해서 앞뒤로 가기",
 
   "settingsSectionPrivacy": "개인정보 보호",
   "settingsAllowInstalledAppAccess": "설치된 앱의 목록 접근 허용",

@@ -1,10 +1,13 @@
 import 'dart:async';
 
+import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/entry_images.dart';
 import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
+import 'package:aves/theme/icons.dart';
+import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/magnifier/controller/controller.dart';
 import 'package:aves/widgets/common/magnifier/controller/state.dart';
 import 'package:aves/widgets/common/magnifier/magnifier.dart';
@@ -24,8 +27,10 @@ import 'package:aves/widgets/viewer/visual/subtitle/subtitle.dart';
 import 'package:aves/widgets/viewer/visual/vector.dart';
 import 'package:aves/widgets/viewer/visual/video.dart';
 import 'package:collection/collection.dart';
+import 'package:decorated_icon/decorated_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tuple/tuple.dart';
 
 class EntryPageView extends StatefulWidget {
   final AvesEntry mainEntry, pageEntry;
@@ -41,7 +46,7 @@ class EntryPageView extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _EntryPageViewState createState() => _EntryPageViewState();
+  State<EntryPageView> createState() => _EntryPageViewState();
 }
 
 class _EntryPageViewState extends State<EntryPageView> {
@@ -51,6 +56,7 @@ class _EntryPageViewState extends State<EntryPageView> {
   ImageStream? _videoCoverStream;
   late ImageStreamListener _videoCoverStreamListener;
   final ValueNotifier<ImageInfo?> _videoCoverInfoNotifier = ValueNotifier(null);
+  final ValueNotifier<Widget?> _actionFeedbackChildNotifier = ValueNotifier(null);
 
   MagnifierController? _dismissedCoverMagnifierController;
 
@@ -168,7 +174,7 @@ class _EntryPageViewState extends State<EntryPageView> {
   }
 
   Widget _buildSvgView() {
-    var child = _buildMagnifier(
+    return _buildMagnifier(
       maxScale: const ScaleLevel(factor: 25),
       scaleStateCycle: _vectorScaleStateCycle,
       applyScale: false,
@@ -181,48 +187,114 @@ class _EntryPageViewState extends State<EntryPageView> {
         ),
       ),
     );
-    return child;
   }
 
   Widget _buildVideoView() {
     final videoController = context.read<VideoConductor>().getController(entry);
     if (videoController == null) return const SizedBox();
+
     return ValueListenableBuilder<double>(
       valueListenable: videoController.sarNotifier,
       builder: (context, sar, child) {
         final videoDisplaySize = entry.videoDisplaySize(sar);
-        return Stack(
-          fit: StackFit.expand,
-          children: [
-            Stack(
+
+        return Selector<Settings, Tuple2<bool, bool>>(
+          selector: (context, s) => Tuple2(s.videoGestureDoubleTapTogglePlay, s.videoGestureSideDoubleTapSeek),
+          builder: (context, s, child) {
+            final playGesture = s.item1;
+            final seekGesture = s.item2;
+            final useActionGesture = playGesture || seekGesture;
+
+            void _applyAction(EntryAction action, {IconData? Function()? icon}) {
+              _actionFeedbackChildNotifier.value = DecoratedIcon(
+                icon?.call() ?? action.getIconData(),
+                size: 48,
+                shadows: const [
+                  Shadow(
+                    color: Colors.black,
+                    blurRadius: 4,
+                  )
+                ],
+              );
+              VideoActionNotification(
+                controller: videoController,
+                action: action,
+              ).dispatch(context);
+            }
+
+            MagnifierDoubleTapCallback? _onDoubleTap = useActionGesture
+                ? (alignment) {
+                    final x = alignment.x;
+                    if (seekGesture) {
+                      if (x < .25) {
+                        _applyAction(EntryAction.videoReplay10);
+                        return true;
+                      } else if (x > .75) {
+                        _applyAction(EntryAction.videoSkip10);
+                        return true;
+                      }
+                    }
+                    if (playGesture) {
+                      _applyAction(
+                        EntryAction.videoTogglePlay,
+                        icon: () => videoController.isPlaying ? AIcons.pause : AIcons.play,
+                      );
+                      return true;
+                    }
+                    return false;
+                  }
+                : null;
+
+            return Stack(
+              fit: StackFit.expand,
               children: [
-                _buildMagnifier(
-                  displaySize: videoDisplaySize,
-                  child: VideoView(
-                    entry: entry,
-                    controller: videoController,
-                  ),
+                Stack(
+                  children: [
+                    _buildMagnifier(
+                      displaySize: videoDisplaySize,
+                      onDoubleTap: _onDoubleTap,
+                      child: VideoView(
+                        entry: entry,
+                        controller: videoController,
+                      ),
+                    ),
+                    VideoSubtitles(
+                      controller: videoController,
+                      viewStateNotifier: _viewStateNotifier,
+                    ),
+                    if (settings.videoShowRawTimedText)
+                      VideoSubtitles(
+                        controller: videoController,
+                        viewStateNotifier: _viewStateNotifier,
+                        debugMode: true,
+                      ),
+                    if (useActionGesture)
+                      ValueListenableBuilder<Widget?>(
+                        valueListenable: _actionFeedbackChildNotifier,
+                        builder: (context, feedbackChild, child) => ActionFeedback(
+                          child: feedbackChild,
+                        ),
+                      ),
+                  ],
                 ),
-                VideoSubtitles(
-                  controller: videoController,
-                  viewStateNotifier: _viewStateNotifier,
+                _buildVideoCover(
+                  videoController: videoController,
+                  videoDisplaySize: videoDisplaySize,
+                  onDoubleTap: _onDoubleTap,
                 ),
-                if (settings.videoShowRawTimedText)
-                  VideoSubtitles(
-                    controller: videoController,
-                    viewStateNotifier: _viewStateNotifier,
-                    debugMode: true,
-                  ),
               ],
-            ),
-            _buildVideoCover(videoController, videoDisplaySize),
-          ],
+            );
+          },
         );
       },
     );
   }
 
-  StreamBuilder<VideoStatus> _buildVideoCover(AvesVideoController videoController, Size videoDisplaySize) {
+  StreamBuilder<VideoStatus> _buildVideoCover({
+    required AvesVideoController videoController,
+    required Size videoDisplaySize,
+    required MagnifierDoubleTapCallback? onDoubleTap,
+  }) {
     // fade out image to ease transition with the player
     return StreamBuilder<VideoStatus>(
       stream: videoController.statusStream,
@@ -250,6 +322,7 @@ class _EntryPageViewState extends State<EntryPageView> {
                   return _buildMagnifier(
                     controller: coverController,
                     displaySize: coverSize,
+                    onDoubleTap: onDoubleTap,
                     child: Image(
                       image: videoCoverUriImage,
                     ),
@@ -285,6 +358,7 @@ class _EntryPageViewState extends State<EntryPageView> {
     ScaleLevel maxScale = maxScale,
     ScaleStateCycle scaleStateCycle = defaultScaleStateCycle,
     bool applyScale = true,
+    MagnifierDoubleTapCallback? onDoubleTap,
     required Widget child,
   }) {
     return Magnifier(
@@ -298,6 +372,7 @@ class _EntryPageViewState extends State<EntryPageView> {
       scaleStateCycle: scaleStateCycle,
       applyScale: applyScale,
       onTap: (c, d, s, o) => _onTap(),
+      onDoubleTap: onDoubleTap,
       child: child,
     );
   }
@@ -305,15 +380,17 @@ class _EntryPageViewState extends State<EntryPageView> {
   void _onTap() => const ToggleOverlayNotification().dispatch(context);
 
   void _onViewStateChanged(MagnifierState v) {
-    final current = _viewStateNotifier.value;
-    final viewState = ViewState(v.position, v.scale, current.viewportSize);
-    _viewStateNotifier.value = viewState;
+    _viewStateNotifier.value = _viewStateNotifier.value.copyWith(
+      position: v.position,
+      scale: v.scale,
+    );
   }
 
   void _onViewScaleBoundariesChanged(ScaleBoundaries v) {
-    final current = _viewStateNotifier.value;
-    final viewState = ViewState(current.position, current.scale, v.viewportSize);
-    _viewStateNotifier.value = viewState;
+    _viewStateNotifier.value = _viewStateNotifier.value.copyWith(
+      viewportSize: v.viewportSize,
+      contentSize: v.childSize,
+    );
   }
 
   static ScaleState _vectorScaleStateCycle(ScaleState actual) {

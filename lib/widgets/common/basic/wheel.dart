@@ -15,7 +15,7 @@ class WheelSelector<T> extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _WheelSelectorState createState() => _WheelSelectorState<T>();
+  State<WheelSelector<T>> createState() => _WheelSelectorState<T>();
 }
 
 class _WheelSelectorState<T> extends State<WheelSelector<T>> {

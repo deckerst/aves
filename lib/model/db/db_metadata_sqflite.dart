@@ -215,11 +215,11 @@ class SqfliteMetadataDb implements MetadataDb {
   }
 
   @override
-  Future<Set<AvesEntry>> searchEntries(String query, {int? limit}) async {
+  Future<Set<AvesEntry>> searchLiveEntries(String query, {int? limit}) async {
     final rows = await _db.query(
       entryTable,
-      where: 'title LIKE ?',
-      whereArgs: ['%$query%'],
+      where: 'title LIKE ? AND trashed = ?',
+      whereArgs: ['%$query%', 0],
       orderBy: 'sourceDateTakenMillis DESC',
       limit: limit,
     );

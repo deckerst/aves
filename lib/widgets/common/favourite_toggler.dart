@@ -20,7 +20,7 @@ class FavouriteToggler extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _FavouriteTogglerState createState() => _FavouriteTogglerState();
+  State<FavouriteToggler> createState() => _FavouriteTogglerState();
 }
 
 class _FavouriteTogglerState extends State<FavouriteToggler> {

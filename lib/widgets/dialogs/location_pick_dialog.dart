@@ -66,7 +66,7 @@ class _Content extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _ContentState createState() => _ContentState();
+  State<_Content> createState() => _ContentState();
 }
 
 class _ContentState extends State<_Content> with SingleTickerProviderStateMixin {
@@ -237,7 +237,7 @@ class _AddressRow extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _AddressRowState createState() => _AddressRowState();
+  State<_AddressRow> createState() => _AddressRowState();
 }
 
 class _AddressRowState extends State<_AddressRow> {

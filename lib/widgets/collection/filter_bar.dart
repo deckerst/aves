@@ -20,7 +20,7 @@ class FilterBar extends StatefulWidget {
         super(key: key);
 
   @override
-  _FilterBarState createState() => _FilterBarState();
+  State<FilterBar> createState() => _FilterBarState();
 }
 
 class _FilterBarState extends State<FilterBar> {

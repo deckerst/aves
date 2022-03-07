@@ -41,7 +41,7 @@ class AvesPopupMenuButton<T> extends PopupMenuButton<T> {
         );
 
   @override
-  _AvesPopupMenuButtonState<T> createState() => _AvesPopupMenuButtonState<T>();
+  PopupMenuButtonState<T> createState() => _AvesPopupMenuButtonState<T>();
 }
 
 class _AvesPopupMenuButtonState<T> extends PopupMenuButtonState<T> {

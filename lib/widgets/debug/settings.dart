@@ -59,7 +59,6 @@ class DebugSettingsSection extends StatelessWidget {
                   'infoMapZoom': '${settings.infoMapZoom}',
                   'collectionSelectionQuickActions': '${settings.collectionSelectionQuickActions}',
                   'viewerQuickActions': '${settings.viewerQuickActions}',
-                  'videoQuickActions': '${settings.videoQuickActions}',
                   'drawerTypeBookmarks': toMultiline(settings.drawerTypeBookmarks),
                   'drawerAlbumBookmarks': toMultiline(settings.drawerAlbumBookmarks),
                   'drawerPageBookmarks': toMultiline(settings.drawerPageBookmarks),

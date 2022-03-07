@@ -1,6 +1,6 @@
 Thanks for using Aves!
-In v1.6.1:
-- recycle bin
-- view small and large images at their actual size
-- enjoy the app in Indonesian
+In v1.6.2:
+- revisited viewer: new layout, thumbnail previews, video gestures
+- storage related fixes for Android 10 and older
+- enjoy the app in Japanese
 Full changelog available on GitHub

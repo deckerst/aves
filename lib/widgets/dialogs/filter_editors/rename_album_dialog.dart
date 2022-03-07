@@ -14,7 +14,7 @@ class RenameAlbumDialog extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _RenameAlbumDialogState createState() => _RenameAlbumDialogState();
+  State<RenameAlbumDialog> createState() => _RenameAlbumDialogState();
 }
 
 class _RenameAlbumDialogState extends State<RenameAlbumDialog> {

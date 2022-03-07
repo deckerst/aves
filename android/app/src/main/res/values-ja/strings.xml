@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<string name="app_name">アヴェス</string>
+<string name="search_shortcut_short_label">検索</string>
+<string name="videos_shortcut_short_label">動画</string>
+<string name="analysis_channel_name">メディアスキャン</string>
+<string name="analysis_service_description">画像と動画をスキャン</string>
+<string name="analysis_notification_default_title">メディアをスキャン中</string>
+<string name="analysis_notification_action_stop">停止</string>
+</resources>

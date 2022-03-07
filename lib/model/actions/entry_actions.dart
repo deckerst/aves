@@ -21,6 +21,15 @@ enum EntryAction {
   flip,
   // vector
   viewSource,
+  // video
+  videoCaptureFrame,
+  videoSelectStreams,
+  videoSetSpeed,
+  videoToggleMute,
+  videoSettings,
+  videoTogglePlay,
+  videoReplay10,
+  videoSkip10,
   // external
   edit,
   open,
@@ -41,8 +50,8 @@ class EntryActions {
     EntryAction.copy,
     EntryAction.move,
     EntryAction.toggleFavourite,
-    EntryAction.viewSource,
     EntryAction.rotateScreen,
+    EntryAction.viewSource,
   ];
 
   static const export = [
@@ -62,6 +71,14 @@ class EntryActions {
   ];
 
   static const pageActions = [
+    EntryAction.videoCaptureFrame,
+    EntryAction.videoSelectStreams,
+    EntryAction.videoSetSpeed,
+    EntryAction.videoToggleMute,
+    EntryAction.videoSettings,
+    EntryAction.videoTogglePlay,
+    EntryAction.videoReplay10,
+    EntryAction.videoSkip10,
     EntryAction.rotateCCW,
     EntryAction.rotateCW,
     EntryAction.flip,
@@ -71,6 +88,14 @@ class EntryActions {
     EntryAction.delete,
     EntryAction.restore,
     EntryAction.debug,
+  ];
+
+  static const video = [
+    EntryAction.videoCaptureFrame,
+    EntryAction.videoToggleMute,
+    EntryAction.videoSetSpeed,
+    EntryAction.videoSelectStreams,
+    EntryAction.videoSettings,
   ];
 }
 
@@ -110,6 +135,25 @@ extension ExtraEntryAction on EntryAction {
       // vector
       case EntryAction.viewSource:
         return context.l10n.entryActionViewSource;
+      // video
+      case EntryAction.videoCaptureFrame:
+        return context.l10n.videoActionCaptureFrame;
+      case EntryAction.videoToggleMute:
+        // different data depending on toggle state
+        return context.l10n.videoActionMute;
+      case EntryAction.videoSelectStreams:
+        return context.l10n.videoActionSelectStreams;
+      case EntryAction.videoSetSpeed:
+        return context.l10n.videoActionSetSpeed;
+      case EntryAction.videoSettings:
+        return context.l10n.videoActionSettings;
+      case EntryAction.videoTogglePlay:
+        // different data depending on toggle state
+        return context.l10n.videoActionPlay;
+      case EntryAction.videoReplay10:
+        return context.l10n.videoActionReplay10;
+      case EntryAction.videoSkip10:
+        return context.l10n.videoActionSkip10;
       // external
       case EntryAction.edit:
         return context.l10n.entryActionEdit;
@@ -176,6 +220,25 @@ extension ExtraEntryAction on EntryAction {
       // vector
       case EntryAction.viewSource:
         return AIcons.vector;
+      // video
+      case EntryAction.videoCaptureFrame:
+        return AIcons.captureFrame;
+      case EntryAction.videoToggleMute:
+        // different data depending on toggle state
+        return AIcons.mute;
+      case EntryAction.videoSelectStreams:
+        return AIcons.streams;
+      case EntryAction.videoSetSpeed:
+        return AIcons.speed;
+      case EntryAction.videoSettings:
+        return AIcons.videoSettings;
+      case EntryAction.videoTogglePlay:
+        // different data depending on toggle state
+        return AIcons.play;
+      case EntryAction.videoReplay10:
+        return AIcons.replay10;
+      case EntryAction.videoSkip10:
+        return AIcons.skip10;
       // external
       case EntryAction.edit:
         return AIcons.edit;

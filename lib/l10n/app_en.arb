@@ -92,10 +92,12 @@
   "entryActionSetAs": "Set as",
   "entryActionOpenMap": "Show in map app",
   "entryActionRotateScreen": "Rotate screen",
-  "entryActionAddFavourite": "Add to favourites",
-  "entryActionRemoveFavourite": "Remove from favourites",
+  "entryActionAddFavourite": "Add to favorites",
+  "entryActionRemoveFavourite": "Remove from favorites",
 
   "videoActionCaptureFrame": "Capture frame",
+  "videoActionMute": "Mute",
+  "videoActionUnmute": "Unmute",
   "videoActionPause": "Pause",
   "videoActionPlay": "Play",
   "videoActionReplay10": "Seek backward 10 seconds",
@@ -111,7 +113,7 @@
   "entryInfoActionRemoveMetadata": "Remove metadata",
 
   "filterBinLabel": "Recycle bin",
-  "filterFavouriteLabel": "Favourite",
+  "filterFavouriteLabel": "Favorite",
   "filterLocationEmptyLabel": "Unlocated",
   "filterTagEmptyLabel": "Untagged",
   "filterRatingUnratedLabel": "Unrated",
@@ -151,6 +153,11 @@
   "videoLoopModeNever": "Never",
   "videoLoopModeShortOnly": "Short videos only",
   "videoLoopModeAlways": "Always",
+
+  "videoControlsPlay": "Play",
+  "videoControlsPlaySeek": "Play & seek backward/forward",
+  "videoControlsPlayOutside": "Open with other player",
+  "videoControlsNone": "None",
 
   "mapStyleGoogleNormal": "Google Maps",
   "mapStyleGoogleHybrid": "Google Maps (Hybrid)",
@@ -387,20 +394,7 @@
   "aboutCredits": "Credits",
   "aboutCreditsWorldAtlas1": "This app uses a TopoJSON file from",
   "aboutCreditsWorldAtlas2": "under ISC License.",
-  "aboutCreditsTranslators": "Translators:",
-  "aboutCreditsTranslatorLine": "{language}: {names}",
-  "@aboutCreditsTranslatorLine": {
-    "placeholders": {
-      "language": {
-        "type": "String",
-        "example": "Sumerian"
-      },
-      "names": {
-        "type": "String",
-        "example": "Reggie Lampert"
-      }
-    }
-  },
+  "aboutCreditsTranslators": "Translators",
 
   "aboutLicenses": "Open-Source Licenses",
   "aboutLicensesBanner": "This app uses the following open-source packages and libraries.",
@@ -490,7 +484,7 @@
     }
   },
 
-  "collectionEmptyFavourites": "No favourites",
+  "collectionEmptyFavourites": "No favorites",
   "collectionEmptyVideos": "No videos",
   "collectionEmptyImages": "No images",
 
@@ -498,7 +492,7 @@
   "collectionDeselectSectionTooltip": "Deselect section",
 
   "drawerCollectionAll": "All collection",
-  "drawerCollectionFavourites": "Favourites",
+  "drawerCollectionFavourites": "Favorites",
   "drawerCollectionImages": "Images",
   "drawerCollectionVideos": "Videos",
   "drawerCollectionAnimated": "Animated",
@@ -556,7 +550,7 @@
   "settingsActionImport": "Import",
 
   "appExportCovers": "Covers",
-  "appExportFavourites": "Favourites",
+  "appExportFavourites": "Favorites",
   "appExportSettings": "Settings",
 
   "settingsSectionNavigation": "Navigation",
@@ -579,7 +573,7 @@
   "settingsNavigationDrawerAddAlbum": "Add album",
 
   "settingsSectionThumbnails": "Thumbnails",
-  "settingsThumbnailShowFavouriteIcon": "Show favourite icon",
+  "settingsThumbnailShowFavouriteIcon": "Show favorite icon",
   "settingsThumbnailShowLocationIcon": "Show location icon",
   "settingsThumbnailShowMotionPhotoIcon": "Show motion photo icon",
   "settingsThumbnailShowRating": "Show rating",
@@ -613,6 +607,7 @@
   "settingsViewerShowInformation": "Show information",
   "settingsViewerShowInformationSubtitle": "Show title, date, location, etc.",
   "settingsViewerShowShootingDetails": "Show shooting details",
+  "settingsViewerShowOverlayThumbnails": "Show thumbnails",
   "settingsViewerEnableOverlayBlurEffect": "Blur effect",
 
   "settingsVideoPageTitle": "Video Settings",
@@ -622,8 +617,6 @@
   "settingsVideoEnableAutoPlay": "Auto play",
   "settingsVideoLoopModeTile": "Loop mode",
   "settingsVideoLoopModeTitle": "Loop Mode",
-  "settingsVideoQuickActionsTile": "Quick actions for videos",
-  "settingsVideoQuickActionEditorTitle": "Quick Actions",
 
   "settingsSubtitleThemeTile": "Subtitles",
   "settingsSubtitleThemeTitle": "Subtitles",
@@ -639,6 +632,13 @@
   "settingsSubtitleThemeTextAlignmentLeft": "Left",
   "settingsSubtitleThemeTextAlignmentCenter": "Center",
   "settingsSubtitleThemeTextAlignmentRight": "Right",
+
+  "settingsVideoControlsTile": "Controls",
+  "settingsVideoControlsTitle": "Controls",
+  "settingsVideoButtonsTile": "Buttons",
+  "settingsVideoButtonsTitle": "Buttons",
+  "settingsVideoGestureDoubleTapTogglePlay": "Double tap to play/pause",
+  "settingsVideoGestureSideDoubleTapSeek": "Double tap on screen edges to seek backward/forward",
 
   "settingsSectionPrivacy": "Privacy",
   "settingsAllowInstalledAppAccess": "Allow access to app inventory",

@@ -68,6 +68,8 @@
   "entryActionRemoveFavourite": "Remova dos favoritos",
 
   "videoActionCaptureFrame": "Capturar quadro",
+  "videoActionMute": "Mudo",
+  "videoActionUnmute": "Ativar mudo",
   "videoActionPause": "Pausa",
   "videoActionPlay": "Toque",
   "videoActionReplay10": "Retroceda 10 segundos",
@@ -111,6 +113,11 @@
   "videoLoopModeNever": "Nunca",
   "videoLoopModeShortOnly": "Apenas vídeos curtos",
   "videoLoopModeAlways": "Sempre",
+
+  "videoControlsPlay": "Começar",
+  "videoControlsPlaySeek": "Começar e procurar",
+  "videoControlsPlayOutside": "Abrir com outro player",
+  "videoControlsNone": "Nenhum",
 
   "mapStyleGoogleNormal": "Google Maps",
   "mapStyleGoogleHybrid": "Google Maps (Híbrido)",
@@ -257,8 +264,7 @@
   "aboutCredits": "Créditos",
   "aboutCreditsWorldAtlas1": "Este aplicativo usa um arquivo de TopoJSON",
   "aboutCreditsWorldAtlas2": "sob licença ISC.",
-  "aboutCreditsTranslators": "Tradutores:",
-  "aboutCreditsTranslatorLine": "{language}: {names}",
+  "aboutCreditsTranslators": "Tradutores",
 
   "aboutLicenses": "Licenças de código aberto",
   "aboutLicensesBanner": "Este aplicativo usa os seguintes pacotes e bibliotecas de código aberto.",
@@ -431,6 +437,7 @@
   "settingsViewerShowInformation": "Mostrar informações",
   "settingsViewerShowInformationSubtitle": "Mostrar título, data, local, etc.",
   "settingsViewerShowShootingDetails": "Mostrar detalhes de disparo",
+  "settingsViewerShowOverlayThumbnails": "Mostrar miniaturas",
   "settingsViewerEnableOverlayBlurEffect": "Efeito de desfoque",
 
   "settingsVideoPageTitle": "Configurações de vídeo",
@@ -440,8 +447,6 @@
   "settingsVideoEnableAutoPlay": "Reprodução automática",
   "settingsVideoLoopModeTile": "Modo de loop",
   "settingsVideoLoopModeTitle": "Modo de loop",
-  "settingsVideoQuickActionsTile": "Ações rápidas para vídeos",
-  "settingsVideoQuickActionEditorTitle": "Ações rápidas",
 
   "settingsSubtitleThemeTile": "Legendas",
   "settingsSubtitleThemeTitle": "Legendas",
@@ -457,6 +462,13 @@
   "settingsSubtitleThemeTextAlignmentLeft": "Esquerda",
   "settingsSubtitleThemeTextAlignmentCenter": "Centro",
   "settingsSubtitleThemeTextAlignmentRight": "Direita",
+
+  "settingsVideoControlsTile": "Controles",
+  "settingsVideoControlsTitle": "Controles",
+  "settingsVideoButtonsTile": "Botões",
+  "settingsVideoButtonsTitle": "Botões",
+  "settingsVideoGestureDoubleTapTogglePlay": "Toque duas vezes para reproduzir/pausar",
+  "settingsVideoGestureSideDoubleTapSeek": "Toque duas vezes nas bordas da tela buscar para trás/para frente",
 
   "settingsSectionPrivacy": "Privacidade",
   "settingsAllowInstalledAppAccess": "Permitir acesso ao inventário de aplicativos",

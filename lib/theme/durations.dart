@@ -39,6 +39,7 @@ class Durations {
   static const thumbnailScrollerScrollAnimation = Duration(milliseconds: 200);
   static const thumbnailScrollerShadeAnimation = Duration(milliseconds: 150);
   static const viewerVideoPlayerTransition = Duration(milliseconds: 500);
+  static const viewerActionFeedbackAnimation = Duration(milliseconds: 600);
 
   // info animations
   static const mapStyleSwitchAnimation = Duration(milliseconds: 300);
@@ -62,7 +63,8 @@ class Durations {
   static const doubleBackTimerDelay = Duration(milliseconds: 1000);
   static const softKeyboardDisplayDelay = Duration(milliseconds: 300);
   static const searchDebounceDelay = Duration(milliseconds: 250);
-  static const contentChangeDebounceDelay = Duration(milliseconds: 1000);
+  static const mediaContentChangeDebounceDelay = Duration(milliseconds: 1000);
+  static const viewerThumbnailScrollDebounceDelay = Duration(milliseconds: 1000);
   static const mapInfoDebounceDelay = Duration(milliseconds: 150);
   static const mapIdleDebounceDelay = Duration(milliseconds: 100);
 }

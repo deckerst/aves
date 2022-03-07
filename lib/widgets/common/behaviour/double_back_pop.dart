@@ -17,7 +17,7 @@ class DoubleBackPopScope extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _DoubleBackPopScopeState createState() => _DoubleBackPopScopeState();
+  State<DoubleBackPopScope> createState() => _DoubleBackPopScopeState();
 }
 
 class _DoubleBackPopScopeState extends State<DoubleBackPopScope> with FeedbackMixin {

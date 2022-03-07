@@ -18,7 +18,7 @@ class MetadataTab extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _MetadataTabState createState() => _MetadataTabState();
+  State<MetadataTab> createState() => _MetadataTabState();
 }
 
 class _MetadataTabState extends State<MetadataTab> {

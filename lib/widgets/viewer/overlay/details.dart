@@ -11,52 +11,48 @@ import 'package:aves/theme/format.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:aves/widgets/common/extensions/media_query.dart';
-import 'package:aves/widgets/common/fx/blurred.dart';
 import 'package:aves/widgets/viewer/multipage/controller.dart';
-import 'package:aves/widgets/viewer/overlay/bottom/multipage.dart';
-import 'package:aves/widgets/viewer/overlay/common.dart';
 import 'package:aves/widgets/viewer/page_entry_builder.dart';
 import 'package:decorated_icon/decorated_icon.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:tuple/tuple.dart';
 
-class ViewerBottomOverlay extends StatefulWidget {
+const double _iconPadding = 8.0;
+const double _iconSize = 16.0;
+const double _interRowPadding = 2.0;
+const double _subRowMinWidth = 300.0;
+
+class ViewerDetailOverlay extends StatefulWidget {
   final List<AvesEntry> entries;
   final int index;
-  final bool showPosition;
-  final EdgeInsets? viewInsets, viewPadding;
+  final bool hasCollection;
   final MultiPageController? multiPageController;
 
-  const ViewerBottomOverlay({
+  const ViewerDetailOverlay({
     Key? key,
     required this.entries,
     required this.index,
-    required this.showPosition,
-    this.viewInsets,
-    this.viewPadding,
+    required this.hasCollection,
     required this.multiPageController,
   }) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _ViewerBottomOverlayState();
+  State<ViewerDetailOverlay> createState() => _ViewerDetailOverlayState();
 }
 
-class _ViewerBottomOverlayState extends State<ViewerBottomOverlay> {
-  late Future<OverlayMetadata?> _detailLoader;
-  AvesEntry? _lastEntry;
-  OverlayMetadata? _lastDetails;
+class _ViewerDetailOverlayState extends State<ViewerDetailOverlay> {
+  List<AvesEntry> get entries => widget.entries;
 
   AvesEntry? get entry {
-    final entries = widget.entries;
     final index = widget.index;
     return index < entries.length ? entries[index] : null;
   }
 
-  MultiPageController? get multiPageController => widget.multiPageController;
+  late Future<OverlayMetadata?> _detailLoader;
+  AvesEntry? _lastEntry;
+  OverlayMetadata? _lastDetails;
 
   @override
   void initState() {
@@ -65,7 +61,7 @@ class _ViewerBottomOverlayState extends State<ViewerBottomOverlay> {
   }
 
   @override
-  void didUpdateWidget(covariant ViewerBottomOverlay oldWidget) {
+  void didUpdateWidget(covariant ViewerDetailOverlay oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (entry != _lastEntry) {
       _initDetailLoader();
@@ -79,63 +75,39 @@ class _ViewerBottomOverlayState extends State<ViewerBottomOverlay> {
 
   @override
   Widget build(BuildContext context) {
-    final showOverlayInfo = settings.showOverlayInfo;
-    final hasEdgeContent = showOverlayInfo || multiPageController != null;
-    final blurred = settings.enableOverlayBlurEffect;
-    return BlurredRect(
-      enabled: hasEdgeContent && blurred,
-      child: Selector<MediaQueryData, Tuple3<double, EdgeInsets, EdgeInsets>>(
-        selector: (context, mq) => Tuple3(mq.size.width, mq.viewInsets, mq.viewPadding),
-        builder: (context, mq, child) {
-          final mqWidth = mq.item1;
-          final mqViewInsets = mq.item2;
-          final mqViewPadding = mq.item3;
+    return SafeArea(
+      top: false,
+      bottom: false,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final availableWidth = constraints.maxWidth;
 
-          final viewInsets = widget.viewInsets ?? mqViewInsets;
-          final viewPadding = widget.viewPadding ?? mqViewPadding;
-          final availableWidth = mqWidth - viewPadding.horizontal;
+          return FutureBuilder<OverlayMetadata?>(
+            future: _detailLoader,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done && !snapshot.hasError) {
+                _lastDetails = snapshot.data;
+                _lastEntry = entry;
+              }
+              if (_lastEntry == null) return const SizedBox();
+              final mainEntry = _lastEntry!;
 
-          return Selector<MediaQueryData, double>(
-            selector: (context, mq) => max(mq.effectiveBottomPadding, showOverlayInfo ? 0 : mq.systemGestureInsets.bottom),
-            builder: (context, mqPaddingBottom, child) {
-              return Container(
-                color: hasEdgeContent ? overlayBackgroundColor(blurred: blurred) : Colors.transparent,
-                padding: EdgeInsets.only(
-                  left: max(viewInsets.left, viewPadding.left),
-                  top: 0,
-                  right: max(viewInsets.right, viewPadding.right),
-                  bottom: mqPaddingBottom,
-                ),
-                child: child,
-              );
-            },
-            child: FutureBuilder<OverlayMetadata?>(
-              future: _detailLoader,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.done && !snapshot.hasError) {
-                  _lastDetails = snapshot.data;
-                  _lastEntry = entry;
-                }
-                if (_lastEntry == null) return const SizedBox();
-                final mainEntry = _lastEntry!;
+              final multiPageController = widget.multiPageController;
+              Widget _buildContent({AvesEntry? pageEntry}) => ViewerDetailOverlayContent(
+                    pageEntry: pageEntry ?? mainEntry,
+                    details: _lastDetails,
+                    position: widget.hasCollection ? '${widget.index + 1}/${entries.length}' : null,
+                    availableWidth: availableWidth,
+                    multiPageController: multiPageController,
+                  );
 
-                Widget _buildContent({AvesEntry? pageEntry}) => _BottomOverlayContent(
-                      mainEntry: mainEntry,
-                      pageEntry: pageEntry ?? mainEntry,
-                      details: _lastDetails,
-                      position: widget.showPosition ? '${widget.index + 1}/${widget.entries.length}' : null,
-                      availableWidth: availableWidth,
+              return multiPageController != null
+                  ? PageEntryBuilder(
                       multiPageController: multiPageController,
-                    );
-
-                return multiPageController != null
-                    ? PageEntryBuilder(
-                        multiPageController: multiPageController!,
-                        builder: (pageEntry) => _buildContent(pageEntry: pageEntry),
-                      )
-                    : _buildContent();
-              },
-            ),
+                      builder: (pageEntry) => _buildContent(pageEntry: pageEntry),
+                    )
+                  : _buildContent();
+            },
           );
         },
       ),
@@ -143,38 +115,31 @@ class _ViewerBottomOverlayState extends State<ViewerBottomOverlay> {
   }
 }
 
-const double _iconPadding = 8.0;
-const double _iconSize = 16.0;
-const double _interRowPadding = 2.0;
-const double _subRowMinWidth = 300.0;
-
-class _BottomOverlayContent extends AnimatedWidget {
-  final AvesEntry mainEntry, pageEntry;
+class ViewerDetailOverlayContent extends StatelessWidget {
+  final AvesEntry pageEntry;
   final OverlayMetadata? details;
   final String? position;
   final double availableWidth;
   final MultiPageController? multiPageController;
 
-  static const infoPadding = EdgeInsets.symmetric(vertical: 4, horizontal: 8);
+  static const padding = EdgeInsets.symmetric(vertical: 4, horizontal: 8);
 
-  _BottomOverlayContent({
+  const ViewerDetailOverlayContent({
     Key? key,
-    required this.mainEntry,
     required this.pageEntry,
-    this.details,
-    this.position,
+    required this.details,
+    required this.position,
     required this.availableWidth,
-    this.multiPageController,
-  }) : super(
-          key: key,
-          listenable: Listenable.merge([
-            mainEntry.metadataChangeNotifier,
-            pageEntry.metadataChangeNotifier,
-          ]),
-        );
+    required this.multiPageController,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final infoMaxWidth = availableWidth - padding.horizontal;
+    final positionTitle = _PositionTitleRow(entry: pageEntry, collectionPosition: position, multiPageController: multiPageController);
+    final hasShootingDetails = details != null && !details!.isEmpty && settings.showOverlayShootingDetails;
+    final animationDuration = context.select<DurationsData, Duration>((v) => v.viewerOverlayChangeAnimation);
+
     return DefaultTextStyle(
       style: Theme.of(context).textTheme.bodyText2!.copyWith(
             shadows: Constants.embossShadows,
@@ -182,81 +147,50 @@ class _BottomOverlayContent extends AnimatedWidget {
       softWrap: false,
       overflow: TextOverflow.fade,
       maxLines: 1,
-      child: SizedBox(
-        width: availableWidth,
+      child: Padding(
+        padding: padding,
         child: Selector<MediaQueryData, Orientation>(
           selector: (context, mq) => mq.orientation,
           builder: (context, orientation, child) {
-            Widget? infoColumn;
+            final twoColumns = orientation == Orientation.landscape && infoMaxWidth / 2 > _subRowMinWidth;
+            final subRowWidth = twoColumns ? min(_subRowMinWidth, infoMaxWidth / 2) : infoMaxWidth;
 
-            if (settings.showOverlayInfo) {
-              infoColumn = _buildInfoColumn(context, orientation);
-            }
-
-            if (mainEntry.isMultiPage && multiPageController != null) {
-              infoColumn = Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  MultiPageOverlay(
-                    controller: multiPageController!,
-                    availableWidth: availableWidth,
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (positionTitle.isNotEmpty) positionTitle,
+                if (twoColumns)
+                  Padding(
+                    padding: const EdgeInsets.only(top: _interRowPadding),
+                    child: Row(
+                      children: [
+                        SizedBox(
+                            width: subRowWidth,
+                            child: _DateRow(
+                              entry: pageEntry,
+                              multiPageController: multiPageController,
+                            )),
+                        _buildDuoShootingRow(subRowWidth, hasShootingDetails, animationDuration),
+                      ],
+                    ),
+                  )
+                else ...[
+                  Container(
+                    padding: const EdgeInsets.only(top: _interRowPadding),
+                    width: subRowWidth,
+                    child: _DateRow(
+                      entry: pageEntry,
+                      multiPageController: multiPageController,
+                    ),
                   ),
-                  if (infoColumn != null) infoColumn,
+                  _buildSoloShootingRow(subRowWidth, hasShootingDetails, animationDuration),
                 ],
-              );
-            }
-
-            return infoColumn ?? const SizedBox();
+                _buildSoloLocationRow(animationDuration),
+              ],
+            );
           },
         ),
-      ),
-    );
-  }
-
-  Widget _buildInfoColumn(BuildContext context, Orientation orientation) {
-    final infoMaxWidth = availableWidth - infoPadding.horizontal;
-    final twoColumns = orientation == Orientation.landscape && infoMaxWidth / 2 > _subRowMinWidth;
-    final subRowWidth = twoColumns ? min(_subRowMinWidth, infoMaxWidth / 2) : infoMaxWidth;
-    final positionTitle = _PositionTitleRow(entry: pageEntry, collectionPosition: position, multiPageController: multiPageController);
-    final hasShootingDetails = details != null && !details!.isEmpty && settings.showOverlayShootingDetails;
-    final animationDuration = context.select<DurationsData, Duration>((v) => v.viewerOverlayChangeAnimation);
-
-    return Padding(
-      padding: infoPadding,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (positionTitle.isNotEmpty) positionTitle,
-          _buildSoloLocationRow(animationDuration),
-          if (twoColumns)
-            Padding(
-              padding: const EdgeInsets.only(top: _interRowPadding),
-              child: Row(
-                children: [
-                  SizedBox(
-                      width: subRowWidth,
-                      child: _DateRow(
-                        entry: pageEntry,
-                        multiPageController: multiPageController,
-                      )),
-                  _buildDuoShootingRow(subRowWidth, hasShootingDetails, animationDuration),
-                ],
-              ),
-            )
-          else ...[
-            Container(
-              padding: const EdgeInsets.only(top: _interRowPadding),
-              width: subRowWidth,
-              child: _DateRow(
-                entry: pageEntry,
-                multiPageController: multiPageController,
-              ),
-            ),
-            _buildSoloShootingRow(subRowWidth, hasShootingDetails, animationDuration),
-          ],
-        ],
       ),
     );
   }
@@ -454,38 +388,6 @@ class _ShootingRow extends StatelessWidget {
         Expanded(child: Text(focalLengthText, strutStyle: Constants.overflowStrutStyle)),
         Expanded(child: Text(isoText, strutStyle: Constants.overflowStrutStyle)),
       ],
-    );
-  }
-}
-
-class ExtraBottomOverlay extends StatelessWidget {
-  final EdgeInsets? viewInsets, viewPadding;
-  final Widget child;
-
-  const ExtraBottomOverlay({
-    Key? key,
-    this.viewInsets,
-    this.viewPadding,
-    required this.child,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final mq = context.select<MediaQueryData, Tuple3<double, EdgeInsets, EdgeInsets>>((mq) => Tuple3(mq.size.width, mq.viewInsets, mq.viewPadding));
-    final mqWidth = mq.item1;
-    final mqViewInsets = mq.item2;
-    final mqViewPadding = mq.item3;
-
-    final viewInsets = this.viewInsets ?? mqViewInsets;
-    final viewPadding = this.viewPadding ?? mqViewPadding;
-    final safePadding = (viewInsets + viewPadding).copyWith(bottom: 8) + const EdgeInsets.symmetric(horizontal: 8.0);
-
-    return Padding(
-      padding: safePadding,
-      child: SizedBox(
-        width: mqWidth - safePadding.horizontal,
-        child: child,
-      ),
     );
   }
 }

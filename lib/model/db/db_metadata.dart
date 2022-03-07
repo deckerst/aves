@@ -30,7 +30,7 @@ abstract class MetadataDb {
 
   Future<void> updateEntry(int id, AvesEntry entry);
 
-  Future<Set<AvesEntry>> searchEntries(String query, {int? limit});
+  Future<Set<AvesEntry>> searchLiveEntries(String query, {int? limit});
 
   // date taken
 

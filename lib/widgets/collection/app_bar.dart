@@ -43,7 +43,7 @@ class CollectionAppBar extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _CollectionAppBarState createState() => _CollectionAppBarState();
+  State<CollectionAppBar> createState() => _CollectionAppBarState();
 }
 
 class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerProviderStateMixin {

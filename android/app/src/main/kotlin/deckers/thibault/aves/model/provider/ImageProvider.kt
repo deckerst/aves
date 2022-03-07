@@ -74,10 +74,6 @@ abstract class ImageProvider {
         throw UnsupportedOperationException("`scanPostMetadataEdit` is not supported by this image provider")
     }
 
-    open fun scanObsoletePath(context: Context, path: String, mimeType: String) {
-        throw UnsupportedOperationException("`scanObsoletePath` is not supported by this image provider")
-    }
-
     suspend fun exportMultiple(
         activity: Activity,
         imageExportMimeType: String,

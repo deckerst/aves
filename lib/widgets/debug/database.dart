@@ -14,7 +14,7 @@ class DebugAppDatabaseSection extends StatefulWidget {
   const DebugAppDatabaseSection({Key? key}) : super(key: key);
 
   @override
-  _DebugAppDatabaseSectionState createState() => _DebugAppDatabaseSectionState();
+  State<DebugAppDatabaseSection> createState() => _DebugAppDatabaseSectionState();
 }
 
 class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with AutomaticKeepAliveClientMixin {
