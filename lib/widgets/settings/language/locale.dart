@@ -32,6 +32,7 @@ class LocaleTile extends StatelessWidget {
           initialValue: settings.locale ?? _systemLocaleOption,
           options: _getLocaleOptions(context),
           title: context.l10n.settingsLanguage,
+          dense: true,
         ),
         onSelection: (v) => settings.locale = v == _systemLocaleOption ? null : v,
       ),
