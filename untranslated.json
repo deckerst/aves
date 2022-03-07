@@ -29,22 +29,5 @@
     "settingsVideoButtonsTitle",
     "settingsVideoGestureDoubleTapTogglePlay",
     "settingsVideoGestureSideDoubleTapSeek"
-  ],
-
-  "ru": [
-    "entryActionConvert",
-    "videoActionMute",
-    "videoActionUnmute",
-    "videoControlsPlay",
-    "videoControlsPlaySeek",
-    "videoControlsPlayOutside",
-    "videoControlsNone",
-    "settingsViewerShowOverlayThumbnails",
-    "settingsVideoControlsTile",
-    "settingsVideoControlsTitle",
-    "settingsVideoButtonsTile",
-    "settingsVideoButtonsTitle",
-    "settingsVideoGestureDoubleTapTogglePlay",
-    "settingsVideoGestureSideDoubleTapSeek"
   ]
 }

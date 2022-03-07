@@ -48,6 +48,7 @@
 
   "entryActionCopyToClipboard": "Скопировать в буфер обмена",
   "entryActionDelete": "Удалить",
+  "entryActionConvert": "Конвертировать",
   "entryActionExport": "Экспорт",
   "entryActionRename": "Переименовать",
   "entryActionRestore": "Восстановить",
@@ -67,6 +68,8 @@
   "entryActionRemoveFavourite": "Удалить из избранного",
 
   "videoActionCaptureFrame": "Сохранить кадр",
+  "videoActionMute": "Выключить звук",
+  "videoActionUnmute": "Включить звук",
   "videoActionPause": "Стоп",
   "videoActionPlay": "Играть",
   "videoActionReplay10": "Перемотка на 10 секунд назад",
@@ -110,6 +113,11 @@
   "videoLoopModeNever": "Никогда",
   "videoLoopModeShortOnly": "Только для коротких видео",
   "videoLoopModeAlways": "Всегда",
+
+  "videoControlsPlay": "Воспроизведение",
+  "videoControlsPlaySeek": "Воспроизведение и переход на позицию",
+  "videoControlsPlayOutside": "Открыть в другом видеоплеере",
+  "videoControlsNone": "Ничего",
 
   "mapStyleGoogleNormal": "Google Карты",
   "mapStyleGoogleHybrid": "Google Карты (Гибридный)",
@@ -430,6 +438,7 @@
   "settingsViewerShowInformation": "Показать информацию",
   "settingsViewerShowInformationSubtitle": "Показать название, дату, местоположение и т.д.",
   "settingsViewerShowShootingDetails": "Показать детали съёмки",
+  "settingsViewerShowOverlayThumbnails": "Показать эскизы",
   "settingsViewerEnableOverlayBlurEffect": "Наложение эффекта размытия",
 
   "settingsVideoPageTitle": "Настройки видео",
@@ -454,6 +463,13 @@
   "settingsSubtitleThemeTextAlignmentLeft": "По левой стороне",
   "settingsSubtitleThemeTextAlignmentCenter": "По центру",
   "settingsSubtitleThemeTextAlignmentRight": "По правой стороне",
+
+  "settingsVideoControlsTile": "Элементы управления",
+  "settingsVideoControlsTitle": "Элементы управления",
+  "settingsVideoButtonsTile": "Кнопки",
+  "settingsVideoButtonsTitle": "Кнопки",
+  "settingsVideoGestureDoubleTapTogglePlay": "Двойное нажатие для воспроизведения/паузы",
+  "settingsVideoGestureSideDoubleTapSeek": "Двойное нажатие на края экрана для перехода назад/вперёд",
 
   "settingsSectionPrivacy": "Конфиденциальность",
   "settingsAllowInstalledAppAccess": "Разрешить доступ к библиотеке приложения",
