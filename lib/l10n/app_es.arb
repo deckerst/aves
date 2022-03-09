@@ -68,6 +68,8 @@
   "entryActionRemoveFavourite": "Quitar de favoritos",
 
   "videoActionCaptureFrame": "Capturar fotograma",
+  "videoActionMute": "Silenciar",
+  "videoActionUnmute": "Dejar de silenciar",
   "videoActionPause": "Pausa",
   "videoActionPlay": "Reproducir",
   "videoActionReplay10": "Retroceder 10 segundos",
@@ -112,10 +114,10 @@
   "videoLoopModeShortOnly": "Sólo videos cortos",
   "videoLoopModeAlways": "Siempre",
 
+  "videoControlsNone": "Ninguno",
   "videoControlsPlay": "Reproducir",
   "videoControlsPlaySeek": "Reproducir y buscar",
   "videoControlsPlayOutside": "Reproducir externamente",
-  "videoControlsNone": "Ninguno",
 
   "mapStyleGoogleNormal": "Mapas de Google",
   "mapStyleGoogleHybrid": "Mapas de Google (Híbrido)",
@@ -264,7 +266,8 @@
   "aboutCredits": "Créditos",
   "aboutCreditsWorldAtlas1": "Esta aplicación usa un archivo TopoJSON de",
   "aboutCreditsWorldAtlas2": "bajo licencia ISC.",
-  "aboutCreditsTranslators": "Traductores",
+  "aboutCreditsTranslators": "Traductores:",
+  "aboutCreditsTranslatorLine": "{language}: {names}",
 
   "aboutLicenses": "Licencias de código abierto",
   "aboutLicensesBanner": "Esta aplicación usa los siguientes paquetes y librerías de código abierto.",
@@ -437,7 +440,7 @@
   "settingsViewerShowInformation": "Mostrar información",
   "settingsViewerShowInformationSubtitle": "Mostrar título, fecha, ubicación, etc.",
   "settingsViewerShowShootingDetails": "Mostrar detalles de toma",
-  "settingsViewerShowOverlayThumbnails": "Mostrar miniaturas",
+   "settingsViewerShowOverlayThumbnails": "Mostrar miniaturas",
   "settingsViewerEnableOverlayBlurEffect": "Efecto de difuminado",
 
   "settingsVideoPageTitle": "Ajustes de video",
@@ -447,6 +450,8 @@
   "settingsVideoEnableAutoPlay": "Reproducción automática",
   "settingsVideoLoopModeTile": "Modo bucle",
   "settingsVideoLoopModeTitle": "Modo bucle",
+  "settingsVideoQuickActionsTile": "Acciones rápidas para videos",
+  "settingsVideoQuickActionEditorTitle": "Acciones rápidas",
 
   "settingsSubtitleThemeTile": "Subtítulos",
   "settingsSubtitleThemeTitle": "Subtítulos",
