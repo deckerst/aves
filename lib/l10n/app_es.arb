@@ -68,6 +68,8 @@
   "entryActionRemoveFavourite": "Quitar de favoritos",
 
   "videoActionCaptureFrame": "Capturar fotograma",
+  "videoActionMute": "Silenciar",
+  "videoActionUnmute": "Dejar de silenciar",
   "videoActionPause": "Pausa",
   "videoActionPlay": "Reproducir",
   "videoActionReplay10": "Retroceder 10 segundos",
