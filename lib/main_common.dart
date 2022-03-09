@@ -30,8 +30,9 @@ void mainCommon(AppFlavor flavor) {
 
   // Errors during the widget build phase will show by default:
   // - in debug mode: error on red background
-  // - in release mode: plain grey background
+  // - in profile/release mode: plain grey background
   // This can be modified via `ErrorWidget.builder`
+  // ErrorWidget.builder = (details) => ErrorWidget(details.exception);
 
   runApp(AvesApp(flavor: flavor));
 }
