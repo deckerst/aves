@@ -114,10 +114,10 @@
   "videoLoopModeShortOnly": "Sólo videos cortos",
   "videoLoopModeAlways": "Siempre",
 
-  "videoControlsNone": "Ninguno",
   "videoControlsPlay": "Reproducir",
   "videoControlsPlaySeek": "Reproducir y buscar",
   "videoControlsPlayOutside": "Reproducir externamente",
+  "videoControlsNone": "Ninguno",
 
   "mapStyleGoogleNormal": "Mapas de Google",
   "mapStyleGoogleHybrid": "Mapas de Google (Híbrido)",
@@ -153,7 +153,6 @@
   "restrictedAccessDialogMessage": "Esta aplicación no tiene permiso para modificar archivos de {directory} en «{volume}».\n\nPor favor use un gestor de archivos o la aplicación de galería preinstalada para mover los elementos a otro directorio.",
   "notEnoughSpaceDialogTitle": "Espacio insuficiente",
   "notEnoughSpaceDialogMessage": "Esta operación necesita {neededSize} de espacio libre en «{volume}» para completarse, pero sólo hay {freeSize} disponible.",
-
   "missingSystemFilePickerDialogTitle": "Selector de archivos del sistema no disponible",
   "missingSystemFilePickerDialogMessage": "El selector de archivos del sistema no se encuentra disponible o fue deshabilitado. Por favor habilítelo e intente nuevamente.",
 
@@ -170,7 +169,6 @@
   "noMatchingAppDialogMessage": "No se encontraron aplicaciones para manejar esto.",
 
   "binEntriesConfirmationDialogMessage": "{count, plural, =1{¿Mover este elemento al cesto de basura?} other{¿Mover estos {count} elementos al cesto de basura?}}",
-
   "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{¿Está seguro de borrar este elemento?} other{¿Está seguro de querer borrar {count} elementos?}}",
 
   "videoResumeDialogMessage": "¿Desea reanudar la reproducción a las {time}?",
@@ -266,8 +264,7 @@
   "aboutCredits": "Créditos",
   "aboutCreditsWorldAtlas1": "Esta aplicación usa un archivo TopoJSON de",
   "aboutCreditsWorldAtlas2": "bajo licencia ISC.",
-  "aboutCreditsTranslators": "Traductores:",
-  "aboutCreditsTranslatorLine": "{language}: {names}",
+  "aboutCreditsTranslators": "Traductores",
 
   "aboutLicenses": "Licencias de código abierto",
   "aboutLicensesBanner": "Esta aplicación usa los siguientes paquetes y librerías de código abierto.",
@@ -440,7 +437,7 @@
   "settingsViewerShowInformation": "Mostrar información",
   "settingsViewerShowInformationSubtitle": "Mostrar título, fecha, ubicación, etc.",
   "settingsViewerShowShootingDetails": "Mostrar detalles de toma",
-   "settingsViewerShowOverlayThumbnails": "Mostrar miniaturas",
+  "settingsViewerShowOverlayThumbnails": "Mostrar miniaturas",
   "settingsViewerEnableOverlayBlurEffect": "Efecto de difuminado",
 
   "settingsVideoPageTitle": "Ajustes de video",
@@ -450,8 +447,6 @@
   "settingsVideoEnableAutoPlay": "Reproducción automática",
   "settingsVideoLoopModeTile": "Modo bucle",
   "settingsVideoLoopModeTitle": "Modo bucle",
-  "settingsVideoQuickActionsTile": "Acciones rápidas para videos",
-  "settingsVideoQuickActionEditorTitle": "Acciones rápidas",
 
   "settingsSubtitleThemeTile": "Subtítulos",
   "settingsSubtitleThemeTitle": "Subtítulos",
