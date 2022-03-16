@@ -1,4 +1,9 @@
+import 'package:aves/model/settings/enums/enums.dart';
+import 'package:aves/model/settings/settings.dart';
+import 'package:aves/widgets/common/fx/borders.dart';
+import 'package:aves/widgets/common/fx/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class AvesLogo extends StatelessWidget {
   final double size;
@@ -10,14 +15,32 @@ class AvesLogo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    Widget child = CustomPaint(
+      size: Size(size / 1.4, size / 1.4),
+      painter: AvesLogoPainter(),
+    );
+    if (context.select<Settings, bool>((v) => v.themeColorMode == AvesThemeColorMode.monochrome)) {
+      final tint = Color.lerp(theme.colorScheme.secondary, Colors.white, .5)!;
+      child = ColorFiltered(
+        colorFilter: ColorFilter.mode(tint, BlendMode.modulate),
+        child: ColorFiltered(
+          colorFilter: MatrixColorFilters.greyscale,
+          child: child,
+        ),
+      );
+    }
+
     return CircleAvatar(
-      backgroundColor: Colors.white,
+      backgroundColor: theme.dividerColor,
       radius: size / 2,
-      child: Padding(
-        padding: EdgeInsets.only(top: size / 15),
-        child: CustomPaint(
-          size: Size(size / 1.4, size / 1.4),
-          painter: AvesLogoPainter(),
+      child: CircleAvatar(
+        backgroundColor: Colors.white,
+        radius: size / 2 - AvesBorder.curvedBorderWidth,
+        child: Padding(
+          padding: EdgeInsets.only(top: size / 15),
+          child: child,
         ),
       ),
     );

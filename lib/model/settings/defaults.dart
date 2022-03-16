@@ -16,6 +16,8 @@ class SettingsDefaults {
   static const isInstalledAppAccessAllowed = false;
   static const isErrorReportingAllowed = false;
   static const tileLayout = TileLayout.grid;
+  static const themeBrightness = AvesThemeBrightness.system;
+  static const themeColorMode = AvesThemeColorMode.polychrome;
 
   // navigation
   static const mustBackTwiceToExit = true;

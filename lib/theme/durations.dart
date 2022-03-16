@@ -47,6 +47,7 @@ class Durations {
   static const tagEditorTransition = Duration(milliseconds: 200);
 
   // settings animations
+  static const themeColorModeAnimation = Duration(milliseconds: 400);
   static const quickActionListAnimation = Duration(milliseconds: 200);
   static const quickActionHighlightAnimation = Duration(milliseconds: 200);
 

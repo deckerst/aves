@@ -18,8 +18,13 @@ class MenuRow extends StatelessWidget {
       children: [
         if (icon != null)
           Padding(
-            padding: const EdgeInsetsDirectional.only(end: 8),
-            child: icon,
+            padding: const EdgeInsetsDirectional.only(end: 12),
+            child: IconTheme.merge(
+              data: IconThemeData(
+                color: ListTileTheme.of(context).iconColor,
+              ),
+              child: icon!,
+            ),
           ),
         Expanded(child: Text(text)),
       ],
@@ -110,6 +115,7 @@ class _PopupMenuItemExpansionPanelState<T> extends State<PopupMenuItemExpansionP
           ),
           isExpanded: _isExpanded,
           canTapOnHeader: true,
+          backgroundColor: Colors.transparent,
         ),
       ],
     );

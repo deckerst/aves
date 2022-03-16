@@ -35,7 +35,11 @@ class EntryViewerPage extends StatelessWidget {
             ),
           ),
         ),
-        backgroundColor: Navigator.canPop(context) ? Colors.transparent : Colors.black,
+        backgroundColor: Navigator.canPop(context)
+            ? Colors.transparent
+            : Theme.of(context).brightness == Brightness.dark
+                ? Colors.black
+                : Colors.white,
         resizeToAvoidBottomInset: false,
       ),
     );

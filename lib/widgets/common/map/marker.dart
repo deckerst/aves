@@ -14,11 +14,13 @@ class ImageMarker extends StatelessWidget {
   static const double outerBorderRadiusDim = 8;
   static const double outerBorderWidth = 1.5;
   static const double innerBorderWidth = 2;
-  static const outerBorderColor = Colors.white30;
-  static const innerBorderColor = Color(0xFF212121);
   static const outerBorderRadius = BorderRadius.all(Radius.circular(outerBorderRadiusDim));
   static const innerRadius = Radius.circular(outerBorderRadiusDim - outerBorderWidth);
   static const innerBorderRadius = BorderRadius.all(innerRadius);
+
+  static Color themedOuterBorderColor(bool isDark) => isDark ? Colors.white30 : Colors.black26;
+
+  static Color themedInnerBorderColor(bool isDark) => isDark ? const Color(0xFF212121) : Colors.white;
 
   const ImageMarker({
     Key? key,
@@ -46,7 +48,12 @@ class ImageMarker extends StatelessWidget {
       child: child,
     );
 
-    const outerDecoration = BoxDecoration(
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final outerBorderColor = themedOuterBorderColor(isDark);
+    final innerBorderColor = themedInnerBorderColor(isDark);
+
+    final outerDecoration = BoxDecoration(
       border: Border.fromBorderSide(BorderSide(
         color: outerBorderColor,
         width: outerBorderWidth,
@@ -54,7 +61,7 @@ class ImageMarker extends StatelessWidget {
       borderRadius: outerBorderRadius,
     );
 
-    const innerDecoration = BoxDecoration(
+    final innerDecoration = BoxDecoration(
       border: Border.fromBorderSide(BorderSide(
         color: innerBorderColor,
         width: innerBorderWidth,
@@ -72,7 +79,7 @@ class ImageMarker extends StatelessWidget {
     );
 
     if (count != null) {
-      const borderSide = BorderSide(
+      final borderSide = BorderSide(
         color: innerBorderColor,
         width: innerBorderWidth,
       );
@@ -82,28 +89,28 @@ class ImageMarker extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 2),
             decoration: ShapeDecoration(
-              color: Theme.of(context).colorScheme.secondary,
+              color: theme.colorScheme.secondary,
               shape: context.isRtl
-                  ? const CustomRoundedRectangleBorder(
+                  ? CustomRoundedRectangleBorder(
                       leftSide: borderSide,
                       rightSide: borderSide,
                       topSide: borderSide,
                       bottomSide: borderSide,
                       topRightCornerSide: borderSide,
                       bottomLeftCornerSide: borderSide,
-                      borderRadius: BorderRadius.only(
+                      borderRadius: const BorderRadius.only(
                         topRight: innerRadius,
                         bottomLeft: innerRadius,
                       ),
                     )
-                  : const CustomRoundedRectangleBorder(
+                  : CustomRoundedRectangleBorder(
                       leftSide: borderSide,
                       rightSide: borderSide,
                       topSide: borderSide,
                       bottomSide: borderSide,
                       topLeftCornerSide: borderSide,
                       bottomRightCornerSide: borderSide,
-                      borderRadius: BorderRadius.only(
+                      borderRadius: const BorderRadius.only(
                         topLeft: innerRadius,
                         bottomRight: innerRadius,
                       ),
@@ -111,7 +118,10 @@ class ImageMarker extends StatelessWidget {
             ),
             child: Text(
               '$count',
-              style: const TextStyle(fontSize: 12),
+              style: const TextStyle(
+                fontSize: 12,
+                color: Colors.white,
+              ),
             ),
           ),
         ],
@@ -190,17 +200,22 @@ class DotMarker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const outerDecoration = BoxDecoration(
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final outerBorderColor = ImageMarker.themedOuterBorderColor(isDark);
+    final innerBorderColor = ImageMarker.themedInnerBorderColor(isDark);
+
+    final outerDecoration = BoxDecoration(
       border: Border.fromBorderSide(BorderSide(
-        color: ImageMarker.outerBorderColor,
+        color: outerBorderColor,
         width: ImageMarker.outerBorderWidth,
       )),
       borderRadius: outerBorderRadius,
     );
 
-    const innerDecoration = BoxDecoration(
+    final innerDecoration = BoxDecoration(
       border: Border.fromBorderSide(BorderSide(
-        color: ImageMarker.innerBorderColor,
+        color: innerBorderColor,
         width: ImageMarker.innerBorderWidth,
       )),
       borderRadius: innerBorderRadius,
@@ -216,7 +231,7 @@ class DotMarker extends StatelessWidget {
           child: Container(
             width: diameter,
             height: diameter,
-            color: Theme.of(context).colorScheme.secondary,
+            color: theme.colorScheme.secondary,
           ),
         ),
       ),

@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/debouncer.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -109,16 +111,19 @@ class _SearchPageState extends State<SearchPage> {
     return Scaffold(
       appBar: AppBar(
         leading: widget.delegate.buildLeading(context),
-        title: TextField(
-          controller: widget.delegate.queryTextController,
-          focusNode: _focusNode,
-          style: theme.textTheme.headline6,
-          textInputAction: TextInputAction.search,
-          onSubmitted: (_) => widget.delegate.showResults(context),
-          decoration: InputDecoration(
-            border: InputBorder.none,
-            hintText: context.l10n.searchCollectionFieldHint,
-            hintStyle: theme.inputDecorationTheme.hintStyle,
+        title: DefaultTextStyle.merge(
+          style: const TextStyle(fontFeatures: [FontFeature.disable('smcp')]),
+          child: TextField(
+            controller: widget.delegate.queryTextController,
+            focusNode: _focusNode,
+            style: theme.textTheme.headline6,
+            textInputAction: TextInputAction.search,
+            onSubmitted: (_) => widget.delegate.showResults(context),
+            decoration: InputDecoration(
+              border: InputBorder.none,
+              hintText: context.l10n.searchCollectionFieldHint,
+              hintStyle: theme.inputDecorationTheme.hintStyle,
+            ),
           ),
         ),
         actions: widget.delegate.buildActions(context),

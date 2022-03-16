@@ -150,43 +150,38 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
             action = SnackBarAction(
               label: l10n.showButtonLabel,
               onPressed: () async {
-                late CollectionLens targetCollection;
+                final newUris = movedOps.map((v) => v.newFields['uri'] as String?).toSet();
+                bool highlightTest(AvesEntry entry) => newUris.contains(entry.uri);
 
-                final highlightInfo = context.read<HighlightInfo>();
                 final collection = context.read<CollectionLens?>();
-                if (collection != null) {
-                  targetCollection = collection;
-                }
                 if (collection == null || collection.filters.any((f) => f is AlbumFilter || f is TrashFilter)) {
-                  targetCollection = CollectionLens(
-                    source: source,
-                    filters: collection?.filters.where((f) => f != TrashFilter.instance).toSet(),
-                  );
+                  final targetFilters = collection?.filters.where((f) => f != TrashFilter.instance).toSet() ?? {};
                   // we could simply add the filter to the current collection
                   // but navigating makes the change less jarring
                   if (destinationAlbums.length == 1) {
                     final destinationAlbum = destinationAlbums.single;
-                    final filter = AlbumFilter(destinationAlbum, source.getAlbumDisplayName(context, destinationAlbum));
-                    targetCollection.addFilter(filter);
+                    targetFilters.removeWhere((f) => f is AlbumFilter);
+                    targetFilters.add(AlbumFilter(destinationAlbum, source.getAlbumDisplayName(context, destinationAlbum)));
                   }
                   unawaited(Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(
                       settings: const RouteSettings(name: CollectionPage.routeName),
                       builder: (context) => CollectionPage(
-                        collection: targetCollection,
+                        source: source,
+                        filters: targetFilters,
+                        highlightTest: highlightTest,
                       ),
                     ),
                     (route) => false,
                   ));
-                  final delayDuration = context.read<DurationsData>().staggeredAnimationPageTarget;
-                  await Future.delayed(delayDuration);
-                }
-                await Future.delayed(Durations.highlightScrollInitDelay);
-                final newUris = movedOps.map((v) => v.newFields['uri'] as String?).toSet();
-                final targetEntry = targetCollection.sortedEntries.firstWhereOrNull((entry) => newUris.contains(entry.uri));
-                if (targetEntry != null) {
-                  highlightInfo.trackItem(targetEntry, highlightItem: targetEntry);
+                } else {
+                  // track in current page, without navigation
+                  await Future.delayed(Durations.highlightScrollInitDelay);
+                  final targetEntry = collection.sortedEntries.firstWhereOrNull(highlightTest);
+                  if (targetEntry != null) {
+                    context.read<HighlightInfo>().trackItem(targetEntry, highlightItem: targetEntry);
+                  }
                 }
               },
             );

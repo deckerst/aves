@@ -1,3 +1,4 @@
+import 'package:aves/widgets/common/fx/borders.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -18,9 +19,10 @@ class MarkdownContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 8),
-      decoration: const BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(16)),
-        color: Colors.white10,
+      decoration: BoxDecoration(
+        color: Theme.of(context).canvasColor,
+        border: Border.all(color: Theme.of(context).dividerColor, width: AvesBorder.curvedBorderWidth),
+        borderRadius: const BorderRadius.all(Radius.circular(16)),
       ),
       constraints: const BoxConstraints(maxWidth: maxWidth),
       child: ClipRRect(

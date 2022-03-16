@@ -5,6 +5,7 @@ import 'package:aves/model/metadata/fields.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/format.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/theme/themes.dart';
 import 'package:aves/widgets/common/basic/wheel.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
@@ -32,11 +33,6 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
   late ValueNotifier<String> _shiftSign;
   bool _showOptions = false;
   final Set<MetadataField> _fields = {...DateModifier.writableDateFields};
-
-  // use a different shade to avoid having the same background
-  // on the dialog (using the theme `dialogBackgroundColor`)
-  // and on the dropdown (using the theme `canvasColor`)
-  static final dropdownColor = Colors.grey.shade800;
 
   @override
   void initState() {
@@ -81,7 +77,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
                   value: _action,
                   onChanged: (v) => setState(() => _action = v!),
                   isExpanded: true,
-                  dropdownColor: dropdownColor,
+                  dropdownColor: Themes.thirdLayerColor(context),
                 ),
               ),
               AnimatedSwitcher(
@@ -169,7 +165,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
         value: _copyFieldSource,
         onChanged: (v) => setState(() => _copyFieldSource = v!),
         isExpanded: true,
-        dropdownColor: dropdownColor,
+        dropdownColor: Themes.thirdLayerColor(context),
       ),
     );
   }

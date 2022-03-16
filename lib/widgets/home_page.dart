@@ -252,10 +252,8 @@ class _HomePageState extends State<HomePage> {
         return DirectMaterialPageRoute(
           settings: const RouteSettings(name: CollectionPage.routeName),
           builder: (_) => CollectionPage(
-            collection: CollectionLens(
-              source: source,
-              filters: filters,
-            ),
+            source: source,
+            filters: filters,
           ),
         );
     }

@@ -6,6 +6,7 @@ import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/basic/menu.dart';
@@ -46,7 +47,6 @@ class AvesFilterChip extends StatefulWidget {
   final FilterCallback? onTap;
   final OffsetFilterCallback? onLongPress;
 
-  static const Color defaultOutlineColor = Colors.white;
   static const double defaultRadius = 32;
   static const double outlineWidth = 2;
   static const double minChipHeight = kMinInteractiveDimension;
@@ -156,7 +156,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
     // the existing widget FutureBuilder cycles again from the start, with a frame in `waiting` state and no data.
     // So we save the result of the Future to a local variable because of this specific case.
     _colorFuture = filter.color(context);
-    _outlineColor = AvesFilterChip.defaultOutlineColor;
+    _outlineColor = context.read<AvesColorsData>().neutral;
   }
 
   @override
@@ -270,7 +270,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
                   return DecoratedBox(
                     decoration: BoxDecoration(
                       border: Border.fromBorderSide(BorderSide(
-                        color: widget.useFilterColor ? _outlineColor : AvesFilterChip.defaultOutlineColor,
+                        color: widget.useFilterColor ? _outlineColor : context.select<AvesColorsData, Color>((v) => v.neutral),
                         width: AvesFilterChip.outlineWidth,
                       )),
                       borderRadius: borderRadius,

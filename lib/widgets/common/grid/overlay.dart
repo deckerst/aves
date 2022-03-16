@@ -44,13 +44,13 @@ class GridItemSelectionOverlay<T> extends StatelessWidget {
                 child: child,
               );
               child = AnimatedContainer(
-                duration: duration,
                 alignment: AlignmentDirectional.topEnd,
                 padding: padding,
                 decoration: BoxDecoration(
                   color: isSelected ? Colors.black54 : Colors.transparent,
                   borderRadius: borderRadius,
                 ),
+                duration: duration,
                 child: child,
               );
               return child;

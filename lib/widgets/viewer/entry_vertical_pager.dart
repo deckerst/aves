@@ -39,7 +39,7 @@ class ViewerVerticalPageView extends StatefulWidget {
 }
 
 class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
-  final ValueNotifier<Color> _backgroundColorNotifier = ValueNotifier(Colors.black);
+  final ValueNotifier<double> _backgroundOpacityNotifier = ValueNotifier(1);
   final ValueNotifier<bool> _isVerticallyScrollingNotifier = ValueNotifier(false);
   Timer? _verticalScrollMonitoringTimer;
   AvesEntry? _oldEntry;
@@ -122,12 +122,15 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
       imagePage,
       infoPage,
     ];
-    return ValueListenableBuilder<Color>(
-      valueListenable: _backgroundColorNotifier,
-      builder: (context, backgroundColor, child) => Container(
-        color: backgroundColor,
-        child: child,
-      ),
+    return ValueListenableBuilder<double>(
+      valueListenable: _backgroundOpacityNotifier,
+      builder: (context, backgroundOpacity, child) {
+        final background = Theme.of(context).brightness == Brightness.dark ? Colors.black : Colors.white;
+        return Container(
+          color: background.withOpacity(backgroundOpacity),
+          child: child,
+        );
+      },
       child: PageView(
         // key is expected by test driver
         key: const Key('vertical-pageview'),
@@ -196,7 +199,7 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
     final page = widget.verticalPager.page!;
 
     final opacity = min(1.0, page);
-    _backgroundColorNotifier.value = _backgroundColorNotifier.value.withOpacity(opacity * opacity);
+    _backgroundOpacityNotifier.value = opacity * opacity;
 
     if (page <= 1 && settings.viewerMaxBrightness) {
       _systemBrightness?.then((system) {

@@ -1,7 +1,29 @@
 {
+  "de": [
+    "themeBrightnessLight",
+    "themeBrightnessDark",
+    "themeBrightnessBlack",
+    "settingsSectionDisplay",
+    "settingsThemeBrightness",
+    "settingsThemeColorful"
+  ],
+
   "es": [
-    "videoActionMute",
-    "videoActionUnmute"
+    "themeBrightnessLight",
+    "themeBrightnessDark",
+    "themeBrightnessBlack",
+    "settingsSectionDisplay",
+    "settingsThemeBrightness",
+    "settingsThemeColorful"
+  ],
+
+  "fr": [
+    "themeBrightnessLight",
+    "themeBrightnessDark",
+    "themeBrightnessBlack",
+    "settingsSectionDisplay",
+    "settingsThemeBrightness",
+    "settingsThemeColorful"
   ],
 
   "id": [
@@ -11,12 +33,54 @@
     "videoControlsPlaySeek",
     "videoControlsPlayOutside",
     "videoControlsNone",
+    "themeBrightnessLight",
+    "themeBrightnessDark",
+    "themeBrightnessBlack",
     "settingsViewerShowOverlayThumbnails",
     "settingsVideoControlsTile",
     "settingsVideoControlsTitle",
     "settingsVideoButtonsTile",
     "settingsVideoButtonsTitle",
     "settingsVideoGestureDoubleTapTogglePlay",
-    "settingsVideoGestureSideDoubleTapSeek"
+    "settingsVideoGestureSideDoubleTapSeek",
+    "settingsSectionDisplay",
+    "settingsThemeBrightness",
+    "settingsThemeColorful"
+  ],
+
+  "ja": [
+    "themeBrightnessLight",
+    "themeBrightnessDark",
+    "themeBrightnessBlack",
+    "settingsSectionDisplay",
+    "settingsThemeBrightness",
+    "settingsThemeColorful"
+  ],
+
+  "ko": [
+    "themeBrightnessLight",
+    "themeBrightnessDark",
+    "themeBrightnessBlack",
+    "settingsSectionDisplay",
+    "settingsThemeBrightness",
+    "settingsThemeColorful"
+  ],
+
+  "pt": [
+    "themeBrightnessLight",
+    "themeBrightnessDark",
+    "themeBrightnessBlack",
+    "settingsSectionDisplay",
+    "settingsThemeBrightness",
+    "settingsThemeColorful"
+  ],
+
+  "ru": [
+    "themeBrightnessLight",
+    "themeBrightnessDark",
+    "themeBrightnessBlack",
+    "settingsSectionDisplay",
+    "settingsThemeBrightness",
+    "settingsThemeColorful"
   ]
 }

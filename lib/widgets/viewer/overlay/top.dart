@@ -1,9 +1,9 @@
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/theme/themes.dart';
 import 'package:aves/widgets/common/fx/blurred.dart';
 import 'package:aves/widgets/viewer/multipage/conductor.dart';
 import 'package:aves/widgets/viewer/multipage/controller.dart';
-import 'package:aves/widgets/viewer/overlay/common.dart';
 import 'package:aves/widgets/viewer/overlay/details.dart';
 import 'package:aves/widgets/viewer/overlay/minimap.dart';
 import 'package:aves/widgets/viewer/page_entry_builder.dart';
@@ -74,7 +74,7 @@ class ViewerTopOverlay extends StatelessWidget {
           BlurredRect(
             enabled: blurred,
             child: Container(
-              color: overlayBackgroundColor(blurred: blurred),
+              color: Themes.overlayBackgroundColor(brightness: Theme.of(context).brightness, blurred: blurred),
               child: SafeArea(
                 minimum: EdgeInsets.only(top: (viewInsets?.top ?? 0) + (viewPadding?.top ?? 0)),
                 bottom: false,

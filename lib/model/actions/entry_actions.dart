@@ -177,7 +177,8 @@ extension ExtraEntryAction on EntryAction {
     switch (this) {
       case EntryAction.debug:
         return ShaderMask(
-          shaderCallback: AColors.debugGradient.createShader,
+          shaderCallback: AvesColorsData.debugGradient.createShader,
+          blendMode: BlendMode.srcIn,
           child: child,
         );
       default:

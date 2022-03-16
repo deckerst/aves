@@ -1,10 +1,11 @@
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
 
 class QueryFilter extends CollectionFilter {
   static const type = 'query';
@@ -67,7 +68,14 @@ class QueryFilter extends CollectionFilter {
   Widget iconBuilder(BuildContext context, double size, {bool showGenericIcon = true}) => Icon(AIcons.text, size: size);
 
   @override
-  Future<Color> color(BuildContext context) => colorful ? super.color(context) : SynchronousFuture(AvesFilterChip.defaultOutlineColor);
+  Future<Color> color(BuildContext context) {
+    if (colorful) {
+      return super.color(context);
+    }
+
+    final colors = context.watch<AvesColorsData>();
+    return SynchronousFuture(colors.neutral);
+  }
 
   @override
   String get category => type;

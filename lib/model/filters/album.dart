@@ -1,4 +1,3 @@
-import 'package:aves/image_providers/app_icon_image_provider.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/colors.dart';
@@ -7,12 +6,10 @@ import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/common/identity/aves_icons.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import 'package:palette_generator/palette_generator.dart';
+import 'package:provider/provider.dart';
 
 class AlbumFilter extends CollectionFilter {
   static const type = 'album';
-
-  static final Map<String, Color> _appColors = {};
 
   final String album;
   final String? displayName;
@@ -56,6 +53,7 @@ class AlbumFilter extends CollectionFilter {
 
   @override
   Future<Color> color(BuildContext context) {
+    final colors = context.watch<AvesColorsData>();
     // do not use async/await and rely on `SynchronousFuture`
     // to prevent rebuilding of the `FutureBuilder` listening on this future
     final albumType = androidFileUtils.getAlbumType(album);
@@ -63,31 +61,19 @@ class AlbumFilter extends CollectionFilter {
       case AlbumType.regular:
         break;
       case AlbumType.app:
-        if (_appColors.containsKey(album)) return SynchronousFuture(_appColors[album]!);
-
-        final packageName = androidFileUtils.getAlbumAppPackageName(album);
-        if (packageName != null) {
-          return PaletteGenerator.fromImageProvider(
-            AppIconImage(packageName: packageName, size: 24),
-          ).then((palette) async {
-            // `dominantColor` is most representative but can have low contrast with a dark background
-            // `vibrantColor` is usually representative and has good contrast with a dark background
-            final color = palette.vibrantColor?.color ?? (await super.color(context));
-            _appColors[album] = color;
-            return color;
-          });
-        }
+        final appColor = colors.appColor(album);
+        if (appColor != null) return appColor;
         break;
       case AlbumType.camera:
-        return SynchronousFuture(AColors.albumCamera);
+        return SynchronousFuture(colors.albumCamera);
       case AlbumType.download:
-        return SynchronousFuture(AColors.albumDownload);
+        return SynchronousFuture(colors.albumDownload);
       case AlbumType.screenRecordings:
-        return SynchronousFuture(AColors.albumScreenRecordings);
+        return SynchronousFuture(colors.albumScreenRecordings);
       case AlbumType.screenshots:
-        return SynchronousFuture(AColors.albumScreenshots);
+        return SynchronousFuture(colors.albumScreenshots);
       case AlbumType.videoCaptures:
-        return SynchronousFuture(AColors.albumVideoCaptures);
+        return SynchronousFuture(colors.albumVideoCaptures);
     }
     return super.color(context);
   }

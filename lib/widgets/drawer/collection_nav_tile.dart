@@ -65,10 +65,8 @@ class CollectionNavTile extends StatelessWidget {
       MaterialPageRoute(
         settings: const RouteSettings(name: CollectionPage.routeName),
         builder: (context) => CollectionPage(
-          collection: CollectionLens(
-            source: context.read<CollectionSource>(),
-            filters: {filter},
-          ),
+          source: context.read<CollectionSource>(),
+          filters: {filter},
         ),
       ),
       (route) => false,

@@ -1,4 +1,5 @@
 import 'package:aves/ref/brand_colors.dart';
+import 'package:aves/theme/colors.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/utils/string_utils.dart';
 import 'package:aves/utils/xmp_utils.dart';
@@ -19,6 +20,7 @@ import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 @immutable
 class XmpNamespace extends Equatable {
@@ -98,7 +100,10 @@ class XmpNamespace extends Equatable {
     'Iptc4xmpCore': 'IPTC Core',
     'Iptc4xmpExt': 'IPTC Extension',
     'lr': 'Lightroom',
-    'MicrosoftPhoto': 'Microsoft Photo',
+    'mediapro': 'MediaPro',
+    'MicrosoftPhoto': 'Microsoft Photo 1.0',
+    'MP1': 'Microsoft Photo 1.1',
+    'MP': 'Microsoft Photo 1.2',
     'mwg-rs': 'Regions',
     'nga': 'National Gallery of Art',
     'panorama': 'Panorama',
@@ -122,7 +127,7 @@ class XmpNamespace extends Equatable {
 
   Map<String, String> get buildProps => rawProps;
 
-  List<Widget> buildNamespaceSection() {
+  List<Widget> buildNamespaceSection(BuildContext context) {
     final props = buildProps.entries
         .map((kv) {
           final prop = XmpProp(kv.key, kv.value);
@@ -149,7 +154,7 @@ class XmpNamespace extends Equatable {
                 padding: const EdgeInsets.only(top: 8),
                 child: HighlightTitle(
                   title: displayTitle,
-                  color: BrandColors.get(displayTitle),
+                  color: context.select<AvesColorsData, Color?>((v) => v.fromBrandColor(BrandColors.get(displayTitle))),
                   selectable: true,
                 ),
               ),

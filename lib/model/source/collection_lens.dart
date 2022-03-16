@@ -325,4 +325,7 @@ class CollectionLens with ChangeNotifier {
     sections = Map.unmodifiable(Map.fromEntries(sections.entries.where((kv) => kv.value.isNotEmpty)));
     notifyListeners();
   }
+
+  @override
+  String toString() => '$runtimeType#${shortHash(this)}{id=$id, source=$source, filters=$filters, entryCount=$entryCount}';
 }

@@ -7,8 +7,8 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
-import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
 import 'package:aves/widgets/settings/common/tile_leading.dart';
+import 'package:aves/widgets/settings/common/tiles.dart';
 import 'package:aves/widgets/settings/language/locale.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -24,9 +24,6 @@ class LanguageSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final currentCoordinateFormat = context.select<Settings, CoordinateFormat>((s) => s.coordinateFormat);
-    final currentUnitSystem = context.select<Settings, UnitSystem>((s) => s.unitSystem);
-
     return AvesExpansionTile(
       // key is expected by test driver
       key: const Key('section-language'),
@@ -35,39 +32,29 @@ class LanguageSection extends StatelessWidget {
       value: 'language',
       leading: SettingsTileLeading(
         icon: AIcons.language,
-        color: AColors.language,
+        color: context.select<AvesColorsData, Color>((v) => v.language),
       ),
       title: l10n.settingsSectionLanguage,
       expandedNotifier: expandedNotifier,
       showHighlight: false,
       children: [
         const LocaleTile(),
-        ListTile(
-          title: Text(l10n.settingsCoordinateFormatTile),
-          subtitle: Text(currentCoordinateFormat.getName(context)),
-          onTap: () => showSelectionDialog<CoordinateFormat>(
-            context: context,
-            builder: (context) => AvesSelectionDialog<CoordinateFormat>(
-              initialValue: currentCoordinateFormat,
-              options: Map.fromEntries(CoordinateFormat.values.map((v) => MapEntry(v, v.getName(context)))),
-              optionSubtitleBuilder: (value) => value.format(l10n, Constants.pointNemo),
-              title: l10n.settingsCoordinateFormatTitle,
-            ),
-            onSelection: (v) => settings.coordinateFormat = v,
-          ),
+        SettingsSelectionListTile<CoordinateFormat>(
+          values: CoordinateFormat.values,
+          getName: (context, v) => v.getName(context),
+          selector: (context, s) => s.coordinateFormat,
+          onSelection: (v) => settings.coordinateFormat = v,
+          tileTitle: l10n.settingsCoordinateFormatTile,
+          dialogTitle: l10n.settingsCoordinateFormatTitle,
+          optionSubtitleBuilder: (value) => value.format(l10n, Constants.pointNemo),
         ),
-        ListTile(
-          title: Text(l10n.settingsUnitSystemTile),
-          subtitle: Text(currentUnitSystem.getName(context)),
-          onTap: () => showSelectionDialog<UnitSystem>(
-            context: context,
-            builder: (context) => AvesSelectionDialog<UnitSystem>(
-              initialValue: currentUnitSystem,
-              options: Map.fromEntries(UnitSystem.values.map((v) => MapEntry(v, v.getName(context)))),
-              title: l10n.settingsUnitSystemTitle,
-            ),
-            onSelection: (v) => settings.unitSystem = v,
-          ),
+        SettingsSelectionListTile<UnitSystem>(
+          values: UnitSystem.values,
+          getName: (context, v) => v.getName(context),
+          selector: (context, s) => s.unitSystem,
+          onSelection: (v) => settings.unitSystem = v,
+          tileTitle: l10n.settingsUnitSystemTile,
+          dialogTitle: l10n.settingsUnitSystemTitle,
         ),
       ],
     );

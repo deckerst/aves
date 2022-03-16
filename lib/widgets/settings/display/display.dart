@@ -1,20 +1,19 @@
-import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/enums/enums.dart';
+import 'package:aves/model/settings/enums/theme_brightness.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
-import 'package:aves/widgets/settings/accessibility/time_to_take_action.dart';
 import 'package:aves/widgets/settings/common/tile_leading.dart';
 import 'package:aves/widgets/settings/common/tiles.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class AccessibilitySection extends StatelessWidget {
+class DisplaySection extends StatelessWidget {
   final ValueNotifier<String?> expandedNotifier;
 
-  const AccessibilitySection({
+  const DisplaySection({
     Key? key,
     required this.expandedNotifier,
   }) : super(key: key);
@@ -23,22 +22,26 @@ class AccessibilitySection extends StatelessWidget {
   Widget build(BuildContext context) {
     return AvesExpansionTile(
       leading: SettingsTileLeading(
-        icon: AIcons.accessibility,
-        color: context.select<AvesColorsData, Color>((v) => v.accessibility),
+        icon: AIcons.display,
+        color: context.select<AvesColorsData, Color>((v) => v.display),
       ),
-      title: context.l10n.settingsSectionAccessibility,
+      title: context.l10n.settingsSectionDisplay,
       expandedNotifier: expandedNotifier,
       showHighlight: false,
       children: [
-        SettingsSelectionListTile<AccessibilityAnimations>(
-          values: AccessibilityAnimations.values,
+        SettingsSelectionListTile<AvesThemeBrightness>(
+          values: AvesThemeBrightness.values,
           getName: (context, v) => v.getName(context),
-          selector: (context, s) => s.accessibilityAnimations,
-          onSelection: (v) => settings.accessibilityAnimations = v,
-          tileTitle: context.l10n.settingsRemoveAnimationsTile,
-          dialogTitle: context.l10n.settingsRemoveAnimationsTitle,
+          selector: (context, s) => s.themeBrightness,
+          onSelection: (v) => settings.themeBrightness = v,
+          tileTitle: context.l10n.settingsThemeBrightness,
+          dialogTitle: context.l10n.settingsThemeBrightness,
         ),
-        const TimeToTakeActionTile(),
+        SettingsSwitchListTile(
+          selector: (context, s) => s.themeColorMode == AvesThemeColorMode.polychrome,
+          onChanged: (v) => settings.themeColorMode = v ? AvesThemeColorMode.polychrome : AvesThemeColorMode.monochrome,
+          title: context.l10n.settingsThemeColorful,
+        ),
       ],
     );
   }

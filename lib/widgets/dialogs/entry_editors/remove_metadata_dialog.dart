@@ -1,7 +1,9 @@
 import 'package:aves/model/metadata/enums.dart';
+import 'package:aves/model/settings/enums/enums.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/ref/brand_colors.dart';
+import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/durations.dart';
-import 'package:aves/utils/color_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/highlight_decoration.dart';
 import 'package:aves/widgets/common/identity/highlight_title.dart';
@@ -97,6 +99,22 @@ class _RemoveEntryMetadataDialogState extends State<RemoveEntryMetadataDialog> {
 
   Widget _toTile(MetadataType type) {
     final text = type.getText();
+    Widget child = Text(
+      text,
+      style: TextStyle(
+        shadows: Theme.of(context).brightness == Brightness.dark ? HighlightTitle.shadows : null,
+      ),
+    );
+    if (context.select<Settings, bool>((v) => v.themeColorMode == AvesThemeColorMode.polychrome)) {
+      final colors = context.watch<AvesColorsData>();
+      child = DecoratedBox(
+        decoration: HighlightDecoration(
+          color: colors.fromBrandColor(BrandColors.get(text)) ?? colors.fromString(text),
+        ),
+        child: child,
+      );
+    }
+
     return SwitchListTile(
       value: _types.contains(type),
       onChanged: (selected) {
@@ -106,17 +124,7 @@ class _RemoveEntryMetadataDialogState extends State<RemoveEntryMetadataDialog> {
       },
       title: Align(
         alignment: Alignment.centerLeft,
-        child: DecoratedBox(
-          decoration: HighlightDecoration(
-            color: BrandColors.get(text) ?? stringToColor(text),
-          ),
-          child: Text(
-            text,
-            style: const TextStyle(
-              shadows: HighlightTitle.shadows,
-            ),
-          ),
-        ),
+        child: child,
       ),
     );
   }

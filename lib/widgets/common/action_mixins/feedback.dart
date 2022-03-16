@@ -171,8 +171,8 @@ class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerPr
                 Container(
                   width: diameter + 2,
                   height: diameter + 2,
-                  decoration: const BoxDecoration(
-                    color: Color(0xBB000000),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).brightness == Brightness.dark ? const Color(0xBB000000) : const Color(0xEEFFFFFF),
                     shape: BoxShape.circle,
                   ),
                 ),
@@ -190,7 +190,7 @@ class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerPr
                   percent: percent,
                   lineWidth: strokeWidth,
                   radius: diameter / 2,
-                  backgroundColor: Colors.white24,
+                  backgroundColor: Theme.of(context).colorScheme.onSurface.withOpacity(.2),
                   progressColor: progressColor,
                   animation: animate,
                   center: Text(
@@ -270,6 +270,8 @@ class _FeedbackMessageState extends State<_FeedbackMessage> {
   Widget build(BuildContext context) {
     final text = Text(widget.message);
     final duration = widget.duration;
+    final theme = Theme.of(context);
+    final contentTextStyle = theme.snackBarTheme.contentTextStyle ?? ThemeData(brightness: theme.brightness).textTheme.subtitle1;
     return duration == null
         ? text
         : Row(
@@ -286,7 +288,10 @@ class _FeedbackMessageState extends State<_FeedbackMessage> {
                 progressColor: Colors.grey,
                 animation: true,
                 animationDuration: duration.inMilliseconds,
-                center: Text('$_remainingSecs'),
+                center: Text(
+                  '$_remainingSecs',
+                  style: contentTextStyle,
+                ),
                 animateFromLastPercent: true,
                 reverse: true,
               ),

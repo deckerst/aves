@@ -1,4 +1,6 @@
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/settings/enums/enums.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
@@ -49,6 +51,8 @@ class FilterTable<T extends Comparable> extends StatelessWidget {
         builder: (context, constraints) {
           final showPercentIndicator = constraints.maxWidth - (chipWidth + countWidth) > percentIndicatorMinWidth;
           final displayedEntries = maxRowCount != null ? sortedEntries.take(maxRowCount!) : sortedEntries;
+          final theme = Theme.of(context);
+          final isMonochrome = settings.themeColorMode == AvesThemeColorMode.monochrome;
           return Table(
             children: displayedEntries.map((kv) {
               final filter = filterBuilder(kv.key);
@@ -81,14 +85,16 @@ class FilterTable<T extends Comparable> extends StatelessWidget {
                             return LinearPercentIndicator(
                               percent: percent,
                               lineHeight: lineHeight,
-                              backgroundColor: Colors.white24,
-                              progressColor: color,
+                              backgroundColor: theme.colorScheme.onPrimary.withOpacity(.1),
+                              progressColor: isMonochrome ? theme.colorScheme.secondary : color,
                               animation: true,
                               isRTL: isRtl,
                               barRadius: barRadius,
                               center: Text(
                                 intl.NumberFormat.percentPattern().format(percent),
-                                style: const TextStyle(shadows: Constants.embossShadows),
+                                style: TextStyle(
+                                  shadows: theme.brightness == Brightness.dark ? Constants.embossShadows : null,
+                                ),
                               ),
                               padding: EdgeInsets.zero,
                             );
@@ -98,7 +104,9 @@ class FilterTable<T extends Comparable> extends StatelessWidget {
                     ),
                   Text(
                     '$count',
-                    style: const TextStyle(color: Colors.white70),
+                    style: TextStyle(
+                      color: theme.textTheme.caption!.color,
+                    ),
                     textAlign: TextAlign.end,
                   ),
                 ],

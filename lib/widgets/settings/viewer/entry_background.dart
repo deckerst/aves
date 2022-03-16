@@ -49,7 +49,7 @@ class _EntryBackgroundSelectorState extends State<EntryBackgroundSelector> {
           width: radius * 2,
           decoration: BoxDecoration(
             color: selected.isColor ? selected.color : null,
-            border: AvesBorder.border,
+            border: AvesBorder.border(context),
             shape: BoxShape.circle,
           ),
           child: selected == EntryBackground.checkered

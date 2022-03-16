@@ -14,6 +14,7 @@ class AIcons {
   static const IconData checked = Icons.done_outlined;
   static const IconData date = Icons.calendar_today_outlined;
   static const IconData disc = Icons.fiber_manual_record;
+  static const IconData display = Icons.light_mode_outlined;
   static const IconData error = Icons.error_outline;
   static const IconData folder = Icons.folder_outlined;
   static const IconData grid = Icons.grid_on_outlined;

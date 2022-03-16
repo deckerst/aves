@@ -20,25 +20,20 @@ class AlbumSectionHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget? albumIcon;
-    if (directory != null) {
-      albumIcon = IconUtils.getAlbumIcon(context: context, albumPath: directory!);
+    final _directory = directory;
+    if (_directory != null) {
+      albumIcon = IconUtils.getAlbumIcon(context: context, albumPath: _directory);
       if (albumIcon != null) {
         albumIcon = RepaintBoundary(
-          child: Material(
-            type: MaterialType.circle,
-            elevation: 3,
-            color: Colors.transparent,
-            shadowColor: Colors.black,
-            child: albumIcon,
-          ),
+          child: albumIcon,
         );
       }
     }
     return SectionHeader<AvesEntry>(
-      sectionKey: EntryAlbumSectionKey(directory),
+      sectionKey: EntryAlbumSectionKey(_directory),
       leading: albumIcon,
       title: albumName ?? context.l10n.sectionUnknown,
-      trailing: directory != null && androidFileUtils.isOnRemovableStorage(directory!)
+      trailing: _directory != null && androidFileUtils.isOnRemovableStorage(_directory)
           ? const Icon(
               AIcons.removableStorage,
               size: 16,

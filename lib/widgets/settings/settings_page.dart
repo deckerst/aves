@@ -14,6 +14,7 @@ import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/settings/accessibility/accessibility.dart';
 import 'package:aves/widgets/settings/app_export/items.dart';
 import 'package:aves/widgets/settings/app_export/selection_dialog.dart';
+import 'package:aves/widgets/settings/display/display.dart';
 import 'package:aves/widgets/settings/language/language.dart';
 import 'package:aves/widgets/settings/navigation/navigation.dart';
 import 'package:aves/widgets/settings/privacy/privacy.dart';
@@ -98,6 +99,7 @@ class _SettingsPageState extends State<SettingsPage> with FeedbackMixin {
                     VideoSection(expandedNotifier: _expandedNotifier),
                     PrivacySection(expandedNotifier: _expandedNotifier),
                     AccessibilitySection(expandedNotifier: _expandedNotifier),
+                    DisplaySection(expandedNotifier: _expandedNotifier),
                     LanguageSection(expandedNotifier: _expandedNotifier),
                   ],
                 ),

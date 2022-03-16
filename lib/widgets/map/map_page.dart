@@ -382,10 +382,8 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
         settings: const RouteSettings(name: CollectionPage.routeName),
         builder: (context) {
           return CollectionPage(
-            collection: CollectionLens(
-              source: openingCollection.source,
-              filters: openingCollection.filters,
-            )..addFilter(filter),
+            source: openingCollection.source,
+            filters: {...openingCollection.filters, filter},
           );
         },
       ),

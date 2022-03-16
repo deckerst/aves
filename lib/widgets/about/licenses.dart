@@ -1,5 +1,6 @@
 import 'package:aves/app_flavor.dart';
 import 'package:aves/ref/brand_colors.dart';
+import 'package:aves/theme/colors.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/basic/link_chip.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -40,6 +41,7 @@ class _LicensesState extends State<Licenses> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.watch<AvesColorsData>();
     return SliverPadding(
       padding: const EdgeInsets.symmetric(horizontal: 8),
       sliver: SliverList(
@@ -49,25 +51,25 @@ class _LicensesState extends State<Licenses> {
             const SizedBox(height: 16),
             AvesExpansionTile(
               title: context.l10n.aboutLicensesAndroidLibraries,
-              color: BrandColors.android,
+              highlightColor: colors.fromBrandColor(BrandColors.android),
               expandedNotifier: _expandedNotifier,
               children: _platform.map((package) => LicenseRow(package: package)).toList(),
             ),
             AvesExpansionTile(
               title: context.l10n.aboutLicensesFlutterPlugins,
-              color: BrandColors.flutter,
+              highlightColor: colors.fromBrandColor(BrandColors.flutter),
               expandedNotifier: _expandedNotifier,
               children: _flutterPlugins.map((package) => LicenseRow(package: package)).toList(),
             ),
             AvesExpansionTile(
               title: context.l10n.aboutLicensesFlutterPackages,
-              color: BrandColors.flutter,
+              highlightColor: colors.fromBrandColor(BrandColors.flutter),
               expandedNotifier: _expandedNotifier,
               children: _flutterPackages.map((package) => LicenseRow(package: package)).toList(),
             ),
             AvesExpansionTile(
               title: context.l10n.aboutLicensesDartPackages,
-              color: BrandColors.flutter,
+              highlightColor: colors.fromBrandColor(BrandColors.flutter),
               expandedNotifier: _expandedNotifier,
               children: _dartPackages.map((package) => LicenseRow(package: package)).toList(),
             ),

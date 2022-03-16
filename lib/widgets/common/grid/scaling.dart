@@ -245,6 +245,10 @@ class _ScaleOverlayState extends State<_ScaleOverlay> {
 
   double get gridWidth => widget.viewportWidth;
 
+  // `Color(0x00FFFFFF)` is different from `Color(0x00000000)` (or `Colors.transparent`)
+  // when used in gradients or lerping to it
+  static const transparentWhite = Color(0x00FFFFFF);
+
   @override
   void initState() {
     super.initState();
@@ -309,24 +313,35 @@ class _ScaleOverlayState extends State<_ScaleOverlay> {
         break;
     }
 
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return _init
         ? BoxDecoration(
             gradient: RadialGradient(
               center: FractionalOffset.fromOffsetAndSize(gradientCenter, context.select<MediaQueryData, Size>((mq) => mq.size)),
               radius: 1,
-              colors: const [
-                Colors.black,
-                Colors.black54,
-              ],
+              colors: isDark
+                  ? const [
+                      Colors.black,
+                      Colors.black54,
+                    ]
+                  : const [
+                      Colors.white,
+                      Colors.white38,
+                    ],
             ),
           )
-        : const BoxDecoration(
+        : BoxDecoration(
             // provide dummy gradient to lerp to the other one during animation
             gradient: RadialGradient(
-              colors: [
-                Colors.transparent,
-                Colors.transparent,
-              ],
+              colors: isDark
+                  ? const [
+                      Colors.transparent,
+                      Colors.transparent,
+                    ]
+                  : const [
+                      transparentWhite,
+                      transparentWhite,
+                    ],
             ),
           );
   }
