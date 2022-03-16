@@ -414,10 +414,8 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
         settings: const RouteSettings(name: CollectionPage.routeName),
         builder: (context) {
           return CollectionPage(
-            collection: CollectionLens(
-              source: baseCollection.source,
-              filters: baseCollection.filters,
-            )..addFilter(filter),
+            source: baseCollection.source,
+            filters: {...baseCollection.filters, filter},
           );
         },
       ),

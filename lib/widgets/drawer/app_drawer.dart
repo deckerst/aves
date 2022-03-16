@@ -121,6 +121,7 @@ class AppDrawer extends StatelessWidget {
                   Text(
                     context.l10n.appName,
                     style: const TextStyle(
+                      color: Colors.white,
                       fontSize: 44,
                       fontWeight: FontWeight.w300,
                       letterSpacing: 1.0,
@@ -136,6 +137,7 @@ class AppDrawer extends StatelessWidget {
                 style: ButtonStyle(
                   foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
                   overlayColor: MaterialStateProperty.all<Color>(Colors.white24),
+                  side: MaterialStateProperty.all<BorderSide>(BorderSide(width: 1, color: Colors.white.withOpacity(0.12))),
                 ),
               ),
               child: Wrap(

@@ -63,7 +63,7 @@ class _OwnerPropState extends State<OwnerProp> {
                 children: [
                   TextSpan(
                     text: context.l10n.viewerInfoLabelOwner,
-                    style: InfoRowGroup.keyStyle,
+                    style: InfoRowGroup.keyStyle(context),
                   ),
                   WidgetSpan(
                     alignment: PlaceholderAlignment.middle,
@@ -81,7 +81,7 @@ class _OwnerPropState extends State<OwnerProp> {
                   ),
                   TextSpan(
                     text: appName,
-                    style: InfoRowGroup.baseStyle,
+                    style: InfoRowGroup.valueStyle,
                   ),
                 ],
               ),

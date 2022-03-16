@@ -8,16 +8,13 @@ import 'package:aves/model/device.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/entry_metadata_edition.dart';
 import 'package:aves/model/filters/album.dart';
-import 'package:aves/model/highlight.dart';
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
-import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/common/image_op_events.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/media/enums.dart';
 import 'package:aves/services/media/media_file_service.dart';
-import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/action_mixins/entry_storage.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
@@ -262,28 +259,19 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         final showAction = isMainMode && newUris.isNotEmpty
             ? SnackBarAction(
                 label: context.l10n.showButtonLabel,
-                onPressed: () async {
-                  final highlightInfo = context.read<HighlightInfo>();
-                  final targetCollection = CollectionLens(
-                    source: source,
-                    filters: {AlbumFilter(destinationAlbum, source.getAlbumDisplayName(context, destinationAlbum))},
-                  );
-                  unawaited(Navigator.pushAndRemoveUntil(
+                onPressed: () {
+                  Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(
                       settings: const RouteSettings(name: CollectionPage.routeName),
                       builder: (context) => CollectionPage(
-                        collection: targetCollection,
+                        source: source,
+                        filters: {AlbumFilter(destinationAlbum, source.getAlbumDisplayName(context, destinationAlbum))},
+                        highlightTest: (entry) => newUris.contains(entry.uri),
                       ),
                     ),
                     (route) => false,
-                  ));
-                  final delayDuration = context.read<DurationsData>().staggeredAnimationPageTarget;
-                  await Future.delayed(delayDuration + Durations.highlightScrollInitDelay);
-                  final targetEntry = targetCollection.sortedEntries.firstWhereOrNull((entry) => newUris.contains(entry.uri));
-                  if (targetEntry != null) {
-                    highlightInfo.trackItem(targetEntry, highlightItem: targetEntry);
-                  }
+                  );
                 },
               )
             : null;

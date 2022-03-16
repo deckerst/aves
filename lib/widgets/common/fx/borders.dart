@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 class AvesBorder {
-  static const borderColor = Colors.white30;
+  static Color _borderColor(BuildContext context) => Theme.of(context).brightness == Brightness.dark ? Colors.white30 : Colors.black26;
 
   // directly uses `devicePixelRatio` as it never changes, to avoid visiting ancestors via `MediaQuery`
 
@@ -13,15 +13,15 @@ class AvesBorder {
   // 1 device pixel for curves is too thin
   static double get curvedBorderWidth => window.devicePixelRatio > 2 ? 0.5 : 1.0;
 
-  static BorderSide get straightSide => BorderSide(
-        color: borderColor,
+  static BorderSide straightSide(BuildContext context) => BorderSide(
+        color: _borderColor(context),
         width: straightBorderWidth,
       );
 
-  static BorderSide get curvedSide => BorderSide(
-        color: borderColor,
+  static BorderSide curvedSide(BuildContext context) => BorderSide(
+        color: _borderColor(context),
         width: curvedBorderWidth,
       );
 
-  static Border get border => Border.fromBorderSide(curvedSide);
+  static Border border(BuildContext context) => Border.fromBorderSide(curvedSide(context));
 }

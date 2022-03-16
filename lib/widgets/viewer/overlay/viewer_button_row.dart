@@ -362,16 +362,21 @@ class ViewerButtonRowContent extends StatelessWidget {
         );
 
     return PopupMenuItem(
-      child: Row(
-        children: [
-          buildDivider(),
-          buildItem(EntryAction.rotateCCW),
-          buildDivider(),
-          buildItem(EntryAction.rotateCW),
-          buildDivider(),
-          buildItem(EntryAction.flip),
-          buildDivider(),
-        ],
+      child: IconTheme.merge(
+        data: IconThemeData(
+          color: ListTileTheme.of(context).iconColor,
+        ),
+        child: Row(
+          children: [
+            buildDivider(),
+            buildItem(EntryAction.rotateCCW),
+            buildDivider(),
+            buildItem(EntryAction.rotateCW),
+            buildDivider(),
+            buildItem(EntryAction.flip),
+            buildDivider(),
+          ],
+        ),
       ),
     );
   }

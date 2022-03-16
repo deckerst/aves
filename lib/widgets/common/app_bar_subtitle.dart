@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums.dart';
 import 'package:aves/model/source/events.dart';
@@ -62,25 +64,28 @@ class SourceStateSubtitle extends StatelessWidget {
     final subtitle = sourceState.getName(context.l10n);
     if (subtitle == null) return const SizedBox();
 
-    final subtitleStyle = Theme.of(context).textTheme.caption!;
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(subtitle, style: subtitleStyle),
-        ValueListenableBuilder<ProgressEvent>(
-          valueListenable: source.progressNotifier,
-          builder: (context, progress, snapshot) {
-            if (progress.total == 0 || sourceState == SourceState.locatingCountries) return const SizedBox();
-            return Padding(
-              padding: const EdgeInsetsDirectional.only(start: 8),
-              child: Text(
-                '${progress.done}/${progress.total}',
-                style: subtitleStyle.copyWith(color: Colors.white30),
-              ),
-            );
-          },
-        ),
-      ],
+    final theme = Theme.of(context);
+    return DefaultTextStyle.merge(
+      style: theme.textTheme.caption!.copyWith(fontFeatures: const [FontFeature.disable('smcp')]),
+      child: ValueListenableBuilder<ProgressEvent>(
+        valueListenable: source.progressNotifier,
+        builder: (context, progress, snapshot) {
+          return Text.rich(
+            TextSpan(
+              children: [
+                TextSpan(text: subtitle),
+                if (progress.total != 0 && sourceState != SourceState.locatingCountries) ...[
+                  const WidgetSpan(child: SizedBox(width: 8)),
+                  TextSpan(
+                    text: '${progress.done}/${progress.total}',
+                    style: TextStyle(color: theme.brightness == Brightness.dark ? Colors.white30 : Colors.black26),
+                  ),
+                ]
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }

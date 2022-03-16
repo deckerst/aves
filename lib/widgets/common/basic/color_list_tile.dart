@@ -27,7 +27,7 @@ class ColorListTile extends StatelessWidget {
         width: radius * 2,
         decoration: BoxDecoration(
           color: value,
-          border: AvesBorder.border,
+          border: AvesBorder.border(context),
           shape: BoxShape.circle,
         ),
       ),

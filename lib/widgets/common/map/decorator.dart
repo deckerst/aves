@@ -1,3 +1,4 @@
+import 'package:aves/widgets/common/fx/borders.dart';
 import 'package:aves/widgets/common/map/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -28,6 +29,10 @@ class MapDecorator extends StatelessWidget {
         borderRadius: mapBorderRadius,
         child: Container(
           color: mapBackground,
+          foregroundDecoration: BoxDecoration(
+            border: AvesBorder.border(context),
+            borderRadius: mapBorderRadius,
+          ),
           child: Stack(
             children: [
               const GridPaper(

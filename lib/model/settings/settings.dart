@@ -41,6 +41,8 @@ class Settings extends ChangeNotifier {
   static const isInstalledAppAccessAllowedKey = 'is_installed_app_access_allowed';
   static const isErrorReportingAllowedKey = 'is_crashlytics_enabled';
   static const localeKey = 'locale';
+  static const themeBrightnessKey = 'theme_brightness';
+  static const themeColorModeKey = 'theme_color_mode';
   static const catalogTimeZoneKey = 'catalog_time_zone';
   static const tileExtentPrefixKey = 'tile_extent_';
   static const tileLayoutPrefixKey = 'tile_layout_';
@@ -238,6 +240,14 @@ class Settings extends ChangeNotifier {
     }
     return _appliedLocale!;
   }
+
+  AvesThemeBrightness get themeBrightness => getEnumOrDefault(themeBrightnessKey, SettingsDefaults.themeBrightness, AvesThemeBrightness.values);
+
+  set themeBrightness(AvesThemeBrightness newValue) => setAndNotify(themeBrightnessKey, newValue.toString());
+
+  AvesThemeColorMode get themeColorMode => getEnumOrDefault(themeColorModeKey, SettingsDefaults.themeColorMode, AvesThemeColorMode.values);
+
+  set themeColorMode(AvesThemeColorMode newValue) => setAndNotify(themeColorModeKey, newValue.toString());
 
   String get catalogTimeZone => getString(catalogTimeZoneKey) ?? '';
 
@@ -675,6 +685,8 @@ class Settings extends ChangeNotifier {
               }
               break;
             case localeKey:
+            case themeBrightnessKey:
+            case themeColorModeKey:
             case keepScreenOnKey:
             case homePageKey:
             case collectionGroupFactorKey:

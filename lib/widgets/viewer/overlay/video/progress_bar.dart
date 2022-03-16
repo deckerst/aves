@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/format.dart';
+import 'package:aves/theme/themes.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/fx/blurred.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
-import 'package:aves/widgets/viewer/overlay/common.dart';
 import 'package:aves/widgets/viewer/video/controller.dart';
 import 'package:flutter/material.dart';
 
@@ -38,7 +38,10 @@ class _VideoProgressBarState extends State<VideoProgressBar> {
   @override
   Widget build(BuildContext context) {
     final blurred = settings.enableOverlayBlurEffect;
-    const textStyle = TextStyle(shadows: Constants.embossShadows);
+    final brightness = Theme.of(context).brightness;
+    final textStyle = TextStyle(
+      shadows: brightness == Brightness.dark ? Constants.embossShadows : null,
+    );
     return SizeTransition(
       sizeFactor: widget.scale,
       child: BlurredRRect.all(
@@ -66,8 +69,8 @@ class _VideoProgressBarState extends State<VideoProgressBar> {
               alignment: Alignment.center,
               padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
               decoration: BoxDecoration(
-                color: overlayBackgroundColor(blurred: blurred),
-                border: AvesBorder.border,
+                color: Themes.overlayBackgroundColor(brightness: brightness, blurred: blurred),
+                border: AvesBorder.border(context),
                 borderRadius: const BorderRadius.all(Radius.circular(radius)),
               ),
               child: Column(
@@ -106,12 +109,12 @@ class _VideoProgressBarState extends State<VideoProgressBar> {
                             if (!progress.isFinite) progress = 0.0;
                             return LinearProgressIndicator(
                               value: progress,
-                              backgroundColor: Colors.grey.shade700,
+                              backgroundColor: Theme.of(context).colorScheme.onSurface.withOpacity(.2),
                             );
                           }),
                     ),
                   ),
-                  const Text(
+                  Text(
                     // fake text below to match the height of the text above and center the whole thing
                     '',
                     style: textStyle,

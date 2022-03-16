@@ -6,13 +6,16 @@ import 'package:aves/app_mode.dart';
 import 'package:aves/l10n/l10n.dart';
 import 'package:aves/model/device.dart';
 import 'package:aves/model/settings/enums/accessibility_animations.dart';
+import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/enums/screen_on.dart';
+import 'package:aves/model/settings/enums/theme_brightness.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/media_store_source.dart';
 import 'package:aves/services/accessibility_service.dart';
 import 'package:aves/services/common/services.dart';
+import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/themes.dart';
@@ -101,11 +104,16 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
                           : Scaffold(
                               body: snapshot.hasError ? _buildError(snapshot.error!) : const SizedBox(),
                             );
-                      return Selector<Settings, Tuple2<Locale?, bool>>(
-                        selector: (context, s) => Tuple2(s.locale, s.initialized ? s.accessibilityAnimations.animate : true),
+                      return Selector<Settings, Tuple3<Locale?, bool, AvesThemeBrightness>>(
+                        selector: (context, s) => Tuple3(
+                          s.locale,
+                          s.initialized ? s.accessibilityAnimations.animate : true,
+                          s.initialized ? s.themeBrightness : AvesThemeBrightness.system,
+                        ),
                         builder: (context, s, child) {
                           final settingsLocale = s.item1;
                           final areAnimationsEnabled = s.item2;
+                          final themeBrightness = s.item3;
                           return MaterialApp(
                             navigatorKey: _navigatorKey,
                             home: home,
@@ -126,11 +134,15 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
                                   child: child!,
                                 );
                               }
-                              return child!;
+                              return AvesColorsProvider(
+                                child: child!,
+                              );
+                              // return child!;
                             },
                             onGenerateTitle: (context) => context.l10n.appName,
-                            darkTheme: Themes.darkTheme,
-                            themeMode: ThemeMode.dark,
+                            theme: Themes.lightTheme,
+                            darkTheme: themeBrightness == AvesThemeBrightness.black ? Themes.blackTheme : Themes.darkTheme,
+                            themeMode: themeBrightness.appThemeMode,
                             locale: settingsLocale,
                             localizationsDelegates: AppLocalizations.localizationsDelegates,
                             supportedLocales: AppLocalizations.supportedLocales,

@@ -52,7 +52,7 @@ class FilterNavigationPage<T extends CollectionFilter> extends StatelessWidget {
           emptyBuilder: () => ValueListenableBuilder<SourceState>(
             valueListenable: source.stateNotifier,
             builder: (context, sourceState, child) {
-              return sourceState != SourceState.loading ? emptyBuilder() : const SizedBox.shrink();
+              return sourceState != SourceState.loading ? emptyBuilder() : const SizedBox();
             },
           ),
           // do not always enable hero, otherwise unwanted hero gets triggered

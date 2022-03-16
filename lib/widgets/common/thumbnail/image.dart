@@ -179,9 +179,12 @@ class _ThumbnailImageState extends State<ThumbnailImage> {
 
   Color? _loadingBackgroundColor;
 
-  Color get loadingBackgroundColor {
+  Color loadingBackgroundColor(BuildContext context) {
     if (_loadingBackgroundColor == null) {
-      final rgb = 0x30 + entry.uri.hashCode % 0x20;
+      var rgb = 0x30 + entry.uri.hashCode % 0x20;
+      if (Theme.of(context).brightness == Brightness.light) {
+        rgb = 0xFF - rgb;
+      }
       _loadingBackgroundColor = Color.fromARGB(0xFF, rgb, rgb, rgb);
     }
     return _loadingBackgroundColor!;
@@ -201,7 +204,7 @@ class _ThumbnailImageState extends State<ThumbnailImage> {
     final imageInfo = _lastImageInfo;
     Widget image = imageInfo == null
         ? Container(
-            color: widget.showLoadingBackground ? loadingBackgroundColor : Colors.transparent,
+            color: widget.showLoadingBackground ? loadingBackgroundColor(context) : Colors.transparent,
             width: extent,
             height: extent,
           )

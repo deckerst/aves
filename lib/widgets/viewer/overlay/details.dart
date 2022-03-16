@@ -24,6 +24,8 @@ const double _iconSize = 16.0;
 const double _interRowPadding = 2.0;
 const double _subRowMinWidth = 300.0;
 
+List<Shadow>? _shadows(BuildContext context) => Theme.of(context).brightness == Brightness.dark ? Constants.embossShadows : null;
+
 class ViewerDetailOverlay extends StatefulWidget {
   final List<AvesEntry> entries;
   final int index;
@@ -142,7 +144,7 @@ class ViewerDetailOverlayContent extends StatelessWidget {
 
     return DefaultTextStyle(
       style: Theme.of(context).textTheme.bodyText2!.copyWith(
-            shadows: Constants.embossShadows,
+            shadows: _shadows(context),
           ),
       softWrap: false,
       overflow: TextOverflow.fade,
@@ -271,7 +273,7 @@ class _LocationRow extends AnimatedWidget {
     }
     return Row(
       children: [
-        const DecoratedIcon(AIcons.location, shadows: Constants.embossShadows, size: _iconSize),
+        DecoratedIcon(AIcons.location, shadows: _shadows(context), size: _iconSize),
         const SizedBox(width: _iconPadding),
         Expanded(child: Text(location, strutStyle: Constants.overflowStrutStyle)),
       ],
@@ -352,7 +354,7 @@ class _DateRow extends StatelessWidget {
 
     return Row(
       children: [
-        const DecoratedIcon(AIcons.date, shadows: Constants.embossShadows, size: _iconSize),
+        DecoratedIcon(AIcons.date, shadows: _shadows(context), size: _iconSize),
         const SizedBox(width: _iconPadding),
         Expanded(flex: 3, child: Text(dateText, strutStyle: Constants.overflowStrutStyle)),
         Expanded(flex: 2, child: Text(resolutionText, strutStyle: Constants.overflowStrutStyle)),
@@ -381,7 +383,7 @@ class _ShootingRow extends StatelessWidget {
 
     return Row(
       children: [
-        const DecoratedIcon(AIcons.shooting, shadows: Constants.embossShadows, size: _iconSize),
+        DecoratedIcon(AIcons.shooting, shadows: _shadows(context), size: _iconSize),
         const SizedBox(width: _iconPadding),
         Expanded(child: Text(apertureText, strutStyle: Constants.overflowStrutStyle)),
         Expanded(child: Text(details.exposureTime ?? Constants.overlayUnknown, strutStyle: Constants.overflowStrutStyle)),

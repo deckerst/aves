@@ -37,7 +37,7 @@ class FilterListDetails<T extends CollectionFilter> extends StatelessWidget {
     return Container(
       padding: FilterListDetailsTheme.contentPadding,
       foregroundDecoration: BoxDecoration(
-        border: Border(top: AvesBorder.straightSide),
+        border: Border(top: AvesBorder.straightSide(context)),
       ),
       margin: FilterListDetailsTheme.contentMargin,
       child: Column(

@@ -8,7 +8,7 @@ class AvesExpansionTile extends StatelessWidget {
   final String value;
   final Widget? leading;
   final String title;
-  final Color? color;
+  final Color? highlightColor;
   final ValueNotifier<String?>? expandedNotifier;
   final bool initiallyExpanded, showHighlight;
   final List<Widget> children;
@@ -18,7 +18,7 @@ class AvesExpansionTile extends StatelessWidget {
     String? value,
     this.leading,
     required this.title,
-    this.color,
+    this.highlightColor,
     this.expandedNotifier,
     this.initiallyExpanded = false,
     this.showHighlight = true,
@@ -31,7 +31,7 @@ class AvesExpansionTile extends StatelessWidget {
     final enabled = children.isNotEmpty == true;
     Widget titleChild = HighlightTitle(
       title: title,
-      color: color,
+      color: highlightColor,
       enabled: enabled,
       showHighlight: showHighlight,
     );
@@ -63,8 +63,8 @@ class AvesExpansionTile extends StatelessWidget {
         expandable: enabled,
         initiallyExpanded: initiallyExpanded,
         finalPadding: const EdgeInsets.symmetric(vertical: 6.0),
-        baseColor: Colors.grey.shade900,
-        expandedColor: Colors.grey[850],
+        baseColor: theme.scaffoldBackgroundColor,
+        expandedColor: theme.canvasColor,
         duration: animationDuration,
         shadowColor: theme.shadowColor,
         child: Column(

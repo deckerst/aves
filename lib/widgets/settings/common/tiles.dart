@@ -1,0 +1,91 @@
+import 'package:aves/model/settings/settings.dart';
+import 'package:aves/theme/durations.dart';
+import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+class SettingsSwitchListTile extends StatelessWidget {
+  final bool Function(BuildContext, Settings) selector;
+  final ValueChanged<bool> onChanged;
+  final String title;
+  final String? subtitle;
+  final Widget? trailing;
+
+  const SettingsSwitchListTile({
+    Key? key,
+    required this.selector,
+    required this.onChanged,
+    required this.title,
+    this.subtitle,
+    this.trailing,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Selector<Settings, bool>(
+      selector: selector,
+      builder: (context, current, child) {
+        Widget titleWidget = Text(title);
+        if (trailing != null) {
+          titleWidget = Row(
+            children: [
+              Expanded(child: titleWidget),
+              AnimatedOpacity(
+                opacity: current ? 1 : .2,
+                duration: Durations.toggleableTransitionAnimation,
+                child: trailing,
+              ),
+            ],
+          );
+        }
+        return SwitchListTile(
+          value: current,
+          onChanged: onChanged,
+          title: titleWidget,
+          subtitle: subtitle != null ? Text(subtitle!) : null,
+        );
+      },
+    );
+  }
+}
+
+class SettingsSelectionListTile<T extends Enum> extends StatelessWidget {
+  final List<T> values;
+  final String Function(BuildContext, T) getName;
+  final T Function(BuildContext, Settings) selector;
+  final ValueChanged<T> onSelection;
+  final String tileTitle, dialogTitle;
+  final TextBuilder<T>? optionSubtitleBuilder;
+
+  const SettingsSelectionListTile({
+    Key? key,
+    required this.values,
+    required this.getName,
+    required this.selector,
+    required this.onSelection,
+    required this.tileTitle,
+    required this.dialogTitle,
+    this.optionSubtitleBuilder,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Selector<Settings, T>(
+      selector: selector,
+      builder: (context, current, child) => ListTile(
+        title: Text(tileTitle),
+        subtitle: Text(getName(context, current)),
+        onTap: () => showSelectionDialog<T>(
+          context: context,
+          builder: (context) => AvesSelectionDialog<T>(
+            initialValue: current,
+            options: Map.fromEntries(values.map((v) => MapEntry(v, getName(context, v)))),
+            optionSubtitleBuilder: optionSubtitleBuilder,
+            title: dialogTitle,
+          ),
+          onSelection: onSelection,
+        ),
+      ),
+    );
+  }
+}

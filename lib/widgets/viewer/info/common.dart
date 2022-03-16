@@ -21,7 +21,6 @@ class SectionRow extends StatelessWidget {
           width: dim,
           child: Divider(
             thickness: AvesFilterChip.outlineWidth,
-            color: Colors.white70,
           ),
         );
     return Row(
@@ -47,11 +46,11 @@ class InfoRowGroup extends StatefulWidget {
   final Map<String, InfoLinkHandler>? linkHandlers;
 
   static const keyValuePadding = 16;
-  static const linkColor = Colors.blue;
   static const fontSize = 13.0;
-  static const baseStyle = TextStyle(fontSize: fontSize);
-  static final keyStyle = baseStyle.copyWith(color: Colors.white70, height: 2.0);
-  static final linkStyle = baseStyle.copyWith(color: linkColor, decoration: TextDecoration.underline);
+  static const valueStyle = TextStyle(fontSize: fontSize);
+  static final _keyStyle = valueStyle.copyWith(height: 2.0);
+
+  static TextStyle keyStyle(BuildContext context) => Theme.of(context).textTheme.caption!.merge(_keyStyle);
 
   const InfoRowGroup({
     Key? key,
@@ -77,9 +76,11 @@ class _InfoRowGroupState extends State<InfoRowGroup> {
   Widget build(BuildContext context) {
     if (keyValues.isEmpty) return const SizedBox.shrink();
 
+    final _keyStyle = InfoRowGroup.keyStyle(context);
+
     // compute the size of keys and space in order to align values
     final textScaleFactor = MediaQuery.textScaleFactorOf(context);
-    final keySizes = Map.fromEntries(keyValues.keys.map((key) => MapEntry(key, _getSpanWidth(TextSpan(text: key, style: InfoRowGroup.keyStyle), textScaleFactor))));
+    final keySizes = Map.fromEntries(keyValues.keys.map((key) => MapEntry(key, _getSpanWidth(TextSpan(text: key, style: _keyStyle), textScaleFactor))));
 
     final lastKey = keyValues.keys.last;
     return LayoutBuilder(
@@ -102,7 +103,10 @@ class _InfoRowGroupState extends State<InfoRowGroup> {
                   value = handler.linkText(context);
                   // open link on tap
                   recognizer = TapGestureRecognizer()..onTap = () => handler.onTap(context);
-                  style = InfoRowGroup.linkStyle;
+                  // `colorScheme.secondary` is overridden upstream as an `ExpansionTileCard` theming workaround,
+                  // so we use `colorScheme.primary` instead
+                  final linkColor = Theme.of(context).colorScheme.primary;
+                  style = InfoRowGroup.valueStyle.copyWith(color: linkColor, decoration: TextDecoration.underline);
                 } else {
                   value = kv.value;
                   // long values are clipped, and made expandable by tapping them
@@ -125,14 +129,14 @@ class _InfoRowGroupState extends State<InfoRowGroup> {
                 // (e.g. keys on the right for RTL locale, whatever the key intrinsic directionality)
                 // and each span respects the directionality of its inner text only
                 return [
-                  TextSpan(text: '${Constants.fsi}$key${Constants.pdi}', style: InfoRowGroup.keyStyle),
+                  TextSpan(text: '${Constants.fsi}$key${Constants.pdi}', style: _keyStyle),
                   WidgetSpan(child: SizedBox(width: thisSpaceSize)),
                   TextSpan(text: '${Constants.fsi}$value${Constants.pdi}', style: style, recognizer: recognizer),
                 ];
               },
             ).toList(),
           ),
-          style: InfoRowGroup.baseStyle,
+          style: InfoRowGroup.valueStyle,
         );
       },
     );

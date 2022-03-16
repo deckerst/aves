@@ -10,8 +10,8 @@ import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
+import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/utils/color_utils.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/utils/mime_utils.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
@@ -22,7 +22,7 @@ import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/stats/filter_table.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:percent_indicator/linear_percent_indicator.dart';
@@ -77,17 +77,26 @@ class StatsPage extends StatelessWidget {
         text: context.l10n.collectionEmptyImages,
       );
     } else {
+      final theme = Theme.of(context);
+      final isDark = theme.brightness == Brightness.dark;
       final animate = context.select<Settings, bool>((v) => v.accessibilityAnimations.animate);
       final byMimeTypes = groupBy<AvesEntry, String>(entries, (entry) => entry.mimeType).map<String, int>((k, v) => MapEntry(k, v.length));
       final imagesByMimeTypes = Map.fromEntries(byMimeTypes.entries.where((kv) => kv.key.startsWith('image')));
       final videoByMimeTypes = Map.fromEntries(byMimeTypes.entries.where((kv) => kv.key.startsWith('video')));
-      final mimeDonuts = Wrap(
-        alignment: WrapAlignment.center,
-        crossAxisAlignment: WrapCrossAlignment.center,
-        children: [
-          _buildMimeDonut(context, AIcons.image, imagesByMimeTypes, animate),
-          _buildMimeDonut(context, AIcons.video, videoByMimeTypes, animate),
-        ],
+      final mimeDonuts = Provider.value(
+        value: isDark ? NeonOnDark() : PastelOnLight(),
+        child: Builder(
+          builder: (context) {
+            return Wrap(
+              alignment: WrapAlignment.center,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                _buildMimeDonut(context, AIcons.image, imagesByMimeTypes, animate),
+                _buildMimeDonut(context, AIcons.video, videoByMimeTypes, animate),
+              ],
+            );
+          },
+        ),
       );
 
       final catalogued = entries.where((entry) => entry.isCatalogued);
@@ -114,14 +123,16 @@ class StatsPage extends StatelessWidget {
                     child: LinearPercentIndicator(
                       percent: withGpsPercent,
                       lineHeight: lineHeight,
-                      backgroundColor: Colors.white24,
-                      progressColor: Theme.of(context).colorScheme.secondary,
+                      backgroundColor: theme.colorScheme.onPrimary.withOpacity(.1),
+                      progressColor: theme.colorScheme.secondary,
                       animation: animate,
                       isRTL: context.isRtl,
                       barRadius: barRadius,
                       center: Text(
                         intl.NumberFormat.percentPattern().format(withGpsPercent),
-                        style: const TextStyle(shadows: Constants.embossShadows),
+                        style: TextStyle(
+                          shadows: isDark ? Constants.embossShadows : null,
+                        ),
                       ),
                       padding: EdgeInsets.zero,
                     ),
@@ -176,7 +187,17 @@ class StatsPage extends StatelessWidget {
 
     final sum = byMimeTypes.values.fold<int>(0, (prev, v) => prev + v);
 
-    final seriesData = byMimeTypes.entries.map((kv) => EntryByMimeDatum(mimeType: kv.key, entryCount: kv.value)).toList();
+    final colors = context.watch<AvesColorsData>();
+    final seriesData = byMimeTypes.entries.map((kv) {
+      final mimeType = kv.key;
+      final displayText = MimeUtils.displayType(mimeType);
+      return EntryByMimeDatum(
+        mimeType: mimeType,
+        displayText: displayText,
+        color: colors.fromString(displayText),
+        entryCount: kv.value,
+      );
+    }).toList();
     seriesData.sort((d1, d2) {
       final c = d2.entryCount.compareTo(d1.entryCount);
       return c != 0 ? c : compareAsciiUpperCase(d1.displayText, d2.displayText);
@@ -250,7 +271,9 @@ class StatsPage extends StatelessWidget {
                         const SizedBox(width: 8),
                         Text(
                           '${d.entryCount}',
-                          style: const TextStyle(color: Colors.white70),
+                          style: TextStyle(
+                            color: Theme.of(context).textTheme.caption!.color,
+                          ),
                         ),
                       ],
                     ),
@@ -327,10 +350,8 @@ class StatsPage extends StatelessWidget {
       MaterialPageRoute(
         settings: const RouteSettings(name: CollectionPage.routeName),
         builder: (context) => CollectionPage(
-          collection: CollectionLens(
-            source: source,
-            filters: {filter},
-          ),
+          source: source,
+          filters: {filter},
         ),
       ),
       (route) => false,
@@ -338,18 +359,19 @@ class StatsPage extends StatelessWidget {
   }
 }
 
-class EntryByMimeDatum {
-  final String mimeType;
-  final String displayText;
+@immutable
+class EntryByMimeDatum extends Equatable {
+  final String mimeType, displayText;
+  final Color color;
   final int entryCount;
 
-  EntryByMimeDatum({
-    required this.mimeType,
-    required this.entryCount,
-  }) : displayText = MimeUtils.displayType(mimeType);
-
-  Color get color => stringToColor(displayText);
-
   @override
-  String toString() => '$runtimeType#${shortHash(this)}{mimeType=$mimeType, displayText=$displayText, entryCount=$entryCount}';
+  List<Object?> get props => [mimeType, displayText, color, entryCount];
+
+  const EntryByMimeDatum({
+    required this.mimeType,
+    required this.displayText,
+    required this.color,
+    required this.entryCount,
+  });
 }

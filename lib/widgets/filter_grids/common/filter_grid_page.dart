@@ -67,8 +67,6 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
     required this.heroType,
   }) : super(key: key);
 
-  static const Color detailColor = Color(0xFFE0E0E0);
-
   @override
   Widget build(BuildContext context) {
     return MediaQueryDataProvider(

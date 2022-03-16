@@ -2,6 +2,10 @@ enum AccessibilityAnimations { system, disabled, enabled }
 
 enum AccessibilityTimeout { system, appDefault, s10, s30, s60, s120 }
 
+enum AvesThemeColorMode { monochrome, polychrome }
+
+enum AvesThemeBrightness { system, light, dark, black }
+
 enum ConfirmationDialog { delete, moveToBin }
 
 enum CoordinateFormat { dms, decimal }

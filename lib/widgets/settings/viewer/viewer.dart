@@ -6,6 +6,7 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/settings/common/tile_leading.dart';
+import 'package:aves/widgets/settings/common/tiles.dart';
 import 'package:aves/widgets/settings/viewer/entry_background.dart';
 import 'package:aves/widgets/settings/viewer/overlay.dart';
 import 'package:aves/widgets/settings/viewer/viewer_actions_editor.dart';
@@ -25,7 +26,7 @@ class ViewerSection extends StatelessWidget {
     return AvesExpansionTile(
       leading: SettingsTileLeading(
         icon: AIcons.image,
-        color: AColors.image,
+        color: context.select<AvesColorsData, Color>((v) => v.image),
       ),
       title: context.l10n.settingsSectionViewer,
       expandedNotifier: expandedNotifier,
@@ -34,21 +35,15 @@ class ViewerSection extends StatelessWidget {
         const ViewerActionsTile(),
         const ViewerOverlayTile(),
         const _CutoutModeSwitch(),
-        Selector<Settings, bool>(
+        SettingsSwitchListTile(
           selector: (context, s) => s.viewerMaxBrightness,
-          builder: (context, current, child) => SwitchListTile(
-            value: current,
-            onChanged: (v) => settings.viewerMaxBrightness = v,
-            title: Text(context.l10n.settingsViewerMaximumBrightness),
-          ),
+          onChanged: (v) => settings.viewerMaxBrightness = v,
+          title: context.l10n.settingsViewerMaximumBrightness,
         ),
-        Selector<Settings, bool>(
+        SettingsSwitchListTile(
           selector: (context, s) => s.enableMotionPhotoAutoPlay,
-          builder: (context, current, child) => SwitchListTile(
-            value: current,
-            onChanged: (v) => settings.enableMotionPhotoAutoPlay = v,
-            title: Text(context.l10n.settingsMotionPhotoAutoPlay),
-          ),
+          onChanged: (v) => settings.enableMotionPhotoAutoPlay = v,
+          title: context.l10n.settingsMotionPhotoAutoPlay,
         ),
         Selector<Settings, EntryBackground>(
           selector: (context, s) => s.imageBackground,
@@ -87,13 +82,10 @@ class _CutoutModeSwitchState extends State<_CutoutModeSwitch> {
       future: _canSet,
       builder: (context, snapshot) {
         if (snapshot.hasData && snapshot.data!) {
-          return Selector<Settings, bool>(
+          return SettingsSwitchListTile(
             selector: (context, s) => s.viewerUseCutout,
-            builder: (context, current, child) => SwitchListTile(
-              value: current,
-              onChanged: (v) => settings.viewerUseCutout = v,
-              title: Text(context.l10n.settingsViewerUseCutout),
-            ),
+            onChanged: (v) => settings.viewerUseCutout = v,
+            title: context.l10n.settingsViewerUseCutout,
           );
         }
         return const SizedBox.shrink();

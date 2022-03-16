@@ -177,6 +177,10 @@
   "accessibilityAnimationsRemove": "Prevent screen effects",
   "accessibilityAnimationsKeep": "Keep screen effects",
 
+  "themeBrightnessLight": "Light",
+  "themeBrightnessDark": "Dark",
+  "themeBrightnessBlack": "Black",
+
   "albumTierNew": "New",
   "albumTierPinned": "Pinned",
   "albumTierSpecial": "Common",
@@ -670,6 +674,10 @@
   "settingsRemoveAnimationsTitle": "Remove Animations",
   "settingsTimeToTakeActionTile": "Time to take action",
   "settingsTimeToTakeActionTitle": "Time to Take Action",
+
+  "settingsSectionDisplay": "Display",
+  "settingsThemeBrightness": "Theme",
+  "settingsThemeColorful": "Colorful",
 
   "settingsSectionLanguage": "Language & Formats",
   "settingsLanguage": "Language",

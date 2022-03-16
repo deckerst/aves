@@ -5,6 +5,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/theme/themes.dart';
 import 'package:aves/utils/debouncer.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/blurred.dart';
@@ -15,7 +16,6 @@ import 'package:aves/widgets/common/map/theme.dart';
 import 'package:aves/widgets/common/map/zoomed_bounds.dart';
 import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
 import 'package:aves/widgets/viewer/info/notifications.dart';
-import 'package:aves/widgets/viewer/overlay/common.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
@@ -207,10 +207,10 @@ class MapOverlayButton extends StatelessWidget {
         enabled: blurred,
         child: Material(
           type: MaterialType.circle,
-          color: overlayBackgroundColor(blurred: blurred),
+          color: Themes.overlayBackgroundColor(brightness: Theme.of(context).brightness, blurred: blurred),
           child: Ink(
             decoration: BoxDecoration(
-              border: AvesBorder.border,
+              border: AvesBorder.border(context),
               shape: BoxShape.circle,
             ),
             child: Selector<MapThemeData, VisualDensity?>(
@@ -278,9 +278,10 @@ class _OverlayCoordinateFilterChipState extends State<_OverlayCoordinateFilterCh
   @override
   Widget build(BuildContext context) {
     final blurred = settings.enableOverlayBlurEffect;
+    final theme = Theme.of(context);
     return Theme(
-      data: Theme.of(context).copyWith(
-        scaffoldBackgroundColor: overlayBackgroundColor(blurred: blurred),
+      data: theme.copyWith(
+        scaffoldBackgroundColor: Themes.overlayBackgroundColor(brightness: theme.brightness, blurred: blurred),
       ),
       child: Align(
         alignment: Alignment.topLeft,
