@@ -62,5 +62,9 @@ class _ViewerThumbnailPreviewState extends State<ViewerThumbnailPreview> {
     );
   }
 
-  void _onScrollerIndexChange() => _debouncer(() => ViewEntryNotification(index: _entryIndexNotifier.value).dispatch(context));
+  void _onScrollerIndexChange() => _debouncer(() {
+        if (mounted) {
+          ViewEntryNotification(index: _entryIndexNotifier.value).dispatch(context);
+        }
+      });
 }

@@ -36,13 +36,14 @@ object StorageUtils {
     const val TRASH_PATH_PLACEHOLDER = "#trash"
 
     private fun isAppFile(context: Context, path: String): Boolean {
-        return context.getExternalFilesDirs(null).any { filesDir -> path.startsWith(filesDir.path) }
+        val filesDirs = context.getExternalFilesDirs(null).filterNotNull()
+        return filesDirs.any { path.startsWith(it.path) }
     }
 
     private fun appExternalFilesDirFor(context: Context, path: String): File? {
-        val filesDirs = context.getExternalFilesDirs(null)
+        val filesDirs = context.getExternalFilesDirs(null).filterNotNull()
         val volumePath = getVolumePath(context, path)
-        return volumePath?.let { filesDirs.firstOrNull { it.startsWith(volumePath) } } ?: filesDirs.first()
+        return volumePath?.let { filesDirs.firstOrNull { it.startsWith(volumePath) } } ?: filesDirs.firstOrNull()
     }
 
     fun trashDirFor(context: Context, path: String): File? {
