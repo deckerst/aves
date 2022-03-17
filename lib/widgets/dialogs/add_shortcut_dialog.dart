@@ -154,5 +154,9 @@ class _AddShortcutDialogState extends State<AddShortcutDialog> {
     _isValidNotifier.value = name.isNotEmpty;
   }
 
-  void _submit(BuildContext context) => Navigator.pop(context, Tuple2<AvesEntry?, String>(_coverEntry, _nameController.text));
+  void _submit(BuildContext context) {
+    if (_isValidNotifier.value) {
+      Navigator.pop(context, Tuple2<AvesEntry?, String>(_coverEntry, _nameController.text));
+    }
+  }
 }

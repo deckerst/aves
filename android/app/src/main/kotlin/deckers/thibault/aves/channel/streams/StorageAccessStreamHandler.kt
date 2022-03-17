@@ -13,6 +13,7 @@ import deckers.thibault.aves.PendingStorageAccessResultHandler
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.PermissionManager
+import deckers.thibault.aves.utils.StorageUtils
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.EventChannel.EventSink
 import kotlinx.coroutines.CoroutineScope
@@ -77,6 +78,11 @@ class StorageAccessStreamHandler(private val activity: Activity, arguments: Any?
         val mimeTypes = (args["mimeTypes"] as List<*>?)?.mapNotNull { if (it is String) it else null }
         if (uris == null || uris.isEmpty() || mimeTypes == null || mimeTypes.size != uris.size) {
             error("requestMediaFileAccess-args", "failed because of missing arguments", null)
+            return
+        }
+
+        if (uris.any { !StorageUtils.isMediaStoreContentUri(it) }) {
+            error("requestMediaFileAccess-nonmediastore", "request is only valid for Media Store content URIs, uris=$uris", null)
             return
         }
 
@@ -148,12 +154,17 @@ class StorageAccessStreamHandler(private val activity: Activity, arguments: Any?
 
         fun onGranted(uri: Uri) {
             ioScope.launch {
-                activity.contentResolver.openInputStream(uri)?.use { input ->
-                    val buffer = ByteArray(BUFFER_SIZE)
-                    var len: Int
-                    while (input.read(buffer).also { len = it } != -1) {
-                        success(buffer.copyOf(len))
+                try {
+                    activity.contentResolver.openInputStream(uri)?.use { input ->
+                        val buffer = ByteArray(BUFFER_SIZE)
+                        var len: Int
+                        while (input.read(buffer).also { len = it } != -1) {
+                            success(buffer.copyOf(len))
+                        }
                     }
+                } catch (e: Exception) {
+                    Log.e(LOG_TAG, "failed to open input stream for uri=$uri", e)
+                } finally {
                     endOfStream()
                 }
             }

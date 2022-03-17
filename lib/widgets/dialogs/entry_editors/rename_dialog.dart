@@ -87,5 +87,9 @@ class _RenameEntryDialogState extends State<RenameEntryDialog> {
     _isValidNotifier.value = newName.isNotEmpty && !exists;
   }
 
-  void _submit(BuildContext context) => Navigator.pop(context, _nameController.text);
+  void _submit(BuildContext context) {
+    if (_isValidNotifier.value) {
+      Navigator.pop(context, _nameController.text);
+    }
+  }
 }
