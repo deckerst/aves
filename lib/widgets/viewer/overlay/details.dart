@@ -139,8 +139,7 @@ class ViewerDetailOverlayContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final infoMaxWidth = availableWidth - padding.horizontal;
     final positionTitle = _PositionTitleRow(entry: pageEntry, collectionPosition: position, multiPageController: multiPageController);
-    final hasShootingDetails = details != null && !details!.isEmpty && settings.showOverlayShootingDetails;
-    final animationDuration = context.select<DurationsData, Duration>((v) => v.viewerOverlayChangeAnimation);
+    final showShooting = settings.showOverlayShootingDetails;
 
     return DefaultTextStyle(
       style: Theme.of(context).textTheme.bodyText2!.copyWith(
@@ -156,40 +155,38 @@ class ViewerDetailOverlayContent extends StatelessWidget {
           builder: (context, orientation, child) {
             final twoColumns = orientation == Orientation.landscape && infoMaxWidth / 2 > _subRowMinWidth;
             final subRowWidth = twoColumns ? min(_subRowMinWidth, infoMaxWidth / 2) : infoMaxWidth;
+            final collapsedShooting = twoColumns && showShooting;
+            final collapsedLocation = twoColumns && !showShooting;
+
+            final rows = <Widget>[];
+            if (positionTitle.isNotEmpty) {
+              rows.add(positionTitle);
+              rows.add(const SizedBox(height: _interRowPadding));
+            }
+            if (twoColumns) {
+              rows.add(
+                Row(
+                  children: [
+                    _buildDateSubRow(subRowWidth),
+                    if (collapsedShooting) _buildShootingSubRow(context, subRowWidth),
+                    if (collapsedLocation) _buildLocationSubRow(context, subRowWidth),
+                  ],
+                ),
+              );
+            } else {
+              rows.add(_buildDateSubRow(subRowWidth));
+              if (showShooting) {
+                rows.add(_buildShootingFullRow(context, subRowWidth));
+              }
+            }
+            if (!collapsedLocation) {
+              rows.add(_buildLocationFullRow(context));
+            }
 
             return Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (positionTitle.isNotEmpty) positionTitle,
-                if (twoColumns)
-                  Padding(
-                    padding: const EdgeInsets.only(top: _interRowPadding),
-                    child: Row(
-                      children: [
-                        SizedBox(
-                            width: subRowWidth,
-                            child: _DateRow(
-                              entry: pageEntry,
-                              multiPageController: multiPageController,
-                            )),
-                        _buildDuoShootingRow(subRowWidth, hasShootingDetails, animationDuration),
-                      ],
-                    ),
-                  )
-                else ...[
-                  Container(
-                    padding: const EdgeInsets.only(top: _interRowPadding),
-                    width: subRowWidth,
-                    child: _DateRow(
-                      entry: pageEntry,
-                      multiPageController: multiPageController,
-                    ),
-                  ),
-                  _buildSoloShootingRow(subRowWidth, hasShootingDetails, animationDuration),
-                ],
-                _buildSoloLocationRow(animationDuration),
-              ],
+              children: rows,
             );
           },
         ),
@@ -197,56 +194,88 @@ class ViewerDetailOverlayContent extends StatelessWidget {
     );
   }
 
-  Widget _buildSoloLocationRow(Duration animationDuration) => AnimatedSwitcher(
-        duration: animationDuration,
-        switchInCurve: Curves.easeInOutCubic,
-        switchOutCurve: Curves.easeInOutCubic,
-        transitionBuilder: _soloTransition,
-        child: pageEntry.hasGps
-            ? Container(
-                padding: const EdgeInsets.only(top: _interRowPadding),
-                child: _LocationRow(entry: pageEntry),
-              )
-            : const SizedBox(),
+  Widget _buildDateSubRow(double subRowWidth) => SizedBox(
+        width: subRowWidth,
+        child: _DateRow(
+          entry: pageEntry,
+          multiPageController: multiPageController,
+        ),
       );
 
-  Widget _buildSoloShootingRow(double subRowWidth, bool hasShootingDetails, Duration animationDuration) => AnimatedSwitcher(
-        duration: animationDuration,
-        switchInCurve: Curves.easeInOutCubic,
-        switchOutCurve: Curves.easeInOutCubic,
-        transitionBuilder: _soloTransition,
-        child: hasShootingDetails
-            ? Container(
-                padding: const EdgeInsets.only(top: _interRowPadding),
-                width: subRowWidth,
-                child: _ShootingRow(details!),
-              )
-            : const SizedBox(),
+  Widget _buildShootingFullRow(BuildContext context, double subRowWidth) => _buildFullRowSwitcher(
+        context: context,
+        visible: details != null && details!.isNotEmpty,
+        builder: (context) => SizedBox(
+          width: subRowWidth,
+          child: _ShootingRow(details!),
+        ),
       );
 
-  Widget _buildDuoShootingRow(double subRowWidth, bool hasShootingDetails, Duration animationDuration) => AnimatedSwitcher(
-        duration: animationDuration,
+  Widget _buildShootingSubRow(BuildContext context, double subRowWidth) => _buildSubRowSwitcher(
+        context: context,
+        subRowWidth: subRowWidth,
+        visible: details != null && details!.isNotEmpty,
+        builder: (context) => _ShootingRow(details!),
+      );
+
+  Widget _buildLocationFullRow(BuildContext context) => _buildFullRowSwitcher(
+        context: context,
+        visible: pageEntry.hasGps,
+        builder: (context) => _LocationRow(entry: pageEntry),
+      );
+
+  Widget _buildLocationSubRow(BuildContext context, double subRowWidth) => _buildSubRowSwitcher(
+        context: context,
+        subRowWidth: subRowWidth,
+        visible: pageEntry.hasGps,
+        builder: (context) => _LocationRow(entry: pageEntry),
+      );
+
+  Widget _buildSubRowSwitcher({
+    required BuildContext context,
+    required double subRowWidth,
+    required bool visible,
+    required WidgetBuilder builder,
+  }) =>
+      AnimatedSwitcher(
+        duration: context.select<DurationsData, Duration>((v) => v.viewerOverlayChangeAnimation),
         switchInCurve: Curves.easeInOutCubic,
         switchOutCurve: Curves.easeInOutCubic,
         transitionBuilder: (child, animation) => FadeTransition(
           opacity: animation,
           child: child,
         ),
-        child: hasShootingDetails
+        child: visible
             ? SizedBox(
                 width: subRowWidth,
-                child: _ShootingRow(details!),
+                child: builder(context),
               )
             : const SizedBox(),
       );
 
-  static Widget _soloTransition(Widget child, Animation<double> animation) => FadeTransition(
-        opacity: animation,
-        child: SizeTransition(
-          axisAlignment: 1,
-          sizeFactor: animation,
-          child: child,
+  Widget _buildFullRowSwitcher({
+    required BuildContext context,
+    required bool visible,
+    required WidgetBuilder builder,
+  }) =>
+      AnimatedSwitcher(
+        duration: context.select<DurationsData, Duration>((v) => v.viewerOverlayChangeAnimation),
+        switchInCurve: Curves.easeInOutCubic,
+        switchOutCurve: Curves.easeInOutCubic,
+        transitionBuilder: (child, animation) => FadeTransition(
+          opacity: animation,
+          child: SizeTransition(
+            axisAlignment: 1,
+            sizeFactor: animation,
+            child: child,
+          ),
         ),
+        child: visible
+            ? Padding(
+                padding: const EdgeInsets.only(top: _interRowPadding),
+                child: builder(context),
+              )
+            : const SizedBox(),
       );
 }
 
