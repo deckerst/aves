@@ -361,27 +361,38 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
         );
 
     Widget buildItem(EntrySetAction action) => Expanded(
-          child: PopupMenuItem(
-            value: action,
-            enabled: canApply(action),
-            child: Tooltip(
-              message: action.getText(context),
-              child: Center(child: action.getIcon()),
+          child: Material(
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8)),
+            ),
+            clipBehavior: Clip.antiAlias,
+            child: PopupMenuItem(
+              value: action,
+              enabled: canApply(action),
+              child: Tooltip(
+                message: action.getText(context),
+                child: Center(child: action.getIcon()),
+              ),
             ),
           ),
         );
 
     return PopupMenuItem(
-      child: Row(
-        children: [
-          buildDivider(),
-          buildItem(EntrySetAction.rotateCCW),
-          buildDivider(),
-          buildItem(EntrySetAction.rotateCW),
-          buildDivider(),
-          buildItem(EntrySetAction.flip),
-          buildDivider(),
-        ],
+      child: TooltipTheme(
+        data: TooltipTheme.of(context).copyWith(
+          preferBelow: false,
+        ),
+        child: Row(
+          children: [
+            buildDivider(),
+            buildItem(EntrySetAction.rotateCCW),
+            buildDivider(),
+            buildItem(EntrySetAction.rotateCW),
+            buildDivider(),
+            buildItem(EntrySetAction.flip),
+            buildDivider(),
+          ],
+        ),
       ),
     );
   }

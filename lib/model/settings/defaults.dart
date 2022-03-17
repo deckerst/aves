@@ -60,9 +60,11 @@ class SettingsDefaults {
 
   // viewer
   static const viewerQuickActions = [
+    EntryAction.rotateScreen,
     EntryAction.toggleFavourite,
     EntryAction.share,
-    EntryAction.rotateScreen,
+    EntryAction.edit,
+    EntryAction.delete,
   ];
   static const showOverlayOnOpening = true;
   static const showOverlayMinimap = false;
