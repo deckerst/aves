@@ -741,7 +741,7 @@ packages:
       name: pdf
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.7.1"
+    version: "3.7.2"
   percent_indicator:
     dependency: "direct main"
     description:
@@ -825,7 +825,7 @@ packages:
       name: printing
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.7.2"
+    version: "5.7.3"
   process:
     dependency: transitive
     description:
@@ -853,7 +853,7 @@ packages:
       name: pub_semver
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.0"
+    version: "2.1.1"
   qr:
     dependency: transitive
     description:
@@ -1019,7 +1019,7 @@ packages:
       name: sqflite_common
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.2.0"
+    version: "2.2.1"
   stack_trace:
     dependency: transitive
     description:
