@@ -147,7 +147,7 @@ dependencies {
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'com.caverock:androidsvg-aar:1.4'
     implementation 'com.commonsware.cwac:document:0.4.1'
-    implementation 'com.drewnoakes:metadata-extractor:2.16.0'
+    implementation 'com.drewnoakes:metadata-extractor:2.17.0'
     // forked, built by JitPack, cf https://jitpack.io/p/deckerst/Android-TiffBitmapFactory
     implementation 'com.github.deckerst:Android-TiffBitmapFactory:876e53870a'
     // forked, built by JitPack, cf https://jitpack.io/p/deckerst/pixymeta-android
