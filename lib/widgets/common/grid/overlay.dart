@@ -56,7 +56,7 @@ class GridItemSelectionOverlay<T> extends StatelessWidget {
               return child;
             },
           )
-        : const SizedBox.shrink();
+        : const SizedBox();
     return AnimatedSwitcher(
       duration: duration,
       child: child,

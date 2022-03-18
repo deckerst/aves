@@ -14,13 +14,14 @@ import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 
 mixin EntryEditorMixin {
-  Future<DateModifier?> selectDateModifier(BuildContext context, Set<AvesEntry> entries) async {
+  Future<DateModifier?> selectDateModifier(BuildContext context, Set<AvesEntry> entries, CollectionLens? collection) async {
     if (entries.isEmpty) return null;
 
     final modifier = await showDialog<DateModifier>(
       context: context,
       builder: (context) => EditEntryDateDialog(
         entry: entries.first,
+        collection: collection,
       ),
     );
     return modifier;
