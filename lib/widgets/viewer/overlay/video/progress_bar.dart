@@ -2,12 +2,14 @@ import 'dart:async';
 
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/format.dart';
+import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/themes.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/fx/blurred.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
 import 'package:aves/widgets/viewer/video/controller.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class VideoProgressBar extends StatefulWidget {
   final AvesVideoController? controller;
@@ -114,10 +116,16 @@ class _VideoProgressBarState extends State<VideoProgressBar> {
                           }),
                     ),
                   ),
-                  Text(
-                    // fake text below to match the height of the text above and center the whole thing
-                    '',
-                    style: textStyle,
+                  Row(
+                    children: [
+                      _buildSpeedIndicator(),
+                      _buildMuteIndicator(),
+                      Text(
+                        // fake text below to match the height of the text above and center the whole thing
+                        '',
+                        style: textStyle,
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -127,6 +135,38 @@ class _VideoProgressBarState extends State<VideoProgressBar> {
       ),
     );
   }
+
+  Widget _buildSpeedIndicator() => StreamBuilder<double>(
+        stream: controller?.speedStream ?? Stream.value(1.0),
+        builder: (context, snapshot) {
+          final speed = controller?.speed ?? 1.0;
+          return speed != 1
+              ? Padding(
+                  padding: const EdgeInsetsDirectional.only(end: 8),
+                  child: Text('x$speed'),
+                )
+              : const SizedBox();
+        },
+      );
+
+  Widget _buildMuteIndicator() => StreamBuilder<double>(
+        stream: controller?.volumeStream ?? Stream.value(1.0),
+        builder: (context, snapshot) {
+          final isMuted = controller?.isMuted ?? false;
+          return isMuted
+              ? Padding(
+                  padding: const EdgeInsetsDirectional.only(end: 8),
+                  child: Selector<MediaQueryData, double>(
+                    selector: (context, mq) => mq.textScaleFactor,
+                    builder: (context, textScaleFactor, child) => Icon(
+                      AIcons.mute,
+                      size: 16 * textScaleFactor,
+                    ),
+                  ),
+                )
+              : const SizedBox();
+        },
+      );
 
   void _seekFromTap(Offset globalPosition) async {
     if (controller == null) return;
