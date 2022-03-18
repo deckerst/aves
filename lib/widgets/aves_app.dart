@@ -200,6 +200,8 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
 
   // save IDs of entries visible at the top of the collection page with current layout settings
   void _saveTopEntries() {
+    if (!settings.initialized) return;
+
     final stopwatch = Stopwatch()..start();
     final screenSize = window.physicalSize / window.devicePixelRatio;
     var tileExtent = settings.getTileExtent(CollectionPage.routeName);
