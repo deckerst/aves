@@ -12,6 +12,7 @@ import 'package:aves/widgets/viewer/info/metadata/xmp_ns/exif.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_ns/google.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_ns/iptc.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_ns/iptc4xmpext.dart';
+import 'package:aves/widgets/viewer/info/metadata/xmp_ns/microsoft.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_ns/mwg.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_ns/photoshop.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_ns/tiff.dart';
@@ -60,6 +61,8 @@ class XmpNamespace extends Equatable {
         return XmpMgwRegionsNamespace(rawProps);
       case XmpMMNamespace.ns:
         return XmpMMNamespace(rawProps);
+      case XmpMPNamespace.ns:
+        return XmpMPNamespace(rawProps);
       case XmpNoteNamespace.ns:
         return XmpNoteNamespace(rawProps);
       case XmpPhotoshopNamespace.ns:
@@ -151,7 +154,7 @@ class XmpNamespace extends Equatable {
         ? [
             if (displayTitle.isNotEmpty)
               Padding(
-                padding: const EdgeInsets.only(top: 8),
+                padding: const EdgeInsets.only(top: 8, bottom: 4),
                 child: HighlightTitle(
                   title: displayTitle,
                   color: context.select<AvesColorsData, Color?>((v) => v.fromBrandColor(BrandColors.get(displayTitle))),
