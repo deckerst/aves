@@ -63,7 +63,6 @@ class SettingsDefaults {
     EntryAction.rotateScreen,
     EntryAction.toggleFavourite,
     EntryAction.share,
-    EntryAction.edit,
     EntryAction.delete,
   ];
   static const showOverlayOnOpening = true;
