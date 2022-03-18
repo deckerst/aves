@@ -57,30 +57,29 @@ class _InfoPageState extends State<InfoPage> {
                   return ValueListenableBuilder<AvesEntry?>(
                     valueListenable: widget.entryNotifier,
                     builder: (context, mainEntry, child) {
-                      if (mainEntry != null) {
-                        Widget _buildContent({AvesEntry? pageEntry}) {
-                          final targetEntry = pageEntry ?? mainEntry;
-                          return EmbeddedDataOpener(
-                            entry: targetEntry,
-                            child: _InfoPageContent(
-                              collection: widget.collection,
-                              entry: targetEntry,
-                              isScrollingNotifier: widget.isScrollingNotifier,
-                              scrollController: _scrollController,
-                              split: mqWidth > splitScreenWidthThreshold,
-                              goToViewer: _goToViewer,
-                            ),
-                          );
-                        }
+                      if (mainEntry == null) return const SizedBox();
 
-                        return mainEntry.isBurst
-                            ? PageEntryBuilder(
-                                multiPageController: context.read<MultiPageConductor>().getController(mainEntry),
-                                builder: (pageEntry) => _buildContent(pageEntry: pageEntry),
-                              )
-                            : _buildContent();
+                      Widget _buildContent({AvesEntry? pageEntry}) {
+                        final targetEntry = pageEntry ?? mainEntry;
+                        return EmbeddedDataOpener(
+                          entry: targetEntry,
+                          child: _InfoPageContent(
+                            collection: widget.collection,
+                            entry: targetEntry,
+                            isScrollingNotifier: widget.isScrollingNotifier,
+                            scrollController: _scrollController,
+                            split: mqWidth > splitScreenWidthThreshold,
+                            goToViewer: _goToViewer,
+                          ),
+                        );
                       }
-                      return const SizedBox();
+
+                      return mainEntry.isBurst
+                          ? PageEntryBuilder(
+                              multiPageController: context.read<MultiPageConductor>().getController(mainEntry),
+                              builder: (pageEntry) => _buildContent(pageEntry: pageEntry),
+                            )
+                          : _buildContent();
                     },
                   );
                 },
