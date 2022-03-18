@@ -24,30 +24,30 @@ class DateModifier extends Equatable {
   List<Object?> get props => [action, fields, setDateTime, copyFieldSource, shiftMinutes];
 
   const DateModifier._private(
-    this.action,
-    this.fields, {
+    this.action, {
+    this.fields = const {},
     this.setDateTime,
     this.copyFieldSource,
     this.shiftMinutes,
   });
 
   factory DateModifier.setCustom(Set<MetadataField> fields, DateTime dateTime) {
-    return DateModifier._private(DateEditAction.setCustom, fields, setDateTime: dateTime);
+    return DateModifier._private(DateEditAction.setCustom, fields: fields, setDateTime: dateTime);
   }
 
-  factory DateModifier.copyField(Set<MetadataField> fields, DateFieldSource copyFieldSource) {
-    return DateModifier._private(DateEditAction.copyField, fields, copyFieldSource: copyFieldSource);
+  factory DateModifier.copyField(DateFieldSource copyFieldSource) {
+    return DateModifier._private(DateEditAction.copyField, copyFieldSource: copyFieldSource);
   }
 
-  factory DateModifier.extractFromTitle(Set<MetadataField> fields) {
-    return DateModifier._private(DateEditAction.extractFromTitle, fields);
+  factory DateModifier.extractFromTitle() {
+    return const DateModifier._private(DateEditAction.extractFromTitle);
   }
 
   factory DateModifier.shift(Set<MetadataField> fields, int shiftMinutes) {
-    return DateModifier._private(DateEditAction.shift, fields, shiftMinutes: shiftMinutes);
+    return DateModifier._private(DateEditAction.shift, fields: fields, shiftMinutes: shiftMinutes);
   }
 
   factory DateModifier.remove(Set<MetadataField> fields) {
-    return DateModifier._private(DateEditAction.remove, fields);
+    return DateModifier._private(DateEditAction.remove, fields: fields);
   }
 }

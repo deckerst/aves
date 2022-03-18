@@ -2,10 +2,9 @@ import 'package:aves/model/covers.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:aves/widgets/common/fx/borders.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
-import 'package:aves/widgets/common/thumbnail/image.dart';
 import 'package:aves/widgets/dialogs/item_pick_dialog.dart';
+import 'package:aves/widgets/dialogs/item_picker.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -66,7 +65,11 @@ class _AddShortcutDialogState extends State<AddShortcutDialog> {
                 Container(
                   alignment: Alignment.center,
                   padding: const EdgeInsets.only(top: 16),
-                  child: _buildCover(_coverEntry!, extent),
+                  child: ItemPicker(
+                    extent: extent,
+                    entry: _coverEntry!,
+                    onTap: _pickEntry,
+                  ),
                 ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 24),
@@ -99,29 +102,6 @@ class _AddShortcutDialogState extends State<AddShortcutDialog> {
             ],
           );
         },
-      ),
-    );
-  }
-
-  Widget _buildCover(AvesEntry entry, double extent) {
-    return GestureDetector(
-      onTap: _pickEntry,
-      child: Container(
-        decoration: BoxDecoration(
-          border: AvesBorder.border(context),
-          borderRadius: const BorderRadius.all(Radius.circular(32)),
-        ),
-        child: ClipRRect(
-          borderRadius: const BorderRadius.all(Radius.circular(32)),
-          child: SizedBox(
-            width: extent,
-            height: extent,
-            child: ThumbnailImage(
-              entry: entry,
-              extent: extent,
-            ),
-          ),
-        ),
       ),
     );
   }

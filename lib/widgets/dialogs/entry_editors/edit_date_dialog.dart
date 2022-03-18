@@ -2,6 +2,7 @@ import 'package:aves/model/entry.dart';
 import 'package:aves/model/metadata/date_modifier.dart';
 import 'package:aves/model/metadata/enums.dart';
 import 'package:aves/model/metadata/fields.dart';
+import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/format.dart';
 import 'package:aves/theme/icons.dart';
@@ -10,15 +11,19 @@ import 'package:aves/widgets/common/basic/wheel.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
+import 'package:aves/widgets/dialogs/item_pick_dialog.dart';
+import 'package:aves/widgets/dialogs/item_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class EditEntryDateDialog extends StatefulWidget {
   final AvesEntry entry;
+  final CollectionLens? collection;
 
   const EditEntryDateDialog({
     Key? key,
     required this.entry,
+    this.collection,
   }) : super(key: key);
 
   @override
@@ -28,21 +33,29 @@ class EditEntryDateDialog extends StatefulWidget {
 class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
   DateEditAction _action = DateEditAction.setCustom;
   DateFieldSource _copyFieldSource = DateFieldSource.fileModifiedDate;
+  late AvesEntry _copyItemSource;
   late DateTime _setDateTime;
   late ValueNotifier<int> _shiftHour, _shiftMinute;
   late ValueNotifier<String> _shiftSign;
   bool _showOptions = false;
   final Set<MetadataField> _fields = {...DateModifier.writableDateFields};
 
+  DateTime get copyItemDate => _copyItemSource.bestDate ?? DateTime.now();
+
   @override
   void initState() {
     super.initState();
     _initSet();
+    _initCopyItem();
     _initShift(60);
   }
 
   void _initSet() {
     _setDateTime = widget.entry.bestDate ?? DateTime.now();
+  }
+
+  void _initCopyItem() {
+    _copyItemSource = widget.entry;
   }
 
   void _initShift(int initialMinutes) {
@@ -91,6 +104,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
                   children: [
                     if (_action == DateEditAction.setCustom) _buildSetCustomContent(context),
                     if (_action == DateEditAction.copyField) _buildCopyFieldContent(context),
+                    if (_action == DateEditAction.copyItem) _buildCopyItemContent(context),
                     if (_action == DateEditAction.shift) _buildShiftContent(context),
                     (_action == DateEditAction.shift || _action == DateEditAction.remove) ? _buildDestinationFields(context) : const SizedBox(height: 8),
                   ],
@@ -166,6 +180,27 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
         onChanged: (v) => setState(() => _copyFieldSource = v!),
         isExpanded: true,
         dropdownColor: Themes.thirdLayerColor(context),
+      ),
+    );
+  }
+
+  Widget _buildCopyItemContent(BuildContext context) {
+    final l10n = context.l10n;
+    final locale = l10n.localeName;
+    final use24hour = context.select<MediaQueryData, bool>((v) => v.alwaysUse24HourFormat);
+
+    return Padding(
+      padding: const EdgeInsetsDirectional.only(start: 16, end: 8),
+      child: Row(
+        children: [
+          Expanded(child: Text(formatDateTime(copyItemDate, locale, use24hour))),
+          const SizedBox(width: 8),
+          ItemPicker(
+            extent: 48,
+            entry: _copyItemSource,
+            onTap: _pickCopyItemSource,
+          ),
+        ],
       ),
     );
   }
@@ -268,6 +303,8 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
         return l10n.editEntryDateDialogSetCustom;
       case DateEditAction.copyField:
         return l10n.editEntryDateDialogCopyField;
+      case DateEditAction.copyItem:
+        return l10n.editEntryDateDialogCopyItem;
       case DateEditAction.extractFromTitle:
         return l10n.editEntryDateDialogExtractFromTitle;
       case DateEditAction.shift:
@@ -335,6 +372,27 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
         ));
   }
 
+  Future<void> _pickCopyItemSource() async {
+    final _collection = widget.collection;
+    if (_collection == null) return;
+
+    final entry = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        settings: const RouteSettings(name: ItemPickDialog.routeName),
+        builder: (context) => ItemPickDialog(
+          collection: CollectionLens(
+            source: _collection.source,
+          ),
+        ),
+        fullscreenDialog: true,
+      ),
+    );
+    if (entry != null) {
+      setState(() => _copyItemSource = entry);
+    }
+  }
+
   DateModifier _getModifier() {
     // fields to modify are only set for the `shift` and `remove` actions,
     // as the effective fields for the other actions will depend on
@@ -343,9 +401,11 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
       case DateEditAction.setCustom:
         return DateModifier.setCustom(const {}, _setDateTime);
       case DateEditAction.copyField:
-        return DateModifier.copyField(const {}, _copyFieldSource);
+        return DateModifier.copyField(_copyFieldSource);
+      case DateEditAction.copyItem:
+        return DateModifier.setCustom(const {}, copyItemDate);
       case DateEditAction.extractFromTitle:
-        return DateModifier.extractFromTitle(const {});
+        return DateModifier.extractFromTitle();
       case DateEditAction.shift:
         final shiftTotalMinutes = (_shiftHour.value * 60 + _shiftMinute.value) * (_shiftSign.value == '+' ? 1 : -1);
         return DateModifier.shift(_fields, shiftTotalMinutes);

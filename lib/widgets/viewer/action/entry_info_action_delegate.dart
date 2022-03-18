@@ -97,7 +97,7 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
   }
 
   Future<void> _editDate(BuildContext context) async {
-    final modifier = await selectDateModifier(context, {entry});
+    final modifier = await selectDateModifier(context, {entry}, collection);
     if (modifier == null) return;
 
     await edit(context, () => entry.editDate(modifier));

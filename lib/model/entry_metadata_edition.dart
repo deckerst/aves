@@ -42,6 +42,7 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
           switch (appliedModifier.action) {
             case DateEditAction.setCustom:
             case DateEditAction.copyField:
+            case DateEditAction.copyItem:
             case DateEditAction.extractFromTitle:
               editCreateDateXmp(descriptions, appliedModifier.setDateTime);
               break;
@@ -319,6 +320,7 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
         final date = parseUnknownDateFormat(bestTitle);
         return date != null ? DateModifier.setCustom(mainMetadataDate(), date) : null;
       case DateEditAction.setCustom:
+      case DateEditAction.copyItem:
         return DateModifier.setCustom(mainMetadataDate(), modifier.setDateTime!);
       case DateEditAction.shift:
       case DateEditAction.remove:

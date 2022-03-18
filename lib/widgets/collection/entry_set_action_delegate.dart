@@ -427,7 +427,8 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     final todoItems = await _getEditableTargetItems(context, canEdit: (entry) => entry.canEditDate);
     if (todoItems == null || todoItems.isEmpty) return;
 
-    final modifier = await selectDateModifier(context, todoItems);
+    final collection = context.read<CollectionLens>();
+    final modifier = await selectDateModifier(context, todoItems, collection);
     if (modifier == null) return;
 
     await _edit(context, todoItems, (entry) => entry.editDate(modifier));
