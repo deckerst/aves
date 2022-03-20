@@ -137,6 +137,10 @@
   "accessibilityAnimationsRemove": "Prevenir efectos en pantalla",
   "accessibilityAnimationsKeep": "Mantener efectos en pantalla",
 
+  "themeBrightnessLight": "Claro",
+  "themeBrightnessDark": "Obscuro",
+  "themeBrightnessBlack": "Negro",
+
   "albumTierNew": "Nuevo",
   "albumTierPinned": "Fijado",
   "albumTierSpecial": "Común",
@@ -171,6 +175,9 @@
   "binEntriesConfirmationDialogMessage": "{count, plural, =1{¿Mover este elemento al cesto de basura?} other{¿Mover estos {count} elementos al cesto de basura?}}",
   "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{¿Está seguro de borrar este elemento?} other{¿Está seguro de querer borrar {count} elementos?}}",
 
+"moveUndatedConfirmationDialogMessage": "Algunos elementos no poseen fecha en sus metadatos. Su fecha actual será reemplazada por esta operación a menos que una fecha de metadatos sea fijada.",
+"moveUndatedConfirmationDialogSetDate": "Fijar fecha",
+
   "videoResumeDialogMessage": "¿Desea reanudar la reproducción a las {time}?",
   "videoStartOverButtonLabel": "VOLVER A EMPEZAR",
   "videoResumeButtonLabel": "REANUDAR",
@@ -201,6 +208,7 @@
   "editEntryDateDialogTitle": "Fecha y hora",
   "editEntryDateDialogSetCustom": "Establecer fecha personalizada",
   "editEntryDateDialogCopyField": "Copiar de otra fecha",
+  "editEntryDateDialogCopyItem": "Copiar de otro elemento",
   "editEntryDateDialogExtractFromTitle": "Extraer del título",
   "editEntryDateDialogShift": "Cambiar",
   "editEntryDateDialogSourceFileModifiedDate": "Fecha de modificación del archivo",
@@ -394,6 +402,7 @@
   "settingsConfirmationDialogTitle": "Diálogos de confirmación",
   "settingsConfirmationDialogDeleteItems": "Preguntar antes de eliminar elementos permanentemente",
   "settingsConfirmationDialogMoveToBinItems": "Preguntar antes de mover elementos al cesto de basura",
+  "settingsConfirmationDialogMoveUndatedItems": "Preguntar antes de mover elementos sin una fecha de metadatos",
 
   "settingsNavigationDrawerTile": "Menú de navegación",
   "settingsNavigationDrawerEditorTitle": "Menú de navegación",
@@ -503,6 +512,10 @@
   "settingsRemoveAnimationsTitle": "Remover animaciones",
   "settingsTimeToTakeActionTile": "Retraso para ejecutar una acción",
   "settingsTimeToTakeActionTitle": "Retraso para ejecutar una acción",
+
+  "settingsSectionDisplay": "Pantalla",
+  "settingsThemeBrightness": "Tema",
+  "settingsThemeColorful": "Colorido",
 
   "settingsSectionLanguage": "Idioma y formatos",
   "settingsLanguage": "Idioma",
