@@ -15,6 +15,10 @@ All notable changes to this project will be documented in this file.
 
 - Viewer: quick action defaults
 
+### Removed
+
+- metadata editing support for DNG
+
 ### Fixed
 
 - app launch despite faulty storage volumes on Android 11+
