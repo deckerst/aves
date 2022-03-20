@@ -52,7 +52,10 @@ class Settings extends ChangeNotifier {
   static const mustBackTwiceToExitKey = 'must_back_twice_to_exit';
   static const keepScreenOnKey = 'keep_screen_on';
   static const homePageKey = 'home_page';
-  static const confirmationDialogsKey = 'confirmation_dialogs';
+  static const confirmDeleteForeverKey = 'confirm_delete_forever';
+  static const confirmMoveToBinKey = 'confirm_move_to_bin';
+  static const confirmMoveUndatedItemsKey = 'confirm_move_undated_items';
+  static const setMetadataDateBeforeFileOpKey = 'set_metadata_date_before_file_op';
   static const drawerTypeBookmarksKey = 'drawer_type_bookmarks';
   static const drawerAlbumBookmarksKey = 'drawer_album_bookmarks';
   static const drawerPageBookmarksKey = 'drawer_page_bookmarks';
@@ -279,9 +282,21 @@ class Settings extends ChangeNotifier {
 
   set homePage(HomePageSetting newValue) => setAndNotify(homePageKey, newValue.toString());
 
-  List<ConfirmationDialog> get confirmationDialogs => getEnumListOrDefault(confirmationDialogsKey, SettingsDefaults.confirmationDialogs, ConfirmationDialog.values);
+  bool get confirmDeleteForever => getBoolOrDefault(confirmDeleteForeverKey, SettingsDefaults.confirmDeleteForever);
 
-  set confirmationDialogs(List<ConfirmationDialog> newValue) => setAndNotify(confirmationDialogsKey, newValue.map((v) => v.toString()).toList());
+  set confirmDeleteForever(bool newValue) => setAndNotify(confirmDeleteForeverKey, newValue);
+
+  bool get confirmMoveToBin => getBoolOrDefault(confirmMoveToBinKey, SettingsDefaults.confirmMoveToBin);
+
+  set confirmMoveToBin(bool newValue) => setAndNotify(confirmMoveToBinKey, newValue);
+
+  bool get confirmMoveUndatedItems => getBoolOrDefault(confirmMoveUndatedItemsKey, SettingsDefaults.confirmMoveUndatedItems);
+
+  set confirmMoveUndatedItems(bool newValue) => setAndNotify(confirmMoveUndatedItemsKey, newValue);
+
+  bool get setMetadataDateBeforeFileOp => getBoolOrDefault(setMetadataDateBeforeFileOpKey, SettingsDefaults.setMetadataDateBeforeFileOp);
+
+  set setMetadataDateBeforeFileOp(bool newValue) => setAndNotify(setMetadataDateBeforeFileOpKey, newValue);
 
   List<CollectionFilter?> get drawerTypeBookmarks =>
       (getStringList(drawerTypeBookmarksKey))?.map((v) {
@@ -656,6 +671,10 @@ class Settings extends ChangeNotifier {
             case isInstalledAppAccessAllowedKey:
             case isErrorReportingAllowedKey:
             case mustBackTwiceToExitKey:
+            case confirmDeleteForeverKey:
+            case confirmMoveToBinKey:
+            case confirmMoveUndatedItemsKey:
+            case setMetadataDateBeforeFileOpKey:
             case showThumbnailFavouriteKey:
             case showThumbnailLocationKey:
             case showThumbnailMotionPhotoKey:
@@ -710,7 +729,6 @@ class Settings extends ChangeNotifier {
                 debugPrint('failed to import key=$key, value=$newValue is not a string');
               }
               break;
-            case confirmationDialogsKey:
             case drawerTypeBookmarksKey:
             case drawerAlbumBookmarksKey:
             case drawerPageBookmarksKey:

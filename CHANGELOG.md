@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Added
+
+- Theme: light/dark/black and poly/monochrome settings
+- Video: speed and muted state indicators
+- Info: option to set date from other item
+- warn and optionally set metadata date before moving undated items
+
+### Changed
+
+- Viewer: quick action defaults
+
+### Fixed
+
+- app launch despite faulty storage volumes on Android 11+
+
 ## <a id="v1.6.2"></a>[v1.6.2] - 2022-03-07
 
 ### Added

@@ -7,7 +7,10 @@ import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/trash.dart';
 import 'package:aves/model/highlight.dart';
+import 'package:aves/model/metadata/date_modifier.dart';
+import 'package:aves/model/metadata/enums.dart';
 import 'package:aves/model/settings/enums/enums.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/common/image_op_events.dart';
@@ -16,6 +19,7 @@ import 'package:aves/services/media/enums.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
+import 'package:aves/widgets/collection/entry_set_action_delegate.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
 import 'package:aves/widgets/common/action_mixins/size_aware.dart';
@@ -42,12 +46,12 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
 
     final l10n = context.l10n;
     if (toBin) {
-      if (!(await showConfirmationDialog(
+      if (!await showConfirmationDialog(
         context: context,
         type: ConfirmationDialog.moveToBin,
         message: l10n.binEntriesConfirmationDialogMessage(todoCount),
         confirmationButtonLabel: l10n.deleteButtonLabel,
-      ))) return;
+      )) return;
     }
 
     final entriesByDestination = <String, Set<AvesEntry>>{};
@@ -107,6 +111,8 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
         nameConflictStrategy = value;
       }
     }
+
+    if ({MoveType.move, MoveType.copy}.contains(moveType) && !await _checkUndatedItems(context, entries)) return;
 
     final source = context.read<CollectionSource>();
     source.pauseMonitoring();
@@ -196,4 +202,60 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
       },
     );
   }
+
+  Future<bool> _checkUndatedItems(BuildContext context, Set<AvesEntry> entries) async {
+    final undatedItems = entries.where((entry) {
+      if (!entry.isCatalogued) return false;
+      final dateMillis = entry.catalogMetadata?.dateMillis;
+      return dateMillis == null || dateMillis == 0;
+    }).toSet();
+    if (undatedItems.isNotEmpty) {
+      if (!await showConfirmationDialog(
+        context: context,
+        type: ConfirmationDialog.moveUndatedItems,
+        delegate: MoveUndatedConfirmationDialogDelegate(),
+        confirmationButtonLabel: context.l10n.continueButtonLabel,
+      )) return false;
+
+      if (settings.setMetadataDateBeforeFileOp) {
+        final entriesToDate = undatedItems.where((entry) => entry.canEditDate).toSet();
+        if (entriesToDate.isNotEmpty) {
+          await EntrySetActionDelegate().editDate(
+            context,
+            entries: entriesToDate,
+            modifier: DateModifier.copyField(DateFieldSource.fileModifiedDate),
+            showResult: false,
+          );
+        }
+      }
+    }
+    return true;
+  }
+}
+
+class MoveUndatedConfirmationDialogDelegate extends ConfirmationDialogDelegate {
+  final ValueNotifier<bool> _setMetadataDate = ValueNotifier(false);
+
+  MoveUndatedConfirmationDialogDelegate() {
+    _setMetadataDate.value = settings.setMetadataDateBeforeFileOp;
+  }
+
+  @override
+  List<Widget> build(BuildContext context) => [
+        Padding(
+          padding: const EdgeInsets.all(16) + const EdgeInsets.only(top: 8),
+          child: Text(context.l10n.moveUndatedConfirmationDialogMessage),
+        ),
+        ValueListenableBuilder<bool>(
+          valueListenable: _setMetadataDate,
+          builder: (context, flag, child) => SwitchListTile(
+            value: flag,
+            onChanged: (v) => _setMetadataDate.value = v,
+            title: Text(context.l10n.moveUndatedConfirmationDialogSetDate),
+          ),
+        ),
+      ];
+
+  @override
+  void apply() => settings.setMetadataDateBeforeFileOp = _setMetadataDate.value;
 }

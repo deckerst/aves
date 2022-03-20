@@ -75,7 +75,7 @@ mixin LocationMixin on SourceBase {
   // full reverse geocoding, requiring Play Services and some connectivity
   Future<void> _locatePlaces(AnalysisController controller, Set<AvesEntry> candidateEntries) async {
     if (controller.isStopping) return;
-    if (!(await availability.canLocatePlaces)) return;
+    if (!await availability.canLocatePlaces) return;
 
     final force = controller.force;
     final todo = (force ? candidateEntries.where((entry) => entry.hasGps) : candidateEntries.where(locatePlacesTest)).toSet();
