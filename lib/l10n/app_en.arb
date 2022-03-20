@@ -286,6 +286,8 @@
       "count": {}
     }
   },
+  "moveUndatedConfirmationDialogMessage": "Some items have no metadata date. Their current date will be reset by this operation unless a metadata date is set.",
+  "moveUndatedConfirmationDialogSetDate": "Set date",
 
   "videoResumeDialogMessage": "Do you want to resume playing at {time}?",
   "@videoResumeDialogMessage": {
@@ -568,6 +570,7 @@
   "settingsConfirmationDialogTitle": "Confirmation Dialogs",
   "settingsConfirmationDialogDeleteItems": "Ask before deleting items forever",
   "settingsConfirmationDialogMoveToBinItems": "Ask before moving items to the recycle bin",
+  "settingsConfirmationDialogMoveUndatedItems": "Ask before moving items without a metadata date",
 
   "settingsNavigationDrawerTile": "Navigation menu",
   "settingsNavigationDrawerEditorTitle": "Navigation Menu",

@@ -8,6 +8,7 @@ import 'package:aves/model/entry.dart';
 import 'package:aves/model/entry_metadata_edition.dart';
 import 'package:aves/model/favourites.dart';
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/metadata/date_modifier.dart';
 import 'package:aves/model/query.dart';
 import 'package:aves/model/selection.dart';
 import 'package:aves/model/settings/enums/enums.dart';
@@ -197,7 +198,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
         _flip(context);
         break;
       case EntrySetAction.editDate:
-        _editDate(context);
+        editDate(context);
         break;
       case EntrySetAction.editLocation:
         _editLocation(context);
@@ -212,6 +213,11 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
         _removeMetadata(context);
         break;
     }
+  }
+
+  void _leaveSelectionMode(BuildContext context) {
+    final selection = context.read<Selection<AvesEntry>?>();
+    selection?.browse();
   }
 
   Set<AvesEntry> _getTargetItems(BuildContext context) {
@@ -234,8 +240,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     final collection = context.read<CollectionLens>();
     collection.source.analyze(controller, entries: entries);
 
-    final selection = context.read<Selection<AvesEntry>>();
-    selection.browse();
+    _leaveSelectionMode(context);
   }
 
   Future<void> _toggleFavourite(BuildContext context) async {
@@ -246,8 +251,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       await favourites.add(entries);
     }
 
-    final selection = context.read<Selection<AvesEntry>>();
-    selection.browse();
+    _leaveSelectionMode(context);
   }
 
   Future<void> _delete(BuildContext context) async {
@@ -264,12 +268,12 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     final selectionDirs = entries.map((e) => e.directory).whereNotNull().toSet();
     final todoCount = entries.length;
 
-    if (!(await showConfirmationDialog(
+    if (!await showConfirmationDialog(
       context: context,
-      type: ConfirmationDialog.delete,
+      type: ConfirmationDialog.deleteForever,
       message: l10n.deleteEntriesConfirmationDialogMessage(todoCount),
       confirmationButtonLabel: l10n.deleteButtonLabel,
-    ))) return;
+    )) return;
 
     if (!pureTrash && !await checkStoragePermissionForAlbums(context, selectionDirs, entries: entries)) return;
 
@@ -298,23 +302,22 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       },
     );
 
-    final selection = context.read<Selection<AvesEntry>>();
-    selection.browse();
+    _leaveSelectionMode(context);
   }
 
   Future<void> _move(BuildContext context, {required MoveType moveType}) async {
     final entries = _getTargetItems(context);
     await move(context, moveType: moveType, entries: entries);
 
-    final selection = context.read<Selection<AvesEntry>>();
-    selection.browse();
+    _leaveSelectionMode(context);
   }
 
   Future<void> _edit(
     BuildContext context,
     Set<AvesEntry> todoItems,
-    Future<Set<EntryDataType>> Function(AvesEntry entry) op,
-  ) async {
+    Future<Set<EntryDataType>> Function(AvesEntry entry) op, {
+    bool showResult = true,
+  }) async {
     final selectionDirs = todoItems.map((e) => e.directory).whereNotNull().toSet();
     final todoCount = todoItems.length;
 
@@ -355,19 +358,20 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
           }
         }));
 
-        final l10n = context.l10n;
-        final successCount = successOps.length;
-        if (successCount < todoCount) {
-          final count = todoCount - successCount;
-          showFeedback(context, l10n.collectionEditFailureFeedback(count));
-        } else {
-          final count = editedOps.length;
-          showFeedback(context, l10n.collectionEditSuccessFeedback(count));
+        if (showResult) {
+          final l10n = context.l10n;
+          final successCount = successOps.length;
+          if (successCount < todoCount) {
+            final count = todoCount - successCount;
+            showFeedback(context, l10n.collectionEditFailureFeedback(count));
+          } else {
+            final count = editedOps.length;
+            showFeedback(context, l10n.collectionEditSuccessFeedback(count));
+          }
         }
       },
     );
-    final selection = context.read<Selection<AvesEntry>>();
-    selection.browse();
+    _leaveSelectionMode(context);
   }
 
   Future<Set<AvesEntry>?> _getEditableTargetItems(
@@ -410,78 +414,80 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
   }
 
   Future<void> _rotate(BuildContext context, {required bool clockwise}) async {
-    final todoItems = await _getEditableTargetItems(context, canEdit: (entry) => entry.canRotateAndFlip);
-    if (todoItems == null || todoItems.isEmpty) return;
+    final entries = await _getEditableTargetItems(context, canEdit: (entry) => entry.canRotateAndFlip);
+    if (entries == null || entries.isEmpty) return;
 
-    await _edit(context, todoItems, (entry) => entry.rotate(clockwise: clockwise));
+    await _edit(context, entries, (entry) => entry.rotate(clockwise: clockwise));
   }
 
   Future<void> _flip(BuildContext context) async {
-    final todoItems = await _getEditableTargetItems(context, canEdit: (entry) => entry.canRotateAndFlip);
-    if (todoItems == null || todoItems.isEmpty) return;
+    final entries = await _getEditableTargetItems(context, canEdit: (entry) => entry.canRotateAndFlip);
+    if (entries == null || entries.isEmpty) return;
 
-    await _edit(context, todoItems, (entry) => entry.flip());
+    await _edit(context, entries, (entry) => entry.flip());
   }
 
-  Future<void> _editDate(BuildContext context) async {
-    final todoItems = await _getEditableTargetItems(context, canEdit: (entry) => entry.canEditDate);
-    if (todoItems == null || todoItems.isEmpty) return;
+  Future<void> editDate(BuildContext context, {Set<AvesEntry>? entries, DateModifier? modifier, bool showResult = true}) async {
+    entries ??= await _getEditableTargetItems(context, canEdit: (entry) => entry.canEditDate);
+    if (entries == null || entries.isEmpty) return;
 
-    final collection = context.read<CollectionLens>();
-    final modifier = await selectDateModifier(context, todoItems, collection);
+    if (modifier == null) {
+      final collection = context.read<CollectionLens>();
+      modifier = await selectDateModifier(context, entries, collection);
+    }
     if (modifier == null) return;
 
-    await _edit(context, todoItems, (entry) => entry.editDate(modifier));
+    await _edit(context, entries, (entry) => entry.editDate(modifier!), showResult: showResult);
   }
 
   Future<void> _editLocation(BuildContext context) async {
-    final todoItems = await _getEditableTargetItems(context, canEdit: (entry) => entry.canEditLocation);
-    if (todoItems == null || todoItems.isEmpty) return;
+    final entries = await _getEditableTargetItems(context, canEdit: (entry) => entry.canEditLocation);
+    if (entries == null || entries.isEmpty) return;
 
     final collection = context.read<CollectionLens>();
-    final location = await selectLocation(context, todoItems, collection);
+    final location = await selectLocation(context, entries, collection);
     if (location == null) return;
 
-    await _edit(context, todoItems, (entry) => entry.editLocation(location));
+    await _edit(context, entries, (entry) => entry.editLocation(location));
   }
 
   Future<void> _editRating(BuildContext context) async {
-    final todoItems = await _getEditableTargetItems(context, canEdit: (entry) => entry.canEditRating);
-    if (todoItems == null || todoItems.isEmpty) return;
+    final entries = await _getEditableTargetItems(context, canEdit: (entry) => entry.canEditRating);
+    if (entries == null || entries.isEmpty) return;
 
-    final rating = await selectRating(context, todoItems);
+    final rating = await selectRating(context, entries);
     if (rating == null) return;
 
-    await _edit(context, todoItems, (entry) => entry.editRating(rating));
+    await _edit(context, entries, (entry) => entry.editRating(rating));
   }
 
   Future<void> _editTags(BuildContext context) async {
-    final todoItems = await _getEditableTargetItems(context, canEdit: (entry) => entry.canEditTags);
-    if (todoItems == null || todoItems.isEmpty) return;
+    final entries = await _getEditableTargetItems(context, canEdit: (entry) => entry.canEditTags);
+    if (entries == null || entries.isEmpty) return;
 
-    final newTagsByEntry = await selectTags(context, todoItems);
+    final newTagsByEntry = await selectTags(context, entries);
     if (newTagsByEntry == null) return;
 
     // only process modified items
-    todoItems.removeWhere((entry) {
+    entries.removeWhere((entry) {
       final newTags = newTagsByEntry[entry] ?? entry.tags;
       final currentTags = entry.tags;
       return newTags.length == currentTags.length && newTags.every(currentTags.contains);
     });
 
-    if (todoItems.isEmpty) return;
+    if (entries.isEmpty) return;
 
-    await _edit(context, todoItems, (entry) => entry.editTags(newTagsByEntry[entry]!));
+    await _edit(context, entries, (entry) => entry.editTags(newTagsByEntry[entry]!));
   }
 
   Future<void> _removeMetadata(BuildContext context) async {
-    final todoItems = await _getEditableTargetItems(context, canEdit: (entry) => entry.canRemoveMetadata);
-    if (todoItems == null || todoItems.isEmpty) return;
+    final entries = await _getEditableTargetItems(context, canEdit: (entry) => entry.canRemoveMetadata);
+    if (entries == null || entries.isEmpty) return;
 
-    final types = await selectMetadataToRemove(context, todoItems);
+    final types = await selectMetadataToRemove(context, entries);
     if (types == null || types.isEmpty) return;
 
-    await _edit(context, todoItems, (entry) => entry.removeMetadata(types));
+    await _edit(context, entries, (entry) => entry.removeMetadata(types));
   }
 
   void _goToMap(BuildContext context) {

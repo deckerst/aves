@@ -290,7 +290,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
 
     if (!await checkStoragePermissionForAlbums(context, {album})) return;
 
-    if (!(await File(destinationAlbum).exists())) {
+    if (!await File(destinationAlbum).exists()) {
       // access to the destination parent is required to create the underlying destination folder
       if (!await checkStoragePermissionForAlbums(context, {destinationAlbumParent})) return;
     }

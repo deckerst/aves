@@ -23,7 +23,10 @@ class SettingsDefaults {
   static const mustBackTwiceToExit = true;
   static const keepScreenOn = KeepScreenOn.viewerOnly;
   static const homePage = HomePageSetting.collection;
-  static const confirmationDialogs = ConfirmationDialog.values;
+  static const confirmDeleteForever = true;
+  static const confirmMoveToBin = true;
+  static const confirmMoveUndatedItems = true;
+  static const setMetadataDateBeforeFileOp = false;
   static final drawerTypeBookmarks = [
     null,
     MimeFilter.video,

@@ -5,56 +5,107 @@ import 'package:flutter/material.dart';
 
 import 'aves_dialog.dart';
 
+abstract class ConfirmationDialogDelegate {
+  List<Widget> build(BuildContext context);
+
+  void apply() {}
+}
+
+class MessageConfirmationDialogDelegate extends ConfirmationDialogDelegate {
+  final String message;
+
+  MessageConfirmationDialogDelegate(this.message);
+
+  @override
+  List<Widget> build(BuildContext context) => [
+        Padding(
+          padding: const EdgeInsets.all(16) + const EdgeInsets.only(top: 8),
+          child: Text(message),
+        ),
+      ];
+}
+
 Future<bool> showConfirmationDialog({
   required BuildContext context,
   required ConfirmationDialog type,
-  required String message,
+  String? message,
+  ConfirmationDialogDelegate? delegate,
   required String confirmationButtonLabel,
 }) async {
-  if (!settings.confirmationDialogs.contains(type)) return true;
+  if (!_shouldConfirm(type)) return true;
 
+  assert((message != null) ^ (delegate != null));
+  final effectiveDelegate = delegate ?? MessageConfirmationDialogDelegate(message!);
   final confirmed = await showDialog<bool>(
     context: context,
-    builder: (context) => AvesConfirmationDialog(
+    builder: (context) => _AvesConfirmationDialog(
       type: type,
-      message: message,
+      delegate: effectiveDelegate,
       confirmationButtonLabel: confirmationButtonLabel,
     ),
   );
-  return confirmed == true;
+  if (confirmed == null) return false;
+
+  if (confirmed) {
+    effectiveDelegate.apply();
+  }
+  return confirmed;
 }
 
-class AvesConfirmationDialog extends StatefulWidget {
-  final ConfirmationDialog type;
-  final String message, confirmationButtonLabel;
+bool _shouldConfirm(ConfirmationDialog type) {
+  switch (type) {
+    case ConfirmationDialog.deleteForever:
+      return settings.confirmDeleteForever;
+    case ConfirmationDialog.moveToBin:
+      return settings.confirmMoveToBin;
+    case ConfirmationDialog.moveUndatedItems:
+      return settings.confirmMoveUndatedItems;
+  }
+}
 
-  const AvesConfirmationDialog({
+void _skipConfirmation(ConfirmationDialog type) {
+  switch (type) {
+    case ConfirmationDialog.deleteForever:
+      settings.confirmDeleteForever = false;
+      break;
+    case ConfirmationDialog.moveToBin:
+      settings.confirmMoveToBin = false;
+      break;
+    case ConfirmationDialog.moveUndatedItems:
+      settings.confirmMoveUndatedItems = false;
+      break;
+  }
+}
+
+class _AvesConfirmationDialog extends StatefulWidget {
+  final ConfirmationDialog type;
+  final ConfirmationDialogDelegate delegate;
+  final String confirmationButtonLabel;
+
+  const _AvesConfirmationDialog({
     Key? key,
     required this.type,
-    required this.message,
+    required this.delegate,
     required this.confirmationButtonLabel,
   }) : super(key: key);
 
   @override
-  State<AvesConfirmationDialog> createState() => _AvesConfirmationDialogState();
+  State<_AvesConfirmationDialog> createState() => _AvesConfirmationDialogState();
 }
 
-class _AvesConfirmationDialogState extends State<AvesConfirmationDialog> {
-  final ValueNotifier<bool> _skipConfirmation = ValueNotifier(false);
+class _AvesConfirmationDialogState extends State<_AvesConfirmationDialog> {
+  final ValueNotifier<bool> _skip = ValueNotifier(false);
 
   @override
   Widget build(BuildContext context) {
     return AvesDialog(
       scrollableContent: [
-        Padding(
-          padding: const EdgeInsets.all(16) + const EdgeInsets.only(top: 8),
-          child: Text(widget.message),
-        ),
+        ...widget.delegate.build(context),
         ValueListenableBuilder<bool>(
-          valueListenable: _skipConfirmation,
-          builder: (context, ask, child) => SwitchListTile(
-            value: ask,
-            onChanged: (v) => _skipConfirmation.value = v,
+          valueListenable: _skip,
+          builder: (context, flag, child) => SwitchListTile(
+            value: flag,
+            onChanged: (v) => _skip.value = v,
             title: Text(context.l10n.doNotAskAgain),
           ),
         ),
@@ -66,8 +117,8 @@ class _AvesConfirmationDialogState extends State<AvesConfirmationDialog> {
         ),
         TextButton(
           onPressed: () {
-            if (_skipConfirmation.value) {
-              settings.confirmationDialogs = settings.confirmationDialogs.toList()..remove(widget.type);
+            if (_skip.value) {
+              _skipConfirmation(widget.type);
             }
             Navigator.pop(context, true);
           },

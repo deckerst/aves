@@ -187,12 +187,12 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     }
 
     final l10n = context.l10n;
-    if (!(await showConfirmationDialog(
+    if (!await showConfirmationDialog(
       context: context,
-      type: ConfirmationDialog.delete,
+      type: ConfirmationDialog.deleteForever,
       message: l10n.deleteEntriesConfirmationDialogMessage(1),
       confirmationButtonLabel: l10n.deleteButtonLabel,
-    ))) return;
+    )) return;
 
     if (!await checkStoragePermission(context, {entry})) return;
 
