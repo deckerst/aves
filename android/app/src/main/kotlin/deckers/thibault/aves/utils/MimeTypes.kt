@@ -26,7 +26,7 @@ object MimeTypes {
     private const val CR2 = "image/x-canon-cr2"
     private const val CRW = "image/x-canon-crw"
     private const val DCR = "image/x-kodak-dcr"
-    private const val DNG = "image/x-adobe-dng"
+    const val DNG = "image/x-adobe-dng"
     private const val ERF = "image/x-epson-erf"
     private const val K25 = "image/x-kodak-k25"
     private const val KDC = "image/x-kodak-kdc"
