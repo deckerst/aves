@@ -100,23 +100,6 @@ object ExifTags {
     // Type = UNDEFINED
     private const val TAG_IMAGE_SOURCE_DATA = 0x935c
 
-    /*
-    DNG
-    https://www.adobe.com/content/dam/acom/en/products/photoshop/pdfs/dng_spec_1.4.0.0.pdf
-     */
-
-    // CameraSerialNumber
-    // Tag = 50735 (C62F.H)
-    // Type = ASCII
-    // Count = variable
-    private const val TAG_CAMERA_SERIAL_NUMBER = 0xc62f
-
-    // OriginalRawFileName (optional)
-    // Tag = 50827 (C68B.H)
-    // Type = ASCII or BYTE
-    // Count = variable
-    private const val TAG_ORIGINAL_RAW_FILE_NAME = 0xc68b
-
     private val geotiffTags = listOf(
         TAG_GEO_ASCII_PARAMS,
         TAG_GEO_DOUBLE_PARAMS,
@@ -144,10 +127,9 @@ object ExifTags {
         TAG_MODEL_TRANSFORMATION to "Model Transformation",
         // Photoshop
         TAG_IMAGE_SOURCE_DATA to "Image Source Data",
-        // DNG
-        TAG_CAMERA_SERIAL_NUMBER to "Camera Serial Number",
-        TAG_ORIGINAL_RAW_FILE_NAME to "Original Raw File Name",
-    )
+    ).apply {
+        putAll(DngTags.tagNameMap)
+    }
 
     fun isGeoTiffTag(tag: Int) = geotiffTags.contains(tag)
 
