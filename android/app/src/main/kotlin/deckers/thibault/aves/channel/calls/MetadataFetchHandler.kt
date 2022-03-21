@@ -74,7 +74,10 @@ import deckers.thibault.aves.utils.UriUtils.tryParseId
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets
 import java.text.ParseException
@@ -163,15 +166,24 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                             // tags
                             val tags = dir.tags
                             if (dir is ExifDirectoryBase) {
-                                if (dir.isGeoTiff()) {
-                                    // split GeoTIFF tags in their own directory
-                                    val byGeoTiff = tags.groupBy { ExifTags.isGeoTiffTag(it.tagType) }
-                                    metadataMap["GeoTIFF"] = HashMap<String, String>().apply {
-                                        byGeoTiff[true]?.map { exifTagMapper(it) }?.let { putAll(it) }
+                                when {
+                                    dir.isGeoTiff() -> {
+                                        // split GeoTIFF tags in their own directory
+                                        val geoTiffDirMap = metadataMap["GeoTIFF"] ?: HashMap()
+                                        metadataMap["GeoTIFF"] = geoTiffDirMap
+                                        val byGeoTiff = tags.groupBy { ExifTags.isGeoTiffTag(it.tagType) }
+                                        byGeoTiff[true]?.map { exifTagMapper(it) }?.let { geoTiffDirMap.putAll(it) }
+                                        byGeoTiff[false]?.map { exifTagMapper(it) }?.let { dirMap.putAll(it) }
                                     }
-                                    byGeoTiff[false]?.map { exifTagMapper(it) }?.let { dirMap.putAll(it) }
-                                } else {
-                                    dirMap.putAll(tags.map { exifTagMapper(it) })
+                                    mimeType == MimeTypes.DNG -> {
+                                        // split DNG tags in their own directory
+                                        val dngDirMap = metadataMap["DNG"] ?: HashMap()
+                                        metadataMap["DNG"] = dngDirMap
+                                        val byDng = tags.groupBy { ExifTags.isDngTag(it.tagType) }
+                                        byDng[true]?.map { exifTagMapper(it) }?.let { dngDirMap.putAll(it) }
+                                        byDng[false]?.map { exifTagMapper(it) }?.let { dirMap.putAll(it) }
+                                    }
+                                    else -> dirMap.putAll(tags.map { exifTagMapper(it) })
                                 }
                             } else if (dir.isPngTextDir()) {
                                 metadataMap.remove(thisDirName)
