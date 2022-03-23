@@ -203,6 +203,55 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
     );
   }
 
+  Future<void> rename(
+    BuildContext context, {
+    required Map<AvesEntry, String> entriesToNewName,
+    required bool persist,
+    VoidCallback? onSuccess,
+  }) async {
+    final entries = entriesToNewName.keys.toSet();
+    final todoCount = entries.length;
+    assert(todoCount > 0);
+
+    if (!await checkStoragePermission(context, entries)) return;
+
+    if (!await _checkUndatedItems(context, entries)) return;
+
+    final source = context.read<CollectionSource>();
+    source.pauseMonitoring();
+    final opId = mediaFileService.newOpId;
+    await showOpReport<MoveOpEvent>(
+      context: context,
+      opStream: mediaFileService.rename(
+        opId: opId,
+        entriesToNewName: entriesToNewName,
+      ),
+      itemCount: todoCount,
+      onCancel: () => mediaFileService.cancelFileOp(opId),
+      onDone: (processed) async {
+        final successOps = processed.where((e) => e.success).toSet();
+        final movedOps = successOps.where((e) => !e.skipped).toSet();
+        await source.updateAfterRename(
+          todoEntries: entries,
+          movedOps: movedOps,
+          persist: persist,
+        );
+        source.resumeMonitoring();
+
+        final l10n = context.l10n;
+        final successCount = successOps.length;
+        if (successCount < todoCount) {
+          final count = todoCount - successCount;
+          showFeedback(context, l10n.collectionRenameFailureFeedback(count));
+        } else {
+          final count = movedOps.length;
+          showFeedback(context, l10n.collectionRenameSuccessFeedback(count));
+          onSuccess?.call();
+        }
+      },
+    );
+  }
+
   Future<bool> _checkUndatedItems(BuildContext context, Set<AvesEntry> entries) async {
     final undatedItems = entries.where((entry) {
       if (!entry.isCatalogued) return false;

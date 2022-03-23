@@ -201,7 +201,7 @@ extension ExtraEntryAction on EntryAction {
       case EntryAction.print:
         return AIcons.print;
       case EntryAction.rename:
-        return AIcons.rename;
+        return AIcons.name;
       case EntryAction.copy:
         return AIcons.copy;
       case EntryAction.move:

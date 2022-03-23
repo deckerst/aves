@@ -138,59 +138,64 @@ class ViewerDetailOverlayContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final infoMaxWidth = availableWidth - padding.horizontal;
-    final positionTitle = _PositionTitleRow(entry: pageEntry, collectionPosition: position, multiPageController: multiPageController);
     final showShooting = settings.showOverlayShootingDetails;
 
-    return DefaultTextStyle(
-      style: Theme.of(context).textTheme.bodyText2!.copyWith(
-            shadows: _shadows(context),
+    return AnimatedBuilder(
+      animation: pageEntry.metadataChangeNotifier,
+      builder: (context, child) {
+        final positionTitle = _PositionTitleRow(entry: pageEntry, collectionPosition: position, multiPageController: multiPageController);
+        return DefaultTextStyle(
+          style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                shadows: _shadows(context),
+              ),
+          softWrap: false,
+          overflow: TextOverflow.fade,
+          maxLines: 1,
+          child: Padding(
+            padding: padding,
+            child: Selector<MediaQueryData, Orientation>(
+              selector: (context, mq) => mq.orientation,
+              builder: (context, orientation, child) {
+                final twoColumns = orientation == Orientation.landscape && infoMaxWidth / 2 > _subRowMinWidth;
+                final subRowWidth = twoColumns ? min(_subRowMinWidth, infoMaxWidth / 2) : infoMaxWidth;
+                final collapsedShooting = twoColumns && showShooting;
+                final collapsedLocation = twoColumns && !showShooting;
+
+                final rows = <Widget>[];
+                if (positionTitle.isNotEmpty) {
+                  rows.add(positionTitle);
+                  rows.add(const SizedBox(height: _interRowPadding));
+                }
+                if (twoColumns) {
+                  rows.add(
+                    Row(
+                      children: [
+                        _buildDateSubRow(subRowWidth),
+                        if (collapsedShooting) _buildShootingSubRow(context, subRowWidth),
+                        if (collapsedLocation) _buildLocationSubRow(context, subRowWidth),
+                      ],
+                    ),
+                  );
+                } else {
+                  rows.add(_buildDateSubRow(subRowWidth));
+                  if (showShooting) {
+                    rows.add(_buildShootingFullRow(context, subRowWidth));
+                  }
+                }
+                if (!collapsedLocation) {
+                  rows.add(_buildLocationFullRow(context));
+                }
+
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: rows,
+                );
+              },
+            ),
           ),
-      softWrap: false,
-      overflow: TextOverflow.fade,
-      maxLines: 1,
-      child: Padding(
-        padding: padding,
-        child: Selector<MediaQueryData, Orientation>(
-          selector: (context, mq) => mq.orientation,
-          builder: (context, orientation, child) {
-            final twoColumns = orientation == Orientation.landscape && infoMaxWidth / 2 > _subRowMinWidth;
-            final subRowWidth = twoColumns ? min(_subRowMinWidth, infoMaxWidth / 2) : infoMaxWidth;
-            final collapsedShooting = twoColumns && showShooting;
-            final collapsedLocation = twoColumns && !showShooting;
-
-            final rows = <Widget>[];
-            if (positionTitle.isNotEmpty) {
-              rows.add(positionTitle);
-              rows.add(const SizedBox(height: _interRowPadding));
-            }
-            if (twoColumns) {
-              rows.add(
-                Row(
-                  children: [
-                    _buildDateSubRow(subRowWidth),
-                    if (collapsedShooting) _buildShootingSubRow(context, subRowWidth),
-                    if (collapsedLocation) _buildLocationSubRow(context, subRowWidth),
-                  ],
-                ),
-              );
-            } else {
-              rows.add(_buildDateSubRow(subRowWidth));
-              if (showShooting) {
-                rows.add(_buildShootingFullRow(context, subRowWidth));
-              }
-            }
-            if (!collapsedLocation) {
-              rows.add(_buildLocationFullRow(context));
-            }
-
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: rows,
-            );
-          },
-        ),
-      ),
+        );
+      },
     );
   }
 

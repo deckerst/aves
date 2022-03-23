@@ -315,6 +315,15 @@
   "renameAlbumDialogLabel": "New name",
   "renameAlbumDialogLabelAlreadyExistsHelper": "Directory already exists",
 
+  "renameEntrySetPageTitle": "Rename",
+  "renameEntrySetPagePatternFieldLabel": "Naming pattern",
+  "renameEntrySetPageInsertTooltip": "Insert field",
+  "renameEntrySetPagePreview": "Preview",
+
+  "renameProcessorCounter": "Counter",
+  "renameProcessorDate": "Date",
+  "renameProcessorName": "Name",
+
   "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{Delete this album and its item?} other{Delete this album and its {count} items?}}",
   "@deleteSingleAlbumConfirmationDialogMessage": {
     "placeholders": {
@@ -460,6 +469,12 @@
       "count": {}
     }
   },
+  "collectionRenameFailureFeedback": "{count, plural, =1{Failed to rename 1 item} other{Failed to rename {count} items}}",
+  "@collectionRenameFailureFeedback": {
+    "placeholders": {
+      "count": {}
+    }
+  },
   "collectionEditFailureFeedback": "{count, plural, =1{Failed to edit 1 item} other{Failed to edit {count} items}}",
   "@collectionEditFailureFeedback": {
     "placeholders": {
@@ -480,6 +495,12 @@
   },
   "collectionMoveSuccessFeedback": "{count, plural, =1{Moved 1 item} other{Moved {count} items}}",
   "@collectionMoveSuccessFeedback": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "collectionRenameSuccessFeedback": "{count, plural, =1{Renamed 1 item} other{Renamed {count} items}}",
+  "@collectionRenameSuccessFeedback": {
     "placeholders": {
       "count": {}
     }

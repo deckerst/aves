@@ -191,7 +191,6 @@ class MediaStoreImageProvider : ImageProvider() {
                 val pathColumn = cursor.getColumnIndexOrThrow(MediaColumns.PATH)
                 val mimeTypeColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.MIME_TYPE)
                 val sizeColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.SIZE)
-                val titleColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.TITLE)
                 val widthColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.WIDTH)
                 val heightColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.HEIGHT)
                 val dateModifiedColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATE_MODIFIED)
@@ -229,7 +228,6 @@ class MediaStoreImageProvider : ImageProvider() {
                                 "height" to height,
                                 "sourceRotationDegrees" to if (orientationColumn != -1) cursor.getInt(orientationColumn) else 0,
                                 "sizeBytes" to cursor.getLong(sizeColumn),
-                                "title" to cursor.getString(titleColumn),
                                 "dateModifiedSecs" to dateModifiedSecs,
                                 "sourceDateTakenMillis" to if (dateTakenColumn != -1) cursor.getLong(dateTakenColumn) else null,
                                 "durationMillis" to durationMillis,
@@ -587,12 +585,14 @@ class MediaStoreImageProvider : ImageProvider() {
 
     override suspend fun renameMultiple(
         activity: Activity,
-        newFileName: String,
-        entries: List<AvesEntry>,
+        entriesToNewName: Map<AvesEntry, String>,
         isCancelledOp: CancelCheck,
         callback: ImageOpCallback,
     ) {
-        for (entry in entries) {
+        for (kv in entriesToNewName) {
+            val entry = kv.key
+            val newFileName = kv.value
+
             val sourceUri = entry.uri
             val sourcePath = entry.path
             val mimeType = entry.mimeType
@@ -602,7 +602,8 @@ class MediaStoreImageProvider : ImageProvider() {
                 "success" to false,
             )
 
-            if (sourcePath != null) {
+            // prevent naming with a `.` prefix as it would hide the file and remove it from the Media Store
+            if (sourcePath != null && !newFileName.startsWith('.')) {
                 try {
                     val newFields = if (isCancelledOp()) skippedFieldMap else renameSingle(
                         activity = activity,
@@ -763,8 +764,6 @@ class MediaStoreImageProvider : ImageProvider() {
                     // we retrieve updated fields as the renamed/moved file became a new entry in the Media Store
                     val projection = arrayOf(
                         MediaStore.MediaColumns.DATE_MODIFIED,
-                        MediaStore.MediaColumns.DISPLAY_NAME,
-                        MediaStore.MediaColumns.TITLE,
                     )
                     try {
                         val cursor = context.contentResolver.query(uri, projection, null, null, null)
@@ -774,8 +773,6 @@ class MediaStoreImageProvider : ImageProvider() {
                             newFields["contentId"] = uri.tryParseId()
                             newFields["path"] = path
                             cursor.getColumnIndex(MediaStore.MediaColumns.DATE_MODIFIED).let { if (it != -1) newFields["dateModifiedSecs"] = cursor.getInt(it) }
-                            cursor.getColumnIndex(MediaStore.MediaColumns.DISPLAY_NAME).let { if (it != -1) newFields["displayName"] = cursor.getString(it) }
-                            cursor.getColumnIndex(MediaStore.MediaColumns.TITLE).let { if (it != -1) newFields["title"] = cursor.getString(it) }
                             cursor.close()
                             return newFields
                         }
@@ -846,8 +843,6 @@ class MediaStoreImageProvider : ImageProvider() {
             MediaColumns.PATH,
             MediaStore.MediaColumns.MIME_TYPE,
             MediaStore.MediaColumns.SIZE,
-            // TODO TLAD use `DISPLAY_NAME` instead/along `TITLE`?
-            MediaStore.MediaColumns.TITLE,
             MediaStore.MediaColumns.WIDTH,
             MediaStore.MediaColumns.HEIGHT,
             MediaStore.MediaColumns.DATE_MODIFIED,
