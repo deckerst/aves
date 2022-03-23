@@ -167,6 +167,7 @@ class AvesEntry {
     _directory = null;
     _filename = null;
     _extension = null;
+    _bestTitle = null;
   }
 
   String? get path => _path;
@@ -455,7 +456,7 @@ class AvesEntry {
   String? _bestTitle;
 
   String? get bestTitle {
-    _bestTitle ??= _catalogMetadata?.xmpTitleDescription?.isNotEmpty == true ? _catalogMetadata!.xmpTitleDescription : sourceTitle;
+    _bestTitle ??= _catalogMetadata?.xmpTitleDescription?.isNotEmpty == true ? _catalogMetadata!.xmpTitleDescription : (filenameWithoutExtension ?? sourceTitle);
     return _bestTitle;
   }
 

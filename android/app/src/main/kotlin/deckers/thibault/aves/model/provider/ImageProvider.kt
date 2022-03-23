@@ -62,8 +62,7 @@ abstract class ImageProvider {
 
     open suspend fun renameMultiple(
         activity: Activity,
-        newFileName: String,
-        entries: List<AvesEntry>,
+        entriesToNewName: Map<AvesEntry, String>,
         isCancelledOp: CancelCheck,
         callback: ImageOpCallback,
     ) {

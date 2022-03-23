@@ -92,9 +92,9 @@ abstract class MediaFileService {
     required NameConflictStrategy nameConflictStrategy,
   });
 
-  Stream<MoveOpEvent> rename(
-    Iterable<AvesEntry> entries, {
-    required String newName,
+  Stream<MoveOpEvent> rename({
+    String? opId,
+    required Map<AvesEntry, String> entriesToNewName,
   });
 
   Future<Map<String, dynamic>> captureFrame(
@@ -392,16 +392,16 @@ class PlatformMediaFileService implements MediaFileService {
   }
 
   @override
-  Stream<MoveOpEvent> rename(
-    Iterable<AvesEntry> entries, {
-    required String newName,
+  Stream<MoveOpEvent> rename({
+    String? opId,
+    required Map<AvesEntry, String> entriesToNewName,
   }) {
     try {
       return _opStreamChannel
           .receiveBroadcastStream(<String, dynamic>{
             'op': 'rename',
-            'entries': entries.map(_toPlatformEntryMap).toList(),
-            'newName': newName,
+            'id': opId,
+            'entriesToNewName': entriesToNewName.map((key, value) => MapEntry(_toPlatformEntryMap(key), value)),
           })
           .where((event) => event is Map)
           .map((event) => MoveOpEvent.fromMap(event as Map));

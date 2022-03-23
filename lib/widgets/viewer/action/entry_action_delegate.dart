@@ -15,6 +15,7 @@ import 'package:aves/services/common/image_op_events.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/media/enums.dart';
 import 'package:aves/services/media/media_file_service.dart';
+import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/action_mixins/entry_storage.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
@@ -24,7 +25,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/add_shortcut_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
-import 'package:aves/widgets/dialogs/entry_editors/rename_dialog.dart';
+import 'package:aves/widgets/dialogs/entry_editors/rename_entry_dialog.dart';
 import 'package:aves/widgets/dialogs/export_entry_dialog.dart';
 import 'package:aves/widgets/filter_grids/album_pick.dart';
 import 'package:aves/widgets/viewer/action/printer.dart';
@@ -36,6 +37,7 @@ import 'package:aves/widgets/viewer/source_viewer_page.dart';
 import 'package:aves/widgets/viewer/video/conductor.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
@@ -314,17 +316,16 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       context: context,
       builder: (context) => RenameEntryDialog(entry: entry),
     );
-    if (newName == null || newName.isEmpty) return;
+    if (newName == null || newName.isEmpty || newName == entry.filenameWithoutExtension) return;
 
-    if (!await checkStoragePermission(context, {entry})) return;
-
-    final success = await context.read<CollectionSource>().renameEntry(entry, newName, persist: _isMainMode(context));
-
-    if (success) {
-      showFeedback(context, context.l10n.genericSuccessFeedback);
-    } else {
-      showFeedback(context, context.l10n.genericFailureFeedback);
-    }
+    // wait for the dialog to hide as applying the change may block the UI
+    await Future.delayed(Durations.dialogTransitionAnimation * timeDilation);
+    await rename(
+      context,
+      entriesToNewName: {entry: '$newName${entry.extension}'},
+      persist: _isMainMode(context),
+      onSuccess: entry.metadataChangeNotifier.notify,
+    );
   }
 
   bool _isMainMode(BuildContext context) => context.read<ValueNotifier<AppMode>>().value == AppMode.main;

@@ -9,6 +9,7 @@ import 'package:aves/model/entry_metadata_edition.dart';
 import 'package:aves/model/favourites.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/metadata/date_modifier.dart';
+import 'package:aves/model/naming_pattern.dart';
 import 'package:aves/model/query.dart';
 import 'package:aves/model/selection.dart';
 import 'package:aves/model/settings/enums/enums.dart';
@@ -19,6 +20,7 @@ import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/common/image_op_events.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
+import 'package:aves/utils/collection_utils.dart';
 import 'package:aves/utils/mime_utils.dart';
 import 'package:aves/widgets/common/action_mixins/entry_editor.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
@@ -28,11 +30,13 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/add_shortcut_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
+import 'package:aves/widgets/dialogs/entry_editors/rename_entry_set_dialog.dart';
 import 'package:aves/widgets/map/map_page.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
 import 'package:aves/widgets/stats/stats_page.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
@@ -78,6 +82,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       case EntrySetAction.share:
       case EntrySetAction.copy:
       case EntrySetAction.move:
+      case EntrySetAction.rename:
       case EntrySetAction.toggleFavourite:
       case EntrySetAction.rotateCCW:
       case EntrySetAction.rotateCW:
@@ -127,6 +132,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       case EntrySetAction.restore:
       case EntrySetAction.copy:
       case EntrySetAction.move:
+      case EntrySetAction.rename:
       case EntrySetAction.toggleFavourite:
       case EntrySetAction.rotateCCW:
       case EntrySetAction.rotateCW:
@@ -184,6 +190,9 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
         break;
       case EntrySetAction.move:
         _move(context, moveType: MoveType.move);
+        break;
+      case EntrySetAction.rename:
+        _rename(context);
         break;
       case EntrySetAction.toggleFavourite:
         _toggleFavourite(context);
@@ -243,17 +252,6 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     _leaveSelectionMode(context);
   }
 
-  Future<void> _toggleFavourite(BuildContext context) async {
-    final entries = _getTargetItems(context);
-    if (entries.every((entry) => entry.isFavourite)) {
-      await favourites.removeEntries(entries);
-    } else {
-      await favourites.add(entries);
-    }
-
-    _leaveSelectionMode(context);
-  }
-
   Future<void> _delete(BuildContext context) async {
     final entries = _getTargetItems(context);
 
@@ -308,6 +306,40 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
   Future<void> _move(BuildContext context, {required MoveType moveType}) async {
     final entries = _getTargetItems(context);
     await move(context, moveType: moveType, entries: entries);
+
+    _leaveSelectionMode(context);
+  }
+
+  Future<void> _rename(BuildContext context) async {
+    final entries = _getTargetItems(context).toList();
+
+    final pattern = await Navigator.push<NamingPattern>(
+      context,
+      MaterialPageRoute(
+        settings: const RouteSettings(name: RenameEntrySetPage.routeName),
+        builder: (context) => RenameEntrySetPage(
+          entries: entries,
+        ),
+      ),
+    );
+    if (pattern == null) return;
+
+    final entriesToNewName = Map.fromEntries(entries.mapIndexed((index, entry) {
+      final newName = pattern.apply(entry, index);
+      return MapEntry(entry, '$newName${entry.extension}');
+    })).whereNotNullValue();
+    await rename(context, entriesToNewName: entriesToNewName, persist: true);
+
+    _leaveSelectionMode(context);
+  }
+
+  Future<void> _toggleFavourite(BuildContext context) async {
+    final entries = _getTargetItems(context);
+    if (entries.every((entry) => entry.isFavourite)) {
+      await favourites.removeEntries(entries);
+    } else {
+      await favourites.add(entries);
+    }
 
     _leaveSelectionMode(context);
   }
@@ -409,7 +441,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     if (confirmed == null || !confirmed) return null;
 
     // wait for the dialog to hide as applying the change may block the UI
-    await Future.delayed(Durations.dialogTransitionAnimation);
+    await Future.delayed(Durations.dialogTransitionAnimation * timeDilation);
     return supported;
   }
 

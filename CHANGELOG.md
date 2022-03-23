@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - Theme: light/dark/black and poly/monochrome settings
+- Collection: bulk renaming
 - Video: speed and muted state indicators
 - Info: option to set date from other item
 - Info: improved DNG tags display
