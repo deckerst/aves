@@ -185,7 +185,7 @@ class SourceEntry {
                         dir.getSafeInt(ExifIFD0Directory.TAG_IMAGE_WIDTH) { width = it }
                         dir.getSafeInt(ExifIFD0Directory.TAG_IMAGE_HEIGHT) { height = it }
                         dir.getSafeInt(ExifIFD0Directory.TAG_ORIENTATION) { sourceRotationDegrees = getRotationDegreesForExifCode(it) }
-                        dir.getSafeDateMillis(ExifIFD0Directory.TAG_DATETIME) { sourceDateTakenMillis = it }
+                        dir.getSafeDateMillis(ExifIFD0Directory.TAG_DATETIME, null)?.let { sourceDateTakenMillis = it }
                     }
 
                     // dimensions reported in EXIF do not always match the image
@@ -218,7 +218,7 @@ class SourceEntry {
                 exif.getSafeInt(ExifInterface.TAG_IMAGE_WIDTH, acceptZero = false) { width = it }
                 exif.getSafeInt(ExifInterface.TAG_IMAGE_LENGTH, acceptZero = false) { height = it }
                 exif.getSafeInt(ExifInterface.TAG_ORIENTATION, acceptZero = false) { sourceRotationDegrees = exif.rotationDegrees }
-                exif.getSafeDateMillis(ExifInterface.TAG_DATETIME) { sourceDateTakenMillis = it }
+                exif.getSafeDateMillis(ExifInterface.TAG_DATETIME, ExifInterface.TAG_SUBSEC_TIME) { sourceDateTakenMillis = it }
             }
         } catch (e: Exception) {
             // ExifInterface initialization can fail with a RuntimeException

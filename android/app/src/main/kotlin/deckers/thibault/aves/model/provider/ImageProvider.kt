@@ -756,7 +756,13 @@ abstract class ImageProvider {
                         ExifInterface.TAG_DATETIME_DIGITIZED,
                     ).forEach { field ->
                         if (fields.contains(field)) {
-                            exif.getSafeDateMillis(field) { date ->
+                            val subSecTag = when (field) {
+                                ExifInterface.TAG_DATETIME -> ExifInterface.TAG_SUBSEC_TIME
+                                ExifInterface.TAG_DATETIME_DIGITIZED -> ExifInterface.TAG_SUBSEC_TIME_DIGITIZED
+                                ExifInterface.TAG_DATETIME_ORIGINAL -> ExifInterface.TAG_SUBSEC_TIME_ORIGINAL
+                                else -> null
+                            }
+                            exif.getSafeDateMillis(field, subSecTag) { date ->
                                 exif.setAttribute(field, ExifInterfaceHelper.DATETIME_FORMAT.format(date + shiftMillis))
                             }
                         }

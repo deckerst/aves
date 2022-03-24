@@ -149,7 +149,7 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
           showFeedback(context, copy ? l10n.collectionCopyFailureFeedback(count) : l10n.collectionMoveFailureFeedback(count));
         } else {
           final count = movedOps.length;
-          final appMode = context.read<ValueNotifier<AppMode>>().value;
+          final appMode = context.read<ValueNotifier<AppMode>?>()?.value;
 
           SnackBarAction? action;
           if (count > 0 && appMode == AppMode.main && !toBin) {

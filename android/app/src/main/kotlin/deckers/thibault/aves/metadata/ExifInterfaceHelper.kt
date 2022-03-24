@@ -363,13 +363,17 @@ object ExifInterfaceHelper {
         }
     }
 
-    fun ExifInterface.getSafeDateMillis(tag: String, save: (value: Long) -> Unit) {
+    fun ExifInterface.getSafeDateMillis(tag: String, subSecTag: String?, save: (value: Long) -> Unit) {
         if (this.hasAttribute(tag)) {
             val dateString = this.getAttribute(tag)
             if (dateString != null) {
                 try {
                     DATETIME_FORMAT.parse(dateString)?.let { date ->
-                        save(date.time)
+                        var dateMillis = date.time
+                        if (subSecTag != null && this.hasAttribute(subSecTag)) {
+                            dateMillis += Metadata.parseSubSecond(this.getAttribute(subSecTag))
+                        }
+                        save(dateMillis)
                     }
                 } catch (e: ParseException) {
                     Log.w(LOG_TAG, "failed to parse date=$dateString", e)
