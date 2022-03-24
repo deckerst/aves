@@ -65,6 +65,20 @@ object Metadata {
         }
     }
 
+    fun parseSubSecond(subSecond: String?): Int {
+        if (subSecond != null) {
+            try {
+                val millis = (".$subSecond".toDouble() * 1000).toInt()
+                if (millis in 0..999) {
+                    return millis
+                }
+            } catch (e: NumberFormatException) {
+                // ignore
+            }
+        }
+        return 0
+    }
+
     // not sure which standards are used for the different video formats,
     // but looks like some form of ISO 8601 `basic format`:
     // yyyyMMddTHHmmss(.sss)?(Z|+/-hhmm)?
@@ -96,18 +110,7 @@ object Metadata {
             null
         } ?: return 0
 
-        var dateMillis = date.time
-        if (subSecond != null) {
-            try {
-                val millis = (".$subSecond".toDouble() * 1000).toInt()
-                if (millis in 0..999) {
-                    dateMillis += millis.toLong()
-                }
-            } catch (e: NumberFormatException) {
-                // ignore
-            }
-        }
-        return dateMillis
+        return date.time + parseSubSecond(subSecond)
     }
 
     // opening large PSD/TIFF files yields an OOM (both with `metadata-extractor` v2.15.0 and `ExifInterface` v1.3.1),

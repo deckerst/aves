@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file.
 ### Changed
 
 - Viewer: quick action defaults
+- cataloguing includes date sub-second data if present
 
 ### Removed
 
