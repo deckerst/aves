@@ -487,7 +487,7 @@ class MediaStoreImageProvider : ImageProvider() {
             return skippedFieldMap
         }
 
-        val desiredNameWithoutExtension = desiredName.replaceFirst(FILE_EXTENSION_PATTERN, "")
+        val desiredNameWithoutExtension = desiredName.substringBeforeLast(".")
         val targetNameWithoutExtension = resolveTargetFileNameWithoutExtension(
             activity = activity,
             dir = targetDir,
@@ -591,7 +591,7 @@ class MediaStoreImageProvider : ImageProvider() {
     ) {
         for (kv in entriesToNewName) {
             val entry = kv.key
-            val newFileName = kv.value
+            val desiredName = kv.value
 
             val sourceUri = entry.uri
             val sourcePath = entry.path
@@ -603,19 +603,19 @@ class MediaStoreImageProvider : ImageProvider() {
             )
 
             // prevent naming with a `.` prefix as it would hide the file and remove it from the Media Store
-            if (sourcePath != null && !newFileName.startsWith('.')) {
+            if (sourcePath != null && !desiredName.startsWith('.')) {
                 try {
                     val newFields = if (isCancelledOp()) skippedFieldMap else renameSingle(
                         activity = activity,
                         mimeType = mimeType,
                         oldMediaUri = sourceUri,
                         oldPath = sourcePath,
-                        newFileName = newFileName,
+                        desiredName = desiredName,
                     )
                     result["newFields"] = newFields
                     result["success"] = true
                 } catch (e: Exception) {
-                    Log.w(LOG_TAG, "failed to rename to newFileName=$newFileName entry with sourcePath=$sourcePath", e)
+                    Log.w(LOG_TAG, "failed to rename to newFileName=$desiredName entry with sourcePath=$sourcePath", e)
                 }
             }
             callback.onSuccess(result)
@@ -627,10 +627,24 @@ class MediaStoreImageProvider : ImageProvider() {
         mimeType: String,
         oldMediaUri: Uri,
         oldPath: String,
-        newFileName: String,
+        desiredName: String,
     ): FieldMap {
+        val desiredNameWithoutExtension = desiredName.substringBeforeLast(".")
+
         val oldFile = File(oldPath)
-        val newFile = File(oldFile.parent, newFileName)
+        if (oldFile.nameWithoutExtension == desiredNameWithoutExtension) return skippedFieldMap
+
+        val dir = oldFile.parent ?: return skippedFieldMap
+        val targetNameWithoutExtension = resolveTargetFileNameWithoutExtension(
+            activity = activity,
+            dir = dir,
+            desiredNameWithoutExtension = desiredNameWithoutExtension,
+            mimeType = mimeType,
+            conflictStrategy = NameConflictStrategy.RENAME,
+        ) ?: return skippedFieldMap
+        val targetFileName = "$targetNameWithoutExtension${extensionFor(mimeType)}"
+
+        val newFile = File(dir, targetFileName)
         return when {
             oldFile == newFile -> skippedFieldMap
             StorageUtils.canEditByFile(activity, oldPath) -> renameSingleByFile(activity, mimeType, oldMediaUri, oldPath, newFile)
@@ -682,8 +696,11 @@ class MediaStoreImageProvider : ImageProvider() {
         newFile: File
     ): FieldMap {
         Log.d(LOG_TAG, "rename document at uri=$oldMediaUri path=$oldPath")
+        val df = StorageUtils.getDocumentFile(activity, oldPath, oldMediaUri)
+        df ?: throw Exception("failed to get document at path=$oldPath")
+
         @Suppress("BlockingMethodInNonBlockingContext")
-        val renamed = StorageUtils.getDocumentFile(activity, oldPath, oldMediaUri)?.renameTo(newFile.name) ?: false
+        val renamed = df.renameTo(newFile.name)
         if (!renamed) {
             throw Exception("failed to rename document at path=$oldPath")
         }
