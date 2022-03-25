@@ -19,6 +19,8 @@ enum HomePageSetting { collection, albums }
 
 enum KeepScreenOn { never, viewerOnly, always }
 
+enum DisplayRefreshRateMode { auto, highest, lowest }
+
 enum UnitSystem { metric, imperial }
 
 enum VideoLoopMode { never, shortOnly, always }

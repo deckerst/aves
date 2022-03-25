@@ -16,6 +16,7 @@ class SettingsDefaults {
   static const canUseAnalysisService = true;
   static const isInstalledAppAccessAllowed = false;
   static const isErrorReportingAllowed = false;
+  static const displayRefreshRateMode = DisplayRefreshRateMode.auto;
   static const themeBrightness = AvesThemeBrightness.system;
   static const themeColorMode = AvesThemeColorMode.polychrome;
   static const tileLayout = TileLayout.grid;

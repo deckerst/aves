@@ -6,6 +6,7 @@ import 'package:aves/app_mode.dart';
 import 'package:aves/l10n/l10n.dart';
 import 'package:aves/model/device.dart';
 import 'package:aves/model/settings/enums/accessibility_animations.dart';
+import 'package:aves/model/settings/enums/display_refresh_rate_mode.dart';
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/enums/screen_on.dart';
 import 'package:aves/model/settings/enums/theme_brightness.dart';
@@ -242,9 +243,8 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
       }
     }
 
-    void applyKeepScreenOn() {
-      settings.keepScreenOn.apply();
-    }
+    void applyDisplayRefreshRateMode() => settings.displayRefreshRateMode.apply();
+    void applyKeepScreenOn() => settings.keepScreenOn.apply();
 
     void applyIsRotationLocked() {
       if (!settings.isRotationLocked) {
@@ -253,9 +253,11 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     }
 
     settings.updateStream.where((event) => event.key == Settings.isInstalledAppAccessAllowedKey).listen((_) => applyIsInstalledAppAccessAllowed());
+    settings.updateStream.where((event) => event.key == Settings.displayRefreshRateModeKey).listen((_) => applyDisplayRefreshRateMode());
     settings.updateStream.where((event) => event.key == Settings.keepScreenOnKey).listen((_) => applyKeepScreenOn());
     settings.updateStream.where((event) => event.key == Settings.platformAccelerometerRotationKey).listen((_) => applyIsRotationLocked());
 
+    applyDisplayRefreshRateMode();
     applyKeepScreenOn();
     applyIsRotationLocked();
   }

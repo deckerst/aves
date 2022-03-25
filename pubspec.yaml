@@ -44,6 +44,7 @@ dependencies:
       ref: aves
   flex_color_picker:
   fluster:
+  flutter_displaymode:
   flutter_highlight:
   flutter_map:
   flutter_markdown:

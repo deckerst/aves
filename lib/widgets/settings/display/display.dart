@@ -1,3 +1,4 @@
+import 'package:aves/model/settings/enums/display_refresh_rate_mode.dart';
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/enums/theme_brightness.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -41,6 +42,14 @@ class DisplaySection extends StatelessWidget {
           selector: (context, s) => s.themeColorMode == AvesThemeColorMode.polychrome,
           onChanged: (v) => settings.themeColorMode = v ? AvesThemeColorMode.polychrome : AvesThemeColorMode.monochrome,
           title: context.l10n.settingsThemeColorful,
+        ),
+        SettingsSelectionListTile<DisplayRefreshRateMode>(
+          values: DisplayRefreshRateMode.values,
+          getName: (context, v) => v.getName(context),
+          selector: (context, s) => s.displayRefreshRateMode,
+          onSelection: (v) => settings.displayRefreshRateMode = v,
+          tileTitle: context.l10n.settingsDisplayRefreshRateModeTile,
+          dialogTitle: context.l10n.settingsDisplayRefreshRateModeTitle,
         ),
       ],
     );

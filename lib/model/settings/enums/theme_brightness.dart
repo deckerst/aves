@@ -1,7 +1,7 @@
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/material.dart';
 
 import 'enums.dart';
-import 'package:aves/widgets/common/extensions/build_context.dart';
 
 extension ExtraAvesThemeBrightness on AvesThemeBrightness {
   String getName(BuildContext context) {
@@ -16,6 +16,7 @@ extension ExtraAvesThemeBrightness on AvesThemeBrightness {
         return context.l10n.themeBrightnessBlack;
     }
   }
+
   ThemeMode get appThemeMode {
     switch (this) {
       case AvesThemeBrightness.system:

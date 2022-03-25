@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file.
 - Info: option to set date from other item
 - Info: improved DNG tags display
 - warn and optionally set metadata date before moving undated items
+- Settings: display refresh rate hint
 
 ### Changed
 
