@@ -15,7 +15,7 @@ abstract class SectionedListLayoutProvider<T> extends StatelessWidget {
   final double scrollableWidth;
   final TileLayout tileLayout;
   final int columnCount;
-  final double spacing, tileWidth, tileHeight;
+  final double spacing, horizontalPadding, tileWidth, tileHeight;
   final Widget Function(T item) tileBuilder;
   final Duration tileAnimationDelay;
   final Widget child;
@@ -26,6 +26,7 @@ abstract class SectionedListLayoutProvider<T> extends StatelessWidget {
     required this.tileLayout,
     required int columnCount,
     required this.spacing,
+    required this.horizontalPadding,
     required double tileWidth,
     required this.tileHeight,
     required this.tileBuilder,
@@ -33,7 +34,7 @@ abstract class SectionedListLayoutProvider<T> extends StatelessWidget {
     required this.child,
   })  : assert(scrollableWidth != 0),
         columnCount = tileLayout == TileLayout.list ? 1 : columnCount,
-        tileWidth = tileLayout == TileLayout.list ? scrollableWidth : tileWidth,
+        tileWidth = tileLayout == TileLayout.list ? scrollableWidth - (horizontalPadding * 2) : tileWidth,
         super(key: key);
 
   @override
@@ -98,6 +99,7 @@ abstract class SectionedListLayoutProvider<T> extends StatelessWidget {
       tileWidth: tileWidth,
       tileHeight: tileHeight,
       spacing: spacing,
+      horizontalPadding: horizontalPadding,
       sectionLayouts: sectionLayouts,
     );
   }
@@ -129,12 +131,15 @@ abstract class SectionedListLayoutProvider<T> extends StatelessWidget {
       );
       children.add(animate ? _buildAnimation(context, itemGridIndex, item) : item);
     }
-    return _GridRow(
-      width: tileWidth,
-      height: tileHeight,
-      spacing: spacing,
-      textDirection: Directionality.of(context),
-      children: children,
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+      child: _GridRow(
+        width: tileWidth,
+        height: tileHeight,
+        spacing: spacing,
+        textDirection: Directionality.of(context),
+        children: children,
+      ),
     );
   }
 
@@ -168,6 +173,7 @@ abstract class SectionedListLayoutProvider<T> extends StatelessWidget {
     properties.add(DoubleProperty('scrollableWidth', scrollableWidth));
     properties.add(IntProperty('columnCount', columnCount));
     properties.add(DoubleProperty('spacing', spacing));
+    properties.add(DoubleProperty('horizontalPadding', horizontalPadding));
     properties.add(DoubleProperty('tileWidth', tileWidth));
     properties.add(DoubleProperty('tileHeight', tileHeight));
     properties.add(DiagnosticsProperty<bool>('showHeaders', showHeaders));
@@ -178,7 +184,7 @@ class SectionedListLayout<T> {
   final Map<SectionKey, List<T>> sections;
   final bool showHeaders;
   final int columnCount;
-  final double tileWidth, tileHeight, spacing;
+  final double tileWidth, tileHeight, spacing, horizontalPadding;
   final List<SectionLayout> sectionLayouts;
 
   const SectionedListLayout({
@@ -188,6 +194,7 @@ class SectionedListLayout<T> {
     required this.tileWidth,
     required this.tileHeight,
     required this.spacing,
+    required this.horizontalPadding,
     required this.sectionLayouts,
   });
 
@@ -205,7 +212,7 @@ class SectionedListLayout<T> {
     final row = (sectionItemIndex / columnCount).floor();
     final listIndex = sectionLayout.firstIndex + 1 + row;
 
-    final left = tileWidth * column + spacing * (column - 1);
+    final left = horizontalPadding + tileWidth * column + spacing * (column - 1);
     final top = sectionLayout.indexToLayoutOffset(listIndex);
     return Rect.fromLTWH(left, top, tileWidth, tileHeight);
   }
@@ -225,7 +232,7 @@ class SectionedListLayout<T> {
     if (dy < 0) return null;
 
     final row = dy ~/ (tileHeight + spacing);
-    final column = position.dx ~/ (tileWidth + spacing);
+    final column = max(0, position.dx - horizontalPadding) ~/ (tileWidth + spacing);
     final index = row * columnCount + column;
     if (index >= section.length) return null;
 

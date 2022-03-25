@@ -70,6 +70,7 @@ class _CollectionGridState extends State<CollectionGrid> {
       extentMin: CollectionGrid.extentMin,
       extentMax: CollectionGrid.extentMax,
       spacing: CollectionGrid.spacing,
+      horizontalPadding: 2,
     );
     return TileExtentControllerProvider(
       controller: _tileExtentController!,
@@ -90,12 +91,13 @@ class _CollectionGridContent extends StatelessWidget {
         final sectionedListLayoutProvider = ValueListenableBuilder<double>(
           valueListenable: context.select<TileExtentController, ValueNotifier<double>>((controller) => controller.extentNotifier),
           builder: (context, thumbnailExtent, child) {
-            return Selector<TileExtentController, Tuple3<double, int, double>>(
-              selector: (context, c) => Tuple3(c.viewportSize.width, c.columnCount, c.spacing),
+            return Selector<TileExtentController, Tuple4<double, int, double, double>>(
+              selector: (context, c) => Tuple4(c.viewportSize.width, c.columnCount, c.spacing, c.horizontalPadding),
               builder: (context, c, child) {
                 final scrollableWidth = c.item1;
                 final columnCount = c.item2;
                 final tileSpacing = c.item3;
+                final horizontalPadding = c.item4;
                 return GridTheme(
                   extent: thumbnailExtent,
                   child: EntryListDetailsTheme(
@@ -117,6 +119,7 @@ class _CollectionGridContent extends StatelessWidget {
                           tileLayout: tileLayout,
                           columnCount: columnCount,
                           spacing: tileSpacing,
+                          horizontalPadding: horizontalPadding,
                           tileExtent: thumbnailExtent,
                           tileBuilder: (entry) => AnimatedBuilder(
                             animation: favourites,
@@ -242,7 +245,9 @@ class _CollectionScaler extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tileSpacing = context.select<TileExtentController, double>((controller) => controller.spacing);
+    final metrics = context.select<TileExtentController, Tuple2<double, double>>((v) => Tuple2(v.spacing, v.horizontalPadding));
+    final tileSpacing = metrics.item1;
+    final horizontalPadding = metrics.item2;
     return GridScaleGestureDetector<AvesEntry>(
       scrollableKey: scrollableKey,
       tileLayout: tileLayout,
@@ -253,6 +258,7 @@ class _CollectionScaler extends StatelessWidget {
           tileCenter: center,
           tileSize: tileSize,
           spacing: tileSpacing,
+          horizontalPadding: horizontalPadding,
           borderWidth: DecoratedThumbnail.borderWidth,
           borderRadius: Radius.zero,
           color: DecoratedThumbnail.borderColor,
