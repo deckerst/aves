@@ -68,6 +68,8 @@
   "entryActionRemoveFavourite": "Hapus dari favorit",
 
   "videoActionCaptureFrame": "Tangkap bingkai",
+  "videoActionMute": "Mute",
+  "videoActionUnmute": "Unmute",
   "videoActionPause": "Henti",
   "videoActionPlay": "Mainkan",
   "videoActionReplay10": "Mundurkan 10 detik",
@@ -112,6 +114,11 @@
   "videoLoopModeShortOnly": "Hanya video pendek",
   "videoLoopModeAlways": "Selalu",
 
+  "videoControlsPlay": "Putar",
+  "videoControlsPlaySeek": "Putar dan cari",
+  "videoControlsPlayOutside": "Buka dengan pemutar lain",
+  "videoControlsNone": "Tidak ada",
+
   "mapStyleGoogleNormal": "Google Maps",
   "mapStyleGoogleHybrid": "Google Maps (Hybrid)",
   "mapStyleGoogleTerrain": "Google Maps (Terrain)",
@@ -129,6 +136,13 @@
 
   "accessibilityAnimationsRemove": "Mencegah efek layar",
   "accessibilityAnimationsKeep": "Simpan efek layar",
+
+  "displayRefreshRatePreferHighest": "Penyegaran tertinggi",
+  "displayRefreshRatePreferLowest": "Penyegaran terendah",
+
+  "themeBrightnessLight": "Terang",
+  "themeBrightnessDark": "Gelap",
+  "themeBrightnessBlack": "Hitam",
 
   "albumTierNew": "Baru",
   "albumTierPinned": "Disemat",
@@ -163,6 +177,8 @@
 
   "binEntriesConfirmationDialogMessage": "{count, plural, =1{Pindahkan benda ini ke tong sampah?} other{Pindahkan {count} benda ke tempat sampah?}}",
   "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{Anda yakin ingin menghapus benda ini?} other{Apakah Anda yakin ingin menghapus {count} benda?}}",
+  "moveUndatedConfirmationDialogMessage": "Beberapa benda tidak mempunyai tanggal metadata. Tanggal mereka sekarang akan diatur ulang dengan operasi ini kecuali ada tanggal metadata yang ditetapkan.",
+  "moveUndatedConfirmationDialogSetDate": "Atur tanggal",
 
   "videoResumeDialogMessage": "Apakah Anda ingin melanjutkan di {time}?",
   "videoStartOverButtonLabel": "ULANG DARI AWAL",
@@ -182,6 +198,14 @@
   "renameAlbumDialogLabel": "Nama baru",
   "renameAlbumDialogLabelAlreadyExistsHelper": "Direktori sudah ada",
 
+  "renameEntrySetPageTitle": "Ganti nama",
+  "renameEntrySetPagePatternFieldLabel": "Pola penamaan",
+  "renameEntrySetPageInsertTooltip": "Masukkan bidang",
+  "renameEntrySetPagePreview": "Pratinjau",
+
+  "renameProcessorCounter": "Menangkal",
+  "renameProcessorName": "Nama",
+
   "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{Anda yakin ingin menghapus album ini dan bendanya?} other{Apakah Anda yakin ingin menghapus album ini dan {count} bendanya?}}",
   "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{Yakin ingin menghapus album ini dan bendanya?} other{Anda yakin ingin menghapus album ini dan {count} bendanya?}}",
 
@@ -194,6 +218,7 @@
   "editEntryDateDialogTitle": "Tanggal & Waktu",
   "editEntryDateDialogSetCustom": "Atur tanggal khusus",
   "editEntryDateDialogCopyField": "Salin dari tanggal lain",
+  "editEntryDateDialogCopyItem": "Salin dari benda lain",
   "editEntryDateDialogExtractFromTitle": "Ekstrak dari judul",
   "editEntryDateDialogShift": "Geser",
   "editEntryDateDialogSourceFileModifiedDate": "Tanggal modifikasi file",
@@ -301,10 +326,12 @@
   "collectionDeleteFailureFeedback": "{count, plural, other{Gagal untuk menghapus {count} benda}}",
   "collectionCopyFailureFeedback": "{count, plural, other{Gagal untuk menyalin {count} benda}}",
   "collectionMoveFailureFeedback": "{count, plural, other{Gagal untuk menggerakkan {count} benda}}",
+  "collectionRenameFailureFeedback": "{count, plural, other{Gagal untuk menggantikan nama {count} benda}}",
   "collectionEditFailureFeedback": "{count, plural, other{Gagal untuk mengubah {count} benda}}",
   "collectionExportFailureFeedback": "{count, plural, other{Gagal untuk mengekspor {count} halaman}}",
   "collectionCopySuccessFeedback": "{count, plural, other{Menyalin {count} benda}}",
   "collectionMoveSuccessFeedback": "{count, plural, other{{count} benda terpindah}}",
+  "collectionRenameSuccessFeedback": "{count, plural, other{Tergantikan nama untuk {count} benda}}",
   "collectionEditSuccessFeedback": "{count, plural, other{Mengubah {count} benda}}",
 
   "collectionEmptyFavourites": "Tidak ada favorit",
@@ -386,6 +413,8 @@
   "settingsConfirmationDialogTitle": "Dialog Konfirmasi",
   "settingsConfirmationDialogDeleteItems": "Tanya sebelum menghapus benda selamanya",
   "settingsConfirmationDialogMoveToBinItems": "Tanya sebelum memindahkan benda ke tong sampah",
+  "settingsConfirmationDialogMoveUndatedItems": "Tanyakan sebelum memindahkan barang tanpa metadata tanggal",
+
   "settingsNavigationDrawerTile": "Menu navigasi",
   "settingsNavigationDrawerEditorTitle": "Menu Navigasi",
   "settingsNavigationDrawerBanner": "Sentuh dan tahan untuk memindahkan dan menyusun ulang benda menu.",
@@ -429,6 +458,7 @@
   "settingsViewerShowInformation": "Tampilkan informasi",
   "settingsViewerShowInformationSubtitle": "Tampilkan judul, tanggal, lokasi, dll.",
   "settingsViewerShowShootingDetails": "Tampilkan detail pemotretan",
+  "settingsViewerShowOverlayThumbnails": "Tampilkan thumbnail",
   "settingsViewerEnableOverlayBlurEffect": "Efek Kabur",
 
   "settingsVideoPageTitle": "Pengaturan Video",
@@ -453,6 +483,12 @@
   "settingsSubtitleThemeTextAlignmentLeft": "Kiri",
   "settingsSubtitleThemeTextAlignmentCenter": "Tengah",
   "settingsSubtitleThemeTextAlignmentRight": "Kanan",
+
+  "settingsVideoControlsTile": "Kontrol",
+  "settingsVideoControlsTitle": "Kontrol",
+  "settingsVideoButtonsTile": "Tombol",
+  "settingsVideoButtonsTitle": "Tombol",
+  "settingsVideoGestureSideDoubleTapSeek": "Ketuk dua kali di tepi layar untuk mencari kebelakang/kedepan",
 
   "settingsSectionPrivacy": "Privasi",
   "settingsAllowInstalledAppAccess": "Izinkan akses ke inventori aplikasi",
@@ -484,6 +520,12 @@
   "settingsRemoveAnimationsTitle": "Hapus Animasi",
   "settingsTimeToTakeActionTile": "Waktu untuk mengambil tindakan",
   "settingsTimeToTakeActionTitle": "Saatnya Bertindak",
+
+  "settingsSectionDisplay": "Tampilan",
+  "settingsThemeBrightness": "Tema",
+  "settingsThemeColorHighlights": "Highlight warna",
+  "settingsDisplayRefreshRateModeTile": "Tampilkan tingkat penyegaran",
+  "settingsDisplayRefreshRateModeTitle": "Tingkat Penyegaran",
 
   "settingsSectionLanguage": "Bahasa & Format",
   "settingsLanguage": "Bahasa",
