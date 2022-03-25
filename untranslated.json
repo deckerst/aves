@@ -1,5 +1,7 @@
 {
   "de": [
+    "displayRefreshRatePreferHighest",
+    "displayRefreshRatePreferLowest",
     "themeBrightnessLight",
     "themeBrightnessDark",
     "themeBrightnessBlack",
@@ -18,10 +20,14 @@
     "settingsConfirmationDialogMoveUndatedItems",
     "settingsSectionDisplay",
     "settingsThemeBrightness",
-    "settingsThemeColorful"
+    "settingsThemeColorful",
+    "settingsDisplayRefreshRateModeTile",
+    "settingsDisplayRefreshRateModeTitle"
   ],
 
   "es": [
+    "displayRefreshRatePreferHighest",
+    "displayRefreshRatePreferLowest",
     "themeBrightnessLight",
     "themeBrightnessDark",
     "themeBrightnessBlack",
@@ -40,10 +46,14 @@
     "settingsConfirmationDialogMoveUndatedItems",
     "settingsSectionDisplay",
     "settingsThemeBrightness",
-    "settingsThemeColorful"
+    "settingsThemeColorful",
+    "settingsDisplayRefreshRateModeTile",
+    "settingsDisplayRefreshRateModeTitle"
   ],
 
   "fr": [
+    "displayRefreshRatePreferHighest",
+    "displayRefreshRatePreferLowest",
     "themeBrightnessLight",
     "themeBrightnessDark",
     "themeBrightnessBlack",
@@ -62,7 +72,9 @@
     "settingsConfirmationDialogMoveUndatedItems",
     "settingsSectionDisplay",
     "settingsThemeBrightness",
-    "settingsThemeColorful"
+    "settingsThemeColorful",
+    "settingsDisplayRefreshRateModeTile",
+    "settingsDisplayRefreshRateModeTitle"
   ],
 
   "id": [
@@ -72,6 +84,8 @@
     "videoControlsPlaySeek",
     "videoControlsPlayOutside",
     "videoControlsNone",
+    "displayRefreshRatePreferHighest",
+    "displayRefreshRatePreferLowest",
     "themeBrightnessLight",
     "themeBrightnessDark",
     "themeBrightnessBlack",
@@ -97,10 +111,14 @@
     "settingsVideoGestureSideDoubleTapSeek",
     "settingsSectionDisplay",
     "settingsThemeBrightness",
-    "settingsThemeColorful"
+    "settingsThemeColorful",
+    "settingsDisplayRefreshRateModeTile",
+    "settingsDisplayRefreshRateModeTitle"
   ],
 
   "ja": [
+    "displayRefreshRatePreferHighest",
+    "displayRefreshRatePreferLowest",
     "themeBrightnessLight",
     "themeBrightnessDark",
     "themeBrightnessBlack",
@@ -119,10 +137,14 @@
     "settingsConfirmationDialogMoveUndatedItems",
     "settingsSectionDisplay",
     "settingsThemeBrightness",
-    "settingsThemeColorful"
+    "settingsThemeColorful",
+    "settingsDisplayRefreshRateModeTile",
+    "settingsDisplayRefreshRateModeTitle"
   ],
 
   "ko": [
+    "displayRefreshRatePreferHighest",
+    "displayRefreshRatePreferLowest",
     "themeBrightnessLight",
     "themeBrightnessDark",
     "themeBrightnessBlack",
@@ -141,10 +163,14 @@
     "settingsConfirmationDialogMoveUndatedItems",
     "settingsSectionDisplay",
     "settingsThemeBrightness",
-    "settingsThemeColorful"
+    "settingsThemeColorful",
+    "settingsDisplayRefreshRateModeTile",
+    "settingsDisplayRefreshRateModeTitle"
   ],
 
   "pt": [
+    "displayRefreshRatePreferHighest",
+    "displayRefreshRatePreferLowest",
     "themeBrightnessLight",
     "themeBrightnessDark",
     "themeBrightnessBlack",
@@ -163,10 +189,14 @@
     "settingsConfirmationDialogMoveUndatedItems",
     "settingsSectionDisplay",
     "settingsThemeBrightness",
-    "settingsThemeColorful"
+    "settingsThemeColorful",
+    "settingsDisplayRefreshRateModeTile",
+    "settingsDisplayRefreshRateModeTitle"
   ],
 
   "ru": [
+    "displayRefreshRatePreferHighest",
+    "displayRefreshRatePreferLowest",
     "themeBrightnessLight",
     "themeBrightnessDark",
     "themeBrightnessBlack",
@@ -185,6 +215,8 @@
     "settingsConfirmationDialogMoveUndatedItems",
     "settingsSectionDisplay",
     "settingsThemeBrightness",
-    "settingsThemeColorful"
+    "settingsThemeColorful",
+    "settingsDisplayRefreshRateModeTile",
+    "settingsDisplayRefreshRateModeTitle"
   ]
 }

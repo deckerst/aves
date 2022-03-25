@@ -177,6 +177,9 @@
   "accessibilityAnimationsRemove": "Prevent screen effects",
   "accessibilityAnimationsKeep": "Keep screen effects",
 
+  "displayRefreshRatePreferHighest": "Prefer highest rate",
+  "displayRefreshRatePreferLowest": "Prefer lowest rate",
+
   "themeBrightnessLight": "Light",
   "themeBrightnessDark": "Dark",
   "themeBrightnessBlack": "Black",
@@ -703,6 +706,8 @@
   "settingsSectionDisplay": "Display",
   "settingsThemeBrightness": "Theme",
   "settingsThemeColorful": "Colorful",
+  "settingsDisplayRefreshRateModeTile": "Display refresh rate",
+  "settingsDisplayRefreshRateModeTitle": "Display Refresh Rate",
 
   "settingsSectionLanguage": "Language & Formats",
   "settingsLanguage": "Language",

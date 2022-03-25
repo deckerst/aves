@@ -41,6 +41,7 @@ class Settings extends ChangeNotifier {
   static const isInstalledAppAccessAllowedKey = 'is_installed_app_access_allowed';
   static const isErrorReportingAllowedKey = 'is_crashlytics_enabled';
   static const localeKey = 'locale';
+  static const displayRefreshRateModeKey = 'display_refresh_rate_mode';
   static const themeBrightnessKey = 'theme_brightness';
   static const themeColorModeKey = 'theme_color_mode';
   static const catalogTimeZoneKey = 'catalog_time_zone';
@@ -244,6 +245,10 @@ class Settings extends ChangeNotifier {
     }
     return _appliedLocale!;
   }
+
+  DisplayRefreshRateMode get displayRefreshRateMode => getEnumOrDefault(displayRefreshRateModeKey, SettingsDefaults.displayRefreshRateMode, DisplayRefreshRateMode.values);
+
+  set displayRefreshRateMode(DisplayRefreshRateMode newValue) => setAndNotify(displayRefreshRateModeKey, newValue.toString());
 
   AvesThemeBrightness get themeBrightness => getEnumOrDefault(themeBrightnessKey, SettingsDefaults.themeBrightness, AvesThemeBrightness.values);
 
@@ -709,6 +714,7 @@ class Settings extends ChangeNotifier {
               }
               break;
             case localeKey:
+            case displayRefreshRateModeKey:
             case themeBrightnessKey:
             case themeColorModeKey:
             case keepScreenOnKey:
