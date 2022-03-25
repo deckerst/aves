@@ -177,8 +177,8 @@
   "accessibilityAnimationsRemove": "Prevent screen effects",
   "accessibilityAnimationsKeep": "Keep screen effects",
 
-  "displayRefreshRatePreferHighest": "Prefer highest rate",
-  "displayRefreshRatePreferLowest": "Prefer lowest rate",
+  "displayRefreshRatePreferHighest": "Highest rate",
+  "displayRefreshRatePreferLowest": "Lowest rate",
 
   "themeBrightnessLight": "Light",
   "themeBrightnessDark": "Dark",
@@ -324,7 +324,6 @@
   "renameEntrySetPagePreview": "Preview",
 
   "renameProcessorCounter": "Counter",
-  "renameProcessorDate": "Date",
   "renameProcessorName": "Name",
 
   "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{Delete this album and its item?} other{Delete this album and its {count} items?}}",
@@ -705,9 +704,9 @@
 
   "settingsSectionDisplay": "Display",
   "settingsThemeBrightness": "Theme",
-  "settingsThemeColorful": "Colorful",
+  "settingsThemeColorHighlights": "Color highlights",
   "settingsDisplayRefreshRateModeTile": "Display refresh rate",
-  "settingsDisplayRefreshRateModeTitle": "Display Refresh Rate",
+  "settingsDisplayRefreshRateModeTitle": "Refresh Rate",
 
   "settingsSectionLanguage": "Language & Formats",
   "settingsLanguage": "Language",

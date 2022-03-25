@@ -88,7 +88,7 @@ class _RenameEntrySetPageState extends State<RenameEntrySetPage> {
                           return [
                             PopupMenuItem(
                               value: DateNamingProcessor.key,
-                              child: MenuRow(text: l10n.renameProcessorDate, icon: const Icon(AIcons.date)),
+                              child: MenuRow(text: l10n.viewerInfoLabelDate, icon: const Icon(AIcons.date)),
                             ),
                             PopupMenuItem(
                               value: NameNamingProcessor.key,

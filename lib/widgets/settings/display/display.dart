@@ -41,7 +41,7 @@ class DisplaySection extends StatelessWidget {
         SettingsSwitchListTile(
           selector: (context, s) => s.themeColorMode == AvesThemeColorMode.polychrome,
           onChanged: (v) => settings.themeColorMode = v ? AvesThemeColorMode.polychrome : AvesThemeColorMode.monochrome,
-          title: context.l10n.settingsThemeColorful,
+          title: context.l10n.settingsThemeColorHighlights,
         ),
         SettingsSelectionListTile<DisplayRefreshRateMode>(
           values: DisplayRefreshRateMode.values,
