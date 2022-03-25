@@ -137,6 +137,13 @@
   "accessibilityAnimationsRemove": "Empêchez certains effets de l’écran",
   "accessibilityAnimationsKeep": "Conserver les effets de l’écran",
 
+  "displayRefreshRatePreferHighest": "Fréquence maximale",
+  "displayRefreshRatePreferLowest": "Fréquence minimale",
+
+  "themeBrightnessLight": "Clair",
+  "themeBrightnessDark": "Sombre",
+  "themeBrightnessBlack": "Noir",
+
   "albumTierNew": "Nouveaux",
   "albumTierPinned": "Épinglés",
   "albumTierSpecial": "Standards",
@@ -170,6 +177,8 @@
 
   "binEntriesConfirmationDialogMessage": "{count, plural, =1{Mettre cet élément à la corbeille ?} other{Mettre ces {count} éléments à la corbeille ?}}",
   "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{Supprimer cet élément ?} other{Supprimer ces {count} éléments ?}}",
+  "moveUndatedConfirmationDialogMessage": "Certains éléments ne sont pas datés par métadonnées. Leurs dates actuelles seront réinitialisées par cette opération, à moins de régler les dates par métadonnées.",
+  "moveUndatedConfirmationDialogSetDate": "Régler les dates",
 
   "videoResumeDialogMessage": "Voulez-vous reprendre la lecture à {time} ?",
   "videoStartOverButtonLabel": "RECOMMENCER",
@@ -189,6 +198,14 @@
   "renameAlbumDialogLabel": "Nouveau nom",
   "renameAlbumDialogLabelAlreadyExistsHelper": "Le dossier existe déjà",
 
+  "renameEntrySetPageTitle": "Renommage",
+  "renameEntrySetPagePatternFieldLabel": "Modèle de nommage",
+  "renameEntrySetPageInsertTooltip": "Ajouter un champ",
+  "renameEntrySetPagePreview": "Aperçu",
+
+  "renameProcessorCounter": "Compteur",
+  "renameProcessorName": "Nom",
+
   "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{Supprimer cet album et son élément ?} other{Supprimer cet album et ses {count} éléments ?}}",
   "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{Supprimer ces albums et leur élément ?} other{Supprimer ces albums et leurs {count} éléments ?}}",
 
@@ -201,6 +218,7 @@
   "editEntryDateDialogTitle": "Date & Heure",
   "editEntryDateDialogSetCustom": "Régler une date personnalisée",
   "editEntryDateDialogCopyField": "Copier d’une autre date",
+  "editEntryDateDialogCopyItem": "Copier d’un autre élément",
   "editEntryDateDialogExtractFromTitle": "Extraire du titre",
   "editEntryDateDialogShift": "Décaler",
   "editEntryDateDialogSourceFileModifiedDate": "Date de modification du fichier",
@@ -308,10 +326,12 @@
   "collectionDeleteFailureFeedback": "{count, plural, =1{Échec de la suppression d’1 élément} other{Échec de la suppression de {count} éléments}}",
   "collectionCopyFailureFeedback": "{count, plural, =1{Échec de la copie d’1 élément} other{Échec de la copie de {count} éléments}}",
   "collectionMoveFailureFeedback": "{count, plural, =1{Échec du déplacement d’1 élément} other{Échec du déplacement de {count} éléments}}",
+  "collectionRenameFailureFeedback": "{count, plural, =1{Échec du renommage d’1 élément} other{Échec du renommage de {count} éléments}}",
   "collectionEditFailureFeedback": "{count, plural, =1{Échec de la modification d’1 élément} other{Échec de la modification de {count} éléments}}",
   "collectionExportFailureFeedback": "{count, plural, =1{Échec de l’export d’1 page} other{Échec de l’export de {count} pages}}",
   "collectionCopySuccessFeedback": "{count, plural, =1{1 élément copié} other{{count} éléments copiés}}",
   "collectionMoveSuccessFeedback": "{count, plural, =1{1 élément déplacé} other{{count} éléments déplacés}}",
+  "collectionRenameSuccessFeedback": "{count, plural, =1{1 élément renommé} other{{count} éléments renommés}}",
   "collectionEditSuccessFeedback": "{count, plural, =1{1 élément modifié} other{{count} éléments modifiés}}",
 
   "collectionEmptyFavourites": "Aucun favori",
@@ -393,6 +413,7 @@
   "settingsConfirmationDialogTitle": "Demandes de confirmation",
   "settingsConfirmationDialogDeleteItems": "Suppression définitive d’éléments",
   "settingsConfirmationDialogMoveToBinItems": "Mise d’éléments à la corbeille",
+  "settingsConfirmationDialogMoveUndatedItems": "Déplacement d’éléments non datés par métadonnées",
 
   "settingsNavigationDrawerTile": "Menu de navigation",
   "settingsNavigationDrawerEditorTitle": "Menu de navigation",
@@ -500,6 +521,12 @@
   "settingsRemoveAnimationsTitle": "Suppression des animations",
   "settingsTimeToTakeActionTile": "Délai pour effectuer une action",
   "settingsTimeToTakeActionTitle": "Délai pour effectuer une action",
+
+  "settingsSectionDisplay": "Affichage",
+  "settingsThemeBrightness": "Thème",
+  "settingsThemeColorHighlights": "Surlignages colorés",
+  "settingsDisplayRefreshRateModeTile": "Fréquence d’actualisation de l'écran",
+  "settingsDisplayRefreshRateModeTitle": "Fréquence d’actualisation",
 
   "settingsSectionLanguage": "Langue & Formats",
   "settingsLanguage": "Langue",
