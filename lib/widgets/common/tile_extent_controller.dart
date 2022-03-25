@@ -7,7 +7,7 @@ import 'package:flutter/widgets.dart';
 class TileExtentController {
   final String settingsRouteKey;
   final int columnCountMin, columnCountDefault;
-  final double spacing, extentMin, extentMax;
+  final double extentMin, extentMax, spacing, horizontalPadding;
   final ValueNotifier<double> extentNotifier = ValueNotifier(0);
 
   late double userPreferredExtent;
@@ -22,6 +22,7 @@ class TileExtentController {
     required this.extentMin,
     required this.extentMax,
     required this.spacing,
+    required this.horizontalPadding,
   }) {
     userPreferredExtent = settings.getTileExtent(settingsRouteKey);
     settings.addListener(_onSettingsChanged);
@@ -68,11 +69,11 @@ class TileExtentController {
     return newExtent;
   }
 
-  double _extentMax() => min(extentMax, (viewportSize.shortestSide - spacing * (columnCountMin - 1)) / columnCountMin);
+  double _extentMax() => min(extentMax, (viewportSize.shortestSide - (horizontalPadding * 2) - spacing * (columnCountMin - 1)) / columnCountMin);
 
-  double _columnCountForExtent(double extent) => (viewportSize.width + spacing) / (extent + spacing);
+  double _columnCountForExtent(double extent) => (viewportSize.width - (horizontalPadding * 2) + spacing) / (extent + spacing);
 
-  double _extentForColumnCount(int columnCount) => (viewportSize.width - spacing * (columnCount - 1)) / columnCount;
+  double _extentForColumnCount(int columnCount) => (viewportSize.width - (horizontalPadding * 2) - spacing * (columnCount - 1)) / columnCount;
 
   int _effectiveColumnCountMin() => _columnCountForExtent(_extentMax()).ceil();
 
@@ -94,7 +95,7 @@ class TileExtentController {
 
   Duration getTileAnimationDelay(Duration pageTarget) {
     final extent = extentNotifier.value;
-    final columnCount = ((viewportSize.width + spacing) / (extent + spacing)).round();
+    final columnCount = ((viewportSize.width - (horizontalPadding * 2) + spacing) / (extent + spacing)).round();
     final rowCount = (viewportSize.height + spacing) ~/ (extent + spacing);
     return pageTarget ~/ (columnCount + rowCount) * timeDilation;
   }
