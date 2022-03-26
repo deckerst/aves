@@ -1,29 +1,4 @@
 {
-  "de": [
-    "displayRefreshRatePreferHighest",
-    "displayRefreshRatePreferLowest",
-    "themeBrightnessLight",
-    "themeBrightnessDark",
-    "themeBrightnessBlack",
-    "moveUndatedConfirmationDialogMessage",
-    "moveUndatedConfirmationDialogSetDate",
-    "renameEntrySetPageTitle",
-    "renameEntrySetPagePatternFieldLabel",
-    "renameEntrySetPageInsertTooltip",
-    "renameEntrySetPagePreview",
-    "renameProcessorCounter",
-    "renameProcessorName",
-    "editEntryDateDialogCopyItem",
-    "collectionRenameFailureFeedback",
-    "collectionRenameSuccessFeedback",
-    "settingsConfirmationDialogMoveUndatedItems",
-    "settingsSectionDisplay",
-    "settingsThemeBrightness",
-    "settingsThemeColorHighlights",
-    "settingsDisplayRefreshRateModeTile",
-    "settingsDisplayRefreshRateModeTitle"
-  ],
-
   "es": [
     "displayRefreshRatePreferHighest",
     "displayRefreshRatePreferLowest",
@@ -47,10 +22,6 @@
     "settingsThemeColorHighlights",
     "settingsDisplayRefreshRateModeTile",
     "settingsDisplayRefreshRateModeTitle"
-  ],
-
-  "id": [
-    "settingsVideoGestureDoubleTapTogglePlay"
   ],
 
   "ja": [
@@ -83,31 +54,6 @@
     "moveUndatedConfirmationDialogSetDate",
     "settingsConfirmationDialogMoveUndatedItems",
     "settingsThemeColorHighlights"
-  ],
-
-  "pt": [
-    "displayRefreshRatePreferHighest",
-    "displayRefreshRatePreferLowest",
-    "themeBrightnessLight",
-    "themeBrightnessDark",
-    "themeBrightnessBlack",
-    "moveUndatedConfirmationDialogMessage",
-    "moveUndatedConfirmationDialogSetDate",
-    "renameEntrySetPageTitle",
-    "renameEntrySetPagePatternFieldLabel",
-    "renameEntrySetPageInsertTooltip",
-    "renameEntrySetPagePreview",
-    "renameProcessorCounter",
-    "renameProcessorName",
-    "editEntryDateDialogCopyItem",
-    "collectionRenameFailureFeedback",
-    "collectionRenameSuccessFeedback",
-    "settingsConfirmationDialogMoveUndatedItems",
-    "settingsSectionDisplay",
-    "settingsThemeBrightness",
-    "settingsThemeColorHighlights",
-    "settingsDisplayRefreshRateModeTile",
-    "settingsDisplayRefreshRateModeTitle"
   ],
 
   "ru": [
