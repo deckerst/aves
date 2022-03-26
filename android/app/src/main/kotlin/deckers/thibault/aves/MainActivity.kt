@@ -201,9 +201,11 @@ class MainActivity : FlutterActivity() {
             }
             Intent.ACTION_VIEW, Intent.ACTION_SEND, "com.android.camera.action.REVIEW" -> {
                 (intent.data ?: (intent.getParcelableExtra<Parcelable>(Intent.EXTRA_STREAM) as? Uri))?.let { uri ->
+                    // MIME type is optional
+                    val type = intent.type ?: intent.resolveType(context)
                     return hashMapOf(
                         INTENT_DATA_KEY_ACTION to INTENT_ACTION_VIEW,
-                        INTENT_DATA_KEY_MIME_TYPE to intent.type, // MIME type is optional
+                        INTENT_DATA_KEY_MIME_TYPE to type,
                         INTENT_DATA_KEY_URI to uri.toString(),
                     )
                 }
