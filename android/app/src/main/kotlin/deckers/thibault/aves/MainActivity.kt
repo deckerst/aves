@@ -164,11 +164,18 @@ class MainActivity : FlutterActivity() {
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            // save access permissions across reboots
-            val takeFlags = (data.flags
-                    and (Intent.FLAG_GRANT_READ_URI_PERMISSION
-                    or Intent.FLAG_GRANT_WRITE_URI_PERMISSION))
-            contentResolver.takePersistableUriPermission(treeUri, takeFlags)
+            val canPersist = (data.flags and Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION) != 0
+            if (canPersist) {
+                // save access permissions across reboots
+                val takeFlags = (data.flags
+                        and (Intent.FLAG_GRANT_READ_URI_PERMISSION
+                        or Intent.FLAG_GRANT_WRITE_URI_PERMISSION))
+                try {
+                    contentResolver.takePersistableUriPermission(treeUri, takeFlags)
+                } catch (e: SecurityException) {
+                    Log.w(LOG_TAG, "failed to take persistable URI permission for uri=$treeUri", e)
+                }
+            }
         }
 
         // resume pending action
