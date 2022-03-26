@@ -488,6 +488,7 @@
   "settingsVideoControlsTitle": "Kontrol",
   "settingsVideoButtonsTile": "Tombol",
   "settingsVideoButtonsTitle": "Tombol",
+  "settingsVideoGestureDoubleTapTogglePlay": "Ketuk dua kali untuk mainkan/hentikan",
   "settingsVideoGestureSideDoubleTapSeek": "Ketuk dua kali di tepi layar untuk mencari kebelakang/kedepan",
 
   "settingsSectionPrivacy": "Privasi",
@@ -524,7 +525,7 @@
   "settingsSectionDisplay": "Tampilan",
   "settingsThemeBrightness": "Tema",
   "settingsThemeColorHighlights": "Highlight warna",
-  "settingsDisplayRefreshRateModeTile": "Tampilkan tingkat penyegaran",
+  "settingsDisplayRefreshRateModeTile": "Tingkat penyegaran tampilan",
   "settingsDisplayRefreshRateModeTitle": "Tingkat Penyegaran",
 
   "settingsSectionLanguage": "Bahasa & Format",
