@@ -137,6 +137,9 @@
   "accessibilityAnimationsRemove": "Prevenir efectos en pantalla",
   "accessibilityAnimationsKeep": "Mantener efectos en pantalla",
 
+  "displayRefreshRatePreferHighest": "Alta tasa",
+  "displayRefreshRatePreferLowest": "Baja tasa",
+
   "themeBrightnessLight": "Claro",
   "themeBrightnessDark": "Obscuro",
   "themeBrightnessBlack": "Negro",
@@ -195,6 +198,14 @@
 
   "renameAlbumDialogLabel": "Renombrar",
   "renameAlbumDialogLabelAlreadyExistsHelper": "El directorio ya existe",
+
+  "renameEntrySetPageTitle": "Renombrar",
+  "renameEntrySetPagePatternFieldLabel": "Patrón de nombramiento",
+  "renameEntrySetPageInsertTooltip": "Insertar campo",
+  "renameEntrySetPagePreview": "Vista previa",
+
+  "renameProcessorCounter": "Contador",
+  "renameProcessorName": "Nombre",
 
   "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{¿Está seguro de que desea borrar este álbum y un elemento?} other{¿Está seguro de que desea borrar este álbum y sus {count} elementos?}}",
   "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{¿Está seguro de que desea borrar estos álbumes y un elemento?} other{¿Está seguro de que desea borrar estos álbumes y sus {count} elementos?}}",
@@ -317,10 +328,12 @@
   "collectionDeleteFailureFeedback": "{count, plural, =1{Error al borrar 1 elemento} other{Error al borrar {count} elementos}}",
   "collectionCopyFailureFeedback": "{count, plural, =1{Error al copiar 1 item} other{Error al copiar {count} elementos}}",
   "collectionMoveFailureFeedback": "{count, plural, =1{Error al mover 1 elemento} other{Error al mover {count} elementos}}",
+  "collectionRenameFailureFeedback": "{count, plural, =1{Error al renombrar 1 elemento} other{Error al renombrar {count} elementos}}",
   "collectionEditFailureFeedback": "{count, plural, =1{Error al editar 1 elemento} other{Error al editar {count} elementos}}",
   "collectionExportFailureFeedback": "{count, plural, =1{Error al exportar 1 página} other{Error al exportar {count} páginas}}",
   "collectionCopySuccessFeedback": "{count, plural, =1{1 elemento copiado} other{Copiados{count} elementos}}",
   "collectionMoveSuccessFeedback": "{count, plural, =1{1 elemento movido} other{Movidos {count} elementos}}",
+  "collectionRenameSuccessFeedback": "{count, plural, =1{1 elemento renombrado} other{Renombrados {count} elementos}}",
   "collectionEditSuccessFeedback": "{count, plural, =1{1 elemento editado} other{Editados {count} elementos}}",
 
   "collectionEmptyFavourites": "Sin favoritos",
@@ -515,7 +528,9 @@
 
   "settingsSectionDisplay": "Pantalla",
   "settingsThemeBrightness": "Tema",
-  "settingsThemeColorful": "Colorido",
+  "settingsThemeColorHighlights": "Acentos de color",
+  "settingsDisplayRefreshRateModeTile": "Tasa de refresco de la pantalla",
+  "settingsDisplayRefreshRateModeTitle": "Tasa de refresco",
 
   "settingsSectionLanguage": "Idioma y formatos",
   "settingsLanguage": "Idioma",
