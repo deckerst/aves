@@ -1,4 +1,3 @@
-Thanks for using Aves!
 In v1.6.3:
 - enjoy the light theme
 - rename items in bulk

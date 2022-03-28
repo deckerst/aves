@@ -4,9 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.6.3"></a>[v1.6.3] - 2022-03-28
+
 ### Added
 
-- Theme: light/dark/black and poly/monochrome settings
+- Theme: light/dark/black and color highlights settings
 - Collection: bulk renaming
 - Video: speed and muted state indicators
 - Info: option to set date from other item
@@ -17,7 +19,7 @@ All notable changes to this project will be documented in this file.
 ### Changed
 
 - Viewer: quick action defaults
-- cataloguing includes date sub-second data if present
+- cataloguing includes date sub-second data if present (requires rescan)
 
 ### Removed
 
