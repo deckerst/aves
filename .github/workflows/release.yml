@@ -14,10 +14,10 @@ jobs:
         with:
           java-version: '11.x'
 
-      - uses: subosito/flutter-action@v1
+      - uses: subosito/flutter-action@v2
         with:
-          channel: stable
           flutter-version: '2.10.4'
+          channel: 'stable'
 
       # Workaround for this Android Gradle Plugin issue (supposedly fixed in AGP 4.1):
       # https://issuetracker.google.com/issues/144111441
