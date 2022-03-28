@@ -177,8 +177,8 @@
 
   "binEntriesConfirmationDialogMessage": "{count, plural, =1{Mettre cet élément à la corbeille ?} other{Mettre ces {count} éléments à la corbeille ?}}",
   "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{Supprimer cet élément ?} other{Supprimer ces {count} éléments ?}}",
-  "moveUndatedConfirmationDialogMessage": "Certains éléments ne sont pas datés par métadonnées. Leurs dates actuelles seront réinitialisées par cette opération, à moins de régler les dates par métadonnées.",
-  "moveUndatedConfirmationDialogSetDate": "Régler les dates",
+  "moveUndatedConfirmationDialogMessage": "Sauvegarder les dates des éléments avant de continuer?",
+  "moveUndatedConfirmationDialogSetDate": "Sauvegarder les dates",
 
   "videoResumeDialogMessage": "Voulez-vous reprendre la lecture à {time} ?",
   "videoStartOverButtonLabel": "RECOMMENCER",
@@ -413,7 +413,7 @@
   "settingsConfirmationDialogTitle": "Demandes de confirmation",
   "settingsConfirmationDialogDeleteItems": "Suppression définitive d’éléments",
   "settingsConfirmationDialogMoveToBinItems": "Mise d’éléments à la corbeille",
-  "settingsConfirmationDialogMoveUndatedItems": "Déplacement d’éléments non datés par métadonnées",
+  "settingsConfirmationDialogMoveUndatedItems": "Déplacement d’éléments non datés",
 
   "settingsNavigationDrawerTile": "Menu de navigation",
   "settingsNavigationDrawerEditorTitle": "Menu de navigation",
