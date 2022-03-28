@@ -24,13 +24,6 @@
     "settingsDisplayRefreshRateModeTitle"
   ],
 
-  "ko": [
-    "moveUndatedConfirmationDialogMessage",
-    "moveUndatedConfirmationDialogSetDate",
-    "settingsConfirmationDialogMoveUndatedItems",
-    "settingsThemeColorHighlights"
-  ],
-
   "ru": [
     "displayRefreshRatePreferHighest",
     "displayRefreshRatePreferLowest",
