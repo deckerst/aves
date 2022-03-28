@@ -12,10 +12,10 @@ jobs:
     name: Check code quality.
     runs-on: ubuntu-latest
     steps:
-      - uses: subosito/flutter-action@v1
+      - uses: subosito/flutter-action@v2
         with:
-          channel: stable
           flutter-version: '2.10.4'
+          channel: 'stable'
 
       - name: Clone the repository.
         uses: actions/checkout@v2
