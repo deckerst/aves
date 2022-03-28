@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/filters/album.dart';
-import 'package:aves/model/highlight.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/media/enums.dart';
@@ -113,30 +112,21 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       final showAction = _collection != null
           ? SnackBarAction(
               label: context.l10n.showButtonLabel,
-              onPressed: () async {
-                final highlightInfo = context.read<HighlightInfo>();
+              onPressed: () {
                 final source = _collection.source;
-                final targetCollection = CollectionLens(
-                  source: source,
-                  filters: {AlbumFilter(destinationAlbum, source.getAlbumDisplayName(context, destinationAlbum))},
-                );
-                unawaited(Navigator.pushAndRemoveUntil(
+                final newUri = newFields['uri'] as String?;
+                Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(
                     settings: const RouteSettings(name: CollectionPage.routeName),
                     builder: (context) => CollectionPage(
-                      collection: targetCollection,
+                      source: source,
+                      filters: {AlbumFilter(destinationAlbum, source.getAlbumDisplayName(context, destinationAlbum))},
+                      highlightTest: (entry) => entry.uri == newUri,
                     ),
                   ),
                   (route) => false,
-                ));
-                final delayDuration = context.read<DurationsData>().staggeredAnimationPageTarget;
-                await Future.delayed(delayDuration + Durations.highlightScrollInitDelay);
-                final newUri = newFields['uri'] as String?;
-                final targetEntry = targetCollection.sortedEntries.firstWhereOrNull((entry) => entry.uri == newUri);
-                if (targetEntry != null) {
-                  highlightInfo.trackItem(targetEntry, highlightItem: targetEntry);
-                }
+                );
               },
             )
           : null;

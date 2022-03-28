@@ -1,9 +1,8 @@
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/theme/themes.dart';
 import 'package:aves/widgets/common/fx/blurred.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
 import 'package:flutter/material.dart';
-
-Color overlayBackgroundColor({required bool blurred}) => blurred ? Colors.black26 : Colors.black38;
 
 class OverlayButton extends StatelessWidget {
   final Animation<double> scale;
@@ -19,6 +18,7 @@ class OverlayButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
     final blurred = settings.enableOverlayBlurEffect;
     return ScaleTransition(
       scale: scale,
@@ -29,10 +29,10 @@ class OverlayButton extends StatelessWidget {
               child: Material(
                 type: MaterialType.button,
                 borderRadius: borderRadius,
-                color: overlayBackgroundColor(blurred: blurred),
+                color: Themes.overlayBackgroundColor(brightness: brightness, blurred: blurred),
                 child: Ink(
                   decoration: BoxDecoration(
-                    border: AvesBorder.border,
+                    border: AvesBorder.border(context),
                     borderRadius: borderRadius,
                   ),
                   child: child,
@@ -43,10 +43,10 @@ class OverlayButton extends StatelessWidget {
               enabled: blurred,
               child: Material(
                 type: MaterialType.circle,
-                color: overlayBackgroundColor(blurred: blurred),
+                color: Themes.overlayBackgroundColor(brightness: brightness, blurred: blurred),
                 child: Ink(
                   decoration: BoxDecoration(
-                    border: AvesBorder.border,
+                    border: AvesBorder.border(context),
                     shape: BoxShape.circle,
                   ),
                   child: child,
@@ -78,6 +78,7 @@ class OverlayTextButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final blurred = settings.enableOverlayBlurEffect;
+    final theme = Theme.of(context);
     return SizeTransition(
       sizeFactor: scale,
       child: BlurredRRect.all(
@@ -86,11 +87,11 @@ class OverlayTextButton extends StatelessWidget {
         child: OutlinedButton(
           onPressed: onPressed,
           style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all<Color>(overlayBackgroundColor(blurred: blurred)),
-            foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
-            overlayColor: MaterialStateProperty.all<Color>(Colors.white.withOpacity(0.12)),
+            backgroundColor: MaterialStateProperty.all<Color>(Themes.overlayBackgroundColor(brightness: theme.brightness, blurred: blurred)),
+            foregroundColor: MaterialStateProperty.all<Color>(theme.colorScheme.onSurface),
+            overlayColor: theme.brightness == Brightness.dark ? MaterialStateProperty.all<Color>(Colors.white.withOpacity(0.12)) : null,
             minimumSize: _minSize,
-            side: MaterialStateProperty.all<BorderSide>(AvesBorder.curvedSide),
+            side: MaterialStateProperty.all<BorderSide>(AvesBorder.curvedSide(context)),
             shape: MaterialStateProperty.all<OutlinedBorder>(const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(_borderRadius)),
             )),

@@ -2,6 +2,7 @@ import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/actions/entry_set_actions.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/mime.dart';
+import 'package:aves/model/naming_pattern.dart';
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/source/enums.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
@@ -15,13 +16,20 @@ class SettingsDefaults {
   static const canUseAnalysisService = true;
   static const isInstalledAppAccessAllowed = false;
   static const isErrorReportingAllowed = false;
+  static const displayRefreshRateMode = DisplayRefreshRateMode.auto;
+  static const themeBrightness = AvesThemeBrightness.system;
+  static const themeColorMode = AvesThemeColorMode.polychrome;
   static const tileLayout = TileLayout.grid;
+  static const entryRenamingPattern = '<${DateNamingProcessor.key}, yyyyMMdd-HHmmss> <${NameNamingProcessor.key}>';
 
   // navigation
   static const mustBackTwiceToExit = true;
   static const keepScreenOn = KeepScreenOn.viewerOnly;
   static const homePage = HomePageSetting.collection;
-  static const confirmationDialogs = ConfirmationDialog.values;
+  static const confirmDeleteForever = true;
+  static const confirmMoveToBin = true;
+  static const confirmMoveUndatedItems = true;
+  static const setMetadataDateBeforeFileOp = false;
   static final drawerTypeBookmarks = [
     null,
     MimeFilter.video,
@@ -58,9 +66,10 @@ class SettingsDefaults {
 
   // viewer
   static const viewerQuickActions = [
+    EntryAction.rotateScreen,
     EntryAction.toggleFavourite,
     EntryAction.share,
-    EntryAction.rotateScreen,
+    EntryAction.delete,
   ];
   static const showOverlayOnOpening = true;
   static const showOverlayMinimap = false;

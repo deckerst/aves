@@ -67,8 +67,6 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
     required this.heroType,
   }) : super(key: key);
 
-  static const Color detailColor = Color(0xFFE0E0E0);
-
   @override
   Widget build(BuildContext context) {
     return MediaQueryDataProvider(
@@ -166,6 +164,7 @@ class _FilterGridState<T extends CollectionFilter> extends State<FilterGrid<T>> 
       extentMin: 60,
       extentMax: 300,
       spacing: 8,
+      horizontalPadding: 2,
     );
     return TileExtentControllerProvider(
       controller: _tileExtentController!,
@@ -239,12 +238,13 @@ class _FilterGridContent<T extends CollectionFilter> extends StatelessWidget {
         final sectionedListLayoutProvider = ValueListenableBuilder<double>(
           valueListenable: context.select<TileExtentController, ValueNotifier<double>>((controller) => controller.extentNotifier),
           builder: (context, thumbnailExtent, child) {
-            return Selector<TileExtentController, Tuple3<double, int, double>>(
-              selector: (context, c) => Tuple3(c.viewportSize.width, c.columnCount, c.spacing),
+            return Selector<TileExtentController, Tuple4<double, int, double, double>>(
+              selector: (context, c) => Tuple4(c.viewportSize.width, c.columnCount, c.spacing, c.horizontalPadding),
               builder: (context, c, child) {
                 final scrollableWidth = c.item1;
                 final columnCount = c.item2;
                 final tileSpacing = c.item3;
+                final horizontalPadding = c.item4;
                 // do not listen for animation delay change
                 final target = context.read<DurationsData>().staggeredAnimationPageTarget;
                 final tileAnimationDelay = context.read<TileExtentController>().getTileAnimationDelay(target);
@@ -267,6 +267,7 @@ class _FilterGridContent<T extends CollectionFilter> extends StatelessWidget {
                           scrollableWidth: scrollableWidth,
                           columnCount: columnCount,
                           spacing: tileSpacing,
+                          horizontalPadding: horizontalPadding,
                           tileWidth: thumbnailExtent,
                           tileHeight: tileHeight,
                           tileBuilder: (gridItem) {
@@ -432,8 +433,10 @@ class _FilterScaler<T extends CollectionFilter> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tileSpacing = context.select<TileExtentController, double>((controller) => controller.spacing);
     final textScaleFactor = context.select<MediaQueryData, double>((mq) => mq.textScaleFactor);
+    final metrics = context.select<TileExtentController, Tuple2<double, double>>((v) => Tuple2(v.spacing, v.horizontalPadding));
+    final tileSpacing = metrics.item1;
+    final horizontalPadding = metrics.item2;
     return GridScaleGestureDetector<FilterGridItem<T>>(
       scrollableKey: scrollableKey,
       tileLayout: tileLayout,
@@ -444,6 +447,7 @@ class _FilterScaler<T extends CollectionFilter> extends StatelessWidget {
           tileCenter: center,
           tileSize: tileSize,
           spacing: tileSpacing,
+          horizontalPadding: horizontalPadding,
           borderWidth: AvesFilterChip.outlineWidth,
           borderRadius: CoveredFilterChip.radius(tileSize.shortestSide),
           color: Colors.grey.shade700,

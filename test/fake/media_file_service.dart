@@ -7,12 +7,14 @@ import 'media_store_service.dart';
 
 class FakeMediaFileService extends Fake implements MediaFileService {
   @override
-  Stream<MoveOpEvent> rename(
-    Iterable<AvesEntry> entries, {
-    required String newName,
+  Stream<MoveOpEvent> rename({
+    String? opId,
+    required Map<AvesEntry, String> entriesToNewName,
   }) {
     final contentId = FakeMediaStoreService.nextId;
-    final entry = entries.first;
+    final kv = entriesToNewName.entries.first;
+    final entry = kv.key;
+    final newName = kv.value;
     return Stream.value(MoveOpEvent(
       success: true,
       skipped: false,
@@ -21,8 +23,6 @@ class FakeMediaFileService extends Fake implements MediaFileService {
         'uri': 'content://media/external/images/media/$contentId',
         'contentId': contentId,
         'path': '${entry.directory}/$newName',
-        'displayName': newName,
-        'title': newName.substring(0, newName.length - entry.extension!.length),
         'dateModifiedSecs': FakeMediaStoreService.dateSecs,
       },
     ));

@@ -7,6 +7,7 @@ import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_namespaces.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class XmpDirTile extends StatefulWidget {
   final AvesEntry entry;
@@ -43,7 +44,7 @@ class _XmpDirTileState extends State<XmpDirTile> {
     return AvesExpansionTile(
       // title may contain parent to distinguish multiple XMP directories
       title: widget.title,
-      color: AColors.xmp,
+      highlightColor: context.select<AvesColorsData, Color>((v) => v.xmp),
       expandedNotifier: widget.expandedNotifier,
       initiallyExpanded: widget.initiallyExpanded,
       children: [
@@ -51,7 +52,7 @@ class _XmpDirTileState extends State<XmpDirTile> {
           padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: sections.expand((section) => section.buildNamespaceSection()).toList(),
+            children: sections.expand((section) => section.buildNamespaceSection(context)).toList(),
           ),
         ),
       ],

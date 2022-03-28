@@ -2,7 +2,6 @@ import 'package:aves/app_mode.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/selection.dart';
 import 'package:aves/model/settings/settings.dart';
-import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
@@ -95,10 +94,8 @@ class _InteractiveFilterTileState<T extends CollectionFilter> extends State<Inte
         MaterialPageRoute(
           settings: const RouteSettings(name: CollectionPage.routeName),
           builder: (context) => CollectionPage(
-            collection: CollectionLens(
-              source: context.read<CollectionSource>(),
-              filters: {filter},
-            ),
+            source: context.read<CollectionSource>(),
+            filters: {filter},
           ),
         ),
       );

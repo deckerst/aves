@@ -164,11 +164,18 @@ class MainActivity : FlutterActivity() {
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            // save access permissions across reboots
-            val takeFlags = (data.flags
-                    and (Intent.FLAG_GRANT_READ_URI_PERMISSION
-                    or Intent.FLAG_GRANT_WRITE_URI_PERMISSION))
-            contentResolver.takePersistableUriPermission(treeUri, takeFlags)
+            val canPersist = (data.flags and Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION) != 0
+            if (canPersist) {
+                // save access permissions across reboots
+                val takeFlags = (data.flags
+                        and (Intent.FLAG_GRANT_READ_URI_PERMISSION
+                        or Intent.FLAG_GRANT_WRITE_URI_PERMISSION))
+                try {
+                    contentResolver.takePersistableUriPermission(treeUri, takeFlags)
+                } catch (e: SecurityException) {
+                    Log.w(LOG_TAG, "failed to take persistable URI permission for uri=$treeUri", e)
+                }
+            }
         }
 
         // resume pending action
@@ -201,9 +208,11 @@ class MainActivity : FlutterActivity() {
             }
             Intent.ACTION_VIEW, Intent.ACTION_SEND, "com.android.camera.action.REVIEW" -> {
                 (intent.data ?: (intent.getParcelableExtra<Parcelable>(Intent.EXTRA_STREAM) as? Uri))?.let { uri ->
+                    // MIME type is optional
+                    val type = intent.type ?: intent.resolveType(context)
                     return hashMapOf(
                         INTENT_DATA_KEY_ACTION to INTENT_ACTION_VIEW,
-                        INTENT_DATA_KEY_MIME_TYPE to intent.type, // MIME type is optional
+                        INTENT_DATA_KEY_MIME_TYPE to type,
                         INTENT_DATA_KEY_URI to uri.toString(),
                     )
                 }

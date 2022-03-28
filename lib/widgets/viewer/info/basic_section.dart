@@ -8,6 +8,7 @@ import 'package:aves/model/filters/rating.dart';
 import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/filters/type.dart';
 import 'package:aves/model/source/collection_lens.dart';
+import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/format.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -156,7 +157,7 @@ class BasicSection extends StatelessWidget {
             DecoratedBox(
               decoration: BoxDecoration(
                 border: Border.fromBorderSide(BorderSide(
-                  color: isEditing ? Theme.of(context).disabledColor : AvesFilterChip.defaultOutlineColor,
+                  color: isEditing ? Theme.of(context).disabledColor : context.select<AvesColorsData, Color>((v) => v.neutral),
                   width: AvesFilterChip.outlineWidth,
                 )),
                 borderRadius: const BorderRadius.all(Radius.circular(AvesFilterChip.defaultRadius)),

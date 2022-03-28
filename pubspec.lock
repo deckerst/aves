@@ -266,7 +266,7 @@ packages:
       path: "."
       ref: HEAD
       resolved-ref: e0380a550c4be0ef52a70f398c2211fc503094e8
-      url: "git://github.com/deckerst/expansion_tile_card.git"
+      url: "https://github.com/deckerst/expansion_tile_card.git"
     source: git
     version: "2.0.0"
   fake_async:
@@ -289,7 +289,7 @@ packages:
       path: "."
       ref: aves
       resolved-ref: "2aa0f5f08135de00966e9b71e58cddb61f93e81c"
-      url: "git://github.com/deckerst/fijkplayer.git"
+      url: "https://github.com/deckerst/fijkplayer.git"
     source: git
     version: "0.10.0"
   file:
@@ -360,6 +360,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.1.1"
+  flutter_displaymode:
+    dependency: "direct main"
+    description:
+      name: flutter_displaymode
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.3.2"
   flutter_driver:
     dependency: "direct dev"
     description: flutter
@@ -741,7 +748,7 @@ packages:
       name: pdf
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.7.1"
+    version: "3.7.2"
   percent_indicator:
     dependency: "direct main"
     description:
@@ -825,7 +832,7 @@ packages:
       name: printing
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.7.2"
+    version: "5.7.3"
   process:
     dependency: transitive
     description:
@@ -853,7 +860,7 @@ packages:
       name: pub_semver
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.0"
+    version: "2.1.1"
   qr:
     dependency: transitive
     description:
@@ -1019,7 +1026,7 @@ packages:
       name: sqflite_common
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.2.0"
+    version: "2.2.1"
   stack_trace:
     dependency: transitive
     description:
@@ -1047,7 +1054,7 @@ packages:
       path: "."
       ref: HEAD
       resolved-ref: cd5ccd925d0348218aaf156f0b9dc4f8caaec7cc
-      url: "git://github.com/deckerst/aves_streams_channel.git"
+      url: "https://github.com/deckerst/aves_streams_channel.git"
     source: git
     version: "0.3.0"
   string_scanner:

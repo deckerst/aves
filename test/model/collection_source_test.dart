@@ -190,7 +190,13 @@ void main() {
     await image1.toggleFavourite();
     const albumFilter = AlbumFilter(testAlbum, 'whatever');
     await covers.set(albumFilter, image1.id);
-    await source.renameEntry(image1, 'image1b.jpg', persist: true);
+    await source.updateAfterRename(
+      todoEntries: {image1},
+      movedOps: {
+        FakeMediaStoreService.moveOpEventForRename(image1, 'image1b.jpg'),
+      },
+      persist: true,
+    );
 
     expect(favourites.count, 1);
     expect(image1.isFavourite, true);
@@ -236,7 +242,7 @@ void main() {
       moveType: MoveType.move,
       destinationAlbums: {destinationAlbum},
       movedOps: {
-        FakeMediaStoreService.moveOpEventFor(image1, sourceAlbum, destinationAlbum),
+        FakeMediaStoreService.moveOpEventForMove(image1, sourceAlbum, destinationAlbum),
       },
     );
 
@@ -260,7 +266,7 @@ void main() {
       moveType: MoveType.move,
       destinationAlbums: {destinationAlbum},
       movedOps: {
-        FakeMediaStoreService.moveOpEventFor(image1, sourceAlbum, destinationAlbum),
+        FakeMediaStoreService.moveOpEventForMove(image1, sourceAlbum, destinationAlbum),
       },
     );
 
@@ -285,7 +291,7 @@ void main() {
       moveType: MoveType.move,
       destinationAlbums: {destinationAlbum},
       movedOps: {
-        FakeMediaStoreService.moveOpEventFor(image1, sourceAlbum, destinationAlbum),
+        FakeMediaStoreService.moveOpEventForMove(image1, sourceAlbum, destinationAlbum),
       },
     );
 
@@ -307,7 +313,7 @@ void main() {
     await source.renameAlbum(sourceAlbum, destinationAlbum, {
       image1
     }, {
-      FakeMediaStoreService.moveOpEventFor(image1, sourceAlbum, destinationAlbum),
+      FakeMediaStoreService.moveOpEventForMove(image1, sourceAlbum, destinationAlbum),
     });
     albumFilter = const AlbumFilter(destinationAlbum, 'whatever');
 

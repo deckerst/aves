@@ -266,10 +266,8 @@ class CollectionSearchDelegate {
       MaterialPageRoute(
         settings: const RouteSettings(name: CollectionPage.routeName),
         builder: (context) => CollectionPage(
-          collection: CollectionLens(
-            source: source,
-            filters: {filter},
-          ),
+          source: source,
+          filters: {filter},
         ),
       ),
       (route) => false,

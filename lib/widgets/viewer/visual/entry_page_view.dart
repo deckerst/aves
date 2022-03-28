@@ -209,6 +209,7 @@ class _EntryPageViewState extends State<EntryPageView> {
               _actionFeedbackChildNotifier.value = DecoratedIcon(
                 icon?.call() ?? action.getIconData(),
                 size: 48,
+                color: Colors.white,
                 shadows: const [
                   Shadow(
                     color: Colors.black,

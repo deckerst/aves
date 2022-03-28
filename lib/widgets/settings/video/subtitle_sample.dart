@@ -32,7 +32,7 @@ class SubtitleSample extends StatelessWidget {
                 Color(0xffeaecc6),
               ],
             ),
-            border: AvesBorder.border,
+            border: AvesBorder.border(context),
             borderRadius: const BorderRadius.all(Radius.circular(24)),
           ),
           height: 128,

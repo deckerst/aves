@@ -62,8 +62,7 @@ abstract class ImageProvider {
 
     open suspend fun renameMultiple(
         activity: Activity,
-        newFileName: String,
-        entries: List<AvesEntry>,
+        entriesToNewName: Map<AvesEntry, String>,
         isCancelledOp: CancelCheck,
         callback: ImageOpCallback,
     ) {
@@ -143,7 +142,7 @@ abstract class ImageProvider {
 
         var desiredNameWithoutExtension = if (sourceEntry.path != null) {
             val sourceFileName = File(sourceEntry.path).name
-            sourceFileName.replaceFirst(FILE_EXTENSION_PATTERN, "")
+            sourceFileName.substringBeforeLast(".")
         } else {
             sourceUri.lastPathSegment!!
         }
@@ -757,7 +756,13 @@ abstract class ImageProvider {
                         ExifInterface.TAG_DATETIME_DIGITIZED,
                     ).forEach { field ->
                         if (fields.contains(field)) {
-                            exif.getSafeDateMillis(field) { date ->
+                            val subSecTag = when (field) {
+                                ExifInterface.TAG_DATETIME -> ExifInterface.TAG_SUBSEC_TIME
+                                ExifInterface.TAG_DATETIME_DIGITIZED -> ExifInterface.TAG_SUBSEC_TIME_DIGITIZED
+                                ExifInterface.TAG_DATETIME_ORIGINAL -> ExifInterface.TAG_SUBSEC_TIME_ORIGINAL
+                                else -> null
+                            }
+                            exif.getSafeDateMillis(field, subSecTag) { date ->
                                 exif.setAttribute(field, ExifInterfaceHelper.DATETIME_FORMAT.format(date + shiftMillis))
                             }
                         }
@@ -963,8 +968,6 @@ abstract class ImageProvider {
 
     companion object {
         private val LOG_TAG = LogUtils.createTag<ImageProvider>()
-
-        val FILE_EXTENSION_PATTERN = Regex("[.][^.]+$")
 
         val supportedExportMimeTypes = listOf(MimeTypes.BMP, MimeTypes.JPEG, MimeTypes.PNG, MimeTypes.WEBP)
 

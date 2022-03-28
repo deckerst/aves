@@ -352,26 +352,37 @@ class ViewerButtonRowContent extends StatelessWidget {
         );
 
     Widget buildItem(EntryAction action) => Expanded(
-          child: PopupMenuItem(
-            value: action,
-            child: Tooltip(
-              message: action.getText(context),
-              child: Center(child: action.getIcon()),
+          child: Material(
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8)),
+            ),
+            clipBehavior: Clip.antiAlias,
+            child: PopupMenuItem(
+              value: action,
+              child: Tooltip(
+                message: action.getText(context),
+                child: Center(child: action.getIcon()),
+              ),
             ),
           ),
         );
 
     return PopupMenuItem(
-      child: Row(
-        children: [
-          buildDivider(),
-          buildItem(EntryAction.rotateCCW),
-          buildDivider(),
-          buildItem(EntryAction.rotateCW),
-          buildDivider(),
-          buildItem(EntryAction.flip),
-          buildDivider(),
-        ],
+      child: IconTheme.merge(
+        data: IconThemeData(
+          color: ListTileTheme.of(context).iconColor,
+        ),
+        child: Row(
+          children: [
+            buildDivider(),
+            buildItem(EntryAction.rotateCCW),
+            buildDivider(),
+            buildItem(EntryAction.rotateCW),
+            buildDivider(),
+            buildItem(EntryAction.flip),
+            buildDivider(),
+          ],
+        ),
       ),
     );
   }

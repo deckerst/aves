@@ -12,6 +12,8 @@ class OverlayMetadata extends Equatable {
 
   bool get isEmpty => aperture == null && exposureTime == null && focalLength == null && iso == null;
 
+  bool get isNotEmpty => !isEmpty;
+
   const OverlayMetadata({
     this.aperture,
     this.exposureTime,

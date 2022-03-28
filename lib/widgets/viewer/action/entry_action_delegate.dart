@@ -8,10 +8,8 @@ import 'package:aves/model/device.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/entry_metadata_edition.dart';
 import 'package:aves/model/filters/album.dart';
-import 'package:aves/model/highlight.dart';
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
-import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/common/image_op_events.dart';
 import 'package:aves/services/common/services.dart';
@@ -27,7 +25,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/add_shortcut_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
-import 'package:aves/widgets/dialogs/entry_editors/rename_dialog.dart';
+import 'package:aves/widgets/dialogs/entry_editors/rename_entry_dialog.dart';
 import 'package:aves/widgets/dialogs/export_entry_dialog.dart';
 import 'package:aves/widgets/filter_grids/album_pick.dart';
 import 'package:aves/widgets/viewer/action/printer.dart';
@@ -39,6 +37,7 @@ import 'package:aves/widgets/viewer/source_viewer_page.dart';
 import 'package:aves/widgets/viewer/video/conductor.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
@@ -190,12 +189,12 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     }
 
     final l10n = context.l10n;
-    if (!(await showConfirmationDialog(
+    if (!await showConfirmationDialog(
       context: context,
-      type: ConfirmationDialog.delete,
+      type: ConfirmationDialog.deleteForever,
       message: l10n.deleteEntriesConfirmationDialogMessage(1),
       confirmationButtonLabel: l10n.deleteButtonLabel,
-    ))) return;
+    )) return;
 
     if (!await checkStoragePermission(context, {entry})) return;
 
@@ -262,28 +261,19 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         final showAction = isMainMode && newUris.isNotEmpty
             ? SnackBarAction(
                 label: context.l10n.showButtonLabel,
-                onPressed: () async {
-                  final highlightInfo = context.read<HighlightInfo>();
-                  final targetCollection = CollectionLens(
-                    source: source,
-                    filters: {AlbumFilter(destinationAlbum, source.getAlbumDisplayName(context, destinationAlbum))},
-                  );
-                  unawaited(Navigator.pushAndRemoveUntil(
+                onPressed: () {
+                  Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(
                       settings: const RouteSettings(name: CollectionPage.routeName),
                       builder: (context) => CollectionPage(
-                        collection: targetCollection,
+                        source: source,
+                        filters: {AlbumFilter(destinationAlbum, source.getAlbumDisplayName(context, destinationAlbum))},
+                        highlightTest: (entry) => newUris.contains(entry.uri),
                       ),
                     ),
                     (route) => false,
-                  ));
-                  final delayDuration = context.read<DurationsData>().staggeredAnimationPageTarget;
-                  await Future.delayed(delayDuration + Durations.highlightScrollInitDelay);
-                  final targetEntry = targetCollection.sortedEntries.firstWhereOrNull((entry) => newUris.contains(entry.uri));
-                  if (targetEntry != null) {
-                    highlightInfo.trackItem(targetEntry, highlightItem: targetEntry);
-                  }
+                  );
                 },
               )
             : null;
@@ -326,17 +316,16 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       context: context,
       builder: (context) => RenameEntryDialog(entry: entry),
     );
-    if (newName == null || newName.isEmpty) return;
+    if (newName == null || newName.isEmpty || newName == entry.filenameWithoutExtension) return;
 
-    if (!await checkStoragePermission(context, {entry})) return;
-
-    final success = await context.read<CollectionSource>().renameEntry(entry, newName, persist: _isMainMode(context));
-
-    if (success) {
-      showFeedback(context, context.l10n.genericSuccessFeedback);
-    } else {
-      showFeedback(context, context.l10n.genericFailureFeedback);
-    }
+    // wait for the dialog to hide as applying the change may block the UI
+    await Future.delayed(Durations.dialogTransitionAnimation * timeDilation);
+    await rename(
+      context,
+      entriesToNewName: {entry: '$newName${entry.extension}'},
+      persist: _isMainMode(context),
+      onSuccess: entry.metadataChangeNotifier.notify,
+    );
   }
 
   bool _isMainMode(BuildContext context) => context.read<ValueNotifier<AppMode>>().value == AppMode.main;

@@ -84,8 +84,12 @@ class _RenameAlbumDialogState extends State<RenameAlbumDialog> {
     final path = _buildAlbumPath(newName);
     final exists = newName.isNotEmpty && await FileSystemEntity.type(path) != FileSystemEntityType.notFound;
     _existsNotifier.value = exists && newName != initialValue;
-    _isValidNotifier.value = newName.isNotEmpty && !exists;
+    _isValidNotifier.value = newName.isNotEmpty;
   }
 
-  void _submit(BuildContext context) => Navigator.pop(context, _nameController.text);
+  void _submit(BuildContext context) {
+    if (_isValidNotifier.value) {
+      Navigator.pop(context, _nameController.text);
+    }
+  }
 }

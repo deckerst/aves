@@ -108,19 +108,26 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T
     _startSize = renderMetaData.size;
     _scaledSizeNotifier = ValueNotifier(_startSize!);
 
-    // not the same as `MediaQuery.size.width`, because of screen insets/padding
-    final gridWidth = scrollableBox.size.width;
+    // not the same as `MediaQuery` metrics, because of screen insets/padding
+    final scrollViewWidth = scrollableBox.size.width;
+    final scrollViewXMin = scrollableBox.localToGlobal(Offset.zero).dx;
+    final scrollViewXMax = scrollableBox.localToGlobal(Offset(scrollViewWidth, 0)).dx;
+
+    final horizontalPadding = tileExtentController.horizontalPadding;
+    final xMin = scrollViewXMin + horizontalPadding;
+    final xMax = scrollViewXMax - horizontalPadding;
 
     _extentMin = tileExtentController.effectiveExtentMin;
     _extentMax = tileExtentController.effectiveExtentMax;
 
     final halfSize = _startSize! / 2;
     final tileCenter = renderMetaData.localToGlobal(Offset(halfSize.width, halfSize.height));
+    final tileLayout = widget.tileLayout;
     _overlayEntry = OverlayEntry(
       builder: (context) => _ScaleOverlay(
         builder: (scaledTileSize) {
           late final double themeExtent;
-          switch (widget.tileLayout) {
+          switch (tileLayout) {
             case TileLayout.grid:
               themeExtent = scaledTileSize.width;
               break;
@@ -136,9 +143,10 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T
             ),
           );
         },
-        tileLayout: widget.tileLayout,
+        tileLayout: tileLayout,
         center: tileCenter,
-        viewportWidth: gridWidth,
+        xMin: xMin,
+        xMax: xMax,
         gridBuilder: widget.gridBuilder,
         scaledSizeNotifier: _scaledSizeNotifier!,
       ),
@@ -220,7 +228,7 @@ class _ScaleOverlay extends StatefulWidget {
   final Widget Function(Size scaledTileSize) builder;
   final TileLayout tileLayout;
   final Offset center;
-  final double viewportWidth;
+  final double xMin, xMax;
   final ValueNotifier<Size> scaledSizeNotifier;
   final Widget Function(Offset center, Size tileSize, Widget child) gridBuilder;
 
@@ -229,7 +237,8 @@ class _ScaleOverlay extends StatefulWidget {
     required this.builder,
     required this.tileLayout,
     required this.center,
-    required this.viewportWidth,
+    required this.xMin,
+    required this.xMax,
     required this.scaledSizeNotifier,
     required this.gridBuilder,
   }) : super(key: key);
@@ -243,7 +252,13 @@ class _ScaleOverlayState extends State<_ScaleOverlay> {
 
   Offset get center => widget.center;
 
-  double get gridWidth => widget.viewportWidth;
+  double get xMin => widget.xMin;
+
+  double get xMax => widget.xMax;
+
+  // `Color(0x00FFFFFF)` is different from `Color(0x00000000)` (or `Colors.transparent`)
+  // when used in gradients or lerping to it
+  static const transparentWhite = Color(0x00FFFFFF);
 
   @override
   void initState() {
@@ -265,8 +280,6 @@ class _ScaleOverlayState extends State<_ScaleOverlay> {
                 final width = scaledSize.width;
                 final height = scaledSize.height;
                 // keep scaled thumbnail within the screen
-                final xMin = context.select<MediaQueryData, double>((mq) => mq.padding.left);
-                final xMax = xMin + gridWidth;
                 var dx = .0;
                 if (center.dx - width / 2 < xMin) {
                   dx = xMin - (center.dx - width / 2);
@@ -305,28 +318,39 @@ class _ScaleOverlayState extends State<_ScaleOverlay> {
         gradientCenter = center;
         break;
       case TileLayout.list:
-        gradientCenter = Offset(context.isRtl ? gridWidth : 0, center.dy);
+        gradientCenter = Offset(context.isRtl ? xMax : xMin, center.dy);
         break;
     }
 
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return _init
         ? BoxDecoration(
             gradient: RadialGradient(
               center: FractionalOffset.fromOffsetAndSize(gradientCenter, context.select<MediaQueryData, Size>((mq) => mq.size)),
               radius: 1,
-              colors: const [
-                Colors.black,
-                Colors.black54,
-              ],
+              colors: isDark
+                  ? const [
+                      Colors.black,
+                      Colors.black54,
+                    ]
+                  : const [
+                      Colors.white,
+                      Colors.white38,
+                    ],
             ),
           )
-        : const BoxDecoration(
+        : BoxDecoration(
             // provide dummy gradient to lerp to the other one during animation
             gradient: RadialGradient(
-              colors: [
-                Colors.transparent,
-                Colors.transparent,
-              ],
+              colors: isDark
+                  ? const [
+                      Colors.transparent,
+                      Colors.transparent,
+                    ]
+                  : const [
+                      transparentWhite,
+                      transparentWhite,
+                    ],
             ),
           );
   }
@@ -336,7 +360,7 @@ class GridPainter extends CustomPainter {
   final TileLayout tileLayout;
   final Offset tileCenter;
   final Size tileSize;
-  final double spacing, borderWidth;
+  final double spacing, horizontalPadding, borderWidth;
   final Radius borderRadius;
   final Color color;
   final TextDirection textDirection;
@@ -346,6 +370,7 @@ class GridPainter extends CustomPainter {
     required this.tileCenter,
     required this.tileSize,
     required this.spacing,
+    required this.horizontalPadding,
     required this.borderWidth,
     required this.borderRadius,
     required this.color,
@@ -379,7 +404,7 @@ class GridPainter extends CustomPainter {
       case TileLayout.list:
         chipSize = Size.square(tileSize.shortestSide);
         final chipCenterToEdge = chipSize.width / 2;
-        chipCenter = Offset(textDirection == TextDirection.rtl ? size.width - chipCenterToEdge : chipCenterToEdge, tileCenter.dy);
+        chipCenter = Offset(textDirection == TextDirection.rtl ? size.width - (chipCenterToEdge + horizontalPadding) : chipCenterToEdge + horizontalPadding, tileCenter.dy);
         deltaColumn = 0;
         strokeShader = ui.Gradient.linear(
           tileCenter - Offset(0, chipSize.shortestSide * 3),

@@ -112,6 +112,11 @@ class Constants {
       sourceUrl: 'https://github.com/deckerst/fijkplayer',
     ),
     Dependency(
+      name: 'Flutter Display Mode',
+      license: 'MIT',
+      sourceUrl: 'https://github.com/ajinasokan/flutter_displaymode',
+    ),
+    Dependency(
       name: 'Google API Availability',
       license: 'MIT',
       sourceUrl: 'https://github.com/Baseflow/flutter-google-api-availability',

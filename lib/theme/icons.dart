@@ -12,8 +12,10 @@ class AIcons {
   static const IconData bin = Icons.delete_outlined;
   static const IconData broken = Icons.broken_image_outlined;
   static const IconData checked = Icons.done_outlined;
+  static const IconData counter = Icons.plus_one_outlined;
   static const IconData date = Icons.calendar_today_outlined;
   static const IconData disc = Icons.fiber_manual_record;
+  static const IconData display = Icons.light_mode_outlined;
   static const IconData error = Icons.error_outline;
   static const IconData folder = Icons.folder_outlined;
   static const IconData grid = Icons.grid_on_outlined;
@@ -74,6 +76,7 @@ class AIcons {
   static const IconData move = MdiIcons.fileMoveOutline;
   static const IconData mute = Icons.volume_off_outlined;
   static const IconData unmute = Icons.volume_up_outlined;
+  static const IconData name = Icons.abc_outlined;
   static const IconData newTier = Icons.fiber_new_outlined;
   static const IconData openOutside = Icons.open_in_new_outlined;
   static const IconData pin = Icons.push_pin_outlined;
@@ -82,7 +85,6 @@ class AIcons {
   static const IconData pause = Icons.pause;
   static const IconData print = Icons.print_outlined;
   static const IconData refresh = Icons.refresh_outlined;
-  static const IconData rename = Icons.title_outlined;
   static const IconData replay10 = Icons.replay_10_outlined;
   static const IconData skip10 = Icons.forward_10_outlined;
   static const IconData reset = Icons.restart_alt_outlined;

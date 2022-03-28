@@ -27,7 +27,6 @@ class VideoIcon extends StatelessWidget {
     if (showDuration) {
       child = DefaultTextStyle(
         style: TextStyle(
-          color: Colors.grey.shade200,
           fontSize: gridTheme.fontSize,
         ),
         child: child,
@@ -146,7 +145,6 @@ class MultiPageIcon extends StatelessWidget {
     );
     return DefaultTextStyle(
       style: TextStyle(
-        color: Colors.grey.shade200,
         fontSize: context.select<GridThemeData, double>((t) => t.fontSize),
       ),
       child: child,
@@ -167,7 +165,6 @@ class RatingIcon extends StatelessWidget {
     final gridTheme = context.watch<GridThemeData>();
     return DefaultTextStyle(
       style: TextStyle(
-        color: Colors.grey.shade200,
         fontSize: gridTheme.fontSize,
       ),
       child: OverlayIcon(
@@ -195,7 +192,6 @@ class TrashIcon extends StatelessWidget {
 
     return DefaultTextStyle(
       style: TextStyle(
-        color: Colors.grey.shade200,
         fontSize: context.select<GridThemeData, double>((t) => t.fontSize),
       ),
       child: child,
@@ -224,8 +220,6 @@ class OverlayIcon extends StatelessWidget {
     final iconChild = Icon(
       icon,
       size: size,
-      // consistent with the color used for the text next to it
-      color: DefaultTextStyle.of(context).style.color,
     );
     final iconBox = SizedBox(
       width: size,
@@ -243,7 +237,7 @@ class OverlayIcon extends StatelessWidget {
       margin: margin,
       padding: text != null ? EdgeInsetsDirectional.only(end: size / 4) : null,
       decoration: BoxDecoration(
-        color: const Color(0xBB000000),
+        color: Theme.of(context).brightness == Brightness.dark ? const Color(0xAA000000) : const Color(0xCCFFFFFF),
         borderRadius: BorderRadius.all(Radius.circular(size)),
       ),
       child: text == null
@@ -254,7 +248,11 @@ class OverlayIcon extends StatelessWidget {
               children: [
                 iconBox,
                 const SizedBox(width: 2),
-                Text(text!),
+                Text(
+                  text!,
+                  // consistent with the color used for the icon next to it
+                  style: TextStyle(color: IconTheme.of(context).color),
+                ),
               ],
             ),
     );

@@ -2,7 +2,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/common/basic/color_list_tile.dart';
 import 'package:aves/widgets/common/basic/slider_list_tile.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
+import 'package:aves/widgets/settings/common/tiles.dart';
 import 'package:aves/widgets/settings/video/subtitle_sample.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -30,8 +30,6 @@ class SubtitleThemeTile extends StatelessWidget {
 class SubtitleThemePage extends StatelessWidget {
   static const routeName = '/settings/video/subtitle_theme';
 
-  static const textAlignOptions = [TextAlign.left, TextAlign.center, TextAlign.right];
-
   const SubtitleThemePage({Key? key}) : super(key: key);
 
   @override
@@ -54,18 +52,13 @@ class SubtitleThemePage extends StatelessWidget {
                 Expanded(
                   child: ListView(
                     children: [
-                      ListTile(
-                        title: Text(context.l10n.settingsSubtitleThemeTextAlignmentTile),
-                        subtitle: Text(_getTextAlignName(context, settings.subtitleTextAlignment)),
-                        onTap: () => showSelectionDialog<TextAlign>(
-                          context: context,
-                          builder: (context) => AvesSelectionDialog<TextAlign>(
-                            initialValue: settings.subtitleTextAlignment,
-                            options: Map.fromEntries(textAlignOptions.map((v) => MapEntry(v, _getTextAlignName(context, v)))),
-                            title: context.l10n.settingsSubtitleThemeTextAlignmentTitle,
-                          ),
-                          onSelection: (v) => settings.subtitleTextAlignment = v,
-                        ),
+                      SettingsSelectionListTile<TextAlign>(
+                        values: const [TextAlign.left, TextAlign.center, TextAlign.right],
+                        getName: _getTextAlignName,
+                        selector: (context, s) => s.subtitleTextAlignment,
+                        onSelection: (v) => settings.subtitleTextAlignment = v,
+                        tileTitle: context.l10n.settingsSubtitleThemeTextAlignmentTile,
+                        dialogTitle: context.l10n.settingsSubtitleThemeTextAlignmentTitle,
                       ),
                       SliderListTile(
                         title: context.l10n.settingsSubtitleThemeTextSize,
@@ -95,10 +88,10 @@ class SubtitleThemePage extends StatelessWidget {
                         value: settings.subtitleBackgroundColor.opacity,
                         onChanged: (v) => settings.subtitleBackgroundColor = settings.subtitleBackgroundColor.withOpacity(v),
                       ),
-                      SwitchListTile(
-                        value: settings.subtitleShowOutline,
+                      SettingsSwitchListTile(
+                        selector: (context, s) => s.subtitleShowOutline,
                         onChanged: (v) => settings.subtitleShowOutline = v,
-                        title: Text(context.l10n.settingsSubtitleThemeShowOutline),
+                        title: context.l10n.settingsSubtitleThemeShowOutline,
                       ),
                     ],
                   ),

@@ -6,6 +6,7 @@ import 'package:aves/widgets/common/basic/menu.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/sweeper.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class FavouriteToggler extends StatefulWidget {
   final Set<AvesEntry> entries;
@@ -73,7 +74,10 @@ class _FavouriteTogglerState extends State<FavouriteToggler> {
             ),
             Sweeper(
               key: ValueKey(entries.length == 1 ? entries.first : entries.length),
-              builder: (context) => const Icon(AIcons.favourite, color: AColors.favourite),
+              builder: (context) => Icon(
+                AIcons.favourite,
+                color: context.select<AvesColorsData, Color>((v) => v.favourite),
+              ),
               toggledNotifier: isFavouriteNotifier,
             ),
           ],

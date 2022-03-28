@@ -124,7 +124,7 @@ extension ExtraChipSetAction on ChipSetAction {
         return AIcons.unpin;
       // selecting (single filter)
       case ChipSetAction.rename:
-        return AIcons.rename;
+        return AIcons.name;
       case ChipSetAction.setCover:
         return AIcons.setCover;
     }

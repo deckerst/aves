@@ -157,5 +157,9 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
     _isValidNotifier.value = newName.isNotEmpty && !exists;
   }
 
-  void _submit(BuildContext context) => Navigator.pop(context, _buildAlbumPath(_nameController.text));
+  void _submit(BuildContext context) {
+    if (_isValidNotifier.value) {
+      Navigator.pop(context, _buildAlbumPath(_nameController.text));
+    }
+  }
 }
