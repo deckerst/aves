@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Changed
+
+- upgraded Flutter to stable v2.10.4
+
 ## <a id="v1.6.3"></a>[v1.6.3] - 2022-03-28
 
 ### Added
