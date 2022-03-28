@@ -137,6 +137,13 @@
   "accessibilityAnimationsRemove": "画面エフェクトを利用しない",
   "accessibilityAnimationsKeep": "画面エフェクトを利用",
 
+  "displayRefreshRatePreferHighest": "高レート",
+  "displayRefreshRatePreferLowest": "低レート",
+
+  "themeBrightnessLight": "ライト",
+  "themeBrightnessDark": "ダーク",
+  "themeBrightnessBlack": "黒",
+
   "albumTierNew": "新規",
   "albumTierPinned": "固定",
   "albumTierSpecial": "全体",
@@ -170,6 +177,8 @@
 
   "binEntriesConfirmationDialogMessage": "{count, plural, =1{このアイテムをごみ箱に移動しますか？} other{{count} 件のアイテムをごみ箱に移動しますか？}}",
   "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{このアイテムを削除しますか？} other{{count} 件のアイテムを削除しますか？}}",
+  "moveUndatedConfirmationDialogMessage": "いくつかのアイテムはメタデータ上に日付がありません。メタデータ上の日付が設定されない場合、この操作によりこれらの現在の日付はリセットされます",
+  "moveUndatedConfirmationDialogSetDate": "日付を設定",
 
   "videoResumeDialogMessage": " {time} の時点から再生を再開しますか?",
   "videoStartOverButtonLabel": "最初から再生",
@@ -189,6 +198,14 @@
   "renameAlbumDialogLabel": "新しい名前",
   "renameAlbumDialogLabelAlreadyExistsHelper": "ディレクトリが既に存在します",
 
+  "renameEntrySetPageTitle": "名前を変更",
+  "renameEntrySetPagePatternFieldLabel": "名前付けのパターン",
+  "renameEntrySetPageInsertTooltip": "フィールドを挿入",
+  "renameEntrySetPagePreview": "プレビュー",
+
+  "renameProcessorCounter": "連番",
+  "renameProcessorName": "名前",
+
   "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{このアルバムとアルバム内のアイテムを削除しますか？} other{このアルバムとアルバム内の {count} 件のアイテムを削除しますか？}}",
   "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{これらのアルバムとアルバム内のアイテムを削除しますか？} other{これらのアルバムとアルバム内の {count} 件のアイテムを削除しますか？}}",
 
@@ -201,6 +218,7 @@
   "editEntryDateDialogTitle": "日時",
   "editEntryDateDialogSetCustom": "日を設定する",
   "editEntryDateDialogCopyField": "他の日からコピーする",
+  "editEntryDateDialogCopyItem": "他のアイテムからコピーする",
   "editEntryDateDialogExtractFromTitle": "タイトルから抽出する",
   "editEntryDateDialogShift": "シフト",
   "editEntryDateDialogSourceFileModifiedDate": "ファイル更新日",
@@ -308,10 +326,12 @@
   "collectionDeleteFailureFeedback": "{count, plural, other{{count} 件のアイテムを削除できませんでした}}",
   "collectionCopyFailureFeedback": "{count, plural, other{{count} 件のアイテムをコピーできませんでした}}",
   "collectionMoveFailureFeedback": "{count, plural, other{{count} 件のアイテムを移動できませんでした}}",
+  "collectionRenameFailureFeedback": "{count, plural, other{{count} 件のアイテム名を変更できませんでした}}",
   "collectionEditFailureFeedback": "{count, plural, other{{count} 件のアイテムを編集できませんでした}}",
   "collectionExportFailureFeedback": "{count, plural, other{{count} ページをエクスポートできませんでした}}",
   "collectionCopySuccessFeedback": "{count, plural, other{{count} 件のアイテムをコピーしました}}",
   "collectionMoveSuccessFeedback": "{count, plural, other{{count} 件のアイテムを移動しました}}",
+  "collectionRenameSuccessFeedback": "{count, plural, other{{count} 件のアイテム名を変更しました}}",
   "collectionEditSuccessFeedback": "{count, plural, other{{count} 件のアイテムを編集しました}}",
 
   "collectionEmptyFavourites": "お気に入りはありません",
@@ -393,6 +413,7 @@
   "settingsConfirmationDialogTitle": "確認メッセージ",
   "settingsConfirmationDialogDeleteItems": "アイテムを完全に削除する前に確認",
   "settingsConfirmationDialogMoveToBinItems": "アイテムをごみ箱に移動する前に確認",
+  "settingsConfirmationDialogMoveUndatedItems": "メタデータ上に日付のないアイテムを移動する前に確認",
 
   "settingsNavigationDrawerTile": "ナビゲーション メニュー",
   "settingsNavigationDrawerEditorTitle": "ナビゲーション メニュー",
@@ -500,6 +521,12 @@
   "settingsRemoveAnimationsTitle": "アニメーションの削除",
   "settingsTimeToTakeActionTile": "操作までの時間",
   "settingsTimeToTakeActionTitle": "操作までの時間",
+
+  "settingsSectionDisplay": "ディスプレイ",
+  "settingsThemeBrightness": "テーマ",
+  "settingsThemeColorHighlights": "カラー強調表示",
+  "settingsDisplayRefreshRateModeTile": "ディスプレイ リフレッシュ レート",
+  "settingsDisplayRefreshRateModeTitle": "リフレッシュレート",
 
   "settingsSectionLanguage": "言語と形式",
   "settingsLanguage": "言語",
