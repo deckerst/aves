@@ -137,6 +137,13 @@
   "accessibilityAnimationsRemove": "화면 효과 제한",
   "accessibilityAnimationsKeep": "화면 효과 유지",
 
+  "displayRefreshRatePreferHighest": "가장 높은 재생률",
+  "displayRefreshRatePreferLowest": "가장 낮은 재생률",
+
+  "themeBrightnessLight": "라이트",
+  "themeBrightnessDark": "다크",
+  "themeBrightnessBlack": "검은색",
+
   "albumTierNew": "신규",
   "albumTierPinned": "고정",
   "albumTierSpecial": "기본",
@@ -170,6 +177,8 @@
 
   "binEntriesConfirmationDialogMessage": "{count, plural, =1{이 항목을 휴지통으로 이동하시겠습니까?} other{항목 {count}개를 휴지통으로 이동하시겠습니까?}}",
   "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{이 항목을 삭제하시겠습니까?} other{항목 {count}개를 삭제하시겠습니까?}}",
+  "moveUndatedConfirmationDialogMessage": "이 작업을 계속하기 전에 항목의 날짜를 지정하시겠습니까?",
+  "moveUndatedConfirmationDialogSetDate": "날짜 지정하기",
 
   "videoResumeDialogMessage": "{time}부터 재개하시겠습니까?",
   "videoStartOverButtonLabel": "처음부터",
@@ -189,6 +198,14 @@
   "renameAlbumDialogLabel": "앨범 이름",
   "renameAlbumDialogLabelAlreadyExistsHelper": "사용 중인 이름입니다",
 
+  "renameEntrySetPageTitle": "이름 변경",
+  "renameEntrySetPagePatternFieldLabel": "이름 양식",
+  "renameEntrySetPageInsertTooltip": "필드 추가",
+  "renameEntrySetPagePreview": "미리보기",
+
+  "renameProcessorCounter": "숫자 증가",
+  "renameProcessorName": "이름",
+
   "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, other{이 앨범의 항목 {count}개를 삭제하시겠습니까?}}",
   "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, other{이 앨범들의 항목 {count}개를 삭제하시겠습니까?}}",
 
@@ -201,6 +218,7 @@
   "editEntryDateDialogTitle": "날짜 및 시간",
   "editEntryDateDialogSetCustom": "지정 날짜로 편집",
   "editEntryDateDialogCopyField": "다른 날짜에서 지정",
+  "editEntryDateDialogCopyItem": "다른 항목에서 지정",
   "editEntryDateDialogExtractFromTitle": "제목에서 추출",
   "editEntryDateDialogShift": "시간 이동",
   "editEntryDateDialogSourceFileModifiedDate": "파일 수정한 날짜",
@@ -308,10 +326,12 @@
   "collectionDeleteFailureFeedback": "{count, plural, other{항목 {count}개를 삭제하지 못했습니다}}",
   "collectionCopyFailureFeedback": "{count, plural, other{항목 {count}개를 복사하지 못했습니다}}",
   "collectionMoveFailureFeedback": "{count, plural, other{항목 {count}개를 이동하지 못했습니다}}",
+  "collectionRenameFailureFeedback": "{count, plural, other{항목 {count}개의 이름을 변경하지 못했습니다}}",
   "collectionEditFailureFeedback": "{count, plural, other{항목 {count}개를 편집하지 못했습니다}}",
   "collectionExportFailureFeedback": "{count, plural, other{항목 {count}개를 내보내지 못했습니다}}",
   "collectionCopySuccessFeedback": "{count, plural, other{항목 {count}개를 복사했습니다}}",
   "collectionMoveSuccessFeedback": "{count, plural, other{항목 {count}개를 이동했습니다}}",
+  "collectionRenameSuccessFeedback": "{count, plural, other{항목 {count}개의 이름을 변경했습니다}}",
   "collectionEditSuccessFeedback": "{count, plural, other{항목 {count}개를 편집했습니다}}",
 
   "collectionEmptyFavourites": "즐겨찾기가 없습니다",
@@ -393,6 +413,7 @@
   "settingsConfirmationDialogTitle": "확정 대화상자",
   "settingsConfirmationDialogDeleteItems": "항목을 완전히 삭제 시",
   "settingsConfirmationDialogMoveToBinItems": "항목을 휴지통으로 이동 시",
+  "settingsConfirmationDialogMoveUndatedItems": "날짜가 지정되지 않은 항목을 이동 시",
 
   "settingsNavigationDrawerTile": "탐색 메뉴",
   "settingsNavigationDrawerEditorTitle": "탐색 메뉴",
@@ -500,6 +521,12 @@
   "settingsRemoveAnimationsTitle": "애니메이션 삭제",
   "settingsTimeToTakeActionTile": "액션 취하기 전 대기 시간",
   "settingsTimeToTakeActionTitle": "액션 취하기 전 대기 시간",
+
+  "settingsSectionDisplay": "디스플레이",
+  "settingsThemeBrightness": "테마",
+  "settingsThemeColorHighlights": "색 강조",
+  "settingsDisplayRefreshRateModeTile": "화면 재생률",
+  "settingsDisplayRefreshRateModeTitle": "화면 재생률",
 
   "settingsSectionLanguage": "언어 및 표시 형식",
   "settingsLanguage": "언어",
