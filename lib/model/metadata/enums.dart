@@ -3,6 +3,7 @@ import 'package:aves/model/metadata/fields.dart';
 enum DateEditAction {
   setCustom,
   copyField,
+  copyItem,
   extractFromTitle,
   shift,
   remove,

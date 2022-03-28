@@ -33,7 +33,10 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.util.PathUtils
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import org.beyka.tiffbitmapfactory.TiffBitmapFactory
 import java.io.IOException
 
@@ -84,7 +87,7 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
             }
         }.mapValues { it.value?.path }.toMutableMap()
         dirs["externalCacheDirs"] = context.externalCacheDirs.joinToString { it.path }
-        dirs["externalFilesDirs"] = context.getExternalFilesDirs(null).joinToString { it.path }
+        dirs["externalFilesDirs"] = context.getExternalFilesDirs(null).joinToString { it?.path ?: "null" }
 
         // used by flutter plugin `path_provider`
         dirs.putAll(

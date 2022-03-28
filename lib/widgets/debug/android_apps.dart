@@ -70,7 +70,7 @@ class _DebugAndroidAppSectionState extends State<DebugAndroidAppSection> with Au
                               ),
                               TextSpan(
                                 text: ' ${package.packageName}\n',
-                                style: InfoRowGroup.keyStyle,
+                                style: InfoRowGroup.keyStyle(context),
                               ),
                               WidgetSpan(
                                 alignment: PlaceholderAlignment.middle,
@@ -94,7 +94,7 @@ class _DebugAndroidAppSectionState extends State<DebugAndroidAppSection> with Au
                               ),
                               TextSpan(
                                 text: ' ${package.potentialDirs.join(', ')}\n',
-                                style: InfoRowGroup.baseStyle,
+                                style: InfoRowGroup.valueStyle,
                               ),
                             ],
                           ),

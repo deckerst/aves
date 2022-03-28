@@ -1,22 +1,26 @@
 {
-  "es": [
-    "videoActionMute",
-    "videoActionUnmute"
-  ],
-
-  "id": [
-    "videoActionMute",
-    "videoActionUnmute",
-    "videoControlsPlay",
-    "videoControlsPlaySeek",
-    "videoControlsPlayOutside",
-    "videoControlsNone",
-    "settingsViewerShowOverlayThumbnails",
-    "settingsVideoControlsTile",
-    "settingsVideoControlsTitle",
-    "settingsVideoButtonsTile",
-    "settingsVideoButtonsTitle",
-    "settingsVideoGestureDoubleTapTogglePlay",
-    "settingsVideoGestureSideDoubleTapSeek"
+  "ru": [
+    "displayRefreshRatePreferHighest",
+    "displayRefreshRatePreferLowest",
+    "themeBrightnessLight",
+    "themeBrightnessDark",
+    "themeBrightnessBlack",
+    "moveUndatedConfirmationDialogMessage",
+    "moveUndatedConfirmationDialogSetDate",
+    "renameEntrySetPageTitle",
+    "renameEntrySetPagePatternFieldLabel",
+    "renameEntrySetPageInsertTooltip",
+    "renameEntrySetPagePreview",
+    "renameProcessorCounter",
+    "renameProcessorName",
+    "editEntryDateDialogCopyItem",
+    "collectionRenameFailureFeedback",
+    "collectionRenameSuccessFeedback",
+    "settingsConfirmationDialogMoveUndatedItems",
+    "settingsSectionDisplay",
+    "settingsThemeBrightness",
+    "settingsThemeColorHighlights",
+    "settingsDisplayRefreshRateModeTile",
+    "settingsDisplayRefreshRateModeTitle"
   ]
 }

@@ -24,6 +24,8 @@ const double _iconSize = 16.0;
 const double _interRowPadding = 2.0;
 const double _subRowMinWidth = 300.0;
 
+List<Shadow>? _shadows(BuildContext context) => Theme.of(context).brightness == Brightness.dark ? Constants.embossShadows : null;
+
 class ViewerDetailOverlay extends StatefulWidget {
   final List<AvesEntry> entries;
   final int index;
@@ -136,115 +138,149 @@ class ViewerDetailOverlayContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final infoMaxWidth = availableWidth - padding.horizontal;
-    final positionTitle = _PositionTitleRow(entry: pageEntry, collectionPosition: position, multiPageController: multiPageController);
-    final hasShootingDetails = details != null && !details!.isEmpty && settings.showOverlayShootingDetails;
-    final animationDuration = context.select<DurationsData, Duration>((v) => v.viewerOverlayChangeAnimation);
+    final showShooting = settings.showOverlayShootingDetails;
 
-    return DefaultTextStyle(
-      style: Theme.of(context).textTheme.bodyText2!.copyWith(
-            shadows: Constants.embossShadows,
-          ),
-      softWrap: false,
-      overflow: TextOverflow.fade,
-      maxLines: 1,
-      child: Padding(
-        padding: padding,
-        child: Selector<MediaQueryData, Orientation>(
-          selector: (context, mq) => mq.orientation,
-          builder: (context, orientation, child) {
-            final twoColumns = orientation == Orientation.landscape && infoMaxWidth / 2 > _subRowMinWidth;
-            final subRowWidth = twoColumns ? min(_subRowMinWidth, infoMaxWidth / 2) : infoMaxWidth;
+    return AnimatedBuilder(
+      animation: pageEntry.metadataChangeNotifier,
+      builder: (context, child) {
+        final positionTitle = _PositionTitleRow(entry: pageEntry, collectionPosition: position, multiPageController: multiPageController);
+        return DefaultTextStyle(
+          style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                shadows: _shadows(context),
+              ),
+          softWrap: false,
+          overflow: TextOverflow.fade,
+          maxLines: 1,
+          child: Padding(
+            padding: padding,
+            child: Selector<MediaQueryData, Orientation>(
+              selector: (context, mq) => mq.orientation,
+              builder: (context, orientation, child) {
+                final twoColumns = orientation == Orientation.landscape && infoMaxWidth / 2 > _subRowMinWidth;
+                final subRowWidth = twoColumns ? min(_subRowMinWidth, infoMaxWidth / 2) : infoMaxWidth;
+                final collapsedShooting = twoColumns && showShooting;
+                final collapsedLocation = twoColumns && !showShooting;
 
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (positionTitle.isNotEmpty) positionTitle,
-                if (twoColumns)
-                  Padding(
-                    padding: const EdgeInsets.only(top: _interRowPadding),
-                    child: Row(
+                final rows = <Widget>[];
+                if (positionTitle.isNotEmpty) {
+                  rows.add(positionTitle);
+                  rows.add(const SizedBox(height: _interRowPadding));
+                }
+                if (twoColumns) {
+                  rows.add(
+                    Row(
                       children: [
-                        SizedBox(
-                            width: subRowWidth,
-                            child: _DateRow(
-                              entry: pageEntry,
-                              multiPageController: multiPageController,
-                            )),
-                        _buildDuoShootingRow(subRowWidth, hasShootingDetails, animationDuration),
+                        _buildDateSubRow(subRowWidth),
+                        if (collapsedShooting) _buildShootingSubRow(context, subRowWidth),
+                        if (collapsedLocation) _buildLocationSubRow(context, subRowWidth),
                       ],
                     ),
-                  )
-                else ...[
-                  Container(
-                    padding: const EdgeInsets.only(top: _interRowPadding),
-                    width: subRowWidth,
-                    child: _DateRow(
-                      entry: pageEntry,
-                      multiPageController: multiPageController,
-                    ),
-                  ),
-                  _buildSoloShootingRow(subRowWidth, hasShootingDetails, animationDuration),
-                ],
-                _buildSoloLocationRow(animationDuration),
-              ],
-            );
-          },
-        ),
-      ),
+                  );
+                } else {
+                  rows.add(_buildDateSubRow(subRowWidth));
+                  if (showShooting) {
+                    rows.add(_buildShootingFullRow(context, subRowWidth));
+                  }
+                }
+                if (!collapsedLocation) {
+                  rows.add(_buildLocationFullRow(context));
+                }
+
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: rows,
+                );
+              },
+            ),
+          ),
+        );
+      },
     );
   }
 
-  Widget _buildSoloLocationRow(Duration animationDuration) => AnimatedSwitcher(
-        duration: animationDuration,
-        switchInCurve: Curves.easeInOutCubic,
-        switchOutCurve: Curves.easeInOutCubic,
-        transitionBuilder: _soloTransition,
-        child: pageEntry.hasGps
-            ? Container(
-                padding: const EdgeInsets.only(top: _interRowPadding),
-                child: _LocationRow(entry: pageEntry),
-              )
-            : const SizedBox(),
+  Widget _buildDateSubRow(double subRowWidth) => SizedBox(
+        width: subRowWidth,
+        child: _DateRow(
+          entry: pageEntry,
+          multiPageController: multiPageController,
+        ),
       );
 
-  Widget _buildSoloShootingRow(double subRowWidth, bool hasShootingDetails, Duration animationDuration) => AnimatedSwitcher(
-        duration: animationDuration,
-        switchInCurve: Curves.easeInOutCubic,
-        switchOutCurve: Curves.easeInOutCubic,
-        transitionBuilder: _soloTransition,
-        child: hasShootingDetails
-            ? Container(
-                padding: const EdgeInsets.only(top: _interRowPadding),
-                width: subRowWidth,
-                child: _ShootingRow(details!),
-              )
-            : const SizedBox(),
+  Widget _buildShootingFullRow(BuildContext context, double subRowWidth) => _buildFullRowSwitcher(
+        context: context,
+        visible: details != null && details!.isNotEmpty,
+        builder: (context) => SizedBox(
+          width: subRowWidth,
+          child: _ShootingRow(details!),
+        ),
       );
 
-  Widget _buildDuoShootingRow(double subRowWidth, bool hasShootingDetails, Duration animationDuration) => AnimatedSwitcher(
-        duration: animationDuration,
+  Widget _buildShootingSubRow(BuildContext context, double subRowWidth) => _buildSubRowSwitcher(
+        context: context,
+        subRowWidth: subRowWidth,
+        visible: details != null && details!.isNotEmpty,
+        builder: (context) => _ShootingRow(details!),
+      );
+
+  Widget _buildLocationFullRow(BuildContext context) => _buildFullRowSwitcher(
+        context: context,
+        visible: pageEntry.hasGps,
+        builder: (context) => _LocationRow(entry: pageEntry),
+      );
+
+  Widget _buildLocationSubRow(BuildContext context, double subRowWidth) => _buildSubRowSwitcher(
+        context: context,
+        subRowWidth: subRowWidth,
+        visible: pageEntry.hasGps,
+        builder: (context) => _LocationRow(entry: pageEntry),
+      );
+
+  Widget _buildSubRowSwitcher({
+    required BuildContext context,
+    required double subRowWidth,
+    required bool visible,
+    required WidgetBuilder builder,
+  }) =>
+      AnimatedSwitcher(
+        duration: context.select<DurationsData, Duration>((v) => v.viewerOverlayChangeAnimation),
         switchInCurve: Curves.easeInOutCubic,
         switchOutCurve: Curves.easeInOutCubic,
         transitionBuilder: (child, animation) => FadeTransition(
           opacity: animation,
           child: child,
         ),
-        child: hasShootingDetails
+        child: visible
             ? SizedBox(
                 width: subRowWidth,
-                child: _ShootingRow(details!),
+                child: builder(context),
               )
             : const SizedBox(),
       );
 
-  static Widget _soloTransition(Widget child, Animation<double> animation) => FadeTransition(
-        opacity: animation,
-        child: SizeTransition(
-          axisAlignment: 1,
-          sizeFactor: animation,
-          child: child,
+  Widget _buildFullRowSwitcher({
+    required BuildContext context,
+    required bool visible,
+    required WidgetBuilder builder,
+  }) =>
+      AnimatedSwitcher(
+        duration: context.select<DurationsData, Duration>((v) => v.viewerOverlayChangeAnimation),
+        switchInCurve: Curves.easeInOutCubic,
+        switchOutCurve: Curves.easeInOutCubic,
+        transitionBuilder: (child, animation) => FadeTransition(
+          opacity: animation,
+          child: SizeTransition(
+            axisAlignment: 1,
+            sizeFactor: animation,
+            child: child,
+          ),
         ),
+        child: visible
+            ? Padding(
+                padding: const EdgeInsets.only(top: _interRowPadding),
+                child: builder(context),
+              )
+            : const SizedBox(),
       );
 }
 
@@ -271,7 +307,7 @@ class _LocationRow extends AnimatedWidget {
     }
     return Row(
       children: [
-        const DecoratedIcon(AIcons.location, shadows: Constants.embossShadows, size: _iconSize),
+        DecoratedIcon(AIcons.location, shadows: _shadows(context), size: _iconSize),
         const SizedBox(width: _iconPadding),
         Expanded(child: Text(location, strutStyle: Constants.overflowStrutStyle)),
       ],
@@ -352,7 +388,7 @@ class _DateRow extends StatelessWidget {
 
     return Row(
       children: [
-        const DecoratedIcon(AIcons.date, shadows: Constants.embossShadows, size: _iconSize),
+        DecoratedIcon(AIcons.date, shadows: _shadows(context), size: _iconSize),
         const SizedBox(width: _iconPadding),
         Expanded(flex: 3, child: Text(dateText, strutStyle: Constants.overflowStrutStyle)),
         Expanded(flex: 2, child: Text(resolutionText, strutStyle: Constants.overflowStrutStyle)),
@@ -381,7 +417,7 @@ class _ShootingRow extends StatelessWidget {
 
     return Row(
       children: [
-        const DecoratedIcon(AIcons.shooting, shadows: Constants.embossShadows, size: _iconSize),
+        DecoratedIcon(AIcons.shooting, shadows: _shadows(context), size: _iconSize),
         const SizedBox(width: _iconPadding),
         Expanded(child: Text(apertureText, strutStyle: Constants.overflowStrutStyle)),
         Expanded(child: Text(details.exposureTime ?? Constants.overlayUnknown, strutStyle: Constants.overflowStrutStyle)),

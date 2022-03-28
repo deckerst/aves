@@ -55,7 +55,8 @@ extension ExtraEntryInfoAction on EntryInfoAction {
     switch (this) {
       case EntryInfoAction.debug:
         return ShaderMask(
-          shaderCallback: AColors.debugGradient.createShader,
+          shaderCallback: AvesColorsData.debugGradient.createShader,
+          blendMode: BlendMode.srcIn,
           child: child,
         );
       default:

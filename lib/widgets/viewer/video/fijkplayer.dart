@@ -18,6 +18,7 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
   final StreamController<FijkValue> _valueStreamController = StreamController.broadcast();
   final StreamController<String?> _timedTextStreamController = StreamController.broadcast();
   final StreamController<double> _volumeStreamController = StreamController.broadcast();
+  final StreamController<double> _speedStreamController = StreamController.broadcast();
   final AChangeNotifier _completedNotifier = AChangeNotifier();
   Offset _macroBlockCrop = Offset.zero;
   final List<StreamSummary> _streams = [];
@@ -334,6 +335,9 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
   Stream<double> get volumeStream => _volumeStreamController.stream;
 
   @override
+  Stream<double> get speedStream => _speedStreamController.stream;
+
+  @override
   bool get isReady => _instance.isPlayable();
 
   @override
@@ -372,6 +376,7 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
     if (speed <= 0 || _speed == speed) return;
     final optionChange = _needSoundTouch(speed) != _needSoundTouch(_speed);
     _speed = speed;
+    _speedStreamController.add(_speed);
 
     if (optionChange) {
       _init(startMillis: currentPosition);

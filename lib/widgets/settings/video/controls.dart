@@ -2,9 +2,8 @@ import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/enums/video_controls.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
+import 'package:aves/widgets/settings/common/tiles.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class VideoControlsTile extends StatelessWidget {
   const VideoControlsTile({Key? key}) : super(key: key);
@@ -40,37 +39,23 @@ class VideoControlsPage extends StatelessWidget {
       body: SafeArea(
         child: ListView(
           children: [
-            Selector<Settings, VideoControls>(
+            SettingsSelectionListTile<VideoControls>(
+              values: VideoControls.values,
+              getName: (context, v) => v.getName(context),
               selector: (context, s) => s.videoControls,
-              builder: (context, current, child) => ListTile(
-                title: Text(context.l10n.settingsVideoButtonsTile),
-                subtitle: Text(current.getName(context)),
-                onTap: () => showSelectionDialog<VideoControls>(
-                  context: context,
-                  builder: (context) => AvesSelectionDialog<VideoControls>(
-                    initialValue: current,
-                    options: Map.fromEntries(VideoControls.values.map((v) => MapEntry(v, v.getName(context)))),
-                    title: context.l10n.settingsVideoButtonsTitle,
-                  ),
-                  onSelection: (v) => settings.videoControls = v,
-                ),
-              ),
+              onSelection: (v) => settings.videoControls = v,
+              tileTitle: context.l10n.settingsVideoButtonsTile,
+              dialogTitle: context.l10n.settingsVideoButtonsTitle,
             ),
-            Selector<Settings, bool>(
+            SettingsSwitchListTile(
               selector: (context, s) => s.videoGestureDoubleTapTogglePlay,
-              builder: (context, current, child) => SwitchListTile(
-                value: current,
-                onChanged: (v) => settings.videoGestureDoubleTapTogglePlay = v,
-                title: Text(context.l10n.settingsVideoGestureDoubleTapTogglePlay),
-              ),
+              onChanged: (v) => settings.videoGestureDoubleTapTogglePlay = v,
+              title: context.l10n.settingsVideoGestureDoubleTapTogglePlay,
             ),
-            Selector<Settings, bool>(
+            SettingsSwitchListTile(
               selector: (context, s) => s.videoGestureSideDoubleTapSeek,
-              builder: (context, current, child) => SwitchListTile(
-                value: current,
-                onChanged: (v) => settings.videoGestureSideDoubleTapSeek = v,
-                title: Text(context.l10n.settingsVideoGestureSideDoubleTapSeek),
-              ),
+              onChanged: (v) => settings.videoGestureSideDoubleTapSeek = v,
+              title: context.l10n.settingsVideoGestureSideDoubleTapSeek,
             ),
           ],
         ),

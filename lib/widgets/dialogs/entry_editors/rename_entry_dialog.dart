@@ -77,15 +77,21 @@ class _RenameEntryDialogState extends State<RenameEntryDialog> {
 
   String _buildEntryPath(String name) {
     if (name.isEmpty) return '';
-    return pContext.join(entry.directory!, name + entry.extension!);
+    return pContext.join(entry.directory!, '$name${entry.extension}');
   }
+
+  String get newName => _nameController.text.trimLeft();
 
   Future<void> _validate() async {
-    final newName = _nameController.text;
-    final path = _buildEntryPath(newName);
-    final exists = newName.isNotEmpty && await FileSystemEntity.type(path) != FileSystemEntityType.notFound;
-    _isValidNotifier.value = newName.isNotEmpty && !exists;
+    final _newName = newName;
+    final path = _buildEntryPath(_newName);
+    final exists = _newName.isNotEmpty && await FileSystemEntity.type(path) != FileSystemEntityType.notFound;
+    _isValidNotifier.value = _newName.isNotEmpty && !exists;
   }
 
-  void _submit(BuildContext context) => Navigator.pop(context, _nameController.text);
+  void _submit(BuildContext context) {
+    if (_isValidNotifier.value) {
+      Navigator.pop(context, newName);
+    }
+  }
 }

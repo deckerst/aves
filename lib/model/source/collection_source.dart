@@ -230,38 +230,6 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
     }
   }
 
-  Future<bool> renameEntry(AvesEntry entry, String newName, {required bool persist}) async {
-    if (newName == entry.filenameWithoutExtension) return true;
-
-    pauseMonitoring();
-    final completer = Completer<bool>();
-    final processed = <MoveOpEvent>{};
-    mediaFileService.rename({entry}, newName: '$newName${entry.extension}').listen(
-      processed.add,
-      onError: (error) => reportService.recordError('renameEntry failed with error=$error', null),
-      onDone: () async {
-        final successOps = processed.where((e) => e.success && !e.skipped).toSet();
-        if (successOps.isEmpty) {
-          completer.complete(false);
-          return;
-        }
-        final newFields = successOps.first.newFields;
-        if (newFields.isEmpty) {
-          completer.complete(false);
-          return;
-        }
-        await _moveEntry(entry, newFields, persist: persist);
-        entry.metadataChangeNotifier.notify();
-        eventBus.fire(EntryMovedEvent(MoveType.move, {entry}));
-        completer.complete(true);
-      },
-    );
-
-    final success = await completer.future;
-    resumeMonitoring();
-    return success;
-  }
-
   Future<void> renameAlbum(String sourceAlbum, String destinationAlbum, Set<AvesEntry> entries, Set<MoveOpEvent> movedOps) async {
     final oldFilter = AlbumFilter(sourceAlbum, null);
     final newFilter = AlbumFilter(destinationAlbum, null);
@@ -338,7 +306,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
       });
     }
 
-    switch(moveType) {
+    switch (moveType) {
       case MoveType.copy:
         addEntries(movedEntries);
         break;
@@ -355,6 +323,29 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
     invalidateAlbumFilterSummary(directories: fromAlbums);
     _invalidate(movedEntries);
     eventBus.fire(EntryMovedEvent(moveType, movedEntries));
+  }
+
+  Future<void> updateAfterRename({
+    required Set<AvesEntry> todoEntries,
+    required Set<MoveOpEvent> movedOps,
+    required bool persist,
+  }) async {
+    if (movedOps.isEmpty) return;
+
+    final movedEntries = <AvesEntry>{};
+    await Future.forEach<MoveOpEvent>(movedOps, (movedOp) async {
+      final newFields = movedOp.newFields;
+      if (newFields.isNotEmpty) {
+        final sourceUri = movedOp.uri;
+        final entry = todoEntries.firstWhereOrNull((entry) => entry.uri == sourceUri);
+        if (entry != null) {
+          movedEntries.add(entry);
+          await _moveEntry(entry, newFields, persist: persist);
+        }
+      }
+    });
+
+    eventBus.fire(EntryMovedEvent(MoveType.move, movedEntries));
   }
 
   SourceInitializationState get initState => SourceInitializationState.none;

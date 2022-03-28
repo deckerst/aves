@@ -94,6 +94,8 @@ abstract class AvesVideoController {
 
   Stream<double> get volumeStream;
 
+  Stream<double> get speedStream;
+
   bool get isReady;
 
   bool get isPlaying => status == VideoStatus.playing;

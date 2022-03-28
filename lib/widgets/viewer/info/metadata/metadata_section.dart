@@ -7,9 +7,9 @@ import 'package:aves/model/video/metadata.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/metadata/svg_metadata_service.dart';
+import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/utils/color_utils.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:aves/widgets/viewer/info/metadata/metadata_dir_tile.dart';
 import 'package:collection/collection.dart';
@@ -218,13 +218,14 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> {
       if (knownStreams.isNotEmpty) {
         final indexDigits = knownStreams.length.toString().length;
 
+        final colors = context.read<AvesColorsData>();
         for (final stream in knownStreams) {
           final index = (stream[Keys.index] ?? 0) + 1;
           final typeText = getTypeText(stream);
           final dirName = 'Stream ${index.toString().padLeft(indexDigits, '0')} • $typeText';
           final formattedStreamTags = VideoMetadataFormatter.formatInfo(stream);
           if (formattedStreamTags.isNotEmpty) {
-            final color = stringToColor(typeText);
+            final color = colors.fromString(typeText);
             directories.add(MetadataDirectory(dirName, _toSortedTags(formattedStreamTags), color: color));
           }
         }

@@ -36,13 +36,14 @@ object StorageUtils {
     const val TRASH_PATH_PLACEHOLDER = "#trash"
 
     private fun isAppFile(context: Context, path: String): Boolean {
-        return context.getExternalFilesDirs(null).any { filesDir -> path.startsWith(filesDir.path) }
+        val filesDirs = context.getExternalFilesDirs(null).filterNotNull()
+        return filesDirs.any { path.startsWith(it.path) }
     }
 
     private fun appExternalFilesDirFor(context: Context, path: String): File? {
-        val filesDirs = context.getExternalFilesDirs(null)
+        val filesDirs = context.getExternalFilesDirs(null).filterNotNull()
         val volumePath = getVolumePath(context, path)
-        return volumePath?.let { filesDirs.firstOrNull { it.startsWith(volumePath) } } ?: filesDirs.first()
+        return volumePath?.let { filesDirs.firstOrNull { it.startsWith(volumePath) } } ?: filesDirs.firstOrNull()
     }
 
     fun trashDirFor(context: Context, path: String): File? {
@@ -115,6 +116,15 @@ object StorageUtils {
     }
 
     private fun findPrimaryVolumePath(context: Context): String? {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val sm = context.getSystemService(Context.STORAGE_SERVICE) as? StorageManager
+            val path = sm?.primaryStorageVolume?.directory?.path
+            if (path != null) {
+                return ensureTrailingSeparator(path)
+            }
+        }
+
+        // fallback
         try {
             // we want:
             // /storage/emulated/0/
@@ -130,9 +140,16 @@ object StorageUtils {
     }
 
     private fun findVolumePaths(context: Context): Array<String> {
-        // Final set of paths
-        val paths = HashSet<String>()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val sm = context.getSystemService(Context.STORAGE_SERVICE) as? StorageManager
+            val paths = sm?.storageVolumes?.mapNotNull { it.directory?.path }
+            if (paths != null) {
+                return paths.map(::ensureTrailingSeparator).toTypedArray()
+            }
+        }
 
+        // fallback
+        val paths = HashSet<String>()
         try {
             // Primary emulated SD-CARD
             val rawEmulatedStorageTarget = System.getenv("EMULATED_STORAGE_TARGET") ?: ""
@@ -143,7 +160,8 @@ object StorageUtils {
                     var validFiles: Boolean
                     do {
                         // `getExternalFilesDirs` sometimes include `null` when called right after getting read access
-                        // (e.g. on API 30 emulator) so we retry until the file system is ready
+                        // (e.g. on API 30 emulator) so we retry until the file system is ready.
+                        // TODO TLAD It can also include `null` when there is a faulty SD card.
                         val externalFilesDirs = context.getExternalFilesDirs(null)
                         validFiles = !externalFilesDirs.contains(null)
                         if (validFiles) {

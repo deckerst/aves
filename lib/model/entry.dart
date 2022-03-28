@@ -167,6 +167,7 @@ class AvesEntry {
     _directory = null;
     _filename = null;
     _extension = null;
+    _bestTitle = null;
   }
 
   String? get path => _path;
@@ -258,9 +259,10 @@ class AvesEntry {
   bool get canRotateAndFlip => canEdit && canEditExif;
 
   // as of androidx.exifinterface:exifinterface:1.3.3
+  // `exifinterface` declares support for DNG, but `exifinterface` strips non-standard Exif tags when saving attributes,
+  // and DNG requires DNG-specific tags saved along standard Exif. So `exifinterface` actually breaks DNG files.
   bool get canEditExif {
     switch (mimeType.toLowerCase()) {
-      case MimeTypes.dng:
       case MimeTypes.jpeg:
       case MimeTypes.png:
       case MimeTypes.webp:
@@ -454,7 +456,7 @@ class AvesEntry {
   String? _bestTitle;
 
   String? get bestTitle {
-    _bestTitle ??= _catalogMetadata?.xmpTitleDescription?.isNotEmpty == true ? _catalogMetadata!.xmpTitleDescription : sourceTitle;
+    _bestTitle ??= _catalogMetadata?.xmpTitleDescription?.isNotEmpty == true ? _catalogMetadata!.xmpTitleDescription : (filenameWithoutExtension ?? sourceTitle);
     return _bestTitle;
   }
 

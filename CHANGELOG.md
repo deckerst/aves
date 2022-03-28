@@ -4,6 +4,31 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.6.3"></a>[v1.6.3] - 2022-03-28
+
+### Added
+
+- Theme: light/dark/black and color highlights settings
+- Collection: bulk renaming
+- Video: speed and muted state indicators
+- Info: option to set date from other item
+- Info: improved DNG tags display
+- warn and optionally set metadata date before moving undated items
+- Settings: display refresh rate hint
+
+### Changed
+
+- Viewer: quick action defaults
+- cataloguing includes date sub-second data if present (requires rescan)
+
+### Removed
+
+- metadata editing support for DNG
+
+### Fixed
+
+- app launch despite faulty storage volumes on Android 11+
+
 ## <a id="v1.6.2"></a>[v1.6.2] - 2022-03-07
 
 ### Added

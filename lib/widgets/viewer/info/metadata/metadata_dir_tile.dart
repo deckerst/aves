@@ -3,7 +3,7 @@ import 'dart:collection';
 import 'package:aves/model/entry.dart';
 import 'package:aves/ref/brand_colors.dart';
 import 'package:aves/services/metadata/svg_metadata_service.dart';
-import 'package:aves/utils/color_utils.dart';
+import 'package:aves/theme/colors.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
@@ -15,6 +15,7 @@ import 'package:aves/widgets/viewer/info/metadata/xmp_tile.dart';
 import 'package:aves/widgets/viewer/source_viewer_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class MetadataDirTile extends StatelessWidget {
   final AvesEntry entry;
@@ -58,9 +59,10 @@ class MetadataDirTile extends StatelessWidget {
           break;
       }
 
+      final colors = context.watch<AvesColorsData>();
       return AvesExpansionTile(
         title: title,
-        color: dir.color ?? BrandColors.get(dirName) ?? stringToColor(dirName),
+        highlightColor: dir.color ?? colors.fromBrandColor(BrandColors.get(dirName)) ?? colors.fromString(dirName),
         expandedNotifier: expandedDirectoryNotifier,
         initiallyExpanded: initiallyExpanded,
         children: [

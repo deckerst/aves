@@ -137,6 +137,13 @@
   "accessibilityAnimationsRemove": "Prevenir efeitos de tela",
   "accessibilityAnimationsKeep": "Manter efeitos de tela",
 
+  "displayRefreshRatePreferHighest": "Taxa mais alta",
+  "displayRefreshRatePreferLowest": "Taxa mais baixa",
+
+  "themeBrightnessLight": "Claro",
+  "themeBrightnessDark": "Escuro",
+  "themeBrightnessBlack": "Preto",
+
   "albumTierNew": "Novo",
   "albumTierPinned": "Fixada",
   "albumTierSpecial": "Comum",
@@ -170,6 +177,8 @@
 
   "binEntriesConfirmationDialogMessage": "{count, plural, =1{Mover esse item para a lixeira?} other{Mova estes {count} itens para a lixeira?}}",
   "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{Tem certeza de que deseja excluir este item?} other{Tem certeza de que deseja excluir estes {count} itens?}}",
+  "moveUndatedConfirmationDialogMessage": "Alguns itens não têm data de metadados. Sua data atual será redefinida por esta operação, a menos que um data de metadados é definida.",
+  "moveUndatedConfirmationDialogSetDate": "Definir data",
 
   "videoResumeDialogMessage": "Deseja continuar jogando em {time}?",
   "videoStartOverButtonLabel": "RECOMEÇAR",
@@ -189,6 +198,14 @@
   "renameAlbumDialogLabel": "Novo nome",
   "renameAlbumDialogLabelAlreadyExistsHelper": "O diretório já existe",
 
+  "renameEntrySetPageTitle": "Renomear",
+  "renameEntrySetPagePatternFieldLabel": "Padrão de nomeação",
+  "renameEntrySetPageInsertTooltip": "Inserir campo",
+  "renameEntrySetPagePreview": "Visualizar",
+
+  "renameProcessorCounter": "Contador",
+  "renameProcessorName": "Nome",
+
   "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{Tem certeza de que deseja excluir este álbum e seu item?} other{Tem certeza de que deseja excluir este álbum e seus {count} itens?}}",
   "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{Tem certeza de que deseja excluir estes álbuns e seus itens?} other{Tem certeza de que deseja excluir estes álbuns e seus {count} itens?}}",
 
@@ -201,6 +218,7 @@
   "editEntryDateDialogTitle": "Data e hora",
   "editEntryDateDialogSetCustom": "Definir data personalizada",
   "editEntryDateDialogCopyField": "Copiar de outra data",
+  "editEntryDateDialogCopyItem": "Copiar de outro item",
   "editEntryDateDialogExtractFromTitle": "Extrair do título",
   "editEntryDateDialogShift": "Mudança",
   "editEntryDateDialogSourceFileModifiedDate": "Data de modificação do arquivo",
@@ -308,10 +326,12 @@
   "collectionDeleteFailureFeedback": "{count, plural, =1{Falha ao excluir 1 item} other{Falha ao excluir {count} itens}}",
   "collectionCopyFailureFeedback": "{count, plural, =1{Falha ao copiar 1 item} other{Falha ao copiar {count} itens}}",
   "collectionMoveFailureFeedback": "{count, plural, =1{Falha ao mover 1 item} other{Falha ao mover {count} itens}}",
+  "collectionRenameFailureFeedback": "{count, plural, =1{Falhei em renomear 1 item} other{Falha ao renomear {count} itens}}",
   "collectionEditFailureFeedback": "{count, plural, =1{Falha ao editar 1 item} other{Falha ao editar {count} itens}}",
   "collectionExportFailureFeedback": "{count, plural, =1{Falha ao exportar 1 página} other{Falha ao exportar {count} páginas}}",
   "collectionCopySuccessFeedback": "{count, plural, =1{1 item copiado} other{Copiado {count} itens}}",
   "collectionMoveSuccessFeedback": "{count, plural, =1{1 item movido} other{Mudou-se {count} itens}}",
+  "collectionRenameSuccessFeedback": "{count, plural, =1{1 item renomeado} other{Renomeado {count} itens}}",
   "collectionEditSuccessFeedback": "{count, plural, =1{Editado 1 item} other{Editado {count} itens}}",
 
   "collectionEmptyFavourites": "Nenhum favorito",
@@ -393,6 +413,7 @@
   "settingsConfirmationDialogTitle": "Caixas de diálogo de confirmação",
   "settingsConfirmationDialogDeleteItems": "Pergunte antes de excluir itens para sempre",
   "settingsConfirmationDialogMoveToBinItems": "Pergunte antes de mover itens para a lixeira",
+  "settingsConfirmationDialogMoveUndatedItems": "Pergunte antes de mover itens sem data de metadados",
 
   "settingsNavigationDrawerTile": "Menu de navegação",
   "settingsNavigationDrawerEditorTitle": "Menu de navegação",
@@ -500,6 +521,12 @@
   "settingsRemoveAnimationsTitle": "Remover Animações",
   "settingsTimeToTakeActionTile": "Tempo para executar uma ação",
   "settingsTimeToTakeActionTitle": "Tempo para executar uma ação",
+
+  "settingsSectionDisplay": "Tela",
+  "settingsThemeBrightness": "Tema",
+  "settingsThemeColorHighlights": "Destaques de cores",
+  "settingsDisplayRefreshRateModeTile": "Taxa de atualização de exibição",
+  "settingsDisplayRefreshRateModeTitle": "Taxa de atualização",
 
   "settingsSectionLanguage": "Idioma e Formatos",
   "settingsLanguage": "Língua",

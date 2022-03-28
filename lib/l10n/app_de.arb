@@ -137,6 +137,13 @@
   "accessibilityAnimationsRemove": "Verhinderung von Bildschirmeffekten",
   "accessibilityAnimationsKeep": "Bildschirmeffekte beibehalten",
 
+  "displayRefreshRatePreferHighest": "Höchste Rate",
+  "displayRefreshRatePreferLowest": "Niedrigste Rate",
+
+  "themeBrightnessLight": "Hell",
+  "themeBrightnessDark": "Dunkel",
+  "themeBrightnessBlack": "Schwarz",
+
   "albumTierNew": "Neu",
   "albumTierPinned": "Angeheftet",
   "albumTierSpecial": "Häufig verwendet",
@@ -170,6 +177,8 @@
 
   "binEntriesConfirmationDialogMessage": "{count, plural, =1{Dieses Element in den Papierkorb verschieben?} other{Diese {count} Elemente in den Papierkorb verschieben?}}",
   "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{Sicher, dass dieses Element gelöscht werden soll?} other{Sicher, dass diese {count} Elemente gelöscht werden sollen?}}",
+  "moveUndatedConfirmationDialogMessage": "Einige Artikel haben kein Metadaten-Datum. Ihr aktuelles Datum wird durch diesen Vorgang zurückgesetzt, es sei denn, es wurde ein Metadaten-Datum festgelegt.",
+  "moveUndatedConfirmationDialogSetDate": "Datum einstellen",
 
   "videoResumeDialogMessage": "Soll bei {time} weiter abspielt werden?",
   "videoStartOverButtonLabel": "NEU BEGINNEN",
@@ -189,6 +198,14 @@
   "renameAlbumDialogLabel": "Neuer Name",
   "renameAlbumDialogLabelAlreadyExistsHelper": "Verzeichnis existiert bereits",
 
+  "renameEntrySetPageTitle": "Umbenennen",
+  "renameEntrySetPagePatternFieldLabel": "Benennungsmuster",
+  "renameEntrySetPageInsertTooltip": "Feld einfügen",
+  "renameEntrySetPagePreview": "Vorschau",
+
+  "renameProcessorCounter": "Zähler",
+  "renameProcessorName": "Name",
+
   "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{Sicher, dass dieses Album und der Inhalt gelöscht werden soll?} other{Sicher, dass dieses Album und deren {count} Elemente gelöscht werden sollen?}}",
   "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{Sicher, dass diese Alben und deren Inhalt gelöscht werden sollen?} other{Sicher, dass diese Alben und deren {count} Elemente gelöscht werden sollen?}}",
 
@@ -201,6 +218,7 @@
   "editEntryDateDialogTitle": "Datum & Uhrzeit",
   "editEntryDateDialogSetCustom": "Datum einstellen",
   "editEntryDateDialogCopyField": "Von anderem Datum kopieren",
+  "editEntryDateDialogCopyItem": "Von einem anderen Element kopieren",
   "editEntryDateDialogExtractFromTitle": "Auszug aus dem Titel",
   "editEntryDateDialogShift": "Verschieben",
   "editEntryDateDialogSourceFileModifiedDate": "Änderungsdatum der Datei",
@@ -308,10 +326,12 @@
   "collectionDeleteFailureFeedback": "{count, plural, =1{1 Element konnte nicht gelöscht werden} other{{count} Elemente konnten nicht gelöscht werden}}",
   "collectionCopyFailureFeedback": "{count, plural, =1{1 Element konnte nicht kopiert werden} other{{count} Element konnten nicht kopiert werden}}",
   "collectionMoveFailureFeedback": "{count, plural, =1{1 Element konnte nicht verschoben werden} other{{count} Elemente konnten nicht verschoben werden}}",
+  "collectionRenameFailureFeedback": "{count, plural, =1{Fehler beim Umbenennen eines Elements} other{Fehler beim Umbenennen {count} Elemente}}",
   "collectionEditFailureFeedback": "{count, plural, =1{1 Element konnte nicht bearbeitet werden} other{{count} 1 Elemente konnten nicht bearbeitet werden}}",
   "collectionExportFailureFeedback": "{count, plural, =1{1 Seite konnte nicht exportiert werden} other{{count} Seiten konnten nicht exportiert werden}}",
   "collectionCopySuccessFeedback": "{count, plural, =1{1 Element kopier} other{ {count} Elemente kopiert}}",
   "collectionMoveSuccessFeedback": "{count, plural, =1{1 Element verschoben} other{{count} Elemente verschoben}}",
+  "collectionRenameSuccessFeedback": "{count, plural, =1{1 Element unmebannt} other{{count} Elemente umbenannt}}",
   "collectionEditSuccessFeedback": "{count, plural, =1{1 Element bearbeitet} other{ {count} Elemente bearbeitet}}",
 
   "collectionEmptyFavourites": "Keine Favoriten",
@@ -393,6 +413,7 @@
   "settingsConfirmationDialogTitle": "Bestätigungsdialoge",
   "settingsConfirmationDialogDeleteItems": "Vor dem endgültigen Löschen von Elementen fragen",
   "settingsConfirmationDialogMoveToBinItems": "Vor dem Verschieben von Elementen in den Papierkorb fragen",
+  "settingsConfirmationDialogMoveUndatedItems": "Vor Verschiebung von Objekten ohne Metadaten-Datum fragen",
 
   "settingsNavigationDrawerTile": "Menü Navigation",
   "settingsNavigationDrawerEditorTitle": "Menü Navigation",
@@ -500,6 +521,12 @@
   "settingsRemoveAnimationsTitle": "Animationen entfernen",
   "settingsTimeToTakeActionTile": "Zeit zum Reagieren",
   "settingsTimeToTakeActionTitle": "Zeit zum Reagieren",
+
+  "settingsSectionDisplay": "Anzeige",
+  "settingsThemeBrightness": "Thema",
+  "settingsThemeColorHighlights": "Farbige Highlights",
+  "settingsDisplayRefreshRateModeTile": "Bildwiederholrate der Anzeige",
+  "settingsDisplayRefreshRateModeTitle": "Bildwiederholrate",
 
   "settingsSectionLanguage": "Sprache & Formate",
   "settingsLanguage": "Sprache",

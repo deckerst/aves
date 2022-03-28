@@ -22,7 +22,7 @@ class AvesOutlinedButton extends StatelessWidget {
         );
       }),
       foregroundColor: MaterialStateProperty.resolveWith<Color>((states) {
-        return states.contains(MaterialState.disabled) ? theme.disabledColor : Colors.white;
+        return states.contains(MaterialState.disabled) ? theme.disabledColor : theme.colorScheme.onSecondary;
       }),
     );
     return icon != null

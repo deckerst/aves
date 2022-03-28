@@ -25,7 +25,7 @@ class EntryListDetails extends StatelessWidget {
     return Container(
       padding: EntryListDetailsTheme.contentPadding,
       foregroundDecoration: BoxDecoration(
-        border: Border(top: AvesBorder.straightSide),
+        border: Border(top: AvesBorder.straightSide(context)),
       ),
       margin: EntryListDetailsTheme.contentMargin,
       child: IconTheme.merge(

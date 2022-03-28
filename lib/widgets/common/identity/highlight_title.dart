@@ -1,8 +1,11 @@
 import 'dart:ui';
 
-import 'package:aves/utils/color_utils.dart';
+import 'package:aves/model/settings/enums/enums.dart';
+import 'package:aves/model/settings/settings.dart';
+import 'package:aves/theme/colors.dart';
 import 'package:aves/widgets/common/fx/highlight_decoration.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class HighlightTitle extends StatelessWidget {
   final String title;
@@ -34,18 +37,19 @@ class HighlightTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final style = TextStyle(
-      shadows: shadows,
+      shadows: Theme.of(context).brightness == Brightness.dark ? shadows : null,
       fontSize: fontSize,
       letterSpacing: 1.0,
       fontFeatures: const [FontFeature.enable('smcp')],
     );
 
+    final colors = context.watch<AvesColorsData>();
     return Align(
       alignment: AlignmentDirectional.centerStart,
       child: Container(
-        decoration: showHighlight
+        decoration: showHighlight && context.select<Settings, bool>((v) => v.themeColorMode == AvesThemeColorMode.polychrome)
             ? HighlightDecoration(
-                color: enabled ? color ?? stringToColor(title) : disabledColor,
+                color: enabled ? color ?? colors.fromString(title) : disabledColor,
               )
             : null,
         margin: const EdgeInsets.symmetric(vertical: 4.0),

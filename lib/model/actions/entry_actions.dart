@@ -177,7 +177,8 @@ extension ExtraEntryAction on EntryAction {
     switch (this) {
       case EntryAction.debug:
         return ShaderMask(
-          shaderCallback: AColors.debugGradient.createShader,
+          shaderCallback: AvesColorsData.debugGradient.createShader,
+          blendMode: BlendMode.srcIn,
           child: child,
         );
       default:
@@ -200,7 +201,7 @@ extension ExtraEntryAction on EntryAction {
       case EntryAction.print:
         return AIcons.print;
       case EntryAction.rename:
-        return AIcons.rename;
+        return AIcons.name;
       case EntryAction.copy:
         return AIcons.copy;
       case EntryAction.move:

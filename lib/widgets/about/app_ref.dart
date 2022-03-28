@@ -53,7 +53,7 @@ class _AppReferenceState extends State<AppReference> {
           mainAxisSize: MainAxisSize.min,
           children: [
             AvesLogo(
-              size: style.fontSize! * MediaQuery.textScaleFactorOf(context) * 1.25,
+              size: style.fontSize! * MediaQuery.textScaleFactorOf(context) * 1.3,
             ),
             const SizedBox(width: 8),
             Text(

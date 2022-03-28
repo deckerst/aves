@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/theme/themes.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/basic/multi_cross_fader.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -50,6 +51,7 @@ class _XmpStructArrayCardState extends State<XmpStructArrayCard> {
     }
 
     return Card(
+      color: Themes.thirdLayerColor(context),
       margin: XmpStructCard.cardMargin,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -120,6 +122,7 @@ class XmpStructCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      color: Themes.thirdLayerColor(context),
       margin: cardMargin,
       child: Padding(
         padding: const EdgeInsets.all(8),

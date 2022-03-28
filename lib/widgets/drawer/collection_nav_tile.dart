@@ -1,6 +1,5 @@
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/android_file_utils.dart';
@@ -65,10 +64,8 @@ class CollectionNavTile extends StatelessWidget {
       MaterialPageRoute(
         settings: const RouteSettings(name: CollectionPage.routeName),
         builder: (context) => CollectionPage(
-          collection: CollectionLens(
-            source: context.read<CollectionSource>(),
-            filters: {filter},
-          ),
+          source: context.read<CollectionSource>(),
+          filters: {filter},
         ),
       ),
       (route) => false,

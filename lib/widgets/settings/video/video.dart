@@ -7,8 +7,8 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
-import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
 import 'package:aves/widgets/settings/common/tile_leading.dart';
+import 'package:aves/widgets/settings/common/tiles.dart';
 import 'package:aves/widgets/settings/video/controls.dart';
 import 'package:aves/widgets/settings/video/subtitle_theme.dart';
 import 'package:flutter/material.dart';
@@ -28,45 +28,28 @@ class VideoSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final children = [
       if (!standalonePage)
-        Selector<Settings, bool>(
+        SettingsSwitchListTile(
           selector: (context, s) => !s.hiddenFilters.contains(MimeFilter.video),
-          builder: (context, current, child) => SwitchListTile(
-            value: current,
-            onChanged: (v) => settings.changeFilterVisibility({MimeFilter.video}, v),
-            title: Text(context.l10n.settingsVideoShowVideos),
-          ),
+          onChanged: (v) => settings.changeFilterVisibility({MimeFilter.video}, v),
+          title: context.l10n.settingsVideoShowVideos,
         ),
-      Selector<Settings, bool>(
+      SettingsSwitchListTile(
         selector: (context, s) => s.enableVideoHardwareAcceleration,
-        builder: (context, current, child) => SwitchListTile(
-          value: current,
-          onChanged: (v) => settings.enableVideoHardwareAcceleration = v,
-          title: Text(context.l10n.settingsVideoEnableHardwareAcceleration),
-        ),
+        onChanged: (v) => settings.enableVideoHardwareAcceleration = v,
+        title: context.l10n.settingsVideoEnableHardwareAcceleration,
       ),
-      Selector<Settings, bool>(
+      SettingsSwitchListTile(
         selector: (context, s) => s.enableVideoAutoPlay,
-        builder: (context, current, child) => SwitchListTile(
-          value: current,
-          onChanged: (v) => settings.enableVideoAutoPlay = v,
-          title: Text(context.l10n.settingsVideoEnableAutoPlay),
-        ),
+        onChanged: (v) => settings.enableVideoAutoPlay = v,
+        title: context.l10n.settingsVideoEnableAutoPlay,
       ),
-      Selector<Settings, VideoLoopMode>(
+      SettingsSelectionListTile<VideoLoopMode>(
+        values: VideoLoopMode.values,
+        getName: (context, v) => v.getName(context),
         selector: (context, s) => s.videoLoopMode,
-        builder: (context, current, child) => ListTile(
-          title: Text(context.l10n.settingsVideoLoopModeTile),
-          subtitle: Text(current.getName(context)),
-          onTap: () => showSelectionDialog<VideoLoopMode>(
-            context: context,
-            builder: (context) => AvesSelectionDialog<VideoLoopMode>(
-              initialValue: current,
-              options: Map.fromEntries(VideoLoopMode.values.map((v) => MapEntry(v, v.getName(context)))),
-              title: context.l10n.settingsVideoLoopModeTitle,
-            ),
-            onSelection: (v) => settings.videoLoopMode = v,
-          ),
-        ),
+        onSelection: (v) => settings.videoLoopMode = v,
+        tileTitle: context.l10n.settingsVideoLoopModeTile,
+        dialogTitle: context.l10n.settingsVideoLoopModeTitle,
       ),
       const VideoControlsTile(),
       const SubtitleThemeTile(),
@@ -79,7 +62,7 @@ class VideoSection extends StatelessWidget {
         : AvesExpansionTile(
             leading: SettingsTileLeading(
               icon: AIcons.video,
-              color: AColors.video,
+              color: context.select<AvesColorsData, Color>((v) => v.video),
             ),
             title: context.l10n.settingsSectionVideo,
             expandedNotifier: expandedNotifier,

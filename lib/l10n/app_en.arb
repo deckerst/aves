@@ -177,6 +177,13 @@
   "accessibilityAnimationsRemove": "Prevent screen effects",
   "accessibilityAnimationsKeep": "Keep screen effects",
 
+  "displayRefreshRatePreferHighest": "Highest rate",
+  "displayRefreshRatePreferLowest": "Lowest rate",
+
+  "themeBrightnessLight": "Light",
+  "themeBrightnessDark": "Dark",
+  "themeBrightnessBlack": "Black",
+
   "albumTierNew": "New",
   "albumTierPinned": "Pinned",
   "albumTierSpecial": "Common",
@@ -282,6 +289,8 @@
       "count": {}
     }
   },
+  "moveUndatedConfirmationDialogMessage": "Save item dates before proceeding?",
+  "moveUndatedConfirmationDialogSetDate": "Save dates",
 
   "videoResumeDialogMessage": "Do you want to resume playing at {time}?",
   "@videoResumeDialogMessage": {
@@ -309,6 +318,14 @@
   "renameAlbumDialogLabel": "New name",
   "renameAlbumDialogLabelAlreadyExistsHelper": "Directory already exists",
 
+  "renameEntrySetPageTitle": "Rename",
+  "renameEntrySetPagePatternFieldLabel": "Naming pattern",
+  "renameEntrySetPageInsertTooltip": "Insert field",
+  "renameEntrySetPagePreview": "Preview",
+
+  "renameProcessorCounter": "Counter",
+  "renameProcessorName": "Name",
+
   "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{Delete this album and its item?} other{Delete this album and its {count} items?}}",
   "@deleteSingleAlbumConfirmationDialogMessage": {
     "placeholders": {
@@ -331,6 +348,7 @@
   "editEntryDateDialogTitle": "Date & Time",
   "editEntryDateDialogSetCustom": "Set custom date",
   "editEntryDateDialogCopyField": "Copy from other date",
+  "editEntryDateDialogCopyItem": "Copy from other item",
   "editEntryDateDialogExtractFromTitle": "Extract from title",
   "editEntryDateDialogShift": "Shift",
   "editEntryDateDialogSourceFileModifiedDate": "File modified date",
@@ -453,6 +471,12 @@
       "count": {}
     }
   },
+  "collectionRenameFailureFeedback": "{count, plural, =1{Failed to rename 1 item} other{Failed to rename {count} items}}",
+  "@collectionRenameFailureFeedback": {
+    "placeholders": {
+      "count": {}
+    }
+  },
   "collectionEditFailureFeedback": "{count, plural, =1{Failed to edit 1 item} other{Failed to edit {count} items}}",
   "@collectionEditFailureFeedback": {
     "placeholders": {
@@ -473,6 +497,12 @@
   },
   "collectionMoveSuccessFeedback": "{count, plural, =1{Moved 1 item} other{Moved {count} items}}",
   "@collectionMoveSuccessFeedback": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "collectionRenameSuccessFeedback": "{count, plural, =1{Renamed 1 item} other{Renamed {count} items}}",
+  "@collectionRenameSuccessFeedback": {
     "placeholders": {
       "count": {}
     }
@@ -563,6 +593,7 @@
   "settingsConfirmationDialogTitle": "Confirmation Dialogs",
   "settingsConfirmationDialogDeleteItems": "Ask before deleting items forever",
   "settingsConfirmationDialogMoveToBinItems": "Ask before moving items to the recycle bin",
+  "settingsConfirmationDialogMoveUndatedItems": "Ask before moving undated items",
 
   "settingsNavigationDrawerTile": "Navigation menu",
   "settingsNavigationDrawerEditorTitle": "Navigation Menu",
@@ -670,6 +701,12 @@
   "settingsRemoveAnimationsTitle": "Remove Animations",
   "settingsTimeToTakeActionTile": "Time to take action",
   "settingsTimeToTakeActionTitle": "Time to Take Action",
+
+  "settingsSectionDisplay": "Display",
+  "settingsThemeBrightness": "Theme",
+  "settingsThemeColorHighlights": "Color highlights",
+  "settingsDisplayRefreshRateModeTile": "Display refresh rate",
+  "settingsDisplayRefreshRateModeTitle": "Refresh Rate",
 
   "settingsSectionLanguage": "Language & Formats",
   "settingsLanguage": "Language",

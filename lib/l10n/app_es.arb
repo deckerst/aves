@@ -68,6 +68,8 @@
   "entryActionRemoveFavourite": "Quitar de favoritos",
 
   "videoActionCaptureFrame": "Capturar fotograma",
+  "videoActionMute": "Silenciar",
+  "videoActionUnmute": "Dejar de silenciar",
   "videoActionPause": "Pausa",
   "videoActionPlay": "Reproducir",
   "videoActionReplay10": "Retroceder 10 segundos",
@@ -135,6 +137,13 @@
   "accessibilityAnimationsRemove": "Prevenir efectos en pantalla",
   "accessibilityAnimationsKeep": "Mantener efectos en pantalla",
 
+  "displayRefreshRatePreferHighest": "Alta tasa",
+  "displayRefreshRatePreferLowest": "Baja tasa",
+
+  "themeBrightnessLight": "Claro",
+  "themeBrightnessDark": "Obscuro",
+  "themeBrightnessBlack": "Negro",
+
   "albumTierNew": "Nuevo",
   "albumTierPinned": "Fijado",
   "albumTierSpecial": "Común",
@@ -151,7 +160,6 @@
   "restrictedAccessDialogMessage": "Esta aplicación no tiene permiso para modificar archivos de {directory} en «{volume}».\n\nPor favor use un gestor de archivos o la aplicación de galería preinstalada para mover los elementos a otro directorio.",
   "notEnoughSpaceDialogTitle": "Espacio insuficiente",
   "notEnoughSpaceDialogMessage": "Esta operación necesita {neededSize} de espacio libre en «{volume}» para completarse, pero sólo hay {freeSize} disponible.",
-
   "missingSystemFilePickerDialogTitle": "Selector de archivos del sistema no disponible",
   "missingSystemFilePickerDialogMessage": "El selector de archivos del sistema no se encuentra disponible o fue deshabilitado. Por favor habilítelo e intente nuevamente.",
 
@@ -168,8 +176,9 @@
   "noMatchingAppDialogMessage": "No se encontraron aplicaciones para manejar esto.",
 
   "binEntriesConfirmationDialogMessage": "{count, plural, =1{¿Mover este elemento al cesto de basura?} other{¿Mover estos {count} elementos al cesto de basura?}}",
-
   "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{¿Está seguro de borrar este elemento?} other{¿Está seguro de querer borrar {count} elementos?}}",
+  "moveUndatedConfirmationDialogMessage": "Algunos elementos no poseen fecha en sus metadatos. Su fecha actual será reemplazada por esta operación a menos que una fecha de metadatos sea fijada.",
+  "moveUndatedConfirmationDialogSetDate": "Fijar fecha",
 
   "videoResumeDialogMessage": "¿Desea reanudar la reproducción a las {time}?",
   "videoStartOverButtonLabel": "VOLVER A EMPEZAR",
@@ -189,6 +198,14 @@
   "renameAlbumDialogLabel": "Renombrar",
   "renameAlbumDialogLabelAlreadyExistsHelper": "El directorio ya existe",
 
+  "renameEntrySetPageTitle": "Renombrar",
+  "renameEntrySetPagePatternFieldLabel": "Patrón de nombramiento",
+  "renameEntrySetPageInsertTooltip": "Insertar campo",
+  "renameEntrySetPagePreview": "Vista previa",
+
+  "renameProcessorCounter": "Contador",
+  "renameProcessorName": "Nombre",
+
   "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{¿Está seguro de que desea borrar este álbum y un elemento?} other{¿Está seguro de que desea borrar este álbum y sus {count} elementos?}}",
   "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{¿Está seguro de que desea borrar estos álbumes y un elemento?} other{¿Está seguro de que desea borrar estos álbumes y sus {count} elementos?}}",
  
@@ -201,6 +218,7 @@
   "editEntryDateDialogTitle": "Fecha y hora",
   "editEntryDateDialogSetCustom": "Establecer fecha personalizada",
   "editEntryDateDialogCopyField": "Copiar de otra fecha",
+  "editEntryDateDialogCopyItem": "Copiar de otro elemento",
   "editEntryDateDialogExtractFromTitle": "Extraer del título",
   "editEntryDateDialogShift": "Cambiar",
   "editEntryDateDialogSourceFileModifiedDate": "Fecha de modificación del archivo",
@@ -308,10 +326,12 @@
   "collectionDeleteFailureFeedback": "{count, plural, =1{Error al borrar 1 elemento} other{Error al borrar {count} elementos}}",
   "collectionCopyFailureFeedback": "{count, plural, =1{Error al copiar 1 item} other{Error al copiar {count} elementos}}",
   "collectionMoveFailureFeedback": "{count, plural, =1{Error al mover 1 elemento} other{Error al mover {count} elementos}}",
+  "collectionRenameFailureFeedback": "{count, plural, =1{Error al renombrar 1 elemento} other{Error al renombrar {count} elementos}}",
   "collectionEditFailureFeedback": "{count, plural, =1{Error al editar 1 elemento} other{Error al editar {count} elementos}}",
   "collectionExportFailureFeedback": "{count, plural, =1{Error al exportar 1 página} other{Error al exportar {count} páginas}}",
   "collectionCopySuccessFeedback": "{count, plural, =1{1 elemento copiado} other{Copiados{count} elementos}}",
   "collectionMoveSuccessFeedback": "{count, plural, =1{1 elemento movido} other{Movidos {count} elementos}}",
+  "collectionRenameSuccessFeedback": "{count, plural, =1{1 elemento renombrado} other{Renombrados {count} elementos}}",
   "collectionEditSuccessFeedback": "{count, plural, =1{1 elemento editado} other{Editados {count} elementos}}",
 
   "collectionEmptyFavourites": "Sin favoritos",
@@ -393,6 +413,7 @@
   "settingsConfirmationDialogTitle": "Diálogos de confirmación",
   "settingsConfirmationDialogDeleteItems": "Preguntar antes de eliminar elementos permanentemente",
   "settingsConfirmationDialogMoveToBinItems": "Preguntar antes de mover elementos al cesto de basura",
+  "settingsConfirmationDialogMoveUndatedItems": "Preguntar antes de mover elementos sin una fecha de metadatos",
 
   "settingsNavigationDrawerTile": "Menú de navegación",
   "settingsNavigationDrawerEditorTitle": "Menú de navegación",
@@ -500,6 +521,12 @@
   "settingsRemoveAnimationsTitle": "Remover animaciones",
   "settingsTimeToTakeActionTile": "Retraso para ejecutar una acción",
   "settingsTimeToTakeActionTitle": "Retraso para ejecutar una acción",
+
+  "settingsSectionDisplay": "Pantalla",
+  "settingsThemeBrightness": "Tema",
+  "settingsThemeColorHighlights": "Acentos de color",
+  "settingsDisplayRefreshRateModeTile": "Tasa de refresco de la pantalla",
+  "settingsDisplayRefreshRateModeTitle": "Tasa de refresco",
 
   "settingsSectionLanguage": "Idioma y formatos",
   "settingsLanguage": "Idioma",

@@ -14,7 +14,6 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/thumbnail/image.dart';
-import 'package:aves/widgets/filter_grids/common/filter_grid_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -151,7 +150,7 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
         radius: radius(extent),
       ),
       banner: banner,
-      details: showText ? _buildDetails(source, filter) : null,
+      details: showText ? _buildDetails(context, source, filter) : null,
       padding: titlePadding,
       heroType: heroType,
       onTap: onTap,
@@ -159,7 +158,9 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
     );
   }
 
-  Widget _buildDetails(CollectionSource source, T filter) {
+  Color _detailColor(BuildContext context) => Theme.of(context).textTheme.caption!.color!;
+
+  Widget _buildDetails(BuildContext context, CollectionSource source, T filter) {
     final padding = min<double>(8.0, extent / 16);
     final iconSize = detailIconSize(extent);
     final fontSize = detailFontSize(extent);
@@ -172,7 +173,7 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
             duration: Durations.chipDecorationAnimation,
             child: Icon(
               AIcons.pin,
-              color: FilterGridPage.detailColor,
+              color: _detailColor(context),
               size: iconSize,
             ),
           ),
@@ -182,14 +183,14 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
             duration: Durations.chipDecorationAnimation,
             child: Icon(
               AIcons.removableStorage,
-              color: FilterGridPage.detailColor,
+              color: _detailColor(context),
               size: iconSize,
             ),
           ),
         Text(
           '${source.count(filter)}',
           style: TextStyle(
-            color: FilterGridPage.detailColor,
+            color: _detailColor(context),
             fontSize: fontSize,
           ),
         ),

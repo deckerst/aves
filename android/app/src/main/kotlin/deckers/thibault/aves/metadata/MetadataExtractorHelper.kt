@@ -6,7 +6,9 @@ import com.drew.lang.Rational
 import com.drew.lang.SequentialByteArrayReader
 import com.drew.metadata.Directory
 import com.drew.metadata.exif.ExifDirectoryBase
+import com.drew.metadata.exif.ExifIFD0Directory
 import com.drew.metadata.exif.ExifReader
+import com.drew.metadata.exif.ExifSubIFDDirectory
 import com.drew.metadata.iptc.IptcReader
 import com.drew.metadata.png.PngDirectory
 import deckers.thibault.aves.utils.LogUtils
@@ -53,11 +55,34 @@ object MetadataExtractorHelper {
         if (this.containsTag(tag)) save(this.getRational(tag))
     }
 
-    fun Directory.getSafeDateMillis(tag: Int, save: (value: Long) -> Unit) {
+    fun Directory.getSafeDateMillis(tag: Int, subSecond: String?): Long? {
         if (this.containsTag(tag)) {
-            val date = this.getDate(tag, null, TimeZone.getDefault())
-            if (date != null) save(date.time)
+            val date = this.getDate(tag, subSecond, TimeZone.getDefault())
+            if (date != null) return date.time
         }
+        return null
+    }
+
+    // time tag and sub-second tag are *not* in the same directory
+    fun ExifSubIFDDirectory.getDateModifiedMillis(save: (value: Long) -> Unit) {
+        val parent = parent
+        if (parent is ExifIFD0Directory) {
+            val subSecond = getString(ExifSubIFDDirectory.TAG_SUBSECOND_TIME)
+            val dateMillis = parent.getSafeDateMillis(ExifIFD0Directory.TAG_DATETIME, subSecond)
+            if (dateMillis != null) save(dateMillis)
+        }
+    }
+
+    fun ExifSubIFDDirectory.getDateDigitizedMillis(save: (value: Long) -> Unit) {
+        val subSecond = getString(ExifSubIFDDirectory.TAG_SUBSECOND_TIME_DIGITIZED)
+        val dateMillis = this.getSafeDateMillis(ExifSubIFDDirectory.TAG_DATETIME_DIGITIZED, subSecond)
+        if (dateMillis != null) save(dateMillis)
+    }
+
+    fun ExifSubIFDDirectory.getDateOriginalMillis(save: (value: Long) -> Unit) {
+        val subSecond = getString(ExifSubIFDDirectory.TAG_SUBSECOND_TIME_ORIGINAL)
+        val dateMillis = this.getSafeDateMillis(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL, subSecond)
+        if (dateMillis != null) save(dateMillis)
     }
 
     // geotiff
@@ -69,13 +94,13 @@ object MetadataExtractorHelper {
     - If the ModelPixelScaleTag is included in an IFD, then a ModelTiepointTag SHALL also be included.
      */
     fun ExifDirectoryBase.isGeoTiff(): Boolean {
-        if (!this.containsTag(ExifTags.TAG_GEO_KEY_DIRECTORY)) return false
+        if (!this.containsTag(GeoTiffTags.TAG_GEO_KEY_DIRECTORY)) return false
 
-        val modelTiepoint = this.containsTag(ExifTags.TAG_MODEL_TIEPOINT)
-        val modelTransformation = this.containsTag(ExifTags.TAG_MODEL_TRANSFORMATION)
+        val modelTiepoint = this.containsTag(GeoTiffTags.TAG_MODEL_TIEPOINT)
+        val modelTransformation = this.containsTag(GeoTiffTags.TAG_MODEL_TRANSFORMATION)
         if (!modelTiepoint && !modelTransformation) return false
 
-        val modelPixelScale = this.containsTag(ExifTags.TAG_MODEL_PIXEL_SCALE)
+        val modelPixelScale = this.containsTag(GeoTiffTags.TAG_MODEL_PIXEL_SCALE)
         if ((modelTransformation && modelPixelScale) || (modelPixelScale && !modelTiepoint)) return false
 
         return true

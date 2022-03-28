@@ -45,7 +45,7 @@ class FakeMediaStoreService extends Fake implements MediaStoreService {
     );
   }
 
-  static MoveOpEvent moveOpEventFor(AvesEntry entry, String sourceAlbum, String destinationAlbum) {
+  static MoveOpEvent moveOpEventForMove(AvesEntry entry, String sourceAlbum, String destinationAlbum) {
     final newContentId = nextId;
     return MoveOpEvent(
       success: true,
@@ -55,8 +55,22 @@ class FakeMediaStoreService extends Fake implements MediaStoreService {
         'uri': 'content://media/external/images/media/$newContentId',
         'contentId': newContentId,
         'path': entry.path!.replaceFirst(sourceAlbum, destinationAlbum),
-        'displayName': '${entry.filenameWithoutExtension}${entry.extension}',
-        'title': entry.filenameWithoutExtension,
+        'dateModifiedSecs': FakeMediaStoreService.dateSecs,
+      },
+    );
+  }
+
+  static MoveOpEvent moveOpEventForRename(AvesEntry entry, String newName) {
+    final newContentId = nextId;
+    final oldName = entry.filenameWithoutExtension!;
+    return MoveOpEvent(
+      success: true,
+      skipped: false,
+      uri: entry.uri,
+      newFields: {
+        'uri': 'content://media/external/images/media/$newContentId',
+        'contentId': newContentId,
+        'path': entry.path!.replaceFirst(oldName, newName),
         'dateModifiedSecs': FakeMediaStoreService.dateSecs,
       },
     );

@@ -22,19 +22,20 @@ class Attribution extends StatelessWidget {
       case EntryMapStyle.stamenWatercolor:
         return _buildAttributionMarkdown(context, context.l10n.mapAttributionStamen);
       default:
-        return const SizedBox.shrink();
+        return const SizedBox();
     }
   }
 
   Widget _buildAttributionMarkdown(BuildContext context, String data) {
+    final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.only(top: 4),
       child: MarkdownBody(
         data: data,
         selectable: true,
         styleSheet: MarkdownStyleSheet(
-          a: TextStyle(color: Theme.of(context).colorScheme.secondary),
-          p: const TextStyle(color: Colors.white70, fontSize: InfoRowGroup.fontSize),
+          a: TextStyle(color: theme.colorScheme.secondary),
+          p: theme.textTheme.caption!.merge(const TextStyle(fontSize: InfoRowGroup.fontSize)),
         ),
         onTapLink: (text, href, title) async {
           if (href != null && await canLaunch(href)) {

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:aves/model/actions/settings_actions.dart';
@@ -8,12 +9,15 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
+import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/basic/menu.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/common/extensions/media_query.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/settings/accessibility/accessibility.dart';
 import 'package:aves/widgets/settings/app_export/items.dart';
 import 'package:aves/widgets/settings/app_export/selection_dialog.dart';
+import 'package:aves/widgets/settings/display/display.dart';
 import 'package:aves/widgets/settings/language/language.dart';
 import 'package:aves/widgets/settings/navigation/navigation.dart';
 import 'package:aves/widgets/settings/privacy/privacy.dart';
@@ -71,36 +75,44 @@ class _SettingsPageState extends State<SettingsPage> with FeedbackMixin {
             ),
           ],
         ),
-        body: Theme(
-          data: theme.copyWith(
-            textTheme: theme.textTheme.copyWith(
-              // dense style font for tile subtitles, without modifying title font
-              bodyText2: const TextStyle(fontSize: 12),
-            ),
-          ),
+        body: GestureAreaProtectorStack(
           child: SafeArea(
-            child: AnimationLimiter(
-              child: ListView(
-                padding: const EdgeInsets.all(8),
-                children: AnimationConfiguration.toStaggeredList(
-                  duration: durations.staggeredAnimation,
-                  delay: durations.staggeredAnimationDelay * timeDilation,
-                  childAnimationBuilder: (child) => SlideAnimation(
-                    verticalOffset: 50.0,
-                    child: FadeInAnimation(
-                      child: child,
-                    ),
-                  ),
-                  children: [
-                    NavigationSection(expandedNotifier: _expandedNotifier),
-                    ThumbnailsSection(expandedNotifier: _expandedNotifier),
-                    ViewerSection(expandedNotifier: _expandedNotifier),
-                    VideoSection(expandedNotifier: _expandedNotifier),
-                    PrivacySection(expandedNotifier: _expandedNotifier),
-                    AccessibilitySection(expandedNotifier: _expandedNotifier),
-                    LanguageSection(expandedNotifier: _expandedNotifier),
-                  ],
+            bottom: false,
+            child: Theme(
+              data: theme.copyWith(
+                textTheme: theme.textTheme.copyWith(
+                  // dense style font for tile subtitles, without modifying title font
+                  bodyText2: const TextStyle(fontSize: 12),
                 ),
+              ),
+              child: AnimationLimiter(
+                child: Selector<MediaQueryData, double>(
+                    selector: (context, mq) => max(mq.effectiveBottomPadding, mq.systemGestureInsets.bottom),
+                    builder: (context, mqPaddingBottom, child) {
+                      return ListView(
+                        padding: const EdgeInsets.all(8) + EdgeInsets.only(bottom: mqPaddingBottom),
+                        children: AnimationConfiguration.toStaggeredList(
+                          duration: durations.staggeredAnimation,
+                          delay: durations.staggeredAnimationDelay * timeDilation,
+                          childAnimationBuilder: (child) => SlideAnimation(
+                            verticalOffset: 50.0,
+                            child: FadeInAnimation(
+                              child: child,
+                            ),
+                          ),
+                          children: [
+                            NavigationSection(expandedNotifier: _expandedNotifier),
+                            ThumbnailsSection(expandedNotifier: _expandedNotifier),
+                            ViewerSection(expandedNotifier: _expandedNotifier),
+                            VideoSection(expandedNotifier: _expandedNotifier),
+                            PrivacySection(expandedNotifier: _expandedNotifier),
+                            AccessibilitySection(expandedNotifier: _expandedNotifier),
+                            DisplaySection(expandedNotifier: _expandedNotifier),
+                            LanguageSection(expandedNotifier: _expandedNotifier),
+                          ],
+                        ),
+                      );
+                    }),
               ),
             ),
           ),

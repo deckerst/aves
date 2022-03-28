@@ -47,6 +47,9 @@ import deckers.thibault.aves.metadata.MetadataExtractorHelper.PNG_ITXT_DIR_NAME
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.PNG_LAST_MODIFICATION_TIME_FORMAT
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.PNG_TIME_DIR_NAME
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.extractPngProfile
+import deckers.thibault.aves.metadata.MetadataExtractorHelper.getDateDigitizedMillis
+import deckers.thibault.aves.metadata.MetadataExtractorHelper.getDateModifiedMillis
+import deckers.thibault.aves.metadata.MetadataExtractorHelper.getDateOriginalMillis
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeBoolean
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeDateMillis
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeInt
@@ -74,7 +77,10 @@ import deckers.thibault.aves.utils.UriUtils.tryParseId
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets
 import java.text.ParseException
@@ -163,15 +169,24 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                             // tags
                             val tags = dir.tags
                             if (dir is ExifDirectoryBase) {
-                                if (dir.isGeoTiff()) {
-                                    // split GeoTIFF tags in their own directory
-                                    val byGeoTiff = tags.groupBy { ExifTags.isGeoTiffTag(it.tagType) }
-                                    metadataMap["GeoTIFF"] = HashMap<String, String>().apply {
-                                        byGeoTiff[true]?.map { exifTagMapper(it) }?.let { putAll(it) }
+                                when {
+                                    dir.isGeoTiff() -> {
+                                        // split GeoTIFF tags in their own directory
+                                        val geoTiffDirMap = metadataMap["GeoTIFF"] ?: HashMap()
+                                        metadataMap["GeoTIFF"] = geoTiffDirMap
+                                        val byGeoTiff = tags.groupBy { ExifTags.isGeoTiffTag(it.tagType) }
+                                        byGeoTiff[true]?.map { exifTagMapper(it) }?.let { geoTiffDirMap.putAll(it) }
+                                        byGeoTiff[false]?.map { exifTagMapper(it) }?.let { dirMap.putAll(it) }
                                     }
-                                    byGeoTiff[false]?.map { exifTagMapper(it) }?.let { dirMap.putAll(it) }
-                                } else {
-                                    dirMap.putAll(tags.map { exifTagMapper(it) })
+                                    mimeType == MimeTypes.DNG -> {
+                                        // split DNG tags in their own directory
+                                        val dngDirMap = metadataMap["DNG"] ?: HashMap()
+                                        metadataMap["DNG"] = dngDirMap
+                                        val byDng = tags.groupBy { ExifTags.isDngTag(it.tagType) }
+                                        byDng[true]?.map { exifTagMapper(it) }?.let { dngDirMap.putAll(it) }
+                                        byDng[false]?.map { exifTagMapper(it) }?.let { dirMap.putAll(it) }
+                                    }
+                                    else -> dirMap.putAll(tags.map { exifTagMapper(it) })
                                 }
                             } else if (dir.isPngTextDir()) {
                                 metadataMap.remove(thisDirName)
@@ -432,11 +447,17 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
 
                     // EXIF
                     for (dir in metadata.getDirectoriesOfType(ExifSubIFDDirectory::class.java)) {
-                        dir.getSafeDateMillis(ExifDirectoryBase.TAG_DATETIME_ORIGINAL) { metadataMap[KEY_DATE_MILLIS] = it }
+                        dir.getDateOriginalMillis { metadataMap[KEY_DATE_MILLIS] = it }
+                        if (!metadataMap.containsKey(KEY_DATE_MILLIS)) {
+                            // fetch date modified from SubIFD directory first, as the sub-second tag is here
+                            dir.getDateModifiedMillis { metadataMap[KEY_DATE_MILLIS] = it }
+                        }
                     }
                     for (dir in metadata.getDirectoriesOfType(ExifIFD0Directory::class.java)) {
                         if (!metadataMap.containsKey(KEY_DATE_MILLIS)) {
-                            dir.getSafeDateMillis(ExifDirectoryBase.TAG_DATETIME) { metadataMap[KEY_DATE_MILLIS] = it }
+                            // fallback to fetch date modified from IFD0 directory, without the sub-second tag
+                            // in case there was no SubIFD directory
+                            dir.getSafeDateMillis(ExifIFD0Directory.TAG_DATETIME, null)?.let { metadataMap[KEY_DATE_MILLIS] = it }
                         }
                         dir.getSafeInt(ExifDirectoryBase.TAG_ORIENTATION) {
                             val orientation = it
@@ -560,9 +581,9 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             try {
                 Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
                     val exif = ExifInterface(input)
-                    exif.getSafeDateMillis(ExifInterface.TAG_DATETIME_ORIGINAL) { metadataMap[KEY_DATE_MILLIS] = it }
+                    exif.getSafeDateMillis(ExifInterface.TAG_DATETIME_ORIGINAL, ExifInterface.TAG_SUBSEC_TIME_ORIGINAL) { metadataMap[KEY_DATE_MILLIS] = it }
                     if (!metadataMap.containsKey(KEY_DATE_MILLIS)) {
-                        exif.getSafeDateMillis(ExifInterface.TAG_DATETIME) { metadataMap[KEY_DATE_MILLIS] = it }
+                        exif.getSafeDateMillis(ExifInterface.TAG_DATETIME, ExifInterface.TAG_SUBSEC_TIME) { metadataMap[KEY_DATE_MILLIS] = it }
                     }
                     exif.getSafeInt(ExifInterface.TAG_ORIENTATION, acceptZero = false) {
                         if (exif.isFlipped) flags = flags or MASK_IS_FLIPPED
@@ -901,9 +922,9 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                 Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
                     val metadata = ImageMetadataReader.readMetadata(input)
                     val tag = when (field) {
-                        ExifInterface.TAG_DATETIME -> ExifDirectoryBase.TAG_DATETIME
-                        ExifInterface.TAG_DATETIME_DIGITIZED -> ExifDirectoryBase.TAG_DATETIME_DIGITIZED
-                        ExifInterface.TAG_DATETIME_ORIGINAL -> ExifDirectoryBase.TAG_DATETIME_ORIGINAL
+                        ExifInterface.TAG_DATETIME -> ExifIFD0Directory.TAG_DATETIME
+                        ExifInterface.TAG_DATETIME_DIGITIZED -> ExifSubIFDDirectory.TAG_DATETIME_DIGITIZED
+                        ExifInterface.TAG_DATETIME_ORIGINAL -> ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL
                         ExifInterface.TAG_GPS_DATESTAMP -> GpsDirectory.TAG_DATE_STAMP
                         else -> {
                             result.error("getDate-field", "unsupported ExifInterface field=$field", null)
@@ -912,11 +933,24 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                     }
 
                     when (tag) {
-                        ExifDirectoryBase.TAG_DATETIME,
-                        ExifDirectoryBase.TAG_DATETIME_DIGITIZED,
-                        ExifDirectoryBase.TAG_DATETIME_ORIGINAL -> {
-                            for (dir in metadata.getDirectoriesOfType(ExifDirectoryBase::class.java)) {
-                                dir.getSafeDateMillis(tag) { dateMillis = it }
+                        ExifIFD0Directory.TAG_DATETIME -> {
+                            for (dir in metadata.getDirectoriesOfType(ExifSubIFDDirectory::class.java)) {
+                                dir.getDateModifiedMillis { dateMillis = it }
+                            }
+                            if (dateMillis == null) {
+                                for (dir in metadata.getDirectoriesOfType(ExifIFD0Directory::class.java)) {
+                                    dir.getSafeDateMillis(ExifIFD0Directory.TAG_DATETIME, null)?.let { dateMillis = it }
+                                }
+                            }
+                        }
+                        ExifSubIFDDirectory.TAG_DATETIME_DIGITIZED -> {
+                            for (dir in metadata.getDirectoriesOfType(ExifSubIFDDirectory::class.java)) {
+                                dir.getDateDigitizedMillis { dateMillis = it }
+                            }
+                        }
+                        ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL -> {
+                            for (dir in metadata.getDirectoriesOfType(ExifSubIFDDirectory::class.java)) {
+                                dir.getDateOriginalMillis { dateMillis = it }
                             }
                         }
                         GpsDirectory.TAG_DATE_STAMP -> {

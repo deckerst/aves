@@ -41,16 +41,23 @@ class Settings extends ChangeNotifier {
   static const isInstalledAppAccessAllowedKey = 'is_installed_app_access_allowed';
   static const isErrorReportingAllowedKey = 'is_crashlytics_enabled';
   static const localeKey = 'locale';
+  static const displayRefreshRateModeKey = 'display_refresh_rate_mode';
+  static const themeBrightnessKey = 'theme_brightness';
+  static const themeColorModeKey = 'theme_color_mode';
   static const catalogTimeZoneKey = 'catalog_time_zone';
   static const tileExtentPrefixKey = 'tile_extent_';
   static const tileLayoutPrefixKey = 'tile_layout_';
+  static const entryRenamingPatternKey = 'entry_renaming_pattern';
   static const topEntryIdsKey = 'top_entry_ids';
 
   // navigation
   static const mustBackTwiceToExitKey = 'must_back_twice_to_exit';
   static const keepScreenOnKey = 'keep_screen_on';
   static const homePageKey = 'home_page';
-  static const confirmationDialogsKey = 'confirmation_dialogs';
+  static const confirmDeleteForeverKey = 'confirm_delete_forever';
+  static const confirmMoveToBinKey = 'confirm_move_to_bin';
+  static const confirmMoveUndatedItemsKey = 'confirm_move_undated_items';
+  static const setMetadataDateBeforeFileOpKey = 'set_metadata_date_before_file_op';
   static const drawerTypeBookmarksKey = 'drawer_type_bookmarks';
   static const drawerAlbumBookmarksKey = 'drawer_album_bookmarks';
   static const drawerPageBookmarksKey = 'drawer_page_bookmarks';
@@ -239,6 +246,18 @@ class Settings extends ChangeNotifier {
     return _appliedLocale!;
   }
 
+  DisplayRefreshRateMode get displayRefreshRateMode => getEnumOrDefault(displayRefreshRateModeKey, SettingsDefaults.displayRefreshRateMode, DisplayRefreshRateMode.values);
+
+  set displayRefreshRateMode(DisplayRefreshRateMode newValue) => setAndNotify(displayRefreshRateModeKey, newValue.toString());
+
+  AvesThemeBrightness get themeBrightness => getEnumOrDefault(themeBrightnessKey, SettingsDefaults.themeBrightness, AvesThemeBrightness.values);
+
+  set themeBrightness(AvesThemeBrightness newValue) => setAndNotify(themeBrightnessKey, newValue.toString());
+
+  AvesThemeColorMode get themeColorMode => getEnumOrDefault(themeColorModeKey, SettingsDefaults.themeColorMode, AvesThemeColorMode.values);
+
+  set themeColorMode(AvesThemeColorMode newValue) => setAndNotify(themeColorModeKey, newValue.toString());
+
   String get catalogTimeZone => getString(catalogTimeZoneKey) ?? '';
 
   set catalogTimeZone(String newValue) => setAndNotify(catalogTimeZoneKey, newValue);
@@ -250,6 +269,10 @@ class Settings extends ChangeNotifier {
   TileLayout getTileLayout(String routeName) => getEnumOrDefault(tileLayoutPrefixKey + routeName, SettingsDefaults.tileLayout, TileLayout.values);
 
   void setTileLayout(String routeName, TileLayout newValue) => setAndNotify(tileLayoutPrefixKey + routeName, newValue.toString());
+
+  String get entryRenamingPattern => getString(entryRenamingPatternKey) ?? SettingsDefaults.entryRenamingPattern;
+
+  set entryRenamingPattern(String newValue) => setAndNotify(entryRenamingPatternKey, newValue);
 
   List<int>? get topEntryIds => getStringList(topEntryIdsKey)?.map(int.tryParse).whereNotNull().toList();
 
@@ -269,9 +292,21 @@ class Settings extends ChangeNotifier {
 
   set homePage(HomePageSetting newValue) => setAndNotify(homePageKey, newValue.toString());
 
-  List<ConfirmationDialog> get confirmationDialogs => getEnumListOrDefault(confirmationDialogsKey, SettingsDefaults.confirmationDialogs, ConfirmationDialog.values);
+  bool get confirmDeleteForever => getBoolOrDefault(confirmDeleteForeverKey, SettingsDefaults.confirmDeleteForever);
 
-  set confirmationDialogs(List<ConfirmationDialog> newValue) => setAndNotify(confirmationDialogsKey, newValue.map((v) => v.toString()).toList());
+  set confirmDeleteForever(bool newValue) => setAndNotify(confirmDeleteForeverKey, newValue);
+
+  bool get confirmMoveToBin => getBoolOrDefault(confirmMoveToBinKey, SettingsDefaults.confirmMoveToBin);
+
+  set confirmMoveToBin(bool newValue) => setAndNotify(confirmMoveToBinKey, newValue);
+
+  bool get confirmMoveUndatedItems => getBoolOrDefault(confirmMoveUndatedItemsKey, SettingsDefaults.confirmMoveUndatedItems);
+
+  set confirmMoveUndatedItems(bool newValue) => setAndNotify(confirmMoveUndatedItemsKey, newValue);
+
+  bool get setMetadataDateBeforeFileOp => getBoolOrDefault(setMetadataDateBeforeFileOpKey, SettingsDefaults.setMetadataDateBeforeFileOp);
+
+  set setMetadataDateBeforeFileOp(bool newValue) => setAndNotify(setMetadataDateBeforeFileOpKey, newValue);
 
   List<CollectionFilter?> get drawerTypeBookmarks =>
       (getStringList(drawerTypeBookmarksKey))?.map((v) {
@@ -646,6 +681,10 @@ class Settings extends ChangeNotifier {
             case isInstalledAppAccessAllowedKey:
             case isErrorReportingAllowedKey:
             case mustBackTwiceToExitKey:
+            case confirmDeleteForeverKey:
+            case confirmMoveToBinKey:
+            case confirmMoveUndatedItemsKey:
+            case setMetadataDateBeforeFileOpKey:
             case showThumbnailFavouriteKey:
             case showThumbnailLocationKey:
             case showThumbnailMotionPhotoKey:
@@ -675,6 +714,9 @@ class Settings extends ChangeNotifier {
               }
               break;
             case localeKey:
+            case displayRefreshRateModeKey:
+            case themeBrightnessKey:
+            case themeColorModeKey:
             case keepScreenOnKey:
             case homePageKey:
             case collectionGroupFactorKey:
@@ -698,7 +740,6 @@ class Settings extends ChangeNotifier {
                 debugPrint('failed to import key=$key, value=$newValue is not a string');
               }
               break;
-            case confirmationDialogsKey:
             case drawerTypeBookmarksKey:
             case drawerAlbumBookmarksKey:
             case drawerPageBookmarksKey:

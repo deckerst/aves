@@ -1,5 +1,6 @@
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/settings/common/tiles.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
@@ -38,22 +39,16 @@ class ViewerOverlayPage extends StatelessWidget {
       body: SafeArea(
         child: ListView(
           children: [
-            Selector<Settings, bool>(
+            SettingsSwitchListTile(
               selector: (context, s) => s.showOverlayOnOpening,
-              builder: (context, current, child) => SwitchListTile(
-                value: current,
-                onChanged: (v) => settings.showOverlayOnOpening = v,
-                title: Text(context.l10n.settingsViewerShowOverlayOnOpening),
-              ),
+              onChanged: (v) => settings.showOverlayOnOpening = v,
+              title: context.l10n.settingsViewerShowOverlayOnOpening,
             ),
-            Selector<Settings, bool>(
+            SettingsSwitchListTile(
               selector: (context, s) => s.showOverlayInfo,
-              builder: (context, current, child) => SwitchListTile(
-                value: current,
-                onChanged: (v) => settings.showOverlayInfo = v,
-                title: Text(context.l10n.settingsViewerShowInformation),
-                subtitle: Text(context.l10n.settingsViewerShowInformationSubtitle),
-              ),
+              onChanged: (v) => settings.showOverlayInfo = v,
+              title: context.l10n.settingsViewerShowInformation,
+              subtitle: context.l10n.settingsViewerShowInformationSubtitle,
             ),
             Selector<Settings, Tuple2<bool, bool>>(
               selector: (context, s) => Tuple2(s.showOverlayInfo, s.showOverlayShootingDetails),
@@ -67,29 +62,20 @@ class ViewerOverlayPage extends StatelessWidget {
                 );
               },
             ),
-            Selector<Settings, bool>(
+            SettingsSwitchListTile(
               selector: (context, s) => s.showOverlayMinimap,
-              builder: (context, current, child) => SwitchListTile(
-                value: current,
-                onChanged: (v) => settings.showOverlayMinimap = v,
-                title: Text(context.l10n.settingsViewerShowMinimap),
-              ),
+              onChanged: (v) => settings.showOverlayMinimap = v,
+              title: context.l10n.settingsViewerShowMinimap,
             ),
-            Selector<Settings, bool>(
+            SettingsSwitchListTile(
               selector: (context, s) => s.showOverlayThumbnailPreview,
-              builder: (context, current, child) => SwitchListTile(
-                value: current,
-                onChanged: (v) => settings.showOverlayThumbnailPreview = v,
-                title: Text(context.l10n.settingsViewerShowOverlayThumbnails),
-              ),
+              onChanged: (v) => settings.showOverlayThumbnailPreview = v,
+              title: context.l10n.settingsViewerShowOverlayThumbnails,
             ),
-            Selector<Settings, bool>(
+            SettingsSwitchListTile(
               selector: (context, s) => s.enableOverlayBlurEffect,
-              builder: (context, current, child) => SwitchListTile(
-                value: current,
-                onChanged: (v) => settings.enableOverlayBlurEffect = v,
-                title: Text(context.l10n.settingsViewerEnableOverlayBlurEffect),
-              ),
+              onChanged: (v) => settings.enableOverlayBlurEffect = v,
+              title: context.l10n.settingsViewerEnableOverlayBlurEffect,
             ),
           ],
         ),

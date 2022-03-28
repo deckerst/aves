@@ -199,27 +199,34 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
     }
 
     private suspend fun rename() {
-        if (arguments !is Map<*, *> || entryMapList.isEmpty()) {
+        if (arguments !is Map<*, *>) {
             endOfStream()
             return
         }
 
-        val newName = arguments["newName"] as String?
-        if (newName == null) {
+        val rawEntryMap = arguments["entriesToNewName"] as Map<*, *>?
+        if (rawEntryMap == null || rawEntryMap.isEmpty()) {
             error("rename-args", "failed because of missing arguments", null)
             return
         }
 
+        val entriesToNewName = HashMap<AvesEntry, String>()
+        rawEntryMap.forEach {
+            @Suppress("unchecked_cast")
+            val rawEntry = it.key as FieldMap
+            val newName = it.value as String
+            entriesToNewName[AvesEntry(rawEntry)] = newName
+        }
+
         // assume same provider for all entries
-        val firstEntry = entryMapList.first()
-        val provider = (firstEntry["uri"] as String?)?.let { Uri.parse(it) }?.let { getProvider(it) }
+        val firstEntry = entriesToNewName.keys.first()
+        val provider = getProvider(firstEntry.uri)
         if (provider == null) {
             error("rename-provider", "failed to find provider for entry=$firstEntry", null)
             return
         }
 
-        val entries = entryMapList.map(::AvesEntry)
-        provider.renameMultiple(activity, newName, entries, ::isCancelledOp, object : ImageOpCallback {
+        provider.renameMultiple(activity, entriesToNewName, ::isCancelledOp, object : ImageOpCallback {
             override fun onSuccess(fields: FieldMap) = success(fields)
             override fun onFailure(throwable: Throwable) = error("rename-failure", "failed to rename", throwable.message)
         })

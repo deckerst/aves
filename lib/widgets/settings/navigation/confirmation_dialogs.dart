@@ -1,9 +1,7 @@
-import 'package:aves/model/settings/enums/confirmation_dialogs.dart';
-import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/settings/common/tiles.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class ConfirmationDialogTile extends StatelessWidget {
   const ConfirmationDialogTile({Key? key}) : super(key: key);
@@ -37,29 +35,23 @@ class ConfirmationDialogPage extends StatelessWidget {
         title: Text(context.l10n.settingsConfirmationDialogTitle),
       ),
       body: SafeArea(
-        child: Selector<Settings, List<ConfirmationDialog>>(
-          selector: (context, s) => s.confirmationDialogs,
-          builder: (context, current, child) => ListView(
-            children: [
-              ConfirmationDialog.moveToBin,
-              ConfirmationDialog.delete,
-            ]
-                .map((dialog) => SwitchListTile(
-                      value: current.contains(dialog),
-                      onChanged: (v) {
-                        final dialogs = current.toList();
-                        if (v) {
-                          dialogs.add(dialog);
-                        } else {
-                          dialogs.remove(dialog);
-                        }
-                        settings.confirmationDialogs = dialogs;
-                      },
-                      title: Text(dialog.getName(context)),
-                    ))
-                .toList(),
+        child: ListView(children: [
+          SettingsSwitchListTile(
+            selector: (context, s) => s.confirmMoveUndatedItems,
+            onChanged: (v) => settings.confirmMoveUndatedItems = v,
+            title: context.l10n.settingsConfirmationDialogMoveUndatedItems,
           ),
-        ),
+          SettingsSwitchListTile(
+            selector: (context, s) => s.confirmMoveToBin,
+            onChanged: (v) => settings.confirmMoveToBin = v,
+            title: context.l10n.settingsConfirmationDialogMoveToBinItems,
+          ),
+          SettingsSwitchListTile(
+            selector: (context, s) => s.confirmDeleteForever,
+            onChanged: (v) => settings.confirmDeleteForever = v,
+            title: context.l10n.settingsConfirmationDialogDeleteItems,
+          ),
+        ]),
       ),
     );
   }

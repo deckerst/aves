@@ -4,9 +4,11 @@ import 'dart:typed_data';
 
 import 'package:aves/app_flavor.dart';
 import 'package:aves/flutter_version.dart';
+import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/services.dart';
+import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
@@ -72,16 +74,19 @@ class _BugReportState extends State<BugReport> with FeedbackMixin {
                   builder: (context, snapshot) {
                     final info = snapshot.data;
                     if (info == null) return const SizedBox();
+
+                    final theme = Theme.of(context);
                     return Container(
                       decoration: BoxDecoration(
-                        color: Colors.grey.shade800,
+                        color: theme.cardColor,
                         border: Border.all(
-                          color: Colors.white,
+                          color: theme.colorScheme.onPrimary,
                         ),
                         borderRadius: const BorderRadius.all(Radius.circular(8)),
                       ),
                       constraints: const BoxConstraints(maxHeight: 100),
                       margin: const EdgeInsets.symmetric(vertical: 8),
+                      clipBehavior: Clip.antiAlias,
                       child: Theme(
                         data: Theme.of(context).copyWith(
                           scrollbarTheme: const ScrollbarThemeData(
@@ -115,13 +120,14 @@ class _BugReportState extends State<BugReport> with FeedbackMixin {
           ),
           isExpanded: _showInstructions,
           canTapOnHeader: true,
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          backgroundColor: Colors.transparent,
         ),
       ],
     );
   }
 
   Widget _buildStep(int step, String text, String buttonText, VoidCallback onPressed) {
+    final isMonochrome = settings.themeColorMode == AvesThemeColorMode.monochrome;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
@@ -130,7 +136,7 @@ class _BugReportState extends State<BugReport> with FeedbackMixin {
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               border: Border.fromBorderSide(BorderSide(
-                color: Theme.of(context).colorScheme.secondary,
+                color: isMonochrome ? context.select<AvesColorsData, Color>((v) => v.neutral) : Theme.of(context).colorScheme.secondary,
                 width: AvesFilterChip.outlineWidth,
               )),
               shape: BoxShape.circle,
@@ -162,7 +168,7 @@ class _BugReportState extends State<BugReport> with FeedbackMixin {
       'Device: ${androidInfo.manufacturer} ${androidInfo.model}',
       'Google Play services: ${hasPlayServices ? 'ready' : 'not available'}',
       'System locales: ${WidgetsBinding.instance!.window.locales.join(', ')}',
-      'Aves locale: ${settings.locale} -> ${settings.appliedLocale}',
+      'Aves locale: ${settings.locale ?? 'system'} -> ${settings.appliedLocale}',
     ].join('\n');
   }
 

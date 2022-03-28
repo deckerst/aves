@@ -6,11 +6,14 @@ repository: https://github.com/deckerst/aves
 # - github changelog: /CHANGELOG.md
 # - play changelog:   /whatsnew/whatsnew-en-US
 # - izzy changelog:   /fastlane/metadata/android/en-US/changelogs/1XXX.txt
-version: 1.6.2+68
+version: 1.6.3+69
 publish_to: none
 
 environment:
   sdk: '>=2.16.0 <3.0.0'
+
+# following https://github.blog/2021-09-01-improving-git-protocol-security-github/
+# dependency GitHub repos should be referenced via `https://`, not `git://`
 
 # use `scripts/apply_flavor_{flavor}.sh` to set the right dependencies for the flavor
 dependencies:
@@ -34,13 +37,14 @@ dependencies:
   event_bus:
   expansion_tile_card:
     git:
-      url: git://github.com/deckerst/expansion_tile_card.git
+      url: https://github.com/deckerst/expansion_tile_card.git
   fijkplayer:
     git:
-      url: git://github.com/deckerst/fijkplayer.git
+      url: https://github.com/deckerst/fijkplayer.git
       ref: aves
   flex_color_picker:
   fluster:
+  flutter_displaymode:
   flutter_highlight:
   flutter_map:
   flutter_markdown:
@@ -68,7 +72,7 @@ dependencies:
   sqflite:
   streams_channel:
     git:
-      url: git://github.com/deckerst/aves_streams_channel.git
+      url: https://github.com/deckerst/aves_streams_channel.git
   transparent_image:
   tuple:
   url_launcher:

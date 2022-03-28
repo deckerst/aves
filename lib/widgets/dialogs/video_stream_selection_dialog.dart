@@ -1,6 +1,7 @@
 import 'package:aves/model/entry.dart';
 import 'package:aves/ref/languages.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/theme/themes.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/viewer/video/controller.dart';
 import 'package:collection/collection.dart';
@@ -167,10 +168,7 @@ class _VideoStreamSelectionDialogState extends State<VideoStreamSelectionDialog>
           value: current,
           onChanged: streams.length > 1 ? (newValue) => setState(() => setter(newValue)) : null,
           isExpanded: true,
-          // use a different shade to avoid having the same background
-          // on the dialog (using the theme `dialogBackgroundColor`)
-          // and on the dropdown (using the theme `canvasColor`)
-          dropdownColor: Colors.grey.shade800,
+          dropdownColor: Themes.thirdLayerColor(context),
         ),
       ),
     ];

@@ -7,7 +7,10 @@ import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/trash.dart';
 import 'package:aves/model/highlight.dart';
+import 'package:aves/model/metadata/date_modifier.dart';
+import 'package:aves/model/metadata/enums.dart';
 import 'package:aves/model/settings/enums/enums.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/common/image_op_events.dart';
@@ -16,6 +19,7 @@ import 'package:aves/services/media/enums.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
+import 'package:aves/widgets/collection/entry_set_action_delegate.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
 import 'package:aves/widgets/common/action_mixins/size_aware.dart';
@@ -42,12 +46,12 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
 
     final l10n = context.l10n;
     if (toBin) {
-      if (!(await showConfirmationDialog(
+      if (!await showConfirmationDialog(
         context: context,
         type: ConfirmationDialog.moveToBin,
         message: l10n.binEntriesConfirmationDialogMessage(todoCount),
         confirmationButtonLabel: l10n.deleteButtonLabel,
-      ))) return;
+      )) return;
     }
 
     final entriesByDestination = <String, Set<AvesEntry>>{};
@@ -108,6 +112,8 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
       }
     }
 
+    if ({MoveType.move, MoveType.copy}.contains(moveType) && !await _checkUndatedItems(context, entries)) return;
+
     final source = context.read<CollectionSource>();
     source.pauseMonitoring();
     final opId = mediaFileService.newOpId;
@@ -143,50 +149,45 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
           showFeedback(context, copy ? l10n.collectionCopyFailureFeedback(count) : l10n.collectionMoveFailureFeedback(count));
         } else {
           final count = movedOps.length;
-          final appMode = context.read<ValueNotifier<AppMode>>().value;
+          final appMode = context.read<ValueNotifier<AppMode>?>()?.value;
 
           SnackBarAction? action;
           if (count > 0 && appMode == AppMode.main && !toBin) {
             action = SnackBarAction(
               label: l10n.showButtonLabel,
               onPressed: () async {
-                late CollectionLens targetCollection;
+                final newUris = movedOps.map((v) => v.newFields['uri'] as String?).toSet();
+                bool highlightTest(AvesEntry entry) => newUris.contains(entry.uri);
 
-                final highlightInfo = context.read<HighlightInfo>();
                 final collection = context.read<CollectionLens?>();
-                if (collection != null) {
-                  targetCollection = collection;
-                }
                 if (collection == null || collection.filters.any((f) => f is AlbumFilter || f is TrashFilter)) {
-                  targetCollection = CollectionLens(
-                    source: source,
-                    filters: collection?.filters.where((f) => f != TrashFilter.instance).toSet(),
-                  );
+                  final targetFilters = collection?.filters.where((f) => f != TrashFilter.instance).toSet() ?? {};
                   // we could simply add the filter to the current collection
                   // but navigating makes the change less jarring
                   if (destinationAlbums.length == 1) {
                     final destinationAlbum = destinationAlbums.single;
-                    final filter = AlbumFilter(destinationAlbum, source.getAlbumDisplayName(context, destinationAlbum));
-                    targetCollection.addFilter(filter);
+                    targetFilters.removeWhere((f) => f is AlbumFilter);
+                    targetFilters.add(AlbumFilter(destinationAlbum, source.getAlbumDisplayName(context, destinationAlbum)));
                   }
                   unawaited(Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(
                       settings: const RouteSettings(name: CollectionPage.routeName),
                       builder: (context) => CollectionPage(
-                        collection: targetCollection,
+                        source: source,
+                        filters: targetFilters,
+                        highlightTest: highlightTest,
                       ),
                     ),
                     (route) => false,
                   ));
-                  final delayDuration = context.read<DurationsData>().staggeredAnimationPageTarget;
-                  await Future.delayed(delayDuration);
-                }
-                await Future.delayed(Durations.highlightScrollInitDelay);
-                final newUris = movedOps.map((v) => v.newFields['uri'] as String?).toSet();
-                final targetEntry = targetCollection.sortedEntries.firstWhereOrNull((entry) => newUris.contains(entry.uri));
-                if (targetEntry != null) {
-                  highlightInfo.trackItem(targetEntry, highlightItem: targetEntry);
+                } else {
+                  // track in current page, without navigation
+                  await Future.delayed(Durations.highlightScrollInitDelay);
+                  final targetEntry = collection.sortedEntries.firstWhereOrNull(highlightTest);
+                  if (targetEntry != null) {
+                    context.read<HighlightInfo>().trackItem(targetEntry, highlightItem: targetEntry);
+                  }
                 }
               },
             );
@@ -201,4 +202,109 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
       },
     );
   }
+
+  Future<void> rename(
+    BuildContext context, {
+    required Map<AvesEntry, String> entriesToNewName,
+    required bool persist,
+    VoidCallback? onSuccess,
+  }) async {
+    final entries = entriesToNewName.keys.toSet();
+    final todoCount = entries.length;
+    assert(todoCount > 0);
+
+    if (!await checkStoragePermission(context, entries)) return;
+
+    if (!await _checkUndatedItems(context, entries)) return;
+
+    final source = context.read<CollectionSource>();
+    source.pauseMonitoring();
+    final opId = mediaFileService.newOpId;
+    await showOpReport<MoveOpEvent>(
+      context: context,
+      opStream: mediaFileService.rename(
+        opId: opId,
+        entriesToNewName: entriesToNewName,
+      ),
+      itemCount: todoCount,
+      onCancel: () => mediaFileService.cancelFileOp(opId),
+      onDone: (processed) async {
+        final successOps = processed.where((e) => e.success).toSet();
+        final movedOps = successOps.where((e) => !e.skipped).toSet();
+        await source.updateAfterRename(
+          todoEntries: entries,
+          movedOps: movedOps,
+          persist: persist,
+        );
+        source.resumeMonitoring();
+
+        final l10n = context.l10n;
+        final successCount = successOps.length;
+        if (successCount < todoCount) {
+          final count = todoCount - successCount;
+          showFeedback(context, l10n.collectionRenameFailureFeedback(count));
+        } else {
+          final count = movedOps.length;
+          showFeedback(context, l10n.collectionRenameSuccessFeedback(count));
+          onSuccess?.call();
+        }
+      },
+    );
+  }
+
+  Future<bool> _checkUndatedItems(BuildContext context, Set<AvesEntry> entries) async {
+    final undatedItems = entries.where((entry) {
+      if (!entry.isCatalogued) return false;
+      final dateMillis = entry.catalogMetadata?.dateMillis;
+      return dateMillis == null || dateMillis == 0;
+    }).toSet();
+    if (undatedItems.isNotEmpty) {
+      if (!await showConfirmationDialog(
+        context: context,
+        type: ConfirmationDialog.moveUndatedItems,
+        delegate: MoveUndatedConfirmationDialogDelegate(),
+        confirmationButtonLabel: context.l10n.continueButtonLabel,
+      )) return false;
+
+      if (settings.setMetadataDateBeforeFileOp) {
+        final entriesToDate = undatedItems.where((entry) => entry.canEditDate).toSet();
+        if (entriesToDate.isNotEmpty) {
+          await EntrySetActionDelegate().editDate(
+            context,
+            entries: entriesToDate,
+            modifier: DateModifier.copyField(DateFieldSource.fileModifiedDate),
+            showResult: false,
+          );
+        }
+      }
+    }
+    return true;
+  }
+}
+
+class MoveUndatedConfirmationDialogDelegate extends ConfirmationDialogDelegate {
+  final ValueNotifier<bool> _setMetadataDate = ValueNotifier(false);
+
+  MoveUndatedConfirmationDialogDelegate() {
+    _setMetadataDate.value = settings.setMetadataDateBeforeFileOp;
+  }
+
+  @override
+  List<Widget> build(BuildContext context) => [
+        Padding(
+          padding: const EdgeInsets.all(16) + const EdgeInsets.only(top: 8),
+          child: Text(context.l10n.moveUndatedConfirmationDialogMessage),
+        ),
+        ValueListenableBuilder<bool>(
+          valueListenable: _setMetadataDate,
+          builder: (context, flag, child) => SwitchListTile(
+            value: flag,
+            onChanged: (v) => _setMetadataDate.value = v,
+            title: Text(context.l10n.moveUndatedConfirmationDialogSetDate),
+          ),
+        ),
+      ];
+
+  @override
+  void apply() => settings.setMetadataDateBeforeFileOp = _setMetadataDate.value;
 }

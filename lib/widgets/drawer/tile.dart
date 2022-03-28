@@ -77,7 +77,8 @@ class DrawerPageIcon extends StatelessWidget {
         return const Icon(AIcons.tag);
       case AppDebugPage.routeName:
         return ShaderMask(
-          shaderCallback: AColors.debugGradient.createShader,
+          shaderCallback: AvesColorsData.debugGradient.createShader,
+          blendMode: BlendMode.srcIn,
           child: const Icon(AIcons.debug),
         );
       default:
