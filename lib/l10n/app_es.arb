@@ -114,10 +114,10 @@
   "videoLoopModeShortOnly": "Sólo videos cortos",
   "videoLoopModeAlways": "Siempre",
 
-  "videoControlsNone": "Ninguno",
   "videoControlsPlay": "Reproducir",
   "videoControlsPlaySeek": "Reproducir y buscar",
   "videoControlsPlayOutside": "Reproducir externamente",
+  "videoControlsNone": "Ninguno",
 
   "mapStyleGoogleNormal": "Mapas de Google",
   "mapStyleGoogleHybrid": "Mapas de Google (Híbrido)",
@@ -177,9 +177,8 @@
 
   "binEntriesConfirmationDialogMessage": "{count, plural, =1{¿Mover este elemento al cesto de basura?} other{¿Mover estos {count} elementos al cesto de basura?}}",
   "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{¿Está seguro de borrar este elemento?} other{¿Está seguro de querer borrar {count} elementos?}}",
-
-"moveUndatedConfirmationDialogMessage": "Algunos elementos no poseen fecha en sus metadatos. Su fecha actual será reemplazada por esta operación a menos que una fecha de metadatos sea fijada.",
-"moveUndatedConfirmationDialogSetDate": "Fijar fecha",
+  "moveUndatedConfirmationDialogMessage": "Algunos elementos no poseen fecha en sus metadatos. Su fecha actual será reemplazada por esta operación a menos que una fecha de metadatos sea fijada.",
+  "moveUndatedConfirmationDialogSetDate": "Fijar fecha",
 
   "videoResumeDialogMessage": "¿Desea reanudar la reproducción a las {time}?",
   "videoStartOverButtonLabel": "VOLVER A EMPEZAR",
@@ -283,8 +282,7 @@
   "aboutCredits": "Créditos",
   "aboutCreditsWorldAtlas1": "Esta aplicación usa un archivo TopoJSON de",
   "aboutCreditsWorldAtlas2": "bajo licencia ISC.",
-  "aboutCreditsTranslators": "Traductores:",
-  "aboutCreditsTranslatorLine": "{language}: {names}",
+  "aboutCreditsTranslators": "Traductores",
 
   "aboutLicenses": "Licencias de código abierto",
   "aboutLicensesBanner": "Esta aplicación usa los siguientes paquetes y librerías de código abierto.",
@@ -460,7 +458,7 @@
   "settingsViewerShowInformation": "Mostrar información",
   "settingsViewerShowInformationSubtitle": "Mostrar título, fecha, ubicación, etc.",
   "settingsViewerShowShootingDetails": "Mostrar detalles de toma",
-   "settingsViewerShowOverlayThumbnails": "Mostrar miniaturas",
+  "settingsViewerShowOverlayThumbnails": "Mostrar miniaturas",
   "settingsViewerEnableOverlayBlurEffect": "Efecto de difuminado",
 
   "settingsVideoPageTitle": "Ajustes de video",
@@ -470,8 +468,6 @@
   "settingsVideoEnableAutoPlay": "Reproducción automática",
   "settingsVideoLoopModeTile": "Modo bucle",
   "settingsVideoLoopModeTitle": "Modo bucle",
-  "settingsVideoQuickActionsTile": "Acciones rápidas para videos",
-  "settingsVideoQuickActionEditorTitle": "Acciones rápidas",
 
   "settingsSubtitleThemeTile": "Subtítulos",
   "settingsSubtitleThemeTitle": "Subtítulos",
