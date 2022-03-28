@@ -17,7 +17,7 @@ jobs:
       - uses: subosito/flutter-action@v1
         with:
           channel: stable
-          flutter-version: '2.10.3'
+          flutter-version: '2.10.4'
 
       # Workaround for this Android Gradle Plugin issue (supposedly fixed in AGP 4.1):
       # https://issuetracker.google.com/issues/144111441
@@ -52,12 +52,12 @@ jobs:
           rm release.keystore.asc
           mkdir outputs
           (cd scripts/; ./apply_flavor_play.sh)
-          flutter build appbundle -t lib/main_play.dart --flavor play --bundle-sksl-path shaders_2.10.3.sksl.json
+          flutter build appbundle -t lib/main_play.dart --flavor play --bundle-sksl-path shaders_2.10.4.sksl.json
           cp build/app/outputs/bundle/playRelease/*.aab outputs
-          flutter build apk -t lib/main_play.dart --flavor play --bundle-sksl-path shaders_2.10.3.sksl.json
+          flutter build apk -t lib/main_play.dart --flavor play --bundle-sksl-path shaders_2.10.4.sksl.json
           cp build/app/outputs/apk/play/release/*.apk outputs
           (cd scripts/; ./apply_flavor_izzy.sh)
-          flutter build apk -t lib/main_izzy.dart --flavor izzy --split-per-abi --bundle-sksl-path shaders_2.10.3.sksl.json
+          flutter build apk -t lib/main_izzy.dart --flavor izzy --split-per-abi --bundle-sksl-path shaders_2.10.4.sksl.json
           cp build/app/outputs/apk/izzy/release/*.apk outputs
           rm $AVES_STORE_FILE
         env:
