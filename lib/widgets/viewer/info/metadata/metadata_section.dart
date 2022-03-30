@@ -279,6 +279,7 @@ class MetadataDirectory {
   static const xmpDirectory = 'XMP'; // from metadata-extractor
   static const mediaDirectory = 'Media'; // custom
   static const coverDirectory = 'Cover'; // custom
+  static const geoTiffDirectory = 'GeoTIFF'; // custom
 
   const MetadataDirectory(
     this.name,
