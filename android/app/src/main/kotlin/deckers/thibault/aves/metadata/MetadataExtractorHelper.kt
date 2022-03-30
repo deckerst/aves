@@ -5,6 +5,7 @@ import com.drew.lang.ByteArrayReader
 import com.drew.lang.Rational
 import com.drew.lang.SequentialByteArrayReader
 import com.drew.metadata.Directory
+import com.drew.metadata.StringValue
 import com.drew.metadata.exif.ExifDirectoryBase
 import com.drew.metadata.exif.ExifIFD0Directory
 import com.drew.metadata.exif.ExifReader
@@ -93,17 +94,67 @@ object MetadataExtractorHelper {
     - If the ModelTransformationTag is included in an IFD, then a ModelPixelScaleTag SHALL NOT be included
     - If the ModelPixelScaleTag is included in an IFD, then a ModelTiepointTag SHALL also be included.
      */
-    fun ExifDirectoryBase.isGeoTiff(): Boolean {
-        if (!this.containsTag(GeoTiffTags.TAG_GEO_KEY_DIRECTORY)) return false
+    fun ExifDirectoryBase.containsGeoTiffTags(): Boolean {
+        if (!this.containsTag(ExifGeoTiffTags.TAG_GEO_KEY_DIRECTORY)) return false
 
-        val modelTiepoint = this.containsTag(GeoTiffTags.TAG_MODEL_TIEPOINT)
-        val modelTransformation = this.containsTag(GeoTiffTags.TAG_MODEL_TRANSFORMATION)
-        if (!modelTiepoint && !modelTransformation) return false
+        val modelTiePoints = this.containsTag(ExifGeoTiffTags.TAG_MODEL_TIE_POINT)
+        val modelTransformation = this.containsTag(ExifGeoTiffTags.TAG_MODEL_TRANSFORMATION)
+        if (!modelTiePoints && !modelTransformation) return false
 
-        val modelPixelScale = this.containsTag(GeoTiffTags.TAG_MODEL_PIXEL_SCALE)
-        if ((modelTransformation && modelPixelScale) || (modelPixelScale && !modelTiepoint)) return false
+        val modelPixelScale = this.containsTag(ExifGeoTiffTags.TAG_MODEL_PIXEL_SCALE)
+        if ((modelTransformation && modelPixelScale) || (modelPixelScale && !modelTiePoints)) return false
 
         return true
+    }
+
+    // TODO TLAD use `GeoTiffDirectory` from the Java version of `metadata-extractor` when available
+    // adapted from https://github.com/drewnoakes/metadata-extractor-dotnet/blob/master/MetadataExtractor/Formats/Exif/ExifTiffHandler.cs
+    fun ExifIFD0Directory.extractGeoKeys(geoKeys: IntArray): HashMap<Int, Any?> {
+        val fields = HashMap<Int, Any?>()
+        if (geoKeys.size < 4) return fields
+
+        var i = 0
+        val directoryVersion = geoKeys[i++]
+        val revision = geoKeys[i++]
+        val minorRevision = geoKeys[i++]
+        val numberOfKeys = geoKeys[i++]
+
+        fields[GeoTiffKeys.GEOTIFF_VERSION] = "$directoryVersion.$revision.$minorRevision"
+
+        for (j in 0 until numberOfKeys) {
+            val keyId = geoKeys[i++]
+            val tiffTagLocation = geoKeys[i++]
+            val valueCount = geoKeys[i++]
+            val valueOffset = geoKeys[i++]
+
+            try {
+                if (tiffTagLocation == 0) {
+                    fields[keyId] = valueOffset
+                } else {
+                    val sourceValue = getObject(tiffTagLocation)
+                    if (sourceValue is StringValue) {
+                        if (valueOffset + valueCount <= sourceValue.bytes.size) {
+                            fields[keyId] = String(sourceValue.bytes, valueOffset, valueCount).trimEnd('|')
+                        } else {
+                            Log.w(LOG_TAG, "GeoTIFF key $keyId with offset $valueOffset and count $valueCount extends beyond length of source value (${sourceValue.bytes.size})")
+                        }
+                    } else if (sourceValue.javaClass.isArray) {
+                        val sourceArray = sourceValue as DoubleArray
+                        if (valueOffset + valueCount < sourceArray.size) {
+                            fields[keyId] = sourceArray.copyOfRange(valueOffset, valueOffset + valueCount)
+                        } else {
+                            Log.w(LOG_TAG, "GeoTIFF key $keyId with offset $valueOffset and count $valueCount extends beyond length of source value (${sourceArray.size})")
+                        }
+                    } else {
+                        Log.w(LOG_TAG, "GeoTIFF key $keyId references tag $tiffTagLocation which has unsupported type of ${sourceValue?.javaClass}")
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e(LOG_TAG, "failed to extract GeoTiff fields from keys", e)
+            }
+        }
+
+        return fields
     }
 
     // PNG
