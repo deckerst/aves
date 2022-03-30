@@ -40,12 +40,16 @@ import deckers.thibault.aves.metadata.ExifInterfaceHelper.getSafeRational
 import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper.getSafeDateMillis
 import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper.getSafeDescription
 import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper.getSafeInt
+import deckers.thibault.aves.metadata.Metadata.DIR_DNG
+import deckers.thibault.aves.metadata.Metadata.DIR_EXIF_GEOTIFF
 import deckers.thibault.aves.metadata.Metadata.DIR_PNG_TEXTUAL_DATA
 import deckers.thibault.aves.metadata.Metadata.getRotationDegreesForExifCode
 import deckers.thibault.aves.metadata.Metadata.isFlippedForExifCode
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.PNG_ITXT_DIR_NAME
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.PNG_LAST_MODIFICATION_TIME_FORMAT
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.PNG_TIME_DIR_NAME
+import deckers.thibault.aves.metadata.MetadataExtractorHelper.containsGeoTiffTags
+import deckers.thibault.aves.metadata.MetadataExtractorHelper.extractGeoKeys
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.extractPngProfile
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.getDateDigitizedMillis
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.getDateModifiedMillis
@@ -55,7 +59,6 @@ import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeDateMillis
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeInt
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeRational
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeString
-import deckers.thibault.aves.metadata.MetadataExtractorHelper.isGeoTiff
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.isPngTextDir
 import deckers.thibault.aves.metadata.XMP.getSafeDateMillis
 import deckers.thibault.aves.metadata.XMP.getSafeInt
@@ -83,6 +86,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets
+import java.text.DecimalFormat
 import java.text.ParseException
 import kotlin.math.roundToInt
 import kotlin.math.roundToLong
@@ -95,6 +99,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             "getAllMetadata" -> ioScope.launch { safe(call, result, ::getAllMetadata) }
             "getCatalogMetadata" -> ioScope.launch { safe(call, result, ::getCatalogMetadata) }
             "getOverlayMetadata" -> ioScope.launch { safe(call, result, ::getOverlayMetadata) }
+            "getGeoTiffInfo" -> ioScope.launch { safe(call, result, ::getGeoTiffInfo) }
             "getMultiPageInfo" -> ioScope.launch { safe(call, result, ::getMultiPageInfo) }
             "getPanoramaInfo" -> ioScope.launch { safe(call, result, ::getPanoramaInfo) }
             "getIptc" -> ioScope.launch { safe(call, result, ::getIptc) }
@@ -168,76 +173,95 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
 
                             // tags
                             val tags = dir.tags
-                            if (dir is ExifDirectoryBase) {
-                                when {
-                                    dir.isGeoTiff() -> {
-                                        // split GeoTIFF tags in their own directory
-                                        val geoTiffDirMap = metadataMap["GeoTIFF"] ?: HashMap()
-                                        metadataMap["GeoTIFF"] = geoTiffDirMap
-                                        val byGeoTiff = tags.groupBy { ExifTags.isGeoTiffTag(it.tagType) }
-                                        byGeoTiff[true]?.map { exifTagMapper(it) }?.let { geoTiffDirMap.putAll(it) }
-                                        byGeoTiff[false]?.map { exifTagMapper(it) }?.let { dirMap.putAll(it) }
-                                    }
-                                    mimeType == MimeTypes.DNG -> {
-                                        // split DNG tags in their own directory
-                                        val dngDirMap = metadataMap["DNG"] ?: HashMap()
-                                        metadataMap["DNG"] = dngDirMap
-                                        val byDng = tags.groupBy { ExifTags.isDngTag(it.tagType) }
-                                        byDng[true]?.map { exifTagMapper(it) }?.let { dngDirMap.putAll(it) }
-                                        byDng[false]?.map { exifTagMapper(it) }?.let { dirMap.putAll(it) }
-                                    }
-                                    else -> dirMap.putAll(tags.map { exifTagMapper(it) })
-                                }
-                            } else if (dir.isPngTextDir()) {
-                                metadataMap.remove(thisDirName)
-                                dirMap = metadataMap[DIR_PNG_TEXTUAL_DATA] ?: HashMap()
-                                metadataMap[DIR_PNG_TEXTUAL_DATA] = dirMap
-
-                                for (tag in tags) {
-                                    val tagType = tag.tagType
-                                    if (tagType == PngDirectory.TAG_TEXTUAL_DATA) {
-                                        val pairs = dir.getObject(tagType) as List<*>
-                                        val textPairs = pairs.map { pair ->
-                                            val kv = pair as KeyValuePair
-                                            val key = kv.key
-                                            // `PNG-iTXt` uses UTF-8, contrary to `PNG-tEXt` and `PNG-zTXt` using Latin-1 / ISO-8859-1
-                                            val charset = if (baseDirName == PNG_ITXT_DIR_NAME) {
-                                                @SuppressLint("ObsoleteSdkInt")
-                                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                                                    StandardCharsets.UTF_8
-                                                } else {
-                                                    Charset.forName("UTF-8")
-                                                }
-                                            } else {
-                                                kv.value.charset
-                                            }
-                                            val valueString = String(kv.value.bytes, charset)
-                                            val dirs = extractPngProfile(key, valueString)
-                                            if (dirs?.any() == true) {
-                                                dirs.forEach { profileDir ->
-                                                    val profileDirName = "${dir.name}/${profileDir.name}"
-                                                    val profileDirMap = metadataMap[profileDirName] ?: HashMap()
-                                                    metadataMap[profileDirName] = profileDirMap
-                                                    val profileTags = profileDir.tags
-                                                    if (profileDir is ExifDirectoryBase) {
-                                                        profileDirMap.putAll(profileTags.map { exifTagMapper(it) })
-                                                    } else {
-                                                        profileDirMap.putAll(profileTags.map { Pair(it.tagName, it.description) })
+                            when {
+                                dir is ExifDirectoryBase -> {
+                                    when {
+                                        dir.containsGeoTiffTags() -> {
+                                            // split GeoTIFF tags in their own directory
+                                            val geoTiffDirMap = metadataMap[DIR_EXIF_GEOTIFF] ?: HashMap()
+                                            metadataMap[DIR_EXIF_GEOTIFF] = geoTiffDirMap
+                                            val byGeoTiff = tags.groupBy { ExifTags.isGeoTiffTag(it.tagType) }
+                                            byGeoTiff[true]?.flatMap { tag ->
+                                                when (tag.tagType) {
+                                                    ExifGeoTiffTags.TAG_GEO_KEY_DIRECTORY -> {
+                                                        val geoTiffTags = (dir as ExifIFD0Directory).extractGeoKeys(dir.getIntArray(tag.tagType))
+                                                        geoTiffTags.map { geoTag ->
+                                                            val name = GeoTiffKeys.getTagName(geoTag.key) ?: "0x${geoTag.key.toString(16)}"
+                                                            val value = geoTag.value
+                                                            val description = if (value is DoubleArray) value.joinToString(" ") { doubleFormat.format(it) } else "$value"
+                                                            Pair(name, description)
+                                                        }
                                                     }
+                                                    // skip `Geo double/ascii params`, as their content is split and presented through various GeoTIFF keys
+                                                    ExifGeoTiffTags.TAG_GEO_DOUBLE_PARAMS,
+                                                    ExifGeoTiffTags.TAG_GEO_ASCII_PARAMS -> ArrayList()
+                                                    else -> listOf(exifTagMapper(tag))
                                                 }
-                                                null
-                                            } else {
-                                                Pair(key, valueString)
-                                            }
+                                            }?.let { geoTiffDirMap.putAll(it) }
+                                            byGeoTiff[false]?.map { exifTagMapper(it) }?.let { dirMap.putAll(it) }
                                         }
-                                        dirMap.putAll(textPairs.filterNotNull())
-                                    } else {
-                                        dirMap[tag.tagName] = tag.description
+                                        mimeType == MimeTypes.DNG -> {
+                                            // split DNG tags in their own directory
+                                            val dngDirMap = metadataMap[DIR_DNG] ?: HashMap()
+                                            metadataMap[DIR_DNG] = dngDirMap
+                                            val byDng = tags.groupBy { ExifTags.isDngTag(it.tagType) }
+                                            byDng[true]?.map { exifTagMapper(it) }?.let { dngDirMap.putAll(it) }
+                                            byDng[false]?.map { exifTagMapper(it) }?.let { dirMap.putAll(it) }
+                                        }
+                                        else -> dirMap.putAll(tags.map { exifTagMapper(it) })
                                     }
                                 }
-                            } else {
-                                dirMap.putAll(tags.map { Pair(it.tagName, it.description) })
+                                dir.isPngTextDir() -> {
+                                    metadataMap.remove(thisDirName)
+                                    dirMap = metadataMap[DIR_PNG_TEXTUAL_DATA] ?: HashMap()
+                                    metadataMap[DIR_PNG_TEXTUAL_DATA] = dirMap
+
+                                    for (tag in tags) {
+                                        val tagType = tag.tagType
+                                        if (tagType == PngDirectory.TAG_TEXTUAL_DATA) {
+                                            val pairs = dir.getObject(tagType) as List<*>
+                                            val textPairs = pairs.map { pair ->
+                                                val kv = pair as KeyValuePair
+                                                val key = kv.key
+                                                // `PNG-iTXt` uses UTF-8, contrary to `PNG-tEXt` and `PNG-zTXt` using Latin-1 / ISO-8859-1
+                                                val charset = if (baseDirName == PNG_ITXT_DIR_NAME) {
+                                                    @SuppressLint("ObsoleteSdkInt")
+                                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                                                        StandardCharsets.UTF_8
+                                                    } else {
+                                                        Charset.forName("UTF-8")
+                                                    }
+                                                } else {
+                                                    kv.value.charset
+                                                }
+                                                val valueString = String(kv.value.bytes, charset)
+                                                val dirs = extractPngProfile(key, valueString)
+                                                if (dirs?.any() == true) {
+                                                    dirs.forEach { profileDir ->
+                                                        val profileDirName = "${dir.name}/${profileDir.name}"
+                                                        val profileDirMap = metadataMap[profileDirName] ?: HashMap()
+                                                        metadataMap[profileDirName] = profileDirMap
+                                                        val profileTags = profileDir.tags
+                                                        if (profileDir is ExifDirectoryBase) {
+                                                            profileDirMap.putAll(profileTags.map { exifTagMapper(it) })
+                                                        } else {
+                                                            profileDirMap.putAll(profileTags.map { Pair(it.tagName, it.description) })
+                                                        }
+                                                    }
+                                                    null
+                                                } else {
+                                                    Pair(key, valueString)
+                                                }
+                                            }
+                                            dirMap.putAll(textPairs.filterNotNull())
+                                        } else {
+                                            dirMap[tag.tagName] = tag.description
+                                        }
+                                    }
+                                }
+                                else -> dirMap.putAll(tags.map { Pair(it.tagName, it.description) })
                             }
+
                             if (dir is XmpDirectory) {
                                 try {
                                     for (prop in dir.xmpMeta) {
@@ -300,9 +324,9 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                     }
                 }
             } catch (e: Exception) {
-                Log.w(LOG_TAG, "failed to get metadata by metadata-extractor for uri=$uri", e)
+                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for mimeType=$mimeType uri=$uri", e)
             } catch (e: NoClassDefFoundError) {
-                Log.w(LOG_TAG, "failed to get metadata by metadata-extractor for uri=$uri", e)
+                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for mimeType=$mimeType uri=$uri", e)
             }
         }
 
@@ -557,7 +581,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                         MimeTypes.TIFF -> {
                             // identification of GeoTIFF
                             for (dir in metadata.getDirectoriesOfType(ExifIFD0Directory::class.java)) {
-                                if (dir.isGeoTiff()) flags = flags or MASK_IS_GEOTIFF
+                                if (dir.containsGeoTiffTags()) flags = flags or MASK_IS_GEOTIFF
                             }
                         }
                     }
@@ -570,9 +594,9 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                     }
                 }
             } catch (e: Exception) {
-                Log.w(LOG_TAG, "failed to get catalog metadata by metadata-extractor for mimeType=$mimeType uri=$uri", e)
+                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for mimeType=$mimeType uri=$uri", e)
             } catch (e: NoClassDefFoundError) {
-                Log.w(LOG_TAG, "failed to get catalog metadata by metadata-extractor for mimeType=$mimeType uri=$uri", e)
+                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for mimeType=$mimeType uri=$uri", e)
             }
         }
 
@@ -696,9 +720,9 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                     }
                 }
             } catch (e: Exception) {
-                Log.w(LOG_TAG, "failed to get metadata by metadata-extractor for mimeType=$mimeType uri=$uri", e)
+                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for mimeType=$mimeType uri=$uri", e)
             } catch (e: NoClassDefFoundError) {
-                Log.w(LOG_TAG, "failed to get metadata by metadata-extractor for mimeType=$mimeType uri=$uri", e)
+                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for mimeType=$mimeType uri=$uri", e)
             }
         }
 
@@ -720,6 +744,43 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         }
 
         result.success(metadataMap)
+    }
+
+    private fun getGeoTiffInfo(call: MethodCall, result: MethodChannel.Result) {
+        val mimeType = call.argument<String>("mimeType")
+        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
+        if (mimeType == null || uri == null) {
+            result.error("getGeoTiffInfo-args", "failed because of missing arguments", null)
+            return
+        }
+
+        if (canReadWithMetadataExtractor(mimeType)) {
+            try {
+                Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
+                    val metadata = ImageMetadataReader.readMetadata(input)
+                    val fields = HashMap<Int, Any?>()
+                    for (dir in metadata.getDirectoriesOfType(ExifIFD0Directory::class.java)) {
+                        if (dir.containsGeoTiffTags()) {
+                            fields.putAll(dir.tags.map { it.tagType }.filter { ExifTags.isGeoTiffTag(it) }.map {
+                                val value = when (it) {
+                                    ExifGeoTiffTags.TAG_GEO_ASCII_PARAMS -> dir.getString(it)
+                                    else -> dir.getObject(it)
+                                }
+                                Pair(it, value)
+                            })
+                        }
+                    }
+                    result.success(fields)
+                    return
+                }
+            } catch (e: Exception) {
+                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for mimeType=$mimeType uri=$uri", e)
+            } catch (e: NoClassDefFoundError) {
+                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for mimeType=$mimeType uri=$uri", e)
+            }
+        }
+        result.error("getGeoTiffInfo-empty", "failed to get info for mimeType=$mimeType uri=$uri", null)
     }
 
     private fun getMultiPageInfo(call: MethodCall, result: MethodChannel.Result) {
@@ -774,12 +835,12 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                     return
                 }
             } catch (e: Exception) {
-                Log.w(LOG_TAG, "failed to read XMP", e)
+                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for mimeType=$mimeType uri=$uri", e)
             } catch (e: NoClassDefFoundError) {
-                Log.w(LOG_TAG, "failed to read XMP", e)
+                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for mimeType=$mimeType uri=$uri", e)
             }
         }
-        result.error("getPanoramaInfo-empty", "failed to read XMP for mimeType=$mimeType uri=$uri", null)
+        result.error("getPanoramaInfo-empty", "failed to get info for mimeType=$mimeType uri=$uri", null)
     }
 
     private fun getIptc(call: MethodCall, result: MethodChannel.Result) {
@@ -961,9 +1022,9 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                     }
                 }
             } catch (e: Exception) {
-                Log.w(LOG_TAG, "failed to get metadata by metadata-extractor for mimeType=$mimeType uri=$uri", e)
+                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for mimeType=$mimeType uri=$uri", e)
             } catch (e: NoClassDefFoundError) {
-                Log.w(LOG_TAG, "failed to get metadata by metadata-extractor for mimeType=$mimeType uri=$uri", e)
+                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for mimeType=$mimeType uri=$uri", e)
             }
         }
 
@@ -973,6 +1034,8 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
     companion object {
         private val LOG_TAG = LogUtils.createTag<MetadataFetchHandler>()
         const val CHANNEL = "deckers.thibault/aves/metadata_fetch"
+
+        private val doubleFormat = DecimalFormat("0.###")
 
         private val allMetadataRedundantDirNames = setOf(
             "MP4",
