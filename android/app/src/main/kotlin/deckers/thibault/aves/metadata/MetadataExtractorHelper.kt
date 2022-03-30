@@ -140,7 +140,7 @@ object MetadataExtractorHelper {
                         }
                     } else if (sourceValue.javaClass.isArray) {
                         val sourceArray = sourceValue as DoubleArray
-                        if (valueOffset + valueCount < sourceArray.size) {
+                        if (valueOffset + valueCount <= sourceArray.size) {
                             fields[keyId] = sourceArray.copyOfRange(valueOffset, valueOffset + valueCount)
                         } else {
                             Log.w(LOG_TAG, "GeoTIFF key $keyId with offset $valueOffset and count $valueCount extends beyond length of source value (${sourceArray.size})")

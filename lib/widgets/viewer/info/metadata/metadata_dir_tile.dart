@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:aves/model/entry.dart';
 import 'package:aves/ref/brand_colors.dart';
+import 'package:aves/ref/geotiff.dart';
 import 'package:aves/services/metadata/svg_metadata_service.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/utils/constants.dart';
@@ -9,6 +10,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/viewer/embedded/notifications.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
+import 'package:aves/widgets/viewer/info/metadata/geotiff.dart';
 import 'package:aves/widgets/viewer/info/metadata/metadata_section.dart';
 import 'package:aves/widgets/viewer/info/metadata/metadata_thumbnail.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_tile.dart';
@@ -36,7 +38,7 @@ class MetadataDirTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tags = dir.tags;
+    var tags = dir.tags;
     if (tags.isEmpty) return const SizedBox.shrink();
 
     final dirName = dir.name;
@@ -56,6 +58,12 @@ class MetadataDirTile extends StatelessWidget {
           break;
         case MetadataDirectory.coverDirectory:
           linkHandlers = getVideoCoverLinkHandlers(tags);
+          break;
+        case MetadataDirectory.geoTiffDirectory:
+          tags = SplayTreeMap.from(tags.map((name, value) {
+            final tag = GeoTiffDirectory.tagForName(name);
+            return MapEntry(name, GeoTiffDirectory.formatValue(tag, value));
+          }));
           break;
       }
 

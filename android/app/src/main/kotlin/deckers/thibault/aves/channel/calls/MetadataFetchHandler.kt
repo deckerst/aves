@@ -769,6 +769,8 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                                 }
                                 Pair(it, value)
                             })
+                            val geoKeyDirectory = dir.getIntArray(ExifGeoTiffTags.TAG_GEO_KEY_DIRECTORY)
+                            fields.putAll((dir as ExifIFD0Directory).extractGeoKeys(geoKeyDirectory))
                         }
                     }
                     result.success(fields)
