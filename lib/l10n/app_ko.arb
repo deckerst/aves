@@ -182,7 +182,7 @@
 
   "videoResumeDialogMessage": "{time}부터 재개하시겠습니까?",
   "videoStartOverButtonLabel": "처음부터",
-  "videoResumeButtonLabel": "재개",
+  "videoResumeButtonLabel": "이어서",
 
   "setCoverDialogTitle": "대표 이미지 변경",
   "setCoverDialogLatest": "최근 항목",
