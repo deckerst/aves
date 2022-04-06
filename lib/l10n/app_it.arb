@@ -177,8 +177,8 @@
 
   "binEntriesConfirmationDialogMessage": "{count, plural, =1{Sposta questo elemento nel cestino?} other{Sposta questi {count} elementi nel cestino?}}",
   "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{Cancellare questo elemento?} other{Cancellare questi {count} elementi?}}",
-  "moveUndatedConfirmationDialogMessage": "Alcuni elementi non hanno una data nei metadati. La loro data attuale sarà resettata da questa operazione a meno che non venga impostata una data nei metadati",
-  "moveUndatedConfirmationDialogSetDate": "Imposta data",
+  "moveUndatedConfirmationDialogMessage": "Salvare le date degli elementi prima di procedere",
+  "moveUndatedConfirmationDialogSetDate": "Salvare le date",
 
   "videoResumeDialogMessage": "Vuoi riprendere la riproduzione a {time}?",
   "videoStartOverButtonLabel": "RICOMINCIA",
@@ -413,7 +413,7 @@
   "settingsConfirmationDialogTitle": "Dialoghi di conferma",
   "settingsConfirmationDialogDeleteItems": "Chiedi prima di cancellare gli elementi per sempre",
   "settingsConfirmationDialogMoveToBinItems": "Chiedi prima di spostare gli elementi nel cestino",
-  "settingsConfirmationDialogMoveUndatedItems": "Chiedi prima di spostare gli elementi senza una data nei metadati",
+  "settingsConfirmationDialogMoveUndatedItems": "Chiedi prima di spostare gli elementi senza data",
 
   "settingsNavigationDrawerTile": "Menu di navigazione",
   "settingsNavigationDrawerEditorTitle": "Menu di navigazione",
