@@ -173,6 +173,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
       final showAction = SnackBarAction(
         label: context.l10n.showButtonLabel,
         onPressed: () async {
+          // assume Album page is still the current page when action is triggered
           final filter = AlbumFilter(newAlbum, source.getAlbumDisplayName(context, newAlbum));
           context.read<HighlightInfo>().trackItem(FilterGridItem(filter, null), highlightItem: filter);
         },

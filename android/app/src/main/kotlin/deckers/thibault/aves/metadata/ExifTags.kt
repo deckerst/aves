@@ -8,6 +8,7 @@ https://www.adobe.com/devnet-apps/photoshop/fileformatashtml/
 https://www.adobe.io/content/dam/udp/en/open/standards/tiff/TIFFphotoshop.pdf
  */
 object ExifTags {
+    private const val PROCESSING_SOFTWARE = 0x000b
     private const val X_POSITION = 0x011e
     private const val Y_POSITION = 0x011f
     private const val T4_OPTIONS = 0x0124
@@ -29,6 +30,7 @@ object ExifTags {
     private const val GDAL_NO_DATA = 0xa481
 
     private val tagNameMap = hashMapOf(
+        PROCESSING_SOFTWARE to "Processing Software",
         X_POSITION to "X Position",
         Y_POSITION to "Y Position",
         T4_OPTIONS to "T4 Options",

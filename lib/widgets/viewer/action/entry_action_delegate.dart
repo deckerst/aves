@@ -258,12 +258,15 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         source.resumeMonitoring();
         source.refreshUris(newUris);
 
+        final l10n = context.l10n;
+        final navigator = Navigator.of(context);
         final showAction = isMainMode && newUris.isNotEmpty
             ? SnackBarAction(
-                label: context.l10n.showButtonLabel,
+                label: l10n.showButtonLabel,
                 onPressed: () {
-                  Navigator.pushAndRemoveUntil(
-                    context,
+                  // `context` may be obsolete if the user navigated away before triggering the action
+                  // so we reused the navigator retrieved before showing the snack bar
+                  navigator.pushAndRemoveUntil(
                     MaterialPageRoute(
                       settings: const RouteSettings(name: CollectionPage.routeName),
                       builder: (context) => CollectionPage(
@@ -282,13 +285,13 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
           final count = selectionCount - successCount;
           showFeedback(
             context,
-            context.l10n.collectionExportFailureFeedback(count),
+            l10n.collectionExportFailureFeedback(count),
             showAction,
           );
         } else {
           showFeedback(
             context,
-            context.l10n.genericSuccessFeedback,
+            l10n.genericSuccessFeedback,
             showAction,
           );
         }
