@@ -68,10 +68,10 @@
   "entryActionRemoveFavourite": "Rimuovi dai preferiti",
 
   "videoActionCaptureFrame": "Cattura fotogramma",
-  "videoActionMute": "Disattiva",
-  "videoActionUnmute": "Disattiva",
+  "videoActionMute": "Disattiva audio",
+  "videoActionUnmute": "Riattiva audio",
   "videoActionPause": "Pausa",
-  "videoActionPlay": "Play",
+  "videoActionPlay": "Riproduci",
   "videoActionReplay10": "Cerca indietro di 10 secondi",
   "videoActionSkip10": "Cerca in avanti di 10 secondi",
   "videoActionSelectStreams": "Seleziona le tracce",
@@ -114,9 +114,9 @@
   "videoLoopModeShortOnly": "Solo video brevi",
   "videoLoopModeAlways": "Sempre",
 
-  "videoControlsPlay": "Play",
-  "videoControlsPlaySeek": "Gioca e cerca avanti/indietro",
-  "videoControlsPlayOutside": "Aprire con un altro giocatore",
+  "videoControlsPlay": "Riproduci",
+  "videoControlsPlaySeek": "Riproduci e cerca avanti/indietro",
+  "videoControlsPlayOutside": "Aprire con un altro lettore",
   "videoControlsNone": "Nessuno",
 
   "mapStyleGoogleNormal": "Google Maps",
@@ -267,9 +267,9 @@
   "tileLayoutList": "Lista",
 
   "aboutPageTitle": "Informazioni",
-  "aboutLinkSources": "Fonti",
+  "aboutLinkSources": "Sorgenti",
   "aboutLinkLicense": "Licenza",
-  "aboutLinkPolicy": "Privacy Policy",
+  "aboutLinkPolicy": "Informativa sulla privacy",
 
   "aboutBug": "Segnalazione bug",
   "aboutBugSaveLogInstruction": "Salva i log dell'app in un file",
@@ -292,11 +292,11 @@
   "aboutLicensesDartPackages": "Pacchetti Dart",
   "aboutLicensesShowAllButtonLabel": "Mostra tutte le licenze",
 
-  "policyPageTitle": "Privacy Policy",
+  "policyPageTitle": "Informativa sulla privacy",
 
   "collectionPageTitle": "Collezione",
   "collectionPickPageTitle": "Seleziona",
-  "collectionSelectPageTitle": "Seleziona articoli",
+  "collectionSelectPageTitle": "Seleziona elementi",
 
   "collectionActionShowTitleSearch": "Mostra filtro titolo",
   "collectionActionHideTitleSearch": "Nascondi filtro titolo",
@@ -366,9 +366,9 @@
 
   "albumCamera": "Camera",
   "albumDownload": "Download",
-  "albumScreenshots": "Screenshots",
+  "albumScreenshots": "Screenshot",
   "albumScreenRecordings": "Registrazioni schermo",
-  "albumVideoCaptures": "Video Captures",
+  "albumVideoCaptures": "Scatti nei video",
 
   "albumPageTitle": "Album",
   "albumEmpty": "Nessun album",
@@ -394,12 +394,12 @@
 
   "settingsPageTitle": "Impostazioni",
   "settingsSystemDefault": "Sistema",
-  "settingsDefault": "Default",
+  "settingsDefault": "Predefinite",
 
   "settingsActionExport": "Esportazione",
   "settingsActionImport": "Importazione",
 
-  "appExportCovers": "Covers",
+  "appExportCovers": "Copertine",
   "appExportFavourites": "Preferiti",
   "appExportSettings": "Impostazioni",
 
@@ -499,8 +499,8 @@
   "settingsEnableBin": "Usa il cestino",
   "settingsEnableBinSubtitle": "Conserva gli elementi cancellati per 30 giorni",
 
-  "settingsHiddenItemsTile": "Articoli nascosti",
-  "settingsHiddenItemsTitle": "Articoli nascosti",
+  "settingsHiddenItemsTile": "Elementi nascosti",
+  "settingsHiddenItemsTitle": "Elementi nascosti",
 
   "settingsHiddenFiltersTitle": "Filtri nascosti",
   "settingsHiddenFiltersBanner": "Le foto e i video che corrispondono ai filtri nascosti non appariranno nella tua collezione",
@@ -522,10 +522,10 @@
   "settingsTimeToTakeActionTile": "Tempo per agire",
   "settingsTimeToTakeActionTitle": "Tempo per agire",
 
-  "settingsSectionDisplay": "Display",
+  "settingsSectionDisplay": "Schermo",
   "settingsThemeBrightness": "Tema",
   "settingsThemeColorHighlights": "Colori evidenziati",
-  "settingsDisplayRefreshRateModeTile": "Frequenza di aggiornamento del display",
+  "settingsDisplayRefreshRateModeTile": "Frequenza di aggiornamento dello schermo",
   "settingsDisplayRefreshRateModeTitle": "Frequenza di aggiornamento",
 
   "settingsSectionLanguage": "Lingua e formati",
