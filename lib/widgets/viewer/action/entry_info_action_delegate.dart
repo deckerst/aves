@@ -4,10 +4,13 @@ import 'package:aves/model/actions/entry_info_actions.dart';
 import 'package:aves/model/actions/events.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/entry_metadata_edition.dart';
+import 'package:aves/model/geotiff.dart';
 import 'package:aves/model/source/collection_lens.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/common/action_mixins/entry_editor.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
+import 'package:aves/widgets/map/map_page.dart';
 import 'package:aves/widgets/viewer/action/single_entry_editor.dart';
 import 'package:aves/widgets/viewer/debug/debug_page.dart';
 import 'package:aves/widgets/viewer/embedded/notifications.dart';
@@ -34,6 +37,9 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
       case EntryInfoAction.editTags:
       case EntryInfoAction.removeMetadata:
         return true;
+      // GeoTIFF
+      case EntryInfoAction.showGeoTiffOnMap:
+        return entry.isGeotiff;
       // motion photo
       case EntryInfoAction.viewMotionPhotoVideo:
         return entry.isMotionPhoto;
@@ -56,6 +62,9 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
         return entry.canEditTags;
       case EntryInfoAction.removeMetadata:
         return entry.canRemoveMetadata;
+      // GeoTIFF
+      case EntryInfoAction.showGeoTiffOnMap:
+        return true;
       // motion photo
       case EntryInfoAction.viewMotionPhotoVideo:
         return true;
@@ -83,6 +92,10 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
         break;
       case EntryInfoAction.removeMetadata:
         await _removeMetadata(context);
+        break;
+      // GeoTIFF
+      case EntryInfoAction.showGeoTiffOnMap:
+        await _showGeoTiffOnMap(context);
         break;
       // motion photo
       case EntryInfoAction.viewMotionPhotoVideo:
@@ -133,6 +146,36 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
     if (types == null) return;
 
     await edit(context, () => entry.removeMetadata(types));
+  }
+
+  Future<void> _showGeoTiffOnMap(BuildContext context) async {
+    final info = await metadataFetchService.getGeoTiffInfo(entry);
+    if (info == null) return;
+
+    final mappedGeoTiff = MappedGeoTiff(
+      info: info,
+      entry: entry,
+    );
+    if (!mappedGeoTiff.canOverlay) return;
+
+    final baseCollection = collection;
+    if (baseCollection == null) return;
+
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        settings: const RouteSettings(name: MapPage.routeName),
+        builder: (context) {
+          return MapPage(
+            collection: baseCollection.copyWith(
+              listenToSource: true,
+              fixedSelection: baseCollection.sortedEntries.where((entry) => entry.hasGps).where((entry) => entry != this.entry).toList(),
+            ),
+            overlayEntry: mappedGeoTiff,
+          );
+        },
+      ),
+    );
   }
 
   void _goToDebug(BuildContext context) {

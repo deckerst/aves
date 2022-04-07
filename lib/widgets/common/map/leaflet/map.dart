@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:aves/model/entry_images.dart';
+import 'package:aves/model/geotiff.dart';
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
@@ -30,6 +32,8 @@ class EntryLeafletMap extends StatefulWidget {
   final MarkerWidgetBuilder markerWidgetBuilder;
   final ValueNotifier<LatLng?>? dotLocationNotifier;
   final Size markerSize, dotMarkerSize;
+  final ValueNotifier<double>? overlayOpacityNotifier;
+  final MappedGeoTiff? overlayEntry;
   final UserZoomChangeCallback? onUserZoomChange;
   final void Function(LatLng location)? onMapTap;
   final void Function(GeoEntry geoEntry)? onMarkerTap;
@@ -48,6 +52,8 @@ class EntryLeafletMap extends StatefulWidget {
     required this.dotLocationNotifier,
     required this.markerSize,
     required this.dotMarkerSize,
+    this.overlayOpacityNotifier,
+    this.overlayEntry,
     this.onUserZoomChange,
     this.onMapTap,
     this.onMarkerTap,
@@ -174,6 +180,7 @@ class _EntryLeafletMapState extends State<EntryLeafletMap> with TickerProviderSt
       ],
       children: [
         _buildMapLayer(),
+        if (widget.overlayEntry != null) _buildOverlayImageLayer(),
         MarkerLayerWidget(
           options: MarkerLayerOptions(
             markers: markers,
@@ -212,6 +219,32 @@ class _EntryLeafletMapState extends State<EntryLeafletMap> with TickerProviderSt
       default:
         return const SizedBox.shrink();
     }
+  }
+
+  Widget _buildOverlayImageLayer() {
+    final overlayEntry = widget.overlayEntry;
+    if (overlayEntry == null) return const SizedBox();
+
+    final corner1 = overlayEntry.topLeft;
+    final corner2 = overlayEntry.bottomRight;
+    if (corner1 == null || corner2 == null) return const SizedBox();
+
+    return ValueListenableBuilder<double>(
+      valueListenable: widget.overlayOpacityNotifier ?? ValueNotifier(1),
+      builder: (context, overlayOpacity, child) {
+        return OverlayImageLayerWidget(
+          options: OverlayImageLayerOptions(
+            overlayImages: [
+              OverlayImage(
+                bounds: LatLngBounds(corner1, corner2),
+                imageProvider: overlayEntry.entry.uriImage,
+                opacity: overlayOpacity,
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   void _onBoundsChange() => _debouncer(_onIdle);
