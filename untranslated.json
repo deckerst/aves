@@ -1,5 +1,34 @@
 {
+  "de": [
+    "entryActionShowGeoTiffOnMap"
+  ],
+
+  "es": [
+    "entryActionShowGeoTiffOnMap"
+  ],
+
+  "fr": [
+    "entryActionShowGeoTiffOnMap"
+  ],
+
+  "id": [
+    "entryActionShowGeoTiffOnMap"
+  ],
+
+  "ja": [
+    "entryActionShowGeoTiffOnMap"
+  ],
+
+  "ko": [
+    "entryActionShowGeoTiffOnMap"
+  ],
+
+  "pt": [
+    "entryActionShowGeoTiffOnMap"
+  ],
+
   "ru": [
+    "entryActionShowGeoTiffOnMap",
     "displayRefreshRatePreferHighest",
     "displayRefreshRatePreferLowest",
     "themeBrightnessLight",

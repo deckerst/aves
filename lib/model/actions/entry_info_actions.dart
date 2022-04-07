@@ -10,6 +10,8 @@ enum EntryInfoAction {
   editRating,
   editTags,
   removeMetadata,
+  // GeoTIFF
+  showGeoTiffOnMap,
   // motion photo
   viewMotionPhotoVideo,
   // debug
@@ -23,6 +25,7 @@ class EntryInfoActions {
     EntryInfoAction.editRating,
     EntryInfoAction.editTags,
     EntryInfoAction.removeMetadata,
+    EntryInfoAction.showGeoTiffOnMap,
     EntryInfoAction.viewMotionPhotoVideo,
   ];
 }
@@ -41,6 +44,9 @@ extension ExtraEntryInfoAction on EntryInfoAction {
         return context.l10n.entryInfoActionEditTags;
       case EntryInfoAction.removeMetadata:
         return context.l10n.entryInfoActionRemoveMetadata;
+      // GeoTIFF
+      case EntryInfoAction.showGeoTiffOnMap:
+        return context.l10n.entryActionShowGeoTiffOnMap;
       // motion photo
       case EntryInfoAction.viewMotionPhotoVideo:
         return context.l10n.entryActionViewMotionPhotoVideo;
@@ -77,6 +83,9 @@ extension ExtraEntryInfoAction on EntryInfoAction {
         return AIcons.editTags;
       case EntryInfoAction.removeMetadata:
         return AIcons.clear;
+      // GeoTIFF
+      case EntryInfoAction.showGeoTiffOnMap:
+        return AIcons.map;
       // motion photo
       case EntryInfoAction.viewMotionPhotoVideo:
         return AIcons.motionPhoto;

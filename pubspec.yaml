@@ -64,6 +64,7 @@ dependencies:
   percent_indicator:
   permission_handler:
   printing:
+  proj4dart:
   provider:
   screen_brightness:
   shared_preferences:

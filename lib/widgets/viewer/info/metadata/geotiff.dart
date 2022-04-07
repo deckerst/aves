@@ -1,6 +1,7 @@
 import 'package:aves/ref/geotiff.dart';
 
 class GeoTiffDirectory {
+  // TODO TLAD [geotiff] avoid string-based match
   static int? tagForName(String name) {
     switch (name) {
       case 'Model Type':
@@ -9,8 +10,12 @@ class GeoTiffDirectory {
         return GeoTiffKeys.rasterType;
       case 'Geographic Type':
         return GeoTiffKeys.geographicType;
+      case 'Geographic Geodetic Datum':
+        return GeoTiffKeys.geogGeodeticDatum;
       case 'Geographic Angular Units':
         return GeoTiffKeys.geogAngularUnits;
+      case 'Geographic Ellipsoid':
+        return GeoTiffKeys.geogEllipsoid;
       case 'Projected Coordinate System Type':
         return GeoTiffKeys.projCSType;
       case 'Projection':
@@ -19,6 +24,8 @@ class GeoTiffDirectory {
         return GeoTiffKeys.projCoordinateTransform;
       case 'Projection Linear Units':
         return GeoTiffKeys.projLinearUnits;
+      case 'Vertical Units':
+        return GeoTiffKeys.verticalUnits;
       default:
         return null;
     }
@@ -32,6 +39,10 @@ class GeoTiffDirectory {
         return getRasterTypeDescription(v);
       case GeoTiffKeys.geographicType:
         return getGeographicTypeDescription(v);
+      case GeoTiffKeys.geogGeodeticDatum:
+        return getGeogGeodeticDatumDescription(v);
+      case GeoTiffKeys.geogEllipsoid:
+        return getGeogEllipsoidDescription(v);
       case GeoTiffKeys.projCSType:
         return getProjCSTypeDescription(v);
       case GeoTiffKeys.projection:
@@ -40,6 +51,7 @@ class GeoTiffDirectory {
         return getProjCoordinateTransformDescription(v);
       case GeoTiffKeys.projLinearUnits:
       case GeoTiffKeys.geogAngularUnits:
+      case GeoTiffKeys.verticalUnits:
         return getGeoTiffUnitsDescription(v);
       default:
         return v;
@@ -439,6 +451,410 @@ class GeoTiffDirectory {
     }
   }
 
+  static String getGeogGeodeticDatumDescription(String valueString) {
+    final value = int.tryParse(valueString);
+    if (value == null) return valueString;
+    switch (value) {
+      case 6001:
+        return 'Airy 1830';
+      case 6002:
+        return 'Airy Modified 1849';
+      case 6003:
+        return 'Australian National Spheroid';
+      case 6004:
+        return 'Bessel 1841';
+      case 6005:
+        return 'Bessel Modified';
+      case 6006:
+        return 'Bessel Namibia';
+      case 6007:
+        return 'Clarke 1858';
+      case 6008:
+        return 'Clarke 1866';
+      case 6009:
+        return 'Clarke 1866 Michigan';
+      case 6010:
+        return 'Clarke 1880 Benoit';
+      case 6011:
+        return 'Clarke 1880 IGN';
+      case 6012:
+        return 'Clarke 1880 RGS';
+      case 6013:
+        return 'Clarke 1880 Arc';
+      case 6014:
+        return 'Clarke 1880 SGA 1922';
+      case 6015:
+        return 'Everest 1830 1937 Adjustment';
+      case 6016:
+        return 'Everest 1830 1967 Definition';
+      case 6017:
+        return 'Everest 1830 1975 Definition';
+      case 6018:
+        return 'Everest 1830 Modified';
+      case 6019:
+        return 'GRS 1980';
+      case 6020:
+        return 'Helmert 1906';
+      case 6021:
+        return 'Indonesian National Spheroid';
+      case 6022:
+        return 'International 1924';
+      case 6023:
+        return 'International 1967';
+      case 6024:
+        return 'Krassowsky 1960';
+      case 6025:
+        return 'NWL9D';
+      case 6026:
+        return 'NWL10D';
+      case 6027:
+        return 'Plessis 1817';
+      case 6028:
+        return 'Struve 1860';
+      case 6029:
+        return 'War Office';
+      case 6030:
+        return 'WGS84';
+      case 6031:
+        return 'GEM10C';
+      case 6032:
+        return 'OSU86F';
+      case 6033:
+        return 'OSU91A';
+      case 6034:
+        return 'Clarke 1880';
+      case 6035:
+        return 'Sphere';
+      case 6201:
+        return 'Adindan';
+      case 6202:
+        return 'Australian Geodetic Datum 1966';
+      case 6203:
+        return 'Australian Geodetic Datum 1984';
+      case 6204:
+        return 'Ain el Abd 1970';
+      case 6205:
+        return 'Afgooye';
+      case 6206:
+        return 'Agadez';
+      case 6207:
+        return 'Lisbon';
+      case 6208:
+        return 'Aratu';
+      case 6209:
+        return 'Arc 1950';
+      case 6210:
+        return 'Arc 1960';
+      case 6211:
+        return 'Batavia';
+      case 6212:
+        return 'Barbados';
+      case 6213:
+        return 'Beduaram';
+      case 6214:
+        return 'Beijing 1954';
+      case 6215:
+        return 'Reseau National Belge 1950';
+      case 6216:
+        return 'Bermuda 1957';
+      case 6217:
+        return 'Bern 1898';
+      case 6218:
+        return 'Bogota';
+      case 6219:
+        return 'Bukit Rimpah';
+      case 6220:
+        return 'Camacupa';
+      case 6221:
+        return 'Campo Inchauspe';
+      case 6222:
+        return 'Cape';
+      case 6223:
+        return 'Carthage';
+      case 6224:
+        return 'Chua';
+      case 6225:
+        return 'Corrego Alegre';
+      case 6226:
+        return 'Cote d Ivoire';
+      case 6227:
+        return 'Deir ez Zor';
+      case 6228:
+        return 'Douala';
+      case 6229:
+        return 'Egypt 1907';
+      case 6230:
+        return 'European Datum 1950';
+      case 6231:
+        return 'European Datum 1987';
+      case 6232:
+        return 'Fahud';
+      case 6233:
+        return 'Gandajika 1970';
+      case 6234:
+        return 'Garoua';
+      case 6235:
+        return 'Guyane Francaise';
+      case 6236:
+        return 'Hu Tzu Shan';
+      case 6237:
+        return 'Hungarian Datum 1972';
+      case 6238:
+        return 'Indonesian Datum 1974';
+      case 6239:
+        return 'Indian 1954';
+      case 6240:
+        return 'Indian 1975';
+      case 6241:
+        return 'Jamaica 1875';
+      case 6242:
+        return 'Jamaica 1969';
+      case 6243:
+        return 'Kalianpur';
+      case 6244:
+        return 'Kandawala';
+      case 6245:
+        return 'Kertau';
+      case 6246:
+        return 'Kuwait Oil Company';
+      case 6247:
+        return 'La Canoa';
+      case 6248:
+        return 'Provisional S American Datum 1956';
+      case 6249:
+        return 'Lake';
+      case 6250:
+        return 'Leigon';
+      case 6251:
+        return 'Liberia 1964';
+      case 6252:
+        return 'Lome';
+      case 6253:
+        return 'Luzon 1911';
+      case 6254:
+        return 'Hito XVIII 1963';
+      case 6255:
+        return 'Herat North';
+      case 6256:
+        return 'Mahe 1971';
+      case 6257:
+        return 'Makassar';
+      case 6258:
+        return 'European Reference System 1989';
+      case 6259:
+        return 'Malongo 1987';
+      case 6260:
+        return 'Manoca';
+      case 6261:
+        return 'Merchich';
+      case 6262:
+        return 'Massawa';
+      case 6263:
+        return 'Minna';
+      case 6264:
+        return 'Mhast';
+      case 6265:
+        return 'Monte Mario';
+      case 6266:
+        return 'M poraloko';
+      case 6267:
+        return 'North American Datum 1927';
+      case 6268:
+        return 'NAD Michigan';
+      case 6269:
+        return 'North American Datum 1983';
+      case 6270:
+        return 'Nahrwan 1967';
+      case 6271:
+        return 'Naparima 1972';
+      case 6272:
+        return 'New Zealand Geodetic Datum 1949';
+      case 6273:
+        return 'NGO 1948';
+      case 6274:
+        return 'Datum 73';
+      case 6275:
+        return 'Nouvelle Triangulation Francaise';
+      case 6276:
+        return 'NSWC 9Z 2';
+      case 6277:
+        return 'OSGB 1936';
+      case 6278:
+        return 'OSGB 1970 SN';
+      case 6279:
+        return 'OS SN 1980';
+      case 6280:
+        return 'Padang 1884';
+      case 6281:
+        return 'Palestine 1923';
+      case 6282:
+        return 'Pointe Noire';
+      case 6283:
+        return 'Geocentric Datum of Australia 1994';
+      case 6284:
+        return 'Pulkovo 1942';
+      case 6285:
+        return 'Qatar';
+      case 6286:
+        return 'Qatar 1948';
+      case 6287:
+        return 'Qornoq';
+      case 6288:
+        return 'Loma Quintana';
+      case 6289:
+        return 'Amersfoort';
+      case 6290:
+        return 'RT38';
+      case 6291:
+        return 'South American Datum 1969';
+      case 6292:
+        return 'Sapper Hill 1943';
+      case 6293:
+        return 'Schwarzeck';
+      case 6294:
+        return 'Segora';
+      case 6295:
+        return 'Serindung';
+      case 6296:
+        return 'Sudan';
+      case 6297:
+        return 'Tananarive 1925';
+      case 6298:
+        return 'Timbalai 1948';
+      case 6299:
+        return 'TM65';
+      case 6300:
+        return 'TM75';
+      case 6301:
+        return 'Tokyo';
+      case 6302:
+        return 'Trinidad 1903';
+      case 6303:
+        return 'Trucial Coast 1948';
+      case 6304:
+        return 'Voirol 1875';
+      case 6305:
+        return 'Voirol Unifie 1960';
+      case 6306:
+        return 'Bern 1938';
+      case 6307:
+        return 'Nord Sahara 1959';
+      case 6308:
+        return 'Stockholm 1938';
+      case 6309:
+        return 'Yacare';
+      case 6310:
+        return 'Yoff';
+      case 6311:
+        return 'Zanderij';
+      case 6312:
+        return 'Militar Geographische Institut';
+      case 6313:
+        return 'Reseau National Belge 1972';
+      case 6314:
+        return 'Deutsche Hauptdreiecksnetz';
+      case 6315:
+        return 'Conakry 1905';
+      case 6317:
+        return 'Dealul Piscului 1970';
+      case 6322:
+        return 'WGS72';
+      case 6324:
+        return 'WGS72 Transit Broadcast Ephemeris';
+      case 6326:
+        return 'WGS84';
+      case 6901:
+        return 'Ancienne Triangulation Francaise';
+      case 6902:
+        return 'Nord de Guerre';
+      case 32767:
+        return 'User Defined';
+      default:
+        return 'Unknown ($value)';
+    }
+  }
+
+  static String getGeogEllipsoidDescription(String valueString) {
+    final value = int.tryParse(valueString);
+    if (value == null) return valueString;
+    switch (value) {
+      case 7001:
+        return 'Airy 1830';
+      case 7002:
+        return 'Airy Modified 1849';
+      case 7003:
+        return 'Australian National Spheroid';
+      case 7004:
+        return 'Bessel 1841';
+      case 7005:
+        return 'Bessel Modified';
+      case 7006:
+        return 'Bessel Namibia';
+      case 7007:
+        return 'Clarke 1858';
+      case 7008:
+        return 'Clarke 1866';
+      case 7009:
+        return 'Clarke 1866 Michigan';
+      case 7010:
+        return 'Clarke 1880 Benoit';
+      case 7011:
+        return 'Clarke 1880 IGN';
+      case 7012:
+        return 'Clarke 1880 RGS';
+      case 7013:
+        return 'Clarke 1880 Arc';
+      case 7014:
+        return 'Clarke 1880 SGA 1922';
+      case 7015:
+        return 'Everest 1830 1937 Adjustment';
+      case 7016:
+        return 'Everest 1830 1967 Definition';
+      case 7017:
+        return 'Everest 1830 1975 Definition';
+      case 7018:
+        return 'Everest 1830 Modified';
+      case 7019:
+        return 'GRS 1980';
+      case 7020:
+        return 'Helmert 1906';
+      case 7021:
+        return 'Indonesian National Spheroid';
+      case 7022:
+        return 'International 1924';
+      case 7023:
+        return 'International 1967';
+      case 7024:
+        return 'Krassowsky 1940';
+      case 7025:
+        return 'NWL 9D';
+      case 7026:
+        return 'NWL 10D';
+      case 7027:
+        return 'Plessis 1817';
+      case 7028:
+        return 'Struve 1860';
+      case 7029:
+        return 'War Office';
+      case 7030:
+        return 'WGS 84';
+      case 7031:
+        return 'GEM 10C';
+      case 7032:
+        return 'OSU86F';
+      case 7033:
+        return 'OSU91A';
+      case 7034:
+        return 'Clarke 1880';
+      case 7035:
+        return 'Sphere';
+      case 32767:
+        return 'User Defined';
+      default:
+        return 'Unknown ($value)';
+    }
+  }
+
   static String getProjCSTypeDescription(String valueString) {
     final value = int.tryParse(valueString);
     if (value == null) return valueString;
@@ -469,6 +885,8 @@ class GeoTiffDirectory {
         return 'RT90 2 5 gon W';
       case 2600:
         return 'Lietuvos Koordinoei Sistema 1994';
+      case 3045:
+        return 'ETRS89 UTM zone 33N';
       case 3053:
         return 'Hjorsey 1955 Lambert';
       case 3057:

@@ -86,6 +86,7 @@
   "entryActionPrint": "Print",
   "entryActionShare": "Share",
   "entryActionViewSource": "View source",
+  "entryActionShowGeoTiffOnMap": "Show as map overlay",
   "entryActionViewMotionPhotoVideo": "Open Motion Photo",
   "entryActionEdit": "Edit",
   "entryActionOpen": "Open with",

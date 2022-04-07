@@ -5,6 +5,7 @@ import 'dart:ui';
 import 'package:aves/geo/countries.dart';
 import 'package:aves/model/entry_cache.dart';
 import 'package:aves/model/favourites.dart';
+import 'package:aves/model/geotiff.dart';
 import 'package:aves/model/metadata/address.dart';
 import 'package:aves/model/metadata/catalog.dart';
 import 'package:aves/model/metadata/trash.dart';
@@ -504,15 +505,34 @@ class AvesEntry {
       }
       catalogMetadata = CatalogMetadata(id: id);
     } else {
+      // pre-processing
       if (isVideo && (!isSized || durationMillis == 0)) {
         // exotic video that is not sized during loading
         final fields = await VideoMetadataFormatter.getLoadingMetadata(this);
         await applyNewFields(fields, persist: persist);
       }
+
+      // cataloguing on platform
       catalogMetadata = await metadataFetchService.getCatalogMetadata(this, background: background);
 
+      // post-processing
       if (isVideo && (catalogMetadata?.dateMillis ?? 0) == 0) {
         catalogMetadata = await VideoMetadataFormatter.getCatalogMetadata(this);
+      }
+      if (isGeotiff && !hasGps) {
+        final info = await metadataFetchService.getGeoTiffInfo(this);
+        if (info != null) {
+          final center = MappedGeoTiff(
+            info: info,
+            entry: this,
+          ).center;
+          if (center != null) {
+            catalogMetadata = catalogMetadata?.copyWith(
+              latitude: center.latitude,
+              longitude: center.longitude,
+            );
+          }
+        }
       }
     }
   }
