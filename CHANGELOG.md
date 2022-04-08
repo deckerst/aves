@@ -15,6 +15,10 @@ All notable changes to this project will be documented in this file.
 
 - upgraded Flutter to stable v2.10.4
 
+### Fixed
+
+- black screen launch when Firebase fails to initialize (Play version only)
+
 ## <a id="v1.6.3"></a>[v1.6.3] - 2022-03-28
 
 ### Added
