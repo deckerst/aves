@@ -7,6 +7,7 @@ class SupportedLocales {
     'es': 'Español (México)',
     'fr': 'Français',
     'id': 'Bahasa Indonesia',
+    'it': 'Italiano',
     'ja': '日本語',
     'ko': '한국어',
     'pt': 'Português (Brasil)',

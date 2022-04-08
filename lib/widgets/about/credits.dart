@@ -11,6 +11,7 @@ class AboutCredits extends StatelessWidget {
     'Bahasa Indonesia': 'MeFinity',
     'Deutsch': 'JanWaldhorn',
     'Español (México)': 'n-berenice',
+    'Italiano': 'glemco',
     'Português (Brasil)': 'Jonatas De Almeida Barros',
     'Русский': 'D3ZOXY',
     '日本語': 'Maki',

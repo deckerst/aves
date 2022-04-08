@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Added
+
+- Info: improved GeoTIFF section
+- GeoTIFF: locating from GeoTIFF metadata (requires rescan, limited to some projections)
+- GeoTIFF: overlay on map (limited to some projections)
+- Italian translation (thanks glemco)
+
 ### Changed
 
 - upgraded Flutter to stable v2.10.4
