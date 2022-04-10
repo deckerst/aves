@@ -14,6 +14,7 @@ import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.PermissionManager
 import deckers.thibault.aves.utils.StorageUtils
+import deckers.thibault.aves.utils.StorageUtils.ensureTrailingSeparator
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.EventChannel.EventSink
 import kotlinx.coroutines.CoroutineScope
@@ -64,7 +65,7 @@ class StorageAccessStreamHandler(private val activity: Activity, arguments: Any?
             return
         }
 
-        PermissionManager.requestDirectoryAccess(activity, path, {
+        PermissionManager.requestDirectoryAccess(activity, ensureTrailingSeparator(path), {
             success(true)
             endOfStream()
         }, {

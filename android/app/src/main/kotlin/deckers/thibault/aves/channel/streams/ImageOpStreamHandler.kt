@@ -14,6 +14,7 @@ import deckers.thibault.aves.model.provider.ImageProviderFactory.getProvider
 import deckers.thibault.aves.model.provider.MediaStoreImageProvider
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.StorageUtils
+import deckers.thibault.aves.utils.StorageUtils.ensureTrailingSeparator
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.EventChannel.EventSink
 import kotlinx.coroutines.CoroutineScope
@@ -154,7 +155,7 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
             return
         }
 
-        destinationDir = StorageUtils.ensureTrailingSeparator(destinationDir)
+        destinationDir = ensureTrailingSeparator(destinationDir)
         val entries = entryMapList.map(::AvesEntry)
         provider.exportMultiple(activity, mimeType, destinationDir, entries, width, height, nameConflictStrategy, object : ImageOpCallback {
             override fun onSuccess(fields: FieldMap) = success(fields)
@@ -181,7 +182,7 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
         rawEntryMap.forEach {
             var destinationDir = it.key as String
             if (destinationDir != StorageUtils.TRASH_PATH_PLACEHOLDER) {
-                destinationDir = StorageUtils.ensureTrailingSeparator(destinationDir)
+                destinationDir = ensureTrailingSeparator(destinationDir)
             }
             @Suppress("unchecked_cast")
             val rawEntries = it.value as List<FieldMap>

@@ -30,7 +30,12 @@ import java.util.regex.Pattern
 object StorageUtils {
     private val LOG_TAG = LogUtils.createTag<StorageUtils>()
 
-    private const val TREE_URI_ROOT = "content://com.android.externalstorage.documents/tree/"
+    // from `DocumentsContract`
+    private const val EXTERNAL_STORAGE_PROVIDER_AUTHORITY = "com.android.externalstorage.documents"
+    private const val EXTERNAL_STORAGE_PRIMARY_EMULATED_ROOT_ID = "primary"
+
+    private const val TREE_URI_ROOT = "content://$EXTERNAL_STORAGE_PROVIDER_AUTHORITY/tree/"
+
     private val TREE_URI_PATH_PATTERN = Pattern.compile("(.*?):(.*)")
 
     const val TRASH_PATH_PLACEHOLDER = "#trash"
@@ -242,12 +247,12 @@ object StorageUtils {
     // e.g.
     // /storage/emulated/0/         -> primary
     // /storage/10F9-3F13/Pictures/ -> 10F9-3F13
-    private fun getVolumeUuidForTreeUri(context: Context, anyPath: String): String? {
+    private fun getVolumeUuidForDocumentUri(context: Context, anyPath: String): String? {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             val sm = context.getSystemService(Context.STORAGE_SERVICE) as? StorageManager
             sm?.getStorageVolume(File(anyPath))?.let { volume ->
                 if (volume.isPrimary) {
-                    return "primary"
+                    return EXTERNAL_STORAGE_PRIMARY_EMULATED_ROOT_ID
                 }
                 volume.uuid?.let { uuid ->
                     return uuid.uppercase(Locale.ROOT)
@@ -258,7 +263,7 @@ object StorageUtils {
         // fallback for <N
         getVolumePath(context, anyPath)?.let { volumePath ->
             if (volumePath == getPrimaryVolumePath(context)) {
-                return "primary"
+                return EXTERNAL_STORAGE_PRIMARY_EMULATED_ROOT_ID
             }
             volumePath.split(File.separator).lastOrNull { it.isNotEmpty() }?.let { uuid ->
                 return uuid.uppercase(Locale.ROOT)
@@ -272,8 +277,8 @@ object StorageUtils {
     // e.g.
     // primary      -> /storage/emulated/0/
     // 10F9-3F13    -> /storage/10F9-3F13/
-    private fun getVolumePathFromTreeUriUuid(context: Context, uuid: String): String? {
-        if (uuid == "primary") {
+    private fun getVolumePathFromTreeDocumentUriUuid(context: Context, uuid: String): String? {
+        if (uuid == EXTERNAL_STORAGE_PRIMARY_EMULATED_ROOT_ID) {
             return getPrimaryVolumePath(context)
         }
 
@@ -309,37 +314,50 @@ object StorageUtils {
     // /storage/emulated/0/         -> content://com.android.externalstorage.documents/tree/primary%3A
     // /storage/10F9-3F13/Pictures/ -> content://com.android.externalstorage.documents/tree/10F9-3F13%3APictures
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-    fun convertDirPathToTreeUri(context: Context, dirPath: String): Uri? {
-        val uuid = getVolumeUuidForTreeUri(context, dirPath)
+    fun convertDirPathToTreeDocumentUri(context: Context, dirPath: String): Uri? {
+        val uuid = getVolumeUuidForDocumentUri(context, dirPath)
         if (uuid != null) {
             val relativeDir = removeTrailingSeparator(PathSegments(context, dirPath).relativeDir ?: "")
-            return DocumentsContract.buildTreeDocumentUri("com.android.externalstorage.documents", "$uuid:$relativeDir")
+            return DocumentsContract.buildTreeDocumentUri(EXTERNAL_STORAGE_PROVIDER_AUTHORITY, "$uuid:$relativeDir")
         }
-        Log.e(LOG_TAG, "failed to convert dirPath=$dirPath to tree URI")
+        Log.e(LOG_TAG, "failed to convert dirPath=$dirPath to tree document URI")
+        return null
+    }
+
+    // e.g.
+    // /storage/emulated/0/         -> content://com.android.externalstorage.documents/document/primary%3A
+    // /storage/10F9-3F13/Pictures/ -> content://com.android.externalstorage.documents/document/10F9-3F13%3APictures
+    fun convertDirPathToDocumentUri(context: Context, dirPath: String): Uri? {
+        val uuid = getVolumeUuidForDocumentUri(context, dirPath)
+        if (uuid != null) {
+            val relativeDir = removeTrailingSeparator(PathSegments(context, dirPath).relativeDir ?: "")
+            return DocumentsContract.buildDocumentUri(EXTERNAL_STORAGE_PROVIDER_AUTHORITY, "$uuid:$relativeDir")
+        }
+        Log.e(LOG_TAG, "failed to convert dirPath=$dirPath to document URI")
         return null
     }
 
     // e.g.
     // content://com.android.externalstorage.documents/tree/primary%3A              -> /storage/emulated/0/
     // content://com.android.externalstorage.documents/tree/10F9-3F13%3APictures    -> /storage/10F9-3F13/Pictures/
-    fun convertTreeUriToDirPath(context: Context, treeUri: Uri): String? {
-        val treeUriString = treeUri.toString()
-        if (treeUriString.length <= TREE_URI_ROOT.length) return null
-        val encoded = treeUriString.substring(TREE_URI_ROOT.length)
+    fun convertTreeDocumentUriToDirPath(context: Context, treeDocumentUri: Uri): String? {
+        val treeDocumentUriString = treeDocumentUri.toString()
+        if (treeDocumentUriString.length <= TREE_URI_ROOT.length) return null
+        val encoded = treeDocumentUriString.substring(TREE_URI_ROOT.length)
         val matcher = TREE_URI_PATH_PATTERN.matcher(Uri.decode(encoded))
         with(matcher) {
             if (find()) {
                 val uuid = group(1)
                 val relativePath = group(2)
                 if (uuid != null && relativePath != null) {
-                    val volumePath = getVolumePathFromTreeUriUuid(context, uuid)
+                    val volumePath = getVolumePathFromTreeDocumentUriUuid(context, uuid)
                     if (volumePath != null) {
                         return ensureTrailingSeparator(volumePath + relativePath)
                     }
                 }
             }
         }
-        Log.e(LOG_TAG, "failed to convert treeUri=$treeUri to path")
+        Log.e(LOG_TAG, "failed to convert treeDocumentUri=$treeDocumentUri to path")
         return null
     }
 
@@ -365,7 +383,7 @@ object StorageUtils {
                 }
 
                 // fallback for older APIs
-                val df = getVolumePath(context, anyPath)?.let { convertDirPathToTreeUri(context, it) }?.let { getDocumentFileFromVolumeTree(context, it, anyPath) }
+                val df = getVolumePath(context, anyPath)?.let { convertDirPathToTreeDocumentUri(context, it) }?.let { getDocumentFileFromVolumeTree(context, it, anyPath) }
                 if (df != null) return df
 
                 // try to strip user info, if any
@@ -389,8 +407,8 @@ object StorageUtils {
         val cleanDirPath = ensureTrailingSeparator(dirPath)
         return if (requireAccessPermission(context, cleanDirPath) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             val grantedDir = getGrantedDirForPath(context, cleanDirPath) ?: return null
-            val rootTreeUri = convertDirPathToTreeUri(context, grantedDir) ?: return null
-            var parentFile: DocumentFileCompat? = DocumentFileCompat.fromTreeUri(context, rootTreeUri) ?: return null
+            val rootTreeDocumentUri = convertDirPathToTreeDocumentUri(context, grantedDir) ?: return null
+            var parentFile: DocumentFileCompat? = DocumentFileCompat.fromTreeUri(context, rootTreeDocumentUri) ?: return null
             val pathIterator = getPathStepIterator(context, cleanDirPath, grantedDir)
             while (pathIterator?.hasNext() == true) {
                 val dirName = pathIterator.next()
@@ -420,8 +438,8 @@ object StorageUtils {
         }
     }
 
-    private fun getDocumentFileFromVolumeTree(context: Context, rootTreeUri: Uri, anyPath: String): DocumentFileCompat? {
-        var documentFile: DocumentFileCompat? = DocumentFileCompat.fromTreeUri(context, rootTreeUri) ?: return null
+    private fun getDocumentFileFromVolumeTree(context: Context, rootTreeDocumentUri: Uri, anyPath: String): DocumentFileCompat? {
+        var documentFile: DocumentFileCompat? = DocumentFileCompat.fromTreeUri(context, rootTreeDocumentUri) ?: return null
 
         // follow the entry path down the document tree
         val pathIterator = getPathStepIterator(context, anyPath, null)
