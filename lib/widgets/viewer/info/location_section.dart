@@ -86,7 +86,7 @@ class _LocationSectionState extends State<LocationSection> {
             controller: _mapController,
             entries: [entry],
             isAnimatingNotifier: widget.isScrollingNotifier,
-            onUserZoomChange: (zoom) => settings.infoMapZoom = zoom,
+            onUserZoomChange: (zoom) => settings.infoMapZoom = zoom.roundToDouble(),
             onMarkerTap: collection != null ? (_, __, ___) => _openMapPage(context) : null,
             openMapPage: collection != null ? _openMapPage : null,
           ),
