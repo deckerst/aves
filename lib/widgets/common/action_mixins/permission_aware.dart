@@ -89,7 +89,7 @@ mixin PermissionAwareMixin {
         return false;
       }
 
-      final granted = await storageService.requestDirectoryAccess(dir.volumePath);
+      final granted = await storageService.requestDirectoryAccess(dir.dirPath);
       if (!granted) {
         // abort if the user denies access from the native dialog
         return false;

@@ -24,7 +24,7 @@ abstract class StorageService {
   Future<int> deleteEmptyDirectories(Iterable<String> dirPaths);
 
   // returns whether user granted access to a directory of his choosing
-  Future<bool> requestDirectoryAccess(String volumePath);
+  Future<bool> requestDirectoryAccess(String path);
 
   Future<bool> canRequestMediaFileAccess();
 
@@ -158,12 +158,12 @@ class PlatformStorageService implements StorageService {
 
   // returns whether user granted access to a directory of his choosing
   @override
-  Future<bool> requestDirectoryAccess(String volumePath) async {
+  Future<bool> requestDirectoryAccess(String path) async {
     try {
       final completer = Completer<bool>();
       storageAccessChannel.receiveBroadcastStream(<String, dynamic>{
         'op': 'requestDirectoryAccess',
-        'path': volumePath,
+        'path': path,
       }).listen(
         (data) => completer.complete(data as bool),
         onError: completer.completeError,

@@ -16,6 +16,7 @@ import app.loup.streams_channel.StreamsChannel
 import deckers.thibault.aves.channel.calls.*
 import deckers.thibault.aves.channel.streams.*
 import deckers.thibault.aves.utils.LogUtils
+import deckers.thibault.aves.utils.PermissionManager
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodCall
@@ -324,7 +325,7 @@ class MainActivity : FlutterActivity() {
         var pendingScopedStoragePermissionCompleter: CompletableFuture<Boolean>? = null
 
         private fun onStorageAccessResult(requestCode: Int, uri: Uri?) {
-            Log.d(LOG_TAG, "onStorageAccessResult with requestCode=$requestCode, uri=$uri")
+            Log.i(LOG_TAG, "onStorageAccessResult with requestCode=$requestCode, uri=$uri")
             val handler = pendingStorageAccessResultHandlers.remove(requestCode) ?: return
             if (uri != null) {
                 handler.onGranted(uri)
