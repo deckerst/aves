@@ -196,7 +196,7 @@ mixin AlbumMixin on SourceBase {
 
     final volumePath = dir.volumePath;
     String trimVolumePath(String? path) => path!.substring(dir.volumePath.length);
-    final otherAlbumsOnVolume = otherAlbumsOnDevice.where((path) => path!.startsWith(volumePath)).map(trimVolumePath).toSet();
+    final otherAlbumsOnVolume = otherAlbumsOnDevice.where((path) => path.startsWith(volumePath)).map(trimVolumePath).toSet();
     final uniqueNameInVolume = unique(trimVolumePath(dirPath), otherAlbumsOnVolume);
     final volume = androidFileUtils.getStorageVolume(dirPath)!;
     if (volume.isPrimary) {
