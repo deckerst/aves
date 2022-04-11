@@ -158,6 +158,7 @@ class _BugReportState extends State<BugReport> with FeedbackMixin {
   Future<String> _getInfo(BuildContext context) async {
     final packageInfo = await PackageInfo.fromPlatform();
     final androidInfo = await DeviceInfoPlugin().androidInfo;
+    final installer = await androidAppService.getAppInstaller();
     final hasPlayServices = await availability.hasPlayServices;
     final flavor = context.read<AppFlavor>().toString().split('.')[1];
     return [
@@ -169,6 +170,7 @@ class _BugReportState extends State<BugReport> with FeedbackMixin {
       'Google Play services: ${hasPlayServices ? 'ready' : 'not available'}',
       'System locales: ${WidgetsBinding.instance!.window.locales.join(', ')}',
       'Aves locale: ${settings.locale ?? 'system'} -> ${settings.appliedLocale}',
+      'Installer: $installer',
     ].join('\n');
   }
 

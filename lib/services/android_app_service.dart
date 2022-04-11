@@ -14,6 +14,8 @@ abstract class AndroidAppService {
 
   Future<Uint8List> getAppIcon(String packageName, double size);
 
+  Future<String?> getAppInstaller();
+
   Future<bool> copyToClipboard(String uri, String? label);
 
   Future<bool> edit(String uri, String mimeType);
@@ -71,6 +73,16 @@ class PlatformAndroidAppService implements AndroidAppService {
       // ignore, as some packages legitimately do not have icons
     }
     return Uint8List(0);
+  }
+
+  @override
+  Future<String?> getAppInstaller() async {
+    try {
+      return await platform.invokeMethod('getAppInstaller');
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
+    return null;
   }
 
   @override
