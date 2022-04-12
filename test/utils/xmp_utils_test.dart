@@ -87,6 +87,50 @@ void main() {
   </rdf:RDF>
 </x:xmpmeta>
 ''';
+  const inMotionPhotoMicroVideo = '''
+<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 5.1.0-jc003">
+  <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+    <rdf:Description rdf:about=""
+      xmlns:GCamera="http://ns.google.com/photos/1.0/camera/"
+      GCamera:MicroVideo="1"
+      GCamera:MicroVideoVersion="1"
+      GCamera:MicroVideoOffset="1228513"
+      GCamera:MicroVideoPresentationTimestampUs="233246"/>
+  </rdf:RDF>
+</x:xmpmeta>
+''';
+  const inMotionPhotoContainer = '''
+<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 5.1.0-jc003">
+  <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+    <rdf:Description rdf:about=""
+      xmlns:GCamera="http://ns.google.com/photos/1.0/camera/"
+      xmlns:Container="http://ns.google.com/photos/1.0/container/"
+      xmlns:Item="http://ns.google.com/photos/1.0/container/item/"
+      GCamera:MotionPhoto="1"
+      GCamera:MotionPhotoVersion="1"
+      GCamera:MotionPhotoPresentationTimestampUs="2306056">
+      <Container:Directory>
+        <rdf:Seq>
+          <rdf:li rdf:parseType="Resource">
+            <Container:Item
+              Item:Mime="image/jpeg"
+              Item:Semantic="Primary"
+              Item:Length="0"
+              Item:Padding="59"/>
+          </rdf:li>
+          <rdf:li rdf:parseType="Resource">
+            <Container:Item
+              Item:Mime="video/mp4"
+              Item:Semantic="MotionPhoto"
+              Item:Length="3491777"
+              Item:Padding="0"/>
+          </rdf:li>
+        </rdf:Seq>
+      </Container:Directory>
+    </rdf:Description>
+  </rdf:RDF>
+</x:xmpmeta>
+''';
 
   test('Get string', () async {
     expect(XMP.getString(_getDescriptions(inRatingAttribute), XMP.xmpRating, namespace: Namespaces.xmp), '5');
@@ -362,7 +406,6 @@ void main() {
 
   test('Remove rating from XMP with subjects only', () async {
     final modifyDate = DateTime.now();
-    final xmpDate = XMP.toXmpDate(modifyDate);
 
     expect(
         _toExpect(await XMP.edit(
@@ -371,23 +414,46 @@ void main() {
           (descriptions) => ExtraAvesEntryMetadataEdition.editRatingXmp(descriptions, null),
           modifyDate: modifyDate,
         )),
-        _toExpect('''
-<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core Test.SNAPSHOT">
-  <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-    <rdf:Description rdf:about=""
-      xmlns:dc="http://purl.org/dc/elements/1.1/"
-      xmlns:xmp="http://ns.adobe.com/xap/1.0/"
-      xmp:MetadataDate="$xmpDate"
-      xmp:ModifyDate="$xmpDate">
-      <dc:subject>
-        <rdf:Bag>
-          <rdf:li>the king</rdf:li>
-        </rdf:Bag>
-      </dc:subject>
-    </rdf:Description>
-  </rdf:RDF>
-</x:xmpmeta>
-'''));
+        _toExpect(inSubjects));
+  });
+
+  test('Remove trailer media info from XMP with micro video', () async {
+    final modifyDate = DateTime.now();
+
+    expect(
+        _toExpect(await XMP.edit(
+          inMotionPhotoMicroVideo,
+          () async => toolkit,
+          ExtraAvesEntryMetadataEdition.removeContainerXmp,
+          modifyDate: modifyDate,
+        )),
+        _toExpect(null));
+  });
+
+  test('Remove trailer media info from XMP with container', () async {
+    final modifyDate = DateTime.now();
+
+    expect(
+        _toExpect(await XMP.edit(
+          inMotionPhotoContainer,
+          () async => toolkit,
+          ExtraAvesEntryMetadataEdition.removeContainerXmp,
+          modifyDate: modifyDate,
+        )),
+        _toExpect(null));
+  });
+
+  test('Remove trailer media info from XMP with no related metadata', () async {
+    final modifyDate = DateTime.now();
+
+    expect(
+        _toExpect(await XMP.edit(
+          inSubjects,
+          () async => toolkit,
+          ExtraAvesEntryMetadataEdition.removeContainerXmp,
+          modifyDate: modifyDate,
+        )),
+        _toExpect(inSubjects));
   });
 
   test('Remove rating from XMP with ratings (multiple descriptions)', () async {

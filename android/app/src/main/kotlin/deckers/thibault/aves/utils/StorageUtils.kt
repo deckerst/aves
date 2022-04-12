@@ -579,14 +579,14 @@ object StorageUtils {
         }
     }
 
-    fun openOutputStream(context: Context, uri: Uri, mimeType: String): OutputStream? {
+    fun openOutputStream(context: Context, uri: Uri, mimeType: String, mode: String): OutputStream? {
         val effectiveUri = getMediaStoreScopedStorageSafeUri(uri, mimeType)
         return try {
-            context.contentResolver.openOutputStream(effectiveUri)
+            context.contentResolver.openOutputStream(effectiveUri, mode)
         } catch (e: Exception) {
             // among various other exceptions,
             // opening a file marked pending and owned by another package throws an `IllegalStateException`
-            Log.w(LOG_TAG, "failed to open output stream for uri=$uri effectiveUri=$effectiveUri", e)
+            Log.w(LOG_TAG, "failed to open output stream for uri=$uri effectiveUri=$effectiveUri mode=$mode", e)
             null
         }
     }

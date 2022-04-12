@@ -53,6 +53,7 @@ class AIcons {
   static const IconData clear = Icons.clear_outlined;
   static const IconData clipboard = Icons.content_copy_outlined;
   static const IconData convert = Icons.transform_outlined;
+  static const IconData convertToStillImage = MdiIcons.movieRemoveOutline;
   static const IconData copy = Icons.file_copy_outlined;
   static const IconData debug = Icons.whatshot_outlined;
   static const IconData delete = Icons.delete_outlined;
@@ -80,6 +81,7 @@ class AIcons {
   static const IconData name = Icons.abc_outlined;
   static const IconData newTier = Icons.fiber_new_outlined;
   static const IconData openOutside = Icons.open_in_new_outlined;
+  static const IconData openVideo = MdiIcons.moviePlayOutline;
   static const IconData pin = Icons.push_pin_outlined;
   static const IconData unpin = MdiIcons.pinOffOutline;
   static const IconData play = Icons.play_arrow;

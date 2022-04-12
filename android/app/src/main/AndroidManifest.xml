@@ -8,7 +8,9 @@
     So we request `WRITE_EXTERNAL_STORAGE` until Q (29), and enable `requestLegacyExternalStorage`
     -->
 
+    <!-- TODO TLAD [tiramisu] need notification permission? -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <!-- TODO TLAD [tiramisu] READ_MEDIA_IMAGE, READ_MEDIA_VIDEO instead of READ_EXTERNAL_STORAGE? -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"

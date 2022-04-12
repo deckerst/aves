@@ -10,7 +10,10 @@ import deckers.thibault.aves.model.provider.ImageProviderFactory.getProvider
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 
 class MetadataEditHandler(private val activity: Activity) : MethodCallHandler {
     private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
@@ -21,6 +24,7 @@ class MetadataEditHandler(private val activity: Activity) : MethodCallHandler {
             "flip" -> ioScope.launch { safe(call, result, ::flip) }
             "editDate" -> ioScope.launch { safe(call, result, ::editDate) }
             "editMetadata" -> ioScope.launch { safe(call, result, ::editMetadata) }
+            "removeTrailerVideo" -> ioScope.launch { safe(call, result, ::removeTrailerVideo) }
             "removeTypes" -> ioScope.launch { safe(call, result, ::removeTypes) }
             else -> result.notImplemented()
         }
@@ -101,7 +105,8 @@ class MetadataEditHandler(private val activity: Activity) : MethodCallHandler {
     private fun editMetadata(call: MethodCall, result: MethodChannel.Result) {
         val metadata = call.argument<FieldMap>("metadata")
         val entryMap = call.argument<FieldMap>("entry")
-        if (entryMap == null || metadata == null) {
+        val autoCorrectTrailerOffset = call.argument<Boolean>("autoCorrectTrailerOffset")
+        if (entryMap == null || metadata == null || autoCorrectTrailerOffset == null) {
             result.error("editMetadata-args", "failed because of missing arguments", null)
             return
         }
@@ -120,9 +125,36 @@ class MetadataEditHandler(private val activity: Activity) : MethodCallHandler {
             return
         }
 
-        provider.editMetadata(activity, path, uri, mimeType, metadata, callback = object : ImageOpCallback {
+        provider.editMetadata(activity, path, uri, mimeType, metadata, autoCorrectTrailerOffset, callback = object : ImageOpCallback {
             override fun onSuccess(fields: FieldMap) = result.success(fields)
             override fun onFailure(throwable: Throwable) = result.error("editMetadata-failure", "failed to edit metadata for mimeType=$mimeType uri=$uri", throwable.message)
+        })
+    }
+
+    private fun removeTrailerVideo(call: MethodCall, result: MethodChannel.Result) {
+        val entryMap = call.argument<FieldMap>("entry")
+        if (entryMap == null) {
+            result.error("removeTrailerVideo-args", "failed because of missing arguments", null)
+            return
+        }
+
+        val uri = (entryMap["uri"] as String?)?.let { Uri.parse(it) }
+        val path = entryMap["path"] as String?
+        val mimeType = entryMap["mimeType"] as String?
+        if (uri == null || path == null || mimeType == null) {
+            result.error("removeTrailerVideo-args", "failed because entry fields are missing", null)
+            return
+        }
+
+        val provider = getProvider(uri)
+        if (provider == null) {
+            result.error("removeTrailerVideo-provider", "failed to find provider for uri=$uri", null)
+            return
+        }
+
+        provider.removeTrailerVideo(activity, path, uri, mimeType, object : ImageOpCallback {
+            override fun onSuccess(fields: FieldMap) = result.success(fields)
+            override fun onFailure(throwable: Throwable) = result.error("removeTrailerVideo-failure", "failed to remove trailer video for mimeType=$mimeType uri=$uri", throwable.message)
         })
     }
 

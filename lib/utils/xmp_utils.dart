@@ -2,7 +2,9 @@ import 'package:intl/intl.dart';
 import 'package:xml/xml.dart';
 
 class Namespaces {
+  static const container = 'http://ns.google.com/photos/1.0/container/';
   static const dc = 'http://purl.org/dc/elements/1.1/';
+  static const gCamera = 'http://ns.google.com/photos/1.0/camera/';
   static const microsoftPhoto = 'http://ns.microsoft.com/photo/1.0/';
   static const rdf = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#';
   static const x = 'adobe:ns:meta/';
@@ -10,7 +12,9 @@ class Namespaces {
   static const xmpNote = 'http://ns.adobe.com/xmp/note/';
 
   static final defaultPrefixes = {
+    container: 'Container',
     dc: 'dc',
+    gCamera: 'GCamera',
     microsoftPhoto: 'MicrosoftPhoto',
     rdf: 'rdf',
     x: 'x',
@@ -30,6 +34,7 @@ class XMP {
   static const xXmpmeta = 'xmpmeta';
   static const rdfRoot = 'RDF';
   static const rdfDescription = 'Description';
+  static const containerDirectory = 'Directory';
   static const dcSubject = 'subject';
   static const msPhotoRating = 'Rating';
   static const xmpRating = 'Rating';
@@ -37,6 +42,13 @@ class XMP {
   // attributes
   static const xXmptk = 'xmptk';
   static const rdfAbout = 'about';
+  static const gCameraMicroVideo = 'MicroVideo';
+  static const gCameraMicroVideoVersion = 'MicroVideoVersion';
+  static const gCameraMicroVideoOffset = 'MicroVideoOffset';
+  static const gCameraMicroVideoPresentationTimestampUs = 'MicroVideoPresentationTimestampUs';
+  static const gCameraMotionPhoto = 'MotionPhoto';
+  static const gCameraMotionPhotoVersion = 'MotionPhotoVersion';
+  static const gCameraMotionPhotoPresentationTimestampUs = 'MotionPhotoPresentationTimestampUs';
   static const xmpCreateDate = 'CreateDate';
   static const xmpMetadataDate = 'MetadataDate';
   static const xmpModifyDate = 'ModifyDate';
@@ -97,7 +109,7 @@ class XMP {
   static void _addNamespaces(XmlNode node, Map<String, String> namespaces) => namespaces.forEach((uri, prefix) => node.setAttribute('$xmlnsPrefix:$prefix', uri));
 
   // remove elements and attributes
-  static bool _removeElements(List<XmlNode> nodes, String name, String namespace) {
+  static bool removeElements(List<XmlNode> nodes, String name, String namespace) {
     var removed = false;
     nodes.forEach((node) {
       final elements = node.findElements(name, namespace: namespace).toSet();
@@ -115,17 +127,18 @@ class XMP {
   }
 
   // remove attribute/element from all nodes, and set attribute with new value, if any, in the first node
-  static void setAttribute(
+  static bool setAttribute(
     List<XmlNode> nodes,
     String name,
     String? value, {
     required String namespace,
     required XmpEditStrategy strat,
   }) {
-    final removed = _removeElements(nodes, name, namespace);
+    final removed = removeElements(nodes, name, namespace);
 
-    if (value == null) return;
+    if (value == null) return removed;
 
+    bool modified = removed;
     if (strat == XmpEditStrategy.always || (strat == XmpEditStrategy.updateIfPresent && removed)) {
       final node = nodes.first;
       _addNamespaces(node, {namespace: prefixOf(namespace)});
@@ -133,7 +146,10 @@ class XMP {
       // use qualified name, otherwise the namespace prefix is not added
       final qualifiedName = '${prefixOf(namespace)}$propNamespaceSeparator$name';
       node.setAttribute(qualifiedName, value);
+      modified = true;
     }
+
+    return modified;
   }
 
   // remove attribute/element from all nodes, and create element with new value, if any, in the first node
@@ -144,7 +160,7 @@ class XMP {
     required String namespace,
     required XmpEditStrategy strat,
   }) {
-    final removed = _removeElements(nodes, name, namespace);
+    final removed = removeElements(nodes, name, namespace);
 
     if (value == null) return;
 
@@ -162,7 +178,7 @@ class XMP {
   }
 
   // remove bag from all nodes, and create bag with new values, if any, in the first node
-  static void setStringBag(
+  static bool setStringBag(
     List<XmlNode> nodes,
     String name,
     Set<String> values, {
@@ -170,10 +186,11 @@ class XMP {
     required XmpEditStrategy strat,
   }) {
     // remove existing
-    final removed = _removeElements(nodes, name, namespace);
+    final removed = removeElements(nodes, name, namespace);
 
-    if (values.isEmpty) return;
+    if (values.isEmpty) return removed;
 
+    bool modified = removed;
     if (strat == XmpEditStrategy.always || (strat == XmpEditStrategy.updateIfPresent && removed)) {
       final node = nodes.first;
       _addNamespaces(node, {namespace: prefixOf(namespace)});
@@ -192,13 +209,16 @@ class XMP {
         });
       });
       node.children.last.children.add(bagBuilder.buildFragment());
+      modified = true;
     }
+
+    return modified;
   }
 
   static Future<String?> edit(
     String? xmpString,
     Future<String> Function() toolkit,
-    void Function(List<XmlNode> descriptions) apply, {
+    bool Function(List<XmlNode> descriptions) apply, {
     DateTime? modifyDate,
   }) async {
     XmlDocument? xmpDoc;
@@ -244,7 +264,7 @@ class XMP {
       // get element because doc fragment cannot be used to edit
       descriptions.add(rdf.getElement(rdfDescription, namespace: Namespaces.rdf)!);
     }
-    apply(descriptions);
+    final modified = apply(descriptions);
 
     // clean description nodes with no children
     descriptions.where((v) => !_hasMeaningfulChildren(v)).forEach((v) => v.children.clear());
@@ -253,10 +273,12 @@ class XMP {
     rdf.children.removeWhere((v) => !_hasMeaningfulChildren(v) && !_hasMeaningfulAttributes(v));
 
     if (rdf.children.isNotEmpty) {
-      _addNamespaces(descriptions.first, {Namespaces.xmp: prefixOf(Namespaces.xmp)});
-      final xmpDate = toXmpDate(modifyDate ?? DateTime.now());
-      setAttribute(descriptions, xmpMetadataDate, xmpDate, namespace: Namespaces.xmp, strat: XmpEditStrategy.always);
-      setAttribute(descriptions, xmpModifyDate, xmpDate, namespace: Namespaces.xmp, strat: XmpEditStrategy.always);
+      if (modified) {
+        _addNamespaces(descriptions.first, {Namespaces.xmp: prefixOf(Namespaces.xmp)});
+        final xmpDate = toXmpDate(modifyDate ?? DateTime.now());
+        setAttribute(descriptions, xmpMetadataDate, xmpDate, namespace: Namespaces.xmp, strat: XmpEditStrategy.always);
+        setAttribute(descriptions, xmpModifyDate, xmpDate, namespace: Namespaces.xmp, strat: XmpEditStrategy.always);
+      }
     } else {
       // clear XMP if there are no attributes or elements worth preserving
       xmpDoc = null;
