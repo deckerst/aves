@@ -85,7 +85,7 @@ At this stage this project does *not* accept PRs, except for translations.
 
 ### Translations
 
-If you want to translate this app in your language and share the result, [there is a guide](https://github.com/deckerst/aves/wiki/Contributing-to-Translations). English, Korean and French are already handled by me. Russian, German, Spanish, Portuguese, Indonesian, Japanese & Italian are handled by generous volunteers.
+If you want to translate this app in your language and share the result, [there is a guide](https://github.com/deckerst/aves/wiki/Contributing-to-Translations). English, Korean and French are already handled by me. Russian, German, Spanish, Portuguese, Indonesian, Japanese, Italian & Chinese are handled by generous volunteers.
 
 ### Donations
 
