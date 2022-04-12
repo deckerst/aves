@@ -24,7 +24,8 @@ class TileExtentController {
     required this.spacing,
     required this.horizontalPadding,
   }) {
-    extentNotifier = ValueNotifier(extentMin);
+    // initialize extent to 0, so that it will be dynamically sized on first launch
+    extentNotifier = ValueNotifier(0);
     userPreferredExtent = settings.getTileExtent(settingsRouteKey);
     settings.addListener(_onSettingsChanged);
   }
