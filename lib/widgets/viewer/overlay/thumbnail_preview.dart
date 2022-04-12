@@ -19,6 +19,8 @@ class ViewerThumbnailPreview extends StatefulWidget {
 
   @override
   State<ViewerThumbnailPreview> createState() => _ViewerThumbnailPreviewState();
+
+  static double get preferredHeight => ThumbnailScroller.preferredHeight;
 }
 
 class _ViewerThumbnailPreviewState extends State<ViewerThumbnailPreview> {

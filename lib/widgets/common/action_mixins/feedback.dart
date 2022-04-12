@@ -8,9 +8,11 @@ import 'package:aves/services/accessibility_service.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/viewer/entry_viewer_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:overlay_support/overlay_support.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:provider/provider.dart';
 
@@ -34,16 +36,45 @@ mixin FeedbackMixin {
   // provide the messenger if feedback happens as the widget is disposed
   void showFeedbackWithMessenger(BuildContext context, ScaffoldMessengerState messenger, String message, [SnackBarAction? action]) {
     _getSnackBarDuration(action != null).then((duration) {
-      final progressColor = Theme.of(context).colorScheme.secondary;
-      messenger.showSnackBar(SnackBar(
-        content: _FeedbackMessage(
-          message: message,
-          progressColor: progressColor,
-          duration: action != null ? duration : null,
-        ),
-        action: action,
-        duration: duration,
-      ));
+      final snackBarContent = _FeedbackMessage(
+        message: message,
+        progressColor: Theme.of(context).colorScheme.secondary,
+        duration: action != null ? duration : null,
+      );
+
+      if (context.currentRouteName == EntryViewerPage.routeName) {
+        // avoid interactive widgets at the bottom of the page
+        final margin = EntryViewerPage.snackBarMargin(context);
+
+        // as of Flutter v2.10.4, `SnackBar` can only be positioned at the bottom,
+        // and space under the snack bar `margin` does not receive gestures
+        // (because it is used by the `Dismissible` wrapping the snack bar)
+        // so we use `showOverlayNotification` instead
+        showOverlayNotification(
+          (context) => SafeArea(
+            child: Padding(
+              padding: margin,
+              child: SnackBar(
+                content: snackBarContent,
+                animation: const AlwaysStoppedAnimation<double>(1),
+                action: action,
+                duration: duration,
+                dismissDirection: DismissDirection.horizontal,
+              ),
+            ),
+          ),
+          duration: duration,
+          position: NotificationPosition.bottom,
+          context: context,
+        );
+      } else {
+        messenger.showSnackBar(SnackBar(
+          content: snackBarContent,
+          action: action,
+          duration: duration,
+          dismissDirection: DismissDirection.horizontal,
+        ));
+      }
     });
   }
 
