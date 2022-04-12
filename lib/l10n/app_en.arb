@@ -87,7 +87,8 @@
   "entryActionShare": "Share",
   "entryActionViewSource": "View source",
   "entryActionShowGeoTiffOnMap": "Show as map overlay",
-  "entryActionViewMotionPhotoVideo": "Open Motion Photo",
+  "entryActionConvertMotionPhotoToStillImage": "Convert to still image",
+  "entryActionViewMotionPhotoVideo": "Open video",
   "entryActionEdit": "Edit",
   "entryActionOpen": "Open with",
   "entryActionSetAs": "Set as",
@@ -370,6 +371,7 @@
   "removeEntryMetadataDialogMore": "More",
 
   "removeEntryMetadataMotionPhotoXmpWarningDialogMessage": "XMP is required to play the video inside a motion photo.\n\nAre you sure you want to remove it?",
+  "convertMotionPhotoToStillImageWarningDialogMessage": "Are you sure?",
 
   "videoSpeedDialogLabel": "Playback speed",
 

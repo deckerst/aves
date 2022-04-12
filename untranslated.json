@@ -1,38 +1,55 @@
 {
   "de": [
-    "entryActionShowGeoTiffOnMap"
+    "entryActionShowGeoTiffOnMap",
+    "entryActionConvertMotionPhotoToStillImage",
+    "convertMotionPhotoToStillImageWarningDialogMessage"
   ],
 
   "es": [
-    "entryActionShowGeoTiffOnMap"
+    "entryActionShowGeoTiffOnMap",
+    "entryActionConvertMotionPhotoToStillImage",
+    "convertMotionPhotoToStillImageWarningDialogMessage"
   ],
 
   "fr": [
-    "entryActionShowGeoTiffOnMap"
+    "entryActionShowGeoTiffOnMap",
+    "entryActionConvertMotionPhotoToStillImage",
+    "convertMotionPhotoToStillImageWarningDialogMessage"
   ],
 
   "id": [
-    "entryActionShowGeoTiffOnMap"
+    "entryActionShowGeoTiffOnMap",
+    "entryActionConvertMotionPhotoToStillImage",
+    "convertMotionPhotoToStillImageWarningDialogMessage"
   ],
 
   "it": [
-    "entryActionShowGeoTiffOnMap"
+    "entryActionShowGeoTiffOnMap",
+    "entryActionConvertMotionPhotoToStillImage",
+    "convertMotionPhotoToStillImageWarningDialogMessage"
   ],
 
   "ja": [
-    "entryActionShowGeoTiffOnMap"
+    "entryActionShowGeoTiffOnMap",
+    "entryActionConvertMotionPhotoToStillImage",
+    "convertMotionPhotoToStillImageWarningDialogMessage"
   ],
 
   "ko": [
-    "entryActionShowGeoTiffOnMap"
+    "entryActionShowGeoTiffOnMap",
+    "entryActionConvertMotionPhotoToStillImage",
+    "convertMotionPhotoToStillImageWarningDialogMessage"
   ],
 
   "pt": [
-    "entryActionShowGeoTiffOnMap"
+    "entryActionShowGeoTiffOnMap",
+    "entryActionConvertMotionPhotoToStillImage",
+    "convertMotionPhotoToStillImageWarningDialogMessage"
   ],
 
   "ru": [
     "entryActionShowGeoTiffOnMap",
+    "entryActionConvertMotionPhotoToStillImage",
     "displayRefreshRatePreferHighest",
     "displayRefreshRatePreferLowest",
     "themeBrightnessLight",
@@ -47,6 +64,7 @@
     "renameProcessorCounter",
     "renameProcessorName",
     "editEntryDateDialogCopyItem",
+    "convertMotionPhotoToStillImageWarningDialogMessage",
     "collectionRenameFailureFeedback",
     "collectionRenameSuccessFeedback",
     "settingsConfirmationDialogMoveUndatedItems",

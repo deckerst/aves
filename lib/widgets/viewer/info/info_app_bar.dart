@@ -29,7 +29,8 @@ class InfoAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final menuActions = EntryInfoActions.all.where(actionDelegate.isVisible);
+    final commonActions = EntryInfoActions.common.where(actionDelegate.isVisible);
+    final formatSpecificActions = EntryInfoActions.formatSpecific.where(actionDelegate.isVisible);
 
     return SliverAppBar(
       leading: IconButton(
@@ -55,7 +56,11 @@ class InfoAppBar extends StatelessWidget {
           MenuIconTheme(
             child: PopupMenuButton<EntryInfoAction>(
               itemBuilder: (context) => [
-                ...menuActions.map((action) => _toMenuItem(context, action, enabled: actionDelegate.canApply(action))),
+                ...commonActions.map((action) => _toMenuItem(context, action, enabled: actionDelegate.canApply(action))),
+                if (formatSpecificActions.isNotEmpty) ...[
+                  const PopupMenuDivider(),
+                  ...formatSpecificActions.map((action) => _toMenuItem(context, action, enabled: actionDelegate.canApply(action))),
+                ],
                 if (!kReleaseMode) ...[
                   const PopupMenuDivider(),
                   _toMenuItem(context, EntryInfoAction.debug, enabled: true),

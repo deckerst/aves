@@ -409,6 +409,7 @@ abstract class ImageProvider {
         uri: Uri,
         mimeType: String,
         callback: ImageOpCallback,
+        autoCorrectTrailerOffset: Boolean = true,
         trailerDiff: Int = 0,
         edit: (exif: ExifInterface) -> Unit,
     ): Boolean {
@@ -464,7 +465,7 @@ abstract class ImageProvider {
             // copy the edited temporary file back to the original
             copyTo(context, mimeType, sourceFile = editableFile, targetUri = uri, targetPath = path)
 
-            if (!checkTrailerOffset(context, path, uri, mimeType, videoSize, editableFile, callback)) {
+            if (autoCorrectTrailerOffset && !checkTrailerOffset(context, path, uri, mimeType, videoSize, editableFile, callback)) {
                 return false
             }
         } catch (e: IOException) {
@@ -481,6 +482,7 @@ abstract class ImageProvider {
         uri: Uri,
         mimeType: String,
         callback: ImageOpCallback,
+        autoCorrectTrailerOffset: Boolean = true,
         trailerDiff: Int = 0,
         iptc: List<FieldMap>?,
     ): Boolean {
@@ -550,7 +552,7 @@ abstract class ImageProvider {
             // copy the edited temporary file back to the original
             copyTo(context, mimeType, sourceFile = editableFile, targetUri = uri, targetPath = path)
 
-            if (!checkTrailerOffset(context, path, uri, mimeType, videoSize, editableFile, callback)) {
+            if (autoCorrectTrailerOffset && !checkTrailerOffset(context, path, uri, mimeType, videoSize, editableFile, callback)) {
                 return false
             }
         } catch (e: IOException) {
@@ -569,6 +571,7 @@ abstract class ImageProvider {
         uri: Uri,
         mimeType: String,
         callback: ImageOpCallback,
+        autoCorrectTrailerOffset: Boolean = true,
         trailerDiff: Int = 0,
         coreXmp: String? = null,
         extendedXmp: String? = null,
@@ -624,7 +627,7 @@ abstract class ImageProvider {
             // copy the edited temporary file back to the original
             copyTo(context, mimeType, sourceFile = editableFile, targetUri = uri, targetPath = path)
 
-            if (!checkTrailerOffset(context, path, uri, mimeType, videoSize, editableFile, callback)) {
+            if (autoCorrectTrailerOffset && !checkTrailerOffset(context, path, uri, mimeType, videoSize, editableFile, callback)) {
                 return false
             }
         } catch (e: IOException) {
@@ -812,12 +815,20 @@ abstract class ImageProvider {
         uri: Uri,
         mimeType: String,
         modifier: FieldMap,
+        autoCorrectTrailerOffset: Boolean,
         callback: ImageOpCallback,
     ) {
         if (modifier.containsKey("exif")) {
             val fields = modifier["exif"] as Map<*, *>?
             if (fields != null && fields.isNotEmpty()) {
-                if (!editExif(context, path, uri, mimeType, callback) { exif ->
+                if (!editExif(
+                        context = context,
+                        path = path,
+                        uri = uri,
+                        mimeType = mimeType,
+                        callback = callback,
+                        autoCorrectTrailerOffset = autoCorrectTrailerOffset,
+                    ) { exif ->
                         var setLocation = false
                         fields.forEach { kv ->
                             val tag = kv.key as String?
@@ -859,7 +870,8 @@ abstract class ImageProvider {
                             }
                         }
                         exif.saveAttributes()
-                    }) return
+                    }
+                ) return
             }
         }
 
@@ -871,6 +883,7 @@ abstract class ImageProvider {
                     uri = uri,
                     mimeType = mimeType,
                     callback = callback,
+                    autoCorrectTrailerOffset = autoCorrectTrailerOffset,
                     iptc = iptc,
                 )
             ) return
@@ -887,11 +900,64 @@ abstract class ImageProvider {
                         uri = uri,
                         mimeType = mimeType,
                         callback = callback,
+                        autoCorrectTrailerOffset = autoCorrectTrailerOffset,
                         coreXmp = coreXmp,
                         extendedXmp = extendedXmp,
                     )
                 ) return
             }
+        }
+
+        val newFields = HashMap<String, Any?>()
+        scanPostMetadataEdit(context, path, uri, mimeType, newFields, callback)
+    }
+
+    fun removeTrailerVideo(
+        context: Context,
+        path: String,
+        uri: Uri,
+        mimeType: String,
+        callback: ImageOpCallback,
+    ) {
+        val originalFileSize = File(path).length()
+        val videoSize = MultiPage.getMotionPhotoOffset(context, uri, mimeType, originalFileSize)?.toInt()
+        if (videoSize == null) {
+            callback.onFailure(Exception("failed to get trailer video size"))
+            return
+        }
+        val bytesToCopy = originalFileSize - videoSize
+
+        val editableFile = File.createTempFile("aves", null).apply {
+            deleteOnExit()
+            try {
+                outputStream().use { output ->
+                    // reopen input to read from start
+                    StorageUtils.openInputStream(context, uri)?.use { input ->
+                        // partial copy
+                        var bytesRemaining: Long = bytesToCopy
+                        val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
+                        var bytes = input.read(buffer)
+                        while (bytes >= 0 && bytesRemaining > 0) {
+                            val len = if (bytes > bytesRemaining) bytesRemaining.toInt() else bytes
+                            output.write(buffer, 0, len)
+                            bytesRemaining -= len
+                            bytes = input.read(buffer)
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                Log.d(LOG_TAG, "failed to remove trailer video", e)
+                callback.onFailure(e)
+                return
+            }
+        }
+
+        try {
+            // copy the edited temporary file back to the original
+            copyTo(context, mimeType, sourceFile = editableFile, targetUri = uri, targetPath = path)
+        } catch (e: IOException) {
+            callback.onFailure(e)
+            return
         }
 
         val newFields = HashMap<String, Any?>()
@@ -952,12 +1018,17 @@ abstract class ImageProvider {
         targetUri: Uri,
         targetPath: String
     ) {
-        if (isMediaUriPermissionGranted(context, targetUri, mimeType)) {
-            val targetStream = StorageUtils.openOutputStream(context, targetUri, mimeType) ?: throw Exception("failed to open output stream for uri=$targetUri")
-            DocumentFileCompat.fromFile(sourceFile).copyTo(targetStream)
-        } else {
-            val targetDocumentFile = StorageUtils.getDocumentFile(context, targetPath, targetUri) ?: throw Exception("failed to get document file for path=$targetPath, uri=$targetUri")
-            DocumentFileCompat.fromFile(sourceFile).copyTo(targetDocumentFile)
+        sourceFile.inputStream().use { input ->
+            // truncate is necessary when overwriting a longer file
+            val targetStream = if (isMediaUriPermissionGranted(context, targetUri, mimeType)) {
+                StorageUtils.openOutputStream(context, targetUri, mimeType, "wt") ?: throw Exception("failed to open output stream for uri=$targetUri")
+            } else {
+                val documentUri = StorageUtils.getDocumentFile(context, targetPath, targetUri)?.uri ?: throw Exception("failed to get document file for path=$targetPath, uri=$targetUri")
+                context.contentResolver.openOutputStream(documentUri, "wt") ?: throw Exception("failed to open output stream from documentUri=$documentUri for path=$targetPath, uri=$targetUri")
+            }
+            targetStream.use { output ->
+                input.copyTo(output)
+            }
         }
     }
 

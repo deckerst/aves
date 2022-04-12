@@ -7,8 +7,9 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - Info: improved GeoTIFF section
-- GeoTIFF: locating from GeoTIFF metadata (requires rescan, limited to some projections)
-- GeoTIFF: overlay on map (limited to some projections)
+- Cataloguing: locating from GeoTIFF metadata (requires rescan, limited to some projections)
+- Info: action to overlay GeoTIFF on map (limited to some projections)
+- Info: action to convert motion photo to still image
 - Italian translation (thanks glemco)
 
 ### Changed

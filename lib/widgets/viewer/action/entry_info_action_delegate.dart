@@ -10,6 +10,8 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/common/action_mixins/entry_editor.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/map/map_page.dart';
 import 'package:aves/widgets/viewer/action/single_entry_editor.dart';
 import 'package:aves/widgets/viewer/debug/debug_page.dart';
@@ -41,6 +43,7 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
       case EntryInfoAction.showGeoTiffOnMap:
         return entry.isGeotiff;
       // motion photo
+      case EntryInfoAction.convertMotionPhotoToStillImage:
       case EntryInfoAction.viewMotionPhotoVideo:
         return entry.isMotionPhoto;
       // debug
@@ -66,6 +69,8 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
       case EntryInfoAction.showGeoTiffOnMap:
         return true;
       // motion photo
+      case EntryInfoAction.convertMotionPhotoToStillImage:
+        return entry.canEdit;
       case EntryInfoAction.viewMotionPhotoVideo:
         return true;
       // debug
@@ -98,6 +103,9 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
         await _showGeoTiffOnMap(context);
         break;
       // motion photo
+      case EntryInfoAction.convertMotionPhotoToStillImage:
+        await _convertMotionPhotoToStillImage(context);
+        break;
       case EntryInfoAction.viewMotionPhotoVideo:
         OpenEmbeddedDataNotification.motionPhotoVideo().dispatch(context);
         break;
@@ -146,6 +154,30 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
     if (types == null) return;
 
     await edit(context, () => entry.removeMetadata(types));
+  }
+
+  Future<void> _convertMotionPhotoToStillImage(BuildContext context) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AvesDialog(
+          content: Text(context.l10n.convertMotionPhotoToStillImageWarningDialogMessage),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: Text(context.l10n.applyButtonLabel),
+            ),
+          ],
+        );
+      },
+    );
+    if (confirmed == null || !confirmed) return;
+
+    await edit(context, entry.removeTrailerVideo);
   }
 
   Future<void> _showGeoTiffOnMap(BuildContext context) async {
