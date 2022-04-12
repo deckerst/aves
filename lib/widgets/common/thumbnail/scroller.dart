@@ -32,6 +32,8 @@ class ThumbnailScroller extends StatefulWidget {
 
   @override
   State<ThumbnailScroller> createState() => _ThumbnailScrollerState();
+
+  static double get preferredHeight => _ThumbnailScrollerState.thumbnailExtent;
 }
 
 class _ThumbnailScrollerState extends State<ThumbnailScroller> {

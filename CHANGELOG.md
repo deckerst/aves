@@ -15,6 +15,8 @@ All notable changes to this project will be documented in this file.
 ### Changed
 
 - upgraded Flutter to stable v2.10.4
+- snack bars are dismissible with an horizontal swipe instead of a down swipe
+- Viewer: snack bars avoid quick actions and thumbnails at the bottom
 
 ### Fixed
 

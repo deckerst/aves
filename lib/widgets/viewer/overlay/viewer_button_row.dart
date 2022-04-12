@@ -31,6 +31,10 @@ class ViewerButtonRow extends StatelessWidget {
   static const double outerPadding = 8;
   static const double innerPadding = 8;
 
+  static double preferredHeight(BuildContext context) => _buttonSize(context) + ViewerButtonRowContent.padding;
+
+  static double _buttonSize(BuildContext context) => OverlayButton.getSize(context);
+
   const ViewerButtonRow({
     Key? key,
     required this.mainEntry,
@@ -107,7 +111,7 @@ class ViewerButtonRow extends StatelessWidget {
       bottom: false,
       child: LayoutBuilder(
         builder: (context, constraints) {
-          final buttonWidth = OverlayButton.getSize(context);
+          final buttonWidth = _buttonSize(context);
           final availableCount = ((constraints.maxWidth - outerPadding * 2) / (buttonWidth + innerPadding)).floor();
           return Selector<Settings, bool>(
             selector: (context, s) => s.isRotationLocked,

@@ -4,6 +4,7 @@ import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/viewer/entry_viewer_stack.dart';
 import 'package:aves/widgets/viewer/multipage/conductor.dart';
+import 'package:aves/widgets/viewer/overlay/bottom.dart';
 import 'package:aves/widgets/viewer/video/conductor.dart';
 import 'package:aves/widgets/viewer/visual/conductor.dart';
 import 'package:flutter/material.dart';
@@ -43,6 +44,10 @@ class EntryViewerPage extends StatelessWidget {
         resizeToAvoidBottomInset: false,
       ),
     );
+  }
+
+  static EdgeInsets snackBarMargin(BuildContext context) {
+    return EdgeInsets.only(bottom: ViewerBottomOverlay.actionSafeHeight(context));
   }
 }
 
