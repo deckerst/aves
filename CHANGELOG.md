@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 - Info: action to overlay GeoTIFF on map (limited to some projections)
 - Info: action to convert motion photo to still image
 - Italian translation (thanks glemco)
+- Chinese (Simplified) translation (thanks 小默 & Aerowolf)
 
 ### Changed
 
