@@ -73,5 +73,10 @@
     "settingsThemeColorHighlights",
     "settingsDisplayRefreshRateModeTile",
     "settingsDisplayRefreshRateModeTitle"
+  ],
+
+  "zh": [
+    "entryActionConvertMotionPhotoToStillImage",
+    "convertMotionPhotoToStillImageWarningDialogMessage"
   ]
 }
