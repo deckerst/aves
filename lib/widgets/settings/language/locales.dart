@@ -12,5 +12,6 @@ class SupportedLocales {
     'ko': '한국어',
     'pt': 'Português (Brasil)',
     'ru': 'Русский',
+    'zh': '简体中文',
   };
 }
