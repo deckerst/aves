@@ -376,7 +376,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
     final _collection = widget.collection;
     if (_collection == null) return;
 
-    final entry = await Navigator.push(
+    final entry = await Navigator.push<AvesEntry>(
       context,
       MaterialPageRoute(
         settings: const RouteSettings(name: ItemPickDialog.routeName),

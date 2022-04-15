@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:aves/model/covers.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/coordinate.dart';
@@ -95,7 +96,7 @@ abstract class CollectionFilter extends Equatable implements Comparable<Collecti
   Widget? iconBuilder(BuildContext context, double size, {bool showGenericIcon = true}) => null;
 
   Future<Color> color(BuildContext context) {
-    final colors = context.watch<AvesColorsData>();
+    final colors = context.read<AvesColorsData>();
     return SynchronousFuture(colors.fromString(getLabel(context)));
   }
 
@@ -111,6 +112,20 @@ abstract class CollectionFilter extends Equatable implements Comparable<Collecti
     final c = displayPriority.compareTo(other.displayPriority);
     // assume we compare context-independent labels
     return c != 0 ? c : compareAsciiUpperCase(universalLabel, other.universalLabel);
+  }
+}
+
+@immutable
+abstract class CoveredCollectionFilter extends CollectionFilter {
+  const CoveredCollectionFilter({bool not = false}) : super(not: not);
+
+  @override
+  Future<Color> color(BuildContext context) {
+    final customColor = covers.of(this)?.item3;
+    if (customColor != null) {
+      return SynchronousFuture(customColor);
+    }
+    return super.color(context);
   }
 }
 

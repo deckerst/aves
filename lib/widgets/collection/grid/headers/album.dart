@@ -1,3 +1,4 @@
+import 'package:aves/model/covers.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/section_keys.dart';
@@ -49,7 +50,7 @@ class AlbumSectionHeader extends StatelessWidget {
       context: context,
       maxWidth: maxWidth,
       title: source.getAlbumDisplayName(context, directory),
-      hasLeading: androidFileUtils.getAlbumType(directory) != AlbumType.regular,
+      hasLeading: covers.effectiveAlbumType(directory) != AlbumType.regular,
       hasTrailing: androidFileUtils.isOnRemovableStorage(directory),
     );
   }

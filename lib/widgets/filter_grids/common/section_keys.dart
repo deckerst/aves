@@ -62,9 +62,9 @@ extension ExtraAlbumImportance on AlbumImportance {
       case AlbumImportance.pinned:
         return AIcons.pin;
       case AlbumImportance.special:
-        return Icons.label_important_outline;
+        return AIcons.important;
       case AlbumImportance.apps:
-        return Icons.apps_outlined;
+        return AIcons.app;
       case AlbumImportance.regular:
         return AIcons.album;
     }
