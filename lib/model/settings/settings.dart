@@ -19,7 +19,7 @@ final Settings settings = Settings._private();
 
 class Settings extends ChangeNotifier {
   final EventChannel _platformSettingsChangeChannel = const EventChannel('deckers.thibault/aves/settings_change');
-  final StreamController<SettingsChangedEvent> _updateStreamController = StreamController<SettingsChangedEvent>.broadcast();
+  final StreamController<SettingsChangedEvent> _updateStreamController = StreamController.broadcast();
 
   Stream<SettingsChangedEvent> get updateStream => _updateStreamController.stream;
 

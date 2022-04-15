@@ -1,7 +1,7 @@
 import 'package:aves/image_providers/app_icon_image_provider.dart';
+import 'package:aves/model/covers.dart';
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
-import 'package:aves/utils/android_file_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:palette_generator/palette_generator.dart';
@@ -55,7 +55,7 @@ abstract class AvesColorsData {
   Future<Color>? appColor(String album) {
     if (_appColors.containsKey(album)) return SynchronousFuture(_appColors[album]!);
 
-    final packageName = androidFileUtils.getAlbumAppPackageName(album);
+    final packageName = covers.effectiveAlbumPackage(album);
     if (packageName == null) return null;
 
     return PaletteGenerator.fromImageProvider(
@@ -68,6 +68,8 @@ abstract class AvesColorsData {
       return color;
     });
   }
+
+  void clearAppColor(String album) => _appColors.remove(album);
 
   static const Color _neutralOnDark = Colors.white;
   static const Color _neutralOnLight = Color(0xAA000000);

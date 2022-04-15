@@ -101,7 +101,7 @@ class TypeFilter extends CollectionFilter {
 
   @override
   Future<Color> color(BuildContext context) {
-    final colors = context.watch<AvesColorsData>();
+    final colors = context.read<AvesColorsData>();
     switch (itemType) {
       case _animated:
         return SynchronousFuture(colors.animated);

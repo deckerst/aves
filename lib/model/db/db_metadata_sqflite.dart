@@ -85,6 +85,8 @@ class SqfliteMetadataDb implements MetadataDb {
         await db.execute('CREATE TABLE $coverTable('
             'filter TEXT PRIMARY KEY'
             ', entryId INTEGER'
+            ', packageName TEXT'
+            ', color INTEGER'
             ')');
         await db.execute('CREATE TABLE $trashTable('
             'id INTEGER PRIMARY KEY'
@@ -97,7 +99,7 @@ class SqfliteMetadataDb implements MetadataDb {
             ')');
       },
       onUpgrade: MetadataDbUpgrader.upgradeDb,
-      version: 7,
+      version: 8,
     );
 
     final maxIdRows = await _db.rawQuery('SELECT max(id) AS maxId FROM $entryTable');

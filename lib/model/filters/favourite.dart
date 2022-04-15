@@ -35,7 +35,7 @@ class FavouriteFilter extends CollectionFilter {
 
   @override
   Future<Color> color(BuildContext context) {
-    final colors = context.watch<AvesColorsData>();
+    final colors = context.read<AvesColorsData>();
     return SynchronousFuture(colors.favourite);
   }
 

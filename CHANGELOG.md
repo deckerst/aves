@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
+- Albums / Countries / Tags: allow custom app / color along cover item
 - Info: improved GeoTIFF section
 - Cataloguing: locating from GeoTIFF metadata (requires rescan, limited to some projections)
 - Info: action to overlay GeoTIFF on map (limited to some projections)

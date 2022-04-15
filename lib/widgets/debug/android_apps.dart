@@ -39,7 +39,7 @@ class _DebugAndroidAppSectionState extends State<DebugAndroidAppSection> with Au
             future: _loader,
             builder: (context, snapshot) {
               if (snapshot.hasError) return Text(snapshot.error.toString());
-              if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
+              if (snapshot.connectionState != ConnectionState.done) return const SizedBox();
               final packages = snapshot.data!.toList()..sort((a, b) => compareAsciiUpperCase(a.packageName, b.packageName));
               final enabledTheme = IconTheme.of(context);
               final disabledTheme = enabledTheme.merge(const IconThemeData(opacity: .2));

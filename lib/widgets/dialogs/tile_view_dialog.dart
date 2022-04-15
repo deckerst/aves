@@ -40,6 +40,8 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
 
   Map<L, String> get layoutOptions => widget.layoutOptions;
 
+  static const int groupTabIndex = 1;
+
   double tabBarHeight(BuildContext context) => 64 * max(1, MediaQuery.textScaleFactorOf(context));
 
   static const double tabIndicatorWeight = 2;
@@ -144,7 +146,6 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
           final maxHeight = min(availableBodyHeight, tabBodyMaxHeight(context));
           return Column(
             mainAxisSize: MainAxisSize.min,
-            // crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Material(
                 borderRadius: const BorderRadius.vertical(
@@ -225,6 +226,24 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
     );
   }
 
+  Widget _buildRadioListTile<T>(T value, String title, T? Function() get, void Function(T value) set) {
+    return RadioListTile<T>(
+      // key is expected by test driver
+      key: Key(value.toString()),
+      value: value,
+      groupValue: get(),
+      onChanged: (v) => setState(() => set(v!)),
+      title: Text(
+        title,
+        softWrap: false,
+        overflow: TextOverflow.fade,
+        maxLines: 1,
+      ),
+    );
+  }
+
+  // tabs
+
   Tab _buildTab(
     BuildContext context,
     Key key,
@@ -262,7 +281,7 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
   bool get canGroup => _selectedSort == EntrySortFactor.date || _selectedSort is ChipSortFactor;
 
   void _onTabChange() {
-    if (!canGroup && _tabController.index == 1) {
+    if (!canGroup && _tabController.index == groupTabIndex) {
       _tabController.index = _tabController.previousIndex;
     }
   }
@@ -291,20 +310,4 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
         layoutOptions,
       ].map((v) => v.length).fold(0, max) *
       singleOptionTileHeight(context);
-
-  Widget _buildRadioListTile<T>(T value, String title, T? Function() get, void Function(T value) set) {
-    return RadioListTile<T>(
-      // key is expected by test driver
-      key: Key(value.toString()),
-      value: value,
-      groupValue: get(),
-      onChanged: (v) => setState(() => set(v!)),
-      title: Text(
-        title,
-        softWrap: false,
-        overflow: TextOverflow.fade,
-        maxLines: 1,
-      ),
-    );
-  }
 }

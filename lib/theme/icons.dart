@@ -9,6 +9,7 @@ class AIcons {
 
   static const IconData accessibility = Icons.accessibility_new_outlined;
   static const IconData android = Icons.android;
+  static const IconData app = Icons.apps_outlined;
   static const IconData bin = Icons.delete_outlined;
   static const IconData broken = Icons.broken_image_outlined;
   static const IconData checked = Icons.done_outlined;
@@ -20,6 +21,7 @@ class AIcons {
   static const IconData folder = Icons.folder_outlined;
   static const IconData grid = Icons.grid_on_outlined;
   static const IconData home = Icons.home_outlined;
+  static const IconData important = Icons.label_important_outline;
   static const IconData language = Icons.translate_outlined;
   static const IconData location = Icons.place_outlined;
   static const IconData locationUnlocated = Icons.location_off_outlined;
