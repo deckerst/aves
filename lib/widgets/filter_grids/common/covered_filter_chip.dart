@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:aves/model/covers.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
@@ -61,37 +62,40 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<CollectionSource>(
-      builder: (context, source, child) {
-        switch (T) {
-          case AlbumFilter:
-            {
-              final album = (filter as AlbumFilter).album;
-              return StreamBuilder<AlbumSummaryInvalidatedEvent>(
-                stream: source.eventBus.on<AlbumSummaryInvalidatedEvent>().where((event) => event.directories == null || event.directories!.contains(album)),
-                builder: (context, snapshot) => _buildChip(context, source),
-              );
-            }
-          case LocationFilter:
-            {
-              final countryCode = (filter as LocationFilter).countryCode;
-              return StreamBuilder<CountrySummaryInvalidatedEvent>(
-                stream: source.eventBus.on<CountrySummaryInvalidatedEvent>().where((event) => event.countryCodes == null || event.countryCodes!.contains(countryCode)),
-                builder: (context, snapshot) => _buildChip(context, source),
-              );
-            }
-          case TagFilter:
-            {
-              final tag = (filter as TagFilter).tag;
-              return StreamBuilder<TagSummaryInvalidatedEvent>(
-                stream: source.eventBus.on<TagSummaryInvalidatedEvent>().where((event) => event.tags == null || event.tags!.contains(tag)),
-                builder: (context, snapshot) => _buildChip(context, source),
-              );
-            }
-          default:
-            return const SizedBox();
-        }
-      },
+    return StreamBuilder<Set<CollectionFilter>?>(
+      stream: covers.entryChangeStream.where((event) => event == null || event.contains(filter)),
+      builder: (context, snapshot) => Consumer<CollectionSource>(
+        builder: (context, source, child) {
+          switch (T) {
+            case AlbumFilter:
+              {
+                final album = (filter as AlbumFilter).album;
+                return StreamBuilder<AlbumSummaryInvalidatedEvent>(
+                  stream: source.eventBus.on<AlbumSummaryInvalidatedEvent>().where((event) => event.directories == null || event.directories!.contains(album)),
+                  builder: (context, snapshot) => _buildChip(context, source),
+                );
+              }
+            case LocationFilter:
+              {
+                final countryCode = (filter as LocationFilter).countryCode;
+                return StreamBuilder<CountrySummaryInvalidatedEvent>(
+                  stream: source.eventBus.on<CountrySummaryInvalidatedEvent>().where((event) => event.countryCodes == null || event.countryCodes!.contains(countryCode)),
+                  builder: (context, snapshot) => _buildChip(context, source),
+                );
+              }
+            case TagFilter:
+              {
+                final tag = (filter as TagFilter).tag;
+                return StreamBuilder<TagSummaryInvalidatedEvent>(
+                  stream: source.eventBus.on<TagSummaryInvalidatedEvent>().where((event) => event.tags == null || event.tags!.contains(tag)),
+                  builder: (context, snapshot) => _buildChip(context, source),
+                );
+              }
+            default:
+              return const SizedBox();
+          }
+        },
+      ),
     );
   }
 

@@ -2,49 +2,97 @@
   "de": [
     "entryActionShowGeoTiffOnMap",
     "entryActionConvertMotionPhotoToStillImage",
-    "convertMotionPhotoToStillImageWarningDialogMessage"
+    "setCoverDialogAuto",
+    "convertMotionPhotoToStillImageWarningDialogMessage",
+    "coverDialogTabCover",
+    "coverDialogTabApp",
+    "coverDialogTabColor",
+    "appPickDialogTitle",
+    "appPickDialogNone"
   ],
 
   "es": [
     "entryActionShowGeoTiffOnMap",
     "entryActionConvertMotionPhotoToStillImage",
-    "convertMotionPhotoToStillImageWarningDialogMessage"
+    "setCoverDialogAuto",
+    "convertMotionPhotoToStillImageWarningDialogMessage",
+    "coverDialogTabCover",
+    "coverDialogTabApp",
+    "coverDialogTabColor",
+    "appPickDialogTitle",
+    "appPickDialogNone"
   ],
 
   "fr": [
     "entryActionShowGeoTiffOnMap",
     "entryActionConvertMotionPhotoToStillImage",
-    "convertMotionPhotoToStillImageWarningDialogMessage"
+    "setCoverDialogAuto",
+    "convertMotionPhotoToStillImageWarningDialogMessage",
+    "coverDialogTabCover",
+    "coverDialogTabApp",
+    "coverDialogTabColor",
+    "appPickDialogTitle",
+    "appPickDialogNone"
   ],
 
   "id": [
     "entryActionShowGeoTiffOnMap",
     "entryActionConvertMotionPhotoToStillImage",
-    "convertMotionPhotoToStillImageWarningDialogMessage"
+    "setCoverDialogAuto",
+    "convertMotionPhotoToStillImageWarningDialogMessage",
+    "coverDialogTabCover",
+    "coverDialogTabApp",
+    "coverDialogTabColor",
+    "appPickDialogTitle",
+    "appPickDialogNone"
   ],
 
   "it": [
     "entryActionShowGeoTiffOnMap",
     "entryActionConvertMotionPhotoToStillImage",
-    "convertMotionPhotoToStillImageWarningDialogMessage"
+    "setCoverDialogAuto",
+    "convertMotionPhotoToStillImageWarningDialogMessage",
+    "coverDialogTabCover",
+    "coverDialogTabApp",
+    "coverDialogTabColor",
+    "appPickDialogTitle",
+    "appPickDialogNone"
   ],
 
   "ja": [
     "entryActionShowGeoTiffOnMap",
     "entryActionConvertMotionPhotoToStillImage",
-    "convertMotionPhotoToStillImageWarningDialogMessage"
+    "setCoverDialogAuto",
+    "convertMotionPhotoToStillImageWarningDialogMessage",
+    "coverDialogTabCover",
+    "coverDialogTabApp",
+    "coverDialogTabColor",
+    "appPickDialogTitle",
+    "appPickDialogNone"
   ],
 
   "ko": [
     "entryActionShowGeoTiffOnMap",
     "entryActionConvertMotionPhotoToStillImage",
-    "convertMotionPhotoToStillImageWarningDialogMessage"
+    "setCoverDialogAuto",
+    "convertMotionPhotoToStillImageWarningDialogMessage",
+    "coverDialogTabCover",
+    "coverDialogTabApp",
+    "coverDialogTabColor",
+    "appPickDialogTitle",
+    "appPickDialogNone"
   ],
 
   "pt": [
     "entryActionShowGeoTiffOnMap",
     "entryActionConvertMotionPhotoToStillImage",
-    "convertMotionPhotoToStillImageWarningDialogMessage"
+    "setCoverDialogAuto",
+    "convertMotionPhotoToStillImageWarningDialogMessage",
+    "coverDialogTabCover",
+    "coverDialogTabApp",
+    "coverDialogTabColor",
+    "appPickDialogTitle",
+    "appPickDialogNone"
   ],
 
   "ru": [
@@ -57,6 +105,7 @@
     "themeBrightnessBlack",
     "moveUndatedConfirmationDialogMessage",
     "moveUndatedConfirmationDialogSetDate",
+    "setCoverDialogAuto",
     "renameEntrySetPageTitle",
     "renameEntrySetPagePatternFieldLabel",
     "renameEntrySetPageInsertTooltip",
@@ -65,6 +114,11 @@
     "renameProcessorName",
     "editEntryDateDialogCopyItem",
     "convertMotionPhotoToStillImageWarningDialogMessage",
+    "coverDialogTabCover",
+    "coverDialogTabApp",
+    "coverDialogTabColor",
+    "appPickDialogTitle",
+    "appPickDialogNone",
     "collectionRenameFailureFeedback",
     "collectionRenameSuccessFeedback",
     "settingsConfirmationDialogMoveUndatedItems",
@@ -77,6 +131,12 @@
 
   "zh": [
     "entryActionConvertMotionPhotoToStillImage",
-    "convertMotionPhotoToStillImageWarningDialogMessage"
+    "setCoverDialogAuto",
+    "convertMotionPhotoToStillImageWarningDialogMessage",
+    "coverDialogTabCover",
+    "coverDialogTabApp",
+    "coverDialogTabColor",
+    "appPickDialogTitle",
+    "appPickDialogNone"
   ]
 }

@@ -24,7 +24,7 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
   final AvesEntry entry;
   final CollectionLens? collection;
 
-  final StreamController<ActionEvent<EntryInfoAction>> _eventStreamController = StreamController<ActionEvent<EntryInfoAction>>.broadcast();
+  final StreamController<ActionEvent<EntryInfoAction>> _eventStreamController = StreamController.broadcast();
 
   Stream<ActionEvent<EntryInfoAction>> get eventStream => _eventStreamController.stream;
 
