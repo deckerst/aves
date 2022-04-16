@@ -58,7 +58,6 @@
   "entryActionPrint": "Imprimir",
   "entryActionShare": "Compartir",
   "entryActionViewSource": "Ver fuente",
-  "entryActionViewMotionPhotoVideo": "Abrir foto en movimiento",
   "entryActionEdit": "Editar",
   "entryActionOpen": "Abrir con",
   "entryActionSetAs": "Establecer como",
@@ -184,7 +183,6 @@
   "videoStartOverButtonLabel": "VOLVER A EMPEZAR",
   "videoResumeButtonLabel": "REANUDAR",
 
-  "setCoverDialogTitle": "Elegir carátula",
   "setCoverDialogLatest": "Elemento más reciente",
   "setCoverDialogCustom": "Personalizado",
 

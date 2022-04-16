@@ -2,6 +2,7 @@
   "de": [
     "entryActionShowGeoTiffOnMap",
     "entryActionConvertMotionPhotoToStillImage",
+    "entryActionViewMotionPhotoVideo",
     "setCoverDialogAuto",
     "convertMotionPhotoToStillImageWarningDialogMessage",
     "coverDialogTabCover",
@@ -14,18 +15,7 @@
   "es": [
     "entryActionShowGeoTiffOnMap",
     "entryActionConvertMotionPhotoToStillImage",
-    "setCoverDialogAuto",
-    "convertMotionPhotoToStillImageWarningDialogMessage",
-    "coverDialogTabCover",
-    "coverDialogTabApp",
-    "coverDialogTabColor",
-    "appPickDialogTitle",
-    "appPickDialogNone"
-  ],
-
-  "fr": [
-    "entryActionShowGeoTiffOnMap",
-    "entryActionConvertMotionPhotoToStillImage",
+    "entryActionViewMotionPhotoVideo",
     "setCoverDialogAuto",
     "convertMotionPhotoToStillImageWarningDialogMessage",
     "coverDialogTabCover",
@@ -38,6 +28,7 @@
   "id": [
     "entryActionShowGeoTiffOnMap",
     "entryActionConvertMotionPhotoToStillImage",
+    "entryActionViewMotionPhotoVideo",
     "setCoverDialogAuto",
     "convertMotionPhotoToStillImageWarningDialogMessage",
     "coverDialogTabCover",
@@ -50,6 +41,7 @@
   "it": [
     "entryActionShowGeoTiffOnMap",
     "entryActionConvertMotionPhotoToStillImage",
+    "entryActionViewMotionPhotoVideo",
     "setCoverDialogAuto",
     "convertMotionPhotoToStillImageWarningDialogMessage",
     "coverDialogTabCover",
@@ -62,6 +54,7 @@
   "ja": [
     "entryActionShowGeoTiffOnMap",
     "entryActionConvertMotionPhotoToStillImage",
+    "entryActionViewMotionPhotoVideo",
     "setCoverDialogAuto",
     "convertMotionPhotoToStillImageWarningDialogMessage",
     "coverDialogTabCover",
@@ -74,6 +67,7 @@
   "ko": [
     "entryActionShowGeoTiffOnMap",
     "entryActionConvertMotionPhotoToStillImage",
+    "entryActionViewMotionPhotoVideo",
     "setCoverDialogAuto",
     "convertMotionPhotoToStillImageWarningDialogMessage",
     "coverDialogTabCover",
@@ -86,6 +80,7 @@
   "pt": [
     "entryActionShowGeoTiffOnMap",
     "entryActionConvertMotionPhotoToStillImage",
+    "entryActionViewMotionPhotoVideo",
     "setCoverDialogAuto",
     "convertMotionPhotoToStillImageWarningDialogMessage",
     "coverDialogTabCover",
@@ -98,6 +93,7 @@
   "ru": [
     "entryActionShowGeoTiffOnMap",
     "entryActionConvertMotionPhotoToStillImage",
+    "entryActionViewMotionPhotoVideo",
     "displayRefreshRatePreferHighest",
     "displayRefreshRatePreferLowest",
     "themeBrightnessLight",
@@ -131,6 +127,7 @@
 
   "zh": [
     "entryActionConvertMotionPhotoToStillImage",
+    "entryActionViewMotionPhotoVideo",
     "setCoverDialogAuto",
     "convertMotionPhotoToStillImageWarningDialogMessage",
     "coverDialogTabCover",

@@ -58,7 +58,6 @@
   "entryActionPrint": "Drucken",
   "entryActionShare": "Teilen",
   "entryActionViewSource": "Quelle anzeigen",
-  "entryActionViewMotionPhotoVideo": "Bewegtes Foto öffnen",
   "entryActionEdit": "Bearbeiten",
   "entryActionOpen": "Öffnen mit",
   "entryActionSetAs": "Einstellen als",
@@ -184,7 +183,6 @@
   "videoStartOverButtonLabel": "NEU BEGINNEN",
   "videoResumeButtonLabel": "FORTSETZTEN",
 
-  "setCoverDialogTitle": "Titelbild bestimmen",
   "setCoverDialogLatest": "Letzter Artikel",
   "setCoverDialogCustom": "Benutzerdefiniert",
 

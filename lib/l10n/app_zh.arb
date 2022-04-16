@@ -59,7 +59,6 @@
   "entryActionShare": "分享",
   "entryActionViewSource": "查看源码",
   "entryActionShowGeoTiffOnMap": "显示为地图叠加层",
-  "entryActionViewMotionPhotoVideo": "打开动态照片",
   "entryActionEdit": "编辑",
   "entryActionOpen": "打开方式",
   "entryActionSetAs": "设置为",
@@ -185,7 +184,6 @@
   "videoStartOverButtonLabel": "从头播放",
   "videoResumeButtonLabel": "继续",
 
-  "setCoverDialogTitle": "设置封面",
   "setCoverDialogLatest": "最新项",
   "setCoverDialogCustom": "自定义",
 

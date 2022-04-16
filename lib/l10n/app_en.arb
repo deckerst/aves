@@ -306,7 +306,6 @@
   "videoStartOverButtonLabel": "START OVER",
   "videoResumeButtonLabel": "RESUME",
 
-  "setCoverDialogTitle": "Set Cover",
   "setCoverDialogLatest": "Latest item",
   "setCoverDialogAuto": "Auto",
   "setCoverDialogCustom": "Custom",
