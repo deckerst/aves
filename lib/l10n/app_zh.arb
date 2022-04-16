@@ -59,6 +59,8 @@
   "entryActionShare": "分享",
   "entryActionViewSource": "查看源码",
   "entryActionShowGeoTiffOnMap": "显示为地图叠加层",
+  "entryActionConvertMotionPhotoToStillImage": "转换为静态图像",
+  "entryActionViewMotionPhotoVideo": "打开视频",
   "entryActionEdit": "编辑",
   "entryActionOpen": "打开方式",
   "entryActionSetAs": "设置为",
@@ -185,6 +187,7 @@
   "videoResumeButtonLabel": "继续",
 
   "setCoverDialogLatest": "最新项",
+  "setCoverDialogAuto": "自动",
   "setCoverDialogCustom": "自定义",
 
   "hideFilterConfirmationDialogMessage": "匹配的照片和视频将从收藏中隐藏，你可以通过“隐私”设置中再次显示它们\n\n确定要将其隐藏吗？",
@@ -238,6 +241,7 @@
   "removeEntryMetadataDialogMore": "更多",
 
   "removeEntryMetadataMotionPhotoXmpWarningDialogMessage": "播放动态照片中的视频需要 XMP\n\n确定要删除它吗？",
+  "convertMotionPhotoToStillImageWarningDialogMessage": "你确定吗？",
 
   "videoSpeedDialogLabel": "播放速度",
 
@@ -264,6 +268,13 @@
 
   "tileLayoutGrid": "网格",
   "tileLayoutList": "列表",
+
+  "coverDialogTabCover": "封面",
+  "coverDialogTabApp": "应用",
+  "coverDialogTabColor": "颜色",
+
+  "appPickDialogTitle": "选择应用",
+  "appPickDialogNone": "无",
 
   "aboutPageTitle": "关于",
   "aboutLinkSources": "源码",
