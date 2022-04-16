@@ -66,8 +66,8 @@
   "entryActionRotateScreen": "Ruota lo schermo",
   "entryActionAddFavourite": "Aggiungi ai preferiti",
   "entryActionRemoveFavourite": "Rimuovi dai preferiti",
-
-  "videoActionCaptureFrame": "Cattura fotogramma",
+  "entryActionShowGeoTiffOnMap": "Mostra sopra la mappa",
+  "entryActionConvertMotionPhotoToStillImage": "Converti in immagine statica",
   "videoActionMute": "Disattiva audio",
   "videoActionUnmute": "Riattiva audio",
   "videoActionPause": "Pausa",
@@ -77,7 +77,7 @@
   "videoActionSelectStreams": "Seleziona le tracce",
   "videoActionSetSpeed": "Velocità di riproduzione",
   "videoActionSettings": "Impostazioni",
-
+  "videoActionCaptureFrame": "Cattura fotogramma",
   "entryInfoActionEditDate": "Modifica data e ora",
   "entryInfoActionEditLocation": "Modifica posizione",
   "entryInfoActionEditRating": "Modifica valutazione",
@@ -185,6 +185,7 @@
   "videoResumeButtonLabel": "RIPRENDI",
 
   "setCoverDialogLatest": "Ultimo elemento",
+  "setCoverDialogAuto": "Automatico",
   "setCoverDialogCustom": "Personalizzato",
 
   "hideFilterConfirmationDialogMessage": "Le foto e i video corrispondenti saranno nascosti dalla tua collezione. Puoi mostrarli di nuovo dalle impostazioni della «Privacy». Sei sicuro di volerli nascondere?",
@@ -238,6 +239,7 @@
   "removeEntryMetadataDialogMore": "Altro",
 
   "removeEntryMetadataMotionPhotoXmpWarningDialogMessage": "XMP è richiesto per riprodurre il video all'interno di una foto in movimento.\n\nSei sicuro di volerlo rimuovere?",
+  "convertMotionPhotoToStillImageWarningDialogMessage": "Sei sicuro?",
 
   "videoSpeedDialogLabel": "Velocità di riproduzione",
 
@@ -264,6 +266,13 @@
 
   "tileLayoutGrid": "Griglia",
   "tileLayoutList": "Lista",
+
+  "coverDialogTabCover": "Copertina",
+  "coverDialogTabApp": "App",
+  "coverDialogTabColor": "Colore",
+
+  "appPickDialogTitle": "Seleziona App",
+  "appPickDialogNone": "Nessuna",
 
   "aboutPageTitle": "Informazioni",
   "aboutLinkSources": "Sorgenti",
