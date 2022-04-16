@@ -8,13 +8,11 @@ import androidx.exifinterface.media.ExifInterface
 import com.adobe.internal.xmp.XMPException
 import com.adobe.internal.xmp.XMPUtils
 import com.bumptech.glide.load.resource.bitmap.TransformationUtils
-import com.drew.imaging.ImageMetadataReader
-import com.drew.metadata.file.FileTypeDirectory
 import com.drew.metadata.xmp.XmpDirectory
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safeSuspend
 import deckers.thibault.aves.metadata.Metadata
-import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeString
+import deckers.thibault.aves.metadata.MetadataExtractorHelper
 import deckers.thibault.aves.metadata.MultiPage
 import deckers.thibault.aves.metadata.XMP
 import deckers.thibault.aves.metadata.XMP.getSafeStructField
@@ -25,19 +23,21 @@ import deckers.thibault.aves.utils.BitmapUtils
 import deckers.thibault.aves.utils.BitmapUtils.getBytes
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
-import deckers.thibault.aves.utils.MimeTypes.extensionFor
-import deckers.thibault.aves.utils.MimeTypes.isImage
 import deckers.thibault.aves.utils.MimeTypes.canReadWithExifInterface
 import deckers.thibault.aves.utils.MimeTypes.canReadWithMetadataExtractor
+import deckers.thibault.aves.utils.MimeTypes.extensionFor
+import deckers.thibault.aves.utils.MimeTypes.isImage
 import deckers.thibault.aves.utils.MimeTypes.isVideo
 import deckers.thibault.aves.utils.StorageUtils
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import java.io.File
 import java.io.InputStream
-import java.util.*
 
 class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
     private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
@@ -118,10 +118,7 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
                 retriever.embeddedPicture?.let { bytes ->
                     var embedMimeType: String? = null
                     bytes.inputStream().use { input ->
-                        val metadata = ImageMetadataReader.readMetadata(input)
-                        metadata.getFirstDirectoryOfType(FileTypeDirectory::class.java)?.let { dir ->
-                            dir.getSafeString(FileTypeDirectory.TAG_DETECTED_FILE_MIME_TYPE) { embedMimeType = it }
-                        }
+                        MetadataExtractorHelper.readMimeType(input)?.let { embedMimeType = it }
                     }
                     embedMimeType?.let { mime ->
                         copyEmbeddedBytes(result, mime, displayName, bytes.inputStream())
@@ -153,7 +150,7 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
         if (canReadWithMetadataExtractor(mimeType)) {
             try {
                 Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
-                    val metadata = ImageMetadataReader.readMetadata(input)
+                    val metadata = MetadataExtractorHelper.safeRead(input, sizeBytes)
                     // data can be large and stored in "Extended XMP",
                     // which is returned as a second XMP directory
                     val xmpDirs = metadata.getDirectoriesOfType(XmpDirectory::class.java)

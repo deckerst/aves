@@ -8,7 +8,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.ParcelFileDescriptor
 import android.util.Log
-import com.drew.imaging.ImageMetadataReader
 import com.drew.metadata.xmp.XmpDirectory
 import deckers.thibault.aves.metadata.XMP.getSafeLong
 import deckers.thibault.aves.metadata.XMP.getSafeStructField
@@ -16,7 +15,6 @@ import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
 import org.beyka.tiffbitmapfactory.TiffBitmapFactory
-import java.util.*
 
 object MultiPage {
     private val LOG_TAG = LogUtils.createTag<MultiPage>()
@@ -142,7 +140,7 @@ object MultiPage {
     fun getMotionPhotoOffset(context: Context, uri: Uri, mimeType: String, sizeBytes: Long): Long? {
         try {
             Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
-                val metadata = ImageMetadataReader.readMetadata(input)
+                val metadata = MetadataExtractorHelper.safeRead(input, sizeBytes)
                 for (dir in metadata.getDirectoriesOfType(XmpDirectory::class.java)) {
                     var offsetFromEnd: Long? = null
                     val xmpMeta = dir.xmpMeta

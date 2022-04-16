@@ -77,7 +77,7 @@ class MimeFilter extends CollectionFilter {
 
   @override
   Future<Color> color(BuildContext context) {
-    final colors = context.watch<AvesColorsData>();
+    final colors = context.read<AvesColorsData>();
     switch (mime) {
       case MimeTypes.anyImage:
         return SynchronousFuture(colors.image);

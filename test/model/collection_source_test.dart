@@ -169,15 +169,15 @@ void main() {
     const albumFilter = AlbumFilter(testAlbum, 'whatever');
     expect(albumFilter.test(image1), true);
     expect(covers.count, 0);
-    expect(covers.coverEntryId(albumFilter), null);
+    expect(covers.of(albumFilter), null);
 
-    await covers.set(albumFilter, image1.id);
+    await covers.set(filter: albumFilter, entryId: image1.id, packageName: null, color: null);
     expect(covers.count, 1);
-    expect(covers.coverEntryId(albumFilter), image1.id);
+    expect(covers.of(albumFilter)?.item1, image1.id);
 
-    await covers.set(albumFilter, null);
+    await covers.set(filter: albumFilter, entryId: null, packageName: null, color: null);
     expect(covers.count, 0);
-    expect(covers.coverEntryId(albumFilter), null);
+    expect(covers.of(albumFilter), null);
   });
 
   test('favourites and covers are kept when renaming entries', () async {
@@ -189,7 +189,7 @@ void main() {
     final source = await _initSource();
     await image1.toggleFavourite();
     const albumFilter = AlbumFilter(testAlbum, 'whatever');
-    await covers.set(albumFilter, image1.id);
+    await covers.set(filter: albumFilter, entryId: image1.id, packageName: null, color: null);
     await source.updateAfterRename(
       todoEntries: {image1},
       movedOps: {
@@ -201,7 +201,7 @@ void main() {
     expect(favourites.count, 1);
     expect(image1.isFavourite, true);
     expect(covers.count, 1);
-    expect(covers.coverEntryId(albumFilter), image1.id);
+    expect(covers.of(albumFilter)?.item1, image1.id);
   });
 
   test('favourites and covers are cleared when removing entries', () async {
@@ -213,13 +213,13 @@ void main() {
     final source = await _initSource();
     await image1.toggleFavourite();
     final albumFilter = AlbumFilter(image1.directory!, 'whatever');
-    await covers.set(albumFilter, image1.id);
+    await covers.set(filter: albumFilter, entryId: image1.id, packageName: null, color: null);
     await source.removeEntries({image1.uri}, includeTrash: true);
 
     expect(source.rawAlbums.length, 0);
     expect(favourites.count, 0);
     expect(covers.count, 0);
-    expect(covers.coverEntryId(albumFilter), null);
+    expect(covers.of(albumFilter), null);
   });
 
   test('albums are updated when moving entries', () async {
@@ -284,7 +284,7 @@ void main() {
     final source = await _initSource();
     expect(source.rawAlbums.length, 1);
     const sourceAlbumFilter = AlbumFilter(sourceAlbum, 'whatever');
-    await covers.set(sourceAlbumFilter, image1.id);
+    await covers.set(filter: sourceAlbumFilter, entryId: image1.id, packageName: null, color: null);
 
     await source.updateAfterMove(
       todoEntries: {image1},
@@ -297,7 +297,7 @@ void main() {
 
     expect(source.rawAlbums.length, 2);
     expect(covers.count, 0);
-    expect(covers.coverEntryId(sourceAlbumFilter), null);
+    expect(covers.of(sourceAlbumFilter), null);
   });
 
   test('favourites and covers are kept when renaming albums', () async {
@@ -309,7 +309,7 @@ void main() {
     final source = await _initSource();
     await image1.toggleFavourite();
     var albumFilter = const AlbumFilter(sourceAlbum, 'whatever');
-    await covers.set(albumFilter, image1.id);
+    await covers.set(filter: albumFilter, entryId: image1.id, packageName: null, color: null);
     await source.renameAlbum(sourceAlbum, destinationAlbum, {
       image1
     }, {
@@ -320,7 +320,7 @@ void main() {
     expect(favourites.count, 1);
     expect(image1.isFavourite, true);
     expect(covers.count, 1);
-    expect(covers.coverEntryId(albumFilter), image1.id);
+    expect(covers.of(albumFilter)?.item1, image1.id);
   });
 
   testWidgets('unique album names', (tester) async {

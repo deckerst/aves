@@ -6,11 +6,13 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
+- Albums / Countries / Tags: allow custom app / color along cover item
 - Info: improved GeoTIFF section
 - Cataloguing: locating from GeoTIFF metadata (requires rescan, limited to some projections)
 - Info: action to overlay GeoTIFF on map (limited to some projections)
 - Info: action to convert motion photo to still image
 - Italian translation (thanks glemco)
+- Chinese (Simplified) translation (thanks 小默 & Aerowolf)
 
 ### Changed
 
@@ -21,6 +23,7 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 
 - black screen launch when Firebase fails to initialize (Play version only)
+- crash when cataloguing JPEG with large extended XMP
 
 ## <a id="v1.6.3"></a>[v1.6.3] - 2022-03-28
 

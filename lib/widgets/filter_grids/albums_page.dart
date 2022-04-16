@@ -1,3 +1,4 @@
+import 'package:aves/model/covers.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -38,17 +39,21 @@ class AlbumListPage extends StatelessWidget {
             stream: source.eventBus.on<AlbumsChangedEvent>(),
             builder: (context, snapshot) {
               final gridItems = getAlbumGridItems(context, source);
-              return FilterNavigationPage<AlbumFilter>(
-                source: source,
-                title: context.l10n.albumPageTitle,
-                sortFactor: settings.albumSortFactor,
-                showHeaders: settings.albumGroupFactor != AlbumChipGroupFactor.none,
-                actionDelegate: AlbumChipSetActionDelegate(gridItems),
-                filterSections: groupToSections(context, source, gridItems),
-                newFilters: source.getNewAlbumFilters(context),
-                emptyBuilder: () => EmptyContent(
-                  icon: AIcons.album,
-                  text: context.l10n.albumEmpty,
+              return StreamBuilder<Set<CollectionFilter>?>(
+                // to update sections by tier
+                stream: covers.packageChangeStream,
+                builder: (context, snapshot) => FilterNavigationPage<AlbumFilter>(
+                  source: source,
+                  title: context.l10n.albumPageTitle,
+                  sortFactor: settings.albumSortFactor,
+                  showHeaders: settings.albumGroupFactor != AlbumChipGroupFactor.none,
+                  actionDelegate: AlbumChipSetActionDelegate(gridItems),
+                  filterSections: groupToSections(context, source, gridItems),
+                  newFilters: source.getNewAlbumFilters(context),
+                  emptyBuilder: () => EmptyContent(
+                    icon: AIcons.album,
+                    text: context.l10n.albumEmpty,
+                  ),
                 ),
               );
             },
@@ -89,7 +94,7 @@ class AlbumListPage extends StatelessWidget {
         final appsKey = AlbumImportanceSectionKey.apps(context);
         final regularKey = AlbumImportanceSectionKey.regular(context);
         sections = groupBy<FilterGridItem<AlbumFilter>, ChipSectionKey>(unpinnedMapEntries, (kv) {
-          switch (androidFileUtils.getAlbumType(kv.filter.album)) {
+          switch (covers.effectiveAlbumType(kv.filter.album)) {
             case AlbumType.regular:
               return regularKey;
             case AlbumType.app:

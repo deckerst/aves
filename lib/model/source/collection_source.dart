@@ -219,9 +219,8 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
       entry.uri = 'file://${entry.trashDetails?.path}';
     }
 
-    await covers.moveEntry(entry, persist: persist);
-
     if (persist) {
+      await covers.moveEntry(entry);
       final id = entry.id;
       await metadataDb.updateEntry(id, entry);
       await metadataDb.updateCatalogMetadata(id, entry.catalogMetadata);
@@ -236,7 +235,15 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
 
     final bookmark = settings.drawerAlbumBookmarks?.indexOf(sourceAlbum);
     final pinned = settings.pinnedFilters.contains(oldFilter);
-    await covers.set(newFilter, covers.coverEntryId(oldFilter));
+
+    final existingCover = covers.of(oldFilter);
+    await covers.set(
+      filter: newFilter,
+      entryId: existingCover?.item1,
+      packageName: existingCover?.item2,
+      color: existingCover?.item3,
+    );
+
     renameNewAlbum(sourceAlbum, destinationAlbum);
     await updateAfterMove(
       todoEntries: entries,
@@ -441,7 +448,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
   }
 
   AvesEntry? coverEntry(CollectionFilter filter) {
-    final id = covers.coverEntryId(filter);
+    final id = covers.of(filter)?.item1;
     if (id != null) {
       final entry = visibleEntries.firstWhereOrNull((entry) => entry.id == id);
       if (entry != null) return entry;
