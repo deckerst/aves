@@ -58,7 +58,6 @@
   "entryActionPrint": "인쇄",
   "entryActionShare": "공유",
   "entryActionViewSource": "소스 코드 보기",
-  "entryActionViewMotionPhotoVideo": "모션 포토 보기",
   "entryActionEdit": "편집",
   "entryActionOpen": "다른 앱에서 열기",
   "entryActionSetAs": "다음 용도로 사용",
@@ -184,7 +183,6 @@
   "videoStartOverButtonLabel": "처음부터",
   "videoResumeButtonLabel": "이어서",
 
-  "setCoverDialogTitle": "대표 이미지 변경",
   "setCoverDialogLatest": "최근 항목",
   "setCoverDialogCustom": "직접 설정",
 

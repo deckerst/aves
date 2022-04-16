@@ -58,7 +58,6 @@
   "entryActionPrint": "印刷",
   "entryActionShare": "共有",
   "entryActionViewSource": "ソースを表示",
-  "entryActionViewMotionPhotoVideo": "モーションフォトを開く",
   "entryActionEdit": "編集",
   "entryActionOpen": "アプリで開く",
   "entryActionSetAs": "登録",
@@ -184,7 +183,6 @@
   "videoStartOverButtonLabel": "最初から再生",
   "videoResumeButtonLabel": "再開",
 
-  "setCoverDialogTitle": "カバーを設定",
   "setCoverDialogLatest": "最新のアイテム",
   "setCoverDialogCustom": "カスタム",
 

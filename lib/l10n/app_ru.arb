@@ -58,7 +58,6 @@
   "entryActionPrint": "Печать",
   "entryActionShare": "Поделиться",
   "entryActionViewSource": "Посмотреть источник",
-  "entryActionViewMotionPhotoVideo": "Открыть «Живые фото»",
   "entryActionEdit": "Изменить",
   "entryActionOpen": "Открыть с помощью",
   "entryActionSetAs": "Установить как",
@@ -175,7 +174,6 @@
   "videoStartOverButtonLabel": "ВОСПРОИЗВЕСТИ СНАЧАЛА",
   "videoResumeButtonLabel": "ПРОДОЛЖИТЬ",
 
-  "setCoverDialogTitle": "Установить обложку",
   "setCoverDialogLatest": "Последний объект",
   "setCoverDialogCustom": "Собственная",
 

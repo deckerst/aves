@@ -58,7 +58,9 @@
   "entryActionPrint": "Imprimer",
   "entryActionShare": "Partager",
   "entryActionViewSource": "Voir le code",
-  "entryActionViewMotionPhotoVideo": "Ouvrir le clip vidéo",
+  "entryActionShowGeoTiffOnMap": "Superposer sur la carte",
+  "entryActionConvertMotionPhotoToStillImage": "Convertir en image fixe",
+  "entryActionViewMotionPhotoVideo": "Ouvrir la vidéo",
   "entryActionEdit": "Modifier",
   "entryActionOpen": "Ouvrir avec",
   "entryActionSetAs": "Utiliser comme",
@@ -184,8 +186,8 @@
   "videoStartOverButtonLabel": "RECOMMENCER",
   "videoResumeButtonLabel": "REPRENDRE",
 
-  "setCoverDialogTitle": "Modifier la couverture",
   "setCoverDialogLatest": "dernier élément",
+  "setCoverDialogAuto": "automatique",
   "setCoverDialogCustom": "personnalisé",
 
   "hideFilterConfirmationDialogMessage": "Les images et vidéos correspondantes n’apparaîtront plus dans votre collection. Vous pouvez les montrer à nouveau via les réglages de «\u00A0Confidentialité\u00A0».\n\nVoulez-vous vraiment les masquer ?",
@@ -239,6 +241,7 @@
   "removeEntryMetadataDialogMore": "Voir plus",
 
   "removeEntryMetadataMotionPhotoXmpWarningDialogMessage": "Les métadonnées XMP sont nécessaires pour lire la vidéo d’une photo animée.\n\nVoulez-vous vraiment les supprimer ?",
+  "convertMotionPhotoToStillImageWarningDialogMessage": "Êtes-vous sûr ?",
 
   "videoSpeedDialogLabel": "Vitesse de lecture",
 
@@ -265,6 +268,13 @@
 
   "tileLayoutGrid": "Grille",
   "tileLayoutList": "Liste",
+
+  "coverDialogTabCover": "Image",
+  "coverDialogTabApp": "App",
+  "coverDialogTabColor": "Couleur",
+
+  "appPickDialogTitle": "Sélection",
+  "appPickDialogNone": "Aucune",
 
   "aboutPageTitle": "À propos",
   "aboutLinkSources": "Sources",

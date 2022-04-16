@@ -58,7 +58,6 @@
   "entryActionPrint": "Cetak",
   "entryActionShare": "Bagikan",
   "entryActionViewSource": "Lihat sumber",
-  "entryActionViewMotionPhotoVideo": "Buka Foto bergerak",
   "entryActionEdit": "Ubah",
   "entryActionOpen": "Buka dengan",
   "entryActionSetAs": "Tetapkan sebagai",
@@ -184,7 +183,6 @@
   "videoStartOverButtonLabel": "ULANG DARI AWAL",
   "videoResumeButtonLabel": "LANJUT",
 
-  "setCoverDialogTitle": "Setel Sampul",
   "setCoverDialogLatest": "Benda terbaru",
   "setCoverDialogCustom": "Kustom",
 

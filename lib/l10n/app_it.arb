@@ -58,7 +58,6 @@
   "entryActionPrint": "Stampa",
   "entryActionShare": "Condividi",
   "entryActionViewSource": "Visualizza sorgente",
-  "entryActionViewMotionPhotoVideo": "Apri foto in movimento",
   "entryActionEdit": "Modifica",
   "entryActionOpen": "Apri con",
   "entryActionSetAs": "Imposta come",
@@ -184,7 +183,6 @@
   "videoStartOverButtonLabel": "RICOMINCIA",
   "videoResumeButtonLabel": "RIPRENDI",
 
-  "setCoverDialogTitle": "Modifica la copertina",
   "setCoverDialogLatest": "Ultimo elemento",
   "setCoverDialogCustom": "Personalizzato",
 
