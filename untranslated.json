@@ -110,17 +110,5 @@
     "settingsThemeColorHighlights",
     "settingsDisplayRefreshRateModeTile",
     "settingsDisplayRefreshRateModeTitle"
-  ],
-
-  "zh": [
-    "entryActionConvertMotionPhotoToStillImage",
-    "entryActionViewMotionPhotoVideo",
-    "setCoverDialogAuto",
-    "convertMotionPhotoToStillImageWarningDialogMessage",
-    "coverDialogTabCover",
-    "coverDialogTabApp",
-    "coverDialogTabColor",
-    "appPickDialogTitle",
-    "appPickDialogNone"
   ]
 }
