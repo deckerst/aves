@@ -5,10 +5,8 @@ import android.net.Uri
 import android.provider.MediaStore
 import android.provider.OpenableColumns
 import android.util.Log
-import com.drew.imaging.ImageMetadataReader
-import com.drew.metadata.file.FileTypeDirectory
 import deckers.thibault.aves.metadata.Metadata
-import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeString
+import deckers.thibault.aves.metadata.MetadataExtractorHelper
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.model.SourceEntry
 import deckers.thibault.aves.utils.LogUtils
@@ -22,17 +20,12 @@ internal class ContentImageProvider : ImageProvider() {
         try {
             val safeUri = Uri.fromFile(Metadata.createPreviewFile(context, uri))
             StorageUtils.openInputStream(context, safeUri)?.use { input ->
-                val metadata = ImageMetadataReader.readMetadata(input)
-                for (dir in metadata.getDirectoriesOfType(FileTypeDirectory::class.java)) {
-                    // `metadata-extractor` is the most reliable, except for `tiff` (false positives, false negatives)
-                    // cf https://github.com/drewnoakes/metadata-extractor/issues/296
-                    dir.getSafeString(FileTypeDirectory.TAG_DETECTED_FILE_MIME_TYPE) {
-                        if (it != MimeTypes.TIFF) {
-                            extractorMimeType = it
-                            if (extractorMimeType != sourceMimeType) {
-                                Log.d(LOG_TAG, "source MIME type is $sourceMimeType but extracted MIME type is $extractorMimeType for uri=$uri")
-                            }
-                        }
+                // `metadata-extractor` is the most reliable, except for `tiff` (false positives, false negatives)
+                // cf https://github.com/drewnoakes/metadata-extractor/issues/296
+                MetadataExtractorHelper.readMimeType(input)?.takeIf { it != MimeTypes.TIFF }?.let {
+                    extractorMimeType = it
+                    if (extractorMimeType != sourceMimeType) {
+                        Log.d(LOG_TAG, "source MIME type is $sourceMimeType but extracted MIME type is $extractorMimeType for uri=$uri")
                     }
                 }
             }
