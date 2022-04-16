@@ -23,6 +23,7 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 
 - black screen launch when Firebase fails to initialize (Play version only)
+- crash when cataloguing JPEG with large extended XMP
 
 ## <a id="v1.6.3"></a>[v1.6.3] - 2022-03-28
 

@@ -1,6 +1,11 @@
 package deckers.thibault.aves.metadata
 
 import android.util.Log
+import com.drew.imaging.FileType
+import com.drew.imaging.FileTypeDetector
+import com.drew.imaging.ImageMetadataReader
+import com.drew.imaging.jpeg.JpegMetadataReader
+import com.drew.imaging.jpeg.JpegSegmentMetadataReader
 import com.drew.lang.ByteArrayReader
 import com.drew.lang.Rational
 import com.drew.lang.SequentialByteArrayReader
@@ -10,9 +15,13 @@ import com.drew.metadata.exif.ExifDirectoryBase
 import com.drew.metadata.exif.ExifIFD0Directory
 import com.drew.metadata.exif.ExifReader
 import com.drew.metadata.exif.ExifSubIFDDirectory
+import com.drew.metadata.file.FileTypeDirectory
 import com.drew.metadata.iptc.IptcReader
 import com.drew.metadata.png.PngDirectory
+import com.drew.metadata.xmp.XmpReader
 import deckers.thibault.aves.utils.LogUtils
+import java.io.BufferedInputStream
+import java.io.InputStream
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -33,6 +42,40 @@ object MetadataExtractorHelper {
     // e.g. "iptc [...] 114 [...] 3842494d040400[...]"
     // e.g. "exif [...] 134 [...] 4578696600004949[...]"
     private val PNG_RAW_PROFILE_PATTERN = Regex("^\\n(.*?)\\n\\s*(\\d+)\\n(.*)", RegexOption.DOT_MATCHES_ALL)
+
+    fun readMimeType(input: InputStream): String? {
+        val bufferedInputStream = if (input is BufferedInputStream) input else BufferedInputStream(input)
+        return FileTypeDetector.detectFileType(bufferedInputStream).mimeType
+    }
+
+    fun safeRead(input: InputStream, sizeBytes: Long?): com.drew.metadata.Metadata {
+        val streamLength = sizeBytes ?: -1
+        val bufferedInputStream = if (input is BufferedInputStream) input else BufferedInputStream(input)
+        val fileType = FileTypeDetector.detectFileType(bufferedInputStream)
+
+        val metadata = if (fileType == FileType.Jpeg) {
+            safeReadJpeg(bufferedInputStream)
+        } else {
+            ImageMetadataReader.readMetadata(bufferedInputStream, streamLength, fileType)
+        }
+
+        metadata.addDirectory(FileTypeDirectory(fileType))
+        return metadata
+    }
+
+    // Some JPEG (and other types?) contain XMP with a preposterous number of `DocumentAncestors`.
+    // This bloated XMP is unsafely loaded in memory by Adobe's `XMPMetaParser.parseInputSource`
+    // which easily yields OOM on Android, so we try to detect and strip extended XMP with a modified XMP reader.
+    private fun safeReadJpeg(input: InputStream): com.drew.metadata.Metadata {
+        val readers = ArrayList<JpegSegmentMetadataReader>().apply {
+            addAll(JpegMetadataReader.ALL_READERS.filter { it !is XmpReader })
+            add(MetadataExtractorSafeXmpReader())
+        }
+
+        val metadata = com.drew.metadata.Metadata()
+        JpegMetadataReader.process(metadata, input, readers)
+        return metadata
+    }
 
     // extensions
 
