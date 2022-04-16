@@ -58,6 +58,9 @@
   "entryActionPrint": "Cetak",
   "entryActionShare": "Bagikan",
   "entryActionViewSource": "Lihat sumber",
+  "entryActionShowGeoTiffOnMap": "Tampilkan sebagai hamparan peta",
+  "entryActionConvertMotionPhotoToStillImage": "Ubah ke gambar tetap",
+  "entryActionViewMotionPhotoVideo": "Buka video",
   "entryActionEdit": "Ubah",
   "entryActionOpen": "Buka dengan",
   "entryActionSetAs": "Tetapkan sebagai",
@@ -184,6 +187,7 @@
   "videoResumeButtonLabel": "LANJUT",
 
   "setCoverDialogLatest": "Benda terbaru",
+  "setCoverDialogAuto": "Otomatis",
   "setCoverDialogCustom": "Kustom",
 
   "hideFilterConfirmationDialogMessage": "Foto dan video yang cocok akan disembunyikan dari koleksi Anda. Anda dapat menampilkannya lagi dari pengaturan “Privasi”.\n\nApakah Anda yakin ingin menyembunyikannya?",
@@ -237,6 +241,7 @@
   "removeEntryMetadataDialogMore": "Lebih Banyak",
 
   "removeEntryMetadataMotionPhotoXmpWarningDialogMessage": "XMP diperlukan untuk memutar video di dalam Foto bergerak.\n\nAnda yakin ingin menghapusnya?",
+  "convertMotionPhotoToStillImageWarningDialogMessage": "Apakah kamu yakin?",
 
   "videoSpeedDialogLabel": "Kecepatan pemutaran",
 
@@ -263,6 +268,13 @@
 
   "tileLayoutGrid": "Grid",
   "tileLayoutList": "Daftar",
+
+  "coverDialogTabCover": "Kover",
+  "coverDialogTabApp": "Aplikasi",
+  "coverDialogTabColor": "Warna",
+
+  "appPickDialogTitle": "Pilih Aplikasi",
+  "appPickDialogNone": "Tidak ada",
 
   "aboutPageTitle": "Tentang",
   "aboutLinkSources": "Sumber",

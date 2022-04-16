@@ -25,19 +25,6 @@
     "appPickDialogNone"
   ],
 
-  "id": [
-    "entryActionShowGeoTiffOnMap",
-    "entryActionConvertMotionPhotoToStillImage",
-    "entryActionViewMotionPhotoVideo",
-    "setCoverDialogAuto",
-    "convertMotionPhotoToStillImageWarningDialogMessage",
-    "coverDialogTabCover",
-    "coverDialogTabApp",
-    "coverDialogTabColor",
-    "appPickDialogTitle",
-    "appPickDialogNone"
-  ],
-
   "it": [
     "entryActionShowGeoTiffOnMap",
     "entryActionConvertMotionPhotoToStillImage",
