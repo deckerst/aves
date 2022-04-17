@@ -27,7 +27,7 @@
   "actionRemove": "Удалить",
   "resetButtonTooltip": "Сбросить",
 
-  "doubleBackExitMessage": "Нажмите «назад» еще раз, чтобы выйти.",
+  "doubleBackExitMessage": "Нажмите «Назад» еще раз, чтобы выйти.",
   "doNotAskAgain": "Больше не спрашивать",
 
   "sourceStateLoading": "Загрузка",
@@ -159,7 +159,7 @@
   "storageAccessDialogTitle": "Доступ к хранилищу",
   "storageAccessDialogMessage": "Пожалуйста, выберите {directory} на накопителе «{volume}» на следующем экране, чтобы предоставить этому приложению доступ к нему.",
   "restrictedAccessDialogTitle": "Ограниченный доступ",
-  "restrictedAccessDialogMessage": "Этому приложению не разрешается изменять файлы в каталоге {directory} накопителя «{volume}».\n\nПожалуйста, используйте предустановленный файловый менеджер или галерею, чтобы переместить элементы в другой каталог.",
+  "restrictedAccessDialogMessage": "Этому приложению не разрешается изменять файлы в каталоге {directory} накопителя «{volume}».\n\nПожалуйста, используйте предустановленный файловый менеджер или галерею, чтобы переместить объекты в другой каталог.",
   "notEnoughSpaceDialogTitle": "Недостаточно свободного места.",
   "notEnoughSpaceDialogMessage": "Для завершения этой операции требуется {neededSize} свободного места на «{volume}», но осталось только {freeSize}.",
   "missingSystemFilePickerDialogTitle": "Отсутствует системное приложение выбора файлов",
@@ -177,7 +177,7 @@
   "noMatchingAppDialogTitle": "Нет подходящего приложения",
   "noMatchingAppDialogMessage": "Нет приложений, которые могли бы с этим справиться.",
 
-  "binEntriesConfirmationDialogMessage": "{count, plural, =1{Переместить этот элемент в корзину?} few{Переместить эти {count} элемента в корзину?} other{Переместить эти {count} элементов в корзину?}}",
+  "binEntriesConfirmationDialogMessage": "{count, plural, =1{Переместить этот объект в корзину?} few{Переместить эти {count} объекта в корзину?} other{Переместить эти {count} объектов в корзину?}}",
   "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{Вы уверены, что хотите удалить этот объект?} few{Вы уверены, что хотите удалить эти {count} объекта?} other{Вы уверены, что хотите удалить эти {count} объектов?}}",
   "moveUndatedConfirmationDialogMessage": "Некоторые объекты не имеют даты в метаданных. Их текущая дата будет сброшена с помощью этой операции, если не задана дата в метаданных.",
   "moveUndatedConfirmationDialogSetDate": "Установить дату",
@@ -340,7 +340,7 @@
   "collectionEditFailureFeedback": "{count, plural, =1{Не удалось изменить 1 объект} few{Не удалось изменить {count} объекта} other{Не удалось изменить {count} объектов}}",
   "collectionExportFailureFeedback": "{count, plural, =1{Не удалось экспортировать 1 страницу} few{Не удалось экспортировать {count} страницы} other{Не удалось экспортировать {count} страниц}}",
   "collectionCopySuccessFeedback": "{count, plural, =1{Скопирован 1 объект} few{Скопировано {count} объекта} other{Скопировано {count} объектов}}",
-  "collectionMoveSuccessFeedback": "{count, plural, =1{Перемещен 1 объект} few{Перемещено {count} объекта} other{Перемещено {count} объектов}}",
+  "collectionMoveSuccessFeedback": "{count, plural, =1{Перемещён 1 объект} few{Перемещено {count} объекта} other{Перемещено {count} объектов}}",
   "collectionRenameSuccessFeedback": "{count, plural, =1{Переименован 1 объект} few{Переименовао {count} объекта} other{Переименовано {count} объектов}}",
   "collectionEditSuccessFeedback": "{count, plural, =1{Изменён 1 объект} few{Изменено {count} объекта} other{Изменено {count} объектов}}",
 
@@ -421,8 +421,8 @@
 
   "settingsConfirmationDialogTile": "Диалоги подтверждения",
   "settingsConfirmationDialogTitle": "Диалоги подтверждения",
-  "settingsConfirmationDialogDeleteItems": "Спросить, прежде чем удалять элементы навсегда",
-  "settingsConfirmationDialogMoveToBinItems": "Спросить, прежде чем перемещать элементы в корзину",
+  "settingsConfirmationDialogDeleteItems": "Спросить, прежде чем удалять объекты навсегда",
+  "settingsConfirmationDialogMoveToBinItems": "Спросить, прежде чем перемещать объекты в корзину",
   "settingsConfirmationDialogMoveUndatedItems": "Спросить, прежде чем перемещать объекты без даты в метаданных",
 
   "settingsNavigationDrawerTile": "Навигационное меню",
@@ -445,7 +445,7 @@
   "settingsCollectionQuickActionEditorTitle": "Быстрые действия",
   "settingsCollectionQuickActionTabBrowsing": "Просмотр",
   "settingsCollectionQuickActionTabSelecting": "Выбор",
-  "settingsCollectionBrowsingQuickActionEditorBanner": "Коснитесь и удерживайте для перемещения кнопок и выбора действий, отображаемых при просмотре объектов.",
+  "settingsCollectionBrowsingQuickActionEditorBanner": "Нажмите и удерживайте для перемещения кнопок и выбора действий, отображаемых при просмотре объектов.",
   "settingsCollectionSelectionQuickActionEditorBanner": "Нажмите и удерживайте, чтобы переместить кнопки и выбрать, какие действия будут отображаться при выборе элементов.",
 
   "settingsSectionViewer": "Просмотрщик",
@@ -507,7 +507,7 @@
   "settingsAllowErrorReporting": "Разрешить анонимную отправку логов",
   "settingsSaveSearchHistory": "Сохранять историю поиска",
   "settingsEnableBin": "Использовать корзину",
-  "settingsEnableBinSubtitle": "Хранить удалённые элементы в течение 30 дней",
+  "settingsEnableBinSubtitle": "Хранить удалённые объекты в течение 30 дней",
 
   "settingsHiddenItemsTile": "Скрытые объекты",
   "settingsHiddenItemsTitle": "Скрытые объекты",
