@@ -58,6 +58,9 @@
   "entryActionPrint": "Печать",
   "entryActionShare": "Поделиться",
   "entryActionViewSource": "Посмотреть источник",
+  "entryActionShowGeoTiffOnMap": "Показать на карте",
+  "entryActionConvertMotionPhotoToStillImage": "Конвертировать в статичное изображение",
+  "entryActionViewMotionPhotoVideo": "Открыть видео",
   "entryActionEdit": "Изменить",
   "entryActionOpen": "Открыть с помощью",
   "entryActionSetAs": "Установить как",
@@ -136,6 +139,13 @@
   "accessibilityAnimationsRemove": "Предотвратить экранные эффекты",
   "accessibilityAnimationsKeep": "Сохранить экранные эффекты",
 
+  "displayRefreshRatePreferHighest": "Наивысшая частота",
+  "displayRefreshRatePreferLowest": "Наименьшая частота",
+
+  "themeBrightnessLight": "Светлая",
+  "themeBrightnessDark": "Тёмная",
+  "themeBrightnessBlack": "Чёрная",
+
   "albumTierNew": "Новые",
   "albumTierPinned": "Закрепленные",
   "albumTierSpecial": "Стандартные",
@@ -169,12 +179,15 @@
 
   "binEntriesConfirmationDialogMessage": "{count, plural, =1{Переместить этот элемент в корзину?} few{Переместить эти {count} элемента в корзину?} other{Переместить эти {count} элементов в корзину?}}",
   "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{Вы уверены, что хотите удалить этот объект?} few{Вы уверены, что хотите удалить эти {count} объекта?} other{Вы уверены, что хотите удалить эти {count} объектов?}}",
+  "moveUndatedConfirmationDialogMessage": "Некоторые объекты не имеют даты в метаданных. Их текущая дата будет сброшена с помощью этой операции, если не задана дата в метаданных.",
+  "moveUndatedConfirmationDialogSetDate": "Установить дату",
 
   "videoResumeDialogMessage": "Хотите ли вы возобновить воспроизведение на {time}?",
   "videoStartOverButtonLabel": "ВОСПРОИЗВЕСТИ СНАЧАЛА",
   "videoResumeButtonLabel": "ПРОДОЛЖИТЬ",
 
   "setCoverDialogLatest": "Последний объект",
+  "setCoverDialogAuto": "Авто",
   "setCoverDialogCustom": "Собственная",
 
   "hideFilterConfirmationDialogMessage": "Соответствующие фотографии и видео будут скрыты из вашей коллекции. Вы можете показать их снова в настройках в разделе «Конфиденциальность».\n\nВы уверены, что хотите их скрыть?",
@@ -186,6 +199,14 @@
 
   "renameAlbumDialogLabel": "Новое название",
   "renameAlbumDialogLabelAlreadyExistsHelper": "Каталог уже существует",
+
+  "renameEntrySetPageTitle": "Переименовать",
+  "renameEntrySetPagePatternFieldLabel": "Образец наименования",
+  "renameEntrySetPageInsertTooltip": "Вставить поле",
+  "renameEntrySetPagePreview": "Предпросмотр",
+
+  "renameProcessorCounter": "Счётчик",
+  "renameProcessorName": "Название",
 
   "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{Вы уверены, что хотите удалить этот альбом и его объект?} few{Вы уверены, что хотите удалить этот альбом и его {count} объекта?} other{Вы уверены, что хотите удалить этот альбом и его {count} объектов?}}",
   "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{Вы уверены, что хотите удалить эти альбомы и их объекты?} few{Вы уверены, что хотите удалить эти альбомы и их {count} объекта?} other{Вы уверены, что хотите удалить эти альбомы и их {count} объектов?}}",
@@ -199,6 +220,7 @@
   "editEntryDateDialogTitle": "Дата и время",
   "editEntryDateDialogSetCustom": "Установить дату",
   "editEntryDateDialogCopyField": "Копировать с другой даты",
+  "editEntryDateDialogCopyItem": "Скопировать из другого объекта",
   "editEntryDateDialogExtractFromTitle": "Извлечь из названия",
   "editEntryDateDialogShift": "Сдвиг",
   "editEntryDateDialogSourceFileModifiedDate": "Дата изменения файла",
@@ -219,6 +241,7 @@
   "removeEntryMetadataDialogMore": "Дополнительно",
 
   "removeEntryMetadataMotionPhotoXmpWarningDialogMessage": "Для воспроизведения видео внутри этой живой фотографии требуется XMP профиль.\n\nВы уверены, что хотите удалить его?",
+  "convertMotionPhotoToStillImageWarningDialogMessage": "Вы уверены?",
 
   "videoSpeedDialogLabel": "Скорость воспроизведения",
 
@@ -245,6 +268,13 @@
 
   "tileLayoutGrid": "Сетка",
   "tileLayoutList": "Список",
+
+  "coverDialogTabCover": "Обложка",
+  "coverDialogTabApp": "Приложение",
+  "coverDialogTabColor": "Цвет",
+
+  "appPickDialogTitle": "Выберите приложение",
+  "appPickDialogNone": "Ничего",
 
   "aboutPageTitle": "О нас",
   "aboutLinkSources": "Исходники",
@@ -306,10 +336,12 @@
   "collectionDeleteFailureFeedback": "{count, plural, =1{Не удалось удалить 1 объект} few{Не удалось удалить {count} объекта} other{Не удалось удалить {count} объектов}}",
   "collectionCopyFailureFeedback": "{count, plural, =1{Не удалось скопировать 1 объект} few{Не удалось скопировать {count} объекта} other{Не удалось скопировать {count} объектов}}",
   "collectionMoveFailureFeedback": "{count, plural, =1{Не удалось переместить 1 объект} few{Не удалось переместить {count} объекта} other{Не удалось переместить {count} объектов}}",
+  "collectionRenameFailureFeedback": "{count, plural, =1{Не удалось переименовать 1 объект} few{Не удалось переименовать (count) объекта} other{Не удалось переименовать (count) объектов}}",
   "collectionEditFailureFeedback": "{count, plural, =1{Не удалось изменить 1 объект} few{Не удалось изменить {count} объекта} other{Не удалось изменить {count} объектов}}",
   "collectionExportFailureFeedback": "{count, plural, =1{Не удалось экспортировать 1 страницу} few{Не удалось экспортировать {count} страницы} other{Не удалось экспортировать {count} страниц}}",
   "collectionCopySuccessFeedback": "{count, plural, =1{Скопирован 1 объект} few{Скопировано {count} объекта} other{Скопировано {count} объектов}}",
   "collectionMoveSuccessFeedback": "{count, plural, =1{Перемещен 1 объект} few{Перемещено {count} объекта} other{Перемещено {count} объектов}}",
+  "collectionRenameSuccessFeedback": "{count, plural, =1{Переименован 1 объект} few{Переименовао {count} объекта} other{Переименовано {count} объектов}}",
   "collectionEditSuccessFeedback": "{count, plural, =1{Изменён 1 объект} few{Изменено {count} объекта} other{Изменено {count} объектов}}",
 
   "collectionEmptyFavourites": "Нет избранных",
@@ -391,6 +423,7 @@
   "settingsConfirmationDialogTitle": "Диалоги подтверждения",
   "settingsConfirmationDialogDeleteItems": "Спросить, прежде чем удалять элементы навсегда",
   "settingsConfirmationDialogMoveToBinItems": "Спросить, прежде чем перемещать элементы в корзину",
+  "settingsConfirmationDialogMoveUndatedItems": "Спросить, прежде чем перемещать объекты без даты в метаданных",
 
   "settingsNavigationDrawerTile": "Навигационное меню",
   "settingsNavigationDrawerEditorTitle": "Навигационное меню",
@@ -498,6 +531,12 @@
   "settingsRemoveAnimationsTitle": "Удалить анимацию",
   "settingsTimeToTakeActionTile": "Время на выполнение действия",
   "settingsTimeToTakeActionTitle": "Время на выполнение действия",
+
+  "settingsSectionDisplay": "Отображение",
+  "settingsThemeBrightness": "Тема",
+  "settingsThemeColorHighlights": "Цветовые акценты",
+  "settingsDisplayRefreshRateModeTile": "Частота обновления экрана",
+  "settingsDisplayRefreshRateModeTitle": "Частота обновления",
 
   "settingsSectionLanguage": "Язык и форматы",
   "settingsLanguage": "Язык",
