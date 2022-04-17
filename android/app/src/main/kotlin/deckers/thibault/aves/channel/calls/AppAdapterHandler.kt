@@ -110,8 +110,29 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
             }
         }
 
-        addPackageDetails(Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER))
-        addPackageDetails(Intent(Intent.ACTION_MAIN))
+        // identify launcher category packages, which typically include user apps
+        // they should be fetched before the other packages, to be marked as launcher packages
+        try {
+            addPackageDetails(Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER))
+        } catch (e: Exception) {
+            Log.w(LOG_TAG, "failed to list launcher packages", e)
+        }
+
+        try {
+            // complete with all the other packages
+            addPackageDetails(Intent(Intent.ACTION_MAIN))
+        } catch (e: Exception) {
+            // `PackageManager.queryIntentActivities()` may kill the package manager if the response is too large
+            Log.w(LOG_TAG, "failed to list all packages", e)
+
+            // fallback to the default category packages, which typically include system and OEM tools
+            try {
+                addPackageDetails(Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_DEFAULT))
+            } catch (e: Exception) {
+                Log.w(LOG_TAG, "failed to list default packages", e)
+            }
+        }
+
         result.success(ArrayList(packages.values))
     }
 
