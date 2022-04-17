@@ -25,19 +25,6 @@
     "appPickDialogNone"
   ],
 
-  "it": [
-    "entryActionShowGeoTiffOnMap",
-    "entryActionConvertMotionPhotoToStillImage",
-    "entryActionViewMotionPhotoVideo",
-    "setCoverDialogAuto",
-    "convertMotionPhotoToStillImageWarningDialogMessage",
-    "coverDialogTabCover",
-    "coverDialogTabApp",
-    "coverDialogTabColor",
-    "appPickDialogTitle",
-    "appPickDialogNone"
-  ],
-
   "ja": [
     "entryActionShowGeoTiffOnMap",
     "entryActionConvertMotionPhotoToStillImage",
@@ -75,40 +62,5 @@
     "coverDialogTabColor",
     "appPickDialogTitle",
     "appPickDialogNone"
-  ],
-
-  "ru": [
-    "entryActionShowGeoTiffOnMap",
-    "entryActionConvertMotionPhotoToStillImage",
-    "entryActionViewMotionPhotoVideo",
-    "displayRefreshRatePreferHighest",
-    "displayRefreshRatePreferLowest",
-    "themeBrightnessLight",
-    "themeBrightnessDark",
-    "themeBrightnessBlack",
-    "moveUndatedConfirmationDialogMessage",
-    "moveUndatedConfirmationDialogSetDate",
-    "setCoverDialogAuto",
-    "renameEntrySetPageTitle",
-    "renameEntrySetPagePatternFieldLabel",
-    "renameEntrySetPageInsertTooltip",
-    "renameEntrySetPagePreview",
-    "renameProcessorCounter",
-    "renameProcessorName",
-    "editEntryDateDialogCopyItem",
-    "convertMotionPhotoToStillImageWarningDialogMessage",
-    "coverDialogTabCover",
-    "coverDialogTabApp",
-    "coverDialogTabColor",
-    "appPickDialogTitle",
-    "appPickDialogNone",
-    "collectionRenameFailureFeedback",
-    "collectionRenameSuccessFeedback",
-    "settingsConfirmationDialogMoveUndatedItems",
-    "settingsSectionDisplay",
-    "settingsThemeBrightness",
-    "settingsThemeColorHighlights",
-    "settingsDisplayRefreshRateModeTile",
-    "settingsDisplayRefreshRateModeTitle"
   ]
 }
