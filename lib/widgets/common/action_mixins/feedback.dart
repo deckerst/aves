@@ -193,7 +193,7 @@ class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerPr
         builder: (context, snapshot) {
           final processedCount = processed.length.toDouble();
           final total = widget.itemCount;
-          final percent = min(1.0, processedCount / total);
+          final percent = total != 0 ? min(1.0, processedCount / total) : 1.0;
           return FadeTransition(
             opacity: _animation,
             child: Stack(
