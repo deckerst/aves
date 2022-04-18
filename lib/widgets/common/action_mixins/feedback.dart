@@ -50,20 +50,34 @@ mixin FeedbackMixin {
         // and space under the snack bar `margin` does not receive gestures
         // (because it is used by the `Dismissible` wrapping the snack bar)
         // so we use `showOverlayNotification` instead
-        showOverlayNotification(
+        OverlaySupportEntry? notificationOverlayEntry;
+        notificationOverlayEntry = showOverlayNotification(
           (context) => SafeArea(
             child: Padding(
               padding: margin,
               child: SnackBar(
                 content: snackBarContent,
                 animation: const AlwaysStoppedAnimation<double>(1),
-                action: action,
+                action: action != null
+                    ? SnackBarAction(
+                        label: action.label,
+                        onPressed: () {
+                          // the regular snack bar dismiss behavior is confused
+                          // because it expects a `Scaffold` in context,
+                          // so we manually dimiss the overlay entry
+                          notificationOverlayEntry?.dismiss();
+                          action.onPressed();
+                        },
+                      )
+                    : null,
                 duration: duration,
                 dismissDirection: DismissDirection.horizontal,
               ),
             ),
           ),
           duration: duration,
+          // reuse the same key to dismiss previous snack bar when a new one is shown
+          key: const Key('snack'),
           position: NotificationPosition.bottom,
           context: context,
         );
