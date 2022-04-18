@@ -46,7 +46,10 @@ internal class ContentImageProvider : ImageProvider() {
             "sourceMimeType" to mimeType,
         )
         try {
-            val cursor = context.contentResolver.query(uri, projection, null, null, null)
+            // some providers do not provide the mandatory `OpenableColumns`
+            // and the query fails when compiling a projection specifying them
+            // e.g. `content://mms/part/[id]` on Android KitKat
+            val cursor = context.contentResolver.query(uri, null, null, null, null)
             if (cursor != null && cursor.moveToFirst()) {
                 cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME).let { if (it != -1) fields["title"] = cursor.getString(it) }
                 cursor.getColumnIndex(OpenableColumns.SIZE).let { if (it != -1) fields["sizeBytes"] = cursor.getLong(it) }
@@ -71,13 +74,5 @@ internal class ContentImageProvider : ImageProvider() {
 
         @Suppress("deprecation")
         const val PATH = MediaStore.MediaColumns.DATA
-
-        private val projection = arrayOf(
-            // standard columns for openable URI
-            OpenableColumns.DISPLAY_NAME,
-            OpenableColumns.SIZE,
-            // optional path underlying media content
-            PATH,
-        )
     }
 }
