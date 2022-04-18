@@ -15,7 +15,7 @@ import 'package:aves/widgets/common/map/compass.dart';
 import 'package:aves/widgets/common/map/theme.dart';
 import 'package:aves/widgets/common/map/zoomed_bounds.dart';
 import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
-import 'package:aves/widgets/viewer/info/notifications.dart';
+import 'package:aves/widgets/viewer/notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';

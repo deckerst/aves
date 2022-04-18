@@ -26,7 +26,7 @@ import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/common/thumbnail/scroller.dart';
 import 'package:aves/widgets/map/map_info_row.dart';
 import 'package:aves/widgets/viewer/entry_viewer_page.dart';
-import 'package:aves/widgets/viewer/info/notifications.dart';
+import 'package:aves/widgets/viewer/notifications.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
