@@ -167,6 +167,8 @@ class _EntryLeafletMapState extends State<EntryLeafletMap> with TickerProviderSt
         // TODO TLAD [map] as of flutter_map v0.14.0, `doubleTapZoom` does not move when zoom is already maximal
         // this could be worked around with https://github.com/fleaflet/flutter_map/pull/960
         interactiveFlags: interactive ? InteractiveFlag.all : InteractiveFlag.none,
+        // prevent triggering multiple gestures at once (e.g. rotating a bit when mostly zooming)
+        enableMultiFingerGestureRace: true,
         onTap: (tapPosition, point) => widget.onMapTap?.call(point),
         controller: _leafletMapController,
       ),
