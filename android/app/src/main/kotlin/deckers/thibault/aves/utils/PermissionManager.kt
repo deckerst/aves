@@ -103,7 +103,7 @@ object PermissionManager {
                         if (relativeDir != null) {
                             val dirSegments = relativeDir.split(File.separator).takeWhile { it.isNotEmpty() }
                             val primaryDir = dirSegments.firstOrNull()
-                            if (primaryDir == Environment.DIRECTORY_DOWNLOADS && dirSegments.size > 1) {
+                            if (getRestrictedPrimaryDirectories().contains(primaryDir) && dirSegments.size > 1) {
                                 // request secondary directory (if any) for restricted primary directory
                                 dirSet.add(dirSegments.take(2).joinToString(File.separator))
                             } else {
@@ -185,11 +185,25 @@ object PermissionManager {
         return accessibleDirs
     }
 
+    private fun getRestrictedPrimaryDirectories(): List<String> {
+        val dirs = ArrayList<String>()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            // cf https://developer.android.com/about/versions/11/privacy/storage#directory-access
+            dirs.add(Environment.DIRECTORY_DOWNLOADS)
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                // by observation, no documentation
+                dirs.add("Android")
+            }
+        }
+        return dirs
+    }
+
+    // cf https://developer.android.com/about/versions/11/privacy/storage#directory-access
     fun getRestrictedDirectories(context: Context): List<Map<String, String>> {
         val dirs = ArrayList<Map<String, String>>()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            // cf https://developer.android.com/about/versions/11/privacy/storage#directory-access
             val volumePaths = StorageUtils.getVolumePaths(context)
             dirs.addAll(volumePaths.map {
                 hashMapOf(
@@ -197,12 +211,14 @@ object PermissionManager {
                     "relativeDir" to "",
                 )
             })
-            dirs.addAll(volumePaths.map {
-                hashMapOf(
-                    "volumePath" to it,
-                    "relativeDir" to Environment.DIRECTORY_DOWNLOADS,
-                )
-            })
+            for (relativeDir in getRestrictedPrimaryDirectories()) {
+                dirs.addAll(volumePaths.map {
+                    hashMapOf(
+                        "volumePath" to it,
+                        "relativeDir" to relativeDir,
+                    )
+                })
+            }
         } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT
             || Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT_WATCH
         ) {
