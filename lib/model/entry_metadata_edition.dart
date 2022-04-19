@@ -63,6 +63,7 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
               editCreateDateXmp(descriptions, null);
               break;
           }
+          return true;
         }),
       };
       final newFields = await metadataEditService.editMetadata(this, metadata);
@@ -156,10 +157,11 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
 
     if (canEditXmp) {
       metadata[MetadataType.xmp] = await _editXmp((descriptions) {
-        if (missingDate != null) {
+        final modified = editTagsXmp(descriptions, tags);
+        if (modified && missingDate != null) {
           editCreateDateXmp(descriptions, missingDate);
         }
-        editTagsXmp(descriptions, tags);
+        return modified;
       });
     }
 
@@ -185,14 +187,45 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
 
     if (canEditXmp) {
       metadata[MetadataType.xmp] = await _editXmp((descriptions) {
-        if (missingDate != null) {
+        final modified = editRatingXmp(descriptions, rating);
+        if (modified && missingDate != null) {
           editCreateDateXmp(descriptions, missingDate);
         }
-        editRatingXmp(descriptions, rating);
+        return modified;
       });
     }
 
     final newFields = await metadataEditService.editMetadata(this, metadata);
+    if (newFields.isNotEmpty) {
+      dataTypes.add(EntryDataType.catalog);
+    }
+    return dataTypes;
+  }
+
+  // remove:
+  // - trailer video
+  // - XMP / Container:Directory
+  // - XMP / GCamera:MicroVideo*
+  // - XMP / GCamera:MotionPhoto*
+  Future<Set<EntryDataType>> removeTrailerVideo() async {
+    final Set<EntryDataType> dataTypes = {};
+    final Map<MetadataType, dynamic> metadata = {};
+
+    if (!canEditXmp) return dataTypes;
+
+    final missingDate = await _missingDateCheckAndExifEdit(dataTypes);
+
+    final newFields = await metadataEditService.removeTrailerVideo(this);
+
+    metadata[MetadataType.xmp] = await _editXmp((descriptions) {
+      final modified = removeContainerXmp(descriptions);
+      if (modified && missingDate != null) {
+        editCreateDateXmp(descriptions, missingDate);
+      }
+      return modified;
+    });
+
+    newFields.addAll(await metadataEditService.editMetadata(this, metadata, autoCorrectTrailerOffset: false));
     if (newFields.isNotEmpty) {
       dataTypes.add(EntryDataType.catalog);
     }
@@ -232,8 +265,8 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
   }
 
   @visibleForTesting
-  static void editTagsXmp(List<XmlNode> descriptions, Set<String> tags) {
-    XMP.setStringBag(
+  static bool editTagsXmp(List<XmlNode> descriptions, Set<String> tags) {
+    return XMP.setStringBag(
       descriptions,
       XMP.dcSubject,
       tags,
@@ -243,21 +276,55 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
   }
 
   @visibleForTesting
-  static void editRatingXmp(List<XmlNode> descriptions, int? rating) {
-    XMP.setAttribute(
+  static bool editRatingXmp(List<XmlNode> descriptions, int? rating) {
+    bool modified = false;
+
+    modified |= XMP.setAttribute(
       descriptions,
       XMP.xmpRating,
       (rating ?? 0) == 0 ? null : '$rating',
       namespace: Namespaces.xmp,
       strat: XmpEditStrategy.always,
     );
-    XMP.setAttribute(
+
+    modified |= XMP.setAttribute(
       descriptions,
       XMP.msPhotoRating,
       XMP.toMsPhotoRating(rating),
       namespace: Namespaces.microsoftPhoto,
       strat: XmpEditStrategy.updateIfPresent,
     );
+
+    return modified;
+  }
+
+  @visibleForTesting
+  static bool removeContainerXmp(List<XmlNode> descriptions) {
+    bool modified = false;
+
+    modified |= XMP.removeElements(
+      descriptions,
+      XMP.containerDirectory,
+      Namespaces.container,
+    );
+
+    modified |= [
+      XMP.gCameraMicroVideo,
+      XMP.gCameraMicroVideoVersion,
+      XMP.gCameraMicroVideoOffset,
+      XMP.gCameraMicroVideoPresentationTimestampUs,
+      XMP.gCameraMotionPhoto,
+      XMP.gCameraMotionPhotoVersion,
+      XMP.gCameraMotionPhotoPresentationTimestampUs,
+    ].fold<bool>(modified, (prev, name) {
+      return prev |= XMP.removeElements(
+        descriptions,
+        name,
+        Namespaces.gCamera,
+      );
+    });
+
+    return modified;
   }
 
   // convenience methods
@@ -328,7 +395,7 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
     }
   }
 
-  Future<Map<String, String?>> _editXmp(void Function(List<XmlNode> descriptions) apply) async {
+  Future<Map<String, String?>> _editXmp(bool Function(List<XmlNode> descriptions) apply) async {
     final xmp = await metadataFetchService.getXmp(this);
     final xmpString = xmp?.xmpString;
     final extendedXmpString = xmp?.extendedXmpString;

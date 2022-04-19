@@ -28,7 +28,7 @@ class Query extends ChangeNotifier {
 
   void toggle() => enabled = !enabled;
 
-  final StreamController<bool> _enabledStreamController = StreamController<bool>.broadcast();
+  final StreamController<bool> _enabledStreamController = StreamController.broadcast();
 
   Stream<bool> get enabledStream => _enabledStreamController.stream;
 

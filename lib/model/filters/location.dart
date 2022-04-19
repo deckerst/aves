@@ -5,7 +5,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
 
-class LocationFilter extends CollectionFilter {
+class LocationFilter extends CoveredCollectionFilter {
   static const type = 'location';
   static const locationSeparator = ';';
 

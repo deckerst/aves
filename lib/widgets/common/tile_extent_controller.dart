@@ -8,7 +8,7 @@ class TileExtentController {
   final String settingsRouteKey;
   final int columnCountMin, columnCountDefault;
   final double extentMin, extentMax, spacing, horizontalPadding;
-  final ValueNotifier<double> extentNotifier = ValueNotifier(0);
+  late final ValueNotifier<double> extentNotifier;
 
   late double userPreferredExtent;
   Size _viewportSize = Size.zero;
@@ -24,6 +24,8 @@ class TileExtentController {
     required this.spacing,
     required this.horizontalPadding,
   }) {
+    // initialize extent to 0, so that it will be dynamically sized on first launch
+    extentNotifier = ValueNotifier(0);
     userPreferredExtent = settings.getTileExtent(settingsRouteKey);
     settings.addListener(_onSettingsChanged);
   }

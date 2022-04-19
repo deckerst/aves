@@ -86,7 +86,9 @@
   "entryActionPrint": "Print",
   "entryActionShare": "Share",
   "entryActionViewSource": "View source",
-  "entryActionViewMotionPhotoVideo": "Open Motion Photo",
+  "entryActionShowGeoTiffOnMap": "Show as map overlay",
+  "entryActionConvertMotionPhotoToStillImage": "Convert to still image",
+  "entryActionViewMotionPhotoVideo": "Open video",
   "entryActionEdit": "Edit",
   "entryActionOpen": "Open with",
   "entryActionSetAs": "Set as",
@@ -304,8 +306,8 @@
   "videoStartOverButtonLabel": "START OVER",
   "videoResumeButtonLabel": "RESUME",
 
-  "setCoverDialogTitle": "Set Cover",
   "setCoverDialogLatest": "Latest item",
+  "setCoverDialogAuto": "Auto",
   "setCoverDialogCustom": "Custom",
 
   "hideFilterConfirmationDialogMessage": "Matching photos and videos will be hidden from your collection. You can show them again from the “Privacy” settings.\n\nAre you sure you want to hide them?",
@@ -369,6 +371,7 @@
   "removeEntryMetadataDialogMore": "More",
 
   "removeEntryMetadataMotionPhotoXmpWarningDialogMessage": "XMP is required to play the video inside a motion photo.\n\nAre you sure you want to remove it?",
+  "convertMotionPhotoToStillImageWarningDialogMessage": "Are you sure?",
 
   "videoSpeedDialogLabel": "Playback speed",
 
@@ -395,6 +398,13 @@
 
   "tileLayoutGrid": "Grid",
   "tileLayoutList": "List",
+
+  "coverDialogTabCover": "Cover",
+  "coverDialogTabApp": "App",
+  "coverDialogTabColor": "Color",
+
+  "appPickDialogTitle": "Pick App",
+  "appPickDialogNone": "None",
 
   "aboutPageTitle": "About",
   "aboutLinkSources": "Sources",

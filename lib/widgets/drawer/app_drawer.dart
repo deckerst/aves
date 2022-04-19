@@ -142,7 +142,6 @@ class AppDrawer extends StatelessWidget {
               ),
               child: Wrap(
                 spacing: 8,
-                runSpacing: 8,
                 children: [
                   OutlinedButton.icon(
                     // key is expected by test driver

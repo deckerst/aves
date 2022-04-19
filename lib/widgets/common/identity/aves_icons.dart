@@ -1,4 +1,5 @@
 import 'package:aves/image_providers/app_icon_image_provider.dart';
+import 'package:aves/model/covers.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/android_file_utils.dart';
@@ -267,7 +268,8 @@ class IconUtils {
   }) {
     size ??= IconTheme.of(context).size;
     Widget buildIcon(IconData icon) => Icon(icon, size: size);
-    switch (androidFileUtils.getAlbumType(albumPath)) {
+
+    switch (covers.effectiveAlbumType(albumPath)) {
       case AlbumType.camera:
         return buildIcon(AIcons.cameraAlbum);
       case AlbumType.screenshots:
@@ -278,14 +280,17 @@ class IconUtils {
       case AlbumType.download:
         return buildIcon(AIcons.downloadAlbum);
       case AlbumType.app:
-        return Image(
-          image: AppIconImage(
-            packageName: androidFileUtils.getAlbumAppPackageName(albumPath)!,
-            size: size!,
-          ),
-          width: size,
-          height: size,
-        );
+        final package = covers.effectiveAlbumPackage(albumPath);
+        return package != null
+            ? Image(
+                image: AppIconImage(
+                  packageName: package,
+                  size: size!,
+                ),
+                width: size,
+                height: size,
+              )
+            : null;
       case AlbumType.regular:
       default:
         return null;

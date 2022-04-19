@@ -1,4 +1,5 @@
 import 'package:aves/model/entry.dart';
+import 'package:aves/model/geotiff.dart';
 import 'package:aves/model/metadata/catalog.dart';
 import 'package:aves/model/metadata/fields.dart';
 import 'package:aves/model/metadata/overlay.dart';
@@ -18,6 +19,8 @@ abstract class MetadataFetchService {
   Future<CatalogMetadata?> getCatalogMetadata(AvesEntry entry, {bool background = false});
 
   Future<OverlayMetadata?> getOverlayMetadata(AvesEntry entry);
+
+  Future<GeoTiffInfo?> getGeoTiffInfo(AvesEntry entry);
 
   Future<MultiPageInfo?> getMultiPageInfo(AvesEntry entry);
 
@@ -109,6 +112,23 @@ class PlatformMetadataFetchService implements MetadataFetchService {
         'sizeBytes': entry.sizeBytes,
       }) as Map;
       return OverlayMetadata.fromMap(result);
+    } on PlatformException catch (e, stack) {
+      if (!entry.isMissingAtPath) {
+        await reportService.recordError(e, stack);
+      }
+    }
+    return null;
+  }
+
+  @override
+  Future<GeoTiffInfo?> getGeoTiffInfo(AvesEntry entry) async {
+    try {
+      final result = await platform.invokeMethod('getGeoTiffInfo', <String, dynamic>{
+        'mimeType': entry.mimeType,
+        'uri': entry.uri,
+        'sizeBytes': entry.sizeBytes,
+      }) as Map;
+      return GeoTiffInfo.fromMap(result);
     } on PlatformException catch (e, stack) {
       if (!entry.isMissingAtPath) {
         await reportService.recordError(e, stack);

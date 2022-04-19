@@ -9,6 +9,7 @@ class AIcons {
 
   static const IconData accessibility = Icons.accessibility_new_outlined;
   static const IconData android = Icons.android;
+  static const IconData app = Icons.apps_outlined;
   static const IconData bin = Icons.delete_outlined;
   static const IconData broken = Icons.broken_image_outlined;
   static const IconData checked = Icons.done_outlined;
@@ -20,10 +21,12 @@ class AIcons {
   static const IconData folder = Icons.folder_outlined;
   static const IconData grid = Icons.grid_on_outlined;
   static const IconData home = Icons.home_outlined;
+  static const IconData important = Icons.label_important_outline;
   static const IconData language = Icons.translate_outlined;
   static const IconData location = Icons.place_outlined;
   static const IconData locationUnlocated = Icons.location_off_outlined;
   static const IconData mainStorage = Icons.smartphone_outlined;
+  static const IconData opacity = Icons.opacity;
   static const IconData privacy = MdiIcons.shieldAccountOutline;
   static const IconData rating = Icons.star_border_outlined;
   static const IconData ratingFull = Icons.star;
@@ -52,6 +55,7 @@ class AIcons {
   static const IconData clear = Icons.clear_outlined;
   static const IconData clipboard = Icons.content_copy_outlined;
   static const IconData convert = Icons.transform_outlined;
+  static const IconData convertToStillImage = MdiIcons.movieRemoveOutline;
   static const IconData copy = Icons.file_copy_outlined;
   static const IconData debug = Icons.whatshot_outlined;
   static const IconData delete = Icons.delete_outlined;
@@ -79,6 +83,7 @@ class AIcons {
   static const IconData name = Icons.abc_outlined;
   static const IconData newTier = Icons.fiber_new_outlined;
   static const IconData openOutside = Icons.open_in_new_outlined;
+  static const IconData openVideo = MdiIcons.moviePlayOutline;
   static const IconData pin = Icons.push_pin_outlined;
   static const IconData unpin = MdiIcons.pinOffOutline;
   static const IconData play = Icons.play_arrow;

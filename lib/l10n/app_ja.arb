@@ -1,6 +1,6 @@
 {
-  "appName": "アヴェス",
-  "welcomeMessage": "アヴェスへようこそ",
+  "appName": "Aves",
+  "welcomeMessage": "Avesへようこそ",
   "welcomeOptional": "オプション",
   "welcomeTermsToggle": "利用規約に同意する",
   "itemCount": "{count, plural, other{{count} 件のアイテム}}",
@@ -58,7 +58,6 @@
   "entryActionPrint": "印刷",
   "entryActionShare": "共有",
   "entryActionViewSource": "ソースを表示",
-  "entryActionViewMotionPhotoVideo": "モーションフォトを開く",
   "entryActionEdit": "編集",
   "entryActionOpen": "アプリで開く",
   "entryActionSetAs": "登録",
@@ -111,7 +110,7 @@
   "unitSystemImperial": "ヤード・ポンド法",
 
   "videoLoopModeNever": "ループ再生しない",
-  "videoLoopModeShortOnly": "短い動画のみループ再生",
+  "videoLoopModeShortOnly": "短い動画のみ",
   "videoLoopModeAlways": "常にループ再生",
 
   "videoControlsPlay": "再生",
@@ -122,7 +121,7 @@
   "mapStyleGoogleNormal": "Google マップ",
   "mapStyleGoogleHybrid": "Google マップ（ハイブリッド）",
   "mapStyleGoogleTerrain": "Google マップ（地形）",
-  "mapStyleOsmHot": "人道支援 OSM",
+  "mapStyleOsmHot": "Humanitarian OSM",
   "mapStyleStamenToner": "Stamen Toner",
   "mapStyleStamenWatercolor": "Stamen Watercolor",
 
@@ -131,18 +130,18 @@
   "nameConflictStrategySkip": "スキップ",
 
   "keepScreenOnNever": "自動オフ",
-  "keepScreenOnViewerOnly": "ビューアー使用時のみオン",
+  "keepScreenOnViewerOnly": "ビューアー表示中のみ",
   "keepScreenOnAlways": "常にオン",
 
-  "accessibilityAnimationsRemove": "画面エフェクトを利用しない",
-  "accessibilityAnimationsKeep": "画面エフェクトを利用",
+  "accessibilityAnimationsRemove": "画面効果を表示しない",
+  "accessibilityAnimationsKeep": "画面効果を表示",
 
   "displayRefreshRatePreferHighest": "高レート",
   "displayRefreshRatePreferLowest": "低レート",
 
   "themeBrightnessLight": "ライト",
   "themeBrightnessDark": "ダーク",
-  "themeBrightnessBlack": "黒",
+  "themeBrightnessBlack": "ブラック",
 
   "albumTierNew": "新規",
   "albumTierPinned": "固定",
@@ -184,7 +183,6 @@
   "videoStartOverButtonLabel": "最初から再生",
   "videoResumeButtonLabel": "再開",
 
-  "setCoverDialogTitle": "カバーを設定",
   "setCoverDialogLatest": "最新のアイテム",
   "setCoverDialogCustom": "カスタム",
 
@@ -405,8 +403,8 @@
 
   "settingsSectionNavigation": "ナビゲーション",
   "settingsHome": "ホーム",
-  "settingsKeepScreenOnTile": "画面表示をオンのままにする",
-  "settingsKeepScreenOnTitle": "画面表示をオンのままにする",
+  "settingsKeepScreenOnTile": "画面をオンのままにする",
+  "settingsKeepScreenOnTitle": "画面をオンのままにする",
   "settingsDoubleBackExit": "「戻る」を２回タップして終了",
 
   "settingsConfirmationDialogTile": "確認メッセージ",
@@ -441,8 +439,8 @@
   "settingsSectionViewer": "ビューアー",
   "settingsViewerUseCutout": "切り取り領域を使用",
   "settingsViewerMaximumBrightness": "明るさ最大",
-  "settingsMotionPhotoAutoPlay": "モーションフォト自動再生",
-  "settingsImageBackground": "画像背景",
+  "settingsMotionPhotoAutoPlay": "モーションフォトを自動再生",
+  "settingsImageBackground": "画像の背景",
 
   "settingsViewerQuickActionsTile": "クイックアクション",
   "settingsViewerQuickActionEditorTitle": "クイックアクション",
@@ -453,7 +451,7 @@
 
   "settingsViewerOverlayTile": "オーバーレイ",
   "settingsViewerOverlayTitle": "オーバーレイ",
-  "settingsViewerShowOverlayOnOpening": "最初に表示",
+  "settingsViewerShowOverlayOnOpening": "起動時に表示",
   "settingsViewerShowMinimap": "小さな地図を表示",
   "settingsViewerShowInformation": "情報を表示",
   "settingsViewerShowInformationSubtitle": "タイトル、日付、位置情報、その他を表示",
@@ -512,7 +510,7 @@
 
   "settingsStorageAccessTile": "ストレージへのアクセス",
   "settingsStorageAccessTitle": "ストレージへのアクセス",
-  "settingsStorageAccessBanner": "ディレクトリによっては保存されているファイルの編集のためにアクセスを許可する必要があります。これまでにアクセスを許可したディレクトりはこちらで確認できます。",
+  "settingsStorageAccessBanner": "ディレクトリによっては、ファイルの編集のためにアクセス許可が必要です。ここには、これまでにアクセスを許可したディレクトリが表示されます。",
   "settingsStorageAccessEmpty": "許可したアクセスはありません",
   "settingsStorageAccessRevokeTooltip": "許可を取り消し",
 
@@ -526,7 +524,7 @@
   "settingsThemeBrightness": "テーマ",
   "settingsThemeColorHighlights": "カラー強調表示",
   "settingsDisplayRefreshRateModeTile": "ディスプレイ リフレッシュ レート",
-  "settingsDisplayRefreshRateModeTitle": "リフレッシュレート",
+  "settingsDisplayRefreshRateModeTitle": "リフレッシュ レート",
 
   "settingsSectionLanguage": "言語と形式",
   "settingsLanguage": "言語",

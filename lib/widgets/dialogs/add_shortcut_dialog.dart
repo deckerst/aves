@@ -38,7 +38,7 @@ class _AddShortcutDialogState extends State<AddShortcutDialog> {
     if (_collection != null) {
       final entries = _collection.sortedEntries;
       if (entries.isNotEmpty) {
-        final coverEntries = _collection.filters.map(covers.coverEntryId).whereNotNull().map((id) => entries.firstWhereOrNull((entry) => entry.id == id)).whereNotNull();
+        final coverEntries = _collection.filters.map((filter) => covers.of(filter)?.item1).whereNotNull().map((id) => entries.firstWhereOrNull((entry) => entry.id == id)).whereNotNull();
         _coverEntry = coverEntries.firstOrNull ?? entries.first;
       }
     }
@@ -110,7 +110,7 @@ class _AddShortcutDialogState extends State<AddShortcutDialog> {
     final _collection = widget.collection;
     if (_collection == null) return;
 
-    final entry = await Navigator.push(
+    final entry = await Navigator.push<AvesEntry>(
       context,
       MaterialPageRoute(
         settings: const RouteSettings(name: ItemPickDialog.routeName),

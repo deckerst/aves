@@ -318,6 +318,11 @@ class Constants {
       sourceUrl: 'https://github.com/DavBfr/dart_pdf',
     ),
     Dependency(
+      name: 'Proj4dart',
+      license: 'MIT',
+      sourceUrl: 'https://github.com/maRci002/proj4dart',
+    ),
+    Dependency(
       name: 'Stack Trace',
       license: 'BSD 3-Clause',
       sourceUrl: 'https://github.com/dart-lang/stack_trace',

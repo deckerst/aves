@@ -29,6 +29,8 @@ object Metadata {
     const val DIR_XMP = "XMP" // from metadata-extractor
     const val DIR_MEDIA = "Media" // custom
     const val DIR_COVER_ART = "Cover" // custom
+    const val DIR_DNG = "DNG" // custom
+    const val DIR_EXIF_GEOTIFF = "GeoTIFF" // custom
     const val DIR_PNG_TEXTUAL_DATA = "PNG Textual Data" // custom
 
     // types of metadata

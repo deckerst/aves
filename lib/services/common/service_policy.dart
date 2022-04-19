@@ -8,7 +8,7 @@ import 'package:tuple/tuple.dart';
 final ServicePolicy servicePolicy = ServicePolicy._private();
 
 class ServicePolicy {
-  final StreamController<QueueState> _queueStreamController = StreamController<QueueState>.broadcast();
+  final StreamController<QueueState> _queueStreamController = StreamController.broadcast();
   final Map<Object, Tuple2<int, _Task>> _paused = {};
   final SplayTreeMap<int, LinkedHashMap<Object, _Task>> _queues = SplayTreeMap();
   final LinkedHashMap<Object, _Task> _runningQueue = LinkedHashMap();

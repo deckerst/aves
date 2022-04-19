@@ -10,19 +10,27 @@ enum EntryInfoAction {
   editRating,
   editTags,
   removeMetadata,
+  // GeoTIFF
+  showGeoTiffOnMap,
   // motion photo
+  convertMotionPhotoToStillImage,
   viewMotionPhotoVideo,
   // debug
   debug,
 }
 
 class EntryInfoActions {
-  static const all = [
+  static const common = [
     EntryInfoAction.editDate,
     EntryInfoAction.editLocation,
     EntryInfoAction.editRating,
     EntryInfoAction.editTags,
     EntryInfoAction.removeMetadata,
+  ];
+
+  static const formatSpecific = [
+    EntryInfoAction.showGeoTiffOnMap,
+    EntryInfoAction.convertMotionPhotoToStillImage,
     EntryInfoAction.viewMotionPhotoVideo,
   ];
 }
@@ -41,7 +49,12 @@ extension ExtraEntryInfoAction on EntryInfoAction {
         return context.l10n.entryInfoActionEditTags;
       case EntryInfoAction.removeMetadata:
         return context.l10n.entryInfoActionRemoveMetadata;
+      // GeoTIFF
+      case EntryInfoAction.showGeoTiffOnMap:
+        return context.l10n.entryActionShowGeoTiffOnMap;
       // motion photo
+      case EntryInfoAction.convertMotionPhotoToStillImage:
+        return context.l10n.entryActionConvertMotionPhotoToStillImage;
       case EntryInfoAction.viewMotionPhotoVideo:
         return context.l10n.entryActionViewMotionPhotoVideo;
       // debug
@@ -77,9 +90,14 @@ extension ExtraEntryInfoAction on EntryInfoAction {
         return AIcons.editTags;
       case EntryInfoAction.removeMetadata:
         return AIcons.clear;
+      // GeoTIFF
+      case EntryInfoAction.showGeoTiffOnMap:
+        return AIcons.map;
       // motion photo
+      case EntryInfoAction.convertMotionPhotoToStillImage:
+        return AIcons.convertToStillImage;
       case EntryInfoAction.viewMotionPhotoVideo:
-        return AIcons.motionPhoto;
+        return AIcons.openVideo;
       // debug
       case EntryInfoAction.debug:
         return AIcons.debug;

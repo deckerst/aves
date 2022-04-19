@@ -142,7 +142,11 @@ class PlatformMediaFileService implements MediaFileService {
       }) as Map;
       return AvesEntry.fromMap(result);
     } on PlatformException catch (e, stack) {
-      await reportService.recordError(e, stack);
+      // do not report issues with simple parameter-less media content
+      // as it is likely an obsolete Media Store entry
+      if (!uri.startsWith('content://media/external/') || uri.contains('?')) {
+        await reportService.recordError(e, stack);
+      }
     }
     return null;
   }

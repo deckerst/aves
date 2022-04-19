@@ -1,0 +1,5 @@
+In v1.6.4:
+- customize album cover app & color
+- explore improved GeoTIFF metadata
+- enjoy the app in Italian & Chinese (Simplified)
+Full changelog available on GitHub

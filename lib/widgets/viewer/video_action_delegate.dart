@@ -107,16 +107,19 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     );
     final success = newFields.isNotEmpty;
 
+    final l10n = context.l10n;
     if (success) {
       final _collection = collection;
+      final navigator = Navigator.of(context);
       final showAction = _collection != null
           ? SnackBarAction(
-              label: context.l10n.showButtonLabel,
+              label: l10n.showButtonLabel,
               onPressed: () {
                 final source = _collection.source;
                 final newUri = newFields['uri'] as String?;
-                Navigator.pushAndRemoveUntil(
-                  context,
+                // `context` may be obsolete if the user navigated away before triggering the action
+                // so we reused the navigator retrieved before showing the snack bar
+                navigator.pushAndRemoveUntil(
                   MaterialPageRoute(
                     settings: const RouteSettings(name: CollectionPage.routeName),
                     builder: (context) => CollectionPage(
@@ -130,9 +133,9 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
               },
             )
           : null;
-      showFeedback(context, context.l10n.genericSuccessFeedback, showAction);
+      showFeedback(context, l10n.genericSuccessFeedback, showAction);
     } else {
-      showFeedback(context, context.l10n.genericFailureFeedback);
+      showFeedback(context, l10n.genericFailureFeedback);
     }
   }
 

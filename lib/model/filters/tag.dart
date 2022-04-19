@@ -3,7 +3,7 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/widgets.dart';
 
-class TagFilter extends CollectionFilter {
+class TagFilter extends CoveredCollectionFilter {
   static const type = 'tag';
 
   final String tag;

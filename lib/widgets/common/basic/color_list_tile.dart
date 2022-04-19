@@ -9,7 +9,7 @@ class ColorListTile extends StatelessWidget {
   final Color value;
   final ValueSetter<Color> onChanged;
 
-  static const radius = 16.0;
+  static const double radius = 16.0;
 
   const ColorListTile({
     Key? key,

@@ -33,10 +33,12 @@ import deckers.thibault.aves.utils.LogUtils
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import java.io.File
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.math.roundToInt
 
 class AppAdapterHandler(private val context: Context) : MethodCallHandler {
@@ -46,6 +48,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
         when (call.method) {
             "getPackages" -> ioScope.launch { safe(call, result, ::getPackages) }
             "getAppIcon" -> ioScope.launch { safeSuspend(call, result, ::getAppIcon) }
+            "getAppInstaller" -> ioScope.launch { safe(call, result, ::getAppInstaller) }
             "copyToClipboard" -> ioScope.launch { safe(call, result, ::copyToClipboard) }
             "edit" -> safe(call, result, ::edit)
             "open" -> safe(call, result, ::open)
@@ -107,8 +110,29 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
             }
         }
 
-        addPackageDetails(Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER))
-        addPackageDetails(Intent(Intent.ACTION_MAIN))
+        // identify launcher category packages, which typically include user apps
+        // they should be fetched before the other packages, to be marked as launcher packages
+        try {
+            addPackageDetails(Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER))
+        } catch (e: Exception) {
+            Log.w(LOG_TAG, "failed to list launcher packages", e)
+        }
+
+        try {
+            // complete with all the other packages
+            addPackageDetails(Intent(Intent.ACTION_MAIN))
+        } catch (e: Exception) {
+            // `PackageManager.queryIntentActivities()` may kill the package manager if the response is too large
+            Log.w(LOG_TAG, "failed to list all packages", e)
+
+            // fallback to the default category packages, which typically include system and OEM tools
+            try {
+                addPackageDetails(Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_DEFAULT))
+            } catch (e: Exception) {
+                Log.w(LOG_TAG, "failed to list default packages", e)
+            }
+        }
+
         result.success(ArrayList(packages.values))
     }
 
@@ -158,6 +182,23 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
             result.success(data)
         } else {
             result.error("getAppIcon-null", "failed to get icon for packageName=$packageName", null)
+        }
+    }
+
+    private fun getAppInstaller(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
+        val packageName = context.packageName
+        val pm = context.packageManager
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                val info = pm.getInstallSourceInfo(packageName)
+                result.success(info.initiatingPackageName ?: info.installingPackageName)
+            } else {
+                @Suppress("deprecation")
+                result.success(pm.getInstallerPackageName(packageName))
+            }
+        } catch (e: Exception) {
+            result.error("getAppInstaller-exception", "failed to get installer for packageName=$packageName", e.message)
+            return
         }
     }
 

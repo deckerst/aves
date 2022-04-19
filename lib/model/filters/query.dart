@@ -73,7 +73,7 @@ class QueryFilter extends CollectionFilter {
       return super.color(context);
     }
 
-    final colors = context.watch<AvesColorsData>();
+    final colors = context.read<AvesColorsData>();
     return SynchronousFuture(colors.neutral);
   }
 

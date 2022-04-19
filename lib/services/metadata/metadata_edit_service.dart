@@ -15,7 +15,9 @@ abstract class MetadataEditService {
 
   Future<Map<String, dynamic>> editExifDate(AvesEntry entry, DateModifier modifier);
 
-  Future<Map<String, dynamic>> editMetadata(AvesEntry entry, Map<MetadataType, dynamic> modifier);
+  Future<Map<String, dynamic>> editMetadata(AvesEntry entry, Map<MetadataType, dynamic> modifier, {bool autoCorrectTrailerOffset = true});
+
+  Future<Map<String, dynamic>> removeTrailerVideo(AvesEntry entry);
 
   Future<Map<String, dynamic>> removeTypes(AvesEntry entry, Set<MetadataType> types);
 }
@@ -90,11 +92,31 @@ class PlatformMetadataEditService implements MetadataEditService {
   }
 
   @override
-  Future<Map<String, dynamic>> editMetadata(AvesEntry entry, Map<MetadataType, dynamic> metadata) async {
+  Future<Map<String, dynamic>> editMetadata(
+    AvesEntry entry,
+    Map<MetadataType, dynamic> metadata, {
+    bool autoCorrectTrailerOffset = true,
+  }) async {
     try {
       final result = await platform.invokeMethod('editMetadata', <String, dynamic>{
         'entry': _toPlatformEntryMap(entry),
         'metadata': metadata.map((type, value) => MapEntry(_toPlatformMetadataType(type), value)),
+        'autoCorrectTrailerOffset': autoCorrectTrailerOffset,
+      });
+      if (result != null) return (result as Map).cast<String, dynamic>();
+    } on PlatformException catch (e, stack) {
+      if (!entry.isMissingAtPath) {
+        await reportService.recordError(e, stack);
+      }
+    }
+    return {};
+  }
+
+  @override
+  Future<Map<String, dynamic>> removeTrailerVideo(AvesEntry entry) async {
+    try {
+      final result = await platform.invokeMethod('removeTrailerVideo', <String, dynamic>{
+        'entry': _toPlatformEntryMap(entry),
       });
       if (result != null) return (result as Map).cast<String, dynamic>();
     } on PlatformException catch (e, stack) {

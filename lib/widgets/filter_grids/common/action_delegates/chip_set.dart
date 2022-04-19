@@ -2,12 +2,14 @@ import 'package:aves/app_mode.dart';
 import 'package:aves/model/actions/chip_set_actions.dart';
 import 'package:aves/model/covers.dart';
 import 'package:aves/model/entry.dart';
+import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/selection.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums.dart';
+import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
@@ -277,19 +279,33 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
   }
 
   void _setCover(BuildContext context, T filter) async {
-    final entryId = covers.coverEntryId(filter);
-    final customEntry = context.read<CollectionSource>().visibleEntries.firstWhereOrNull((entry) => entry.id == entryId);
-    final coverSelection = await showDialog<Tuple2<bool, AvesEntry?>>(
+    final existingCover = covers.of(filter);
+    final entryId = existingCover?.item1;
+    final customEntry = entryId != null ? context.read<CollectionSource>().visibleEntries.firstWhereOrNull((entry) => entry.id == entryId) : null;
+    final selectedCover = await showDialog<Tuple3<AvesEntry?, String?, Color?>>(
       context: context,
       builder: (context) => CoverSelectionDialog(
         filter: filter,
         customEntry: customEntry,
+        customPackage: existingCover?.item2,
+        customColor: existingCover?.item3,
       ),
     );
-    if (coverSelection == null) return;
+    if (selectedCover == null) return;
 
-    final isCustom = coverSelection.item1;
-    await covers.set(filter, isCustom ? coverSelection.item2?.id : null);
+    if (filter is AlbumFilter) {
+      context.read<AvesColorsData>().clearAppColor(filter.album);
+    }
+
+    final selectedEntry = selectedCover.item1;
+    final selectedPackage = selectedCover.item2;
+    final selectedColor = selectedCover.item3;
+    await covers.set(
+      filter: filter,
+      entryId: selectedEntry?.id,
+      packageName: selectedPackage,
+      color: selectedColor,
+    );
 
     _browse(context);
   }

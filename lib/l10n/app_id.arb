@@ -31,14 +31,14 @@
   "doNotAskAgain": "Jangan tanya lagi",
 
   "sourceStateLoading": "Memuat",
-  "sourceStateCataloguing": "Mengkatalog",
+  "sourceStateCataloguing": "Mengkataloging",
   "sourceStateLocatingCountries": "Mencari negara",
   "sourceStateLocatingPlaces": "Mencari tempat",
 
   "chipActionDelete": "Hapus",
   "chipActionGoToAlbumPage": "Tampilkan di Album",
   "chipActionGoToCountryPage": "Tampilkan di Negara",
-  "chipActionGoToTagPage": "Tampilkan di Tag",
+  "chipActionGoToTagPage": "Tampilkan di Label",
   "chipActionHide": "Sembunyikan",
   "chipActionPin": "Sematkan ke atas",
   "chipActionUnpin": "Lepas sematan dari atas",
@@ -58,7 +58,9 @@
   "entryActionPrint": "Cetak",
   "entryActionShare": "Bagikan",
   "entryActionViewSource": "Lihat sumber",
-  "entryActionViewMotionPhotoVideo": "Buka Foto bergerak",
+  "entryActionShowGeoTiffOnMap": "Tampilkan sebagai hamparan peta",
+  "entryActionConvertMotionPhotoToStillImage": "Ubah ke gambar tetap",
+  "entryActionViewMotionPhotoVideo": "Buka video",
   "entryActionEdit": "Ubah",
   "entryActionOpen": "Buka dengan",
   "entryActionSetAs": "Tetapkan sebagai",
@@ -68,9 +70,9 @@
   "entryActionRemoveFavourite": "Hapus dari favorit",
 
   "videoActionCaptureFrame": "Tangkap bingkai",
-  "videoActionMute": "Mute",
-  "videoActionUnmute": "Unmute",
-  "videoActionPause": "Henti",
+  "videoActionMute": "Matikan Suara",
+  "videoActionUnmute": "Hidupkan Suara",
+  "videoActionPause": "Hentikan",
   "videoActionPlay": "Mainkan",
   "videoActionReplay10": "Mundurkan 10 detik",
   "videoActionSkip10": "Majukan 10 detik",
@@ -81,20 +83,20 @@
   "entryInfoActionEditDate": "Ubah tanggal & waktu",
   "entryInfoActionEditLocation": "Ubah lokasi",
   "entryInfoActionEditRating": "Ubah peringkat",
-  "entryInfoActionEditTags": "Ubah tag",
+  "entryInfoActionEditTags": "Ubah label",
   "entryInfoActionRemoveMetadata": "Hapus metadata",
 
   "filterBinLabel": "Tong sampah",
   "filterFavouriteLabel": "Favorit",
   "filterLocationEmptyLabel": "Lokasi yang tidak ditemukan",
-  "filterTagEmptyLabel": "Tidak ditag",
+  "filterTagEmptyLabel": "Tidak dilabel",
   "filterRatingUnratedLabel": "Belum diberi peringkat",
   "filterRatingRejectedLabel": "Ditolak",
   "filterTypeAnimatedLabel": "Teranimasi",
   "filterTypeMotionPhotoLabel": "Foto bergerak",
   "filterTypePanoramaLabel": "Panorama",
   "filterTypeRawLabel": "Raw",
-  "filterTypeSphericalVideoLabel": "Video 360°",
+  "filterTypeSphericalVideoLabel": "Vidio 360°",
   "filterTypeGeotiffLabel": "GeoTIFF",
   "filterMimeImageLabel": "Gambar",
   "filterMimeVideoLabel": "Video",
@@ -110,7 +112,7 @@
   "unitSystemMetric": "Metrik",
   "unitSystemImperial": "Imperial",
 
-  "videoLoopModeNever": "Tidak pernah",
+  "videoLoopModeNever": "Jangan pernah",
   "videoLoopModeShortOnly": "Hanya video pendek",
   "videoLoopModeAlways": "Selalu",
 
@@ -130,11 +132,11 @@
   "nameConflictStrategyReplace": "Ganti",
   "nameConflictStrategySkip": "Lewati",
 
-  "keepScreenOnNever": "Tidak pernah",
-  "keepScreenOnViewerOnly": "Hanya halaman pemirsa",
+  "keepScreenOnNever": "Jangan pernah",
+  "keepScreenOnViewerOnly": "Hanya halaman penonton",
   "keepScreenOnAlways": "Selalu",
 
-  "accessibilityAnimationsRemove": "Mencegah efek layar",
+  "accessibilityAnimationsRemove": "Cegah efek layar",
   "accessibilityAnimationsKeep": "Simpan efek layar",
 
   "displayRefreshRatePreferHighest": "Penyegaran tertinggi",
@@ -153,7 +155,7 @@
   "storageVolumeDescriptionFallbackPrimary": "Penyimpanan internal",
   "storageVolumeDescriptionFallbackNonPrimary": "kartu SD",
   "rootDirectoryDescription": "direktori root",
-  "otherDirectoryDescription": "“{name}” direktori",
+  "otherDirectoryDescription": "direktori “{name}”",
   "storageAccessDialogTitle": "Akses Penyimpanan",
   "storageAccessDialogMessage": "Silahkan pilih {directory} dari “{volume}” di layar berikutnya untuk memberikan akses aplikasi ini ke sana.",
   "restrictedAccessDialogTitle": "Akses Terbatas",
@@ -163,7 +165,7 @@
   "missingSystemFilePickerDialogTitle": "Pemilih File Sistem Tidak Ada",
   "missingSystemFilePickerDialogMessage": "Pemilih file sistem tidak ada atau dinonaktifkan. Harap aktifkan dan coba lagi.",
 
-  "unsupportedTypeDialogTitle": "Jenis Yang Tidak Didukung",
+  "unsupportedTypeDialogTitle": "Tipe Yang Tidak Didukung",
   "unsupportedTypeDialogMessage": "{count, plural, other{Operasi ini tidak didukung untuk benda dari jenis berikut: {types}.}}",
 
   "nameConflictDialogSingleSourceMessage": "Beberapa file di folder tujuan memiliki nama yang sama.",
@@ -184,8 +186,8 @@
   "videoStartOverButtonLabel": "ULANG DARI AWAL",
   "videoResumeButtonLabel": "LANJUT",
 
-  "setCoverDialogTitle": "Setel Sampul",
   "setCoverDialogLatest": "Benda terbaru",
+  "setCoverDialogAuto": "Otomatis",
   "setCoverDialogCustom": "Kustom",
 
   "hideFilterConfirmationDialogMessage": "Foto dan video yang cocok akan disembunyikan dari koleksi Anda. Anda dapat menampilkannya lagi dari pengaturan “Privasi”.\n\nApakah Anda yakin ingin menyembunyikannya?",
@@ -203,11 +205,11 @@
   "renameEntrySetPageInsertTooltip": "Masukkan bidang",
   "renameEntrySetPagePreview": "Pratinjau",
 
-  "renameProcessorCounter": "Menangkal",
+  "renameProcessorCounter": "Penghitungan",
   "renameProcessorName": "Nama",
 
-  "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{Anda yakin ingin menghapus album ini dan bendanya?} other{Apakah Anda yakin ingin menghapus album ini dan {count} bendanya?}}",
-  "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{Yakin ingin menghapus album ini dan bendanya?} other{Anda yakin ingin menghapus album ini dan {count} bendanya?}}",
+  "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{Apakah Anda yakin ingin menghapus album ini dan bendanya?} other{Apakah Anda yakin ingin menghapus album ini dan {count} bendanya?}}",
+  "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{Apakah Anda yakin ingin menghapus album ini dan bendanya?} other{Apakah Anda yakin ingin menghapus album ini dan {count} bendanya?}}",
 
   "exportEntryDialogFormat": "Format:",
   "exportEntryDialogWidth": "Lebar",
@@ -239,6 +241,7 @@
   "removeEntryMetadataDialogMore": "Lebih Banyak",
 
   "removeEntryMetadataMotionPhotoXmpWarningDialogMessage": "XMP diperlukan untuk memutar video di dalam Foto bergerak.\n\nAnda yakin ingin menghapusnya?",
+  "convertMotionPhotoToStillImageWarningDialogMessage": "Apakah kamu yakin?",
 
   "videoSpeedDialogLabel": "Kecepatan pemutaran",
 
@@ -265,6 +268,13 @@
 
   "tileLayoutGrid": "Grid",
   "tileLayoutList": "Daftar",
+
+  "coverDialogTabCover": "Kover",
+  "coverDialogTabApp": "Aplikasi",
+  "coverDialogTabColor": "Warna",
+
+  "appPickDialogTitle": "Pilih Aplikasi",
+  "appPickDialogNone": "Tidak ada",
 
   "aboutPageTitle": "Tentang",
   "aboutLinkSources": "Sumber",
@@ -379,8 +389,8 @@
   "countryPageTitle": "Negara",
   "countryEmpty": "Tidak ada negara",
 
-  "tagPageTitle": "Tag",
-  "tagEmpty": "Tidak ada tag",
+  "tagPageTitle": "Label",
+  "tagEmpty": "Tidak ada label",
 
   "binPageTitle": "Tong Sampah",
 
@@ -389,7 +399,7 @@
   "searchSectionAlbums": "Album",
   "searchSectionCountries": "Negara",
   "searchSectionPlaces": "Tempat",
-  "searchSectionTags": "Tag",
+  "searchSectionTags": "Label",
   "searchSectionRating": "Peringkat",
 
   "settingsPageTitle": "Pengaturan",
@@ -539,14 +549,14 @@
   "statsWithGps": "{count, plural, other{{count} benda dengan lokasi}}",
   "statsTopCountries": "Negara Teratas",
   "statsTopPlaces": "Tempat Teratas",
-  "statsTopTags": "Tag Teratas",
+  "statsTopTags": "Label Teratas",
 
   "viewerOpenPanoramaButtonLabel": "BUKA PANORAMA",
   "viewerErrorUnknown": "Ups!",
   "viewerErrorDoesNotExist": "File tidak ada lagi.",
 
   "viewerInfoPageTitle": "Info",
-  "viewerInfoBackToViewerTooltip": "Kembali ke pemirsa",
+  "viewerInfoBackToViewerTooltip": "Kembali ke penonton",
 
   "viewerInfoUnknown": "tidak dikenal",
   "viewerInfoLabelTitle": "Judul",
@@ -582,9 +592,9 @@
   "viewerInfoSearchSuggestionResolution": "Resolusi",
   "viewerInfoSearchSuggestionRights": "Hak",
 
-  "tagEditorPageTitle": "Ubah Tag",
-  "tagEditorPageNewTagFieldLabel": "Tag baru",
-  "tagEditorPageAddTagTooltip": "Tambah tag",
+  "tagEditorPageTitle": "Ubah Label",
+  "tagEditorPageNewTagFieldLabel": "Label baru",
+  "tagEditorPageAddTagTooltip": "Tambah label",
   "tagEditorSectionRecent": "Terkini",
 
   "panoramaEnableSensorControl": "Aktifkan kontrol sensor",
