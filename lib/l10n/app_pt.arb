@@ -58,6 +58,9 @@
   "entryActionPrint": "Imprimir",
   "entryActionShare": "Compartilhado",
   "entryActionViewSource": "Ver fonte",
+  "entryActionShowGeoTiffOnMap": "Mostrar como sobreposição de mapa",
+  "entryActionConvertMotionPhotoToStillImage": "Converter para imagem estática",
+  "entryActionViewMotionPhotoVideo": "Abrir vídeo",
   "entryActionEdit": "Editar",
   "entryActionOpen": "Abrir com",
   "entryActionSetAs": "Definir como",
@@ -184,6 +187,7 @@
   "videoResumeButtonLabel": "RETOMAR",
 
   "setCoverDialogLatest": "Último item",
+  "setCoverDialogAuto": "Auto",
   "setCoverDialogCustom": "Personalizado",
 
   "hideFilterConfirmationDialogMessage": "Fotos e vídeos correspondentes serão ocultados da sua coleção. Você pode mostrá-los novamente nas configurações de “Privacidade”.\n\nTem certeza de que deseja ocultá-los?",
@@ -237,6 +241,7 @@
   "removeEntryMetadataDialogMore": "Mais",
 
   "removeEntryMetadataMotionPhotoXmpWarningDialogMessage": "XMP é necessário para reproduzir o vídeo dentro de uma foto em movimento.\n\nTem certeza de que deseja removê-lo?",
+  "convertMotionPhotoToStillImageWarningDialogMessage": "Tem certeza?",
 
   "videoSpeedDialogLabel": "Velocidade de reprodução",
 
@@ -263,6 +268,13 @@
 
   "tileLayoutGrid": "Grid",
   "tileLayoutList": "Lista",
+
+  "coverDialogTabCover": "Capa",
+  "coverDialogTabApp": "Aplicativo",
+  "coverDialogTabColor": "Cor",
+
+  "appPickDialogTitle": "Escolha o aplicativo",
+  "appPickDialogNone": "Nenhum",
 
   "aboutPageTitle": "Sobre",
   "aboutLinkSources": "Fontes",

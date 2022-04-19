@@ -23,18 +23,5 @@
     "coverDialogTabColor",
     "appPickDialogTitle",
     "appPickDialogNone"
-  ],
-
-  "pt": [
-    "entryActionShowGeoTiffOnMap",
-    "entryActionConvertMotionPhotoToStillImage",
-    "entryActionViewMotionPhotoVideo",
-    "setCoverDialogAuto",
-    "convertMotionPhotoToStillImageWarningDialogMessage",
-    "coverDialogTabCover",
-    "coverDialogTabApp",
-    "coverDialogTabColor",
-    "appPickDialogTitle",
-    "appPickDialogNone"
   ]
 }
