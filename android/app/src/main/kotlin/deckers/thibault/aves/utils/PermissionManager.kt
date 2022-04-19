@@ -9,7 +9,7 @@ import android.net.Uri
 import android.os.Binder
 import android.os.Build
 import android.os.Environment
-import android.os.storage.StorageManager
+import android.provider.DocumentsContract
 import android.provider.MediaStore
 import android.util.Log
 import androidx.annotation.RequiresApi
@@ -33,20 +33,14 @@ object PermissionManager {
     suspend fun requestDirectoryAccess(activity: Activity, path: String, onGranted: (uri: Uri) -> Unit, onDenied: () -> Unit) {
         Log.i(LOG_TAG, "request user to select and grant access permission to path=$path")
 
-        var intent: Intent? = null
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            val sm = activity.getSystemService(Context.STORAGE_SERVICE) as? StorageManager
-            val storageVolume = sm?.getStorageVolume(File(path))
-            if (storageVolume != null) {
-                intent = storageVolume.createOpenDocumentTreeIntent()
-            } else {
-                MainActivity.notifyError("failed to get storage volume for path=$path on volumes=${sm?.storageVolumes?.joinToString(", ")}")
+        // `StorageVolume.createOpenDocumentTreeIntent` is an alternative,
+        // and it helps with initial volume, but not with initial directory
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // initial URI should not be a `tree document URI`, but a simple `document URI`
+            StorageUtils.convertDirPathToDocumentUri(activity, path)?.let {
+                intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, it)
             }
-        }
-
-        // fallback to basic open document tree intent
-        if (intent == null) {
-            intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
         }
 
         if (intent.resolveActivity(activity.packageManager) != null) {
@@ -109,7 +103,7 @@ object PermissionManager {
                         if (relativeDir != null) {
                             val dirSegments = relativeDir.split(File.separator).takeWhile { it.isNotEmpty() }
                             val primaryDir = dirSegments.firstOrNull()
-                            if (primaryDir == Environment.DIRECTORY_DOWNLOADS && dirSegments.size > 1) {
+                            if (getRestrictedPrimaryDirectories().contains(primaryDir) && dirSegments.size > 1) {
                                 // request secondary directory (if any) for restricted primary directory
                                 dirSet.add(dirSegments.take(2).joinToString(File.separator))
                             } else {
@@ -156,7 +150,7 @@ object PermissionManager {
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     fun revokeDirectoryAccess(context: Context, path: String): Boolean {
-        return StorageUtils.convertDirPathToTreeUri(context, path)?.let {
+        return StorageUtils.convertDirPathToTreeDocumentUri(context, path)?.let {
             releaseUriPermission(context, it)
             true
         } ?: false
@@ -167,7 +161,7 @@ object PermissionManager {
         val grantedDirs = HashSet<String>()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             for (uriPermission in context.contentResolver.persistedUriPermissions) {
-                val dirPath = StorageUtils.convertTreeUriToDirPath(context, uriPermission.uri)
+                val dirPath = StorageUtils.convertTreeDocumentUriToDirPath(context, uriPermission.uri)
                 dirPath?.let { grantedDirs.add(it) }
             }
         }
@@ -191,11 +185,25 @@ object PermissionManager {
         return accessibleDirs
     }
 
+    private fun getRestrictedPrimaryDirectories(): List<String> {
+        val dirs = ArrayList<String>()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            // cf https://developer.android.com/about/versions/11/privacy/storage#directory-access
+            dirs.add(Environment.DIRECTORY_DOWNLOADS)
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                // by observation, no documentation
+                dirs.add("Android")
+            }
+        }
+        return dirs
+    }
+
+    // cf https://developer.android.com/about/versions/11/privacy/storage#directory-access
     fun getRestrictedDirectories(context: Context): List<Map<String, String>> {
         val dirs = ArrayList<Map<String, String>>()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            // cf https://developer.android.com/about/versions/11/privacy/storage#directory-access
             val volumePaths = StorageUtils.getVolumePaths(context)
             dirs.addAll(volumePaths.map {
                 hashMapOf(
@@ -203,12 +211,14 @@ object PermissionManager {
                     "relativeDir" to "",
                 )
             })
-            dirs.addAll(volumePaths.map {
-                hashMapOf(
-                    "volumePath" to it,
-                    "relativeDir" to Environment.DIRECTORY_DOWNLOADS,
-                )
-            })
+            for (relativeDir in getRestrictedPrimaryDirectories()) {
+                dirs.addAll(volumePaths.map {
+                    hashMapOf(
+                        "volumePath" to it,
+                        "relativeDir" to relativeDir,
+                    )
+                })
+            }
         } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT
             || Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT_WATCH
         ) {
@@ -234,7 +244,7 @@ object PermissionManager {
         try {
             for (uriPermission in context.contentResolver.persistedUriPermissions) {
                 val uri = uriPermission.uri
-                val path = StorageUtils.convertTreeUriToDirPath(context, uri)
+                val path = StorageUtils.convertTreeDocumentUriToDirPath(context, uri)
                 if (path != null && !File(path).exists()) {
                     Log.d(LOG_TAG, "revoke URI permission for obsolete path=$path")
                     releaseUriPermission(context, uri)

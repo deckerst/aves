@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:aves/model/entry_images.dart';
+import 'package:aves/model/geotiff.dart';
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/utils/change_notifier.dart';
 import 'package:aves/widgets/common/map/buttons.dart';
@@ -9,6 +10,7 @@ import 'package:aves/widgets/common/map/controller.dart';
 import 'package:aves/widgets/common/map/decorator.dart';
 import 'package:aves/widgets/common/map/geo_entry.dart';
 import 'package:aves/widgets/common/map/geo_map.dart';
+import 'package:aves/widgets/common/map/google/geotiff_tile_provider.dart';
 import 'package:aves/widgets/common/map/google/marker_generator.dart';
 import 'package:aves/widgets/common/map/marker.dart';
 import 'package:aves/widgets/common/map/theme.dart';
@@ -27,6 +29,8 @@ class EntryGoogleMap extends StatefulWidget {
   final MarkerClusterBuilder markerClusterBuilder;
   final MarkerWidgetBuilder markerWidgetBuilder;
   final ValueNotifier<ll.LatLng?>? dotLocationNotifier;
+  final ValueNotifier<double>? overlayOpacityNotifier;
+  final MappedGeoTiff? overlayEntry;
   final UserZoomChangeCallback? onUserZoomChange;
   final void Function(ll.LatLng location)? onMapTap;
   final void Function(GeoEntry geoEntry)? onMarkerTap;
@@ -43,6 +47,8 @@ class EntryGoogleMap extends StatefulWidget {
     required this.markerClusterBuilder,
     required this.markerWidgetBuilder,
     required this.dotLocationNotifier,
+    this.overlayOpacityNotifier,
+    this.overlayEntry,
     this.onUserZoomChange,
     this.onMapTap,
     this.onMarkerTap,
@@ -169,54 +175,69 @@ class _EntryGoogleMapState extends State<EntryGoogleMap> with WidgetsBindingObse
         });
 
         final interactive = context.select<MapThemeData, bool>((v) => v.interactive);
+        final overlayEntry = widget.overlayEntry;
         return ValueListenableBuilder<ll.LatLng?>(
           valueListenable: widget.dotLocationNotifier ?? ValueNotifier(null),
           builder: (context, dotLocation, child) {
-            return GoogleMap(
-              initialCameraPosition: CameraPosition(
-                bearing: -bounds.rotation,
-                target: _toGoogleLatLng(bounds.projectedCenter),
-                zoom: bounds.zoom,
-              ),
-              onMapCreated: (controller) async {
-                _googleMapController = controller;
-                final zoom = await controller.getZoomLevel();
-                await _updateVisibleRegion(zoom: zoom, rotation: bounds.rotation);
-                if (mounted) {
-                  setState(() {});
-                }
+            return ValueListenableBuilder<double>(
+              valueListenable: widget.overlayOpacityNotifier ?? ValueNotifier(1),
+              builder: (context, overlayOpacity, child) {
+                return GoogleMap(
+                  initialCameraPosition: CameraPosition(
+                    bearing: -bounds.rotation,
+                    target: _toGoogleLatLng(bounds.projectedCenter),
+                    zoom: bounds.zoom,
+                  ),
+                  onMapCreated: (controller) async {
+                    _googleMapController = controller;
+                    final zoom = await controller.getZoomLevel();
+                    await _updateVisibleRegion(zoom: zoom, rotation: bounds.rotation);
+                    if (mounted) {
+                      setState(() {});
+                    }
+                  },
+                  // compass disabled to use provider agnostic controls
+                  compassEnabled: false,
+                  mapToolbarEnabled: false,
+                  mapType: _toMapType(widget.style),
+                  minMaxZoomPreference: MinMaxZoomPreference(widget.minZoom, widget.maxZoom),
+                  rotateGesturesEnabled: true,
+                  scrollGesturesEnabled: interactive,
+                  // zoom controls disabled to use provider agnostic controls
+                  zoomControlsEnabled: false,
+                  zoomGesturesEnabled: interactive,
+                  // lite mode disabled because it lacks camera animation
+                  liteModeEnabled: false,
+                  // tilt disabled to match leaflet
+                  tiltGesturesEnabled: false,
+                  myLocationEnabled: false,
+                  myLocationButtonEnabled: false,
+                  markers: {
+                    ...markers,
+                    if (dotLocation != null && _dotMarkerBitmap != null)
+                      Marker(
+                        markerId: const MarkerId('dot'),
+                        anchor: const Offset(.5, .5),
+                        consumeTapEvents: true,
+                        icon: BitmapDescriptor.fromBytes(_dotMarkerBitmap!),
+                        position: _toGoogleLatLng(dotLocation),
+                        zIndex: 1,
+                      )
+                  },
+                  // TODO TLAD [geotiff] may use ground overlay instead when this is fixed: https://github.com/flutter/flutter/issues/26479
+                  tileOverlays: {
+                    if (overlayEntry != null && overlayEntry.canOverlay)
+                      TileOverlay(
+                        tileOverlayId: TileOverlayId(overlayEntry.entry.uri),
+                        tileProvider: GeoTiffTileProvider(overlayEntry),
+                        transparency: 1 - overlayOpacity,
+                      ),
+                  },
+                  onCameraMove: (position) => _updateVisibleRegion(zoom: position.zoom, rotation: -position.bearing),
+                  onCameraIdle: _onIdle,
+                  onTap: (position) => widget.onMapTap?.call(_fromGoogleLatLng(position)),
+                );
               },
-              // compass disabled to use provider agnostic controls
-              compassEnabled: false,
-              mapToolbarEnabled: false,
-              mapType: _toMapType(widget.style),
-              minMaxZoomPreference: MinMaxZoomPreference(widget.minZoom, widget.maxZoom),
-              rotateGesturesEnabled: true,
-              scrollGesturesEnabled: interactive,
-              // zoom controls disabled to use provider agnostic controls
-              zoomControlsEnabled: false,
-              zoomGesturesEnabled: interactive,
-              // lite mode disabled because it lacks camera animation
-              liteModeEnabled: false,
-              // tilt disabled to match leaflet
-              tiltGesturesEnabled: false,
-              myLocationEnabled: false,
-              myLocationButtonEnabled: false,
-              markers: {
-                ...markers,
-                if (dotLocation != null && _dotMarkerBitmap != null)
-                  Marker(
-                    markerId: const MarkerId('dot'),
-                    anchor: const Offset(.5, .5),
-                    consumeTapEvents: true,
-                    icon: BitmapDescriptor.fromBytes(_dotMarkerBitmap!),
-                    position: _toGoogleLatLng(dotLocation),
-                    zIndex: 1,
-                  )
-              },
-              onCameraMove: (position) => _updateVisibleRegion(zoom: position.zoom, rotation: -position.bearing),
-              onCameraIdle: _onIdle,
-              onTap: (position) => widget.onMapTap?.call(_fromGoogleLatLng(position)),
             );
           },
         );

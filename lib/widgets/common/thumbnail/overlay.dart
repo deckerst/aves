@@ -28,13 +28,13 @@ class ThumbnailEntryOverlay extends StatelessWidget {
         const AnimatedImageIcon()
       else ...[
         if (entry.isRaw && context.select<GridThemeData, bool>((t) => t.showRaw)) const RawIcon(),
-        if (entry.isGeotiff) const GeoTiffIcon(),
         if (entry.is360) const SphericalImageIcon(),
       ],
       if (entry.isMultiPage) ...[
         if (entry.isMotionPhoto && context.select<GridThemeData, bool>((t) => t.showMotionPhoto)) const MotionPhotoIcon(),
         if (!entry.isMotionPhoto) MultiPageIcon(entry: entry),
       ],
+      if (entry.isGeotiff) const GeoTiffIcon(),
       if (entry.trashed && context.select<GridThemeData, bool>((t) => t.showTrash)) TrashIcon(trashDaysLeft: entry.trashDaysLeft),
     ];
     if (children.isEmpty) return const SizedBox();

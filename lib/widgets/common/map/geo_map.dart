@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:aves/model/entry.dart';
+import 'package:aves/model/geotiff.dart';
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/enums/map_style.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -33,6 +34,8 @@ class GeoMap extends StatefulWidget {
   final LatLng? initialCenter;
   final ValueNotifier<bool> isAnimatingNotifier;
   final ValueNotifier<LatLng?>? dotLocationNotifier;
+  final ValueNotifier<double>? overlayOpacityNotifier;
+  final MappedGeoTiff? overlayEntry;
   final UserZoomChangeCallback? onUserZoomChange;
   final void Function(LatLng location)? onMapTap;
   final MarkerTapCallback? onMarkerTap;
@@ -49,6 +52,8 @@ class GeoMap extends StatefulWidget {
     this.initialCenter,
     required this.isAnimatingNotifier,
     this.dotLocationNotifier,
+    this.overlayOpacityNotifier,
+    this.overlayEntry,
     this.onUserZoomChange,
     this.onMapTap,
     this.onMarkerTap,
@@ -176,6 +181,8 @@ class _GeoMapState extends State<GeoMap> {
                 markerClusterBuilder: _buildMarkerClusters,
                 markerWidgetBuilder: _buildMarkerWidget,
                 dotLocationNotifier: widget.dotLocationNotifier,
+                overlayOpacityNotifier: widget.overlayOpacityNotifier,
+                overlayEntry: widget.overlayEntry,
                 onUserZoomChange: widget.onUserZoomChange,
                 onMapTap: widget.onMapTap,
                 onMarkerTap: _onMarkerTap,
@@ -199,6 +206,8 @@ class _GeoMapState extends State<GeoMap> {
                   DotMarker.diameter + ImageMarker.outerBorderWidth * 2,
                   DotMarker.diameter + ImageMarker.outerBorderWidth * 2,
                 ),
+                overlayOpacityNotifier: widget.overlayOpacityNotifier,
+                overlayEntry: widget.overlayEntry,
                 onUserZoomChange: widget.onUserZoomChange,
                 onMapTap: widget.onMapTap,
                 onMarkerTap: _onMarkerTap,
@@ -262,12 +271,27 @@ class _GeoMapState extends State<GeoMap> {
   }
 
   ZoomedBounds _initBounds() {
-    final initialCenter = widget.initialCenter;
-    final points = initialCenter != null ? {initialCenter} : entries.map((v) => v.latLng!).toSet();
-    final bounds = ZoomedBounds.fromPoints(
-      points: points.isNotEmpty ? points : {Constants.wonders[Random().nextInt(Constants.wonders.length)]},
-      collocationZoom: settings.infoMapZoom,
-    );
+    ZoomedBounds? bounds;
+
+    final overlayEntry = widget.overlayEntry;
+    if (overlayEntry != null) {
+      final corner1 = overlayEntry.topLeft;
+      final corner2 = overlayEntry.bottomRight;
+      if (corner1 != null && corner2 != null) {
+        bounds = ZoomedBounds.fromPoints(
+          points: {corner1, corner2},
+        );
+      }
+    }
+    if (bounds == null) {
+      final initialCenter = widget.initialCenter;
+      final points = initialCenter != null ? {initialCenter} : entries.map((v) => v.latLng!).toSet();
+      bounds = ZoomedBounds.fromPoints(
+        points: points.isNotEmpty ? points : {Constants.wonders[Random().nextInt(Constants.wonders.length)]},
+        collocationZoom: settings.infoMapZoom,
+      );
+    }
+
     return bounds.copyWith(
       zoom: max(bounds.zoom, minInitialZoom),
     );

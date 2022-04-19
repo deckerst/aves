@@ -31,7 +31,7 @@ import 'package:aves/widgets/filter_grids/album_pick.dart';
 import 'package:aves/widgets/viewer/action/printer.dart';
 import 'package:aves/widgets/viewer/action/single_entry_editor.dart';
 import 'package:aves/widgets/viewer/debug/debug_page.dart';
-import 'package:aves/widgets/viewer/info/notifications.dart';
+import 'package:aves/widgets/viewer/notifications.dart';
 import 'package:aves/widgets/viewer/overlay/notifications.dart';
 import 'package:aves/widgets/viewer/source_viewer_page.dart';
 import 'package:aves/widgets/viewer/video/conductor.dart';
@@ -205,7 +205,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       if (source.initState != SourceInitializationState.none) {
         await source.removeEntries({entry.uri}, includeTrash: true);
       }
-      EntryRemovedNotification(entry).dispatch(context);
+      EntryDeletedNotification({entry}).dispatch(context);
     }
   }
 
@@ -258,12 +258,15 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         source.resumeMonitoring();
         source.refreshUris(newUris);
 
+        final l10n = context.l10n;
+        final navigator = Navigator.of(context);
         final showAction = isMainMode && newUris.isNotEmpty
             ? SnackBarAction(
-                label: context.l10n.showButtonLabel,
+                label: l10n.showButtonLabel,
                 onPressed: () {
-                  Navigator.pushAndRemoveUntil(
-                    context,
+                  // `context` may be obsolete if the user navigated away before triggering the action
+                  // so we reused the navigator retrieved before showing the snack bar
+                  navigator.pushAndRemoveUntil(
                     MaterialPageRoute(
                       settings: const RouteSettings(name: CollectionPage.routeName),
                       builder: (context) => CollectionPage(
@@ -282,13 +285,13 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
           final count = selectionCount - successCount;
           showFeedback(
             context,
-            context.l10n.collectionExportFailureFeedback(count),
+            l10n.collectionExportFailureFeedback(count),
             showAction,
           );
         } else {
           showFeedback(
             context,
-            context.l10n.genericSuccessFeedback,
+            l10n.genericSuccessFeedback,
             showAction,
           );
         }
@@ -296,20 +299,11 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     );
   }
 
-  Future<void> _move(BuildContext context, {required MoveType moveType}) async {
-    await move(
-      context,
-      moveType: moveType,
-      entries: {entry},
-      onSuccess: {
-        MoveType.move,
-        MoveType.toBin,
-        MoveType.fromBin,
-      }.contains(moveType)
-          ? () => EntryRemovedNotification(entry).dispatch(context)
-          : null,
-    );
-  }
+  Future<void> _move(BuildContext context, {required MoveType moveType}) => move(
+        context,
+        moveType: moveType,
+        entries: {entry},
+      );
 
   Future<void> _rename(BuildContext context) async {
     final newName = await showDialog<String>(

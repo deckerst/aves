@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/actions/chip_actions.dart';
+import 'package:aves/model/covers.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/location.dart';
@@ -114,6 +117,7 @@ class AvesFilterChip extends StatefulWidget {
 }
 
 class _AvesFilterChipState extends State<AvesFilterChip> {
+  final List<StreamSubscription> _subscriptions = [];
   late Future<Color> _colorFuture;
   late Color _outlineColor;
   late bool _tapped;
@@ -131,6 +135,14 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
   void initState() {
     super.initState();
     _tapped = false;
+    _subscriptions.add(covers.packageChangeStream.listen(_onCoverColorChange));
+    _subscriptions.add(covers.colorChangeStream.listen(_onCoverColorChange));
+    _subscriptions.add(settings.updateStream.where((event) => event.key == Settings.themeColorModeKey).listen((_) {
+      // delay so that contextual colors reflect the new settings
+      WidgetsBinding.instance!.addPostFrameCallback((_) {
+        _onCoverColorChange(null);
+      });
+    }));
   }
 
   @override
@@ -148,6 +160,14 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
     }
   }
 
+  @override
+  void dispose() {
+    _subscriptions
+      ..forEach((sub) => sub.cancel())
+      ..clear();
+    super.dispose();
+  }
+
   void _initColorLoader() {
     // For app albums, `filter.color` yields a regular async `Future` the first time
     // but it yields a `SynchronousFuture` when called again on a known album.
@@ -157,6 +177,13 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
     // So we save the result of the Future to a local variable because of this specific case.
     _colorFuture = filter.color(context);
     _outlineColor = context.read<AvesColorsData>().neutral;
+  }
+
+  void _onCoverColorChange(Set<CollectionFilter>? event) {
+    if (event == null || event.contains(filter)) {
+      _initColorLoader();
+      setState(() {});
+    }
   }
 
   @override

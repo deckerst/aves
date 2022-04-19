@@ -4,12 +4,14 @@ import 'package:aves/app_mode.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/coordinate.dart';
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/geotiff.dart';
 import 'package:aves/model/highlight.dart';
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/enums/map_style.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/theme/durations.dart';
+import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/debouncer.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/behaviour/routes.dart';
@@ -24,7 +26,7 @@ import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/common/thumbnail/scroller.dart';
 import 'package:aves/widgets/map/map_info_row.dart';
 import 'package:aves/widgets/viewer/entry_viewer_page.dart';
-import 'package:aves/widgets/viewer/info/notifications.dart';
+import 'package:aves/widgets/viewer/notifications.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -36,11 +38,13 @@ class MapPage extends StatelessWidget {
 
   final CollectionLens collection;
   final AvesEntry? initialEntry;
+  final MappedGeoTiff? overlayEntry;
 
   const MapPage({
     Key? key,
     required this.collection,
     this.initialEntry,
+    this.overlayEntry,
   }) : super(key: key);
 
   @override
@@ -59,6 +63,7 @@ class MapPage extends StatelessWidget {
             child: _Content(
               collection: collection,
               initialEntry: initialEntry,
+              overlayEntry: overlayEntry,
             ),
           ),
         ),
@@ -70,11 +75,13 @@ class MapPage extends StatelessWidget {
 class _Content extends StatefulWidget {
   final CollectionLens collection;
   final AvesEntry? initialEntry;
+  final MappedGeoTiff? overlayEntry;
 
   const _Content({
     Key? key,
     required this.collection,
     this.initialEntry,
+    this.overlayEntry,
   }) : super(key: key);
 
   @override
@@ -89,6 +96,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
   final ValueNotifier<CollectionLens?> _regionCollectionNotifier = ValueNotifier(null);
   final ValueNotifier<LatLng?> _dotLocationNotifier = ValueNotifier(null);
   final ValueNotifier<AvesEntry?> _dotEntryNotifier = ValueNotifier(null), _infoEntryNotifier = ValueNotifier(null);
+  final ValueNotifier<double> _overlayOpacityNotifier = ValueNotifier(1);
   final Debouncer _infoDebouncer = Debouncer(delay: Durations.mapInfoDebounceDelay);
   final ValueNotifier<bool> _overlayVisible = ValueNotifier(true);
   late AnimationController _overlayAnimationController;
@@ -205,6 +213,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
           children: [
             const SizedBox(height: 8),
             const Divider(height: 0),
+            _buildOverlayController(),
             _buildScroller(),
           ],
         ),
@@ -224,9 +233,11 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
         controller: _mapController,
         collectionListenable: openingCollection,
         entries: openingCollection.sortedEntries,
-        initialCenter: widget.initialEntry?.latLng,
+        initialCenter: widget.initialEntry?.latLng ?? widget.overlayEntry?.center,
         isAnimatingNotifier: _isPageAnimatingNotifier,
         dotLocationNotifier: _dotLocationNotifier,
+        overlayOpacityNotifier: _overlayOpacityNotifier,
+        overlayEntry: widget.overlayEntry,
         onMapTap: (_) => _toggleOverlay(),
         onMarkerTap: (averageLocation, markerEntry, getClusterEntries) async {
           final index = regionCollection?.sortedEntries.indexOf(markerEntry);
@@ -235,6 +246,32 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
           }
           await Future.delayed(const Duration(milliseconds: 500));
           context.read<HighlightInfo>().set(markerEntry);
+        },
+      ),
+    );
+  }
+
+  Widget _buildOverlayController() {
+    if (widget.overlayEntry == null) return const SizedBox();
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: ValueListenableBuilder<double>(
+        valueListenable: _overlayOpacityNotifier,
+        builder: (context, overlayOpacity, child) {
+          return Row(
+            children: [
+              const Icon(AIcons.opacity),
+              Expanded(
+                child: Slider(
+                  value: _overlayOpacityNotifier.value,
+                  onChanged: (v) => _overlayOpacityNotifier.value = v,
+                  min: 0,
+                  max: 1,
+                ),
+              ),
+            ],
+          );
         },
       ),
     );

@@ -4,6 +4,29 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.6.4"></a>[v1.6.4] - 2022-04-19
+
+### Added
+
+- Albums / Countries / Tags: allow custom app / color along cover item
+- Info: improved GeoTIFF section
+- Cataloguing: locating from GeoTIFF metadata (requires rescan, limited to some projections)
+- Info: action to overlay GeoTIFF on map (limited to some projections)
+- Info: action to convert motion photo to still image
+- Italian translation (thanks glemco)
+- Chinese (Simplified) translation (thanks 小默 & Aerowolf)
+
+### Changed
+
+- upgraded Flutter to stable v2.10.4
+- snack bars are dismissible with an horizontal swipe instead of a down swipe
+- Viewer: snack bars avoid quick actions and thumbnails at the bottom
+
+### Fixed
+
+- black screen launch when Firebase fails to initialize (Play version only)
+- crash when cataloguing JPEG with large extended XMP
+
 ## <a id="v1.6.3"></a>[v1.6.3] - 2022-03-28
 
 ### Added

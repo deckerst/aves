@@ -1,26 +1,27 @@
 {
-  "ru": [
-    "displayRefreshRatePreferHighest",
-    "displayRefreshRatePreferLowest",
-    "themeBrightnessLight",
-    "themeBrightnessDark",
-    "themeBrightnessBlack",
-    "moveUndatedConfirmationDialogMessage",
-    "moveUndatedConfirmationDialogSetDate",
-    "renameEntrySetPageTitle",
-    "renameEntrySetPagePatternFieldLabel",
-    "renameEntrySetPageInsertTooltip",
-    "renameEntrySetPagePreview",
-    "renameProcessorCounter",
-    "renameProcessorName",
-    "editEntryDateDialogCopyItem",
-    "collectionRenameFailureFeedback",
-    "collectionRenameSuccessFeedback",
-    "settingsConfirmationDialogMoveUndatedItems",
-    "settingsSectionDisplay",
-    "settingsThemeBrightness",
-    "settingsThemeColorHighlights",
-    "settingsDisplayRefreshRateModeTile",
-    "settingsDisplayRefreshRateModeTitle"
+  "es": [
+    "entryActionShowGeoTiffOnMap",
+    "entryActionConvertMotionPhotoToStillImage",
+    "entryActionViewMotionPhotoVideo",
+    "setCoverDialogAuto",
+    "convertMotionPhotoToStillImageWarningDialogMessage",
+    "coverDialogTabCover",
+    "coverDialogTabApp",
+    "coverDialogTabColor",
+    "appPickDialogTitle",
+    "appPickDialogNone"
+  ],
+
+  "ja": [
+    "entryActionShowGeoTiffOnMap",
+    "entryActionConvertMotionPhotoToStillImage",
+    "entryActionViewMotionPhotoVideo",
+    "setCoverDialogAuto",
+    "convertMotionPhotoToStillImageWarningDialogMessage",
+    "coverDialogTabCover",
+    "coverDialogTabApp",
+    "coverDialogTabColor",
+    "appPickDialogTitle",
+    "appPickDialogNone"
   ]
 }

@@ -14,13 +14,13 @@ import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.PermissionManager
 import deckers.thibault.aves.utils.StorageUtils
+import deckers.thibault.aves.utils.StorageUtils.ensureTrailingSeparator
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.EventChannel.EventSink
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
-import java.io.FileOutputStream
 
 // starting activity to give access with the native dialog
 // breaks the regular `MethodChannel` so we use a stream channel instead
@@ -64,7 +64,7 @@ class StorageAccessStreamHandler(private val activity: Activity, arguments: Any?
             return
         }
 
-        PermissionManager.requestDirectoryAccess(activity, path, {
+        PermissionManager.requestDirectoryAccess(activity, ensureTrailingSeparator(path), {
             success(true)
             endOfStream()
         }, {
@@ -123,10 +123,8 @@ class StorageAccessStreamHandler(private val activity: Activity, arguments: Any?
         MainActivity.pendingStorageAccessResultHandlers[MainActivity.CREATE_FILE_REQUEST] = PendingStorageAccessResultHandler(null, { uri ->
             ioScope.launch {
                 try {
-                    activity.contentResolver.openOutputStream(uri)?.use { output ->
-                        output as FileOutputStream
-                        // truncate is necessary when overwriting a longer file
-                        output.channel.truncate(0)
+                    // truncate is necessary when overwriting a longer file
+                    activity.contentResolver.openOutputStream(uri, "wt")?.use { output ->
                         output.write(bytes)
                     }
                     success(true)

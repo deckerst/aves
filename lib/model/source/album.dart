@@ -178,17 +178,17 @@ mixin AlbumMixin on SourceBase {
       return volume.getDescription(context);
     }
 
-    String unique(String dirPath, Set<String?> others) {
+    String unique(String dirPath, Set<String> others) {
       final parts = pContext.split(dirPath);
       for (var i = parts.length - 1; i > 0; i--) {
         final name = pContext.joinAll(['', ...parts.skip(i)]);
         final testName = '$separator$name';
-        if (others.every((item) => !item!.endsWith(testName))) return name;
+        if (others.every((item) => !item.endsWith(testName))) return name;
       }
       return dirPath;
     }
 
-    final otherAlbumsOnDevice = _directories.where((item) => item != dirPath).toSet();
+    final otherAlbumsOnDevice = _directories.whereNotNull().where((item) => item != dirPath).toSet();
     final uniqueNameInDevice = unique(dirPath, otherAlbumsOnDevice);
     if (uniqueNameInDevice.length <= relativeDir.length) {
       return uniqueNameInDevice;
@@ -196,7 +196,7 @@ mixin AlbumMixin on SourceBase {
 
     final volumePath = dir.volumePath;
     String trimVolumePath(String? path) => path!.substring(dir.volumePath.length);
-    final otherAlbumsOnVolume = otherAlbumsOnDevice.where((path) => path!.startsWith(volumePath)).map(trimVolumePath).toSet();
+    final otherAlbumsOnVolume = otherAlbumsOnDevice.where((path) => path.startsWith(volumePath)).map(trimVolumePath).toSet();
     final uniqueNameInVolume = unique(trimVolumePath(dirPath), otherAlbumsOnVolume);
     final volume = androidFileUtils.getStorageVolume(dirPath)!;
     if (volume.isPrimary) {

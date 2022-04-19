@@ -33,6 +33,10 @@ class ViewerBottomOverlay extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() => _ViewerBottomOverlayState();
+
+  static double actionSafeHeight(BuildContext context) {
+    return ViewerButtonRow.preferredHeight(context) + (settings.showOverlayThumbnailPreview ? ViewerThumbnailPreview.preferredHeight : 0);
+  }
 }
 
 class _ViewerBottomOverlayState extends State<ViewerBottomOverlay> {

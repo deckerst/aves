@@ -183,6 +183,8 @@ class VolumeRelativeDirectory extends Equatable {
   @override
   List<Object?> get props => [volumePath, relativeDir];
 
+  String get dirPath => '$volumePath$relativeDir';
+
   const VolumeRelativeDirectory({
     required this.volumePath,
     required this.relativeDir,

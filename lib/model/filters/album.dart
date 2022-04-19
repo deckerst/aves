@@ -1,3 +1,4 @@
+import 'package:aves/model/covers.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/colors.dart';
@@ -8,7 +9,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
-class AlbumFilter extends CollectionFilter {
+class AlbumFilter extends CoveredCollectionFilter {
   static const type = 'album';
 
   final String album;
@@ -53,10 +54,14 @@ class AlbumFilter extends CollectionFilter {
 
   @override
   Future<Color> color(BuildContext context) {
-    final colors = context.watch<AvesColorsData>();
+    // custom color has precedence over others, even custom app color
+    final customColor = covers.of(this)?.item3;
+    if (customColor != null) return SynchronousFuture(customColor);
+
+    final colors = context.read<AvesColorsData>();
     // do not use async/await and rely on `SynchronousFuture`
     // to prevent rebuilding of the `FutureBuilder` listening on this future
-    final albumType = androidFileUtils.getAlbumType(album);
+    final albumType = covers.effectiveAlbumType(album);
     switch (albumType) {
       case AlbumType.regular:
         break;

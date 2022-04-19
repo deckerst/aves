@@ -35,6 +35,9 @@ class MetadataDbUpgrader {
         case 6:
           await _upgradeFrom6(db);
           break;
+        case 7:
+          await _upgradeFrom7(db);
+          break;
       }
       oldVersion++;
     }
@@ -268,5 +271,11 @@ class MetadataDbUpgrader {
         ', path TEXT'
         ', dateMillis INTEGER'
         ')');
+  }
+
+  static Future<void> _upgradeFrom7(Database db) async {
+    debugPrint('upgrading DB from v7');
+    await db.execute('ALTER TABLE $coverTable ADD COLUMN packageName TEXT;');
+    await db.execute('ALTER TABLE $coverTable ADD COLUMN color INTEGER;');
   }
 }

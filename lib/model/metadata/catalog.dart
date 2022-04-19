@@ -55,6 +55,8 @@ class CatalogMetadata {
     int? dateMillis,
     bool? isMultiPage,
     int? rotationDegrees,
+    double? latitude,
+    double? longitude,
   }) {
     return CatalogMetadata(
       id: id ?? this.id,
@@ -68,8 +70,8 @@ class CatalogMetadata {
       rotationDegrees: rotationDegrees ?? this.rotationDegrees,
       xmpSubjects: xmpSubjects,
       xmpTitleDescription: xmpTitleDescription,
-      latitude: latitude,
-      longitude: longitude,
+      latitude: latitude ?? this.latitude,
+      longitude: longitude ?? this.longitude,
       rating: rating,
     );
   }

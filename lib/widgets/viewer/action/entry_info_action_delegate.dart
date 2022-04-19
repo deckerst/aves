@@ -4,10 +4,15 @@ import 'package:aves/model/actions/entry_info_actions.dart';
 import 'package:aves/model/actions/events.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/entry_metadata_edition.dart';
+import 'package:aves/model/geotiff.dart';
 import 'package:aves/model/source/collection_lens.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/common/action_mixins/entry_editor.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/dialogs/aves_dialog.dart';
+import 'package:aves/widgets/map/map_page.dart';
 import 'package:aves/widgets/viewer/action/single_entry_editor.dart';
 import 'package:aves/widgets/viewer/debug/debug_page.dart';
 import 'package:aves/widgets/viewer/embedded/notifications.dart';
@@ -19,7 +24,7 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
   final AvesEntry entry;
   final CollectionLens? collection;
 
-  final StreamController<ActionEvent<EntryInfoAction>> _eventStreamController = StreamController<ActionEvent<EntryInfoAction>>.broadcast();
+  final StreamController<ActionEvent<EntryInfoAction>> _eventStreamController = StreamController.broadcast();
 
   Stream<ActionEvent<EntryInfoAction>> get eventStream => _eventStreamController.stream;
 
@@ -34,7 +39,11 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
       case EntryInfoAction.editTags:
       case EntryInfoAction.removeMetadata:
         return true;
+      // GeoTIFF
+      case EntryInfoAction.showGeoTiffOnMap:
+        return entry.isGeotiff;
       // motion photo
+      case EntryInfoAction.convertMotionPhotoToStillImage:
       case EntryInfoAction.viewMotionPhotoVideo:
         return entry.isMotionPhoto;
       // debug
@@ -56,7 +65,12 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
         return entry.canEditTags;
       case EntryInfoAction.removeMetadata:
         return entry.canRemoveMetadata;
+      // GeoTIFF
+      case EntryInfoAction.showGeoTiffOnMap:
+        return true;
       // motion photo
+      case EntryInfoAction.convertMotionPhotoToStillImage:
+        return entry.canEdit;
       case EntryInfoAction.viewMotionPhotoVideo:
         return true;
       // debug
@@ -84,7 +98,14 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
       case EntryInfoAction.removeMetadata:
         await _removeMetadata(context);
         break;
+      // GeoTIFF
+      case EntryInfoAction.showGeoTiffOnMap:
+        await _showGeoTiffOnMap(context);
+        break;
       // motion photo
+      case EntryInfoAction.convertMotionPhotoToStillImage:
+        await _convertMotionPhotoToStillImage(context);
+        break;
       case EntryInfoAction.viewMotionPhotoVideo:
         OpenEmbeddedDataNotification.motionPhotoVideo().dispatch(context);
         break;
@@ -133,6 +154,60 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
     if (types == null) return;
 
     await edit(context, () => entry.removeMetadata(types));
+  }
+
+  Future<void> _convertMotionPhotoToStillImage(BuildContext context) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AvesDialog(
+          content: Text(context.l10n.convertMotionPhotoToStillImageWarningDialogMessage),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: Text(context.l10n.applyButtonLabel),
+            ),
+          ],
+        );
+      },
+    );
+    if (confirmed == null || !confirmed) return;
+
+    await edit(context, entry.removeTrailerVideo);
+  }
+
+  Future<void> _showGeoTiffOnMap(BuildContext context) async {
+    final info = await metadataFetchService.getGeoTiffInfo(entry);
+    if (info == null) return;
+
+    final mappedGeoTiff = MappedGeoTiff(
+      info: info,
+      entry: entry,
+    );
+    if (!mappedGeoTiff.canOverlay) return;
+
+    final baseCollection = collection;
+    if (baseCollection == null) return;
+
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        settings: const RouteSettings(name: MapPage.routeName),
+        builder: (context) {
+          return MapPage(
+            collection: baseCollection.copyWith(
+              listenToSource: true,
+              fixedSelection: baseCollection.sortedEntries.where((entry) => entry.hasGps).where((entry) => entry != this.entry).toList(),
+            ),
+            overlayEntry: mappedGeoTiff,
+          );
+        },
+      ),
+    );
   }
 
   void _goToDebug(BuildContext context) {
