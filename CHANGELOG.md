@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.6.4"></a>[v1.6.4] - 2022-04-19
+
 ### Added
 
 - Albums / Countries / Tags: allow custom app / color along cover item
