@@ -1,9 +1,8 @@
-import 'package:aves/model/entry.dart';
 import 'package:fluster/fluster.dart';
 import 'package:flutter/foundation.dart';
 
-class GeoEntry extends Clusterable {
-  AvesEntry? entry;
+class GeoEntry<T> extends Clusterable {
+  T? entry;
 
   GeoEntry({
     this.entry,

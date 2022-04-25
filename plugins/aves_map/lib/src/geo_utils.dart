@@ -1,27 +1,8 @@
 import 'dart:math';
 
-import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
 
 class GeoUtils {
-  static String decimal2sexagesimal(
-    double degDecimal,
-    bool minuteSecondPadding,
-    int secondDecimals,
-    String locale,
-  ) {
-    final degAbs = degDecimal.abs();
-    final deg = degAbs.toInt();
-    final minDecimal = (degAbs - deg) * 60;
-    final min = minDecimal.toInt();
-    final sec = (minDecimal - min) * 60;
-
-    var minText = NumberFormat('0' * (minuteSecondPadding ? 2 : 1), locale).format(min);
-    var secText = NumberFormat('${'0' * (minuteSecondPadding ? 2 : 1)}${secondDecimals > 0 ? '.${'0' * secondDecimals}' : ''}', locale).format(sec);
-
-    return '$deg° $minText′ $secText″';
-  }
-
   static LatLng getLatLngCenter(List<LatLng> points) {
     double x = 0;
     double y = 0;

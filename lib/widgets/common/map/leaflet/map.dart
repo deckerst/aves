@@ -1,43 +1,34 @@
 import 'dart:async';
 
-import 'package:aves/model/entry_images.dart';
-import 'package:aves/model/geotiff.dart';
-import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/debouncer.dart';
-import 'package:aves/widgets/common/map/buttons.dart';
-import 'package:aves/widgets/common/map/controller.dart';
-import 'package:aves/widgets/common/map/decorator.dart';
-import 'package:aves/widgets/common/map/geo_entry.dart';
-import 'package:aves/widgets/common/map/geo_map.dart';
-import 'package:aves/widgets/common/map/latlng_tween.dart';
+import 'package:aves/widgets/common/map/leaflet/latlng_tween.dart';
 import 'package:aves/widgets/common/map/leaflet/scale_layer.dart';
 import 'package:aves/widgets/common/map/leaflet/tile_layers.dart';
-import 'package:aves/widgets/common/map/marker.dart';
-import 'package:aves/widgets/common/map/theme.dart';
-import 'package:aves/widgets/common/map/zoomed_bounds.dart';
+import 'package:aves_map/aves_map.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 
-class EntryLeafletMap extends StatefulWidget {
+class EntryLeafletMap<T> extends StatefulWidget {
   final AvesMapController? controller;
   final Listenable clusterListenable;
   final ValueNotifier<ZoomedBounds> boundsNotifier;
   final double minZoom, maxZoom;
   final EntryMapStyle style;
-  final MarkerClusterBuilder markerClusterBuilder;
-  final MarkerWidgetBuilder markerWidgetBuilder;
+  final TransitionBuilder decoratorBuilder;
+  final ButtonPanelBuilder buttonPanelBuilder;
+  final MarkerClusterBuilder<T> markerClusterBuilder;
+  final MarkerWidgetBuilder<T> markerWidgetBuilder;
   final ValueNotifier<LatLng?>? dotLocationNotifier;
   final Size markerSize, dotMarkerSize;
   final ValueNotifier<double>? overlayOpacityNotifier;
-  final MappedGeoTiff? overlayEntry;
+  final MapOverlay? overlayEntry;
   final UserZoomChangeCallback? onUserZoomChange;
-  final void Function(LatLng location)? onMapTap;
-  final void Function(GeoEntry geoEntry)? onMarkerTap;
-  final MapOpener? openMapPage;
+  final MapTapCallback? onMapTap;
+  final MarkerTapCallback<T>? onMarkerTap;
 
   const EntryLeafletMap({
     Key? key,
@@ -47,6 +38,8 @@ class EntryLeafletMap extends StatefulWidget {
     this.minZoom = 0,
     this.maxZoom = 22,
     required this.style,
+    required this.decoratorBuilder,
+    required this.buttonPanelBuilder,
     required this.markerClusterBuilder,
     required this.markerWidgetBuilder,
     required this.dotLocationNotifier,
@@ -57,17 +50,16 @@ class EntryLeafletMap extends StatefulWidget {
     this.onUserZoomChange,
     this.onMapTap,
     this.onMarkerTap,
-    this.openMapPage,
   }) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _EntryLeafletMapState();
+  State<StatefulWidget> createState() => _EntryLeafletMapState<T>();
 }
 
-class _EntryLeafletMapState extends State<EntryLeafletMap> with TickerProviderStateMixin {
+class _EntryLeafletMapState<T> extends State<EntryLeafletMap<T>> with TickerProviderStateMixin {
   final MapController _leafletMapController = MapController();
   final List<StreamSubscription> _subscriptions = [];
-  Map<MarkerKey, GeoEntry> _geoEntryByMarkerKey = {};
+  Map<MarkerKey<T>, GeoEntry<T>> _geoEntryByMarkerKey = {};
   final Debouncer _debouncer = Debouncer(delay: Durations.mapIdleDebounceDelay);
 
   ValueNotifier<ZoomedBounds> get boundsNotifier => widget.boundsNotifier;
@@ -85,7 +77,7 @@ class _EntryLeafletMapState extends State<EntryLeafletMap> with TickerProviderSt
   }
 
   @override
-  void didUpdateWidget(covariant EntryLeafletMap oldWidget) {
+  void didUpdateWidget(covariant EntryLeafletMap<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
     _unregisterWidget(oldWidget);
     _registerWidget(widget);
@@ -97,7 +89,7 @@ class _EntryLeafletMapState extends State<EntryLeafletMap> with TickerProviderSt
     super.dispose();
   }
 
-  void _registerWidget(EntryLeafletMap widget) {
+  void _registerWidget(EntryLeafletMap<T> widget) {
     final avesMapController = widget.controller;
     if (avesMapController != null) {
       _subscriptions.add(avesMapController.moveCommands.listen((event) => _moveTo(event.latLng)));
@@ -107,7 +99,7 @@ class _EntryLeafletMapState extends State<EntryLeafletMap> with TickerProviderSt
     widget.boundsNotifier.addListener(_onBoundsChange);
   }
 
-  void _unregisterWidget(EntryLeafletMap widget) {
+  void _unregisterWidget(EntryLeafletMap<T> widget) {
     widget.clusterListenable.removeListener(_updateMarkers);
     widget.boundsNotifier.removeListener(_onBoundsChange);
     _subscriptions
@@ -119,15 +111,8 @@ class _EntryLeafletMapState extends State<EntryLeafletMap> with TickerProviderSt
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        MapDecorator(
-          child: _buildMap(),
-        ),
-        MapButtonPanel(
-          boundsNotifier: boundsNotifier,
-          zoomBy: _zoomBy,
-          openMapPage: widget.openMapPage,
-          resetRotation: _resetRotation,
-        ),
+        widget.decoratorBuilder(context, _buildMap()),
+        widget.buttonPanelBuilder(_zoomBy, _resetRotation),
       ],
     );
   }
@@ -239,7 +224,7 @@ class _EntryLeafletMapState extends State<EntryLeafletMap> with TickerProviderSt
             overlayImages: [
               OverlayImage(
                 bounds: LatLngBounds(corner1, corner2),
-                imageProvider: overlayEntry.entry.uriImage,
+                imageProvider: overlayEntry.imageProvider,
                 opacity: overlayOpacity,
               ),
             ],

@@ -1,4 +1,4 @@
-import 'package:aves/widgets/common/map/latlng_utils.dart';
+import 'package:aves/widgets/common/map/leaflet/latlng_utils.dart';
 import 'package:flutter/widgets.dart';
 import 'package:latlong2/latlong.dart';
 

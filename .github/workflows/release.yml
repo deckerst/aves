@@ -59,6 +59,9 @@ jobs:
           cp build/app/outputs/bundle/playRelease/*.aab outputs
           flutter build apk -t lib/main_play.dart --flavor play --bundle-sksl-path shaders_2.10.5.sksl.json
           cp build/app/outputs/apk/play/release/*.apk outputs
+          (cd scripts/; ./apply_flavor_huawei.sh)
+          flutter build apk -t lib/main_huawei.dart --flavor huawei --bundle-sksl-path shaders_2.10.5.sksl.json
+          cp build/app/outputs/apk/huawei/release/*.apk outputs
           (cd scripts/; ./apply_flavor_izzy.sh)
           flutter build apk -t lib/main_izzy.dart --flavor izzy --split-per-abi --bundle-sksl-path shaders_2.10.5.sksl.json
           cp build/app/outputs/apk/izzy/release/*.apk outputs

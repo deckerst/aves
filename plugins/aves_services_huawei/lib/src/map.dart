@@ -1,42 +1,31 @@
 import 'dart:async';
 import 'dart:typed_data';
 
-import 'package:aves/model/entry_images.dart';
-import 'package:aves/model/geotiff.dart';
-import 'package:aves/model/settings/enums/enums.dart';
-import 'package:aves/utils/change_notifier.dart';
-import 'package:aves/widgets/common/map/buttons.dart';
-import 'package:aves/widgets/common/map/controller.dart';
-import 'package:aves/widgets/common/map/decorator.dart';
-import 'package:aves/widgets/common/map/geo_entry.dart';
-import 'package:aves/widgets/common/map/geo_map.dart';
-import 'package:aves/widgets/common/map/google/geotiff_tile_provider.dart';
-import 'package:aves/widgets/common/map/google/marker_generator.dart';
-import 'package:aves/widgets/common/map/marker.dart';
-import 'package:aves/widgets/common/map/theme.dart';
-import 'package:aves/widgets/common/map/zoomed_bounds.dart';
+import 'package:aves_map/aves_map.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:huawei_map/map.dart';
 import 'package:latlong2/latlong.dart' as ll;
 import 'package:provider/provider.dart';
 
-class EntryGoogleMap extends StatefulWidget {
+class EntryHmsMap<T> extends StatefulWidget {
   final AvesMapController? controller;
   final Listenable clusterListenable;
   final ValueNotifier<ZoomedBounds> boundsNotifier;
   final double? minZoom, maxZoom;
   final EntryMapStyle style;
-  final MarkerClusterBuilder markerClusterBuilder;
-  final MarkerWidgetBuilder markerWidgetBuilder;
+  final TransitionBuilder decoratorBuilder;
+  final ButtonPanelBuilder buttonPanelBuilder;
+  final MarkerClusterBuilder<T> markerClusterBuilder;
+  final MarkerWidgetBuilder<T> markerWidgetBuilder;
+  final MarkerImageReadyChecker<T> markerImageReadyChecker;
   final ValueNotifier<ll.LatLng?>? dotLocationNotifier;
   final ValueNotifier<double>? overlayOpacityNotifier;
-  final MappedGeoTiff? overlayEntry;
+  final MapOverlay? overlayEntry;
   final UserZoomChangeCallback? onUserZoomChange;
-  final void Function(ll.LatLng location)? onMapTap;
-  final void Function(GeoEntry geoEntry)? onMarkerTap;
-  final MapOpener? openMapPage;
+  final MapTapCallback? onMapTap;
+  final MarkerTapCallback<T>? onMarkerTap;
 
-  const EntryGoogleMap({
+  const EntryHmsMap({
     Key? key,
     this.controller,
     required this.clusterListenable,
@@ -44,27 +33,29 @@ class EntryGoogleMap extends StatefulWidget {
     this.minZoom,
     this.maxZoom,
     required this.style,
+    required this.decoratorBuilder,
+    required this.buttonPanelBuilder,
     required this.markerClusterBuilder,
     required this.markerWidgetBuilder,
+    required this.markerImageReadyChecker,
     required this.dotLocationNotifier,
     this.overlayOpacityNotifier,
     this.overlayEntry,
     this.onUserZoomChange,
     this.onMapTap,
     this.onMarkerTap,
-    this.openMapPage,
   }) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _EntryGoogleMapState();
+  State<StatefulWidget> createState() => _EntryHmsMapState<T>();
 }
 
-class _EntryGoogleMapState extends State<EntryGoogleMap> with WidgetsBindingObserver {
-  GoogleMapController? _googleMapController;
+class _EntryHmsMapState<T> extends State<EntryHmsMap<T>> {
+  HuaweiMapController? _serviceMapController;
   final List<StreamSubscription> _subscriptions = [];
-  Map<MarkerKey, GeoEntry> _geoEntryByMarkerKey = {};
-  final Map<MarkerKey, Uint8List> _markerBitmaps = {};
-  final AChangeNotifier _markerBitmapChangeNotifier = AChangeNotifier();
+  Map<MarkerKey<T>, GeoEntry<T>> _geoEntryByMarkerKey = {};
+  final Map<MarkerKey<T>, Uint8List> _markerBitmaps = {};
+  final StreamController<MarkerKey<T>> _markerBitmapReadyStreamController = StreamController.broadcast();
   Uint8List? _dotMarkerBitmap;
 
   ValueNotifier<ZoomedBounds> get boundsNotifier => widget.boundsNotifier;
@@ -76,12 +67,11 @@ class _EntryGoogleMapState extends State<EntryGoogleMap> with WidgetsBindingObse
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addObserver(this);
     _registerWidget(widget);
   }
 
   @override
-  void didUpdateWidget(covariant EntryGoogleMap oldWidget) {
+  void didUpdateWidget(covariant EntryHmsMap<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
     _unregisterWidget(oldWidget);
     _registerWidget(widget);
@@ -90,39 +80,22 @@ class _EntryGoogleMapState extends State<EntryGoogleMap> with WidgetsBindingObse
   @override
   void dispose() {
     _unregisterWidget(widget);
-    _googleMapController?.dispose();
-    WidgetsBinding.instance!.removeObserver(this);
     super.dispose();
   }
 
-  void _registerWidget(EntryGoogleMap widget) {
+  void _registerWidget(EntryHmsMap<T> widget) {
     final avesMapController = widget.controller;
     if (avesMapController != null) {
-      _subscriptions.add(avesMapController.moveCommands.listen((event) => _moveTo(_toGoogleLatLng(event.latLng))));
+      _subscriptions.add(avesMapController.moveCommands.listen((event) => _moveTo(_toServiceLatLng(event.latLng))));
     }
     widget.clusterListenable.addListener(_updateMarkers);
   }
 
-  void _unregisterWidget(EntryGoogleMap widget) {
+  void _unregisterWidget(EntryHmsMap<T> widget) {
     widget.clusterListenable.removeListener(_updateMarkers);
     _subscriptions
       ..forEach((sub) => sub.cancel())
       ..clear();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    switch (state) {
-      case AppLifecycleState.inactive:
-      case AppLifecycleState.paused:
-      case AppLifecycleState.detached:
-        break;
-      case AppLifecycleState.resumed:
-        // workaround for blank Google map when resuming app
-        // cf https://github.com/flutter/flutter/issues/40284
-        _googleMapController?.setMapStyle(null);
-        break;
-    }
   }
 
   @override
@@ -134,31 +107,24 @@ class _EntryGoogleMapState extends State<EntryGoogleMap> with WidgetsBindingObse
           isReadyToRender: (key) => true,
           onRendered: (key, bitmap) => _dotMarkerBitmap = bitmap,
         ),
-        MarkerGeneratorWidget<MarkerKey>(
+        MarkerGeneratorWidget<MarkerKey<T>>(
           markers: _geoEntryByMarkerKey.keys.map(widget.markerWidgetBuilder).toList(),
-          isReadyToRender: (key) => key.entry.isThumbnailReady(extent: GeoMap.markerImageExtent),
+          isReadyToRender: widget.markerImageReadyChecker,
           onRendered: (key, bitmap) {
             _markerBitmaps[key] = bitmap;
-            _markerBitmapChangeNotifier.notify();
+            _markerBitmapReadyStreamController.add(key);
           },
         ),
-        MapDecorator(
-          child: _buildMap(),
-        ),
-        MapButtonPanel(
-          boundsNotifier: boundsNotifier,
-          zoomBy: _zoomBy,
-          openMapPage: widget.openMapPage,
-          resetRotation: _resetRotation,
-        ),
+        widget.decoratorBuilder(context, _buildMap()),
+        widget.buttonPanelBuilder(_zoomBy, _resetRotation),
       ],
     );
   }
 
   Widget _buildMap() {
-    return AnimatedBuilder(
-      animation: _markerBitmapChangeNotifier,
-      builder: (context, child) {
+    return StreamBuilder(
+      stream: _markerBitmapReadyStreamController.stream,
+      builder: (context, _) {
         final markers = <Marker>{};
         _geoEntryByMarkerKey.forEach((markerKey, geoEntry) {
           final bytes = _markerBitmaps[markerKey];
@@ -166,76 +132,112 @@ class _EntryGoogleMapState extends State<EntryGoogleMap> with WidgetsBindingObse
             final point = LatLng(geoEntry.latitude!, geoEntry.longitude!);
             markers.add(Marker(
               markerId: MarkerId(geoEntry.markerId!),
-              consumeTapEvents: true,
+              clickable: true,
               icon: BitmapDescriptor.fromBytes(bytes),
               position: point,
-              onTap: () => widget.onMarkerTap?.call(geoEntry),
+              onClick: () => widget.onMarkerTap?.call(geoEntry),
             ));
           }
         });
 
         final interactive = context.select<MapThemeData, bool>((v) => v.interactive);
-        final overlayEntry = widget.overlayEntry;
+        // final overlayEntry = widget.overlayEntry;
         return ValueListenableBuilder<ll.LatLng?>(
           valueListenable: widget.dotLocationNotifier ?? ValueNotifier(null),
           builder: (context, dotLocation, child) {
             return ValueListenableBuilder<double>(
               valueListenable: widget.overlayOpacityNotifier ?? ValueNotifier(1),
               builder: (context, overlayOpacity, child) {
-                return GoogleMap(
+                return HuaweiMap(
                   initialCameraPosition: CameraPosition(
-                    bearing: -bounds.rotation,
-                    target: _toGoogleLatLng(bounds.projectedCenter),
+                    bearing: bounds.rotation,
+                    target: _toServiceLatLng(bounds.projectedCenter),
                     zoom: bounds.zoom,
                   ),
-                  onMapCreated: (controller) async {
-                    _googleMapController = controller;
-                    final zoom = await controller.getZoomLevel();
-                    await _updateVisibleRegion(zoom: zoom, rotation: bounds.rotation);
-                    if (mounted) {
-                      setState(() {});
-                    }
-                  },
+                  mapType: _toMapType(widget.style),
                   // compass disabled to use provider agnostic controls
                   compassEnabled: false,
                   mapToolbarEnabled: false,
-                  mapType: _toMapType(widget.style),
-                  minMaxZoomPreference: MinMaxZoomPreference(widget.minZoom, widget.maxZoom),
-                  rotateGesturesEnabled: true,
+                  minMaxZoomPreference: MinMaxZoomPreference(
+                    widget.minZoom ?? MinMaxZoomPreference.unbounded.minZoom,
+                    widget.maxZoom ?? MinMaxZoomPreference.unbounded.maxZoom,
+                  ),
+                  // `allGesturesEnabled`, if defined overrides specific gesture settings
+                  rotateGesturesEnabled: interactive,
                   scrollGesturesEnabled: interactive,
                   // zoom controls disabled to use provider agnostic controls
                   zoomControlsEnabled: false,
                   zoomGesturesEnabled: interactive,
-                  // lite mode disabled because it lacks camera animation
-                  liteModeEnabled: false,
                   // tilt disabled to match leaflet
                   tiltGesturesEnabled: false,
                   myLocationEnabled: false,
                   myLocationButtonEnabled: false,
+                  trafficEnabled: false,
+                  isScrollGesturesEnabledDuringRotateOrZoom: true,
                   markers: {
                     ...markers,
                     if (dotLocation != null && _dotMarkerBitmap != null)
                       Marker(
-                        markerId: const MarkerId('dot'),
+                        markerId: MarkerId('dot'),
                         anchor: const Offset(.5, .5),
-                        consumeTapEvents: true,
+                        clickable: true,
                         icon: BitmapDescriptor.fromBytes(_dotMarkerBitmap!),
-                        position: _toGoogleLatLng(dotLocation),
+                        position: _toServiceLatLng(dotLocation),
                         zIndex: 1,
                       )
                   },
-                  // TODO TLAD [geotiff] may use ground overlay instead when this is fixed: https://github.com/flutter/flutter/issues/26479
-                  tileOverlays: {
-                    if (overlayEntry != null && overlayEntry.canOverlay)
-                      TileOverlay(
-                        tileOverlayId: TileOverlayId(overlayEntry.entry.uri),
-                        tileProvider: GeoTiffTileProvider(overlayEntry),
-                        transparency: 1 - overlayOpacity,
-                      ),
+                  // TODO TLAD [hms] GeoTIFF ground overlay
+                  // groundOverlays: {
+                  //   if (overlayEntry != null && overlayEntry.canOverlay)
+                  //     GroundOverlay(
+                  //       groundOverlayId: GroundOverlayId('overlay'),
+                  //       // Google Maps API allows defining overlay either via
+                  //       // 1) position, anchor and width/height (in meters)
+                  //       // 2) bounds
+                  //       // Huawei requires width/height (in meters?), but also allows bounds...
+                  //       width: 42,
+                  //       height: 42,
+                  //       imageDescriptor: BitmapDescriptor.defaultMarker,
+                  //       position: _toServiceLatLng(overlayEntry.center!),
+                  //     ),
+                  // },
+                  // TODO TLAD [hms] dynamic tile provider from current bounds,
+                  // tileOverlays: {
+                  //   if (overlayEntry != null && overlayEntry.canOverlay)
+                  //     TileOverlay(
+                  //       tileOverlayId: TileOverlayId(overlayEntry.entry.uri),
+                  //       // `tileProvider` is `RepetitiveTile`, `UrlTile` or List<Tile>
+                  //       // tileProvider: <Tile>[
+                  //       //   Tile(
+                  //       //     x: x,
+                  //       //     y: y,
+                  //       //     zoom: zoom,
+                  //       //     imageData: imageData,
+                  //       //   ),
+                  //       // ],
+                  //       transparency: 1 - overlayOpacity,
+                  //     ),
+                  // },
+                  onMapCreated: (controller) async {
+                    _serviceMapController = controller;
+                    final zoom = await controller.getZoomLevel();
+                    await _updateVisibleRegion(zoom: zoom ?? bounds.zoom, rotation: bounds.rotation);
+                    if (mounted) {
+                      setState(() {});
+                    }
                   },
-                  onCameraMove: (position) => _updateVisibleRegion(zoom: position.zoom, rotation: -position.bearing),
+                  onCameraMove: (position) => _updateVisibleRegion(zoom: position.zoom, rotation: position.bearing),
                   onCameraIdle: _onIdle,
-                  onTap: (position) => widget.onMapTap?.call(_fromGoogleLatLng(position)),
+                  onClick: (position) => widget.onMapTap?.call(_fromServiceLatLng(position)),
+                  onPoiClick: (poi) {
+                    final poiPosition = poi.latLng;
+                    if (poiPosition != null) {
+                      widget.onMapTap?.call(_fromServiceLatLng(poiPosition));
+                    }
+                  },
+                  logoPadding: const EdgeInsets.all(8),
+                  // lite mode disabled because it is not interactive
+                  liteMode: false,
                 );
               },
             );
@@ -258,13 +260,13 @@ class _EntryGoogleMapState extends State<EntryGoogleMap> with WidgetsBindingObse
   Future<void> _updateVisibleRegion({required double zoom, required double rotation}) async {
     if (!mounted) return;
 
-    final bounds = await _googleMapController?.getVisibleRegion();
+    final bounds = await _serviceMapController?.getVisibleRegion();
     if (bounds != null && (bounds.northeast != uninitializedLatLng || bounds.southwest != uninitializedLatLng)) {
       final sw = bounds.southwest;
       final ne = bounds.northeast;
       boundsNotifier.value = ZoomedBounds(
-        sw: _fromGoogleLatLng(sw),
-        ne: _fromGoogleLatLng(ne),
+        sw: _fromServiceLatLng(sw),
+        ne: _fromServiceLatLng(ne),
         zoom: zoom,
         rotation: rotation,
       );
@@ -278,42 +280,43 @@ class _EntryGoogleMapState extends State<EntryGoogleMap> with WidgetsBindingObse
   }
 
   Future<void> _resetRotation() async {
-    final controller = _googleMapController;
+    final controller = _serviceMapController;
     if (controller == null) return;
 
     await controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-      target: _toGoogleLatLng(bounds.projectedCenter),
+      target: _toServiceLatLng(bounds.projectedCenter),
       zoom: bounds.zoom,
     )));
   }
 
   Future<void> _zoomBy(double amount) async {
-    final controller = _googleMapController;
+    final controller = _serviceMapController;
     if (controller == null) return;
 
-    widget.onUserZoomChange?.call(await controller.getZoomLevel() + amount);
+    final zoom = await controller.getZoomLevel();
+    if (zoom == null) return;
+
+    widget.onUserZoomChange?.call(zoom + amount);
     await controller.animateCamera(CameraUpdate.zoomBy(amount));
   }
 
   Future<void> _moveTo(LatLng point) async {
-    final controller = _googleMapController;
+    final controller = _serviceMapController;
     if (controller == null) return;
 
     await controller.animateCamera(CameraUpdate.newLatLng(point));
   }
 
   // `LatLng` used by `google_maps_flutter` is not the one from `latlong2` package
-  LatLng _toGoogleLatLng(ll.LatLng location) => LatLng(location.latitude, location.longitude);
+  LatLng _toServiceLatLng(ll.LatLng location) => LatLng(location.latitude, location.longitude);
 
-  ll.LatLng _fromGoogleLatLng(LatLng location) => ll.LatLng(location.latitude, location.longitude);
+  ll.LatLng _fromServiceLatLng(LatLng location) => ll.LatLng(location.lat, location.lng);
 
   MapType _toMapType(EntryMapStyle style) {
     switch (style) {
-      case EntryMapStyle.googleNormal:
+      case EntryMapStyle.hmsNormal:
         return MapType.normal;
-      case EntryMapStyle.googleHybrid:
-        return MapType.hybrid;
-      case EntryMapStyle.googleTerrain:
+      case EntryMapStyle.hmsTerrain:
         return MapType.terrain;
       default:
         return MapType.none;

@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:aves/utils/geo_utils.dart';
+import 'package:aves_map/src/geo_utils.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_map/flutter_map.dart';

@@ -8,6 +8,7 @@ import 'package:aves/model/source/enums.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/countries_page.dart';
 import 'package:aves/widgets/filter_grids/tags_page.dart';
+import 'package:aves_map/aves_map.dart';
 import 'package:flutter/material.dart';
 
 class SettingsDefaults {

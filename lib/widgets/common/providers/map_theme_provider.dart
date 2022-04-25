@@ -1,8 +1,7 @@
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves_map/aves_map.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-enum MapNavigationButton { back, map }
 
 class MapTheme extends StatelessWidget {
   final bool interactive, showCoordinateFilter;
@@ -39,21 +38,4 @@ class MapTheme extends StatelessWidget {
       child: child,
     );
   }
-}
-
-class MapThemeData {
-  final bool interactive, showCoordinateFilter;
-  final MapNavigationButton navigationButton;
-  final Animation<double> scale;
-  final VisualDensity? visualDensity;
-  final double? mapHeight;
-
-  const MapThemeData({
-    required this.interactive,
-    required this.showCoordinateFilter,
-    required this.navigationButton,
-    required this.scale,
-    required this.visualDensity,
-    required this.mapHeight,
-  });
 }
