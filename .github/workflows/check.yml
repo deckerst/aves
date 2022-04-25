@@ -24,7 +24,8 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Get packages for the Flutter project.
-        run: flutter pub get
+        working-directory: ${{ github.workspace }}/scripts
+        run: ./pub_get_all.sh
 
       - name: Update the flutter version file.
         working-directory: ${{ github.workspace }}/scripts
