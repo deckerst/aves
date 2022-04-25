@@ -1,31 +1,23 @@
-import 'package:aves/model/filters/coordinate.dart';
-import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/enums/map_style.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/theme/themes.dart';
-import 'package:aves/utils/debouncer.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:aves/widgets/common/fx/blurred.dart';
-import 'package:aves/widgets/common/fx/borders.dart';
-import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
+import 'package:aves/widgets/common/map/buttons/button.dart';
+import 'package:aves/widgets/common/map/buttons/coordinate_filter.dart';
 import 'package:aves/widgets/common/map/compass.dart';
-import 'package:aves/widgets/common/map/theme.dart';
-import 'package:aves/widgets/common/map/zoomed_bounds.dart';
 import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
-import 'package:aves/widgets/viewer/notifications.dart';
+import 'package:aves_map/aves_map.dart';
+import 'package:aves_services_platform/aves_services_platform.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 
-typedef MapOpener = void Function(BuildContext context);
-
 class MapButtonPanel extends StatelessWidget {
   final ValueNotifier<ZoomedBounds> boundsNotifier;
   final Future<void> Function(double amount)? zoomBy;
-  final MapOpener? openMapPage;
+  final void Function(BuildContext context)? openMapPage;
   final VoidCallback? resetRotation;
 
   const MapButtonPanel({
@@ -123,7 +115,7 @@ class MapButtonPanel extends StatelessWidget {
                     ),
                     showCoordinateFilter
                         ? Expanded(
-                            child: _OverlayCoordinateFilterChip(
+                            child: OverlayCoordinateFilterChip(
                               boundsNotifier: boundsNotifier,
                               padding: padding,
                             ),
@@ -134,8 +126,11 @@ class MapButtonPanel extends StatelessWidget {
                       child: MapOverlayButton(
                         icon: const Icon(AIcons.layers),
                         onPressed: () async {
-                          final canUseGoogleMaps = await availability.canUseGoogleMaps;
-                          final availableStyles = EntryMapStyle.values.where((style) => !style.isGoogleMaps || canUseGoogleMaps);
+                          final canUseDeviceMaps = await availability.canUseDeviceMaps;
+                          final availableStyles = [
+                            if (canUseDeviceMaps) ...PlatformMobileServices().mapStyles,
+                            ...EntryMapStyle.values.where((v) => !v.needDeviceService),
+                          ];
                           final preferredStyle = settings.infoMapStyle;
                           final initialStyle = availableStyles.contains(preferredStyle) ? preferredStyle : availableStyles.first;
                           await showSelectionDialog<EntryMapStyle>(
@@ -179,153 +174,5 @@ class MapButtonPanel extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-class MapOverlayButton extends StatelessWidget {
-  final Widget icon;
-  final String tooltip;
-  final VoidCallback? onPressed;
-
-  const MapOverlayButton({
-    Key? key,
-    required this.icon,
-    required this.tooltip,
-    required this.onPressed,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final blurred = settings.enableOverlayBlurEffect;
-    return Selector<MapThemeData, Animation<double>>(
-      selector: (context, v) => v.scale,
-      builder: (context, scale, child) => ScaleTransition(
-        scale: scale,
-        child: child,
-      ),
-      child: BlurredOval(
-        enabled: blurred,
-        child: Material(
-          type: MaterialType.circle,
-          color: Themes.overlayBackgroundColor(brightness: Theme.of(context).brightness, blurred: blurred),
-          child: Ink(
-            decoration: BoxDecoration(
-              border: AvesBorder.border(context),
-              shape: BoxShape.circle,
-            ),
-            child: Selector<MapThemeData, VisualDensity?>(
-              selector: (context, v) => v.visualDensity,
-              builder: (context, visualDensity, child) => IconButton(
-                iconSize: 20,
-                visualDensity: visualDensity,
-                icon: icon,
-                onPressed: onPressed,
-                tooltip: tooltip,
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _OverlayCoordinateFilterChip extends StatefulWidget {
-  final ValueNotifier<ZoomedBounds> boundsNotifier;
-  final double padding;
-
-  const _OverlayCoordinateFilterChip({
-    Key? key,
-    required this.boundsNotifier,
-    required this.padding,
-  }) : super(key: key);
-
-  @override
-  State<_OverlayCoordinateFilterChip> createState() => _OverlayCoordinateFilterChipState();
-}
-
-class _OverlayCoordinateFilterChipState extends State<_OverlayCoordinateFilterChip> {
-  final Debouncer _debouncer = Debouncer(delay: Durations.mapInfoDebounceDelay);
-  final ValueNotifier<ZoomedBounds?> _idleBoundsNotifier = ValueNotifier(null);
-
-  @override
-  void initState() {
-    super.initState();
-    _registerWidget(widget);
-  }
-
-  @override
-  void didUpdateWidget(covariant _OverlayCoordinateFilterChip oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    _unregisterWidget(oldWidget);
-    _registerWidget(widget);
-  }
-
-  @override
-  void dispose() {
-    _unregisterWidget(widget);
-    super.dispose();
-  }
-
-  void _registerWidget(_OverlayCoordinateFilterChip widget) {
-    widget.boundsNotifier.addListener(_onBoundsChanged);
-  }
-
-  void _unregisterWidget(_OverlayCoordinateFilterChip widget) {
-    widget.boundsNotifier.removeListener(_onBoundsChanged);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final blurred = settings.enableOverlayBlurEffect;
-    final theme = Theme.of(context);
-    return Theme(
-      data: theme.copyWith(
-        scaffoldBackgroundColor: Themes.overlayBackgroundColor(brightness: theme.brightness, blurred: blurred),
-      ),
-      child: Align(
-        alignment: Alignment.topLeft,
-        child: Selector<MapThemeData, Animation<double>>(
-          selector: (context, v) => v.scale,
-          builder: (context, scale, child) => SizeTransition(
-            sizeFactor: scale,
-            axisAlignment: 1,
-            child: FadeTransition(
-              opacity: scale,
-              child: child,
-            ),
-          ),
-          child: ValueListenableBuilder<ZoomedBounds?>(
-            valueListenable: _idleBoundsNotifier,
-            builder: (context, bounds, child) {
-              if (bounds == null) return const SizedBox();
-              final filter = CoordinateFilter(
-                bounds.sw,
-                bounds.ne,
-                // more stable format when bounds change
-                minuteSecondPadding: true,
-              );
-              return Padding(
-                padding: EdgeInsets.all(widget.padding),
-                child: BlurredRRect.all(
-                  enabled: blurred,
-                  borderRadius: AvesFilterChip.defaultRadius,
-                  child: AvesFilterChip(
-                    filter: filter,
-                    useFilterColor: false,
-                    maxWidth: double.infinity,
-                    onTap: (filter) => FilterSelectedNotification(CoordinateFilter(bounds.sw, bounds.ne)).dispatch(context),
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
-      ),
-    );
-  }
-
-  void _onBoundsChanged() {
-    _debouncer(() => _idleBoundsNotifier.value = widget.boundsNotifier.value);
   }
 }

@@ -1,5 +1,4 @@
 import 'package:aves/l10n/l10n.dart';
-import 'package:aves/utils/geo_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
@@ -33,12 +32,30 @@ extension ExtraCoordinateFormat on CoordinateFormat {
     final locale = l10n.localeName;
     final lat = latLng.latitude;
     final lng = latLng.longitude;
-    final latSexa = GeoUtils.decimal2sexagesimal(lat, minuteSecondPadding, secondDecimals, locale);
-    final lngSexa = GeoUtils.decimal2sexagesimal(lng, minuteSecondPadding, secondDecimals, locale);
+    final latSexa = _decimal2sexagesimal(lat, minuteSecondPadding, secondDecimals, locale);
+    final lngSexa = _decimal2sexagesimal(lng, minuteSecondPadding, secondDecimals, locale);
     return [
       l10n.coordinateDms(latSexa, lat < 0 ? l10n.coordinateDmsSouth : l10n.coordinateDmsNorth),
       l10n.coordinateDms(lngSexa, lng < 0 ? l10n.coordinateDmsWest : l10n.coordinateDmsEast),
     ];
+  }
+
+  static String _decimal2sexagesimal(
+    double degDecimal,
+    bool minuteSecondPadding,
+    int secondDecimals,
+    String locale,
+  ) {
+    final degAbs = degDecimal.abs();
+    final deg = degAbs.toInt();
+    final minDecimal = (degAbs - deg) * 60;
+    final min = minDecimal.toInt();
+    final sec = (minDecimal - min) * 60;
+
+    var minText = NumberFormat('0' * (minuteSecondPadding ? 2 : 1), locale).format(min);
+    var secText = NumberFormat('${'0' * (minuteSecondPadding ? 2 : 1)}${secondDecimals > 0 ? '.${'0' * secondDecimals}' : ''}', locale).format(sec);
+
+    return '$deg° $minText′ $secText″';
   }
 
   static List<String> _toDecimal(AppLocalizations l10n, LatLng latLng) {

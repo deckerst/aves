@@ -331,6 +331,8 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                 Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for mimeType=$mimeType uri=$uri", e)
             } catch (e: NoClassDefFoundError) {
                 Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for mimeType=$mimeType uri=$uri", e)
+            } catch (e: AssertionError) {
+                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for mimeType=$mimeType uri=$uri", e)
             }
         }
 
@@ -601,6 +603,8 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                 Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for mimeType=$mimeType uri=$uri", e)
             } catch (e: NoClassDefFoundError) {
                 Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for mimeType=$mimeType uri=$uri", e)
+            } catch (e: AssertionError) {
+                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for mimeType=$mimeType uri=$uri", e)
             }
         }
 
@@ -727,6 +731,8 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                 Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for mimeType=$mimeType uri=$uri", e)
             } catch (e: NoClassDefFoundError) {
                 Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for mimeType=$mimeType uri=$uri", e)
+            } catch (e: AssertionError) {
+                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for mimeType=$mimeType uri=$uri", e)
             }
         }
 
@@ -783,6 +789,8 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             } catch (e: Exception) {
                 Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for mimeType=$mimeType uri=$uri", e)
             } catch (e: NoClassDefFoundError) {
+                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for mimeType=$mimeType uri=$uri", e)
+            } catch (e: AssertionError) {
                 Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for mimeType=$mimeType uri=$uri", e)
             }
         }
@@ -844,6 +852,8 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                 Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for mimeType=$mimeType uri=$uri", e)
             } catch (e: NoClassDefFoundError) {
                 Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for mimeType=$mimeType uri=$uri", e)
+            } catch (e: AssertionError) {
+                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for mimeType=$mimeType uri=$uri", e)
             }
         }
         result.error("getPanoramaInfo-empty", "failed to get info for mimeType=$mimeType uri=$uri", null)
@@ -894,7 +904,10 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                 result.error("getXmp-exception", "failed to read XMP for mimeType=$mimeType uri=$uri", e.message)
                 return
             } catch (e: NoClassDefFoundError) {
-                result.error("getXmp-error", "failed to read XMP for mimeType=$mimeType uri=$uri", e.message)
+                result.error("getXmp-noclass", "failed to read XMP for mimeType=$mimeType uri=$uri", e.message)
+                return
+            } catch (e: AssertionError) {
+                result.error("getXmp-assert", "failed to read XMP for mimeType=$mimeType uri=$uri", e.message)
                 return
             }
         }
@@ -1030,6 +1043,8 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             } catch (e: Exception) {
                 Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for mimeType=$mimeType uri=$uri", e)
             } catch (e: NoClassDefFoundError) {
+                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for mimeType=$mimeType uri=$uri", e)
+            } catch (e: AssertionError) {
                 Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for mimeType=$mimeType uri=$uri", e)
             }
         }

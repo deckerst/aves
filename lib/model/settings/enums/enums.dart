@@ -12,9 +12,6 @@ enum CoordinateFormat { dms, decimal }
 
 enum EntryBackground { black, white, checkered }
 
-// browse providers at https://leaflet-extras.github.io/leaflet-providers/preview/
-enum EntryMapStyle { googleNormal, googleHybrid, googleTerrain, osmHot, stamenToner, stamenWatercolor }
-
 enum HomePageSetting { collection, albums }
 
 enum KeepScreenOn { never, viewerOnly, always }

@@ -167,6 +167,8 @@ object MultiPage {
             Log.w(LOG_TAG, "failed to get motion photo offset from uri=$uri", e)
         } catch (e: NoClassDefFoundError) {
             Log.w(LOG_TAG, "failed to get motion photo offset from uri=$uri", e)
+        } catch (e: AssertionError) {
+            Log.w(LOG_TAG, "failed to get motion photo offset from uri=$uri", e)
         }
         return null
     }

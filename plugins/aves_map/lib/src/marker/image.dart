@@ -1,45 +1,29 @@
-import 'package:aves/model/entry.dart';
-import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:aves/widgets/common/thumbnail/image.dart';
+import 'package:aves_map/src/theme.dart';
 import 'package:custom_rounded_rectangle_border/custom_rounded_rectangle_border.dart';
 import 'package:flutter/material.dart';
 
 class ImageMarker extends StatelessWidget {
-  final AvesEntry? entry;
   final int? count;
-  final double extent;
-  final Size arrowSize;
-  final bool progressive;
+  final Widget Function(double extent) buildThumbnailImage;
 
   static const double outerBorderRadiusDim = 8;
-  static const double outerBorderWidth = 1.5;
-  static const double innerBorderWidth = 2;
+  static const outerBorderWidth = MapThemeData.markerOuterBorderWidth;
+  static const innerBorderWidth = MapThemeData.markerInnerBorderWidth;
+  static const extent = MapThemeData.markerImageExtent;
+  static const arrowSize = MapThemeData.markerArrowSize;
   static const outerBorderRadius = BorderRadius.all(Radius.circular(outerBorderRadiusDim));
   static const innerRadius = Radius.circular(outerBorderRadiusDim - outerBorderWidth);
   static const innerBorderRadius = BorderRadius.all(innerRadius);
 
-  static Color themedOuterBorderColor(bool isDark) => isDark ? Colors.white30 : Colors.black26;
-
-  static Color themedInnerBorderColor(bool isDark) => isDark ? const Color(0xFF212121) : Colors.white;
-
   const ImageMarker({
     Key? key,
-    required this.entry,
     required this.count,
-    required this.extent,
-    required this.arrowSize,
-    required this.progressive,
+    required this.buildThumbnailImage,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    Widget child = entry != null
-        ? ThumbnailImage(
-            entry: entry!,
-            extent: extent,
-            progressive: progressive,
-          )
-        : const SizedBox();
+    Widget child = buildThumbnailImage(extent);
 
     // need to be sized for the Google map marker generator
     child = SizedBox(
@@ -50,8 +34,8 @@ class ImageMarker extends StatelessWidget {
 
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final outerBorderColor = themedOuterBorderColor(isDark);
-    final innerBorderColor = themedInnerBorderColor(isDark);
+    final outerBorderColor = MapThemeData.markerThemedOuterBorderColor(isDark);
+    final innerBorderColor = MapThemeData.markerThemedInnerBorderColor(isDark);
 
     final outerDecoration = BoxDecoration(
       border: Border.fromBorderSide(BorderSide(
@@ -90,7 +74,7 @@ class ImageMarker extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 2),
             decoration: ShapeDecoration(
               color: theme.colorScheme.secondary,
-              shape: context.isRtl
+              shape: Directionality.of(context) == TextDirection.rtl
                   ? CustomRoundedRectangleBorder(
                       leftSide: borderSide,
                       rightSide: borderSide,
@@ -187,54 +171,4 @@ class _MarkerArrowPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-
-class DotMarker extends StatelessWidget {
-  const DotMarker({Key? key}) : super(key: key);
-
-  static const double diameter = 16;
-  static const double outerBorderRadiusDim = diameter;
-  static const outerBorderRadius = BorderRadius.all(Radius.circular(outerBorderRadiusDim));
-  static const innerRadius = Radius.circular(outerBorderRadiusDim - ImageMarker.outerBorderWidth);
-  static const innerBorderRadius = BorderRadius.all(innerRadius);
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-    final outerBorderColor = ImageMarker.themedOuterBorderColor(isDark);
-    final innerBorderColor = ImageMarker.themedInnerBorderColor(isDark);
-
-    final outerDecoration = BoxDecoration(
-      border: Border.fromBorderSide(BorderSide(
-        color: outerBorderColor,
-        width: ImageMarker.outerBorderWidth,
-      )),
-      borderRadius: outerBorderRadius,
-    );
-
-    final innerDecoration = BoxDecoration(
-      border: Border.fromBorderSide(BorderSide(
-        color: innerBorderColor,
-        width: ImageMarker.innerBorderWidth,
-      )),
-      borderRadius: innerBorderRadius,
-    );
-
-    return Container(
-      decoration: outerDecoration,
-      child: DecoratedBox(
-        decoration: innerDecoration,
-        position: DecorationPosition.foreground,
-        child: ClipRRect(
-          borderRadius: innerBorderRadius,
-          child: Container(
-            width: diameter,
-            height: diameter,
-            color: theme.colorScheme.secondary,
-          ),
-        ),
-      ),
-    );
-  }
 }

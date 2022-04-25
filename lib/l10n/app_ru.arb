@@ -124,6 +124,8 @@
   "mapStyleGoogleNormal": "Google Карты",
   "mapStyleGoogleHybrid": "Google Карты (Гибридный)",
   "mapStyleGoogleTerrain": "Google Карты (Местность)",
+  "mapStyleHuaweiNormal": "Petal Карты",
+  "mapStyleHuaweiTerrain": "Petal Карты (Местность)",
   "mapStyleOsmHot": "Команда гуманитарной картопомощи",
   "mapStyleStamenToner": "Stamen Toner",
   "mapStyleStamenWatercolor": "Stamen Watercolor",

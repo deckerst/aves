@@ -124,6 +124,8 @@
   "mapStyleGoogleNormal": "Google Maps",
   "mapStyleGoogleHybrid": "Google Maps (Satellite)",
   "mapStyleGoogleTerrain": "Google Maps (Relief)",
+  "mapStyleHuaweiNormal": "Petal Maps",
+  "mapStyleHuaweiTerrain": "Petal Maps (Relief)",
   "mapStyleOsmHot": "OSM Humanitaire",
   "mapStyleStamenToner": "Stamen Toner (Monochrome)",
   "mapStyleStamenWatercolor": "Stamen Watercolor (Aquarelle)",

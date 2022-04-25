@@ -11,6 +11,8 @@ import 'package:aves/model/settings/enums/map_style.dart';
 import 'package:aves/model/source/enums.dart';
 import 'package:aves/services/accessibility_service.dart';
 import 'package:aves/services/common/services.dart';
+import 'package:aves_map/aves_map.dart';
+import 'package:aves_services_platform/aves_services_platform.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -161,11 +163,11 @@ class Settings extends ChangeNotifier {
     enableOverlayBlurEffect = performanceClass >= 29;
 
     // availability
-    final canUseGoogleMaps = await availability.canUseGoogleMaps;
-    if (canUseGoogleMaps) {
-      infoMapStyle = EntryMapStyle.googleNormal;
+    final isDeviceMapAvailable = await availability.canUseDeviceMaps;
+    if (isDeviceMapAvailable) {
+      infoMapStyle = PlatformMobileServices().defaultMapStyle;
     } else {
-      final styles = EntryMapStyle.values.whereNot((v) => v.isGoogleMaps).toList();
+      final styles = EntryMapStyle.values.whereNot((v) => v.needDeviceService).toList();
       infoMapStyle = styles[Random().nextInt(styles.length)];
     }
 

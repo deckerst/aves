@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:aves/widgets/common/map/zoomed_bounds.dart';
+import 'package:aves_map/src/zoomed_bounds.dart';
 import 'package:latlong2/latlong.dart';
 
 class AvesMapController {
