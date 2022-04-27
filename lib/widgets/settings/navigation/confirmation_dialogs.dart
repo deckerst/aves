@@ -3,26 +3,6 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/settings/common/tiles.dart';
 import 'package:flutter/material.dart';
 
-class ConfirmationDialogTile extends StatelessWidget {
-  const ConfirmationDialogTile({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(context.l10n.settingsConfirmationDialogTile),
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            settings: const RouteSettings(name: ConfirmationDialogPage.routeName),
-            builder: (context) => const ConfirmationDialogPage(),
-          ),
-        );
-      },
-    );
-  }
-}
-
 class ConfirmationDialogPage extends StatelessWidget {
   static const routeName = '/settings/navigation_confirmation';
 

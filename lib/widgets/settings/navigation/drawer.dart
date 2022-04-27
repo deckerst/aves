@@ -13,26 +13,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:tuple/tuple.dart';
 
-class NavigationDrawerTile extends StatelessWidget {
-  const NavigationDrawerTile({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(context.l10n.settingsNavigationDrawerTile),
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            settings: const RouteSettings(name: NavigationDrawerEditorPage.routeName),
-            builder: (context) => const NavigationDrawerEditorPage(),
-          ),
-        );
-      },
-    );
-  }
-}
-
 class NavigationDrawerEditorPage extends StatefulWidget {
   static const routeName = '/settings/navigation_drawer';
 

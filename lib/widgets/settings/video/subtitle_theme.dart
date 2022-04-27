@@ -7,26 +7,6 @@ import 'package:aves/widgets/settings/video/subtitle_sample.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class SubtitleThemeTile extends StatelessWidget {
-  const SubtitleThemeTile({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(context.l10n.settingsSubtitleThemeTile),
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            settings: const RouteSettings(name: SubtitleThemePage.routeName),
-            builder: (context) => const SubtitleThemePage(),
-          ),
-        );
-      },
-    );
-  }
-}
-
 class SubtitleThemePage extends StatelessWidget {
   static const routeName = '/settings/video/subtitle_theme';
 

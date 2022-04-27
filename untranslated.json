@@ -1,4 +1,11 @@
 {
+  "de": [
+    "settingsSearchFieldLabel",
+    "settingsSearchEmpty",
+    "settingsThumbnailOverlayTile",
+    "settingsThumbnailOverlayTitle"
+  ],
+
   "es": [
     "entryActionShowGeoTiffOnMap",
     "entryActionConvertMotionPhotoToStillImage",
@@ -9,7 +16,32 @@
     "coverDialogTabApp",
     "coverDialogTabColor",
     "appPickDialogTitle",
-    "appPickDialogNone"
+    "appPickDialogNone",
+    "settingsSearchFieldLabel",
+    "settingsSearchEmpty",
+    "settingsThumbnailOverlayTile",
+    "settingsThumbnailOverlayTitle"
+  ],
+
+  "fr": [
+    "settingsSearchFieldLabel",
+    "settingsSearchEmpty",
+    "settingsThumbnailOverlayTile",
+    "settingsThumbnailOverlayTitle"
+  ],
+
+  "id": [
+    "settingsSearchFieldLabel",
+    "settingsSearchEmpty",
+    "settingsThumbnailOverlayTile",
+    "settingsThumbnailOverlayTitle"
+  ],
+
+  "it": [
+    "settingsSearchFieldLabel",
+    "settingsSearchEmpty",
+    "settingsThumbnailOverlayTile",
+    "settingsThumbnailOverlayTitle"
   ],
 
   "ja": [
@@ -22,6 +54,38 @@
     "coverDialogTabApp",
     "coverDialogTabColor",
     "appPickDialogTitle",
-    "appPickDialogNone"
+    "appPickDialogNone",
+    "settingsSearchFieldLabel",
+    "settingsSearchEmpty",
+    "settingsThumbnailOverlayTile",
+    "settingsThumbnailOverlayTitle"
+  ],
+
+  "ko": [
+    "settingsSearchFieldLabel",
+    "settingsSearchEmpty",
+    "settingsThumbnailOverlayTile",
+    "settingsThumbnailOverlayTitle"
+  ],
+
+  "pt": [
+    "settingsSearchFieldLabel",
+    "settingsSearchEmpty",
+    "settingsThumbnailOverlayTile",
+    "settingsThumbnailOverlayTitle"
+  ],
+
+  "ru": [
+    "settingsSearchFieldLabel",
+    "settingsSearchEmpty",
+    "settingsThumbnailOverlayTile",
+    "settingsThumbnailOverlayTitle"
+  ],
+
+  "zh": [
+    "settingsSearchFieldLabel",
+    "settingsSearchEmpty",
+    "settingsThumbnailOverlayTile",
+    "settingsThumbnailOverlayTitle"
   ]
 }

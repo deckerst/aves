@@ -588,6 +588,8 @@
   "settingsSystemDefault": "System",
   "settingsDefault": "Default",
 
+  "settingsSearchFieldLabel": "Search settings",
+  "settingsSearchEmpty": "No matching setting",
   "settingsActionExport": "Export",
   "settingsActionImport": "Import",
 
@@ -616,6 +618,8 @@
   "settingsNavigationDrawerAddAlbum": "Add album",
 
   "settingsSectionThumbnails": "Thumbnails",
+  "settingsThumbnailOverlayTile": "Overlay",
+  "settingsThumbnailOverlayTitle": "Overlay",
   "settingsThumbnailShowFavouriteIcon": "Show favorite icon",
   "settingsThumbnailShowLocationIcon": "Show location icon",
   "settingsThumbnailShowMotionPhotoIcon": "Show motion photo icon",
