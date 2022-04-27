@@ -4,6 +4,34 @@ import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+class SettingsSubPageTile extends StatelessWidget {
+  final String title, routeName;
+  final WidgetBuilder builder;
+
+  const SettingsSubPageTile({
+    Key? key,
+    required this.title,
+    required this.routeName,
+    required this.builder,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      title: Text(title),
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            settings: RouteSettings(name: routeName),
+            builder: builder,
+          ),
+        );
+      },
+    );
+  }
+}
+
 class SettingsSwitchListTile extends StatelessWidget {
   final bool Function(BuildContext, Settings) selector;
   final ValueChanged<bool> onChanged;
