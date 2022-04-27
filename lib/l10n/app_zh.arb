@@ -436,6 +436,8 @@
   "settingsNavigationDrawerAddAlbum": "添加相册",
 
   "settingsSectionThumbnails": "缩略图",
+  "settingsThumbnailOverlayTile": "叠加层",
+  "settingsThumbnailOverlayTitle": "叠加层",
   "settingsThumbnailShowFavouriteIcon": "显示收藏图标",
   "settingsThumbnailShowLocationIcon": "显示位置图标",
   "settingsThumbnailShowMotionPhotoIcon": "显示动态照片图标",

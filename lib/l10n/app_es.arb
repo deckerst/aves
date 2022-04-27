@@ -424,6 +424,8 @@
   "settingsNavigationDrawerAddAlbum": "Agregar álbum",
 
   "settingsSectionThumbnails": "Miniaturas",
+  "settingsThumbnailOverlayTile": "Incrustaciones",
+  "settingsThumbnailOverlayTitle": "Incrustaciones",
   "settingsThumbnailShowFavouriteIcon": "Mostrar icono de favoritos",
   "settingsThumbnailShowLocationIcon": "Mostrar icono de ubicación",
   "settingsThumbnailShowMotionPhotoIcon": "Mostrar icono de foto en movimiento",

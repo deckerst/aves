@@ -436,6 +436,8 @@
   "settingsNavigationDrawerAddAlbum": "Adicionar álbum",
 
   "settingsSectionThumbnails": "Miniaturas",
+  "settingsThumbnailOverlayTile": "Sobreposição",
+  "settingsThumbnailOverlayTitle": "Sobreposição",
   "settingsThumbnailShowFavouriteIcon": "Mostrar ícone favorito",
   "settingsThumbnailShowLocationIcon": "Mostrar ícone de localização",
   "settingsThumbnailShowMotionPhotoIcon": "Mostrar ícone de foto em movimento",

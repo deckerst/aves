@@ -4,10 +4,14 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Added
+
+- Settings: search
+- `huawei` app flavor (Petal Maps, no Crashlytics)
+
 ### Changed
 
 - upgraded Flutter to stable v2.10.5
-- `huawei` flavor (Petal Maps, no Crashlytics)
 
 ## <a id="v1.6.4"></a>[v1.6.4] - 2022-04-19
 

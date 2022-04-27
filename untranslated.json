@@ -1,9 +1,7 @@
 {
   "de": [
     "settingsSearchFieldLabel",
-    "settingsSearchEmpty",
-    "settingsThumbnailOverlayTile",
-    "settingsThumbnailOverlayTitle"
+    "settingsSearchEmpty"
   ],
 
   "es": [
@@ -18,30 +16,22 @@
     "appPickDialogTitle",
     "appPickDialogNone",
     "settingsSearchFieldLabel",
-    "settingsSearchEmpty",
-    "settingsThumbnailOverlayTile",
-    "settingsThumbnailOverlayTitle"
+    "settingsSearchEmpty"
   ],
 
   "fr": [
     "settingsSearchFieldLabel",
-    "settingsSearchEmpty",
-    "settingsThumbnailOverlayTile",
-    "settingsThumbnailOverlayTitle"
+    "settingsSearchEmpty"
   ],
 
   "id": [
     "settingsSearchFieldLabel",
-    "settingsSearchEmpty",
-    "settingsThumbnailOverlayTile",
-    "settingsThumbnailOverlayTitle"
+    "settingsSearchEmpty"
   ],
 
   "it": [
     "settingsSearchFieldLabel",
-    "settingsSearchEmpty",
-    "settingsThumbnailOverlayTile",
-    "settingsThumbnailOverlayTitle"
+    "settingsSearchEmpty"
   ],
 
   "ja": [
@@ -56,36 +46,26 @@
     "appPickDialogTitle",
     "appPickDialogNone",
     "settingsSearchFieldLabel",
-    "settingsSearchEmpty",
-    "settingsThumbnailOverlayTile",
-    "settingsThumbnailOverlayTitle"
+    "settingsSearchEmpty"
   ],
 
   "ko": [
     "settingsSearchFieldLabel",
-    "settingsSearchEmpty",
-    "settingsThumbnailOverlayTile",
-    "settingsThumbnailOverlayTitle"
+    "settingsSearchEmpty"
   ],
 
   "pt": [
     "settingsSearchFieldLabel",
-    "settingsSearchEmpty",
-    "settingsThumbnailOverlayTile",
-    "settingsThumbnailOverlayTitle"
+    "settingsSearchEmpty"
   ],
 
   "ru": [
     "settingsSearchFieldLabel",
-    "settingsSearchEmpty",
-    "settingsThumbnailOverlayTile",
-    "settingsThumbnailOverlayTitle"
+    "settingsSearchEmpty"
   ],
 
   "zh": [
     "settingsSearchFieldLabel",
-    "settingsSearchEmpty",
-    "settingsThumbnailOverlayTile",
-    "settingsThumbnailOverlayTitle"
+    "settingsSearchEmpty"
   ]
 }
