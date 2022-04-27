@@ -436,6 +436,8 @@
   "settingsNavigationDrawerAddAlbum": "Album hinzufügen",
 
   "settingsSectionThumbnails": "Vorschaubilder",
+  "settingsThumbnailOverlayTile": "Überlagerung",
+  "settingsThumbnailOverlayTitle": "Überlagerung",
   "settingsThumbnailShowFavouriteIcon": "Favoriten-Symbol anzeigen",
   "settingsThumbnailShowLocationIcon": "Standort-Symbol anzeigen",
   "settingsThumbnailShowMotionPhotoIcon": "Bewegungsfoto-Symbol anzeigen",

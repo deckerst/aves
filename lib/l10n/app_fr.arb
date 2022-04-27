@@ -436,6 +436,8 @@
   "settingsNavigationDrawerAddAlbum": "Ajouter un album",
 
   "settingsSectionThumbnails": "Vignettes",
+  "settingsThumbnailOverlayTile": "Incrustations",
+  "settingsThumbnailOverlayTitle": "Incrustations",
   "settingsThumbnailShowFavouriteIcon": "Afficher l’icône de favori",
   "settingsThumbnailShowLocationIcon": "Afficher l’icône de lieu",
   "settingsThumbnailShowMotionPhotoIcon": "Afficher l’icône de photo animée",

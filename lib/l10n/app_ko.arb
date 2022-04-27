@@ -436,6 +436,8 @@
   "settingsNavigationDrawerAddAlbum": "앨범 추가",
 
   "settingsSectionThumbnails": "섬네일",
+  "settingsThumbnailOverlayTile": "오버레이",
+  "settingsThumbnailOverlayTitle": "오버레이",
   "settingsThumbnailShowFavouriteIcon": "즐겨찾기 아이콘 표시",
   "settingsThumbnailShowLocationIcon": "위치 아이콘 표시",
   "settingsThumbnailShowMotionPhotoIcon": "모션 사진 아이콘 표시",

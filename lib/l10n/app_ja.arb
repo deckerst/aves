@@ -424,6 +424,8 @@
   "settingsNavigationDrawerAddAlbum": "アルバムを追加",
 
   "settingsSectionThumbnails": "サムネイル",
+  "settingsThumbnailOverlayTile": "オーバーレイ",
+  "settingsThumbnailOverlayTitle": "オーバーレイ",
   "settingsThumbnailShowFavouriteIcon": "お気に入りアイコンを表示",
   "settingsThumbnailShowLocationIcon": "位置情報アイコンを表示",
   "settingsThumbnailShowMotionPhotoIcon": "モーションフォトアイコンを表示",

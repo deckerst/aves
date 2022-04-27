@@ -436,6 +436,8 @@
   "settingsNavigationDrawerAddAlbum": "Добавить альбом",
 
   "settingsSectionThumbnails": "Эскизы",
+  "settingsThumbnailOverlayTile": "Наложение",
+  "settingsThumbnailOverlayTitle": "Наложение",
   "settingsThumbnailShowFavouriteIcon": "Показать значок избранного",
   "settingsThumbnailShowLocationIcon": "Показать значок местоположения",
   "settingsThumbnailShowMotionPhotoIcon": "Показать значок «живого фото»",
