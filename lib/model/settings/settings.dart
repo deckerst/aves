@@ -71,6 +71,7 @@ class Settings extends ChangeNotifier {
   static const collectionBrowsingQuickActionsKey = 'collection_browsing_quick_actions';
   static const collectionSelectionQuickActionsKey = 'collection_selection_quick_actions';
   static const showThumbnailFavouriteKey = 'show_thumbnail_favourite';
+  static const showThumbnailTagKey = 'show_thumbnail_tag';
   static const showThumbnailLocationKey = 'show_thumbnail_location';
   static const showThumbnailMotionPhotoKey = 'show_thumbnail_motion_photo';
   static const showThumbnailRatingKey = 'show_thumbnail_rating';
@@ -353,6 +354,10 @@ class Settings extends ChangeNotifier {
   bool get showThumbnailFavourite => getBoolOrDefault(showThumbnailFavouriteKey, SettingsDefaults.showThumbnailFavourite);
 
   set showThumbnailFavourite(bool newValue) => setAndNotify(showThumbnailFavouriteKey, newValue);
+
+  bool get showThumbnailTag => getBoolOrDefault(showThumbnailTagKey, SettingsDefaults.showThumbnailTag);
+
+  set showThumbnailTag(bool newValue) => setAndNotify(showThumbnailTagKey, newValue);
 
   bool get showThumbnailLocation => getBoolOrDefault(showThumbnailLocationKey, SettingsDefaults.showThumbnailLocation);
 
@@ -694,6 +699,7 @@ class Settings extends ChangeNotifier {
             case confirmMoveUndatedItemsKey:
             case setMetadataDateBeforeFileOpKey:
             case showThumbnailFavouriteKey:
+            case showThumbnailTagKey:
             case showThumbnailLocationKey:
             case showThumbnailMotionPhotoKey:
             case showThumbnailRatingKey:

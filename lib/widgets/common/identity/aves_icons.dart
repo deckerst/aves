@@ -87,6 +87,21 @@ class FavouriteIcon extends StatelessWidget {
   }
 }
 
+class TagIcon extends StatelessWidget {
+  const TagIcon({Key? key}) : super(key: key);
+
+  static const scale = .9;
+
+  @override
+  Widget build(BuildContext context) {
+    return const OverlayIcon(
+      icon: AIcons.tag,
+      iconScale: scale,
+      relativeOffset: Offset(.05, .05),
+    );
+  }
+}
+
 class GpsIcon extends StatelessWidget {
   const GpsIcon({Key? key}) : super(key: key);
 
@@ -204,7 +219,8 @@ class OverlayIcon extends StatelessWidget {
   final IconData icon;
   final String? text;
   final double iconScale;
-  final EdgeInsets margin;
+  final EdgeInsetsGeometry margin;
+  final Offset? relativeOffset;
 
   const OverlayIcon({
     Key? key,
@@ -213,25 +229,36 @@ class OverlayIcon extends StatelessWidget {
     this.text,
     // default margin for multiple icons in a `Column`
     this.margin = const EdgeInsets.only(left: 1, right: 1, bottom: 1),
+    this.relativeOffset,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final size = context.select<GridThemeData, double>((t) => t.iconSize);
-    final iconChild = Icon(
+    Widget iconChild = Icon(
       icon,
       size: size,
     );
-    final iconBox = SizedBox(
+
+    if (relativeOffset != null) {
+      iconChild = FractionalTranslation(
+        translation: relativeOffset!,
+        child: iconChild,
+      );
+    }
+
+    if (iconScale != 1) {
+      // using a transform is better than modifying the icon size to properly center the scaled icon
+      iconChild = Transform.scale(
+        scale: iconScale,
+        child: iconChild,
+      );
+    }
+
+    iconChild = SizedBox(
       width: size,
       height: size,
-      // using a transform is better than modifying the icon size to properly center the scaled icon
-      child: iconScale != 1
-          ? Transform.scale(
-              scale: iconScale,
-              child: iconChild,
-            )
-          : iconChild,
+      child: iconChild,
     );
 
     return Container(
@@ -242,12 +269,12 @@ class OverlayIcon extends StatelessWidget {
         borderRadius: BorderRadius.all(Radius.circular(size)),
       ),
       child: text == null
-          ? iconBox
+          ? iconChild
           : Row(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                iconBox,
+                iconChild,
                 const SizedBox(width: 2),
                 Text(
                   text!,
