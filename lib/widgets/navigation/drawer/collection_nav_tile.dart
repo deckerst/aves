@@ -5,7 +5,7 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:aves/widgets/drawer/tile.dart';
+import 'package:aves/widgets/navigation/drawer/tile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

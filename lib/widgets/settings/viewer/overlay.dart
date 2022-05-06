@@ -52,11 +52,6 @@ class ViewerOverlayPage extends StatelessWidget {
               onChanged: (v) => settings.showOverlayThumbnailPreview = v,
               title: context.l10n.settingsViewerShowOverlayThumbnails,
             ),
-            SettingsSwitchListTile(
-              selector: (context, s) => s.enableOverlayBlurEffect,
-              onChanged: (v) => settings.enableOverlayBlurEffect = v,
-              title: context.l10n.settingsViewerEnableOverlayBlurEffect,
-            ),
           ],
         ),
       ),

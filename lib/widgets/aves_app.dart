@@ -139,7 +139,6 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
                               return AvesColorsProvider(
                                 child: child!,
                               );
-                              // return child!;
                             },
                             onGenerateTitle: (context) => context.l10n.appName,
                             theme: Themes.lightTheme,

@@ -56,6 +56,7 @@ class Settings extends ChangeNotifier {
   static const mustBackTwiceToExitKey = 'must_back_twice_to_exit';
   static const keepScreenOnKey = 'keep_screen_on';
   static const homePageKey = 'home_page';
+  static const showBottomNavigationBarKey = 'show_bottom_navigation_bar';
   static const confirmDeleteForeverKey = 'confirm_delete_forever';
   static const confirmMoveToBinKey = 'confirm_move_to_bin';
   static const confirmMoveUndatedItemsKey = 'confirm_move_undated_items';
@@ -293,6 +294,10 @@ class Settings extends ChangeNotifier {
   HomePageSetting get homePage => getEnumOrDefault(homePageKey, SettingsDefaults.homePage, HomePageSetting.values);
 
   set homePage(HomePageSetting newValue) => setAndNotify(homePageKey, newValue.toString());
+
+  bool get showBottomNavigationBar => getBoolOrDefault(showBottomNavigationBarKey, SettingsDefaults.showBottomNavigationBar);
+
+  set showBottomNavigationBar(bool newValue) => setAndNotify(showBottomNavigationBarKey, newValue);
 
   bool get confirmDeleteForever => getBoolOrDefault(confirmDeleteForeverKey, SettingsDefaults.confirmDeleteForever);
 
@@ -682,6 +687,7 @@ class Settings extends ChangeNotifier {
               break;
             case isInstalledAppAccessAllowedKey:
             case isErrorReportingAllowedKey:
+            case showBottomNavigationBarKey:
             case mustBackTwiceToExitKey:
             case confirmDeleteForeverKey:
             case confirmMoveToBinKey:

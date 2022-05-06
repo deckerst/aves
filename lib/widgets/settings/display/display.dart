@@ -31,6 +31,7 @@ class DisplaySection extends SettingsSection {
         SettingsTileDisplayThemeBrightness(),
         SettingsTileDisplayThemeColorMode(),
         SettingsTileDisplayDisplayRefreshRateMode(),
+        SettingsTileDisplayEnableBlurEffect(),
       ];
 }
 
@@ -73,5 +74,17 @@ class SettingsTileDisplayDisplayRefreshRateMode extends SettingsTile {
         onSelection: (v) => settings.displayRefreshRateMode = v,
         tileTitle: title(context),
         dialogTitle: context.l10n.settingsDisplayRefreshRateModeTitle,
+      );
+}
+
+class SettingsTileDisplayEnableBlurEffect extends SettingsTile {
+  @override
+  String title(BuildContext context) => context.l10n.settingsViewerEnableOverlayBlurEffect;
+
+  @override
+  Widget build(BuildContext context) => SettingsSwitchListTile(
+        selector: (context, s) => s.enableOverlayBlurEffect,
+        onChanged: (v) => settings.enableOverlayBlurEffect = v,
+        title: title(context),
       );
 }
