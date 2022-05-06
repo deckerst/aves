@@ -599,6 +599,7 @@
 
   "settingsSectionNavigation": "Navigation",
   "settingsHome": "Home",
+  "settingsShowBottomNavigationBar": "Show bottom navigation bar",
   "settingsKeepScreenOnTile": "Keep screen on",
   "settingsKeepScreenOnTitle": "Keep Screen On",
   "settingsDoubleBackExit": "Tap “back” twice to exit",

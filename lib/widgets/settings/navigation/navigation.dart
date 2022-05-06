@@ -31,6 +31,7 @@ class NavigationSection extends SettingsSection {
   @override
   FutureOr<List<SettingsTile>> tiles(BuildContext context) => [
         SettingsTileNavigationHomePage(),
+        SettingsTileShowBottomNavigationBar(),
         SettingsTileNavigationDrawer(),
         SettingsTileNavigationConfirmationDialog(),
         SettingsTileNavigationKeepScreenOn(),
@@ -50,6 +51,18 @@ class SettingsTileNavigationHomePage extends SettingsTile {
         onSelection: (v) => settings.homePage = v,
         tileTitle: title(context),
         dialogTitle: context.l10n.settingsHome,
+      );
+}
+
+class SettingsTileShowBottomNavigationBar extends SettingsTile {
+  @override
+  String title(BuildContext context) => context.l10n.settingsShowBottomNavigationBar;
+
+  @override
+  Widget build(BuildContext context) => SettingsSwitchListTile(
+        selector: (context, s) => s.showBottomNavigationBar,
+        onChanged: (v) => settings.showBottomNavigationBar = v,
+        title: title(context),
       );
 }
 

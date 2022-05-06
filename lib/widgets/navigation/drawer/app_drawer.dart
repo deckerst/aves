@@ -17,19 +17,19 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
 import 'package:aves/widgets/common/identity/aves_logo.dart';
 import 'package:aves/widgets/debug/app_debug_page.dart';
-import 'package:aves/widgets/drawer/collection_nav_tile.dart';
-import 'package:aves/widgets/drawer/page_nav_tile.dart';
-import 'package:aves/widgets/drawer/tile.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/countries_page.dart';
 import 'package:aves/widgets/filter_grids/tags_page.dart';
+import 'package:aves/widgets/navigation/drawer/collection_nav_tile.dart';
+import 'package:aves/widgets/navigation/drawer/page_nav_tile.dart';
+import 'package:aves/widgets/navigation/drawer/tile.dart';
 import 'package:aves/widgets/settings/settings_page.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class AppDrawer extends StatelessWidget {
+class AppDrawer extends StatefulWidget {
   // collection loaded in the `CollectionPage`, if any
   final CollectionLens? currentCollection;
 
@@ -37,6 +37,9 @@ class AppDrawer extends StatelessWidget {
     Key? key,
     this.currentCollection,
   }) : super(key: key);
+
+  @override
+  State<AppDrawer> createState() => _AppDrawerState();
 
   static List<String> getDefaultAlbums(BuildContext context) {
     final source = context.read<CollectionSource>();
@@ -47,6 +50,14 @@ class AppDrawer extends StatelessWidget {
       ..sort(source.compareAlbumsByName);
     return specialAlbums;
   }
+}
+
+class _AppDrawerState extends State<AppDrawer> {
+  // using the default controller conflicts
+  // with bottom nav bar primary scroll monitoring
+  final ScrollController _scrollController = ScrollController();
+
+  CollectionLens? get currentCollection => widget.currentCollection;
 
   @override
   Widget build(BuildContext context) {
@@ -73,6 +84,7 @@ class AppDrawer extends StatelessWidget {
           builder: (context, mqPaddingBottom, child) {
             final iconTheme = IconTheme.of(context);
             return SingleChildScrollView(
+              controller: _scrollController,
               // key is expected by test driver
               key: const Key('drawer-scrollview'),
               padding: EdgeInsets.only(bottom: mqPaddingBottom),

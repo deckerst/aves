@@ -1,7 +1,8 @@
 {
   "de": [
     "settingsSearchFieldLabel",
-    "settingsSearchEmpty"
+    "settingsSearchEmpty",
+    "settingsShowBottomNavigationBar"
   ],
 
   "es": [
@@ -16,22 +17,26 @@
     "appPickDialogTitle",
     "appPickDialogNone",
     "settingsSearchFieldLabel",
-    "settingsSearchEmpty"
+    "settingsSearchEmpty",
+    "settingsShowBottomNavigationBar"
   ],
 
   "fr": [
     "settingsSearchFieldLabel",
-    "settingsSearchEmpty"
+    "settingsSearchEmpty",
+    "settingsShowBottomNavigationBar"
   ],
 
   "id": [
     "settingsSearchFieldLabel",
-    "settingsSearchEmpty"
+    "settingsSearchEmpty",
+    "settingsShowBottomNavigationBar"
   ],
 
   "it": [
     "settingsSearchFieldLabel",
-    "settingsSearchEmpty"
+    "settingsSearchEmpty",
+    "settingsShowBottomNavigationBar"
   ],
 
   "ja": [
@@ -46,26 +51,31 @@
     "appPickDialogTitle",
     "appPickDialogNone",
     "settingsSearchFieldLabel",
-    "settingsSearchEmpty"
+    "settingsSearchEmpty",
+    "settingsShowBottomNavigationBar"
   ],
 
   "ko": [
     "settingsSearchFieldLabel",
-    "settingsSearchEmpty"
+    "settingsSearchEmpty",
+    "settingsShowBottomNavigationBar"
   ],
 
   "pt": [
     "settingsSearchFieldLabel",
-    "settingsSearchEmpty"
+    "settingsSearchEmpty",
+    "settingsShowBottomNavigationBar"
   ],
 
   "ru": [
     "settingsSearchFieldLabel",
-    "settingsSearchEmpty"
+    "settingsSearchEmpty",
+    "settingsShowBottomNavigationBar"
   ],
 
   "zh": [
     "settingsSearchFieldLabel",
-    "settingsSearchEmpty"
+    "settingsSearchEmpty",
+    "settingsShowBottomNavigationBar"
   ]
 }

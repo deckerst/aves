@@ -21,13 +21,14 @@ import 'package:aves/widgets/common/identity/scroll_thumb.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/common/providers/tile_extent_controller_provider.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
-import 'package:aves/widgets/drawer/app_drawer.dart';
 import 'package:aves/widgets/filter_grids/common/covered_filter_chip.dart';
 import 'package:aves/widgets/filter_grids/common/draggable_thumb_label.dart';
 import 'package:aves/widgets/filter_grids/common/filter_tile.dart';
 import 'package:aves/widgets/filter_grids/common/list_details_theme.dart';
 import 'package:aves/widgets/filter_grids/common/section_keys.dart';
 import 'package:aves/widgets/filter_grids/common/section_layout.dart';
+import 'package:aves/widgets/navigation/drawer/app_drawer.dart';
+import 'package:aves/widgets/navigation/nav_bar/nav_bar.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -69,42 +70,49 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MediaQueryDataProvider(
-      child: Scaffold(
-        body: WillPopScope(
-          onWillPop: () {
-            final selection = context.read<Selection<FilterGridItem<T>>>();
-            if (selection.isSelecting) {
-              selection.browse();
-              return SynchronousFuture(false);
-            }
-            return SynchronousFuture(true);
-          },
-          child: DoubleBackPopScope(
-            child: GestureAreaProtectorStack(
-              child: SafeArea(
-                bottom: false,
-                child: FilterGrid<T>(
-                  // key is expected by test driver
-                  key: const Key('filter-grid'),
-                  settingsRouteKey: settingsRouteKey,
-                  appBar: appBar,
-                  appBarHeight: appBarHeight,
-                  sections: sections,
-                  newFilters: newFilters,
-                  sortFactor: sortFactor,
-                  showHeaders: showHeaders,
-                  selectable: selectable,
-                  queryNotifier: queryNotifier,
-                  applyQuery: applyQuery,
-                  emptyBuilder: emptyBuilder,
-                  heroType: heroType,
+      child: Selector<Settings, bool>(
+        selector: (context, s) => s.showBottomNavigationBar,
+        builder: (context, showBottomNavigationBar, child) {
+          return Scaffold(
+            body: WillPopScope(
+              onWillPop: () {
+                final selection = context.read<Selection<FilterGridItem<T>>>();
+                if (selection.isSelecting) {
+                  selection.browse();
+                  return SynchronousFuture(false);
+                }
+                return SynchronousFuture(true);
+              },
+              child: DoubleBackPopScope(
+                child: GestureAreaProtectorStack(
+                  child: SafeArea(
+                    bottom: false,
+                    child: FilterGrid<T>(
+                      // key is expected by test driver
+                      key: const Key('filter-grid'),
+                      settingsRouteKey: settingsRouteKey,
+                      appBar: appBar,
+                      appBarHeight: appBarHeight,
+                      sections: sections,
+                      newFilters: newFilters,
+                      sortFactor: sortFactor,
+                      showHeaders: showHeaders,
+                      selectable: selectable,
+                      queryNotifier: queryNotifier,
+                      applyQuery: applyQuery,
+                      emptyBuilder: emptyBuilder,
+                      heroType: heroType,
+                    ),
+                  ),
                 ),
               ),
             ),
-          ),
-        ),
-        drawer: const AppDrawer(),
-        resizeToAvoidBottomInset: false,
+            drawer: const AppDrawer(),
+            bottomNavigationBar: showBottomNavigationBar ? const AppBottomNavBar() : null,
+            resizeToAvoidBottomInset: false,
+            extendBody: true,
+          );
+        },
       ),
     );
   }
