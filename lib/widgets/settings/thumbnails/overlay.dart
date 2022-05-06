@@ -38,6 +38,19 @@ class ThumbnailOverlayPage extends StatelessWidget {
               ),
             ),
             SettingsSwitchListTile(
+              selector: (context, s) => s.showThumbnailTag,
+              onChanged: (v) => settings.showThumbnailTag = v,
+              title: context.l10n.settingsThumbnailShowTagIcon,
+              trailing: Padding(
+                padding: EdgeInsets.symmetric(horizontal: iconSize * (1 - TagIcon.scale) / 2),
+                child: Icon(
+                  AIcons.tag,
+                  size: iconSize * TagIcon.scale,
+                  color: iconColor,
+                ),
+              ),
+            ),
+            SettingsSwitchListTile(
               selector: (context, s) => s.showThumbnailLocation,
               onChanged: (v) => settings.showThumbnailLocation = v,
               title: context.l10n.settingsThumbnailShowLocationIcon,

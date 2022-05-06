@@ -2,7 +2,8 @@
   "de": [
     "settingsSearchFieldLabel",
     "settingsSearchEmpty",
-    "settingsShowBottomNavigationBar"
+    "settingsShowBottomNavigationBar",
+    "settingsThumbnailShowTagIcon"
   ],
 
   "es": [
@@ -18,25 +19,29 @@
     "appPickDialogNone",
     "settingsSearchFieldLabel",
     "settingsSearchEmpty",
-    "settingsShowBottomNavigationBar"
+    "settingsShowBottomNavigationBar",
+    "settingsThumbnailShowTagIcon"
   ],
 
   "fr": [
     "settingsSearchFieldLabel",
     "settingsSearchEmpty",
-    "settingsShowBottomNavigationBar"
+    "settingsShowBottomNavigationBar",
+    "settingsThumbnailShowTagIcon"
   ],
 
   "id": [
     "settingsSearchFieldLabel",
     "settingsSearchEmpty",
-    "settingsShowBottomNavigationBar"
+    "settingsShowBottomNavigationBar",
+    "settingsThumbnailShowTagIcon"
   ],
 
   "it": [
     "settingsSearchFieldLabel",
     "settingsSearchEmpty",
-    "settingsShowBottomNavigationBar"
+    "settingsShowBottomNavigationBar",
+    "settingsThumbnailShowTagIcon"
   ],
 
   "ja": [
@@ -52,30 +57,35 @@
     "appPickDialogNone",
     "settingsSearchFieldLabel",
     "settingsSearchEmpty",
-    "settingsShowBottomNavigationBar"
+    "settingsShowBottomNavigationBar",
+    "settingsThumbnailShowTagIcon"
   ],
 
   "ko": [
     "settingsSearchFieldLabel",
     "settingsSearchEmpty",
-    "settingsShowBottomNavigationBar"
+    "settingsShowBottomNavigationBar",
+    "settingsThumbnailShowTagIcon"
   ],
 
   "pt": [
     "settingsSearchFieldLabel",
     "settingsSearchEmpty",
-    "settingsShowBottomNavigationBar"
+    "settingsShowBottomNavigationBar",
+    "settingsThumbnailShowTagIcon"
   ],
 
   "ru": [
     "settingsSearchFieldLabel",
     "settingsSearchEmpty",
-    "settingsShowBottomNavigationBar"
+    "settingsShowBottomNavigationBar",
+    "settingsThumbnailShowTagIcon"
   ],
 
   "zh": [
     "settingsSearchFieldLabel",
     "settingsSearchEmpty",
-    "settingsShowBottomNavigationBar"
+    "settingsShowBottomNavigationBar",
+    "settingsThumbnailShowTagIcon"
   ]
 }
