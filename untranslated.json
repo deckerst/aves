@@ -20,13 +20,6 @@
     "settingsThumbnailShowTagIcon"
   ],
 
-  "it": [
-    "settingsSearchFieldLabel",
-    "settingsSearchEmpty",
-    "settingsShowBottomNavigationBar",
-    "settingsThumbnailShowTagIcon"
-  ],
-
   "ja": [
     "entryActionShowGeoTiffOnMap",
     "entryActionConvertMotionPhotoToStillImage",
