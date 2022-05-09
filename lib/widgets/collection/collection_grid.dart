@@ -31,6 +31,7 @@ import 'package:aves/widgets/common/identity/scroll_thumb.dart';
 import 'package:aves/widgets/common/providers/tile_extent_controller_provider.dart';
 import 'package:aves/widgets/common/thumbnail/decorated.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
+import 'package:aves/widgets/navigation/nav_bar/nav_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:provider/provider.dart';
@@ -386,6 +387,7 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> {
                 child: _buildEmptyCollectionPlaceholder(collection),
               )
             : const SectionedListSliver<AvesEntry>(),
+        const NavBarPaddingSliver(),
         const BottomPaddingSliver(),
       ],
     );

@@ -6,6 +6,11 @@
     "settingsThumbnailShowTagIcon"
   ],
 
+  "es": [
+    "settingsShowBottomNavigationBar",
+    "settingsThumbnailShowTagIcon"
+  ],
+
   "fr": [
     "settingsSearchFieldLabel",
     "settingsSearchEmpty",
@@ -16,6 +21,11 @@
   "id": [
     "settingsSearchFieldLabel",
     "settingsSearchEmpty",
+    "settingsShowBottomNavigationBar",
+    "settingsThumbnailShowTagIcon"
+  ],
+
+  "it": [
     "settingsShowBottomNavigationBar",
     "settingsThumbnailShowTagIcon"
   ],

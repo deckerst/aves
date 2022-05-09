@@ -547,6 +547,7 @@ class _FilterScrollView<T extends CollectionFilter> extends StatelessWidget {
                     )
                   : SectionedListSliver<FilterGridItem<T>>();
             }),
+        const NavBarPaddingSliver(),
         const BottomPaddingSliver(),
       ],
     );
