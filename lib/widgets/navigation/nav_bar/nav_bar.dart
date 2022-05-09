@@ -22,6 +22,10 @@ class AppBottomNavBar extends StatelessWidget {
     this.currentCollection,
   }) : super(key: key);
 
+  static const padding = EdgeInsets.all(8);
+
+  static double get height => kBottomNavigationBarHeight + padding.vertical;
+
   @override
   Widget build(BuildContext context) {
     const borderRadius = BorderRadius.all(Radius.circular(8));
@@ -37,7 +41,7 @@ class AppBottomNavBar extends StatelessWidget {
     ];
 
     Widget child = Padding(
-      padding: const EdgeInsets.all(8),
+      padding: padding,
       child: BlurredRRect(
         enabled: blurred,
         borderRadius: borderRadius,
@@ -112,6 +116,22 @@ class AppBottomNavBar extends StatelessWidget {
         },
       ),
       (route) => false,
+    );
+  }
+}
+
+class NavBarPaddingSliver extends StatelessWidget {
+  const NavBarPaddingSliver({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverToBoxAdapter(
+      child: Selector<Settings, bool>(
+        selector: (context, s) => s.showBottomNavigationBar,
+        builder: (context, showBottomNavigationBar, child) {
+          return SizedBox(height: showBottomNavigationBar ? AppBottomNavBar.height : 0);
+        },
+      ),
     );
   }
 }
