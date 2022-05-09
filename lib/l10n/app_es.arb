@@ -58,6 +58,9 @@
   "entryActionPrint": "Imprimir",
   "entryActionShare": "Compartir",
   "entryActionViewSource": "Ver fuente",
+  "entryActionShowGeoTiffOnMap": "Mostrar como mapa superpuesto",
+  "entryActionConvertMotionPhotoToStillImage": "Convertir a imagen fija",
+  "entryActionViewMotionPhotoVideo": "Abrir video",
   "entryActionEdit": "Editar",
   "entryActionOpen": "Abrir con",
   "entryActionSetAs": "Establecer como",
@@ -113,10 +116,10 @@
   "videoLoopModeShortOnly": "Sólo videos cortos",
   "videoLoopModeAlways": "Siempre",
 
+  "videoControlsNone": "Ninguno",
   "videoControlsPlay": "Reproducir",
   "videoControlsPlaySeek": "Reproducir y buscar",
   "videoControlsPlayOutside": "Reproducir externamente",
-  "videoControlsNone": "Ninguno",
 
   "mapStyleGoogleNormal": "Google Maps",
   "mapStyleGoogleHybrid": "Google Maps (Híbrido)",
@@ -186,6 +189,7 @@
   "videoResumeButtonLabel": "REANUDAR",
 
   "setCoverDialogLatest": "Elemento más reciente",
+  "setCoverDialogAuto": "Automático",
   "setCoverDialogCustom": "Personalizado",
 
   "hideFilterConfirmationDialogMessage": "Fotos y videos que concuerden serán ocultados de su colección. Puede volver a mostrarlos desde los ajustes de «Privacidad».\n\n¿Está seguro de que desea ocultarlos?",
@@ -239,6 +243,7 @@
   "removeEntryMetadataDialogMore": "Más",
 
   "removeEntryMetadataMotionPhotoXmpWarningDialogMessage": "XMP es necesario para reproducir la animación de una foto en movimiento.\n\n¿Está seguro de que desea removerlo?",
+  "convertMotionPhotoToStillImageWarningDialogMessage": "¿Está seguro?",
 
   "videoSpeedDialogLabel": "Velocidad de reproducción",
 
@@ -266,6 +271,14 @@
   "tileLayoutGrid": "Cuadrícula",
   "tileLayoutList": "Lista",
 
+  "coverDialogTabCover": "Carátula",
+  "coverDialogTabApp": "Aplicación",
+  "coverDialogTabColor": "Color",
+
+  "appPickDialogTitle": "Escoger aplicación",
+  "appPickDialogNone": "Ninguna",
+
+
   "aboutPageTitle": "Acerca de",
   "aboutLinkSources": "Fuentes",
   "aboutLinkLicense": "Licencia",
@@ -282,7 +295,8 @@
   "aboutCredits": "Créditos",
   "aboutCreditsWorldAtlas1": "Esta aplicación usa un archivo TopoJSON de",
   "aboutCreditsWorldAtlas2": "bajo licencia ISC.",
-  "aboutCreditsTranslators": "Traductores",
+  "aboutCreditsTranslators": "Traductores:",
+  "aboutCreditsTranslatorLine": "{language}: {names}",
 
   "aboutLicenses": "Licencias de código abierto",
   "aboutLicensesBanner": "Esta aplicación usa los siguientes paquetes y librerías de código abierto.",
@@ -396,6 +410,8 @@
   "settingsSystemDefault": "Sistema",
   "settingsDefault": "Restablecer",
 
+  "settingsSearchFieldLabel": "Buscar ajustes",
+  "settingsSearchEmpty": "Sin coincidencias",
   "settingsActionExport": "Exportar",
   "settingsActionImport": "Importar",
 
@@ -460,7 +476,7 @@
   "settingsViewerShowInformation": "Mostrar información",
   "settingsViewerShowInformationSubtitle": "Mostrar título, fecha, ubicación, etc.",
   "settingsViewerShowShootingDetails": "Mostrar detalles de toma",
-  "settingsViewerShowOverlayThumbnails": "Mostrar miniaturas",
+   "settingsViewerShowOverlayThumbnails": "Mostrar miniaturas",
   "settingsViewerEnableOverlayBlurEffect": "Efecto de difuminado",
 
   "settingsVideoPageTitle": "Ajustes de video",
@@ -470,6 +486,8 @@
   "settingsVideoEnableAutoPlay": "Reproducción automática",
   "settingsVideoLoopModeTile": "Modo bucle",
   "settingsVideoLoopModeTitle": "Modo bucle",
+  "settingsVideoQuickActionsTile": "Acciones rápidas para videos",
+  "settingsVideoQuickActionEditorTitle": "Acciones rápidas",
 
   "settingsSubtitleThemeTile": "Subtítulos",
   "settingsSubtitleThemeTitle": "Subtítulos",

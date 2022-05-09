@@ -376,8 +376,8 @@
   "albumPickPageTitleMove": "Sposta",
   "albumPickPageTitlePick": "Seleziona",
 
-  "albumCamera": "Camera",
-  "albumDownload": "Download",
+  "albumCamera": "Fotocamera",
+  "albumDownload": "Scarica",
   "albumScreenshots": "Screenshot",
   "albumScreenRecordings": "Registrazioni schermo",
   "albumVideoCaptures": "Scatti nei video",
@@ -408,6 +408,8 @@
   "settingsSystemDefault": "Sistema",
   "settingsDefault": "Predefinite",
 
+  "settingsSearchFieldLabel": "Ricerca impostazioni",
+  "settingsSearchEmpty": "Nessuna impostazioni corrispondente",
   "settingsActionExport": "Esporta",
   "settingsActionImport": "Importa",
 
@@ -576,8 +578,8 @@
 
   "mapStyleTitle": "Stile Mappa",
   "mapStyleTooltip": "Seleziona lo stile della mappa",
-  "mapZoomInTooltip": "Zoom in",
-  "mapZoomOutTooltip": "Zoom out",
+  "mapZoomInTooltip": "Ingrandire",
+  "mapZoomOutTooltip": "Rimpicciolire",
   "mapPointNorthUpTooltip": "Punta a nord verso l'alto",
   "mapAttributionOsmHot": "Dati della mappa © collaboratori di [OpenStreetMap](https://www.openstreetmap.org/copyright) - Titoli di [HOT](https://www.hotosm.org/) - Ospitato da [OSM France](https://openstreetmap.fr/)",
   "mapAttributionStamen": "Dati della mappa © collaboratori di [OpenStreetMap](https://www.openstreetmap.org/copyright) - Titoli di [Stamen Design](http://stamen.com), [CC BY 3.0](http://creativecommons.org/licenses/by/3.0)",
