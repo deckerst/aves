@@ -36,6 +36,8 @@ class _BugReportState extends State<BugReport> with FeedbackMixin {
   late Future<String> _infoLoader;
   bool _showInstructions = false;
 
+  static final bugReportUri = Uri.parse('${Constants.avesGithub}/issues/new?labels=type%3Abug&template=bug_report.md');
+
   @override
   void initState() {
     super.initState();
@@ -198,6 +200,8 @@ class _BugReportState extends State<BugReport> with FeedbackMixin {
   }
 
   Future<void> _goToGithub() async {
-    await launch('${Constants.avesGithub}/issues/new?labels=type%3Abug&template=bug_report.md');
+    if (await canLaunchUrl(bugReportUri)) {
+      await launchUrl(bugReportUri, mode: LaunchMode.externalApplication);
+    }
   }
 }

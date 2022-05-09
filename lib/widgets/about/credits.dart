@@ -40,7 +40,7 @@ class AboutCredits extends StatelessWidget {
                 const WidgetSpan(
                   child: LinkChip(
                     text: 'World Atlas',
-                    url: 'https://github.com/topojson/world-atlas',
+                    urlString: 'https://github.com/topojson/world-atlas',
                     textStyle: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   alignment: PlaceholderAlignment.middle,

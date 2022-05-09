@@ -79,7 +79,7 @@ class _AppReferenceState extends State<AppReference> {
             size: 24,
           ),
           text: l10n.aboutLinkSources,
-          url: Constants.avesGithub,
+          urlString: Constants.avesGithub,
         ),
         LinkChip(
           leading: const Icon(
@@ -87,7 +87,7 @@ class _AppReferenceState extends State<AppReference> {
             size: 22,
           ),
           text: l10n.aboutLinkLicense,
-          url: '${Constants.avesGithub}/blob/main/LICENSE',
+          urlString: '${Constants.avesGithub}/blob/main/LICENSE',
         ),
         LinkChip(
           leading: const Icon(
