@@ -7,6 +7,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/accessibility_service.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/widgets/common/basic/circle.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/viewer/entry_viewer_page.dart';
 import 'package:flutter/foundation.dart';
@@ -36,10 +37,12 @@ mixin FeedbackMixin {
   // provide the messenger if feedback happens as the widget is disposed
   void showFeedbackWithMessenger(BuildContext context, ScaffoldMessengerState messenger, String message, [SnackBarAction? action]) {
     _getSnackBarDuration(action != null).then((duration) {
+      final start = DateTime.now();
       final snackBarContent = _FeedbackMessage(
         message: message,
         progressColor: Theme.of(context).colorScheme.secondary,
-        duration: action != null ? duration : null,
+        start: start,
+        stop: action != null ? start.add(duration) : null,
       );
 
       if (context.currentRouteName == EntryViewerPage.routeName) {
@@ -65,6 +68,7 @@ mixin FeedbackMixin {
                           // the regular snack bar dismiss behavior is confused
                           // because it expects a `Scaffold` in context,
                           // so we manually dimiss the overlay entry
+                          // TODO TLAD [bug] after dismissing the overlay, tapping on the snack bar area makes the overlay visible again
                           notificationOverlayEntry?.dismiss();
                           action.onPressed();
                         },
@@ -273,72 +277,84 @@ class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerPr
 
 class _FeedbackMessage extends StatefulWidget {
   final String message;
-  final Duration? duration;
+  final DateTime? start, stop;
   final Color progressColor;
 
   const _FeedbackMessage({
     Key? key,
     required this.message,
     required this.progressColor,
-    this.duration,
+    this.start,
+    this.stop,
   }) : super(key: key);
 
   @override
   State<_FeedbackMessage> createState() => _FeedbackMessageState();
 }
 
-class _FeedbackMessageState extends State<_FeedbackMessage> {
-  double _percent = 0;
-  late int _remainingSecs;
-  Timer? _timer;
+class _FeedbackMessageState extends State<_FeedbackMessage> with SingleTickerProviderStateMixin {
+  AnimationController? _animationController;
+  Animation<int>? _remainingDurationMillis;
+  int? _totalDurationMillis;
 
   @override
   void initState() {
     super.initState();
-    final duration = widget.duration;
-    if (duration != null) {
-      _remainingSecs = duration.inSeconds;
-      _timer = Timer.periodic(const Duration(seconds: 1), (_) {
-        setState(() => _remainingSecs--);
-      });
-      WidgetsBinding.instance!.addPostFrameCallback((_) => setState(() => _percent = 1.0));
+    final start = widget.start;
+    final stop = widget.stop;
+    if (start != null && stop != null) {
+      _totalDurationMillis = stop.difference(start).inMilliseconds;
+      final remainingDuration = stop.difference(DateTime.now());
+      _animationController = AnimationController(
+        duration: remainingDuration,
+        vsync: this,
+      );
+      _remainingDurationMillis = IntTween(
+        begin: remainingDuration.inMilliseconds,
+        end: 0,
+      ).animate(CurvedAnimation(
+        parent: _animationController!,
+        curve: Curves.linear,
+      ));
+      _animationController!.forward();
     }
   }
 
   @override
   void dispose() {
-    _timer?.cancel();
+    _animationController?.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final text = Text(widget.message);
-    final duration = widget.duration;
     final theme = Theme.of(context);
     final contentTextStyle = theme.snackBarTheme.contentTextStyle ?? ThemeData(brightness: theme.brightness).textTheme.subtitle1;
-    return duration == null
+    return _remainingDurationMillis == null
         ? text
         : Row(
             children: [
               Expanded(child: text),
               const SizedBox(width: 16),
-              CircularPercentIndicator(
-                percent: _percent,
-                lineWidth: 2,
-                radius: 16,
-                // progress color is provided by the caller,
-                // because we cannot use the app context theme here
-                backgroundColor: widget.progressColor,
-                progressColor: Colors.grey,
-                animation: true,
-                animationDuration: duration.inMilliseconds,
-                center: Text(
-                  '$_remainingSecs',
-                  style: contentTextStyle,
-                ),
-                animateFromLastPercent: true,
-                reverse: true,
+              AnimatedBuilder(
+                animation: _remainingDurationMillis!,
+                builder: (context, child) {
+                  final remainingDurationMillis = _remainingDurationMillis!.value;
+                  return CircularIndicator(
+                    radius: 16,
+                    lineWidth: 2,
+                    percent: remainingDurationMillis / _totalDurationMillis!,
+                    background: Colors.grey,
+                    // progress color is provided by the caller,
+                    // because we cannot use the app context theme here
+                    foreground: widget.progressColor,
+                    center: Text(
+                      '${(remainingDurationMillis / 1000).ceil()}',
+                      style: contentTextStyle,
+                    ),
+                  );
+                },
               ),
             ],
           );

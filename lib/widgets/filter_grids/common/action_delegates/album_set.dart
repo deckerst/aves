@@ -15,6 +15,7 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/services/media/enums.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/android_file_utils.dart';
+import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/common/action_mixins/entry_storage.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
@@ -173,9 +174,25 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
       final showAction = SnackBarAction(
         label: context.l10n.showButtonLabel,
         onPressed: () async {
-          // assume Album page is still the current page when action is triggered
-          final filter = AlbumFilter(newAlbum, source.getAlbumDisplayName(context, newAlbum));
-          context.read<HighlightInfo>().trackItem(FilterGridItem(filter, null), highlightItem: filter);
+          // local context may be deactivated when action is triggered after navigation
+          final context = AvesApp.navigatorKey.currentContext;
+          if (context != null) {
+            final highlightInfo = context.read<HighlightInfo>();
+            final filter = AlbumFilter(newAlbum, source.getAlbumDisplayName(context, newAlbum));
+            if (context.currentRouteName == AlbumListPage.routeName) {
+              highlightInfo.trackItem(FilterGridItem(filter, null), highlightItem: filter);
+            } else {
+              highlightInfo.set(filter);
+              await Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  settings: const RouteSettings(name: AlbumListPage.routeName),
+                  builder: (_) => const AlbumListPage(),
+                ),
+                (route) => false,
+              );
+            }
+          }
         },
       );
       showFeedback(context, context.l10n.genericSuccessFeedback, showAction);
