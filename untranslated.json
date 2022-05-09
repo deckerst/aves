@@ -6,23 +6,6 @@
     "settingsThumbnailShowTagIcon"
   ],
 
-  "es": [
-    "entryActionShowGeoTiffOnMap",
-    "entryActionConvertMotionPhotoToStillImage",
-    "entryActionViewMotionPhotoVideo",
-    "setCoverDialogAuto",
-    "convertMotionPhotoToStillImageWarningDialogMessage",
-    "coverDialogTabCover",
-    "coverDialogTabApp",
-    "coverDialogTabColor",
-    "appPickDialogTitle",
-    "appPickDialogNone",
-    "settingsSearchFieldLabel",
-    "settingsSearchEmpty",
-    "settingsShowBottomNavigationBar",
-    "settingsThumbnailShowTagIcon"
-  ],
-
   "fr": [
     "settingsSearchFieldLabel",
     "settingsSearchEmpty",
@@ -31,13 +14,6 @@
   ],
 
   "id": [
-    "settingsSearchFieldLabel",
-    "settingsSearchEmpty",
-    "settingsShowBottomNavigationBar",
-    "settingsThumbnailShowTagIcon"
-  ],
-
-  "it": [
     "settingsSearchFieldLabel",
     "settingsSearchEmpty",
     "settingsShowBottomNavigationBar",
