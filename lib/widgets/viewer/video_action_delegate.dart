@@ -7,6 +7,7 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/services/media/enums.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/android_file_utils.dart';
+import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
@@ -110,26 +111,28 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     final l10n = context.l10n;
     if (success) {
       final _collection = collection;
-      final navigator = Navigator.of(context);
       final showAction = _collection != null
           ? SnackBarAction(
               label: l10n.showButtonLabel,
               onPressed: () {
-                final source = _collection.source;
-                final newUri = newFields['uri'] as String?;
-                // `context` may be obsolete if the user navigated away before triggering the action
-                // so we reused the navigator retrieved before showing the snack bar
-                navigator.pushAndRemoveUntil(
-                  MaterialPageRoute(
-                    settings: const RouteSettings(name: CollectionPage.routeName),
-                    builder: (context) => CollectionPage(
-                      source: source,
-                      filters: {AlbumFilter(destinationAlbum, source.getAlbumDisplayName(context, destinationAlbum))},
-                      highlightTest: (entry) => entry.uri == newUri,
+                // local context may be deactivated when action is triggered after navigation
+                final context = AvesApp.navigatorKey.currentContext;
+                if (context != null) {
+                  final source = _collection.source;
+                  final newUri = newFields['uri'] as String?;
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      settings: const RouteSettings(name: CollectionPage.routeName),
+                      builder: (context) => CollectionPage(
+                        source: source,
+                        filters: {AlbumFilter(destinationAlbum, source.getAlbumDisplayName(context, destinationAlbum))},
+                        highlightTest: (entry) => entry.uri == newUri,
+                      ),
                     ),
-                  ),
-                  (route) => false,
-                );
+                    (route) => false,
+                  );
+                }
               },
             )
           : null;
