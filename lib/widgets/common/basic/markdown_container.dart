@@ -44,8 +44,11 @@ class MarkdownContainer extends StatelessWidget {
                 data: data,
                 selectable: true,
                 onTapLink: (text, href, title) async {
-                  if (href != null && await canLaunch(href)) {
-                    await launch(href);
+                  if (href != null) {
+                    final url = Uri.parse(href);
+                    if (await canLaunchUrl(url)) {
+                      await launchUrl(url, mode: LaunchMode.externalApplication);
+                    }
                   }
                 },
                 shrinkWrap: true,

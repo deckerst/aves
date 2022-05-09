@@ -35,6 +35,15 @@
         <intent>
             <action android:name="android.intent.action.MAIN" />
         </intent>
+        <!--
+        from Android R, `url_launcher` method `canLaunchUrl()` will return false,
+        if appropriate intents are not declared, cf https://pub.dev/packages/url_launcher#configuration=
+        -->
+        <!-- to open https URLs -->
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="https" />
+        </intent>
     </queries>
 
     <application

@@ -38,8 +38,11 @@ class Attribution extends StatelessWidget {
           p: theme.textTheme.caption!.merge(const TextStyle(fontSize: InfoRowGroup.fontSize)),
         ),
         onTapLink: (text, href, title) async {
-          if (href != null && await canLaunch(href)) {
-            await launch(href);
+          if (href != null) {
+            final url = Uri.parse(href);
+            if (await canLaunchUrl(url)) {
+              await launchUrl(url, mode: LaunchMode.externalApplication);
+            }
           }
         },
       ),

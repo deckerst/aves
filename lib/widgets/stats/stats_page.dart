@@ -110,36 +110,30 @@ class StatsPage extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            // as of percent_indicator v4.0.0, bar radius is not correctly applied to progress bar
-            // when width is lower than height, so we clip it and handle padding outside
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 const Icon(AIcons.location),
-                SizedBox(width: lineHeight),
                 Expanded(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.all(barRadius),
-                    child: LinearPercentIndicator(
-                      percent: withGpsPercent,
-                      lineHeight: lineHeight,
-                      backgroundColor: theme.colorScheme.onPrimary.withOpacity(.1),
-                      progressColor: theme.colorScheme.secondary,
-                      animation: animate,
-                      isRTL: context.isRtl,
-                      barRadius: barRadius,
-                      center: Text(
-                        intl.NumberFormat.percentPattern().format(withGpsPercent),
-                        style: TextStyle(
-                          shadows: isDark ? Constants.embossShadows : null,
-                        ),
+                  child: LinearPercentIndicator(
+                    percent: withGpsPercent,
+                    lineHeight: lineHeight,
+                    backgroundColor: theme.colorScheme.onPrimary.withOpacity(.1),
+                    progressColor: theme.colorScheme.secondary,
+                    animation: animate,
+                    isRTL: context.isRtl,
+                    barRadius: barRadius,
+                    center: Text(
+                      intl.NumberFormat.percentPattern().format(withGpsPercent),
+                      style: TextStyle(
+                        shadows: isDark ? Constants.embossShadows : null,
                       ),
-                      padding: EdgeInsets.zero,
                     ),
+                    padding: EdgeInsets.symmetric(horizontal: lineHeight),
                   ),
                 ),
                 // end padding to match leading, so that inside label is aligned with outside label below
-                SizedBox(width: lineHeight + 24),
+                const SizedBox(width: 24),
               ],
             ),
             const SizedBox(height: 8),

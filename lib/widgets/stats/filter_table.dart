@@ -72,35 +72,27 @@ class FilterTable<T extends Comparable> extends StatelessWidget {
                     ),
                   ),
                   if (showPercentIndicator)
-                    // as of percent_indicator v4.0.0, bar radius is not correctly applied to progress bar
-                    // when width is lower than height, so we clip it and handle padding outside
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: lineHeight),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.all(barRadius),
-                        child: FutureBuilder<Color>(
-                          future: filter.color(context),
-                          builder: (context, snapshot) {
-                            final color = snapshot.data;
-                            return LinearPercentIndicator(
-                              percent: percent,
-                              lineHeight: lineHeight,
-                              backgroundColor: theme.colorScheme.onPrimary.withOpacity(.1),
-                              progressColor: isMonochrome ? theme.colorScheme.secondary : color,
-                              animation: true,
-                              isRTL: isRtl,
-                              barRadius: barRadius,
-                              center: Text(
-                                intl.NumberFormat.percentPattern().format(percent),
-                                style: TextStyle(
-                                  shadows: theme.brightness == Brightness.dark ? Constants.embossShadows : null,
-                                ),
-                              ),
-                              padding: EdgeInsets.zero,
-                            );
-                          },
-                        ),
-                      ),
+                    FutureBuilder<Color>(
+                      future: filter.color(context),
+                      builder: (context, snapshot) {
+                        final color = snapshot.data;
+                        return LinearPercentIndicator(
+                          percent: percent,
+                          lineHeight: lineHeight,
+                          backgroundColor: theme.colorScheme.onPrimary.withOpacity(.1),
+                          progressColor: isMonochrome ? theme.colorScheme.secondary : color,
+                          animation: true,
+                          isRTL: isRtl,
+                          barRadius: barRadius,
+                          center: Text(
+                            intl.NumberFormat.percentPattern().format(percent),
+                            style: TextStyle(
+                              shadows: theme.brightness == Brightness.dark ? Constants.embossShadows : null,
+                            ),
+                          ),
+                          padding: EdgeInsets.symmetric(horizontal: lineHeight),
+                        );
+                      },
                     ),
                   Text(
                     '$count',

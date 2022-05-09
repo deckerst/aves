@@ -138,14 +138,14 @@ class LicenseRow extends StatelessWidget {
         children: [
           LinkChip(
             text: package.name,
-            url: package.sourceUrl,
+            urlString: package.sourceUrl,
             textStyle: const TextStyle(fontWeight: FontWeight.bold),
           ),
           Padding(
             padding: const EdgeInsetsDirectional.only(start: 16),
             child: LinkChip(
               text: package.license,
-              url: package.licenseUrl,
+              urlString: package.licenseUrl,
               color: subColor,
             ),
           ),
