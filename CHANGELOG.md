@@ -6,6 +6,8 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
+- Bottom navigation bar
+- Collection: thumbnail overlay tag icon
 - Settings: search
 - `huawei` app flavor (Petal Maps, no Crashlytics)
 
