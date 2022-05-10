@@ -84,7 +84,7 @@ class LocationFilter extends CoveredCollectionFilter {
 
   static String? countryCodeToFlag(String? code) {
     if (code == null || code.length != 2) return null;
-    return String.fromCharCodes(code.codeUnits.map((letter) => letter += _countryCodeToFlagDiff));
+    return String.fromCharCodes(code.toUpperCase().codeUnits.map((letter) => letter += _countryCodeToFlagDiff));
   }
 }
 
