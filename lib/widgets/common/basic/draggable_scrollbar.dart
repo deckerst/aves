@@ -24,7 +24,8 @@ typedef ScrollThumbBuilder = Widget Function(
 });
 
 /// Build a Text widget using the current scroll offset
-typedef LabelTextBuilder = Widget Function(double offsetY);
+typedef OffsetLabelBuilder = Widget Function(double offsetY);
+typedef TextLabelBuilder = Widget Function(String label);
 
 /// A widget that will display a BoxScrollView with a ScrollThumb that can be dragged
 /// for quick navigation of the BoxScrollView.
@@ -32,14 +33,15 @@ class DraggableScrollbar extends StatefulWidget {
   /// The background color of the label and thumb
   final Color backgroundColor;
 
-  /// The height of the scroll thumb
-  final double scrollThumbHeight;
+  final Map<double, String> Function()? crumbsBuilder;
+
+  final Size scrollThumbSize;
 
   /// A function that builds a thumb using the current configuration
   final ScrollThumbBuilder scrollThumbBuilder;
 
   /// The amount of padding that should surround the thumb
-  final EdgeInsets? padding;
+  final EdgeInsets padding;
 
   /// Determines how quickly the scrollbar will animate in and out
   final Duration scrollbarAnimationDuration;
@@ -48,7 +50,9 @@ class DraggableScrollbar extends StatefulWidget {
   final Duration scrollbarTimeToFade;
 
   /// Build a Text widget from the current offset in the BoxScrollView
-  final LabelTextBuilder? labelTextBuilder;
+  final OffsetLabelBuilder labelTextBuilder;
+
+  final TextLabelBuilder crumbTextBuilder;
 
   /// The ScrollController for the BoxScrollView
   final ScrollController controller;
@@ -59,19 +63,23 @@ class DraggableScrollbar extends StatefulWidget {
   DraggableScrollbar({
     Key? key,
     required this.backgroundColor,
-    required this.scrollThumbHeight,
+    required this.scrollThumbSize,
     required this.scrollThumbBuilder,
     required this.controller,
-    this.padding,
+    this.crumbsBuilder,
+    this.padding = EdgeInsets.zero,
     this.scrollbarAnimationDuration = const Duration(milliseconds: 300),
     this.scrollbarTimeToFade = const Duration(milliseconds: 1000),
-    this.labelTextBuilder,
+    required this.labelTextBuilder,
+    required this.crumbTextBuilder,
     required this.child,
   })  : assert(child.scrollDirection == Axis.vertical),
         super(key: key);
 
   @override
   State<DraggableScrollbar> createState() => _DraggableScrollbarState();
+
+  static const double labelThumbPadding = 16;
 
   static Widget buildScrollThumbAndLabel({
     required Widget scrollThumb,
@@ -91,7 +99,7 @@ class DraggableScrollbar extends StatefulWidget {
                 backgroundColor: backgroundColor,
                 child: labelText,
               ),
-              const SizedBox(width: 24),
+              const SizedBox(width: labelThumbPadding),
               scrollThumb,
             ],
           );
@@ -141,6 +149,11 @@ class _DraggableScrollbarState extends State<DraggableScrollbar> with TickerProv
   late AnimationController _labelAnimationController;
   late Animation<double> _labelAnimation;
   Timer? _fadeoutTimer;
+  Map<double, String>? _modelCrumbs;
+  final List<_Crumb> _viewportCrumbs = [];
+
+  static const crumbPadding = 30.0;
+  static const crumbOffsetRatioThreshold = 10;
 
   @override
   void initState() {
@@ -168,6 +181,15 @@ class _DraggableScrollbarState extends State<DraggableScrollbar> with TickerProv
   }
 
   @override
+  void didUpdateWidget(covariant DraggableScrollbar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.crumbsBuilder != widget.crumbsBuilder) {
+      _modelCrumbs = null;
+    }
+  }
+
+  @override
   void dispose() {
     _thumbAnimationController.dispose();
     _labelAnimationController.dispose();
@@ -177,7 +199,9 @@ class _DraggableScrollbarState extends State<DraggableScrollbar> with TickerProv
 
   ScrollController get controller => widget.controller;
 
-  double get thumbMaxScrollExtent => context.size!.height - widget.scrollThumbHeight - (widget.padding?.vertical ?? 0.0);
+  double get scrollBarHeight => context.size!.height - widget.padding.vertical;
+
+  double get thumbMaxScrollExtent => scrollBarHeight - widget.scrollThumbSize.height;
 
   double get thumbMinScrollExtent => 0.0;
 
@@ -193,6 +217,27 @@ class _DraggableScrollbarState extends State<DraggableScrollbar> with TickerProv
           RepaintBoundary(
             child: widget.child,
           ),
+          if (_isDragInProcess)
+            ..._viewportCrumbs.map((crumb) {
+              return Positioned.directional(
+                textDirection: Directionality.of(context),
+                top: crumb.labelOffset,
+                end: DraggableScrollbar.labelThumbPadding + widget.scrollThumbSize.width,
+                child: Padding(
+                  padding: widget.padding,
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(minHeight: widget.scrollThumbSize.height),
+                    child: Center(
+                      child: ScrollLabel(
+                        animation: kAlwaysCompleteAnimation,
+                        backgroundColor: widget.backgroundColor,
+                        child: widget.crumbTextBuilder(crumb.label),
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            }),
           RepaintBoundary(
             child: GestureDetector(
               onLongPressStart: (details) {
@@ -212,16 +257,16 @@ class _DraggableScrollbarState extends State<DraggableScrollbar> with TickerProv
                 valueListenable: _thumbOffsetNotifier,
                 builder: (context, thumbOffset, child) => Container(
                   alignment: AlignmentDirectional.topEnd,
-                  padding: EdgeInsets.only(top: thumbOffset) + (widget.padding ?? EdgeInsets.zero),
+                  padding: EdgeInsets.only(top: thumbOffset) + widget.padding,
                   child: widget.scrollThumbBuilder(
                     widget.backgroundColor,
                     _thumbAnimation,
                     _labelAnimation,
-                    widget.scrollThumbHeight,
-                    labelText: (widget.labelTextBuilder != null && _isDragInProcess)
+                    widget.scrollThumbSize.height,
+                    labelText: _isDragInProcess
                         ? ValueListenableBuilder<double>(
                             valueListenable: _viewOffsetNotifier,
-                            builder: (context, viewOffset, child) => widget.labelTextBuilder!.call(viewOffset + thumbOffset),
+                            builder: (context, viewOffset, child) => widget.labelTextBuilder(viewOffset + thumbOffset),
                           )
                         : null,
                   ),
@@ -261,6 +306,7 @@ class _DraggableScrollbarState extends State<DraggableScrollbar> with TickerProv
     _labelAnimationController.forward();
     _fadeoutTimer?.cancel();
     _showThumb();
+    _updateViewportCrumbs();
     setState(() => _isDragInProcess = true);
   }
 
@@ -296,6 +342,50 @@ class _DraggableScrollbarState extends State<DraggableScrollbar> with TickerProv
       _fadeoutTimer = null;
     });
   }
+
+  void _updateViewportCrumbs() {
+    _viewportCrumbs.clear();
+    final crumbsBuilder = widget.crumbsBuilder;
+    if (crumbsBuilder != null) {
+      final position = controller.position;
+      final contentHeight = position.maxScrollExtent + thumbMaxScrollExtent + position.viewportDimension;
+      final ratio = contentHeight / scrollBarHeight;
+      if (ratio > crumbOffsetRatioThreshold) {
+        final maxLabelOffset = scrollBarHeight - widget.scrollThumbSize.height;
+        double lastLabelOffset = -crumbPadding;
+        _modelCrumbs ??= crumbsBuilder();
+        _modelCrumbs!.entries.forEach((kv) {
+          final viewOffset = kv.key;
+          final label = kv.value;
+          final labelOffset = (viewOffset / ratio).roundToDouble();
+          if (labelOffset >= lastLabelOffset + crumbPadding && labelOffset < maxLabelOffset) {
+            lastLabelOffset = labelOffset;
+            _viewportCrumbs.add(_Crumb(
+              viewOffset: viewOffset,
+              labelOffset: labelOffset,
+              label: label,
+            ));
+          }
+        });
+        // hide lonesome crumb, whether it is because of a single section,
+        // or because multiple sections collapsed to a single crumb
+        if (_viewportCrumbs.length == 1) {
+          _viewportCrumbs.clear();
+        }
+      }
+    }
+  }
+}
+
+class _Crumb {
+  final double viewOffset, labelOffset;
+  final String label;
+
+  const _Crumb({
+    required this.viewOffset,
+    required this.labelOffset,
+    required this.label,
+  });
 }
 
 ///This cut 2 lines in arrow shape
