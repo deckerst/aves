@@ -303,6 +303,7 @@ class _DraggableScrollbarState extends State<DraggableScrollbar> with TickerProv
   }
 
   void _onVerticalDragStart() {
+    const DraggableScrollBarNotification(DraggableScrollBarEvent.dragStart).dispatch(context);
     _labelAnimationController.forward();
     _fadeoutTimer?.cancel();
     _showThumb();
@@ -324,6 +325,7 @@ class _DraggableScrollbarState extends State<DraggableScrollbar> with TickerProv
   }
 
   void _onVerticalDragEnd() {
+    const DraggableScrollBarNotification(DraggableScrollBarEvent.dragEnd).dispatch(context);
     _scheduleFadeout();
     setState(() => _isDragInProcess = false);
   }
@@ -454,3 +456,12 @@ class SlideFadeTransition extends StatelessWidget {
     );
   }
 }
+
+@immutable
+class DraggableScrollBarNotification extends Notification {
+  final DraggableScrollBarEvent event;
+
+  const DraggableScrollBarNotification(this.event);
+}
+
+enum DraggableScrollBarEvent { dragStart, dragEnd }

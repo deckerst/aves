@@ -4,6 +4,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
+import 'package:aves/widgets/common/basic/draggable_scrollbar.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/blurred.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
@@ -14,11 +15,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class AppBottomNavBar extends StatelessWidget {
+  final Stream<DraggableScrollBarEvent> events;
   // collection loaded in the `CollectionPage`, if any
   final CollectionLens? currentCollection;
 
   const AppBottomNavBar({
     Key? key,
+    required this.events,
     this.currentCollection,
   }) : super(key: key);
 
@@ -73,6 +76,7 @@ class AppBottomNavBar extends StatelessWidget {
       },
       child: FloatingNavBar(
         scrollController: PrimaryScrollController.of(context),
+        events: events,
         child: SafeArea(
           child: child,
         ),
