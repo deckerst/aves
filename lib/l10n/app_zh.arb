@@ -408,6 +408,8 @@
   "settingsSystemDefault": "系统",
   "settingsDefault": "默认",
 
+  "settingsSearchFieldLabel": "搜索设置",
+  "settingsSearchEmpty": "无匹配设置项",
   "settingsActionExport": "导出",
   "settingsActionImport": "导入",
 
@@ -417,6 +419,7 @@
 
   "settingsSectionNavigation": "导航",
   "settingsHome": "主页",
+  "settingsShowBottomNavigationBar": "显示底部导航栏",
   "settingsKeepScreenOnTile": "保持亮屏",
   "settingsKeepScreenOnTitle": "保持亮屏",
   "settingsDoubleBackExit": "按两次返回键退出",
@@ -439,6 +442,7 @@
   "settingsThumbnailOverlayTile": "叠加层",
   "settingsThumbnailOverlayTitle": "叠加层",
   "settingsThumbnailShowFavouriteIcon": "显示收藏图标",
+  "settingsThumbnailShowTagIcon": "显示标签图标",
   "settingsThumbnailShowLocationIcon": "显示位置图标",
   "settingsThumbnailShowMotionPhotoIcon": "显示动态照片图标",
   "settingsThumbnailShowRating": "显示评分",

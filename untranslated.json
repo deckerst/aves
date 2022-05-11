@@ -11,13 +11,6 @@
     "settingsThumbnailShowTagIcon"
   ],
 
-  "fr": [
-    "settingsSearchFieldLabel",
-    "settingsSearchEmpty",
-    "settingsShowBottomNavigationBar",
-    "settingsThumbnailShowTagIcon"
-  ],
-
   "id": [
     "settingsSearchFieldLabel",
     "settingsSearchEmpty",
@@ -47,13 +40,6 @@
     "settingsThumbnailShowTagIcon"
   ],
 
-  "ko": [
-    "settingsSearchFieldLabel",
-    "settingsSearchEmpty",
-    "settingsShowBottomNavigationBar",
-    "settingsThumbnailShowTagIcon"
-  ],
-
   "pt": [
     "settingsSearchFieldLabel",
     "settingsSearchEmpty",
@@ -62,13 +48,6 @@
   ],
 
   "ru": [
-    "settingsSearchFieldLabel",
-    "settingsSearchEmpty",
-    "settingsShowBottomNavigationBar",
-    "settingsThumbnailShowTagIcon"
-  ],
-
-  "zh": [
     "settingsSearchFieldLabel",
     "settingsSearchEmpty",
     "settingsShowBottomNavigationBar",
