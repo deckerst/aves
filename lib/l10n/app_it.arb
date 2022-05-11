@@ -377,7 +377,7 @@
   "albumPickPageTitlePick": "Seleziona",
 
   "albumCamera": "Fotocamera",
-  "albumDownload": "Scarica",
+  "albumDownload": "Scaricati",
   "albumScreenshots": "Screenshot",
   "albumScreenRecordings": "Registrazioni schermo",
   "albumVideoCaptures": "Scatti nei video",
@@ -409,7 +409,7 @@
   "settingsDefault": "Predefinite",
 
   "settingsSearchFieldLabel": "Ricerca impostazioni",
-  "settingsSearchEmpty": "Nessuna impostazioni corrispondente",
+  "settingsSearchEmpty": "Nessuna impostazione corrispondente",
   "settingsActionExport": "Esporta",
   "settingsActionImport": "Importa",
 
@@ -419,6 +419,7 @@
 
   "settingsSectionNavigation": "Navigazione",
   "settingsHome": "Pagina iniziale",
+  "settingsShowBottomNavigationBar": "Mostra la barra di navigazione in basso",
   "settingsKeepScreenOnTile": "Mantieni acceso lo schermo",
   "settingsKeepScreenOnTitle": "Illuminazione schermo",
   "settingsDoubleBackExit": "Tocca «indietro» due volte per uscire",
@@ -440,11 +441,12 @@
   "settingsSectionThumbnails": "Miniature",
   "settingsThumbnailOverlayTile": "Sovrapposizione",
   "settingsThumbnailOverlayTitle": "Sovrapposizione",
-  "settingsThumbnailShowFavouriteIcon": "Mostra icona preferita",
-  "settingsThumbnailShowLocationIcon": "Mostra l'icona della posizione",
-  "settingsThumbnailShowMotionPhotoIcon": "Mostra l'icona della foto in movimento",
+  "settingsThumbnailShowFavouriteIcon": "Mostra l'icona Preferiti",
+  "settingsThumbnailShowTagIcon": "Mostra l'icona Etichetta",
+  "settingsThumbnailShowLocationIcon": "Mostra l'icona Posizione",
+  "settingsThumbnailShowMotionPhotoIcon": "Mostra l'icona Foto in movimento",
   "settingsThumbnailShowRating": "Mostra la valutazione",
-  "settingsThumbnailShowRawIcon": "Mostra icona raw",
+  "settingsThumbnailShowRawIcon": "Mostra icona Raw",
   "settingsThumbnailShowVideoDuration": "Mostra la durata del video",
 
   "settingsCollectionQuickActionsTile": "Azioni rapide",
@@ -578,8 +580,8 @@
 
   "mapStyleTitle": "Stile Mappa",
   "mapStyleTooltip": "Seleziona lo stile della mappa",
-  "mapZoomInTooltip": "Ingrandire",
-  "mapZoomOutTooltip": "Rimpicciolire",
+  "mapZoomInTooltip": "Ingrandisci",
+  "mapZoomOutTooltip": "Riduci",
   "mapPointNorthUpTooltip": "Punta a nord verso l'alto",
   "mapAttributionOsmHot": "Dati della mappa © collaboratori di [OpenStreetMap](https://www.openstreetmap.org/copyright) - Titoli di [HOT](https://www.hotosm.org/) - Ospitato da [OSM France](https://openstreetmap.fr/)",
   "mapAttributionStamen": "Dati della mappa © collaboratori di [OpenStreetMap](https://www.openstreetmap.org/copyright) - Titoli di [Stamen Design](http://stamen.com), [CC BY 3.0](http://creativecommons.org/licenses/by/3.0)",
