@@ -2,8 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:aves/model/entry.dart';
-import 'package:aves/model/geotiff.dart';
-import 'package:aves/model/settings/enums/enums.dart';
+import 'package:aves/model/entry_images.dart';
 import 'package:aves/model/settings/enums/map_style.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
@@ -11,17 +10,13 @@ import 'package:aves/utils/change_notifier.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/utils/math_utils.dart';
 import 'package:aves/widgets/common/map/attribution.dart';
-import 'package:aves/widgets/common/map/buttons.dart';
-import 'package:aves/widgets/common/map/controller.dart';
+import 'package:aves/widgets/common/map/buttons/panel.dart';
 import 'package:aves/widgets/common/map/decorator.dart';
-import 'package:aves/widgets/common/map/geo_entry.dart';
-import 'package:aves/widgets/common/map/google/map.dart';
 import 'package:aves/widgets/common/map/leaflet/map.dart';
-import 'package:aves/widgets/common/map/marker.dart';
-import 'package:aves/widgets/common/map/theme.dart';
-import 'package:aves/widgets/common/map/zoomed_bounds.dart';
+import 'package:aves/widgets/common/thumbnail/image.dart';
+import 'package:aves_map/aves_map.dart';
+import 'package:aves_services_platform/aves_services_platform.dart';
 import 'package:collection/collection.dart';
-import 'package:equatable/equatable.dart';
 import 'package:fluster/fluster.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
@@ -35,14 +30,11 @@ class GeoMap extends StatefulWidget {
   final ValueNotifier<bool> isAnimatingNotifier;
   final ValueNotifier<LatLng?>? dotLocationNotifier;
   final ValueNotifier<double>? overlayOpacityNotifier;
-  final MappedGeoTiff? overlayEntry;
+  final MapOverlay? overlayEntry;
   final UserZoomChangeCallback? onUserZoomChange;
-  final void Function(LatLng location)? onMapTap;
-  final MarkerTapCallback? onMarkerTap;
-  final MapOpener? openMapPage;
-
-  static const markerImageExtent = 48.0;
-  static const markerArrowSize = Size(8, 6);
+  final MapTapCallback? onMapTap;
+  final void Function(LatLng averageLocation, AvesEntry markerEntry, Set<AvesEntry> Function() getClusterEntries)? onMarkerTap;
+  final void Function(BuildContext context)? openMapPage;
 
   const GeoMap({
     Key? key,
@@ -71,13 +63,15 @@ class _GeoMapState extends State<GeoMap> {
   // cf https://github.com/flutter/flutter/issues/28493
   // it is especially severe the first time, but still significant afterwards
   // so we prevent loading it while scrolling or animating
-  bool _googleMapsLoaded = false;
+  bool _heavyMapLoaded = false;
   late final ValueNotifier<ZoomedBounds> _boundsNotifier;
-  Fluster<GeoEntry>? _defaultMarkerCluster;
-  Fluster<GeoEntry>? _slowMarkerCluster;
+  Fluster<GeoEntry<AvesEntry>>? _defaultMarkerCluster;
+  Fluster<GeoEntry<AvesEntry>>? _slowMarkerCluster;
   final AChangeNotifier _clusterChangeNotifier = AChangeNotifier();
 
   List<AvesEntry> get entries => widget.entries;
+
+  static final _platformMobileServices = PlatformMobileServices();
 
   // cap initial zoom to avoid a zoom change
   // when toggling overlay on Google map initial state
@@ -121,7 +115,7 @@ class _GeoMapState extends State<GeoMap> {
 
   @override
   Widget build(BuildContext context) {
-    void _onMarkerTap(GeoEntry geoEntry) {
+    void _onMarkerTap(GeoEntry<AvesEntry> geoEntry) {
       final onTap = widget.onMarkerTap;
       if (onTap == null) return;
 
@@ -159,60 +153,74 @@ class _GeoMapState extends State<GeoMap> {
     return Selector<Settings, EntryMapStyle>(
       selector: (context, s) => s.infoMapStyle,
       builder: (context, mapStyle, child) {
-        final isGoogleMaps = mapStyle.isGoogleMaps;
-        final progressive = !isGoogleMaps;
-        Widget _buildMarkerWidget(MarkerKey key) => ImageMarker(
+        final isHeavy = mapStyle.isHeavy;
+        Widget _buildMarkerWidget(MarkerKey<AvesEntry> key) => ImageMarker(
               key: key,
-              entry: key.entry,
               count: key.count,
-              extent: GeoMap.markerImageExtent,
-              arrowSize: GeoMap.markerArrowSize,
-              progressive: progressive,
+              buildThumbnailImage: (extent) => ThumbnailImage(
+                entry: key.entry,
+                extent: extent,
+                progressive: !isHeavy,
+              ),
             );
+        bool _isMarkerImageReady(MarkerKey<AvesEntry> key) => key.entry.isThumbnailReady(extent: MapThemeData.markerImageExtent);
 
-        Widget child = isGoogleMaps
-            ? EntryGoogleMap(
-                controller: widget.controller,
-                clusterListenable: _clusterChangeNotifier,
-                boundsNotifier: _boundsNotifier,
-                minZoom: 0,
-                maxZoom: 20,
-                style: mapStyle,
-                markerClusterBuilder: _buildMarkerClusters,
-                markerWidgetBuilder: _buildMarkerWidget,
-                dotLocationNotifier: widget.dotLocationNotifier,
-                overlayOpacityNotifier: widget.overlayOpacityNotifier,
-                overlayEntry: widget.overlayEntry,
-                onUserZoomChange: widget.onUserZoomChange,
-                onMapTap: widget.onMapTap,
-                onMarkerTap: _onMarkerTap,
-                openMapPage: widget.openMapPage,
-              )
-            : EntryLeafletMap(
-                controller: widget.controller,
-                clusterListenable: _clusterChangeNotifier,
-                boundsNotifier: _boundsNotifier,
-                minZoom: 2,
-                maxZoom: 16,
-                style: mapStyle,
-                markerClusterBuilder: _buildMarkerClusters,
-                markerWidgetBuilder: _buildMarkerWidget,
-                dotLocationNotifier: widget.dotLocationNotifier,
-                markerSize: Size(
-                  GeoMap.markerImageExtent + ImageMarker.outerBorderWidth * 2,
-                  GeoMap.markerImageExtent + ImageMarker.outerBorderWidth * 2 + GeoMap.markerArrowSize.height,
-                ),
-                dotMarkerSize: const Size(
-                  DotMarker.diameter + ImageMarker.outerBorderWidth * 2,
-                  DotMarker.diameter + ImageMarker.outerBorderWidth * 2,
-                ),
-                overlayOpacityNotifier: widget.overlayOpacityNotifier,
-                overlayEntry: widget.overlayEntry,
-                onUserZoomChange: widget.onUserZoomChange,
-                onMapTap: widget.onMapTap,
-                onMarkerTap: _onMarkerTap,
-                openMapPage: widget.openMapPage,
-              );
+        Widget child = const SizedBox();
+        switch (mapStyle) {
+          case EntryMapStyle.googleNormal:
+          case EntryMapStyle.googleHybrid:
+          case EntryMapStyle.googleTerrain:
+          case EntryMapStyle.hmsNormal:
+          case EntryMapStyle.hmsTerrain:
+            child = _platformMobileServices.buildMap<AvesEntry>(
+              controller: widget.controller,
+              clusterListenable: _clusterChangeNotifier,
+              boundsNotifier: _boundsNotifier,
+              style: mapStyle,
+              decoratorBuilder: _decorateMap,
+              buttonPanelBuilder: _buildButtonPanel,
+              markerClusterBuilder: _buildMarkerClusters,
+              markerWidgetBuilder: _buildMarkerWidget,
+              markerImageReadyChecker: _isMarkerImageReady,
+              dotLocationNotifier: widget.dotLocationNotifier,
+              overlayOpacityNotifier: widget.overlayOpacityNotifier,
+              overlayEntry: widget.overlayEntry,
+              onUserZoomChange: widget.onUserZoomChange,
+              onMapTap: widget.onMapTap,
+              onMarkerTap: _onMarkerTap,
+            );
+            break;
+          case EntryMapStyle.osmHot:
+          case EntryMapStyle.stamenToner:
+          case EntryMapStyle.stamenWatercolor:
+            child = EntryLeafletMap<AvesEntry>(
+              controller: widget.controller,
+              clusterListenable: _clusterChangeNotifier,
+              boundsNotifier: _boundsNotifier,
+              minZoom: 2,
+              maxZoom: 16,
+              style: mapStyle,
+              decoratorBuilder: _decorateMap,
+              buttonPanelBuilder: _buildButtonPanel,
+              markerClusterBuilder: _buildMarkerClusters,
+              markerWidgetBuilder: _buildMarkerWidget,
+              dotLocationNotifier: widget.dotLocationNotifier,
+              markerSize: Size(
+                MapThemeData.markerImageExtent + MapThemeData.markerOuterBorderWidth * 2,
+                MapThemeData.markerImageExtent + MapThemeData.markerOuterBorderWidth * 2 + MapThemeData.markerArrowSize.height,
+              ),
+              dotMarkerSize: const Size(
+                DotMarker.diameter + MapThemeData.markerOuterBorderWidth * 2,
+                DotMarker.diameter + MapThemeData.markerOuterBorderWidth * 2,
+              ),
+              overlayOpacityNotifier: widget.overlayOpacityNotifier,
+              overlayEntry: widget.overlayEntry,
+              onUserZoomChange: widget.onUserZoomChange,
+              onMapTap: widget.onMapTap,
+              onMarkerTap: _onMarkerTap,
+            );
+            break;
+        }
 
         final mapHeight = context.select<MapThemeData, double?>((v) => v.mapHeight);
         child = Column(
@@ -239,8 +247,8 @@ class _GeoMapState extends State<GeoMap> {
           child: ValueListenableBuilder<bool>(
             valueListenable: widget.isAnimatingNotifier,
             builder: (context, animating, child) {
-              if (!animating && isGoogleMaps) {
-                _googleMapsLoaded = true;
+              if (!animating && isHeavy) {
+                _heavyMapLoaded = true;
               }
               Widget replacement = Stack(
                 children: [
@@ -258,7 +266,7 @@ class _GeoMapState extends State<GeoMap> {
                 );
               }
               return Visibility(
-                visible: !isGoogleMaps || _googleMapsLoaded,
+                visible: !isHeavy || _heavyMapLoaded,
                 replacement: replacement,
                 child: child!,
               );
@@ -303,10 +311,10 @@ class _GeoMapState extends State<GeoMap> {
     _clusterChangeNotifier.notify();
   }
 
-  Fluster<GeoEntry> _buildFluster({int nodeSize = 64}) {
+  Fluster<GeoEntry<AvesEntry>> _buildFluster({int nodeSize = 64}) {
     final markers = entries.map((entry) {
       final latLng = entry.latLng!;
-      return GeoEntry(
+      return GeoEntry<AvesEntry>(
         entry: entry,
         latitude: latLng.latitude,
         longitude: latLng.longitude,
@@ -314,7 +322,7 @@ class _GeoMapState extends State<GeoMap> {
       );
     }).toList();
 
-    return Fluster<GeoEntry>(
+    return Fluster<GeoEntry<AvesEntry>>(
       // we keep clustering on the whole range of zooms (including the maximum)
       // to avoid collocated entries overlapping
       minZoom: 0,
@@ -329,11 +337,11 @@ class _GeoMapState extends State<GeoMap> {
       // use lambda instead of tear-off because of runtime exception when using
       // `T Function(BaseCluster, double, double)` for `T Function(BaseCluster?, double?, double?)`
       // ignore: unnecessary_lambdas
-      createCluster: (base, lng, lat) => GeoEntry.createCluster(base, lng, lat),
+      createCluster: (base, lng, lat) => GeoEntry<AvesEntry>.createCluster(base, lng, lat),
     );
   }
 
-  Map<MarkerKey, GeoEntry> _buildMarkerClusters() {
+  Map<MarkerKey<AvesEntry>, GeoEntry<AvesEntry>> _buildMarkerClusters() {
     final bounds = _boundsNotifier.value;
     final geoEntries = _defaultMarkerCluster?.clusters(bounds.boundingBox, bounds.zoom.round()) ?? [];
     return Map.fromEntries(geoEntries.map((v) {
@@ -345,20 +353,17 @@ class _GeoMapState extends State<GeoMap> {
       return MapEntry(MarkerKey(v.entry!, null), v);
     }));
   }
+
+  Widget _decorateMap(BuildContext context, Widget? child) => MapDecorator(child: child);
+
+  Widget _buildButtonPanel(
+    Future<void> Function(double amount) zoomBy,
+    VoidCallback resetRotation,
+  ) =>
+      MapButtonPanel(
+        boundsNotifier: _boundsNotifier,
+        zoomBy: zoomBy,
+        openMapPage: widget.openMapPage,
+        resetRotation: resetRotation,
+      );
 }
-
-@immutable
-class MarkerKey extends LocalKey with EquatableMixin {
-  final AvesEntry entry;
-  final int? count;
-
-  @override
-  List<Object?> get props => [entry, count];
-
-  const MarkerKey(this.entry, this.count);
-}
-
-typedef MarkerClusterBuilder = Map<MarkerKey, GeoEntry> Function();
-typedef MarkerWidgetBuilder = Widget Function(MarkerKey key);
-typedef UserZoomChangeCallback = void Function(double zoom);
-typedef MarkerTapCallback = void Function(LatLng averageLocation, AvesEntry markerEntry, Set<AvesEntry> Function() getClusterEntries);

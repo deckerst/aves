@@ -30,6 +30,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/providers/highlight_info_provider.dart';
 import 'package:aves/widgets/home_page.dart';
 import 'package:aves/widgets/welcome_page.dart';
+import 'package:aves_services_platform/aves_services_platform.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fijkplayer/fijkplayer.dart';
 import 'package:flutter/foundation.dart';
@@ -41,6 +42,8 @@ import 'package:tuple/tuple.dart';
 
 class AvesApp extends StatefulWidget {
   final AppFlavor flavor;
+
+  static final GlobalKey<NavigatorState> navigatorKey = GlobalKey(debugLabel: 'app-navigator');
 
   const AvesApp({
     Key? key,
@@ -65,7 +68,6 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   final EventChannel _newIntentChannel = const EventChannel('deckers.thibault/aves/intent');
   final EventChannel _analysisCompletionChannel = const EventChannel('deckers.thibault/aves/analysis_events');
   final EventChannel _errorChannel = const EventChannel('deckers.thibault/aves/error');
-  final GlobalKey<NavigatorState> _navigatorKey = GlobalKey(debugLabel: 'app-navigator');
 
   Widget getFirstPage({Map? intentData}) => settings.hasAcceptedTerms ? HomePage(intentData: intentData) : const WelcomePage();
 
@@ -116,7 +118,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
                           final areAnimationsEnabled = s.item2;
                           final themeBrightness = s.item3;
                           return MaterialApp(
-                            navigatorKey: _navigatorKey,
+                            navigatorKey: AvesApp.navigatorKey,
                             home: home,
                             navigatorObservers: _navigatorObservers,
                             builder: (context, child) {
@@ -138,7 +140,6 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
                               return AvesColorsProvider(
                                 child: child!,
                               );
-                              // return child!;
                             },
                             onGenerateTitle: (context) => context.l10n.appName,
                             theme: Themes.lightTheme,
@@ -271,14 +272,14 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
 
     FlutterError.onError = reportService.recordFlutterError;
     final now = DateTime.now();
-    final hasPlayServices = await availability.hasPlayServices;
+    final hasMobileServices = await PlatformMobileServices().isServiceAvailable();
     await reportService.setCustomKeys({
       'build_mode': kReleaseMode
           ? 'release'
           : kProfileMode
               ? 'profile'
               : 'debug',
-      'has_play_services': hasPlayServices,
+      'has_mobile_services': hasMobileServices,
       'locales': WidgetsBinding.instance!.window.locales.join(', '),
       'time_zone': '${now.timeZoneName} (${now.timeZoneOffset})',
     });
@@ -294,7 +295,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     if (appModeNotifier.value == AppMode.main && (intentData == null || intentData.isEmpty == true)) return;
 
     reportService.log('New intent');
-    _navigatorKey.currentState!.pushReplacement(DirectMaterialPageRoute(
+    AvesApp.navigatorKey.currentState!.pushReplacement(DirectMaterialPageRoute(
       settings: const RouteSettings(name: HomePage.routeName),
       builder: (_) => getFirstPage(intentData: intentData),
     ));

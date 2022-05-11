@@ -1,0 +1,22 @@
+name: aves_map
+version: 0.0.1
+publish_to: none
+
+environment:
+  sdk: ">=2.16.2 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  # TODO TLAD as of 2022/02/22, null safe version is pre-release
+  custom_rounded_rectangle_border: '>=0.2.0-nullsafety.0'
+  equatable:
+  fluster:
+  flutter_map:
+  latlong2:
+  provider:
+
+dev_dependencies:
+  flutter_lints:
+
+flutter:

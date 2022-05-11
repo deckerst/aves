@@ -1,6 +1,6 @@
-import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
+import 'package:aves_map/aves_map.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -38,8 +38,11 @@ class Attribution extends StatelessWidget {
           p: theme.textTheme.caption!.merge(const TextStyle(fontSize: InfoRowGroup.fontSize)),
         ),
         onTapLink: (text, href, title) async {
-          if (href != null && await canLaunch(href)) {
-            await launch(href);
+          if (href != null) {
+            final url = Uri.parse(href);
+            if (await canLaunchUrl(url)) {
+              await launchUrl(url, mode: LaunchMode.externalApplication);
+            }
           }
         },
       ),

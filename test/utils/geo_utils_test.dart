@@ -1,6 +1,6 @@
 import 'package:aves/l10n/l10n.dart';
 import 'package:aves/model/settings/enums/coordinate_format.dart';
-import 'package:aves/utils/geo_utils.dart';
+import 'package:aves_map/aves_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:test/test.dart';
 

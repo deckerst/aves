@@ -5,6 +5,26 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+class DraggableCrumbLabel extends StatelessWidget {
+  final String label;
+
+  const DraggableCrumbLabel({
+    Key? key,
+    required this.label,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: _crumbLabelMaxWidth),
+      child: Padding(
+        padding: _padding,
+        child: _buildText(label, isCrumb: true),
+      ),
+    );
+  }
+}
+
 class DraggableThumbLabel<T> extends StatelessWidget {
   final double offsetY;
   final List<String> Function(BuildContext context, T item) lineBuilder;
@@ -30,29 +50,19 @@ class DraggableThumbLabel<T> extends StatelessWidget {
     if (lines.isEmpty) return const SizedBox();
 
     return ConstrainedBox(
-      constraints: const BoxConstraints(maxWidth: 140),
+      constraints: const BoxConstraints(maxWidth: _thumbLabelMaxWidth),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+        padding: _padding,
         child: lines.length > 1
             ? Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.end,
-                children: lines.map(_buildText).toList(),
+                children: lines.map((v) => _buildText(v, isCrumb: false)).toList(),
               )
-            : _buildText(lines.first),
+            : _buildText(lines.first, isCrumb: false),
       ),
     );
   }
-
-  Widget _buildText(String text) => Text(
-        text,
-        style: const TextStyle(
-          color: Colors.black,
-        ),
-        softWrap: false,
-        overflow: TextOverflow.fade,
-        maxLines: 1,
-      );
 
   static String formatMonthThumbLabel(BuildContext context, DateTime? date) {
     final l10n = context.l10n;
@@ -66,3 +76,18 @@ class DraggableThumbLabel<T> extends StatelessWidget {
     return formatDay(date, l10n.localeName);
   }
 }
+
+const double _crumbLabelMaxWidth = 96;
+const double _thumbLabelMaxWidth = 144;
+const EdgeInsets _padding = EdgeInsets.symmetric(vertical: 4, horizontal: 8);
+
+Widget _buildText(String text, {required bool isCrumb}) => Text(
+      text,
+      style: TextStyle(
+        color: Colors.black,
+        fontSize: isCrumb ? 10 : 14,
+      ),
+      softWrap: false,
+      overflow: TextOverflow.fade,
+      maxLines: 1,
+    );

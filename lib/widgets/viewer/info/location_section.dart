@@ -7,11 +7,11 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
-import 'package:aves/widgets/common/map/controller.dart';
 import 'package:aves/widgets/common/map/geo_map.dart';
-import 'package:aves/widgets/common/map/theme.dart';
+import 'package:aves/widgets/common/providers/map_theme_provider.dart';
 import 'package:aves/widgets/map/map_page.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
+import 'package:aves_map/aves_map.dart';
 import 'package:flutter/material.dart';
 
 class LocationSection extends StatefulWidget {

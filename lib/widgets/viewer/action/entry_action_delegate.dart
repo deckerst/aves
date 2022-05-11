@@ -16,6 +16,7 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/services/media/enums.dart';
 import 'package:aves/services/media/media_file_service.dart';
 import 'package:aves/theme/durations.dart';
+import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/action_mixins/entry_storage.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
@@ -31,7 +32,7 @@ import 'package:aves/widgets/filter_grids/album_pick.dart';
 import 'package:aves/widgets/viewer/action/printer.dart';
 import 'package:aves/widgets/viewer/action/single_entry_editor.dart';
 import 'package:aves/widgets/viewer/debug/debug_page.dart';
-import 'package:aves/widgets/viewer/info/notifications.dart';
+import 'package:aves/widgets/viewer/notifications.dart';
 import 'package:aves/widgets/viewer/overlay/notifications.dart';
 import 'package:aves/widgets/viewer/source_viewer_page.dart';
 import 'package:aves/widgets/viewer/video/conductor.dart';
@@ -205,7 +206,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       if (source.initState != SourceInitializationState.none) {
         await source.removeEntries({entry.uri}, includeTrash: true);
       }
-      EntryRemovedNotification(entry).dispatch(context);
+      EntryDeletedNotification({entry}).dispatch(context);
     }
   }
 
@@ -259,24 +260,26 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         source.refreshUris(newUris);
 
         final l10n = context.l10n;
-        final navigator = Navigator.of(context);
         final showAction = isMainMode && newUris.isNotEmpty
             ? SnackBarAction(
                 label: l10n.showButtonLabel,
                 onPressed: () {
-                  // `context` may be obsolete if the user navigated away before triggering the action
-                  // so we reused the navigator retrieved before showing the snack bar
-                  navigator.pushAndRemoveUntil(
-                    MaterialPageRoute(
-                      settings: const RouteSettings(name: CollectionPage.routeName),
-                      builder: (context) => CollectionPage(
-                        source: source,
-                        filters: {AlbumFilter(destinationAlbum, source.getAlbumDisplayName(context, destinationAlbum))},
-                        highlightTest: (entry) => newUris.contains(entry.uri),
+                  // local context may be deactivated when action is triggered after navigation
+                  final context = AvesApp.navigatorKey.currentContext;
+                  if (context != null) {
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                        settings: const RouteSettings(name: CollectionPage.routeName),
+                        builder: (context) => CollectionPage(
+                          source: source,
+                          filters: {AlbumFilter(destinationAlbum, source.getAlbumDisplayName(context, destinationAlbum))},
+                          highlightTest: (entry) => newUris.contains(entry.uri),
+                        ),
                       ),
-                    ),
-                    (route) => false,
-                  );
+                      (route) => false,
+                    );
+                  }
                 },
               )
             : null;
@@ -299,20 +302,11 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     );
   }
 
-  Future<void> _move(BuildContext context, {required MoveType moveType}) async {
-    await move(
-      context,
-      moveType: moveType,
-      entries: {entry},
-      onSuccess: {
-        MoveType.move,
-        MoveType.toBin,
-        MoveType.fromBin,
-      }.contains(moveType)
-          ? () => EntryRemovedNotification(entry).dispatch(context)
-          : null,
-    );
-  }
+  Future<void> _move(BuildContext context, {required MoveType moveType}) => move(
+        context,
+        moveType: moveType,
+        entries: {entry},
+      );
 
   Future<void> _rename(BuildContext context) async {
     final newName = await showDialog<String>(

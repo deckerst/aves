@@ -12,12 +12,10 @@ import 'package:aves/utils/constants.dart';
 import 'package:aves/utils/debouncer.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/buttons.dart';
-import 'package:aves/widgets/common/map/controller.dart';
 import 'package:aves/widgets/common/map/geo_map.dart';
-import 'package:aves/widgets/common/map/marker.dart';
-import 'package:aves/widgets/common/map/theme.dart';
-import 'package:aves/widgets/common/map/zoomed_bounds.dart';
+import 'package:aves/widgets/common/providers/map_theme_provider.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
+import 'package:aves_map/aves_map.dart';
 import 'package:decorated_icon/decorated_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -82,7 +80,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
   void initState() {
     super.initState();
 
-    if (settings.infoMapStyle.isGoogleMaps) {
+    if (settings.infoMapStyle.isHeavy) {
       _isPageAnimatingNotifier = ValueNotifier(true);
       Future.delayed(Durations.pageTransitionAnimation * timeDilation).then((_) {
         if (!mounted) return;

@@ -197,11 +197,12 @@ class _MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateM
   }
 
   void onTap(TapUpDetails details) {
-    if (widget.onTap == null) return;
+    final onTap = widget.onTap;
+    if (onTap == null) return;
 
     final viewportTapPosition = details.localPosition;
     final childTapPosition = scaleBoundaries.viewportToChildPosition(controller, viewportTapPosition);
-    widget.onTap!.call(context, details, controller.currentState, childTapPosition);
+    onTap(context, details, controller.currentState, childTapPosition);
   }
 
   void onDoubleTap(TapDownDetails details) {

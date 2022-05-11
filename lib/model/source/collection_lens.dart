@@ -62,19 +62,19 @@ class CollectionLens with ChangeNotifier {
             break;
           case MoveType.move:
           case MoveType.fromBin:
-            _refresh();
+            refresh();
             break;
           case MoveType.toBin:
             _onEntryRemoved(e.entries);
             break;
         }
       }));
-      _subscriptions.add(sourceEvents.on<EntryRefreshedEvent>().listen((e) => _refresh()));
-      _subscriptions.add(sourceEvents.on<FilterVisibilityChangedEvent>().listen((e) => _refresh()));
-      _subscriptions.add(sourceEvents.on<CatalogMetadataChangedEvent>().listen((e) => _refresh()));
+      _subscriptions.add(sourceEvents.on<EntryRefreshedEvent>().listen((e) => refresh()));
+      _subscriptions.add(sourceEvents.on<FilterVisibilityChangedEvent>().listen((e) => refresh()));
+      _subscriptions.add(sourceEvents.on<CatalogMetadataChangedEvent>().listen((e) => refresh()));
       _subscriptions.add(sourceEvents.on<AddressMetadataChangedEvent>().listen((e) {
         if (this.filters.any((filter) => filter is LocationFilter)) {
-          _refresh();
+          refresh();
         }
       }));
       favourites.addListener(_onFavouritesChanged);
@@ -85,7 +85,7 @@ class CollectionLens with ChangeNotifier {
               Settings.collectionGroupFactorKey,
             ].contains(event.key))
         .listen((_) => _onSettingsChanged()));
-    _refresh();
+    refresh();
   }
 
   @override
@@ -171,7 +171,7 @@ class CollectionLens with ChangeNotifier {
   }
 
   void _onFilterChanged() {
-    _refresh();
+    refresh();
     filterChangeNotifier.notifyListeners();
   }
 
@@ -259,7 +259,7 @@ class CollectionLens with ChangeNotifier {
 
   // metadata change should also trigger a full refresh
   // as dates impact sorting and sectioning
-  void _refresh() {
+  void refresh() {
     _applyFilters();
     _applySort();
     _applySection();
@@ -267,7 +267,7 @@ class CollectionLens with ChangeNotifier {
 
   void _onFavouritesChanged() {
     if (filters.any((filter) => filter is FavouriteFilter)) {
-      _refresh();
+      refresh();
     }
   }
 
@@ -292,7 +292,7 @@ class CollectionLens with ChangeNotifier {
   }
 
   void _onEntryAdded(Set<AvesEntry>? entries) {
-    _refresh();
+    refresh();
   }
 
   void _onEntryRemoved(Set<AvesEntry> entries) {

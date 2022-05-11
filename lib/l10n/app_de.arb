@@ -58,6 +58,9 @@
   "entryActionPrint": "Drucken",
   "entryActionShare": "Teilen",
   "entryActionViewSource": "Quelle anzeigen",
+  "entryActionShowGeoTiffOnMap": "Als Karten-Overlay anzeigen",
+  "entryActionConvertMotionPhotoToStillImage": "In ein Standbild umwandeln",
+  "entryActionViewMotionPhotoVideo": "Video öffnen",
   "entryActionEdit": "Bearbeiten",
   "entryActionOpen": "Öffnen mit",
   "entryActionSetAs": "Einstellen als",
@@ -121,6 +124,8 @@
   "mapStyleGoogleNormal": "Google Maps",
   "mapStyleGoogleHybrid": "Google Maps (Hybrid)",
   "mapStyleGoogleTerrain": "Google Maps (Gelände)",
+  "mapStyleHuaweiNormal": "Petal Maps",
+  "mapStyleHuaweiTerrain": "Petal Maps (Gelände)",
   "mapStyleOsmHot": "Humanitäres OSM",
   "mapStyleStamenToner": "Stamen Toner (SchwarzWeiß)",
   "mapStyleStamenWatercolor": "Stamen Watercolor (Aquarell)",
@@ -184,6 +189,7 @@
   "videoResumeButtonLabel": "FORTSETZTEN",
 
   "setCoverDialogLatest": "Letzter Artikel",
+  "setCoverDialogAuto": "Auto",
   "setCoverDialogCustom": "Benutzerdefiniert",
 
   "hideFilterConfirmationDialogMessage": "Passende Fotos und Videos werden aus Ihrer Sammlung ausgeblendet. Dies kann in den „Datenschutz“-Einstellungen wieder eingeblendet werden.\n\nSicher, dass diese ausblendet werden sollen?",
@@ -237,6 +243,7 @@
   "removeEntryMetadataDialogMore": "Mehr",
 
   "removeEntryMetadataMotionPhotoXmpWarningDialogMessage": "XMP ist erforderlich, um das Video innerhalb eines bewegten Bildes abzuspielen.\n\nSicher, dass es entfernt werden soll?",
+  "convertMotionPhotoToStillImageWarningDialogMessage": "Sicher?",
 
   "videoSpeedDialogLabel": "Wiedergabegeschwindigkeit",
 
@@ -263,6 +270,13 @@
 
   "tileLayoutGrid": "Kacheln",
   "tileLayoutList": "Liste",
+
+  "coverDialogTabCover": "Titelbild",
+  "coverDialogTabApp": "App",
+  "coverDialogTabColor": "Farbe",
+
+  "appPickDialogTitle": "Wähle App",
+  "appPickDialogNone": "Nichts",
 
   "aboutPageTitle": "Über",
   "aboutLinkSources": "Quellen",
@@ -422,6 +436,8 @@
   "settingsNavigationDrawerAddAlbum": "Album hinzufügen",
 
   "settingsSectionThumbnails": "Vorschaubilder",
+  "settingsThumbnailOverlayTile": "Überlagerung",
+  "settingsThumbnailOverlayTitle": "Überlagerung",
   "settingsThumbnailShowFavouriteIcon": "Favoriten-Symbol anzeigen",
   "settingsThumbnailShowLocationIcon": "Standort-Symbol anzeigen",
   "settingsThumbnailShowMotionPhotoIcon": "Bewegungsfoto-Symbol anzeigen",

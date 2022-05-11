@@ -18,6 +18,7 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/services/media/enums.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/android_file_utils.dart';
+import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/collection/entry_set_action_delegate.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
@@ -27,6 +28,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
 import 'package:aves/widgets/filter_grids/album_pick.dart';
+import 'package:aves/widgets/viewer/notifications.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -36,6 +38,7 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
     BuildContext context, {
     required MoveType moveType,
     required Set<AvesEntry> entries,
+    bool hideShowAction = false,
     VoidCallback? onSuccess,
   }) async {
     final todoCount = entries.length;
@@ -128,8 +131,9 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
       itemCount: todoCount,
       onCancel: () => mediaFileService.cancelFileOp(opId),
       onDone: (processed) async {
-        final successOps = processed.where((e) => e.success).toSet();
-        final movedOps = successOps.where((e) => !e.skipped).toSet();
+        final successOps = processed.where((v) => v.success).toSet();
+        final movedOps = successOps.where((v) => !v.skipped).toSet();
+        final movedEntries = movedOps.map((v) => v.uri).map((uri) => entries.firstWhereOrNull((entry) => entry.uri == uri)).whereNotNull().toSet();
         await source.updateAfterMove(
           todoEntries: entries,
           moveType: moveType,
@@ -152,51 +156,46 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
           final appMode = context.read<ValueNotifier<AppMode>?>()?.value;
 
           SnackBarAction? action;
-          if (count > 0 && appMode == AppMode.main && !toBin) {
-            action = SnackBarAction(
-              label: l10n.showButtonLabel,
-              onPressed: () async {
-                final newUris = movedOps.map((v) => v.newFields['uri'] as String?).toSet();
-                bool highlightTest(AvesEntry entry) => newUris.contains(entry.uri);
-
-                final collection = context.read<CollectionLens?>();
-                if (collection == null || collection.filters.any((f) => f is AlbumFilter || f is TrashFilter)) {
-                  final targetFilters = collection?.filters.where((f) => f != TrashFilter.instance).toSet() ?? {};
-                  // we could simply add the filter to the current collection
-                  // but navigating makes the change less jarring
-                  if (destinationAlbums.length == 1) {
-                    final destinationAlbum = destinationAlbums.single;
-                    targetFilters.removeWhere((f) => f is AlbumFilter);
-                    targetFilters.add(AlbumFilter(destinationAlbum, source.getAlbumDisplayName(context, destinationAlbum)));
+          if (count > 0 && appMode == AppMode.main) {
+            if (toBin) {
+              if (movedEntries.isNotEmpty) {
+                action = SnackBarAction(
+                  // TODO TLAD [l10n] key for "RESTORE"
+                  label: l10n.entryActionRestore.toUpperCase(),
+                  onPressed: () {
+                    // local context may be deactivated when action is triggered after navigation
+                    final context = AvesApp.navigatorKey.currentContext;
+                    if (context != null) {
+                      move(
+                        context,
+                        moveType: MoveType.fromBin,
+                        entries: movedEntries,
+                        hideShowAction: true,
+                      );
+                    }
+                  },
+                );
+              }
+            } else if (!hideShowAction) {
+              action = SnackBarAction(
+                label: l10n.showButtonLabel,
+                onPressed: () {
+                  // local context may be deactivated when action is triggered after navigation
+                  final context = AvesApp.navigatorKey.currentContext;
+                  if (context != null) {
+                    _showMovedItems(context, destinationAlbums, movedOps);
                   }
-                  unawaited(Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                      settings: const RouteSettings(name: CollectionPage.routeName),
-                      builder: (context) => CollectionPage(
-                        source: source,
-                        filters: targetFilters,
-                        highlightTest: highlightTest,
-                      ),
-                    ),
-                    (route) => false,
-                  ));
-                } else {
-                  // track in current page, without navigation
-                  await Future.delayed(Durations.highlightScrollInitDelay);
-                  final targetEntry = collection.sortedEntries.firstWhereOrNull(highlightTest);
-                  if (targetEntry != null) {
-                    context.read<HighlightInfo>().trackItem(targetEntry, highlightItem: targetEntry);
-                  }
-                }
-              },
-            );
+                },
+              );
+            }
           }
           showFeedback(
             context,
             copy ? l10n.collectionCopySuccessFeedback(count) : l10n.collectionMoveSuccessFeedback(count),
             action,
           );
+
+          EntryMovedNotification(moveType, movedEntries).dispatch(context);
           onSuccess?.call();
         }
       },
@@ -279,6 +278,47 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
       }
     }
     return true;
+  }
+
+  Future<void> _showMovedItems(
+    BuildContext context,
+    Set<String> destinationAlbums,
+    Set<MoveOpEvent> movedOps,
+  ) async {
+    final newUris = movedOps.map((v) => v.newFields['uri'] as String?).toSet();
+    bool highlightTest(AvesEntry entry) => newUris.contains(entry.uri);
+
+    final collection = context.read<CollectionLens?>();
+    if (collection == null || collection.filters.any((f) => f is AlbumFilter || f is TrashFilter)) {
+      final source = context.read<CollectionSource>();
+      final targetFilters = collection?.filters.where((f) => f != TrashFilter.instance).toSet() ?? {};
+      // we could simply add the filter to the current collection
+      // but navigating makes the change less jarring
+      if (destinationAlbums.length == 1) {
+        final destinationAlbum = destinationAlbums.single;
+        targetFilters.removeWhere((f) => f is AlbumFilter);
+        targetFilters.add(AlbumFilter(destinationAlbum, source.getAlbumDisplayName(context, destinationAlbum)));
+      }
+      unawaited(Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          settings: const RouteSettings(name: CollectionPage.routeName),
+          builder: (context) => CollectionPage(
+            source: source,
+            filters: targetFilters,
+            highlightTest: highlightTest,
+          ),
+        ),
+        (route) => false,
+      ));
+    } else {
+      // track in current page, without navigation
+      await Future.delayed(Durations.highlightScrollInitDelay);
+      final targetEntry = collection.sortedEntries.firstWhereOrNull(highlightTest);
+      if (targetEntry != null) {
+        context.read<HighlightInfo>().trackItem(targetEntry, highlightItem: targetEntry);
+      }
+    }
   }
 }
 

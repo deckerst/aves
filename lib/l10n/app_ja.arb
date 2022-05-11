@@ -121,6 +121,8 @@
   "mapStyleGoogleNormal": "Google マップ",
   "mapStyleGoogleHybrid": "Google マップ（ハイブリッド）",
   "mapStyleGoogleTerrain": "Google マップ（地形）",
+  "mapStyleHuaweiNormal": "Petal マップ",
+  "mapStyleHuaweiTerrain": "Petal マップ（地形）",
   "mapStyleOsmHot": "Humanitarian OSM",
   "mapStyleStamenToner": "Stamen Toner",
   "mapStyleStamenWatercolor": "Stamen Watercolor",
@@ -422,6 +424,8 @@
   "settingsNavigationDrawerAddAlbum": "アルバムを追加",
 
   "settingsSectionThumbnails": "サムネイル",
+  "settingsThumbnailOverlayTile": "オーバーレイ",
+  "settingsThumbnailOverlayTitle": "オーバーレイ",
   "settingsThumbnailShowFavouriteIcon": "お気に入りアイコンを表示",
   "settingsThumbnailShowLocationIcon": "位置情報アイコンを表示",
   "settingsThumbnailShowMotionPhotoIcon": "モーションフォトアイコンを表示",

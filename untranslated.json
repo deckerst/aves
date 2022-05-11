@@ -1,41 +1,26 @@
 {
   "de": [
-    "entryActionShowGeoTiffOnMap",
-    "entryActionConvertMotionPhotoToStillImage",
-    "entryActionViewMotionPhotoVideo",
-    "setCoverDialogAuto",
-    "convertMotionPhotoToStillImageWarningDialogMessage",
-    "coverDialogTabCover",
-    "coverDialogTabApp",
-    "coverDialogTabColor",
-    "appPickDialogTitle",
-    "appPickDialogNone"
+    "settingsSearchFieldLabel",
+    "settingsSearchEmpty",
+    "settingsShowBottomNavigationBar",
+    "settingsThumbnailShowTagIcon"
   ],
 
   "es": [
-    "entryActionShowGeoTiffOnMap",
-    "entryActionConvertMotionPhotoToStillImage",
-    "entryActionViewMotionPhotoVideo",
-    "setCoverDialogAuto",
-    "convertMotionPhotoToStillImageWarningDialogMessage",
-    "coverDialogTabCover",
-    "coverDialogTabApp",
-    "coverDialogTabColor",
-    "appPickDialogTitle",
-    "appPickDialogNone"
+    "settingsShowBottomNavigationBar",
+    "settingsThumbnailShowTagIcon"
+  ],
+
+  "id": [
+    "settingsSearchFieldLabel",
+    "settingsSearchEmpty",
+    "settingsShowBottomNavigationBar",
+    "settingsThumbnailShowTagIcon"
   ],
 
   "it": [
-    "entryActionShowGeoTiffOnMap",
-    "entryActionConvertMotionPhotoToStillImage",
-    "entryActionViewMotionPhotoVideo",
-    "setCoverDialogAuto",
-    "convertMotionPhotoToStillImageWarningDialogMessage",
-    "coverDialogTabCover",
-    "coverDialogTabApp",
-    "coverDialogTabColor",
-    "appPickDialogTitle",
-    "appPickDialogNone"
+    "settingsShowBottomNavigationBar",
+    "settingsThumbnailShowTagIcon"
   ],
 
   "ja": [
@@ -48,67 +33,24 @@
     "coverDialogTabApp",
     "coverDialogTabColor",
     "appPickDialogTitle",
-    "appPickDialogNone"
-  ],
-
-  "ko": [
-    "entryActionShowGeoTiffOnMap",
-    "entryActionConvertMotionPhotoToStillImage",
-    "entryActionViewMotionPhotoVideo",
-    "setCoverDialogAuto",
-    "convertMotionPhotoToStillImageWarningDialogMessage",
-    "coverDialogTabCover",
-    "coverDialogTabApp",
-    "coverDialogTabColor",
-    "appPickDialogTitle",
-    "appPickDialogNone"
+    "appPickDialogNone",
+    "settingsSearchFieldLabel",
+    "settingsSearchEmpty",
+    "settingsShowBottomNavigationBar",
+    "settingsThumbnailShowTagIcon"
   ],
 
   "pt": [
-    "entryActionShowGeoTiffOnMap",
-    "entryActionConvertMotionPhotoToStillImage",
-    "entryActionViewMotionPhotoVideo",
-    "setCoverDialogAuto",
-    "convertMotionPhotoToStillImageWarningDialogMessage",
-    "coverDialogTabCover",
-    "coverDialogTabApp",
-    "coverDialogTabColor",
-    "appPickDialogTitle",
-    "appPickDialogNone"
+    "settingsSearchFieldLabel",
+    "settingsSearchEmpty",
+    "settingsShowBottomNavigationBar",
+    "settingsThumbnailShowTagIcon"
   ],
 
   "ru": [
-    "entryActionShowGeoTiffOnMap",
-    "entryActionConvertMotionPhotoToStillImage",
-    "entryActionViewMotionPhotoVideo",
-    "displayRefreshRatePreferHighest",
-    "displayRefreshRatePreferLowest",
-    "themeBrightnessLight",
-    "themeBrightnessDark",
-    "themeBrightnessBlack",
-    "moveUndatedConfirmationDialogMessage",
-    "moveUndatedConfirmationDialogSetDate",
-    "setCoverDialogAuto",
-    "renameEntrySetPageTitle",
-    "renameEntrySetPagePatternFieldLabel",
-    "renameEntrySetPageInsertTooltip",
-    "renameEntrySetPagePreview",
-    "renameProcessorCounter",
-    "renameProcessorName",
-    "editEntryDateDialogCopyItem",
-    "convertMotionPhotoToStillImageWarningDialogMessage",
-    "coverDialogTabCover",
-    "coverDialogTabApp",
-    "coverDialogTabColor",
-    "appPickDialogTitle",
-    "appPickDialogNone",
-    "collectionRenameFailureFeedback",
-    "collectionRenameSuccessFeedback",
-    "settingsConfirmationDialogMoveUndatedItems",
-    "settingsSectionDisplay",
-    "settingsThemeBrightness",
-    "settingsThemeColorHighlights",
-    "settingsDisplayRefreshRateModeTile",
-    "settingsDisplayRefreshRateModeTitle"
+    "settingsSearchFieldLabel",
+    "settingsSearchEmpty",
+    "settingsShowBottomNavigationBar",
+    "settingsThumbnailShowTagIcon"
   ]
 }

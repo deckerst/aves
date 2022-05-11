@@ -16,7 +16,8 @@ import 'package:aves/widgets/common/behaviour/double_back_pop.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/common/providers/query_provider.dart';
 import 'package:aves/widgets/common/providers/selection_provider.dart';
-import 'package:aves/widgets/drawer/app_drawer.dart';
+import 'package:aves/widgets/navigation/drawer/app_drawer.dart';
+import 'package:aves/widgets/navigation/nav_bar/nav_bar.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -74,30 +75,35 @@ class _CollectionPageState extends State<CollectionPage> {
   Widget build(BuildContext context) {
     final liveFilter = _collection.filters.firstWhereOrNull((v) => v is QueryFilter && v.live) as QueryFilter?;
     return MediaQueryDataProvider(
-      child: Scaffold(
-        body: SelectionProvider<AvesEntry>(
-          child: QueryProvider(
-            initialQuery: liveFilter?.query,
-            child: Builder(
-              builder: (context) => WillPopScope(
-                onWillPop: () {
-                  final selection = context.read<Selection<AvesEntry>>();
-                  if (selection.isSelecting) {
-                    selection.browse();
-                    return SynchronousFuture(false);
-                  }
-                  return SynchronousFuture(true);
-                },
-                child: DoubleBackPopScope(
-                  child: GestureAreaProtectorStack(
-                    child: SafeArea(
-                      bottom: false,
-                      child: ChangeNotifierProvider<CollectionLens>.value(
-                        value: _collection,
-                        child: const CollectionGrid(
-                          // key is expected by test driver
-                          key: Key('collection-grid'),
-                          settingsRouteKey: CollectionPage.routeName,
+      child: Selector<Settings, bool>(
+        selector: (context, s) => s.showBottomNavigationBar,
+        builder: (context, showBottomNavigationBar, child) {
+          return Scaffold(
+            body: SelectionProvider<AvesEntry>(
+              child: QueryProvider(
+                initialQuery: liveFilter?.query,
+                child: Builder(
+                  builder: (context) => WillPopScope(
+                    onWillPop: () {
+                      final selection = context.read<Selection<AvesEntry>>();
+                      if (selection.isSelecting) {
+                        selection.browse();
+                        return SynchronousFuture(false);
+                      }
+                      return SynchronousFuture(true);
+                    },
+                    child: DoubleBackPopScope(
+                      child: GestureAreaProtectorStack(
+                        child: SafeArea(
+                          bottom: false,
+                          child: ChangeNotifierProvider<CollectionLens>.value(
+                            value: _collection,
+                            child: const CollectionGrid(
+                              // key is expected by test driver
+                              key: Key('collection-grid'),
+                              settingsRouteKey: CollectionPage.routeName,
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -105,10 +111,12 @@ class _CollectionPageState extends State<CollectionPage> {
                 ),
               ),
             ),
-          ),
-        ),
-        drawer: AppDrawer(currentCollection: _collection),
-        resizeToAvoidBottomInset: false,
+            drawer: AppDrawer(currentCollection: _collection),
+            bottomNavigationBar: showBottomNavigationBar ? AppBottomNavBar(currentCollection: _collection) : null,
+            resizeToAvoidBottomInset: false,
+            extendBody: true,
+          );
+        },
       ),
     );
   }

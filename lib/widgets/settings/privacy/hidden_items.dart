@@ -14,26 +14,6 @@ import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
-class HiddenItemsTile extends StatelessWidget {
-  const HiddenItemsTile({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(context.l10n.settingsHiddenItemsTile),
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            settings: const RouteSettings(name: HiddenItemsPage.routeName),
-            builder: (context) => const HiddenItemsPage(),
-          ),
-        );
-      },
-    );
-  }
-}
-
 class HiddenItemsPage extends StatelessWidget {
   static const routeName = '/settings/hidden_items';
 

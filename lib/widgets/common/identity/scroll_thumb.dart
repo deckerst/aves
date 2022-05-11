@@ -15,12 +15,12 @@ ScrollThumbBuilder avesScrollThumbBuilder({
       borderRadius: BorderRadius.all(Radius.circular(12)),
     ),
     height: height,
-    margin: const EdgeInsetsDirectional.only(end: 1),
-    padding: const EdgeInsets.all(2),
+    margin: _margin,
+    padding: _padding,
     child: ClipPath(
       clipper: ArrowClipper(),
       child: Container(
-        width: 20.0,
+        width: _width,
         decoration: BoxDecoration(
           color: backgroundColor,
           borderRadius: const BorderRadius.all(Radius.circular(12)),
@@ -38,3 +38,9 @@ ScrollThumbBuilder avesScrollThumbBuilder({
     );
   };
 }
+
+const _margin = EdgeInsetsDirectional.only(end: 1);
+const _padding = EdgeInsets.all(2);
+const _width = 20.0;
+
+double get avesScrollThumbWidth => _width + _padding.horizontal + _margin.horizontal;
