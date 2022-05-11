@@ -82,6 +82,8 @@ class MimeTypes {
 
   static bool isVideo(String mimeType) => mimeType.startsWith('video');
 
+  static bool isVisual(String mimeType) => isImage(mimeType) || isVideo(mimeType);
+
   static bool refersToSameType(String a, b) {
     switch (a) {
       case avi:
