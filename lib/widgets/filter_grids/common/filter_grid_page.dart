@@ -503,7 +503,7 @@ class _FilterScrollView<T extends CollectionFilter> extends StatelessWidget {
       selector: (context, mq) => mq.effectiveBottomPadding,
       builder: (context, mqPaddingBottom, child) => DraggableScrollbar(
         backgroundColor: Colors.white,
-        scrollThumbHeight: avesScrollThumbHeight,
+        scrollThumbSize: Size(avesScrollThumbWidth, avesScrollThumbHeight),
         scrollThumbBuilder: avesScrollThumbBuilder(
           height: avesScrollThumbHeight,
           backgroundColor: Colors.white,
@@ -518,6 +518,7 @@ class _FilterScrollView<T extends CollectionFilter> extends StatelessWidget {
           sortFactor: sortFactor,
           offsetY: offsetY,
         ),
+        crumbTextBuilder: (offsetY) => const SizedBox(),
         child: scrollView,
       ),
     );
