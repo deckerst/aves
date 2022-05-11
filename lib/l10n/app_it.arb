@@ -41,7 +41,7 @@
   "chipActionGoToTagPage": "Mostra nelle etichette",
   "chipActionHide": "Nascondi",
   "chipActionPin": "Fissa in alto",
-  "chipActionUnpin": "Rimuovi dall'alto",
+  "chipActionUnpin": "Rimuovi dall’alto",
   "chipActionRename": "Rinomina",
   "chipActionSetCover": "Imposta copertina",
   "chipActionCreateAlbum": "Crea album",
@@ -195,7 +195,7 @@
   "hideFilterConfirmationDialogMessage": "Le foto e i video corrispondenti saranno nascosti dalla tua collezione. Puoi mostrarli di nuovo dalle impostazioni della «Privacy». Sei sicuro di volerli nascondere?",
 
   "newAlbumDialogTitle": "Nuovo album",
-  "newAlbumDialogNameLabel": "Nome dell'album",
+  "newAlbumDialogNameLabel": "Nome dell’album",
   "newAlbumDialogNameLabelAlreadyExistsHelper": "La cartella esiste già",
   "newAlbumDialogStorageLabel": "Archiviazione:",
 
@@ -221,7 +221,7 @@
 
   "editEntryDateDialogTitle": "Data e ora",
   "editEntryDateDialogSetCustom": "Imposta data personalizzata",
-  "editEntryDateDialogCopyField": "Copia da un'altra data",
+  "editEntryDateDialogCopyField": "Copia da un’altra data",
   "editEntryDateDialogCopyItem": "Copia da un altro elemento",
   "editEntryDateDialogExtractFromTitle": "Estrai dal titolo",
   "editEntryDateDialogShift": "Turno",
@@ -242,7 +242,7 @@
   "removeEntryMetadataDialogTitle": "Rimozione dei metadati",
   "removeEntryMetadataDialogMore": "Altro",
 
-  "removeEntryMetadataMotionPhotoXmpWarningDialogMessage": "XMP è richiesto per riprodurre il video all'interno di una foto in movimento.\n\nSei sicuro di volerlo rimuovere?",
+  "removeEntryMetadataMotionPhotoXmpWarningDialogMessage": "XMP è richiesto per riprodurre il video all’interno di una foto in movimento.\n\nSei sicuro di volerlo rimuovere?",
   "convertMotionPhotoToStillImageWarningDialogMessage": "Sei sicuro?",
 
   "videoSpeedDialogLabel": "Velocità di riproduzione",
@@ -284,7 +284,7 @@
   "aboutLinkPolicy": "Informativa sulla privacy",
 
   "aboutBug": "Segnalazione bug",
-  "aboutBugSaveLogInstruction": "Salva i log dell'app in un file",
+  "aboutBugSaveLogInstruction": "Salva i log dell’app in un file",
   "aboutBugSaveLogButton": "Salva",
   "aboutBugCopyInfoInstruction": "Copia le informazioni di sistema",
   "aboutBugCopyInfoButton": "Copia",
@@ -314,8 +314,8 @@
   "collectionActionHideTitleSearch": "Nascondi filtro",
   "collectionActionAddShortcut": "Aggiungi collegamento",
   "collectionActionEmptyBin": "Svuota cestino",
-  "collectionActionCopy": "Copia nell'album",
-  "collectionActionMove": "Sposta nell'album",
+  "collectionActionCopy": "Copia nell’album",
+  "collectionActionMove": "Sposta nell’album",
   "collectionActionRescan": "Riscansiona",
   "collectionActionEdit": "Modifica",
 
@@ -441,10 +441,10 @@
   "settingsSectionThumbnails": "Miniature",
   "settingsThumbnailOverlayTile": "Sovrapposizione",
   "settingsThumbnailOverlayTitle": "Sovrapposizione",
-  "settingsThumbnailShowFavouriteIcon": "Mostra l'icona Preferiti",
-  "settingsThumbnailShowTagIcon": "Mostra l'icona Etichetta",
-  "settingsThumbnailShowLocationIcon": "Mostra l'icona Posizione",
-  "settingsThumbnailShowMotionPhotoIcon": "Mostra l'icona Foto in movimento",
+  "settingsThumbnailShowFavouriteIcon": "Mostra l’icona Preferiti",
+  "settingsThumbnailShowTagIcon": "Mostra l’icona Etichetta",
+  "settingsThumbnailShowLocationIcon": "Mostra l’icona Posizione",
+  "settingsThumbnailShowMotionPhotoIcon": "Mostra l’icona Foto in movimento",
   "settingsThumbnailShowRating": "Mostra la valutazione",
   "settingsThumbnailShowRawIcon": "Mostra icona Raw",
   "settingsThumbnailShowVideoDuration": "Mostra la durata del video",
@@ -471,7 +471,7 @@
 
   "settingsViewerOverlayTile": "Sovrapposizione",
   "settingsViewerOverlayTitle": "Sovrapposizione",
-  "settingsViewerShowOverlayOnOpening": "Mostra all'apertura",
+  "settingsViewerShowOverlayOnOpening": "Mostra all’apertura",
   "settingsViewerShowMinimap": "Mostra la minimappa",
   "settingsViewerShowInformation": "Mostra informazioni",
   "settingsViewerShowInformationSubtitle": "Mostra titolo, data, posizione, ecc.",
@@ -510,7 +510,7 @@
   "settingsVideoGestureSideDoubleTapSeek": "Doppio tocco sui bordi dello schermo per cercare avanti/indietro",
 
   "settingsSectionPrivacy": "Privacy",
-  "settingsAllowInstalledAppAccess": "Consentire l'accesso all'inventario delle app",
+  "settingsAllowInstalledAppAccess": "Consentire l’accesso all’inventario delle app",
   "settingsAllowInstalledAppAccessSubtitle": "Utilizzato per migliorare la visualizzazione degli album",
   "settingsAllowErrorReporting": "Consenti segnalazione anonima degli errori",
   "settingsSaveSearchHistory": "Salva la cronologia delle ricerche",
@@ -582,13 +582,13 @@
   "mapStyleTooltip": "Seleziona lo stile della mappa",
   "mapZoomInTooltip": "Ingrandisci",
   "mapZoomOutTooltip": "Riduci",
-  "mapPointNorthUpTooltip": "Punta a nord verso l'alto",
+  "mapPointNorthUpTooltip": "Punta a nord verso l’alto",
   "mapAttributionOsmHot": "Dati della mappa © collaboratori di [OpenStreetMap](https://www.openstreetmap.org/copyright) - Titoli di [HOT](https://www.hotosm.org/) - Ospitato da [OSM France](https://openstreetmap.fr/)",
   "mapAttributionStamen": "Dati della mappa © collaboratori di [OpenStreetMap](https://www.openstreetmap.org/copyright) - Titoli di [Stamen Design](http://stamen.com), [CC BY 3.0](http://creativecommons.org/licenses/by/3.0)",
   "openMapPageTooltip": "Visualizza sulla pagina della mappa",
   "mapEmptyRegion": "Nessuna immagine in questa regione",
 
-  "viewerInfoOpenEmbeddedFailureFeedback": "Fallita l'estrazione dei dati incorporati",
+  "viewerInfoOpenEmbeddedFailureFeedback": "Fallita l’estrazione dei dati incorporati",
   "viewerInfoOpenLinkText": "Apri",
   "viewerInfoViewXmlLinkText": "Visualizza XML",
 
