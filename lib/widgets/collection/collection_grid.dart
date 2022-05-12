@@ -450,13 +450,14 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> {
     final crumbs = <double, String>{};
     if (sectionLayouts.length <= 1) return crumbs;
 
+    final maxOffset = sectionLayouts.last.maxOffset;
     void addAlbums(CollectionLens collection, List<SectionLayout> sectionLayouts, Map<double, String> crumbs) {
       final source = collection.source;
       sectionLayouts.forEach((section) {
         final directory = (section.sectionKey as EntryAlbumSectionKey).directory;
         if (directory != null) {
           final label = source.getAlbumDisplayName(context, directory);
-          crumbs[section.minOffset] = label;
+          crumbs[section.minOffset / maxOffset] = label;
         }
       });
     }
@@ -484,7 +485,7 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> {
                   if (date != null) {
                     final label = dateFormat.format(date);
                     if (label != lastLabel) {
-                      crumbs[section.minOffset] = label;
+                      crumbs[section.minOffset / maxOffset] = label;
                       lastLabel = label;
                     }
                   }
