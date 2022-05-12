@@ -21,10 +21,10 @@ class AppBottomNavBar extends StatelessWidget {
   final CollectionLens? currentCollection;
 
   const AppBottomNavBar({
-    Key? key,
+    super.key,
     required this.events,
     this.currentCollection,
-  }) : super(key: key);
+  });
 
   static const padding = EdgeInsets.all(8);
 
@@ -127,7 +127,7 @@ class AppBottomNavBar extends StatelessWidget {
 }
 
 class NavBarPaddingSliver extends StatelessWidget {
-  const NavBarPaddingSliver({Key? key}) : super(key: key);
+  const NavBarPaddingSliver({super.key});
 
   @override
   Widget build(BuildContext context) {

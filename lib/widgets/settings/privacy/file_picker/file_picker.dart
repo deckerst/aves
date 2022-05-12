@@ -20,7 +20,7 @@ import 'package:flutter/scheduler.dart';
 class FilePicker extends StatefulWidget {
   static const routeName = '/file_picker';
 
-  const FilePicker({Key? key}) : super(key: key);
+  const FilePicker({super.key});
 
   @override
   State<FilePicker> createState() => _FilePickerState();

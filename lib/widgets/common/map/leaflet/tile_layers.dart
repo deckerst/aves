@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 const _tileLayerBackgroundColor = Colors.transparent;
 
 class OSMHotLayer extends StatelessWidget {
-  const OSMHotLayer({Key? key}) : super(key: key);
+  const OSMHotLayer({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +23,7 @@ class OSMHotLayer extends StatelessWidget {
 }
 
 class StamenTonerLayer extends StatelessWidget {
-  const StamenTonerLayer({Key? key}) : super(key: key);
+  const StamenTonerLayer({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +40,7 @@ class StamenTonerLayer extends StatelessWidget {
 }
 
 class StamenWatercolorLayer extends StatelessWidget {
-  const StamenWatercolorLayer({Key? key}) : super(key: key);
+  const StamenWatercolorLayer({super.key});
 
   @override
   Widget build(BuildContext context) {

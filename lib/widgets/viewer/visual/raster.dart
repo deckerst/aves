@@ -21,11 +21,11 @@ class RasterImageView extends StatefulWidget {
   final ImageErrorWidgetBuilder errorBuilder;
 
   const RasterImageView({
-    Key? key,
+    super.key,
     required this.entry,
     required this.viewStateNotifier,
     required this.errorBuilder,
-  }) : super(key: key);
+  });
 
   @override
   State<RasterImageView> createState() => _RasterImageViewState();
@@ -337,12 +337,12 @@ class _RegionTile extends StatefulWidget {
   final int sampleSize;
 
   const _RegionTile({
-    Key? key,
+    super.key,
     required this.entry,
     required this.tileRect,
     required this.regionRect,
     required this.sampleSize,
-  }) : super(key: key);
+  });
 
   @override
   State<_RegionTile> createState() => _RegionTileState();

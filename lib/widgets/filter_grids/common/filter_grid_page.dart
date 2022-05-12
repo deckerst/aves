@@ -55,7 +55,7 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
   final StreamController<DraggableScrollBarEvent> _draggableScrollBarEventStreamController = StreamController.broadcast();
 
   FilterGridPage({
-    Key? key,
+    super.key,
     this.settingsRouteKey,
     required this.appBar,
     this.appBarHeight = kToolbarHeight,
@@ -68,7 +68,7 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
     this.applyQuery,
     required this.emptyBuilder,
     required this.heroType,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -145,7 +145,7 @@ class FilterGrid<T extends CollectionFilter> extends StatefulWidget {
   final HeroType heroType;
 
   const FilterGrid({
-    Key? key,
+    super.key,
     required this.settingsRouteKey,
     required this.appBar,
     required this.appBarHeight,
@@ -158,7 +158,7 @@ class FilterGrid<T extends CollectionFilter> extends StatefulWidget {
     required this.applyQuery,
     required this.emptyBuilder,
     required this.heroType,
-  }) : super(key: key);
+  });
 
   @override
   State<FilterGrid<T>> createState() => _FilterGridState<T>();
@@ -216,7 +216,7 @@ class _FilterGridContent<T extends CollectionFilter> extends StatelessWidget {
   final ValueNotifier<double> _appBarHeightNotifier = ValueNotifier(0);
 
   _FilterGridContent({
-    Key? key,
+    super.key,
     required this.appBar,
     required double appBarHeight,
     required this.sections,
@@ -228,7 +228,7 @@ class _FilterGridContent<T extends CollectionFilter> extends StatelessWidget {
     required this.applyQuery,
     required this.emptyBuilder,
     required this.heroType,
-  }) : super(key: key) {
+  }) {
     _appBarHeightNotifier.value = appBarHeight;
   }
 

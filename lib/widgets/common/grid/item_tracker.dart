@@ -17,13 +17,13 @@ class GridItemTracker<T> extends StatefulWidget {
   final Widget child;
 
   const GridItemTracker({
-    Key? key,
+    super.key,
     required this.scrollableKey,
     required this.appBarHeightNotifier,
     required this.tileLayout,
     required this.scrollController,
     required this.child,
-  }) : super(key: key);
+  });
 
   @override
   State<GridItemTracker<T>> createState() => _GridItemTrackerState<T>();

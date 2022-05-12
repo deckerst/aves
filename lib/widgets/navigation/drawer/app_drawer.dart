@@ -34,9 +34,9 @@ class AppDrawer extends StatefulWidget {
   final CollectionLens? currentCollection;
 
   const AppDrawer({
-    Key? key,
+    super.key,
     this.currentCollection,
-  }) : super(key: key);
+  });
 
   @override
   State<AppDrawer> createState() => _AppDrawerState();

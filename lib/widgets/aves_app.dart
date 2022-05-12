@@ -46,9 +46,9 @@ class AvesApp extends StatefulWidget {
   static final GlobalKey<NavigatorState> navigatorKey = GlobalKey(debugLabel: 'app-navigator');
 
   const AvesApp({
-    Key? key,
+    super.key,
     required this.flavor,
-  }) : super(key: key);
+  });
 
   @override
   State<AvesApp> createState() => _AvesAppState();

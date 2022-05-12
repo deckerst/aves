@@ -17,7 +17,7 @@ class QuickActionButton<T extends Object> extends StatelessWidget {
   final Widget? child;
 
   const QuickActionButton({
-    Key? key,
+    super.key,
     required this.placement,
     this.action,
     required this.panelHighlight,
@@ -28,7 +28,7 @@ class QuickActionButton<T extends Object> extends StatelessWidget {
     required this.onTargetLeave,
     this.draggableFeedbackBuilder,
     this.child,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

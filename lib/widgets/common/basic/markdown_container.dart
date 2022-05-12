@@ -8,10 +8,10 @@ class MarkdownContainer extends StatelessWidget {
   final TextDirection? textDirection;
 
   const MarkdownContainer({
-    Key? key,
+    super.key,
     required this.data,
     this.textDirection,
-  }) : super(key: key);
+  });
 
   static const double maxWidth = 460;
 

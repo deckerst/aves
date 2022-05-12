@@ -26,11 +26,11 @@ class InfoPage extends StatefulWidget {
   final ValueNotifier<bool> isScrollingNotifier;
 
   const InfoPage({
-    Key? key,
+    super.key,
     required this.collection,
     required this.entryNotifier,
     required this.isScrollingNotifier,
-  }) : super(key: key);
+  });
 
   @override
   State<StatefulWidget> createState() => _InfoPageState();
@@ -132,14 +132,14 @@ class _InfoPageContent extends StatefulWidget {
   final VoidCallback goToViewer;
 
   const _InfoPageContent({
-    Key? key,
+    super.key,
     required this.collection,
     required this.entry,
     required this.isScrollingNotifier,
     required this.scrollController,
     required this.split,
     required this.goToViewer,
-  }) : super(key: key);
+  });
 
   @override
   State<_InfoPageContent> createState() => _InfoPageContentState();

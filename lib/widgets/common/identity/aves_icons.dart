@@ -12,9 +12,9 @@ class VideoIcon extends StatelessWidget {
   final AvesEntry entry;
 
   const VideoIcon({
-    Key? key,
+    super.key,
     required this.entry,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +38,7 @@ class VideoIcon extends StatelessWidget {
 }
 
 class AnimatedImageIcon extends StatelessWidget {
-  const AnimatedImageIcon({Key? key}) : super(key: key);
+  const AnimatedImageIcon({super.key});
 
   static const scale = .8;
 
@@ -52,7 +52,7 @@ class AnimatedImageIcon extends StatelessWidget {
 }
 
 class GeoTiffIcon extends StatelessWidget {
-  const GeoTiffIcon({Key? key}) : super(key: key);
+  const GeoTiffIcon({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +63,7 @@ class GeoTiffIcon extends StatelessWidget {
 }
 
 class SphericalImageIcon extends StatelessWidget {
-  const SphericalImageIcon({Key? key}) : super(key: key);
+  const SphericalImageIcon({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +74,7 @@ class SphericalImageIcon extends StatelessWidget {
 }
 
 class FavouriteIcon extends StatelessWidget {
-  const FavouriteIcon({Key? key}) : super(key: key);
+  const FavouriteIcon({super.key});
 
   static const scale = .9;
 
@@ -88,7 +88,7 @@ class FavouriteIcon extends StatelessWidget {
 }
 
 class TagIcon extends StatelessWidget {
-  const TagIcon({Key? key}) : super(key: key);
+  const TagIcon({super.key});
 
   static const scale = .9;
 
@@ -103,7 +103,7 @@ class TagIcon extends StatelessWidget {
 }
 
 class GpsIcon extends StatelessWidget {
-  const GpsIcon({Key? key}) : super(key: key);
+  const GpsIcon({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -114,7 +114,7 @@ class GpsIcon extends StatelessWidget {
 }
 
 class RawIcon extends StatelessWidget {
-  const RawIcon({Key? key}) : super(key: key);
+  const RawIcon({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -125,7 +125,7 @@ class RawIcon extends StatelessWidget {
 }
 
 class MotionPhotoIcon extends StatelessWidget {
-  const MotionPhotoIcon({Key? key}) : super(key: key);
+  const MotionPhotoIcon({super.key});
 
   static const scale = .8;
 
@@ -144,9 +144,9 @@ class MultiPageIcon extends StatelessWidget {
   static const scale = .8;
 
   const MultiPageIcon({
-    Key? key,
+    super.key,
     required this.entry,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -172,9 +172,9 @@ class RatingIcon extends StatelessWidget {
   final AvesEntry entry;
 
   const RatingIcon({
-    Key? key,
+    super.key,
     required this.entry,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -195,9 +195,9 @@ class TrashIcon extends StatelessWidget {
   final int? trashDaysLeft;
 
   const TrashIcon({
-    Key? key,
+    super.key,
     required this.trashDaysLeft,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -223,14 +223,14 @@ class OverlayIcon extends StatelessWidget {
   final Offset? relativeOffset;
 
   const OverlayIcon({
-    Key? key,
+    super.key,
     required this.icon,
     this.iconScale = 1,
     this.text,
     // default margin for multiple icons in a `Column`
     this.margin = const EdgeInsets.only(left: 1, right: 1, bottom: 1),
     this.relativeOffset,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

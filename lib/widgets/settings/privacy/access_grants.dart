@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 class StorageAccessPage extends StatefulWidget {
   static const routeName = '/settings/storage_access';
 
-  const StorageAccessPage({Key? key}) : super(key: key);
+  const StorageAccessPage({super.key});
 
   @override
   State<StorageAccessPage> createState() => _StorageAccessPageState();
@@ -90,7 +90,7 @@ class _StorageAccessPageState extends State<StorageAccessPage> {
 }
 
 class _Header extends StatelessWidget {
-  const _Header({Key? key}) : super(key: key);
+  const _Header({super.key});
 
   @override
   Widget build(BuildContext context) {

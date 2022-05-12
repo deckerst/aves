@@ -34,9 +34,9 @@ class HomePage extends StatefulWidget {
   final Map? intentData;
 
   const HomePage({
-    Key? key,
+    super.key,
     this.intentData,
-  }) : super(key: key);
+  });
 
   @override
   State<HomePage> createState() => _HomePageState();

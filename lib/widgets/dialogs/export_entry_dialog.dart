@@ -11,9 +11,9 @@ class ExportEntryDialog extends StatefulWidget {
   final AvesEntry entry;
 
   const ExportEntryDialog({
-    Key? key,
+    super.key,
     required this.entry,
-  }) : super(key: key);
+  });
 
   @override
   State<ExportEntryDialog> createState() => _ExportEntryDialogState();

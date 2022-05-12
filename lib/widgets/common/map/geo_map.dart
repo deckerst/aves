@@ -37,7 +37,7 @@ class GeoMap extends StatefulWidget {
   final void Function(BuildContext context)? openMapPage;
 
   const GeoMap({
-    Key? key,
+    super.key,
     this.controller,
     this.collectionListenable,
     required this.entries,
@@ -50,7 +50,7 @@ class GeoMap extends StatefulWidget {
     this.onMapTap,
     this.onMarkerTap,
     this.openMapPage,
-  }) : super(key: key);
+  });
 
   @override
   State<GeoMap> createState() => _GeoMapState();

@@ -14,9 +14,9 @@ class AppPickDialog extends StatefulWidget {
   final String? initialValue;
 
   const AppPickDialog({
-    Key? key,
+    super.key,
     required this.initialValue,
-  }) : super(key: key);
+  });
 
   @override
   State<AppPickDialog> createState() => _AppPickDialogState();

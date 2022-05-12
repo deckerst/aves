@@ -9,9 +9,9 @@ class Attribution extends StatelessWidget {
   final EntryMapStyle style;
 
   const Attribution({
-    Key? key,
+    super.key,
     required this.style,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

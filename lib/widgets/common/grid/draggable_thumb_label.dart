@@ -9,9 +9,9 @@ class DraggableCrumbLabel extends StatelessWidget {
   final String label;
 
   const DraggableCrumbLabel({
-    Key? key,
+    super.key,
     required this.label,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -30,10 +30,10 @@ class DraggableThumbLabel<T> extends StatelessWidget {
   final List<String> Function(BuildContext context, T item) lineBuilder;
 
   const DraggableThumbLabel({
-    Key? key,
+    super.key,
     required this.offsetY,
     required this.lineBuilder,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

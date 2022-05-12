@@ -7,10 +7,10 @@ class VideoView extends StatefulWidget {
   final AvesVideoController controller;
 
   const VideoView({
-    Key? key,
+    super.key,
     required this.entry,
     required this.controller,
-  }) : super(key: key);
+  });
 
   @override
   State<StatefulWidget> createState() => _VideoViewState();

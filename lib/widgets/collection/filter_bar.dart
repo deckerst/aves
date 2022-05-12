@@ -12,12 +12,11 @@ class FilterBar extends StatefulWidget {
   final FilterCallback? onTap;
 
   FilterBar({
-    Key? key,
+    super.key,
     required Set<CollectionFilter> filters,
     required this.removable,
     this.onTap,
-  })  : filters = List<CollectionFilter>.from(filters)..sort(),
-        super(key: key);
+  }) : filters = List<CollectionFilter>.from(filters)..sort();
 
   @override
   State<FilterBar> createState() => _FilterBarState();

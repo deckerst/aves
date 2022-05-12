@@ -15,10 +15,10 @@ class EditEntryLocationDialog extends StatefulWidget {
   final CollectionLens? collection;
 
   const EditEntryLocationDialog({
-    Key? key,
+    super.key,
     required this.entry,
     this.collection,
-  }) : super(key: key);
+  });
 
   @override
   State<EditEntryLocationDialog> createState() => _EditEntryLocationDialogState();

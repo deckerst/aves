@@ -31,7 +31,7 @@ class AvesSelectionDialog<T> extends StatefulWidget {
   final bool? dense;
 
   const AvesSelectionDialog({
-    Key? key,
+    super.key,
     required this.initialValue,
     required this.options,
     this.optionSubtitleBuilder,
@@ -39,7 +39,7 @@ class AvesSelectionDialog<T> extends StatefulWidget {
     this.message,
     this.confirmationButtonLabel,
     this.dense,
-  }) : super(key: key);
+  });
 
   @override
   State<AvesSelectionDialog<T>> createState() => _AvesSelectionDialogState<T>();

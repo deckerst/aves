@@ -16,13 +16,13 @@ class SectionHeader<T> extends StatelessWidget {
   final bool selectable;
 
   const SectionHeader({
-    Key? key,
+    super.key,
     required this.sectionKey,
     this.leading,
     required this.title,
     this.trailing,
     this.selectable = true,
-  }) : super(key: key);
+  });
 
   static const leadingDimension = 32.0;
   static const padding = EdgeInsets.all(16);
@@ -39,6 +39,7 @@ class SectionHeader<T> extends StatelessWidget {
         child: Text.rich(
           TextSpan(
             children: [
+              // TODO TLAD [flutter 3] https://github.com/flutter/flutter/issues/103615
               WidgetSpan(
                 alignment: widgetSpanAlignment,
                 child: _SectionSelectableLeading<T>(
@@ -127,12 +128,12 @@ class _SectionSelectableLeading<T> extends StatelessWidget {
   final VoidCallback? onPressed;
 
   const _SectionSelectableLeading({
-    Key? key,
+    super.key,
     this.selectable = true,
     required this.sectionKey,
     required this.browsingBuilder,
     required this.onPressed,
-  }) : super(key: key);
+  });
 
   static const leadingDimension = SectionHeader.leadingDimension;
 
@@ -180,10 +181,10 @@ class _SectionSelectingLeading<T> extends StatelessWidget {
   final VoidCallback? onPressed;
 
   const _SectionSelectingLeading({
-    Key? key,
+    super.key,
     required this.sectionKey,
     required this.onPressed,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

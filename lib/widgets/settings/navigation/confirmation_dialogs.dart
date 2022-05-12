@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 class ConfirmationDialogPage extends StatelessWidget {
   static const routeName = '/settings/navigation_confirmation';
 
-  const ConfirmationDialogPage({Key? key}) : super(key: key);
+  const ConfirmationDialogPage({super.key});
 
   @override
   Widget build(BuildContext context) {

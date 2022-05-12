@@ -16,13 +16,13 @@ class VideoControlOverlay extends StatefulWidget {
   final VoidCallback onActionMenuOpened;
 
   const VideoControlOverlay({
-    Key? key,
+    super.key,
     required this.entry,
     required this.controller,
     required this.scale,
     required this.onActionSelected,
     required this.onActionMenuOpened,
-  }) : super(key: key);
+  });
 
   @override
   State<StatefulWidget> createState() => _VideoControlOverlayState();

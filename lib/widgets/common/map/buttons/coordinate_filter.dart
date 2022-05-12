@@ -15,10 +15,10 @@ class OverlayCoordinateFilterChip extends StatefulWidget {
   final double padding;
 
   const OverlayCoordinateFilterChip({
-    Key? key,
+    super.key,
     required this.boundsNotifier,
     required this.padding,
-  }) : super(key: key);
+  });
 
   @override
   State<OverlayCoordinateFilterChip> createState() => _OverlayCoordinateFilterChipState();

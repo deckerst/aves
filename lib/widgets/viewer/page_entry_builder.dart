@@ -8,10 +8,10 @@ class PageEntryBuilder extends StatelessWidget {
   final Widget Function(AvesEntry? pageEntry) builder;
 
   const PageEntryBuilder({
-    Key? key,
+    super.key,
     required this.multiPageController,
     required this.builder,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

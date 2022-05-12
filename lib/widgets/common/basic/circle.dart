@@ -8,14 +8,14 @@ class CircularIndicator extends StatefulWidget {
   final Widget center;
 
   const CircularIndicator({
-    Key? key,
+    super.key,
     required this.radius,
     required this.lineWidth,
     required this.percent,
     required this.background,
     required this.foreground,
     required this.center,
-  }) : super(key: key);
+  });
 
   @override
   State<CircularIndicator> createState() => _CircularIndicatorState();
@@ -53,12 +53,12 @@ class Circle extends StatelessWidget {
   final Color color;
 
   const Circle({
-    Key? key,
+    super.key,
     required this.radius,
     required this.lineWidth,
     required this.percent,
     required this.color,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

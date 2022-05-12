@@ -26,7 +26,7 @@ class EntryHmsMap<T> extends StatefulWidget {
   final MarkerTapCallback<T>? onMarkerTap;
 
   const EntryHmsMap({
-    Key? key,
+    super.key,
     this.controller,
     required this.clusterListenable,
     required this.boundsNotifier,
@@ -44,7 +44,7 @@ class EntryHmsMap<T> extends StatefulWidget {
     this.onUserZoomChange,
     this.onMapTap,
     this.onMarkerTap,
-  }) : super(key: key);
+  });
 
   @override
   State<StatefulWidget> createState() => _EntryHmsMapState<T>();

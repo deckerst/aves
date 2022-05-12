@@ -9,7 +9,7 @@ import 'package:tuple/tuple.dart';
 class CollectionActionEditorPage extends StatelessWidget {
   static const routeName = '/settings/collection_actions';
 
-  const CollectionActionEditorPage({Key? key}) : super(key: key);
+  const CollectionActionEditorPage({super.key});
 
   @override
   Widget build(BuildContext context) {

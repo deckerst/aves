@@ -21,13 +21,13 @@ class InteractiveTile extends StatelessWidget {
   final ValueNotifier<bool>? isScrollingNotifier;
 
   const InteractiveTile({
-    Key? key,
+    super.key,
     required this.collection,
     required this.entry,
     required this.thumbnailExtent,
     required this.tileLayout,
     this.isScrollingNotifier,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -101,7 +101,7 @@ class Tile extends StatelessWidget {
   final Object? Function()? heroTagger;
 
   const Tile({
-    Key? key,
+    super.key,
     required this.entry,
     required this.thumbnailExtent,
     required this.tileLayout,
@@ -109,7 +109,7 @@ class Tile extends StatelessWidget {
     this.highlightable = false,
     this.isScrollingNotifier,
     this.heroTagger,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

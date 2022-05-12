@@ -7,12 +7,12 @@ class WheelSelector<T> extends StatefulWidget {
   final TextAlign textAlign;
 
   const WheelSelector({
-    Key? key,
+    super.key,
     required this.valueNotifier,
     required this.values,
     required this.textStyle,
     required this.textAlign,
-  }) : super(key: key);
+  });
 
   @override
   State<WheelSelector<T>> createState() => _WheelSelectorState<T>();

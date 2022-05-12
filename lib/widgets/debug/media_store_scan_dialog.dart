@@ -6,7 +6,7 @@ import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:flutter/material.dart';
 
 class MediaStoreScanDirDialog extends StatefulWidget {
-  const MediaStoreScanDirDialog({Key? key}) : super(key: key);
+  const MediaStoreScanDirDialog({super.key});
 
   @override
   State<MediaStoreScanDirDialog> createState() => _MediaStoreScanDirDialogState();

@@ -15,10 +15,10 @@ class CollectionDraggableThumbLabel extends StatelessWidget {
   final double offsetY;
 
   const CollectionDraggableThumbLabel({
-    Key? key,
+    super.key,
     required this.collection,
     required this.offsetY,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

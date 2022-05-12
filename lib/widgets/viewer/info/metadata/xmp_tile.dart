@@ -17,13 +17,13 @@ class XmpDirTile extends StatefulWidget {
   final bool initiallyExpanded;
 
   const XmpDirTile({
-    Key? key,
+    super.key,
     required this.entry,
     required this.title,
     required this.tags,
     required this.expandedNotifier,
     required this.initiallyExpanded,
-  }) : super(key: key);
+  });
 
   @override
   State<XmpDirTile> createState() => _XmpDirTileState();

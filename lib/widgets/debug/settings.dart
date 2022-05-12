@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class DebugSettingsSection extends StatelessWidget {
-  const DebugSettingsSection({Key? key}) : super(key: key);
+  const DebugSettingsSection({super.key});
 
   @override
   Widget build(BuildContext context) {

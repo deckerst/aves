@@ -9,12 +9,12 @@ class PageNavTile extends StatelessWidget {
   final WidgetBuilder? pageBuilder;
 
   const PageNavTile({
-    Key? key,
+    super.key,
     this.trailing,
     this.topLevel = true,
     required this.routeName,
     required this.pageBuilder,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

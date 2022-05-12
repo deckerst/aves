@@ -10,7 +10,7 @@ import 'package:provider/provider.dart';
 class SubtitleThemePage extends StatelessWidget {
   static const routeName = '/settings/video/subtitle_theme';
 
-  const SubtitleThemePage({Key? key}) : super(key: key);
+  const SubtitleThemePage({super.key});
 
   @override
   Widget build(BuildContext context) {

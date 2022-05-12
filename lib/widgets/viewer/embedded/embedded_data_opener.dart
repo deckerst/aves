@@ -16,10 +16,10 @@ class EmbeddedDataOpener extends StatelessWidget with FeedbackMixin {
   final Widget child;
 
   const EmbeddedDataOpener({
-    Key? key,
+    super.key,
     required this.entry,
     required this.child,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

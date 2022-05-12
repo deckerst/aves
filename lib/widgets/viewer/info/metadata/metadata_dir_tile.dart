@@ -26,14 +26,14 @@ class MetadataDirTile extends StatelessWidget {
   final bool initiallyExpanded, showThumbnails;
 
   const MetadataDirTile({
-    Key? key,
+    super.key,
     required this.entry,
     required this.title,
     required this.dir,
     this.expandedDirectoryNotifier,
     this.initiallyExpanded = false,
     this.showThumbnails = true,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

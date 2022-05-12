@@ -12,7 +12,7 @@ class MapTheme extends StatelessWidget {
   final Widget child;
 
   const MapTheme({
-    Key? key,
+    super.key,
     required this.interactive,
     required this.showCoordinateFilter,
     required this.navigationButton,
@@ -20,7 +20,7 @@ class MapTheme extends StatelessWidget {
     this.visualDensity,
     this.mapHeight,
     required this.child,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

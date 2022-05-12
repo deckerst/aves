@@ -7,11 +7,11 @@ class VideoSpeedDialog extends StatefulWidget {
   final double current, min, max;
 
   const VideoSpeedDialog({
-    Key? key,
+    super.key,
     required this.current,
     required this.min,
     required this.max,
-  }) : super(key: key);
+  });
 
   @override
   State<VideoSpeedDialog> createState() => _VideoSpeedDialogState();

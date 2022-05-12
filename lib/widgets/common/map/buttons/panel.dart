@@ -21,12 +21,12 @@ class MapButtonPanel extends StatelessWidget {
   final VoidCallback? resetRotation;
 
   const MapButtonPanel({
-    Key? key,
+    super.key,
     required this.boundsNotifier,
     this.zoomBy,
     this.openMapPage,
     this.resetRotation,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

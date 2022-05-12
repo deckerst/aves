@@ -12,13 +12,13 @@ class QueryBar extends StatefulWidget {
   final bool editable;
 
   const QueryBar({
-    Key? key,
+    super.key,
     required this.queryNotifier,
     this.focusNode,
     this.icon,
     this.hintText,
     this.editable = true,
-  }) : super(key: key);
+  });
 
   @override
   State<QueryBar> createState() => _QueryBarState();

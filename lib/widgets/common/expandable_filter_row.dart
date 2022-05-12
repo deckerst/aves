@@ -15,7 +15,7 @@ class ExpandableFilterRow extends StatelessWidget {
   final OffsetFilterCallback? onLongPress;
 
   const ExpandableFilterRow({
-    Key? key,
+    super.key,
     this.title,
     required this.filters,
     required this.expandedNotifier,
@@ -23,7 +23,7 @@ class ExpandableFilterRow extends StatelessWidget {
     this.heroTypeBuilder,
     required this.onTap,
     required this.onLongPress,
-  }) : super(key: key);
+  });
 
   static const double horizontalPadding = 8;
   static const double verticalPadding = 8;

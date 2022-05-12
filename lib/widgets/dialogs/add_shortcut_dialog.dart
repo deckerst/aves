@@ -17,10 +17,10 @@ class AddShortcutDialog extends StatefulWidget {
   final String defaultName;
 
   const AddShortcutDialog({
-    Key? key,
+    super.key,
     required this.defaultName,
     this.collection,
-  }) : super(key: key);
+  });
 
   @override
   State<AddShortcutDialog> createState() => _AddShortcutDialogState();

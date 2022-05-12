@@ -9,9 +9,9 @@ class EditEntryRatingDialog extends StatefulWidget {
   final AvesEntry entry;
 
   const EditEntryRatingDialog({
-    Key? key,
+    super.key,
     required this.entry,
-  }) : super(key: key);
+  });
 
   @override
   State<EditEntryRatingDialog> createState() => _EditEntryRatingDialogState();

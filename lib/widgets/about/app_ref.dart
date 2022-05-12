@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 class AppReference extends StatefulWidget {
-  const AppReference({Key? key}) : super(key: key);
+  const AppReference({super.key});
 
   @override
   State<AppReference> createState() => _AppReferenceState();

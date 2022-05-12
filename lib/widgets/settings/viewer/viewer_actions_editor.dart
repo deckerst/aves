@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 class ViewerActionEditorPage extends StatelessWidget {
   static const routeName = '/settings/viewer_actions';
 
-  const ViewerActionEditorPage({Key? key}) : super(key: key);
+  const ViewerActionEditorPage({super.key});
 
   static const allAvailableActions = [
     EntryAction.share,

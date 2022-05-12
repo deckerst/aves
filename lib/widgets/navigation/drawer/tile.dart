@@ -12,9 +12,9 @@ class DrawerFilterIcon extends StatelessWidget {
   final CollectionFilter? filter;
 
   const DrawerFilterIcon({
-    Key? key,
+    super.key,
     required this.filter,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -31,9 +31,9 @@ class DrawerFilterTitle extends StatelessWidget {
   final CollectionFilter? filter;
 
   const DrawerFilterTitle({
-    Key? key,
+    super.key,
     required this.filter,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) => Text(NavigationDisplay.getFilterTitle(context, filter));
@@ -43,9 +43,9 @@ class DrawerPageIcon extends StatelessWidget {
   final String route;
 
   const DrawerPageIcon({
-    Key? key,
+    super.key,
     required this.route,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -72,9 +72,9 @@ class DrawerPageTitle extends StatelessWidget {
   final String route;
 
   const DrawerPageTitle({
-    Key? key,
+    super.key,
     required this.route,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) => Text(NavigationDisplay.getPageTitle(context, route));

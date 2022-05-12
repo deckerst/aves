@@ -40,11 +40,11 @@ class StatsPage extends StatelessWidget {
   static const mimeDonutMinWidth = 124.0;
 
   StatsPage({
-    Key? key,
+    super.key,
     required this.entries,
     required this.source,
     this.parentCollection,
-  }) : super(key: key) {
+  }) {
     entries.forEach((entry) {
       if (entry.hasAddress) {
         final address = entry.addressDetails!;

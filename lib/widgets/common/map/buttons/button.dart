@@ -12,11 +12,11 @@ class MapOverlayButton extends StatelessWidget {
   final VoidCallback? onPressed;
 
   const MapOverlayButton({
-    Key? key,
+    super.key,
     required this.icon,
     required this.tooltip,
     required this.onPressed,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

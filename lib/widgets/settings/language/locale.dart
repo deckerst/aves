@@ -15,7 +15,7 @@ import 'package:provider/provider.dart';
 class LocaleTile extends StatelessWidget {
   static const systemLocaleOption = Locale('system');
 
-  const LocaleTile({Key? key}) : super(key: key);
+  const LocaleTile({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +56,7 @@ class LocaleTile extends StatelessWidget {
 class LocaleSelectionPage extends StatefulWidget {
   static const routeName = '/settings/locale';
 
-  const LocaleSelectionPage({Key? key}) : super(key: key);
+  const LocaleSelectionPage({super.key});
 
   @override
   State<LocaleSelectionPage> createState() => _LocaleSelectionPageState();

@@ -6,11 +6,11 @@ class AvesOutlinedButton extends StatelessWidget {
   final VoidCallback? onPressed;
 
   const AvesOutlinedButton({
-    Key? key,
+    super.key,
     this.icon,
     required this.label,
     required this.onPressed,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

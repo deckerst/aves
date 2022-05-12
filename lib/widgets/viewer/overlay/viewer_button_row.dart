@@ -36,12 +36,12 @@ class ViewerButtonRow extends StatelessWidget {
   static double _buttonSize(BuildContext context) => OverlayButton.getSize(context);
 
   const ViewerButtonRow({
-    Key? key,
+    super.key,
     required this.mainEntry,
     required this.pageEntry,
     required this.scale,
     required this.canToggleFavourite,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -147,7 +147,7 @@ class ViewerButtonRowContent extends StatelessWidget {
   static const double padding = 8;
 
   const ViewerButtonRowContent({
-    Key? key,
+    super.key,
     required this.quickActions,
     required this.topLevelActions,
     required this.exportActions,
@@ -155,7 +155,7 @@ class ViewerButtonRowContent extends StatelessWidget {
     required this.scale,
     required this.mainEntry,
     required this.pageEntry,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

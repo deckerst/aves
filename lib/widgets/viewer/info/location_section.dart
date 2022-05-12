@@ -22,13 +22,13 @@ class LocationSection extends StatefulWidget {
   final FilterCallback onFilter;
 
   const LocationSection({
-    Key? key,
+    super.key,
     required this.collection,
     required this.entry,
     required this.showTitle,
     required this.isScrollingNotifier,
     required this.onFilter,
-  }) : super(key: key);
+  });
 
   @override
   State<LocationSection> createState() => _LocationSectionState();

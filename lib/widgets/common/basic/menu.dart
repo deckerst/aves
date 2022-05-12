@@ -7,10 +7,10 @@ class MenuRow extends StatelessWidget {
   final Widget? icon;
 
   const MenuRow({
-    Key? key,
+    super.key,
     required this.text,
     this.icon,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -37,9 +37,9 @@ class MenuIconTheme extends StatelessWidget {
   final Widget child;
 
   const MenuIconTheme({
-    Key? key,
+    super.key,
     required this.child,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -60,12 +60,12 @@ class PopupMenuItemExpansionPanel<T> extends StatefulWidget {
   final List<PopupMenuEntry<T>> items;
 
   const PopupMenuItemExpansionPanel({
-    Key? key,
+    super.key,
     this.enabled = true,
     required this.icon,
     required this.title,
     required this.items,
-  }) : super(key: key);
+  });
 
   @override
   State<PopupMenuItemExpansionPanel<T>> createState() => _PopupMenuItemExpansionPanelState<T>();

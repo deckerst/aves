@@ -14,9 +14,9 @@ class OwnerProp extends StatefulWidget {
   final AvesEntry entry;
 
   const OwnerProp({
-    Key? key,
+    super.key,
     required this.entry,
-  }) : super(key: key);
+  });
 
   @override
   State<OwnerProp> createState() => _OwnerPropState();

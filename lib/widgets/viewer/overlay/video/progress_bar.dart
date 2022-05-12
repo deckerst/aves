@@ -16,10 +16,10 @@ class VideoProgressBar extends StatefulWidget {
   final Animation<double> scale;
 
   const VideoProgressBar({
-    Key? key,
+    super.key,
     required this.controller,
     required this.scale,
-  }) : super(key: key);
+  });
 
   @override
   State<VideoProgressBar> createState() => _VideoProgressBarState();

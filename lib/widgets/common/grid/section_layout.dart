@@ -21,7 +21,7 @@ abstract class SectionedListLayoutProvider<T> extends StatelessWidget {
   final Widget child;
 
   const SectionedListLayoutProvider({
-    Key? key,
+    super.key,
     required this.scrollableWidth,
     required this.tileLayout,
     required int columnCount,
@@ -34,8 +34,7 @@ abstract class SectionedListLayoutProvider<T> extends StatelessWidget {
     required this.child,
   })  : assert(scrollableWidth != 0),
         columnCount = tileLayout == TileLayout.list ? 1 : columnCount,
-        tileWidth = tileLayout == TileLayout.list ? scrollableWidth - (horizontalPadding * 2) : tileWidth,
-        super(key: key);
+        tileWidth = tileLayout == TileLayout.list ? scrollableWidth - (horizontalPadding * 2) : tileWidth;
 
   @override
   Widget build(BuildContext context) {
@@ -296,13 +295,12 @@ class _GridRow extends MultiChildRenderObjectWidget {
   final TextDirection textDirection;
 
   _GridRow({
-    Key? key,
     required this.width,
     required this.height,
     required this.spacing,
     required this.textDirection,
     required List<Widget> children,
-  }) : super(key: key, children: children);
+  }) : super(children: children);
 
   @override
   RenderObject createRenderObject(BuildContext context) {

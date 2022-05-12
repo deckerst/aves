@@ -44,10 +44,10 @@ class EntryViewerStack extends StatefulWidget {
   final AvesEntry initialEntry;
 
   const EntryViewerStack({
-    Key? key,
+    super.key,
     this.collection,
     required this.initialEntry,
-  }) : super(key: key);
+  });
 
   @override
   State<EntryViewerStack> createState() => _EntryViewerStackState();
