@@ -28,8 +28,9 @@ class SettingsTileLeading extends StatelessWidget {
       duration: Durations.themeColorModeAnimation,
       child: DecoratedIcon(
         icon,
-        shadows: Theme.of(context).brightness == Brightness.dark ? Constants.embossShadows : null,
         size: 18,
+        color: DefaultTextStyle.of(context).style.color,
+        shadows: Theme.of(context).brightness == Brightness.dark ? Constants.embossShadows : null,
       ),
     );
   }

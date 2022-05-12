@@ -16,7 +16,6 @@ import 'package:aves/widgets/common/map/geo_map.dart';
 import 'package:aves/widgets/common/providers/map_theme_provider.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves_map/aves_map.dart';
-import 'package:decorated_icon/decorated_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:latlong2/latlong.dart';
@@ -258,7 +257,7 @@ class _AddressRowState extends State<_AddressRow> {
       mainAxisSize: MainAxisSize.min,
       children: [
         const SizedBox(width: _LocationInfo.iconPadding),
-        const DecoratedIcon(AIcons.location, size: _LocationInfo.iconSize),
+        const Icon(AIcons.location, size: _LocationInfo.iconSize),
         const SizedBox(width: _LocationInfo.iconPadding),
         Expanded(
           child: Container(
@@ -317,7 +316,7 @@ class _CoordinateRow extends StatelessWidget {
     return Row(
       children: [
         const SizedBox(width: _LocationInfo.iconPadding),
-        const DecoratedIcon(AIcons.geoBounds, size: _LocationInfo.iconSize),
+        const Icon(AIcons.geoBounds, size: _LocationInfo.iconSize),
         const SizedBox(width: _LocationInfo.iconPadding),
         Text(
           location != null ? settings.coordinateFormat.format(context.l10n, location!) : Constants.overlayUnknown,

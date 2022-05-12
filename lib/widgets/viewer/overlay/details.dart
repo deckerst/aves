@@ -306,7 +306,7 @@ class _LocationRow extends AnimatedWidget {
     }
     return Row(
       children: [
-        DecoratedIcon(AIcons.location, shadows: _shadows(context), size: _iconSize),
+        DecoratedIcon(AIcons.location, size: _iconSize, shadows: _shadows(context)),
         const SizedBox(width: _iconPadding),
         Expanded(child: Text(location, strutStyle: Constants.overflowStrutStyle)),
       ],
@@ -387,7 +387,7 @@ class _DateRow extends StatelessWidget {
 
     return Row(
       children: [
-        DecoratedIcon(AIcons.date, shadows: _shadows(context), size: _iconSize),
+        DecoratedIcon(AIcons.date, size: _iconSize, shadows: _shadows(context)),
         const SizedBox(width: _iconPadding),
         Expanded(flex: 3, child: Text(dateText, strutStyle: Constants.overflowStrutStyle)),
         Expanded(flex: 2, child: Text(resolutionText, strutStyle: Constants.overflowStrutStyle)),
@@ -416,7 +416,7 @@ class _ShootingRow extends StatelessWidget {
 
     return Row(
       children: [
-        DecoratedIcon(AIcons.shooting, shadows: _shadows(context), size: _iconSize),
+        DecoratedIcon(AIcons.shooting, size: _iconSize, shadows: _shadows(context)),
         const SizedBox(width: _iconPadding),
         Expanded(child: Text(apertureText, strutStyle: Constants.overflowStrutStyle)),
         Expanded(child: Text(details.exposureTime ?? Constants.overlayUnknown, strutStyle: Constants.overflowStrutStyle)),
