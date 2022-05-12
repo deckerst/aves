@@ -35,6 +35,7 @@ import 'package:aves/widgets/common/providers/tile_extent_controller_provider.da
 import 'package:aves/widgets/common/thumbnail/decorated.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
 import 'package:aves/widgets/navigation/nav_bar/nav_bar.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:intl/intl.dart';
@@ -389,7 +390,12 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> {
       primary: true,
       // workaround to prevent scrolling the app bar away
       // when there is no content and we use `SliverFillRemaining`
-      physics: collection.isEmpty ? const NeverScrollableScrollPhysics() : const SloppyScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+      physics: collection.isEmpty
+          ? const NeverScrollableScrollPhysics()
+          : SloppyScrollPhysics(
+              gestureSettings: context.select<MediaQueryData, DeviceGestureSettings>((mq) => mq.gestureSettings),
+              parent: const AlwaysScrollableScrollPhysics(),
+            ),
       cacheExtent: context.select<TileExtentController, double>((controller) => controller.effectiveExtentMax),
       slivers: [
         appBar,

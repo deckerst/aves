@@ -61,7 +61,7 @@ class _CollectionPageState extends State<CollectionPage> {
         _collection.removeFilter(TrashFilter.instance);
       }
     }));
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _checkInitHighlight());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _checkInitHighlight());
   }
 
   @override

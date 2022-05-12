@@ -68,9 +68,9 @@ class AvesDialog extends StatelessWidget {
       if (hasScrollBar) {
         child = Theme(
           data: Theme.of(context).copyWith(
-            scrollbarTheme: const ScrollbarThemeData(
-              isAlwaysShown: true,
-              radius: Radius.circular(16),
+            scrollbarTheme: ScrollbarThemeData(
+              thumbVisibility: MaterialStateProperty.all(true),
+              radius: const Radius.circular(16),
               crossAxisMargin: 4,
               mainAxisMargin: 4,
               interactive: true,

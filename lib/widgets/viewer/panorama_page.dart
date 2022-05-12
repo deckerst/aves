@@ -46,7 +46,7 @@ class _PanoramaPageState extends State<PanoramaPage> {
   void initState() {
     super.initState();
     _overlayVisible.addListener(_onOverlayVisibleChange);
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _initOverlay());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _initOverlay());
   }
 
   @override

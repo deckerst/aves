@@ -44,7 +44,7 @@ class _MarkerGeneratorWidgetState<T extends Key> extends State<MarkerGeneratorWi
   }
 
   void _checkNextFrame() {
-    WidgetsBinding.instance!.addPostFrameCallback((_) async {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (!mounted) return;
       final waitingItems = _items.where((v) => v.isWaiting).toSet();
       final readyItems = waitingItems.where((v) => widget.isReadyToRender(v.markerKey)).toSet();

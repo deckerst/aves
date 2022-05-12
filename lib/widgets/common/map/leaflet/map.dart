@@ -73,7 +73,7 @@ class _EntryLeafletMapState<T> extends State<EntryLeafletMap<T>> with TickerProv
   void initState() {
     super.initState();
     _registerWidget(widget);
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _updateVisibleRegion());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _updateVisibleRegion());
   }
 
   @override

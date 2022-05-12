@@ -7,6 +7,7 @@ import 'package:aves/widgets/common/magnifier/pan/scroll_physics.dart';
 import 'package:aves/widgets/viewer/multipage/conductor.dart';
 import 'package:aves/widgets/viewer/page_entry_builder.dart';
 import 'package:aves/widgets/viewer/visual/entry_page_view.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -44,7 +45,10 @@ class _MultiEntryScrollerState extends State<MultiEntryScroller> with AutomaticK
         key: const Key('horizontal-pageview'),
         scrollDirection: Axis.horizontal,
         controller: pageController,
-        physics: const MagnifierScrollerPhysics(parent: BouncingScrollPhysics()),
+        physics: MagnifierScrollerPhysics(
+          gestureSettings: context.select<MediaQueryData, DeviceGestureSettings>((mq) => mq.gestureSettings),
+          parent: const BouncingScrollPhysics(),
+        ),
         onPageChanged: widget.onPageChanged,
         itemBuilder: (context, index) {
           final mainEntry = entries[index];

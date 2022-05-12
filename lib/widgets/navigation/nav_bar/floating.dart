@@ -16,7 +16,7 @@ class FloatingNavBar extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _FloatingNavBarState createState() => _FloatingNavBarState();
+  State<FloatingNavBar> createState() => _FloatingNavBarState();
 }
 
 class _FloatingNavBarState extends State<FloatingNavBar> with SingleTickerProviderStateMixin {

@@ -3,6 +3,7 @@ import 'package:aves/widgets/common/magnifier/pan/corner_hit_detector.dart';
 import 'package:aves/widgets/common/magnifier/pan/gesture_detector_scope.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
 
 class MagnifierGestureDetector extends StatefulWidget {
   const MagnifierGestureDetector({
@@ -39,6 +40,7 @@ class _MagnifierGestureDetectorState extends State<MagnifierGestureDetector> {
 
   @override
   Widget build(BuildContext context) {
+    final gestureSettings = context.select<MediaQueryData, DeviceGestureSettings>((mq) => mq.gestureSettings);
     final gestures = <Type, GestureRecognizerFactory>{};
 
     if (widget.onTapDown != null || widget.onTapUp != null) {
@@ -63,9 +65,11 @@ class _MagnifierGestureDetectorState extends State<MagnifierGestureDetector> {
           doubleTapDetails: doubleTapDetails,
         ),
         (instance) {
-          instance.onStart = widget.onScaleStart != null ? (details) => widget.onScaleStart!(details, doubleTapDetails.value != null) : null;
-          instance.onUpdate = widget.onScaleUpdate;
-          instance.onEnd = widget.onScaleEnd;
+          instance
+            ..onStart = widget.onScaleStart != null ? (details) => widget.onScaleStart!(details, doubleTapDetails.value != null) : null
+            ..onUpdate = widget.onScaleUpdate
+            ..onEnd = widget.onScaleEnd
+            ..gestureSettings = gestureSettings;
         },
       );
     }
@@ -73,14 +77,16 @@ class _MagnifierGestureDetectorState extends State<MagnifierGestureDetector> {
     gestures[DoubleTapGestureRecognizer] = GestureRecognizerFactoryWithHandlers<DoubleTapGestureRecognizer>(
       () => DoubleTapGestureRecognizer(debugOwner: this),
       (instance) {
-        instance.onDoubleTapCancel = () => doubleTapDetails.value = null;
-        instance.onDoubleTapDown = (details) => doubleTapDetails.value = details;
-        instance.onDoubleTap = widget.onDoubleTap != null
-            ? () {
-                widget.onDoubleTap!(doubleTapDetails.value!);
-                doubleTapDetails.value = null;
-              }
-            : null;
+        final onDoubleTap = widget.onDoubleTap;
+        instance
+          ..onDoubleTapCancel = _onDoubleTapCancel
+          ..onDoubleTapDown = _onDoubleTapDown
+          ..onDoubleTap = onDoubleTap != null
+              ? () {
+                  onDoubleTap(doubleTapDetails.value!);
+                  doubleTapDetails.value = null;
+                }
+              : null;
       },
     );
 
@@ -90,4 +96,8 @@ class _MagnifierGestureDetectorState extends State<MagnifierGestureDetector> {
       child: widget.child,
     );
   }
+
+  void _onDoubleTapCancel() => doubleTapDetails.value = null;
+
+  void _onDoubleTapDown(TapDownDetails details) => doubleTapDetails.value = details;
 }

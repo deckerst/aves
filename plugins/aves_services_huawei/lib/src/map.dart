@@ -273,7 +273,7 @@ class _EntryHmsMapState<T> extends State<EntryHmsMap<T>> {
     } else {
       // the visible region is sometimes uninitialized when queried right after creation,
       // so we query it again next frame
-      WidgetsBinding.instance!.addPostFrameCallback((_) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
         _updateVisibleRegion(zoom: zoom, rotation: rotation);
       });
     }

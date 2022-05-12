@@ -11,12 +11,12 @@ class MagnifierGestureRecognizer extends ScaleGestureRecognizer {
   final ValueNotifier<TapDownDetails?> doubleTapDetails;
 
   MagnifierGestureRecognizer({
-    Object? debugOwner,
+    super.debugOwner,
     required this.hitDetector,
     required this.validateAxis,
     this.touchSlopFactor = 2,
     required this.doubleTapDetails,
-  }) : super(debugOwner: debugOwner);
+  });
 
   Map<int, Offset> _pointerLocations = <int, Offset>{};
 
@@ -128,14 +128,16 @@ class MagnifierGestureRecognizer extends ScaleGestureRecognizer {
 
     final doubleTap = doubleTapDetails.value != null;
     if (shouldMove || doubleTap) {
+      final pointerDeviceKind = event.kind;
       final spanDelta = (_currentSpan! - _initialSpan!).abs();
       final focalPointDelta = (_currentFocalPoint! - _initialFocalPoint!).distance;
       // warning: do not compare `focalPointDelta` to `kPanSlop`
-      // `ScaleGestureRecognizer` uses `kPanSlop`, but `HorizontalDragGestureRecognizer` uses `kTouchSlop`
+      // `ScaleGestureRecognizer` uses `kPanSlop` (or platform settings, cf gestures/events.dart `computePanSlop`),
+      // but `HorizontalDragGestureRecognizer` uses `kTouchSlop` (or platform settings, cf gestures/events.dart `computeHitSlop`)
       // and the magnifier recognizer may compete with the `HorizontalDragGestureRecognizer` from a containing `PageView`
       // setting `touchSlopFactor` to 2 restores default `ScaleGestureRecognizer` behaviour as `kPanSlop = kTouchSlop * 2.0`
       // setting `touchSlopFactor` in [0, 1] will allow this recognizer to accept the gesture before the one from `PageView`
-      if (spanDelta > kScaleSlop || focalPointDelta > kTouchSlop * touchSlopFactor) {
+      if (spanDelta > computeScaleSlop(pointerDeviceKind) || focalPointDelta > computeHitSlop(pointerDeviceKind, gestureSettings) * touchSlopFactor) {
         acceptGesture(event.pointer);
       }
     }

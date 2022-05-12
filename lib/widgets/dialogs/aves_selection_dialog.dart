@@ -92,7 +92,7 @@ class _AvesSelectionDialogState<T> extends State<AvesSelectionDialog<T>> {
       groupValue: _selectedValue,
       onChanged: (v) {
         if (needConfirmation) {
-          setState(() => _selectedValue = v!);
+          setState(() => _selectedValue = v as T);
         } else {
           Navigator.pop(context, v);
         }

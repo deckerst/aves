@@ -55,6 +55,8 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T
 
   @override
   Widget build(BuildContext context) {
+    final gestureSettings = context.select<MediaQueryData, DeviceGestureSettings>((mq) => mq.gestureSettings);
+
     final child = GestureDetector(
       // Horizontal/vertical drag gestures are interpreted as scaling
       // if they are not handled by `onHorizontalDragStart`/`onVerticalDragStart`
@@ -79,7 +81,8 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T
               ..onStart = _onScaleStart
               ..onUpdate = _onScaleUpdate
               ..onEnd = _onScaleEnd
-              ..dragStartBehavior = DragStartBehavior.start;
+              ..dragStartBehavior = DragStartBehavior.start
+              ..gestureSettings = gestureSettings;
           },
         ),
       },
@@ -195,7 +198,7 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T
       _applyingScale = false;
     } else {
       // scroll to show the focal point thumbnail at its new position
-      WidgetsBinding.instance!.addPostFrameCallback((_) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
         final trackItem = _metadata!.item;
         final highlightItem = widget.highlightItem?.call(trackItem) ?? trackItem;
         context.read<HighlightInfo>().trackItem(trackItem, animate: false, highlightItem: highlightItem);
@@ -263,7 +266,7 @@ class _ScaleOverlayState extends State<_ScaleOverlay> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((_) => setState(() => _init = true));
+    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() => _init = true));
   }
 
   @override
