@@ -1,11 +1,4 @@
 {
-  "de": [
-    "settingsSearchFieldLabel",
-    "settingsSearchEmpty",
-    "settingsShowBottomNavigationBar",
-    "settingsThumbnailShowTagIcon"
-  ],
-
   "es": [
     "settingsShowBottomNavigationBar",
     "settingsThumbnailShowTagIcon"
@@ -29,13 +22,6 @@
     "coverDialogTabColor",
     "appPickDialogTitle",
     "appPickDialogNone",
-    "settingsSearchFieldLabel",
-    "settingsSearchEmpty",
-    "settingsShowBottomNavigationBar",
-    "settingsThumbnailShowTagIcon"
-  ],
-
-  "pt": [
     "settingsSearchFieldLabel",
     "settingsSearchEmpty",
     "settingsShowBottomNavigationBar",

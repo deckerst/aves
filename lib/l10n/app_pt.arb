@@ -408,6 +408,8 @@
   "settingsSystemDefault": "Sistema",
   "settingsDefault": "Padrão",
 
+  "settingsSearchFieldLabel": "Pesquisar configuração",
+  "settingsSearchEmpty": "Nenhuma configuração correspondente",
   "settingsActionExport": "Exportar",
   "settingsActionImport": "Importar",
 
@@ -417,6 +419,7 @@
 
   "settingsSectionNavigation": "Navegação",
   "settingsHome": "Início",
+  "settingsShowBottomNavigationBar": "Mostrar barra de navegação inferior",
   "settingsKeepScreenOnTile": "Manter a tela ligada",
   "settingsKeepScreenOnTitle": "Manter a tela ligada",
   "settingsDoubleBackExit": "Toque em “voltar” duas vezes para sair",
@@ -439,6 +442,7 @@
   "settingsThumbnailOverlayTile": "Sobreposição",
   "settingsThumbnailOverlayTitle": "Sobreposição",
   "settingsThumbnailShowFavouriteIcon": "Mostrar ícone favorito",
+  "settingsThumbnailShowTagIcon": "Mostrar ícone de etiqueta",
   "settingsThumbnailShowLocationIcon": "Mostrar ícone de localização",
   "settingsThumbnailShowMotionPhotoIcon": "Mostrar ícone de foto em movimento",
   "settingsThumbnailShowRating": "Mostrar classificação",

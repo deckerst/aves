@@ -408,6 +408,8 @@
   "settingsSystemDefault": "System",
   "settingsDefault": "Standard",
 
+  "settingsSearchFieldLabel": "Einstellungen durchsuchen",
+  "settingsSearchEmpty": "Keine passende Einstellung",
   "settingsActionExport": "Exportieren",
   "settingsActionImport": "Importieren",
 
@@ -417,6 +419,7 @@
 
   "settingsSectionNavigation": "Navigation",
   "settingsHome": "Startseite",
+  "settingsShowBottomNavigationBar": "Untere Navigationsleiste anzeigen",
   "settingsKeepScreenOnTile": "Bildschirm eingeschaltet lassen",
   "settingsKeepScreenOnTitle": "Bildschirm eingeschaltet lassen",
   "settingsDoubleBackExit": "Zum Verlassen zweimal „zurück“ tippen",
@@ -439,6 +442,7 @@
   "settingsThumbnailOverlayTile": "Überlagerung",
   "settingsThumbnailOverlayTitle": "Überlagerung",
   "settingsThumbnailShowFavouriteIcon": "Favoriten-Symbol anzeigen",
+  "settingsThumbnailShowTagIcon": "Tag-Symbol anzeigen",
   "settingsThumbnailShowLocationIcon": "Standort-Symbol anzeigen",
   "settingsThumbnailShowMotionPhotoIcon": "Bewegungsfoto-Symbol anzeigen",
   "settingsThumbnailShowRating": "Bewertung anzeigen",
