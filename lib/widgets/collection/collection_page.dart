@@ -32,11 +32,11 @@ class CollectionPage extends StatefulWidget {
   final bool Function(AvesEntry element)? highlightTest;
 
   const CollectionPage({
-    Key? key,
+    super.key,
     required this.source,
     required this.filters,
     this.highlightTest,
-  }) : super(key: key);
+  });
 
   @override
   State<CollectionPage> createState() => _CollectionPageState();

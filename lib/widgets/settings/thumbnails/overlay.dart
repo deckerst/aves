@@ -10,7 +10,7 @@ import 'package:provider/provider.dart';
 class ThumbnailOverlayPage extends StatelessWidget {
   static const routeName = '/settings/thumbnail_overlay';
 
-  const ThumbnailOverlayPage({Key? key}) : super(key: key);
+  const ThumbnailOverlayPage({super.key});
 
   @override
   Widget build(BuildContext context) {

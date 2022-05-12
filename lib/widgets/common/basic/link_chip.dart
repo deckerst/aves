@@ -13,14 +13,14 @@ class LinkChip extends StatelessWidget {
   static const borderRadius = BorderRadius.all(Radius.circular(8));
 
   const LinkChip({
-    Key? key,
+    super.key,
     this.leading,
     required this.text,
     this.urlString,
     this.color,
     this.textStyle,
     this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

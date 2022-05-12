@@ -12,9 +12,9 @@ class ThumbnailEntryOverlay extends StatelessWidget {
   final AvesEntry entry;
 
   const ThumbnailEntryOverlay({
-    Key? key,
+    super.key,
     required this.entry,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -54,9 +54,9 @@ class ThumbnailHighlightOverlay extends StatefulWidget {
   final AvesEntry entry;
 
   const ThumbnailHighlightOverlay({
-    Key? key,
+    super.key,
     required this.entry,
-  }) : super(key: key);
+  });
 
   @override
   State<ThumbnailHighlightOverlay> createState() => _ThumbnailHighlightOverlayState();

@@ -21,7 +21,7 @@ class ViewerBottomOverlay extends StatefulWidget {
   final MultiPageController? multiPageController;
 
   const ViewerBottomOverlay({
-    Key? key,
+    super.key,
     required this.entries,
     required this.index,
     required this.hasCollection,
@@ -29,7 +29,7 @@ class ViewerBottomOverlay extends StatefulWidget {
     this.viewInsets,
     this.viewPadding,
     required this.multiPageController,
-  }) : super(key: key);
+  });
 
   @override
   State<StatefulWidget> createState() => _ViewerBottomOverlayState();
@@ -93,7 +93,7 @@ class _BottomOverlayContent extends StatefulWidget {
   final AnimationController animationController;
 
   const _BottomOverlayContent({
-    Key? key,
+    super.key,
     required this.entries,
     required this.index,
     required this.mainEntry,
@@ -101,7 +101,7 @@ class _BottomOverlayContent extends StatefulWidget {
     required this.hasCollection,
     required this.multiPageController,
     required this.animationController,
-  }) : super(key: key);
+  });
 
   @override
   State<_BottomOverlayContent> createState() => _BottomOverlayContentState();
@@ -211,11 +211,11 @@ class ExtraBottomOverlay extends StatelessWidget {
   final Widget child;
 
   const ExtraBottomOverlay({
-    Key? key,
+    super.key,
     this.viewInsets,
     this.viewPadding,
     required this.child,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

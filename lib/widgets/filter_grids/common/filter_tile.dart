@@ -22,14 +22,14 @@ class InteractiveFilterTile<T extends CollectionFilter> extends StatefulWidget {
   final HeroType heroType;
 
   const InteractiveFilterTile({
-    Key? key,
+    super.key,
     required this.gridItem,
     required this.chipExtent,
     required this.thumbnailExtent,
     required this.tileLayout,
     this.banner,
     required this.heroType,
-  }) : super(key: key);
+  });
 
   @override
   State<InteractiveFilterTile<T>> createState() => _InteractiveFilterTileState<T>();
@@ -113,7 +113,7 @@ class FilterTile<T extends CollectionFilter> extends StatelessWidget {
   final HeroType heroType;
 
   const FilterTile({
-    Key? key,
+    super.key,
     required this.gridItem,
     required this.chipExtent,
     required this.thumbnailExtent,
@@ -123,7 +123,7 @@ class FilterTile<T extends CollectionFilter> extends StatelessWidget {
     this.highlightable = false,
     this.onTap,
     this.heroType = HeroType.never,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

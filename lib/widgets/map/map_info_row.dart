@@ -20,9 +20,9 @@ class MapInfoRow extends StatelessWidget {
   static const double _interRowPadding = 2.0;
 
   const MapInfoRow({
-    Key? key,
+    super.key,
     required this.entryNotifier,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -72,9 +72,9 @@ class _AddressRow extends StatefulWidget {
   final AvesEntry? entry;
 
   const _AddressRow({
-    Key? key,
+    super.key,
     required this.entry,
-  }) : super(key: key);
+  });
 
   @override
   State<_AddressRow> createState() => _AddressRowState();
@@ -161,9 +161,9 @@ class _DateRow extends StatelessWidget {
   final AvesEntry? entry;
 
   const _DateRow({
-    Key? key,
+    super.key,
     required this.entry,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

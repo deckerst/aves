@@ -13,10 +13,10 @@ class SourceStateAwareAppBarTitle extends StatelessWidget {
   final CollectionSource source;
 
   const SourceStateAwareAppBarTitle({
-    Key? key,
+    super.key,
     required this.title,
     required this.source,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -54,9 +54,9 @@ class SourceStateSubtitle extends StatelessWidget {
   final CollectionSource source;
 
   const SourceStateSubtitle({
-    Key? key,
+    super.key,
     required this.source,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

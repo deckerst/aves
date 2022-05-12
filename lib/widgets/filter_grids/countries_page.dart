@@ -18,7 +18,7 @@ import 'package:tuple/tuple.dart';
 class CountryListPage extends StatelessWidget {
   static const routeName = '/countries';
 
-  const CountryListPage({Key? key}) : super(key: key);
+  const CountryListPage({super.key});
 
   @override
   Widget build(BuildContext context) {

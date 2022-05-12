@@ -14,7 +14,7 @@ class AvesExpansionTile extends StatelessWidget {
   final List<Widget> children;
 
   const AvesExpansionTile({
-    Key? key,
+    super.key,
     String? value,
     this.leading,
     required this.title,
@@ -23,8 +23,7 @@ class AvesExpansionTile extends StatelessWidget {
     this.initiallyExpanded = false,
     this.showHighlight = true,
     required this.children,
-  })  : value = value ?? title,
-        super(key: key);
+  })  : value = value ?? title;
 
   @override
   Widget build(BuildContext context) {

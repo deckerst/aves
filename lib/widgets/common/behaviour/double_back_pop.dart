@@ -12,9 +12,9 @@ class DoubleBackPopScope extends StatefulWidget {
   final Widget child;
 
   const DoubleBackPopScope({
-    Key? key,
+    super.key,
     required this.child,
-  }) : super(key: key);
+  });
 
   @override
   State<DoubleBackPopScope> createState() => _DoubleBackPopScopeState();

@@ -29,10 +29,10 @@ class LocationPickDialog extends StatelessWidget {
   final LatLng? initialLocation;
 
   const LocationPickDialog({
-    Key? key,
+    super.key,
     required this.collection,
     required this.initialLocation,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -58,10 +58,10 @@ class _Content extends StatefulWidget {
   final LatLng? initialLocation;
 
   const _Content({
-    Key? key,
+    super.key,
     required this.collection,
     required this.initialLocation,
-  }) : super(key: key);
+  });
 
   @override
   State<_Content> createState() => _ContentState();
@@ -178,9 +178,9 @@ class _LocationInfo extends StatelessWidget {
   static const double _interRowPadding = 2.0;
 
   const _LocationInfo({
-    Key? key,
+    super.key,
     required this.locationNotifier,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -230,9 +230,9 @@ class _AddressRow extends StatefulWidget {
   final LatLng? location;
 
   const _AddressRow({
-    Key? key,
+    super.key,
     required this.location,
-  }) : super(key: key);
+  });
 
   @override
   State<_AddressRow> createState() => _AddressRowState();
@@ -312,9 +312,9 @@ class _CoordinateRow extends StatelessWidget {
   final LatLng? location;
 
   const _CoordinateRow({
-    Key? key,
+    super.key,
     required this.location,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

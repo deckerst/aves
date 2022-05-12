@@ -18,15 +18,14 @@ class CollectionNavTile extends StatelessWidget {
   final bool Function() isSelected;
 
   const CollectionNavTile({
-    Key? key,
+    super.key,
     required this.leading,
     required this.title,
     this.trailing,
     bool? dense,
     required this.filter,
     required this.isSelected,
-  })  : dense = dense ?? false,
-        super(key: key);
+  }) : dense = dense ?? false;
 
   @override
   Widget build(BuildContext context) {
@@ -78,10 +77,10 @@ class AlbumNavTile extends StatelessWidget {
   final bool Function() isSelected;
 
   const AlbumNavTile({
-    Key? key,
+    super.key,
     required this.album,
     required this.isSelected,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

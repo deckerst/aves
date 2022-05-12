@@ -22,10 +22,10 @@ class FilterListDetails<T extends CollectionFilter> extends StatelessWidget {
   AvesEntry? get entry => gridItem.entry;
 
   const FilterListDetails({
-    Key? key,
+    super.key,
     required this.gridItem,
     required this.pinned,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

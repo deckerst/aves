@@ -17,11 +17,11 @@ class CollectionSectionHeader extends StatelessWidget {
   final double height;
 
   const CollectionSectionHeader({
-    Key? key,
+    super.key,
     required this.collection,
     required this.sectionKey,
     required this.height,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

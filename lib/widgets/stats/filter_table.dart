@@ -17,14 +17,14 @@ class FilterTable<T extends Comparable> extends StatelessWidget {
   final FilterCallback onFilterSelection;
 
   const FilterTable({
-    Key? key,
+    super.key,
     required this.totalEntryCount,
     required this.entryCountMap,
     required this.filterBuilder,
     required this.sortByCount,
     required this.maxRowCount,
     required this.onFilterSelection,
-  }) : super(key: key);
+  });
 
   static const chipWidth = AvesFilterChip.defaultMaxChipWidth;
   static const countWidth = 32.0;

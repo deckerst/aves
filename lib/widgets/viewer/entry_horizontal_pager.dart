@@ -18,12 +18,12 @@ class MultiEntryScroller extends StatefulWidget {
   final void Function(AvesEntry mainEntry, AvesEntry? pageEntry) onViewDisposed;
 
   const MultiEntryScroller({
-    Key? key,
+    super.key,
     required this.collection,
     required this.pageController,
     required this.onPageChanged,
     required this.onViewDisposed,
-  }) : super(key: key);
+  });
 
   @override
   State<StatefulWidget> createState() => _MultiEntryScrollerState();
@@ -112,9 +112,9 @@ class SingleEntryScroller extends StatefulWidget {
   final AvesEntry entry;
 
   const SingleEntryScroller({
-    Key? key,
+    super.key,
     required this.entry,
-  }) : super(key: key);
+  });
 
   @override
   State<StatefulWidget> createState() => _SingleEntryScrollerState();

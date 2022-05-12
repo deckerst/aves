@@ -148,12 +148,12 @@ class ReportOverlay<T> extends StatefulWidget {
   final void Function(Set<T> processed) onDone;
 
   const ReportOverlay({
-    Key? key,
+    super.key,
     required this.opStream,
     required this.itemCount,
     required this.onCancel,
     required this.onDone,
-  }) : super(key: key);
+  });
 
   @override
   State<ReportOverlay<T>> createState() => _ReportOverlayState<T>();
@@ -281,12 +281,12 @@ class _FeedbackMessage extends StatefulWidget {
   final Color progressColor;
 
   const _FeedbackMessage({
-    Key? key,
+    super.key,
     required this.message,
     required this.progressColor,
     this.start,
     this.stop,
-  }) : super(key: key);
+  });
 
   @override
   State<_FeedbackMessage> createState() => _FeedbackMessageState();
@@ -365,9 +365,9 @@ class ActionFeedback extends StatefulWidget {
   final Widget? child;
 
   const ActionFeedback({
-    Key? key,
+    super.key,
     required this.child,
-  }) : super(key: key);
+  });
 
   @override
   State<ActionFeedback> createState() => _ActionFeedbackState();

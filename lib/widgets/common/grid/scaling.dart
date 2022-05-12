@@ -31,7 +31,7 @@ class GridScaleGestureDetector<T> extends StatefulWidget {
   final Widget child;
 
   const GridScaleGestureDetector({
-    Key? key,
+    super.key,
     required this.scrollableKey,
     required this.tileLayout,
     required this.heightForWidth,
@@ -39,7 +39,7 @@ class GridScaleGestureDetector<T> extends StatefulWidget {
     required this.scaledBuilder,
     this.highlightItem,
     required this.child,
-  }) : super(key: key);
+  });
 
   @override
   State<GridScaleGestureDetector<T>> createState() => _GridScaleGestureDetectorState<T>();
@@ -236,7 +236,7 @@ class _ScaleOverlay extends StatefulWidget {
   final Widget Function(Offset center, Size tileSize, Widget child) gridBuilder;
 
   const _ScaleOverlay({
-    Key? key,
+    super.key,
     required this.builder,
     required this.tileLayout,
     required this.center,
@@ -244,7 +244,7 @@ class _ScaleOverlay extends StatefulWidget {
     required this.xMax,
     required this.scaledSizeNotifier,
     required this.gridBuilder,
-  }) : super(key: key);
+  });
 
   @override
   State<_ScaleOverlay> createState() => _ScaleOverlayState();

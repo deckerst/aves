@@ -13,10 +13,10 @@ class SearchPage extends StatefulWidget {
   final Animation<double> animation;
 
   const SearchPage({
-    Key? key,
+    super.key,
     required this.delegate,
     required this.animation,
-  }) : super(key: key);
+  });
 
   @override
   State<SearchPage> createState() => _SearchPageState();

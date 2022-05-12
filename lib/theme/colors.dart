@@ -11,9 +11,9 @@ class AvesColorsProvider extends StatelessWidget {
   final Widget child;
 
   const AvesColorsProvider({
-    Key? key,
+    super.key,
     required this.child,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

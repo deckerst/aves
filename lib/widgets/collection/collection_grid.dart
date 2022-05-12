@@ -51,9 +51,9 @@ class CollectionGrid extends StatefulWidget {
   static const double spacing = 2;
 
   const CollectionGrid({
-    Key? key,
+    super.key,
     required this.settingsRouteKey,
-  }) : super(key: key);
+  });
 
   @override
   State<CollectionGrid> createState() => _CollectionGridState();

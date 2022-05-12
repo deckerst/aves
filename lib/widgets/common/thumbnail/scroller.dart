@@ -18,7 +18,7 @@ class ThumbnailScroller extends StatefulWidget {
   final bool scrollable, highlightable, showLocation;
 
   const ThumbnailScroller({
-    Key? key,
+    super.key,
     required this.availableWidth,
     required this.entryCount,
     required this.entryBuilder,
@@ -28,7 +28,7 @@ class ThumbnailScroller extends StatefulWidget {
     this.highlightable = false,
     this.showLocation = true,
     this.scrollable = true,
-  }) : super(key: key);
+  });
 
   @override
   State<ThumbnailScroller> createState() => _ThumbnailScrollerState();

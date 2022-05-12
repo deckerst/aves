@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class Licenses extends StatefulWidget {
-  const Licenses({Key? key}) : super(key: key);
+  const Licenses({super.key});
 
   @override
   State<Licenses> createState() => _LicensesState();
@@ -121,9 +121,9 @@ class LicenseRow extends StatelessWidget {
   final Dependency package;
 
   const LicenseRow({
-    Key? key,
+    super.key,
     required this.package,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

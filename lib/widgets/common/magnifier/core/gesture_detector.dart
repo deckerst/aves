@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 
 class MagnifierGestureDetector extends StatefulWidget {
   const MagnifierGestureDetector({
-    Key? key,
+    super.key,
     required this.hitDetector,
     this.onScaleStart,
     this.onScaleUpdate,
@@ -17,7 +17,7 @@ class MagnifierGestureDetector extends StatefulWidget {
     this.onDoubleTap,
     this.behavior,
     this.child,
-  }) : super(key: key);
+  });
 
   final CornerHitDetector hitDetector;
   final void Function(ScaleStartDetails details, bool doubleTap)? onScaleStart;

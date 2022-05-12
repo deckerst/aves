@@ -5,10 +5,10 @@ class InteractiveAppBarTitle extends StatelessWidget {
   final Widget child;
 
   const InteractiveAppBarTitle({
-    Key? key,
+    super.key,
     this.onTap,
     required this.child,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -10,11 +10,11 @@ class OverlayButton extends StatelessWidget {
   final Widget child;
 
   const OverlayButton({
-    Key? key,
+    super.key,
     this.scale = kAlwaysCompleteAnimation,
     this.borderRadius,
     required this.child,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -66,11 +66,11 @@ class OverlayTextButton extends StatelessWidget {
   final VoidCallback? onPressed;
 
   const OverlayTextButton({
-    Key? key,
+    super.key,
     required this.scale,
     required this.buttonLabel,
     this.onPressed,
-  }) : super(key: key);
+  });
 
   static const _borderRadius = 123.0;
   static final _minSize = MaterialStateProperty.all<Size>(const Size(kMinInteractiveDimension, kMinInteractiveDimension));

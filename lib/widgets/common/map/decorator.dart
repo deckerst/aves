@@ -11,9 +11,9 @@ class MapDecorator extends StatelessWidget {
   static const mapLoadingGrid = Color(0xFFC4BEBB);
 
   const MapDecorator({
-    Key? key,
+    super.key,
     this.child,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

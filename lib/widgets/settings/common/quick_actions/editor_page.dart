@@ -24,7 +24,7 @@ class QuickActionEditorPage<T extends Object> extends StatelessWidget {
   final void Function(List<T> actions) save;
 
   const QuickActionEditorPage({
-    Key? key,
+    super.key,
     required this.title,
     required this.bannerText,
     required this.allAvailableActions,
@@ -32,7 +32,7 @@ class QuickActionEditorPage<T extends Object> extends StatelessWidget {
     required this.actionText,
     required this.load,
     required this.save,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -65,14 +65,14 @@ class QuickActionEditorBody<T extends Object> extends StatefulWidget {
   final void Function(List<T> actions) save;
 
   const QuickActionEditorBody({
-    Key? key,
+    super.key,
     required this.bannerText,
     required this.allAvailableActions,
     required this.actionIcon,
     required this.actionText,
     required this.load,
     required this.save,
-  }) : super(key: key);
+  });
 
   @override
   State<QuickActionEditorBody<T>> createState() => _QuickActionEditorBodyState<T>();

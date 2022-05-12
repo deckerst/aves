@@ -2,7 +2,7 @@ import 'package:aves_map/src/theme.dart';
 import 'package:flutter/material.dart';
 
 class DotMarker extends StatelessWidget {
-  const DotMarker({Key? key}) : super(key: key);
+  const DotMarker({super.key});
 
   static const double diameter = 16;
   static const double outerBorderRadiusDim = diameter;

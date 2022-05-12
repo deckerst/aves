@@ -61,7 +61,7 @@ class DraggableScrollbar extends StatefulWidget {
   final ScrollView child;
 
   DraggableScrollbar({
-    Key? key,
+    super.key,
     required this.backgroundColor,
     required this.scrollThumbSize,
     required this.scrollThumbBuilder,
@@ -73,8 +73,7 @@ class DraggableScrollbar extends StatefulWidget {
     required this.labelTextBuilder,
     required this.crumbTextBuilder,
     required this.child,
-  })  : assert(child.scrollDirection == Axis.vertical),
-        super(key: key);
+  }) : assert(child.scrollDirection == Axis.vertical);
 
   @override
   State<DraggableScrollbar> createState() => _DraggableScrollbarState();
@@ -116,11 +115,11 @@ class ScrollLabel extends StatelessWidget {
   final Widget child;
 
   const ScrollLabel({
-    Key? key,
+    super.key,
     required this.child,
     required this.animation,
     required this.backgroundColor,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -418,10 +417,10 @@ class SlideFadeTransition extends StatelessWidget {
   final Widget child;
 
   const SlideFadeTransition({
-    Key? key,
+    super.key,
     required this.animation,
     required this.child,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -10,12 +10,12 @@ class GridTheme extends StatelessWidget {
   final Widget child;
 
   const GridTheme({
-    Key? key,
+    super.key,
     required this.extent,
     this.showLocation,
     this.showTrash,
     required this.child,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

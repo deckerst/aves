@@ -13,10 +13,10 @@ class AlbumSectionHeader extends StatelessWidget {
   final String? directory, albumName;
 
   const AlbumSectionHeader({
-    Key? key,
+    super.key,
     required this.directory,
     required this.albumName,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

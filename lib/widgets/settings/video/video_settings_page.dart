@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 class VideoSettingsPage extends StatefulWidget {
   static const routeName = '/settings/video';
 
-  const VideoSettingsPage({Key? key}) : super(key: key);
+  const VideoSettingsPage({super.key});
 
   @override
   State<VideoSettingsPage> createState() => _VideoSettingsPageState();

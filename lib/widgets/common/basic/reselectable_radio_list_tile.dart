@@ -20,7 +20,7 @@ class ReselectableRadioListTile<T> extends StatelessWidget {
   bool get checked => value == groupValue;
 
   const ReselectableRadioListTile({
-    Key? key,
+    super.key,
     required this.value,
     required this.groupValue,
     required this.onChanged,
@@ -35,8 +35,7 @@ class ReselectableRadioListTile<T> extends StatelessWidget {
     this.selected = false,
     this.controlAffinity = ListTileControlAffinity.platform,
     this.autofocus = false,
-  })  : assert(!isThreeLine || subtitle != null),
-        super(key: key);
+  })  : assert(!isThreeLine || subtitle != null);
 
   @override
   Widget build(BuildContext context) {

@@ -33,12 +33,12 @@ class ViewerDetailOverlay extends StatefulWidget {
   final MultiPageController? multiPageController;
 
   const ViewerDetailOverlay({
-    Key? key,
+    super.key,
     required this.entries,
     required this.index,
     required this.hasCollection,
     required this.multiPageController,
-  }) : super(key: key);
+  });
 
   @override
   State<ViewerDetailOverlay> createState() => _ViewerDetailOverlayState();
@@ -127,13 +127,13 @@ class ViewerDetailOverlayContent extends StatelessWidget {
   static const padding = EdgeInsets.symmetric(vertical: 4, horizontal: 8);
 
   const ViewerDetailOverlayContent({
-    Key? key,
+    super.key,
     required this.pageEntry,
     required this.details,
     required this.position,
     required this.availableWidth,
     required this.multiPageController,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -288,9 +288,9 @@ class _LocationRow extends AnimatedWidget {
   final AvesEntry entry;
 
   _LocationRow({
-    Key? key,
+    super.key,
     required this.entry,
-  }) : super(key: key, listenable: entry.addressChangeNotifier);
+  }) : super(listenable: entry.addressChangeNotifier);
 
   @override
   Widget build(BuildContext context) {

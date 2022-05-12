@@ -21,7 +21,7 @@ class FilterNavigationPage<T extends CollectionFilter> extends StatelessWidget {
   final Widget Function() emptyBuilder;
 
   const FilterNavigationPage({
-    Key? key,
+    super.key,
     required this.source,
     required this.title,
     required this.sortFactor,
@@ -30,7 +30,7 @@ class FilterNavigationPage<T extends CollectionFilter> extends StatelessWidget {
     required this.filterSections,
     this.newFilters,
     required this.emptyBuilder,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

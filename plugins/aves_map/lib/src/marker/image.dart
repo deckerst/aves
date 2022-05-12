@@ -16,10 +16,10 @@ class ImageMarker extends StatelessWidget {
   static const innerBorderRadius = BorderRadius.all(innerRadius);
 
   const ImageMarker({
-    Key? key,
+    super.key,
     required this.count,
     required this.buildThumbnailImage,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

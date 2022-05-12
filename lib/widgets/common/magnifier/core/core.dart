@@ -23,7 +23,7 @@ class MagnifierCore extends StatefulWidget {
   final Widget child;
 
   const MagnifierCore({
-    Key? key,
+    super.key,
     required this.controller,
     required this.scaleStateCycle,
     required this.applyScale,
@@ -31,7 +31,7 @@ class MagnifierCore extends StatefulWidget {
     this.onTap,
     this.onDoubleTap,
     required this.child,
-  }) : super(key: key);
+  });
 
   @override
   State<StatefulWidget> createState() => _MagnifierCoreState();

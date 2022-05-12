@@ -20,7 +20,7 @@ import 'package:flutter/material.dart';
  */
 class Magnifier extends StatelessWidget {
   const Magnifier({
-    Key? key,
+    super.key,
     required this.controller,
     required this.childSize,
     this.minScale = const ScaleLevel(factor: .0),
@@ -31,7 +31,7 @@ class Magnifier extends StatelessWidget {
     this.onTap,
     this.onDoubleTap,
     required this.child,
-  }) : super(key: key);
+  });
 
   final MagnifierController controller;
 

@@ -8,7 +8,7 @@ import 'package:tuple/tuple.dart';
 class ViewerOverlayPage extends StatelessWidget {
   static const routeName = '/settings/viewer_overlay';
 
-  const ViewerOverlayPage({Key? key}) : super(key: key);
+  const ViewerOverlayPage({super.key});
 
   @override
   Widget build(BuildContext context) {

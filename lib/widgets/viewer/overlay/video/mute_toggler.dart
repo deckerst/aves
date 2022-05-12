@@ -12,11 +12,11 @@ class MuteToggler extends StatelessWidget {
   final VoidCallback? onPressed;
 
   const MuteToggler({
-    Key? key,
+    super.key,
     required this.controller,
     this.isMenuItem = false,
     this.onPressed,
-  }) : super(key: key);
+  });
 
   bool get isMuted => controller?.isMuted ?? false;
 

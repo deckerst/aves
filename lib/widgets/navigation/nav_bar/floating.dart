@@ -9,11 +9,11 @@ class FloatingNavBar extends StatefulWidget {
   final Widget child;
 
   const FloatingNavBar({
-    Key? key,
+    super.key,
     required this.scrollController,
     required this.events,
     required this.child,
-  }) : super(key: key);
+  });
 
   @override
   State<FloatingNavBar> createState() => _FloatingNavBarState();

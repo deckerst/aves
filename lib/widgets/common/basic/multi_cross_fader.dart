@@ -7,13 +7,13 @@ class MultiCrossFader extends StatefulWidget {
   final Widget child;
 
   const MultiCrossFader({
-    Key? key,
+    super.key,
     required this.duration,
     this.fadeCurve = Curves.linear,
     this.sizeCurve = Curves.linear,
     this.alignment = Alignment.topCenter,
     required this.child,
-  }) : super(key: key);
+  });
 
   @override
   State<MultiCrossFader> createState() => _MultiCrossFaderState();

@@ -9,9 +9,9 @@ class AvesLogo extends StatelessWidget {
   final double size;
 
   const AvesLogo({
-    Key? key,
+    super.key,
     required this.size,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

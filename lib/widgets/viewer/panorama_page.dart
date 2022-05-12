@@ -25,10 +25,10 @@ class PanoramaPage extends StatefulWidget {
   final PanoramaInfo info;
 
   const PanoramaPage({
-    Key? key,
+    super.key,
     required this.entry,
     required this.info,
-  }) : super(key: key);
+  });
 
   @override
   State<PanoramaPage> createState() => _PanoramaPageState();

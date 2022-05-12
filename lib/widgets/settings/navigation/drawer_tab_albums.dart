@@ -13,9 +13,9 @@ class DrawerAlbumTab extends StatefulWidget {
   final List<String> items;
 
   const DrawerAlbumTab({
-    Key? key,
+    super.key,
     required this.items,
-  }) : super(key: key);
+  });
 
   @override
   State<DrawerAlbumTab> createState() => _DrawerAlbumTabState();

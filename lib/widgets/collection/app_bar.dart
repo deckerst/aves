@@ -36,10 +36,10 @@ class CollectionAppBar extends StatefulWidget {
   final CollectionLens collection;
 
   const CollectionAppBar({
-    Key? key,
+    super.key,
     required this.appBarHeightNotifier,
     required this.collection,
-  }) : super(key: key);
+  });
 
   @override
   State<CollectionAppBar> createState() => _CollectionAppBarState();

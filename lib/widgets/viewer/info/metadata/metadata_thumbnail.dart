@@ -10,9 +10,9 @@ class MetadataThumbnails extends StatefulWidget {
   final AvesEntry entry;
 
   const MetadataThumbnails({
-    Key? key,
+    super.key,
     required this.entry,
-  }) : super(key: key);
+  });
 
   @override
   State<MetadataThumbnails> createState() => _MetadataThumbnailsState();

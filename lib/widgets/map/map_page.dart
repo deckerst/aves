@@ -39,11 +39,11 @@ class MapPage extends StatelessWidget {
   final MappedGeoTiff? overlayEntry;
 
   const MapPage({
-    Key? key,
+    super.key,
     required this.collection,
     this.initialEntry,
     this.overlayEntry,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -76,11 +76,11 @@ class _Content extends StatefulWidget {
   final MappedGeoTiff? overlayEntry;
 
   const _Content({
-    Key? key,
+    super.key,
     required this.collection,
     this.initialEntry,
     this.overlayEntry,
-  }) : super(key: key);
+  });
 
   @override
   State<_Content> createState() => _ContentState();

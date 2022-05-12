@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 class VideoControlsPage extends StatelessWidget {
   static const routeName = '/settings/video/controls';
 
-  const VideoControlsPage({Key? key}) : super(key: key);
+  const VideoControlsPage({super.key});
 
   @override
   Widget build(BuildContext context) {

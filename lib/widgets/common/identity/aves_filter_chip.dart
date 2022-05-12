@@ -60,7 +60,7 @@ class AvesFilterChip extends StatefulWidget {
   static const double decoratedContentVerticalPadding = 5;
 
   const AvesFilterChip({
-    Key? key,
+    super.key,
     required this.filter,
     this.removable = false,
     this.showText = true,
@@ -75,7 +75,7 @@ class AvesFilterChip extends StatefulWidget {
     this.heroType = HeroType.onTap,
     this.onTap,
     this.onLongPress = showDefaultLongPressMenu,
-  }) : super(key: key);
+  });
 
   static Future<void> showDefaultLongPressMenu(BuildContext context, CollectionFilter filter, Offset tapPosition) async {
     if (context.read<ValueNotifier<AppMode>>().value == AppMode.main) {

@@ -22,12 +22,12 @@ class FilterGridAppBar<T extends CollectionFilter> extends StatefulWidget {
   final bool isEmpty;
 
   const FilterGridAppBar({
-    Key? key,
+    super.key,
     required this.source,
     required this.title,
     required this.actionDelegate,
     required this.isEmpty,
-  }) : super(key: key);
+  });
 
   @override
   State<FilterGridAppBar<T>> createState() => _FilterGridAppBarState<T>();

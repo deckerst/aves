@@ -12,7 +12,7 @@ class OutlinedText extends StatelessWidget {
   static const widgetSpanAlignment = PlaceholderAlignment.middle;
 
   const OutlinedText({
-    Key? key,
+    super.key,
     required this.textSpans,
     double? outlineWidth,
     Color? outlineColor,
@@ -20,8 +20,7 @@ class OutlinedText extends StatelessWidget {
     this.textAlign,
   })  : outlineWidth = outlineWidth ?? 1,
         outlineColor = outlineColor ?? Colors.black,
-        outlineBlurSigma = outlineBlurSigma ?? 0,
-        super(key: key);
+        outlineBlurSigma = outlineBlurSigma ?? 0;
 
   @override
   Widget build(BuildContext context) {

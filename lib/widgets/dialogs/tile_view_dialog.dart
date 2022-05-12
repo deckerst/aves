@@ -16,12 +16,12 @@ class TileViewDialog<S, G, L> extends StatefulWidget {
   final Map<L, String> layoutOptions;
 
   const TileViewDialog({
-    Key? key,
+    super.key,
     required this.initialValue,
     this.sortOptions = const {},
     this.groupOptions = const {},
     this.layoutOptions = const {},
-  }) : super(key: key);
+  });
 
   @override
   State<TileViewDialog> createState() => _TileViewDialogState<S, G, L>();

@@ -9,11 +9,11 @@ class SettingsSubPageTile extends StatelessWidget {
   final WidgetBuilder builder;
 
   const SettingsSubPageTile({
-    Key? key,
+    super.key,
     required this.title,
     required this.routeName,
     required this.builder,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -40,13 +40,13 @@ class SettingsSwitchListTile extends StatelessWidget {
   final Widget? trailing;
 
   const SettingsSwitchListTile({
-    Key? key,
+    super.key,
     required this.selector,
     required this.onChanged,
     required this.title,
     this.subtitle,
     this.trailing,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -86,7 +86,7 @@ class SettingsSelectionListTile<T extends Enum> extends StatelessWidget {
   final TextBuilder<T>? optionSubtitleBuilder;
 
   const SettingsSelectionListTile({
-    Key? key,
+    super.key,
     required this.values,
     required this.getName,
     required this.selector,
@@ -94,7 +94,7 @@ class SettingsSelectionListTile<T extends Enum> extends StatelessWidget {
     required this.tileTitle,
     required this.dialogTitle,
     this.optionSubtitleBuilder,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

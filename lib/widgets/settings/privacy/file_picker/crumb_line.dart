@@ -8,10 +8,10 @@ class CrumbLine extends StatefulWidget {
   final void Function(String path) onTap;
 
   const CrumbLine({
-    Key? key,
+    super.key,
     required this.directory,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   State<CrumbLine> createState() => _CrumbLineState();

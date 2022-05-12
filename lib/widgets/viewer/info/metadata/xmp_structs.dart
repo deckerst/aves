@@ -16,11 +16,11 @@ class XmpStructArrayCard extends StatefulWidget {
   final Map<String, InfoLinkHandler> Function(int index)? linkifier;
 
   XmpStructArrayCard({
-    Key? key,
+    super.key,
     required this.title,
     required Map<int, Map<String, String>> structByIndex,
     this.linkifier,
-  }) : super(key: key) {
+  }) {
     final length = structByIndex.keys.fold(0, max);
     structs = [for (var i = 0; i < length; i++) structByIndex[i + 1] ?? {}];
   }
@@ -113,11 +113,11 @@ class XmpStructCard extends StatelessWidget {
   static const cardMargin = EdgeInsets.symmetric(vertical: 8, horizontal: 0);
 
   const XmpStructCard({
-    Key? key,
+    super.key,
     required this.title,
     required this.struct,
     this.linkifier,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

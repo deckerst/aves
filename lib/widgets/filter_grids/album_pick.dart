@@ -52,10 +52,10 @@ class _AlbumPickPage extends StatefulWidget {
   final MoveType? moveType;
 
   const _AlbumPickPage({
-    Key? key,
+    super.key,
     required this.source,
     required this.moveType,
-  }) : super(key: key);
+  });
 
   @override
   State<_AlbumPickPage> createState() => _AlbumPickPageState();
@@ -122,12 +122,12 @@ class _AlbumPickAppBar extends StatelessWidget {
   static const preferredHeight = kToolbarHeight + _AlbumQueryBar.preferredHeight;
 
   const _AlbumPickAppBar({
-    Key? key,
+    super.key,
     required this.source,
     required this.moveType,
     required this.actionDelegate,
     required this.queryNotifier,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -207,9 +207,9 @@ class _AlbumQueryBar extends StatelessWidget implements PreferredSizeWidget {
   static const preferredHeight = kToolbarHeight;
 
   const _AlbumQueryBar({
-    Key? key,
+    super.key,
     required this.queryNotifier,
-  }) : super(key: key);
+  });
 
   @override
   Size get preferredSize => const Size.fromHeight(preferredHeight);

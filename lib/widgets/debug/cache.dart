@@ -4,7 +4,7 @@ import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:flutter/material.dart';
 
 class DebugCacheSection extends StatefulWidget {
-  const DebugCacheSection({Key? key}) : super(key: key);
+  const DebugCacheSection({super.key});
 
   @override
   State<DebugCacheSection> createState() => _DebugCacheSectionState();

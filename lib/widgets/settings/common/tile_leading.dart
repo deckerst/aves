@@ -9,10 +9,10 @@ class SettingsTileLeading extends StatelessWidget {
   final Color color;
 
   const SettingsTileLeading({
-    Key? key,
+    super.key,
     required this.icon,
     required this.color,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

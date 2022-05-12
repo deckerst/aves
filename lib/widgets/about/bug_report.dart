@@ -25,7 +25,7 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class BugReport extends StatefulWidget {
-  const BugReport({Key? key}) : super(key: key);
+  const BugReport({super.key});
 
   @override
   State<BugReport> createState() => _BugReportState();

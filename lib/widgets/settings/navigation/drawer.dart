@@ -16,7 +16,7 @@ import 'package:tuple/tuple.dart';
 class NavigationDrawerEditorPage extends StatefulWidget {
   static const routeName = '/settings/navigation_drawer';
 
-  const NavigationDrawerEditorPage({Key? key}) : super(key: key);
+  const NavigationDrawerEditorPage({super.key});
 
   @override
   State<NavigationDrawerEditorPage> createState() => _NavigationDrawerEditorPageState();

@@ -10,9 +10,9 @@ class SectionRow extends StatelessWidget {
   final IconData icon;
 
   const SectionRow({
-    Key? key,
+    super.key,
     required this.icon,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -53,11 +53,11 @@ class InfoRowGroup extends StatefulWidget {
   static TextStyle keyStyle(BuildContext context) => Theme.of(context).textTheme.caption!.merge(_keyStyle);
 
   const InfoRowGroup({
-    Key? key,
+    super.key,
     required this.info,
     this.maxValueLength = 0,
     this.linkHandlers,
-  }) : super(key: key);
+  });
 
   @override
   State<InfoRowGroup> createState() => _InfoRowGroupState();

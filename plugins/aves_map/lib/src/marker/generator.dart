@@ -14,11 +14,11 @@ class MarkerGeneratorWidget<T extends Key> extends StatefulWidget {
   final void Function(T markerKey, Uint8List bitmap) onRendered;
 
   const MarkerGeneratorWidget({
-    Key? key,
+    super.key,
     required this.markers,
     required this.isReadyToRender,
     required this.onRendered,
-  }) : super(key: key);
+  });
 
   @override
   State<MarkerGeneratorWidget<T>> createState() => _MarkerGeneratorWidgetState<T>();
