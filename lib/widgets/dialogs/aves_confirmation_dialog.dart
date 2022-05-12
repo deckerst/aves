@@ -83,7 +83,6 @@ class _AvesConfirmationDialog extends StatefulWidget {
   final String confirmationButtonLabel;
 
   const _AvesConfirmationDialog({
-    super.key,
     required this.type,
     required this.delegate,
     required this.confirmationButtonLabel,

@@ -288,7 +288,6 @@ class _LocationRow extends AnimatedWidget {
   final AvesEntry entry;
 
   _LocationRow({
-    super.key,
     required this.entry,
   }) : super(listenable: entry.addressChangeNotifier);
 

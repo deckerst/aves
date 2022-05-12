@@ -229,7 +229,6 @@ class _FilterRow extends StatelessWidget {
   final void Function(String tag) onTap;
 
   const _FilterRow({
-    super.key,
     required this.title,
     required this.filters,
     required this.expandedNotifier,
@@ -255,7 +254,6 @@ class _TagCount extends StatelessWidget {
   final int count;
 
   const _TagCount({
-    super.key,
     required this.count,
   });
 

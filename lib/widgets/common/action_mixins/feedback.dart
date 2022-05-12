@@ -281,7 +281,6 @@ class _FeedbackMessage extends StatefulWidget {
   final Color progressColor;
 
   const _FeedbackMessage({
-    super.key,
     required this.message,
     required this.progressColor,
     this.start,

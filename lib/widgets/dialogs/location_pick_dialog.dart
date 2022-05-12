@@ -58,7 +58,6 @@ class _Content extends StatefulWidget {
   final LatLng? initialLocation;
 
   const _Content({
-    super.key,
     required this.collection,
     required this.initialLocation,
   });
@@ -178,7 +177,6 @@ class _LocationInfo extends StatelessWidget {
   static const double _interRowPadding = 2.0;
 
   const _LocationInfo({
-    super.key,
     required this.locationNotifier,
   });
 
@@ -230,7 +228,6 @@ class _AddressRow extends StatefulWidget {
   final LatLng? location;
 
   const _AddressRow({
-    super.key,
     required this.location,
   });
 
@@ -312,7 +309,6 @@ class _CoordinateRow extends StatelessWidget {
   final LatLng? location;
 
   const _CoordinateRow({
-    super.key,
     required this.location,
   });
 

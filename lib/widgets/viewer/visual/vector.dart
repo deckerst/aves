@@ -290,7 +290,6 @@ class _RegionTile extends StatefulWidget {
   final _BackgroundFrameBuilder? backgroundFrameBuilder;
 
   const _RegionTile({
-    super.key,
     required this.entry,
     required this.tileRect,
     required this.regionRect,

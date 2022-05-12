@@ -236,7 +236,6 @@ class _ScaleOverlay extends StatefulWidget {
   final Widget Function(Offset center, Size tileSize, Widget child) gridBuilder;
 
   const _ScaleOverlay({
-    super.key,
     required this.builder,
     required this.tileLayout,
     required this.center,

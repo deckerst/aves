@@ -52,7 +52,6 @@ class _AlbumPickPage extends StatefulWidget {
   final MoveType? moveType;
 
   const _AlbumPickPage({
-    super.key,
     required this.source,
     required this.moveType,
   });
@@ -122,7 +121,6 @@ class _AlbumPickAppBar extends StatelessWidget {
   static const preferredHeight = kToolbarHeight + _AlbumQueryBar.preferredHeight;
 
   const _AlbumPickAppBar({
-    super.key,
     required this.source,
     required this.moveType,
     required this.actionDelegate,
@@ -207,7 +205,6 @@ class _AlbumQueryBar extends StatelessWidget implements PreferredSizeWidget {
   static const preferredHeight = kToolbarHeight;
 
   const _AlbumQueryBar({
-    super.key,
     required this.queryNotifier,
   });
 

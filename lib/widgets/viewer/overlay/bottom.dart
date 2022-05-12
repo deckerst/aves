@@ -93,7 +93,6 @@ class _BottomOverlayContent extends StatefulWidget {
   final AnimationController animationController;
 
   const _BottomOverlayContent({
-    super.key,
     required this.entries,
     required this.index,
     required this.mainEntry,

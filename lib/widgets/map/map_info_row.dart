@@ -72,7 +72,6 @@ class _AddressRow extends StatefulWidget {
   final AvesEntry? entry;
 
   const _AddressRow({
-    super.key,
     required this.entry,
   });
 
@@ -161,7 +160,6 @@ class _DateRow extends StatelessWidget {
   final AvesEntry? entry;
 
   const _DateRow({
-    super.key,
     required this.entry,
   });
 

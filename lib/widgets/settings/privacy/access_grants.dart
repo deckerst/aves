@@ -90,7 +90,7 @@ class _StorageAccessPageState extends State<StorageAccessPage> {
 }
 
 class _Header extends StatelessWidget {
-  const _Header({super.key});
+  const _Header();
 
   @override
   Widget build(BuildContext context) {
