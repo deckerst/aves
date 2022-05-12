@@ -55,7 +55,7 @@ class HiddenItemsPage extends StatelessWidget {
 }
 
 class _HiddenFilters extends StatelessWidget {
-  const _HiddenFilters({super.key});
+  const _HiddenFilters();
 
   @override
   Widget build(BuildContext context) {
@@ -109,7 +109,7 @@ class _HiddenFilters extends StatelessWidget {
 }
 
 class _HiddenPaths extends StatelessWidget {
-  const _HiddenPaths({super.key});
+  const _HiddenPaths();
 
   @override
   Widget build(BuildContext context) {
@@ -169,7 +169,7 @@ class _HiddenPaths extends StatelessWidget {
 class _Banner extends StatelessWidget {
   final String bannerText;
 
-  const _Banner({super.key, required this.bannerText});
+  const _Banner({required this.bannerText});
 
   @override
   Widget build(BuildContext context) {

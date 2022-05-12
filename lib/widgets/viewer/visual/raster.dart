@@ -337,7 +337,6 @@ class _RegionTile extends StatefulWidget {
   final int sampleSize;
 
   const _RegionTile({
-    super.key,
     required this.entry,
     required this.tileRect,
     required this.regionRect,

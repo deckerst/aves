@@ -76,7 +76,6 @@ class _Content extends StatefulWidget {
   final MappedGeoTiff? overlayEntry;
 
   const _Content({
-    super.key,
     required this.collection,
     this.initialEntry,
     this.overlayEntry,

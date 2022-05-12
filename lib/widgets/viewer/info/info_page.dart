@@ -132,7 +132,6 @@ class _InfoPageContent extends StatefulWidget {
   final VoidCallback goToViewer;
 
   const _InfoPageContent({
-    super.key,
     required this.collection,
     required this.entry,
     required this.isScrollingNotifier,
