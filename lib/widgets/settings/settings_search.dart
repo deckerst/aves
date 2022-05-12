@@ -1,5 +1,4 @@
 import 'package:aves/theme/icons.dart';
-import 'package:aves/widgets/common/animated_icons_fix.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
 import 'package:aves/widgets/common/identity/highlight_title.dart';
@@ -21,9 +20,8 @@ class SettingsSearchDelegate extends SearchDelegate {
   @override
   Widget buildLeading(BuildContext context) {
     return IconButton(
-      // TODO TLAD [rtl] replace to regular `AnimatedIcon` when this is fixed: https://github.com/flutter/flutter/issues/60521
-      icon: AnimatedIconFixIssue60521(
-        icon: AnimatedIconsFixIssue60521.menu_arrow,
+      icon: AnimatedIcon(
+        icon: AnimatedIcons.menu_arrow,
         progress: transitionAnimation,
       ),
       onPressed: () => Navigator.pop(context),

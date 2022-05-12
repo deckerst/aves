@@ -18,7 +18,6 @@ import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/collection/entry_set_action_delegate.dart';
 import 'package:aves/widgets/collection/filter_bar.dart';
 import 'package:aves/widgets/collection/query_bar.dart';
-import 'package:aves/widgets/common/animated_icons_fix.dart';
 import 'package:aves/widgets/common/app_bar_subtitle.dart';
 import 'package:aves/widgets/common/app_bar_title.dart';
 import 'package:aves/widgets/common/basic/menu.dart';
@@ -174,9 +173,8 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     return IconButton(
       // key is expected by test driver
       key: const Key('appbar-leading-button'),
-      // TODO TLAD [rtl] replace to regular `AnimatedIcon` when this is fixed: https://github.com/flutter/flutter/issues/60521
-      icon: AnimatedIconFixIssue60521(
-        icon: AnimatedIconsFixIssue60521.menu_arrow,
+      icon: AnimatedIcon(
+        icon: AnimatedIcons.menu_arrow,
         progress: _browseToSelectAnimation,
       ),
       onPressed: onPressed,
