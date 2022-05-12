@@ -8,7 +8,6 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves_map/aves_map.dart';
-import 'package:decorated_icon/decorated_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -103,7 +102,7 @@ class _AddressRowState extends State<_AddressRow> {
       mainAxisSize: MainAxisSize.min,
       children: [
         const SizedBox(width: MapInfoRow.iconPadding),
-        const DecoratedIcon(AIcons.location, size: MapInfoRow.iconSize),
+        const Icon(AIcons.location, size: MapInfoRow.iconSize),
         const SizedBox(width: MapInfoRow.iconPadding),
         Expanded(
           child: Container(
@@ -173,7 +172,7 @@ class _DateRow extends StatelessWidget {
     return Row(
       children: [
         const SizedBox(width: MapInfoRow.iconPadding),
-        const DecoratedIcon(AIcons.date, size: MapInfoRow.iconSize),
+        const Icon(AIcons.date, size: MapInfoRow.iconSize),
         const SizedBox(width: MapInfoRow.iconPadding),
         Text(
           dateText,
