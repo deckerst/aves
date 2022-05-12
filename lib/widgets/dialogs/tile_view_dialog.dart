@@ -232,7 +232,7 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
       key: Key(value.toString()),
       value: value,
       groupValue: get(),
-      onChanged: (v) => setState(() => set(v!)),
+      onChanged: (v) => setState(() => set(v as T)),
       title: Text(
         title,
         softWrap: false,

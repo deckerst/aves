@@ -10,7 +10,7 @@ version: 1.6.4+70
 publish_to: none
 
 environment:
-  sdk: ">=2.16.2 <3.0.0"
+  sdk: ">=2.17.0 <3.0.0"
 
 # following https://github.blog/2021-09-01-improving-git-protocol-security-github/
 # dependency GitHub repos should be referenced via `https://`, not `git://`
@@ -62,6 +62,7 @@ dependencies:
   palette_generator:
 # TODO TLAD as of 2022/02/22, latest version (v0.4.1) has this issue: https://github.com/zesage/panorama/issues/25
   panorama: 0.4.0
+  path:
   pdf:
   percent_indicator:
   permission_handler:

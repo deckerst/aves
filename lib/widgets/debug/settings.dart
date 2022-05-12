@@ -66,7 +66,7 @@ class DebugSettingsSection extends StatelessWidget {
                   'hiddenFilters': toMultiline(settings.hiddenFilters),
                   'searchHistory': toMultiline(settings.searchHistory),
                   'locale': '${settings.locale}',
-                  'systemLocales': '${WidgetsBinding.instance!.window.locales}',
+                  'systemLocales': '${WidgetsBinding.instance.window.locales}',
                   'topEntryIds': '${settings.topEntryIds}',
                 },
               ),

@@ -147,7 +147,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
       }
     });
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _onOverlayVisibleChange(animate: false));
+    WidgetsBinding.instance.addPostFrameCallback((_) => _onOverlayVisibleChange(animate: false));
   }
 
   @override

@@ -27,7 +27,7 @@ class _CrumbLineState extends State<CrumbLine> {
     super.didUpdateWidget(oldWidget);
     if (widget.directory.relativeDir.length > oldWidget.directory.relativeDir.length) {
       // scroll to show last crumb
-      WidgetsBinding.instance!.addPostFrameCallback((_) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
         final extent = _controller.position.maxScrollExtent;
         _controller.animateTo(
           extent,

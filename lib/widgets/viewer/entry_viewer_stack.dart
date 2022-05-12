@@ -132,8 +132,8 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
     );
     _initEntryControllers(entry);
     _registerWidget(widget);
-    WidgetsBinding.instance!.addObserver(this);
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _initOverlay());
+    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance.addPostFrameCallback((_) => _initOverlay());
   }
 
   @override
@@ -150,7 +150,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
     _overlayAnimationController.dispose();
     _overlayVisible.removeListener(_onOverlayVisibleChange);
     _verticalPager.removeListener(_onVerticalPageControllerChange);
-    WidgetsBinding.instance!.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
     _unregisterWidget(widget);
     super.dispose();
   }
@@ -395,7 +395,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
       builder: (context, mqHeight, child) {
         // when orientation change, the `PageController` offset is not updated right away
         // and it does not trigger its listeners when it does, so we force a refresh in the next frame
-        WidgetsBinding.instance!.addPostFrameCallback((_) => _onVerticalPageControllerChange());
+        WidgetsBinding.instance.addPostFrameCallback((_) => _onVerticalPageControllerChange());
         return AnimatedBuilder(
           animation: _verticalScrollNotifier,
           builder: (context, child) => Positioned(
@@ -548,7 +548,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
       if (_heroInfoNotifier.value != heroInfo) {
         _heroInfoNotifier.value = heroInfo;
         // we post closing the viewer page so that hero animation source is ready
-        WidgetsBinding.instance!.addPostFrameCallback((_) => pop());
+        WidgetsBinding.instance.addPostFrameCallback((_) => pop());
       } else {
         // viewer already has correct hero info, no need to rebuild
         pop();

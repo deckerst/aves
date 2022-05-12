@@ -80,7 +80,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     _newIntentChannel.receiveBroadcastStream().listen((event) => _onNewIntent(event as Map?));
     _analysisCompletionChannel.receiveBroadcastStream().listen((event) => _onAnalysisCompletion());
     _errorChannel.receiveBroadcastStream().listen((event) => _onError(event as String?));
-    WidgetsBinding.instance!.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
@@ -280,7 +280,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
               ? 'profile'
               : 'debug',
       'has_mobile_services': hasMobileServices,
-      'locales': WidgetsBinding.instance!.window.locales.join(', '),
+      'locales': WidgetsBinding.instance.window.locales.join(', '),
       'time_zone': '${now.timeZoneName} (${now.timeZoneOffset})',
     });
     _navigatorObservers = [

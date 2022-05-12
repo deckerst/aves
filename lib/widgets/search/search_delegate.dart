@@ -211,7 +211,7 @@ class CollectionSearchDelegate {
   }
 
   Widget buildResults(BuildContext context) {
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       // `buildResults` is called in the build phase,
       // so we post the call that will filter the collection
       // and possibly trigger a rebuild here
@@ -249,7 +249,7 @@ class CollectionSearchDelegate {
     // we post closing the search page after applying the filter selection
     // so that hero animation target is ready in the `FilterBar`,
     // even when the target is a child of an `AnimatedList`
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       _goBack(context);
     });
   }

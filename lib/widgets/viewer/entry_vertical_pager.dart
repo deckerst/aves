@@ -10,8 +10,10 @@ import 'package:aves/widgets/common/magnifier/pan/scroll_physics.dart';
 import 'package:aves/widgets/viewer/entry_horizontal_pager.dart';
 import 'package:aves/widgets/viewer/info/info_page.dart';
 import 'package:aves/widgets/viewer/notifications.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:screen_brightness/screen_brightness.dart';
 
 class ViewerVerticalPageView extends StatefulWidget {
@@ -136,7 +138,10 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
         key: const Key('vertical-pageview'),
         scrollDirection: Axis.vertical,
         controller: widget.verticalPager,
-        physics: const MagnifierScrollerPhysics(parent: PageScrollPhysics()),
+        physics: MagnifierScrollerPhysics(
+          gestureSettings: context.select<MediaQueryData, DeviceGestureSettings>((mq) => mq.gestureSettings),
+          parent: const PageScrollPhysics(),
+        ),
         onPageChanged: widget.onVerticalPageChanged,
         children: pages,
       ),

@@ -37,7 +37,7 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> {
     super.initState();
     _latitudeFocusNode.addListener(_onLatLngFocusChange);
     _longitudeFocusNode.addListener(_onLatLngFocusChange);
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _setLocation(context, widget.entry.latLng));
+    WidgetsBinding.instance.addPostFrameCallback((_) => _setLocation(context, widget.entry.latLng));
   }
 
   @override

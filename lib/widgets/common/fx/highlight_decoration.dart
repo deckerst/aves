@@ -6,7 +6,7 @@ class HighlightDecoration extends Decoration {
   const HighlightDecoration({required this.color});
 
   @override
-  _HighlightDecorationPainter createBoxPainter([VoidCallback? onChanged]) {
+  BoxPainter createBoxPainter([VoidCallback? onChanged]) {
     return _HighlightDecorationPainter(this, onChanged);
   }
 }

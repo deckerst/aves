@@ -239,7 +239,7 @@ class Settings extends ChangeNotifier {
       if (_locale != null) {
         preferredLocales.add(_locale);
       } else {
-        preferredLocales.addAll(WidgetsBinding.instance!.window.locales);
+        preferredLocales.addAll(WidgetsBinding.instance.window.locales);
         if (preferredLocales.isEmpty) {
           // the `window` locales may be empty in a window-less service context
           preferredLocales.addAll(_systemLocalesFallback);

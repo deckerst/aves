@@ -88,7 +88,7 @@ class _InteractiveFilterTileState<T extends CollectionFilter> extends State<Inte
       // make sure the chip hero triggers, even when tapping on the list view details
       setState(() => _heroTypeOverride = HeroType.always);
     }
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       Navigator.push(
         context,
         MaterialPageRoute(

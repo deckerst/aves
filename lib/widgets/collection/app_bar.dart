@@ -77,7 +77,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     );
     _isSelectingNotifier.addListener(_onActivityChange);
     _registerWidget(widget);
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _onFilterChanged());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _onFilterChanged());
   }
 
   @override

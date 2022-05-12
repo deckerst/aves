@@ -33,7 +33,7 @@ class _WelcomePageState extends State<WelcomePage> {
     super.initState();
     settings.setContextualDefaults();
     _termsLoader = rootBundle.loadString(termsPath);
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _initWelcomeSettings());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _initWelcomeSettings());
   }
 
   // explicitly set consent values to current defaults

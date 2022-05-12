@@ -336,6 +336,11 @@ class Constants {
       sourceUrl: 'https://github.com/jifalops/dart-latlong',
     ),
     Dependency(
+      name: 'Path',
+      license: 'BSD 3-Clause',
+      sourceUrl: 'https://github.com/dart-lang/path',
+    ),
+    Dependency(
       name: 'PDF for Dart and Flutter',
       license: 'Apache 2.0',
       sourceUrl: 'https://github.com/DavBfr/dart_pdf',

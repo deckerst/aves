@@ -92,9 +92,9 @@ class _BugReportState extends State<BugReport> with FeedbackMixin {
                       clipBehavior: Clip.antiAlias,
                       child: Theme(
                         data: Theme.of(context).copyWith(
-                          scrollbarTheme: const ScrollbarThemeData(
-                            isAlwaysShown: true,
-                            radius: Radius.circular(16),
+                          scrollbarTheme: ScrollbarThemeData(
+                            thumbVisibility: MaterialStateProperty.all(true),
+                            radius: const Radius.circular(16),
                             crossAxisMargin: 6,
                             mainAxisMargin: 6,
                             interactive: true,
@@ -171,7 +171,7 @@ class _BugReportState extends State<BugReport> with FeedbackMixin {
       'Android build: ${androidInfo.display}',
       'Device: ${androidInfo.manufacturer} ${androidInfo.model}',
       'Mobile services: ${hasMobileServices ? 'ready' : 'not available'}',
-      'System locales: ${WidgetsBinding.instance!.window.locales.join(', ')}',
+      'System locales: ${WidgetsBinding.instance.window.locales.join(', ')}',
       'Aves locale: ${settings.locale ?? 'system'} -> ${settings.appliedLocale}',
       'Installer: $installer',
     ].join('\n');

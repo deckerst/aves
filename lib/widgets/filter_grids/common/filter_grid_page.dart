@@ -377,7 +377,7 @@ class _FilterSectionedContentState<T extends CollectionFilter> extends State<_Fi
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _checkInitHighlight());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _checkInitHighlight());
   }
 
   @override
