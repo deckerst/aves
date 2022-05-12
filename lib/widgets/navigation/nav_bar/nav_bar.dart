@@ -16,6 +16,7 @@ import 'package:provider/provider.dart';
 
 class AppBottomNavBar extends StatelessWidget {
   final Stream<DraggableScrollBarEvent> events;
+
   // collection loaded in the `CollectionPage`, if any
   final CollectionLens? currentCollection;
 
@@ -35,6 +36,7 @@ class AppBottomNavBar extends StatelessWidget {
 
     final blurred = context.select<Settings, bool>((s) => s.enableOverlayBlurEffect);
     final showVideo = context.select<Settings, bool>((s) => !s.hiddenFilters.contains(MimeFilter.video));
+    final backgroundColor = Theme.of(context).canvasColor;
 
     final items = [
       const AvesBottomNavItem(route: CollectionPage.routeName),
@@ -58,7 +60,7 @@ class AppBottomNavBar extends StatelessWidget {
           onTap: (index) => _goTo(context, items, index),
           currentIndex: _getCurrentIndex(context, items),
           type: BottomNavigationBarType.fixed,
-          backgroundColor: Theme.of(context).canvasColor.withOpacity(.85),
+          backgroundColor: blurred ? backgroundColor.withOpacity(.85) : backgroundColor,
           showSelectedLabels: false,
           showUnselectedLabels: false,
         ),

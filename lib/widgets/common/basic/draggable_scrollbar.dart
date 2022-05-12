@@ -149,11 +149,11 @@ class _DraggableScrollbarState extends State<DraggableScrollbar> with TickerProv
   late AnimationController _labelAnimationController;
   late Animation<double> _labelAnimation;
   Timer? _fadeoutTimer;
-  Map<double, String>? _modelCrumbs;
-  final List<_Crumb> _viewportCrumbs = [];
+  Map<double, String>? _percentCrumbs;
+  final Map<double, String> _viewportCrumbs = {};
 
-  static const crumbPadding = 30.0;
-  static const crumbOffsetRatioThreshold = 10;
+  static const double crumbPadding = 30;
+  static const double crumbMinViewportRatio = 4;
 
   @override
   void initState() {
@@ -185,7 +185,7 @@ class _DraggableScrollbarState extends State<DraggableScrollbar> with TickerProv
     super.didUpdateWidget(oldWidget);
 
     if (oldWidget.crumbsBuilder != widget.crumbsBuilder) {
-      _modelCrumbs = null;
+      _percentCrumbs = null;
     }
   }
 
@@ -218,10 +218,12 @@ class _DraggableScrollbarState extends State<DraggableScrollbar> with TickerProv
             child: widget.child,
           ),
           if (_isDragInProcess)
-            ..._viewportCrumbs.map((crumb) {
+            ..._viewportCrumbs.entries.map((kv) {
+              final offset = kv.key;
+              final label = kv.value;
               return Positioned.directional(
                 textDirection: Directionality.of(context),
-                top: crumb.labelOffset,
+                top: offset,
                 end: DraggableScrollbar.labelThumbPadding + widget.scrollThumbSize.width,
                 child: Padding(
                   padding: widget.padding,
@@ -231,7 +233,7 @@ class _DraggableScrollbarState extends State<DraggableScrollbar> with TickerProv
                       child: ScrollLabel(
                         animation: kAlwaysCompleteAnimation,
                         backgroundColor: widget.backgroundColor,
-                        child: widget.crumbTextBuilder(crumb.label),
+                        child: widget.crumbTextBuilder(label),
                       ),
                     ),
                   ),
@@ -349,24 +351,18 @@ class _DraggableScrollbarState extends State<DraggableScrollbar> with TickerProv
     _viewportCrumbs.clear();
     final crumbsBuilder = widget.crumbsBuilder;
     if (crumbsBuilder != null) {
+      final maxOffset = thumbMaxScrollExtent;
       final position = controller.position;
-      final contentHeight = position.maxScrollExtent + thumbMaxScrollExtent + position.viewportDimension;
-      final ratio = contentHeight / scrollBarHeight;
-      if (ratio > crumbOffsetRatioThreshold) {
-        final maxLabelOffset = scrollBarHeight - widget.scrollThumbSize.height;
+      if (position.maxScrollExtent / position.viewportDimension > crumbMinViewportRatio) {
         double lastLabelOffset = -crumbPadding;
-        _modelCrumbs ??= crumbsBuilder();
-        _modelCrumbs!.entries.forEach((kv) {
-          final viewOffset = kv.key;
+        _percentCrumbs ??= crumbsBuilder();
+        _percentCrumbs!.entries.forEach((kv) {
+          final percent = kv.key;
           final label = kv.value;
-          final labelOffset = (viewOffset / ratio).roundToDouble();
-          if (labelOffset >= lastLabelOffset + crumbPadding && labelOffset < maxLabelOffset) {
+          final labelOffset = percent * maxOffset;
+          if (labelOffset >= lastLabelOffset + crumbPadding) {
             lastLabelOffset = labelOffset;
-            _viewportCrumbs.add(_Crumb(
-              viewOffset: viewOffset,
-              labelOffset: labelOffset,
-              label: label,
-            ));
+            _viewportCrumbs[labelOffset] = label;
           }
         });
         // hide lonesome crumb, whether it is because of a single section,
@@ -377,17 +373,6 @@ class _DraggableScrollbarState extends State<DraggableScrollbar> with TickerProv
       }
     }
   }
-}
-
-class _Crumb {
-  final double viewOffset, labelOffset;
-  final String label;
-
-  const _Crumb({
-    required this.viewOffset,
-    required this.labelOffset,
-    required this.label,
-  });
 }
 
 ///This cut 2 lines in arrow shape
