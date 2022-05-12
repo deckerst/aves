@@ -39,7 +39,6 @@ class SectionHeader<T> extends StatelessWidget {
         child: Text.rich(
           TextSpan(
             children: [
-              // TODO TLAD [flutter 3] https://github.com/flutter/flutter/issues/103615
               WidgetSpan(
                 alignment: widgetSpanAlignment,
                 child: _SectionSelectableLeading<T>(
@@ -56,6 +55,8 @@ class SectionHeader<T> extends StatelessWidget {
                   onPressed: selectable ? () => _toggleSectionSelection(context) : null,
                 ),
               ),
+              // TODO TLAD [flutter 3] remove this zero-width span when this is fixed: https://github.com/flutter/flutter/issues/103615
+              TextSpan(text: '\u200B' * 3, style: Constants.titleTextStyle),
               TextSpan(
                 text: title,
                 style: Constants.titleTextStyle,
