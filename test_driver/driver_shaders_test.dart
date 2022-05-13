@@ -60,7 +60,7 @@ void agreeToTerms() {
     // delay to avoid flaky failures when widget binding is not ready from the start
     await Future.delayed(const Duration(seconds: 3));
 
-    await driver.scroll(find.text('Terms of Service'), 0, -300, const Duration(milliseconds: 500));
+    await driver.scrollY(find.text('Terms of Service'), -300);
 
     await driver.tap(find.byValueKey('apps-checkbox'));
     await driver.tap(find.byValueKey('terms-checkbox'));
@@ -189,7 +189,7 @@ void showViewer() {
 void goToNextImage() {
   test('[viewer] show next image', () async {
     final horizontalPageView = find.byValueKey('horizontal-pageview');
-    await driver.scroll(horizontalPageView, -600, 0, const Duration(milliseconds: 400));
+    await driver.scrollX(horizontalPageView, -500);
     await Future.delayed(const Duration(seconds: 2));
   });
 }
@@ -228,11 +228,11 @@ void showInfoMetadata() {
     final verticalPageView = find.byValueKey('vertical-pageview');
 
     print('* scroll down to info');
-    await driver.scroll(verticalPageView, 0, -600, const Duration(milliseconds: 400));
+    await driver.scrollY(verticalPageView, -600);
     await Future.delayed(const Duration(seconds: 2));
 
     print('* scroll down to metadata details');
-    await driver.scroll(verticalPageView, 0, -800, const Duration(milliseconds: 600));
+    await driver.scrollY(verticalPageView, -800);
     await Future.delayed(const Duration(seconds: 1));
 
     print('* toggle GPS metadata');
@@ -246,7 +246,7 @@ void showInfoMetadata() {
     await driver.waitUntilNoTransientCallbacks();
 
     print('* scroll up to show app bar');
-    await driver.scroll(verticalPageView, 0, 100, const Duration(milliseconds: 400));
+    await driver.scrollY(verticalPageView, 100);
     await Future.delayed(const Duration(seconds: 1));
 
     print('* back to image');
@@ -256,7 +256,7 @@ void showInfoMetadata() {
 
 void scrollOffImage() {
   test('[viewer] scroll off', () async {
-    await driver.scroll(find.byValueKey('image_view'), 0, 800, const Duration(milliseconds: 600));
+    await driver.scrollY(find.byValueKey('image_view'), 800);
     await Future.delayed(const Duration(seconds: 1));
   });
 }
