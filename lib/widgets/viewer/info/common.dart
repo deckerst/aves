@@ -130,7 +130,14 @@ class _InfoRowGroupState extends State<InfoRowGroup> {
                 // and each span respects the directionality of its inner text only
                 return [
                   TextSpan(text: '${Constants.fsi}$key${Constants.pdi}', style: _keyStyle),
-                  WidgetSpan(child: SizedBox(width: thisSpaceSize)),
+                  WidgetSpan(
+                    child: SizedBox(
+                      width: thisSpaceSize,
+                      // as of Flutter v3.0.0, the underline decoration from the following `TextSpan`
+                      // is applied to the `WidgetSpan` too, so we add a dummy `Text` as a workaround
+                      child: const Text(''),
+                    ),
+                  ),
                   TextSpan(text: '${Constants.fsi}$value${Constants.pdi}', style: style, recognizer: recognizer),
                 ];
               },

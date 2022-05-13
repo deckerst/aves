@@ -29,6 +29,8 @@ class Constants {
   // Pop Directional Isolate
   static const pdi = '\u2069';
 
+  static const zwsp = '\u200B';
+
   static const overlayUnknown = '—'; // em dash
 
   static final pointNemo = LatLng(-48.876667, -123.393333);
