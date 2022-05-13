@@ -1,17 +1,21 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:aves/widgets/common/basic/draggable_scrollbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 class FloatingNavBar extends StatefulWidget {
   final ScrollController? scrollController;
   final Stream<DraggableScrollBarEvent> events;
+  final double childHeight;
   final Widget child;
 
   const FloatingNavBar({
     super.key,
     required this.scrollController,
     required this.events,
+    required this.childHeight,
     required this.child,
   });
 
@@ -90,8 +94,6 @@ class _FloatingNavBarState extends State<FloatingNavBar> with SingleTickerProvid
   }
 
   void _onScrollChange() {
-    if (_isDragging) return;
-
     final scrollController = widget.scrollController;
     if (scrollController == null) return;
 
@@ -99,13 +101,22 @@ class _FloatingNavBarState extends State<FloatingNavBar> with SingleTickerProvid
     _delta += offset - (_lastOffset ?? offset);
     _lastOffset = offset;
 
+    if (_isDragging) return;
+
+    final after = scrollController.position.extentAfter;
+    final childHeight = widget.childHeight;
+    if (after < childHeight && scrollController.position.userScrollDirection == ScrollDirection.reverse) {
+      _controller.value = min(_controller.value, after / childHeight);
+      _delta = 0;
+      return;
+    }
+
     if (_delta.abs() > _deltaThreshold) {
       if (_delta > 0) {
         _hide();
       } else {
         _show();
       }
-      _delta = 0;
     }
   }
 
@@ -122,7 +133,13 @@ class _FloatingNavBarState extends State<FloatingNavBar> with SingleTickerProvid
     }
   }
 
-  void _show() => _controller.reverse();
+  void _show() {
+    _controller.reverse();
+    _delta = 0;
+  }
 
-  void _hide() => _controller.forward();
+  void _hide() {
+    _controller.forward();
+    _delta = 0;
+  }
 }

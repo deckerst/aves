@@ -512,28 +512,41 @@ class _FilterScrollView<T extends CollectionFilter> extends StatelessWidget {
   }
 
   Widget _buildDraggableScrollView(ScrollView scrollView) {
-    return Selector<MediaQueryData, double>(
-      selector: (context, mq) => mq.effectiveBottomPadding,
-      builder: (context, mqPaddingBottom, child) => DraggableScrollbar(
-        backgroundColor: Colors.white,
-        scrollThumbSize: Size(avesScrollThumbWidth, avesScrollThumbHeight),
-        scrollThumbBuilder: avesScrollThumbBuilder(
-          height: avesScrollThumbHeight,
-          backgroundColor: Colors.white,
-        ),
-        controller: scrollController,
-        padding: EdgeInsets.only(
-          // padding to keep scroll thumb between app bar above and nav bar below
-          top: appBarHeightNotifier.value,
-          bottom: mqPaddingBottom,
-        ),
-        labelTextBuilder: (offsetY) => FilterDraggableThumbLabel<T>(
-          sortFactor: sortFactor,
-          offsetY: offsetY,
-        ),
-        crumbTextBuilder: (offsetY) => const SizedBox(),
-        child: scrollView,
-      ),
+    return ValueListenableBuilder<double>(
+      valueListenable: appBarHeightNotifier,
+      builder: (context, appBarHeight, child) {
+        return Selector<MediaQueryData, double>(
+          selector: (context, mq) => mq.effectiveBottomPadding,
+          builder: (context, mqPaddingBottom, child) {
+            return Selector<Settings, bool>(
+              selector: (context, s) => s.showBottomNavigationBar,
+              builder: (context, showBottomNavigationBar, child) {
+                final navBarHeight = showBottomNavigationBar ? AppBottomNavBar.height : 0;
+                return DraggableScrollbar(
+                  backgroundColor: Colors.white,
+                  scrollThumbSize: Size(avesScrollThumbWidth, avesScrollThumbHeight),
+                  scrollThumbBuilder: avesScrollThumbBuilder(
+                    height: avesScrollThumbHeight,
+                    backgroundColor: Colors.white,
+                  ),
+                  controller: scrollController,
+                  padding: EdgeInsets.only(
+                    // padding to keep scroll thumb between app bar above and nav bar below
+                    top: appBarHeight,
+                    bottom: navBarHeight + mqPaddingBottom,
+                  ),
+                  labelTextBuilder: (offsetY) => FilterDraggableThumbLabel<T>(
+                    sortFactor: sortFactor,
+                    offsetY: offsetY,
+                  ),
+                  crumbTextBuilder: (offsetY) => const SizedBox(),
+                  child: scrollView,
+                );
+              },
+            );
+          },
+        );
+      },
     );
   }
 
