@@ -57,6 +57,7 @@ class _EntryGoogleMapState<T> extends State<EntryGoogleMap<T>> with WidgetsBindi
   final Map<MarkerKey<T>, Uint8List> _markerBitmaps = {};
   final StreamController<MarkerKey<T>> _markerBitmapReadyStreamController = StreamController.broadcast();
   Uint8List? _dotMarkerBitmap;
+  final ValueNotifier<Size> _sizeNotifier = ValueNotifier(Size.zero);
 
   ValueNotifier<ZoomedBounds> get boundsNotifier => widget.boundsNotifier;
 
@@ -68,6 +69,7 @@ class _EntryGoogleMapState<T> extends State<EntryGoogleMap<T>> with WidgetsBindi
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    _sizeNotifier.addListener(_onSizeChange);
     _registerWidget(widget);
   }
 
@@ -83,6 +85,7 @@ class _EntryGoogleMapState<T> extends State<EntryGoogleMap<T>> with WidgetsBindi
     _unregisterWidget(widget);
     _serviceMapController?.dispose();
     WidgetsBinding.instance.removeObserver(this);
+    _sizeNotifier.removeListener(_onSizeChange);
     super.dispose();
   }
 
@@ -109,7 +112,7 @@ class _EntryGoogleMapState<T> extends State<EntryGoogleMap<T>> with WidgetsBindi
       case AppLifecycleState.detached:
         break;
       case AppLifecycleState.resumed:
-        // workaround for blank Google map when resuming app
+        // workaround for blank map when resuming app
         // cf https://github.com/flutter/flutter/issues/40284
         _serviceMapController?.setMapStyle(null);
         break;
@@ -166,60 +169,65 @@ class _EntryGoogleMapState<T> extends State<EntryGoogleMap<T>> with WidgetsBindi
             return ValueListenableBuilder<double>(
               valueListenable: widget.overlayOpacityNotifier ?? ValueNotifier(1),
               builder: (context, overlayOpacity, child) {
-                return GoogleMap(
-                  initialCameraPosition: CameraPosition(
-                    bearing: -bounds.rotation,
-                    target: _toServiceLatLng(bounds.projectedCenter),
-                    zoom: bounds.zoom,
-                  ),
-                  onMapCreated: (controller) async {
-                    _serviceMapController = controller;
-                    final zoom = await controller.getZoomLevel();
-                    await _updateVisibleRegion(zoom: zoom, rotation: bounds.rotation);
-                    if (mounted) {
-                      setState(() {});
-                    }
-                  },
-                  // compass disabled to use provider agnostic controls
-                  compassEnabled: false,
-                  mapToolbarEnabled: false,
-                  mapType: _toMapType(widget.style),
-                  minMaxZoomPreference: MinMaxZoomPreference(widget.minZoom, widget.maxZoom),
-                  rotateGesturesEnabled: true,
-                  scrollGesturesEnabled: interactive,
-                  // zoom controls disabled to use provider agnostic controls
-                  zoomControlsEnabled: false,
-                  zoomGesturesEnabled: interactive,
-                  // lite mode disabled because it lacks camera animation
-                  liteModeEnabled: false,
-                  // tilt disabled to match leaflet
-                  tiltGesturesEnabled: false,
-                  myLocationEnabled: false,
-                  myLocationButtonEnabled: false,
-                  markers: {
-                    ...markers,
-                    if (dotLocation != null && _dotMarkerBitmap != null)
-                      Marker(
-                        markerId: const MarkerId('dot'),
-                        anchor: const Offset(.5, .5),
-                        consumeTapEvents: true,
-                        icon: BitmapDescriptor.fromBytes(_dotMarkerBitmap!),
-                        position: _toServiceLatLng(dotLocation),
-                        zIndex: 1,
-                      )
-                  },
-                  // TODO TLAD [geotiff] may use ground overlay instead when this is fixed: https://github.com/flutter/flutter/issues/26479
-                  tileOverlays: {
-                    if (overlayEntry != null && overlayEntry.canOverlay)
-                      TileOverlay(
-                        tileOverlayId: TileOverlayId(overlayEntry.id),
-                        tileProvider: GmsGeoTiffTileProvider(overlayEntry),
-                        transparency: 1 - overlayOpacity,
+                return LayoutBuilder(
+                  builder: (context, constraints) {
+                    _sizeNotifier.value = constraints.biggest;
+                    return GoogleMap(
+                      initialCameraPosition: CameraPosition(
+                        bearing: -bounds.rotation,
+                        target: _toServiceLatLng(bounds.projectedCenter),
+                        zoom: bounds.zoom,
                       ),
+                      onMapCreated: (controller) async {
+                        _serviceMapController = controller;
+                        final zoom = await controller.getZoomLevel();
+                        await _updateVisibleRegion(zoom: zoom, rotation: bounds.rotation);
+                        if (mounted) {
+                          setState(() {});
+                        }
+                      },
+                      // compass disabled to use provider agnostic controls
+                      compassEnabled: false,
+                      mapToolbarEnabled: false,
+                      mapType: _toMapType(widget.style),
+                      minMaxZoomPreference: MinMaxZoomPreference(widget.minZoom, widget.maxZoom),
+                      rotateGesturesEnabled: true,
+                      scrollGesturesEnabled: interactive,
+                      // zoom controls disabled to use provider agnostic controls
+                      zoomControlsEnabled: false,
+                      zoomGesturesEnabled: interactive,
+                      // lite mode disabled because it lacks camera animation
+                      liteModeEnabled: false,
+                      // tilt disabled to match leaflet
+                      tiltGesturesEnabled: false,
+                      myLocationEnabled: false,
+                      myLocationButtonEnabled: false,
+                      markers: {
+                        ...markers,
+                        if (dotLocation != null && _dotMarkerBitmap != null)
+                          Marker(
+                            markerId: const MarkerId('dot'),
+                            anchor: const Offset(.5, .5),
+                            consumeTapEvents: true,
+                            icon: BitmapDescriptor.fromBytes(_dotMarkerBitmap!),
+                            position: _toServiceLatLng(dotLocation),
+                            zIndex: 1,
+                          )
+                      },
+                      // TODO TLAD [geotiff] may use ground overlay instead when this is fixed: https://github.com/flutter/flutter/issues/26479
+                      tileOverlays: {
+                        if (overlayEntry != null && overlayEntry.canOverlay)
+                          TileOverlay(
+                            tileOverlayId: TileOverlayId(overlayEntry.id),
+                            tileProvider: GmsGeoTiffTileProvider(overlayEntry),
+                            transparency: 1 - overlayOpacity,
+                          ),
+                      },
+                      onCameraMove: (position) => _updateVisibleRegion(zoom: position.zoom, rotation: -position.bearing),
+                      onCameraIdle: _onIdle,
+                      onTap: (position) => widget.onMapTap?.call(_fromServiceLatLng(position)),
+                    );
                   },
-                  onCameraMove: (position) => _updateVisibleRegion(zoom: position.zoom, rotation: -position.bearing),
-                  onCameraIdle: _onIdle,
-                  onTap: (position) => widget.onMapTap?.call(_fromServiceLatLng(position)),
                 );
               },
             );
@@ -227,6 +235,14 @@ class _EntryGoogleMapState<T> extends State<EntryGoogleMap<T>> with WidgetsBindi
         );
       },
     );
+  }
+
+  // sometimes the map does not properly update after changing the widget size,
+  // so we monitor the size and force refreshing after an arbitrary small delay
+  Future<void> _onSizeChange() async {
+    await Future.delayed(const Duration(milliseconds: 100));
+    debugPrint('refresh map for size=${_sizeNotifier.value}');
+    await _serviceMapController?.setMapStyle(null);
   }
 
   void _onIdle() {
