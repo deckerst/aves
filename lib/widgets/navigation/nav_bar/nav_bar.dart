@@ -6,6 +6,7 @@ import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/basic/draggable_scrollbar.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/common/extensions/media_query.dart';
 import 'package:aves/widgets/common/fx/blurred.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/navigation/nav_bar/floating.dart';
@@ -79,6 +80,7 @@ class AppBottomNavBar extends StatelessWidget {
       child: FloatingNavBar(
         scrollController: PrimaryScrollController.of(context),
         events: events,
+        childHeight: height + context.select<MediaQueryData, double>((mq) => mq.effectiveBottomPadding),
         child: SafeArea(
           child: child,
         ),

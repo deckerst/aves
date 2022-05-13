@@ -350,37 +350,45 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> {
   Widget _buildDraggableScrollView(ScrollView scrollView, CollectionLens collection) {
     return ValueListenableBuilder<double>(
       valueListenable: widget.appBarHeightNotifier,
-      builder: (context, appBarHeight, child) => Selector<MediaQueryData, double>(
-        selector: (context, mq) => mq.effectiveBottomPadding,
-        builder: (context, mqPaddingBottom, child) {
-          return Selector<SectionedListLayout<AvesEntry>, List<SectionLayout>>(
-            selector: (context, layout) => layout.sectionLayouts,
-            builder: (context, sectionLayouts, child) {
-              return DraggableScrollbar(
-                backgroundColor: Colors.white,
-                scrollThumbSize: Size(avesScrollThumbWidth, avesScrollThumbHeight),
-                scrollThumbBuilder: avesScrollThumbBuilder(
-                  height: avesScrollThumbHeight,
-                  backgroundColor: Colors.white,
-                ),
-                controller: widget.scrollController,
-                crumbsBuilder: () => _getCrumbs(sectionLayouts),
-                padding: EdgeInsets.only(
-                  // padding to keep scroll thumb between app bar above and nav bar below
-                  top: appBarHeight,
-                  bottom: mqPaddingBottom,
-                ),
-                labelTextBuilder: (offsetY) => CollectionDraggableThumbLabel(
-                  collection: collection,
-                  offsetY: offsetY,
-                ),
-                crumbTextBuilder: (label) => DraggableCrumbLabel(label: label),
-                child: scrollView,
-              );
-            },
-          );
-        },
-      ),
+      builder: (context, appBarHeight, child) {
+        return Selector<MediaQueryData, double>(
+          selector: (context, mq) => mq.effectiveBottomPadding,
+          builder: (context, mqPaddingBottom, child) {
+            return Selector<Settings, bool>(
+              selector: (context, s) => s.showBottomNavigationBar,
+              builder: (context, showBottomNavigationBar, child) {
+                final navBarHeight = showBottomNavigationBar ? AppBottomNavBar.height : 0;
+                return Selector<SectionedListLayout<AvesEntry>, List<SectionLayout>>(
+                  selector: (context, layout) => layout.sectionLayouts,
+                  builder: (context, sectionLayouts, child) {
+                    return DraggableScrollbar(
+                      backgroundColor: Colors.white,
+                      scrollThumbSize: Size(avesScrollThumbWidth, avesScrollThumbHeight),
+                      scrollThumbBuilder: avesScrollThumbBuilder(
+                        height: avesScrollThumbHeight,
+                        backgroundColor: Colors.white,
+                      ),
+                      controller: widget.scrollController,
+                      crumbsBuilder: () => _getCrumbs(sectionLayouts),
+                      padding: EdgeInsets.only(
+                        // padding to keep scroll thumb between app bar above and nav bar below
+                        top: appBarHeight,
+                        bottom: navBarHeight + mqPaddingBottom,
+                      ),
+                      labelTextBuilder: (offsetY) => CollectionDraggableThumbLabel(
+                        collection: collection,
+                        offsetY: offsetY,
+                      ),
+                      crumbTextBuilder: (label) => DraggableCrumbLabel(label: label),
+                      child: scrollView,
+                    );
+                  },
+                );
+              },
+            );
+          },
+        );
+      },
     );
   }
 
