@@ -15,6 +15,11 @@ All notable changes to this project will be documented in this file.
 ### Changed
 
 - upgraded Flutter to stable v3.0.0
+- stretching overscroll effect
+
+### Fixed
+
+- Map: grey Google Map layer when size changed
 
 ## <a id="v1.6.4"></a>[v1.6.4] - 2022-04-19
 

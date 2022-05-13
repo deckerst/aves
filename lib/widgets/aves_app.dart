@@ -117,30 +117,28 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
                           final settingsLocale = s.item1;
                           final areAnimationsEnabled = s.item2;
                           final themeBrightness = s.item3;
+
+                          final pageTransitionsTheme = areAnimationsEnabled
+                              // Flutter has various page transition implementations for Android:
+                              // - `FadeUpwardsPageTransitionsBuilder` on Oreo / API 27 and below
+                              // - `OpenUpwardsPageTransitionsBuilder` on Pie / API 28
+                              // - `ZoomPageTransitionsBuilder` on Android 10 / API 29 and above (default in Flutter v3.0.0)
+                              ? const PageTransitionsTheme()
+                              // strip page transitions used by `MaterialPageRoute`
+                              : const DirectPageTransitionsTheme();
+
                           return MaterialApp(
                             navigatorKey: AvesApp.navigatorKey,
                             home: home,
                             navigatorObservers: _navigatorObservers,
-                            builder: (context, child) {
-                              // Flutter has various page transition implementations for Android:
-                              // - `FadeUpwardsPageTransitionsBuilder` on Oreo / API 27 and below
-                              // - `OpenUpwardsPageTransitionsBuilder` on Pie / API 28
-                              // - `ZoomPageTransitionsBuilder` on Android 10 / API 29 and above
-                              // As of Flutter v2.8.1, `FadeUpwardsPageTransitionsBuilder` is the default, regardless of versions.
-                              // In practice, `ZoomPageTransitionsBuilder` feels unstable when transitioning from Album to Collection.
-                              if (!areAnimationsEnabled) {
-                                child = Theme(
-                                  data: Theme.of(context).copyWith(
-                                    // strip page transitions used by `MaterialPageRoute`
-                                    pageTransitionsTheme: DirectPageTransitionsTheme(),
-                                  ),
-                                  child: child!,
-                                );
-                              }
-                              return AvesColorsProvider(
+                            builder: (context, child) => AvesColorsProvider(
+                              child: Theme(
+                                data: Theme.of(context).copyWith(
+                                  pageTransitionsTheme: pageTransitionsTheme,
+                                ),
                                 child: child!,
-                              );
-                            },
+                              ),
+                            ),
                             onGenerateTitle: (context) => context.l10n.appName,
                             theme: Themes.lightTheme,
                             darkTheme: themeBrightness == AvesThemeBrightness.black ? Themes.blackTheme : Themes.darkTheme,
