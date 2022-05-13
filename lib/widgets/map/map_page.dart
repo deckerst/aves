@@ -429,8 +429,6 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
 
   void _toggleOverlay() => _overlayVisible.value = !_overlayVisible.value;
 
-  // TODO TLAD [map] as of Flutter v2.5.1 / google_maps_flutter v2.0.10, toggling overlay changes the size of the map, which is an issue for Google map on Android 12
-  // cf https://github.com/flutter/flutter/issues/90556
   Future<void> _onOverlayVisibleChange({bool animate = true}) async {
     if (_overlayVisible.value) {
       if (animate) {
