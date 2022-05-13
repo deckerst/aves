@@ -46,6 +46,7 @@ object MimeTypes {
     // vector
     const val SVG = "image/svg+xml"
 
+    // video
     private const val AVI = "video/avi"
     private const val AVI_VND = "video/vnd.avi"
     const val DVD = "video/dvd"
@@ -56,6 +57,9 @@ object MimeTypes {
     const val MP4 = "video/mp4"
     private const val OGV = "video/ogg"
     private const val WEBM = "video/webm"
+
+    // others
+    const val ZIP = "application/zip"
 
     fun isImage(mimeType: String?) = mimeType != null && mimeType.startsWith("image")
 

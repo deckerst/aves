@@ -14,6 +14,7 @@ class MimeTypes {
   static const webp = 'image/webp';
 
   static const art = 'image/x-jg';
+  static const cdr = 'image/x-coreldraw';
   static const djvu = 'image/vnd.djvu';
   static const jxl = 'image/jxl';
   static const psdVnd = 'image/vnd.adobe.photoshop';
@@ -70,7 +71,7 @@ class MimeTypes {
   static const Set<String> rawImages = {arw, cr2, crw, dcr, dng, erf, k25, kdc, mrw, nef, nrw, orf, pef, raf, raw, rw2, sr2, srf, srw, x3f};
 
   // TODO TLAD [codec] make it dynamic if it depends on OS/lib versions
-  static const Set<String> undecodableImages = {art, crw, djvu, jxl, psdVnd, psdX, octetStream, zip};
+  static const Set<String> undecodableImages = {art, cdr, crw, djvu, jxl, psdVnd, psdX, octetStream, zip};
 
   static const Set<String> _knownOpaqueImages = {heic, heif, jpeg};
 

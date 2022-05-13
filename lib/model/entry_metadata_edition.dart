@@ -22,7 +22,9 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
 
     final appliedModifier = await _applyDateModifierToEntry(userModifier);
     if (appliedModifier == null) {
-      await reportService.recordError('failed to get date for modifier=$userModifier, entry=$this', null);
+      if (!isMissingAtPath) {
+        await reportService.recordError('failed to get date for modifier=$userModifier, entry=$this', null);
+      }
       return {};
     }
 
@@ -374,7 +376,12 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
           switch (source) {
             case DateFieldSource.fileModifiedDate:
               try {
-                date = path != null ? await File(path!).lastModified() : null;
+                if (path != null) {
+                  final file = File(path!);
+                  if (await file.exists()) {
+                    date = await file.lastModified();
+                  }
+                }
               } on FileSystemException catch (_) {}
               break;
             default:
