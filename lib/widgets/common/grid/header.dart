@@ -56,7 +56,7 @@ class SectionHeader<T> extends StatelessWidget {
                 ),
               ),
               // TODO TLAD [flutter 3] remove this zero-width span when this is fixed: https://github.com/flutter/flutter/issues/103615
-              TextSpan(text: '\u200B' * 3, style: Constants.titleTextStyle),
+              TextSpan(text: Constants.zwsp * 3, style: Constants.titleTextStyle),
               TextSpan(
                 text: title,
                 style: Constants.titleTextStyle,
