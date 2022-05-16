@@ -216,10 +216,9 @@ class _CollectionSectionedContentState extends State<_CollectionSectionedContent
       child: scrollView,
     );
 
-    final isMainMode = context.select<ValueNotifier<AppMode>, bool>((vn) => vn.value == AppMode.main);
     final selector = GridSelectionGestureDetector(
       scrollableKey: scrollableKey,
-      selectable: isMainMode,
+      selectable: context.select<ValueNotifier<AppMode>, bool>((v) => v.value.canSelectMedia),
       items: collection.sortedEntries,
       scrollController: scrollController,
       appBarHeightNotifier: appBarHeightNotifier,

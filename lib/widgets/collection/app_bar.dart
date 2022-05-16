@@ -250,7 +250,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
               ...(isSelecting ? selectionMenuActions : browsingMenuActions).where(isVisible).map(
                     (action) => _toMenuItem(action, enabled: canApply(action), selection: selection),
                   ),
-              if (isSelecting && !isTrash)
+              if (isSelecting && !isTrash && appMode == AppMode.main)
                 PopupMenuItem<EntrySetAction>(
                   enabled: canApplyEditActions,
                   padding: EdgeInsets.zero,
