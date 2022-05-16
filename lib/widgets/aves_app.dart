@@ -184,7 +184,8 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
       case AppLifecycleState.inactive:
         switch (appModeNotifier.value) {
           case AppMode.main:
-          case AppMode.pickMediaExternal:
+          case AppMode.pickSingleMediaExternal:
+          case AppMode.pickMultipleMediaExternal:
             _saveTopEntries();
             break;
           case AppMode.pickMediaInternal:

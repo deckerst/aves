@@ -401,10 +401,9 @@ class _FilterSectionedContentState<T extends CollectionFilter> extends State<_Fi
       child: scrollView,
     );
 
-    final isMainMode = context.select<ValueNotifier<AppMode>, bool>((vn) => vn.value == AppMode.main);
     final selector = GridSelectionGestureDetector<FilterGridItem<T>>(
       scrollableKey: scrollableKey,
-      selectable: isMainMode && widget.selectable,
+      selectable: context.select<ValueNotifier<AppMode>, bool>((v) => v.value.canSelectFilter) && widget.selectable,
       items: visibleSections.values.expand((v) => v).toList(),
       scrollController: scrollController,
       appBarHeightNotifier: appBarHeightNotifier,

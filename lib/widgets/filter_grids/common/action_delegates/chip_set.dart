@@ -52,7 +52,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
       case ChipSetAction.configureView:
         return true;
       case ChipSetAction.select:
-        return appMode.canSelect && !isSelecting;
+        return appMode.canSelectFilter && !isSelecting;
       case ChipSetAction.selectAll:
         return isSelecting && selectedItemCount < itemCount;
       case ChipSetAction.selectNone:

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:aves/app_mode.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/query.dart';
@@ -9,11 +10,14 @@ import 'package:aves/model/selection.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
+import 'package:aves/services/viewer_service.dart';
 import 'package:aves/theme/durations.dart';
+import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/collection/collection_grid.dart';
 import 'package:aves/widgets/common/basic/draggable_scrollbar.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/behaviour/double_back_pop.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/common/providers/query_provider.dart';
 import 'package:aves/widgets/common/providers/selection_provider.dart';
@@ -75,61 +79,78 @@ class _CollectionPageState extends State<CollectionPage> {
 
   @override
   Widget build(BuildContext context) {
+    final appMode = context.watch<ValueNotifier<AppMode>>().value;
     final liveFilter = _collection.filters.firstWhereOrNull((v) => v is QueryFilter && v.live) as QueryFilter?;
     return MediaQueryDataProvider(
-      child: Selector<Settings, bool>(
-        selector: (context, s) => s.showBottomNavigationBar,
-        builder: (context, showBottomNavigationBar, child) {
-          return NotificationListener<DraggableScrollBarNotification>(
-            onNotification: (notification) {
-              _draggableScrollBarEventStreamController.add(notification.event);
-              return false;
-            },
-            child: Scaffold(
-              body: SelectionProvider<AvesEntry>(
-                child: QueryProvider(
-                  initialQuery: liveFilter?.query,
-                  child: Builder(
-                    builder: (context) => WillPopScope(
-                      onWillPop: () {
-                        final selection = context.read<Selection<AvesEntry>>();
-                        if (selection.isSelecting) {
-                          selection.browse();
-                          return SynchronousFuture(false);
-                        }
-                        return SynchronousFuture(true);
-                      },
-                      child: DoubleBackPopScope(
-                        child: GestureAreaProtectorStack(
-                          child: SafeArea(
-                            bottom: false,
-                            child: ChangeNotifierProvider<CollectionLens>.value(
-                              value: _collection,
-                              child: const CollectionGrid(
-                                // key is expected by test driver
-                                key: Key('collection-grid'),
-                                settingsRouteKey: CollectionPage.routeName,
+      child: SelectionProvider<AvesEntry>(
+        child: Selector<Selection<AvesEntry>, bool>(
+          selector: (context, selection) => selection.selectedItems.isNotEmpty,
+          builder: (context, hasSelection, child) {
+            return Selector<Settings, bool>(
+              selector: (context, s) => s.showBottomNavigationBar,
+              builder: (context, showBottomNavigationBar, child) {
+                return NotificationListener<DraggableScrollBarNotification>(
+                  onNotification: (notification) {
+                    _draggableScrollBarEventStreamController.add(notification.event);
+                    return false;
+                  },
+                  child: Scaffold(
+                    body: QueryProvider(
+                      initialQuery: liveFilter?.query,
+                      child: Builder(
+                        builder: (context) => WillPopScope(
+                          onWillPop: () {
+                            final selection = context.read<Selection<AvesEntry>>();
+                            if (selection.isSelecting) {
+                              selection.browse();
+                              return SynchronousFuture(false);
+                            }
+                            return SynchronousFuture(true);
+                          },
+                          child: DoubleBackPopScope(
+                            child: GestureAreaProtectorStack(
+                              child: SafeArea(
+                                bottom: false,
+                                child: ChangeNotifierProvider<CollectionLens>.value(
+                                  value: _collection,
+                                  child: const CollectionGrid(
+                                    // key is expected by test driver
+                                    key: Key('collection-grid'),
+                                    settingsRouteKey: CollectionPage.routeName,
+                                  ),
+                                ),
                               ),
                             ),
                           ),
                         ),
                       ),
                     ),
+                    floatingActionButton: appMode == AppMode.pickMultipleMediaExternal && hasSelection
+                        ? FloatingActionButton(
+                            tooltip: context.l10n.collectionPickPageTitle,
+                            onPressed: () {
+                              final items = context.read<Selection<AvesEntry>>().selectedItems;
+                              final uris = items.map((entry) => entry.uri).toList();
+                              ViewerService.pick(uris);
+                            },
+                            child: const Icon(AIcons.apply),
+                          )
+                        : null,
+                    drawer: AppDrawer(currentCollection: _collection),
+                    bottomNavigationBar: showBottomNavigationBar
+                        ? AppBottomNavBar(
+                            events: _draggableScrollBarEventStreamController.stream,
+                            currentCollection: _collection,
+                          )
+                        : null,
+                    resizeToAvoidBottomInset: false,
+                    extendBody: true,
                   ),
-                ),
-              ),
-              drawer: AppDrawer(currentCollection: _collection),
-              bottomNavigationBar: showBottomNavigationBar
-                  ? AppBottomNavBar(
-                      events: _draggableScrollBarEventStreamController.stream,
-                      currentCollection: _collection,
-                    )
-                  : null,
-              resizeToAvoidBottomInset: false,
-              extendBody: true,
-            ),
-          );
-        },
+                );
+              },
+            );
+          },
+        ),
       ),
     );
   }

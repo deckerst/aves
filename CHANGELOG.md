@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 - Collection: thumbnail overlay tag icon
 - Collection: fast-scrolling shows breadcrumbs from groups
 - Settings: search
+- Pick: allow selecting multiple items according to request intent
 - `huawei` app flavor (Petal Maps, no Crashlytics)
 
 ### Changed

@@ -177,12 +177,12 @@ dependencies {
 android.productFlavors.each { flavor ->
     def tasks = gradle.startParameter.taskRequests.toString().toLowerCase()
     if (tasks.contains(flavor.name) && flavor.ext.useCrashlytics) {
-        println("Building flavor with Crashlytics [${flavor.name}] - applying plugin")
+        println("Building flavor [${flavor.name}] with Crashlytics plugin")
         apply plugin: 'com.google.gms.google-services'
         apply plugin: 'com.google.firebase.crashlytics'
     }
     if (tasks.contains(flavor.name) && flavor.ext.useHMS) {
-        println("Building flavor with HMS [${flavor.name}] - applying plugin")
+        println("Building flavor [${flavor.name}] with HMS plugin")
         apply plugin: 'com.huawei.agconnect'
     }
 }
