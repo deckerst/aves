@@ -110,6 +110,7 @@ class _CollectionPageState extends State<CollectionPage> {
                           child: DoubleBackPopScope(
                             child: GestureAreaProtectorStack(
                               child: SafeArea(
+                                top: false,
                                 bottom: false,
                                 child: ChangeNotifierProvider<CollectionLens>.value(
                                   value: _collection,
