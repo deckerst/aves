@@ -77,7 +77,7 @@ class RegionFetcher internal constructor(
                     }
                 }
                 if (newDecoder == null) {
-                    result.error("getRegion-read-null", "failed to open file for uri=$uri regionRect=$regionRect", null)
+                    result.error("getRegion-read-null", "failed to open file for mimeType=$mimeType uri=$uri regionRect=$regionRect", null)
                     return
                 }
                 currentDecoderRef = LastDecoderRef(uri, newDecoder)
