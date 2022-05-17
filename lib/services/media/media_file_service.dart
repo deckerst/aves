@@ -248,7 +248,9 @@ class PlatformMediaFileService implements MediaFileService {
           });
           if (result != null) return result as Uint8List;
         } on PlatformException catch (e, stack) {
-          await reportService.recordError(e, stack);
+          if (!MimeTypes.knownMediaTypes.contains(mimeType) && MimeTypes.isVisual(mimeType)) {
+            await reportService.recordError(e, stack);
+          }
         }
         return Uint8List(0);
       },

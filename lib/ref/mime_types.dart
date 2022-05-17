@@ -1,6 +1,7 @@
 class MimeTypes {
   static const anyImage = 'image/*';
 
+  static const avif = 'image/avif';
   static const bmp = 'image/bmp';
   static const bmpX = 'image/x-ms-bmp';
   static const gif = 'image/gif';
@@ -66,18 +67,26 @@ class MimeTypes {
   // groups
 
   // formats that support transparency
-  static const Set<String> alphaImages = {bmp, bmpX, gif, ico, png, svg, tiff, webp};
+  static const Set<String> alphaImages = {avif, bmp, bmpX, gif, heic, heif, ico, png, svg, tiff, webp};
 
   static const Set<String> rawImages = {arw, cr2, crw, dcr, dng, erf, k25, kdc, mrw, nef, nrw, orf, pef, raf, raw, rw2, sr2, srf, srw, x3f};
 
   // TODO TLAD [codec] make it dynamic if it depends on OS/lib versions
   static const Set<String> undecodableImages = {art, cdr, crw, djvu, jxl, psdVnd, psdX, octetStream, zip};
 
-  static const Set<String> _knownOpaqueImages = {heic, heif, jpeg};
+  static const Set<String> _knownOpaqueImages = {jpeg};
 
   static const Set<String> _knownVideos = {avi, aviVnd, flv, flvX, mkv, mov, mp2t, mp2ts, mp4, mpeg, ogv, webm};
 
-  static final Set<String> knownMediaTypes = {..._knownOpaqueImages, ...alphaImages, ...rawImages, ...undecodableImages, ..._knownVideos};
+  static final Set<String> knownMediaTypes = {
+    anyImage,
+    ..._knownOpaqueImages,
+    ...alphaImages,
+    ...rawImages,
+    ...undecodableImages,
+    anyVideo,
+    ..._knownVideos,
+  };
 
   static bool isImage(String mimeType) => mimeType.startsWith('image');
 
