@@ -94,22 +94,28 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
                 child: DoubleBackPopScope(
                   child: GestureAreaProtectorStack(
                     child: SafeArea(
+                      top: false,
                       bottom: false,
-                      child: FilterGrid<T>(
-                        // key is expected by test driver
-                        key: const Key('filter-grid'),
-                        settingsRouteKey: settingsRouteKey,
-                        appBar: appBar,
-                        appBarHeight: appBarHeight,
-                        sections: sections,
-                        newFilters: newFilters,
-                        sortFactor: sortFactor,
-                        showHeaders: showHeaders,
-                        selectable: selectable,
-                        queryNotifier: queryNotifier,
-                        applyQuery: applyQuery,
-                        emptyBuilder: emptyBuilder,
-                        heroType: heroType,
+                      child: Selector<MediaQueryData, double>(
+                        selector: (context, mq) => mq.padding.top,
+                        builder: (context, mqPaddingTop, child) {
+                          return FilterGrid<T>(
+                            // key is expected by test driver
+                            key: const Key('filter-grid'),
+                            settingsRouteKey: settingsRouteKey,
+                            appBar: appBar,
+                            appBarHeight: mqPaddingTop + appBarHeight,
+                            sections: sections,
+                            newFilters: newFilters,
+                            sortFactor: sortFactor,
+                            showHeaders: showHeaders,
+                            selectable: selectable,
+                            queryNotifier: queryNotifier,
+                            applyQuery: applyQuery,
+                            emptyBuilder: emptyBuilder,
+                            heroType: heroType,
+                          );
+                        },
                       ),
                     ),
                   ),
