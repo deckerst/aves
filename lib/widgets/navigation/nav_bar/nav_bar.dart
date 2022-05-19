@@ -7,7 +7,7 @@ import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/basic/draggable_scrollbar.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
-import 'package:aves/widgets/common/fx/blurred.dart';
+import 'package:aves/widgets/common/identity/aves_app_bar.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/navigation/nav_bar/floating.dart';
 import 'package:aves/widgets/navigation/nav_bar/nav_item.dart';
@@ -27,17 +27,11 @@ class AppBottomNavBar extends StatelessWidget {
     this.currentCollection,
   });
 
-  static const padding = EdgeInsets.all(8);
-
-  static double get height => kBottomNavigationBarHeight + padding.vertical;
+  static double get height => kBottomNavigationBarHeight + AvesFloatingBar.margin.vertical;
 
   @override
   Widget build(BuildContext context) {
-    const borderRadius = BorderRadius.all(Radius.circular(8));
-
-    final blurred = context.select<Settings, bool>((s) => s.enableOverlayBlurEffect);
     final showVideo = context.select<Settings, bool>((s) => !s.hiddenFilters.contains(MimeFilter.video));
-    final backgroundColor = Theme.of(context).canvasColor;
 
     final items = [
       const AvesBottomNavItem(route: CollectionPage.routeName),
@@ -46,25 +40,20 @@ class AppBottomNavBar extends StatelessWidget {
       const AvesBottomNavItem(route: AlbumListPage.routeName),
     ];
 
-    Widget child = Padding(
-      padding: padding,
-      child: BlurredRRect(
-        enabled: blurred,
-        borderRadius: borderRadius,
-        child: BottomNavigationBar(
-          items: items
-              .map((item) => BottomNavigationBarItem(
-                    icon: item.icon(context),
-                    label: item.label(context),
-                  ))
-              .toList(),
-          onTap: (index) => _goTo(context, items, index),
-          currentIndex: _getCurrentIndex(context, items),
-          type: BottomNavigationBarType.fixed,
-          backgroundColor: blurred ? backgroundColor.withOpacity(.85) : backgroundColor,
-          showSelectedLabels: false,
-          showUnselectedLabels: false,
-        ),
+    Widget child = AvesFloatingBar(
+      builder: (context, backgroundColor) => BottomNavigationBar(
+        items: items
+            .map((item) => BottomNavigationBarItem(
+                  icon: item.icon(context),
+                  label: item.label(context),
+                ))
+            .toList(),
+        onTap: (index) => _goTo(context, items, index),
+        currentIndex: _getCurrentIndex(context, items),
+        type: BottomNavigationBarType.fixed,
+        backgroundColor: backgroundColor,
+        showSelectedLabels: false,
+        showUnselectedLabels: false,
       ),
     );
 

@@ -47,6 +47,7 @@ class _ItemPickDialogState extends State<ItemPickDialog> {
               initialQuery: liveFilter?.query,
               child: GestureAreaProtectorStack(
                 child: SafeArea(
+                  top: false,
                   bottom: false,
                   child: ChangeNotifierProvider<CollectionLens>.value(
                     value: collection,

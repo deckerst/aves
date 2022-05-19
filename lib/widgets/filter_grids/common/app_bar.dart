@@ -8,7 +8,7 @@ import 'package:aves/widgets/common/app_bar_subtitle.dart';
 import 'package:aves/widgets/common/app_bar_title.dart';
 import 'package:aves/widgets/common/basic/menu.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:aves/widgets/common/sliver_app_bar_title.dart';
+import 'package:aves/widgets/common/identity/aves_app_bar.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip_set.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
 import 'package:flutter/material.dart';
@@ -73,18 +73,23 @@ class _FilterGridAppBarState<T extends CollectionFilter> extends State<FilterGri
     final selection = context.watch<Selection<FilterGridItem<T>>>();
     final isSelecting = selection.isSelecting;
     _isSelectingNotifier.value = isSelecting;
-    return SliverAppBar(
-      leading: appMode.hasDrawer ? _buildAppBarLeading(isSelecting) : null,
-      title: SliverAppBarTitleWrapper(
-        child: _buildAppBarTitle(isSelecting),
+    return AvesAppBar(
+      contentHeight: kToolbarHeight,
+      leading: _buildAppBarLeading(
+        hasDrawer: appMode.hasDrawer,
+        isSelecting: isSelecting,
       ),
+      title: _buildAppBarTitle(isSelecting),
       actions: _buildActions(appMode, selection),
-      titleSpacing: 0,
-      floating: true,
+      transitionKey: isSelecting,
     );
   }
 
-  Widget _buildAppBarLeading(bool isSelecting) {
+  Widget _buildAppBarLeading({required bool hasDrawer, required bool isSelecting}) {
+    if (!hasDrawer) {
+      return const CloseButton();
+    }
+
     VoidCallback? onPressed;
     String? tooltip;
     if (isSelecting) {
