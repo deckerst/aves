@@ -43,6 +43,8 @@ mixin SourceBase {
   ValueNotifier<ProgressEvent> progressNotifier = ValueNotifier(const ProgressEvent(done: 0, total: 0));
 
   void setProgress({required int done, required int total}) => progressNotifier.value = ProgressEvent(done: done, total: total);
+
+  void invalidateEntries();
 }
 
 abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagMixin, TrashMixin {
@@ -113,12 +115,17 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
   }
 
   void _invalidate([Set<AvesEntry>? entries]) {
-    _visibleEntries = null;
-    _trashedEntries = null;
-    _sortedEntriesByDate = null;
+    invalidateEntries();
     invalidateAlbumFilterSummary(entries: entries);
     invalidateCountryFilterSummary(entries: entries);
     invalidateTagFilterSummary(entries: entries);
+  }
+
+  @override
+  void invalidateEntries() {
+    _visibleEntries = null;
+    _trashedEntries = null;
+    _sortedEntriesByDate = null;
   }
 
   void updateDerivedFilters([Set<AvesEntry>? entries]) {

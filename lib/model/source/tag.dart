@@ -18,6 +18,7 @@ mixin TagMixin on SourceBase {
     final saved = await (ids != null ? metadataDb.loadCatalogMetadataById(ids) : metadataDb.loadCatalogMetadata());
     final idMap = entryById;
     saved.forEach((metadata) => idMap[metadata.id]?.catalogMetadata = metadata);
+    invalidateEntries();
     onCatalogMetadataChanged();
   }
 
