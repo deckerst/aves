@@ -203,6 +203,7 @@ class _EntryGoogleMapState<T> extends State<EntryGoogleMap<T>> with WidgetsBindi
                       myLocationEnabled: false,
                       myLocationButtonEnabled: false,
                       markers: {
+                        // TODO TLAD workaround for dot location marker not showing the last value until this is fixed: https://github.com/flutter/flutter/issues/103686
                         ...markers,
                         if (dotLocation != null && _dotMarkerBitmap != null)
                           Marker(

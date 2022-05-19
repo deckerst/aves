@@ -127,14 +127,22 @@ class _CollectionPageState extends State<CollectionPage> {
                       ),
                     ),
                     floatingActionButton: appMode == AppMode.pickMultipleMediaExternal && hasSelection
-                        ? FloatingActionButton(
-                            tooltip: context.l10n.collectionPickPageTitle,
-                            onPressed: () {
-                              final items = context.read<Selection<AvesEntry>>().selectedItems;
-                              final uris = items.map((entry) => entry.uri).toList();
-                              ViewerService.pick(uris);
-                            },
-                            child: const Icon(AIcons.apply),
+                        ? TooltipTheme(
+                            data: TooltipTheme.of(context).copyWith(
+                              preferBelow: false,
+                            ),
+                            child: FloatingActionButton(
+                              tooltip: context.l10n.collectionPickPageTitle,
+                              onPressed: () {
+                                final items = context.read<Selection<AvesEntry>>().selectedItems;
+                                final uris = items.map((entry) => entry.uri).toList();
+                                ViewerService.pick(uris);
+                              },
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(16)),
+                              ),
+                              child: const Icon(AIcons.apply),
+                            ),
                           )
                         : null,
                     drawer: AppDrawer(currentCollection: _collection),

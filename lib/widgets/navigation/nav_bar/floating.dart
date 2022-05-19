@@ -3,7 +3,6 @@ import 'dart:math';
 
 import 'package:aves/widgets/common/basic/draggable_scrollbar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 
 class FloatingNavBar extends StatefulWidget {
   final ScrollController? scrollController;
@@ -28,10 +27,7 @@ class _FloatingNavBarState extends State<FloatingNavBar> with SingleTickerProvid
   late AnimationController _controller;
   late Animation<Offset> _offsetAnimation;
   double? _lastOffset;
-  double _delta = 0;
   bool _isDragging = false;
-
-  static const double _deltaThreshold = 50;
 
   @override
   void initState() {
@@ -73,7 +69,6 @@ class _FloatingNavBarState extends State<FloatingNavBar> with SingleTickerProvid
 
   void _registerWidget(FloatingNavBar widget) {
     _lastOffset = null;
-    _delta = 0;
     widget.scrollController?.addListener(_onScrollChange);
     _subscriptions.add(widget.events.listen(_onDraggableScrollBarEvent));
   }
@@ -98,25 +93,19 @@ class _FloatingNavBarState extends State<FloatingNavBar> with SingleTickerProvid
     if (scrollController == null) return;
 
     final offset = scrollController.offset;
-    _delta += offset - (_lastOffset ?? offset);
+    final delta = offset - (_lastOffset ?? offset);
     _lastOffset = offset;
 
-    if (_isDragging) return;
-
-    final after = scrollController.position.extentAfter;
+    double? newValue;
     final childHeight = widget.childHeight;
-    if (after < childHeight && scrollController.position.userScrollDirection == ScrollDirection.reverse) {
-      _controller.value = min(_controller.value, after / childHeight);
-      _delta = 0;
-      return;
+    final after = scrollController.position.extentAfter;
+    if (after < childHeight && delta > 0) {
+      newValue = min(_controller.value, after / childHeight);
+    } else if (!_isDragging || delta > 0) {
+      newValue = _controller.value + delta / childHeight;
     }
-
-    if (_delta.abs() > _deltaThreshold) {
-      if (_delta > 0) {
-        _hide();
-      } else {
-        _show();
-      }
+    if (newValue != null) {
+      _controller.value = newValue.clamp(0.0, 1.0);
     }
   }
 
@@ -124,22 +113,10 @@ class _FloatingNavBarState extends State<FloatingNavBar> with SingleTickerProvid
     switch (event) {
       case DraggableScrollBarEvent.dragStart:
         _isDragging = true;
-        _hide();
         break;
       case DraggableScrollBarEvent.dragEnd:
         _isDragging = false;
-        _show();
         break;
     }
-  }
-
-  void _show() {
-    _controller.reverse();
-    _delta = 0;
-  }
-
-  void _hide() {
-    _controller.forward();
-    _delta = 0;
   }
 }
