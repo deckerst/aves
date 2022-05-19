@@ -183,7 +183,11 @@ mixin LocationMixin on SourceBase {
   final Map<String, int> _filterEntryCountMap = {};
   final Map<String, AvesEntry?> _filterRecentEntryMap = {};
 
-  void invalidateCountryFilterSummary({Set<AvesEntry>? entries, Set<String>? countryCodes}) {
+  void invalidateCountryFilterSummary({
+    Set<AvesEntry>? entries,
+    Set<String>? countryCodes,
+    bool notify = true,
+  }) {
     if (_filterEntryCountMap.isEmpty && _filterRecentEntryMap.isEmpty) return;
 
     if (entries == null && countryCodes == null) {
@@ -199,7 +203,9 @@ mixin LocationMixin on SourceBase {
         _filterRecentEntryMap.remove(countryCode);
       });
     }
-    eventBus.fire(CountrySummaryInvalidatedEvent(countryCodes));
+    if (notify) {
+      eventBus.fire(CountrySummaryInvalidatedEvent(countryCodes));
+    }
   }
 
   int countryEntryCount(LocationFilter filter) {

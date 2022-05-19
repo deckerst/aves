@@ -26,9 +26,11 @@ mixin AlbumMixin on SourceBase {
     return compareAsciiUpperCase(va, vb);
   }
 
-  void _onAlbumChanged() {
+  void _onAlbumChanged({bool notify = true}) {
     invalidateAlbumDisplayNames();
-    eventBus.fire(AlbumsChangedEvent());
+    if (notify) {
+      eventBus.fire(AlbumsChangedEvent());
+    }
   }
 
   Map<String, AvesEntry?> getAlbumEntries() {
@@ -55,14 +57,14 @@ mixin AlbumMixin on SourceBase {
 
   void updateDirectories() {
     final visibleDirectories = visibleEntries.map((entry) => entry.directory).toSet();
-    addDirectories(visibleDirectories);
+    addDirectories(albums: visibleDirectories);
     cleanEmptyAlbums();
   }
 
-  void addDirectories(Set<String?> albums) {
+  void addDirectories({required Set<String?> albums, bool notify = true}) {
     if (!_directories.containsAll(albums)) {
       _directories.addAll(albums);
-      _onAlbumChanged();
+      _onAlbumChanged(notify: notify);
     }
   }
 
@@ -92,7 +94,11 @@ mixin AlbumMixin on SourceBase {
   final Map<String, int> _filterEntryCountMap = {};
   final Map<String, AvesEntry?> _filterRecentEntryMap = {};
 
-  void invalidateAlbumFilterSummary({Set<AvesEntry>? entries, Set<String?>? directories}) {
+  void invalidateAlbumFilterSummary({
+    Set<AvesEntry>? entries,
+    Set<String?>? directories,
+    bool notify = true,
+  }) {
     if (_filterEntryCountMap.isEmpty && _filterRecentEntryMap.isEmpty) return;
 
     if (entries == null && directories == null) {
@@ -108,7 +114,9 @@ mixin AlbumMixin on SourceBase {
         _filterRecentEntryMap.remove(directory);
       });
     }
-    eventBus.fire(AlbumSummaryInvalidatedEvent(directories));
+    if (notify) {
+      eventBus.fire(AlbumSummaryInvalidatedEvent(directories));
+    }
   }
 
   int albumEntryCount(AlbumFilter filter) {
@@ -123,7 +131,7 @@ mixin AlbumMixin on SourceBase {
 
   void createAlbum(String directory) {
     _newAlbums.add(directory);
-    addDirectories({directory});
+    addDirectories(albums: {directory});
   }
 
   void renameNewAlbum(String source, String destination) {

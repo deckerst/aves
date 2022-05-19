@@ -96,7 +96,9 @@ class MediaStoreSource extends CollectionSource {
 
     // show known entries
     debugPrint('$runtimeType refresh ${stopwatch.elapsed} add known entries');
-    addEntries(knownEntries);
+    // add entries without notifying, so that the collection is not refreshed
+    // with items that may be hidden right away because of their metadata
+    addEntries(knownEntries, notify: false);
 
     debugPrint('$runtimeType refresh ${stopwatch.elapsed} load metadata');
     if (directory != null) {

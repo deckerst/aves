@@ -114,11 +114,11 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
     return entries.where(TrashFilter.instance.test);
   }
 
-  void _invalidate([Set<AvesEntry>? entries]) {
+  void _invalidate({Set<AvesEntry>? entries, bool notify = true}) {
     invalidateEntries();
-    invalidateAlbumFilterSummary(entries: entries);
-    invalidateCountryFilterSummary(entries: entries);
-    invalidateTagFilterSummary(entries: entries);
+    invalidateAlbumFilterSummary(entries: entries, notify: notify);
+    invalidateCountryFilterSummary(entries: entries, notify: notify);
+    invalidateTagFilterSummary(entries: entries, notify: notify);
   }
 
   @override
@@ -129,7 +129,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
   }
 
   void updateDerivedFilters([Set<AvesEntry>? entries]) {
-    _invalidate(entries);
+    _invalidate(entries: entries);
     // it is possible for entries hidden by a filter type, to have an impact on other types
     // e.g. given a sole entry for country C and tag T, hiding T should make C disappear too
     updateDirectories();
@@ -137,7 +137,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
     updateTags();
   }
 
-  void addEntries(Set<AvesEntry> entries) {
+  void addEntries(Set<AvesEntry> entries, {bool notify = true}) {
     if (entries.isEmpty) return;
 
     final newIdMapEntries = Map.fromEntries(entries.map((entry) => MapEntry(entry.id, entry)));
@@ -152,10 +152,12 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
 
     _entryById.addAll(newIdMapEntries);
     _rawEntries.addAll(entries);
-    _invalidate(entries);
+    _invalidate(entries: entries, notify: notify);
 
-    addDirectories(_applyHiddenFilters(entries).map((entry) => entry.directory).toSet());
-    eventBus.fire(EntryAddedEvent(entries));
+    addDirectories(albums: _applyHiddenFilters(entries).map((entry) => entry.directory).toSet(), notify: notify);
+    if (notify) {
+      eventBus.fire(EntryAddedEvent(entries));
+    }
   }
 
   Future<void> removeEntries(Set<String> uris, {required bool includeTrash}) async {
@@ -327,7 +329,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
       case MoveType.move:
       case MoveType.export:
         cleanEmptyAlbums(fromAlbums);
-        addDirectories(destinationAlbums);
+        addDirectories(albums: destinationAlbums);
         break;
       case MoveType.toBin:
       case MoveType.fromBin:
@@ -335,7 +337,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
         break;
     }
     invalidateAlbumFilterSummary(directories: fromAlbums);
-    _invalidate(movedEntries);
+    _invalidate(entries: movedEntries);
     eventBus.fire(EntryMovedEvent(moveType, movedEntries));
   }
 
