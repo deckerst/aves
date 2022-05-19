@@ -58,7 +58,7 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
     super.key,
     this.settingsRouteKey,
     required this.appBar,
-    this.appBarHeight = kToolbarHeight,
+    required this.appBarHeight,
     required this.sections,
     required this.newFilters,
     required this.sortFactor,

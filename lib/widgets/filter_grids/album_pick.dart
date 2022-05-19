@@ -85,7 +85,7 @@ class _AlbumPickPageState extends State<_AlbumPickPage> {
                     actionDelegate: AlbumChipSetActionDelegate(gridItems),
                     queryNotifier: _queryNotifier,
                   ),
-                  appBarHeight: _AlbumPickAppBar.preferredHeight,
+                  appBarHeight: AvesAppBar.appBarHeightForContentHeight(_AlbumPickAppBar.contentHeight),
                   sections: AlbumListPage.groupToSections(context, source, gridItems),
                   newFilters: source.getNewAlbumFilters(context),
                   sortFactor: settings.albumSortFactor,
@@ -118,7 +118,7 @@ class _AlbumPickAppBar extends StatelessWidget {
   final AlbumChipSetActionDelegate actionDelegate;
   final ValueNotifier<String> queryNotifier;
 
-  static const preferredHeight = kToolbarHeight + _AlbumQueryBar.preferredHeight;
+  static const contentHeight = kToolbarHeight + _AlbumQueryBar.preferredHeight;
 
   const _AlbumPickAppBar({
     required this.source,
@@ -145,7 +145,7 @@ class _AlbumPickAppBar extends StatelessWidget {
     }
 
     return AvesAppBar(
-      contentHeight: preferredHeight,
+      contentHeight: contentHeight,
       leading: const BackButton(),
       title: SourceStateAwareAppBarTitle(
         title: Text(title()),

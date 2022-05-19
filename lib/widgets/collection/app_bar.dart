@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/actions/entry_set_actions.dart';
@@ -45,13 +46,14 @@ class CollectionAppBar extends StatefulWidget {
   State<CollectionAppBar> createState() => _CollectionAppBarState();
 }
 
-class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerProviderStateMixin {
+class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   final List<StreamSubscription> _subscriptions = [];
   final EntrySetActionDelegate _actionDelegate = EntrySetActionDelegate();
   late AnimationController _browseToSelectAnimation;
   final ValueNotifier<bool> _isSelectingNotifier = ValueNotifier(false);
   final FocusNode _queryBarFocusNode = FocusNode();
   late final Listenable _queryFocusRequestNotifier;
+  double _statusBarHeight = 0;
 
   CollectionLens get collection => widget.collection;
 
@@ -76,7 +78,11 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     );
     _isSelectingNotifier.addListener(_onActivityChange);
     _registerWidget(widget);
-    WidgetsBinding.instance.addPostFrameCallback((_) => _onFilterChanged());
+    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _updateStatusBarHeight();
+      _onFilterChanged();
+    });
   }
 
   @override
@@ -95,6 +101,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     _subscriptions
       ..forEach((sub) => sub.cancel())
       ..clear();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
@@ -104,6 +111,11 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
 
   void _unregisterWidget(CollectionAppBar widget) {
     widget.collection.filterChangeNotifier.removeListener(_onFilterChanged);
+  }
+
+  @override
+  void didChangeMetrics() {
+    _updateStatusBarHeight();
   }
 
   @override
@@ -432,8 +444,13 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
 
   void _onQueryFocusRequest() => _queryBarFocusNode.requestFocus();
 
+  void _updateStatusBarHeight() {
+    _statusBarHeight = EdgeInsets.fromWindowPadding(window.padding, window.devicePixelRatio).top;
+    _updateAppBarHeight();
+  }
+
   void _updateAppBarHeight() {
-    widget.appBarHeightNotifier.value = AvesAppBar.appBarHeightForContentHeight(appBarContentHeight);
+    widget.appBarHeightNotifier.value = _statusBarHeight + AvesAppBar.appBarHeightForContentHeight(appBarContentHeight);
   }
 
   Future<void> _onActionSelected(EntrySetAction action) async {

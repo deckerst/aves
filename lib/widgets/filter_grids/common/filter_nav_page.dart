@@ -2,6 +2,7 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums.dart';
 import 'package:aves/utils/time_utils.dart';
+import 'package:aves/widgets/common/identity/aves_app_bar.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/providers/selection_provider.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip_set.dart';
@@ -43,6 +44,7 @@ class FilterNavigationPage<T extends CollectionFilter> extends StatelessWidget {
             actionDelegate: actionDelegate,
             isEmpty: filterSections.isEmpty,
           ),
+          appBarHeight: AvesAppBar.appBarHeightForContentHeight(kToolbarHeight),
           sections: filterSections,
           newFilters: newFilters ?? {},
           sortFactor: sortFactor,
