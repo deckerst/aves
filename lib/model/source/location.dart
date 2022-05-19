@@ -24,6 +24,7 @@ mixin LocationMixin on SourceBase {
     final saved = await (ids != null ? metadataDb.loadAddressesById(ids) : metadataDb.loadAddresses());
     final idMap = entryById;
     saved.forEach((metadata) => idMap[metadata.id]?.addressDetails = metadata);
+    invalidateEntries();
     onAddressMetadataChanged();
   }
 
