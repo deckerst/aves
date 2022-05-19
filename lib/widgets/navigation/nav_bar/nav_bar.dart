@@ -15,11 +15,13 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class AppBottomNavBar extends StatelessWidget {
+class AppBottomNavBar extends StatefulWidget {
   final Stream<DraggableScrollBarEvent> events;
 
   // collection loaded in the `CollectionPage`, if any
   final CollectionLens? currentCollection;
+
+  static double get height => kBottomNavigationBarHeight + AvesFloatingBar.margin.vertical;
 
   const AppBottomNavBar({
     super.key,
@@ -27,7 +29,12 @@ class AppBottomNavBar extends StatelessWidget {
     this.currentCollection,
   });
 
-  static double get height => kBottomNavigationBarHeight + AvesFloatingBar.margin.vertical;
+  @override
+  State<AppBottomNavBar> createState() => _AppBottomNavBarState();
+}
+
+class _AppBottomNavBarState extends State<AppBottomNavBar> {
+  String? _lastRoute;
 
   @override
   Widget build(BuildContext context) {
@@ -68,8 +75,8 @@ class AppBottomNavBar extends StatelessWidget {
       },
       child: FloatingNavBar(
         scrollController: PrimaryScrollController.of(context),
-        events: events,
-        childHeight: height + context.select<MediaQueryData, double>((mq) => mq.effectiveBottomPadding),
+        events: widget.events,
+        childHeight: AppBottomNavBar.height + context.select<MediaQueryData, double>((mq) => mq.effectiveBottomPadding),
         child: SafeArea(
           child: child,
         ),
@@ -78,13 +85,16 @@ class AppBottomNavBar extends StatelessWidget {
   }
 
   int _getCurrentIndex(BuildContext context, List<AvesBottomNavItem> items) {
-    final currentRoute = context.currentRouteName;
+    // current route may be null during navigation
+    final currentRoute = context.currentRouteName ?? _lastRoute;
+    _lastRoute = currentRoute;
+
     final currentItem = items.firstWhereOrNull((item) {
       if (currentRoute != item.route) return false;
 
       if (item.route != CollectionPage.routeName) return true;
 
-      final currentFilters = currentCollection?.filters;
+      final currentFilters = widget.currentCollection?.filters;
       if (currentFilters == null || currentFilters.length > 1) return false;
       return currentFilters.firstOrNull == item.filter;
     });

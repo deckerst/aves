@@ -32,7 +32,6 @@ class BugReport extends StatefulWidget {
 }
 
 class _BugReportState extends State<BugReport> with FeedbackMixin {
-  final ScrollController _infoScrollController = ScrollController();
   late Future<String> _infoLoader;
   bool _showInstructions = false;
 
@@ -90,28 +89,12 @@ class _BugReportState extends State<BugReport> with FeedbackMixin {
                       constraints: const BoxConstraints(maxHeight: 100),
                       margin: const EdgeInsets.symmetric(vertical: 8),
                       clipBehavior: Clip.antiAlias,
-                      child: Theme(
-                        data: Theme.of(context).copyWith(
-                          scrollbarTheme: ScrollbarThemeData(
-                            thumbVisibility: MaterialStateProperty.all(true),
-                            radius: const Radius.circular(16),
-                            crossAxisMargin: 6,
-                            mainAxisMargin: 6,
-                            interactive: true,
-                          ),
-                        ),
-                        child: Scrollbar(
-                          // when using `Scrollbar.isAlwaysShown`, a controller must be provided
-                          // and used by both the `Scrollbar` and the `Scrollable`, but
-                          // as of Flutter v2.8.1, `SelectableText` does not allow passing the `scrollController`
-                          // so we wrap it in a `SingleChildScrollView`
-                          controller: _infoScrollController,
-                          child: SingleChildScrollView(
-                            padding: const EdgeInsetsDirectional.only(start: 8, top: 4, end: 16, bottom: 4),
-                            controller: _infoScrollController,
-                            child: SelectableText(info),
-                          ),
-                        ),
+                      child: SingleChildScrollView(
+                        padding: const EdgeInsetsDirectional.only(start: 8, top: 4, end: 16, bottom: 4),
+                        // to show a scroll bar, we would need to provide a scroll controller
+                        // to both the `Scrollable` and the `Scrollbar`, but
+                        // as of Flutter v3.0.0, `SelectableText` does not allow passing the `scrollController`
+                        child: SelectableText(info),
                       ),
                     );
                   },
