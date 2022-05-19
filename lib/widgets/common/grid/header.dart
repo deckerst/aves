@@ -24,7 +24,7 @@ class SectionHeader<T> extends StatelessWidget {
     this.selectable = true,
   });
 
-  static const leadingDimension = 32.0;
+  static const leadingSize = Size(48, 32);
   static const padding = EdgeInsets.all(16);
   static const widgetSpanAlignment = PlaceholderAlignment.middle;
 
@@ -33,7 +33,7 @@ class SectionHeader<T> extends StatelessWidget {
     return Container(
       alignment: AlignmentDirectional.centerStart,
       padding: padding,
-      constraints: const BoxConstraints(minHeight: leadingDimension),
+      constraints: BoxConstraints(minHeight: leadingSize.height),
       child: GestureDetector(
         onTap: selectable ? () => _toggleSectionSelection(context) : null,
         child: Text.rich(
@@ -47,8 +47,8 @@ class SectionHeader<T> extends StatelessWidget {
                   browsingBuilder: leading != null
                       ? (context) => Container(
                             padding: const EdgeInsetsDirectional.only(end: 8, bottom: 4),
-                            width: leadingDimension,
-                            height: leadingDimension,
+                            width: leadingSize.width,
+                            height: leadingSize.height,
                             child: leading,
                           )
                       : null,
@@ -136,8 +136,6 @@ class _SectionSelectableLeading<T> extends StatelessWidget {
     required this.onPressed,
   });
 
-  static const leadingDimension = SectionHeader.leadingDimension;
-
   @override
   Widget build(BuildContext context) {
     if (!selectable) return _buildBrowsing(context);
@@ -174,7 +172,7 @@ class _SectionSelectableLeading<T> extends StatelessWidget {
     );
   }
 
-  Widget _buildBrowsing(BuildContext context) => browsingBuilder?.call(context) ?? const SizedBox(height: leadingDimension);
+  Widget _buildBrowsing(BuildContext context) => browsingBuilder?.call(context) ?? SizedBox(height: SectionHeader.leadingSize.height);
 }
 
 class _SectionSelectingLeading<T> extends StatelessWidget {
@@ -207,15 +205,14 @@ class _SectionSelectingLeading<T> extends StatelessWidget {
         ),
         child: IconButton(
           iconSize: 26,
-          padding: const EdgeInsets.only(top: 1),
-          alignment: AlignmentDirectional.topStart,
-          icon: Icon(isSelected ? AIcons.selected : AIcons.unselected),
+          padding: const EdgeInsetsDirectional.only(end: 6, bottom: 4),
           onPressed: onPressed,
           tooltip: isSelected ? context.l10n.collectionDeselectSectionTooltip : context.l10n.collectionSelectSectionTooltip,
-          constraints: const BoxConstraints(
-            minHeight: SectionHeader.leadingDimension,
-            minWidth: SectionHeader.leadingDimension,
+          constraints: BoxConstraints(
+            minHeight: SectionHeader.leadingSize.height,
+            minWidth: SectionHeader.leadingSize.width,
           ),
+          icon: Icon(isSelected ? AIcons.selected : AIcons.unselected),
         ),
       ),
     );
