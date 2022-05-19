@@ -37,6 +37,33 @@ class _AppBottomNavBarState extends State<AppBottomNavBar> {
   String? _lastRoute;
 
   @override
+  void initState() {
+    super.initState();
+    _registerWidget(widget);
+  }
+
+  @override
+  void didUpdateWidget(covariant AppBottomNavBar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _unregisterWidget(oldWidget);
+    _registerWidget(widget);
+  }
+
+  @override
+  void dispose() {
+    _unregisterWidget(widget);
+    super.dispose();
+  }
+
+  void _registerWidget(AppBottomNavBar widget) {
+    widget.currentCollection?.filterChangeNotifier.addListener(_onCollectionFilterChange);
+  }
+
+  void _unregisterWidget(AppBottomNavBar widget) {
+    widget.currentCollection?.filterChangeNotifier.removeListener(_onCollectionFilterChange);
+  }
+
+  @override
   Widget build(BuildContext context) {
     final showVideo = context.select<Settings, bool>((s) => !s.hiddenFilters.contains(MimeFilter.video));
 
@@ -83,6 +110,8 @@ class _AppBottomNavBarState extends State<AppBottomNavBar> {
       ),
     );
   }
+
+  void _onCollectionFilterChange() => setState(() {});
 
   int _getCurrentIndex(BuildContext context, List<AvesBottomNavItem> items) {
     // current route may be null during navigation

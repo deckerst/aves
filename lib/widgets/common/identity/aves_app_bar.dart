@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/fx/blurred.dart';
@@ -26,56 +24,58 @@ class AvesAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SliverPersistentHeader(
-      floating: true,
-      pinned: false,
-      delegate: _SliverAppBarDelegate(
-        height: appBarHeightForContentHeight(contentHeight),
-        child: SafeArea(
-          bottom: false,
-          child: AvesFloatingBar(
-            builder: (context, backgroundColor) => Material(
-              color: backgroundColor,
-              textStyle: Theme.of(context).appBarTheme.titleTextStyle,
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: kToolbarHeight,
-                    child: Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 4),
-                          child: leading,
-                        ),
-                        Expanded(
-                          child: AnimatedSwitcher(
-                            duration: context.read<DurationsData>().iconAnimation,
-                            child: Row(
-                              key: ValueKey(transitionKey),
-                              children: [
-                                Expanded(child: title),
-                                ...actions,
-                              ],
+    return Selector<MediaQueryData, double>(
+      selector: (context, mq) => mq.padding.top,
+      builder: (context, mqPaddingTop, child) {
+        return SliverPersistentHeader(
+          floating: true,
+          pinned: false,
+          delegate: _SliverAppBarDelegate(
+            height: mqPaddingTop + appBarHeightForContentHeight(contentHeight),
+            child: SafeArea(
+              bottom: false,
+              child: AvesFloatingBar(
+                builder: (context, backgroundColor) => Material(
+                  color: backgroundColor,
+                  textStyle: Theme.of(context).appBarTheme.titleTextStyle,
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: kToolbarHeight,
+                        child: Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 4),
+                              child: leading,
                             ),
-                          ),
+                            Expanded(
+                              child: AnimatedSwitcher(
+                                duration: context.read<DurationsData>().iconAnimation,
+                                child: Row(
+                                  key: ValueKey(transitionKey),
+                                  children: [
+                                    Expanded(child: title),
+                                    ...actions,
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                      if (bottom != null) bottom!,
+                    ],
                   ),
-                  if (bottom != null) bottom!,
-                ],
+                ),
               ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
-  static double appBarHeightForContentHeight(double contentHeight) {
-    final topPadding = window.padding.top / window.devicePixelRatio;
-    return topPadding + AvesFloatingBar.margin.vertical + contentHeight;
-  }
+  static double appBarHeightForContentHeight(double contentHeight) => AvesFloatingBar.margin.vertical + contentHeight;
 }
 
 class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
