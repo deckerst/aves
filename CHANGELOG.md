@@ -15,7 +15,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
-- upgraded Flutter to stable v3.0.0
+- upgraded Flutter to stable v3.0.1
 - stretching overscroll effect
 
 ### Fixed
