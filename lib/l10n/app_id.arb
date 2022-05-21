@@ -17,7 +17,7 @@
   "hideButtonLabel": "SEMBUNYIKAN",
   "continueButtonLabel": "SELANJUTNYA",
 
-  "cancelTooltip": "Batalkan",
+  "cancelTooltip": "Batal",
   "changeTooltip": "Ganti",
   "clearTooltip": "Hapus",
   "previousTooltip": "Sebelumnya",
@@ -82,7 +82,7 @@
 
   "entryInfoActionEditDate": "Ubah tanggal & waktu",
   "entryInfoActionEditLocation": "Ubah lokasi",
-  "entryInfoActionEditRating": "Ubah peringkat",
+  "entryInfoActionEditRating": "Ubah nilai",
   "entryInfoActionEditTags": "Ubah label",
   "entryInfoActionRemoveMetadata": "Hapus metadata",
 
@@ -90,7 +90,7 @@
   "filterFavouriteLabel": "Favorit",
   "filterLocationEmptyLabel": "Lokasi yang tidak ditemukan",
   "filterTagEmptyLabel": "Tidak dilabel",
-  "filterRatingUnratedLabel": "Belum diberi peringkat",
+  "filterRatingUnratedLabel": "Belum diberi nilai",
   "filterRatingRejectedLabel": "Ditolak",
   "filterTypeAnimatedLabel": "Teranimasi",
   "filterTypeMotionPhotoLabel": "Foto bergerak",
@@ -150,14 +150,14 @@
 
   "albumTierNew": "Baru",
   "albumTierPinned": "Disemat",
-  "albumTierSpecial": "Umum",
+  "albumTierSpecial": "Biasa",
   "albumTierApps": "Aplikasi",
   "albumTierRegular": "Lainnya",
 
-  "storageVolumeDescriptionFallbackPrimary": "Penyimpanan internal",
-  "storageVolumeDescriptionFallbackNonPrimary": "kartu SD",
-  "rootDirectoryDescription": "direktori root",
-  "otherDirectoryDescription": "direktori “{name}”",
+  "storageVolumeDescriptionFallbackPrimary": "Penyimpanan Internal",
+  "storageVolumeDescriptionFallbackNonPrimary": "Kartu SD",
+  "rootDirectoryDescription": "Direktori root",
+  "otherDirectoryDescription": "Direktori “{name}”",
   "storageAccessDialogTitle": "Akses Penyimpanan",
   "storageAccessDialogMessage": "Silahkan pilih {directory} dari “{volume}” di layar berikutnya untuk memberikan akses aplikasi ini ke sana.",
   "restrictedAccessDialogTitle": "Akses Terbatas",
@@ -237,7 +237,7 @@
 
   "locationPickerUseThisLocationButton": "Gunakan lokasi ini",
 
-  "editEntryRatingDialogTitle": "Peringkat",
+  "editEntryRatingDialogTitle": "Nilai",
 
   "removeEntryMetadataDialogTitle": "Penghapusan Metadata",
   "removeEntryMetadataDialogMore": "Lebih Banyak",
@@ -249,7 +249,7 @@
 
   "videoStreamSelectionDialogVideo": "Video",
   "videoStreamSelectionDialogAudio": "Audio",
-  "videoStreamSelectionDialogText": "Subtitle",
+  "videoStreamSelectionDialogText": "Subjudul",
   "videoStreamSelectionDialogOff": "Mati",
   "videoStreamSelectionDialogTrack": "Trek",
   "videoStreamSelectionDialogNoSelection": "Tidak ada Trek yang lain.",
@@ -324,7 +324,7 @@
   "collectionSortDate": "Lewat tanggal",
   "collectionSortSize": "Lewat ukuran",
   "collectionSortName": "Lewat nama album & file",
-  "collectionSortRating": "Lewat peringkat",
+  "collectionSortRating": "Lewat nilai",
 
   "collectionGroupAlbum": "Lewat album",
   "collectionGroupMonth": "Lewat bulan",
@@ -402,7 +402,7 @@
   "searchSectionCountries": "Negara",
   "searchSectionPlaces": "Tempat",
   "searchSectionTags": "Label",
-  "searchSectionRating": "Peringkat",
+  "searchSectionRating": "Nilai",
 
   "settingsPageTitle": "Pengaturan",
   "settingsSystemDefault": "Sistem",
@@ -419,7 +419,7 @@
 
   "settingsSectionNavigation": "Navigasi",
   "settingsHome": "Beranda",
-  "settingsShowBottomNavigationBar": "Lihatkan bilah navigasi bawah",
+  "settingsShowBottomNavigationBar": "Tampilkan bilah navigasi bawah",
   "settingsKeepScreenOnTile": "Biarkan layarnya menyala",
   "settingsKeepScreenOnTitle": "Biarkan Layarnya Menyala",
   "settingsDoubleBackExit": "Ketuk “kembali” dua kali untuk keluar",
@@ -445,7 +445,7 @@
   "settingsThumbnailShowTagIcon": "Tampilkan ikon label",
   "settingsThumbnailShowLocationIcon": "Tampilkan ikon lokasi",
   "settingsThumbnailShowMotionPhotoIcon": "Tampilkan ikon Foto bergerak",
-  "settingsThumbnailShowRating": "Tampilkan peringkat",
+  "settingsThumbnailShowRating": "Tampilkan ",
   "settingsThumbnailShowRawIcon": "Tampilkan ikon raw",
   "settingsThumbnailShowVideoDuration": "Tampilkan durasi video",
 
@@ -487,8 +487,8 @@
   "settingsVideoLoopModeTile": "Putar ulang",
   "settingsVideoLoopModeTitle": "Putar Ulang",
 
-  "settingsSubtitleThemeTile": "Subtitle",
-  "settingsSubtitleThemeTitle": "Subtitle",
+  "settingsSubtitleThemeTile": "Subjudul",
+  "settingsSubtitleThemeTitle": "Subjudul",
   "settingsSubtitleThemeSample": "Ini adalah sampel.",
   "settingsSubtitleThemeTextAlignmentTile": "Perataan teks",
   "settingsSubtitleThemeTextAlignmentTitle": "Perataan Teks",
