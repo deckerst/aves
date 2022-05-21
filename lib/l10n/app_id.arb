@@ -154,10 +154,10 @@
   "albumTierApps": "Aplikasi",
   "albumTierRegular": "Lainnya",
 
-  "storageVolumeDescriptionFallbackPrimary": "Penyimpanan Internal",
-  "storageVolumeDescriptionFallbackNonPrimary": "Kartu SD",
-  "rootDirectoryDescription": "Direktori root",
-  "otherDirectoryDescription": "Direktori “{name}”",
+  "storageVolumeDescriptionFallbackPrimary": "Penyimpanan internal",
+  "storageVolumeDescriptionFallbackNonPrimary": "kartu SD",
+  "rootDirectoryDescription": "direktori root",
+  "otherDirectoryDescription": "direktori “{name}”",
   "storageAccessDialogTitle": "Akses Penyimpanan",
   "storageAccessDialogMessage": "Silahkan pilih {directory} dari “{volume}” di layar berikutnya untuk memberikan akses aplikasi ini ke sana.",
   "restrictedAccessDialogTitle": "Akses Terbatas",
@@ -445,7 +445,7 @@
   "settingsThumbnailShowTagIcon": "Tampilkan ikon label",
   "settingsThumbnailShowLocationIcon": "Tampilkan ikon lokasi",
   "settingsThumbnailShowMotionPhotoIcon": "Tampilkan ikon Foto bergerak",
-  "settingsThumbnailShowRating": "Tampilkan ",
+  "settingsThumbnailShowRating": "Tampilkan nilai",
   "settingsThumbnailShowRawIcon": "Tampilkan ikon raw",
   "settingsThumbnailShowVideoDuration": "Tampilkan durasi video",
 
