@@ -1,0 +1,23 @@
+name: aves_services_platform
+version: 0.0.1
+publish_to: none
+
+environment:
+  sdk: ">=2.17.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  aves_map:
+    path: ../aves_map
+  aves_services:
+    path: ../aves_services
+  google_api_availability:
+  google_maps_flutter:
+  latlong2:
+  provider:
+
+dev_dependencies:
+  flutter_lints:
+
+flutter:

@@ -56,7 +56,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       case EntrySetAction.configureView:
         return true;
       case EntrySetAction.select:
-        return appMode.canSelect && !isSelecting;
+        return appMode.canSelectMedia && !isSelecting;
       case EntrySetAction.selectAll:
         return isSelecting && selectedItemCount < itemCount;
       case EntrySetAction.selectNone:
@@ -69,7 +69,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       case EntrySetAction.addShortcut:
         return appMode == AppMode.main && !isSelecting && device.canPinShortcut && !isTrash;
       case EntrySetAction.emptyBin:
-        return isTrash;
+        return appMode == AppMode.main && isTrash;
       // browsing or selecting
       case EntrySetAction.map:
       case EntrySetAction.stats:

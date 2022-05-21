@@ -18,10 +18,10 @@ class FilterListDetailsTheme extends StatelessWidget {
   static const double titleDetailPadding = 6;
 
   const FilterListDetailsTheme({
-    Key? key,
+    super.key,
     required this.extent,
     required this.child,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

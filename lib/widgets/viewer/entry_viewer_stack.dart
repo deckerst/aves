@@ -1,9 +1,11 @@
 import 'dart:math';
 
 import 'package:aves/app_mode.dart';
+import 'package:aves/model/actions/move_type.dart';
 import 'package:aves/model/device.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/filters/trash.dart';
 import 'package:aves/model/highlight.dart';
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -16,9 +18,9 @@ import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/viewer/entry_vertical_pager.dart';
 import 'package:aves/widgets/viewer/hero.dart';
-import 'package:aves/widgets/viewer/info/notifications.dart';
 import 'package:aves/widgets/viewer/multipage/conductor.dart';
 import 'package:aves/widgets/viewer/multipage/controller.dart';
+import 'package:aves/widgets/viewer/notifications.dart';
 import 'package:aves/widgets/viewer/overlay/bottom.dart';
 import 'package:aves/widgets/viewer/overlay/notifications.dart';
 import 'package:aves/widgets/viewer/overlay/panorama.dart';
@@ -42,10 +44,10 @@ class EntryViewerStack extends StatefulWidget {
   final AvesEntry initialEntry;
 
   const EntryViewerStack({
-    Key? key,
+    super.key,
     this.collection,
     required this.initialEntry,
-  }) : super(key: key);
+  });
 
   @override
   State<EntryViewerStack> createState() => _EntryViewerStackState();
@@ -130,8 +132,8 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
     );
     _initEntryControllers(entry);
     _registerWidget(widget);
-    WidgetsBinding.instance!.addObserver(this);
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _initOverlay());
+    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance.addPostFrameCallback((_) => _initOverlay());
   }
 
   @override
@@ -148,7 +150,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
     _overlayAnimationController.dispose();
     _overlayVisible.removeListener(_onOverlayVisibleChange);
     _verticalPager.removeListener(_onVerticalPageControllerChange);
-    WidgetsBinding.instance!.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
     _unregisterWidget(widget);
     super.dispose();
   }
@@ -195,8 +197,33 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
           onNotification: (dynamic notification) {
             if (notification is FilterSelectedNotification) {
               _goToCollection(notification.filter);
-            } else if (notification is EntryRemovedNotification) {
-              _onEntryRemoved(context, notification.entry);
+            } else if (notification is EntryDeletedNotification) {
+              _onEntryRemoved(context, notification.entries);
+            } else if (notification is EntryMovedNotification) {
+              // only add or remove entries following user actions,
+              // instead of applying all collection source changes
+              final isBin = collection?.filters.contains(TrashFilter.instance) ?? false;
+              final entries = notification.entries;
+              switch (notification.moveType) {
+                case MoveType.move:
+                  _onEntryRemoved(context, entries);
+                  break;
+                case MoveType.toBin:
+                  if (!isBin) {
+                    _onEntryRemoved(context, entries);
+                  }
+                  break;
+                case MoveType.fromBin:
+                  if (isBin) {
+                    _onEntryRemoved(context, entries);
+                  } else {
+                    _onEntryRestored(entries);
+                  }
+                  break;
+                case MoveType.copy:
+                case MoveType.export:
+                  break;
+              }
             } else if (notification is ToggleOverlayNotification) {
               _overlayVisible.value = notification.visible ?? !_overlayVisible.value;
             } else if (notification is ShowInfoNotification) {
@@ -368,7 +395,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
       builder: (context, mqHeight, child) {
         // when orientation change, the `PageController` offset is not updated right away
         // and it does not trigger its listeners when it does, so we force a refresh in the next frame
-        WidgetsBinding.instance!.addPostFrameCallback((_) => _onVerticalPageControllerChange());
+        WidgetsBinding.instance.addPostFrameCallback((_) => _onVerticalPageControllerChange());
         return AnimatedBuilder(
           animation: _verticalScrollNotifier,
           builder: (context, child) => Positioned(
@@ -457,12 +484,28 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
     _updateEntry();
   }
 
-  void _onEntryRemoved(BuildContext context, AvesEntry entry) {
-    // deleted or moved to another album
+  void _onEntryRestored(Set<AvesEntry> restoredEntries) {
+    if (restoredEntries.isEmpty) return;
+
+    final _collection = collection;
+    if (_collection != null) {
+      _collection.refresh();
+      final index = _collection.sortedEntries.indexOf(restoredEntries.first);
+      if (index != -1) {
+        _onHorizontalPageChanged(index);
+      }
+      _onCollectionChange();
+    }
+  }
+
+  // deleted or moved to another album
+  void _onEntryRemoved(BuildContext context, Set<AvesEntry> removedEntries) {
+    if (removedEntries.isEmpty) return;
+
     if (hasCollection) {
-      final entries = collection!.sortedEntries;
-      entries.remove(entry);
-      if (entries.isNotEmpty) {
+      final collectionEntries = collection!.sortedEntries;
+      removedEntries.forEach(collectionEntries.remove);
+      if (collectionEntries.isNotEmpty) {
         _onCollectionChange();
         return;
       }
@@ -505,7 +548,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
       if (_heroInfoNotifier.value != heroInfo) {
         _heroInfoNotifier.value = heroInfo;
         // we post closing the viewer page so that hero animation source is ready
-        WidgetsBinding.instance!.addPostFrameCallback((_) => pop());
+        WidgetsBinding.instance.addPostFrameCallback((_) => pop());
       } else {
         // viewer already has correct hero info, no need to rebuild
         pop();

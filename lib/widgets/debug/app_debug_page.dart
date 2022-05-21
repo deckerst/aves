@@ -31,7 +31,7 @@ import 'package:provider/provider.dart';
 class AppDebugPage extends StatefulWidget {
   static const routeName = '/debug';
 
-  const AppDebugPage({Key? key}) : super(key: key);
+  const AppDebugPage({super.key});
 
   @override
   State<StatefulWidget> createState() => _AppDebugPageState();

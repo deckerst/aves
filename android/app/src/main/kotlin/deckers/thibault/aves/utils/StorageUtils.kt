@@ -21,7 +21,6 @@ import deckers.thibault.aves.utils.MimeTypes.isVideo
 import deckers.thibault.aves.utils.PermissionManager.getGrantedDirForPath
 import deckers.thibault.aves.utils.UriUtils.tryParseId
 import java.io.File
-import java.io.FileNotFoundException
 import java.io.InputStream
 import java.io.OutputStream
 import java.util.*
@@ -404,37 +403,37 @@ object StorageUtils {
     // returns the directory `DocumentFile` (from tree URI when scoped storage is required, `File` otherwise)
     // returns null if directory does not exist and could not be created
     fun createDirectoryDocIfAbsent(context: Context, dirPath: String): DocumentFileCompat? {
-        val cleanDirPath = ensureTrailingSeparator(dirPath)
-        return if (requireAccessPermission(context, cleanDirPath) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            val grantedDir = getGrantedDirForPath(context, cleanDirPath) ?: return null
-            val rootTreeDocumentUri = convertDirPathToTreeDocumentUri(context, grantedDir) ?: return null
-            var parentFile: DocumentFileCompat? = DocumentFileCompat.fromTreeUri(context, rootTreeDocumentUri) ?: return null
-            val pathIterator = getPathStepIterator(context, cleanDirPath, grantedDir)
-            while (pathIterator?.hasNext() == true) {
-                val dirName = pathIterator.next()
-                var dirFile = findDocumentFileIgnoreCase(parentFile, dirName)
-                if (dirFile == null || !dirFile.exists()) {
-                    try {
+        try {
+            val cleanDirPath = ensureTrailingSeparator(dirPath)
+            return if (requireAccessPermission(context, cleanDirPath) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                val grantedDir = getGrantedDirForPath(context, cleanDirPath) ?: return null
+                val rootTreeDocumentUri = convertDirPathToTreeDocumentUri(context, grantedDir) ?: return null
+                var parentFile: DocumentFileCompat? = DocumentFileCompat.fromTreeUri(context, rootTreeDocumentUri) ?: return null
+                val pathIterator = getPathStepIterator(context, cleanDirPath, grantedDir)
+                while (pathIterator?.hasNext() == true) {
+                    val dirName = pathIterator.next()
+                    var dirFile = findDocumentFileIgnoreCase(parentFile, dirName)
+                    if (dirFile == null || !dirFile.exists()) {
                         dirFile = parentFile?.createDirectory(dirName)
                         if (dirFile == null) {
                             Log.e(LOG_TAG, "failed to create directory with name=$dirName from parent=$parentFile")
                             return null
                         }
-                    } catch (e: FileNotFoundException) {
-                        Log.e(LOG_TAG, "failed to create directory with name=$dirName from parent=$parentFile", e)
-                        return null
                     }
+                    parentFile = dirFile
                 }
-                parentFile = dirFile
+                parentFile
+            } else {
+                val directory = File(cleanDirPath)
+                if (!directory.exists() && !directory.mkdirs()) {
+                    Log.e(LOG_TAG, "failed to create directories at path=$cleanDirPath")
+                    return null
+                }
+                DocumentFileCompat.fromFile(directory)
             }
-            parentFile
-        } else {
-            val directory = File(cleanDirPath)
-            if (!directory.exists() && !directory.mkdirs()) {
-                Log.e(LOG_TAG, "failed to create directories at path=$cleanDirPath")
-                return null
-            }
-            DocumentFileCompat.fromFile(directory)
+        } catch (e: Exception) {
+            Log.e(LOG_TAG, "failed to create directory at path=$dirPath", e)
+            return null
         }
     }
 

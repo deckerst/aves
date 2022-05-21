@@ -11,10 +11,10 @@ class FilterDraggableThumbLabel<T extends CollectionFilter> extends StatelessWid
   final double offsetY;
 
   const FilterDraggableThumbLabel({
-    Key? key,
+    super.key,
     required this.sortFactor,
     required this.offsetY,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

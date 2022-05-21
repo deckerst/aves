@@ -14,10 +14,10 @@ class EntryListDetailsTheme extends StatelessWidget {
   static const double titleDetailPadding = 6;
 
   const EntryListDetailsTheme({
-    Key? key,
+    super.key,
     required this.extent,
     required this.child,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

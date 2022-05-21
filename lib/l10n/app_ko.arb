@@ -58,7 +58,9 @@
   "entryActionPrint": "인쇄",
   "entryActionShare": "공유",
   "entryActionViewSource": "소스 코드 보기",
-  "entryActionViewMotionPhotoVideo": "모션 포토 보기",
+  "entryActionShowGeoTiffOnMap": "지도에 겹쳐그리기",
+  "entryActionConvertMotionPhotoToStillImage": "스틸 사진으로 변환",
+  "entryActionViewMotionPhotoVideo": "동영상 보기",
   "entryActionEdit": "편집",
   "entryActionOpen": "다른 앱에서 열기",
   "entryActionSetAs": "다음 용도로 사용",
@@ -91,7 +93,7 @@
   "filterRatingUnratedLabel": "별점 없음",
   "filterRatingRejectedLabel": "거부됨",
   "filterTypeAnimatedLabel": "애니메이션",
-  "filterTypeMotionPhotoLabel": "모션 포토",
+  "filterTypeMotionPhotoLabel": "모션 사진",
   "filterTypePanoramaLabel": "파노라마",
   "filterTypeRawLabel": "Raw",
   "filterTypeSphericalVideoLabel": "360° 동영상",
@@ -119,9 +121,11 @@
   "videoControlsPlayOutside": "다른 앱에서 열기",
   "videoControlsNone": "없음",
 
-  "mapStyleGoogleNormal": "구글 지도",
-  "mapStyleGoogleHybrid": "구글 지도 (위성)",
-  "mapStyleGoogleTerrain": "구글 지도 (지형)",
+  "mapStyleGoogleNormal": "Google 지도",
+  "mapStyleGoogleHybrid": "Google 지도 (위성)",
+  "mapStyleGoogleTerrain": "Google 지도 (지형)",
+  "mapStyleHuaweiNormal": "Petal 지도",
+  "mapStyleHuaweiTerrain": "Petal 지도 (지형)",
   "mapStyleOsmHot": "Humanitarian OSM",
   "mapStyleStamenToner": "Stamen Toner (토너)",
   "mapStyleStamenWatercolor": "Stamen Watercolor (수채화)",
@@ -184,8 +188,8 @@
   "videoStartOverButtonLabel": "처음부터",
   "videoResumeButtonLabel": "이어서",
 
-  "setCoverDialogTitle": "대표 이미지 변경",
   "setCoverDialogLatest": "최근 항목",
+  "setCoverDialogAuto": "자동 설정",
   "setCoverDialogCustom": "직접 설정",
 
   "hideFilterConfirmationDialogMessage": "이 필터에 맞는 사진과 동영상이 보이지 않을 것입니다. “개인정보 보호” 설정을 수정하면 다시 보일 수 있습니다.\n\n이 필터를 숨기시겠습니까?",
@@ -238,7 +242,8 @@
   "removeEntryMetadataDialogTitle": "메타데이터 삭제",
   "removeEntryMetadataDialogMore": "더 보기",
 
-  "removeEntryMetadataMotionPhotoXmpWarningDialogMessage": "XMP가 있어야 모션 포토에 포함되는 동영상을 재생할 수 있습니다.\n\n삭제하시겠습니까?",
+  "removeEntryMetadataMotionPhotoXmpWarningDialogMessage": "XMP가 있어야 모션 사진에 포함되는 동영상을 재생할 수 있습니다.\n\n삭제하시겠습니까?",
+  "convertMotionPhotoToStillImageWarningDialogMessage": "확실합니까?",
 
   "videoSpeedDialogLabel": "재생 배속",
 
@@ -265,6 +270,13 @@
 
   "tileLayoutGrid": "바둑판",
   "tileLayoutList": "목록",
+
+  "coverDialogTabCover": "이미지",
+  "coverDialogTabApp": "앱",
+  "coverDialogTabColor": "색깔",
+
+  "appPickDialogTitle": "앱 선택",
+  "appPickDialogNone": "없음",
 
   "aboutPageTitle": "앱 정보",
   "aboutLinkSources": "소스 코드",
@@ -346,7 +358,7 @@
   "drawerCollectionImages": "사진",
   "drawerCollectionVideos": "동영상",
   "drawerCollectionAnimated": "애니메이션",
-  "drawerCollectionMotionPhotos": "모션 포토",
+  "drawerCollectionMotionPhotos": "모션 사진",
   "drawerCollectionPanoramas": "파노라마",
   "drawerCollectionRaws": "Raw 이미지",
   "drawerCollectionSphericalVideos": "360° 동영상",
@@ -396,6 +408,8 @@
   "settingsSystemDefault": "시스템",
   "settingsDefault": "기본",
 
+  "settingsSearchFieldLabel": "설정 검색",
+  "settingsSearchEmpty": "결과가 없습니다",
   "settingsActionExport": "내보내기",
   "settingsActionImport": "가져오기",
 
@@ -405,6 +419,7 @@
 
   "settingsSectionNavigation": "탐색",
   "settingsHome": "홈",
+  "settingsShowBottomNavigationBar": "하단 탐색 모음 표시",
   "settingsKeepScreenOnTile": "화면 자동 꺼짐 방지",
   "settingsKeepScreenOnTitle": "화면 자동 꺼짐 방지",
   "settingsDoubleBackExit": "뒤로가기 두번 눌러 앱 종료하기",
@@ -424,9 +439,12 @@
   "settingsNavigationDrawerAddAlbum": "앨범 추가",
 
   "settingsSectionThumbnails": "섬네일",
+  "settingsThumbnailOverlayTile": "오버레이",
+  "settingsThumbnailOverlayTitle": "오버레이",
   "settingsThumbnailShowFavouriteIcon": "즐겨찾기 아이콘 표시",
+  "settingsThumbnailShowTagIcon": "태그 아이콘 표시",
   "settingsThumbnailShowLocationIcon": "위치 아이콘 표시",
-  "settingsThumbnailShowMotionPhotoIcon": "모션 포토 아이콘 표시",
+  "settingsThumbnailShowMotionPhotoIcon": "모션 사진 아이콘 표시",
   "settingsThumbnailShowRating": "별점 표시",
   "settingsThumbnailShowRawIcon": "Raw 아이콘 표시",
   "settingsThumbnailShowVideoDuration": "동영상 길이 표시",
@@ -441,7 +459,7 @@
   "settingsSectionViewer": "뷰어",
   "settingsViewerUseCutout": "컷아웃 영역 사용",
   "settingsViewerMaximumBrightness": "최대 밝기",
-  "settingsMotionPhotoAutoPlay": "모션 포토 자동 재생",
+  "settingsMotionPhotoAutoPlay": "모션 사진 자동 재생",
   "settingsImageBackground": "이미지 배경",
 
   "settingsViewerQuickActionsTile": "빠른 작업",

@@ -20,7 +20,7 @@ class ViewerTopOverlay extends StatelessWidget {
   final bool hasCollection;
 
   const ViewerTopOverlay({
-    Key? key,
+    super.key,
     required this.entries,
     required this.index,
     required this.mainEntry,
@@ -28,7 +28,7 @@ class ViewerTopOverlay extends StatelessWidget {
     required this.hasCollection,
     required this.viewInsets,
     required this.viewPadding,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -2,6 +2,7 @@ package deckers.thibault.aves
 
 import android.annotation.SuppressLint
 import android.app.SearchManager
+import android.content.ClipData
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -16,7 +17,6 @@ import app.loup.streams_channel.StreamsChannel
 import deckers.thibault.aves.channel.calls.*
 import deckers.thibault.aves.channel.streams.*
 import deckers.thibault.aves.utils.LogUtils
-import deckers.thibault.aves.utils.PermissionManager
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodCall
@@ -222,6 +222,7 @@ class MainActivity : FlutterActivity() {
                 return hashMapOf(
                     INTENT_DATA_KEY_ACTION to INTENT_ACTION_PICK,
                     INTENT_DATA_KEY_MIME_TYPE to intent.type,
+                    INTENT_DATA_KEY_ALLOW_MULTIPLE to (intent.extras?.getBoolean(Intent.EXTRA_ALLOW_MULTIPLE) ?: false),
                 )
             }
             Intent.ACTION_SEARCH -> {
@@ -246,10 +247,20 @@ class MainActivity : FlutterActivity() {
     }
 
     private fun pick(call: MethodCall) {
-        val pickedUri = call.argument<String>("uri")
-        if (pickedUri != null) {
+        val pickedUris = call.argument<List<String>>("uris")
+        if (pickedUris != null && pickedUris.isNotEmpty()) {
+            val toUri = { uriString: String -> AppAdapterHandler.getShareableUri(context, Uri.parse(uriString)) }
             val intent = Intent().apply {
-                data = Uri.parse(pickedUri)
+                val firstUri = toUri(pickedUris.first())
+                if (pickedUris.size == 1) {
+                    data = firstUri
+                } else {
+                    clipData = ClipData.newUri(contentResolver, null, firstUri).apply {
+                        pickedUris.drop(1).forEach {
+                            addItem(ClipData.Item(toUri(it)))
+                        }
+                    }
+                }
                 addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             }
             setResult(RESULT_OK, intent)
@@ -307,6 +318,7 @@ class MainActivity : FlutterActivity() {
         const val INTENT_DATA_KEY_ACTION = "action"
         const val INTENT_DATA_KEY_FILTERS = "filters"
         const val INTENT_DATA_KEY_MIME_TYPE = "mimeType"
+        const val INTENT_DATA_KEY_ALLOW_MULTIPLE = "allowMultiple"
         const val INTENT_DATA_KEY_PAGE = "page"
         const val INTENT_DATA_KEY_URI = "uri"
         const val INTENT_DATA_KEY_QUERY = "query"

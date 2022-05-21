@@ -58,7 +58,9 @@
   "entryActionPrint": "Drucken",
   "entryActionShare": "Teilen",
   "entryActionViewSource": "Quelle anzeigen",
-  "entryActionViewMotionPhotoVideo": "Bewegtes Foto öffnen",
+  "entryActionShowGeoTiffOnMap": "Als Karten-Overlay anzeigen",
+  "entryActionConvertMotionPhotoToStillImage": "In ein Standbild umwandeln",
+  "entryActionViewMotionPhotoVideo": "Video öffnen",
   "entryActionEdit": "Bearbeiten",
   "entryActionOpen": "Öffnen mit",
   "entryActionSetAs": "Einstellen als",
@@ -122,6 +124,8 @@
   "mapStyleGoogleNormal": "Google Maps",
   "mapStyleGoogleHybrid": "Google Maps (Hybrid)",
   "mapStyleGoogleTerrain": "Google Maps (Gelände)",
+  "mapStyleHuaweiNormal": "Petal Maps",
+  "mapStyleHuaweiTerrain": "Petal Maps (Gelände)",
   "mapStyleOsmHot": "Humanitäres OSM",
   "mapStyleStamenToner": "Stamen Toner (SchwarzWeiß)",
   "mapStyleStamenWatercolor": "Stamen Watercolor (Aquarell)",
@@ -184,8 +188,8 @@
   "videoStartOverButtonLabel": "NEU BEGINNEN",
   "videoResumeButtonLabel": "FORTSETZTEN",
 
-  "setCoverDialogTitle": "Titelbild bestimmen",
   "setCoverDialogLatest": "Letzter Artikel",
+  "setCoverDialogAuto": "Auto",
   "setCoverDialogCustom": "Benutzerdefiniert",
 
   "hideFilterConfirmationDialogMessage": "Passende Fotos und Videos werden aus Ihrer Sammlung ausgeblendet. Dies kann in den „Datenschutz“-Einstellungen wieder eingeblendet werden.\n\nSicher, dass diese ausblendet werden sollen?",
@@ -239,6 +243,7 @@
   "removeEntryMetadataDialogMore": "Mehr",
 
   "removeEntryMetadataMotionPhotoXmpWarningDialogMessage": "XMP ist erforderlich, um das Video innerhalb eines bewegten Bildes abzuspielen.\n\nSicher, dass es entfernt werden soll?",
+  "convertMotionPhotoToStillImageWarningDialogMessage": "Sicher?",
 
   "videoSpeedDialogLabel": "Wiedergabegeschwindigkeit",
 
@@ -265,6 +270,13 @@
 
   "tileLayoutGrid": "Kacheln",
   "tileLayoutList": "Liste",
+
+  "coverDialogTabCover": "Titelbild",
+  "coverDialogTabApp": "App",
+  "coverDialogTabColor": "Farbe",
+
+  "appPickDialogTitle": "Wähle App",
+  "appPickDialogNone": "Nichts",
 
   "aboutPageTitle": "Über",
   "aboutLinkSources": "Quellen",
@@ -396,6 +408,8 @@
   "settingsSystemDefault": "System",
   "settingsDefault": "Standard",
 
+  "settingsSearchFieldLabel": "Einstellungen durchsuchen",
+  "settingsSearchEmpty": "Keine passende Einstellung",
   "settingsActionExport": "Exportieren",
   "settingsActionImport": "Importieren",
 
@@ -405,6 +419,7 @@
 
   "settingsSectionNavigation": "Navigation",
   "settingsHome": "Startseite",
+  "settingsShowBottomNavigationBar": "Untere Navigationsleiste anzeigen",
   "settingsKeepScreenOnTile": "Bildschirm eingeschaltet lassen",
   "settingsKeepScreenOnTitle": "Bildschirm eingeschaltet lassen",
   "settingsDoubleBackExit": "Zum Verlassen zweimal „zurück“ tippen",
@@ -424,7 +439,10 @@
   "settingsNavigationDrawerAddAlbum": "Album hinzufügen",
 
   "settingsSectionThumbnails": "Vorschaubilder",
+  "settingsThumbnailOverlayTile": "Überlagerung",
+  "settingsThumbnailOverlayTitle": "Überlagerung",
   "settingsThumbnailShowFavouriteIcon": "Favoriten-Symbol anzeigen",
+  "settingsThumbnailShowTagIcon": "Tag-Symbol anzeigen",
   "settingsThumbnailShowLocationIcon": "Standort-Symbol anzeigen",
   "settingsThumbnailShowMotionPhotoIcon": "Bewegungsfoto-Symbol anzeigen",
   "settingsThumbnailShowRating": "Bewertung anzeigen",

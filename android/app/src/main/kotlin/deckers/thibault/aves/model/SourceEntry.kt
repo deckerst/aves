@@ -8,7 +8,6 @@ import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Build
 import androidx.exifinterface.media.ExifInterface
-import com.drew.imaging.ImageMetadataReader
 import com.drew.metadata.avi.AviDirectory
 import com.drew.metadata.exif.ExifIFD0Directory
 import com.drew.metadata.jpeg.JpegDirectory
@@ -23,6 +22,7 @@ import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper.getSafeLong
 import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper.getSafeString
 import deckers.thibault.aves.metadata.Metadata
 import deckers.thibault.aves.metadata.Metadata.getRotationDegreesForExifCode
+import deckers.thibault.aves.metadata.MetadataExtractorHelper
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeDateMillis
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeInt
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeLong
@@ -161,7 +161,7 @@ class SourceEntry {
 
         try {
             Metadata.openSafeInputStream(context, uri, sourceMimeType, sizeBytes)?.use { input ->
-                val metadata = ImageMetadataReader.readMetadata(input)
+                val metadata = MetadataExtractorHelper.safeRead(input, sizeBytes)
 
                 // do not switch on specific MIME types, as the reported MIME type could be wrong
                 // (e.g. PNG registered as JPG)
@@ -203,6 +203,8 @@ class SourceEntry {
         } catch (e: Exception) {
             // ignore
         } catch (e: NoClassDefFoundError) {
+            // ignore
+        } catch (e: AssertionError) {
             // ignore
         }
     }

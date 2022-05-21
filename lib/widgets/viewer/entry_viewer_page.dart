@@ -17,10 +17,10 @@ class EntryViewerPage extends StatelessWidget {
   final AvesEntry initialEntry;
 
   const EntryViewerPage({
-    Key? key,
+    super.key,
     this.collection,
     required this.initialEntry,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -55,9 +55,9 @@ class ViewStateConductorProvider extends StatelessWidget {
   final Widget? child;
 
   const ViewStateConductorProvider({
-    Key? key,
+    super.key,
     this.child,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -77,9 +77,9 @@ class VideoConductorProvider extends StatelessWidget {
   final Widget? child;
 
   const VideoConductorProvider({
-    Key? key,
+    super.key,
     this.child,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -97,9 +97,9 @@ class MultiPageConductorProvider extends StatelessWidget {
   final Widget? child;
 
   const MultiPageConductorProvider({
-    Key? key,
+    super.key,
     this.child,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

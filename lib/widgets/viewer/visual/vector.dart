@@ -21,11 +21,11 @@ class VectorImageView extends StatefulWidget {
   final ImageErrorWidgetBuilder errorBuilder;
 
   const VectorImageView({
-    Key? key,
+    super.key,
     required this.entry,
     required this.viewStateNotifier,
     required this.errorBuilder,
-  }) : super(key: key);
+  });
 
   @override
   State<VectorImageView> createState() => _VectorImageViewState();
@@ -290,14 +290,13 @@ class _RegionTile extends StatefulWidget {
   final _BackgroundFrameBuilder? backgroundFrameBuilder;
 
   const _RegionTile({
-    Key? key,
     required this.entry,
     required this.tileRect,
     required this.regionRect,
     required this.scale,
     required this.backgroundColor,
     required this.backgroundFrameBuilder,
-  }) : super(key: key);
+  });
 
   @override
   State<_RegionTile> createState() => _RegionTileState();

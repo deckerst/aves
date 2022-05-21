@@ -9,9 +9,9 @@ class RenameAlbumDialog extends StatefulWidget {
   final String album;
 
   const RenameAlbumDialog({
-    Key? key,
+    super.key,
     required this.album,
-  }) : super(key: key);
+  });
 
   @override
   State<RenameAlbumDialog> createState() => _RenameAlbumDialogState();

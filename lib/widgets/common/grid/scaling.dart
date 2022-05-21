@@ -31,7 +31,7 @@ class GridScaleGestureDetector<T> extends StatefulWidget {
   final Widget child;
 
   const GridScaleGestureDetector({
-    Key? key,
+    super.key,
     required this.scrollableKey,
     required this.tileLayout,
     required this.heightForWidth,
@@ -39,7 +39,7 @@ class GridScaleGestureDetector<T> extends StatefulWidget {
     required this.scaledBuilder,
     this.highlightItem,
     required this.child,
-  }) : super(key: key);
+  });
 
   @override
   State<GridScaleGestureDetector<T>> createState() => _GridScaleGestureDetectorState<T>();
@@ -55,6 +55,8 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T
 
   @override
   Widget build(BuildContext context) {
+    final gestureSettings = context.select<MediaQueryData, DeviceGestureSettings>((mq) => mq.gestureSettings);
+
     final child = GestureDetector(
       // Horizontal/vertical drag gestures are interpreted as scaling
       // if they are not handled by `onHorizontalDragStart`/`onVerticalDragStart`
@@ -79,7 +81,8 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T
               ..onStart = _onScaleStart
               ..onUpdate = _onScaleUpdate
               ..onEnd = _onScaleEnd
-              ..dragStartBehavior = DragStartBehavior.start;
+              ..dragStartBehavior = DragStartBehavior.start
+              ..gestureSettings = gestureSettings;
           },
         ),
       },
@@ -195,7 +198,7 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T
       _applyingScale = false;
     } else {
       // scroll to show the focal point thumbnail at its new position
-      WidgetsBinding.instance!.addPostFrameCallback((_) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
         final trackItem = _metadata!.item;
         final highlightItem = widget.highlightItem?.call(trackItem) ?? trackItem;
         context.read<HighlightInfo>().trackItem(trackItem, animate: false, highlightItem: highlightItem);
@@ -233,7 +236,6 @@ class _ScaleOverlay extends StatefulWidget {
   final Widget Function(Offset center, Size tileSize, Widget child) gridBuilder;
 
   const _ScaleOverlay({
-    Key? key,
     required this.builder,
     required this.tileLayout,
     required this.center,
@@ -241,7 +243,7 @@ class _ScaleOverlay extends StatefulWidget {
     required this.xMax,
     required this.scaledSizeNotifier,
     required this.gridBuilder,
-  }) : super(key: key);
+  });
 
   @override
   State<_ScaleOverlay> createState() => _ScaleOverlayState();
@@ -263,7 +265,7 @@ class _ScaleOverlayState extends State<_ScaleOverlay> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((_) => setState(() => _init = true));
+    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() => _init = true));
   }
 
   @override

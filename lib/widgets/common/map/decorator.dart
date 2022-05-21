@@ -1,5 +1,5 @@
 import 'package:aves/widgets/common/fx/borders.dart';
-import 'package:aves/widgets/common/map/theme.dart';
+import 'package:aves_map/aves_map.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -11,9 +11,9 @@ class MapDecorator extends StatelessWidget {
   static const mapLoadingGrid = Color(0xFFC4BEBB);
 
   const MapDecorator({
-    Key? key,
+    super.key,
     this.child,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

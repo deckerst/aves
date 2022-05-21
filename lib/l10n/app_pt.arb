@@ -58,7 +58,9 @@
   "entryActionPrint": "Imprimir",
   "entryActionShare": "Compartilhado",
   "entryActionViewSource": "Ver fonte",
-  "entryActionViewMotionPhotoVideo": "Abrir foto em movimento",
+  "entryActionShowGeoTiffOnMap": "Mostrar como sobreposição de mapa",
+  "entryActionConvertMotionPhotoToStillImage": "Converter para imagem estática",
+  "entryActionViewMotionPhotoVideo": "Abrir vídeo",
   "entryActionEdit": "Editar",
   "entryActionOpen": "Abrir com",
   "entryActionSetAs": "Definir como",
@@ -122,6 +124,8 @@
   "mapStyleGoogleNormal": "Google Maps",
   "mapStyleGoogleHybrid": "Google Maps (Híbrido)",
   "mapStyleGoogleTerrain": "Google Maps (Terreno)",
+  "mapStyleHuaweiNormal": "Petal Maps",
+  "mapStyleHuaweiTerrain": "Petal Maps (Terreno)",
   "mapStyleOsmHot": "OSM Humanitário",
   "mapStyleStamenToner": "Stamen Toner (Monocromático)",
   "mapStyleStamenWatercolor": "Stamen Watercolor (Aquarela)",
@@ -184,8 +188,8 @@
   "videoStartOverButtonLabel": "RECOMEÇAR",
   "videoResumeButtonLabel": "RETOMAR",
 
-  "setCoverDialogTitle": "Definir capa",
   "setCoverDialogLatest": "Último item",
+  "setCoverDialogAuto": "Auto",
   "setCoverDialogCustom": "Personalizado",
 
   "hideFilterConfirmationDialogMessage": "Fotos e vídeos correspondentes serão ocultados da sua coleção. Você pode mostrá-los novamente nas configurações de “Privacidade”.\n\nTem certeza de que deseja ocultá-los?",
@@ -239,6 +243,7 @@
   "removeEntryMetadataDialogMore": "Mais",
 
   "removeEntryMetadataMotionPhotoXmpWarningDialogMessage": "XMP é necessário para reproduzir o vídeo dentro de uma foto em movimento.\n\nTem certeza de que deseja removê-lo?",
+  "convertMotionPhotoToStillImageWarningDialogMessage": "Tem certeza?",
 
   "videoSpeedDialogLabel": "Velocidade de reprodução",
 
@@ -265,6 +270,13 @@
 
   "tileLayoutGrid": "Grid",
   "tileLayoutList": "Lista",
+
+  "coverDialogTabCover": "Capa",
+  "coverDialogTabApp": "Aplicativo",
+  "coverDialogTabColor": "Cor",
+
+  "appPickDialogTitle": "Escolha o aplicativo",
+  "appPickDialogNone": "Nenhum",
 
   "aboutPageTitle": "Sobre",
   "aboutLinkSources": "Fontes",
@@ -396,6 +408,8 @@
   "settingsSystemDefault": "Sistema",
   "settingsDefault": "Padrão",
 
+  "settingsSearchFieldLabel": "Pesquisar configuração",
+  "settingsSearchEmpty": "Nenhuma configuração correspondente",
   "settingsActionExport": "Exportar",
   "settingsActionImport": "Importar",
 
@@ -405,6 +419,7 @@
 
   "settingsSectionNavigation": "Navegação",
   "settingsHome": "Início",
+  "settingsShowBottomNavigationBar": "Mostrar barra de navegação inferior",
   "settingsKeepScreenOnTile": "Manter a tela ligada",
   "settingsKeepScreenOnTitle": "Manter a tela ligada",
   "settingsDoubleBackExit": "Toque em “voltar” duas vezes para sair",
@@ -424,7 +439,10 @@
   "settingsNavigationDrawerAddAlbum": "Adicionar álbum",
 
   "settingsSectionThumbnails": "Miniaturas",
+  "settingsThumbnailOverlayTile": "Sobreposição",
+  "settingsThumbnailOverlayTitle": "Sobreposição",
   "settingsThumbnailShowFavouriteIcon": "Mostrar ícone favorito",
+  "settingsThumbnailShowTagIcon": "Mostrar ícone de etiqueta",
   "settingsThumbnailShowLocationIcon": "Mostrar ícone de localização",
   "settingsThumbnailShowMotionPhotoIcon": "Mostrar ícone de foto em movimento",
   "settingsThumbnailShowRating": "Mostrar classificação",

@@ -17,7 +17,7 @@ class AvesDialog extends StatelessWidget {
   static const double borderWidth = 1.0;
 
   const AvesDialog({
-    Key? key,
+    super.key,
     this.title,
     this.scrollController,
     this.scrollableContent,
@@ -25,8 +25,7 @@ class AvesDialog extends StatelessWidget {
     this.horizontalContentPadding = defaultHorizontalContentPadding,
     this.content,
     required this.actions,
-  })  : assert((scrollableContent != null) ^ (content != null)),
-        super(key: key);
+  }) : assert((scrollableContent != null) ^ (content != null));
 
   @override
   Widget build(BuildContext context) {
@@ -68,9 +67,9 @@ class AvesDialog extends StatelessWidget {
       if (hasScrollBar) {
         child = Theme(
           data: Theme.of(context).copyWith(
-            scrollbarTheme: const ScrollbarThemeData(
-              isAlwaysShown: true,
-              radius: Radius.circular(16),
+            scrollbarTheme: ScrollbarThemeData(
+              thumbVisibility: MaterialStateProperty.all(true),
+              radius: const Radius.circular(16),
               crossAxisMargin: 4,
               mainAxisMargin: 4,
               interactive: true,
@@ -120,9 +119,9 @@ class DialogTitle extends StatelessWidget {
   final String title;
 
   const DialogTitle({
-    Key? key,
+    super.key,
     required this.title,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

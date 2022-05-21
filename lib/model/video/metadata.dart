@@ -24,6 +24,9 @@ import 'package:flutter/foundation.dart';
 class VideoMetadataFormatter {
   static final _dateY4M2D2H2m2s2Pattern = RegExp(r'(\d{4})[-/](\d{2})[-/](\d{2}) (\d{2}):(\d{2}):(\d{2})');
   static final _dateY4M2D2H2m2s2APmPattern = RegExp(r'(\d{4})[-/](\d{2})[-/](\d{2})T(\d+):(\d+):(\d+) ([ap]m)Z');
+  static final _ambiguousDatePatterns = {
+    RegExp(r'^\d{2}[-/]\d{2}[-/]\d{4}$'),
+  };
   static final _durationPattern = RegExp(r'(\d+):(\d+):(\d+)(.\d+)');
   static final _locationPattern = RegExp(r'([+-][.0-9]+)');
   static final Map<String, String> _codecNames = {
@@ -93,7 +96,7 @@ class VideoMetadataFormatter {
     int? dateMillis;
     if (isDefined(dateString)) {
       dateMillis = parseVideoDate(dateString);
-      if (dateMillis == null) {
+      if (dateMillis == null && !isAmbiguousDate(dateString)) {
         await reportService.recordError('getCatalogMetadata failed to parse date=$dateString for mimeType=${entry.mimeType} entry=$entry', null);
       }
     }
@@ -105,6 +108,10 @@ class VideoMetadataFormatter {
     }
 
     return entry.catalogMetadata;
+  }
+
+  static bool isAmbiguousDate(String dateString) {
+    return _ambiguousDatePatterns.any((pattern) => pattern.hasMatch(dateString));
   }
 
   static int? parseVideoDate(String dateString) {

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class DirectPageTransitionsTheme extends PageTransitionsTheme {
+  const DirectPageTransitionsTheme();
+
   @override
   Widget buildTransitions<T>(
     PageRoute<T> route,

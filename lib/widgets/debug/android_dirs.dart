@@ -6,7 +6,7 @@ import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:flutter/material.dart';
 
 class DebugAndroidDirSection extends StatefulWidget {
-  const DebugAndroidDirSection({Key? key}) : super(key: key);
+  const DebugAndroidDirSection({super.key});
 
   @override
   State<DebugAndroidDirSection> createState() => _DebugAndroidDirSectionState();

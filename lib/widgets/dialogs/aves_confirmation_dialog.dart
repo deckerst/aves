@@ -83,11 +83,10 @@ class _AvesConfirmationDialog extends StatefulWidget {
   final String confirmationButtonLabel;
 
   const _AvesConfirmationDialog({
-    Key? key,
     required this.type,
     required this.delegate,
     required this.confirmationButtonLabel,
-  }) : super(key: key);
+  });
 
   @override
   State<_AvesConfirmationDialog> createState() => _AvesConfirmationDialogState();

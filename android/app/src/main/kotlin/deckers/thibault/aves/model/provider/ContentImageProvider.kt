@@ -5,10 +5,8 @@ import android.net.Uri
 import android.provider.MediaStore
 import android.provider.OpenableColumns
 import android.util.Log
-import com.drew.imaging.ImageMetadataReader
-import com.drew.metadata.file.FileTypeDirectory
 import deckers.thibault.aves.metadata.Metadata
-import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeString
+import deckers.thibault.aves.metadata.MetadataExtractorHelper
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.model.SourceEntry
 import deckers.thibault.aves.utils.LogUtils
@@ -22,23 +20,20 @@ internal class ContentImageProvider : ImageProvider() {
         try {
             val safeUri = Uri.fromFile(Metadata.createPreviewFile(context, uri))
             StorageUtils.openInputStream(context, safeUri)?.use { input ->
-                val metadata = ImageMetadataReader.readMetadata(input)
-                for (dir in metadata.getDirectoriesOfType(FileTypeDirectory::class.java)) {
-                    // `metadata-extractor` is the most reliable, except for `tiff` (false positives, false negatives)
-                    // cf https://github.com/drewnoakes/metadata-extractor/issues/296
-                    dir.getSafeString(FileTypeDirectory.TAG_DETECTED_FILE_MIME_TYPE) {
-                        if (it != MimeTypes.TIFF) {
-                            extractorMimeType = it
-                            if (extractorMimeType != sourceMimeType) {
-                                Log.d(LOG_TAG, "source MIME type is $sourceMimeType but extracted MIME type is $extractorMimeType for uri=$uri")
-                            }
-                        }
+                // `metadata-extractor` is the most reliable, except for `tiff` (false positives, false negatives)
+                // cf https://github.com/drewnoakes/metadata-extractor/issues/296
+                MetadataExtractorHelper.readMimeType(input)?.takeIf { it != MimeTypes.TIFF }?.let {
+                    extractorMimeType = it
+                    if (extractorMimeType != sourceMimeType) {
+                        Log.d(LOG_TAG, "source MIME type is $sourceMimeType but extracted MIME type is $extractorMimeType for uri=$uri")
                     }
                 }
             }
         } catch (e: Exception) {
             Log.w(LOG_TAG, "failed to get MIME type by metadata-extractor for uri=$uri", e)
         } catch (e: NoClassDefFoundError) {
+            Log.w(LOG_TAG, "failed to get MIME type by metadata-extractor for uri=$uri", e)
+        } catch (e: AssertionError) {
             Log.w(LOG_TAG, "failed to get MIME type by metadata-extractor for uri=$uri", e)
         }
 
@@ -53,7 +48,10 @@ internal class ContentImageProvider : ImageProvider() {
             "sourceMimeType" to mimeType,
         )
         try {
-            val cursor = context.contentResolver.query(uri, projection, null, null, null)
+            // some providers do not provide the mandatory `OpenableColumns`
+            // and the query fails when compiling a projection specifying them
+            // e.g. `content://mms/part/[id]` on Android KitKat
+            val cursor = context.contentResolver.query(uri, null, null, null, null)
             if (cursor != null && cursor.moveToFirst()) {
                 cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME).let { if (it != -1) fields["title"] = cursor.getString(it) }
                 cursor.getColumnIndex(OpenableColumns.SIZE).let { if (it != -1) fields["sizeBytes"] = cursor.getLong(it) }
@@ -78,13 +76,5 @@ internal class ContentImageProvider : ImageProvider() {
 
         @Suppress("deprecation")
         const val PATH = MediaStore.MediaColumns.DATA
-
-        private val projection = arrayOf(
-            // standard columns for openable URI
-            OpenableColumns.DISPLAY_NAME,
-            OpenableColumns.SIZE,
-            // optional path underlying media content
-            PATH,
-        )
     }
 }

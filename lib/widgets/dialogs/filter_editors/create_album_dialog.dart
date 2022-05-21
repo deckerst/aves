@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import '../aves_dialog.dart';
 
 class CreateAlbumDialog extends StatefulWidget {
-  const CreateAlbumDialog({Key? key}) : super(key: key);
+  const CreateAlbumDialog({super.key});
 
   @override
   State<CreateAlbumDialog> createState() => _CreateAlbumDialogState();

@@ -10,9 +10,9 @@ class SectionRow extends StatelessWidget {
   final IconData icon;
 
   const SectionRow({
-    Key? key,
+    super.key,
     required this.icon,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -53,11 +53,11 @@ class InfoRowGroup extends StatefulWidget {
   static TextStyle keyStyle(BuildContext context) => Theme.of(context).textTheme.caption!.merge(_keyStyle);
 
   const InfoRowGroup({
-    Key? key,
+    super.key,
     required this.info,
     this.maxValueLength = 0,
     this.linkHandlers,
-  }) : super(key: key);
+  });
 
   @override
   State<InfoRowGroup> createState() => _InfoRowGroupState();
@@ -130,7 +130,14 @@ class _InfoRowGroupState extends State<InfoRowGroup> {
                 // and each span respects the directionality of its inner text only
                 return [
                   TextSpan(text: '${Constants.fsi}$key${Constants.pdi}', style: _keyStyle),
-                  WidgetSpan(child: SizedBox(width: thisSpaceSize)),
+                  WidgetSpan(
+                    child: SizedBox(
+                      width: thisSpaceSize,
+                      // as of Flutter v3.0.0, the underline decoration from the following `TextSpan`
+                      // is applied to the `WidgetSpan` too, so we add a dummy `Text` as a workaround
+                      child: const Text(''),
+                    ),
+                  ),
                   TextSpan(text: '${Constants.fsi}$value${Constants.pdi}', style: style, recognizer: recognizer),
                 ];
               },

@@ -18,9 +18,9 @@ class ItemPickDialog extends StatefulWidget {
   final CollectionLens collection;
 
   const ItemPickDialog({
-    Key? key,
+    super.key,
     required this.collection,
-  }) : super(key: key);
+  });
 
   @override
   State<ItemPickDialog> createState() => _ItemPickDialogState();
@@ -47,6 +47,7 @@ class _ItemPickDialogState extends State<ItemPickDialog> {
               initialQuery: liveFilter?.query,
               child: GestureAreaProtectorStack(
                 child: SafeArea(
+                  top: false,
                   bottom: false,
                   child: ChangeNotifierProvider<CollectionLens>.value(
                     value: collection,

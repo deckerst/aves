@@ -12,6 +12,9 @@ Aves is a gallery and metadata explorer app. It is built for Android, with Flutt
 [<img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
       alt='Get it on Google Play'
       height="80">](https://play.google.com/store/apps/details?id=deckers.thibault.aves&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1)
+[<img src="https://raw.githubusercontent.com/deckerst/common/main/assets/amazon-appstore-badge-english-black.png"
+      alt='Get it on Amazon Appstore'
+      height="80">](https://www.amazon.com/dp/B09XQHQQ72)
 [<img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png"
       alt='Get it on IzzyOnDroid'
       height="80">](https://apt.izzysoft.de/fdroid/index/apk/deckers.thibault.aves)
@@ -77,7 +80,7 @@ Aves requires a few permissions to do its job:
 
 ### Issues
 
-[Bug reports](https://github.com/deckerst/aves/issues/new?assignees=&labels=type%3Abug&template=bug_report.md&title=) and [feature requests](https://github.com/deckerst/aves/issues/new?assignees=&labels=type%3Afeature&template=feature_request.md&title=) are welcome. Questions too, though you could also ask them in [Discussions](https://github.com/deckerst/aves/discussions).
+[Bug reports](https://github.com/deckerst/aves/issues/new?assignees=&labels=type%3Abug&template=bug_report.md&title=) and [feature requests](https://github.com/deckerst/aves/issues/new?assignees=&labels=type%3Afeature&template=feature_request.md&title=) are welcome, but read the [guidelines](https://github.com/deckerst/aves/issues/234) first. If you have questions, check out the [discussions](https://github.com/deckerst/aves/discussions).
 
 ### Code
 

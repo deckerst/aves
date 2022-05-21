@@ -7,10 +7,10 @@ class QueryProvider extends StatelessWidget {
   final Widget child;
 
   const QueryProvider({
-    Key? key,
+    super.key,
     required this.initialQuery,
     required this.child,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

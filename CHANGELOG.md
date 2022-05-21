@@ -6,6 +6,28 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
+- Bottom navigation bar
+- Collection: thumbnail overlay tag icon
+- Collection: fast-scrolling shows breadcrumbs from groups
+- Settings: search
+- Pick: allow selecting multiple items according to request intent
+- `huawei` app flavor (Petal Maps, no Crashlytics)
+
+### Changed
+
+- upgraded Flutter to stable v3.0.1
+- stretching overscroll effect
+
+### Fixed
+
+- grey Google Map layer when size changed
+- Android scrolling screenshot support
+- Voice Access scrolling support
+
+## <a id="v1.6.4"></a>[v1.6.4] - 2022-04-19
+
+### Added
+
 - Albums / Countries / Tags: allow custom app / color along cover item
 - Info: improved GeoTIFF section
 - Cataloguing: locating from GeoTIFF metadata (requires rescan, limited to some projections)
@@ -23,6 +45,7 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 
 - black screen launch when Firebase fails to initialize (Play version only)
+- crash when cataloguing JPEG with large extended XMP
 
 ## <a id="v1.6.3"></a>[v1.6.3] - 2022-03-28
 

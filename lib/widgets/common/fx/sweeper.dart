@@ -15,7 +15,7 @@ class Sweeper extends StatefulWidget {
   final VoidCallback? onSweepEnd;
 
   const Sweeper({
-    Key? key,
+    super.key,
     required this.builder,
     this.startAngle = -pi / 2,
     this.sweepAngle = pi / 4,
@@ -23,7 +23,7 @@ class Sweeper extends StatefulWidget {
     required this.toggledNotifier,
     this.centerSweep = true,
     this.onSweepEnd,
-  }) : super(key: key);
+  });
 
   @override
   State<Sweeper> createState() => _SweeperState();

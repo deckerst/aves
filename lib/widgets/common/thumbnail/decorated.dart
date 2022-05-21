@@ -16,14 +16,14 @@ class DecoratedThumbnail extends StatelessWidget {
   static final double borderWidth = AvesBorder.straightBorderWidth;
 
   const DecoratedThumbnail({
-    Key? key,
+    super.key,
     required this.entry,
     required this.tileExtent,
     this.cancellableNotifier,
     this.selectable = true,
     this.highlightable = true,
     this.heroTagger,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

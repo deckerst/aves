@@ -39,11 +39,11 @@ class EntryPageView extends StatefulWidget {
   static const decorationCheckSize = 20.0;
 
   const EntryPageView({
-    Key? key,
+    super.key,
     required this.mainEntry,
     required this.pageEntry,
     this.onDisposed,
-  }) : super(key: key);
+  });
 
   @override
   State<EntryPageView> createState() => _EntryPageViewState();

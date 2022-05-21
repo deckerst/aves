@@ -7,8 +7,7 @@ import 'package:aves/theme/format.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:aves/widgets/common/map/marker.dart';
-import 'package:decorated_icon/decorated_icon.dart';
+import 'package:aves_map/aves_map.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -20,9 +19,9 @@ class MapInfoRow extends StatelessWidget {
   static const double _interRowPadding = 2.0;
 
   const MapInfoRow({
-    Key? key,
+    super.key,
     required this.entryNotifier,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -72,9 +71,8 @@ class _AddressRow extends StatefulWidget {
   final AvesEntry? entry;
 
   const _AddressRow({
-    Key? key,
     required this.entry,
-  }) : super(key: key);
+  });
 
   @override
   State<_AddressRow> createState() => _AddressRowState();
@@ -104,7 +102,7 @@ class _AddressRowState extends State<_AddressRow> {
       mainAxisSize: MainAxisSize.min,
       children: [
         const SizedBox(width: MapInfoRow.iconPadding),
-        const DecoratedIcon(AIcons.location, size: MapInfoRow.iconSize),
+        const Icon(AIcons.location, size: MapInfoRow.iconSize),
         const SizedBox(width: MapInfoRow.iconPadding),
         Expanded(
           child: Container(
@@ -161,9 +159,8 @@ class _DateRow extends StatelessWidget {
   final AvesEntry? entry;
 
   const _DateRow({
-    Key? key,
     required this.entry,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -175,7 +172,7 @@ class _DateRow extends StatelessWidget {
     return Row(
       children: [
         const SizedBox(width: MapInfoRow.iconPadding),
-        const DecoratedIcon(AIcons.date, size: MapInfoRow.iconSize),
+        const Icon(AIcons.date, size: MapInfoRow.iconSize),
         const SizedBox(width: MapInfoRow.iconPadding),
         Text(
           dateText,

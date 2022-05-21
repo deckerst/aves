@@ -21,10 +21,10 @@ class EditEntryDateDialog extends StatefulWidget {
   final CollectionLens? collection;
 
   const EditEntryDateDialog({
-    Key? key,
+    super.key,
     required this.entry,
     this.collection,
-  }) : super(key: key);
+  });
 
   @override
   State<EditEntryDateDialog> createState() => _EditEntryDateDialogState();

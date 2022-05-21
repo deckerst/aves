@@ -200,7 +200,14 @@ class PlatformStorageService implements StorageService {
       // `await` here, so that `completeError` will be caught below
       return await completer.future;
     } on PlatformException catch (e, stack) {
-      await reportService.recordError(e, stack);
+      final message = e.message;
+      // mute issue in the specific case when an item:
+      // 1) is a Media Store `file` content,
+      // 2) has no `images` or `video` entry,
+      // 3) is in a restricted directory
+      if (message == null || !message.contains('/external/file/')) {
+        await reportService.recordError(e, stack);
+      }
     }
     return false;
   }

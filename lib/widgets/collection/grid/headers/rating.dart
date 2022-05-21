@@ -7,9 +7,9 @@ class RatingSectionHeader<T> extends StatelessWidget {
   final int rating;
 
   const RatingSectionHeader({
-    Key? key,
+    super.key,
     required this.rating,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

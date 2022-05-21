@@ -58,7 +58,9 @@
   "entryActionPrint": "Imprimer",
   "entryActionShare": "Partager",
   "entryActionViewSource": "Voir le code",
-  "entryActionViewMotionPhotoVideo": "Ouvrir le clip vidéo",
+  "entryActionShowGeoTiffOnMap": "Superposer sur la carte",
+  "entryActionConvertMotionPhotoToStillImage": "Convertir en image fixe",
+  "entryActionViewMotionPhotoVideo": "Ouvrir la vidéo",
   "entryActionEdit": "Modifier",
   "entryActionOpen": "Ouvrir avec",
   "entryActionSetAs": "Utiliser comme",
@@ -122,6 +124,8 @@
   "mapStyleGoogleNormal": "Google Maps",
   "mapStyleGoogleHybrid": "Google Maps (Satellite)",
   "mapStyleGoogleTerrain": "Google Maps (Relief)",
+  "mapStyleHuaweiNormal": "Petal Maps",
+  "mapStyleHuaweiTerrain": "Petal Maps (Relief)",
   "mapStyleOsmHot": "OSM Humanitaire",
   "mapStyleStamenToner": "Stamen Toner (Monochrome)",
   "mapStyleStamenWatercolor": "Stamen Watercolor (Aquarelle)",
@@ -184,8 +188,8 @@
   "videoStartOverButtonLabel": "RECOMMENCER",
   "videoResumeButtonLabel": "REPRENDRE",
 
-  "setCoverDialogTitle": "Modifier la couverture",
   "setCoverDialogLatest": "dernier élément",
+  "setCoverDialogAuto": "automatique",
   "setCoverDialogCustom": "personnalisé",
 
   "hideFilterConfirmationDialogMessage": "Les images et vidéos correspondantes n’apparaîtront plus dans votre collection. Vous pouvez les montrer à nouveau via les réglages de «\u00A0Confidentialité\u00A0».\n\nVoulez-vous vraiment les masquer ?",
@@ -239,6 +243,7 @@
   "removeEntryMetadataDialogMore": "Voir plus",
 
   "removeEntryMetadataMotionPhotoXmpWarningDialogMessage": "Les métadonnées XMP sont nécessaires pour lire la vidéo d’une photo animée.\n\nVoulez-vous vraiment les supprimer ?",
+  "convertMotionPhotoToStillImageWarningDialogMessage": "Êtes-vous sûr ?",
 
   "videoSpeedDialogLabel": "Vitesse de lecture",
 
@@ -265,6 +270,13 @@
 
   "tileLayoutGrid": "Grille",
   "tileLayoutList": "Liste",
+
+  "coverDialogTabCover": "Image",
+  "coverDialogTabApp": "App",
+  "coverDialogTabColor": "Couleur",
+
+  "appPickDialogTitle": "Sélection",
+  "appPickDialogNone": "Aucune",
 
   "aboutPageTitle": "À propos",
   "aboutLinkSources": "Sources",
@@ -396,6 +408,8 @@
   "settingsSystemDefault": "Système",
   "settingsDefault": "Par défaut",
 
+  "settingsSearchFieldLabel": "Recherche de réglages",
+  "settingsSearchEmpty": "Aucun réglage correspondant",
   "settingsActionExport": "Exporter",
   "settingsActionImport": "Importer",
 
@@ -405,6 +419,7 @@
 
   "settingsSectionNavigation": "Navigation",
   "settingsHome": "Page d’accueil",
+  "settingsShowBottomNavigationBar": "Afficher la barre de navigation",
   "settingsKeepScreenOnTile": "Maintenir l’écran allumé",
   "settingsKeepScreenOnTitle": "Allumage de l’écran",
   "settingsDoubleBackExit": "Presser «\u00A0retour\u00A0» 2 fois pour quitter",
@@ -424,7 +439,10 @@
   "settingsNavigationDrawerAddAlbum": "Ajouter un album",
 
   "settingsSectionThumbnails": "Vignettes",
+  "settingsThumbnailOverlayTile": "Incrustations",
+  "settingsThumbnailOverlayTitle": "Incrustations",
   "settingsThumbnailShowFavouriteIcon": "Afficher l’icône de favori",
+  "settingsThumbnailShowTagIcon": "Afficher l’icône de libellé",
   "settingsThumbnailShowLocationIcon": "Afficher l’icône de lieu",
   "settingsThumbnailShowMotionPhotoIcon": "Afficher l’icône de photo animée",
   "settingsThumbnailShowRating": "Afficher la notation",

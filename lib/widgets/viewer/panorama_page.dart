@@ -14,6 +14,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:panorama/panorama.dart';
 import 'package:provider/provider.dart';
 
@@ -24,10 +25,10 @@ class PanoramaPage extends StatefulWidget {
   final PanoramaInfo info;
 
   const PanoramaPage({
-    Key? key,
+    super.key,
     required this.entry,
     required this.info,
-  }) : super(key: key);
+  });
 
   @override
   State<PanoramaPage> createState() => _PanoramaPageState();
@@ -45,7 +46,7 @@ class _PanoramaPageState extends State<PanoramaPage> {
   void initState() {
     super.initState();
     _overlayVisible.addListener(_onOverlayVisibleChange);
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _initOverlay());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _initOverlay());
   }
 
   @override
@@ -68,14 +69,33 @@ class _PanoramaPageState extends State<PanoramaPage> {
               ValueListenableBuilder<SensorControl>(
                 valueListenable: _sensorControl,
                 builder: (context, sensorControl, child) {
-                  return Panorama(
-                    sensorControl: sensorControl,
-                    croppedArea: info.hasCroppedArea ? info.croppedAreaRect! : const Rect.fromLTWH(0.0, 0.0, 1.0, 1.0),
-                    croppedFullWidth: info.hasCroppedArea ? info.fullPanoSize!.width : 1.0,
-                    croppedFullHeight: info.hasCroppedArea ? info.fullPanoSize!.height : 1.0,
-                    onTap: (longitude, latitude, tilt) => _overlayVisible.value = !_overlayVisible.value,
-                    child: child as Image,
-                  );
+                  void onTap(longitude, latitude, tilt) => _overlayVisible.value = !_overlayVisible.value;
+                  final imageChild = child as Image;
+
+                  if (info.hasCroppedArea) {
+                    final croppedArea = info.croppedAreaRect!;
+                    final fullSize = info.fullPanoSize!;
+                    final longitude = ((croppedArea.left + croppedArea.width / 2) / fullSize.width - 1 / 2) * 360;
+                    return Panorama(
+                      // TODO TLAD [panorama] fork and fix
+                      // as of panorama v0.4.0, doc says `latitude` and `longitude` parameters are in degrees,
+                      // but they are actually converted from radians in state initialization
+                      // as of panorama v0.4.0, state uses longitude in degrees as radians with `Quaternion.axisAngle`
+                      longitude: degToRadian(longitude),
+                      sensorControl: sensorControl,
+                      croppedArea: croppedArea,
+                      croppedFullWidth: fullSize.width,
+                      croppedFullHeight: fullSize.height,
+                      onTap: onTap,
+                      child: imageChild,
+                    );
+                  } else {
+                    return Panorama(
+                      sensorControl: sensorControl,
+                      onTap: onTap,
+                      child: imageChild,
+                    );
+                  }
                 },
                 child: Image(
                   image: entry.uriImage,

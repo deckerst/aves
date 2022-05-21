@@ -28,13 +28,13 @@ class BasicSection extends StatelessWidget {
   final FilterCallback onFilter;
 
   const BasicSection({
-    Key? key,
+    super.key,
     required this.entry,
     this.collection,
     required this.actionDelegate,
     required this.isEditingMetadataNotifier,
     required this.onFilter,
-  }) : super(key: key);
+  });
 
   int get megaPixels => entry.megaPixels;
 

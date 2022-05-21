@@ -9,6 +9,7 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
+import 'package:aves/widgets/common/app_bar_title.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/basic/menu.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -21,6 +22,8 @@ import 'package:aves/widgets/settings/display/display.dart';
 import 'package:aves/widgets/settings/language/language.dart';
 import 'package:aves/widgets/settings/navigation/navigation.dart';
 import 'package:aves/widgets/settings/privacy/privacy.dart';
+import 'package:aves/widgets/settings/settings_definition.dart';
+import 'package:aves/widgets/settings/settings_search.dart';
 import 'package:aves/widgets/settings/thumbnails/thumbnails.dart';
 import 'package:aves/widgets/settings/video/video.dart';
 import 'package:aves/widgets/settings/viewer/viewer.dart';
@@ -34,7 +37,7 @@ import 'package:provider/provider.dart';
 class SettingsPage extends StatefulWidget {
   static const routeName = '/settings';
 
-  const SettingsPage({Key? key}) : super(key: key);
+  const SettingsPage({super.key});
 
   @override
   State<SettingsPage> createState() => _SettingsPageState();
@@ -43,6 +46,17 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> with FeedbackMixin {
   final ValueNotifier<String?> _expandedNotifier = ValueNotifier(null);
 
+  static final List<SettingsSection> sections = [
+    NavigationSection(),
+    ThumbnailsSection(),
+    ViewerSection(),
+    VideoSection(),
+    PrivacySection(),
+    AccessibilitySection(),
+    DisplaySection(),
+    LanguageSection(),
+  ];
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -50,8 +64,16 @@ class _SettingsPageState extends State<SettingsPage> with FeedbackMixin {
     return MediaQueryDataProvider(
       child: Scaffold(
         appBar: AppBar(
-          title: Text(context.l10n.settingsPageTitle),
+          title: InteractiveAppBarTitle(
+            onTap: () => _goToSearch(context),
+            child: Text(context.l10n.settingsPageTitle),
+          ),
           actions: [
+            IconButton(
+              icon: const Icon(AIcons.search),
+              onPressed: () => _goToSearch(context),
+              tooltip: MaterialLocalizations.of(context).searchFieldLabel,
+            ),
             MenuIconTheme(
               child: PopupMenuButton<SettingsAction>(
                 itemBuilder: (context) {
@@ -74,6 +96,7 @@ class _SettingsPageState extends State<SettingsPage> with FeedbackMixin {
               ),
             ),
           ],
+          titleSpacing: 0,
         ),
         body: GestureAreaProtectorStack(
           child: SafeArea(
@@ -100,16 +123,7 @@ class _SettingsPageState extends State<SettingsPage> with FeedbackMixin {
                               child: child,
                             ),
                           ),
-                          children: [
-                            NavigationSection(expandedNotifier: _expandedNotifier),
-                            ThumbnailsSection(expandedNotifier: _expandedNotifier),
-                            ViewerSection(expandedNotifier: _expandedNotifier),
-                            VideoSection(expandedNotifier: _expandedNotifier),
-                            PrivacySection(expandedNotifier: _expandedNotifier),
-                            AccessibilitySection(expandedNotifier: _expandedNotifier),
-                            DisplaySection(expandedNotifier: _expandedNotifier),
-                            LanguageSection(expandedNotifier: _expandedNotifier),
-                          ],
+                          children: sections.map((v) => v.build(context, _expandedNotifier)).toList(),
                         ),
                       );
                     }),
@@ -205,5 +219,15 @@ class _SettingsPageState extends State<SettingsPage> with FeedbackMixin {
         }
         break;
     }
+  }
+
+  void _goToSearch(BuildContext context) {
+    showSearch(
+      context: context,
+      delegate: SettingsSearchDelegate(
+        searchFieldLabel: context.l10n.settingsSearchFieldLabel,
+        sections: sections,
+      ),
+    );
   }
 }

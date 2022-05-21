@@ -2,7 +2,7 @@ import 'package:aves/services/common/service_policy.dart';
 import 'package:flutter/material.dart';
 
 class DebugTaskQueueOverlay extends StatelessWidget {
-  const DebugTaskQueueOverlay({Key? key}) : super(key: key);
+  const DebugTaskQueueOverlay({super.key});
 
   @override
   Widget build(BuildContext context) {

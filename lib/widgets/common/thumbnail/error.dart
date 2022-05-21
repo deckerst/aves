@@ -12,10 +12,10 @@ class ErrorThumbnail extends StatefulWidget {
   final double extent;
 
   const ErrorThumbnail({
-    Key? key,
+    super.key,
     required this.entry,
     required this.extent,
-  }) : super(key: key);
+  });
 
   @override
   State<ErrorThumbnail> createState() => _ErrorThumbnailState();

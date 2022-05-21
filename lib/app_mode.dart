@@ -1,11 +1,13 @@
-enum AppMode { main, pickMediaExternal, pickMediaInternal, pickFilterInternal, view }
+enum AppMode { main, pickSingleMediaExternal, pickMultipleMediaExternal, pickMediaInternal, pickFilterInternal, view }
 
 extension ExtraAppMode on AppMode {
-  bool get canSearch => this == AppMode.main || this == AppMode.pickMediaExternal;
+  bool get canSearch => this == AppMode.main || this == AppMode.pickSingleMediaExternal || this == AppMode.pickMultipleMediaExternal;
 
-  bool get canSelect => this == AppMode.main;
+  bool get canSelectMedia => this == AppMode.main || this == AppMode.pickMultipleMediaExternal;
 
-  bool get hasDrawer => this == AppMode.main || this == AppMode.pickMediaExternal;
+  bool get canSelectFilter => this == AppMode.main;
 
-  bool get isPickingMedia => this == AppMode.pickMediaExternal || this == AppMode.pickMediaInternal;
+  bool get hasDrawer => this == AppMode.main || this == AppMode.pickSingleMediaExternal || this == AppMode.pickMultipleMediaExternal;
+
+  bool get isPickingMedia => this == AppMode.pickSingleMediaExternal || this == AppMode.pickMultipleMediaExternal || this == AppMode.pickMediaInternal;
 }

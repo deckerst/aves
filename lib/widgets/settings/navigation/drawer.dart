@@ -1,11 +1,11 @@
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:aves/widgets/drawer/app_drawer.dart';
-import 'package:aves/widgets/drawer/tile.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/countries_page.dart';
 import 'package:aves/widgets/filter_grids/tags_page.dart';
+import 'package:aves/widgets/navigation/drawer/app_drawer.dart';
+import 'package:aves/widgets/navigation/drawer/tile.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
 import 'package:aves/widgets/settings/navigation/drawer_tab_albums.dart';
 import 'package:aves/widgets/settings/navigation/drawer_tab_fixed.dart';
@@ -13,30 +13,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:tuple/tuple.dart';
 
-class NavigationDrawerTile extends StatelessWidget {
-  const NavigationDrawerTile({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(context.l10n.settingsNavigationDrawerTile),
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            settings: const RouteSettings(name: NavigationDrawerEditorPage.routeName),
-            builder: (context) => const NavigationDrawerEditorPage(),
-          ),
-        );
-      },
-    );
-  }
-}
-
 class NavigationDrawerEditorPage extends StatefulWidget {
   static const routeName = '/settings/navigation_drawer';
 
-  const NavigationDrawerEditorPage({Key? key}) : super(key: key);
+  const NavigationDrawerEditorPage({super.key});
 
   @override
   State<NavigationDrawerEditorPage> createState() => _NavigationDrawerEditorPageState();

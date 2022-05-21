@@ -59,7 +59,8 @@
   "entryActionShare": "分享",
   "entryActionViewSource": "查看源码",
   "entryActionShowGeoTiffOnMap": "显示为地图叠加层",
-  "entryActionViewMotionPhotoVideo": "打开动态照片",
+  "entryActionConvertMotionPhotoToStillImage": "转换为静态图像",
+  "entryActionViewMotionPhotoVideo": "打开视频",
   "entryActionEdit": "编辑",
   "entryActionOpen": "打开方式",
   "entryActionSetAs": "设置为",
@@ -120,9 +121,11 @@
   "videoControlsPlayOutside": "用其他播放器打开",
   "videoControlsNone": "无",
 
-  "mapStyleGoogleNormal": "Google Maps",
-  "mapStyleGoogleHybrid": "Google Maps (Hybrid)",
-  "mapStyleGoogleTerrain": "Google Maps (Terrain)",
+  "mapStyleGoogleNormal": "Google 地图",
+  "mapStyleGoogleHybrid": "Google 地图 (卫星图像)",
+  "mapStyleGoogleTerrain": "Google 地图 (地形)",
+  "mapStyleHuaweiNormal": "Petal 地图",
+  "mapStyleHuaweiTerrain": "Petal 地图 (地形)",
   "mapStyleOsmHot": "Humanitarian OSM",
   "mapStyleStamenToner": "Stamen Toner",
   "mapStyleStamenWatercolor": "Stamen Watercolor",
@@ -185,8 +188,8 @@
   "videoStartOverButtonLabel": "从头播放",
   "videoResumeButtonLabel": "继续",
 
-  "setCoverDialogTitle": "设置封面",
   "setCoverDialogLatest": "最新项",
+  "setCoverDialogAuto": "自动",
   "setCoverDialogCustom": "自定义",
 
   "hideFilterConfirmationDialogMessage": "匹配的照片和视频将从收藏中隐藏，你可以通过“隐私”设置中再次显示它们\n\n确定要将其隐藏吗？",
@@ -240,6 +243,7 @@
   "removeEntryMetadataDialogMore": "更多",
 
   "removeEntryMetadataMotionPhotoXmpWarningDialogMessage": "播放动态照片中的视频需要 XMP\n\n确定要删除它吗？",
+  "convertMotionPhotoToStillImageWarningDialogMessage": "你确定吗？",
 
   "videoSpeedDialogLabel": "播放速度",
 
@@ -266,6 +270,13 @@
 
   "tileLayoutGrid": "网格",
   "tileLayoutList": "列表",
+
+  "coverDialogTabCover": "封面",
+  "coverDialogTabApp": "应用",
+  "coverDialogTabColor": "颜色",
+
+  "appPickDialogTitle": "选择应用",
+  "appPickDialogNone": "无",
 
   "aboutPageTitle": "关于",
   "aboutLinkSources": "源码",
@@ -397,6 +408,8 @@
   "settingsSystemDefault": "系统",
   "settingsDefault": "默认",
 
+  "settingsSearchFieldLabel": "搜索设置",
+  "settingsSearchEmpty": "无匹配设置项",
   "settingsActionExport": "导出",
   "settingsActionImport": "导入",
 
@@ -406,6 +419,7 @@
 
   "settingsSectionNavigation": "导航",
   "settingsHome": "主页",
+  "settingsShowBottomNavigationBar": "显示底部导航栏",
   "settingsKeepScreenOnTile": "保持亮屏",
   "settingsKeepScreenOnTitle": "保持亮屏",
   "settingsDoubleBackExit": "按两次返回键退出",
@@ -425,7 +439,10 @@
   "settingsNavigationDrawerAddAlbum": "添加相册",
 
   "settingsSectionThumbnails": "缩略图",
+  "settingsThumbnailOverlayTile": "叠加层",
+  "settingsThumbnailOverlayTitle": "叠加层",
   "settingsThumbnailShowFavouriteIcon": "显示收藏图标",
+  "settingsThumbnailShowTagIcon": "显示标签图标",
   "settingsThumbnailShowLocationIcon": "显示位置图标",
   "settingsThumbnailShowMotionPhotoIcon": "显示动态照片图标",
   "settingsThumbnailShowRating": "显示评分",

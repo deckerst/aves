@@ -6,7 +6,6 @@ import 'package:aves/model/filters/coordinate.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/geotiff.dart';
 import 'package:aves/model/highlight.dart';
-import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/enums/map_style.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
@@ -17,16 +16,15 @@ import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/behaviour/routes.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
-import 'package:aves/widgets/common/map/controller.dart';
 import 'package:aves/widgets/common/map/geo_map.dart';
-import 'package:aves/widgets/common/map/theme.dart';
-import 'package:aves/widgets/common/map/zoomed_bounds.dart';
 import 'package:aves/widgets/common/providers/highlight_info_provider.dart';
+import 'package:aves/widgets/common/providers/map_theme_provider.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/common/thumbnail/scroller.dart';
 import 'package:aves/widgets/map/map_info_row.dart';
 import 'package:aves/widgets/viewer/entry_viewer_page.dart';
-import 'package:aves/widgets/viewer/info/notifications.dart';
+import 'package:aves/widgets/viewer/notifications.dart';
+import 'package:aves_map/aves_map.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -41,11 +39,11 @@ class MapPage extends StatelessWidget {
   final MappedGeoTiff? overlayEntry;
 
   const MapPage({
-    Key? key,
+    super.key,
     required this.collection,
     this.initialEntry,
     this.overlayEntry,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -78,11 +76,10 @@ class _Content extends StatefulWidget {
   final MappedGeoTiff? overlayEntry;
 
   const _Content({
-    Key? key,
     required this.collection,
     this.initialEntry,
     this.overlayEntry,
-  }) : super(key: key);
+  });
 
   @override
   State<_Content> createState() => _ContentState();
@@ -110,7 +107,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
   void initState() {
     super.initState();
 
-    if (settings.infoMapStyle.isGoogleMaps) {
+    if (settings.infoMapStyle.isHeavy) {
       _isPageAnimatingNotifier.value = true;
       Future.delayed(Durations.pageTransitionAnimation * timeDilation).then((_) {
         if (!mounted) return;
@@ -149,7 +146,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
       }
     });
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _onOverlayVisibleChange(animate: false));
+    WidgetsBinding.instance.addPostFrameCallback((_) => _onOverlayVisibleChange(animate: false));
   }
 
   @override
@@ -176,8 +173,8 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
         selector: (context, s) => s.infoMapStyle,
         builder: (context, mapStyle, child) {
           late Widget scroller;
-          if (mapStyle.isGoogleMaps) {
-            // the Google map widget is too heavy for a smooth resizing animation
+          if (mapStyle.isHeavy) {
+            // the map widget is too heavy for a smooth resizing animation
             // so we just toggle visibility when overlay animation is done
             scroller = ValueListenableBuilder<double>(
               valueListenable: _overlayAnimationController,
@@ -190,7 +187,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
               child: child,
             );
           } else {
-            // the Leaflet map widget is light enough for a smooth resizing animation
+            // the map widget is light enough for a smooth resizing animation
             scroller = FadeTransition(
               opacity: _scrollerSize,
               child: SizeTransition(
@@ -432,8 +429,6 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
 
   void _toggleOverlay() => _overlayVisible.value = !_overlayVisible.value;
 
-  // TODO TLAD [map] as of Flutter v2.5.1 / google_maps_flutter v2.0.10, toggling overlay changes the size of the map, which is an issue for Google map on Android 12
-  // cf https://github.com/flutter/flutter/issues/90556
   Future<void> _onOverlayVisibleChange({bool animate = true}) async {
     if (_overlayVisible.value) {
       if (animate) {

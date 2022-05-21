@@ -28,7 +28,7 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
   final HeroType heroType;
 
   const CoveredFilterChip({
-    Key? key,
+    super.key,
     required this.filter,
     required this.extent,
     double? thumbnailExtent,
@@ -38,8 +38,7 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
     this.banner,
     this.onTap,
     this.heroType = HeroType.onTap,
-  })  : thumbnailExtent = thumbnailExtent ?? extent,
-        super(key: key);
+  }) : thumbnailExtent = thumbnailExtent ?? extent;
 
   static double tileHeight({required double extent, required double textScaleFactor, required bool showText}) {
     return extent + infoHeight(extent: extent, textScaleFactor: textScaleFactor, showText: showText);
@@ -129,20 +128,27 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
             );
           },
           child: entry == null
-              ? FutureBuilder<Color>(
-                  future: filter.color(context),
+              ? StreamBuilder<Set<CollectionFilter>?>(
+                  stream: covers.colorChangeStream.where((event) => event == null || event.contains(filter)),
                   builder: (context, snapshot) {
-                    return Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            Colors.white,
-                            snapshot.data ?? Colors.white,
-                          ],
-                        ),
-                      ),
+                    return FutureBuilder<Color>(
+                      future: filter.color(context),
+                      builder: (context, snapshot) {
+                        final color = snapshot.data;
+                        const neutral = Colors.white;
+                        return Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [
+                                neutral,
+                                color ?? neutral,
+                              ],
+                            ),
+                          ),
+                        );
+                      },
                     );
                   },
                 )

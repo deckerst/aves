@@ -13,11 +13,11 @@ class GridItemSelectionOverlay<T> extends StatelessWidget {
   static const duration = Durations.thumbnailOverlayAnimation;
 
   const GridItemSelectionOverlay({
-    Key? key,
+    super.key,
     required this.item,
     this.borderRadius,
     this.padding,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

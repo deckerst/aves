@@ -17,11 +17,11 @@ class CollectionSectionHeader extends StatelessWidget {
   final double height;
 
   const CollectionSectionHeader({
-    Key? key,
+    super.key,
     required this.collection,
     required this.sectionKey,
     required this.height,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +76,7 @@ class CollectionSectionHeader extends StatelessWidget {
     }
 
     final textScaleFactor = MediaQuery.textScaleFactorOf(context);
-    headerExtent = max(headerExtent, SectionHeader.leadingDimension * textScaleFactor) + SectionHeader.padding.vertical;
+    headerExtent = max(headerExtent, SectionHeader.leadingSize.height * textScaleFactor) + SectionHeader.padding.vertical;
     return headerExtent;
   }
 }

@@ -16,11 +16,11 @@ class VideoControlRow extends StatelessWidget {
   static const Radius radius = Radius.circular(123);
 
   const VideoControlRow({
-    Key? key,
+    super.key,
     required this.controller,
     required this.scale,
     required this.onActionSelected,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

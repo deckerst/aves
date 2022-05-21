@@ -1,16 +1,19 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
-    ext.kotlin_version = '1.6.20'
+    ext.kotlin_version = '1.6.21'
     repositories {
         google()
         mavenCentral()
+        maven { url 'https://developer.huawei.com/repo/' }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:7.1.3'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        // GMS & Firebase Crashlytics are not actually used by all flavors
+        // GMS & Firebase Crashlytics (used by some flavors only)
         classpath 'com.google.gms:google-services:4.3.10'
         classpath 'com.google.firebase:firebase-crashlytics-gradle:2.8.1'
+        // HMS (used by some flavors only)
+        classpath 'com.huawei.agconnect:agcp:1.5.2.300'
     }
 }
 
@@ -18,6 +21,7 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        maven {url 'https://developer.huawei.com/repo/'}
     }
 //    gradle.projectsEvaluated {
 //        tasks.withType(JavaCompile) {

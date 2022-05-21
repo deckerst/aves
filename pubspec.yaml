@@ -6,11 +6,11 @@ repository: https://github.com/deckerst/aves
 # - github changelog: /CHANGELOG.md
 # - play changelog:   /whatsnew/whatsnew-en-US
 # - izzy changelog:   /fastlane/metadata/android/en-US/changelogs/1XXX.txt
-version: 1.6.3+69
+version: 1.6.4+70
 publish_to: none
 
 environment:
-  sdk: '>=2.16.0 <3.0.0'
+  sdk: ">=2.17.0 <3.0.0"
 
 # following https://github.blog/2021-09-01-improving-git-protocol-security-github/
 # dependency GitHub repos should be referenced via `https://`, not `git://`
@@ -21,16 +21,20 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
+  aves_map:
+    path: plugins/aves_map
   aves_report:
     path: plugins/aves_report
   aves_report_platform:
     path: plugins/aves_report_crashlytics
+  aves_services:
+    path: plugins/aves_services
+  aves_services_platform:
+    path: plugins/aves_services_google
   charts_flutter:
   collection:
   connectivity_plus:
   country_code:
-# TODO TLAD as of 2022/02/22, null safe version is pre-release
-  custom_rounded_rectangle_border: '>=0.2.0-nullsafety.0'
   decorated_icon:
   device_info_plus:
   equatable:
@@ -50,8 +54,6 @@ dependencies:
   flutter_markdown:
   flutter_staggered_animations:
   get_it:
-  google_api_availability:
-  google_maps_flutter:
   intl:
   latlong2:
   material_design_icons_flutter:
@@ -60,6 +62,7 @@ dependencies:
   palette_generator:
 # TODO TLAD as of 2022/02/22, latest version (v0.4.1) has this issue: https://github.com/zesage/panorama/issues/25
   panorama: 0.4.0
+  path:
   pdf:
   percent_indicator:
   permission_handler:

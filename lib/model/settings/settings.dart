@@ -11,6 +11,8 @@ import 'package:aves/model/settings/enums/map_style.dart';
 import 'package:aves/model/source/enums.dart';
 import 'package:aves/services/accessibility_service.dart';
 import 'package:aves/services/common/services.dart';
+import 'package:aves_map/aves_map.dart';
+import 'package:aves_services_platform/aves_services_platform.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -54,6 +56,7 @@ class Settings extends ChangeNotifier {
   static const mustBackTwiceToExitKey = 'must_back_twice_to_exit';
   static const keepScreenOnKey = 'keep_screen_on';
   static const homePageKey = 'home_page';
+  static const showBottomNavigationBarKey = 'show_bottom_navigation_bar';
   static const confirmDeleteForeverKey = 'confirm_delete_forever';
   static const confirmMoveToBinKey = 'confirm_move_to_bin';
   static const confirmMoveUndatedItemsKey = 'confirm_move_undated_items';
@@ -68,6 +71,7 @@ class Settings extends ChangeNotifier {
   static const collectionBrowsingQuickActionsKey = 'collection_browsing_quick_actions';
   static const collectionSelectionQuickActionsKey = 'collection_selection_quick_actions';
   static const showThumbnailFavouriteKey = 'show_thumbnail_favourite';
+  static const showThumbnailTagKey = 'show_thumbnail_tag';
   static const showThumbnailLocationKey = 'show_thumbnail_location';
   static const showThumbnailMotionPhotoKey = 'show_thumbnail_motion_photo';
   static const showThumbnailRatingKey = 'show_thumbnail_rating';
@@ -161,11 +165,11 @@ class Settings extends ChangeNotifier {
     enableOverlayBlurEffect = performanceClass >= 29;
 
     // availability
-    final canUseGoogleMaps = await availability.canUseGoogleMaps;
-    if (canUseGoogleMaps) {
-      infoMapStyle = EntryMapStyle.googleNormal;
+    final isDeviceMapAvailable = await availability.canUseDeviceMaps;
+    if (isDeviceMapAvailable) {
+      infoMapStyle = PlatformMobileServices().defaultMapStyle;
     } else {
-      final styles = EntryMapStyle.values.whereNot((v) => v.isGoogleMaps).toList();
+      final styles = EntryMapStyle.values.whereNot((v) => v.needDeviceService).toList();
       infoMapStyle = styles[Random().nextInt(styles.length)];
     }
 
@@ -235,7 +239,7 @@ class Settings extends ChangeNotifier {
       if (_locale != null) {
         preferredLocales.add(_locale);
       } else {
-        preferredLocales.addAll(WidgetsBinding.instance!.window.locales);
+        preferredLocales.addAll(WidgetsBinding.instance.window.locales);
         if (preferredLocales.isEmpty) {
           // the `window` locales may be empty in a window-less service context
           preferredLocales.addAll(_systemLocalesFallback);
@@ -292,6 +296,10 @@ class Settings extends ChangeNotifier {
 
   set homePage(HomePageSetting newValue) => setAndNotify(homePageKey, newValue.toString());
 
+  bool get showBottomNavigationBar => getBoolOrDefault(showBottomNavigationBarKey, SettingsDefaults.showBottomNavigationBar);
+
+  set showBottomNavigationBar(bool newValue) => setAndNotify(showBottomNavigationBarKey, newValue);
+
   bool get confirmDeleteForever => getBoolOrDefault(confirmDeleteForeverKey, SettingsDefaults.confirmDeleteForever);
 
   set confirmDeleteForever(bool newValue) => setAndNotify(confirmDeleteForeverKey, newValue);
@@ -346,6 +354,10 @@ class Settings extends ChangeNotifier {
   bool get showThumbnailFavourite => getBoolOrDefault(showThumbnailFavouriteKey, SettingsDefaults.showThumbnailFavourite);
 
   set showThumbnailFavourite(bool newValue) => setAndNotify(showThumbnailFavouriteKey, newValue);
+
+  bool get showThumbnailTag => getBoolOrDefault(showThumbnailTagKey, SettingsDefaults.showThumbnailTag);
+
+  set showThumbnailTag(bool newValue) => setAndNotify(showThumbnailTagKey, newValue);
 
   bool get showThumbnailLocation => getBoolOrDefault(showThumbnailLocationKey, SettingsDefaults.showThumbnailLocation);
 
@@ -680,12 +692,14 @@ class Settings extends ChangeNotifier {
               break;
             case isInstalledAppAccessAllowedKey:
             case isErrorReportingAllowedKey:
+            case showBottomNavigationBarKey:
             case mustBackTwiceToExitKey:
             case confirmDeleteForeverKey:
             case confirmMoveToBinKey:
             case confirmMoveUndatedItemsKey:
             case setMetadataDateBeforeFileOpKey:
             case showThumbnailFavouriteKey:
+            case showThumbnailTagKey:
             case showThumbnailLocationKey:
             case showThumbnailMotionPhotoKey:
             case showThumbnailRatingKey:

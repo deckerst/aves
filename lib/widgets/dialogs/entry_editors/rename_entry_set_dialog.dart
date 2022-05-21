@@ -23,9 +23,9 @@ class RenameEntrySetPage extends StatefulWidget {
   final List<AvesEntry> entries;
 
   const RenameEntrySetPage({
-    Key? key,
+    super.key,
     required this.entries,
-  }) : super(key: key);
+  });
 
   @override
   State<RenameEntrySetPage> createState() => _RenameEntrySetPageState();
