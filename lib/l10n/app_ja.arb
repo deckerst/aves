@@ -91,7 +91,7 @@
   "filterLocationEmptyLabel": "位置情報なし",
   "filterTagEmptyLabel": "タグ情報なし",
   "filterRatingUnratedLabel": "評価情報なし",
-  "filterRatingRejectedLabel": "拒否されました",
+  "filterRatingRejectedLabel": "拒否",
   "filterTypeAnimatedLabel": "アニメーション",
   "filterTypeMotionPhotoLabel": "モーションフォト",
   "filterTypePanoramaLabel": "パノラマ",
