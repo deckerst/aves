@@ -25,6 +25,7 @@ class FakeMediaFileService extends Fake implements MediaFileService {
         'path': '${entry.directory}/$newName',
         'dateModifiedSecs': FakeMediaStoreService.dateSecs,
       },
+      deleted: false,
     ));
   }
 }

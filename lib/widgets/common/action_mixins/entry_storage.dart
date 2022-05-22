@@ -132,7 +132,9 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
       onCancel: () => mediaFileService.cancelFileOp(opId),
       onDone: (processed) async {
         final successOps = processed.where((v) => v.success).toSet();
-        final movedOps = successOps.where((v) => !v.skipped).toSet();
+
+        // move
+        final movedOps = successOps.where((v) => !v.skipped && !v.deleted).toSet();
         final movedEntries = movedOps.map((v) => v.uri).map((uri) => entries.firstWhereOrNull((entry) => entry.uri == uri)).whereNotNull().toSet();
         await source.updateAfterMove(
           todoEntries: entries,
@@ -140,6 +142,12 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
           destinationAlbums: destinationAlbums,
           movedOps: movedOps,
         );
+
+        // delete (when trying to move to bin obsolete entries)
+        final deletedOps = successOps.where((v) => v.deleted).toSet();
+        final deletedUris = deletedOps.map((event) => event.uri).toSet();
+        await source.removeEntries(deletedUris, includeTrash: true);
+
         source.resumeMonitoring();
 
         // cleanup
