@@ -37,7 +37,7 @@ extension ExtraEntryMapStyle on EntryMapStyle {
     }
   }
 
-  bool get needDeviceService {
+  bool get needMobileService {
     switch (this) {
       case EntryMapStyle.osmHot:
       case EntryMapStyle.stamenToner:

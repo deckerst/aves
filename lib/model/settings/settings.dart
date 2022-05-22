@@ -12,7 +12,6 @@ import 'package:aves/model/source/enums.dart';
 import 'package:aves/services/accessibility_service.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves_map/aves_map.dart';
-import 'package:aves_services_platform/aves_services_platform.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -165,11 +164,11 @@ class Settings extends ChangeNotifier {
     enableOverlayBlurEffect = performanceClass >= 29;
 
     // availability
-    final isDeviceMapAvailable = await availability.canUseDeviceMaps;
-    if (isDeviceMapAvailable) {
-      infoMapStyle = PlatformMobileServices().defaultMapStyle;
+    final defaultMapStyle = mobileServices.defaultMapStyle;
+    if (mobileServices.mapStyles.contains(defaultMapStyle)) {
+      infoMapStyle = defaultMapStyle;
     } else {
-      final styles = EntryMapStyle.values.whereNot((v) => v.needDeviceService).toList();
+      final styles = EntryMapStyle.values.whereNot((v) => v.needMobileService).toList();
       infoMapStyle = styles[Random().nextInt(styles.length)];
     }
 
@@ -516,7 +515,11 @@ class Settings extends ChangeNotifier {
 
   // info
 
-  EntryMapStyle get infoMapStyle => getEnumOrDefault(infoMapStyleKey, SettingsDefaults.infoMapStyle, EntryMapStyle.values);
+  EntryMapStyle get infoMapStyle {
+    final preferred = getEnumOrDefault(infoMapStyleKey, SettingsDefaults.infoMapStyle, EntryMapStyle.values);
+    final available = availability.mapStyles;
+    return available.contains(preferred) ? preferred : available.first;
+  }
 
   set infoMapStyle(EntryMapStyle newValue) => setAndNotify(infoMapStyleKey, newValue.toString());
 

@@ -3,7 +3,6 @@ library aves_services_platform;
 import 'package:aves_map/aves_map.dart';
 import 'package:aves_services/aves_services.dart';
 import 'package:aves_services_platform/src/map.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:huawei_hmsavailability/huawei_hmsavailability.dart';
 import 'package:latlong2/latlong.dart';
@@ -12,22 +11,28 @@ class PlatformMobileServices extends MobileServices {
   // cf https://developer.huawei.com/consumer/en/doc/development/hmscore-common-References/huaweiapiavailability-0000001050121134#section9492524178
   static const int _hmsCoreAvailable = 0;
 
-  bool? _isAvailable;
+  bool _isAvailable = false;
 
   @override
-  Future<bool> isServiceAvailable() async {
-    if (_isAvailable != null) return SynchronousFuture(_isAvailable!);
+  Future<void> init() async {
     final result = await HmsApiAvailability().isHMSAvailable();
     _isAvailable = result == _hmsCoreAvailable;
     debugPrint('Device has Huawei Mobile Services=$_isAvailable');
-    return _isAvailable!;
   }
+
+  @override
+  bool get isServiceAvailable => _isAvailable;
 
   @override
   EntryMapStyle get defaultMapStyle => EntryMapStyle.hmsNormal;
 
   @override
-  List<EntryMapStyle> get mapStyles => [EntryMapStyle.hmsNormal, EntryMapStyle.hmsTerrain];
+  List<EntryMapStyle> get mapStyles => isServiceAvailable
+      ? [
+          EntryMapStyle.hmsNormal,
+          EntryMapStyle.hmsTerrain,
+        ]
+      : [];
 
   @override
   Widget buildMap<T>({

@@ -5,7 +5,9 @@ import 'package:flutter/widgets.dart';
 import 'package:latlong2/latlong.dart';
 
 abstract class MobileServices {
-  Future<bool> isServiceAvailable();
+  Future<void> init();
+
+  bool get isServiceAvailable;
 
   EntryMapStyle get defaultMapStyle;
 
