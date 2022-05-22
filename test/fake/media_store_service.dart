@@ -57,6 +57,7 @@ class FakeMediaStoreService extends Fake implements MediaStoreService {
         'path': entry.path!.replaceFirst(sourceAlbum, destinationAlbum),
         'dateModifiedSecs': FakeMediaStoreService.dateSecs,
       },
+      deleted: false,
     );
   }
 
@@ -73,6 +74,7 @@ class FakeMediaStoreService extends Fake implements MediaStoreService {
         'path': entry.path!.replaceFirst(oldName, newName),
         'dateModifiedSecs': FakeMediaStoreService.dateSecs,
       },
+      deleted: false,
     );
   }
 }
