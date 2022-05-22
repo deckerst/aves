@@ -30,7 +30,6 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/providers/highlight_info_provider.dart';
 import 'package:aves/widgets/home_page.dart';
 import 'package:aves/widgets/welcome_page.dart';
-import 'package:aves_services_platform/aves_services_platform.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fijkplayer/fijkplayer.dart';
 import 'package:flutter/foundation.dart';
@@ -225,6 +224,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     final stopwatch = Stopwatch()..start();
 
     await device.init();
+    await mobileServices.init();
     await settings.init(monitorPlatformSettings: true);
     settings.isRotationLocked = await windowService.isRotationLocked();
     settings.areAnimationsRemoved = await AccessibilityService.areAnimationsRemoved();
@@ -273,14 +273,13 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
 
     FlutterError.onError = reportService.recordFlutterError;
     final now = DateTime.now();
-    final hasMobileServices = await PlatformMobileServices().isServiceAvailable();
     await reportService.setCustomKeys({
       'build_mode': kReleaseMode
           ? 'release'
           : kProfileMode
               ? 'profile'
               : 'debug',
-      'has_mobile_services': hasMobileServices,
+      'has_mobile_services': mobileServices.isServiceAvailable,
       'locales': WidgetsBinding.instance.window.locales.join(', '),
       'time_zone': '${now.timeZoneName} (${now.timeZoneOffset})',
     });

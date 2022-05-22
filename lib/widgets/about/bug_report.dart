@@ -15,7 +15,6 @@ import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/identity/buttons.dart';
-import 'package:aves_services_platform/aves_services_platform.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -145,7 +144,6 @@ class _BugReportState extends State<BugReport> with FeedbackMixin {
     final packageInfo = await PackageInfo.fromPlatform();
     final androidInfo = await DeviceInfoPlugin().androidInfo;
     final installer = await androidAppService.getAppInstaller();
-    final hasMobileServices = await PlatformMobileServices().isServiceAvailable();
     final flavor = context.read<AppFlavor>().toString().split('.')[1];
     return [
       'Aves version: ${packageInfo.version}-$flavor (Build ${packageInfo.buildNumber})',
@@ -153,7 +151,7 @@ class _BugReportState extends State<BugReport> with FeedbackMixin {
       'Android version: ${androidInfo.version.release} (SDK ${androidInfo.version.sdkInt})',
       'Android build: ${androidInfo.display}',
       'Device: ${androidInfo.manufacturer} ${androidInfo.model}',
-      'Mobile services: ${hasMobileServices ? 'ready' : 'not available'}',
+      'Mobile services: ${mobileServices.isServiceAvailable ? 'ready' : 'not available'}',
       'System locales: ${WidgetsBinding.instance.window.locales.join(', ')}',
       'Aves locale: ${settings.locale ?? 'system'} -> ${settings.appliedLocale}',
       'Installer: $installer',

@@ -5,6 +5,7 @@ import 'package:aves/model/entry.dart';
 import 'package:aves/model/entry_images.dart';
 import 'package:aves/model/settings/enums/map_style.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/change_notifier.dart';
 import 'package:aves/utils/constants.dart';
@@ -15,7 +16,6 @@ import 'package:aves/widgets/common/map/decorator.dart';
 import 'package:aves/widgets/common/map/leaflet/map.dart';
 import 'package:aves/widgets/common/thumbnail/image.dart';
 import 'package:aves_map/aves_map.dart';
-import 'package:aves_services_platform/aves_services_platform.dart';
 import 'package:collection/collection.dart';
 import 'package:fluster/fluster.dart';
 import 'package:flutter/material.dart';
@@ -70,8 +70,6 @@ class _GeoMapState extends State<GeoMap> {
   final AChangeNotifier _clusterChangeNotifier = AChangeNotifier();
 
   List<AvesEntry> get entries => widget.entries;
-
-  static final _platformMobileServices = PlatformMobileServices();
 
   // cap initial zoom to avoid a zoom change
   // when toggling overlay on Google map initial state
@@ -172,7 +170,7 @@ class _GeoMapState extends State<GeoMap> {
           case EntryMapStyle.googleTerrain:
           case EntryMapStyle.hmsNormal:
           case EntryMapStyle.hmsTerrain:
-            child = _platformMobileServices.buildMap<AvesEntry>(
+            child = mobileServices.buildMap<AvesEntry>(
               controller: widget.controller,
               clusterListenable: _clusterChangeNotifier,
               boundsNotifier: _boundsNotifier,

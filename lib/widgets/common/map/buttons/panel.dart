@@ -9,7 +9,6 @@ import 'package:aves/widgets/common/map/buttons/coordinate_filter.dart';
 import 'package:aves/widgets/common/map/compass.dart';
 import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
 import 'package:aves_map/aves_map.dart';
-import 'package:aves_services_platform/aves_services_platform.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
@@ -125,24 +124,15 @@ class MapButtonPanel extends StatelessWidget {
                       padding: EdgeInsets.only(top: padding),
                       child: MapOverlayButton(
                         icon: const Icon(AIcons.layers),
-                        onPressed: () async {
-                          final canUseDeviceMaps = await availability.canUseDeviceMaps;
-                          final availableStyles = [
-                            if (canUseDeviceMaps) ...PlatformMobileServices().mapStyles,
-                            ...EntryMapStyle.values.where((v) => !v.needDeviceService),
-                          ];
-                          final preferredStyle = settings.infoMapStyle;
-                          final initialStyle = availableStyles.contains(preferredStyle) ? preferredStyle : availableStyles.first;
-                          await showSelectionDialog<EntryMapStyle>(
-                            context: context,
-                            builder: (context) => AvesSelectionDialog<EntryMapStyle>(
-                              initialValue: initialStyle,
-                              options: Map.fromEntries(availableStyles.map((v) => MapEntry(v, v.getName(context)))),
-                              title: context.l10n.mapStyleTitle,
-                            ),
-                            onSelection: (v) => settings.infoMapStyle = v,
-                          );
-                        },
+                        onPressed: () => showSelectionDialog<EntryMapStyle>(
+                          context: context,
+                          builder: (context) => AvesSelectionDialog<EntryMapStyle>(
+                            initialValue: settings.infoMapStyle,
+                            options: Map.fromEntries(availability.mapStyles.map((v) => MapEntry(v, v.getName(context)))),
+                            title: context.l10n.mapStyleTitle,
+                          ),
+                          onSelection: (v) => settings.infoMapStyle = v,
+                        ),
                         tooltip: context.l10n.mapStyleTooltip,
                       ),
                     ),

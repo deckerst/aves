@@ -12,6 +12,7 @@ dependencies:
     path: ../aves_map
   aves_services:
     path: ../aves_services
+  device_info_plus:
   google_api_availability:
   google_maps_flutter:
   latlong2:
