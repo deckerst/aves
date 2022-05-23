@@ -222,13 +222,15 @@ class OverlayIcon extends StatelessWidget {
   final EdgeInsetsGeometry margin;
   final Offset? relativeOffset;
 
+  static const defaultMargin = EdgeInsets.only(left: 1, right: 1, bottom: 1);
+
   const OverlayIcon({
     super.key,
     required this.icon,
     this.iconScale = 1,
     this.text,
     // default margin for multiple icons in a `Column`
-    this.margin = const EdgeInsets.only(left: 1, right: 1, bottom: 1),
+    this.margin = defaultMargin,
     this.relativeOffset,
   });
 
