@@ -75,7 +75,7 @@ class _AppBottomNavBarState extends State<AppBottomNavBar> {
     ];
 
     Widget child = AvesFloatingBar(
-      builder: (context, backgroundColor) => BottomNavigationBar(
+      builder: (context, backgroundColor, child) => BottomNavigationBar(
         items: items
             .map((item) => BottomNavigationBarItem(
                   icon: item.icon(context),

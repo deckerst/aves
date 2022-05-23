@@ -44,6 +44,10 @@ class AvesApp extends StatefulWidget {
 
   static final GlobalKey<NavigatorState> navigatorKey = GlobalKey(debugLabel: 'app-navigator');
 
+  // do not monitor all `ModalRoute`s, which would include popup menus,
+  // so that we can react to fullscreen `PageRoute`s only
+  static final RouteObserver<PageRoute> pageRouteObserver = RouteObserver<PageRoute>();
+
   const AvesApp({
     super.key,
     required this.flavor,
@@ -62,7 +66,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
 
   // observers are not registered when using the same list object with different items
   // the list itself needs to be reassigned
-  List<NavigatorObserver> _navigatorObservers = [];
+  List<NavigatorObserver> _navigatorObservers = [AvesApp.pageRouteObserver];
   final EventChannel _mediaStoreChangeChannel = const EventChannel('deckers.thibault/aves/media_store_change');
   final EventChannel _newIntentChannel = const EventChannel('deckers.thibault/aves/intent');
   final EventChannel _analysisCompletionChannel = const EventChannel('deckers.thibault/aves/analysis_events');
@@ -284,6 +288,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
       'time_zone': '${now.timeZoneName} (${now.timeZoneOffset})',
     });
     _navigatorObservers = [
+      AvesApp.pageRouteObserver,
       ReportingRouteTracker(),
     ];
   }
