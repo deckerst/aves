@@ -18,11 +18,14 @@ Future<void> configureAndLaunch() async {
     ..hasAcceptedTerms = true
     ..isInstalledAppAccessAllowed = true
     ..isErrorReportingAllowed = false
+    ..themeBrightness = AvesThemeBrightness.dark
+    ..themeColorMode = AvesThemeColorMode.polychrome
+    ..setTileExtent(CountryListPage.routeName, 112)
+    ..setTileLayout(CountryListPage.routeName, TileLayout.grid)
+    // navigation
     ..keepScreenOn = KeepScreenOn.always
     ..homePage = HomePageSetting.collection
     ..showBottomNavigationBar = true
-    ..setTileExtent(CountryListPage.routeName, 112)
-    ..setTileLayout(CountryListPage.routeName, TileLayout.grid)
     // collection
     ..collectionSectionFactor = EntryGroupFactor.month
     ..collectionSortFactor = EntrySortFactor.date
