@@ -78,7 +78,6 @@ class ExpandableFilterRow extends StatelessWidget {
       height: AvesFilterChip.minChipHeight,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
-        physics: const BouncingScrollPhysics(),
         padding: const EdgeInsets.symmetric(horizontal: horizontalPadding),
         itemBuilder: (context, index) {
           return index < filterList.length ? _buildFilterChip(filterList[index]) : const SizedBox();

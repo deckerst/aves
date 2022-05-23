@@ -105,6 +105,8 @@ mixin FeedbackMixin {
         return Duration(milliseconds: millis);
       case AccessibilityTimeout.appDefault:
         return appDefaultDuration;
+      case AccessibilityTimeout.s3:
+        return const Duration(seconds: 3);
       case AccessibilityTimeout.s10:
         return const Duration(seconds: 10);
       case AccessibilityTimeout.s30:

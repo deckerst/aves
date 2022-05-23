@@ -1,6 +1,6 @@
 enum AccessibilityAnimations { system, disabled, enabled }
 
-enum AccessibilityTimeout { system, appDefault, s10, s30, s60, s120 }
+enum AccessibilityTimeout { system, appDefault, s3, s10, s30, s60, s120 }
 
 enum AvesThemeColorMode { monochrome, polychrome }
 

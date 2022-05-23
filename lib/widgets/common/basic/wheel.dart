@@ -41,39 +41,51 @@ class _WheelSelectorState<T> extends State<WheelSelector<T>> {
     const background = Colors.transparent;
     final foreground = DefaultTextStyle.of(context).style.color!;
 
-    return Padding(
-      padding: const EdgeInsets.all(8),
-      child: SizedBox(
-        width: itemSize.width,
-        height: itemSize.height * 3,
-        child: ShaderMask(
-          shaderCallback: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              background,
-              foreground,
-              foreground,
-              background,
-            ],
-          ).createShader,
-          child: ListWheelScrollView(
-            controller: _controller,
-            physics: const FixedExtentScrollPhysics(parent: BouncingScrollPhysics()),
-            diameterRatio: 1.2,
-            itemExtent: itemSize.height,
-            squeeze: 1.3,
-            onSelectedItemChanged: (i) => valueNotifier.value = values[i],
-            children: values
-                .map((i) => SizedBox.fromSize(
-                      size: itemSize,
-                      child: Text(
-                        '$i',
-                        textAlign: widget.textAlign,
-                        style: widget.textStyle,
-                      ),
-                    ))
-                .toList(),
+    return NotificationListener<ScrollNotification>(
+      // cancel notification bubbling so that the dialog scroll bar
+      // does not misinterpret wheel scrolling for dialog content scrolling
+      onNotification: (notification) => true,
+      child: Padding(
+        padding: const EdgeInsets.all(8),
+        child: SizedBox(
+          width: itemSize.width,
+          height: itemSize.height * 3,
+          child: ShaderMask(
+            shaderCallback: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                background,
+                foreground,
+                foreground,
+                background,
+              ],
+            ).createShader,
+            child: Theme(
+              data: Theme.of(context).copyWith(
+                scrollbarTheme: ScrollbarThemeData(
+                  thumbVisibility: MaterialStateProperty.all(false),
+                ),
+              ),
+              child: ListWheelScrollView(
+                controller: _controller,
+                physics: const FixedExtentScrollPhysics(parent: BouncingScrollPhysics()),
+                diameterRatio: 1.2,
+                itemExtent: itemSize.height,
+                squeeze: 1.3,
+                onSelectedItemChanged: (i) => valueNotifier.value = values[i],
+                children: values
+                    .map((i) => SizedBox.fromSize(
+                          size: itemSize,
+                          child: Text(
+                            '$i',
+                            textAlign: widget.textAlign,
+                            style: widget.textStyle,
+                          ),
+                        ))
+                    .toList(),
+              ),
+            ),
           ),
         ),
       ),
