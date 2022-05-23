@@ -54,7 +54,6 @@ class _CrumbLineState extends State<CrumbLine> {
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         controller: _controller,
-        physics: const BouncingScrollPhysics(),
         padding: const EdgeInsets.symmetric(horizontal: 8),
         itemBuilder: (context, index) {
           Widget _buildText(String text) => Padding(

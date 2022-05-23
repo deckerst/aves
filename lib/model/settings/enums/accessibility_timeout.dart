@@ -10,6 +10,8 @@ extension ExtraAccessibilityTimeout on AccessibilityTimeout {
         return context.l10n.settingsSystemDefault;
       case AccessibilityTimeout.appDefault:
         return context.l10n.settingsDefault;
+      case AccessibilityTimeout.s3:
+        return context.l10n.timeSeconds(3);
       case AccessibilityTimeout.s10:
         return context.l10n.timeSeconds(10);
       case AccessibilityTimeout.s30:

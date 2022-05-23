@@ -81,14 +81,13 @@ class _FilterBarState extends State<FilterBar> {
       color: Colors.transparent,
       height: FilterBar.preferredHeight,
       child: NotificationListener<ScrollNotification>(
-        // cancel notification bubbling so that the draggable scrollbar
+        // cancel notification bubbling so that the draggable scroll bar
         // does not misinterpret filter bar scrolling for collection scrolling
         onNotification: (notification) => true,
         child: AnimatedList(
           key: _animatedListKey,
           initialItemCount: widget.filters.length,
           scrollDirection: Axis.horizontal,
-          physics: const BouncingScrollPhysics(),
           padding: const EdgeInsets.symmetric(horizontal: 4),
           itemBuilder: (context, index, animation) {
             if (index >= widget.filters.length) return const SizedBox();
