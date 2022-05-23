@@ -145,7 +145,7 @@ class XmpNamespace extends Equatable {
         InfoRowGroup(
           info: Map.fromEntries(props.map((prop) => MapEntry(prop.displayKey, formatValue(prop)))),
           maxValueLength: Constants.infoGroupMaxValueLength,
-          linkHandlers: linkifyValues(props),
+          spanBuilders: linkifyValues(props),
         ),
       ...buildFromExtractedData(),
     ];
@@ -194,7 +194,7 @@ class XmpNamespace extends Equatable {
 
   String formatValue(XmpProp prop) => prop.value;
 
-  Map<String, InfoLinkHandler> linkifyValues(List<XmpProp> props) => {};
+  Map<String, InfoValueSpanBuilder> linkifyValues(List<XmpProp> props) => {};
 }
 
 class XmpProp {

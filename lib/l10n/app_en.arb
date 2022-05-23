@@ -759,7 +759,7 @@
   "viewerInfoLabelUri": "URI",
   "viewerInfoLabelPath": "Path",
   "viewerInfoLabelDuration": "Duration",
-  "viewerInfoLabelOwner": "Owned by",
+  "viewerInfoLabelOwner": "Owner",
   "viewerInfoLabelCoordinates": "Coordinates",
   "viewerInfoLabelAddress": "Address",
 
