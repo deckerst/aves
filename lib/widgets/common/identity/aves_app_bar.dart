@@ -1,5 +1,6 @@
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
+import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/common/fx/blurred.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -35,37 +36,38 @@ class AvesAppBar extends StatelessWidget {
             child: SafeArea(
               bottom: false,
               child: AvesFloatingBar(
-                builder: (context, backgroundColor) => Material(
+                builder: (context, backgroundColor, child) => Material(
                   color: backgroundColor,
                   textStyle: Theme.of(context).appBarTheme.titleTextStyle,
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        height: kToolbarHeight,
-                        child: Row(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 4),
-                              child: leading,
-                            ),
-                            Expanded(
-                              child: AnimatedSwitcher(
-                                duration: context.read<DurationsData>().iconAnimation,
-                                child: Row(
-                                  key: ValueKey(transitionKey),
-                                  children: [
-                                    Expanded(child: title),
-                                    ...actions,
-                                  ],
-                                ),
+                  child: child,
+                ),
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: kToolbarHeight,
+                      child: Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 4),
+                            child: leading,
+                          ),
+                          Expanded(
+                            child: AnimatedSwitcher(
+                              duration: context.read<DurationsData>().iconAnimation,
+                              child: Row(
+                                key: ValueKey(transitionKey),
+                                children: [
+                                  Expanded(child: title),
+                                  ...actions,
+                                ],
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                      if (bottom != null) bottom!,
-                    ],
-                  ),
+                    ),
+                    if (bottom != null) bottom!,
+                  ],
                 ),
               ),
             ),
@@ -100,39 +102,75 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   bool shouldRebuild(covariant _SliverAppBarDelegate oldDelegate) => true;
 }
 
-class AvesFloatingBar extends StatelessWidget {
-  final Widget Function(BuildContext context, Color backgroundColor) builder;
+class AvesFloatingBar extends StatefulWidget {
+  final Widget Function(BuildContext context, Color backgroundColor, Widget? child) builder;
+  final Widget? child;
+
+  static const margin = EdgeInsets.all(8);
+  static const borderRadius = BorderRadius.all(Radius.circular(8));
 
   const AvesFloatingBar({
     super.key,
     required this.builder,
+    this.child,
   });
 
-  static const margin = EdgeInsets.all(8);
-  static const borderRadius = BorderRadius.all(Radius.circular(8));
+  @override
+  State<AvesFloatingBar> createState() => _AvesFloatingBarState();
+}
+
+class _AvesFloatingBarState extends State<AvesFloatingBar> with RouteAware {
+  // prevent expensive blurring when the current page is hidden
+  final ValueNotifier<bool> _isBlurAllowedNotifier = ValueNotifier(true);
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final route = ModalRoute.of(context);
+    if (route is PageRoute) {
+      AvesApp.pageRouteObserver.subscribe(this, route);
+    }
+  }
+
+  @override
+  void dispose() {
+    AvesApp.pageRouteObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  @override
+  void didPopNext() => _isBlurAllowedNotifier.value = true;
+
+  @override
+  void didPushNext() => _isBlurAllowedNotifier.value = false;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final backgroundColor = theme.appBarTheme.backgroundColor!;
-    final blurred = context.select<Settings, bool>((s) => s.enableOverlayBlurEffect);
-
-    return Container(
-      foregroundDecoration: BoxDecoration(
-        border: Border.all(
-          color: theme.dividerColor,
-        ),
-        borderRadius: borderRadius,
-      ),
-      margin: margin,
-      child: BlurredRRect(
-        enabled: blurred,
-        borderRadius: borderRadius,
-        child: builder(
-          context,
-          blurred ? backgroundColor.withOpacity(.85) : backgroundColor,
-        ),
-      ),
+    return ValueListenableBuilder<bool>(
+      valueListenable: _isBlurAllowedNotifier,
+      builder: (context, isBlurAllowed, child) {
+        final blurred = isBlurAllowed && context.select<Settings, bool>((s) => s.enableOverlayBlurEffect);
+        return Container(
+          foregroundDecoration: BoxDecoration(
+            border: Border.all(
+              color: theme.dividerColor,
+            ),
+            borderRadius: AvesFloatingBar.borderRadius,
+          ),
+          margin: AvesFloatingBar.margin,
+          child: BlurredRRect(
+            enabled: blurred,
+            borderRadius: AvesFloatingBar.borderRadius,
+            child: widget.builder(
+              context,
+              blurred ? backgroundColor.withOpacity(.85) : backgroundColor,
+              widget.child,
+            ),
+          ),
+        );
+      },
     );
   }
 }

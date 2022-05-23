@@ -20,6 +20,7 @@ Future<void> configureAndLaunch() async {
     ..isErrorReportingAllowed = false
     ..keepScreenOn = KeepScreenOn.always
     ..homePage = HomePageSetting.collection
+    ..showBottomNavigationBar = true
     ..setTileExtent(CountryListPage.routeName, 112)
     ..setTileLayout(CountryListPage.routeName, TileLayout.grid)
     // collection
