@@ -1,3 +1,5 @@
+import 'package:aves/app_mode.dart';
+import 'package:aves/image_providers/app_icon_image_provider.dart';
 import 'package:aves/model/actions/entry_info_actions.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/favourites.dart';
@@ -7,16 +9,19 @@ import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/rating.dart';
 import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/filters/type.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/format.dart';
+import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/viewer/action/entry_info_action_delegate.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
-import 'package:aves/widgets/viewer/info/owner.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -36,46 +41,15 @@ class BasicSection extends StatelessWidget {
     required this.onFilter,
   });
 
-  int get megaPixels => entry.megaPixels;
-
-  bool get showMegaPixels => entry.isPhoto && megaPixels > 0;
-
-  String get rasterResolutionText => '${entry.resolutionText}${showMegaPixels ? ' • $megaPixels MP' : ''}';
-
   @override
   Widget build(BuildContext context) {
-    final l10n = context.l10n;
-    final infoUnknown = l10n.viewerInfoUnknown;
-    final locale = l10n.localeName;
-    final use24hour = context.select<MediaQueryData, bool>((v) => v.alwaysUse24HourFormat);
-
     return AnimatedBuilder(
         animation: entry.metadataChangeNotifier,
         builder: (context, child) {
-          // TODO TLAD line break on all characters for the following fields when this is fixed: https://github.com/flutter/flutter/issues/61081
-          // inserting ZWSP (\u200B) between characters does help, but it messes with width and height computation (another Flutter issue)
-          final title = entry.bestTitle ?? infoUnknown;
-          final date = entry.bestDate;
-          final dateText = date != null ? formatDateTime(date, locale, use24hour) : infoUnknown;
-          final showResolution = !entry.isSvg && entry.isSized;
-          final sizeText = entry.sizeBytes != null ? formatFileSize(locale, entry.sizeBytes!) : infoUnknown;
-          final path = entry.path;
-
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              InfoRowGroup(
-                info: {
-                  l10n.viewerInfoLabelTitle: title,
-                  l10n.viewerInfoLabelDate: dateText,
-                  if (entry.isVideo) ..._buildVideoRows(context),
-                  if (showResolution) l10n.viewerInfoLabelResolution: rasterResolutionText,
-                  l10n.viewerInfoLabelSize: sizeText,
-                  if (!entry.trashed) l10n.viewerInfoLabelUri: entry.uri,
-                  if (path != null) l10n.viewerInfoLabelPath: path,
-                },
-              ),
-              if (!entry.trashed) OwnerProp(entry: entry),
+              _BasicInfo(entry: entry),
               _buildChips(context),
               _buildEditButtons(context),
             ],
@@ -184,10 +158,130 @@ class BasicSection extends StatelessWidget {
       },
     );
   }
+}
+
+class _BasicInfo extends StatefulWidget {
+  final AvesEntry entry;
+
+  const _BasicInfo({
+    required this.entry,
+  });
+
+  @override
+  State<_BasicInfo> createState() => _BasicInfoState();
+}
+
+class _BasicInfoState extends State<_BasicInfo> {
+  Future<String?> _ownerPackageLoader = SynchronousFuture(null);
+  Future<void> _appNameLoader = SynchronousFuture(null);
+
+  AvesEntry get entry => widget.entry;
+
+  int get megaPixels => entry.megaPixels;
+
+  bool get showMegaPixels => entry.isPhoto && megaPixels > 0;
+
+  String get rasterResolutionText => '${entry.resolutionText}${showMegaPixels ? ' • $megaPixels MP' : ''}';
+
+  static const ownerPackageNamePropKey = 'owner_package_name';
+  static const iconSize = 20.0;
+
+  @override
+  void initState() {
+    super.initState();
+    if (!entry.trashed) {
+      final isMediaContent = entry.uri.startsWith('content://media/external/');
+      if (isMediaContent) {
+        _ownerPackageLoader = metadataFetchService.hasContentResolverProp(ownerPackageNamePropKey).then((exists) {
+          return exists ? metadataFetchService.getContentResolverProp(entry, ownerPackageNamePropKey) : SynchronousFuture(null);
+        });
+        final isViewerMode = context.read<ValueNotifier<AppMode>>().value == AppMode.view;
+        if (isViewerMode && settings.isInstalledAppAccessAllowed) {
+          _appNameLoader = androidFileUtils.initAppNames();
+        }
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final infoUnknown = l10n.viewerInfoUnknown;
+    final locale = l10n.localeName;
+    final use24hour = context.select<MediaQueryData, bool>((v) => v.alwaysUse24HourFormat);
+
+    // TODO TLAD line break on all characters for the following fields when this is fixed: https://github.com/flutter/flutter/issues/61081
+    // inserting ZWSP (\u200B) between characters does help, but it messes with width and height computation (another Flutter issue)
+    final title = entry.bestTitle ?? infoUnknown;
+    final date = entry.bestDate;
+    final dateText = date != null ? formatDateTime(date, locale, use24hour) : infoUnknown;
+    final showResolution = !entry.isSvg && entry.isSized;
+    final sizeText = entry.sizeBytes != null ? formatFileSize(locale, entry.sizeBytes!) : infoUnknown;
+    final path = entry.path;
+
+    return FutureBuilder<String?>(
+      future: _ownerPackageLoader,
+      builder: (context, snapshot) {
+        final ownerPackage = snapshot.data;
+        return FutureBuilder<void>(
+          future: _appNameLoader,
+          builder: (context, snapshot) {
+            return InfoRowGroup(
+              info: {
+                l10n.viewerInfoLabelTitle: title,
+                l10n.viewerInfoLabelDate: dateText,
+                if (entry.isVideo) ..._buildVideoRows(context),
+                if (showResolution) l10n.viewerInfoLabelResolution: rasterResolutionText,
+                l10n.viewerInfoLabelSize: sizeText,
+                if (!entry.trashed) l10n.viewerInfoLabelUri: entry.uri,
+                if (path != null) l10n.viewerInfoLabelPath: path,
+                if (ownerPackage != null) l10n.viewerInfoLabelOwner: ownerPackage,
+              },
+              spanBuilders: {
+                l10n.viewerInfoLabelOwner: _ownerHandler(ownerPackage),
+              },
+            );
+          },
+        );
+      },
+    );
+  }
 
   Map<String, String> _buildVideoRows(BuildContext context) {
     return {
       context.l10n.viewerInfoLabelDuration: entry.durationText,
     };
+  }
+
+  InfoValueSpanBuilder _ownerHandler(String? ownerPackage) {
+    if (ownerPackage == null) return (context, key, value) => [];
+
+    final appName = androidFileUtils.getCurrentAppName(ownerPackage) ?? ownerPackage;
+    return (context, key, value) => [
+          WidgetSpan(
+            alignment: PlaceholderAlignment.middle,
+            child: Padding(
+              padding: const EdgeInsetsDirectional.only(end: 4),
+              child: ConstrainedBox(
+                // use constraints instead of sizing `Image`,
+                // so that it can collapse when handling an empty image
+                constraints: const BoxConstraints(
+                  maxWidth: iconSize,
+                  maxHeight: iconSize,
+                ),
+                child: Image(
+                  image: AppIconImage(
+                    packageName: ownerPackage,
+                    size: iconSize,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          TextSpan(
+            text: appName,
+            style: InfoRowGroup.valueStyle,
+          ),
+        ];
   }
 }

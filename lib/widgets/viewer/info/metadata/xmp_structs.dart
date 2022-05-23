@@ -13,7 +13,7 @@ import 'package:flutter/material.dart';
 class XmpStructArrayCard extends StatefulWidget {
   final String title;
   late final List<Map<String, String>> structs;
-  final Map<String, InfoLinkHandler> Function(int index)? linkifier;
+  final Map<String, InfoValueSpanBuilder> Function(int index)? linkifier;
 
   XmpStructArrayCard({
     super.key,
@@ -95,7 +95,7 @@ class _XmpStructArrayCardState extends State<XmpStructArrayCard> {
               child: InfoRowGroup(
                 info: structs[_index],
                 maxValueLength: Constants.infoGroupMaxValueLength,
-                linkHandlers: widget.linkifier?.call(_index + 1),
+                spanBuilders: widget.linkifier?.call(_index + 1),
               ),
             ),
           ),
@@ -108,7 +108,7 @@ class _XmpStructArrayCardState extends State<XmpStructArrayCard> {
 class XmpStructCard extends StatelessWidget {
   final String title;
   final Map<String, String> struct;
-  final Map<String, InfoLinkHandler> Function()? linkifier;
+  final Map<String, InfoValueSpanBuilder> Function()? linkifier;
 
   static const cardMargin = EdgeInsets.symmetric(vertical: 8, horizontal: 0);
 
@@ -137,7 +137,7 @@ class XmpStructCard extends StatelessWidget {
             InfoRowGroup(
               info: struct,
               maxValueLength: Constants.infoGroupMaxValueLength,
-              linkHandlers: linkifier?.call(),
+              spanBuilders: linkifier?.call(),
             ),
           ],
         ),
