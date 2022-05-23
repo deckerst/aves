@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/widgets/common/identity/aves_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -21,7 +22,8 @@ class GridTheme extends StatelessWidget {
   Widget build(BuildContext context) {
     return ProxyProvider2<Settings, MediaQueryData, GridThemeData>(
       update: (context, settings, mq, previous) {
-        var iconSize = min(24.0, (extent / 5)).roundToDouble();
+        final margin = OverlayIcon.defaultMargin.vertical;
+        var iconSize = min(24.0, ((extent - margin) / 5).floorToDouble() - margin);
         final fontSize = (iconSize * .7).floorToDouble();
         iconSize *= mq.textScaleFactor;
         final highlightBorderWidth = extent * .1;
