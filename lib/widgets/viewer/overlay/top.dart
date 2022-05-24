@@ -16,8 +16,8 @@ class ViewerTopOverlay extends StatelessWidget {
   final int index;
   final AvesEntry mainEntry;
   final Animation<double> scale;
-  final EdgeInsets? viewInsets, viewPadding;
   final bool hasCollection;
+  final EdgeInsets? viewInsets, viewPadding;
 
   const ViewerTopOverlay({
     super.key,
@@ -66,6 +66,7 @@ class ViewerTopOverlay extends StatelessWidget {
     final viewStateNotifier = viewStateConductor.getOrCreateController(pageEntry);
 
     final blurred = settings.enableOverlayBlurEffect;
+    final viewInsetsPadding = (viewInsets ?? EdgeInsets.zero) + (viewPadding ?? EdgeInsets.zero);
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -76,8 +77,12 @@ class ViewerTopOverlay extends StatelessWidget {
             child: Container(
               color: Themes.overlayBackgroundColor(brightness: Theme.of(context).brightness, blurred: blurred),
               child: SafeArea(
-                minimum: EdgeInsets.only(top: (viewInsets?.top ?? 0) + (viewPadding?.top ?? 0)),
                 bottom: false,
+                minimum: EdgeInsets.only(
+                  left: viewInsetsPadding.left,
+                  top: viewInsetsPadding.top,
+                  right: viewInsetsPadding.right,
+                ),
                 child: ViewerDetailOverlay(
                   index: index,
                   entries: entries,
@@ -90,6 +95,10 @@ class ViewerTopOverlay extends StatelessWidget {
         if (settings.showOverlayMinimap)
           SafeArea(
             top: !showInfo,
+            minimum: EdgeInsets.only(
+              left: viewInsetsPadding.left,
+              right: viewInsetsPadding.right,
+            ),
             child: Padding(
               padding: const EdgeInsets.all(8),
               child: FadeTransition(

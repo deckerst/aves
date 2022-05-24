@@ -60,6 +60,8 @@ class _ViewerBottomOverlayState extends State<ViewerBottomOverlay> {
           mainEntry: mainEntry,
           pageEntry: pageEntry ?? mainEntry,
           hasCollection: widget.hasCollection,
+          viewInsets: widget.viewInsets,
+          viewPadding: widget.viewPadding,
           multiPageController: multiPageController,
           animationController: widget.animationController,
         );
@@ -89,6 +91,7 @@ class _BottomOverlayContent extends StatefulWidget {
   final int index;
   final AvesEntry mainEntry, pageEntry;
   final bool hasCollection;
+  final EdgeInsets? viewInsets, viewPadding;
   final MultiPageController? multiPageController;
   final AnimationController animationController;
 
@@ -98,6 +101,8 @@ class _BottomOverlayContent extends StatefulWidget {
     required this.mainEntry,
     required this.pageEntry,
     required this.hasCollection,
+    required this.viewInsets,
+    required this.viewPadding,
     required this.multiPageController,
     required this.animationController,
   });
@@ -139,11 +144,20 @@ class _BottomOverlayContentState extends State<_BottomOverlayContent> {
           return Selector<MediaQueryData, double>(
             selector: (context, mq) => mq.size.width,
             builder: (context, mqWidth, child) {
-              final viewerButtonRow = ViewerButtonRow(
-                mainEntry: mainEntry,
-                pageEntry: pageEntry,
-                scale: _buttonScale,
-                canToggleFavourite: widget.hasCollection,
+              final viewInsetsPadding = (widget.viewInsets ?? EdgeInsets.zero) + (widget.viewPadding ?? EdgeInsets.zero);
+              final viewerButtonRow = SafeArea(
+                top: false,
+                bottom: false,
+                minimum: EdgeInsets.only(
+                  left: viewInsetsPadding.left,
+                  right: viewInsetsPadding.right,
+                ),
+                child: ViewerButtonRow(
+                  mainEntry: mainEntry,
+                  pageEntry: pageEntry,
+                  scale: _buttonScale,
+                  canToggleFavourite: widget.hasCollection,
+                ),
               );
 
               final showMultiPageOverlay = mainEntry.isMultiPage && multiPageController != null;
