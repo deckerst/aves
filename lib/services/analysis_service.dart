@@ -43,6 +43,7 @@ Future<void> _init() async {
   WidgetsFlutterBinding.ensureInitialized();
   initPlatformServices();
   await metadataDb.init();
+  await mobileServices.init();
   await settings.init(monitorPlatformSettings: false);
   FijkLog.setLevel(FijkLogLevel.Warn);
   await reportService.init();
