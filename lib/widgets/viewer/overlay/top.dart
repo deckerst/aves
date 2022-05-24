@@ -3,7 +3,6 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/themes.dart';
 import 'package:aves/widgets/common/fx/blurred.dart';
 import 'package:aves/widgets/viewer/multipage/conductor.dart';
-import 'package:aves/widgets/viewer/multipage/controller.dart';
 import 'package:aves/widgets/viewer/overlay/details.dart';
 import 'package:aves/widgets/viewer/overlay/minimap.dart';
 import 'package:aves/widgets/viewer/page_entry_builder.dart';
@@ -32,84 +31,64 @@ class ViewerTopOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    late Widget child;
+    final multiPageController = mainEntry.isMultiPage ? context.read<MultiPageConductor>().getController(mainEntry) : null;
+    return PageEntryBuilder(
+      multiPageController: multiPageController,
+      builder: (pageEntry) {
+        pageEntry ??= mainEntry;
 
-    if (mainEntry.isMultiPage) {
-      final multiPageController = context.read<MultiPageConductor>().getController(mainEntry);
-      child = PageEntryBuilder(
-        multiPageController: multiPageController,
-        builder: (pageEntry) => _buildOverlay(
-          context,
-          mainEntry,
-          pageEntry: pageEntry,
-          multiPageController: multiPageController,
-        ),
-      );
-    } else {
-      child = _buildOverlay(context, mainEntry);
-    }
+        final showInfo = settings.showOverlayInfo;
 
-    return child;
-  }
+        final viewStateConductor = context.read<ViewStateConductor>();
+        final viewStateNotifier = viewStateConductor.getOrCreateController(pageEntry);
 
-  Widget _buildOverlay(
-    BuildContext context,
-    AvesEntry mainEntry, {
-    AvesEntry? pageEntry,
-    MultiPageController? multiPageController,
-  }) {
-    pageEntry ??= mainEntry;
-
-    final showInfo = settings.showOverlayInfo;
-
-    final viewStateConductor = context.read<ViewStateConductor>();
-    final viewStateNotifier = viewStateConductor.getOrCreateController(pageEntry);
-
-    final blurred = settings.enableOverlayBlurEffect;
-    final viewInsetsPadding = (viewInsets ?? EdgeInsets.zero) + (viewPadding ?? EdgeInsets.zero);
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (showInfo)
-          BlurredRect(
-            enabled: blurred,
-            child: Container(
-              color: Themes.overlayBackgroundColor(brightness: Theme.of(context).brightness, blurred: blurred),
-              child: SafeArea(
-                bottom: false,
+        final blurred = settings.enableOverlayBlurEffect;
+        final viewInsetsPadding = (viewInsets ?? EdgeInsets.zero) + (viewPadding ?? EdgeInsets.zero);
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (showInfo)
+              BlurredRect(
+                enabled: blurred,
+                child: Container(
+                  color: Themes.overlayBackgroundColor(brightness: Theme.of(context).brightness, blurred: blurred),
+                  child: SafeArea(
+                    bottom: false,
+                    minimum: EdgeInsets.only(
+                      left: viewInsetsPadding.left,
+                      top: viewInsetsPadding.top,
+                      right: viewInsetsPadding.right,
+                    ),
+                    child: ViewerDetailOverlay(
+                      index: index,
+                      entries: entries,
+                      hasCollection: hasCollection,
+                      multiPageController: multiPageController,
+                    ),
+                  ),
+                ),
+              ),
+            if (settings.showOverlayMinimap)
+              SafeArea(
+                top: !showInfo,
                 minimum: EdgeInsets.only(
                   left: viewInsetsPadding.left,
-                  top: viewInsetsPadding.top,
                   right: viewInsetsPadding.right,
                 ),
-                child: ViewerDetailOverlay(
-                  index: index,
-                  entries: entries,
-                  hasCollection: hasCollection,
-                  multiPageController: multiPageController,
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: FadeTransition(
+                    opacity: scale,
+                    child: Minimap(
+                      viewStateNotifier: viewStateNotifier,
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          ),
-        if (settings.showOverlayMinimap)
-          SafeArea(
-            top: !showInfo,
-            minimum: EdgeInsets.only(
-              left: viewInsetsPadding.left,
-              right: viewInsetsPadding.right,
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(8),
-              child: FadeTransition(
-                opacity: scale,
-                child: Minimap(
-                  viewStateNotifier: viewStateNotifier,
-                ),
-              ),
-            ),
-          )
-      ],
+              )
+          ],
+        );
+      },
     );
   }
 }
