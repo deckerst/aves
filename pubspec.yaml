@@ -146,6 +146,9 @@ flutter:
 #  `OutputBuffer` in `/services/common/output_buffer.dart`
 #  adapts from Flutter `_OutputBuffer` in `/foundation/consolidate_response.dart`
 #
+#  `OverlaySnackBar` in `/widgets/common/action_mixins/overlay_snack_bar.dart`
+#  adapts from Flutter `SnackBar` in `/material/snack_bar.dart`
+#
 #  `EagerScaleGestureRecognizer` in `/widgets/common/behaviour/eager_scale_gesture_recognizer.dart`
 #  adapts from Flutter `ScaleGestureRecognizer` in `/gestures/scale.dart`
 #
