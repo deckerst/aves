@@ -7,7 +7,7 @@ class VideoConductor {
   final List<AvesVideoController> _controllers = [];
   final bool persistPlayback;
 
-  static const maxControllerCount = 3;
+  static const _defaultMaxControllerCount = 3;
 
   VideoConductor({required this.persistPlayback});
 
@@ -16,7 +16,7 @@ class VideoConductor {
     _controllers.clear();
   }
 
-  AvesVideoController getOrCreateController(AvesEntry entry) {
+  AvesVideoController getOrCreateController(AvesEntry entry, {int? maxControllerCount}) {
     var controller = getController(entry);
     if (controller != null) {
       _controllers.remove(controller);
@@ -24,7 +24,7 @@ class VideoConductor {
       controller = IjkPlayerAvesVideoController(entry, persistPlayback: persistPlayback);
     }
     _controllers.insert(0, controller);
-    while (_controllers.length > maxControllerCount) {
+    while (_controllers.length > (maxControllerCount ?? _defaultMaxControllerCount)) {
       _controllers.removeLast().dispose();
     }
     return controller;
