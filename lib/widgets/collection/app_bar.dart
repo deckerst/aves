@@ -25,6 +25,7 @@ import 'package:aves/widgets/common/basic/menu.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/favourite_toggler.dart';
 import 'package:aves/widgets/common/identity/aves_app_bar.dart';
+import 'package:aves/widgets/common/search/route.dart';
 import 'package:aves/widgets/dialogs/tile_view_dialog.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
 import 'package:flutter/material.dart';
@@ -543,6 +544,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       context,
       SearchPageRoute(
         delegate: CollectionSearchDelegate(
+          searchFieldLabel: context.l10n.searchCollectionFieldHint,
           source: collection.source,
           parentCollection: collection,
         ),

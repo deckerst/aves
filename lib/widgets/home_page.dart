@@ -17,9 +17,10 @@ import 'package:aves/services/viewer_service.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/behaviour/routes.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/common/search/route.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
-import 'package:aves/widgets/search/search_page.dart';
 import 'package:aves/widgets/viewer/entry_viewer_page.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -47,7 +48,11 @@ class _HomePageState extends State<HomePage> {
   String? _shortcutRouteName, _shortcutSearchQuery;
   Set<String>? _shortcutFilters;
 
-  static const allowedShortcutRoutes = [CollectionPage.routeName, AlbumListPage.routeName, SearchPage.routeName];
+  static const allowedShortcutRoutes = [
+    CollectionPage.routeName,
+    AlbumListPage.routeName,
+    CollectionSearchDelegate.pageRouteName,
+  ];
 
   @override
   void initState() {
@@ -103,7 +108,7 @@ class _HomePageState extends State<HomePage> {
           appMode = multiple ? AppMode.pickMultipleMediaExternal : AppMode.pickSingleMediaExternal;
           break;
         case 'search':
-          _shortcutRouteName = SearchPage.routeName;
+          _shortcutRouteName = CollectionSearchDelegate.pageRouteName;
           _shortcutSearchQuery = intentData['query'];
           break;
         default:
@@ -245,9 +250,10 @@ class _HomePageState extends State<HomePage> {
           settings: const RouteSettings(name: AlbumListPage.routeName),
           builder: (_) => const AlbumListPage(),
         );
-      case SearchPage.routeName:
+      case CollectionSearchDelegate.pageRouteName:
         return SearchPageRoute(
           delegate: CollectionSearchDelegate(
+            searchFieldLabel: context.l10n.searchCollectionFieldHint,
             source: source,
             canPop: false,
             initialQuery: _shortcutSearchQuery,

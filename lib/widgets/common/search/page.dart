@@ -2,16 +2,14 @@ import 'dart:ui';
 
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/debouncer.dart';
-import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_app_bar.dart';
-import 'package:aves/widgets/search/search_delegate.dart';
+import 'package:aves/widgets/common/search/delegate.dart';
+import 'package:aves/widgets/common/search/route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
 class SearchPage extends StatefulWidget {
-  static const routeName = '/search';
-
-  final CollectionSearchDelegate delegate;
+  final AvesSearchDelegate delegate;
   final Animation<double> animation;
 
   const SearchPage({
@@ -31,21 +29,38 @@ class _SearchPageState extends State<SearchPage> {
   @override
   void initState() {
     super.initState();
-    widget.delegate.queryTextController.addListener(_onQueryChanged);
+    _registerWidget(widget);
     widget.animation.addStatusListener(_onAnimationStatusChanged);
-    widget.delegate.currentBodyNotifier.addListener(_onSearchBodyChanged);
     _focusNode.addListener(_onFocusChanged);
-    widget.delegate.focusNode = _focusNode;
+  }
+
+  @override
+  void didUpdateWidget(covariant SearchPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.delegate != oldWidget.delegate) {
+      _unregisterWidget(oldWidget);
+      _registerWidget(widget);
+    }
   }
 
   @override
   void dispose() {
-    widget.delegate.queryTextController.removeListener(_onQueryChanged);
+    _unregisterWidget(widget);
     widget.animation.removeStatusListener(_onAnimationStatusChanged);
-    widget.delegate.currentBodyNotifier.removeListener(_onSearchBodyChanged);
-    widget.delegate.focusNode = null;
     _focusNode.dispose();
     super.dispose();
+  }
+
+  void _registerWidget(SearchPage widget) {
+    widget.delegate.queryTextController.addListener(_onQueryChanged);
+    widget.delegate.currentBodyNotifier.addListener(_onSearchBodyChanged);
+    widget.delegate.focusNode = _focusNode;
+  }
+
+  void _unregisterWidget(SearchPage widget) {
+    widget.delegate.queryTextController.removeListener(_onQueryChanged);
+    widget.delegate.currentBodyNotifier.removeListener(_onSearchBodyChanged);
+    widget.delegate.focusNode = null;
   }
 
   void _onAnimationStatusChanged(AnimationStatus status) {
@@ -57,19 +72,6 @@ class _SearchPageState extends State<SearchPage> {
       if (!mounted) return;
       _focusNode.requestFocus();
     });
-  }
-
-  @override
-  void didUpdateWidget(covariant SearchPage oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (widget.delegate != oldWidget.delegate) {
-      oldWidget.delegate.queryTextController.removeListener(_onQueryChanged);
-      widget.delegate.queryTextController.addListener(_onQueryChanged);
-      oldWidget.delegate.currentBodyNotifier.removeListener(_onSearchBodyChanged);
-      widget.delegate.currentBodyNotifier.addListener(_onSearchBodyChanged);
-      oldWidget.delegate.focusNode = null;
-      widget.delegate.focusNode = _focusNode;
-    }
   }
 
   void _onFocusChanged() {
@@ -130,7 +132,7 @@ class _SearchPageState extends State<SearchPage> {
               focusNode: _focusNode,
               decoration: InputDecoration(
                 border: InputBorder.none,
-                hintText: context.l10n.searchCollectionFieldHint,
+                hintText: widget.delegate.searchFieldLabel,
                 hintStyle: theme.inputDecorationTheme.hintStyle,
               ),
               textInputAction: TextInputAction.search,
