@@ -13,6 +13,9 @@ class AvesAppBar extends StatelessWidget {
   final Widget? bottom;
   final Object? transitionKey;
 
+  static const leadingHeroTag = 'appbar-leading';
+  static const titleHeroTag = 'appbar-title';
+
   const AvesAppBar({
     super.key,
     required this.contentHeight,
@@ -49,17 +52,27 @@ class AvesAppBar extends StatelessWidget {
                         children: [
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 4),
-                            child: leading,
+                            child: Hero(
+                              tag: leadingHeroTag,
+                              flightShuttleBuilder: _flightShuttleBuilder,
+                              transitionOnUserGestures: true,
+                              child: leading,
+                            ),
                           ),
                           Expanded(
-                            child: AnimatedSwitcher(
-                              duration: context.read<DurationsData>().iconAnimation,
-                              child: Row(
-                                key: ValueKey(transitionKey),
-                                children: [
-                                  Expanded(child: title),
-                                  ...actions,
-                                ],
+                            child: Hero(
+                              tag: titleHeroTag,
+                              flightShuttleBuilder: _flightShuttleBuilder,
+                              transitionOnUserGestures: true,
+                              child: AnimatedSwitcher(
+                                duration: context.read<DurationsData>().iconAnimation,
+                                child: Row(
+                                  key: ValueKey(transitionKey),
+                                  children: [
+                                    Expanded(child: title),
+                                    ...actions,
+                                  ],
+                                ),
                               ),
                             ),
                           ),
@@ -74,6 +87,38 @@ class AvesAppBar extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+
+  static Widget _flightShuttleBuilder(
+    BuildContext flightContext,
+    Animation<double> animation,
+    HeroFlightDirection direction,
+    BuildContext fromHero,
+    BuildContext toHero,
+  ) {
+    final pushing = direction == HeroFlightDirection.push;
+    Widget popBuilder(context, child) => Opacity(opacity: 1 - animation.value, child: child);
+    Widget pushBuilder(context, child) => Opacity(opacity: animation.value, child: child);
+    return Material(
+      type: MaterialType.transparency,
+      child: DefaultTextStyle(
+        style: DefaultTextStyle.of(toHero).style,
+        child: Stack(
+          children: [
+            AnimatedBuilder(
+              animation: animation,
+              builder: pushing ? popBuilder : pushBuilder,
+              child: fromHero.widget,
+            ),
+            AnimatedBuilder(
+              animation: animation,
+              builder: pushing ? pushBuilder : popBuilder,
+              child: toHero.widget,
+            ),
+          ],
+        ),
+      ),
     );
   }
 

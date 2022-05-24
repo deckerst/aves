@@ -74,7 +74,6 @@ class InfoAppBar extends StatelessWidget {
             ),
           ),
       ],
-      titleSpacing: 0,
       floating: true,
     );
   }

@@ -96,7 +96,6 @@ class _SettingsPageState extends State<SettingsPage> with FeedbackMixin {
               ),
             ),
           ],
-          titleSpacing: 0,
         ),
         body: GestureAreaProtectorStack(
           child: SafeArea(
