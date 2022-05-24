@@ -7,6 +7,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/accessibility_service.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/widgets/common/action_mixins/overlay_snack_bar.dart';
 import 'package:aves/widgets/common/basic/circle.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/viewer/entry_viewer_page.dart';
@@ -58,24 +59,22 @@ mixin FeedbackMixin {
           (context) => SafeArea(
             child: Padding(
               padding: margin,
-              child: SnackBar(
+              child: OverlaySnackBar(
                 content: snackBarContent,
-                animation: const AlwaysStoppedAnimation<double>(1),
                 action: action != null
-                    ? SnackBarAction(
-                        label: action.label,
+                    ? TextButton(
+                        style: ButtonStyle(
+                          foregroundColor: MaterialStateProperty.all(Theme.of(context).snackBarTheme.actionTextColor),
+                        ),
                         onPressed: () {
-                          // the regular snack bar dismiss behavior is confused
-                          // because it expects a `Scaffold` in context,
-                          // so we manually dimiss the overlay entry
-                          // TODO TLAD [bug] after dismissing the overlay, tapping on the snack bar area makes the overlay visible again
                           notificationOverlayEntry?.dismiss();
                           action.onPressed();
                         },
+                        child: Text(action.label),
                       )
                     : null,
-                duration: duration,
                 dismissDirection: DismissDirection.horizontal,
+                onDismiss: () => notificationOverlayEntry?.dismiss(),
               ),
             ),
           ),
