@@ -3,8 +3,10 @@ import 'dart:ui';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/debouncer.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/common/identity/aves_app_bar.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 
 class SearchPage extends StatefulWidget {
   static const routeName = '/search';
@@ -51,7 +53,10 @@ class _SearchPageState extends State<SearchPage> {
       return;
     }
     widget.animation.removeStatusListener(_onAnimationStatusChanged);
-    _focusNode.requestFocus();
+    Future.delayed(Durations.pageTransitionAnimation * timeDilation).then((_) {
+      if (!mounted) return;
+      _focusNode.requestFocus();
+    });
   }
 
   @override
@@ -110,19 +115,27 @@ class _SearchPageState extends State<SearchPage> {
     }
     return Scaffold(
       appBar: AppBar(
-        leading: widget.delegate.buildLeading(context),
-        title: DefaultTextStyle.merge(
-          style: const TextStyle(fontFeatures: [FontFeature.disable('smcp')]),
-          child: TextField(
-            controller: widget.delegate.queryTextController,
-            focusNode: _focusNode,
-            style: theme.textTheme.headline6,
-            textInputAction: TextInputAction.search,
-            onSubmitted: (_) => widget.delegate.showResults(context),
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              hintText: context.l10n.searchCollectionFieldHint,
-              hintStyle: theme.inputDecorationTheme.hintStyle,
+        leading: Hero(
+          tag: AvesAppBar.leadingHeroTag,
+          transitionOnUserGestures: true,
+          child: Center(child: widget.delegate.buildLeading(context)),
+        ),
+        title: Hero(
+          tag: AvesAppBar.titleHeroTag,
+          transitionOnUserGestures: true,
+          child: DefaultTextStyle.merge(
+            style: const TextStyle(fontFeatures: [FontFeature.disable('smcp')]),
+            child: TextField(
+              controller: widget.delegate.queryTextController,
+              focusNode: _focusNode,
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                hintText: context.l10n.searchCollectionFieldHint,
+                hintStyle: theme.inputDecorationTheme.hintStyle,
+              ),
+              textInputAction: TextInputAction.search,
+              style: theme.textTheme.headline6,
+              onSubmitted: (_) => widget.delegate.showResults(context),
             ),
           ),
         ),

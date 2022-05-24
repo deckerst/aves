@@ -126,7 +126,11 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
                               // - `FadeUpwardsPageTransitionsBuilder` on Oreo / API 27 and below
                               // - `OpenUpwardsPageTransitionsBuilder` on Pie / API 28
                               // - `ZoomPageTransitionsBuilder` on Android 10 / API 29 and above (default in Flutter v3.0.0)
-                              ? const PageTransitionsTheme()
+                              ? const PageTransitionsTheme(
+                                  builders: {
+                                    TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
+                                  },
+                                )
                               // strip page transitions used by `MaterialPageRoute`
                               : const DirectPageTransitionsTheme();
 
