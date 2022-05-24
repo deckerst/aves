@@ -683,7 +683,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
     if (videoPageEntries.isNotEmpty) {
       // init video controllers for all pages that could need it
       final videoConductor = context.read<VideoConductor>();
-      videoPageEntries.forEach(videoConductor.getOrCreateController);
+      videoPageEntries.forEach((entry) => videoConductor.getOrCreateController(entry, maxControllerCount: videoPageEntries.length));
 
       // auto play/pause when changing page
       Future<void> _onPageChange() async {
@@ -693,8 +693,11 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
           final pageInfo = multiPageInfo.getByIndex(page)!;
           if (pageInfo.isVideo) {
             final pageEntry = multiPageInfo.getPageEntryByIndex(page);
-            final pageVideoController = videoConductor.getController(pageEntry)!;
-            await _playVideo(pageVideoController, () => entry == _entryNotifier.value && page == multiPageController.page);
+            final pageVideoController = videoConductor.getController(pageEntry);
+            assert(pageVideoController != null);
+            if (pageVideoController != null) {
+              await _playVideo(pageVideoController, () => entry == _entryNotifier.value && page == multiPageController.page);
+            }
           }
         }
       }
