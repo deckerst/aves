@@ -9,6 +9,7 @@ import 'package:aves/widgets/common/app_bar_title.dart';
 import 'package:aves/widgets/common/basic/menu.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_app_bar.dart';
+import 'package:aves/widgets/common/search/route.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip_set.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
 import 'package:flutter/material.dart';
@@ -222,6 +223,7 @@ class _FilterGridAppBarState<T extends CollectionFilter> extends State<FilterGri
       context,
       SearchPageRoute(
         delegate: CollectionSearchDelegate(
+          searchFieldLabel: context.l10n.searchCollectionFieldHint,
           source: source,
         ),
       ),

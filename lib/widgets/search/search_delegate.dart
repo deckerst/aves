@@ -14,23 +14,21 @@ import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/location.dart';
 import 'package:aves/model/source/tag.dart';
 import 'package:aves/ref/mime_types.dart';
-import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/expandable_filter_row.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
-import 'package:aves/widgets/search/search_page.dart';
+import 'package:aves/widgets/common/search/delegate.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-class CollectionSearchDelegate {
+class CollectionSearchDelegate extends AvesSearchDelegate {
   final CollectionSource source;
   final CollectionLens? parentCollection;
   final ValueNotifier<String?> _expandedSectionNotifier = ValueNotifier(null);
-  final bool canPop;
 
+  static const pageRouteName = '/search';
   static const int searchHistoryCount = 10;
   static final typeFilters = [
     FavouriteFilter.instance,
@@ -46,46 +44,18 @@ class CollectionSearchDelegate {
   ];
 
   CollectionSearchDelegate({
+    required super.searchFieldLabel,
     required this.source,
     this.parentCollection,
-    this.canPop = true,
+    super.canPop,
     String? initialQuery,
-  }) {
+  }) : super(
+          routeName: pageRouteName,
+        ) {
     query = initialQuery ?? '';
   }
 
-  Widget buildLeading(BuildContext context) {
-    // use a property instead of checking `Navigator.canPop(context)`
-    // because the navigator state changes as soon as we press back
-    // so the leading may mistakenly switch to the close button
-    return canPop
-        ? IconButton(
-            icon: AnimatedIcon(
-              icon: AnimatedIcons.menu_arrow,
-              progress: transitionAnimation,
-            ),
-            onPressed: () => _goBack(context),
-            tooltip: MaterialLocalizations.of(context).backButtonTooltip,
-          )
-        : const CloseButton(
-            onPressed: SystemNavigator.pop,
-          );
-  }
-
-  List<Widget> buildActions(BuildContext context) {
-    return [
-      if (query.isNotEmpty)
-        IconButton(
-          icon: const Icon(AIcons.clear),
-          onPressed: () {
-            query = '';
-            showSuggestions(context);
-          },
-          tooltip: context.l10n.clearTooltip,
-        ),
-    ];
-  }
-
+  @override
   Widget buildSuggestions(BuildContext context) {
     final upQuery = query.trim().toUpperCase();
     bool containQuery(String s) => s.toUpperCase().contains(upQuery);
@@ -208,6 +178,7 @@ class CollectionSearchDelegate {
     );
   }
 
+  @override
   Widget buildResults(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       // `buildResults` is called in the build phase,
@@ -215,7 +186,7 @@ class CollectionSearchDelegate {
       // and possibly trigger a rebuild here
       _select(context, _buildQueryFilter(true));
     });
-    return const SizedBox.shrink();
+    return const SizedBox();
   }
 
   QueryFilter? _buildQueryFilter(bool colorful) {
@@ -225,7 +196,7 @@ class CollectionSearchDelegate {
 
   void _select(BuildContext context, CollectionFilter? filter) {
     if (filter == null) {
-      _goBack(context);
+      goBack(context);
       return;
     }
 
@@ -248,17 +219,12 @@ class CollectionSearchDelegate {
     // so that hero animation target is ready in the `FilterBar`,
     // even when the target is a child of an `AnimatedList`
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _goBack(context);
+      goBack(context);
     });
   }
 
-  void _goBack(BuildContext context) {
-    _clean();
-    Navigator.pop(context);
-  }
-
   void _jumpToCollectionPage(BuildContext context, CollectionFilter filter) {
-    _clean();
+    clean();
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
@@ -270,119 +236,5 @@ class CollectionSearchDelegate {
       ),
       (route) => false,
     );
-  }
-
-  void _clean() {
-    currentBody = null;
-    focusNode?.unfocus();
-  }
-
-  // adapted from Flutter `SearchDelegate` in `/material/search.dart`
-
-  void showResults(BuildContext context) {
-    focusNode?.unfocus();
-    currentBody = SearchBody.results;
-  }
-
-  void showSuggestions(BuildContext context) {
-    assert(focusNode != null, '_focusNode must be set by route before showSuggestions is called.');
-    focusNode!.requestFocus();
-    currentBody = SearchBody.suggestions;
-  }
-
-  Animation<double> get transitionAnimation => proxyAnimation;
-
-  FocusNode? focusNode;
-
-  final TextEditingController queryTextController = TextEditingController();
-
-  final ProxyAnimation proxyAnimation = ProxyAnimation(kAlwaysDismissedAnimation);
-
-  String get query => queryTextController.text;
-
-  set query(String value) {
-    queryTextController.text = value;
-  }
-
-  final ValueNotifier<SearchBody?> currentBodyNotifier = ValueNotifier(null);
-
-  SearchBody? get currentBody => currentBodyNotifier.value;
-
-  set currentBody(SearchBody? value) {
-    currentBodyNotifier.value = value;
-  }
-
-  SearchPageRoute? route;
-}
-
-// adapted from Flutter `_SearchBody` in `/material/search.dart`
-enum SearchBody { suggestions, results }
-
-// adapted from Flutter `_SearchPageRoute` in `/material/search.dart`
-class SearchPageRoute<T> extends PageRoute<T> {
-  SearchPageRoute({
-    required this.delegate,
-  }) : super(settings: const RouteSettings(name: SearchPage.routeName)) {
-    assert(
-      delegate.route == null,
-      'The ${delegate.runtimeType} instance is currently used by another active '
-      'search. Please close that search by calling close() on the SearchDelegate '
-      'before openening another search with the same delegate instance.',
-    );
-    delegate.route = this;
-  }
-
-  final CollectionSearchDelegate delegate;
-
-  @override
-  Color? get barrierColor => null;
-
-  @override
-  String? get barrierLabel => null;
-
-  @override
-  Duration get transitionDuration => const Duration(milliseconds: 300);
-
-  @override
-  bool get maintainState => false;
-
-  @override
-  Widget buildTransitions(
-    BuildContext context,
-    Animation<double> animation,
-    Animation<double> secondaryAnimation,
-    Widget child,
-  ) {
-    return FadeTransition(
-      opacity: animation,
-      child: child,
-    );
-  }
-
-  @override
-  Animation<double> createAnimation() {
-    final animation = super.createAnimation();
-    delegate.proxyAnimation.parent = animation;
-    return animation;
-  }
-
-  @override
-  Widget buildPage(
-    BuildContext context,
-    Animation<double> animation,
-    Animation<double> secondaryAnimation,
-  ) {
-    return SearchPage(
-      delegate: delegate,
-      animation: animation,
-    );
-  }
-
-  @override
-  void didComplete(T? result) {
-    super.didComplete(result);
-    assert(delegate.route == this);
-    delegate.route = null;
-    delegate.currentBody = null;
   }
 }

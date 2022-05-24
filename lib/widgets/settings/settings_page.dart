@@ -15,6 +15,7 @@ import 'package:aves/widgets/common/basic/menu.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
+import 'package:aves/widgets/common/search/route.dart';
 import 'package:aves/widgets/settings/accessibility/accessibility.dart';
 import 'package:aves/widgets/settings/app_export/items.dart';
 import 'package:aves/widgets/settings/app_export/selection_dialog.dart';
@@ -221,11 +222,13 @@ class _SettingsPageState extends State<SettingsPage> with FeedbackMixin {
   }
 
   void _goToSearch(BuildContext context) {
-    showSearch(
-      context: context,
-      delegate: SettingsSearchDelegate(
-        searchFieldLabel: context.l10n.settingsSearchFieldLabel,
-        sections: sections,
+    Navigator.push(
+      context,
+      SearchPageRoute(
+        delegate: SettingsSearchDelegate(
+          searchFieldLabel: context.l10n.settingsSearchFieldLabel,
+          sections: sections,
+        ),
       ),
     );
   }

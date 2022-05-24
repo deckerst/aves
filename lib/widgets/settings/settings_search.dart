@@ -3,58 +3,27 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
 import 'package:aves/widgets/common/identity/highlight_title.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
+import 'package:aves/widgets/common/search/delegate.dart';
 import 'package:aves/widgets/settings/settings_definition.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
-class SettingsSearchDelegate extends SearchDelegate {
+class SettingsSearchDelegate extends AvesSearchDelegate {
   final List<SettingsSection> sections;
 
+  static const pageRouteName = '/settings/search';
+
   SettingsSearchDelegate({
-    required String searchFieldLabel,
+    required super.searchFieldLabel,
     required this.sections,
   }) : super(
-          searchFieldLabel: searchFieldLabel,
+          routeName: pageRouteName,
         );
 
   @override
-  Widget buildLeading(BuildContext context) {
-    return IconButton(
-      icon: AnimatedIcon(
-        icon: AnimatedIcons.menu_arrow,
-        progress: transitionAnimation,
-      ),
-      onPressed: () => Navigator.pop(context),
-      tooltip: MaterialLocalizations.of(context).backButtonTooltip,
-    );
-  }
-
-  @override
-  List<Widget> buildActions(BuildContext context) {
-    return [
-      if (query.isNotEmpty)
-        IconButton(
-          icon: const Icon(AIcons.clear),
-          onPressed: () {
-            query = '';
-            showSuggestions(context);
-          },
-          tooltip: context.l10n.clearTooltip,
-        ),
-    ];
-  }
-
-  @override
-  Widget buildSuggestions(BuildContext context) => const SizedBox();
-
-  @override
-  Widget buildResults(BuildContext context) {
-    if (query.isEmpty) {
-      showSuggestions(context);
-      return const SizedBox();
-    }
-
+  Widget buildSuggestions(BuildContext context) {
     final upQuery = query.toUpperCase().trim();
+    if (upQuery.isEmpty) return const SizedBox();
 
     bool testKey(String key) => key.toUpperCase().contains(upQuery);
 
@@ -109,4 +78,7 @@ class SettingsSearchDelegate extends SearchDelegate {
       ),
     );
   }
+
+  @override
+  Widget buildResults(BuildContext context) => buildSuggestions(context);
 }
