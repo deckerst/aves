@@ -2,7 +2,6 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/common/fx/blurred.dart';
-import 'package:aves/widgets/common/providers/query_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -101,26 +100,23 @@ class AvesAppBar extends StatelessWidget {
     final pushing = direction == HeroFlightDirection.push;
     Widget popBuilder(context, child) => Opacity(opacity: 1 - animation.value, child: child);
     Widget pushBuilder(context, child) => Opacity(opacity: animation.value, child: child);
-    return QueryProvider(
-      initialQuery: null,
-      child: Material(
-        type: MaterialType.transparency,
-        child: DefaultTextStyle(
-          style: DefaultTextStyle.of(toHero).style,
-          child: Stack(
-            children: [
-              AnimatedBuilder(
-                animation: animation,
-                builder: pushing ? popBuilder : pushBuilder,
-                child: fromHero.widget,
-              ),
-              AnimatedBuilder(
-                animation: animation,
-                builder: pushing ? pushBuilder : popBuilder,
-                child: toHero.widget,
-              ),
-            ],
-          ),
+    return Material(
+      type: MaterialType.transparency,
+      child: DefaultTextStyle(
+        style: DefaultTextStyle.of(toHero).style,
+        child: Stack(
+          children: [
+            AnimatedBuilder(
+              animation: animation,
+              builder: pushing ? popBuilder : pushBuilder,
+              child: fromHero.widget,
+            ),
+            AnimatedBuilder(
+              animation: animation,
+              builder: pushing ? pushBuilder : popBuilder,
+              child: toHero.widget,
+            ),
+          ],
         ),
       ),
     );
