@@ -203,8 +203,9 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     final l10n = context.l10n;
 
     if (isSelecting) {
-      return Selector<Selection<AvesEntry>, int>(
-        selector: (context, selection) => selection.selectedItems.length,
+      // `Selection` may not be available during hero
+      return Selector<Selection<AvesEntry>?, int>(
+        selector: (context, selection) => selection?.selectedItems.length ?? 0,
         builder: (context, count, child) => Text(
           count == 0 ? l10n.collectionSelectPageTitle : l10n.itemCount(count),
           softWrap: false,
@@ -322,8 +323,9 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     final onPressed = enabled ? () => _onActionSelected(action) : null;
     switch (action) {
       case EntrySetAction.toggleTitleSearch:
-        return Selector<Query, bool>(
-          selector: (context, query) => query.enabled,
+        // `Query` may not be available during hero
+        return Selector<Query?, bool>(
+          selector: (context, query) => query?.enabled ?? false,
           builder: (context, queryEnabled, child) {
             return _TitleSearchToggler(
               queryEnabled: queryEnabled,
