@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
-## <a id="v1.6.6"></a>[v1.6.6] - 2022-05-25
+## <a id="v1.6.7"></a>[v1.6.7] - 2022-05-25
 
 ### Added
 
@@ -26,6 +26,8 @@ All notable changes to this project will be documented in this file.
 - grey Google Map layer when size changed
 - Android scrolling screenshot support
 - Voice Access scrolling support
+
+## <a id="v1.6.6"></a>[v1.6.6] - 2022-05-25 [YANKED AGAIN!]
 
 ## <a id="v1.6.5"></a>[v1.6.5] - 2022-05-25 [YANKED]
 
