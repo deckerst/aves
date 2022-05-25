@@ -184,10 +184,20 @@ class _AvesFloatingBarState extends State<AvesFloatingBar> with RouteAware {
   }
 
   @override
-  void didPopNext() => _isBlurAllowedNotifier.value = true;
+  void didPopNext() {
+    // post to prevent single frame flash during hero
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _isBlurAllowedNotifier.value = true;
+    });
+  }
 
   @override
-  void didPushNext() => _isBlurAllowedNotifier.value = false;
+  void didPushNext() {
+    // post to prevent single frame flash during hero
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _isBlurAllowedNotifier.value = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
