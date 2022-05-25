@@ -1,4 +1,3 @@
-Thanks for using Aves!
 In v1.6.5:
 - bottom navigation bar
 - fast scroll with breadcrumbs
