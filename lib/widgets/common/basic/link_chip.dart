@@ -5,7 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 class LinkChip extends StatelessWidget {
   final Widget? leading;
   final String text;
-  final String? url;
+  final String? urlString;
   final Color? color;
   final TextStyle? textStyle;
   final VoidCallback? onTap;
@@ -13,26 +13,29 @@ class LinkChip extends StatelessWidget {
   static const borderRadius = BorderRadius.all(Radius.circular(8));
 
   const LinkChip({
-    Key? key,
+    super.key,
     this.leading,
     required this.text,
-    this.url,
+    this.urlString,
     this.color,
     this.textStyle,
     this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
-    final _url = url;
+    final _urlString = urlString;
     return DefaultTextStyle.merge(
       style: (textStyle ?? const TextStyle()).copyWith(color: color),
       child: InkWell(
         borderRadius: borderRadius,
         onTap: onTap ??
             () async {
-              if (_url != null && await canLaunch(_url)) {
-                await launch(_url);
+              if (_urlString != null) {
+                final url = Uri.parse(_urlString);
+                if (await canLaunchUrl(url)) {
+                  await launchUrl(url, mode: LaunchMode.externalApplication);
+                }
               }
             },
         child: Padding(

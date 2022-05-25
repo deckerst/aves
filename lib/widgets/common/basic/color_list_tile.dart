@@ -12,11 +12,11 @@ class ColorListTile extends StatelessWidget {
   static const double radius = 16.0;
 
   const ColorListTile({
-    Key? key,
+    super.key,
     required this.title,
     required this.value,
     required this.onChanged,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -51,9 +51,9 @@ class ColorPickerDialog extends StatefulWidget {
   final Color initialValue;
 
   const ColorPickerDialog({
-    Key? key,
+    super.key,
     required this.initialValue,
-  }) : super(key: key);
+  });
 
   @override
   State<ColorPickerDialog> createState() => _ColorPickerDialogState();

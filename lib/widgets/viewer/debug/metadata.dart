@@ -13,9 +13,9 @@ class MetadataTab extends StatefulWidget {
   final AvesEntry entry;
 
   const MetadataTab({
-    Key? key,
+    super.key,
     required this.entry,
-  }) : super(key: key);
+  });
 
   @override
   State<MetadataTab> createState() => _MetadataTabState();

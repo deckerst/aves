@@ -42,10 +42,16 @@ import 'package:tuple/tuple.dart';
 class AvesApp extends StatefulWidget {
   final AppFlavor flavor;
 
+  static final GlobalKey<NavigatorState> navigatorKey = GlobalKey(debugLabel: 'app-navigator');
+
+  // do not monitor all `ModalRoute`s, which would include popup menus,
+  // so that we can react to fullscreen `PageRoute`s only
+  static final RouteObserver<PageRoute> pageRouteObserver = RouteObserver<PageRoute>();
+
   const AvesApp({
-    Key? key,
+    super.key,
     required this.flavor,
-  }) : super(key: key);
+  });
 
   @override
   State<AvesApp> createState() => _AvesAppState();
@@ -60,12 +66,11 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
 
   // observers are not registered when using the same list object with different items
   // the list itself needs to be reassigned
-  List<NavigatorObserver> _navigatorObservers = [];
+  List<NavigatorObserver> _navigatorObservers = [AvesApp.pageRouteObserver];
   final EventChannel _mediaStoreChangeChannel = const EventChannel('deckers.thibault/aves/media_store_change');
   final EventChannel _newIntentChannel = const EventChannel('deckers.thibault/aves/intent');
   final EventChannel _analysisCompletionChannel = const EventChannel('deckers.thibault/aves/analysis_events');
   final EventChannel _errorChannel = const EventChannel('deckers.thibault/aves/error');
-  final GlobalKey<NavigatorState> _navigatorKey = GlobalKey(debugLabel: 'app-navigator');
 
   Widget getFirstPage({Map? intentData}) => settings.hasAcceptedTerms ? HomePage(intentData: intentData) : const WelcomePage();
 
@@ -78,7 +83,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     _newIntentChannel.receiveBroadcastStream().listen((event) => _onNewIntent(event as Map?));
     _analysisCompletionChannel.receiveBroadcastStream().listen((event) => _onAnalysisCompletion());
     _errorChannel.receiveBroadcastStream().listen((event) => _onError(event as String?));
-    WidgetsBinding.instance!.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
@@ -115,31 +120,32 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
                           final settingsLocale = s.item1;
                           final areAnimationsEnabled = s.item2;
                           final themeBrightness = s.item3;
-                          return MaterialApp(
-                            navigatorKey: _navigatorKey,
-                            home: home,
-                            navigatorObservers: _navigatorObservers,
-                            builder: (context, child) {
+
+                          final pageTransitionsTheme = areAnimationsEnabled
                               // Flutter has various page transition implementations for Android:
                               // - `FadeUpwardsPageTransitionsBuilder` on Oreo / API 27 and below
                               // - `OpenUpwardsPageTransitionsBuilder` on Pie / API 28
-                              // - `ZoomPageTransitionsBuilder` on Android 10 / API 29 and above
-                              // As of Flutter v2.8.1, `FadeUpwardsPageTransitionsBuilder` is the default, regardless of versions.
-                              // In practice, `ZoomPageTransitionsBuilder` feels unstable when transitioning from Album to Collection.
-                              if (!areAnimationsEnabled) {
-                                child = Theme(
-                                  data: Theme.of(context).copyWith(
-                                    // strip page transitions used by `MaterialPageRoute`
-                                    pageTransitionsTheme: DirectPageTransitionsTheme(),
-                                  ),
-                                  child: child!,
-                                );
-                              }
-                              return AvesColorsProvider(
+                              // - `ZoomPageTransitionsBuilder` on Android 10 / API 29 and above (default in Flutter v3.0.0)
+                              ? const PageTransitionsTheme(
+                                  builders: {
+                                    TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
+                                  },
+                                )
+                              // strip page transitions used by `MaterialPageRoute`
+                              : const DirectPageTransitionsTheme();
+
+                          return MaterialApp(
+                            navigatorKey: AvesApp.navigatorKey,
+                            home: home,
+                            navigatorObservers: _navigatorObservers,
+                            builder: (context, child) => AvesColorsProvider(
+                              child: Theme(
+                                data: Theme.of(context).copyWith(
+                                  pageTransitionsTheme: pageTransitionsTheme,
+                                ),
                                 child: child!,
-                              );
-                              // return child!;
-                            },
+                              ),
+                            ),
                             onGenerateTitle: (context) => context.l10n.appName,
                             theme: Themes.lightTheme,
                             darkTheme: themeBrightness == AvesThemeBrightness.black ? Themes.blackTheme : Themes.darkTheme,
@@ -147,6 +153,8 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
                             locale: settingsLocale,
                             localizationsDelegates: AppLocalizations.localizationsDelegates,
                             supportedLocales: AppLocalizations.supportedLocales,
+                            // TODO TLAD remove custom scroll behavior when this is fixed: https://github.com/flutter/flutter/issues/82906
+                            scrollBehavior: StretchMaterialScrollBehavior(),
                           );
                         },
                       );
@@ -183,7 +191,8 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
       case AppLifecycleState.inactive:
         switch (appModeNotifier.value) {
           case AppMode.main:
-          case AppMode.pickMediaExternal:
+          case AppMode.pickSingleMediaExternal:
+          case AppMode.pickMultipleMediaExternal:
             _saveTopEntries();
             break;
           case AppMode.pickMediaInternal:
@@ -223,6 +232,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     final stopwatch = Stopwatch()..start();
 
     await device.init();
+    await mobileServices.init();
     await settings.init(monitorPlatformSettings: true);
     settings.isRotationLocked = await windowService.isRotationLocked();
     settings.areAnimationsRemoved = await AccessibilityService.areAnimationsRemoved();
@@ -271,18 +281,18 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
 
     FlutterError.onError = reportService.recordFlutterError;
     final now = DateTime.now();
-    final hasPlayServices = await availability.hasPlayServices;
     await reportService.setCustomKeys({
       'build_mode': kReleaseMode
           ? 'release'
           : kProfileMode
               ? 'profile'
               : 'debug',
-      'has_play_services': hasPlayServices,
-      'locales': WidgetsBinding.instance!.window.locales.join(', '),
+      'has_mobile_services': mobileServices.isServiceAvailable,
+      'locales': WidgetsBinding.instance.window.locales.join(', '),
       'time_zone': '${now.timeZoneName} (${now.timeZoneOffset})',
     });
     _navigatorObservers = [
+      AvesApp.pageRouteObserver,
       ReportingRouteTracker(),
     ];
   }
@@ -294,7 +304,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     if (appModeNotifier.value == AppMode.main && (intentData == null || intentData.isEmpty == true)) return;
 
     reportService.log('New intent');
-    _navigatorKey.currentState!.pushReplacement(DirectMaterialPageRoute(
+    AvesApp.navigatorKey.currentState!.pushReplacement(DirectMaterialPageRoute(
       settings: const RouteSettings(name: HomePage.routeName),
       builder: (_) => getFirstPage(intentData: intentData),
     ));
@@ -323,4 +333,14 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   }
 
   void _onError(String? error) => reportService.recordError(error, null);
+}
+
+class StretchMaterialScrollBehavior extends MaterialScrollBehavior {
+  @override
+  Widget buildOverscrollIndicator(BuildContext context, Widget child, ScrollableDetails details) {
+    return StretchingOverscrollIndicator(
+      axisDirection: details.direction,
+      child: child,
+    );
+  }
 }

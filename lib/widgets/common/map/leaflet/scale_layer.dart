@@ -9,11 +9,11 @@ class ScaleLayerOptions extends LayerOptions {
   final Widget Function(double width, String distance) builder;
 
   ScaleLayerOptions({
-    Key? key,
+    super.key,
     this.unitSystem = UnitSystem.metric,
     this.builder = defaultBuilder,
     rebuild,
-  }) : super(key: key, rebuild: rebuild);
+  }) : super(rebuild: rebuild);
 
   static Widget defaultBuilder(double width, String distance) {
     return ScaleBar(
@@ -132,10 +132,10 @@ class ScaleBar extends StatelessWidget {
   static const double barThickness = 1;
 
   const ScaleBar({
-    Key? key,
+    super.key,
     required this.distance,
     required this.width,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

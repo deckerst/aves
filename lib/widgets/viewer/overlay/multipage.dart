@@ -11,11 +11,11 @@ class MultiPageOverlay extends StatefulWidget {
   final bool scrollable;
 
   const MultiPageOverlay({
-    Key? key,
+    super.key,
     required this.controller,
     required this.availableWidth,
     required this.scrollable,
-  }) : super(key: key);
+  });
 
   @override
   State<MultiPageOverlay> createState() => _MultiPageOverlayState();

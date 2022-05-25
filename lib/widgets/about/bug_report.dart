@@ -24,16 +24,17 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class BugReport extends StatefulWidget {
-  const BugReport({Key? key}) : super(key: key);
+  const BugReport({super.key});
 
   @override
   State<BugReport> createState() => _BugReportState();
 }
 
 class _BugReportState extends State<BugReport> with FeedbackMixin {
-  final ScrollController _infoScrollController = ScrollController();
   late Future<String> _infoLoader;
   bool _showInstructions = false;
+
+  static final bugReportUri = Uri.parse('${Constants.avesGithub}/issues/new?labels=type%3Abug&template=bug_report.md');
 
   @override
   void initState() {
@@ -87,28 +88,12 @@ class _BugReportState extends State<BugReport> with FeedbackMixin {
                       constraints: const BoxConstraints(maxHeight: 100),
                       margin: const EdgeInsets.symmetric(vertical: 8),
                       clipBehavior: Clip.antiAlias,
-                      child: Theme(
-                        data: Theme.of(context).copyWith(
-                          scrollbarTheme: const ScrollbarThemeData(
-                            isAlwaysShown: true,
-                            radius: Radius.circular(16),
-                            crossAxisMargin: 6,
-                            mainAxisMargin: 6,
-                            interactive: true,
-                          ),
-                        ),
-                        child: Scrollbar(
-                          // when using `Scrollbar.isAlwaysShown`, a controller must be provided
-                          // and used by both the `Scrollbar` and the `Scrollable`, but
-                          // as of Flutter v2.8.1, `SelectableText` does not allow passing the `scrollController`
-                          // so we wrap it in a `SingleChildScrollView`
-                          controller: _infoScrollController,
-                          child: SingleChildScrollView(
-                            padding: const EdgeInsetsDirectional.only(start: 8, top: 4, end: 16, bottom: 4),
-                            controller: _infoScrollController,
-                            child: SelectableText(info),
-                          ),
-                        ),
+                      child: SingleChildScrollView(
+                        padding: const EdgeInsetsDirectional.only(start: 8, top: 4, end: 16, bottom: 4),
+                        // to show a scroll bar, we would need to provide a scroll controller
+                        // to both the `Scrollable` and the `Scrollbar`, but
+                        // as of Flutter v3.0.0, `SelectableText` does not allow passing the `scrollController`
+                        child: SelectableText(info),
                       ),
                     );
                   },
@@ -159,7 +144,6 @@ class _BugReportState extends State<BugReport> with FeedbackMixin {
     final packageInfo = await PackageInfo.fromPlatform();
     final androidInfo = await DeviceInfoPlugin().androidInfo;
     final installer = await androidAppService.getAppInstaller();
-    final hasPlayServices = await availability.hasPlayServices;
     final flavor = context.read<AppFlavor>().toString().split('.')[1];
     return [
       'Aves version: ${packageInfo.version}-$flavor (Build ${packageInfo.buildNumber})',
@@ -167,8 +151,8 @@ class _BugReportState extends State<BugReport> with FeedbackMixin {
       'Android version: ${androidInfo.version.release} (SDK ${androidInfo.version.sdkInt})',
       'Android build: ${androidInfo.display}',
       'Device: ${androidInfo.manufacturer} ${androidInfo.model}',
-      'Google Play services: ${hasPlayServices ? 'ready' : 'not available'}',
-      'System locales: ${WidgetsBinding.instance!.window.locales.join(', ')}',
+      'Mobile services: ${mobileServices.isServiceAvailable ? 'ready' : 'not available'}',
+      'System locales: ${WidgetsBinding.instance.window.locales.join(', ')}',
       'Aves locale: ${settings.locale ?? 'system'} -> ${settings.appliedLocale}',
       'Installer: $installer',
     ].join('\n');
@@ -197,6 +181,8 @@ class _BugReportState extends State<BugReport> with FeedbackMixin {
   }
 
   Future<void> _goToGithub() async {
-    await launch('${Constants.avesGithub}/issues/new?labels=type%3Abug&template=bug_report.md');
+    if (await canLaunchUrl(bugReportUri)) {
+      await launchUrl(bugReportUri, mode: LaunchMode.externalApplication);
+    }
   }
 }

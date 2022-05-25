@@ -23,10 +23,10 @@ class MetadataSectionSliver extends StatefulWidget {
   final ValueNotifier<Map<String, MetadataDirectory>> metadataNotifier;
 
   const MetadataSectionSliver({
-    Key? key,
+    super.key,
     required this.entry,
     required this.metadataNotifier,
-  }) : super(key: key);
+  });
 
   @override
   State<StatefulWidget> createState() => _MetadataSectionSliverState();

@@ -9,9 +9,9 @@ class SourceViewerPage extends StatefulWidget {
   final Future<String> Function() loader;
 
   const SourceViewerPage({
-    Key? key,
+    super.key,
     required this.loader,
-  }) : super(key: key);
+  });
 
   @override
   State<SourceViewerPage> createState() => _SourceViewerPageState();

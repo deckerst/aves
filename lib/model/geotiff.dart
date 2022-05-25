@@ -5,9 +5,8 @@ import 'dart:ui' as ui;
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/entry_images.dart';
 import 'package:aves/ref/geotiff.dart';
-import 'package:aves/utils/geo_utils.dart';
 import 'package:aves/utils/math_utils.dart';
-import 'package:aves/widgets/common/map/tile.dart';
+import 'package:aves_map/aves_map.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
@@ -40,7 +39,7 @@ class GeoTiffInfo extends Equatable {
   }
 }
 
-class MappedGeoTiff {
+class MappedGeoTiff with MapOverlay {
   final AvesEntry entry;
   late LatLng? Function(Point<int> pixel) pointToLatLng;
   late Point<int>? Function(Point<double> smPoint) epsg3857ToPoint;
@@ -129,6 +128,7 @@ class MappedGeoTiff {
     };
   }
 
+  @override
   Future<MapTile?> getTile(int tx, int ty, int? zoomLevel) async {
     zoomLevel ??= 0;
 
@@ -217,15 +217,24 @@ class MappedGeoTiff {
     );
   }
 
+  @override
+  String get id => entry.uri;
+
+  @override
+  ImageProvider get imageProvider => entry.uriImage;
+
   int get width => entry.width;
 
   int get height => entry.height;
 
+  @override
   bool get canOverlay => center != null;
 
   LatLng? get center => pointToLatLng(Point((width / 2).round(), (height / 2).round()));
 
+  @override
   LatLng? get topLeft => pointToLatLng(const Point(0, 0));
 
+  @override
   LatLng? get bottomRight => pointToLatLng(Point(width, height));
 }

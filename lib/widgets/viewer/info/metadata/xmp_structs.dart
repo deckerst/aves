@@ -13,14 +13,14 @@ import 'package:flutter/material.dart';
 class XmpStructArrayCard extends StatefulWidget {
   final String title;
   late final List<Map<String, String>> structs;
-  final Map<String, InfoLinkHandler> Function(int index)? linkifier;
+  final Map<String, InfoValueSpanBuilder> Function(int index)? linkifier;
 
   XmpStructArrayCard({
-    Key? key,
+    super.key,
     required this.title,
     required Map<int, Map<String, String>> structByIndex,
     this.linkifier,
-  }) : super(key: key) {
+  }) {
     final length = structByIndex.keys.fold(0, max);
     structs = [for (var i = 0; i < length; i++) structByIndex[i + 1] ?? {}];
   }
@@ -95,7 +95,7 @@ class _XmpStructArrayCardState extends State<XmpStructArrayCard> {
               child: InfoRowGroup(
                 info: structs[_index],
                 maxValueLength: Constants.infoGroupMaxValueLength,
-                linkHandlers: widget.linkifier?.call(_index + 1),
+                spanBuilders: widget.linkifier?.call(_index + 1),
               ),
             ),
           ),
@@ -108,16 +108,16 @@ class _XmpStructArrayCardState extends State<XmpStructArrayCard> {
 class XmpStructCard extends StatelessWidget {
   final String title;
   final Map<String, String> struct;
-  final Map<String, InfoLinkHandler> Function()? linkifier;
+  final Map<String, InfoValueSpanBuilder> Function()? linkifier;
 
   static const cardMargin = EdgeInsets.symmetric(vertical: 8, horizontal: 0);
 
   const XmpStructCard({
-    Key? key,
+    super.key,
     required this.title,
     required this.struct,
     this.linkifier,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -137,7 +137,7 @@ class XmpStructCard extends StatelessWidget {
             InfoRowGroup(
               info: struct,
               maxValueLength: Constants.infoGroupMaxValueLength,
-              linkHandlers: linkifier?.call(),
+              spanBuilders: linkifier?.call(),
             ),
           ],
         ),

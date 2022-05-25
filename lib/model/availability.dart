@@ -1,22 +1,21 @@
-import 'package:aves/model/device.dart';
+import 'package:aves/model/settings/enums/map_style.dart';
+import 'package:aves/services/common/services.dart';
+import 'package:aves_map/aves_map.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
-import 'package:google_api_availability/google_api_availability.dart';
 
 abstract class AvesAvailability {
   void onResume();
 
   Future<bool> get isConnected;
 
-  Future<bool> get hasPlayServices;
-
   Future<bool> get canLocatePlaces;
 
-  Future<bool> get canUseGoogleMaps;
+  List<EntryMapStyle> get mapStyles;
 }
 
 class LiveAvesAvailability implements AvesAvailability {
-  bool? _isConnected, _hasPlayServices;
+  bool? _isConnected;
 
   LiveAvesAvailability() {
     Connectivity().onConnectivityChanged.listen(_updateConnectivityFromResult);
@@ -41,19 +40,14 @@ class LiveAvesAvailability implements AvesAvailability {
     }
   }
 
+  // local geocoding with `geocoder` seems to require Google Play Services
+  // what about devices with Huawei Mobile Services?
   @override
-  Future<bool> get hasPlayServices async {
-    if (_hasPlayServices != null) return SynchronousFuture(_hasPlayServices!);
-    final result = await GoogleApiAvailability.instance.checkGooglePlayServicesAvailability();
-    _hasPlayServices = result == GooglePlayServicesAvailability.success;
-    debugPrint('Device has Play Services=$_hasPlayServices');
-    return _hasPlayServices!;
-  }
-
-  // local geocoding with `geocoder` requires Play Services
-  @override
-  Future<bool> get canLocatePlaces => Future.wait<bool>([isConnected, hasPlayServices]).then((results) => results.every((result) => result));
+  Future<bool> get canLocatePlaces async => mobileServices.isServiceAvailable && await isConnected;
 
   @override
-  Future<bool> get canUseGoogleMaps async => device.canRenderGoogleMaps && await hasPlayServices;
+  List<EntryMapStyle> get mapStyles => [
+        ...mobileServices.mapStyles,
+        ...EntryMapStyle.values.where((v) => !v.needMobileService),
+      ];
 }

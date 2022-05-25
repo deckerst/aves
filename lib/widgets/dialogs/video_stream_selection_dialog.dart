@@ -13,9 +13,9 @@ class VideoStreamSelectionDialog extends StatefulWidget {
   final Map<StreamSummary, bool> streams;
 
   const VideoStreamSelectionDialog({
-    Key? key,
+    super.key,
     required this.streams,
-  }) : super(key: key);
+  });
 
   @override
   State<VideoStreamSelectionDialog> createState() => _VideoStreamSelectionDialogState();

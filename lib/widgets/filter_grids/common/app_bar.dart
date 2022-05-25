@@ -4,12 +4,12 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/selection.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/theme/durations.dart';
-import 'package:aves/widgets/common/animated_icons_fix.dart';
 import 'package:aves/widgets/common/app_bar_subtitle.dart';
 import 'package:aves/widgets/common/app_bar_title.dart';
 import 'package:aves/widgets/common/basic/menu.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:aves/widgets/common/sliver_app_bar_title.dart';
+import 'package:aves/widgets/common/identity/aves_app_bar.dart';
+import 'package:aves/widgets/common/search/route.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip_set.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
 import 'package:flutter/material.dart';
@@ -23,12 +23,12 @@ class FilterGridAppBar<T extends CollectionFilter> extends StatefulWidget {
   final bool isEmpty;
 
   const FilterGridAppBar({
-    Key? key,
+    super.key,
     required this.source,
     required this.title,
     required this.actionDelegate,
     required this.isEmpty,
-  }) : super(key: key);
+  });
 
   @override
   State<FilterGridAppBar<T>> createState() => _FilterGridAppBarState<T>();
@@ -74,18 +74,23 @@ class _FilterGridAppBarState<T extends CollectionFilter> extends State<FilterGri
     final selection = context.watch<Selection<FilterGridItem<T>>>();
     final isSelecting = selection.isSelecting;
     _isSelectingNotifier.value = isSelecting;
-    return SliverAppBar(
-      leading: appMode.hasDrawer ? _buildAppBarLeading(isSelecting) : null,
-      title: SliverAppBarTitleWrapper(
-        child: _buildAppBarTitle(isSelecting),
+    return AvesAppBar(
+      contentHeight: kToolbarHeight,
+      leading: _buildAppBarLeading(
+        hasDrawer: appMode.hasDrawer,
+        isSelecting: isSelecting,
       ),
+      title: _buildAppBarTitle(isSelecting),
       actions: _buildActions(appMode, selection),
-      titleSpacing: 0,
-      floating: true,
+      transitionKey: isSelecting,
     );
   }
 
-  Widget _buildAppBarLeading(bool isSelecting) {
+  Widget _buildAppBarLeading({required bool hasDrawer, required bool isSelecting}) {
+    if (!hasDrawer) {
+      return const CloseButton();
+    }
+
     VoidCallback? onPressed;
     String? tooltip;
     if (isSelecting) {
@@ -98,9 +103,8 @@ class _FilterGridAppBarState<T extends CollectionFilter> extends State<FilterGri
     return IconButton(
       // key is expected by test driver
       key: const Key('appbar-leading-button'),
-      // TODO TLAD [rtl] replace to regular `AnimatedIcon` when this is fixed: https://github.com/flutter/flutter/issues/60521
-      icon: AnimatedIconFixIssue60521(
-        icon: AnimatedIconsFixIssue60521.menu_arrow,
+      icon: AnimatedIcon(
+        icon: AnimatedIcons.menu_arrow,
         progress: _browseToSelectAnimation,
       ),
       onPressed: onPressed,
@@ -219,6 +223,7 @@ class _FilterGridAppBarState<T extends CollectionFilter> extends State<FilterGri
       context,
       SearchPageRoute(
         delegate: CollectionSearchDelegate(
+          searchFieldLabel: context.l10n.searchCollectionFieldHint,
           source: source,
         ),
       ),

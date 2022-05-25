@@ -584,7 +584,7 @@ class AvesEntry {
           : call());
       if (addresses.isNotEmpty) {
         final address = addresses.first;
-        final cc = address.countryCode;
+        final cc = address.countryCode?.toUpperCase();
         final cn = address.countryName;
         final aa = address.adminArea;
         addressDetails = AddressDetails(

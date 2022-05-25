@@ -81,6 +81,16 @@ android {
             // Google Play
             dimension "store"
             ext.useCrashlytics = true
+            ext.useHMS = false
+            // generate a universal APK without x86 native libs
+            ext.useNdkAbiFilters = true
+        }
+
+        huawei {
+            // Huawei AppGallery
+            dimension "store"
+            ext.useCrashlytics = false
+            ext.useHMS = true
             // generate a universal APK without x86 native libs
             ext.useNdkAbiFilters = true
         }
@@ -91,6 +101,7 @@ android {
             // cf https://android.izzysoft.de/articles/named/app-modules-2
             dimension "store"
             ext.useCrashlytics = false
+            ext.useHMS = false
             // generate APK by ABI, but NDK ABI filters are incompatible with split APK generation
             ext.useNdkAbiFilters = false
         }
@@ -129,6 +140,7 @@ android {
     lint {
         disable 'InvalidPackage'
     }
+    namespace 'deckers.thibault.aves'
 }
 
 flutter {
@@ -147,12 +159,15 @@ dependencies {
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'com.caverock:androidsvg-aar:1.4'
     implementation 'com.commonsware.cwac:document:0.4.1'
-    implementation 'com.drewnoakes:metadata-extractor:2.17.0'
+    implementation 'com.drewnoakes:metadata-extractor:2.18.0'
     // forked, built by JitPack, cf https://jitpack.io/p/deckerst/Android-TiffBitmapFactory
     implementation 'com.github.deckerst:Android-TiffBitmapFactory:876e53870a'
     // forked, built by JitPack, cf https://jitpack.io/p/deckerst/pixymeta-android
     implementation 'com.github.deckerst:pixymeta-android:706bd73d6e'
-    implementation 'com.github.bumptech.glide:glide:4.13.1'
+    implementation 'com.github.bumptech.glide:glide:4.13.2'
+
+    // huawei flavor only
+    huaweiImplementation 'com.huawei.agconnect:agconnect-core:1.5.2.300'
 
     kapt 'androidx.annotation:annotation:1.3.0'
     kapt 'com.github.bumptech.glide:compiler:4.13.0'
@@ -163,8 +178,12 @@ dependencies {
 android.productFlavors.each { flavor ->
     def tasks = gradle.startParameter.taskRequests.toString().toLowerCase()
     if (tasks.contains(flavor.name) && flavor.ext.useCrashlytics) {
-        println("Building flavor with Crashlytics [${flavor.name}] - applying plugin")
+        println("Building flavor [${flavor.name}] with Crashlytics plugin")
         apply plugin: 'com.google.gms.google-services'
         apply plugin: 'com.google.firebase.crashlytics'
+    }
+    if (tasks.contains(flavor.name) && flavor.ext.useHMS) {
+        println("Building flavor [${flavor.name}] with HMS plugin")
+        apply plugin: 'com.huawei.agconnect'
     }
 }

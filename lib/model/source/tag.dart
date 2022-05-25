@@ -18,6 +18,7 @@ mixin TagMixin on SourceBase {
     final saved = await (ids != null ? metadataDb.loadCatalogMetadataById(ids) : metadataDb.loadCatalogMetadata());
     final idMap = entryById;
     saved.forEach((metadata) => idMap[metadata.id]?.catalogMetadata = metadata);
+    invalidateEntries();
     onCatalogMetadataChanged();
   }
 
@@ -77,7 +78,11 @@ mixin TagMixin on SourceBase {
   final Map<String, int> _filterEntryCountMap = {};
   final Map<String, AvesEntry?> _filterRecentEntryMap = {};
 
-  void invalidateTagFilterSummary({Set<AvesEntry>? entries, Set<String>? tags}) {
+  void invalidateTagFilterSummary({
+    Set<AvesEntry>? entries,
+    Set<String>? tags,
+    bool notify = true,
+  }) {
     if (_filterEntryCountMap.isEmpty && _filterRecentEntryMap.isEmpty) return;
 
     if (entries == null && tags == null) {
@@ -93,7 +98,9 @@ mixin TagMixin on SourceBase {
         _filterRecentEntryMap.remove(tag);
       });
     }
-    eventBus.fire(TagSummaryInvalidatedEvent(tags));
+    if (notify) {
+      eventBus.fire(TagSummaryInvalidatedEvent(tags));
+    }
   }
 
   int tagEntryCount(TagFilter filter) {

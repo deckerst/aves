@@ -308,6 +308,8 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
                 Log.w(LOG_TAG, "failed to get metadata by metadata-extractor for uri=$uri", e)
             } catch (e: NoClassDefFoundError) {
                 Log.w(LOG_TAG, "failed to get metadata by metadata-extractor for uri=$uri", e)
+            } catch (e: AssertionError) {
+                Log.w(LOG_TAG, "failed to get metadata by metadata-extractor for uri=$uri", e)
             }
         }
         result.success(metadataMap)

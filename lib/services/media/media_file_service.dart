@@ -211,7 +211,7 @@ class PlatformMediaFileService implements MediaFileService {
       // `await` here, so that `completeError` will be caught below
       return await completer.future;
     } on PlatformException catch (e, stack) {
-      if (!MimeTypes.knownMediaTypes.contains(mimeType)) {
+      if (!MimeTypes.knownMediaTypes.contains(mimeType) && MimeTypes.isVisual(mimeType)) {
         await reportService.recordError(e, stack);
       }
     }
@@ -248,7 +248,9 @@ class PlatformMediaFileService implements MediaFileService {
           });
           if (result != null) return result as Uint8List;
         } on PlatformException catch (e, stack) {
-          await reportService.recordError(e, stack);
+          if (!MimeTypes.knownMediaTypes.contains(mimeType) && MimeTypes.isVisual(mimeType)) {
+            await reportService.recordError(e, stack);
+          }
         }
         return Uint8List(0);
       },
@@ -285,7 +287,7 @@ class PlatformMediaFileService implements MediaFileService {
           });
           if (result != null) return result as Uint8List;
         } on PlatformException catch (e, stack) {
-          if (!MimeTypes.knownMediaTypes.contains(mimeType)) {
+          if (!MimeTypes.knownMediaTypes.contains(mimeType) && MimeTypes.isVisual(mimeType)) {
             await reportService.recordError(e, stack);
           }
         }

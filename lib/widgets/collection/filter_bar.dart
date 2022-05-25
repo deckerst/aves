@@ -12,12 +12,11 @@ class FilterBar extends StatefulWidget {
   final FilterCallback? onTap;
 
   FilterBar({
-    Key? key,
+    super.key,
     required Set<CollectionFilter> filters,
     required this.removable,
     this.onTap,
-  })  : filters = List<CollectionFilter>.from(filters)..sort(),
-        super(key: key);
+  }) : filters = List<CollectionFilter>.from(filters)..sort();
 
   @override
   State<FilterBar> createState() => _FilterBarState();
@@ -82,14 +81,13 @@ class _FilterBarState extends State<FilterBar> {
       color: Colors.transparent,
       height: FilterBar.preferredHeight,
       child: NotificationListener<ScrollNotification>(
-        // cancel notification bubbling so that the draggable scrollbar
+        // cancel notification bubbling so that the draggable scroll bar
         // does not misinterpret filter bar scrolling for collection scrolling
         onNotification: (notification) => true,
         child: AnimatedList(
           key: _animatedListKey,
           initialItemCount: widget.filters.length,
           scrollDirection: Axis.horizontal,
-          physics: const BouncingScrollPhysics(),
           padding: const EdgeInsets.symmetric(horizontal: 4),
           itemBuilder: (context, index, animation) {
             if (index >= widget.filters.length) return const SizedBox();

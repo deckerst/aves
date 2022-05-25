@@ -4,30 +4,10 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/settings/common/quick_actions/editor_page.dart';
 import 'package:flutter/material.dart';
 
-class ViewerActionsTile extends StatelessWidget {
-  const ViewerActionsTile({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(context.l10n.settingsViewerQuickActionsTile),
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            settings: const RouteSettings(name: ViewerActionEditorPage.routeName),
-            builder: (context) => const ViewerActionEditorPage(),
-          ),
-        );
-      },
-    );
-  }
-}
-
 class ViewerActionEditorPage extends StatelessWidget {
   static const routeName = '/settings/viewer_actions';
 
-  const ViewerActionEditorPage({Key? key}) : super(key: key);
+  const ViewerActionEditorPage({super.key});
 
   static const allAvailableActions = [
     EntryAction.share,

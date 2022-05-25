@@ -124,6 +124,8 @@
   "mapStyleGoogleNormal": "Google Карты",
   "mapStyleGoogleHybrid": "Google Карты (Гибридный)",
   "mapStyleGoogleTerrain": "Google Карты (Местность)",
+  "mapStyleHuaweiNormal": "Petal Карты",
+  "mapStyleHuaweiTerrain": "Petal Карты (Местность)",
   "mapStyleOsmHot": "Команда гуманитарной картопомощи",
   "mapStyleStamenToner": "Stamen Toner",
   "mapStyleStamenWatercolor": "Stamen Watercolor",
@@ -434,6 +436,8 @@
   "settingsNavigationDrawerAddAlbum": "Добавить альбом",
 
   "settingsSectionThumbnails": "Эскизы",
+  "settingsThumbnailOverlayTile": "Наложение",
+  "settingsThumbnailOverlayTitle": "Наложение",
   "settingsThumbnailShowFavouriteIcon": "Показать значок избранного",
   "settingsThumbnailShowLocationIcon": "Показать значок местоположения",
   "settingsThumbnailShowMotionPhotoIcon": "Показать значок «живого фото»",

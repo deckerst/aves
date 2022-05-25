@@ -121,9 +121,11 @@
   "videoControlsPlayOutside": "다른 앱에서 열기",
   "videoControlsNone": "없음",
 
-  "mapStyleGoogleNormal": "구글 지도",
-  "mapStyleGoogleHybrid": "구글 지도 (위성)",
-  "mapStyleGoogleTerrain": "구글 지도 (지형)",
+  "mapStyleGoogleNormal": "Google 지도",
+  "mapStyleGoogleHybrid": "Google 지도 (위성)",
+  "mapStyleGoogleTerrain": "Google 지도 (지형)",
+  "mapStyleHuaweiNormal": "Petal 지도",
+  "mapStyleHuaweiTerrain": "Petal 지도 (지형)",
   "mapStyleOsmHot": "Humanitarian OSM",
   "mapStyleStamenToner": "Stamen Toner (토너)",
   "mapStyleStamenWatercolor": "Stamen Watercolor (수채화)",
@@ -406,6 +408,8 @@
   "settingsSystemDefault": "시스템",
   "settingsDefault": "기본",
 
+  "settingsSearchFieldLabel": "설정 검색",
+  "settingsSearchEmpty": "결과가 없습니다",
   "settingsActionExport": "내보내기",
   "settingsActionImport": "가져오기",
 
@@ -415,6 +419,7 @@
 
   "settingsSectionNavigation": "탐색",
   "settingsHome": "홈",
+  "settingsShowBottomNavigationBar": "하단 탐색 모음 표시",
   "settingsKeepScreenOnTile": "화면 자동 꺼짐 방지",
   "settingsKeepScreenOnTitle": "화면 자동 꺼짐 방지",
   "settingsDoubleBackExit": "뒤로가기 두번 눌러 앱 종료하기",
@@ -434,7 +439,10 @@
   "settingsNavigationDrawerAddAlbum": "앨범 추가",
 
   "settingsSectionThumbnails": "섬네일",
+  "settingsThumbnailOverlayTile": "오버레이",
+  "settingsThumbnailOverlayTitle": "오버레이",
   "settingsThumbnailShowFavouriteIcon": "즐겨찾기 아이콘 표시",
+  "settingsThumbnailShowTagIcon": "태그 아이콘 표시",
   "settingsThumbnailShowLocationIcon": "위치 아이콘 표시",
   "settingsThumbnailShowMotionPhotoIcon": "모션 사진 아이콘 표시",
   "settingsThumbnailShowRating": "별점 표시",

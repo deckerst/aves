@@ -16,15 +16,15 @@ class SectionHeader<T> extends StatelessWidget {
   final bool selectable;
 
   const SectionHeader({
-    Key? key,
+    super.key,
     required this.sectionKey,
     this.leading,
     required this.title,
     this.trailing,
     this.selectable = true,
-  }) : super(key: key);
+  });
 
-  static const leadingDimension = 32.0;
+  static const leadingSize = Size(48, 32);
   static const padding = EdgeInsets.all(16);
   static const widgetSpanAlignment = PlaceholderAlignment.middle;
 
@@ -33,7 +33,7 @@ class SectionHeader<T> extends StatelessWidget {
     return Container(
       alignment: AlignmentDirectional.centerStart,
       padding: padding,
-      constraints: const BoxConstraints(minHeight: leadingDimension),
+      constraints: BoxConstraints(minHeight: leadingSize.height),
       child: GestureDetector(
         onTap: selectable ? () => _toggleSectionSelection(context) : null,
         child: Text.rich(
@@ -47,14 +47,16 @@ class SectionHeader<T> extends StatelessWidget {
                   browsingBuilder: leading != null
                       ? (context) => Container(
                             padding: const EdgeInsetsDirectional.only(end: 8, bottom: 4),
-                            width: leadingDimension,
-                            height: leadingDimension,
+                            width: leadingSize.width,
+                            height: leadingSize.height,
                             child: leading,
                           )
                       : null,
                   onPressed: selectable ? () => _toggleSectionSelection(context) : null,
                 ),
               ),
+              // TODO TLAD [flutter 3] remove this zero-width span when this is fixed: https://github.com/flutter/flutter/issues/103615
+              TextSpan(text: Constants.zwsp * 3, style: Constants.titleTextStyle),
               TextSpan(
                 text: title,
                 style: Constants.titleTextStyle,
@@ -127,14 +129,12 @@ class _SectionSelectableLeading<T> extends StatelessWidget {
   final VoidCallback? onPressed;
 
   const _SectionSelectableLeading({
-    Key? key,
+    super.key,
     this.selectable = true,
     required this.sectionKey,
     required this.browsingBuilder,
     required this.onPressed,
-  }) : super(key: key);
-
-  static const leadingDimension = SectionHeader.leadingDimension;
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -172,7 +172,7 @@ class _SectionSelectableLeading<T> extends StatelessWidget {
     );
   }
 
-  Widget _buildBrowsing(BuildContext context) => browsingBuilder?.call(context) ?? const SizedBox(height: leadingDimension);
+  Widget _buildBrowsing(BuildContext context) => browsingBuilder?.call(context) ?? SizedBox(height: SectionHeader.leadingSize.height);
 }
 
 class _SectionSelectingLeading<T> extends StatelessWidget {
@@ -180,10 +180,10 @@ class _SectionSelectingLeading<T> extends StatelessWidget {
   final VoidCallback? onPressed;
 
   const _SectionSelectingLeading({
-    Key? key,
+    super.key,
     required this.sectionKey,
     required this.onPressed,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -205,15 +205,14 @@ class _SectionSelectingLeading<T> extends StatelessWidget {
         ),
         child: IconButton(
           iconSize: 26,
-          padding: const EdgeInsets.only(top: 1),
-          alignment: AlignmentDirectional.topStart,
-          icon: Icon(isSelected ? AIcons.selected : AIcons.unselected),
+          padding: const EdgeInsetsDirectional.only(end: 6, bottom: 4),
           onPressed: onPressed,
           tooltip: isSelected ? context.l10n.collectionDeselectSectionTooltip : context.l10n.collectionSelectSectionTooltip,
-          constraints: const BoxConstraints(
-            minHeight: SectionHeader.leadingDimension,
-            minWidth: SectionHeader.leadingDimension,
+          constraints: BoxConstraints(
+            minHeight: SectionHeader.leadingSize.height,
+            minWidth: SectionHeader.leadingSize.width,
           ),
+          icon: Icon(isSelected ? AIcons.selected : AIcons.unselected),
         ),
       ),
     );

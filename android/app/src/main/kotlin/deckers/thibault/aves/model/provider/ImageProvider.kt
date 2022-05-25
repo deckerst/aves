@@ -1045,6 +1045,9 @@ abstract class ImageProvider {
         // used when skipping a move/creation op because the target file already exists
         val skippedFieldMap: HashMap<String, Any?> = hashMapOf("skipped" to true)
 
+        // used when deleting instead of moving to bin because the target file no longer exists
+        val deletedFieldMap: HashMap<String, Any?> = hashMapOf("deleted" to true)
+
         fun isMediaUriPermissionGranted(context: Context, uri: Uri, mimeType: String): Boolean {
             return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 val safeUri = StorageUtils.getMediaStoreScopedStorageSafeUri(uri, mimeType)

@@ -11,7 +11,7 @@ import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:flutter/material.dart';
 
 class DebugAppDatabaseSection extends StatefulWidget {
-  const DebugAppDatabaseSection({Key? key}) : super(key: key);
+  const DebugAppDatabaseSection({super.key});
 
   @override
   State<DebugAppDatabaseSection> createState() => _DebugAppDatabaseSectionState();

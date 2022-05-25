@@ -9,10 +9,10 @@ class SettingsTileLeading extends StatelessWidget {
   final Color color;
 
   const SettingsTileLeading({
-    Key? key,
+    super.key,
     required this.icon,
     required this.color,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -28,8 +28,9 @@ class SettingsTileLeading extends StatelessWidget {
       duration: Durations.themeColorModeAnimation,
       child: DecoratedIcon(
         icon,
-        shadows: Theme.of(context).brightness == Brightness.dark ? Constants.embossShadows : null,
         size: 18,
+        color: DefaultTextStyle.of(context).style.color,
+        shadows: Theme.of(context).brightness == Brightness.dark ? Constants.embossShadows : null,
       ),
     );
   }

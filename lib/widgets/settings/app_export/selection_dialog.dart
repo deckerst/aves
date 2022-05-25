@@ -8,11 +8,11 @@ class AppExportItemSelectionDialog extends StatefulWidget {
   final Set<AppExportItem>? selectableItems, initialSelection;
 
   const AppExportItemSelectionDialog({
-    Key? key,
+    super.key,
     required this.title,
     this.selectableItems,
     this.initialSelection,
-  }) : super(key: key);
+  });
 
   @override
   State<AppExportItemSelectionDialog> createState() => _AppExportItemSelectionDialogState();

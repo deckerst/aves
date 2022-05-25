@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class Licenses extends StatefulWidget {
-  const Licenses({Key? key}) : super(key: key);
+  const Licenses({super.key});
 
   @override
   State<Licenses> createState() => _LicensesState();
@@ -121,9 +121,9 @@ class LicenseRow extends StatelessWidget {
   final Dependency package;
 
   const LicenseRow({
-    Key? key,
+    super.key,
     required this.package,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -138,14 +138,14 @@ class LicenseRow extends StatelessWidget {
         children: [
           LinkChip(
             text: package.name,
-            url: package.sourceUrl,
+            urlString: package.sourceUrl,
             textStyle: const TextStyle(fontWeight: FontWeight.bold),
           ),
           Padding(
             padding: const EdgeInsetsDirectional.only(start: 16),
             child: LinkChip(
               text: package.license,
-              url: package.licenseUrl,
+              urlString: package.licenseUrl,
               color: subColor,
             ),
           ),

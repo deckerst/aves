@@ -16,13 +16,13 @@ class TransitionImage extends StatefulWidget {
   final Color? background;
 
   const TransitionImage({
-    Key? key,
+    super.key,
     required this.image,
     required this.animation,
     this.width,
     this.height,
     this.background,
-  }) : super(key: key);
+  });
 
   @override
   State<TransitionImage> createState() => _TransitionImageState();

@@ -15,7 +15,7 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:provider/provider.dart';
 
 class WelcomePage extends StatefulWidget {
-  const WelcomePage({Key? key}) : super(key: key);
+  const WelcomePage({super.key});
 
   @override
   State<WelcomePage> createState() => _WelcomePageState();
@@ -33,7 +33,7 @@ class _WelcomePageState extends State<WelcomePage> {
     super.initState();
     settings.setContextualDefaults();
     _termsLoader = rootBundle.loadString(termsPath);
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _initWelcomeSettings());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _initWelcomeSettings());
   }
 
   // explicitly set consent values to current defaults

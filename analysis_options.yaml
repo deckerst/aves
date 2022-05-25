@@ -11,6 +11,12 @@ analyzer:
 
 linter:
   rules:
+    # from 'flutter_lints', excluded
+    use_build_context_synchronously: false # no alternative
+
+    # from 'lints / recommended', excluded
+    no_leading_underscores_for_local_identifiers: false # useful for null checked variable variants
+
     # from 'effective dart', excluded
     avoid_classes_with_only_static_members: false # too strict
     avoid_function_literals_in_foreach_calls: false # benefit?

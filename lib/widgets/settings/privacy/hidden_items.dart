@@ -14,30 +14,10 @@ import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
-class HiddenItemsTile extends StatelessWidget {
-  const HiddenItemsTile({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(context.l10n.settingsHiddenItemsTile),
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            settings: const RouteSettings(name: HiddenItemsPage.routeName),
-            builder: (context) => const HiddenItemsPage(),
-          ),
-        );
-      },
-    );
-  }
-}
-
 class HiddenItemsPage extends StatelessWidget {
   static const routeName = '/settings/hidden_items';
 
-  const HiddenItemsPage({Key? key}) : super(key: key);
+  const HiddenItemsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +55,7 @@ class HiddenItemsPage extends StatelessWidget {
 }
 
 class _HiddenFilters extends StatelessWidget {
-  const _HiddenFilters({Key? key}) : super(key: key);
+  const _HiddenFilters();
 
   @override
   Widget build(BuildContext context) {
@@ -129,7 +109,7 @@ class _HiddenFilters extends StatelessWidget {
 }
 
 class _HiddenPaths extends StatelessWidget {
-  const _HiddenPaths({Key? key}) : super(key: key);
+  const _HiddenPaths();
 
   @override
   Widget build(BuildContext context) {
@@ -189,7 +169,7 @@ class _HiddenPaths extends StatelessWidget {
 class _Banner extends StatelessWidget {
   final String bannerText;
 
-  const _Banner({Key? key, required this.bannerText}) : super(key: key);
+  const _Banner({required this.bannerText});
 
   @override
   Widget build(BuildContext context) {

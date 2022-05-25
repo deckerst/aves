@@ -12,14 +12,15 @@ class ThumbnailEntryOverlay extends StatelessWidget {
   final AvesEntry entry;
 
   const ThumbnailEntryOverlay({
-    Key? key,
+    super.key,
     required this.entry,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     final children = [
       if (entry.isFavourite && context.select<GridThemeData, bool>((t) => t.showFavourite)) const FavouriteIcon(),
+      if (entry.tags.isNotEmpty && context.select<GridThemeData, bool>((t) => t.showTag)) const TagIcon(),
       if (entry.hasGps && context.select<GridThemeData, bool>((t) => t.showLocation)) const GpsIcon(),
       if (entry.rating != 0 && context.select<GridThemeData, bool>((t) => t.showRating)) RatingIcon(entry: entry),
       if (entry.isVideo)
@@ -53,9 +54,9 @@ class ThumbnailHighlightOverlay extends StatefulWidget {
   final AvesEntry entry;
 
   const ThumbnailHighlightOverlay({
-    Key? key,
+    super.key,
     required this.entry,
-  }) : super(key: key);
+  });
 
   @override
   State<ThumbnailHighlightOverlay> createState() => _ThumbnailHighlightOverlayState();

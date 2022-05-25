@@ -14,11 +14,11 @@ class FavouriteToggler extends StatefulWidget {
   final VoidCallback? onPressed;
 
   const FavouriteToggler({
-    Key? key,
+    super.key,
     required this.entries,
     this.isMenuItem = false,
     this.onPressed,
-  }) : super(key: key);
+  });
 
   @override
   State<FavouriteToggler> createState() => _FavouriteTogglerState();

@@ -33,6 +33,8 @@ internal class ContentImageProvider : ImageProvider() {
             Log.w(LOG_TAG, "failed to get MIME type by metadata-extractor for uri=$uri", e)
         } catch (e: NoClassDefFoundError) {
             Log.w(LOG_TAG, "failed to get MIME type by metadata-extractor for uri=$uri", e)
+        } catch (e: AssertionError) {
+            Log.w(LOG_TAG, "failed to get MIME type by metadata-extractor for uri=$uri", e)
         }
 
         val mimeType = extractorMimeType ?: sourceMimeType

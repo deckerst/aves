@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/highlight.dart';
@@ -21,13 +23,14 @@ import 'package:aves/widgets/common/identity/scroll_thumb.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/common/providers/tile_extent_controller_provider.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
-import 'package:aves/widgets/drawer/app_drawer.dart';
 import 'package:aves/widgets/filter_grids/common/covered_filter_chip.dart';
 import 'package:aves/widgets/filter_grids/common/draggable_thumb_label.dart';
 import 'package:aves/widgets/filter_grids/common/filter_tile.dart';
 import 'package:aves/widgets/filter_grids/common/list_details_theme.dart';
 import 'package:aves/widgets/filter_grids/common/section_keys.dart';
 import 'package:aves/widgets/filter_grids/common/section_layout.dart';
+import 'package:aves/widgets/navigation/drawer/app_drawer.dart';
+import 'package:aves/widgets/navigation/nav_bar/nav_bar.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -49,12 +52,13 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
   final QueryTest<T>? applyQuery;
   final Widget Function() emptyBuilder;
   final HeroType heroType;
+  final StreamController<DraggableScrollBarEvent> _draggableScrollBarEventStreamController = StreamController.broadcast();
 
-  const FilterGridPage({
-    Key? key,
+  FilterGridPage({
+    super.key,
     this.settingsRouteKey,
     required this.appBar,
-    this.appBarHeight = kToolbarHeight,
+    required this.appBarHeight,
     required this.sections,
     required this.newFilters,
     required this.sortFactor,
@@ -64,47 +68,70 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
     this.applyQuery,
     required this.emptyBuilder,
     required this.heroType,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     return MediaQueryDataProvider(
-      child: Scaffold(
-        body: WillPopScope(
-          onWillPop: () {
-            final selection = context.read<Selection<FilterGridItem<T>>>();
-            if (selection.isSelecting) {
-              selection.browse();
-              return SynchronousFuture(false);
-            }
-            return SynchronousFuture(true);
-          },
-          child: DoubleBackPopScope(
-            child: GestureAreaProtectorStack(
-              child: SafeArea(
-                bottom: false,
-                child: FilterGrid<T>(
-                  // key is expected by test driver
-                  key: const Key('filter-grid'),
-                  settingsRouteKey: settingsRouteKey,
-                  appBar: appBar,
-                  appBarHeight: appBarHeight,
-                  sections: sections,
-                  newFilters: newFilters,
-                  sortFactor: sortFactor,
-                  showHeaders: showHeaders,
-                  selectable: selectable,
-                  queryNotifier: queryNotifier,
-                  applyQuery: applyQuery,
-                  emptyBuilder: emptyBuilder,
-                  heroType: heroType,
+      child: Selector<Settings, bool>(
+        selector: (context, s) => s.showBottomNavigationBar,
+        builder: (context, showBottomNavigationBar, child) {
+          return NotificationListener<DraggableScrollBarNotification>(
+            onNotification: (notification) {
+              _draggableScrollBarEventStreamController.add(notification.event);
+              return false;
+            },
+            child: Scaffold(
+              body: WillPopScope(
+                onWillPop: () {
+                  final selection = context.read<Selection<FilterGridItem<T>>>();
+                  if (selection.isSelecting) {
+                    selection.browse();
+                    return SynchronousFuture(false);
+                  }
+                  return SynchronousFuture(true);
+                },
+                child: DoubleBackPopScope(
+                  child: GestureAreaProtectorStack(
+                    child: SafeArea(
+                      top: false,
+                      bottom: false,
+                      child: Selector<MediaQueryData, double>(
+                        selector: (context, mq) => mq.padding.top,
+                        builder: (context, mqPaddingTop, child) {
+                          return FilterGrid<T>(
+                            // key is expected by test driver
+                            key: const Key('filter-grid'),
+                            settingsRouteKey: settingsRouteKey,
+                            appBar: appBar,
+                            appBarHeight: mqPaddingTop + appBarHeight,
+                            sections: sections,
+                            newFilters: newFilters,
+                            sortFactor: sortFactor,
+                            showHeaders: showHeaders,
+                            selectable: selectable,
+                            queryNotifier: queryNotifier,
+                            applyQuery: applyQuery,
+                            emptyBuilder: emptyBuilder,
+                            heroType: heroType,
+                          );
+                        },
+                      ),
+                    ),
+                  ),
                 ),
               ),
+              drawer: const AppDrawer(),
+              bottomNavigationBar: showBottomNavigationBar
+                  ? AppBottomNavBar(
+                      events: _draggableScrollBarEventStreamController.stream,
+                    )
+                  : null,
+              resizeToAvoidBottomInset: false,
+              extendBody: true,
             ),
-          ),
-        ),
-        drawer: const AppDrawer(),
-        resizeToAvoidBottomInset: false,
+          );
+        },
       ),
     );
   }
@@ -124,7 +151,7 @@ class FilterGrid<T extends CollectionFilter> extends StatefulWidget {
   final HeroType heroType;
 
   const FilterGrid({
-    Key? key,
+    super.key,
     required this.settingsRouteKey,
     required this.appBar,
     required this.appBarHeight,
@@ -137,7 +164,7 @@ class FilterGrid<T extends CollectionFilter> extends StatefulWidget {
     required this.applyQuery,
     required this.emptyBuilder,
     required this.heroType,
-  }) : super(key: key);
+  });
 
   @override
   State<FilterGrid<T>> createState() => _FilterGridState<T>();
@@ -195,7 +222,7 @@ class _FilterGridContent<T extends CollectionFilter> extends StatelessWidget {
   final ValueNotifier<double> _appBarHeightNotifier = ValueNotifier(0);
 
   _FilterGridContent({
-    Key? key,
+    super.key,
     required this.appBar,
     required double appBarHeight,
     required this.sections,
@@ -207,7 +234,7 @@ class _FilterGridContent<T extends CollectionFilter> extends StatelessWidget {
     required this.applyQuery,
     required this.emptyBuilder,
     required this.heroType,
-  }) : super(key: key) {
+  }) {
     _appBarHeightNotifier.value = appBarHeight;
   }
 
@@ -356,7 +383,7 @@ class _FilterSectionedContentState<T extends CollectionFilter> extends State<_Fi
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _checkInitHighlight());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _checkInitHighlight());
   }
 
   @override
@@ -380,10 +407,9 @@ class _FilterSectionedContentState<T extends CollectionFilter> extends State<_Fi
       child: scrollView,
     );
 
-    final isMainMode = context.select<ValueNotifier<AppMode>, bool>((vn) => vn.value == AppMode.main);
     final selector = GridSelectionGestureDetector<FilterGridItem<T>>(
       scrollableKey: scrollableKey,
-      selectable: isMainMode && widget.selectable,
+      selectable: context.select<ValueNotifier<AppMode>, bool>((v) => v.value.canSelectFilter) && widget.selectable,
       items: visibleSections.values.expand((v) => v).toList(),
       scrollController: scrollController,
       appBarHeightNotifier: appBarHeightNotifier,
@@ -491,27 +517,41 @@ class _FilterScrollView<T extends CollectionFilter> extends StatelessWidget {
   }
 
   Widget _buildDraggableScrollView(ScrollView scrollView) {
-    return Selector<MediaQueryData, double>(
-      selector: (context, mq) => mq.effectiveBottomPadding,
-      builder: (context, mqPaddingBottom, child) => DraggableScrollbar(
-        backgroundColor: Colors.white,
-        scrollThumbHeight: avesScrollThumbHeight,
-        scrollThumbBuilder: avesScrollThumbBuilder(
-          height: avesScrollThumbHeight,
-          backgroundColor: Colors.white,
-        ),
-        controller: scrollController,
-        padding: EdgeInsets.only(
-          // padding to keep scroll thumb between app bar above and nav bar below
-          top: appBarHeightNotifier.value,
-          bottom: mqPaddingBottom,
-        ),
-        labelTextBuilder: (offsetY) => FilterDraggableThumbLabel<T>(
-          sortFactor: sortFactor,
-          offsetY: offsetY,
-        ),
-        child: scrollView,
-      ),
+    return ValueListenableBuilder<double>(
+      valueListenable: appBarHeightNotifier,
+      builder: (context, appBarHeight, child) {
+        return Selector<MediaQueryData, double>(
+          selector: (context, mq) => mq.effectiveBottomPadding,
+          builder: (context, mqPaddingBottom, child) {
+            return Selector<Settings, bool>(
+              selector: (context, s) => s.showBottomNavigationBar,
+              builder: (context, showBottomNavigationBar, child) {
+                final navBarHeight = showBottomNavigationBar ? AppBottomNavBar.height : 0;
+                return DraggableScrollbar(
+                  backgroundColor: Colors.white,
+                  scrollThumbSize: Size(avesScrollThumbWidth, avesScrollThumbHeight),
+                  scrollThumbBuilder: avesScrollThumbBuilder(
+                    height: avesScrollThumbHeight,
+                    backgroundColor: Colors.white,
+                  ),
+                  controller: scrollController,
+                  padding: EdgeInsets.only(
+                    // padding to keep scroll thumb between app bar above and nav bar below
+                    top: appBarHeight,
+                    bottom: navBarHeight + mqPaddingBottom,
+                  ),
+                  labelTextBuilder: (offsetY) => FilterDraggableThumbLabel<T>(
+                    sortFactor: sortFactor,
+                    offsetY: offsetY,
+                  ),
+                  crumbTextBuilder: (offsetY) => const SizedBox(),
+                  child: scrollView,
+                );
+              },
+            );
+          },
+        );
+      },
     );
   }
 
@@ -539,6 +579,7 @@ class _FilterScrollView<T extends CollectionFilter> extends StatelessWidget {
                     )
                   : SectionedListSliver<FilterGridItem<T>>();
             }),
+        const NavBarPaddingSliver(),
         const BottomPaddingSliver(),
       ],
     );

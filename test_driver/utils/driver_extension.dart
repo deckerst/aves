@@ -6,7 +6,13 @@ import 'adb_utils.dart';
 extension ExtraFlutterDriver on FlutterDriver {
   static const doubleTapDelay = Duration(milliseconds: 100); // in [kDoubleTapMinTime = 40 ms, kDoubleTapTimeout = 300 ms]
 
-  Future doubleTap(SerializableFinder finder, {Duration? timeout}) async {
+  // scrolling is ineffective when duration is too short for the spatial delta
+  Future<void> scrollX(SerializableFinder finder, double dx) => scroll(finder, dx, 0, Duration(milliseconds: dx.toInt().abs() * 2));
+
+  // scrolling is ineffective when duration is too short for the spatial delta
+  Future<void> scrollY(SerializableFinder finder, double dy) => scroll(finder, 0, dy, Duration(milliseconds: dy.toInt().abs() * 2));
+
+  Future<void> doubleTap(SerializableFinder finder, {Duration? timeout}) async {
     await tap(finder, timeout: timeout);
     await Future.delayed(doubleTapDelay);
     await tap(finder, timeout: timeout);

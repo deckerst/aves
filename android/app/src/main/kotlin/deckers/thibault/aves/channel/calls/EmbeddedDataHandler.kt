@@ -175,6 +175,8 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
                 Log.w(LOG_TAG, "failed to extract file from XMP", e)
             } catch (e: NoClassDefFoundError) {
                 Log.w(LOG_TAG, "failed to extract file from XMP", e)
+            } catch (e: AssertionError) {
+                Log.w(LOG_TAG, "failed to extract file from XMP", e)
             }
         }
         result.error("extractXmpDataProp-empty", "failed to extract file from XMP uri=$uri prop=$dataPropPath", null)

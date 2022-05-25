@@ -17,13 +17,13 @@ class GridItemTracker<T> extends StatefulWidget {
   final Widget child;
 
   const GridItemTracker({
-    Key? key,
+    super.key,
     required this.scrollableKey,
     required this.appBarHeightNotifier,
     required this.tileLayout,
     required this.scrollController,
     required this.child,
-  }) : super(key: key);
+  });
 
   @override
   State<GridItemTracker<T>> createState() => _GridItemTrackerState<T>();
@@ -45,7 +45,7 @@ class _GridItemTrackerState<T> extends State<GridItemTracker<T>> with WidgetsBin
   }
 
   Orientation get _windowOrientation {
-    final size = WidgetsBinding.instance!.window.physicalSize;
+    final size = WidgetsBinding.instance.window.physicalSize;
     return size.width > size.height ? Orientation.landscape : Orientation.portrait;
   }
 
@@ -62,7 +62,7 @@ class _GridItemTrackerState<T> extends State<GridItemTracker<T>> with WidgetsBin
     final highlightInfo = context.read<HighlightInfo>();
     _subscriptions.add(highlightInfo.eventBus.on<TrackEvent<T>>().listen(_trackItem));
     _lastOrientation = _windowOrientation;
-    WidgetsBinding.instance!.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
     _saveLayoutMetrics();
   }
 
@@ -90,7 +90,7 @@ class _GridItemTrackerState<T> extends State<GridItemTracker<T>> with WidgetsBin
 
   @override
   void dispose() {
-    WidgetsBinding.instance!.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
     _subscriptions
       ..forEach((sub) => sub.cancel())
       ..clear();
@@ -168,7 +168,7 @@ class _GridItemTrackerState<T> extends State<GridItemTracker<T>> with WidgetsBin
     }
 
     if (pivotItem != null) {
-      WidgetsBinding.instance!.addPostFrameCallback((_) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
         context.read<HighlightInfo>().trackItem(pivotItem, animate: false);
       });
     }

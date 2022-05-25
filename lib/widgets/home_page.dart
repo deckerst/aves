@@ -17,9 +17,10 @@ import 'package:aves/services/viewer_service.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/behaviour/routes.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/common/search/route.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
-import 'package:aves/widgets/search/search_page.dart';
 import 'package:aves/widgets/viewer/entry_viewer_page.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -34,9 +35,9 @@ class HomePage extends StatefulWidget {
   final Map? intentData;
 
   const HomePage({
-    Key? key,
+    super.key,
     this.intentData,
-  }) : super(key: key);
+  });
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -47,13 +48,17 @@ class _HomePageState extends State<HomePage> {
   String? _shortcutRouteName, _shortcutSearchQuery;
   Set<String>? _shortcutFilters;
 
-  static const allowedShortcutRoutes = [CollectionPage.routeName, AlbumListPage.routeName, SearchPage.routeName];
+  static const allowedShortcutRoutes = [
+    CollectionPage.routeName,
+    AlbumListPage.routeName,
+    CollectionSearchDelegate.pageRouteName,
+  ];
 
   @override
   void initState() {
     super.initState();
     _setup();
-    imageCache!.maximumSizeBytes = 512 * (1 << 20);
+    imageCache.maximumSizeBytes = 512 * (1 << 20);
   }
 
   @override
@@ -95,14 +100,15 @@ class _HomePageState extends State<HomePage> {
           }
           break;
         case 'pick':
-          appMode = AppMode.pickMediaExternal;
           // TODO TLAD apply pick mimetype(s)
           // some apps define multiple types, separated by a space (maybe other signs too, like `,` `;`?)
           String? pickMimeTypes = intentData['mimeType'];
-          debugPrint('pick mimeType=$pickMimeTypes');
+          final multiple = intentData['allowMultiple'] ?? false;
+          debugPrint('pick mimeType=$pickMimeTypes multiple=$multiple');
+          appMode = multiple ? AppMode.pickMultipleMediaExternal : AppMode.pickSingleMediaExternal;
           break;
         case 'search':
-          _shortcutRouteName = SearchPage.routeName;
+          _shortcutRouteName = CollectionSearchDelegate.pageRouteName;
           _shortcutSearchQuery = intentData['query'];
           break;
         default:
@@ -121,7 +127,8 @@ class _HomePageState extends State<HomePage> {
 
     switch (appMode) {
       case AppMode.main:
-      case AppMode.pickMediaExternal:
+      case AppMode.pickSingleMediaExternal:
+      case AppMode.pickMultipleMediaExternal:
         unawaited(GlobalSearch.registerCallback());
         unawaited(AnalysisService.registerCallback());
         final source = context.read<CollectionSource>();
@@ -226,11 +233,15 @@ class _HomePageState extends State<HomePage> {
 
     String routeName;
     Set<CollectionFilter?>? filters;
-    if (appMode == AppMode.pickMediaExternal) {
-      routeName = CollectionPage.routeName;
-    } else {
-      routeName = _shortcutRouteName ?? settings.homePage.routeName;
-      filters = (_shortcutFilters ?? {}).map(CollectionFilter.fromJson).toSet();
+    switch (appMode) {
+      case AppMode.pickSingleMediaExternal:
+      case AppMode.pickMultipleMediaExternal:
+        routeName = CollectionPage.routeName;
+        break;
+      default:
+        routeName = _shortcutRouteName ?? settings.homePage.routeName;
+        filters = (_shortcutFilters ?? {}).map(CollectionFilter.fromJson).toSet();
+        break;
     }
     final source = context.read<CollectionSource>();
     switch (routeName) {
@@ -239,9 +250,10 @@ class _HomePageState extends State<HomePage> {
           settings: const RouteSettings(name: AlbumListPage.routeName),
           builder: (_) => const AlbumListPage(),
         );
-      case SearchPage.routeName:
+      case CollectionSearchDelegate.pageRouteName:
         return SearchPageRoute(
           delegate: CollectionSearchDelegate(
+            searchFieldLabel: context.l10n.searchCollectionFieldHint,
             source: source,
             canPop: false,
             initialQuery: _shortcutSearchQuery,

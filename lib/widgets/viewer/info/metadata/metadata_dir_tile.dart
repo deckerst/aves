@@ -26,14 +26,14 @@ class MetadataDirTile extends StatelessWidget {
   final bool initiallyExpanded, showThumbnails;
 
   const MetadataDirTile({
-    Key? key,
+    super.key,
     required this.entry,
     required this.title,
     required this.dir,
     this.expandedDirectoryNotifier,
     this.initiallyExpanded = false,
     this.showThumbnails = true,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +50,7 @@ class MetadataDirTile extends StatelessWidget {
         initiallyExpanded: initiallyExpanded,
       );
     } else {
-      Map<String, InfoLinkHandler>? linkHandlers;
+      Map<String, InfoValueSpanBuilder>? linkHandlers;
       switch (dirName) {
         case SvgMetadataService.metadataDirectory:
           linkHandlers = getSvgLinkHandlers(tags);
@@ -79,7 +79,7 @@ class MetadataDirTile extends StatelessWidget {
             child: InfoRowGroup(
               info: tags,
               maxValueLength: Constants.infoGroupMaxValueLength,
-              linkHandlers: linkHandlers,
+              spanBuilders: linkHandlers,
             ),
           ),
         ],
@@ -87,9 +87,9 @@ class MetadataDirTile extends StatelessWidget {
     }
   }
 
-  static Map<String, InfoLinkHandler> getSvgLinkHandlers(SplayTreeMap<String, String> tags) {
+  static Map<String, InfoValueSpanBuilder> getSvgLinkHandlers(SplayTreeMap<String, String> tags) {
     return {
-      'Metadata': InfoLinkHandler(
+      'Metadata': InfoRowGroup.linkSpanBuilder(
         linkText: (context) => context.l10n.viewerInfoViewXmlLinkText,
         onTap: (context) {
           Navigator.push(
@@ -106,9 +106,9 @@ class MetadataDirTile extends StatelessWidget {
     };
   }
 
-  static Map<String, InfoLinkHandler> getVideoCoverLinkHandlers(SplayTreeMap<String, String> tags) {
+  static Map<String, InfoValueSpanBuilder> getVideoCoverLinkHandlers(SplayTreeMap<String, String> tags) {
     return {
-      'Image': InfoLinkHandler(
+      'Image': InfoRowGroup.linkSpanBuilder(
         linkText: (context) => context.l10n.viewerInfoOpenLinkText,
         onTap: (context) => OpenEmbeddedDataNotification.videoCover().dispatch(context),
       ),

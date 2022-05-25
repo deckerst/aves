@@ -5,7 +5,7 @@ import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:flutter/material.dart';
 
 class AboutCredits extends StatelessWidget {
-  const AboutCredits({Key? key}) : super(key: key);
+  const AboutCredits({super.key});
 
   static const translators = {
     'Bahasa Indonesia': 'MeFinity',
@@ -40,7 +40,7 @@ class AboutCredits extends StatelessWidget {
                 const WidgetSpan(
                   child: LinkChip(
                     text: 'World Atlas',
-                    url: 'https://github.com/topojson/world-atlas',
+                    urlString: 'https://github.com/topojson/world-atlas',
                     textStyle: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   alignment: PlaceholderAlignment.middle,

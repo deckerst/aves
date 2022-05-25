@@ -8,6 +8,7 @@ import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/enums.dart';
+import 'package:aves/model/source/section_keys.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
@@ -21,8 +22,10 @@ import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/behaviour/sloppy_scroll_physics.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
+import 'package:aves/widgets/common/grid/draggable_thumb_label.dart';
 import 'package:aves/widgets/common/grid/item_tracker.dart';
 import 'package:aves/widgets/common/grid/scaling.dart';
+import 'package:aves/widgets/common/grid/section_layout.dart';
 import 'package:aves/widgets/common/grid/selector.dart';
 import 'package:aves/widgets/common/grid/sliver.dart';
 import 'package:aves/widgets/common/grid/theme.dart';
@@ -31,8 +34,11 @@ import 'package:aves/widgets/common/identity/scroll_thumb.dart';
 import 'package:aves/widgets/common/providers/tile_extent_controller_provider.dart';
 import 'package:aves/widgets/common/thumbnail/decorated.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
+import 'package:aves/widgets/navigation/nav_bar/nav_bar.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
@@ -45,9 +51,9 @@ class CollectionGrid extends StatefulWidget {
   static const double spacing = 2;
 
   const CollectionGrid({
-    Key? key,
+    super.key,
     required this.settingsRouteKey,
-  }) : super(key: key);
+  });
 
   @override
   State<CollectionGrid> createState() => _CollectionGridState();
@@ -210,10 +216,9 @@ class _CollectionSectionedContentState extends State<_CollectionSectionedContent
       child: scrollView,
     );
 
-    final isMainMode = context.select<ValueNotifier<AppMode>, bool>((vn) => vn.value == AppMode.main);
     final selector = GridSelectionGestureDetector(
       scrollableKey: scrollableKey,
-      selectable: isMainMode,
+      selectable: context.select<ValueNotifier<AppMode>, bool>((v) => v.value.canSelectMedia),
       items: collection.sortedEntries,
       scrollController: scrollController,
       appBarHeightNotifier: appBarHeightNotifier,
@@ -344,29 +349,45 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> {
   Widget _buildDraggableScrollView(ScrollView scrollView, CollectionLens collection) {
     return ValueListenableBuilder<double>(
       valueListenable: widget.appBarHeightNotifier,
-      builder: (context, appBarHeight, child) => Selector<MediaQueryData, double>(
-        selector: (context, mq) => mq.effectiveBottomPadding,
-        builder: (context, mqPaddingBottom, child) => DraggableScrollbar(
-          backgroundColor: Colors.white,
-          scrollThumbHeight: avesScrollThumbHeight,
-          scrollThumbBuilder: avesScrollThumbBuilder(
-            height: avesScrollThumbHeight,
-            backgroundColor: Colors.white,
-          ),
-          controller: widget.scrollController,
-          padding: EdgeInsets.only(
-            // padding to keep scroll thumb between app bar above and nav bar below
-            top: appBarHeight,
-            bottom: mqPaddingBottom,
-          ),
-          labelTextBuilder: (offsetY) => CollectionDraggableThumbLabel(
-            collection: collection,
-            offsetY: offsetY,
-          ),
-          child: scrollView,
-        ),
-        child: child,
-      ),
+      builder: (context, appBarHeight, child) {
+        return Selector<MediaQueryData, double>(
+          selector: (context, mq) => mq.effectiveBottomPadding,
+          builder: (context, mqPaddingBottom, child) {
+            return Selector<Settings, bool>(
+              selector: (context, s) => s.showBottomNavigationBar,
+              builder: (context, showBottomNavigationBar, child) {
+                final navBarHeight = showBottomNavigationBar ? AppBottomNavBar.height : 0;
+                return Selector<SectionedListLayout<AvesEntry>, List<SectionLayout>>(
+                  selector: (context, layout) => layout.sectionLayouts,
+                  builder: (context, sectionLayouts, child) {
+                    return DraggableScrollbar(
+                      backgroundColor: Colors.white,
+                      scrollThumbSize: Size(avesScrollThumbWidth, avesScrollThumbHeight),
+                      scrollThumbBuilder: avesScrollThumbBuilder(
+                        height: avesScrollThumbHeight,
+                        backgroundColor: Colors.white,
+                      ),
+                      controller: widget.scrollController,
+                      crumbsBuilder: () => _getCrumbs(sectionLayouts),
+                      padding: EdgeInsets.only(
+                        // padding to keep scroll thumb between app bar above and nav bar below
+                        top: appBarHeight,
+                        bottom: navBarHeight + mqPaddingBottom,
+                      ),
+                      labelTextBuilder: (offsetY) => CollectionDraggableThumbLabel(
+                        collection: collection,
+                        offsetY: offsetY,
+                      ),
+                      crumbTextBuilder: (label) => DraggableCrumbLabel(label: label),
+                      child: scrollView,
+                    );
+                  },
+                );
+              },
+            );
+          },
+        );
+      },
     );
   }
 
@@ -376,7 +397,12 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> {
       primary: true,
       // workaround to prevent scrolling the app bar away
       // when there is no content and we use `SliverFillRemaining`
-      physics: collection.isEmpty ? const NeverScrollableScrollPhysics() : const SloppyScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+      physics: collection.isEmpty
+          ? const NeverScrollableScrollPhysics()
+          : SloppyScrollPhysics(
+              gestureSettings: context.select<MediaQueryData, DeviceGestureSettings>((mq) => mq.gestureSettings),
+              parent: const AlwaysScrollableScrollPhysics(),
+            ),
       cacheExtent: context.select<TileExtentController, double>((controller) => controller.effectiveExtentMax),
       slivers: [
         appBar,
@@ -386,6 +412,7 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> {
                 child: _buildEmptyCollectionPlaceholder(collection),
               )
             : const SectionedListSliver<AvesEntry>(),
+        const NavBarPaddingSliver(),
         const BottomPaddingSliver(),
       ],
     );
@@ -430,5 +457,66 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> {
 
   void _stopScrollMonitoringTimer() {
     _scrollMonitoringTimer?.cancel();
+  }
+
+  Map<double, String> _getCrumbs(List<SectionLayout> sectionLayouts) {
+    final crumbs = <double, String>{};
+    if (sectionLayouts.length <= 1) return crumbs;
+
+    final maxOffset = sectionLayouts.last.maxOffset;
+    void addAlbums(CollectionLens collection, List<SectionLayout> sectionLayouts, Map<double, String> crumbs) {
+      final source = collection.source;
+      sectionLayouts.forEach((section) {
+        final directory = (section.sectionKey as EntryAlbumSectionKey).directory;
+        if (directory != null) {
+          final label = source.getAlbumDisplayName(context, directory);
+          crumbs[section.minOffset / maxOffset] = label;
+        }
+      });
+    }
+
+    final collection = widget.collection;
+    switch (collection.sortFactor) {
+      case EntrySortFactor.date:
+        switch (collection.sectionFactor) {
+          case EntryGroupFactor.album:
+            addAlbums(collection, sectionLayouts, crumbs);
+            break;
+          case EntryGroupFactor.month:
+          case EntryGroupFactor.day:
+            final firstKey = sectionLayouts.first.sectionKey;
+            final lastKey = sectionLayouts.last.sectionKey;
+            if (firstKey is EntryDateSectionKey && lastKey is EntryDateSectionKey) {
+              final newest = firstKey.date;
+              final oldest = lastKey.date;
+              if (newest != null && oldest != null) {
+                final localeName = context.l10n.localeName;
+                final dateFormat = newest.difference(oldest).inDays > 365 ? DateFormat.y(localeName) : DateFormat.MMM(localeName);
+                String? lastLabel;
+                sectionLayouts.forEach((section) {
+                  final date = (section.sectionKey as EntryDateSectionKey).date;
+                  if (date != null) {
+                    final label = dateFormat.format(date);
+                    if (label != lastLabel) {
+                      crumbs[section.minOffset / maxOffset] = label;
+                      lastLabel = label;
+                    }
+                  }
+                });
+              }
+            }
+            break;
+          case EntryGroupFactor.none:
+            break;
+        }
+        break;
+      case EntrySortFactor.name:
+        addAlbums(collection, sectionLayouts, crumbs);
+        break;
+      case EntrySortFactor.rating:
+      case EntrySortFactor.size:
+        break;
+    }
+    return crumbs;
   }
 }

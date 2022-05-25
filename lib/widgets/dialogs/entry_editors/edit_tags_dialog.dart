@@ -19,9 +19,9 @@ class TagEditorPage extends StatefulWidget {
   final Map<AvesEntry, Set<String>> tagsByEntry;
 
   const TagEditorPage({
-    Key? key,
+    super.key,
     required this.tagsByEntry,
-  }) : super(key: key);
+  });
 
   @override
   State<TagEditorPage> createState() => _TagEditorPageState();
@@ -229,12 +229,11 @@ class _FilterRow extends StatelessWidget {
   final void Function(String tag) onTap;
 
   const _FilterRow({
-    Key? key,
     required this.title,
     required this.filters,
     required this.expandedNotifier,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -255,9 +254,8 @@ class _TagCount extends StatelessWidget {
   final int count;
 
   const _TagCount({
-    Key? key,
     required this.count,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -11,13 +11,15 @@ class Selection<T> extends ChangeNotifier {
 
   void browse() {
     if (!_isSelecting) return;
-    clearSelection();
     _isSelecting = false;
     notifyListeners();
   }
 
   void select() {
     if (_isSelecting) return;
+    // clear selection on `select`, not on `browse`, so that
+    // the selection count is stable when transitioning to browse
+    clearSelection();
     _isSelecting = true;
     notifyListeners();
   }
@@ -42,7 +44,7 @@ class Selection<T> extends ChangeNotifier {
   }
 
   void toggleSelection(T item) {
-    if (_selectedItems.isEmpty) select();
+    if (!_isSelecting) select();
     if (!_selectedItems.remove(item)) _selectedItems.add(item);
     notifyListeners();
   }

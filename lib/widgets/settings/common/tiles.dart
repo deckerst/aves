@@ -4,6 +4,34 @@ import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+class SettingsSubPageTile extends StatelessWidget {
+  final String title, routeName;
+  final WidgetBuilder builder;
+
+  const SettingsSubPageTile({
+    super.key,
+    required this.title,
+    required this.routeName,
+    required this.builder,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      title: Text(title),
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            settings: RouteSettings(name: routeName),
+            builder: builder,
+          ),
+        );
+      },
+    );
+  }
+}
+
 class SettingsSwitchListTile extends StatelessWidget {
   final bool Function(BuildContext, Settings) selector;
   final ValueChanged<bool> onChanged;
@@ -12,13 +40,13 @@ class SettingsSwitchListTile extends StatelessWidget {
   final Widget? trailing;
 
   const SettingsSwitchListTile({
-    Key? key,
+    super.key,
     required this.selector,
     required this.onChanged,
     required this.title,
     this.subtitle,
     this.trailing,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +86,7 @@ class SettingsSelectionListTile<T extends Enum> extends StatelessWidget {
   final TextBuilder<T>? optionSubtitleBuilder;
 
   const SettingsSelectionListTile({
-    Key? key,
+    super.key,
     required this.values,
     required this.getName,
     required this.selector,
@@ -66,7 +94,7 @@ class SettingsSelectionListTile<T extends Enum> extends StatelessWidget {
     required this.tileTitle,
     required this.dialogTitle,
     this.optionSubtitleBuilder,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

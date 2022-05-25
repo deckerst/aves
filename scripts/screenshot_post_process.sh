@@ -37,6 +37,10 @@ for source in overlay/*/*; do
     convert -resize 350x "$source" "$target"
   fi
 done
+mv screenshots/izzy/en screenshots/izzy/en-US
+mv screenshots/izzy/es screenshots/izzy/es-MX
+mv screenshots/izzy/pt screenshots/izzy/pt-BR
+mv screenshots/izzy/zh screenshots/izzy/zh-CN
 
 # play: add device frame
 for source in overlay/*/*; do
@@ -65,5 +69,15 @@ for source in framed/en/*; do
     echo "$source -> $target"
     mkdir -p "$(dirname "$target")"
     convert -resize 250x "$source" "$target"
+  fi
+done
+
+# amazon: scale down
+for source in framed/en/*; do
+  if [[ -f "$source" ]]; then
+    target=${source/framed/amazon}
+    echo "$source -> $target"
+    mkdir -p "$(dirname "$target")"
+    convert -resize x1920 "$source" -gravity center -background transparent -extent 1200x1920 "$target"
   fi
 done

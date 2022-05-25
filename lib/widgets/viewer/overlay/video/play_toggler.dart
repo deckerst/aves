@@ -14,11 +14,11 @@ class PlayToggler extends StatefulWidget {
   final VoidCallback? onPressed;
 
   const PlayToggler({
-    Key? key,
+    super.key,
     required this.controller,
     this.isMenuItem = false,
     this.onPressed,
-  }) : super(key: key);
+  });
 
   @override
   State<PlayToggler> createState() => _PlayTogglerState();

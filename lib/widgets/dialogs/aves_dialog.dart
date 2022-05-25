@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 class AvesDialog extends StatelessWidget {
   final String? title;
-  final ScrollController? scrollController;
+  final ScrollController scrollController;
   final List<Widget>? scrollableContent;
   final bool hasScrollBar;
   final double horizontalContentPadding;
@@ -16,17 +16,17 @@ class AvesDialog extends StatelessWidget {
   static const double controlCaptionPadding = 16;
   static const double borderWidth = 1.0;
 
-  const AvesDialog({
-    Key? key,
+  AvesDialog({
+    super.key,
     this.title,
-    this.scrollController,
+    ScrollController? scrollController,
     this.scrollableContent,
     this.hasScrollBar = true,
     this.horizontalContentPadding = defaultHorizontalContentPadding,
     this.content,
     required this.actions,
   })  : assert((scrollableContent != null) ^ (content != null)),
-        super(key: key);
+        scrollController = scrollController ?? ScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -57,10 +57,8 @@ class AvesDialog extends StatelessWidget {
     }
 
     if (scrollableContent != null) {
-      final _scrollController = scrollController ?? ScrollController();
-
       Widget child = ListView(
-        controller: _scrollController,
+        controller: scrollController,
         shrinkWrap: true,
         children: scrollableContent!,
       );
@@ -68,16 +66,23 @@ class AvesDialog extends StatelessWidget {
       if (hasScrollBar) {
         child = Theme(
           data: Theme.of(context).copyWith(
-            scrollbarTheme: const ScrollbarThemeData(
-              isAlwaysShown: true,
-              radius: Radius.circular(16),
+            scrollbarTheme: ScrollbarThemeData(
+              thumbVisibility: MaterialStateProperty.all(true),
+              radius: const Radius.circular(16),
               crossAxisMargin: 4,
               mainAxisMargin: 4,
               interactive: true,
             ),
           ),
           child: Scrollbar(
-            controller: _scrollController,
+            controller: scrollController,
+            notificationPredicate: (notification) {
+              // as of Flutter v3.0.1, the `Scrollbar` does not only respond to the nearest `ScrollView`
+              // despite the `defaultScrollNotificationPredicate` checking notification depth,
+              // as the notifications coming from the controller in `ListWheelScrollView` in `WheelSelector` still have a depth of 0.
+              // Cancelling notification bubbling seems ineffective, so we check the metrics type as a workaround.
+              return defaultScrollNotificationPredicate(notification) && notification.metrics is! FixedExtentMetrics;
+            },
             child: child,
           ),
         );
@@ -120,9 +125,9 @@ class DialogTitle extends StatelessWidget {
   final String title;
 
   const DialogTitle({
-    Key? key,
+    super.key,
     required this.title,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

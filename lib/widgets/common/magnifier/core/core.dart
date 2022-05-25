@@ -23,7 +23,7 @@ class MagnifierCore extends StatefulWidget {
   final Widget child;
 
   const MagnifierCore({
-    Key? key,
+    super.key,
     required this.controller,
     required this.scaleStateCycle,
     required this.applyScale,
@@ -31,7 +31,7 @@ class MagnifierCore extends StatefulWidget {
     this.onTap,
     this.onDoubleTap,
     required this.child,
-  }) : super(key: key);
+  });
 
   @override
   State<StatefulWidget> createState() => _MagnifierCoreState();
@@ -197,11 +197,12 @@ class _MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateM
   }
 
   void onTap(TapUpDetails details) {
-    if (widget.onTap == null) return;
+    final onTap = widget.onTap;
+    if (onTap == null) return;
 
     final viewportTapPosition = details.localPosition;
     final childTapPosition = scaleBoundaries.viewportToChildPosition(controller, viewportTapPosition);
-    widget.onTap!.call(context, details, controller.currentState, childTapPosition);
+    onTap(context, details, controller.currentState, childTapPosition);
   }
 
   void onDoubleTap(TapDownDetails details) {

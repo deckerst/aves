@@ -12,13 +12,13 @@ class QueryBar extends StatefulWidget {
   final bool editable;
 
   const QueryBar({
-    Key? key,
+    super.key,
     required this.queryNotifier,
     this.focusNode,
     this.icon,
     this.hintText,
     this.editable = true,
-  }) : super(key: key);
+  });
 
   @override
   State<QueryBar> createState() => _QueryBarState();
@@ -49,45 +49,48 @@ class _QueryBarState extends State<QueryBar> {
       tooltip: context.l10n.clearTooltip,
     );
 
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          child: TextField(
-            controller: _controller,
-            focusNode: widget.focusNode ?? FocusNode(),
-            decoration: InputDecoration(
-              icon: Padding(
-                padding: const EdgeInsetsDirectional.only(start: 16),
-                child: Icon(widget.icon ?? AIcons.filter),
-              ),
-              hintText: widget.hintText ?? MaterialLocalizations.of(context).searchFieldLabel,
-              hintStyle: Theme.of(context).inputDecorationTheme.hintStyle,
-            ),
-            textInputAction: TextInputAction.search,
-            onChanged: (s) => _debouncer(() => queryNotifier.value = s.trim()),
-            enabled: widget.editable,
-          ),
-        ),
-        ConstrainedBox(
-          constraints: const BoxConstraints(minWidth: 16),
-          child: ValueListenableBuilder<TextEditingValue>(
-            valueListenable: _controller,
-            builder: (context, value, child) => AnimatedSwitcher(
-              duration: Durations.appBarActionChangeAnimation,
-              transitionBuilder: (child, animation) => FadeTransition(
-                opacity: animation,
-                child: SizeTransition(
-                  axis: Axis.horizontal,
-                  sizeFactor: animation,
-                  child: child,
+    return DefaultTextStyle(
+      style: Theme.of(context).textTheme.bodyText2!,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: TextField(
+              controller: _controller,
+              focusNode: widget.focusNode ?? FocusNode(),
+              decoration: InputDecoration(
+                icon: Padding(
+                  padding: const EdgeInsetsDirectional.only(start: 16),
+                  child: Icon(widget.icon ?? AIcons.filter),
                 ),
+                hintText: widget.hintText ?? MaterialLocalizations.of(context).searchFieldLabel,
+                hintStyle: Theme.of(context).inputDecorationTheme.hintStyle,
               ),
-              child: value.text.isNotEmpty ? clearButton : const SizedBox(),
+              textInputAction: TextInputAction.search,
+              onChanged: (s) => _debouncer(() => queryNotifier.value = s.trim()),
+              enabled: widget.editable,
             ),
           ),
-        )
-      ],
+          ConstrainedBox(
+            constraints: const BoxConstraints(minWidth: 16),
+            child: ValueListenableBuilder<TextEditingValue>(
+              valueListenable: _controller,
+              builder: (context, value, child) => AnimatedSwitcher(
+                duration: Durations.appBarActionChangeAnimation,
+                transitionBuilder: (child, animation) => FadeTransition(
+                  opacity: animation,
+                  child: SizeTransition(
+                    axis: Axis.horizontal,
+                    sizeFactor: animation,
+                    child: child,
+                  ),
+                ),
+                child: value.text.isNotEmpty ? clearButton : const SizedBox(),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

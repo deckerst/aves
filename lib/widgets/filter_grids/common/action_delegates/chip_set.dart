@@ -15,6 +15,7 @@ import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
 import 'package:aves/widgets/common/action_mixins/size_aware.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/common/search/route.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/filter_editors/cover_selection_dialog.dart';
 import 'package:aves/widgets/dialogs/tile_view_dialog.dart';
@@ -52,7 +53,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
       case ChipSetAction.configureView:
         return true;
       case ChipSetAction.select:
-        return appMode.canSelect && !isSelecting;
+        return appMode.canSelectFilter && !isSelecting;
       case ChipSetAction.selectAll:
         return isSelecting && selectedItemCount < itemCount;
       case ChipSetAction.selectNone:
@@ -246,6 +247,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
       context,
       SearchPageRoute(
         delegate: CollectionSearchDelegate(
+          searchFieldLabel: context.l10n.searchCollectionFieldHint,
           source: context.read<CollectionSource>(),
         ),
       ),

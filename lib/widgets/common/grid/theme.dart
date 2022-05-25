@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/widgets/common/identity/aves_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -10,18 +11,19 @@ class GridTheme extends StatelessWidget {
   final Widget child;
 
   const GridTheme({
-    Key? key,
+    super.key,
     required this.extent,
     this.showLocation,
     this.showTrash,
     required this.child,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     return ProxyProvider2<Settings, MediaQueryData, GridThemeData>(
       update: (context, settings, mq, previous) {
-        var iconSize = min(24.0, (extent / 5)).roundToDouble();
+        final margin = OverlayIcon.defaultMargin.vertical;
+        var iconSize = min(24.0, ((extent - margin) / 5).floorToDouble() - margin);
         final fontSize = (iconSize * .7).floorToDouble();
         iconSize *= mq.textScaleFactor;
         final highlightBorderWidth = extent * .1;
@@ -34,6 +36,7 @@ class GridTheme extends StatelessWidget {
           showMotionPhoto: settings.showThumbnailMotionPhoto,
           showRating: settings.showThumbnailRating,
           showRaw: settings.showThumbnailRaw,
+          showTag: settings.showThumbnailTag,
           showTrash: showTrash ?? true,
           showVideoDuration: settings.showThumbnailVideoDuration,
         );
@@ -45,7 +48,7 @@ class GridTheme extends StatelessWidget {
 
 class GridThemeData {
   final double iconSize, fontSize, highlightBorderWidth;
-  final bool showFavourite, showLocation, showMotionPhoto, showRating, showRaw, showTrash, showVideoDuration;
+  final bool showFavourite, showLocation, showMotionPhoto, showRating, showRaw, showTag, showTrash, showVideoDuration;
 
   const GridThemeData({
     required this.iconSize,
@@ -56,6 +59,7 @@ class GridThemeData {
     required this.showMotionPhoto,
     required this.showRating,
     required this.showRaw,
+    required this.showTag,
     required this.showTrash,
     required this.showVideoDuration,
   });

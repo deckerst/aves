@@ -13,7 +13,7 @@ abstract class XmpGoogleNamespace extends XmpNamespace {
   List<Tuple2<String, String>> get dataProps;
 
   @override
-  Map<String, InfoLinkHandler> linkifyValues(List<XmpProp> props) {
+  Map<String, InfoValueSpanBuilder> linkifyValues(List<XmpProp> props) {
     return Map.fromEntries(dataProps.map((t) {
       final dataPropPath = t.item1;
       final mimePropPath = t.item2;
@@ -22,7 +22,7 @@ abstract class XmpGoogleNamespace extends XmpNamespace {
       return (dataProp != null && mimeProp != null)
           ? MapEntry(
               dataProp.displayKey,
-              InfoLinkHandler(
+              InfoRowGroup.linkSpanBuilder(
                 linkText: (context) => context.l10n.viewerInfoOpenLinkText,
                 onTap: (context) => OpenEmbeddedDataNotification.xmp(
                   propPath: dataProp.path,

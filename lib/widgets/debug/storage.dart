@@ -6,7 +6,7 @@ import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:flutter/material.dart';
 
 class DebugStorageSection extends StatefulWidget {
-  const DebugStorageSection({Key? key}) : super(key: key);
+  const DebugStorageSection({super.key});
 
   @override
   State<DebugStorageSection> createState() => _DebugStorageSectionState();

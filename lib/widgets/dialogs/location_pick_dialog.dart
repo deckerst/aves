@@ -12,13 +12,10 @@ import 'package:aves/utils/constants.dart';
 import 'package:aves/utils/debouncer.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/buttons.dart';
-import 'package:aves/widgets/common/map/controller.dart';
 import 'package:aves/widgets/common/map/geo_map.dart';
-import 'package:aves/widgets/common/map/marker.dart';
-import 'package:aves/widgets/common/map/theme.dart';
-import 'package:aves/widgets/common/map/zoomed_bounds.dart';
+import 'package:aves/widgets/common/providers/map_theme_provider.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
-import 'package:decorated_icon/decorated_icon.dart';
+import 'package:aves_map/aves_map.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:latlong2/latlong.dart';
@@ -31,10 +28,10 @@ class LocationPickDialog extends StatelessWidget {
   final LatLng? initialLocation;
 
   const LocationPickDialog({
-    Key? key,
+    super.key,
     required this.collection,
     required this.initialLocation,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -60,10 +57,9 @@ class _Content extends StatefulWidget {
   final LatLng? initialLocation;
 
   const _Content({
-    Key? key,
     required this.collection,
     required this.initialLocation,
-  }) : super(key: key);
+  });
 
   @override
   State<_Content> createState() => _ContentState();
@@ -82,7 +78,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
   void initState() {
     super.initState();
 
-    if (settings.infoMapStyle.isGoogleMaps) {
+    if (settings.infoMapStyle.isHeavy) {
       _isPageAnimatingNotifier = ValueNotifier(true);
       Future.delayed(Durations.pageTransitionAnimation * timeDilation).then((_) {
         if (!mounted) return;
@@ -180,9 +176,8 @@ class _LocationInfo extends StatelessWidget {
   static const double _interRowPadding = 2.0;
 
   const _LocationInfo({
-    Key? key,
     required this.locationNotifier,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -232,9 +227,8 @@ class _AddressRow extends StatefulWidget {
   final LatLng? location;
 
   const _AddressRow({
-    Key? key,
     required this.location,
-  }) : super(key: key);
+  });
 
   @override
   State<_AddressRow> createState() => _AddressRowState();
@@ -263,7 +257,7 @@ class _AddressRowState extends State<_AddressRow> {
       mainAxisSize: MainAxisSize.min,
       children: [
         const SizedBox(width: _LocationInfo.iconPadding),
-        const DecoratedIcon(AIcons.location, size: _LocationInfo.iconSize),
+        const Icon(AIcons.location, size: _LocationInfo.iconSize),
         const SizedBox(width: _LocationInfo.iconPadding),
         Expanded(
           child: Container(
@@ -314,16 +308,15 @@ class _CoordinateRow extends StatelessWidget {
   final LatLng? location;
 
   const _CoordinateRow({
-    Key? key,
     required this.location,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
         const SizedBox(width: _LocationInfo.iconPadding),
-        const DecoratedIcon(AIcons.geoBounds, size: _LocationInfo.iconSize),
+        const Icon(AIcons.geoBounds, size: _LocationInfo.iconSize),
         const SizedBox(width: _LocationInfo.iconPadding),
         Text(
           location != null ? settings.coordinateFormat.format(context.l10n, location!) : Constants.overlayUnknown,

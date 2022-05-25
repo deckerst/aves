@@ -7,7 +7,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
 class DebugAndroidCodecSection extends StatefulWidget {
-  const DebugAndroidCodecSection({Key? key}) : super(key: key);
+  const DebugAndroidCodecSection({super.key});
 
   @override
   State<DebugAndroidCodecSection> createState() => _DebugAndroidCodecSectionState();
