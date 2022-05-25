@@ -22,14 +22,14 @@ class InteractiveFilterTile<T extends CollectionFilter> extends StatefulWidget {
   final HeroType heroType;
 
   const InteractiveFilterTile({
-    Key? key,
+    super.key,
     required this.gridItem,
     required this.chipExtent,
     required this.thumbnailExtent,
     required this.tileLayout,
     this.banner,
     required this.heroType,
-  }) : super(key: key);
+  });
 
   @override
   State<InteractiveFilterTile<T>> createState() => _InteractiveFilterTileState<T>();
@@ -50,7 +50,8 @@ class _InteractiveFilterTileState<T extends CollectionFilter> extends State<Inte
       final appMode = context.read<ValueNotifier<AppMode>>().value;
       switch (appMode) {
         case AppMode.main:
-        case AppMode.pickMediaExternal:
+        case AppMode.pickSingleMediaExternal:
+        case AppMode.pickMultipleMediaExternal:
           final selection = context.read<Selection<FilterGridItem<T>>>();
           if (selection.isSelecting) {
             selection.toggleSelection(gridItem);
@@ -88,7 +89,7 @@ class _InteractiveFilterTileState<T extends CollectionFilter> extends State<Inte
       // make sure the chip hero triggers, even when tapping on the list view details
       setState(() => _heroTypeOverride = HeroType.always);
     }
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -113,7 +114,7 @@ class FilterTile<T extends CollectionFilter> extends StatelessWidget {
   final HeroType heroType;
 
   const FilterTile({
-    Key? key,
+    super.key,
     required this.gridItem,
     required this.chipExtent,
     required this.thumbnailExtent,
@@ -123,7 +124,7 @@ class FilterTile<T extends CollectionFilter> extends StatelessWidget {
     this.highlightable = false,
     this.onTap,
     this.heroType = HeroType.never,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -33,12 +33,12 @@ class ViewerDetailOverlay extends StatefulWidget {
   final MultiPageController? multiPageController;
 
   const ViewerDetailOverlay({
-    Key? key,
+    super.key,
     required this.entries,
     required this.index,
     required this.hasCollection,
     required this.multiPageController,
-  }) : super(key: key);
+  });
 
   @override
   State<ViewerDetailOverlay> createState() => _ViewerDetailOverlayState();
@@ -127,13 +127,13 @@ class ViewerDetailOverlayContent extends StatelessWidget {
   static const padding = EdgeInsets.symmetric(vertical: 4, horizontal: 8);
 
   const ViewerDetailOverlayContent({
-    Key? key,
+    super.key,
     required this.pageEntry,
     required this.details,
     required this.position,
     required this.availableWidth,
     required this.multiPageController,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -288,9 +288,8 @@ class _LocationRow extends AnimatedWidget {
   final AvesEntry entry;
 
   _LocationRow({
-    Key? key,
     required this.entry,
-  }) : super(key: key, listenable: entry.addressChangeNotifier);
+  }) : super(listenable: entry.addressChangeNotifier);
 
   @override
   Widget build(BuildContext context) {
@@ -307,7 +306,7 @@ class _LocationRow extends AnimatedWidget {
     }
     return Row(
       children: [
-        DecoratedIcon(AIcons.location, shadows: _shadows(context), size: _iconSize),
+        DecoratedIcon(AIcons.location, size: _iconSize, shadows: _shadows(context)),
         const SizedBox(width: _iconPadding),
         Expanded(child: Text(location, strutStyle: Constants.overflowStrutStyle)),
       ],
@@ -388,7 +387,7 @@ class _DateRow extends StatelessWidget {
 
     return Row(
       children: [
-        DecoratedIcon(AIcons.date, shadows: _shadows(context), size: _iconSize),
+        DecoratedIcon(AIcons.date, size: _iconSize, shadows: _shadows(context)),
         const SizedBox(width: _iconPadding),
         Expanded(flex: 3, child: Text(dateText, strutStyle: Constants.overflowStrutStyle)),
         Expanded(flex: 2, child: Text(resolutionText, strutStyle: Constants.overflowStrutStyle)),
@@ -417,7 +416,7 @@ class _ShootingRow extends StatelessWidget {
 
     return Row(
       children: [
-        DecoratedIcon(AIcons.shooting, shadows: _shadows(context), size: _iconSize),
+        DecoratedIcon(AIcons.shooting, size: _iconSize, shadows: _shadows(context)),
         const SizedBox(width: _iconPadding),
         Expanded(child: Text(apertureText, strutStyle: Constants.overflowStrutStyle)),
         Expanded(child: Text(details.exposureTime ?? Constants.overlayUnknown, strutStyle: Constants.overflowStrutStyle)),

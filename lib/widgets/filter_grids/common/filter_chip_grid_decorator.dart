@@ -11,13 +11,13 @@ class FilterChipGridDecorator<T extends CollectionFilter, U extends FilterGridIt
   final Widget child;
 
   const FilterChipGridDecorator({
-    Key? key,
+    super.key,
     required this.gridItem,
     required this.extent,
     this.selectable = true,
     this.highlightable = true,
     required this.child,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

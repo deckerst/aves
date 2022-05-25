@@ -28,7 +28,7 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
   final HeroType heroType;
 
   const CoveredFilterChip({
-    Key? key,
+    super.key,
     required this.filter,
     required this.extent,
     double? thumbnailExtent,
@@ -38,8 +38,7 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
     this.banner,
     this.onTap,
     this.heroType = HeroType.onTap,
-  })  : thumbnailExtent = thumbnailExtent ?? extent,
-        super(key: key);
+  }) : thumbnailExtent = thumbnailExtent ?? extent;
 
   static double tileHeight({required double extent, required double textScaleFactor, required bool showText}) {
     return extent + infoHeight(extent: extent, textScaleFactor: textScaleFactor, showText: showText);

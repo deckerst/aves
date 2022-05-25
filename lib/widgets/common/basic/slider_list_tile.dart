@@ -9,14 +9,14 @@ class SliderListTile extends StatelessWidget {
   final int? divisions;
 
   const SliderListTile({
-    Key? key,
+    super.key,
     required this.title,
     required this.value,
     required this.onChanged,
     this.min = 0.0,
     this.max = 1.0,
     this.divisions,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -17,7 +17,7 @@
   "hideButtonLabel": "SEMBUNYIKAN",
   "continueButtonLabel": "SELANJUTNYA",
 
-  "cancelTooltip": "Batalkan",
+  "cancelTooltip": "Batal",
   "changeTooltip": "Ganti",
   "clearTooltip": "Hapus",
   "previousTooltip": "Sebelumnya",
@@ -82,7 +82,7 @@
 
   "entryInfoActionEditDate": "Ubah tanggal & waktu",
   "entryInfoActionEditLocation": "Ubah lokasi",
-  "entryInfoActionEditRating": "Ubah peringkat",
+  "entryInfoActionEditRating": "Ubah nilai",
   "entryInfoActionEditTags": "Ubah label",
   "entryInfoActionRemoveMetadata": "Hapus metadata",
 
@@ -90,7 +90,7 @@
   "filterFavouriteLabel": "Favorit",
   "filterLocationEmptyLabel": "Lokasi yang tidak ditemukan",
   "filterTagEmptyLabel": "Tidak dilabel",
-  "filterRatingUnratedLabel": "Belum diberi peringkat",
+  "filterRatingUnratedLabel": "Belum diberi nilai",
   "filterRatingRejectedLabel": "Ditolak",
   "filterTypeAnimatedLabel": "Teranimasi",
   "filterTypeMotionPhotoLabel": "Foto bergerak",
@@ -124,6 +124,8 @@
   "mapStyleGoogleNormal": "Google Maps",
   "mapStyleGoogleHybrid": "Google Maps (Hybrid)",
   "mapStyleGoogleTerrain": "Google Maps (Terrain)",
+  "mapStyleHuaweiNormal": "Petal Maps",
+  "mapStyleHuaweiTerrain": "Petal Maps (Terrain)",
   "mapStyleOsmHot": "Humanitarian OSM",
   "mapStyleStamenToner": "Stamen Toner",
   "mapStyleStamenWatercolor": "Stamen Watercolor",
@@ -148,7 +150,7 @@
 
   "albumTierNew": "Baru",
   "albumTierPinned": "Disemat",
-  "albumTierSpecial": "Umum",
+  "albumTierSpecial": "Biasa",
   "albumTierApps": "Aplikasi",
   "albumTierRegular": "Lainnya",
 
@@ -235,7 +237,7 @@
 
   "locationPickerUseThisLocationButton": "Gunakan lokasi ini",
 
-  "editEntryRatingDialogTitle": "Peringkat",
+  "editEntryRatingDialogTitle": "Nilai",
 
   "removeEntryMetadataDialogTitle": "Penghapusan Metadata",
   "removeEntryMetadataDialogMore": "Lebih Banyak",
@@ -247,7 +249,7 @@
 
   "videoStreamSelectionDialogVideo": "Video",
   "videoStreamSelectionDialogAudio": "Audio",
-  "videoStreamSelectionDialogText": "Subtitle",
+  "videoStreamSelectionDialogText": "Subjudul",
   "videoStreamSelectionDialogOff": "Mati",
   "videoStreamSelectionDialogTrack": "Trek",
   "videoStreamSelectionDialogNoSelection": "Tidak ada Trek yang lain.",
@@ -322,7 +324,7 @@
   "collectionSortDate": "Lewat tanggal",
   "collectionSortSize": "Lewat ukuran",
   "collectionSortName": "Lewat nama album & file",
-  "collectionSortRating": "Lewat peringkat",
+  "collectionSortRating": "Lewat nilai",
 
   "collectionGroupAlbum": "Lewat album",
   "collectionGroupMonth": "Lewat bulan",
@@ -400,12 +402,14 @@
   "searchSectionCountries": "Negara",
   "searchSectionPlaces": "Tempat",
   "searchSectionTags": "Label",
-  "searchSectionRating": "Peringkat",
+  "searchSectionRating": "Nilai",
 
   "settingsPageTitle": "Pengaturan",
   "settingsSystemDefault": "Sistem",
   "settingsDefault": "Default",
 
+  "settingsSearchFieldLabel": "Cari peraturan",
+  "settingsSearchEmpty": "Tidak ada peraturan yang cocok",
   "settingsActionExport": "Ekspor",
   "settingsActionImport": "Impor",
 
@@ -415,6 +419,7 @@
 
   "settingsSectionNavigation": "Navigasi",
   "settingsHome": "Beranda",
+  "settingsShowBottomNavigationBar": "Tampilkan bilah navigasi bawah",
   "settingsKeepScreenOnTile": "Biarkan layarnya menyala",
   "settingsKeepScreenOnTitle": "Biarkan Layarnya Menyala",
   "settingsDoubleBackExit": "Ketuk “kembali” dua kali untuk keluar",
@@ -434,10 +439,13 @@
   "settingsNavigationDrawerAddAlbum": "Tambahkan album",
 
   "settingsSectionThumbnails": "Thumbnail",
+  "settingsThumbnailOverlayTile": "Hamparan",
+  "settingsThumbnailOverlayTitle": "Hamparan",
   "settingsThumbnailShowFavouriteIcon": "Tampilkan ikon favorit",
+  "settingsThumbnailShowTagIcon": "Tampilkan ikon label",
   "settingsThumbnailShowLocationIcon": "Tampilkan ikon lokasi",
   "settingsThumbnailShowMotionPhotoIcon": "Tampilkan ikon Foto bergerak",
-  "settingsThumbnailShowRating": "Tampilkan peringkat",
+  "settingsThumbnailShowRating": "Tampilkan nilai",
   "settingsThumbnailShowRawIcon": "Tampilkan ikon raw",
   "settingsThumbnailShowVideoDuration": "Tampilkan durasi video",
 
@@ -479,8 +487,8 @@
   "settingsVideoLoopModeTile": "Putar ulang",
   "settingsVideoLoopModeTitle": "Putar Ulang",
 
-  "settingsSubtitleThemeTile": "Subtitle",
-  "settingsSubtitleThemeTitle": "Subtitle",
+  "settingsSubtitleThemeTile": "Subjudul",
+  "settingsSubtitleThemeTitle": "Subjudul",
   "settingsSubtitleThemeSample": "Ini adalah sampel.",
   "settingsSubtitleThemeTextAlignmentTile": "Perataan teks",
   "settingsSubtitleThemeTextAlignmentTitle": "Perataan Teks",

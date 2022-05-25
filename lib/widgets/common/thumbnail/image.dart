@@ -26,7 +26,7 @@ class ThumbnailImage extends StatefulWidget {
   final Object? heroTag;
 
   const ThumbnailImage({
-    Key? key,
+    super.key,
     required this.entry,
     required this.extent,
     this.progressive = true,
@@ -34,7 +34,7 @@ class ThumbnailImage extends StatefulWidget {
     this.showLoadingBackground = true,
     this.cancellableNotifier,
     this.heroTag,
-  }) : super(key: key);
+  });
 
   @override
   State<ThumbnailImage> createState() => _ThumbnailImageState();

@@ -443,18 +443,23 @@ class MediaStoreImageProvider : ImageProvider() {
                         if (effectiveTargetDir != null) {
                             val newFields = if (isCancelledOp()) skippedFieldMap else {
                                 val sourceFile = File(sourcePath)
-                                moveSingle(
-                                    activity = activity,
-                                    sourceFile = sourceFile,
-                                    sourceUri = sourceUri,
-                                    targetDir = effectiveTargetDir,
-                                    targetDirDocFile = targetDirDocFile,
-                                    desiredName = desiredName ?: sourceFile.name,
-                                    nameConflictStrategy = nameConflictStrategy,
-                                    mimeType = mimeType,
-                                    copy = copy,
-                                    toBin = toBin,
-                                )
+                                if (!sourceFile.exists() && toBin) {
+                                    delete(activity, sourceUri, sourcePath, mimeType = mimeType)
+                                    deletedFieldMap
+                                } else {
+                                    moveSingle(
+                                        activity = activity,
+                                        sourceFile = sourceFile,
+                                        sourceUri = sourceUri,
+                                        targetDir = effectiveTargetDir,
+                                        targetDirDocFile = targetDirDocFile,
+                                        desiredName = desiredName ?: sourceFile.name,
+                                        nameConflictStrategy = nameConflictStrategy,
+                                        mimeType = mimeType,
+                                        copy = copy,
+                                        toBin = toBin,
+                                    )
+                                }
                             }
                             result["newFields"] = newFields
                             result["success"] = true

@@ -8,10 +8,10 @@ class CrumbLine extends StatefulWidget {
   final void Function(String path) onTap;
 
   const CrumbLine({
-    Key? key,
+    super.key,
     required this.directory,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   State<CrumbLine> createState() => _CrumbLineState();
@@ -27,7 +27,7 @@ class _CrumbLineState extends State<CrumbLine> {
     super.didUpdateWidget(oldWidget);
     if (widget.directory.relativeDir.length > oldWidget.directory.relativeDir.length) {
       // scroll to show last crumb
-      WidgetsBinding.instance!.addPostFrameCallback((_) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
         final extent = _controller.position.maxScrollExtent;
         _controller.animateTo(
           extent,
@@ -54,7 +54,6 @@ class _CrumbLineState extends State<CrumbLine> {
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         controller: _controller,
-        physics: const BouncingScrollPhysics(),
         padding: const EdgeInsets.symmetric(horizontal: 8),
         itemBuilder: (context, index) {
           Widget _buildText(String text) => Padding(

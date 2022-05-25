@@ -13,10 +13,10 @@ class EntryQueryBar extends StatefulWidget {
   static const preferredHeight = kToolbarHeight;
 
   const EntryQueryBar({
-    Key? key,
+    super.key,
     required this.queryNotifier,
     required this.focusNode,
-  }) : super(key: key);
+  });
 
   @override
   State<EntryQueryBar> createState() => _EntryQueryBarState();

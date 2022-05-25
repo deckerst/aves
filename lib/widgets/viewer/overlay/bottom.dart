@@ -21,7 +21,7 @@ class ViewerBottomOverlay extends StatefulWidget {
   final MultiPageController? multiPageController;
 
   const ViewerBottomOverlay({
-    Key? key,
+    super.key,
     required this.entries,
     required this.index,
     required this.hasCollection,
@@ -29,7 +29,7 @@ class ViewerBottomOverlay extends StatefulWidget {
     this.viewInsets,
     this.viewPadding,
     required this.multiPageController,
-  }) : super(key: key);
+  });
 
   @override
   State<StatefulWidget> createState() => _ViewerBottomOverlayState();
@@ -60,6 +60,8 @@ class _ViewerBottomOverlayState extends State<ViewerBottomOverlay> {
           mainEntry: mainEntry,
           pageEntry: pageEntry ?? mainEntry,
           hasCollection: widget.hasCollection,
+          viewInsets: widget.viewInsets,
+          viewPadding: widget.viewPadding,
           multiPageController: multiPageController,
           animationController: widget.animationController,
         );
@@ -89,19 +91,21 @@ class _BottomOverlayContent extends StatefulWidget {
   final int index;
   final AvesEntry mainEntry, pageEntry;
   final bool hasCollection;
+  final EdgeInsets? viewInsets, viewPadding;
   final MultiPageController? multiPageController;
   final AnimationController animationController;
 
   const _BottomOverlayContent({
-    Key? key,
     required this.entries,
     required this.index,
     required this.mainEntry,
     required this.pageEntry,
     required this.hasCollection,
+    required this.viewInsets,
+    required this.viewPadding,
     required this.multiPageController,
     required this.animationController,
-  }) : super(key: key);
+  });
 
   @override
   State<_BottomOverlayContent> createState() => _BottomOverlayContentState();
@@ -140,11 +144,20 @@ class _BottomOverlayContentState extends State<_BottomOverlayContent> {
           return Selector<MediaQueryData, double>(
             selector: (context, mq) => mq.size.width,
             builder: (context, mqWidth, child) {
-              final viewerButtonRow = ViewerButtonRow(
-                mainEntry: mainEntry,
-                pageEntry: pageEntry,
-                scale: _buttonScale,
-                canToggleFavourite: widget.hasCollection,
+              final viewInsetsPadding = (widget.viewInsets ?? EdgeInsets.zero) + (widget.viewPadding ?? EdgeInsets.zero);
+              final viewerButtonRow = SafeArea(
+                top: false,
+                bottom: false,
+                minimum: EdgeInsets.only(
+                  left: viewInsetsPadding.left,
+                  right: viewInsetsPadding.right,
+                ),
+                child: ViewerButtonRow(
+                  mainEntry: mainEntry,
+                  pageEntry: pageEntry,
+                  scale: _buttonScale,
+                  canToggleFavourite: widget.hasCollection,
+                ),
               );
 
               final showMultiPageOverlay = mainEntry.isMultiPage && multiPageController != null;
@@ -211,11 +224,11 @@ class ExtraBottomOverlay extends StatelessWidget {
   final Widget child;
 
   const ExtraBottomOverlay({
-    Key? key,
+    super.key,
     this.viewInsets,
     this.viewPadding,
     required this.child,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

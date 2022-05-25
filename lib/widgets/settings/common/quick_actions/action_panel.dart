@@ -6,10 +6,10 @@ class ActionPanel extends StatelessWidget {
   final Widget child;
 
   const ActionPanel({
-    Key? key,
+    super.key,
     this.highlight = false,
     required this.child,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

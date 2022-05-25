@@ -19,11 +19,11 @@ class VideoSubtitles extends StatelessWidget {
   static const baseShadowOffset = Offset(1, 1);
 
   const VideoSubtitles({
-    Key? key,
+    super.key,
     required this.controller,
     required this.viewStateNotifier,
     this.debugMode = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

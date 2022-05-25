@@ -27,6 +27,7 @@ import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
 import 'package:aves/widgets/common/action_mixins/size_aware.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/common/search/route.dart';
 import 'package:aves/widgets/dialogs/add_shortcut_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
@@ -56,7 +57,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       case EntrySetAction.configureView:
         return true;
       case EntrySetAction.select:
-        return appMode.canSelect && !isSelecting;
+        return appMode.canSelectMedia && !isSelecting;
       case EntrySetAction.selectAll:
         return isSelecting && selectedItemCount < itemCount;
       case EntrySetAction.selectNone:
@@ -69,7 +70,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       case EntrySetAction.addShortcut:
         return appMode == AppMode.main && !isSelecting && device.canPinShortcut && !isTrash;
       case EntrySetAction.emptyBin:
-        return isTrash;
+        return appMode == AppMode.main && isTrash;
       // browsing or selecting
       case EntrySetAction.map:
       case EntrySetAction.stats:
@@ -566,6 +567,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       context,
       SearchPageRoute(
         delegate: CollectionSearchDelegate(
+          searchFieldLabel: context.l10n.searchCollectionFieldHint,
           source: collection.source,
           parentCollection: collection,
         ),

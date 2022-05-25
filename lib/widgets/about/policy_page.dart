@@ -6,9 +6,7 @@ import 'package:flutter/services.dart';
 class PolicyPage extends StatefulWidget {
   static const routeName = '/about/policy';
 
-  const PolicyPage({
-    Key? key,
-  }) : super(key: key);
+  const PolicyPage({super.key});
 
   @override
   State<PolicyPage> createState() => _PolicyPageState();

@@ -58,6 +58,9 @@
   "entryActionPrint": "印刷",
   "entryActionShare": "共有",
   "entryActionViewSource": "ソースを表示",
+  "entryActionShowGeoTiffOnMap": "地図のオーバーレイとして表示",
+  "entryActionConvertMotionPhotoToStillImage": "静止画に変換",
+  "entryActionViewMotionPhotoVideo": "動画を開く",
   "entryActionEdit": "編集",
   "entryActionOpen": "アプリで開く",
   "entryActionSetAs": "登録",
@@ -88,7 +91,7 @@
   "filterLocationEmptyLabel": "位置情報なし",
   "filterTagEmptyLabel": "タグ情報なし",
   "filterRatingUnratedLabel": "評価情報なし",
-  "filterRatingRejectedLabel": "拒否されました",
+  "filterRatingRejectedLabel": "拒否",
   "filterTypeAnimatedLabel": "アニメーション",
   "filterTypeMotionPhotoLabel": "モーションフォト",
   "filterTypePanoramaLabel": "パノラマ",
@@ -121,6 +124,8 @@
   "mapStyleGoogleNormal": "Google マップ",
   "mapStyleGoogleHybrid": "Google マップ（ハイブリッド）",
   "mapStyleGoogleTerrain": "Google マップ（地形）",
+  "mapStyleHuaweiNormal": "Petal マップ",
+  "mapStyleHuaweiTerrain": "Petal マップ（地形）",
   "mapStyleOsmHot": "Humanitarian OSM",
   "mapStyleStamenToner": "Stamen Toner",
   "mapStyleStamenWatercolor": "Stamen Watercolor",
@@ -184,6 +189,7 @@
   "videoResumeButtonLabel": "再開",
 
   "setCoverDialogLatest": "最新のアイテム",
+  "setCoverDialogAuto": "自動",
   "setCoverDialogCustom": "カスタム",
 
   "hideFilterConfirmationDialogMessage": "一致する写真と動画はコレクションに表示されなくなります。「プライバシー」設定からいつでもアイテムを表示できます。\n\nこれらのアイテムを非表示にしますか？",
@@ -237,6 +243,7 @@
   "removeEntryMetadataDialogMore": "もっと見る",
 
   "removeEntryMetadataMotionPhotoXmpWarningDialogMessage": "モーションフォト内の動画を再生するには XMP が必要です。\n\n削除しますか？",
+  "convertMotionPhotoToStillImageWarningDialogMessage": "適用しますか？",
 
   "videoSpeedDialogLabel": "再生速度",
 
@@ -263,6 +270,13 @@
 
   "tileLayoutGrid": "グリッド表示",
   "tileLayoutList": "リスト表示",
+
+  "coverDialogTabCover": "カバー",
+  "coverDialogTabApp": "アプリ",
+  "coverDialogTabColor": "カラー",
+
+  "appPickDialogTitle": "アプリを選ぶ",
+  "appPickDialogNone": "なし",
 
   "aboutPageTitle": "アプリについて",
   "aboutLinkSources": "ソース",
@@ -394,6 +408,8 @@
   "settingsSystemDefault": "システム",
   "settingsDefault": "デフォルト",
 
+  "settingsSearchFieldLabel": "検索設定",
+  "settingsSearchEmpty": "一致する設定なし",
   "settingsActionExport": "エクスポート",
   "settingsActionImport": "インポート",
 
@@ -403,6 +419,7 @@
 
   "settingsSectionNavigation": "ナビゲーション",
   "settingsHome": "ホーム",
+  "settingsShowBottomNavigationBar": "下部のナビゲーションバーを表示",
   "settingsKeepScreenOnTile": "画面をオンのままにする",
   "settingsKeepScreenOnTitle": "画面をオンのままにする",
   "settingsDoubleBackExit": "「戻る」を２回タップして終了",
@@ -422,7 +439,10 @@
   "settingsNavigationDrawerAddAlbum": "アルバムを追加",
 
   "settingsSectionThumbnails": "サムネイル",
+  "settingsThumbnailOverlayTile": "オーバーレイ",
+  "settingsThumbnailOverlayTitle": "オーバーレイ",
   "settingsThumbnailShowFavouriteIcon": "お気に入りアイコンを表示",
+  "settingsThumbnailShowTagIcon": "タグアイコンを表示",
   "settingsThumbnailShowLocationIcon": "位置情報アイコンを表示",
   "settingsThumbnailShowMotionPhotoIcon": "モーションフォトアイコンを表示",
   "settingsThumbnailShowRating": "評価情報を表示",

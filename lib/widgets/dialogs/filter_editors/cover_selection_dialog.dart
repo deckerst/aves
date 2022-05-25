@@ -28,12 +28,12 @@ class CoverSelectionDialog extends StatefulWidget {
   final Color? customColor;
 
   const CoverSelectionDialog({
-    Key? key,
+    super.key,
     required this.filter,
     required this.customEntry,
     required this.customPackage,
     required this.customColor,
-  }) : super(key: key);
+  });
 
   @override
   State<CoverSelectionDialog> createState() => _CoverSelectionDialogState();

@@ -6,30 +6,10 @@ import 'package:aves/widgets/settings/common/quick_actions/editor_page.dart';
 import 'package:flutter/material.dart';
 import 'package:tuple/tuple.dart';
 
-class CollectionActionsTile extends StatelessWidget {
-  const CollectionActionsTile({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(context.l10n.settingsCollectionQuickActionsTile),
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            settings: const RouteSettings(name: CollectionActionEditorPage.routeName),
-            builder: (context) => const CollectionActionEditorPage(),
-          ),
-        );
-      },
-    );
-  }
-}
-
 class CollectionActionEditorPage extends StatelessWidget {
   static const routeName = '/settings/collection_actions';
 
-  const CollectionActionEditorPage({Key? key}) : super(key: key);
+  const CollectionActionEditorPage({super.key});
 
   @override
   Widget build(BuildContext context) {

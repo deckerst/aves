@@ -74,9 +74,9 @@ class DurationsProvider extends StatelessWidget {
   final Widget child;
 
   const DurationsProvider({
-    Key? key,
+    super.key,
     required this.child,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

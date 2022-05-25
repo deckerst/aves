@@ -20,12 +20,12 @@ class InfoAppBar extends StatelessWidget {
   final VoidCallback onBackPressed;
 
   const InfoAppBar({
-    Key? key,
+    super.key,
     required this.entry,
     required this.actionDelegate,
     required this.metadataNotifier,
     required this.onBackPressed,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +74,6 @@ class InfoAppBar extends StatelessWidget {
             ),
           ),
       ],
-      titleSpacing: 0,
       floating: true,
     );
   }

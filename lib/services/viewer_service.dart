@@ -15,10 +15,10 @@ class ViewerService {
     return {};
   }
 
-  static Future<void> pick(String uri) async {
+  static Future<void> pick(List<String> uris) async {
     try {
       await platform.invokeMethod('pick', <String, dynamic>{
-        'uri': uri,
+        'uris': uris,
       });
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);

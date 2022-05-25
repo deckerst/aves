@@ -7,6 +7,7 @@ import 'package:aves/widgets/common/magnifier/pan/scroll_physics.dart';
 import 'package:aves/widgets/viewer/multipage/conductor.dart';
 import 'package:aves/widgets/viewer/page_entry_builder.dart';
 import 'package:aves/widgets/viewer/visual/entry_page_view.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -17,12 +18,12 @@ class MultiEntryScroller extends StatefulWidget {
   final void Function(AvesEntry mainEntry, AvesEntry? pageEntry) onViewDisposed;
 
   const MultiEntryScroller({
-    Key? key,
+    super.key,
     required this.collection,
     required this.pageController,
     required this.onPageChanged,
     required this.onViewDisposed,
-  }) : super(key: key);
+  });
 
   @override
   State<StatefulWidget> createState() => _MultiEntryScrollerState();
@@ -44,7 +45,10 @@ class _MultiEntryScrollerState extends State<MultiEntryScroller> with AutomaticK
         key: const Key('horizontal-pageview'),
         scrollDirection: Axis.horizontal,
         controller: pageController,
-        physics: const MagnifierScrollerPhysics(parent: BouncingScrollPhysics()),
+        physics: MagnifierScrollerPhysics(
+          gestureSettings: context.select<MediaQueryData, DeviceGestureSettings>((mq) => mq.gestureSettings),
+          parent: const BouncingScrollPhysics(),
+        ),
         onPageChanged: widget.onPageChanged,
         itemBuilder: (context, index) {
           final mainEntry = entries[index];
@@ -108,9 +112,9 @@ class SingleEntryScroller extends StatefulWidget {
   final AvesEntry entry;
 
   const SingleEntryScroller({
-    Key? key,
+    super.key,
     required this.entry,
-  }) : super(key: key);
+  });
 
   @override
   State<StatefulWidget> createState() => _SingleEntryScrollerState();

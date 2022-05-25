@@ -14,7 +14,7 @@ import 'package:provider/provider.dart';
 // cf https://github.com/flutter/flutter/issues/49027
 // adapted from Flutter `RenderSliverFixedExtentBoxAdaptor` in `/rendering/sliver_fixed_extent_list.dart`
 class SectionedListSliver<T> extends StatelessWidget {
-  const SectionedListSliver({Key? key}) : super(key: key);
+  const SectionedListSliver({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -40,10 +40,9 @@ class _SliverKnownExtentList extends SliverMultiBoxAdaptorWidget {
   final List<SectionLayout> sectionLayouts;
 
   const _SliverKnownExtentList({
-    Key? key,
     required SliverChildDelegate delegate,
     required this.sectionLayouts,
-  }) : super(key: key, delegate: delegate);
+  }) : super(delegate: delegate);
 
   @override
   _RenderSliverKnownExtentBoxAdaptor createRenderObject(BuildContext context) {
@@ -79,7 +78,7 @@ class _RenderSliverKnownExtentBoxAdaptor extends RenderSliverMultiBoxAdaptor {
   SectionLayout? sectionAtOffset(double scrollOffset) => sectionLayouts.firstWhereOrNull((section) => section.hasChildAtOffset(scrollOffset)) ?? sectionLayouts.lastOrNull;
 
   double indexToLayoutOffset(int index) {
-    return (sectionAtIndex(index) ?? sectionLayouts.last).indexToLayoutOffset(index);
+    return (sectionAtIndex(index) ?? sectionLayouts.lastOrNull)?.indexToLayoutOffset(index) ?? 0;
   }
 
   int getMinChildIndexForScrollOffset(double scrollOffset) {

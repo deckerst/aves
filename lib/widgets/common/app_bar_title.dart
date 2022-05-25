@@ -5,10 +5,10 @@ class InteractiveAppBarTitle extends StatelessWidget {
   final Widget child;
 
   const InteractiveAppBarTitle({
-    Key? key,
+    super.key,
     this.onTap,
     required this.child,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +18,6 @@ class InteractiveAppBarTitle extends StatelessWidget {
       // so that we can also detect taps around the title `Text`
       child: Container(
         alignment: AlignmentDirectional.centerStart,
-        padding: const EdgeInsets.symmetric(horizontal: NavigationToolbar.kMiddleSpacing),
         color: Colors.transparent,
         height: kToolbarHeight,
         child: child,

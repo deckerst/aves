@@ -3,6 +3,7 @@ import 'package:aves/model/settings/defaults.dart';
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/enums.dart';
+import 'package:aves_map/src/style.dart';
 import 'package:aves/widgets/filter_grids/countries_page.dart';
 import 'package:flutter_driver/driver_extension.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -17,15 +18,20 @@ Future<void> configureAndLaunch() async {
     ..hasAcceptedTerms = true
     ..isInstalledAppAccessAllowed = true
     ..isErrorReportingAllowed = false
-    ..keepScreenOn = KeepScreenOn.always
-    ..homePage = HomePageSetting.collection
+    ..themeBrightness = AvesThemeBrightness.dark
+    ..themeColorMode = AvesThemeColorMode.polychrome
     ..setTileExtent(CountryListPage.routeName, 112)
     ..setTileLayout(CountryListPage.routeName, TileLayout.grid)
+    // navigation
+    ..keepScreenOn = KeepScreenOn.always
+    ..homePage = HomePageSetting.collection
+    ..showBottomNavigationBar = true
     // collection
     ..collectionSectionFactor = EntryGroupFactor.month
     ..collectionSortFactor = EntrySortFactor.date
     ..collectionBrowsingQuickActions = SettingsDefaults.collectionBrowsingQuickActions
     ..showThumbnailFavourite = false
+    ..showThumbnailTag = false
     ..showThumbnailLocation = false
     ..hiddenFilters = {}
     // viewer

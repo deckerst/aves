@@ -5,30 +5,10 @@ import 'package:aves/widgets/common/identity/empty.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:flutter/material.dart';
 
-class StorageAccessTile extends StatelessWidget {
-  const StorageAccessTile({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(context.l10n.settingsStorageAccessTile),
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            settings: const RouteSettings(name: StorageAccessPage.routeName),
-            builder: (context) => const StorageAccessPage(),
-          ),
-        );
-      },
-    );
-  }
-}
-
 class StorageAccessPage extends StatefulWidget {
   static const routeName = '/settings/storage_access';
 
-  const StorageAccessPage({Key? key}) : super(key: key);
+  const StorageAccessPage({super.key});
 
   @override
   State<StorageAccessPage> createState() => _StorageAccessPageState();
@@ -110,7 +90,7 @@ class _StorageAccessPageState extends State<StorageAccessPage> {
 }
 
 class _Header extends StatelessWidget {
-  const _Header({Key? key}) : super(key: key);
+  const _Header();
 
   @override
   Widget build(BuildContext context) {

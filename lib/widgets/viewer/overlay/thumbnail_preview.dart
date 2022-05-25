@@ -11,11 +11,11 @@ class ViewerThumbnailPreview extends StatefulWidget {
   final double availableWidth;
 
   const ViewerThumbnailPreview({
-    Key? key,
+    super.key,
     required this.entries,
     required this.displayedIndex,
     required this.availableWidth,
-  }) : super(key: key);
+  });
 
   @override
   State<ViewerThumbnailPreview> createState() => _ViewerThumbnailPreviewState();

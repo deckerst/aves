@@ -1,3 +1,4 @@
+// ignore_for_file: depend_on_referenced_packages
 import 'package:flutter/material.dart';
 import 'package:highlight/highlight.dart' show highlight, Node;
 
@@ -30,15 +31,14 @@ class AvesHighlightView extends StatelessWidget {
   final TextStyle? textStyle;
 
   AvesHighlightView({
-    Key? key,
+    super.key,
     required String input,
     this.language,
     this.theme = const {},
     this.padding,
     this.textStyle,
     int tabSize = 8, // TODO: https://github.com/flutter/flutter/issues/50087
-  })  : source = input.replaceAll('\t', ' ' * tabSize),
-        super(key: key);
+  })  : source = input.replaceAll('\t', ' ' * tabSize);
 
   List<TextSpan> _convert(List<Node> nodes) {
     final spans = <TextSpan>[];

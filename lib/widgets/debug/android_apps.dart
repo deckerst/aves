@@ -8,7 +8,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
 class DebugAndroidAppSection extends StatefulWidget {
-  const DebugAndroidAppSection({Key? key}) : super(key: key);
+  const DebugAndroidAppSection({super.key});
 
   @override
   State<DebugAndroidAppSection> createState() => _DebugAndroidAppSectionState();

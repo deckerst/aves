@@ -29,7 +29,7 @@ class XmpBasicNamespace extends XmpNamespace {
               final struct = thumbnails[index]!;
               return {
                 if (struct.containsKey(thumbnailDataDisplayKey))
-                  thumbnailDataDisplayKey: InfoLinkHandler(
+                  thumbnailDataDisplayKey: InfoRowGroup.linkSpanBuilder(
                     linkText: (context) => context.l10n.viewerInfoOpenLinkText,
                     onTap: (context) => OpenEmbeddedDataNotification.xmp(
                       propPath: 'xmp:Thumbnails[$index]/xmpGImg:image',

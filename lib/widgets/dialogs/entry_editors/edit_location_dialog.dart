@@ -15,10 +15,10 @@ class EditEntryLocationDialog extends StatefulWidget {
   final CollectionLens? collection;
 
   const EditEntryLocationDialog({
-    Key? key,
+    super.key,
     required this.entry,
     this.collection,
-  }) : super(key: key);
+  });
 
   @override
   State<EditEntryLocationDialog> createState() => _EditEntryLocationDialogState();
@@ -37,7 +37,7 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> {
     super.initState();
     _latitudeFocusNode.addListener(_onLatLngFocusChange);
     _longitudeFocusNode.addListener(_onLatLngFocusChange);
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _setLocation(context, widget.entry.latLng));
+    WidgetsBinding.instance.addPostFrameCallback((_) => _setLocation(context, widget.entry.latLng));
   }
 
   @override

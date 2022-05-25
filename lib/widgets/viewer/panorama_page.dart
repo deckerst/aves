@@ -25,10 +25,10 @@ class PanoramaPage extends StatefulWidget {
   final PanoramaInfo info;
 
   const PanoramaPage({
-    Key? key,
+    super.key,
     required this.entry,
     required this.info,
-  }) : super(key: key);
+  });
 
   @override
   State<PanoramaPage> createState() => _PanoramaPageState();
@@ -46,7 +46,7 @@ class _PanoramaPageState extends State<PanoramaPage> {
   void initState() {
     super.initState();
     _overlayVisible.addListener(_onOverlayVisibleChange);
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _initOverlay());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _initOverlay());
   }
 
   @override

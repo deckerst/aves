@@ -164,6 +164,8 @@
   "mapStyleGoogleNormal": "Google Maps",
   "mapStyleGoogleHybrid": "Google Maps (Hybrid)",
   "mapStyleGoogleTerrain": "Google Maps (Terrain)",
+  "mapStyleHuaweiNormal": "Petal Maps",
+  "mapStyleHuaweiTerrain": "Petal Maps (Terrain)",
   "mapStyleOsmHot": "Humanitarian OSM",
   "mapStyleStamenToner": "Stamen Toner",
   "mapStyleStamenWatercolor": "Stamen Watercolor",
@@ -586,6 +588,8 @@
   "settingsSystemDefault": "System",
   "settingsDefault": "Default",
 
+  "settingsSearchFieldLabel": "Search settings",
+  "settingsSearchEmpty": "No matching setting",
   "settingsActionExport": "Export",
   "settingsActionImport": "Import",
 
@@ -595,6 +599,7 @@
 
   "settingsSectionNavigation": "Navigation",
   "settingsHome": "Home",
+  "settingsShowBottomNavigationBar": "Show bottom navigation bar",
   "settingsKeepScreenOnTile": "Keep screen on",
   "settingsKeepScreenOnTitle": "Keep Screen On",
   "settingsDoubleBackExit": "Tap “back” twice to exit",
@@ -614,7 +619,10 @@
   "settingsNavigationDrawerAddAlbum": "Add album",
 
   "settingsSectionThumbnails": "Thumbnails",
+  "settingsThumbnailOverlayTile": "Overlay",
+  "settingsThumbnailOverlayTitle": "Overlay",
   "settingsThumbnailShowFavouriteIcon": "Show favorite icon",
+  "settingsThumbnailShowTagIcon": "Show tag icon",
   "settingsThumbnailShowLocationIcon": "Show location icon",
   "settingsThumbnailShowMotionPhotoIcon": "Show motion photo icon",
   "settingsThumbnailShowRating": "Show rating",
@@ -751,7 +759,7 @@
   "viewerInfoLabelUri": "URI",
   "viewerInfoLabelPath": "Path",
   "viewerInfoLabelDuration": "Duration",
-  "viewerInfoLabelOwner": "Owned by",
+  "viewerInfoLabelOwner": "Owner",
   "viewerInfoLabelCoordinates": "Coordinates",
   "viewerInfoLabelAddress": "Address",
 

@@ -6,9 +6,9 @@ class FilterChipSectionHeader<T> extends StatelessWidget {
   final ChipSectionKey sectionKey;
 
   const FilterChipSectionHeader({
-    Key? key,
+    super.key,
     required this.sectionKey,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -21,6 +21,6 @@ class FilterChipSectionHeader<T> extends StatelessWidget {
 
   static double getPreferredHeight(BuildContext context) {
     final textScaleFactor = MediaQuery.textScaleFactorOf(context);
-    return SectionHeader.leadingDimension * textScaleFactor + SectionHeader.padding.vertical;
+    return SectionHeader.leadingSize.height * textScaleFactor + SectionHeader.padding.vertical;
   }
 }

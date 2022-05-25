@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:aves/model/entry.dart';
 import 'package:aves/model/favourites.dart';
 import 'package:aves/model/filters/path.dart';
 import 'package:aves/model/filters/tag.dart';
@@ -31,17 +30,13 @@ import 'package:provider/provider.dart';
 class AppDebugPage extends StatefulWidget {
   static const routeName = '/debug';
 
-  const AppDebugPage({Key? key}) : super(key: key);
+  const AppDebugPage({super.key});
 
   @override
   State<StatefulWidget> createState() => _AppDebugPageState();
 }
 
 class _AppDebugPageState extends State<AppDebugPage> {
-  CollectionSource get source => context.read<CollectionSource>();
-
-  Set<AvesEntry> get visibleEntries => source.visibleEntries;
-
   static OverlayEntry? _taskQueueOverlayEntry;
 
   @override
@@ -96,6 +91,8 @@ class _AppDebugPageState extends State<AppDebugPage> {
   }
 
   Widget _buildGeneralTabView() {
+    final source = context.read<CollectionSource>();
+    final visibleEntries = source.visibleEntries;
     final catalogued = visibleEntries.where((entry) => entry.isCatalogued);
     final withGps = catalogued.where((entry) => entry.hasGps);
     final withAddress = withGps.where((entry) => entry.hasAddress);
@@ -172,6 +169,8 @@ class _AppDebugPageState extends State<AppDebugPage> {
   Future<void> _onActionSelected(AppDebugAction action) async {
     switch (action) {
       case AppDebugAction.prepScreenshotThumbnails:
+        // get source beforehand, as widget may be unmounted during action handling
+        final source = context.read<CollectionSource>();
         settings.changeFilterVisibility(settings.hiddenFilters, true);
         settings.changeFilterVisibility({
           TagFilter('aves-thumbnail', not: true),

@@ -12,12 +12,12 @@ class DrawerFixedListTab<T> extends StatefulWidget {
   final ItemWidgetBuilder<T> title;
 
   const DrawerFixedListTab({
-    Key? key,
+    super.key,
     required this.items,
     required this.visibleItems,
     required this.leading,
     required this.title,
-  }) : super(key: key);
+  });
 
   @override
   State<DrawerFixedListTab<T>> createState() => _DrawerFixedListTabState<T>();

@@ -216,7 +216,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
             try {
                 val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager
                 if (clipboard != null) {
-                    val clip = ClipData.newUri(context.contentResolver, label, getShareableUri(uri))
+                    val clip = ClipData.newUri(context.contentResolver, label, getShareableUri(context, uri))
                     clipboard.setPrimaryClip(clip)
                     result.success(true)
                 } else {
@@ -239,7 +239,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
 
         val intent = Intent(Intent.ACTION_EDIT)
             .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
-            .setDataAndType(getShareableUri(uri), mimeType)
+            .setDataAndType(getShareableUri(context, uri), mimeType)
         val started = safeStartActivityChooser(title, intent)
 
         result.success(started)
@@ -256,7 +256,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
 
         val intent = Intent(Intent.ACTION_VIEW)
             .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            .setDataAndType(getShareableUri(uri), mimeType)
+            .setDataAndType(getShareableUri(context, uri), mimeType)
         val started = safeStartActivityChooser(title, intent)
 
         result.success(started)
@@ -286,7 +286,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
 
         val intent = Intent(Intent.ACTION_ATTACH_DATA)
             .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            .setDataAndType(getShareableUri(uri), mimeType)
+            .setDataAndType(getShareableUri(context, uri), mimeType)
         val started = safeStartActivityChooser(title, intent)
 
         result.success(started)
@@ -311,7 +311,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
             val intent = Intent(Intent.ACTION_SEND)
                 .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                 .setType(mimeType)
-                .putExtra(Intent.EXTRA_STREAM, getShareableUri(uri))
+                .putExtra(Intent.EXTRA_STREAM, getShareableUri(context, uri))
             safeStartActivityChooser(title, intent)
         } else {
             var mimeType = "*/*"
@@ -366,18 +366,6 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
             }
         }
         return false
-    }
-
-    private fun getShareableUri(uri: Uri): Uri? {
-        return when (uri.scheme?.lowercase(Locale.ROOT)) {
-            ContentResolver.SCHEME_FILE -> {
-                uri.path?.let { path ->
-                    val authority = "${context.applicationContext.packageName}.file_provider"
-                    FileProvider.getUriForFile(context, authority, File(path))
-                }
-            }
-            else -> uri
-        }
     }
 
     // shortcuts
@@ -443,5 +431,17 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
     companion object {
         private val LOG_TAG = LogUtils.createTag<AppAdapterHandler>()
         const val CHANNEL = "deckers.thibault/aves/app"
+
+        fun getShareableUri(context: Context, uri: Uri): Uri? {
+            return when (uri.scheme?.lowercase(Locale.ROOT)) {
+                ContentResolver.SCHEME_FILE -> {
+                    uri.path?.let { path ->
+                        val authority = "${context.applicationContext.packageName}.file_provider"
+                        FileProvider.getUriForFile(context, authority, File(path))
+                    }
+                }
+                else -> uri
+            }
+        }
     }
 }

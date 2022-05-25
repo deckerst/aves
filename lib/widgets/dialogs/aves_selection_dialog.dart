@@ -31,7 +31,7 @@ class AvesSelectionDialog<T> extends StatefulWidget {
   final bool? dense;
 
   const AvesSelectionDialog({
-    Key? key,
+    super.key,
     required this.initialValue,
     required this.options,
     this.optionSubtitleBuilder,
@@ -39,7 +39,7 @@ class AvesSelectionDialog<T> extends StatefulWidget {
     this.message,
     this.confirmationButtonLabel,
     this.dense,
-  }) : super(key: key);
+  });
 
   @override
   State<AvesSelectionDialog<T>> createState() => _AvesSelectionDialogState<T>();
@@ -92,7 +92,7 @@ class _AvesSelectionDialogState<T> extends State<AvesSelectionDialog<T>> {
       groupValue: _selectedValue,
       onChanged: (v) {
         if (needConfirmation) {
-          setState(() => _selectedValue = v!);
+          setState(() => _selectedValue = v as T);
         } else {
           Navigator.pop(context, v);
         }

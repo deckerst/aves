@@ -10,13 +10,13 @@ class EmptyContent extends StatelessWidget {
   final bool safeBottom;
 
   const EmptyContent({
-    Key? key,
+    super.key,
     this.icon,
     required this.text,
     this.alignment = const FractionalOffset(.5, .35),
     this.fontSize = 22,
     this.safeBottom = true,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

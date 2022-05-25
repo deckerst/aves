@@ -16,6 +16,7 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/services/media/enums.dart';
 import 'package:aves/services/media/media_file_service.dart';
 import 'package:aves/theme/durations.dart';
+import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/action_mixins/entry_storage.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
@@ -259,24 +260,26 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         source.refreshUris(newUris);
 
         final l10n = context.l10n;
-        final navigator = Navigator.of(context);
         final showAction = isMainMode && newUris.isNotEmpty
             ? SnackBarAction(
                 label: l10n.showButtonLabel,
                 onPressed: () {
-                  // `context` may be obsolete if the user navigated away before triggering the action
-                  // so we reused the navigator retrieved before showing the snack bar
-                  navigator.pushAndRemoveUntil(
-                    MaterialPageRoute(
-                      settings: const RouteSettings(name: CollectionPage.routeName),
-                      builder: (context) => CollectionPage(
-                        source: source,
-                        filters: {AlbumFilter(destinationAlbum, source.getAlbumDisplayName(context, destinationAlbum))},
-                        highlightTest: (entry) => newUris.contains(entry.uri),
+                  // local context may be deactivated when action is triggered after navigation
+                  final context = AvesApp.navigatorKey.currentContext;
+                  if (context != null) {
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                        settings: const RouteSettings(name: CollectionPage.routeName),
+                        builder: (context) => CollectionPage(
+                          source: source,
+                          filters: {AlbumFilter(destinationAlbum, source.getAlbumDisplayName(context, destinationAlbum))},
+                          highlightTest: (entry) => newUris.contains(entry.uri),
+                        ),
                       ),
-                    ),
-                    (route) => false,
-                  );
+                      (route) => false,
+                    );
+                  }
                 },
               )
             : null;

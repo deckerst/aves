@@ -13,11 +13,11 @@ class ItemPicker extends StatelessWidget {
   final GestureTapCallback? onTap;
 
   const ItemPicker({
-    Key? key,
+    super.key,
     required this.extent,
     required this.entry,
     this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

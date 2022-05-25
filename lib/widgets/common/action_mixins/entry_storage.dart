@@ -18,6 +18,7 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/services/media/enums.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/android_file_utils.dart';
+import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/collection/entry_set_action_delegate.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
@@ -131,7 +132,9 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
       onCancel: () => mediaFileService.cancelFileOp(opId),
       onDone: (processed) async {
         final successOps = processed.where((v) => v.success).toSet();
-        final movedOps = successOps.where((v) => !v.skipped).toSet();
+
+        // move
+        final movedOps = successOps.where((v) => !v.skipped && !v.deleted).toSet();
         final movedEntries = movedOps.map((v) => v.uri).map((uri) => entries.firstWhereOrNull((entry) => entry.uri == uri)).whereNotNull().toSet();
         await source.updateAfterMove(
           todoEntries: entries,
@@ -139,6 +142,12 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
           destinationAlbums: destinationAlbums,
           movedOps: movedOps,
         );
+
+        // delete (when trying to move to bin obsolete entries)
+        final deletedOps = successOps.where((v) => v.deleted).toSet();
+        final deletedUris = deletedOps.map((event) => event.uri).toSet();
+        await source.removeEntries(deletedUris, includeTrash: true);
+
         source.resumeMonitoring();
 
         // cleanup
@@ -161,18 +170,30 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
                 action = SnackBarAction(
                   // TODO TLAD [l10n] key for "RESTORE"
                   label: l10n.entryActionRestore.toUpperCase(),
-                  onPressed: () => move(
-                    context,
-                    moveType: MoveType.fromBin,
-                    entries: movedEntries,
-                    hideShowAction: true,
-                  ),
+                  onPressed: () {
+                    // local context may be deactivated when action is triggered after navigation
+                    final context = AvesApp.navigatorKey.currentContext;
+                    if (context != null) {
+                      move(
+                        context,
+                        moveType: MoveType.fromBin,
+                        entries: movedEntries,
+                        hideShowAction: true,
+                      );
+                    }
+                  },
                 );
               }
             } else if (!hideShowAction) {
               action = SnackBarAction(
                 label: l10n.showButtonLabel,
-                onPressed: () => _showMovedItems(context, destinationAlbums, movedOps),
+                onPressed: () {
+                  // local context may be deactivated when action is triggered after navigation
+                  final context = AvesApp.navigatorKey.currentContext;
+                  if (context != null) {
+                    _showMovedItems(context, destinationAlbums, movedOps);
+                  }
+                },
               );
             }
           }

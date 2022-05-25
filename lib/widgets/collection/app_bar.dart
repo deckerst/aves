@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/actions/entry_set_actions.dart';
@@ -18,13 +19,13 @@ import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/collection/entry_set_action_delegate.dart';
 import 'package:aves/widgets/collection/filter_bar.dart';
 import 'package:aves/widgets/collection/query_bar.dart';
-import 'package:aves/widgets/common/animated_icons_fix.dart';
 import 'package:aves/widgets/common/app_bar_subtitle.dart';
 import 'package:aves/widgets/common/app_bar_title.dart';
 import 'package:aves/widgets/common/basic/menu.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/favourite_toggler.dart';
-import 'package:aves/widgets/common/sliver_app_bar_title.dart';
+import 'package:aves/widgets/common/identity/aves_app_bar.dart';
+import 'package:aves/widgets/common/search/route.dart';
 import 'package:aves/widgets/dialogs/tile_view_dialog.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
 import 'package:flutter/material.dart';
@@ -37,22 +38,23 @@ class CollectionAppBar extends StatefulWidget {
   final CollectionLens collection;
 
   const CollectionAppBar({
-    Key? key,
+    super.key,
     required this.appBarHeightNotifier,
     required this.collection,
-  }) : super(key: key);
+  });
 
   @override
   State<CollectionAppBar> createState() => _CollectionAppBarState();
 }
 
-class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerProviderStateMixin {
+class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   final List<StreamSubscription> _subscriptions = [];
   final EntrySetActionDelegate _actionDelegate = EntrySetActionDelegate();
   late AnimationController _browseToSelectAnimation;
   final ValueNotifier<bool> _isSelectingNotifier = ValueNotifier(false);
   final FocusNode _queryBarFocusNode = FocusNode();
   late final Listenable _queryFocusRequestNotifier;
+  double _statusBarHeight = 0;
 
   CollectionLens get collection => widget.collection;
 
@@ -77,7 +79,11 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     );
     _isSelectingNotifier.addListener(_onActivityChange);
     _registerWidget(widget);
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _onFilterChanged());
+    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _updateStatusBarHeight();
+      _onFilterChanged();
+    });
   }
 
   @override
@@ -96,6 +102,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     _subscriptions
       ..forEach((sub) => sub.cancel())
       ..clear();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
@@ -105,6 +112,11 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
 
   void _unregisterWidget(CollectionAppBar widget) {
     widget.collection.filterChangeNotifier.removeListener(_onFilterChanged);
+  }
+
+  @override
+  void didChangeMetrics() {
+    _updateStatusBarHeight();
   }
 
   @override
@@ -122,15 +134,16 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
           builder: (context, queryEnabled, child) {
             return Selector<Settings, List<EntrySetAction>>(
               selector: (context, s) => s.collectionBrowsingQuickActions,
-              builder: (context, _, child) => SliverAppBar(
-                leading: appMode.hasDrawer ? _buildAppBarLeading(isSelecting) : null,
-                title: SliverAppBarTitleWrapper(
-                  child: _buildAppBarTitle(isSelecting),
-                ),
-                actions: _buildActions(selection),
-                bottom: PreferredSize(
-                  preferredSize: Size.fromHeight(appBarBottomHeight),
-                  child: Column(
+              builder: (context, _, child) {
+                return AvesAppBar(
+                  contentHeight: appBarContentHeight,
+                  leading: _buildAppBarLeading(
+                    hasDrawer: appMode.hasDrawer,
+                    isSelecting: isSelecting,
+                  ),
+                  title: _buildAppBarTitle(isSelecting),
+                  actions: _buildActions(selection),
+                  bottom: Column(
                     children: [
                       if (showFilterBar)
                         FilterBar(
@@ -145,10 +158,9 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
                         )
                     ],
                   ),
-                ),
-                titleSpacing: 0,
-                floating: true,
-              ),
+                  transitionKey: isSelecting,
+                );
+              },
             );
           },
         );
@@ -156,12 +168,16 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     );
   }
 
-  double get appBarBottomHeight {
+  double get appBarContentHeight {
     final hasQuery = context.read<Query>().enabled;
-    return (showFilterBar ? FilterBar.preferredHeight : .0) + (hasQuery ? EntryQueryBar.preferredHeight : .0);
+    return kToolbarHeight + (showFilterBar ? FilterBar.preferredHeight : .0) + (hasQuery ? EntryQueryBar.preferredHeight : .0);
   }
 
-  Widget _buildAppBarLeading(bool isSelecting) {
+  Widget _buildAppBarLeading({required bool hasDrawer, required bool isSelecting}) {
+    if (!hasDrawer) {
+      return const CloseButton();
+    }
+
     VoidCallback? onPressed;
     String? tooltip;
     if (isSelecting) {
@@ -174,9 +190,8 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     return IconButton(
       // key is expected by test driver
       key: const Key('appbar-leading-button'),
-      // TODO TLAD [rtl] replace to regular `AnimatedIcon` when this is fixed: https://github.com/flutter/flutter/issues/60521
-      icon: AnimatedIconFixIssue60521(
-        icon: AnimatedIconsFixIssue60521.menu_arrow,
+      icon: AnimatedIcon(
+        icon: AnimatedIcons.menu_arrow,
         progress: _browseToSelectAnimation,
       ),
       onPressed: onPressed,
@@ -190,11 +205,21 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     if (isSelecting) {
       return Selector<Selection<AvesEntry>, int>(
         selector: (context, selection) => selection.selectedItems.length,
-        builder: (context, count, child) => Text(count == 0 ? l10n.collectionSelectPageTitle : l10n.itemCount(count)),
+        builder: (context, count, child) => Text(
+          count == 0 ? l10n.collectionSelectPageTitle : l10n.itemCount(count),
+          softWrap: false,
+          overflow: TextOverflow.fade,
+          maxLines: 1,
+        ),
       );
     } else {
       final appMode = context.watch<ValueNotifier<AppMode>>().value;
-      Widget title = Text(appMode.isPickingMedia ? l10n.collectionPickPageTitle : (isTrash ? l10n.binPageTitle : l10n.collectionPageTitle));
+      Widget title = Text(
+        appMode.isPickingMedia ? l10n.collectionPickPageTitle : (isTrash ? l10n.binPageTitle : l10n.collectionPageTitle),
+        softWrap: false,
+        overflow: TextOverflow.fade,
+        maxLines: 1,
+      );
       if (appMode == AppMode.main) {
         title = SourceStateAwareAppBarTitle(
           title: title,
@@ -252,7 +277,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
               ...(isSelecting ? selectionMenuActions : browsingMenuActions).where(isVisible).map(
                     (action) => _toMenuItem(action, enabled: canApply(action), selection: selection),
                   ),
-              if (isSelecting && !isTrash)
+              if (isSelecting && !isTrash && appMode == AppMode.main)
                 PopupMenuItem<EntrySetAction>(
                   enabled: canApplyEditActions,
                   padding: EdgeInsets.zero,
@@ -420,7 +445,14 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
 
   void _onQueryFocusRequest() => _queryBarFocusNode.requestFocus();
 
-  void _updateAppBarHeight() => widget.appBarHeightNotifier.value = kToolbarHeight + appBarBottomHeight;
+  void _updateStatusBarHeight() {
+    _statusBarHeight = EdgeInsets.fromWindowPadding(window.padding, window.devicePixelRatio).top;
+    _updateAppBarHeight();
+  }
+
+  void _updateAppBarHeight() {
+    widget.appBarHeightNotifier.value = _statusBarHeight + AvesAppBar.appBarHeightForContentHeight(appBarContentHeight);
+  }
 
   Future<void> _onActionSelected(EntrySetAction action) async {
     switch (action) {
@@ -512,6 +544,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       context,
       SearchPageRoute(
         delegate: CollectionSearchDelegate(
+          searchFieldLabel: context.l10n.searchCollectionFieldHint,
           source: collection.source,
           parentCollection: collection,
         ),

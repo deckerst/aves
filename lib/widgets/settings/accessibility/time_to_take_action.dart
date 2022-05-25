@@ -7,7 +7,7 @@ import 'package:aves/widgets/settings/common/tiles.dart';
 import 'package:flutter/material.dart';
 
 class TimeToTakeActionTile extends StatefulWidget {
-  const TimeToTakeActionTile({Key? key}) : super(key: key);
+  const TimeToTakeActionTile({super.key});
 
   @override
   State<TimeToTakeActionTile> createState() => _TimeToTakeActionTileState();

@@ -60,7 +60,7 @@ class AvesFilterChip extends StatefulWidget {
   static const double decoratedContentVerticalPadding = 5;
 
   const AvesFilterChip({
-    Key? key,
+    super.key,
     required this.filter,
     this.removable = false,
     this.showText = true,
@@ -75,7 +75,7 @@ class AvesFilterChip extends StatefulWidget {
     this.heroType = HeroType.onTap,
     this.onTap,
     this.onLongPress = showDefaultLongPressMenu,
-  }) : super(key: key);
+  });
 
   static Future<void> showDefaultLongPressMenu(BuildContext context, CollectionFilter filter, Offset tapPosition) async {
     if (context.read<ValueNotifier<AppMode>>().value == AppMode.main) {
@@ -139,7 +139,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
     _subscriptions.add(covers.colorChangeStream.listen(_onCoverColorChange));
     _subscriptions.add(settings.updateStream.where((event) => event.key == Settings.themeColorModeKey).listen((_) {
       // delay so that contextual colors reflect the new settings
-      WidgetsBinding.instance!.addPostFrameCallback((_) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
         _onCoverColorChange(null);
       });
     }));
@@ -282,7 +282,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
               onTapDown: onLongPress != null ? (details) => _tapPosition = details.globalPosition : null,
               onTap: onTap != null
                   ? () {
-                      WidgetsBinding.instance!.addPostFrameCallback((_) => onTap!(filter));
+                      WidgetsBinding.instance.addPostFrameCallback((_) => onTap!(filter));
                       setState(() => _tapped = true);
                     }
                   : null,

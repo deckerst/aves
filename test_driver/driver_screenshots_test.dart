@@ -95,7 +95,7 @@ void configureCollectionVisibility(AppDebugAction action) {
   test('configure collection visibility', () async {
     await driver.tapKeyAndWait('appbar-leading-button');
     final verticalPageView = find.byValueKey('drawer-scrollview');
-    await driver.scroll(verticalPageView, 0, -600, const Duration(milliseconds: 400));
+    await driver.scrollY(verticalPageView, -600);
     await driver.tapKeyAndWait('drawer-debug');
 
     await driver.tapKeyAndWait('appbar-menu-button');
@@ -146,13 +146,13 @@ void info() {
   test('3. Info (basic), 4. Info (metadata)', () async {
     final verticalPageView = find.byValueKey('vertical-pageview');
 
-    await driver.scroll(verticalPageView, 0, -600, const Duration(milliseconds: 400));
+    await driver.scrollY(verticalPageView, -600);
     // tiles may take time to load
     await Future.delayed(const Duration(seconds: 5));
 
     await _takeScreenshot(driver, '3');
 
-    await driver.scroll(verticalPageView, 0, -680, const Duration(milliseconds: 600));
+    await driver.scrollY(verticalPageView, -680);
     await Future.delayed(const Duration(seconds: 1));
 
     final gpsTile = find.descendant(

@@ -3,7 +3,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/material.dart';
 
 class DrawerEditorBanner extends StatelessWidget {
-  const DrawerEditorBanner({Key? key}) : super(key: key);
+  const DrawerEditorBanner({super.key});
 
   @override
   Widget build(BuildContext context) {

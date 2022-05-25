@@ -8,6 +8,7 @@ import 'package:aves/model/source/enums.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/countries_page.dart';
 import 'package:aves/widgets/filter_grids/tags_page.dart';
+import 'package:aves_map/aves_map.dart';
 import 'package:flutter/material.dart';
 
 class SettingsDefaults {
@@ -26,6 +27,7 @@ class SettingsDefaults {
   static const mustBackTwiceToExit = true;
   static const keepScreenOn = KeepScreenOn.viewerOnly;
   static const homePage = HomePageSetting.collection;
+  static const showBottomNavigationBar = true;
   static const confirmDeleteForever = true;
   static const confirmMoveToBin = true;
   static const confirmMoveUndatedItems = true;
@@ -52,6 +54,7 @@ class SettingsDefaults {
     EntrySetAction.delete,
   ];
   static const showThumbnailFavourite = true;
+  static const showThumbnailTag = false;
   static const showThumbnailLocation = true;
   static const showThumbnailMotionPhoto = true;
   static const showThumbnailRating = true;

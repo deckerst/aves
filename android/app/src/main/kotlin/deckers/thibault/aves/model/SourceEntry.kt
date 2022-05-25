@@ -204,6 +204,8 @@ class SourceEntry {
             // ignore
         } catch (e: NoClassDefFoundError) {
             // ignore
+        } catch (e: AssertionError) {
+            // ignore
         }
     }
 

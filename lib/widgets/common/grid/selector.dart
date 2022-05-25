@@ -18,14 +18,14 @@ class GridSelectionGestureDetector<T> extends StatefulWidget {
   final Widget child;
 
   const GridSelectionGestureDetector({
-    Key? key,
+    super.key,
     required this.scrollableKey,
     this.selectable = true,
     required this.items,
     required this.scrollController,
     required this.appBarHeightNotifier,
     required this.child,
-  }) : super(key: key);
+  });
 
   @override
   State<GridSelectionGestureDetector<T>> createState() => _GridSelectionGestureDetectorState<T>();

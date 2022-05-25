@@ -5,30 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
-class ViewerOverlayTile extends StatelessWidget {
-  const ViewerOverlayTile({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(context.l10n.settingsViewerOverlayTile),
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            settings: const RouteSettings(name: ViewerOverlayPage.routeName),
-            builder: (context) => const ViewerOverlayPage(),
-          ),
-        );
-      },
-    );
-  }
-}
-
 class ViewerOverlayPage extends StatelessWidget {
   static const routeName = '/settings/viewer_overlay';
 
-  const ViewerOverlayPage({Key? key}) : super(key: key);
+  const ViewerOverlayPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -71,11 +51,6 @@ class ViewerOverlayPage extends StatelessWidget {
               selector: (context, s) => s.showOverlayThumbnailPreview,
               onChanged: (v) => settings.showOverlayThumbnailPreview = v,
               title: context.l10n.settingsViewerShowOverlayThumbnails,
-            ),
-            SettingsSwitchListTile(
-              selector: (context, s) => s.enableOverlayBlurEffect,
-              onChanged: (v) => settings.enableOverlayBlurEffect = v,
-              title: context.l10n.settingsViewerEnableOverlayBlurEffect,
             ),
           ],
         ),

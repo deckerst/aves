@@ -9,9 +9,9 @@ class DaySectionHeader<T> extends StatelessWidget {
   final DateTime? date;
 
   const DaySectionHeader({
-    Key? key,
+    super.key,
     required this.date,
-  }) : super(key: key);
+  });
 
   // Examples (en_US):
   // `MMMMd`:       `April 15`
@@ -56,9 +56,9 @@ class MonthSectionHeader<T> extends StatelessWidget {
   final DateTime? date;
 
   const MonthSectionHeader({
-    Key? key,
+    super.key,
     required this.date,
-  }) : super(key: key);
+  });
 
   static String _formatDate(BuildContext context, DateTime? date) {
     final l10n = context.l10n;

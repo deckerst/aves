@@ -3,8 +3,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 mixin CornerHitDetector on MagnifierControllerDelegate {
-  _AxisHit hitAxis() => _AxisHit(_hitCornersX(), _hitCornersY());
-
   // the child width/height is not accurate for some image size & scale combos
   // e.g. 3580.0 * 0.1005586592178771 yields 360.0
   // but 4764.0 * 0.07556675062972293 yields 360.00000000000006
@@ -51,17 +49,6 @@ mixin CornerHitDetector on MagnifierControllerDelegate {
     }
     return true;
   }
-}
-
-class _AxisHit {
-  _AxisHit(this.hasHitX, this.hasHitY);
-
-  final _CornerHit hasHitX;
-  final _CornerHit hasHitY;
-
-  bool get hasHitAny => hasHitX.hasHitAny || hasHitY.hasHitAny;
-
-  bool get hasHitBoth => hasHitX.hasHitBoth && hasHitY.hasHitBoth;
 }
 
 class _CornerHit {

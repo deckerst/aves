@@ -40,11 +40,11 @@ class StatsPage extends StatelessWidget {
   static const mimeDonutMinWidth = 124.0;
 
   StatsPage({
-    Key? key,
+    super.key,
     required this.entries,
     required this.source,
     this.parentCollection,
-  }) : super(key: key) {
+  }) {
     entries.forEach((entry) {
       if (entry.hasAddress) {
         final address = entry.addressDetails!;
@@ -110,36 +110,30 @@ class StatsPage extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            // as of percent_indicator v4.0.0, bar radius is not correctly applied to progress bar
-            // when width is lower than height, so we clip it and handle padding outside
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 const Icon(AIcons.location),
-                SizedBox(width: lineHeight),
                 Expanded(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.all(barRadius),
-                    child: LinearPercentIndicator(
-                      percent: withGpsPercent,
-                      lineHeight: lineHeight,
-                      backgroundColor: theme.colorScheme.onPrimary.withOpacity(.1),
-                      progressColor: theme.colorScheme.secondary,
-                      animation: animate,
-                      isRTL: context.isRtl,
-                      barRadius: barRadius,
-                      center: Text(
-                        intl.NumberFormat.percentPattern().format(withGpsPercent),
-                        style: TextStyle(
-                          shadows: isDark ? Constants.embossShadows : null,
-                        ),
+                  child: LinearPercentIndicator(
+                    percent: withGpsPercent,
+                    lineHeight: lineHeight,
+                    backgroundColor: theme.colorScheme.onPrimary.withOpacity(.1),
+                    progressColor: theme.colorScheme.secondary,
+                    animation: animate,
+                    isRTL: context.isRtl,
+                    barRadius: barRadius,
+                    center: Text(
+                      intl.NumberFormat.percentPattern().format(withGpsPercent),
+                      style: TextStyle(
+                        shadows: isDark ? Constants.embossShadows : null,
                       ),
-                      padding: EdgeInsets.zero,
                     ),
+                    padding: EdgeInsets.symmetric(horizontal: lineHeight),
                   ),
                 ),
                 // end padding to match leading, so that inside label is aligned with outside label below
-                SizedBox(width: lineHeight + 24),
+                const SizedBox(width: 24),
               ],
             ),
             const SizedBox(height: 8),
@@ -339,7 +333,7 @@ class StatsPage extends StatelessWidget {
     // we post closing the search page after applying the filter selection
     // so that hero animation target is ready in the `FilterBar`,
     // even when the target is a child of an `AnimatedList`
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       Navigator.pop(context);
     });
   }

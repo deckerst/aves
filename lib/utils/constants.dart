@@ -29,6 +29,8 @@ class Constants {
   // Pop Directional Isolate
   static const pdi = '\u2069';
 
+  static const zwsp = '\u200B';
+
   static const overlayUnknown = '—'; // em dash
 
   static final pointNemo = LatLng(-48.876667, -123.393333);
@@ -117,17 +119,6 @@ class Constants {
       sourceUrl: 'https://github.com/ajinasokan/flutter_displaymode',
     ),
     Dependency(
-      name: 'Google API Availability',
-      license: 'MIT',
-      sourceUrl: 'https://github.com/Baseflow/flutter-google-api-availability',
-    ),
-    Dependency(
-      name: 'Google Maps for Flutter',
-      license: 'BSD 3-Clause',
-      licenseUrl: 'https://github.com/flutter/plugins/blob/master/packages/google_maps_flutter/google_maps_flutter/LICENSE',
-      sourceUrl: 'https://github.com/flutter/plugins/tree/master/packages/google_maps_flutter/google_maps_flutter',
-    ),
-    Dependency(
       name: 'Package Info Plus',
       license: 'BSD 3-Clause',
       licenseUrl: 'https://github.com/fluttercommunity/plus_plugins/blob/main/packages/package_info_plus/package_info_plus/LICENSE',
@@ -172,7 +163,39 @@ class Constants {
     ),
   ];
 
+  static const List<Dependency> _googleMobileServices = [
+    Dependency(
+      name: 'Google API Availability',
+      license: 'MIT',
+      sourceUrl: 'https://github.com/Baseflow/flutter-google-api-availability',
+    ),
+    Dependency(
+      name: 'Google Maps for Flutter',
+      license: 'BSD 3-Clause',
+      licenseUrl: 'https://github.com/flutter/plugins/blob/master/packages/google_maps_flutter/google_maps_flutter/LICENSE',
+      sourceUrl: 'https://github.com/flutter/plugins/tree/master/packages/google_maps_flutter/google_maps_flutter',
+    ),
+  ];
+
+  static const List<Dependency> _huaweiMobileServices = [
+    Dependency(
+      name: 'Huawei Mobile Services (Availability, Map)',
+      license: 'Apache 2.0',
+      licenseUrl: 'https://github.com/HMS-Core/hms-flutter-plugin/blob/master/LICENCE',
+      sourceUrl: 'https://github.com/HMS-Core/hms-flutter-plugin',
+    ),
+  ];
+
+  static const List<Dependency> _flutterPluginsHuaweiOnly = [
+    ..._huaweiMobileServices,
+  ];
+
+  static const List<Dependency> _flutterPluginsIzzyOnly = [
+    ..._googleMobileServices,
+  ];
+
   static const List<Dependency> _flutterPluginsPlayOnly = [
+    ..._googleMobileServices,
     Dependency(
       name: 'FlutterFire (Core, Crashlytics)',
       license: 'BSD 3-Clause',
@@ -182,6 +205,8 @@ class Constants {
 
   static List<Dependency> flutterPlugins(AppFlavor flavor) => [
         ..._flutterPluginsCommon,
+        if (flavor == AppFlavor.huawei) ..._flutterPluginsHuaweiOnly,
+        if (flavor == AppFlavor.izzy) ..._flutterPluginsIzzyOnly,
         if (flavor == AppFlavor.play) ..._flutterPluginsPlayOnly,
       ];
 
@@ -311,6 +336,11 @@ class Constants {
       name: 'LatLong2',
       license: 'Apache 2.0',
       sourceUrl: 'https://github.com/jifalops/dart-latlong',
+    ),
+    Dependency(
+      name: 'Path',
+      license: 'BSD 3-Clause',
+      sourceUrl: 'https://github.com/dart-lang/path',
     ),
     Dependency(
       name: 'PDF for Dart and Flutter',

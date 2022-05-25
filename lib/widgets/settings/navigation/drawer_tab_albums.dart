@@ -3,8 +3,8 @@ import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/buttons.dart';
-import 'package:aves/widgets/drawer/tile.dart';
 import 'package:aves/widgets/filter_grids/album_pick.dart';
+import 'package:aves/widgets/navigation/drawer/tile.dart';
 import 'package:aves/widgets/settings/navigation/drawer_editor_banner.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -13,9 +13,9 @@ class DrawerAlbumTab extends StatefulWidget {
   final List<String> items;
 
   const DrawerAlbumTab({
-    Key? key,
+    super.key,
     required this.items,
-  }) : super(key: key);
+  });
 
   @override
   State<DrawerAlbumTab> createState() => _DrawerAlbumTabState();

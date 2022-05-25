@@ -4,6 +4,29 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.6.5"></a>[v1.6.5] - 2022-05-25
+
+### Added
+
+- Bottom navigation bar
+- Collection: thumbnail overlay tag icon
+- Collection: fast-scrolling shows breadcrumbs from groups
+- Settings: search
+- Pick: allow selecting multiple items according to request intent
+- `huawei` app flavor (Petal Maps, no Crashlytics)
+
+### Changed
+
+- upgraded Flutter to stable v3.0.1
+- stretching overscroll effect
+- disabled Google Maps layer on Android Lollipop
+
+### Fixed
+
+- grey Google Map layer when size changed
+- Android scrolling screenshot support
+- Voice Access scrolling support
+
 ## <a id="v1.6.4"></a>[v1.6.4] - 2022-04-19
 
 ### Added

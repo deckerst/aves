@@ -3,14 +3,14 @@ version: 0.0.1
 publish_to: none
 
 environment:
-  sdk: ">=2.12.0 <3.0.0"
-  flutter: ">=1.17.0"
+  sdk: ">=2.17.0 <3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
   aves_report:
     path: ../aves_report
+  collection:
   firebase_core:
   firebase_crashlytics:
   stack_trace:
