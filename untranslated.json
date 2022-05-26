@@ -2,12 +2,5 @@
   "es": [
     "settingsShowBottomNavigationBar",
     "settingsThumbnailShowTagIcon"
-  ],
-
-  "ru": [
-    "settingsSearchFieldLabel",
-    "settingsSearchEmpty",
-    "settingsShowBottomNavigationBar",
-    "settingsThumbnailShowTagIcon"
   ]
 }
