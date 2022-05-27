@@ -150,7 +150,7 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
         if (canReadWithMetadataExtractor(mimeType)) {
             try {
                 Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
-                    val metadata = MetadataExtractorHelper.safeRead(input, sizeBytes)
+                    val metadata = MetadataExtractorHelper.safeRead(input)
                     // data can be large and stored in "Extended XMP",
                     // which is returned as a second XMP directory
                     val xmpDirs = metadata.getDirectoriesOfType(XmpDirectory::class.java)

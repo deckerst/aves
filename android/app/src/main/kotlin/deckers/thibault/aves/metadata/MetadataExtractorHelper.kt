@@ -48,15 +48,15 @@ object MetadataExtractorHelper {
         return FileTypeDetector.detectFileType(bufferedInputStream).mimeType
     }
 
-    fun safeRead(input: InputStream, sizeBytes: Long?): com.drew.metadata.Metadata {
-        val streamLength = sizeBytes ?: -1
+    fun safeRead(input: InputStream): com.drew.metadata.Metadata {
         val bufferedInputStream = if (input is BufferedInputStream) input else BufferedInputStream(input)
         val fileType = FileTypeDetector.detectFileType(bufferedInputStream)
 
         val metadata = if (fileType == FileType.Jpeg) {
             safeReadJpeg(bufferedInputStream)
         } else {
-            ImageMetadataReader.readMetadata(bufferedInputStream, streamLength, fileType)
+            // providing the stream length is risky, as it may crash if it is incorrect
+            ImageMetadataReader.readMetadata(bufferedInputStream, -1L, fileType)
         }
 
         metadata.addDirectory(FileTypeDirectory(fileType))
