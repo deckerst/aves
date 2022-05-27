@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.6.8"></a>[v1.6.8] - 2022-05-27
+
+### Fixed
+
+- wrong window metrics on startup in some cases
+- home albums not updated on startup in some cases
+- crash when cataloguing large TIFF
+
 ## <a id="v1.6.7"></a>[v1.6.7] - 2022-05-25
 
 ### Added
