@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 
 - wrong window metrics on startup in some cases
+- home albums not updated on startup in some cases
 
 ## <a id="v1.6.7"></a>[v1.6.7] - 2022-05-25
 

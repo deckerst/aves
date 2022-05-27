@@ -130,7 +130,7 @@ class MainActivity : FlutterActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
             Handler(Looper.getMainLooper()).postDelayed({
                 window.decorView.requestApplyInsets()
-            }, 10)
+            }, 100)
         }
     }
 
