@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/actions/move_type.dart';
-import 'package:aves/model/device.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/trash.dart';
@@ -13,6 +12,7 @@ import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/change_notifier.dart';
+import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
@@ -584,21 +584,9 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
       windowService.keepScreenOn(false);
     }
 
-    _showSystemUI();
+    AvesApp.showSystemUI();
     windowService.requestOrientation();
   }
-
-  // system UI
-
-  static void _showSystemUI() {
-    if (device.supportEdgeToEdgeUIMode) {
-      SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-    } else {
-      SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values);
-    }
-  }
-
-  static void _hideSystemUI() => SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
 
   // overlay
 
@@ -611,7 +599,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
 
   Future<void> _onOverlayVisibleChange({bool animate = true}) async {
     if (_overlayVisible.value) {
-      _showSystemUI();
+      AvesApp.showSystemUI();
       if (animate) {
         await _overlayAnimationController.forward();
       } else {
@@ -623,7 +611,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
         _frozenViewInsets = mediaQuery.viewInsets;
         _frozenViewPadding = mediaQuery.viewPadding;
       });
-      _hideSystemUI();
+      AvesApp.hideSystemUI();
       if (animate) {
         await _overlayAnimationController.reverse();
       } else {

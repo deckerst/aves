@@ -1,10 +1,10 @@
 import 'dart:math';
 
-import 'package:aves/model/device.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/entry_images.dart';
 import 'package:aves/model/panorama.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
@@ -13,7 +13,6 @@ import 'package:aves/widgets/viewer/overlay/common.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter/services.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:panorama/panorama.dart';
 import 'package:provider/provider.dart';
@@ -164,20 +163,10 @@ class _PanoramaPageState extends State<PanoramaPage> {
   }
 
   void _onLeave() {
-    _showSystemUI();
+    AvesApp.showSystemUI();
   }
 
   // system UI
-
-  static void _showSystemUI() {
-    if (device.supportEdgeToEdgeUIMode) {
-      SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-    } else {
-      SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values);
-    }
-  }
-
-  static void _hideSystemUI() => SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
 
   // overlay
 
@@ -190,9 +179,9 @@ class _PanoramaPageState extends State<PanoramaPage> {
 
   Future<void> _onOverlayVisibleChange() async {
     if (_overlayVisible.value) {
-      _showSystemUI();
+      AvesApp.showSystemUI();
     } else {
-      _hideSystemUI();
+      AvesApp.hideSystemUI();
     }
   }
 }
