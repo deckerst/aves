@@ -35,29 +35,31 @@ class AlbumListPage extends StatelessWidget {
       builder: (context, s, child) {
         return ValueListenableBuilder<bool>(
           valueListenable: androidFileUtils.areAppNamesReadyNotifier,
-          builder: (context, areAppNamesReady, child) => StreamBuilder(
-            stream: source.eventBus.on<AlbumsChangedEvent>(),
-            builder: (context, snapshot) {
-              final gridItems = getAlbumGridItems(context, source);
-              return StreamBuilder<Set<CollectionFilter>?>(
-                // to update sections by tier
-                stream: covers.packageChangeStream,
-                builder: (context, snapshot) => FilterNavigationPage<AlbumFilter>(
-                  source: source,
-                  title: context.l10n.albumPageTitle,
-                  sortFactor: settings.albumSortFactor,
-                  showHeaders: settings.albumGroupFactor != AlbumChipGroupFactor.none,
-                  actionDelegate: AlbumChipSetActionDelegate(gridItems),
-                  filterSections: groupToSections(context, source, gridItems),
-                  newFilters: source.getNewAlbumFilters(context),
-                  emptyBuilder: () => EmptyContent(
-                    icon: AIcons.album,
-                    text: context.l10n.albumEmpty,
+          builder: (context, areAppNamesReady, child) {
+            return StreamBuilder(
+              stream: source.eventBus.on<AlbumsChangedEvent>(),
+              builder: (context, snapshot) {
+                final gridItems = getAlbumGridItems(context, source);
+                return StreamBuilder<Set<CollectionFilter>?>(
+                  // to update sections by tier
+                  stream: covers.packageChangeStream,
+                  builder: (context, snapshot) => FilterNavigationPage<AlbumFilter>(
+                    source: source,
+                    title: context.l10n.albumPageTitle,
+                    sortFactor: settings.albumSortFactor,
+                    showHeaders: settings.albumGroupFactor != AlbumChipGroupFactor.none,
+                    actionDelegate: AlbumChipSetActionDelegate(gridItems),
+                    filterSections: groupToSections(context, source, gridItems),
+                    newFilters: source.getNewAlbumFilters(context),
+                    emptyBuilder: () => EmptyContent(
+                      icon: AIcons.album,
+                      text: context.l10n.albumEmpty,
+                    ),
                   ),
-                ),
-              );
-            },
-          ),
+                );
+              },
+            );
+          },
         );
       },
     );

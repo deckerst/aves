@@ -97,10 +97,10 @@ class SourceEntry {
         get() = if (uri.scheme == ContentResolver.SCHEME_CONTENT) uri.tryParseId() else null
 
     val isSized: Boolean
-        get() = width ?: 0 > 0 && height ?: 0 > 0
+        get() = (width ?: 0) > 0 && (height ?: 0) > 0
 
     private val hasDuration: Boolean
-        get() = durationMillis ?: 0 > 0
+        get() = (durationMillis ?: 0) > 0
 
     val isVideo: Boolean
         get() = MimeTypes.isVideo(sourceMimeType)
@@ -161,7 +161,7 @@ class SourceEntry {
 
         try {
             Metadata.openSafeInputStream(context, uri, sourceMimeType, sizeBytes)?.use { input ->
-                val metadata = MetadataExtractorHelper.safeRead(input, sizeBytes)
+                val metadata = MetadataExtractorHelper.safeRead(input)
 
                 // do not switch on specific MIME types, as the reported MIME type could be wrong
                 // (e.g. PNG registered as JPG)

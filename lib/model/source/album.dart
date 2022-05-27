@@ -26,10 +26,14 @@ mixin AlbumMixin on SourceBase {
     return compareAsciiUpperCase(va, vb);
   }
 
+  void notifyAlbumsChanged() {
+    eventBus.fire(AlbumsChangedEvent());
+  }
+
   void _onAlbumChanged({bool notify = true}) {
     invalidateAlbumDisplayNames();
     if (notify) {
-      eventBus.fire(AlbumsChangedEvent());
+      notifyAlbumsChanged();
     }
   }
 

@@ -55,6 +55,16 @@ class AvesApp extends StatefulWidget {
 
   @override
   State<AvesApp> createState() => _AvesAppState();
+
+  static void showSystemUI() {
+    if (device.supportEdgeToEdgeUIMode) {
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    } else {
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values);
+    }
+  }
+
+  static void hideSystemUI() => SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
 }
 
 class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {

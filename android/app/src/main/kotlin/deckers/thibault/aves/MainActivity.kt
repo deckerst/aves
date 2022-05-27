@@ -5,9 +5,7 @@ import android.app.SearchManager
 import android.content.ClipData
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
-import android.os.Bundle
-import android.os.Parcelable
+import android.os.*
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.content.pm.ShortcutInfoCompat
@@ -125,6 +123,15 @@ class MainActivity : FlutterActivity() {
         Log.i(LOG_TAG, "onStart")
         super.onStart()
         analysisHandler.attachToActivity()
+
+        // as of Flutter v3.0.1, the window `viewInsets` and `viewPadding`
+        // are incorrect on startup in some environments (e.g. API 29 emulator),
+        // so we manually request to apply the insets to update the window metrics
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+            Handler(Looper.getMainLooper()).postDelayed({
+                window.decorView.requestApplyInsets()
+            }, 100)
+        }
     }
 
     override fun onStop() {

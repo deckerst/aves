@@ -184,6 +184,11 @@ class MediaStoreSource extends CollectionSource {
         }
         await analyze(analysisController, entries: analysisEntries);
 
+        // the home page may not reflect the current derived filters
+        // as the initial addition of entries is silent,
+        // so we manually notify change for potential home screen filters
+        notifyAlbumsChanged();
+
         debugPrint('$runtimeType refresh ${stopwatch.elapsed} done for ${knownEntries.length} known, ${allNewEntries.length} new, ${removedEntries.length} removed');
       },
       onError: (error) => debugPrint('$runtimeType stream error=$error'),

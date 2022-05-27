@@ -126,7 +126,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         if (canReadWithMetadataExtractor(mimeType)) {
             try {
                 Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
-                    val metadata = MetadataExtractorHelper.safeRead(input, sizeBytes)
+                    val metadata = MetadataExtractorHelper.safeRead(input)
                     foundExif = metadata.directories.any { it is ExifDirectoryBase && it.tagCount > 0 }
                     foundXmp = metadata.directories.any { it is XmpDirectory && it.tagCount > 0 }
                     val uuidDirCount = HashMap<String, Int>()
@@ -451,7 +451,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         if (canReadWithMetadataExtractor(mimeType)) {
             try {
                 Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
-                    val metadata = MetadataExtractorHelper.safeRead(input, sizeBytes)
+                    val metadata = MetadataExtractorHelper.safeRead(input)
                     foundExif = metadata.directories.any { it is ExifDirectoryBase && it.tagCount > 0 }
 
                     // File type
@@ -718,7 +718,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         if (canReadWithMetadataExtractor(mimeType)) {
             try {
                 Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
-                    val metadata = MetadataExtractorHelper.safeRead(input, sizeBytes)
+                    val metadata = MetadataExtractorHelper.safeRead(input)
                     for (dir in metadata.getDirectoriesOfType(ExifSubIFDDirectory::class.java)) {
                         foundExif = true
                         dir.getSafeRational(ExifDirectoryBase.TAG_FNUMBER) { metadataMap[KEY_APERTURE] = it.numerator.toDouble() / it.denominator }
@@ -768,7 +768,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         if (canReadWithMetadataExtractor(mimeType)) {
             try {
                 Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
-                    val metadata = MetadataExtractorHelper.safeRead(input, sizeBytes)
+                    val metadata = MetadataExtractorHelper.safeRead(input)
                     val fields = HashMap<Int, Any?>()
                     for (dir in metadata.getDirectoriesOfType(ExifIFD0Directory::class.java)) {
                         if (dir.containsGeoTiffTags()) {
@@ -831,7 +831,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         if (canReadWithMetadataExtractor(mimeType)) {
             try {
                 Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
-                    val metadata = MetadataExtractorHelper.safeRead(input, sizeBytes)
+                    val metadata = MetadataExtractorHelper.safeRead(input)
                     val fields: FieldMap = hashMapOf(
                         "projectionType" to XMP.GPANO_PROJECTION_TYPE_DEFAULT,
                     )
@@ -895,7 +895,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         if (canReadWithMetadataExtractor(mimeType)) {
             try {
                 Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
-                    val metadata = MetadataExtractorHelper.safeRead(input, sizeBytes)
+                    val metadata = MetadataExtractorHelper.safeRead(input)
                     val xmpStrings = metadata.getDirectoriesOfType(XmpDirectory::class.java).mapNotNull { XMPMetaFactory.serializeToString(it.xmpMeta, xmpSerializeOptions) }
                     result.success(xmpStrings.toMutableList())
                     return
@@ -1000,7 +1000,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         if (canReadWithMetadataExtractor(mimeType)) {
             try {
                 Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
-                    val metadata = MetadataExtractorHelper.safeRead(input, sizeBytes)
+                    val metadata = MetadataExtractorHelper.safeRead(input)
                     val tag = when (field) {
                         ExifInterface.TAG_DATETIME -> ExifIFD0Directory.TAG_DATETIME
                         ExifInterface.TAG_DATETIME_DIGITIZED -> ExifSubIFDDirectory.TAG_DATETIME_DIGITIZED
