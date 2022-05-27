@@ -140,7 +140,7 @@ object MultiPage {
     fun getMotionPhotoOffset(context: Context, uri: Uri, mimeType: String, sizeBytes: Long): Long? {
         try {
             Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
-                val metadata = MetadataExtractorHelper.safeRead(input, sizeBytes)
+                val metadata = MetadataExtractorHelper.safeRead(input)
                 for (dir in metadata.getDirectoriesOfType(XmpDirectory::class.java)) {
                     var offsetFromEnd: Long? = null
                     val xmpMeta = dir.xmpMeta
@@ -194,7 +194,7 @@ object MultiPage {
         return pages
     }
 
-    fun isMultiPageTiff(context: Context, uri: Uri) = getTiffPageInfo(context, uri, 0)?.outDirectoryCount ?: 1 > 1
+    fun isMultiPageTiff(context: Context, uri: Uri) = (getTiffPageInfo(context, uri, 0)?.outDirectoryCount ?: 1) > 1
 
     private fun getTiffPageInfo(context: Context, uri: Uri, page: Int): TiffBitmapFactory.Options? {
         try {
