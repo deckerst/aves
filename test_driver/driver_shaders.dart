@@ -29,7 +29,7 @@ Future<void> configureAndLaunch() async {
     ..showOverlayInfo = true
     ..showOverlayShootingDetails = true
     ..showOverlayThumbnailPreview = true
-    ..enableOverlayBlurEffect = true
+    ..enableBlurEffect = true
     ..imageBackground = EntryBackground.checkered
     // info
     ..infoMapStyle = EntryMapStyle.googleNormal;

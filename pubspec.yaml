@@ -37,6 +37,7 @@ dependencies:
   country_code:
   decorated_icon:
   device_info_plus:
+  dynamic_color:
   equatable:
   event_bus:
   expansion_tile_card:
@@ -56,6 +57,7 @@ dependencies:
   get_it:
   intl:
   latlong2:
+  material_color_utilities:
   material_design_icons_flutter:
   overlay_support:
   package_info_plus:

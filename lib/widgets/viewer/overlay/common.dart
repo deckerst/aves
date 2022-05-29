@@ -19,7 +19,7 @@ class OverlayButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final brightness = Theme.of(context).brightness;
-    final blurred = settings.enableOverlayBlurEffect;
+    final blurred = settings.enableBlurEffect;
     return ScaleTransition(
       scale: scale,
       child: borderRadius != null
@@ -77,7 +77,7 @@ class OverlayTextButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final blurred = settings.enableOverlayBlurEffect;
+    final blurred = settings.enableBlurEffect;
     final theme = Theme.of(context);
     return SizeTransition(
       sizeFactor: scale,

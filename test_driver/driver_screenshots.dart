@@ -41,7 +41,7 @@ Future<void> configureAndLaunch() async {
     ..showOverlayInfo = true
     ..showOverlayShootingDetails = false
     ..showOverlayThumbnailPreview = false
-    ..enableOverlayBlurEffect = true
+    ..enableBlurEffect = true
     ..viewerUseCutout = true
     // info
     ..infoMapStyle = EntryMapStyle.stamenWatercolor

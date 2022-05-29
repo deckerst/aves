@@ -129,7 +129,7 @@ class _AppDrawerState extends State<AppDrawer> {
                 spacing: 16,
                 crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
-                  const AvesLogo(size: 64),
+                  const AvesLogo(size: 56),
                   Text(
                     context.l10n.appName,
                     style: const TextStyle(

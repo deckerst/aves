@@ -1,6 +1,43 @@
 {
+  "de": [
+    "settingsThemeEnableDynamicColor"
+  ],
+
   "es": [
     "settingsShowBottomNavigationBar",
-    "settingsThumbnailShowTagIcon"
+    "settingsThumbnailShowTagIcon",
+    "settingsThemeEnableDynamicColor"
+  ],
+
+  "fr": [
+    "settingsThemeEnableDynamicColor"
+  ],
+
+  "id": [
+    "settingsThemeEnableDynamicColor"
+  ],
+
+  "it": [
+    "settingsThemeEnableDynamicColor"
+  ],
+
+  "ja": [
+    "settingsThemeEnableDynamicColor"
+  ],
+
+  "ko": [
+    "settingsThemeEnableDynamicColor"
+  ],
+
+  "pt": [
+    "settingsThemeEnableDynamicColor"
+  ],
+
+  "ru": [
+    "settingsThemeEnableDynamicColor"
+  ],
+
+  "zh": [
+    "settingsThemeEnableDynamicColor"
   ]
 }

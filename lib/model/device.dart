@@ -6,7 +6,7 @@ final Device device = Device._private();
 class Device {
   late final String _userAgent;
   late final bool _canGrantDirectoryAccess, _canPinShortcut, _canPrint, _canRenderFlagEmojis;
-  late final bool _showPinShortcutFeedback, _supportEdgeToEdgeUIMode;
+  late final bool _isDynamicColorAvailable, _showPinShortcutFeedback, _supportEdgeToEdgeUIMode;
 
   String get userAgent => _userAgent;
 
@@ -17,6 +17,8 @@ class Device {
   bool get canPrint => _canPrint;
 
   bool get canRenderFlagEmojis => _canRenderFlagEmojis;
+
+  bool get isDynamicColorAvailable => _isDynamicColorAvailable;
 
   bool get showPinShortcutFeedback => _showPinShortcutFeedback;
 
@@ -33,6 +35,7 @@ class Device {
     _canPinShortcut = capabilities['canPinShortcut'] ?? false;
     _canPrint = capabilities['canPrint'] ?? false;
     _canRenderFlagEmojis = capabilities['canRenderFlagEmojis'] ?? false;
+    _isDynamicColorAvailable = capabilities['isDynamicColorAvailable'] ?? false;
     _showPinShortcutFeedback = capabilities['showPinShortcutFeedback'] ?? false;
     _supportEdgeToEdgeUIMode = capabilities['supportEdgeToEdgeUIMode'] ?? false;
   }

@@ -20,7 +20,7 @@ class EmptyContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const color = Colors.blueGrey;
+    final color = Theme.of(context).colorScheme.secondary.withOpacity(.5);
     return Padding(
       padding: safeBottom
           ? EdgeInsets.only(

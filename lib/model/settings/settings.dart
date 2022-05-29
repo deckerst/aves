@@ -42,14 +42,18 @@ class Settings extends ChangeNotifier {
   static const isInstalledAppAccessAllowedKey = 'is_installed_app_access_allowed';
   static const isErrorReportingAllowedKey = 'is_crashlytics_enabled';
   static const localeKey = 'locale';
-  static const displayRefreshRateModeKey = 'display_refresh_rate_mode';
-  static const themeBrightnessKey = 'theme_brightness';
-  static const themeColorModeKey = 'theme_color_mode';
   static const catalogTimeZoneKey = 'catalog_time_zone';
   static const tileExtentPrefixKey = 'tile_extent_';
   static const tileLayoutPrefixKey = 'tile_layout_';
   static const entryRenamingPatternKey = 'entry_renaming_pattern';
   static const topEntryIdsKey = 'top_entry_ids';
+
+  // display
+  static const displayRefreshRateModeKey = 'display_refresh_rate_mode';
+  static const themeBrightnessKey = 'theme_brightness';
+  static const themeColorModeKey = 'theme_color_mode';
+  static const enableDynamicColorKey = 'dynamic_color';
+  static const enableBlurEffectKey = 'enable_overlay_blur_effect';
 
   // navigation
   static const mustBackTwiceToExitKey = 'must_back_twice_to_exit';
@@ -92,7 +96,6 @@ class Settings extends ChangeNotifier {
   static const showOverlayInfoKey = 'show_overlay_info';
   static const showOverlayShootingDetailsKey = 'show_overlay_shooting_details';
   static const showOverlayThumbnailPreviewKey = 'show_overlay_thumbnail_preview';
-  static const enableOverlayBlurEffectKey = 'enable_overlay_blur_effect';
   static const viewerUseCutoutKey = 'viewer_use_cutout';
   static const viewerMaxBrightnessKey = 'viewer_max_brightness';
   static const enableMotionPhotoAutoPlayKey = 'motion_photo_auto_play';
@@ -161,7 +164,7 @@ class Settings extends ChangeNotifier {
   Future<void> setContextualDefaults() async {
     // performance
     final performanceClass = await deviceService.getPerformanceClass();
-    enableOverlayBlurEffect = performanceClass >= 29;
+    enableBlurEffect = performanceClass >= 29;
 
     // availability
     final defaultMapStyle = mobileServices.defaultMapStyle;
@@ -249,18 +252,6 @@ class Settings extends ChangeNotifier {
     return _appliedLocale!;
   }
 
-  DisplayRefreshRateMode get displayRefreshRateMode => getEnumOrDefault(displayRefreshRateModeKey, SettingsDefaults.displayRefreshRateMode, DisplayRefreshRateMode.values);
-
-  set displayRefreshRateMode(DisplayRefreshRateMode newValue) => setAndNotify(displayRefreshRateModeKey, newValue.toString());
-
-  AvesThemeBrightness get themeBrightness => getEnumOrDefault(themeBrightnessKey, SettingsDefaults.themeBrightness, AvesThemeBrightness.values);
-
-  set themeBrightness(AvesThemeBrightness newValue) => setAndNotify(themeBrightnessKey, newValue.toString());
-
-  AvesThemeColorMode get themeColorMode => getEnumOrDefault(themeColorModeKey, SettingsDefaults.themeColorMode, AvesThemeColorMode.values);
-
-  set themeColorMode(AvesThemeColorMode newValue) => setAndNotify(themeColorModeKey, newValue.toString());
-
   String get catalogTimeZone => getString(catalogTimeZoneKey) ?? '';
 
   set catalogTimeZone(String newValue) => setAndNotify(catalogTimeZoneKey, newValue);
@@ -280,6 +271,28 @@ class Settings extends ChangeNotifier {
   List<int>? get topEntryIds => getStringList(topEntryIdsKey)?.map(int.tryParse).whereNotNull().toList();
 
   set topEntryIds(List<int>? newValue) => setAndNotify(topEntryIdsKey, newValue?.map((id) => id.toString()).whereNotNull().toList());
+
+  // display
+
+  DisplayRefreshRateMode get displayRefreshRateMode => getEnumOrDefault(displayRefreshRateModeKey, SettingsDefaults.displayRefreshRateMode, DisplayRefreshRateMode.values);
+
+  set displayRefreshRateMode(DisplayRefreshRateMode newValue) => setAndNotify(displayRefreshRateModeKey, newValue.toString());
+
+  AvesThemeBrightness get themeBrightness => getEnumOrDefault(themeBrightnessKey, SettingsDefaults.themeBrightness, AvesThemeBrightness.values);
+
+  set themeBrightness(AvesThemeBrightness newValue) => setAndNotify(themeBrightnessKey, newValue.toString());
+
+  AvesThemeColorMode get themeColorMode => getEnumOrDefault(themeColorModeKey, SettingsDefaults.themeColorMode, AvesThemeColorMode.values);
+
+  set themeColorMode(AvesThemeColorMode newValue) => setAndNotify(themeColorModeKey, newValue.toString());
+
+  bool get enableDynamicColor => getBoolOrDefault(enableDynamicColorKey, SettingsDefaults.enableDynamicColor);
+
+  set enableDynamicColor(bool newValue) => setAndNotify(enableDynamicColorKey, newValue);
+
+  bool get enableBlurEffect => getBoolOrDefault(enableBlurEffectKey, SettingsDefaults.enableBlurEffect);
+
+  set enableBlurEffect(bool newValue) => setAndNotify(enableBlurEffectKey, newValue);
 
   // navigation
 
@@ -440,10 +453,6 @@ class Settings extends ChangeNotifier {
   bool get showOverlayThumbnailPreview => getBoolOrDefault(showOverlayThumbnailPreviewKey, SettingsDefaults.showOverlayThumbnailPreview);
 
   set showOverlayThumbnailPreview(bool newValue) => setAndNotify(showOverlayThumbnailPreviewKey, newValue);
-
-  bool get enableOverlayBlurEffect => getBoolOrDefault(enableOverlayBlurEffectKey, SettingsDefaults.enableOverlayBlurEffect);
-
-  set enableOverlayBlurEffect(bool newValue) => setAndNotify(enableOverlayBlurEffectKey, newValue);
 
   bool get viewerUseCutout => getBoolOrDefault(viewerUseCutoutKey, SettingsDefaults.viewerUseCutout);
 
@@ -695,6 +704,8 @@ class Settings extends ChangeNotifier {
               break;
             case isInstalledAppAccessAllowedKey:
             case isErrorReportingAllowedKey:
+            case enableDynamicColorKey:
+            case enableBlurEffectKey:
             case showBottomNavigationBarKey:
             case mustBackTwiceToExitKey:
             case confirmDeleteForeverKey:
@@ -713,7 +724,6 @@ class Settings extends ChangeNotifier {
             case showOverlayInfoKey:
             case showOverlayShootingDetailsKey:
             case showOverlayThumbnailPreviewKey:
-            case enableOverlayBlurEffectKey:
             case viewerUseCutoutKey:
             case viewerMaxBrightnessKey:
             case enableMotionPhotoAutoPlayKey:
