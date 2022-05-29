@@ -17,11 +17,15 @@ class SettingsDefaults {
   static const canUseAnalysisService = true;
   static const isInstalledAppAccessAllowed = false;
   static const isErrorReportingAllowed = false;
+  static const tileLayout = TileLayout.grid;
+  static const entryRenamingPattern = '<${DateNamingProcessor.key}, yyyyMMdd-HHmmss> <${NameNamingProcessor.key}>';
+
+  // display
   static const displayRefreshRateMode = DisplayRefreshRateMode.auto;
   static const themeBrightness = AvesThemeBrightness.system;
   static const themeColorMode = AvesThemeColorMode.polychrome;
-  static const tileLayout = TileLayout.grid;
-  static const entryRenamingPattern = '<${DateNamingProcessor.key}, yyyyMMdd-HHmmss> <${NameNamingProcessor.key}>';
+  static const enableDynamicColor = false;
+  static const enableBlurEffect = true; // `enableBlurEffect` has a contextual default value
 
   // navigation
   static const mustBackTwiceToExit = true;
@@ -79,7 +83,6 @@ class SettingsDefaults {
   static const showOverlayInfo = true;
   static const showOverlayShootingDetails = false;
   static const showOverlayThumbnailPreview = false;
-  static const enableOverlayBlurEffect = true; // `enableOverlayBlurEffect` has a contextual default value
   static const viewerUseCutout = true;
   static const viewerMaxBrightness = false;
   static const enableMotionPhotoAutoPlay = false;

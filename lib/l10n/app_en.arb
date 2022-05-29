@@ -723,6 +723,7 @@
   "settingsSectionDisplay": "Display",
   "settingsThemeBrightness": "Theme",
   "settingsThemeColorHighlights": "Color highlights",
+  "settingsThemeEnableDynamicColor": "Dynamic color",
   "settingsDisplayRefreshRateModeTile": "Display refresh rate",
   "settingsDisplayRefreshRateModeTitle": "Refresh Rate",
 

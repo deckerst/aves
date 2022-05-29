@@ -32,6 +32,7 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
                 "canPinShortcut" to ShortcutManagerCompat.isRequestPinShortcutSupported(context),
                 "canPrint" to (sdkInt >= Build.VERSION_CODES.KITKAT),
                 "canRenderFlagEmojis" to (sdkInt >= Build.VERSION_CODES.LOLLIPOP),
+                "isDynamicColorAvailable" to (sdkInt >= Build.VERSION_CODES.S),
                 "showPinShortcutFeedback" to (sdkInt >= Build.VERSION_CODES.O),
                 "supportEdgeToEdgeUIMode" to (sdkInt >= Build.VERSION_CODES.Q),
             )

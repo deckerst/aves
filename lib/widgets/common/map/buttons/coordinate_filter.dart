@@ -57,7 +57,7 @@ class _OverlayCoordinateFilterChipState extends State<OverlayCoordinateFilterChi
 
   @override
   Widget build(BuildContext context) {
-    final blurred = settings.enableOverlayBlurEffect;
+    final blurred = settings.enableBlurEffect;
     final theme = Theme.of(context);
     return Theme(
       data: theme.copyWith(
