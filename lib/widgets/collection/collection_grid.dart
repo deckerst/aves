@@ -29,6 +29,7 @@ import 'package:aves/widgets/common/grid/section_layout.dart';
 import 'package:aves/widgets/common/grid/selector.dart';
 import 'package:aves/widgets/common/grid/sliver.dart';
 import 'package:aves/widgets/common/grid/theme.dart';
+import 'package:aves/widgets/common/identity/buttons.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
 import 'package:aves/widgets/common/identity/scroll_thumb.dart';
 import 'package:aves/widgets/common/providers/tile_extent_controller_provider.dart';
@@ -39,6 +40,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:intl/intl.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
@@ -305,13 +307,15 @@ class _CollectionScrollView extends StatefulWidget {
   State<_CollectionScrollView> createState() => _CollectionScrollViewState();
 }
 
-class _CollectionScrollViewState extends State<_CollectionScrollView> {
+class _CollectionScrollViewState extends State<_CollectionScrollView> with WidgetsBindingObserver {
   Timer? _scrollMonitoringTimer;
+  bool _checkingStoragePermission = false;
 
   @override
   void initState() {
     super.initState();
     _registerWidget(widget);
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
@@ -323,6 +327,7 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _unregisterWidget(widget);
     _stopScrollMonitoringTimer();
     super.dispose();
@@ -338,6 +343,26 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> {
     widget.collection.filterChangeNotifier.removeListener(_scrollToTop);
     widget.collection.sortSectionChangeNotifier.removeListener(_scrollToTop);
     widget.scrollController.removeListener(_onScrollChange);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    switch (state) {
+      case AppLifecycleState.inactive:
+      case AppLifecycleState.paused:
+      case AppLifecycleState.detached:
+        break;
+      case AppLifecycleState.resumed:
+        if (_checkingStoragePermission) {
+          _checkingStoragePermission = false;
+          _isStoragePermissionGranted.then((granted) {
+            if (granted) {
+              widget.collection.source.init();
+            }
+          });
+        }
+        break;
+    }
   }
 
   @override
@@ -423,23 +448,47 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> {
       valueListenable: collection.source.stateNotifier,
       builder: (context, sourceState, child) {
         if (sourceState == SourceState.loading) {
-          return const SizedBox.shrink();
+          return const SizedBox();
         }
-        if (collection.filters.any((filter) => filter is FavouriteFilter)) {
-          return EmptyContent(
-            icon: AIcons.favourite,
-            text: context.l10n.collectionEmptyFavourites,
-          );
-        }
-        if (collection.filters.any((filter) => filter is MimeFilter && filter.mime == MimeTypes.anyVideo)) {
-          return EmptyContent(
-            icon: AIcons.video,
-            text: context.l10n.collectionEmptyVideos,
-          );
-        }
-        return EmptyContent(
-          icon: AIcons.image,
-          text: context.l10n.collectionEmptyImages,
+
+        return FutureBuilder<bool>(
+          future: _isStoragePermissionGranted,
+          builder: (context, snapshot) {
+            final granted = snapshot.data ?? true;
+            Widget? bottom = granted
+                ? null
+                : Padding(
+                    padding: const EdgeInsets.only(top: 16),
+                    child: AvesOutlinedButton(
+                      label: context.l10n.collectionEmptyGrantAccessButtonLabel,
+                      onPressed: () async {
+                        if (await openAppSettings()) {
+                          _checkingStoragePermission = true;
+                        }
+                      },
+                    ),
+                  );
+
+            if (collection.filters.any((filter) => filter is FavouriteFilter)) {
+              return EmptyContent(
+                icon: AIcons.favourite,
+                text: context.l10n.collectionEmptyFavourites,
+                bottom: bottom,
+              );
+            }
+            if (collection.filters.any((filter) => filter is MimeFilter && filter.mime == MimeTypes.anyVideo)) {
+              return EmptyContent(
+                icon: AIcons.video,
+                text: context.l10n.collectionEmptyVideos,
+                bottom: bottom,
+              );
+            }
+            return EmptyContent(
+              icon: AIcons.image,
+              text: context.l10n.collectionEmptyImages,
+              bottom: bottom,
+            );
+          },
         );
       },
     );
@@ -519,4 +568,6 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> {
     }
     return crumbs;
   }
+
+  Future<bool> get _isStoragePermissionGranted => Permission.storage.status.then((status) => status.isGranted);
 }

@@ -529,6 +529,7 @@
   "collectionEmptyFavourites": "No favorites",
   "collectionEmptyVideos": "No videos",
   "collectionEmptyImages": "No images",
+  "collectionEmptyGrantAccessButtonLabel": "Grant access",
 
   "collectionSelectSectionTooltip": "Select section",
   "collectionDeselectSectionTooltip": "Deselect section",
