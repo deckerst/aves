@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 class EmptyContent extends StatelessWidget {
   final IconData? icon;
   final String text;
+  final Widget? bottom;
   final AlignmentGeometry alignment;
   final double fontSize;
   final bool safeBottom;
@@ -13,6 +14,7 @@ class EmptyContent extends StatelessWidget {
     super.key,
     this.icon,
     required this.text,
+    this.bottom,
     this.alignment = const FractionalOffset(.5, .35),
     this.fontSize = 22,
     this.safeBottom = true,
@@ -48,6 +50,7 @@ class EmptyContent extends StatelessWidget {
               ),
               textAlign: TextAlign.center,
             ),
+            if (bottom != null) bottom!,
           ],
         ),
       ),

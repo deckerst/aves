@@ -24,7 +24,6 @@ import 'package:aves/widgets/search/search_delegate.dart';
 import 'package:aves/widgets/viewer/entry_viewer_page.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
@@ -66,15 +65,14 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _setup() async {
     final stopwatch = Stopwatch()..start();
-    final permissions = await [
+    // do not check whether permission was granted,
+    // as some app stores hide in some countries
+    // apps that force quit on permission denial
+    await [
       Permission.storage,
       // to access media with unredacted metadata with scoped storage (Android 10+)
       Permission.accessMediaLocation,
     ].request();
-    if (permissions[Permission.storage] != PermissionStatus.granted) {
-      unawaited(SystemNavigator.pop());
-      return;
-    }
 
     await androidFileUtils.init();
     if (settings.isInstalledAppAccessAllowed) {

@@ -1,43 +1,53 @@
 {
   "de": [
+    "collectionEmptyGrantAccessButtonLabel",
     "settingsThemeEnableDynamicColor"
   ],
 
   "es": [
+    "collectionEmptyGrantAccessButtonLabel",
     "settingsShowBottomNavigationBar",
     "settingsThumbnailShowTagIcon",
     "settingsThemeEnableDynamicColor"
   ],
 
   "fr": [
+    "collectionEmptyGrantAccessButtonLabel",
     "settingsThemeEnableDynamicColor"
   ],
 
   "id": [
+    "collectionEmptyGrantAccessButtonLabel",
     "settingsThemeEnableDynamicColor"
   ],
 
   "it": [
+    "collectionEmptyGrantAccessButtonLabel",
     "settingsThemeEnableDynamicColor"
   ],
 
   "ja": [
+    "collectionEmptyGrantAccessButtonLabel",
     "settingsThemeEnableDynamicColor"
   ],
 
   "ko": [
+    "collectionEmptyGrantAccessButtonLabel",
     "settingsThemeEnableDynamicColor"
   ],
 
   "pt": [
+    "collectionEmptyGrantAccessButtonLabel",
     "settingsThemeEnableDynamicColor"
   ],
 
   "ru": [
+    "collectionEmptyGrantAccessButtonLabel",
     "settingsThemeEnableDynamicColor"
   ],
 
   "zh": [
+    "collectionEmptyGrantAccessButtonLabel",
     "settingsThemeEnableDynamicColor"
   ]
 }
