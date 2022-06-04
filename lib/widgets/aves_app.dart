@@ -245,7 +245,14 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     if (!settings.initialized) return;
 
     final stopwatch = Stopwatch()..start();
-    final screenSize = window.physicalSize / window.devicePixelRatio;
+    final Size screenSize;
+    try {
+      screenSize = window.physicalSize / window.devicePixelRatio;
+    } catch (error) {
+      // view may no longer be usable
+      return;
+    }
+
     var tileExtent = settings.getTileExtent(CollectionPage.routeName);
     if (tileExtent == 0) {
       tileExtent = screenSize.shortestSide / CollectionGrid.columnCountDefault;

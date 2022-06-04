@@ -305,12 +305,13 @@ class _FeedbackMessageState extends State<_FeedbackMessage> with SingleTickerPro
     if (start != null && stop != null) {
       _totalDurationMillis = stop.difference(start).inMilliseconds;
       final remainingDuration = stop.difference(DateTime.now());
+      final effectiveDuration = remainingDuration > Duration.zero ? remainingDuration : const Duration(milliseconds: 1);
       _animationController = AnimationController(
-        duration: remainingDuration,
+        duration: effectiveDuration,
         vsync: this,
       );
       _remainingDurationMillis = IntTween(
-        begin: remainingDuration.inMilliseconds,
+        begin: effectiveDuration.inMilliseconds,
         end: 0,
       ).animate(CurvedAnimation(
         parent: _animationController!,
