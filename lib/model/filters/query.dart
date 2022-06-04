@@ -22,8 +22,8 @@ class QueryFilter extends CollectionFilter {
   QueryFilter(this.query, {this.colorful = true, this.live = false}) {
     var upQuery = query.toUpperCase();
     if (upQuery.startsWith('ID:')) {
-      final id = int.tryParse(upQuery.substring(3));
-      _test = (entry) => entry.id == id;
+      final contentId = int.tryParse(upQuery.substring(3));
+      _test = (entry) => entry.contentId == contentId;
       return;
     }
 
