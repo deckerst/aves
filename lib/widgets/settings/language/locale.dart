@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'package:aves/l10n/l10n.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
+import 'package:aves/widgets/common/basic/query_bar.dart';
 import 'package:aves/widgets/common/basic/reselectable_radio_list_tile.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
@@ -64,6 +65,7 @@ class LocaleSelectionPage extends StatefulWidget {
 
 class _LocaleSelectionPageState extends State<LocaleSelectionPage> {
   late Locale _selectedValue;
+  final ValueNotifier<String> _queryNotifier = ValueNotifier('');
 
   @override
   void initState() {
@@ -79,25 +81,41 @@ class _LocaleSelectionPageState extends State<LocaleSelectionPage> {
           title: Text(context.l10n.settingsLanguage),
         ),
         body: SafeArea(
-          child: ListView(
-            children: _getLocaleOptions(context).entries.map((kv) {
-              final value = kv.key;
-              final title = kv.value;
-              return ReselectableRadioListTile<Locale>(
-                // key is expected by test driver
-                key: Key(value.toString()),
-                value: value,
-                groupValue: _selectedValue,
-                onChanged: (v) => Navigator.pop(context, v),
-                reselectable: true,
-                title: Text(
-                  title,
-                  softWrap: false,
-                  overflow: TextOverflow.fade,
-                  maxLines: 1,
-                ),
+          child: ValueListenableBuilder<String>(
+            valueListenable: _queryNotifier,
+            builder: (context, query, child) {
+              final upQuery = query.toUpperCase().trim();
+              return ListView(
+                children: [
+                  QueryBar(
+                    queryNotifier: _queryNotifier,
+                    leadingPadding: const EdgeInsetsDirectional.only(start: 24, end: 8),
+                  ),
+                  ..._getLocaleOptions(context).entries.where((kv) {
+                    if (upQuery.isEmpty) return true;
+                    final title = kv.value;
+                    return title.toUpperCase().contains(upQuery);
+                  }).map((kv) {
+                    final value = kv.key;
+                    final title = kv.value;
+                    return ReselectableRadioListTile<Locale>(
+                      // key is expected by test driver
+                      key: Key(value.toString()),
+                      value: value,
+                      groupValue: _selectedValue,
+                      onChanged: (v) => Navigator.pop(context, v),
+                      reselectable: true,
+                      title: Text(
+                        title,
+                        softWrap: false,
+                        overflow: TextOverflow.fade,
+                        maxLines: 1,
+                      ),
+                    );
+                  }),
+                ],
               );
-            }).toList(),
+            },
           ),
         ),
       ),

@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Added
+
+- optional dynamic accent color on Android 12+
+- Turkish translation (thanks metezd)
+
+### Changed
+
+- do not force quit on storage permission denial
+
+### Fixed
+
+- merge ambiguously cased directories
+
 ## <a id="v1.6.8"></a>[v1.6.8] - 2022-05-27
 
 ### Fixed
