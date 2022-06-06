@@ -19,8 +19,15 @@ Future<void> configureAndLaunch() async {
     ..isInstalledAppAccessAllowed = true
     ..isErrorReportingAllowed = false
     ..locale = const Locale('en')
+    // display
+    ..themeBrightness = AvesThemeBrightness.dark
+    ..themeColorMode = AvesThemeColorMode.polychrome
+    ..enableDynamicColor = false
+    ..enableBlurEffect = true
+    // navigation
     ..keepScreenOn = KeepScreenOn.always
     ..homePage = HomePageSetting.collection
+    ..showBottomNavigationBar = true
     // collection
     ..collectionBrowsingQuickActions = SettingsDefaults.collectionBrowsingQuickActions
     // viewer
@@ -29,7 +36,6 @@ Future<void> configureAndLaunch() async {
     ..showOverlayInfo = true
     ..showOverlayShootingDetails = true
     ..showOverlayThumbnailPreview = true
-    ..enableBlurEffect = true
     ..imageBackground = EntryBackground.checkered
     // info
     ..infoMapStyle = EntryMapStyle.googleNormal;

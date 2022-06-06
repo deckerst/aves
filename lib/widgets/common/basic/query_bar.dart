@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 class QueryBar extends StatefulWidget {
   final ValueNotifier<String> queryNotifier;
   final FocusNode? focusNode;
+  final EdgeInsetsGeometry? leadingPadding;
   final IconData? icon;
   final String? hintText;
   final bool editable;
@@ -15,6 +16,7 @@ class QueryBar extends StatefulWidget {
     super.key,
     required this.queryNotifier,
     this.focusNode,
+    this.leadingPadding,
     this.icon,
     this.hintText,
     this.editable = true,
@@ -60,7 +62,7 @@ class _QueryBarState extends State<QueryBar> {
               focusNode: widget.focusNode ?? FocusNode(),
               decoration: InputDecoration(
                 icon: Padding(
-                  padding: const EdgeInsetsDirectional.only(start: 16),
+                  padding: widget.leadingPadding ?? const EdgeInsetsDirectional.only(start: 16),
                   child: Icon(widget.icon ?? AIcons.filter),
                 ),
                 hintText: widget.hintText ?? MaterialLocalizations.of(context).searchFieldLabel,

@@ -63,15 +63,16 @@ class _AppPickDialogState extends State<AppPickDialog> {
                   ValueListenableBuilder<String>(
                     valueListenable: _queryNotifier,
                     builder: (context, query, child) {
+                      final upQuery = query.toUpperCase().trim();
                       final visiblePackages = packages.where((package) {
                         return {
                           package.packageName,
                           package.currentLabel,
                           package.englishLabel,
                           ...package.potentialDirs,
-                        }.any((v) => v != null && v.toLowerCase().contains(query.toLowerCase()));
+                        }.any((v) => v != null && v.toUpperCase().contains(upQuery));
                       }).toList();
-                      final showNoneOption = query.isEmpty;
+                      final showNoneOption = upQuery.isEmpty;
                       final itemCount = visiblePackages.length + (showNoneOption ? 1 : 0);
                       return Expanded(
                         child: ListView.builder(

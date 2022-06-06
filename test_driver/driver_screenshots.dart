@@ -18,10 +18,13 @@ Future<void> configureAndLaunch() async {
     ..hasAcceptedTerms = true
     ..isInstalledAppAccessAllowed = true
     ..isErrorReportingAllowed = false
-    ..themeBrightness = AvesThemeBrightness.dark
-    ..themeColorMode = AvesThemeColorMode.polychrome
     ..setTileExtent(CountryListPage.routeName, 112)
     ..setTileLayout(CountryListPage.routeName, TileLayout.grid)
+    // display
+    ..themeBrightness = AvesThemeBrightness.dark
+    ..themeColorMode = AvesThemeColorMode.polychrome
+    ..enableDynamicColor = false
+    ..enableBlurEffect = true
     // navigation
     ..keepScreenOn = KeepScreenOn.always
     ..homePage = HomePageSetting.collection
@@ -41,7 +44,6 @@ Future<void> configureAndLaunch() async {
     ..showOverlayInfo = true
     ..showOverlayShootingDetails = false
     ..showOverlayThumbnailPreview = false
-    ..enableBlurEffect = true
     ..viewerUseCutout = true
     // info
     ..infoMapStyle = EntryMapStyle.stamenWatercolor
