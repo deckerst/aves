@@ -27,7 +27,7 @@
   "actionRemove": "Kaldır",
   "resetButtonTooltip": "Sıfırla",
 
-  "doubleBackExitMessage": "Çıkmak için tekrar "geri" düğmesine dokunun.",
+  "doubleBackExitMessage": "Çıkmak için tekrar “geri”, düğmesine dokunun.",
   "doNotAskAgain": "Bir daha sorma",
 
   "sourceStateLoading": "Yükleniyor",
@@ -161,13 +161,13 @@
   "otherDirectoryDescription": "“{name}” dizin",
 
   "storageAccessDialogTitle": "Depolama Erişimi",
-  "storageAccessDialogMessage": "Bu uygulamaya erişim sağlamak için lütfen bir sonraki ekranda "{volume}" {directory}'sini seçin.",
+  "storageAccessDialogMessage": "Bu uygulamaya erişim sağlamak için lütfen bir sonraki ekranda “{volume}” {directory}'sini seçin.",
 
   "restrictedAccessDialogTitle": "Kısıtlı Erişim",
-  "restrictedAccessDialogMessage": "Bu uygulamanın "{volume}" içindeki {directory} dosyaları değiştirmesine izin verilmiyor.\n\nÖğeleri başka bir dizine taşımak için lütfen önceden yüklenmiş bir dosya yöneticisi veya galeri uygulaması kullanın.",
+  "restrictedAccessDialogMessage": "Bu uygulamanın “{volume}” içindeki {directory} dosyaları değiştirmesine izin verilmiyor.\n\nÖğeleri başka bir dizine taşımak için lütfen önceden yüklenmiş bir dosya yöneticisi veya galeri uygulaması kullanın.",
 
   "notEnoughSpaceDialogTitle": "Yeterli Yer Yok",
-  "notEnoughSpaceDialogMessage": "Bu işlemin tamamlanması için "{volume}" üzerinde {needSize} boş alana ihtiyaç var, ancak yalnızca {freeSize} kaldı.",
+  "notEnoughSpaceDialogMessage": "Bu işlemin tamamlanması için “{volume}” üzerinde {needSize} boş alana ihtiyaç var, ancak yalnızca {freeSize} kaldı.",
 
   "missingSystemFilePickerDialogTitle": "Eksik Sistem Dosya Seçicisi",
   "missingSystemFilePickerDialogMessage": "Sistem dosya seçicisi eksik veya devre dışı. Lütfen etkinleştirin ve tekrar deneyin.",
@@ -200,7 +200,7 @@
   "setCoverDialogAuto": "Otomatik",
   "setCoverDialogCustom": "Özel",
 
-  "hideFilterConfirmationDialogMessage": "Eşleşen fotoğraf ve videolar koleksiyonunuzdan gizlenecektir. Bunları "Gizlilik" ayarlarından tekrar gösterebilirsiniz.\n\nBunları gizlemek istediğinizden emin misiniz?",
+  "hideFilterConfirmationDialogMessage": "Eşleşen fotoğraf ve videolar koleksiyonunuzdan gizlenecektir. Bunları “Gizlilik”, ayarlarından tekrar gösterebilirsiniz.\n\nBunları gizlemek istediğinizden emin misiniz?",
 
   "newAlbumDialogTitle": "Yeni Albüm",
   "newAlbumDialogNameLabel": "Albüm adı",
@@ -441,7 +441,7 @@
   "settingsShowBottomNavigationBar": "Alt gezinti çubuğunu göster",
   "settingsKeepScreenOnTile": "Ekranı açık tut",
   "settingsKeepScreenOnTitle": "Ekranı Açık Tut",
-  "settingsDoubleBackExit": "Çıkmak için iki kez "geri" düğmesine dokunun",
+  "settingsDoubleBackExit": "Çıkmak için iki kez “geri” düğmesine dokunun",
 
   "settingsConfirmationDialogTile": "Onaylama diyalogları",
   "settingsConfirmationDialogTitle": "Onaylama Diyalogları",
