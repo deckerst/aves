@@ -1,0 +1,638 @@
+{
+  "appName": "Aves",
+  "welcomeMessage": "Aves'e Hoş Geldiniz",
+  "welcomeOptional": "İsteğe bağlı",
+  "welcomeTermsToggle": "Hüküm ve koşulları kabul ediyorum",
+  "itemCount": "{count, plural, =1{1 öğe} other{{count} öğe}}",
+
+  "timeSeconds": "{seconds, plural, =1{1 saniye} other{{seconds} saniye}}",
+  "timeMinutes": "{minutes, plural, =1{1 dakika} other{{minutes} dakika}}",
+  "timeDays": "{days, plural, =1{1 gün} other{{days} gün}}",
+  "focalLength": "{length} mm",
+
+  "applyButtonLabel": "UYGULA",
+  "deleteButtonLabel": "SİL",
+  "nextButtonLabel": "SONRAKİ",
+  "showButtonLabel": "GÖSTER",
+  "hideButtonLabel": "GİZLE",
+  "continueButtonLabel": "DEVAM ET",
+
+  "cancelTooltip": "İptal et",
+  "changeTooltip": "Değiştir",
+  "clearTooltip": "Temizle",
+  "previousTooltip": "Önceki",
+  "nextTooltip": "Sonraki",
+  "showTooltip": "Göster",
+  "hideTooltip": "Gizle",
+  "actionRemove": "Kaldır",
+  "resetButtonTooltip": "Sıfırla",
+
+  "doubleBackExitMessage": "Çıkmak için tekrar "geri" düğmesine dokunun.",
+  "doNotAskAgain": "Bir daha sorma",
+
+  "sourceStateLoading": "Yükleniyor",
+  "sourceStateCataloguing": "Kataloglanıyor",
+  "sourceStateLocatingCountries": "Ülkeler konumlandırılıyor",
+  "sourceStateLocatingPlaces": "Konum belirleniyor",
+
+  "chipActionDelete": "Sil",
+  "chipActionGoToAlbumPage": "Albümlerde göster",
+  "chipActionGoToCountryPage": "Ülkelerde göster",
+  "chipActionGoToTagPage": "Etiketlerde göster",
+  "chipActionHide": "Gizle",
+  "chipActionPin": "Başa sabitle",
+  "chipActionUnpin": "Baştan çıkar",
+  "chipActionRename": "Yeniden adlandır",
+  "chipActionSetCover": "Kapağı ayarla",
+  "chipActionCreateAlbum": "Albüm oluştur",
+
+  "entryActionCopyToClipboard": "Panoya kopyala",
+  "entryActionDelete": "Sil",
+  "entryActionConvert": "Dönüştür",
+  "entryActionExport": "Dışa aktar",
+  "entryActionRename": "Yeniden adlandır",
+  "entryActionRestore": "Dışa aktar",
+  "entryActionRotateCCW": "Saat yönünün tersine döndür",
+  "entryActionRotateCW": "Saat yönünde döndür",
+  "entryActionFlip": "Yatay olarak çevir",
+  "entryActionPrint": "Yazdır",
+  "entryActionShare": "Paylaş",
+  "entryActionViewSource": "Kaynağı görüntüle",
+  "entryActionShowGeoTiffOnMap": "Harita katmanı olarak göster",
+  "entryActionConvertMotionPhotoToStillImage": "Hareketsiz görüntüye dönüştür",
+  "entryActionViewMotionPhotoVideo": "Videoyu aç",
+  "entryActionEdit": "Düzenle",
+  "entryActionOpen": "Şununla aç",
+  "entryActionSetAs": "Olarak ayarla",
+  "entryActionOpenMap": "Harita uygulamasında göster",
+  "entryActionRotateScreen": "Ekranı döndür",
+  "entryActionAddFavourite": "Favorilere ekle",
+  "entryActionRemoveFavourite": "Favorilerden kaldır",
+
+  "videoActionCaptureFrame": "Çerçeve yakala",
+  "videoActionMute": "Sustur",
+  "videoActionUnmute": "Susturmayı kaldır",
+  "videoActionPause": "Duraklat",
+  "videoActionPlay": "Oynat",
+  "videoActionReplay10": "10 saniye geri git",
+  "videoActionSkip10": "10 saniye ileri git",
+  "videoActionSelectStreams": "Parça seç",
+  "videoActionSetSpeed": "Oynatma hızı",
+  "videoActionSettings": "Ayarlar",
+
+  "entryInfoActionEditDate": "Tarih ve saati düzenle",
+  "entryInfoActionEditLocation": "Konumu düzenle",
+  "entryInfoActionEditRating": "Derecelendirmeyi düzenle",
+  "entryInfoActionEditTags": "Etiketleri düzenle",
+  "entryInfoActionRemoveMetadata": "Meta verileri kaldır",
+
+  "filterBinLabel": "Geri dönüşüm kutusu",
+  "filterFavouriteLabel": "Favori",
+  "filterLocationEmptyLabel": "Konumsuz",
+  "filterTagEmptyLabel": "Etiketsiz",
+  "filterRatingUnratedLabel": "Derecelendirilmemiş",
+  "filterRatingRejectedLabel": "Reddedilmiş",
+  "filterTypeAnimatedLabel": "Hareketli",
+  "filterTypeMotionPhotoLabel": "Hareketli Fotoğraf",
+  "filterTypePanoramaLabel": "Panorama",
+  "filterTypeRawLabel": "Raw",
+  "filterTypeSphericalVideoLabel": "360° Video",
+  "filterTypeGeotiffLabel": "GeoTIFF",
+  "filterMimeImageLabel": "Resim",
+  "filterMimeVideoLabel": "Video",
+
+  "coordinateFormatDms": "DMS",
+  "coordinateFormatDecimal": "Ondalık dereceler",
+  "coordinateDms": "{coordinate} {direction}",
+
+  "coordinateDmsNorth": "K",
+  "coordinateDmsSouth": "G",
+  "coordinateDmsEast": "D",
+  "coordinateDmsWest": "B",
+
+  "unitSystemMetric": "Metrik",
+  "unitSystemImperial": "İngiliz",
+
+  "videoLoopModeNever": "Asla",
+  "videoLoopModeShortOnly": "Yalnızca kısa videolar",
+  "videoLoopModeAlways": "Her zaman",
+
+  "videoControlsPlay": "Oynat",
+  "videoControlsPlaySeek": "Oynat ve ileri/geri git",
+  "videoControlsPlayOutside": "Başka bir oynatıcı ile aç",
+  "videoControlsNone": "Hiçbiri",
+
+  "mapStyleGoogleNormal": "Google Haritalar",
+  "mapStyleGoogleHybrid": "Google Haritalar (Hibrit)",
+  "mapStyleGoogleTerrain": "Google Haritalar (Arazi)",
+  "mapStyleHuaweiNormal": "Petal Haritalar",
+  "mapStyleHuaweiTerrain": "Petal Haritalar (Arazi)",
+  "mapStyleOsmHot": "İnsancıl OSM",
+  "mapStyleStamenToner": "Stamen Tonik",
+  "mapStyleStamenWatercolor": "Stamen Suluboya",
+
+  "nameConflictStrategyRename": "Yeniden adlandır",
+  "nameConflictStrategyReplace": "Değiştir",
+  "nameConflictStrategySkip": "Atla",
+
+  "keepScreenOnNever": "Asla",
+  "keepScreenOnViewerOnly": "Yalnızca görüntüleyici sayfası",
+  "keepScreenOnAlways": "Her zaman",
+
+  "accessibilityAnimationsRemove": "Ekran efektlerini önle",
+  "accessibilityAnimationsKeep": "Ekran efektlerini koru",
+
+  "displayRefreshRatePreferHighest": "En yüksek oran",
+  "displayRefreshRatePreferLowest": "En düşük oran",
+
+  "themeBrightnessLight": "Açık",
+  "themeBrightnessDark": "Koyu",
+  "themeBrightnessBlack": "Siyah",
+
+  "albumTierNew": "Yeni",
+  "albumTierPinned": "Sabitlenmiş",
+  "albumTierSpecial": "Genel",
+  "albumTierApps": "Uygulamalar",
+  "albumTierRegular": "Diğer",
+
+  "storageVolumeDescriptionFallbackPrimary": "Dahili depolama",
+  "storageVolumeDescriptionFallbackNonPrimary": "SD kart",
+  "rootDirectoryDescription": "kök dizin",
+  "otherDirectoryDescription": "“{name}” dizin",
+
+  "storageAccessDialogTitle": "Depolama Erişimi",
+  "storageAccessDialogMessage": "Bu uygulamaya erişim sağlamak için lütfen bir sonraki ekranda "{volume}" {directory}'sini seçin.",
+
+  "restrictedAccessDialogTitle": "Kısıtlı Erişim",
+  "restrictedAccessDialogMessage": "Bu uygulamanın "{volume}" içindeki {directory} dosyaları değiştirmesine izin verilmiyor.\n\nÖğeleri başka bir dizine taşımak için lütfen önceden yüklenmiş bir dosya yöneticisi veya galeri uygulaması kullanın.",
+
+  "notEnoughSpaceDialogTitle": "Yeterli Yer Yok",
+  "notEnoughSpaceDialogMessage": "Bu işlemin tamamlanması için "{volume}" üzerinde {needSize} boş alana ihtiyaç var, ancak yalnızca {freeSize} kaldı.",
+
+  "missingSystemFilePickerDialogTitle": "Eksik Sistem Dosya Seçicisi",
+  "missingSystemFilePickerDialogMessage": "Sistem dosya seçicisi eksik veya devre dışı. Lütfen etkinleştirin ve tekrar deneyin.",
+
+  "unsupportedTypeDialogTitle": "Desteklenmeyen Türler",
+  "unsupportedTypeDialogMessage": "{count, plural, =1{Bu işlem aşağıdaki türdeki öğeler için desteklenmez: {types}.} other{Bu işlem aşağıdaki türlerdeki öğeler için desteklenmez: {types}.}}",
+
+  "nameConflictDialogSingleSourceMessage": "Hedef klasördeki bazı dosyalar aynı ada sahip.",
+  "nameConflictDialogMultipleSourceMessage": "Bazı dosyalar aynı ada sahip.",
+
+  "addShortcutDialogLabel": "Kısayol etiketi",
+  "addShortcutButtonLabel": "EKLE",
+
+  "noMatchingAppDialogTitle": "Eşleşen Uygulama Yok",
+  "noMatchingAppDialogMessage": "Bununla ilgilenebilecek bir uygulama yok.",
+
+  "binEntriesConfirmationDialogMessage": "{count, plural, =1{Bu öğe geri dönüşüm kutusuna taşınsın mı?} other{Bu {count} madde geri dönüşüm kutusuna atılsın mı?}}",
+
+  "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{Bu öğe silinsin mi?} other{Bu {count} öğe silinsin mi?}}",
+
+  "moveUndatedConfirmationDialogMessage": "Devam etmeden önce öğe tarihleri ​​kaydedilsin mi?",
+  "moveUndatedConfirmationDialogSetDate": "Tarihleri kaydet",
+
+  "videoResumeDialogMessage": "{time} itibarıyla oynatmaya devam etmek istiyor musunuz?",
+
+  "videoStartOverButtonLabel": "BAŞTAN BAŞLA",
+  "videoResumeButtonLabel": "SÜRDÜR",
+
+  "setCoverDialogLatest": "Son öğe",
+  "setCoverDialogAuto": "Otomatik",
+  "setCoverDialogCustom": "Özel",
+
+  "hideFilterConfirmationDialogMessage": "Eşleşen fotoğraf ve videolar koleksiyonunuzdan gizlenecektir. Bunları "Gizlilik" ayarlarından tekrar gösterebilirsiniz.\n\nBunları gizlemek istediğinizden emin misiniz?",
+
+  "newAlbumDialogTitle": "Yeni Albüm",
+  "newAlbumDialogNameLabel": "Albüm adı",
+  "newAlbumDialogNameLabelAlreadyExistsHelper": "Dizin zaten var",
+  "newAlbumDialogStorageLabel": "Depolama:",
+
+  "renameAlbumDialogLabel": "Yeni ad",
+  "renameAlbumDialogLabelAlreadyExistsHelper": "Dizin zaten var",
+
+  "renameEntrySetPageTitle": "Yeniden adlandır",
+  "renameEntrySetPagePatternFieldLabel": "İsimlendirme şekli",
+  "renameEntrySetPageInsertTooltip": "Alan ekle",
+  "renameEntrySetPagePreview": "Önizleme",
+
+  "renameProcessorCounter": "Sayaç",
+  "renameProcessorName": "Ad",
+
+  "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{Bu albüm ve öğesi silinsin mi?} other{Bu albüm ve {count} öğesi silinsin mi?}}",
+
+  "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{Bu albümler ve öğeleri silinsin mi?} other{Bu albümler ve {count} öğesi silinsin mi?}}",
+
+  "exportEntryDialogFormat": "Biçim:",
+  "exportEntryDialogWidth": "Genişlik",
+  "exportEntryDialogHeight": "Yükseklik",
+
+  "renameEntryDialogLabel": "Yeni ad",
+
+  "editEntryDateDialogTitle": "Tarih ve Saat",
+  "editEntryDateDialogSetCustom": "Özel tarih ayarla",
+  "editEntryDateDialogCopyField": "Başka bir tarihten kopyala",
+  "editEntryDateDialogCopyItem": "Başka bir öğeden kopyala",
+  "editEntryDateDialogExtractFromTitle": "Başlıktan ayıkla",
+  "editEntryDateDialogShift": "Değişim",
+  "editEntryDateDialogSourceFileModifiedDate": "Dosya değiştirilme tarihi",
+  "editEntryDateDialogTargetFieldsHeader": "Değiştirilecek alanlar",
+  "editEntryDateDialogHours": "Saat",
+  "editEntryDateDialogMinutes": "Dakika",
+
+  "editEntryLocationDialogTitle": "Konum",
+  "editEntryLocationDialogChooseOnMapTooltip": "Harita üzerinde seç",
+  "editEntryLocationDialogLatitude": "Enlem",
+  "editEntryLocationDialogLongitude": "Boylam",
+
+  "locationPickerUseThisLocationButton": "Bu konumu kullan",
+
+  "editEntryRatingDialogTitle": "Derecelendirme",
+
+  "removeEntryMetadataDialogTitle": "Meta veri kaldırma",
+  "removeEntryMetadataDialogMore": "Daha fazla",
+
+  "removeEntryMetadataMotionPhotoXmpWarningDialogMessage": "Hareketli bir fotoğrafın içindeki videoyu oynatmak için XMP gereklidir.\n\nKaldırmak istediğinizden emin misiniz?",
+  "convertMotionPhotoToStillImageWarningDialogMessage": "Emin misiniz?",
+
+  "videoSpeedDialogLabel": "Oynatma hızı",
+
+  "videoStreamSelectionDialogVideo": "Video",
+  "videoStreamSelectionDialogAudio": "Ses",
+  "videoStreamSelectionDialogText": "Altyazı",
+  "videoStreamSelectionDialogOff": "Kapalı",
+  "videoStreamSelectionDialogTrack": "Parça",
+  "videoStreamSelectionDialogNoSelection": "Başka parça yok.",
+
+  "genericSuccessFeedback": "Başarılı!",
+  "genericFailureFeedback": "Başarısız",
+
+  "menuActionConfigureView": "Görünüm",
+  "menuActionSelect": "Seç",
+  "menuActionSelectAll": "Hepsini seç",
+  "menuActionSelectNone": "Hiçbirini seçme",
+  "menuActionMap": "Harita",
+  "menuActionStats": "İstatistikler",
+
+  "viewDialogTabSort": "Sırala",
+  "viewDialogTabGroup": "Grup",
+  "viewDialogTabLayout": "Düzen",
+
+  "tileLayoutGrid": "Izgara",
+  "tileLayoutList": "Liste",
+
+  "coverDialogTabCover": "Kapak",
+  "coverDialogTabApp": "Uygulama",
+  "coverDialogTabColor": "Renk",
+
+  "appPickDialogTitle": "Uygulama seç",
+  "appPickDialogNone": "Yok",
+
+  "aboutPageTitle": "Hakkında",
+  "aboutLinkSources": "Kaynaklar",
+  "aboutLinkLicense": "Lisans",
+  "aboutLinkPolicy": "Gizlilik Politikası",
+
+  "aboutBug": "Hata Bildirimi",
+  "aboutBugSaveLogInstruction": "Uygulama günlüklerini bir dosyaya kaydet",
+  "aboutBugSaveLogButton": "Kaydet",
+  "aboutBugCopyInfoInstruction": "Sistem bilgilerini kopyala",
+  "aboutBugCopyInfoButton": "Kopyala",
+  "aboutBugReportInstruction": "GitHub'da günlükleri ve sistem bilgilerini içeren bir rapor oluştur",
+  "aboutBugReportButton": "Raporla",
+
+  "aboutCredits": "Kredi",
+  "aboutCreditsWorldAtlas1": "Bu uygulama bir TopoJSON dosyası kullanır",
+  "aboutCreditsWorldAtlas2": "ISC Lisansı kapsamında.",
+  "aboutCreditsTranslators": "Tercümanlar",
+
+  "aboutLicenses": "Açık Kaynak Lisansları",
+  "aboutLicensesBanner": "Bu uygulama aşağıdaki açık kaynaklı paketleri ve kütüphaneleri kullanır.",
+  "aboutLicensesAndroidLibraries": "Android Kütüphaneleri",
+  "aboutLicensesFlutterPlugins": "Flutter Eklentileri",
+  "aboutLicensesFlutterPackages": "Flutter Paketleri",
+  "aboutLicensesDartPackages": "Dart Paketleri",
+  "aboutLicensesShowAllButtonLabel": "Tüm Lisansları Göster",
+
+  "policyPageTitle": "Gizlilik Politikası",
+
+  "collectionPageTitle": "Koleksiyon",
+  "collectionPickPageTitle": "Seç",
+  "collectionSelectPageTitle": "Öğeleri seç",
+
+  "collectionActionShowTitleSearch": "Başlık filtresini göster",
+  "collectionActionHideTitleSearch": "Başlık filtresini gizle",
+  "collectionActionAddShortcut": "Kısayol ekle",
+  "collectionActionEmptyBin": "Boş çöp kutusu",
+  "collectionActionCopy": "Albüme kopyala",
+  "collectionActionMove": "Albüme taşı",
+  "collectionActionRescan": "Yeniden tara",
+  "collectionActionEdit": "Düzenle",
+
+  "collectionSearchTitlesHintText": "Başlıkları ara",
+
+  "collectionSortDate": "Tarihe göre",
+  "collectionSortSize": "Boyuta göre",
+  "collectionSortName": "Albüm ve dosya adına göre",
+  "collectionSortRating": "Derecelendirmeye göre",
+
+  "collectionGroupAlbum": "Albüme göre",
+  "collectionGroupMonth": "Aya göre",
+  "collectionGroupDay": "Güne göre",
+  "collectionGroupNone": "Gruplama",
+
+  "sectionUnknown": "Bilinmeyen",
+  "dateToday": "Bugün",
+  "dateYesterday": "Dün",
+  "dateThisMonth": "Bu ay",
+  "collectionDeleteFailureFeedback": "{count, plural, =1{1 öğe silinemedi} other{{count} öğe silinemedi}}",
+
+  "collectionCopyFailureFeedback": "{count, plural, =1{1 öğe kopyalanamadı} other{{count} öğe kopyalanamadı}}",
+
+  "collectionMoveFailureFeedback": "{count, plural, =1{1 öğe taşınamadı} other{{count} öğe taşınamadı}}",
+
+  "collectionRenameFailureFeedback": "{count, plural, =1{1 öğenin adı değiştirilemedi} other{{count} öğenin adı değiştirilemedi}}",
+
+  "collectionEditFailureFeedback": "{count, plural, =1{1 öğe düzenlenemedi} other{{count} öğe düzenlenemedi}}",
+
+  "collectionExportFailureFeedback": "{count, plural, =1{1 sayfa dışa aktarılamadı} other{{count} sayfa dışa aktarılamadı}",
+
+  "collectionCopySuccessFeedback": "{count, plural, =1{1 öğe kopyalandı} other{{count} öğe kopyalandı}}",
+
+  "collectionMoveSuccessFeedback": "{count, plural, =1{1 öğe taşındı} other{{count} öğe taşındı}}",
+
+  "collectionRenameSuccessFeedback": "{count, plural, =1{1 öğenin adı değiştirildi} other{{count} öğenin adı değiştirildi}}",
+
+  "collectionEditSuccessFeedback": "{count, plural, =1{1 öğe düzenlendi} other{{count} öğe düzenlendi}}",
+
+  "collectionEmptyFavourites": "Favori yok",
+  "collectionEmptyVideos": "Video yok",
+  "collectionEmptyImages": "Resim yok",
+  "collectionEmptyGrantAccessButtonLabel": "Erişim izni",
+
+  "collectionSelectSectionTooltip": "Bölüm seç",
+  "collectionDeselectSectionTooltip": "Bölüm seçimini kaldır",
+
+  "drawerCollectionAll": "Tüm koleksiyon",
+  "drawerCollectionFavourites": "Favoriler",
+  "drawerCollectionImages": "Resimler",
+  "drawerCollectionVideos": "Videolar",
+  "drawerCollectionAnimated": "Hareketli",
+  "drawerCollectionMotionPhotos": "Hareketli fotoğraflar",
+  "drawerCollectionPanoramas": "Panoramalar",
+  "drawerCollectionRaws": "Raw fotoğraflar",
+  "drawerCollectionSphericalVideos": "360° Videolar",
+
+  "chipSortDate": "Tarihe göre",
+  "chipSortName": "Adına göre",
+  "chipSortCount": "Öğe sayısına göre",
+
+  "albumGroupTier": "Kademeye göre",
+  "albumGroupVolume": "Depolama hacmine göre",
+  "albumGroupNone": "Gruplama",
+
+  "albumPickPageTitleCopy": "Albüme kopyala",
+  "albumPickPageTitleExport": "Albüme aktar",
+  "albumPickPageTitleMove": "Albüme taşı",
+  "albumPickPageTitlePick": "Albüm seç",
+
+  "albumCamera": "Kamera",
+  "albumDownload": "İndir",
+  "albumScreenshots": "Ekran görüntüleri",
+  "albumScreenRecordings": "Ekran kayıtları",
+  "albumVideoCaptures": "Video çekimleri",
+
+  "albumPageTitle": "Albümler",
+  "albumEmpty": "Albüm yok",
+  "createAlbumTooltip": "Albüm oluştur",
+  "createAlbumButtonLabel": "OLUŞTUR",
+  "newFilterBanner": "yeni",
+
+  "countryPageTitle": "Ülkeler",
+  "countryEmpty": "Ülke yok",
+
+  "tagPageTitle": "Etiketler",
+  "tagEmpty": "Etiket yok",
+
+  "binPageTitle": "Geri Dönüşüm Kutusu",
+
+  "searchCollectionFieldHint": "Koleksiyonu ara",
+  "searchSectionRecent": "Yakın zamanda",
+  "searchSectionAlbums": "Albümler",
+  "searchSectionCountries": "Ülkeler",
+  "searchSectionPlaces": "Yerler",
+  "searchSectionTags": "Etiketler",
+  "searchSectionRating": "Derecelendirmeler",
+
+  "settingsPageTitle": "Ayarlar",
+  "settingsSystemDefault": "Sistem",
+  "settingsDefault": "Varsayılan",
+
+  "settingsSearchFieldLabel": "Ayarlarda ara",
+  "settingsSearchEmpty": "Eşleşen ayar bulunamadı",
+  "settingsActionExport": "Dışa aktar",
+  "settingsActionImport": "İçe aktar",
+
+  "appExportCovers": "Kapaklar",
+  "appExportFavourites": "Favoriler",
+  "appExportSettings": "Ayarlar",
+
+  "settingsSectionNavigation": "Gezinti",
+  "settingsHome": "Anasayfa",
+  "settingsShowBottomNavigationBar": "Alt gezinti çubuğunu göster",
+  "settingsKeepScreenOnTile": "Ekranı açık tut",
+  "settingsKeepScreenOnTitle": "Ekranı Açık Tut",
+  "settingsDoubleBackExit": "Çıkmak için iki kez "geri" düğmesine dokunun",
+
+  "settingsConfirmationDialogTile": "Onaylama diyalogları",
+  "settingsConfirmationDialogTitle": "Onaylama Diyalogları",
+  "settingsConfirmationDialogDeleteItems": "Öğeleri sonsuza dek silmeden önce sor",
+  "settingsConfirmationDialogMoveToBinItems": "Eşyaları geri dönüşüm kutusuna atmadan önce sor",
+  "settingsConfirmationDialogMoveUndatedItems": "Tarihsiz eşyaları taşımadan önce sor",
+
+  "settingsNavigationDrawerTile": "Gezinti menüsü",
+  "settingsNavigationDrawerEditorTitle": "Gezinti Menüsü",
+  "settingsNavigationDrawerBanner": "Menü öğelerini taşımak ve yeniden sıralamak için dokunun ve basılı tutun.",
+  "settingsNavigationDrawerTabTypes": "Türler",
+  "settingsNavigationDrawerTabAlbums": "Albümler",
+  "settingsNavigationDrawerTabPages": "Sayfalar",
+  "settingsNavigationDrawerAddAlbum": "Albüm ekle",
+
+  "settingsSectionThumbnails": "Küçük resimler",
+  "settingsThumbnailOverlayTile": "Kaplama",
+  "settingsThumbnailOverlayTitle": "Kaplama",
+  "settingsThumbnailShowFavouriteIcon": "Favori simgeyi göster",
+  "settingsThumbnailShowTagIcon": "Etiket simgesini göster",
+  "settingsThumbnailShowLocationIcon": "Konum simgesini göster",
+  "settingsThumbnailShowMotionPhotoIcon": "Hareketli fotoğraf simgesini göster",
+  "settingsThumbnailShowRating": "Derecelendirmeyi göster",
+  "settingsThumbnailShowRawIcon": "Raw simgesini göster",
+  "settingsThumbnailShowVideoDuration": "Video süresini göster",
+
+  "settingsCollectionQuickActionsTile": "Hızlı eylemler",
+  "settingsCollectionQuickActionEditorTitle": "Hızlı Eylemler",
+  "settingsCollectionQuickActionTabBrowsing": "Gözatma",
+  "settingsCollectionQuickActionTabSelecting": "Seçme",
+  "settingsCollectionBrowsingQuickActionEditorBanner": "Düğmeleri hareket ettirmek ve öğelere göz atarken hangi eylemlerin görüntüleneceğini seçmek için dokunun ve basılı tutun.",
+  "settingsCollectionSelectionQuickActionEditorBanner": "Düğmeleri hareket ettirmek ve öğeleri seçerken hangi eylemlerin görüntüleneceğini seçmek için dokunun ve basılı tutun.",
+
+  "settingsSectionViewer": "Görüntüleyici",
+  "settingsViewerUseCutout": "Kesim alanını kullan",
+  "settingsViewerMaximumBrightness": "Maksimum parlaklık",
+  "settingsMotionPhotoAutoPlay": "Hareketli fotoğrafları otomatik oynat",
+  "settingsImageBackground": "Resim arka planı",
+
+  "settingsViewerQuickActionsTile": "Hızlı eylemler",
+  "settingsViewerQuickActionEditorTitle": "Hızlı Eylemler",
+  "settingsViewerQuickActionEditorBanner": "Düğmeleri hareket ettirmek ve görüntüleyicide hangi eylemlerin görüntüleneceğini seçmek için dokunun ve basılı tutun.",
+  "settingsViewerQuickActionEditorDisplayedButtons": "Gösterilen Düğmeler",
+  "settingsViewerQuickActionEditorAvailableButtons": "Mevcut Düğmeler",
+  "settingsViewerQuickActionEmpty": "Düğme yok",
+
+  "settingsViewerOverlayTile": "Kaplama",
+  "settingsViewerOverlayTitle": "Kaplama",
+  "settingsViewerShowOverlayOnOpening": "Açılışta göster",
+  "settingsViewerShowMinimap": "Mini haritayı göster",
+  "settingsViewerShowInformation": "Bilgileri göster",
+  "settingsViewerShowInformationSubtitle": "Başlığı, tarihi, konumu vb. göster.",
+  "settingsViewerShowShootingDetails": "Çekim ayrıntılarını göster",
+  "settingsViewerShowOverlayThumbnails": "Küçük resimleri göster",
+  "settingsViewerEnableOverlayBlurEffect": "Bulanıklık efekti",
+
+  "settingsVideoPageTitle": "Video Ayarları",
+  "settingsSectionVideo": "Video",
+  "settingsVideoShowVideos": "Videoları göster",
+  "settingsVideoEnableHardwareAcceleration": "Donanım hızlandırma",
+  "settingsVideoEnableAutoPlay": "Otomatik oynat",
+  "settingsVideoLoopModeTile": "Döngü modu",
+  "settingsVideoLoopModeTitle": "Döngü Modu",
+
+  "settingsSubtitleThemeTile": "Altyazılar",
+  "settingsSubtitleThemeTitle": "Altyazılar",
+  "settingsSubtitleThemeSample": "Bu bir örnek.",
+  "settingsSubtitleThemeTextAlignmentTile": "Metin hizalama",
+  "settingsSubtitleThemeTextAlignmentTitle": "Metin Hizalama",
+  "settingsSubtitleThemeTextSize": "Metin boyutu",
+  "settingsSubtitleThemeShowOutline": "Dış çizgiyi ve gölgeyi göster",
+  "settingsSubtitleThemeTextColor": "Metin rengi",
+  "settingsSubtitleThemeTextOpacity": "Metin opaklığı",
+  "settingsSubtitleThemeBackgroundColor": "Arka plan rengi",
+  "settingsSubtitleThemeBackgroundOpacity": "Arka plan opaklığı",
+  "settingsSubtitleThemeTextAlignmentLeft": "Sol",
+  "settingsSubtitleThemeTextAlignmentCenter": "Merkez",
+  "settingsSubtitleThemeTextAlignmentRight": "Sağ",
+
+  "settingsVideoControlsTile": "Kontroller",
+  "settingsVideoControlsTitle": "Kontroller",
+  "settingsVideoButtonsTile": "Düğmeler",
+  "settingsVideoButtonsTitle": "Düğmeler",
+  "settingsVideoGestureDoubleTapTogglePlay": "Oynatmak/duraklatmak için çift dokunun",
+  "settingsVideoGestureSideDoubleTapSeek": "Geri/ileri aramak için ekran kenarlarına çift dokunun",
+
+  "settingsSectionPrivacy": "Gizlilik",
+  "settingsAllowInstalledAppAccess": "Uygulama envanterine erişime izin ver",
+  "settingsAllowInstalledAppAccessSubtitle": "Albüm görüntüsünü iyileştirmek için kullanılır",
+  "settingsAllowErrorReporting": "Anonim hata raporlamasına izin ver",
+  "settingsSaveSearchHistory": "Arama geçmişini kaydet",
+  "settingsEnableBin": "Geri dönüşüm kutusunu kullan",
+  "settingsEnableBinSubtitle": "Silinen öğeleri 30 gün boyunca saklar",
+
+  "settingsHiddenItemsTile": "Gizli öğeler",
+  "settingsHiddenItemsTitle": "Gizli Öğeler",
+
+  "settingsHiddenFiltersTitle": "Gizli Filtreler",
+  "settingsHiddenFiltersBanner": "Gizli filtrelerle eşleşen fotoğraflar ve videolar koleksiyonunuzda görünmeyecektir.",
+  "settingsHiddenFiltersEmpty": "Gizli filtre yok",
+
+  "settingsHiddenPathsTitle": "Gizli Yollar",
+  "settingsHiddenPathsBanner": "Bu klasörlerdeki veya alt klasörlerindeki fotoğraflar ve videolar koleksiyonunuzda görünmeyecektir.",
+  "addPathTooltip": "Yol ekle",
+
+  "settingsStorageAccessTile": "Depolama erişimi",
+  "settingsStorageAccessTitle": "Depolama Erişimi",
+  "settingsStorageAccessBanner": "Bazı dizinler, içlerindeki dosyaları değiştirmek için açık bir erişim izni gerektirir. Daha önce erişim izni verdiğiniz dizinleri buradan inceleyebilirsiniz.",
+  "settingsStorageAccessEmpty": "Erişim izni yok",
+  "settingsStorageAccessRevokeTooltip": "Geri al",
+
+  "settingsSectionAccessibility": "Erişilebilirlik",
+  "settingsRemoveAnimationsTile": "Animasyonları kaldır",
+  "settingsRemoveAnimationsTitle": "Animasyonları Kaldır",
+  "settingsTimeToTakeActionTile": "Harekete geçme zamanı",
+  "settingsTimeToTakeActionTitle": "Harekete Geçme Zamanı",
+
+  "settingsSectionDisplay": "Ekran",
+  "settingsThemeBrightness": "Tema",
+  "settingsThemeColorHighlights": "Renk vurguları",
+  "settingsThemeEnableDynamicColor": "Dinamik renk",
+  "settingsDisplayRefreshRateModeTile": "Görüntü yenileme hızı",
+  "settingsDisplayRefreshRateModeTitle": "Yenileme Hızı",
+
+  "settingsSectionLanguage": "Dil ve Biçimler",
+  "settingsLanguage": "Dil",
+  "settingsCoordinateFormatTile": "Koordinat formatı",
+  "settingsCoordinateFormatTitle": "Koordinat Formatı",
+  "settingsUnitSystemTile": "Birimler",
+  "settingsUnitSystemTitle": "Birimler",
+
+  "statsPageTitle": "İstatistikler",
+  "statsWithGps": "{count, plural, =1{1 konuma sahip öğe} other{{count} konuma sahip öğe}}",
+  "statsTopCountries": "Başlıca Ülkeler",
+  "statsTopPlaces": "Başlıca Yerler",
+  "statsTopTags": "Başlıca Etiketler",
+
+  "viewerOpenPanoramaButtonLabel": "PANORAMAYI AÇ",
+  "viewerErrorUnknown": "Tüh!",
+  "viewerErrorDoesNotExist": "Dosya artık mevcut değil.",
+
+  "viewerInfoPageTitle": "Bilgi",
+  "viewerInfoBackToViewerTooltip": "Görüntüleyiciye geri dön",
+
+  "viewerInfoUnknown": "bilinmeyen",
+  "viewerInfoLabelTitle": "Başlık",
+  "viewerInfoLabelDate": "Tarih",
+  "viewerInfoLabelResolution": "Çözünürlük",
+  "viewerInfoLabelSize": "Boyut",
+  "viewerInfoLabelUri": "URI",
+  "viewerInfoLabelPath": "Yol",
+  "viewerInfoLabelDuration": "Süre",
+  "viewerInfoLabelOwner": "Sahibi",
+  "viewerInfoLabelCoordinates": "Koordinatlar",
+  "viewerInfoLabelAddress": "Adres",
+
+  "mapStyleTitle": "Harita Şekli",
+  "mapStyleTooltip": "Harita şeklini seç",
+  "mapZoomInTooltip": "Yakınlaştır",
+  "mapZoomOutTooltip": "Uzaklaştır",
+  "mapPointNorthUpTooltip": "Kuzeyi göster",
+  "mapAttributionOsmHot": "Harita verileri © [OpenStreetMap](https://www.openstreetmap.org/copyright) katkıda bulunanlar - Kutucuklar [HOT](https://www.hotosm.org/) tarafından hazırlanmıştır - [OSM France](https://openstreetmap.fr/) tarafından barındırılmaktadır",
+  "mapAttributionStamen": "Harita verileri © [OpenStreetMap](https://www.openstreetmap.org/copyright) katkıda bulunanlar - Döşemeler [Stamen Design](http://stamen.com), [CC BY 3.0](http://creativecommons.org/licenses/by/3.0)",
+  "openMapPageTooltip": "Harita sayfasında görüntüle",
+  "mapEmptyRegion": "Bu bölgede resim yok",
+
+  "viewerInfoOpenEmbeddedFailureFeedback": "Gömülü veriler ayıklanamadı",
+  "viewerInfoOpenLinkText": "Aç",
+  "viewerInfoViewXmlLinkText": "XML'i Görüntüle",
+
+  "viewerInfoSearchFieldLabel": "Meta verileri ara",
+  "viewerInfoSearchEmpty": "Eşleşen anahtar yok",
+  "viewerInfoSearchSuggestionDate": "Tarih ve saat",
+  "viewerInfoSearchSuggestionDescription": "Açıklama",
+  "viewerInfoSearchSuggestionDimensions": "Boyutlar",
+  "viewerInfoSearchSuggestionResolution": "Çözünürlük",
+  "viewerInfoSearchSuggestionRights": "Haklar",
+
+  "tagEditorPageTitle": "Etiketleri Düzenle",
+  "tagEditorPageNewTagFieldLabel": "Yeni etiket",
+  "tagEditorPageAddTagTooltip": "Etiket ekle",
+  "tagEditorSectionRecent": "Yakın zamanda",
+
+  "panoramaEnableSensorControl": "Sensör kontrolünü etkinleştir",
+  "panoramaDisableSensorControl": "Sensör kontrolünü devre dışı bırak",
+
+  "sourceViewerPageTitle": "Kaynak",
+
+  "filePickerShowHiddenFiles": "Gizli dosyaları göster",
+  "filePickerDoNotShowHiddenFiles": "Gizli dosyaları gösterme",
+  "filePickerOpenFrom": "Şuradan aç",
+  "filePickerNoItems": "Öğe yok",
+  "filePickerUseThisFolder": "Bu klasörü kullan"
+}
