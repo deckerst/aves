@@ -161,7 +161,7 @@
   "otherDirectoryDescription": "“{name}” dizin",
 
   "storageAccessDialogTitle": "Depolama Erişimi",
-  "storageAccessDialogMessage": "Bu uygulamaya erişim sağlamak için lütfen bir sonraki ekranda “{volume}” {directory}'sini seçin.",
+  "storageAccessDialogMessage": "Bu uygulamaya erişim sağlamak için lütfen bir sonraki ekranda “{volume}” öğesinin {directory} dizinini seçin.",
 
   "restrictedAccessDialogTitle": "Kısıtlı Erişim",
   "restrictedAccessDialogMessage": "Bu uygulamanın “{volume}” içindeki {directory} dosyaları değiştirmesine izin verilmiyor.\n\nÖğeleri başka bir dizine taşımak için lütfen önceden yüklenmiş bir dosya yöneticisi veya galeri uygulaması kullanın.",
