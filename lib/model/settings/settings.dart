@@ -10,6 +10,7 @@ import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/enums/map_style.dart';
 import 'package:aves/model/source/enums.dart';
 import 'package:aves/services/accessibility_service.dart';
+import 'package:aves/services/common/optional_event_channel.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves_map/aves_map.dart';
 import 'package:collection/collection.dart';
@@ -19,7 +20,7 @@ import 'package:flutter/services.dart';
 final Settings settings = Settings._private();
 
 class Settings extends ChangeNotifier {
-  final EventChannel _platformSettingsChangeChannel = const EventChannel('deckers.thibault/aves/settings_change');
+  final EventChannel _platformSettingsChangeChannel = const OptionalEventChannel('deckers.thibault/aves/settings_change');
   final StreamController<SettingsChangedEvent> _updateStreamController = StreamController.broadcast();
 
   Stream<SettingsChangedEvent> get updateStream => _updateStreamController.stream;
@@ -190,8 +191,7 @@ class Settings extends ChangeNotifier {
 
   set canUseAnalysisService(bool newValue) => setAndNotify(canUseAnalysisServiceKey, newValue);
 
-  // TODO TLAD use `true` for transition (it's unset in v1.5.4), but replace by `SettingsDefaults.isInstalledAppAccessAllowed` in a later release
-  bool get isInstalledAppAccessAllowed => getBoolOrDefault(isInstalledAppAccessAllowedKey, true);
+  bool get isInstalledAppAccessAllowed => getBoolOrDefault(isInstalledAppAccessAllowedKey, SettingsDefaults.isInstalledAppAccessAllowed);
 
   set isInstalledAppAccessAllowed(bool newValue) => setAndNotify(isInstalledAppAccessAllowedKey, newValue);
 

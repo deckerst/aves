@@ -19,7 +19,6 @@ import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/viewer/entry_vertical_pager.dart';
 import 'package:aves/widgets/viewer/hero.dart';
 import 'package:aves/widgets/viewer/multipage/conductor.dart';
-import 'package:aves/widgets/viewer/multipage/controller.dart';
 import 'package:aves/widgets/viewer/notifications.dart';
 import 'package:aves/widgets/viewer/overlay/bottom.dart';
 import 'package:aves/widgets/viewer/overlay/notifications.dart';
@@ -31,6 +30,7 @@ import 'package:aves/widgets/viewer/video/conductor.dart';
 import 'package:aves/widgets/viewer/video/controller.dart';
 import 'package:aves/widgets/viewer/video_action_delegate.dart';
 import 'package:aves/widgets/viewer/visual/conductor.dart';
+import 'package:aves/widgets/viewer/visual/controller_mixin.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -53,8 +53,7 @@ class EntryViewerStack extends StatefulWidget {
   State<EntryViewerStack> createState() => _EntryViewerStackState();
 }
 
-class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin, SingleTickerProviderStateMixin, WidgetsBindingObserver {
-  final ValueNotifier<AvesEntry?> _entryNotifier = ValueNotifier(null);
+class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewControllerMixin, FeedbackMixin, SingleTickerProviderStateMixin, WidgetsBindingObserver {
   late int _currentHorizontalPage;
   late ValueNotifier<int> _currentVerticalPage;
   late PageController _horizontalPager, _verticalPager;
@@ -65,9 +64,11 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
   late Animation<Offset> _overlayTopOffset;
   EdgeInsets? _frozenViewInsets, _frozenViewPadding;
   late VideoActionDelegate _videoActionDelegate;
-  final Map<MultiPageController, Future<void> Function()> _multiPageControllerPageListeners = {};
   final ValueNotifier<HeroInfo?> _heroInfoNotifier = ValueNotifier(null);
   bool _isEntryTracked = true;
+
+  @override
+  final ValueNotifier<AvesEntry?> entryNotifier = ValueNotifier(null);
 
   CollectionLens? get collection => widget.collection;
 
@@ -102,7 +103,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
     final entry = entries.firstWhereOrNull((entry) => entry.id == initialEntry.id) ?? entries.firstOrNull;
     // opening hero, with viewer as target
     _heroInfoNotifier.value = HeroInfo(collection?.id, entry);
-    _entryNotifier.value = entry;
+    entryNotifier.value = entry;
     _currentHorizontalPage = max(0, entry != null ? entries.indexOf(entry) : -1);
     _currentVerticalPage = ValueNotifier(imagePage);
     _horizontalPager = PageController(initialPage: _currentHorizontalPage);
@@ -130,7 +131,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
     _videoActionDelegate = VideoActionDelegate(
       collection: collection,
     );
-    _initEntryControllers(entry);
+    initEntryControllers(entry);
     _registerWidget(widget);
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) => _initOverlay());
@@ -145,7 +146,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
 
   @override
   void dispose() {
-    _cleanEntryControllers(_entryNotifier.value);
+    cleanEntryControllers(entryNotifier.value);
     _videoActionDelegate.dispose();
     _overlayAnimationController.dispose();
     _overlayVisible.removeListener(_onOverlayVisibleChange);
@@ -169,7 +170,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
       case AppLifecycleState.inactive:
       case AppLifecycleState.paused:
       case AppLifecycleState.detached:
-        _pauseVideoControllers();
+        pauseVideoControllers();
         break;
       case AppLifecycleState.resumed:
         availability.onResume();
@@ -248,7 +249,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
             children: [
               ViewerVerticalPageView(
                 collection: collection,
-                entryNotifier: _entryNotifier,
+                entryNotifier: entryNotifier,
                 verticalPager: _verticalPager,
                 horizontalPager: _horizontalPager,
                 onVerticalPageChanged: _onVerticalPageChanged,
@@ -269,7 +270,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
 
   Widget _buildTopOverlay() {
     Widget child = ValueListenableBuilder<AvesEntry?>(
-      valueListenable: _entryNotifier,
+      valueListenable: entryNotifier,
       builder: (context, mainEntry, child) {
         if (mainEntry == null) return const SizedBox();
 
@@ -315,7 +316,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
 
   Widget _buildBottomOverlay() {
     Widget child = ValueListenableBuilder<AvesEntry?>(
-      valueListenable: _entryNotifier,
+      valueListenable: entryNotifier,
       builder: (context, mainEntry, child) {
         if (mainEntry == null) return const SizedBox();
 
@@ -528,12 +529,12 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
     }
 
     final newEntry = _currentHorizontalPage < entries.length ? entries[_currentHorizontalPage] : null;
-    if (_entryNotifier.value == newEntry) return;
-    _cleanEntryControllers(_entryNotifier.value);
-    _entryNotifier.value = newEntry;
+    if (entryNotifier.value == newEntry) return;
+    cleanEntryControllers(entryNotifier.value);
+    entryNotifier.value = newEntry;
     _isEntryTracked = false;
-    await _pauseVideoControllers();
-    await _initEntryControllers(newEntry);
+    await pauseVideoControllers();
+    await initEntryControllers(newEntry);
   }
 
   void _popVisual() {
@@ -544,7 +545,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
       }
 
       // closing hero, with viewer as source
-      final heroInfo = HeroInfo(collection?.id, _entryNotifier.value);
+      final heroInfo = HeroInfo(collection?.id, entryNotifier.value);
       if (_heroInfoNotifier.value != heroInfo) {
         _heroInfoNotifier.value = heroInfo;
         // we post closing the viewer page so that hero animation source is ready
@@ -563,7 +564,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
   // if they are not fully visible already
   void _trackEntry() {
     _isEntryTracked = true;
-    final entry = _entryNotifier.value;
+    final entry = entryNotifier.value;
     if (entry != null && hasCollection) {
       context.read<HighlightInfo>().trackItem(
             entry,
@@ -623,115 +624,4 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
       });
     }
   }
-
-  // state controllers/monitors
-
-  Future<void> _initEntryControllers(AvesEntry? entry) async {
-    if (entry == null) return;
-
-    if (entry.isVideo) {
-      await _initVideoController(entry);
-    }
-    if (entry.isMultiPage) {
-      await _initMultiPageController(entry);
-    }
-  }
-
-  void _cleanEntryControllers(AvesEntry? entry) {
-    if (entry == null) return;
-
-    if (entry.isMultiPage) {
-      _cleanMultiPageController(entry);
-    }
-  }
-
-  Future<void> _initVideoController(AvesEntry entry) async {
-    final controller = context.read<VideoConductor>().getOrCreateController(entry);
-    setState(() {});
-
-    if (settings.enableVideoAutoPlay) {
-      final resumeTimeMillis = await controller.getResumeTime(context);
-      await _playVideo(controller, () => entry == _entryNotifier.value, resumeTimeMillis: resumeTimeMillis);
-    }
-  }
-
-  Future<void> _initMultiPageController(AvesEntry entry) async {
-    final multiPageController = context.read<MultiPageConductor>().getOrCreateController(entry);
-    setState(() {});
-
-    final multiPageInfo = multiPageController.info ?? await multiPageController.infoStream.first;
-    assert(multiPageInfo != null);
-    if (multiPageInfo == null) return;
-
-    if (entry.isMotionPhoto) {
-      await multiPageInfo.extractMotionPhotoVideo();
-    }
-
-    final videoPageEntries = multiPageInfo.videoPageEntries;
-    if (videoPageEntries.isNotEmpty) {
-      // init video controllers for all pages that could need it
-      final videoConductor = context.read<VideoConductor>();
-      videoPageEntries.forEach((entry) => videoConductor.getOrCreateController(entry, maxControllerCount: videoPageEntries.length));
-
-      // auto play/pause when changing page
-      Future<void> _onPageChange() async {
-        await _pauseVideoControllers();
-        if (settings.enableVideoAutoPlay || (entry.isMotionPhoto && settings.enableMotionPhotoAutoPlay)) {
-          final page = multiPageController.page;
-          final pageInfo = multiPageInfo.getByIndex(page)!;
-          if (pageInfo.isVideo) {
-            final pageEntry = multiPageInfo.getPageEntryByIndex(page);
-            final pageVideoController = videoConductor.getController(pageEntry);
-            assert(pageVideoController != null);
-            if (pageVideoController != null) {
-              await _playVideo(pageVideoController, () => entry == _entryNotifier.value && page == multiPageController.page);
-            }
-          }
-        }
-      }
-
-      _multiPageControllerPageListeners[multiPageController] = _onPageChange;
-      multiPageController.pageNotifier.addListener(_onPageChange);
-      await _onPageChange();
-
-      if (entry.isMotionPhoto && settings.enableMotionPhotoAutoPlay) {
-        await Future.delayed(Durations.motionPhotoAutoPlayDelay);
-        if (entry == _entryNotifier.value) {
-          multiPageController.page = 1;
-        }
-      }
-    }
-  }
-
-  Future<void> _cleanMultiPageController(AvesEntry entry) async {
-    final multiPageController = _multiPageControllerPageListeners.keys.firstWhereOrNull((v) => v.entry == entry);
-    if (multiPageController != null) {
-      final _onPageChange = _multiPageControllerPageListeners.remove(multiPageController);
-      if (_onPageChange != null) {
-        multiPageController.pageNotifier.removeListener(_onPageChange);
-      }
-    }
-  }
-
-  Future<void> _playVideo(AvesVideoController videoController, bool Function() isCurrent, {int? resumeTimeMillis}) async {
-    // video decoding may fail or have initial artifacts when the player initializes
-    // during this widget initialization (because of the page transition and hero animation?)
-    // so we play after a delay for increased stability
-    await Future.delayed(const Duration(milliseconds: 300) * timeDilation);
-
-    if (resumeTimeMillis != null) {
-      await videoController.seekTo(resumeTimeMillis);
-    } else {
-      await videoController.play();
-    }
-
-    // playing controllers are paused when the entry changes,
-    // but the controller may still be preparing (not yet playing) when this happens
-    // so we make sure the current entry is still the same to keep playing
-    if (!isCurrent()) {
-      await videoController.pause();
-    }
-  }
-
-  Future<void> _pauseVideoControllers() => context.read<VideoConductor>().pauseAll();
 }

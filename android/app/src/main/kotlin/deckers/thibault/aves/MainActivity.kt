@@ -332,6 +332,7 @@ class MainActivity : FlutterActivity() {
 
         const val INTENT_ACTION_PICK = "pick"
         const val INTENT_ACTION_SEARCH = "search"
+        const val INTENT_ACTION_SET_WALLPAPER = "set_wallpaper"
         const val INTENT_ACTION_VIEW = "view"
 
         const val SHORTCUT_KEY_PAGE = "page"

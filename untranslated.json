@@ -1,53 +1,100 @@
 {
   "de": [
+    "wallpaperTargetHome",
+    "wallpaperTargetLock",
+    "wallpaperTargetHomeLock",
     "collectionEmptyGrantAccessButtonLabel",
-    "settingsThemeEnableDynamicColor"
+    "settingsThemeEnableDynamicColor",
+    "viewerSetWallpaperButtonLabel"
   ],
 
   "es": [
+    "wallpaperTargetHome",
+    "wallpaperTargetLock",
+    "wallpaperTargetHomeLock",
     "collectionEmptyGrantAccessButtonLabel",
     "settingsShowBottomNavigationBar",
     "settingsThumbnailShowTagIcon",
-    "settingsThemeEnableDynamicColor"
+    "settingsThemeEnableDynamicColor",
+    "viewerSetWallpaperButtonLabel"
   ],
 
   "fr": [
+    "wallpaperTargetHome",
+    "wallpaperTargetLock",
+    "wallpaperTargetHomeLock",
     "collectionEmptyGrantAccessButtonLabel",
-    "settingsThemeEnableDynamicColor"
+    "settingsThemeEnableDynamicColor",
+    "viewerSetWallpaperButtonLabel"
   ],
 
   "id": [
+    "wallpaperTargetHome",
+    "wallpaperTargetLock",
+    "wallpaperTargetHomeLock",
     "collectionEmptyGrantAccessButtonLabel",
-    "settingsThemeEnableDynamicColor"
+    "settingsThemeEnableDynamicColor",
+    "viewerSetWallpaperButtonLabel"
   ],
 
   "it": [
+    "wallpaperTargetHome",
+    "wallpaperTargetLock",
+    "wallpaperTargetHomeLock",
     "collectionEmptyGrantAccessButtonLabel",
-    "settingsThemeEnableDynamicColor"
+    "settingsThemeEnableDynamicColor",
+    "viewerSetWallpaperButtonLabel"
   ],
 
   "ja": [
+    "wallpaperTargetHome",
+    "wallpaperTargetLock",
+    "wallpaperTargetHomeLock",
     "collectionEmptyGrantAccessButtonLabel",
-    "settingsThemeEnableDynamicColor"
+    "settingsThemeEnableDynamicColor",
+    "viewerSetWallpaperButtonLabel"
   ],
 
   "ko": [
+    "wallpaperTargetHome",
+    "wallpaperTargetLock",
+    "wallpaperTargetHomeLock",
     "collectionEmptyGrantAccessButtonLabel",
-    "settingsThemeEnableDynamicColor"
+    "settingsThemeEnableDynamicColor",
+    "viewerSetWallpaperButtonLabel"
   ],
 
   "pt": [
+    "wallpaperTargetHome",
+    "wallpaperTargetLock",
+    "wallpaperTargetHomeLock",
     "collectionEmptyGrantAccessButtonLabel",
-    "settingsThemeEnableDynamicColor"
+    "settingsThemeEnableDynamicColor",
+    "viewerSetWallpaperButtonLabel"
   ],
 
   "ru": [
+    "wallpaperTargetHome",
+    "wallpaperTargetLock",
+    "wallpaperTargetHomeLock",
     "collectionEmptyGrantAccessButtonLabel",
-    "settingsThemeEnableDynamicColor"
+    "settingsThemeEnableDynamicColor",
+    "viewerSetWallpaperButtonLabel"
+  ],
+
+  "tr": [
+    "wallpaperTargetHome",
+    "wallpaperTargetLock",
+    "wallpaperTargetHomeLock",
+    "viewerSetWallpaperButtonLabel"
   ],
 
   "zh": [
+    "wallpaperTargetHome",
+    "wallpaperTargetLock",
+    "wallpaperTargetHomeLock",
     "collectionEmptyGrantAccessButtonLabel",
-    "settingsThemeEnableDynamicColor"
+    "settingsThemeEnableDynamicColor",
+    "viewerSetWallpaperButtonLabel"
   ]
 }

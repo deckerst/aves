@@ -6,7 +6,6 @@ import 'package:aves/model/entry_images.dart';
 import 'package:aves/model/settings/enums/entry_background.dart';
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
-import 'package:aves/utils/math_utils.dart';
 import 'package:aves/widgets/common/fx/checkered_decoration.dart';
 import 'package:aves/widgets/viewer/visual/entry_page_view.dart';
 import 'package:aves/widgets/viewer/visual/state.dart';
@@ -63,9 +62,6 @@ class _RasterImageViewState extends State<RasterImageView> {
       return entry.uriImage;
     }
   }
-
-  // magic number used to derive sample size from scale
-  static const scaleFactor = 2.0;
 
   @override
   void initState() {
@@ -145,10 +141,10 @@ class _RasterImageViewState extends State<RasterImageView> {
   }
 
   void _initTiling(Size viewportSize) {
-    _tileSide = viewportSize.shortestSide * scaleFactor;
+    _tileSide = viewportSize.shortestSide * ExtraAvesEntryImages.scaleFactor;
     // scale for initial state `contained`
     final containedScale = min(viewportSize.width / _displaySize.width, viewportSize.height / _displaySize.height);
-    _maxSampleSize = _sampleSizeForScale(containedScale);
+    _maxSampleSize = ExtraAvesEntryImages.sampleSizeForScale(containedScale);
 
     final rotationDegrees = entry.rotationDegrees;
     final isFlipped = entry.isFlipped;
@@ -244,7 +240,7 @@ class _RasterImageViewState extends State<RasterImageView> {
     );
     final tiles = [fullImageRegionTile];
 
-    var minSampleSize = min(_sampleSizeForScale(scale), _maxSampleSize);
+    var minSampleSize = min(ExtraAvesEntryImages.sampleSizeForScale(scale), _maxSampleSize);
     int nextSampleSize(int sampleSize) => (sampleSize / 2).floor();
     for (var sampleSize = nextSampleSize(_maxSampleSize); sampleSize >= minSampleSize; sampleSize = nextSampleSize(sampleSize)) {
       final regionSide = (_tileSide * sampleSize).round();
@@ -316,14 +312,6 @@ class _RasterImageViewState extends State<RasterImageView> {
       regionRect = Rectangle<int>(x, y, thisRegionWidth, thisRegionHeight);
     }
     return Tuple2<Rect, Rectangle<int>>(tileRect, regionRect);
-  }
-
-  int _sampleSizeForScale(double scale) {
-    var sample = 0;
-    if (0 < scale && scale < 1) {
-      sample = highestPowerOf2((1 / scale) / scaleFactor);
-    }
-    return max<int>(1, sample);
   }
 }
 
