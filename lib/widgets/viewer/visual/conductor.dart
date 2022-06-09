@@ -31,6 +31,7 @@ class ViewStateConductor {
         final initialValue = ViewState(
           position: Offset.zero,
           scale: ScaleBoundaries(
+            allowOriginalScaleBeyondRange: true,
             minScale: initialScale,
             maxScale: initialScale,
             initialScale: initialScale,

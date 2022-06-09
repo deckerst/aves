@@ -188,6 +188,10 @@
   "themeBrightnessDark": "Dark",
   "themeBrightnessBlack": "Black",
 
+  "wallpaperTargetHome": "Home screen",
+  "wallpaperTargetLock": "Lock screen",
+  "wallpaperTargetHomeLock": "Home and lock screens",
+
   "albumTierNew": "New",
   "albumTierPinned": "Pinned",
   "albumTierSpecial": "Common",
@@ -747,6 +751,7 @@
   "statsTopTags": "Top Tags",
 
   "viewerOpenPanoramaButtonLabel": "OPEN PANORAMA",
+  "viewerSetWallpaperButtonLabel": "SET WALLPAPER",
   "viewerErrorUnknown": "Oops!",
   "viewerErrorDoesNotExist": "The file no longer exists.",
 

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:aves/app_mode.dart';
 import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/entry_images.dart';
@@ -71,10 +72,6 @@ class _EntryPageViewState extends State<EntryPageView> {
 
   // use the high res photo as cover for the video part of a motion photo
   ImageProvider get videoCoverUriImage => mainEntry.isMotionPhoto ? mainEntry.uriImage : entry.uriImage;
-
-  static const initialScale = ScaleLevel(ref: ScaleReference.contained);
-  static const minScale = ScaleLevel(ref: ScaleReference.contained);
-  static const maxScale = ScaleLevel(factor: 2.0);
 
   @override
   void initState() {
@@ -307,6 +304,16 @@ class _EntryPageViewState extends State<EntryPageView> {
             opacity: showCover ? 1 : 0,
             curve: Curves.easeInCirc,
             duration: Durations.viewerVideoPlayerTransition,
+            onEnd: () {
+              // while cover is fading out, the same controller is used for both the cover and the video,
+              // and both fire scale boundaries events, so we make sure that in the end
+              // the scale boundaries from the video are used after the cover is gone
+              _magnifierController.setScaleBoundaries(
+                _magnifierController.scaleBoundaries.copyWith(
+                  childSize: videoDisplaySize,
+                ),
+              );
+            },
             child: ValueListenableBuilder<ImageInfo?>(
               valueListenable: _videoCoverInfoNotifier,
               builder: (context, videoCoverInfo, child) {
@@ -356,20 +363,24 @@ class _EntryPageViewState extends State<EntryPageView> {
   Widget _buildMagnifier({
     MagnifierController? controller,
     Size? displaySize,
-    ScaleLevel maxScale = maxScale,
+    ScaleLevel maxScale = const ScaleLevel(factor: 2.0),
     ScaleStateCycle scaleStateCycle = defaultScaleStateCycle,
     bool applyScale = true,
     MagnifierDoubleTapCallback? onDoubleTap,
     required Widget child,
   }) {
+    final isWallpaperMode = context.read<ValueNotifier<AppMode>>().value == AppMode.setWallpaper;
+    final minScale = isWallpaperMode ? const ScaleLevel(ref: ScaleReference.covered) : const ScaleLevel(ref: ScaleReference.contained);
+
     return Magnifier(
       // key includes modified date to refresh when the image is modified by metadata (e.g. rotated)
       key: ValueKey('${entry.uri}_${entry.pageId}_${entry.dateModifiedSecs}'),
       controller: controller ?? _magnifierController,
       childSize: displaySize ?? entry.displaySize,
+      allowOriginalScaleBeyondRange: !isWallpaperMode,
       minScale: minScale,
       maxScale: maxScale,
-      initialScale: initialScale,
+      initialScale: minScale,
       scaleStateCycle: scaleStateCycle,
       applyScale: applyScale,
       onTap: (c, d, s, o) => _onTap(),

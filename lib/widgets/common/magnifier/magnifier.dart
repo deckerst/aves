@@ -23,6 +23,7 @@ class Magnifier extends StatelessWidget {
     super.key,
     required this.controller,
     required this.childSize,
+    this.allowOriginalScaleBeyondRange = true,
     this.minScale = const ScaleLevel(factor: .0),
     this.maxScale = const ScaleLevel(factor: double.infinity),
     this.initialScale = const ScaleLevel(ref: ScaleReference.contained),
@@ -37,6 +38,8 @@ class Magnifier extends StatelessWidget {
 
   // The size of the custom [child]. This value is used to compute the relation between the child and the container's size to calculate the scale value.
   final Size childSize;
+
+  final bool allowOriginalScaleBeyondRange;
 
   // Defines the minimum size in which the image will be allowed to assume, it is proportional to the original image size.
   final ScaleLevel minScale;
@@ -58,6 +61,7 @@ class Magnifier extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         controller.setScaleBoundaries(ScaleBoundaries(
+          allowOriginalScaleBeyondRange: allowOriginalScaleBeyondRange,
           minScale: minScale,
           maxScale: maxScale,
           initialScale: initialScale,

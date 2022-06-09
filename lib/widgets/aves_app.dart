@@ -16,6 +16,7 @@ import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/media_store_source.dart';
 import 'package:aves/services/accessibility_service.dart';
+import 'package:aves/services/common/optional_event_channel.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/durations.dart';
@@ -81,10 +82,10 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   // observers are not registered when using the same list object with different items
   // the list itself needs to be reassigned
   List<NavigatorObserver> _navigatorObservers = [AvesApp.pageRouteObserver];
-  final EventChannel _mediaStoreChangeChannel = const EventChannel('deckers.thibault/aves/media_store_change');
-  final EventChannel _newIntentChannel = const EventChannel('deckers.thibault/aves/intent');
-  final EventChannel _analysisCompletionChannel = const EventChannel('deckers.thibault/aves/analysis_events');
-  final EventChannel _errorChannel = const EventChannel('deckers.thibault/aves/error');
+  final EventChannel _mediaStoreChangeChannel = const OptionalEventChannel('deckers.thibault/aves/media_store_change');
+  final EventChannel _newIntentChannel = const OptionalEventChannel('deckers.thibault/aves/intent');
+  final EventChannel _analysisCompletionChannel = const OptionalEventChannel('deckers.thibault/aves/analysis_events');
+  final EventChannel _errorChannel = const OptionalEventChannel('deckers.thibault/aves/error');
 
   Widget getFirstPage({Map? intentData}) => settings.hasAcceptedTerms ? HomePage(intentData: intentData) : const WelcomePage();
 
@@ -229,6 +230,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
             break;
           case AppMode.pickMediaInternal:
           case AppMode.pickFilterInternal:
+          case AppMode.setWallpaper:
           case AppMode.view:
             break;
         }
