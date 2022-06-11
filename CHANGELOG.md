@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file.
 ### Changed
 
 - do not force quit on storage permission denial
+- upgraded Flutter to stable v3.0.2
 
 ### Fixed
 
