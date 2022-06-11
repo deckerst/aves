@@ -50,6 +50,9 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
 
   void onActionSelected(BuildContext context, EntryAction action) {
     switch (action) {
+      case EntryAction.info:
+        ShowInfoNotification().dispatch(context);
+        break;
       case EntryAction.addShortcut:
         _addShortcut(context);
         break;

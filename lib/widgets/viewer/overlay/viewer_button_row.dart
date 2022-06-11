@@ -92,6 +92,7 @@ class ViewerButtonRow extends StatelessWidget {
             return settings.isRotationLocked;
           case EntryAction.addShortcut:
             return device.canPinShortcut;
+          case EntryAction.info:
           case EntryAction.copyToClipboard:
           case EntryAction.edit:
           case EntryAction.open:

@@ -4,6 +4,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/widgets.dart';
 
 enum EntryAction {
+  info,
   addShortcut,
   copyToClipboard,
   delete,
@@ -43,6 +44,7 @@ enum EntryAction {
 
 class EntryActions {
   static const topLevel = [
+    EntryAction.info,
     EntryAction.share,
     EntryAction.edit,
     EntryAction.rename,
@@ -102,6 +104,8 @@ class EntryActions {
 extension ExtraEntryAction on EntryAction {
   String getText(BuildContext context) {
     switch (this) {
+      case EntryAction.info:
+        return context.l10n.entryActionInfo;
       case EntryAction.addShortcut:
         return context.l10n.collectionActionAddShortcut;
       case EntryAction.copyToClipboard:
@@ -188,6 +192,8 @@ extension ExtraEntryAction on EntryAction {
 
   IconData getIconData() {
     switch (this) {
+      case EntryAction.info:
+        return AIcons.info;
       case EntryAction.addShortcut:
         return AIcons.addShortcut;
       case EntryAction.copyToClipboard:

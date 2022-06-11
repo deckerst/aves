@@ -50,6 +50,7 @@
   "entryActionDelete": "删除",
   "entryActionConvert": "转换",
   "entryActionExport": "导出",
+  "entryActionInfo": "信息",
   "entryActionRename": "重命名",
   "entryActionRestore": "恢复",
   "entryActionRotateCCW": "逆时针旋转",

@@ -50,6 +50,7 @@
   "entryActionDelete": "삭제",
   "entryActionConvert": "변환",
   "entryActionExport": "내보내기",
+  "entryActionInfo": "상세정보",
   "entryActionRename": "이름 변경",
   "entryActionRestore": "복원",
   "entryActionRotateCCW": "좌회전",

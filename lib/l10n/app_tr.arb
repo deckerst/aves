@@ -50,6 +50,7 @@
   "entryActionDelete": "Sil",
   "entryActionConvert": "Dönüştür",
   "entryActionExport": "Dışa aktar",
+  "entryActionInfo": "Bilgi",
   "entryActionRename": "Yeniden adlandır",
   "entryActionRestore": "Dışa aktar",
   "entryActionRotateCCW": "Saat yönünün tersine döndür",

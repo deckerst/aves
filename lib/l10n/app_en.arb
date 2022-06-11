@@ -78,6 +78,7 @@
   "entryActionDelete": "Delete",
   "entryActionConvert": "Convert",
   "entryActionExport": "Export",
+  "entryActionInfo": "Info",
   "entryActionRename": "Rename",
   "entryActionRestore": "Restore",
   "entryActionRotateCCW": "Rotate counterclockwise",
