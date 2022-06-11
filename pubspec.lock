@@ -785,11 +785,13 @@ packages:
     source: hosted
     version: "9.2.0"
   permission_handler_android:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: permission_handler_android
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: permission_handler_android
+      ref: HEAD
+      resolved-ref: "279cf44656272c6b89c73b16097108f3c973c31f"
+      url: "https://github.com/deckerst/flutter-permission-handler"
+    source: git
     version: "9.0.2+1"
   permission_handler_apple:
     dependency: transitive

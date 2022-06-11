@@ -159,7 +159,7 @@ class AnalysisService : MethodChannel.MethodCallHandler, Service() {
                 COMMAND_START -> {
                     runBlocking {
                         FlutterUtils.runOnUiThread {
-                            val entryIds = data.get(KEY_ENTRY_IDS)?.takeIf { it is IntArray }?.let { (it as IntArray).toList() }
+                            val entryIds = data.getIntArray(KEY_ENTRY_IDS)?.toList()
                             backgroundChannel?.invokeMethod(
                                 "start", hashMapOf(
                                     "entryIds" to entryIds,

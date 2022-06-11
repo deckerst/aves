@@ -1,12 +1,17 @@
 package deckers.thibault.aves.channel.calls
 
 import android.content.Context
+import android.location.Address
 import android.location.Geocoder
+import android.os.Build
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import java.io.IOException
 import java.util.*
 
@@ -48,36 +53,48 @@ class GeocodingHandler(private val context: Context) : MethodCallHandler {
             Geocoder(context)
         }
 
-        val addresses = try {
-            geocoder!!.getFromLocation(latitude, longitude, maxResults) ?: ArrayList()
-        } catch (e: IOException) {
-            // `grpc failed`, etc.
-            result.error("getAddress-network", "failed to get address because of network issues", e.message)
-            return
-        } catch (e: Exception) {
-            result.error("getAddress-exception", "failed to get address", e.message)
-            return
+        fun processAddresses(addresses: List<Address>) {
+            if (addresses.isEmpty()) {
+                result.error("getAddress-empty", "failed to find any address for latitude=$latitude, longitude=$longitude", null)
+            } else {
+                val addressMapList: ArrayList<Map<String, String?>> = ArrayList(addresses.map { address ->
+                    hashMapOf(
+                        "addressLine" to (0..address.maxAddressLineIndex).joinToString(", ") { i -> address.getAddressLine(i) },
+                        "adminArea" to address.adminArea,
+                        "countryCode" to address.countryCode,
+                        "countryName" to address.countryName,
+                        "featureName" to address.featureName,
+                        "locality" to address.locality,
+                        "postalCode" to address.postalCode,
+                        "subAdminArea" to address.subAdminArea,
+                        "subLocality" to address.subLocality,
+                        "subThoroughfare" to address.subThoroughfare,
+                        "thoroughfare" to address.thoroughfare,
+                    )
+                })
+                result.success(addressMapList)
+            }
         }
 
-        if (addresses.isEmpty()) {
-            result.error("getAddress-empty", "failed to find any address for latitude=$latitude, longitude=$longitude", null)
-        } else {
-            val addressMapList: ArrayList<Map<String, String?>> = ArrayList(addresses.map { address ->
-                hashMapOf(
-                    "addressLine" to (0..address.maxAddressLineIndex).joinToString(", ") { i -> address.getAddressLine(i) },
-                    "adminArea" to address.adminArea,
-                    "countryCode" to address.countryCode,
-                    "countryName" to address.countryName,
-                    "featureName" to address.featureName,
-                    "locality" to address.locality,
-                    "postalCode" to address.postalCode,
-                    "subAdminArea" to address.subAdminArea,
-                    "subLocality" to address.subLocality,
-                    "subThoroughfare" to address.subThoroughfare,
-                    "thoroughfare" to address.thoroughfare,
-                )
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            geocoder!!.getFromLocation(latitude, longitude, maxResults, object : Geocoder.GeocodeListener {
+                override fun onGeocode(addresses: List<Address?>) = processAddresses(addresses.filterNotNull())
+
+                override fun onError(errorMessage: String?) {
+                    result.error("getAddress-asyncerror", "failed to get address", errorMessage)
+                }
             })
-            result.success(addressMapList)
+        } else {
+            try {
+                @Suppress("deprecation")
+                val addresses = geocoder!!.getFromLocation(latitude, longitude, maxResults) ?: ArrayList()
+                processAddresses(addresses)
+            } catch (e: IOException) {
+                // `grpc failed`, etc.
+                result.error("getAddress-network", "failed to get address because of network issues", e.message)
+            } catch (e: Exception) {
+                result.error("getAddress-exception", "failed to get address", e.message)
+            }
         }
     }
 

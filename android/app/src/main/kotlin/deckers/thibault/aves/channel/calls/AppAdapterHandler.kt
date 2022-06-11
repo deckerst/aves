@@ -30,6 +30,8 @@ import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.utils.BitmapUtils
 import deckers.thibault.aves.utils.BitmapUtils.getBytes
 import deckers.thibault.aves.utils.LogUtils
+import deckers.thibault.aves.utils.getApplicationInfoCompat
+import deckers.thibault.aves.utils.queryIntentActivitiesCompat
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
@@ -77,7 +79,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
             }
 
             val pm = context.packageManager
-            for (resolveInfo in pm.queryIntentActivities(intent, 0)) {
+            for (resolveInfo in pm.queryIntentActivitiesCompat(intent, 0)) {
                 val appInfo = resolveInfo.activityInfo.applicationInfo
                 val packageName = appInfo.packageName
                 if (!packages.containsKey(packageName)) {
@@ -149,7 +151,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
         val size = (sizeDip * density).roundToInt()
         var data: ByteArray? = null
         try {
-            val iconResourceId = context.packageManager.getApplicationInfo(packageName, 0).icon
+            val iconResourceId = context.packageManager.getApplicationInfoCompat(packageName, 0).icon
             if (iconResourceId != Resources.ID_NULL) {
                 val uri = Uri.Builder()
                     .scheme(ContentResolver.SCHEME_ANDROID_RESOURCE)

@@ -8,6 +8,7 @@ import app.loup.streams_channel.StreamsChannel
 import deckers.thibault.aves.channel.calls.*
 import deckers.thibault.aves.channel.streams.ImageByteStreamHandler
 import deckers.thibault.aves.utils.LogUtils
+import deckers.thibault.aves.utils.getParcelableExtraCompat
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.plugin.common.MethodChannel
 
@@ -79,7 +80,7 @@ class WallpaperActivity : FlutterActivity() {
     private fun extractIntentData(intent: Intent?): MutableMap<String, Any?> {
         when (intent?.action) {
             Intent.ACTION_ATTACH_DATA, Intent.ACTION_SET_WALLPAPER -> {
-                (intent.data ?: (intent.getParcelableExtra<Parcelable>(Intent.EXTRA_STREAM) as? Uri))?.let { uri ->
+                (intent.data ?: intent.getParcelableExtraCompat<Uri>(Intent.EXTRA_STREAM))?.let { uri ->
                     // MIME type is optional
                     val type = intent.type ?: intent.resolveType(context)
                     return hashMapOf(
