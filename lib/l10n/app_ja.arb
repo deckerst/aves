@@ -50,6 +50,7 @@
   "entryActionDelete": "削除",
   "entryActionConvert": "変換",
   "entryActionExport": "エクスポート",
+  "entryActionInfo": "情報",
   "entryActionRename": "名前を変更",
   "entryActionRestore": "元に戻す",
   "entryActionRotateCCW": "反時計回りに回転",

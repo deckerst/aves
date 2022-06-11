@@ -50,6 +50,7 @@
   "entryActionDelete": "Borrar",
   "entryActionConvert": "Convertir",
   "entryActionExport": "Exportar",
+  "entryActionInfo": "Información",
   "entryActionRename": "Renombrar",
   "entryActionRestore": "Restaurar",
   "entryActionRotateCCW": "Rotar en sentido antihorario",

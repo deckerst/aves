@@ -50,6 +50,7 @@
   "entryActionDelete": "Удалить",
   "entryActionConvert": "Конвертировать",
   "entryActionExport": "Экспорт",
+  "entryActionInfo": "Информация",
   "entryActionRename": "Переименовать",
   "entryActionRestore": "Восстановить",
   "entryActionRotateCCW": "Повернуть против часовой стрелки",
