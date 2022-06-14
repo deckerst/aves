@@ -22,7 +22,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 
-class ViewerButtonRow extends StatelessWidget {
+class ViewerButtons extends StatelessWidget {
   final AvesEntry mainEntry;
   final AvesEntry pageEntry;
   final Animation<double> scale;
@@ -35,7 +35,7 @@ class ViewerButtonRow extends StatelessWidget {
 
   static double _buttonSize(BuildContext context) => OverlayButton.getSize(context);
 
-  const ViewerButtonRow({
+  const ViewerButtons({
     super.key,
     required this.mainEntry,
     required this.pageEntry,

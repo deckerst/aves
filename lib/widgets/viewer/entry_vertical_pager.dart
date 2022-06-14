@@ -2,14 +2,17 @@ import 'dart:async';
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:aves/app_mode.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/magnifier/pan/scroll_physics.dart';
+import 'package:aves/widgets/viewer/controller.dart';
 import 'package:aves/widgets/viewer/entry_horizontal_pager.dart';
 import 'package:aves/widgets/viewer/info/info_page.dart';
 import 'package:aves/widgets/viewer/notifications.dart';
+import 'package:aves/widgets/viewer/overlay/notifications.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -19,6 +22,7 @@ import 'package:screen_brightness/screen_brightness.dart';
 class ViewerVerticalPageView extends StatefulWidget {
   final CollectionLens? collection;
   final ValueNotifier<AvesEntry?> entryNotifier;
+  final ViewerController viewerController;
   final PageController horizontalPager, verticalPager;
   final void Function(int page) onVerticalPageChanged, onHorizontalPageChanged;
   final VoidCallback onImagePageRequested;
@@ -28,6 +32,7 @@ class ViewerVerticalPageView extends StatefulWidget {
     super.key,
     required this.collection,
     required this.entryNotifier,
+    required this.viewerController,
     required this.verticalPager,
     required this.horizontalPager,
     required this.onVerticalPageChanged,
@@ -41,6 +46,7 @@ class ViewerVerticalPageView extends StatefulWidget {
 }
 
 class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
+  final List<StreamSubscription> _subscriptions = [];
   final ValueNotifier<double> _backgroundOpacityNotifier = ValueNotifier(1);
   final ValueNotifier<bool> _isVerticallyScrollingNotifier = ValueNotifier(false);
   Timer? _verticalScrollMonitoringTimer;
@@ -80,12 +86,21 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
   }
 
   void _registerWidget(ViewerVerticalPageView widget) {
+    _subscriptions.add(widget.viewerController.showNextCommands.listen((event) {
+      _goToHorizontalPage(1, animate: true);
+    }));
+    _subscriptions.add(widget.viewerController.overlayCommands.listen((event) {
+      ToggleOverlayNotification(visible: event.visible).dispatch(context);
+    }));
     widget.verticalPager.addListener(_onVerticalPageControllerChanged);
     widget.entryNotifier.addListener(_onEntryChanged);
     if (_oldEntry != entry) _onEntryChanged();
   }
 
   void _unregisterWidget(ViewerVerticalPageView widget) {
+    _subscriptions
+      ..forEach((sub) => sub.cancel())
+      ..clear();
     widget.verticalPager.removeListener(_onVerticalPageControllerChanged);
     widget.entryNotifier.removeListener(_onEntryChanged);
     _oldEntry?.imageChangeNotifier.removeListener(_onImageChanged);
@@ -96,34 +111,36 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
     // fake page for opacity transition between collection and viewer
     const transitionPage = SizedBox();
 
-    final imagePage = _buildImagePage();
-
-    final infoPage = NotificationListener<ShowImageNotification>(
-      onNotification: (notification) {
-        widget.onImagePageRequested();
-        return true;
-      },
-      child: AnimatedBuilder(
-        animation: widget.verticalPager,
-        builder: (context, child) {
-          return Visibility(
-            visible: widget.verticalPager.page! > 1,
-            child: child!,
-          );
-        },
-        child: InfoPage(
-          collection: collection,
-          entryNotifier: widget.entryNotifier,
-          isScrollingNotifier: _isVerticallyScrollingNotifier,
-        ),
-      ),
-    );
-
     final pages = [
       transitionPage,
-      imagePage,
-      infoPage,
+      _buildImagePage(),
     ];
+
+    if (context.read<ValueNotifier<AppMode>>().value != AppMode.slideshow) {
+      final infoPage = NotificationListener<ShowImageNotification>(
+        onNotification: (notification) {
+          widget.onImagePageRequested();
+          return true;
+        },
+        child: AnimatedBuilder(
+          animation: widget.verticalPager,
+          builder: (context, child) {
+            return Visibility(
+              visible: widget.verticalPager.page! > 1,
+              child: child!,
+            );
+          },
+          child: InfoPage(
+            collection: collection,
+            entryNotifier: widget.entryNotifier,
+            isScrollingNotifier: _isVerticallyScrollingNotifier,
+          ),
+        ),
+      );
+
+      pages.add(infoPage);
+    }
+
     return ValueListenableBuilder<double>(
       valueListenable: _backgroundOpacityNotifier,
       builder: (context, backgroundOpacity, child) {
@@ -155,6 +172,7 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
     if (hasCollection) {
       child = MultiEntryScroller(
         collection: collection!,
+        viewerController: widget.viewerController,
         pageController: widget.horizontalPager,
         onPageChanged: widget.onHorizontalPageChanged,
         onViewDisposed: widget.onViewDisposed,
@@ -179,8 +197,8 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
         autofocus: true,
         shortcuts: shortcuts,
         actions: {
-          ShowPreviousIntent: CallbackAction<Intent>(onInvoke: (intent) => _jumpHorizontalPage(-1)),
-          ShowNextIntent: CallbackAction<Intent>(onInvoke: (intent) => _jumpHorizontalPage(1)),
+          ShowPreviousIntent: CallbackAction<Intent>(onInvoke: (intent) => _goToHorizontalPage(-1, animate: false)),
+          ShowNextIntent: CallbackAction<Intent>(onInvoke: (intent) => _goToHorizontalPage(1, animate: false)),
           LeaveIntent: CallbackAction<Intent>(onInvoke: (intent) => Navigator.pop(context)),
           ShowInfoIntent: CallbackAction<Intent>(onInvoke: (intent) => ShowInfoNotification().dispatch(context)),
         },
@@ -190,13 +208,24 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
     return const SizedBox();
   }
 
-  void _jumpHorizontalPage(int delta) {
+  void _goToHorizontalPage(int delta, {required bool animate}) {
     final pageController = widget.horizontalPager;
     final page = pageController.page?.round();
     final _collection = collection;
     if (page != null && _collection != null) {
-      final target = (page + delta).clamp(0, _collection.entryCount - 1);
-      pageController.jumpToPage(target);
+      var target = page + delta;
+      if (!widget.viewerController.repeat) {
+        target = target.clamp(0, _collection.entryCount - 1);
+      }
+      if (animate) {
+        pageController.animateToPage(
+          target,
+          duration: const Duration(seconds: 1),
+          curve: Curves.easeInOutCubic,
+        );
+      } else {
+        pageController.jumpToPage(target);
+      }
     }
   }
 

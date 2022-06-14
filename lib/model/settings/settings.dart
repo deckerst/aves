@@ -138,6 +138,13 @@ class Settings extends ChangeNotifier {
   // file picker
   static const filePickerShowHiddenFilesKey = 'file_picker_show_hidden_files';
 
+  // slideshow
+  static const slideshowRepeatKey = 'slideshow_loop';
+  static const slideshowShuffleKey = 'slideshow_shuffle';
+  static const slideshowTransitionKey = 'slideshow_transition';
+  static const slideshowVideoPlaybackKey = 'slideshow_video_playback';
+  static const slideshowIntervalKey = 'slideshow_interval';
+
   // platform settings
   // cf Android `Settings.System.ACCELEROMETER_ROTATION`
   static const platformAccelerometerRotationKey = 'accelerometer_rotation';
@@ -576,6 +583,28 @@ class Settings extends ChangeNotifier {
 
   set filePickerShowHiddenFiles(bool newValue) => setAndNotify(filePickerShowHiddenFilesKey, newValue);
 
+  // slideshow
+
+  bool get slideshowRepeat => getBoolOrDefault(slideshowRepeatKey, SettingsDefaults.slideshowRepeat);
+
+  set slideshowRepeat(bool newValue) => setAndNotify(slideshowRepeatKey, newValue);
+
+  bool get slideshowShuffle => getBoolOrDefault(slideshowShuffleKey, SettingsDefaults.slideshowShuffle);
+
+  set slideshowShuffle(bool newValue) => setAndNotify(slideshowShuffleKey, newValue);
+
+  ViewerTransition get slideshowTransition => getEnumOrDefault(slideshowTransitionKey, SettingsDefaults.slideshowTransition, ViewerTransition.values);
+
+  set slideshowTransition(ViewerTransition newValue) => setAndNotify(slideshowTransitionKey, newValue.toString());
+
+  SlideshowVideoPlayback get slideshowVideoPlayback => getEnumOrDefault(slideshowVideoPlaybackKey, SettingsDefaults.slideshowVideoPlayback, SlideshowVideoPlayback.values);
+
+  set slideshowVideoPlayback(SlideshowVideoPlayback newValue) => setAndNotify(slideshowVideoPlaybackKey, newValue.toString());
+
+  SlideshowInterval get slideshowInterval => getEnumOrDefault(slideshowIntervalKey, SettingsDefaults.slideshowInterval, SlideshowInterval.values);
+
+  set slideshowInterval(SlideshowInterval newValue) => setAndNotify(slideshowIntervalKey, newValue.toString());
+
   // convenience methods
 
   int? getInt(String key) => settingsStore.getInt(key);
@@ -734,6 +763,8 @@ class Settings extends ChangeNotifier {
             case subtitleShowOutlineKey:
             case saveSearchHistoryKey:
             case filePickerShowHiddenFilesKey:
+            case slideshowRepeatKey:
+            case slideshowShuffleKey:
               if (newValue is bool) {
                 settingsStore.setBool(key, newValue);
               } else {
@@ -761,6 +792,9 @@ class Settings extends ChangeNotifier {
             case unitSystemKey:
             case accessibilityAnimationsKey:
             case timeToTakeActionKey:
+            case slideshowTransitionKey:
+            case slideshowVideoPlaybackKey:
+            case slideshowIntervalKey:
               if (newValue is String) {
                 settingsStore.setString(key, newValue);
               } else {

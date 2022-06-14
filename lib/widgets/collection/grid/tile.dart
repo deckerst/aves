@@ -55,6 +55,7 @@ class InteractiveTile extends StatelessWidget {
             break;
           case AppMode.pickFilterInternal:
           case AppMode.setWallpaper:
+          case AppMode.slideshow:
           case AppMode.view:
             break;
         }

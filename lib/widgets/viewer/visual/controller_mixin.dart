@@ -1,4 +1,6 @@
+import 'package:aves/app_mode.dart';
 import 'package:aves/model/entry.dart';
+import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/viewer/multipage/conductor.dart';
@@ -35,11 +37,27 @@ mixin EntryViewControllerMixin<T extends StatefulWidget> on State<T> {
     }
   }
 
+  bool _isSlideshow(BuildContext context) => context.read<ValueNotifier<AppMode>>().value == AppMode.slideshow;
+
+  bool _shouldAutoPlay(BuildContext context) {
+    if (_isSlideshow(context)) {
+      switch (settings.slideshowVideoPlayback) {
+        case SlideshowVideoPlayback.skip:
+          return false;
+        case SlideshowVideoPlayback.playMuted:
+        case SlideshowVideoPlayback.playWithSound:
+          return true;
+      }
+    }
+
+    return settings.enableVideoAutoPlay;
+  }
+
   Future<void> _initVideoController(AvesEntry entry) async {
     final controller = context.read<VideoConductor>().getOrCreateController(entry);
     setState(() {});
 
-    if (settings.enableVideoAutoPlay) {
+    if (_shouldAutoPlay(context)) {
       final resumeTimeMillis = await controller.getResumeTime(context);
       await _playVideo(controller, () => entry == entryNotifier.value, resumeTimeMillis: resumeTimeMillis);
     }
@@ -66,7 +84,7 @@ mixin EntryViewControllerMixin<T extends StatefulWidget> on State<T> {
       // auto play/pause when changing page
       Future<void> _onPageChange() async {
         await pauseVideoControllers();
-        if (settings.enableVideoAutoPlay || (entry.isMotionPhoto && settings.enableMotionPhotoAutoPlay)) {
+        if (_shouldAutoPlay(context) || (entry.isMotionPhoto && settings.enableMotionPhotoAutoPlay)) {
           final page = multiPageController.page;
           final pageInfo = multiPageInfo.getByIndex(page)!;
           if (pageInfo.isVideo) {
@@ -108,6 +126,10 @@ mixin EntryViewControllerMixin<T extends StatefulWidget> on State<T> {
     // during this widget initialization (because of the page transition and hero animation?)
     // so we play after a delay for increased stability
     await Future.delayed(const Duration(milliseconds: 300) * timeDilation);
+
+    if (_isSlideshow(context) && settings.slideshowVideoPlayback == SlideshowVideoPlayback.playMuted && !videoController.isMuted) {
+      await videoController.toggleMute();
+    }
 
     if (resumeTimeMillis != null) {
       await videoController.seekTo(resumeTimeMillis);

@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
+- slideshow
 - set wallpaper from any media
 - optional dynamic accent color on Android 12+
 - support Android 13 (API 33)

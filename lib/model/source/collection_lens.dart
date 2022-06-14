@@ -32,7 +32,7 @@ class CollectionLens with ChangeNotifier {
   final AChangeNotifier filterChangeNotifier = AChangeNotifier(), sortSectionChangeNotifier = AChangeNotifier();
   final List<StreamSubscription> _subscriptions = [];
   int? id;
-  bool listenToSource, groupBursts;
+  bool listenToSource, groupBursts, fixedSort;
   List<AvesEntry>? fixedSelection;
 
   List<AvesEntry> _filteredSortedEntries = [];
@@ -45,6 +45,7 @@ class CollectionLens with ChangeNotifier {
     this.id,
     this.listenToSource = true,
     this.groupBursts = true,
+    this.fixedSort = false,
     this.fixedSelection,
   })  : filters = (filters ?? {}).whereNotNull().toSet(),
         sectionFactor = settings.collectionSectionFactor,
@@ -203,6 +204,8 @@ class CollectionLens with ChangeNotifier {
   }
 
   void _applySort() {
+    if (fixedSort) return;
+
     switch (sortFactor) {
       case EntrySortFactor.date:
         _filteredSortedEntries.sort(AvesEntry.compareByDate);
@@ -220,37 +223,43 @@ class CollectionLens with ChangeNotifier {
   }
 
   void _applySection() {
-    switch (sortFactor) {
-      case EntrySortFactor.date:
-        switch (sectionFactor) {
-          case EntryGroupFactor.album:
-            sections = groupBy<AvesEntry, EntryAlbumSectionKey>(_filteredSortedEntries, (entry) => EntryAlbumSectionKey(entry.directory));
-            break;
-          case EntryGroupFactor.month:
-            sections = groupBy<AvesEntry, EntryDateSectionKey>(_filteredSortedEntries, (entry) => EntryDateSectionKey(entry.monthTaken));
-            break;
-          case EntryGroupFactor.day:
-            sections = groupBy<AvesEntry, EntryDateSectionKey>(_filteredSortedEntries, (entry) => EntryDateSectionKey(entry.dayTaken));
-            break;
-          case EntryGroupFactor.none:
-            sections = Map.fromEntries([
-              MapEntry(const SectionKey(), _filteredSortedEntries),
-            ]);
-            break;
-        }
-        break;
-      case EntrySortFactor.name:
-        final byAlbum = groupBy<AvesEntry, EntryAlbumSectionKey>(_filteredSortedEntries, (entry) => EntryAlbumSectionKey(entry.directory));
-        sections = SplayTreeMap<EntryAlbumSectionKey, List<AvesEntry>>.of(byAlbum, (a, b) => source.compareAlbumsByName(a.directory!, b.directory!));
-        break;
-      case EntrySortFactor.rating:
-        sections = groupBy<AvesEntry, EntryRatingSectionKey>(_filteredSortedEntries, (entry) => EntryRatingSectionKey(entry.rating));
-        break;
-      case EntrySortFactor.size:
-        sections = Map.fromEntries([
-          MapEntry(const SectionKey(), _filteredSortedEntries),
-        ]);
-        break;
+    if (fixedSort) {
+      sections = Map.fromEntries([
+        MapEntry(const SectionKey(), _filteredSortedEntries),
+      ]);
+    } else {
+      switch (sortFactor) {
+        case EntrySortFactor.date:
+          switch (sectionFactor) {
+            case EntryGroupFactor.album:
+              sections = groupBy<AvesEntry, EntryAlbumSectionKey>(_filteredSortedEntries, (entry) => EntryAlbumSectionKey(entry.directory));
+              break;
+            case EntryGroupFactor.month:
+              sections = groupBy<AvesEntry, EntryDateSectionKey>(_filteredSortedEntries, (entry) => EntryDateSectionKey(entry.monthTaken));
+              break;
+            case EntryGroupFactor.day:
+              sections = groupBy<AvesEntry, EntryDateSectionKey>(_filteredSortedEntries, (entry) => EntryDateSectionKey(entry.dayTaken));
+              break;
+            case EntryGroupFactor.none:
+              sections = Map.fromEntries([
+                MapEntry(const SectionKey(), _filteredSortedEntries),
+              ]);
+              break;
+          }
+          break;
+        case EntrySortFactor.name:
+          final byAlbum = groupBy<AvesEntry, EntryAlbumSectionKey>(_filteredSortedEntries, (entry) => EntryAlbumSectionKey(entry.directory));
+          sections = SplayTreeMap<EntryAlbumSectionKey, List<AvesEntry>>.of(byAlbum, (a, b) => source.compareAlbumsByName(a.directory!, b.directory!));
+          break;
+        case EntrySortFactor.rating:
+          sections = groupBy<AvesEntry, EntryRatingSectionKey>(_filteredSortedEntries, (entry) => EntryRatingSectionKey(entry.rating));
+          break;
+        case EntrySortFactor.size:
+          sections = Map.fromEntries([
+            MapEntry(const SectionKey(), _filteredSortedEntries),
+          ]);
+          break;
+      }
     }
     sections = Map.unmodifiable(sections);
     _sortedEntries = null;

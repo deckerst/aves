@@ -1,9 +1,11 @@
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/settings/enums/accessibility_animations.dart';
+import 'package:aves/model/settings/enums/viewer_transition.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/widgets/common/magnifier/pan/gesture_detector_scope.dart';
 import 'package:aves/widgets/common/magnifier/pan/scroll_physics.dart';
+import 'package:aves/widgets/viewer/controller.dart';
 import 'package:aves/widgets/viewer/multipage/conductor.dart';
 import 'package:aves/widgets/viewer/page_entry_builder.dart';
 import 'package:aves/widgets/viewer/visual/entry_page_view.dart';
@@ -13,6 +15,7 @@ import 'package:provider/provider.dart';
 
 class MultiEntryScroller extends StatefulWidget {
   final CollectionLens collection;
+  final ViewerController viewerController;
   final PageController pageController;
   final ValueChanged<int> onPageChanged;
   final void Function(AvesEntry mainEntry, AvesEntry? pageEntry) onViewDisposed;
@@ -20,6 +23,7 @@ class MultiEntryScroller extends StatefulWidget {
   const MultiEntryScroller({
     super.key,
     required this.collection,
+    required this.viewerController,
     required this.pageController,
     required this.onPageChanged,
     required this.onViewDisposed,
@@ -31,6 +35,8 @@ class MultiEntryScroller extends StatefulWidget {
 
 class _MultiEntryScrollerState extends State<MultiEntryScroller> with AutomaticKeepAliveClientMixin {
   List<AvesEntry> get entries => widget.collection.sortedEntries;
+
+  ViewerController get viewerController => widget.viewerController;
 
   PageController get pageController => widget.pageController;
 
@@ -51,45 +57,29 @@ class _MultiEntryScrollerState extends State<MultiEntryScroller> with AutomaticK
         ),
         onPageChanged: widget.onPageChanged,
         itemBuilder: (context, index) {
-          final mainEntry = entries[index];
+          final mainEntry = entries[index % entries.length];
 
-          var child = mainEntry.isMultiPage
+          final child = mainEntry.isMultiPage
               ? PageEntryBuilder(
                   multiPageController: context.read<MultiPageConductor>().getController(mainEntry),
                   builder: (pageEntry) => _buildViewer(mainEntry, pageEntry: pageEntry),
                 )
               : _buildViewer(mainEntry);
 
-          child = Selector<Settings, bool>(
+          return Selector<Settings, bool>(
             selector: (context, s) => s.accessibilityAnimations.animate,
             builder: (context, animate, child) {
-              return animate
-                  ? AnimatedBuilder(
-                      animation: pageController,
-                      builder: (context, child) {
-                        // parallax scrolling
-                        double dx = 0;
-                        if (pageController.hasClients && pageController.position.haveDimensions) {
-                          final delta = pageController.page! - index;
-                          dx = delta * pageController.position.viewportDimension / 2;
-                        }
-                        return Transform.translate(
-                          offset: Offset(dx, 0),
-                          child: child,
-                        );
-                      },
-                      child: child,
-                    )
-                  : child!;
+              if (!animate) return child!;
+              return AnimatedBuilder(
+                animation: pageController,
+                builder: viewerController.transition.builder(pageController, index),
+                child: child,
+              );
             },
             child: child,
           );
-
-          return ClipRect(
-            child: child,
-          );
         },
-        itemCount: entries.length,
+        itemCount: viewerController.repeat ? null : entries.length,
       ),
     );
   }
