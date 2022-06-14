@@ -196,10 +196,10 @@
   "themeBrightnessDark": "Dark",
   "themeBrightnessBlack": "Black",
 
-  "viewerTransitionFade": "Fade",
-  "viewerTransitionFadeZoomIn": "Fade & zoom in",
-  "viewerTransitionParallax": "Parallax",
   "viewerTransitionSlide": "Slide",
+  "viewerTransitionParallax": "Parallax",
+  "viewerTransitionFade": "Fade",
+  "viewerTransitionZoomIn": "Zoom in",
 
   "wallpaperTargetHome": "Home screen",
   "wallpaperTargetLock": "Lock screen",

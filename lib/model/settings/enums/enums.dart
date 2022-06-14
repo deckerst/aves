@@ -28,4 +28,4 @@ enum VideoControls { play, playSeek, playOutside, none }
 
 enum VideoLoopMode { never, shortOnly, always }
 
-enum ViewerTransition { slide, parallax, fade, fadeZoomIn }
+enum ViewerTransition { slide, parallax, fade, zoomIn }
