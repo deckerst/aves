@@ -162,6 +162,7 @@ class _HomePageState extends State<HomePage> {
       case AppMode.pickMediaInternal:
       case AppMode.pickFilterInternal:
       case AppMode.setWallpaper:
+      case AppMode.slideshow:
         break;
     }
 
@@ -286,7 +287,7 @@ class _HomePageState extends State<HomePage> {
       default:
         return DirectMaterialPageRoute(
           settings: const RouteSettings(name: CollectionPage.routeName),
-          builder: (_) => CollectionPage(
+          builder: (context) => CollectionPage(
             source: source,
             filters: filters,
           ),

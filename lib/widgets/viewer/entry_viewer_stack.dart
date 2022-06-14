@@ -16,6 +16,7 @@ import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
+import 'package:aves/widgets/viewer/controller.dart';
 import 'package:aves/widgets/viewer/entry_vertical_pager.dart';
 import 'package:aves/widgets/viewer/hero.dart';
 import 'package:aves/widgets/viewer/multipage/conductor.dart';
@@ -23,6 +24,7 @@ import 'package:aves/widgets/viewer/notifications.dart';
 import 'package:aves/widgets/viewer/overlay/bottom.dart';
 import 'package:aves/widgets/viewer/overlay/notifications.dart';
 import 'package:aves/widgets/viewer/overlay/panorama.dart';
+import 'package:aves/widgets/viewer/overlay/slideshow_buttons.dart';
 import 'package:aves/widgets/viewer/overlay/top.dart';
 import 'package:aves/widgets/viewer/overlay/video/video.dart';
 import 'package:aves/widgets/viewer/page_entry_builder.dart';
@@ -42,11 +44,13 @@ import 'package:screen_brightness/screen_brightness.dart';
 class EntryViewerStack extends StatefulWidget {
   final CollectionLens? collection;
   final AvesEntry initialEntry;
+  final ViewerController viewerController;
 
   const EntryViewerStack({
     super.key,
     this.collection,
     required this.initialEntry,
+    required this.viewerController,
   });
 
   @override
@@ -54,7 +58,7 @@ class EntryViewerStack extends StatefulWidget {
 }
 
 class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewControllerMixin, FeedbackMixin, SingleTickerProviderStateMixin, WidgetsBindingObserver {
-  late int _currentHorizontalPage;
+  late int _currentEntryIndex;
   late ValueNotifier<int> _currentVerticalPage;
   late PageController _horizontalPager, _verticalPager;
   final AChangeNotifier _verticalScrollNotifier = AChangeNotifier();
@@ -68,7 +72,9 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
   bool _isEntryTracked = true;
 
   @override
-  final ValueNotifier<AvesEntry?> entryNotifier = ValueNotifier(null);
+  late final ValueNotifier<AvesEntry?> entryNotifier;
+
+  ViewerController get viewerController => widget.viewerController;
 
   CollectionLens? get collection => widget.collection;
 
@@ -103,10 +109,11 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     final entry = entries.firstWhereOrNull((entry) => entry.id == initialEntry.id) ?? entries.firstOrNull;
     // opening hero, with viewer as target
     _heroInfoNotifier.value = HeroInfo(collection?.id, entry);
+    entryNotifier = viewerController.entryNotifier;
     entryNotifier.value = entry;
-    _currentHorizontalPage = max(0, entry != null ? entries.indexOf(entry) : -1);
+    _currentEntryIndex = max(0, entry != null ? entries.indexOf(entry) : -1);
     _currentVerticalPage = ValueNotifier(imagePage);
-    _horizontalPager = PageController(initialPage: _currentHorizontalPage);
+    _horizontalPager = PageController(initialPage: _currentEntryIndex);
     _verticalPager = PageController(initialPage: _currentVerticalPage.value)..addListener(_onVerticalPageControllerChange);
     _overlayAnimationController = AnimationController(
       duration: context.read<DurationsData>().viewerOverlayAnimation,
@@ -126,7 +133,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
       parent: _overlayAnimationController,
       curve: Curves.easeOutQuad,
     ));
-    _overlayVisible.value = settings.showOverlayOnOpening;
+    _overlayVisible.value = settings.showOverlayOnOpening && !viewerController.autopilot;
     _overlayVisible.addListener(_onOverlayVisibleChange);
     _videoActionDelegate = VideoActionDelegate(
       collection: collection,
@@ -233,7 +240,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
               _goToVerticalPage(infoPage);
             } else if (notification is ViewEntryNotification) {
               final index = notification.index;
-              if (_currentHorizontalPage != index) {
+              if (_currentEntryIndex != index) {
                 _horizontalPager.jumpToPage(index);
               }
             } else if (notification is VideoActionNotification) {
@@ -250,6 +257,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
               ViewerVerticalPageView(
                 collection: collection,
                 entryNotifier: entryNotifier,
+                viewerController: viewerController,
                 verticalPager: _verticalPager,
                 horizontalPager: _horizontalPager,
                 onVerticalPageChanged: _onVerticalPageChanged,
@@ -257,8 +265,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
                 onImagePageRequested: () => _goToVerticalPage(imagePage),
                 onViewDisposed: (mainEntry, pageEntry) => viewStateConductor.reset(pageEntry ?? mainEntry),
               ),
-              _buildTopOverlay(),
-              _buildBottomOverlay(),
+              ..._buildOverlays(),
               const SideGestureAreaProtector(),
               const BottomGestureAreaProtector(),
             ],
@@ -268,7 +275,40 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     );
   }
 
-  Widget _buildTopOverlay() {
+  List<Widget> _buildOverlays() {
+    if (context.read<ValueNotifier<AppMode>>().value == AppMode.slideshow) {
+      return [_buildSlideshowBottomOverlay()];
+    }
+
+    return [
+      _buildViewerTopOverlay(),
+      _buildViewerBottomOverlay(),
+    ];
+  }
+
+  Widget _buildSlideshowBottomOverlay() {
+    return Selector<MediaQueryData, Size>(
+      selector: (context, mq) => mq.size,
+      builder: (context, mqSize, child) {
+        return SizedBox.fromSize(
+          size: mqSize,
+          child: Align(
+            alignment: AlignmentDirectional.bottomEnd,
+            child: TooltipTheme(
+              data: TooltipTheme.of(context).copyWith(
+                preferBelow: false,
+              ),
+              child: SlideshowButtons(
+                scale: _overlayButtonScale,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildViewerTopOverlay() {
     Widget child = ValueListenableBuilder<AvesEntry?>(
       valueListenable: entryNotifier,
       builder: (context, mainEntry, child) {
@@ -278,7 +318,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
           position: _overlayTopOffset,
           child: ViewerTopOverlay(
             entries: entries,
-            index: _currentHorizontalPage,
+            index: _currentEntryIndex,
             hasCollection: hasCollection,
             mainEntry: mainEntry,
             scale: _overlayButtonScale,
@@ -314,7 +354,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     return child;
   }
 
-  Widget _buildBottomOverlay() {
+  Widget _buildViewerBottomOverlay() {
     Widget child = ValueListenableBuilder<AvesEntry?>(
       valueListenable: entryNotifier,
       builder: (context, mainEntry, child) {
@@ -378,7 +418,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
               if (extraBottomOverlay != null) extraBottomOverlay,
               ViewerBottomOverlay(
                 entries: entries,
-                index: _currentHorizontalPage,
+                index: _currentEntryIndex,
                 hasCollection: hasCollection,
                 animationController: _overlayAnimationController,
                 viewInsets: _frozenViewInsets,
@@ -400,7 +440,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
         return AnimatedBuilder(
           animation: _verticalScrollNotifier,
           builder: (context, child) => Positioned(
-            bottom: (_verticalPager.position.hasPixels ? _verticalPager.offset : 0) - mqHeight,
+            bottom: (_verticalPager.hasClients && _verticalPager.position.hasPixels ? _verticalPager.offset : 0) - mqHeight,
             child: child!,
           ),
           child: child,
@@ -422,7 +462,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
   }
 
   void _onVerticalPageControllerChange() {
-    if (!_isEntryTracked && _verticalPager.page?.floor() == transitionPage) {
+    if (!_isEntryTracked && _verticalPager.hasClients && _verticalPager.page?.floor() == transitionPage) {
       _trackEntry();
     }
     _verticalScrollNotifier.notify();
@@ -440,12 +480,10 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
       context,
       MaterialPageRoute(
         settings: const RouteSettings(name: CollectionPage.routeName),
-        builder: (context) {
-          return CollectionPage(
-            source: baseCollection.source,
-            filters: {...baseCollection.filters, filter},
-          );
-        },
+        builder: (context) => CollectionPage(
+          source: baseCollection.source,
+          filters: {...baseCollection.filters, filter},
+        ),
       ),
       (route) => false,
     );
@@ -477,7 +515,10 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
   }
 
   void _onHorizontalPageChanged(int page) {
-    _currentHorizontalPage = page;
+    _currentEntryIndex = page;
+    if (viewerController.repeat) {
+      _currentEntryIndex %= entries.length;
+    }
     _updateEntry();
   }
 
@@ -521,14 +562,14 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
   }
 
   Future<void> _updateEntry() async {
-    if (entries.isNotEmpty && _currentHorizontalPage >= entries.length) {
+    if (entries.isNotEmpty && _currentEntryIndex >= entries.length) {
       // as of Flutter v1.22.2, `PageView` does not call `onPageChanged` when the last page is deleted
       // so we manually track the page change, and let the entry update follow
       _onHorizontalPageChanged(entries.length - 1);
       return;
     }
 
-    final newEntry = _currentHorizontalPage < entries.length ? entries[_currentHorizontalPage] : null;
+    final newEntry = _currentEntryIndex < entries.length ? entries[_currentEntryIndex] : null;
     if (entryNotifier.value == newEntry) return;
     cleanEntryControllers(entryNotifier.value);
     entryNotifier.value = newEntry;
@@ -606,6 +647,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
       } else {
         _overlayAnimationController.value = _overlayAnimationController.upperBound;
       }
+      viewerController.autopilot = false;
     } else {
       final mediaQuery = context.read<MediaQueryData>();
       setState(() {

@@ -70,10 +70,10 @@ class SettingsTileDisplayEnableDynamicColor extends SettingsTile {
 
   @override
   Widget build(BuildContext context) => SettingsSwitchListTile(
-    selector: (context, s) => s.enableDynamicColor,
-    onChanged: (v) => settings.enableDynamicColor = v,
-    title: title(context),
-  );
+        selector: (context, s) => s.enableDynamicColor,
+        onChanged: (v) => settings.enableDynamicColor = v,
+        title: title(context),
+      );
 }
 
 class SettingsTileDisplayEnableBlurEffect extends SettingsTile {
@@ -82,10 +82,10 @@ class SettingsTileDisplayEnableBlurEffect extends SettingsTile {
 
   @override
   Widget build(BuildContext context) => SettingsSwitchListTile(
-    selector: (context, s) => s.enableBlurEffect,
-    onChanged: (v) => settings.enableBlurEffect = v,
-    title: title(context),
-  );
+        selector: (context, s) => s.enableBlurEffect,
+        onChanged: (v) => settings.enableBlurEffect = v,
+        title: title(context),
+      );
 }
 
 class SettingsTileDisplayDisplayRefreshRateMode extends SettingsTile {

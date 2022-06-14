@@ -35,7 +35,7 @@ class ReselectableRadioListTile<T> extends StatelessWidget {
     this.selected = false,
     this.controlAffinity = ListTileControlAffinity.platform,
     this.autofocus = false,
-  })  : assert(!isThreeLine || subtitle != null);
+  }) : assert(!isThreeLine || subtitle != null);
 
   @override
   Widget build(BuildContext context) {

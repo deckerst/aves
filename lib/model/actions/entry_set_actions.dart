@@ -15,6 +15,7 @@ enum EntrySetAction {
   emptyBin,
   // browsing or selecting
   map,
+  slideshow,
   stats,
   rescan,
   // selecting
@@ -48,6 +49,7 @@ class EntrySetActions {
     EntrySetAction.toggleTitleSearch,
     EntrySetAction.addShortcut,
     EntrySetAction.map,
+    EntrySetAction.slideshow,
     EntrySetAction.stats,
     EntrySetAction.rescan,
     EntrySetAction.emptyBin,
@@ -59,6 +61,7 @@ class EntrySetActions {
     EntrySetAction.toggleTitleSearch,
     EntrySetAction.addShortcut,
     EntrySetAction.map,
+    EntrySetAction.slideshow,
     EntrySetAction.stats,
     EntrySetAction.rescan,
   ];
@@ -72,6 +75,7 @@ class EntrySetActions {
     EntrySetAction.rename,
     EntrySetAction.toggleFavourite,
     EntrySetAction.map,
+    EntrySetAction.slideshow,
     EntrySetAction.stats,
     EntrySetAction.rescan,
     // editing actions are in their subsection
@@ -86,6 +90,7 @@ class EntrySetActions {
     EntrySetAction.rename,
     EntrySetAction.toggleFavourite,
     EntrySetAction.map,
+    EntrySetAction.slideshow,
     EntrySetAction.stats,
     EntrySetAction.rescan,
     // editing actions are in their subsection
@@ -125,6 +130,8 @@ extension ExtraEntrySetAction on EntrySetAction {
       // browsing or selecting
       case EntrySetAction.map:
         return context.l10n.menuActionMap;
+      case EntrySetAction.slideshow:
+        return context.l10n.menuActionSlideshow;
       case EntrySetAction.stats:
         return context.l10n.menuActionStats;
       case EntrySetAction.rescan:
@@ -190,6 +197,8 @@ extension ExtraEntrySetAction on EntrySetAction {
       // browsing or selecting
       case EntrySetAction.map:
         return AIcons.map;
+      case EntrySetAction.slideshow:
+        return AIcons.slideshow;
       case EntrySetAction.stats:
         return AIcons.stats;
       case EntrySetAction.rescan:

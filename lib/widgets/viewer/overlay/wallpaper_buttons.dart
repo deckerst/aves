@@ -12,7 +12,7 @@ import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
 import 'package:aves/widgets/viewer/overlay/common.dart';
-import 'package:aves/widgets/viewer/overlay/viewer_button_row.dart';
+import 'package:aves/widgets/viewer/overlay/viewer_buttons.dart';
 import 'package:aves/widgets/viewer/video/conductor.dart';
 import 'package:aves/widgets/viewer/visual/conductor.dart';
 import 'package:flutter/material.dart';
@@ -20,11 +20,11 @@ import 'package:flutter/services.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 
-class WallpaperButton extends StatelessWidget with FeedbackMixin {
+class WallpaperButtons extends StatelessWidget with FeedbackMixin {
   final AvesEntry entry;
   final Animation<double> scale;
 
-  const WallpaperButton({
+  const WallpaperButtons({
     super.key,
     required this.entry,
     required this.scale,

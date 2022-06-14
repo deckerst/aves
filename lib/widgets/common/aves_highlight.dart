@@ -38,7 +38,7 @@ class AvesHighlightView extends StatelessWidget {
     this.padding,
     this.textStyle,
     int tabSize = 8, // TODO: https://github.com/flutter/flutter/issues/50087
-  })  : source = input.replaceAll('\t', ' ' * tabSize);
+  }) : source = input.replaceAll('\t', ' ' * tabSize);
 
   List<TextSpan> _convert(List<Node> nodes) {
     final spans = <TextSpan>[];

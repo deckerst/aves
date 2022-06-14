@@ -7,8 +7,8 @@ import 'package:aves/widgets/common/extensions/media_query.dart';
 import 'package:aves/widgets/viewer/multipage/controller.dart';
 import 'package:aves/widgets/viewer/overlay/multipage.dart';
 import 'package:aves/widgets/viewer/overlay/thumbnail_preview.dart';
-import 'package:aves/widgets/viewer/overlay/viewer_button_row.dart';
-import 'package:aves/widgets/viewer/overlay/wallpaper_button_row.dart';
+import 'package:aves/widgets/viewer/overlay/viewer_buttons.dart';
+import 'package:aves/widgets/viewer/overlay/wallpaper_buttons.dart';
 import 'package:aves/widgets/viewer/page_entry_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -37,7 +37,7 @@ class ViewerBottomOverlay extends StatefulWidget {
   State<StatefulWidget> createState() => _ViewerBottomOverlayState();
 
   static double actionSafeHeight(BuildContext context) {
-    return ViewerButtonRow.preferredHeight(context) + (settings.showOverlayThumbnailPreview ? ViewerThumbnailPreview.preferredHeight : 0);
+    return ViewerButtons.preferredHeight(context) + (settings.showOverlayThumbnailPreview ? ViewerThumbnailPreview.preferredHeight : 0);
   }
 }
 
@@ -156,11 +156,11 @@ class _BottomOverlayContentState extends State<_BottomOverlayContent> {
                   right: viewInsetsPadding.right,
                 ),
                 child: isWallpaperMode
-                    ? WallpaperButton(
+                    ? WallpaperButtons(
                         entry: pageEntry,
                         scale: _buttonScale,
                       )
-                    : ViewerButtonRow(
+                    : ViewerButtons(
                         mainEntry: mainEntry,
                         pageEntry: pageEntry,
                         scale: _buttonScale,

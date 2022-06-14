@@ -125,6 +125,13 @@ class SettingsDefaults {
   // file picker
   static const filePickerShowHiddenFiles = false;
 
+  // slideshow
+  static const slideshowRepeat = false;
+  static const slideshowShuffle = false;
+  static const slideshowTransition = ViewerTransition.fade;
+  static const slideshowVideoPlayback = SlideshowVideoPlayback.playMuted;
+  static const slideshowInterval = SlideshowInterval.s5;
+
   // platform settings
   static const isRotationLocked = false;
   static const areAnimationsRemoved = false;
