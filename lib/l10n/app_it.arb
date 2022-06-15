@@ -81,6 +81,9 @@
   "videoActionSetSpeed": "Velocità di riproduzione",
   "videoActionSettings": "Impostazioni",
 
+  "slideshowActionResume": "Riprendi",
+  "slideshowActionShowInCollection": "Mostra nella Collezione",
+
   "entryInfoActionEditDate": "Modifica data e ora",
   "entryInfoActionEditLocation": "Modifica posizione",
   "entryInfoActionEditRating": "Modifica valutazione",
@@ -145,9 +148,22 @@
   "displayRefreshRatePreferHighest": "Frequenza massima",
   "displayRefreshRatePreferLowest": "Frequenza minima",
 
+  "slideshowVideoPlaybackSkip": "Salta",
+  "slideshowVideoPlaybackMuted": "Riproduci senza audio",
+  "slideshowVideoPlaybackWithSound": "Riproduci con audio",
+
   "themeBrightnessLight": "Chiaro",
   "themeBrightnessDark": "Scuro",
   "themeBrightnessBlack": "Nero",
+
+  "viewerTransitionSlide": "Diapositiva",
+  "viewerTransitionParallax": "Parallasse",
+  "viewerTransitionFade": "Dissolvenza",
+  "viewerTransitionZoomIn": "Ingrandisci",
+
+  "wallpaperTargetHome": "Schermata iniziale",
+  "wallpaperTargetLock": "Schermata di blocco",
+  "wallpaperTargetHomeLock": "Schermata iniziale e di blocco",
 
   "albumTierNew": "Nuovi",
   "albumTierPinned": "Fissati",
@@ -263,6 +279,7 @@
   "menuActionSelectAll": "Seleziona tutto",
   "menuActionSelectNone": "Deseleziona tutto",
   "menuActionMap": "Mappa",
+  "menuActionSlideshow": "Presentazione",
   "menuActionStats": "Statistiche",
 
   "viewDialogTabSort": "Ordina",
@@ -350,6 +367,7 @@
   "collectionEmptyFavourites": "Nessun preferito",
   "collectionEmptyVideos": "Nessun video",
   "collectionEmptyImages": "Nessuna immagine",
+  "collectionEmptyGrantAccessButtonLabel": "Consenti accesso",
 
   "collectionSelectSectionTooltip": "Seleziona sezione",
   "collectionDeselectSectionTooltip": "Deseleziona sezione",
@@ -480,6 +498,17 @@
   "settingsViewerShowOverlayThumbnails": "Mostra le miniature",
   "settingsViewerEnableOverlayBlurEffect": "Effetto sfocatura",
 
+  "settingsViewerSlideshowTile": "Presentazione",
+  "settingsViewerSlideshowTitle": "Presentazione",
+  "settingsSlideshowRepeat": "Ripeti",
+  "settingsSlideshowShuffle": "Ordine casuale",
+  "settingsSlideshowTransitionTile": "Transizione",
+  "settingsSlideshowTransitionTitle": "Transizione",
+  "settingsSlideshowIntervalTile": "Intervallo",
+  "settingsSlideshowIntervalTitle": "Intervallo",
+  "settingsSlideshowVideoPlaybackTile": "Riproduzione video",
+  "settingsSlideshowVideoPlaybackTitle": "Riproduzione video",
+
   "settingsVideoPageTitle": "Impostazioni video",
   "settingsSectionVideo": "Video",
   "settingsVideoShowVideos": "Mostra video",
@@ -544,6 +573,7 @@
   "settingsSectionDisplay": "Schermo",
   "settingsThemeBrightness": "Tema",
   "settingsThemeColorHighlights": "Colori evidenziati",
+  "settingsThemeEnableDynamicColor": "Colori dinamici",
   "settingsDisplayRefreshRateModeTile": "Frequenza di aggiornamento dello schermo",
   "settingsDisplayRefreshRateModeTitle": "Frequenza di aggiornamento",
 
@@ -561,6 +591,7 @@
   "statsTopTags": "Etichette più frequenti",
 
   "viewerOpenPanoramaButtonLabel": "APRI PANORAMA",
+  "viewerSetWallpaperButtonLabel": "IMPOSTA SFONDO",
   "viewerErrorUnknown": "Ops!",
   "viewerErrorDoesNotExist": "Il file non esiste più",
 
