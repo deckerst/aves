@@ -59,25 +59,6 @@
     "viewerSetWallpaperButtonLabel"
   ],
 
-  "fr": [
-    "slideshowActionResume",
-    "slideshowActionShowInCollection",
-    "slideshowVideoPlaybackSkip",
-    "slideshowVideoPlaybackMuted",
-    "slideshowVideoPlaybackWithSound",
-    "viewerTransitionSlide",
-    "viewerTransitionParallax",
-    "viewerTransitionFade",
-    "viewerTransitionZoomIn",
-    "collectionEmptyGrantAccessButtonLabel",
-    "settingsSlideshowTransitionTile",
-    "settingsSlideshowTransitionTitle",
-    "settingsSlideshowIntervalTile",
-    "settingsSlideshowIntervalTitle",
-    "settingsSlideshowVideoPlaybackTile",
-    "settingsSlideshowVideoPlaybackTitle"
-  ],
-
   "id": [
     "slideshowActionResume",
     "slideshowActionShowInCollection",
@@ -134,25 +115,6 @@
     "settingsSlideshowVideoPlaybackTitle",
     "settingsThemeEnableDynamicColor",
     "viewerSetWallpaperButtonLabel"
-  ],
-
-  "ko": [
-    "slideshowActionResume",
-    "slideshowActionShowInCollection",
-    "slideshowVideoPlaybackSkip",
-    "slideshowVideoPlaybackMuted",
-    "slideshowVideoPlaybackWithSound",
-    "viewerTransitionSlide",
-    "viewerTransitionParallax",
-    "viewerTransitionFade",
-    "viewerTransitionZoomIn",
-    "collectionEmptyGrantAccessButtonLabel",
-    "settingsSlideshowTransitionTile",
-    "settingsSlideshowTransitionTitle",
-    "settingsSlideshowIntervalTile",
-    "settingsSlideshowIntervalTitle",
-    "settingsSlideshowVideoPlaybackTile",
-    "settingsSlideshowVideoPlaybackTitle"
   ],
 
   "pt": [
