@@ -149,6 +149,10 @@
   "themeBrightnessDark": "다크",
   "themeBrightnessBlack": "검은색",
 
+  "wallpaperTargetHome": "홈 화면",
+  "wallpaperTargetLock": "잠금화면",
+  "wallpaperTargetHomeLock": "홈 및 잠금화면",
+
   "albumTierNew": "신규",
   "albumTierPinned": "고정",
   "albumTierSpecial": "기본",
@@ -263,6 +267,7 @@
   "menuActionSelectAll": "모두 선택",
   "menuActionSelectNone": "모두 해제",
   "menuActionMap": "지도",
+  "menuActionSlideshow": "슬라이드쇼",
   "menuActionStats": "통계",
 
   "viewDialogTabSort": "정렬",
@@ -480,6 +485,11 @@
   "settingsViewerShowOverlayThumbnails": "섬네일 표시",
   "settingsViewerEnableOverlayBlurEffect": "흐림 효과",
 
+  "settingsViewerSlideshowTile": "슬라이드쇼",
+  "settingsViewerSlideshowTitle": "슬라이드쇼",
+  "settingsSlideshowRepeat": "반복",
+  "settingsSlideshowShuffle": "순서섞기",
+
   "settingsVideoPageTitle": "동영상 설정",
   "settingsSectionVideo": "동영상",
   "settingsVideoShowVideos": "미디어에 동영상 표시",
@@ -544,6 +554,7 @@
   "settingsSectionDisplay": "디스플레이",
   "settingsThemeBrightness": "테마",
   "settingsThemeColorHighlights": "색 강조",
+  "settingsThemeEnableDynamicColor": "동적 색상",
   "settingsDisplayRefreshRateModeTile": "화면 재생률",
   "settingsDisplayRefreshRateModeTitle": "화면 재생률",
 
@@ -561,6 +572,7 @@
   "statsTopTags": "태그 랭킹",
 
   "viewerOpenPanoramaButtonLabel": "파노라마 열기",
+  "viewerSetWallpaperButtonLabel": "설정",
   "viewerErrorUnknown": "아이구!",
   "viewerErrorDoesNotExist": "파일이 존재하지 않습니다.",
 

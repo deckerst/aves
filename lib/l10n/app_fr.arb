@@ -149,6 +149,10 @@
   "themeBrightnessDark": "Sombre",
   "themeBrightnessBlack": "Noir",
 
+  "wallpaperTargetHome": "Écran d’accueil",
+  "wallpaperTargetLock": "Écran de verrouillage",
+  "wallpaperTargetHomeLock": "Écrans accueil et verrouillage",
+
   "albumTierNew": "Nouveaux",
   "albumTierPinned": "Épinglés",
   "albumTierSpecial": "Standards",
@@ -263,6 +267,7 @@
   "menuActionSelectAll": "Tout sélectionner",
   "menuActionSelectNone": "Tout désélectionner",
   "menuActionMap": "Carte",
+  "menuActionSlideshow": "Diaporama",
   "menuActionStats": "Statistiques",
 
   "viewDialogTabSort": "Tri",
@@ -480,6 +485,11 @@
   "settingsViewerShowOverlayThumbnails": "Afficher les vignettes",
   "settingsViewerEnableOverlayBlurEffect": "Effets de flou",
 
+  "settingsViewerSlideshowTile": "Diaporama",
+  "settingsViewerSlideshowTitle": "Diaporama",
+  "settingsSlideshowRepeat": "Répéter",
+  "settingsSlideshowShuffle": "Aléatoire",
+
   "settingsVideoPageTitle": "Réglages vidéo",
   "settingsSectionVideo": "Vidéo",
   "settingsVideoShowVideos": "Afficher les vidéos",
@@ -544,6 +554,7 @@
   "settingsSectionDisplay": "Affichage",
   "settingsThemeBrightness": "Thème",
   "settingsThemeColorHighlights": "Surlignages colorés",
+  "settingsThemeEnableDynamicColor": "Couleur dynamique",
   "settingsDisplayRefreshRateModeTile": "Fréquence d’actualisation de l'écran",
   "settingsDisplayRefreshRateModeTitle": "Fréquence d’actualisation",
 
@@ -561,6 +572,7 @@
   "statsTopTags": "Top libellés",
 
   "viewerOpenPanoramaButtonLabel": "OUVRIR LE PANORAMA",
+  "viewerSetWallpaperButtonLabel": "APPLIQUER",
   "viewerErrorUnknown": "Zut !",
   "viewerErrorDoesNotExist": "Le fichier n’existe plus.",
 
