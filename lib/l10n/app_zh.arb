@@ -81,6 +81,9 @@
   "videoActionSetSpeed": "播放速度",
   "videoActionSettings": "设置",
 
+  "slideshowActionResume": "继续",
+  "slideshowActionShowInCollection": "在媒体集中显示",
+
   "entryInfoActionEditDate": "编辑日期和时间",
   "entryInfoActionEditLocation": "编辑位置",
   "entryInfoActionEditRating": "修改评分",
@@ -145,9 +148,22 @@
   "displayRefreshRatePreferHighest": "最高刷新率",
   "displayRefreshRatePreferLowest": "最低刷新率",
 
+  "slideshowVideoPlaybackSkip": "跳过",
+  "slideshowVideoPlaybackMuted": "静音播放",
+  "slideshowVideoPlaybackWithSound": "带音播放",
+
   "themeBrightnessLight": "浅色",
   "themeBrightnessDark": "深色",
   "themeBrightnessBlack": "黑色",
+
+  "viewerTransitionSlide": "滑动",
+  "viewerTransitionParallax": "视差滚动",
+  "viewerTransitionFade": "淡入淡出",
+  "viewerTransitionZoomIn": "放大",
+
+  "wallpaperTargetHome": "主屏幕",
+  "wallpaperTargetLock": "锁屏界面",
+  "wallpaperTargetHomeLock": "主屏幕 + 锁屏界面",
 
   "albumTierNew": "新的",
   "albumTierPinned": "钉选",
@@ -263,6 +279,7 @@
   "menuActionSelectAll": "全选",
   "menuActionSelectNone": "全不选",
   "menuActionMap": "地图",
+  "menuActionSlideshow": "幻灯片",
   "menuActionStats": "统计",
 
   "viewDialogTabSort": "排序",
@@ -350,6 +367,7 @@
   "collectionEmptyFavourites": "无收藏项",
   "collectionEmptyVideos": "无视频",
   "collectionEmptyImages": "无图像",
+  "collectionEmptyGrantAccessButtonLabel": "授予访问权限",
 
   "collectionSelectSectionTooltip": "选择部分",
   "collectionDeselectSectionTooltip": "取消选择部分",
@@ -480,6 +498,17 @@
   "settingsViewerShowOverlayThumbnails": "显示缩略图",
   "settingsViewerEnableOverlayBlurEffect": "模糊特效",
 
+  "settingsViewerSlideshowTile": "幻灯片",
+  "settingsViewerSlideshowTitle": "幻灯片",
+  "settingsSlideshowRepeat": "重复",
+  "settingsSlideshowShuffle": "随机播放",
+  "settingsSlideshowTransitionTile": "过渡动画",
+  "settingsSlideshowTransitionTitle": "过渡动画",
+  "settingsSlideshowIntervalTile": "时间间隔",
+  "settingsSlideshowIntervalTitle": "时间间隔",
+  "settingsSlideshowVideoPlaybackTile": "视频回放",
+  "settingsSlideshowVideoPlaybackTitle": "视频回放",
+
   "settingsVideoPageTitle": "视频设置",
   "settingsSectionVideo": "视频",
   "settingsVideoShowVideos": "显示视频",
@@ -544,6 +573,7 @@
   "settingsSectionDisplay": "显示",
   "settingsThemeBrightness": "主题",
   "settingsThemeColorHighlights": "色彩强调",
+  "settingsThemeEnableDynamicColor": "动态色彩",
   "settingsDisplayRefreshRateModeTile": "显示刷新率",
   "settingsDisplayRefreshRateModeTitle": "刷新率",
 
@@ -561,6 +591,7 @@
   "statsTopTags": "热门标签",
 
   "viewerOpenPanoramaButtonLabel": "打开全景",
+  "viewerSetWallpaperButtonLabel": "设置壁纸",
   "viewerErrorUnknown": "糟糕！",
   "viewerErrorDoesNotExist": "该文件不存在",
 
