@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Aves</string>
+    <string name="wallpaper">Hintergrundbild</string>
     <string name="search_shortcut_short_label">Suche</string>
     <string name="videos_shortcut_short_label">Videos</string>
     <string name="analysis_channel_name">Analyse von Medien</string>

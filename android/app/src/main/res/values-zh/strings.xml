@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Aves</string>
+    <string name="wallpaper">壁纸</string>
     <string name="search_shortcut_short_label">搜索</string>
     <string name="videos_shortcut_short_label">视频</string>
     <string name="analysis_channel_name">媒体扫描</string>
