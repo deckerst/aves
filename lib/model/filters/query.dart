@@ -19,12 +19,31 @@ class QueryFilter extends CollectionFilter {
   @override
   List<Object?> get props => [query, live];
 
+  static final _fieldPattern = RegExp(r'(.+)([=<>])(.+)');
+  static const keyContentId = 'ID';
+  static const opEqual = '=';
+
   QueryFilter(this.query, {this.colorful = true, this.live = false}) {
     var upQuery = query.toUpperCase();
-    if (upQuery.startsWith('ID:')) {
-      final contentId = int.tryParse(upQuery.substring(3));
-      _test = (entry) => entry.contentId == contentId;
-      return;
+
+    final match = _fieldPattern.firstMatch(upQuery);
+    if (match != null) {
+      final key = match.group(1)?.trim();
+      final op = match.group(2)?.trim();
+      final value = match.group(3)?.trim();
+      if (key != null && op != null && value != null) {
+        switch (key) {
+          case keyContentId:
+            if (op == opEqual) {
+              final contentId = int.tryParse(value);
+              if (contentId != null) {
+                _test = (entry) => entry.contentId == contentId;
+                return;
+              }
+            }
+            break;
+        }
+      }
     }
 
     // allow NOT queries starting with `-`

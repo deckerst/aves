@@ -92,6 +92,7 @@ class _InteractiveFilterTileState<T extends CollectionFilter> extends State<Inte
       setState(() => _heroTypeOverride = HeroType.always);
     }
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
       Navigator.push(
         context,
         MaterialPageRoute(
