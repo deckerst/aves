@@ -99,6 +99,7 @@ class _CollectionGridContent extends StatelessWidget {
         final sectionedListLayoutProvider = ValueListenableBuilder<double>(
           valueListenable: context.select<TileExtentController, ValueNotifier<double>>((controller) => controller.extentNotifier),
           builder: (context, thumbnailExtent, child) {
+            assert(thumbnailExtent > 0);
             return Selector<TileExtentController, Tuple4<double, int, double, double>>(
               selector: (context, c) => Tuple4(c.viewportSize.width, c.columnCount, c.spacing, c.horizontalPadding),
               builder: (context, c, child) {
