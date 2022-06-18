@@ -5,7 +5,7 @@ import 'package:aves/widgets/settings/common/quick_actions/editor_page.dart';
 import 'package:flutter/material.dart';
 
 class ViewerActionEditorPage extends StatelessWidget {
-  static const routeName = '/settings/viewer_actions';
+  static const routeName = '/settings/viewer/actions';
 
   const ViewerActionEditorPage({super.key});
 

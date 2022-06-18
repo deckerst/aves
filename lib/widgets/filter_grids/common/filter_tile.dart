@@ -63,6 +63,8 @@ class _InteractiveFilterTileState<T extends CollectionFilter> extends State<Inte
           Navigator.pop<T>(context, filter);
           break;
         case AppMode.pickMediaInternal:
+        case AppMode.setWallpaper:
+        case AppMode.slideshow:
         case AppMode.view:
           break;
       }
@@ -90,6 +92,7 @@ class _InteractiveFilterTileState<T extends CollectionFilter> extends State<Inte
       setState(() => _heroTypeOverride = HeroType.always);
     }
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
       Navigator.push(
         context,
         MaterialPageRoute(

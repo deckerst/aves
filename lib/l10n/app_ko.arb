@@ -50,6 +50,7 @@
   "entryActionDelete": "삭제",
   "entryActionConvert": "변환",
   "entryActionExport": "내보내기",
+  "entryActionInfo": "상세정보",
   "entryActionRename": "이름 변경",
   "entryActionRestore": "복원",
   "entryActionRotateCCW": "좌회전",
@@ -79,6 +80,9 @@
   "videoActionSelectStreams": "트랙 선택",
   "videoActionSetSpeed": "재생 배속",
   "videoActionSettings": "설정",
+
+  "slideshowActionResume": "이어서",
+  "slideshowActionShowInCollection": "미디어 페이지에서 보기",
 
   "entryInfoActionEditDate": "날짜 및 시간 수정",
   "entryInfoActionEditLocation": "위치 수정",
@@ -144,9 +148,22 @@
   "displayRefreshRatePreferHighest": "가장 높은 재생률",
   "displayRefreshRatePreferLowest": "가장 낮은 재생률",
 
+  "slideshowVideoPlaybackSkip": "생략",
+  "slideshowVideoPlaybackMuted": "음소거 재생",
+  "slideshowVideoPlaybackWithSound": "일반 재생",
+
   "themeBrightnessLight": "라이트",
   "themeBrightnessDark": "다크",
   "themeBrightnessBlack": "검은색",
+
+  "viewerTransitionSlide": "좌우",
+  "viewerTransitionParallax": "시차",
+  "viewerTransitionFade": "페이드",
+  "viewerTransitionZoomIn": "확대",
+
+  "wallpaperTargetHome": "홈 화면",
+  "wallpaperTargetLock": "잠금화면",
+  "wallpaperTargetHomeLock": "홈 및 잠금화면",
 
   "albumTierNew": "신규",
   "albumTierPinned": "고정",
@@ -262,6 +279,7 @@
   "menuActionSelectAll": "모두 선택",
   "menuActionSelectNone": "모두 해제",
   "menuActionMap": "지도",
+  "menuActionSlideshow": "슬라이드쇼",
   "menuActionStats": "통계",
 
   "viewDialogTabSort": "정렬",
@@ -349,6 +367,7 @@
   "collectionEmptyFavourites": "즐겨찾기가 없습니다",
   "collectionEmptyVideos": "동영상이 없습니다",
   "collectionEmptyImages": "사진이 없습니다",
+  "collectionEmptyGrantAccessButtonLabel": "접근 허용",
 
   "collectionSelectSectionTooltip": "묶음 선택",
   "collectionDeselectSectionTooltip": "묶음 선택 해제",
@@ -479,6 +498,17 @@
   "settingsViewerShowOverlayThumbnails": "섬네일 표시",
   "settingsViewerEnableOverlayBlurEffect": "흐림 효과",
 
+  "settingsViewerSlideshowTile": "슬라이드쇼",
+  "settingsViewerSlideshowTitle": "슬라이드쇼",
+  "settingsSlideshowRepeat": "반복",
+  "settingsSlideshowShuffle": "순서섞기",
+  "settingsSlideshowTransitionTile": "전환 효과",
+  "settingsSlideshowTransitionTitle": "전환 효과",
+  "settingsSlideshowIntervalTile": "교체 주기",
+  "settingsSlideshowIntervalTitle": "교체 주기",
+  "settingsSlideshowVideoPlaybackTile": "동영상 재생",
+  "settingsSlideshowVideoPlaybackTitle": "동영상 재생",
+
   "settingsVideoPageTitle": "동영상 설정",
   "settingsSectionVideo": "동영상",
   "settingsVideoShowVideos": "미디어에 동영상 표시",
@@ -543,6 +573,7 @@
   "settingsSectionDisplay": "디스플레이",
   "settingsThemeBrightness": "테마",
   "settingsThemeColorHighlights": "색 강조",
+  "settingsThemeEnableDynamicColor": "동적 색상",
   "settingsDisplayRefreshRateModeTile": "화면 재생률",
   "settingsDisplayRefreshRateModeTitle": "화면 재생률",
 
@@ -560,6 +591,7 @@
   "statsTopTags": "태그 랭킹",
 
   "viewerOpenPanoramaButtonLabel": "파노라마 열기",
+  "viewerSetWallpaperButtonLabel": "설정",
   "viewerErrorUnknown": "아이구!",
   "viewerErrorDoesNotExist": "파일이 존재하지 않습니다.",
 

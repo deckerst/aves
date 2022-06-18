@@ -284,6 +284,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
                   padding: EdgeInsets.zero,
                   child: PopupMenuItemExpansionPanel<EntrySetAction>(
                     enabled: canApplyEditActions,
+                    value: 'edit',
                     icon: AIcons.edit,
                     title: context.l10n.collectionActionEdit,
                     items: [
@@ -477,6 +478,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       case EntrySetAction.addShortcut:
       // browsing or selecting
       case EntrySetAction.map:
+      case EntrySetAction.slideshow:
       case EntrySetAction.stats:
       case EntrySetAction.rescan:
       case EntrySetAction.emptyBin:

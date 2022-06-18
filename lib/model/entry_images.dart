@@ -5,6 +5,7 @@ import 'package:aves/image_providers/thumbnail_provider.dart';
 import 'package:aves/image_providers/uri_image_provider.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/entry_cache.dart';
+import 'package:aves/utils/math_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
 
@@ -62,5 +63,16 @@ extension ExtraAvesEntryImages on AvesEntry {
   ThumbnailProvider get bestCachedThumbnail {
     final sizedThumbnailKey = EntryCache.thumbnailRequestExtents.map(_getThumbnailProviderKey).firstWhereOrNull(_isReady);
     return sizedThumbnailKey != null ? ThumbnailProvider(sizedThumbnailKey) : getThumbnail();
+  }
+
+  // magic number used to derive sample size from scale
+  static const scaleFactor = 2.0;
+
+  static int sampleSizeForScale(double scale) {
+    var sample = 0;
+    if (0 < scale && scale < 1) {
+      sample = highestPowerOf2((1 / scale) / scaleFactor);
+    }
+    return max<int>(1, sample);
   }
 }

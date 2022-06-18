@@ -10,6 +10,7 @@ import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/enums/map_style.dart';
 import 'package:aves/model/source/enums.dart';
 import 'package:aves/services/accessibility_service.dart';
+import 'package:aves/services/common/optional_event_channel.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves_map/aves_map.dart';
 import 'package:collection/collection.dart';
@@ -19,7 +20,7 @@ import 'package:flutter/services.dart';
 final Settings settings = Settings._private();
 
 class Settings extends ChangeNotifier {
-  final EventChannel _platformSettingsChangeChannel = const EventChannel('deckers.thibault/aves/settings_change');
+  final EventChannel _platformSettingsChangeChannel = const OptionalEventChannel('deckers.thibault/aves/settings_change');
   final StreamController<SettingsChangedEvent> _updateStreamController = StreamController.broadcast();
 
   Stream<SettingsChangedEvent> get updateStream => _updateStreamController.stream;
@@ -42,14 +43,18 @@ class Settings extends ChangeNotifier {
   static const isInstalledAppAccessAllowedKey = 'is_installed_app_access_allowed';
   static const isErrorReportingAllowedKey = 'is_crashlytics_enabled';
   static const localeKey = 'locale';
-  static const displayRefreshRateModeKey = 'display_refresh_rate_mode';
-  static const themeBrightnessKey = 'theme_brightness';
-  static const themeColorModeKey = 'theme_color_mode';
   static const catalogTimeZoneKey = 'catalog_time_zone';
   static const tileExtentPrefixKey = 'tile_extent_';
   static const tileLayoutPrefixKey = 'tile_layout_';
   static const entryRenamingPatternKey = 'entry_renaming_pattern';
   static const topEntryIdsKey = 'top_entry_ids';
+
+  // display
+  static const displayRefreshRateModeKey = 'display_refresh_rate_mode';
+  static const themeBrightnessKey = 'theme_brightness';
+  static const themeColorModeKey = 'theme_color_mode';
+  static const enableDynamicColorKey = 'dynamic_color';
+  static const enableBlurEffectKey = 'enable_overlay_blur_effect';
 
   // navigation
   static const mustBackTwiceToExitKey = 'must_back_twice_to_exit';
@@ -92,7 +97,6 @@ class Settings extends ChangeNotifier {
   static const showOverlayInfoKey = 'show_overlay_info';
   static const showOverlayShootingDetailsKey = 'show_overlay_shooting_details';
   static const showOverlayThumbnailPreviewKey = 'show_overlay_thumbnail_preview';
-  static const enableOverlayBlurEffectKey = 'enable_overlay_blur_effect';
   static const viewerUseCutoutKey = 'viewer_use_cutout';
   static const viewerMaxBrightnessKey = 'viewer_max_brightness';
   static const enableMotionPhotoAutoPlayKey = 'motion_photo_auto_play';
@@ -134,6 +138,13 @@ class Settings extends ChangeNotifier {
   // file picker
   static const filePickerShowHiddenFilesKey = 'file_picker_show_hidden_files';
 
+  // slideshow
+  static const slideshowRepeatKey = 'slideshow_loop';
+  static const slideshowShuffleKey = 'slideshow_shuffle';
+  static const slideshowTransitionKey = 'slideshow_transition';
+  static const slideshowVideoPlaybackKey = 'slideshow_video_playback';
+  static const slideshowIntervalKey = 'slideshow_interval';
+
   // platform settings
   // cf Android `Settings.System.ACCELEROMETER_ROTATION`
   static const platformAccelerometerRotationKey = 'accelerometer_rotation';
@@ -161,7 +172,7 @@ class Settings extends ChangeNotifier {
   Future<void> setContextualDefaults() async {
     // performance
     final performanceClass = await deviceService.getPerformanceClass();
-    enableOverlayBlurEffect = performanceClass >= 29;
+    enableBlurEffect = performanceClass >= 29;
 
     // availability
     final defaultMapStyle = mobileServices.defaultMapStyle;
@@ -187,8 +198,7 @@ class Settings extends ChangeNotifier {
 
   set canUseAnalysisService(bool newValue) => setAndNotify(canUseAnalysisServiceKey, newValue);
 
-  // TODO TLAD use `true` for transition (it's unset in v1.5.4), but replace by `SettingsDefaults.isInstalledAppAccessAllowed` in a later release
-  bool get isInstalledAppAccessAllowed => getBoolOrDefault(isInstalledAppAccessAllowedKey, true);
+  bool get isInstalledAppAccessAllowed => getBoolOrDefault(isInstalledAppAccessAllowedKey, SettingsDefaults.isInstalledAppAccessAllowed);
 
   set isInstalledAppAccessAllowed(bool newValue) => setAndNotify(isInstalledAppAccessAllowedKey, newValue);
 
@@ -249,18 +259,6 @@ class Settings extends ChangeNotifier {
     return _appliedLocale!;
   }
 
-  DisplayRefreshRateMode get displayRefreshRateMode => getEnumOrDefault(displayRefreshRateModeKey, SettingsDefaults.displayRefreshRateMode, DisplayRefreshRateMode.values);
-
-  set displayRefreshRateMode(DisplayRefreshRateMode newValue) => setAndNotify(displayRefreshRateModeKey, newValue.toString());
-
-  AvesThemeBrightness get themeBrightness => getEnumOrDefault(themeBrightnessKey, SettingsDefaults.themeBrightness, AvesThemeBrightness.values);
-
-  set themeBrightness(AvesThemeBrightness newValue) => setAndNotify(themeBrightnessKey, newValue.toString());
-
-  AvesThemeColorMode get themeColorMode => getEnumOrDefault(themeColorModeKey, SettingsDefaults.themeColorMode, AvesThemeColorMode.values);
-
-  set themeColorMode(AvesThemeColorMode newValue) => setAndNotify(themeColorModeKey, newValue.toString());
-
   String get catalogTimeZone => getString(catalogTimeZoneKey) ?? '';
 
   set catalogTimeZone(String newValue) => setAndNotify(catalogTimeZoneKey, newValue);
@@ -280,6 +278,28 @@ class Settings extends ChangeNotifier {
   List<int>? get topEntryIds => getStringList(topEntryIdsKey)?.map(int.tryParse).whereNotNull().toList();
 
   set topEntryIds(List<int>? newValue) => setAndNotify(topEntryIdsKey, newValue?.map((id) => id.toString()).whereNotNull().toList());
+
+  // display
+
+  DisplayRefreshRateMode get displayRefreshRateMode => getEnumOrDefault(displayRefreshRateModeKey, SettingsDefaults.displayRefreshRateMode, DisplayRefreshRateMode.values);
+
+  set displayRefreshRateMode(DisplayRefreshRateMode newValue) => setAndNotify(displayRefreshRateModeKey, newValue.toString());
+
+  AvesThemeBrightness get themeBrightness => getEnumOrDefault(themeBrightnessKey, SettingsDefaults.themeBrightness, AvesThemeBrightness.values);
+
+  set themeBrightness(AvesThemeBrightness newValue) => setAndNotify(themeBrightnessKey, newValue.toString());
+
+  AvesThemeColorMode get themeColorMode => getEnumOrDefault(themeColorModeKey, SettingsDefaults.themeColorMode, AvesThemeColorMode.values);
+
+  set themeColorMode(AvesThemeColorMode newValue) => setAndNotify(themeColorModeKey, newValue.toString());
+
+  bool get enableDynamicColor => getBoolOrDefault(enableDynamicColorKey, SettingsDefaults.enableDynamicColor);
+
+  set enableDynamicColor(bool newValue) => setAndNotify(enableDynamicColorKey, newValue);
+
+  bool get enableBlurEffect => getBoolOrDefault(enableBlurEffectKey, SettingsDefaults.enableBlurEffect);
+
+  set enableBlurEffect(bool newValue) => setAndNotify(enableBlurEffectKey, newValue);
 
   // navigation
 
@@ -441,10 +461,6 @@ class Settings extends ChangeNotifier {
 
   set showOverlayThumbnailPreview(bool newValue) => setAndNotify(showOverlayThumbnailPreviewKey, newValue);
 
-  bool get enableOverlayBlurEffect => getBoolOrDefault(enableOverlayBlurEffectKey, SettingsDefaults.enableOverlayBlurEffect);
-
-  set enableOverlayBlurEffect(bool newValue) => setAndNotify(enableOverlayBlurEffectKey, newValue);
-
   bool get viewerUseCutout => getBoolOrDefault(viewerUseCutoutKey, SettingsDefaults.viewerUseCutout);
 
   set viewerUseCutout(bool newValue) => setAndNotify(viewerUseCutoutKey, newValue);
@@ -566,6 +582,28 @@ class Settings extends ChangeNotifier {
   bool get filePickerShowHiddenFiles => getBoolOrDefault(filePickerShowHiddenFilesKey, SettingsDefaults.filePickerShowHiddenFiles);
 
   set filePickerShowHiddenFiles(bool newValue) => setAndNotify(filePickerShowHiddenFilesKey, newValue);
+
+  // slideshow
+
+  bool get slideshowRepeat => getBoolOrDefault(slideshowRepeatKey, SettingsDefaults.slideshowRepeat);
+
+  set slideshowRepeat(bool newValue) => setAndNotify(slideshowRepeatKey, newValue);
+
+  bool get slideshowShuffle => getBoolOrDefault(slideshowShuffleKey, SettingsDefaults.slideshowShuffle);
+
+  set slideshowShuffle(bool newValue) => setAndNotify(slideshowShuffleKey, newValue);
+
+  ViewerTransition get slideshowTransition => getEnumOrDefault(slideshowTransitionKey, SettingsDefaults.slideshowTransition, ViewerTransition.values);
+
+  set slideshowTransition(ViewerTransition newValue) => setAndNotify(slideshowTransitionKey, newValue.toString());
+
+  SlideshowVideoPlayback get slideshowVideoPlayback => getEnumOrDefault(slideshowVideoPlaybackKey, SettingsDefaults.slideshowVideoPlayback, SlideshowVideoPlayback.values);
+
+  set slideshowVideoPlayback(SlideshowVideoPlayback newValue) => setAndNotify(slideshowVideoPlaybackKey, newValue.toString());
+
+  SlideshowInterval get slideshowInterval => getEnumOrDefault(slideshowIntervalKey, SettingsDefaults.slideshowInterval, SlideshowInterval.values);
+
+  set slideshowInterval(SlideshowInterval newValue) => setAndNotify(slideshowIntervalKey, newValue.toString());
 
   // convenience methods
 
@@ -695,6 +733,8 @@ class Settings extends ChangeNotifier {
               break;
             case isInstalledAppAccessAllowedKey:
             case isErrorReportingAllowedKey:
+            case enableDynamicColorKey:
+            case enableBlurEffectKey:
             case showBottomNavigationBarKey:
             case mustBackTwiceToExitKey:
             case confirmDeleteForeverKey:
@@ -713,7 +753,6 @@ class Settings extends ChangeNotifier {
             case showOverlayInfoKey:
             case showOverlayShootingDetailsKey:
             case showOverlayThumbnailPreviewKey:
-            case enableOverlayBlurEffectKey:
             case viewerUseCutoutKey:
             case viewerMaxBrightnessKey:
             case enableMotionPhotoAutoPlayKey:
@@ -724,6 +763,8 @@ class Settings extends ChangeNotifier {
             case subtitleShowOutlineKey:
             case saveSearchHistoryKey:
             case filePickerShowHiddenFilesKey:
+            case slideshowRepeatKey:
+            case slideshowShuffleKey:
               if (newValue is bool) {
                 settingsStore.setBool(key, newValue);
               } else {
@@ -751,6 +792,9 @@ class Settings extends ChangeNotifier {
             case unitSystemKey:
             case accessibilityAnimationsKey:
             case timeToTakeActionKey:
+            case slideshowTransitionKey:
+            case slideshowVideoPlaybackKey:
+            case slideshowIntervalKey:
               if (newValue is String) {
                 settingsStore.setString(key, newValue);
               } else {

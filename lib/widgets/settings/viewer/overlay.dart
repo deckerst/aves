@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
 class ViewerOverlayPage extends StatelessWidget {
-  static const routeName = '/settings/viewer_overlay';
+  static const routeName = '/settings/viewer/overlay';
 
   const ViewerOverlayPage({super.key});
 

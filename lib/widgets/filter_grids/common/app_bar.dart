@@ -115,9 +115,14 @@ class _FilterGridAppBarState<T extends CollectionFilter> extends State<FilterGri
   Widget _buildAppBarTitle(bool isSelecting) {
     if (isSelecting) {
       final l10n = context.l10n;
-      return Selector<Selection<FilterGridItem<T>>, int>(
-        selector: (context, selection) => selection.selectedItems.length,
-        builder: (context, count, child) => Text(count == 0 ? l10n.collectionSelectPageTitle : l10n.itemCount(count)),
+      return Selector<Selection<FilterGridItem<T>>?, int>(
+        selector: (context, selection) => selection?.selectedItems.length ?? 0,
+        builder: (context, count, child) => Text(
+          count == 0 ? l10n.collectionSelectPageTitle : l10n.itemCount(count),
+          softWrap: false,
+          overflow: TextOverflow.fade,
+          maxLines: 1,
+        ),
       );
     } else {
       final appMode = context.watch<ValueNotifier<AppMode>>().value;

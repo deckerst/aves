@@ -109,6 +109,11 @@ class Constants {
       sourceUrl: 'https://github.com/fluttercommunity/plus_plugins/tree/main/packages/device_info_plus',
     ),
     Dependency(
+      name: 'Dynamic Color',
+      license: 'BSD 3-Clause',
+      sourceUrl: 'https://github.com/material-foundation/material-dynamic-color-flutter',
+    ),
+    Dependency(
       name: 'fijkplayer (Aves fork)',
       license: 'MIT',
       sourceUrl: 'https://github.com/deckerst/fijkplayer',
@@ -336,6 +341,12 @@ class Constants {
       name: 'LatLong2',
       license: 'Apache 2.0',
       sourceUrl: 'https://github.com/jifalops/dart-latlong',
+    ),
+    Dependency(
+      name: 'Material Color Utilities',
+      license: 'Apache 2.0',
+      licenseUrl: 'https://github.com/material-foundation/material-color-utilities/tree/main/dart/LICENSE',
+      sourceUrl: 'https://github.com/material-foundation/material-color-utilities/tree/main/dart',
     ),
     Dependency(
       name: 'Path',

@@ -12,6 +12,9 @@ Aves is a gallery and metadata explorer app. It is built for Android, with Flutt
 [<img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
       alt='Get it on Google Play'
       height="80">](https://play.google.com/store/apps/details?id=deckers.thibault.aves&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1)
+[<img src="https://raw.githubusercontent.com/deckerst/common/main/assets/huawei-appgallery-badge-english-black.png"
+      alt='Get it on Huawei AppGallery'
+      height="80">](https://appgallery.huawei.com/app/C106014023)
 [<img src="https://raw.githubusercontent.com/deckerst/common/main/assets/amazon-appstore-badge-english-black.png"
       alt='Get it on Amazon Appstore'
       height="80">](https://www.amazon.com/dp/B09XQHQQ72)
@@ -90,7 +93,7 @@ At this stage this project does *not* accept PRs, except for translations.
 
 ### Translations
 
-If you want to translate this app in your language and share the result, [there is a guide](https://github.com/deckerst/aves/wiki/Contributing-to-Translations). English, Korean and French are already handled by me. Russian, German, Spanish, Portuguese, Indonesian, Japanese, Italian & Chinese are handled by generous volunteers.
+If you want to translate this app in your language and share the result, [there is a guide](https://github.com/deckerst/aves/wiki/Contributing-to-Translations). English, Korean and French are already handled by me. Russian, German, Spanish, Portuguese, Indonesian, Japanese, Italian, Chinese & Turkish are handled by generous volunteers.
 
 ### Donations
 

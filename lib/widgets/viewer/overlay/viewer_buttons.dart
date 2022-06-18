@@ -22,7 +22,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 
-class ViewerButtonRow extends StatelessWidget {
+class ViewerButtons extends StatelessWidget {
   final AvesEntry mainEntry;
   final AvesEntry pageEntry;
   final Animation<double> scale;
@@ -35,7 +35,7 @@ class ViewerButtonRow extends StatelessWidget {
 
   static double _buttonSize(BuildContext context) => OverlayButton.getSize(context);
 
-  const ViewerButtonRow({
+  const ViewerButtons({
     super.key,
     required this.mainEntry,
     required this.pageEntry,
@@ -92,6 +92,7 @@ class ViewerButtonRow extends StatelessWidget {
             return settings.isRotationLocked;
           case EntryAction.addShortcut:
             return device.canPinShortcut;
+          case EntryAction.info:
           case EntryAction.copyToClipboard:
           case EntryAction.edit:
           case EntryAction.open:
@@ -141,12 +142,13 @@ class ViewerButtonRowContent extends StatelessWidget {
   final List<EntryAction> quickActions, topLevelActions, exportActions, videoActions;
   final Animation<double> scale;
   final AvesEntry mainEntry, pageEntry;
+  final ValueNotifier<String?> _popupExpandedNotifier = ValueNotifier(null);
 
   AvesEntry get favouriteTargetEntry => mainEntry.isBurst ? pageEntry : mainEntry;
 
   static const double padding = 8;
 
-  const ViewerButtonRowContent({
+  ViewerButtonRowContent({
     super.key,
     required this.quickActions,
     required this.topLevelActions,
@@ -187,6 +189,8 @@ class ViewerButtonRowContent extends StatelessWidget {
                               PopupMenuItem<EntryAction>(
                                 padding: EdgeInsets.zero,
                                 child: PopupMenuItemExpansionPanel<EntryAction>(
+                                  value: 'export',
+                                  expandedNotifier: _popupExpandedNotifier,
                                   icon: AIcons.export,
                                   title: context.l10n.entryActionExport,
                                   items: [
@@ -200,6 +204,8 @@ class ViewerButtonRowContent extends StatelessWidget {
                               PopupMenuItem<EntryAction>(
                                 padding: EdgeInsets.zero,
                                 child: PopupMenuItemExpansionPanel<EntryAction>(
+                                  value: 'video',
+                                  expandedNotifier: _popupExpandedNotifier,
                                   icon: AIcons.video,
                                   title: context.l10n.settingsSectionVideo,
                                   items: [
@@ -214,8 +220,12 @@ class ViewerButtonRowContent extends StatelessWidget {
                           ];
                         },
                         onSelected: (action) {
+                          _popupExpandedNotifier.value = null;
                           // wait for the popup menu to hide before proceeding with the action
                           Future.delayed(Durations.popupMenuAnimation * timeDilation, () => _onActionSelected(context, action));
+                        },
+                        onCanceled: () {
+                          _popupExpandedNotifier.value = null;
                         },
                         onMenuOpened: () {
                           // if the menu is opened while overlay is hiding,

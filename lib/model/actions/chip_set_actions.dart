@@ -13,6 +13,7 @@ enum ChipSetAction {
   createAlbum,
   // browsing or selecting
   map,
+  slideshow,
   stats,
   // selecting (single/multiple filters)
   delete,
@@ -36,6 +37,7 @@ class ChipSetActions {
     ChipSetAction.search,
     ChipSetAction.createAlbum,
     ChipSetAction.map,
+    ChipSetAction.slideshow,
     ChipSetAction.stats,
   ];
 
@@ -47,6 +49,7 @@ class ChipSetActions {
     ChipSetAction.rename,
     ChipSetAction.hide,
     ChipSetAction.map,
+    ChipSetAction.slideshow,
     ChipSetAction.stats,
   ];
 }
@@ -71,6 +74,8 @@ extension ExtraChipSetAction on ChipSetAction {
       // browsing or selecting
       case ChipSetAction.map:
         return context.l10n.menuActionMap;
+      case ChipSetAction.slideshow:
+        return context.l10n.menuActionSlideshow;
       case ChipSetAction.stats:
         return context.l10n.menuActionStats;
       // selecting (single/multiple filters)
@@ -111,6 +116,8 @@ extension ExtraChipSetAction on ChipSetAction {
       // browsing or selecting
       case ChipSetAction.map:
         return AIcons.map;
+      case ChipSetAction.slideshow:
+        return AIcons.slideshow;
       case ChipSetAction.stats:
         return AIcons.stats;
       // selecting (single/multiple filters)

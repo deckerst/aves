@@ -22,9 +22,9 @@ import 'package:aves/widgets/common/search/route.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
 import 'package:aves/widgets/viewer/entry_viewer_page.dart';
+import 'package:aves/widgets/wallpaper_page.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
@@ -48,6 +48,11 @@ class _HomePageState extends State<HomePage> {
   String? _shortcutRouteName, _shortcutSearchQuery;
   Set<String>? _shortcutFilters;
 
+  static const actionPick = 'pick';
+  static const actionSearch = 'search';
+  static const actionSetWallpaper = 'set_wallpaper';
+  static const actionView = 'view';
+
   static const allowedShortcutRoutes = [
     CollectionPage.routeName,
     AlbumListPage.routeName,
@@ -66,31 +71,30 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _setup() async {
     final stopwatch = Stopwatch()..start();
-    final permissions = await [
+    // do not check whether permission was granted,
+    // as some app stores hide in some countries
+    // apps that force quit on permission denial
+    await [
       Permission.storage,
       // to access media with unredacted metadata with scoped storage (Android 10+)
       Permission.accessMediaLocation,
     ].request();
-    if (permissions[Permission.storage] != PermissionStatus.granted) {
-      unawaited(SystemNavigator.pop());
-      return;
-    }
-
-    await androidFileUtils.init();
-    if (settings.isInstalledAppAccessAllowed) {
-      // TODO TLAD transition code (it's unset in v1.5.4), remove in a later release
-      settings.isInstalledAppAccessAllowed = settings.isInstalledAppAccessAllowed;
-
-      unawaited(androidFileUtils.initAppNames());
-    }
 
     var appMode = AppMode.main;
     final intentData = widget.intentData ?? await ViewerService.getIntentData();
+    final intentAction = intentData['action'];
+
+    if (intentAction != actionSetWallpaper) {
+      await androidFileUtils.init();
+      if (settings.isInstalledAppAccessAllowed) {
+        unawaited(androidFileUtils.initAppNames());
+      }
+    }
+
     if (intentData.isNotEmpty) {
-      final action = intentData['action'];
       await reportService.log('Intent data=$intentData');
-      switch (action) {
-        case 'view':
+      switch (intentAction) {
+        case actionView:
           _viewerEntry = await _initViewerEntry(
             uri: intentData['uri'],
             mimeType: intentData['mimeType'],
@@ -99,7 +103,7 @@ class _HomePageState extends State<HomePage> {
             appMode = AppMode.view;
           }
           break;
-        case 'pick':
+        case actionPick:
           // TODO TLAD apply pick mimetype(s)
           // some apps define multiple types, separated by a space (maybe other signs too, like `,` `;`?)
           String? pickMimeTypes = intentData['mimeType'];
@@ -107,9 +111,16 @@ class _HomePageState extends State<HomePage> {
           debugPrint('pick mimeType=$pickMimeTypes multiple=$multiple');
           appMode = multiple ? AppMode.pickMultipleMediaExternal : AppMode.pickSingleMediaExternal;
           break;
-        case 'search':
+        case actionSearch:
           _shortcutRouteName = CollectionSearchDelegate.pageRouteName;
           _shortcutSearchQuery = intentData['query'];
+          break;
+        case actionSetWallpaper:
+          appMode = AppMode.setWallpaper;
+          _viewerEntry = await _initViewerEntry(
+            uri: intentData['uri'],
+            mimeType: intentData['mimeType'],
+          );
           break;
         default:
           // do not use 'route' as extra key, as the Flutter framework acts on it
@@ -150,6 +161,8 @@ class _HomePageState extends State<HomePage> {
         break;
       case AppMode.pickMediaInternal:
       case AppMode.pickFilterInternal:
+      case AppMode.setWallpaper:
+      case AppMode.slideshow:
         break;
     }
 
@@ -180,6 +193,17 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<Route> _getRedirectRoute(AppMode appMode) async {
+    if (appMode == AppMode.setWallpaper) {
+      return DirectMaterialPageRoute(
+        settings: const RouteSettings(name: WallpaperPage.routeName),
+        builder: (_) {
+          return WallpaperPage(
+            entry: _viewerEntry,
+          );
+        },
+      );
+    }
+
     if (appMode == AppMode.view) {
       AvesEntry viewerEntry = _viewerEntry!;
       CollectionLens? collection;
@@ -263,7 +287,7 @@ class _HomePageState extends State<HomePage> {
       default:
         return DirectMaterialPageRoute(
           settings: const RouteSettings(name: CollectionPage.routeName),
-          builder: (_) => CollectionPage(
+          builder: (context) => CollectionPage(
             source: source,
             filters: filters,
           ),

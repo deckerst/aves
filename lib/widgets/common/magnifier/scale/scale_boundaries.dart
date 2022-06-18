@@ -10,6 +10,7 @@ import 'package:flutter/foundation.dart';
 /// Also, stores values regarding the two sizes: the container and the child.
 @immutable
 class ScaleBoundaries extends Equatable {
+  final bool _allowOriginalScaleBeyondRange;
   final ScaleLevel _minScale;
   final ScaleLevel _maxScale;
   final ScaleLevel _initialScale;
@@ -17,17 +18,32 @@ class ScaleBoundaries extends Equatable {
   final Size childSize;
 
   @override
-  List<Object?> get props => [_minScale, _maxScale, _initialScale, viewportSize, childSize];
+  List<Object?> get props => [_allowOriginalScaleBeyondRange, _minScale, _maxScale, _initialScale, viewportSize, childSize];
 
   const ScaleBoundaries({
+    required bool allowOriginalScaleBeyondRange,
     required ScaleLevel minScale,
     required ScaleLevel maxScale,
     required ScaleLevel initialScale,
     required this.viewportSize,
     required this.childSize,
-  })  : _minScale = minScale,
+  })  : _allowOriginalScaleBeyondRange = allowOriginalScaleBeyondRange,
+        _minScale = minScale,
         _maxScale = maxScale,
         _initialScale = initialScale;
+
+  ScaleBoundaries copyWith({
+    Size? childSize,
+  }) {
+    return ScaleBoundaries(
+      allowOriginalScaleBeyondRange: _allowOriginalScaleBeyondRange,
+      minScale: _minScale,
+      maxScale: _maxScale,
+      initialScale: _initialScale,
+      viewportSize: viewportSize,
+      childSize: childSize ?? this.childSize,
+    );
+  }
 
   double _scaleForLevel(ScaleLevel level) {
     final factor = level.factor;
@@ -44,9 +60,17 @@ class ScaleBoundaries extends Equatable {
 
   double get originalScale => 1.0 / window.devicePixelRatio;
 
-  double get minScale => {_scaleForLevel(_minScale), originalScale, initialScale}.fold(double.infinity, min);
+  double get minScale => {
+        _scaleForLevel(_minScale),
+        _allowOriginalScaleBeyondRange ? originalScale : double.infinity,
+        initialScale,
+      }.fold(double.infinity, min);
 
-  double get maxScale => {_scaleForLevel(_maxScale), originalScale, initialScale}.fold(0, max);
+  double get maxScale => {
+        _scaleForLevel(_maxScale),
+        _allowOriginalScaleBeyondRange ? originalScale : double.negativeInfinity,
+        initialScale,
+      }.fold(0, max);
 
   double get initialScale => _scaleForLevel(_initialScale);
 

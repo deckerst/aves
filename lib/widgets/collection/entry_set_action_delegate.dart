@@ -35,6 +35,7 @@ import 'package:aves/widgets/dialogs/entry_editors/rename_entry_set_dialog.dart'
 import 'package:aves/widgets/map/map_page.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
 import 'package:aves/widgets/stats/stats_page.dart';
+import 'package:aves/widgets/viewer/slideshow_page.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -73,6 +74,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
         return appMode == AppMode.main && isTrash;
       // browsing or selecting
       case EntrySetAction.map:
+      case EntrySetAction.slideshow:
       case EntrySetAction.stats:
         return appMode == AppMode.main;
       case EntrySetAction.rescan:
@@ -124,6 +126,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       case EntrySetAction.emptyBin:
         return !isSelecting && hasItems;
       case EntrySetAction.map:
+      case EntrySetAction.slideshow:
       case EntrySetAction.stats:
       case EntrySetAction.rescan:
         return (!isSelecting && hasItems) || (isSelecting && hasSelection);
@@ -168,6 +171,9 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       // browsing or selecting
       case EntrySetAction.map:
         _goToMap(context);
+        break;
+      case EntrySetAction.slideshow:
+        _goToSlideshow(context);
         break;
       case EntrySetAction.stats:
         _goToStats(context);
@@ -539,6 +545,27 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
             fixedSelection: entries.where((entry) => entry.hasGps).toList(),
           ),
         ),
+      ),
+    );
+  }
+
+  void _goToSlideshow(BuildContext context) {
+    final collection = context.read<CollectionLens>();
+    final entries = _getTargetItems(context);
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        settings: const RouteSettings(name: SlideshowPage.routeName),
+        builder: (context) {
+          return SlideshowPage(
+            collection: CollectionLens(
+              source: collection.source,
+              filters: collection.filters,
+              fixedSelection: entries.toList(),
+            ),
+          );
+        },
       ),
     );
   }

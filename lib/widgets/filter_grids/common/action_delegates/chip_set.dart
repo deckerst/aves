@@ -22,6 +22,7 @@ import 'package:aves/widgets/dialogs/tile_view_dialog.dart';
 import 'package:aves/widgets/map/map_page.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
 import 'package:aves/widgets/stats/stats_page.dart';
+import 'package:aves/widgets/viewer/slideshow_page.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -65,6 +66,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
         return false;
       // browsing or selecting
       case ChipSetAction.map:
+      case ChipSetAction.slideshow:
       case ChipSetAction.stats:
         return appMode == AppMode.main;
       // selecting (single/multiple filters)
@@ -106,6 +108,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
         return true;
       // browsing or selecting
       case ChipSetAction.map:
+      case ChipSetAction.slideshow:
       case ChipSetAction.stats:
         return (!isSelecting && hasItems) || (isSelecting && hasSelection);
       // selecting (single/multiple filters)
@@ -145,6 +148,9 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
       // browsing or selecting
       case ChipSetAction.map:
         _goToMap(context, filters);
+        break;
+      case ChipSetAction.slideshow:
+        _goToSlideshow(context, filters);
         break;
       case ChipSetAction.stats:
         _goToStats(context, filters);
@@ -223,6 +229,23 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
             fixedSelection: _selectedEntries(context, filters).where((entry) => entry.hasGps).toList(),
           ),
         ),
+      ),
+    );
+  }
+
+  void _goToSlideshow(BuildContext context, Set<T> filters) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        settings: const RouteSettings(name: SlideshowPage.routeName),
+        builder: (context) {
+          return SlideshowPage(
+            collection: CollectionLens(
+              source: context.read<CollectionSource>(),
+              fixedSelection: _selectedEntries(context, filters).toList(),
+            ),
+          );
+        },
       ),
     );
   }
