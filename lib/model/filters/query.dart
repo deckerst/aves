@@ -2,6 +2,7 @@ import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/utils/file_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -20,30 +21,25 @@ class QueryFilter extends CollectionFilter {
   List<Object?> get props => [query, live];
 
   static final _fieldPattern = RegExp(r'(.+)([=<>])(.+)');
+  static final _fileSizePattern = RegExp(r'(\d+)([KMG])?');
   static const keyContentId = 'ID';
+  static const keyContentYear = 'YEAR';
+  static const keyContentMonth = 'MONTH';
+  static const keyContentDay = 'DAY';
+  static const keyContentWidth = 'WIDTH';
+  static const keyContentHeight = 'HEIGHT';
+  static const keyContentSize = 'SIZE';
   static const opEqual = '=';
+  static const opLower = '<';
+  static const opGreater = '>';
 
   QueryFilter(this.query, {this.colorful = true, this.live = false}) {
     var upQuery = query.toUpperCase();
 
-    final match = _fieldPattern.firstMatch(upQuery);
-    if (match != null) {
-      final key = match.group(1)?.trim();
-      final op = match.group(2)?.trim();
-      final value = match.group(3)?.trim();
-      if (key != null && op != null && value != null) {
-        switch (key) {
-          case keyContentId:
-            if (op == opEqual) {
-              final contentId = int.tryParse(value);
-              if (contentId != null) {
-                _test = (entry) => entry.contentId == contentId;
-                return;
-              }
-            }
-            break;
-        }
-      }
+    final test = fieldTest(upQuery);
+    if (test != null) {
+      _test = test;
+      return;
     }
 
     // allow NOT queries starting with `-`
@@ -101,4 +97,114 @@ class QueryFilter extends CollectionFilter {
 
   @override
   String get key => '$type-$query';
+
+  EntryFilter? fieldTest(String upQuery) {
+    var match = _fieldPattern.firstMatch(upQuery);
+    if (match == null) return null;
+
+    final key = match.group(1)?.trim();
+    final op = match.group(2)?.trim();
+    var valueString = match.group(3)?.trim();
+    if (key == null || op == null || valueString == null) return null;
+
+    final valueInt = int.tryParse(valueString);
+
+    switch (key) {
+      case keyContentId:
+        if (valueInt == null) return null;
+        if (op == opEqual) {
+          return (entry) => entry.contentId == valueInt;
+        }
+        break;
+      case keyContentYear:
+        if (valueInt == null) return null;
+        switch (op) {
+          case opEqual:
+            return (entry) => (entry.bestDate?.year ?? 0) == valueInt;
+          case opLower:
+            return (entry) => (entry.bestDate?.year ?? 0) < valueInt;
+          case opGreater:
+            return (entry) => (entry.bestDate?.year ?? 0) > valueInt;
+        }
+        break;
+      case keyContentMonth:
+        if (valueInt == null) return null;
+        switch (op) {
+          case opEqual:
+            return (entry) => (entry.bestDate?.month ?? 0) == valueInt;
+          case opLower:
+            return (entry) => (entry.bestDate?.month ?? 0) < valueInt;
+          case opGreater:
+            return (entry) => (entry.bestDate?.month ?? 0) > valueInt;
+        }
+        break;
+      case keyContentDay:
+        if (valueInt == null) return null;
+        switch (op) {
+          case opEqual:
+            return (entry) => (entry.bestDate?.day ?? 0) == valueInt;
+          case opLower:
+            return (entry) => (entry.bestDate?.day ?? 0) < valueInt;
+          case opGreater:
+            return (entry) => (entry.bestDate?.day ?? 0) > valueInt;
+        }
+        break;
+      case keyContentWidth:
+        if (valueInt == null) return null;
+        switch (op) {
+          case opEqual:
+            return (entry) => entry.displaySize.width == valueInt;
+          case opLower:
+            return (entry) => entry.displaySize.width < valueInt;
+          case opGreater:
+            return (entry) => entry.displaySize.width > valueInt;
+        }
+        break;
+      case keyContentHeight:
+        if (valueInt == null) return null;
+        switch (op) {
+          case opEqual:
+            return (entry) => entry.displaySize.height == valueInt;
+          case opLower:
+            return (entry) => entry.displaySize.height < valueInt;
+          case opGreater:
+            return (entry) => entry.displaySize.height > valueInt;
+        }
+        break;
+      case keyContentSize:
+        match = _fileSizePattern.firstMatch(valueString);
+        if (match == null) return null;
+
+        valueString = match.group(1)?.trim();
+        if (valueString == null) return null;
+        final valueInt = int.tryParse(valueString);
+        if (valueInt == null) return null;
+
+        var bytes = valueInt;
+        final multiplierString = match.group(2)?.trim();
+        switch (multiplierString) {
+          case 'K':
+            bytes *= kilo;
+            break;
+          case 'M':
+            bytes *= mega;
+            break;
+          case 'G':
+            bytes *= giga;
+            break;
+        }
+
+        switch (op) {
+          case opEqual:
+            return (entry) => (entry.sizeBytes ?? 0) == bytes;
+          case opLower:
+            return (entry) => (entry.sizeBytes ?? 0) < bytes;
+          case opGreater:
+            return (entry) => (entry.sizeBytes ?? 0) > bytes;
+        }
+        break;
+    }
+
+    return null;
+  }
 }
