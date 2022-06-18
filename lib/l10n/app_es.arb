@@ -81,6 +81,9 @@
   "videoActionSetSpeed": "Velocidad de reproducción",
   "videoActionSettings": "Ajustes",
 
+  "slideshowActionResume": "Reanudar",
+  "slideshowActionShowInCollection": "Mostrar en Colección",
+
   "entryInfoActionEditDate": "Editar fecha y hora",
   "entryInfoActionEditLocation": "Editar ubicación",
   "entryInfoActionEditRating": "Editar clasificación",
@@ -422,6 +425,7 @@
 
   "settingsSectionNavigation": "Navegación",
   "settingsHome": "Inicio",
+  "settingsShowBottomNavigationBar": "Mostrar barra de navegación inferior",
   "settingsKeepScreenOnTile": "Mantener pantalla encendida",
   "settingsKeepScreenOnTitle": "Mantener pantalla encendida",
   "settingsDoubleBackExit": "Presione «atrás» dos veces para salir",
