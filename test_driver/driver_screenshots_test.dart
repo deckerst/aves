@@ -83,6 +83,11 @@ void setLanguage(String languageCode) {
     await driver.tapKeyAndWait('drawer-settings-button');
     await driver.tapKeyAndWait('section-language');
     await driver.tapKeyAndWait('tile-language');
+
+    final name = SupportedLocales.languagesByLanguageCode[languageCode] ?? languageCode;
+    await driver.tap(find.byType('TextField'));
+    await driver.enterText(name);
+
     await driver.tapKeyAndWait(languageCode);
     _languageCode = languageCode;
 

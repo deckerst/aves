@@ -4,6 +4,26 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.6.9"></a>[v1.6.9] - 2022-06-18
+
+### Added
+
+- slideshow
+- set wallpaper from any media
+- optional dynamic accent color on Android 12+
+- Search: date/dimension/size field equality (undocumented)
+- support Android 13 (API 33)
+- Turkish translation (thanks metezd)
+
+### Changed
+
+- do not force quit on storage permission denial
+- upgraded Flutter to stable v3.0.2
+
+### Fixed
+
+- merge ambiguously cased directories
+
 ## <a id="v1.6.8"></a>[v1.6.8] - 2022-05-27
 
 ### Fixed

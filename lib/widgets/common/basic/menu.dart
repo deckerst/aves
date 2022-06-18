@@ -55,25 +55,27 @@ class MenuIconTheme extends StatelessWidget {
 
 class PopupMenuItemExpansionPanel<T> extends StatefulWidget {
   final bool enabled;
+  final String value;
+  final ValueNotifier<String?> expandedNotifier;
   final IconData icon;
   final String title;
   final List<PopupMenuEntry<T>> items;
 
-  const PopupMenuItemExpansionPanel({
+  PopupMenuItemExpansionPanel({
     super.key,
     this.enabled = true,
+    required this.value,
+    ValueNotifier<String?>? expandedNotifier,
     required this.icon,
     required this.title,
     required this.items,
-  });
+  }) : expandedNotifier = expandedNotifier ?? ValueNotifier(null);
 
   @override
   State<PopupMenuItemExpansionPanel<T>> createState() => _PopupMenuItemExpansionPanelState<T>();
 }
 
 class _PopupMenuItemExpansionPanelState<T> extends State<PopupMenuItemExpansionPanel<T>> {
-  bool _isExpanded = false;
-
   // ref `_kMenuHorizontalPadding` used in `PopupMenuItem`
   static const double _horizontalPadding = 16;
 
@@ -86,38 +88,43 @@ class _PopupMenuItemExpansionPanelState<T> extends State<PopupMenuItemExpansionP
     }
     final animationDuration = context.select<DurationsData, Duration>((v) => v.expansionTileAnimation);
 
-    Widget child = ExpansionPanelList(
-      expansionCallback: (index, isExpanded) {
-        setState(() => _isExpanded = !isExpanded);
-      },
-      animationDuration: animationDuration,
-      expandedHeaderPadding: EdgeInsets.zero,
-      elevation: 0,
-      children: [
-        ExpansionPanel(
-          headerBuilder: (context, isExpanded) => DefaultTextStyle(
-            style: style,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: _horizontalPadding),
-              child: MenuRow(
-                text: widget.title,
-                icon: Icon(widget.icon),
+    Widget child = ValueListenableBuilder<String?>(
+      valueListenable: widget.expandedNotifier,
+      builder: (context, expandedValue, child) {
+        return ExpansionPanelList(
+          expansionCallback: (index, isExpanded) {
+            widget.expandedNotifier.value = isExpanded ? null : widget.value;
+          },
+          animationDuration: animationDuration,
+          expandedHeaderPadding: EdgeInsets.zero,
+          elevation: 0,
+          children: [
+            ExpansionPanel(
+              headerBuilder: (context, isExpanded) => DefaultTextStyle(
+                style: style,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: _horizontalPadding),
+                  child: MenuRow(
+                    text: widget.title,
+                    icon: Icon(widget.icon),
+                  ),
+                ),
               ),
+              body: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const PopupMenuDivider(height: 0),
+                  ...widget.items,
+                  const PopupMenuDivider(height: 0),
+                ],
+              ),
+              isExpanded: expandedValue == widget.value,
+              canTapOnHeader: true,
+              backgroundColor: Colors.transparent,
             ),
-          ),
-          body: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const PopupMenuDivider(height: 0),
-              ...widget.items,
-              const PopupMenuDivider(height: 0),
-            ],
-          ),
-          isExpanded: _isExpanded,
-          canTapOnHeader: true,
-          backgroundColor: Colors.transparent,
-        ),
-      ],
+          ],
+        );
+      },
     );
     if (!widget.enabled) {
       child = IgnorePointer(child: child);

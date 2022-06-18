@@ -78,6 +78,7 @@
   "entryActionDelete": "Delete",
   "entryActionConvert": "Convert",
   "entryActionExport": "Export",
+  "entryActionInfo": "Info",
   "entryActionRename": "Rename",
   "entryActionRestore": "Restore",
   "entryActionRotateCCW": "Rotate counterclockwise",
@@ -107,6 +108,9 @@
   "videoActionSelectStreams": "Select tracks",
   "videoActionSetSpeed": "Playback speed",
   "videoActionSettings": "Settings",
+
+  "slideshowActionResume": "Resume",
+  "slideshowActionShowInCollection": "Show in Collection",
 
   "entryInfoActionEditDate": "Edit date & time",
   "entryInfoActionEditLocation": "Edit location",
@@ -184,9 +188,22 @@
   "displayRefreshRatePreferHighest": "Highest rate",
   "displayRefreshRatePreferLowest": "Lowest rate",
 
+  "slideshowVideoPlaybackSkip": "Skip",
+  "slideshowVideoPlaybackMuted": "Play muted",
+  "slideshowVideoPlaybackWithSound": "Play with sound",
+
   "themeBrightnessLight": "Light",
   "themeBrightnessDark": "Dark",
   "themeBrightnessBlack": "Black",
+
+  "viewerTransitionSlide": "Slide",
+  "viewerTransitionParallax": "Parallax",
+  "viewerTransitionFade": "Fade",
+  "viewerTransitionZoomIn": "Zoom in",
+
+  "wallpaperTargetHome": "Home screen",
+  "wallpaperTargetLock": "Lock screen",
+  "wallpaperTargetHomeLock": "Home and lock screens",
 
   "albumTierNew": "New",
   "albumTierPinned": "Pinned",
@@ -392,6 +409,7 @@
   "menuActionSelectAll": "Select all",
   "menuActionSelectNone": "Select none",
   "menuActionMap": "Map",
+  "menuActionSlideshow": "Slideshow",
   "menuActionStats": "Stats",
 
   "viewDialogTabSort": "Sort",
@@ -529,6 +547,7 @@
   "collectionEmptyFavourites": "No favorites",
   "collectionEmptyVideos": "No videos",
   "collectionEmptyImages": "No images",
+  "collectionEmptyGrantAccessButtonLabel": "Grant access",
 
   "collectionSelectSectionTooltip": "Select section",
   "collectionDeselectSectionTooltip": "Deselect section",
@@ -659,6 +678,17 @@
   "settingsViewerShowOverlayThumbnails": "Show thumbnails",
   "settingsViewerEnableOverlayBlurEffect": "Blur effect",
 
+  "settingsViewerSlideshowTile": "Slideshow",
+  "settingsViewerSlideshowTitle": "Slideshow",
+  "settingsSlideshowRepeat": "Repeat",
+  "settingsSlideshowShuffle": "Shuffle",
+  "settingsSlideshowTransitionTile": "Transition",
+  "settingsSlideshowTransitionTitle": "Transition",
+  "settingsSlideshowIntervalTile": "Interval",
+  "settingsSlideshowIntervalTitle": "Interval",
+  "settingsSlideshowVideoPlaybackTile": "Video playback",
+  "settingsSlideshowVideoPlaybackTitle": "Video Playback",
+
   "settingsVideoPageTitle": "Video Settings",
   "settingsSectionVideo": "Video",
   "settingsVideoShowVideos": "Show videos",
@@ -723,6 +753,7 @@
   "settingsSectionDisplay": "Display",
   "settingsThemeBrightness": "Theme",
   "settingsThemeColorHighlights": "Color highlights",
+  "settingsThemeEnableDynamicColor": "Dynamic color",
   "settingsDisplayRefreshRateModeTile": "Display refresh rate",
   "settingsDisplayRefreshRateModeTitle": "Refresh Rate",
 
@@ -745,6 +776,7 @@
   "statsTopTags": "Top Tags",
 
   "viewerOpenPanoramaButtonLabel": "OPEN PANORAMA",
+  "viewerSetWallpaperButtonLabel": "SET WALLPAPER",
   "viewerErrorUnknown": "Oops!",
   "viewerErrorDoesNotExist": "The file no longer exists.",
 

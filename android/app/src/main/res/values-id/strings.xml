@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Aves</string>
+    <string name="wallpaper">Wallpaper</string>
     <string name="search_shortcut_short_label">Cari</string>
     <string name="videos_shortcut_short_label">Video</string>
     <string name="analysis_channel_name">Pindai media</string>

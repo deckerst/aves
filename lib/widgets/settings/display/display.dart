@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:aves/model/device.dart';
 import 'package:aves/model/settings/enums/display_refresh_rate_mode.dart';
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/enums/theme_brightness.dart';
@@ -30,8 +31,9 @@ class DisplaySection extends SettingsSection {
   FutureOr<List<SettingsTile>> tiles(BuildContext context) => [
         SettingsTileDisplayThemeBrightness(),
         SettingsTileDisplayThemeColorMode(),
-        SettingsTileDisplayDisplayRefreshRateMode(),
+        if (device.isDynamicColorAvailable) SettingsTileDisplayEnableDynamicColor(),
         SettingsTileDisplayEnableBlurEffect(),
+        SettingsTileDisplayDisplayRefreshRateMode(),
       ];
 }
 
@@ -62,6 +64,30 @@ class SettingsTileDisplayThemeColorMode extends SettingsTile {
       );
 }
 
+class SettingsTileDisplayEnableDynamicColor extends SettingsTile {
+  @override
+  String title(BuildContext context) => context.l10n.settingsThemeEnableDynamicColor;
+
+  @override
+  Widget build(BuildContext context) => SettingsSwitchListTile(
+        selector: (context, s) => s.enableDynamicColor,
+        onChanged: (v) => settings.enableDynamicColor = v,
+        title: title(context),
+      );
+}
+
+class SettingsTileDisplayEnableBlurEffect extends SettingsTile {
+  @override
+  String title(BuildContext context) => context.l10n.settingsViewerEnableOverlayBlurEffect;
+
+  @override
+  Widget build(BuildContext context) => SettingsSwitchListTile(
+        selector: (context, s) => s.enableBlurEffect,
+        onChanged: (v) => settings.enableBlurEffect = v,
+        title: title(context),
+      );
+}
+
 class SettingsTileDisplayDisplayRefreshRateMode extends SettingsTile {
   @override
   String title(BuildContext context) => context.l10n.settingsDisplayRefreshRateModeTile;
@@ -74,17 +100,5 @@ class SettingsTileDisplayDisplayRefreshRateMode extends SettingsTile {
         onSelection: (v) => settings.displayRefreshRateMode = v,
         tileTitle: title(context),
         dialogTitle: context.l10n.settingsDisplayRefreshRateModeTitle,
-      );
-}
-
-class SettingsTileDisplayEnableBlurEffect extends SettingsTile {
-  @override
-  String title(BuildContext context) => context.l10n.settingsViewerEnableOverlayBlurEffect;
-
-  @override
-  Widget build(BuildContext context) => SettingsSwitchListTile(
-        selector: (context, s) => s.enableOverlayBlurEffect,
-        onChanged: (v) => settings.enableOverlayBlurEffect = v,
-        title: title(context),
       );
 }

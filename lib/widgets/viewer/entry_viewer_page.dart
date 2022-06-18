@@ -2,6 +2,7 @@ import 'package:aves/app_mode.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
+import 'package:aves/widgets/viewer/controller.dart';
 import 'package:aves/widgets/viewer/entry_viewer_stack.dart';
 import 'package:aves/widgets/viewer/multipage/conductor.dart';
 import 'package:aves/widgets/viewer/overlay/bottom.dart';
@@ -10,7 +11,7 @@ import 'package:aves/widgets/viewer/visual/conductor.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class EntryViewerPage extends StatelessWidget {
+class EntryViewerPage extends StatefulWidget {
   static const routeName = '/viewer';
 
   final CollectionLens? collection;
@@ -23,6 +24,23 @@ class EntryViewerPage extends StatelessWidget {
   });
 
   @override
+  State<EntryViewerPage> createState() => _EntryViewerPageState();
+
+  static EdgeInsets snackBarMargin(BuildContext context) {
+    return EdgeInsets.only(bottom: ViewerBottomOverlay.actionSafeHeight(context));
+  }
+}
+
+class _EntryViewerPageState extends State<EntryViewerPage> {
+  final ViewerController _viewerController = ViewerController();
+
+  @override
+  void dispose() {
+    _viewerController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return MediaQueryDataProvider(
       child: Scaffold(
@@ -30,8 +48,9 @@ class EntryViewerPage extends StatelessWidget {
           child: VideoConductorProvider(
             child: MultiPageConductorProvider(
               child: EntryViewerStack(
-                collection: collection,
-                initialEntry: initialEntry,
+                collection: widget.collection,
+                initialEntry: widget.initialEntry,
+                viewerController: _viewerController,
               ),
             ),
           ),
@@ -44,10 +63,6 @@ class EntryViewerPage extends StatelessWidget {
         resizeToAvoidBottomInset: false,
       ),
     );
-  }
-
-  static EdgeInsets snackBarMargin(BuildContext context) {
-    return EdgeInsets.only(bottom: ViewerBottomOverlay.actionSafeHeight(context));
   }
 }
 

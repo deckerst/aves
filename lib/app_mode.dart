@@ -1,4 +1,13 @@
-enum AppMode { main, pickSingleMediaExternal, pickMultipleMediaExternal, pickMediaInternal, pickFilterInternal, view }
+enum AppMode {
+  main,
+  pickSingleMediaExternal,
+  pickMultipleMediaExternal,
+  pickMediaInternal,
+  pickFilterInternal,
+  setWallpaper,
+  slideshow,
+  view,
+}
 
 extension ExtraAppMode on AppMode {
   bool get canSearch => this == AppMode.main || this == AppMode.pickSingleMediaExternal || this == AppMode.pickMultipleMediaExternal;

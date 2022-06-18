@@ -20,7 +20,7 @@ class MapOverlayButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final blurred = settings.enableOverlayBlurEffect;
+    final blurred = settings.enableBlurEffect;
     return Selector<MapThemeData, Animation<double>>(
       selector: (context, v) => v.scale,
       builder: (context, scale, child) => ScaleTransition(

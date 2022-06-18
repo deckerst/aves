@@ -13,6 +13,7 @@ class AboutCredits extends StatelessWidget {
     'Español (México)': 'n-berenice',
     'Italiano': 'glemco',
     'Português (Brasil)': 'Jonatas De Almeida Barros',
+    'Türkçe': 'metezd',
     'Русский': 'D3ZOXY',
     '日本語': 'Maki',
     '简体中文': '小默, Aerowolf',

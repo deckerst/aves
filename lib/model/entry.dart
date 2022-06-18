@@ -4,6 +4,7 @@ import 'dart:ui';
 
 import 'package:aves/geo/countries.dart';
 import 'package:aves/model/entry_cache.dart';
+import 'package:aves/model/entry_dirs.dart';
 import 'package:aves/model/favourites.dart';
 import 'package:aves/model/geotiff.dart';
 import 'package:aves/model/metadata/address.dart';
@@ -31,7 +32,8 @@ class AvesEntry {
   // `sizeBytes`, `dateModifiedSecs` can be missing in viewer mode
   int id;
   String uri;
-  String? _path, _directory, _filename, _extension, _sourceTitle;
+  String? _path, _filename, _extension, _sourceTitle;
+  EntryDir? _directory;
   int? pageId, contentId;
   final String sourceMimeType;
   int width, height, sourceRotationDegrees;
@@ -175,8 +177,8 @@ class AvesEntry {
 
   // directory path, without the trailing separator
   String? get directory {
-    _directory ??= path != null ? pContext.dirname(path!) : null;
-    return _directory;
+    _directory ??= entryDirRepo.getOrCreate(path != null ? pContext.dirname(path!) : null);
+    return _directory!.resolved;
   }
 
   String? get filenameWithoutExtension {

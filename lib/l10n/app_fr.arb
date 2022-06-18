@@ -50,6 +50,7 @@
   "entryActionDelete": "Supprimer",
   "entryActionConvert": "Convertir",
   "entryActionExport": "Exporter",
+  "entryActionInfo": "Détails",
   "entryActionRename": "Renommer",
   "entryActionRestore": "Restaurer",
   "entryActionRotateCCW": "Pivoter à gauche",
@@ -79,6 +80,9 @@
   "videoActionSelectStreams": "Choisir les pistes",
   "videoActionSetSpeed": "Vitesse de lecture",
   "videoActionSettings": "Préférences",
+
+  "slideshowActionResume": "Reprendre",
+  "slideshowActionShowInCollection": "Afficher dans Collection",
 
   "entryInfoActionEditDate": "Modifier la date",
   "entryInfoActionEditLocation": "Modifier le lieu",
@@ -144,9 +148,22 @@
   "displayRefreshRatePreferHighest": "Fréquence maximale",
   "displayRefreshRatePreferLowest": "Fréquence minimale",
 
+  "slideshowVideoPlaybackSkip": "Passer",
+  "slideshowVideoPlaybackMuted": "Jouer sans son",
+  "slideshowVideoPlaybackWithSound": "Jouer avec son",
+
   "themeBrightnessLight": "Clair",
   "themeBrightnessDark": "Sombre",
   "themeBrightnessBlack": "Noir",
+
+  "viewerTransitionSlide": "Défilement",
+  "viewerTransitionParallax": "Parallaxe",
+  "viewerTransitionFade": "Fondu",
+  "viewerTransitionZoomIn": "Zoom",
+
+  "wallpaperTargetHome": "Écran d’accueil",
+  "wallpaperTargetLock": "Écran de verrouillage",
+  "wallpaperTargetHomeLock": "Écrans accueil et verrouillage",
 
   "albumTierNew": "Nouveaux",
   "albumTierPinned": "Épinglés",
@@ -262,6 +279,7 @@
   "menuActionSelectAll": "Tout sélectionner",
   "menuActionSelectNone": "Tout désélectionner",
   "menuActionMap": "Carte",
+  "menuActionSlideshow": "Diaporama",
   "menuActionStats": "Statistiques",
 
   "viewDialogTabSort": "Tri",
@@ -349,6 +367,7 @@
   "collectionEmptyFavourites": "Aucun favori",
   "collectionEmptyVideos": "Aucune vidéo",
   "collectionEmptyImages": "Aucune image",
+  "collectionEmptyGrantAccessButtonLabel": "Autoriser l’accès",
 
   "collectionSelectSectionTooltip": "Sélectionner la section",
   "collectionDeselectSectionTooltip": "Désélectionner la section",
@@ -479,6 +498,17 @@
   "settingsViewerShowOverlayThumbnails": "Afficher les vignettes",
   "settingsViewerEnableOverlayBlurEffect": "Effets de flou",
 
+  "settingsViewerSlideshowTile": "Diaporama",
+  "settingsViewerSlideshowTitle": "Diaporama",
+  "settingsSlideshowRepeat": "Répéter",
+  "settingsSlideshowShuffle": "Aléatoire",
+  "settingsSlideshowTransitionTile": "Transition",
+  "settingsSlideshowTransitionTitle": "Transition",
+  "settingsSlideshowIntervalTile": "Intervalle",
+  "settingsSlideshowIntervalTitle": "Intervalle",
+  "settingsSlideshowVideoPlaybackTile": "Lecture de vidéos",
+  "settingsSlideshowVideoPlaybackTitle": "Lecture de vidéos",
+
   "settingsVideoPageTitle": "Réglages vidéo",
   "settingsSectionVideo": "Vidéo",
   "settingsVideoShowVideos": "Afficher les vidéos",
@@ -543,6 +573,7 @@
   "settingsSectionDisplay": "Affichage",
   "settingsThemeBrightness": "Thème",
   "settingsThemeColorHighlights": "Surlignages colorés",
+  "settingsThemeEnableDynamicColor": "Couleur dynamique",
   "settingsDisplayRefreshRateModeTile": "Fréquence d’actualisation de l'écran",
   "settingsDisplayRefreshRateModeTitle": "Fréquence d’actualisation",
 
@@ -560,6 +591,7 @@
   "statsTopTags": "Top libellés",
 
   "viewerOpenPanoramaButtonLabel": "OUVRIR LE PANORAMA",
+  "viewerSetWallpaperButtonLabel": "APPLIQUER",
   "viewerErrorUnknown": "Zut !",
   "viewerErrorDoesNotExist": "Le fichier n’existe plus.",
 

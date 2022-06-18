@@ -5,6 +5,7 @@ import 'package:aves/app_flavor.dart';
 import 'package:aves/app_mode.dart';
 import 'package:aves/l10n/l10n.dart';
 import 'package:aves/model/device.dart';
+import 'package:aves/model/settings/defaults.dart';
 import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/enums/display_refresh_rate_mode.dart';
 import 'package:aves/model/settings/enums/enums.dart';
@@ -15,6 +16,7 @@ import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/media_store_source.dart';
 import 'package:aves/services/accessibility_service.dart';
+import 'package:aves/services/common/optional_event_channel.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/durations.dart';
@@ -30,11 +32,13 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/providers/highlight_info_provider.dart';
 import 'package:aves/widgets/home_page.dart';
 import 'package:aves/widgets/welcome_page.dart';
+import 'package:dynamic_color/dynamic_color.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fijkplayer/fijkplayer.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:material_color_utilities/material_color_utilities.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
@@ -70,6 +74,7 @@ class AvesApp extends StatefulWidget {
 class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   final ValueNotifier<AppMode> appModeNotifier = ValueNotifier(AppMode.main);
   late Future<void> _appSetup;
+  late Future<CorePalette?> _dynamicColorPaletteLoader;
   final _mediaStoreSource = MediaStoreSource();
   final Debouncer _mediaStoreChangeDebouncer = Debouncer(delay: Durations.mediaContentChangeDebounceDelay);
   final Set<String> changedUris = {};
@@ -77,10 +82,10 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   // observers are not registered when using the same list object with different items
   // the list itself needs to be reassigned
   List<NavigatorObserver> _navigatorObservers = [AvesApp.pageRouteObserver];
-  final EventChannel _mediaStoreChangeChannel = const EventChannel('deckers.thibault/aves/media_store_change');
-  final EventChannel _newIntentChannel = const EventChannel('deckers.thibault/aves/intent');
-  final EventChannel _analysisCompletionChannel = const EventChannel('deckers.thibault/aves/analysis_events');
-  final EventChannel _errorChannel = const EventChannel('deckers.thibault/aves/error');
+  final EventChannel _mediaStoreChangeChannel = const OptionalEventChannel('deckers.thibault/aves/media_store_change');
+  final EventChannel _newIntentChannel = const OptionalEventChannel('deckers.thibault/aves/intent');
+  final EventChannel _analysisCompletionChannel = const OptionalEventChannel('deckers.thibault/aves/analysis_events');
+  final EventChannel _errorChannel = const OptionalEventChannel('deckers.thibault/aves/error');
 
   Widget getFirstPage({Map? intentData}) => settings.hasAcceptedTerms ? HomePage(intentData: intentData) : const WelcomePage();
 
@@ -89,6 +94,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     super.initState();
     EquatableConfig.stringify = true;
     _appSetup = _setup();
+    _dynamicColorPaletteLoader = DynamicColorPlugin.getCorePalette();
     _mediaStoreChangeChannel.receiveBroadcastStream().listen((event) => _onMediaStoreChange(event as String?));
     _newIntentChannel.receiveBroadcastStream().listen((event) => _onNewIntent(event as Map?));
     _analysisCompletionChannel.receiveBroadcastStream().listen((event) => _onAnalysisCompletion());
@@ -120,16 +126,18 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
                           : Scaffold(
                               body: snapshot.hasError ? _buildError(snapshot.error!) : const SizedBox(),
                             );
-                      return Selector<Settings, Tuple3<Locale?, bool, AvesThemeBrightness>>(
-                        selector: (context, s) => Tuple3(
+                      return Selector<Settings, Tuple4<Locale?, bool, AvesThemeBrightness, bool>>(
+                        selector: (context, s) => Tuple4(
                           s.locale,
                           s.initialized ? s.accessibilityAnimations.animate : true,
-                          s.initialized ? s.themeBrightness : AvesThemeBrightness.system,
+                          s.initialized ? s.themeBrightness : SettingsDefaults.themeBrightness,
+                          s.initialized ? s.enableDynamicColor : SettingsDefaults.enableDynamicColor,
                         ),
                         builder: (context, s, child) {
                           final settingsLocale = s.item1;
                           final areAnimationsEnabled = s.item2;
                           final themeBrightness = s.item3;
+                          final enableDynamicColor = s.item4;
 
                           final pageTransitionsTheme = areAnimationsEnabled
                               // Flutter has various page transition implementations for Android:
@@ -144,27 +152,42 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
                               // strip page transitions used by `MaterialPageRoute`
                               : const DirectPageTransitionsTheme();
 
-                          return MaterialApp(
-                            navigatorKey: AvesApp.navigatorKey,
-                            home: home,
-                            navigatorObservers: _navigatorObservers,
-                            builder: (context, child) => AvesColorsProvider(
-                              child: Theme(
-                                data: Theme.of(context).copyWith(
-                                  pageTransitionsTheme: pageTransitionsTheme,
+                          return FutureBuilder<CorePalette?>(
+                            future: _dynamicColorPaletteLoader,
+                            builder: (context, snapshot) {
+                              const defaultAccent = Themes.defaultAccent;
+                              Color lightAccent = defaultAccent, darkAccent = defaultAccent;
+                              if (enableDynamicColor) {
+                                // `DynamicColorBuilder` from package `dynamic_color` provides light/dark
+                                // palettes with a primary color from tones too dark/light (40/80),
+                                // so we derive the color with adjusted tones (60/70)
+                                final tonalPalette = snapshot.data?.primary;
+                                lightAccent = Color(tonalPalette?.get(60) ?? defaultAccent.value);
+                                darkAccent = Color(tonalPalette?.get(70) ?? defaultAccent.value);
+                              }
+                              return MaterialApp(
+                                navigatorKey: AvesApp.navigatorKey,
+                                home: home,
+                                navigatorObservers: _navigatorObservers,
+                                builder: (context, child) => AvesColorsProvider(
+                                  child: Theme(
+                                    data: Theme.of(context).copyWith(
+                                      pageTransitionsTheme: pageTransitionsTheme,
+                                    ),
+                                    child: child!,
+                                  ),
                                 ),
-                                child: child!,
-                              ),
-                            ),
-                            onGenerateTitle: (context) => context.l10n.appName,
-                            theme: Themes.lightTheme,
-                            darkTheme: themeBrightness == AvesThemeBrightness.black ? Themes.blackTheme : Themes.darkTheme,
-                            themeMode: themeBrightness.appThemeMode,
-                            locale: settingsLocale,
-                            localizationsDelegates: AppLocalizations.localizationsDelegates,
-                            supportedLocales: AppLocalizations.supportedLocales,
-                            // TODO TLAD remove custom scroll behavior when this is fixed: https://github.com/flutter/flutter/issues/82906
-                            scrollBehavior: StretchMaterialScrollBehavior(),
+                                onGenerateTitle: (context) => context.l10n.appName,
+                                theme: Themes.lightTheme(lightAccent),
+                                darkTheme: themeBrightness == AvesThemeBrightness.black ? Themes.blackTheme(darkAccent) : Themes.darkTheme(darkAccent),
+                                themeMode: themeBrightness.appThemeMode,
+                                locale: settingsLocale,
+                                localizationsDelegates: AppLocalizations.localizationsDelegates,
+                                supportedLocales: AppLocalizations.supportedLocales,
+                                // TODO TLAD remove custom scroll behavior when this is fixed: https://github.com/flutter/flutter/issues/82906
+                                scrollBehavior: StretchMaterialScrollBehavior(),
+                              );
+                            },
                           );
                         },
                       );
@@ -207,6 +230,8 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
             break;
           case AppMode.pickMediaInternal:
           case AppMode.pickFilterInternal:
+          case AppMode.setWallpaper:
+          case AppMode.slideshow:
           case AppMode.view:
             break;
         }
@@ -223,7 +248,14 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     if (!settings.initialized) return;
 
     final stopwatch = Stopwatch()..start();
-    final screenSize = window.physicalSize / window.devicePixelRatio;
+    final Size screenSize;
+    try {
+      screenSize = window.physicalSize / window.devicePixelRatio;
+    } catch (error) {
+      // view may no longer be usable
+      return;
+    }
+
     var tileExtent = settings.getTileExtent(CollectionPage.routeName);
     if (tileExtent == 0) {
       tileExtent = screenSize.shortestSide / CollectionGrid.columnCountDefault;

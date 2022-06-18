@@ -50,6 +50,7 @@
   "entryActionDelete": "Löschen",
   "entryActionConvert": "Konvertieren",
   "entryActionExport": "Exportieren",
+  "entryActionInfo": "Info",
   "entryActionRename": "Umbenennen",
   "entryActionRestore": "Wiederherstellen",
   "entryActionRotateCCW": "Drehen gegen den Uhrzeigersinn",
@@ -79,6 +80,9 @@
   "videoActionSelectStreams": "Titel auswählen",
   "videoActionSetSpeed": "Wiedergabegeschwindigkeit",
   "videoActionSettings": "Einstellungen",
+
+  "slideshowActionResume": "Wiedergabe",
+  "slideshowActionShowInCollection": "In Sammlung anzeigen",
 
   "entryInfoActionEditDate": "Datum & Uhrzeit bearbeiten",
   "entryInfoActionEditLocation": "Standort bearbeiten",
@@ -144,9 +148,22 @@
   "displayRefreshRatePreferHighest": "Höchste Rate",
   "displayRefreshRatePreferLowest": "Niedrigste Rate",
 
+  "slideshowVideoPlaybackSkip": "Überspringen",
+  "slideshowVideoPlaybackMuted": "Stumm abspielen",
+  "slideshowVideoPlaybackWithSound": "Mit Ton abspielen",
+
   "themeBrightnessLight": "Hell",
   "themeBrightnessDark": "Dunkel",
   "themeBrightnessBlack": "Schwarz",
+
+  "viewerTransitionSlide": "Dia",
+  "viewerTransitionParallax": "Parallaxe",
+  "viewerTransitionFade": "Ausblenden",
+  "viewerTransitionZoomIn": "Heranzoomen",
+
+  "wallpaperTargetHome": "Startbildschirm",
+  "wallpaperTargetLock": "Sperrbildschirm",
+  "wallpaperTargetHomeLock": "Start- und Sperrbildschirm",
 
   "albumTierNew": "Neu",
   "albumTierPinned": "Angeheftet",
@@ -262,6 +279,7 @@
   "menuActionSelectAll": "Alle auswählen",
   "menuActionSelectNone": "Keine auswählen",
   "menuActionMap": "Karte",
+  "menuActionSlideshow": "Diashow",
   "menuActionStats": "Statistiken",
 
   "viewDialogTabSort": "Sortieren",
@@ -349,6 +367,7 @@
   "collectionEmptyFavourites": "Keine Favoriten",
   "collectionEmptyVideos": "Keine Videos",
   "collectionEmptyImages": "Keine Bilder",
+  "collectionEmptyGrantAccessButtonLabel": "Zugriff gewähren",
 
   "collectionSelectSectionTooltip": "Bereich auswählen",
   "collectionDeselectSectionTooltip": "Bereich abwählen",
@@ -479,6 +498,17 @@
   "settingsViewerShowOverlayThumbnails": "Vorschaubilder anzeigen",
   "settingsViewerEnableOverlayBlurEffect": "Unschärfe-Effekt",
 
+  "settingsViewerSlideshowTile": "Diashow",
+  "settingsViewerSlideshowTitle": "Diashow",
+  "settingsSlideshowRepeat": "Wiederholung",
+  "settingsSlideshowShuffle": "Mischen",
+  "settingsSlideshowTransitionTile": "Übergang",
+  "settingsSlideshowTransitionTitle": "Übergang",
+  "settingsSlideshowIntervalTile": "Intervall",
+  "settingsSlideshowIntervalTitle": "Intervall",
+  "settingsSlideshowVideoPlaybackTile": "Videowiedergabe",
+  "settingsSlideshowVideoPlaybackTitle": "Videowiedergabe",
+
   "settingsVideoPageTitle": "Video-Einstellungen",
   "settingsSectionVideo": "Video",
   "settingsVideoShowVideos": "Videos anzeigen",
@@ -543,6 +573,7 @@
   "settingsSectionDisplay": "Anzeige",
   "settingsThemeBrightness": "Thema",
   "settingsThemeColorHighlights": "Farbige Highlights",
+  "settingsThemeEnableDynamicColor": "Dynamische Farben",
   "settingsDisplayRefreshRateModeTile": "Bildwiederholrate der Anzeige",
   "settingsDisplayRefreshRateModeTitle": "Bildwiederholrate",
 
@@ -560,6 +591,7 @@
   "statsTopTags": "Top-Tags",
 
   "viewerOpenPanoramaButtonLabel": "ÖFFNE PANORAMA",
+  "viewerSetWallpaperButtonLabel": "HINTERGRUNDBILD EINSTELLEN",
   "viewerErrorUnknown": "Ups!",
   "viewerErrorDoesNotExist": "Die Datei existiert nicht mehr.",
 

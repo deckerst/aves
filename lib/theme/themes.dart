@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 class Themes {
-  static const _accentColor = Colors.indigoAccent;
+  static const defaultAccent = Colors.indigoAccent;
 
   static const _tooltipTheme = TooltipThemeData(
     verticalOffset: 32,
@@ -19,10 +19,10 @@ class Themes {
     fontFeatures: [FontFeature.enable('smcp')],
   );
 
-  static const _snackBarTheme = SnackBarThemeData(
-    actionTextColor: _accentColor,
-    behavior: SnackBarBehavior.floating,
-  );
+  static SnackBarThemeData _snackBarTheme(Color accentColor) => SnackBarThemeData(
+        actionTextColor: accentColor,
+        behavior: SnackBarBehavior.floating,
+      );
 
   static final _typography = Typography.material2018(platform: TargetPlatform.android);
 
@@ -35,49 +35,49 @@ class Themes {
   static const _lightSecondLayer = Color(0xFFF5F5F5); // aka `Colors.grey[100]`
   static const _lightThirdLayer = Color(0xFFEEEEEE); // aka `Colors.grey[200]`
 
-  static final lightTheme = ThemeData(
-    colorScheme: ColorScheme.light(
-      primary: _accentColor,
-      secondary: _accentColor,
-      onPrimary: _lightBodyColor,
-      onSecondary: _lightBodyColor,
-    ),
-    brightness: Brightness.light,
-    // `canvasColor` is used by `Drawer`, `DropdownButton` and `ExpansionTileCard`
-    canvasColor: _lightSecondLayer,
-    scaffoldBackgroundColor: _lightFirstLayer,
-    // `cardColor` is used by `ExpansionPanel`
-    cardColor: _lightSecondLayer,
-    dialogBackgroundColor: _lightSecondLayer,
-    indicatorColor: _accentColor,
-    toggleableActiveColor: _accentColor,
-    typography: _typography,
-    appBarTheme: AppBarTheme(
-      backgroundColor: _lightFirstLayer,
-      // `foregroundColor` is used by icons
-      foregroundColor: _lightActionIconColor,
-      // `titleTextStyle.color` is used by text
-      titleTextStyle: _appBarTitleTextStyle.copyWith(color: _lightTitleColor),
-      systemOverlayStyle: SystemUiOverlayStyle.dark,
-    ),
-    listTileTheme: const ListTileThemeData(
-      iconColor: _lightActionIconColor,
-    ),
-    popupMenuTheme: const PopupMenuThemeData(
-      color: _lightSecondLayer,
-    ),
-    snackBarTheme: _snackBarTheme,
-    tabBarTheme: TabBarTheme(
-      labelColor: _lightTitleColor,
-      unselectedLabelColor: Colors.black54,
-    ),
-    textButtonTheme: TextButtonThemeData(
-      style: TextButton.styleFrom(
-        primary: _lightLabelColor,
-      ),
-    ),
-    tooltipTheme: _tooltipTheme,
-  );
+  static ThemeData lightTheme(Color accentColor) => ThemeData(
+        colorScheme: ColorScheme.light(
+          primary: accentColor,
+          secondary: accentColor,
+          onPrimary: _lightBodyColor,
+          onSecondary: _lightBodyColor,
+        ),
+        brightness: Brightness.light,
+        // `canvasColor` is used by `Drawer`, `DropdownButton` and `ExpansionTileCard`
+        canvasColor: _lightSecondLayer,
+        scaffoldBackgroundColor: _lightFirstLayer,
+        // `cardColor` is used by `ExpansionPanel`
+        cardColor: _lightSecondLayer,
+        dialogBackgroundColor: _lightSecondLayer,
+        indicatorColor: accentColor,
+        toggleableActiveColor: accentColor,
+        typography: _typography,
+        appBarTheme: AppBarTheme(
+          backgroundColor: _lightFirstLayer,
+          // `foregroundColor` is used by icons
+          foregroundColor: _lightActionIconColor,
+          // `titleTextStyle.color` is used by text
+          titleTextStyle: _appBarTitleTextStyle.copyWith(color: _lightTitleColor),
+          systemOverlayStyle: SystemUiOverlayStyle.dark,
+        ),
+        listTileTheme: const ListTileThemeData(
+          iconColor: _lightActionIconColor,
+        ),
+        popupMenuTheme: const PopupMenuThemeData(
+          color: _lightSecondLayer,
+        ),
+        snackBarTheme: _snackBarTheme(accentColor),
+        tabBarTheme: TabBarTheme(
+          labelColor: _lightTitleColor,
+          unselectedLabelColor: Colors.black54,
+        ),
+        textButtonTheme: TextButtonThemeData(
+          style: TextButton.styleFrom(
+            primary: _lightLabelColor,
+          ),
+        ),
+        tooltipTheme: _tooltipTheme,
+      );
 
   static final _darkThemeTypo = _typography.white;
   static final _darkTitleColor = _darkThemeTypo.titleMedium!.color!;
@@ -87,71 +87,74 @@ class Themes {
   static const _darkSecondLayer = Color(0xFF363636);
   static const _darkThirdLayer = Color(0xFF424242); // aka `Colors.grey[800]`
 
-  static final darkTheme = ThemeData(
-    colorScheme: ColorScheme.dark(
-      primary: _accentColor,
-      secondary: _accentColor,
-      // surface color is used by the date/time pickers
-      surface: Colors.grey.shade800,
-      onPrimary: _darkBodyColor,
-      onSecondary: _darkBodyColor,
-    ),
-    brightness: Brightness.dark,
-    // `canvasColor` is used by `Drawer`, `DropdownButton` and `ExpansionTileCard`
-    canvasColor: _darkSecondLayer,
-    scaffoldBackgroundColor: _darkFirstLayer,
-    // `cardColor` is used by `ExpansionPanel`
-    cardColor: _darkSecondLayer,
-    dialogBackgroundColor: _darkSecondLayer,
-    indicatorColor: _accentColor,
-    toggleableActiveColor: _accentColor,
-    typography: _typography,
-    appBarTheme: AppBarTheme(
-      backgroundColor: _darkFirstLayer,
-      // `foregroundColor` is used by icons
-      foregroundColor: _darkTitleColor,
-      // `titleTextStyle.color` is used by text
-      titleTextStyle: _appBarTitleTextStyle.copyWith(color: _darkTitleColor),
-      systemOverlayStyle: SystemUiOverlayStyle.light,
-    ),
-    popupMenuTheme: const PopupMenuThemeData(
-      color: _darkSecondLayer,
-    ),
-    snackBarTheme: _snackBarTheme.copyWith(
-      backgroundColor: Colors.grey.shade800,
-      contentTextStyle: TextStyle(
-        color: _darkBodyColor,
-      ),
-    ),
-    tabBarTheme: TabBarTheme(
-      labelColor: _darkTitleColor,
-    ),
-    textButtonTheme: TextButtonThemeData(
-      style: TextButton.styleFrom(
-        primary: _darkLabelColor,
-      ),
-    ),
-    tooltipTheme: _tooltipTheme,
-  );
+  static ThemeData darkTheme(Color accentColor) => ThemeData(
+        colorScheme: ColorScheme.dark(
+          primary: accentColor,
+          secondary: accentColor,
+          // surface color is used by the date/time pickers
+          surface: Colors.grey.shade800,
+          onPrimary: _darkBodyColor,
+          onSecondary: _darkBodyColor,
+        ),
+        brightness: Brightness.dark,
+        // `canvasColor` is used by `Drawer`, `DropdownButton` and `ExpansionTileCard`
+        canvasColor: _darkSecondLayer,
+        scaffoldBackgroundColor: _darkFirstLayer,
+        // `cardColor` is used by `ExpansionPanel`
+        cardColor: _darkSecondLayer,
+        dialogBackgroundColor: _darkSecondLayer,
+        indicatorColor: accentColor,
+        toggleableActiveColor: accentColor,
+        typography: _typography,
+        appBarTheme: AppBarTheme(
+          backgroundColor: _darkFirstLayer,
+          // `foregroundColor` is used by icons
+          foregroundColor: _darkTitleColor,
+          // `titleTextStyle.color` is used by text
+          titleTextStyle: _appBarTitleTextStyle.copyWith(color: _darkTitleColor),
+          systemOverlayStyle: SystemUiOverlayStyle.light,
+        ),
+        popupMenuTheme: const PopupMenuThemeData(
+          color: _darkSecondLayer,
+        ),
+        snackBarTheme: _snackBarTheme(accentColor).copyWith(
+          backgroundColor: Colors.grey.shade800,
+          contentTextStyle: TextStyle(
+            color: _darkBodyColor,
+          ),
+        ),
+        tabBarTheme: TabBarTheme(
+          labelColor: _darkTitleColor,
+        ),
+        textButtonTheme: TextButtonThemeData(
+          style: TextButton.styleFrom(
+            primary: _darkLabelColor,
+          ),
+        ),
+        tooltipTheme: _tooltipTheme,
+      );
 
   static const _blackFirstLayer = Colors.black;
   static const _blackSecondLayer = Color(0xFF212121); // aka `Colors.grey[900]`
   static const _blackThirdLayer = Color(0xFF303030); // aka `Colors.grey[850]`
 
-  static final blackTheme = darkTheme.copyWith(
-    // `canvasColor` is used by `Drawer`, `DropdownButton` and `ExpansionTileCard`
-    canvasColor: _blackSecondLayer,
-    scaffoldBackgroundColor: _blackFirstLayer,
-    // `cardColor` is used by `ExpansionPanel`
-    cardColor: _blackSecondLayer,
-    dialogBackgroundColor: _blackSecondLayer,
-    appBarTheme: darkTheme.appBarTheme.copyWith(
-      backgroundColor: _blackFirstLayer,
-    ),
-    popupMenuTheme: darkTheme.popupMenuTheme.copyWith(
-      color: _blackSecondLayer,
-    ),
-  );
+  static ThemeData blackTheme(Color accentColor) {
+    final baseTheme = darkTheme(accentColor);
+    return baseTheme.copyWith(
+      // `canvasColor` is used by `Drawer`, `DropdownButton` and `ExpansionTileCard`
+      canvasColor: _blackSecondLayer,
+      scaffoldBackgroundColor: _blackFirstLayer,
+      // `cardColor` is used by `ExpansionPanel`
+      cardColor: _blackSecondLayer,
+      dialogBackgroundColor: _blackSecondLayer,
+      appBarTheme: baseTheme.appBarTheme.copyWith(
+        backgroundColor: _blackFirstLayer,
+      ),
+      popupMenuTheme: baseTheme.popupMenuTheme.copyWith(
+        color: _blackSecondLayer,
+      ),
+    );
+  }
 
   static Color overlayBackgroundColor({
     required Brightness brightness,

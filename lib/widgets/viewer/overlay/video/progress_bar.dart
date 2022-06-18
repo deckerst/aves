@@ -39,7 +39,7 @@ class _VideoProgressBarState extends State<VideoProgressBar> {
 
   @override
   Widget build(BuildContext context) {
-    final blurred = settings.enableOverlayBlurEffect;
+    final blurred = settings.enableBlurEffect;
     final brightness = Theme.of(context).brightness;
     final textStyle = TextStyle(
       shadows: brightness == Brightness.dark ? Constants.embossShadows : null,

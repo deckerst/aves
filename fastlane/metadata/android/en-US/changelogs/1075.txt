@@ -1,0 +1,5 @@
+In v1.6.9:
+- start slideshows
+- change your wallpaper
+- enjoy the app in Turkish
+Full changelog available on GitHub

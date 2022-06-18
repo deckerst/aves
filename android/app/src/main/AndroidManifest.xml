@@ -6,16 +6,21 @@
     Scoped storage on Android Q is inconvenient because users need to confirm edition on each individual file.
     So we request `WRITE_EXTERNAL_STORAGE` until Q (29), and enable `requestLegacyExternalStorage`
     -->
-
-    <!-- TODO TLAD [tiramisu] need notification permission? -->
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <!-- TODO TLAD [tiramisu] READ_MEDIA_IMAGE, READ_MEDIA_VIDEO instead of READ_EXTERNAL_STORAGE? -->
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="29"
         tools:ignore="ScopedStorage" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.SET_WALLPAPER" />
+
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <!-- to show foreground service progress via notification -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <!-- to access media with original metadata with scoped storage (Android Q+) -->
     <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION" />
@@ -128,6 +133,26 @@
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
         </activity>
+
+        <activity
+            android:name=".WallpaperActivity"
+            android:exported="true"
+            android:label="@string/wallpaper"
+            android:theme="@style/NormalTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.ATTACH_DATA" />
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="image/*" />
+                <data android:mimeType="video/*" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.SET_WALLPAPER" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
         <service
             android:name=".AnalysisService"
             android:description="@string/analysis_service_description"

@@ -50,6 +50,7 @@
   "entryActionDelete": "Borrar",
   "entryActionConvert": "Convertir",
   "entryActionExport": "Exportar",
+  "entryActionInfo": "Información",
   "entryActionRename": "Renombrar",
   "entryActionRestore": "Restaurar",
   "entryActionRotateCCW": "Rotar en sentido antihorario",
@@ -79,6 +80,9 @@
   "videoActionSelectStreams": "Seleccionar pistas",
   "videoActionSetSpeed": "Velocidad de reproducción",
   "videoActionSettings": "Ajustes",
+
+  "slideshowActionResume": "Reanudar",
+  "slideshowActionShowInCollection": "Mostrar en Colección",
 
   "entryInfoActionEditDate": "Editar fecha y hora",
   "entryInfoActionEditLocation": "Editar ubicación",
@@ -144,9 +148,22 @@
   "displayRefreshRatePreferHighest": "Alta tasa",
   "displayRefreshRatePreferLowest": "Baja tasa",
 
+  "slideshowVideoPlaybackSkip": "Saltear",
+  "slideshowVideoPlaybackMuted": "Reproducir sin sonido",
+  "slideshowVideoPlaybackWithSound": "Reproducir con sonido",
+
   "themeBrightnessLight": "Claro",
   "themeBrightnessDark": "Obscuro",
   "themeBrightnessBlack": "Negro",
+
+  "viewerTransitionSlide": "Diapositiva",
+  "viewerTransitionParallax": "Paralaje",
+  "viewerTransitionFade": "Desvanecer",
+  "viewerTransitionZoomIn": "Acercar",
+
+  "wallpaperTargetHome": "Pantalla de inicio",
+  "wallpaperTargetLock": "Pantalla de bloqueo",
+  "wallpaperTargetHomeLock": "Pantallas de inicio y bloqueo",
 
   "albumTierNew": "Nuevo",
   "albumTierPinned": "Fijado",
@@ -262,6 +279,7 @@
   "menuActionSelectAll": "Seleccionar todo",
   "menuActionSelectNone": "Deseleccionar",
   "menuActionMap": "Mapa",
+  "menuActionSlideshow": "Presentación",
   "menuActionStats": "Estadísticas",
 
   "viewDialogTabSort": "Ordenar",
@@ -277,7 +295,6 @@
 
   "appPickDialogTitle": "Escoger aplicación",
   "appPickDialogNone": "Ninguna",
-
 
   "aboutPageTitle": "Acerca de",
   "aboutLinkSources": "Fuentes",
@@ -296,7 +313,6 @@
   "aboutCreditsWorldAtlas1": "Esta aplicación usa un archivo TopoJSON de",
   "aboutCreditsWorldAtlas2": "bajo licencia ISC.",
   "aboutCreditsTranslators": "Traductores:",
-  "aboutCreditsTranslatorLine": "{language}: {names}",
 
   "aboutLicenses": "Licencias de código abierto",
   "aboutLicensesBanner": "Esta aplicación usa los siguientes paquetes y librerías de código abierto.",
@@ -351,6 +367,7 @@
   "collectionEmptyFavourites": "Sin favoritos",
   "collectionEmptyVideos": "Sin videos",
   "collectionEmptyImages": "Sin imágenes",
+  "collectionEmptyGrantAccessButtonLabel": "Otorgar accceso",
 
   "collectionSelectSectionTooltip": "Seleccionar sección",
   "collectionDeselectSectionTooltip": "Deseleccionar sección",
@@ -421,6 +438,7 @@
 
   "settingsSectionNavigation": "Navegación",
   "settingsHome": "Inicio",
+  "settingsShowBottomNavigationBar": "Mostrar barra de navegación inferior",
   "settingsKeepScreenOnTile": "Mantener pantalla encendida",
   "settingsKeepScreenOnTitle": "Mantener pantalla encendida",
   "settingsDoubleBackExit": "Presione «atrás» dos veces para salir",
@@ -443,6 +461,7 @@
   "settingsThumbnailOverlayTile": "Incrustaciones",
   "settingsThumbnailOverlayTitle": "Incrustaciones",
   "settingsThumbnailShowFavouriteIcon": "Mostrar icono de favoritos",
+  "settingsThumbnailShowTagIcon": "Mostrar ícono de etiqueta",
   "settingsThumbnailShowLocationIcon": "Mostrar icono de ubicación",
   "settingsThumbnailShowMotionPhotoIcon": "Mostrar icono de foto en movimiento",
   "settingsThumbnailShowRating": "Mostrar clasificación",
@@ -476,8 +495,19 @@
   "settingsViewerShowInformation": "Mostrar información",
   "settingsViewerShowInformationSubtitle": "Mostrar título, fecha, ubicación, etc.",
   "settingsViewerShowShootingDetails": "Mostrar detalles de toma",
-   "settingsViewerShowOverlayThumbnails": "Mostrar miniaturas",
+  "settingsViewerShowOverlayThumbnails": "Mostrar miniaturas",
   "settingsViewerEnableOverlayBlurEffect": "Efecto de difuminado",
+
+  "settingsViewerSlideshowTile": "Presentación",
+  "settingsViewerSlideshowTitle": "Presentación",
+  "settingsSlideshowRepeat": "Repetir",
+  "settingsSlideshowShuffle": "Mezclar",
+  "settingsSlideshowTransitionTile": "Transición",
+  "settingsSlideshowTransitionTitle": "Transición",
+  "settingsSlideshowIntervalTile": "Intervalo",
+  "settingsSlideshowIntervalTitle": "Intervalo",
+  "settingsSlideshowVideoPlaybackTile": "Reproducción de video",
+  "settingsSlideshowVideoPlaybackTitle": "Reproducción de video",
 
   "settingsVideoPageTitle": "Ajustes de video",
   "settingsSectionVideo": "Video",
@@ -486,8 +516,6 @@
   "settingsVideoEnableAutoPlay": "Reproducción automática",
   "settingsVideoLoopModeTile": "Modo bucle",
   "settingsVideoLoopModeTitle": "Modo bucle",
-  "settingsVideoQuickActionsTile": "Acciones rápidas para videos",
-  "settingsVideoQuickActionEditorTitle": "Acciones rápidas",
 
   "settingsSubtitleThemeTile": "Subtítulos",
   "settingsSubtitleThemeTitle": "Subtítulos",
@@ -545,6 +573,7 @@
   "settingsSectionDisplay": "Pantalla",
   "settingsThemeBrightness": "Tema",
   "settingsThemeColorHighlights": "Acentos de color",
+  "settingsThemeEnableDynamicColor": "Color dinámico",
   "settingsDisplayRefreshRateModeTile": "Tasa de refresco de la pantalla",
   "settingsDisplayRefreshRateModeTitle": "Tasa de refresco",
 
@@ -562,6 +591,7 @@
   "statsTopTags": "Etiquetas principales",
 
   "viewerOpenPanoramaButtonLabel": "ABRIR PANORÁMICA",
+  "viewerSetWallpaperButtonLabel": "ESTABLECER FONDO",
   "viewerErrorUnknown": "¡Ups!",
   "viewerErrorDoesNotExist": "El archivo no existe.",
 

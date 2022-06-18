@@ -122,7 +122,7 @@ mixin FeedbackMixin {
   Future<void> showOpReport<T>({
     required BuildContext context,
     required Stream<T> opStream,
-    required int itemCount,
+    int? itemCount,
     VoidCallback? onCancel,
     void Function(Set<T> processed)? onDone,
   }) {
@@ -144,7 +144,7 @@ mixin FeedbackMixin {
 
 class ReportOverlay<T> extends StatefulWidget {
   final Stream<T> opStream;
-  final int itemCount;
+  final int? itemCount;
   final VoidCallback? onCancel;
   final void Function(Set<T> processed) onDone;
 
@@ -212,7 +212,7 @@ class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerPr
         builder: (context, snapshot) {
           final processedCount = processed.length.toDouble();
           final total = widget.itemCount;
-          final percent = total != 0 ? min(1.0, processedCount / total) : 1.0;
+          final percent = total == null || total == 0 ? 0.0 : min(1.0, processedCount / total);
           return FadeTransition(
             opacity: _animation,
             child: Stack(
@@ -243,10 +243,12 @@ class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerPr
                   backgroundColor: Theme.of(context).colorScheme.onSurface.withOpacity(.2),
                   progressColor: progressColor,
                   animation: animate,
-                  center: Text(
-                    NumberFormat.percentPattern().format(percent),
-                    style: const TextStyle(fontSize: fontSize),
-                  ),
+                  center: total != null
+                      ? Text(
+                          NumberFormat.percentPattern().format(percent),
+                          style: const TextStyle(fontSize: fontSize),
+                        )
+                      : null,
                   animateFromLastPercent: true,
                 ),
                 if (widget.onCancel != null)
@@ -305,12 +307,13 @@ class _FeedbackMessageState extends State<_FeedbackMessage> with SingleTickerPro
     if (start != null && stop != null) {
       _totalDurationMillis = stop.difference(start).inMilliseconds;
       final remainingDuration = stop.difference(DateTime.now());
+      final effectiveDuration = remainingDuration > Duration.zero ? remainingDuration : const Duration(milliseconds: 1);
       _animationController = AnimationController(
-        duration: remainingDuration,
+        duration: effectiveDuration,
         vsync: this,
       );
       _remainingDurationMillis = IntTween(
-        begin: remainingDuration.inMilliseconds,
+        begin: effectiveDuration.inMilliseconds,
         end: 0,
       ).animate(CurvedAnimation(
         parent: _animationController!,

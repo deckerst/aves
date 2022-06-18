@@ -15,6 +15,7 @@ import app.loup.streams_channel.StreamsChannel
 import deckers.thibault.aves.channel.calls.*
 import deckers.thibault.aves.channel.streams.*
 import deckers.thibault.aves.utils.LogUtils
+import deckers.thibault.aves.utils.getParcelableExtraCompat
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodCall
@@ -215,7 +216,7 @@ class MainActivity : FlutterActivity() {
                 }
             }
             Intent.ACTION_VIEW, Intent.ACTION_SEND, "com.android.camera.action.REVIEW" -> {
-                (intent.data ?: (intent.getParcelableExtra<Parcelable>(Intent.EXTRA_STREAM) as? Uri))?.let { uri ->
+                (intent.data ?: intent.getParcelableExtraCompat<Uri>(Intent.EXTRA_STREAM))?.let { uri ->
                     // MIME type is optional
                     val type = intent.type ?: intent.resolveType(context)
                     return hashMapOf(
@@ -332,6 +333,7 @@ class MainActivity : FlutterActivity() {
 
         const val INTENT_ACTION_PICK = "pick"
         const val INTENT_ACTION_SEARCH = "search"
+        const val INTENT_ACTION_SET_WALLPAPER = "set_wallpaper"
         const val INTENT_ACTION_VIEW = "view"
 
         const val SHORTCUT_KEY_PAGE = "page"

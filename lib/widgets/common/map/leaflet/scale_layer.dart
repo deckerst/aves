@@ -39,8 +39,7 @@ class ScaleLayer extends StatelessWidget {
   final ScaleLayerOptions scaleLayerOpts;
   final MapState map;
 
-  // ignore: prefer_void_to_null
-  final Stream<Null> stream;
+  final Stream<void> stream;
   static const List<double> scaleMeters = [
     25000000,
     15000000,
@@ -75,8 +74,7 @@ class ScaleLayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // ignore: prefer_void_to_null
-    return StreamBuilder<Null>(
+    return StreamBuilder<void>(
       stream: stream,
       builder: (context, snapshot) {
         final center = map.center;

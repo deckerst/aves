@@ -11,6 +11,7 @@ import 'package:aves/widgets/settings/common/tiles.dart';
 import 'package:aves/widgets/settings/settings_definition.dart';
 import 'package:aves/widgets/settings/viewer/entry_background.dart';
 import 'package:aves/widgets/settings/viewer/overlay.dart';
+import 'package:aves/widgets/settings/viewer/slideshow.dart';
 import 'package:aves/widgets/settings/viewer/viewer_actions_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -34,6 +35,7 @@ class ViewerSection extends SettingsSection {
     return [
       SettingsTileViewerQuickActions(),
       SettingsTileViewerOverlay(),
+      SettingsTileViewerSlideshow(),
       if (canSetCutoutMode) SettingsTileViewerCutoutMode(),
       SettingsTileViewerMaxBrightness(),
       SettingsTileViewerMotionPhotoAutoPlay(),
@@ -64,6 +66,18 @@ class SettingsTileViewerOverlay extends SettingsTile {
         routeName: ViewerOverlayPage.routeName,
         builder: (context) => const ViewerOverlayPage(),
       );
+}
+
+class SettingsTileViewerSlideshow extends SettingsTile {
+  @override
+  String title(BuildContext context) => context.l10n.settingsViewerSlideshowTile;
+
+  @override
+  Widget build(BuildContext context) => SettingsSubPageTile(
+    title: title(context),
+    routeName: ViewerSlideshowPage.routeName,
+    builder: (context) => const ViewerSlideshowPage(),
+  );
 }
 
 class SettingsTileViewerCutoutMode extends SettingsTile {

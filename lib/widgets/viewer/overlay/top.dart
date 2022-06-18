@@ -42,7 +42,7 @@ class ViewerTopOverlay extends StatelessWidget {
         final viewStateConductor = context.read<ViewStateConductor>();
         final viewStateNotifier = viewStateConductor.getOrCreateController(pageEntry);
 
-        final blurred = settings.enableOverlayBlurEffect;
+        final blurred = settings.enableBlurEffect;
         final viewInsetsPadding = (viewInsets ?? EdgeInsets.zero) + (viewPadding ?? EdgeInsets.zero);
         return Column(
           mainAxisSize: MainAxisSize.min,
