@@ -148,9 +148,22 @@
   "displayRefreshRatePreferHighest": "Alta tasa",
   "displayRefreshRatePreferLowest": "Baja tasa",
 
+  "slideshowVideoPlaybackSkip": "Saltear",
+  "slideshowVideoPlaybackMuted": "Reproducir sin sonido",
+  "slideshowVideoPlaybackWithSound": "Reproducir con sonido",
+
   "themeBrightnessLight": "Claro",
   "themeBrightnessDark": "Obscuro",
   "themeBrightnessBlack": "Negro",
+
+  "viewerTransitionSlide": "Diapositiva",
+  "viewerTransitionParallax": "Paralaje",
+  "viewerTransitionFade": "Desvanecer",
+  "viewerTransitionZoomIn": "Acercar",
+
+  "wallpaperTargetHome": "Pantalla de inicio",
+  "wallpaperTargetLock": "Pantalla de bloqueo",
+  "wallpaperTargetHomeLock": "Pantallas de inicio y bloqueo",
 
   "albumTierNew": "Nuevo",
   "albumTierPinned": "Fijado",
@@ -266,6 +279,7 @@
   "menuActionSelectAll": "Seleccionar todo",
   "menuActionSelectNone": "Deseleccionar",
   "menuActionMap": "Mapa",
+  "menuActionSlideshow": "Presentación",
   "menuActionStats": "Estadísticas",
 
   "viewDialogTabSort": "Ordenar",
@@ -355,6 +369,7 @@
   "collectionEmptyFavourites": "Sin favoritos",
   "collectionEmptyVideos": "Sin videos",
   "collectionEmptyImages": "Sin imágenes",
+  "collectionEmptyGrantAccessButtonLabel": "Otorgar accceso",
 
   "collectionSelectSectionTooltip": "Seleccionar sección",
   "collectionDeselectSectionTooltip": "Deseleccionar sección",
@@ -448,6 +463,7 @@
   "settingsThumbnailOverlayTile": "Incrustaciones",
   "settingsThumbnailOverlayTitle": "Incrustaciones",
   "settingsThumbnailShowFavouriteIcon": "Mostrar icono de favoritos",
+  "settingsThumbnailShowTagIcon": "Mostrar ícono de etiqueta",
   "settingsThumbnailShowLocationIcon": "Mostrar icono de ubicación",
   "settingsThumbnailShowMotionPhotoIcon": "Mostrar icono de foto en movimiento",
   "settingsThumbnailShowRating": "Mostrar clasificación",
@@ -483,6 +499,17 @@
   "settingsViewerShowShootingDetails": "Mostrar detalles de toma",
    "settingsViewerShowOverlayThumbnails": "Mostrar miniaturas",
   "settingsViewerEnableOverlayBlurEffect": "Efecto de difuminado",
+
+  "settingsViewerSlideshowTile": "Presentación",
+  "settingsViewerSlideshowTitle": "Presentación",
+  "settingsSlideshowRepeat": "Repetir",
+  "settingsSlideshowShuffle": "Mezclar",
+  "settingsSlideshowTransitionTile": "Transición",
+  "settingsSlideshowTransitionTitle": "Transición",
+  "settingsSlideshowIntervalTile": "Intervalo",
+  "settingsSlideshowIntervalTitle": "Intervalo",
+  "settingsSlideshowVideoPlaybackTile": "Reproducción de Video",
+  "settingsSlideshowVideoPlaybackTitle": "Reproducción de video",
 
   "settingsVideoPageTitle": "Ajustes de video",
   "settingsSectionVideo": "Video",
@@ -550,6 +577,7 @@
   "settingsSectionDisplay": "Pantalla",
   "settingsThemeBrightness": "Tema",
   "settingsThemeColorHighlights": "Acentos de color",
+  "settingsThemeEnableDynamicColor": "Color dinámico",
   "settingsDisplayRefreshRateModeTile": "Tasa de refresco de la pantalla",
   "settingsDisplayRefreshRateModeTitle": "Tasa de refresco",
 
@@ -567,6 +595,7 @@
   "statsTopTags": "Etiquetas principales",
 
   "viewerOpenPanoramaButtonLabel": "ABRIR PANORÁMICA",
+  "viewerSetWallpaperButtonLabel": "ESTABLECER FONDO",
   "viewerErrorUnknown": "¡Ups!",
   "viewerErrorDoesNotExist": "El archivo no existe.",
 
