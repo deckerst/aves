@@ -1,5 +1,12 @@
+<!--
+Android Studio Chipmunk (2021.2.1) recommends:
+- removing "package" from AndroidManifest.xml
+- adding it as "namespace" in app/build.gradle
+This change eventually prevents building the app with Flutter v3.0.2.
+-->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    package="deckers.thibault.aves"
     android:installLocation="auto">
 
     <!--
