@@ -62,8 +62,10 @@ dependencies:
   overlay_support:
   package_info_plus:
   palette_generator:
-# TODO TLAD as of 2022/06/18, latest version (v0.4.1) has this issue: https://github.com/zesage/panorama/issues/25
-  panorama: 0.4.0
+  panorama:
+    git:
+      url: https://github.com/deckerst/aves_panorama.git
+      ref: aves
   path:
   pdf:
   percent_indicator:

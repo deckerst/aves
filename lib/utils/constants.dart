@@ -279,7 +279,7 @@ class Constants {
       sourceUrl: 'https://github.com/flutter/packages/tree/master/packages/palette_generator',
     ),
     Dependency(
-      name: 'Panorama',
+      name: 'Panorama (Aves fork)',
       license: 'Apache 2.0',
       sourceUrl: 'https://github.com/zesage/panorama',
     ),
