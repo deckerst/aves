@@ -724,10 +724,12 @@ packages:
   panorama:
     dependency: "direct main"
     description:
-      name: panorama
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.4.0"
+      path: "."
+      ref: aves
+      resolved-ref: "0050dc1aee451f821961980ea8b9c1eb3d131c01"
+      url: "https://github.com/deckerst/aves_panorama.git"
+    source: git
+    version: "0.4.1"
   path:
     dependency: "direct main"
     description:
