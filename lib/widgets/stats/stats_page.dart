@@ -20,6 +20,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/stats/filter_table.dart';
+import 'package:aves/widgets/stats/histogram.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
@@ -148,6 +149,10 @@ class StatsPage extends StatelessWidget {
       child = ListView(
         children: [
           mimeDonuts,
+          Histogram(
+            entries: entries,
+            onFilterSelection: (filter) => _onFilterSelection(context, filter),
+          ),
           locationIndicator,
           ..._buildFilterSection<String>(context, context.l10n.statsTopCountries, entryCountPerCountry, (v) => LocationFilter(LocationLevel.country, v)),
           ..._buildFilterSection<String>(context, context.l10n.statsTopPlaces, entryCountPerPlace, (v) => LocationFilter(LocationLevel.place, v)),

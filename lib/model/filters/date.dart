@@ -1,91 +1,111 @@
-import 'package:aves/model/device.dart';
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/theme/format.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/utils/time_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
+import 'package:intl/intl.dart';
 
-class LocationFilter extends CoveredCollectionFilter {
-  static const type = 'location';
-  static const locationSeparator = ';';
+class DateFilter extends CoveredCollectionFilter {
+  static const type = 'date';
 
-  final LocationLevel level;
-  late final String _location;
-  late final String? _countryCode;
+  final DateLevel level;
+  late final DateTime? date;
+  late final DateTime _effectiveDate;
   late final EntryFilter _test;
 
+  static final onThisDay = DateFilter(DateLevel.md, null);
+
   @override
-  List<Object?> get props => [level, _location, _countryCode];
+  List<Object?> get props => [level, date];
 
-  LocationFilter(this.level, String location) {
-    final split = location.split(locationSeparator);
-    _location = split.isNotEmpty ? split[0] : location;
-    _countryCode = split.length > 1 ? split[1] : null;
-
-    if (_location.isEmpty) {
-      _test = (entry) => !entry.hasGps;
-    } else if (level == LocationLevel.country) {
-      _test = (entry) => entry.addressDetails?.countryCode == _countryCode;
-    } else if (level == LocationLevel.place) {
-      _test = (entry) => entry.addressDetails?.place == _location;
+  DateFilter(this.level, this.date) {
+    _effectiveDate = date ?? DateTime.now();
+    switch (level) {
+      case DateLevel.y:
+        _test = (entry) => entry.bestDate?.isAtSameYearAs(_effectiveDate) ?? false;
+        break;
+      case DateLevel.ym:
+        _test = (entry) => entry.bestDate?.isAtSameMonthAs(_effectiveDate) ?? false;
+        break;
+      case DateLevel.ymd:
+        _test = (entry) => entry.bestDate?.isAtSameDayAs(_effectiveDate) ?? false;
+        break;
+      case DateLevel.md:
+        final month = _effectiveDate.month;
+        final day = _effectiveDate.day;
+        _test = (entry) {
+          final bestDate = entry.bestDate;
+          return bestDate != null && bestDate.month == month && bestDate.day == day;
+        };
+        break;
+      case DateLevel.m:
+        final month = _effectiveDate.month;
+        _test = (entry) => entry.bestDate?.month == month;
+        break;
+      case DateLevel.d:
+        final day = _effectiveDate.day;
+        _test = (entry) => entry.bestDate?.day == day;
+        break;
     }
   }
 
-  LocationFilter.fromMap(Map<String, dynamic> json)
-      : this(
-          LocationLevel.values.firstWhereOrNull((v) => v.toString() == json['level']) ?? LocationLevel.place,
-          json['location'],
-        );
+  factory DateFilter.fromMap(Map<String, dynamic> json) {
+    final dateString = json['date'] as String?;
+    return DateFilter(
+      DateLevel.values.firstWhereOrNull((v) => v.toString() == json['level']) ?? DateLevel.ymd,
+      dateString != null ? DateTime.tryParse(dateString) : null,
+    );
+  }
 
   @override
   Map<String, dynamic> toMap() => {
         'type': type,
         'level': level.toString(),
-        'location': _countryCode != null ? countryNameAndCode : _location,
+        'date': date?.toIso8601String(),
       };
-
-  String get countryNameAndCode => '$_location$locationSeparator$_countryCode';
-
-  String? get countryCode => _countryCode;
 
   @override
   EntryFilter get test => _test;
 
   @override
-  String get universalLabel => _location;
+  String get universalLabel => _effectiveDate.toIso8601String();
 
   @override
-  String getLabel(BuildContext context) => _location.isEmpty ? context.l10n.filterLocationEmptyLabel : _location;
+  String getLabel(BuildContext context) {
+    final l10n = context.l10n;
+    final locale = l10n.localeName;
+    switch (level) {
+      case DateLevel.y:
+        return DateFormat.y(locale).format(_effectiveDate);
+      case DateLevel.ym:
+        return DateFormat.yMMM(locale).format(_effectiveDate);
+      case DateLevel.ymd:
+        return formatDay(_effectiveDate, locale);
+      case DateLevel.md:
+        if (date != null) {
+          return DateFormat.MMMd(locale).format(_effectiveDate);
+        } else {
+          return l10n.filterOnThisDayLabel;
+        }
+      case DateLevel.m:
+        return DateFormat.MMMM(locale).format(_effectiveDate);
+      case DateLevel.d:
+        return DateFormat.d(locale).format(_effectiveDate);
+    }
+  }
 
   @override
   Widget iconBuilder(BuildContext context, double size, {bool showGenericIcon = true}) {
-    if (_countryCode != null && device.canRenderFlagEmojis) {
-      final flag = countryCodeToFlag(_countryCode);
-      if (flag != null) {
-        return Text(
-          flag,
-          style: TextStyle(fontSize: size),
-          textScaleFactor: 1.0,
-        );
-      }
-    }
-    return Icon(_location.isEmpty ? AIcons.locationUnlocated : AIcons.location, size: size);
+    return Icon(AIcons.date, size: size);
   }
 
   @override
   String get category => type;
 
   @override
-  String get key => '$type-$level-$_location';
-
-  // U+0041 Latin Capital letter A
-  // U+1F1E6 🇦 REGIONAL INDICATOR SYMBOL LETTER A
-  static const _countryCodeToFlagDiff = 0x1F1E6 - 0x0041;
-
-  static String? countryCodeToFlag(String? code) {
-    if (code == null || code.length != 2) return null;
-    return String.fromCharCodes(code.toUpperCase().codeUnits.map((letter) => letter += _countryCodeToFlagDiff));
-  }
+  String get key => '$type-$level-$date';
 }
 
-enum LocationLevel { place, country }
+enum DateLevel { y, ym, ymd, md, m, d }

@@ -1,7 +1,28 @@
 {
+  "de": [
+    "filterOnThisDayLabel"
+  ],
+
+  "es": [
+    "filterOnThisDayLabel"
+  ],
+
+  "fr": [
+    "filterOnThisDayLabel"
+  ],
+
+  "id": [
+    "filterOnThisDayLabel"
+  ],
+
+  "it": [
+    "filterOnThisDayLabel"
+  ],
+
   "ja": [
     "slideshowActionResume",
     "slideshowActionShowInCollection",
+    "filterOnThisDayLabel",
     "slideshowVideoPlaybackSkip",
     "slideshowVideoPlaybackMuted",
     "slideshowVideoPlaybackWithSound",
@@ -28,9 +49,18 @@
     "viewerSetWallpaperButtonLabel"
   ],
 
+  "ko": [
+    "filterOnThisDayLabel"
+  ],
+
+  "pt": [
+    "filterOnThisDayLabel"
+  ],
+
   "ru": [
     "slideshowActionResume",
     "slideshowActionShowInCollection",
+    "filterOnThisDayLabel",
     "slideshowVideoPlaybackSkip",
     "slideshowVideoPlaybackMuted",
     "slideshowVideoPlaybackWithSound",
@@ -60,6 +90,7 @@
   "tr": [
     "slideshowActionResume",
     "slideshowActionShowInCollection",
+    "filterOnThisDayLabel",
     "slideshowVideoPlaybackSkip",
     "slideshowVideoPlaybackMuted",
     "slideshowVideoPlaybackWithSound",
@@ -82,5 +113,9 @@
     "settingsSlideshowVideoPlaybackTile",
     "settingsSlideshowVideoPlaybackTitle",
     "viewerSetWallpaperButtonLabel"
+  ],
+
+  "zh": [
+    "filterOnThisDayLabel"
   ]
 }

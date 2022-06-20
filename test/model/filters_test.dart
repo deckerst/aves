@@ -1,5 +1,6 @@
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/coordinate.dart';
+import 'package:aves/model/filters/date.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/location.dart';
@@ -35,6 +36,12 @@ void main() {
 
     final bounds = CoordinateFilter(LatLng(29.979167, 28.223615), LatLng(36.451000, 31.134167));
     expect(bounds, jsonRoundTrip(bounds));
+
+    final date = DateFilter(DateLevel.ym, DateTime(1969, 7));
+    expect(date, jsonRoundTrip(date));
+
+    final onThisDay = DateFilter.onThisDay;
+    expect(onThisDay, jsonRoundTrip(onThisDay));
 
     const fav = FavouriteFilter.instance;
     expect(fav, jsonRoundTrip(fav));
