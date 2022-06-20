@@ -59,10 +59,11 @@ class TypeFilter extends CollectionFilter {
     }
   }
 
-  TypeFilter.fromMap(Map<String, dynamic> json)
-      : this._private(
-          json['itemType'],
-        );
+  factory TypeFilter.fromMap(Map<String, dynamic> json) {
+    return TypeFilter._private(
+      json['itemType'],
+    );
+  }
 
   @override
   Map<String, dynamic> toMap() => {
