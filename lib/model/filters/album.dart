@@ -20,11 +20,12 @@ class AlbumFilter extends CoveredCollectionFilter {
 
   const AlbumFilter(this.album, this.displayName);
 
-  AlbumFilter.fromMap(Map<String, dynamic> json)
-      : this(
-          json['album'],
-          json['uniqueName'],
-        );
+  factory AlbumFilter.fromMap(Map<String, dynamic> json) {
+    return AlbumFilter(
+      json['album'],
+      json['uniqueName'],
+    );
+  }
 
   @override
   Map<String, dynamic> toMap() => {

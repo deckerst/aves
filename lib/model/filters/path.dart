@@ -15,10 +15,11 @@ class PathFilter extends CollectionFilter {
 
   PathFilter(this.path) : _rootAlbum = path.substring(0, path.length - 1);
 
-  PathFilter.fromMap(Map<String, dynamic> json)
-      : this(
-          json['path'],
-        );
+  factory PathFilter.fromMap(Map<String, dynamic> json) {
+    return PathFilter(
+      json['path'],
+    );
+  }
 
   @override
   Map<String, dynamic> toMap() => {
