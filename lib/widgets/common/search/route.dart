@@ -40,6 +40,8 @@ class SearchPageRoute<T> extends PageRoute<T> {
     Animation<double> secondaryAnimation,
     Widget child,
   ) {
+    // a simple fade is usually more fitting for a search page,
+    // instead of the `pageTransitionsTheme` used by the rest of the app
     return FadeTransition(
       opacity: animation,
       child: child,

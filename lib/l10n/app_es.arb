@@ -296,7 +296,6 @@
   "appPickDialogTitle": "Escoger aplicación",
   "appPickDialogNone": "Ninguna",
 
-
   "aboutPageTitle": "Acerca de",
   "aboutLinkSources": "Fuentes",
   "aboutLinkLicense": "Licencia",
@@ -314,7 +313,6 @@
   "aboutCreditsWorldAtlas1": "Esta aplicación usa un archivo TopoJSON de",
   "aboutCreditsWorldAtlas2": "bajo licencia ISC.",
   "aboutCreditsTranslators": "Traductores:",
-  "aboutCreditsTranslatorLine": "{language}: {names}",
 
   "aboutLicenses": "Licencias de código abierto",
   "aboutLicensesBanner": "Esta aplicación usa los siguientes paquetes y librerías de código abierto.",
@@ -497,7 +495,7 @@
   "settingsViewerShowInformation": "Mostrar información",
   "settingsViewerShowInformationSubtitle": "Mostrar título, fecha, ubicación, etc.",
   "settingsViewerShowShootingDetails": "Mostrar detalles de toma",
-   "settingsViewerShowOverlayThumbnails": "Mostrar miniaturas",
+  "settingsViewerShowOverlayThumbnails": "Mostrar miniaturas",
   "settingsViewerEnableOverlayBlurEffect": "Efecto de difuminado",
 
   "settingsViewerSlideshowTile": "Presentación",
@@ -508,7 +506,7 @@
   "settingsSlideshowTransitionTitle": "Transición",
   "settingsSlideshowIntervalTile": "Intervalo",
   "settingsSlideshowIntervalTitle": "Intervalo",
-  "settingsSlideshowVideoPlaybackTile": "Reproducción de Video",
+  "settingsSlideshowVideoPlaybackTile": "Reproducción de video",
   "settingsSlideshowVideoPlaybackTitle": "Reproducción de video",
 
   "settingsVideoPageTitle": "Ajustes de video",
@@ -518,8 +516,6 @@
   "settingsVideoEnableAutoPlay": "Reproducción automática",
   "settingsVideoLoopModeTile": "Modo bucle",
   "settingsVideoLoopModeTitle": "Modo bucle",
-  "settingsVideoQuickActionsTile": "Acciones rápidas para videos",
-  "settingsVideoQuickActionEditorTitle": "Acciones rápidas",
 
   "settingsSubtitleThemeTile": "Subtítulos",
   "settingsSubtitleThemeTitle": "Subtítulos",
