@@ -23,11 +23,12 @@ class CoordinateFilter extends CollectionFilter {
 
   const CoordinateFilter(this.sw, this.ne, {this.minuteSecondPadding = false});
 
-  CoordinateFilter.fromMap(Map<String, dynamic> json)
-      : this(
-          LatLng.fromJson(json['sw']),
-          LatLng.fromJson(json['ne']),
-        );
+  factory CoordinateFilter.fromMap(Map<String, dynamic> json) {
+    return CoordinateFilter(
+      LatLng.fromJson(json['sw']),
+      LatLng.fromJson(json['ne']),
+    );
+  }
 
   @override
   Map<String, dynamic> toMap() => {

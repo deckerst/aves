@@ -1,36 +1,28 @@
 {
+  "de": [
+    "filterOnThisDayLabel"
+  ],
+
+  "es": [
+    "filterOnThisDayLabel"
+  ],
+
+  "fr": [
+    "filterOnThisDayLabel"
+  ],
+
   "id": [
-    "slideshowActionResume",
-    "slideshowActionShowInCollection",
-    "slideshowVideoPlaybackSkip",
-    "slideshowVideoPlaybackMuted",
-    "slideshowVideoPlaybackWithSound",
-    "viewerTransitionSlide",
-    "viewerTransitionParallax",
-    "viewerTransitionFade",
-    "viewerTransitionZoomIn",
-    "wallpaperTargetHome",
-    "wallpaperTargetLock",
-    "wallpaperTargetHomeLock",
-    "menuActionSlideshow",
-    "collectionEmptyGrantAccessButtonLabel",
-    "settingsViewerSlideshowTile",
-    "settingsViewerSlideshowTitle",
-    "settingsSlideshowRepeat",
-    "settingsSlideshowShuffle",
-    "settingsSlideshowTransitionTile",
-    "settingsSlideshowTransitionTitle",
-    "settingsSlideshowIntervalTile",
-    "settingsSlideshowIntervalTitle",
-    "settingsSlideshowVideoPlaybackTile",
-    "settingsSlideshowVideoPlaybackTitle",
-    "settingsThemeEnableDynamicColor",
-    "viewerSetWallpaperButtonLabel"
+    "filterOnThisDayLabel"
+  ],
+
+  "it": [
+    "filterOnThisDayLabel"
   ],
 
   "ja": [
     "slideshowActionResume",
     "slideshowActionShowInCollection",
+    "filterOnThisDayLabel",
     "slideshowVideoPlaybackSkip",
     "slideshowVideoPlaybackMuted",
     "slideshowVideoPlaybackWithSound",
@@ -57,9 +49,18 @@
     "viewerSetWallpaperButtonLabel"
   ],
 
+  "ko": [
+    "filterOnThisDayLabel"
+  ],
+
+  "pt": [
+    "filterOnThisDayLabel"
+  ],
+
   "ru": [
     "slideshowActionResume",
     "slideshowActionShowInCollection",
+    "filterOnThisDayLabel",
     "slideshowVideoPlaybackSkip",
     "slideshowVideoPlaybackMuted",
     "slideshowVideoPlaybackWithSound",
@@ -89,6 +90,7 @@
   "tr": [
     "slideshowActionResume",
     "slideshowActionShowInCollection",
+    "filterOnThisDayLabel",
     "slideshowVideoPlaybackSkip",
     "slideshowVideoPlaybackMuted",
     "slideshowVideoPlaybackWithSound",
@@ -111,5 +113,9 @@
     "settingsSlideshowVideoPlaybackTile",
     "settingsSlideshowVideoPlaybackTitle",
     "viewerSetWallpaperButtonLabel"
+  ],
+
+  "zh": [
+    "filterOnThisDayLabel"
   ]
 }

@@ -140,7 +140,6 @@ android {
     lint {
         disable 'InvalidPackage'
     }
-    namespace 'deckers.thibault.aves'
 }
 
 flutter {

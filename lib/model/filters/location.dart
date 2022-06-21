@@ -31,11 +31,12 @@ class LocationFilter extends CoveredCollectionFilter {
     }
   }
 
-  LocationFilter.fromMap(Map<String, dynamic> json)
-      : this(
-          LocationLevel.values.firstWhereOrNull((v) => v.toString() == json['level']) ?? LocationLevel.place,
-          json['location'],
-        );
+  factory LocationFilter.fromMap(Map<String, dynamic> json) {
+    return LocationFilter(
+      LocationLevel.values.firstWhereOrNull((v) => v.toString() == json['level']) ?? LocationLevel.place,
+      json['location'],
+    );
+  }
 
   @override
   Map<String, dynamic> toMap() => {

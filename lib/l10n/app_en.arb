@@ -122,6 +122,7 @@
   "filterFavouriteLabel": "Favorite",
   "filterLocationEmptyLabel": "Unlocated",
   "filterTagEmptyLabel": "Untagged",
+  "filterOnThisDayLabel": "On this day",
   "filterRatingUnratedLabel": "Unrated",
   "filterRatingRejectedLabel": "Rejected",
   "filterTypeAnimatedLabel": "Animated",

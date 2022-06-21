@@ -59,10 +59,11 @@ class QueryFilter extends CollectionFilter {
     _test = not ? (entry) => !testTitle(entry) : testTitle;
   }
 
-  QueryFilter.fromMap(Map<String, dynamic> json)
-      : this(
-          json['query'],
-        );
+  factory QueryFilter.fromMap(Map<String, dynamic> json) {
+    return QueryFilter(
+      json['query'],
+    );
+  }
 
   @override
   Map<String, dynamic> toMap() => {

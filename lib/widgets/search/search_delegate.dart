@@ -1,4 +1,5 @@
 import 'package:aves/model/filters/album.dart';
+import 'package:aves/model/filters/date.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/location.dart';
@@ -41,6 +42,7 @@ class CollectionSearchDelegate extends AvesSearchDelegate {
     TypeFilter.geotiff,
     TypeFilter.raw,
     MimeFilter(MimeTypes.svg),
+    DateFilter.onThisDay,
   ];
 
   CollectionSearchDelegate({

@@ -62,8 +62,10 @@ dependencies:
   overlay_support:
   package_info_plus:
   palette_generator:
-# TODO TLAD as of 2022/02/22, latest version (v0.4.1) has this issue: https://github.com/zesage/panorama/issues/25
-  panorama: 0.4.0
+  panorama:
+    git:
+      url: https://github.com/deckerst/aves_panorama.git
+      ref: aves
   path:
   pdf:
   percent_indicator:
@@ -73,8 +75,6 @@ dependencies:
   provider:
   screen_brightness:
   shared_preferences:
-# TODO TLAD as of 2022/02/22, latest version (v2.0.11) fails to load from analysis service (target wrong channel?)
-  shared_preferences_android: 2.0.10
   sqflite:
   streams_channel:
     git:
@@ -85,7 +85,7 @@ dependencies:
   xml:
 
 dependency_overrides:
-  # TODO TLAD as of 2022/06/11, latest version (v9.0.2+1) does not support Android 13 storage permissions
+  # TODO TLAD as of 2022/06/18, latest version (v10.0.0) does not support Android 13 storage permissions
   permission_handler_android:
     git:
       url: https://github.com/deckerst/flutter-permission-handler

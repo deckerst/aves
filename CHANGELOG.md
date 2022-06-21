@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+### Added
+
+- Search: `on this day` filter
+- Stats: histogram and date filters
+
 ## <a id="unreleased"></a>[Unreleased]
 
 ## <a id="v1.6.9"></a>[v1.6.9] - 2022-06-18

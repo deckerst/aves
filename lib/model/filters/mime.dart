@@ -43,10 +43,11 @@ class MimeFilter extends CollectionFilter {
     _icon = icon ?? AIcons.vector;
   }
 
-  MimeFilter.fromMap(Map<String, dynamic> json)
-      : this(
-          json['mime'],
-        );
+  factory MimeFilter.fromMap(Map<String, dynamic> json) {
+    return MimeFilter(
+      json['mime'],
+    );
+  }
 
   @override
   Map<String, dynamic> toMap() => {
