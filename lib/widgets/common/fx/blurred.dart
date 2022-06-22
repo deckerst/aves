@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 final _filter = ImageFilter.blur(sigmaX: 4, sigmaY: 4);
+const _identity = ColorFilter.matrix(<double>[1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0]);
 
 class BlurredRect extends StatelessWidget {
   final bool enabled;
@@ -16,14 +17,13 @@ class BlurredRect extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return enabled
-        ? ClipRect(
-            child: BackdropFilter(
-              filter: _filter,
-              child: child,
-            ),
-          )
-        : child;
+    return ClipRect(
+      child: BackdropFilter(
+        // do not modify tree when disabling filter
+        filter: enabled ? _filter : _identity,
+        child: child,
+      ),
+    );
   }
 }
 
@@ -57,12 +57,11 @@ class BlurredRRect extends StatelessWidget {
   Widget build(BuildContext context) {
     return ClipRRect(
       borderRadius: borderRadius,
-      child: enabled
-          ? BackdropFilter(
-              filter: _filter,
-              child: child,
-            )
-          : child,
+      child: BackdropFilter(
+        // do not modify tree when disabling filter
+        filter: enabled ? _filter : _identity,
+        child: child,
+      ),
     );
   }
 }
@@ -80,12 +79,11 @@ class BlurredOval extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipOval(
-      child: enabled
-          ? BackdropFilter(
-              filter: _filter,
-              child: child,
-            )
-          : child,
+      child: BackdropFilter(
+        // do not modify tree when disabling filter
+        filter: enabled ? _filter : _identity,
+        child: child,
+      ),
     );
   }
 }
