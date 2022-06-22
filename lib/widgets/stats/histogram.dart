@@ -1,11 +1,14 @@
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/date.dart';
 import 'package:aves/theme/durations.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
+import 'package:aves/widgets/stats/date/axis.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class Histogram extends StatefulWidget {
@@ -24,6 +27,7 @@ class Histogram extends StatefulWidget {
 
 class _HistogramState extends State<Histogram> {
   DateLevel _level = DateLevel.y;
+  DateTime? _firstDate, _lastDate;
   final Map<DateTime, int> _entryCountPerDate = {};
   final ValueNotifier<EntryByDate?> _selection = ValueNotifier(null);
 
@@ -33,20 +37,20 @@ class _HistogramState extends State<Histogram> {
   void initState() {
     super.initState();
 
-    final entries = widget.entries;
-    final firstDate = entries.firstWhereOrNull((entry) => entry.bestDate != null)?.bestDate;
-    final lastDate = entries.lastWhereOrNull((entry) => entry.bestDate != null)?.bestDate;
+    final entriesByDateDescending = List.of(widget.entries)..sort(AvesEntry.compareByDate);
+    _lastDate = entriesByDateDescending.firstWhereOrNull((entry) => entry.bestDate != null)?.bestDate;
+    _firstDate = entriesByDateDescending.lastWhereOrNull((entry) => entry.bestDate != null)?.bestDate;
 
-    if (lastDate != null && firstDate != null) {
-      final range = firstDate.difference(lastDate);
-      if (range > const Duration(days: 1)) {
-        if (range < const Duration(days: 30)) {
+    if (_lastDate != null && _firstDate != null) {
+      final rangeDays = _lastDate!.difference(_firstDate!).inDays;
+      if (rangeDays > 1) {
+        if (rangeDays <= 31) {
           _level = DateLevel.ymd;
-        } else if (range < const Duration(days: 365)) {
+        } else if (rangeDays <= 365) {
           _level = DateLevel.ym;
         }
 
-        final dates = entries.map((entry) => entry.bestDate).whereNotNull();
+        final dates = entriesByDateDescending.map((entry) => entry.bestDate).whereNotNull();
         late DateTime Function(DateTime) groupByKey;
         switch (_level) {
           case DateLevel.ymd:
@@ -84,8 +88,18 @@ class _HistogramState extends State<Histogram> {
       ),
     ];
 
+    final locale = context.l10n.localeName;
+    final timeAxisSpec = _firstDate != null && _lastDate != null
+        ? TimeAxisSpec.forLevel(
+            locale: locale,
+            level: _level,
+            first: _firstDate!,
+            last: _lastDate!,
+          )
+        : null;
     final axisColor = charts.ColorUtil.fromDartColor(theme.colorScheme.onPrimary.withOpacity(.9));
     final measureLineColor = charts.ColorUtil.fromDartColor(theme.colorScheme.onPrimary.withOpacity(.1));
+    final measureFormat = NumberFormat.decimalPattern(locale);
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -100,12 +114,17 @@ class _HistogramState extends State<Histogram> {
                 labelStyle: charts.TextStyleSpec(color: axisColor),
                 lineStyle: charts.LineStyleSpec(color: axisColor),
               ),
+              tickProviderSpec: timeAxisSpec != null && timeAxisSpec.tickSpecs.isNotEmpty ? charts.StaticDateTimeTickProviderSpec(timeAxisSpec.tickSpecs) : null,
             ),
             primaryMeasureAxis: charts.NumericAxisSpec(
               renderSpec: charts.GridlineRendererSpec(
                 labelStyle: charts.TextStyleSpec(color: axisColor),
                 lineStyle: charts.LineStyleSpec(color: measureLineColor),
               ),
+              tickFormatterSpec: charts.BasicNumericTickFormatterSpec((v) {
+                // localize and hide 0
+                return (v == null || v == 0) ? '' : measureFormat.format(v);
+              }),
             ),
             defaultRenderer: charts.BarRendererConfig<DateTime>(),
             defaultInteractions: false,
@@ -152,6 +171,8 @@ class _HistogramState extends State<Histogram> {
 
             return AnimatedSwitcher(
               duration: context.read<DurationsData>().formTransition,
+              switchInCurve: Curves.easeInOutCubic,
+              switchOutCurve: Curves.easeInOutCubic,
               transitionBuilder: (child, animation) => FadeTransition(
                 opacity: animation,
                 child: SizeTransition(
