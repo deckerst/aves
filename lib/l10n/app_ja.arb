@@ -81,6 +81,9 @@
   "videoActionSetSpeed": "再生速度",
   "videoActionSettings": "設定",
 
+  "slideshowActionResume": "再開",
+  "slideshowActionShowInCollection": "コレクションで表示",
+
   "entryInfoActionEditDate": "日時を編集",
   "entryInfoActionEditLocation": "位置情報を編集",
   "entryInfoActionEditRating": "評価を編集",
@@ -145,9 +148,22 @@
   "displayRefreshRatePreferHighest": "高レート",
   "displayRefreshRatePreferLowest": "低レート",
 
+  "slideshowVideoPlaybackSkip": "スキップ",
+  "slideshowVideoPlaybackMuted": "ミュート再生",
+  "slideshowVideoPlaybackWithSound": "音声あり再生",
+
   "themeBrightnessLight": "ライト",
   "themeBrightnessDark": "ダーク",
   "themeBrightnessBlack": "ブラック",
+
+  "viewerTransitionSlide": "スライド",
+  "viewerTransitionParallax": "パララックス",
+  "viewerTransitionFade": "フェード",
+  "viewerTransitionZoomIn": "ズームイン",
+
+  "wallpaperTargetHome": "ホーム画面",
+  "wallpaperTargetLock": "ロック画面",
+  "wallpaperTargetHomeLock": "ホームおよびロック画面",
 
   "albumTierNew": "新規",
   "albumTierPinned": "固定",
@@ -263,6 +279,7 @@
   "menuActionSelectAll": "すべて選択",
   "menuActionSelectNone": "選択を解除",
   "menuActionMap": "地図",
+  "menuActionSlideshow": "スライドショー",
   "menuActionStats": "統計",
 
   "viewDialogTabSort": "並べ替え",
@@ -350,6 +367,7 @@
   "collectionEmptyFavourites": "お気に入りはありません",
   "collectionEmptyVideos": "動画はありません",
   "collectionEmptyImages": "画像はありません",
+  "collectionEmptyGrantAccessButtonLabel": "アクセスを許可",
 
   "collectionSelectSectionTooltip": "セクションを選択",
   "collectionDeselectSectionTooltip": "セクションの選択を解除",
@@ -480,6 +498,17 @@
   "settingsViewerShowOverlayThumbnails": "サムネイルを表示",
   "settingsViewerEnableOverlayBlurEffect": "ぼかし効果",
 
+  "settingsViewerSlideshowTile": "スライドショー",
+  "settingsViewerSlideshowTitle": "スライドショー",
+  "settingsSlideshowRepeat": "繰り返し",
+  "settingsSlideshowShuffle": "シャッフル",
+  "settingsSlideshowTransitionTile": "トランジション",
+  "settingsSlideshowTransitionTitle": "トランジション",
+  "settingsSlideshowIntervalTile": "間隔",
+  "settingsSlideshowIntervalTitle": "間隔",
+  "settingsSlideshowVideoPlaybackTile": "動画を再生",
+  "settingsSlideshowVideoPlaybackTitle": "動画再生",
+
   "settingsVideoPageTitle": "動画設定",
   "settingsSectionVideo": "動画",
   "settingsVideoShowVideos": "動画を表示",
@@ -544,6 +573,7 @@
   "settingsSectionDisplay": "ディスプレイ",
   "settingsThemeBrightness": "テーマ",
   "settingsThemeColorHighlights": "カラー強調表示",
+  "settingsThemeEnableDynamicColor": "ダイナミックカラー",
   "settingsDisplayRefreshRateModeTile": "ディスプレイ リフレッシュ レート",
   "settingsDisplayRefreshRateModeTitle": "リフレッシュ レート",
 
@@ -561,6 +591,7 @@
   "statsTopTags": "上位のタグ",
 
   "viewerOpenPanoramaButtonLabel": "パノラマを開く",
+  "viewerSetWallpaperButtonLabel": "壁紙設定",
   "viewerErrorUnknown": "エラー",
   "viewerErrorDoesNotExist": "ファイルが存在しません。",
 

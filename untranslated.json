@@ -20,33 +20,7 @@
   ],
 
   "ja": [
-    "slideshowActionResume",
-    "slideshowActionShowInCollection",
-    "filterOnThisDayLabel",
-    "slideshowVideoPlaybackSkip",
-    "slideshowVideoPlaybackMuted",
-    "slideshowVideoPlaybackWithSound",
-    "viewerTransitionSlide",
-    "viewerTransitionParallax",
-    "viewerTransitionFade",
-    "viewerTransitionZoomIn",
-    "wallpaperTargetHome",
-    "wallpaperTargetLock",
-    "wallpaperTargetHomeLock",
-    "menuActionSlideshow",
-    "collectionEmptyGrantAccessButtonLabel",
-    "settingsViewerSlideshowTile",
-    "settingsViewerSlideshowTitle",
-    "settingsSlideshowRepeat",
-    "settingsSlideshowShuffle",
-    "settingsSlideshowTransitionTile",
-    "settingsSlideshowTransitionTitle",
-    "settingsSlideshowIntervalTile",
-    "settingsSlideshowIntervalTitle",
-    "settingsSlideshowVideoPlaybackTile",
-    "settingsSlideshowVideoPlaybackTitle",
-    "settingsThemeEnableDynamicColor",
-    "viewerSetWallpaperButtonLabel"
+    "filterOnThisDayLabel"
   ],
 
   "ko": [
