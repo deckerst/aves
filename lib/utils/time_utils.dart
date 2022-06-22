@@ -14,6 +14,12 @@ extension ExtraDateTime on DateTime {
   bool get isThisMonth => isAtSameMonthAs(DateTime.now());
 
   bool get isThisYear => isAtSameYearAs(DateTime.now());
+
+  DateTime get date => DateTime(year, month, day);
+
+  DateTime addMonths(int months) => DateTime(year, month + months, day, hour, minute, second, millisecond, microsecond);
+
+  DateTime addDays(int days) => DateTime(year, month, day + days, hour, minute, second, millisecond, microsecond);
 }
 
 final epoch = DateTime.fromMillisecondsSinceEpoch(0, isUtc: true);
