@@ -1,6 +1,6 @@
 package deckers.thibault.aves.channel.calls
 
-import android.app.Activity
+import android.content.ContextWrapper
 import android.graphics.Rect
 import android.net.Uri
 import android.util.Log
@@ -21,14 +21,17 @@ import deckers.thibault.aves.utils.StorageUtils.ensureTrailingSeparator
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
-class MediaFileHandler(private val activity: Activity) : MethodCallHandler {
+class MediaFileHandler(private val contextWrapper: ContextWrapper) : MethodCallHandler {
     private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-    private val density = activity.resources.displayMetrics.density
+    private val density = contextWrapper.resources.displayMetrics.density
 
-    private val regionFetcher = RegionFetcher(activity)
+    private val regionFetcher = RegionFetcher(contextWrapper)
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
@@ -56,7 +59,7 @@ class MediaFileHandler(private val activity: Activity) : MethodCallHandler {
             return
         }
 
-        provider.fetchSingle(activity, uri, mimeType, object : ImageOpCallback {
+        provider.fetchSingle(contextWrapper, uri, mimeType, object : ImageOpCallback {
             override fun onSuccess(fields: FieldMap) = result.success(fields)
             override fun onFailure(throwable: Throwable) = result.error("getEntry-failure", "failed to get entry for uri=$uri", throwable.message)
         })
@@ -80,7 +83,7 @@ class MediaFileHandler(private val activity: Activity) : MethodCallHandler {
 
         // convert DIP to physical pixels here, instead of using `devicePixelRatio` in Flutter
         ThumbnailFetcher(
-            activity,
+            contextWrapper,
             uri,
             mimeType,
             dateModifiedSecs,
@@ -113,14 +116,14 @@ class MediaFileHandler(private val activity: Activity) : MethodCallHandler {
 
         val regionRect = Rect(x, y, x + width, y + height)
         when (mimeType) {
-            MimeTypes.SVG -> SvgRegionFetcher(activity).fetch(
+            MimeTypes.SVG -> SvgRegionFetcher(contextWrapper).fetch(
                 uri = uri,
                 regionRect = regionRect,
                 imageWidth = imageWidth,
                 imageHeight = imageHeight,
                 result = result,
             )
-            MimeTypes.TIFF -> TiffRegionFetcher(activity).fetch(
+            MimeTypes.TIFF -> TiffRegionFetcher(contextWrapper).fetch(
                 uri = uri,
                 page = pageId ?: 0,
                 sampleSize = sampleSize,
@@ -172,14 +175,14 @@ class MediaFileHandler(private val activity: Activity) : MethodCallHandler {
         }
 
         destinationDir = ensureTrailingSeparator(destinationDir)
-        provider.captureFrame(activity, desiredName, exifFields, bytes, destinationDir, nameConflictStrategy, object : ImageOpCallback {
+        provider.captureFrame(contextWrapper, desiredName, exifFields, bytes, destinationDir, nameConflictStrategy, object : ImageOpCallback {
             override fun onSuccess(fields: FieldMap) = result.success(fields)
             override fun onFailure(throwable: Throwable) = result.error("captureFrame-failure", "failed to capture frame for uri=$uri", throwable.message)
         })
     }
 
     private fun clearSizedThumbnailDiskCache(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
-        Glide.get(activity).clearDiskCache()
+        Glide.get(contextWrapper).clearDiskCache()
         result.success(null)
     }
 

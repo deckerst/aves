@@ -1,7 +1,7 @@
 package deckers.thibault.aves.model.provider
 
-import android.app.Activity
 import android.content.Context
+import android.content.ContextWrapper
 import android.net.Uri
 import android.util.Log
 import deckers.thibault.aves.model.SourceEntry
@@ -37,7 +37,7 @@ internal class FileImageProvider : ImageProvider() {
         }
     }
 
-    override suspend fun delete(activity: Activity, uri: Uri, path: String?, mimeType: String) {
+    override suspend fun delete(contextWrapper: ContextWrapper, uri: Uri, path: String?, mimeType: String) {
         val file = File(File(uri.path!!).path)
         if (!file.exists()) return
 
