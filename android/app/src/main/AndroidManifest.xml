@@ -142,6 +142,11 @@ This change eventually prevents building the app with Flutter v3.0.2.
         </activity>
 
         <activity
+            android:name=".ScreenSaverSettingsActivity"
+            android:exported="true"
+            android:theme="@style/NormalTheme" />
+
+        <activity
             android:name=".WallpaperActivity"
             android:exported="true"
             android:label="@string/wallpaper"
@@ -164,6 +169,22 @@ This change eventually prevents building the app with Flutter v3.0.2.
             android:name=".AnalysisService"
             android:description="@string/analysis_service_description"
             android:exported="false" />
+
+        <service
+            android:name=".ScreenSaverService"
+            android:exported="true"
+            android:icon="@mipmap/ic_launcher"
+            android:label="@string/app_name"
+            android:permission="android.permission.BIND_DREAM_SERVICE">
+            <intent-filter>
+                <action android:name="android.service.dreams.DreamService" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.service.dream"
+                android:resource="@xml/screen_saver" />
+        </service>
 
         <!-- file provider to share files having a file:// URI -->
         <provider

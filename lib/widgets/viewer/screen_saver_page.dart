@@ -1,13 +1,11 @@
-import 'package:aves/app_mode.dart';
-import 'package:aves/model/actions/slideshow_actions.dart';
-import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/enums/slideshow_interval.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
+import 'package:aves/model/source/collection_source.dart';
+import 'package:aves/model/source/enums.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
@@ -15,128 +13,110 @@ import 'package:aves/widgets/viewer/controller.dart';
 import 'package:aves/widgets/viewer/entry_viewer_page.dart';
 import 'package:aves/widgets/viewer/entry_viewer_stack.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
-class SlideshowPage extends StatefulWidget {
-  static const routeName = '/collection/slideshow';
+class ScreenSaverPage extends StatefulWidget {
+  static const routeName = '/screen_saver';
 
-  final CollectionLens collection;
+  final CollectionSource source;
 
-  const SlideshowPage({
+  const ScreenSaverPage({
     super.key,
-    required this.collection,
+    required this.source,
   });
 
   @override
-  State<SlideshowPage> createState() => _SlideshowPageState();
+  State<ScreenSaverPage> createState() => _ScreenSaverPageState();
 }
 
-class _SlideshowPageState extends State<SlideshowPage> {
-  late final CollectionLens _slideshowCollection;
+class _ScreenSaverPageState extends State<ScreenSaverPage> {
   late final ViewerController _viewerController;
+  CollectionLens? _slideshowCollection;
+
+  CollectionSource get source => widget.source;
 
   @override
   void initState() {
     super.initState();
-    final originalCollection = widget.collection;
-    var entries = originalCollection.sortedEntries;
-    if (settings.slideshowVideoPlayback == SlideshowVideoPlayback.skip) {
-      entries = entries.where((entry) => !MimeFilter.video.test(entry)).toList();
-    }
-    if (settings.slideshowShuffle) {
-      entries.shuffle();
-    }
-    _slideshowCollection = CollectionLens(
-      source: originalCollection.source,
-      listenToSource: false,
-      fixedSort: true,
-      fixedSelection: entries,
-    );
     _viewerController = ViewerController(
-      transition: settings.slideshowTransition,
-      repeat: settings.slideshowRepeat,
+      transition: settings.screenSaverTransition,
+      repeat: true,
       autopilot: true,
-      autopilotInterval: settings.slideshowInterval.getDuration(),
+      autopilotInterval: settings.screenSaverInterval.getDuration(),
     );
+    source.stateNotifier.addListener(_onSourceStateChanged);
+    _initSlideshowCollection();
+  }
+
+  void _onSourceStateChanged() {
+    if (_slideshowCollection == null) {
+      _initSlideshowCollection();
+      if (_slideshowCollection != null) {
+        setState(() {});
+      }
+    }
   }
 
   @override
   void dispose() {
+    source.stateNotifier.removeListener(_onSourceStateChanged);
     _viewerController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final entries = _slideshowCollection.sortedEntries;
-    return ListenableProvider<ValueNotifier<AppMode>>.value(
-      value: ValueNotifier(AppMode.slideshow),
-      child: MediaQueryDataProvider(
-        child: Scaffold(
-          body: entries.isEmpty
-              ? EmptyContent(
-                  icon: AIcons.image,
-                  text: context.l10n.collectionEmptyImages,
-                  alignment: Alignment.center,
-                )
-              : ViewStateConductorProvider(
-                  child: VideoConductorProvider(
-                    child: MultiPageConductorProvider(
-                      child: NotificationListener<SlideshowActionNotification>(
-                        onNotification: (notification) {
-                          _onActionSelected(notification.action);
-                          return true;
-                        },
-                        child: EntryViewerStack(
-                          collection: _slideshowCollection,
-                          initialEntry: entries.first,
-                          viewerController: _viewerController,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-        ),
-      ),
-    );
-  }
+    Widget child;
 
-  void _onActionSelected(SlideshowAction action) {
-    switch (action) {
-      case SlideshowAction.resume:
-        _viewerController.autopilot = true;
-        break;
-      case SlideshowAction.showInCollection:
-        _showInCollection();
-        break;
+    final collection = _slideshowCollection;
+    if (collection == null) {
+      child = const SizedBox();
+    } else {
+      final entries = collection.sortedEntries;
+      if (entries.isEmpty) {
+        child = EmptyContent(
+          icon: AIcons.image,
+          text: context.l10n.collectionEmptyImages,
+          alignment: Alignment.center,
+        );
+      } else {
+        child = ViewStateConductorProvider(
+          child: VideoConductorProvider(
+            child: MultiPageConductorProvider(
+              child: EntryViewerStack(
+                collection: collection,
+                initialEntry: entries.first,
+                viewerController: _viewerController,
+              ),
+            ),
+          ),
+        );
+      }
     }
-  }
 
-  void _showInCollection() {
-    final entry = _viewerController.entryNotifier.value;
-    if (entry == null) return;
-
-    final source = _slideshowCollection.source;
-    final album = entry.directory;
-    final uri = entry.uri;
-
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(
-        settings: const RouteSettings(name: CollectionPage.routeName),
-        builder: (context) => CollectionPage(
-          source: source,
-          filters: album != null ? {AlbumFilter(album, source.getAlbumDisplayName(context, album))} : null,
-          highlightTest: (entry) => entry.uri == uri,
-        ),
+    return MediaQueryDataProvider(
+      child: Scaffold(
+        body: child,
       ),
-      (route) => false,
     );
   }
-}
 
-class SlideshowActionNotification extends Notification {
-  final SlideshowAction action;
+  void _initSlideshowCollection() {
+    if (source.stateNotifier.value != SourceState.ready || _slideshowCollection != null) return;
 
-  SlideshowActionNotification(this.action);
+    final originalCollection = CollectionLens(
+      source: source,
+      // TODO TLAD [screensaver] custom filters
+    );
+    var entries = originalCollection.sortedEntries;
+    if (settings.screenSaverVideoPlayback == SlideshowVideoPlayback.skip) {
+      entries = entries.where((entry) => !MimeFilter.video.test(entry)).toList();
+    }
+    entries.shuffle();
+    _slideshowCollection = CollectionLens(
+      source: originalCollection.source,
+      listenToSource: false,
+      fixedSort: true,
+      fixedSelection: entries,
+    );
+  }
 }

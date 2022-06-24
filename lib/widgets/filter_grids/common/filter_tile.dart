@@ -63,6 +63,7 @@ class _InteractiveFilterTileState<T extends CollectionFilter> extends State<Inte
           Navigator.pop<T>(context, filter);
           break;
         case AppMode.pickMediaInternal:
+        case AppMode.screenSaver:
         case AppMode.setWallpaper:
         case AppMode.slideshow:
         case AppMode.view:

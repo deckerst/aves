@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 abstract class WindowService {
+  Future<bool> isActivity();
+
   Future<void> keepScreenOn(bool on);
 
   Future<bool> isRotationLocked();
@@ -16,6 +18,17 @@ abstract class WindowService {
 
 class PlatformWindowService implements WindowService {
   static const platform = MethodChannel('deckers.thibault/aves/window');
+
+  @override
+  Future<bool> isActivity() async {
+    try {
+      final result = await platform.invokeMethod('isActivity');
+      if (result != null) return result as bool;
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
+    return false;
+  }
 
   @override
   Future<void> keepScreenOn(bool on) async {

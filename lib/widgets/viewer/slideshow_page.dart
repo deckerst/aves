@@ -32,32 +32,19 @@ class SlideshowPage extends StatefulWidget {
 }
 
 class _SlideshowPageState extends State<SlideshowPage> {
-  late final CollectionLens _slideshowCollection;
   late final ViewerController _viewerController;
+  late final CollectionLens _slideshowCollection;
 
   @override
   void initState() {
     super.initState();
-    final originalCollection = widget.collection;
-    var entries = originalCollection.sortedEntries;
-    if (settings.slideshowVideoPlayback == SlideshowVideoPlayback.skip) {
-      entries = entries.where((entry) => !MimeFilter.video.test(entry)).toList();
-    }
-    if (settings.slideshowShuffle) {
-      entries.shuffle();
-    }
-    _slideshowCollection = CollectionLens(
-      source: originalCollection.source,
-      listenToSource: false,
-      fixedSort: true,
-      fixedSelection: entries,
-    );
     _viewerController = ViewerController(
       transition: settings.slideshowTransition,
       repeat: settings.slideshowRepeat,
       autopilot: true,
       autopilotInterval: settings.slideshowInterval.getDuration(),
     );
+    _initSlideshowCollection();
   }
 
   @override
@@ -98,6 +85,23 @@ class _SlideshowPageState extends State<SlideshowPage> {
                 ),
         ),
       ),
+    );
+  }
+
+  void _initSlideshowCollection() {
+    final originalCollection = widget.collection;
+    var entries = originalCollection.sortedEntries;
+    if (settings.slideshowVideoPlayback == SlideshowVideoPlayback.skip) {
+      entries = entries.where((entry) => !MimeFilter.video.test(entry)).toList();
+    }
+    if (settings.slideshowShuffle) {
+      entries.shuffle();
+    }
+    _slideshowCollection = CollectionLens(
+      source: originalCollection.source,
+      listenToSource: false,
+      fixedSort: true,
+      fixedSelection: entries,
     );
   }
 

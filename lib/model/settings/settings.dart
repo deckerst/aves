@@ -138,6 +138,11 @@ class Settings extends ChangeNotifier {
   // file picker
   static const filePickerShowHiddenFilesKey = 'file_picker_show_hidden_files';
 
+  // screen saver
+  static const screenSaverTransitionKey = 'screen_saver_transition';
+  static const screenSaverVideoPlaybackKey = 'screen_saver_video_playback';
+  static const screenSaverIntervalKey = 'screen_saver_interval';
+
   // slideshow
   static const slideshowRepeatKey = 'slideshow_loop';
   static const slideshowShuffleKey = 'slideshow_shuffle';
@@ -583,6 +588,20 @@ class Settings extends ChangeNotifier {
 
   set filePickerShowHiddenFiles(bool newValue) => setAndNotify(filePickerShowHiddenFilesKey, newValue);
 
+  // screen saver
+
+  ViewerTransition get screenSaverTransition => getEnumOrDefault(screenSaverTransitionKey, SettingsDefaults.slideshowTransition, ViewerTransition.values);
+
+  set screenSaverTransition(ViewerTransition newValue) => setAndNotify(screenSaverTransitionKey, newValue.toString());
+
+  SlideshowVideoPlayback get screenSaverVideoPlayback => getEnumOrDefault(screenSaverVideoPlaybackKey, SettingsDefaults.slideshowVideoPlayback, SlideshowVideoPlayback.values);
+
+  set screenSaverVideoPlayback(SlideshowVideoPlayback newValue) => setAndNotify(screenSaverVideoPlaybackKey, newValue.toString());
+
+  SlideshowInterval get screenSaverInterval => getEnumOrDefault(screenSaverIntervalKey, SettingsDefaults.slideshowInterval, SlideshowInterval.values);
+
+  set screenSaverInterval(SlideshowInterval newValue) => setAndNotify(screenSaverIntervalKey, newValue.toString());
+
   // slideshow
 
   bool get slideshowRepeat => getBoolOrDefault(slideshowRepeatKey, SettingsDefaults.slideshowRepeat);
@@ -792,6 +811,9 @@ class Settings extends ChangeNotifier {
             case unitSystemKey:
             case accessibilityAnimationsKey:
             case timeToTakeActionKey:
+            case screenSaverTransitionKey:
+            case screenSaverVideoPlaybackKey:
+            case screenSaverIntervalKey:
             case slideshowTransitionKey:
             case slideshowVideoPlaybackKey:
             case slideshowIntervalKey:

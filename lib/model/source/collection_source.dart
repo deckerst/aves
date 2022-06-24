@@ -370,6 +370,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
     AnalysisController? analysisController,
     String? directory,
     bool loadTopEntriesFirst = false,
+    bool canAnalyze = true,
   });
 
   Future<Set<String>> refreshUris(Set<String> changedUris, {AnalysisController? analysisController});

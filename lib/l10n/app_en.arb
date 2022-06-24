@@ -765,6 +765,8 @@
   "settingsUnitSystemTile": "Units",
   "settingsUnitSystemTitle": "Units",
 
+  "settingsScreenSaverTitle": "Screen Saver",
+
   "statsPageTitle": "Stats",
   "statsWithGps": "{count, plural, =1{1 item with location} other{{count} items with location}}",
   "@statsWithGps": {

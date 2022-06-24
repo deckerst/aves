@@ -276,14 +276,20 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
   }
 
   List<Widget> _buildOverlays() {
-    if (context.read<ValueNotifier<AppMode>>().value == AppMode.slideshow) {
-      return [_buildSlideshowBottomOverlay()];
+    final appMode = context.read<ValueNotifier<AppMode>>().value;
+    switch (appMode) {
+      case AppMode.screenSaver:
+        return [];
+      case AppMode.slideshow:
+        return [
+          _buildSlideshowBottomOverlay(),
+        ];
+      default:
+        return [
+          _buildViewerTopOverlay(),
+          _buildViewerBottomOverlay(),
+        ];
     }
-
-    return [
-      _buildViewerTopOverlay(),
-      _buildViewerBottomOverlay(),
-    ];
   }
 
   Widget _buildSlideshowBottomOverlay() {

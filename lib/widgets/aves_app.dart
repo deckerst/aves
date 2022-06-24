@@ -230,6 +230,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
             break;
           case AppMode.pickMediaInternal:
           case AppMode.pickFilterInternal:
+          case AppMode.screenSaver:
           case AppMode.setWallpaper:
           case AppMode.slideshow:
           case AppMode.view:
