@@ -1,8 +1,8 @@
 package deckers.thibault.aves.channel.calls
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Context
+import android.content.ContextWrapper
 import android.os.Build
 import android.provider.Settings
 import android.util.Log
@@ -13,7 +13,7 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 
-class AccessibilityHandler(private val activity: Activity) : MethodCallHandler {
+class AccessibilityHandler(private val contextWrapper: ContextWrapper) : MethodCallHandler {
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
             "areAnimationsRemoved" -> safe(call, result, ::areAnimationsRemoved)
@@ -28,7 +28,7 @@ class AccessibilityHandler(private val activity: Activity) : MethodCallHandler {
         @SuppressLint("ObsoleteSdkInt")
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             try {
-                removed = Settings.Global.getFloat(activity.contentResolver, Settings.Global.TRANSITION_ANIMATION_SCALE) == 0f
+                removed = Settings.Global.getFloat(contextWrapper.contentResolver, Settings.Global.TRANSITION_ANIMATION_SCALE) == 0f
             } catch (e: Exception) {
                 Log.w(LOG_TAG, "failed to get settings with error=${e.message}", null)
             }
@@ -66,7 +66,7 @@ class AccessibilityHandler(private val activity: Activity) : MethodCallHandler {
             }
         }
 
-        val am = activity.getSystemService(Context.ACCESSIBILITY_SERVICE) as? AccessibilityManager
+        val am = contextWrapper.getSystemService(Context.ACCESSIBILITY_SERVICE) as? AccessibilityManager
         if (am == null) {
             result.error("getRecommendedTimeoutMillis-service", "failed to get accessibility manager", null)
             return
