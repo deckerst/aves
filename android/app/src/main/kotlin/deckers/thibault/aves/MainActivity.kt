@@ -28,7 +28,7 @@ import io.flutter.plugin.common.MethodChannel
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ConcurrentHashMap
 
-class MainActivity : FlutterActivity() {
+open class MainActivity : FlutterActivity() {
     private lateinit var mediaStoreChangeStreamHandler: MediaStoreChangeStreamHandler
     private lateinit var settingsChangeStreamHandler: SettingsChangeStreamHandler
     private lateinit var intentStreamHandler: IntentStreamHandler
@@ -203,7 +203,7 @@ class MainActivity : FlutterActivity() {
         }
     }
 
-    private fun extractIntentData(intent: Intent?): MutableMap<String, Any?> {
+    open fun extractIntentData(intent: Intent?): MutableMap<String, Any?> {
         when (intent?.action) {
             Intent.ACTION_MAIN -> {
                 intent.getStringExtra(SHORTCUT_KEY_PAGE)?.let { page ->
@@ -338,6 +338,8 @@ class MainActivity : FlutterActivity() {
         const val INTENT_DATA_KEY_QUERY = "query"
 
         const val INTENT_ACTION_PICK = "pick"
+        const val INTENT_ACTION_SCREEN_SAVER = "screen_saver"
+        const val INTENT_ACTION_SCREEN_SAVER_SETTINGS = "screen_saver_settings"
         const val INTENT_ACTION_SEARCH = "search"
         const val INTENT_ACTION_SET_WALLPAPER = "set_wallpaper"
         const val INTENT_ACTION_VIEW = "view"

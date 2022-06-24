@@ -24,6 +24,7 @@ class MediaStoreSource extends CollectionSource {
     AnalysisController? analysisController,
     String? directory,
     bool loadTopEntriesFirst = false,
+    bool canAnalyze = true,
   }) async {
     if (_initState == SourceInitializationState.none) {
       await _loadEssentials();
@@ -35,6 +36,7 @@ class MediaStoreSource extends CollectionSource {
       analysisController: analysisController,
       directory: directory,
       loadTopEntriesFirst: loadTopEntriesFirst,
+      canAnalyze: canAnalyze,
     ));
   }
 
@@ -63,6 +65,7 @@ class MediaStoreSource extends CollectionSource {
     AnalysisController? analysisController,
     String? directory,
     required bool loadTopEntriesFirst,
+    required bool canAnalyze,
   }) async {
     debugPrint('$runtimeType refresh start');
     final stopwatch = Stopwatch()..start();
@@ -182,7 +185,11 @@ class MediaStoreSource extends CollectionSource {
         if (analysisIds != null) {
           analysisEntries = visibleEntries.where((entry) => analysisIds.contains(entry.id)).toSet();
         }
-        await analyze(analysisController, entries: analysisEntries);
+        if (canAnalyze) {
+          await analyze(analysisController, entries: analysisEntries);
+        } else {
+          stateNotifier.value = SourceState.ready;
+        }
 
         // the home page may not reflect the current derived filters
         // as the initial addition of entries is silent,

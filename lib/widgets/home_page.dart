@@ -21,7 +21,9 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/search/route.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
+import 'package:aves/widgets/settings/screen_saver_settings_page.dart';
 import 'package:aves/widgets/viewer/entry_viewer_page.dart';
+import 'package:aves/widgets/viewer/screen_saver_page.dart';
 import 'package:aves/widgets/wallpaper_page.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -49,6 +51,8 @@ class _HomePageState extends State<HomePage> {
   Set<String>? _shortcutFilters;
 
   static const actionPick = 'pick';
+  static const actionScreenSaver = 'screen_saver';
+  static const actionScreenSaverSettings = 'screen_saver_settings';
   static const actionSearch = 'search';
   static const actionSetWallpaper = 'set_wallpaper';
   static const actionView = 'view';
@@ -71,20 +75,21 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _setup() async {
     final stopwatch = Stopwatch()..start();
-    // do not check whether permission was granted,
-    // as some app stores hide in some countries
-    // apps that force quit on permission denial
-    await [
-      Permission.storage,
-      // to access media with unredacted metadata with scoped storage (Android 10+)
-      Permission.accessMediaLocation,
-    ].request();
+    if (await windowService.isActivity()) {
+      // do not check whether permission was granted, because some app stores
+      // hide in some countries apps that force quit on permission denial
+      await [
+        Permission.storage,
+        // to access media with unredacted metadata with scoped storage (Android 10+)
+        Permission.accessMediaLocation,
+      ].request();
+    }
 
     var appMode = AppMode.main;
     final intentData = widget.intentData ?? await ViewerService.getIntentData();
     final intentAction = intentData['action'];
 
-    if (intentAction != actionSetWallpaper) {
+    if (!{actionScreenSaver, actionSetWallpaper}.contains(intentAction)) {
       await androidFileUtils.init();
       if (settings.isInstalledAppAccessAllowed) {
         unawaited(androidFileUtils.initAppNames());
@@ -110,6 +115,13 @@ class _HomePageState extends State<HomePage> {
           final multiple = intentData['allowMultiple'] ?? false;
           debugPrint('pick mimeType=$pickMimeTypes multiple=$multiple');
           appMode = multiple ? AppMode.pickMultipleMediaExternal : AppMode.pickSingleMediaExternal;
+          break;
+        case actionScreenSaver:
+          appMode = AppMode.screenSaver;
+          _shortcutRouteName = ScreenSaverPage.routeName;
+          break;
+        case actionScreenSaverSettings:
+          _shortcutRouteName = ScreenSaverSettingsPage.routeName;
           break;
         case actionSearch:
           _shortcutRouteName = CollectionSearchDelegate.pageRouteName;
@@ -145,6 +157,12 @@ class _HomePageState extends State<HomePage> {
         final source = context.read<CollectionSource>();
         await source.init(
           loadTopEntriesFirst: settings.homePage == HomePageSetting.collection,
+        );
+        break;
+      case AppMode.screenSaver:
+        final source = context.read<CollectionSource>();
+        await source.init(
+          canAnalyze: false,
         );
         break;
       case AppMode.view:
@@ -271,8 +289,20 @@ class _HomePageState extends State<HomePage> {
     switch (routeName) {
       case AlbumListPage.routeName:
         return DirectMaterialPageRoute(
-          settings: const RouteSettings(name: AlbumListPage.routeName),
-          builder: (_) => const AlbumListPage(),
+          settings: RouteSettings(name: routeName),
+          builder: (context) => const AlbumListPage(),
+        );
+      case ScreenSaverPage.routeName:
+        return DirectMaterialPageRoute(
+          settings: RouteSettings(name: routeName),
+          builder: (context) => ScreenSaverPage(
+            source: source,
+          ),
+        );
+      case ScreenSaverSettingsPage.routeName:
+        return DirectMaterialPageRoute(
+          settings: RouteSettings(name: routeName),
+          builder: (context) => const ScreenSaverSettingsPage(),
         );
       case CollectionSearchDelegate.pageRouteName:
         return SearchPageRoute(
@@ -286,7 +316,7 @@ class _HomePageState extends State<HomePage> {
       case CollectionPage.routeName:
       default:
         return DirectMaterialPageRoute(
-          settings: const RouteSettings(name: CollectionPage.routeName),
+          settings: RouteSettings(name: routeName),
           builder: (context) => CollectionPage(
             source: source,
             filters: filters,

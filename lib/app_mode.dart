@@ -4,6 +4,7 @@ enum AppMode {
   pickMultipleMediaExternal,
   pickMediaInternal,
   pickFilterInternal,
+  screenSaver,
   setWallpaper,
   slideshow,
   view,

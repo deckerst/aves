@@ -1,34 +1,42 @@
 {
   "de": [
-    "filterOnThisDayLabel"
+    "filterOnThisDayLabel",
+    "settingsScreenSaverTitle"
   ],
 
   "es": [
-    "filterOnThisDayLabel"
+    "filterOnThisDayLabel",
+    "settingsScreenSaverTitle"
   ],
 
   "fr": [
-    "filterOnThisDayLabel"
+    "filterOnThisDayLabel",
+    "settingsScreenSaverTitle"
   ],
 
   "id": [
-    "filterOnThisDayLabel"
+    "filterOnThisDayLabel",
+    "settingsScreenSaverTitle"
   ],
 
   "it": [
-    "filterOnThisDayLabel"
+    "filterOnThisDayLabel",
+    "settingsScreenSaverTitle"
   ],
 
   "ja": [
-    "filterOnThisDayLabel"
+    "filterOnThisDayLabel",
+    "settingsScreenSaverTitle"
   ],
 
   "ko": [
-    "filterOnThisDayLabel"
+    "filterOnThisDayLabel",
+    "settingsScreenSaverTitle"
   ],
 
   "pt": [
-    "filterOnThisDayLabel"
+    "filterOnThisDayLabel",
+    "settingsScreenSaverTitle"
   ],
 
   "ru": [
@@ -58,6 +66,7 @@
     "settingsSlideshowVideoPlaybackTile",
     "settingsSlideshowVideoPlaybackTitle",
     "settingsThemeEnableDynamicColor",
+    "settingsScreenSaverTitle",
     "viewerSetWallpaperButtonLabel"
   ],
 
@@ -86,10 +95,12 @@
     "settingsSlideshowIntervalTitle",
     "settingsSlideshowVideoPlaybackTile",
     "settingsSlideshowVideoPlaybackTitle",
+    "settingsScreenSaverTitle",
     "viewerSetWallpaperButtonLabel"
   ],
 
   "zh": [
-    "filterOnThisDayLabel"
+    "filterOnThisDayLabel",
+    "settingsScreenSaverTitle"
   ]
 }
