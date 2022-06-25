@@ -1,8 +1,8 @@
 package deckers.thibault.aves
 
 import android.service.dreams.DreamService
+import android.util.Log
 import android.view.View
-import android.view.ViewTreeObserver
 import app.loup.streams_channel.StreamsChannel
 import deckers.thibault.aves.channel.calls.AccessibilityHandler
 import deckers.thibault.aves.channel.calls.DeviceHandler
@@ -14,40 +14,89 @@ import deckers.thibault.aves.channel.streams.ImageByteStreamHandler
 import deckers.thibault.aves.channel.streams.MediaStoreStreamHandler
 import deckers.thibault.aves.utils.LogUtils
 import io.flutter.FlutterInjector
-import io.flutter.Log
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.android.FlutterSurfaceView
 import io.flutter.embedding.android.FlutterView
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.engine.dart.DartExecutor.DartEntrypoint
 import io.flutter.embedding.engine.plugins.util.GeneratedPluginRegister
-import io.flutter.embedding.engine.renderer.FlutterUiDisplayListener
 import io.flutter.plugin.common.MethodChannel
 
 // for FlutterView-level integration, cf https://docs.flutter.dev/development/add-to-app/android/add-flutter-view
 class ScreenSaverService : DreamService() {
     private var flutterEngine: FlutterEngine? = null
     private var flutterView: FlutterView? = null
-    private var activePreDrawListener: ViewTreeObserver.OnPreDrawListener? = null
-    private var isFlutterUiDisplayed = false
-    private var isFirstFrameRendered = false
-    private var isAttached = false
 
-    private val flutterUiDisplayListener: FlutterUiDisplayListener = object : FlutterUiDisplayListener {
-        override fun onFlutterUiDisplayed() {
-            isFlutterUiDisplayed = true
-            isFirstFrameRendered = true
+    override fun onAttachedToWindow() {
+        Log.i(LOG_TAG, "onAttachedToWindow")
+        super.onAttachedToWindow()
+        initDream()
+        createEngine()
+        setContentView(createView())
+    }
+
+    override fun onDreamingStarted() {
+        Log.i(LOG_TAG, "onDreamingStarted")
+        super.onDreamingStarted()
+        onStart()
+    }
+
+    override fun onDreamingStopped() {
+        Log.i(LOG_TAG, "onDreamingStopped")
+        release()
+        super.onDreamingStopped()
+    }
+
+    override fun onDetachedFromWindow() {
+        Log.i(LOG_TAG, "onDetachedFromWindow")
+        destroyView()
+        super.onDetachedFromWindow()
+    }
+
+    private fun initDream() {
+        isInteractive = false
+        isFullscreen = true
+    }
+
+    private fun createEngine() {
+        flutterEngine = flutterEngine ?: FlutterEngine(this, null, false)
+        GeneratedPluginRegister.registerGeneratedPlugins(flutterEngine!!)
+        initChannels()
+    }
+
+    private fun createView(): View {
+        flutterView = FlutterView(this, FlutterSurfaceView(this)).apply {
+            id = FlutterActivity.FLUTTER_VIEW_ID
+            attachToFlutterEngine(flutterEngine!!)
         }
+        return flutterView!!
+    }
 
-        override fun onFlutterUiNoLongerDisplayed() {
-            isFlutterUiDisplayed = false
+    private fun destroyView() {
+        flutterEngine?.lifecycleChannel?.appIsDetached()
+        flutterView?.detachFromFlutterEngine()
+    }
+
+    private fun release() {
+        destroyView()
+        flutterEngine = null
+        flutterView = null
+    }
+
+    private fun onStart() {
+        flutterEngine!!.apply {
+            if (!dartExecutor.isExecutingDart) {
+                navigationChannel.setInitialRoute(DEFAULT_INITIAL_ROUTE)
+                val appBundlePathOverride = FlutterInjector.instance().flutterLoader().findAppBundlePath()
+                val entrypoint = DartEntrypoint(appBundlePathOverride, DEFAULT_DART_ENTRYPOINT)
+                dartExecutor.executeDartEntrypoint(entrypoint)
+            }
+            lifecycleChannel.appIsResumed()
         }
     }
 
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
-        onAttach()
 
+    private fun initChannels() {
         val messenger = flutterEngine!!.dartExecutor.binaryMessenger
 
         // dart -> platform -> dart
@@ -71,123 +120,14 @@ class ScreenSaverService : DreamService() {
             when (call.method) {
                 "getIntentData" -> {
                     result.success(intentDataMap)
-                    intentDataMap.clear()
                 }
             }
         }
-
-        // dream setup
-        isInteractive = false
-        isFullscreen = true
-        setContentView(createFlutterView())
-    }
-
-    override fun onDreamingStarted() {
-        super.onDreamingStarted()
-        onStart()
-    }
-
-    override fun onDreamingStopped() {
-        onDestroyView()
-        super.onDreamingStopped()
-    }
-
-    override fun onDetachedFromWindow() {
-        release()
-        super.onDetachedFromWindow()
-    }
-
-    // from `FlutterActivityAndFragmentDelegate`
-
-    private fun createFlutterView(): View {
-        Log.d(LOG_TAG, "Creating FlutterView.")
-        val flutterSurfaceView = FlutterSurfaceView(this)
-        val pFlutterView = FlutterView(this, flutterSurfaceView)
-        flutterView = pFlutterView
-
-        // Add listener to be notified when Flutter renders its first frame.
-        pFlutterView.addOnFirstFrameRenderedListener(flutterUiDisplayListener)
-        Log.d(LOG_TAG, "Attaching FlutterEngine to FlutterView.")
-        pFlutterView.attachToFlutterEngine(flutterEngine!!)
-        pFlutterView.id = FlutterActivity.FLUTTER_VIEW_ID
-        delayFirstAndroidViewDraw(pFlutterView)
-        return pFlutterView
-    }
-
-    private fun release() {
-        flutterEngine = null
-        flutterView = null
-    }
-
-    private fun onAttach() {
-        if (flutterEngine == null) {
-            Log.d(LOG_TAG, "Setting up FlutterEngine.")
-            flutterEngine = FlutterEngine(
-                this,
-                null,
-                false,
-            )
-        }
-        GeneratedPluginRegister.registerGeneratedPlugins(flutterEngine!!)
-        isAttached = true
-    }
-
-    private fun onStart() {
-        Log.d(LOG_TAG, "onStart()")
-        doInitialFlutterViewRun()
-        flutterView!!.visibility = View.VISIBLE
-        flutterEngine!!.lifecycleChannel.appIsResumed()
-    }
-
-    private fun onDestroyView() {
-        Log.v(LOG_TAG, "onDestroyView()")
-        flutterView ?: return
-
-        val pFlutterView = flutterView!!
-        if (activePreDrawListener != null) {
-            pFlutterView.viewTreeObserver.removeOnPreDrawListener(activePreDrawListener)
-            activePreDrawListener = null
-        }
-        pFlutterView.detachFromFlutterEngine()
-        pFlutterView.removeOnFirstFrameRenderedListener(flutterUiDisplayListener)
-
-        flutterEngine!!.lifecycleChannel.appIsInactive()
-    }
-
-    private fun delayFirstAndroidViewDraw(flutterView: FlutterView) {
-        if (activePreDrawListener != null) {
-            flutterView.viewTreeObserver.removeOnPreDrawListener(activePreDrawListener)
-        }
-        activePreDrawListener = object : ViewTreeObserver.OnPreDrawListener {
-            override fun onPreDraw(): Boolean {
-                if (isFlutterUiDisplayed && activePreDrawListener != null) {
-                    flutterView.viewTreeObserver.removeOnPreDrawListener(this)
-                    activePreDrawListener = null
-                }
-                return isFlutterUiDisplayed
-            }
-        }
-        flutterView.viewTreeObserver.addOnPreDrawListener(activePreDrawListener)
-    }
-
-    private fun doInitialFlutterViewRun() {
-        val pFlutterEngine = flutterEngine!!
-        if (pFlutterEngine.dartExecutor.isExecutingDart) {
-            // No warning is logged because this situation will happen on every config
-            // change if the developer does not choose to retain the Fragment instance.
-            // So this is expected behavior in many cases.
-            return
-        }
-
-        pFlutterEngine.navigationChannel.setInitialRoute(DEFAULT_INITIAL_ROUTE)
-        val appBundlePathOverride = FlutterInjector.instance().flutterLoader().findAppBundlePath()
-        val entrypoint = DartEntrypoint(appBundlePathOverride, DEFAULT_DART_ENTRYPOINT)
-        pFlutterEngine.dartExecutor.executeDartEntrypoint(entrypoint)
     }
 
     companion object {
         private val LOG_TAG = LogUtils.createTag<ScreenSaverService>()
-        private val intentDataMap: MutableMap<String, Any?> = hashMapOf(
+        private val intentDataMap: Map<String, Any?> = hashMapOf(
             MainActivity.INTENT_DATA_KEY_ACTION to MainActivity.INTENT_ACTION_SCREEN_SAVER,
         )
 

@@ -177,6 +177,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
       case AppLifecycleState.inactive:
       case AppLifecycleState.paused:
       case AppLifecycleState.detached:
+        viewerController.autopilot = false;
         pauseVideoControllers();
         break;
       case AppLifecycleState.resumed:
