@@ -2,12 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## <a id="unreleased"></a>[Unreleased]
+
 ### Added
 
 - Search: `on this day` filter
 - Stats: histogram and date filters
 
-## <a id="unreleased"></a>[Unreleased]
+### Changed
+
+- upgraded Flutter to stable v3.0.3
 
 ## <a id="v1.6.9"></a>[v1.6.9] - 2022-06-18
 
