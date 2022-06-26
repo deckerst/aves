@@ -116,7 +116,7 @@ class ScreenSaverService : DreamService() {
 
         // intent handling
         // detail fetch: dart -> platform
-        MethodChannel(messenger, WallpaperActivity.VIEWER_CHANNEL).setMethodCallHandler { call, result ->
+        MethodChannel(messenger, MainActivity.INTENT_CHANNEL).setMethodCallHandler { call, result ->
             when (call.method) {
                 "getIntentData" -> {
                     result.success(intentDataMap)

@@ -83,7 +83,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   // the list itself needs to be reassigned
   List<NavigatorObserver> _navigatorObservers = [AvesApp.pageRouteObserver];
   final EventChannel _mediaStoreChangeChannel = const OptionalEventChannel('deckers.thibault/aves/media_store_change');
-  final EventChannel _newIntentChannel = const OptionalEventChannel('deckers.thibault/aves/intent');
+  final EventChannel _newIntentChannel = const OptionalEventChannel('deckers.thibault/aves/new_intent_stream');
   final EventChannel _analysisCompletionChannel = const OptionalEventChannel('deckers.thibault/aves/analysis_events');
   final EventChannel _errorChannel = const OptionalEventChannel('deckers.thibault/aves/error');
 
@@ -228,6 +228,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
           case AppMode.pickMultipleMediaExternal:
             _saveTopEntries();
             break;
+          case AppMode.pickCollectionFiltersExternal:
           case AppMode.pickMediaInternal:
           case AppMode.pickFilterInternal:
           case AppMode.screenSaver:

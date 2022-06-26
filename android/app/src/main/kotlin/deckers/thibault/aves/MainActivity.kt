@@ -84,7 +84,7 @@ open class MainActivity : FlutterActivity() {
         StreamsChannel(messenger, MediaStoreStreamHandler.CHANNEL).setStreamHandlerFactory { args -> MediaStoreStreamHandler(this, args) }
         // - need Activity
         StreamsChannel(messenger, ImageOpStreamHandler.CHANNEL).setStreamHandlerFactory { args -> ImageOpStreamHandler(this, args) }
-        StreamsChannel(messenger, StorageAccessStreamHandler.CHANNEL).setStreamHandlerFactory { args -> StorageAccessStreamHandler(this, args) }
+        StreamsChannel(messenger, ActivityResultStreamHandler.CHANNEL).setStreamHandlerFactory { args -> ActivityResultStreamHandler(this, args) }
 
         // change monitoring: platform -> dart
         mediaStoreChangeStreamHandler = MediaStoreChangeStreamHandler(this).apply {
@@ -99,15 +99,16 @@ open class MainActivity : FlutterActivity() {
         intentStreamHandler = IntentStreamHandler().apply {
             EventChannel(messenger, IntentStreamHandler.CHANNEL).setStreamHandler(this)
         }
-        // detail fetch: dart -> platform
+        // intent detail & result: dart -> platform
         intentDataMap = extractIntentData(intent)
-        MethodChannel(messenger, VIEWER_CHANNEL).setMethodCallHandler { call, result ->
+        MethodChannel(messenger, INTENT_CHANNEL).setMethodCallHandler { call, result ->
             when (call.method) {
                 "getIntentData" -> {
                     result.success(intentDataMap)
                     intentDataMap.clear()
                 }
-                "pick" -> pick(call)
+                "submitPickedItems" -> submitPickedItems(call)
+                "submitPickedCollectionFilters" -> submitPickedCollectionFilters(call)
             }
         }
 
@@ -162,27 +163,33 @@ open class MainActivity : FlutterActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
-            DOCUMENT_TREE_ACCESS_REQUEST -> onDocumentTreeAccessResult(data, resultCode, requestCode)
+            DOCUMENT_TREE_ACCESS_REQUEST -> onDocumentTreeAccessResult(requestCode, resultCode, data)
             DELETE_SINGLE_PERMISSION_REQUEST,
             MEDIA_WRITE_BULK_PERMISSION_REQUEST -> onScopedStoragePermissionResult(resultCode)
             CREATE_FILE_REQUEST,
             OPEN_FILE_REQUEST -> onStorageAccessResult(requestCode, data?.data)
+            PICK_COLLECTION_FILTERS_REQUEST -> onCollectionFiltersPickResult(resultCode, data)
         }
     }
 
-    @SuppressLint("WrongConstant", "ObsoleteSdkInt")
-    private fun onDocumentTreeAccessResult(data: Intent?, resultCode: Int, requestCode: Int) {
-        val treeUri = data?.data
+    private fun onCollectionFiltersPickResult(resultCode: Int, intent: Intent?) {
+        val filters = if (resultCode == RESULT_OK) extractFiltersFromIntent(intent) else null
+        pendingCollectionFilterPickHandler?.let { it(filters) }
+    }
+
+    private fun onDocumentTreeAccessResult(requestCode: Int, resultCode: Int, intent: Intent?) {
+        val treeUri = intent?.data
         if (resultCode != RESULT_OK || treeUri == null) {
             onStorageAccessResult(requestCode, null)
             return
         }
 
+        @SuppressLint("WrongConstant", "ObsoleteSdkInt")
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            val canPersist = (data.flags and Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION) != 0
+            val canPersist = (intent.flags and Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION) != 0
             if (canPersist) {
                 // save access permissions across reboots
-                val takeFlags = (data.flags
+                val takeFlags = (intent.flags
                         and (Intent.FLAG_GRANT_READ_URI_PERMISSION
                         or Intent.FLAG_GRANT_WRITE_URI_PERMISSION))
                 try {
@@ -206,15 +213,8 @@ open class MainActivity : FlutterActivity() {
     open fun extractIntentData(intent: Intent?): MutableMap<String, Any?> {
         when (intent?.action) {
             Intent.ACTION_MAIN -> {
-                intent.getStringExtra(SHORTCUT_KEY_PAGE)?.let { page ->
-                    var filters = intent.getStringArrayExtra(SHORTCUT_KEY_FILTERS_ARRAY)?.toList()
-                    if (filters == null) {
-                        // fallback for shortcuts created on API < 26
-                        val filterString = intent.getStringExtra(SHORTCUT_KEY_FILTERS_STRING)
-                        if (filterString != null) {
-                            filters = filterString.split(EXTRA_STRING_ARRAY_SEPARATOR)
-                        }
-                    }
+                intent.getStringExtra(EXTRA_KEY_PAGE)?.let { page ->
+                    val filters = extractFiltersFromIntent(intent)
                     return hashMapOf(
                         INTENT_DATA_KEY_PAGE to page,
                         INTENT_DATA_KEY_FILTERS to filters,
@@ -234,7 +234,7 @@ open class MainActivity : FlutterActivity() {
             }
             Intent.ACTION_GET_CONTENT, Intent.ACTION_PICK -> {
                 return hashMapOf(
-                    INTENT_DATA_KEY_ACTION to INTENT_ACTION_PICK,
+                    INTENT_DATA_KEY_ACTION to INTENT_ACTION_PICK_ITEMS,
                     INTENT_DATA_KEY_MIME_TYPE to intent.type,
                     INTENT_DATA_KEY_ALLOW_MULTIPLE to (intent.extras?.getBoolean(Intent.EXTRA_ALLOW_MULTIPLE) ?: false),
                 )
@@ -250,6 +250,13 @@ open class MainActivity : FlutterActivity() {
                     INTENT_DATA_KEY_QUERY to intent.getStringExtra(SearchManager.QUERY),
                 )
             }
+            INTENT_ACTION_PICK_COLLECTION_FILTERS -> {
+                val initialFilters = extractFiltersFromIntent(intent)
+                return hashMapOf(
+                    INTENT_DATA_KEY_ACTION to INTENT_ACTION_PICK_COLLECTION_FILTERS,
+                    INTENT_DATA_KEY_FILTERS to initialFilters
+                )
+            }
             Intent.ACTION_RUN -> {
                 // flutter run
             }
@@ -260,7 +267,22 @@ open class MainActivity : FlutterActivity() {
         return HashMap()
     }
 
-    private fun pick(call: MethodCall) {
+    private fun extractFiltersFromIntent(intent: Intent?): List<String>? {
+        intent ?: return null
+
+        val filters = intent.getStringArrayExtra(EXTRA_KEY_FILTERS_ARRAY)?.toList()
+        if (filters != null) return filters
+
+        // fallback for shortcuts created on API < 26
+        val filterString = intent.getStringExtra(EXTRA_KEY_FILTERS_STRING)
+        if (filterString != null) {
+            return filterString.split(EXTRA_STRING_ARRAY_SEPARATOR)
+        }
+
+        return null
+    }
+
+    private fun submitPickedItems(call: MethodCall) {
         val pickedUris = call.argument<List<String>>("uris")
         if (pickedUris != null && pickedUris.isNotEmpty()) {
             val toUri = { uriString: String -> AppAdapterHandler.getShareableUri(context, Uri.parse(uriString)) }
@@ -284,6 +306,19 @@ open class MainActivity : FlutterActivity() {
         finish()
     }
 
+    private fun submitPickedCollectionFilters(call: MethodCall) {
+        val filters = call.argument<List<String>>("filters")
+        if (filters != null) {
+            val intent = Intent()
+                .putExtra(EXTRA_KEY_FILTERS_ARRAY, filters.toTypedArray())
+                .putExtra(EXTRA_KEY_FILTERS_STRING, filters.joinToString(EXTRA_STRING_ARRAY_SEPARATOR))
+            setResult(RESULT_OK, intent)
+        } else {
+            setResult(RESULT_CANCELED)
+        }
+        finish()
+    }
+
     @RequiresApi(Build.VERSION_CODES.N_MR1)
     private fun setupShortcuts() {
         // do not use 'route' as extra key, as the Flutter framework acts on it
@@ -297,7 +332,7 @@ open class MainActivity : FlutterActivity() {
             .setIcon(IconCompat.createWithResource(this, if (supportAdaptiveIcon) R.mipmap.ic_shortcut_search else R.drawable.ic_shortcut_search))
             .setIntent(
                 Intent(Intent.ACTION_MAIN, null, this, MainActivity::class.java)
-                    .putExtra(SHORTCUT_KEY_PAGE, "/search")
+                    .putExtra(EXTRA_KEY_PAGE, "/search")
             )
             .build()
 
@@ -306,7 +341,7 @@ open class MainActivity : FlutterActivity() {
             .setIcon(IconCompat.createWithResource(this, if (supportAdaptiveIcon) R.mipmap.ic_shortcut_movie else R.drawable.ic_shortcut_movie))
             .setIntent(
                 Intent(Intent.ACTION_MAIN, null, this, MainActivity::class.java)
-                    .putExtra(SHORTCUT_KEY_PAGE, "/collection")
+                    .putExtra(EXTRA_KEY_PAGE, "/collection")
                     .putExtra("filters", arrayOf("{\"type\":\"mime\",\"mime\":\"video/*\"}"))
             )
             .build()
@@ -320,7 +355,7 @@ open class MainActivity : FlutterActivity() {
 
     companion object {
         private val LOG_TAG = LogUtils.createTag<MainActivity>()
-        const val VIEWER_CHANNEL = "deckers.thibault/aves/viewer"
+        const val INTENT_CHANNEL = "deckers.thibault/aves/intent"
         const val EXTRA_STRING_ARRAY_SEPARATOR = "###"
         const val DOCUMENT_TREE_ACCESS_REQUEST = 1
         const val OPEN_FROM_ANALYSIS_SERVICE = 2
@@ -328,6 +363,7 @@ open class MainActivity : FlutterActivity() {
         const val OPEN_FILE_REQUEST = 4
         const val DELETE_SINGLE_PERMISSION_REQUEST = 5
         const val MEDIA_WRITE_BULK_PERMISSION_REQUEST = 6
+        const val PICK_COLLECTION_FILTERS_REQUEST = 7
 
         const val INTENT_DATA_KEY_ACTION = "action"
         const val INTENT_DATA_KEY_FILTERS = "filters"
@@ -337,21 +373,24 @@ open class MainActivity : FlutterActivity() {
         const val INTENT_DATA_KEY_URI = "uri"
         const val INTENT_DATA_KEY_QUERY = "query"
 
-        const val INTENT_ACTION_PICK = "pick"
+        const val INTENT_ACTION_PICK_ITEMS = "pick_items"
+        const val INTENT_ACTION_PICK_COLLECTION_FILTERS = "pick_collection_filters"
         const val INTENT_ACTION_SCREEN_SAVER = "screen_saver"
         const val INTENT_ACTION_SCREEN_SAVER_SETTINGS = "screen_saver_settings"
         const val INTENT_ACTION_SEARCH = "search"
         const val INTENT_ACTION_SET_WALLPAPER = "set_wallpaper"
         const val INTENT_ACTION_VIEW = "view"
 
-        const val SHORTCUT_KEY_PAGE = "page"
-        const val SHORTCUT_KEY_FILTERS_ARRAY = "filters"
-        const val SHORTCUT_KEY_FILTERS_STRING = "filtersString"
+        const val EXTRA_KEY_PAGE = "page"
+        const val EXTRA_KEY_FILTERS_ARRAY = "filters"
+        const val EXTRA_KEY_FILTERS_STRING = "filtersString"
 
         // request code to pending runnable
         val pendingStorageAccessResultHandlers = ConcurrentHashMap<Int, PendingStorageAccessResultHandler>()
 
         var pendingScopedStoragePermissionCompleter: CompletableFuture<Boolean>? = null
+
+        var pendingCollectionFilterPickHandler: ((filters: List<String>?) -> Unit)? = null
 
         private fun onStorageAccessResult(requestCode: Int, uri: Uri?) {
             Log.i(LOG_TAG, "onStorageAccessResult with requestCode=$requestCode, uri=$uri")

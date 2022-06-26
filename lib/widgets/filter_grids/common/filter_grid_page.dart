@@ -74,8 +74,10 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
   Widget build(BuildContext context) {
     return MediaQueryDataProvider(
       child: Selector<Settings, bool>(
-        selector: (context, s) => s.showBottomNavigationBar,
-        builder: (context, showBottomNavigationBar, child) {
+        selector: (context, s) => s.enableBottomNavigationBar,
+        builder: (context, enableBottomNavigationBar, child) {
+          final canNavigate = context.select<ValueNotifier<AppMode>, bool>((v) => v.value.canNavigate);
+          final showBottomNavigationBar = canNavigate && enableBottomNavigationBar;
           return NotificationListener<DraggableScrollBarNotification>(
             onNotification: (notification) {
               _draggableScrollBarEventStreamController.add(notification.event);
@@ -524,8 +526,10 @@ class _FilterScrollView<T extends CollectionFilter> extends StatelessWidget {
           selector: (context, mq) => mq.effectiveBottomPadding,
           builder: (context, mqPaddingBottom, child) {
             return Selector<Settings, bool>(
-              selector: (context, s) => s.showBottomNavigationBar,
-              builder: (context, showBottomNavigationBar, child) {
+              selector: (context, s) => s.enableBottomNavigationBar,
+              builder: (context, enableBottomNavigationBar, child) {
+                final canNavigate = context.select<ValueNotifier<AppMode>, bool>((v) => v.value.canNavigate);
+                final showBottomNavigationBar = canNavigate && enableBottomNavigationBar;
                 final navBarHeight = showBottomNavigationBar ? AppBottomNavBar.height : 0;
                 return DraggableScrollbar(
                   backgroundColor: Colors.white,

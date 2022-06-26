@@ -4,11 +4,11 @@ import 'package:aves/services/common/services.dart';
 import 'package:flutter/services.dart';
 
 class AndroidDebugService {
-  static const platform = MethodChannel('deckers.thibault/aves/debug');
+  static const _platform = MethodChannel('deckers.thibault/aves/debug');
 
   static Future<void> crash() async {
     try {
-      await platform.invokeMethod('crash');
+      await _platform.invokeMethod('crash');
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
     }
@@ -16,7 +16,7 @@ class AndroidDebugService {
 
   static Future<void> exception() async {
     try {
-      await platform.invokeMethod('exception');
+      await _platform.invokeMethod('exception');
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
     }
@@ -24,7 +24,7 @@ class AndroidDebugService {
 
   static Future<void> safeException() async {
     try {
-      await platform.invokeMethod('safeException');
+      await _platform.invokeMethod('safeException');
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
     }
@@ -32,7 +32,7 @@ class AndroidDebugService {
 
   static Future<void> exceptionInCoroutine() async {
     try {
-      await platform.invokeMethod('exceptionInCoroutine');
+      await _platform.invokeMethod('exceptionInCoroutine');
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
     }
@@ -40,7 +40,7 @@ class AndroidDebugService {
 
   static Future<void> safeExceptionInCoroutine() async {
     try {
-      await platform.invokeMethod('safeExceptionInCoroutine');
+      await _platform.invokeMethod('safeExceptionInCoroutine');
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
     }
@@ -48,7 +48,7 @@ class AndroidDebugService {
 
   static Future<Map> getContextDirs() async {
     try {
-      final result = await platform.invokeMethod('getContextDirs');
+      final result = await _platform.invokeMethod('getContextDirs');
       if (result != null) return result as Map;
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
@@ -58,7 +58,7 @@ class AndroidDebugService {
 
   static Future<List<Map>> getCodecs() async {
     try {
-      final result = await platform.invokeMethod('getCodecs');
+      final result = await _platform.invokeMethod('getCodecs');
       if (result != null) return (result as List).cast<Map>();
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
@@ -68,7 +68,7 @@ class AndroidDebugService {
 
   static Future<Map> getEnv() async {
     try {
-      final result = await platform.invokeMethod('getEnv');
+      final result = await _platform.invokeMethod('getEnv');
       if (result != null) return result as Map;
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
@@ -79,7 +79,7 @@ class AndroidDebugService {
   static Future<Map> getBitmapFactoryInfo(AvesEntry entry) async {
     try {
       // returns map with all data available when decoding image bounds with `BitmapFactory`
-      final result = await platform.invokeMethod('getBitmapFactoryInfo', <String, dynamic>{
+      final result = await _platform.invokeMethod('getBitmapFactoryInfo', <String, dynamic>{
         'uri': entry.uri,
       });
       if (result != null) return result as Map;
@@ -92,7 +92,7 @@ class AndroidDebugService {
   static Future<Map> getContentResolverMetadata(AvesEntry entry) async {
     try {
       // returns map with all data available from the content resolver
-      final result = await platform.invokeMethod('getContentResolverMetadata', <String, dynamic>{
+      final result = await _platform.invokeMethod('getContentResolverMetadata', <String, dynamic>{
         'mimeType': entry.mimeType,
         'uri': entry.uri,
       });
@@ -106,7 +106,7 @@ class AndroidDebugService {
   static Future<Map> getExifInterfaceMetadata(AvesEntry entry) async {
     try {
       // returns map with all data available from the `ExifInterface` library
-      final result = await platform.invokeMethod('getExifInterfaceMetadata', <String, dynamic>{
+      final result = await _platform.invokeMethod('getExifInterfaceMetadata', <String, dynamic>{
         'mimeType': entry.mimeType,
         'uri': entry.uri,
         'sizeBytes': entry.sizeBytes,
@@ -121,7 +121,7 @@ class AndroidDebugService {
   static Future<Map> getMediaMetadataRetrieverMetadata(AvesEntry entry) async {
     try {
       // returns map with all data available from `MediaMetadataRetriever`
-      final result = await platform.invokeMethod('getMediaMetadataRetrieverMetadata', <String, dynamic>{
+      final result = await _platform.invokeMethod('getMediaMetadataRetrieverMetadata', <String, dynamic>{
         'uri': entry.uri,
       });
       if (result != null) return result as Map;
@@ -134,7 +134,7 @@ class AndroidDebugService {
   static Future<Map> getMetadataExtractorSummary(AvesEntry entry) async {
     try {
       // returns map with the MIME type and tag count for each directory found by `metadata-extractor`
-      final result = await platform.invokeMethod('getMetadataExtractorSummary', <String, dynamic>{
+      final result = await _platform.invokeMethod('getMetadataExtractorSummary', <String, dynamic>{
         'mimeType': entry.mimeType,
         'uri': entry.uri,
         'sizeBytes': entry.sizeBytes,
@@ -149,7 +149,7 @@ class AndroidDebugService {
   static Future<Map> getPixyMetadata(AvesEntry entry) async {
     try {
       // returns map with all data available from the `PixyMeta` library
-      final result = await platform.invokeMethod('getPixyMetadata', <String, dynamic>{
+      final result = await _platform.invokeMethod('getPixyMetadata', <String, dynamic>{
         'mimeType': entry.mimeType,
         'uri': entry.uri,
       });
@@ -164,7 +164,7 @@ class AndroidDebugService {
     if (entry.mimeType != MimeTypes.tiff) return {};
 
     try {
-      final result = await platform.invokeMethod('getTiffStructure', <String, dynamic>{
+      final result = await _platform.invokeMethod('getTiffStructure', <String, dynamic>{
         'uri': entry.uri,
       });
       if (result != null) return result as Map;

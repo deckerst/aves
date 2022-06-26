@@ -20,9 +20,9 @@ import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.request.RequestOptions
 import deckers.thibault.aves.MainActivity
 import deckers.thibault.aves.MainActivity.Companion.EXTRA_STRING_ARRAY_SEPARATOR
-import deckers.thibault.aves.MainActivity.Companion.SHORTCUT_KEY_FILTERS_ARRAY
-import deckers.thibault.aves.MainActivity.Companion.SHORTCUT_KEY_FILTERS_STRING
-import deckers.thibault.aves.MainActivity.Companion.SHORTCUT_KEY_PAGE
+import deckers.thibault.aves.MainActivity.Companion.EXTRA_KEY_FILTERS_ARRAY
+import deckers.thibault.aves.MainActivity.Companion.EXTRA_KEY_FILTERS_STRING
+import deckers.thibault.aves.MainActivity.Companion.EXTRA_KEY_PAGE
 import deckers.thibault.aves.R
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safeSuspend
@@ -407,11 +407,11 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
         val intent = when {
             uri != null -> Intent(Intent.ACTION_VIEW, uri, context, MainActivity::class.java)
             filters != null -> Intent(Intent.ACTION_MAIN, null, context, MainActivity::class.java)
-                .putExtra(SHORTCUT_KEY_PAGE, "/collection")
-                .putExtra(SHORTCUT_KEY_FILTERS_ARRAY, filters.toTypedArray())
+                .putExtra(EXTRA_KEY_PAGE, "/collection")
+                .putExtra(EXTRA_KEY_FILTERS_ARRAY, filters.toTypedArray())
                 // on API 25, `String[]` or `ArrayList` extras are null when using the shortcut
                 // so we use a joined `String` as fallback
-                .putExtra(SHORTCUT_KEY_FILTERS_STRING, filters.joinToString(EXTRA_STRING_ARRAY_SEPARATOR))
+                .putExtra(EXTRA_KEY_FILTERS_STRING, filters.joinToString(EXTRA_STRING_ARRAY_SEPARATOR))
             else -> {
                 result.error("pin-intent", "failed to build intent", null)
                 return

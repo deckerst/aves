@@ -17,12 +17,12 @@ abstract class WindowService {
 }
 
 class PlatformWindowService implements WindowService {
-  static const platform = MethodChannel('deckers.thibault/aves/window');
+  static const _platform = MethodChannel('deckers.thibault/aves/window');
 
   @override
   Future<bool> isActivity() async {
     try {
-      final result = await platform.invokeMethod('isActivity');
+      final result = await _platform.invokeMethod('isActivity');
       if (result != null) return result as bool;
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
@@ -33,7 +33,7 @@ class PlatformWindowService implements WindowService {
   @override
   Future<void> keepScreenOn(bool on) async {
     try {
-      await platform.invokeMethod('keepScreenOn', <String, dynamic>{
+      await _platform.invokeMethod('keepScreenOn', <String, dynamic>{
         'on': on,
       });
     } on PlatformException catch (e, stack) {
@@ -44,7 +44,7 @@ class PlatformWindowService implements WindowService {
   @override
   Future<bool> isRotationLocked() async {
     try {
-      final result = await platform.invokeMethod('isRotationLocked');
+      final result = await _platform.invokeMethod('isRotationLocked');
       if (result != null) return result as bool;
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
@@ -71,7 +71,7 @@ class PlatformWindowService implements WindowService {
         break;
     }
     try {
-      await platform.invokeMethod('requestOrientation', <String, dynamic>{
+      await _platform.invokeMethod('requestOrientation', <String, dynamic>{
         'orientation': orientationCode,
       });
     } on PlatformException catch (e, stack) {
@@ -82,7 +82,7 @@ class PlatformWindowService implements WindowService {
   @override
   Future<bool> canSetCutoutMode() async {
     try {
-      final result = await platform.invokeMethod('canSetCutoutMode');
+      final result = await _platform.invokeMethod('canSetCutoutMode');
       if (result != null) return result as bool;
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
@@ -93,7 +93,7 @@ class PlatformWindowService implements WindowService {
   @override
   Future<void> setCutoutMode(bool use) async {
     try {
-      await platform.invokeMethod('setCutoutMode', <String, dynamic>{
+      await _platform.invokeMethod('setCutoutMode', <String, dynamic>{
         'use': use,
       });
     } on PlatformException catch (e, stack) {

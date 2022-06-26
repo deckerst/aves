@@ -23,7 +23,7 @@ abstract class MetadataEditService {
 }
 
 class PlatformMetadataEditService implements MetadataEditService {
-  static const platform = MethodChannel('deckers.thibault/aves/metadata_edit');
+  static const _platform = MethodChannel('deckers.thibault/aves/metadata_edit');
 
   static Map<String, dynamic> _toPlatformEntryMap(AvesEntry entry) {
     return {
@@ -44,7 +44,7 @@ class PlatformMetadataEditService implements MetadataEditService {
   Future<Map<String, dynamic>> rotate(AvesEntry entry, {required bool clockwise}) async {
     try {
       // returns map with: 'rotationDegrees' 'isFlipped'
-      final result = await platform.invokeMethod('rotate', <String, dynamic>{
+      final result = await _platform.invokeMethod('rotate', <String, dynamic>{
         'entry': _toPlatformEntryMap(entry),
         'clockwise': clockwise,
       });
@@ -61,7 +61,7 @@ class PlatformMetadataEditService implements MetadataEditService {
   Future<Map<String, dynamic>> flip(AvesEntry entry) async {
     try {
       // returns map with: 'rotationDegrees' 'isFlipped'
-      final result = await platform.invokeMethod('flip', <String, dynamic>{
+      final result = await _platform.invokeMethod('flip', <String, dynamic>{
         'entry': _toPlatformEntryMap(entry),
       });
       if (result != null) return (result as Map).cast<String, dynamic>();
@@ -76,7 +76,7 @@ class PlatformMetadataEditService implements MetadataEditService {
   @override
   Future<Map<String, dynamic>> editExifDate(AvesEntry entry, DateModifier modifier) async {
     try {
-      final result = await platform.invokeMethod('editDate', <String, dynamic>{
+      final result = await _platform.invokeMethod('editDate', <String, dynamic>{
         'entry': _toPlatformEntryMap(entry),
         'dateMillis': modifier.setDateTime?.millisecondsSinceEpoch,
         'shiftMinutes': modifier.shiftMinutes,
@@ -98,7 +98,7 @@ class PlatformMetadataEditService implements MetadataEditService {
     bool autoCorrectTrailerOffset = true,
   }) async {
     try {
-      final result = await platform.invokeMethod('editMetadata', <String, dynamic>{
+      final result = await _platform.invokeMethod('editMetadata', <String, dynamic>{
         'entry': _toPlatformEntryMap(entry),
         'metadata': metadata.map((type, value) => MapEntry(_toPlatformMetadataType(type), value)),
         'autoCorrectTrailerOffset': autoCorrectTrailerOffset,
@@ -115,7 +115,7 @@ class PlatformMetadataEditService implements MetadataEditService {
   @override
   Future<Map<String, dynamic>> removeTrailerVideo(AvesEntry entry) async {
     try {
-      final result = await platform.invokeMethod('removeTrailerVideo', <String, dynamic>{
+      final result = await _platform.invokeMethod('removeTrailerVideo', <String, dynamic>{
         'entry': _toPlatformEntryMap(entry),
       });
       if (result != null) return (result as Map).cast<String, dynamic>();
@@ -130,7 +130,7 @@ class PlatformMetadataEditService implements MetadataEditService {
   @override
   Future<Map<String, dynamic>> removeTypes(AvesEntry entry, Set<MetadataType> types) async {
     try {
-      final result = await platform.invokeMethod('removeTypes', <String, dynamic>{
+      final result = await _platform.invokeMethod('removeTypes', <String, dynamic>{
         'entry': _toPlatformEntryMap(entry),
         'types': types.map(_toPlatformMetadataType).toList(),
       });

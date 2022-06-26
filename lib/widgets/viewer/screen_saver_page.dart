@@ -105,7 +105,7 @@ class _ScreenSaverPageState extends State<ScreenSaverPage> {
 
     final originalCollection = CollectionLens(
       source: source,
-      // TODO TLAD [screensaver] custom filters
+      filters: settings.screenSaverCollectionFilters,
     );
     var entries = originalCollection.sortedEntries;
     if (settings.screenSaverVideoPlayback == SlideshowVideoPlayback.skip) {

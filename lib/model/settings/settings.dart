@@ -60,7 +60,7 @@ class Settings extends ChangeNotifier {
   static const mustBackTwiceToExitKey = 'must_back_twice_to_exit';
   static const keepScreenOnKey = 'keep_screen_on';
   static const homePageKey = 'home_page';
-  static const showBottomNavigationBarKey = 'show_bottom_navigation_bar';
+  static const enableBottomNavigationBarKey = 'show_bottom_navigation_bar';
   static const confirmDeleteForeverKey = 'confirm_delete_forever';
   static const confirmMoveToBinKey = 'confirm_move_to_bin';
   static const confirmMoveUndatedItemsKey = 'confirm_move_undated_items';
@@ -142,6 +142,7 @@ class Settings extends ChangeNotifier {
   static const screenSaverTransitionKey = 'screen_saver_transition';
   static const screenSaverVideoPlaybackKey = 'screen_saver_video_playback';
   static const screenSaverIntervalKey = 'screen_saver_interval';
+  static const screenSaverCollectionFiltersKey = 'screen_saver_collection_filters';
 
   // slideshow
   static const slideshowRepeatKey = 'slideshow_loop';
@@ -320,9 +321,9 @@ class Settings extends ChangeNotifier {
 
   set homePage(HomePageSetting newValue) => setAndNotify(homePageKey, newValue.toString());
 
-  bool get showBottomNavigationBar => getBoolOrDefault(showBottomNavigationBarKey, SettingsDefaults.showBottomNavigationBar);
+  bool get enableBottomNavigationBar => getBoolOrDefault(enableBottomNavigationBarKey, SettingsDefaults.enableBottomNavigationBar);
 
-  set showBottomNavigationBar(bool newValue) => setAndNotify(showBottomNavigationBarKey, newValue);
+  set enableBottomNavigationBar(bool newValue) => setAndNotify(enableBottomNavigationBarKey, newValue);
 
   bool get confirmDeleteForever => getBoolOrDefault(confirmDeleteForeverKey, SettingsDefaults.confirmDeleteForever);
 
@@ -602,6 +603,10 @@ class Settings extends ChangeNotifier {
 
   set screenSaverInterval(SlideshowInterval newValue) => setAndNotify(screenSaverIntervalKey, newValue.toString());
 
+  Set<CollectionFilter> get screenSaverCollectionFilters => (getStringList(screenSaverCollectionFiltersKey) ?? []).map(CollectionFilter.fromJson).whereNotNull().toSet();
+
+  set screenSaverCollectionFilters(Set<CollectionFilter> newValue) => setAndNotify(screenSaverCollectionFiltersKey, newValue.map((filter) => filter.toJson()).toList());
+
   // slideshow
 
   bool get slideshowRepeat => getBoolOrDefault(slideshowRepeatKey, SettingsDefaults.slideshowRepeat);
@@ -754,7 +759,7 @@ class Settings extends ChangeNotifier {
             case isErrorReportingAllowedKey:
             case enableDynamicColorKey:
             case enableBlurEffectKey:
-            case showBottomNavigationBarKey:
+            case enableBottomNavigationBarKey:
             case mustBackTwiceToExitKey:
             case confirmDeleteForeverKey:
             case confirmMoveToBinKey:
@@ -831,6 +836,7 @@ class Settings extends ChangeNotifier {
             case collectionBrowsingQuickActionsKey:
             case collectionSelectionQuickActionsKey:
             case viewerQuickActionsKey:
+            case screenSaverCollectionFiltersKey:
               if (newValue is List) {
                 settingsStore.setStringList(key, newValue.cast<String>());
               } else {

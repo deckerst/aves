@@ -13,7 +13,7 @@ import 'package:aves/model/source/enums.dart';
 import 'package:aves/services/analysis_service.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/global_search.dart';
-import 'package:aves/services/viewer_service.dart';
+import 'package:aves/services/intent_service.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/behaviour/routes.dart';
@@ -47,10 +47,11 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   AvesEntry? _viewerEntry;
-  String? _shortcutRouteName, _shortcutSearchQuery;
-  Set<String>? _shortcutFilters;
+  String? _initialRouteName, _initialSearchQuery;
+  Set<CollectionFilter>? _initialFilters;
 
-  static const actionPick = 'pick';
+  static const actionPickItems = 'pick_items';
+  static const actionPickCollectionFilters = 'pick_collection_filters';
   static const actionScreenSaver = 'screen_saver';
   static const actionScreenSaverSettings = 'screen_saver_settings';
   static const actionSearch = 'search';
@@ -86,7 +87,7 @@ class _HomePageState extends State<HomePage> {
     }
 
     var appMode = AppMode.main;
-    final intentData = widget.intentData ?? await ViewerService.getIntentData();
+    final intentData = widget.intentData ?? await IntentService.getIntentData();
     final intentAction = intentData['action'];
 
     if (!{actionScreenSaver, actionSetWallpaper}.contains(intentAction)) {
@@ -108,7 +109,7 @@ class _HomePageState extends State<HomePage> {
             appMode = AppMode.view;
           }
           break;
-        case actionPick:
+        case actionPickItems:
           // TODO TLAD apply pick mimetype(s)
           // some apps define multiple types, separated by a space (maybe other signs too, like `,` `;`?)
           String? pickMimeTypes = intentData['mimeType'];
@@ -116,16 +117,19 @@ class _HomePageState extends State<HomePage> {
           debugPrint('pick mimeType=$pickMimeTypes multiple=$multiple');
           appMode = multiple ? AppMode.pickMultipleMediaExternal : AppMode.pickSingleMediaExternal;
           break;
+        case actionPickCollectionFilters:
+          appMode = AppMode.pickCollectionFiltersExternal;
+          break;
         case actionScreenSaver:
           appMode = AppMode.screenSaver;
-          _shortcutRouteName = ScreenSaverPage.routeName;
+          _initialRouteName = ScreenSaverPage.routeName;
           break;
         case actionScreenSaverSettings:
-          _shortcutRouteName = ScreenSaverSettingsPage.routeName;
+          _initialRouteName = ScreenSaverSettingsPage.routeName;
           break;
         case actionSearch:
-          _shortcutRouteName = CollectionSearchDelegate.pageRouteName;
-          _shortcutSearchQuery = intentData['query'];
+          _initialRouteName = CollectionSearchDelegate.pageRouteName;
+          _initialSearchQuery = intentData['query'];
           break;
         case actionSetWallpaper:
           appMode = AppMode.setWallpaper;
@@ -138,11 +142,11 @@ class _HomePageState extends State<HomePage> {
           // do not use 'route' as extra key, as the Flutter framework acts on it
           final extraRoute = intentData['page'];
           if (allowedShortcutRoutes.contains(extraRoute)) {
-            _shortcutRouteName = extraRoute;
+            _initialRouteName = extraRoute;
           }
-          final extraFilters = intentData['filters'];
-          _shortcutFilters = extraFilters != null ? (extraFilters as List).cast<String>().toSet() : null;
       }
+      final extraFilters = intentData['filters'];
+      _initialFilters = extraFilters != null ? (extraFilters as List).cast<String>().map(CollectionFilter.fromJson).whereNotNull().toSet() : null;
     }
     context.read<ValueNotifier<AppMode>>().value = appMode;
     unawaited(reportService.setCustomKey('app_mode', appMode.toString()));
@@ -150,6 +154,7 @@ class _HomePageState extends State<HomePage> {
 
     switch (appMode) {
       case AppMode.main:
+      case AppMode.pickCollectionFiltersExternal:
       case AppMode.pickSingleMediaExternal:
       case AppMode.pickMultipleMediaExternal:
         unawaited(GlobalSearch.registerCallback());
@@ -281,8 +286,8 @@ class _HomePageState extends State<HomePage> {
         routeName = CollectionPage.routeName;
         break;
       default:
-        routeName = _shortcutRouteName ?? settings.homePage.routeName;
-        filters = (_shortcutFilters ?? {}).map(CollectionFilter.fromJson).toSet();
+        routeName = _initialRouteName ?? settings.homePage.routeName;
+        filters = _initialFilters ?? {};
         break;
     }
     final source = context.read<CollectionSource>();
@@ -310,7 +315,7 @@ class _HomePageState extends State<HomePage> {
             searchFieldLabel: context.l10n.searchCollectionFieldHint,
             source: source,
             canPop: false,
-            initialQuery: _shortcutSearchQuery,
+            initialQuery: _initialSearchQuery,
           ),
         );
       case CollectionPage.routeName:

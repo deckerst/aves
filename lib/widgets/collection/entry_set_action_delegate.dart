@@ -65,7 +65,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
         return isSelecting && selectedItemCount == itemCount;
       // browsing
       case EntrySetAction.searchCollection:
-        return appMode.canSearch && !isSelecting;
+        return appMode.canNavigate && !isSelecting;
       case EntrySetAction.toggleTitleSearch:
         return !isSelecting;
       case EntrySetAction.addShortcut:

@@ -138,7 +138,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
                 return AvesAppBar(
                   contentHeight: appBarContentHeight,
                   leading: _buildAppBarLeading(
-                    hasDrawer: appMode.hasDrawer,
+                    hasDrawer: appMode.canNavigate,
                     isSelecting: isSelecting,
                   ),
                   title: _buildAppBarTitle(isSelecting),
@@ -228,7 +228,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
         );
       }
       return InteractiveAppBarTitle(
-        onTap: appMode.canSearch ? _goToSearch : null,
+        onTap: appMode.canNavigate ? _goToSearch : null,
         child: title,
       );
     }
