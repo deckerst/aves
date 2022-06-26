@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 
 - Search: `on this day` filter
 - Stats: histogram and date filters
+- Screen saver
 
 ### Changed
 

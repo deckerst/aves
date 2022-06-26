@@ -14,7 +14,7 @@ class FilterBar extends StatefulWidget {
   FilterBar({
     super.key,
     required Set<CollectionFilter> filters,
-    required this.removable,
+    this.removable = false,
     this.onTap,
   }) : filters = List<CollectionFilter>.from(filters)..sort();
 

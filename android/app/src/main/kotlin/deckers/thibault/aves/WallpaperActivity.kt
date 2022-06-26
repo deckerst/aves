@@ -49,7 +49,7 @@ class WallpaperActivity : FlutterActivity() {
         // intent handling
         // detail fetch: dart -> platform
         intentDataMap = extractIntentData(intent)
-        MethodChannel(messenger, VIEWER_CHANNEL).setMethodCallHandler { call, result ->
+        MethodChannel(messenger, MainActivity.INTENT_CHANNEL).setMethodCallHandler { call, result ->
             when (call.method) {
                 "getIntentData" -> {
                     result.success(intentDataMap)
@@ -71,16 +71,6 @@ class WallpaperActivity : FlutterActivity() {
                 window.decorView.requestApplyInsets()
             }, 100)
         }
-    }
-
-    override fun onStop() {
-        Log.i(LOG_TAG, "onStop")
-        super.onStop()
-    }
-
-    override fun onDestroy() {
-        Log.i(LOG_TAG, "onDestroy")
-        super.onDestroy()
     }
 
     private fun extractIntentData(intent: Intent?): MutableMap<String, Any?> {
@@ -108,6 +98,5 @@ class WallpaperActivity : FlutterActivity() {
 
     companion object {
         private val LOG_TAG = LogUtils.createTag<WallpaperActivity>()
-        const val VIEWER_CHANNEL = "deckers.thibault/aves/viewer"
     }
 }

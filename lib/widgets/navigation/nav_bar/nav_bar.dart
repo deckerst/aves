@@ -1,3 +1,4 @@
+import 'package:aves/app_mode.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -13,6 +14,7 @@ import 'package:aves/widgets/navigation/nav_bar/floating.dart';
 import 'package:aves/widgets/navigation/nav_bar/nav_item.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:provider/provider.dart';
 
 class AppBottomNavBar extends StatefulWidget {
@@ -163,8 +165,10 @@ class NavBarPaddingSliver extends StatelessWidget {
   Widget build(BuildContext context) {
     return SliverToBoxAdapter(
       child: Selector<Settings, bool>(
-        selector: (context, s) => s.showBottomNavigationBar,
-        builder: (context, showBottomNavigationBar, child) {
+        selector: (context, s) => s.enableBottomNavigationBar,
+        builder: (context, enableBottomNavigationBar, child) {
+          final canNavigate = context.select<ValueNotifier<AppMode>, bool>((v) => v.value.canNavigate);
+          final showBottomNavigationBar = canNavigate && enableBottomNavigationBar;
           return SizedBox(height: showBottomNavigationBar ? AppBottomNavBar.height : 0);
         },
       ),

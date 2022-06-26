@@ -10,7 +10,7 @@ import 'package:aves/model/selection.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
-import 'package:aves/services/viewer_service.dart';
+import 'package:aves/services/intent_service.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/collection/collection_grid.dart';
@@ -79,7 +79,6 @@ class _CollectionPageState extends State<CollectionPage> {
 
   @override
   Widget build(BuildContext context) {
-    final appMode = context.watch<ValueNotifier<AppMode>>().value;
     final liveFilter = _collection.filters.firstWhereOrNull((v) => v is QueryFilter && v.live) as QueryFilter?;
     return MediaQueryDataProvider(
       child: SelectionProvider<AvesEntry>(
@@ -87,8 +86,10 @@ class _CollectionPageState extends State<CollectionPage> {
           selector: (context, selection) => selection.selectedItems.isNotEmpty,
           builder: (context, hasSelection, child) {
             return Selector<Settings, bool>(
-              selector: (context, s) => s.showBottomNavigationBar,
-              builder: (context, showBottomNavigationBar, child) {
+              selector: (context, s) => s.enableBottomNavigationBar,
+              builder: (context, enableBottomNavigationBar, child) {
+                final canNavigate = context.select<ValueNotifier<AppMode>, bool>((v) => v.value.canNavigate);
+                final showBottomNavigationBar = canNavigate && enableBottomNavigationBar;
                 return NotificationListener<DraggableScrollBarNotification>(
                   onNotification: (notification) {
                     _draggableScrollBarEventStreamController.add(notification.event);
@@ -126,25 +127,7 @@ class _CollectionPageState extends State<CollectionPage> {
                         ),
                       ),
                     ),
-                    floatingActionButton: appMode == AppMode.pickMultipleMediaExternal && hasSelection
-                        ? TooltipTheme(
-                            data: TooltipTheme.of(context).copyWith(
-                              preferBelow: false,
-                            ),
-                            child: FloatingActionButton(
-                              tooltip: context.l10n.collectionPickPageTitle,
-                              onPressed: () {
-                                final items = context.read<Selection<AvesEntry>>().selectedItems;
-                                final uris = items.map((entry) => entry.uri).toList();
-                                ViewerService.pick(uris);
-                              },
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.all(Radius.circular(16)),
-                              ),
-                              child: const Icon(AIcons.apply),
-                            ),
-                          )
-                        : null,
+                    floatingActionButton: _buildFab(context, hasSelection),
                     drawer: AppDrawer(currentCollection: _collection),
                     bottomNavigationBar: showBottomNavigationBar
                         ? AppBottomNavBar(
@@ -162,6 +145,59 @@ class _CollectionPageState extends State<CollectionPage> {
         ),
       ),
     );
+  }
+
+  Widget? _buildFab(BuildContext context, bool hasSelection) {
+    Widget fab({
+      required String tooltip,
+      required VoidCallback onPressed,
+    }) {
+      return TooltipTheme(
+        data: TooltipTheme.of(context).copyWith(
+          preferBelow: false,
+        ),
+        child: FloatingActionButton(
+          tooltip: tooltip,
+          onPressed: onPressed,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(16)),
+          ),
+          child: const Icon(AIcons.apply),
+        ),
+      );
+    }
+
+    final appMode = context.watch<ValueNotifier<AppMode>>().value;
+    switch (appMode) {
+      case AppMode.pickMultipleMediaExternal:
+        return hasSelection
+            ? fab(
+                tooltip: context.l10n.collectionPickPageTitle,
+                onPressed: () {
+                  final items = context.read<Selection<AvesEntry>>().selectedItems;
+                  final uris = items.map((entry) => entry.uri).toList();
+                  IntentService.submitPickedItems(uris);
+                },
+              )
+            : null;
+      case AppMode.pickCollectionFiltersExternal:
+        return fab(
+          tooltip: context.l10n.collectionPickPageTitle,
+          onPressed: () {
+            final filters = _collection.filters;
+            IntentService.submitPickedCollectionFilters(filters);
+          },
+        );
+      case AppMode.main:
+      case AppMode.pickSingleMediaExternal:
+      case AppMode.pickMediaInternal:
+      case AppMode.pickFilterInternal:
+      case AppMode.screenSaver:
+      case AppMode.setWallpaper:
+      case AppMode.slideshow:
+      case AppMode.view:
+        return null;
+    }
   }
 
   Future<void> _checkInitHighlight() async {

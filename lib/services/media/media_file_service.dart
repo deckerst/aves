@@ -108,10 +108,10 @@ abstract class MediaFileService {
 }
 
 class PlatformMediaFileService implements MediaFileService {
-  static const platform = MethodChannel('deckers.thibault/aves/media_file');
-  static final StreamsChannel _byteStreamChannel = StreamsChannel('deckers.thibault/aves/media_byte_stream');
-  static final StreamsChannel _opStreamChannel = StreamsChannel('deckers.thibault/aves/media_op_stream');
-  static const double thumbnailDefaultSize = 64.0;
+  static const _platform = MethodChannel('deckers.thibault/aves/media_file');
+  static final _byteStream = StreamsChannel('deckers.thibault/aves/media_byte_stream');
+  static final _opStream = StreamsChannel('deckers.thibault/aves/media_op_stream');
+  static const double _thumbnailDefaultSize = 64.0;
 
   static Map<String, dynamic> _toPlatformEntryMap(AvesEntry entry) {
     return {
@@ -136,7 +136,7 @@ class PlatformMediaFileService implements MediaFileService {
   @override
   Future<AvesEntry?> getEntry(String uri, String? mimeType) async {
     try {
-      final result = await platform.invokeMethod('getEntry', <String, dynamic>{
+      final result = await _platform.invokeMethod('getEntry', <String, dynamic>{
         'uri': uri,
         'mimeType': mimeType,
       }) as Map;
@@ -181,7 +181,7 @@ class PlatformMediaFileService implements MediaFileService {
       final completer = Completer<Uint8List>.sync();
       final sink = OutputBuffer();
       var bytesReceived = 0;
-      _byteStreamChannel.receiveBroadcastStream(<String, dynamic>{
+      _byteStream.receiveBroadcastStream(<String, dynamic>{
         'uri': uri,
         'mimeType': mimeType,
         'rotationDegrees': rotationDegrees ?? 0,
@@ -234,7 +234,7 @@ class PlatformMediaFileService implements MediaFileService {
     return servicePolicy.call(
       () async {
         try {
-          final result = await platform.invokeMethod('getRegion', <String, dynamic>{
+          final result = await _platform.invokeMethod('getRegion', <String, dynamic>{
             'uri': uri,
             'mimeType': mimeType,
             'pageId': pageId,
@@ -274,7 +274,7 @@ class PlatformMediaFileService implements MediaFileService {
     return servicePolicy.call(
       () async {
         try {
-          final result = await platform.invokeMethod('getThumbnail', <String, dynamic>{
+          final result = await _platform.invokeMethod('getThumbnail', <String, dynamic>{
             'uri': uri,
             'mimeType': mimeType,
             'dateModifiedSecs': dateModifiedSecs,
@@ -283,7 +283,7 @@ class PlatformMediaFileService implements MediaFileService {
             'widthDip': extent,
             'heightDip': extent,
             'pageId': pageId,
-            'defaultSizeDip': thumbnailDefaultSize,
+            'defaultSizeDip': _thumbnailDefaultSize,
           });
           if (result != null) return result as Uint8List;
         } on PlatformException catch (e, stack) {
@@ -301,7 +301,7 @@ class PlatformMediaFileService implements MediaFileService {
   @override
   Future<void> clearSizedThumbnailDiskCache() async {
     try {
-      return platform.invokeMethod('clearSizedThumbnailDiskCache');
+      return _platform.invokeMethod('clearSizedThumbnailDiskCache');
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
     }
@@ -319,7 +319,7 @@ class PlatformMediaFileService implements MediaFileService {
   @override
   Future<void> cancelFileOp(String opId) async {
     try {
-      await platform.invokeMethod('cancelFileOp', <String, dynamic>{
+      await _platform.invokeMethod('cancelFileOp', <String, dynamic>{
         'opId': opId,
       });
     } on PlatformException catch (e, stack) {
@@ -333,7 +333,7 @@ class PlatformMediaFileService implements MediaFileService {
     required Iterable<AvesEntry> entries,
   }) {
     try {
-      return _opStreamChannel
+      return _opStream
           .receiveBroadcastStream(<String, dynamic>{
             'op': 'delete',
             'id': opId,
@@ -355,7 +355,7 @@ class PlatformMediaFileService implements MediaFileService {
     required NameConflictStrategy nameConflictStrategy,
   }) {
     try {
-      return _opStreamChannel
+      return _opStream
           .receiveBroadcastStream(<String, dynamic>{
             'op': 'move',
             'id': opId,
@@ -379,7 +379,7 @@ class PlatformMediaFileService implements MediaFileService {
     required NameConflictStrategy nameConflictStrategy,
   }) {
     try {
-      return _opStreamChannel
+      return _opStream
           .receiveBroadcastStream(<String, dynamic>{
             'op': 'export',
             'entries': entries.map(_toPlatformEntryMap).toList(),
@@ -403,7 +403,7 @@ class PlatformMediaFileService implements MediaFileService {
     required Map<AvesEntry, String> entriesToNewName,
   }) {
     try {
-      return _opStreamChannel
+      return _opStream
           .receiveBroadcastStream(<String, dynamic>{
             'op': 'rename',
             'id': opId,
@@ -427,7 +427,7 @@ class PlatformMediaFileService implements MediaFileService {
     required NameConflictStrategy nameConflictStrategy,
   }) async {
     try {
-      final result = await platform.invokeMethod('captureFrame', <String, dynamic>{
+      final result = await _platform.invokeMethod('captureFrame', <String, dynamic>{
         'uri': entry.uri,
         'desiredName': desiredName,
         'exif': exif,

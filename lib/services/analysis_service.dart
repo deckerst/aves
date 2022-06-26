@@ -13,11 +13,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 class AnalysisService {
-  static const platform = MethodChannel('deckers.thibault/aves/analysis');
+  static const _platform = MethodChannel('deckers.thibault/aves/analysis');
 
   static Future<void> registerCallback() async {
     try {
-      await platform.invokeMethod('registerCallback', <String, dynamic>{
+      await _platform.invokeMethod('registerCallback', <String, dynamic>{
         'callbackHandle': PluginUtilities.getCallbackHandle(_init)?.toRawHandle(),
       });
     } on PlatformException catch (e, stack) {
@@ -27,7 +27,7 @@ class AnalysisService {
 
   static Future<void> startService({required bool force, List<int>? entryIds}) async {
     try {
-      await platform.invokeMethod('startService', <String, dynamic>{
+      await _platform.invokeMethod('startService', <String, dynamic>{
         'entryIds': entryIds,
         'force': force,
       });

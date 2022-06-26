@@ -60,8 +60,8 @@ class SettingsTileShowBottomNavigationBar extends SettingsTile {
 
   @override
   Widget build(BuildContext context) => SettingsSwitchListTile(
-        selector: (context, s) => s.showBottomNavigationBar,
-        onChanged: (v) => settings.showBottomNavigationBar = v,
+        selector: (context, s) => s.enableBottomNavigationBar,
+        onChanged: (v) => settings.enableBottomNavigationBar = v,
         title: title(context),
       );
 }

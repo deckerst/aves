@@ -3,7 +3,7 @@ import 'package:aves/model/entry.dart';
 import 'package:aves/model/selection.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/enums.dart';
-import 'package:aves/services/viewer_service.dart';
+import 'package:aves/services/intent_service.dart';
 import 'package:aves/widgets/collection/grid/list_details.dart';
 import 'package:aves/widgets/collection/grid/list_details_theme.dart';
 import 'package:aves/widgets/common/behaviour/routes.dart';
@@ -44,7 +44,7 @@ class InteractiveTile extends StatelessWidget {
             }
             break;
           case AppMode.pickSingleMediaExternal:
-            ViewerService.pick([entry.uri]);
+            IntentService.submitPickedItems([entry.uri]);
             break;
           case AppMode.pickMultipleMediaExternal:
             final selection = context.read<Selection<AvesEntry>>();
@@ -53,6 +53,7 @@ class InteractiveTile extends StatelessWidget {
           case AppMode.pickMediaInternal:
             Navigator.pop(context, entry);
             break;
+          case AppMode.pickCollectionFiltersExternal:
           case AppMode.pickFilterInternal:
           case AppMode.screenSaver:
           case AppMode.setWallpaper:
