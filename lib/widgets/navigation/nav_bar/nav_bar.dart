@@ -15,7 +15,6 @@ import 'package:aves/widgets/navigation/nav_bar/nav_item.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:provider/provider.dart';
 
 class AppBottomNavBar extends StatefulWidget {
   final Stream<DraggableScrollBarEvent> events;
