@@ -38,7 +38,7 @@ class TagFilter extends CoveredCollectionFilter {
   EntryFilter get test => _test;
 
   @override
-  bool get isUnique => false;
+  bool isCompatible(CollectionFilter other) => true;
 
   @override
   String get universalLabel => tag;

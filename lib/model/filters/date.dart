@@ -7,7 +7,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 
-class DateFilter extends CoveredCollectionFilter {
+class DateFilter extends CollectionFilter {
   static const type = 'date';
 
   final DateLevel level;
@@ -68,6 +68,32 @@ class DateFilter extends CoveredCollectionFilter {
 
   @override
   EntryFilter get test => _test;
+
+  @override
+  bool isCompatible(CollectionFilter other) {
+    if (other is DateFilter) {
+      return isCompatibleLevel(level, other.level);
+    } else {
+      return true;
+    }
+  }
+
+  static bool isCompatibleLevel(DateLevel a, DateLevel b) {
+    switch (a) {
+      case DateLevel.y:
+        return {DateLevel.md, DateLevel.m, DateLevel.d}.contains(b);
+      case DateLevel.ym:
+        return DateLevel.d == b;
+      case DateLevel.ymd:
+        return false;
+      case DateLevel.md:
+        return DateLevel.y == b;
+      case DateLevel.m:
+        return {DateLevel.y, DateLevel.d}.contains(b);
+      case DateLevel.d:
+        return {DateLevel.y, DateLevel.ym, DateLevel.m}.contains(b);
+    }
+  }
 
   @override
   String get universalLabel => _effectiveDate.toIso8601String();

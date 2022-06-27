@@ -417,6 +417,7 @@
 
   "searchCollectionFieldHint": "Recherche",
   "searchSectionRecent": "Historique",
+  "searchSectionDate": "Date",
   "searchSectionAlbums": "Albums",
   "searchSectionCountries": "Pays",
   "searchSectionPlaces": "Lieux",

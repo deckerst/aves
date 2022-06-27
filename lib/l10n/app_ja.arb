@@ -417,6 +417,7 @@
 
   "searchCollectionFieldHint": "コレクションを検索",
   "searchSectionRecent": "最近",
+  "searchSectionDate": "日付",
   "searchSectionAlbums": "アルバム",
   "searchSectionCountries": "国",
   "searchSectionPlaces": "場所",

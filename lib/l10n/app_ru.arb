@@ -399,6 +399,7 @@
 
   "searchCollectionFieldHint": "Поиск по коллекции",
   "searchSectionRecent": "Недавние",
+  "searchSectionDate": "Дата",
   "searchSectionAlbums": "Альбомы",
   "searchSectionCountries": "Страны",
   "searchSectionPlaces": "Локации",
