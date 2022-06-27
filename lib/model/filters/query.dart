@@ -75,7 +75,7 @@ class QueryFilter extends CollectionFilter {
   EntryFilter get test => _test;
 
   @override
-  bool get isUnique => false;
+  bool isCompatible(CollectionFilter other) => true;
 
   @override
   String get universalLabel => query;

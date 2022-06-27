@@ -598,6 +598,7 @@
 
   "searchCollectionFieldHint": "Search collection",
   "searchSectionRecent": "Recent",
+  "searchSectionDate": "Date",
   "searchSectionAlbums": "Albums",
   "searchSectionCountries": "Countries",
   "searchSectionPlaces": "Places",

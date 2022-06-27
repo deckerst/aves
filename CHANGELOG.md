@@ -6,8 +6,8 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
-- Search: `on this day` filter
-- Stats: histogram and date filters
+- Search: `on this day` and month filters in date filter section
+- Stats: histogram and contextual date filters
 - Screen saver
 
 ### Changed

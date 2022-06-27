@@ -417,6 +417,7 @@
 
   "searchCollectionFieldHint": "미디어 검색",
   "searchSectionRecent": "최근 검색기록",
+  "searchSectionDate": "날짜",
   "searchSectionAlbums": "앨범",
   "searchSectionCountries": "국가",
   "searchSectionPlaces": "장소",

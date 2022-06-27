@@ -89,7 +89,7 @@ abstract class CollectionFilter extends Equatable implements Comparable<Collecti
 
   EntryFilter get test;
 
-  bool get isUnique => true;
+  bool isCompatible(CollectionFilter other) => category != other.category;
 
   String get universalLabel;
 
