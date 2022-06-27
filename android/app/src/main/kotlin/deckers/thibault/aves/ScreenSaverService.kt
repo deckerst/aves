@@ -4,10 +4,7 @@ import android.service.dreams.DreamService
 import android.util.Log
 import android.view.View
 import app.loup.streams_channel.StreamsChannel
-import deckers.thibault.aves.channel.calls.AccessibilityHandler
-import deckers.thibault.aves.channel.calls.DeviceHandler
-import deckers.thibault.aves.channel.calls.MediaFileHandler
-import deckers.thibault.aves.channel.calls.MediaStoreHandler
+import deckers.thibault.aves.channel.calls.*
 import deckers.thibault.aves.channel.calls.window.ServiceWindowHandler
 import deckers.thibault.aves.channel.calls.window.WindowHandler
 import deckers.thibault.aves.channel.streams.ImageByteStreamHandler
@@ -102,7 +99,9 @@ class ScreenSaverService : DreamService() {
         // dart -> platform -> dart
         // - need Context
         MethodChannel(messenger, DeviceHandler.CHANNEL).setMethodCallHandler(DeviceHandler(this))
+        MethodChannel(messenger, EmbeddedDataHandler.CHANNEL).setMethodCallHandler(EmbeddedDataHandler(this))
         MethodChannel(messenger, MediaStoreHandler.CHANNEL).setMethodCallHandler(MediaStoreHandler(this))
+        MethodChannel(messenger, MetadataFetchHandler.CHANNEL).setMethodCallHandler(MetadataFetchHandler(this))
         // - need ContextWrapper
         MethodChannel(messenger, AccessibilityHandler.CHANNEL).setMethodCallHandler(AccessibilityHandler(this))
         MethodChannel(messenger, MediaFileHandler.CHANNEL).setMethodCallHandler(MediaFileHandler(this))
