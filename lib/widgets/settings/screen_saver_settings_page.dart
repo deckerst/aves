@@ -27,6 +27,11 @@ class ScreenSaverSettingsPage extends StatelessWidget {
       body: SafeArea(
         child: ListView(
           children: [
+            SettingsSwitchListTile(
+              selector: (context, s) => s.screenSaverFillScreen,
+              onChanged: (v) => settings.screenSaverFillScreen = v,
+              title: context.l10n.settingsSlideshowFillScreen,
+            ),
             SettingsSelectionListTile<ViewerTransition>(
               values: ViewerTransition.values,
               getName: (context, v) => v.getName(context),

@@ -128,6 +128,7 @@ class SettingsDefaults {
   // slideshow
   static const slideshowRepeat = false;
   static const slideshowShuffle = false;
+  static const slideshowFillScreen = false;
   static const slideshowTransition = ViewerTransition.fade;
   static const slideshowVideoPlayback = SlideshowVideoPlayback.playMuted;
   static const slideshowInterval = SlideshowInterval.s5;

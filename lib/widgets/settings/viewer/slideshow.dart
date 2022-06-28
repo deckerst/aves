@@ -31,6 +31,11 @@ class ViewerSlideshowPage extends StatelessWidget {
               onChanged: (v) => settings.slideshowShuffle = v,
               title: context.l10n.settingsSlideshowShuffle,
             ),
+            SettingsSwitchListTile(
+              selector: (context, s) => s.slideshowFillScreen,
+              onChanged: (v) => settings.slideshowFillScreen = v,
+              title: context.l10n.settingsSlideshowFillScreen,
+            ),
             SettingsSelectionListTile<ViewerTransition>(
               values: ViewerTransition.values,
               getName: (context, v) => v.getName(context),
