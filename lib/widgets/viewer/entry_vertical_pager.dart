@@ -186,6 +186,7 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
       };
     } else if (entry != null) {
       child = SingleEntryScroller(
+        viewerController: widget.viewerController,
         entry: entry!,
       );
       shortcuts = const {

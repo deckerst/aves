@@ -2,10 +2,12 @@ import 'dart:async';
 
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/settings/enums/enums.dart';
+import 'package:aves/widgets/common/magnifier/scale/scale_level.dart';
 import 'package:flutter/widgets.dart';
 
 class ViewerController {
   final ValueNotifier<AvesEntry?> entryNotifier = ValueNotifier(null);
+  final ScaleLevel initialScale;
   final ViewerTransition transition;
   final Duration? autopilotInterval;
   final bool repeat;
@@ -25,6 +27,7 @@ class ViewerController {
   set autopilot(bool enabled) => _autopilotNotifier.value = enabled;
 
   ViewerController({
+    this.initialScale = const ScaleLevel(ref: ScaleReference.contained),
     this.transition = ViewerTransition.parallax,
     this.repeat = false,
     bool autopilot = false,

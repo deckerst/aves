@@ -5,7 +5,9 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
+import 'package:aves/widgets/common/magnifier/scale/scale_level.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
+import 'package:aves/widgets/viewer/controller.dart';
 import 'package:aves/widgets/viewer/entry_horizontal_pager.dart';
 import 'package:aves/widgets/viewer/entry_viewer_page.dart';
 import 'package:aves/widgets/viewer/multipage/conductor.dart';
@@ -71,6 +73,7 @@ class _EntryEditorState extends State<EntryEditor> with EntryViewControllerMixin
   late Animation<double> _overlayVideoControlScale;
   EdgeInsets? _frozenViewInsets, _frozenViewPadding;
   late VideoActionDelegate _videoActionDelegate;
+  late final ViewerController _viewerController;
 
   @override
   final ValueNotifier<AvesEntry?> entryNotifier = ValueNotifier(null);
@@ -105,6 +108,9 @@ class _EntryEditorState extends State<EntryEditor> with EntryViewControllerMixin
       collection: null,
     );
 
+    _viewerController = ViewerController(
+      initialScale: const ScaleLevel(ref: ScaleReference.covered),
+    );
     initEntryControllers(entry);
     _onOverlayVisibleChange();
   }
@@ -112,6 +118,7 @@ class _EntryEditorState extends State<EntryEditor> with EntryViewControllerMixin
   @override
   void dispose() {
     cleanEntryControllers(entry);
+    _viewerController.dispose();
     _videoActionDelegate.dispose();
     _overlayAnimationController.dispose();
     _overlayVisible.removeListener(_onOverlayVisibleChange);
@@ -131,6 +138,7 @@ class _EntryEditorState extends State<EntryEditor> with EntryViewControllerMixin
         children: [
           SingleEntryScroller(
             entry: entry,
+            viewerController: _viewerController,
           ),
           Positioned(
             bottom: 0,

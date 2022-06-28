@@ -35,6 +35,7 @@ import 'package:tuple/tuple.dart';
 
 class EntryPageView extends StatefulWidget {
   final AvesEntry mainEntry, pageEntry;
+  final ScaleLevel initialScale;
   final VoidCallback? onDisposed;
 
   static const decorationCheckSize = 20.0;
@@ -43,6 +44,7 @@ class EntryPageView extends StatefulWidget {
     super.key,
     required this.mainEntry,
     required this.pageEntry,
+    required this.initialScale,
     this.onDisposed,
   });
 
@@ -380,7 +382,7 @@ class _EntryPageViewState extends State<EntryPageView> {
       allowOriginalScaleBeyondRange: !isWallpaperMode,
       minScale: minScale,
       maxScale: maxScale,
-      initialScale: minScale,
+      initialScale: widget.initialScale,
       scaleStateCycle: scaleStateCycle,
       applyScale: applyScale,
       onTap: (c, d, s, o) => _onTap(),

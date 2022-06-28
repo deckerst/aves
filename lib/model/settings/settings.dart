@@ -139,6 +139,7 @@ class Settings extends ChangeNotifier {
   static const filePickerShowHiddenFilesKey = 'file_picker_show_hidden_files';
 
   // screen saver
+  static const screenSaverFillScreenKey = 'screen_saver_fill_screen';
   static const screenSaverTransitionKey = 'screen_saver_transition';
   static const screenSaverVideoPlaybackKey = 'screen_saver_video_playback';
   static const screenSaverIntervalKey = 'screen_saver_interval';
@@ -147,6 +148,7 @@ class Settings extends ChangeNotifier {
   // slideshow
   static const slideshowRepeatKey = 'slideshow_loop';
   static const slideshowShuffleKey = 'slideshow_shuffle';
+  static const slideshowFillScreenKey = 'slideshow_fill_screen';
   static const slideshowTransitionKey = 'slideshow_transition';
   static const slideshowVideoPlaybackKey = 'slideshow_video_playback';
   static const slideshowIntervalKey = 'slideshow_interval';
@@ -591,6 +593,10 @@ class Settings extends ChangeNotifier {
 
   // screen saver
 
+  bool get screenSaverFillScreen => getBoolOrDefault(screenSaverFillScreenKey, SettingsDefaults.slideshowFillScreen);
+
+  set screenSaverFillScreen(bool newValue) => setAndNotify(screenSaverFillScreenKey, newValue);
+
   ViewerTransition get screenSaverTransition => getEnumOrDefault(screenSaverTransitionKey, SettingsDefaults.slideshowTransition, ViewerTransition.values);
 
   set screenSaverTransition(ViewerTransition newValue) => setAndNotify(screenSaverTransitionKey, newValue.toString());
@@ -616,6 +622,10 @@ class Settings extends ChangeNotifier {
   bool get slideshowShuffle => getBoolOrDefault(slideshowShuffleKey, SettingsDefaults.slideshowShuffle);
 
   set slideshowShuffle(bool newValue) => setAndNotify(slideshowShuffleKey, newValue);
+
+  bool get slideshowFillScreen => getBoolOrDefault(slideshowFillScreenKey, SettingsDefaults.slideshowFillScreen);
+
+  set slideshowFillScreen(bool newValue) => setAndNotify(slideshowFillScreenKey, newValue);
 
   ViewerTransition get slideshowTransition => getEnumOrDefault(slideshowTransitionKey, SettingsDefaults.slideshowTransition, ViewerTransition.values);
 
@@ -787,8 +797,10 @@ class Settings extends ChangeNotifier {
             case subtitleShowOutlineKey:
             case saveSearchHistoryKey:
             case filePickerShowHiddenFilesKey:
+            case screenSaverFillScreenKey:
             case slideshowRepeatKey:
             case slideshowShuffleKey:
+            case slideshowFillScreenKey:
               if (newValue is bool) {
                 settingsStore.setBool(key, newValue);
               } else {

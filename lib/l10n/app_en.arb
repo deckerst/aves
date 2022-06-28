@@ -684,6 +684,7 @@
   "settingsViewerSlideshowTitle": "Slideshow",
   "settingsSlideshowRepeat": "Repeat",
   "settingsSlideshowShuffle": "Shuffle",
+  "settingsSlideshowFillScreen": "Fill screen",
   "settingsSlideshowTransitionTile": "Transition",
   "settingsSlideshowTransitionTitle": "Transition",
   "settingsSlideshowIntervalTile": "Interval",

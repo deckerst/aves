@@ -1,41 +1,49 @@
 {
   "de": [
     "filterOnThisDayLabel",
+    "settingsSlideshowFillScreen",
     "settingsScreenSaverTitle"
   ],
 
   "es": [
     "filterOnThisDayLabel",
+    "settingsSlideshowFillScreen",
     "settingsScreenSaverTitle"
   ],
 
   "fr": [
     "filterOnThisDayLabel",
+    "settingsSlideshowFillScreen",
     "settingsScreenSaverTitle"
   ],
 
   "id": [
     "filterOnThisDayLabel",
+    "settingsSlideshowFillScreen",
     "settingsScreenSaverTitle"
   ],
 
   "it": [
     "filterOnThisDayLabel",
+    "settingsSlideshowFillScreen",
     "settingsScreenSaverTitle"
   ],
 
   "ja": [
     "filterOnThisDayLabel",
+    "settingsSlideshowFillScreen",
     "settingsScreenSaverTitle"
   ],
 
   "ko": [
     "filterOnThisDayLabel",
+    "settingsSlideshowFillScreen",
     "settingsScreenSaverTitle"
   ],
 
   "pt": [
     "filterOnThisDayLabel",
+    "settingsSlideshowFillScreen",
     "settingsScreenSaverTitle"
   ],
 
@@ -59,6 +67,7 @@
     "settingsViewerSlideshowTitle",
     "settingsSlideshowRepeat",
     "settingsSlideshowShuffle",
+    "settingsSlideshowFillScreen",
     "settingsSlideshowTransitionTile",
     "settingsSlideshowTransitionTitle",
     "settingsSlideshowIntervalTile",
@@ -89,6 +98,7 @@
     "settingsViewerSlideshowTitle",
     "settingsSlideshowRepeat",
     "settingsSlideshowShuffle",
+    "settingsSlideshowFillScreen",
     "settingsSlideshowTransitionTile",
     "settingsSlideshowTransitionTitle",
     "settingsSlideshowIntervalTile",
@@ -101,6 +111,7 @@
 
   "zh": [
     "filterOnThisDayLabel",
+    "settingsSlideshowFillScreen",
     "settingsScreenSaverTitle"
   ]
 }
