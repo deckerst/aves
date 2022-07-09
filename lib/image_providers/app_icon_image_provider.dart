@@ -1,4 +1,4 @@
-import 'dart:ui' as ui show Codec;
+import 'dart:ui' as ui;
 
 import 'package:aves/services/common/services.dart';
 import 'package:equatable/equatable.dart';
@@ -27,7 +27,7 @@ class AppIconImage extends ImageProvider<AppIconImageKey> {
   }
 
   @override
-  ImageStreamCompleter load(AppIconImageKey key, DecoderCallback decode) {
+  ImageStreamCompleter loadBuffer(AppIconImageKey key, DecoderBufferCallback decode) {
     return MultiFrameImageStreamCompleter(
       codec: _loadAsync(key, decode),
       scale: key.scale,
@@ -37,10 +37,11 @@ class AppIconImage extends ImageProvider<AppIconImageKey> {
     );
   }
 
-  Future<ui.Codec> _loadAsync(AppIconImageKey key, DecoderCallback decode) async {
+  Future<ui.Codec> _loadAsync(AppIconImageKey key, DecoderBufferCallback decode) async {
     try {
       final bytes = await androidAppService.getAppIcon(key.packageName, key.size);
-      return await decode(bytes.isEmpty ? kTransparentImage : bytes);
+      final buffer = await ui.ImmutableBuffer.fromUint8List(bytes.isEmpty ? kTransparentImage : bytes);
+      return await decode(buffer);
     } catch (error) {
       debugPrint('$runtimeType _loadAsync failed with packageName=$packageName, error=$error');
       throw StateError('$packageName app icon decoding failed');
