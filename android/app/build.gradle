@@ -38,6 +38,7 @@ if (keystorePropertiesFile.exists()) {
     keystoreProperties['keyAlias'] = System.getenv('AVES_KEY_ALIAS')
     keystoreProperties['keyPassword'] = System.getenv('AVES_KEY_PASSWORD')
     keystoreProperties['googleApiKey'] = System.getenv('AVES_GOOGLE_API_KEY')
+    keystoreProperties['huaweiApiKey'] = System.getenv('AVES_HUAWEI_API_KEY')
 }
 
 android {
@@ -60,7 +61,8 @@ android {
         targetSdkVersion 33
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
-        manifestPlaceholders = [googleApiKey: keystoreProperties['googleApiKey']]
+        manifestPlaceholders = [googleApiKey: keystoreProperties['googleApiKey'],
+                                huaweiApiKey: keystoreProperties['huaweiApiKey']]
         multiDexEnabled true
         resValue 'string', 'search_provider', "${appId}.search_provider"
     }

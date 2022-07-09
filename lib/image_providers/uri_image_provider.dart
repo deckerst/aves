@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:ui' as ui show Codec;
+import 'dart:ui' as ui;
 
 import 'package:aves/services/common/services.dart';
 import 'package:equatable/equatable.dart';
@@ -32,7 +32,7 @@ class UriImage extends ImageProvider<UriImage> with EquatableMixin {
   }
 
   @override
-  ImageStreamCompleter load(UriImage key, DecoderCallback decode) {
+  ImageStreamCompleter loadBuffer(UriImage key, DecoderBufferCallback decode) {
     final chunkEvents = StreamController<ImageChunkEvent>();
 
     return MultiFrameImageStreamCompleter(
@@ -45,7 +45,7 @@ class UriImage extends ImageProvider<UriImage> with EquatableMixin {
     );
   }
 
-  Future<ui.Codec> _loadAsync(UriImage key, DecoderCallback decode, StreamController<ImageChunkEvent> chunkEvents) async {
+  Future<ui.Codec> _loadAsync(UriImage key, DecoderBufferCallback decode, StreamController<ImageChunkEvent> chunkEvents) async {
     assert(key == this);
 
     try {
@@ -66,7 +66,8 @@ class UriImage extends ImageProvider<UriImage> with EquatableMixin {
       if (bytes.isEmpty) {
         throw StateError('$uri ($mimeType) loading failed');
       }
-      return await decode(bytes);
+      final buffer = await ui.ImmutableBuffer.fromUint8List(bytes);
+      return await decode(buffer);
     } catch (error) {
       // loading may fail if the provided MIME type is incorrect (e.g. the Media Store may report a JPEG as a TIFF)
       debugPrint('$runtimeType _loadAsync failed with mimeType=$mimeType, uri=$uri, error=$error');

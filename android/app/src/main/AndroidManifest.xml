@@ -207,6 +207,9 @@ This change eventually prevents building the app with Flutter v3.0.2.
             android:name="com.google.android.geo.API_KEY"
             android:value="${googleApiKey}" />
         <meta-data
+            android:name="deckers.thibault.aves.huawei.API_KEY"
+            android:value="${huaweiApiKey}" />
+        <meta-data
             android:name="firebase_crashlytics_collection_enabled"
             android:value="false" />
         <!-- Don't delete the meta-data below.

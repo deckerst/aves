@@ -12,7 +12,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
-- upgraded Flutter to stable v3.0.4
+- upgraded Flutter to beta v3.1.0-9.0.pre
 
 ## <a id="v1.6.9"></a>[v1.6.9] - 2022-06-18
 
