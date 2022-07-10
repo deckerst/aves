@@ -47,14 +47,14 @@ class _InteractiveFilterTileState<T extends CollectionFilter> extends State<Inte
     final filter = gridItem.filter;
 
     void onTap() {
-      final appMode = context.read<ValueNotifier<AppMode>>().value;
+      final appMode = context.read<ValueNotifier<AppMode>?>()?.value;
       switch (appMode) {
         case AppMode.main:
         case AppMode.pickCollectionFiltersExternal:
         case AppMode.pickSingleMediaExternal:
         case AppMode.pickMultipleMediaExternal:
-          final selection = context.read<Selection<FilterGridItem<T>>>();
-          if (selection.isSelecting) {
+          final selection = context.read<Selection<FilterGridItem<T>>?>();
+          if (selection != null && selection.isSelecting) {
             selection.toggleSelection(gridItem);
           } else {
             _goToCollection(context, filter);
@@ -68,6 +68,7 @@ class _InteractiveFilterTileState<T extends CollectionFilter> extends State<Inte
         case AppMode.setWallpaper:
         case AppMode.slideshow:
         case AppMode.view:
+        case null:
           break;
       }
     }

@@ -23,7 +23,7 @@ class GlobalSearchHandler(private val context: Context) : MethodCallHandler {
     private fun registerCallback(call: MethodCall, result: MethodChannel.Result) {
         val callbackHandle = call.argument<Number>("callbackHandle")?.toLong()
         if (callbackHandle == null) {
-            result.error("registerCallback-args", "failed because of missing arguments", null)
+            result.error("registerCallback-args", "missing arguments", null)
             return
         }
 

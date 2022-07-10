@@ -49,7 +49,7 @@ class MediaFileHandler(private val contextWrapper: ContextWrapper) : MethodCallH
         val mimeType = call.argument<String>("mimeType") // MIME type is optional
         val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
         if (uri == null) {
-            result.error("getEntry-args", "failed because of missing arguments", null)
+            result.error("getEntry-args", "missing arguments", null)
             return
         }
 
@@ -77,7 +77,7 @@ class MediaFileHandler(private val contextWrapper: ContextWrapper) : MethodCallH
         val defaultSizeDip = call.argument<Number>("defaultSizeDip")?.toDouble()
 
         if (uri == null || mimeType == null || dateModifiedSecs == null || rotationDegrees == null || isFlipped == null || widthDip == null || heightDip == null || defaultSizeDip == null) {
-            result.error("getThumbnail-args", "failed because of missing arguments", null)
+            result.error("getThumbnail-args", "missing arguments", null)
             return
         }
 
@@ -110,7 +110,7 @@ class MediaFileHandler(private val contextWrapper: ContextWrapper) : MethodCallH
         val imageHeight = call.argument<Int>("imageHeight")
 
         if (uri == null || mimeType == null || sampleSize == null || x == null || y == null || width == null || height == null || imageWidth == null || imageHeight == null) {
-            result.error("getRegion-args", "failed because of missing arguments", null)
+            result.error("getRegion-args", "missing arguments", null)
             return
         }
 
@@ -146,7 +146,7 @@ class MediaFileHandler(private val contextWrapper: ContextWrapper) : MethodCallH
     private fun cancelFileOp(call: MethodCall, result: MethodChannel.Result) {
         val opId = call.argument<String>("opId")
         if (opId == null) {
-            result.error("cancelFileOp-args", "failed because of missing arguments", null)
+            result.error("cancelFileOp-args", "missing arguments", null)
             return
         }
 
@@ -164,7 +164,7 @@ class MediaFileHandler(private val contextWrapper: ContextWrapper) : MethodCallH
         var destinationDir = call.argument<String>("destinationPath")
         val nameConflictStrategy = NameConflictStrategy.get(call.argument<String>("nameConflictStrategy"))
         if (uri == null || desiredName == null || bytes == null || destinationDir == null || nameConflictStrategy == null) {
-            result.error("captureFrame-args", "failed because of missing arguments", null)
+            result.error("captureFrame-args", "missing arguments", null)
             return
         }
 

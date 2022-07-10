@@ -33,7 +33,7 @@ class MetadataEditHandler(private val contextWrapper: ContextWrapper) : MethodCa
     private fun rotate(call: MethodCall, result: MethodChannel.Result) {
         val clockwise = call.argument<Boolean>("clockwise")
         if (clockwise == null) {
-            result.error("rotate-args", "failed because of missing arguments", null)
+            result.error("rotate-args", "missing arguments", null)
             return
         }
 
@@ -48,7 +48,7 @@ class MetadataEditHandler(private val contextWrapper: ContextWrapper) : MethodCa
     private fun editOrientation(call: MethodCall, result: MethodChannel.Result, op: ExifOrientationOp) {
         val entryMap = call.argument<FieldMap>("entry")
         if (entryMap == null) {
-            result.error("editOrientation-args", "failed because of missing arguments", null)
+            result.error("editOrientation-args", "missing arguments", null)
             return
         }
 
@@ -78,7 +78,7 @@ class MetadataEditHandler(private val contextWrapper: ContextWrapper) : MethodCa
         val fields = call.argument<List<String>>("fields")
         val entryMap = call.argument<FieldMap>("entry")
         if (entryMap == null || fields == null) {
-            result.error("editDate-args", "failed because of missing arguments", null)
+            result.error("editDate-args", "missing arguments", null)
             return
         }
 
@@ -107,7 +107,7 @@ class MetadataEditHandler(private val contextWrapper: ContextWrapper) : MethodCa
         val entryMap = call.argument<FieldMap>("entry")
         val autoCorrectTrailerOffset = call.argument<Boolean>("autoCorrectTrailerOffset")
         if (entryMap == null || metadata == null || autoCorrectTrailerOffset == null) {
-            result.error("editMetadata-args", "failed because of missing arguments", null)
+            result.error("editMetadata-args", "missing arguments", null)
             return
         }
 
@@ -134,7 +134,7 @@ class MetadataEditHandler(private val contextWrapper: ContextWrapper) : MethodCa
     private fun removeTrailerVideo(call: MethodCall, result: MethodChannel.Result) {
         val entryMap = call.argument<FieldMap>("entry")
         if (entryMap == null) {
-            result.error("removeTrailerVideo-args", "failed because of missing arguments", null)
+            result.error("removeTrailerVideo-args", "missing arguments", null)
             return
         }
 
@@ -162,7 +162,7 @@ class MetadataEditHandler(private val contextWrapper: ContextWrapper) : MethodCa
         val types = call.argument<List<String>>("types")
         val entryMap = call.argument<FieldMap>("entry")
         if (entryMap == null || types == null) {
-            result.error("removeTypes-args", "failed because of missing arguments", null)
+            result.error("removeTypes-args", "missing arguments", null)
             return
         }
 
