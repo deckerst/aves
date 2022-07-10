@@ -96,7 +96,7 @@ class SearchSuggestionsProvider : MethodChannel.MethodCallHandler, ContentProvid
                             }
 
                             override fun notImplemented() {
-                                cont.resumeWithException(NotImplementedError("getSuggestions"))
+                                cont.resumeWithException(Exception("not implemented"))
                             }
                         })
                     }

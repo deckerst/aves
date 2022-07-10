@@ -33,7 +33,7 @@ class AnalysisHandler(private val activity: Activity, private val onAnalysisComp
     private fun registerCallback(call: MethodCall, result: MethodChannel.Result) {
         val callbackHandle = call.argument<Number>("callbackHandle")?.toLong()
         if (callbackHandle == null) {
-            result.error("registerCallback-args", "failed because of missing arguments", null)
+            result.error("registerCallback-args", "missing arguments", null)
             return
         }
 
@@ -47,7 +47,7 @@ class AnalysisHandler(private val activity: Activity, private val onAnalysisComp
     private fun startAnalysis(call: MethodCall, result: MethodChannel.Result) {
         val force = call.argument<Boolean>("force")
         if (force == null) {
-            result.error("startAnalysis-args", "failed because of missing arguments", null)
+            result.error("startAnalysis-args", "missing arguments", null)
             return
         }
 

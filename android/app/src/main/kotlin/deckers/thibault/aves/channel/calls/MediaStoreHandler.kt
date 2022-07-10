@@ -28,7 +28,7 @@ class MediaStoreHandler(private val context: Context) : MethodCallHandler {
     private fun checkObsoleteContentIds(call: MethodCall, result: MethodChannel.Result) {
         val knownContentIds = call.argument<List<Int?>>("knownContentIds")
         if (knownContentIds == null) {
-            result.error("checkObsoleteContentIds-args", "failed because of missing arguments", null)
+            result.error("checkObsoleteContentIds-args", "missing arguments", null)
             return
         }
         result.success(MediaStoreImageProvider().checkObsoleteContentIds(context, knownContentIds))
@@ -37,7 +37,7 @@ class MediaStoreHandler(private val context: Context) : MethodCallHandler {
     private fun checkObsoletePaths(call: MethodCall, result: MethodChannel.Result) {
         val knownPathById = call.argument<Map<Int?, String?>>("knownPathById")
         if (knownPathById == null) {
-            result.error("checkObsoletePaths-args", "failed because of missing arguments", null)
+            result.error("checkObsoletePaths-args", "missing arguments", null)
             return
         }
         result.success(MediaStoreImageProvider().checkObsoletePaths(context, knownPathById))

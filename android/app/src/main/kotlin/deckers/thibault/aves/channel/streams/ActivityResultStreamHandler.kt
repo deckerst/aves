@@ -56,7 +56,7 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
     private suspend fun requestDirectoryAccess() {
         val path = args["path"] as String?
         if (path == null) {
-            error("requestDirectoryAccess-args", "failed because of missing arguments", null)
+            error("requestDirectoryAccess-args", "missing arguments", null)
             return
         }
 
@@ -78,7 +78,7 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
         val uris = (args["uris"] as List<*>?)?.mapNotNull { if (it is String) Uri.parse(it) else null }
         val mimeTypes = (args["mimeTypes"] as List<*>?)?.mapNotNull { if (it is String) it else null }
         if (uris == null || uris.isEmpty() || mimeTypes == null || mimeTypes.size != uris.size) {
-            error("requestMediaFileAccess-args", "failed because of missing arguments", null)
+            error("requestMediaFileAccess-args", "missing arguments", null)
             return
         }
 
@@ -112,7 +112,7 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
         val mimeType = args["mimeType"] as String?
         val bytes = args["bytes"] as ByteArray?
         if (name == null || mimeType == null || bytes == null) {
-            error("createFile-args", "failed because of missing arguments", null)
+            error("createFile-args", "missing arguments", null)
             return
         }
 

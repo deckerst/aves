@@ -29,7 +29,7 @@ class WallpaperHandler(private val contextWrapper: ContextWrapper) : MethodCallH
         val home = call.argument<Boolean>("home")
         val lock = call.argument<Boolean>("lock")
         if (bytes == null || home == null || lock == null) {
-            result.error("setWallpaper-args", "failed because of missing arguments", null)
+            result.error("setWallpaper-args", "missing arguments", null)
             return
         }
 

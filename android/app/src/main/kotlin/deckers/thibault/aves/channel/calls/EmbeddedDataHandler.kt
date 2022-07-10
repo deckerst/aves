@@ -57,7 +57,7 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
         val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
         val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
         if (mimeType == null || uri == null) {
-            result.error("getExifThumbnails-args", "failed because of missing arguments", null)
+            result.error("getExifThumbnails-args", "missing arguments", null)
             return
         }
 
@@ -88,7 +88,7 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
         val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
         val displayName = call.argument<String>("displayName")
         if (mimeType == null || uri == null || sizeBytes == null) {
-            result.error("extractMotionPhotoVideo-args", "failed because of missing arguments", null)
+            result.error("extractMotionPhotoVideo-args", "missing arguments", null)
             return
         }
 
@@ -108,7 +108,7 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
         val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
         val displayName = call.argument<String>("displayName")
         if (uri == null) {
-            result.error("extractVideoEmbeddedPicture-args", "failed because of missing arguments", null)
+            result.error("extractVideoEmbeddedPicture-args", "missing arguments", null)
             return
         }
 
@@ -143,7 +143,7 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
         val dataPropPath = call.argument<String>("propPath")
         val embedMimeType = call.argument<String>("propMimeType")
         if (mimeType == null || uri == null || dataPropPath == null || embedMimeType == null) {
-            result.error("extractXmpDataProp-args", "failed because of missing arguments", null)
+            result.error("extractXmpDataProp-args", "missing arguments", null)
             return
         }
 

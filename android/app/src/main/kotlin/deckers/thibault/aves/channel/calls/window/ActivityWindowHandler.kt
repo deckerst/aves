@@ -15,7 +15,7 @@ class ActivityWindowHandler(private val activity: Activity) : WindowHandler(acti
     override fun keepScreenOn(call: MethodCall, result: MethodChannel.Result) {
         val on = call.argument<Boolean>("on")
         if (on == null) {
-            result.error("keepOn-args", "failed because of missing arguments", null)
+            result.error("keepOn-args", "missing arguments", null)
             return
         }
 
@@ -32,7 +32,7 @@ class ActivityWindowHandler(private val activity: Activity) : WindowHandler(acti
     override fun requestOrientation(call: MethodCall, result: MethodChannel.Result) {
         val orientation = call.argument<Int>("orientation")
         if (orientation == null) {
-            result.error("requestOrientation-args", "failed because of missing arguments", null)
+            result.error("requestOrientation-args", "missing arguments", null)
             return
         }
         activity.requestedOrientation = orientation
@@ -46,7 +46,7 @@ class ActivityWindowHandler(private val activity: Activity) : WindowHandler(acti
     override fun setCutoutMode(call: MethodCall, result: MethodChannel.Result) {
         val use = call.argument<Boolean>("use")
         if (use == null) {
-            result.error("setCutoutMode-args", "failed because of missing arguments", null)
+            result.error("setCutoutMode-args", "missing arguments", null)
             return
         }
 

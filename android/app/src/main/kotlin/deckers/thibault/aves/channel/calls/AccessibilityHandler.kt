@@ -49,7 +49,7 @@ class AccessibilityHandler(private val contextWrapper: ContextWrapper) : MethodC
         val originalTimeoutMillis = call.argument<Int>("originalTimeoutMillis")
         val content = call.argument<List<String>>("content")
         if (originalTimeoutMillis == null || content == null) {
-            result.error("getRecommendedTimeoutMillis-args", "failed because of missing arguments", null)
+            result.error("getRecommendedTimeoutMillis-args", "missing arguments", null)
             return
         }
 

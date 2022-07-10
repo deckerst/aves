@@ -249,9 +249,9 @@ class AvesEntry {
 
   bool get is360 => _catalogMetadata?.is360 ?? false;
 
-  bool get isMediaStoreContentUri => uri.startsWith('content://media/');
+  bool get isMediaStoreContent => uri.startsWith('content://media/');
 
-  bool get canEdit => path != null && !trashed && isMediaStoreContentUri;
+  bool get canEdit => path != null && !trashed && isMediaStoreContent;
 
   bool get canEditDate => canEdit && (canEditExif || canEditXmp);
 

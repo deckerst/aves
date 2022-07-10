@@ -143,7 +143,7 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
         val height = arguments["height"] as Int?
         val nameConflictStrategy = NameConflictStrategy.get(arguments["nameConflictStrategy"] as String?)
         if (destinationDir == null || mimeType == null || width == null || height == null || nameConflictStrategy == null) {
-            error("export-args", "failed because of missing arguments", null)
+            error("export-args", "missing arguments", null)
             return
         }
 
@@ -174,7 +174,7 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
         val nameConflictStrategy = NameConflictStrategy.get(arguments["nameConflictStrategy"] as String?)
         val rawEntryMap = arguments["entriesByDestination"] as Map<*, *>?
         if (copy == null || nameConflictStrategy == null || rawEntryMap == null || rawEntryMap.isEmpty()) {
-            error("move-args", "failed because of missing arguments", null)
+            error("move-args", "missing arguments", null)
             return
         }
 
@@ -207,7 +207,7 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
 
         val rawEntryMap = arguments["entriesToNewName"] as Map<*, *>?
         if (rawEntryMap == null || rawEntryMap.isEmpty()) {
-            error("rename-args", "failed because of missing arguments", null)
+            error("rename-args", "missing arguments", null)
             return
         }
 
