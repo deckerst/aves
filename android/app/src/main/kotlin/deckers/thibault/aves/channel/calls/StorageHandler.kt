@@ -55,7 +55,7 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
                                 )
                             )
                         }
-                    } catch (e: IllegalArgumentException) {
+                    } catch (e: Exception) {
                         // ignore
                     }
                 }
@@ -80,7 +80,7 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
                             "state" to EnvironmentCompat.getStorageState(volumeFile)
                         )
                     )
-                } catch (e: IllegalArgumentException) {
+                } catch (e: Exception) {
                     // ignore
                 }
             }
