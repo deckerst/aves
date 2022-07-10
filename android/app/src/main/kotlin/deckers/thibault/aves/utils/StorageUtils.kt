@@ -290,7 +290,7 @@ object StorageUtils {
                         if (volume != null && uuid.equals(volume.uuid, ignoreCase = true)) {
                             return volumePath
                         }
-                    } catch (e: IllegalArgumentException) {
+                    } catch (e: Exception) {
                         // ignore
                     }
                 }
