@@ -22,6 +22,8 @@ class DrawerAlbumTab extends StatefulWidget {
 }
 
 class _DrawerAlbumTabState extends State<DrawerAlbumTab> {
+  List<String> get items => widget.items;
+
   @override
   Widget build(BuildContext context) {
     final source = context.read<CollectionSource>();
@@ -32,7 +34,7 @@ class _DrawerAlbumTabState extends State<DrawerAlbumTab> {
         Flexible(
           child: ReorderableListView.builder(
             itemBuilder: (context, index) {
-              final album = widget.items[index];
+              final album = items[index];
               final filter = AlbumFilter(album, source.getAlbumDisplayName(context, album));
               return ListTile(
                 key: ValueKey(album),
@@ -41,17 +43,17 @@ class _DrawerAlbumTabState extends State<DrawerAlbumTab> {
                 trailing: IconButton(
                   icon: const Icon(AIcons.clear),
                   onPressed: () {
-                    setState(() => widget.items.remove(album));
+                    setState(() => items.remove(album));
                   },
                   tooltip: context.l10n.actionRemove,
                 ),
               );
             },
-            itemCount: widget.items.length,
+            itemCount: items.length,
             onReorder: (oldIndex, newIndex) {
               setState(() {
                 if (oldIndex < newIndex) newIndex -= 1;
-                widget.items.insert(newIndex, widget.items.removeAt(oldIndex));
+                items.insert(newIndex, items.removeAt(oldIndex));
               });
             },
             shrinkWrap: true,
@@ -64,8 +66,8 @@ class _DrawerAlbumTabState extends State<DrawerAlbumTab> {
           label: context.l10n.settingsNavigationDrawerAddAlbum,
           onPressed: () async {
             final album = await pickAlbum(context: context, moveType: null);
-            if (album == null) return;
-            setState(() => widget.items.add(album));
+            if (album == null || items.contains(album)) return;
+            setState(() => items.add(album));
           },
         ),
       ],
