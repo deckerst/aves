@@ -48,7 +48,6 @@ android {
         main.java.srcDirs += 'src/main/kotlin'
     }
 
-
     defaultConfig {
         applicationId appId
         // minSdkVersion constraints:
