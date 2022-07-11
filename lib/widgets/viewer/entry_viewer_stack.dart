@@ -62,9 +62,10 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
   late ValueNotifier<int> _currentVerticalPage;
   late PageController _horizontalPager, _verticalPager;
   final AChangeNotifier _verticalScrollNotifier = AChangeNotifier();
+  bool _overlayInitialized = false;
   final ValueNotifier<bool> _overlayVisible = ValueNotifier(true);
   late AnimationController _overlayAnimationController;
-  late Animation<double> _overlayButtonScale, _overlayVideoControlScale;
+  late Animation<double> _overlayButtonScale, _overlayVideoControlScale, _overlayOpacity;
   late Animation<Offset> _overlayTopOffset;
   EdgeInsets? _frozenViewInsets, _frozenViewPadding;
   late VideoActionDelegate _videoActionDelegate;
@@ -127,6 +128,10 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     _overlayVideoControlScale = CurvedAnimation(
       parent: _overlayAnimationController,
       // no bounce at the bottom, to avoid video controller displacement
+      curve: Curves.easeOutQuad,
+    );
+    _overlayOpacity = CurvedAnimation(
+      parent: _overlayAnimationController,
       curve: Curves.easeOutQuad,
     );
     _overlayTopOffset = Tween(begin: const Offset(0, -1), end: const Offset(0, 0)).animate(CurvedAnimation(
@@ -259,6 +264,11 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
                 collection: collection,
                 entryNotifier: entryNotifier,
                 viewerController: viewerController,
+                overlayOpacity: _overlayInitialized
+                    ? _overlayOpacity
+                    : settings.showOverlayOnOpening
+                        ? kAlwaysCompleteAnimation
+                        : kAlwaysDismissedAnimation,
                 verticalPager: _verticalPager,
                 horizontalPager: _horizontalPager,
                 onVerticalPageChanged: _onVerticalPageChanged,
@@ -644,6 +654,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     // to show overlay after hero animation is complete
     await Future.delayed(ModalRoute.of(context)!.transitionDuration * timeDilation);
     await _onOverlayVisibleChange();
+    _overlayInitialized = true;
   }
 
   Future<void> _onOverlayVisibleChange({bool animate = true}) async {
