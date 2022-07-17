@@ -48,35 +48,9 @@
   ],
 
   "ru": [
-    "slideshowActionResume",
-    "slideshowActionShowInCollection",
     "filterOnThisDayLabel",
-    "slideshowVideoPlaybackSkip",
-    "slideshowVideoPlaybackMuted",
-    "slideshowVideoPlaybackWithSound",
-    "viewerTransitionSlide",
-    "viewerTransitionParallax",
-    "viewerTransitionFade",
-    "viewerTransitionZoomIn",
-    "wallpaperTargetHome",
-    "wallpaperTargetLock",
-    "wallpaperTargetHomeLock",
-    "menuActionSlideshow",
-    "collectionEmptyGrantAccessButtonLabel",
-    "settingsViewerSlideshowTile",
-    "settingsViewerSlideshowTitle",
-    "settingsSlideshowRepeat",
-    "settingsSlideshowShuffle",
     "settingsSlideshowFillScreen",
-    "settingsSlideshowTransitionTile",
-    "settingsSlideshowTransitionTitle",
-    "settingsSlideshowIntervalTile",
-    "settingsSlideshowIntervalTitle",
-    "settingsSlideshowVideoPlaybackTile",
-    "settingsSlideshowVideoPlaybackTitle",
-    "settingsThemeEnableDynamicColor",
-    "settingsScreenSaverTitle",
-    "viewerSetWallpaperButtonLabel"
+    "settingsScreenSaverTitle"
   ],
 
   "tr": [
