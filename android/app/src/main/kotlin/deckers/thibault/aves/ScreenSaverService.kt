@@ -92,19 +92,18 @@ class ScreenSaverService : DreamService() {
         }
     }
 
-
     private fun initChannels() {
-        val messenger = flutterEngine!!.dartExecutor.binaryMessenger
+        val messenger = flutterEngine!!.dartExecutor
 
         // dart -> platform -> dart
         // - need Context
         MethodChannel(messenger, DeviceHandler.CHANNEL).setMethodCallHandler(DeviceHandler(this))
         MethodChannel(messenger, EmbeddedDataHandler.CHANNEL).setMethodCallHandler(EmbeddedDataHandler(this))
+        MethodChannel(messenger, MediaFetchHandler.CHANNEL).setMethodCallHandler(MediaFetchHandler(this))
         MethodChannel(messenger, MediaStoreHandler.CHANNEL).setMethodCallHandler(MediaStoreHandler(this))
         MethodChannel(messenger, MetadataFetchHandler.CHANNEL).setMethodCallHandler(MetadataFetchHandler(this))
         // - need ContextWrapper
         MethodChannel(messenger, AccessibilityHandler.CHANNEL).setMethodCallHandler(AccessibilityHandler(this))
-        MethodChannel(messenger, MediaFileHandler.CHANNEL).setMethodCallHandler(MediaFileHandler(this))
         // - need Service
         MethodChannel(messenger, WindowHandler.CHANNEL).setMethodCallHandler(ServiceWindowHandler(this))
 

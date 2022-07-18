@@ -25,7 +25,8 @@
   "showTooltip": "Показать",
   "hideTooltip": "Скрыть",
   "actionRemove": "Удалить",
-  "resetButtonTooltip": "Сбросить",
+  "resetTooltip": "Сбросить",
+  "saveTooltip": "Сохранить",
 
   "doubleBackExitMessage": "Нажмите «Назад» еще раз, чтобы выйти.",
   "doNotAskAgain": "Больше не спрашивать",
@@ -303,7 +304,6 @@
 
   "aboutBug": "Отчет об ошибке",
   "aboutBugSaveLogInstruction": "Сохраните логи приложения в файл",
-  "aboutBugSaveLogButton": "Сохранить",
   "aboutBugCopyInfoInstruction": "Скопируйте системную информацию",
   "aboutBugCopyInfoButton": "Скопировать",
   "aboutBugReportInstruction": "Отправьте отчёт об ошибке на GitHub вместе с логами и системной информацией",

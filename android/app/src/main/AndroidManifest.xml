@@ -1,3 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+
 <!--
 Android Studio Chipmunk (2021.2.1) recommends:
 - removing "package" from AndroidManifest.xml
@@ -164,6 +166,28 @@ This change eventually prevents building the app with Flutter v3.0.2.
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".HomeWidgetSettingsActivity"
+            android:exported="false"
+            android:theme="@style/NormalTheme">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+
+        <receiver
+            android:name=".HomeWidgetProvider"
+            android:exported="false"
+            android:label="@string/app_widget_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/app_widget_info" />
+        </receiver>
 
         <service
             android:name=".AnalysisService"

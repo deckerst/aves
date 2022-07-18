@@ -25,7 +25,8 @@
   "showTooltip": "Mostra",
   "hideTooltip": "Nascondi",
   "actionRemove": "Rimuovi",
-  "resetButtonTooltip": "Reimposta",
+  "resetTooltip": "Reimposta",
+  "saveTooltip": "Salva",
 
   "doubleBackExitMessage": "Tocca di nuovo «indietro» per uscire",
   "doNotAskAgain": "Non chiedere di nuovo",
@@ -303,7 +304,6 @@
 
   "aboutBug": "Segnalazione bug",
   "aboutBugSaveLogInstruction": "Salva i log dell’app in un file",
-  "aboutBugSaveLogButton": "Salva",
   "aboutBugCopyInfoInstruction": "Copia le informazioni di sistema",
   "aboutBugCopyInfoButton": "Copia",
   "aboutBugReportInstruction": "Segnala su GitHub con i log e le informazioni di sistema",

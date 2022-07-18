@@ -235,7 +235,7 @@ class MediaStoreSource extends CollectionSource {
     for (final kv in uriByContentId.entries) {
       final contentId = kv.key;
       final uri = kv.value;
-      final sourceEntry = await mediaFileService.getEntry(uri, null);
+      final sourceEntry = await mediaFetchService.getEntry(uri, null);
       if (sourceEntry != null) {
         final existingEntry = allEntries.firstWhereOrNull((entry) => entry.contentId == contentId);
         // compare paths because some apps move files without updating their `last modified date`

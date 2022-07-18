@@ -25,7 +25,8 @@
   "showTooltip": "Göster",
   "hideTooltip": "Gizle",
   "actionRemove": "Kaldır",
-  "resetButtonTooltip": "Sıfırla",
+  "resetTooltip": "Sıfırla",
+  "saveTooltip": "Kaydet",
 
   "doubleBackExitMessage": "Çıkmak için tekrar “geri”, düğmesine dokunun.",
   "doNotAskAgain": "Bir daha sorma",
@@ -295,7 +296,6 @@
 
   "aboutBug": "Hata Bildirimi",
   "aboutBugSaveLogInstruction": "Uygulama günlüklerini bir dosyaya kaydet",
-  "aboutBugSaveLogButton": "Kaydet",
   "aboutBugCopyInfoInstruction": "Sistem bilgilerini kopyala",
   "aboutBugCopyInfoButton": "Kopyala",
   "aboutBugReportInstruction": "GitHub'da günlükleri ve sistem bilgilerini içeren bir rapor oluştur",

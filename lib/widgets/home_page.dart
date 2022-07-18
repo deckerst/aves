@@ -14,6 +14,7 @@ import 'package:aves/services/analysis_service.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/global_search.dart';
 import 'package:aves/services/intent_service.dart';
+import 'package:aves/services/widget_service.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/behaviour/routes.dart';
@@ -22,6 +23,7 @@ import 'package:aves/widgets/common/search/route.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
 import 'package:aves/widgets/settings/screen_saver_settings_page.dart';
+import 'package:aves/widgets/settings/home_widget_settings_page.dart';
 import 'package:aves/widgets/viewer/entry_viewer_page.dart';
 import 'package:aves/widgets/viewer/screen_saver_page.dart';
 import 'package:aves/widgets/wallpaper_page.dart';
@@ -47,6 +49,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   AvesEntry? _viewerEntry;
+  int? _widgetId;
   String? _initialRouteName, _initialSearchQuery;
   Set<CollectionFilter>? _initialFilters;
 
@@ -57,6 +60,17 @@ class _HomePageState extends State<HomePage> {
   static const actionSearch = 'search';
   static const actionSetWallpaper = 'set_wallpaper';
   static const actionView = 'view';
+  static const actionWidgetOpen = 'widget_open';
+  static const actionWidgetSettings = 'widget_settings';
+
+  static const intentDataKeyAction = 'action';
+  static const intentDataKeyAllowMultiple = 'allowMultiple';
+  static const intentDataKeyFilters = 'filters';
+  static const intentDataKeyMimeType = 'mimeType';
+  static const intentDataKeyPage = 'page';
+  static const intentDataKeyQuery = 'query';
+  static const intentDataKeyUri = 'uri';
+  static const intentDataKeyWidgetId = 'widgetId';
 
   static const allowedShortcutRoutes = [
     CollectionPage.routeName,
@@ -88,7 +102,7 @@ class _HomePageState extends State<HomePage> {
 
     var appMode = AppMode.main;
     final intentData = widget.intentData ?? await IntentService.getIntentData();
-    final intentAction = intentData['action'];
+    final intentAction = intentData[intentDataKeyAction];
 
     if (!{actionScreenSaver, actionSetWallpaper}.contains(intentAction)) {
       await androidFileUtils.init();
@@ -101,19 +115,31 @@ class _HomePageState extends State<HomePage> {
       await reportService.log('Intent data=$intentData');
       switch (intentAction) {
         case actionView:
-          _viewerEntry = await _initViewerEntry(
-            uri: intentData['uri'],
-            mimeType: intentData['mimeType'],
-          );
-          if (_viewerEntry != null) {
-            appMode = AppMode.view;
+        case actionWidgetOpen:
+          String? uri, mimeType;
+          final widgetId = intentData[intentDataKeyWidgetId];
+          if (widgetId != null) {
+            uri = settings.getWidgetUri(widgetId);
+            unawaited(WidgetService.update(widgetId));
+          } else {
+            uri = intentData[intentDataKeyUri];
+            mimeType = intentData[intentDataKeyMimeType];
+          }
+          if (uri != null) {
+            _viewerEntry = await _initViewerEntry(
+              uri: uri,
+              mimeType: mimeType,
+            );
+            if (_viewerEntry != null) {
+              appMode = AppMode.view;
+            }
           }
           break;
         case actionPickItems:
           // TODO TLAD apply pick mimetype(s)
           // some apps define multiple types, separated by a space (maybe other signs too, like `,` `;`?)
-          String? pickMimeTypes = intentData['mimeType'];
-          final multiple = intentData['allowMultiple'] ?? false;
+          String? pickMimeTypes = intentData[intentDataKeyMimeType];
+          final multiple = intentData[intentDataKeyAllowMultiple] ?? false;
           debugPrint('pick mimeType=$pickMimeTypes multiple=$multiple');
           appMode = multiple ? AppMode.pickMultipleMediaExternal : AppMode.pickSingleMediaExternal;
           break;
@@ -129,23 +155,27 @@ class _HomePageState extends State<HomePage> {
           break;
         case actionSearch:
           _initialRouteName = CollectionSearchDelegate.pageRouteName;
-          _initialSearchQuery = intentData['query'];
+          _initialSearchQuery = intentData[intentDataKeyQuery];
           break;
         case actionSetWallpaper:
           appMode = AppMode.setWallpaper;
           _viewerEntry = await _initViewerEntry(
-            uri: intentData['uri'],
-            mimeType: intentData['mimeType'],
+            uri: intentData[intentDataKeyUri],
+            mimeType: intentData[intentDataKeyMimeType],
           );
+          break;
+        case actionWidgetSettings:
+          _initialRouteName = HomeWidgetSettingsPage.routeName;
+          _widgetId = intentData[intentDataKeyWidgetId] ?? 0;
           break;
         default:
           // do not use 'route' as extra key, as the Flutter framework acts on it
-          final extraRoute = intentData['page'];
+          final extraRoute = intentData[intentDataKeyPage];
           if (allowedShortcutRoutes.contains(extraRoute)) {
             _initialRouteName = extraRoute;
           }
       }
-      final extraFilters = intentData['filters'];
+      final extraFilters = intentData[intentDataKeyFilters];
       _initialFilters = extraFilters != null ? (extraFilters as List).cast<String>().map(CollectionFilter.fromJson).whereNotNull().toSet() : null;
     }
     context.read<ValueNotifier<AppMode>>().value = appMode;
@@ -207,7 +237,7 @@ class _HomePageState extends State<HomePage> {
       // convert this file path to a proper URI
       uri = Uri.file(uri).toString();
     }
-    final entry = await mediaFileService.getEntry(uri, mimeType);
+    final entry = await mediaFetchService.getEntry(uri, mimeType);
     if (entry != null) {
       // cataloguing is essential for coordinates and video rotation
       await entry.catalog(background: false, force: false, persist: false);
@@ -308,6 +338,13 @@ class _HomePageState extends State<HomePage> {
         return DirectMaterialPageRoute(
           settings: RouteSettings(name: routeName),
           builder: (context) => const ScreenSaverSettingsPage(),
+        );
+      case HomeWidgetSettingsPage.routeName:
+        return DirectMaterialPageRoute(
+          settings: RouteSettings(name: routeName),
+          builder: (context) => HomeWidgetSettingsPage(
+            widgetId: _widgetId!,
+          ),
         );
       case CollectionSearchDelegate.pageRouteName:
         return SearchPageRoute(

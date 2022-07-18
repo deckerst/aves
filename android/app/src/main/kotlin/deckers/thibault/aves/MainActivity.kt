@@ -2,6 +2,7 @@ package deckers.thibault.aves
 
 import android.annotation.SuppressLint
 import android.app.SearchManager
+import android.appwidget.AppWidgetManager
 import android.content.ClipData
 import android.content.Intent
 import android.net.Uri
@@ -33,7 +34,7 @@ open class MainActivity : FlutterActivity() {
     private lateinit var settingsChangeStreamHandler: SettingsChangeStreamHandler
     private lateinit var intentStreamHandler: IntentStreamHandler
     private lateinit var analysisStreamHandler: AnalysisStreamHandler
-    private lateinit var intentDataMap: MutableMap<String, Any?>
+    internal lateinit var intentDataMap: MutableMap<String, Any?>
     private lateinit var analysisHandler: AnalysisHandler
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,7 +57,7 @@ open class MainActivity : FlutterActivity() {
 //        )
         super.onCreate(savedInstanceState)
 
-        val messenger = flutterEngine!!.dartExecutor.binaryMessenger
+        val messenger = flutterEngine!!.dartExecutor
 
         // dart -> platform -> dart
         // - need Context
@@ -68,12 +69,14 @@ open class MainActivity : FlutterActivity() {
         MethodChannel(messenger, EmbeddedDataHandler.CHANNEL).setMethodCallHandler(EmbeddedDataHandler(this))
         MethodChannel(messenger, GeocodingHandler.CHANNEL).setMethodCallHandler(GeocodingHandler(this))
         MethodChannel(messenger, GlobalSearchHandler.CHANNEL).setMethodCallHandler(GlobalSearchHandler(this))
+        MethodChannel(messenger, HomeWidgetHandler.CHANNEL).setMethodCallHandler(HomeWidgetHandler(this))
+        MethodChannel(messenger, MediaFetchHandler.CHANNEL).setMethodCallHandler(MediaFetchHandler(this))
         MethodChannel(messenger, MediaStoreHandler.CHANNEL).setMethodCallHandler(MediaStoreHandler(this))
         MethodChannel(messenger, MetadataFetchHandler.CHANNEL).setMethodCallHandler(MetadataFetchHandler(this))
         MethodChannel(messenger, StorageHandler.CHANNEL).setMethodCallHandler(StorageHandler(this))
         // - need ContextWrapper
         MethodChannel(messenger, AccessibilityHandler.CHANNEL).setMethodCallHandler(AccessibilityHandler(this))
-        MethodChannel(messenger, MediaFileHandler.CHANNEL).setMethodCallHandler(MediaFileHandler(this))
+        MethodChannel(messenger, MediaEditHandler.CHANNEL).setMethodCallHandler(MediaEditHandler(this))
         MethodChannel(messenger, MetadataEditHandler.CHANNEL).setMethodCallHandler(MetadataEditHandler(this))
         // - need Activity
         MethodChannel(messenger, WindowHandler.CHANNEL).setMethodCallHandler(ActivityWindowHandler(this))
@@ -211,7 +214,7 @@ open class MainActivity : FlutterActivity() {
     }
 
     open fun extractIntentData(intent: Intent?): MutableMap<String, Any?> {
-        when (intent?.action) {
+        when (val action = intent?.action) {
             Intent.ACTION_MAIN -> {
                 intent.getStringExtra(EXTRA_KEY_PAGE)?.let { page ->
                     val filters = extractFiltersFromIntent(intent)
@@ -253,9 +256,18 @@ open class MainActivity : FlutterActivity() {
             INTENT_ACTION_PICK_COLLECTION_FILTERS -> {
                 val initialFilters = extractFiltersFromIntent(intent)
                 return hashMapOf(
-                    INTENT_DATA_KEY_ACTION to INTENT_ACTION_PICK_COLLECTION_FILTERS,
-                    INTENT_DATA_KEY_FILTERS to initialFilters
+                    INTENT_DATA_KEY_ACTION to action,
+                    INTENT_DATA_KEY_FILTERS to initialFilters,
                 )
+            }
+            INTENT_ACTION_WIDGET_OPEN -> {
+                val widgetId = intent.getIntExtra(EXTRA_KEY_WIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID)
+                if (widgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
+                    return hashMapOf(
+                        INTENT_DATA_KEY_ACTION to action,
+                        INTENT_DATA_KEY_WIDGET_ID to widgetId,
+                    )
+                }
             }
             Intent.ACTION_RUN -> {
                 // flutter run
@@ -365,14 +377,6 @@ open class MainActivity : FlutterActivity() {
         const val MEDIA_WRITE_BULK_PERMISSION_REQUEST = 6
         const val PICK_COLLECTION_FILTERS_REQUEST = 7
 
-        const val INTENT_DATA_KEY_ACTION = "action"
-        const val INTENT_DATA_KEY_FILTERS = "filters"
-        const val INTENT_DATA_KEY_MIME_TYPE = "mimeType"
-        const val INTENT_DATA_KEY_ALLOW_MULTIPLE = "allowMultiple"
-        const val INTENT_DATA_KEY_PAGE = "page"
-        const val INTENT_DATA_KEY_URI = "uri"
-        const val INTENT_DATA_KEY_QUERY = "query"
-
         const val INTENT_ACTION_PICK_ITEMS = "pick_items"
         const val INTENT_ACTION_PICK_COLLECTION_FILTERS = "pick_collection_filters"
         const val INTENT_ACTION_SCREEN_SAVER = "screen_saver"
@@ -380,10 +384,22 @@ open class MainActivity : FlutterActivity() {
         const val INTENT_ACTION_SEARCH = "search"
         const val INTENT_ACTION_SET_WALLPAPER = "set_wallpaper"
         const val INTENT_ACTION_VIEW = "view"
+        const val INTENT_ACTION_WIDGET_OPEN = "widget_open"
+        const val INTENT_ACTION_WIDGET_SETTINGS = "widget_settings"
+
+        const val INTENT_DATA_KEY_ACTION = "action"
+        const val INTENT_DATA_KEY_ALLOW_MULTIPLE = "allowMultiple"
+        const val INTENT_DATA_KEY_FILTERS = "filters"
+        const val INTENT_DATA_KEY_MIME_TYPE = "mimeType"
+        const val INTENT_DATA_KEY_PAGE = "page"
+        const val INTENT_DATA_KEY_QUERY = "query"
+        const val INTENT_DATA_KEY_URI = "uri"
+        const val INTENT_DATA_KEY_WIDGET_ID = "widgetId"
 
         const val EXTRA_KEY_PAGE = "page"
         const val EXTRA_KEY_FILTERS_ARRAY = "filters"
         const val EXTRA_KEY_FILTERS_STRING = "filtersString"
+        const val EXTRA_KEY_WIDGET_ID = "widgetId"
 
         // request code to pending runnable
         val pendingStorageAccessResultHandlers = ConcurrentHashMap<Int, PendingStorageAccessResultHandler>()

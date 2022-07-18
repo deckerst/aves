@@ -53,7 +53,8 @@
   "showTooltip": "Show",
   "hideTooltip": "Hide",
   "actionRemove": "Remove",
-  "resetButtonTooltip": "Reset",
+  "resetTooltip": "Reset",
+  "saveTooltip": "Save",
 
   "doubleBackExitMessage": "Tap “back” again to exit.",
   "doNotAskAgain": "Do not ask again",
@@ -434,7 +435,6 @@
 
   "aboutBug": "Bug Report",
   "aboutBugSaveLogInstruction": "Save app logs to a file",
-  "aboutBugSaveLogButton": "Save",
   "aboutBugCopyInfoInstruction": "Copy system information",
   "aboutBugCopyInfoButton": "Copy",
   "aboutBugReportInstruction": "Report on GitHub with the logs and system information",
@@ -767,7 +767,10 @@
   "settingsUnitSystemTile": "Units",
   "settingsUnitSystemTitle": "Units",
 
-  "settingsScreenSaverTitle": "Screen Saver",
+  "settingsScreenSaverPageTitle": "Screen Saver",
+
+  "settingsWidgetPageTitle": "Photo Frame",
+  "settingsWidgetShowOutline": "Outline",
 
   "statsPageTitle": "Stats",
   "statsWithGps": "{count, plural, =1{1 item with location} other{{count} items with location}}",

@@ -5,7 +5,7 @@ import android.net.Uri
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import deckers.thibault.aves.channel.calls.MediaFileHandler.Companion.cancelledOps
+import deckers.thibault.aves.channel.calls.MediaEditHandler.Companion.cancelledOps
 import deckers.thibault.aves.model.AvesEntry
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.model.NameConflictStrategy

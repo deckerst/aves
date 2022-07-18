@@ -250,12 +250,12 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
     if (!await checkStoragePermissionForAlbums(context, filledAlbums)) return;
 
     source.pauseMonitoring();
-    final opId = mediaFileService.newOpId;
+    final opId = mediaEditService.newOpId;
     await showOpReport<ImageOpEvent>(
       context: context,
-      opStream: mediaFileService.delete(opId: opId, entries: todoEntries),
+      opStream: mediaEditService.delete(opId: opId, entries: todoEntries),
       itemCount: todoCount,
-      onCancel: () => mediaFileService.cancelFileOp(opId),
+      onCancel: () => mediaEditService.cancelFileOp(opId),
       onDone: (processed) async {
         final successOps = processed.where((event) => event.success);
         final deletedOps = successOps.where((e) => !e.skipped).toSet();
@@ -314,10 +314,10 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
     }
 
     source.pauseMonitoring();
-    final opId = mediaFileService.newOpId;
+    final opId = mediaEditService.newOpId;
     await showOpReport<MoveOpEvent>(
       context: context,
-      opStream: mediaFileService.move(
+      opStream: mediaEditService.move(
         opId: opId,
         entriesByDestination: {destinationAlbum: todoEntries},
         copy: false,
@@ -325,7 +325,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
         nameConflictStrategy: NameConflictStrategy.rename,
       ),
       itemCount: todoCount,
-      onCancel: () => mediaFileService.cancelFileOp(opId),
+      onCancel: () => mediaEditService.cancelFileOp(opId),
       onDone: (processed) async {
         final successOps = processed.where((e) => e.success).toSet();
         final movedOps = successOps.where((e) => !e.skipped).toSet();

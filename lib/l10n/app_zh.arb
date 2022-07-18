@@ -25,7 +25,8 @@
   "showTooltip": "显示",
   "hideTooltip": "隐藏",
   "actionRemove": "移除",
-  "resetButtonTooltip": "重置",
+  "resetTooltip": "重置",
+  "saveTooltip": "保存",
 
   "doubleBackExitMessage": "再按一次退出",
   "doNotAskAgain": "不再询问",
@@ -303,7 +304,6 @@
 
   "aboutBug": "报告错误",
   "aboutBugSaveLogInstruction": "将应用日志保存到文件",
-  "aboutBugSaveLogButton": "保存",
   "aboutBugCopyInfoInstruction": "复制系统信息",
   "aboutBugCopyInfoButton": "复制",
   "aboutBugReportInstruction": "在 GitHub 上报告日志和系统信息",

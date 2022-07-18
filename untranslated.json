@@ -2,55 +2,73 @@
   "de": [
     "filterOnThisDayLabel",
     "settingsSlideshowFillScreen",
-    "settingsScreenSaverTitle"
+    "settingsScreenSaverPageTitle",
+    "settingsWidgetPageTitle",
+    "settingsWidgetShowOutline"
   ],
 
   "es": [
     "filterOnThisDayLabel",
     "settingsSlideshowFillScreen",
-    "settingsScreenSaverTitle"
+    "settingsScreenSaverPageTitle",
+    "settingsWidgetPageTitle",
+    "settingsWidgetShowOutline"
   ],
 
   "fr": [
     "filterOnThisDayLabel",
     "settingsSlideshowFillScreen",
-    "settingsScreenSaverTitle"
+    "settingsScreenSaverPageTitle",
+    "settingsWidgetPageTitle",
+    "settingsWidgetShowOutline"
   ],
 
   "id": [
     "filterOnThisDayLabel",
     "settingsSlideshowFillScreen",
-    "settingsScreenSaverTitle"
+    "settingsScreenSaverPageTitle",
+    "settingsWidgetPageTitle",
+    "settingsWidgetShowOutline"
   ],
 
   "it": [
     "filterOnThisDayLabel",
     "settingsSlideshowFillScreen",
-    "settingsScreenSaverTitle"
+    "settingsScreenSaverPageTitle",
+    "settingsWidgetPageTitle",
+    "settingsWidgetShowOutline"
   ],
 
   "ja": [
     "filterOnThisDayLabel",
     "settingsSlideshowFillScreen",
-    "settingsScreenSaverTitle"
+    "settingsScreenSaverPageTitle",
+    "settingsWidgetPageTitle",
+    "settingsWidgetShowOutline"
   ],
 
   "ko": [
     "filterOnThisDayLabel",
     "settingsSlideshowFillScreen",
-    "settingsScreenSaverTitle"
+    "settingsScreenSaverPageTitle",
+    "settingsWidgetPageTitle",
+    "settingsWidgetShowOutline"
   ],
 
   "pt": [
     "filterOnThisDayLabel",
     "settingsSlideshowFillScreen",
-    "settingsScreenSaverTitle"
+    "settingsScreenSaverPageTitle",
+    "settingsWidgetPageTitle",
+    "settingsWidgetShowOutline"
   ],
 
   "ru": [
     "filterOnThisDayLabel",
     "settingsSlideshowFillScreen",
-    "settingsScreenSaverTitle"
+    "settingsScreenSaverPageTitle",
+    "settingsWidgetPageTitle",
+    "settingsWidgetShowOutline"
   ],
 
   "tr": [
@@ -79,13 +97,17 @@
     "settingsSlideshowIntervalTitle",
     "settingsSlideshowVideoPlaybackTile",
     "settingsSlideshowVideoPlaybackTitle",
-    "settingsScreenSaverTitle",
+    "settingsScreenSaverPageTitle",
+    "settingsWidgetPageTitle",
+    "settingsWidgetShowOutline",
     "viewerSetWallpaperButtonLabel"
   ],
 
   "zh": [
     "filterOnThisDayLabel",
     "settingsSlideshowFillScreen",
-    "settingsScreenSaverTitle"
+    "settingsScreenSaverPageTitle",
+    "settingsWidgetPageTitle",
+    "settingsWidgetShowOutline"
   ]
 }

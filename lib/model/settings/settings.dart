@@ -27,7 +27,7 @@ class Settings extends ChangeNotifier {
 
   Settings._private();
 
-  static const Set<String> internalKeys = {
+  static const Set<String> _internalKeys = {
     hasAcceptedTermsKey,
     catalogTimeZoneKey,
     videoShowRawTimedTextKey,
@@ -36,6 +36,7 @@ class Settings extends ChangeNotifier {
     platformTransitionAnimationScaleKey,
     topEntryIdsKey,
   };
+  static const _widgetKeyPrefix = 'widget_';
 
   // app
   static const hasAcceptedTermsKey = 'has_accepted_terms';
@@ -153,6 +154,12 @@ class Settings extends ChangeNotifier {
   static const slideshowVideoPlaybackKey = 'slideshow_video_playback';
   static const slideshowIntervalKey = 'slideshow_interval';
 
+  // widget
+  static const widgetOutlinePrefixKey = '${_widgetKeyPrefix}outline_';
+  static const widgetShapePrefixKey = '${_widgetKeyPrefix}shape_';
+  static const widgetCollectionFiltersPrefixKey = '${_widgetKeyPrefix}collection_filters_';
+  static const widgetUriPrefixKey = '${_widgetKeyPrefix}uri_';
+
   // platform settings
   // cf Android `Settings.System.ACCELEROMETER_ROTATION`
   static const platformAccelerometerRotationKey = 'accelerometer_rotation';
@@ -169,13 +176,17 @@ class Settings extends ChangeNotifier {
     }
   }
 
+  Future<void> reload() => settingsStore.reload();
+
   Future<void> reset({required bool includeInternalKeys}) async {
     if (includeInternalKeys) {
       await settingsStore.clear();
     } else {
-      await Future.forEach<String>(settingsStore.getKeys().whereNot(Settings.internalKeys.contains), settingsStore.remove);
+      await Future.forEach<String>(settingsStore.getKeys().whereNot(isInternalKey), settingsStore.remove);
     }
   }
+
+  bool isInternalKey(String key) => _internalKeys.contains(key) || key.startsWith(_widgetKeyPrefix);
 
   Future<void> setContextualDefaults() async {
     // performance
@@ -639,6 +650,27 @@ class Settings extends ChangeNotifier {
 
   set slideshowInterval(SlideshowInterval newValue) => setAndNotify(slideshowIntervalKey, newValue.toString());
 
+  // widget
+
+  Color? getWidgetOutline(int widgetId) {
+    final value = getInt('$widgetOutlinePrefixKey$widgetId');
+    return value != null ? Color(value) : null;
+  }
+
+  void setWidgetOutline(int widgetId, Color? newValue) => setAndNotify('$widgetOutlinePrefixKey$widgetId', newValue?.value);
+
+  WidgetShape getWidgetShape(int widgetId) => getEnumOrDefault('$widgetShapePrefixKey$widgetId', SettingsDefaults.widgetShape, WidgetShape.values);
+
+  void setWidgetShape(int widgetId, WidgetShape newValue) => setAndNotify('$widgetShapePrefixKey$widgetId', newValue.toString());
+
+  Set<CollectionFilter> getWidgetCollectionFilters(int widgetId) => (getStringList('$widgetCollectionFiltersPrefixKey$widgetId') ?? []).map(CollectionFilter.fromJson).whereNotNull().toSet();
+
+  void setWidgetCollectionFilters(int widgetId, Set<CollectionFilter> newValue) => setAndNotify('$widgetCollectionFiltersPrefixKey$widgetId', newValue.map((filter) => filter.toJson()).toList());
+
+  String? getWidgetUri(int widgetId) => getString('$widgetUriPrefixKey$widgetId');
+
+  void setWidgetUri(int widgetId, String? newValue) => setAndNotify('$widgetUriPrefixKey$widgetId', newValue);
+
   // convenience methods
 
   int? getInt(String key) => settingsStore.getInt(key);
@@ -721,7 +753,7 @@ class Settings extends ChangeNotifier {
   // import/export
 
   Map<String, dynamic> export() => Map.fromEntries(
-        settingsStore.getKeys().whereNot(internalKeys.contains).map((k) => MapEntry(k, settingsStore.get(k))),
+        settingsStore.getKeys().whereNot(isInternalKey).map((k) => MapEntry(k, settingsStore.get(k))),
       );
 
   Future<void> import(dynamic jsonMap) async {

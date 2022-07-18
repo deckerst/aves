@@ -3,6 +3,8 @@ abstract class SettingsStore {
 
   Future<void> init();
 
+  Future<void> reload();
+
   Future<bool> clear();
 
   Future<bool> remove(String key);

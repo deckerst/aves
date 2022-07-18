@@ -196,7 +196,7 @@ class PlatformAndroidAppService implements AndroidAppService {
     Uint8List? iconBytes;
     if (coverEntry != null) {
       final size = coverEntry.isVideo ? 0.0 : 256.0;
-      iconBytes = await mediaFileService.getThumbnail(
+      iconBytes = await mediaFetchService.getThumbnail(
         uri: coverEntry.uri,
         mimeType: coverEntry.mimeType,
         pageId: coverEntry.pageId,

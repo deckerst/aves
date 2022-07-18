@@ -25,7 +25,8 @@
   "showTooltip": "Tampilkan",
   "hideTooltip": "Sembunyikan",
   "actionRemove": "Hapus",
-  "resetButtonTooltip": "Ulang",
+  "resetTooltip": "Ulang",
+  "saveTooltip": "Simpan",
 
   "doubleBackExitMessage": "Ketuk “kembali” lagi untuk keluar.",
   "doNotAskAgain": "Jangan tanya lagi",
@@ -303,7 +304,6 @@
 
   "aboutBug": "Lapor Bug",
   "aboutBugSaveLogInstruction": "Simpan log aplikasi ke file",
-  "aboutBugSaveLogButton": "Simpan",
   "aboutBugCopyInfoInstruction": "Salin informasi sistem",
   "aboutBugCopyInfoButton": "Salin",
   "aboutBugReportInstruction": "Laporkan ke GitHub dengan log dan informasi sistem",
