@@ -4,6 +4,7 @@ import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:flutter/material.dart';
 
 class FilterBar extends StatefulWidget {
+  static const EdgeInsets chipPadding = EdgeInsets.symmetric(horizontal: 4);
   static const double verticalPadding = 16;
   static const double preferredHeight = AvesFilterChip.minChipHeight + verticalPadding;
 
@@ -88,7 +89,7 @@ class _FilterBarState extends State<FilterBar> {
           key: _animatedListKey,
           initialItemCount: widget.filters.length,
           scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.symmetric(horizontal: 4),
+          padding: FilterBar.chipPadding,
           itemBuilder: (context, index, animation) {
             if (index >= widget.filters.length) return const SizedBox();
             return _buildChip(widget.filters.toList()[index]);
@@ -100,7 +101,7 @@ class _FilterBarState extends State<FilterBar> {
 
   Padding _buildChip(CollectionFilter filter) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 4),
+      padding: FilterBar.chipPadding,
       child: Center(
         child: AvesFilterChip(
           key: ValueKey(filter),

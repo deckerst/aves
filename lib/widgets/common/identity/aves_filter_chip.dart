@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/actions/chip_actions.dart';
@@ -12,6 +13,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/widgets/collection/filter_bar.dart';
 import 'package:aves/widgets/common/basic/menu.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip.dart';
@@ -45,7 +47,8 @@ class AvesFilterChip extends StatefulWidget {
   final AvesFilterDecoration? decoration;
   final String? banner;
   final Widget? leadingOverride, details;
-  final double padding, maxWidth;
+  final double padding;
+  final double? maxWidth;
   final HeroType heroType;
   final FilterCallback? onTap;
   final OffsetFilterCallback? onLongPress;
@@ -54,7 +57,6 @@ class AvesFilterChip extends StatefulWidget {
   static const double outlineWidth = 2;
   static const double minChipHeight = kMinInteractiveDimension;
   static const double minChipWidth = 80;
-  static const double defaultMaxChipWidth = 160;
   static const double iconSize = 18;
   static const double fontSize = 14;
   static const double decoratedContentVerticalPadding = 5;
@@ -71,7 +73,7 @@ class AvesFilterChip extends StatefulWidget {
     this.leadingOverride,
     this.details,
     this.padding = 6.0,
-    this.maxWidth = defaultMaxChipWidth,
+    this.maxWidth,
     this.heroType = HeroType.onTap,
     this.onTap,
     this.onLongPress = showDefaultLongPressMenu,
@@ -261,7 +263,14 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
     Widget chip = Container(
       constraints: BoxConstraints(
         minWidth: AvesFilterChip.minChipWidth,
-        maxWidth: widget.maxWidth,
+        maxWidth: max(
+            AvesFilterChip.minChipWidth,
+            widget.maxWidth ??
+                context.select<MediaQueryData, double>((mq) {
+                  const minChipPerRow = 2;
+                  final padding = FilterBar.chipPadding.horizontal;
+                  return (mq.size.width - mq.padding.horizontal - padding * (minChipPerRow + 1)) / minChipPerRow;
+                })),
         minHeight: AvesFilterChip.minChipHeight,
       ),
       child: Stack(
