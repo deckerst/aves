@@ -25,7 +25,7 @@ import io.flutter.plugin.common.MethodChannel
 import kotlinx.coroutines.runBlocking
 
 class AnalysisService : MethodChannel.MethodCallHandler, Service() {
-    private var backgroundFlutterEngine: FlutterEngine? = null
+    private var flutterEngine: FlutterEngine? = null
     private var backgroundChannel: MethodChannel? = null
     private var serviceLooper: Looper? = null
     private var serviceHandler: ServiceHandler? = null
@@ -37,11 +37,11 @@ class AnalysisService : MethodChannel.MethodCallHandler, Service() {
 
         runBlocking {
             FlutterUtils.initFlutterEngine(context, SHARED_PREFERENCES_KEY, CALLBACK_HANDLE_KEY) {
-                backgroundFlutterEngine = it
+                flutterEngine = it
             }
         }
 
-        val messenger = backgroundFlutterEngine!!.dartExecutor.binaryMessenger
+        val messenger = flutterEngine!!.dartExecutor
         // channels for analysis
         MethodChannel(messenger, DeviceHandler.CHANNEL).setMethodCallHandler(DeviceHandler(this))
         MethodChannel(messenger, GeocodingHandler.CHANNEL).setMethodCallHandler(GeocodingHandler(this))

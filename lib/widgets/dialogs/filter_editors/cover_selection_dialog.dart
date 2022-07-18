@@ -9,6 +9,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/basic/color_list_tile.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
@@ -53,7 +54,7 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
 
   static const double itemPickerExtent = 46;
   static const double appPickerExtent = 32;
-  static const double colorPickerRadius = 16;
+  static const double colorPickerRadius = Constants.colorPickerRadius;
 
   double tabBarHeight(BuildContext context) => 64 * max(1, MediaQuery.textScaleFactorOf(context));
 

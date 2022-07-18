@@ -25,7 +25,8 @@
   "showTooltip": "表示する",
   "hideTooltip": "非表示にする",
   "actionRemove": "削除",
-  "resetButtonTooltip": "リセット",
+  "resetTooltip": "リセット",
+  "saveTooltip": "保存",
 
   "doubleBackExitMessage": "終了するには「戻る」をもう一度タップしてください。",
   "doNotAskAgain": "今後このメッセージを表示しない",
@@ -303,7 +304,6 @@
 
   "aboutBug": "バグの報告",
   "aboutBugSaveLogInstruction": "アプリのログをファイルに保存",
-  "aboutBugSaveLogButton": "保存",
   "aboutBugCopyInfoInstruction": "システム情報をコピー",
   "aboutBugCopyInfoButton": "コピー",
   "aboutBugReportInstruction": "ログとシステム情報とともに GitHub で報告",

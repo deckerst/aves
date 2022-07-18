@@ -133,6 +133,10 @@ class SettingsDefaults {
   static const slideshowVideoPlayback = SlideshowVideoPlayback.playMuted;
   static const slideshowInterval = SlideshowInterval.s5;
 
+  // widget
+  static const widgetOutline = false;
+  static const widgetShape = WidgetShape.rrect;
+
   // platform settings
   static const isRotationLocked = false;
   static const areAnimationsRemoved = false;

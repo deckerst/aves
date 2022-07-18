@@ -15,7 +15,6 @@ import 'package:aves/model/source/media_store_source.dart';
 import 'package:aves/services/android_app_service.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/device_service.dart';
-import 'package:aves/services/media/media_file_service.dart';
 import 'package:aves/services/media/media_store_service.dart';
 import 'package:aves/services/metadata/metadata_fetch_service.dart';
 import 'package:aves/services/storage_service.dart';
@@ -30,7 +29,6 @@ import 'package:path/path.dart' as p;
 import '../fake/android_app_service.dart';
 import '../fake/availability.dart';
 import '../fake/device_service.dart';
-import '../fake/media_file_service.dart';
 import '../fake/media_store_service.dart';
 import '../fake/metadata_db.dart';
 import '../fake/metadata_fetch_service.dart';
@@ -59,7 +57,6 @@ void main() {
 
     getIt.registerLazySingleton<AndroidAppService>(FakeAndroidAppService.new);
     getIt.registerLazySingleton<DeviceService>(FakeDeviceService.new);
-    getIt.registerLazySingleton<MediaFileService>(FakeMediaFileService.new);
     getIt.registerLazySingleton<MediaStoreService>(FakeMediaStoreService.new);
     getIt.registerLazySingleton<MetadataFetchService>(FakeMetadataFetchService.new);
     getIt.registerLazySingleton<ReportService>(FakeReportService.new);

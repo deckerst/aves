@@ -1,9 +1,8 @@
 package deckers.thibault.aves.channel.calls
 
-import android.content.ContextWrapper
+import android.content.Context
 import android.graphics.Rect
 import android.net.Uri
-import android.util.Log
 import com.bumptech.glide.Glide
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safeSuspend
@@ -12,12 +11,9 @@ import deckers.thibault.aves.channel.calls.fetchers.SvgRegionFetcher
 import deckers.thibault.aves.channel.calls.fetchers.ThumbnailFetcher
 import deckers.thibault.aves.channel.calls.fetchers.TiffRegionFetcher
 import deckers.thibault.aves.model.FieldMap
-import deckers.thibault.aves.model.NameConflictStrategy
 import deckers.thibault.aves.model.provider.ImageProvider.ImageOpCallback
 import deckers.thibault.aves.model.provider.ImageProviderFactory.getProvider
-import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
-import deckers.thibault.aves.utils.StorageUtils.ensureTrailingSeparator
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
@@ -27,19 +23,17 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
-class MediaFileHandler(private val contextWrapper: ContextWrapper) : MethodCallHandler {
+class MediaFetchHandler(private val context: Context) : MethodCallHandler {
     private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-    private val density = contextWrapper.resources.displayMetrics.density
+    private val density = context.resources.displayMetrics.density
 
-    private val regionFetcher = RegionFetcher(contextWrapper)
+    private val regionFetcher = RegionFetcher(context)
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
             "getEntry" -> ioScope.launch { safe(call, result, ::getEntry) }
             "getThumbnail" -> ioScope.launch { safeSuspend(call, result, ::getThumbnail) }
             "getRegion" -> ioScope.launch { safeSuspend(call, result, ::getRegion) }
-            "cancelFileOp" -> safe(call, result, ::cancelFileOp)
-            "captureFrame" -> ioScope.launch { safeSuspend(call, result, ::captureFrame) }
             "clearSizedThumbnailDiskCache" -> ioScope.launch { safe(call, result, ::clearSizedThumbnailDiskCache) }
             else -> result.notImplemented()
         }
@@ -59,7 +53,7 @@ class MediaFileHandler(private val contextWrapper: ContextWrapper) : MethodCallH
             return
         }
 
-        provider.fetchSingle(contextWrapper, uri, mimeType, object : ImageOpCallback {
+        provider.fetchSingle(context, uri, mimeType, object : ImageOpCallback {
             override fun onSuccess(fields: FieldMap) = result.success(fields)
             override fun onFailure(throwable: Throwable) = result.error("getEntry-failure", "failed to get entry for uri=$uri", throwable.message)
         })
@@ -83,7 +77,7 @@ class MediaFileHandler(private val contextWrapper: ContextWrapper) : MethodCallH
 
         // convert DIP to physical pixels here, instead of using `devicePixelRatio` in Flutter
         ThumbnailFetcher(
-            contextWrapper,
+            context,
             uri,
             mimeType,
             dateModifiedSecs,
@@ -116,14 +110,14 @@ class MediaFileHandler(private val contextWrapper: ContextWrapper) : MethodCallH
 
         val regionRect = Rect(x, y, x + width, y + height)
         when (mimeType) {
-            MimeTypes.SVG -> SvgRegionFetcher(contextWrapper).fetch(
+            MimeTypes.SVG -> SvgRegionFetcher(context).fetch(
                 uri = uri,
                 regionRect = regionRect,
                 imageWidth = imageWidth,
                 imageHeight = imageHeight,
                 result = result,
             )
-            MimeTypes.TIFF -> TiffRegionFetcher(contextWrapper).fetch(
+            MimeTypes.TIFF -> TiffRegionFetcher(context).fetch(
                 uri = uri,
                 page = pageId ?: 0,
                 sampleSize = sampleSize,
@@ -143,53 +137,12 @@ class MediaFileHandler(private val contextWrapper: ContextWrapper) : MethodCallH
         }
     }
 
-    private fun cancelFileOp(call: MethodCall, result: MethodChannel.Result) {
-        val opId = call.argument<String>("opId")
-        if (opId == null) {
-            result.error("cancelFileOp-args", "missing arguments", null)
-            return
-        }
-
-        Log.i(LOG_TAG, "cancelling file op $opId")
-        cancelledOps.add(opId)
-
-        result.success(null)
-    }
-
-    private suspend fun captureFrame(call: MethodCall, result: MethodChannel.Result) {
-        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
-        val desiredName = call.argument<String>("desiredName")
-        val exifFields = call.argument<FieldMap>("exif") ?: HashMap()
-        val bytes = call.argument<ByteArray>("bytes")
-        var destinationDir = call.argument<String>("destinationPath")
-        val nameConflictStrategy = NameConflictStrategy.get(call.argument<String>("nameConflictStrategy"))
-        if (uri == null || desiredName == null || bytes == null || destinationDir == null || nameConflictStrategy == null) {
-            result.error("captureFrame-args", "missing arguments", null)
-            return
-        }
-
-        val provider = getProvider(uri)
-        if (provider == null) {
-            result.error("captureFrame-provider", "failed to find provider for uri=$uri", null)
-            return
-        }
-
-        destinationDir = ensureTrailingSeparator(destinationDir)
-        provider.captureFrame(contextWrapper, desiredName, exifFields, bytes, destinationDir, nameConflictStrategy, object : ImageOpCallback {
-            override fun onSuccess(fields: FieldMap) = result.success(fields)
-            override fun onFailure(throwable: Throwable) = result.error("captureFrame-failure", "failed to capture frame for uri=$uri", throwable.message)
-        })
-    }
-
     private fun clearSizedThumbnailDiskCache(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
-        Glide.get(contextWrapper).clearDiskCache()
+        Glide.get(context).clearDiskCache()
         result.success(null)
     }
 
     companion object {
-        private val LOG_TAG = LogUtils.createTag<MediaFileHandler>()
-        const val CHANNEL = "deckers.thibault/aves/media_file"
-
-        val cancelledOps = HashSet<String>()
+        const val CHANNEL = "deckers.thibault/aves/media_fetch"
     }
 }

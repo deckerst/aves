@@ -691,7 +691,7 @@ class AvesEntry {
       await metadataDb.removeIds({id}, dataTypes: dataTypes);
     }
 
-    final updatedEntry = await mediaFileService.getEntry(uri, mimeType);
+    final updatedEntry = await mediaFetchService.getEntry(uri, mimeType);
     if (updatedEntry != null) {
       await applyNewFields(updatedEntry.toMap(), persist: persist);
     }
@@ -701,7 +701,7 @@ class AvesEntry {
 
   Future<bool> delete() {
     final completer = Completer<bool>();
-    mediaFileService.delete(entries: {this}).listen(
+    mediaEditService.delete(entries: {this}).listen(
       (event) => completer.complete(event.success && !event.skipped),
       onError: completer.completeError,
       onDone: () {

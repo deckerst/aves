@@ -25,7 +25,8 @@
   "showTooltip": "보기",
   "hideTooltip": "숨기기",
   "actionRemove": "제거",
-  "resetButtonTooltip": "복원",
+  "resetTooltip": "복원",
+  "saveTooltip": "저장",
 
   "doubleBackExitMessage": "종료하려면 한번 더 누르세요.",
   "doNotAskAgain": "다시 묻지 않기",
@@ -303,7 +304,6 @@
 
   "aboutBug": "버그 보고",
   "aboutBugSaveLogInstruction": "앱 로그를 파일에 저장하기",
-  "aboutBugSaveLogButton": "저장",
   "aboutBugCopyInfoInstruction": "시스템 정보를 복사하기",
   "aboutBugCopyInfoButton": "복사",
   "aboutBugReportInstruction": "로그와 시스템 정보를 첨부하여 깃허브에서 이슈를 제출하기",

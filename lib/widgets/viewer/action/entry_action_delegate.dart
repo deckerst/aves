@@ -14,7 +14,7 @@ import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/common/image_op_events.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/media/enums.dart';
-import 'package:aves/services/media/media_file_service.dart';
+import 'package:aves/services/media/media_edit_service.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
@@ -246,7 +246,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     source.pauseMonitoring();
     await showOpReport<ExportOpEvent>(
       context: context,
-      opStream: mediaFileService.export(
+      opStream: mediaEditService.export(
         selection,
         options: options,
         destinationAlbum: destinationAlbum,
@@ -336,7 +336,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       MaterialPageRoute(
         settings: const RouteSettings(name: SourceViewerPage.routeName),
         builder: (context) => SourceViewerPage(
-          loader: () => mediaFileService.getSvg(entry.uri, entry.mimeType).then(utf8.decode),
+          loader: () => mediaFetchService.getSvg(entry.uri, entry.mimeType).then(utf8.decode),
         ),
       ),
     );

@@ -28,16 +28,16 @@ class WallpaperActivity : FlutterActivity() {
 
         super.onCreate(savedInstanceState)
 
-        val messenger = flutterEngine!!.dartExecutor.binaryMessenger
+        val messenger = flutterEngine!!.dartExecutor
 
         // dart -> platform -> dart
         // - need Context
         MethodChannel(messenger, DeviceHandler.CHANNEL).setMethodCallHandler(DeviceHandler(this))
         MethodChannel(messenger, EmbeddedDataHandler.CHANNEL).setMethodCallHandler(EmbeddedDataHandler(this))
+        MethodChannel(messenger, MediaFetchHandler.CHANNEL).setMethodCallHandler(MediaFetchHandler(this))
         MethodChannel(messenger, MetadataFetchHandler.CHANNEL).setMethodCallHandler(MetadataFetchHandler(this))
         // - need ContextWrapper
         MethodChannel(messenger, AccessibilityHandler.CHANNEL).setMethodCallHandler(AccessibilityHandler(this))
-        MethodChannel(messenger, MediaFileHandler.CHANNEL).setMethodCallHandler(MediaFileHandler(this))
         MethodChannel(messenger, WallpaperHandler.CHANNEL).setMethodCallHandler(WallpaperHandler(this))
         // - need Activity
         MethodChannel(messenger, WindowHandler.CHANNEL).setMethodCallHandler(ActivityWindowHandler(this))

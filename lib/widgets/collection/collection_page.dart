@@ -12,12 +12,12 @@ import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/intent_service.dart';
 import 'package:aves/theme/durations.dart';
-import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/collection/collection_grid.dart';
 import 'package:aves/widgets/common/basic/draggable_scrollbar.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/behaviour/double_back_pop.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/common/identity/aves_fab.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/common/providers/query_provider.dart';
 import 'package:aves/widgets/common/providers/selection_provider.dart';
@@ -148,30 +148,11 @@ class _CollectionPageState extends State<CollectionPage> {
   }
 
   Widget? _buildFab(BuildContext context, bool hasSelection) {
-    Widget fab({
-      required String tooltip,
-      required VoidCallback onPressed,
-    }) {
-      return TooltipTheme(
-        data: TooltipTheme.of(context).copyWith(
-          preferBelow: false,
-        ),
-        child: FloatingActionButton(
-          tooltip: tooltip,
-          onPressed: onPressed,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(16)),
-          ),
-          child: const Icon(AIcons.apply),
-        ),
-      );
-    }
-
     final appMode = context.watch<ValueNotifier<AppMode>>().value;
     switch (appMode) {
       case AppMode.pickMultipleMediaExternal:
         return hasSelection
-            ? fab(
+            ? AvesFab(
                 tooltip: context.l10n.collectionPickPageTitle,
                 onPressed: () {
                   final items = context.read<Selection<AvesEntry>>().selectedItems;
@@ -181,7 +162,7 @@ class _CollectionPageState extends State<CollectionPage> {
               )
             : null;
       case AppMode.pickCollectionFiltersExternal:
-        return fab(
+        return AvesFab(
           tooltip: context.l10n.collectionPickPageTitle,
           onPressed: () {
             final filters = _collection.filters;

@@ -49,7 +49,7 @@ class UriImage extends ImageProvider<UriImage> with EquatableMixin {
     assert(key == this);
 
     try {
-      final bytes = await mediaFileService.getImage(
+      final bytes = await mediaFetchService.getImage(
         uri,
         mimeType,
         rotationDegrees,

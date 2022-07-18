@@ -1,7 +1,12 @@
+import 'dart:typed_data';
+import 'dart:ui' as ui;
+
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/entry_images.dart';
+import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/widgets/home_widget.dart';
 import 'package:aves/widgets/viewer/debug/db.dart';
 import 'package:aves/widgets/viewer/debug/metadata.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
@@ -27,6 +32,7 @@ class ViewerDebugPage extends StatelessWidget {
       if (context.select<ValueNotifier<AppMode>, bool>((vn) => vn.value != AppMode.view)) Tuple2(const Tab(text: 'DB'), DbTab(entry: entry)),
       Tuple2(const Tab(icon: Icon(AIcons.android)), MetadataTab(entry: entry)),
       Tuple2(const Tab(icon: Icon(AIcons.image)), _buildThumbnailsTabView()),
+      Tuple2(const Tab(icon: Icon(AIcons.addShortcut)), _buildWidgetTabView()),
     ];
     return Directionality(
       textDirection: TextDirection.ltr,
@@ -155,7 +161,7 @@ class ViewerDebugPage extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       children: entry.cachedThumbnails
           .expand((provider) => [
-                Text('Extent: ${provider.key.extent}'),
+                Text('Thumb extent: ${provider.key.extent}'),
                 Center(
                   child: Image(
                     image: provider,
@@ -173,6 +179,34 @@ class ViewerDebugPage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 16),
+              ])
+          .toList(),
+    );
+  }
+
+  Widget _buildWidgetTabView() {
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [303, 636, 972, 1305]
+          .expand((heightPx) => [
+                Text('Widget heightPx: $heightPx'),
+                FutureBuilder<Uint8List>(
+                  future: HomeWidgetPainter(
+                    entry: entry,
+                    devicePixelRatio: ui.window.devicePixelRatio,
+                  ).drawWidget(
+                    widthPx: 978,
+                    heightPx: heightPx,
+                    outline: Colors.amber,
+                    shape: WidgetShape.heart,
+                    format: ui.ImageByteFormat.png,
+                  ),
+                  builder: (context, snapshot) {
+                    final bytes = snapshot.data;
+                    if (bytes == null) return const SizedBox();
+                    return Image.memory(bytes);
+                  },
+                ),
               ])
           .toList(),
     );

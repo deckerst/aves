@@ -25,7 +25,8 @@
   "showTooltip": "Anzeigen",
   "hideTooltip": "Ausblenden",
   "actionRemove": "Entfernen",
-  "resetButtonTooltip": "Zurücksetzen",
+  "resetTooltip": "Zurücksetzen",
+  "saveTooltip": "Speichern",
 
   "doubleBackExitMessage": "Zum Verlassen erneut auf „Zurück“ tippen.",
   "doNotAskAgain": "Nicht noch einmal fragen",
@@ -303,7 +304,6 @@
 
   "aboutBug": "Fehlerbericht",
   "aboutBugSaveLogInstruction": "Anwendungsprotokolle in einer Datei speichern",
-  "aboutBugSaveLogButton": "Speichern",
   "aboutBugCopyInfoInstruction": "Systeminformationen kopieren",
   "aboutBugCopyInfoButton": "Kopieren",
   "aboutBugReportInstruction": "Bericht auf GitHub mit den Protokollen und Systeminformationen",

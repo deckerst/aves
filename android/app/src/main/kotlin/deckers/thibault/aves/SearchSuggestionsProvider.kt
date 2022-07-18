@@ -23,7 +23,7 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
-class SearchSuggestionsProvider : MethodChannel.MethodCallHandler, ContentProvider() {
+class SearchSuggestionsProvider : ContentProvider() {
     private val defaultScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
     override fun query(uri: Uri, projection: Array<String>?, selection: String?, selectionArgs: Array<String>?, sortOrder: String?): Cursor? {
@@ -67,15 +67,23 @@ class SearchSuggestionsProvider : MethodChannel.MethodCallHandler, ContentProvid
     }
 
     private suspend fun getSuggestions(context: Context, query: String): List<FieldMap> {
-        if (backgroundFlutterEngine == null) {
+        if (flutterEngine == null) {
             FlutterUtils.initFlutterEngine(context, SHARED_PREFERENCES_KEY, CALLBACK_HANDLE_KEY) {
-                backgroundFlutterEngine = it
+                flutterEngine = it
             }
         }
 
-        val messenger = backgroundFlutterEngine!!.dartExecutor.binaryMessenger
+        val messenger = flutterEngine!!.dartExecutor
         val backgroundChannel = MethodChannel(messenger, BACKGROUND_CHANNEL)
-        backgroundChannel.setMethodCallHandler(this)
+        backgroundChannel.setMethodCallHandler { call: MethodCall, result: MethodChannel.Result ->
+            when (call.method) {
+                "initialized" -> {
+                    Log.d(LOG_TAG, "background channel is ready")
+                    result.success(null)
+                }
+                else -> result.notImplemented()
+            }
+        }
 
         try {
             return suspendCoroutine { cont ->
@@ -108,16 +116,6 @@ class SearchSuggestionsProvider : MethodChannel.MethodCallHandler, ContentProvid
         }
     }
 
-    override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
-        when (call.method) {
-            "initialized" -> {
-                Log.d(LOG_TAG, "background channel is ready")
-                result.success(null)
-            }
-            else -> result.notImplemented()
-        }
-    }
-
     override fun onCreate(): Boolean = true
 
     override fun getType(uri: Uri): String? = null
@@ -137,6 +135,6 @@ class SearchSuggestionsProvider : MethodChannel.MethodCallHandler, ContentProvid
         const val SHARED_PREFERENCES_KEY = "platform_search"
         const val CALLBACK_HANDLE_KEY = "callback_handle"
 
-        private var backgroundFlutterEngine: FlutterEngine? = null
+        private var flutterEngine: FlutterEngine? = null
     }
 }

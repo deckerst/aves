@@ -283,12 +283,12 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     if (!pureTrash && !await checkStoragePermissionForAlbums(context, selectionDirs, entries: entries)) return;
 
     source.pauseMonitoring();
-    final opId = mediaFileService.newOpId;
+    final opId = mediaEditService.newOpId;
     await showOpReport<ImageOpEvent>(
       context: context,
-      opStream: mediaFileService.delete(opId: opId, entries: entries),
+      opStream: mediaEditService.delete(opId: opId, entries: entries),
       itemCount: todoCount,
-      onCancel: () => mediaFileService.cancelFileOp(opId),
+      onCancel: () => mediaEditService.cancelFileOp(opId),
       onDone: (processed) async {
         final successOps = processed.where((e) => e.success).toSet();
         final deletedOps = successOps.where((e) => !e.skipped).toSet();
