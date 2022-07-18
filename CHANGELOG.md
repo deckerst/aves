@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 - Search: `on this day` and month filters in date filter section
 - Stats: histogram and contextual date filters
 - Screen saver
+- Widget: photo frame
 
 ### Changed
 
