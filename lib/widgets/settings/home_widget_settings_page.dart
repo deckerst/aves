@@ -9,6 +9,7 @@ import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
 import 'package:aves/widgets/common/identity/buttons.dart';
+import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/home_widget.dart';
 import 'package:aves/widgets/settings/common/collection_tile.dart';
 import 'package:collection/collection.dart';
@@ -60,44 +61,45 @@ class _HomeWidgetSettingsPageState extends State<HomeWidgetSettingsPage> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.settingsWidgetPageTitle),
-      ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: ListView(
-                children: [
-                  _buildShapeSelector(),
-                  ListTile(
-                    title: Text(l10n.settingsWidgetShowOutline),
-                    trailing: HomeWidgetOutlineSelector(
-                      getter: () => _outline,
-                      setter: (v) => setState(() => _outline = v),
+    return MediaQueryDataProvider(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(l10n.settingsWidgetPageTitle),
+        ),
+        body: SafeArea(
+          child: Column(
+            children: [
+              Expanded(
+                child: ListView(
+                  children: [
+                    _buildShapeSelector(),
+                    ListTile(
+                      title: Text(l10n.settingsWidgetShowOutline),
+                      trailing: HomeWidgetOutlineSelector(
+                        getter: () => _outline,
+                        setter: (v) => setState(() => _outline = v),
+                      ),
                     ),
-                  ),
-                  SettingsCollectionTile(
-                    filters: _collectionFilters,
-                    onSelection: (v) => setState(() => _collectionFilters = v),
-                  ),
-                ],
+                    SettingsCollectionTile(
+                      filters: _collectionFilters,
+                      onSelection: (v) => setState(() => _collectionFilters = v),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            const Divider(height: 0),
-            Padding(
-              padding: const EdgeInsets.all(8),
-              child: AvesOutlinedButton(
-                label: l10n.saveTooltip,
-                onPressed: () {
-                  _saveSettings();
-                  WidgetService.configure();
-                },
+              const Divider(height: 0),
+              Padding(
+                padding: const EdgeInsets.all(8),
+                child: AvesOutlinedButton(
+                  label: l10n.saveTooltip,
+                  onPressed: () {
+                    _saveSettings();
+                    WidgetService.configure();
+                  },
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
