@@ -1,10 +1,12 @@
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/theme/durations.dart';
+import 'package:aves/widgets/common/identity/aves_app_bar.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:flutter/material.dart';
 
 class FilterBar extends StatefulWidget {
   static const EdgeInsets chipPadding = EdgeInsets.symmetric(horizontal: 4);
+  static const EdgeInsets rowPadding = EdgeInsets.symmetric(horizontal: 4);
   static const double verticalPadding = 16;
   static const double preferredHeight = AvesFilterChip.minChipHeight + verticalPadding;
 
@@ -26,6 +28,8 @@ class FilterBar extends StatefulWidget {
 class _FilterBarState extends State<FilterBar> {
   final GlobalKey<AnimatedListState> _animatedListKey = GlobalKey(debugLabel: 'filter-bar-animated-list');
   CollectionFilter? _userTappedFilter;
+
+  List<CollectionFilter> get filters => widget.filters;
 
   FilterCallback? get onTap => widget.onTap;
 
@@ -87,33 +91,64 @@ class _FilterBarState extends State<FilterBar> {
         onNotification: (notification) => true,
         child: AnimatedList(
           key: _animatedListKey,
-          initialItemCount: widget.filters.length,
+          initialItemCount: filters.length,
           scrollDirection: Axis.horizontal,
-          padding: FilterBar.chipPadding,
+          padding: FilterBar.rowPadding,
           itemBuilder: (context, index, animation) {
-            if (index >= widget.filters.length) return const SizedBox();
-            return _buildChip(widget.filters.toList()[index]);
+            if (index >= filters.length) return const SizedBox();
+            return _buildChip(filters.toList()[index]);
           },
         ),
       ),
     );
   }
 
-  Padding _buildChip(CollectionFilter filter) {
+  Widget _buildChip(CollectionFilter filter) {
+    return _Chip(
+      filter: filter,
+      removable: widget.removable,
+      single: filters.length == 1,
+      onTap: onTap != null
+          ? (filter) {
+              _userTappedFilter = filter;
+              onTap!(filter);
+            }
+          : null,
+    );
+  }
+}
+
+class _Chip extends StatelessWidget {
+  final CollectionFilter filter;
+  final bool removable, single;
+  final FilterCallback? onTap;
+
+  const _Chip({
+    required this.filter,
+    required this.removable,
+    required this.single,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: FilterBar.chipPadding,
       child: Center(
         child: AvesFilterChip(
           key: ValueKey(filter),
           filter: filter,
-          removable: widget.removable,
-          heroType: HeroType.always,
-          onTap: onTap != null
-              ? (filter) {
-                  _userTappedFilter = filter;
-                  onTap!(filter);
-                }
+          removable: removable,
+          maxWidth: single
+              ? AvesFilterChip.computeMaxWidth(
+                  context,
+                  minChipPerRow: 1,
+                  chipPadding: FilterBar.chipPadding.horizontal,
+                  rowPadding: FilterBar.rowPadding.horizontal + AvesFloatingBar.margin.horizontal,
+                )
               : null,
+          heroType: HeroType.always,
+          onTap: onTap,
         ),
       ),
     );

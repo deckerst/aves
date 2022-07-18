@@ -79,6 +79,17 @@ class AvesFilterChip extends StatefulWidget {
     this.onLongPress = showDefaultLongPressMenu,
   });
 
+  static double computeMaxWidth(
+    BuildContext context, {
+    required int minChipPerRow,
+    required double chipPadding,
+    required double rowPadding,
+  }) {
+    return context.select<MediaQueryData, double>((mq) {
+      return (mq.size.width - mq.padding.horizontal - chipPadding * minChipPerRow - rowPadding) / minChipPerRow;
+    });
+  }
+
   static Future<void> showDefaultLongPressMenu(BuildContext context, CollectionFilter filter, Offset tapPosition) async {
     if (context.read<ValueNotifier<AppMode>>().value.canNavigate) {
       final actions = [
@@ -266,11 +277,12 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
         maxWidth: max(
             AvesFilterChip.minChipWidth,
             widget.maxWidth ??
-                context.select<MediaQueryData, double>((mq) {
-                  const minChipPerRow = 2;
-                  final padding = FilterBar.chipPadding.horizontal;
-                  return (mq.size.width - mq.padding.horizontal - padding * (minChipPerRow + 1)) / minChipPerRow;
-                })),
+                AvesFilterChip.computeMaxWidth(
+                  context,
+                  minChipPerRow: 2,
+                  chipPadding: FilterBar.chipPadding.horizontal,
+                  rowPadding: FilterBar.rowPadding.horizontal,
+                )),
         minHeight: AvesFilterChip.minChipHeight,
       ),
       child: Stack(
