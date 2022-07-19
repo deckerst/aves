@@ -8,6 +8,7 @@ import 'package:aves/model/source/enums.dart';
 import 'package:aves/model/source/media_store_source.dart';
 import 'package:aves/model/source/source_state.dart';
 import 'package:aves/services/common/services.dart';
+import 'package:aves/utils/android_file_utils.dart';
 import 'package:fijkplayer/fijkplayer.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -42,6 +43,7 @@ const _channel = MethodChannel('deckers.thibault/aves/analysis_service_backgroun
 Future<void> _init() async {
   WidgetsFlutterBinding.ensureInitialized();
   initPlatformServices();
+  await androidFileUtils.init();
   await metadataDb.init();
   await mobileServices.init();
   await settings.init(monitorPlatformSettings: false);
