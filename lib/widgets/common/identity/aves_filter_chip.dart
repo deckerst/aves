@@ -108,14 +108,18 @@ class AvesFilterChip extends StatefulWidget {
       final selectedAction = await showMenu<ChipAction>(
         context: context,
         position: RelativeRect.fromRect(tapPosition & touchArea, Offset.zero & overlay.size),
-        items: actions
-            .map((action) => PopupMenuItem(
-                  value: action,
-                  child: MenuIconTheme(
-                    child: MenuRow(text: action.getText(context), icon: action.getIcon()),
-                  ),
-                ))
-            .toList(),
+        items: [
+          PopupMenuItem(
+            child: Text(filter.getLabel(context)),
+          ),
+          const PopupMenuDivider(),
+          ...actions.map((action) => PopupMenuItem(
+                value: action,
+                child: MenuIconTheme(
+                  child: MenuRow(text: action.getText(context), icon: action.getIcon()),
+                ),
+              )),
+        ],
       );
       if (selectedAction != null) {
         // wait for the popup menu to hide before proceeding with the action
