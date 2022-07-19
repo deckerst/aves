@@ -144,6 +144,7 @@ class _EntryEditorState extends State<EntryEditor> with EntryViewControllerMixin
             bottom: 0,
             child: _buildBottomOverlay(),
           ),
+          const TopGestureAreaProtector(),
           const SideGestureAreaProtector(),
           const BottomGestureAreaProtector(),
         ],
