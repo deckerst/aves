@@ -277,6 +277,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
                 onViewDisposed: (mainEntry, pageEntry) => viewStateConductor.reset(pageEntry ?? mainEntry),
               ),
               ..._buildOverlays(),
+              const TopGestureAreaProtector(),
               const SideGestureAreaProtector(),
               const BottomGestureAreaProtector(),
             ],

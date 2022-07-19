@@ -136,6 +136,8 @@ class _PanoramaPageState extends State<PanoramaPage> {
                   ),
                 ),
               ),
+              const TopGestureAreaProtector(),
+              const SideGestureAreaProtector(),
               const BottomGestureAreaProtector(),
             ],
           ),
