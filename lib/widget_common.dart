@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:typed_data';
 
 import 'package:aves/app_flavor.dart';
 import 'package:aves/model/entry.dart';

@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:aves/model/wallpaper_target.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:flutter/services.dart';

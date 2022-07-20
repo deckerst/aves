@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:typed_data';
 
 import 'package:aves/model/entry.dart';
 import 'package:aves/services/common/image_op_events.dart';
