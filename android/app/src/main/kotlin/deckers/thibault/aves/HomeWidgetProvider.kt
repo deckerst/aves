@@ -73,6 +73,7 @@ class HomeWidgetProvider : AppWidgetProvider() {
         val devicePixelRatio = context.resources.displayMetrics.density
         val widthPx = (widgetInfo.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH) * devicePixelRatio).roundToInt()
         val heightPx = (widgetInfo.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT) * devicePixelRatio).roundToInt()
+        if (widthPx == 0 || heightPx == 0) return null
 
         initFlutterEngine(context)
         val messenger = flutterEngine!!.dartExecutor
