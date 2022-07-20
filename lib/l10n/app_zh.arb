@@ -95,6 +95,7 @@
   "filterFavouriteLabel": "收藏夹",
   "filterLocationEmptyLabel": "未定位",
   "filterTagEmptyLabel": "无标签",
+  "filterOnThisDayLabel": "选择日期",
   "filterRatingUnratedLabel": "未评分",
   "filterRatingRejectedLabel": "拒绝",
   "filterTypeAnimatedLabel": "动画",
@@ -503,6 +504,7 @@
   "settingsViewerSlideshowTitle": "幻灯片",
   "settingsSlideshowRepeat": "重复",
   "settingsSlideshowShuffle": "随机播放",
+  "settingsSlideshowFillScreen": "填充屏幕",
   "settingsSlideshowTransitionTile": "过渡动画",
   "settingsSlideshowTransitionTitle": "过渡动画",
   "settingsSlideshowIntervalTile": "时间间隔",
@@ -584,6 +586,11 @@
   "settingsCoordinateFormatTitle": "坐标格式",
   "settingsUnitSystemTile": "单位",
   "settingsUnitSystemTitle": "单位",
+
+  "settingsScreenSaverPageTitle": "屏保",
+
+  "settingsWidgetPageTitle": "相框",
+  "settingsWidgetShowOutline": "轮廓",
 
   "statsPageTitle": "统计",
   "statsWithGps": "{count, plural, other{{count} 项带位置信息}}",
