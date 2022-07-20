@@ -95,6 +95,7 @@
   "filterFavouriteLabel": "즐겨찾기",
   "filterLocationEmptyLabel": "장소 없음",
   "filterTagEmptyLabel": "태그 없음",
+  "filterOnThisDayLabel": "이 날",
   "filterRatingUnratedLabel": "별점 없음",
   "filterRatingRejectedLabel": "거부됨",
   "filterTypeAnimatedLabel": "애니메이션",
@@ -503,6 +504,7 @@
   "settingsViewerSlideshowTitle": "슬라이드쇼",
   "settingsSlideshowRepeat": "반복",
   "settingsSlideshowShuffle": "순서섞기",
+  "settingsSlideshowFillScreen": "화면 채우기",
   "settingsSlideshowTransitionTile": "전환 효과",
   "settingsSlideshowTransitionTitle": "전환 효과",
   "settingsSlideshowIntervalTile": "교체 주기",
@@ -584,6 +586,11 @@
   "settingsCoordinateFormatTitle": "좌표 표현",
   "settingsUnitSystemTile": "단위법",
   "settingsUnitSystemTitle": "단위법",
+
+  "settingsScreenSaverPageTitle": "화면보호기",
+
+  "settingsWidgetPageTitle": "사진 액자",
+  "settingsWidgetShowOutline": "윤곽",
 
   "statsPageTitle": "통계",
   "statsWithGps": "{count, plural, other{{count}개 위치가 있음}}",

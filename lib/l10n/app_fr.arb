@@ -95,6 +95,7 @@
   "filterFavouriteLabel": "Favori",
   "filterLocationEmptyLabel": "Sans lieu",
   "filterTagEmptyLabel": "Sans libellé",
+  "filterOnThisDayLabel": "Ce jour-là",
   "filterRatingUnratedLabel": "Sans notation",
   "filterRatingRejectedLabel": "Rejeté",
   "filterTypeAnimatedLabel": "Animation",
@@ -503,6 +504,7 @@
   "settingsViewerSlideshowTitle": "Diaporama",
   "settingsSlideshowRepeat": "Répéter",
   "settingsSlideshowShuffle": "Aléatoire",
+  "settingsSlideshowFillScreen": "Remplir l’écran",
   "settingsSlideshowTransitionTile": "Transition",
   "settingsSlideshowTransitionTitle": "Transition",
   "settingsSlideshowIntervalTile": "Intervalle",
@@ -575,7 +577,7 @@
   "settingsThemeBrightness": "Thème",
   "settingsThemeColorHighlights": "Surlignages colorés",
   "settingsThemeEnableDynamicColor": "Couleur dynamique",
-  "settingsDisplayRefreshRateModeTile": "Fréquence d’actualisation de l'écran",
+  "settingsDisplayRefreshRateModeTile": "Fréquence d’actualisation de l’écran",
   "settingsDisplayRefreshRateModeTitle": "Fréquence d’actualisation",
 
   "settingsSectionLanguage": "Langue & Formats",
@@ -584,6 +586,11 @@
   "settingsCoordinateFormatTitle": "Format de coordonnées",
   "settingsUnitSystemTile": "Unités",
   "settingsUnitSystemTitle": "Unités",
+
+  "settingsScreenSaverPageTitle": "Économiseur d’écran",
+
+  "settingsWidgetPageTitle": "Cadre photo",
+  "settingsWidgetShowOutline": "Contours",
 
   "statsPageTitle": "Statistiques",
   "statsWithGps": "{count, plural, =1{1 élément localisé} other{{count} éléments localisés}}",
