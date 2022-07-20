@@ -1,12 +1,4 @@
 {
-  "de": [
-    "filterOnThisDayLabel",
-    "settingsSlideshowFillScreen",
-    "settingsScreenSaverPageTitle",
-    "settingsWidgetPageTitle",
-    "settingsWidgetShowOutline"
-  ],
-
   "es": [
     "filterOnThisDayLabel",
     "settingsSlideshowFillScreen",
@@ -23,23 +15,7 @@
     "settingsWidgetShowOutline"
   ],
 
-  "it": [
-    "filterOnThisDayLabel",
-    "settingsSlideshowFillScreen",
-    "settingsScreenSaverPageTitle",
-    "settingsWidgetPageTitle",
-    "settingsWidgetShowOutline"
-  ],
-
   "ja": [
-    "filterOnThisDayLabel",
-    "settingsSlideshowFillScreen",
-    "settingsScreenSaverPageTitle",
-    "settingsWidgetPageTitle",
-    "settingsWidgetShowOutline"
-  ],
-
-  "pt": [
     "filterOnThisDayLabel",
     "settingsSlideshowFillScreen",
     "settingsScreenSaverPageTitle",
@@ -85,13 +61,5 @@
     "settingsWidgetPageTitle",
     "settingsWidgetShowOutline",
     "viewerSetWallpaperButtonLabel"
-  ],
-
-  "zh": [
-    "filterOnThisDayLabel",
-    "settingsSlideshowFillScreen",
-    "settingsScreenSaverPageTitle",
-    "settingsWidgetPageTitle",
-    "settingsWidgetShowOutline"
   ]
 }
