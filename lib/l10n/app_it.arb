@@ -95,6 +95,7 @@
   "filterFavouriteLabel": "Preferiti",
   "filterLocationEmptyLabel": "Senza posizione",
   "filterTagEmptyLabel": "Senza etichetta",
+  "filterOnThisDayLabel": "In questo giorno",
   "filterRatingUnratedLabel": "Non valutato",
   "filterRatingRejectedLabel": "Rifiutato",
   "filterTypeAnimatedLabel": "Animato",
@@ -503,6 +504,7 @@
   "settingsViewerSlideshowTitle": "Presentazione",
   "settingsSlideshowRepeat": "Ripeti",
   "settingsSlideshowShuffle": "Ordine casuale",
+  "settingsSlideshowFillScreen": "Riempi schermo",
   "settingsSlideshowTransitionTile": "Transizione",
   "settingsSlideshowTransitionTitle": "Transizione",
   "settingsSlideshowIntervalTile": "Intervallo",
@@ -584,6 +586,11 @@
   "settingsCoordinateFormatTitle": "Formato coordinate",
   "settingsUnitSystemTile": "Unità",
   "settingsUnitSystemTitle": "Unità",
+
+  "settingsScreenSaverPageTitle": "Salvaschermo",
+
+  "settingsWidgetPageTitle": "Cornice foto",
+  "settingsWidgetShowOutline": "Contorno",
 
   "statsPageTitle": "Statistiche",
   "statsWithGps": "{count, plural, =1{1 elemento con posizione} other{{count} elementi con posizione}}",
