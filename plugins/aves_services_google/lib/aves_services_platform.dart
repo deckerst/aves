@@ -23,7 +23,7 @@ class PlatformMobileServices extends MobileServices {
     // cf https://github.com/flutter/flutter/issues/23728
     // as of google_maps_flutter v2.1.5, Flutter v3.0.1 makes the map hide overlay widgets on API <=22
     final androidInfo = await DeviceInfoPlugin().androidInfo;
-    _canRenderMaps = (androidInfo.version.sdkInt ?? 0) >= 23;
+    _canRenderMaps = (androidInfo.version.sdkInt ?? 0) >= 21;
   }
 
   @override

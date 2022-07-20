@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:aves/app_flavor.dart';
 import 'package:aves/flutter_version.dart';

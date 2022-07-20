@@ -1,7 +1,5 @@
 import 'dart:async';
 import 'dart:math';
-import 'dart:typed_data';
-import 'dart:ui';
 
 import 'package:aves/model/entry.dart';
 import 'package:aves/ref/mime_types.dart';
