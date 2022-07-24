@@ -25,7 +25,8 @@
   "showTooltip": "Mostrar",
   "hideTooltip": "Ocultar",
   "actionRemove": "Remover",
-  "resetButtonTooltip": "Resetar",
+  "resetTooltip": "Resetar",
+  "saveTooltip": "Salve",
 
   "doubleBackExitMessage": "Toque em “voltar” novamente para sair.",
   "doNotAskAgain": "Não pergunte novamente",
@@ -94,6 +95,7 @@
   "filterFavouriteLabel": "Favorito",
   "filterLocationEmptyLabel": "Não localizado",
   "filterTagEmptyLabel": "Sem etiqueta",
+  "filterOnThisDayLabel": "Neste dia",
   "filterRatingUnratedLabel": "Sem classificação",
   "filterRatingRejectedLabel": "Rejeitado",
   "filterTypeAnimatedLabel": "Animado",
@@ -303,7 +305,6 @@
 
   "aboutBug": "Relatório de erro",
   "aboutBugSaveLogInstruction": "Salvar registros de aplicativos em um arquivo",
-  "aboutBugSaveLogButton": "Salve",
   "aboutBugCopyInfoInstruction": "Copiar informações do sistema",
   "aboutBugCopyInfoButton": "Copiar",
   "aboutBugReportInstruction": "Relatório no GitHub com os logs e informações do sistema",
@@ -417,6 +418,7 @@
 
   "searchCollectionFieldHint": "Pesquisar coleção",
   "searchSectionRecent": "Recente",
+  "searchSectionDate": "Data",
   "searchSectionAlbums": "Álbuns",
   "searchSectionCountries": "Países",
   "searchSectionPlaces": "Locais",
@@ -502,6 +504,7 @@
   "settingsViewerSlideshowTitle": "Apresentação de slides",
   "settingsSlideshowRepeat": "Repetir",
   "settingsSlideshowShuffle": "Embaralhar",
+  "settingsSlideshowFillScreen": "Preencher tela",
   "settingsSlideshowTransitionTile": "Transição",
   "settingsSlideshowTransitionTitle": "Transição",
   "settingsSlideshowIntervalTile": "Intervalo",
@@ -583,6 +586,11 @@
   "settingsCoordinateFormatTitle": "Formato de coordenadas",
   "settingsUnitSystemTile": "Unidades",
   "settingsUnitSystemTitle": "Unidades",
+
+  "settingsScreenSaverPageTitle": "Protetor de tela",
+
+  "settingsWidgetPageTitle": "Porta-retratos",
+  "settingsWidgetShowOutline": "Contorno",
 
   "statsPageTitle": "Estatísticas",
   "statsWithGps": "{count, plural, =1{1 item com localização} other{{count} itens com localização}}",

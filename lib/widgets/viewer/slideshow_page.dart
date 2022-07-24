@@ -10,6 +10,7 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
+import 'package:aves/widgets/common/magnifier/scale/scale_level.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/viewer/controller.dart';
 import 'package:aves/widgets/viewer/entry_viewer_page.dart';
@@ -32,32 +33,20 @@ class SlideshowPage extends StatefulWidget {
 }
 
 class _SlideshowPageState extends State<SlideshowPage> {
-  late final CollectionLens _slideshowCollection;
   late final ViewerController _viewerController;
+  late final CollectionLens _slideshowCollection;
 
   @override
   void initState() {
     super.initState();
-    final originalCollection = widget.collection;
-    var entries = originalCollection.sortedEntries;
-    if (settings.slideshowVideoPlayback == SlideshowVideoPlayback.skip) {
-      entries = entries.where((entry) => !MimeFilter.video.test(entry)).toList();
-    }
-    if (settings.slideshowShuffle) {
-      entries.shuffle();
-    }
-    _slideshowCollection = CollectionLens(
-      source: originalCollection.source,
-      listenToSource: false,
-      fixedSort: true,
-      fixedSelection: entries,
-    );
     _viewerController = ViewerController(
+      initialScale: ScaleLevel(ref: settings.slideshowFillScreen ? ScaleReference.covered : ScaleReference.contained),
       transition: settings.slideshowTransition,
       repeat: settings.slideshowRepeat,
       autopilot: true,
       autopilotInterval: settings.slideshowInterval.getDuration(),
     );
+    _initSlideshowCollection();
   }
 
   @override
@@ -98,6 +87,23 @@ class _SlideshowPageState extends State<SlideshowPage> {
                 ),
         ),
       ),
+    );
+  }
+
+  void _initSlideshowCollection() {
+    final originalCollection = widget.collection;
+    var entries = originalCollection.sortedEntries;
+    if (settings.slideshowVideoPlayback == SlideshowVideoPlayback.skip) {
+      entries = entries.where((entry) => !MimeFilter.video.test(entry)).toList();
+    }
+    if (settings.slideshowShuffle) {
+      entries.shuffle();
+    }
+    _slideshowCollection = CollectionLens(
+      source: originalCollection.source,
+      listenToSource: false,
+      fixedSort: true,
+      fixedSelection: entries,
     );
   }
 

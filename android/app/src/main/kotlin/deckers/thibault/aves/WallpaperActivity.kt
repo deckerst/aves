@@ -2,10 +2,15 @@ package deckers.thibault.aves
 
 import android.content.Intent
 import android.net.Uri
-import android.os.*
+import android.os.Build
+import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import app.loup.streams_channel.StreamsChannel
 import deckers.thibault.aves.channel.calls.*
+import deckers.thibault.aves.channel.calls.window.ActivityWindowHandler
+import deckers.thibault.aves.channel.calls.window.WindowHandler
 import deckers.thibault.aves.channel.streams.ImageByteStreamHandler
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.getParcelableExtraCompat
@@ -23,18 +28,19 @@ class WallpaperActivity : FlutterActivity() {
 
         super.onCreate(savedInstanceState)
 
-        val messenger = flutterEngine!!.dartExecutor.binaryMessenger
+        val messenger = flutterEngine!!.dartExecutor
 
         // dart -> platform -> dart
         // - need Context
         MethodChannel(messenger, DeviceHandler.CHANNEL).setMethodCallHandler(DeviceHandler(this))
         MethodChannel(messenger, EmbeddedDataHandler.CHANNEL).setMethodCallHandler(EmbeddedDataHandler(this))
+        MethodChannel(messenger, MediaFetchHandler.CHANNEL).setMethodCallHandler(MediaFetchHandler(this))
         MethodChannel(messenger, MetadataFetchHandler.CHANNEL).setMethodCallHandler(MetadataFetchHandler(this))
-        // - need Activity
+        // - need ContextWrapper
         MethodChannel(messenger, AccessibilityHandler.CHANNEL).setMethodCallHandler(AccessibilityHandler(this))
-        MethodChannel(messenger, MediaFileHandler.CHANNEL).setMethodCallHandler(MediaFileHandler(this))
         MethodChannel(messenger, WallpaperHandler.CHANNEL).setMethodCallHandler(WallpaperHandler(this))
-        MethodChannel(messenger, WindowHandler.CHANNEL).setMethodCallHandler(WindowHandler(this))
+        // - need Activity
+        MethodChannel(messenger, WindowHandler.CHANNEL).setMethodCallHandler(ActivityWindowHandler(this))
 
         // result streaming: dart -> platform ->->-> dart
         // - need Context
@@ -43,7 +49,7 @@ class WallpaperActivity : FlutterActivity() {
         // intent handling
         // detail fetch: dart -> platform
         intentDataMap = extractIntentData(intent)
-        MethodChannel(messenger, VIEWER_CHANNEL).setMethodCallHandler { call, result ->
+        MethodChannel(messenger, MainActivity.INTENT_CHANNEL).setMethodCallHandler { call, result ->
             when (call.method) {
                 "getIntentData" -> {
                     result.success(intentDataMap)
@@ -65,16 +71,6 @@ class WallpaperActivity : FlutterActivity() {
                 window.decorView.requestApplyInsets()
             }, 100)
         }
-    }
-
-    override fun onStop() {
-        Log.i(LOG_TAG, "onStop")
-        super.onStop()
-    }
-
-    override fun onDestroy() {
-        Log.i(LOG_TAG, "onDestroy")
-        super.onDestroy()
     }
 
     private fun extractIntentData(intent: Intent?): MutableMap<String, Any?> {
@@ -102,6 +98,5 @@ class WallpaperActivity : FlutterActivity() {
 
     companion object {
         private val LOG_TAG = LogUtils.createTag<WallpaperActivity>()
-        const val VIEWER_CHANNEL = "deckers.thibault/aves/viewer"
     }
 }

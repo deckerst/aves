@@ -115,7 +115,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
         val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
         if (mimeType == null || uri == null) {
-            result.error("getAllMetadata-args", "failed because of missing arguments", null)
+            result.error("getAllMetadata-args", "missing arguments", null)
             return
         }
 
@@ -424,7 +424,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         val path = call.argument<String>("path")
         val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
         if (mimeType == null || uri == null) {
-            result.error("getCatalogMetadata-args", "failed because of missing arguments", null)
+            result.error("getCatalogMetadata-args", "missing arguments", null)
             return
         }
 
@@ -691,7 +691,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
         val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
         if (mimeType == null || uri == null) {
-            result.error("getOverlayMetadata-args", "failed because of missing arguments", null)
+            result.error("getOverlayMetadata-args", "missing arguments", null)
             return
         }
 
@@ -761,7 +761,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
         val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
         if (mimeType == null || uri == null) {
-            result.error("getGeoTiffInfo-args", "failed because of missing arguments", null)
+            result.error("getGeoTiffInfo-args", "missing arguments", null)
             return
         }
 
@@ -802,7 +802,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
         val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
         if (mimeType == null || uri == null || sizeBytes == null) {
-            result.error("getMultiPageInfo-args", "failed because of missing arguments", null)
+            result.error("getMultiPageInfo-args", "missing arguments", null)
             return
         }
 
@@ -824,7 +824,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
         val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
         if (mimeType == null || uri == null) {
-            result.error("getPanoramaInfo-args", "failed because of missing arguments", null)
+            result.error("getPanoramaInfo-args", "missing arguments", null)
             return
         }
 
@@ -863,7 +863,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         val mimeType = call.argument<String>("mimeType")
         val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
         if (mimeType == null || uri == null) {
-            result.error("getIptc-args", "failed because of missing arguments", null)
+            result.error("getIptc-args", "missing arguments", null)
             return
         }
 
@@ -888,7 +888,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
         val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
         if (mimeType == null || uri == null) {
-            result.error("getXmp-args", "failed because of missing arguments", null)
+            result.error("getXmp-args", "missing arguments", null)
             return
         }
 
@@ -918,7 +918,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
     private fun hasContentResolverProp(call: MethodCall, result: MethodChannel.Result) {
         val prop = call.argument<String>("prop")
         if (prop == null) {
-            result.error("hasContentResolverProp-args", "failed because of missing arguments", null)
+            result.error("hasContentResolverProp-args", "missing arguments", null)
             return
         }
 
@@ -938,7 +938,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
         val prop = call.argument<String>("prop")
         if (mimeType == null || uri == null || prop == null) {
-            result.error("getContentResolverProp-args", "failed because of missing arguments", null)
+            result.error("getContentResolverProp-args", "missing arguments", null)
             return
         }
 
@@ -992,7 +992,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
         val field = call.argument<String>("field")
         if (mimeType == null || uri == null || field == null) {
-            result.error("getDate-args", "failed because of missing arguments", null)
+            result.error("getDate-args", "missing arguments", null)
             return
         }
 

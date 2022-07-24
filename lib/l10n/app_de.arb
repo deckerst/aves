@@ -25,7 +25,8 @@
   "showTooltip": "Anzeigen",
   "hideTooltip": "Ausblenden",
   "actionRemove": "Entfernen",
-  "resetButtonTooltip": "Zurücksetzen",
+  "resetTooltip": "Zurücksetzen",
+  "saveTooltip": "Speichern",
 
   "doubleBackExitMessage": "Zum Verlassen erneut auf „Zurück“ tippen.",
   "doNotAskAgain": "Nicht noch einmal fragen",
@@ -94,6 +95,7 @@
   "filterFavouriteLabel": "Favorit",
   "filterLocationEmptyLabel": "Ungeortet",
   "filterTagEmptyLabel": "Unmarkiert",
+  "filterOnThisDayLabel": "Am heutigen Tag",
   "filterRatingUnratedLabel": "Nicht bewertet",
   "filterRatingRejectedLabel": "Verworfen",
   "filterTypeAnimatedLabel": "Animationen",
@@ -303,7 +305,6 @@
 
   "aboutBug": "Fehlerbericht",
   "aboutBugSaveLogInstruction": "Anwendungsprotokolle in einer Datei speichern",
-  "aboutBugSaveLogButton": "Speichern",
   "aboutBugCopyInfoInstruction": "Systeminformationen kopieren",
   "aboutBugCopyInfoButton": "Kopieren",
   "aboutBugReportInstruction": "Bericht auf GitHub mit den Protokollen und Systeminformationen",
@@ -417,6 +418,7 @@
 
   "searchCollectionFieldHint": "Sammlung durchsuchen",
   "searchSectionRecent": "Neueste",
+  "searchSectionDate": "Datum",
   "searchSectionAlbums": "Alben",
   "searchSectionCountries": "Länder",
   "searchSectionPlaces": "Orte",
@@ -502,6 +504,7 @@
   "settingsViewerSlideshowTitle": "Diashow",
   "settingsSlideshowRepeat": "Wiederholung",
   "settingsSlideshowShuffle": "Mischen",
+  "settingsSlideshowFillScreen": "Bildschirm ausfüllen",
   "settingsSlideshowTransitionTile": "Übergang",
   "settingsSlideshowTransitionTitle": "Übergang",
   "settingsSlideshowIntervalTile": "Intervall",
@@ -583,6 +586,11 @@
   "settingsCoordinateFormatTitle": "Koordinatenformat",
   "settingsUnitSystemTile": "Einheiten",
   "settingsUnitSystemTitle": "Einheiten",
+
+  "settingsScreenSaverPageTitle": "Bildschirmschoner",
+
+  "settingsWidgetPageTitle": "Bilderrahmen",
+  "settingsWidgetShowOutline": "Gliederung",
 
   "statsPageTitle": "Statistiken",
   "statsWithGps": "{count, plural, =1{1 Element mit Standort} other{{count} Elemente mit Standort}}",

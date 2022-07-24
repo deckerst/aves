@@ -1,4 +1,5 @@
 import 'package:aves/model/filters/album.dart';
+import 'package:aves/model/filters/date.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/location.dart';
@@ -42,6 +43,8 @@ class CollectionSearchDelegate extends AvesSearchDelegate {
     TypeFilter.raw,
     MimeFilter(MimeTypes.svg),
   ];
+
+  static final _monthFilters = List.generate(12, (i) => DateFilter(DateLevel.m, DateTime(1, i + 1)));
 
   CollectionSearchDelegate({
     required super.searchFieldLabel,
@@ -95,66 +98,12 @@ class CollectionSearchDelegate extends AvesSearchDelegate {
                           title: context.l10n.searchSectionRecent,
                           filters: history,
                         ),
-                      StreamBuilder(
-                          stream: source.eventBus.on<AlbumsChangedEvent>(),
-                          builder: (context, snapshot) {
-                            final filters = source.rawAlbums
-                                .map((album) => AlbumFilter(
-                                      album,
-                                      source.getAlbumDisplayName(context, album),
-                                    ))
-                                .where((filter) => containQuery(filter.displayName ?? filter.album))
-                                .toList()
-                              ..sort();
-                            return _buildFilterRow(
-                              context: context,
-                              title: context.l10n.searchSectionAlbums,
-                              filters: filters,
-                            );
-                          }),
-                      StreamBuilder(
-                          stream: source.eventBus.on<CountriesChangedEvent>(),
-                          builder: (context, snapshot) {
-                            final filters = source.sortedCountries.where(containQuery).map((s) => LocationFilter(LocationLevel.country, s)).toList();
-                            return _buildFilterRow(
-                              context: context,
-                              title: context.l10n.searchSectionCountries,
-                              filters: filters,
-                            );
-                          }),
-                      StreamBuilder(
-                          stream: source.eventBus.on<PlacesChangedEvent>(),
-                          builder: (context, snapshot) {
-                            final filters = source.sortedPlaces.where(containQuery).map((s) => LocationFilter(LocationLevel.place, s));
-                            final noFilter = LocationFilter(LocationLevel.place, '');
-                            return _buildFilterRow(
-                              context: context,
-                              title: context.l10n.searchSectionPlaces,
-                              filters: [
-                                if (containQuery(noFilter.getLabel(context))) noFilter,
-                                ...filters,
-                              ],
-                            );
-                          }),
-                      StreamBuilder(
-                          stream: source.eventBus.on<TagsChangedEvent>(),
-                          builder: (context, snapshot) {
-                            final filters = source.sortedTags.where(containQuery).map(TagFilter.new);
-                            final noFilter = TagFilter('');
-                            return _buildFilterRow(
-                              context: context,
-                              title: context.l10n.searchSectionTags,
-                              filters: [
-                                if (containQuery(noFilter.getLabel(context))) noFilter,
-                                ...filters,
-                              ],
-                            );
-                          }),
-                      _buildFilterRow(
-                        context: context,
-                        title: context.l10n.searchSectionRating,
-                        filters: [0, 5, 4, 3, 2, 1, -1].map(RatingFilter.new).where((f) => containQuery(f.getLabel(context))).toList(),
-                      ),
+                      _buildDateFilters(context, containQuery),
+                      _buildAlbumFilters(containQuery),
+                      _buildCountryFilters(containQuery),
+                      _buildPlaceFilters(containQuery),
+                      _buildTagFilters(containQuery),
+                      _buildRatingFilters(context, containQuery),
                     ],
                   );
                 });
@@ -175,6 +124,97 @@ class CollectionSearchDelegate extends AvesSearchDelegate {
       heroTypeBuilder: heroTypeBuilder,
       onTap: (filter) => _select(context, filter is QueryFilter ? QueryFilter(filter.query) : filter),
       onLongPress: AvesFilterChip.showDefaultLongPressMenu,
+    );
+  }
+
+  Widget _buildDateFilters(BuildContext context, _ContainQuery containQuery) {
+    final filters = [
+      DateFilter.onThisDay,
+      ..._monthFilters,
+    ].where((f) => containQuery(f.getLabel(context))).toList();
+    return _buildFilterRow(
+      context: context,
+      title: context.l10n.searchSectionDate,
+      filters: filters,
+    );
+  }
+
+  Widget _buildAlbumFilters(_ContainQuery containQuery) {
+    return StreamBuilder(
+      stream: source.eventBus.on<AlbumsChangedEvent>(),
+      builder: (context, snapshot) {
+        final filters = source.rawAlbums
+            .map((album) => AlbumFilter(
+                  album,
+                  source.getAlbumDisplayName(context, album),
+                ))
+            .where((filter) => containQuery(filter.displayName ?? filter.album))
+            .toList()
+          ..sort();
+        return _buildFilterRow(
+          context: context,
+          title: context.l10n.searchSectionAlbums,
+          filters: filters,
+        );
+      },
+    );
+  }
+
+  Widget _buildCountryFilters(_ContainQuery containQuery) {
+    return StreamBuilder(
+      stream: source.eventBus.on<CountriesChangedEvent>(),
+      builder: (context, snapshot) {
+        final filters = source.sortedCountries.where(containQuery).map((s) => LocationFilter(LocationLevel.country, s)).toList();
+        return _buildFilterRow(
+          context: context,
+          title: context.l10n.searchSectionCountries,
+          filters: filters,
+        );
+      },
+    );
+  }
+
+  Widget _buildPlaceFilters(_ContainQuery containQuery) {
+    return StreamBuilder(
+      stream: source.eventBus.on<PlacesChangedEvent>(),
+      builder: (context, snapshot) {
+        final filters = source.sortedPlaces.where(containQuery).map((s) => LocationFilter(LocationLevel.place, s));
+        final noFilter = LocationFilter(LocationLevel.place, '');
+        return _buildFilterRow(
+          context: context,
+          title: context.l10n.searchSectionPlaces,
+          filters: [
+            if (containQuery(noFilter.getLabel(context))) noFilter,
+            ...filters,
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildTagFilters(_ContainQuery containQuery) {
+    return StreamBuilder(
+      stream: source.eventBus.on<TagsChangedEvent>(),
+      builder: (context, snapshot) {
+        final filters = source.sortedTags.where(containQuery).map(TagFilter.new);
+        final noFilter = TagFilter('');
+        return _buildFilterRow(
+          context: context,
+          title: context.l10n.searchSectionTags,
+          filters: [
+            if (containQuery(noFilter.getLabel(context))) noFilter,
+            ...filters,
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildRatingFilters(BuildContext context, _ContainQuery containQuery) {
+    return _buildFilterRow(
+      context: context,
+      title: context.l10n.searchSectionRating,
+      filters: [0, 5, 4, 3, 2, 1, -1].map(RatingFilter.new).where((f) => containQuery(f.getLabel(context))).toList(),
     );
   }
 
@@ -238,3 +278,5 @@ class CollectionSearchDelegate extends AvesSearchDelegate {
     );
   }
 }
+
+typedef _ContainQuery = bool Function(String s);

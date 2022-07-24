@@ -87,7 +87,7 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
         val pageId = arguments["pageId"] as Int?
 
         if (mimeType == null || uri == null) {
-            error("streamImage-args", "failed because of missing arguments", null)
+            error("streamImage-args", "missing arguments", null)
             endOfStream()
             return
         }

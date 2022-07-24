@@ -189,16 +189,13 @@ class _BasicInfoState extends State<_BasicInfo> {
   @override
   void initState() {
     super.initState();
-    if (!entry.trashed) {
-      final isMediaContent = entry.uri.startsWith('content://media/external/');
-      if (isMediaContent) {
-        _ownerPackageLoader = metadataFetchService.hasContentResolverProp(ownerPackageNamePropKey).then((exists) {
-          return exists ? metadataFetchService.getContentResolverProp(entry, ownerPackageNamePropKey) : SynchronousFuture(null);
-        });
-        final isViewerMode = context.read<ValueNotifier<AppMode>>().value == AppMode.view;
-        if (isViewerMode && settings.isInstalledAppAccessAllowed) {
-          _appNameLoader = androidFileUtils.initAppNames();
-        }
+    if (!entry.trashed && entry.isMediaStoreContent) {
+      _ownerPackageLoader = metadataFetchService.hasContentResolverProp(ownerPackageNamePropKey).then((exists) {
+        return exists ? metadataFetchService.getContentResolverProp(entry, ownerPackageNamePropKey) : SynchronousFuture(null);
+      });
+      final isViewerMode = context.read<ValueNotifier<AppMode>>().value == AppMode.view;
+      if (isViewerMode && settings.isInstalledAppAccessAllowed) {
+        _appNameLoader = androidFileUtils.initAppNames();
       }
     }
   }

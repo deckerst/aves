@@ -16,7 +16,10 @@ import deckers.thibault.aves.utils.ContextUtils.isMyServiceRunning
 import deckers.thibault.aves.utils.LogUtils
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 
 class AnalysisHandler(private val activity: Activity, private val onAnalysisCompleted: () -> Unit) : MethodChannel.MethodCallHandler, AnalysisServiceListener {
     private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
@@ -33,7 +36,7 @@ class AnalysisHandler(private val activity: Activity, private val onAnalysisComp
     private fun registerCallback(call: MethodCall, result: MethodChannel.Result) {
         val callbackHandle = call.argument<Number>("callbackHandle")?.toLong()
         if (callbackHandle == null) {
-            result.error("registerCallback-args", "failed because of missing arguments", null)
+            result.error("registerCallback-args", "missing arguments", null)
             return
         }
 
@@ -47,7 +50,7 @@ class AnalysisHandler(private val activity: Activity, private val onAnalysisComp
     private fun startAnalysis(call: MethodCall, result: MethodChannel.Result) {
         val force = call.argument<Boolean>("force")
         if (force == null) {
-            result.error("startAnalysis-args", "failed because of missing arguments", null)
+            result.error("startAnalysis-args", "missing arguments", null)
             return
         }
 
@@ -56,9 +59,9 @@ class AnalysisHandler(private val activity: Activity, private val onAnalysisComp
 
         if (!activity.isMyServiceRunning(AnalysisService::class.java)) {
             val intent = Intent(activity, AnalysisService::class.java)
-            intent.putExtra(AnalysisService.KEY_COMMAND, AnalysisService.COMMAND_START)
-            intent.putExtra(AnalysisService.KEY_ENTRY_IDS, entryIds?.toIntArray())
-            intent.putExtra(AnalysisService.KEY_FORCE, force)
+                .putExtra(AnalysisService.KEY_COMMAND, AnalysisService.COMMAND_START)
+                .putExtra(AnalysisService.KEY_ENTRY_IDS, entryIds?.toIntArray())
+                .putExtra(AnalysisService.KEY_FORCE, force)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 activity.startForegroundService(intent)
             } else {

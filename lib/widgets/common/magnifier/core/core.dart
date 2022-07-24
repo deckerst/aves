@@ -169,12 +169,14 @@ class _MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateM
       final pps = details.velocity.pixelsPerSecond;
       if (pps != Offset.zero) {
         final newPosition = clampPosition(position: _position + pps * widget.panInertia);
-        final tween = Tween<Offset>(begin: _position, end: newPosition);
-        const curve = Curves.easeOutCubic;
-        _positionAnimation = tween.animate(CurvedAnimation(parent: _positionAnimationController, curve: curve));
-        _positionAnimationController
-          ..duration = _getAnimationDurationForVelocity(curve: curve, tween: tween, targetPixelPerSecond: pps)
-          ..forward(from: 0.0);
+        if (_position != newPosition) {
+          final tween = Tween<Offset>(begin: _position, end: newPosition);
+          const curve = Curves.easeOutCubic;
+          _positionAnimation = tween.animate(CurvedAnimation(parent: _positionAnimationController, curve: curve));
+          _positionAnimationController
+            ..duration = _getAnimationDurationForVelocity(curve: curve, tween: tween, targetPixelPerSecond: pps)
+            ..forward(from: 0.0);
+        }
       }
     }
 

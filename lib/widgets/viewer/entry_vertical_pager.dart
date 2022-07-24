@@ -23,6 +23,7 @@ class ViewerVerticalPageView extends StatefulWidget {
   final CollectionLens? collection;
   final ValueNotifier<AvesEntry?> entryNotifier;
   final ViewerController viewerController;
+  final Animation<double> overlayOpacity;
   final PageController horizontalPager, verticalPager;
   final void Function(int page) onVerticalPageChanged, onHorizontalPageChanged;
   final VoidCallback onImagePageRequested;
@@ -33,6 +34,7 @@ class ViewerVerticalPageView extends StatefulWidget {
     required this.collection,
     required this.entryNotifier,
     required this.viewerController,
+    required this.overlayOpacity,
     required this.verticalPager,
     required this.horizontalPager,
     required this.onVerticalPageChanged,
@@ -116,7 +118,8 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
       _buildImagePage(),
     ];
 
-    if (context.read<ValueNotifier<AppMode>>().value != AppMode.slideshow) {
+    final appMode = context.read<ValueNotifier<AppMode>>().value;
+    if (!{AppMode.screenSaver, AppMode.slideshow}.contains(appMode)) {
       final infoPage = NotificationListener<ShowImageNotification>(
         onNotification: (notification) {
           widget.onImagePageRequested();
@@ -144,9 +147,15 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
     return ValueListenableBuilder<double>(
       valueListenable: _backgroundOpacityNotifier,
       builder: (context, backgroundOpacity, child) {
-        final background = Theme.of(context).brightness == Brightness.dark ? Colors.black : Colors.white;
-        return Container(
-          color: background.withOpacity(backgroundOpacity),
+        return ValueListenableBuilder<double>(
+          valueListenable: widget.overlayOpacity,
+          builder: (context, overlayOpacity, child) {
+            final background = Theme.of(context).brightness == Brightness.dark ? Colors.black : Color.lerp(Colors.black, Colors.white, overlayOpacity)!;
+            return Container(
+              color: background.withOpacity(backgroundOpacity),
+              child: child,
+            );
+          },
           child: child,
         );
       },
@@ -185,6 +194,7 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
       };
     } else if (entry != null) {
       child = SingleEntryScroller(
+        viewerController: widget.viewerController,
         entry: entry!,
       );
       shortcuts = const {

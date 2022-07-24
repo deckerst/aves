@@ -27,7 +27,7 @@ class Settings extends ChangeNotifier {
 
   Settings._private();
 
-  static const Set<String> internalKeys = {
+  static const Set<String> _internalKeys = {
     hasAcceptedTermsKey,
     catalogTimeZoneKey,
     videoShowRawTimedTextKey,
@@ -36,6 +36,7 @@ class Settings extends ChangeNotifier {
     platformTransitionAnimationScaleKey,
     topEntryIdsKey,
   };
+  static const _widgetKeyPrefix = 'widget_';
 
   // app
   static const hasAcceptedTermsKey = 'has_accepted_terms';
@@ -60,7 +61,7 @@ class Settings extends ChangeNotifier {
   static const mustBackTwiceToExitKey = 'must_back_twice_to_exit';
   static const keepScreenOnKey = 'keep_screen_on';
   static const homePageKey = 'home_page';
-  static const showBottomNavigationBarKey = 'show_bottom_navigation_bar';
+  static const enableBottomNavigationBarKey = 'show_bottom_navigation_bar';
   static const confirmDeleteForeverKey = 'confirm_delete_forever';
   static const confirmMoveToBinKey = 'confirm_move_to_bin';
   static const confirmMoveUndatedItemsKey = 'confirm_move_undated_items';
@@ -138,12 +139,26 @@ class Settings extends ChangeNotifier {
   // file picker
   static const filePickerShowHiddenFilesKey = 'file_picker_show_hidden_files';
 
+  // screen saver
+  static const screenSaverFillScreenKey = 'screen_saver_fill_screen';
+  static const screenSaverTransitionKey = 'screen_saver_transition';
+  static const screenSaverVideoPlaybackKey = 'screen_saver_video_playback';
+  static const screenSaverIntervalKey = 'screen_saver_interval';
+  static const screenSaverCollectionFiltersKey = 'screen_saver_collection_filters';
+
   // slideshow
   static const slideshowRepeatKey = 'slideshow_loop';
   static const slideshowShuffleKey = 'slideshow_shuffle';
+  static const slideshowFillScreenKey = 'slideshow_fill_screen';
   static const slideshowTransitionKey = 'slideshow_transition';
   static const slideshowVideoPlaybackKey = 'slideshow_video_playback';
   static const slideshowIntervalKey = 'slideshow_interval';
+
+  // widget
+  static const widgetOutlinePrefixKey = '${_widgetKeyPrefix}outline_';
+  static const widgetShapePrefixKey = '${_widgetKeyPrefix}shape_';
+  static const widgetCollectionFiltersPrefixKey = '${_widgetKeyPrefix}collection_filters_';
+  static const widgetUriPrefixKey = '${_widgetKeyPrefix}uri_';
 
   // platform settings
   // cf Android `Settings.System.ACCELEROMETER_ROTATION`
@@ -161,13 +176,17 @@ class Settings extends ChangeNotifier {
     }
   }
 
+  Future<void> reload() => settingsStore.reload();
+
   Future<void> reset({required bool includeInternalKeys}) async {
     if (includeInternalKeys) {
       await settingsStore.clear();
     } else {
-      await Future.forEach<String>(settingsStore.getKeys().whereNot(Settings.internalKeys.contains), settingsStore.remove);
+      await Future.forEach<String>(settingsStore.getKeys().whereNot(isInternalKey), settingsStore.remove);
     }
   }
+
+  bool isInternalKey(String key) => _internalKeys.contains(key) || key.startsWith(_widgetKeyPrefix);
 
   Future<void> setContextualDefaults() async {
     // performance
@@ -315,9 +334,9 @@ class Settings extends ChangeNotifier {
 
   set homePage(HomePageSetting newValue) => setAndNotify(homePageKey, newValue.toString());
 
-  bool get showBottomNavigationBar => getBoolOrDefault(showBottomNavigationBarKey, SettingsDefaults.showBottomNavigationBar);
+  bool get enableBottomNavigationBar => getBoolOrDefault(enableBottomNavigationBarKey, SettingsDefaults.enableBottomNavigationBar);
 
-  set showBottomNavigationBar(bool newValue) => setAndNotify(showBottomNavigationBarKey, newValue);
+  set enableBottomNavigationBar(bool newValue) => setAndNotify(enableBottomNavigationBarKey, newValue);
 
   bool get confirmDeleteForever => getBoolOrDefault(confirmDeleteForeverKey, SettingsDefaults.confirmDeleteForever);
 
@@ -583,6 +602,28 @@ class Settings extends ChangeNotifier {
 
   set filePickerShowHiddenFiles(bool newValue) => setAndNotify(filePickerShowHiddenFilesKey, newValue);
 
+  // screen saver
+
+  bool get screenSaverFillScreen => getBoolOrDefault(screenSaverFillScreenKey, SettingsDefaults.slideshowFillScreen);
+
+  set screenSaverFillScreen(bool newValue) => setAndNotify(screenSaverFillScreenKey, newValue);
+
+  ViewerTransition get screenSaverTransition => getEnumOrDefault(screenSaverTransitionKey, SettingsDefaults.slideshowTransition, ViewerTransition.values);
+
+  set screenSaverTransition(ViewerTransition newValue) => setAndNotify(screenSaverTransitionKey, newValue.toString());
+
+  SlideshowVideoPlayback get screenSaverVideoPlayback => getEnumOrDefault(screenSaverVideoPlaybackKey, SettingsDefaults.slideshowVideoPlayback, SlideshowVideoPlayback.values);
+
+  set screenSaverVideoPlayback(SlideshowVideoPlayback newValue) => setAndNotify(screenSaverVideoPlaybackKey, newValue.toString());
+
+  SlideshowInterval get screenSaverInterval => getEnumOrDefault(screenSaverIntervalKey, SettingsDefaults.slideshowInterval, SlideshowInterval.values);
+
+  set screenSaverInterval(SlideshowInterval newValue) => setAndNotify(screenSaverIntervalKey, newValue.toString());
+
+  Set<CollectionFilter> get screenSaverCollectionFilters => (getStringList(screenSaverCollectionFiltersKey) ?? []).map(CollectionFilter.fromJson).whereNotNull().toSet();
+
+  set screenSaverCollectionFilters(Set<CollectionFilter> newValue) => setAndNotify(screenSaverCollectionFiltersKey, newValue.map((filter) => filter.toJson()).toList());
+
   // slideshow
 
   bool get slideshowRepeat => getBoolOrDefault(slideshowRepeatKey, SettingsDefaults.slideshowRepeat);
@@ -592,6 +633,10 @@ class Settings extends ChangeNotifier {
   bool get slideshowShuffle => getBoolOrDefault(slideshowShuffleKey, SettingsDefaults.slideshowShuffle);
 
   set slideshowShuffle(bool newValue) => setAndNotify(slideshowShuffleKey, newValue);
+
+  bool get slideshowFillScreen => getBoolOrDefault(slideshowFillScreenKey, SettingsDefaults.slideshowFillScreen);
+
+  set slideshowFillScreen(bool newValue) => setAndNotify(slideshowFillScreenKey, newValue);
 
   ViewerTransition get slideshowTransition => getEnumOrDefault(slideshowTransitionKey, SettingsDefaults.slideshowTransition, ViewerTransition.values);
 
@@ -604,6 +649,27 @@ class Settings extends ChangeNotifier {
   SlideshowInterval get slideshowInterval => getEnumOrDefault(slideshowIntervalKey, SettingsDefaults.slideshowInterval, SlideshowInterval.values);
 
   set slideshowInterval(SlideshowInterval newValue) => setAndNotify(slideshowIntervalKey, newValue.toString());
+
+  // widget
+
+  Color? getWidgetOutline(int widgetId) {
+    final value = getInt('$widgetOutlinePrefixKey$widgetId');
+    return value != null ? Color(value) : null;
+  }
+
+  void setWidgetOutline(int widgetId, Color? newValue) => setAndNotify('$widgetOutlinePrefixKey$widgetId', newValue?.value);
+
+  WidgetShape getWidgetShape(int widgetId) => getEnumOrDefault('$widgetShapePrefixKey$widgetId', SettingsDefaults.widgetShape, WidgetShape.values);
+
+  void setWidgetShape(int widgetId, WidgetShape newValue) => setAndNotify('$widgetShapePrefixKey$widgetId', newValue.toString());
+
+  Set<CollectionFilter> getWidgetCollectionFilters(int widgetId) => (getStringList('$widgetCollectionFiltersPrefixKey$widgetId') ?? []).map(CollectionFilter.fromJson).whereNotNull().toSet();
+
+  void setWidgetCollectionFilters(int widgetId, Set<CollectionFilter> newValue) => setAndNotify('$widgetCollectionFiltersPrefixKey$widgetId', newValue.map((filter) => filter.toJson()).toList());
+
+  String? getWidgetUri(int widgetId) => getString('$widgetUriPrefixKey$widgetId');
+
+  void setWidgetUri(int widgetId, String? newValue) => setAndNotify('$widgetUriPrefixKey$widgetId', newValue);
 
   // convenience methods
 
@@ -687,7 +753,7 @@ class Settings extends ChangeNotifier {
   // import/export
 
   Map<String, dynamic> export() => Map.fromEntries(
-        settingsStore.getKeys().whereNot(internalKeys.contains).map((k) => MapEntry(k, settingsStore.get(k))),
+        settingsStore.getKeys().whereNot(isInternalKey).map((k) => MapEntry(k, settingsStore.get(k))),
       );
 
   Future<void> import(dynamic jsonMap) async {
@@ -735,7 +801,7 @@ class Settings extends ChangeNotifier {
             case isErrorReportingAllowedKey:
             case enableDynamicColorKey:
             case enableBlurEffectKey:
-            case showBottomNavigationBarKey:
+            case enableBottomNavigationBarKey:
             case mustBackTwiceToExitKey:
             case confirmDeleteForeverKey:
             case confirmMoveToBinKey:
@@ -763,8 +829,10 @@ class Settings extends ChangeNotifier {
             case subtitleShowOutlineKey:
             case saveSearchHistoryKey:
             case filePickerShowHiddenFilesKey:
+            case screenSaverFillScreenKey:
             case slideshowRepeatKey:
             case slideshowShuffleKey:
+            case slideshowFillScreenKey:
               if (newValue is bool) {
                 settingsStore.setBool(key, newValue);
               } else {
@@ -792,6 +860,9 @@ class Settings extends ChangeNotifier {
             case unitSystemKey:
             case accessibilityAnimationsKey:
             case timeToTakeActionKey:
+            case screenSaverTransitionKey:
+            case screenSaverVideoPlaybackKey:
+            case screenSaverIntervalKey:
             case slideshowTransitionKey:
             case slideshowVideoPlaybackKey:
             case slideshowIntervalKey:
@@ -809,6 +880,7 @@ class Settings extends ChangeNotifier {
             case collectionBrowsingQuickActionsKey:
             case collectionSelectionQuickActionsKey:
             case viewerQuickActionsKey:
+            case screenSaverCollectionFiltersKey:
               if (newValue is List) {
                 settingsStore.setStringList(key, newValue.cast<String>());
               } else {

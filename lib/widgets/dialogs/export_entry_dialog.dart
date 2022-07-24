@@ -1,6 +1,6 @@
 import 'package:aves/model/entry.dart';
 import 'package:aves/ref/mime_types.dart';
-import 'package:aves/services/media/media_file_service.dart';
+import 'package:aves/services/media/media_edit_service.dart';
 import 'package:aves/utils/mime_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/material.dart';

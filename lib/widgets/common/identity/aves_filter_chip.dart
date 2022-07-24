@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/actions/chip_actions.dart';
@@ -12,6 +13,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/widgets/collection/filter_bar.dart';
 import 'package:aves/widgets/common/basic/menu.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip.dart';
@@ -45,7 +47,8 @@ class AvesFilterChip extends StatefulWidget {
   final AvesFilterDecoration? decoration;
   final String? banner;
   final Widget? leadingOverride, details;
-  final double padding, maxWidth;
+  final double padding;
+  final double? maxWidth;
   final HeroType heroType;
   final FilterCallback? onTap;
   final OffsetFilterCallback? onLongPress;
@@ -54,7 +57,6 @@ class AvesFilterChip extends StatefulWidget {
   static const double outlineWidth = 2;
   static const double minChipHeight = kMinInteractiveDimension;
   static const double minChipWidth = 80;
-  static const double defaultMaxChipWidth = 160;
   static const double iconSize = 18;
   static const double fontSize = 14;
   static const double decoratedContentVerticalPadding = 5;
@@ -71,14 +73,25 @@ class AvesFilterChip extends StatefulWidget {
     this.leadingOverride,
     this.details,
     this.padding = 6.0,
-    this.maxWidth = defaultMaxChipWidth,
+    this.maxWidth,
     this.heroType = HeroType.onTap,
     this.onTap,
     this.onLongPress = showDefaultLongPressMenu,
   });
 
+  static double computeMaxWidth(
+    BuildContext context, {
+    required int minChipPerRow,
+    required double chipPadding,
+    required double rowPadding,
+  }) {
+    return context.select<MediaQueryData, double>((mq) {
+      return (mq.size.width - mq.padding.horizontal - chipPadding * minChipPerRow - rowPadding) / minChipPerRow;
+    });
+  }
+
   static Future<void> showDefaultLongPressMenu(BuildContext context, CollectionFilter filter, Offset tapPosition) async {
-    if (context.read<ValueNotifier<AppMode>>().value == AppMode.main) {
+    if (context.read<ValueNotifier<AppMode>>().value.canNavigate) {
       final actions = [
         if (filter is AlbumFilter) ChipAction.goToAlbumPage,
         if ((filter is LocationFilter && filter.level == LocationLevel.country)) ChipAction.goToCountryPage,
@@ -95,14 +108,18 @@ class AvesFilterChip extends StatefulWidget {
       final selectedAction = await showMenu<ChipAction>(
         context: context,
         position: RelativeRect.fromRect(tapPosition & touchArea, Offset.zero & overlay.size),
-        items: actions
-            .map((action) => PopupMenuItem(
-                  value: action,
-                  child: MenuIconTheme(
-                    child: MenuRow(text: action.getText(context), icon: action.getIcon()),
-                  ),
-                ))
-            .toList(),
+        items: [
+          PopupMenuItem(
+            child: Text(filter.getLabel(context)),
+          ),
+          const PopupMenuDivider(),
+          ...actions.map((action) => PopupMenuItem(
+                value: action,
+                child: MenuIconTheme(
+                  child: MenuRow(text: action.getText(context), icon: action.getIcon()),
+                ),
+              )),
+        ],
       );
       if (selectedAction != null) {
         // wait for the popup menu to hide before proceeding with the action
@@ -261,7 +278,15 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
     Widget chip = Container(
       constraints: BoxConstraints(
         minWidth: AvesFilterChip.minChipWidth,
-        maxWidth: widget.maxWidth,
+        maxWidth: max(
+            AvesFilterChip.minChipWidth,
+            widget.maxWidth ??
+                AvesFilterChip.computeMaxWidth(
+                  context,
+                  minChipPerRow: 2,
+                  chipPadding: FilterBar.chipPadding.horizontal,
+                  rowPadding: FilterBar.rowPadding.horizontal,
+                )),
         minHeight: AvesFilterChip.minChipHeight,
       ),
       child: Stack(

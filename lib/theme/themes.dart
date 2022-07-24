@@ -73,7 +73,7 @@ class Themes {
         ),
         textButtonTheme: TextButtonThemeData(
           style: TextButton.styleFrom(
-            primary: _lightLabelColor,
+            foregroundColor: _lightLabelColor,
           ),
         ),
         tooltipTheme: _tooltipTheme,
@@ -128,7 +128,7 @@ class Themes {
         ),
         textButtonTheme: TextButtonThemeData(
           style: TextButton.styleFrom(
-            primary: _darkLabelColor,
+            foregroundColor: _darkLabelColor,
           ),
         ),
         tooltipTheme: _tooltipTheme,

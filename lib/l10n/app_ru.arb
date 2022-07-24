@@ -25,7 +25,8 @@
   "showTooltip": "Показать",
   "hideTooltip": "Скрыть",
   "actionRemove": "Удалить",
-  "resetButtonTooltip": "Сбросить",
+  "resetTooltip": "Сбросить",
+  "saveTooltip": "Сохранить",
 
   "doubleBackExitMessage": "Нажмите «Назад» еще раз, чтобы выйти.",
   "doNotAskAgain": "Больше не спрашивать",
@@ -80,6 +81,9 @@
   "videoActionSelectStreams": "Выбрать дорожку",
   "videoActionSetSpeed": "Скорость вопспроизведения",
   "videoActionSettings": "Настройки",
+
+  "slideshowActionResume": "Продолжить",
+  "slideshowActionShowInCollection": "Показать в Коллекции",
 
   "entryInfoActionEditDate": "Изменить дату и время",
   "entryInfoActionEditLocation": "Изменить местоположение",
@@ -145,9 +149,22 @@
   "displayRefreshRatePreferHighest": "Наивысшая частота",
   "displayRefreshRatePreferLowest": "Наименьшая частота",
 
+  "slideshowVideoPlaybackSkip": "Пропустить",
+  "slideshowVideoPlaybackMuted": "Играть без звука",
+  "slideshowVideoPlaybackWithSound": "Играть со звуком",
+
   "themeBrightnessLight": "Светлая",
   "themeBrightnessDark": "Тёмная",
   "themeBrightnessBlack": "Чёрная",
+
+  "viewerTransitionSlide": "Скольжение",
+  "viewerTransitionParallax": "Параллакс",
+  "viewerTransitionFade": "Затухание",
+  "viewerTransitionZoomIn": "Приближение",
+
+  "wallpaperTargetHome": "Домашний экран",
+  "wallpaperTargetLock": "Экран блокировки",
+  "wallpaperTargetHomeLock": "Домашний экран и экран блокировки",
 
   "albumTierNew": "Новые",
   "albumTierPinned": "Закрепленные",
@@ -263,6 +280,7 @@
   "menuActionSelectAll": "Выбрать все",
   "menuActionSelectNone": "Снять выделение",
   "menuActionMap": "Карта",
+  "menuActionSlideshow": "Слайд-шоу",
   "menuActionStats": "Статистика",
 
   "viewDialogTabSort": "Сортировка",
@@ -286,7 +304,6 @@
 
   "aboutBug": "Отчет об ошибке",
   "aboutBugSaveLogInstruction": "Сохраните логи приложения в файл",
-  "aboutBugSaveLogButton": "Сохранить",
   "aboutBugCopyInfoInstruction": "Скопируйте системную информацию",
   "aboutBugCopyInfoButton": "Скопировать",
   "aboutBugReportInstruction": "Отправьте отчёт об ошибке на GitHub вместе с логами и системной информацией",
@@ -350,6 +367,7 @@
   "collectionEmptyFavourites": "Нет избранных",
   "collectionEmptyVideos": "Нет видео",
   "collectionEmptyImages": "Нет изображений",
+  "collectionEmptyGrantAccessButtonLabel": "Предоставить доступ",
 
   "collectionSelectSectionTooltip": "Выбрать раздел",
   "collectionDeselectSectionTooltip": "Снять выбор с раздела",
@@ -399,6 +417,7 @@
 
   "searchCollectionFieldHint": "Поиск по коллекции",
   "searchSectionRecent": "Недавние",
+  "searchSectionDate": "Дата",
   "searchSectionAlbums": "Альбомы",
   "searchSectionCountries": "Страны",
   "searchSectionPlaces": "Локации",
@@ -480,6 +499,17 @@
   "settingsViewerShowOverlayThumbnails": "Показать эскизы",
   "settingsViewerEnableOverlayBlurEffect": "Наложение эффекта размытия",
 
+  "settingsViewerSlideshowTile": "Слайд-шоу",
+  "settingsViewerSlideshowTitle": "Слайд-шоу",
+  "settingsSlideshowRepeat": "Повтор",
+  "settingsSlideshowShuffle": "Вперемешку",
+  "settingsSlideshowTransitionTile": "Эффект перехода",
+  "settingsSlideshowTransitionTitle": "Эффект Перехода",
+  "settingsSlideshowIntervalTile": "Интервал",
+  "settingsSlideshowIntervalTitle": "Интервал",
+  "settingsSlideshowVideoPlaybackTile": "Проигрывание видео",
+  "settingsSlideshowVideoPlaybackTitle": "Проигрывание Видео",
+
   "settingsVideoPageTitle": "Настройки видео",
   "settingsSectionVideo": "Видео",
   "settingsVideoShowVideos": "Показать видео",
@@ -544,6 +574,7 @@
   "settingsSectionDisplay": "Отображение",
   "settingsThemeBrightness": "Тема",
   "settingsThemeColorHighlights": "Цветовые акценты",
+  "settingsThemeEnableDynamicColor": "Динамический цвет",
   "settingsDisplayRefreshRateModeTile": "Частота обновления экрана",
   "settingsDisplayRefreshRateModeTitle": "Частота обновления",
 
@@ -561,6 +592,7 @@
   "statsTopTags": "Топ тегов",
 
   "viewerOpenPanoramaButtonLabel": "ОТКРЫТЬ ПАНОРАМУ",
+  "viewerSetWallpaperButtonLabel": "УСТАНОВИТЬ КАК ОБОИ",
   "viewerErrorUnknown": "Упс!",
   "viewerErrorDoesNotExist": "Файл больше не существует.",
 

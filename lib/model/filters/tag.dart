@@ -20,11 +20,12 @@ class TagFilter extends CoveredCollectionFilter {
     }
   }
 
-  TagFilter.fromMap(Map<String, dynamic> json)
-      : this(
-          json['tag'],
-          not: json['not'] ?? false,
-        );
+  factory TagFilter.fromMap(Map<String, dynamic> json) {
+    return TagFilter(
+      json['tag'],
+      not: json['not'] ?? false,
+    );
+  }
 
   @override
   Map<String, dynamic> toMap() => {
@@ -37,7 +38,7 @@ class TagFilter extends CoveredCollectionFilter {
   EntryFilter get test => _test;
 
   @override
-  bool get isUnique => false;
+  bool isCompatible(CollectionFilter other) => true;
 
   @override
   String get universalLabel => tag;

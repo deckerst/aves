@@ -1,5 +1,6 @@
 import 'package:aves/model/settings/enums/entry_background.dart';
 import 'package:aves/model/settings/enums/enums.dart';
+import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
 import 'package:aves/widgets/common/fx/checkered_decoration.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +20,8 @@ class EntryBackgroundSelector extends StatefulWidget {
 }
 
 class _EntryBackgroundSelectorState extends State<EntryBackgroundSelector> {
+  static const radius = Constants.colorPickerRadius;
+
   @override
   Widget build(BuildContext context) {
     return DropdownButtonHideUnderline(
@@ -36,7 +39,6 @@ class _EntryBackgroundSelectorState extends State<EntryBackgroundSelector> {
   }
 
   List<DropdownMenuItem<EntryBackground>> _buildItems(BuildContext context) {
-    const radius = 12.0;
     return [
       EntryBackground.white,
       EntryBackground.black,

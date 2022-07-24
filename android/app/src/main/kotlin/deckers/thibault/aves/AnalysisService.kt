@@ -11,10 +11,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import app.loup.streams_channel.StreamsChannel
 import deckers.thibault.aves.MainActivity.Companion.OPEN_FROM_ANALYSIS_SERVICE
-import deckers.thibault.aves.channel.calls.DeviceHandler
-import deckers.thibault.aves.channel.calls.GeocodingHandler
-import deckers.thibault.aves.channel.calls.MediaStoreHandler
-import deckers.thibault.aves.channel.calls.MetadataFetchHandler
+import deckers.thibault.aves.channel.calls.*
 import deckers.thibault.aves.channel.streams.ImageByteStreamHandler
 import deckers.thibault.aves.channel.streams.MediaStoreStreamHandler
 import deckers.thibault.aves.utils.FlutterUtils
@@ -25,7 +22,7 @@ import io.flutter.plugin.common.MethodChannel
 import kotlinx.coroutines.runBlocking
 
 class AnalysisService : MethodChannel.MethodCallHandler, Service() {
-    private var backgroundFlutterEngine: FlutterEngine? = null
+    private var flutterEngine: FlutterEngine? = null
     private var backgroundChannel: MethodChannel? = null
     private var serviceLooper: Looper? = null
     private var serviceHandler: ServiceHandler? = null
@@ -37,18 +34,27 @@ class AnalysisService : MethodChannel.MethodCallHandler, Service() {
 
         runBlocking {
             FlutterUtils.initFlutterEngine(context, SHARED_PREFERENCES_KEY, CALLBACK_HANDLE_KEY) {
-                backgroundFlutterEngine = it
+                flutterEngine = it
             }
         }
 
-        val messenger = backgroundFlutterEngine!!.dartExecutor.binaryMessenger
+        val messenger = flutterEngine!!.dartExecutor
+
         // channels for analysis
+
+        // dart -> platform -> dart
+        // - need Context
         MethodChannel(messenger, DeviceHandler.CHANNEL).setMethodCallHandler(DeviceHandler(this))
         MethodChannel(messenger, GeocodingHandler.CHANNEL).setMethodCallHandler(GeocodingHandler(this))
         MethodChannel(messenger, MediaStoreHandler.CHANNEL).setMethodCallHandler(MediaStoreHandler(this))
         MethodChannel(messenger, MetadataFetchHandler.CHANNEL).setMethodCallHandler(MetadataFetchHandler(this))
+        MethodChannel(messenger, StorageHandler.CHANNEL).setMethodCallHandler(StorageHandler(this))
+
+        // result streaming: dart -> platform ->->-> dart
+        // - need Context
         StreamsChannel(messenger, ImageByteStreamHandler.CHANNEL).setStreamHandlerFactory { args -> ImageByteStreamHandler(this, args) }
         StreamsChannel(messenger, MediaStoreStreamHandler.CHANNEL).setStreamHandlerFactory { args -> MediaStoreStreamHandler(this, args) }
+
         // channel for service management
         backgroundChannel = MethodChannel(messenger, BACKGROUND_CHANNEL).apply {
             setMethodCallHandler(context)
@@ -67,7 +73,7 @@ class AnalysisService : MethodChannel.MethodCallHandler, Service() {
 
     override fun onBind(intent: Intent) = analysisServiceBinder
 
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val channel = NotificationChannelCompat.Builder(CHANNEL_ANALYSIS, NotificationManagerCompat.IMPORTANCE_LOW)
             .setName(getText(R.string.analysis_channel_name))
             .setShowBadge(false)
@@ -76,7 +82,7 @@ class AnalysisService : MethodChannel.MethodCallHandler, Service() {
         startForeground(NOTIFICATION_ID, buildNotification())
 
         val msgData = Bundle()
-        intent.extras?.let {
+        intent?.extras?.let {
             msgData.putAll(it)
         }
         serviceHandler?.obtainMessage()?.let { msg ->

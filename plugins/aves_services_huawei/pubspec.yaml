@@ -10,14 +10,12 @@ dependencies:
     sdk: flutter
   aves_map:
     path: ../aves_map
+  aves_platform_meta:
+    path: ../aves_platform_meta
   aves_services:
     path: ../aves_services
   huawei_hmsavailability:
   huawei_map:
-    git:
-      url: https://github.com/deckerst/hms-flutter-plugin.git
-      path: flutter-hms-map
-      ref: aves
   latlong2:
   provider:
 

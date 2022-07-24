@@ -77,7 +77,7 @@ class _FilterGridAppBarState<T extends CollectionFilter> extends State<FilterGri
     return AvesAppBar(
       contentHeight: kToolbarHeight,
       leading: _buildAppBarLeading(
-        hasDrawer: appMode.hasDrawer,
+        hasDrawer: appMode.canNavigate,
         isSelecting: isSelecting,
       ),
       title: _buildAppBarTitle(isSelecting),
@@ -127,7 +127,7 @@ class _FilterGridAppBarState<T extends CollectionFilter> extends State<FilterGri
     } else {
       final appMode = context.watch<ValueNotifier<AppMode>>().value;
       return InteractiveAppBarTitle(
-        onTap: appMode.canSearch ? _goToSearch : null,
+        onTap: appMode.canNavigate ? _goToSearch : null,
         child: SourceStateAwareAppBarTitle(
           title: Text(widget.title),
           source: source,

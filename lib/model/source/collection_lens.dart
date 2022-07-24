@@ -150,9 +150,7 @@ class CollectionLens with ChangeNotifier {
 
   void addFilter(CollectionFilter filter) {
     if (filters.contains(filter)) return;
-    if (filter.isUnique) {
-      filters.removeWhere((old) => old.category == filter.category);
-    }
+    filters.removeWhere((other) => !filter.isCompatible(other));
     filters.add(filter);
     _onFilterChanged();
   }

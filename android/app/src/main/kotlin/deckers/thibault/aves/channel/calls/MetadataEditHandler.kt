@@ -1,6 +1,6 @@
 package deckers.thibault.aves.channel.calls
 
-import android.app.Activity
+import android.content.ContextWrapper
 import android.net.Uri
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.model.ExifOrientationOp
@@ -15,7 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
-class MetadataEditHandler(private val activity: Activity) : MethodCallHandler {
+class MetadataEditHandler(private val contextWrapper: ContextWrapper) : MethodCallHandler {
     private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
@@ -33,7 +33,7 @@ class MetadataEditHandler(private val activity: Activity) : MethodCallHandler {
     private fun rotate(call: MethodCall, result: MethodChannel.Result) {
         val clockwise = call.argument<Boolean>("clockwise")
         if (clockwise == null) {
-            result.error("rotate-args", "failed because of missing arguments", null)
+            result.error("rotate-args", "missing arguments", null)
             return
         }
 
@@ -48,7 +48,7 @@ class MetadataEditHandler(private val activity: Activity) : MethodCallHandler {
     private fun editOrientation(call: MethodCall, result: MethodChannel.Result, op: ExifOrientationOp) {
         val entryMap = call.argument<FieldMap>("entry")
         if (entryMap == null) {
-            result.error("editOrientation-args", "failed because of missing arguments", null)
+            result.error("editOrientation-args", "missing arguments", null)
             return
         }
 
@@ -66,7 +66,7 @@ class MetadataEditHandler(private val activity: Activity) : MethodCallHandler {
             return
         }
 
-        provider.editOrientation(activity, path, uri, mimeType, op, object : ImageOpCallback {
+        provider.editOrientation(contextWrapper, path, uri, mimeType, op, object : ImageOpCallback {
             override fun onSuccess(fields: FieldMap) = result.success(fields)
             override fun onFailure(throwable: Throwable) = result.error("editOrientation-failure", "failed to change orientation for mimeType=$mimeType uri=$uri", throwable.message)
         })
@@ -78,7 +78,7 @@ class MetadataEditHandler(private val activity: Activity) : MethodCallHandler {
         val fields = call.argument<List<String>>("fields")
         val entryMap = call.argument<FieldMap>("entry")
         if (entryMap == null || fields == null) {
-            result.error("editDate-args", "failed because of missing arguments", null)
+            result.error("editDate-args", "missing arguments", null)
             return
         }
 
@@ -96,7 +96,7 @@ class MetadataEditHandler(private val activity: Activity) : MethodCallHandler {
             return
         }
 
-        provider.editDate(activity, path, uri, mimeType, dateMillis, shiftMinutes, fields, object : ImageOpCallback {
+        provider.editDate(contextWrapper, path, uri, mimeType, dateMillis, shiftMinutes, fields, object : ImageOpCallback {
             override fun onSuccess(fields: FieldMap) = result.success(fields)
             override fun onFailure(throwable: Throwable) = result.error("editDate-failure", "failed to edit date for mimeType=$mimeType uri=$uri", throwable.message)
         })
@@ -107,7 +107,7 @@ class MetadataEditHandler(private val activity: Activity) : MethodCallHandler {
         val entryMap = call.argument<FieldMap>("entry")
         val autoCorrectTrailerOffset = call.argument<Boolean>("autoCorrectTrailerOffset")
         if (entryMap == null || metadata == null || autoCorrectTrailerOffset == null) {
-            result.error("editMetadata-args", "failed because of missing arguments", null)
+            result.error("editMetadata-args", "missing arguments", null)
             return
         }
 
@@ -125,7 +125,7 @@ class MetadataEditHandler(private val activity: Activity) : MethodCallHandler {
             return
         }
 
-        provider.editMetadata(activity, path, uri, mimeType, metadata, autoCorrectTrailerOffset, callback = object : ImageOpCallback {
+        provider.editMetadata(contextWrapper, path, uri, mimeType, metadata, autoCorrectTrailerOffset, callback = object : ImageOpCallback {
             override fun onSuccess(fields: FieldMap) = result.success(fields)
             override fun onFailure(throwable: Throwable) = result.error("editMetadata-failure", "failed to edit metadata for mimeType=$mimeType uri=$uri", throwable.message)
         })
@@ -134,7 +134,7 @@ class MetadataEditHandler(private val activity: Activity) : MethodCallHandler {
     private fun removeTrailerVideo(call: MethodCall, result: MethodChannel.Result) {
         val entryMap = call.argument<FieldMap>("entry")
         if (entryMap == null) {
-            result.error("removeTrailerVideo-args", "failed because of missing arguments", null)
+            result.error("removeTrailerVideo-args", "missing arguments", null)
             return
         }
 
@@ -152,7 +152,7 @@ class MetadataEditHandler(private val activity: Activity) : MethodCallHandler {
             return
         }
 
-        provider.removeTrailerVideo(activity, path, uri, mimeType, object : ImageOpCallback {
+        provider.removeTrailerVideo(contextWrapper, path, uri, mimeType, object : ImageOpCallback {
             override fun onSuccess(fields: FieldMap) = result.success(fields)
             override fun onFailure(throwable: Throwable) = result.error("removeTrailerVideo-failure", "failed to remove trailer video for mimeType=$mimeType uri=$uri", throwable.message)
         })
@@ -162,7 +162,7 @@ class MetadataEditHandler(private val activity: Activity) : MethodCallHandler {
         val types = call.argument<List<String>>("types")
         val entryMap = call.argument<FieldMap>("entry")
         if (entryMap == null || types == null) {
-            result.error("removeTypes-args", "failed because of missing arguments", null)
+            result.error("removeTypes-args", "missing arguments", null)
             return
         }
 
@@ -180,7 +180,7 @@ class MetadataEditHandler(private val activity: Activity) : MethodCallHandler {
             return
         }
 
-        provider.removeMetadataTypes(activity, path, uri, mimeType, types.toSet(), object : ImageOpCallback {
+        provider.removeMetadataTypes(contextWrapper, path, uri, mimeType, types.toSet(), object : ImageOpCallback {
             override fun onSuccess(fields: FieldMap) = result.success(fields)
             override fun onFailure(throwable: Throwable) = result.error("removeTypes-failure", "failed to remove metadata for mimeType=$mimeType uri=$uri", throwable.message)
         })

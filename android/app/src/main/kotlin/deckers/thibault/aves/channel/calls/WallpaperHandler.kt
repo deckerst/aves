@@ -1,9 +1,9 @@
 package deckers.thibault.aves.channel.calls
 
-import android.app.Activity
 import android.app.WallpaperManager
 import android.app.WallpaperManager.FLAG_LOCK
 import android.app.WallpaperManager.FLAG_SYSTEM
+import android.content.ContextWrapper
 import android.os.Build
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import io.flutter.plugin.common.MethodCall
@@ -14,7 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
-class WallpaperHandler(private val activity: Activity) : MethodCallHandler {
+class WallpaperHandler(private val contextWrapper: ContextWrapper) : MethodCallHandler {
     private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
@@ -29,11 +29,11 @@ class WallpaperHandler(private val activity: Activity) : MethodCallHandler {
         val home = call.argument<Boolean>("home")
         val lock = call.argument<Boolean>("lock")
         if (bytes == null || home == null || lock == null) {
-            result.error("setWallpaper-args", "failed because of missing arguments", null)
+            result.error("setWallpaper-args", "missing arguments", null)
             return
         }
 
-        val manager = WallpaperManager.getInstance(activity)
+        val manager = WallpaperManager.getInstance(contextWrapper)
         val supported = Build.VERSION.SDK_INT < Build.VERSION_CODES.M || manager.isWallpaperSupported
         val allowed = Build.VERSION.SDK_INT < Build.VERSION_CODES.N || manager.isSetWallpaperAllowed
         if (!supported || !allowed) {

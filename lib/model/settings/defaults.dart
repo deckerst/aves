@@ -31,7 +31,7 @@ class SettingsDefaults {
   static const mustBackTwiceToExit = true;
   static const keepScreenOn = KeepScreenOn.viewerOnly;
   static const homePage = HomePageSetting.collection;
-  static const showBottomNavigationBar = true;
+  static const enableBottomNavigationBar = true;
   static const confirmDeleteForever = true;
   static const confirmMoveToBin = true;
   static const confirmMoveUndatedItems = true;
@@ -128,9 +128,14 @@ class SettingsDefaults {
   // slideshow
   static const slideshowRepeat = false;
   static const slideshowShuffle = false;
+  static const slideshowFillScreen = false;
   static const slideshowTransition = ViewerTransition.fade;
   static const slideshowVideoPlayback = SlideshowVideoPlayback.playMuted;
   static const slideshowInterval = SlideshowInterval.s5;
+
+  // widget
+  static const widgetOutline = false;
+  static const widgetShape = WidgetShape.rrect;
 
   // platform settings
   static const isRotationLocked = false;

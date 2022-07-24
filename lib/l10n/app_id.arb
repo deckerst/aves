@@ -25,7 +25,8 @@
   "showTooltip": "Tampilkan",
   "hideTooltip": "Sembunyikan",
   "actionRemove": "Hapus",
-  "resetButtonTooltip": "Ulang",
+  "resetTooltip": "Ulang",
+  "saveTooltip": "Simpan",
 
   "doubleBackExitMessage": "Ketuk “kembali” lagi untuk keluar.",
   "doNotAskAgain": "Jangan tanya lagi",
@@ -80,6 +81,9 @@
   "videoActionSelectStreams": "Pilih trek",
   "videoActionSetSpeed": "Kecepatan pemutaran",
   "videoActionSettings": "Pengaturan",
+
+  "slideshowActionResume": "Lanjutkan",
+  "slideshowActionShowInCollection": "Tampilkan di Koleksi",
 
   "entryInfoActionEditDate": "Ubah tanggal & waktu",
   "entryInfoActionEditLocation": "Ubah lokasi",
@@ -145,9 +149,22 @@
   "displayRefreshRatePreferHighest": "Penyegaran tertinggi",
   "displayRefreshRatePreferLowest": "Penyegaran terendah",
 
+  "slideshowVideoPlaybackSkip": "Lewati",
+  "slideshowVideoPlaybackMuted": "Mainkan bisu",
+  "slideshowVideoPlaybackWithSound": "Mainkan dengan suara",
+
   "themeBrightnessLight": "Terang",
   "themeBrightnessDark": "Gelap",
   "themeBrightnessBlack": "Hitam",
+
+  "viewerTransitionSlide": "Menggeser",
+  "viewerTransitionParallax": "Paralaks",
+  "viewerTransitionFade": "Memudar",
+  "viewerTransitionZoomIn": "Membesar",
+
+  "wallpaperTargetHome": "Tampilan depan",
+  "wallpaperTargetLock": "Tampilan kunci",
+  "wallpaperTargetHomeLock": "Tampilan depan dan kunci",
 
   "albumTierNew": "Baru",
   "albumTierPinned": "Disemat",
@@ -263,6 +280,7 @@
   "menuActionSelectAll": "Pilih semua",
   "menuActionSelectNone": "Pilih tidak ada",
   "menuActionMap": "Peta",
+  "menuActionSlideshow": "Tampilan slide",
   "menuActionStats": "Statistik",
 
   "viewDialogTabSort": "Sortir",
@@ -286,7 +304,6 @@
 
   "aboutBug": "Lapor Bug",
   "aboutBugSaveLogInstruction": "Simpan log aplikasi ke file",
-  "aboutBugSaveLogButton": "Simpan",
   "aboutBugCopyInfoInstruction": "Salin informasi sistem",
   "aboutBugCopyInfoButton": "Salin",
   "aboutBugReportInstruction": "Laporkan ke GitHub dengan log dan informasi sistem",
@@ -350,6 +367,7 @@
   "collectionEmptyFavourites": "Tidak ada favorit",
   "collectionEmptyVideos": "Tidak ada video",
   "collectionEmptyImages": "Tidak ada gambar",
+  "collectionEmptyGrantAccessButtonLabel": "Berikan akses",
 
   "collectionSelectSectionTooltip": "Pilih bagian",
   "collectionDeselectSectionTooltip": "Batalkan pilihan bagian",
@@ -399,6 +417,7 @@
 
   "searchCollectionFieldHint": "Cari koleksi",
   "searchSectionRecent": "Terkini",
+  "searchSectionDate": "Tanggal",
   "searchSectionAlbums": "Album",
   "searchSectionCountries": "Negara",
   "searchSectionPlaces": "Tempat",
@@ -480,6 +499,17 @@
   "settingsViewerShowOverlayThumbnails": "Tampilkan thumbnail",
   "settingsViewerEnableOverlayBlurEffect": "Efek Kabur",
 
+  "settingsViewerSlideshowTile": "Tampilan slide",
+  "settingsViewerSlideshowTitle": "Tampilan Slide",
+  "settingsSlideshowRepeat": "Ulangi",
+  "settingsSlideshowShuffle": "Acak",
+  "settingsSlideshowTransitionTile": "Transisi",
+  "settingsSlideshowTransitionTitle": "Transisi",
+  "settingsSlideshowIntervalTile": "Interval",
+  "settingsSlideshowIntervalTitle": "Interval",
+  "settingsSlideshowVideoPlaybackTile": "Putaran ulang video",
+  "settingsSlideshowVideoPlaybackTitle": "Putaran Ulang Video",
+
   "settingsVideoPageTitle": "Pengaturan Video",
   "settingsSectionVideo": "Video",
   "settingsVideoShowVideos": "Tampilkan video",
@@ -544,6 +574,7 @@
   "settingsSectionDisplay": "Tampilan",
   "settingsThemeBrightness": "Tema",
   "settingsThemeColorHighlights": "Highlight warna",
+  "settingsThemeEnableDynamicColor": "Warna dinamis",
   "settingsDisplayRefreshRateModeTile": "Tingkat penyegaran tampilan",
   "settingsDisplayRefreshRateModeTitle": "Tingkat Penyegaran",
 
@@ -561,6 +592,7 @@
   "statsTopTags": "Label Teratas",
 
   "viewerOpenPanoramaButtonLabel": "BUKA PANORAMA",
+  "viewerSetWallpaperButtonLabel": "TETAPKAN SEBAGAI WALLPAPER",
   "viewerErrorUnknown": "Ups!",
   "viewerErrorDoesNotExist": "File tidak ada lagi.",
 

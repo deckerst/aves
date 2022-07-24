@@ -25,7 +25,8 @@
   "showTooltip": "显示",
   "hideTooltip": "隐藏",
   "actionRemove": "移除",
-  "resetButtonTooltip": "重置",
+  "resetTooltip": "重置",
+  "saveTooltip": "保存",
 
   "doubleBackExitMessage": "再按一次退出",
   "doNotAskAgain": "不再询问",
@@ -94,6 +95,7 @@
   "filterFavouriteLabel": "收藏夹",
   "filterLocationEmptyLabel": "未定位",
   "filterTagEmptyLabel": "无标签",
+  "filterOnThisDayLabel": "选择日期",
   "filterRatingUnratedLabel": "未评分",
   "filterRatingRejectedLabel": "拒绝",
   "filterTypeAnimatedLabel": "动画",
@@ -303,7 +305,6 @@
 
   "aboutBug": "报告错误",
   "aboutBugSaveLogInstruction": "将应用日志保存到文件",
-  "aboutBugSaveLogButton": "保存",
   "aboutBugCopyInfoInstruction": "复制系统信息",
   "aboutBugCopyInfoButton": "复制",
   "aboutBugReportInstruction": "在 GitHub 上报告日志和系统信息",
@@ -417,6 +418,7 @@
 
   "searchCollectionFieldHint": "搜索媒体集",
   "searchSectionRecent": "最近",
+  "searchSectionDate": "日期",
   "searchSectionAlbums": "相册",
   "searchSectionCountries": "国家",
   "searchSectionPlaces": "地点",
@@ -502,6 +504,7 @@
   "settingsViewerSlideshowTitle": "幻灯片",
   "settingsSlideshowRepeat": "重复",
   "settingsSlideshowShuffle": "随机播放",
+  "settingsSlideshowFillScreen": "填充屏幕",
   "settingsSlideshowTransitionTile": "过渡动画",
   "settingsSlideshowTransitionTitle": "过渡动画",
   "settingsSlideshowIntervalTile": "时间间隔",
@@ -583,6 +586,11 @@
   "settingsCoordinateFormatTitle": "坐标格式",
   "settingsUnitSystemTile": "单位",
   "settingsUnitSystemTitle": "单位",
+
+  "settingsScreenSaverPageTitle": "屏保",
+
+  "settingsWidgetPageTitle": "相框",
+  "settingsWidgetShowOutline": "轮廓",
 
   "statsPageTitle": "统计",
   "statsWithGps": "{count, plural, other{{count} 项带位置信息}}",

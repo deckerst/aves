@@ -7,12 +7,12 @@ import 'package:flutter/services.dart';
 import 'package:latlong2/latlong.dart';
 
 class GeocodingService {
-  static const platform = MethodChannel('deckers.thibault/aves/geocoding');
+  static const _platform = MethodChannel('deckers.thibault/aves/geocoding');
 
   // geocoding requires Google Play Services
   static Future<List<Address>> getAddress(LatLng coordinates, Locale locale) async {
     try {
-      final result = await platform.invokeMethod('getAddress', <String, dynamic>{
+      final result = await _platform.invokeMethod('getAddress', <String, dynamic>{
         'latitude': coordinates.latitude,
         'longitude': coordinates.longitude,
         'locale': locale.toString(),

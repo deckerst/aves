@@ -13,10 +13,11 @@ class RatingFilter extends CollectionFilter {
 
   const RatingFilter(this.rating);
 
-  RatingFilter.fromMap(Map<String, dynamic> json)
-      : this(
-          json['rating'] ?? 0,
-        );
+  factory RatingFilter.fromMap(Map<String, dynamic> json) {
+    return RatingFilter(
+      json['rating'] ?? 0,
+    );
+  }
 
   @override
   Map<String, dynamic> toMap() => {

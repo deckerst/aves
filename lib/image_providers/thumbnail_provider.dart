@@ -1,4 +1,4 @@
-import 'dart:ui' as ui show Codec;
+import 'dart:ui' as ui;
 
 import 'package:aves/services/common/services.dart';
 import 'package:equatable/equatable.dart';
@@ -19,7 +19,7 @@ class ThumbnailProvider extends ImageProvider<ThumbnailProviderKey> {
   }
 
   @override
-  ImageStreamCompleter load(ThumbnailProviderKey key, DecoderCallback decode) {
+  ImageStreamCompleter loadBuffer(ThumbnailProviderKey key, DecoderBufferCallback decode) {
     return MultiFrameImageStreamCompleter(
       codec: _loadAsync(key, decode),
       scale: 1.0,
@@ -30,12 +30,12 @@ class ThumbnailProvider extends ImageProvider<ThumbnailProviderKey> {
     );
   }
 
-  Future<ui.Codec> _loadAsync(ThumbnailProviderKey key, DecoderCallback decode) async {
+  Future<ui.Codec> _loadAsync(ThumbnailProviderKey key, DecoderBufferCallback decode) async {
     final uri = key.uri;
     final mimeType = key.mimeType;
     final pageId = key.pageId;
     try {
-      final bytes = await mediaFileService.getThumbnail(
+      final bytes = await mediaFetchService.getThumbnail(
         uri: uri,
         mimeType: mimeType,
         pageId: pageId,
@@ -48,7 +48,8 @@ class ThumbnailProvider extends ImageProvider<ThumbnailProviderKey> {
       if (bytes.isEmpty) {
         throw StateError('$uri ($mimeType) loading failed');
       }
-      return await decode(bytes);
+      final buffer = await ui.ImmutableBuffer.fromUint8List(bytes);
+      return await decode(buffer);
     } catch (error) {
       // loading may fail if the provided MIME type is incorrect (e.g. the Media Store may report a JPEG as a TIFF)
       debugPrint('$runtimeType _loadAsync failed with mimeType=$mimeType, uri=$uri, error=$error');
@@ -58,11 +59,11 @@ class ThumbnailProvider extends ImageProvider<ThumbnailProviderKey> {
 
   @override
   void resolveStreamForKey(ImageConfiguration configuration, ImageStream stream, ThumbnailProviderKey key, ImageErrorListener handleError) {
-    mediaFileService.resumeLoading(key);
+    mediaFetchService.resumeLoading(key);
     super.resolveStreamForKey(configuration, stream, key, handleError);
   }
 
-  void pause() => mediaFileService.cancelThumbnail(key);
+  void pause() => mediaFetchService.cancelThumbnail(key);
 }
 
 @immutable

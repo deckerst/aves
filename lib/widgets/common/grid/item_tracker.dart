@@ -169,6 +169,7 @@ class _GridItemTrackerState<T> extends State<GridItemTracker<T>> with WidgetsBin
 
     if (pivotItem != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
         context.read<HighlightInfo>().trackItem(pivotItem, animate: false);
       });
     }

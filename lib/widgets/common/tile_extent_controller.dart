@@ -84,7 +84,9 @@ class TileExtentController {
   int _effectiveColumnCountForExtent(double extent) {
     if (extent > 0) {
       final columnCount = _columnCountForExtent(extent);
-      return columnCount.clamp(_effectiveColumnCountMin(), _effectiveColumnCountMax()).round();
+      final countMin = _effectiveColumnCountMin();
+      final countMax = _effectiveColumnCountMax();
+      return columnCount.clamp(countMin, max(countMin, countMax)).round();
     }
     return columnCountDefault;
   }

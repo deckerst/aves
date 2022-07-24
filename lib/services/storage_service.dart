@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:typed_data';
 
 import 'package:aves/services/common/output_buffer.dart';
 import 'package:aves/services/common/services.dart';
@@ -40,13 +39,13 @@ abstract class StorageService {
 }
 
 class PlatformStorageService implements StorageService {
-  static const platform = MethodChannel('deckers.thibault/aves/storage');
-  static final StreamsChannel storageAccessChannel = StreamsChannel('deckers.thibault/aves/storage_access_stream');
+  static const _platform = MethodChannel('deckers.thibault/aves/storage');
+  static final _stream = StreamsChannel('deckers.thibault/aves/activity_result_stream');
 
   @override
   Future<Set<StorageVolume>> getStorageVolumes() async {
     try {
-      final result = await platform.invokeMethod('getStorageVolumes');
+      final result = await _platform.invokeMethod('getStorageVolumes');
       return (result as List).cast<Map>().map(StorageVolume.fromMap).toSet();
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
@@ -57,7 +56,7 @@ class PlatformStorageService implements StorageService {
   @override
   Future<int?> getFreeSpace(StorageVolume volume) async {
     try {
-      final result = await platform.invokeMethod('getFreeSpace', <String, dynamic>{
+      final result = await _platform.invokeMethod('getFreeSpace', <String, dynamic>{
         'path': volume.path,
       });
       return result as int?;
@@ -70,7 +69,7 @@ class PlatformStorageService implements StorageService {
   @override
   Future<List<String>> getGrantedDirectories() async {
     try {
-      final result = await platform.invokeMethod('getGrantedDirectories');
+      final result = await _platform.invokeMethod('getGrantedDirectories');
       return (result as List).cast<String>();
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
@@ -81,7 +80,7 @@ class PlatformStorageService implements StorageService {
   @override
   Future<Set<VolumeRelativeDirectory>> getInaccessibleDirectories(Iterable<String> dirPaths) async {
     try {
-      final result = await platform.invokeMethod('getInaccessibleDirectories', <String, dynamic>{
+      final result = await _platform.invokeMethod('getInaccessibleDirectories', <String, dynamic>{
         'dirPaths': dirPaths.toList(),
       });
       if (result != null) {
@@ -96,7 +95,7 @@ class PlatformStorageService implements StorageService {
   @override
   Future<Set<VolumeRelativeDirectory>> getRestrictedDirectories() async {
     try {
-      final result = await platform.invokeMethod('getRestrictedDirectories');
+      final result = await _platform.invokeMethod('getRestrictedDirectories');
       if (result != null) {
         return (result as List).cast<Map>().map(VolumeRelativeDirectory.fromMap).toSet();
       }
@@ -109,7 +108,7 @@ class PlatformStorageService implements StorageService {
   @override
   Future<void> revokeDirectoryAccess(String path) async {
     try {
-      await platform.invokeMethod('revokeDirectoryAccess', <String, dynamic>{
+      await _platform.invokeMethod('revokeDirectoryAccess', <String, dynamic>{
         'path': path,
       });
     } on PlatformException catch (e, stack) {
@@ -122,7 +121,7 @@ class PlatformStorageService implements StorageService {
   @override
   Future<int> deleteEmptyDirectories(Iterable<String> dirPaths) async {
     try {
-      final result = await platform.invokeMethod('deleteEmptyDirectories', <String, dynamic>{
+      final result = await _platform.invokeMethod('deleteEmptyDirectories', <String, dynamic>{
         'dirPaths': dirPaths.toList(),
       });
       if (result != null) return result as int;
@@ -135,7 +134,7 @@ class PlatformStorageService implements StorageService {
   @override
   Future<bool> canRequestMediaFileAccess() async {
     try {
-      final result = await platform.invokeMethod('canRequestMediaFileBulkAccess');
+      final result = await _platform.invokeMethod('canRequestMediaFileBulkAccess');
       if (result != null) return result as bool;
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
@@ -146,7 +145,7 @@ class PlatformStorageService implements StorageService {
   @override
   Future<bool> canInsertMedia(Set<VolumeRelativeDirectory> directories) async {
     try {
-      final result = await platform.invokeMethod('canInsertMedia', <String, dynamic>{
+      final result = await _platform.invokeMethod('canInsertMedia', <String, dynamic>{
         'directories': directories.map((v) => v.toMap()).toList(),
       });
       if (result != null) return result as bool;
@@ -161,7 +160,7 @@ class PlatformStorageService implements StorageService {
   Future<bool> requestDirectoryAccess(String path) async {
     try {
       final completer = Completer<bool>();
-      storageAccessChannel.receiveBroadcastStream(<String, dynamic>{
+      _stream.receiveBroadcastStream(<String, dynamic>{
         'op': 'requestDirectoryAccess',
         'path': path,
       }).listen(
@@ -185,7 +184,7 @@ class PlatformStorageService implements StorageService {
   Future<bool> requestMediaFileAccess(List<String> uris, List<String> mimeTypes) async {
     try {
       final completer = Completer<bool>();
-      storageAccessChannel.receiveBroadcastStream(<String, dynamic>{
+      _stream.receiveBroadcastStream(<String, dynamic>{
         'op': 'requestMediaFileAccess',
         'uris': uris,
         'mimeTypes': mimeTypes,
@@ -216,7 +215,7 @@ class PlatformStorageService implements StorageService {
   Future<bool?> createFile(String name, String mimeType, Uint8List bytes) async {
     try {
       final completer = Completer<bool?>();
-      storageAccessChannel.receiveBroadcastStream(<String, dynamic>{
+      _stream.receiveBroadcastStream(<String, dynamic>{
         'op': 'createFile',
         'name': name,
         'mimeType': mimeType,
@@ -242,7 +241,7 @@ class PlatformStorageService implements StorageService {
     try {
       final completer = Completer<Uint8List>.sync();
       final sink = OutputBuffer();
-      storageAccessChannel.receiveBroadcastStream(<String, dynamic>{
+      _stream.receiveBroadcastStream(<String, dynamic>{
         'op': 'openFile',
         'mimeType': mimeType,
       }).listen(
