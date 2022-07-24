@@ -28,7 +28,7 @@ Future<void> configureAndLaunch() async {
     // navigation
     ..keepScreenOn = KeepScreenOn.always
     ..homePage = HomePageSetting.collection
-    ..showBottomNavigationBar = true
+    ..enableBottomNavigationBar = true
     // collection
     ..collectionSectionFactor = EntryGroupFactor.month
     ..collectionSortFactor = EntrySortFactor.date

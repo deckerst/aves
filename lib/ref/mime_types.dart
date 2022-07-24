@@ -17,7 +17,10 @@ class MimeTypes {
   static const art = 'image/x-jg';
   static const cdr = 'image/x-coreldraw';
   static const djvu = 'image/vnd.djvu';
+  static const jpeg2000 = 'image/jp2';
   static const jxl = 'image/jxl';
+  static const pat = 'image/x-coreldrawpattern';
+  static const pnm = 'image/x-portable-anymap';
   static const psdVnd = 'image/vnd.adobe.photoshop';
   static const psdX = 'image/x-photoshop';
 
@@ -25,7 +28,8 @@ class MimeTypes {
   static const cr2 = 'image/x-canon-cr2';
   static const crw = 'image/x-canon-crw';
   static const dcr = 'image/x-kodak-dcr';
-  static const dng = 'image/x-adobe-dng';
+  static const dng = 'image/dng';
+  static const dngX = 'image/x-adobe-dng';
   static const erf = 'image/x-epson-erf';
   static const k25 = 'image/x-kodak-k25';
   static const kdc = 'image/x-kodak-kdc';
@@ -50,13 +54,16 @@ class MimeTypes {
   static const aviVnd = 'video/vnd.avi';
   static const flv = 'video/flv';
   static const flvX = 'video/x-flv';
-  static const mkv = 'video/x-matroska';
+  static const mkv = 'video/mkv';
+  static const mkvX = 'video/x-matroska';
   static const mov = 'video/quicktime';
+  static const mp2p = 'video/mp2p';
   static const mp2t = 'video/mp2t'; // .m2ts, .ts
   static const mp2ts = 'video/mp2ts'; // .ts (prefer `mp2t` when possible)
   static const mp4 = 'video/mp4';
   static const mpeg = 'video/mpeg';
   static const ogv = 'video/ogg';
+  static const realVideo = 'video/x-pn-realvideo';
   static const webm = 'video/webm';
   static const wmv = 'video/x-ms-wmv';
 
@@ -72,14 +79,14 @@ class MimeTypes {
   // formats that support transparency
   static const Set<String> alphaImages = {avif, bmp, bmpX, gif, heic, heif, ico, png, svg, tiff, webp};
 
-  static const Set<String> rawImages = {arw, cr2, crw, dcr, dng, erf, k25, kdc, mrw, nef, nrw, orf, pef, raf, raw, rw2, sr2, srf, srw, x3f};
+  static const Set<String> rawImages = {arw, cr2, crw, dcr, dng, dngX, erf, k25, kdc, mrw, nef, nrw, orf, pef, raf, raw, rw2, sr2, srf, srw, x3f};
 
   // TODO TLAD [codec] make it dynamic if it depends on OS/lib versions
-  static const Set<String> undecodableImages = {art, cdr, crw, djvu, jxl, psdVnd, psdX, octetStream, zip};
+  static const Set<String> undecodableImages = {art, cdr, crw, djvu, jpeg2000, jxl, pat, pnm, psdVnd, psdX, octetStream, zip};
 
   static const Set<String> _knownOpaqueImages = {jpeg};
 
-  static const Set<String> _knownVideos = {v3gpp, asf, avi, aviVnd, flv, flvX, mkv, mov, mp2t, mp2ts, mp4, mpeg, ogv, webm, wmv};
+  static const Set<String> _knownVideos = {v3gpp, asf, avi, aviVnd, flv, flvX, mkv, mkvX, mov, mp2p, mp2t, mp2ts, mp4, mpeg, ogv, realVideo, webm, wmv};
 
   static final Set<String> knownMediaTypes = {
     anyImage,

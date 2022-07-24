@@ -13,7 +13,6 @@ import 'package:aves/widgets/viewer/overlay/common.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:latlong2/latlong.dart';
 import 'package:panorama/panorama.dart';
 import 'package:provider/provider.dart';
 
@@ -76,11 +75,7 @@ class _PanoramaPageState extends State<PanoramaPage> {
                     final fullSize = info.fullPanoSize!;
                     final longitude = ((croppedArea.left + croppedArea.width / 2) / fullSize.width - 1 / 2) * 360;
                     return Panorama(
-                      // TODO TLAD [panorama] fork and fix
-                      // as of panorama v0.4.0, doc says `latitude` and `longitude` parameters are in degrees,
-                      // but they are actually converted from radians in state initialization
-                      // as of panorama v0.4.0, state uses longitude in degrees as radians with `Quaternion.axisAngle`
-                      longitude: degToRadian(longitude),
+                      longitude: longitude,
                       sensorControl: sensorControl,
                       croppedArea: croppedArea,
                       croppedFullWidth: fullSize.width,
@@ -141,6 +136,8 @@ class _PanoramaPageState extends State<PanoramaPage> {
                   ),
                 ),
               ),
+              const TopGestureAreaProtector(),
+              const SideGestureAreaProtector(),
               const BottomGestureAreaProtector(),
             ],
           ),

@@ -26,7 +26,7 @@ class FilterTable<T extends Comparable> extends StatelessWidget {
     required this.onFilterSelection,
   });
 
-  static const chipWidth = AvesFilterChip.defaultMaxChipWidth;
+  static const chipWidth = 160.0;
   static const countWidth = 32.0;
   static const percentIndicatorMinWidth = 80.0;
 

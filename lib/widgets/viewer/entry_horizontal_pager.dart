@@ -90,6 +90,7 @@ class _MultiEntryScrollerState extends State<MultiEntryScroller> with AutomaticK
       key: const Key('image_view'),
       mainEntry: mainEntry,
       pageEntry: pageEntry ?? mainEntry,
+      initialScale: viewerController.initialScale,
       onDisposed: () => widget.onViewDisposed(mainEntry, pageEntry),
     );
   }
@@ -100,10 +101,12 @@ class _MultiEntryScrollerState extends State<MultiEntryScroller> with AutomaticK
 
 class SingleEntryScroller extends StatefulWidget {
   final AvesEntry entry;
+  final ViewerController viewerController;
 
   const SingleEntryScroller({
     super.key,
     required this.entry,
+    required this.viewerController,
   });
 
   @override
@@ -112,6 +115,8 @@ class SingleEntryScroller extends StatefulWidget {
 
 class _SingleEntryScrollerState extends State<SingleEntryScroller> with AutomaticKeepAliveClientMixin {
   AvesEntry get mainEntry => widget.entry;
+
+  ViewerController get viewerController => widget.viewerController;
 
   @override
   Widget build(BuildContext context) {
@@ -134,6 +139,7 @@ class _SingleEntryScrollerState extends State<SingleEntryScroller> with Automati
     return EntryPageView(
       mainEntry: mainEntry,
       pageEntry: pageEntry ?? mainEntry,
+      initialScale: viewerController.initialScale,
     );
   }
 

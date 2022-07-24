@@ -20,6 +20,6 @@ class IntentStreamHandler : EventChannel.StreamHandler {
     }
 
     companion object {
-        const val CHANNEL = "deckers.thibault/aves/intent"
+        const val CHANNEL = "deckers.thibault/aves/new_intent_stream"
     }
 }

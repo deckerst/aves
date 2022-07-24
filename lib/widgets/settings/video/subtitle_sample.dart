@@ -1,4 +1,5 @@
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/basic/outlined_text.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
@@ -26,11 +27,7 @@ class SubtitleSample extends StatelessWidget {
             gradient: const LinearGradient(
               begin: Alignment.bottomLeft,
               end: Alignment.topRight,
-              colors: [
-                // Bora Bora
-                Color(0xff2bc0e4),
-                Color(0xffeaecc6),
-              ],
+              colors: Constants.boraBoraGradientColors,
             ),
             border: AvesBorder.border(context),
             borderRadius: const BorderRadius.all(Radius.circular(24)),

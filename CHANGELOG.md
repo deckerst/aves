@@ -4,6 +4,25 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.6.10"></a>[v1.6.10] - 2022-07-24
+
+### Added
+
+- Search: `on this day` and month filters in date filter section
+- Stats: histogram and contextual date filters
+- Screen saver
+- Widget: photo frame
+
+### Changed
+
+- viewer: black background when overlay is disabled with light theme
+- filter chip long press menu shows full label
+- upgraded Flutter to beta v3.3.0-0.0.pre
+
+### Fixed
+
+- analysis service stuck when storage has ambiguous directories
+
 ## <a id="v1.6.9"></a>[v1.6.9] - 2022-06-18
 
 ### Added

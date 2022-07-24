@@ -119,17 +119,17 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
 
     final source = context.read<CollectionSource>();
     source.pauseMonitoring();
-    final opId = mediaFileService.newOpId;
+    final opId = mediaEditService.newOpId;
     await showOpReport<MoveOpEvent>(
       context: context,
-      opStream: mediaFileService.move(
+      opStream: mediaEditService.move(
         opId: opId,
         entriesByDestination: entriesByDestination,
         copy: copy,
         nameConflictStrategy: nameConflictStrategy,
       ),
       itemCount: todoCount,
-      onCancel: () => mediaFileService.cancelFileOp(opId),
+      onCancel: () => mediaEditService.cancelFileOp(opId),
       onDone: (processed) async {
         final successOps = processed.where((v) => v.success).toSet();
 
@@ -226,15 +226,15 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
 
     final source = context.read<CollectionSource>();
     source.pauseMonitoring();
-    final opId = mediaFileService.newOpId;
+    final opId = mediaEditService.newOpId;
     await showOpReport<MoveOpEvent>(
       context: context,
-      opStream: mediaFileService.rename(
+      opStream: mediaEditService.rename(
         opId: opId,
         entriesToNewName: entriesToNewName,
       ),
       itemCount: todoCount,
-      onCancel: () => mediaFileService.cancelFileOp(opId),
+      onCancel: () => mediaEditService.cancelFileOp(opId),
       onDone: (processed) async {
         final successOps = processed.where((e) => e.success).toSet();
         final movedOps = successOps.where((e) => !e.skipped).toSet();

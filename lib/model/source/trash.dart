@@ -19,7 +19,7 @@ mixin TrashMixin on SourceBase {
 
     final processed = <ImageOpEvent>{};
     final completer = Completer<Set<String>>();
-    mediaFileService.delete(entries: expiredEntries).listen(
+    mediaEditService.delete(entries: expiredEntries).listen(
       processed.add,
       onError: completer.completeError,
       onDone: () async {

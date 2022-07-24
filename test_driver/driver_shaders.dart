@@ -27,7 +27,7 @@ Future<void> configureAndLaunch() async {
     // navigation
     ..keepScreenOn = KeepScreenOn.always
     ..homePage = HomePageSetting.collection
-    ..showBottomNavigationBar = true
+    ..enableBottomNavigationBar = true
     // collection
     ..collectionBrowsingQuickActions = SettingsDefaults.collectionBrowsingQuickActions
     // viewer

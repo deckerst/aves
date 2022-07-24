@@ -1,15 +1,19 @@
 library aves_services_platform;
 
 import 'package:aves_map/aves_map.dart';
+import 'package:aves_platform_meta/aves_platform_meta_platform_interface.dart';
 import 'package:aves_services/aves_services.dart';
 import 'package:aves_services_platform/src/map.dart';
 import 'package:flutter/widgets.dart';
 import 'package:huawei_hmsavailability/huawei_hmsavailability.dart';
+import 'package:huawei_map/map.dart' as hmap;
 import 'package:latlong2/latlong.dart';
 
 class PlatformMobileServices extends MobileServices {
   // cf https://developer.huawei.com/consumer/en/doc/development/hmscore-common-References/huaweiapiavailability-0000001050121134#section9492524178
   static const int _hmsCoreAvailable = 0;
+
+  static const manifestApiKey = 'deckers.thibault.aves.huawei.API_KEY';
 
   bool _isAvailable = false;
 
@@ -18,6 +22,10 @@ class PlatformMobileServices extends MobileServices {
     final result = await HmsApiAvailability().isHMSAvailable();
     _isAvailable = result == _hmsCoreAvailable;
     debugPrint('Device has Huawei Mobile Services=$_isAvailable');
+
+    final apiKey = await AvesPlatformMetaPlatform.instance.getMetadata(manifestApiKey);
+    hmap.HuaweiMapInitializer.setApiKey(apiKey: apiKey ?? '');
+    hmap.HuaweiMapInitializer.initializeMap();
   }
 
   @override

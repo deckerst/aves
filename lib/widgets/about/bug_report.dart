@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:aves/app_flavor.dart';
 import 'package:aves/flutter_version.dart';
@@ -68,7 +67,7 @@ class _BugReportState extends State<BugReport> with FeedbackMixin {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildStep(1, l10n.aboutBugSaveLogInstruction, l10n.aboutBugSaveLogButton, _saveLogs),
+                _buildStep(1, l10n.aboutBugSaveLogInstruction, l10n.saveTooltip, _saveLogs),
                 _buildStep(2, l10n.aboutBugCopyInfoInstruction, l10n.aboutBugCopyInfoButton, _copySystemInfo),
                 FutureBuilder<String>(
                   future: _infoLoader,

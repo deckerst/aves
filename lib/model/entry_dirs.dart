@@ -58,9 +58,13 @@ class EntryDir {
     var resolved = vrl.volumePath;
     final parts = pContext.split(vrl.relativeDir);
     for (final part in parts) {
-      final partLower = part.toLowerCase();
-      final childrenDirs = Directory(resolved).listSync().where((v) => v.absolute is Directory).toSet();
-      final found = childrenDirs.firstWhereOrNull((v) => pContext.basename(v.path).toLowerCase() == partLower);
+      FileSystemEntity? found;
+      final dir = Directory(resolved);
+      if (dir.existsSync()) {
+        final partLower = part.toLowerCase();
+        final childrenDirs = dir.listSync().where((v) => v.absolute is Directory).toSet();
+        found = childrenDirs.firstWhereOrNull((v) => pContext.basename(v.path).toLowerCase() == partLower);
+      }
       resolved = found?.path ?? '$resolved${pContext.separator}$part';
     }
     return resolved;

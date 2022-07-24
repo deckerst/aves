@@ -1,3 +1,4 @@
+import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
@@ -9,7 +10,7 @@ class ColorListTile extends StatelessWidget {
   final Color value;
   final ValueSetter<Color> onChanged;
 
-  static const double radius = 16.0;
+  static const radius = Constants.colorPickerRadius;
 
   const ColorListTile({
     super.key,

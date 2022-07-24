@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/debouncer.dart';
 import 'package:aves/widgets/common/identity/aves_app_bar.dart';
+import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/common/search/delegate.dart';
 import 'package:aves/widgets/common/search/route.dart';
 import 'package:flutter/material.dart';
@@ -115,37 +116,39 @@ class _SearchPageState extends State<SearchPage> {
       case null:
         break;
     }
-    return Scaffold(
-      appBar: AppBar(
-        leading: Hero(
-          tag: AvesAppBar.leadingHeroTag,
-          transitionOnUserGestures: true,
-          child: Center(child: widget.delegate.buildLeading(context)),
-        ),
-        title: Hero(
-          tag: AvesAppBar.titleHeroTag,
-          transitionOnUserGestures: true,
-          child: DefaultTextStyle.merge(
-            style: const TextStyle(fontFeatures: [FontFeature.disable('smcp')]),
-            child: TextField(
-              controller: widget.delegate.queryTextController,
-              focusNode: _focusNode,
-              decoration: InputDecoration(
-                border: InputBorder.none,
-                hintText: widget.delegate.searchFieldLabel,
-                hintStyle: theme.inputDecorationTheme.hintStyle,
+    return MediaQueryDataProvider(
+      child: Scaffold(
+        appBar: AppBar(
+          leading: Hero(
+            tag: AvesAppBar.leadingHeroTag,
+            transitionOnUserGestures: true,
+            child: Center(child: widget.delegate.buildLeading(context)),
+          ),
+          title: Hero(
+            tag: AvesAppBar.titleHeroTag,
+            transitionOnUserGestures: true,
+            child: DefaultTextStyle.merge(
+              style: const TextStyle(fontFeatures: [FontFeature.disable('smcp')]),
+              child: TextField(
+                controller: widget.delegate.queryTextController,
+                focusNode: _focusNode,
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  hintText: widget.delegate.searchFieldLabel,
+                  hintStyle: theme.inputDecorationTheme.hintStyle,
+                ),
+                textInputAction: TextInputAction.search,
+                style: theme.textTheme.headline6,
+                onSubmitted: (_) => widget.delegate.showResults(context),
               ),
-              textInputAction: TextInputAction.search,
-              style: theme.textTheme.headline6,
-              onSubmitted: (_) => widget.delegate.showResults(context),
             ),
           ),
+          actions: widget.delegate.buildActions(context),
         ),
-        actions: widget.delegate.buildActions(context),
-      ),
-      body: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 300),
-        child: body,
+        body: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 300),
+          child: body,
+        ),
       ),
     );
   }

@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/services/common/services.dart';
@@ -34,9 +32,9 @@ abstract class AndroidAppService {
 }
 
 class PlatformAndroidAppService implements AndroidAppService {
-  static const platform = MethodChannel('deckers.thibault/aves/app');
+  static const _platform = MethodChannel('deckers.thibault/aves/app');
 
-  static final knownAppDirs = {
+  static final _knownAppDirs = {
     'com.kakao.talk': {'KakaoTalkDownload'},
     'com.sony.playmemories.mobile': {'Imaging Edge Mobile'},
     'nekox.messenger': {'NekoX'},
@@ -45,10 +43,10 @@ class PlatformAndroidAppService implements AndroidAppService {
   @override
   Future<Set<Package>> getPackages() async {
     try {
-      final result = await platform.invokeMethod('getPackages');
+      final result = await _platform.invokeMethod('getPackages');
       final packages = (result as List).cast<Map>().map(Package.fromMap).toSet();
       // additional info for known directories
-      knownAppDirs.forEach((packageName, dirs) {
+      _knownAppDirs.forEach((packageName, dirs) {
         final package = packages.firstWhereOrNull((package) => package.packageName == packageName);
         if (package != null) {
           package.ownedDirs.addAll(dirs);
@@ -64,7 +62,7 @@ class PlatformAndroidAppService implements AndroidAppService {
   @override
   Future<Uint8List> getAppIcon(String packageName, double size) async {
     try {
-      final result = await platform.invokeMethod('getAppIcon', <String, dynamic>{
+      final result = await _platform.invokeMethod('getAppIcon', <String, dynamic>{
         'packageName': packageName,
         'sizeDip': size,
       });
@@ -78,7 +76,7 @@ class PlatformAndroidAppService implements AndroidAppService {
   @override
   Future<String?> getAppInstaller() async {
     try {
-      return await platform.invokeMethod('getAppInstaller');
+      return await _platform.invokeMethod('getAppInstaller');
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
     }
@@ -88,7 +86,7 @@ class PlatformAndroidAppService implements AndroidAppService {
   @override
   Future<bool> copyToClipboard(String uri, String? label) async {
     try {
-      final result = await platform.invokeMethod('copyToClipboard', <String, dynamic>{
+      final result = await _platform.invokeMethod('copyToClipboard', <String, dynamic>{
         'uri': uri,
         'label': label,
       });
@@ -102,7 +100,7 @@ class PlatformAndroidAppService implements AndroidAppService {
   @override
   Future<bool> edit(String uri, String mimeType) async {
     try {
-      final result = await platform.invokeMethod('edit', <String, dynamic>{
+      final result = await _platform.invokeMethod('edit', <String, dynamic>{
         'uri': uri,
         'mimeType': mimeType,
       });
@@ -116,7 +114,7 @@ class PlatformAndroidAppService implements AndroidAppService {
   @override
   Future<bool> open(String uri, String mimeType) async {
     try {
-      final result = await platform.invokeMethod('open', <String, dynamic>{
+      final result = await _platform.invokeMethod('open', <String, dynamic>{
         'uri': uri,
         'mimeType': mimeType,
       });
@@ -134,7 +132,7 @@ class PlatformAndroidAppService implements AndroidAppService {
     final geoUri = 'geo:$latitude,$longitude?q=$latitude,$longitude';
 
     try {
-      final result = await platform.invokeMethod('openMap', <String, dynamic>{
+      final result = await _platform.invokeMethod('openMap', <String, dynamic>{
         'geoUri': geoUri,
       });
       if (result != null) return result as bool;
@@ -147,7 +145,7 @@ class PlatformAndroidAppService implements AndroidAppService {
   @override
   Future<bool> setAs(String uri, String mimeType) async {
     try {
-      final result = await platform.invokeMethod('setAs', <String, dynamic>{
+      final result = await _platform.invokeMethod('setAs', <String, dynamic>{
         'uri': uri,
         'mimeType': mimeType,
       });
@@ -164,7 +162,7 @@ class PlatformAndroidAppService implements AndroidAppService {
     // e.g. Google Lens declares receiving "image/jpeg" only, but it can actually handle more formats
     final urisByMimeType = groupBy<AvesEntry, String>(entries, (e) => e.mimeTypeAnySubtype).map((k, v) => MapEntry(k, v.map((e) => e.uri).toList()));
     try {
-      final result = await platform.invokeMethod('share', <String, dynamic>{
+      final result = await _platform.invokeMethod('share', <String, dynamic>{
         'urisByMimeType': urisByMimeType,
       });
       if (result != null) return result as bool;
@@ -177,7 +175,7 @@ class PlatformAndroidAppService implements AndroidAppService {
   @override
   Future<bool> shareSingle(String uri, String mimeType) async {
     try {
-      final result = await platform.invokeMethod('share', <String, dynamic>{
+      final result = await _platform.invokeMethod('share', <String, dynamic>{
         'urisByMimeType': {
           mimeType: [uri]
         },
@@ -196,7 +194,7 @@ class PlatformAndroidAppService implements AndroidAppService {
     Uint8List? iconBytes;
     if (coverEntry != null) {
       final size = coverEntry.isVideo ? 0.0 : 256.0;
-      iconBytes = await mediaFileService.getThumbnail(
+      iconBytes = await mediaFetchService.getThumbnail(
         uri: coverEntry.uri,
         mimeType: coverEntry.mimeType,
         pageId: coverEntry.pageId,
@@ -207,7 +205,7 @@ class PlatformAndroidAppService implements AndroidAppService {
       );
     }
     try {
-      await platform.invokeMethod('pinShortcut', <String, dynamic>{
+      await _platform.invokeMethod('pinShortcut', <String, dynamic>{
         'label': label,
         'iconBytes': iconBytes,
         'filters': filters?.map((filter) => filter.toJson()).toList(),

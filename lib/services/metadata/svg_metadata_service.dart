@@ -17,7 +17,7 @@ class SvgMetadataService {
 
   static Future<Size?> getSize(AvesEntry entry) async {
     try {
-      final data = await mediaFileService.getSvg(entry.uri, entry.mimeType);
+      final data = await mediaFetchService.getSvg(entry.uri, entry.mimeType);
 
       final document = XmlDocument.parse(utf8.decode(data));
       final root = document.rootElement;
@@ -63,7 +63,7 @@ class SvgMetadataService {
     }
 
     try {
-      final data = await mediaFileService.getSvg(entry.uri, entry.mimeType);
+      final data = await mediaFetchService.getSvg(entry.uri, entry.mimeType);
 
       final document = XmlDocument.parse(utf8.decode(data));
       final root = document.rootElement;

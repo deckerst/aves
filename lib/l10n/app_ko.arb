@@ -25,7 +25,8 @@
   "showTooltip": "보기",
   "hideTooltip": "숨기기",
   "actionRemove": "제거",
-  "resetButtonTooltip": "복원",
+  "resetTooltip": "복원",
+  "saveTooltip": "저장",
 
   "doubleBackExitMessage": "종료하려면 한번 더 누르세요.",
   "doNotAskAgain": "다시 묻지 않기",
@@ -94,6 +95,7 @@
   "filterFavouriteLabel": "즐겨찾기",
   "filterLocationEmptyLabel": "장소 없음",
   "filterTagEmptyLabel": "태그 없음",
+  "filterOnThisDayLabel": "이 날",
   "filterRatingUnratedLabel": "별점 없음",
   "filterRatingRejectedLabel": "거부됨",
   "filterTypeAnimatedLabel": "애니메이션",
@@ -303,7 +305,6 @@
 
   "aboutBug": "버그 보고",
   "aboutBugSaveLogInstruction": "앱 로그를 파일에 저장하기",
-  "aboutBugSaveLogButton": "저장",
   "aboutBugCopyInfoInstruction": "시스템 정보를 복사하기",
   "aboutBugCopyInfoButton": "복사",
   "aboutBugReportInstruction": "로그와 시스템 정보를 첨부하여 깃허브에서 이슈를 제출하기",
@@ -417,6 +418,7 @@
 
   "searchCollectionFieldHint": "미디어 검색",
   "searchSectionRecent": "최근 검색기록",
+  "searchSectionDate": "날짜",
   "searchSectionAlbums": "앨범",
   "searchSectionCountries": "국가",
   "searchSectionPlaces": "장소",
@@ -502,6 +504,7 @@
   "settingsViewerSlideshowTitle": "슬라이드쇼",
   "settingsSlideshowRepeat": "반복",
   "settingsSlideshowShuffle": "순서섞기",
+  "settingsSlideshowFillScreen": "화면 채우기",
   "settingsSlideshowTransitionTile": "전환 효과",
   "settingsSlideshowTransitionTitle": "전환 효과",
   "settingsSlideshowIntervalTile": "교체 주기",
@@ -583,6 +586,11 @@
   "settingsCoordinateFormatTitle": "좌표 표현",
   "settingsUnitSystemTile": "단위법",
   "settingsUnitSystemTitle": "단위법",
+
+  "settingsScreenSaverPageTitle": "화면보호기",
+
+  "settingsWidgetPageTitle": "사진 액자",
+  "settingsWidgetShowOutline": "윤곽",
 
   "statsPageTitle": "통계",
   "statsWithGps": "{count, plural, other{{count}개 위치가 있음}}",

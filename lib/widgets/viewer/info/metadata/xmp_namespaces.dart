@@ -15,6 +15,7 @@ import 'package:aves/widgets/viewer/info/metadata/xmp_ns/iptc4xmpext.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_ns/microsoft.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_ns/mwg.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_ns/photoshop.dart';
+import 'package:aves/widgets/viewer/info/metadata/xmp_ns/plus.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_ns/tiff.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_ns/xmp.dart';
 import 'package:collection/collection.dart';
@@ -67,6 +68,8 @@ class XmpNamespace extends Equatable {
         return XmpNoteNamespace(rawProps);
       case XmpPhotoshopNamespace.ns:
         return XmpPhotoshopNamespace(rawProps);
+      case XmpPlusNamespace.ns:
+        return XmpPlusNamespace(rawProps);
       case XmpTiffNamespace.ns:
         return XmpTiffNamespace(rawProps);
       default:

@@ -24,7 +24,6 @@ fun PackageManager.getApplicationInfoCompat(packageName: String, flags: Int): Ap
         @Suppress("deprecation")
         getApplicationInfo(packageName, flags)
     }
-
 }
 
 fun PackageManager.queryIntentActivitiesCompat(intent: Intent, flags: Int): List<ResolveInfo> {

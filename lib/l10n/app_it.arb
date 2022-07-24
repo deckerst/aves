@@ -25,7 +25,8 @@
   "showTooltip": "Mostra",
   "hideTooltip": "Nascondi",
   "actionRemove": "Rimuovi",
-  "resetButtonTooltip": "Reimposta",
+  "resetTooltip": "Reimposta",
+  "saveTooltip": "Salva",
 
   "doubleBackExitMessage": "Tocca di nuovo «indietro» per uscire",
   "doNotAskAgain": "Non chiedere di nuovo",
@@ -94,6 +95,7 @@
   "filterFavouriteLabel": "Preferiti",
   "filterLocationEmptyLabel": "Senza posizione",
   "filterTagEmptyLabel": "Senza etichetta",
+  "filterOnThisDayLabel": "In questo giorno",
   "filterRatingUnratedLabel": "Non valutato",
   "filterRatingRejectedLabel": "Rifiutato",
   "filterTypeAnimatedLabel": "Animato",
@@ -303,7 +305,6 @@
 
   "aboutBug": "Segnalazione bug",
   "aboutBugSaveLogInstruction": "Salva i log dell’app in un file",
-  "aboutBugSaveLogButton": "Salva",
   "aboutBugCopyInfoInstruction": "Copia le informazioni di sistema",
   "aboutBugCopyInfoButton": "Copia",
   "aboutBugReportInstruction": "Segnala su GitHub con i log e le informazioni di sistema",
@@ -417,6 +418,7 @@
 
   "searchCollectionFieldHint": "Cerca raccolta",
   "searchSectionRecent": "Recenti",
+  "searchSectionDate": "Data",
   "searchSectionAlbums": "Album",
   "searchSectionCountries": "Paesi",
   "searchSectionPlaces": "Luoghi",
@@ -502,6 +504,7 @@
   "settingsViewerSlideshowTitle": "Presentazione",
   "settingsSlideshowRepeat": "Ripeti",
   "settingsSlideshowShuffle": "Ordine casuale",
+  "settingsSlideshowFillScreen": "Riempi schermo",
   "settingsSlideshowTransitionTile": "Transizione",
   "settingsSlideshowTransitionTitle": "Transizione",
   "settingsSlideshowIntervalTile": "Intervallo",
@@ -583,6 +586,11 @@
   "settingsCoordinateFormatTitle": "Formato coordinate",
   "settingsUnitSystemTile": "Unità",
   "settingsUnitSystemTitle": "Unità",
+
+  "settingsScreenSaverPageTitle": "Salvaschermo",
+
+  "settingsWidgetPageTitle": "Cornice foto",
+  "settingsWidgetShowOutline": "Contorno",
 
   "statsPageTitle": "Statistiche",
   "statsWithGps": "{count, plural, =1{1 elemento con posizione} other{{count} elementi con posizione}}",

@@ -25,7 +25,8 @@
   "showTooltip": "Mostrar",
   "hideTooltip": "Ocultar",
   "actionRemove": "Remover",
-  "resetButtonTooltip": "Restablecer",
+  "resetTooltip": "Restablecer",
+  "saveTooltip": "Guardar",
 
   "doubleBackExitMessage": "Presione «atrás» nuevamente para salir.",
   "doNotAskAgain": "No preguntar nuevamente",
@@ -303,7 +304,6 @@
 
   "aboutBug": "Reporte de errores",
   "aboutBugSaveLogInstruction": "Guardar registros de la aplicación a un archivo",
-  "aboutBugSaveLogButton": "Guardar",
   "aboutBugCopyInfoInstruction": "Copiar información del sistema",
   "aboutBugCopyInfoButton": "Copiar",
   "aboutBugReportInstruction": "Reportar en GitHub con los registros y la información del sistema",
@@ -417,6 +417,7 @@
 
   "searchCollectionFieldHint": "Buscar en colección",
   "searchSectionRecent": "Reciente",
+  "searchSectionDate": "Fecha",
   "searchSectionAlbums": "Álbumes",
   "searchSectionCountries": "Países",
   "searchSectionPlaces": "Lugares",

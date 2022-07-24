@@ -240,6 +240,7 @@ class _EntryGoogleMapState<T> extends State<EntryGoogleMap<T>> with WidgetsBindi
 
   // sometimes the map does not properly update after changing the widget size,
   // so we monitor the size and force refreshing after an arbitrary small delay
+  // TODO TLAD [map] this workaround no longer works with Flutter beta v3.3.0-0.0.pre
   Future<void> _onSizeChange() async {
     await Future.delayed(const Duration(milliseconds: 100));
     debugPrint('refresh map for size=${_sizeNotifier.value}');

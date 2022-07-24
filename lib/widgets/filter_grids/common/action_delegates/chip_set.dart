@@ -61,7 +61,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
         return isSelecting && selectedItemCount == itemCount;
       // browsing
       case ChipSetAction.search:
-        return appMode.canSearch && !isSelecting;
+        return appMode.canNavigate && !isSelecting;
       case ChipSetAction.createAlbum:
         return false;
       // browsing or selecting

@@ -15,8 +15,8 @@ class OSMHotLayer extends StatelessWidget {
         urlTemplate: 'https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png',
         subdomains: ['a', 'b', 'c'],
         backgroundColor: _tileLayerBackgroundColor,
-        tileProvider: _NetworkTileProvider(),
         retinaMode: context.select<MediaQueryData, double>((mq) => mq.devicePixelRatio) > 1,
+        userAgentPackageName: device.userAgent,
       ),
     );
   }
@@ -32,8 +32,8 @@ class StamenTonerLayer extends StatelessWidget {
         urlTemplate: 'https://stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}{r}.png',
         subdomains: ['a', 'b', 'c', 'd'],
         backgroundColor: _tileLayerBackgroundColor,
-        tileProvider: _NetworkTileProvider(),
         retinaMode: context.select<MediaQueryData, double>((mq) => mq.devicePixelRatio) > 1,
+        userAgentPackageName: device.userAgent,
       ),
     );
   }
@@ -49,22 +49,9 @@ class StamenWatercolorLayer extends StatelessWidget {
         urlTemplate: 'https://stamen-tiles-{s}.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.jpg',
         subdomains: ['a', 'b', 'c', 'd'],
         backgroundColor: _tileLayerBackgroundColor,
-        tileProvider: _NetworkTileProvider(),
         retinaMode: context.select<MediaQueryData, double>((mq) => mq.devicePixelRatio) > 1,
+        userAgentPackageName: device.userAgent,
       ),
     );
-  }
-}
-
-class _NetworkTileProvider extends NetworkTileProvider {
-  final Map<String, String> headers = {
-    'User-Agent': device.userAgent,
-  };
-
-  _NetworkTileProvider();
-
-  @override
-  ImageProvider getImage(Coords<num> coords, TileLayerOptions options) {
-    return NetworkImage(getTileUrl(coords, options), headers: headers);
   }
 }

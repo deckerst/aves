@@ -35,7 +35,7 @@ class GeocodingHandler(private val context: Context) : MethodCallHandler {
         val localeString = call.argument<String>("locale")
         val maxResults = call.argument<Int>("maxResults") ?: 1
         if (latitude == null || longitude == null) {
-            result.error("getAddress-args", "failed because of missing arguments", null)
+            result.error("getAddress-args", "missing arguments", null)
             return
         }
 
