@@ -95,6 +95,7 @@
   "filterFavouriteLabel": "お気に入り",
   "filterLocationEmptyLabel": "位置情報なし",
   "filterTagEmptyLabel": "タグ情報なし",
+  "filterOnThisDayLabel": "過去のこの日",
   "filterRatingUnratedLabel": "評価情報なし",
   "filterRatingRejectedLabel": "拒否",
   "filterTypeAnimatedLabel": "アニメーション",
@@ -503,6 +504,7 @@
   "settingsViewerSlideshowTitle": "スライドショー",
   "settingsSlideshowRepeat": "繰り返し",
   "settingsSlideshowShuffle": "シャッフル",
+  "settingsSlideshowFillScreen": "画面いっぱいに表示",
   "settingsSlideshowTransitionTile": "トランジション",
   "settingsSlideshowTransitionTitle": "トランジション",
   "settingsSlideshowIntervalTile": "間隔",
@@ -584,6 +586,11 @@
   "settingsCoordinateFormatTitle": "座標形式",
   "settingsUnitSystemTile": "単位",
   "settingsUnitSystemTitle": "単位",
+
+  "settingsScreenSaverPageTitle": "スクリーンセーバー",
+
+  "settingsWidgetPageTitle": "フォトフレーム",
+  "settingsWidgetShowOutline": "枠",
 
   "statsPageTitle": "統計",
   "statsWithGps": "{count, plural, other{位置情報のあるアイテム {count} 件}}",
