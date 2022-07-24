@@ -73,6 +73,7 @@ jobs:
           AVES_KEY_ALIAS: ${{ secrets.AVES_KEY_ALIAS }}
           AVES_KEY_PASSWORD: ${{ secrets.AVES_KEY_PASSWORD }}
           AVES_GOOGLE_API_KEY: ${{ secrets.AVES_GOOGLE_API_KEY }}
+          AVES_HUAWEI_API_KEY: ${{ secrets.AVES_HUAWEI_API_KEY }}
 
       - name: Create a release with the APK and App Bundle.
         uses: ncipollo/release-action@v1
