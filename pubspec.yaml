@@ -70,7 +70,7 @@ dependencies:
   pdf:
   percent_indicator:
   permission_handler:
-  printing:
+  printing: 5.9.1
   proj4dart:
   provider:
   screen_brightness:
