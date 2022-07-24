@@ -73,7 +73,7 @@ class AnalysisService : MethodChannel.MethodCallHandler, Service() {
 
     override fun onBind(intent: Intent) = analysisServiceBinder
 
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val channel = NotificationChannelCompat.Builder(CHANNEL_ANALYSIS, NotificationManagerCompat.IMPORTANCE_LOW)
             .setName(getText(R.string.analysis_channel_name))
             .setShowBadge(false)
@@ -82,7 +82,7 @@ class AnalysisService : MethodChannel.MethodCallHandler, Service() {
         startForeground(NOTIFICATION_ID, buildNotification())
 
         val msgData = Bundle()
-        intent.extras?.let {
+        intent?.extras?.let {
             msgData.putAll(it)
         }
         serviceHandler?.obtainMessage()?.let { msg ->
