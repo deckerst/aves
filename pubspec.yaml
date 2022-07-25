@@ -70,7 +70,7 @@ dependencies:
   pdf:
   percent_indicator:
   permission_handler:
-  printing: 5.9.1
+  printing:
   proj4dart:
   provider:
   screen_brightness:
@@ -90,6 +90,8 @@ dependency_overrides:
     git:
       url: https://github.com/deckerst/flutter-permission-handler
       path: permission_handler_android
+  # TODO TLAD remove override when this is fixed: https://github.com/DavBfr/dart_pdf/issues/1104
+  ffi: ">=1.1.0 <3.0.0"
 
 dev_dependencies:
   flutter_test:
