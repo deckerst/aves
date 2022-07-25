@@ -4,6 +4,7 @@ import 'package:aves/widget_common.dart';
 
 const _flavor = AppFlavor.play;
 
+@pragma('vm:entry-point')
 void main() => mainCommon(_flavor);
 
 @pragma('vm:entry-point')
