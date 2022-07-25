@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.6.11"></a>[v1.6.11] - 2022-07-26
+
 ### Added
 
 - Search: `on this day` and month filters in date filter section
