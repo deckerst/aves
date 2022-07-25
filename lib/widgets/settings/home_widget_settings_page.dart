@@ -118,7 +118,8 @@ class _HomeWidgetSettingsPageState extends State<HomeWidgetSettingsPage> {
             onTap: () => setState(() => _shape = shape),
             child: AnimatedOpacity(
               duration: duration,
-              opacity: selected ? 1.0 : .4,
+              // as of Flutter beta v3.3.0-0.0.pre, decoration rendering is at the wrong position if opacity is > .998
+              opacity: selected ? .998 : .4,
               child: AnimatedContainer(
                 duration: duration,
                 width: 96,

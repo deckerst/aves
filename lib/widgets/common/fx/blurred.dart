@@ -3,7 +3,9 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 final _filter = ImageFilter.blur(sigmaX: 4, sigmaY: 4);
-const _identity = ColorFilter.matrix(<double>[1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0]);
+// do not use `ColorFilter.matrix` for identity,
+// as it yields performance issues when there are other layers on top
+final _identity = ImageFilter.matrix(Matrix4.identity().storage);
 
 class BlurredRect extends StatelessWidget {
   final bool enabled;
