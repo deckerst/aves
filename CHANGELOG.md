@@ -4,8 +4,6 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
-## <a id="v1.6.10"></a>[v1.6.10] - 2022-07-24 [YANKED]
-
 ### Added
 
 - Search: `on this day` and month filters in date filter section
@@ -22,6 +20,8 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 
 - analysis service stuck when storage has ambiguous directories
+
+## <a id="v1.6.10"></a>[v1.6.10] - 2022-07-24 [YANKED]
 
 ## <a id="v1.6.9"></a>[v1.6.9] - 2022-06-18
 
