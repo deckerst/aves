@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
-## <a id="v1.6.10"></a>[v1.6.10] - 2022-07-24
+## <a id="v1.6.10"></a>[v1.6.10] - 2022-07-24 [YANKED]
 
 ### Added
 
