@@ -98,6 +98,7 @@ class Settings extends ChangeNotifier {
   static const showOverlayInfoKey = 'show_overlay_info';
   static const showOverlayShootingDetailsKey = 'show_overlay_shooting_details';
   static const showOverlayThumbnailPreviewKey = 'show_overlay_thumbnail_preview';
+  static const viewerGestureSideTapNextKey = 'viewer_gesture_side_tap_next';
   static const viewerUseCutoutKey = 'viewer_use_cutout';
   static const viewerMaxBrightnessKey = 'viewer_max_brightness';
   static const enableMotionPhotoAutoPlayKey = 'motion_photo_auto_play';
@@ -480,6 +481,10 @@ class Settings extends ChangeNotifier {
 
   set showOverlayThumbnailPreview(bool newValue) => setAndNotify(showOverlayThumbnailPreviewKey, newValue);
 
+  bool get viewerGestureSideTapNext => getBoolOrDefault(viewerGestureSideTapNextKey, SettingsDefaults.viewerGestureSideTapNext);
+
+  set viewerGestureSideTapNext(bool newValue) => setAndNotify(viewerGestureSideTapNextKey, newValue);
+
   bool get viewerUseCutout => getBoolOrDefault(viewerUseCutoutKey, SettingsDefaults.viewerUseCutout);
 
   set viewerUseCutout(bool newValue) => setAndNotify(viewerUseCutoutKey, newValue);
@@ -819,6 +824,7 @@ class Settings extends ChangeNotifier {
             case showOverlayInfoKey:
             case showOverlayShootingDetailsKey:
             case showOverlayThumbnailPreviewKey:
+            case viewerGestureSideTapNextKey:
             case viewerUseCutoutKey:
             case viewerMaxBrightnessKey:
             case enableMotionPhotoAutoPlayKey:

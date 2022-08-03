@@ -22,7 +22,6 @@ import 'package:aves/widgets/viewer/hero.dart';
 import 'package:aves/widgets/viewer/multipage/conductor.dart';
 import 'package:aves/widgets/viewer/notifications.dart';
 import 'package:aves/widgets/viewer/overlay/bottom.dart';
-import 'package:aves/widgets/viewer/overlay/notifications.dart';
 import 'package:aves/widgets/viewer/overlay/panorama.dart';
 import 'package:aves/widgets/viewer/overlay/slideshow_buttons.dart';
 import 'package:aves/widgets/viewer/overlay/top.dart';
@@ -244,11 +243,12 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
               // remove focus, if any, to prevent viewer shortcuts activation from the Info page
               FocusManager.instance.primaryFocus?.unfocus();
               _goToVerticalPage(infoPage);
-            } else if (notification is ViewEntryNotification) {
-              final index = notification.index;
-              if (_currentEntryIndex != index) {
-                _horizontalPager.jumpToPage(index);
-              }
+            } else if (notification is JumpToPreviousEntryNotification) {
+              _jumpToHorizontalPageByDelta(-1);
+            } else if (notification is JumpToNextEntryNotification) {
+              _jumpToHorizontalPageByDelta(1);
+            } else if (notification is JumpToEntryNotification) {
+              _jumpToHorizontalPageByIndex(notification.index);
             } else if (notification is VideoActionNotification) {
               final controller = notification.controller;
               final action = notification.action;
@@ -529,6 +529,25 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     } else if (page == infoPage) {
       // prevent hero when viewer is offscreen
       _heroInfoNotifier.value = null;
+    }
+  }
+
+  void _jumpToHorizontalPageByDelta(int delta) {
+    final page = _horizontalPager.page?.round();
+    if (page != null) {
+      _jumpToHorizontalPageByIndex(page + delta);
+    }
+  }
+
+  void _jumpToHorizontalPageByIndex(int target) {
+    final _collection = collection;
+    if (_collection != null) {
+      if (!widget.viewerController.repeat) {
+        target = target.clamp(0, _collection.entryCount - 1);
+      }
+      if (_currentEntryIndex != target) {
+        _horizontalPager.jumpToPage(target);
+      }
     }
   }
 

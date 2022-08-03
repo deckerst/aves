@@ -84,8 +84,8 @@ class Magnifier extends StatelessWidget {
 
 typedef MagnifierTapCallback = Function(
   BuildContext context,
-  TapUpDetails details,
   MagnifierState state,
+  Alignment alignment,
   Offset childTapPosition,
 );
 
