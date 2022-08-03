@@ -658,6 +658,7 @@
   "settingsCollectionSelectionQuickActionEditorBanner": "Touch and hold to move buttons and select which actions are displayed when selecting items.",
 
   "settingsSectionViewer": "Viewer",
+  "settingsViewerGestureSideTapNext": "Tap on screen edges to show previous/next item",
   "settingsViewerUseCutout": "Use cutout area",
   "settingsViewerMaximumBrightness": "Maximum brightness",
   "settingsMotionPhotoAutoPlay": "Auto play motion photos",

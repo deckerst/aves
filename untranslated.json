@@ -1,22 +1,49 @@
 {
+  "de": [
+    "settingsViewerGestureSideTapNext"
+  ],
+
   "es": [
     "filterOnThisDayLabel",
+    "settingsViewerGestureSideTapNext",
     "settingsSlideshowFillScreen",
     "settingsScreenSaverPageTitle",
     "settingsWidgetPageTitle",
     "settingsWidgetShowOutline"
+  ],
+
+  "fr": [
+    "settingsViewerGestureSideTapNext"
   ],
 
   "id": [
     "filterOnThisDayLabel",
+    "settingsViewerGestureSideTapNext",
     "settingsSlideshowFillScreen",
     "settingsScreenSaverPageTitle",
     "settingsWidgetPageTitle",
     "settingsWidgetShowOutline"
   ],
 
+  "it": [
+    "settingsViewerGestureSideTapNext"
+  ],
+
+  "ja": [
+    "settingsViewerGestureSideTapNext"
+  ],
+
+  "ko": [
+    "settingsViewerGestureSideTapNext"
+  ],
+
+  "pt": [
+    "settingsViewerGestureSideTapNext"
+  ],
+
   "ru": [
     "filterOnThisDayLabel",
+    "settingsViewerGestureSideTapNext",
     "settingsSlideshowFillScreen",
     "settingsScreenSaverPageTitle",
     "settingsWidgetPageTitle",
@@ -38,6 +65,7 @@
     "wallpaperTargetLock",
     "wallpaperTargetHomeLock",
     "menuActionSlideshow",
+    "settingsViewerGestureSideTapNext",
     "settingsViewerSlideshowTile",
     "settingsViewerSlideshowTitle",
     "settingsSlideshowRepeat",
@@ -53,5 +81,9 @@
     "settingsWidgetPageTitle",
     "settingsWidgetShowOutline",
     "viewerSetWallpaperButtonLabel"
+  ],
+
+  "zh": [
+    "settingsViewerGestureSideTapNext"
   ]
 }

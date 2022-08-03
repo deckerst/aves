@@ -83,6 +83,7 @@ class SettingsDefaults {
   static const showOverlayInfo = true;
   static const showOverlayShootingDetails = false;
   static const showOverlayThumbnailPreview = false;
+  static const viewerGestureSideTapNext = false;
   static const viewerUseCutout = true;
   static const viewerMaxBrightness = false;
   static const enableMotionPhotoAutoPlay = false;
