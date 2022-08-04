@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - Viewer: optional gesture to show previous/next item
+- Albums / Countries / Tags: live title filter
 
 ## <a id="v1.6.11"></a>[v1.6.11] - 2022-07-26
 

@@ -3,23 +3,22 @@ import 'package:aves/model/actions/chip_set_actions.dart';
 import 'package:aves/model/actions/move_type.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/selection.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/album.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/widgets/common/app_bar_subtitle.dart';
 import 'package:aves/widgets/common/basic/menu.dart';
-import 'package:aves/widgets/common/basic/query_bar.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:aves/widgets/common/identity/aves_app_bar.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
 import 'package:aves/widgets/common/providers/selection_provider.dart';
 import 'package:aves/widgets/dialogs/filter_editors/create_album_dialog.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/album_set.dart';
+import 'package:aves/widgets/filter_grids/common/app_bar.dart';
 import 'package:aves/widgets/filter_grids/common/filter_grid_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -61,9 +60,24 @@ class _AlbumPickPage extends StatefulWidget {
 }
 
 class _AlbumPickPageState extends State<_AlbumPickPage> {
-  final _queryNotifier = ValueNotifier('');
+  final ValueNotifier<double> _appBarHeightNotifier = ValueNotifier(0);
 
   CollectionSource get source => widget.source;
+
+  String get title {
+    switch (widget.moveType) {
+      case MoveType.copy:
+        return context.l10n.albumPickPageTitleCopy;
+      case MoveType.move:
+        return context.l10n.albumPickPageTitleMove;
+      case MoveType.export:
+        return context.l10n.albumPickPageTitleExport;
+      case MoveType.toBin:
+      case MoveType.fromBin:
+      case null:
+        return context.l10n.albumPickPageTitlePick;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,24 +93,21 @@ class _AlbumPickPageState extends State<_AlbumPickPage> {
               return SelectionProvider<FilterGridItem<AlbumFilter>>(
                 child: FilterGridPage<AlbumFilter>(
                   settingsRouteKey: AlbumListPage.routeName,
-                  appBar: _AlbumPickAppBar(
+                  appBar: FilterGridAppBar(
                     source: source,
-                    moveType: widget.moveType,
+                    title: title,
                     actionDelegate: AlbumChipSetActionDelegate(gridItems),
-                    queryNotifier: _queryNotifier,
+                    actionsBuilder: _buildActions,
+                    isEmpty: false,
+                    appBarHeightNotifier: _appBarHeightNotifier,
                   ),
-                  appBarHeight: AvesAppBar.appBarHeightForContentHeight(_AlbumPickAppBar.contentHeight),
+                  appBarHeightNotifier: _appBarHeightNotifier,
                   sections: AlbumListPage.groupToSections(context, source, gridItems),
                   newFilters: source.getNewAlbumFilters(context),
                   sortFactor: settings.albumSortFactor,
                   showHeaders: settings.albumGroupFactor != AlbumChipGroupFactor.none,
                   selectable: false,
-                  queryNotifier: _queryNotifier,
-                  applyQuery: (filters, query) {
-                    if (query.isEmpty) return filters;
-                    query = query.toUpperCase();
-                    return filters.where((item) => (item.filter.displayName ?? item.filter.album).toUpperCase().contains(query)).toList();
-                  },
+                  applyQuery: AlbumListPage.applyQuery,
                   emptyBuilder: () => EmptyContent(
                     icon: AIcons.album,
                     text: context.l10n.albumEmpty,
@@ -110,57 +121,15 @@ class _AlbumPickPageState extends State<_AlbumPickPage> {
       ),
     );
   }
-}
 
-class _AlbumPickAppBar extends StatelessWidget {
-  final CollectionSource source;
-  final MoveType? moveType;
-  final AlbumChipSetActionDelegate actionDelegate;
-  final ValueNotifier<String> queryNotifier;
-
-  static const contentHeight = kToolbarHeight + _AlbumQueryBar.preferredHeight;
-
-  const _AlbumPickAppBar({
-    required this.source,
-    required this.moveType,
-    required this.actionDelegate,
-    required this.queryNotifier,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    String title() {
-      switch (moveType) {
-        case MoveType.copy:
-          return context.l10n.albumPickPageTitleCopy;
-        case MoveType.move:
-          return context.l10n.albumPickPageTitleMove;
-        case MoveType.export:
-          return context.l10n.albumPickPageTitleExport;
-        case MoveType.toBin:
-        case MoveType.fromBin:
-        case null:
-          return context.l10n.albumPickPageTitlePick;
-      }
-    }
-
-    return AvesAppBar(
-      contentHeight: contentHeight,
-      leading: const BackButton(),
-      title: SourceStateAwareAppBarTitle(
-        title: Text(title()),
-        source: source,
-      ),
-      actions: _buildActions(context),
-      bottom: _AlbumQueryBar(
-        queryNotifier: queryNotifier,
-      ),
-    );
-  }
-
-  List<StatelessWidget> _buildActions(BuildContext context) {
+  List<Widget> _buildActions(
+    BuildContext context,
+    AppMode appMode,
+    Selection<FilterGridItem<AlbumFilter>> selection,
+    AlbumChipSetActionDelegate actionDelegate,
+  ) {
     return [
-      if (moveType != null)
+      if (widget.moveType != null)
         IconButton(
           icon: const Icon(AIcons.add),
           onPressed: () async {
@@ -180,10 +149,9 @@ class _AlbumPickAppBar extends StatelessWidget {
         child: PopupMenuButton<ChipSetAction>(
           itemBuilder: (context) {
             return [
-              PopupMenuItem(
-                value: ChipSetAction.configureView,
-                child: MenuRow(text: context.l10n.menuActionConfigureView, icon: const Icon(AIcons.view)),
-              ),
+              FilterGridAppBar.toMenuItem(context, ChipSetAction.configureView, enabled: true),
+              const PopupMenuDivider(),
+              FilterGridAppBar.toMenuItem(context, ChipSetAction.toggleTitleSearch, enabled: true),
             ];
           },
           onSelected: (action) async {
@@ -198,29 +166,5 @@ class _AlbumPickAppBar extends StatelessWidget {
         ),
       ),
     ];
-  }
-}
-
-class _AlbumQueryBar extends StatelessWidget implements PreferredSizeWidget {
-  final ValueNotifier<String> queryNotifier;
-
-  static const preferredHeight = kToolbarHeight;
-
-  const _AlbumQueryBar({
-    required this.queryNotifier,
-  });
-
-  @override
-  Size get preferredSize => const Size.fromHeight(preferredHeight);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: _AlbumQueryBar.preferredHeight,
-      alignment: Alignment.topCenter,
-      child: QueryBar(
-        queryNotifier: queryNotifier,
-      ),
-    );
   }
 }

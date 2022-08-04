@@ -128,7 +128,7 @@ class _CollectionPageState extends State<CollectionPage> {
                       ),
                     ),
                     floatingActionButton: _buildFab(context, hasSelection),
-                    drawer: AppDrawer(currentCollection: _collection),
+                    drawer: canNavigate ? AppDrawer(currentCollection: _collection) : null,
                     bottomNavigationBar: showBottomNavigationBar
                         ? AppBottomNavBar(
                             events: _draggableScrollBarEventStreamController.stream,

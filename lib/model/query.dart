@@ -4,6 +4,10 @@ import 'package:aves/utils/change_notifier.dart';
 import 'package:flutter/foundation.dart';
 
 class Query extends ChangeNotifier {
+  final AChangeNotifier _focusRequestNotifier = AChangeNotifier();
+  final ValueNotifier<String> _queryNotifier = ValueNotifier('');
+  final StreamController<bool> _enabledStreamController = StreamController.broadcast();
+
   Query({required String? initialValue}) {
     if (initialValue != null && initialValue.isNotEmpty) {
       _enabled = true;
@@ -28,11 +32,9 @@ class Query extends ChangeNotifier {
 
   void toggle() => enabled = !enabled;
 
-  final StreamController<bool> _enabledStreamController = StreamController.broadcast();
-
   Stream<bool> get enabledStream => _enabledStreamController.stream;
 
-  final AChangeNotifier focusRequestNotifier = AChangeNotifier();
+  AChangeNotifier get focusRequestNotifier => _focusRequestNotifier;
 
-  final ValueNotifier<String> queryNotifier = ValueNotifier('');
+  ValueNotifier<String> get queryNotifier => _queryNotifier;
 }
