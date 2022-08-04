@@ -9,6 +9,10 @@ All notable changes to this project will be documented in this file.
 - Viewer: optional gesture to show previous/next item
 - Albums / Countries / Tags: live title filter
 
+### Changed
+
+- upgraded Flutter to beta v3.3.0-0.2.pre
+
 ## <a id="v1.6.11"></a>[v1.6.11] - 2022-07-26
 
 ### Added
