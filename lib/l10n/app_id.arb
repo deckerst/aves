@@ -95,6 +95,7 @@
   "filterFavouriteLabel": "Favorit",
   "filterLocationEmptyLabel": "Lokasi yang tidak ditemukan",
   "filterTagEmptyLabel": "Tidak dilabel",
+  "filterOnThisDayLabel": "Di hari ini",
   "filterRatingUnratedLabel": "Belum diberi nilai",
   "filterRatingRejectedLabel": "Ditolak",
   "filterTypeAnimatedLabel": "Teranimasi",
@@ -503,6 +504,7 @@
   "settingsViewerSlideshowTitle": "Tampilan Slide",
   "settingsSlideshowRepeat": "Ulangi",
   "settingsSlideshowShuffle": "Acak",
+  "settingsSlideshowFillScreen": "Isi layar",
   "settingsSlideshowTransitionTile": "Transisi",
   "settingsSlideshowTransitionTitle": "Transisi",
   "settingsSlideshowIntervalTile": "Interval",
@@ -584,6 +586,11 @@
   "settingsCoordinateFormatTitle": "Format Koordinat",
   "settingsUnitSystemTile": "Unit",
   "settingsUnitSystemTitle": "Unit",
+
+  "settingsScreenSaverPageTitle": "Screensaver",
+
+  "settingsWidgetPageTitle": "Bingkai Foto",
+  "settingsWidgetShowOutline": "Garis luar",
 
   "statsPageTitle": "Statistik",
   "statsWithGps": "{count, plural, other{{count} benda dengan lokasi}}",
