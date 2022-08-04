@@ -2,7 +2,6 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums.dart';
 import 'package:aves/utils/time_utils.dart';
-import 'package:aves/widgets/common/identity/aves_app_bar.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/providers/selection_provider.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip_set.dart';
@@ -11,14 +10,15 @@ import 'package:aves/widgets/filter_grids/common/filter_grid_page.dart';
 import 'package:aves/widgets/filter_grids/common/section_keys.dart';
 import 'package:flutter/material.dart';
 
-class FilterNavigationPage<T extends CollectionFilter> extends StatelessWidget {
+class FilterNavigationPage<T extends CollectionFilter, CSAD extends ChipSetActionDelegate<T>> extends StatefulWidget {
   final CollectionSource source;
   final String title;
   final ChipSortFactor sortFactor;
   final bool showHeaders;
-  final ChipSetActionDelegate<T> actionDelegate;
+  final CSAD actionDelegate;
   final Map<ChipSectionKey, List<FilterGridItem<T>>> filterSections;
   final Set<T>? newFilters;
+  final QueryTest<T> applyQuery;
   final Widget Function() emptyBuilder;
 
   const FilterNavigationPage({
@@ -30,40 +30,12 @@ class FilterNavigationPage<T extends CollectionFilter> extends StatelessWidget {
     required this.actionDelegate,
     required this.filterSections,
     this.newFilters,
+    required this.applyQuery,
     required this.emptyBuilder,
   });
 
   @override
-  Widget build(BuildContext context) {
-    return SelectionProvider<FilterGridItem<T>>(
-      child: Builder(
-        builder: (context) => FilterGridPage<T>(
-          appBar: FilterGridAppBar<T>(
-            source: source,
-            title: title,
-            actionDelegate: actionDelegate,
-            isEmpty: filterSections.isEmpty,
-          ),
-          appBarHeight: AvesAppBar.appBarHeightForContentHeight(kToolbarHeight),
-          sections: filterSections,
-          newFilters: newFilters ?? {},
-          sortFactor: sortFactor,
-          showHeaders: showHeaders,
-          selectable: true,
-          queryNotifier: ValueNotifier(''),
-          emptyBuilder: () => ValueListenableBuilder<SourceState>(
-            valueListenable: source.stateNotifier,
-            builder: (context, sourceState, child) {
-              return sourceState != SourceState.loading ? emptyBuilder() : const SizedBox();
-            },
-          ),
-          // do not always enable hero, otherwise unwanted hero gets triggered
-          // when using `Show in [...]` action from a chip in the Collection filter bar
-          heroType: HeroType.onTap,
-        ),
-      ),
-    );
-  }
+  State<FilterNavigationPage<T, CSAD>> createState() => _FilterNavigationPageState<T, CSAD>();
 
   static int compareFiltersByDate(FilterGridItem<CollectionFilter> a, FilterGridItem<CollectionFilter> b) {
     final c = (b.entry?.bestDate ?? epoch).compareTo(a.entry?.bestDate ?? epoch);
@@ -79,7 +51,7 @@ class FilterNavigationPage<T extends CollectionFilter> extends StatelessWidget {
     return a.filter.compareTo(b.filter);
   }
 
-  static List<FilterGridItem<T>> sort<T extends CollectionFilter>(ChipSortFactor sortFactor, CollectionSource source, Set<T> filters) {
+  static List<FilterGridItem<T>> sort<T extends CollectionFilter, CSAD extends ChipSetActionDelegate<T>>(ChipSortFactor sortFactor, CollectionSource source, Set<T> filters) {
     List<FilterGridItem<T>> toGridItem(CollectionSource source, Set<T> filters) {
       return filters
           .map((filter) => FilterGridItem(
@@ -105,5 +77,42 @@ class FilterNavigationPage<T extends CollectionFilter> extends StatelessWidget {
         break;
     }
     return allMapEntries;
+  }
+}
+
+class _FilterNavigationPageState<T extends CollectionFilter, CSAD extends ChipSetActionDelegate<T>> extends State<FilterNavigationPage<T, CSAD>> {
+  final ValueNotifier<double> _appBarHeightNotifier = ValueNotifier(0);
+
+  @override
+  Widget build(BuildContext context) {
+    return SelectionProvider<FilterGridItem<T>>(
+      child: Builder(
+        builder: (context) => FilterGridPage<T>(
+          appBar: FilterGridAppBar<T, CSAD>(
+            source: widget.source,
+            title: widget.title,
+            actionDelegate: widget.actionDelegate,
+            isEmpty: widget.filterSections.isEmpty,
+            appBarHeightNotifier: _appBarHeightNotifier,
+          ),
+          appBarHeightNotifier: _appBarHeightNotifier,
+          sections: widget.filterSections,
+          newFilters: widget.newFilters ?? {},
+          sortFactor: widget.sortFactor,
+          showHeaders: widget.showHeaders,
+          selectable: true,
+          applyQuery: widget.applyQuery,
+          emptyBuilder: () => ValueListenableBuilder<SourceState>(
+            valueListenable: widget.source.stateNotifier,
+            builder: (context, sourceState, child) {
+              return sourceState != SourceState.loading ? widget.emptyBuilder() : const SizedBox();
+            },
+          ),
+          // do not always enable hero, otherwise unwanted hero gets triggered
+          // when using `Show in [...]` action from a chip in the Collection filter bar
+          heroType: HeroType.onTap,
+        ),
+      ),
+    );
   }
 }
