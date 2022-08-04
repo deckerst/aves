@@ -18,13 +18,13 @@ abstract class MediaStoreService {
 }
 
 class PlatformMediaStoreService implements MediaStoreService {
-  static const platform = MethodChannel('deckers.thibault/aves/media_store');
-  static final StreamsChannel _streamChannel = StreamsChannel('deckers.thibault/aves/media_store_stream');
+  static const _platform = MethodChannel('deckers.thibault/aves/media_store');
+  static final _stream = StreamsChannel('deckers.thibault/aves/media_store_stream');
 
   @override
   Future<List<int>> checkObsoleteContentIds(List<int?> knownContentIds) async {
     try {
-      final result = await platform.invokeMethod('checkObsoleteContentIds', <String, dynamic>{
+      final result = await _platform.invokeMethod('checkObsoleteContentIds', <String, dynamic>{
         'knownContentIds': knownContentIds,
       });
       return (result as List).cast<int>();
@@ -37,7 +37,7 @@ class PlatformMediaStoreService implements MediaStoreService {
   @override
   Future<List<int>> checkObsoletePaths(Map<int?, String?> knownPathById) async {
     try {
-      final result = await platform.invokeMethod('checkObsoletePaths', <String, dynamic>{
+      final result = await _platform.invokeMethod('checkObsoletePaths', <String, dynamic>{
         'knownPathById': knownPathById,
       });
       return (result as List).cast<int>();
@@ -50,7 +50,7 @@ class PlatformMediaStoreService implements MediaStoreService {
   @override
   Stream<AvesEntry> getEntries(Map<int?, int?> knownEntries, {String? directory}) {
     try {
-      return _streamChannel
+      return _stream
           .receiveBroadcastStream(<String, dynamic>{
             'knownEntries': knownEntries,
             'directory': directory,
@@ -67,7 +67,7 @@ class PlatformMediaStoreService implements MediaStoreService {
   @override
   Future<Uri?> scanFile(String path, String mimeType) async {
     try {
-      final result = await platform.invokeMethod('scanFile', <String, dynamic>{
+      final result = await _platform.invokeMethod('scanFile', <String, dynamic>{
         'path': path,
         'mimeType': mimeType,
       });

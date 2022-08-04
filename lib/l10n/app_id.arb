@@ -25,7 +25,8 @@
   "showTooltip": "Tampilkan",
   "hideTooltip": "Sembunyikan",
   "actionRemove": "Hapus",
-  "resetButtonTooltip": "Ulang",
+  "resetTooltip": "Ulang",
+  "saveTooltip": "Simpan",
 
   "doubleBackExitMessage": "Ketuk “kembali” lagi untuk keluar.",
   "doNotAskAgain": "Jangan tanya lagi",
@@ -94,6 +95,7 @@
   "filterFavouriteLabel": "Favorit",
   "filterLocationEmptyLabel": "Lokasi yang tidak ditemukan",
   "filterTagEmptyLabel": "Tidak dilabel",
+  "filterOnThisDayLabel": "Di hari ini",
   "filterRatingUnratedLabel": "Belum diberi nilai",
   "filterRatingRejectedLabel": "Ditolak",
   "filterTypeAnimatedLabel": "Teranimasi",
@@ -303,7 +305,6 @@
 
   "aboutBug": "Lapor Bug",
   "aboutBugSaveLogInstruction": "Simpan log aplikasi ke file",
-  "aboutBugSaveLogButton": "Simpan",
   "aboutBugCopyInfoInstruction": "Salin informasi sistem",
   "aboutBugCopyInfoButton": "Salin",
   "aboutBugReportInstruction": "Laporkan ke GitHub dengan log dan informasi sistem",
@@ -417,6 +418,7 @@
 
   "searchCollectionFieldHint": "Cari koleksi",
   "searchSectionRecent": "Terkini",
+  "searchSectionDate": "Tanggal",
   "searchSectionAlbums": "Album",
   "searchSectionCountries": "Negara",
   "searchSectionPlaces": "Tempat",
@@ -502,6 +504,7 @@
   "settingsViewerSlideshowTitle": "Tampilan Slide",
   "settingsSlideshowRepeat": "Ulangi",
   "settingsSlideshowShuffle": "Acak",
+  "settingsSlideshowFillScreen": "Isi layar",
   "settingsSlideshowTransitionTile": "Transisi",
   "settingsSlideshowTransitionTitle": "Transisi",
   "settingsSlideshowIntervalTile": "Interval",
@@ -583,6 +586,11 @@
   "settingsCoordinateFormatTitle": "Format Koordinat",
   "settingsUnitSystemTile": "Unit",
   "settingsUnitSystemTitle": "Unit",
+
+  "settingsScreenSaverPageTitle": "Screensaver",
+
+  "settingsWidgetPageTitle": "Bingkai Foto",
+  "settingsWidgetShowOutline": "Garis luar",
 
   "statsPageTitle": "Statistik",
   "statsWithGps": "{count, plural, other{{count} benda dengan lokasi}}",

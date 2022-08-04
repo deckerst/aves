@@ -35,12 +35,13 @@ class CountryListPage extends StatelessWidget {
           stream: source.eventBus.on<CountriesChangedEvent>(),
           builder: (context, snapshot) {
             final gridItems = _getGridItems(source);
-            return FilterNavigationPage<LocationFilter>(
+            return FilterNavigationPage<LocationFilter, CountryChipSetActionDelegate>(
               source: source,
               title: context.l10n.countryPageTitle,
               sortFactor: settings.countrySortFactor,
               actionDelegate: CountryChipSetActionDelegate(gridItems),
               filterSections: _groupToSections(gridItems),
+              applyQuery: applyQuery,
               emptyBuilder: () => EmptyContent(
                 icon: AIcons.location,
                 text: context.l10n.countryEmpty,
@@ -50,6 +51,10 @@ class CountryListPage extends StatelessWidget {
         );
       },
     );
+  }
+
+  List<FilterGridItem<LocationFilter>> applyQuery(BuildContext context, List<FilterGridItem<LocationFilter>> filters, String query) {
+    return filters.where((item) => item.filter.getLabel(context).toUpperCase().contains(query)).toList();
   }
 
   List<FilterGridItem<LocationFilter>> _getGridItems(CollectionSource source) {

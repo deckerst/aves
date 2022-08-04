@@ -73,7 +73,7 @@ class OverlaySnackBar extends StatelessWidget {
               child: TextButtonTheme(
                 data: TextButtonThemeData(
                   style: TextButton.styleFrom(
-                    primary: buttonColor,
+                    foregroundColor: buttonColor,
                     padding: const EdgeInsets.symmetric(horizontal: horizontalPadding),
                   ),
                 ),

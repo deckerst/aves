@@ -43,7 +43,7 @@ class AlbumListPage extends StatelessWidget {
                 return StreamBuilder<Set<CollectionFilter>?>(
                   // to update sections by tier
                   stream: covers.packageChangeStream,
-                  builder: (context, snapshot) => FilterNavigationPage<AlbumFilter>(
+                  builder: (context, snapshot) => FilterNavigationPage<AlbumFilter, AlbumChipSetActionDelegate>(
                     source: source,
                     title: context.l10n.albumPageTitle,
                     sortFactor: settings.albumSortFactor,
@@ -51,6 +51,7 @@ class AlbumListPage extends StatelessWidget {
                     actionDelegate: AlbumChipSetActionDelegate(gridItems),
                     filterSections: groupToSections(context, source, gridItems),
                     newFilters: source.getNewAlbumFilters(context),
+                    applyQuery: applyQuery,
                     emptyBuilder: () => EmptyContent(
                       icon: AIcons.album,
                       text: context.l10n.albumEmpty,
@@ -66,6 +67,10 @@ class AlbumListPage extends StatelessWidget {
   }
 
   // common with album selection page to move/copy entries
+
+  static List<FilterGridItem<AlbumFilter>> applyQuery(BuildContext context, List<FilterGridItem<AlbumFilter>> filters, String query) {
+    return filters.where((item) => (item.filter.displayName ?? item.filter.album).toUpperCase().contains(query)).toList();
+  }
 
   static List<FilterGridItem<AlbumFilter>> getAlbumGridItems(BuildContext context, CollectionSource source) {
     final filters = source.rawAlbums.map((album) => AlbumFilter(album, source.getAlbumDisplayName(context, album))).toSet();

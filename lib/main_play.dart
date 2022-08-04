@@ -1,6 +1,11 @@
 import 'package:aves/app_flavor.dart';
 import 'package:aves/main_common.dart';
+import 'package:aves/widget_common.dart';
 
-void main() {
-  mainCommon(AppFlavor.play);
-}
+const _flavor = AppFlavor.play;
+
+@pragma('vm:entry-point')
+void main() => mainCommon(_flavor);
+
+@pragma('vm:entry-point')
+void widgetMain() => widgetMainCommon(_flavor);

@@ -7,11 +7,12 @@ import 'package:flutter/widgets.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 class GlobalSearch {
-  static const platform = MethodChannel('deckers.thibault/aves/global_search');
+  static const _platform = MethodChannel('deckers.thibault/aves/global_search');
 
   static Future<void> registerCallback() async {
     try {
-      await platform.invokeMethod('registerCallback', <String, dynamic>{
+      await _platform.invokeMethod('registerCallback', <String, dynamic>{
+        // callback needs to be annotated with `@pragma('vm:entry-point')` to work in release mode
         'callbackHandle': PluginUtilities.getCallbackHandle(_init)?.toRawHandle(),
       });
     } on PlatformException catch (e, stack) {
@@ -20,6 +21,7 @@ class GlobalSearch {
   }
 }
 
+@pragma('vm:entry-point')
 Future<void> _init() async {
   WidgetsFlutterBinding.ensureInitialized();
 

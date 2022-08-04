@@ -38,14 +38,14 @@ abstract class MetadataFetchService {
 }
 
 class PlatformMetadataFetchService implements MetadataFetchService {
-  static const platform = MethodChannel('deckers.thibault/aves/metadata_fetch');
+  static const _platform = MethodChannel('deckers.thibault/aves/metadata_fetch');
 
   @override
   Future<Map> getAllMetadata(AvesEntry entry) async {
     if (entry.isSvg) return {};
 
     try {
-      final result = await platform.invokeMethod('getAllMetadata', <String, dynamic>{
+      final result = await _platform.invokeMethod('getAllMetadata', <String, dynamic>{
         'mimeType': entry.mimeType,
         'uri': entry.uri,
         'sizeBytes': entry.sizeBytes,
@@ -76,7 +76,7 @@ class PlatformMetadataFetchService implements MetadataFetchService {
         // 'longitude': longitude (double)
         // 'xmpSubjects': ';' separated XMP subjects (string)
         // 'xmpTitleDescription': XMP title or XMP description (string)
-        final result = await platform.invokeMethod('getCatalogMetadata', <String, dynamic>{
+        final result = await _platform.invokeMethod('getCatalogMetadata', <String, dynamic>{
           'mimeType': entry.mimeType,
           'uri': entry.uri,
           'path': entry.path,
@@ -106,7 +106,7 @@ class PlatformMetadataFetchService implements MetadataFetchService {
 
     try {
       // returns map with values for: 'aperture' (double), 'exposureTime' (description), 'focalLength' (double), 'iso' (int)
-      final result = await platform.invokeMethod('getOverlayMetadata', <String, dynamic>{
+      final result = await _platform.invokeMethod('getOverlayMetadata', <String, dynamic>{
         'mimeType': entry.mimeType,
         'uri': entry.uri,
         'sizeBytes': entry.sizeBytes,
@@ -123,7 +123,7 @@ class PlatformMetadataFetchService implements MetadataFetchService {
   @override
   Future<GeoTiffInfo?> getGeoTiffInfo(AvesEntry entry) async {
     try {
-      final result = await platform.invokeMethod('getGeoTiffInfo', <String, dynamic>{
+      final result = await _platform.invokeMethod('getGeoTiffInfo', <String, dynamic>{
         'mimeType': entry.mimeType,
         'uri': entry.uri,
         'sizeBytes': entry.sizeBytes,
@@ -140,7 +140,7 @@ class PlatformMetadataFetchService implements MetadataFetchService {
   @override
   Future<MultiPageInfo?> getMultiPageInfo(AvesEntry entry) async {
     try {
-      final result = await platform.invokeMethod('getMultiPageInfo', <String, dynamic>{
+      final result = await _platform.invokeMethod('getMultiPageInfo', <String, dynamic>{
         'mimeType': entry.mimeType,
         'uri': entry.uri,
         'sizeBytes': entry.sizeBytes,
@@ -167,7 +167,7 @@ class PlatformMetadataFetchService implements MetadataFetchService {
       // returns map with values for:
       // 'croppedAreaLeft' (int), 'croppedAreaTop' (int), 'croppedAreaWidth' (int), 'croppedAreaHeight' (int),
       // 'fullPanoWidth' (int), 'fullPanoHeight' (int)
-      final result = await platform.invokeMethod('getPanoramaInfo', <String, dynamic>{
+      final result = await _platform.invokeMethod('getPanoramaInfo', <String, dynamic>{
         'mimeType': entry.mimeType,
         'uri': entry.uri,
         'sizeBytes': entry.sizeBytes,
@@ -184,7 +184,7 @@ class PlatformMetadataFetchService implements MetadataFetchService {
   @override
   Future<List<Map<String, dynamic>>?> getIptc(AvesEntry entry) async {
     try {
-      final result = await platform.invokeMethod('getIptc', <String, dynamic>{
+      final result = await _platform.invokeMethod('getIptc', <String, dynamic>{
         'mimeType': entry.mimeType,
         'uri': entry.uri,
       });
@@ -200,7 +200,7 @@ class PlatformMetadataFetchService implements MetadataFetchService {
   @override
   Future<AvesXmp?> getXmp(AvesEntry entry) async {
     try {
-      final result = await platform.invokeMethod('getXmp', <String, dynamic>{
+      final result = await _platform.invokeMethod('getXmp', <String, dynamic>{
         'mimeType': entry.mimeType,
         'uri': entry.uri,
         'sizeBytes': entry.sizeBytes,
@@ -222,7 +222,7 @@ class PlatformMetadataFetchService implements MetadataFetchService {
     if (exists != null) return SynchronousFuture(exists);
 
     try {
-      exists = await platform.invokeMethod('hasContentResolverProp', <String, dynamic>{
+      exists = await _platform.invokeMethod('hasContentResolverProp', <String, dynamic>{
         'prop': prop,
       });
     } on PlatformException catch (e, stack) {
@@ -236,7 +236,7 @@ class PlatformMetadataFetchService implements MetadataFetchService {
   @override
   Future<String?> getContentResolverProp(AvesEntry entry, String prop) async {
     try {
-      return await platform.invokeMethod('getContentResolverProp', <String, dynamic>{
+      return await _platform.invokeMethod('getContentResolverProp', <String, dynamic>{
         'mimeType': entry.mimeType,
         'uri': entry.uri,
         'prop': prop,
@@ -252,7 +252,7 @@ class PlatformMetadataFetchService implements MetadataFetchService {
   @override
   Future<DateTime?> getDate(AvesEntry entry, MetadataField field) async {
     try {
-      final result = await platform.invokeMethod('getDate', <String, dynamic>{
+      final result = await _platform.invokeMethod('getDate', <String, dynamic>{
         'mimeType': entry.mimeType,
         'uri': entry.uri,
         'sizeBytes': entry.sizeBytes,

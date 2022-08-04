@@ -37,20 +37,28 @@ mixin EntryViewControllerMixin<T extends StatefulWidget> on State<T> {
     }
   }
 
-  bool _isSlideshow(BuildContext context) => context.read<ValueNotifier<AppMode>>().value == AppMode.slideshow;
+  SlideshowVideoPlayback? get videoPlaybackOverride {
+    final appMode = context.read<ValueNotifier<AppMode>>().value;
+    switch (appMode) {
+      case AppMode.screenSaver:
+        return settings.screenSaverVideoPlayback;
+      case AppMode.slideshow:
+        return settings.slideshowVideoPlayback;
+      default:
+        return null;
+    }
+  }
 
   bool _shouldAutoPlay(BuildContext context) {
-    if (_isSlideshow(context)) {
-      switch (settings.slideshowVideoPlayback) {
-        case SlideshowVideoPlayback.skip:
-          return false;
-        case SlideshowVideoPlayback.playMuted:
-        case SlideshowVideoPlayback.playWithSound:
-          return true;
-      }
+    switch (videoPlaybackOverride) {
+      case SlideshowVideoPlayback.skip:
+        return false;
+      case SlideshowVideoPlayback.playMuted:
+      case SlideshowVideoPlayback.playWithSound:
+        return true;
+      case null:
+        return settings.enableVideoAutoPlay;
     }
-
-    return settings.enableVideoAutoPlay;
   }
 
   Future<void> _initVideoController(AvesEntry entry) async {
@@ -127,7 +135,7 @@ mixin EntryViewControllerMixin<T extends StatefulWidget> on State<T> {
     // so we play after a delay for increased stability
     await Future.delayed(const Duration(milliseconds: 300) * timeDilation);
 
-    if (_isSlideshow(context) && settings.slideshowVideoPlayback == SlideshowVideoPlayback.playMuted && !videoController.isMuted) {
+    if (videoPlaybackOverride == SlideshowVideoPlayback.playMuted && !videoController.isMuted) {
       await videoController.toggleMute();
     }
 

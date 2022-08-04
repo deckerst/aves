@@ -2,6 +2,7 @@ package deckers.thibault.aves.model.provider
 
 import android.app.Activity
 import android.content.Context
+import android.content.ContextWrapper
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -45,7 +46,7 @@ abstract class ImageProvider {
         callback.onFailure(UnsupportedOperationException("`fetchSingle` is not supported by this image provider"))
     }
 
-    open suspend fun delete(activity: Activity, uri: Uri, path: String?, mimeType: String) {
+    open suspend fun delete(contextWrapper: ContextWrapper, uri: Uri, path: String?, mimeType: String) {
         throw UnsupportedOperationException("`delete` is not supported by this image provider")
     }
 
@@ -151,7 +152,7 @@ abstract class ImageProvider {
             desiredNameWithoutExtension += "_${page.toString().padStart(3, '0')}"
         }
         val targetNameWithoutExtension = resolveTargetFileNameWithoutExtension(
-            activity = activity,
+            contextWrapper = activity,
             dir = targetDir,
             desiredNameWithoutExtension = desiredNameWithoutExtension,
             mimeType = exportMimeType,
@@ -242,7 +243,7 @@ abstract class ImageProvider {
 
     @Suppress("BlockingMethodInNonBlockingContext")
     suspend fun captureFrame(
-        activity: Activity,
+        contextWrapper: ContextWrapper,
         desiredNameWithoutExtension: String,
         exifFields: FieldMap,
         bytes: ByteArray,
@@ -250,7 +251,7 @@ abstract class ImageProvider {
         nameConflictStrategy: NameConflictStrategy,
         callback: ImageOpCallback,
     ) {
-        val targetDirDocFile = StorageUtils.createDirectoryDocIfAbsent(activity, targetDir)
+        val targetDirDocFile = StorageUtils.createDirectoryDocIfAbsent(contextWrapper, targetDir)
         if (!File(targetDir).exists()) {
             callback.onFailure(Exception("failed to create directory at path=$targetDir"))
             return
@@ -265,7 +266,7 @@ abstract class ImageProvider {
         val captureMimeType = MimeTypes.JPEG
         val targetNameWithoutExtension = try {
             resolveTargetFileNameWithoutExtension(
-                activity = activity,
+                contextWrapper = contextWrapper,
                 dir = targetDir,
                 desiredNameWithoutExtension = desiredNameWithoutExtension,
                 mimeType = captureMimeType,
@@ -287,7 +288,7 @@ abstract class ImageProvider {
         // through a document URI, not a tree URI
         // note that `DocumentFile.getParentFile()` returns null if we did not pick a tree first
         val targetTreeFile = targetDirDocFile.createFile(captureMimeType, targetNameWithoutExtension)
-        val targetDocFile = DocumentFileCompat.fromSingleUri(activity, targetTreeFile.uri)
+        val targetDocFile = DocumentFileCompat.fromSingleUri(contextWrapper, targetTreeFile.uri)
 
         try {
             if (exifFields.isEmpty()) {
@@ -355,7 +356,7 @@ abstract class ImageProvider {
 
             val fileName = targetDocFile.name
             val targetFullPath = targetDir + fileName
-            val newFields = MediaStoreImageProvider().scanNewPath(activity, targetFullPath, captureMimeType)
+            val newFields = MediaStoreImageProvider().scanNewPath(contextWrapper, targetFullPath, captureMimeType)
             callback.onSuccess(newFields)
         } catch (e: Exception) {
             callback.onFailure(e)
@@ -364,7 +365,7 @@ abstract class ImageProvider {
 
     // returns available name to use, or `null` to skip it
     suspend fun resolveTargetFileNameWithoutExtension(
-        activity: Activity,
+        contextWrapper: ContextWrapper,
         dir: String,
         desiredNameWithoutExtension: String,
         mimeType: String,
@@ -386,9 +387,9 @@ abstract class ImageProvider {
                 if (targetFile.exists()) {
                     val path = targetFile.path
                     MediaStoreImageProvider().apply {
-                        val uri = getContentUriForPath(activity, path)
+                        val uri = getContentUriForPath(contextWrapper, path)
                         uri ?: throw Exception("failed to find content URI for path=$path")
-                        delete(activity, uri, path, mimeType)
+                        delete(contextWrapper, uri, path, mimeType)
                     }
                 }
                 desiredNameWithoutExtension

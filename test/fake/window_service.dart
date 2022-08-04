@@ -5,6 +5,9 @@ import 'package:flutter_test/flutter_test.dart';
 
 class FakeWindowService extends Fake implements WindowService {
   @override
+  Future<bool> isActivity() => SynchronousFuture(true);
+
+  @override
   Future<void> keepScreenOn(bool on) => SynchronousFuture(null);
 
   @override

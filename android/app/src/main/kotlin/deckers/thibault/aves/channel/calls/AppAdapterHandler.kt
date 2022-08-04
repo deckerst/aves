@@ -20,9 +20,9 @@ import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.request.RequestOptions
 import deckers.thibault.aves.MainActivity
 import deckers.thibault.aves.MainActivity.Companion.EXTRA_STRING_ARRAY_SEPARATOR
-import deckers.thibault.aves.MainActivity.Companion.SHORTCUT_KEY_FILTERS_ARRAY
-import deckers.thibault.aves.MainActivity.Companion.SHORTCUT_KEY_FILTERS_STRING
-import deckers.thibault.aves.MainActivity.Companion.SHORTCUT_KEY_PAGE
+import deckers.thibault.aves.MainActivity.Companion.EXTRA_KEY_FILTERS_ARRAY
+import deckers.thibault.aves.MainActivity.Companion.EXTRA_KEY_FILTERS_STRING
+import deckers.thibault.aves.MainActivity.Companion.EXTRA_KEY_PAGE
 import deckers.thibault.aves.R
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safeSuspend
@@ -142,7 +142,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
         val packageName = call.argument<String>("packageName")
         val sizeDip = call.argument<Number>("sizeDip")?.toDouble()
         if (packageName == null || sizeDip == null) {
-            result.error("getAppIcon-args", "failed because of missing arguments", null)
+            result.error("getAppIcon-args", "missing arguments", null)
             return
         }
 
@@ -208,7 +208,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
         val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
         val label = call.argument<String>("label")
         if (uri == null) {
-            result.error("copyToClipboard-args", "failed because of missing arguments", null)
+            result.error("copyToClipboard-args", "missing arguments", null)
             return
         }
 
@@ -235,7 +235,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
         val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
         val mimeType = call.argument<String>("mimeType")
         if (uri == null) {
-            result.error("edit-args", "failed because of missing arguments", null)
+            result.error("edit-args", "missing arguments", null)
             return
         }
 
@@ -252,7 +252,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
         val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
         val mimeType = call.argument<String>("mimeType")
         if (uri == null) {
-            result.error("open-args", "failed because of missing arguments", null)
+            result.error("open-args", "missing arguments", null)
             return
         }
 
@@ -267,7 +267,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
     private fun openMap(call: MethodCall, result: MethodChannel.Result) {
         val geoUri = call.argument<String>("geoUri")?.let { Uri.parse(it) }
         if (geoUri == null) {
-            result.error("openMap-args", "failed because of missing arguments", null)
+            result.error("openMap-args", "missing arguments", null)
             return
         }
 
@@ -282,7 +282,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
         val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
         val mimeType = call.argument<String>("mimeType")
         if (uri == null) {
-            result.error("setAs-args", "failed because of missing arguments", null)
+            result.error("setAs-args", "missing arguments", null)
             return
         }
 
@@ -298,7 +298,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
         val title = call.argument<String>("title")
         val urisByMimeType = call.argument<Map<String, List<String>>>("urisByMimeType")
         if (urisByMimeType == null) {
-            result.error("setAs-args", "failed because of missing arguments", null)
+            result.error("setAs-args", "missing arguments", null)
             return
         }
 
@@ -378,7 +378,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
         val filters = call.argument<List<String>>("filters")
         val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
         if (label == null || (filters == null && uri == null)) {
-            result.error("pin-args", "failed because of missing arguments", null)
+            result.error("pin-args", "missing arguments", null)
             return
         }
 
@@ -407,11 +407,11 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
         val intent = when {
             uri != null -> Intent(Intent.ACTION_VIEW, uri, context, MainActivity::class.java)
             filters != null -> Intent(Intent.ACTION_MAIN, null, context, MainActivity::class.java)
-                .putExtra(SHORTCUT_KEY_PAGE, "/collection")
-                .putExtra(SHORTCUT_KEY_FILTERS_ARRAY, filters.toTypedArray())
+                .putExtra(EXTRA_KEY_PAGE, "/collection")
+                .putExtra(EXTRA_KEY_FILTERS_ARRAY, filters.toTypedArray())
                 // on API 25, `String[]` or `ArrayList` extras are null when using the shortcut
                 // so we use a joined `String` as fallback
-                .putExtra(SHORTCUT_KEY_FILTERS_STRING, filters.joinToString(EXTRA_STRING_ARRAY_SEPARATOR))
+                .putExtra(EXTRA_KEY_FILTERS_STRING, filters.joinToString(EXTRA_STRING_ARRAY_SEPARATOR))
             else -> {
                 result.error("pin-intent", "failed to build intent", null)
                 return

@@ -67,8 +67,8 @@ class OutlinedText extends StatelessWidget {
         style: (span.style ?? const TextStyle()).copyWith(
           foreground: Paint()
             ..style = PaintingStyle.stroke
-            ..strokeWidth = outlineWidth
-            ..color = outlineColor,
+            ..color = outlineColor
+            ..strokeWidth = outlineWidth,
         ),
       );
 

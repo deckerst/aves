@@ -25,7 +25,8 @@
   "showTooltip": "Mostra",
   "hideTooltip": "Nascondi",
   "actionRemove": "Rimuovi",
-  "resetButtonTooltip": "Reimposta",
+  "resetTooltip": "Reimposta",
+  "saveTooltip": "Salva",
 
   "doubleBackExitMessage": "Tocca di nuovo «indietro» per uscire",
   "doNotAskAgain": "Non chiedere di nuovo",
@@ -41,7 +42,7 @@
   "chipActionGoToTagPage": "Mostra nelle etichette",
   "chipActionHide": "Nascondi",
   "chipActionPin": "Fissa in alto",
-  "chipActionUnpin": "Rimuovi dall'alto",
+  "chipActionUnpin": "Rimuovi dall’alto",
   "chipActionRename": "Rinomina",
   "chipActionSetCover": "Imposta copertina",
   "chipActionCreateAlbum": "Crea album",
@@ -50,6 +51,7 @@
   "entryActionDelete": "Elimina",
   "entryActionConvert": "Converti",
   "entryActionExport": "Esportazione",
+  "entryActionInfo": "Info",
   "entryActionRename": "Rinomina",
   "entryActionRestore": "Ripristina",
   "entryActionRotateCCW": "Ruota in senso antiorario",
@@ -80,6 +82,9 @@
   "videoActionSetSpeed": "Velocità di riproduzione",
   "videoActionSettings": "Impostazioni",
 
+  "slideshowActionResume": "Riprendi",
+  "slideshowActionShowInCollection": "Mostra nella Collezione",
+
   "entryInfoActionEditDate": "Modifica data e ora",
   "entryInfoActionEditLocation": "Modifica posizione",
   "entryInfoActionEditRating": "Modifica valutazione",
@@ -90,6 +95,7 @@
   "filterFavouriteLabel": "Preferiti",
   "filterLocationEmptyLabel": "Senza posizione",
   "filterTagEmptyLabel": "Senza etichetta",
+  "filterOnThisDayLabel": "In questo giorno",
   "filterRatingUnratedLabel": "Non valutato",
   "filterRatingRejectedLabel": "Rifiutato",
   "filterTypeAnimatedLabel": "Animato",
@@ -144,9 +150,22 @@
   "displayRefreshRatePreferHighest": "Frequenza massima",
   "displayRefreshRatePreferLowest": "Frequenza minima",
 
+  "slideshowVideoPlaybackSkip": "Salta",
+  "slideshowVideoPlaybackMuted": "Riproduci senza audio",
+  "slideshowVideoPlaybackWithSound": "Riproduci con audio",
+
   "themeBrightnessLight": "Chiaro",
   "themeBrightnessDark": "Scuro",
   "themeBrightnessBlack": "Nero",
+
+  "viewerTransitionSlide": "Diapositiva",
+  "viewerTransitionParallax": "Parallasse",
+  "viewerTransitionFade": "Dissolvenza",
+  "viewerTransitionZoomIn": "Ingrandisci",
+
+  "wallpaperTargetHome": "Schermata iniziale",
+  "wallpaperTargetLock": "Schermata di blocco",
+  "wallpaperTargetHomeLock": "Schermata iniziale e di blocco",
 
   "albumTierNew": "Nuovi",
   "albumTierPinned": "Fissati",
@@ -195,7 +214,7 @@
   "hideFilterConfirmationDialogMessage": "Le foto e i video corrispondenti saranno nascosti dalla tua collezione. Puoi mostrarli di nuovo dalle impostazioni della «Privacy». Sei sicuro di volerli nascondere?",
 
   "newAlbumDialogTitle": "Nuovo album",
-  "newAlbumDialogNameLabel": "Nome dell'album",
+  "newAlbumDialogNameLabel": "Nome dell’album",
   "newAlbumDialogNameLabelAlreadyExistsHelper": "La cartella esiste già",
   "newAlbumDialogStorageLabel": "Archiviazione:",
 
@@ -221,7 +240,7 @@
 
   "editEntryDateDialogTitle": "Data e ora",
   "editEntryDateDialogSetCustom": "Imposta data personalizzata",
-  "editEntryDateDialogCopyField": "Copia da un'altra data",
+  "editEntryDateDialogCopyField": "Copia da un’altra data",
   "editEntryDateDialogCopyItem": "Copia da un altro elemento",
   "editEntryDateDialogExtractFromTitle": "Estrai dal titolo",
   "editEntryDateDialogShift": "Turno",
@@ -242,7 +261,7 @@
   "removeEntryMetadataDialogTitle": "Rimozione dei metadati",
   "removeEntryMetadataDialogMore": "Altro",
 
-  "removeEntryMetadataMotionPhotoXmpWarningDialogMessage": "XMP è richiesto per riprodurre il video all'interno di una foto in movimento.\n\nSei sicuro di volerlo rimuovere?",
+  "removeEntryMetadataMotionPhotoXmpWarningDialogMessage": "XMP è richiesto per riprodurre il video all’interno di una foto in movimento.\n\nSei sicuro di volerlo rimuovere?",
   "convertMotionPhotoToStillImageWarningDialogMessage": "Sei sicuro?",
 
   "videoSpeedDialogLabel": "Velocità di riproduzione",
@@ -262,6 +281,7 @@
   "menuActionSelectAll": "Seleziona tutto",
   "menuActionSelectNone": "Deseleziona tutto",
   "menuActionMap": "Mappa",
+  "menuActionSlideshow": "Presentazione",
   "menuActionStats": "Statistiche",
 
   "viewDialogTabSort": "Ordina",
@@ -284,8 +304,7 @@
   "aboutLinkPolicy": "Informativa sulla privacy",
 
   "aboutBug": "Segnalazione bug",
-  "aboutBugSaveLogInstruction": "Salva i log dell'app in un file",
-  "aboutBugSaveLogButton": "Salva",
+  "aboutBugSaveLogInstruction": "Salva i log dell’app in un file",
   "aboutBugCopyInfoInstruction": "Copia le informazioni di sistema",
   "aboutBugCopyInfoButton": "Copia",
   "aboutBugReportInstruction": "Segnala su GitHub con i log e le informazioni di sistema",
@@ -314,8 +333,8 @@
   "collectionActionHideTitleSearch": "Nascondi filtro",
   "collectionActionAddShortcut": "Aggiungi collegamento",
   "collectionActionEmptyBin": "Svuota cestino",
-  "collectionActionCopy": "Copia nell'album",
-  "collectionActionMove": "Sposta nell'album",
+  "collectionActionCopy": "Copia nell’album",
+  "collectionActionMove": "Sposta nell’album",
   "collectionActionRescan": "Riscansiona",
   "collectionActionEdit": "Modifica",
 
@@ -349,6 +368,7 @@
   "collectionEmptyFavourites": "Nessun preferito",
   "collectionEmptyVideos": "Nessun video",
   "collectionEmptyImages": "Nessuna immagine",
+  "collectionEmptyGrantAccessButtonLabel": "Consenti accesso",
 
   "collectionSelectSectionTooltip": "Seleziona sezione",
   "collectionDeselectSectionTooltip": "Deseleziona sezione",
@@ -377,7 +397,7 @@
   "albumPickPageTitlePick": "Seleziona",
 
   "albumCamera": "Fotocamera",
-  "albumDownload": "Scarica",
+  "albumDownload": "Scaricati",
   "albumScreenshots": "Screenshot",
   "albumScreenRecordings": "Registrazioni schermo",
   "albumVideoCaptures": "Scatti nei video",
@@ -398,6 +418,7 @@
 
   "searchCollectionFieldHint": "Cerca raccolta",
   "searchSectionRecent": "Recenti",
+  "searchSectionDate": "Data",
   "searchSectionAlbums": "Album",
   "searchSectionCountries": "Paesi",
   "searchSectionPlaces": "Luoghi",
@@ -409,7 +430,7 @@
   "settingsDefault": "Predefinite",
 
   "settingsSearchFieldLabel": "Ricerca impostazioni",
-  "settingsSearchEmpty": "Nessuna impostazioni corrispondente",
+  "settingsSearchEmpty": "Nessuna impostazione corrispondente",
   "settingsActionExport": "Esporta",
   "settingsActionImport": "Importa",
 
@@ -419,6 +440,7 @@
 
   "settingsSectionNavigation": "Navigazione",
   "settingsHome": "Pagina iniziale",
+  "settingsShowBottomNavigationBar": "Mostra la barra di navigazione in basso",
   "settingsKeepScreenOnTile": "Mantieni acceso lo schermo",
   "settingsKeepScreenOnTitle": "Illuminazione schermo",
   "settingsDoubleBackExit": "Tocca «indietro» due volte per uscire",
@@ -440,11 +462,12 @@
   "settingsSectionThumbnails": "Miniature",
   "settingsThumbnailOverlayTile": "Sovrapposizione",
   "settingsThumbnailOverlayTitle": "Sovrapposizione",
-  "settingsThumbnailShowFavouriteIcon": "Mostra icona preferita",
-  "settingsThumbnailShowLocationIcon": "Mostra l'icona della posizione",
-  "settingsThumbnailShowMotionPhotoIcon": "Mostra l'icona della foto in movimento",
+  "settingsThumbnailShowFavouriteIcon": "Mostra l’icona Preferiti",
+  "settingsThumbnailShowTagIcon": "Mostra l’icona Etichetta",
+  "settingsThumbnailShowLocationIcon": "Mostra l’icona Posizione",
+  "settingsThumbnailShowMotionPhotoIcon": "Mostra l’icona Foto in movimento",
   "settingsThumbnailShowRating": "Mostra la valutazione",
-  "settingsThumbnailShowRawIcon": "Mostra icona raw",
+  "settingsThumbnailShowRawIcon": "Mostra icona Raw",
   "settingsThumbnailShowVideoDuration": "Mostra la durata del video",
 
   "settingsCollectionQuickActionsTile": "Azioni rapide",
@@ -469,13 +492,25 @@
 
   "settingsViewerOverlayTile": "Sovrapposizione",
   "settingsViewerOverlayTitle": "Sovrapposizione",
-  "settingsViewerShowOverlayOnOpening": "Mostra all'apertura",
+  "settingsViewerShowOverlayOnOpening": "Mostra all’apertura",
   "settingsViewerShowMinimap": "Mostra la minimappa",
   "settingsViewerShowInformation": "Mostra informazioni",
   "settingsViewerShowInformationSubtitle": "Mostra titolo, data, posizione, ecc.",
   "settingsViewerShowShootingDetails": "Mostra i dettagli dello scatto",
   "settingsViewerShowOverlayThumbnails": "Mostra le miniature",
   "settingsViewerEnableOverlayBlurEffect": "Effetto sfocatura",
+
+  "settingsViewerSlideshowTile": "Presentazione",
+  "settingsViewerSlideshowTitle": "Presentazione",
+  "settingsSlideshowRepeat": "Ripeti",
+  "settingsSlideshowShuffle": "Ordine casuale",
+  "settingsSlideshowFillScreen": "Riempi schermo",
+  "settingsSlideshowTransitionTile": "Transizione",
+  "settingsSlideshowTransitionTitle": "Transizione",
+  "settingsSlideshowIntervalTile": "Intervallo",
+  "settingsSlideshowIntervalTitle": "Intervallo",
+  "settingsSlideshowVideoPlaybackTile": "Riproduzione video",
+  "settingsSlideshowVideoPlaybackTitle": "Riproduzione video",
 
   "settingsVideoPageTitle": "Impostazioni video",
   "settingsSectionVideo": "Video",
@@ -508,7 +543,7 @@
   "settingsVideoGestureSideDoubleTapSeek": "Doppio tocco sui bordi dello schermo per cercare avanti/indietro",
 
   "settingsSectionPrivacy": "Privacy",
-  "settingsAllowInstalledAppAccess": "Consentire l'accesso all'inventario delle app",
+  "settingsAllowInstalledAppAccess": "Consentire l’accesso all’inventario delle app",
   "settingsAllowInstalledAppAccessSubtitle": "Utilizzato per migliorare la visualizzazione degli album",
   "settingsAllowErrorReporting": "Consenti segnalazione anonima degli errori",
   "settingsSaveSearchHistory": "Salva la cronologia delle ricerche",
@@ -541,6 +576,7 @@
   "settingsSectionDisplay": "Schermo",
   "settingsThemeBrightness": "Tema",
   "settingsThemeColorHighlights": "Colori evidenziati",
+  "settingsThemeEnableDynamicColor": "Colori dinamici",
   "settingsDisplayRefreshRateModeTile": "Frequenza di aggiornamento dello schermo",
   "settingsDisplayRefreshRateModeTitle": "Frequenza di aggiornamento",
 
@@ -551,6 +587,11 @@
   "settingsUnitSystemTile": "Unità",
   "settingsUnitSystemTitle": "Unità",
 
+  "settingsScreenSaverPageTitle": "Salvaschermo",
+
+  "settingsWidgetPageTitle": "Cornice foto",
+  "settingsWidgetShowOutline": "Contorno",
+
   "statsPageTitle": "Statistiche",
   "statsWithGps": "{count, plural, =1{1 elemento con posizione} other{{count} elementi con posizione}}",
   "statsTopCountries": "Paesi più frequenti",
@@ -558,6 +599,7 @@
   "statsTopTags": "Etichette più frequenti",
 
   "viewerOpenPanoramaButtonLabel": "APRI PANORAMA",
+  "viewerSetWallpaperButtonLabel": "IMPOSTA SFONDO",
   "viewerErrorUnknown": "Ops!",
   "viewerErrorDoesNotExist": "Il file non esiste più",
 
@@ -578,15 +620,15 @@
 
   "mapStyleTitle": "Stile Mappa",
   "mapStyleTooltip": "Seleziona lo stile della mappa",
-  "mapZoomInTooltip": "Ingrandire",
-  "mapZoomOutTooltip": "Rimpicciolire",
-  "mapPointNorthUpTooltip": "Punta a nord verso l'alto",
+  "mapZoomInTooltip": "Ingrandisci",
+  "mapZoomOutTooltip": "Riduci",
+  "mapPointNorthUpTooltip": "Punta a nord verso l’alto",
   "mapAttributionOsmHot": "Dati della mappa © collaboratori di [OpenStreetMap](https://www.openstreetmap.org/copyright) - Titoli di [HOT](https://www.hotosm.org/) - Ospitato da [OSM France](https://openstreetmap.fr/)",
   "mapAttributionStamen": "Dati della mappa © collaboratori di [OpenStreetMap](https://www.openstreetmap.org/copyright) - Titoli di [Stamen Design](http://stamen.com), [CC BY 3.0](http://creativecommons.org/licenses/by/3.0)",
   "openMapPageTooltip": "Visualizza sulla pagina della mappa",
   "mapEmptyRegion": "Nessuna immagine in questa regione",
 
-  "viewerInfoOpenEmbeddedFailureFeedback": "Fallita l'estrazione dei dati incorporati",
+  "viewerInfoOpenEmbeddedFailureFeedback": "Fallita l’estrazione dei dati incorporati",
   "viewerInfoOpenLinkText": "Apri",
   "viewerInfoViewXmlLinkText": "Visualizza XML",
 

@@ -8,16 +8,18 @@ import 'package:aves/model/source/enums.dart';
 import 'package:aves/model/source/media_store_source.dart';
 import 'package:aves/model/source/source_state.dart';
 import 'package:aves/services/common/services.dart';
+import 'package:aves/utils/android_file_utils.dart';
 import 'package:fijkplayer/fijkplayer.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 class AnalysisService {
-  static const platform = MethodChannel('deckers.thibault/aves/analysis');
+  static const _platform = MethodChannel('deckers.thibault/aves/analysis');
 
   static Future<void> registerCallback() async {
     try {
-      await platform.invokeMethod('registerCallback', <String, dynamic>{
+      await _platform.invokeMethod('registerCallback', <String, dynamic>{
+        // callback needs to be annotated with `@pragma('vm:entry-point')` to work in release mode
         'callbackHandle': PluginUtilities.getCallbackHandle(_init)?.toRawHandle(),
       });
     } on PlatformException catch (e, stack) {
@@ -27,7 +29,7 @@ class AnalysisService {
 
   static Future<void> startService({required bool force, List<int>? entryIds}) async {
     try {
-      await platform.invokeMethod('startService', <String, dynamic>{
+      await _platform.invokeMethod('startService', <String, dynamic>{
         'entryIds': entryIds,
         'force': force,
       });
@@ -39,9 +41,11 @@ class AnalysisService {
 
 const _channel = MethodChannel('deckers.thibault/aves/analysis_service_background');
 
+@pragma('vm:entry-point')
 Future<void> _init() async {
   WidgetsFlutterBinding.ensureInitialized();
   initPlatformServices();
+  await androidFileUtils.init();
   await metadataDb.init();
   await mobileServices.init();
   await settings.init(monitorPlatformSettings: false);

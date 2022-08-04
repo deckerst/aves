@@ -1,90 +1,48 @@
 {
   "de": [
-    "filterOnThisDayLabel"
+    "settingsViewerGestureSideTapNext"
   ],
 
   "es": [
-    "filterOnThisDayLabel"
+    "filterOnThisDayLabel",
+    "settingsViewerGestureSideTapNext",
+    "settingsSlideshowFillScreen",
+    "settingsScreenSaverPageTitle",
+    "settingsWidgetPageTitle",
+    "settingsWidgetShowOutline"
   ],
 
   "fr": [
-    "filterOnThisDayLabel"
+    "settingsViewerGestureSideTapNext"
   ],
 
   "id": [
-    "filterOnThisDayLabel"
+    "settingsViewerGestureSideTapNext"
   ],
 
   "it": [
-    "filterOnThisDayLabel"
+    "settingsViewerGestureSideTapNext"
   ],
 
   "ja": [
-    "slideshowActionResume",
-    "slideshowActionShowInCollection",
-    "filterOnThisDayLabel",
-    "slideshowVideoPlaybackSkip",
-    "slideshowVideoPlaybackMuted",
-    "slideshowVideoPlaybackWithSound",
-    "viewerTransitionSlide",
-    "viewerTransitionParallax",
-    "viewerTransitionFade",
-    "viewerTransitionZoomIn",
-    "wallpaperTargetHome",
-    "wallpaperTargetLock",
-    "wallpaperTargetHomeLock",
-    "menuActionSlideshow",
-    "collectionEmptyGrantAccessButtonLabel",
-    "settingsViewerSlideshowTile",
-    "settingsViewerSlideshowTitle",
-    "settingsSlideshowRepeat",
-    "settingsSlideshowShuffle",
-    "settingsSlideshowTransitionTile",
-    "settingsSlideshowTransitionTitle",
-    "settingsSlideshowIntervalTile",
-    "settingsSlideshowIntervalTitle",
-    "settingsSlideshowVideoPlaybackTile",
-    "settingsSlideshowVideoPlaybackTitle",
-    "settingsThemeEnableDynamicColor",
-    "viewerSetWallpaperButtonLabel"
+    "settingsViewerGestureSideTapNext"
   ],
 
   "ko": [
-    "filterOnThisDayLabel"
+    "settingsViewerGestureSideTapNext"
   ],
 
   "pt": [
-    "filterOnThisDayLabel"
+    "settingsViewerGestureSideTapNext"
   ],
 
   "ru": [
-    "slideshowActionResume",
-    "slideshowActionShowInCollection",
     "filterOnThisDayLabel",
-    "slideshowVideoPlaybackSkip",
-    "slideshowVideoPlaybackMuted",
-    "slideshowVideoPlaybackWithSound",
-    "viewerTransitionSlide",
-    "viewerTransitionParallax",
-    "viewerTransitionFade",
-    "viewerTransitionZoomIn",
-    "wallpaperTargetHome",
-    "wallpaperTargetLock",
-    "wallpaperTargetHomeLock",
-    "menuActionSlideshow",
-    "collectionEmptyGrantAccessButtonLabel",
-    "settingsViewerSlideshowTile",
-    "settingsViewerSlideshowTitle",
-    "settingsSlideshowRepeat",
-    "settingsSlideshowShuffle",
-    "settingsSlideshowTransitionTile",
-    "settingsSlideshowTransitionTitle",
-    "settingsSlideshowIntervalTile",
-    "settingsSlideshowIntervalTitle",
-    "settingsSlideshowVideoPlaybackTile",
-    "settingsSlideshowVideoPlaybackTitle",
-    "settingsThemeEnableDynamicColor",
-    "viewerSetWallpaperButtonLabel"
+    "settingsViewerGestureSideTapNext",
+    "settingsSlideshowFillScreen",
+    "settingsScreenSaverPageTitle",
+    "settingsWidgetPageTitle",
+    "settingsWidgetShowOutline"
   ],
 
   "tr": [
@@ -102,20 +60,25 @@
     "wallpaperTargetLock",
     "wallpaperTargetHomeLock",
     "menuActionSlideshow",
+    "settingsViewerGestureSideTapNext",
     "settingsViewerSlideshowTile",
     "settingsViewerSlideshowTitle",
     "settingsSlideshowRepeat",
     "settingsSlideshowShuffle",
+    "settingsSlideshowFillScreen",
     "settingsSlideshowTransitionTile",
     "settingsSlideshowTransitionTitle",
     "settingsSlideshowIntervalTile",
     "settingsSlideshowIntervalTitle",
     "settingsSlideshowVideoPlaybackTile",
     "settingsSlideshowVideoPlaybackTitle",
+    "settingsScreenSaverPageTitle",
+    "settingsWidgetPageTitle",
+    "settingsWidgetShowOutline",
     "viewerSetWallpaperButtonLabel"
   ],
 
   "zh": [
-    "filterOnThisDayLabel"
+    "settingsViewerGestureSideTapNext"
   ]
 }

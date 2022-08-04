@@ -55,7 +55,7 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
                                 )
                             )
                         }
-                    } catch (e: IllegalArgumentException) {
+                    } catch (e: Exception) {
                         // ignore
                     }
                 }
@@ -80,7 +80,7 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
                             "state" to EnvironmentCompat.getStorageState(volumeFile)
                         )
                     )
-                } catch (e: IllegalArgumentException) {
+                } catch (e: Exception) {
                     // ignore
                 }
             }
@@ -91,7 +91,7 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
     private fun getFreeSpace(call: MethodCall, result: MethodChannel.Result) {
         val path = call.argument<String>("path")
         if (path == null) {
-            result.error("getFreeSpace-args", "failed because of missing arguments", null)
+            result.error("getFreeSpace-args", "missing arguments", null)
             return
         }
 
@@ -112,7 +112,7 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
     private fun getInaccessibleDirectories(call: MethodCall, result: MethodChannel.Result) {
         val dirPaths = call.argument<List<String>>("dirPaths")
         if (dirPaths == null) {
-            result.error("getInaccessibleDirectories-args", "failed because of missing arguments", null)
+            result.error("getInaccessibleDirectories-args", "missing arguments", null)
             return
         }
 
@@ -126,7 +126,7 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
     private fun revokeDirectoryAccess(call: MethodCall, result: MethodChannel.Result) {
         val path = call.argument<String>("path")
         if (path == null) {
-            result.error("revokeDirectoryAccess-args", "failed because of missing arguments", null)
+            result.error("revokeDirectoryAccess-args", "missing arguments", null)
             return
         }
 
@@ -142,7 +142,7 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
     private fun deleteEmptyDirectories(call: MethodCall, result: MethodChannel.Result) {
         val dirPaths = call.argument<List<String>>("dirPaths")
         if (dirPaths == null) {
-            result.error("deleteEmptyDirectories-args", "failed because of missing arguments", null)
+            result.error("deleteEmptyDirectories-args", "missing arguments", null)
             return
         }
 
@@ -167,7 +167,7 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
     private fun canInsertMedia(call: MethodCall, result: MethodChannel.Result) {
         val directories = call.argument<List<FieldMap>>("directories")
         if (directories == null) {
-            result.error("canInsertMedia-args", "failed because of missing arguments", null)
+            result.error("canInsertMedia-args", "missing arguments", null)
             return
         }
 

@@ -14,6 +14,12 @@ extension ExtraDateTime on DateTime {
   bool get isThisMonth => isAtSameMonthAs(DateTime.now());
 
   bool get isThisYear => isAtSameYearAs(DateTime.now());
+
+  DateTime get date => DateTime(year, month, day);
+
+  DateTime addMonths(int months) => DateTime(year, month + months, day, hour, minute, second, millisecond, microsecond);
+
+  DateTime addDays(int days) => DateTime(year, month, day + days, hour, minute, second, millisecond, microsecond);
 }
 
 final epoch = DateTime.fromMillisecondsSinceEpoch(0, isUtc: true);
@@ -41,7 +47,8 @@ DateTime? dateTimeFromMillis(int? millis, {bool isUtc = false}) {
 
 final _unixStampMillisPattern = RegExp(r'\d{13}');
 final _unixStampSecPattern = RegExp(r'\d{10}');
-final _plainPattern = RegExp(r'(\d{8})([_-\s](\d{6})([_-\s](\d{3}))?)?');
+final _dateYMD8Hms6Sub3Pattern = RegExp(r'(\d{8})([_-\s](\d{6})([_-\s](\d{3}))?)?');
+final _dateY4M2D2H2m2s2Sub3Pattern = RegExp(r'(\d{4})-(\d{1,2})-(\d{1,2})-(\d{1,2})-(\d{1,2})-(\d{1,2})-(\d{1,3})');
 
 DateTime? parseUnknownDateFormat(String? s) {
   if (s == null) return null;
@@ -68,7 +75,7 @@ DateTime? parseUnknownDateFormat(String? s) {
     }
   }
 
-  match = _plainPattern.firstMatch(s);
+  match = _dateYMD8Hms6Sub3Pattern.firstMatch(s);
   if (match != null) {
     final dateString = match.group(1);
     final timeString = match.group(3);
@@ -92,6 +99,21 @@ DateTime? parseUnknownDateFormat(String? s) {
         }
         return DateTime(year, month, day, hour, minute, second, millis);
       }
+    }
+  }
+
+  match = _dateY4M2D2H2m2s2Sub3Pattern.firstMatch(s);
+  if (match != null) {
+    final year = int.tryParse(match.group(1)!);
+    final month = int.tryParse(match.group(2)!);
+    final day = int.tryParse(match.group(3)!);
+    final hour = int.tryParse(match.group(4)!);
+    final minute = int.tryParse(match.group(5)!);
+    final second = int.tryParse(match.group(6)!);
+    final millis = int.tryParse(match.group(7)!);
+
+    if (year != null && month != null && day != null && hour != null && minute != null && second != null && millis != null) {
+      return DateTime(year, month, day, hour, minute, second, millis);
     }
   }
 

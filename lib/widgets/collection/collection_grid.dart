@@ -186,52 +186,51 @@ class _CollectionSectionedContent extends StatefulWidget {
 }
 
 class _CollectionSectionedContentState extends State<_CollectionSectionedContent> {
+  final ValueNotifier<double> _appBarHeightNotifier = ValueNotifier(0);
+  final GlobalKey _scrollableKey = GlobalKey(debugLabel: 'thumbnail-collection-scrollable');
+
   CollectionLens get collection => widget.collection;
 
   TileLayout get tileLayout => widget.tileLayout;
 
   ScrollController get scrollController => widget.scrollController;
 
-  final ValueNotifier<double> appBarHeightNotifier = ValueNotifier(0);
-
-  final GlobalKey scrollableKey = GlobalKey(debugLabel: 'thumbnail-collection-scrollable');
-
   @override
   Widget build(BuildContext context) {
     final scrollView = AnimationLimiter(
       child: _CollectionScrollView(
-        scrollableKey: scrollableKey,
+        scrollableKey: _scrollableKey,
         collection: collection,
         appBar: CollectionAppBar(
-          appBarHeightNotifier: appBarHeightNotifier,
+          appBarHeightNotifier: _appBarHeightNotifier,
           collection: collection,
         ),
-        appBarHeightNotifier: appBarHeightNotifier,
+        appBarHeightNotifier: _appBarHeightNotifier,
         isScrollingNotifier: widget.isScrollingNotifier,
         scrollController: scrollController,
       ),
     );
 
     final scaler = _CollectionScaler(
-      scrollableKey: scrollableKey,
-      appBarHeightNotifier: appBarHeightNotifier,
+      scrollableKey: _scrollableKey,
+      appBarHeightNotifier: _appBarHeightNotifier,
       tileLayout: tileLayout,
       child: scrollView,
     );
 
     final selector = GridSelectionGestureDetector(
-      scrollableKey: scrollableKey,
+      scrollableKey: _scrollableKey,
       selectable: context.select<ValueNotifier<AppMode>, bool>((v) => v.value.canSelectMedia),
       items: collection.sortedEntries,
       scrollController: scrollController,
-      appBarHeightNotifier: appBarHeightNotifier,
+      appBarHeightNotifier: _appBarHeightNotifier,
       child: scaler,
     );
 
     return GridItemTracker<AvesEntry>(
-      scrollableKey: scrollableKey,
+      scrollableKey: _scrollableKey,
       tileLayout: tileLayout,
-      appBarHeightNotifier: appBarHeightNotifier,
+      appBarHeightNotifier: _appBarHeightNotifier,
       scrollController: scrollController,
       child: selector,
     );
@@ -380,8 +379,10 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> with Widge
           selector: (context, mq) => mq.effectiveBottomPadding,
           builder: (context, mqPaddingBottom, child) {
             return Selector<Settings, bool>(
-              selector: (context, s) => s.showBottomNavigationBar,
-              builder: (context, showBottomNavigationBar, child) {
+              selector: (context, s) => s.enableBottomNavigationBar,
+              builder: (context, enableBottomNavigationBar, child) {
+                final canNavigate = context.select<ValueNotifier<AppMode>, bool>((v) => v.value.canNavigate);
+                final showBottomNavigationBar = canNavigate && enableBottomNavigationBar;
                 final navBarHeight = showBottomNavigationBar ? AppBottomNavBar.height : 0;
                 return Selector<SectionedListLayout<AvesEntry>, List<SectionLayout>>(
                   selector: (context, layout) => layout.sectionLayouts,

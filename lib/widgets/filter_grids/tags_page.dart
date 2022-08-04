@@ -35,12 +35,13 @@ class TagListPage extends StatelessWidget {
           stream: source.eventBus.on<TagsChangedEvent>(),
           builder: (context, snapshot) {
             final gridItems = _getGridItems(source);
-            return FilterNavigationPage<TagFilter>(
+            return FilterNavigationPage<TagFilter, TagChipSetActionDelegate>(
               source: source,
               title: context.l10n.tagPageTitle,
               sortFactor: settings.tagSortFactor,
               actionDelegate: TagChipSetActionDelegate(gridItems),
               filterSections: _groupToSections(gridItems),
+              applyQuery: applyQuery,
               emptyBuilder: () => EmptyContent(
                 icon: AIcons.tag,
                 text: context.l10n.tagEmpty,
@@ -50,6 +51,10 @@ class TagListPage extends StatelessWidget {
         );
       },
     );
+  }
+
+  List<FilterGridItem<TagFilter>> applyQuery(BuildContext context, List<FilterGridItem<TagFilter>> filters, String query) {
+    return filters.where((item) => item.filter.tag.toUpperCase().contains(query)).toList();
   }
 
   List<FilterGridItem<TagFilter>> _getGridItems(CollectionSource source) {

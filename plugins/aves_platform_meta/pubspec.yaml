@@ -1,0 +1,21 @@
+name: aves_platform_meta
+version: 0.0.1
+publish_to: none
+
+environment:
+  sdk: ">=2.17.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  plugin_platform_interface:
+
+dev_dependencies:
+  flutter_lints:
+
+flutter:
+  plugin:
+    platforms:
+      android:
+        package: deckers.thibault.aves.aves_platform_meta
+        pluginClass: AvesPlatformMetaPlugin

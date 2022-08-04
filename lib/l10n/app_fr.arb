@@ -25,7 +25,8 @@
   "showTooltip": "Afficher",
   "hideTooltip": "Masquer",
   "actionRemove": "Supprimer",
-  "resetButtonTooltip": "Réinitialiser",
+  "resetTooltip": "Réinitialiser",
+  "saveTooltip": "Sauvegarder",
 
   "doubleBackExitMessage": "Pressez «\u00A0retour\u00A0» à nouveau pour quitter.",
   "doNotAskAgain": "Ne pas demander de nouveau",
@@ -94,6 +95,7 @@
   "filterFavouriteLabel": "Favori",
   "filterLocationEmptyLabel": "Sans lieu",
   "filterTagEmptyLabel": "Sans libellé",
+  "filterOnThisDayLabel": "Ce jour-là",
   "filterRatingUnratedLabel": "Sans notation",
   "filterRatingRejectedLabel": "Rejeté",
   "filterTypeAnimatedLabel": "Animation",
@@ -303,7 +305,6 @@
 
   "aboutBug": "Rapports d’erreur",
   "aboutBugSaveLogInstruction": "Sauvegarder les logs de l’app vers un fichier",
-  "aboutBugSaveLogButton": "Sauvegarder",
   "aboutBugCopyInfoInstruction": "Copier les informations d’environnement",
   "aboutBugCopyInfoButton": "Copier",
   "aboutBugReportInstruction": "Créer une «\u00A0issue\u00A0» sur GitHub en attachant les logs et informations d’environnement",
@@ -417,6 +418,7 @@
 
   "searchCollectionFieldHint": "Recherche",
   "searchSectionRecent": "Historique",
+  "searchSectionDate": "Date",
   "searchSectionAlbums": "Albums",
   "searchSectionCountries": "Pays",
   "searchSectionPlaces": "Lieux",
@@ -502,6 +504,7 @@
   "settingsViewerSlideshowTitle": "Diaporama",
   "settingsSlideshowRepeat": "Répéter",
   "settingsSlideshowShuffle": "Aléatoire",
+  "settingsSlideshowFillScreen": "Remplir l’écran",
   "settingsSlideshowTransitionTile": "Transition",
   "settingsSlideshowTransitionTitle": "Transition",
   "settingsSlideshowIntervalTile": "Intervalle",
@@ -574,7 +577,7 @@
   "settingsThemeBrightness": "Thème",
   "settingsThemeColorHighlights": "Surlignages colorés",
   "settingsThemeEnableDynamicColor": "Couleur dynamique",
-  "settingsDisplayRefreshRateModeTile": "Fréquence d’actualisation de l'écran",
+  "settingsDisplayRefreshRateModeTile": "Fréquence d’actualisation de l’écran",
   "settingsDisplayRefreshRateModeTitle": "Fréquence d’actualisation",
 
   "settingsSectionLanguage": "Langue & Formats",
@@ -583,6 +586,11 @@
   "settingsCoordinateFormatTitle": "Format de coordonnées",
   "settingsUnitSystemTile": "Unités",
   "settingsUnitSystemTitle": "Unités",
+
+  "settingsScreenSaverPageTitle": "Économiseur d’écran",
+
+  "settingsWidgetPageTitle": "Cadre photo",
+  "settingsWidgetShowOutline": "Contours",
 
   "statsPageTitle": "Statistiques",
   "statsWithGps": "{count, plural, =1{1 élément localisé} other{{count} éléments localisés}}",

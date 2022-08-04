@@ -9,6 +9,8 @@ class Constants {
   // so we give it a `strutStyle` with a slightly larger height
   static const overflowStrutStyle = StrutStyle(height: 1.3);
 
+  static const double colorPickerRadius = 16;
+
   static const titleTextStyle = TextStyle(
     fontSize: 20,
     fontWeight: FontWeight.w300,
@@ -20,6 +22,11 @@ class Constants {
       color: Colors.black,
       offset: Offset(0.5, 1.0),
     )
+  ];
+
+  static const boraBoraGradientColors = [
+    Color(0xff2bc0e4),
+    Color(0xffeaecc6),
   ];
 
   // Bidi fun, cf https://www.unicode.org/reports/tr9/

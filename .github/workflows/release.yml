@@ -19,8 +19,8 @@ jobs:
       # Available versions may lag behind https://github.com/flutter/flutter.git
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.0.2'
-          channel: 'stable'
+          flutter-version: '3.3.0-0.2.pre'
+          channel: 'beta'
 
       # Workaround for this Android Gradle Plugin issue (supposedly fixed in AGP 4.1):
       # https://issuetracker.google.com/issues/144111441
@@ -56,15 +56,15 @@ jobs:
           rm release.keystore.asc
           mkdir outputs
           (cd scripts/; ./apply_flavor_play.sh)
-          flutter build appbundle -t lib/main_play.dart --flavor play --bundle-sksl-path shaders_3.0.2.sksl.json
+          flutter build appbundle -t lib/main_play.dart --flavor play --bundle-sksl-path shaders_3.3.0-0.2.pre.sksl.json
           cp build/app/outputs/bundle/playRelease/*.aab outputs
-          flutter build apk -t lib/main_play.dart --flavor play --bundle-sksl-path shaders_3.0.2.sksl.json
+          flutter build apk -t lib/main_play.dart --flavor play --bundle-sksl-path shaders_3.3.0-0.2.pre.sksl.json
           cp build/app/outputs/apk/play/release/*.apk outputs
           (cd scripts/; ./apply_flavor_huawei.sh)
-          flutter build apk -t lib/main_huawei.dart --flavor huawei --bundle-sksl-path shaders_3.0.2.sksl.json
+          flutter build apk -t lib/main_huawei.dart --flavor huawei --bundle-sksl-path shaders_3.3.0-0.2.pre.sksl.json
           cp build/app/outputs/apk/huawei/release/*.apk outputs
           (cd scripts/; ./apply_flavor_izzy.sh)
-          flutter build apk -t lib/main_izzy.dart --flavor izzy --split-per-abi --bundle-sksl-path shaders_3.0.2.sksl.json
+          flutter build apk -t lib/main_izzy.dart --flavor izzy --split-per-abi --bundle-sksl-path shaders_3.3.0-0.2.pre.sksl.json
           cp build/app/outputs/apk/izzy/release/*.apk outputs
           rm $AVES_STORE_FILE
         env:
@@ -73,6 +73,7 @@ jobs:
           AVES_KEY_ALIAS: ${{ secrets.AVES_KEY_ALIAS }}
           AVES_KEY_PASSWORD: ${{ secrets.AVES_KEY_PASSWORD }}
           AVES_GOOGLE_API_KEY: ${{ secrets.AVES_GOOGLE_API_KEY }}
+          AVES_HUAWEI_API_KEY: ${{ secrets.AVES_HUAWEI_API_KEY }}
 
       - name: Create a release with the APK and App Bundle.
         uses: ncipollo/release-action@v1

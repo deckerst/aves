@@ -18,6 +18,9 @@ class SharedPrefSettingsStore implements SettingsStore {
   }
 
   @override
+  Future<void> reload() => _prefs!.reload();
+
+  @override
   Future<bool> clear() => _prefs!.clear();
 
   @override

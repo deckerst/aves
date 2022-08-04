@@ -2,7 +2,6 @@
 import 'dart:math' as math;
 
 import 'package:flutter/gestures.dart';
-import 'package:vector_math/vector_math_64.dart';
 
 // adapted from Flutter `ScaleGestureRecognizer` in `/gestures/scale.dart`
 // ignore_for_file: curly_braces_in_flow_control_structures, deprecated_member_use, unnecessary_null_comparison

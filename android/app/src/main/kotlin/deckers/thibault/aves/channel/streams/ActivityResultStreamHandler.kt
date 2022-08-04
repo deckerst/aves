@@ -22,9 +22,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
-// starting activity to give access with the native dialog
+// starting activity to get a result (e.g. storage access via native dialog)
 // breaks the regular `MethodChannel` so we use a stream channel instead
-class StorageAccessStreamHandler(private val activity: Activity, arguments: Any?) : EventChannel.StreamHandler {
+class ActivityResultStreamHandler(private val activity: Activity, arguments: Any?) : EventChannel.StreamHandler {
     private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private lateinit var eventSink: EventSink
     private lateinit var handler: Handler
@@ -48,6 +48,7 @@ class StorageAccessStreamHandler(private val activity: Activity, arguments: Any?
             "requestMediaFileAccess" -> ioScope.launch { requestMediaFileAccess() }
             "createFile" -> ioScope.launch { createFile() }
             "openFile" -> ioScope.launch { openFile() }
+            "pickCollectionFilters" -> pickCollectionFilters()
             else -> endOfStream()
         }
     }
@@ -55,7 +56,7 @@ class StorageAccessStreamHandler(private val activity: Activity, arguments: Any?
     private suspend fun requestDirectoryAccess() {
         val path = args["path"] as String?
         if (path == null) {
-            error("requestDirectoryAccess-args", "failed because of missing arguments", null)
+            error("requestDirectoryAccess-args", "missing arguments", null)
             return
         }
 
@@ -77,7 +78,7 @@ class StorageAccessStreamHandler(private val activity: Activity, arguments: Any?
         val uris = (args["uris"] as List<*>?)?.mapNotNull { if (it is String) Uri.parse(it) else null }
         val mimeTypes = (args["mimeTypes"] as List<*>?)?.mapNotNull { if (it is String) it else null }
         if (uris == null || uris.isEmpty() || mimeTypes == null || mimeTypes.size != uris.size) {
-            error("requestMediaFileAccess-args", "failed because of missing arguments", null)
+            error("requestMediaFileAccess-args", "missing arguments", null)
             return
         }
 
@@ -111,7 +112,7 @@ class StorageAccessStreamHandler(private val activity: Activity, arguments: Any?
         val mimeType = args["mimeType"] as String?
         val bytes = args["bytes"] as ByteArray?
         if (name == null || mimeType == null || bytes == null) {
-            error("createFile-args", "failed because of missing arguments", null)
+            error("createFile-args", "missing arguments", null)
             return
         }
 
@@ -186,6 +187,18 @@ class StorageAccessStreamHandler(private val activity: Activity, arguments: Any?
         }
     }
 
+    private fun pickCollectionFilters() {
+        val initialFilters = (args["initialFilters"] as List<*>?)?.mapNotNull { if (it is String) it else null } ?: listOf()
+        val intent = Intent(MainActivity.INTENT_ACTION_PICK_COLLECTION_FILTERS, null, activity, MainActivity::class.java)
+            .putExtra(MainActivity.EXTRA_KEY_FILTERS_ARRAY, initialFilters.toTypedArray())
+            .putExtra(MainActivity.EXTRA_KEY_FILTERS_STRING, initialFilters.joinToString(MainActivity.EXTRA_STRING_ARRAY_SEPARATOR))
+        MainActivity.pendingCollectionFilterPickHandler = { filters ->
+            success(filters)
+            endOfStream()
+        }
+        activity.startActivityForResult(intent, MainActivity.PICK_COLLECTION_FILTERS_REQUEST)
+    }
+
     override fun onCancel(arguments: Any?) {}
 
     private fun success(result: Any?) {
@@ -221,8 +234,8 @@ class StorageAccessStreamHandler(private val activity: Activity, arguments: Any?
     }
 
     companion object {
-        private val LOG_TAG = LogUtils.createTag<StorageAccessStreamHandler>()
-        const val CHANNEL = "deckers.thibault/aves/storage_access_stream"
+        private val LOG_TAG = LogUtils.createTag<ActivityResultStreamHandler>()
+        const val CHANNEL = "deckers.thibault/aves/activity_result_stream"
         private const val BUFFER_SIZE = 2 shl 17 // 256kB
     }
 }

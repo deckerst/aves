@@ -29,9 +29,9 @@ class CompassPainter extends CustomPainter {
       ..color = color.withOpacity(.6);
     final strokePaint = Paint()
       ..style = PaintingStyle.stroke
+      ..color = color
       ..strokeWidth = 1.7
-      ..strokeJoin = StrokeJoin.round
-      ..color = color;
+      ..strokeJoin = StrokeJoin.round;
 
     canvas.drawPath(northTriangle, fillPaint);
     canvas.drawPath(northTriangle, strokePaint);

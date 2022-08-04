@@ -16,12 +16,12 @@ abstract class DeviceService {
 }
 
 class PlatformDeviceService implements DeviceService {
-  static const platform = MethodChannel('deckers.thibault/aves/device');
+  static const _platform = MethodChannel('deckers.thibault/aves/device');
 
   @override
   Future<Map<String, dynamic>> getCapabilities() async {
     try {
-      final result = await platform.invokeMethod('getCapabilities');
+      final result = await _platform.invokeMethod('getCapabilities');
       if (result != null) return (result as Map).cast<String, dynamic>();
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
@@ -32,7 +32,7 @@ class PlatformDeviceService implements DeviceService {
   @override
   Future<String?> getDefaultTimeZone() async {
     try {
-      return await platform.invokeMethod('getDefaultTimeZone');
+      return await _platform.invokeMethod('getDefaultTimeZone');
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
     }
@@ -42,7 +42,7 @@ class PlatformDeviceService implements DeviceService {
   @override
   Future<List<Locale>> getLocales() async {
     try {
-      final result = await platform.invokeMethod('getLocales');
+      final result = await _platform.invokeMethod('getLocales');
       if (result != null) {
         return (result as List).cast<Map>().map((tags) {
           final language = tags['language'] as String?;
@@ -62,7 +62,7 @@ class PlatformDeviceService implements DeviceService {
   @override
   Future<int> getPerformanceClass() async {
     try {
-      final result = await platform.invokeMethod('getPerformanceClass');
+      final result = await _platform.invokeMethod('getPerformanceClass');
       if (result != null) return result as int;
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
@@ -73,7 +73,7 @@ class PlatformDeviceService implements DeviceService {
   @override
   Future<bool> isSystemFilePickerEnabled() async {
     try {
-      final result = await platform.invokeMethod('isSystemFilePickerEnabled');
+      final result = await _platform.invokeMethod('isSystemFilePickerEnabled');
       if (result != null) return result as bool;
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);

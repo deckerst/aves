@@ -53,7 +53,8 @@
   "showTooltip": "Show",
   "hideTooltip": "Hide",
   "actionRemove": "Remove",
-  "resetButtonTooltip": "Reset",
+  "resetTooltip": "Reset",
+  "saveTooltip": "Save",
 
   "doubleBackExitMessage": "Tap “back” again to exit.",
   "doNotAskAgain": "Do not ask again",
@@ -434,7 +435,6 @@
 
   "aboutBug": "Bug Report",
   "aboutBugSaveLogInstruction": "Save app logs to a file",
-  "aboutBugSaveLogButton": "Save",
   "aboutBugCopyInfoInstruction": "Copy system information",
   "aboutBugCopyInfoButton": "Copy",
   "aboutBugReportInstruction": "Report on GitHub with the logs and system information",
@@ -598,6 +598,7 @@
 
   "searchCollectionFieldHint": "Search collection",
   "searchSectionRecent": "Recent",
+  "searchSectionDate": "Date",
   "searchSectionAlbums": "Albums",
   "searchSectionCountries": "Countries",
   "searchSectionPlaces": "Places",
@@ -657,6 +658,7 @@
   "settingsCollectionSelectionQuickActionEditorBanner": "Touch and hold to move buttons and select which actions are displayed when selecting items.",
 
   "settingsSectionViewer": "Viewer",
+  "settingsViewerGestureSideTapNext": "Tap on screen edges to show previous/next item",
   "settingsViewerUseCutout": "Use cutout area",
   "settingsViewerMaximumBrightness": "Maximum brightness",
   "settingsMotionPhotoAutoPlay": "Auto play motion photos",
@@ -683,6 +685,7 @@
   "settingsViewerSlideshowTitle": "Slideshow",
   "settingsSlideshowRepeat": "Repeat",
   "settingsSlideshowShuffle": "Shuffle",
+  "settingsSlideshowFillScreen": "Fill screen",
   "settingsSlideshowTransitionTile": "Transition",
   "settingsSlideshowTransitionTitle": "Transition",
   "settingsSlideshowIntervalTile": "Interval",
@@ -764,6 +767,11 @@
   "settingsCoordinateFormatTitle": "Coordinate Format",
   "settingsUnitSystemTile": "Units",
   "settingsUnitSystemTitle": "Units",
+
+  "settingsScreenSaverPageTitle": "Screen Saver",
+
+  "settingsWidgetPageTitle": "Photo Frame",
+  "settingsWidgetShowOutline": "Outline",
 
   "statsPageTitle": "Stats",
   "statsWithGps": "{count, plural, =1{1 item with location} other{{count} items with location}}",

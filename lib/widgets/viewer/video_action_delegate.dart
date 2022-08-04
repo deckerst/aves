@@ -17,7 +17,7 @@ import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/video_speed_dialog.dart';
 import 'package:aves/widgets/dialogs/video_stream_selection_dialog.dart';
 import 'package:aves/widgets/settings/video/video_settings_page.dart';
-import 'package:aves/widgets/viewer/overlay/notifications.dart';
+import 'package:aves/widgets/viewer/notifications.dart';
 import 'package:aves/widgets/viewer/video/controller.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -98,7 +98,7 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       }
     };
 
-    final newFields = await mediaFileService.captureFrame(
+    final newFields = await mediaEditService.captureFrame(
       entry,
       desiredName: '${entry.bestTitle}_${'$positionMillis'.padLeft(8, '0')}',
       exif: exif,

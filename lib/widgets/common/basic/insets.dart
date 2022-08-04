@@ -25,6 +25,26 @@ class BottomGestureAreaProtector extends StatelessWidget {
   }
 }
 
+// It will prevent the body from scrolling when a user swipe from top to show the status bar when system UI is hidden.
+class TopGestureAreaProtector extends StatelessWidget {
+  const TopGestureAreaProtector({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      left: 0,
+      top: 0,
+      right: 0,
+      height: context.select<MediaQueryData, double>((mq) => mq.systemGestureInsets.top),
+      child: GestureDetector(
+        // absorb vertical gestures only
+        onVerticalDragDown: (details) {},
+        behavior: HitTestBehavior.translucent,
+      ),
+    );
+  }
+}
+
 // It will prevent the body from scrolling when a user swipe from edges to use Android Q style navigation gestures.
 class SideGestureAreaProtector extends StatelessWidget {
   const SideGestureAreaProtector({super.key});

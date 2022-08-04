@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:math';
-import 'dart:ui' as ui show Codec;
+import 'dart:ui' as ui;
 
 import 'package:aves/services/common/services.dart';
 import 'package:equatable/equatable.dart';
@@ -18,7 +18,7 @@ class RegionProvider extends ImageProvider<RegionProviderKey> {
   }
 
   @override
-  ImageStreamCompleter load(RegionProviderKey key, DecoderCallback decode) {
+  ImageStreamCompleter loadBuffer(RegionProviderKey key, DecoderBufferCallback decode) {
     return MultiFrameImageStreamCompleter(
       codec: _loadAsync(key, decode),
       scale: 1.0,
@@ -28,12 +28,12 @@ class RegionProvider extends ImageProvider<RegionProviderKey> {
     );
   }
 
-  Future<ui.Codec> _loadAsync(RegionProviderKey key, DecoderCallback decode) async {
+  Future<ui.Codec> _loadAsync(RegionProviderKey key, DecoderBufferCallback decode) async {
     final uri = key.uri;
     final mimeType = key.mimeType;
     final pageId = key.pageId;
     try {
-      final bytes = await mediaFileService.getRegion(
+      final bytes = await mediaFetchService.getRegion(
         uri,
         mimeType,
         key.rotationDegrees,
@@ -47,7 +47,8 @@ class RegionProvider extends ImageProvider<RegionProviderKey> {
       if (bytes.isEmpty) {
         throw StateError('$uri ($mimeType) region loading failed');
       }
-      return await decode(bytes);
+      final buffer = await ui.ImmutableBuffer.fromUint8List(bytes);
+      return await decode(buffer);
     } catch (error) {
       // loading may fail if the provided MIME type is incorrect (e.g. the Media Store may report a JPEG as a TIFF)
       debugPrint('$runtimeType _loadAsync failed with mimeType=$mimeType, uri=$uri, error=$error');
@@ -57,11 +58,11 @@ class RegionProvider extends ImageProvider<RegionProviderKey> {
 
   @override
   void resolveStreamForKey(ImageConfiguration configuration, ImageStream stream, RegionProviderKey key, ImageErrorListener handleError) {
-    mediaFileService.resumeLoading(key);
+    mediaFetchService.resumeLoading(key);
     super.resolveStreamForKey(configuration, stream, key, handleError);
   }
 
-  void pause() => mediaFileService.cancelRegion(key);
+  void pause() => mediaFetchService.cancelRegion(key);
 }
 
 @immutable

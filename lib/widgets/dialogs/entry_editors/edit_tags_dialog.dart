@@ -64,7 +64,7 @@ class _TagEditorPageState extends State<TagEditorPage> {
             IconButton(
               icon: const Icon(AIcons.reset),
               onPressed: _reset,
-              tooltip: l10n.resetButtonTooltip,
+              tooltip: l10n.resetTooltip,
             ),
           ],
         ),
