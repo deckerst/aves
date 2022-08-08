@@ -17,7 +17,7 @@ class Coresult internal constructor(private val call: MethodCall, private val me
             try {
                 methodResult.success(result)
             } catch (e: Exception) {
-                MainActivity.notifyError("failed to reply success for method=${call.method}, result=$result, exception=$e")
+                MainActivity.notifyError("failed to reply success for method=${call.method}, result=$result, exception=\n${e.stackTraceToString()}")
             }
         }
     }
@@ -27,7 +27,7 @@ class Coresult internal constructor(private val call: MethodCall, private val me
             try {
                 methodResult.error(errorCode, errorMessage, errorDetails)
             } catch (e: Exception) {
-                MainActivity.notifyError("failed to reply error for method=${call.method}, errorCode=$errorCode, errorMessage=$errorMessage, errorDetails=$errorDetails, exception=$e")
+                MainActivity.notifyError("failed to reply error for method=${call.method}, errorCode=$errorCode, errorMessage=$errorMessage, errorDetails=$errorDetails, exception=\n${e.stackTraceToString()}")
             }
         }
     }
@@ -37,7 +37,7 @@ class Coresult internal constructor(private val call: MethodCall, private val me
             try {
                 methodResult.notImplemented()
             } catch (e: Exception) {
-                MainActivity.notifyError("failed to reply notImplemented for method=${call.method}, exception=$e")
+                MainActivity.notifyError("failed to reply notImplemented for method=${call.method}, exception=\n${e.stackTraceToString()}")
             }
         }
     }
