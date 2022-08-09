@@ -15,7 +15,8 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 
-- app launch despite faulty storage volumes on Android <11
+- storage volume setup despite faulty volume on Android <11
+- storage volume setup when launched right after device boot
 
 ### Changed
 

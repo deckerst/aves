@@ -82,7 +82,7 @@ object StorageUtils {
     }
 
     fun getVolumePaths(context: Context): Array<String> {
-        if (mStorageVolumePaths == null) {
+        if (mStorageVolumePaths == null || mStorageVolumePaths!!.isEmpty()) {
             mStorageVolumePaths = findVolumePaths(context)
         }
         return mStorageVolumePaths!!
