@@ -162,22 +162,27 @@ object StorageUtils {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     lateinit var files: List<File>
                     var validFiles: Boolean
+                    val retryInterval = 100L
+                    val maxDelay = 1000L
+                    var totalDelay = 0L
                     do {
                         // `getExternalFilesDirs` sometimes include `null` when called right after getting read access
                         // (e.g. on API 30 emulator) so we retry until the file system is ready.
-                        // TODO TLAD It can also include `null` when there is a faulty SD card.
+                        // It can also include `null` when there is a faulty SD card.
                         val externalFilesDirs = context.getExternalFilesDirs(null)
                         validFiles = !externalFilesDirs.contains(null)
                         if (validFiles) {
                             files = externalFilesDirs.filterNotNull()
                         } else {
+                            Log.d(LOG_TAG, "External files dirs contain `null`. Retrying...")
+                            totalDelay += retryInterval
                             try {
-                                Thread.sleep(100)
+                                Thread.sleep(retryInterval)
                             } catch (e: InterruptedException) {
                                 Log.e(LOG_TAG, "insomnia", e)
                             }
                         }
-                    } while (!validFiles)
+                    } while (!validFiles && totalDelay < maxDelay)
                     paths.addAll(files.mapNotNull(::appSpecificVolumePath))
                 } else {
                     // Primary physical SD-CARD (not emulated)
