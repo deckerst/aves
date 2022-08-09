@@ -98,7 +98,7 @@ object PermissionManager {
                 segments.volumePath?.let { volumePath ->
                     val dirSet = dirsPerVolume[volumePath] ?: HashSet()
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                        // request primary directory on volume from Android R
+                        // request primary directory on volume from Android 11
                         val relativeDir = segments.relativeDir
                         if (relativeDir != null) {
                             val dirSegments = relativeDir.split(File.separator).takeWhile { it.isNotEmpty() }
@@ -111,11 +111,11 @@ object PermissionManager {
                             }
                         } else {
                             // the requested path is the volume root itself
-                            // which cannot be granted, due to Android R restrictions
+                            // which cannot be granted, due to Android 11 restrictions
                             dirSet.add("")
                         }
                     } else {
-                        // request volume root until Android Q
+                        // request volume root until Android 10
                         dirSet.add("")
                     }
                     dirsPerVolume[volumePath] = dirSet
@@ -236,7 +236,7 @@ object PermissionManager {
         return dirs
     }
 
-    // As of Android R, `MediaStore.getDocumentUri` fails if any of the persisted
+    // As of Android 11, `MediaStore.getDocumentUri` fails if any of the persisted
     // URI permissions we hold points to a folder that no longer exists,
     // so we should remove these obsolete URIs before proceeding.
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)

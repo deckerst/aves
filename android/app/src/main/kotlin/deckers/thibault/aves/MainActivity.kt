@@ -285,7 +285,7 @@ open class MainActivity : FlutterActivity() {
         val filters = intent.getStringArrayExtra(EXTRA_KEY_FILTERS_ARRAY)?.toList()
         if (filters != null) return filters
 
-        // fallback for shortcuts created on API < 26
+        // fallback for shortcuts created on API <26
         val filterString = intent.getStringExtra(EXTRA_KEY_FILTERS_STRING)
         if (filterString != null) {
             return filterString.split(EXTRA_STRING_ARRAY_SEPARATOR)

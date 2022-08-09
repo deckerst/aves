@@ -95,7 +95,7 @@ class _HomePageState extends State<HomePage> {
       // hide in some countries apps that force quit on permission denial
       await [
         Permission.storage,
-        // to access media with unredacted metadata with scoped storage (Android 10+)
+        // to access media with unredacted metadata with scoped storage (Android >=10)
         Permission.accessMediaLocation,
       ].request();
     }

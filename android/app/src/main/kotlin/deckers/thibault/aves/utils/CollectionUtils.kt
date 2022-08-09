@@ -2,7 +2,7 @@ package deckers.thibault.aves.utils
 
 import android.os.Build
 
-// compatibility extension for `removeIf` for API < N
+// compatibility extension for `removeIf` for API <24
 fun <E> MutableList<E>.compatRemoveIf(filter: (t: E) -> Boolean): Boolean {
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
         this.removeIf(filter)
