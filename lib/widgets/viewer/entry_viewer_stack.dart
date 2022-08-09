@@ -652,19 +652,20 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     }
   }
 
-  void _onLeave() {
+  Future<void> _onLeave() async {
     if (!settings.viewerUseCutout) {
-      windowService.setCutoutMode(true);
+      await windowService.setCutoutMode(true);
     }
     if (settings.viewerMaxBrightness) {
-      ScreenBrightness().resetScreenBrightness();
+      await ScreenBrightness().resetScreenBrightness();
     }
     if (settings.keepScreenOn == KeepScreenOn.viewerOnly) {
-      windowService.keepScreenOn(false);
+      await windowService.keepScreenOn(false);
     }
 
-    AvesApp.showSystemUI();
-    windowService.requestOrientation();
+    await AvesApp.showSystemUI();
+    AvesApp.setSystemUIStyle(context);
+    await windowService.requestOrientation();
   }
 
   // overlay
@@ -679,7 +680,8 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
 
   Future<void> _onOverlayVisibleChange({bool animate = true}) async {
     if (_overlayVisible.value) {
-      AvesApp.showSystemUI();
+      await AvesApp.showSystemUI();
+      AvesApp.setSystemUIStyle(context);
       if (animate) {
         await _overlayAnimationController.forward();
       } else {
@@ -692,7 +694,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
         _frozenViewInsets = mediaQuery.viewInsets;
         _frozenViewPadding = mediaQuery.viewPadding;
       });
-      AvesApp.hideSystemUI();
+      await AvesApp.hideSystemUI();
       if (animate) {
         await _overlayAnimationController.reverse();
       } else {

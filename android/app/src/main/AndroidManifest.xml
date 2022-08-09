@@ -12,8 +12,8 @@ This change eventually prevents building the app with Flutter v3.0.2.
     android:installLocation="auto">
 
     <!--
-    Scoped storage on Android Q is inconvenient because users need to confirm edition on each individual file.
-    So we request `WRITE_EXTERNAL_STORAGE` until Q (29), and enable `requestLegacyExternalStorage`
+    Scoped storage on Android 10 is inconvenient because users need to confirm edition on each individual file.
+    So we request `WRITE_EXTERNAL_STORAGE` until Android 10 (API 29), and enable `requestLegacyExternalStorage`
     -->
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
@@ -31,25 +31,25 @@ This change eventually prevents building the app with Flutter v3.0.2.
     <!-- to show foreground service progress via notification -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
-    <!-- to access media with original metadata with scoped storage (Android Q+) -->
+    <!-- to access media with original metadata with scoped storage (Android >=10) -->
     <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION" />
 
     <!-- TODO TLAD remove this permission when this is fixed: https://github.com/flutter/flutter/issues/42451 -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
-    <!-- for API < 26 -->
+    <!-- for API <26 -->
     <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
 
     <!-- allow install on API 19, but Google Maps is from API 20 -->
     <uses-sdk tools:overrideLibrary="io.flutter.plugins.googlemaps" />
 
-    <!-- from Android R, we should define <queries> to make other apps visible to this app -->
+    <!-- from Android 11, we should define <queries> to make other apps visible to this app -->
     <queries>
         <intent>
             <action android:name="android.intent.action.MAIN" />
         </intent>
         <!--
-        from Android R, `url_launcher` method `canLaunchUrl()` will return false,
+        from Android 11, `url_launcher` method `canLaunchUrl()` will return false,
         if appropriate intents are not declared, cf https://pub.dev/packages/url_launcher#configuration=
         -->
         <!-- to open https URLs -->

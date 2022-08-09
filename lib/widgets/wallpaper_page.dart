@@ -234,7 +234,8 @@ class _EntryEditorState extends State<EntryEditor> with EntryViewControllerMixin
 
   Future<void> _onOverlayVisibleChange({bool animate = true}) async {
     if (_overlayVisible.value) {
-      AvesApp.showSystemUI();
+      await AvesApp.showSystemUI();
+      AvesApp.setSystemUIStyle(context);
       if (animate) {
         await _overlayAnimationController.forward();
       } else {
@@ -246,7 +247,7 @@ class _EntryEditorState extends State<EntryEditor> with EntryViewControllerMixin
         _frozenViewInsets = mediaQuery.viewInsets;
         _frozenViewPadding = mediaQuery.viewPadding;
       });
-      AvesApp.hideSystemUI();
+      await AvesApp.hideSystemUI();
       if (animate) {
         await _overlayAnimationController.reverse();
       } else {
