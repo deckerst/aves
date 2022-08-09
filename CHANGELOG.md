@@ -11,6 +11,14 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
+- status and navigation bar transparency
+
+### Fixed
+
+- app launch despite faulty storage volumes on Android <11
+
+### Changed
+
 - upgraded Flutter to beta v3.3.0-0.2.pre
 
 ## <a id="v1.6.11"></a>[v1.6.11] - 2022-07-26
