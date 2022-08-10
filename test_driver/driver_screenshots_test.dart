@@ -182,6 +182,12 @@ void stats() {
     await driver.tapKeyAndWait('appbar-leading-button');
     await driver.tapKeyAndWait('drawer-type-null');
 
+    final maxYear = DateTime.now().year + 1;
+    final maxQuery = 'year<$maxYear';
+    const minQuery = 'year>2012';
+    await _search(maxQuery, 'query-$maxQuery');
+    await _search(minQuery, 'query-$minQuery');
+
     await driver.tapKeyAndWait('appbar-menu-button');
     await driver.tapKeyAndWait('menu-stats');
 
