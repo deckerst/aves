@@ -39,9 +39,12 @@ mixin FeedbackMixin {
   void showFeedbackWithMessenger(BuildContext context, ScaffoldMessengerState messenger, String message, [SnackBarAction? action]) {
     _getSnackBarDuration(action != null).then((duration) {
       final start = DateTime.now();
+      final theme = Theme.of(context);
+      final snackBarTheme = theme.snackBarTheme;
+
       final snackBarContent = _FeedbackMessage(
         message: message,
-        progressColor: Theme.of(context).colorScheme.secondary,
+        progressColor: theme.colorScheme.secondary,
         start: start,
         stop: action != null ? start.add(duration) : null,
       );
@@ -64,7 +67,7 @@ mixin FeedbackMixin {
                 action: action != null
                     ? TextButton(
                         style: ButtonStyle(
-                          foregroundColor: MaterialStateProperty.all(Theme.of(context).snackBarTheme.actionTextColor),
+                          foregroundColor: MaterialStateProperty.all(snackBarTheme.actionTextColor),
                         ),
                         onPressed: () {
                           notificationOverlayEntry?.dismiss();
@@ -87,12 +90,19 @@ mixin FeedbackMixin {
       } else {
         messenger.showSnackBar(SnackBar(
           content: snackBarContent,
+          padding: action != null ? EdgeInsetsDirectional.only(start: snackBarHorizontalPadding(snackBarTheme)) : null,
           action: action,
           duration: duration,
           dismissDirection: DismissDirection.horizontal,
         ));
       }
     });
+  }
+
+  static double snackBarHorizontalPadding(SnackBarThemeData snackBarTheme) {
+    final isFloatingSnackBar = (snackBarTheme.behavior ?? SnackBarBehavior.fixed) == SnackBarBehavior.floating;
+    final horizontalPadding = isFloatingSnackBar ? 16.0 : 24.0;
+    return horizontalPadding;
   }
 
   Future<Duration> _getSnackBarDuration(bool hasAction) async {
