@@ -450,6 +450,7 @@
   "settingsConfirmationDialogDeleteItems": "항목을 완전히 삭제 시",
   "settingsConfirmationDialogMoveToBinItems": "항목을 휴지통으로 이동 시",
   "settingsConfirmationDialogMoveUndatedItems": "날짜가 지정되지 않은 항목을 이동 시",
+  "settingsConfirmationAfterMoveToBinItems": "항목을 휴지통으로 이동 후",
 
   "settingsNavigationDrawerTile": "탐색 메뉴",
   "settingsNavigationDrawerEditorTitle": "탐색 메뉴",

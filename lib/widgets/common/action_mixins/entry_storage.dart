@@ -197,11 +197,14 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
               );
             }
           }
-          showFeedback(
-            context,
-            copy ? l10n.collectionCopySuccessFeedback(count) : l10n.collectionMoveSuccessFeedback(count),
-            action,
-          );
+
+          if (!toBin || (toBin && settings.confirmAfterMoveToBin)) {
+            showFeedback(
+              context,
+              copy ? l10n.collectionCopySuccessFeedback(count) : l10n.collectionMoveSuccessFeedback(count),
+              action,
+            );
+          }
 
           EntryMovedNotification(moveType, movedEntries).dispatch(context);
           onSuccess?.call();

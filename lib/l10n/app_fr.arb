@@ -450,6 +450,7 @@
   "settingsConfirmationDialogDeleteItems": "Suppression définitive d’éléments",
   "settingsConfirmationDialogMoveToBinItems": "Mise d’éléments à la corbeille",
   "settingsConfirmationDialogMoveUndatedItems": "Déplacement d’éléments non datés",
+  "settingsConfirmationAfterMoveToBinItems": "Confirmation après mise d’éléments à la corbeille",
 
   "settingsNavigationDrawerTile": "Menu de navigation",
   "settingsNavigationDrawerEditorTitle": "Menu de navigation",

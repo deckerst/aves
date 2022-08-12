@@ -630,6 +630,7 @@
   "settingsConfirmationDialogDeleteItems": "Ask before deleting items forever",
   "settingsConfirmationDialogMoveToBinItems": "Ask before moving items to the recycle bin",
   "settingsConfirmationDialogMoveUndatedItems": "Ask before moving undated items",
+  "settingsConfirmationAfterMoveToBinItems": "Show message after moving items to the recycle bin",
 
   "settingsNavigationDrawerTile": "Navigation menu",
   "settingsNavigationDrawerEditorTitle": "Navigation Menu",

@@ -65,6 +65,7 @@ class Settings extends ChangeNotifier {
   static const confirmDeleteForeverKey = 'confirm_delete_forever';
   static const confirmMoveToBinKey = 'confirm_move_to_bin';
   static const confirmMoveUndatedItemsKey = 'confirm_move_undated_items';
+  static const confirmAfterMoveToBinKey = 'confirm_after_move_to_bin';
   static const setMetadataDateBeforeFileOpKey = 'set_metadata_date_before_file_op';
   static const drawerTypeBookmarksKey = 'drawer_type_bookmarks';
   static const drawerAlbumBookmarksKey = 'drawer_album_bookmarks';
@@ -350,6 +351,10 @@ class Settings extends ChangeNotifier {
   bool get confirmMoveUndatedItems => getBoolOrDefault(confirmMoveUndatedItemsKey, SettingsDefaults.confirmMoveUndatedItems);
 
   set confirmMoveUndatedItems(bool newValue) => setAndNotify(confirmMoveUndatedItemsKey, newValue);
+
+  bool get confirmAfterMoveToBin => getBoolOrDefault(confirmAfterMoveToBinKey, SettingsDefaults.confirmAfterMoveToBin);
+
+  set confirmAfterMoveToBin(bool newValue) => setAndNotify(confirmAfterMoveToBinKey, newValue);
 
   bool get setMetadataDateBeforeFileOp => getBoolOrDefault(setMetadataDateBeforeFileOpKey, SettingsDefaults.setMetadataDateBeforeFileOp);
 
@@ -811,6 +816,7 @@ class Settings extends ChangeNotifier {
             case confirmDeleteForeverKey:
             case confirmMoveToBinKey:
             case confirmMoveUndatedItemsKey:
+            case confirmAfterMoveToBinKey:
             case setMetadataDateBeforeFileOpKey:
             case showThumbnailFavouriteKey:
             case showThumbnailTagKey:

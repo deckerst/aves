@@ -1,6 +1,11 @@
 {
   "de": [
+    "settingsConfirmationAfterMoveToBinItems",
     "settingsViewerGestureSideTapNext"
+  ],
+
+  "es": [
+    "settingsConfirmationAfterMoveToBinItems"
   ],
 
   "fr": [
@@ -8,14 +13,17 @@
   ],
 
   "id": [
+    "settingsConfirmationAfterMoveToBinItems",
     "settingsViewerGestureSideTapNext"
   ],
 
   "it": [
+    "settingsConfirmationAfterMoveToBinItems",
     "settingsViewerGestureSideTapNext"
   ],
 
   "ja": [
+    "settingsConfirmationAfterMoveToBinItems",
     "settingsViewerGestureSideTapNext"
   ],
 
@@ -24,11 +32,13 @@
   ],
 
   "pt": [
+    "settingsConfirmationAfterMoveToBinItems",
     "settingsViewerGestureSideTapNext"
   ],
 
   "ru": [
     "filterOnThisDayLabel",
+    "settingsConfirmationAfterMoveToBinItems",
     "settingsViewerGestureSideTapNext",
     "settingsSlideshowFillScreen",
     "settingsScreenSaverPageTitle",
@@ -51,6 +61,7 @@
     "wallpaperTargetLock",
     "wallpaperTargetHomeLock",
     "menuActionSlideshow",
+    "settingsConfirmationAfterMoveToBinItems",
     "settingsViewerGestureSideTapNext",
     "settingsViewerSlideshowTile",
     "settingsViewerSlideshowTitle",
@@ -70,6 +81,7 @@
   ],
 
   "zh": [
+    "settingsConfirmationAfterMoveToBinItems",
     "settingsViewerGestureSideTapNext"
   ]
 }

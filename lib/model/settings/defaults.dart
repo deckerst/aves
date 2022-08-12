@@ -35,6 +35,7 @@ class SettingsDefaults {
   static const confirmDeleteForever = true;
   static const confirmMoveToBin = true;
   static const confirmMoveUndatedItems = true;
+  static const confirmAfterMoveToBin = true;
   static const setMetadataDateBeforeFileOp = false;
   static final drawerTypeBookmarks = [
     null,
