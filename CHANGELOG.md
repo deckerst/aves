@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 
 - Viewer: optional gesture to show previous/next item
 - Albums / Countries / Tags: live title filter
+- option to hide confirmation message after moving items to the bin
 
 ### Changed
 
