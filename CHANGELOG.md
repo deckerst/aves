@@ -12,15 +12,12 @@ All notable changes to this project will be documented in this file.
 ### Changed
 
 - status and navigation bar transparency
+- upgraded Flutter to beta v3.3.0-0.3.pre
 
 ### Fixed
 
 - storage volume setup despite faulty volume on Android <11
 - storage volume setup when launched right after device boot
-
-### Changed
-
-- upgraded Flutter to beta v3.3.0-0.2.pre
 
 ## <a id="v1.6.11"></a>[v1.6.11] - 2022-07-26
 
