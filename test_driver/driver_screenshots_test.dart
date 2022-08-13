@@ -56,6 +56,7 @@ void main() {
       info();
       stats();
       countries();
+      map();
     });
   }, timeout: const Timeout(Duration(seconds: 30)));
 }
@@ -64,10 +65,15 @@ Future<void> _search(String query, String chipKey) async {
   await driver.tapKeyAndWait('menu-searchCollection');
   await driver.tap(find.byType('TextField'));
   await driver.enterText(query);
-  final chip = find.byValueKey(chipKey);
-  await driver.waitFor(chip);
-  await driver.tap(chip);
-  await driver.waitUntilNoTransientCallbacks();
+  await driver.tapKeyAndWait(chipKey);
+}
+
+Future<void> _selectMapStyle(String style) async {
+  await driver.tapKeyAndWait('map-menu-layers');
+  await driver.tapKeyAndWait('EntryMapStyle.$style');
+
+  // tiles may take time to load
+  await Future.delayed(const Duration(seconds: 5));
 }
 
 Future<void> _takeScreenshot(FlutterDriver driver, String name) async {
@@ -152,8 +158,7 @@ void info() {
     final verticalPageView = find.byValueKey('vertical-pageview');
 
     await driver.scrollY(verticalPageView, -600);
-    // tiles may take time to load
-    await Future.delayed(const Duration(seconds: 5));
+    await _selectMapStyle('stamenWatercolor');
 
     await _takeScreenshot(driver, '3');
 
@@ -184,7 +189,7 @@ void stats() {
 
     final maxYear = DateTime.now().year + 1;
     final maxQuery = 'year<$maxYear';
-    const minQuery = 'year>2012';
+    const minQuery = 'year>2005';
     await _search(maxQuery, 'query-$maxQuery');
     await _search(minQuery, 'query-$minQuery');
 
@@ -204,5 +209,25 @@ void countries() {
     await driver.tapKeyAndWait('drawer-page-/countries');
 
     await _takeScreenshot(driver, '6');
+  });
+}
+
+void map() {
+  test('7. Map', () async {
+    await driver.tapKeyAndWait('appbar-leading-button');
+    await driver.tapKeyAndWait('drawer-type-null');
+
+    await _search('animals', 'tag-animals');
+    await _search('Singapore', 'location-LocationLevel.country-Singapore');
+
+    await driver.tapKeyAndWait('appbar-menu-button');
+    await driver.tapKeyAndWait('menu-map');
+
+    await _selectMapStyle('googleTerrain');
+
+    await _takeScreenshot(driver, '7');
+
+    await pressDeviceBackButton();
+    await driver.waitUntilNoTransientCallbacks();
   });
 }

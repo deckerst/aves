@@ -165,10 +165,7 @@ void searchAlbum() {
     await driver.tap(find.byType('TextField'));
     await driver.enterText(albumDisplayName);
 
-    final albumChip = find.byValueKey('album-$albumPath');
-    await driver.waitFor(albumChip);
-    await driver.tap(albumChip);
-    await driver.waitUntilNoTransientCallbacks();
+    await driver.tapKeyAndWait('album-$albumPath');
   });
 }
 

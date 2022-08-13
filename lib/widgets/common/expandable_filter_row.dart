@@ -59,7 +59,7 @@ class ExpandableFilterRow extends StatelessWidget {
 
     final filterList = filters.toList();
     final wrap = Container(
-      key: ValueKey('wrap$title'),
+      key: Key('wrap$title'),
       padding: const EdgeInsets.symmetric(horizontal: horizontalPadding),
       // specify transparent as a workaround to prevent
       // chip border clipping when the floating app bar is fading
@@ -71,7 +71,7 @@ class ExpandableFilterRow extends StatelessWidget {
       ),
     );
     final list = Container(
-      key: ValueKey('list$title'),
+      key: Key('list$title'),
       // specify transparent as a workaround to prevent
       // chip border clipping when the floating app bar is fading
       color: Colors.transparent,
