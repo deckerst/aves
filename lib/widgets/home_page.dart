@@ -104,11 +104,9 @@ class _HomePageState extends State<HomePage> {
     final intentData = widget.intentData ?? await IntentService.getIntentData();
     final intentAction = intentData[intentDataKeyAction];
 
-    if (!{actionScreenSaver, actionSetWallpaper}.contains(intentAction)) {
-      await androidFileUtils.init();
-      if (settings.isInstalledAppAccessAllowed) {
-        unawaited(androidFileUtils.initAppNames());
-      }
+    await androidFileUtils.init();
+    if (!{actionScreenSaver, actionSetWallpaper}.contains(intentAction) && settings.isInstalledAppAccessAllowed) {
+      unawaited(androidFileUtils.initAppNames());
     }
 
     if (intentData.isNotEmpty) {
