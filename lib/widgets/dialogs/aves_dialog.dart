@@ -15,6 +15,8 @@ class AvesDialog extends StatelessWidget {
   static const double defaultHorizontalContentPadding = 24;
   static const double controlCaptionPadding = 16;
   static const double borderWidth = 1.0;
+  static const EdgeInsets actionsPadding = EdgeInsets.symmetric(vertical: 4, horizontal: 8);
+  static const EdgeInsets buttonPadding = EdgeInsets.symmetric(horizontal: 8);
 
   AvesDialog({
     super.key,
@@ -46,7 +48,8 @@ class AvesDialog extends StatelessWidget {
       content: _buildContent(context),
       contentPadding: scrollableContent != null ? EdgeInsets.zero : EdgeInsets.only(left: horizontalContentPadding, top: 20, right: horizontalContentPadding),
       actions: actions,
-      actionsPadding: const EdgeInsets.symmetric(horizontal: 8),
+      actionsPadding: actionsPadding,
+      buttonPadding: buttonPadding,
       shape: shape(context),
     );
   }
@@ -133,7 +136,7 @@ class DialogTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.center,
-      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+      padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
       decoration: AvesDialog.contentDecoration(context),
       child: Text(
         title,
