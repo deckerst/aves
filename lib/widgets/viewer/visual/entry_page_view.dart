@@ -376,7 +376,7 @@ class _EntryPageViewState extends State<EntryPageView> {
 
     return Magnifier(
       // key includes modified date to refresh when the image is modified by metadata (e.g. rotated)
-      key: ValueKey('${entry.uri}_${entry.pageId}_${entry.dateModifiedSecs}'),
+      key: Key('${entry.uri}_${entry.pageId}_${entry.dateModifiedSecs}'),
       controller: controller ?? _magnifierController,
       childSize: displaySize ?? entry.displaySize,
       allowOriginalScaleBeyondRange: !isWallpaperMode,
