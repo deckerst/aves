@@ -178,13 +178,11 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
       ),
     );
 
-    const actionsPadding = EdgeInsets.symmetric(horizontal: 8);
-    const double actionsSpacing = 8.0;
     final actionsWidget = Padding(
-      padding: actionsPadding.add(const EdgeInsets.all(actionsSpacing)),
+      padding: AvesDialog.actionsPadding,
       child: OverflowBar(
         alignment: MainAxisAlignment.end,
-        spacing: actionsSpacing,
+        spacing: AvesDialog.buttonPadding.horizontal / 2,
         overflowAlignment: OverflowBarAlignment.end,
         children: [
           TextButton(
