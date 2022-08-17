@@ -35,6 +35,7 @@ class XMP {
   static const rdfRoot = 'RDF';
   static const rdfDescription = 'Description';
   static const containerDirectory = 'Directory';
+  static const dcDescription = 'description';
   static const dcSubject = 'subject';
   static const msPhotoRating = 'Rating';
   static const xmpRating = 'Rating';

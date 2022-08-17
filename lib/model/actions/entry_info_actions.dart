@@ -7,6 +7,7 @@ enum EntryInfoAction {
   // general
   editDate,
   editLocation,
+  editDescription,
   editRating,
   editTags,
   removeMetadata,
@@ -23,6 +24,7 @@ class EntryInfoActions {
   static const common = [
     EntryInfoAction.editDate,
     EntryInfoAction.editLocation,
+    EntryInfoAction.editDescription,
     EntryInfoAction.editRating,
     EntryInfoAction.editTags,
     EntryInfoAction.removeMetadata,
@@ -43,6 +45,8 @@ extension ExtraEntryInfoAction on EntryInfoAction {
         return context.l10n.entryInfoActionEditDate;
       case EntryInfoAction.editLocation:
         return context.l10n.entryInfoActionEditLocation;
+      case EntryInfoAction.editDescription:
+        return context.l10n.entryInfoActionEditDescription;
       case EntryInfoAction.editRating:
         return context.l10n.entryInfoActionEditRating;
       case EntryInfoAction.editTags:
@@ -84,6 +88,8 @@ extension ExtraEntryInfoAction on EntryInfoAction {
         return AIcons.date;
       case EntryInfoAction.editLocation:
         return AIcons.location;
+      case EntryInfoAction.editDescription:
+        return AIcons.description;
       case EntryInfoAction.editRating:
         return AIcons.editRating;
       case EntryInfoAction.editTags:

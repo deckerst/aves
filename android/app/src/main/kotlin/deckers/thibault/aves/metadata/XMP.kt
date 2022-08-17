@@ -28,8 +28,8 @@ object XMP {
     const val CONTAINER_SCHEMA_NS = "http://ns.google.com/photos/1.0/container/"
     private const val CONTAINER_ITEM_SCHEMA_NS = "http://ns.google.com/photos/1.0/container/item/"
 
-    const val DC_DESCRIPTION_PROP_NAME = "dc:description"
     const val DC_SUBJECT_PROP_NAME = "dc:subject"
+    const val DC_DESCRIPTION_PROP_NAME = "dc:description"
     const val DC_TITLE_PROP_NAME = "dc:title"
     const val MS_RATING_PROP_NAME = "MicrosoftPhoto:Rating"
     const val PS_DATE_CREATED_PROP_NAME = "photoshop:DateCreated"

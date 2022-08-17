@@ -238,6 +238,8 @@
 
   "renameEntryDialogLabel": "이름",
 
+  "editEntryDialogTargetFieldsHeader": "수정할 필드",
+
   "editEntryDateDialogTitle": "날짜 및 시간",
   "editEntryDateDialogSetCustom": "지정 날짜로 편집",
   "editEntryDateDialogCopyField": "다른 날짜에서 지정",
@@ -245,7 +247,6 @@
   "editEntryDateDialogExtractFromTitle": "제목에서 추출",
   "editEntryDateDialogShift": "시간 이동",
   "editEntryDateDialogSourceFileModifiedDate": "파일 수정한 날짜",
-  "editEntryDateDialogTargetFieldsHeader": "수정할 필드",
   "editEntryDateDialogHours": "시간",
   "editEntryDateDialogMinutes": "분",
 

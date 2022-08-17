@@ -106,6 +106,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             "hasContentResolverProp" -> ioScope.launch { safe(call, result, ::hasContentResolverProp) }
             "getContentResolverProp" -> ioScope.launch { safe(call, result, ::getContentResolverProp) }
             "getDate" -> ioScope.launch { safe(call, result, ::getDate) }
+            "getDescription" -> ioScope.launch { safe(call, result, ::getDescription) }
             else -> result.notImplemented()
         }
     }
@@ -409,9 +410,8 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
     // - XMP / photoshop:DateCreated
     // - PNG / TIME / LAST_MODIFICATION_TIME
     // - Video / METADATA_KEY_DATE
-    // set `KEY_XMP_TITLE_DESCRIPTION` from these fields (by precedence):
+    // set `KEY_XMP_TITLE` from this field:
     // - XMP / dc:title
-    // - XMP / dc:description
     // set `KEY_XMP_SUBJECTS` from these fields (by precedence):
     // - XMP / dc:subject
     // - IPTC / keywords
@@ -514,10 +514,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                                 val values = (1 until count + 1).map { xmpMeta.getArrayItem(XMP.DC_SCHEMA_NS, XMP.DC_SUBJECT_PROP_NAME, it).value }
                                 metadataMap[KEY_XMP_SUBJECTS] = values.joinToString(XMP_SUBJECTS_SEPARATOR)
                             }
-                            xmpMeta.getSafeLocalizedText(XMP.DC_SCHEMA_NS, XMP.DC_TITLE_PROP_NAME, acceptBlank = false) { metadataMap[KEY_XMP_TITLE_DESCRIPTION] = it }
-                            if (!metadataMap.containsKey(KEY_XMP_TITLE_DESCRIPTION)) {
-                                xmpMeta.getSafeLocalizedText(XMP.DC_SCHEMA_NS, XMP.DC_DESCRIPTION_PROP_NAME, acceptBlank = false) { metadataMap[KEY_XMP_TITLE_DESCRIPTION] = it }
-                            }
+                            xmpMeta.getSafeLocalizedText(XMP.DC_SCHEMA_NS, XMP.DC_TITLE_PROP_NAME, acceptBlank = false) { metadataMap[KEY_XMP_TITLE] = it }
                             if (!metadataMap.containsKey(KEY_DATE_MILLIS)) {
                                 xmpMeta.getSafeDateMillis(XMP.XMP_SCHEMA_NS, XMP.XMP_CREATE_DATE_PROP_NAME) { metadataMap[KEY_DATE_MILLIS] = it }
                                 if (!metadataMap.containsKey(KEY_DATE_MILLIS)) {
@@ -1052,6 +1049,58 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         result.success(dateMillis)
     }
 
+    // return description from these fields (by precedence):
+    // - XMP / dc:description
+    // - IPTC / caption-abstract
+    // - Exif / ImageDescription
+    private fun getDescription(call: MethodCall, result: MethodChannel.Result) {
+        val mimeType = call.argument<String>("mimeType")
+        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
+        if (mimeType == null || uri == null) {
+            result.error("getDescription-args", "missing arguments", null)
+            return
+        }
+
+        var description: String? = null
+        if (canReadWithMetadataExtractor(mimeType)) {
+            try {
+                Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
+                    val metadata = MetadataExtractorHelper.safeRead(input)
+
+                    for (dir in metadata.getDirectoriesOfType(XmpDirectory::class.java)) {
+                        val xmpMeta = dir.xmpMeta
+                        try {
+                            if (xmpMeta.doesPropertyExist(XMP.DC_SCHEMA_NS, XMP.DC_DESCRIPTION_PROP_NAME)) {
+                                xmpMeta.getSafeLocalizedText(XMP.DC_SCHEMA_NS, XMP.DC_DESCRIPTION_PROP_NAME) { description = it }
+                            }
+                        } catch (e: XMPException) {
+                            Log.w(LOG_TAG, "failed to read XMP directory for uri=$uri", e)
+                        }
+                    }
+                    if (description == null) {
+                        for (dir in metadata.getDirectoriesOfType(IptcDirectory::class.java)) {
+                            dir.getSafeString(IptcDirectory.TAG_CAPTION) { description = it }
+                        }
+                    }
+                    if (description == null) {
+                        for (dir in metadata.getDirectoriesOfType(ExifIFD0Directory::class.java)) {
+                            dir.getSafeString(ExifIFD0Directory.TAG_IMAGE_DESCRIPTION) { description = it }
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for mimeType=$mimeType uri=$uri", e)
+            } catch (e: NoClassDefFoundError) {
+                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for mimeType=$mimeType uri=$uri", e)
+            } catch (e: AssertionError) {
+                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for mimeType=$mimeType uri=$uri", e)
+            }
+        }
+
+        result.success(description)
+    }
+
     companion object {
         private val LOG_TAG = LogUtils.createTag<MetadataFetchHandler>()
         const val CHANNEL = "deckers.thibault/aves/metadata_fetch"
@@ -1100,7 +1149,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         private const val KEY_LATITUDE = "latitude"
         private const val KEY_LONGITUDE = "longitude"
         private const val KEY_XMP_SUBJECTS = "xmpSubjects"
-        private const val KEY_XMP_TITLE_DESCRIPTION = "xmpTitleDescription"
+        private const val KEY_XMP_TITLE = "xmpTitleDescription"
         private const val KEY_RATING = "rating"
 
         private const val MASK_IS_ANIMATED = 1 shl 0
