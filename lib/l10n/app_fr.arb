@@ -238,6 +238,8 @@
 
   "renameEntryDialogLabel": "Nouveau nom",
 
+  "editEntryDialogTargetFieldsHeader": "Champs à modifier",
+
   "editEntryDateDialogTitle": "Date & Heure",
   "editEntryDateDialogSetCustom": "Régler une date personnalisée",
   "editEntryDateDialogCopyField": "Copier d’une autre date",
@@ -245,7 +247,6 @@
   "editEntryDateDialogExtractFromTitle": "Extraire du titre",
   "editEntryDateDialogShift": "Décaler",
   "editEntryDateDialogSourceFileModifiedDate": "Date de modification du fichier",
-  "editEntryDateDialogTargetFieldsHeader": "Champs à modifier",
   "editEntryDateDialogHours": "Heures",
   "editEntryDateDialogMinutes": "Minutes",
 

@@ -230,6 +230,8 @@
 
   "renameEntryDialogLabel": "Yeni ad",
 
+  "editEntryDialogTargetFieldsHeader": "Değiştirilecek alanlar",
+
   "editEntryDateDialogTitle": "Tarih ve Saat",
   "editEntryDateDialogSetCustom": "Özel tarih ayarla",
   "editEntryDateDialogCopyField": "Başka bir tarihten kopyala",
@@ -237,7 +239,6 @@
   "editEntryDateDialogExtractFromTitle": "Başlıktan ayıkla",
   "editEntryDateDialogShift": "Değişim",
   "editEntryDateDialogSourceFileModifiedDate": "Dosya değiştirilme tarihi",
-  "editEntryDateDialogTargetFieldsHeader": "Değiştirilecek alanlar",
   "editEntryDateDialogHours": "Saat",
   "editEntryDateDialogMinutes": "Dakika",
 

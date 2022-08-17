@@ -238,6 +238,8 @@
 
   "renameEntryDialogLabel": "新名称",
 
+  "editEntryDialogTargetFieldsHeader": "待修改的字段",
+
   "editEntryDateDialogTitle": "日期和时间",
   "editEntryDateDialogSetCustom": "设置自定义日期",
   "editEntryDateDialogCopyField": "复制自其他日期",
@@ -245,7 +247,6 @@
   "editEntryDateDialogExtractFromTitle": "从标题提取",
   "editEntryDateDialogShift": "转移",
   "editEntryDateDialogSourceFileModifiedDate": "文件修改日期",
-  "editEntryDateDialogTargetFieldsHeader": "待修改的字段",
   "editEntryDateDialogHours": "时",
   "editEntryDateDialogMinutes": "分",
 

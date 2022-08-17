@@ -1,43 +1,61 @@
 {
   "de": [
+    "entryInfoActionEditDescription",
+    "editEntryDescriptionDialogTitle",
     "settingsConfirmationAfterMoveToBinItems",
     "settingsViewerGestureSideTapNext"
   ],
 
   "es": [
+    "entryInfoActionEditDescription",
+    "editEntryDescriptionDialogTitle",
     "settingsConfirmationAfterMoveToBinItems"
   ],
 
   "fr": [
+    "entryInfoActionEditDescription",
+    "editEntryDescriptionDialogTitle",
     "settingsViewerGestureSideTapNext"
   ],
 
   "id": [
+    "entryInfoActionEditDescription",
+    "editEntryDescriptionDialogTitle",
     "settingsConfirmationAfterMoveToBinItems",
     "settingsViewerGestureSideTapNext"
   ],
 
   "it": [
+    "entryInfoActionEditDescription",
+    "editEntryDescriptionDialogTitle",
     "settingsConfirmationAfterMoveToBinItems",
     "settingsViewerGestureSideTapNext"
   ],
 
   "ja": [
+    "entryInfoActionEditDescription",
+    "editEntryDescriptionDialogTitle",
     "settingsConfirmationAfterMoveToBinItems",
     "settingsViewerGestureSideTapNext"
   ],
 
   "ko": [
+    "entryInfoActionEditDescription",
+    "editEntryDescriptionDialogTitle",
     "settingsViewerGestureSideTapNext"
   ],
 
   "pt": [
+    "entryInfoActionEditDescription",
+    "editEntryDescriptionDialogTitle",
     "settingsConfirmationAfterMoveToBinItems",
     "settingsViewerGestureSideTapNext"
   ],
 
   "ru": [
+    "entryInfoActionEditDescription",
     "filterOnThisDayLabel",
+    "editEntryDescriptionDialogTitle",
     "settingsConfirmationAfterMoveToBinItems",
     "settingsViewerGestureSideTapNext",
     "settingsSlideshowFillScreen",
@@ -49,6 +67,7 @@
   "tr": [
     "slideshowActionResume",
     "slideshowActionShowInCollection",
+    "entryInfoActionEditDescription",
     "filterOnThisDayLabel",
     "slideshowVideoPlaybackSkip",
     "slideshowVideoPlaybackMuted",
@@ -60,6 +79,7 @@
     "wallpaperTargetHome",
     "wallpaperTargetLock",
     "wallpaperTargetHomeLock",
+    "editEntryDescriptionDialogTitle",
     "menuActionSlideshow",
     "settingsConfirmationAfterMoveToBinItems",
     "settingsViewerGestureSideTapNext",
@@ -81,6 +101,8 @@
   ],
 
   "zh": [
+    "entryInfoActionEditDescription",
+    "editEntryDescriptionDialogTitle",
     "settingsConfirmationAfterMoveToBinItems",
     "settingsViewerGestureSideTapNext"
   ]

@@ -3,4 +3,5 @@ class IPTC {
 
   // ApplicationRecord tags
   static const int keywordsTag = 25;
+  static const int captionAbstractTag = 120;
 }

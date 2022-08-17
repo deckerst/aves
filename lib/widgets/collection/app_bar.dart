@@ -496,6 +496,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       case EntrySetAction.flip:
       case EntrySetAction.editDate:
       case EntrySetAction.editLocation:
+      case EntrySetAction.editDescription:
       case EntrySetAction.editRating:
       case EntrySetAction.editTags:
       case EntrySetAction.removeMetadata:

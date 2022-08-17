@@ -238,6 +238,8 @@
 
   "renameEntryDialogLabel": "Nama baru",
 
+  "editEntryDialogTargetFieldsHeader": "Bidang untuk dimodifikasikan",
+
   "editEntryDateDialogTitle": "Tanggal & Waktu",
   "editEntryDateDialogSetCustom": "Atur tanggal khusus",
   "editEntryDateDialogCopyField": "Salin dari tanggal lain",
@@ -245,7 +247,6 @@
   "editEntryDateDialogExtractFromTitle": "Ekstrak dari judul",
   "editEntryDateDialogShift": "Geser",
   "editEntryDateDialogSourceFileModifiedDate": "Tanggal modifikasi file",
-  "editEntryDateDialogTargetFieldsHeader": "Bidang untuk dimodifikasikan",
   "editEntryDateDialogHours": "Jam",
   "editEntryDateDialogMinutes": "Menit",
 

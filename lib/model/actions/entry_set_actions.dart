@@ -31,6 +31,7 @@ enum EntrySetAction {
   flip,
   editDate,
   editLocation,
+  editDescription,
   editRating,
   editTags,
   removeMetadata,
@@ -99,6 +100,7 @@ class EntrySetActions {
   static const edit = [
     EntrySetAction.editDate,
     EntrySetAction.editLocation,
+    EntrySetAction.editDescription,
     EntrySetAction.editRating,
     EntrySetAction.editTags,
     EntrySetAction.removeMetadata,
@@ -162,6 +164,8 @@ extension ExtraEntrySetAction on EntrySetAction {
         return context.l10n.entryInfoActionEditDate;
       case EntrySetAction.editLocation:
         return context.l10n.entryInfoActionEditLocation;
+      case EntrySetAction.editDescription:
+        return context.l10n.entryInfoActionEditDescription;
       case EntrySetAction.editRating:
         return context.l10n.entryInfoActionEditRating;
       case EntrySetAction.editTags:
@@ -229,6 +233,8 @@ extension ExtraEntrySetAction on EntrySetAction {
         return AIcons.date;
       case EntrySetAction.editLocation:
         return AIcons.location;
+      case EntrySetAction.editDescription:
+        return AIcons.description;
       case EntrySetAction.editRating:
         return AIcons.editRating;
       case EntrySetAction.editTags:

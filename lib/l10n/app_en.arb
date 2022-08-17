@@ -115,6 +115,7 @@
 
   "entryInfoActionEditDate": "Edit date & time",
   "entryInfoActionEditLocation": "Edit location",
+  "entryInfoActionEditDescription": "Edit description",
   "entryInfoActionEditRating": "Edit rating",
   "entryInfoActionEditTags": "Edit tags",
   "entryInfoActionRemoveMetadata": "Remove metadata",
@@ -368,6 +369,8 @@
 
   "renameEntryDialogLabel": "New name",
 
+  "editEntryDialogTargetFieldsHeader": "Fields to modify",
+
   "editEntryDateDialogTitle": "Date & Time",
   "editEntryDateDialogSetCustom": "Set custom date",
   "editEntryDateDialogCopyField": "Copy from other date",
@@ -375,7 +378,6 @@
   "editEntryDateDialogExtractFromTitle": "Extract from title",
   "editEntryDateDialogShift": "Shift",
   "editEntryDateDialogSourceFileModifiedDate": "File modified date",
-  "editEntryDateDialogTargetFieldsHeader": "Fields to modify",
   "editEntryDateDialogHours": "Hours",
   "editEntryDateDialogMinutes": "Minutes",
 
@@ -385,6 +387,8 @@
   "editEntryLocationDialogLongitude": "Longitude",
 
   "locationPickerUseThisLocationButton": "Use this location",
+
+  "editEntryDescriptionDialogTitle": "Description",
 
   "editEntryRatingDialogTitle": "Rating",
 
