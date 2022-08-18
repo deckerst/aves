@@ -103,9 +103,11 @@ object MultiPage {
                         )
                     )
                     // add video tracks from the appended video
-                    for (i in 0 until extractor.trackCount) {
+                    if (extractor.trackCount > 0) {
+                        // only consider the first track to represent the appended video
+                        val trackIndex = 0
                         try {
-                            val format = extractor.getTrackFormat(i)
+                            val format = extractor.getTrackFormat(trackIndex)
                             format.getString(MediaFormat.KEY_MIME)?.let { mime ->
                                 if (MimeTypes.isVideo(mime)) {
                                     val track: FieldMap = hashMapOf(
@@ -123,7 +125,7 @@ object MultiPage {
                                 }
                             }
                         } catch (e: Exception) {
-                            Log.w(LOG_TAG, "failed to get motion photo track information for uri=$uri, track num=$i", e)
+                            Log.w(LOG_TAG, "failed to get motion photo track information for uri=$uri, track num=$trackIndex", e)
                         }
                     }
                 }
