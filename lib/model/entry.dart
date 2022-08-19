@@ -218,6 +218,7 @@ class AvesEntry {
         MimeTypes.heic,
         MimeTypes.heif,
         MimeTypes.jpeg,
+        MimeTypes.png,
         MimeTypes.webp,
         MimeTypes.arw,
         MimeTypes.cr2,
