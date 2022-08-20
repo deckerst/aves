@@ -9,6 +9,8 @@ import android.os.Build
 import android.os.ParcelFileDescriptor
 import android.util.Log
 import com.drew.metadata.xmp.XmpDirectory
+import deckers.thibault.aves.metadata.XMP.countPropArrayItems
+import deckers.thibault.aves.metadata.XMP.doesPropExist
 import deckers.thibault.aves.metadata.XMP.getSafeLong
 import deckers.thibault.aves.metadata.XMP.getSafeStructField
 import deckers.thibault.aves.model.FieldMap
@@ -146,17 +148,17 @@ object MultiPage {
                 for (dir in metadata.getDirectoriesOfType(XmpDirectory::class.java)) {
                     var offsetFromEnd: Long? = null
                     val xmpMeta = dir.xmpMeta
-                    if (xmpMeta.doesPropertyExist(XMP.GCAMERA_SCHEMA_NS, XMP.GCAMERA_VIDEO_OFFSET_PROP_NAME)) {
+                    if (xmpMeta.doesPropExist(XMP.GCAMERA_VIDEO_OFFSET_PROP_NAME)) {
                         // GCamera motion photo
-                        xmpMeta.getSafeLong(XMP.GCAMERA_SCHEMA_NS, XMP.GCAMERA_VIDEO_OFFSET_PROP_NAME) { offsetFromEnd = it }
-                    } else if (xmpMeta.doesPropertyExist(XMP.CONTAINER_SCHEMA_NS, XMP.CONTAINER_DIRECTORY_PROP_NAME)) {
+                        xmpMeta.getSafeLong(XMP.GCAMERA_VIDEO_OFFSET_PROP_NAME) { offsetFromEnd = it }
+                    } else if (xmpMeta.doesPropExist(XMP.CONTAINER_DIRECTORY_PROP_NAME)) {
                         // Container motion photo
-                        val count = xmpMeta.countArrayItems(XMP.CONTAINER_SCHEMA_NS, XMP.CONTAINER_DIRECTORY_PROP_NAME)
+                        val count = xmpMeta.countPropArrayItems(XMP.CONTAINER_DIRECTORY_PROP_NAME)
                         if (count == 2) {
                             // expect the video to be the second item
                             val i = 2
-                            val mime = xmpMeta.getSafeStructField("${XMP.CONTAINER_DIRECTORY_PROP_NAME}[$i]/${XMP.CONTAINER_ITEM_PROP_NAME}/${XMP.CONTAINER_ITEM_MIME_PROP_NAME}")?.value
-                            val length = xmpMeta.getSafeStructField("${XMP.CONTAINER_DIRECTORY_PROP_NAME}[$i]/${XMP.CONTAINER_ITEM_PROP_NAME}/${XMP.CONTAINER_ITEM_LENGTH_PROP_NAME}")?.value
+                            val mime = xmpMeta.getSafeStructField(listOf(XMP.CONTAINER_DIRECTORY_PROP_NAME, i, XMP.CONTAINER_ITEM_PROP_NAME, XMP.CONTAINER_ITEM_MIME_PROP_NAME))?.value
+                            val length = xmpMeta.getSafeStructField(listOf(XMP.CONTAINER_DIRECTORY_PROP_NAME, i, XMP.CONTAINER_ITEM_PROP_NAME, XMP.CONTAINER_ITEM_LENGTH_PROP_NAME))?.value
                             if (MimeTypes.isVideo(mime) && length != null) {
                                 offsetFromEnd = length.toLong()
                             }

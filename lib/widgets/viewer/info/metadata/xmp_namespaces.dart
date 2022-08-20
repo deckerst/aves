@@ -26,110 +26,58 @@ import 'package:provider/provider.dart';
 
 @immutable
 class XmpNamespace extends Equatable {
-  final String namespace;
+  final String nsUri, nsPrefix;
   final Map<String, String> rawProps;
 
   @override
-  List<Object?> get props => [namespace];
+  List<Object?> get props => [nsUri, nsPrefix];
 
-  const XmpNamespace(this.namespace, this.rawProps);
+  const XmpNamespace(this.nsUri, this.nsPrefix, this.rawProps);
 
-  factory XmpNamespace.create(String namespace, Map<String, String> rawProps) {
-    switch (namespace) {
-      case XmpBasicNamespace.ns:
-        return XmpBasicNamespace(rawProps);
-      case XmpContainer.ns:
-        return XmpContainer(rawProps);
-      case XmpCrsNamespace.ns:
-        return XmpCrsNamespace(rawProps);
-      case XmpDarktableNamespace.ns:
-        return XmpDarktableNamespace(rawProps);
-      case XmpDwcNamespace.ns:
-        return XmpDwcNamespace(rawProps);
-      case XmpExifNamespace.ns:
-        return XmpExifNamespace(rawProps);
-      case XmpGAudioNamespace.ns:
-        return XmpGAudioNamespace(rawProps);
-      case XmpGDepthNamespace.ns:
-        return XmpGDepthNamespace(rawProps);
-      case XmpGImageNamespace.ns:
-        return XmpGImageNamespace(rawProps);
-      case XmpIptcCoreNamespace.ns:
-        return XmpIptcCoreNamespace(rawProps);
-      case XmpIptc4xmpExtNamespace.ns:
-        return XmpIptc4xmpExtNamespace(rawProps);
-      case XmpMgwRegionsNamespace.ns:
-        return XmpMgwRegionsNamespace(rawProps);
-      case XmpMMNamespace.ns:
-        return XmpMMNamespace(rawProps);
-      case XmpMPNamespace.ns:
-        return XmpMPNamespace(rawProps);
-      case XmpNoteNamespace.ns:
-        return XmpNoteNamespace(rawProps);
-      case XmpPhotoshopNamespace.ns:
-        return XmpPhotoshopNamespace(rawProps);
-      case XmpPlusNamespace.ns:
-        return XmpPlusNamespace(rawProps);
-      case XmpTiffNamespace.ns:
-        return XmpTiffNamespace(rawProps);
+  factory XmpNamespace.create(String nsUri, String nsPrefix, Map<String, String> rawProps) {
+    switch (nsUri) {
+      case Namespaces.container:
+        return XmpContainer(nsPrefix, rawProps);
+      case Namespaces.crs:
+        return XmpCrsNamespace(nsPrefix, rawProps);
+      case Namespaces.darktable:
+        return XmpDarktableNamespace(nsPrefix, rawProps);
+      case Namespaces.dwc:
+        return XmpDwcNamespace(nsPrefix, rawProps);
+      case Namespaces.exif:
+        return XmpExifNamespace(nsPrefix, rawProps);
+      case Namespaces.gAudio:
+        return XmpGAudioNamespace(nsPrefix, rawProps);
+      case Namespaces.gDepth:
+        return XmpGDepthNamespace(nsPrefix, rawProps);
+      case Namespaces.gImage:
+        return XmpGImageNamespace(nsPrefix, rawProps);
+      case Namespaces.iptc4xmpCore:
+        return XmpIptcCoreNamespace(nsPrefix, rawProps);
+      case Namespaces.iptc4xmpExt:
+        return XmpIptc4xmpExtNamespace(nsPrefix, rawProps);
+      case Namespaces.mwgrs:
+        return XmpMgwRegionsNamespace(nsPrefix, rawProps);
+      case Namespaces.mp:
+        return XmpMPNamespace(nsPrefix, rawProps);
+      case Namespaces.photoshop:
+        return XmpPhotoshopNamespace(nsPrefix, rawProps);
+      case Namespaces.plus:
+        return XmpPlusNamespace(nsPrefix, rawProps);
+      case Namespaces.tiff:
+        return XmpTiffNamespace(nsPrefix, rawProps);
+      case Namespaces.xmp:
+        return XmpBasicNamespace(nsPrefix, rawProps);
+      case Namespaces.xmpMM:
+        return XmpMMNamespace(nsPrefix, rawProps);
+      case Namespaces.xmpNote:
+        return XmpNoteNamespace(nsPrefix, rawProps);
       default:
-        return XmpNamespace(namespace, rawProps);
+        return XmpNamespace(nsUri, nsPrefix, rawProps);
     }
   }
 
-  // cf https://exiftool.org/TagNames/XMP.html
-  static const Map<String, String> nsTitles = {
-    'acdsee': 'ACDSee',
-    'adsml-at': 'AdsML',
-    'aux': 'Exif Aux',
-    'avm': 'Astronomy Visualization',
-    'Camera': 'Camera',
-    'cc': 'Creative Commons',
-    'crd': 'Camera Raw Defaults',
-    'creatorAtom': 'After Effects',
-    'crs': 'Camera Raw Settings',
-    'dc': 'Dublin Core',
-    'drone-dji': 'DJI Drone',
-    'dwc': 'Darwin Core',
-    'exif': 'Exif',
-    'exifEX': 'Exif Ex',
-    'GettyImagesGIFT': 'Getty Images',
-    'GAudio': 'Google Audio',
-    'GDepth': 'Google Depth',
-    'GImage': 'Google Image',
-    'GIMP': 'GIMP',
-    'GCamera': 'Google Camera',
-    'GCreations': 'Google Creations',
-    'GFocus': 'Google Focus',
-    'GPano': 'Google Panorama',
-    'illustrator': 'Illustrator',
-    'Iptc4xmpCore': 'IPTC Core',
-    'Iptc4xmpExt': 'IPTC Extension',
-    'lr': 'Lightroom',
-    'mediapro': 'MediaPro',
-    'MicrosoftPhoto': 'Microsoft Photo 1.0',
-    'MP1': 'Microsoft Photo 1.1',
-    'MP': 'Microsoft Photo 1.2',
-    'mwg-rs': 'Regions',
-    'nga': 'National Gallery of Art',
-    'panorama': 'Panorama',
-    'PanoStudioXMP': 'PanoramaStudio',
-    'pdf': 'PDF',
-    'pdfx': 'PDF/X',
-    'photomechanic': 'Photo Mechanic',
-    'photoshop': 'Photoshop',
-    'plus': 'PLUS',
-    'pmtm': 'Photomatix',
-    'tiff': 'TIFF',
-    'xmp': 'Basic',
-    'xmpBJ': 'Basic Job Ticket',
-    'xmpDM': 'Dynamic Media',
-    'xmpMM': 'Media Management',
-    'xmpRights': 'Rights Management',
-    'xmpTPg': 'Paged-Text',
-  };
-
-  String get displayTitle => nsTitles[namespace] ?? namespace;
+  String get displayTitle => Namespaces.nsTitles[nsUri] ?? '${nsPrefix.substring(0, nsPrefix.length - 1)} ($nsUri)';
 
   Map<String, String> get buildProps => rawProps;
 

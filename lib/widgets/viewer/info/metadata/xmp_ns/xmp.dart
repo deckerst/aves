@@ -1,4 +1,5 @@
 import 'package:aves/ref/mime_types.dart';
+import 'package:aves/utils/xmp_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/viewer/embedded/notifications.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
@@ -7,14 +8,12 @@ import 'package:aves/widgets/viewer/info/metadata/xmp_structs.dart';
 import 'package:flutter/material.dart';
 
 class XmpBasicNamespace extends XmpNamespace {
-  static const ns = 'xmp';
-
-  static final thumbnailsPattern = RegExp(ns + r':Thumbnails\[(\d+)\]/(.*)');
+  late final thumbnailsPattern = RegExp(nsPrefix + r'Thumbnails\[(\d+)\]/(.*)');
   static const thumbnailDataDisplayKey = 'Image';
 
   final thumbnails = <int, Map<String, String>>{};
 
-  XmpBasicNamespace(Map<String, String> rawProps) : super(ns, rawProps);
+  XmpBasicNamespace(String nsPrefix, Map<String, String> rawProps) : super(Namespaces.xmp, nsPrefix, rawProps);
 
   @override
   bool extractData(XmpProp prop) => extractIndexedStruct(prop, thumbnailsPattern, thumbnails);
@@ -32,7 +31,11 @@ class XmpBasicNamespace extends XmpNamespace {
                   thumbnailDataDisplayKey: InfoRowGroup.linkSpanBuilder(
                     linkText: (context) => context.l10n.viewerInfoOpenLinkText,
                     onTap: (context) => OpenEmbeddedDataNotification.xmp(
-                      propPath: 'xmp:Thumbnails[$index]/xmpGImg:image',
+                      props: [
+                        const [Namespaces.xmp, 'Thumbnails'],
+                        index,
+                        const [Namespaces.xmpGImg, 'image'],
+                      ],
                       mimeType: MimeTypes.jpeg,
                     ).dispatch(context),
                   ),
@@ -43,22 +46,17 @@ class XmpBasicNamespace extends XmpNamespace {
 }
 
 class XmpMMNamespace extends XmpNamespace {
-  static const ns = 'xmpMM';
-
-  static const didPrefix = 'xmp.did:';
-  static const iidPrefix = 'xmp.iid:';
-
-  static final derivedFromPattern = RegExp(ns + r':DerivedFrom/(.*)');
-  static final historyPattern = RegExp(ns + r':History\[(\d+)\]/(.*)');
-  static final ingredientsPattern = RegExp(ns + r':Ingredients\[(\d+)\]/(.*)');
-  static final pantryPattern = RegExp(ns + r':Pantry\[(\d+)\]/(.*)');
+  late final derivedFromPattern = RegExp(nsPrefix + r'DerivedFrom/(.*)');
+  late final historyPattern = RegExp(nsPrefix + r'History\[(\d+)\]/(.*)');
+  late final ingredientsPattern = RegExp(nsPrefix + r'Ingredients\[(\d+)\]/(.*)');
+  late final pantryPattern = RegExp(nsPrefix + r'Pantry\[(\d+)\]/(.*)');
 
   final derivedFrom = <String, String>{};
   final history = <int, Map<String, String>>{};
   final ingredients = <int, Map<String, String>>{};
   final pantry = <int, Map<String, String>>{};
 
-  XmpMMNamespace(Map<String, String> rawProps) : super(ns, rawProps);
+  XmpMMNamespace(String nsPrefix, Map<String, String> rawProps) : super(Namespaces.xmpMM, nsPrefix, rawProps);
 
   @override
   bool extractData(XmpProp prop) {
@@ -92,23 +90,13 @@ class XmpMMNamespace extends XmpNamespace {
             structByIndex: pantry,
           ),
       ];
-
-  @override
-  String formatValue(XmpProp prop) {
-    final value = prop.value;
-    if (value.startsWith(didPrefix)) return value.replaceFirst(didPrefix, '');
-    if (value.startsWith(iidPrefix)) return value.replaceFirst(iidPrefix, '');
-    return value;
-  }
 }
 
 class XmpNoteNamespace extends XmpNamespace {
-  static const ns = 'xmpNote';
-
   // `xmpNote:HasExtendedXMP` is structural and should not be displayed to users
-  static const hasExtendedXmp = '$ns:HasExtendedXMP';
+  late final hasExtendedXmp = '${nsPrefix}HasExtendedXMP';
 
-  const XmpNoteNamespace(Map<String, String> rawProps) : super(ns, rawProps);
+  XmpNoteNamespace(String nsPrefix, Map<String, String> rawProps) : super(Namespaces.xmpNote, nsPrefix, rawProps);
 
   @override
   bool extractData(XmpProp prop) {
