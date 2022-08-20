@@ -38,6 +38,7 @@ mixin EntryViewControllerMixin<T extends StatefulWidget> on State<T> {
   }
 
   SlideshowVideoPlayback? get videoPlaybackOverride {
+    if (!mounted) return null;
     final appMode = context.read<ValueNotifier<AppMode>>().value;
     switch (appMode) {
       case AppMode.screenSaver:
