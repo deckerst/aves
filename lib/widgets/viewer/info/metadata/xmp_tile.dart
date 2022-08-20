@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:convert';
 
 import 'package:aves/model/entry.dart';
 import 'package:aves/theme/colors.dart';
@@ -12,7 +13,7 @@ import 'package:provider/provider.dart';
 class XmpDirTile extends StatefulWidget {
   final AvesEntry entry;
   final String title;
-  final SplayTreeMap<String, String> tags;
+  final SplayTreeMap<String, String> allTags, tags;
   final ValueNotifier<String?>? expandedNotifier;
   final bool initiallyExpanded;
 
@@ -20,6 +21,7 @@ class XmpDirTile extends StatefulWidget {
     super.key,
     required this.entry,
     required this.title,
+    required this.allTags,
     required this.tags,
     required this.expandedNotifier,
     required this.initiallyExpanded,
@@ -30,16 +32,34 @@ class XmpDirTile extends StatefulWidget {
 }
 
 class _XmpDirTileState extends State<XmpDirTile> {
+  late final Map<String, String> _schemaRegistryPrefixes, _tags;
+
   AvesEntry get entry => widget.entry;
+
+  static const schemaRegistryPrefixesKey = 'schemaRegistryPrefixes';
+
+  @override
+  void initState() {
+    super.initState();
+    _tags = Map.from(widget.tags)..remove(schemaRegistryPrefixesKey);
+    final prefixesJson = widget.allTags[schemaRegistryPrefixesKey];
+    final Map<String, dynamic> prefixesDecoded = prefixesJson != null ? json.decode(prefixesJson) : {};
+    _schemaRegistryPrefixes = Map.fromEntries(prefixesDecoded.entries.map((kv) => MapEntry(kv.key, kv.value as String)));
+  }
 
   @override
   Widget build(BuildContext context) {
-    final sections = groupBy<MapEntry<String, String>, String>(widget.tags.entries, (kv) {
+    final sections = groupBy<MapEntry<String, String>, String>(_tags.entries, (kv) {
       final fullKey = kv.key;
       final i = fullKey.indexOf(XMP.propNamespaceSeparator);
-      final namespace = i == -1 ? '' : fullKey.substring(0, i);
-      return namespace;
-    }).entries.map((kv) => XmpNamespace.create(kv.key, Map.fromEntries(kv.value))).toList()
+      final nsPrefix = i == -1 ? '' : fullKey.substring(0, i + 1);
+      return nsPrefix;
+    }).entries.map((kv) {
+      final nsPrefix = kv.key;
+      final nsUri = _schemaRegistryPrefixes[nsPrefix] ?? '';
+      final rawProps = Map.fromEntries(kv.value);
+      return XmpNamespace.create(nsUri, nsPrefix, rawProps);
+    }).toList()
       ..sort((a, b) => compareAsciiUpperCase(a.displayTitle, b.displayTitle));
     return AvesExpansionTile(
       // title may contain parent to distinguish multiple XMP directories

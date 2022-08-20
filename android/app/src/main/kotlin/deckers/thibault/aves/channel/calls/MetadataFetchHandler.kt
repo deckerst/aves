@@ -59,6 +59,8 @@ import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeInt
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeRational
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeString
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.isPngTextDir
+import deckers.thibault.aves.metadata.XMP.doesPropExist
+import deckers.thibault.aves.metadata.XMP.getPropArrayItemValues
 import deckers.thibault.aves.metadata.XMP.getSafeDateMillis
 import deckers.thibault.aves.metadata.XMP.getSafeInt
 import deckers.thibault.aves.metadata.XMP.getSafeLocalizedText
@@ -83,6 +85,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets
 import java.text.DecimalFormat
@@ -280,6 +283,9 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                                 }
                                 // remove this stat as it is not actual XMP data
                                 dirMap.remove(dir.getTagName(XmpDirectory.TAG_XMP_VALUE_COUNT))
+                                // add schema prefixes for namespace resolution
+                                val prefixes = XMPMetaFactory.getSchemaRegistry().prefixes
+                                dirMap["schemaRegistryPrefixes"] = JSONObject(prefixes).toString()
                             }
 
                             if (dir is Mp4UuidBoxDirectory) {
@@ -509,22 +515,21 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                     for (dir in metadata.getDirectoriesOfType(XmpDirectory::class.java)) {
                         val xmpMeta = dir.xmpMeta
                         try {
-                            if (xmpMeta.doesPropertyExist(XMP.DC_SCHEMA_NS, XMP.DC_SUBJECT_PROP_NAME)) {
-                                val count = xmpMeta.countArrayItems(XMP.DC_SCHEMA_NS, XMP.DC_SUBJECT_PROP_NAME)
-                                val values = (1 until count + 1).map { xmpMeta.getArrayItem(XMP.DC_SCHEMA_NS, XMP.DC_SUBJECT_PROP_NAME, it).value }
+                            if (xmpMeta.doesPropExist(XMP.DC_SUBJECT_PROP_NAME)) {
+                                val values = xmpMeta.getPropArrayItemValues(XMP.DC_SUBJECT_PROP_NAME)
                                 metadataMap[KEY_XMP_SUBJECTS] = values.joinToString(XMP_SUBJECTS_SEPARATOR)
                             }
-                            xmpMeta.getSafeLocalizedText(XMP.DC_SCHEMA_NS, XMP.DC_TITLE_PROP_NAME, acceptBlank = false) { metadataMap[KEY_XMP_TITLE] = it }
+                            xmpMeta.getSafeLocalizedText(XMP.DC_TITLE_PROP_NAME, acceptBlank = false) { metadataMap[KEY_XMP_TITLE] = it }
                             if (!metadataMap.containsKey(KEY_DATE_MILLIS)) {
-                                xmpMeta.getSafeDateMillis(XMP.XMP_SCHEMA_NS, XMP.XMP_CREATE_DATE_PROP_NAME) { metadataMap[KEY_DATE_MILLIS] = it }
+                                xmpMeta.getSafeDateMillis(XMP.XMP_CREATE_DATE_PROP_NAME) { metadataMap[KEY_DATE_MILLIS] = it }
                                 if (!metadataMap.containsKey(KEY_DATE_MILLIS)) {
-                                    xmpMeta.getSafeDateMillis(XMP.PHOTOSHOP_SCHEMA_NS, XMP.PS_DATE_CREATED_PROP_NAME) { metadataMap[KEY_DATE_MILLIS] = it }
+                                    xmpMeta.getSafeDateMillis(XMP.PS_DATE_CREATED_PROP_NAME) { metadataMap[KEY_DATE_MILLIS] = it }
                                 }
                             }
 
-                            xmpMeta.getSafeInt(XMP.XMP_SCHEMA_NS, XMP.XMP_RATING_PROP_NAME) { metadataMap[KEY_RATING] = it }
+                            xmpMeta.getSafeInt(XMP.XMP_RATING_PROP_NAME) { metadataMap[KEY_RATING] = it }
                             if (!metadataMap.containsKey(KEY_RATING)) {
-                                xmpMeta.getSafeInt(XMP.MICROSOFTPHOTO_SCHEMA_NS, XMP.MS_RATING_PROP_NAME) { percentRating ->
+                                xmpMeta.getSafeInt(XMP.MS_RATING_PROP_NAME) { percentRating ->
                                     // values of 1,25,50,75,99% correspond to 1,2,3,4,5 stars
                                     val standardRating = (percentRating / 25f).roundToInt() + 1
                                     metadataMap[KEY_RATING] = standardRating
@@ -834,13 +839,13 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                     )
                     for (dir in metadata.getDirectoriesOfType(XmpDirectory::class.java)) {
                         val xmpMeta = dir.xmpMeta
-                        xmpMeta.getSafeInt(XMP.GPANO_SCHEMA_NS, XMP.GPANO_CROPPED_AREA_LEFT_PROP_NAME) { fields["croppedAreaLeft"] = it }
-                        xmpMeta.getSafeInt(XMP.GPANO_SCHEMA_NS, XMP.GPANO_CROPPED_AREA_TOP_PROP_NAME) { fields["croppedAreaTop"] = it }
-                        xmpMeta.getSafeInt(XMP.GPANO_SCHEMA_NS, XMP.GPANO_CROPPED_AREA_WIDTH_PROP_NAME) { fields["croppedAreaWidth"] = it }
-                        xmpMeta.getSafeInt(XMP.GPANO_SCHEMA_NS, XMP.GPANO_CROPPED_AREA_HEIGHT_PROP_NAME) { fields["croppedAreaHeight"] = it }
-                        xmpMeta.getSafeInt(XMP.GPANO_SCHEMA_NS, XMP.GPANO_FULL_PANO_WIDTH_PROP_NAME) { fields["fullPanoWidth"] = it }
-                        xmpMeta.getSafeInt(XMP.GPANO_SCHEMA_NS, XMP.GPANO_FULL_PANO_HEIGHT_PROP_NAME) { fields["fullPanoHeight"] = it }
-                        xmpMeta.getSafeString(XMP.GPANO_SCHEMA_NS, XMP.GPANO_PROJECTION_TYPE_PROP_NAME) { fields["projectionType"] = it }
+                        xmpMeta.getSafeInt(XMP.GPANO_CROPPED_AREA_LEFT_PROP_NAME) { fields["croppedAreaLeft"] = it }
+                        xmpMeta.getSafeInt(XMP.GPANO_CROPPED_AREA_TOP_PROP_NAME) { fields["croppedAreaTop"] = it }
+                        xmpMeta.getSafeInt(XMP.GPANO_CROPPED_AREA_WIDTH_PROP_NAME) { fields["croppedAreaWidth"] = it }
+                        xmpMeta.getSafeInt(XMP.GPANO_CROPPED_AREA_HEIGHT_PROP_NAME) { fields["croppedAreaHeight"] = it }
+                        xmpMeta.getSafeInt(XMP.GPANO_FULL_PANO_WIDTH_PROP_NAME) { fields["fullPanoWidth"] = it }
+                        xmpMeta.getSafeInt(XMP.GPANO_FULL_PANO_HEIGHT_PROP_NAME) { fields["fullPanoHeight"] = it }
+                        xmpMeta.getSafeString(XMP.GPANO_PROJECTION_TYPE_PROP_NAME) { fields["projectionType"] = it }
                     }
                     result.success(fields)
                     return
@@ -1071,8 +1076,8 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                     for (dir in metadata.getDirectoriesOfType(XmpDirectory::class.java)) {
                         val xmpMeta = dir.xmpMeta
                         try {
-                            if (xmpMeta.doesPropertyExist(XMP.DC_SCHEMA_NS, XMP.DC_DESCRIPTION_PROP_NAME)) {
-                                xmpMeta.getSafeLocalizedText(XMP.DC_SCHEMA_NS, XMP.DC_DESCRIPTION_PROP_NAME) { description = it }
+                            if (xmpMeta.doesPropExist(XMP.DC_DESCRIPTION_PROP_NAME)) {
+                                xmpMeta.getSafeLocalizedText(XMP.DC_DESCRIPTION_PROP_NAME) { description = it }
                             }
                         } catch (e: XMPException) {
                             Log.w(LOG_TAG, "failed to read XMP directory for uri=$uri", e)

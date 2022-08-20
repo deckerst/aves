@@ -14,8 +14,8 @@ import deckers.thibault.aves.channel.calls.Coresult.Companion.safeSuspend
 import deckers.thibault.aves.metadata.Metadata
 import deckers.thibault.aves.metadata.MetadataExtractorHelper
 import deckers.thibault.aves.metadata.MultiPage
-import deckers.thibault.aves.metadata.XMP
 import deckers.thibault.aves.metadata.XMP.getSafeStructField
+import deckers.thibault.aves.metadata.XMPPropName
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.model.provider.ContentImageProvider
 import deckers.thibault.aves.model.provider.ImageProvider
@@ -140,11 +140,19 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
         val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
         val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
         val displayName = call.argument<String>("displayName")
-        val dataPropPath = call.argument<String>("propPath")
+        val dataProp = call.argument<List<Any>>("propPath")
         val embedMimeType = call.argument<String>("propMimeType")
-        if (mimeType == null || uri == null || dataPropPath == null || embedMimeType == null) {
+        if (mimeType == null || uri == null || dataProp == null || embedMimeType == null) {
             result.error("extractXmpDataProp-args", "missing arguments", null)
             return
+        }
+
+        val props = dataProp.mapNotNull {
+            when (it) {
+                is List<*> -> XMPPropName(it.first() as String, it.last() as String)
+                is Int -> it
+                else -> null
+            }
         }
 
         if (canReadWithMetadataExtractor(mimeType)) {
@@ -155,11 +163,11 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
                     // which is returned as a second XMP directory
                     val xmpDirs = metadata.getDirectoriesOfType(XmpDirectory::class.java)
                     try {
-                        val embedBytes: ByteArray = if (!dataPropPath.contains('/')) {
-                            val propNs = XMP.namespaceForPropPath(dataPropPath)
-                            xmpDirs.mapNotNull { it.xmpMeta.getPropertyBase64(propNs, dataPropPath) }.first()
+                        val embedBytes: ByteArray = if (props.size == 1) {
+                            val prop = props.first() as XMPPropName
+                            xmpDirs.mapNotNull { it.xmpMeta.getPropertyBase64(prop.nsUri, prop.toString()) }.first()
                         } else {
-                            xmpDirs.mapNotNull { it.xmpMeta.getSafeStructField(dataPropPath) }.first().let {
+                            xmpDirs.mapNotNull { it.xmpMeta.getSafeStructField(props) }.first().let {
                                 XMPUtils.decodeBase64(it.value)
                             }
                         }
@@ -167,7 +175,7 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
                         copyEmbeddedBytes(result, embedMimeType, displayName, embedBytes.inputStream())
                         return
                     } catch (e: XMPException) {
-                        result.error("extractXmpDataProp-xmp", "failed to read XMP directory for uri=$uri prop=$dataPropPath", e.message)
+                        result.error("extractXmpDataProp-xmp", "failed to read XMP directory for uri=$uri prop=$dataProp", e.message)
                         return
                     }
                 }
@@ -179,7 +187,7 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
                 Log.w(LOG_TAG, "failed to extract file from XMP", e)
             }
         }
-        result.error("extractXmpDataProp-empty", "failed to extract file from XMP uri=$uri prop=$dataPropPath", null)
+        result.error("extractXmpDataProp-empty", "failed to extract file from XMP uri=$uri prop=$dataProp", null)
     }
 
     private fun copyEmbeddedBytes(result: MethodChannel.Result, mimeType: String, displayName: String?, embeddedByteStream: InputStream) {

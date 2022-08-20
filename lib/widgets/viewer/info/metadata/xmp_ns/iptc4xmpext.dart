@@ -1,15 +1,14 @@
+import 'package:aves/utils/xmp_utils.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_namespaces.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_structs.dart';
 import 'package:flutter/material.dart';
 
 class XmpIptc4xmpExtNamespace extends XmpNamespace {
-  static const ns = 'Iptc4xmpExt';
-
-  static final aooPattern = RegExp(ns + r':ArtworkOrObject\[(\d+)\]/(.*)');
+  late final aooPattern = RegExp(nsPrefix + r'ArtworkOrObject\[(\d+)\]/(.*)');
 
   final aoo = <int, Map<String, String>>{};
 
-  XmpIptc4xmpExtNamespace(Map<String, String> rawProps) : super(ns, rawProps);
+  XmpIptc4xmpExtNamespace(String nsPrefix, Map<String, String> rawProps) : super(Namespaces.iptc4xmpExt, nsPrefix, rawProps);
 
   @override
   bool extractData(XmpProp prop) => extractIndexedStruct(prop, aooPattern, aoo);
