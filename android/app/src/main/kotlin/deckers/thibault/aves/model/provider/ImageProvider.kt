@@ -70,7 +70,7 @@ abstract class ImageProvider {
         callback.onFailure(UnsupportedOperationException("`renameMultiple` is not supported by this image provider"))
     }
 
-    open fun scanPostMetadataEdit(context: Context, path: String, uri: Uri, mimeType: String, newFields: HashMap<String, Any?>, callback: ImageOpCallback) {
+    open fun scanPostMetadataEdit(context: Context, path: String, uri: Uri, mimeType: String, newFields: FieldMap, callback: ImageOpCallback) {
         throw UnsupportedOperationException("`scanPostMetadataEdit` is not supported by this image provider")
     }
 
@@ -684,7 +684,7 @@ abstract class ImageProvider {
         op: ExifOrientationOp,
         callback: ImageOpCallback,
     ) {
-        val newFields = HashMap<String, Any?>()
+        val newFields: FieldMap = hashMapOf()
 
         val success = editExif(context, path, uri, mimeType, callback) { exif ->
             // when the orientation is not defined, it returns `undefined (0)` instead of the orientation default value `normal (1)`
@@ -909,7 +909,7 @@ abstract class ImageProvider {
             }
         }
 
-        val newFields = HashMap<String, Any?>()
+        val newFields: FieldMap = hashMapOf()
         scanPostMetadataEdit(context, path, uri, mimeType, newFields, callback)
     }
 
@@ -961,7 +961,7 @@ abstract class ImageProvider {
             return
         }
 
-        val newFields = HashMap<String, Any?>()
+        val newFields: FieldMap = hashMapOf()
         scanPostMetadataEdit(context, path, uri, mimeType, newFields, callback)
     }
 
@@ -1008,7 +1008,7 @@ abstract class ImageProvider {
             return
         }
 
-        val newFields = HashMap<String, Any?>()
+        val newFields: FieldMap = hashMapOf()
         scanPostMetadataEdit(context, path, uri, mimeType, newFields, callback)
     }
 

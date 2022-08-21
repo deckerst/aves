@@ -138,7 +138,7 @@ class MetadataExtractorSafeXmpReader : XmpReader() {
         private const val segmentTypeSizeDangerThreshold = 3 * (1 shl 20) // MB
 
         // tighter node limits for faster loading
-        private val PARSE_OPTIONS = ParseOptions().setXMPNodesToLimit(
+        val PARSE_OPTIONS: ParseOptions = ParseOptions().setXMPNodesToLimit(
             mapOf(
                 "photoshop:DocumentAncestors" to 200,
                 "xmpMM:History" to 200,
