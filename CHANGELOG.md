@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 - Albums / Countries / Tags: live title filter
 - option to hide confirmation message after moving items to the bin
 - Collection / Info: edit description via Exif / IPTC / XMP
+- Dutch translation (thanks Martijn Fabrie, Koen Koppens)
 
 ### Changed
 

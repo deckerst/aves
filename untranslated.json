@@ -45,6 +45,14 @@
     "settingsViewerGestureSideTapNext"
   ],
 
+  "nl": [
+    "entryInfoActionEditDescription",
+    "editEntryDescriptionDialogTitle",
+    "settingsConfirmationAfterMoveToBinItems",
+    "settingsViewerGestureSideTapNext",
+    "settingsWidgetShowOutline"
+  ],
+
   "pt": [
     "entryInfoActionEditDescription",
     "editEntryDescriptionDialogTitle",
