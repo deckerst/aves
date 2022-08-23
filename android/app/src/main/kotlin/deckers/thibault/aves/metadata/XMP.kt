@@ -1,13 +1,19 @@
 package deckers.thibault.aves.metadata
 
+import android.content.Context
+import android.net.Uri
+import android.os.Build
+import android.provider.MediaStore
 import android.util.Log
 import com.adobe.internal.xmp.XMPError
 import com.adobe.internal.xmp.XMPException
 import com.adobe.internal.xmp.XMPMeta
 import com.adobe.internal.xmp.XMPMetaFactory
 import com.adobe.internal.xmp.properties.XMPProperty
+import deckers.thibault.aves.utils.ContextUtils.queryContentResolverProp
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
+import deckers.thibault.aves.utils.StorageUtils
 import java.util.*
 
 object XMP {
@@ -84,6 +90,22 @@ object XMP {
         GPANO_CROPPED_AREA_TOP_PROP_NAME,
         GPANO_FULL_PANO_WIDTH_PROP_NAME,
     )
+
+    // as of `metadata-extractor` v2.18.0, XMP is not discovered in HEIC images,
+    // so we fall back to the native content resolver, if possible
+    fun checkHeic(context: Context, uri: Uri, mimeType: String, foundXmp: Boolean, processXmp: (xmpMeta: XMPMeta) -> Unit) {
+        if (MimeTypes.isHeic(mimeType) && !foundXmp && StorageUtils.isMediaStoreContentUri(uri) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            try {
+                val xmpBytes = context.queryContentResolverProp(uri, mimeType, MediaStore.MediaColumns.XMP)
+                if (xmpBytes is ByteArray) {
+                    val xmpMeta = XMPMetaFactory.parseFromBuffer(xmpBytes, MetadataExtractorSafeXmpReader.PARSE_OPTIONS)
+                    processXmp(xmpMeta)
+                }
+            } catch (e: Exception) {
+                Log.w(LOG_TAG, "failed to get XMP by content resolver for mimeType=$mimeType uri=$uri", e)
+            }
+        }
+    }
 
     // extensions
 

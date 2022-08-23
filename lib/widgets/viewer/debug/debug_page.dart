@@ -135,6 +135,8 @@ class ViewerDebugPage extends StatelessWidget {
             'isAnimated': '${entry.isAnimated}',
             'isGeotiff': '${entry.isGeotiff}',
             'is360': '${entry.is360}',
+            'isMultiPage': '${entry.isMultiPage}',
+            'isMotionPhoto': '${entry.isMotionPhoto}',
             'canEdit': '${entry.canEdit}',
             'canEditDate': '${entry.canEditDate}',
             'canEditTags': '${entry.canEditTags}',

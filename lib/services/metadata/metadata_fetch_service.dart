@@ -146,6 +146,7 @@ class PlatformMetadataFetchService implements MetadataFetchService {
         'mimeType': entry.mimeType,
         'uri': entry.uri,
         'sizeBytes': entry.sizeBytes,
+        'isMotionPhoto': entry.isMotionPhoto,
       });
       final pageMaps = ((result as List?) ?? []).cast<Map>();
       if (entry.isMotionPhoto && pageMaps.isNotEmpty) {

@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.ParcelFileDescriptor
 import android.util.Log
+import com.adobe.internal.xmp.XMPMeta
 import com.drew.metadata.xmp.XmpDirectory
 import deckers.thibault.aves.metadata.XMP.countPropArrayItems
 import deckers.thibault.aves.metadata.XMP.doesPropExist
@@ -16,10 +17,14 @@ import deckers.thibault.aves.metadata.XMP.getSafeStructField
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
+import deckers.thibault.aves.utils.indexOfBytes
 import org.beyka.tiffbitmapfactory.TiffBitmapFactory
+import java.io.DataInputStream
 
 object MultiPage {
     private val LOG_TAG = LogUtils.createTag<MultiPage>()
+
+    private val heicMotionPhotoVideoStartIndicator = byteArrayOf(0x00, 0x00, 0x00, 0x18) + "ftypmp42".toByteArray()
 
     // page info
     private const val KEY_MIME_TYPE = "mimeType"
@@ -142,30 +147,53 @@ object MultiPage {
     }
 
     fun getMotionPhotoOffset(context: Context, uri: Uri, mimeType: String, sizeBytes: Long): Long? {
+        if (MimeTypes.isHeic(mimeType)) {
+            // XMP in HEIC motion photos (as taken with a Samsung Camera v12.0.01.50) indicates an `Item:Length` of 68 bytes for the video.
+            // This item does not contain the video itself, but only some kind of metadata (no doc, no spec),
+            // so we ignore the `Item:Length` and look instead for the MP4 marker bytes indicating the start of the video.
+            try {
+                Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
+                    val bytes = ByteArray(sizeBytes.toInt())
+                    DataInputStream(input).use {
+                        it.readFully(bytes)
+                    }
+                    val index = bytes.indexOfBytes(heicMotionPhotoVideoStartIndicator)
+                    if (index != -1) {
+                        return sizeBytes - index
+                    }
+                }
+            } catch (e: Exception) {
+                Log.w(LOG_TAG, "failed to get motion photo offset from uri=$uri", e)
+            }
+        }
+
+        var offsetFromEnd: Long? = null
+        var foundXmp = false
+
+        fun processXmp(xmpMeta: XMPMeta) {
+            if (xmpMeta.doesPropExist(XMP.GCAMERA_VIDEO_OFFSET_PROP_NAME)) {
+                // `GCamera` motion photo
+                xmpMeta.getSafeLong(XMP.GCAMERA_VIDEO_OFFSET_PROP_NAME) { offsetFromEnd = it }
+            } else if (xmpMeta.doesPropExist(XMP.CONTAINER_DIRECTORY_PROP_NAME)) {
+                // `Container` motion photo
+                val count = xmpMeta.countPropArrayItems(XMP.CONTAINER_DIRECTORY_PROP_NAME)
+                if (count == 2) {
+                    // expect the video to be the second item
+                    val i = 2
+                    val mime = xmpMeta.getSafeStructField(listOf(XMP.CONTAINER_DIRECTORY_PROP_NAME, i, XMP.CONTAINER_ITEM_PROP_NAME, XMP.CONTAINER_ITEM_MIME_PROP_NAME))?.value
+                    val length = xmpMeta.getSafeStructField(listOf(XMP.CONTAINER_DIRECTORY_PROP_NAME, i, XMP.CONTAINER_ITEM_PROP_NAME, XMP.CONTAINER_ITEM_LENGTH_PROP_NAME))?.value
+                    if (MimeTypes.isVideo(mime) && length != null) {
+                        offsetFromEnd = length.toLong()
+                    }
+                }
+            }
+        }
+
         try {
             Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
                 val metadata = MetadataExtractorHelper.safeRead(input)
-                for (dir in metadata.getDirectoriesOfType(XmpDirectory::class.java)) {
-                    var offsetFromEnd: Long? = null
-                    val xmpMeta = dir.xmpMeta
-                    if (xmpMeta.doesPropExist(XMP.GCAMERA_VIDEO_OFFSET_PROP_NAME)) {
-                        // GCamera motion photo
-                        xmpMeta.getSafeLong(XMP.GCAMERA_VIDEO_OFFSET_PROP_NAME) { offsetFromEnd = it }
-                    } else if (xmpMeta.doesPropExist(XMP.CONTAINER_DIRECTORY_PROP_NAME)) {
-                        // Container motion photo
-                        val count = xmpMeta.countPropArrayItems(XMP.CONTAINER_DIRECTORY_PROP_NAME)
-                        if (count == 2) {
-                            // expect the video to be the second item
-                            val i = 2
-                            val mime = xmpMeta.getSafeStructField(listOf(XMP.CONTAINER_DIRECTORY_PROP_NAME, i, XMP.CONTAINER_ITEM_PROP_NAME, XMP.CONTAINER_ITEM_MIME_PROP_NAME))?.value
-                            val length = xmpMeta.getSafeStructField(listOf(XMP.CONTAINER_DIRECTORY_PROP_NAME, i, XMP.CONTAINER_ITEM_PROP_NAME, XMP.CONTAINER_ITEM_LENGTH_PROP_NAME))?.value
-                            if (MimeTypes.isVideo(mime) && length != null) {
-                                offsetFromEnd = length.toLong()
-                            }
-                        }
-                    }
-                    return offsetFromEnd
-                }
+                foundXmp = metadata.directories.any { it is XmpDirectory && it.tagCount > 0 }
+                metadata.getDirectoriesOfType(XmpDirectory::class.java).map { it.xmpMeta }.forEach(::processXmp)
             }
         } catch (e: Exception) {
             Log.w(LOG_TAG, "failed to get motion photo offset from uri=$uri", e)
@@ -174,7 +202,10 @@ object MultiPage {
         } catch (e: AssertionError) {
             Log.w(LOG_TAG, "failed to get motion photo offset from uri=$uri", e)
         }
-        return null
+
+        XMP.checkHeic(context, uri, mimeType, foundXmp, ::processXmp)
+
+        return offsetFromEnd
     }
 
     fun getTiffPages(context: Context, uri: Uri): ArrayList<FieldMap> {
