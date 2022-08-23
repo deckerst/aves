@@ -533,6 +533,8 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
   }
 
   void _jumpToHorizontalPageByDelta(int delta) {
+    if (_horizontalPager.positions.isEmpty) return;
+
     final page = _horizontalPager.page?.round();
     if (page != null) {
       _jumpToHorizontalPageByIndex(page + delta);

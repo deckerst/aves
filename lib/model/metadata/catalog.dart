@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 class CatalogMetadata {
   final int id;
   final int? dateMillis;
-  final bool isAnimated, isGeotiff, is360, isMultiPage;
+  final bool isAnimated, isGeotiff, is360, isMultiPage, isMotionPhoto;
   bool isFlipped;
   int? rotationDegrees;
   final String? mimeType, xmpSubjects, xmpTitleDescription;
@@ -18,6 +18,7 @@ class CatalogMetadata {
   static const _isGeotiffMask = 1 << 2;
   static const _is360Mask = 1 << 3;
   static const _isMultiPageMask = 1 << 4;
+  static const _isMotionPhotoMask = 1 << 5;
 
   CatalogMetadata({
     required this.id,
@@ -28,6 +29,7 @@ class CatalogMetadata {
     this.isGeotiff = false,
     this.is360 = false,
     this.isMultiPage = false,
+    this.isMotionPhoto = false,
     this.rotationDegrees,
     this.xmpSubjects,
     this.xmpTitleDescription,
@@ -67,6 +69,7 @@ class CatalogMetadata {
       isGeotiff: isGeotiff,
       is360: is360,
       isMultiPage: isMultiPage ?? this.isMultiPage,
+      isMotionPhoto: isMotionPhoto,
       rotationDegrees: rotationDegrees ?? this.rotationDegrees,
       xmpSubjects: xmpSubjects,
       xmpTitleDescription: xmpTitleDescription,
@@ -87,6 +90,7 @@ class CatalogMetadata {
       isGeotiff: flags & _isGeotiffMask != 0,
       is360: flags & _is360Mask != 0,
       isMultiPage: flags & _isMultiPageMask != 0,
+      isMotionPhoto: flags & _isMotionPhotoMask != 0,
       // `rotationDegrees` should default to `sourceRotationDegrees`, not 0
       rotationDegrees: map['rotationDegrees'],
       xmpSubjects: map['xmpSubjects'] ?? '',
@@ -101,7 +105,7 @@ class CatalogMetadata {
         'id': id,
         'mimeType': mimeType,
         'dateMillis': dateMillis,
-        'flags': (isAnimated ? _isAnimatedMask : 0) | (isFlipped ? _isFlippedMask : 0) | (isGeotiff ? _isGeotiffMask : 0) | (is360 ? _is360Mask : 0) | (isMultiPage ? _isMultiPageMask : 0),
+        'flags': (isAnimated ? _isAnimatedMask : 0) | (isFlipped ? _isFlippedMask : 0) | (isGeotiff ? _isGeotiffMask : 0) | (is360 ? _is360Mask : 0) | (isMultiPage ? _isMultiPageMask : 0) | (isMotionPhoto ? _isMotionPhotoMask : 0),
         'rotationDegrees': rotationDegrees,
         'xmpSubjects': xmpSubjects,
         'xmpTitleDescription': xmpTitleDescription,
@@ -111,5 +115,5 @@ class CatalogMetadata {
       };
 
   @override
-  String toString() => '$runtimeType#${shortHash(this)}{id=$id, mimeType=$mimeType, dateMillis=$dateMillis, isAnimated=$isAnimated, isFlipped=$isFlipped, isGeotiff=$isGeotiff, is360=$is360, isMultiPage=$isMultiPage, rotationDegrees=$rotationDegrees, xmpSubjects=$xmpSubjects, xmpTitleDescription=$xmpTitleDescription, latitude=$latitude, longitude=$longitude, rating=$rating}';
+  String toString() => '$runtimeType#${shortHash(this)}{id=$id, mimeType=$mimeType, dateMillis=$dateMillis, isAnimated=$isAnimated, isFlipped=$isFlipped, isGeotiff=$isGeotiff, is360=$is360, isMultiPage=$isMultiPage, isMotionPhoto=$isMotionPhoto, rotationDegrees=$rotationDegrees, xmpSubjects=$xmpSubjects, xmpTitleDescription=$xmpTitleDescription, latitude=$latitude, longitude=$longitude, rating=$rating}';
 }

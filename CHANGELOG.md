@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 - option to hide confirmation message after moving items to the bin
 - Collection / Info: edit description via Exif / IPTC / XMP
 - Info: read XMP from HEIC on Android >=11
+- Collection: support HEIC motion photos on Android >=11
 - Dutch translation (thanks Martijn Fabrie, Koen Koppens)
 
 ### Changed

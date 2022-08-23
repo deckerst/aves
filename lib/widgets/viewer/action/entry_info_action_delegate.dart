@@ -73,7 +73,7 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
         return true;
       // motion photo
       case EntryInfoAction.convertMotionPhotoToStillImage:
-        return entry.canEdit;
+        return entry.canEditXmp;
       case EntryInfoAction.viewMotionPhotoVideo:
         return true;
       // debug

@@ -1,13 +1,10 @@
 package deckers.thibault.aves.channel.calls
 
 import android.annotation.SuppressLint
-import android.content.ContentUris
 import android.content.Context
-import android.database.Cursor
 import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Build
-import android.provider.MediaStore
 import android.util.Log
 import androidx.exifinterface.media.ExifInterface
 import com.adobe.internal.xmp.XMPException
@@ -69,16 +66,15 @@ import deckers.thibault.aves.metadata.XMP.getSafeString
 import deckers.thibault.aves.metadata.XMP.isMotionPhoto
 import deckers.thibault.aves.metadata.XMP.isPanorama
 import deckers.thibault.aves.model.FieldMap
+import deckers.thibault.aves.utils.ContextUtils.queryContentResolverProp
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.MimeTypes.TIFF_EXTENSION_PATTERN
 import deckers.thibault.aves.utils.MimeTypes.canReadWithExifInterface
 import deckers.thibault.aves.utils.MimeTypes.canReadWithMetadataExtractor
 import deckers.thibault.aves.utils.MimeTypes.isHeic
-import deckers.thibault.aves.utils.MimeTypes.isImage
 import deckers.thibault.aves.utils.MimeTypes.isVideo
 import deckers.thibault.aves.utils.StorageUtils
-import deckers.thibault.aves.utils.UriUtils.tryParseId
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
@@ -370,7 +366,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             }
         }
 
-        checkHeicXmp(uri, mimeType, foundXmp) { xmpMeta ->
+        XMP.checkHeic(context, uri, mimeType, foundXmp) { xmpMeta ->
             val thisDirName = XmpDirectory().name
             val dirMap = metadataMap[thisDirName] ?: HashMap()
             metadataMap[thisDirName] = dirMap
@@ -499,7 +495,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
 
                 // identification of motion photo
                 if (xmpMeta.isMotionPhoto()) {
-                    flags = flags or MASK_IS_MULTIPAGE
+                    flags = flags or MASK_IS_MULTIPAGE or MASK_IS_MOTION_PHOTO
                 }
             } catch (e: XMPException) {
                 Log.w(LOG_TAG, "failed to read XMP directory for uri=$uri", e)
@@ -659,7 +655,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             }
         }
 
-        checkHeicXmp(uri, mimeType, foundXmp, ::processXmp)
+        XMP.checkHeic(context, uri, mimeType, foundXmp, ::processXmp)
 
         if (mimeType == MimeTypes.TIFF && MultiPage.isMultiPageTiff(context, uri)) flags = flags or MASK_IS_MULTIPAGE
 
@@ -828,16 +824,20 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         val mimeType = call.argument<String>("mimeType")
         val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
         val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
-        if (mimeType == null || uri == null || sizeBytes == null) {
+        val isMotionPhoto = call.argument<Boolean>("isMotionPhoto")
+        if (mimeType == null || uri == null || sizeBytes == null || isMotionPhoto == null) {
             result.error("getMultiPageInfo-args", "missing arguments", null)
             return
         }
 
-        val pages: ArrayList<FieldMap>? = when (mimeType) {
-            MimeTypes.HEIC, MimeTypes.HEIF -> MultiPage.getHeicTracks(context, uri)
-            MimeTypes.JPEG -> MultiPage.getMotionPhotoPages(context, uri, mimeType, sizeBytes = sizeBytes)
-            MimeTypes.TIFF -> MultiPage.getTiffPages(context, uri)
-            else -> null
+        val pages: ArrayList<FieldMap>? = if (isMotionPhoto) {
+            MultiPage.getMotionPhotoPages(context, uri, mimeType, sizeBytes = sizeBytes)
+        } else {
+            when (mimeType) {
+                MimeTypes.HEIC, MimeTypes.HEIF -> MultiPage.getHeicTracks(context, uri)
+                MimeTypes.TIFF -> MultiPage.getTiffPages(context, uri)
+                else -> null
+            }
         }
         if (pages?.isEmpty() == true) {
             result.error("getMultiPageInfo-empty", "failed to get pages for mimeType=$mimeType uri=$uri", null)
@@ -888,7 +888,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             }
         }
 
-        checkHeicXmp(uri, mimeType, foundXmp, ::processXmp)
+        XMP.checkHeic(context, uri, mimeType, foundXmp, ::processXmp)
 
         if (fields.isEmpty()) {
             result.error("getPanoramaInfo-empty", "failed to get info for mimeType=$mimeType uri=$uri", null)
@@ -961,7 +961,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             }
         }
 
-        checkHeicXmp(uri, mimeType, foundXmp, ::processXmp)
+        XMP.checkHeic(context, uri, mimeType, foundXmp, ::processXmp)
 
         if (xmpStrings.isEmpty()) {
             result.success(null)
@@ -998,62 +998,10 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         }
 
         try {
-            val value = queryContentResolverProp(uri, mimeType, prop)
+            val value = context.queryContentResolverProp(uri, mimeType, prop)
             result.success(value?.toString())
         } catch (e: Exception) {
             result.error("getContentResolverProp-query", "failed to query prop for uri=$uri", e.message)
-        }
-    }
-
-    private fun queryContentResolverProp(uri: Uri, mimeType: String, prop: String): Any? {
-        var contentUri: Uri = uri
-        if (StorageUtils.isMediaStoreContentUri(uri)) {
-            uri.tryParseId()?.let { id ->
-                contentUri = when {
-                    isImage(mimeType) -> ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
-                    isVideo(mimeType) -> ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, id)
-                    else -> uri
-                }
-                contentUri = StorageUtils.getOriginalUri(context, contentUri)
-            }
-        }
-
-        // throws SQLiteException when the requested prop is not a known column
-        val cursor = context.contentResolver.query(contentUri, arrayOf(prop), null, null, null)
-        if (cursor == null || !cursor.moveToFirst()) {
-            throw Exception("failed to get cursor for contentUri=$contentUri")
-        }
-
-        var value: Any? = null
-        try {
-            value = when (cursor.getType(0)) {
-                Cursor.FIELD_TYPE_NULL -> null
-                Cursor.FIELD_TYPE_INTEGER -> cursor.getLong(0)
-                Cursor.FIELD_TYPE_FLOAT -> cursor.getFloat(0)
-                Cursor.FIELD_TYPE_STRING -> cursor.getString(0)
-                Cursor.FIELD_TYPE_BLOB -> cursor.getBlob(0)
-                else -> null
-            }
-        } catch (e: Exception) {
-            Log.w(LOG_TAG, "failed to get value for contentUri=$contentUri key=$prop", e)
-        }
-        cursor.close()
-        return value
-    }
-
-    // as of `metadata-extractor` v2.18.0, XMP is not discovered in HEIC images,
-    // so we fall back to the native content resolver, if possible
-    private fun checkHeicXmp(uri: Uri, mimeType: String, foundXmp: Boolean, processXmp: (xmpMeta: XMPMeta) -> Unit) {
-        if (isHeic(mimeType) && !foundXmp && StorageUtils.isMediaStoreContentUri(uri) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            try {
-                val xmpBytes = queryContentResolverProp(uri, mimeType, MediaStore.MediaColumns.XMP)
-                if (xmpBytes is ByteArray) {
-                    val xmpMeta = XMPMetaFactory.parseFromBuffer(xmpBytes, MetadataExtractorSafeXmpReader.PARSE_OPTIONS)
-                    processXmp(xmpMeta)
-                }
-            } catch (e: Exception) {
-                Log.w(LOG_TAG, "failed to get XMP by content resolver for mimeType=$mimeType uri=$uri", e)
-            }
         }
     }
 
@@ -1231,6 +1179,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         private const val MASK_IS_GEOTIFF = 1 shl 2
         private const val MASK_IS_360 = 1 shl 3
         private const val MASK_IS_MULTIPAGE = 1 shl 4
+        private const val MASK_IS_MOTION_PHOTO = 1 shl 5
         private const val XMP_SUBJECTS_SEPARATOR = ";"
 
         // overlay metadata
