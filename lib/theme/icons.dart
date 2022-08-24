@@ -35,6 +35,7 @@ class AIcons {
   static const IconData ratingRejected = MdiIcons.starMinusOutline;
   static const IconData ratingUnrated = MdiIcons.starOffOutline;
   static const IconData raw = Icons.raw_on_outlined;
+  static const IconData recent = Icons.today_outlined;
   static const IconData shooting = Icons.camera_outlined;
   static const IconData removableStorage = Icons.sd_storage_outlined;
   static const IconData sensorControlEnabled = Icons.explore_outlined;

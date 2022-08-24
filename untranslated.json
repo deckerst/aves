@@ -1,6 +1,7 @@
 {
   "de": [
     "entryInfoActionEditDescription",
+    "filterRecentlyAddedLabel",
     "editEntryDescriptionDialogTitle",
     "settingsConfirmationAfterMoveToBinItems",
     "settingsViewerGestureSideTapNext"
@@ -8,18 +9,21 @@
 
   "es": [
     "entryInfoActionEditDescription",
+    "filterRecentlyAddedLabel",
     "editEntryDescriptionDialogTitle",
     "settingsConfirmationAfterMoveToBinItems"
   ],
 
   "fr": [
     "entryInfoActionEditDescription",
+    "filterRecentlyAddedLabel",
     "editEntryDescriptionDialogTitle",
     "settingsViewerGestureSideTapNext"
   ],
 
   "id": [
     "entryInfoActionEditDescription",
+    "filterRecentlyAddedLabel",
     "editEntryDescriptionDialogTitle",
     "settingsConfirmationAfterMoveToBinItems",
     "settingsViewerGestureSideTapNext"
@@ -27,6 +31,7 @@
 
   "it": [
     "entryInfoActionEditDescription",
+    "filterRecentlyAddedLabel",
     "editEntryDescriptionDialogTitle",
     "settingsConfirmationAfterMoveToBinItems",
     "settingsViewerGestureSideTapNext"
@@ -34,6 +39,7 @@
 
   "ja": [
     "entryInfoActionEditDescription",
+    "filterRecentlyAddedLabel",
     "editEntryDescriptionDialogTitle",
     "settingsConfirmationAfterMoveToBinItems",
     "settingsViewerGestureSideTapNext"
@@ -41,12 +47,14 @@
 
   "ko": [
     "entryInfoActionEditDescription",
+    "filterRecentlyAddedLabel",
     "editEntryDescriptionDialogTitle",
     "settingsViewerGestureSideTapNext"
   ],
 
   "nl": [
     "entryInfoActionEditDescription",
+    "filterRecentlyAddedLabel",
     "editEntryDescriptionDialogTitle",
     "settingsConfirmationAfterMoveToBinItems",
     "settingsViewerGestureSideTapNext",
@@ -55,6 +63,7 @@
 
   "pt": [
     "entryInfoActionEditDescription",
+    "filterRecentlyAddedLabel",
     "editEntryDescriptionDialogTitle",
     "settingsConfirmationAfterMoveToBinItems",
     "settingsViewerGestureSideTapNext"
@@ -63,6 +72,7 @@
   "ru": [
     "entryInfoActionEditDescription",
     "filterOnThisDayLabel",
+    "filterRecentlyAddedLabel",
     "editEntryDescriptionDialogTitle",
     "settingsConfirmationAfterMoveToBinItems",
     "settingsViewerGestureSideTapNext",
@@ -77,6 +87,7 @@
     "slideshowActionShowInCollection",
     "entryInfoActionEditDescription",
     "filterOnThisDayLabel",
+    "filterRecentlyAddedLabel",
     "slideshowVideoPlaybackSkip",
     "slideshowVideoPlaybackMuted",
     "slideshowVideoPlaybackWithSound",
@@ -110,6 +121,7 @@
 
   "zh": [
     "entryInfoActionEditDescription",
+    "filterRecentlyAddedLabel",
     "editEntryDescriptionDialogTitle",
     "settingsConfirmationAfterMoveToBinItems",
     "settingsViewerGestureSideTapNext"

@@ -38,6 +38,9 @@ class MetadataDbUpgrader {
         case 7:
           await _upgradeFrom7(db);
           break;
+        case 8:
+          await _upgradeFrom8(db);
+          break;
       }
       oldVersion++;
     }
@@ -277,5 +280,58 @@ class MetadataDbUpgrader {
     debugPrint('upgrading DB from v7');
     await db.execute('ALTER TABLE $coverTable ADD COLUMN packageName TEXT;');
     await db.execute('ALTER TABLE $coverTable ADD COLUMN color INTEGER;');
+  }
+
+  static Future<void> _upgradeFrom8(Database db) async {
+    debugPrint('upgrading DB from v8');
+
+    // new column `dateAddedSecs`
+    await db.transaction((txn) async {
+      const newEntryTable = '${entryTable}TEMP';
+      await db.execute('CREATE TABLE $newEntryTable('
+          'id INTEGER PRIMARY KEY'
+          ', contentId INTEGER'
+          ', uri TEXT'
+          ', path TEXT'
+          ', sourceMimeType TEXT'
+          ', width INTEGER'
+          ', height INTEGER'
+          ', sourceRotationDegrees INTEGER'
+          ', sizeBytes INTEGER'
+          ', title TEXT'
+          ', dateAddedSecs INTEGER DEFAULT (strftime(\'%s\',\'now\'))'
+          ', dateModifiedSecs INTEGER'
+          ', sourceDateTakenMillis INTEGER'
+          ', durationMillis INTEGER'
+          ', trashed INTEGER DEFAULT 0'
+          ')');
+      await db.rawInsert('INSERT INTO $newEntryTable(id,contentId,uri,path,sourceMimeType,width,height,sourceRotationDegrees,sizeBytes,title,dateModifiedSecs,sourceDateTakenMillis,durationMillis,trashed)'
+          ' SELECT id,contentId,uri,path,sourceMimeType,width,height,sourceRotationDegrees,sizeBytes,title,dateModifiedSecs,sourceDateTakenMillis,durationMillis,trashed'
+          ' FROM $entryTable;');
+      await db.execute('DROP TABLE $entryTable;');
+      await db.execute('ALTER TABLE $newEntryTable RENAME TO $entryTable;');
+    });
+
+    // rename column `xmpTitleDescription` to `xmpTitle`
+    await db.transaction((txn) async {
+      const newMetadataTable = '${metadataTable}TEMP';
+      await db.execute('CREATE TABLE $newMetadataTable('
+          'id INTEGER PRIMARY KEY'
+          ', mimeType TEXT'
+          ', dateMillis INTEGER'
+          ', flags INTEGER'
+          ', rotationDegrees INTEGER'
+          ', xmpSubjects TEXT'
+          ', xmpTitle TEXT'
+          ', latitude REAL'
+          ', longitude REAL'
+          ', rating INTEGER'
+          ')');
+      await db.rawInsert('INSERT INTO $newMetadataTable(id,mimeType,dateMillis,flags,rotationDegrees,xmpSubjects,xmpTitle,latitude,longitude,rating)'
+          ' SELECT id,mimeType,dateMillis,flags,rotationDegrees,xmpSubjects,xmpTitleDescription,latitude,longitude,rating'
+          ' FROM $metadataTable;');
+      await db.execute('DROP TABLE $metadataTable;');
+      await db.execute('ALTER TABLE $newMetadataTable RENAME TO $metadataTable;');
+    });
   }
 }

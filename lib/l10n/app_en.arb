@@ -125,6 +125,7 @@
   "filterLocationEmptyLabel": "Unlocated",
   "filterTagEmptyLabel": "Untagged",
   "filterOnThisDayLabel": "On this day",
+  "filterRecentlyAddedLabel": "Recently added",
   "filterRatingUnratedLabel": "Unrated",
   "filterRatingRejectedLabel": "Rejected",
   "filterTypeAnimatedLabel": "Animated",

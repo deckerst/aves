@@ -8,6 +8,7 @@ import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/path.dart';
 import 'package:aves/model/filters/query.dart';
 import 'package:aves/model/filters/rating.dart';
+import 'package:aves/model/filters/recent.dart';
 import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/filters/type.dart';
 import 'package:aves/services/common/services.dart';
@@ -60,6 +61,9 @@ void main() {
 
     const rating = RatingFilter(3);
     expect(rating, jsonRoundTrip(rating));
+
+    final recent = RecentlyAddedFilter.instance;
+    expect(recent, jsonRoundTrip(recent));
 
     final tag = TagFilter('some tag');
     expect(tag, jsonRoundTrip(tag));

@@ -7,7 +7,7 @@ class CatalogMetadata {
   final bool isAnimated, isGeotiff, is360, isMultiPage, isMotionPhoto;
   bool isFlipped;
   int? rotationDegrees;
-  final String? mimeType, xmpSubjects, xmpTitleDescription;
+  final String? mimeType, xmpSubjects, xmpTitle;
   double? latitude, longitude;
   Address? address;
   int rating;
@@ -32,7 +32,7 @@ class CatalogMetadata {
     this.isMotionPhoto = false,
     this.rotationDegrees,
     this.xmpSubjects,
-    this.xmpTitleDescription,
+    this.xmpTitle,
     double? latitude,
     double? longitude,
     this.rating = 0,
@@ -72,7 +72,7 @@ class CatalogMetadata {
       isMotionPhoto: isMotionPhoto,
       rotationDegrees: rotationDegrees ?? this.rotationDegrees,
       xmpSubjects: xmpSubjects,
-      xmpTitleDescription: xmpTitleDescription,
+      xmpTitle: xmpTitle,
       latitude: latitude ?? this.latitude,
       longitude: longitude ?? this.longitude,
       rating: rating,
@@ -94,7 +94,7 @@ class CatalogMetadata {
       // `rotationDegrees` should default to `sourceRotationDegrees`, not 0
       rotationDegrees: map['rotationDegrees'],
       xmpSubjects: map['xmpSubjects'] ?? '',
-      xmpTitleDescription: map['xmpTitleDescription'] ?? '',
+      xmpTitle: map['xmpTitle'] ?? '',
       latitude: map['latitude'],
       longitude: map['longitude'],
       rating: map['rating'] ?? 0,
@@ -108,12 +108,12 @@ class CatalogMetadata {
         'flags': (isAnimated ? _isAnimatedMask : 0) | (isFlipped ? _isFlippedMask : 0) | (isGeotiff ? _isGeotiffMask : 0) | (is360 ? _is360Mask : 0) | (isMultiPage ? _isMultiPageMask : 0) | (isMotionPhoto ? _isMotionPhotoMask : 0),
         'rotationDegrees': rotationDegrees,
         'xmpSubjects': xmpSubjects,
-        'xmpTitleDescription': xmpTitleDescription,
+        'xmpTitle': xmpTitle,
         'latitude': latitude,
         'longitude': longitude,
         'rating': rating,
       };
 
   @override
-  String toString() => '$runtimeType#${shortHash(this)}{id=$id, mimeType=$mimeType, dateMillis=$dateMillis, isAnimated=$isAnimated, isFlipped=$isFlipped, isGeotiff=$isGeotiff, is360=$is360, isMultiPage=$isMultiPage, isMotionPhoto=$isMotionPhoto, rotationDegrees=$rotationDegrees, xmpSubjects=$xmpSubjects, xmpTitleDescription=$xmpTitleDescription, latitude=$latitude, longitude=$longitude, rating=$rating}';
+  String toString() => '$runtimeType#${shortHash(this)}{id=$id, mimeType=$mimeType, dateMillis=$dateMillis, isAnimated=$isAnimated, isFlipped=$isFlipped, isGeotiff=$isGeotiff, is360=$is360, isMultiPage=$isMultiPage, isMotionPhoto=$isMotionPhoto, rotationDegrees=$rotationDegrees, xmpSubjects=$xmpSubjects, xmpTitle=$xmpTitle, latitude=$latitude, longitude=$longitude, rating=$rating}';
 }

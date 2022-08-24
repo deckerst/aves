@@ -98,6 +98,7 @@ class ViewerDebugPage extends StatelessWidget {
         InfoRowGroup(
           info: {
             'catalogDateMillis': toDateValue(entry.catalogDateMillis),
+            'dateAddedSecs': toDateValue(entry.dateAddedSecs, factor: 1000),
             'dateModifiedSecs': toDateValue(entry.dateModifiedSecs, factor: 1000),
             'sourceDateTakenMillis': toDateValue(entry.sourceDateTakenMillis),
             'bestDate': '${entry.bestDate}',
