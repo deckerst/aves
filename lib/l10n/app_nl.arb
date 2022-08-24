@@ -87,6 +87,7 @@
 
   "entryInfoActionEditDate": "Bewerk Datum & Tijd",
   "entryInfoActionEditLocation": "Bewerk Locatie",
+  "entryInfoActionEditDescription": "Omschrijving wijzigen",
   "entryInfoActionEditRating": "Bewerk waardering",
   "entryInfoActionEditTags": "Bewerk labels",
   "entryInfoActionRemoveMetadata": "Verwijder metadata",
@@ -96,6 +97,7 @@
   "filterLocationEmptyLabel": "Geen locatie",
   "filterTagEmptyLabel": "Geen label",
   "filterOnThisDayLabel": "Op deze dag",
+  "filterRecentlyAddedLabel": "Recent toegevoegd",
   "filterRatingUnratedLabel": "Geen rating",
   "filterRatingRejectedLabel": "Afgekeurd",
   "filterTypeAnimatedLabel": "Geanimeerd",
@@ -256,6 +258,8 @@
   "editEntryLocationDialogLongitude": "Lengtegraad",
 
   "locationPickerUseThisLocationButton": "Gebruik deze locatie",
+
+  "editEntryDescriptionDialogTitle": "Omschrijving",
 
   "editEntryRatingDialogTitle": "Beoordeling",
 
@@ -451,6 +455,7 @@
   "settingsConfirmationDialogDeleteItems": "Bevestig voordat je items voor altijd verwijdert",
   "settingsConfirmationDialogMoveToBinItems": "Bevestig voordat u items naar de prullenbak verplaatst",
   "settingsConfirmationDialogMoveUndatedItems": "Bevestigvoordat u ongedateerde items verplaatst",
+  "settingsConfirmationAfterMoveToBinItems": "Toon bevestigingsbericht na het verplaatsen van items naar de prullenbak",
 
   "settingsNavigationDrawerTile": "Navigatiemenu",
   "settingsNavigationDrawerEditorTitle": "Navigatiemenu",
@@ -479,6 +484,7 @@
   "settingsCollectionSelectionQuickActionEditorBanner": "Houd ingedrukt om knoppen te verplaatsen en te selecteren welke acties worden weergegeven bij het selecteren van items.",
 
   "settingsSectionViewer": "Voorbeeld",
+  "settingsViewerGestureSideTapNext": "Druk op het scherm om het vorige/volgende item weer te geven",
   "settingsViewerUseCutout": "Uitgesneden gebied gebruiken",
   "settingsViewerMaximumBrightness": "Maximale helderheid",
   "settingsMotionPhotoAutoPlay": "Bewegingsfoto’s automatisch afspelen",
@@ -591,6 +597,7 @@
   "settingsScreenSaverPageTitle": "Schermbeveiliging",
 
   "settingsWidgetPageTitle": "Foto Lijstje",
+  "settingsWidgetShowOutline": "Contour",
 
   "statsPageTitle": "Stats",
   "statsWithGps": "{count, plural, =1{1 item met locatie} other{{count} items met locatie}}",
