@@ -93,7 +93,7 @@
   "entryInfoActionRemoveMetadata": "Verwijder metadata",
 
   "filterBinLabel": "Prullenbak",
-  "filterFavouriteLabel": "Als favoriet instellen",
+  "filterFavouriteLabel": "Favorieten",
   "filterLocationEmptyLabel": "Geen locatie",
   "filterTagEmptyLabel": "Geen label",
   "filterOnThisDayLabel": "Op deze dag",
@@ -630,8 +630,8 @@
   "mapZoomInTooltip": "Inzoomen",
   "mapZoomOutTooltip": "Uitzoomen",
   "mapPointNorthUpTooltip": "Noorden boven",
-  "mapAttributionOsmHot": "Kaartgegevens © [OpenStreetMap](https://www.openstreetmap.org/copyright) bijdragers • Tegels door [HOT](https://www.hotosm.org/) • Gehost door [OSM France](https:// openstreetmap.fr/)",
-  "mapAttributionStamen": "Kaartgegevens © [OpenStreetMap](https://www.openstreetmap.org/copyright) bijdragers • Tegels door [Stamen Design](http://stamen.com), [CC BY 3.0](http://creativecommons.org /licenties/door/3.0)",
+  "mapAttributionOsmHot": "Kaartgegevens © [OpenStreetMap](https://www.openstreetmap.org/copyright) bijdragers • Tegels door [HOT](https://www.hotosm.org/) • Gehost door [OSM France](https://openstreetmap.fr/)",
+  "mapAttributionStamen": "Kaartgegevens © [OpenStreetMap](https://www.openstreetmap.org/copyright) bijdragers • Tegels door [Stamen Design](http://stamen.com), [CC BY 3.0](http://creativecommons.org/licenses/by/3.0)",
   "openMapPageTooltip": "Bekijk op kaartpagina",
   "mapEmptyRegion": "Geen afbeeldingen in de geselecteerde regio",
 
