@@ -87,6 +87,7 @@
 
   "entryInfoActionEditDate": "Modifica data e ora",
   "entryInfoActionEditLocation": "Modifica posizione",
+  "entryInfoActionEditDescription": "Modifica descrizione",
   "entryInfoActionEditRating": "Modifica valutazione",
   "entryInfoActionEditTags": "Modifica etichetta",
   "entryInfoActionRemoveMetadata": "Rimuovi metadati",
@@ -96,6 +97,7 @@
   "filterLocationEmptyLabel": "Senza posizione",
   "filterTagEmptyLabel": "Senza etichetta",
   "filterOnThisDayLabel": "In questo giorno",
+  "filterRecentlyAddedLabel": "Aggiunto di recente",
   "filterRatingUnratedLabel": "Non valutato",
   "filterRatingRejectedLabel": "Rifiutato",
   "filterTypeAnimatedLabel": "Animato",
@@ -256,6 +258,8 @@
   "editEntryLocationDialogLongitude": "Longitudine",
 
   "locationPickerUseThisLocationButton": "Usa questa posizione",
+
+  "editEntryDescriptionDialogTitle": "Descrizione",
 
   "editEntryRatingDialogTitle": "Valutazione",
 
@@ -451,6 +455,7 @@
   "settingsConfirmationDialogDeleteItems": "Chiedi prima di cancellare gli elementi definitivamente",
   "settingsConfirmationDialogMoveToBinItems": "Chiedi prima di spostare gli elementi nel cestino",
   "settingsConfirmationDialogMoveUndatedItems": "Chiedi prima di spostare gli elementi senza data",
+  "settingsConfirmationAfterMoveToBinItems": "Mostra un messaggio dopo aver spostato gli elementi nel cestino",
 
   "settingsNavigationDrawerTile": "Menu di navigazione",
   "settingsNavigationDrawerEditorTitle": "Menu di navigazione",
@@ -479,6 +484,7 @@
   "settingsCollectionSelectionQuickActionEditorBanner": "Tocca e tieni premuto per spostare i pulsanti e selezionare quali azioni vengono visualizzate quando si selezionano gli elementi",
 
   "settingsSectionViewer": "Visualizzazione",
+  "settingsViewerGestureSideTapNext": "Tocca i bordi dello schermo per visualizzare l'elemento precedente/successivo",
   "settingsViewerUseCutout": "Usa area di ritaglio",
   "settingsViewerMaximumBrightness": "Luminosità massima",
   "settingsMotionPhotoAutoPlay": "Riproduzione automatica delle foto in movimento",
