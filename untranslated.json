@@ -117,13 +117,5 @@
     "settingsWidgetPageTitle",
     "settingsWidgetShowOutline",
     "viewerSetWallpaperButtonLabel"
-  ],
-
-  "zh": [
-    "entryInfoActionEditDescription",
-    "filterRecentlyAddedLabel",
-    "editEntryDescriptionDialogTitle",
-    "settingsConfirmationAfterMoveToBinItems",
-    "settingsViewerGestureSideTapNext"
   ]
 }
