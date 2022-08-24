@@ -124,7 +124,7 @@ class SettingsDefaults {
 
   // accessibility
   static const accessibilityAnimations = AccessibilityAnimations.system;
-  static const timeToTakeAction = AccessibilityTimeout.appDefault; // `timeToTakeAction` has a contextual default value
+  static const timeToTakeAction = AccessibilityTimeout.s3;
 
   // file picker
   static const filePickerShowHiddenFiles = false;

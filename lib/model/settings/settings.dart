@@ -9,7 +9,6 @@ import 'package:aves/model/settings/defaults.dart';
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/enums/map_style.dart';
 import 'package:aves/model/source/enums.dart';
-import 'package:aves/services/accessibility_service.dart';
 import 'package:aves/services/common/optional_event_channel.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves_map/aves_map.dart';
@@ -203,10 +202,6 @@ class Settings extends ChangeNotifier {
       final styles = EntryMapStyle.values.whereNot((v) => v.needMobileService).toList();
       infoMapStyle = styles[Random().nextInt(styles.length)];
     }
-
-    // accessibility
-    final hasRecommendedTimeouts = await AccessibilityService.hasRecommendedTimeouts();
-    timeToTakeAction = hasRecommendedTimeouts ? AccessibilityTimeout.system : AccessibilityTimeout.appDefault;
   }
 
   // app
