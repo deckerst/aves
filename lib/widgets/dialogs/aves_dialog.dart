@@ -12,10 +12,11 @@ class AvesDialog extends StatelessWidget {
   final Widget? content;
   final List<Widget> actions;
 
+  static const Radius cornerRadius = Radius.circular(24);
   static const double defaultHorizontalContentPadding = 24;
   static const double controlCaptionPadding = 16;
   static const double borderWidth = 1.0;
-  static const EdgeInsets actionsPadding = EdgeInsets.symmetric(vertical: 4, horizontal: 8);
+  static const EdgeInsets actionsPadding = EdgeInsets.symmetric(vertical: 4, horizontal: 16);
   static const EdgeInsets buttonPadding = EdgeInsets.symmetric(horizontal: 8);
 
   AvesDialog({
@@ -113,8 +114,6 @@ class AvesDialog extends StatelessWidget {
           bottom: Divider.createBorderSide(context, width: borderWidth),
         ),
       );
-
-  static const Radius cornerRadius = Radius.circular(24);
 
   static ShapeBorder shape(BuildContext context) {
     return RoundedRectangleBorder(
