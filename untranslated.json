@@ -29,14 +29,6 @@
     "settingsViewerGestureSideTapNext"
   ],
 
-  "it": [
-    "entryInfoActionEditDescription",
-    "filterRecentlyAddedLabel",
-    "editEntryDescriptionDialogTitle",
-    "settingsConfirmationAfterMoveToBinItems",
-    "settingsViewerGestureSideTapNext"
-  ],
-
   "ja": [
     "entryInfoActionEditDescription",
     "filterRecentlyAddedLabel",
@@ -50,15 +42,6 @@
     "filterRecentlyAddedLabel",
     "editEntryDescriptionDialogTitle",
     "settingsViewerGestureSideTapNext"
-  ],
-
-  "nl": [
-    "entryInfoActionEditDescription",
-    "filterRecentlyAddedLabel",
-    "editEntryDescriptionDialogTitle",
-    "settingsConfirmationAfterMoveToBinItems",
-    "settingsViewerGestureSideTapNext",
-    "settingsWidgetShowOutline"
   ],
 
   "pt": [
