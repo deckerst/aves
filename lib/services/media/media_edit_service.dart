@@ -52,23 +52,6 @@ class PlatformMediaEditService implements MediaEditService {
   static const _platform = MethodChannel('deckers.thibault/aves/media_edit');
   static final _opStream = StreamsChannel('deckers.thibault/aves/media_op_stream');
 
-  static Map<String, dynamic> _toPlatformEntryMap(AvesEntry entry) {
-    return {
-      'uri': entry.uri,
-      'path': entry.path,
-      'pageId': entry.pageId,
-      'mimeType': entry.mimeType,
-      'width': entry.width,
-      'height': entry.height,
-      'rotationDegrees': entry.rotationDegrees,
-      'isFlipped': entry.isFlipped,
-      'dateModifiedSecs': entry.dateModifiedSecs,
-      'sizeBytes': entry.sizeBytes,
-      'trashed': entry.trashed,
-      'trashPath': entry.trashDetails?.path,
-    };
-  }
-
   @override
   String get newOpId => DateTime.now().millisecondsSinceEpoch.toString();
 
@@ -93,7 +76,7 @@ class PlatformMediaEditService implements MediaEditService {
           .receiveBroadcastStream(<String, dynamic>{
             'op': 'delete',
             'id': opId,
-            'entries': entries.map(_toPlatformEntryMap).toList(),
+            'entries': entries.map((entry) => entry.toPlatformEntryMap()).toList(),
           })
           .where((event) => event is Map)
           .map((event) => ImageOpEvent.fromMap(event as Map));
@@ -115,7 +98,7 @@ class PlatformMediaEditService implements MediaEditService {
           .receiveBroadcastStream(<String, dynamic>{
             'op': 'move',
             'id': opId,
-            'entriesByDestination': entriesByDestination.map((destination, entries) => MapEntry(destination, entries.map(_toPlatformEntryMap).toList())),
+            'entriesByDestination': entriesByDestination.map((destination, entries) => MapEntry(destination, entries.map((entry) => entry.toPlatformEntryMap()).toList())),
             'copy': copy,
             'nameConflictStrategy': nameConflictStrategy.toPlatform(),
           })
@@ -138,7 +121,7 @@ class PlatformMediaEditService implements MediaEditService {
       return _opStream
           .receiveBroadcastStream(<String, dynamic>{
             'op': 'export',
-            'entries': entries.map(_toPlatformEntryMap).toList(),
+            'entries': entries.map((entry) => entry.toPlatformEntryMap()).toList(),
             'mimeType': options.mimeType,
             'width': options.width,
             'height': options.height,
@@ -163,7 +146,7 @@ class PlatformMediaEditService implements MediaEditService {
           .receiveBroadcastStream(<String, dynamic>{
             'op': 'rename',
             'id': opId,
-            'entriesToNewName': entriesToNewName.map((key, value) => MapEntry(_toPlatformEntryMap(key), value)),
+            'entriesToNewName': entriesToNewName.map((entry, name) => MapEntry(entry.toPlatformEntryMap(), name)),
           })
           .where((event) => event is Map)
           .map((event) => MoveOpEvent.fromMap(event as Map));

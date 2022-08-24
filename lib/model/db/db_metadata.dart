@@ -10,6 +10,8 @@ import 'package:aves/model/video_playback.dart';
 abstract class MetadataDb {
   int get nextId;
 
+  int get timestampSecs;
+
   Future<void> init();
 
   Future<int> dbFileSize();

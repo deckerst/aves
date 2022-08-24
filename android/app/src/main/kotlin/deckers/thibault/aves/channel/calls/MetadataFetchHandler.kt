@@ -1171,7 +1171,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         private const val KEY_LATITUDE = "latitude"
         private const val KEY_LONGITUDE = "longitude"
         private const val KEY_XMP_SUBJECTS = "xmpSubjects"
-        private const val KEY_XMP_TITLE = "xmpTitleDescription"
+        private const val KEY_XMP_TITLE = "xmpTitle"
         private const val KEY_RATING = "rating"
 
         private const val MASK_IS_ANIMATED = 1 shl 0

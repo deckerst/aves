@@ -77,7 +77,7 @@ class PlatformMetadataFetchService implements MetadataFetchService {
         // 'latitude': latitude (double)
         // 'longitude': longitude (double)
         // 'xmpSubjects': ';' separated XMP subjects (string)
-        // 'xmpTitleDescription': XMP title (string)
+        // 'xmpTitle': XMP title (string)
         final result = await _platform.invokeMethod('getCatalogMetadata', <String, dynamic>{
           'mimeType': entry.mimeType,
           'uri': entry.uri,

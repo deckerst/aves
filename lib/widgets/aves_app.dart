@@ -5,6 +5,7 @@ import 'package:aves/app_flavor.dart';
 import 'package:aves/app_mode.dart';
 import 'package:aves/l10n/l10n.dart';
 import 'package:aves/model/device.dart';
+import 'package:aves/model/filters/recent.dart';
 import 'package:aves/model/settings/defaults.dart';
 import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/enums/display_refresh_rate_mode.dart';
@@ -275,9 +276,11 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
             break;
         }
         break;
+      case AppLifecycleState.resumed:
+        RecentlyAddedFilter.updateNow();
+        break;
       case AppLifecycleState.paused:
       case AppLifecycleState.detached:
-      case AppLifecycleState.resumed:
         break;
     }
   }
