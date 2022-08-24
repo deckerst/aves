@@ -19,7 +19,7 @@ All notable changes to this project will be documented in this file.
 
 - status and navigation bar transparency
 - default snack bar timeout to 3s
-- upgraded Flutter to beta v3.3.0-0.4.pre
+- upgraded Flutter to beta v3.3.0-0.5.pre
 
 ### Fixed
 
