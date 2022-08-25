@@ -87,6 +87,7 @@
 
   "entryInfoActionEditDate": "Datum & Uhrzeit bearbeiten",
   "entryInfoActionEditLocation": "Standort bearbeiten",
+  "entryInfoActionEditDescription": "Beschreibung bearbeiten",
   "entryInfoActionEditRating": "Bewertung bearbeiten",
   "entryInfoActionEditTags": "Tags bearbeiten",
   "entryInfoActionRemoveMetadata": "Metadaten entfernen",
@@ -96,6 +97,7 @@
   "filterLocationEmptyLabel": "Ungeortet",
   "filterTagEmptyLabel": "Unmarkiert",
   "filterOnThisDayLabel": "Am heutigen Tag",
+  "filterRecentlyAddedLabel": "Kürzlich hinzugefügt",
   "filterRatingUnratedLabel": "Nicht bewertet",
   "filterRatingRejectedLabel": "Verworfen",
   "filterTypeAnimatedLabel": "Animationen",
@@ -256,6 +258,8 @@
   "editEntryLocationDialogLongitude": "Längengrad",
 
   "locationPickerUseThisLocationButton": "Diesen Standort verwenden",
+
+  "editEntryDescriptionDialogTitle": "Beschreibung",
 
   "editEntryRatingDialogTitle": "Bewertung",
 
@@ -451,6 +455,7 @@
   "settingsConfirmationDialogDeleteItems": "Vor dem endgültigen Löschen von Elementen fragen",
   "settingsConfirmationDialogMoveToBinItems": "Vor dem Verschieben von Elementen in den Papierkorb fragen",
   "settingsConfirmationDialogMoveUndatedItems": "Vor Verschiebung von Objekten ohne Metadaten-Datum fragen",
+  "settingsConfirmationAfterMoveToBinItems": "Nachricht nach dem Verschieben von Elementen in den Papierkorb anzeigen",
 
   "settingsNavigationDrawerTile": "Menü Navigation",
   "settingsNavigationDrawerEditorTitle": "Menü Navigation",
@@ -479,6 +484,7 @@
   "settingsCollectionSelectionQuickActionEditorBanner": "Die Taste gedrückt halten, um die Schaltflächen zu bewegen und auszuwählen, welche Aktionen beim Durchsuchen von Elementen angezeigt werden.",
 
   "settingsSectionViewer": "Anzeige",
+  "settingsViewerGestureSideTapNext": "Tippen auf den Bildschirmrand, um das vorheriges/nächstes Element anzuzeigen",
   "settingsViewerUseCutout": "Ausgeschnittenen Bereich verwenden",
   "settingsViewerMaximumBrightness": "Maximale Helligkeit",
   "settingsMotionPhotoAutoPlay": "Automatische Wiedergabe bewegter Fotos",
