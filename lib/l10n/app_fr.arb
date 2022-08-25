@@ -87,6 +87,7 @@
 
   "entryInfoActionEditDate": "Modifier la date",
   "entryInfoActionEditLocation": "Modifier le lieu",
+  "entryInfoActionEditDescription": "Modifier la description",
   "entryInfoActionEditRating": "Modifier la notation",
   "entryInfoActionEditTags": "Modifier les libellés",
   "entryInfoActionRemoveMetadata": "Retirer les métadonnées",
@@ -96,6 +97,7 @@
   "filterLocationEmptyLabel": "Sans lieu",
   "filterTagEmptyLabel": "Sans libellé",
   "filterOnThisDayLabel": "Ce jour-là",
+  "filterRecentlyAddedLabel": "Ajouté récemment",
   "filterRatingUnratedLabel": "Sans notation",
   "filterRatingRejectedLabel": "Rejeté",
   "filterTypeAnimatedLabel": "Animation",
@@ -256,6 +258,8 @@
   "editEntryLocationDialogLongitude": "Longitude",
 
   "locationPickerUseThisLocationButton": "Utiliser ce lieu",
+
+  "editEntryDescriptionDialogTitle": "Description",
 
   "editEntryRatingDialogTitle": "Notation",
 
@@ -480,6 +484,7 @@
   "settingsCollectionSelectionQuickActionEditorBanner": "Maintenez votre doigt appuyé pour déplacer les boutons et choisir les actions affichées lors de la sélection d’éléments.",
 
   "settingsSectionViewer": "Visionneuse",
+  "settingsViewerGestureSideTapNext": "Appuyer sur les bords de l’écran pour passer à l’élément précédent/suivant",
   "settingsViewerUseCutout": "Utiliser la zone d’encoche",
   "settingsViewerMaximumBrightness": "Luminosité maximale",
   "settingsMotionPhotoAutoPlay": "Lecture automatique des photos animées",

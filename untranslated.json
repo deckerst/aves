@@ -6,13 +6,6 @@
     "settingsConfirmationAfterMoveToBinItems"
   ],
 
-  "fr": [
-    "entryInfoActionEditDescription",
-    "filterRecentlyAddedLabel",
-    "editEntryDescriptionDialogTitle",
-    "settingsViewerGestureSideTapNext"
-  ],
-
   "id": [
     "entryInfoActionEditDescription",
     "filterRecentlyAddedLabel",
@@ -26,13 +19,6 @@
     "filterRecentlyAddedLabel",
     "editEntryDescriptionDialogTitle",
     "settingsConfirmationAfterMoveToBinItems",
-    "settingsViewerGestureSideTapNext"
-  ],
-
-  "ko": [
-    "entryInfoActionEditDescription",
-    "filterRecentlyAddedLabel",
-    "editEntryDescriptionDialogTitle",
     "settingsViewerGestureSideTapNext"
   ],
 
