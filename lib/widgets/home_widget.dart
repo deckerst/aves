@@ -33,7 +33,13 @@ class HomeWidgetPainter {
     ui.ImageByteFormat format = ui.ImageByteFormat.rawRgba,
   }) async {
     final widgetSizePx = Size(widthPx.toDouble(), heightPx.toDouble());
-    final entryImage = await _getEntryImage(entry, shape.size(widgetSizePx));
+    late final ui.Image? entryImage;
+    if (entry != null) {
+      final extent = shape.extentPx(widgetSizePx, entry!) / devicePixelRatio;
+      entryImage = await _getEntryImage(entry, extent);
+    } else {
+      entryImage = null;
+    }
 
     final recorder = ui.PictureRecorder();
     final rect = Rect.fromLTWH(0, 0, widgetSizePx.width, widgetSizePx.height);
@@ -63,10 +69,10 @@ class HomeWidgetPainter {
           ..strokeCap = StrokeCap.round);
   }
 
-  FutureOr<ui.Image?> _getEntryImage(AvesEntry? entry, Size sizePx) async {
+  FutureOr<ui.Image?> _getEntryImage(AvesEntry? entry, double extent) async {
     if (entry == null) return null;
 
-    final provider = entry.getThumbnail(extent: sizePx.longestSide / devicePixelRatio);
+    final provider = entry.getThumbnail(extent: extent);
 
     final imageInfoCompleter = Completer<ImageInfo?>();
     final imageStream = provider.resolve(ImageConfiguration.empty);

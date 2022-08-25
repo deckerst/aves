@@ -26,6 +26,7 @@ All notable changes to this project will be documented in this file.
 - storage volume setup despite faulty volume on Android <11
 - storage volume setup when launched right after device boot
 - tiling PNG images
+- widget image sizing in some cases
 
 ## <a id="v1.6.11"></a>[v1.6.11] - 2022-07-26
 
