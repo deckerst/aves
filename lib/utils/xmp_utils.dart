@@ -5,6 +5,7 @@ class Namespaces {
   static const acdsee = 'http://ns.acdsee.com/iptc/1.0/';
   static const adsmlat = 'http://adsml.org/xmlns/';
   static const avm = 'http://www.communicatingastronomy.org/avm/1.0/';
+  static const camera = 'http://pix4d.com/camera/1.0/';
   static const cc = 'http://creativecommons.org/ns#';
   static const container = 'http://ns.google.com/photos/1.0/container/';
   static const creatorAtom = 'http://ns.adobe.com/creatorAtom/1.0/';
@@ -74,6 +75,7 @@ class Namespaces {
     adsmlat: 'AdsML',
     exifAux: 'Exif Aux',
     avm: 'Astronomy Visualization',
+    camera: 'Pix4D Camera',
     cc: 'Creative Commons',
     container: 'Container',
     crd: 'Camera Raw Defaults',
