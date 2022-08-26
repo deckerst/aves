@@ -576,6 +576,8 @@
   "settingsUnitSystemTile": "Birimler",
   "settingsUnitSystemTitle": "Birimler",
 
+  "settingsWidgetPageTitle": "Fotoğraf Çerçevesi",
+
   "statsPageTitle": "İstatistikler",
   "statsWithGps": "{count, plural, =1{1 konuma sahip öğe} other{{count} konuma sahip öğe}}",
   "statsTopCountries": "Başlıca Ülkeler",

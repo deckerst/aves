@@ -39,7 +39,6 @@
     "settingsViewerGestureSideTapNext",
     "settingsSlideshowFillScreen",
     "settingsScreenSaverPageTitle",
-    "settingsWidgetPageTitle",
     "settingsWidgetShowOutline"
   ],
 
@@ -75,7 +74,6 @@
     "settingsSlideshowVideoPlaybackTile",
     "settingsSlideshowVideoPlaybackTitle",
     "settingsScreenSaverPageTitle",
-    "settingsWidgetPageTitle",
     "settingsWidgetShowOutline",
     "viewerSetWallpaperButtonLabel"
   ]
