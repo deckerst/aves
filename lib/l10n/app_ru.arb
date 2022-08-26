@@ -586,6 +586,8 @@
   "settingsUnitSystemTile": "Единицы измерения",
   "settingsUnitSystemTitle": "Единицы измерения",
 
+  "settingsWidgetPageTitle": "Фоторамка",
+
   "statsPageTitle": "Статистика",
   "statsWithGps": "{count, plural, =1{1 объект с местоположением} few{{count} объекта с местоположением} other{{count} объектов с местоположением}}",
   "statsTopCountries": "Топ стран",
