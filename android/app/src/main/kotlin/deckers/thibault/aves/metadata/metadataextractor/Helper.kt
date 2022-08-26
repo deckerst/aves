@@ -1,4 +1,4 @@
-package deckers.thibault.aves.metadata
+package deckers.thibault.aves.metadata.metadataextractor
 
 import android.util.Log
 import com.drew.imaging.FileType
@@ -6,6 +6,7 @@ import com.drew.imaging.FileTypeDetector
 import com.drew.imaging.ImageMetadataReader
 import com.drew.imaging.jpeg.JpegMetadataReader
 import com.drew.imaging.jpeg.JpegSegmentMetadataReader
+import com.drew.imaging.mp4.Mp4Reader
 import com.drew.lang.ByteArrayReader
 import com.drew.lang.Rational
 import com.drew.lang.SequentialByteArrayReader
@@ -19,14 +20,17 @@ import com.drew.metadata.file.FileTypeDirectory
 import com.drew.metadata.iptc.IptcReader
 import com.drew.metadata.png.PngDirectory
 import com.drew.metadata.xmp.XmpReader
+import deckers.thibault.aves.metadata.ExifGeoTiffTags
+import deckers.thibault.aves.metadata.GeoTiffKeys
+import deckers.thibault.aves.metadata.Metadata
 import deckers.thibault.aves.utils.LogUtils
 import java.io.BufferedInputStream
 import java.io.InputStream
 import java.text.SimpleDateFormat
 import java.util.*
 
-object MetadataExtractorHelper {
-    private val LOG_TAG = LogUtils.createTag<MetadataExtractorHelper>()
+object Helper {
+    private val LOG_TAG = LogUtils.createTag<Helper>()
 
     const val PNG_ITXT_DIR_NAME = "PNG-iTXt"
     private const val PNG_TEXT_DIR_NAME = "PNG-tEXt"
@@ -52,14 +56,21 @@ object MetadataExtractorHelper {
         val bufferedInputStream = if (input is BufferedInputStream) input else BufferedInputStream(input)
         val fileType = FileTypeDetector.detectFileType(bufferedInputStream)
 
-        val metadata = if (fileType == FileType.Jpeg) {
-            safeReadJpeg(bufferedInputStream)
-        } else {
-            // providing the stream length is risky, as it may crash if it is incorrect
-            ImageMetadataReader.readMetadata(bufferedInputStream, -1L, fileType)
+        val metadata = when (fileType) {
+            FileType.Jpeg -> safeReadJpeg(bufferedInputStream)
+            FileType.Mp4 -> safeReadMp4(bufferedInputStream)
+            else ->
+                // providing the stream length is risky, as it may crash if it is incorrect
+                ImageMetadataReader.readMetadata(bufferedInputStream, -1L, fileType)
         }
 
         metadata.addDirectory(FileTypeDirectory(fileType))
+        return metadata
+    }
+
+    private fun safeReadMp4(input: InputStream): com.drew.metadata.Metadata {
+        val metadata = com.drew.metadata.Metadata()
+        Mp4Reader.extract(input, SafeMp4BoxHandler(metadata))
         return metadata
     }
 
@@ -69,7 +80,7 @@ object MetadataExtractorHelper {
     private fun safeReadJpeg(input: InputStream): com.drew.metadata.Metadata {
         val readers = ArrayList<JpegSegmentMetadataReader>().apply {
             addAll(JpegMetadataReader.ALL_READERS.filter { it !is XmpReader })
-            add(MetadataExtractorSafeXmpReader())
+            add(SafeXmpReader())
         }
 
         val metadata = com.drew.metadata.Metadata()

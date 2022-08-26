@@ -14,6 +14,7 @@ import deckers.thibault.aves.metadata.XMP.countPropArrayItems
 import deckers.thibault.aves.metadata.XMP.doesPropExist
 import deckers.thibault.aves.metadata.XMP.getSafeLong
 import deckers.thibault.aves.metadata.XMP.getSafeStructField
+import deckers.thibault.aves.metadata.metadataextractor.Helper
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
@@ -191,7 +192,7 @@ object MultiPage {
 
         try {
             Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
-                val metadata = MetadataExtractorHelper.safeRead(input)
+                val metadata = Helper.safeRead(input)
                 foundXmp = metadata.directories.any { it is XmpDirectory && it.tagCount > 0 }
                 metadata.getDirectoriesOfType(XmpDirectory::class.java).map { it.xmpMeta }.forEach(::processXmp)
             }
