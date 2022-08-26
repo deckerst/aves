@@ -6,7 +6,7 @@ import android.provider.MediaStore
 import android.provider.OpenableColumns
 import android.util.Log
 import deckers.thibault.aves.metadata.Metadata
-import deckers.thibault.aves.metadata.MetadataExtractorHelper
+import deckers.thibault.aves.metadata.metadataextractor.Helper
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.model.SourceEntry
 import deckers.thibault.aves.utils.LogUtils
@@ -22,7 +22,7 @@ internal class ContentImageProvider : ImageProvider() {
             StorageUtils.openInputStream(context, safeUri)?.use { input ->
                 // `metadata-extractor` is the most reliable, except for `tiff` (false positives, false negatives)
                 // cf https://github.com/drewnoakes/metadata-extractor/issues/296
-                MetadataExtractorHelper.readMimeType(input)?.takeIf { it != MimeTypes.TIFF }?.let {
+                Helper.readMimeType(input)?.takeIf { it != MimeTypes.TIFF }?.let {
                     extractorMimeType = it
                     if (extractorMimeType != sourceMimeType) {
                         Log.d(LOG_TAG, "source MIME type is $sourceMimeType but extracted MIME type is $extractorMimeType for uri=$uri")

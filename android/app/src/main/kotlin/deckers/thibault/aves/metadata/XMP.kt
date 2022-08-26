@@ -10,6 +10,7 @@ import com.adobe.internal.xmp.XMPException
 import com.adobe.internal.xmp.XMPMeta
 import com.adobe.internal.xmp.XMPMetaFactory
 import com.adobe.internal.xmp.properties.XMPProperty
+import deckers.thibault.aves.metadata.metadataextractor.SafeXmpReader
 import deckers.thibault.aves.utils.ContextUtils.queryContentResolverProp
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
@@ -98,7 +99,7 @@ object XMP {
             try {
                 val xmpBytes = context.queryContentResolverProp(uri, mimeType, MediaStore.MediaColumns.XMP)
                 if (xmpBytes is ByteArray) {
-                    val xmpMeta = XMPMetaFactory.parseFromBuffer(xmpBytes, MetadataExtractorSafeXmpReader.PARSE_OPTIONS)
+                    val xmpMeta = XMPMetaFactory.parseFromBuffer(xmpBytes, SafeXmpReader.PARSE_OPTIONS)
                     processXmp(xmpMeta)
                 }
             } catch (e: Exception) {
