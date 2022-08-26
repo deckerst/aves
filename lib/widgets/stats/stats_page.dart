@@ -25,7 +25,7 @@ import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart' as intl;
+import 'package:intl/intl.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
 
@@ -71,11 +71,16 @@ class StatsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final locale = l10n.localeName;
+    final numberFormat = NumberFormat.decimalPattern(locale);
+    final percentFormat = NumberFormat.percentPattern();
+
     Widget child;
     if (entries.isEmpty) {
       child = EmptyContent(
         icon: AIcons.image,
-        text: context.l10n.collectionEmptyImages,
+        text: l10n.collectionEmptyImages,
       );
     } else {
       final theme = Theme.of(context);
@@ -92,8 +97,8 @@ class StatsPage extends StatelessWidget {
               alignment: WrapAlignment.center,
               crossAxisAlignment: WrapCrossAlignment.center,
               children: [
-                _buildMimeDonut(context, AIcons.image, imagesByMimeTypes, animate),
-                _buildMimeDonut(context, AIcons.video, videoByMimeTypes, animate),
+                _buildMimeDonut(context, AIcons.image, imagesByMimeTypes, animate, numberFormat),
+                _buildMimeDonut(context, AIcons.video, videoByMimeTypes, animate, numberFormat),
               ],
             );
           },
@@ -125,7 +130,7 @@ class StatsPage extends StatelessWidget {
                     isRTL: context.isRtl,
                     barRadius: barRadius,
                     center: Text(
-                      intl.NumberFormat.percentPattern().format(withGpsPercent),
+                      percentFormat.format(withGpsPercent),
                       style: TextStyle(
                         shadows: isDark ? Constants.embossShadows : null,
                       ),
@@ -139,7 +144,7 @@ class StatsPage extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              context.l10n.statsWithGps(withGpsCount),
+              l10n.statsWithGps(withGpsCount),
               textAlign: TextAlign.center,
             ),
           ],
@@ -154,17 +159,17 @@ class StatsPage extends StatelessWidget {
             onFilterSelection: (filter) => _onFilterSelection(context, filter),
           ),
           locationIndicator,
-          ..._buildFilterSection<String>(context, context.l10n.statsTopCountries, entryCountPerCountry, (v) => LocationFilter(LocationLevel.country, v)),
-          ..._buildFilterSection<String>(context, context.l10n.statsTopPlaces, entryCountPerPlace, (v) => LocationFilter(LocationLevel.place, v)),
-          ..._buildFilterSection<String>(context, context.l10n.statsTopTags, entryCountPerTag, TagFilter.new),
-          if (showRatings) ..._buildFilterSection<int>(context, context.l10n.searchSectionRating, entryCountPerRating, RatingFilter.new, sortByCount: false, maxRowCount: null),
+          ..._buildFilterSection<String>(context, l10n.statsTopCountries, entryCountPerCountry, (v) => LocationFilter(LocationLevel.country, v)),
+          ..._buildFilterSection<String>(context, l10n.statsTopPlaces, entryCountPerPlace, (v) => LocationFilter(LocationLevel.place, v)),
+          ..._buildFilterSection<String>(context, l10n.statsTopTags, entryCountPerTag, TagFilter.new),
+          if (showRatings) ..._buildFilterSection<int>(context, l10n.searchSectionRating, entryCountPerRating, RatingFilter.new, sortByCount: false, maxRowCount: null),
         ],
       );
     }
     return MediaQueryDataProvider(
       child: Scaffold(
         appBar: AppBar(
-          title: Text(context.l10n.statsPageTitle),
+          title: Text(l10n.statsPageTitle),
         ),
         body: GestureAreaProtectorStack(
           child: SafeArea(
@@ -181,6 +186,7 @@ class StatsPage extends StatelessWidget {
     IconData icon,
     Map<String, int> byMimeTypes,
     bool animate,
+    NumberFormat numberFormat,
   ) {
     if (byMimeTypes.isEmpty) return const SizedBox.shrink();
 
@@ -237,7 +243,7 @@ class StatsPage extends StatelessWidget {
                 children: [
                   Icon(icon),
                   Text(
-                    '$sum',
+                    numberFormat.format(sum),
                     textAlign: TextAlign.center,
                   ),
                 ],
@@ -269,7 +275,7 @@ class StatsPage extends StatelessWidget {
                         ),
                         const SizedBox(width: 8),
                         Text(
-                          '${d.entryCount}',
+                          numberFormat.format(d.entryCount),
                           style: TextStyle(
                             color: Theme.of(context).textTheme.caption!.color,
                           ),
