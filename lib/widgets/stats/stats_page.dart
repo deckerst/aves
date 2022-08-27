@@ -341,12 +341,12 @@ class StatsPage extends StatelessWidget {
 
   void _applyToParentCollectionPage(BuildContext context, CollectionFilter filter) {
     parentCollection!.addFilter(filter);
-    // we post closing the search page after applying the filter selection
+    // We delay closing the current page after applying the filter selection
     // so that hero animation target is ready in the `FilterBar`,
-    // even when the target is a child of an `AnimatedList`
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Navigator.pop(context);
-    });
+    // even when the target is a child of an `AnimatedList`.
+    // Do not use `WidgetsBinding.instance.addPostFrameCallback`,
+    // as it may not trigger if there is no subsequent build.
+    Future.delayed(const Duration(milliseconds: 100), () => Navigator.pop(context));
   }
 
   void _jumpToCollectionPage(BuildContext context, CollectionFilter filter) {
