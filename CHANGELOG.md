@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.6.12"></a>[v1.6.12] - 2022-08-27
+
 ### Added
 
 - Viewer: optional gesture to show previous/next item
