@@ -98,6 +98,7 @@ class ViewerDebugPage extends StatelessWidget {
         InfoRowGroup(
           info: {
             'catalogDateMillis': toDateValue(entry.catalogDateMillis),
+            'dateAddedSecs': toDateValue(entry.dateAddedSecs, factor: 1000),
             'dateModifiedSecs': toDateValue(entry.dateModifiedSecs, factor: 1000),
             'sourceDateTakenMillis': toDateValue(entry.sourceDateTakenMillis),
             'bestDate': '${entry.bestDate}',
@@ -135,6 +136,8 @@ class ViewerDebugPage extends StatelessWidget {
             'isAnimated': '${entry.isAnimated}',
             'isGeotiff': '${entry.isGeotiff}',
             'is360': '${entry.is360}',
+            'isMultiPage': '${entry.isMultiPage}',
+            'isMotionPhoto': '${entry.isMotionPhoto}',
             'canEdit': '${entry.canEdit}',
             'canEditDate': '${entry.canEditDate}',
             'canEditTags': '${entry.canEditTags}',

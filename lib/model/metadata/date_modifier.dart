@@ -6,12 +6,12 @@ import 'package:flutter/widgets.dart';
 
 @immutable
 class DateModifier extends Equatable {
-  static const writableDateFields = [
+  static const writableFields = [
     MetadataField.exifDate,
     MetadataField.exifDateOriginal,
     MetadataField.exifDateDigitized,
     MetadataField.exifGpsDatestamp,
-    MetadataField.xmpCreateDate,
+    MetadataField.xmpXmpCreateDate,
   ];
 
   final DateEditAction action;

@@ -37,7 +37,7 @@ class AvesEntry {
   int? pageId, contentId;
   final String sourceMimeType;
   int width, height, sourceRotationDegrees;
-  int? sizeBytes, _dateModifiedSecs, sourceDateTakenMillis, _durationMillis;
+  int? sizeBytes, dateAddedSecs, _dateModifiedSecs, sourceDateTakenMillis, _durationMillis;
   bool trashed;
 
   int? _catalogDateMillis;
@@ -61,6 +61,7 @@ class AvesEntry {
     required this.sourceRotationDegrees,
     required this.sizeBytes,
     required String? sourceTitle,
+    required this.dateAddedSecs,
     required int? dateModifiedSecs,
     required this.sourceDateTakenMillis,
     required int? durationMillis,
@@ -83,6 +84,7 @@ class AvesEntry {
     String? path,
     int? contentId,
     String? title,
+    int? dateAddedSecs,
     int? dateModifiedSecs,
     List<AvesEntry>? burstEntries,
   }) {
@@ -99,6 +101,7 @@ class AvesEntry {
       sourceRotationDegrees: sourceRotationDegrees,
       sizeBytes: sizeBytes,
       sourceTitle: title ?? sourceTitle,
+      dateAddedSecs: dateAddedSecs ?? this.dateAddedSecs,
       dateModifiedSecs: dateModifiedSecs ?? this.dateModifiedSecs,
       sourceDateTakenMillis: sourceDateTakenMillis,
       durationMillis: durationMillis,
@@ -126,6 +129,7 @@ class AvesEntry {
       sourceRotationDegrees: map['sourceRotationDegrees'] as int? ?? 0,
       sizeBytes: map['sizeBytes'] as int?,
       sourceTitle: map['title'] as String?,
+      dateAddedSecs: map['dateAddedSecs'] as int?,
       dateModifiedSecs: map['dateModifiedSecs'] as int?,
       sourceDateTakenMillis: map['sourceDateTakenMillis'] as int?,
       durationMillis: map['durationMillis'] as int?,
@@ -150,6 +154,23 @@ class AvesEntry {
       'sourceDateTakenMillis': sourceDateTakenMillis,
       'durationMillis': durationMillis,
       'trashed': trashed ? 1 : 0,
+    };
+  }
+
+  Map<String, dynamic> toPlatformEntryMap() {
+    return {
+      'uri': uri,
+      'path': path,
+      'pageId': pageId,
+      'mimeType': mimeType,
+      'width': width,
+      'height': height,
+      'rotationDegrees': rotationDegrees,
+      'isFlipped': isFlipped,
+      'dateModifiedSecs': dateModifiedSecs,
+      'sizeBytes': sizeBytes,
+      'trashed': trashed,
+      'trashPath': trashDetails?.path,
     };
   }
 
@@ -218,6 +239,7 @@ class AvesEntry {
         MimeTypes.heic,
         MimeTypes.heif,
         MimeTypes.jpeg,
+        MimeTypes.png,
         MimeTypes.webp,
         MimeTypes.arw,
         MimeTypes.cr2,
@@ -256,6 +278,8 @@ class AvesEntry {
   bool get canEditDate => canEdit && (canEditExif || canEditXmp);
 
   bool get canEditLocation => canEdit && canEditExif;
+
+  bool get canEditDescription => canEdit && (canEditExif || canEditXmp);
 
   bool get canEditRating => canEdit && canEditXmp;
 
@@ -461,7 +485,7 @@ class AvesEntry {
   String? _bestTitle;
 
   String? get bestTitle {
-    _bestTitle ??= _catalogMetadata?.xmpTitleDescription?.isNotEmpty == true ? _catalogMetadata!.xmpTitleDescription : (filenameWithoutExtension ?? sourceTitle);
+    _bestTitle ??= _catalogMetadata?.xmpTitle?.isNotEmpty == true ? _catalogMetadata!.xmpTitle : (filenameWithoutExtension ?? sourceTitle);
     return _bestTitle;
   }
 
@@ -751,7 +775,10 @@ class AvesEntry {
 
   bool get isBurst => burstEntries?.isNotEmpty == true;
 
-  bool get isMotionPhoto => isMultiPage && !isBurst && mimeType == MimeTypes.jpeg;
+  // for backwards compatibility
+  bool get _isMotionPhotoLegacy => isMultiPage && !isBurst && mimeType == MimeTypes.jpeg;
+
+  bool get isMotionPhoto => (_catalogMetadata?.isMotionPhoto ?? false) || _isMotionPhotoLegacy;
 
   String? get burstKey {
     if (filenameWithoutExtension != null) {

@@ -35,6 +35,9 @@ class SqfliteMetadataDb implements MetadataDb {
   int get nextId => ++_lastId;
 
   @override
+  int get timestampSecs => DateTime.now().millisecondsSinceEpoch ~/ 1000;
+
+  @override
   Future<void> init() async {
     _db = await openDatabase(
       await path,
@@ -50,6 +53,7 @@ class SqfliteMetadataDb implements MetadataDb {
             ', sourceRotationDegrees INTEGER'
             ', sizeBytes INTEGER'
             ', title TEXT'
+            ', dateAddedSecs INTEGER DEFAULT (strftime(\'%s\',\'now\'))'
             ', dateModifiedSecs INTEGER'
             ', sourceDateTakenMillis INTEGER'
             ', durationMillis INTEGER'
@@ -66,7 +70,7 @@ class SqfliteMetadataDb implements MetadataDb {
             ', flags INTEGER'
             ', rotationDegrees INTEGER'
             ', xmpSubjects TEXT'
-            ', xmpTitleDescription TEXT'
+            ', xmpTitle TEXT'
             ', latitude REAL'
             ', longitude REAL'
             ', rating INTEGER'
@@ -99,7 +103,7 @@ class SqfliteMetadataDb implements MetadataDb {
             ')');
       },
       onUpgrade: MetadataDbUpgrader.upgradeDb,
-      version: 8,
+      version: 9,
     );
 
     final maxIdRows = await _db.rawQuery('SELECT max(id) AS maxId FROM $entryTable');

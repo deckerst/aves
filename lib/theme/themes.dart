@@ -2,8 +2,8 @@ import 'dart:ui';
 
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/widgets/aves_app.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 class Themes {
@@ -35,7 +35,7 @@ class Themes {
   static const _lightSecondLayer = Color(0xFFF5F5F5); // aka `Colors.grey[100]`
   static const _lightThirdLayer = Color(0xFFEEEEEE); // aka `Colors.grey[200]`
 
-  static ThemeData lightTheme(Color accentColor) => ThemeData(
+  static ThemeData lightTheme(Color accentColor, bool deviceInitialized) => ThemeData(
         colorScheme: ColorScheme.light(
           primary: accentColor,
           secondary: accentColor,
@@ -58,7 +58,7 @@ class Themes {
           foregroundColor: _lightActionIconColor,
           // `titleTextStyle.color` is used by text
           titleTextStyle: _appBarTitleTextStyle.copyWith(color: _lightTitleColor),
-          systemOverlayStyle: SystemUiOverlayStyle.dark,
+          systemOverlayStyle: deviceInitialized ? AvesApp.systemUIStyleForBrightness(Brightness.light, _lightFirstLayer) : null,
         ),
         listTileTheme: const ListTileThemeData(
           iconColor: _lightActionIconColor,
@@ -87,7 +87,7 @@ class Themes {
   static const _darkSecondLayer = Color(0xFF363636);
   static const _darkThirdLayer = Color(0xFF424242); // aka `Colors.grey[800]`
 
-  static ThemeData darkTheme(Color accentColor) => ThemeData(
+  static ThemeData darkTheme(Color accentColor, bool deviceInitialized) => ThemeData(
         colorScheme: ColorScheme.dark(
           primary: accentColor,
           secondary: accentColor,
@@ -112,7 +112,7 @@ class Themes {
           foregroundColor: _darkTitleColor,
           // `titleTextStyle.color` is used by text
           titleTextStyle: _appBarTitleTextStyle.copyWith(color: _darkTitleColor),
-          systemOverlayStyle: SystemUiOverlayStyle.light,
+          systemOverlayStyle: deviceInitialized ? AvesApp.systemUIStyleForBrightness(Brightness.dark, _darkFirstLayer) : null,
         ),
         popupMenuTheme: const PopupMenuThemeData(
           color: _darkSecondLayer,
@@ -138,8 +138,8 @@ class Themes {
   static const _blackSecondLayer = Color(0xFF212121); // aka `Colors.grey[900]`
   static const _blackThirdLayer = Color(0xFF303030); // aka `Colors.grey[850]`
 
-  static ThemeData blackTheme(Color accentColor) {
-    final baseTheme = darkTheme(accentColor);
+  static ThemeData blackTheme(Color accentColor, bool deviceInitialized) {
+    final baseTheme = darkTheme(accentColor, deviceInitialized);
     return baseTheme.copyWith(
       // `canvasColor` is used by `Drawer`, `DropdownButton` and `ExpansionTileCard`
       canvasColor: _blackSecondLayer,

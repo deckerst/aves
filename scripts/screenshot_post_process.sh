@@ -2,12 +2,14 @@
 # process raw screenshots from test driver to generate:
 # - scaled down versions for IzzyOnDroid
 # - framed versions for Google Play
+# - framed and scaled down versions for README (English only)
+# - framed and scaled down versions for Amazon (English only)
 
 # expects:
 # - ImageMagick 6
 # - raw screenshots sized at 1080x2280 in `/screenshots/raw`
 
-DEVICE_OVERLAY_LTR=~/code/aves_extra/screenshots/device_overlay_s10e_ltr.png
+DEVICE_OVERLAY_LTR=~/code/aves_extra/screenshots/device_overlay_s10e_ltr_nav_gestures.png
 DEVICE_FRAME=~/code/aves_extra/screenshots/device_frame_s10e.png
 # FRAME_SIZE: dimensions of DEVICE_FRAME
 FRAME_SIZE=1142x2410
@@ -37,10 +39,10 @@ for source in overlay/*/*; do
     convert -resize 350x "$source" "$target"
   fi
 done
-mv screenshots/izzy/en screenshots/izzy/en-US
-mv screenshots/izzy/es screenshots/izzy/es-MX
-mv screenshots/izzy/pt screenshots/izzy/pt-BR
-mv screenshots/izzy/zh screenshots/izzy/zh-CN
+mv izzy/en izzy/en-US
+mv izzy/es izzy/es-MX
+mv izzy/pt izzy/pt-BR
+mv izzy/zh izzy/zh-CN
 
 # play: add device frame
 for source in overlay/*/*; do

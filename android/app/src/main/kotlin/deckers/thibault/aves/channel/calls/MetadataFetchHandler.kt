@@ -1,16 +1,14 @@
 package deckers.thibault.aves.channel.calls
 
 import android.annotation.SuppressLint
-import android.content.ContentUris
 import android.content.Context
-import android.database.Cursor
 import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Build
-import android.provider.MediaStore
 import android.util.Log
 import androidx.exifinterface.media.ExifInterface
 import com.adobe.internal.xmp.XMPException
+import com.adobe.internal.xmp.XMPMeta
 import com.adobe.internal.xmp.XMPMetaFactory
 import com.adobe.internal.xmp.options.SerializeOptions
 import com.adobe.internal.xmp.properties.XMPPropertyInfo
@@ -44,38 +42,40 @@ import deckers.thibault.aves.metadata.Metadata.DIR_EXIF_GEOTIFF
 import deckers.thibault.aves.metadata.Metadata.DIR_PNG_TEXTUAL_DATA
 import deckers.thibault.aves.metadata.Metadata.getRotationDegreesForExifCode
 import deckers.thibault.aves.metadata.Metadata.isFlippedForExifCode
-import deckers.thibault.aves.metadata.MetadataExtractorHelper.PNG_ITXT_DIR_NAME
-import deckers.thibault.aves.metadata.MetadataExtractorHelper.PNG_LAST_MODIFICATION_TIME_FORMAT
-import deckers.thibault.aves.metadata.MetadataExtractorHelper.PNG_TIME_DIR_NAME
-import deckers.thibault.aves.metadata.MetadataExtractorHelper.containsGeoTiffTags
-import deckers.thibault.aves.metadata.MetadataExtractorHelper.extractGeoKeys
-import deckers.thibault.aves.metadata.MetadataExtractorHelper.extractPngProfile
-import deckers.thibault.aves.metadata.MetadataExtractorHelper.getDateDigitizedMillis
-import deckers.thibault.aves.metadata.MetadataExtractorHelper.getDateModifiedMillis
-import deckers.thibault.aves.metadata.MetadataExtractorHelper.getDateOriginalMillis
-import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeBoolean
-import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeDateMillis
-import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeInt
-import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeRational
-import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeString
-import deckers.thibault.aves.metadata.MetadataExtractorHelper.isPngTextDir
+import deckers.thibault.aves.metadata.XMP.doesPropExist
+import deckers.thibault.aves.metadata.XMP.getPropArrayItemValues
 import deckers.thibault.aves.metadata.XMP.getSafeDateMillis
 import deckers.thibault.aves.metadata.XMP.getSafeInt
 import deckers.thibault.aves.metadata.XMP.getSafeLocalizedText
 import deckers.thibault.aves.metadata.XMP.getSafeString
 import deckers.thibault.aves.metadata.XMP.isMotionPhoto
 import deckers.thibault.aves.metadata.XMP.isPanorama
+import deckers.thibault.aves.metadata.metadataextractor.Helper
+import deckers.thibault.aves.metadata.metadataextractor.Helper.PNG_ITXT_DIR_NAME
+import deckers.thibault.aves.metadata.metadataextractor.Helper.PNG_LAST_MODIFICATION_TIME_FORMAT
+import deckers.thibault.aves.metadata.metadataextractor.Helper.PNG_TIME_DIR_NAME
+import deckers.thibault.aves.metadata.metadataextractor.Helper.containsGeoTiffTags
+import deckers.thibault.aves.metadata.metadataextractor.Helper.extractGeoKeys
+import deckers.thibault.aves.metadata.metadataextractor.Helper.extractPngProfile
+import deckers.thibault.aves.metadata.metadataextractor.Helper.getDateDigitizedMillis
+import deckers.thibault.aves.metadata.metadataextractor.Helper.getDateModifiedMillis
+import deckers.thibault.aves.metadata.metadataextractor.Helper.getDateOriginalMillis
+import deckers.thibault.aves.metadata.metadataextractor.Helper.getSafeBoolean
+import deckers.thibault.aves.metadata.metadataextractor.Helper.getSafeDateMillis
+import deckers.thibault.aves.metadata.metadataextractor.Helper.getSafeInt
+import deckers.thibault.aves.metadata.metadataextractor.Helper.getSafeRational
+import deckers.thibault.aves.metadata.metadataextractor.Helper.getSafeString
+import deckers.thibault.aves.metadata.metadataextractor.Helper.isPngTextDir
 import deckers.thibault.aves.model.FieldMap
+import deckers.thibault.aves.utils.ContextUtils.queryContentResolverProp
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.MimeTypes.TIFF_EXTENSION_PATTERN
 import deckers.thibault.aves.utils.MimeTypes.canReadWithExifInterface
 import deckers.thibault.aves.utils.MimeTypes.canReadWithMetadataExtractor
 import deckers.thibault.aves.utils.MimeTypes.isHeic
-import deckers.thibault.aves.utils.MimeTypes.isImage
 import deckers.thibault.aves.utils.MimeTypes.isVideo
 import deckers.thibault.aves.utils.StorageUtils
-import deckers.thibault.aves.utils.UriUtils.tryParseId
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
@@ -83,6 +83,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets
 import java.text.DecimalFormat
@@ -106,6 +107,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             "hasContentResolverProp" -> ioScope.launch { safe(call, result, ::hasContentResolverProp) }
             "getContentResolverProp" -> ioScope.launch { safe(call, result, ::getContentResolverProp) }
             "getDate" -> ioScope.launch { safe(call, result, ::getDate) }
+            "getDescription" -> ioScope.launch { safe(call, result, ::getDescription) }
             else -> result.notImplemented()
         }
     }
@@ -123,18 +125,43 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         var foundExif = false
         var foundXmp = false
 
+        fun processXmp(xmpMeta: XMPMeta, dirMap: MutableMap<String, String>) {
+            try {
+                for (prop in xmpMeta) {
+                    if (prop is XMPPropertyInfo) {
+                        val path = prop.path
+                        if (path?.isNotEmpty() == true) {
+                            val value = if (XMP.isDataPath(path)) "[skipped]" else prop.value
+                            if (value?.isNotEmpty() == true) {
+                                dirMap[path] = value
+                            }
+                        }
+                    }
+                }
+            } catch (e: XMPException) {
+                Log.w(LOG_TAG, "failed to read XMP directory for uri=$uri", e)
+            }
+            // remove this stat as it is not actual XMP data
+            dirMap.remove(XmpDirectory().getTagName(XmpDirectory.TAG_XMP_VALUE_COUNT))
+            // add schema prefixes for namespace resolution
+            val prefixes = XMPMetaFactory.getSchemaRegistry().prefixes
+            dirMap["schemaRegistryPrefixes"] = JSONObject(prefixes).toString()
+        }
+
         if (canReadWithMetadataExtractor(mimeType)) {
             try {
                 Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
-                    val metadata = MetadataExtractorHelper.safeRead(input)
+                    val metadata = Helper.safeRead(input)
                     foundExif = metadata.directories.any { it is ExifDirectoryBase && it.tagCount > 0 }
                     foundXmp = metadata.directories.any { it is XmpDirectory && it.tagCount > 0 }
+
                     val uuidDirCount = HashMap<String, Int>()
                     val dirByName = metadata.directories.filter {
                         (it.tagCount > 0 || it.errorCount > 0)
                                 && it !is FileTypeDirectory
                                 && it !is AviDirectory
                     }.groupBy { dir -> dir.name }
+
                     for (dirEntry in dirByName) {
                         val baseDirName = dirEntry.key
 
@@ -262,23 +289,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                             }
 
                             if (dir is XmpDirectory) {
-                                try {
-                                    for (prop in dir.xmpMeta) {
-                                        if (prop is XMPPropertyInfo) {
-                                            val path = prop.path
-                                            if (path?.isNotEmpty() == true) {
-                                                val value = if (XMP.isDataPath(path)) "[skipped]" else prop.value
-                                                if (value?.isNotEmpty() == true) {
-                                                    dirMap[path] = value
-                                                }
-                                            }
-                                        }
-                                    }
-                                } catch (e: XMPException) {
-                                    Log.w(LOG_TAG, "failed to read XMP directory for uri=$uri", e)
-                                }
-                                // remove this stat as it is not actual XMP data
-                                dirMap.remove(dir.getTagName(XmpDirectory.TAG_XMP_VALUE_COUNT))
+                                processXmp(dir.xmpMeta, dirMap)
                             }
 
                             if (dir is Mp4UuidBoxDirectory) {
@@ -356,6 +367,13 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             }
         }
 
+        XMP.checkHeic(context, uri, mimeType, foundXmp) { xmpMeta ->
+            val thisDirName = XmpDirectory().name
+            val dirMap = metadataMap[thisDirName] ?: HashMap()
+            metadataMap[thisDirName] = dirMap
+            processXmp(xmpMeta, dirMap)
+        }
+
         if (isVideo(mimeType)) {
             // this is used as fallback when the video metadata cannot be found on the Dart side
             // and to identify whether there is an accessible cover image
@@ -409,9 +427,8 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
     // - XMP / photoshop:DateCreated
     // - PNG / TIME / LAST_MODIFICATION_TIME
     // - Video / METADATA_KEY_DATE
-    // set `KEY_XMP_TITLE_DESCRIPTION` from these fields (by precedence):
+    // set `KEY_XMP_TITLE` from this field:
     // - XMP / dc:title
-    // - XMP / dc:description
     // set `KEY_XMP_SUBJECTS` from these fields (by precedence):
     // - XMP / dc:subject
     // - IPTC / keywords
@@ -447,12 +464,51 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
     ) {
         var flags = (metadataMap[KEY_FLAGS] ?: 0) as Int
         var foundExif = false
+        var foundXmp = false
+
+        fun processXmp(xmpMeta: XMPMeta) {
+            try {
+                if (xmpMeta.doesPropExist(XMP.DC_SUBJECT_PROP_NAME)) {
+                    val values = xmpMeta.getPropArrayItemValues(XMP.DC_SUBJECT_PROP_NAME)
+                    metadataMap[KEY_XMP_SUBJECTS] = values.joinToString(XMP_SUBJECTS_SEPARATOR)
+                }
+                xmpMeta.getSafeLocalizedText(XMP.DC_TITLE_PROP_NAME, acceptBlank = false) { metadataMap[KEY_XMP_TITLE] = it }
+                if (!metadataMap.containsKey(KEY_DATE_MILLIS)) {
+                    xmpMeta.getSafeDateMillis(XMP.XMP_CREATE_DATE_PROP_NAME) { metadataMap[KEY_DATE_MILLIS] = it }
+                    if (!metadataMap.containsKey(KEY_DATE_MILLIS)) {
+                        xmpMeta.getSafeDateMillis(XMP.PS_DATE_CREATED_PROP_NAME) { metadataMap[KEY_DATE_MILLIS] = it }
+                    }
+                }
+
+                xmpMeta.getSafeInt(XMP.XMP_RATING_PROP_NAME) { metadataMap[KEY_RATING] = it }
+                if (!metadataMap.containsKey(KEY_RATING)) {
+                    xmpMeta.getSafeInt(XMP.MS_RATING_PROP_NAME) { percentRating ->
+                        // values of 1,25,50,75,99% correspond to 1,2,3,4,5 stars
+                        val standardRating = (percentRating / 25f).roundToInt() + 1
+                        metadataMap[KEY_RATING] = standardRating
+                    }
+                }
+
+                // identification of panorama (aka photo sphere)
+                if (xmpMeta.isPanorama()) {
+                    flags = flags or MASK_IS_360
+                }
+
+                // identification of motion photo
+                if (xmpMeta.isMotionPhoto()) {
+                    flags = flags or MASK_IS_MULTIPAGE or MASK_IS_MOTION_PHOTO
+                }
+            } catch (e: XMPException) {
+                Log.w(LOG_TAG, "failed to read XMP directory for uri=$uri", e)
+            }
+        }
 
         if (canReadWithMetadataExtractor(mimeType)) {
             try {
                 Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
-                    val metadata = MetadataExtractorHelper.safeRead(input)
+                    val metadata = Helper.safeRead(input)
                     foundExif = metadata.directories.any { it is ExifDirectoryBase && it.tagCount > 0 }
+                    foundXmp = metadata.directories.any { it is XmpDirectory && it.tagCount > 0 }
 
                     // File type
                     for (dir in metadata.getDirectoriesOfType(FileTypeDirectory::class.java)) {
@@ -491,7 +547,9 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                         }
                         dir.getSafeInt(ExifDirectoryBase.TAG_ORIENTATION) {
                             val orientation = it
-                            if (isFlippedForExifCode(orientation)) flags = flags or MASK_IS_FLIPPED
+                            if (isFlippedForExifCode(orientation)) {
+                                flags = flags or MASK_IS_FLIPPED
+                            }
                             metadataMap[KEY_ROTATION_DEGREES] = getRotationDegreesForExifCode(orientation)
                         }
                     }
@@ -506,47 +564,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                     }
 
                     // XMP
-                    for (dir in metadata.getDirectoriesOfType(XmpDirectory::class.java)) {
-                        val xmpMeta = dir.xmpMeta
-                        try {
-                            if (xmpMeta.doesPropertyExist(XMP.DC_SCHEMA_NS, XMP.DC_SUBJECT_PROP_NAME)) {
-                                val count = xmpMeta.countArrayItems(XMP.DC_SCHEMA_NS, XMP.DC_SUBJECT_PROP_NAME)
-                                val values = (1 until count + 1).map { xmpMeta.getArrayItem(XMP.DC_SCHEMA_NS, XMP.DC_SUBJECT_PROP_NAME, it).value }
-                                metadataMap[KEY_XMP_SUBJECTS] = values.joinToString(XMP_SUBJECTS_SEPARATOR)
-                            }
-                            xmpMeta.getSafeLocalizedText(XMP.DC_SCHEMA_NS, XMP.DC_TITLE_PROP_NAME, acceptBlank = false) { metadataMap[KEY_XMP_TITLE_DESCRIPTION] = it }
-                            if (!metadataMap.containsKey(KEY_XMP_TITLE_DESCRIPTION)) {
-                                xmpMeta.getSafeLocalizedText(XMP.DC_SCHEMA_NS, XMP.DC_DESCRIPTION_PROP_NAME, acceptBlank = false) { metadataMap[KEY_XMP_TITLE_DESCRIPTION] = it }
-                            }
-                            if (!metadataMap.containsKey(KEY_DATE_MILLIS)) {
-                                xmpMeta.getSafeDateMillis(XMP.XMP_SCHEMA_NS, XMP.XMP_CREATE_DATE_PROP_NAME) { metadataMap[KEY_DATE_MILLIS] = it }
-                                if (!metadataMap.containsKey(KEY_DATE_MILLIS)) {
-                                    xmpMeta.getSafeDateMillis(XMP.PHOTOSHOP_SCHEMA_NS, XMP.PS_DATE_CREATED_PROP_NAME) { metadataMap[KEY_DATE_MILLIS] = it }
-                                }
-                            }
-
-                            xmpMeta.getSafeInt(XMP.XMP_SCHEMA_NS, XMP.XMP_RATING_PROP_NAME) { metadataMap[KEY_RATING] = it }
-                            if (!metadataMap.containsKey(KEY_RATING)) {
-                                xmpMeta.getSafeInt(XMP.MICROSOFTPHOTO_SCHEMA_NS, XMP.MS_RATING_PROP_NAME) { percentRating ->
-                                    // values of 1,25,50,75,99% correspond to 1,2,3,4,5 stars
-                                    val standardRating = (percentRating / 25f).roundToInt() + 1
-                                    metadataMap[KEY_RATING] = standardRating
-                                }
-                            }
-
-                            // identification of panorama (aka photo sphere)
-                            if (xmpMeta.isPanorama()) {
-                                flags = flags or MASK_IS_360
-                            }
-
-                            // identification of motion photo
-                            if (xmpMeta.isMotionPhoto()) {
-                                flags = flags or MASK_IS_MULTIPAGE
-                            }
-                        } catch (e: XMPException) {
-                            Log.w(LOG_TAG, "failed to read XMP directory for uri=$uri", e)
-                        }
-                    }
+                    metadata.getDirectoriesOfType(XmpDirectory::class.java).map { it.xmpMeta }.forEach(::processXmp)
 
                     // XMP fallback to IPTC
                     if (!metadataMap.containsKey(KEY_XMP_SUBJECTS)) {
@@ -574,7 +592,9 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                         }
                         MimeTypes.GIF -> {
                             // identification of animated GIF
-                            if (metadata.containsDirectoryOfType(GifAnimationDirectory::class.java)) flags = flags or MASK_IS_ANIMATED
+                            if (metadata.containsDirectoryOfType(GifAnimationDirectory::class.java)) {
+                                flags = flags or MASK_IS_ANIMATED
+                            }
                         }
                         MimeTypes.WEBP -> {
                             // identification of animated WEBP
@@ -587,7 +607,9 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                         MimeTypes.TIFF -> {
                             // identification of GeoTIFF
                             for (dir in metadata.getDirectoriesOfType(ExifIFD0Directory::class.java)) {
-                                if (dir.containsGeoTiffTags()) flags = flags or MASK_IS_GEOTIFF
+                                if (dir.containsGeoTiffTags()) {
+                                    flags = flags or MASK_IS_GEOTIFF
+                                }
                             }
                         }
                     }
@@ -633,6 +655,8 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                 Log.w(LOG_TAG, "failed to get metadata by ExifInterface for mimeType=$mimeType uri=$uri", e)
             }
         }
+
+        XMP.checkHeic(context, uri, mimeType, foundXmp, ::processXmp)
 
         if (mimeType == MimeTypes.TIFF && MultiPage.isMultiPageTiff(context, uri)) flags = flags or MASK_IS_MULTIPAGE
 
@@ -718,7 +742,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         if (canReadWithMetadataExtractor(mimeType)) {
             try {
                 Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
-                    val metadata = MetadataExtractorHelper.safeRead(input)
+                    val metadata = Helper.safeRead(input)
                     for (dir in metadata.getDirectoriesOfType(ExifSubIFDDirectory::class.java)) {
                         foundExif = true
                         dir.getSafeRational(ExifDirectoryBase.TAG_FNUMBER) { metadataMap[KEY_APERTURE] = it.numerator.toDouble() / it.denominator }
@@ -768,7 +792,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         if (canReadWithMetadataExtractor(mimeType)) {
             try {
                 Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
-                    val metadata = MetadataExtractorHelper.safeRead(input)
+                    val metadata = Helper.safeRead(input)
                     val fields = HashMap<Int, Any?>()
                     for (dir in metadata.getDirectoriesOfType(ExifIFD0Directory::class.java)) {
                         if (dir.containsGeoTiffTags()) {
@@ -801,16 +825,20 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         val mimeType = call.argument<String>("mimeType")
         val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
         val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
-        if (mimeType == null || uri == null || sizeBytes == null) {
+        val isMotionPhoto = call.argument<Boolean>("isMotionPhoto")
+        if (mimeType == null || uri == null || sizeBytes == null || isMotionPhoto == null) {
             result.error("getMultiPageInfo-args", "missing arguments", null)
             return
         }
 
-        val pages: ArrayList<FieldMap>? = when (mimeType) {
-            MimeTypes.HEIC, MimeTypes.HEIF -> MultiPage.getHeicTracks(context, uri)
-            MimeTypes.JPEG -> MultiPage.getMotionPhotoPages(context, uri, mimeType, sizeBytes = sizeBytes)
-            MimeTypes.TIFF -> MultiPage.getTiffPages(context, uri)
-            else -> null
+        val pages: ArrayList<FieldMap>? = if (isMotionPhoto) {
+            MultiPage.getMotionPhotoPages(context, uri, mimeType, sizeBytes = sizeBytes)
+        } else {
+            when (mimeType) {
+                MimeTypes.HEIC, MimeTypes.HEIF -> MultiPage.getHeicTracks(context, uri)
+                MimeTypes.TIFF -> MultiPage.getTiffPages(context, uri)
+                else -> null
+            }
         }
         if (pages?.isEmpty() == true) {
             result.error("getMultiPageInfo-empty", "failed to get pages for mimeType=$mimeType uri=$uri", null)
@@ -828,25 +856,29 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             return
         }
 
+        var foundXmp = false
+        val fields: FieldMap = hashMapOf()
+
+        fun processXmp(xmpMeta: XMPMeta) {
+            try {
+                xmpMeta.getSafeInt(XMP.GPANO_CROPPED_AREA_LEFT_PROP_NAME) { fields["croppedAreaLeft"] = it }
+                xmpMeta.getSafeInt(XMP.GPANO_CROPPED_AREA_TOP_PROP_NAME) { fields["croppedAreaTop"] = it }
+                xmpMeta.getSafeInt(XMP.GPANO_CROPPED_AREA_WIDTH_PROP_NAME) { fields["croppedAreaWidth"] = it }
+                xmpMeta.getSafeInt(XMP.GPANO_CROPPED_AREA_HEIGHT_PROP_NAME) { fields["croppedAreaHeight"] = it }
+                xmpMeta.getSafeInt(XMP.GPANO_FULL_PANO_WIDTH_PROP_NAME) { fields["fullPanoWidth"] = it }
+                xmpMeta.getSafeInt(XMP.GPANO_FULL_PANO_HEIGHT_PROP_NAME) { fields["fullPanoHeight"] = it }
+                xmpMeta.getSafeString(XMP.GPANO_PROJECTION_TYPE_PROP_NAME) { fields["projectionType"] = it }
+            } catch (e: XMPException) {
+                Log.w(LOG_TAG, "failed to read XMP directory for uri=$uri", e)
+            }
+        }
+
         if (canReadWithMetadataExtractor(mimeType)) {
             try {
                 Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
-                    val metadata = MetadataExtractorHelper.safeRead(input)
-                    val fields: FieldMap = hashMapOf(
-                        "projectionType" to XMP.GPANO_PROJECTION_TYPE_DEFAULT,
-                    )
-                    for (dir in metadata.getDirectoriesOfType(XmpDirectory::class.java)) {
-                        val xmpMeta = dir.xmpMeta
-                        xmpMeta.getSafeInt(XMP.GPANO_SCHEMA_NS, XMP.GPANO_CROPPED_AREA_LEFT_PROP_NAME) { fields["croppedAreaLeft"] = it }
-                        xmpMeta.getSafeInt(XMP.GPANO_SCHEMA_NS, XMP.GPANO_CROPPED_AREA_TOP_PROP_NAME) { fields["croppedAreaTop"] = it }
-                        xmpMeta.getSafeInt(XMP.GPANO_SCHEMA_NS, XMP.GPANO_CROPPED_AREA_WIDTH_PROP_NAME) { fields["croppedAreaWidth"] = it }
-                        xmpMeta.getSafeInt(XMP.GPANO_SCHEMA_NS, XMP.GPANO_CROPPED_AREA_HEIGHT_PROP_NAME) { fields["croppedAreaHeight"] = it }
-                        xmpMeta.getSafeInt(XMP.GPANO_SCHEMA_NS, XMP.GPANO_FULL_PANO_WIDTH_PROP_NAME) { fields["fullPanoWidth"] = it }
-                        xmpMeta.getSafeInt(XMP.GPANO_SCHEMA_NS, XMP.GPANO_FULL_PANO_HEIGHT_PROP_NAME) { fields["fullPanoHeight"] = it }
-                        xmpMeta.getSafeString(XMP.GPANO_SCHEMA_NS, XMP.GPANO_PROJECTION_TYPE_PROP_NAME) { fields["projectionType"] = it }
-                    }
-                    result.success(fields)
-                    return
+                    val metadata = Helper.safeRead(input)
+                    foundXmp = metadata.directories.any { it is XmpDirectory && it.tagCount > 0 }
+                    metadata.getDirectoriesOfType(XmpDirectory::class.java).map { it.xmpMeta }.forEach(::processXmp)
                 }
             } catch (e: Exception) {
                 Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for mimeType=$mimeType uri=$uri", e)
@@ -856,7 +888,15 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                 Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for mimeType=$mimeType uri=$uri", e)
             }
         }
-        result.error("getPanoramaInfo-empty", "failed to get info for mimeType=$mimeType uri=$uri", null)
+
+        XMP.checkHeic(context, uri, mimeType, foundXmp, ::processXmp)
+
+        if (fields.isEmpty()) {
+            result.error("getPanoramaInfo-empty", "failed to get info for mimeType=$mimeType uri=$uri", null)
+        } else {
+            fields["projectionType"] = fields["projectionType"] ?: XMP.GPANO_PROJECTION_TYPE_DEFAULT
+            result.success(fields)
+        }
     }
 
     private fun getIptc(call: MethodCall, result: MethodChannel.Result) {
@@ -892,13 +932,23 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             return
         }
 
+        var foundXmp = false
+        val xmpStrings = mutableListOf<String>()
+
+        fun processXmp(xmpMeta: XMPMeta) {
+            try {
+                xmpStrings.add(XMPMetaFactory.serializeToString(xmpMeta, xmpSerializeOptions))
+            } catch (e: XMPException) {
+                Log.w(LOG_TAG, "failed to read XMP directory for uri=$uri", e)
+            }
+        }
+
         if (canReadWithMetadataExtractor(mimeType)) {
             try {
                 Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
-                    val metadata = MetadataExtractorHelper.safeRead(input)
-                    val xmpStrings = metadata.getDirectoriesOfType(XmpDirectory::class.java).mapNotNull { XMPMetaFactory.serializeToString(it.xmpMeta, xmpSerializeOptions) }
-                    result.success(xmpStrings.toMutableList())
-                    return
+                    val metadata = Helper.safeRead(input)
+                    foundXmp = metadata.directories.any { it is XmpDirectory && it.tagCount > 0 }
+                    metadata.getDirectoriesOfType(XmpDirectory::class.java).map { it.xmpMeta }.forEach(::processXmp)
                 }
             } catch (e: Exception) {
                 result.error("getXmp-exception", "failed to read XMP for mimeType=$mimeType uri=$uri", e.message)
@@ -912,7 +962,13 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             }
         }
 
-        result.success(null)
+        XMP.checkHeic(context, uri, mimeType, foundXmp, ::processXmp)
+
+        if (xmpStrings.isEmpty()) {
+            result.success(null)
+        } else {
+            result.success(xmpStrings)
+        }
     }
 
     private fun hasContentResolverProp(call: MethodCall, result: MethodChannel.Result) {
@@ -942,48 +998,12 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             return
         }
 
-        var contentUri: Uri = uri
-        if (StorageUtils.isMediaStoreContentUri(uri)) {
-            uri.tryParseId()?.let { id ->
-                contentUri = when {
-                    isImage(mimeType) -> ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
-                    isVideo(mimeType) -> ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, id)
-                    else -> uri
-                }
-                contentUri = StorageUtils.getOriginalUri(context, contentUri)
-            }
-        }
-
-        val projection = arrayOf(prop)
-        val cursor: Cursor?
         try {
-            cursor = context.contentResolver.query(contentUri, projection, null, null, null)
+            val value = context.queryContentResolverProp(uri, mimeType, prop)
+            result.success(value?.toString())
         } catch (e: Exception) {
-            // throws SQLiteException when the requested prop is not a known column
-            result.error("getContentResolverProp-query", "failed to query for contentUri=$contentUri", e.message)
-            return
+            result.error("getContentResolverProp-query", "failed to query prop for uri=$uri", e.message)
         }
-
-        if (cursor == null || !cursor.moveToFirst()) {
-            result.error("getContentResolverProp-cursor", "failed to get cursor for contentUri=$contentUri", null)
-            return
-        }
-
-        var value: Any? = null
-        try {
-            value = when (cursor.getType(0)) {
-                Cursor.FIELD_TYPE_NULL -> null
-                Cursor.FIELD_TYPE_INTEGER -> cursor.getLong(0)
-                Cursor.FIELD_TYPE_FLOAT -> cursor.getFloat(0)
-                Cursor.FIELD_TYPE_STRING -> cursor.getString(0)
-                Cursor.FIELD_TYPE_BLOB -> cursor.getBlob(0)
-                else -> null
-            }
-        } catch (e: Exception) {
-            Log.w(LOG_TAG, "failed to get value for key=$prop", e)
-        }
-        cursor.close()
-        result.success(value?.toString())
     }
 
     private fun getDate(call: MethodCall, result: MethodChannel.Result) {
@@ -1000,7 +1020,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         if (canReadWithMetadataExtractor(mimeType)) {
             try {
                 Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
-                    val metadata = MetadataExtractorHelper.safeRead(input)
+                    val metadata = Helper.safeRead(input)
                     val tag = when (field) {
                         ExifInterface.TAG_DATETIME -> ExifIFD0Directory.TAG_DATETIME
                         ExifInterface.TAG_DATETIME_DIGITIZED -> ExifSubIFDDirectory.TAG_DATETIME_DIGITIZED
@@ -1052,6 +1072,58 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         result.success(dateMillis)
     }
 
+    // return description from these fields (by precedence):
+    // - XMP / dc:description
+    // - IPTC / caption-abstract
+    // - Exif / ImageDescription
+    private fun getDescription(call: MethodCall, result: MethodChannel.Result) {
+        val mimeType = call.argument<String>("mimeType")
+        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
+        if (mimeType == null || uri == null) {
+            result.error("getDescription-args", "missing arguments", null)
+            return
+        }
+
+        var description: String? = null
+        if (canReadWithMetadataExtractor(mimeType)) {
+            try {
+                Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
+                    val metadata = Helper.safeRead(input)
+
+                    for (dir in metadata.getDirectoriesOfType(XmpDirectory::class.java)) {
+                        val xmpMeta = dir.xmpMeta
+                        try {
+                            if (xmpMeta.doesPropExist(XMP.DC_DESCRIPTION_PROP_NAME)) {
+                                xmpMeta.getSafeLocalizedText(XMP.DC_DESCRIPTION_PROP_NAME) { description = it }
+                            }
+                        } catch (e: XMPException) {
+                            Log.w(LOG_TAG, "failed to read XMP directory for uri=$uri", e)
+                        }
+                    }
+                    if (description == null) {
+                        for (dir in metadata.getDirectoriesOfType(IptcDirectory::class.java)) {
+                            dir.getSafeString(IptcDirectory.TAG_CAPTION) { description = it }
+                        }
+                    }
+                    if (description == null) {
+                        for (dir in metadata.getDirectoriesOfType(ExifIFD0Directory::class.java)) {
+                            dir.getSafeString(ExifIFD0Directory.TAG_IMAGE_DESCRIPTION) { description = it }
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for mimeType=$mimeType uri=$uri", e)
+            } catch (e: NoClassDefFoundError) {
+                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for mimeType=$mimeType uri=$uri", e)
+            } catch (e: AssertionError) {
+                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for mimeType=$mimeType uri=$uri", e)
+            }
+        }
+
+        result.success(description)
+    }
+
     companion object {
         private val LOG_TAG = LogUtils.createTag<MetadataFetchHandler>()
         const val CHANNEL = "deckers.thibault/aves/metadata_fetch"
@@ -1100,7 +1172,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         private const val KEY_LATITUDE = "latitude"
         private const val KEY_LONGITUDE = "longitude"
         private const val KEY_XMP_SUBJECTS = "xmpSubjects"
-        private const val KEY_XMP_TITLE_DESCRIPTION = "xmpTitleDescription"
+        private const val KEY_XMP_TITLE = "xmpTitle"
         private const val KEY_RATING = "rating"
 
         private const val MASK_IS_ANIMATED = 1 shl 0
@@ -1108,6 +1180,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         private const val MASK_IS_GEOTIFF = 1 shl 2
         private const val MASK_IS_360 = 1 shl 3
         private const val MASK_IS_MULTIPAGE = 1 shl 4
+        private const val MASK_IS_MOTION_PHOTO = 1 shl 5
         private const val XMP_SUBJECTS_SEPARATOR = ";"
 
         // overlay metadata

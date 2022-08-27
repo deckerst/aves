@@ -1,3 +1,4 @@
+import 'package:aves/utils/xmp_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/viewer/embedded/notifications.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
@@ -8,7 +9,7 @@ import 'package:flutter/widgets.dart';
 import 'package:tuple/tuple.dart';
 
 abstract class XmpGoogleNamespace extends XmpNamespace {
-  const XmpGoogleNamespace(String ns, Map<String, String> rawProps) : super(ns, rawProps);
+  const XmpGoogleNamespace(String nsUri, String nsPrefix, Map<String, String> rawProps) : super(nsUri, nsPrefix, rawProps);
 
   List<Tuple2<String, String>> get dataProps;
 
@@ -24,10 +25,29 @@ abstract class XmpGoogleNamespace extends XmpNamespace {
               dataProp.displayKey,
               InfoRowGroup.linkSpanBuilder(
                 linkText: (context) => context.l10n.viewerInfoOpenLinkText,
-                onTap: (context) => OpenEmbeddedDataNotification.xmp(
-                  propPath: dataProp.path,
-                  mimeType: mimeProp.value,
-                ).dispatch(context),
+                onTap: (context) {
+                  final pattern = RegExp(r'(.+):(.+)([(\d)])?');
+                  final props = dataProp.path.split('/').expand((part) {
+                    var match = pattern.firstMatch(part);
+                    if (match == null) return [];
+
+                    // ignore namespace prefix
+                    final propName = match.group(2);
+                    final prop = [nsUri, propName];
+
+                    final indexString = match.groupCount >= 4 ? match.group(4) : null;
+                    final index = indexString != null ? int.tryParse(indexString) : null;
+                    if (index != null) {
+                      return [prop, index];
+                    } else {
+                      return [prop];
+                    }
+                  }).toList();
+                  return OpenEmbeddedDataNotification.xmp(
+                    props: props,
+                    mimeType: mimeProp.value,
+                  ).dispatch(context);
+                },
               ))
           : null;
     }).whereNotNull());
@@ -35,43 +55,35 @@ abstract class XmpGoogleNamespace extends XmpNamespace {
 }
 
 class XmpGAudioNamespace extends XmpGoogleNamespace {
-  static const ns = 'GAudio';
-
-  const XmpGAudioNamespace(Map<String, String> rawProps) : super(ns, rawProps);
+  const XmpGAudioNamespace(String nsPrefix, Map<String, String> rawProps) : super(Namespaces.gAudio, nsPrefix, rawProps);
 
   @override
-  List<Tuple2<String, String>> get dataProps => const [Tuple2('$ns:Data', '$ns:Mime')];
+  List<Tuple2<String, String>> get dataProps => [Tuple2('${nsPrefix}Data', '${nsPrefix}Mime')];
 }
 
 class XmpGDepthNamespace extends XmpGoogleNamespace {
-  static const ns = 'GDepth';
-
-  const XmpGDepthNamespace(Map<String, String> rawProps) : super(ns, rawProps);
+  const XmpGDepthNamespace(String nsPrefix, Map<String, String> rawProps) : super(Namespaces.gDepth, nsPrefix, rawProps);
 
   @override
-  List<Tuple2<String, String>> get dataProps => const [
-        Tuple2('$ns:Data', '$ns:Mime'),
-        Tuple2('$ns:Confidence', '$ns:ConfidenceMime'),
+  List<Tuple2<String, String>> get dataProps => [
+        Tuple2('${nsPrefix}Data', '${nsPrefix}Mime'),
+        Tuple2('${nsPrefix}Confidence', '${nsPrefix}ConfidenceMime'),
       ];
 }
 
 class XmpGImageNamespace extends XmpGoogleNamespace {
-  static const ns = 'GImage';
-
-  const XmpGImageNamespace(Map<String, String> rawProps) : super(ns, rawProps);
+  const XmpGImageNamespace(String nsPrefix, Map<String, String> rawProps) : super(Namespaces.gImage, nsPrefix, rawProps);
 
   @override
-  List<Tuple2<String, String>> get dataProps => const [Tuple2('$ns:Data', '$ns:Mime')];
+  List<Tuple2<String, String>> get dataProps => [Tuple2('${nsPrefix}Data', '${nsPrefix}Mime')];
 }
 
 class XmpContainer extends XmpNamespace {
-  static const ns = 'Container';
-
-  static final directoryPattern = RegExp('$ns:Directory\\[(\\d+)\\]/$ns:Item/(.*)');
+  late final directoryPattern = RegExp('${nsPrefix}Directory\\[(\\d+)\\]/${nsPrefix}Item/(.*)');
 
   final directories = <int, Map<String, String>>{};
 
-  XmpContainer(Map<String, String> rawProps) : super(ns, rawProps);
+  XmpContainer(String nsPrefix, Map<String, String> rawProps) : super(Namespaces.container, nsPrefix, rawProps);
 
   @override
   bool extractData(XmpProp prop) => extractIndexedStruct(prop, directoryPattern, directories);

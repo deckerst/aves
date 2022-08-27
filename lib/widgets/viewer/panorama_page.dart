@@ -159,8 +159,9 @@ class _PanoramaPageState extends State<PanoramaPage> {
     }
   }
 
-  void _onLeave() {
-    AvesApp.showSystemUI();
+  Future<void> _onLeave() async {
+    await AvesApp.showSystemUI();
+    AvesApp.setSystemUIStyle(context);
   }
 
   // system UI
@@ -176,9 +177,10 @@ class _PanoramaPageState extends State<PanoramaPage> {
 
   Future<void> _onOverlayVisibleChange() async {
     if (_overlayVisible.value) {
-      AvesApp.showSystemUI();
+      await AvesApp.showSystemUI();
+      AvesApp.setSystemUIStyle(context);
     } else {
-      AvesApp.hideSystemUI();
+      await AvesApp.hideSystemUI();
     }
   }
 }

@@ -12,6 +12,7 @@ class AboutCredits extends StatelessWidget {
     'Deutsch': 'JanWaldhorn',
     'Español (México)': 'n-berenice',
     'Italiano': 'glemco',
+    'Nederlands': 'Martijn Fabrie, Koen Koppens',
     'Português (Brasil)': 'Jonatas De Almeida Barros',
     'Türkçe': 'metezd',
     'Русский': 'D3ZOXY',

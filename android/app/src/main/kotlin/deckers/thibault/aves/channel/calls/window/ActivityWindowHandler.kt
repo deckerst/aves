@@ -3,7 +3,6 @@ package deckers.thibault.aves.channel.calls.window
 import android.app.Activity
 import android.os.Build
 import android.view.WindowManager
-import deckers.thibault.aves.utils.LogUtils
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 
@@ -59,9 +58,5 @@ class ActivityWindowHandler(private val activity: Activity) : WindowHandler(acti
             activity.window.attributes.layoutInDisplayCutoutMode = mode
         }
         result.success(true)
-    }
-
-    companion object {
-        private val LOG_TAG = LogUtils.createTag<ActivityWindowHandler>()
     }
 }

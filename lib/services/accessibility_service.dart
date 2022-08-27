@@ -24,7 +24,8 @@ class AccessibilityService {
     return false;
   }
 
-  static Future<int> getRecommendedTimeToRead(int originalTimeoutMillis) async {
+  static Future<int> getRecommendedTimeToRead(Duration originalTimeoutDuration) async {
+    final originalTimeoutMillis = originalTimeoutDuration.inMilliseconds;
     try {
       final result = await _platform.invokeMethod('getRecommendedTimeoutMillis', <String, dynamic>{
         'originalTimeoutMillis': originalTimeoutMillis,
@@ -37,7 +38,8 @@ class AccessibilityService {
     return originalTimeoutMillis;
   }
 
-  static Future<int> getRecommendedTimeToTakeAction(int originalTimeoutMillis) async {
+  static Future<int> getRecommendedTimeToTakeAction(Duration originalTimeoutDuration) async {
+    final originalTimeoutMillis = originalTimeoutDuration.inMilliseconds;
     try {
       final result = await _platform.invokeMethod('getRecommendedTimeoutMillis', <String, dynamic>{
         'originalTimeoutMillis': originalTimeoutMillis,

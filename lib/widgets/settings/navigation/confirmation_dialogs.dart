@@ -10,26 +10,33 @@ class ConfirmationDialogPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return Scaffold(
       appBar: AppBar(
-        title: Text(context.l10n.settingsConfirmationDialogTitle),
+        title: Text(l10n.settingsConfirmationDialogTitle),
       ),
       body: SafeArea(
         child: ListView(children: [
           SettingsSwitchListTile(
             selector: (context, s) => s.confirmMoveUndatedItems,
             onChanged: (v) => settings.confirmMoveUndatedItems = v,
-            title: context.l10n.settingsConfirmationDialogMoveUndatedItems,
+            title: l10n.settingsConfirmationDialogMoveUndatedItems,
           ),
           SettingsSwitchListTile(
             selector: (context, s) => s.confirmMoveToBin,
             onChanged: (v) => settings.confirmMoveToBin = v,
-            title: context.l10n.settingsConfirmationDialogMoveToBinItems,
+            title: l10n.settingsConfirmationDialogMoveToBinItems,
           ),
           SettingsSwitchListTile(
             selector: (context, s) => s.confirmDeleteForever,
             onChanged: (v) => settings.confirmDeleteForever = v,
-            title: context.l10n.settingsConfirmationDialogDeleteItems,
+            title: l10n.settingsConfirmationDialogDeleteItems,
+          ),
+          const Divider(height: 32),
+          SettingsSwitchListTile(
+            selector: (context, s) => s.confirmAfterMoveToBin,
+            onChanged: (v) => settings.confirmAfterMoveToBin = v,
+            title: l10n.settingsConfirmationAfterMoveToBinItems,
           ),
         ]),
       ),

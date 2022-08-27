@@ -38,13 +38,14 @@ class MetadataDirTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var tags = dir.tags;
-    if (tags.isEmpty) return const SizedBox.shrink();
+    if (tags.isEmpty) return const SizedBox();
 
     final dirName = dir.name;
     if (dirName == MetadataDirectory.xmpDirectory) {
       return XmpDirTile(
         entry: entry,
         title: title,
+        allTags: dir.allTags,
         tags: tags,
         expandedNotifier: expandedDirectoryNotifier,
         initiallyExpanded: initiallyExpanded,

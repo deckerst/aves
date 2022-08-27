@@ -82,6 +82,7 @@ class _WelcomePageState extends State<WelcomePage> {
                       ] else
                         Flexible(
                           child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               Flexible(
                                 child: Padding(
@@ -94,6 +95,7 @@ class _WelcomePageState extends State<WelcomePage> {
                               ),
                               Flexible(
                                 child: ListView(
+                                  shrinkWrap: true,
                                   children: _buildControls(context),
                                 ),
                               ),

@@ -123,6 +123,8 @@ class MapButtonPanel extends StatelessWidget {
                     Padding(
                       padding: EdgeInsets.only(top: padding),
                       child: MapOverlayButton(
+                        // key is expected by test driver
+                        buttonKey: const Key('map-menu-layers'),
                         icon: const Icon(AIcons.layers),
                         onPressed: () => showSelectionDialog<EntryMapStyle>(
                           context: context,

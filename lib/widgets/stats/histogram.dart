@@ -89,6 +89,7 @@ class _HistogramState extends State<Histogram> {
     ];
 
     final locale = context.l10n.localeName;
+    final numberFormat = NumberFormat.decimalPattern(locale);
     final timeAxisSpec = _firstDate != null && _lastDate != null
         ? TimeAxisSpec.forLevel(
             locale: locale,
@@ -158,7 +159,7 @@ class _HistogramState extends State<Histogram> {
                     ),
                     const Spacer(),
                     Text(
-                      '$count',
+                      numberFormat.format(count),
                       style: TextStyle(
                         color: theme.textTheme.caption!.color,
                       ),

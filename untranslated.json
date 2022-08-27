@@ -1,32 +1,53 @@
 {
   "es": [
-    "filterOnThisDayLabel",
-    "settingsSlideshowFillScreen",
-    "settingsScreenSaverPageTitle",
-    "settingsWidgetPageTitle",
-    "settingsWidgetShowOutline"
+    "entryInfoActionEditDescription",
+    "filterRecentlyAddedLabel",
+    "editEntryDescriptionDialogTitle",
+    "settingsConfirmationAfterMoveToBinItems"
   ],
 
   "id": [
-    "filterOnThisDayLabel",
-    "settingsSlideshowFillScreen",
-    "settingsScreenSaverPageTitle",
-    "settingsWidgetPageTitle",
-    "settingsWidgetShowOutline"
+    "entryInfoActionEditDescription",
+    "filterRecentlyAddedLabel",
+    "editEntryDescriptionDialogTitle",
+    "settingsConfirmationAfterMoveToBinItems",
+    "settingsViewerGestureSideTapNext"
+  ],
+
+  "ja": [
+    "entryInfoActionEditDescription",
+    "filterRecentlyAddedLabel",
+    "editEntryDescriptionDialogTitle",
+    "settingsConfirmationAfterMoveToBinItems",
+    "settingsViewerGestureSideTapNext"
+  ],
+
+  "pt": [
+    "entryInfoActionEditDescription",
+    "filterRecentlyAddedLabel",
+    "editEntryDescriptionDialogTitle",
+    "settingsConfirmationAfterMoveToBinItems",
+    "settingsViewerGestureSideTapNext"
   ],
 
   "ru": [
+    "entryInfoActionEditDescription",
     "filterOnThisDayLabel",
+    "filterRecentlyAddedLabel",
+    "editEntryDescriptionDialogTitle",
+    "settingsConfirmationAfterMoveToBinItems",
+    "settingsViewerGestureSideTapNext",
     "settingsSlideshowFillScreen",
     "settingsScreenSaverPageTitle",
-    "settingsWidgetPageTitle",
     "settingsWidgetShowOutline"
   ],
 
   "tr": [
     "slideshowActionResume",
     "slideshowActionShowInCollection",
+    "entryInfoActionEditDescription",
     "filterOnThisDayLabel",
+    "filterRecentlyAddedLabel",
     "slideshowVideoPlaybackSkip",
     "slideshowVideoPlaybackMuted",
     "slideshowVideoPlaybackWithSound",
@@ -37,7 +58,10 @@
     "wallpaperTargetHome",
     "wallpaperTargetLock",
     "wallpaperTargetHomeLock",
+    "editEntryDescriptionDialogTitle",
     "menuActionSlideshow",
+    "settingsConfirmationAfterMoveToBinItems",
+    "settingsViewerGestureSideTapNext",
     "settingsViewerSlideshowTile",
     "settingsViewerSlideshowTitle",
     "settingsSlideshowRepeat",
@@ -50,7 +74,6 @@
     "settingsSlideshowVideoPlaybackTile",
     "settingsSlideshowVideoPlaybackTitle",
     "settingsScreenSaverPageTitle",
-    "settingsWidgetPageTitle",
     "settingsWidgetShowOutline",
     "viewerSetWallpaperButtonLabel"
   ]

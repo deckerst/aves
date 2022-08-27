@@ -115,6 +115,7 @@
 
   "entryInfoActionEditDate": "Edit date & time",
   "entryInfoActionEditLocation": "Edit location",
+  "entryInfoActionEditDescription": "Edit description",
   "entryInfoActionEditRating": "Edit rating",
   "entryInfoActionEditTags": "Edit tags",
   "entryInfoActionRemoveMetadata": "Remove metadata",
@@ -124,6 +125,7 @@
   "filterLocationEmptyLabel": "Unlocated",
   "filterTagEmptyLabel": "Untagged",
   "filterOnThisDayLabel": "On this day",
+  "filterRecentlyAddedLabel": "Recently added",
   "filterRatingUnratedLabel": "Unrated",
   "filterRatingRejectedLabel": "Rejected",
   "filterTypeAnimatedLabel": "Animated",
@@ -368,6 +370,8 @@
 
   "renameEntryDialogLabel": "New name",
 
+  "editEntryDialogTargetFieldsHeader": "Fields to modify",
+
   "editEntryDateDialogTitle": "Date & Time",
   "editEntryDateDialogSetCustom": "Set custom date",
   "editEntryDateDialogCopyField": "Copy from other date",
@@ -375,7 +379,6 @@
   "editEntryDateDialogExtractFromTitle": "Extract from title",
   "editEntryDateDialogShift": "Shift",
   "editEntryDateDialogSourceFileModifiedDate": "File modified date",
-  "editEntryDateDialogTargetFieldsHeader": "Fields to modify",
   "editEntryDateDialogHours": "Hours",
   "editEntryDateDialogMinutes": "Minutes",
 
@@ -385,6 +388,8 @@
   "editEntryLocationDialogLongitude": "Longitude",
 
   "locationPickerUseThisLocationButton": "Use this location",
+
+  "editEntryDescriptionDialogTitle": "Description",
 
   "editEntryRatingDialogTitle": "Rating",
 
@@ -630,6 +635,7 @@
   "settingsConfirmationDialogDeleteItems": "Ask before deleting items forever",
   "settingsConfirmationDialogMoveToBinItems": "Ask before moving items to the recycle bin",
   "settingsConfirmationDialogMoveUndatedItems": "Ask before moving undated items",
+  "settingsConfirmationAfterMoveToBinItems": "Show message after moving items to the recycle bin",
 
   "settingsNavigationDrawerTile": "Navigation menu",
   "settingsNavigationDrawerEditorTitle": "Navigation Menu",
@@ -658,6 +664,7 @@
   "settingsCollectionSelectionQuickActionEditorBanner": "Touch and hold to move buttons and select which actions are displayed when selecting items.",
 
   "settingsSectionViewer": "Viewer",
+  "settingsViewerGestureSideTapNext": "Tap on screen edges to show previous/next item",
   "settingsViewerUseCutout": "Use cutout area",
   "settingsViewerMaximumBrightness": "Maximum brightness",
   "settingsMotionPhotoAutoPlay": "Auto play motion photos",

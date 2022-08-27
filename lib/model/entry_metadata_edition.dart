@@ -141,6 +141,54 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
   }
 
   // write:
+  // - Exif / ImageDescription
+  // - IPTC / caption-abstract, if IPTC exists
+  // - XMP / dc:description
+  Future<Set<EntryDataType>> editDescription(String? description) async {
+    final Set<EntryDataType> dataTypes = {};
+    final Map<MetadataType, dynamic> metadata = {};
+
+    final missingDate = await _missingDateCheckAndExifEdit(dataTypes);
+
+    if (canEditExif) {
+      metadata[MetadataType.exif] = {MetadataField.exifImageDescription.exifInterfaceTag!: description};
+    }
+
+    if (canEditIptc) {
+      final iptc = await metadataFetchService.getIptc(this);
+      if (iptc != null) {
+        editIptcValues(iptc, IPTC.applicationRecord, IPTC.captionAbstractTag, {if (description != null) description});
+        metadata[MetadataType.iptc] = iptc;
+      }
+    }
+
+    if (canEditXmp) {
+      metadata[MetadataType.xmp] = await _editXmp((descriptions) {
+        final modified = XMP.setAttribute(
+          descriptions,
+          XMP.dcDescription,
+          description,
+          namespace: Namespaces.dc,
+          strat: XmpEditStrategy.always,
+        );
+        if (modified && missingDate != null) {
+          editCreateDateXmp(descriptions, missingDate);
+        }
+        return modified;
+      });
+    }
+
+    final newFields = await metadataEditService.editMetadata(this, metadata);
+    if (newFields.isNotEmpty) {
+      dataTypes.addAll({
+        EntryDataType.basic,
+      });
+    }
+
+    return dataTypes;
+  }
+
+  // write:
   // - IPTC / keywords, if IPTC exists
   // - XMP / dc:subject
   Future<Set<EntryDataType>> editTags(Set<String> tags) async {
@@ -152,7 +200,7 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
     if (canEditIptc) {
       final iptc = await metadataFetchService.getIptc(this);
       if (iptc != null) {
-        editTagsIptc(iptc, tags);
+        editIptcValues(iptc, IPTC.applicationRecord, IPTC.keywordsTag, tags);
         metadata[MetadataType.iptc] = iptc;
       }
     }
@@ -245,25 +293,24 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
           };
   }
 
+  static void editIptcValues(List<Map<String, dynamic>> iptc, int record, int tag, Set<String> values) {
+    iptc.removeWhere((v) => v['record'] == record && v['tag'] == tag);
+    iptc.add({
+      'record': record,
+      'tag': tag,
+      'values': values.map((v) => utf8.encode(v)).toList(),
+    });
+  }
+
   @visibleForTesting
-  static void editCreateDateXmp(List<XmlNode> descriptions, DateTime? date) {
-    XMP.setAttribute(
+  static bool editCreateDateXmp(List<XmlNode> descriptions, DateTime? date) {
+    return XMP.setAttribute(
       descriptions,
       XMP.xmpCreateDate,
       date != null ? XMP.toXmpDate(date) : null,
       namespace: Namespaces.xmp,
       strat: XmpEditStrategy.always,
     );
-  }
-
-  @visibleForTesting
-  static void editTagsIptc(List<Map<String, dynamic>> iptc, Set<String> tags) {
-    iptc.removeWhere((v) => v['record'] == IPTC.applicationRecord && v['tag'] == IPTC.keywordsTag);
-    iptc.add({
-      'record': IPTC.applicationRecord,
-      'tag': IPTC.keywordsTag,
-      'values': tags.map((v) => utf8.encode(v)).toList(),
-    });
   }
 
   @visibleForTesting
@@ -366,7 +413,7 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
   }
 
   Future<DateModifier?> _applyDateModifierToEntry(DateModifier modifier) async {
-    Set<MetadataField> mainMetadataDate() => {canEditExif ? MetadataField.exifDateOriginal : MetadataField.xmpCreateDate};
+    Set<MetadataField> mainMetadataDate() => {canEditExif ? MetadataField.exifDateOriginal : MetadataField.xmpXmpCreateDate};
 
     switch (modifier.action) {
       case DateEditAction.copyField:

@@ -9,7 +9,6 @@ import 'package:aves/model/settings/defaults.dart';
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/enums/map_style.dart';
 import 'package:aves/model/source/enums.dart';
-import 'package:aves/services/accessibility_service.dart';
 import 'package:aves/services/common/optional_event_channel.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves_map/aves_map.dart';
@@ -65,6 +64,7 @@ class Settings extends ChangeNotifier {
   static const confirmDeleteForeverKey = 'confirm_delete_forever';
   static const confirmMoveToBinKey = 'confirm_move_to_bin';
   static const confirmMoveUndatedItemsKey = 'confirm_move_undated_items';
+  static const confirmAfterMoveToBinKey = 'confirm_after_move_to_bin';
   static const setMetadataDateBeforeFileOpKey = 'set_metadata_date_before_file_op';
   static const drawerTypeBookmarksKey = 'drawer_type_bookmarks';
   static const drawerAlbumBookmarksKey = 'drawer_album_bookmarks';
@@ -98,6 +98,7 @@ class Settings extends ChangeNotifier {
   static const showOverlayInfoKey = 'show_overlay_info';
   static const showOverlayShootingDetailsKey = 'show_overlay_shooting_details';
   static const showOverlayThumbnailPreviewKey = 'show_overlay_thumbnail_preview';
+  static const viewerGestureSideTapNextKey = 'viewer_gesture_side_tap_next';
   static const viewerUseCutoutKey = 'viewer_use_cutout';
   static const viewerMaxBrightnessKey = 'viewer_max_brightness';
   static const enableMotionPhotoAutoPlayKey = 'motion_photo_auto_play';
@@ -201,10 +202,6 @@ class Settings extends ChangeNotifier {
       final styles = EntryMapStyle.values.whereNot((v) => v.needMobileService).toList();
       infoMapStyle = styles[Random().nextInt(styles.length)];
     }
-
-    // accessibility
-    final hasRecommendedTimeouts = await AccessibilityService.hasRecommendedTimeouts();
-    timeToTakeAction = hasRecommendedTimeouts ? AccessibilityTimeout.system : AccessibilityTimeout.appDefault;
   }
 
   // app
@@ -350,6 +347,10 @@ class Settings extends ChangeNotifier {
 
   set confirmMoveUndatedItems(bool newValue) => setAndNotify(confirmMoveUndatedItemsKey, newValue);
 
+  bool get confirmAfterMoveToBin => getBoolOrDefault(confirmAfterMoveToBinKey, SettingsDefaults.confirmAfterMoveToBin);
+
+  set confirmAfterMoveToBin(bool newValue) => setAndNotify(confirmAfterMoveToBinKey, newValue);
+
   bool get setMetadataDateBeforeFileOp => getBoolOrDefault(setMetadataDateBeforeFileOpKey, SettingsDefaults.setMetadataDateBeforeFileOp);
 
   set setMetadataDateBeforeFileOp(bool newValue) => setAndNotify(setMetadataDateBeforeFileOpKey, newValue);
@@ -479,6 +480,10 @@ class Settings extends ChangeNotifier {
   bool get showOverlayThumbnailPreview => getBoolOrDefault(showOverlayThumbnailPreviewKey, SettingsDefaults.showOverlayThumbnailPreview);
 
   set showOverlayThumbnailPreview(bool newValue) => setAndNotify(showOverlayThumbnailPreviewKey, newValue);
+
+  bool get viewerGestureSideTapNext => getBoolOrDefault(viewerGestureSideTapNextKey, SettingsDefaults.viewerGestureSideTapNext);
+
+  set viewerGestureSideTapNext(bool newValue) => setAndNotify(viewerGestureSideTapNextKey, newValue);
 
   bool get viewerUseCutout => getBoolOrDefault(viewerUseCutoutKey, SettingsDefaults.viewerUseCutout);
 
@@ -806,6 +811,7 @@ class Settings extends ChangeNotifier {
             case confirmDeleteForeverKey:
             case confirmMoveToBinKey:
             case confirmMoveUndatedItemsKey:
+            case confirmAfterMoveToBinKey:
             case setMetadataDateBeforeFileOpKey:
             case showThumbnailFavouriteKey:
             case showThumbnailTagKey:
@@ -819,6 +825,7 @@ class Settings extends ChangeNotifier {
             case showOverlayInfoKey:
             case showOverlayShootingDetailsKey:
             case showOverlayThumbnailPreviewKey:
+            case viewerGestureSideTapNextKey:
             case viewerUseCutoutKey:
             case viewerMaxBrightnessKey:
             case enableMotionPhotoAutoPlayKey:

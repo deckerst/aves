@@ -4,6 +4,32 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.6.12"></a>[v1.6.12] - 2022-08-27
+
+### Added
+
+- Viewer: optional gesture to show previous/next item
+- Albums / Countries / Tags: live title filter
+- option to hide confirmation message after moving items to the bin
+- Collection / Info: edit description via Exif / IPTC / XMP
+- Info: read XMP from HEIC on Android >=11
+- Collection: support HEIC motion photos on Android >=11
+- Search: `recently added` filter
+- Dutch translation (thanks Martijn Fabrie, Koen Koppens)
+
+### Changed
+
+- status and navigation bar transparency
+- default snack bar timeout to 3s
+- upgraded Flutter to beta v3.3.0-0.5.pre
+
+### Fixed
+
+- storage volume setup despite faulty volume on Android <11
+- storage volume setup when launched right after device boot
+- tiling PNG images
+- widget image sizing in some cases
+
 ## <a id="v1.6.11"></a>[v1.6.11] - 2022-07-26
 
 ### Added
@@ -31,7 +57,7 @@ All notable changes to this project will be documented in this file.
 
 - slideshow
 - set wallpaper from any media
-- optional dynamic accent color on Android 12+
+- optional dynamic accent color on Android >=12
 - Search: date/dimension/size field equality (undocumented)
 - support Android 13 (API 33)
 - Turkish translation (thanks metezd)
@@ -126,7 +152,7 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 
-- app launch despite faulty storage volumes on Android 11+
+- app launch despite faulty storage volumes on Android >=11
 
 ## <a id="v1.6.2"></a>[v1.6.2] - 2022-03-07
 
@@ -311,7 +337,7 @@ All notable changes to this project will be documented in this file.
 - Info: improved display for PNG text metadata, XMP and others
 - Export: output format selection
 - Search: added raw filter
-- Support modifying files in the Download folder on Android 11+
+- Support modifying files in the Download folder on Android >=11
 
 ### Changed
 
@@ -321,7 +347,7 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 
 - hide root album of hidden path
-- gesture & spacing handling for Android 10+ navigation gestures
+- gesture & spacing handling for Android >=10 navigation gestures
 - renaming was leaving behind obsolete items in some cases
 - speeding up videos on Xiaomi devices
 
@@ -384,7 +410,7 @@ All notable changes to this project will be documented in this file.
 - Map & Stats from selection
 - Map: item browsing, rotation control
 - Navigation menu customization
-- shortcut support on older devices (API < 26)
+- shortcut support on older devices (API <26)
 - support Android 12/S (API 31)
 
 ## [v1.4.8] - 2021-08-08
@@ -398,7 +424,7 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 
 - auto album identification and naming
-- opening HEIC images from downloads content URI on Android R+
+- opening HEIC images from downloads content URI on Android >=11
 
 ## [v1.4.7] - 2021-08-06 [YANKED]
 
@@ -602,7 +628,7 @@ All notable changes to this project will be documented in this file.
 
 - Viewer: support for multi-track HEIF
 - Viewer: export image (including multipage TIFF/HEIF and images embedded in XMP)
-- Info: show owner app (Android Q and up)
+- Info: show owner app (Android >=10)
 - listen to Media Store changes
 
 ### Changed
@@ -629,7 +655,7 @@ upgraded libtiff to 4.2.0 for TIFF decoding
 
 ### Fixed
 
-- prevent scrolling when using Android Q style gesture navigation
+- prevent scrolling when using Android 10 style gesture navigation
 
 ## [v1.3.1] - 2021-01-04
 

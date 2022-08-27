@@ -36,6 +36,7 @@ class ViewerSection extends SettingsSection {
       SettingsTileViewerQuickActions(),
       SettingsTileViewerOverlay(),
       SettingsTileViewerSlideshow(),
+      SettingsTileViewerGestureSideTapNext(),
       if (canSetCutoutMode) SettingsTileViewerCutoutMode(),
       SettingsTileViewerMaxBrightness(),
       SettingsTileViewerMotionPhotoAutoPlay(),
@@ -74,10 +75,22 @@ class SettingsTileViewerSlideshow extends SettingsTile {
 
   @override
   Widget build(BuildContext context) => SettingsSubPageTile(
-    title: title(context),
-    routeName: ViewerSlideshowPage.routeName,
-    builder: (context) => const ViewerSlideshowPage(),
-  );
+        title: title(context),
+        routeName: ViewerSlideshowPage.routeName,
+        builder: (context) => const ViewerSlideshowPage(),
+      );
+}
+
+class SettingsTileViewerGestureSideTapNext extends SettingsTile {
+  @override
+  String title(BuildContext context) => context.l10n.settingsViewerGestureSideTapNext;
+
+  @override
+  Widget build(BuildContext context) => SettingsSwitchListTile(
+        selector: (context, s) => s.viewerGestureSideTapNext,
+        onChanged: (v) => settings.viewerGestureSideTapNext = v,
+        title: title(context),
+      );
 }
 
 class SettingsTileViewerCutoutMode extends SettingsTile {

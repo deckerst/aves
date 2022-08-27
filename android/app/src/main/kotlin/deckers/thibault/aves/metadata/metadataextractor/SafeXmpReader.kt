@@ -1,4 +1,4 @@
-package deckers.thibault.aves.metadata
+package deckers.thibault.aves.metadata.metadataextractor
 
 import android.util.Log
 import com.adobe.internal.xmp.XMPException
@@ -19,7 +19,7 @@ import com.drew.metadata.xmp.XmpReader
 import deckers.thibault.aves.utils.LogUtils
 import java.io.IOException
 
-class MetadataExtractorSafeXmpReader : XmpReader() {
+class SafeXmpReader : XmpReader() {
     // adapted from `XmpReader` to detect and skip large extended XMP
     override fun readJpegSegments(segments: Iterable<ByteArray>, metadata: Metadata, segmentType: JpegSegmentType) {
         val preambleLength = XMP_JPEG_PREAMBLE.length
@@ -132,13 +132,13 @@ class MetadataExtractorSafeXmpReader : XmpReader() {
     }
 
     companion object {
-        private val LOG_TAG = LogUtils.createTag<MetadataExtractorSafeXmpReader>()
+        private val LOG_TAG = LogUtils.createTag<SafeXmpReader>()
 
         // arbitrary size to detect extended XMP that may yield an OOM
         private const val segmentTypeSizeDangerThreshold = 3 * (1 shl 20) // MB
 
         // tighter node limits for faster loading
-        private val PARSE_OPTIONS = ParseOptions().setXMPNodesToLimit(
+        val PARSE_OPTIONS: ParseOptions = ParseOptions().setXMPNodesToLimit(
             mapOf(
                 "photoshop:DocumentAncestors" to 200,
                 "xmpMM:History" to 200,

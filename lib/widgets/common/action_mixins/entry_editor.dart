@@ -3,9 +3,11 @@ import 'package:aves/model/metadata/date_modifier.dart';
 import 'package:aves/model/metadata/enums.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/ref/mime_types.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/entry_editors/edit_date_dialog.dart';
+import 'package:aves/widgets/dialogs/entry_editors/edit_description_dialog.dart';
 import 'package:aves/widgets/dialogs/entry_editors/edit_location_dialog.dart';
 import 'package:aves/widgets/dialogs/entry_editors/edit_rating_dialog.dart';
 import 'package:aves/widgets/dialogs/entry_editors/edit_tags_dialog.dart';
@@ -17,39 +19,49 @@ mixin EntryEditorMixin {
   Future<DateModifier?> selectDateModifier(BuildContext context, Set<AvesEntry> entries, CollectionLens? collection) async {
     if (entries.isEmpty) return null;
 
-    final modifier = await showDialog<DateModifier>(
+    return showDialog<DateModifier>(
       context: context,
       builder: (context) => EditEntryDateDialog(
         entry: entries.first,
         collection: collection,
       ),
     );
-    return modifier;
   }
 
   Future<LatLng?> selectLocation(BuildContext context, Set<AvesEntry> entries, CollectionLens? collection) async {
     if (entries.isEmpty) return null;
 
-    final location = await showDialog<LatLng>(
+    return showDialog<LatLng>(
       context: context,
       builder: (context) => EditEntryLocationDialog(
         entry: entries.first,
         collection: collection,
       ),
     );
-    return location;
+  }
+
+  Future<String?> selectDescription(BuildContext context, Set<AvesEntry> entries) async {
+    if (entries.isEmpty) return null;
+
+    final initialDescription = await metadataFetchService.getDescription(entries.first) ?? '';
+
+    return showDialog<String>(
+      context: context,
+      builder: (context) => EditEntryDescriptionDialog(
+        initialDescription: initialDescription,
+      ),
+    );
   }
 
   Future<int?> selectRating(BuildContext context, Set<AvesEntry> entries) async {
     if (entries.isEmpty) return null;
 
-    final rating = await showDialog<int>(
+    return showDialog<int>(
       context: context,
       builder: (context) => EditEntryRatingDialog(
         entry: entries.first,
       ),
     );
-    return rating;
   }
 
   Future<Map<AvesEntry, Set<String>>?> selectTags(BuildContext context, Set<AvesEntry> entries) async {

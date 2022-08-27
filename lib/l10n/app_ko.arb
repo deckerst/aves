@@ -87,6 +87,7 @@
 
   "entryInfoActionEditDate": "날짜 및 시간 수정",
   "entryInfoActionEditLocation": "위치 수정",
+  "entryInfoActionEditDescription": "설명 수정",
   "entryInfoActionEditRating": "별점 수정",
   "entryInfoActionEditTags": "태그 수정",
   "entryInfoActionRemoveMetadata": "메타데이터 삭제",
@@ -96,6 +97,7 @@
   "filterLocationEmptyLabel": "장소 없음",
   "filterTagEmptyLabel": "태그 없음",
   "filterOnThisDayLabel": "이 날",
+  "filterRecentlyAddedLabel": "최근 추가된",
   "filterRatingUnratedLabel": "별점 없음",
   "filterRatingRejectedLabel": "거부됨",
   "filterTypeAnimatedLabel": "애니메이션",
@@ -238,6 +240,8 @@
 
   "renameEntryDialogLabel": "이름",
 
+  "editEntryDialogTargetFieldsHeader": "수정할 필드",
+
   "editEntryDateDialogTitle": "날짜 및 시간",
   "editEntryDateDialogSetCustom": "지정 날짜로 편집",
   "editEntryDateDialogCopyField": "다른 날짜에서 지정",
@@ -245,7 +249,6 @@
   "editEntryDateDialogExtractFromTitle": "제목에서 추출",
   "editEntryDateDialogShift": "시간 이동",
   "editEntryDateDialogSourceFileModifiedDate": "파일 수정한 날짜",
-  "editEntryDateDialogTargetFieldsHeader": "수정할 필드",
   "editEntryDateDialogHours": "시간",
   "editEntryDateDialogMinutes": "분",
 
@@ -255,6 +258,8 @@
   "editEntryLocationDialogLongitude": "경도",
 
   "locationPickerUseThisLocationButton": "이 위치 사용",
+
+  "editEntryDescriptionDialogTitle": "설명",
 
   "editEntryRatingDialogTitle": "별점",
 
@@ -450,6 +455,7 @@
   "settingsConfirmationDialogDeleteItems": "항목을 완전히 삭제 시",
   "settingsConfirmationDialogMoveToBinItems": "항목을 휴지통으로 이동 시",
   "settingsConfirmationDialogMoveUndatedItems": "날짜가 지정되지 않은 항목을 이동 시",
+  "settingsConfirmationAfterMoveToBinItems": "항목을 휴지통으로 이동 후",
 
   "settingsNavigationDrawerTile": "탐색 메뉴",
   "settingsNavigationDrawerEditorTitle": "탐색 메뉴",
@@ -478,6 +484,7 @@
   "settingsCollectionSelectionQuickActionEditorBanner": "버튼을 길게 누른 후 이동하여 항목 선택할 때 표시될 버튼을 선택하세요.",
 
   "settingsSectionViewer": "뷰어",
+  "settingsViewerGestureSideTapNext": "화면 측면에서 탭해서 이전/다음 항목 보기",
   "settingsViewerUseCutout": "컷아웃 영역 사용",
   "settingsViewerMaximumBrightness": "최대 밝기",
   "settingsMotionPhotoAutoPlay": "모션 사진 자동 재생",

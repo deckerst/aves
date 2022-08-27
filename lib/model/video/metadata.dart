@@ -23,7 +23,7 @@ import 'package:flutter/foundation.dart';
 
 class VideoMetadataFormatter {
   static final _dateY4M2D2H2m2s2Pattern = RegExp(r'(\d{4})[-/](\d{2})[-/](\d{2}) (\d{2}):(\d{2}):(\d{2})');
-  static final _dateY4M2D2H2m2s2APmPattern = RegExp(r'(\d{4})[-/](\d{1,2})[-/](\d{1,2})T(\d+):(\d+):(\d+)( ([ap]m))?Z');
+  static final _dateY4M2D2H2m2s2APmPattern = RegExp(r'(\d{4})[-/](\d{1,2})[-/](\d{1,2})T(\d+):(\d+):(\d+)( ([ap]\.? ?m\.?))?Z');
   static final _ambiguousDatePatterns = {
     RegExp(r'^\d{2}[-/]\d{2}[-/]\d{4}$'),
   };
@@ -124,6 +124,7 @@ class VideoMetadataFormatter {
     // - `UTC 2021-05-30 19:14:21`
     // - `2021/10/31 21:23:17`
     // - `2021-09-10T7:14:49 pmZ`
+    // - `2022-01-28T5:07:46 p. m.Z`
     // - `2012-1-1T12:00:00Z`
     // - `2021` (not enough to build a date)
 

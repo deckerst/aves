@@ -9,7 +9,7 @@ abstract class EmbeddedDataService {
 
   Future<Map> extractVideoEmbeddedPicture(AvesEntry entry);
 
-  Future<Map> extractXmpDataProp(AvesEntry entry, String? propPath, String? propMimeType);
+  Future<Map> extractXmpDataProp(AvesEntry entry, List<dynamic>? props, String? propMimeType);
 }
 
 class PlatformEmbeddedDataService implements EmbeddedDataService {
@@ -61,14 +61,14 @@ class PlatformEmbeddedDataService implements EmbeddedDataService {
   }
 
   @override
-  Future<Map> extractXmpDataProp(AvesEntry entry, String? propPath, String? propMimeType) async {
+  Future<Map> extractXmpDataProp(AvesEntry entry, List<dynamic>? props, String? propMimeType) async {
     try {
       final result = await _platform.invokeMethod('extractXmpDataProp', <String, dynamic>{
         'mimeType': entry.mimeType,
         'uri': entry.uri,
         'sizeBytes': entry.sizeBytes,
-        'displayName': '${entry.bestTitle} • $propPath',
-        'propPath': propPath,
+        'displayName': '${entry.bestTitle} • $props',
+        'propPath': props,
         'propMimeType': propMimeType,
       });
       if (result != null) return result as Map;

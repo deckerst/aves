@@ -35,6 +35,7 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
       // general
       case EntryInfoAction.editDate:
       case EntryInfoAction.editLocation:
+      case EntryInfoAction.editDescription:
       case EntryInfoAction.editRating:
       case EntryInfoAction.editTags:
       case EntryInfoAction.removeMetadata:
@@ -59,6 +60,8 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
         return entry.canEditDate;
       case EntryInfoAction.editLocation:
         return entry.canEditLocation;
+      case EntryInfoAction.editDescription:
+        return entry.canEditDescription;
       case EntryInfoAction.editRating:
         return entry.canEditRating;
       case EntryInfoAction.editTags:
@@ -70,7 +73,7 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
         return true;
       // motion photo
       case EntryInfoAction.convertMotionPhotoToStillImage:
-        return entry.canEdit;
+        return entry.canEditXmp;
       case EntryInfoAction.viewMotionPhotoVideo:
         return true;
       // debug
@@ -88,6 +91,9 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
         break;
       case EntryInfoAction.editLocation:
         await _editLocation(context);
+        break;
+      case EntryInfoAction.editDescription:
+        await _editDescription(context);
         break;
       case EntryInfoAction.editRating:
         await _editRating(context);
@@ -129,6 +135,13 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
     if (location == null) return;
 
     await edit(context, () => entry.editLocation(location));
+  }
+
+  Future<void> _editDescription(BuildContext context) async {
+    final description = await selectDescription(context, {entry});
+    if (description == null) return;
+
+    await edit(context, () => entry.editDescription(description));
   }
 
   Future<void> _editRating(BuildContext context) async {

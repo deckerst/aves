@@ -1,16 +1,15 @@
+import 'package:aves/utils/xmp_utils.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_namespaces.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_structs.dart';
 import 'package:flutter/widgets.dart';
 
 // cf https://github.com/adobe/xmp-docs/blob/master/XMPNamespaces/photoshop.md
 class XmpPhotoshopNamespace extends XmpNamespace {
-  static const ns = 'photoshop';
-
-  static final textLayersPattern = RegExp(ns + r':TextLayers\[(\d+)\]/(.*)');
+  late final textLayersPattern = RegExp(nsPrefix + r'TextLayers\[(\d+)\]/(.*)');
 
   final textLayers = <int, Map<String, String>>{};
 
-  XmpPhotoshopNamespace(Map<String, String> rawProps) : super(ns, rawProps);
+  XmpPhotoshopNamespace(String nsPrefix, Map<String, String> rawProps) : super(Namespaces.photoshop, nsPrefix, rawProps);
 
   @override
   bool extractData(XmpProp prop) {

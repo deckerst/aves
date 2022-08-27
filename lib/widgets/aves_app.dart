@@ -5,6 +5,7 @@ import 'package:aves/app_flavor.dart';
 import 'package:aves/app_mode.dart';
 import 'package:aves/l10n/l10n.dart';
 import 'package:aves/model/device.dart';
+import 'package:aves/model/filters/recent.dart';
 import 'package:aves/model/settings/defaults.dart';
 import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/enums/display_refresh_rate_mode.dart';
@@ -60,15 +61,44 @@ class AvesApp extends StatefulWidget {
   @override
   State<AvesApp> createState() => _AvesAppState();
 
-  static void showSystemUI() {
+  static void setSystemUIStyle(BuildContext context) {
+    final theme = Theme.of(context);
+    final style = systemUIStyleForBrightness(theme.brightness, theme.scaffoldBackgroundColor);
+    SystemChrome.setSystemUIOverlayStyle(style);
+  }
+
+  static SystemUiOverlayStyle systemUIStyleForBrightness(Brightness themeBrightness, Color scaffoldBackgroundColor) {
+    final barBrightness = themeBrightness == Brightness.light ? Brightness.dark : Brightness.light;
+    const statusBarColor = Colors.transparent;
+    // as of Flutter v3.3.0-0.2.pre, setting `SystemUiOverlayStyle` (whether manually or automatically because of `AppBar`)
+    // prevents the canvas from drawing behind the nav bar on Android <10 (API <29),
+    // so the nav bar is opaque, even when requesting `SystemUiMode.edgeToEdge` from Flutter
+    // or setting `android:windowTranslucentNavigation` in Android themes.
+    final navBarColor = device.supportEdgeToEdgeUIMode ? Colors.transparent : scaffoldBackgroundColor;
+    return SystemUiOverlayStyle(
+      systemNavigationBarColor: navBarColor,
+      systemNavigationBarDividerColor: navBarColor,
+      systemNavigationBarIconBrightness: barBrightness,
+      // shows background scrim when using navigation buttons, but not when using gesture navigation
+      systemNavigationBarContrastEnforced: true,
+      statusBarColor: statusBarColor,
+      statusBarBrightness: barBrightness,
+      statusBarIconBrightness: barBrightness,
+      systemStatusBarContrastEnforced: false,
+    );
+  }
+
+  static Future<void> showSystemUI() async {
     if (device.supportEdgeToEdgeUIMode) {
-      SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+      await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     } else {
-      SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values);
+      await SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values);
     }
   }
 
-  static void hideSystemUI() => SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
+  static Future<void> hideSystemUI() async {
+    await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
+  }
 }
 
 class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
@@ -121,6 +151,9 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
                     future: _appSetup,
                     builder: (context, snapshot) {
                       final initialized = !snapshot.hasError && snapshot.connectionState == ConnectionState.done;
+                      if (initialized) {
+                        AvesApp.showSystemUI();
+                      }
                       final home = initialized
                           ? getFirstPage()
                           : Scaffold(
@@ -169,17 +202,22 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
                                 navigatorKey: AvesApp.navigatorKey,
                                 home: home,
                                 navigatorObservers: _navigatorObservers,
-                                builder: (context, child) => AvesColorsProvider(
-                                  child: Theme(
-                                    data: Theme.of(context).copyWith(
-                                      pageTransitionsTheme: pageTransitionsTheme,
+                                builder: (context, child) {
+                                  if (initialized) {
+                                    WidgetsBinding.instance.addPostFrameCallback((_) => AvesApp.setSystemUIStyle(context));
+                                  }
+                                  return AvesColorsProvider(
+                                    child: Theme(
+                                      data: Theme.of(context).copyWith(
+                                        pageTransitionsTheme: pageTransitionsTheme,
+                                      ),
+                                      child: child!,
                                     ),
-                                    child: child!,
-                                  ),
-                                ),
+                                  );
+                                },
                                 onGenerateTitle: (context) => context.l10n.appName,
-                                theme: Themes.lightTheme(lightAccent),
-                                darkTheme: themeBrightness == AvesThemeBrightness.black ? Themes.blackTheme(darkAccent) : Themes.darkTheme(darkAccent),
+                                theme: Themes.lightTheme(lightAccent, initialized),
+                                darkTheme: themeBrightness == AvesThemeBrightness.black ? Themes.blackTheme(darkAccent, initialized) : Themes.darkTheme(darkAccent, initialized),
                                 themeMode: themeBrightness.appThemeMode,
                                 locale: settingsLocale,
                                 localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -238,9 +276,11 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
             break;
         }
         break;
+      case AppLifecycleState.resumed:
+        RecentlyAddedFilter.updateNow();
+        break;
       case AppLifecycleState.paused:
       case AppLifecycleState.detached:
-      case AppLifecycleState.resumed:
         break;
     }
   }

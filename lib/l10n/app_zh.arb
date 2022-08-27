@@ -87,6 +87,7 @@
 
   "entryInfoActionEditDate": "编辑日期和时间",
   "entryInfoActionEditLocation": "编辑位置",
+  "entryInfoActionEditDescription": "编辑备注",
   "entryInfoActionEditRating": "修改评分",
   "entryInfoActionEditTags": "编辑标签",
   "entryInfoActionRemoveMetadata": "移除元数据",
@@ -96,6 +97,7 @@
   "filterLocationEmptyLabel": "未定位",
   "filterTagEmptyLabel": "无标签",
   "filterOnThisDayLabel": "选择日期",
+  "filterRecentlyAddedLabel": "最近添加",
   "filterRatingUnratedLabel": "未评分",
   "filterRatingRejectedLabel": "拒绝",
   "filterTypeAnimatedLabel": "动画",
@@ -238,6 +240,8 @@
 
   "renameEntryDialogLabel": "新名称",
 
+  "editEntryDialogTargetFieldsHeader": "待修改的字段",
+
   "editEntryDateDialogTitle": "日期和时间",
   "editEntryDateDialogSetCustom": "设置自定义日期",
   "editEntryDateDialogCopyField": "复制自其他日期",
@@ -245,7 +249,6 @@
   "editEntryDateDialogExtractFromTitle": "从标题提取",
   "editEntryDateDialogShift": "转移",
   "editEntryDateDialogSourceFileModifiedDate": "文件修改日期",
-  "editEntryDateDialogTargetFieldsHeader": "待修改的字段",
   "editEntryDateDialogHours": "时",
   "editEntryDateDialogMinutes": "分",
 
@@ -255,6 +258,8 @@
   "editEntryLocationDialogLongitude": "经度",
 
   "locationPickerUseThisLocationButton": "使用此位置",
+
+  "editEntryDescriptionDialogTitle": "备注",
 
   "editEntryRatingDialogTitle": "评分",
 
@@ -450,6 +455,7 @@
   "settingsConfirmationDialogDeleteItems": "永久删除项目之前询问",
   "settingsConfirmationDialogMoveToBinItems": "移至回收站之前询问",
   "settingsConfirmationDialogMoveUndatedItems": "移动未注明日期的项目之前询问",
+  "settingsConfirmationAfterMoveToBinItems": "移至回收站后显示消息",
 
   "settingsNavigationDrawerTile": "导航栏菜单",
   "settingsNavigationDrawerEditorTitle": "导航栏菜单",
@@ -478,6 +484,7 @@
   "settingsCollectionSelectionQuickActionEditorBanner": "按住并拖拽可移动按钮并选择选择项目时显示的操作",
 
   "settingsSectionViewer": "查看器",
+  "settingsViewerGestureSideTapNext": "轻触屏幕边缘显示上/下一个项目",
   "settingsViewerUseCutout": "使用剪切区域",
   "settingsViewerMaximumBrightness": "最大亮度",
   "settingsMotionPhotoAutoPlay": "自动播放动态照片",

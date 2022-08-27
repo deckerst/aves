@@ -38,7 +38,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
   late ValueNotifier<int> _shiftHour, _shiftMinute;
   late ValueNotifier<String> _shiftSign;
   bool _showOptions = false;
-  final Set<MetadataField> _fields = {...DateModifier.writableDateFields};
+  final Set<MetadataField> _fields = {...DateModifier.writableFields};
 
   DateTime get copyItemDate => _copyItemSource.bestDate ?? DateTime.now();
 
@@ -276,14 +276,14 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
         children: [
           ExpansionPanel(
             headerBuilder: (context, isExpanded) => ListTile(
-              title: Text(context.l10n.editEntryDateDialogTargetFieldsHeader),
+              title: Text(context.l10n.editEntryDialogTargetFieldsHeader),
             ),
             body: Column(
-              children: DateModifier.writableDateFields
+              children: DateModifier.writableFields
                   .map((field) => SwitchListTile(
                         value: _fields.contains(field),
                         onChanged: (selected) => setState(() => selected ? _fields.add(field) : _fields.remove(field)),
-                        title: Text(_fieldTitle(field)),
+                        title: Text(field.title),
                       ))
                   .toList(),
             ),
@@ -327,23 +327,6 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
         return 'Exif digitized date';
       case DateFieldSource.exifGpsDate:
         return 'Exif GPS date';
-    }
-  }
-
-  String _fieldTitle(MetadataField field) {
-    switch (field) {
-      case MetadataField.exifDate:
-        return 'Exif date';
-      case MetadataField.exifDateOriginal:
-        return 'Exif original date';
-      case MetadataField.exifDateDigitized:
-        return 'Exif digitized date';
-      case MetadataField.exifGpsDatestamp:
-        return 'Exif GPS date';
-      case MetadataField.xmpCreateDate:
-        return 'XMP xmp:CreateDate';
-      default:
-        return field.name;
     }
   }
 

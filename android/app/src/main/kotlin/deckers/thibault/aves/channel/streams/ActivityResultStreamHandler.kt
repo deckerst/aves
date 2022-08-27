@@ -88,7 +88,7 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
         }
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
-            error("requestMediaFileAccess-unsupported", "media file bulk access is not allowed before Android R", null)
+            error("requestMediaFileAccess-unsupported", "media file bulk access is not allowed before Android 11", null)
             return
         }
 

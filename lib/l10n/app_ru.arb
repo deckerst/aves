@@ -237,6 +237,8 @@
 
   "renameEntryDialogLabel": "Новое название",
 
+  "editEntryDialogTargetFieldsHeader": "Поля для изменения",
+
   "editEntryDateDialogTitle": "Дата и время",
   "editEntryDateDialogSetCustom": "Установить дату",
   "editEntryDateDialogCopyField": "Копировать с другой даты",
@@ -244,7 +246,6 @@
   "editEntryDateDialogExtractFromTitle": "Извлечь из названия",
   "editEntryDateDialogShift": "Сдвиг",
   "editEntryDateDialogSourceFileModifiedDate": "Дата изменения файла",
-  "editEntryDateDialogTargetFieldsHeader": "Поля для изменения",
   "editEntryDateDialogHours": "Часов",
   "editEntryDateDialogMinutes": "Минут",
 
@@ -584,6 +585,8 @@
   "settingsCoordinateFormatTitle": "Формат координат",
   "settingsUnitSystemTile": "Единицы измерения",
   "settingsUnitSystemTitle": "Единицы измерения",
+
+  "settingsWidgetPageTitle": "Фоторамка",
 
   "statsPageTitle": "Статистика",
   "statsWithGps": "{count, plural, =1{1 объект с местоположением} few{{count} объекта с местоположением} other{{count} объектов с местоположением}}",

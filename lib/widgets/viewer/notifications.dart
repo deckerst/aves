@@ -1,6 +1,8 @@
+import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/actions/move_type.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/widgets/viewer/video/controller.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/widgets.dart';
 
@@ -9,6 +11,37 @@ class ShowImageNotification extends Notification {}
 
 @immutable
 class ShowInfoNotification extends Notification {}
+
+@immutable
+class ToggleOverlayNotification extends Notification {
+  final bool? visible;
+
+  const ToggleOverlayNotification({this.visible});
+}
+
+@immutable
+class JumpToPreviousEntryNotification extends Notification {}
+
+@immutable
+class JumpToNextEntryNotification extends Notification {}
+
+@immutable
+class JumpToEntryNotification extends Notification {
+  final int index;
+
+  const JumpToEntryNotification({required this.index});
+}
+
+@immutable
+class VideoActionNotification extends Notification {
+  final AvesVideoController controller;
+  final EntryAction action;
+
+  const VideoActionNotification({
+    required this.controller,
+    required this.action,
+  });
+}
 
 @immutable
 class FilterSelectedNotification extends Notification with EquatableMixin {

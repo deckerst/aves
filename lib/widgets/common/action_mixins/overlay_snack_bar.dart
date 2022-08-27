@@ -1,3 +1,4 @@
+import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:flutter/material.dart';
 
 // adapted from Flutter `SnackBar` in `/material/snack_bar.dart`
@@ -49,9 +50,8 @@ class OverlaySnackBar extends StatelessWidget {
 
     final contentTextStyle = snackBarTheme.contentTextStyle ?? ThemeData(brightness: brightness).textTheme.subtitle1;
 
-    const horizontalPadding = 16.0;
+    final horizontalPadding = FeedbackMixin.snackBarHorizontalPadding(snackBarTheme);
     final padding = EdgeInsetsDirectional.only(start: horizontalPadding, end: action != null ? 0 : horizontalPadding);
-    const actionHorizontalMargin = horizontalPadding / 2;
     const singleLineVerticalPadding = 14.0;
 
     Widget snackBar = Padding(
@@ -60,7 +60,7 @@ class OverlaySnackBar extends StatelessWidget {
         children: <Widget>[
           Expanded(
             child: Container(
-              padding: const EdgeInsets.symmetric(vertical: singleLineVerticalPadding),
+              padding: action != null ? null : const EdgeInsets.symmetric(vertical: singleLineVerticalPadding),
               child: DefaultTextStyle(
                 style: contentTextStyle!,
                 child: content,
@@ -68,17 +68,14 @@ class OverlaySnackBar extends StatelessWidget {
             ),
           ),
           if (action != null)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: actionHorizontalMargin),
-              child: TextButtonTheme(
-                data: TextButtonThemeData(
-                  style: TextButton.styleFrom(
-                    foregroundColor: buttonColor,
-                    padding: const EdgeInsets.symmetric(horizontal: horizontalPadding),
-                  ),
+            TextButtonTheme(
+              data: TextButtonThemeData(
+                style: TextButton.styleFrom(
+                  foregroundColor: buttonColor,
+                  padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
                 ),
-                child: action!,
               ),
+              child: action!,
             ),
         ],
       ),

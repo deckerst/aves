@@ -193,7 +193,7 @@ class MediaStoreImageProvider : ImageProvider() {
                 val dateModifiedColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATE_MODIFIED)
                 val dateTakenColumn = cursor.getColumnIndex(MediaColumns.DATE_TAKEN)
 
-                // image & video for API >= Q, only for images for API < Q
+                // image & video for API >=29, only for images for API <29
                 val orientationColumn = cursor.getColumnIndex(MediaColumns.ORIENTATION)
 
                 // video only
@@ -347,7 +347,7 @@ class MediaStoreImageProvider : ImageProvider() {
             }
         } catch (securityException: SecurityException) {
             // even if the app has access permission granted on the containing directory,
-            // the delete request may yield a `RecoverableSecurityException` on Android 10+
+            // the delete request may yield a `RecoverableSecurityException` on Android >=10
             // when the underlying file no longer exists and this is an orphaned entry in the Media Store
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && contextWrapper is Activity) {
                 Log.w(LOG_TAG, "caught a security exception when attempting to delete uri=$uri", securityException)
@@ -726,7 +726,7 @@ class MediaStoreImageProvider : ImageProvider() {
         return scanNewPath(activity, newFile.path, mimeType)
     }
 
-    override fun scanPostMetadataEdit(context: Context, path: String, uri: Uri, mimeType: String, newFields: HashMap<String, Any?>, callback: ImageOpCallback) {
+    override fun scanPostMetadataEdit(context: Context, path: String, uri: Uri, mimeType: String, newFields: FieldMap, callback: ImageOpCallback) {
         MediaScannerConnection.scanFile(context, arrayOf(path), arrayOf(mimeType)) { _, _ ->
             val projection = arrayOf(
                 MediaStore.MediaColumns.DATE_MODIFIED,
@@ -876,7 +876,7 @@ class MediaStoreImageProvider : ImageProvider() {
         private val VIDEO_PROJECTION = arrayOf(
             *BASE_PROJECTION,
             MediaColumns.DURATION,
-            // `ORIENTATION` was only available for images before Android Q
+            // `ORIENTATION` was only available for images before Android 10
             *if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) arrayOf(
                 MediaStore.MediaColumns.ORIENTATION,
             ) else emptyArray()

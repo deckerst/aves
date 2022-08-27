@@ -56,7 +56,7 @@ class ThumbnailFetcher internal constructor(
         try {
             if (!customFetch && (width == defaultSize || height == defaultSize) && !isFlipped) {
                 // Fetch low quality thumbnails when size is not specified.
-                // As of Android R, the Media Store content resolver may return a thumbnail
+                // As of Android 11, the Media Store content resolver may return a thumbnail
                 // that is automatically rotated according to EXIF orientation, but not flipped,
                 // so we skip this step for flipped entries.
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -108,7 +108,7 @@ class ThumbnailFetcher internal constructor(
         } else {
             @Suppress("deprecation")
             var bitmap = MediaStore.Images.Thumbnails.getThumbnail(resolver, contentId, MediaStore.Images.Thumbnails.MINI_KIND, null)
-            // from Android Q, returned thumbnail is already rotated according to EXIF orientation
+            // from Android 10, returned thumbnail is already rotated according to EXIF orientation
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q && bitmap != null) {
                 bitmap = applyExifOrientation(context, bitmap, rotationDegrees, isFlipped)
             }

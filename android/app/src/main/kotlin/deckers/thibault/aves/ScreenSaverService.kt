@@ -102,6 +102,7 @@ class ScreenSaverService : DreamService() {
         MethodChannel(messenger, MediaFetchHandler.CHANNEL).setMethodCallHandler(MediaFetchHandler(this))
         MethodChannel(messenger, MediaStoreHandler.CHANNEL).setMethodCallHandler(MediaStoreHandler(this))
         MethodChannel(messenger, MetadataFetchHandler.CHANNEL).setMethodCallHandler(MetadataFetchHandler(this))
+        MethodChannel(messenger, StorageHandler.CHANNEL).setMethodCallHandler(StorageHandler(this))
         // - need ContextWrapper
         MethodChannel(messenger, AccessibilityHandler.CHANNEL).setMethodCallHandler(AccessibilityHandler(this))
         // - need Service

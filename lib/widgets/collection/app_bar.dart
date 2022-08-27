@@ -19,11 +19,12 @@ import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/collection/entry_set_action_delegate.dart';
 import 'package:aves/widgets/collection/filter_bar.dart';
 import 'package:aves/widgets/collection/query_bar.dart';
-import 'package:aves/widgets/common/app_bar_subtitle.dart';
-import 'package:aves/widgets/common/app_bar_title.dart';
+import 'package:aves/widgets/common/app_bar/app_bar_subtitle.dart';
+import 'package:aves/widgets/common/app_bar/app_bar_title.dart';
+import 'package:aves/widgets/common/app_bar/favourite_toggler.dart';
+import 'package:aves/widgets/common/app_bar/title_search_toggler.dart';
 import 'package:aves/widgets/common/basic/menu.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:aves/widgets/common/favourite_toggler.dart';
 import 'package:aves/widgets/common/identity/aves_app_bar.dart';
 import 'package:aves/widgets/common/search/route.dart';
 import 'package:aves/widgets/dialogs/tile_view_dialog.dart';
@@ -142,7 +143,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
                     isSelecting: isSelecting,
                   ),
                   title: _buildAppBarTitle(isSelecting),
-                  actions: _buildActions(selection),
+                  actions: _buildActions(context, selection),
                   bottom: Column(
                     children: [
                       if (showFilterBar)
@@ -234,7 +235,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     }
   }
 
-  List<Widget> _buildActions(Selection<AvesEntry> selection) {
+  List<Widget> _buildActions(BuildContext context, Selection<AvesEntry> selection) {
     final isSelecting = selection.isSelecting;
     final selectedItemCount = selection.selectedItems.length;
 
@@ -328,7 +329,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
         return Selector<Query?, bool>(
           selector: (context, query) => query?.enabled ?? false,
           builder: (context, queryEnabled, child) {
-            return _TitleSearchToggler(
+            return TitleSearchToggler(
               queryEnabled: queryEnabled,
               onPressed: onPressed,
             );
@@ -353,7 +354,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     late Widget child;
     switch (action) {
       case EntrySetAction.toggleTitleSearch:
-        child = _TitleSearchToggler(
+        child = TitleSearchToggler(
           queryEnabled: context.read<Query>().enabled,
           isMenuItem: true,
         );
@@ -495,6 +496,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       case EntrySetAction.flip:
       case EntrySetAction.editDate:
       case EntrySetAction.editLocation:
+      case EntrySetAction.editDescription:
       case EntrySetAction.editRating:
       case EntrySetAction.editTags:
       case EntrySetAction.removeMetadata:
@@ -554,32 +556,5 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
         ),
       ),
     );
-  }
-}
-
-class _TitleSearchToggler extends StatelessWidget {
-  final bool queryEnabled, isMenuItem;
-  final VoidCallback? onPressed;
-
-  const _TitleSearchToggler({
-    required this.queryEnabled,
-    this.isMenuItem = false,
-    this.onPressed,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final icon = Icon(queryEnabled ? AIcons.filterOff : AIcons.filter);
-    final text = queryEnabled ? context.l10n.collectionActionHideTitleSearch : context.l10n.collectionActionShowTitleSearch;
-    return isMenuItem
-        ? MenuRow(
-            text: text,
-            icon: icon,
-          )
-        : IconButton(
-            icon: icon,
-            onPressed: onPressed,
-            tooltip: text,
-          );
   }
 }

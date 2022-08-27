@@ -1,17 +1,16 @@
+import 'package:aves/utils/xmp_utils.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_namespaces.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_structs.dart';
 import 'package:flutter/widgets.dart';
 
 class XmpCrsNamespace extends XmpNamespace {
-  static const ns = 'crs';
-
-  static final cgbcPattern = RegExp(ns + r':CircularGradientBasedCorrections\[(\d+)\]/(.*)');
-  static final gbcPattern = RegExp(ns + r':GradientBasedCorrections\[(\d+)\]/(.*)');
-  static final mgbcPattern = RegExp(ns + r':MaskGroupBasedCorrections\[(\d+)\]/(.*)');
-  static final pbcPattern = RegExp(ns + r':PaintBasedCorrections\[(\d+)\]/(.*)');
-  static final retouchAreasPattern = RegExp(ns + r':RetouchAreas\[(\d+)\]/(.*)');
-  static final lookPattern = RegExp(ns + r':Look/(.*)');
-  static final rmmiPattern = RegExp(ns + r':RangeMaskMapInfo/' + ns + r':RangeMaskMapInfo/(.*)');
+  late final cgbcPattern = RegExp(nsPrefix + r'CircularGradientBasedCorrections\[(\d+)\]/(.*)');
+  late final gbcPattern = RegExp(nsPrefix + r'GradientBasedCorrections\[(\d+)\]/(.*)');
+  late final mgbcPattern = RegExp(nsPrefix + r'MaskGroupBasedCorrections\[(\d+)\]/(.*)');
+  late final pbcPattern = RegExp(nsPrefix + r'PaintBasedCorrections\[(\d+)\]/(.*)');
+  late final retouchAreasPattern = RegExp(nsPrefix + r'RetouchAreas\[(\d+)\]/(.*)');
+  late final lookPattern = RegExp(nsPrefix + r'Look/(.*)');
+  late final rmmiPattern = RegExp(nsPrefix + r'RangeMaskMapInfo/' + nsPrefix + r'RangeMaskMapInfo/(.*)');
 
   final cgbc = <int, Map<String, String>>{};
   final gbc = <int, Map<String, String>>{};
@@ -21,7 +20,7 @@ class XmpCrsNamespace extends XmpNamespace {
   final look = <String, String>{};
   final rmmi = <String, String>{};
 
-  XmpCrsNamespace(Map<String, String> rawProps) : super(ns, rawProps);
+  XmpCrsNamespace(String nsPrefix, Map<String, String> rawProps) : super(Namespaces.crs, nsPrefix, rawProps);
 
   @override
   bool extractData(XmpProp prop) {

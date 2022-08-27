@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/highlight.dart';
+import 'package:aves/model/query.dart';
 import 'package:aves/model/selection.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/enums.dart';
@@ -21,6 +22,7 @@ import 'package:aves/widgets/common/grid/theme.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/identity/scroll_thumb.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
+import 'package:aves/widgets/common/providers/query_provider.dart';
 import 'package:aves/widgets/common/providers/tile_extent_controller_provider.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
 import 'package:aves/widgets/filter_grids/common/covered_filter_chip.dart';
@@ -38,18 +40,17 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
-typedef QueryTest<T extends CollectionFilter> = Iterable<FilterGridItem<T>> Function(Iterable<FilterGridItem<T>> filters, String query);
+typedef QueryTest<T extends CollectionFilter> = List<FilterGridItem<T>> Function(BuildContext context, List<FilterGridItem<T>> filters, String query);
 
 class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
   final String? settingsRouteKey;
   final Widget appBar;
-  final double appBarHeight;
+  final ValueNotifier<double> appBarHeightNotifier;
   final Map<ChipSectionKey, List<FilterGridItem<T>>> sections;
   final Set<T> newFilters;
   final ChipSortFactor sortFactor;
   final bool showHeaders, selectable;
-  final ValueNotifier<String> queryNotifier;
-  final QueryTest<T>? applyQuery;
+  final QueryTest<T> applyQuery;
   final Widget Function() emptyBuilder;
   final HeroType heroType;
   final StreamController<DraggableScrollBarEvent> _draggableScrollBarEventStreamController = StreamController.broadcast();
@@ -58,14 +59,13 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
     super.key,
     this.settingsRouteKey,
     required this.appBar,
-    required this.appBarHeight,
+    required this.appBarHeightNotifier,
     required this.sections,
     required this.newFilters,
     required this.sortFactor,
     required this.showHeaders,
     required this.selectable,
-    required this.queryNotifier,
-    this.applyQuery,
+    required this.applyQuery,
     required this.emptyBuilder,
     required this.heroType,
   });
@@ -84,46 +84,53 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
               return false;
             },
             child: Scaffold(
-              body: WillPopScope(
-                onWillPop: () {
-                  final selection = context.read<Selection<FilterGridItem<T>>>();
-                  if (selection.isSelecting) {
-                    selection.browse();
-                    return SynchronousFuture(false);
-                  }
-                  return SynchronousFuture(true);
-                },
-                child: DoubleBackPopScope(
-                  child: GestureAreaProtectorStack(
-                    child: SafeArea(
-                      top: false,
-                      bottom: false,
-                      child: Selector<MediaQueryData, double>(
-                        selector: (context, mq) => mq.padding.top,
-                        builder: (context, mqPaddingTop, child) {
-                          return FilterGrid<T>(
-                            // key is expected by test driver
-                            key: const Key('filter-grid'),
-                            settingsRouteKey: settingsRouteKey,
-                            appBar: appBar,
-                            appBarHeight: mqPaddingTop + appBarHeight,
-                            sections: sections,
-                            newFilters: newFilters,
-                            sortFactor: sortFactor,
-                            showHeaders: showHeaders,
-                            selectable: selectable,
-                            queryNotifier: queryNotifier,
-                            applyQuery: applyQuery,
-                            emptyBuilder: emptyBuilder,
-                            heroType: heroType,
-                          );
-                        },
+              body: QueryProvider(
+                initialQuery: null,
+                child: WillPopScope(
+                  onWillPop: () {
+                    final selection = context.read<Selection<FilterGridItem<T>>>();
+                    if (selection.isSelecting) {
+                      selection.browse();
+                      return SynchronousFuture(false);
+                    }
+                    return SynchronousFuture(true);
+                  },
+                  child: DoubleBackPopScope(
+                    child: GestureAreaProtectorStack(
+                      child: SafeArea(
+                        top: false,
+                        bottom: false,
+                        child: Selector<MediaQueryData, double>(
+                          selector: (context, mq) => mq.padding.top,
+                          builder: (context, mqPaddingTop, child) {
+                            return ValueListenableBuilder<double>(
+                              valueListenable: appBarHeightNotifier,
+                              builder: (context, appBarHeight, child) {
+                                return FilterGrid<T>(
+                                  // key is expected by test driver
+                                  key: const Key('filter-grid'),
+                                  settingsRouteKey: settingsRouteKey,
+                                  appBar: appBar,
+                                  appBarHeight: mqPaddingTop + appBarHeight,
+                                  sections: sections,
+                                  newFilters: newFilters,
+                                  sortFactor: sortFactor,
+                                  showHeaders: showHeaders,
+                                  selectable: selectable,
+                                  applyQuery: applyQuery,
+                                  emptyBuilder: emptyBuilder,
+                                  heroType: heroType,
+                                );
+                              },
+                            );
+                          },
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
-              drawer: const AppDrawer(),
+              drawer: canNavigate ? const AppDrawer() : null,
               bottomNavigationBar: showBottomNavigationBar
                   ? AppBottomNavBar(
                       events: _draggableScrollBarEventStreamController.stream,
@@ -147,8 +154,7 @@ class FilterGrid<T extends CollectionFilter> extends StatefulWidget {
   final Set<T> newFilters;
   final ChipSortFactor sortFactor;
   final bool showHeaders, selectable;
-  final ValueNotifier<String> queryNotifier;
-  final QueryTest<T>? applyQuery;
+  final QueryTest<T> applyQuery;
   final Widget Function() emptyBuilder;
   final HeroType heroType;
 
@@ -162,7 +168,6 @@ class FilterGrid<T extends CollectionFilter> extends StatefulWidget {
     required this.sortFactor,
     required this.showHeaders,
     required this.selectable,
-    required this.queryNotifier,
     required this.applyQuery,
     required this.emptyBuilder,
     required this.heroType,
@@ -201,7 +206,6 @@ class _FilterGridState<T extends CollectionFilter> extends State<FilterGrid<T>> 
         sortFactor: widget.sortFactor,
         showHeaders: widget.showHeaders,
         selectable: widget.selectable,
-        queryNotifier: widget.queryNotifier,
         applyQuery: widget.applyQuery,
         emptyBuilder: widget.emptyBuilder,
         heroType: widget.heroType,
@@ -216,9 +220,8 @@ class _FilterGridContent<T extends CollectionFilter> extends StatelessWidget {
   final Set<T> newFilters;
   final ChipSortFactor sortFactor;
   final bool showHeaders, selectable;
-  final ValueNotifier<String> queryNotifier;
   final Widget Function() emptyBuilder;
-  final QueryTest<T>? applyQuery;
+  final QueryTest<T> applyQuery;
   final HeroType heroType;
 
   final ValueNotifier<double> _appBarHeightNotifier = ValueNotifier(0);
@@ -232,7 +235,6 @@ class _FilterGridContent<T extends CollectionFilter> extends StatelessWidget {
     required this.sortFactor,
     required this.showHeaders,
     required this.selectable,
-    required this.queryNotifier,
     required this.applyQuery,
     required this.emptyBuilder,
     required this.heroType,
@@ -244,92 +246,97 @@ class _FilterGridContent<T extends CollectionFilter> extends StatelessWidget {
   Widget build(BuildContext context) {
     final settingsRouteKey = context.read<TileExtentController>().settingsRouteKey;
     final tileLayout = context.select<Settings, TileLayout>((s) => s.getTileLayout(settingsRouteKey));
-    return ValueListenableBuilder<String>(
-      valueListenable: queryNotifier,
-      builder: (context, query, child) {
-        Map<ChipSectionKey, List<FilterGridItem<T>>> visibleSections;
-        if (applyQuery == null) {
-          visibleSections = sections;
-        } else {
-          visibleSections = {};
-          sections.forEach((sectionKey, sectionFilters) {
-            final visibleFilters = applyQuery!(sectionFilters, query);
-            if (visibleFilters.isNotEmpty) {
-              visibleSections[sectionKey] = visibleFilters.toList();
+    return Selector<Query, bool>(
+      selector: (context, query) => query.enabled,
+      builder: (context, queryEnabled, child) {
+        return ValueListenableBuilder<String>(
+          valueListenable: context.select<Query, ValueNotifier<String>>((query) => query.queryNotifier),
+          builder: (context, query, child) {
+            Map<ChipSectionKey, List<FilterGridItem<T>>> visibleSections;
+            if (queryEnabled && query.isNotEmpty) {
+              visibleSections = {};
+              sections.forEach((sectionKey, sectionFilters) {
+                final visibleFilters = applyQuery(context, sectionFilters, query.toUpperCase());
+                if (visibleFilters.isNotEmpty) {
+                  visibleSections[sectionKey] = visibleFilters;
+                }
+              });
+            } else {
+              visibleSections = sections;
             }
-          });
-        }
 
-        final sectionedListLayoutProvider = ValueListenableBuilder<double>(
-          valueListenable: context.select<TileExtentController, ValueNotifier<double>>((controller) => controller.extentNotifier),
-          builder: (context, thumbnailExtent, child) {
-            return Selector<TileExtentController, Tuple4<double, int, double, double>>(
-              selector: (context, c) => Tuple4(c.viewportSize.width, c.columnCount, c.spacing, c.horizontalPadding),
-              builder: (context, c, child) {
-                final scrollableWidth = c.item1;
-                final columnCount = c.item2;
-                final tileSpacing = c.item3;
-                final horizontalPadding = c.item4;
-                // do not listen for animation delay change
-                final target = context.read<DurationsData>().staggeredAnimationPageTarget;
-                final tileAnimationDelay = context.read<TileExtentController>().getTileAnimationDelay(target);
-                return Selector<MediaQueryData, double>(
-                  selector: (context, mq) => mq.textScaleFactor,
-                  builder: (context, textScaleFactor, child) {
-                    final tileHeight = CoveredFilterChip.tileHeight(
-                      extent: thumbnailExtent,
-                      textScaleFactor: textScaleFactor,
-                      showText: tileLayout == TileLayout.grid,
-                    );
-                    return GridTheme(
-                      extent: thumbnailExtent,
-                      child: FilterListDetailsTheme(
-                        extent: thumbnailExtent,
-                        child: SectionedFilterListLayoutProvider<T>(
-                          sections: visibleSections,
-                          showHeaders: showHeaders,
-                          tileLayout: tileLayout,
-                          scrollableWidth: scrollableWidth,
-                          columnCount: columnCount,
-                          spacing: tileSpacing,
-                          horizontalPadding: horizontalPadding,
-                          tileWidth: thumbnailExtent,
-                          tileHeight: tileHeight,
-                          tileBuilder: (gridItem) {
-                            return InteractiveFilterTile(
-                              gridItem: gridItem,
-                              chipExtent: thumbnailExtent,
-                              thumbnailExtent: thumbnailExtent,
+            final sectionedListLayoutProvider = ValueListenableBuilder<double>(
+              valueListenable: context.select<TileExtentController, ValueNotifier<double>>((controller) => controller.extentNotifier),
+              builder: (context, thumbnailExtent, child) {
+                return Selector<TileExtentController, Tuple4<double, int, double, double>>(
+                  selector: (context, c) => Tuple4(c.viewportSize.width, c.columnCount, c.spacing, c.horizontalPadding),
+                  builder: (context, c, child) {
+                    final scrollableWidth = c.item1;
+                    final columnCount = c.item2;
+                    final tileSpacing = c.item3;
+                    final horizontalPadding = c.item4;
+                    // do not listen for animation delay change
+                    final target = context.read<DurationsData>().staggeredAnimationPageTarget;
+                    final tileAnimationDelay = context.read<TileExtentController>().getTileAnimationDelay(target);
+                    return Selector<MediaQueryData, double>(
+                      selector: (context, mq) => mq.textScaleFactor,
+                      builder: (context, textScaleFactor, child) {
+                        final tileHeight = CoveredFilterChip.tileHeight(
+                          extent: thumbnailExtent,
+                          textScaleFactor: textScaleFactor,
+                          showText: tileLayout == TileLayout.grid,
+                        );
+                        return GridTheme(
+                          extent: thumbnailExtent,
+                          child: FilterListDetailsTheme(
+                            extent: thumbnailExtent,
+                            child: SectionedFilterListLayoutProvider<T>(
+                              sections: visibleSections,
+                              showHeaders: showHeaders,
                               tileLayout: tileLayout,
-                              banner: _getFilterBanner(context, gridItem.filter),
-                              heroType: heroType,
-                            );
-                          },
-                          tileAnimationDelay: tileAnimationDelay,
-                          child: child!,
-                        ),
-                      ),
+                              scrollableWidth: scrollableWidth,
+                              columnCount: columnCount,
+                              spacing: tileSpacing,
+                              horizontalPadding: horizontalPadding,
+                              tileWidth: thumbnailExtent,
+                              tileHeight: tileHeight,
+                              tileBuilder: (gridItem) {
+                                return InteractiveFilterTile(
+                                  gridItem: gridItem,
+                                  chipExtent: thumbnailExtent,
+                                  thumbnailExtent: thumbnailExtent,
+                                  tileLayout: tileLayout,
+                                  banner: _getFilterBanner(context, gridItem.filter),
+                                  heroType: heroType,
+                                );
+                              },
+                              tileAnimationDelay: tileAnimationDelay,
+                              child: child!,
+                            ),
+                          ),
+                        );
+                      },
+                      child: child,
                     );
                   },
                   child: child,
                 );
               },
-              child: child,
+              child: _FilterSectionedContent<T>(
+                appBar: appBar,
+                appBarHeightNotifier: _appBarHeightNotifier,
+                visibleSections: visibleSections,
+                sortFactor: sortFactor,
+                selectable: selectable,
+                emptyBuilder: emptyBuilder,
+                bannerBuilder: _getFilterBanner,
+                scrollController: PrimaryScrollController.of(context)!,
+                tileLayout: tileLayout,
+              ),
             );
+            return sectionedListLayoutProvider;
           },
-          child: _FilterSectionedContent<T>(
-            appBar: appBar,
-            appBarHeightNotifier: _appBarHeightNotifier,
-            visibleSections: visibleSections,
-            sortFactor: sortFactor,
-            selectable: selectable,
-            emptyBuilder: emptyBuilder,
-            bannerBuilder: _getFilterBanner,
-            scrollController: PrimaryScrollController.of(context)!,
-            tileLayout: tileLayout,
-          ),
         );
-        return sectionedListLayoutProvider;
       },
     );
   }
@@ -571,15 +578,7 @@ class _FilterScrollView<T extends CollectionFilter> extends StatelessWidget {
               return empty
                   ? SliverFillRemaining(
                       hasScrollBody: false,
-                      child: Selector<MediaQueryData, double>(
-                        selector: (context, mq) => mq.effectiveBottomPadding,
-                        builder: (context, mqPaddingBottom, child) {
-                          return Padding(
-                            padding: EdgeInsets.only(bottom: mqPaddingBottom),
-                            child: emptyBuilder(),
-                          );
-                        },
-                      ),
+                      child: emptyBuilder(),
                     )
                   : SectionedListSliver<FilterGridItem<T>>();
             }),
