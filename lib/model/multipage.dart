@@ -102,6 +102,7 @@ class MultiPageInfo {
       sourceRotationDegrees: pageInfo.rotationDegrees ?? mainEntry.sourceRotationDegrees,
       sizeBytes: mainEntry.sizeBytes,
       sourceTitle: mainEntry.sourceTitle,
+      dateAddedSecs: mainEntry.dateAddedSecs,
       dateModifiedSecs: mainEntry.dateModifiedSecs,
       sourceDateTakenMillis: mainEntry.sourceDateTakenMillis,
       durationMillis: pageInfo.durationMillis ?? mainEntry.durationMillis,

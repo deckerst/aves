@@ -36,7 +36,8 @@ enum MetadataField {
   exifGpsTrack,
   exifGpsTrackRef,
   exifGpsVersionId,
-  xmpCreateDate,
+  exifImageDescription,
+  xmpXmpCreateDate,
 }
 
 class MetadataFields {
@@ -114,8 +115,9 @@ extension ExtraMetadataField on MetadataField {
       case MetadataField.exifGpsTrack:
       case MetadataField.exifGpsTrackRef:
       case MetadataField.exifGpsVersionId:
+      case MetadataField.exifImageDescription:
         return MetadataType.exif;
-      case MetadataField.xmpCreateDate:
+      case MetadataField.xmpXmpCreateDate:
         return MetadataType.xmp;
     }
   }
@@ -192,8 +194,27 @@ extension ExtraMetadataField on MetadataField {
         return 'GPSTrackRef';
       case MetadataField.exifGpsVersionId:
         return 'GPSVersionID';
-      case MetadataField.xmpCreateDate:
+      case MetadataField.exifImageDescription:
+        return 'ImageDescription';
+      case MetadataField.xmpXmpCreateDate:
         return null;
+    }
+  }
+
+  String get title {
+    switch (this) {
+      case MetadataField.exifDate:
+        return 'Exif date';
+      case MetadataField.exifDateOriginal:
+        return 'Exif original date';
+      case MetadataField.exifDateDigitized:
+        return 'Exif digitized date';
+      case MetadataField.exifGpsDatestamp:
+        return 'Exif GPS date';
+      case MetadataField.xmpXmpCreateDate:
+        return 'XMP xmp:CreateDate';
+      default:
+        return name;
     }
   }
 }

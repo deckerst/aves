@@ -1,3 +1,4 @@
+// ignore_for_file: avoid_print
 import 'package:aves/widgets/debug/app_debug_action.dart';
 import 'package:flutter_driver/flutter_driver.dart';
 
@@ -19,7 +20,10 @@ extension ExtraFlutterDriver on FlutterDriver {
   }
 
   Future<void> tapKeyAndWait(String key) async {
-    await tap(find.byValueKey(key));
+    print('  find key=$key');
+    final finder = find.byValueKey(key);
+    await waitFor(finder);
+    await tap(finder);
     await waitUntilNoTransientCallbacks();
   }
 

@@ -39,9 +39,12 @@ mixin FeedbackMixin {
   void showFeedbackWithMessenger(BuildContext context, ScaffoldMessengerState messenger, String message, [SnackBarAction? action]) {
     _getSnackBarDuration(action != null).then((duration) {
       final start = DateTime.now();
+      final theme = Theme.of(context);
+      final snackBarTheme = theme.snackBarTheme;
+
       final snackBarContent = _FeedbackMessage(
         message: message,
-        progressColor: Theme.of(context).colorScheme.secondary,
+        progressColor: theme.colorScheme.secondary,
         start: start,
         stop: action != null ? start.add(duration) : null,
       );
@@ -64,7 +67,7 @@ mixin FeedbackMixin {
                 action: action != null
                     ? TextButton(
                         style: ButtonStyle(
-                          foregroundColor: MaterialStateProperty.all(Theme.of(context).snackBarTheme.actionTextColor),
+                          foregroundColor: MaterialStateProperty.all(snackBarTheme.actionTextColor),
                         ),
                         onPressed: () {
                           notificationOverlayEntry?.dismiss();
@@ -87,6 +90,7 @@ mixin FeedbackMixin {
       } else {
         messenger.showSnackBar(SnackBar(
           content: snackBarContent,
+          padding: action != null ? EdgeInsetsDirectional.only(start: snackBarHorizontalPadding(snackBarTheme)) : null,
           action: action,
           duration: duration,
           dismissDirection: DismissDirection.horizontal,
@@ -95,25 +99,30 @@ mixin FeedbackMixin {
     });
   }
 
+  static double snackBarHorizontalPadding(SnackBarThemeData snackBarTheme) {
+    final isFloatingSnackBar = (snackBarTheme.behavior ?? SnackBarBehavior.fixed) == SnackBarBehavior.floating;
+    final horizontalPadding = isFloatingSnackBar ? 16.0 : 24.0;
+    return horizontalPadding;
+  }
+
   Future<Duration> _getSnackBarDuration(bool hasAction) async {
-    final appDefaultDuration = hasAction ? Durations.opToastActionDisplay : Durations.opToastTextDisplay;
     switch (settings.timeToTakeAction) {
       case AccessibilityTimeout.system:
-        final original = appDefaultDuration.inMilliseconds;
-        final millis = await (hasAction ? AccessibilityService.getRecommendedTimeToTakeAction(original) : AccessibilityService.getRecommendedTimeToRead(original));
-        return Duration(milliseconds: millis);
-      case AccessibilityTimeout.appDefault:
-        return appDefaultDuration;
+        if (hasAction) {
+          return Duration(milliseconds: await (AccessibilityService.getRecommendedTimeToTakeAction(Durations.opToastActionDisplay)));
+        } else {
+          return Duration(milliseconds: await (AccessibilityService.getRecommendedTimeToRead(Durations.opToastTextDisplay)));
+        }
+      case AccessibilityTimeout.s1:
+        return const Duration(seconds: 1);
       case AccessibilityTimeout.s3:
         return const Duration(seconds: 3);
+      case AccessibilityTimeout.s5:
+        return const Duration(seconds: 5);
       case AccessibilityTimeout.s10:
         return const Duration(seconds: 10);
       case AccessibilityTimeout.s30:
         return const Duration(seconds: 30);
-      case AccessibilityTimeout.s60:
-        return const Duration(minutes: 1);
-      case AccessibilityTimeout.s120:
-        return const Duration(minutes: 2);
     }
   }
 

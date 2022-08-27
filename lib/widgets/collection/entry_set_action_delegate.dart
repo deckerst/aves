@@ -92,6 +92,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       case EntrySetAction.flip:
       case EntrySetAction.editDate:
       case EntrySetAction.editLocation:
+      case EntrySetAction.editDescription:
       case EntrySetAction.editRating:
       case EntrySetAction.editTags:
       case EntrySetAction.removeMetadata:
@@ -143,6 +144,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       case EntrySetAction.flip:
       case EntrySetAction.editDate:
       case EntrySetAction.editLocation:
+      case EntrySetAction.editDescription:
       case EntrySetAction.editRating:
       case EntrySetAction.editTags:
       case EntrySetAction.removeMetadata:
@@ -218,6 +220,9 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
         break;
       case EntrySetAction.editLocation:
         _editLocation(context);
+        break;
+      case EntrySetAction.editDescription:
+        _editDescription(context);
         break;
       case EntrySetAction.editRating:
         _editRating(context);
@@ -488,6 +493,16 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     if (location == null) return;
 
     await _edit(context, entries, (entry) => entry.editLocation(location));
+  }
+
+  Future<void> _editDescription(BuildContext context) async {
+    final entries = await _getEditableTargetItems(context, canEdit: (entry) => entry.canEditDescription);
+    if (entries == null || entries.isEmpty) return;
+
+    final description = await selectDescription(context, entries);
+    if (description == null) return;
+
+    await _edit(context, entries, (entry) => entry.editDescription(description));
   }
 
   Future<void> _editRating(BuildContext context) async {

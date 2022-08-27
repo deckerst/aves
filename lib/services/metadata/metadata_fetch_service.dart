@@ -35,6 +35,8 @@ abstract class MetadataFetchService {
   Future<String?> getContentResolverProp(AvesEntry entry, String prop);
 
   Future<DateTime?> getDate(AvesEntry entry, MetadataField field);
+
+  Future<String?> getDescription(AvesEntry entry);
 }
 
 class PlatformMetadataFetchService implements MetadataFetchService {
@@ -75,7 +77,7 @@ class PlatformMetadataFetchService implements MetadataFetchService {
         // 'latitude': latitude (double)
         // 'longitude': longitude (double)
         // 'xmpSubjects': ';' separated XMP subjects (string)
-        // 'xmpTitleDescription': XMP title or XMP description (string)
+        // 'xmpTitle': XMP title (string)
         final result = await _platform.invokeMethod('getCatalogMetadata', <String, dynamic>{
           'mimeType': entry.mimeType,
           'uri': entry.uri,
@@ -144,6 +146,7 @@ class PlatformMetadataFetchService implements MetadataFetchService {
         'mimeType': entry.mimeType,
         'uri': entry.uri,
         'sizeBytes': entry.sizeBytes,
+        'isMotionPhoto': entry.isMotionPhoto,
       });
       final pageMaps = ((result as List?) ?? []).cast<Map>();
       if (entry.isMotionPhoto && pageMaps.isNotEmpty) {
@@ -261,6 +264,22 @@ class PlatformMetadataFetchService implements MetadataFetchService {
       if (result is int) {
         return dateTimeFromMillis(result, isUtc: false);
       }
+    } on PlatformException catch (e, stack) {
+      if (!entry.isMissingAtPath) {
+        await reportService.recordError(e, stack);
+      }
+    }
+    return null;
+  }
+
+  @override
+  Future<String?> getDescription(AvesEntry entry) async {
+    try {
+      return await _platform.invokeMethod('getDescription', <String, dynamic>{
+        'mimeType': entry.mimeType,
+        'uri': entry.uri,
+        'sizeBytes': entry.sizeBytes,
+      });
     } on PlatformException catch (e, stack) {
       if (!entry.isMissingAtPath) {
         await reportService.recordError(e, stack);

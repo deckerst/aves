@@ -95,6 +95,7 @@
   "filterFavouriteLabel": "Favorit",
   "filterLocationEmptyLabel": "Lokasi yang tidak ditemukan",
   "filterTagEmptyLabel": "Tidak dilabel",
+  "filterOnThisDayLabel": "Di hari ini",
   "filterRatingUnratedLabel": "Belum diberi nilai",
   "filterRatingRejectedLabel": "Ditolak",
   "filterTypeAnimatedLabel": "Teranimasi",
@@ -237,6 +238,8 @@
 
   "renameEntryDialogLabel": "Nama baru",
 
+  "editEntryDialogTargetFieldsHeader": "Bidang untuk dimodifikasikan",
+
   "editEntryDateDialogTitle": "Tanggal & Waktu",
   "editEntryDateDialogSetCustom": "Atur tanggal khusus",
   "editEntryDateDialogCopyField": "Salin dari tanggal lain",
@@ -244,7 +247,6 @@
   "editEntryDateDialogExtractFromTitle": "Ekstrak dari judul",
   "editEntryDateDialogShift": "Geser",
   "editEntryDateDialogSourceFileModifiedDate": "Tanggal modifikasi file",
-  "editEntryDateDialogTargetFieldsHeader": "Bidang untuk dimodifikasikan",
   "editEntryDateDialogHours": "Jam",
   "editEntryDateDialogMinutes": "Menit",
 
@@ -503,6 +505,7 @@
   "settingsViewerSlideshowTitle": "Tampilan Slide",
   "settingsSlideshowRepeat": "Ulangi",
   "settingsSlideshowShuffle": "Acak",
+  "settingsSlideshowFillScreen": "Isi layar",
   "settingsSlideshowTransitionTile": "Transisi",
   "settingsSlideshowTransitionTitle": "Transisi",
   "settingsSlideshowIntervalTile": "Interval",
@@ -584,6 +587,11 @@
   "settingsCoordinateFormatTitle": "Format Koordinat",
   "settingsUnitSystemTile": "Unit",
   "settingsUnitSystemTitle": "Unit",
+
+  "settingsScreenSaverPageTitle": "Screensaver",
+
+  "settingsWidgetPageTitle": "Bingkai Foto",
+  "settingsWidgetShowOutline": "Garis luar",
 
   "statsPageTitle": "Statistik",
   "statsWithGps": "{count, plural, other{{count} benda dengan lokasi}}",

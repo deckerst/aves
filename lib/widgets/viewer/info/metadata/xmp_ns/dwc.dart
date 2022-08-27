@@ -1,19 +1,18 @@
+import 'package:aves/utils/xmp_utils.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_namespaces.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_structs.dart';
 import 'package:flutter/widgets.dart';
 
 class XmpDwcNamespace extends XmpNamespace {
-  static const ns = 'dwc';
-
-  static final dcTermsLocationPattern = RegExp(ns + r':dctermsLocation/(.*)');
-  static final eventPattern = RegExp(ns + r':Event/(.*)');
-  static final geologicalContextPattern = RegExp(ns + r':GeologicalContext/(.*)');
-  static final identificationPattern = RegExp(ns + r':Identification/(.*)');
-  static final measurementOrFactPattern = RegExp(ns + r':MeasurementOrFact/(.*)');
-  static final occurrencePattern = RegExp(ns + r':Occurrence/(.*)');
-  static final recordPattern = RegExp(ns + r':Record/(.*)');
-  static final resourceRelationshipPattern = RegExp(ns + r':ResourceRelationship/(.*)');
-  static final taxonPattern = RegExp(ns + r':Taxon/(.*)');
+  late final dcTermsLocationPattern = RegExp(nsPrefix + r'dctermsLocation/(.*)');
+  late final eventPattern = RegExp(nsPrefix + r'Event/(.*)');
+  late final geologicalContextPattern = RegExp(nsPrefix + r'GeologicalContext/(.*)');
+  late final identificationPattern = RegExp(nsPrefix + r'Identification/(.*)');
+  late final measurementOrFactPattern = RegExp(nsPrefix + r'MeasurementOrFact/(.*)');
+  late final occurrencePattern = RegExp(nsPrefix + r'Occurrence/(.*)');
+  late final recordPattern = RegExp(nsPrefix + r'Record/(.*)');
+  late final resourceRelationshipPattern = RegExp(nsPrefix + r'ResourceRelationship/(.*)');
+  late final taxonPattern = RegExp(nsPrefix + r'Taxon/(.*)');
 
   final dcTermsLocation = <String, String>{};
   final event = <String, String>{};
@@ -25,7 +24,7 @@ class XmpDwcNamespace extends XmpNamespace {
   final resourceRelationship = <String, String>{};
   final taxon = <String, String>{};
 
-  XmpDwcNamespace(Map<String, String> rawProps) : super(ns, rawProps);
+  XmpDwcNamespace(String nsPrefix, Map<String, String> rawProps) : super(Namespaces.dwc, nsPrefix, rawProps);
 
   @override
   bool extractData(XmpProp prop) {

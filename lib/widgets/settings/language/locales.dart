@@ -10,6 +10,7 @@ class SupportedLocales {
     'it': 'Italiano',
     'ja': '日本語',
     'ko': '한국어',
+    'nl': 'Nederlands',
     'pt': 'Português (Brasil)',
     'ru': 'Русский',
     'tr': 'Türkçe',

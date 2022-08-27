@@ -17,7 +17,7 @@ import 'package:aves/widgets/common/magnifier/scale/scale_level.dart';
 import 'package:aves/widgets/common/magnifier/scale/state.dart';
 import 'package:aves/widgets/common/thumbnail/image.dart';
 import 'package:aves/widgets/viewer/hero.dart';
-import 'package:aves/widgets/viewer/overlay/notifications.dart';
+import 'package:aves/widgets/viewer/notifications.dart';
 import 'package:aves/widgets/viewer/video/conductor.dart';
 import 'package:aves/widgets/viewer/video/controller.dart';
 import 'package:aves/widgets/viewer/visual/conductor.dart';
@@ -376,7 +376,7 @@ class _EntryPageViewState extends State<EntryPageView> {
 
     return Magnifier(
       // key includes modified date to refresh when the image is modified by metadata (e.g. rotated)
-      key: ValueKey('${entry.uri}_${entry.pageId}_${entry.dateModifiedSecs}'),
+      key: Key('${entry.uri}_${entry.pageId}_${entry.dateModifiedSecs}'),
       controller: controller ?? _magnifierController,
       childSize: displaySize ?? entry.displaySize,
       allowOriginalScaleBeyondRange: !isWallpaperMode,
@@ -385,13 +385,25 @@ class _EntryPageViewState extends State<EntryPageView> {
       initialScale: widget.initialScale,
       scaleStateCycle: scaleStateCycle,
       applyScale: applyScale,
-      onTap: (c, d, s, o) => _onTap(),
+      onTap: (c, s, a, p) => _onTap(alignment: a),
       onDoubleTap: onDoubleTap,
       child: child,
     );
   }
 
-  void _onTap() => const ToggleOverlayNotification().dispatch(context);
+  void _onTap({Alignment? alignment}) {
+    if (settings.viewerGestureSideTapNext && alignment != null) {
+      final x = alignment.x;
+      if (x < .25) {
+        JumpToPreviousEntryNotification().dispatch(context);
+        return;
+      } else if (x > .75) {
+        JumpToNextEntryNotification().dispatch(context);
+        return;
+      }
+    }
+    const ToggleOverlayNotification().dispatch(context);
+  }
 
   void _onViewStateChanged(MagnifierState v) {
     _viewStateNotifier.value = _viewStateNotifier.value.copyWith(

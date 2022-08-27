@@ -79,7 +79,7 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> {
                             controller: _latitudeController,
                             focusNode: _latitudeFocusNode,
                             decoration: InputDecoration(
-                              labelText: context.l10n.editEntryLocationDialogLatitude,
+                              labelText: l10n.editEntryLocationDialogLatitude,
                               hintText: coordinateFormatter.format(Constants.pointNemo.latitude),
                             ),
                             onChanged: (_) => _validate(),
@@ -88,7 +88,7 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> {
                             controller: _longitudeController,
                             focusNode: _longitudeFocusNode,
                             decoration: InputDecoration(
-                              labelText: context.l10n.editEntryLocationDialogLongitude,
+                              labelText: l10n.editEntryLocationDialogLongitude,
                               hintText: coordinateFormatter.format(Constants.pointNemo.longitude),
                             ),
                             onChanged: (_) => _validate(),
@@ -131,7 +131,7 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> {
                 builder: (context, isValid, child) {
                   return TextButton(
                     onPressed: isValid ? () => _submit(context) : null,
-                    child: Text(context.l10n.applyButtonLabel),
+                    child: Text(l10n.applyButtonLabel),
                   );
                 },
               ),

@@ -1,12 +1,17 @@
-package deckers.thibault.aves.metadata
+package deckers.thibault.aves.metadata.metadataextractor
 
 import android.util.Log
 import com.drew.imaging.FileType
 import com.drew.imaging.FileTypeDetector
 import com.drew.imaging.ImageMetadataReader
+import com.drew.imaging.ImageProcessingException
 import com.drew.imaging.jpeg.JpegMetadataReader
 import com.drew.imaging.jpeg.JpegSegmentMetadataReader
+import com.drew.imaging.mp4.Mp4Reader
+import com.drew.imaging.tiff.TiffProcessingException
+import com.drew.imaging.tiff.TiffReader
 import com.drew.lang.ByteArrayReader
+import com.drew.lang.RandomAccessStreamReader
 import com.drew.lang.Rational
 import com.drew.lang.SequentialByteArrayReader
 import com.drew.metadata.Directory
@@ -19,14 +24,18 @@ import com.drew.metadata.file.FileTypeDirectory
 import com.drew.metadata.iptc.IptcReader
 import com.drew.metadata.png.PngDirectory
 import com.drew.metadata.xmp.XmpReader
+import deckers.thibault.aves.metadata.ExifGeoTiffTags
+import deckers.thibault.aves.metadata.GeoTiffKeys
+import deckers.thibault.aves.metadata.Metadata
 import deckers.thibault.aves.utils.LogUtils
 import java.io.BufferedInputStream
+import java.io.IOException
 import java.io.InputStream
 import java.text.SimpleDateFormat
 import java.util.*
 
-object MetadataExtractorHelper {
-    private val LOG_TAG = LogUtils.createTag<MetadataExtractorHelper>()
+object Helper {
+    private val LOG_TAG = LogUtils.createTag<Helper>()
 
     const val PNG_ITXT_DIR_NAME = "PNG-iTXt"
     private const val PNG_TEXT_DIR_NAME = "PNG-tEXt"
@@ -43,37 +52,61 @@ object MetadataExtractorHelper {
     // e.g. "exif [...] 134 [...] 4578696600004949[...]"
     private val PNG_RAW_PROFILE_PATTERN = Regex("^\\n(.*?)\\n\\s*(\\d+)\\n(.*)", RegexOption.DOT_MATCHES_ALL)
 
+    // providing the stream length is risky, as it may crash if it is incorrect
+    private const val safeReadStreamLength = -1L
+
     fun readMimeType(input: InputStream): String? {
         val bufferedInputStream = if (input is BufferedInputStream) input else BufferedInputStream(input)
         return FileTypeDetector.detectFileType(bufferedInputStream).mimeType
     }
 
+    @Throws(IOException::class, ImageProcessingException::class)
     fun safeRead(input: InputStream): com.drew.metadata.Metadata {
-        val bufferedInputStream = if (input is BufferedInputStream) input else BufferedInputStream(input)
-        val fileType = FileTypeDetector.detectFileType(bufferedInputStream)
+        val inputStream = if (input is BufferedInputStream) input else BufferedInputStream(input)
+        val fileType = FileTypeDetector.detectFileType(inputStream)
 
-        val metadata = if (fileType == FileType.Jpeg) {
-            safeReadJpeg(bufferedInputStream)
-        } else {
-            // providing the stream length is risky, as it may crash if it is incorrect
-            ImageMetadataReader.readMetadata(bufferedInputStream, -1L, fileType)
+        val metadata = when (fileType) {
+            FileType.Jpeg -> safeReadJpeg(inputStream)
+            FileType.Tiff,
+            FileType.Arw,
+            FileType.Cr2,
+            FileType.Nef,
+            FileType.Orf,
+            FileType.Rw2 -> safeReadTiff(inputStream)
+            FileType.Mp4 -> safeReadMp4(inputStream)
+            else -> ImageMetadataReader.readMetadata(inputStream, safeReadStreamLength, fileType)
         }
 
         metadata.addDirectory(FileTypeDirectory(fileType))
         return metadata
     }
 
-    // Some JPEG (and other types?) contain XMP with a preposterous number of `DocumentAncestors`.
+    // Some JPEG, TIFF, MP4 (and other types?) contain XMP with a preposterous number of `DocumentAncestors`.
     // This bloated XMP is unsafely loaded in memory by Adobe's `XMPMetaParser.parseInputSource`
     // which easily yields OOM on Android, so we try to detect and strip extended XMP with a modified XMP reader.
     private fun safeReadJpeg(input: InputStream): com.drew.metadata.Metadata {
         val readers = ArrayList<JpegSegmentMetadataReader>().apply {
             addAll(JpegMetadataReader.ALL_READERS.filter { it !is XmpReader })
-            add(MetadataExtractorSafeXmpReader())
+            add(SafeXmpReader())
         }
 
         val metadata = com.drew.metadata.Metadata()
         JpegMetadataReader.process(metadata, input, readers)
+        return metadata
+    }
+
+    @Throws(IOException::class, TiffProcessingException::class)
+    fun safeReadTiff(input: InputStream): com.drew.metadata.Metadata {
+        val reader = RandomAccessStreamReader(input, RandomAccessStreamReader.DEFAULT_CHUNK_LENGTH, safeReadStreamLength)
+        val metadata = com.drew.metadata.Metadata()
+        val handler = SafeExifTiffHandler(metadata, null)
+        TiffReader().processTiff(reader, handler, 0)
+        return metadata
+    }
+
+    private fun safeReadMp4(input: InputStream): com.drew.metadata.Metadata {
+        val metadata = com.drew.metadata.Metadata()
+        Mp4Reader.extract(input, SafeMp4BoxHandler(metadata))
         return metadata
     }
 

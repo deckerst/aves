@@ -59,7 +59,7 @@ class TileExtentController {
     final targetExtent = preferredExtent > 0 ? preferredExtent : extentNotifier.value;
 
     final columnCount = _effectiveColumnCountForExtent(targetExtent);
-    final newExtent = _extentForColumnCount(columnCount);
+    final newExtent = _extentForColumnCount(columnCount).clamp(effectiveExtentMin, effectiveExtentMax);
 
     if (this.userPreferredExtent != preferredExtent) {
       this.userPreferredExtent = preferredExtent;

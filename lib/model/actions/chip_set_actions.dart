@@ -10,6 +10,7 @@ enum ChipSetAction {
   selectNone,
   // browsing
   search,
+  toggleTitleSearch,
   createAlbum,
   // browsing or selecting
   map,
@@ -35,6 +36,7 @@ class ChipSetActions {
 
   static const browsing = [
     ChipSetAction.search,
+    ChipSetAction.toggleTitleSearch,
     ChipSetAction.createAlbum,
     ChipSetAction.map,
     ChipSetAction.slideshow,
@@ -69,6 +71,9 @@ extension ExtraChipSetAction on ChipSetAction {
       // browsing
       case ChipSetAction.search:
         return MaterialLocalizations.of(context).searchFieldLabel;
+      case ChipSetAction.toggleTitleSearch:
+        // different data depending on toggle state
+        return context.l10n.collectionActionShowTitleSearch;
       case ChipSetAction.createAlbum:
         return context.l10n.chipActionCreateAlbum;
       // browsing or selecting
@@ -111,6 +116,9 @@ extension ExtraChipSetAction on ChipSetAction {
       // browsing
       case ChipSetAction.search:
         return AIcons.search;
+      case ChipSetAction.toggleTitleSearch:
+        // different data depending on toggle state
+        return AIcons.filter;
       case ChipSetAction.createAlbum:
         return AIcons.add;
       // browsing or selecting

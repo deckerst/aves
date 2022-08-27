@@ -82,7 +82,7 @@ object StorageUtils {
     }
 
     fun getVolumePaths(context: Context): Array<String> {
-        if (mStorageVolumePaths == null) {
+        if (mStorageVolumePaths == null || mStorageVolumePaths!!.isEmpty()) {
             mStorageVolumePaths = findVolumePaths(context)
         }
         return mStorageVolumePaths!!
@@ -162,22 +162,27 @@ object StorageUtils {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     lateinit var files: List<File>
                     var validFiles: Boolean
+                    val retryInterval = 100L
+                    val maxDelay = 1000L
+                    var totalDelay = 0L
                     do {
                         // `getExternalFilesDirs` sometimes include `null` when called right after getting read access
                         // (e.g. on API 30 emulator) so we retry until the file system is ready.
-                        // TODO TLAD It can also include `null` when there is a faulty SD card.
+                        // It can also include `null` when there is a faulty SD card.
                         val externalFilesDirs = context.getExternalFilesDirs(null)
                         validFiles = !externalFilesDirs.contains(null)
                         if (validFiles) {
                             files = externalFilesDirs.filterNotNull()
                         } else {
+                            Log.d(LOG_TAG, "External files dirs contain `null`. Retrying...")
+                            totalDelay += retryInterval
                             try {
-                                Thread.sleep(100)
+                                Thread.sleep(retryInterval)
                             } catch (e: InterruptedException) {
                                 Log.e(LOG_TAG, "insomnia", e)
                             }
                         }
-                    } while (!validFiles)
+                    } while (!validFiles && totalDelay < maxDelay)
                     paths.addAll(files.mapNotNull(::appSpecificVolumePath))
                 } else {
                     // Primary physical SD-CARD (not emulated)
@@ -468,7 +473,7 @@ object StorageUtils {
     fun requireAccessPermission(context: Context, anyPath: String): Boolean {
         if (isAppFile(context, anyPath)) return false
 
-        // on Android R, we should always require access permission, even on primary volume
+        // on Android 11, we should always require access permission, even on primary volume
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) return true
 
         val onPrimaryVolume = anyPath.startsWith(getPrimaryVolumePath(context))
@@ -487,7 +492,7 @@ object StorageUtils {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && isMediaStoreContentUri(uri)) {
             val path = uri.path
             path ?: return uri
-            // from Android R, accessing the original URI for a `file` or `downloads` media content yields a `SecurityException`
+            // from Android 11, accessing the original URI for a `file` or `downloads` media content yields a `SecurityException`
             if (path.startsWith("/external/images/") || path.startsWith("/external/video/")) {
                 // "Caller must hold ACCESS_MEDIA_LOCATION permission to access original"
                 if (context.checkSelfPermission(Manifest.permission.ACCESS_MEDIA_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -499,7 +504,7 @@ object StorageUtils {
     }
 
     // As of Glide v4.12.0, a special loader `QMediaStoreUriLoader` is automatically used
-    // to work around a bug from Android Q where metadata redaction corrupts HEIC images.
+    // to work around a bug from Android 10 where metadata redaction corrupts HEIC images.
     // This loader relies on `MediaStore.setRequireOriginal` but this yields a `SecurityException`
     // for some non image/video content URIs (e.g. `downloads`, `file`)
     fun getGlideSafeUri(context: Context, uri: Uri, mimeType: String): Uri {
@@ -594,7 +599,7 @@ object StorageUtils {
         val effectiveUri = getOriginalUri(context, uri)
         return try {
             MediaMetadataRetriever().apply {
-                // on Android S preview, setting the data source works but yields an internal IOException
+                // on Android 12 preview, setting the data source works but yields an internal IOException
                 // (`Input file descriptor already original`), whether we provide the original URI or not
                 setDataSource(context, effectiveUri)
             }

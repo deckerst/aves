@@ -6,6 +6,7 @@ import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/query.dart';
 import 'package:aves/model/filters/rating.dart';
+import 'package:aves/model/filters/recent.dart';
 import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/filters/type.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -130,6 +131,7 @@ class CollectionSearchDelegate extends AvesSearchDelegate {
   Widget _buildDateFilters(BuildContext context, _ContainQuery containQuery) {
     final filters = [
       DateFilter.onThisDay,
+      RecentlyAddedFilter.instance,
       ..._monthFilters,
     ].where((f) => containQuery(f.getLabel(context))).toList();
     return _buildFilterRow(
@@ -255,12 +257,12 @@ class CollectionSearchDelegate extends AvesSearchDelegate {
 
   void _applyToParentCollectionPage(BuildContext context, CollectionFilter filter) {
     parentCollection!.addFilter(filter);
-    // we post closing the search page after applying the filter selection
+    // We delay closing the current page after applying the filter selection
     // so that hero animation target is ready in the `FilterBar`,
-    // even when the target is a child of an `AnimatedList`
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      goBack(context);
-    });
+    // even when the target is a child of an `AnimatedList`.
+    // Do not use `WidgetsBinding.instance.addPostFrameCallback`,
+    // as it may not trigger if there is no subsequent build.
+    Future.delayed(const Duration(milliseconds: 100), () => goBack(context));
   }
 
   void _jumpToCollectionPage(BuildContext context, CollectionFilter filter) {

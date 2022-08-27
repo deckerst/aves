@@ -238,6 +238,8 @@
 
   "renameEntryDialogLabel": "新しい名前",
 
+  "editEntryDialogTargetFieldsHeader": "更新するフィールド",
+
   "editEntryDateDialogTitle": "日時",
   "editEntryDateDialogSetCustom": "日を設定する",
   "editEntryDateDialogCopyField": "他の日からコピーする",
@@ -245,7 +247,6 @@
   "editEntryDateDialogExtractFromTitle": "タイトルから抽出する",
   "editEntryDateDialogShift": "シフト",
   "editEntryDateDialogSourceFileModifiedDate": "ファイル更新日",
-  "editEntryDateDialogTargetFieldsHeader": "更新するフィールド",
   "editEntryDateDialogHours": "時",
   "editEntryDateDialogMinutes": "分",
 

@@ -95,6 +95,7 @@
   "filterFavouriteLabel": "Favorito",
   "filterLocationEmptyLabel": "No localizado",
   "filterTagEmptyLabel": "Sin etiquetar",
+  "filterOnThisDayLabel": "De este día",
   "filterRatingUnratedLabel": "Sin clasificar",
   "filterRatingRejectedLabel": "Rechazado",
   "filterTypeAnimatedLabel": "Animado",
@@ -237,6 +238,8 @@
 
   "renameEntryDialogLabel": "Renombrar",
 
+  "editEntryDialogTargetFieldsHeader": "Campos a modificar",
+
   "editEntryDateDialogTitle": "Fecha y hora",
   "editEntryDateDialogSetCustom": "Establecer fecha personalizada",
   "editEntryDateDialogCopyField": "Copiar de otra fecha",
@@ -244,7 +247,6 @@
   "editEntryDateDialogExtractFromTitle": "Extraer del título",
   "editEntryDateDialogShift": "Cambiar",
   "editEntryDateDialogSourceFileModifiedDate": "Fecha de modificación del archivo",
-  "editEntryDateDialogTargetFieldsHeader": "Campos a modificar",
   "editEntryDateDialogHours": "Horas",
   "editEntryDateDialogMinutes": "Minutos",
 
@@ -477,6 +479,7 @@
   "settingsCollectionSelectionQuickActionEditorBanner": "Toque y mantenga para mover botones y seleccionar cuáles acciones se muestran mientras selecciona elementos.",
 
   "settingsSectionViewer": "Visor",
+  "settingsViewerGestureSideTapNext": "Toque en los bordes de la pantalla para mostrar el elemento anterior/siguiente",
   "settingsViewerUseCutout": "Usar área recortada",
   "settingsViewerMaximumBrightness": "Brillo máximo",
   "settingsMotionPhotoAutoPlay": "Reproducir automáticamente fotos en movimiento",
@@ -503,6 +506,7 @@
   "settingsViewerSlideshowTitle": "Presentación",
   "settingsSlideshowRepeat": "Repetir",
   "settingsSlideshowShuffle": "Mezclar",
+  "settingsSlideshowFillScreen": "Llenar pantalla",
   "settingsSlideshowTransitionTile": "Transición",
   "settingsSlideshowTransitionTitle": "Transición",
   "settingsSlideshowIntervalTile": "Intervalo",
@@ -584,6 +588,11 @@
   "settingsCoordinateFormatTitle": "Formato de coordenadas",
   "settingsUnitSystemTile": "Unidades",
   "settingsUnitSystemTitle": "Unidades",
+
+  "settingsScreenSaverPageTitle": "Protector de pantalla",
+
+  "settingsWidgetPageTitle": "Marco de foto",
+  "settingsWidgetShowOutline": "Borde",
 
   "statsPageTitle": "Stats",
   "statsWithGps": "{count, plural, =1{1 elemento con ubicación} other{{count} elementos con ubicación}}",

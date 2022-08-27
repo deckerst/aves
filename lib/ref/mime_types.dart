@@ -20,6 +20,7 @@ class MimeTypes {
   static const jpeg2000 = 'image/jp2';
   static const jxl = 'image/jxl';
   static const pat = 'image/x-coreldrawpattern';
+  static const pcx = 'image/x-pcx';
   static const pnm = 'image/x-portable-anymap';
   static const psdVnd = 'image/vnd.adobe.photoshop';
   static const psdX = 'image/x-photoshop';
@@ -82,7 +83,7 @@ class MimeTypes {
   static const Set<String> rawImages = {arw, cr2, crw, dcr, dng, dngX, erf, k25, kdc, mrw, nef, nrw, orf, pef, raf, raw, rw2, sr2, srf, srw, x3f};
 
   // TODO TLAD [codec] make it dynamic if it depends on OS/lib versions
-  static const Set<String> undecodableImages = {art, cdr, crw, djvu, jpeg2000, jxl, pat, pnm, psdVnd, psdX, octetStream, zip};
+  static const Set<String> undecodableImages = {art, cdr, crw, djvu, jpeg2000, jxl, pat, pcx, pnm, psdVnd, psdX, octetStream, zip};
 
   static const Set<String> _knownOpaqueImages = {jpeg};
 

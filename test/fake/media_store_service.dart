@@ -38,6 +38,7 @@ class FakeMediaStoreService extends Fake implements MediaStoreService {
       sourceRotationDegrees: 0,
       sizeBytes: 42,
       sourceTitle: filenameWithoutExtension,
+      dateAddedSecs: date,
       dateModifiedSecs: date,
       sourceDateTakenMillis: date,
       durationMillis: null,

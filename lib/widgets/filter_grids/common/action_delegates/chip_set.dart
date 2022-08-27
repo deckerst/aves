@@ -4,6 +4,7 @@ import 'package:aves/model/covers.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/query.dart';
 import 'package:aves/model/selection.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
@@ -62,6 +63,8 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
       // browsing
       case ChipSetAction.search:
         return appMode.canNavigate && !isSelecting;
+      case ChipSetAction.toggleTitleSearch:
+        return !isSelecting;
       case ChipSetAction.createAlbum:
         return false;
       // browsing or selecting
@@ -104,6 +107,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
       case ChipSetAction.selectNone:
       // browsing
       case ChipSetAction.search:
+      case ChipSetAction.toggleTitleSearch:
       case ChipSetAction.createAlbum:
         return true;
       // browsing or selecting
@@ -142,6 +146,9 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
       // browsing
       case ChipSetAction.search:
         _goToSearch(context);
+        break;
+      case ChipSetAction.toggleTitleSearch:
+        context.read<Query>().toggle();
         break;
       case ChipSetAction.createAlbum:
         break;

@@ -27,7 +27,7 @@ class AndroidFileUtils {
     if (_initialized) return;
 
     separator = pContext.separator;
-    storageVolumes = await storageService.getStorageVolumes();
+    await _initStorageVolumes();
     primaryStorage = storageVolumes.firstWhereOrNull((volume) => volume.isPrimary)?.path ?? separator;
     // standard
     dcimPath = pContext.join(primaryStorage, 'DCIM');
@@ -43,6 +43,16 @@ class AndroidFileUtils {
     };
 
     _initialized = true;
+  }
+
+  Future<void> _initStorageVolumes() async {
+    storageVolumes = await storageService.getStorageVolumes();
+    if (storageVolumes.isEmpty) {
+      // this can happen when the device is booting up
+      debugPrint('Storage volume list is empty. Retrying in a second...');
+      await Future.delayed(const Duration(seconds: 1));
+      await _initStorageVolumes();
+    }
   }
 
   Future<void> initAppNames() async {
@@ -142,10 +152,13 @@ class Package {
 }
 
 @immutable
-class StorageVolume {
+class StorageVolume extends Equatable {
   final String? _description;
   final String path, state;
   final bool isPrimary, isRemovable;
+
+  @override
+  List<Object?> get props => [_description, path, state, isPrimary, isRemovable];
 
   const StorageVolume({
     required String? description,

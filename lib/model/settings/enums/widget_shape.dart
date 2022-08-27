@@ -1,3 +1,4 @@
+import 'package:aves/model/entry.dart';
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:flutter/material.dart';
 
@@ -32,13 +33,29 @@ extension ExtraWidgetShape on WidgetShape {
     }
   }
 
-  Size size(Size widgetSize) {
+  double extentPx(Size widgetSizePx, AvesEntry entry) {
     switch (this) {
       case WidgetShape.rrect:
-        return widgetSize;
+        final entryRatio = entry.displayAspectRatio;
+        final widgetRatio = widgetSizePx.width / widgetSizePx.height;
+        if (entryRatio > 1) {
+          // landscape entry, must return thumbnail height as extent
+          if (widgetRatio > entryRatio) {
+            return widgetSizePx.width / entryRatio;
+          } else {
+            return widgetSizePx.height;
+          }
+        } else {
+          // portrait entry, must return thumbnail width as extent
+          if (widgetRatio > entryRatio) {
+            return widgetSizePx.width;
+          } else {
+            return widgetSizePx.height * entryRatio;
+          }
+        }
       case WidgetShape.circle:
       case WidgetShape.heart:
-        return Size.square(widgetSize.shortestSide);
+        return widgetSizePx.shortestSide;
     }
   }
 }

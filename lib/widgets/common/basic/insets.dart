@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 // This widget should be added on top of Scaffolds with:
 // - `resizeToAvoidBottomInset` set to false,
 // - a vertically scrollable body.
-// It will prevent the body from scrolling when a user swipe from bottom to use Android Q style navigation gestures.
+// It will prevent the body from scrolling when a user swipe from bottom to use Android 10 style navigation gestures.
 class BottomGestureAreaProtector extends StatelessWidget {
   const BottomGestureAreaProtector({super.key});
 
@@ -45,7 +45,7 @@ class TopGestureAreaProtector extends StatelessWidget {
   }
 }
 
-// It will prevent the body from scrolling when a user swipe from edges to use Android Q style navigation gestures.
+// It will prevent the body from scrolling when a user swipe from edges to use Android 10 style navigation gestures.
 class SideGestureAreaProtector extends StatelessWidget {
   const SideGestureAreaProtector({super.key});
 

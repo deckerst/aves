@@ -11,6 +11,7 @@ import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/path.dart';
 import 'package:aves/model/filters/query.dart';
 import 'package:aves/model/filters/rating.dart';
+import 'package:aves/model/filters/recent.dart';
 import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/filters/trash.dart';
 import 'package:aves/model/filters/type.dart';
@@ -68,6 +69,8 @@ abstract class CollectionFilter extends Equatable implements Comparable<Collecti
             return QueryFilter.fromMap(jsonMap);
           case RatingFilter.type:
             return RatingFilter.fromMap(jsonMap);
+          case RecentlyAddedFilter.type:
+            return RecentlyAddedFilter.instance;
           case TagFilter.type:
             return TagFilter.fromMap(jsonMap);
           case TypeFilter.type:

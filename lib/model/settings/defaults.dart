@@ -2,6 +2,7 @@ import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/actions/entry_set_actions.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/mime.dart';
+import 'package:aves/model/filters/recent.dart';
 import 'package:aves/model/naming_pattern.dart';
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/source/enums.dart';
@@ -35,11 +36,13 @@ class SettingsDefaults {
   static const confirmDeleteForever = true;
   static const confirmMoveToBin = true;
   static const confirmMoveUndatedItems = true;
+  static const confirmAfterMoveToBin = true;
   static const setMetadataDateBeforeFileOp = false;
   static final drawerTypeBookmarks = [
     null,
     MimeFilter.video,
     FavouriteFilter.instance,
+    RecentlyAddedFilter.instance,
   ];
   static const drawerPageBookmarks = [
     AlbumListPage.routeName,
@@ -83,6 +86,7 @@ class SettingsDefaults {
   static const showOverlayInfo = true;
   static const showOverlayShootingDetails = false;
   static const showOverlayThumbnailPreview = false;
+  static const viewerGestureSideTapNext = false;
   static const viewerUseCutout = true;
   static const viewerMaxBrightness = false;
   static const enableMotionPhotoAutoPlay = false;
@@ -120,7 +124,7 @@ class SettingsDefaults {
 
   // accessibility
   static const accessibilityAnimations = AccessibilityAnimations.system;
-  static const timeToTakeAction = AccessibilityTimeout.appDefault; // `timeToTakeAction` has a contextual default value
+  static const timeToTakeAction = AccessibilityTimeout.s3;
 
   // file picker
   static const filePickerShowHiddenFiles = false;

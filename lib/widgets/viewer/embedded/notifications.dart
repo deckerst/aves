@@ -6,12 +6,12 @@ enum EmbeddedDataSource { motionPhotoVideo, videoCover, xmp }
 @immutable
 class OpenEmbeddedDataNotification extends Notification {
   final EmbeddedDataSource source;
-  final String? propPath;
+  final List<dynamic>? props;
   final String? mimeType;
 
   const OpenEmbeddedDataNotification._private({
     required this.source,
-    this.propPath,
+    this.props,
     this.mimeType,
   });
 
@@ -24,15 +24,15 @@ class OpenEmbeddedDataNotification extends Notification {
       );
 
   factory OpenEmbeddedDataNotification.xmp({
-    required String propPath,
+    required List<dynamic> props,
     required String mimeType,
   }) =>
       OpenEmbeddedDataNotification._private(
         source: EmbeddedDataSource.xmp,
-        propPath: propPath,
+        props: props,
         mimeType: mimeType,
       );
 
   @override
-  String toString() => '$runtimeType#${shortHash(this)}{source=$source, propPath=$propPath, mimeType=$mimeType}';
+  String toString() => '$runtimeType#${shortHash(this)}{source=$source, props=$props, mimeType=$mimeType}';
 }

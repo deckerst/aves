@@ -13,9 +13,11 @@ import 'package:aves/model/source/tag.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/android_file_utils.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/thumbnail/image.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
@@ -171,6 +173,9 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
   Color _detailColor(BuildContext context) => Theme.of(context).textTheme.caption!.color!;
 
   Widget _buildDetails(BuildContext context, CollectionSource source, T filter) {
+    final locale = context.l10n.localeName;
+    final numberFormat = NumberFormat.decimalPattern(locale);
+
     final padding = min<double>(8.0, extent / 16);
     final iconSize = detailIconSize(extent);
     final fontSize = detailFontSize(extent);
@@ -198,7 +203,7 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
             ),
           ),
         Text(
-          '${source.count(filter)}',
+          numberFormat.format(source.count(filter)),
           style: TextStyle(
             color: _detailColor(context),
             fontSize: fontSize,

@@ -1,15 +1,14 @@
+import 'package:aves/utils/xmp_utils.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_namespaces.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_structs.dart';
 import 'package:flutter/widgets.dart';
 
 class XmpMPNamespace extends XmpNamespace {
-  static const ns = 'MP';
-
-  static final regionListPattern = RegExp(ns + r':RegionInfo/MPRI:Regions\[(\d+)\]/(.*)');
+  late final regionListPattern = RegExp(nsPrefix + r'RegionInfo/MPRI:Regions\[(\d+)\]/(.*)');
 
   final regionList = <int, Map<String, String>>{};
 
-  XmpMPNamespace(Map<String, String> rawProps) : super(ns, rawProps);
+  XmpMPNamespace(String nsPrefix, Map<String, String> rawProps) : super(Namespaces.mp, nsPrefix, rawProps);
 
   @override
   bool extractData(XmpProp prop) => extractIndexedStruct(prop, regionListPattern, regionList);

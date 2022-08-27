@@ -1,11 +1,10 @@
 import 'package:aves/ref/exif.dart';
+import 'package:aves/utils/xmp_utils.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_namespaces.dart';
 
 // cf https://github.com/adobe/xmp-docs/blob/master/XMPNamespaces/tiff.md
 class XmpTiffNamespace extends XmpNamespace {
-  static const ns = 'tiff';
-
-  const XmpTiffNamespace(Map<String, String> rawProps) : super(ns, rawProps);
+  const XmpTiffNamespace(String nsPrefix, Map<String, String> rawProps) : super(Namespaces.tiff, nsPrefix, rawProps);
 
   @override
   String formatValue(XmpProp prop) {

@@ -1,5 +1,6 @@
 import 'package:aves/model/covers.dart';
 import 'package:aves/model/entry.dart';
+import 'package:aves/model/filters/query.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
@@ -114,12 +115,20 @@ class _AddShortcutDialogState extends State<AddShortcutDialog> {
       context,
       MaterialPageRoute(
         settings: const RouteSettings(name: ItemPickDialog.routeName),
-        builder: (context) => ItemPickDialog(
-          collection: CollectionLens(
-            source: _collection.source,
-            filters: _collection.filters,
-          ),
-        ),
+        builder: (context) {
+          final pickFilters = _collection.filters.toSet();
+          final liveFilters = pickFilters.whereType<QueryFilter>().where((v) => v.live).toSet();
+          liveFilters.forEach((filter) {
+            pickFilters.remove(filter);
+            pickFilters.add(QueryFilter(filter.query));
+          });
+          return ItemPickDialog(
+            collection: CollectionLens(
+              source: _collection.source,
+              filters: pickFilters,
+            ),
+          );
+        },
         fullscreenDialog: true,
       ),
     );
