@@ -200,7 +200,7 @@ class _FilePickerState extends State<FilePicker> {
         contents.add(entity);
       }
     }, onDone: () {
-      _contents = contents..sort((a, b) => compareAsciiUpperCase(pContext.split(a.path).last, pContext.split(b.path).last));
+      _contents = contents..sort((a, b) => compareAsciiUpperCaseNatural(pContext.split(a.path).last, pContext.split(b.path).last));
       setState(() {});
     });
   }

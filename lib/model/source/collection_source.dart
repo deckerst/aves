@@ -40,6 +40,12 @@ mixin SourceBase {
 
   ValueNotifier<SourceState> stateNotifier = ValueNotifier(SourceState.ready);
 
+  set state(SourceState value) => stateNotifier.value = value;
+
+  SourceState get state => stateNotifier.value;
+
+  bool get isReady => state == SourceState.ready;
+
   ValueNotifier<ProgressEvent> progressNotifier = ValueNotifier(const ProgressEvent(done: 0, total: 0));
 
   void setProgress({required int done, required int total}) => progressNotifier.value = ProgressEvent(done: done, total: total);
@@ -430,7 +436,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
         updateDerivedFilters(todoEntries);
       }
     }
-    stateNotifier.value = SourceState.ready;
+    state = SourceState.ready;
   }
 
   // monitoring

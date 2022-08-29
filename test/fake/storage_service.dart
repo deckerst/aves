@@ -1,7 +1,7 @@
 import 'package:aves/services/storage_service.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_test/flutter_test.dart';
+import 'package:test/fake.dart';
 
 class FakeStorageService extends Fake implements StorageService {
   static const primaryRootAlbum = '/storage/emulated/0';

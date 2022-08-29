@@ -87,6 +87,7 @@
 
   "entryInfoActionEditDate": "Editar data e hora",
   "entryInfoActionEditLocation": "Editar localização",
+  "entryInfoActionEditDescription": "Editar descrição",
   "entryInfoActionEditRating": "Editar classificação",
   "entryInfoActionEditTags": "Editar etiquetas",
   "entryInfoActionRemoveMetadata": "Remover metadados",
@@ -96,6 +97,7 @@
   "filterLocationEmptyLabel": "Não localizado",
   "filterTagEmptyLabel": "Sem etiqueta",
   "filterOnThisDayLabel": "Neste dia",
+  "filterRecentlyAddedLabel": "Adicionado recentemente",
   "filterRatingUnratedLabel": "Sem classificação",
   "filterRatingRejectedLabel": "Rejeitado",
   "filterTypeAnimatedLabel": "Animado",
@@ -256,6 +258,8 @@
   "editEntryLocationDialogLongitude": "Longitude",
 
   "locationPickerUseThisLocationButton": "Usar essa localização",
+
+  "editEntryDescriptionDialogTitle": "Descrição",
 
   "editEntryRatingDialogTitle": "Avaliação",
 
@@ -451,6 +455,7 @@
   "settingsConfirmationDialogDeleteItems": "Pergunte antes de excluir itens para sempre",
   "settingsConfirmationDialogMoveToBinItems": "Pergunte antes de mover itens para a lixeira",
   "settingsConfirmationDialogMoveUndatedItems": "Pergunte antes de mover itens sem data de metadados",
+  "settingsConfirmationAfterMoveToBinItems": "Mostrar mensagem depois de mover itens para a lixeira",
 
   "settingsNavigationDrawerTile": "Menu de navegação",
   "settingsNavigationDrawerEditorTitle": "Menu de navegação",
@@ -479,6 +484,7 @@
   "settingsCollectionSelectionQuickActionEditorBanner": "Toque e segure para mover os botões e selecionar quais ações são exibidas ao selecionar itens.",
 
   "settingsSectionViewer": "Visualizador",
+  "settingsViewerGestureSideTapNext": "Toque nas bordas da tela para mostrar anterior/seguinte",
   "settingsViewerUseCutout": "Usar área de recorte",
   "settingsViewerMaximumBrightness": "Brilho máximo",
   "settingsMotionPhotoAutoPlay": "Reprodução automática de fotos em movimento",

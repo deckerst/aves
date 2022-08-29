@@ -192,7 +192,7 @@ class _TagEditorPageState extends State<TagEditorPage> {
     return entryCountByTag.entries.toList()
       ..sort((kv1, kv2) {
         final c = kv2.value.compareTo(kv1.value);
-        return c != 0 ? c : compareAsciiUpperCase(kv1.key, kv2.key);
+        return c != 0 ? c : compareAsciiUpperCaseNatural(kv1.key, kv2.key);
       });
   }
 
