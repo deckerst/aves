@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Fixed
+
+- screensaver stopping when device orientation changes
+
 ## <a id="v1.6.12"></a>[v1.6.12] - 2022-08-27
 
 ### Added
