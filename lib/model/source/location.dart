@@ -51,7 +51,7 @@ mixin LocationMixin on SourceBase {
     final todo = (force ? candidateEntries.where((entry) => entry.hasGps) : candidateEntries.where(locateCountriesTest)).toSet();
     if (todo.isEmpty) return;
 
-    stateNotifier.value = SourceState.locatingCountries;
+    state = SourceState.locatingCountries;
     var progressDone = 0;
     final progressTotal = todo.length;
     setProgress(done: progressDone, total: progressTotal);
@@ -106,7 +106,7 @@ mixin LocationMixin on SourceBase {
       knownLocations.putIfAbsent(approximateLatLng(entry), () => entry.addressDetails);
     });
 
-    stateNotifier.value = SourceState.locatingPlaces;
+    state = SourceState.locatingPlaces;
     var progressDone = 0;
     final progressTotal = todo.length;
     setProgress(done: progressDone, total: progressTotal);
