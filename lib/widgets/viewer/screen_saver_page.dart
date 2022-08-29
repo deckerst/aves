@@ -29,7 +29,7 @@ class ScreenSaverPage extends StatefulWidget {
   State<ScreenSaverPage> createState() => _ScreenSaverPageState();
 }
 
-class _ScreenSaverPageState extends State<ScreenSaverPage> {
+class _ScreenSaverPageState extends State<ScreenSaverPage> with WidgetsBindingObserver {
   late final ViewerController _viewerController;
   CollectionLens? _slideshowCollection;
 
@@ -47,22 +47,22 @@ class _ScreenSaverPageState extends State<ScreenSaverPage> {
     );
     source.stateNotifier.addListener(_onSourceStateChanged);
     _initSlideshowCollection();
-  }
-
-  void _onSourceStateChanged() {
-    if (_slideshowCollection == null) {
-      _initSlideshowCollection();
-      if (_slideshowCollection != null) {
-        setState(() {});
-      }
-    }
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
   void dispose() {
     source.stateNotifier.removeListener(_onSourceStateChanged);
     _viewerController.dispose();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _viewerController.autopilot = true;
+    }
   }
 
   @override
@@ -100,6 +100,15 @@ class _ScreenSaverPageState extends State<ScreenSaverPage> {
         body: child,
       ),
     );
+  }
+
+  void _onSourceStateChanged() {
+    if (_slideshowCollection == null) {
+      _initSlideshowCollection();
+      if (_slideshowCollection != null) {
+        setState(() {});
+      }
+    }
   }
 
   void _initSlideshowCollection() {
