@@ -64,7 +64,7 @@ mixin TagMixin on SourceBase {
   }
 
   void updateTags() {
-    final updatedTags = visibleEntries.expand((entry) => entry.tags).toSet().toList()..sort(compareAsciiUpperCase);
+    final updatedTags = visibleEntries.expand((entry) => entry.tags).toSet().toList()..sort(compareAsciiUpperCaseNatural);
     if (!listEquals(updatedTags, sortedTags)) {
       sortedTags = List.unmodifiable(updatedTags);
       invalidateTagFilterSummary();

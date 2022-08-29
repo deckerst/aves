@@ -118,7 +118,7 @@ abstract class CollectionFilter extends Equatable implements Comparable<Collecti
   int compareTo(CollectionFilter other) {
     final c = displayPriority.compareTo(other.displayPriority);
     // assume we compare context-independent labels
-    return c != 0 ? c : compareAsciiUpperCase(universalLabel, other.universalLabel);
+    return c != 0 ? c : compareAsciiUpperCaseNatural(universalLabel, other.universalLabel);
   }
 }
 
