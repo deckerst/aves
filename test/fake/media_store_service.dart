@@ -2,17 +2,28 @@ import 'package:aves/model/entry.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/image_op_events.dart';
 import 'package:aves/services/media/media_store_service.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter_test/flutter_test.dart';
+import 'package:test/fake.dart';
 
 class FakeMediaStoreService extends Fake implements MediaStoreService {
-  Set<AvesEntry> entries = {};
+  late Set<AvesEntry> entries;
+  Duration? latency;
+
+  void reset() {
+    entries = {};
+    latency = null;
+  }
 
   @override
-  Future<List<int>> checkObsoleteContentIds(List<int?> knownContentIds) => SynchronousFuture([]);
+  Future<List<int>> checkObsoleteContentIds(List<int?> knownContentIds) async {
+    if (latency != null) await Future.delayed(latency!);
+    return [];
+  }
 
   @override
-  Future<List<int>> checkObsoletePaths(Map<int?, String?> knownPathById) => SynchronousFuture([]);
+  Future<List<int>> checkObsoletePaths(Map<int?, String?> knownPathById) async {
+    if (latency != null) await Future.delayed(latency!);
+    return [];
+  }
 
   @override
   Stream<AvesEntry> getEntries(Map<int?, int?> knownEntries, {String? directory}) => Stream.fromIterable(entries);
@@ -23,14 +34,15 @@ class FakeMediaStoreService extends Fake implements MediaStoreService {
 
   static int get dateSecs => DateTime.now().millisecondsSinceEpoch ~/ 1000;
 
-  static AvesEntry newImage(String album, String filenameWithoutExtension) {
-    final id = nextId;
+  static AvesEntry newImage(String album, String filenameWithoutExtension, {int? id, int? contentId}) {
+    id ??= nextId;
+    contentId ??= id;
     final date = dateSecs;
     return AvesEntry(
       id: id,
-      uri: 'content://media/external/images/media/$id',
+      uri: 'content://media/external/images/media/$contentId',
       path: '$album/$filenameWithoutExtension.jpg',
-      contentId: id,
+      contentId: contentId,
       pageId: null,
       sourceMimeType: MimeTypes.jpeg,
       width: 360,

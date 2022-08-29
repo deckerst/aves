@@ -85,7 +85,7 @@ class Analyzer {
 
   bool get isRunning => serviceState == AnalyzerState.running;
 
-  SourceState get sourceState => _source.stateNotifier.value;
+  SourceState get sourceState => _source.state;
 
   static const notificationUpdateInterval = Duration(seconds: 1);
 
@@ -151,7 +151,7 @@ class Analyzer {
   }
 
   void _onSourceStateChanged() {
-    if (sourceState == SourceState.ready) {
+    if (_source.isReady) {
       _refreshApp();
       _serviceStateNotifier.value = AnalyzerState.stopping;
     }

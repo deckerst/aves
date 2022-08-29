@@ -42,7 +42,7 @@ class MediaStoreSource extends CollectionSource {
 
   Future<void> _loadEssentials() async {
     final stopwatch = Stopwatch()..start();
-    stateNotifier.value = SourceState.loading;
+    state = SourceState.loading;
     await metadataDb.init();
     await favourites.init();
     await covers.init();
@@ -69,7 +69,7 @@ class MediaStoreSource extends CollectionSource {
   }) async {
     debugPrint('$runtimeType refresh start');
     final stopwatch = Stopwatch()..start();
-    stateNotifier.value = SourceState.loading;
+    state = SourceState.loading;
     clearEntries();
 
     final Set<AvesEntry> topEntries = {};
@@ -195,7 +195,7 @@ class MediaStoreSource extends CollectionSource {
         if (canAnalyze) {
           await analyze(analysisController, entries: analysisEntries);
         } else {
-          stateNotifier.value = SourceState.ready;
+          state = SourceState.ready;
         }
 
         // the home page may not reflect the current derived filters
@@ -216,7 +216,7 @@ class MediaStoreSource extends CollectionSource {
   // sometimes yields an entry with its temporary path: `/data/sec/camera/!@#$%^..._temp.jpg`
   @override
   Future<Set<String>> refreshUris(Set<String> changedUris, {AnalysisController? analysisController}) async {
-    if (_initState == SourceInitializationState.none || !isMonitoring) return changedUris;
+    if (_initState == SourceInitializationState.none || !isMonitoring || !isReady) return changedUris;
 
     debugPrint('$runtimeType refreshUris ${changedUris.length} uris');
     final uriByContentId = Map.fromEntries(changedUris.map((uri) {

@@ -31,7 +31,7 @@ mixin TagMixin on SourceBase {
     final todo = force ? candidateEntries : candidateEntries.where(catalogEntriesTest).toSet();
     if (todo.isEmpty) return;
 
-    stateNotifier.value = SourceState.cataloguing;
+    state = SourceState.cataloguing;
     var progressDone = 0;
     final progressTotal = todo.length;
     setProgress(done: progressDone, total: progressTotal);
@@ -64,7 +64,7 @@ mixin TagMixin on SourceBase {
   }
 
   void updateTags() {
-    final updatedTags = visibleEntries.expand((entry) => entry.tags).toSet().toList()..sort(compareAsciiUpperCase);
+    final updatedTags = visibleEntries.expand((entry) => entry.tags).toSet().toList()..sort(compareAsciiUpperCaseNatural);
     if (!listEquals(updatedTags, sortedTags)) {
       sortedTags = List.unmodifiable(updatedTags);
       invalidateTagFilterSummary();

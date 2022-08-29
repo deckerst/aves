@@ -60,7 +60,7 @@ class SourceStateSubtitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final sourceState = source.stateNotifier.value;
+    final sourceState = source.state;
     final subtitle = sourceState.getName(context.l10n);
     if (subtitle == null) return const SizedBox();
 

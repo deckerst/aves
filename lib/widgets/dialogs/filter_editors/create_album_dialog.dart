@@ -48,7 +48,7 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
     final volumeTiles = <Widget>[];
     if (_allVolumes.length > 1) {
       final byPrimary = groupBy<StorageVolume, bool>(_allVolumes, (volume) => volume.isPrimary);
-      int compare(StorageVolume a, StorageVolume b) => compareAsciiUpperCase(a.path, b.path);
+      int compare(StorageVolume a, StorageVolume b) => compareAsciiUpperCaseNatural(a.path, b.path);
       final primaryVolumes = (byPrimary[true] ?? [])..sort(compare);
       final otherVolumes = (byPrimary[false] ?? [])..sort(compare);
       volumeTiles.addAll([

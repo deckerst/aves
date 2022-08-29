@@ -266,7 +266,7 @@ class _HomePageState extends State<HomePage> {
           // wait for collection to pass the `loading` state
           final completer = Completer();
           void _onSourceStateChanged() {
-            if (source.stateNotifier.value != SourceState.loading) {
+            if (source.state != SourceState.loading) {
               source.stateNotifier.removeListener(_onSourceStateChanged);
               completer.complete();
             }

@@ -819,7 +819,7 @@ class AvesEntry {
   // 1) title ascending
   // 2) extension ascending
   static int compareByName(AvesEntry a, AvesEntry b) {
-    final c = compareAsciiUpperCase(a.bestTitle ?? '', b.bestTitle ?? '');
+    final c = compareAsciiUpperCaseNatural(a.bestTitle ?? '', b.bestTitle ?? '');
     return c != 0 ? c : compareAsciiUpperCase(a.extension ?? '', b.extension ?? '');
   }
 

@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.6.13"></a>[v1.6.13] - 2022-08-29
+
+### Changed
+
+- use natural order when sorting by name items, albums, tags
+
+### Fixed
+
+- adding duplicate items during loading in some cases
+- screensaver stopping when device orientation changes
+
 ## <a id="v1.6.12"></a>[v1.6.12] - 2022-08-27
 
 ### Added

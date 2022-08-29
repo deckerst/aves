@@ -1,7 +1,7 @@
 import 'package:aves/services/window_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_test/flutter_test.dart';
+import 'package:test/fake.dart';
 
 class FakeWindowService extends Fake implements WindowService {
   @override

@@ -4,7 +4,6 @@ import 'package:aves/model/settings/enums/slideshow_interval.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
-import 'package:aves/model/source/enums.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
@@ -29,7 +28,7 @@ class ScreenSaverPage extends StatefulWidget {
   State<ScreenSaverPage> createState() => _ScreenSaverPageState();
 }
 
-class _ScreenSaverPageState extends State<ScreenSaverPage> {
+class _ScreenSaverPageState extends State<ScreenSaverPage> with WidgetsBindingObserver {
   late final ViewerController _viewerController;
   CollectionLens? _slideshowCollection;
 
@@ -47,22 +46,22 @@ class _ScreenSaverPageState extends State<ScreenSaverPage> {
     );
     source.stateNotifier.addListener(_onSourceStateChanged);
     _initSlideshowCollection();
-  }
-
-  void _onSourceStateChanged() {
-    if (_slideshowCollection == null) {
-      _initSlideshowCollection();
-      if (_slideshowCollection != null) {
-        setState(() {});
-      }
-    }
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
   void dispose() {
     source.stateNotifier.removeListener(_onSourceStateChanged);
     _viewerController.dispose();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _viewerController.autopilot = true;
+    }
   }
 
   @override
@@ -102,8 +101,17 @@ class _ScreenSaverPageState extends State<ScreenSaverPage> {
     );
   }
 
+  void _onSourceStateChanged() {
+    if (_slideshowCollection == null) {
+      _initSlideshowCollection();
+      if (_slideshowCollection != null) {
+        setState(() {});
+      }
+    }
+  }
+
   void _initSlideshowCollection() {
-    if (source.stateNotifier.value != SourceState.ready || _slideshowCollection != null) return;
+    if (!source.isReady || _slideshowCollection != null) return;
 
     final originalCollection = CollectionLens(
       source: source,
