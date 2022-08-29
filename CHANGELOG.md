@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Changed
+
+- use natural order when sorting by name items, albums, tags
+
 ### Fixed
 
 - screensaver stopping when device orientation changes

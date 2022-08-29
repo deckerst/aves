@@ -58,7 +58,7 @@ class BasicSection extends StatelessWidget {
   }
 
   Widget _buildChips(BuildContext context) {
-    final tags = entry.tags.toList()..sort(compareAsciiUpperCase);
+    final tags = entry.tags.toList()..sort(compareAsciiUpperCaseNatural);
     final album = entry.directory;
     final filters = {
       MimeFilter(entry.mimeType),

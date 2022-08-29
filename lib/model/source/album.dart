@@ -19,11 +19,11 @@ mixin AlbumMixin on SourceBase {
   int compareAlbumsByName(String a, String b) {
     final ua = getAlbumDisplayName(null, a);
     final ub = getAlbumDisplayName(null, b);
-    final c = compareAsciiUpperCase(ua, ub);
+    final c = compareAsciiUpperCaseNatural(ua, ub);
     if (c != 0) return c;
     final va = androidFileUtils.getStorageVolume(a)?.path ?? '';
     final vb = androidFileUtils.getStorageVolume(b)?.path ?? '';
-    return compareAsciiUpperCase(va, vb);
+    return compareAsciiUpperCaseNatural(va, vb);
   }
 
   void notifyAlbumsChanged() {
