@@ -5,18 +5,23 @@ import 'package:aves/services/media/media_store_service.dart';
 import 'package:test/fake.dart';
 
 class FakeMediaStoreService extends Fake implements MediaStoreService {
-  Duration latency = Duration.zero;
-  Set<AvesEntry> entries = {};
+  late Set<AvesEntry> entries;
+  Duration? latency;
+
+  void reset() {
+    entries = {};
+    latency = null;
+  }
 
   @override
   Future<List<int>> checkObsoleteContentIds(List<int?> knownContentIds) async {
-    await Future.delayed(latency);
+    if (latency != null) await Future.delayed(latency!);
     return [];
   }
 
   @override
   Future<List<int>> checkObsoletePaths(Map<int?, String?> knownPathById) async {
-    await Future.delayed(latency);
+    if (latency != null) await Future.delayed(latency!);
     return [];
   }
 

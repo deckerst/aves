@@ -51,7 +51,7 @@ void main() {
     countryName: 'AUS',
   );
 
-  setUp(() async {
+  setUpAll(() async {
     // specify Posix style path context for consistent behaviour when running tests on Windows
     getIt.registerLazySingleton<p.Context>(() => p.Context(style: p.Style.posix));
     getIt.registerLazySingleton<AvesAvailability>(FakeAvesAvailability.new);
@@ -71,7 +71,11 @@ void main() {
     await androidFileUtils.init();
   });
 
-  tearDown(() async {
+  setUp(() async {
+    (getIt<MediaStoreService>() as FakeMediaStoreService).reset();
+  });
+
+  tearDownAll(() async {
     await getIt.reset();
   });
 
@@ -360,7 +364,6 @@ void main() {
       FakeMediaStoreService.newImage('${FakeStorageService.primaryPath}Pictures/Arendt', '1'),
     };
 
-    await androidFileUtils.init();
     final source = await _initSource();
     await tester.pumpWidget(
       Builder(
