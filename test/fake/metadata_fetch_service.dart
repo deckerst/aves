@@ -2,7 +2,7 @@ import 'package:aves/model/entry.dart';
 import 'package:aves/model/metadata/catalog.dart';
 import 'package:aves/services/metadata/metadata_fetch_service.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_test/flutter_test.dart';
+import 'package:test/fake.dart';
 
 class FakeMetadataFetchService extends Fake implements MetadataFetchService {
   final Map<AvesEntry, CatalogMetadata> _metaMap = {};

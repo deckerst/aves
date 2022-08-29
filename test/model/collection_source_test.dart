@@ -10,11 +10,12 @@ import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/metadata/address.dart';
 import 'package:aves/model/metadata/catalog.dart';
 import 'package:aves/model/settings/settings.dart';
-import 'package:aves/model/source/enums.dart';
+import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/media_store_source.dart';
 import 'package:aves/services/android_app_service.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/device_service.dart';
+import 'package:aves/services/media/media_fetch_service.dart';
 import 'package:aves/services/media/media_store_service.dart';
 import 'package:aves/services/metadata/metadata_fetch_service.dart';
 import 'package:aves/services/storage_service.dart';
@@ -29,6 +30,7 @@ import 'package:path/path.dart' as p;
 import '../fake/android_app_service.dart';
 import '../fake/availability.dart';
 import '../fake/device_service.dart';
+import '../fake/media_fetch_service.dart';
 import '../fake/media_store_service.dart';
 import '../fake/metadata_db.dart';
 import '../fake/metadata_fetch_service.dart';
@@ -57,6 +59,7 @@ void main() {
 
     getIt.registerLazySingleton<AndroidAppService>(FakeAndroidAppService.new);
     getIt.registerLazySingleton<DeviceService>(FakeDeviceService.new);
+    getIt.registerLazySingleton<MediaFetchService>(FakeMediaFetchService.new);
     getIt.registerLazySingleton<MediaStoreService>(FakeMediaStoreService.new);
     getIt.registerLazySingleton<MetadataFetchService>(FakeMetadataFetchService.new);
     getIt.registerLazySingleton<ReportService>(FakeReportService.new);
@@ -65,6 +68,7 @@ void main() {
 
     await settings.init(monitorPlatformSettings: false);
     settings.canUseAnalysisService = false;
+    await androidFileUtils.init();
   });
 
   tearDown(() async {
@@ -75,7 +79,7 @@ void main() {
     final source = MediaStoreSource();
     final readyCompleter = Completer();
     source.stateNotifier.addListener(() {
-      if (source.stateNotifier.value == SourceState.ready) {
+      if (source.isReady) {
         readyCompleter.complete();
       }
     });
@@ -83,6 +87,26 @@ void main() {
     await readyCompleter.future;
     return source;
   }
+
+  test('initial load v. refresh race condition', () async {
+    const latency = Duration(milliseconds: 100);
+
+    final loadEntry = FakeMediaStoreService.newImage(testAlbum, 'image1', id: -1, contentId: 1);
+    final refreshEntry = FakeMediaStoreService.newImage(testAlbum, 'image1', id: -1, contentId: 1);
+    (mediaStoreService as FakeMediaStoreService)
+      ..entries = {loadEntry}
+      ..latency = latency;
+    (mediaFetchService as FakeMediaFetchService).entries = {refreshEntry};
+
+    final source = MediaStoreSource();
+    unawaited(source.init());
+    await Future.delayed(const Duration(milliseconds: 10));
+    expect(source.initState, SourceInitializationState.full);
+    await source.refreshUris({refreshEntry.uri});
+
+    await Future.delayed(const Duration(seconds: 1));
+    expect(source.allEntries.length, 1);
+  });
 
   test('album/country/tag hidden on launch when their items are hidden by entry prop', () async {
     settings.hiddenFilters = {const AlbumFilter(testAlbum, 'whatever')};

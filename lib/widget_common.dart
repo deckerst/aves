@@ -4,7 +4,6 @@ import 'package:aves/app_flavor.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
-import 'package:aves/model/source/enums.dart';
 import 'package:aves/model/source/media_store_source.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/home_widget.dart';
@@ -64,7 +63,7 @@ Future<AvesEntry?> _getWidgetEntry(int widgetId, bool reuseEntry) async {
   final source = MediaStoreSource();
   final readyCompleter = Completer();
   source.stateNotifier.addListener(() {
-    if (source.stateNotifier.value == SourceState.ready) {
+    if (source.isReady) {
       readyCompleter.complete();
     }
   });
