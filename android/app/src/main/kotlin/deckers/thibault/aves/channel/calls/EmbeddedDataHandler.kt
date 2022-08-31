@@ -21,6 +21,7 @@ import deckers.thibault.aves.model.provider.ContentImageProvider
 import deckers.thibault.aves.model.provider.ImageProvider
 import deckers.thibault.aves.utils.BitmapUtils
 import deckers.thibault.aves.utils.BitmapUtils.getBytes
+import deckers.thibault.aves.utils.FileUtils.transferFrom
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.MimeTypes.canReadWithExifInterface
@@ -96,7 +97,7 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
             val videoStartOffset = sizeBytes - videoSizeBytes
             StorageUtils.openInputStream(context, uri)?.let { input ->
                 input.skip(videoStartOffset)
-                copyEmbeddedBytes(result, MimeTypes.MP4, displayName, input)
+                copyEmbeddedBytes(result, MimeTypes.MP4, displayName, input, videoSizeBytes)
             }
             return
         }
@@ -121,7 +122,7 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
                         Helper.readMimeType(input)?.let { embedMimeType = it }
                     }
                     embedMimeType?.let { mime ->
-                        copyEmbeddedBytes(result, mime, displayName, bytes.inputStream())
+                        copyEmbeddedBytes(result, mime, displayName, bytes.inputStream(), bytes.size.toLong())
                         return
                     }
                 }
@@ -172,7 +173,7 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
                             }
                         }
 
-                        copyEmbeddedBytes(result, embedMimeType, displayName, embedBytes.inputStream())
+                        copyEmbeddedBytes(result, embedMimeType, displayName, embedBytes.inputStream(), embedBytes.size.toLong())
                         return
                     } catch (e: XMPException) {
                         result.error("extractXmpDataProp-xmp", "failed to read XMP directory for uri=$uri prop=$dataProp", e.message)
@@ -190,16 +191,19 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
         result.error("extractXmpDataProp-empty", "failed to extract file from XMP uri=$uri prop=$dataProp", null)
     }
 
-    private fun copyEmbeddedBytes(result: MethodChannel.Result, mimeType: String, displayName: String?, embeddedByteStream: InputStream) {
+    private fun copyEmbeddedBytes(
+        result: MethodChannel.Result,
+        mimeType: String,
+        displayName: String?,
+        embeddedByteStream: InputStream,
+        embeddedByteLength: Long,
+    ) {
         val extension = extensionFor(mimeType)
-        val file = File.createTempFile("aves", extension, context.cacheDir).apply {
+        val targetFile = File.createTempFile("aves", extension, context.cacheDir).apply {
             deleteOnExit()
-            outputStream().use { output ->
-                embeddedByteStream.use { input ->
-                    input.copyTo(output)
-                }
-            }
+            transferFrom(embeddedByteStream, embeddedByteLength)
         }
+
         val authority = "${context.applicationContext.packageName}.file_provider"
         val uri = if (displayName != null) {
             // add extension to ease type identification when sharing this content
@@ -208,9 +212,9 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
             } else {
                 "$displayName$extension"
             }
-            FileProvider.getUriForFile(context, authority, file, displayNameWithExtension)
+            FileProvider.getUriForFile(context, authority, targetFile, displayNameWithExtension)
         } else {
-            FileProvider.getUriForFile(context, authority, file)
+            FileProvider.getUriForFile(context, authority, targetFile)
         }
         val resultFields: FieldMap = hashMapOf(
             "uri" to uri.toString(),

@@ -27,7 +27,7 @@ abstract class MediaFetchService {
     int? rotationDegrees,
     bool isFlipped, {
     int? pageId,
-    int? expectedContentLength,
+    int? sizeBytes,
     BytesReceivedCallback? onBytesReceived,
   });
 
@@ -102,7 +102,7 @@ class PlatformMediaFetchService implements MediaFetchService {
         mimeType,
         0,
         false,
-        expectedContentLength: expectedContentLength,
+        sizeBytes: expectedContentLength,
         onBytesReceived: onBytesReceived,
       );
 
@@ -113,7 +113,7 @@ class PlatformMediaFetchService implements MediaFetchService {
     int? rotationDegrees,
     bool isFlipped, {
     int? pageId,
-    int? expectedContentLength,
+    int? sizeBytes,
     BytesReceivedCallback? onBytesReceived,
   }) async {
     try {
@@ -123,6 +123,7 @@ class PlatformMediaFetchService implements MediaFetchService {
       _byteStream.receiveBroadcastStream(<String, dynamic>{
         'uri': uri,
         'mimeType': mimeType,
+        'sizeBytes': sizeBytes,
         'rotationDegrees': rotationDegrees ?? 0,
         'isFlipped': isFlipped,
         'pageId': pageId,
@@ -133,7 +134,7 @@ class PlatformMediaFetchService implements MediaFetchService {
           if (onBytesReceived != null) {
             bytesReceived += chunk.length;
             try {
-              onBytesReceived(bytesReceived, expectedContentLength);
+              onBytesReceived(bytesReceived, sizeBytes);
             } catch (error, stack) {
               completer.completeError(error, stack);
               return;

@@ -53,7 +53,7 @@ extension ExtraAvesEntryImages on AvesEntry {
         pageId: pageId,
         rotationDegrees: rotationDegrees,
         isFlipped: isFlipped,
-        expectedContentLength: sizeBytes,
+        sizeBytes: sizeBytes,
       );
 
   bool _isReady(Object providerKey) => imageCache.statusForKey(providerKey).keepAlive;
