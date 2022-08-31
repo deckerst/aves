@@ -29,6 +29,8 @@ import deckers.thibault.aves.model.ExifOrientationOp
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.model.NameConflictStrategy
 import deckers.thibault.aves.utils.*
+import deckers.thibault.aves.utils.FileUtils.transferFrom
+import deckers.thibault.aves.utils.FileUtils.transferTo
 import deckers.thibault.aves.utils.MimeTypes.canEditExif
 import deckers.thibault.aves.utils.MimeTypes.canEditIptc
 import deckers.thibault.aves.utils.MimeTypes.canEditXmp
@@ -178,7 +180,7 @@ abstract class ImageProvider {
                 } else if (sourceMimeType == MimeTypes.SVG) {
                     SvgImage(activity, sourceUri)
                 } else {
-                    StorageUtils.getGlideSafeUri(activity, sourceUri, sourceMimeType)
+                    StorageUtils.getGlideSafeUri(activity, sourceUri, sourceMimeType, sourceEntry.sizeBytes)
                 }
 
                 // request a fresh image with the highest quality format
@@ -298,11 +300,7 @@ abstract class ImageProvider {
             } else {
                 val editableFile = File.createTempFile("aves", null).apply {
                     deleteOnExit()
-                    outputStream().use { output ->
-                        ByteArrayInputStream(bytes).use { imageInput ->
-                            imageInput.copyTo(output)
-                        }
-                    }
+                    transferFrom(ByteArrayInputStream(bytes), bytes.size.toLong())
                 }
 
                 val exif = ExifInterface(editableFile)
@@ -425,29 +423,24 @@ abstract class ImageProvider {
         val editableFile = File.createTempFile("aves", null).apply {
             deleteOnExit()
             try {
-                outputStream().use { output ->
-                    if (videoSize != null) {
-                        // handle motion photo and embedded video separately
-                        val imageSize = (originalFileSize - videoSize).toInt()
-                        videoBytes = ByteArray(videoSize)
+                if (videoSize != null) {
+                    // handle motion photo and embedded video separately
+                    val imageSize = (originalFileSize - videoSize).toInt()
+                    videoBytes = ByteArray(videoSize)
 
-                        StorageUtils.openInputStream(context, uri)?.let { input ->
-                            val imageBytes = ByteArray(imageSize)
-                            input.read(imageBytes, 0, imageSize)
-                            input.read(videoBytes, 0, videoSize)
+                    StorageUtils.openInputStream(context, uri)?.let { input ->
+                        val imageBytes = ByteArray(imageSize)
+                        input.read(imageBytes, 0, imageSize)
+                        input.read(videoBytes, 0, videoSize)
 
-                            // copy only the image to a temporary file for editing
-                            // video will be appended after metadata modification
-                            ByteArrayInputStream(imageBytes).use { imageInput ->
-                                imageInput.copyTo(output)
-                            }
-                        }
-                    } else {
-                        // copy original file to a temporary file for editing
-                        StorageUtils.openInputStream(context, uri)?.use { imageInput ->
-                            imageInput.copyTo(output)
-                        }
+                        // copy only the image to a temporary file for editing
+                        // video will be appended after metadata modification
+                        transferFrom(ByteArrayInputStream(imageBytes), imageBytes.size.toLong())
                     }
+                } else {
+                    // copy original file to a temporary file for editing
+                    val inputStream = StorageUtils.openInputStream(context, uri)
+                    transferFrom(inputStream, originalFileSize)
                 }
             } catch (e: Exception) {
                 callback.onFailure(e)
@@ -464,7 +457,7 @@ abstract class ImageProvider {
             }
 
             // copy the edited temporary file back to the original
-            copyTo(context, mimeType, sourceFile = editableFile, targetUri = uri, targetPath = path)
+            copyFileTo(context, mimeType, sourceFile = editableFile, targetUri = uri, targetPath = path)
 
             if (autoCorrectTrailerOffset && !checkTrailerOffset(context, path, uri, mimeType, videoSize, editableFile, callback)) {
                 return false
@@ -498,29 +491,24 @@ abstract class ImageProvider {
         val editableFile = File.createTempFile("aves", null).apply {
             deleteOnExit()
             try {
-                outputStream().use { output ->
-                    if (videoSize != null) {
-                        // handle motion photo and embedded video separately
-                        val imageSize = (originalFileSize - videoSize).toInt()
-                        videoBytes = ByteArray(videoSize)
+                if (videoSize != null) {
+                    // handle motion photo and embedded video separately
+                    val imageSize = (originalFileSize - videoSize).toInt()
+                    videoBytes = ByteArray(videoSize)
 
-                        StorageUtils.openInputStream(context, uri)?.let { input ->
-                            val imageBytes = ByteArray(imageSize)
-                            input.read(imageBytes, 0, imageSize)
-                            input.read(videoBytes, 0, videoSize)
+                    StorageUtils.openInputStream(context, uri)?.let { input ->
+                        val imageBytes = ByteArray(imageSize)
+                        input.read(imageBytes, 0, imageSize)
+                        input.read(videoBytes, 0, videoSize)
 
-                            // copy only the image to a temporary file for editing
-                            // video will be appended after metadata modification
-                            ByteArrayInputStream(imageBytes).use { imageInput ->
-                                imageInput.copyTo(output)
-                            }
-                        }
-                    } else {
-                        // copy original file to a temporary file for editing
-                        StorageUtils.openInputStream(context, uri)?.use { imageInput ->
-                            imageInput.copyTo(output)
-                        }
+                        // copy only the image to a temporary file for editing
+                        // video will be appended after metadata modification
+                        transferFrom(ByteArrayInputStream(imageBytes), imageBytes.size.toLong())
                     }
+                } else {
+                    // copy original file to a temporary file for editing
+                    val inputStream = StorageUtils.openInputStream(context, uri)
+                    transferFrom(inputStream, originalFileSize)
                 }
             } catch (e: Exception) {
                 callback.onFailure(e)
@@ -551,7 +539,7 @@ abstract class ImageProvider {
             }
 
             // copy the edited temporary file back to the original
-            copyTo(context, mimeType, sourceFile = editableFile, targetUri = uri, targetPath = path)
+            copyFileTo(context, mimeType, sourceFile = editableFile, targetUri = uri, targetPath = path)
 
             if (autoCorrectTrailerOffset && !checkTrailerOffset(context, path, uri, mimeType, videoSize, editableFile, callback)) {
                 return false
@@ -626,7 +614,7 @@ abstract class ImageProvider {
 
         try {
             // copy the edited temporary file back to the original
-            copyTo(context, mimeType, sourceFile = editableFile, targetUri = uri, targetPath = path)
+            copyFileTo(context, mimeType, sourceFile = editableFile, targetUri = uri, targetPath = path)
 
             if (autoCorrectTrailerOffset && !checkTrailerOffset(context, path, uri, mimeType, videoSize, editableFile, callback)) {
                 return false
@@ -926,26 +914,13 @@ abstract class ImageProvider {
             callback.onFailure(Exception("failed to get trailer video size"))
             return
         }
-        val bytesToCopy = originalFileSize - videoSize
 
         val editableFile = File.createTempFile("aves", null).apply {
             deleteOnExit()
             try {
-                outputStream().use { output ->
-                    // reopen input to read from start
-                    StorageUtils.openInputStream(context, uri)?.use { input ->
-                        // partial copy
-                        var bytesRemaining: Long = bytesToCopy
-                        val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
-                        var bytes = input.read(buffer)
-                        while (bytes >= 0 && bytesRemaining > 0) {
-                            val len = if (bytes > bytesRemaining) bytesRemaining.toInt() else bytes
-                            output.write(buffer, 0, len)
-                            bytesRemaining -= len
-                            bytes = input.read(buffer)
-                        }
-                    }
-                }
+                val inputStream = StorageUtils.openInputStream(context, uri)
+                // partial copy
+                transferFrom(inputStream, originalFileSize - videoSize)
             } catch (e: Exception) {
                 Log.d(LOG_TAG, "failed to remove trailer video", e)
                 callback.onFailure(e)
@@ -955,7 +930,7 @@ abstract class ImageProvider {
 
         try {
             // copy the edited temporary file back to the original
-            copyTo(context, mimeType, sourceFile = editableFile, targetUri = uri, targetPath = path)
+            copyFileTo(context, mimeType, sourceFile = editableFile, targetUri = uri, targetPath = path)
         } catch (e: IOException) {
             callback.onFailure(e)
             return
@@ -998,7 +973,7 @@ abstract class ImageProvider {
 
         try {
             // copy the edited temporary file back to the original
-            copyTo(context, mimeType, sourceFile = editableFile, targetUri = uri, targetPath = path)
+            copyFileTo(context, mimeType, sourceFile = editableFile, targetUri = uri, targetPath = path)
 
             if (!types.contains(Metadata.TYPE_XMP) && !checkTrailerOffset(context, path, uri, mimeType, videoSize, editableFile, callback)) {
                 return
@@ -1012,25 +987,21 @@ abstract class ImageProvider {
         scanPostMetadataEdit(context, path, uri, mimeType, newFields, callback)
     }
 
-    private fun copyTo(
+    private fun copyFileTo(
         context: Context,
         mimeType: String,
         sourceFile: File,
         targetUri: Uri,
         targetPath: String
     ) {
-        sourceFile.inputStream().use { input ->
-            // truncate is necessary when overwriting a longer file
-            val targetStream = if (isMediaUriPermissionGranted(context, targetUri, mimeType)) {
-                StorageUtils.openOutputStream(context, targetUri, mimeType, "wt") ?: throw Exception("failed to open output stream for uri=$targetUri")
-            } else {
-                val documentUri = StorageUtils.getDocumentFile(context, targetPath, targetUri)?.uri ?: throw Exception("failed to get document file for path=$targetPath, uri=$targetUri")
-                context.contentResolver.openOutputStream(documentUri, "wt") ?: throw Exception("failed to open output stream from documentUri=$documentUri for path=$targetPath, uri=$targetUri")
-            }
-            targetStream.use { output ->
-                input.copyTo(output)
-            }
+        // truncate is necessary when overwriting a longer file
+        val targetStream = if (isMediaUriPermissionGranted(context, targetUri, mimeType)) {
+            StorageUtils.openOutputStream(context, targetUri, mimeType, "wt") ?: throw Exception("failed to open output stream for uri=$targetUri")
+        } else {
+            val documentUri = StorageUtils.getDocumentFile(context, targetPath, targetUri)?.uri ?: throw Exception("failed to get document file for path=$targetPath, uri=$targetUri")
+            context.contentResolver.openOutputStream(documentUri, "wt") ?: throw Exception("failed to open output stream from documentUri=$documentUri for path=$targetPath, uri=$targetUri")
         }
+        sourceFile.transferTo(targetStream)
     }
 
     interface ImageOpCallback {

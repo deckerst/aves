@@ -3,6 +3,7 @@ package deckers.thibault.aves.metadata
 import android.content.Context
 import android.net.Uri
 import androidx.exifinterface.media.ExifInterface
+import deckers.thibault.aves.utils.FileUtils.transferFrom
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.StorageUtils
 import java.io.File
@@ -122,7 +123,7 @@ object Metadata {
 
     // we try and read metadata from large files by copying an arbitrary amount from its beginning
     // to a temporary file, and reusing that preview file for all metadata reading purposes
-    private const val previewSize = 5 * (1 shl 20) // MB
+    private const val previewSize: Long = 5 * (1 shl 20) // MB
 
     private val previewFiles = HashMap<Uri, File>()
 
@@ -155,13 +156,7 @@ object Metadata {
     fun createPreviewFile(context: Context, uri: Uri): File {
         return File.createTempFile("aves", null, context.cacheDir).apply {
             deleteOnExit()
-            outputStream().use { output ->
-                StorageUtils.openInputStream(context, uri)?.use { input ->
-                    val b = ByteArray(previewSize)
-                    input.read(b, 0, previewSize)
-                    output.write(b)
-                }
-            }
+            transferFrom(StorageUtils.openInputStream(context, uri), previewSize)
         }
     }
 

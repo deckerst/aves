@@ -50,17 +50,17 @@ class MediaFetchBytesHandler(private val context: Context) : MethodCallHandler {
 
         // convert DIP to physical pixels here, instead of using `devicePixelRatio` in Flutter
         ThumbnailFetcher(
-            context,
-            uri,
-            mimeType,
-            dateModifiedSecs,
-            rotationDegrees,
-            isFlipped,
+            context = context,
+            uri = uri,
+            mimeType = mimeType,
+            dateModifiedSecs = dateModifiedSecs,
+            rotationDegrees = rotationDegrees,
+            isFlipped = isFlipped,
             width = (widthDip * density).roundToInt(),
             height = (heightDip * density).roundToInt(),
             pageId = pageId,
             defaultSize = (defaultSizeDip * density).roundToInt(),
-            result,
+            result = result,
         ).fetch()
     }
 

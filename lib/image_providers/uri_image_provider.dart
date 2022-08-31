@@ -9,7 +9,7 @@ import 'package:flutter/widgets.dart';
 @immutable
 class UriImage extends ImageProvider<UriImage> with EquatableMixin {
   final String uri, mimeType;
-  final int? pageId, rotationDegrees, expectedContentLength;
+  final int? pageId, rotationDegrees, sizeBytes;
   final bool isFlipped;
   final double scale;
 
@@ -22,7 +22,7 @@ class UriImage extends ImageProvider<UriImage> with EquatableMixin {
     required this.pageId,
     required this.rotationDegrees,
     required this.isFlipped,
-    this.expectedContentLength,
+    this.sizeBytes,
     this.scale = 1.0,
   });
 
@@ -55,7 +55,7 @@ class UriImage extends ImageProvider<UriImage> with EquatableMixin {
         rotationDegrees,
         isFlipped,
         pageId: pageId,
-        expectedContentLength: expectedContentLength,
+        sizeBytes: sizeBytes,
         onBytesReceived: (cumulative, total) {
           chunkEvents.add(ImageChunkEvent(
             cumulativeBytesLoaded: cumulative,
