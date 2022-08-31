@@ -12,7 +12,7 @@ class TopoJson {
 
   static Topology? _isoParse(String jsonData) {
     try {
-      final data = json.decode(jsonData) as Map<String, dynamic>;
+      final data = jsonDecode(jsonData) as Map<String, dynamic>;
       return Topology.parse(data);
     } catch (error, stack) {
       // an unhandled error in a spawn isolate would make the app crash
