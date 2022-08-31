@@ -241,5 +241,9 @@ This change eventually prevents building the app with Flutter v3.0.2.
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+        <!-- as of Flutter v3.3.0, background blur & icon shading fail with Impeller -->
+        <meta-data
+            android:name="io.flutter.embedding.android.EnableImpeller"
+            android:value="false" />
     </application>
 </manifest>
