@@ -87,7 +87,7 @@
 
   "entryInfoActionEditDate": "Modifier la date",
   "entryInfoActionEditLocation": "Modifier le lieu",
-  "entryInfoActionEditDescription": "Modifier la description",
+  "entryInfoActionEditTitleDescription": "Modifier titre et description",
   "entryInfoActionEditRating": "Modifier la notation",
   "entryInfoActionEditTags": "Modifier les libellés",
   "entryInfoActionRemoveMetadata": "Retirer les métadonnées",
@@ -258,8 +258,6 @@
   "editEntryLocationDialogLongitude": "Longitude",
 
   "locationPickerUseThisLocationButton": "Utiliser ce lieu",
-
-  "editEntryDescriptionDialogTitle": "Description",
 
   "editEntryRatingDialogTitle": "Notation",
 
@@ -614,6 +612,7 @@
   "viewerInfoBackToViewerTooltip": "Retour à la visionneuse",
 
   "viewerInfoUnknown": "inconnu",
+  "viewerInfoLabelDescription": "Description",
   "viewerInfoLabelTitle": "Titre",
   "viewerInfoLabelDate": "Date",
   "viewerInfoLabelResolution": "Résolution",

@@ -427,8 +427,9 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
     // - XMP / photoshop:DateCreated
     // - PNG / TIME / LAST_MODIFICATION_TIME
     // - Video / METADATA_KEY_DATE
-    // set `KEY_XMP_TITLE` from this field:
+    // set `KEY_XMP_TITLE` from these fields (by precedence):
     // - XMP / dc:title
+    // - IPTC / object-name
     // set `KEY_XMP_SUBJECTS` from these fields (by precedence):
     // - XMP / dc:subject
     // - IPTC / keywords
@@ -567,9 +568,14 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                     metadata.getDirectoriesOfType(XmpDirectory::class.java).map { it.xmpMeta }.forEach(::processXmp)
 
                     // XMP fallback to IPTC
-                    if (!metadataMap.containsKey(KEY_XMP_SUBJECTS)) {
+                    if (!metadataMap.containsKey(KEY_XMP_TITLE) || !metadataMap.containsKey(KEY_XMP_SUBJECTS)) {
                         for (dir in metadata.getDirectoriesOfType(IptcDirectory::class.java)) {
-                            dir.keywords?.let { metadataMap[KEY_XMP_SUBJECTS] = it.joinToString(XMP_SUBJECTS_SEPARATOR) }
+                            if (!metadataMap.containsKey(KEY_XMP_TITLE)) {
+                                dir.getSafeString(IptcDirectory.TAG_OBJECT_NAME) { metadataMap[KEY_XMP_TITLE] = it }
+                            }
+                            if (!metadataMap.containsKey(KEY_XMP_SUBJECTS)) {
+                                dir.keywords?.let { metadataMap[KEY_XMP_SUBJECTS] = it.joinToString(XMP_SUBJECTS_SEPARATOR) }
+                            }
                         }
                     }
 

@@ -35,7 +35,7 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
       // general
       case EntryInfoAction.editDate:
       case EntryInfoAction.editLocation:
-      case EntryInfoAction.editDescription:
+      case EntryInfoAction.editTitleDescription:
       case EntryInfoAction.editRating:
       case EntryInfoAction.editTags:
       case EntryInfoAction.removeMetadata:
@@ -60,8 +60,8 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
         return entry.canEditDate;
       case EntryInfoAction.editLocation:
         return entry.canEditLocation;
-      case EntryInfoAction.editDescription:
-        return entry.canEditDescription;
+      case EntryInfoAction.editTitleDescription:
+        return entry.canEditTitleDescription;
       case EntryInfoAction.editRating:
         return entry.canEditRating;
       case EntryInfoAction.editTags:
@@ -92,8 +92,8 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
       case EntryInfoAction.editLocation:
         await _editLocation(context);
         break;
-      case EntryInfoAction.editDescription:
-        await _editDescription(context);
+      case EntryInfoAction.editTitleDescription:
+        await _editTitleDescription(context);
         break;
       case EntryInfoAction.editRating:
         await _editRating(context);
@@ -137,11 +137,11 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
     await edit(context, () => entry.editLocation(location));
   }
 
-  Future<void> _editDescription(BuildContext context) async {
-    final description = await selectDescription(context, {entry});
-    if (description == null) return;
+  Future<void> _editTitleDescription(BuildContext context) async {
+    final modifier = await selectTitleDescriptionModifier(context, {entry});
+    if (modifier == null) return;
 
-    await edit(context, () => entry.editDescription(description));
+    await edit(context, () => entry.editTitleDescription(modifier));
   }
 
   Future<void> _editRating(BuildContext context) async {

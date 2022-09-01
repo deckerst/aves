@@ -140,37 +140,62 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
     return _changeOrientation(() => metadataEditService.flip(this));
   }
 
-  // write:
+  // write title:
+  // - IPTC / object-name, if IPTC exists
+  // - XMP / dc:title
+  // write description:
   // - Exif / ImageDescription
   // - IPTC / caption-abstract, if IPTC exists
   // - XMP / dc:description
-  Future<Set<EntryDataType>> editDescription(String? description) async {
+  Future<Set<EntryDataType>> editTitleDescription(Map<DescriptionField, String?> fields) async {
     final Set<EntryDataType> dataTypes = {};
     final Map<MetadataType, dynamic> metadata = {};
 
     final missingDate = await _missingDateCheckAndExifEdit(dataTypes);
 
-    if (canEditExif) {
+    final editTitle = fields.keys.contains(DescriptionField.title);
+    final editDescription = fields.keys.contains(DescriptionField.description);
+    final title = fields[DescriptionField.title];
+    final description = fields[DescriptionField.description];
+
+    if (canEditExif && editDescription) {
       metadata[MetadataType.exif] = {MetadataField.exifImageDescription.exifInterfaceTag!: description};
     }
 
     if (canEditIptc) {
       final iptc = await metadataFetchService.getIptc(this);
       if (iptc != null) {
-        editIptcValues(iptc, IPTC.applicationRecord, IPTC.captionAbstractTag, {if (description != null) description});
+        if (editTitle) {
+          editIptcValues(iptc, IPTC.applicationRecord, IPTC.objectName, {if (title != null) title});
+        }
+        if (editDescription) {
+          editIptcValues(iptc, IPTC.applicationRecord, IPTC.captionAbstractTag, {if (description != null) description});
+        }
         metadata[MetadataType.iptc] = iptc;
       }
     }
 
     if (canEditXmp) {
       metadata[MetadataType.xmp] = await _editXmp((descriptions) {
-        final modified = XMP.setAttribute(
-          descriptions,
-          XMP.dcDescription,
-          description,
-          namespace: Namespaces.dc,
-          strat: XmpEditStrategy.always,
-        );
+        var modified = false;
+        if (editTitle) {
+          modified |= XMP.setAttribute(
+            descriptions,
+            XMP.dcTitle,
+            title,
+            namespace: Namespaces.dc,
+            strat: XmpEditStrategy.always,
+          );
+        }
+        if (editDescription) {
+          modified |= XMP.setAttribute(
+            descriptions,
+            XMP.dcDescription,
+            description,
+            namespace: Namespaces.dc,
+            strat: XmpEditStrategy.always,
+          );
+        }
         if (modified && missingDate != null) {
           editCreateDateXmp(descriptions, missingDate);
         }
@@ -182,6 +207,7 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
     if (newFields.isNotEmpty) {
       dataTypes.addAll({
         EntryDataType.basic,
+        EntryDataType.catalog,
       });
     }
 
@@ -467,3 +493,5 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
     };
   }
 }
+
+enum DescriptionField { title, description }

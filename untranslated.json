@@ -1,43 +1,59 @@
 {
+  "de": [
+    "entryInfoActionEditTitleDescription"
+  ],
+
   "es": [
-    "entryInfoActionEditDescription",
+    "entryInfoActionEditTitleDescription",
     "filterRecentlyAddedLabel",
-    "editEntryDescriptionDialogTitle",
-    "settingsConfirmationAfterMoveToBinItems"
+    "settingsConfirmationAfterMoveToBinItems",
+    "viewerInfoLabelDescription"
   ],
 
   "id": [
-    "entryInfoActionEditDescription",
+    "entryInfoActionEditTitleDescription",
     "filterRecentlyAddedLabel",
-    "editEntryDescriptionDialogTitle",
     "settingsConfirmationAfterMoveToBinItems",
-    "settingsViewerGestureSideTapNext"
+    "settingsViewerGestureSideTapNext",
+    "viewerInfoLabelDescription"
+  ],
+
+  "it": [
+    "entryInfoActionEditTitleDescription"
   ],
 
   "ja": [
-    "entryInfoActionEditDescription",
+    "entryInfoActionEditTitleDescription",
     "filterRecentlyAddedLabel",
-    "editEntryDescriptionDialogTitle",
     "settingsConfirmationAfterMoveToBinItems",
-    "settingsViewerGestureSideTapNext"
+    "settingsViewerGestureSideTapNext",
+    "viewerInfoLabelDescription"
+  ],
+
+  "nl": [
+    "entryInfoActionEditTitleDescription"
+  ],
+
+  "pt": [
+    "entryInfoActionEditTitleDescription"
   ],
 
   "ru": [
-    "entryInfoActionEditDescription",
+    "entryInfoActionEditTitleDescription",
     "filterOnThisDayLabel",
     "filterRecentlyAddedLabel",
-    "editEntryDescriptionDialogTitle",
     "settingsConfirmationAfterMoveToBinItems",
     "settingsViewerGestureSideTapNext",
     "settingsSlideshowFillScreen",
     "settingsScreenSaverPageTitle",
-    "settingsWidgetShowOutline"
+    "settingsWidgetShowOutline",
+    "viewerInfoLabelDescription"
   ],
 
   "tr": [
     "slideshowActionResume",
     "slideshowActionShowInCollection",
-    "entryInfoActionEditDescription",
+    "entryInfoActionEditTitleDescription",
     "filterOnThisDayLabel",
     "filterRecentlyAddedLabel",
     "slideshowVideoPlaybackSkip",
@@ -50,7 +66,6 @@
     "wallpaperTargetHome",
     "wallpaperTargetLock",
     "wallpaperTargetHomeLock",
-    "editEntryDescriptionDialogTitle",
     "menuActionSlideshow",
     "settingsConfirmationAfterMoveToBinItems",
     "settingsViewerGestureSideTapNext",
@@ -67,6 +82,11 @@
     "settingsSlideshowVideoPlaybackTitle",
     "settingsScreenSaverPageTitle",
     "settingsWidgetShowOutline",
-    "viewerSetWallpaperButtonLabel"
+    "viewerSetWallpaperButtonLabel",
+    "viewerInfoLabelDescription"
+  ],
+
+  "zh": [
+    "entryInfoActionEditTitleDescription"
   ]
 }

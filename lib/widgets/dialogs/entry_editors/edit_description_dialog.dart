@@ -1,52 +1,56 @@
+import 'package:aves/model/entry_metadata_edition.dart';
+import 'package:aves/widgets/common/basic/labeled_checkbox.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:flutter/material.dart';
 
-class EditEntryDescriptionDialog extends StatefulWidget {
-  final String initialDescription;
+class EditEntryTitleDescriptionDialog extends StatefulWidget {
+  final String initialTitle, initialDescription;
 
-  const EditEntryDescriptionDialog({
+  const EditEntryTitleDescriptionDialog({
     super.key,
+    required this.initialTitle,
     required this.initialDescription,
   });
 
   @override
-  State<EditEntryDescriptionDialog> createState() => _EditEntryDescriptionDialogState();
+  State<EditEntryTitleDescriptionDialog> createState() => _EditEntryTitleDescriptionDialogState();
 }
 
-class _EditEntryDescriptionDialogState extends State<EditEntryDescriptionDialog> {
-  late final TextEditingController _textController;
+class _EditEntryTitleDescriptionDialogState extends State<EditEntryTitleDescriptionDialog> {
+  final Set<DescriptionField> fields = {
+    DescriptionField.title,
+    DescriptionField.description,
+  };
+  late final TextEditingController _titleTextController, _descriptionTextController;
 
   @override
   void initState() {
     super.initState();
-    _textController = TextEditingController(text: widget.initialDescription);
+    _titleTextController = TextEditingController(text: widget.initialTitle);
+    _descriptionTextController = TextEditingController(text: widget.initialDescription);
   }
 
   @override
   Widget build(BuildContext context) {
     return MediaQueryDataProvider(
       child: Builder(builder: (context) {
-        final l10n = context.l10n;
-
         return AvesDialog(
-          title: l10n.editEntryDescriptionDialogTitle,
-          content: TextField(
-            controller: _textController,
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(),
-            ),
-            maxLines: null,
-          ),
+          scrollableContent: [
+            const SizedBox(height: 8),
+            ..._buildFieldEditor(DescriptionField.title),
+            ..._buildFieldEditor(DescriptionField.description),
+            const SizedBox(height: 8),
+          ],
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
               child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
             ),
             TextButton(
-              onPressed: () => _submit(context),
-              child: Text(l10n.applyButtonLabel),
+              onPressed: fields.isEmpty ? null : () => _submit(context),
+              child: Text(context.l10n.applyButtonLabel),
             ),
           ],
         );
@@ -54,5 +58,54 @@ class _EditEntryDescriptionDialogState extends State<EditEntryDescriptionDialog>
     );
   }
 
-  void _submit(BuildContext context) => Navigator.pop(context, _textController.text);
+  List<Widget> _buildFieldEditor(DescriptionField field) {
+    final editing = fields.contains(field);
+    return [
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 4),
+        child: LabeledCheckbox(
+          value: editing,
+          onChanged: (v) => setState(() => editing ? fields.remove(field) : fields.add(field)),
+          text: _fieldName(field),
+        ),
+      ),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        child: TextField(
+          controller: _fieldController(field),
+          decoration: const InputDecoration(
+            border: OutlineInputBorder(),
+          ),
+          maxLines: null,
+          enabled: editing,
+        ),
+      ),
+    ];
+  }
+
+  TextEditingController _fieldController(DescriptionField field) {
+    switch (field) {
+      case DescriptionField.title:
+        return _titleTextController;
+      case DescriptionField.description:
+        return _descriptionTextController;
+    }
+  }
+
+  String _fieldName(DescriptionField field) {
+    switch (field) {
+      case DescriptionField.title:
+        return context.l10n.viewerInfoLabelTitle;
+      case DescriptionField.description:
+        return context.l10n.viewerInfoLabelDescription;
+    }
+  }
+
+  void _submit(BuildContext context) {
+    final modifier = Map.fromEntries(fields.map((field) {
+      final text = _fieldController(field).text;
+      return MapEntry(field, text.isEmpty ? null : text);
+    }));
+    return Navigator.pop<Map<DescriptionField, String?>>(context, modifier);
+  }
 }

@@ -1,4 +1,5 @@
 import 'package:aves/model/entry.dart';
+import 'package:aves/model/entry_metadata_edition.dart';
 import 'package:aves/model/metadata/date_modifier.dart';
 import 'package:aves/model/metadata/enums.dart';
 import 'package:aves/model/source/collection_lens.dart';
@@ -40,14 +41,17 @@ mixin EntryEditorMixin {
     );
   }
 
-  Future<String?> selectDescription(BuildContext context, Set<AvesEntry> entries) async {
+  Future<Map<DescriptionField, String?>?> selectTitleDescriptionModifier(BuildContext context, Set<AvesEntry> entries) async {
     if (entries.isEmpty) return null;
 
-    final initialDescription = await metadataFetchService.getDescription(entries.first) ?? '';
+    final entry = entries.first;
+    final initialTitle = entry.catalogMetadata?.xmpTitle ?? '';
+    final initialDescription = await metadataFetchService.getDescription(entry) ?? '';
 
-    return showDialog<String>(
+    return showDialog<Map<DescriptionField, String?>>(
       context: context,
-      builder: (context) => EditEntryDescriptionDialog(
+      builder: (context) => EditEntryTitleDescriptionDialog(
+        initialTitle: initialTitle,
         initialDescription: initialDescription,
       ),
     );
