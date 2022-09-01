@@ -87,7 +87,6 @@
 
   "entryInfoActionEditDate": "Datum & Uhrzeit bearbeiten",
   "entryInfoActionEditLocation": "Standort bearbeiten",
-  "entryInfoActionEditDescription": "Beschreibung bearbeiten",
   "entryInfoActionEditRating": "Bewertung bearbeiten",
   "entryInfoActionEditTags": "Tags bearbeiten",
   "entryInfoActionRemoveMetadata": "Metadaten entfernen",
@@ -258,8 +257,6 @@
   "editEntryLocationDialogLongitude": "Längengrad",
 
   "locationPickerUseThisLocationButton": "Diesen Standort verwenden",
-
-  "editEntryDescriptionDialogTitle": "Beschreibung",
 
   "editEntryRatingDialogTitle": "Bewertung",
 
@@ -614,6 +611,7 @@
   "viewerInfoBackToViewerTooltip": "Zurück zum Betrachter",
 
   "viewerInfoUnknown": "Unbekannt",
+  "viewerInfoLabelDescription": "Beschreibung",
   "viewerInfoLabelTitle": "Titel",
   "viewerInfoLabelDate": "Datum",
   "viewerInfoLabelResolution": "Auflösung",

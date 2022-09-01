@@ -279,7 +279,7 @@ class AvesEntry {
 
   bool get canEditLocation => canEdit && canEditExif;
 
-  bool get canEditDescription => canEdit && (canEditExif || canEditXmp);
+  bool get canEditTitleDescription => canEdit && canEditXmp;
 
   bool get canEditRating => canEdit && canEditXmp;
 

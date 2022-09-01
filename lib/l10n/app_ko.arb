@@ -87,7 +87,7 @@
 
   "entryInfoActionEditDate": "날짜 및 시간 수정",
   "entryInfoActionEditLocation": "위치 수정",
-  "entryInfoActionEditDescription": "설명 수정",
+  "entryInfoActionEditTitleDescription": "제목 및 설명 수정",
   "entryInfoActionEditRating": "별점 수정",
   "entryInfoActionEditTags": "태그 수정",
   "entryInfoActionRemoveMetadata": "메타데이터 삭제",
@@ -258,8 +258,6 @@
   "editEntryLocationDialogLongitude": "경도",
 
   "locationPickerUseThisLocationButton": "이 위치 사용",
-
-  "editEntryDescriptionDialogTitle": "설명",
 
   "editEntryRatingDialogTitle": "별점",
 
@@ -614,6 +612,7 @@
   "viewerInfoBackToViewerTooltip": "뷰어로",
 
   "viewerInfoUnknown": "알 수 없음",
+  "viewerInfoLabelDescription": "설명",
   "viewerInfoLabelTitle": "제목",
   "viewerInfoLabelDate": "날짜",
   "viewerInfoLabelResolution": "해상도",

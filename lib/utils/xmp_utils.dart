@@ -153,6 +153,7 @@ class XMP {
   static const containerDirectory = 'Directory';
   static const dcDescription = 'description';
   static const dcSubject = 'subject';
+  static const dcTitle = 'title';
   static const msPhotoRating = 'Rating';
   static const xmpRating = 'Rating';
 

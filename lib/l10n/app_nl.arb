@@ -87,7 +87,6 @@
 
   "entryInfoActionEditDate": "Bewerk Datum & Tijd",
   "entryInfoActionEditLocation": "Bewerk Locatie",
-  "entryInfoActionEditDescription": "Omschrijving wijzigen",
   "entryInfoActionEditRating": "Bewerk waardering",
   "entryInfoActionEditTags": "Bewerk labels",
   "entryInfoActionRemoveMetadata": "Verwijder metadata",
@@ -258,8 +257,6 @@
   "editEntryLocationDialogLongitude": "Lengtegraad",
 
   "locationPickerUseThisLocationButton": "Gebruik deze locatie",
-
-  "editEntryDescriptionDialogTitle": "Omschrijving",
 
   "editEntryRatingDialogTitle": "Beoordeling",
 
@@ -614,6 +611,7 @@
   "viewerInfoBackToViewerTooltip": "Terug naar viewer",
 
   "viewerInfoUnknown": "onbekendd",
+  "viewerInfoLabelDescription": "Omschrijving",
   "viewerInfoLabelTitle": "Titel",
   "viewerInfoLabelDate": "Datum",
   "viewerInfoLabelResolution": "Resolutie",

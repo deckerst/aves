@@ -115,7 +115,7 @@
 
   "entryInfoActionEditDate": "Edit date & time",
   "entryInfoActionEditLocation": "Edit location",
-  "entryInfoActionEditDescription": "Edit description",
+  "entryInfoActionEditTitleDescription": "Edit title & description",
   "entryInfoActionEditRating": "Edit rating",
   "entryInfoActionEditTags": "Edit tags",
   "entryInfoActionRemoveMetadata": "Remove metadata",
@@ -388,8 +388,6 @@
   "editEntryLocationDialogLongitude": "Longitude",
 
   "locationPickerUseThisLocationButton": "Use this location",
-
-  "editEntryDescriptionDialogTitle": "Description",
 
   "editEntryRatingDialogTitle": "Rating",
 
@@ -799,6 +797,7 @@
   "viewerInfoBackToViewerTooltip": "Back to viewer",
 
   "viewerInfoUnknown": "unknown",
+  "viewerInfoLabelDescription": "Description",
   "viewerInfoLabelTitle": "Title",
   "viewerInfoLabelDate": "Date",
   "viewerInfoLabelResolution": "Resolution",

@@ -87,7 +87,6 @@
 
   "entryInfoActionEditDate": "Modifica data e ora",
   "entryInfoActionEditLocation": "Modifica posizione",
-  "entryInfoActionEditDescription": "Modifica descrizione",
   "entryInfoActionEditRating": "Modifica valutazione",
   "entryInfoActionEditTags": "Modifica etichetta",
   "entryInfoActionRemoveMetadata": "Rimuovi metadati",
@@ -258,8 +257,6 @@
   "editEntryLocationDialogLongitude": "Longitudine",
 
   "locationPickerUseThisLocationButton": "Usa questa posizione",
-
-  "editEntryDescriptionDialogTitle": "Descrizione",
 
   "editEntryRatingDialogTitle": "Valutazione",
 
@@ -614,6 +611,7 @@
   "viewerInfoBackToViewerTooltip": "Torna alla visualizzazione",
 
   "viewerInfoUnknown": "sconosciuto",
+  "viewerInfoLabelDescription": "Descrizione",
   "viewerInfoLabelTitle": "Titolo",
   "viewerInfoLabelDate": "Data",
   "viewerInfoLabelResolution": "Risoluzione",

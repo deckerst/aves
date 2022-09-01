@@ -87,7 +87,6 @@
 
   "entryInfoActionEditDate": "编辑日期和时间",
   "entryInfoActionEditLocation": "编辑位置",
-  "entryInfoActionEditDescription": "编辑备注",
   "entryInfoActionEditRating": "修改评分",
   "entryInfoActionEditTags": "编辑标签",
   "entryInfoActionRemoveMetadata": "移除元数据",
@@ -258,8 +257,6 @@
   "editEntryLocationDialogLongitude": "经度",
 
   "locationPickerUseThisLocationButton": "使用此位置",
-
-  "editEntryDescriptionDialogTitle": "备注",
 
   "editEntryRatingDialogTitle": "评分",
 
@@ -614,6 +611,7 @@
   "viewerInfoBackToViewerTooltip": "返回查看器",
 
   "viewerInfoUnknown": "未知",
+  "viewerInfoLabelDescription": "备注",
   "viewerInfoLabelTitle": "标题",
   "viewerInfoLabelDate": "日期",
   "viewerInfoLabelResolution": "分辨率",
