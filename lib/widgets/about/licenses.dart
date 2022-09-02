@@ -50,25 +50,25 @@ class _LicensesState extends State<Licenses> {
             _buildHeader(),
             const SizedBox(height: 16),
             AvesExpansionTile(
-              title: context.l10n.aboutLicensesAndroidLibraries,
+              title: context.l10n.aboutLicensesAndroidLibrariesSectionTitle,
               highlightColor: colors.fromBrandColor(BrandColors.android),
               expandedNotifier: _expandedNotifier,
               children: _platform.map((package) => LicenseRow(package: package)).toList(),
             ),
             AvesExpansionTile(
-              title: context.l10n.aboutLicensesFlutterPlugins,
+              title: context.l10n.aboutLicensesFlutterPluginsSectionTitle,
               highlightColor: colors.fromBrandColor(BrandColors.flutter),
               expandedNotifier: _expandedNotifier,
               children: _flutterPlugins.map((package) => LicenseRow(package: package)).toList(),
             ),
             AvesExpansionTile(
-              title: context.l10n.aboutLicensesFlutterPackages,
+              title: context.l10n.aboutLicensesFlutterPackagesSectionTitle,
               highlightColor: colors.fromBrandColor(BrandColors.flutter),
               expandedNotifier: _expandedNotifier,
               children: _flutterPackages.map((package) => LicenseRow(package: package)).toList(),
             ),
             AvesExpansionTile(
-              title: context.l10n.aboutLicensesDartPackages,
+              title: context.l10n.aboutLicensesDartPackagesSectionTitle,
               highlightColor: colors.fromBrandColor(BrandColors.flutter),
               expandedNotifier: _expandedNotifier,
               children: _dartPackages.map((package) => LicenseRow(package: package)).toList(),
@@ -106,7 +106,7 @@ class _LicensesState extends State<Licenses> {
             constraints: const BoxConstraints(minHeight: 48),
             child: Align(
               alignment: AlignmentDirectional.centerStart,
-              child: Text(context.l10n.aboutLicenses, style: Constants.titleTextStyle),
+              child: Text(context.l10n.aboutLicensesSectionTitle, style: Constants.knownTitleTextStyle),
             ),
           ),
           const SizedBox(height: 8),

@@ -24,6 +24,7 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/themes.dart';
 import 'package:aves/utils/android_file_utils.dart';
+import 'package:aves/utils/constants.dart';
 import 'package:aves/utils/debouncer.dart';
 import 'package:aves/widgets/collection/collection_grid.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
@@ -171,6 +172,8 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
                           final areAnimationsEnabled = s.item2;
                           final themeBrightness = s.item3;
                           final enableDynamicColor = s.item4;
+
+                          Constants.updateStylesForLocale(settings.appliedLocale);
 
                           final pageTransitionsTheme = areAnimationsEnabled
                               // Flutter has various page transition implementations for Android:

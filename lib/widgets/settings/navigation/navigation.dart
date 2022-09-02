@@ -26,7 +26,7 @@ class NavigationSection extends SettingsSection {
       );
 
   @override
-  String title(BuildContext context) => context.l10n.settingsSectionNavigation;
+  String title(BuildContext context) => context.l10n.settingsNavigationSectionTitle;
 
   @override
   FutureOr<List<SettingsTile>> tiles(BuildContext context) => [
@@ -41,7 +41,7 @@ class NavigationSection extends SettingsSection {
 
 class SettingsTileNavigationHomePage extends SettingsTile {
   @override
-  String title(BuildContext context) => context.l10n.settingsHome;
+  String title(BuildContext context) => context.l10n.settingsHomeTile;
 
   @override
   Widget build(BuildContext context) => SettingsSelectionListTile<HomePageSetting>(
@@ -50,7 +50,7 @@ class SettingsTileNavigationHomePage extends SettingsTile {
         selector: (context, s) => s.homePage,
         onSelection: (v) => settings.homePage = v,
         tileTitle: title(context),
-        dialogTitle: context.l10n.settingsHome,
+        dialogTitle: context.l10n.settingsHomeDialogTitle,
       );
 }
 
@@ -80,7 +80,7 @@ class SettingsTileNavigationDrawer extends SettingsTile {
 
 class SettingsTileNavigationConfirmationDialog extends SettingsTile {
   @override
-  String title(BuildContext context) => context.l10n.settingsConfirmationDialogTile;
+  String title(BuildContext context) => context.l10n.settingsConfirmationTile;
 
   @override
   Widget build(BuildContext context) => SettingsSubPageTile(
@@ -101,7 +101,7 @@ class SettingsTileNavigationKeepScreenOn extends SettingsTile {
         selector: (context, s) => s.keepScreenOn,
         onSelection: (v) => settings.keepScreenOn = v,
         tileTitle: title(context),
-        dialogTitle: context.l10n.settingsKeepScreenOnTitle,
+        dialogTitle: context.l10n.settingsKeepScreenOnDialogTitle,
       );
 }
 

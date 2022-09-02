@@ -27,7 +27,7 @@ class ViewerSection extends SettingsSection {
       );
 
   @override
-  String title(BuildContext context) => context.l10n.settingsSectionViewer;
+  String title(BuildContext context) => context.l10n.settingsViewerSectionTitle;
 
   @override
   FutureOr<List<SettingsTile>> tiles(BuildContext context) async {

@@ -154,7 +154,6 @@ void showNoMatchingAppDialog(BuildContext context) {
     context: context,
     builder: (context) {
       return AvesDialog(
-        title: context.l10n.noMatchingAppDialogTitle,
         content: Text(context.l10n.noMatchingAppDialogMessage),
         actions: [
           TextButton(

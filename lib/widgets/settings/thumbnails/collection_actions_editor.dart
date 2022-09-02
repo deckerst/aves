@@ -44,7 +44,7 @@ class CollectionActionEditorPage extends StatelessWidget {
         length: tabs.length,
         child: Scaffold(
           appBar: AppBar(
-            title: Text(context.l10n.settingsCollectionQuickActionEditorTitle),
+            title: Text(context.l10n.settingsCollectionQuickActionEditorPageTitle),
             bottom: TabBar(
               tabs: tabs.map((t) => t.item1).toList(),
             ),

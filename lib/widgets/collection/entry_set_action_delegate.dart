@@ -434,7 +434,6 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       builder: (context) {
         final l10n = context.l10n;
         return AvesDialog(
-          title: l10n.unsupportedTypeDialogTitle,
           content: Text(l10n.unsupportedTypeDialogMessage(unsupportedTypes.length, unsupportedTypes.join(', '))),
           actions: [
             TextButton(

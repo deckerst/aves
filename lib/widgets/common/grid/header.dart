@@ -55,11 +55,9 @@ class SectionHeader<T> extends StatelessWidget {
                   onPressed: selectable ? () => _toggleSectionSelection(context) : null,
                 ),
               ),
-              // TODO TLAD [flutter 3] remove this zero-width span when this is fixed: https://github.com/flutter/flutter/issues/103615
-              TextSpan(text: Constants.zwsp * 3, style: Constants.titleTextStyle),
               TextSpan(
                 text: title,
-                style: Constants.titleTextStyle,
+                style: Constants.unknownTitleTextStyle,
               ),
               if (trailing != null)
                 WidgetSpan(
@@ -111,7 +109,7 @@ class SectionHeader<T> extends StatelessWidget {
           if (hasTrailing) TextSpan(text: '\u200A' * 17),
           TextSpan(
             text: title,
-            style: Constants.titleTextStyle,
+            style: Constants.unknownTitleTextStyle,
           ),
         ],
       ),

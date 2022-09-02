@@ -3,6 +3,10 @@
     "entryInfoActionEditTitleDescription"
   ],
 
+  "el": [
+    "entryInfoActionEditTitleDescription"
+  ],
+
   "es": [
     "entryInfoActionEditTitleDescription",
     "filterRecentlyAddedLabel",
@@ -70,16 +74,16 @@
     "settingsConfirmationAfterMoveToBinItems",
     "settingsViewerGestureSideTapNext",
     "settingsViewerSlideshowTile",
-    "settingsViewerSlideshowTitle",
+    "settingsViewerSlideshowPageTitle",
     "settingsSlideshowRepeat",
     "settingsSlideshowShuffle",
     "settingsSlideshowFillScreen",
     "settingsSlideshowTransitionTile",
-    "settingsSlideshowTransitionTitle",
+    "settingsSlideshowTransitionDialogTitle",
     "settingsSlideshowIntervalTile",
-    "settingsSlideshowIntervalTitle",
+    "settingsSlideshowIntervalDialogTitle",
     "settingsSlideshowVideoPlaybackTile",
-    "settingsSlideshowVideoPlaybackTitle",
+    "settingsSlideshowVideoPlaybackDialogTitle",
     "settingsScreenSaverPageTitle",
     "settingsWidgetShowOutline",
     "viewerSetWallpaperButtonLabel",

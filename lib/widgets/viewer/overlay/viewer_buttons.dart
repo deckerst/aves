@@ -207,7 +207,7 @@ class ViewerButtonRowContent extends StatelessWidget {
                                   value: 'video',
                                   expandedNotifier: _popupExpandedNotifier,
                                   icon: AIcons.video,
-                                  title: context.l10n.settingsSectionVideo,
+                                  title: context.l10n.settingsVideoSectionTitle,
                                   items: [
                                     ...videoActions.map((action) => _buildPopupMenuItem(context, action, videoController)).toList(),
                                   ],

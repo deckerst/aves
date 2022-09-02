@@ -55,6 +55,7 @@
   "actionRemove": "Remove",
   "resetTooltip": "Reset",
   "saveTooltip": "Save",
+  "pickTooltip": "Pick",
 
   "doubleBackExitMessage": "Tap “back” again to exit.",
   "doNotAskAgain": "Do not ask again",
@@ -228,7 +229,6 @@
       }
     }
   },
-  "storageAccessDialogTitle": "Storage Access",
   "storageAccessDialogMessage": "Please select the {directory} of “{volume}” in the next screen to give this app access to it.",
   "@storageAccessDialogMessage": {
     "placeholders": {
@@ -243,7 +243,6 @@
       }
     }
   },
-  "restrictedAccessDialogTitle": "Restricted Access",
   "restrictedAccessDialogMessage": "This app is not allowed to modify files in the {directory} of “{volume}”.\n\nPlease use a pre-installed file manager or gallery app to move the items to another directory.",
   "@restrictedAccessDialogMessage": {
     "placeholders": {
@@ -258,7 +257,6 @@
       }
     }
   },
-  "notEnoughSpaceDialogTitle": "Not Enough Space",
   "notEnoughSpaceDialogMessage": "This operation needs {neededSize} of free space on “{volume}” to complete, but there is only {freeSize} left.",
   "@notEnoughSpaceDialogMessage": {
     "placeholders": {
@@ -277,10 +275,8 @@
       }
     }
   },
-  "missingSystemFilePickerDialogTitle": "Missing System File Picker",
   "missingSystemFilePickerDialogMessage": "The system file picker is missing or disabled. Please enable it and try again.",
 
-  "unsupportedTypeDialogTitle": "Unsupported Types",
   "unsupportedTypeDialogMessage": "{count, plural, =1{This operation is not supported for items of the following type: {types}.} other{This operation is not supported for items of the following types: {types}.}}",
   "@unsupportedTypeDialogMessage": {
     "placeholders": {
@@ -299,7 +295,6 @@
   "addShortcutDialogLabel": "Shortcut label",
   "addShortcutButtonLabel": "ADD",
 
-  "noMatchingAppDialogTitle": "No Matching App",
   "noMatchingAppDialogMessage": "There are no apps that can handle this.",
 
   "binEntriesConfirmationDialogMessage": "{count, plural, =1{Move this item to the recycle bin?} other{Move these {count} items to the recycle bin?}}",
@@ -346,7 +341,7 @@
   "renameEntrySetPageTitle": "Rename",
   "renameEntrySetPagePatternFieldLabel": "Naming pattern",
   "renameEntrySetPageInsertTooltip": "Insert field",
-  "renameEntrySetPagePreview": "Preview",
+  "renameEntrySetPagePreviewSectionTitle": "Preview",
 
   "renameProcessorCounter": "Counter",
   "renameProcessorName": "Name",
@@ -436,24 +431,24 @@
   "aboutLinkLicense": "License",
   "aboutLinkPolicy": "Privacy Policy",
 
-  "aboutBug": "Bug Report",
+  "aboutBugSectionTitle": "Bug Report",
   "aboutBugSaveLogInstruction": "Save app logs to a file",
   "aboutBugCopyInfoInstruction": "Copy system information",
   "aboutBugCopyInfoButton": "Copy",
   "aboutBugReportInstruction": "Report on GitHub with the logs and system information",
   "aboutBugReportButton": "Report",
 
-  "aboutCredits": "Credits",
+  "aboutCreditsSectionTitle": "Credits",
   "aboutCreditsWorldAtlas1": "This app uses a TopoJSON file from",
   "aboutCreditsWorldAtlas2": "under ISC License.",
-  "aboutCreditsTranslators": "Translators",
+  "aboutTranslatorsSectionTitle": "Translators",
 
-  "aboutLicenses": "Open-Source Licenses",
+  "aboutLicensesSectionTitle": "Open-Source Licenses",
   "aboutLicensesBanner": "This app uses the following open-source packages and libraries.",
-  "aboutLicensesAndroidLibraries": "Android Libraries",
-  "aboutLicensesFlutterPlugins": "Flutter Plugins",
-  "aboutLicensesFlutterPackages": "Flutter Packages",
-  "aboutLicensesDartPackages": "Dart Packages",
+  "aboutLicensesAndroidLibrariesSectionTitle": "Android Libraries",
+  "aboutLicensesFlutterPluginsSectionTitle": "Flutter Plugins",
+  "aboutLicensesFlutterPackagesSectionTitle": "Flutter Packages",
+  "aboutLicensesDartPackagesSectionTitle": "Dart Packages",
   "aboutLicensesShowAllButtonLabel": "Show All Licenses",
 
   "policyPageTitle": "Privacy Policy",
@@ -556,6 +551,8 @@
   "collectionSelectSectionTooltip": "Select section",
   "collectionDeselectSectionTooltip": "Deselect section",
 
+  "drawerAboutButton": "About",
+  "drawerSettingsButton": "Settings",
   "drawerCollectionAll": "All collection",
   "drawerCollectionFavourites": "Favorites",
   "drawerCollectionImages": "Images",
@@ -565,6 +562,9 @@
   "drawerCollectionPanoramas": "Panoramas",
   "drawerCollectionRaws": "Raw photos",
   "drawerCollectionSphericalVideos": "360° Videos",
+  "drawerAlbumPage": "Albums",
+  "drawerCountryPage": "Countries",
+  "drawerTagPage": "Tags",
 
   "chipSortDate": "By date",
   "chipSortName": "By name",
@@ -600,13 +600,13 @@
   "binPageTitle": "Recycle Bin",
 
   "searchCollectionFieldHint": "Search collection",
-  "searchSectionRecent": "Recent",
-  "searchSectionDate": "Date",
-  "searchSectionAlbums": "Albums",
-  "searchSectionCountries": "Countries",
-  "searchSectionPlaces": "Places",
-  "searchSectionTags": "Tags",
-  "searchSectionRating": "Ratings",
+  "searchRecentSectionTitle": "Recent",
+  "searchDateSectionTitle": "Date",
+  "searchAlbumsSectionTitle": "Albums",
+  "searchCountriesSectionTitle": "Countries",
+  "searchPlacesSectionTitle": "Places",
+  "searchTagsSectionTitle": "Tags",
+  "searchRatingSectionTitle": "Ratings",
 
   "settingsPageTitle": "Settings",
   "settingsSystemDefault": "System",
@@ -621,31 +621,32 @@
   "appExportFavourites": "Favorites",
   "appExportSettings": "Settings",
 
-  "settingsSectionNavigation": "Navigation",
-  "settingsHome": "Home",
+  "settingsNavigationSectionTitle": "Navigation",
+  "settingsHomeTile": "Home",
+  "settingsHomeDialogTitle": "Home",
   "settingsShowBottomNavigationBar": "Show bottom navigation bar",
   "settingsKeepScreenOnTile": "Keep screen on",
-  "settingsKeepScreenOnTitle": "Keep Screen On",
+  "settingsKeepScreenOnDialogTitle": "Keep Screen On",
   "settingsDoubleBackExit": "Tap “back” twice to exit",
 
-  "settingsConfirmationDialogTile": "Confirmation dialogs",
+  "settingsConfirmationTile": "Confirmation dialogs",
   "settingsConfirmationDialogTitle": "Confirmation Dialogs",
-  "settingsConfirmationDialogDeleteItems": "Ask before deleting items forever",
-  "settingsConfirmationDialogMoveToBinItems": "Ask before moving items to the recycle bin",
-  "settingsConfirmationDialogMoveUndatedItems": "Ask before moving undated items",
+  "settingsConfirmationBeforeDeleteItems": "Ask before deleting items forever",
+  "settingsConfirmationBeforeMoveToBinItems": "Ask before moving items to the recycle bin",
+  "settingsConfirmationBeforeMoveUndatedItems": "Ask before moving undated items",
   "settingsConfirmationAfterMoveToBinItems": "Show message after moving items to the recycle bin",
 
   "settingsNavigationDrawerTile": "Navigation menu",
-  "settingsNavigationDrawerEditorTitle": "Navigation Menu",
+  "settingsNavigationDrawerEditorPageTitle": "Navigation Menu",
   "settingsNavigationDrawerBanner": "Touch and hold to move and reorder menu items.",
   "settingsNavigationDrawerTabTypes": "Types",
   "settingsNavigationDrawerTabAlbums": "Albums",
   "settingsNavigationDrawerTabPages": "Pages",
   "settingsNavigationDrawerAddAlbum": "Add album",
 
-  "settingsSectionThumbnails": "Thumbnails",
+  "settingsThumbnailSectionTitle": "Thumbnails",
   "settingsThumbnailOverlayTile": "Overlay",
-  "settingsThumbnailOverlayTitle": "Overlay",
+  "settingsThumbnailOverlayPageTitle": "Overlay",
   "settingsThumbnailShowFavouriteIcon": "Show favorite icon",
   "settingsThumbnailShowTagIcon": "Show tag icon",
   "settingsThumbnailShowLocationIcon": "Show location icon",
@@ -655,13 +656,13 @@
   "settingsThumbnailShowVideoDuration": "Show video duration",
 
   "settingsCollectionQuickActionsTile": "Quick actions",
-  "settingsCollectionQuickActionEditorTitle": "Quick Actions",
+  "settingsCollectionQuickActionEditorPageTitle": "Quick Actions",
   "settingsCollectionQuickActionTabBrowsing": "Browsing",
   "settingsCollectionQuickActionTabSelecting": "Selecting",
   "settingsCollectionBrowsingQuickActionEditorBanner": "Touch and hold to move buttons and select which actions are displayed when browsing items.",
   "settingsCollectionSelectionQuickActionEditorBanner": "Touch and hold to move buttons and select which actions are displayed when selecting items.",
 
-  "settingsSectionViewer": "Viewer",
+  "settingsViewerSectionTitle": "Viewer",
   "settingsViewerGestureSideTapNext": "Tap on screen edges to show previous/next item",
   "settingsViewerUseCutout": "Use cutout area",
   "settingsViewerMaximumBrightness": "Maximum brightness",
@@ -669,14 +670,14 @@
   "settingsImageBackground": "Image background",
 
   "settingsViewerQuickActionsTile": "Quick actions",
-  "settingsViewerQuickActionEditorTitle": "Quick Actions",
+  "settingsViewerQuickActionEditorPageTitle": "Quick Actions",
   "settingsViewerQuickActionEditorBanner": "Touch and hold to move buttons and select which actions are displayed in the viewer.",
-  "settingsViewerQuickActionEditorDisplayedButtons": "Displayed Buttons",
-  "settingsViewerQuickActionEditorAvailableButtons": "Available Buttons",
+  "settingsViewerQuickActionEditorDisplayedButtonsSectionTitle": "Displayed Buttons",
+  "settingsViewerQuickActionEditorAvailableButtonsSectionTitle": "Available Buttons",
   "settingsViewerQuickActionEmpty": "No buttons",
 
   "settingsViewerOverlayTile": "Overlay",
-  "settingsViewerOverlayTitle": "Overlay",
+  "settingsViewerOverlayPageTitle": "Overlay",
   "settingsViewerShowOverlayOnOpening": "Show on opening",
   "settingsViewerShowMinimap": "Show minimap",
   "settingsViewerShowInformation": "Show information",
@@ -686,30 +687,30 @@
   "settingsViewerEnableOverlayBlurEffect": "Blur effect",
 
   "settingsViewerSlideshowTile": "Slideshow",
-  "settingsViewerSlideshowTitle": "Slideshow",
+  "settingsViewerSlideshowPageTitle": "Slideshow",
   "settingsSlideshowRepeat": "Repeat",
   "settingsSlideshowShuffle": "Shuffle",
   "settingsSlideshowFillScreen": "Fill screen",
   "settingsSlideshowTransitionTile": "Transition",
-  "settingsSlideshowTransitionTitle": "Transition",
+  "settingsSlideshowTransitionDialogTitle": "Transition",
   "settingsSlideshowIntervalTile": "Interval",
-  "settingsSlideshowIntervalTitle": "Interval",
+  "settingsSlideshowIntervalDialogTitle": "Interval",
   "settingsSlideshowVideoPlaybackTile": "Video playback",
-  "settingsSlideshowVideoPlaybackTitle": "Video Playback",
+  "settingsSlideshowVideoPlaybackDialogTitle": "Video Playback",
 
   "settingsVideoPageTitle": "Video Settings",
-  "settingsSectionVideo": "Video",
+  "settingsVideoSectionTitle": "Video",
   "settingsVideoShowVideos": "Show videos",
   "settingsVideoEnableHardwareAcceleration": "Hardware acceleration",
   "settingsVideoEnableAutoPlay": "Auto play",
   "settingsVideoLoopModeTile": "Loop mode",
-  "settingsVideoLoopModeTitle": "Loop Mode",
+  "settingsVideoLoopModeDialogTitle": "Loop Mode",
 
   "settingsSubtitleThemeTile": "Subtitles",
-  "settingsSubtitleThemeTitle": "Subtitles",
+  "settingsSubtitleThemePageTitle": "Subtitles",
   "settingsSubtitleThemeSample": "This is a sample.",
   "settingsSubtitleThemeTextAlignmentTile": "Text alignment",
-  "settingsSubtitleThemeTextAlignmentTitle": "Text Alignment",
+  "settingsSubtitleThemeTextAlignmentDialogTitle": "Text Alignment",
   "settingsSubtitleThemeTextSize": "Text size",
   "settingsSubtitleThemeShowOutline": "Show outline and shadow",
   "settingsSubtitleThemeTextColor": "Text color",
@@ -721,13 +722,13 @@
   "settingsSubtitleThemeTextAlignmentRight": "Right",
 
   "settingsVideoControlsTile": "Controls",
-  "settingsVideoControlsTitle": "Controls",
+  "settingsVideoControlsPageTitle": "Controls",
   "settingsVideoButtonsTile": "Buttons",
-  "settingsVideoButtonsTitle": "Buttons",
+  "settingsVideoButtonsDialogTitle": "Buttons",
   "settingsVideoGestureDoubleTapTogglePlay": "Double tap to play/pause",
   "settingsVideoGestureSideDoubleTapSeek": "Double tap on screen edges to seek backward/forward",
 
-  "settingsSectionPrivacy": "Privacy",
+  "settingsPrivacySectionTitle": "Privacy",
   "settingsAllowInstalledAppAccess": "Allow access to app inventory",
   "settingsAllowInstalledAppAccessSubtitle": "Used to improve album display",
   "settingsAllowErrorReporting": "Allow anonymous error reporting",
@@ -736,46 +737,49 @@
   "settingsEnableBinSubtitle": "Keep deleted items for 30 days",
 
   "settingsHiddenItemsTile": "Hidden items",
-  "settingsHiddenItemsTitle": "Hidden Items",
+  "settingsHiddenItemsPageTitle": "Hidden Items",
 
-  "settingsHiddenFiltersTitle": "Hidden Filters",
+  "settingsHiddenItemsTabFilters": "Hidden Filters",
   "settingsHiddenFiltersBanner": "Photos and videos matching hidden filters will not appear in your collection.",
   "settingsHiddenFiltersEmpty": "No hidden filters",
 
-  "settingsHiddenPathsTitle": "Hidden Paths",
+  "settingsHiddenItemsTabPaths": "Hidden Paths",
   "settingsHiddenPathsBanner": "Photos and videos in these folders, or any of their subfolders, will not appear in your collection.",
   "addPathTooltip": "Add path",
 
   "settingsStorageAccessTile": "Storage access",
-  "settingsStorageAccessTitle": "Storage Access",
+  "settingsStorageAccessPageTitle": "Storage Access",
   "settingsStorageAccessBanner": "Some directories require an explicit access grant to modify files in them. You can review here directories to which you previously gave access.",
   "settingsStorageAccessEmpty": "No access grants",
   "settingsStorageAccessRevokeTooltip": "Revoke",
 
-  "settingsSectionAccessibility": "Accessibility",
+  "settingsAccessibilitySectionTitle": "Accessibility",
   "settingsRemoveAnimationsTile": "Remove animations",
-  "settingsRemoveAnimationsTitle": "Remove Animations",
+  "settingsRemoveAnimationsDialogTitle": "Remove Animations",
   "settingsTimeToTakeActionTile": "Time to take action",
-  "settingsTimeToTakeActionTitle": "Time to Take Action",
+  "settingsTimeToTakeActionDialogTitle": "Time to Take Action",
 
-  "settingsSectionDisplay": "Display",
-  "settingsThemeBrightness": "Theme",
+  "settingsDisplaySectionTitle": "Display",
+  "settingsThemeBrightnessTile": "Theme",
+  "settingsThemeBrightnessDialogTitle": "Theme",
   "settingsThemeColorHighlights": "Color highlights",
   "settingsThemeEnableDynamicColor": "Dynamic color",
   "settingsDisplayRefreshRateModeTile": "Display refresh rate",
-  "settingsDisplayRefreshRateModeTitle": "Refresh Rate",
+  "settingsDisplayRefreshRateModeDialogTitle": "Refresh Rate",
 
-  "settingsSectionLanguage": "Language & Formats",
+  "settingsLanguageSectionTitle": "Language & Formats",
   "settingsLanguage": "Language",
   "settingsCoordinateFormatTile": "Coordinate format",
-  "settingsCoordinateFormatTitle": "Coordinate Format",
+  "settingsCoordinateFormatDialogTitle": "Coordinate Format",
   "settingsUnitSystemTile": "Units",
-  "settingsUnitSystemTitle": "Units",
+  "settingsUnitSystemDialogTitle": "Units",
 
   "settingsScreenSaverPageTitle": "Screen Saver",
 
   "settingsWidgetPageTitle": "Photo Frame",
   "settingsWidgetShowOutline": "Outline",
+
+  "settingsCollectionTile": "Collection",
 
   "statsPageTitle": "Stats",
   "statsWithGps": "{count, plural, =1{1 item with location} other{{count} items with location}}",
@@ -784,9 +788,9 @@
       "count": {}
     }
   },
-  "statsTopCountries": "Top Countries",
-  "statsTopPlaces": "Top Places",
-  "statsTopTags": "Top Tags",
+  "statsTopCountriesSectionTitle": "Top Countries",
+  "statsTopPlacesSectionTitle": "Top Places",
+  "statsTopTagsSectionTitle": "Top Tags",
 
   "viewerOpenPanoramaButtonLabel": "OPEN PANORAMA",
   "viewerSetWallpaperButtonLabel": "SET WALLPAPER",
@@ -809,7 +813,7 @@
   "viewerInfoLabelCoordinates": "Coordinates",
   "viewerInfoLabelAddress": "Address",
 
-  "mapStyleTitle": "Map Style",
+  "mapStyleDialogTitle": "Map Style",
   "mapStyleTooltip": "Select map style",
   "mapZoomInTooltip": "Zoom in",
   "mapZoomOutTooltip": "Zoom out",

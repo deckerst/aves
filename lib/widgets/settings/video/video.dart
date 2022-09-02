@@ -32,7 +32,7 @@ class VideoSection extends SettingsSection {
       );
 
   @override
-  String title(BuildContext context) => context.l10n.settingsSectionVideo;
+  String title(BuildContext context) => context.l10n.settingsVideoSectionTitle;
 
   @override
   FutureOr<List<SettingsTile>> tiles(BuildContext context) async {
@@ -94,7 +94,7 @@ class SettingsTileVideoLoopMode extends SettingsTile {
         selector: (context, s) => s.videoLoopMode,
         onSelection: (v) => settings.videoLoopMode = v,
         tileTitle: title(context),
-        dialogTitle: context.l10n.settingsVideoLoopModeTitle,
+        dialogTitle: context.l10n.settingsVideoLoopModeDialogTitle,
       );
 }
 

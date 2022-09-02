@@ -9,9 +9,9 @@ extension ExtraHomePageSetting on HomePageSetting {
   String getName(BuildContext context) {
     switch (this) {
       case HomePageSetting.collection:
-        return context.l10n.collectionPageTitle;
+        return context.l10n.drawerCollectionAll;
       case HomePageSetting.albums:
-        return context.l10n.albumPageTitle;
+        return context.l10n.drawerAlbumPage;
     }
   }
 
