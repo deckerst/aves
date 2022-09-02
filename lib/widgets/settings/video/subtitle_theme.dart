@@ -16,7 +16,7 @@ class SubtitleThemePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(context.l10n.settingsSubtitleThemeTitle),
+        title: Text(context.l10n.settingsSubtitleThemePageTitle),
       ),
       body: SafeArea(
         child: Consumer<Settings>(
@@ -38,7 +38,7 @@ class SubtitleThemePage extends StatelessWidget {
                         selector: (context, s) => s.subtitleTextAlignment,
                         onSelection: (v) => settings.subtitleTextAlignment = v,
                         tileTitle: context.l10n.settingsSubtitleThemeTextAlignmentTile,
-                        dialogTitle: context.l10n.settingsSubtitleThemeTextAlignmentTitle,
+                        dialogTitle: context.l10n.settingsSubtitleThemeTextAlignmentDialogTitle,
                       ),
                       SliderListTile(
                         title: context.l10n.settingsSubtitleThemeTextSize,

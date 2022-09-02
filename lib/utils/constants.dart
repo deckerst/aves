@@ -11,11 +11,18 @@ class Constants {
 
   static const double colorPickerRadius = 16;
 
-  static const titleTextStyle = TextStyle(
+  static const knownTitleTextStyle = TextStyle(
     fontSize: 20,
     fontWeight: FontWeight.w300,
     fontFeatures: [FontFeature.enable('smcp')],
   );
+
+  static TextStyle unknownTitleTextStyle = knownTitleTextStyle;
+
+  static void updateStylesForLocale(Locale locale) {
+    final smcp = locale.languageCode != 'el';
+    unknownTitleTextStyle = smcp ? knownTitleTextStyle : knownTitleTextStyle.copyWith(fontFeatures: []);
+  }
 
   static const embossShadows = [
     Shadow(

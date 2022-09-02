@@ -44,7 +44,7 @@ class ExpandableFilterRow extends StatelessWidget {
           children: [
             Text(
               title!,
-              style: Constants.titleTextStyle,
+              style: Constants.knownTitleTextStyle,
             ),
             const Spacer(),
             IconButton(

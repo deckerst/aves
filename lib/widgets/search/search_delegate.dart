@@ -96,7 +96,7 @@ class CollectionSearchDelegate extends AvesSearchDelegate {
                       if (upQuery.isEmpty && history.isNotEmpty)
                         _buildFilterRow(
                           context: context,
-                          title: context.l10n.searchSectionRecent,
+                          title: context.l10n.searchRecentSectionTitle,
                           filters: history,
                         ),
                       _buildDateFilters(context, containQuery),
@@ -136,7 +136,7 @@ class CollectionSearchDelegate extends AvesSearchDelegate {
     ].where((f) => containQuery(f.getLabel(context))).toList();
     return _buildFilterRow(
       context: context,
-      title: context.l10n.searchSectionDate,
+      title: context.l10n.searchDateSectionTitle,
       filters: filters,
     );
   }
@@ -155,7 +155,7 @@ class CollectionSearchDelegate extends AvesSearchDelegate {
           ..sort();
         return _buildFilterRow(
           context: context,
-          title: context.l10n.searchSectionAlbums,
+          title: context.l10n.searchAlbumsSectionTitle,
           filters: filters,
         );
       },
@@ -169,7 +169,7 @@ class CollectionSearchDelegate extends AvesSearchDelegate {
         final filters = source.sortedCountries.where(containQuery).map((s) => LocationFilter(LocationLevel.country, s)).toList();
         return _buildFilterRow(
           context: context,
-          title: context.l10n.searchSectionCountries,
+          title: context.l10n.searchCountriesSectionTitle,
           filters: filters,
         );
       },
@@ -184,7 +184,7 @@ class CollectionSearchDelegate extends AvesSearchDelegate {
         final noFilter = LocationFilter(LocationLevel.place, '');
         return _buildFilterRow(
           context: context,
-          title: context.l10n.searchSectionPlaces,
+          title: context.l10n.searchPlacesSectionTitle,
           filters: [
             if (containQuery(noFilter.getLabel(context))) noFilter,
             ...filters,
@@ -202,7 +202,7 @@ class CollectionSearchDelegate extends AvesSearchDelegate {
         final noFilter = TagFilter('');
         return _buildFilterRow(
           context: context,
-          title: context.l10n.searchSectionTags,
+          title: context.l10n.searchTagsSectionTitle,
           filters: [
             if (containQuery(noFilter.getLabel(context))) noFilter,
             ...filters,
@@ -215,7 +215,7 @@ class CollectionSearchDelegate extends AvesSearchDelegate {
   Widget _buildRatingFilters(BuildContext context, _ContainQuery containQuery) {
     return _buildFilterRow(
       context: context,
-      title: context.l10n.searchSectionRating,
+      title: context.l10n.searchRatingSectionTitle,
       filters: [0, 5, 4, 3, 2, 1, -1].map(RatingFilter.new).where((f) => containQuery(f.getLabel(context))).toList(),
     );
   }

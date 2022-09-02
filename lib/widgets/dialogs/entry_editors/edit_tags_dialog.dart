@@ -162,7 +162,7 @@ class _TagEditorPageState extends State<TagEditorPage> {
                         onTap: _addTag,
                       ),
                       _FilterRow(
-                        title: l10n.statsTopTags,
+                        title: l10n.statsTopTagsSectionTitle,
                         filters: topTagFilters,
                         expandedNotifier: _expandedSectionNotifier,
                         onTap: _addTag,

@@ -20,17 +20,17 @@ class ConfirmationDialogPage extends StatelessWidget {
           SettingsSwitchListTile(
             selector: (context, s) => s.confirmMoveUndatedItems,
             onChanged: (v) => settings.confirmMoveUndatedItems = v,
-            title: l10n.settingsConfirmationDialogMoveUndatedItems,
+            title: l10n.settingsConfirmationBeforeMoveUndatedItems,
           ),
           SettingsSwitchListTile(
             selector: (context, s) => s.confirmMoveToBin,
             onChanged: (v) => settings.confirmMoveToBin = v,
-            title: l10n.settingsConfirmationDialogMoveToBinItems,
+            title: l10n.settingsConfirmationBeforeMoveToBinItems,
           ),
           SettingsSwitchListTile(
             selector: (context, s) => s.confirmDeleteForever,
             onChanged: (v) => settings.confirmDeleteForever = v,
-            title: l10n.settingsConfirmationDialogDeleteItems,
+            title: l10n.settingsConfirmationBeforeDeleteItems,
           ),
           const Divider(height: 32),
           SettingsSwitchListTile(

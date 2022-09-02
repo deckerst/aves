@@ -159,10 +159,10 @@ class StatsPage extends StatelessWidget {
             onFilterSelection: (filter) => _onFilterSelection(context, filter),
           ),
           locationIndicator,
-          ..._buildFilterSection<String>(context, l10n.statsTopCountries, entryCountPerCountry, (v) => LocationFilter(LocationLevel.country, v)),
-          ..._buildFilterSection<String>(context, l10n.statsTopPlaces, entryCountPerPlace, (v) => LocationFilter(LocationLevel.place, v)),
-          ..._buildFilterSection<String>(context, l10n.statsTopTags, entryCountPerTag, TagFilter.new),
-          if (showRatings) ..._buildFilterSection<int>(context, l10n.searchSectionRating, entryCountPerRating, RatingFilter.new, sortByCount: false, maxRowCount: null),
+          ..._buildFilterSection<String>(context, l10n.statsTopCountriesSectionTitle, entryCountPerCountry, (v) => LocationFilter(LocationLevel.country, v)),
+          ..._buildFilterSection<String>(context, l10n.statsTopPlacesSectionTitle, entryCountPerPlace, (v) => LocationFilter(LocationLevel.place, v)),
+          ..._buildFilterSection<String>(context, l10n.statsTopTagsSectionTitle, entryCountPerTag, TagFilter.new),
+          if (showRatings) ..._buildFilterSection<int>(context, l10n.searchRatingSectionTitle, entryCountPerRating, RatingFilter.new, sortByCount: false, maxRowCount: null),
         ],
       );
     }
@@ -317,7 +317,7 @@ class StatsPage extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: Text(
           title,
-          style: Constants.titleTextStyle,
+          style: Constants.knownTitleTextStyle,
         ),
       ),
       FilterTable(

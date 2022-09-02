@@ -131,7 +131,7 @@ class MapButtonPanel extends StatelessWidget {
                           builder: (context) => AvesSelectionDialog<EntryMapStyle>(
                             initialValue: settings.infoMapStyle,
                             options: Map.fromEntries(availability.mapStyles.map((v) => MapEntry(v, v.getName(context)))),
-                            title: context.l10n.mapStyleTitle,
+                            title: context.l10n.mapStyleDialogTitle,
                           ),
                           onSelection: (v) => settings.infoMapStyle = v,
                         ),

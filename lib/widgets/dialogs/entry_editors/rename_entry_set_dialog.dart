@@ -116,8 +116,8 @@ class _RenameEntrySetPageState extends State<RenameEntrySetPage> {
               Padding(
                 padding: const EdgeInsets.all(16),
                 child: Text(
-                  l10n.renameEntrySetPagePreview,
-                  style: Constants.titleTextStyle,
+                  l10n.renameEntrySetPagePreviewSectionTitle,
+                  style: Constants.knownTitleTextStyle,
                 ),
               ),
               Expanded(

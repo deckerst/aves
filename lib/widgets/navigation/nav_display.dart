@@ -30,11 +30,11 @@ class NavigationDisplay {
     final l10n = context.l10n;
     switch (route) {
       case AlbumListPage.routeName:
-        return l10n.albumPageTitle;
+        return l10n.drawerAlbumPage;
       case CountryListPage.routeName:
-        return l10n.countryPageTitle;
+        return l10n.drawerCountryPage;
       case TagListPage.routeName:
-        return l10n.tagPageTitle;
+        return l10n.drawerTagPage;
       case AppDebugPage.routeName:
         return 'Debug';
       default:

@@ -160,14 +160,14 @@ class _AppDrawerState extends State<AppDrawer> {
                     key: const Key('drawer-about-button'),
                     onPressed: () => goTo(AboutPage.routeName, (_) => const AboutPage()),
                     icon: const Icon(AIcons.info),
-                    label: Text(context.l10n.aboutPageTitle),
+                    label: Text(context.l10n.drawerAboutButton),
                   ),
                   OutlinedButton.icon(
                     // key is expected by test driver
                     key: const Key('drawer-settings-button'),
                     onPressed: () => goTo(SettingsPage.routeName, (_) => const SettingsPage()),
                     icon: const Icon(AIcons.settings),
-                    label: Text(context.l10n.settingsPageTitle),
+                    label: Text(context.l10n.drawerSettingsButton),
                   ),
                 ],
               ),

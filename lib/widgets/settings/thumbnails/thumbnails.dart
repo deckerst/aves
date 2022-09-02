@@ -20,7 +20,7 @@ class ThumbnailsSection extends SettingsSection {
       );
 
   @override
-  String title(BuildContext context) => context.l10n.settingsSectionThumbnails;
+  String title(BuildContext context) => context.l10n.settingsThumbnailSectionTitle;
 
   @override
   List<SettingsTile> tiles(BuildContext context) => [

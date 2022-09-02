@@ -172,6 +172,7 @@ class Settings extends ChangeNotifier {
 
   Future<void> init({required bool monitorPlatformSettings}) async {
     await settingsStore.init();
+    _appliedLocale = null;
     if (monitorPlatformSettings) {
       _platformSettingsChangeChannel.receiveBroadcastStream().listen((event) => _onPlatformSettingsChange(event as Map?));
     }

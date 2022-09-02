@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - Collection / Info: edit title via IPTC / XMP
+- Greek translation (thanks Emmanouil Papavergis)
 
 ### Changed
 

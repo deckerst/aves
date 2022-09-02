@@ -51,7 +51,6 @@ mixin PermissionAwareMixin {
           final directory = dir.relativeDir.isEmpty ? l10n.rootDirectoryDescription : l10n.otherDirectoryDescription(dir.relativeDir);
           final volume = dir.getVolumeDescription(context);
           return AvesDialog(
-            title: l10n.storageAccessDialogTitle,
             content: Text(l10n.storageAccessDialogMessage(directory, volume)),
             actions: [
               TextButton(
@@ -73,10 +72,8 @@ mixin PermissionAwareMixin {
         await showDialog(
           context: context,
           builder: (context) {
-            final l10n = context.l10n;
             return AvesDialog(
-              title: l10n.missingSystemFilePickerDialogTitle,
-              content: Text(l10n.missingSystemFilePickerDialogMessage),
+              content: Text(context.l10n.missingSystemFilePickerDialogMessage),
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(context),
@@ -104,7 +101,6 @@ mixin PermissionAwareMixin {
         final directory = dir.relativeDir.isEmpty ? context.l10n.rootDirectoryDescription : context.l10n.otherDirectoryDescription(dir.relativeDir);
         final volume = dir.getVolumeDescription(context);
         return AvesDialog(
-          title: context.l10n.restrictedAccessDialogTitle,
           content: Text(context.l10n.restrictedAccessDialogMessage(directory, volume)),
           actions: [
             TextButton(
