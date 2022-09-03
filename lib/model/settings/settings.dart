@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:aves/l10n/l10n.dart';
@@ -15,6 +16,7 @@ import 'package:aves_map/aves_map.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:latlong2/latlong.dart';
 
 final Settings settings = Settings._private();
 
@@ -121,10 +123,13 @@ class Settings extends ChangeNotifier {
   static const subtitleBackgroundColorKey = 'subtitle_background_color';
 
   // info
-  static const infoMapStyleKey = 'info_map_style';
   static const infoMapZoomKey = 'info_map_zoom';
   static const coordinateFormatKey = 'coordinates_format';
   static const unitSystemKey = 'unit_system';
+
+  // map
+  static const mapStyleKey = 'info_map_style';
+  static const mapDefaultCenterKey = 'map_default_center';
 
   // search
   static const saveSearchHistoryKey = 'save_search_history';
@@ -198,10 +203,10 @@ class Settings extends ChangeNotifier {
     // availability
     final defaultMapStyle = mobileServices.defaultMapStyle;
     if (mobileServices.mapStyles.contains(defaultMapStyle)) {
-      infoMapStyle = defaultMapStyle;
+      mapStyle = defaultMapStyle;
     } else {
       final styles = EntryMapStyle.values.whereNot((v) => v.needMobileService).toList();
-      infoMapStyle = styles[Random().nextInt(styles.length)];
+      mapStyle = styles[Random().nextInt(styles.length)];
     }
   }
 
@@ -556,14 +561,6 @@ class Settings extends ChangeNotifier {
 
   // info
 
-  EntryMapStyle get infoMapStyle {
-    final preferred = getEnumOrDefault(infoMapStyleKey, SettingsDefaults.infoMapStyle, EntryMapStyle.values);
-    final available = availability.mapStyles;
-    return available.contains(preferred) ? preferred : available.first;
-  }
-
-  set infoMapStyle(EntryMapStyle newValue) => setAndNotify(infoMapStyleKey, newValue.toString());
-
   double get infoMapZoom => getDouble(infoMapZoomKey) ?? SettingsDefaults.infoMapZoom;
 
   set infoMapZoom(double newValue) => setAndNotify(infoMapZoomKey, newValue);
@@ -575,6 +572,23 @@ class Settings extends ChangeNotifier {
   UnitSystem get unitSystem => getEnumOrDefault(unitSystemKey, SettingsDefaults.unitSystem, UnitSystem.values);
 
   set unitSystem(UnitSystem newValue) => setAndNotify(unitSystemKey, newValue.toString());
+
+  // map
+
+  EntryMapStyle get mapStyle {
+    final preferred = getEnumOrDefault(mapStyleKey, SettingsDefaults.infoMapStyle, EntryMapStyle.values);
+    final available = availability.mapStyles;
+    return available.contains(preferred) ? preferred : available.first;
+  }
+
+  set mapStyle(EntryMapStyle newValue) => setAndNotify(mapStyleKey, newValue.toString());
+
+  LatLng? get mapDefaultCenter {
+    final json = getString(mapDefaultCenterKey);
+    return json != null ? LatLng.fromJson(jsonDecode(json)) : null;
+  }
+
+  set mapDefaultCenter(LatLng? newValue) => setAndNotify(mapDefaultCenterKey, newValue != null ? jsonEncode(newValue.toJson()) : null);
 
   // search
 
@@ -863,7 +877,8 @@ class Settings extends ChangeNotifier {
             case videoLoopModeKey:
             case videoControlsKey:
             case subtitleTextAlignmentKey:
-            case infoMapStyleKey:
+            case mapStyleKey:
+            case mapDefaultCenterKey:
             case coordinateFormatKey:
             case unitSystemKey:
             case accessibilityAnimationsKey:

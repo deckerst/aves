@@ -149,7 +149,7 @@ class _GeoMapState extends State<GeoMap> {
     }
 
     return Selector<Settings, EntryMapStyle>(
-      selector: (context, s) => s.infoMapStyle,
+      selector: (context, s) => s.mapStyle,
       builder: (context, mapStyle, child) {
         final isHeavy = mapStyle.isHeavy;
         Widget _buildMarkerWidget(MarkerKey<AvesEntry> key) => ImageMarker(
@@ -281,6 +281,7 @@ class _GeoMapState extends State<GeoMap> {
 
     final overlayEntry = widget.overlayEntry;
     if (overlayEntry != null) {
+      // fit map to overlaid item
       final corner1 = overlayEntry.topLeft;
       final corner2 = overlayEntry.bottomRight;
       if (corner1 != null && corner2 != null) {
@@ -290,10 +291,26 @@ class _GeoMapState extends State<GeoMap> {
       }
     }
     if (bounds == null) {
+      // fit map to located items
       final initialCenter = widget.initialCenter;
       final points = initialCenter != null ? {initialCenter} : entries.map((v) => v.latLng!).toSet();
+      if (points.isNotEmpty) {
+        bounds = ZoomedBounds.fromPoints(
+          points: points,
+          collocationZoom: settings.infoMapZoom,
+        );
+        final center = bounds.projectedCenter;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!mounted) return;
+          settings.mapDefaultCenter = center;
+        });
+      }
+    }
+    if (bounds == null) {
+      // fallback to default center
+      final center = settings.mapDefaultCenter ??= Constants.wonders[Random().nextInt(Constants.wonders.length)];
       bounds = ZoomedBounds.fromPoints(
-        points: points.isNotEmpty ? points : {Constants.wonders[Random().nextInt(Constants.wonders.length)]},
+        points: {center},
         collocationZoom: settings.infoMapZoom,
       );
     }
