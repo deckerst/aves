@@ -79,7 +79,7 @@
   "videoActionPlay": "Αναπαραγωγή",
   "videoActionReplay10": "10 δευτερόλεπτα πίσω ",
   "videoActionSkip10": "10 δευτερόλεπτα μπροστά",
-  "videoActionSelectStreams": "Επιλέξτε κομμάτια",
+  "videoActionSelectStreams": "Επιλογή γλώσσας",
   "videoActionSetSpeed": "Ταχύτητα αναπαραγωγής",
   "videoActionSettings": "Ρυθμίσεις",
 
@@ -312,7 +312,7 @@
   "aboutCreditsWorldAtlas2": "υπό την άδεια ISC.",
   "aboutTranslatorsSectionTitle": "Μεταφραστες",
 
-  "aboutLicensesSectionTitle": "Άδειες ανοιχτου κωδικα",
+  "aboutLicensesSectionTitle": "Αδειες ανοιχτου κωδικα",
   "aboutLicensesBanner": "Αυτή η εφαρμογή χρησιμοποιεί τα ακόλουθα πακέτα και βιβλιοθήκες ανοιχτού κώδικα.",
   "aboutLicensesAndroidLibrariesSectionTitle": "Βιβλιοθηκες Android",
   "aboutLicensesFlutterPluginsSectionTitle": "Προσθετα Flutter",
@@ -464,8 +464,8 @@
   "settingsNavigationDrawerAddAlbum": "Προσθήκη άλμπουμ",
 
   "settingsThumbnailSectionTitle": "Μικρογραφιες",
-  "settingsThumbnailOverlayTile": "Επικάλυψη",
-  "settingsThumbnailOverlayPageTitle": "Επικαλυψη",
+  "settingsThumbnailOverlayTile": "Βοηθητικές πληροφορίες",
+  "settingsThumbnailOverlayPageTitle": "Βοηθητικές πληροφοριες",
   "settingsThumbnailShowFavouriteIcon": "Εμφάνιση εικονιδίου για αγαπημένο",
   "settingsThumbnailShowTagIcon": "Εμφάνιση εικονιδίου για ετικέτα",
   "settingsThumbnailShowLocationIcon": "Εμφάνιση εικονιδίου για τοποθεσία",
@@ -541,7 +541,7 @@
   "settingsSubtitleThemeTextAlignmentRight": "Δεξιά",
 
   "settingsVideoControlsTile": "Έλεγχος",
-  "settingsVideoControlsPageTitle": "Έλεγχος",
+  "settingsVideoControlsPageTitle": "Ελεγχος",
   "settingsVideoButtonsTile": "Κουμπιά",
   "settingsVideoButtonsDialogTitle": "Κουμπια",
   "settingsVideoGestureDoubleTapTogglePlay": "Αγγίξτε την οθόνη δύο φορές για αναπαραγωγή/παύση",
