@@ -226,10 +226,10 @@ class _EntryPageViewState extends State<EntryPageView> {
                 ? (alignment) {
                     final x = alignment.x;
                     if (seekGesture) {
-                      if (x < .25) {
+                      if (x < sideRatio) {
                         _applyAction(EntryAction.videoReplay10);
                         return true;
-                      } else if (x > .75) {
+                      } else if (x > 1 - sideRatio) {
                         _applyAction(EntryAction.videoSkip10);
                         return true;
                       }
@@ -394,10 +394,10 @@ class _EntryPageViewState extends State<EntryPageView> {
   void _onTap({Alignment? alignment}) {
     if (settings.viewerGestureSideTapNext && alignment != null) {
       final x = alignment.x;
-      if (x < .25) {
+      if (x < sideRatio) {
         JumpToPreviousEntryNotification().dispatch(context);
         return;
-      } else if (x > .75) {
+      } else if (x > 1 - sideRatio) {
         JumpToNextEntryNotification().dispatch(context);
         return;
       }
@@ -417,6 +417,15 @@ class _EntryPageViewState extends State<EntryPageView> {
       viewportSize: v.viewportSize,
       contentSize: v.childSize,
     );
+  }
+
+  double get sideRatio {
+    switch (context.read<MediaQueryData>().orientation) {
+      case Orientation.portrait:
+        return 1 / 4;
+      case Orientation.landscape:
+        return 1 / 8;
+    }
   }
 
   static ScaleState _vectorScaleStateCycle(ScaleState actual) {
