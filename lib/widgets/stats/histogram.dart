@@ -72,35 +72,12 @@ class _HistogramState extends State<Histogram> {
   Widget build(BuildContext context) {
     if (_entryCountPerDate.isEmpty) return const SizedBox();
 
-    final theme = Theme.of(context);
+    final locale = context.l10n.localeName;
+    final numberFormat = NumberFormat.decimalPattern(locale);
 
     final seriesData = _entryCountPerDate.entries.map((kv) {
       return EntryByDate(date: kv.key, entryCount: kv.value);
     }).toList();
-
-    final series = [
-      charts.Series<EntryByDate, DateTime>(
-        id: 'histogram',
-        colorFn: (d, i) => charts.ColorUtil.fromDartColor(theme.colorScheme.secondary),
-        domainFn: (d, i) => d.date,
-        measureFn: (d, i) => d.entryCount,
-        data: seriesData,
-      ),
-    ];
-
-    final locale = context.l10n.localeName;
-    final numberFormat = NumberFormat.decimalPattern(locale);
-    final timeAxisSpec = _firstDate != null && _lastDate != null
-        ? TimeAxisSpec.forLevel(
-            locale: locale,
-            level: _level,
-            first: _firstDate!,
-            last: _lastDate!,
-          )
-        : null;
-    final axisColor = charts.ColorUtil.fromDartColor(theme.colorScheme.onPrimary.withOpacity(.9));
-    final measureLineColor = charts.ColorUtil.fromDartColor(theme.colorScheme.onPrimary.withOpacity(.1));
-    final measureFormat = NumberFormat.decimalPattern(locale);
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -108,35 +85,10 @@ class _HistogramState extends State<Histogram> {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 8),
           height: histogramHeight,
-          child: charts.TimeSeriesChart(
-            series,
-            domainAxis: charts.DateTimeAxisSpec(
-              renderSpec: charts.SmallTickRendererSpec(
-                labelStyle: charts.TextStyleSpec(color: axisColor),
-                lineStyle: charts.LineStyleSpec(color: axisColor),
-              ),
-              tickProviderSpec: timeAxisSpec != null && timeAxisSpec.tickSpecs.isNotEmpty ? charts.StaticDateTimeTickProviderSpec(timeAxisSpec.tickSpecs) : null,
-            ),
-            primaryMeasureAxis: charts.NumericAxisSpec(
-              renderSpec: charts.GridlineRendererSpec(
-                labelStyle: charts.TextStyleSpec(color: axisColor),
-                lineStyle: charts.LineStyleSpec(color: measureLineColor),
-              ),
-              tickFormatterSpec: charts.BasicNumericTickFormatterSpec((v) {
-                // localize and hide 0
-                return (v == null || v == 0) ? '' : measureFormat.format(v);
-              }),
-            ),
-            defaultRenderer: charts.BarRendererConfig<DateTime>(),
-            defaultInteractions: false,
-            behaviors: [
-              charts.SelectNearest(),
-              charts.DomainHighlighter(),
-            ],
-            selectionModels: [
-              charts.SelectionModelConfig(
-                changedListener: (model) => _selection.value = model.selectedDatum.firstOrNull?.datum as EntryByDate?,
-              )
+          child: Stack(
+            children: [
+              _buildChart(context, seriesData, drawArea: true),
+              _buildChart(context, seriesData, drawArea: false),
             ],
           ),
         ),
@@ -161,7 +113,7 @@ class _HistogramState extends State<Histogram> {
                     Text(
                       numberFormat.format(count),
                       style: TextStyle(
-                        color: theme.textTheme.caption!.color,
+                        color: Theme.of(context).textTheme.caption!.color,
                       ),
                       textAlign: TextAlign.end,
                     ),
@@ -188,6 +140,111 @@ class _HistogramState extends State<Histogram> {
         ),
       ],
     );
+  }
+
+  Widget _buildChart(BuildContext context, List<EntryByDate> seriesData, {required bool drawArea}) {
+    final theme = Theme.of(context);
+    final accentColor = theme.colorScheme.secondary;
+    final axisColor = charts.ColorUtil.fromDartColor(drawArea ? Colors.transparent : theme.colorScheme.onPrimary.withOpacity(.9));
+    final measureLineColor = charts.ColorUtil.fromDartColor(drawArea ? Colors.transparent : theme.colorScheme.onPrimary.withOpacity(.1));
+    final histogramLineColor = charts.ColorUtil.fromDartColor(drawArea ? Colors.white : accentColor);
+    final histogramPointStrikeColor = axisColor;
+    final histogramPointFillColor = charts.ColorUtil.fromDartColor(theme.colorScheme.background);
+
+    final series = [
+      charts.Series<EntryByDate, DateTime>(
+        id: 'histogramLine',
+        data: seriesData,
+        domainFn: (d, i) => d.date,
+        measureFn: (d, i) => d.entryCount,
+        colorFn: (d, i) => histogramLineColor,
+      ),
+      if (!drawArea)
+        charts.Series<EntryByDate, DateTime>(
+          id: 'histogramPoints',
+          data: seriesData,
+          domainFn: (d, i) => d.date,
+          measureFn: (d, i) => d.entryCount,
+          colorFn: (d, i) => histogramPointStrikeColor,
+          fillColorFn: (d, i) => histogramPointFillColor,
+        )..setAttribute(charts.rendererIdKey, 'customPoint'),
+    ];
+
+    final locale = context.l10n.localeName;
+    final timeAxisSpec = _firstDate != null && _lastDate != null
+        ? TimeAxisSpec.forLevel(
+            locale: locale,
+            level: _level,
+            first: _firstDate!,
+            last: _lastDate!,
+          )
+        : null;
+    final measureFormat = NumberFormat.decimalPattern(locale);
+
+    final domainAxis = charts.DateTimeAxisSpec(
+      renderSpec: charts.SmallTickRendererSpec(
+        labelStyle: charts.TextStyleSpec(color: axisColor),
+        lineStyle: charts.LineStyleSpec(color: axisColor),
+      ),
+      tickProviderSpec: timeAxisSpec != null && timeAxisSpec.tickSpecs.isNotEmpty ? charts.StaticDateTimeTickProviderSpec(timeAxisSpec.tickSpecs) : null,
+    );
+
+    Widget chart = charts.TimeSeriesChart(
+      series,
+      domainAxis: domainAxis,
+      primaryMeasureAxis: charts.NumericAxisSpec(
+        renderSpec: charts.GridlineRendererSpec(
+          labelStyle: charts.TextStyleSpec(color: axisColor),
+          lineStyle: charts.LineStyleSpec(color: measureLineColor),
+        ),
+        tickFormatterSpec: charts.BasicNumericTickFormatterSpec((v) {
+          // localize and hide 0
+          return (v == null || v == 0) ? '' : measureFormat.format(v);
+        }),
+      ),
+      defaultRenderer: charts.LineRendererConfig(
+        includeArea: drawArea,
+        areaOpacity: 1,
+      ),
+      customSeriesRenderers: [
+        charts.PointRendererConfig(
+          customRendererId: 'customPoint',
+          radiusPx: 3,
+          strokeWidthPx: 2,
+          symbolRenderer: charts.CircleSymbolRenderer(isSolid: true),
+        ),
+      ],
+      defaultInteractions: false,
+      behaviors: [
+        charts.SelectNearest(),
+        charts.LinePointHighlighter(
+          defaultRadiusPx: 8,
+          radiusPaddingPx: 2,
+          showHorizontalFollowLine: charts.LinePointHighlighterFollowLineType.nearest,
+          showVerticalFollowLine: charts.LinePointHighlighterFollowLineType.nearest,
+        ),
+      ],
+      selectionModels: [
+        charts.SelectionModelConfig(
+          changedListener: (model) => _selection.value = model.selectedDatum.firstOrNull?.datum as EntryByDate?,
+        )
+      ],
+    );
+    if (drawArea) {
+      chart = ShaderMask(
+        shaderCallback: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            accentColor.withOpacity(0),
+            accentColor,
+          ],
+        ).createShader,
+        blendMode: BlendMode.srcIn,
+        child: chart,
+      );
+    }
+    return chart;
   }
 }
 
