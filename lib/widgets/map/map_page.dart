@@ -107,7 +107,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
   void initState() {
     super.initState();
 
-    if (settings.infoMapStyle.isHeavy) {
+    if (settings.mapStyle.isHeavy) {
       _isPageAnimatingNotifier.value = true;
       Future.delayed(Durations.pageTransitionAnimation * timeDilation).then((_) {
         if (!mounted) return;
@@ -170,7 +170,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
         return true;
       },
       child: Selector<Settings, EntryMapStyle>(
-        selector: (context, s) => s.infoMapStyle,
+        selector: (context, s) => s.mapStyle,
         builder: (context, mapStyle, child) {
           late Widget scroller;
           if (mapStyle.isHeavy) {
