@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:aves/model/entry.dart';
@@ -9,17 +10,21 @@ import 'package:aves/widgets/stats/date/axis.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class Histogram extends StatefulWidget {
   final Set<AvesEntry> entries;
+  final Duration animationDuration;
   final FilterCallback onFilterSelection;
 
   const Histogram({
     super.key,
     required this.entries,
+    required this.animationDuration,
     required this.onFilterSelection,
   });
 
@@ -27,15 +32,18 @@ class Histogram extends StatefulWidget {
   State<Histogram> createState() => _HistogramState();
 }
 
-class _HistogramState extends State<Histogram> {
+class _HistogramState extends State<Histogram> with AutomaticKeepAliveClientMixin {
   DateLevel _level = DateLevel.y;
   DateTime? _firstDate, _lastDate;
   final Map<DateTime, int> _entryCountPerDate = {};
   final ValueNotifier<_EntryByDate?> _selection = ValueNotifier(null);
   List<_EntryByDate>? _seriesData;
-  List<_EntryByDate>? _interpolatedData;
+  late Future<List<_EntryByDate>?> _interpolatedDataLoader;
+  late Future<void> _areaChartLoader;
 
   static const histogramHeight = 200.0;
+
+  Duration get animationDuration => widget.animationDuration;
 
   @override
   void initState() {
@@ -78,22 +86,33 @@ class _HistogramState extends State<Histogram> {
           }).toList();
 
           // smooth curve
-          _computeInterpolatedData();
+          _interpolatedDataLoader = compute<_DataInterpolationArg, List<_EntryByDate>?>(
+              _computeInterpolatedData,
+              _DataInterpolationArg(
+                firstDate: _firstDate,
+                lastDate: _lastDate,
+                level: _level,
+                entryCountPerDate: _entryCountPerDate,
+              ));
+          _areaChartLoader = _interpolatedDataLoader.then((_) => Future.delayed(animationDuration * timeDilation));
         }
       }
     }
   }
 
-  void _computeInterpolatedData() {
-    final firstDate = _firstDate;
-    final lastDate = _lastDate;
-    if (firstDate == null || lastDate == null) return;
+  static List<_EntryByDate>? _computeInterpolatedData(_DataInterpolationArg arg) {
+    final firstDate = arg.firstDate;
+    final lastDate = arg.lastDate;
+    final level = arg.level;
+    final entryCountPerDate = arg.entryCountPerDate;
+
+    if (firstDate == null || lastDate == null) return null;
 
     final xRange = lastDate.difference(firstDate);
     final xRangeInMillis = xRange.inMilliseconds;
     late int xCount;
     late DateTime Function(DateTime date) incrementDate;
-    switch (_level) {
+    switch (level) {
       case DateLevel.ymd:
         xCount = xRange.inDays;
         incrementDate = (date) => DateTime(date.year, date.month, date.day + 1);
@@ -107,42 +126,69 @@ class _HistogramState extends State<Histogram> {
         incrementDate = (date) => DateTime(date.year + 1);
         break;
     }
-    final yMax = _entryCountPerDate.values.reduce(max).toDouble();
+    final yMax = entryCountPerDate.values.reduce(max).toDouble();
     final xInterval = yMax / xCount;
     final controlPoints = <Offset>[];
     var date = firstDate;
     for (int i = 0; i <= xCount; i++) {
-      controlPoints.add(Offset(i * xInterval, (_entryCountPerDate[date] ?? 0).toDouble()));
+      controlPoints.add(Offset(i * xInterval, (entryCountPerDate[date] ?? 0).toDouble()));
       date = incrementDate(date);
     }
     final interpolatedPoints = controlPoints.length > 3 ? CatmullRomSpline(controlPoints).generateSamples().map((sample) => sample.value).toList() : controlPoints;
-    _interpolatedData = interpolatedPoints.map((p) {
+    final interpolatedData = interpolatedPoints.map((p) {
       final date = firstDate.add(Duration(milliseconds: p.dx * xRangeInMillis ~/ yMax));
       final entryCount = p.dy.clamp(0, yMax);
       return _EntryByDate(date: date, entryCount: entryCount);
     }).toList();
+
+    return interpolatedData;
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_seriesData == null || _interpolatedData == null) return const SizedBox();
+    super.build(context);
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          height: histogramHeight,
-          child: Stack(
-            children: [
-              _buildChart(context, _interpolatedData!, isInterpolated: true, isArea: true),
-              _buildChart(context, _interpolatedData!, isInterpolated: true, isArea: false),
-              _buildChart(context, _seriesData!, isInterpolated: false, isArea: false),
-            ],
-          ),
-        ),
-        _buildSelectionRow(),
-      ],
+    if (_seriesData == null) return const SizedBox();
+
+    return FutureBuilder<List<_EntryByDate>?>(
+      future: _interpolatedDataLoader,
+      builder: (context, snapshot) {
+        final interpolatedData = snapshot.data;
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              height: histogramHeight,
+              child: AnimatedSwitcher(
+                duration: animationDuration,
+                child: interpolatedData != null
+                    ? Stack(
+                        children: [
+                          FutureBuilder<void>(
+                            future: _areaChartLoader,
+                            builder: (context, snapshot) {
+                              Widget child = const SizedBox();
+                              if (snapshot.connectionState == ConnectionState.done) {
+                                child = _buildChart(context, interpolatedData, isInterpolated: true, isArea: true);
+                              }
+                              return AnimatedSwitcher(
+                                duration: animationDuration,
+                                child: child,
+                              );
+                            },
+                          ),
+                          _buildChart(context, interpolatedData, isInterpolated: true, isArea: false),
+                          _buildChart(context, _seriesData!, isInterpolated: false, isArea: false),
+                        ],
+                      )
+                    : const SizedBox(),
+              ),
+            ),
+            _buildSelectionRow(),
+          ],
+        );
+      },
     );
   }
 
@@ -200,6 +246,8 @@ class _HistogramState extends State<Histogram> {
 
     Widget chart = charts.TimeSeriesChart(
       series,
+      animate: false,
+      animationDuration: animationDuration,
       domainAxis: domainAxis,
       primaryMeasureAxis: charts.NumericAxisSpec(
         renderSpec: charts.GridlineRendererSpec(
@@ -308,6 +356,9 @@ class _HistogramState extends State<Histogram> {
       },
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 @immutable
@@ -329,4 +380,17 @@ class _CircleSymbolRenderer extends charts.CircleSymbolRenderer {
 
   @override
   charts.Color? getSolidFillColor(charts.Color? fillColor) => fillColor;
+}
+
+class _DataInterpolationArg {
+  final DateLevel level;
+  final DateTime? firstDate, lastDate;
+  final Map<DateTime, int> entryCountPerDate;
+
+  const _DataInterpolationArg({
+    required this.level,
+    required this.firstDate,
+    required this.lastDate,
+    required this.entryCountPerDate,
+  });
 }
