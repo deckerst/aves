@@ -738,7 +738,12 @@ class AvesEntry {
   }
 
   // when the MIME type or the image itself changed (e.g. after rotation)
-  Future<void> _onVisualFieldChanged(String oldMimeType, int? oldDateModifiedSecs, int oldRotationDegrees, bool oldIsFlipped) async {
+  Future<void> _onVisualFieldChanged(
+    String oldMimeType,
+    int? oldDateModifiedSecs,
+    int oldRotationDegrees,
+    bool oldIsFlipped,
+  ) async {
     if ((!MimeTypes.refersToSameType(oldMimeType, mimeType) && !MimeTypes.isVideo(oldMimeType)) || oldDateModifiedSecs != dateModifiedSecs || oldRotationDegrees != rotationDegrees || oldIsFlipped != isFlipped) {
       await EntryCache.evict(uri, oldMimeType, oldDateModifiedSecs, oldRotationDegrees, oldIsFlipped);
       imageChangeNotifier.notify();

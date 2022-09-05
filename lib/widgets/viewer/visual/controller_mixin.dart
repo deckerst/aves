@@ -14,7 +14,10 @@ import 'package:provider/provider.dart';
 
 // state controllers/monitors
 mixin EntryViewControllerMixin<T extends StatefulWidget> on State<T> {
+  final Map<AvesEntry, VoidCallback> _metadataChangeListeners = {};
   final Map<MultiPageController, Future<void> Function()> _multiPageControllerPageListeners = {};
+
+  bool get isViewingImage;
 
   ValueNotifier<AvesEntry?> get entryNotifier;
 
@@ -27,14 +30,27 @@ mixin EntryViewControllerMixin<T extends StatefulWidget> on State<T> {
     if (entry.isMultiPage) {
       await _initMultiPageController(entry);
     }
+    void listener() => _onMetadataChange(entry);
+    _metadataChangeListeners[entry] = listener;
+    entry.metadataChangeNotifier.addListener(listener);
   }
 
   void cleanEntryControllers(AvesEntry? entry) {
     if (entry == null) return;
 
+    final listener = _metadataChangeListeners.remove(entry);
+    if (listener != null) {
+      entry.metadataChangeNotifier.removeListener(listener);
+    }
     if (entry.isMultiPage) {
       _cleanMultiPageController(entry);
     }
+  }
+
+  void _onMetadataChange(AvesEntry entry) {
+    debugPrint('reinitialize controllers for entry=$entry because metadata changed');
+    cleanEntryControllers(entry);
+    initEntryControllers(entry);
   }
 
   SlideshowVideoPlayback? get videoPlaybackOverride {
@@ -50,7 +66,9 @@ mixin EntryViewControllerMixin<T extends StatefulWidget> on State<T> {
     }
   }
 
-  bool _shouldAutoPlay(BuildContext context) {
+  bool _shouldAutoPlayVideo(BuildContext context) {
+    if (!isViewingImage) return false;
+
     switch (videoPlaybackOverride) {
       case SlideshowVideoPlayback.skip:
         return false;
@@ -62,11 +80,17 @@ mixin EntryViewControllerMixin<T extends StatefulWidget> on State<T> {
     }
   }
 
+  bool _shouldAutoPlayMotionPhoto(BuildContext context) {
+    if (!isViewingImage) return false;
+
+    return settings.enableMotionPhotoAutoPlay;
+  }
+
   Future<void> _initVideoController(AvesEntry entry) async {
     final controller = context.read<VideoConductor>().getOrCreateController(entry);
     setState(() {});
 
-    if (_shouldAutoPlay(context)) {
+    if (_shouldAutoPlayVideo(context)) {
       final resumeTimeMillis = await controller.getResumeTime(context);
       await _playVideo(controller, () => entry == entryNotifier.value, resumeTimeMillis: resumeTimeMillis);
     }
@@ -93,7 +117,7 @@ mixin EntryViewControllerMixin<T extends StatefulWidget> on State<T> {
       // auto play/pause when changing page
       Future<void> _onPageChange() async {
         await pauseVideoControllers();
-        if (_shouldAutoPlay(context) || (entry.isMotionPhoto && settings.enableMotionPhotoAutoPlay)) {
+        if (_shouldAutoPlayVideo(context) || (entry.isMotionPhoto && _shouldAutoPlayMotionPhoto(context))) {
           final page = multiPageController.page;
           final pageInfo = multiPageInfo.getByIndex(page)!;
           if (pageInfo.isVideo) {
@@ -111,7 +135,7 @@ mixin EntryViewControllerMixin<T extends StatefulWidget> on State<T> {
       multiPageController.pageNotifier.addListener(_onPageChange);
       await _onPageChange();
 
-      if (entry.isMotionPhoto && settings.enableMotionPhotoAutoPlay) {
+      if (entry.isMotionPhoto && _shouldAutoPlayMotionPhoto(context)) {
         await Future.delayed(Durations.motionPhotoAutoPlayDelay);
         if (entry == entryNotifier.value) {
           multiPageController.page = 1;
