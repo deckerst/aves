@@ -458,6 +458,13 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
     return 0;
   }
 
+  int size(CollectionFilter filter) {
+    if (filter is AlbumFilter) return albumSize(filter);
+    if (filter is LocationFilter) return countrySize(filter);
+    if (filter is TagFilter) return tagSize(filter);
+    return 0;
+  }
+
   AvesEntry? recentEntry(CollectionFilter filter) {
     if (filter is AlbumFilter) return albumRecentEntry(filter);
     if (filter is LocationFilter) return countryRecentEntry(filter);

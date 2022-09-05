@@ -323,11 +323,6 @@
 
   "collectionSearchTitlesHintText": "Başlıkları ara",
 
-  "collectionSortDate": "Tarihe göre",
-  "collectionSortSize": "Boyuta göre",
-  "collectionSortName": "Albüm ve dosya adına göre",
-  "collectionSortRating": "Derecelendirmeye göre",
-
   "collectionGroupAlbum": "Albüme göre",
   "collectionGroupMonth": "Aya göre",
   "collectionGroupDay": "Güne göre",
@@ -380,9 +375,12 @@
   "drawerCountryPage": "Ülkeler",
   "drawerTagPage": "Etiketler",
 
-  "chipSortDate": "Tarihe göre",
-  "chipSortName": "Adına göre",
-  "chipSortCount": "Öğe sayısına göre",
+  "sortByDate": "Tarihe göre",
+  "sortByName": "Adına göre",
+  "sortByItemCount": "Öğe sayısına göre",
+  "sortBySize": "Boyuta göre",
+  "sortByAlbumFileName": "Albüm ve dosya adına göre",
+  "sortByRating": "Derecelendirmeye göre",
 
   "albumGroupTier": "Kademeye göre",
   "albumGroupVolume": "Depolama hacmine göre",

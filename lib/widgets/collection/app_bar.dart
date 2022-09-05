@@ -518,10 +518,10 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
         return TileViewDialog<EntrySortFactor, EntryGroupFactor, TileLayout>(
           initialValue: initialValue,
           sortOptions: {
-            EntrySortFactor.date: l10n.collectionSortDate,
-            EntrySortFactor.size: l10n.collectionSortSize,
-            EntrySortFactor.name: l10n.collectionSortName,
-            EntrySortFactor.rating: l10n.collectionSortRating,
+            EntrySortFactor.date: l10n.sortByDate,
+            EntrySortFactor.size: l10n.sortBySize,
+            EntrySortFactor.name: l10n.sortByAlbumFileName,
+            EntrySortFactor.rating: l10n.sortByRating,
           },
           groupOptions: {
             EntryGroupFactor.album: l10n.collectionGroupAlbum,

@@ -336,11 +336,6 @@
 
   "collectionSearchTitlesHintText": "Cari judul",
 
-  "collectionSortDate": "Lewat tanggal",
-  "collectionSortSize": "Lewat ukuran",
-  "collectionSortName": "Lewat nama album & file",
-  "collectionSortRating": "Lewat nilai",
-
   "collectionGroupAlbum": "Lewat album",
   "collectionGroupMonth": "Lewat bulan",
   "collectionGroupDay": "Lewat hari",
@@ -384,9 +379,12 @@
   "drawerCountryPage": "Negara",
   "drawerTagPage": "Label",
 
-  "chipSortDate": "Lewat tanggal",
-  "chipSortName": "Lewat nama",
-  "chipSortCount": "Lewat jumlah benda",
+  "sortByDate": "Lewat tanggal",
+  "sortByName": "Lewat nama",
+  "sortByItemCount": "Lewat jumlah benda",
+  "sortBySize": "Lewat ukuran",
+  "sortByAlbumFileName": "Lewat nama album & file",
+  "sortByRating": "Lewat nilai",
 
   "albumGroupTier": "Lewat tingkat",
   "albumGroupVolume": "Lewat volume penyimpanan",

@@ -337,11 +337,6 @@
 
   "collectionSearchTitlesHintText": "Αναζήτηση τίτλων",
 
-  "collectionSortDate": "Ανά ημερομηνία.",
-  "collectionSortSize": "Ανά μέγεθος",
-  "collectionSortName": "Ανά άλμπουμ και όνομα αρχείου",
-  "collectionSortRating": "Ανά βαθμολογία",
-
   "collectionGroupAlbum": "Ανά άλμπουμ",
   "collectionGroupMonth": "Ανά μήνα",
   "collectionGroupDay": "Ανά ημέρα",
@@ -385,9 +380,12 @@
   "drawerCountryPage": "Χώρες",
   "drawerTagPage": "Ετικέτες",
 
-  "chipSortDate": "Ανά ημερομηνία",
-  "chipSortName": "Ανά όνομα",
-  "chipSortCount": "Ανά μέτρηση στοιχείων",
+  "sortByDate": "Ανά ημερομηνία",
+  "sortByName": "Ανά όνομα",
+  "sortByItemCount": "Ανά μέτρηση στοιχείων",
+  "sortBySize": "Ανά μέγεθος",
+  "sortByAlbumFileName": "Ανά άλμπουμ και όνομα αρχείου",
+  "sortByRating": "Ανά βαθμολογία",
 
   "albumGroupTier": "Ανά βαθμίδα",
   "albumGroupVolume": "Ανά αποθηκευτική μονάδα",

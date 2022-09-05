@@ -337,11 +337,6 @@
 
   "collectionSearchTitlesHintText": "Titel suchen",
 
-  "collectionSortDate": "Nach Datum",
-  "collectionSortSize": "Nach Größe",
-  "collectionSortName": "Nach Album & Dateiname",
-  "collectionSortRating": "Nach Bewertung",
-
   "collectionGroupAlbum": "Nach Album",
   "collectionGroupMonth": "Nach Monat",
   "collectionGroupDay": "Nach Tag",
@@ -385,9 +380,12 @@
   "drawerCountryPage": "Länder",
   "drawerTagPage": "Tags",
 
-  "chipSortDate": "Nach Datum",
-  "chipSortName": "Nach Name",
-  "chipSortCount": "Nach Anzahl",
+  "sortByDate": "Nach Datum",
+  "sortByName": "Nach Name",
+  "sortByItemCount": "Nach Anzahl",
+  "sortBySize": "Nach Größe",
+  "sortByAlbumFileName": "Nach Album & Dateiname",
+  "sortByRating": "Nach Bewertung",
 
   "albumGroupTier": "Nach Ebene",
   "albumGroupVolume": "Nach Speichervolumen",

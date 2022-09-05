@@ -47,6 +47,11 @@ class FilterNavigationPage<T extends CollectionFilter, CSAD extends ChipSetActio
     return c != 0 ? c : a.key.compareTo(b.key);
   }
 
+  static int compareFiltersBySize(MapEntry<CollectionFilter, num> a, MapEntry<CollectionFilter, num> b) {
+    final c = b.value.compareTo(a.value);
+    return c != 0 ? c : a.key.compareTo(b.key);
+  }
+
   static int compareFiltersByName(FilterGridItem<CollectionFilter> a, FilterGridItem<CollectionFilter> b) {
     return a.filter.compareTo(b.filter);
   }
@@ -73,6 +78,12 @@ class FilterNavigationPage<T extends CollectionFilter, CSAD extends ChipSetActio
         final filtersWithCount = List.of(filters.map((filter) => MapEntry(filter, source.count(filter))));
         filtersWithCount.sort(compareFiltersByEntryCount);
         filters = filtersWithCount.map((kv) => kv.key).toSet();
+        allMapEntries = toGridItem(source, filters);
+        break;
+      case ChipSortFactor.size:
+        final filtersWithSize = List.of(filters.map((filter) => MapEntry(filter, source.size(filter))));
+        filtersWithSize.sort(compareFiltersBySize);
+        filters = filtersWithSize.map((kv) => kv.key).toSet();
         allMapEntries = toGridItem(source, filters);
         break;
     }

@@ -337,11 +337,6 @@
 
   "collectionSearchTitlesHintText": "搜索标题",
 
-  "collectionSortDate": "按日期",
-  "collectionSortSize": "按大小",
-  "collectionSortName": "按相册和文件名",
-  "collectionSortRating": "按评分",
-
   "collectionGroupAlbum": "按相册",
   "collectionGroupMonth": "按月份",
   "collectionGroupDay": "按天",
@@ -385,9 +380,12 @@
   "drawerCountryPage": "国家",
   "drawerTagPage": "标签",
 
-  "chipSortDate": "按日期",
-  "chipSortName": "按名称",
-  "chipSortCount": "按数量",
+  "sortByDate": "按日期",
+  "sortByName": "按名称",
+  "sortByItemCount": "按数量",
+  "sortBySize": "按大小",
+  "sortByAlbumFileName": "按相册和文件名",
+  "sortByRating": "按评分",
 
   "albumGroupTier": "按层级",
   "albumGroupVolume": "按存储卷",

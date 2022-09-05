@@ -336,11 +336,6 @@
 
   "collectionSearchTitlesHintText": "タイトルを検索",
 
-  "collectionSortDate": "日付",
-  "collectionSortSize": "サイズ",
-  "collectionSortName": "アルバムとファイル名",
-  "collectionSortRating": "評価",
-
   "collectionGroupAlbum": "アルバム別",
   "collectionGroupMonth": "月別",
   "collectionGroupDay": "日別",
@@ -384,9 +379,12 @@
   "drawerCountryPage": "国",
   "drawerTagPage": "タグ",
 
-  "chipSortDate": "日付",
-  "chipSortName": "名前",
-  "chipSortCount": "アイテム件数",
+  "sortByDate": "日付",
+  "sortByName": "名前",
+  "sortByItemCount": "アイテム件数",
+  "sortBySize": "サイズ",
+  "sortByAlbumFileName": "アルバムとファイル名",
+  "sortByRating": "評価",
 
   "albumGroupTier": "階層別",
   "albumGroupVolume": "ストレージ ボリューム別",
