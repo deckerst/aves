@@ -13,6 +13,10 @@ All notable changes to this project will be documented in this file.
 
 - upgraded Flutter to stable v3.3.0
 
+### Fixed
+
+- fixed opening viewer with directory context in some cases
+
 ## <a id="v1.6.13"></a>[v1.6.13] - 2022-08-29
 
 ### Changed
