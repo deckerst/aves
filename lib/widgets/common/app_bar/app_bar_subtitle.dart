@@ -38,7 +38,7 @@ class SourceStateAwareAppBarTitle extends StatelessWidget {
                 ),
               ),
               child: sourceState == SourceState.ready
-                  ? const SizedBox.shrink()
+                  ? const SizedBox()
                   : SourceStateSubtitle(
                       source: source,
                     ),

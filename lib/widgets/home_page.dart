@@ -22,8 +22,8 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/search/route.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
-import 'package:aves/widgets/settings/screen_saver_settings_page.dart';
 import 'package:aves/widgets/settings/home_widget_settings_page.dart';
+import 'package:aves/widgets/settings/screen_saver_settings_page.dart';
 import 'package:aves/widgets/viewer/entry_viewer_page.dart';
 import 'package:aves/widgets/viewer/screen_saver_page.dart';
 import 'package:aves/widgets/wallpaper_page.dart';
@@ -206,6 +206,7 @@ class _HomePageState extends State<HomePage> {
             final source = context.read<CollectionSource>();
             await source.init(
               directory: directory,
+              canAnalyze: false,
             );
           }
         }
