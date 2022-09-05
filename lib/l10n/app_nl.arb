@@ -337,11 +337,6 @@
 
   "collectionSearchTitlesHintText": "Zoek op titel",
 
-  "collectionSortDate": "Op datum",
-  "collectionSortSize": "Op grootte",
-  "collectionSortName": "Op album- en bestandsnaam",
-  "collectionSortRating": "Op rating",
-
   "collectionGroupAlbum": "Op Albumnaam",
   "collectionGroupMonth": "Op maand",
   "collectionGroupDay": "Op dag",
@@ -385,9 +380,12 @@
   "drawerCountryPage": "Landen",
   "drawerTagPage": "Labels",
 
-  "chipSortDate": "Op datum",
-  "chipSortName": "Op naam",
-  "chipSortCount": "Op aantal items",
+  "sortByDate": "Op datum",
+  "sortByName": "Op naam",
+  "sortByItemCount": "Op aantal items",
+  "sortBySize": "Op grootte",
+  "sortByAlbumFileName": "Op album- en bestandsnaam",
+  "sortByRating": "Op rating",
 
   "albumGroupTier": "Op rang",
   "albumGroupVolume": "Op opslagvolume",

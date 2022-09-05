@@ -335,11 +335,6 @@
 
   "collectionSearchTitlesHintText": "Поиск заголовков",
 
-  "collectionSortDate": "По дате",
-  "collectionSortSize": "По размеру",
-  "collectionSortName": "По имени альбома и файла",
-  "collectionSortRating": "По рейтингу",
-
   "collectionGroupAlbum": "По альбому",
   "collectionGroupMonth": "По месяцу",
   "collectionGroupDay": "По дню",
@@ -383,9 +378,12 @@
   "drawerCountryPage": "Страны",
   "drawerTagPage": "Теги",
 
-  "chipSortDate": "По дате",
-  "chipSortName": "По названию",
-  "chipSortCount": "По количеству объектов",
+  "sortByDate": "По дате",
+  "sortByName": "По названию",
+  "sortByItemCount": "По количеству объектов",
+  "sortBySize": "По размеру",
+  "sortByAlbumFileName": "По имени альбома и файла",
+  "sortByRating": "По рейтингу",
 
   "albumGroupTier": "По уровню",
   "albumGroupVolume": "По накопителю",

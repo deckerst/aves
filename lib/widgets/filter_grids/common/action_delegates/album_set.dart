@@ -137,14 +137,15 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
         return TileViewDialog<ChipSortFactor, AlbumChipGroupFactor, TileLayout>(
           initialValue: initialValue,
           sortOptions: {
-            ChipSortFactor.date: context.l10n.chipSortDate,
-            ChipSortFactor.name: context.l10n.chipSortName,
-            ChipSortFactor.count: context.l10n.chipSortCount,
+            ChipSortFactor.date: l10n.sortByDate,
+            ChipSortFactor.name: l10n.sortByName,
+            ChipSortFactor.count: l10n.sortByItemCount,
+            ChipSortFactor.size: l10n.sortBySize,
           },
           groupOptions: {
-            AlbumChipGroupFactor.importance: context.l10n.albumGroupTier,
-            AlbumChipGroupFactor.volume: context.l10n.albumGroupVolume,
-            AlbumChipGroupFactor.none: context.l10n.albumGroupNone,
+            AlbumChipGroupFactor.importance: l10n.albumGroupTier,
+            AlbumChipGroupFactor.volume: l10n.albumGroupVolume,
+            AlbumChipGroupFactor.none: l10n.albumGroupNone,
           },
           layoutOptions: {
             TileLayout.grid: l10n.tileLayoutGrid,

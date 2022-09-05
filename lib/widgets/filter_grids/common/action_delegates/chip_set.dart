@@ -206,9 +206,10 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
         return TileViewDialog<ChipSortFactor, void, TileLayout>(
           initialValue: initialValue,
           sortOptions: {
-            ChipSortFactor.date: context.l10n.chipSortDate,
-            ChipSortFactor.name: context.l10n.chipSortName,
-            ChipSortFactor.count: context.l10n.chipSortCount,
+            ChipSortFactor.date: l10n.sortByDate,
+            ChipSortFactor.name: l10n.sortByName,
+            ChipSortFactor.count: l10n.sortByItemCount,
+            ChipSortFactor.size: l10n.sortBySize,
           },
           layoutOptions: {
             TileLayout.grid: l10n.tileLayoutGrid,

@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - Collection / Info: edit title via IPTC / XMP
+- Albums / Countries / Tags: size displayed in list view details, sort by size
 - Greek translation (thanks Emmanouil Papavergis)
 
 ### Changed

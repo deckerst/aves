@@ -48,7 +48,7 @@ class _MimeDonutState extends State<MimeDonut> with AutomaticKeepAliveClientMixi
     final locale = l10n.localeName;
     final numberFormat = NumberFormat.decimalPattern(locale);
 
-    final sum = byMimeTypes.values.fold<int>(0, (prev, v) => prev + v);
+    final sum = byMimeTypes.values.sum;
 
     final colors = context.watch<AvesColorsData>();
     final seriesData = byMimeTypes.entries.map((kv) {

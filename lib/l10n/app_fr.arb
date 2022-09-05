@@ -338,11 +338,6 @@
 
   "collectionSearchTitlesHintText": "Recherche de titres",
 
-  "collectionSortDate": "par date",
-  "collectionSortSize": "par taille",
-  "collectionSortName": "alphabétique",
-  "collectionSortRating": "par notation",
-
   "collectionGroupAlbum": "par album",
   "collectionGroupMonth": "par mois",
   "collectionGroupDay": "par jour",
@@ -386,9 +381,12 @@
   "drawerCountryPage": "Pays",
   "drawerTagPage": "Libellés",
 
-  "chipSortDate": "par date",
-  "chipSortName": "alphabétique",
-  "chipSortCount": "par nombre d’éléments",
+  "sortByDate": "par date",
+  "sortByName": "alphabétique",
+  "sortByItemCount": "par nombre d’éléments",
+  "sortBySize": "par taille",
+  "sortByAlbumFileName": "alphabétique",
+  "sortByRating": "par notation",
 
   "albumGroupTier": "par importance",
   "albumGroupVolume": "par volume de stockage",
