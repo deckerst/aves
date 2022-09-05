@@ -422,7 +422,7 @@ class _EntryPageViewState extends State<EntryPageView> {
   double get sideRatio {
     switch (context.read<MediaQueryData>().orientation) {
       case Orientation.portrait:
-        return 1 / 4;
+        return 1 / 5;
       case Orientation.landscape:
         return 1 / 8;
     }
