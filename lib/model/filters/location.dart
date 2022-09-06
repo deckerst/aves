@@ -56,7 +56,7 @@ class LocationFilter extends CoveredCollectionFilter {
   String get universalLabel => _location;
 
   @override
-  String getLabel(BuildContext context) => _location.isEmpty ? context.l10n.filterLocationEmptyLabel : _location;
+  String getLabel(BuildContext context) => _location.isEmpty ? context.l10n.filterNoLocationLabel : _location;
 
   @override
   Widget iconBuilder(BuildContext context, double size, {bool showGenericIcon = true}) {

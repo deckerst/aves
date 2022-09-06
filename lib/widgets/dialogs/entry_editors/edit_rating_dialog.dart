@@ -95,7 +95,7 @@ class _EditEntryRatingDialogState extends State<EditEntryRatingDialog> {
                   _action = v!;
                   _rating = 0;
                 }),
-                title: Text(l10n.filterRatingUnratedLabel),
+                title: Text(l10n.filterNoRatingLabel),
               ),
             ],
             actions: [

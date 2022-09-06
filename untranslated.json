@@ -1,51 +1,78 @@
 {
   "de": [
-    "entryInfoActionEditTitleDescription"
+    "entryInfoActionEditTitleDescription",
+    "filterNoDateLabel",
+    "filterNoTitleLabel",
+    "searchMetadataSectionTitle"
   ],
 
   "el": [
-    "entryInfoActionEditTitleDescription"
+    "entryInfoActionEditTitleDescription",
+    "filterNoDateLabel",
+    "filterNoTitleLabel",
+    "searchMetadataSectionTitle"
   ],
 
   "es": [
     "entryInfoActionEditTitleDescription",
+    "filterNoDateLabel",
+    "filterNoTitleLabel",
     "filterRecentlyAddedLabel",
+    "searchMetadataSectionTitle",
     "settingsConfirmationAfterMoveToBinItems",
     "viewerInfoLabelDescription"
   ],
 
   "id": [
     "entryInfoActionEditTitleDescription",
+    "filterNoDateLabel",
+    "filterNoTitleLabel",
     "filterRecentlyAddedLabel",
+    "searchMetadataSectionTitle",
     "settingsConfirmationAfterMoveToBinItems",
     "settingsViewerGestureSideTapNext",
     "viewerInfoLabelDescription"
   ],
 
   "it": [
-    "entryInfoActionEditTitleDescription"
+    "entryInfoActionEditTitleDescription",
+    "filterNoDateLabel",
+    "filterNoTitleLabel",
+    "searchMetadataSectionTitle"
   ],
 
   "ja": [
     "entryInfoActionEditTitleDescription",
+    "filterNoDateLabel",
+    "filterNoTitleLabel",
     "filterRecentlyAddedLabel",
+    "searchMetadataSectionTitle",
     "settingsConfirmationAfterMoveToBinItems",
     "settingsViewerGestureSideTapNext",
     "viewerInfoLabelDescription"
   ],
 
   "nl": [
-    "entryInfoActionEditTitleDescription"
+    "entryInfoActionEditTitleDescription",
+    "filterNoDateLabel",
+    "filterNoTitleLabel",
+    "searchMetadataSectionTitle"
   ],
 
   "pt": [
-    "entryInfoActionEditTitleDescription"
+    "entryInfoActionEditTitleDescription",
+    "filterNoDateLabel",
+    "filterNoTitleLabel",
+    "searchMetadataSectionTitle"
   ],
 
   "ru": [
     "entryInfoActionEditTitleDescription",
+    "filterNoDateLabel",
+    "filterNoTitleLabel",
     "filterOnThisDayLabel",
     "filterRecentlyAddedLabel",
+    "searchMetadataSectionTitle",
     "settingsConfirmationAfterMoveToBinItems",
     "settingsViewerGestureSideTapNext",
     "settingsSlideshowFillScreen",
@@ -58,6 +85,8 @@
     "slideshowActionResume",
     "slideshowActionShowInCollection",
     "entryInfoActionEditTitleDescription",
+    "filterNoDateLabel",
+    "filterNoTitleLabel",
     "filterOnThisDayLabel",
     "filterRecentlyAddedLabel",
     "slideshowVideoPlaybackSkip",
@@ -71,6 +100,7 @@
     "wallpaperTargetLock",
     "wallpaperTargetHomeLock",
     "menuActionSlideshow",
+    "searchMetadataSectionTitle",
     "settingsConfirmationAfterMoveToBinItems",
     "settingsViewerGestureSideTapNext",
     "settingsViewerSlideshowTile",
@@ -91,6 +121,9 @@
   ],
 
   "zh": [
-    "entryInfoActionEditTitleDescription"
+    "entryInfoActionEditTitleDescription",
+    "filterNoDateLabel",
+    "filterNoTitleLabel",
+    "searchMetadataSectionTitle"
   ]
 }

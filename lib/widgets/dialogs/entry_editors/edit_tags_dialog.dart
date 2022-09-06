@@ -125,7 +125,7 @@ class _TagEditorPageState extends State<TagEditorPage> {
                                   const Icon(AIcons.tagUntagged, color: untaggedColor),
                                   const SizedBox(width: 8),
                                   Text(
-                                    l10n.filterTagEmptyLabel,
+                                    l10n.filterNoTagLabel,
                                     style: const TextStyle(color: untaggedColor),
                                   ),
                                 ],

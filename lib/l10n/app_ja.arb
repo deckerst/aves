@@ -94,10 +94,10 @@
 
   "filterBinLabel": "ごみ箱",
   "filterFavouriteLabel": "お気に入り",
-  "filterLocationEmptyLabel": "位置情報なし",
-  "filterTagEmptyLabel": "タグ情報なし",
+  "filterNoLocationLabel": "位置情報なし",
+  "filterNoRatingLabel": "評価情報なし",
+  "filterNoTagLabel": "タグ情報なし",
   "filterOnThisDayLabel": "過去のこの日",
-  "filterRatingUnratedLabel": "評価情報なし",
   "filterRatingRejectedLabel": "拒否",
   "filterTypeAnimatedLabel": "アニメーション",
   "filterTypeMotionPhotoLabel": "モーションフォト",

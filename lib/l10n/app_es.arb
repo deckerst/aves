@@ -94,10 +94,10 @@
 
   "filterBinLabel": "Cesto de basura",
   "filterFavouriteLabel": "Favorito",
-  "filterLocationEmptyLabel": "No localizado",
-  "filterTagEmptyLabel": "Sin etiquetar",
+  "filterNoLocationLabel": "No localizado",
+  "filterNoRatingLabel": "Sin clasificar",
+  "filterNoTagLabel": "Sin etiquetar",
   "filterOnThisDayLabel": "De este día",
-  "filterRatingUnratedLabel": "Sin clasificar",
   "filterRatingRejectedLabel": "Rechazado",
   "filterTypeAnimatedLabel": "Animado",
   "filterTypeMotionPhotoLabel": "Foto en movimiento",

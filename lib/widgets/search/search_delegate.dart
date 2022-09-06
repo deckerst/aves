@@ -4,6 +4,7 @@ import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/filters/mime.dart';
+import 'package:aves/model/filters/missing.dart';
 import 'package:aves/model/filters/query.dart';
 import 'package:aves/model/filters/rating.dart';
 import 'package:aves/model/filters/recent.dart';
@@ -105,6 +106,7 @@ class CollectionSearchDelegate extends AvesSearchDelegate {
                       _buildPlaceFilters(containQuery),
                       _buildTagFilters(containQuery),
                       _buildRatingFilters(context, containQuery),
+                      _buildMetadataFilters(context, containQuery),
                     ],
                   );
                 });
@@ -166,11 +168,10 @@ class CollectionSearchDelegate extends AvesSearchDelegate {
     return StreamBuilder(
       stream: source.eventBus.on<CountriesChangedEvent>(),
       builder: (context, snapshot) {
-        final filters = source.sortedCountries.where(containQuery).map((s) => LocationFilter(LocationLevel.country, s)).toList();
         return _buildFilterRow(
           context: context,
           title: context.l10n.searchCountriesSectionTitle,
-          filters: filters,
+          filters: source.sortedCountries.where(containQuery).map((s) => LocationFilter(LocationLevel.country, s)).toList(),
         );
       },
     );
@@ -180,15 +181,10 @@ class CollectionSearchDelegate extends AvesSearchDelegate {
     return StreamBuilder(
       stream: source.eventBus.on<PlacesChangedEvent>(),
       builder: (context, snapshot) {
-        final filters = source.sortedPlaces.where(containQuery).map((s) => LocationFilter(LocationLevel.place, s));
-        final noFilter = LocationFilter(LocationLevel.place, '');
         return _buildFilterRow(
           context: context,
           title: context.l10n.searchPlacesSectionTitle,
-          filters: [
-            if (containQuery(noFilter.getLabel(context))) noFilter,
-            ...filters,
-          ],
+          filters: source.sortedPlaces.where(containQuery).map((s) => LocationFilter(LocationLevel.place, s)).toList(),
         );
       },
     );
@@ -198,15 +194,10 @@ class CollectionSearchDelegate extends AvesSearchDelegate {
     return StreamBuilder(
       stream: source.eventBus.on<TagsChangedEvent>(),
       builder: (context, snapshot) {
-        final filters = source.sortedTags.where(containQuery).map(TagFilter.new);
-        final noFilter = TagFilter('');
         return _buildFilterRow(
           context: context,
           title: context.l10n.searchTagsSectionTitle,
-          filters: [
-            if (containQuery(noFilter.getLabel(context))) noFilter,
-            ...filters,
-          ],
+          filters: source.sortedTags.where(containQuery).map(TagFilter.new).toList(),
         );
       },
     );
@@ -216,7 +207,21 @@ class CollectionSearchDelegate extends AvesSearchDelegate {
     return _buildFilterRow(
       context: context,
       title: context.l10n.searchRatingSectionTitle,
-      filters: [0, 5, 4, 3, 2, 1, -1].map(RatingFilter.new).where((f) => containQuery(f.getLabel(context))).toList(),
+      filters: [5, 4, 3, 2, 1, -1].map(RatingFilter.new).where((f) => containQuery(f.getLabel(context))).toList(),
+    );
+  }
+
+  Widget _buildMetadataFilters(BuildContext context, _ContainQuery containQuery) {
+    return _buildFilterRow(
+      context: context,
+      title: context.l10n.searchMetadataSectionTitle,
+      filters: [
+        MissingFilter.date,
+        LocationFilter(LocationLevel.place, ''),
+        TagFilter(''),
+        const RatingFilter(0),
+        MissingFilter.title,
+      ].where((f) => containQuery(f.getLabel(context))).toList(),
     );
   }
 

@@ -44,7 +44,7 @@ class TagFilter extends CoveredCollectionFilter {
   String get universalLabel => tag;
 
   @override
-  String getLabel(BuildContext context) => tag.isEmpty ? context.l10n.filterTagEmptyLabel : tag;
+  String getLabel(BuildContext context) => tag.isEmpty ? context.l10n.filterNoTagLabel : tag;
 
   @override
   Widget? iconBuilder(BuildContext context, double size, {bool showGenericIcon = true}) => showGenericIcon ? Icon(tag.isEmpty ? AIcons.tagUntagged : AIcons.tag, size: size) : null;

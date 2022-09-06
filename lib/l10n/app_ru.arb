@@ -94,9 +94,9 @@
 
   "filterBinLabel": "Корзина",
   "filterFavouriteLabel": "Избранное",
-  "filterLocationEmptyLabel": "Без местоположения",
-  "filterTagEmptyLabel": "Без тегов",
-  "filterRatingUnratedLabel": "Без рейтинга",
+  "filterNoLocationLabel": "Без местоположения",
+  "filterNoRatingLabel": "Без рейтинга",
+  "filterNoTagLabel": "Без тегов",
   "filterRatingRejectedLabel": "Отклонённое",
   "filterTypeAnimatedLabel": "GIF",
   "filterTypeMotionPhotoLabel": "Живое фото",
