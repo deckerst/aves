@@ -91,9 +91,9 @@
 
   "filterBinLabel": "Geri dönüşüm kutusu",
   "filterFavouriteLabel": "Favori",
-  "filterLocationEmptyLabel": "Konumsuz",
-  "filterTagEmptyLabel": "Etiketsiz",
-  "filterRatingUnratedLabel": "Derecelendirilmemiş",
+  "filterNoLocationLabel": "Konumsuz",
+  "filterNoRatingLabel": "Derecelendirilmemiş",
+  "filterNoTagLabel": "Etiketsiz",
   "filterRatingRejectedLabel": "Reddedilmiş",
   "filterTypeAnimatedLabel": "Hareketli",
   "filterTypeMotionPhotoLabel": "Hareketli Fotoğraf",

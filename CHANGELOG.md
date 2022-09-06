@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 
 - Collection / Info: edit title via IPTC / XMP
 - Albums / Countries / Tags: size displayed in list view details, sort by size
+- Search: `undated` and `untitled` filters
 - Greek translation (thanks Emmanouil Papavergis)
 
 ### Changed

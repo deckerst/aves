@@ -94,10 +94,10 @@
 
   "filterBinLabel": "Tong sampah",
   "filterFavouriteLabel": "Favorit",
-  "filterLocationEmptyLabel": "Lokasi yang tidak ditemukan",
-  "filterTagEmptyLabel": "Tidak dilabel",
+  "filterNoLocationLabel": "Lokasi yang tidak ditemukan",
+  "filterNoRatingLabel": "Belum diberi nilai",
+  "filterNoTagLabel": "Tidak dilabel",
   "filterOnThisDayLabel": "Di hari ini",
-  "filterRatingUnratedLabel": "Belum diberi nilai",
   "filterRatingRejectedLabel": "Ditolak",
   "filterTypeAnimatedLabel": "Teranimasi",
   "filterTypeMotionPhotoLabel": "Foto bergerak",
