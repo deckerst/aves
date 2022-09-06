@@ -46,7 +46,7 @@ class TypeFilter extends CollectionFilter {
         break;
       case _panorama:
         _test = (entry) => entry.isImage && entry.is360;
-        _icon = AIcons.threeSixty;
+        _icon = AIcons.panorama;
         break;
       case _raw:
         _test = (entry) => entry.isRaw;
@@ -54,7 +54,7 @@ class TypeFilter extends CollectionFilter {
         break;
       case _sphericalVideo:
         _test = (entry) => entry.isVideo && entry.is360;
-        _icon = AIcons.threeSixty;
+        _icon = AIcons.sphericalVideo;
         break;
     }
   }
