@@ -1,6 +1,6 @@
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/source/collection_source.dart';
-import 'package:aves/model/source/enums.dart';
+import 'package:aves/model/source/enums/enums.dart';
 import 'package:aves/utils/time_utils.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/providers/selection_provider.dart';
@@ -56,7 +56,12 @@ class FilterNavigationPage<T extends CollectionFilter, CSAD extends ChipSetActio
     return a.filter.compareTo(b.filter);
   }
 
-  static List<FilterGridItem<T>> sort<T extends CollectionFilter, CSAD extends ChipSetActionDelegate<T>>(ChipSortFactor sortFactor, CollectionSource source, Set<T> filters) {
+  static List<FilterGridItem<T>> sort<T extends CollectionFilter, CSAD extends ChipSetActionDelegate<T>>(
+    ChipSortFactor sortFactor,
+    bool reverse,
+    CollectionSource source,
+    Set<T> filters,
+  ) {
     List<FilterGridItem<T>> toGridItem(CollectionSource source, Set<T> filters) {
       return filters
           .map((filter) => FilterGridItem(
@@ -86,6 +91,9 @@ class FilterNavigationPage<T extends CollectionFilter, CSAD extends ChipSetActio
         filters = filtersWithSize.map((kv) => kv.key).toSet();
         allMapEntries = toGridItem(source, filters);
         break;
+    }
+    if (reverse) {
+      allMapEntries = allMapEntries.reversed.toList();
     }
     return allMapEntries;
   }

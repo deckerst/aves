@@ -1,7 +1,7 @@
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/settings/settings.dart';
-import 'package:aves/model/source/enums.dart';
+import 'package:aves/model/source/enums/enums.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip_set.dart';
 import 'package:aves/widgets/filter_grids/countries_page.dart';
 
@@ -18,6 +18,12 @@ class CountryChipSetActionDelegate extends ChipSetActionDelegate<LocationFilter>
 
   @override
   set sortFactor(ChipSortFactor factor) => settings.countrySortFactor = factor;
+
+  @override
+  bool get sortReverse => settings.countrySortReverse;
+
+  @override
+  set sortReverse(bool value) => settings.countrySortReverse = value;
 
   @override
   TileLayout get tileLayout => settings.getTileLayout(CountryListPage.routeName);

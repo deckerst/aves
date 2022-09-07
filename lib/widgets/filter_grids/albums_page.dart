@@ -4,7 +4,7 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/album.dart';
 import 'package:aves/model/source/collection_source.dart';
-import 'package:aves/model/source/enums.dart';
+import 'package:aves/model/source/enums/enums.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -25,12 +25,12 @@ class AlbumListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final source = context.read<CollectionSource>();
-    return Selector<Settings, Tuple3<AlbumChipGroupFactor, ChipSortFactor, Set<CollectionFilter>>>(
-      selector: (context, s) => Tuple3(s.albumGroupFactor, s.albumSortFactor, s.pinnedFilters),
+    return Selector<Settings, Tuple4<AlbumChipGroupFactor, ChipSortFactor, bool, Set<CollectionFilter>>>(
+      selector: (context, s) => Tuple4(s.albumGroupFactor, s.albumSortFactor, s.albumSortReverse, s.pinnedFilters),
       shouldRebuild: (t1, t2) {
         // `Selector` by default uses `DeepCollectionEquality`, which does not go deep in collections within `TupleN`
         const eq = DeepCollectionEquality();
-        return !(eq.equals(t1.item1, t2.item1) && eq.equals(t1.item2, t2.item2) && eq.equals(t1.item3, t2.item3));
+        return !(eq.equals(t1.item1, t2.item1) && eq.equals(t1.item2, t2.item2) && eq.equals(t1.item3, t2.item3) && eq.equals(t1.item4, t2.item4));
       },
       builder: (context, s, child) {
         return ValueListenableBuilder<bool>(
@@ -75,7 +75,7 @@ class AlbumListPage extends StatelessWidget {
   static List<FilterGridItem<AlbumFilter>> getAlbumGridItems(BuildContext context, CollectionSource source) {
     final filters = source.rawAlbums.map((album) => AlbumFilter(album, source.getAlbumDisplayName(context, album))).toSet();
 
-    return FilterNavigationPage.sort(settings.albumSortFactor, source, filters);
+    return FilterNavigationPage.sort(settings.albumSortFactor, settings.albumSortReverse, source, filters);
   }
 
   static Map<ChipSectionKey, List<FilterGridItem<AlbumFilter>>> groupToSections(BuildContext context, CollectionSource source, Iterable<FilterGridItem<AlbumFilter>> sortedMapEntries) {

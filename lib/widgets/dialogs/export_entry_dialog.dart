@@ -2,6 +2,7 @@ import 'package:aves/model/entry.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/media/media_edit_service.dart';
 import 'package:aves/utils/mime_utils.dart';
+import 'package:aves/widgets/common/basic/text_dropdown_button.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/material.dart';
 
@@ -63,13 +64,9 @@ class _ExportEntryDialogState extends State<ExportEntryDialog> {
             children: [
               Text(l10n.exportEntryDialogFormat),
               const SizedBox(width: AvesDialog.controlCaptionPadding),
-              DropdownButton<String>(
-                items: imageExportFormats.map((mimeType) {
-                  return DropdownMenuItem<String>(
-                    value: mimeType,
-                    child: Text(MimeUtils.displayType(mimeType)),
-                  );
-                }).toList(),
+              TextDropdownButton<String>(
+                values: imageExportFormats,
+                valueText: MimeUtils.displayType,
                 value: _mimeType,
                 onChanged: (selected) {
                   if (selected != null) {

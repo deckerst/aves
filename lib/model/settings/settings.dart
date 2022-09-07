@@ -9,7 +9,7 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/defaults.dart';
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/enums/map_style.dart';
-import 'package:aves/model/source/enums.dart';
+import 'package:aves/model/source/enums/enums.dart';
 import 'package:aves/services/common/optional_event_channel.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves_map/aves_map.dart';
@@ -75,6 +75,7 @@ class Settings extends ChangeNotifier {
   // collection
   static const collectionGroupFactorKey = 'collection_group_factor';
   static const collectionSortFactorKey = 'collection_sort_factor';
+  static const collectionSortReverseKey = 'collection_sort_reverse';
   static const collectionBrowsingQuickActionsKey = 'collection_browsing_quick_actions';
   static const collectionSelectionQuickActionsKey = 'collection_selection_quick_actions';
   static const showThumbnailFavouriteKey = 'show_thumbnail_favourite';
@@ -90,6 +91,9 @@ class Settings extends ChangeNotifier {
   static const albumSortFactorKey = 'album_sort_factor';
   static const countrySortFactorKey = 'country_sort_factor';
   static const tagSortFactorKey = 'tag_sort_factor';
+  static const albumSortReverseKey = 'album_sort_reverse';
+  static const countrySortReverseKey = 'country_sort_reverse';
+  static const tagSortReverseKey = 'tag_sort_reverse';
   static const pinnedFiltersKey = 'pinned_filters';
   static const hiddenFiltersKey = 'hidden_filters';
 
@@ -388,6 +392,10 @@ class Settings extends ChangeNotifier {
 
   set collectionSortFactor(EntrySortFactor newValue) => setAndNotify(collectionSortFactorKey, newValue.toString());
 
+  bool get collectionSortReverse => getBoolOrDefault(collectionSortReverseKey, false);
+
+  set collectionSortReverse(bool newValue) => setAndNotify(collectionSortReverseKey, newValue);
+
   List<EntrySetAction> get collectionBrowsingQuickActions => getEnumListOrDefault(collectionBrowsingQuickActionsKey, SettingsDefaults.collectionBrowsingQuickActions, EntrySetAction.values);
 
   set collectionBrowsingQuickActions(List<EntrySetAction> newValue) => setAndNotify(collectionBrowsingQuickActionsKey, newValue.map((v) => v.toString()).toList());
@@ -441,6 +449,18 @@ class Settings extends ChangeNotifier {
   ChipSortFactor get tagSortFactor => getEnumOrDefault(tagSortFactorKey, SettingsDefaults.tagSortFactor, ChipSortFactor.values);
 
   set tagSortFactor(ChipSortFactor newValue) => setAndNotify(tagSortFactorKey, newValue.toString());
+
+  bool get albumSortReverse => getBoolOrDefault(albumSortReverseKey, false);
+
+  set albumSortReverse(bool newValue) => setAndNotify(albumSortReverseKey, newValue);
+
+  bool get countrySortReverse => getBoolOrDefault(countrySortReverseKey, false);
+
+  set countrySortReverse(bool newValue) => setAndNotify(countrySortReverseKey, newValue);
+
+  bool get tagSortReverse => getBoolOrDefault(tagSortReverseKey, false);
+
+  set tagSortReverse(bool newValue) => setAndNotify(tagSortReverseKey, newValue);
 
   Set<CollectionFilter> get pinnedFilters => (getStringList(pinnedFiltersKey) ?? []).map(CollectionFilter.fromJson).whereNotNull().toSet();
 
@@ -828,6 +848,7 @@ class Settings extends ChangeNotifier {
             case confirmMoveUndatedItemsKey:
             case confirmAfterMoveToBinKey:
             case setMetadataDateBeforeFileOpKey:
+            case collectionSortReverseKey:
             case showThumbnailFavouriteKey:
             case showThumbnailTagKey:
             case showThumbnailLocationKey:
@@ -835,6 +856,9 @@ class Settings extends ChangeNotifier {
             case showThumbnailRatingKey:
             case showThumbnailRawKey:
             case showThumbnailVideoDurationKey:
+            case albumSortReverseKey:
+            case countrySortReverseKey:
+            case tagSortReverseKey:
             case showOverlayOnOpeningKey:
             case showOverlayMinimapKey:
             case showOverlayInfoKey:

@@ -1,19 +1,22 @@
-import 'dart:math';
-
-import 'package:aves/model/source/enums.dart';
+import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/theme/themes.dart';
+import 'package:aves/widgets/common/basic/text_dropdown_button.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/common/identity/highlight_title.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
+import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
 import 'aves_dialog.dart';
 
 class TileViewDialog<S, G, L> extends StatefulWidget {
-  final Tuple3<S?, G?, L?> initialValue;
+  final Tuple4<S?, G?, L?, bool> initialValue;
   final Map<S, String> sortOptions;
   final Map<G, String> groupOptions;
   final Map<L, String> layoutOptions;
+  final String Function(S sort, bool reverse) sortOrder;
+  final bool Function(S? sort, G? group, L? layout)? canGroup;
 
   const TileViewDialog({
     super.key,
@@ -21,6 +24,8 @@ class TileViewDialog<S, G, L> extends StatefulWidget {
     this.sortOptions = const {},
     this.groupOptions = const {},
     this.layoutOptions = const {},
+    required this.sortOrder,
+    this.canGroup,
   });
 
   @override
@@ -31,8 +36,7 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
   late S? _selectedSort;
   late G? _selectedGroup;
   late L? _selectedLayout;
-  late final TabController _tabController;
-  late final String _optionLines;
+  late bool _reverseSort;
 
   Map<S, String> get sortOptions => widget.sortOptions;
 
@@ -40,11 +44,7 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
 
   Map<L, String> get layoutOptions => widget.layoutOptions;
 
-  static const int groupTabIndex = 1;
-
-  double tabBarHeight(BuildContext context) => 64 * max(1, MediaQuery.textScaleFactorOf(context));
-
-  static const double tabIndicatorWeight = 2;
+  bool get canGroup => (widget.canGroup ?? (s, g, l) => true).call(_selectedSort, _selectedGroup, _selectedLayout);
 
   @override
   void initState() {
@@ -53,259 +53,140 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
     _selectedSort = initialValue.item1;
     _selectedGroup = initialValue.item2;
     _selectedLayout = initialValue.item3;
-
-    final allOptions = [
-      sortOptions,
-      groupOptions,
-      layoutOptions,
-    ];
-
-    final tabCount = allOptions.where((options) => options.isNotEmpty).length;
-    _tabController = TabController(length: tabCount, vsync: this);
-    _tabController.addListener(_onTabChange);
-
-    _optionLines = allOptions.expand((v) => v.values).fold('', (previousValue, element) => '$previousValue\n$element');
-  }
-
-  @override
-  void dispose() {
-    _tabController.removeListener(_onTabChange);
-    _tabController.dispose();
-    super.dispose();
+    _reverseSort = initialValue.item4;
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final tabs = <Tuple2<Tab, Widget>>[
-      if (sortOptions.isNotEmpty)
-        Tuple2(
-          _buildTab(
-            context,
-            const Key('tab-sort'),
-            AIcons.sort,
-            l10n.viewDialogTabSort,
+
+    return AvesDialog(
+      scrollableContent: [
+        _buildSection(
+          icon: AIcons.sort,
+          title: l10n.viewDialogTabSort,
+          trailing: IconButton(
+            icon: const Icon(AIcons.sortOrder),
+            onPressed: () => setState(() => _reverseSort = !_reverseSort),
+            tooltip: l10n.viewDialogReverseSortOrder,
           ),
-          Column(
-            children: sortOptions.entries
-                .map((kv) => _buildRadioListTile<S>(
-                      kv.key,
-                      kv.value,
-                      () => _selectedSort,
-                      (v) => _selectedSort = v,
-                    ))
-                .toList(),
+          options: sortOptions,
+          value: _selectedSort,
+          onChanged: (v) {
+            _selectedSort = v;
+            _reverseSort = false;
+          },
+          bottom: _selectedSort != null
+              ? Text(
+                  widget.sortOrder(_selectedSort as S, _reverseSort),
+                  style: Theme.of(context).textTheme.caption,
+                )
+              : null,
+        ),
+        AnimatedSwitcher(
+          duration: context.read<DurationsData>().formTransition,
+          switchInCurve: Curves.easeInOutCubic,
+          switchOutCurve: Curves.easeInOutCubic,
+          transitionBuilder: (child, animation) => FadeTransition(
+            opacity: animation,
+            child: SizeTransition(
+              sizeFactor: animation,
+              axisAlignment: -1,
+              child: child,
+            ),
+          ),
+          child: _buildSection(
+            show: canGroup,
+            icon: AIcons.group,
+            title: l10n.viewDialogTabGroup,
+            options: groupOptions,
+            value: _selectedGroup,
+            onChanged: (v) => _selectedGroup = v,
           ),
         ),
-      if (groupOptions.isNotEmpty)
-        Tuple2(
-          _buildTab(
-            context,
-            const Key('tab-group'),
-            AIcons.group,
-            l10n.viewDialogTabGroup,
-            color: canGroup ? null : Theme.of(context).disabledColor,
-          ),
-          Column(
-            children: groupOptions.entries
-                .map((kv) => _buildRadioListTile<G>(
-                      kv.key,
-                      kv.value,
-                      () => _selectedGroup,
-                      (v) => _selectedGroup = v,
-                    ))
-                .toList(),
-          ),
+        _buildSection(
+          icon: AIcons.layout,
+          title: l10n.viewDialogTabLayout,
+          options: layoutOptions,
+          value: _selectedLayout,
+          onChanged: (v) => _selectedLayout = v,
         ),
-      if (layoutOptions.isNotEmpty)
-        Tuple2(
-          _buildTab(
-            context,
-            const Key('tab-layout'),
-            AIcons.layout,
-            l10n.viewDialogTabLayout,
-          ),
-          Column(
-            children: layoutOptions.entries
-                .map((kv) => _buildRadioListTile<L>(
-                      kv.key,
-                      kv.value,
-                      () => _selectedLayout,
-                      (v) => _selectedLayout = v,
-                    ))
-                .toList(),
-          ),
+      ],
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
         ),
-    ];
-
-    final contentWidget = DecoratedBox(
-      decoration: AvesDialog.contentDecoration(context),
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final availableBodyHeight = constraints.maxHeight - tabBarHeight(context) - tabIndicatorWeight;
-          final maxHeight = min(availableBodyHeight, tabBodyMaxHeight(context));
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Material(
-                borderRadius: const BorderRadius.vertical(
-                  top: AvesDialog.cornerRadius,
-                ),
-                clipBehavior: Clip.antiAlias,
-                child: TabBar(
-                  indicatorWeight: tabIndicatorWeight,
-                  tabs: tabs.map((t) => t.item1).toList(),
-                  controller: _tabController,
-                ),
-              ),
-              ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxHeight: maxHeight,
-                ),
-                child: TabBarView(
-                  controller: _tabController,
-                  physics: const NeverScrollableScrollPhysics(),
-                  children: tabs
-                      .map((t) => SingleChildScrollView(
-                            child: t.item2,
-                          ))
-                      .toList(),
-                ),
-              ),
-            ],
-          );
-        },
-      ),
-    );
-
-    final actionsWidget = Padding(
-      padding: AvesDialog.actionsPadding,
-      child: OverflowBar(
-        alignment: MainAxisAlignment.end,
-        spacing: AvesDialog.buttonPadding.horizontal / 2,
-        overflowAlignment: OverflowBarAlignment.end,
-        children: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
-          ),
-          TextButton(
-            key: const Key('button-apply'),
-            onPressed: () => Navigator.pop(context, Tuple3(_selectedSort, _selectedGroup, _selectedLayout)),
-            child: Text(l10n.applyButtonLabel),
-          )
-        ],
-      ),
-    );
-
-    Widget dialogChild = LayoutBuilder(
-      builder: (context, constraints) {
-        final availableBodyWidth = constraints.maxWidth;
-        final maxWidth = min(availableBodyWidth, tabBodyMaxWidth(context));
-        return ConstrainedBox(
-          constraints: BoxConstraints(
-            maxWidth: maxWidth,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Flexible(child: contentWidget),
-              actionsWidget,
-            ],
-          ),
-        );
-      },
-    );
-
-    return Dialog(
-      shape: AvesDialog.shape(context),
-      child: dialogChild,
+        TextButton(
+          key: const Key('button-apply'),
+          onPressed: () => Navigator.pop(context, Tuple4(_selectedSort, _selectedGroup, _selectedLayout, _reverseSort)),
+          child: Text(l10n.applyButtonLabel),
+        )
+      ],
     );
   }
 
-  Widget _buildRadioListTile<T>(T value, String title, T? Function() get, void Function(T value) set) {
-    return RadioListTile<T>(
-      // key is expected by test driver
-      key: Key(value.toString()),
-      value: value,
-      groupValue: get(),
-      onChanged: (v) => setState(() => set(v as T)),
-      title: Text(
-        title,
-        softWrap: false,
-        overflow: TextOverflow.fade,
-        maxLines: 1,
-      ),
-    );
-  }
-
-  // tabs
-
-  Tab _buildTab(
-    BuildContext context,
-    Key key,
-    IconData icon,
-    String text, {
-    Color? color,
+  Widget _buildSection<T>({
+    bool show = true,
+    required IconData icon,
+    required String title,
+    Widget? trailing,
+    required Map<T, String> options,
+    required T value,
+    required ValueChanged<T?> onChanged,
+    Widget? bottom,
   }) {
-    // cannot use `IconTheme` over `TabBar` to change size,
-    // because `TabBar` does so internally
-    final textScaleFactor = MediaQuery.textScaleFactorOf(context);
-    final iconSize = IconTheme.of(context).size! * textScaleFactor;
-    return Tab(
-      key: key,
-      height: tabBarHeight(context),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            icon,
-            size: iconSize,
-            color: color,
-          ),
-          const SizedBox(height: 4),
-          Text(
-            text,
-            style: TextStyle(color: color),
-            softWrap: false,
-            overflow: TextOverflow.fade,
-          ),
-        ],
+    if (options.isEmpty || !show) return const SizedBox();
+
+    final iconSize = IconTheme.of(context).size! * MediaQuery.textScaleFactorOf(context);
+    return TooltipTheme(
+      data: TooltipTheme.of(context).copyWith(
+        preferBelow: false,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 8),
+            ConstrainedBox(
+              constraints: const BoxConstraints(
+                minHeight: kMinInteractiveDimension,
+              ),
+              child: Row(
+                children: [
+                  Icon(icon),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: HighlightTitle(
+                      title: title,
+                      showHighlight: false,
+                    ),
+                  ),
+                  if (trailing != null) trailing,
+                ],
+              ),
+            ),
+            Padding(
+              padding: EdgeInsetsDirectional.only(start: iconSize + 16, end: 12),
+              child: TextDropdownButton<T>(
+                values: options.keys.toList(),
+                valueText: (v) => options[v] ?? v.toString(),
+                value: value,
+                onChanged: (v) => setState(() => onChanged(v)),
+                isExpanded: true,
+                dropdownColor: Themes.thirdLayerColor(context),
+              ),
+            ),
+            if (bottom != null)
+              Padding(
+                padding: EdgeInsetsDirectional.only(start: iconSize + 16),
+                child: bottom,
+              ),
+          ],
+        ),
       ),
     );
   }
-
-  bool get canGroup => _selectedSort == EntrySortFactor.date || _selectedSort is ChipSortFactor;
-
-  void _onTabChange() {
-    if (!canGroup && _tabController.index == groupTabIndex) {
-      _tabController.index = _tabController.previousIndex;
-    }
-  }
-
-  // based on `ListTile` height computation (one line, no subtitle, not dense)
-  double singleOptionTileHeight(BuildContext context) => 56.0 + Theme.of(context).visualDensity.baseSizeAdjustment.dy;
-
-  double tabBodyMaxWidth(BuildContext context) {
-    final para = RenderParagraph(
-      TextSpan(text: _optionLines, style: Theme.of(context).textTheme.subtitle1!),
-      textDirection: TextDirection.ltr,
-      textScaleFactor: MediaQuery.textScaleFactorOf(context),
-    )..layout(const BoxConstraints(), parentUsesSize: true);
-    final textWidth = para.getMaxIntrinsicWidth(double.infinity);
-
-    // from `RadioListTile` layout
-    const contentPadding = 32;
-    const leadingWidth = kMinInteractiveDimension + 8;
-    return contentPadding + leadingWidth + textWidth;
-  }
-
-  double tabBodyMaxHeight(BuildContext context) =>
-      [
-        sortOptions,
-        groupOptions,
-        layoutOptions,
-      ].map((v) => v.length).fold(0, max) *
-      singleOptionTileHeight(context);
 }

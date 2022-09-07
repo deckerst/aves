@@ -7,6 +7,7 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/format.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/themes.dart';
+import 'package:aves/widgets/common/basic/text_dropdown_button.dart';
 import 'package:aves/widgets/common/basic/wheel.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
@@ -80,13 +81,9 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
             scrollableContent: [
               Padding(
                 padding: const EdgeInsets.only(left: 16, top: 8, right: 16),
-                child: DropdownButton<DateEditAction>(
-                  items: DateEditAction.values
-                      .map((v) => DropdownMenuItem<DateEditAction>(
-                            value: v,
-                            child: Text(_actionText(context, v)),
-                          ))
-                      .toList(),
+                child: TextDropdownButton<DateEditAction>(
+                  values: DateEditAction.values,
+                  valueText: (v) => _actionText(context, v),
                   value: _action,
                   onChanged: (v) => setState(() => _action = v!),
                   isExpanded: true,
@@ -159,23 +156,9 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
   Widget _buildCopyFieldContent(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(left: 16, top: 0, right: 16),
-      child: DropdownButton<DateFieldSource>(
-        items: DateFieldSource.values
-            .map((v) => DropdownMenuItem<DateFieldSource>(
-                  value: v,
-                  child: Text(_setSourceText(context, v)),
-                ))
-            .toList(),
-        selectedItemBuilder: (context) => DateFieldSource.values
-            .map((v) => DropdownMenuItem<DateFieldSource>(
-                  value: v,
-                  child: Text(
-                    _setSourceText(context, v),
-                    softWrap: false,
-                    overflow: TextOverflow.fade,
-                  ),
-                ))
-            .toList(),
+      child: TextDropdownButton<DateFieldSource>(
+        values: DateFieldSource.values,
+        valueText: (v) => _setSourceText(context, v),
         value: _copyFieldSource,
         onChanged: (v) => setState(() => _copyFieldSource = v!),
         isExpanded: true,
