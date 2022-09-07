@@ -281,9 +281,9 @@
   "menuActionSlideshow": "幻灯片",
   "menuActionStats": "统计",
 
-  "viewDialogTabSort": "排序",
-  "viewDialogTabGroup": "分组",
-  "viewDialogTabLayout": "布局",
+  "viewDialogSortSectionTitle": "排序",
+  "viewDialogGroupSectionTitle": "分组",
+  "viewDialogLayoutSectionTitle": "布局",
 
   "tileLayoutGrid": "网格",
   "tileLayoutList": "列表",
@@ -432,7 +432,9 @@
   "settingsSearchFieldLabel": "搜索设置",
   "settingsSearchEmpty": "无匹配设置项",
   "settingsActionExport": "导出",
+  "settingsActionExportDialogTitle": "导出",
   "settingsActionImport": "导入",
+  "settingsActionImportDialogTitle": "导入",
 
   "appExportCovers": "封面",
   "appExportFavourites": "收藏夹",
@@ -585,7 +587,8 @@
   "settingsDisplayRefreshRateModeDialogTitle": "刷新率",
 
   "settingsLanguageSectionTitle": "语言和格式",
-  "settingsLanguage": "界面语言",
+  "settingsLanguageTile": "界面语言",
+  "settingsLanguagePageTitle": "界面语言",
   "settingsCoordinateFormatTile": "坐标格式",
   "settingsCoordinateFormatDialogTitle": "坐标格式",
   "settingsUnitSystemTile": "单位",

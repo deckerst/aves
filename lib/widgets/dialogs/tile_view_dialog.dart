@@ -64,7 +64,7 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
       scrollableContent: [
         _buildSection(
           icon: AIcons.sort,
-          title: l10n.viewDialogTabSort,
+          title: l10n.viewDialogSortSectionTitle,
           trailing: IconButton(
             icon: const Icon(AIcons.sortOrder),
             onPressed: () => setState(() => _reverseSort = !_reverseSort),
@@ -98,7 +98,7 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
           child: _buildSection(
             show: canGroup,
             icon: AIcons.group,
-            title: l10n.viewDialogTabGroup,
+            title: l10n.viewDialogGroupSectionTitle,
             options: groupOptions,
             value: _selectedGroup,
             onChanged: (v) => _selectedGroup = v,
@@ -106,7 +106,7 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
         ),
         _buildSection(
           icon: AIcons.layout,
-          title: l10n.viewDialogTabLayout,
+          title: l10n.viewDialogLayoutSectionTitle,
           options: layoutOptions,
           value: _selectedLayout,
           onChanged: (v) => _selectedLayout = v,

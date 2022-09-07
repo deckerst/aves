@@ -284,9 +284,9 @@
   "menuActionSlideshow": "슬라이드쇼",
   "menuActionStats": "통계",
 
-  "viewDialogTabSort": "정렬",
-  "viewDialogTabGroup": "묶음",
-  "viewDialogTabLayout": "배치",
+  "viewDialogSortSectionTitle": "정렬",
+  "viewDialogGroupSectionTitle": "묶음",
+  "viewDialogLayoutSectionTitle": "배치",
 
   "tileLayoutGrid": "바둑판",
   "tileLayoutList": "목록",
@@ -436,7 +436,9 @@
   "settingsSearchFieldLabel": "설정 검색",
   "settingsSearchEmpty": "결과가 없습니다",
   "settingsActionExport": "내보내기",
+  "settingsActionExportDialogTitle": "내보내기",
   "settingsActionImport": "가져오기",
+  "settingsActionImportDialogTitle": "가져오기",
 
   "appExportCovers": "대표 이미지",
   "appExportFavourites": "즐겨찾기",
@@ -589,7 +591,8 @@
   "settingsDisplayRefreshRateModeDialogTitle": "화면 재생률",
 
   "settingsLanguageSectionTitle": "언어 및 표시 형식",
-  "settingsLanguage": "언어",
+  "settingsLanguageTile": "언어",
+  "settingsLanguagePageTitle": "언어",
   "settingsCoordinateFormatTile": "좌표 표현",
   "settingsCoordinateFormatDialogTitle": "좌표 표현",
   "settingsUnitSystemTile": "단위법",

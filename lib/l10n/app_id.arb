@@ -280,9 +280,9 @@
   "menuActionSlideshow": "Tampilan slide",
   "menuActionStats": "Statistik",
 
-  "viewDialogTabSort": "Sortir",
-  "viewDialogTabGroup": "Grup",
-  "viewDialogTabLayout": "Tata letak",
+  "viewDialogSortSectionTitle": "Sortir",
+  "viewDialogGroupSectionTitle": "Grup",
+  "viewDialogLayoutSectionTitle": "Tata letak",
 
   "tileLayoutGrid": "Grid",
   "tileLayoutList": "Daftar",
@@ -431,7 +431,9 @@
   "settingsSearchFieldLabel": "Cari peraturan",
   "settingsSearchEmpty": "Tidak ada peraturan yang cocok",
   "settingsActionExport": "Ekspor",
+  "settingsActionExportDialogTitle": "Ekspor",
   "settingsActionImport": "Impor",
+  "settingsActionImportDialogTitle": "Impor",
 
   "appExportCovers": "Sampul",
   "appExportFavourites": "Favorit",
@@ -582,7 +584,8 @@
   "settingsDisplayRefreshRateModeDialogTitle": "Tingkat Penyegaran",
 
   "settingsLanguageSectionTitle": "Bahasa & Format",
-  "settingsLanguage": "Bahasa",
+  "settingsLanguageTile": "Bahasa",
+  "settingsLanguagePageTitle": "Bahasa",
   "settingsCoordinateFormatTile": "Format koordinat",
   "settingsCoordinateFormatDialogTitle": "Format Koordinat",
   "settingsUnitSystemTile": "Unit",

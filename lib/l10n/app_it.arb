@@ -281,9 +281,9 @@
   "menuActionSlideshow": "Presentazione",
   "menuActionStats": "Statistiche",
 
-  "viewDialogTabSort": "Ordina",
-  "viewDialogTabGroup": "Raggruppa",
-  "viewDialogTabLayout": "Layout",
+  "viewDialogSortSectionTitle": "Ordina",
+  "viewDialogGroupSectionTitle": "Raggruppa",
+  "viewDialogLayoutSectionTitle": "Layout",
 
   "tileLayoutGrid": "Griglia",
   "tileLayoutList": "Lista",
@@ -432,7 +432,9 @@
   "settingsSearchFieldLabel": "Ricerca impostazioni",
   "settingsSearchEmpty": "Nessuna impostazione corrispondente",
   "settingsActionExport": "Esporta",
+  "settingsActionExportDialogTitle": "Esporta",
   "settingsActionImport": "Importa",
+  "settingsActionImportDialogTitle": "Importa",
 
   "appExportCovers": "Copertine",
   "appExportFavourites": "Preferiti",
@@ -585,7 +587,8 @@
   "settingsDisplayRefreshRateModeDialogTitle": "Frequenza di aggiornamento",
 
   "settingsLanguageSectionTitle": "Lingua e formati",
-  "settingsLanguage": "Lingua",
+  "settingsLanguageTile": "Lingua",
+  "settingsLanguagePageTitle": "Lingua",
   "settingsCoordinateFormatTile": "Formato coordinate",
   "settingsCoordinateFormatDialogTitle": "Formato coordinate",
   "settingsUnitSystemTile": "Unità",

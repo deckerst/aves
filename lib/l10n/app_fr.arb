@@ -284,9 +284,9 @@
   "menuActionSlideshow": "Diaporama",
   "menuActionStats": "Statistiques",
 
-  "viewDialogTabSort": "Tri",
-  "viewDialogTabGroup": "Groupes",
-  "viewDialogTabLayout": "Vue",
+  "viewDialogSortSectionTitle": "Tri",
+  "viewDialogGroupSectionTitle": "Groupes",
+  "viewDialogLayoutSectionTitle": "Vue",
 
   "tileLayoutGrid": "Grille",
   "tileLayoutList": "Liste",
@@ -436,7 +436,9 @@
   "settingsSearchFieldLabel": "Recherche de réglages",
   "settingsSearchEmpty": "Aucun réglage correspondant",
   "settingsActionExport": "Exporter",
+  "settingsActionExportDialogTitle": "Exporter",
   "settingsActionImport": "Importer",
+  "settingsActionImportDialogTitle": "Importer",
 
   "appExportCovers": "Couvertures",
   "appExportFavourites": "Favoris",
@@ -589,7 +591,8 @@
   "settingsDisplayRefreshRateModeDialogTitle": "Fréquence d’actualisation",
 
   "settingsLanguageSectionTitle": "Langue & Formats",
-  "settingsLanguage": "Langue",
+  "settingsLanguageTile": "Langue",
+  "settingsLanguagePageTitle": "Langue",
   "settingsCoordinateFormatTile": "Format de coordonnées",
   "settingsCoordinateFormatDialogTitle": "Format de coordonnées",
   "settingsUnitSystemTile": "Unités",

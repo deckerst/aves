@@ -145,7 +145,7 @@ class _SettingsPageState extends State<SettingsPage> with FeedbackMixin {
         final toExport = await showDialog<Set<AppExportItem>>(
           context: context,
           builder: (context) => AppExportItemSelectionDialog(
-            title: context.l10n.settingsActionExport,
+            title: context.l10n.settingsActionExportDialogTitle,
           ),
         );
         if (toExport == null || toExport.isEmpty) return;
@@ -202,7 +202,7 @@ class _SettingsPageState extends State<SettingsPage> with FeedbackMixin {
             final toImport = await showDialog<Set<AppExportItem>>(
               context: context,
               builder: (context) => AppExportItemSelectionDialog(
-                title: context.l10n.settingsActionImport,
+                title: context.l10n.settingsActionImportDialogTitle,
                 selectableItems: importable.keys.toSet(),
               ),
             );
