@@ -281,9 +281,9 @@
   "menuActionSlideshow": "Diavoorstelling",
   "menuActionStats": "Statistieken",
 
-  "viewDialogTabSort": "Sorteer",
-  "viewDialogTabGroup": "Groeperen",
-  "viewDialogTabLayout": "Layout",
+  "viewDialogSortSectionTitle": "Sorteer",
+  "viewDialogGroupSectionTitle": "Groeperen",
+  "viewDialogLayoutSectionTitle": "Layout",
 
   "tileLayoutGrid": "Raster",
   "tileLayoutList": "Lijst",
@@ -432,7 +432,9 @@
   "settingsSearchFieldLabel": "Instellingen doorzoeken",
   "settingsSearchEmpty": "Geen instellingen gevonden",
   "settingsActionExport": "Exporteer",
+  "settingsActionExportDialogTitle": "Exporteer",
   "settingsActionImport": "Importeer",
+  "settingsActionImportDialogTitle": "Importeer",
 
   "appExportCovers": "Omslagen",
   "appExportFavourites": "Favorieten",
@@ -585,7 +587,8 @@
   "settingsDisplayRefreshRateModeDialogTitle": "Vernieuwingsfrequentie",
 
   "settingsLanguageSectionTitle": "Taal & landinstellingen",
-  "settingsLanguage": "Taal",
+  "settingsLanguageTile": "Taal",
+  "settingsLanguagePageTitle": "Taal",
   "settingsCoordinateFormatTile": "Coördineer formaat",
   "settingsCoordinateFormatDialogTitle": "Coördineer formaat",
   "settingsUnitSystemTile": "Eenheden",

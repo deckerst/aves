@@ -414,9 +414,9 @@
   "menuActionSlideshow": "Slideshow",
   "menuActionStats": "Stats",
 
-  "viewDialogTabSort": "Sort",
-  "viewDialogTabGroup": "Group",
-  "viewDialogTabLayout": "Layout",
+  "viewDialogSortSectionTitle": "Sort",
+  "viewDialogGroupSectionTitle": "Group",
+  "viewDialogLayoutSectionTitle": "Layout",
   "viewDialogReverseSortOrder": "Reverse sort order",
 
   "tileLayoutGrid": "Grid",
@@ -626,7 +626,9 @@
   "settingsSearchFieldLabel": "Search settings",
   "settingsSearchEmpty": "No matching setting",
   "settingsActionExport": "Export",
+  "settingsActionExportDialogTitle": "Export",
   "settingsActionImport": "Import",
+  "settingsActionImportDialogTitle": "Import",
 
   "appExportCovers": "Covers",
   "appExportFavourites": "Favorites",
@@ -779,7 +781,8 @@
   "settingsDisplayRefreshRateModeDialogTitle": "Refresh Rate",
 
   "settingsLanguageSectionTitle": "Language & Formats",
-  "settingsLanguage": "Language",
+  "settingsLanguageTile": "Language",
+  "settingsLanguagePageTitle": "Language",
   "settingsCoordinateFormatTile": "Coordinate format",
   "settingsCoordinateFormatDialogTitle": "Coordinate Format",
   "settingsUnitSystemTile": "Units",

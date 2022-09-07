@@ -279,9 +279,9 @@
   "menuActionSlideshow": "Слайд-шоу",
   "menuActionStats": "Статистика",
 
-  "viewDialogTabSort": "Сортировка",
-  "viewDialogTabGroup": "Группировка",
-  "viewDialogTabLayout": "Макет",
+  "viewDialogSortSectionTitle": "Сортировка",
+  "viewDialogGroupSectionTitle": "Группировка",
+  "viewDialogLayoutSectionTitle": "Макет",
 
   "tileLayoutGrid": "Сетка",
   "tileLayoutList": "Список",
@@ -430,7 +430,9 @@
   "settingsSearchFieldLabel": "Поиск настроек",
   "settingsSearchEmpty": "Нет соответствующих настроек",
   "settingsActionExport": "Экспорт",
+  "settingsActionExportDialogTitle": "Экспорт",
   "settingsActionImport": "Импорт",
+  "settingsActionImportDialogTitle": "Импорт",
 
   "appExportCovers": "Обложки",
   "appExportFavourites": "Избранное",
@@ -580,7 +582,8 @@
   "settingsDisplayRefreshRateModeDialogTitle": "Частота обновления",
 
   "settingsLanguageSectionTitle": "Язык и форматы",
-  "settingsLanguage": "Язык",
+  "settingsLanguageTile": "Язык",
+  "settingsLanguagePageTitle": "Язык",
   "settingsCoordinateFormatTile": "Формат координат",
   "settingsCoordinateFormatDialogTitle": "Формат координат",
   "settingsUnitSystemTile": "Единицы измерения",

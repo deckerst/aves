@@ -38,7 +38,7 @@ class LanguageSection extends SettingsSection {
 
 class SettingsTileLanguageLocale extends SettingsTile {
   @override
-  String title(BuildContext context) => context.l10n.settingsLanguage;
+  String title(BuildContext context) => context.l10n.settingsLanguageTile;
 
   @override
   Widget build(BuildContext context) => const LocaleTile();

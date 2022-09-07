@@ -281,9 +281,9 @@
   "menuActionSlideshow": "Παρουσίαση φωτογραφιών",
   "menuActionStats": "Στατιστικά",
 
-  "viewDialogTabSort": "Ταξινόμηση",
-  "viewDialogTabGroup": "Ομαδοποίηση",
-  "viewDialogTabLayout": "Διάταξη",
+  "viewDialogSortSectionTitle": "Ταξινομηση",
+  "viewDialogGroupSectionTitle": "Ομαδοποιηση",
+  "viewDialogLayoutSectionTitle": "Διαταξη",
 
   "tileLayoutGrid": "Πλέγμα",
   "tileLayoutList": "Λίστα",
@@ -432,7 +432,9 @@
   "settingsSearchFieldLabel": "Αναζήτηση ρυθμίσεων",
   "settingsSearchEmpty": "Δεν υπάρχει αντίστοιχη ρύθμιση",
   "settingsActionExport": "Εξαγωγή",
+  "settingsActionExportDialogTitle": "Εξαγωγη",
   "settingsActionImport": "Εισαγωγή",
+  "settingsActionImportDialogTitle": "Εισαγωγη",
 
   "appExportCovers": "Εξώφυλλα",
   "appExportFavourites": "Αγαπημένα",
@@ -585,7 +587,8 @@
   "settingsDisplayRefreshRateModeDialogTitle": "Ρυθμος ανανεωσης",
 
   "settingsLanguageSectionTitle": "Γλωσσα & Μορφες",
-  "settingsLanguage": "Γλώσσα",
+  "settingsLanguageTile": "Γλώσσα",
+  "settingsLanguagePageTitle": "Γλωσσα",
   "settingsCoordinateFormatTile": "Μορφή συντεταγμένων",
   "settingsCoordinateFormatDialogTitle": "Μορφη Συντεταγμενων",
   "settingsUnitSystemTile": "Σύστημα μέτρησης",

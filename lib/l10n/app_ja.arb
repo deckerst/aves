@@ -280,9 +280,9 @@
   "menuActionSlideshow": "スライドショー",
   "menuActionStats": "統計",
 
-  "viewDialogTabSort": "並べ替え",
-  "viewDialogTabGroup": "グループ",
-  "viewDialogTabLayout": "レイアウト",
+  "viewDialogSortSectionTitle": "並べ替え",
+  "viewDialogGroupSectionTitle": "グループ",
+  "viewDialogLayoutSectionTitle": "レイアウト",
 
   "tileLayoutGrid": "グリッド表示",
   "tileLayoutList": "リスト表示",
@@ -431,7 +431,9 @@
   "settingsSearchFieldLabel": "検索設定",
   "settingsSearchEmpty": "一致する設定なし",
   "settingsActionExport": "エクスポート",
+  "settingsActionExportDialogTitle": "エクスポート",
   "settingsActionImport": "インポート",
+  "settingsActionImportDialogTitle": "インポート",
 
   "appExportCovers": "カバー",
   "appExportFavourites": "お気に入り",
@@ -582,7 +584,8 @@
   "settingsDisplayRefreshRateModeDialogTitle": "リフレッシュ レート",
 
   "settingsLanguageSectionTitle": "言語と形式",
-  "settingsLanguage": "言語",
+  "settingsLanguageTile": "言語",
+  "settingsLanguagePageTitle": "言語",
   "settingsCoordinateFormatTile": "座標形式",
   "settingsCoordinateFormatDialogTitle": "座標形式",
   "settingsUnitSystemTile": "単位",

@@ -267,9 +267,9 @@
   "menuActionMap": "Harita",
   "menuActionStats": "İstatistikler",
 
-  "viewDialogTabSort": "Sırala",
-  "viewDialogTabGroup": "Grup",
-  "viewDialogTabLayout": "Düzen",
+  "viewDialogSortSectionTitle": "Sırala",
+  "viewDialogGroupSectionTitle": "Grup",
+  "viewDialogLayoutSectionTitle": "Düzen",
 
   "tileLayoutGrid": "Izgara",
   "tileLayoutList": "Liste",
@@ -427,7 +427,9 @@
   "settingsSearchFieldLabel": "Ayarlarda ara",
   "settingsSearchEmpty": "Eşleşen ayar bulunamadı",
   "settingsActionExport": "Dışa aktar",
+  "settingsActionExportDialogTitle": "Dışa aktar",
   "settingsActionImport": "İçe aktar",
+  "settingsActionImportDialogTitle": "İçe aktar",
 
   "appExportCovers": "Kapaklar",
   "appExportFavourites": "Favoriler",
@@ -566,7 +568,8 @@
   "settingsDisplayRefreshRateModeDialogTitle": "Yenileme Hızı",
 
   "settingsLanguageSectionTitle": "Dil ve Biçimler",
-  "settingsLanguage": "Dil",
+  "settingsLanguageTile": "Dil",
+  "settingsLanguagePageTitle": "Dil",
   "settingsCoordinateFormatTile": "Koordinat formatı",
   "settingsCoordinateFormatDialogTitle": "Koordinat Formatı",
   "settingsUnitSystemTile": "Birimler",
