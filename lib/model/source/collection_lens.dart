@@ -22,13 +22,14 @@ import 'package:aves/utils/collection_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
-import 'enums.dart';
+import 'enums/enums.dart';
 
 class CollectionLens with ChangeNotifier {
   final CollectionSource source;
   final Set<CollectionFilter> filters;
   EntryGroupFactor sectionFactor;
   EntrySortFactor sortFactor;
+  bool sortReverse;
   final AChangeNotifier filterChangeNotifier = AChangeNotifier(), sortSectionChangeNotifier = AChangeNotifier();
   final List<StreamSubscription> _subscriptions = [];
   int? id;
@@ -49,7 +50,8 @@ class CollectionLens with ChangeNotifier {
     this.fixedSelection,
   })  : filters = (filters ?? {}).whereNotNull().toSet(),
         sectionFactor = settings.collectionSectionFactor,
-        sortFactor = settings.collectionSortFactor {
+        sortFactor = settings.collectionSortFactor,
+        sortReverse = settings.collectionSortReverse {
     id ??= hashCode;
     if (listenToSource) {
       final sourceEvents = source.eventBus;
@@ -84,6 +86,7 @@ class CollectionLens with ChangeNotifier {
         .where((event) => [
               Settings.collectionSortFactorKey,
               Settings.collectionGroupFactorKey,
+              Settings.collectionSortReverseKey,
             ].contains(event.key))
         .listen((_) => _onSettingsChanged()));
     refresh();
@@ -218,6 +221,9 @@ class CollectionLens with ChangeNotifier {
         _filteredSortedEntries.sort(AvesEntry.compareBySize);
         break;
     }
+    if (sortReverse) {
+      _filteredSortedEntries = _filteredSortedEntries.reversed.toList();
+    }
   }
 
   void _applySection() {
@@ -247,7 +253,8 @@ class CollectionLens with ChangeNotifier {
           break;
         case EntrySortFactor.name:
           final byAlbum = groupBy<AvesEntry, EntryAlbumSectionKey>(_filteredSortedEntries, (entry) => EntryAlbumSectionKey(entry.directory));
-          sections = SplayTreeMap<EntryAlbumSectionKey, List<AvesEntry>>.of(byAlbum, (a, b) => source.compareAlbumsByName(a.directory!, b.directory!));
+          final compare = sortReverse ? (a, b) => source.compareAlbumsByName(b.directory!, a.directory!) : (a, b) => source.compareAlbumsByName(a.directory!, b.directory!);
+          sections = SplayTreeMap<EntryAlbumSectionKey, List<AvesEntry>>.of(byAlbum, compare);
           break;
         case EntrySortFactor.rating:
           sections = groupBy<AvesEntry, EntryRatingSectionKey>(_filteredSortedEntries, (entry) => EntryRatingSectionKey(entry.rating));
@@ -281,12 +288,14 @@ class CollectionLens with ChangeNotifier {
   void _onSettingsChanged() {
     final newSortFactor = settings.collectionSortFactor;
     final newSectionFactor = settings.collectionSectionFactor;
+    final newSortReverse = settings.collectionSortReverse;
 
-    final needSort = sortFactor != newSortFactor;
+    final needSort = sortFactor != newSortFactor || sortReverse != newSortReverse;
     final needSection = needSort || sectionFactor != newSectionFactor;
 
     if (needSort) {
       sortFactor = newSortFactor;
+      sortReverse = newSortReverse;
       _applySort();
     }
     if (needSection) {

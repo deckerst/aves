@@ -417,6 +417,7 @@
   "viewDialogTabSort": "Sort",
   "viewDialogTabGroup": "Group",
   "viewDialogTabLayout": "Layout",
+  "viewDialogReverseSortOrder": "Reverse sort order",
 
   "tileLayoutGrid": "Grid",
   "tileLayoutList": "List",
@@ -569,6 +570,15 @@
   "sortBySize": "By size",
   "sortByAlbumFileName": "By album & file name",
   "sortByRating": "By rating",
+
+  "sortOrderNewestFirst": "Newest first",
+  "sortOrderOldestFirst": "Oldest first",
+  "sortOrderAtoZ": "A to Z",
+  "sortOrderZtoA": "Z to A",
+  "sortOrderHighestFirst": "Highest first",
+  "sortOrderLowestFirst": "Lowest first",
+  "sortOrderLargestFirst": "Largest first",
+  "sortOrderSmallestFirst": "Smallest first",
 
   "albumGroupTier": "By tier",
   "albumGroupVolume": "By storage volume",

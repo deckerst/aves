@@ -9,7 +9,8 @@ import 'package:aves/model/selection.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
-import 'package:aves/model/source/enums.dart';
+import 'package:aves/model/source/enums/enums.dart';
+import 'package:aves/model/source/enums/view.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
@@ -37,9 +38,25 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
 
   set sortFactor(ChipSortFactor factor);
 
+  bool get sortReverse;
+
+  set sortReverse(bool value);
+
   TileLayout get tileLayout;
 
   set tileLayout(TileLayout tileLayout);
+
+  static const sortOptions = [
+    ChipSortFactor.date,
+    ChipSortFactor.name,
+    ChipSortFactor.count,
+    ChipSortFactor.size,
+  ];
+
+  static const layoutOptions = [
+    TileLayout.grid,
+    TileLayout.list,
+  ];
 
   bool isVisible(
     ChipSetAction action, {
@@ -194,27 +211,20 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
   }
 
   Future<void> configureView(BuildContext context) async {
-    final initialValue = Tuple3(
+    final initialValue = Tuple4(
       sortFactor,
       null,
       tileLayout,
+      sortReverse,
     );
-    final value = await showDialog<Tuple3<ChipSortFactor?, void, TileLayout?>>(
+    final value = await showDialog<Tuple4<ChipSortFactor?, void, TileLayout?, bool>>(
       context: context,
       builder: (context) {
-        final l10n = context.l10n;
         return TileViewDialog<ChipSortFactor, void, TileLayout>(
           initialValue: initialValue,
-          sortOptions: {
-            ChipSortFactor.date: l10n.sortByDate,
-            ChipSortFactor.name: l10n.sortByName,
-            ChipSortFactor.count: l10n.sortByItemCount,
-            ChipSortFactor.size: l10n.sortBySize,
-          },
-          layoutOptions: {
-            TileLayout.grid: l10n.tileLayoutGrid,
-            TileLayout.list: l10n.tileLayoutList,
-          },
+          sortOptions: Map.fromEntries(sortOptions.map((v) => MapEntry(v, v.getName(context)))),
+          layoutOptions: Map.fromEntries(layoutOptions.map((v) => MapEntry(v, v.getName(context)))),
+          sortOrder: (factor, reverse) => factor.getOrderName(context, reverse),
         );
       },
     );
@@ -223,6 +233,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
     if (value != null && initialValue != value) {
       sortFactor = value.item1!;
       tileLayout = value.item3!;
+      sortReverse = value.item4;
     }
   }
 

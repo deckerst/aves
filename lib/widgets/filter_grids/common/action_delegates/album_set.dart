@@ -9,7 +9,8 @@ import 'package:aves/model/highlight.dart';
 import 'package:aves/model/selection.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
-import 'package:aves/model/source/enums.dart';
+import 'package:aves/model/source/enums/enums.dart';
+import 'package:aves/model/source/enums/view.dart';
 import 'package:aves/services/common/image_op_events.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/media/enums.dart';
@@ -45,10 +46,22 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
   set sortFactor(ChipSortFactor factor) => settings.albumSortFactor = factor;
 
   @override
+  bool get sortReverse => settings.albumSortReverse;
+
+  @override
+  set sortReverse(bool value) => settings.albumSortReverse = value;
+
+  @override
   TileLayout get tileLayout => settings.getTileLayout(AlbumListPage.routeName);
 
   @override
   set tileLayout(TileLayout tileLayout) => settings.setTileLayout(AlbumListPage.routeName, tileLayout);
+
+  static const _groupOptions = [
+    AlbumChipGroupFactor.importance,
+    AlbumChipGroupFactor.volume,
+    AlbumChipGroupFactor.none,
+  ];
 
   @override
   bool isVisible(
@@ -125,32 +138,21 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
 
   @override
   Future<void> configureView(BuildContext context) async {
-    final initialValue = Tuple3(
+    final initialValue = Tuple4(
       sortFactor,
       settings.albumGroupFactor,
       tileLayout,
+      sortReverse,
     );
-    final value = await showDialog<Tuple3<ChipSortFactor?, AlbumChipGroupFactor?, TileLayout?>>(
+    final value = await showDialog<Tuple4<ChipSortFactor?, AlbumChipGroupFactor?, TileLayout?, bool>>(
       context: context,
       builder: (context) {
-        final l10n = context.l10n;
         return TileViewDialog<ChipSortFactor, AlbumChipGroupFactor, TileLayout>(
           initialValue: initialValue,
-          sortOptions: {
-            ChipSortFactor.date: l10n.sortByDate,
-            ChipSortFactor.name: l10n.sortByName,
-            ChipSortFactor.count: l10n.sortByItemCount,
-            ChipSortFactor.size: l10n.sortBySize,
-          },
-          groupOptions: {
-            AlbumChipGroupFactor.importance: l10n.albumGroupTier,
-            AlbumChipGroupFactor.volume: l10n.albumGroupVolume,
-            AlbumChipGroupFactor.none: l10n.albumGroupNone,
-          },
-          layoutOptions: {
-            TileLayout.grid: l10n.tileLayoutGrid,
-            TileLayout.list: l10n.tileLayoutList,
-          },
+          sortOptions: Map.fromEntries(ChipSetActionDelegate.sortOptions.map((v) => MapEntry(v, v.getName(context)))),
+          groupOptions: Map.fromEntries(_groupOptions.map((v) => MapEntry(v, v.getName(context)))),
+          layoutOptions: Map.fromEntries(ChipSetActionDelegate.layoutOptions.map((v) => MapEntry(v, v.getName(context)))),
+          sortOrder: (factor, reverse) => factor.getOrderName(context, reverse),
         );
       },
     );
@@ -160,6 +162,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
       sortFactor = value.item1!;
       settings.albumGroupFactor = value.item2!;
       tileLayout = value.item3!;
+      sortReverse = value.item4;
     }
   }
 

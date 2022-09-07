@@ -51,6 +51,7 @@ class AIcons {
   static const IconData group = Icons.group_work_outlined;
   static const IconData layout = Icons.grid_view_outlined;
   static const IconData sort = Icons.sort_outlined;
+  static const IconData sortOrder = Icons.swap_vert_outlined;
 
   // actions
   static const IconData add = Icons.add_circle_outline;

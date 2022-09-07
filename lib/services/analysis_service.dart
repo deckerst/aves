@@ -4,7 +4,7 @@ import 'dart:ui';
 import 'package:aves/l10n/l10n.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/analysis_controller.dart';
-import 'package:aves/model/source/enums.dart';
+import 'package:aves/model/source/enums/enums.dart';
 import 'package:aves/model/source/media_store_source.dart';
 import 'package:aves/model/source/source_state.dart';
 import 'package:aves/services/common/services.dart';
