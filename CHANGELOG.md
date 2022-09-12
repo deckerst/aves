@@ -20,6 +20,7 @@ All notable changes to this project will be documented in this file.
 
 - opening viewer with directory context in some cases
 - photo frame widget rendering in some cases
+- exporting large images to BMP
 
 ## <a id="v1.6.13"></a>[v1.6.13] - 2022-08-29
 
