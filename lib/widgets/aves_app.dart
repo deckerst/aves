@@ -104,11 +104,12 @@ class AvesApp extends StatefulWidget {
 
 class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   final ValueNotifier<AppMode> appModeNotifier = ValueNotifier(AppMode.main);
-  late Future<void> _appSetup;
-  late Future<CorePalette?> _dynamicColorPaletteLoader;
-  final _mediaStoreSource = MediaStoreSource();
+  late final Future<void> _appSetup;
+  late final Size _screenSize;
+  late final Future<CorePalette?> _dynamicColorPaletteLoader;
+  final CollectionSource _mediaStoreSource = MediaStoreSource();
   final Debouncer _mediaStoreChangeDebouncer = Debouncer(delay: Durations.mediaContentChangeDebounceDelay);
-  final Set<String> changedUris = {};
+  final Set<String> _changedUris = {};
 
   // observers are not registered when using the same list object with different items
   // the list itself needs to be reassigned
@@ -125,6 +126,8 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     super.initState();
     EquatableConfig.stringify = true;
     _appSetup = _setup();
+    // remember screen size to use it later, when `context` and `window` are no longer reliable
+    _screenSize = window.physicalSize / window.devicePixelRatio;
     _dynamicColorPaletteLoader = DynamicColorPlugin.getCorePalette();
     _mediaStoreChangeChannel.receiveBroadcastStream().listen((event) => _onMediaStoreChange(event as String?));
     _newIntentChannel.receiveBroadcastStream().listen((event) => _onNewIntent(event as Map?));
@@ -293,20 +296,13 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     if (!settings.initialized) return;
 
     final stopwatch = Stopwatch()..start();
-    final Size screenSize;
-    try {
-      screenSize = window.physicalSize / window.devicePixelRatio;
-    } catch (error) {
-      // view may no longer be usable
-      return;
-    }
 
     var tileExtent = settings.getTileExtent(CollectionPage.routeName);
     if (tileExtent == 0) {
-      tileExtent = screenSize.shortestSide / CollectionGrid.columnCountDefault;
+      tileExtent = _screenSize.shortestSide / CollectionGrid.columnCountDefault;
     }
-    final rows = (screenSize.height / tileExtent).ceil();
-    final columns = (screenSize.width / tileExtent).ceil();
+    final rows = (_screenSize.height / tileExtent).ceil();
+    final columns = (_screenSize.width / tileExtent).ceil();
     final count = rows * columns;
     final collection = CollectionLens(source: _mediaStoreSource, listenToSource: false);
     settings.topEntryIds = collection.sortedEntries.take(count).map((entry) => entry.id).toList();
@@ -405,14 +401,14 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   }
 
   void _onMediaStoreChange(String? uri) {
-    if (uri != null) changedUris.add(uri);
-    if (changedUris.isNotEmpty) {
+    if (uri != null) _changedUris.add(uri);
+    if (_changedUris.isNotEmpty) {
       _mediaStoreChangeDebouncer(() async {
-        final todo = changedUris.toSet();
-        changedUris.clear();
+        final todo = _changedUris.toSet();
+        _changedUris.clear();
         final tempUris = await _mediaStoreSource.refreshUris(todo);
         if (tempUris.isNotEmpty) {
-          changedUris.addAll(tempUris);
+          _changedUris.addAll(tempUris);
           _onMediaStoreChange(null);
         }
       });

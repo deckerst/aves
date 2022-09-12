@@ -10,7 +10,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
 
 mixin AlbumMixin on SourceBase {
-  final Set<String?> _directories = {};
+  final Set<String> _directories = {};
   final Set<String> _newAlbums = {};
 
   List<String> get rawAlbums => List.unmodifiable(_directories);
@@ -68,7 +68,7 @@ mixin AlbumMixin on SourceBase {
 
   void addDirectories({required Set<String?> albums, bool notify = true}) {
     if (!_directories.containsAll(albums)) {
-      _directories.addAll(albums);
+      _directories.addAll(albums.whereNotNull());
       _onAlbumChanged(notify: notify);
     }
   }
