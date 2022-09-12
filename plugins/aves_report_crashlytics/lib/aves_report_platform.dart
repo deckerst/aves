@@ -15,7 +15,7 @@ class PlatformReportService extends ReportService {
     try {
       return FirebaseCrashlytics.instance;
     } catch (error, stack) {
-      // as of firebase_core v1.10.5 / firebase_crashlytics v2.4.3, `Firebase.app` sometimes fail with:
+      // as of firebase_core v1.21.0 / firebase_crashlytics v2.8.8, `Firebase.app` sometimes fail with:
       // `No Firebase App '[DEFAULT]' has been created - call Firebase.initializeApp()`
       debugPrint('failed to get Firebase Crashlytics instance with error=$error\n$stack');
     }
@@ -34,7 +34,7 @@ class PlatformReportService extends ReportService {
         'Crashlytics collection enabled': '${_instance?.isCrashlyticsCollectionEnabled}',
       };
     } catch (error, stack) {
-      // as of firebase_core v1.10.5 / firebase_crashlytics v2.4.3, `Firebase.app` sometimes fail with:
+      // as of firebase_core v1.21.0 / firebase_crashlytics v2.8.8, `Firebase.app` sometimes fail with:
       // `No Firebase App '[DEFAULT]' has been created - call Firebase.initializeApp()`
       debugPrint('failed to access Firebase properties with error=$error\n$stack');
     }
@@ -48,7 +48,7 @@ class PlatformReportService extends ReportService {
       await Firebase.app().setAutomaticDataCollectionEnabled(enabled);
       await _instance?.setCrashlyticsCollectionEnabled(enabled);
     } catch (error, stack) {
-      // as of firebase_core v1.10.5 / firebase_crashlytics v2.4.3, `Firebase.app` sometimes fail with:
+      // as of firebase_core v1.21.0 / firebase_crashlytics v2.8.8, `Firebase.app` sometimes fail with:
       // `No Firebase App '[DEFAULT]' has been created - call Firebase.initializeApp()`
       debugPrint('failed to access Firebase properties with error=$error\n$stack');
     }
