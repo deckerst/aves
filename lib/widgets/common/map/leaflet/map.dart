@@ -155,7 +155,6 @@ class _EntryLeafletMapState<T> extends State<EntryLeafletMap<T>> with TickerProv
         // prevent triggering multiple gestures at once (e.g. rotating a bit when mostly zooming)
         enableMultiFingerGestureRace: true,
         onTap: (tapPosition, point) => widget.onMapTap?.call(point),
-        controller: _leafletMapController,
       ),
       mapController: _leafletMapController,
       nonRotatedChildren: [
@@ -168,27 +167,23 @@ class _EntryLeafletMapState<T> extends State<EntryLeafletMap<T>> with TickerProv
       children: [
         _buildMapLayer(),
         if (widget.overlayEntry != null) _buildOverlayImageLayer(),
-        MarkerLayerWidget(
-          options: MarkerLayerOptions(
-            markers: markers,
-            rotate: true,
-            rotateAlignment: Alignment.bottomCenter,
-          ),
+        MarkerLayer(
+          markers: markers,
+          rotate: true,
+          rotateAlignment: Alignment.bottomCenter,
         ),
         ValueListenableBuilder<LatLng?>(
           valueListenable: widget.dotLocationNotifier ?? ValueNotifier(null),
-          builder: (context, dotLocation, child) => MarkerLayerWidget(
-            options: MarkerLayerOptions(
-              markers: [
-                if (dotLocation != null)
-                  Marker(
-                    point: dotLocation,
-                    builder: (context) => const DotMarker(),
-                    width: dotMarkerSize.width,
-                    height: dotMarkerSize.height,
-                  )
-              ],
-            ),
+          builder: (context, dotLocation, child) => MarkerLayer(
+            markers: [
+              if (dotLocation != null)
+                Marker(
+                  point: dotLocation,
+                  builder: (context) => const DotMarker(),
+                  width: dotMarkerSize.width,
+                  height: dotMarkerSize.height,
+                )
+            ],
           ),
         ),
       ],
@@ -219,16 +214,14 @@ class _EntryLeafletMapState<T> extends State<EntryLeafletMap<T>> with TickerProv
     return ValueListenableBuilder<double>(
       valueListenable: widget.overlayOpacityNotifier ?? ValueNotifier(1),
       builder: (context, overlayOpacity, child) {
-        return OverlayImageLayerWidget(
-          options: OverlayImageLayerOptions(
-            overlayImages: [
-              OverlayImage(
-                bounds: LatLngBounds(corner1, corner2),
-                imageProvider: overlayEntry.imageProvider,
-                opacity: overlayOpacity,
-              ),
-            ],
-          ),
+        return OverlayImageLayer(
+          overlayImages: [
+            OverlayImage(
+              bounds: LatLngBounds(corner1, corner2),
+              imageProvider: overlayEntry.imageProvider,
+              opacity: overlayOpacity,
+            ),
+          ],
         );
       },
     );

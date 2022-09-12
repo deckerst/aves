@@ -10,14 +10,12 @@ class OSMHotLayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TileLayerWidget(
-      options: TileLayerOptions(
-        urlTemplate: 'https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png',
-        subdomains: ['a', 'b', 'c'],
-        backgroundColor: _tileLayerBackgroundColor,
-        retinaMode: context.select<MediaQueryData, double>((mq) => mq.devicePixelRatio) > 1,
-        userAgentPackageName: device.userAgent,
-      ),
+    return TileLayer(
+      urlTemplate: 'https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png',
+      subdomains: const ['a', 'b', 'c'],
+      backgroundColor: _tileLayerBackgroundColor,
+      retinaMode: context.select<MediaQueryData, double>((mq) => mq.devicePixelRatio) > 1,
+      userAgentPackageName: device.userAgent,
     );
   }
 }
@@ -27,14 +25,12 @@ class StamenTonerLayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TileLayerWidget(
-      options: TileLayerOptions(
-        urlTemplate: 'https://stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}{r}.png',
-        subdomains: ['a', 'b', 'c', 'd'],
-        backgroundColor: _tileLayerBackgroundColor,
-        retinaMode: context.select<MediaQueryData, double>((mq) => mq.devicePixelRatio) > 1,
-        userAgentPackageName: device.userAgent,
-      ),
+    return TileLayer(
+      urlTemplate: 'https://stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}{r}.png',
+      subdomains: const ['a', 'b', 'c', 'd'],
+      backgroundColor: _tileLayerBackgroundColor,
+      retinaMode: context.select<MediaQueryData, double>((mq) => mq.devicePixelRatio) > 1,
+      userAgentPackageName: device.userAgent,
     );
   }
 }
@@ -44,14 +40,12 @@ class StamenWatercolorLayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TileLayerWidget(
-      options: TileLayerOptions(
-        urlTemplate: 'https://stamen-tiles-{s}.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.jpg',
-        subdomains: ['a', 'b', 'c', 'd'],
-        backgroundColor: _tileLayerBackgroundColor,
-        retinaMode: context.select<MediaQueryData, double>((mq) => mq.devicePixelRatio) > 1,
-        userAgentPackageName: device.userAgent,
-      ),
+    return TileLayer(
+      urlTemplate: 'https://stamen-tiles-{s}.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.jpg',
+      subdomains: const ['a', 'b', 'c', 'd'],
+      backgroundColor: _tileLayerBackgroundColor,
+      retinaMode: context.select<MediaQueryData, double>((mq) => mq.devicePixelRatio) > 1,
+      userAgentPackageName: device.userAgent,
     );
   }
 }
