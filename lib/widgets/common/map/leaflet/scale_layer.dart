@@ -1,19 +1,19 @@
+import 'dart:math';
+
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/widgets/common/basic/outlined_text.dart';
-import 'package:aves/widgets/common/map/leaflet/scalebar_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/plugin_api.dart';
+import 'package:latlong2/latlong.dart';
 
-class ScaleLayerOptions extends LayerOptions {
+class ScaleLayerOptions {
   final UnitSystem unitSystem;
   final Widget Function(double width, String distance) builder;
 
   ScaleLayerOptions({
-    super.key,
     this.unitSystem = UnitSystem.metric,
     this.builder = defaultBuilder,
-    rebuild,
-  }) : super(rebuild: rebuild);
+  });
 
   static Widget defaultBuilder(double width, String distance) {
     return ScaleBar(
@@ -26,20 +26,13 @@ class ScaleLayerOptions extends LayerOptions {
 class ScaleLayerWidget extends StatelessWidget {
   final ScaleLayerOptions options;
 
-  ScaleLayerWidget({required this.options}) : super(key: options.key);
+  final Distance _distanceCalculator = const Distance();
 
-  @override
-  Widget build(BuildContext context) {
-    final mapState = MapState.maybeOf(context);
-    return mapState != null ? ScaleLayer(options, mapState, mapState.onMoved) : const SizedBox();
-  }
-}
+  const ScaleLayerWidget({
+    super.key,
+    required this.options,
+  });
 
-class ScaleLayer extends StatelessWidget {
-  final ScaleLayerOptions scaleLayerOpts;
-  final MapState map;
-
-  final Stream<void> stream;
   static const List<double> scaleMeters = [
     25000000,
     15000000,
@@ -70,53 +63,47 @@ class ScaleLayer extends StatelessWidget {
   static const double metersInAMile = 1609.344;
   static const double metersInAFoot = 0.3048;
 
-  ScaleLayer(this.scaleLayerOpts, this.map, this.stream) : super(key: scaleLayerOpts.key);
-
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<void>(
-      stream: stream,
-      builder: (context, snapshot) {
-        final center = map.center;
-        final latitude = center.latitude.abs();
-        final level = map.zoom.round() +
-            (latitude > 80
-                ? 4
-                : latitude > 60
-                    ? 3
-                    : 2);
-        final scaleLevel = level.clamp(0, 20);
-        late final double distanceMeters;
-        late final String displayDistance;
-        switch (scaleLayerOpts.unitSystem) {
-          case UnitSystem.metric:
-            // meters
-            distanceMeters = scaleMeters[scaleLevel];
-            displayDistance = distanceMeters >= metersInAKilometer ? '${(distanceMeters / metersInAKilometer).toStringAsFixed(0)} km' : '${distanceMeters.toStringAsFixed(0)} m';
-            break;
-          case UnitSystem.imperial:
-            if (scaleLevel < 15) {
-              // miles
-              final distanceMiles = scaleMeters[scaleLevel + 1] / 1000;
-              distanceMeters = distanceMiles * metersInAMile;
-              displayDistance = '${distanceMiles.toStringAsFixed(0)} mi';
-            } else {
-              // feet
-              final distanceFeet = scaleMeters[scaleLevel - 1];
-              distanceMeters = distanceFeet * metersInAFoot;
-              displayDistance = '${distanceFeet.toStringAsFixed(0)} ft';
-            }
-            break;
+    final map = FlutterMapState.maybeOf(context)!;
+    final center = map.center;
+    final latitude = center.latitude.abs();
+    final level = map.zoom.round() +
+        (latitude > 80
+            ? 4
+            : latitude > 60
+                ? 3
+                : 2);
+    final scaleLevel = level.clamp(0, 20);
+    late final double distanceMeters;
+    late final String displayDistance;
+    switch (options.unitSystem) {
+      case UnitSystem.metric:
+        // meters
+        distanceMeters = scaleMeters[scaleLevel];
+        displayDistance = distanceMeters >= metersInAKilometer ? '${(distanceMeters / metersInAKilometer).toStringAsFixed(0)} km' : '${distanceMeters.toStringAsFixed(0)} m';
+        break;
+      case UnitSystem.imperial:
+        if (scaleLevel < 15) {
+          // miles
+          final distanceMiles = scaleMeters[scaleLevel + 1] / 1000;
+          distanceMeters = distanceMiles * metersInAMile;
+          displayDistance = '${distanceMiles.toStringAsFixed(0)} mi';
+        } else {
+          // feet
+          final distanceFeet = scaleMeters[scaleLevel - 1];
+          distanceMeters = distanceFeet * metersInAFoot;
+          displayDistance = '${distanceFeet.toStringAsFixed(0)} ft';
         }
+        break;
+    }
 
-        final start = map.project(center);
-        final targetPoint = ScaleBarUtils.calculateEndingGlobalCoordinates(center, 90, distanceMeters);
-        final end = map.project(targetPoint);
-        final width = end.x - (start.x as double);
+    final start = map.project(center);
+    final targetPoint = _distanceCalculator.offset(center, distanceMeters, 90);
+    final end = map.project(targetPoint);
+    final width = max(0, end.x - start.x).toDouble();
 
-        return scaleLayerOpts.builder(width, displayDistance);
-      },
-    );
+    return options.builder(width, displayDistance);
   }
 }
 
