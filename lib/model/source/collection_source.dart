@@ -283,6 +283,16 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
   }) async {
     if (movedOps.isEmpty) return;
 
+    final replacedUris = movedOps
+        .map((movedOp) => movedOp.newFields['path'] as String?)
+        .map((targetPath) {
+          final existingEntry = _rawEntries.firstWhereOrNull((entry) => entry.path == targetPath && !entry.trashed);
+          return existingEntry?.uri;
+        })
+        .whereNotNull()
+        .toSet();
+    await removeEntries(replacedUris, includeTrash: false);
+
     final fromAlbums = <String?>{};
     final movedEntries = <AvesEntry>{};
     final copy = moveType == MoveType.copy;
