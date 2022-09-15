@@ -92,6 +92,7 @@ class _CollectionGridContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final selectable = context.select<ValueNotifier<AppMode>, bool>((v) => v.value.canSelectMedia);
     final settingsRouteKey = context.read<TileExtentController>().settingsRouteKey;
     final tileLayout = context.select<Settings, TileLayout>((s) => s.getTileLayout(settingsRouteKey));
     return Consumer<CollectionLens>(
@@ -124,6 +125,7 @@ class _CollectionGridContent extends StatelessWidget {
                         }
                         return SectionedEntryListLayoutProvider(
                           collection: collection,
+                          selectable: selectable,
                           scrollableWidth: scrollableWidth,
                           tileLayout: tileLayout,
                           columnCount: columnCount,
@@ -160,6 +162,7 @@ class _CollectionGridContent extends StatelessWidget {
             isScrollingNotifier: _isScrollingNotifier,
             scrollController: PrimaryScrollController.of(context)!,
             tileLayout: tileLayout,
+            selectable: selectable,
           ),
         );
         return sectionedListLayoutProvider;
@@ -173,12 +176,14 @@ class _CollectionSectionedContent extends StatefulWidget {
   final ValueNotifier<bool> isScrollingNotifier;
   final ScrollController scrollController;
   final TileLayout tileLayout;
+  final bool selectable;
 
   const _CollectionSectionedContent({
     required this.collection,
     required this.isScrollingNotifier,
     required this.scrollController,
     required this.tileLayout,
+    required this.selectable,
   });
 
   @override
@@ -220,7 +225,7 @@ class _CollectionSectionedContentState extends State<_CollectionSectionedContent
 
     final selector = GridSelectionGestureDetector(
       scrollableKey: _scrollableKey,
-      selectable: context.select<ValueNotifier<AppMode>, bool>((v) => v.value.canSelectMedia),
+      selectable: widget.selectable,
       items: collection.sortedEntries,
       scrollController: scrollController,
       appBarHeightNotifier: _appBarHeightNotifier,

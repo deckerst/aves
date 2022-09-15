@@ -36,6 +36,17 @@ class SectionHeader<T> extends StatelessWidget {
       constraints: BoxConstraints(minHeight: leadingSize.height),
       child: GestureDetector(
         onTap: selectable ? () => _toggleSectionSelection(context) : null,
+        onLongPress: selectable
+            ? () {
+                final selection = context.read<Selection<T>>();
+                if (selection.isSelecting) {
+                  _toggleSectionSelection(context);
+                } else {
+                  selection.select();
+                  selection.addToSelection(_getSectionEntries(context));
+                }
+              }
+            : null,
         child: Text.rich(
           TextSpan(
             children: [
@@ -74,8 +85,10 @@ class SectionHeader<T> extends StatelessWidget {
     );
   }
 
+  List<T> _getSectionEntries(BuildContext context) => context.read<SectionedListLayout<T>>().sections[sectionKey] ?? [];
+
   void _toggleSectionSelection(BuildContext context) {
-    final sectionEntries = context.read<SectionedListLayout<T>>().sections[sectionKey] ?? [];
+    final sectionEntries = _getSectionEntries(context);
     final selection = context.read<Selection<T>>();
     final isSelected = selection.isSelected(sectionEntries);
     if (isSelected) {
