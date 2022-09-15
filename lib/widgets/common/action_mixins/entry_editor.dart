@@ -13,6 +13,7 @@ import 'package:aves/widgets/dialogs/entry_editors/edit_location_dialog.dart';
 import 'package:aves/widgets/dialogs/entry_editors/edit_rating_dialog.dart';
 import 'package:aves/widgets/dialogs/entry_editors/edit_tags_dialog.dart';
 import 'package:aves/widgets/dialogs/entry_editors/remove_metadata_dialog.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 
@@ -32,10 +33,12 @@ mixin EntryEditorMixin {
   Future<LatLng?> selectLocation(BuildContext context, Set<AvesEntry> entries, CollectionLens? collection) async {
     if (entries.isEmpty) return null;
 
+    final initialLocation = entries.firstWhereOrNull((entry) => entry.hasGps)?.latLng;
+
     return showDialog<LatLng>(
       context: context,
       builder: (context) => EditEntryLocationDialog(
-        entry: entries.first,
+        initialLocation: initialLocation,
         collection: collection,
       ),
     );
