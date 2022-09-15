@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 
 class FilterChipSectionHeader<T> extends StatelessWidget {
   final ChipSectionKey sectionKey;
+  final bool selectable;
 
   const FilterChipSectionHeader({
     super.key,
     required this.sectionKey,
+    required this.selectable,
   });
 
   @override
@@ -16,6 +18,7 @@ class FilterChipSectionHeader<T> extends StatelessWidget {
       sectionKey: sectionKey,
       leading: sectionKey.leading,
       title: sectionKey.title,
+      selectable: selectable,
     );
   }
 

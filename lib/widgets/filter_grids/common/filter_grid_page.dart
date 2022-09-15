@@ -293,6 +293,7 @@ class _FilterGridContent<T extends CollectionFilter> extends StatelessWidget {
                             child: SectionedFilterListLayoutProvider<T>(
                               sections: visibleSections,
                               showHeaders: showHeaders,
+                              selectable: selectable,
                               tileLayout: tileLayout,
                               scrollableWidth: scrollableWidth,
                               columnCount: columnCount,

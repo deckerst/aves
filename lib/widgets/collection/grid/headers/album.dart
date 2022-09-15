@@ -11,11 +11,13 @@ import 'package:flutter/material.dart';
 
 class AlbumSectionHeader extends StatelessWidget {
   final String? directory, albumName;
+  final bool selectable;
 
   const AlbumSectionHeader({
     super.key,
     required this.directory,
     required this.albumName,
+    required this.selectable,
   });
 
   @override
@@ -41,6 +43,7 @@ class AlbumSectionHeader extends StatelessWidget {
               color: Color(0xFF757575),
             )
           : null,
+      selectable: selectable,
     );
   }
 
