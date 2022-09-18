@@ -16,7 +16,7 @@ class AboutCredits extends StatelessWidget {
     'Português (Brasil)': 'Jonatas De Almeida Barros',
     'Türkçe': 'metezd',
     'Ελληνικά': 'Emmanouil Papavergis',
-    'Русский': 'D3ZOXY',
+    'Русский': 'D3ZOXY, kha84',
     '日本語': 'Maki',
     '简体中文': '小默, Aerowolf',
   };

@@ -88,15 +88,18 @@
 
   "entryInfoActionEditDate": "Επεξεργασία ημερομηνίας και ώρας",
   "entryInfoActionEditLocation": "Επεξεργασία τοποθεσίας",
+  "entryInfoActionEditTitleDescription": "Επεξεργασία ονομασίας & περιγραφής",
   "entryInfoActionEditRating": "Επεξεργασία βαθμολογίας",
   "entryInfoActionEditTags": "Επεξεργασία ετικετών",
   "entryInfoActionRemoveMetadata": "Κατάργηση μεταδεδομένων",
 
   "filterBinLabel": "Κάδος ανακύκλωσης",
   "filterFavouriteLabel": "Αγαπημένα",
+  "filterNoDateLabel": "Χωρίς ημερομηνία",
   "filterNoLocationLabel": "Χωρίς τοποθεσία",
   "filterNoRatingLabel": "Χωρίς βαθμολογία",
   "filterNoTagLabel": "Χωρίς ετικέτα",
+  "filterNoTitleLabel": "Χωρίς ονομασία",
   "filterOnThisDayLabel": "Αυτή τη μέρα",
   "filterRecentlyAddedLabel": "Προστέθηκαν πρόσφατα",
   "filterRatingRejectedLabel": "Απορριφθέντα",
@@ -284,6 +287,7 @@
   "viewDialogSortSectionTitle": "Ταξινομηση",
   "viewDialogGroupSectionTitle": "Ομαδοποιηση",
   "viewDialogLayoutSectionTitle": "Διαταξη",
+  "viewDialogReverseSortOrder": "Αντίστροφη σειρά ταξινόμησης",
 
   "tileLayoutGrid": "Πλέγμα",
   "tileLayoutList": "Λίστα",
@@ -387,6 +391,15 @@
   "sortByAlbumFileName": "Ανά άλμπουμ και όνομα αρχείου",
   "sortByRating": "Ανά βαθμολογία",
 
+  "sortOrderNewestFirst": "Τα πιο πρόσφατα πρώτα",
+  "sortOrderOldestFirst": "Τα παλαιότερα πρώτα",
+  "sortOrderAtoZ": "Α έως Ω",
+  "sortOrderZtoA": "Ω έως Α",
+  "sortOrderHighestFirst": "Υψηλότερη βαθμολογία πρώτα",
+  "sortOrderLowestFirst": "Χαμηλότερη βαθμολογία πρώτα",
+  "sortOrderLargestFirst": "Τα μεγαλύτερα πρώτα",
+  "sortOrderSmallestFirst": "Τα μικρότερα πρώτα",
+
   "albumGroupTier": "Ανά βαθμίδα",
   "albumGroupVolume": "Ανά αποθηκευτική μονάδα",
   "albumGroupNone": "Να μην γίνει ομαδοποίηση",
@@ -424,6 +437,7 @@
   "searchPlacesSectionTitle": "Τοποθεσιες",
   "searchTagsSectionTitle": "Ετικετες",
   "searchRatingSectionTitle": "Βαθμολογιες",
+  "searchMetadataSectionTitle": "Μεταδεδομενα",
 
   "settingsPageTitle": "Ρυθμισεις",
   "settingsSystemDefault": "Σύστημα",
