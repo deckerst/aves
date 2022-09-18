@@ -88,15 +88,18 @@
 
   "entryInfoActionEditDate": "编辑日期和时间",
   "entryInfoActionEditLocation": "编辑位置",
+  "entryInfoActionEditTitleDescription": "编辑标题和描述",
   "entryInfoActionEditRating": "修改评分",
   "entryInfoActionEditTags": "编辑标签",
   "entryInfoActionRemoveMetadata": "移除元数据",
 
   "filterBinLabel": "回收站",
   "filterFavouriteLabel": "收藏夹",
+  "filterNoDateLabel": "未注明日期",
   "filterNoLocationLabel": "未定位",
   "filterNoRatingLabel": "未评分",
   "filterNoTagLabel": "无标签",
+  "filterNoTitleLabel": "无标题",
   "filterOnThisDayLabel": "选择日期",
   "filterRecentlyAddedLabel": "最近添加",
   "filterRatingRejectedLabel": "拒绝",
@@ -284,6 +287,7 @@
   "viewDialogSortSectionTitle": "排序",
   "viewDialogGroupSectionTitle": "分组",
   "viewDialogLayoutSectionTitle": "布局",
+  "viewDialogReverseSortOrder": "反向排序",
 
   "tileLayoutGrid": "网格",
   "tileLayoutList": "列表",
@@ -387,6 +391,15 @@
   "sortByAlbumFileName": "按相册和文件名",
   "sortByRating": "按评分",
 
+  "sortOrderNewestFirst": "降序",
+  "sortOrderOldestFirst": "升序",
+  "sortOrderAtoZ": "A — Z",
+  "sortOrderZtoA": "Z — A",
+  "sortOrderHighestFirst": "由高到低",
+  "sortOrderLowestFirst": "由低到高",
+  "sortOrderLargestFirst": "由大到小",
+  "sortOrderSmallestFirst": "由小到大",
+
   "albumGroupTier": "按层级",
   "albumGroupVolume": "按存储卷",
   "albumGroupNone": "不分组",
@@ -424,6 +437,7 @@
   "searchPlacesSectionTitle": "地点",
   "searchTagsSectionTitle": "标签",
   "searchRatingSectionTitle": "评分",
+  "searchMetadataSectionTitle": "元数据",
 
   "settingsPageTitle": "设置",
   "settingsSystemDefault": "系统",

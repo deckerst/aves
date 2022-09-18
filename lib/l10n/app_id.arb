@@ -88,16 +88,20 @@
 
   "entryInfoActionEditDate": "Ubah tanggal & waktu",
   "entryInfoActionEditLocation": "Ubah lokasi",
+  "entryInfoActionEditTitleDescription": "Ubah judul & deskripsi",
   "entryInfoActionEditRating": "Ubah nilai",
   "entryInfoActionEditTags": "Ubah label",
   "entryInfoActionRemoveMetadata": "Hapus metadata",
 
   "filterBinLabel": "Tong sampah",
   "filterFavouriteLabel": "Favorit",
+  "filterNoDateLabel": "Tak ada tanggal",
   "filterNoLocationLabel": "Lokasi yang tidak ditemukan",
   "filterNoRatingLabel": "Belum diberi nilai",
   "filterNoTagLabel": "Tidak dilabel",
+  "filterNoTitleLabel": "Tak ada judul",
   "filterOnThisDayLabel": "Di hari ini",
+  "filterRecentlyAddedLabel": "Baru-baru ini ditambahkan",
   "filterRatingRejectedLabel": "Ditolak",
   "filterTypeAnimatedLabel": "Teranimasi",
   "filterTypeMotionPhotoLabel": "Foto bergerak",
@@ -283,6 +287,7 @@
   "viewDialogSortSectionTitle": "Sortir",
   "viewDialogGroupSectionTitle": "Grup",
   "viewDialogLayoutSectionTitle": "Tata letak",
+  "viewDialogReverseSortOrder": "Urutan pengurutan terbalik",
 
   "tileLayoutGrid": "Grid",
   "tileLayoutList": "Daftar",
@@ -386,6 +391,15 @@
   "sortByAlbumFileName": "Lewat nama album & file",
   "sortByRating": "Lewat nilai",
 
+  "sortOrderNewestFirst": "Terbaru pertama",
+  "sortOrderOldestFirst": "Tertua pertama",
+  "sortOrderAtoZ": "A ke Z",
+  "sortOrderZtoA": "Z ke A",
+  "sortOrderHighestFirst": "Tertinggi pertama",
+  "sortOrderLowestFirst": "Terendah pertama",
+  "sortOrderLargestFirst": "Terbesar pertama",
+  "sortOrderSmallestFirst": "Terkecil pertama",
+
   "albumGroupTier": "Lewat tingkat",
   "albumGroupVolume": "Lewat volume penyimpanan",
   "albumGroupNone": "Jangan kelompokkan",
@@ -423,6 +437,7 @@
   "searchPlacesSectionTitle": "Tempat",
   "searchTagsSectionTitle": "Label",
   "searchRatingSectionTitle": "Nilai",
+  "searchMetadataSectionTitle": "Metadata",
 
   "settingsPageTitle": "Pengaturan",
   "settingsSystemDefault": "Sistem",
@@ -452,6 +467,7 @@
   "settingsConfirmationBeforeDeleteItems": "Tanya sebelum menghapus benda selamanya",
   "settingsConfirmationBeforeMoveToBinItems": "Tanya sebelum memindahkan benda ke tong sampah",
   "settingsConfirmationBeforeMoveUndatedItems": "Tanyakan sebelum memindahkan barang tanpa metadata tanggal",
+  "settingsConfirmationAfterMoveToBinItems": "Tampilkan pesan setelah menggerakkan barang ke tong sampah",
 
   "settingsNavigationDrawerTile": "Menu navigasi",
   "settingsNavigationDrawerEditorPageTitle": "Menu Navigasi",
@@ -480,6 +496,7 @@
   "settingsCollectionSelectionQuickActionEditorBanner": "Sentuh dan tahan untuk memindahkan tombol dan memilih tindakan yang ditampilkan saat memilih benda.",
 
   "settingsViewerSectionTitle": "Penonton",
+  "settingsViewerGestureSideTapNext": "Ketuk tepi layar untuk menampilkan benda sebelumnya/berikutnya",
   "settingsViewerUseCutout": "Gunakan area potongan",
   "settingsViewerMaximumBrightness": "Kecerahan maksimum",
   "settingsMotionPhotoAutoPlay": "Putar foto bergerak otomatis",
@@ -613,6 +630,7 @@
   "viewerInfoBackToViewerTooltip": "Kembali ke penonton",
 
   "viewerInfoUnknown": "tidak dikenal",
+  "viewerInfoLabelDescription": "Deskripsi",
   "viewerInfoLabelTitle": "Judul",
   "viewerInfoLabelDate": "Tanggal",
   "viewerInfoLabelResolution": "Resolusi",

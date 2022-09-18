@@ -88,15 +88,20 @@
 
   "entryInfoActionEditDate": "Изменить дату и время",
   "entryInfoActionEditLocation": "Изменить местоположение",
+  "entryInfoActionEditTitleDescription": "Изменить название & описание",
   "entryInfoActionEditRating": "Изменить рейтинг",
   "entryInfoActionEditTags": "Изменить теги",
   "entryInfoActionRemoveMetadata": "Удалить метаданные",
 
   "filterBinLabel": "Корзина",
   "filterFavouriteLabel": "Избранное",
+  "filterNoDateLabel": "Без даты",
   "filterNoLocationLabel": "Без местоположения",
   "filterNoRatingLabel": "Без рейтинга",
   "filterNoTagLabel": "Без тегов",
+  "filterNoTitleLabel": "Без названия",
+  "filterOnThisDayLabel": "В этот день",
+  "filterRecentlyAddedLabel": "Недавно добавленные",
   "filterRatingRejectedLabel": "Отклонённое",
   "filterTypeAnimatedLabel": "GIF",
   "filterTypeMotionPhotoLabel": "Живое фото",
@@ -282,6 +287,7 @@
   "viewDialogSortSectionTitle": "Сортировка",
   "viewDialogGroupSectionTitle": "Группировка",
   "viewDialogLayoutSectionTitle": "Макет",
+  "viewDialogReverseSortOrder": "Обратный порядок сортировки",
 
   "tileLayoutGrid": "Сетка",
   "tileLayoutList": "Список",
@@ -385,6 +391,15 @@
   "sortByAlbumFileName": "По имени альбома и файла",
   "sortByRating": "По рейтингу",
 
+  "sortOrderNewestFirst": "Сначала новые",
+  "sortOrderOldestFirst": "Сначала старые",
+  "sortOrderAtoZ": "От А до Я",
+  "sortOrderZtoA": "От Я до А",
+  "sortOrderHighestFirst": "Сначала с высоким",
+  "sortOrderLowestFirst": "Сначала с низким",
+  "sortOrderLargestFirst": "Сначала большие",
+  "sortOrderSmallestFirst": "Сначала маленькие",
+
   "albumGroupTier": "По уровню",
   "albumGroupVolume": "По накопителю",
   "albumGroupNone": "Не группировать",
@@ -422,6 +437,7 @@
   "searchPlacesSectionTitle": "Локации",
   "searchTagsSectionTitle": "Теги",
   "searchRatingSectionTitle": "Рейтинги",
+  "searchMetadataSectionTitle": "Метаданные",
 
   "settingsPageTitle": "Настройки",
   "settingsSystemDefault": "Система",
@@ -451,6 +467,7 @@
   "settingsConfirmationBeforeDeleteItems": "Спросить, прежде чем удалять объекты навсегда",
   "settingsConfirmationBeforeMoveToBinItems": "Спросить, прежде чем перемещать объекты в корзину",
   "settingsConfirmationBeforeMoveUndatedItems": "Спросить, прежде чем перемещать объекты без даты в метаданных",
+  "settingsConfirmationAfterMoveToBinItems": "Показывать сообщение после перемещения в корзину",
 
   "settingsNavigationDrawerTile": "Навигационное меню",
   "settingsNavigationDrawerEditorPageTitle": "Навигационное меню",
@@ -479,6 +496,7 @@
   "settingsCollectionSelectionQuickActionEditorBanner": "Нажмите и удерживайте, чтобы переместить кнопки и выбрать, какие действия будут отображаться при выборе элементов.",
 
   "settingsViewerSectionTitle": "Просмотрщик",
+  "settingsViewerGestureSideTapNext": "Нажатие на край экрана для перехода назад/вперед",
   "settingsViewerUseCutout": "Использовать область выреза",
   "settingsViewerMaximumBrightness": "Максимальная яркость",
   "settingsMotionPhotoAutoPlay": "Автовоспроизведение «живых фото»",
@@ -505,6 +523,7 @@
   "settingsViewerSlideshowPageTitle": "Слайд-шоу",
   "settingsSlideshowRepeat": "Повтор",
   "settingsSlideshowShuffle": "Вперемешку",
+  "settingsSlideshowFillScreen": "Полный экран",
   "settingsSlideshowTransitionTile": "Эффект перехода",
   "settingsSlideshowTransitionDialogTitle": "Эффект Перехода",
   "settingsSlideshowIntervalTile": "Интервал",
@@ -589,7 +608,10 @@
   "settingsUnitSystemTile": "Единицы измерения",
   "settingsUnitSystemDialogTitle": "Единицы измерения",
 
+  "settingsScreenSaverPageTitle": "Скринсейвер",
+
   "settingsWidgetPageTitle": "Фоторамка",
+  "settingsWidgetShowOutline": "Выделение",
 
   "settingsCollectionTile": "Коллекция",
 
@@ -608,6 +630,7 @@
   "viewerInfoBackToViewerTooltip": "Вернуться к просмотрщику",
 
   "viewerInfoUnknown": "неизвестный",
+  "viewerInfoLabelDescription": "Описание",
   "viewerInfoLabelTitle": "Название",
   "viewerInfoLabelDate": "Дата",
   "viewerInfoLabelResolution": "Разрешение",

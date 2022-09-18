@@ -15,22 +15,6 @@
     "searchMetadataSectionTitle"
   ],
 
-  "el": [
-    "entryInfoActionEditTitleDescription",
-    "filterNoDateLabel",
-    "filterNoTitleLabel",
-    "viewDialogReverseSortOrder",
-    "sortOrderNewestFirst",
-    "sortOrderOldestFirst",
-    "sortOrderAtoZ",
-    "sortOrderZtoA",
-    "sortOrderHighestFirst",
-    "sortOrderLowestFirst",
-    "sortOrderLargestFirst",
-    "sortOrderSmallestFirst",
-    "searchMetadataSectionTitle"
-  ],
-
   "es": [
     "entryInfoActionEditTitleDescription",
     "filterNoDateLabel",
@@ -51,7 +35,6 @@
   ],
 
   "fr": [
-    "viewDialogReverseSortOrder",
     "sortOrderNewestFirst",
     "sortOrderOldestFirst",
     "sortOrderAtoZ",
@@ -60,42 +43,6 @@
     "sortOrderLowestFirst",
     "sortOrderLargestFirst",
     "sortOrderSmallestFirst"
-  ],
-
-  "id": [
-    "entryInfoActionEditTitleDescription",
-    "filterNoDateLabel",
-    "filterNoTitleLabel",
-    "filterRecentlyAddedLabel",
-    "viewDialogReverseSortOrder",
-    "sortOrderNewestFirst",
-    "sortOrderOldestFirst",
-    "sortOrderAtoZ",
-    "sortOrderZtoA",
-    "sortOrderHighestFirst",
-    "sortOrderLowestFirst",
-    "sortOrderLargestFirst",
-    "sortOrderSmallestFirst",
-    "searchMetadataSectionTitle",
-    "settingsConfirmationAfterMoveToBinItems",
-    "settingsViewerGestureSideTapNext",
-    "viewerInfoLabelDescription"
-  ],
-
-  "it": [
-    "entryInfoActionEditTitleDescription",
-    "filterNoDateLabel",
-    "filterNoTitleLabel",
-    "viewDialogReverseSortOrder",
-    "sortOrderNewestFirst",
-    "sortOrderOldestFirst",
-    "sortOrderAtoZ",
-    "sortOrderZtoA",
-    "sortOrderHighestFirst",
-    "sortOrderLowestFirst",
-    "sortOrderLargestFirst",
-    "sortOrderSmallestFirst",
-    "searchMetadataSectionTitle"
   ],
 
   "ja": [
@@ -130,22 +77,6 @@
     "sortOrderSmallestFirst"
   ],
 
-  "nl": [
-    "entryInfoActionEditTitleDescription",
-    "filterNoDateLabel",
-    "filterNoTitleLabel",
-    "viewDialogReverseSortOrder",
-    "sortOrderNewestFirst",
-    "sortOrderOldestFirst",
-    "sortOrderAtoZ",
-    "sortOrderZtoA",
-    "sortOrderHighestFirst",
-    "sortOrderLowestFirst",
-    "sortOrderLargestFirst",
-    "sortOrderSmallestFirst",
-    "searchMetadataSectionTitle"
-  ],
-
   "pt": [
     "entryInfoActionEditTitleDescription",
     "filterNoDateLabel",
@@ -160,30 +91,6 @@
     "sortOrderLargestFirst",
     "sortOrderSmallestFirst",
     "searchMetadataSectionTitle"
-  ],
-
-  "ru": [
-    "entryInfoActionEditTitleDescription",
-    "filterNoDateLabel",
-    "filterNoTitleLabel",
-    "filterOnThisDayLabel",
-    "filterRecentlyAddedLabel",
-    "viewDialogReverseSortOrder",
-    "sortOrderNewestFirst",
-    "sortOrderOldestFirst",
-    "sortOrderAtoZ",
-    "sortOrderZtoA",
-    "sortOrderHighestFirst",
-    "sortOrderLowestFirst",
-    "sortOrderLargestFirst",
-    "sortOrderSmallestFirst",
-    "searchMetadataSectionTitle",
-    "settingsConfirmationAfterMoveToBinItems",
-    "settingsViewerGestureSideTapNext",
-    "settingsSlideshowFillScreen",
-    "settingsScreenSaverPageTitle",
-    "settingsWidgetShowOutline",
-    "viewerInfoLabelDescription"
   ],
 
   "tr": [
@@ -232,21 +139,5 @@
     "settingsWidgetShowOutline",
     "viewerSetWallpaperButtonLabel",
     "viewerInfoLabelDescription"
-  ],
-
-  "zh": [
-    "entryInfoActionEditTitleDescription",
-    "filterNoDateLabel",
-    "filterNoTitleLabel",
-    "viewDialogReverseSortOrder",
-    "sortOrderNewestFirst",
-    "sortOrderOldestFirst",
-    "sortOrderAtoZ",
-    "sortOrderZtoA",
-    "sortOrderHighestFirst",
-    "sortOrderLowestFirst",
-    "sortOrderLargestFirst",
-    "sortOrderSmallestFirst",
-    "searchMetadataSectionTitle"
   ]
 }
