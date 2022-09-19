@@ -275,7 +275,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
 
     final l10n = context.l10n;
     final source = context.read<CollectionSource>();
-    final selectionDirs = entries.map((e) => e.directory).whereNotNull().toSet();
+    final storageDirs = entries.map((e) => e.storageDirectory).whereNotNull().toSet();
     final todoCount = entries.length;
 
     if (!await showConfirmationDialog(
@@ -285,7 +285,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       confirmationButtonLabel: l10n.deleteButtonLabel,
     )) return;
 
-    if (!pureTrash && !await checkStoragePermissionForAlbums(context, selectionDirs, entries: entries)) return;
+    if (!await checkStoragePermissionForAlbums(context, storageDirs, entries: entries)) return;
 
     source.pauseMonitoring();
     final opId = mediaEditService.newOpId;
@@ -308,7 +308,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
         }
 
         // cleanup
-        await storageService.deleteEmptyDirectories(selectionDirs);
+        await storageService.deleteEmptyDirectories(storageDirs);
       },
     );
 

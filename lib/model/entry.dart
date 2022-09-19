@@ -213,9 +213,13 @@ class AvesEntry {
     return _extension;
   }
 
+  String? get storagePath => trashed ? trashDetails?.path : path;
+
+  String? get storageDirectory => trashed ? pContext.dirname(trashDetails!.path) : directory;
+
   bool get isMissingAtPath {
-    final effectivePath = trashed ? trashDetails?.path : path;
-    return effectivePath != null && !File(effectivePath).existsSync();
+    final _storagePath = storagePath;
+    return _storagePath != null && !File(_storagePath).existsSync();
   }
 
   // the MIME type reported by the Media Store is unreliable

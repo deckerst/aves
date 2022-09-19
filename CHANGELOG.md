@@ -22,6 +22,7 @@ All notable changes to this project will be documented in this file.
 - photo frame widget rendering in some cases
 - exporting large images to BMP
 - replacing entries during move/copy
+- deleting binned item from the Download album
 
 ## <a id="v1.6.13"></a>[v1.6.13] - 2022-08-29
 
