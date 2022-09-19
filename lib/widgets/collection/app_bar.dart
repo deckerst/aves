@@ -12,7 +12,8 @@ import 'package:aves/model/selection.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
-import 'package:aves/model/source/enums.dart';
+import 'package:aves/model/source/enums/enums.dart';
+import 'package:aves/model/source/enums/view.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
@@ -66,6 +67,25 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   Set<CollectionFilter> get visibleFilters => collection.filters.where((v) => !(v is QueryFilter && v.live) && v is! TrashFilter).toSet();
 
   bool get showFilterBar => visibleFilters.isNotEmpty;
+
+  static const _sortOptions = [
+    EntrySortFactor.date,
+    EntrySortFactor.size,
+    EntrySortFactor.name,
+    EntrySortFactor.rating,
+  ];
+
+  static const _groupOptions = [
+    EntryGroupFactor.album,
+    EntryGroupFactor.month,
+    EntryGroupFactor.day,
+    EntryGroupFactor.none,
+  ];
+
+  static const _layoutOptions = [
+    TileLayout.grid,
+    TileLayout.list,
+  ];
 
   @override
   void initState() {
@@ -496,7 +516,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       case EntrySetAction.flip:
       case EntrySetAction.editDate:
       case EntrySetAction.editLocation:
-      case EntrySetAction.editDescription:
+      case EntrySetAction.editTitleDescription:
       case EntrySetAction.editRating:
       case EntrySetAction.editTags:
       case EntrySetAction.removeMetadata:
@@ -506,33 +526,22 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   }
 
   Future<void> _configureView() async {
-    final initialValue = Tuple3(
+    final initialValue = Tuple4(
       settings.collectionSortFactor,
       settings.collectionSectionFactor,
       settings.getTileLayout(CollectionPage.routeName),
+      settings.collectionSortReverse,
     );
-    final value = await showDialog<Tuple3<EntrySortFactor?, EntryGroupFactor?, TileLayout?>>(
+    final value = await showDialog<Tuple4<EntrySortFactor?, EntryGroupFactor?, TileLayout?, bool>>(
       context: context,
       builder: (context) {
-        final l10n = context.l10n;
         return TileViewDialog<EntrySortFactor, EntryGroupFactor, TileLayout>(
           initialValue: initialValue,
-          sortOptions: {
-            EntrySortFactor.date: l10n.collectionSortDate,
-            EntrySortFactor.size: l10n.collectionSortSize,
-            EntrySortFactor.name: l10n.collectionSortName,
-            EntrySortFactor.rating: l10n.collectionSortRating,
-          },
-          groupOptions: {
-            EntryGroupFactor.album: l10n.collectionGroupAlbum,
-            EntryGroupFactor.month: l10n.collectionGroupMonth,
-            EntryGroupFactor.day: l10n.collectionGroupDay,
-            EntryGroupFactor.none: l10n.collectionGroupNone,
-          },
-          layoutOptions: {
-            TileLayout.grid: l10n.tileLayoutGrid,
-            TileLayout.list: l10n.tileLayoutList,
-          },
+          sortOptions: Map.fromEntries(_sortOptions.map((v) => MapEntry(v, v.getName(context)))),
+          groupOptions: Map.fromEntries(_groupOptions.map((v) => MapEntry(v, v.getName(context)))),
+          layoutOptions: Map.fromEntries(_layoutOptions.map((v) => MapEntry(v, v.getName(context)))),
+          sortOrder: (factor, reverse) => factor.getOrderName(context, reverse),
+          canGroup: (s, g, l) => s == EntrySortFactor.date,
         );
       },
     );
@@ -542,6 +551,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       settings.collectionSortFactor = value.item1!;
       settings.collectionSectionFactor = value.item2!;
       settings.setTileLayout(CollectionPage.routeName, value.item3!);
+      settings.collectionSortReverse = value.item4;
     }
   }
 

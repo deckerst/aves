@@ -8,13 +8,14 @@ import 'package:flutter/material.dart';
 
 mixin PermissionAwareMixin {
   Future<bool> checkStoragePermission(BuildContext context, Set<AvesEntry> entries) {
-    return checkStoragePermissionForAlbums(context, entries.map((e) => e.directory).whereNotNull().toSet(), entries: entries);
+    final storageDirs = entries.map((e) => e.storageDirectory).whereNotNull().toSet();
+    return checkStoragePermissionForAlbums(context, storageDirs, entries: entries);
   }
 
-  Future<bool> checkStoragePermissionForAlbums(BuildContext context, Set<String> albumPaths, {Set<AvesEntry>? entries}) async {
+  Future<bool> checkStoragePermissionForAlbums(BuildContext context, Set<String> storageDirs, {Set<AvesEntry>? entries}) async {
     final restrictedDirs = await storageService.getRestrictedDirectories();
     while (true) {
-      final dirs = await storageService.getInaccessibleDirectories(albumPaths);
+      final dirs = await storageService.getInaccessibleDirectories(storageDirs);
 
       final restrictedInaccessibleDirs = dirs.where(restrictedDirs.contains).toSet();
       if (restrictedInaccessibleDirs.isNotEmpty) {
@@ -51,7 +52,6 @@ mixin PermissionAwareMixin {
           final directory = dir.relativeDir.isEmpty ? l10n.rootDirectoryDescription : l10n.otherDirectoryDescription(dir.relativeDir);
           final volume = dir.getVolumeDescription(context);
           return AvesDialog(
-            title: l10n.storageAccessDialogTitle,
             content: Text(l10n.storageAccessDialogMessage(directory, volume)),
             actions: [
               TextButton(
@@ -73,10 +73,8 @@ mixin PermissionAwareMixin {
         await showDialog(
           context: context,
           builder: (context) {
-            final l10n = context.l10n;
             return AvesDialog(
-              title: l10n.missingSystemFilePickerDialogTitle,
-              content: Text(l10n.missingSystemFilePickerDialogMessage),
+              content: Text(context.l10n.missingSystemFilePickerDialogMessage),
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(context),
@@ -104,7 +102,6 @@ mixin PermissionAwareMixin {
         final directory = dir.relativeDir.isEmpty ? context.l10n.rootDirectoryDescription : context.l10n.otherDirectoryDescription(dir.relativeDir);
         final volume = dir.getVolumeDescription(context);
         return AvesDialog(
-          title: context.l10n.restrictedAccessDialogTitle,
           content: Text(context.l10n.restrictedAccessDialogMessage(directory, volume)),
           actions: [
             TextButton(

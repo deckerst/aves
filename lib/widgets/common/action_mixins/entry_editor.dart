@@ -1,4 +1,5 @@
 import 'package:aves/model/entry.dart';
+import 'package:aves/model/entry_metadata_edition.dart';
 import 'package:aves/model/metadata/date_modifier.dart';
 import 'package:aves/model/metadata/enums.dart';
 import 'package:aves/model/source/collection_lens.dart';
@@ -12,6 +13,7 @@ import 'package:aves/widgets/dialogs/entry_editors/edit_location_dialog.dart';
 import 'package:aves/widgets/dialogs/entry_editors/edit_rating_dialog.dart';
 import 'package:aves/widgets/dialogs/entry_editors/edit_tags_dialog.dart';
 import 'package:aves/widgets/dialogs/entry_editors/remove_metadata_dialog.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 
@@ -31,23 +33,28 @@ mixin EntryEditorMixin {
   Future<LatLng?> selectLocation(BuildContext context, Set<AvesEntry> entries, CollectionLens? collection) async {
     if (entries.isEmpty) return null;
 
+    final initialLocation = entries.firstWhereOrNull((entry) => entry.hasGps)?.latLng;
+
     return showDialog<LatLng>(
       context: context,
       builder: (context) => EditEntryLocationDialog(
-        entry: entries.first,
+        initialLocation: initialLocation,
         collection: collection,
       ),
     );
   }
 
-  Future<String?> selectDescription(BuildContext context, Set<AvesEntry> entries) async {
+  Future<Map<DescriptionField, String?>?> selectTitleDescriptionModifier(BuildContext context, Set<AvesEntry> entries) async {
     if (entries.isEmpty) return null;
 
-    final initialDescription = await metadataFetchService.getDescription(entries.first) ?? '';
+    final entry = entries.first;
+    final initialTitle = entry.catalogMetadata?.xmpTitle ?? '';
+    final initialDescription = await metadataFetchService.getDescription(entry) ?? '';
 
-    return showDialog<String>(
+    return showDialog<Map<DescriptionField, String?>>(
       context: context,
-      builder: (context) => EditEntryDescriptionDialog(
+      builder: (context) => EditEntryTitleDescriptionDialog(
+        initialTitle: initialTitle,
         initialDescription: initialDescription,
       ),
     );

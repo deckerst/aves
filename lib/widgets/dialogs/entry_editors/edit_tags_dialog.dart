@@ -125,7 +125,7 @@ class _TagEditorPageState extends State<TagEditorPage> {
                                   const Icon(AIcons.tagUntagged, color: untaggedColor),
                                   const SizedBox(width: 8),
                                   Text(
-                                    l10n.filterTagEmptyLabel,
+                                    l10n.filterNoTagLabel,
                                     style: const TextStyle(color: untaggedColor),
                                   ),
                                 ],
@@ -162,7 +162,7 @@ class _TagEditorPageState extends State<TagEditorPage> {
                         onTap: _addTag,
                       ),
                       _FilterRow(
-                        title: l10n.statsTopTags,
+                        title: l10n.statsTopTagsSectionTitle,
                         filters: topTagFilters,
                         expandedNotifier: _expandedSectionNotifier,
                         onTap: _addTag,

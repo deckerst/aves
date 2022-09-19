@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
-import 'package:aves/model/source/enums.dart';
+import 'package:aves/model/source/enums/enums.dart';
 import 'package:aves/model/source/section_keys.dart';
 import 'package:aves/widgets/collection/grid/headers/album.dart';
 import 'package:aves/widgets/collection/grid/headers/date.dart';
@@ -15,12 +15,14 @@ class CollectionSectionHeader extends StatelessWidget {
   final CollectionLens collection;
   final SectionKey sectionKey;
   final double height;
+  final bool selectable;
 
   const CollectionSectionHeader({
     super.key,
     required this.collection,
     required this.sectionKey,
     required this.height,
+    required this.selectable,
   });
 
   @override
@@ -41,9 +43,17 @@ class CollectionSectionHeader extends StatelessWidget {
           case EntryGroupFactor.album:
             return _buildAlbumHeader(context);
           case EntryGroupFactor.month:
-            return MonthSectionHeader<AvesEntry>(key: ValueKey(sectionKey), date: (sectionKey as EntryDateSectionKey).date);
+            return MonthSectionHeader<AvesEntry>(
+              key: ValueKey(sectionKey),
+              date: (sectionKey as EntryDateSectionKey).date,
+              selectable: selectable,
+            );
           case EntryGroupFactor.day:
-            return DaySectionHeader<AvesEntry>(key: ValueKey(sectionKey), date: (sectionKey as EntryDateSectionKey).date);
+            return DaySectionHeader<AvesEntry>(
+              key: ValueKey(sectionKey),
+              date: (sectionKey as EntryDateSectionKey).date,
+              selectable: selectable,
+            );
           case EntryGroupFactor.none:
             break;
         }
@@ -51,7 +61,11 @@ class CollectionSectionHeader extends StatelessWidget {
       case EntrySortFactor.name:
         return _buildAlbumHeader(context);
       case EntrySortFactor.rating:
-        return RatingSectionHeader<AvesEntry>(key: ValueKey(sectionKey), rating: (sectionKey as EntryRatingSectionKey).rating);
+        return RatingSectionHeader<AvesEntry>(
+          key: ValueKey(sectionKey),
+          rating: (sectionKey as EntryRatingSectionKey).rating,
+          selectable: selectable,
+        );
       case EntrySortFactor.size:
         break;
     }
@@ -65,6 +79,7 @@ class CollectionSectionHeader extends StatelessWidget {
       key: ValueKey(sectionKey),
       directory: directory,
       albumName: directory != null ? source.getAlbumDisplayName(context, directory) : null,
+      selectable: selectable,
     );
   }
 

@@ -25,7 +25,7 @@ class DisplaySection extends SettingsSection {
       );
 
   @override
-  String title(BuildContext context) => context.l10n.settingsSectionDisplay;
+  String title(BuildContext context) => context.l10n.settingsDisplaySectionTitle;
 
   @override
   FutureOr<List<SettingsTile>> tiles(BuildContext context) => [
@@ -39,7 +39,7 @@ class DisplaySection extends SettingsSection {
 
 class SettingsTileDisplayThemeBrightness extends SettingsTile {
   @override
-  String title(BuildContext context) => context.l10n.settingsThemeBrightness;
+  String title(BuildContext context) => context.l10n.settingsThemeBrightnessTile;
 
   @override
   Widget build(BuildContext context) => SettingsSelectionListTile<AvesThemeBrightness>(
@@ -48,7 +48,7 @@ class SettingsTileDisplayThemeBrightness extends SettingsTile {
         selector: (context, s) => s.themeBrightness,
         onSelection: (v) => settings.themeBrightness = v,
         tileTitle: title(context),
-        dialogTitle: context.l10n.settingsThemeBrightness,
+        dialogTitle: context.l10n.settingsThemeBrightnessDialogTitle,
       );
 }
 
@@ -99,6 +99,6 @@ class SettingsTileDisplayDisplayRefreshRateMode extends SettingsTile {
         selector: (context, s) => s.displayRefreshRateMode,
         onSelection: (v) => settings.displayRefreshRateMode = v,
         tileTitle: title(context),
-        dialogTitle: context.l10n.settingsDisplayRefreshRateModeTitle,
+        dialogTitle: context.l10n.settingsDisplayRefreshRateModeDialogTitle,
       );
 }

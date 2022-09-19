@@ -1,6 +1,6 @@
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/source/collection_source.dart';
-import 'package:aves/model/source/enums.dart';
+import 'package:aves/model/source/enums/enums.dart';
 import 'package:aves/utils/time_utils.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/providers/selection_provider.dart';
@@ -47,11 +47,21 @@ class FilterNavigationPage<T extends CollectionFilter, CSAD extends ChipSetActio
     return c != 0 ? c : a.key.compareTo(b.key);
   }
 
+  static int compareFiltersBySize(MapEntry<CollectionFilter, num> a, MapEntry<CollectionFilter, num> b) {
+    final c = b.value.compareTo(a.value);
+    return c != 0 ? c : a.key.compareTo(b.key);
+  }
+
   static int compareFiltersByName(FilterGridItem<CollectionFilter> a, FilterGridItem<CollectionFilter> b) {
     return a.filter.compareTo(b.filter);
   }
 
-  static List<FilterGridItem<T>> sort<T extends CollectionFilter, CSAD extends ChipSetActionDelegate<T>>(ChipSortFactor sortFactor, CollectionSource source, Set<T> filters) {
+  static List<FilterGridItem<T>> sort<T extends CollectionFilter, CSAD extends ChipSetActionDelegate<T>>(
+    ChipSortFactor sortFactor,
+    bool reverse,
+    CollectionSource source,
+    Set<T> filters,
+  ) {
     List<FilterGridItem<T>> toGridItem(CollectionSource source, Set<T> filters) {
       return filters
           .map((filter) => FilterGridItem(
@@ -75,6 +85,15 @@ class FilterNavigationPage<T extends CollectionFilter, CSAD extends ChipSetActio
         filters = filtersWithCount.map((kv) => kv.key).toSet();
         allMapEntries = toGridItem(source, filters);
         break;
+      case ChipSortFactor.size:
+        final filtersWithSize = List.of(filters.map((filter) => MapEntry(filter, source.size(filter))));
+        filtersWithSize.sort(compareFiltersBySize);
+        filters = filtersWithSize.map((kv) => kv.key).toSet();
+        allMapEntries = toGridItem(source, filters);
+        break;
+    }
+    if (reverse) {
+      allMapEntries = allMapEntries.reversed.toList();
     }
     return allMapEntries;
   }

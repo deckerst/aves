@@ -60,6 +60,7 @@ mixin FeedbackMixin {
         OverlaySupportEntry? notificationOverlayEntry;
         notificationOverlayEntry = showOverlayNotification(
           (context) => SafeArea(
+            bottom: false,
             child: Padding(
               padding: margin,
               child: OverlaySnackBar(

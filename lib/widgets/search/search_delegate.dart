@@ -4,6 +4,7 @@ import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/filters/mime.dart';
+import 'package:aves/model/filters/missing.dart';
 import 'package:aves/model/filters/query.dart';
 import 'package:aves/model/filters/rating.dart';
 import 'package:aves/model/filters/recent.dart';
@@ -96,7 +97,7 @@ class CollectionSearchDelegate extends AvesSearchDelegate {
                       if (upQuery.isEmpty && history.isNotEmpty)
                         _buildFilterRow(
                           context: context,
-                          title: context.l10n.searchSectionRecent,
+                          title: context.l10n.searchRecentSectionTitle,
                           filters: history,
                         ),
                       _buildDateFilters(context, containQuery),
@@ -105,6 +106,7 @@ class CollectionSearchDelegate extends AvesSearchDelegate {
                       _buildPlaceFilters(containQuery),
                       _buildTagFilters(containQuery),
                       _buildRatingFilters(context, containQuery),
+                      _buildMetadataFilters(context, containQuery),
                     ],
                   );
                 });
@@ -136,7 +138,7 @@ class CollectionSearchDelegate extends AvesSearchDelegate {
     ].where((f) => containQuery(f.getLabel(context))).toList();
     return _buildFilterRow(
       context: context,
-      title: context.l10n.searchSectionDate,
+      title: context.l10n.searchDateSectionTitle,
       filters: filters,
     );
   }
@@ -155,7 +157,7 @@ class CollectionSearchDelegate extends AvesSearchDelegate {
           ..sort();
         return _buildFilterRow(
           context: context,
-          title: context.l10n.searchSectionAlbums,
+          title: context.l10n.searchAlbumsSectionTitle,
           filters: filters,
         );
       },
@@ -166,11 +168,10 @@ class CollectionSearchDelegate extends AvesSearchDelegate {
     return StreamBuilder(
       stream: source.eventBus.on<CountriesChangedEvent>(),
       builder: (context, snapshot) {
-        final filters = source.sortedCountries.where(containQuery).map((s) => LocationFilter(LocationLevel.country, s)).toList();
         return _buildFilterRow(
           context: context,
-          title: context.l10n.searchSectionCountries,
-          filters: filters,
+          title: context.l10n.searchCountriesSectionTitle,
+          filters: source.sortedCountries.where(containQuery).map((s) => LocationFilter(LocationLevel.country, s)).toList(),
         );
       },
     );
@@ -180,15 +181,10 @@ class CollectionSearchDelegate extends AvesSearchDelegate {
     return StreamBuilder(
       stream: source.eventBus.on<PlacesChangedEvent>(),
       builder: (context, snapshot) {
-        final filters = source.sortedPlaces.where(containQuery).map((s) => LocationFilter(LocationLevel.place, s));
-        final noFilter = LocationFilter(LocationLevel.place, '');
         return _buildFilterRow(
           context: context,
-          title: context.l10n.searchSectionPlaces,
-          filters: [
-            if (containQuery(noFilter.getLabel(context))) noFilter,
-            ...filters,
-          ],
+          title: context.l10n.searchPlacesSectionTitle,
+          filters: source.sortedPlaces.where(containQuery).map((s) => LocationFilter(LocationLevel.place, s)).toList(),
         );
       },
     );
@@ -198,15 +194,10 @@ class CollectionSearchDelegate extends AvesSearchDelegate {
     return StreamBuilder(
       stream: source.eventBus.on<TagsChangedEvent>(),
       builder: (context, snapshot) {
-        final filters = source.sortedTags.where(containQuery).map(TagFilter.new);
-        final noFilter = TagFilter('');
         return _buildFilterRow(
           context: context,
-          title: context.l10n.searchSectionTags,
-          filters: [
-            if (containQuery(noFilter.getLabel(context))) noFilter,
-            ...filters,
-          ],
+          title: context.l10n.searchTagsSectionTitle,
+          filters: source.sortedTags.where(containQuery).map(TagFilter.new).toList(),
         );
       },
     );
@@ -215,8 +206,22 @@ class CollectionSearchDelegate extends AvesSearchDelegate {
   Widget _buildRatingFilters(BuildContext context, _ContainQuery containQuery) {
     return _buildFilterRow(
       context: context,
-      title: context.l10n.searchSectionRating,
-      filters: [0, 5, 4, 3, 2, 1, -1].map(RatingFilter.new).where((f) => containQuery(f.getLabel(context))).toList(),
+      title: context.l10n.searchRatingSectionTitle,
+      filters: [5, 4, 3, 2, 1, -1].map(RatingFilter.new).where((f) => containQuery(f.getLabel(context))).toList(),
+    );
+  }
+
+  Widget _buildMetadataFilters(BuildContext context, _ContainQuery containQuery) {
+    return _buildFilterRow(
+      context: context,
+      title: context.l10n.searchMetadataSectionTitle,
+      filters: [
+        MissingFilter.date,
+        LocationFilter(LocationLevel.place, ''),
+        TagFilter(''),
+        const RatingFilter(0),
+        MissingFilter.title,
+      ].where((f) => containQuery(f.getLabel(context))).toList(),
     );
   }
 

@@ -22,8 +22,7 @@ import 'package:fijkplayer/fijkplayer.dart';
 import 'package:flutter/foundation.dart';
 
 class VideoMetadataFormatter {
-  static final _dateY4M2D2H2m2s2Pattern = RegExp(r'(\d{4})[-/](\d{2})[-/](\d{2}) (\d{2}):(\d{2}):(\d{2})');
-  static final _dateY4M2D2H2m2s2APmPattern = RegExp(r'(\d{4})[-/](\d{1,2})[-/](\d{1,2})T(\d+):(\d+):(\d+)( ([ap]\.? ?m\.?))?Z');
+  static final _dateY4M2D2H2m2s2Pattern = RegExp(r'(\d{4})[-./](\d{1,2})[-./](\d{1,2})([ T](\d{1,2}):(\d{1,2}):(\d{1,2})( ([ap]\.? ?m\.?))?)?');
   static final _ambiguousDatePatterns = {
     RegExp(r'^\d{2}[-/]\d{2}[-/]\d{4}$'),
   };
@@ -126,6 +125,7 @@ class VideoMetadataFormatter {
     // - `2021-09-10T7:14:49 pmZ`
     // - `2022-01-28T5:07:46 p. m.Z`
     // - `2012-1-1T12:00:00Z`
+    // - `2020.10.14`
     // - `2021` (not enough to build a date)
 
     var match = _dateY4M2D2H2m2s2Pattern.firstMatch(dateString);
@@ -133,27 +133,16 @@ class VideoMetadataFormatter {
       final year = int.tryParse(match.group(1)!);
       final month = int.tryParse(match.group(2)!);
       final day = int.tryParse(match.group(3)!);
-      final hour = int.tryParse(match.group(4)!);
-      final minute = int.tryParse(match.group(5)!);
-      final second = int.tryParse(match.group(6)!);
 
-      if (year != null && month != null && day != null && hour != null && minute != null && second != null) {
-        final date = DateTime(year, month, day, hour, minute, second, 0);
-        return date.millisecondsSinceEpoch;
-      }
-    }
+      if (year != null && month != null && day != null) {
+        var hour = 0, minute = 0, second = 0, pm = false;
+        if (match.groupCount >= 7 && match.group(4) != null) {
+          hour = int.tryParse(match.group(5)!) ?? 0;
+          minute = int.tryParse(match.group(6)!) ?? 0;
+          second = int.tryParse(match.group(7)!) ?? 0;
+          pm = match.group(9) == 'pm';
+        }
 
-    match = _dateY4M2D2H2m2s2APmPattern.firstMatch(dateString);
-    if (match != null) {
-      final year = int.tryParse(match.group(1)!);
-      final month = int.tryParse(match.group(2)!);
-      final day = int.tryParse(match.group(3)!);
-      final hour = int.tryParse(match.group(4)!);
-      final minute = int.tryParse(match.group(5)!);
-      final second = int.tryParse(match.group(6)!);
-      final pm = match.group(8) == 'pm';
-
-      if (year != null && month != null && day != null && hour != null && minute != null && second != null) {
         final date = DateTime(year, month, day, hour + (pm ? 12 : 0), minute, second, 0);
         return date.millisecondsSinceEpoch;
       }

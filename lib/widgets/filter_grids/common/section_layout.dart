@@ -6,10 +6,13 @@ import 'package:aves/widgets/filter_grids/common/section_keys.dart';
 import 'package:flutter/material.dart';
 
 class SectionedFilterListLayoutProvider<T extends CollectionFilter> extends SectionedListLayoutProvider<FilterGridItem<T>> {
+  final bool selectable;
+
   const SectionedFilterListLayoutProvider({
     super.key,
     required this.sections,
     required this.showHeaders,
+    required this.selectable,
     required super.scrollableWidth,
     required super.tileLayout,
     required super.columnCount,
@@ -37,6 +40,7 @@ class SectionedFilterListLayoutProvider<T extends CollectionFilter> extends Sect
   Widget buildHeader(BuildContext context, SectionKey sectionKey, double headerExtent) {
     return FilterChipSectionHeader<FilterGridItem<T>>(
       sectionKey: sectionKey as ChipSectionKey,
+      selectable: selectable,
     );
   }
 }

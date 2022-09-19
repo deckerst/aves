@@ -1,305 +1,227 @@
-import 'dart:math';
+import 'dart:async';
 
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/location.dart';
-import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/rating.dart';
 import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
-import 'package:aves/theme/colors.dart';
+import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/constants.dart';
-import 'package:aves/utils/mime_utils.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
+import 'package:aves/widgets/stats/date/histogram.dart';
 import 'package:aves/widgets/stats/filter_table.dart';
-import 'package:aves/widgets/stats/histogram.dart';
-import 'package:charts_flutter/flutter.dart' as charts;
+import 'package:aves/widgets/stats/mime_donut.dart';
 import 'package:collection/collection.dart';
-import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:intl/intl.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
 
-class StatsPage extends StatelessWidget {
+class StatsPage extends StatefulWidget {
   static const routeName = '/collection/stats';
 
+  final Set<AvesEntry> entries;
   final CollectionSource source;
   final CollectionLens? parentCollection;
-  final Set<AvesEntry> entries;
-  final Map<String, int> entryCountPerCountry = {}, entryCountPerPlace = {}, entryCountPerTag = {};
-  final Map<int, int> entryCountPerRating = Map.fromEntries(List.generate(7, (i) => MapEntry(5 - i, 0)));
 
-  static const mimeDonutMinWidth = 124.0;
-
-  StatsPage({
+  const StatsPage({
     super.key,
     required this.entries,
     required this.source,
     this.parentCollection,
-  }) {
+  });
+
+  @override
+  State<StatsPage> createState() => _StatsPageState();
+}
+
+class _StatsPageState extends State<StatsPage> {
+  final Map<String, int> _entryCountPerCountry = {}, _entryCountPerPlace = {}, _entryCountPerTag = {};
+  final Map<int, int> _entryCountPerRating = Map.fromEntries(List.generate(7, (i) => MapEntry(5 - i, 0)));
+  late final ValueNotifier<bool> _isPageAnimatingNotifier;
+
+  Set<AvesEntry> get entries => widget.entries;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _isPageAnimatingNotifier = ValueNotifier(true);
+    Future.delayed(Durations.pageTransitionAnimation * timeDilation).then((_) {
+      if (!mounted) return;
+      _isPageAnimatingNotifier.value = false;
+    });
+
     entries.forEach((entry) {
       if (entry.hasAddress) {
         final address = entry.addressDetails!;
         var country = address.countryName;
         if (country != null && country.isNotEmpty) {
           country += '${LocationFilter.locationSeparator}${address.countryCode}';
-          entryCountPerCountry[country] = (entryCountPerCountry[country] ?? 0) + 1;
+          _entryCountPerCountry[country] = (_entryCountPerCountry[country] ?? 0) + 1;
         }
         final place = address.place;
         if (place != null && place.isNotEmpty) {
-          entryCountPerPlace[place] = (entryCountPerPlace[place] ?? 0) + 1;
+          _entryCountPerPlace[place] = (_entryCountPerPlace[place] ?? 0) + 1;
         }
       }
 
       entry.tags.forEach((tag) {
-        entryCountPerTag[tag] = (entryCountPerTag[tag] ?? 0) + 1;
+        _entryCountPerTag[tag] = (_entryCountPerTag[tag] ?? 0) + 1;
       });
 
       final rating = entry.rating;
-      entryCountPerRating[rating] = (entryCountPerRating[rating] ?? 0) + 1;
+      _entryCountPerRating[rating] = (_entryCountPerRating[rating] ?? 0) + 1;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final l10n = context.l10n;
-    final locale = l10n.localeName;
-    final numberFormat = NumberFormat.decimalPattern(locale);
-    final percentFormat = NumberFormat.percentPattern();
+    return ValueListenableBuilder<bool>(
+      valueListenable: _isPageAnimatingNotifier,
+      builder: (context, animating, child) {
+        final l10n = context.l10n;
 
-    Widget child;
-    if (entries.isEmpty) {
-      child = EmptyContent(
-        icon: AIcons.image,
-        text: l10n.collectionEmptyImages,
-      );
-    } else {
-      final theme = Theme.of(context);
-      final isDark = theme.brightness == Brightness.dark;
-      final animate = context.select<Settings, bool>((v) => v.accessibilityAnimations.animate);
-      final byMimeTypes = groupBy<AvesEntry, String>(entries, (entry) => entry.mimeType).map<String, int>((k, v) => MapEntry(k, v.length));
-      final imagesByMimeTypes = Map.fromEntries(byMimeTypes.entries.where((kv) => kv.key.startsWith('image')));
-      final videoByMimeTypes = Map.fromEntries(byMimeTypes.entries.where((kv) => kv.key.startsWith('video')));
-      final mimeDonuts = Provider.value(
-        value: isDark ? NeonOnDark() : PastelOnLight(),
-        child: Builder(
-          builder: (context) {
-            return Wrap(
+        Widget child = const SizedBox();
+
+        if (!animating) {
+          final durations = context.watch<DurationsData>();
+          final percentFormat = NumberFormat.percentPattern();
+
+          if (entries.isEmpty) {
+            child = EmptyContent(
+              icon: AIcons.image,
+              text: l10n.collectionEmptyImages,
+            );
+          } else {
+            final theme = Theme.of(context);
+            final isDark = theme.brightness == Brightness.dark;
+            final chartAnimationDuration = context.read<DurationsData>().chartTransition;
+
+            final byMimeTypes = groupBy<AvesEntry, String>(entries, (entry) => entry.mimeType).map<String, int>((k, v) => MapEntry(k, v.length));
+            final imagesByMimeTypes = Map.fromEntries(byMimeTypes.entries.where((kv) => kv.key.startsWith('image')));
+            final videoByMimeTypes = Map.fromEntries(byMimeTypes.entries.where((kv) => kv.key.startsWith('video')));
+            final mimeDonuts = Wrap(
               alignment: WrapAlignment.center,
               crossAxisAlignment: WrapCrossAlignment.center,
               children: [
-                _buildMimeDonut(context, AIcons.image, imagesByMimeTypes, animate, numberFormat),
-                _buildMimeDonut(context, AIcons.video, videoByMimeTypes, animate, numberFormat),
+                MimeDonut(
+                  icon: AIcons.image,
+                  byMimeTypes: imagesByMimeTypes,
+                  animationDuration: chartAnimationDuration,
+                  onFilterSelection: (filter) => _onFilterSelection(context, filter),
+                ),
+                MimeDonut(
+                  icon: AIcons.video,
+                  byMimeTypes: videoByMimeTypes,
+                  animationDuration: chartAnimationDuration,
+                  onFilterSelection: (filter) => _onFilterSelection(context, filter),
+                ),
               ],
             );
-          },
-        ),
-      );
 
-      final catalogued = entries.where((entry) => entry.isCatalogued);
-      final withGps = catalogued.where((entry) => entry.hasGps);
-      final withGpsCount = withGps.length;
-      final withGpsPercent = withGpsCount / entries.length;
-      final textScaleFactor = MediaQuery.textScaleFactorOf(context);
-      final lineHeight = 16 * textScaleFactor;
-      final barRadius = Radius.circular(lineHeight / 2);
-      final locationIndicator = Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(AIcons.location),
-                Expanded(
-                  child: LinearPercentIndicator(
-                    percent: withGpsPercent,
-                    lineHeight: lineHeight,
-                    backgroundColor: theme.colorScheme.onPrimary.withOpacity(.1),
-                    progressColor: theme.colorScheme.secondary,
-                    animation: animate,
-                    isRTL: context.isRtl,
-                    barRadius: barRadius,
-                    center: Text(
-                      percentFormat.format(withGpsPercent),
-                      style: TextStyle(
-                        shadows: isDark ? Constants.embossShadows : null,
-                      ),
-                    ),
-                    padding: EdgeInsets.symmetric(horizontal: lineHeight),
-                  ),
-                ),
-                // end padding to match leading, so that inside label is aligned with outside label below
-                const SizedBox(width: 24),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Text(
-              l10n.statsWithGps(withGpsCount),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      );
-      final showRatings = entryCountPerRating.entries.any((kv) => kv.key != 0 && kv.value > 0);
-      child = ListView(
-        children: [
-          mimeDonuts,
-          Histogram(
-            entries: entries,
-            onFilterSelection: (filter) => _onFilterSelection(context, filter),
-          ),
-          locationIndicator,
-          ..._buildFilterSection<String>(context, l10n.statsTopCountries, entryCountPerCountry, (v) => LocationFilter(LocationLevel.country, v)),
-          ..._buildFilterSection<String>(context, l10n.statsTopPlaces, entryCountPerPlace, (v) => LocationFilter(LocationLevel.place, v)),
-          ..._buildFilterSection<String>(context, l10n.statsTopTags, entryCountPerTag, TagFilter.new),
-          if (showRatings) ..._buildFilterSection<int>(context, l10n.searchSectionRating, entryCountPerRating, RatingFilter.new, sortByCount: false, maxRowCount: null),
-        ],
-      );
-    }
-    return MediaQueryDataProvider(
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(l10n.statsPageTitle),
-        ),
-        body: GestureAreaProtectorStack(
-          child: SafeArea(
-            bottom: false,
-            child: child,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildMimeDonut(
-    BuildContext context,
-    IconData icon,
-    Map<String, int> byMimeTypes,
-    bool animate,
-    NumberFormat numberFormat,
-  ) {
-    if (byMimeTypes.isEmpty) return const SizedBox.shrink();
-
-    final sum = byMimeTypes.values.fold<int>(0, (prev, v) => prev + v);
-
-    final colors = context.watch<AvesColorsData>();
-    final seriesData = byMimeTypes.entries.map((kv) {
-      final mimeType = kv.key;
-      final displayText = MimeUtils.displayType(mimeType);
-      return EntryByMimeDatum(
-        mimeType: mimeType,
-        displayText: displayText,
-        color: colors.fromString(displayText),
-        entryCount: kv.value,
-      );
-    }).toList();
-    seriesData.sort((d1, d2) {
-      final c = d2.entryCount.compareTo(d1.entryCount);
-      return c != 0 ? c : compareAsciiUpperCase(d1.displayText, d2.displayText);
-    });
-
-    final series = [
-      charts.Series<EntryByMimeDatum, String>(
-        id: 'mime',
-        colorFn: (d, i) => charts.ColorUtil.fromDartColor(d.color),
-        domainFn: (d, i) => d.displayText,
-        measureFn: (d, i) => d.entryCount,
-        data: seriesData,
-        labelAccessorFn: (d, _) => '${d.displayText}: ${d.entryCount}',
-      ),
-    ];
-
-    return LayoutBuilder(builder: (context, constraints) {
-      final textScaleFactor = MediaQuery.textScaleFactorOf(context);
-      final minWidth = mimeDonutMinWidth * textScaleFactor;
-      final availableWidth = constraints.maxWidth;
-      final dim = max(minWidth, availableWidth / (availableWidth > 4 * minWidth ? 4 : (availableWidth > 2 * minWidth ? 2 : 1)));
-
-      final donut = SizedBox(
-        width: dim,
-        height: dim,
-        child: Stack(
-          children: [
-            charts.PieChart(
-              series,
-              animate: animate,
-              defaultRenderer: charts.ArcRendererConfig<String>(
-                arcWidth: 16,
-              ),
-            ),
-            Center(
+            final catalogued = entries.where((entry) => entry.isCatalogued);
+            final withGps = catalogued.where((entry) => entry.hasGps);
+            final withGpsCount = withGps.length;
+            final withGpsPercent = withGpsCount / entries.length;
+            final textScaleFactor = MediaQuery.textScaleFactorOf(context);
+            final lineHeight = 16 * textScaleFactor;
+            final barRadius = Radius.circular(lineHeight / 2);
+            final locationIndicator = Padding(
+              padding: const EdgeInsets.all(16),
               child: Column(
-                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(icon),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(AIcons.location),
+                      Expanded(
+                        child: LinearPercentIndicator(
+                          percent: withGpsPercent,
+                          lineHeight: lineHeight,
+                          backgroundColor: theme.colorScheme.onPrimary.withOpacity(.1),
+                          progressColor: theme.colorScheme.secondary,
+                          animation: context.select<Settings, bool>((v) => v.accessibilityAnimations.animate),
+                          isRTL: context.isRtl,
+                          barRadius: barRadius,
+                          center: Text(
+                            percentFormat.format(withGpsPercent),
+                            style: TextStyle(
+                              shadows: isDark ? Constants.embossShadows : null,
+                            ),
+                          ),
+                          padding: EdgeInsets.symmetric(horizontal: lineHeight),
+                        ),
+                      ),
+                      // end padding to match leading, so that inside label is aligned with outside label below
+                      const SizedBox(width: 24),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
                   Text(
-                    numberFormat.format(sum),
+                    l10n.statsWithGps(withGpsCount),
                     textAlign: TextAlign.center,
                   ),
                 ],
               ),
-            ),
-          ],
-        ),
-      );
-      final legend = SizedBox(
-        width: dim,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: seriesData
-              .map((d) => GestureDetector(
-                    onTap: () => _onFilterSelection(context, MimeFilter(d.mimeType)),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(AIcons.disc, color: d.color),
-                        const SizedBox(width: 8),
-                        Flexible(
-                          child: Text(
-                            d.displayText,
-                            overflow: TextOverflow.fade,
-                            softWrap: false,
-                            maxLines: 1,
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          numberFormat.format(d.entryCount),
-                          style: TextStyle(
-                            color: Theme.of(context).textTheme.caption!.color,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ))
-              .toList(),
-        ),
-      );
-      final children = [
-        donut,
-        legend,
-      ];
-      return availableWidth > minWidth * 2
-          ? Row(
-              mainAxisSize: MainAxisSize.min,
-              children: children,
-            )
-          : Column(
-              mainAxisSize: MainAxisSize.min,
-              children: children,
             );
-    });
+            final showRatings = _entryCountPerRating.entries.any((kv) => kv.key != 0 && kv.value > 0);
+            child = AnimationLimiter(
+              child: ListView(
+                children: AnimationConfiguration.toStaggeredList(
+                  duration: durations.staggeredAnimation,
+                  delay: durations.staggeredAnimationDelay * timeDilation,
+                  childAnimationBuilder: (child) => SlideAnimation(
+                    verticalOffset: 50.0,
+                    child: FadeInAnimation(
+                      child: child,
+                    ),
+                  ),
+                  children: [
+                    mimeDonuts,
+                    Histogram(
+                      entries: entries,
+                      animationDuration: chartAnimationDuration,
+                      onFilterSelection: (filter) => _onFilterSelection(context, filter),
+                    ),
+                    locationIndicator,
+                    ..._buildFilterSection<String>(context, l10n.statsTopCountriesSectionTitle, _entryCountPerCountry, (v) => LocationFilter(LocationLevel.country, v)),
+                    ..._buildFilterSection<String>(context, l10n.statsTopPlacesSectionTitle, _entryCountPerPlace, (v) => LocationFilter(LocationLevel.place, v)),
+                    ..._buildFilterSection<String>(context, l10n.statsTopTagsSectionTitle, _entryCountPerTag, TagFilter.new),
+                    if (showRatings) ..._buildFilterSection<int>(context, l10n.searchRatingSectionTitle, _entryCountPerRating, RatingFilter.new, sortByCount: false, maxRowCount: null),
+                  ],
+                ),
+              ),
+            );
+          }
+        }
+
+        return MediaQueryDataProvider(
+          child: Scaffold(
+            appBar: AppBar(
+              title: Text(l10n.statsPageTitle),
+            ),
+            body: GestureAreaProtectorStack(
+              child: SafeArea(
+                bottom: false,
+                child: child,
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 
   List<Widget> _buildFilterSection<T extends Comparable>(
@@ -317,7 +239,7 @@ class StatsPage extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: Text(
           title,
-          style: Constants.titleTextStyle,
+          style: Constants.knownTitleTextStyle,
         ),
       ),
       FilterTable(
@@ -332,7 +254,7 @@ class StatsPage extends StatelessWidget {
   }
 
   void _onFilterSelection(BuildContext context, CollectionFilter filter) {
-    if (parentCollection != null) {
+    if (widget.parentCollection != null) {
       _applyToParentCollectionPage(context, filter);
     } else {
       _jumpToCollectionPage(context, filter);
@@ -340,7 +262,7 @@ class StatsPage extends StatelessWidget {
   }
 
   void _applyToParentCollectionPage(BuildContext context, CollectionFilter filter) {
-    parentCollection!.addFilter(filter);
+    widget.parentCollection!.addFilter(filter);
     // We delay closing the current page after applying the filter selection
     // so that hero animation target is ready in the `FilterBar`,
     // even when the target is a child of an `AnimatedList`.
@@ -355,28 +277,11 @@ class StatsPage extends StatelessWidget {
       MaterialPageRoute(
         settings: const RouteSettings(name: CollectionPage.routeName),
         builder: (context) => CollectionPage(
-          source: source,
+          source: widget.source,
           filters: {filter},
         ),
       ),
       (route) => false,
     );
   }
-}
-
-@immutable
-class EntryByMimeDatum extends Equatable {
-  final String mimeType, displayText;
-  final Color color;
-  final int entryCount;
-
-  @override
-  List<Object?> get props => [mimeType, displayText, color, entryCount];
-
-  const EntryByMimeDatum({
-    required this.mimeType,
-    required this.displayText,
-    required this.color,
-    required this.entryCount,
-  });
 }

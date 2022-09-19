@@ -6,6 +6,7 @@ import 'package:aves/theme/format.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/constants.dart';
+import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
 import 'package:aves/widgets/filter_grids/common/list_details_theme.dart';
@@ -140,6 +141,10 @@ class FilterListDetails<T extends CollectionFilter> extends StatelessWidget {
       child: Center(child: leading ?? const SizedBox()),
     );
 
+    final l10n = context.l10n;
+    final locale = l10n.localeName;
+    final source = context.read<CollectionSource>();
+
     return IconTheme.merge(
       data: detailsTheme.captionIconTheme,
       child: Row(
@@ -147,7 +152,7 @@ class FilterListDetails<T extends CollectionFilter> extends StatelessWidget {
           leading,
           const SizedBox(width: 8),
           Text(
-            context.l10n.itemCount(context.read<CollectionSource>().count(filter)),
+            '${l10n.itemCount(source.count(filter))} • ${formatFileSize(locale, source.size(filter))}',
             style: detailsTheme.captionStyle,
             strutStyle: Constants.overflowStrutStyle,
             softWrap: false,

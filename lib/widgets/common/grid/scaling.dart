@@ -1,7 +1,7 @@
 import 'dart:ui' as ui;
 
 import 'package:aves/model/highlight.dart';
-import 'package:aves/model/source/enums.dart';
+import 'package:aves/model/source/enums/enums.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/behaviour/eager_scale_gesture_recognizer.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';

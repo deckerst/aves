@@ -54,9 +54,8 @@ object BmpWriter {
         val padPerRow = (4 - (biWidth * BYTE_PER_PIXEL) % 4) % 4
         val biSizeImage = (biWidth * BYTE_PER_PIXEL + padPerRow) * biHeight
         val bfSize = FILE_HEADER_SIZE + INFO_HEADER_SIZE + biSizeImage
-        val buffer = ByteBuffer.allocate(bfSize)
-        val pixels = IntArray(biWidth * biHeight)
-        bitmap.getPixels(pixels, 0, biWidth, 0, 0, biWidth, biHeight)
+
+        var buffer = ByteBuffer.allocate(FILE_HEADER_SIZE + INFO_HEADER_SIZE)
 
         // file header
         buffer.put(bfType)
@@ -78,11 +77,17 @@ object BmpWriter {
         buffer.put(biClrUsed)
         buffer.put(biClrImportant)
 
+        outputStream.write(buffer.array())
+
         // pixels
+        buffer = ByteBuffer.allocate(biWidth * BYTE_PER_PIXEL + padPerRow)
+        val pixels = IntArray(biWidth)
         val rgb = ByteArray(BYTE_PER_PIXEL)
         var value: Int
         var row = biHeight - 1
         while (row >= 0) {
+            bitmap.getPixels(pixels, 0, biWidth, 0, row, biWidth, 1)
+
             var column = 0
             while (column < biWidth) {
                 /*
@@ -91,7 +96,7 @@ object BmpWriter {
                     green: (value shr 8 and 0xFF).toByte()
                     blue: (value and 0xFF).toByte()
                  */
-                value = pixels[row * biWidth + column]
+                value = pixels[column]
                 // blue: [0], green: [1], red: [2]
                 rgb[0] = (value and 0xFF).toByte()
                 rgb[1] = (value shr 8 and 0xFF).toByte()
@@ -102,10 +107,9 @@ object BmpWriter {
             if (padPerRow > 0) {
                 buffer.put(pad, 0, padPerRow)
             }
+            outputStream.write(buffer.array())
+            buffer.clear()
             row--
         }
-
-        // write to output stream
-        outputStream.write(buffer.array())
     }
 }

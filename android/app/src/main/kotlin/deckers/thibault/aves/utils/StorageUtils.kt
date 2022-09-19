@@ -16,6 +16,7 @@ import android.text.TextUtils
 import android.util.Log
 import androidx.annotation.RequiresApi
 import com.commonsware.cwac.document.DocumentFileCompat
+import deckers.thibault.aves.utils.FileUtils.transferFrom
 import deckers.thibault.aves.utils.MimeTypes.isImage
 import deckers.thibault.aves.utils.MimeTypes.isVideo
 import deckers.thibault.aves.utils.PermissionManager.getGrantedDirForPath
@@ -507,7 +508,7 @@ object StorageUtils {
     // to work around a bug from Android 10 where metadata redaction corrupts HEIC images.
     // This loader relies on `MediaStore.setRequireOriginal` but this yields a `SecurityException`
     // for some non image/video content URIs (e.g. `downloads`, `file`)
-    fun getGlideSafeUri(context: Context, uri: Uri, mimeType: String): Uri {
+    fun getGlideSafeUri(context: Context, uri: Uri, mimeType: String, sizeBytes: Long? = null): Uri {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && isMediaStoreContentUri(uri)) {
             val uriPath = uri.path
             when {
@@ -521,11 +522,7 @@ object StorageUtils {
                     File.createTempFile("aves", null).apply {
                         deleteOnExit()
                         try {
-                            outputStream().use { output ->
-                                openInputStream(context, uri)?.use { input ->
-                                    input.copyTo(output)
-                                }
-                            }
+                            transferFrom(openInputStream(context, uri), sizeBytes)
                             return Uri.fromFile(this)
                         } catch (e: Exception) {
                             Log.e(LOG_TAG, "failed to create temporary file from uri=$uri", e)

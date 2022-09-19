@@ -77,7 +77,7 @@ class XmpNamespace extends Equatable {
     }
   }
 
-  String get displayTitle => Namespaces.nsTitles[nsUri] ?? '${nsPrefix.substring(0, nsPrefix.length - 1)} ($nsUri)';
+  String get displayTitle => Namespaces.nsTitles[nsUri] ?? (nsPrefix.isEmpty ? nsUri : '${nsPrefix.substring(0, nsPrefix.length - 1)} ($nsUri)');
 
   Map<String, String> get buildProps => rawProps;
 

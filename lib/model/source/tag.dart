@@ -3,8 +3,9 @@ import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/metadata/catalog.dart';
 import 'package:aves/model/source/analysis_controller.dart';
 import 'package:aves/model/source/collection_source.dart';
-import 'package:aves/model/source/enums.dart';
+import 'package:aves/model/source/enums/enums.dart';
 import 'package:aves/services/common/services.dart';
+import 'package:aves/utils/collection_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
@@ -75,7 +76,7 @@ mixin TagMixin on SourceBase {
   // filter summary
 
   // by tag
-  final Map<String, int> _filterEntryCountMap = {};
+  final Map<String, int> _filterEntryCountMap = {}, _filterSizeMap = {};
   final Map<String, AvesEntry?> _filterRecentEntryMap = {};
 
   void invalidateTagFilterSummary({
@@ -83,10 +84,11 @@ mixin TagMixin on SourceBase {
     Set<String>? tags,
     bool notify = true,
   }) {
-    if (_filterEntryCountMap.isEmpty && _filterRecentEntryMap.isEmpty) return;
+    if (_filterEntryCountMap.isEmpty && _filterSizeMap.isEmpty && _filterRecentEntryMap.isEmpty) return;
 
     if (entries == null && tags == null) {
       _filterEntryCountMap.clear();
+      _filterSizeMap.clear();
       _filterRecentEntryMap.clear();
     } else {
       tags ??= {};
@@ -95,6 +97,7 @@ mixin TagMixin on SourceBase {
       }
       tags.forEach((tag) {
         _filterEntryCountMap.remove(tag);
+        _filterSizeMap.remove(tag);
         _filterRecentEntryMap.remove(tag);
       });
     }
@@ -105,6 +108,10 @@ mixin TagMixin on SourceBase {
 
   int tagEntryCount(TagFilter filter) {
     return _filterEntryCountMap.putIfAbsent(filter.tag, () => visibleEntries.where(filter.test).length);
+  }
+
+  int tagSize(TagFilter filter) {
+    return _filterSizeMap.putIfAbsent(filter.tag, () => visibleEntries.where(filter.test).map((v) => v.sizeBytes).sum);
   }
 
   AvesEntry? tagRecentEntry(TagFilter filter) {

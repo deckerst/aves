@@ -1,7 +1,7 @@
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/settings/settings.dart';
-import 'package:aves/model/source/enums.dart';
+import 'package:aves/model/source/enums/enums.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip_set.dart';
 import 'package:aves/widgets/filter_grids/tags_page.dart';
 
@@ -18,6 +18,12 @@ class TagChipSetActionDelegate extends ChipSetActionDelegate<TagFilter> {
 
   @override
   set sortFactor(ChipSortFactor factor) => settings.tagSortFactor = factor;
+
+  @override
+  bool get sortReverse => settings.tagSortReverse;
+
+  @override
+  set sortReverse(bool value) => settings.tagSortReverse = value;
 
   @override
   TileLayout get tileLayout => settings.getTileLayout(TagListPage.routeName);

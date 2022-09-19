@@ -153,7 +153,7 @@ class _CollectionPageState extends State<CollectionPage> {
       case AppMode.pickMultipleMediaExternal:
         return hasSelection
             ? AvesFab(
-                tooltip: context.l10n.collectionPickPageTitle,
+                tooltip: context.l10n.pickTooltip,
                 onPressed: () {
                   final items = context.read<Selection<AvesEntry>>().selectedItems;
                   final uris = items.map((entry) => entry.uri).toList();
@@ -163,7 +163,7 @@ class _CollectionPageState extends State<CollectionPage> {
             : null;
       case AppMode.pickCollectionFiltersExternal:
         return AvesFab(
-          tooltip: context.l10n.collectionPickPageTitle,
+          tooltip: context.l10n.pickTooltip,
           onPressed: () {
             final filters = _collection.filters;
             IntentService.submitPickedCollectionFilters(filters);

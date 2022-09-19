@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:aves/model/highlight.dart';
-import 'package:aves/model/source/enums.dart';
+import 'package:aves/model/source/enums/enums.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/grid/section_layout.dart';
 import 'package:collection/collection.dart';

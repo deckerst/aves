@@ -31,7 +31,7 @@ class _StorageAccessPageState extends State<StorageAccessPage> {
     return MediaQueryDataProvider(
       child: Scaffold(
         appBar: AppBar(
-          title: Text(context.l10n.settingsStorageAccessTitle),
+          title: Text(context.l10n.settingsStorageAccessPageTitle),
         ),
         body: SafeArea(
           child: FutureBuilder<List<String>>(

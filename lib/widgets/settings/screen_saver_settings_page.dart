@@ -38,7 +38,7 @@ class ScreenSaverSettingsPage extends StatelessWidget {
                 selector: (context, s) => s.screenSaverTransition,
                 onSelection: (v) => settings.screenSaverTransition = v,
                 tileTitle: l10n.settingsSlideshowTransitionTile,
-                dialogTitle: l10n.settingsSlideshowTransitionTitle,
+                dialogTitle: l10n.settingsSlideshowTransitionDialogTitle,
               ),
               SettingsSelectionListTile<SlideshowInterval>(
                 values: SlideshowInterval.values,
@@ -46,7 +46,7 @@ class ScreenSaverSettingsPage extends StatelessWidget {
                 selector: (context, s) => s.screenSaverInterval,
                 onSelection: (v) => settings.screenSaverInterval = v,
                 tileTitle: l10n.settingsSlideshowIntervalTile,
-                dialogTitle: l10n.settingsSlideshowIntervalTitle,
+                dialogTitle: l10n.settingsSlideshowIntervalDialogTitle,
               ),
               SettingsSelectionListTile<SlideshowVideoPlayback>(
                 values: SlideshowVideoPlayback.values,
@@ -54,7 +54,7 @@ class ScreenSaverSettingsPage extends StatelessWidget {
                 selector: (context, s) => s.screenSaverVideoPlayback,
                 onSelection: (v) => settings.screenSaverVideoPlayback = v,
                 tileTitle: l10n.settingsSlideshowVideoPlaybackTile,
-                dialogTitle: l10n.settingsSlideshowVideoPlaybackTitle,
+                dialogTitle: l10n.settingsSlideshowVideoPlaybackDialogTitle,
               ),
               Selector<Settings, Set<CollectionFilter>>(
                 selector: (context, s) => s.screenSaverCollectionFilters,

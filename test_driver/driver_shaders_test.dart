@@ -1,7 +1,6 @@
 // ignore_for_file: avoid_print
 import 'dart:async';
 
-import 'package:aves/model/source/enums.dart';
 import 'package:flutter_driver/flutter_driver.dart';
 import 'package:path/path.dart' as p;
 import 'package:test/test.dart';
@@ -37,8 +36,6 @@ void main() {
     test('scan media dir', () => driver.scanMediaDir(shadersTargetDirAndroid));
     visitAbout();
     visitSettings();
-    sortCollection();
-    groupCollection();
     visitMap();
     selectFirstAlbum();
     searchAlbum();
@@ -90,26 +87,6 @@ void visitSettings() {
 
     await pressDeviceBackButton();
     await driver.waitUntilNoTransientCallbacks();
-  });
-}
-
-void sortCollection() {
-  test('[collection] sort', () async {
-    await driver.tapKeyAndWait('appbar-menu-button');
-    await driver.tapKeyAndWait('menu-configureView');
-    await driver.tapKeyAndWait('tab-sort');
-    await driver.tapKeyAndWait(EntrySortFactor.date.toString());
-    await driver.tapKeyAndWait('button-apply');
-  });
-}
-
-void groupCollection() {
-  test('[collection] group', () async {
-    await driver.tapKeyAndWait('appbar-menu-button');
-    await driver.tapKeyAndWait('menu-configureView');
-    await driver.tapKeyAndWait('tab-group');
-    await driver.tapKeyAndWait(EntryGroupFactor.album.toString());
-    await driver.tapKeyAndWait('button-apply');
   });
 }
 

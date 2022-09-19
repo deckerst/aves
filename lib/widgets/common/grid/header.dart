@@ -36,6 +36,17 @@ class SectionHeader<T> extends StatelessWidget {
       constraints: BoxConstraints(minHeight: leadingSize.height),
       child: GestureDetector(
         onTap: selectable ? () => _toggleSectionSelection(context) : null,
+        onLongPress: selectable
+            ? () {
+                final selection = context.read<Selection<T>>();
+                if (selection.isSelecting) {
+                  _toggleSectionSelection(context);
+                } else {
+                  selection.select();
+                  selection.addToSelection(_getSectionEntries(context));
+                }
+              }
+            : null,
         child: Text.rich(
           TextSpan(
             children: [
@@ -55,11 +66,9 @@ class SectionHeader<T> extends StatelessWidget {
                   onPressed: selectable ? () => _toggleSectionSelection(context) : null,
                 ),
               ),
-              // TODO TLAD [flutter 3] remove this zero-width span when this is fixed: https://github.com/flutter/flutter/issues/103615
-              TextSpan(text: Constants.zwsp * 3, style: Constants.titleTextStyle),
               TextSpan(
                 text: title,
-                style: Constants.titleTextStyle,
+                style: Constants.unknownTitleTextStyle,
               ),
               if (trailing != null)
                 WidgetSpan(
@@ -76,8 +85,10 @@ class SectionHeader<T> extends StatelessWidget {
     );
   }
 
+  List<T> _getSectionEntries(BuildContext context) => context.read<SectionedListLayout<T>>().sections[sectionKey] ?? [];
+
   void _toggleSectionSelection(BuildContext context) {
-    final sectionEntries = context.read<SectionedListLayout<T>>().sections[sectionKey] ?? [];
+    final sectionEntries = _getSectionEntries(context);
     final selection = context.read<Selection<T>>();
     final isSelected = selection.isSelected(sectionEntries);
     if (isSelected) {
@@ -111,7 +122,7 @@ class SectionHeader<T> extends StatelessWidget {
           if (hasTrailing) TextSpan(text: '\u200A' * 17),
           TextSpan(
             text: title,
-            style: Constants.titleTextStyle,
+            style: Constants.unknownTitleTextStyle,
           ),
         ],
       ),

@@ -56,7 +56,7 @@ class MediaStoreImageProvider : ImageProvider() {
             val relativePath = PathSegments(context, relativePathDirectory).relativeDir
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && relativePath != null) {
                 selection = "${MediaStore.MediaColumns.RELATIVE_PATH} = ? AND ${MediaColumns.PATH} LIKE ?"
-                selectionArgs = arrayOf(relativePath, "relativePathDirectory%")
+                selectionArgs = arrayOf(relativePath, "$relativePathDirectory%")
             } else {
                 selection = "${MediaColumns.PATH} LIKE ?"
                 selectionArgs = arrayOf("$relativePathDirectory%")

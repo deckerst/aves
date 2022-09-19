@@ -13,7 +13,7 @@ import 'package:aves/model/metadata/trash.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/album.dart';
 import 'package:aves/model/source/analysis_controller.dart';
-import 'package:aves/model/source/enums.dart';
+import 'package:aves/model/source/enums/enums.dart';
 import 'package:aves/model/source/events.dart';
 import 'package:aves/model/source/location.dart';
 import 'package:aves/model/source/tag.dart';
@@ -283,6 +283,16 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
   }) async {
     if (movedOps.isEmpty) return;
 
+    final replacedUris = movedOps
+        .map((movedOp) => movedOp.newFields['path'] as String?)
+        .map((targetPath) {
+          final existingEntry = _rawEntries.firstWhereOrNull((entry) => entry.path == targetPath && !entry.trashed);
+          return existingEntry?.uri;
+        })
+        .whereNotNull()
+        .toSet();
+    await removeEntries(replacedUris, includeTrash: false);
+
     final fromAlbums = <String?>{};
     final movedEntries = <AvesEntry>{};
     final copy = moveType == MoveType.copy;
@@ -455,6 +465,13 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
     if (filter is AlbumFilter) return albumEntryCount(filter);
     if (filter is LocationFilter) return countryEntryCount(filter);
     if (filter is TagFilter) return tagEntryCount(filter);
+    return 0;
+  }
+
+  int size(CollectionFilter filter) {
+    if (filter is AlbumFilter) return albumSize(filter);
+    if (filter is LocationFilter) return countrySize(filter);
+    if (filter is TagFilter) return tagSize(filter);
     return 0;
   }
 

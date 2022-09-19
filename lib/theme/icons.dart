@@ -16,7 +16,10 @@ class AIcons {
   static const IconData checked = Icons.done_outlined;
   static const IconData counter = Icons.plus_one_outlined;
   static const IconData date = Icons.calendar_today_outlined;
+  static const IconData dateRecent = Icons.today_outlined;
+  static const IconData dateUndated = Icons.event_busy_outlined;
   static const IconData description = Icons.description_outlined;
+  static const IconData descriptionUntitled = Icons.comments_disabled_outlined;
   static const IconData disc = Icons.fiber_manual_record;
   static const IconData display = Icons.light_mode_outlined;
   static const IconData error = Icons.error_outline;
@@ -35,7 +38,6 @@ class AIcons {
   static const IconData ratingRejected = MdiIcons.starMinusOutline;
   static const IconData ratingUnrated = MdiIcons.starOffOutline;
   static const IconData raw = Icons.raw_on_outlined;
-  static const IconData recent = Icons.today_outlined;
   static const IconData shooting = Icons.camera_outlined;
   static const IconData removableStorage = Icons.sd_storage_outlined;
   static const IconData sensorControlEnabled = Icons.explore_outlined;
@@ -49,6 +51,7 @@ class AIcons {
   static const IconData group = Icons.group_work_outlined;
   static const IconData layout = Icons.grid_view_outlined;
   static const IconData sort = Icons.sort_outlined;
+  static const IconData sortOrder = Icons.swap_vert_outlined;
 
   // actions
   static const IconData add = Icons.add_circle_outline;
@@ -134,7 +137,8 @@ class AIcons {
   static const IconData geo = Icons.language_outlined;
   static const IconData motionPhoto = Icons.motion_photos_on_outlined;
   static const IconData multiPage = Icons.burst_mode_outlined;
-  static const IconData threeSixty = Icons.threesixty_outlined;
+  static const IconData panorama = Icons.vrpano_outlined;
+  static const IconData sphericalVideo = Icons.threesixty_outlined;
   static const IconData videoThumb = Icons.play_circle_outline;
   static const IconData selected = Icons.check_circle_outline;
   static const IconData unselected = Icons.radio_button_unchecked;

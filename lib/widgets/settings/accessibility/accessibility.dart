@@ -24,7 +24,7 @@ class AccessibilitySection extends SettingsSection {
       );
 
   @override
-  String title(BuildContext context) => context.l10n.settingsSectionAccessibility;
+  String title(BuildContext context) => context.l10n.settingsAccessibilitySectionTitle;
 
   @override
   FutureOr<List<SettingsTile>> tiles(BuildContext context) => [
@@ -44,7 +44,7 @@ class SettingsTileAccessibilityAnimations extends SettingsTile {
         selector: (context, s) => s.accessibilityAnimations,
         onSelection: (v) => settings.accessibilityAnimations = v,
         tileTitle: title(context),
-        dialogTitle: context.l10n.settingsRemoveAnimationsTitle,
+        dialogTitle: context.l10n.settingsRemoveAnimationsDialogTitle,
       );
 }
 

@@ -92,7 +92,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       case EntrySetAction.flip:
       case EntrySetAction.editDate:
       case EntrySetAction.editLocation:
-      case EntrySetAction.editDescription:
+      case EntrySetAction.editTitleDescription:
       case EntrySetAction.editRating:
       case EntrySetAction.editTags:
       case EntrySetAction.removeMetadata:
@@ -144,7 +144,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       case EntrySetAction.flip:
       case EntrySetAction.editDate:
       case EntrySetAction.editLocation:
-      case EntrySetAction.editDescription:
+      case EntrySetAction.editTitleDescription:
       case EntrySetAction.editRating:
       case EntrySetAction.editTags:
       case EntrySetAction.removeMetadata:
@@ -221,8 +221,8 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       case EntrySetAction.editLocation:
         _editLocation(context);
         break;
-      case EntrySetAction.editDescription:
-        _editDescription(context);
+      case EntrySetAction.editTitleDescription:
+        _editTitleDescription(context);
         break;
       case EntrySetAction.editRating:
         _editRating(context);
@@ -275,7 +275,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
 
     final l10n = context.l10n;
     final source = context.read<CollectionSource>();
-    final selectionDirs = entries.map((e) => e.directory).whereNotNull().toSet();
+    final storageDirs = entries.map((e) => e.storageDirectory).whereNotNull().toSet();
     final todoCount = entries.length;
 
     if (!await showConfirmationDialog(
@@ -285,7 +285,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       confirmationButtonLabel: l10n.deleteButtonLabel,
     )) return;
 
-    if (!pureTrash && !await checkStoragePermissionForAlbums(context, selectionDirs, entries: entries)) return;
+    if (!await checkStoragePermissionForAlbums(context, storageDirs, entries: entries)) return;
 
     source.pauseMonitoring();
     final opId = mediaEditService.newOpId;
@@ -308,7 +308,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
         }
 
         // cleanup
-        await storageService.deleteEmptyDirectories(selectionDirs);
+        await storageService.deleteEmptyDirectories(storageDirs);
       },
     );
 
@@ -434,7 +434,6 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       builder: (context) {
         final l10n = context.l10n;
         return AvesDialog(
-          title: l10n.unsupportedTypeDialogTitle,
           content: Text(l10n.unsupportedTypeDialogMessage(unsupportedTypes.length, unsupportedTypes.join(', '))),
           actions: [
             TextButton(
@@ -495,14 +494,14 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     await _edit(context, entries, (entry) => entry.editLocation(location));
   }
 
-  Future<void> _editDescription(BuildContext context) async {
-    final entries = await _getEditableTargetItems(context, canEdit: (entry) => entry.canEditDescription);
+  Future<void> _editTitleDescription(BuildContext context) async {
+    final entries = await _getEditableTargetItems(context, canEdit: (entry) => entry.canEditTitleDescription);
     if (entries == null || entries.isEmpty) return;
 
-    final description = await selectDescription(context, entries);
-    if (description == null) return;
+    final modifier = await selectTitleDescriptionModifier(context, entries);
+    if (modifier == null) return;
 
-    await _edit(context, entries, (entry) => entry.editDescription(description));
+    await _edit(context, entries, (entry) => entry.editTitleDescription(modifier));
   }
 
   Future<void> _editRating(BuildContext context) async {

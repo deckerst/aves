@@ -2,6 +2,7 @@ import 'package:aves/model/entry.dart';
 import 'package:aves/ref/languages.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/themes.dart';
+import 'package:aves/widgets/common/basic/text_dropdown_button.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/viewer/video/controller.dart';
 import 'package:collection/collection.dart';
@@ -123,25 +124,6 @@ class _VideoStreamSelectionDialogState extends State<VideoStreamSelectionDialog>
     return common;
   }
 
-  DropdownMenuItem<StreamSummary> _buildMenuItem(StreamSummary? value) {
-    return DropdownMenuItem(
-      value: value,
-      child: Text(_streamName(value)),
-    );
-  }
-
-  Widget _buildSelectedItem(StreamSummary? v) {
-    return Align(
-      alignment: AlignmentDirectional.centerStart,
-      child: Text(
-        _streamName(v),
-        softWrap: false,
-        overflow: TextOverflow.fade,
-        maxLines: 1,
-      ),
-    );
-  }
-
   List<Widget> _buildSection({
     required IconData icon,
     required String title,
@@ -162,9 +144,9 @@ class _VideoStreamSelectionDialogState extends State<VideoStreamSelectionDialog>
       ),
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: DropdownButton<StreamSummary>(
-          items: streams.map(_buildMenuItem).toList(),
-          selectedItemBuilder: (context) => streams.map(_buildSelectedItem).toList(),
+        child: TextDropdownButton<StreamSummary>(
+          values: streams.whereNotNull().toList(),
+          valueText: _streamName,
           value: current,
           onChanged: streams.length > 1 ? (newValue) => setState(() => setter(newValue)) : null,
           isExpanded: true,

@@ -25,7 +25,7 @@ class PrivacySection extends SettingsSection {
       );
 
   @override
-  String title(BuildContext context) => context.l10n.settingsSectionPrivacy;
+  String title(BuildContext context) => context.l10n.settingsPrivacySectionTitle;
 
   @override
   FutureOr<List<SettingsTile>> tiles(BuildContext context) async {

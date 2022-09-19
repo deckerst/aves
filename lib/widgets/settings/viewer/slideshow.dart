@@ -16,7 +16,7 @@ class ViewerSlideshowPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(context.l10n.settingsViewerSlideshowTitle),
+        title: Text(context.l10n.settingsViewerSlideshowPageTitle),
       ),
       body: SafeArea(
         child: ListView(
@@ -42,7 +42,7 @@ class ViewerSlideshowPage extends StatelessWidget {
               selector: (context, s) => s.slideshowTransition,
               onSelection: (v) => settings.slideshowTransition = v,
               tileTitle: context.l10n.settingsSlideshowTransitionTile,
-              dialogTitle: context.l10n.settingsSlideshowTransitionTitle,
+              dialogTitle: context.l10n.settingsSlideshowTransitionDialogTitle,
             ),
             SettingsSelectionListTile<SlideshowInterval>(
               values: SlideshowInterval.values,
@@ -50,7 +50,7 @@ class ViewerSlideshowPage extends StatelessWidget {
               selector: (context, s) => s.slideshowInterval,
               onSelection: (v) => settings.slideshowInterval = v,
               tileTitle: context.l10n.settingsSlideshowIntervalTile,
-              dialogTitle: context.l10n.settingsSlideshowIntervalTitle,
+              dialogTitle: context.l10n.settingsSlideshowIntervalDialogTitle,
             ),
             SettingsSelectionListTile<SlideshowVideoPlayback>(
               values: SlideshowVideoPlayback.values,
@@ -58,7 +58,7 @@ class ViewerSlideshowPage extends StatelessWidget {
               selector: (context, s) => s.slideshowVideoPlayback,
               onSelection: (v) => settings.slideshowVideoPlayback = v,
               tileTitle: context.l10n.settingsSlideshowVideoPlaybackTile,
-              dialogTitle: context.l10n.settingsSlideshowVideoPlaybackTitle,
+              dialogTitle: context.l10n.settingsSlideshowVideoPlaybackDialogTitle,
             ),
           ],
         ),

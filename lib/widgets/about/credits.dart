@@ -15,7 +15,8 @@ class AboutCredits extends StatelessWidget {
     'Nederlands': 'Martijn Fabrie, Koen Koppens',
     'Português (Brasil)': 'Jonatas De Almeida Barros',
     'Türkçe': 'metezd',
-    'Русский': 'D3ZOXY',
+    'Ελληνικά': 'Emmanouil Papavergis',
+    'Русский': 'D3ZOXY, kha84',
     '日本語': 'Maki',
     '简体中文': '小默, Aerowolf',
   };
@@ -32,7 +33,7 @@ class AboutCredits extends StatelessWidget {
             constraints: const BoxConstraints(minHeight: 48),
             child: Align(
               alignment: AlignmentDirectional.centerStart,
-              child: Text(l10n.aboutCredits, style: Constants.titleTextStyle),
+              child: Text(l10n.aboutCreditsSectionTitle, style: Constants.knownTitleTextStyle),
             ),
           ),
           Text.rich(
@@ -55,7 +56,7 @@ class AboutCredits extends StatelessWidget {
             constraints: const BoxConstraints(minHeight: 48),
             child: Align(
               alignment: AlignmentDirectional.centerStart,
-              child: Text(l10n.aboutCreditsTranslators, style: Constants.titleTextStyle),
+              child: Text(l10n.aboutTranslatorsSectionTitle, style: Constants.knownTitleTextStyle),
             ),
           ),
           const InfoRowGroup(info: translators),

@@ -2,7 +2,7 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
-import 'package:aves/model/source/enums.dart';
+import 'package:aves/model/source/enums/enums.dart';
 import 'package:aves/model/source/tag.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -23,12 +23,12 @@ class TagListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final source = context.read<CollectionSource>();
-    return Selector<Settings, Tuple2<ChipSortFactor, Set<CollectionFilter>>>(
-      selector: (context, s) => Tuple2(s.tagSortFactor, s.pinnedFilters),
+    return Selector<Settings, Tuple3<ChipSortFactor, bool, Set<CollectionFilter>>>(
+      selector: (context, s) => Tuple3(s.tagSortFactor, s.tagSortReverse, s.pinnedFilters),
       shouldRebuild: (t1, t2) {
         // `Selector` by default uses `DeepCollectionEquality`, which does not go deep in collections within `TupleN`
         const eq = DeepCollectionEquality();
-        return !(eq.equals(t1.item1, t2.item1) && eq.equals(t1.item2, t2.item2));
+        return !(eq.equals(t1.item1, t2.item1) && eq.equals(t1.item2, t2.item2) && eq.equals(t1.item3, t2.item3));
       },
       builder: (context, s, child) {
         return StreamBuilder(
@@ -60,7 +60,7 @@ class TagListPage extends StatelessWidget {
   List<FilterGridItem<TagFilter>> _getGridItems(CollectionSource source) {
     final filters = source.sortedTags.map(TagFilter.new).toSet();
 
-    return FilterNavigationPage.sort(settings.tagSortFactor, source, filters);
+    return FilterNavigationPage.sort(settings.tagSortFactor, settings.tagSortReverse, source, filters);
   }
 
   static Map<ChipSectionKey, List<FilterGridItem<TagFilter>>> _groupToSections(Iterable<FilterGridItem<TagFilter>> sortedMapEntries) {

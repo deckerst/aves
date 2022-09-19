@@ -23,7 +23,10 @@ import deckers.thibault.aves.utils.MimeTypes.needRotationAfterGlide
 import deckers.thibault.aves.utils.StorageUtils
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.EventChannel.EventSink
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import java.io.InputStream
 
 class ImageByteStreamHandler(private val context: Context, private val arguments: Any?) : EventChannel.StreamHandler {
@@ -82,6 +85,7 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
 
         val mimeType = arguments["mimeType"] as String?
         val uri = (arguments["uri"] as String?)?.let { Uri.parse(it) }
+        val sizeBytes = (arguments["sizeBytes"] as Number?)?.toLong()
         val rotationDegrees = arguments["rotationDegrees"] as Int
         val isFlipped = arguments["isFlipped"] as Boolean
         val pageId = arguments["pageId"] as Int?
@@ -96,7 +100,7 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
             streamVideoByGlide(uri, mimeType)
         } else if (!canDecodeWithFlutter(mimeType, rotationDegrees, isFlipped)) {
             // decode exotic format on platform side, then encode it in portable format for Flutter
-            streamImageByGlide(uri, pageId, mimeType, rotationDegrees, isFlipped)
+            streamImageByGlide(uri, pageId, mimeType, sizeBytes, rotationDegrees, isFlipped)
         } else {
             // to be decoded by Flutter
             streamImageAsIs(uri, mimeType)
@@ -112,13 +116,20 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
         }
     }
 
-    private suspend fun streamImageByGlide(uri: Uri, pageId: Int?, mimeType: String, rotationDegrees: Int, isFlipped: Boolean) {
+    private suspend fun streamImageByGlide(
+        uri: Uri,
+        pageId: Int?,
+        mimeType: String,
+        sizeBytes: Long?,
+        rotationDegrees: Int,
+        isFlipped: Boolean,
+    ) {
         val model: Any = if (isHeic(mimeType) && pageId != null) {
             MultiTrackImage(context, uri, pageId)
         } else if (mimeType == MimeTypes.TIFF) {
             TiffImage(context, uri, pageId)
         } else {
-            StorageUtils.getGlideSafeUri(context, uri, mimeType)
+            StorageUtils.getGlideSafeUri(context, uri, mimeType, sizeBytes)
         }
 
         val target = Glide.with(context)

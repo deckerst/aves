@@ -14,7 +14,7 @@ class VideoControlsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(context.l10n.settingsVideoControlsTitle),
+        title: Text(context.l10n.settingsVideoControlsPageTitle),
       ),
       body: SafeArea(
         child: ListView(
@@ -25,7 +25,7 @@ class VideoControlsPage extends StatelessWidget {
               selector: (context, s) => s.videoControls,
               onSelection: (v) => settings.videoControls = v,
               tileTitle: context.l10n.settingsVideoButtonsTile,
-              dialogTitle: context.l10n.settingsVideoButtonsTitle,
+              dialogTitle: context.l10n.settingsVideoButtonsDialogTitle,
             ),
             SettingsSwitchListTile(
               selector: (context, s) => s.videoGestureDoubleTapTogglePlay,

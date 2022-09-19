@@ -1,6 +1,6 @@
 enum SourceState { loading, cataloguing, locatingCountries, locatingPlaces, ready }
 
-enum ChipSortFactor { date, name, count }
+enum ChipSortFactor { date, name, count, size }
 
 enum AlbumChipGroupFactor { none, importance, volume }
 
