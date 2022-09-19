@@ -391,6 +391,15 @@
   "sortByAlbumFileName": "alphabétique",
   "sortByRating": "par notation",
 
+  "sortOrderNewestFirst": "Plus récents d’abord",
+  "sortOrderOldestFirst": "Plus anciens d’abord",
+  "sortOrderAtoZ": "De A à Z",
+  "sortOrderZtoA": "De Z à A",
+  "sortOrderHighestFirst": "Meilleurs d’abord",
+  "sortOrderLowestFirst": "Moins bons d’abord",
+  "sortOrderLargestFirst": "Plus larges d’abord",
+  "sortOrderSmallestFirst": "Moins larges d’abord",
+
   "albumGroupTier": "par importance",
   "albumGroupVolume": "par volume de stockage",
   "albumGroupNone": "ne pas grouper",
