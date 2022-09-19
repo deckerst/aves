@@ -8,13 +8,14 @@ import 'package:flutter/material.dart';
 
 mixin PermissionAwareMixin {
   Future<bool> checkStoragePermission(BuildContext context, Set<AvesEntry> entries) {
-    return checkStoragePermissionForAlbums(context, entries.map((e) => e.directory).whereNotNull().toSet(), entries: entries);
+    final storageDirs = entries.map((e) => e.storageDirectory).whereNotNull().toSet();
+    return checkStoragePermissionForAlbums(context, storageDirs, entries: entries);
   }
 
-  Future<bool> checkStoragePermissionForAlbums(BuildContext context, Set<String> albumPaths, {Set<AvesEntry>? entries}) async {
+  Future<bool> checkStoragePermissionForAlbums(BuildContext context, Set<String> storageDirs, {Set<AvesEntry>? entries}) async {
     final restrictedDirs = await storageService.getRestrictedDirectories();
     while (true) {
-      final dirs = await storageService.getInaccessibleDirectories(albumPaths);
+      final dirs = await storageService.getInaccessibleDirectories(storageDirs);
 
       final restrictedInaccessibleDirs = dirs.where(restrictedDirs.contains).toSet();
       if (restrictedInaccessibleDirs.isNotEmpty) {

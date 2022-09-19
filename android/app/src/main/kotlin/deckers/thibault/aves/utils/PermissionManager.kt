@@ -171,6 +171,7 @@ object PermissionManager {
     // returns paths accessible to the app (granted by the user or by default)
     private fun getAccessibleDirs(context: Context): Set<String> {
         val accessibleDirs = HashSet(getGrantedDirs(context))
+        accessibleDirs.addAll(context.getExternalFilesDirs(null).filterNotNull().map { it.path })
 
         // until API 18 / Android 4.3 / Jelly Bean MR2, removable storage is accessible by default like primary storage
         // from API 19 / Android 4.4 / KitKat, removable storage requires access permission, at the file level
