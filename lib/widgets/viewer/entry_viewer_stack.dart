@@ -72,6 +72,9 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
   bool _isEntryTracked = true;
 
   @override
+  bool get isViewingImage => _currentVerticalPage.value == imagePage;
+
+  @override
   late final ValueNotifier<AvesEntry?> entryNotifier;
 
   ViewerController get viewerController => widget.viewerController;

@@ -213,9 +213,13 @@ class AvesEntry {
     return _extension;
   }
 
+  String? get storagePath => trashed ? trashDetails?.path : path;
+
+  String? get storageDirectory => trashed ? pContext.dirname(trashDetails!.path) : directory;
+
   bool get isMissingAtPath {
-    final effectivePath = trashed ? trashDetails?.path : path;
-    return effectivePath != null && !File(effectivePath).existsSync();
+    final _storagePath = storagePath;
+    return _storagePath != null && !File(_storagePath).existsSync();
   }
 
   // the MIME type reported by the Media Store is unreliable
@@ -279,7 +283,7 @@ class AvesEntry {
 
   bool get canEditLocation => canEdit && canEditExif;
 
-  bool get canEditDescription => canEdit && (canEditExif || canEditXmp);
+  bool get canEditTitleDescription => canEdit && canEditXmp;
 
   bool get canEditRating => canEdit && canEditXmp;
 
@@ -738,7 +742,12 @@ class AvesEntry {
   }
 
   // when the MIME type or the image itself changed (e.g. after rotation)
-  Future<void> _onVisualFieldChanged(String oldMimeType, int? oldDateModifiedSecs, int oldRotationDegrees, bool oldIsFlipped) async {
+  Future<void> _onVisualFieldChanged(
+    String oldMimeType,
+    int? oldDateModifiedSecs,
+    int oldRotationDegrees,
+    bool oldIsFlipped,
+  ) async {
     if ((!MimeTypes.refersToSameType(oldMimeType, mimeType) && !MimeTypes.isVideo(oldMimeType)) || oldDateModifiedSecs != dateModifiedSecs || oldRotationDegrees != rotationDegrees || oldIsFlipped != isFlipped) {
       await EntryCache.evict(uri, oldMimeType, oldDateModifiedSecs, oldRotationDegrees, oldIsFlipped);
       imageChangeNotifier.notify();

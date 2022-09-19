@@ -4,12 +4,13 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/utils/android_file_utils.dart';
+import 'package:aves/utils/collection_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
 
 mixin AlbumMixin on SourceBase {
-  final Set<String?> _directories = {};
+  final Set<String> _directories = {};
   final Set<String> _newAlbums = {};
 
   List<String> get rawAlbums => List.unmodifiable(_directories);
@@ -67,7 +68,7 @@ mixin AlbumMixin on SourceBase {
 
   void addDirectories({required Set<String?> albums, bool notify = true}) {
     if (!_directories.containsAll(albums)) {
-      _directories.addAll(albums);
+      _directories.addAll(albums.whereNotNull());
       _onAlbumChanged(notify: notify);
     }
   }
@@ -95,7 +96,7 @@ mixin AlbumMixin on SourceBase {
   // filter summary
 
   // by directory
-  final Map<String, int> _filterEntryCountMap = {};
+  final Map<String, int> _filterEntryCountMap = {}, _filterSizeMap = {};
   final Map<String, AvesEntry?> _filterRecentEntryMap = {};
 
   void invalidateAlbumFilterSummary({
@@ -103,10 +104,11 @@ mixin AlbumMixin on SourceBase {
     Set<String?>? directories,
     bool notify = true,
   }) {
-    if (_filterEntryCountMap.isEmpty && _filterRecentEntryMap.isEmpty) return;
+    if (_filterEntryCountMap.isEmpty && _filterSizeMap.isEmpty && _filterRecentEntryMap.isEmpty) return;
 
     if (entries == null && directories == null) {
       _filterEntryCountMap.clear();
+      _filterSizeMap.clear();
       _filterRecentEntryMap.clear();
     } else {
       directories ??= {};
@@ -115,6 +117,7 @@ mixin AlbumMixin on SourceBase {
       }
       directories.forEach((directory) {
         _filterEntryCountMap.remove(directory);
+        _filterSizeMap.remove(directory);
         _filterRecentEntryMap.remove(directory);
       });
     }
@@ -125,6 +128,10 @@ mixin AlbumMixin on SourceBase {
 
   int albumEntryCount(AlbumFilter filter) {
     return _filterEntryCountMap.putIfAbsent(filter.album, () => visibleEntries.where(filter.test).length);
+  }
+
+  int albumSize(AlbumFilter filter) {
+    return _filterSizeMap.putIfAbsent(filter.album, () => visibleEntries.where(filter.test).map((v) => v.sizeBytes).sum);
   }
 
   AvesEntry? albumRecentEntry(AlbumFilter filter) {

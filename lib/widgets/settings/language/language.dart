@@ -26,7 +26,7 @@ class LanguageSection extends SettingsSection {
       );
 
   @override
-  String title(BuildContext context) => context.l10n.settingsSectionLanguage;
+  String title(BuildContext context) => context.l10n.settingsLanguageSectionTitle;
 
   @override
   FutureOr<List<SettingsTile>> tiles(BuildContext context) => [
@@ -38,7 +38,7 @@ class LanguageSection extends SettingsSection {
 
 class SettingsTileLanguageLocale extends SettingsTile {
   @override
-  String title(BuildContext context) => context.l10n.settingsLanguage;
+  String title(BuildContext context) => context.l10n.settingsLanguageTile;
 
   @override
   Widget build(BuildContext context) => const LocaleTile();
@@ -55,7 +55,7 @@ class SettingsTileLanguageCoordinateFormat extends SettingsTile {
         selector: (context, s) => s.coordinateFormat,
         onSelection: (v) => settings.coordinateFormat = v,
         tileTitle: title(context),
-        dialogTitle: context.l10n.settingsCoordinateFormatTitle,
+        dialogTitle: context.l10n.settingsCoordinateFormatDialogTitle,
         optionSubtitleBuilder: (value) => value.format(context.l10n, Constants.pointNemo),
       );
 }
@@ -71,6 +71,6 @@ class SettingsTileLanguageUnitSystem extends SettingsTile {
         selector: (context, s) => s.unitSystem,
         onSelection: (v) => settings.unitSystem = v,
         tileTitle: title(context),
-        dialogTitle: context.l10n.settingsUnitSystemTitle,
+        dialogTitle: context.l10n.settingsUnitSystemDialogTitle,
       );
 }

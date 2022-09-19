@@ -24,11 +24,11 @@ class HiddenItemsPage extends StatelessWidget {
     final l10n = context.l10n;
     final tabs = <Tuple2<Tab, Widget>>[
       Tuple2(
-        Tab(text: l10n.settingsHiddenFiltersTitle),
+        Tab(text: l10n.settingsHiddenItemsTabFilters),
         const _HiddenFilters(),
       ),
       Tuple2(
-        Tab(text: l10n.settingsHiddenPathsTitle),
+        Tab(text: l10n.settingsHiddenItemsTabPaths),
         const _HiddenPaths(),
       ),
     ];
@@ -38,7 +38,7 @@ class HiddenItemsPage extends StatelessWidget {
         length: tabs.length,
         child: Scaffold(
           appBar: AppBar(
-            title: Text(l10n.settingsHiddenItemsTitle),
+            title: Text(l10n.settingsHiddenItemsPageTitle),
             bottom: TabBar(
               tabs: tabs.map((t) => t.item1).toList(),
             ),

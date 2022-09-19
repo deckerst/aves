@@ -7,8 +7,9 @@ import 'package:aves/model/metadata/address.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/analysis_controller.dart';
 import 'package:aves/model/source/collection_source.dart';
-import 'package:aves/model/source/enums.dart';
+import 'package:aves/model/source/enums/enums.dart';
 import 'package:aves/services/common/services.dart';
+import 'package:aves/utils/collection_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:tuple/tuple.dart';
@@ -180,7 +181,7 @@ mixin LocationMixin on SourceBase {
   // filter summary
 
   // by country code
-  final Map<String, int> _filterEntryCountMap = {};
+  final Map<String, int> _filterEntryCountMap = {}, _filterSizeMap = {};
   final Map<String, AvesEntry?> _filterRecentEntryMap = {};
 
   void invalidateCountryFilterSummary({
@@ -188,10 +189,11 @@ mixin LocationMixin on SourceBase {
     Set<String>? countryCodes,
     bool notify = true,
   }) {
-    if (_filterEntryCountMap.isEmpty && _filterRecentEntryMap.isEmpty) return;
+    if (_filterEntryCountMap.isEmpty && _filterSizeMap.isEmpty && _filterRecentEntryMap.isEmpty) return;
 
     if (entries == null && countryCodes == null) {
       _filterEntryCountMap.clear();
+      _filterSizeMap.clear();
       _filterRecentEntryMap.clear();
     } else {
       countryCodes ??= {};
@@ -200,6 +202,7 @@ mixin LocationMixin on SourceBase {
       }
       countryCodes.forEach((countryCode) {
         _filterEntryCountMap.remove(countryCode);
+        _filterSizeMap.remove(countryCode);
         _filterRecentEntryMap.remove(countryCode);
       });
     }
@@ -212,6 +215,12 @@ mixin LocationMixin on SourceBase {
     final countryCode = filter.countryCode;
     if (countryCode == null) return 0;
     return _filterEntryCountMap.putIfAbsent(countryCode, () => visibleEntries.where(filter.test).length);
+  }
+
+  int countrySize(LocationFilter filter) {
+    final countryCode = filter.countryCode;
+    if (countryCode == null) return 0;
+    return _filterSizeMap.putIfAbsent(countryCode, () => visibleEntries.where(filter.test).map((v) => v.sizeBytes).sum);
   }
 
   AvesEntry? countryRecentEntry(LocationFilter filter) {

@@ -4,6 +4,28 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.7.0"></a>[v1.7.0] - 2022-09-19
+
+### Added
+
+- Collection: view settings allow changing the sort order (aka ascending/descending)
+- Collection / Info: edit title via IPTC / XMP
+- Albums / Countries / Tags: size displayed in list view details, sort by size
+- Search: `undated` and `untitled` filters
+- Greek translation (thanks Emmanouil Papavergis)
+
+### Changed
+
+- upgraded Flutter to stable v3.3.2
+
+### Fixed
+
+- opening viewer with directory context in some cases
+- photo frame widget rendering in some cases
+- exporting large images to BMP
+- replacing entries during move/copy
+- deleting binned item from the Download album
+
 ## <a id="v1.6.13"></a>[v1.6.13] - 2022-08-29
 
 ### Changed

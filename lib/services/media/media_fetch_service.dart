@@ -6,6 +6,7 @@ import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/output_buffer.dart';
 import 'package:aves/services/common/service_policy.dart';
 import 'package:aves/services/common/services.dart';
+import 'package:aves/services/media/byte_receiving_codec.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:streams_channel/streams_channel.dart';
@@ -26,7 +27,7 @@ abstract class MediaFetchService {
     int? rotationDegrees,
     bool isFlipped, {
     int? pageId,
-    int? expectedContentLength,
+    int? sizeBytes,
     BytesReceivedCallback? onBytesReceived,
   });
 
@@ -66,14 +67,15 @@ abstract class MediaFetchService {
 }
 
 class PlatformMediaFetchService implements MediaFetchService {
-  static const _platform = MethodChannel('deckers.thibault/aves/media_fetch');
+  static const _platformObject = MethodChannel('deckers.thibault/aves/media_fetch_object');
+  static const _platformBytes = MethodChannel('deckers.thibault/aves/media_fetch_bytes', AvesByteReceivingMethodCodec());
   static final _byteStream = StreamsChannel('deckers.thibault/aves/media_byte_stream');
   static const double _thumbnailDefaultSize = 64.0;
 
   @override
   Future<AvesEntry?> getEntry(String uri, String? mimeType) async {
     try {
-      final result = await _platform.invokeMethod('getEntry', <String, dynamic>{
+      final result = await _platformObject.invokeMethod('getEntry', <String, dynamic>{
         'uri': uri,
         'mimeType': mimeType,
       }) as Map;
@@ -100,7 +102,7 @@ class PlatformMediaFetchService implements MediaFetchService {
         mimeType,
         0,
         false,
-        expectedContentLength: expectedContentLength,
+        sizeBytes: expectedContentLength,
         onBytesReceived: onBytesReceived,
       );
 
@@ -111,7 +113,7 @@ class PlatformMediaFetchService implements MediaFetchService {
     int? rotationDegrees,
     bool isFlipped, {
     int? pageId,
-    int? expectedContentLength,
+    int? sizeBytes,
     BytesReceivedCallback? onBytesReceived,
   }) async {
     try {
@@ -121,6 +123,7 @@ class PlatformMediaFetchService implements MediaFetchService {
       _byteStream.receiveBroadcastStream(<String, dynamic>{
         'uri': uri,
         'mimeType': mimeType,
+        'sizeBytes': sizeBytes,
         'rotationDegrees': rotationDegrees ?? 0,
         'isFlipped': isFlipped,
         'pageId': pageId,
@@ -131,7 +134,7 @@ class PlatformMediaFetchService implements MediaFetchService {
           if (onBytesReceived != null) {
             bytesReceived += chunk.length;
             try {
-              onBytesReceived(bytesReceived, expectedContentLength);
+              onBytesReceived(bytesReceived, sizeBytes);
             } catch (error, stack) {
               completer.completeError(error, stack);
               return;
@@ -171,7 +174,7 @@ class PlatformMediaFetchService implements MediaFetchService {
     return servicePolicy.call(
       () async {
         try {
-          final result = await _platform.invokeMethod('getRegion', <String, dynamic>{
+          final result = await _platformBytes.invokeMethod('getRegion', <String, dynamic>{
             'uri': uri,
             'mimeType': mimeType,
             'pageId': pageId,
@@ -211,7 +214,7 @@ class PlatformMediaFetchService implements MediaFetchService {
     return servicePolicy.call(
       () async {
         try {
-          final result = await _platform.invokeMethod('getThumbnail', <String, dynamic>{
+          final result = await _platformBytes.invokeMethod('getThumbnail', <String, dynamic>{
             'uri': uri,
             'mimeType': mimeType,
             'dateModifiedSecs': dateModifiedSecs,
@@ -238,7 +241,7 @@ class PlatformMediaFetchService implements MediaFetchService {
   @override
   Future<void> clearSizedThumbnailDiskCache() async {
     try {
-      return _platform.invokeMethod('clearSizedThumbnailDiskCache');
+      return _platformObject.invokeMethod('clearSizedThumbnailDiskCache');
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
     }

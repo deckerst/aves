@@ -57,7 +57,7 @@ class RatingFilter extends CollectionFilter {
       case -1:
         return context.l10n.filterRatingRejectedLabel;
       case 0:
-        return context.l10n.filterRatingUnratedLabel;
+        return context.l10n.filterNoRatingLabel;
       default:
         return '\u2B50' * rating;
     }

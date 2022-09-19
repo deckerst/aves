@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:aves/l10n/l10n.dart';
@@ -8,13 +9,14 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/defaults.dart';
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/enums/map_style.dart';
-import 'package:aves/model/source/enums.dart';
+import 'package:aves/model/source/enums/enums.dart';
 import 'package:aves/services/common/optional_event_channel.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves_map/aves_map.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:latlong2/latlong.dart';
 
 final Settings settings = Settings._private();
 
@@ -73,6 +75,7 @@ class Settings extends ChangeNotifier {
   // collection
   static const collectionGroupFactorKey = 'collection_group_factor';
   static const collectionSortFactorKey = 'collection_sort_factor';
+  static const collectionSortReverseKey = 'collection_sort_reverse';
   static const collectionBrowsingQuickActionsKey = 'collection_browsing_quick_actions';
   static const collectionSelectionQuickActionsKey = 'collection_selection_quick_actions';
   static const showThumbnailFavouriteKey = 'show_thumbnail_favourite';
@@ -88,6 +91,9 @@ class Settings extends ChangeNotifier {
   static const albumSortFactorKey = 'album_sort_factor';
   static const countrySortFactorKey = 'country_sort_factor';
   static const tagSortFactorKey = 'tag_sort_factor';
+  static const albumSortReverseKey = 'album_sort_reverse';
+  static const countrySortReverseKey = 'country_sort_reverse';
+  static const tagSortReverseKey = 'tag_sort_reverse';
   static const pinnedFiltersKey = 'pinned_filters';
   static const hiddenFiltersKey = 'hidden_filters';
 
@@ -121,10 +127,13 @@ class Settings extends ChangeNotifier {
   static const subtitleBackgroundColorKey = 'subtitle_background_color';
 
   // info
-  static const infoMapStyleKey = 'info_map_style';
   static const infoMapZoomKey = 'info_map_zoom';
   static const coordinateFormatKey = 'coordinates_format';
   static const unitSystemKey = 'unit_system';
+
+  // map
+  static const mapStyleKey = 'info_map_style';
+  static const mapDefaultCenterKey = 'map_default_center';
 
   // search
   static const saveSearchHistoryKey = 'save_search_history';
@@ -172,6 +181,7 @@ class Settings extends ChangeNotifier {
 
   Future<void> init({required bool monitorPlatformSettings}) async {
     await settingsStore.init();
+    _appliedLocale = null;
     if (monitorPlatformSettings) {
       _platformSettingsChangeChannel.receiveBroadcastStream().listen((event) => _onPlatformSettingsChange(event as Map?));
     }
@@ -197,10 +207,10 @@ class Settings extends ChangeNotifier {
     // availability
     final defaultMapStyle = mobileServices.defaultMapStyle;
     if (mobileServices.mapStyles.contains(defaultMapStyle)) {
-      infoMapStyle = defaultMapStyle;
+      mapStyle = defaultMapStyle;
     } else {
       final styles = EntryMapStyle.values.whereNot((v) => v.needMobileService).toList();
-      infoMapStyle = styles[Random().nextInt(styles.length)];
+      mapStyle = styles[Random().nextInt(styles.length)];
     }
   }
 
@@ -382,6 +392,10 @@ class Settings extends ChangeNotifier {
 
   set collectionSortFactor(EntrySortFactor newValue) => setAndNotify(collectionSortFactorKey, newValue.toString());
 
+  bool get collectionSortReverse => getBoolOrDefault(collectionSortReverseKey, false);
+
+  set collectionSortReverse(bool newValue) => setAndNotify(collectionSortReverseKey, newValue);
+
   List<EntrySetAction> get collectionBrowsingQuickActions => getEnumListOrDefault(collectionBrowsingQuickActionsKey, SettingsDefaults.collectionBrowsingQuickActions, EntrySetAction.values);
 
   set collectionBrowsingQuickActions(List<EntrySetAction> newValue) => setAndNotify(collectionBrowsingQuickActionsKey, newValue.map((v) => v.toString()).toList());
@@ -435,6 +449,18 @@ class Settings extends ChangeNotifier {
   ChipSortFactor get tagSortFactor => getEnumOrDefault(tagSortFactorKey, SettingsDefaults.tagSortFactor, ChipSortFactor.values);
 
   set tagSortFactor(ChipSortFactor newValue) => setAndNotify(tagSortFactorKey, newValue.toString());
+
+  bool get albumSortReverse => getBoolOrDefault(albumSortReverseKey, false);
+
+  set albumSortReverse(bool newValue) => setAndNotify(albumSortReverseKey, newValue);
+
+  bool get countrySortReverse => getBoolOrDefault(countrySortReverseKey, false);
+
+  set countrySortReverse(bool newValue) => setAndNotify(countrySortReverseKey, newValue);
+
+  bool get tagSortReverse => getBoolOrDefault(tagSortReverseKey, false);
+
+  set tagSortReverse(bool newValue) => setAndNotify(tagSortReverseKey, newValue);
 
   Set<CollectionFilter> get pinnedFilters => (getStringList(pinnedFiltersKey) ?? []).map(CollectionFilter.fromJson).whereNotNull().toSet();
 
@@ -555,14 +581,6 @@ class Settings extends ChangeNotifier {
 
   // info
 
-  EntryMapStyle get infoMapStyle {
-    final preferred = getEnumOrDefault(infoMapStyleKey, SettingsDefaults.infoMapStyle, EntryMapStyle.values);
-    final available = availability.mapStyles;
-    return available.contains(preferred) ? preferred : available.first;
-  }
-
-  set infoMapStyle(EntryMapStyle newValue) => setAndNotify(infoMapStyleKey, newValue.toString());
-
   double get infoMapZoom => getDouble(infoMapZoomKey) ?? SettingsDefaults.infoMapZoom;
 
   set infoMapZoom(double newValue) => setAndNotify(infoMapZoomKey, newValue);
@@ -574,6 +592,23 @@ class Settings extends ChangeNotifier {
   UnitSystem get unitSystem => getEnumOrDefault(unitSystemKey, SettingsDefaults.unitSystem, UnitSystem.values);
 
   set unitSystem(UnitSystem newValue) => setAndNotify(unitSystemKey, newValue.toString());
+
+  // map
+
+  EntryMapStyle get mapStyle {
+    final preferred = getEnumOrDefault(mapStyleKey, SettingsDefaults.infoMapStyle, EntryMapStyle.values);
+    final available = availability.mapStyles;
+    return available.contains(preferred) ? preferred : available.first;
+  }
+
+  set mapStyle(EntryMapStyle newValue) => setAndNotify(mapStyleKey, newValue.toString());
+
+  LatLng? get mapDefaultCenter {
+    final json = getString(mapDefaultCenterKey);
+    return json != null ? LatLng.fromJson(jsonDecode(json)) : null;
+  }
+
+  set mapDefaultCenter(LatLng? newValue) => setAndNotify(mapDefaultCenterKey, newValue != null ? jsonEncode(newValue.toJson()) : null);
 
   // search
 
@@ -813,6 +848,7 @@ class Settings extends ChangeNotifier {
             case confirmMoveUndatedItemsKey:
             case confirmAfterMoveToBinKey:
             case setMetadataDateBeforeFileOpKey:
+            case collectionSortReverseKey:
             case showThumbnailFavouriteKey:
             case showThumbnailTagKey:
             case showThumbnailLocationKey:
@@ -820,6 +856,9 @@ class Settings extends ChangeNotifier {
             case showThumbnailRatingKey:
             case showThumbnailRawKey:
             case showThumbnailVideoDurationKey:
+            case albumSortReverseKey:
+            case countrySortReverseKey:
+            case tagSortReverseKey:
             case showOverlayOnOpeningKey:
             case showOverlayMinimapKey:
             case showOverlayInfoKey:
@@ -862,7 +901,8 @@ class Settings extends ChangeNotifier {
             case videoLoopModeKey:
             case videoControlsKey:
             case subtitleTextAlignmentKey:
-            case infoMapStyleKey:
+            case mapStyleKey:
+            case mapDefaultCenterKey:
             case coordinateFormatKey:
             case unitSystemKey:
             case accessibilityAnimationsKey:

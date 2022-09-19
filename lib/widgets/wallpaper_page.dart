@@ -76,6 +76,9 @@ class _EntryEditorState extends State<EntryEditor> with EntryViewControllerMixin
   late final ViewerController _viewerController;
 
   @override
+  bool get isViewingImage => true;
+
+  @override
   final ValueNotifier<AvesEntry?> entryNotifier = ValueNotifier(null);
 
   AvesEntry get entry => widget.entry;

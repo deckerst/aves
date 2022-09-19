@@ -59,7 +59,7 @@ class _BugReportState extends State<BugReport> with FeedbackMixin {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               alignment: AlignmentDirectional.centerStart,
-              child: Text(l10n.aboutBug, style: Constants.titleTextStyle),
+              child: Text(l10n.aboutBugSectionTitle, style: Constants.knownTitleTextStyle),
             ),
           ),
           body: Padding(

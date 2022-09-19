@@ -43,7 +43,7 @@ class _XmpDirTileState extends State<XmpDirTile> {
     super.initState();
     _tags = Map.from(widget.tags)..remove(schemaRegistryPrefixesKey);
     final prefixesJson = widget.allTags[schemaRegistryPrefixesKey];
-    final Map<String, dynamic> prefixesDecoded = prefixesJson != null ? json.decode(prefixesJson) : {};
+    final Map<String, dynamic> prefixesDecoded = prefixesJson != null ? jsonDecode(prefixesJson) : {};
     _schemaRegistryPrefixes = Map.fromEntries(prefixesDecoded.entries.map((kv) => MapEntry(kv.key, kv.value as String)));
   }
 

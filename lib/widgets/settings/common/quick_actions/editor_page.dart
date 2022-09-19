@@ -158,8 +158,8 @@ class _QuickActionEditorBodyState<T extends Object> extends State<QuickActionEdi
           Padding(
             padding: const EdgeInsets.only(left: 16, top: 16, right: 16),
             child: Text(
-              context.l10n.settingsViewerQuickActionEditorDisplayedButtons,
-              style: Constants.titleTextStyle,
+              context.l10n.settingsViewerQuickActionEditorDisplayedButtonsSectionTitle,
+              style: Constants.knownTitleTextStyle,
             ),
           ),
           ValueListenableBuilder<bool>(
@@ -234,8 +234,8 @@ class _QuickActionEditorBodyState<T extends Object> extends State<QuickActionEdi
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Text(
-              context.l10n.settingsViewerQuickActionEditorAvailableButtons,
-              style: Constants.titleTextStyle,
+              context.l10n.settingsViewerQuickActionEditorAvailableButtonsSectionTitle,
+              style: Constants.knownTitleTextStyle,
             ),
           ),
           ValueListenableBuilder<bool>(

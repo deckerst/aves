@@ -6,7 +6,9 @@ import 'package:aves_services_platform/src/map.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_api_availability/google_api_availability.dart';
-import 'package:latlong2/latlong.dart';
+import 'package:google_maps_flutter_android/google_maps_flutter_android.dart';
+import 'package:google_maps_flutter_platform_interface/google_maps_flutter_platform_interface.dart';
+import 'package:latlong2/latlong.dart' as ll;
 
 class PlatformMobileServices extends MobileServices {
   bool _isAvailable = false;
@@ -24,6 +26,20 @@ class PlatformMobileServices extends MobileServices {
     // as of google_maps_flutter v2.1.5, Flutter v3.0.1 makes the map hide overlay widgets on API <=22
     final androidInfo = await DeviceInfoPlugin().androidInfo;
     _canRenderMaps = (androidInfo.version.sdkInt ?? 0) >= 21;
+    if (_canRenderMaps) {
+      final mapsImplementation = GoogleMapsFlutterPlatform.instance;
+      if (mapsImplementation is GoogleMapsFlutterAndroid) {
+        // as of google_maps_flutter_android v2.2.0,
+        // setting `useAndroidViewSurface` to true:
+        // + issue #241 exists but workaround is efficient
+        // + pan perf is OK when overlay is disabled
+        // - pan perf is bad when overlay is enabled
+        // setting `useAndroidViewSurface` to false:
+        // - issue #241 exists and workaround is inefficient
+        // + pan perf is OK when overlay is disabled or enabled
+        mapsImplementation.useAndroidViewSurface = false;
+      }
+    }
   }
 
   @override
@@ -52,7 +68,7 @@ class PlatformMobileServices extends MobileServices {
     required MarkerClusterBuilder<T> markerClusterBuilder,
     required MarkerWidgetBuilder<T> markerWidgetBuilder,
     required MarkerImageReadyChecker<T> markerImageReadyChecker,
-    required ValueNotifier<LatLng?>? dotLocationNotifier,
+    required ValueNotifier<ll.LatLng?>? dotLocationNotifier,
     required ValueNotifier<double>? overlayOpacityNotifier,
     required MapOverlay? overlayEntry,
     required UserZoomChangeCallback? onUserZoomChange,

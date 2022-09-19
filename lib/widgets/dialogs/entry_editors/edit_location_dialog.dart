@@ -1,4 +1,4 @@
-import 'package:aves/model/entry.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/constants.dart';
@@ -11,12 +11,12 @@ import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
 
 class EditEntryLocationDialog extends StatefulWidget {
-  final AvesEntry entry;
+  final LatLng? initialLocation;
   final CollectionLens? collection;
 
   const EditEntryLocationDialog({
     super.key,
-    required this.entry,
+    required this.initialLocation,
     this.collection,
   });
 
@@ -37,7 +37,7 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> {
     super.initState();
     _latitudeFocusNode.addListener(_onLatLngFocusChange);
     _longitudeFocusNode.addListener(_onLatLngFocusChange);
-    WidgetsBinding.instance.addPostFrameCallback((_) => _setLocation(context, widget.entry.latLng));
+    WidgetsBinding.instance.addPostFrameCallback((_) => _setLocation(context, widget.initialLocation));
   }
 
   @override
@@ -183,6 +183,7 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> {
       ),
     );
     if (latLng != null) {
+      settings.mapDefaultCenter = latLng;
       _setLocation(context, latLng);
     }
   }

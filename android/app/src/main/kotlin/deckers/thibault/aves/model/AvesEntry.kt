@@ -11,6 +11,15 @@ class AvesEntry(map: FieldMap) {
     val height = map["height"] as Int
     val rotationDegrees = map["rotationDegrees"] as Int
     val isFlipped = map["isFlipped"] as Boolean
+    val sizeBytes = toLong(map["sizeBytes"])
     val trashed = map["trashed"] as Boolean
     val trashPath = map["trashPath"] as String?
+
+    companion object {
+        // convenience method
+        private fun toLong(o: Any?): Long? = when (o) {
+            is Int -> o.toLong()
+            else -> o as? Long
+        }
+    }
 }

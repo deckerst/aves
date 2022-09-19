@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:aves/model/source/collection_source.dart';
-import 'package:aves/model/source/enums.dart';
+import 'package:aves/model/source/enums/enums.dart';
 import 'package:aves/model/source/events.dart';
 import 'package:aves/model/source/source_state.dart';
 import 'package:aves/theme/durations.dart';
@@ -38,7 +38,7 @@ class SourceStateAwareAppBarTitle extends StatelessWidget {
                 ),
               ),
               child: sourceState == SourceState.ready
-                  ? const SizedBox.shrink()
+                  ? const SizedBox()
                   : SourceStateSubtitle(
                       source: source,
                     ),

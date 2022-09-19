@@ -19,7 +19,7 @@ class ThumbnailOverlayPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(context.l10n.settingsThumbnailOverlayTitle),
+        title: Text(context.l10n.settingsThumbnailOverlayPageTitle),
       ),
       body: SafeArea(
         child: ListView(

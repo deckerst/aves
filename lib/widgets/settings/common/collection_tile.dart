@@ -38,7 +38,7 @@ class SettingsCollectionTile extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        l10n.collectionPageTitle,
+                        l10n.settingsCollectionTile,
                         style: textTheme.subtitle1!,
                       ),
                       if (hasSubtitle)

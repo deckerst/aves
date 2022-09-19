@@ -21,7 +21,7 @@ class VideoIcon extends StatelessWidget {
     final gridTheme = context.watch<GridThemeData>();
     final showDuration = gridTheme.showVideoDuration;
     Widget child = OverlayIcon(
-      icon: entry.is360 ? AIcons.threeSixty : AIcons.videoThumb,
+      icon: entry.is360 ? AIcons.sphericalVideo : AIcons.videoThumb,
       text: showDuration ? entry.durationText : null,
       iconScale: entry.is360 && showDuration ? .9 : 1,
     );
@@ -62,13 +62,16 @@ class GeoTiffIcon extends StatelessWidget {
   }
 }
 
-class SphericalImageIcon extends StatelessWidget {
-  const SphericalImageIcon({super.key});
+class PanoramaIcon extends StatelessWidget {
+  const PanoramaIcon({super.key});
+
+  static const scale = .85;
 
   @override
   Widget build(BuildContext context) {
     return const OverlayIcon(
-      icon: AIcons.threeSixty,
+      icon: AIcons.panorama,
+      iconScale: scale,
     );
   }
 }

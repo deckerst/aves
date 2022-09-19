@@ -14,7 +14,7 @@ class ViewerOverlayPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(context.l10n.settingsViewerOverlayTitle),
+        title: Text(context.l10n.settingsViewerOverlayPageTitle),
       ),
       body: SafeArea(
         child: ListView(

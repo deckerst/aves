@@ -7,10 +7,12 @@ import 'package:flutter/material.dart';
 
 class SectionedEntryListLayoutProvider extends SectionedListLayoutProvider<AvesEntry> {
   final CollectionLens collection;
+  final bool selectable;
 
   const SectionedEntryListLayoutProvider({
     super.key,
     required this.collection,
+    required this.selectable,
     required super.scrollableWidth,
     required super.tileLayout,
     required super.columnCount,
@@ -42,6 +44,7 @@ class SectionedEntryListLayoutProvider extends SectionedListLayoutProvider<AvesE
       collection: collection,
       sectionKey: sectionKey,
       height: headerExtent,
+      selectable: selectable,
     );
   }
 }

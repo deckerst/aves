@@ -5,10 +5,12 @@ import 'package:flutter/material.dart';
 
 class RatingSectionHeader<T> extends StatelessWidget {
   final int rating;
+  final bool selectable;
 
   const RatingSectionHeader({
     super.key,
     required this.rating,
+    required this.selectable,
   });
 
   @override
@@ -16,6 +18,7 @@ class RatingSectionHeader<T> extends StatelessWidget {
     return SectionHeader<T>(
       sectionKey: EntryRatingSectionKey(rating),
       title: RatingFilter.formatRating(context, rating),
+      selectable: selectable,
     );
   }
 }

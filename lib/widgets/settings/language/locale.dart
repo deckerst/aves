@@ -23,7 +23,7 @@ class LocaleTile extends StatelessWidget {
     return ListTile(
       // key is expected by test driver
       key: const Key('tile-language'),
-      title: Text(context.l10n.settingsLanguage),
+      title: Text(context.l10n.settingsLanguageTile),
       subtitle: Selector<Settings, Locale?>(
         selector: (context, s) => settings.locale,
         builder: (context, locale, child) {
@@ -78,7 +78,7 @@ class _LocaleSelectionPageState extends State<LocaleSelectionPage> {
     return MediaQueryDataProvider(
       child: Scaffold(
         appBar: AppBar(
-          title: Text(context.l10n.settingsLanguage),
+          title: Text(context.l10n.settingsLanguagePageTitle),
         ),
         body: SafeArea(
           child: ValueListenableBuilder<String>(

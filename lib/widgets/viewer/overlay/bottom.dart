@@ -37,7 +37,11 @@ class ViewerBottomOverlay extends StatefulWidget {
   State<StatefulWidget> createState() => _ViewerBottomOverlayState();
 
   static double actionSafeHeight(BuildContext context) {
-    return ViewerButtons.preferredHeight(context) + (settings.showOverlayThumbnailPreview ? ViewerThumbnailPreview.preferredHeight : 0);
+    final mq = context.read<MediaQueryData>();
+    final mqPaddingBottom = max(mq.effectiveBottomPadding, mq.systemGestureInsets.bottom);
+    final buttonHeight = ViewerButtons.preferredHeight(context);
+    final thumbnailHeight = (settings.showOverlayThumbnailPreview ? ViewerThumbnailPreview.preferredHeight : 0);
+    return mqPaddingBottom + buttonHeight + thumbnailHeight;
   }
 }
 

@@ -5,6 +5,7 @@ import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/filters/mime.dart';
+import 'package:aves/model/filters/missing.dart';
 import 'package:aves/model/filters/path.dart';
 import 'package:aves/model/filters/query.dart';
 import 'package:aves/model/filters/rating.dart';
@@ -52,6 +53,9 @@ void main() {
 
     final mime = MimeFilter.video;
     expect(mime, jsonRoundTrip(mime));
+
+    final missing = MissingFilter.title;
+    expect(missing, jsonRoundTrip(missing));
 
     final path = PathFilter('/some/path/');
     expect(path, jsonRoundTrip(path));

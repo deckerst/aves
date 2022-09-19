@@ -95,6 +95,7 @@ class DurationsData {
   // common animations
   final Duration expansionTileAnimation;
   final Duration formTransition;
+  final Duration chartTransition;
   final Duration iconAnimation;
   final Duration staggeredAnimation;
   final Duration staggeredAnimationPageTarget;
@@ -110,6 +111,7 @@ class DurationsData {
   const DurationsData({
     this.expansionTileAnimation = const Duration(milliseconds: 200),
     this.formTransition = const Duration(milliseconds: 200),
+    this.chartTransition = const Duration(milliseconds: 400),
     this.iconAnimation = const Duration(milliseconds: 300),
     this.staggeredAnimation = const Duration(milliseconds: 375),
     this.staggeredAnimationPageTarget = const Duration(milliseconds: 800),
@@ -123,6 +125,7 @@ class DurationsData {
       // as of Flutter v2.5.1, `ExpansionPanelList` throws if animation duration is zero
       expansionTileAnimation: const Duration(microseconds: 1),
       formTransition: Duration.zero,
+      chartTransition: Duration.zero,
       iconAnimation: Duration.zero,
       staggeredAnimation: Duration.zero,
       staggeredAnimationPageTarget: Duration.zero,

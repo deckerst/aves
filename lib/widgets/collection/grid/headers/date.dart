@@ -7,10 +7,12 @@ import 'package:intl/intl.dart';
 
 class DaySectionHeader<T> extends StatelessWidget {
   final DateTime? date;
+  final bool selectable;
 
   const DaySectionHeader({
     super.key,
     required this.date,
+    required this.selectable,
   });
 
   // Examples (en_US):
@@ -48,16 +50,19 @@ class DaySectionHeader<T> extends StatelessWidget {
     return SectionHeader<T>(
       sectionKey: EntryDateSectionKey(date),
       title: _formatDate(context, date),
+      selectable: selectable,
     );
   }
 }
 
 class MonthSectionHeader<T> extends StatelessWidget {
   final DateTime? date;
+  final bool selectable;
 
   const MonthSectionHeader({
     super.key,
     required this.date,
+    required this.selectable,
   });
 
   static String _formatDate(BuildContext context, DateTime? date) {
@@ -74,6 +79,7 @@ class MonthSectionHeader<T> extends StatelessWidget {
     return SectionHeader<T>(
       sectionKey: EntryDateSectionKey(date),
       title: _formatDate(context, date),
+      selectable: selectable,
     );
   }
 }

@@ -31,7 +31,7 @@ class ViewerActionEditorPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return QuickActionEditorPage<EntryAction>(
-      title: context.l10n.settingsViewerQuickActionEditorTitle,
+      title: context.l10n.settingsViewerQuickActionEditorPageTitle,
       bannerText: context.l10n.settingsViewerQuickActionEditorBanner,
       allAvailableActions: allAvailableActions,
       actionIcon: (action) => action.getIcon(),

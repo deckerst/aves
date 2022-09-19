@@ -258,7 +258,6 @@ class SourceEntry {
         }
     }
 
-
     companion object {
         // convenience method
         private fun toLong(o: Any?): Long? = when (o) {

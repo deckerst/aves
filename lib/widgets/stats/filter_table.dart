@@ -1,4 +1,5 @@
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/utils/constants.dart';
@@ -7,6 +8,7 @@ import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
+import 'package:provider/provider.dart';
 
 class FilterTable<T extends Comparable> extends StatelessWidget {
   final int totalEntryCount;
@@ -35,6 +37,7 @@ class FilterTable<T extends Comparable> extends StatelessWidget {
     final locale = context.l10n.localeName;
     final numberFormat = NumberFormat.decimalPattern(locale);
     final percentFormat = NumberFormat.percentPattern();
+    final animate = context.select<Settings, bool>((v) => v.accessibilityAnimations.animate);
 
     final sortedEntries = entryCountMap.entries.toList();
     if (sortByCount) {
@@ -85,7 +88,7 @@ class FilterTable<T extends Comparable> extends StatelessWidget {
                           lineHeight: lineHeight,
                           backgroundColor: theme.colorScheme.onPrimary.withOpacity(.1),
                           progressColor: isMonochrome ? theme.colorScheme.secondary : color,
-                          animation: true,
+                          animation: animate,
                           isRTL: isRtl,
                           barRadius: barRadius,
                           center: Text(

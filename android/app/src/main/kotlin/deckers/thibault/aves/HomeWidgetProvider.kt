@@ -12,9 +12,8 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.RemoteViews
 import app.loup.streams_channel.StreamsChannel
-import deckers.thibault.aves.channel.calls.DeviceHandler
-import deckers.thibault.aves.channel.calls.MediaFetchHandler
-import deckers.thibault.aves.channel.calls.MediaStoreHandler
+import deckers.thibault.aves.channel.AvesByteSendingMethodCodec
+import deckers.thibault.aves.channel.calls.*
 import deckers.thibault.aves.channel.streams.ImageByteStreamHandler
 import deckers.thibault.aves.channel.streams.MediaStoreStreamHandler
 import deckers.thibault.aves.utils.FlutterUtils
@@ -190,7 +189,9 @@ class HomeWidgetProvider : AppWidgetProvider() {
             // - need Context
             MethodChannel(messenger, DeviceHandler.CHANNEL).setMethodCallHandler(DeviceHandler(context))
             MethodChannel(messenger, MediaStoreHandler.CHANNEL).setMethodCallHandler(MediaStoreHandler(context))
-            MethodChannel(messenger, MediaFetchHandler.CHANNEL).setMethodCallHandler(MediaFetchHandler(context))
+            MethodChannel(messenger, MediaFetchBytesHandler.CHANNEL, AvesByteSendingMethodCodec.INSTANCE).setMethodCallHandler(MediaFetchBytesHandler(context))
+            MethodChannel(messenger, MediaFetchObjectHandler.CHANNEL).setMethodCallHandler(MediaFetchObjectHandler(context))
+            MethodChannel(messenger, StorageHandler.CHANNEL).setMethodCallHandler(StorageHandler(context))
 
             // result streaming: dart -> platform ->->-> dart
             // - need Context
