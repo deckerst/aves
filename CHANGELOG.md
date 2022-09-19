@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.7.0"></a>[v1.7.0] - 2022-09-19
+
 ### Added
 
 - Collection: view settings allow changing the sort order (aka ascending/descending)
