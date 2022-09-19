@@ -287,6 +287,7 @@
   "viewDialogSortSectionTitle": "정렬",
   "viewDialogGroupSectionTitle": "묶음",
   "viewDialogLayoutSectionTitle": "배치",
+  "viewDialogReverseSortOrder": "순서를 뒤바꾸기",
 
   "tileLayoutGrid": "바둑판",
   "tileLayoutList": "목록",
@@ -389,6 +390,15 @@
   "sortBySize": "크기",
   "sortByAlbumFileName": "이름",
   "sortByRating": "별점",
+
+  "sortOrderNewestFirst": "최근 날짜순",
+  "sortOrderOldestFirst": "오래된 날짜순",
+  "sortOrderAtoZ": "A~Z",
+  "sortOrderZtoA": "Z~A",
+  "sortOrderHighestFirst": "높은 별점순",
+  "sortOrderLowestFirst": "낮은 별점순",
+  "sortOrderLargestFirst": "큰 파일순",
+  "sortOrderSmallestFirst": "작은 파일순",
 
   "albumGroupTier": "단계별로",
   "albumGroupVolume": "저장공간별로",

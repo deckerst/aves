@@ -34,17 +34,6 @@
     "viewerInfoLabelDescription"
   ],
 
-  "fr": [
-    "sortOrderNewestFirst",
-    "sortOrderOldestFirst",
-    "sortOrderAtoZ",
-    "sortOrderZtoA",
-    "sortOrderHighestFirst",
-    "sortOrderLowestFirst",
-    "sortOrderLargestFirst",
-    "sortOrderSmallestFirst"
-  ],
-
   "ja": [
     "entryInfoActionEditTitleDescription",
     "filterNoDateLabel",
@@ -63,18 +52,6 @@
     "settingsConfirmationAfterMoveToBinItems",
     "settingsViewerGestureSideTapNext",
     "viewerInfoLabelDescription"
-  ],
-
-  "ko": [
-    "viewDialogReverseSortOrder",
-    "sortOrderNewestFirst",
-    "sortOrderOldestFirst",
-    "sortOrderAtoZ",
-    "sortOrderZtoA",
-    "sortOrderHighestFirst",
-    "sortOrderLowestFirst",
-    "sortOrderLargestFirst",
-    "sortOrderSmallestFirst"
   ],
 
   "pt": [
