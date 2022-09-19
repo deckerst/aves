@@ -30,6 +30,7 @@ void main() {
 
     expect(parseUnknownDateFormat('Screenshot_2022-05-14-15-40-29-164_uri'), DateTime(2022, 5, 14, 15, 40, 29, 164));
     expect(parseUnknownDateFormat('2019-02-18 16.00.12-DCM'), DateTime(2019, 2, 18, 16, 0, 12, 0));
+    expect(parseUnknownDateFormat('2020-11-01 00.31.02'), DateTime(2020, 11, 1, 0, 31, 2, 0));
     expect(parseUnknownDateFormat('2019-10-31 135703'), DateTime(2019, 10, 31, 13, 57, 3, 0));
   });
 }
