@@ -88,15 +88,18 @@
 
   "entryInfoActionEditDate": "Datum & Uhrzeit bearbeiten",
   "entryInfoActionEditLocation": "Standort bearbeiten",
+  "entryInfoActionEditTitleDescription": "Titel und Beschreibung bearbeiten",
   "entryInfoActionEditRating": "Bewertung bearbeiten",
   "entryInfoActionEditTags": "Tags bearbeiten",
   "entryInfoActionRemoveMetadata": "Metadaten entfernen",
 
   "filterBinLabel": "Papierkorb",
   "filterFavouriteLabel": "Favorit",
+  "filterNoDateLabel": "Undatiert",
   "filterNoLocationLabel": "Ungeortet",
   "filterNoRatingLabel": "Nicht bewertet",
   "filterNoTagLabel": "Unmarkiert",
+  "filterNoTitleLabel": "Unbenannt",
   "filterOnThisDayLabel": "Am heutigen Tag",
   "filterRecentlyAddedLabel": "Kürzlich hinzugefügt",
   "filterRatingRejectedLabel": "Verworfen",
@@ -284,6 +287,7 @@
   "viewDialogSortSectionTitle": "Sortieren",
   "viewDialogGroupSectionTitle": "Gruppe",
   "viewDialogLayoutSectionTitle": "Layout",
+  "viewDialogReverseSortOrder": "Umgekehrte Sortierung",
 
   "tileLayoutGrid": "Kacheln",
   "tileLayoutList": "Liste",
@@ -387,6 +391,15 @@
   "sortByAlbumFileName": "Nach Album & Dateiname",
   "sortByRating": "Nach Bewertung",
 
+  "sortOrderNewestFirst": "Neueste zuerst",
+  "sortOrderOldestFirst": "Älteste zuerst",
+  "sortOrderAtoZ": "A zu Z",
+  "sortOrderZtoA": "Z zu A",
+  "sortOrderHighestFirst": "Höchste zuerst",
+  "sortOrderLowestFirst": "Niedrigste zuerst",
+  "sortOrderLargestFirst": "Größtes zuerst",
+  "sortOrderSmallestFirst": "Kleinste zuerst",
+
   "albumGroupTier": "Nach Ebene",
   "albumGroupVolume": "Nach Speichervolumen",
   "albumGroupNone": "Nicht gruppieren",
@@ -424,6 +437,7 @@
   "searchPlacesSectionTitle": "Orte",
   "searchTagsSectionTitle": "Tags",
   "searchRatingSectionTitle": "Bewertungen",
+  "searchMetadataSectionTitle": "Metadaten",
 
   "settingsPageTitle": "Einstellungen",
   "settingsSystemDefault": "System",
