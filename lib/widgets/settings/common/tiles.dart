@@ -82,7 +82,8 @@ class SettingsSelectionListTile<T extends Enum> extends StatelessWidget {
   final String Function(BuildContext, T) getName;
   final T Function(BuildContext, Settings) selector;
   final ValueChanged<T> onSelection;
-  final String tileTitle, dialogTitle;
+  final String tileTitle;
+  final String? dialogTitle;
   final TextBuilder<T>? optionSubtitleBuilder;
 
   const SettingsSelectionListTile({
@@ -92,7 +93,7 @@ class SettingsSelectionListTile<T extends Enum> extends StatelessWidget {
     required this.selector,
     required this.onSelection,
     required this.tileTitle,
-    required this.dialogTitle,
+    this.dialogTitle,
     this.optionSubtitleBuilder,
   });
 
