@@ -167,6 +167,7 @@
   "viewerTransitionParallax": "Parallaxe",
   "viewerTransitionFade": "Fondu",
   "viewerTransitionZoomIn": "Zoom",
+  "viewerTransitionNone": "Aucune",
 
   "wallpaperTargetHome": "Écran d’accueil",
   "wallpaperTargetLock": "Écran de verrouillage",
