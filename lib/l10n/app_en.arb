@@ -207,6 +207,7 @@
   "viewerTransitionParallax": "Parallax",
   "viewerTransitionFade": "Fade",
   "viewerTransitionZoomIn": "Zoom in",
+  "viewerTransitionNone": "None",
 
   "wallpaperTargetHome": "Home screen",
   "wallpaperTargetLock": "Lock screen",

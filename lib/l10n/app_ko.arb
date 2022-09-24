@@ -167,6 +167,7 @@
   "viewerTransitionParallax": "시차",
   "viewerTransitionFade": "페이드",
   "viewerTransitionZoomIn": "확대",
+  "viewerTransitionNone": "없음",
 
   "wallpaperTargetHome": "홈 화면",
   "wallpaperTargetLock": "잠금화면",

@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - mosaic layout
+- slideshow: option for no transition
 
 ## <a id="v1.7.0"></a>[v1.7.0] - 2022-09-19
 
