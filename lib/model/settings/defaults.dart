@@ -1,7 +1,5 @@
 import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/actions/entry_set_actions.dart';
-import 'package:aves/model/filters/favourite.dart';
-import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/recent.dart';
 import 'package:aves/model/naming_pattern.dart';
 import 'package:aves/model/settings/enums/enums.dart';
@@ -40,8 +38,6 @@ class SettingsDefaults {
   static const setMetadataDateBeforeFileOp = false;
   static final drawerTypeBookmarks = [
     null,
-    MimeFilter.video,
-    FavouriteFilter.instance,
     RecentlyAddedFilter.instance,
   ];
   static const drawerPageBookmarks = [
