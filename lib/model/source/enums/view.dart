@@ -1,3 +1,4 @@
+import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/widgets.dart';
 
@@ -15,6 +16,19 @@ extension ExtraEntrySortFactor on EntrySortFactor {
         return l10n.sortByRating;
       case EntrySortFactor.size:
         return l10n.sortBySize;
+    }
+  }
+
+  IconData get icon {
+    switch (this) {
+      case EntrySortFactor.date:
+        return AIcons.date;
+      case EntrySortFactor.name:
+        return AIcons.name;
+      case EntrySortFactor.rating:
+        return AIcons.rating;
+      case EntrySortFactor.size:
+        return AIcons.size;
     }
   }
 
@@ -48,6 +62,19 @@ extension ExtraChipSortFactor on ChipSortFactor {
     }
   }
 
+  IconData get icon {
+    switch (this) {
+      case ChipSortFactor.date:
+        return AIcons.date;
+      case ChipSortFactor.name:
+        return AIcons.name;
+      case ChipSortFactor.count:
+        return AIcons.count;
+      case ChipSortFactor.size:
+        return AIcons.size;
+    }
+  }
+
   String getOrderName(BuildContext context, bool reverse) {
     final l10n = context.l10n;
     switch (this) {
@@ -76,6 +103,19 @@ extension ExtraEntryGroupFactor on EntryGroupFactor {
         return l10n.collectionGroupNone;
     }
   }
+
+  IconData get icon {
+    switch (this) {
+      case EntryGroupFactor.album:
+        return AIcons.album;
+      case EntryGroupFactor.month:
+        return AIcons.dateByMonth;
+      case EntryGroupFactor.day:
+        return AIcons.dateByDay;
+      case EntryGroupFactor.none:
+        return AIcons.clear;
+    }
+  }
 }
 
 extension ExtraAlbumChipGroupFactor on AlbumChipGroupFactor {
@@ -90,16 +130,40 @@ extension ExtraAlbumChipGroupFactor on AlbumChipGroupFactor {
         return l10n.albumGroupNone;
     }
   }
+
+  IconData get icon {
+    switch (this) {
+      case AlbumChipGroupFactor.importance:
+        return AIcons.important;
+      case AlbumChipGroupFactor.volume:
+        return AIcons.removableStorage;
+      case AlbumChipGroupFactor.none:
+        return AIcons.clear;
+    }
+  }
 }
 
 extension ExtraTileLayout on TileLayout {
   String getName(BuildContext context) {
     final l10n = context.l10n;
     switch (this) {
+      case TileLayout.mosaic:
+        return l10n.tileLayoutMosaic;
       case TileLayout.grid:
         return l10n.tileLayoutGrid;
       case TileLayout.list:
         return l10n.tileLayoutList;
+    }
+  }
+
+  IconData get icon {
+    switch (this) {
+      case TileLayout.mosaic:
+        return AIcons.layoutMosaic;
+      case TileLayout.grid:
+        return AIcons.layoutGrid;
+      case TileLayout.list:
+        return AIcons.layoutList;
     }
   }
 }

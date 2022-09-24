@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
-import 'package:aves/widgets/common/grid/section_layout.dart';
+import 'package:aves/widgets/common/grid/sections/list_layout.dart';
+import 'package:aves/widgets/common/grid/sections/section_layout.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +27,7 @@ class SectionedListSliver<T> extends StatelessWidget {
         (context, index) {
           if (index >= childCount) return null;
           final sectionLayout = sectionLayouts.firstWhereOrNull((section) => section.hasChild(index));
-          return sectionLayout?.builder(context, index) ?? const SizedBox.shrink();
+          return sectionLayout?.builder(context, index) ?? const SizedBox();
         },
         childCount: childCount,
         addAutomaticKeepAlives: false,

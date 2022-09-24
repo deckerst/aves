@@ -1,18 +1,10 @@
 {
   "de": [
-    "entryInfoActionEditTitleDescription",
-    "filterNoDateLabel",
-    "filterNoTitleLabel",
-    "viewDialogReverseSortOrder",
-    "sortOrderNewestFirst",
-    "sortOrderOldestFirst",
-    "sortOrderAtoZ",
-    "sortOrderZtoA",
-    "sortOrderHighestFirst",
-    "sortOrderLowestFirst",
-    "sortOrderLargestFirst",
-    "sortOrderSmallestFirst",
-    "searchMetadataSectionTitle"
+    "tileLayoutMosaic"
+  ],
+
+  "el": [
+    "tileLayoutMosaic"
   ],
 
   "es": [
@@ -21,6 +13,7 @@
     "filterNoTitleLabel",
     "filterRecentlyAddedLabel",
     "viewDialogReverseSortOrder",
+    "tileLayoutMosaic",
     "sortOrderNewestFirst",
     "sortOrderOldestFirst",
     "sortOrderAtoZ",
@@ -34,12 +27,21 @@
     "viewerInfoLabelDescription"
   ],
 
+  "id": [
+    "tileLayoutMosaic"
+  ],
+
+  "it": [
+    "tileLayoutMosaic"
+  ],
+
   "ja": [
     "entryInfoActionEditTitleDescription",
     "filterNoDateLabel",
     "filterNoTitleLabel",
     "filterRecentlyAddedLabel",
     "viewDialogReverseSortOrder",
+    "tileLayoutMosaic",
     "sortOrderNewestFirst",
     "sortOrderOldestFirst",
     "sortOrderAtoZ",
@@ -54,11 +56,16 @@
     "viewerInfoLabelDescription"
   ],
 
+  "nl": [
+    "tileLayoutMosaic"
+  ],
+
   "pt": [
     "entryInfoActionEditTitleDescription",
     "filterNoDateLabel",
     "filterNoTitleLabel",
     "viewDialogReverseSortOrder",
+    "tileLayoutMosaic",
     "sortOrderNewestFirst",
     "sortOrderOldestFirst",
     "sortOrderAtoZ",
@@ -68,6 +75,10 @@
     "sortOrderLargestFirst",
     "sortOrderSmallestFirst",
     "searchMetadataSectionTitle"
+  ],
+
+  "ru": [
+    "tileLayoutMosaic"
   ],
 
   "tr": [
@@ -90,6 +101,7 @@
     "wallpaperTargetHomeLock",
     "menuActionSlideshow",
     "viewDialogReverseSortOrder",
+    "tileLayoutMosaic",
     "sortOrderNewestFirst",
     "sortOrderOldestFirst",
     "sortOrderAtoZ",
@@ -116,5 +128,9 @@
     "settingsWidgetShowOutline",
     "viewerSetWallpaperButtonLabel",
     "viewerInfoLabelDescription"
+  ],
+
+  "zh": [
+    "tileLayoutMosaic"
   ]
 }

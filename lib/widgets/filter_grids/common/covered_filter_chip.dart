@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:aves/model/covers.dart';
-import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/location.dart';
@@ -23,7 +22,6 @@ import 'package:provider/provider.dart';
 class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
   final T filter;
   final double extent, thumbnailExtent;
-  final AvesEntry? coverEntry;
   final bool showText, pinned;
   final String? banner;
   final FilterCallback? onTap;
@@ -34,7 +32,6 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
     required this.filter,
     required this.extent,
     double? thumbnailExtent,
-    this.coverEntry,
     this.showText = true,
     this.pinned = false,
     this.banner,
@@ -101,7 +98,7 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
   }
 
   Widget _buildChip(BuildContext context, CollectionSource source) {
-    final entry = coverEntry ?? source.coverEntry(filter);
+    final entry = source.coverEntry(filter);
     final titlePadding = min<double>(4.0, extent / 32);
     Key? chipKey;
     if (filter is AlbumFilter) {

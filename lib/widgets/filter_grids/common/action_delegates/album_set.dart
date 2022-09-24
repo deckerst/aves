@@ -149,9 +149,9 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
       builder: (context) {
         return TileViewDialog<ChipSortFactor, AlbumChipGroupFactor, TileLayout>(
           initialValue: initialValue,
-          sortOptions: Map.fromEntries(ChipSetActionDelegate.sortOptions.map((v) => MapEntry(v, v.getName(context)))),
-          groupOptions: Map.fromEntries(_groupOptions.map((v) => MapEntry(v, v.getName(context)))),
-          layoutOptions: Map.fromEntries(ChipSetActionDelegate.layoutOptions.map((v) => MapEntry(v, v.getName(context)))),
+          sortOptions: ChipSetActionDelegate.sortOptions.map((v) => TileViewDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
+          groupOptions: _groupOptions.map((v) => TileViewDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
+          layoutOptions: ChipSetActionDelegate.layoutOptions.map((v) => TileViewDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
           sortOrder: (factor, reverse) => factor.getOrderName(context, reverse),
         );
       },

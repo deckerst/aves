@@ -24,11 +24,12 @@ class Durations {
   static const chipDecorationAnimation = Duration(milliseconds: 200);
   static const highlightScrollAnimationMinMillis = 400;
   static const highlightScrollAnimationMaxMillis = 2000;
+  static const scalingGridBackgroundAnimation = Duration(milliseconds: 200);
+  static const scalingGridPositionAnimation = Duration(milliseconds: 150);
 
   // collection animations
   static const filterBarRemovalAnimation = Duration(milliseconds: 400);
   static const collectionOpOverlayAnimation = Duration(milliseconds: 300);
-  static const collectionScalingBackgroundAnimation = Duration(milliseconds: 200);
   static const sectionHeaderAnimation = Duration(milliseconds: 200);
   static const thumbnailOverlayAnimation = Duration(milliseconds: 200);
 

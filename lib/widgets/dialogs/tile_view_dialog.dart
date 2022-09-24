@@ -12,18 +12,18 @@ import 'aves_dialog.dart';
 
 class TileViewDialog<S, G, L> extends StatefulWidget {
   final Tuple4<S?, G?, L?, bool> initialValue;
-  final Map<S, String> sortOptions;
-  final Map<G, String> groupOptions;
-  final Map<L, String> layoutOptions;
+  final List<TileViewDialogOption<S>> sortOptions;
+  final List<TileViewDialogOption<G>> groupOptions;
+  final List<TileViewDialogOption<L>> layoutOptions;
   final String Function(S sort, bool reverse) sortOrder;
   final bool Function(S? sort, G? group, L? layout)? canGroup;
 
   const TileViewDialog({
     super.key,
     required this.initialValue,
-    this.sortOptions = const {},
-    this.groupOptions = const {},
-    this.layoutOptions = const {},
+    this.sortOptions = const [],
+    this.groupOptions = const [],
+    this.layoutOptions = const [],
     required this.sortOrder,
     this.canGroup,
   });
@@ -38,11 +38,11 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
   late L? _selectedLayout;
   late bool _reverseSort;
 
-  Map<S, String> get sortOptions => widget.sortOptions;
+  List<TileViewDialogOption<S>> get sortOptions => widget.sortOptions;
 
-  Map<G, String> get groupOptions => widget.groupOptions;
+  List<TileViewDialogOption<G>> get groupOptions => widget.groupOptions;
 
-  Map<L, String> get layoutOptions => widget.layoutOptions;
+  List<TileViewDialogOption<L>> get layoutOptions => widget.layoutOptions;
 
   bool get canGroup => (widget.canGroup ?? (s, g, l) => true).call(_selectedSort, _selectedGroup, _selectedLayout);
 
@@ -131,7 +131,7 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
     required IconData icon,
     required String title,
     Widget? trailing,
-    required Map<T, String> options,
+    required List<TileViewDialogOption<T>> options,
     required T value,
     required ValueChanged<T?> onChanged,
     Widget? bottom,
@@ -171,8 +171,9 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
             Padding(
               padding: EdgeInsetsDirectional.only(start: iconSize + 16, end: 12),
               child: TextDropdownButton<T>(
-                values: options.keys.toList(),
-                valueText: (v) => options[v] ?? v.toString(),
+                values: options.map((v) => v.value).toList(),
+                valueText: (v) => options.firstWhere((option) => option.value == v).title,
+                valueIcon: (v) => options.firstWhere((option) => option.value == v).icon,
                 value: value,
                 onChanged: (v) => setState(() => onChanged(v)),
                 isExpanded: true,
@@ -189,4 +190,17 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
       ),
     );
   }
+}
+
+@immutable
+class TileViewDialogOption<T> {
+  final T value;
+  final String title;
+  final IconData icon;
+
+  const TileViewDialogOption({
+    required this.value,
+    required this.title,
+    required this.icon,
+  });
 }

@@ -2,14 +2,14 @@ import 'package:aves/model/entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/section_keys.dart';
 import 'package:aves/widgets/collection/grid/headers/any.dart';
-import 'package:aves/widgets/common/grid/section_layout.dart';
+import 'package:aves/widgets/common/grid/sections/provider.dart';
 import 'package:flutter/material.dart';
 
 class SectionedEntryListLayoutProvider extends SectionedListLayoutProvider<AvesEntry> {
   final CollectionLens collection;
   final bool selectable;
 
-  const SectionedEntryListLayoutProvider({
+  SectionedEntryListLayoutProvider({
     super.key,
     required this.collection,
     required this.selectable,
@@ -25,6 +25,7 @@ class SectionedEntryListLayoutProvider extends SectionedListLayoutProvider<AvesE
   }) : super(
           tileWidth: tileExtent,
           tileHeight: tileExtent,
+          coverRatioResolver: (item) => item.displayAspectRatio,
         );
 
   @override

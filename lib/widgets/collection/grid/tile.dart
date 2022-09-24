@@ -122,6 +122,7 @@ class Tile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     switch (tileLayout) {
+      case TileLayout.mosaic:
       case TileLayout.grid:
         return _buildThumbnail();
       case TileLayout.list:
@@ -145,6 +146,7 @@ class Tile extends StatelessWidget {
   Widget _buildThumbnail() => DecoratedThumbnail(
         entry: entry,
         tileExtent: thumbnailExtent,
+        isMosaic: tileLayout == TileLayout.mosaic,
         // when the user is scrolling faster than we can retrieve the thumbnails,
         // the retrieval task queue can pile up for thumbnails that got disposed
         // in this case we pause the image retrieval task to get it out of the queue
