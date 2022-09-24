@@ -117,7 +117,10 @@ class _HomePageState extends State<HomePage> {
           String? uri, mimeType;
           final widgetId = intentData[intentDataKeyWidgetId];
           if (widgetId != null) {
-            uri = settings.getWidgetUri(widgetId);
+            final page = settings.getWidgetOpenPage(widgetId);
+            if (page == WidgetOpenPage.viewer) {
+              uri = settings.getWidgetUri(widgetId);
+            }
             unawaited(WidgetService.update(widgetId));
           } else {
             uri = intentData[intentDataKeyUri];

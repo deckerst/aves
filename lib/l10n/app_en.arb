@@ -213,6 +213,9 @@
   "wallpaperTargetLock": "Lock screen",
   "wallpaperTargetHomeLock": "Home and lock screens",
 
+  "widgetOpenPageHome": "Open home",
+  "widgetOpenPageViewer": "Open viewer",
+
   "albumTierNew": "New",
   "albumTierPinned": "Pinned",
   "albumTierSpecial": "Common",
@@ -794,6 +797,7 @@
 
   "settingsWidgetPageTitle": "Photo Frame",
   "settingsWidgetShowOutline": "Outline",
+  "settingsWidgetOpenPage": "When tapping on the widget",
 
   "settingsCollectionTile": "Collection",
 

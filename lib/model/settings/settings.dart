@@ -168,6 +168,7 @@ class Settings extends ChangeNotifier {
   static const widgetOutlinePrefixKey = '${_widgetKeyPrefix}outline_';
   static const widgetShapePrefixKey = '${_widgetKeyPrefix}shape_';
   static const widgetCollectionFiltersPrefixKey = '${_widgetKeyPrefix}collection_filters_';
+  static const widgetOpenPagePrefixKey = '${_widgetKeyPrefix}open_page_';
   static const widgetUriPrefixKey = '${_widgetKeyPrefix}uri_';
 
   // platform settings
@@ -706,6 +707,10 @@ class Settings extends ChangeNotifier {
   Set<CollectionFilter> getWidgetCollectionFilters(int widgetId) => (getStringList('$widgetCollectionFiltersPrefixKey$widgetId') ?? []).map(CollectionFilter.fromJson).whereNotNull().toSet();
 
   void setWidgetCollectionFilters(int widgetId, Set<CollectionFilter> newValue) => setAndNotify('$widgetCollectionFiltersPrefixKey$widgetId', newValue.map((filter) => filter.toJson()).toList());
+
+  WidgetOpenPage getWidgetOpenPage(int widgetId) => getEnumOrDefault('$widgetOpenPagePrefixKey$widgetId', SettingsDefaults.widgetOpenPage, WidgetOpenPage.values);
+
+  void setWidgetOpenPage(int widgetId, WidgetOpenPage newValue) => setAndNotify('$widgetOpenPagePrefixKey$widgetId', newValue.toString());
 
   String? getWidgetUri(int widgetId) => getString('$widgetUriPrefixKey$widgetId');
 

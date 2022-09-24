@@ -1,12 +1,18 @@
 {
   "de": [
     "viewerTransitionNone",
-    "tileLayoutMosaic"
+    "widgetOpenPageHome",
+    "widgetOpenPageViewer",
+    "tileLayoutMosaic",
+    "settingsWidgetOpenPage"
   ],
 
   "el": [
     "viewerTransitionNone",
-    "tileLayoutMosaic"
+    "widgetOpenPageHome",
+    "widgetOpenPageViewer",
+    "tileLayoutMosaic",
+    "settingsWidgetOpenPage"
   ],
 
   "es": [
@@ -15,6 +21,8 @@
     "filterNoTitleLabel",
     "filterRecentlyAddedLabel",
     "viewerTransitionNone",
+    "widgetOpenPageHome",
+    "widgetOpenPageViewer",
     "viewDialogReverseSortOrder",
     "tileLayoutMosaic",
     "sortOrderNewestFirst",
@@ -27,17 +35,30 @@
     "sortOrderSmallestFirst",
     "searchMetadataSectionTitle",
     "settingsConfirmationAfterMoveToBinItems",
+    "settingsWidgetOpenPage",
     "viewerInfoLabelDescription"
+  ],
+
+  "fr": [
+    "widgetOpenPageHome",
+    "widgetOpenPageViewer",
+    "settingsWidgetOpenPage"
   ],
 
   "id": [
     "viewerTransitionNone",
-    "tileLayoutMosaic"
+    "widgetOpenPageHome",
+    "widgetOpenPageViewer",
+    "tileLayoutMosaic",
+    "settingsWidgetOpenPage"
   ],
 
   "it": [
     "viewerTransitionNone",
-    "tileLayoutMosaic"
+    "widgetOpenPageHome",
+    "widgetOpenPageViewer",
+    "tileLayoutMosaic",
+    "settingsWidgetOpenPage"
   ],
 
   "ja": [
@@ -46,6 +67,8 @@
     "filterNoTitleLabel",
     "filterRecentlyAddedLabel",
     "viewerTransitionNone",
+    "widgetOpenPageHome",
+    "widgetOpenPageViewer",
     "viewDialogReverseSortOrder",
     "tileLayoutMosaic",
     "sortOrderNewestFirst",
@@ -59,12 +82,22 @@
     "searchMetadataSectionTitle",
     "settingsConfirmationAfterMoveToBinItems",
     "settingsViewerGestureSideTapNext",
+    "settingsWidgetOpenPage",
     "viewerInfoLabelDescription"
+  ],
+
+  "ko": [
+    "widgetOpenPageHome",
+    "widgetOpenPageViewer",
+    "settingsWidgetOpenPage"
   ],
 
   "nl": [
     "viewerTransitionNone",
-    "tileLayoutMosaic"
+    "widgetOpenPageHome",
+    "widgetOpenPageViewer",
+    "tileLayoutMosaic",
+    "settingsWidgetOpenPage"
   ],
 
   "pt": [
@@ -72,6 +105,8 @@
     "filterNoDateLabel",
     "filterNoTitleLabel",
     "viewerTransitionNone",
+    "widgetOpenPageHome",
+    "widgetOpenPageViewer",
     "viewDialogReverseSortOrder",
     "tileLayoutMosaic",
     "sortOrderNewestFirst",
@@ -82,12 +117,16 @@
     "sortOrderLowestFirst",
     "sortOrderLargestFirst",
     "sortOrderSmallestFirst",
-    "searchMetadataSectionTitle"
+    "searchMetadataSectionTitle",
+    "settingsWidgetOpenPage"
   ],
 
   "ru": [
     "viewerTransitionNone",
-    "tileLayoutMosaic"
+    "widgetOpenPageHome",
+    "widgetOpenPageViewer",
+    "tileLayoutMosaic",
+    "settingsWidgetOpenPage"
   ],
 
   "tr": [
@@ -109,6 +148,8 @@
     "wallpaperTargetHome",
     "wallpaperTargetLock",
     "wallpaperTargetHomeLock",
+    "widgetOpenPageHome",
+    "widgetOpenPageViewer",
     "menuActionSlideshow",
     "viewDialogReverseSortOrder",
     "tileLayoutMosaic",
@@ -136,12 +177,16 @@
     "settingsSlideshowVideoPlaybackDialogTitle",
     "settingsScreenSaverPageTitle",
     "settingsWidgetShowOutline",
+    "settingsWidgetOpenPage",
     "viewerSetWallpaperButtonLabel",
     "viewerInfoLabelDescription"
   ],
 
   "zh": [
     "viewerTransitionNone",
-    "tileLayoutMosaic"
+    "widgetOpenPageHome",
+    "widgetOpenPageViewer",
+    "tileLayoutMosaic",
+    "settingsWidgetOpenPage"
   ]
 }
