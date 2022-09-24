@@ -83,6 +83,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   ];
 
   static const _layoutOptions = [
+    TileLayout.mosaic,
     TileLayout.grid,
     TileLayout.list,
   ];
@@ -537,9 +538,9 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       builder: (context) {
         return TileViewDialog<EntrySortFactor, EntryGroupFactor, TileLayout>(
           initialValue: initialValue,
-          sortOptions: Map.fromEntries(_sortOptions.map((v) => MapEntry(v, v.getName(context)))),
-          groupOptions: Map.fromEntries(_groupOptions.map((v) => MapEntry(v, v.getName(context)))),
-          layoutOptions: Map.fromEntries(_layoutOptions.map((v) => MapEntry(v, v.getName(context)))),
+          sortOptions: _sortOptions.map((v) => TileViewDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
+          groupOptions: _groupOptions.map((v) => TileViewDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
+          layoutOptions: _layoutOptions.map((v) => TileViewDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
           sortOrder: (factor, reverse) => factor.getOrderName(context, reverse),
           canGroup: (s, g, l) => s == EntrySortFactor.date,
         );

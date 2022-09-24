@@ -19,7 +19,7 @@ import 'package:provider/provider.dart';
 class ThumbnailImage extends StatefulWidget {
   final AvesEntry entry;
   final double extent;
-  final bool progressive;
+  final bool isMosaic, progressive;
   final BoxFit? fit;
   final bool showLoadingBackground;
   final ValueNotifier<bool>? cancellableNotifier;
@@ -30,6 +30,7 @@ class ThumbnailImage extends StatefulWidget {
     required this.entry,
     required this.extent,
     this.progressive = true,
+    this.isMosaic = false,
     this.fit,
     this.showLoadingBackground = true,
     this.cancellableNotifier,
@@ -38,6 +39,14 @@ class ThumbnailImage extends StatefulWidget {
 
   @override
   State<ThumbnailImage> createState() => _ThumbnailImageState();
+
+  static Color computeLoadingBackgroundColor(int hashCode, Brightness brightness) {
+    var rgb = 0x30 + hashCode % 0x20;
+    if (brightness == Brightness.light) {
+      rgb = 0xFF - rgb;
+    }
+    return Color.fromARGB(0xFF, rgb, rgb, rgb);
+  }
 }
 
 class _ThumbnailImageState extends State<ThumbnailImage> {
@@ -51,6 +60,8 @@ class _ThumbnailImageState extends State<ThumbnailImage> {
   AvesEntry get entry => widget.entry;
 
   double get extent => widget.extent;
+
+  bool get isMosaic => widget.isMosaic;
 
   @override
   void initState() {
@@ -180,13 +191,7 @@ class _ThumbnailImageState extends State<ThumbnailImage> {
   Color? _loadingBackgroundColor;
 
   Color loadingBackgroundColor(BuildContext context) {
-    if (_loadingBackgroundColor == null) {
-      var rgb = 0x30 + entry.uri.hashCode % 0x20;
-      if (Theme.of(context).brightness == Brightness.light) {
-        rgb = 0xFF - rgb;
-      }
-      _loadingBackgroundColor = Color.fromARGB(0xFF, rgb, rgb, rgb);
-    }
+    _loadingBackgroundColor ??= ThumbnailImage.computeLoadingBackgroundColor(entry.uri.hashCode, Theme.of(context).brightness);
     return _loadingBackgroundColor!;
   }
 
@@ -200,13 +205,21 @@ class _ThumbnailImageState extends State<ThumbnailImage> {
     // use `RawImage` instead of `Image`, using `ImageInfo` to check dimensions
     // and have more control when chaining image providers
 
-    final fit = widget.fit ?? (entry.isSvg ? BoxFit.contain : BoxFit.cover);
+    final thumbnailWidth = isMosaic ? extent * entry.displayAspectRatio : extent;
+    final thumbnailHeight = extent;
+
+    final fit = widget.fit ??
+        (entry.isSvg
+            ? BoxFit.contain
+            : isMosaic
+                ? BoxFit.contain
+                : BoxFit.cover);
     final imageInfo = _lastImageInfo;
     Widget image = imageInfo == null
         ? Container(
             color: widget.showLoadingBackground ? loadingBackgroundColor(context) : Colors.transparent,
-            width: extent,
-            height: extent,
+            width: thumbnailWidth,
+            height: thumbnailHeight,
           )
         : Selector<Settings, EntryBackground>(
             selector: (context, s) => s.imageBackground,
@@ -240,8 +253,8 @@ class _ThumbnailImageState extends State<ThumbnailImage> {
               return RawImage(
                 image: imageInfo.image,
                 debugImageLabel: imageInfo.debugLabel,
-                width: extent,
-                height: extent,
+                width: thumbnailWidth,
+                height: thumbnailHeight,
                 scale: imageInfo.scale,
                 color: backgroundColor,
                 colorBlendMode: BlendMode.dstOver,

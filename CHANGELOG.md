@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Added
+
+- mosaic layout
+
 ## <a id="v1.7.0"></a>[v1.7.0] - 2022-09-19
 
 ### Added

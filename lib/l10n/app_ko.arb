@@ -289,6 +289,7 @@
   "viewDialogLayoutSectionTitle": "배치",
   "viewDialogReverseSortOrder": "순서를 뒤바꾸기",
 
+  "tileLayoutMosaic": "모자이크",
   "tileLayoutGrid": "바둑판",
   "tileLayoutList": "목록",
 

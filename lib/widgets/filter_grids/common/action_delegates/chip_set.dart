@@ -54,6 +54,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
   ];
 
   static const layoutOptions = [
+    TileLayout.mosaic,
     TileLayout.grid,
     TileLayout.list,
   ];
@@ -222,8 +223,8 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
       builder: (context) {
         return TileViewDialog<ChipSortFactor, void, TileLayout>(
           initialValue: initialValue,
-          sortOptions: Map.fromEntries(sortOptions.map((v) => MapEntry(v, v.getName(context)))),
-          layoutOptions: Map.fromEntries(layoutOptions.map((v) => MapEntry(v, v.getName(context)))),
+          sortOptions: sortOptions.map((v) => TileViewDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
+          layoutOptions: layoutOptions.map((v) => TileViewDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
           sortOrder: (factor, reverse) => factor.getOrderName(context, reverse),
         );
       },

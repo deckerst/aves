@@ -1,6 +1,6 @@
 import 'package:aves/theme/format.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:aves/widgets/common/grid/section_layout.dart';
+import 'package:aves/widgets/common/grid/sections/list_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -41,10 +41,7 @@ class DraggableThumbLabel<T> extends StatelessWidget {
     final sectionLayout = sll.getSectionAt(offsetY);
     if (sectionLayout == null) return const SizedBox();
 
-    final section = sll.sections[sectionLayout.sectionKey]!;
-    final dy = offsetY - (sectionLayout.minOffset + sectionLayout.headerExtent);
-    final itemIndex = dy < 0 ? 0 : (dy ~/ (sll.tileHeight + sll.spacing)) * sll.columnCount;
-    final item = section[itemIndex];
+    final item = sll.getItemAt(Offset(0, offsetY)) ?? sll.sections[sectionLayout.sectionKey]!.first;
 
     final lines = lineBuilder(context, item);
     if (lines.isEmpty) return const SizedBox();

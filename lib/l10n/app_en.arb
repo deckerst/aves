@@ -419,6 +419,7 @@
   "viewDialogLayoutSectionTitle": "Layout",
   "viewDialogReverseSortOrder": "Reverse sort order",
 
+  "tileLayoutMosaic": "Mosaic",
   "tileLayoutGrid": "Grid",
   "tileLayoutList": "List",
 

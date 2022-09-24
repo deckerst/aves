@@ -9,7 +9,7 @@ class DecoratedThumbnail extends StatelessWidget {
   final AvesEntry entry;
   final double tileExtent;
   final ValueNotifier<bool>? cancellableNotifier;
-  final bool selectable, highlightable;
+  final bool isMosaic, selectable, highlightable;
   final Object? Function()? heroTagger;
 
   static final Color borderColor = Colors.grey.shade700;
@@ -20,6 +20,7 @@ class DecoratedThumbnail extends StatelessWidget {
     required this.entry,
     required this.tileExtent,
     this.cancellableNotifier,
+    this.isMosaic = false,
     this.selectable = true,
     this.highlightable = true,
     this.heroTagger,
@@ -27,9 +28,13 @@ class DecoratedThumbnail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final thumbnailWidth = isMosaic ? tileExtent * entry.displayAspectRatio : tileExtent;
+    final thumbnailHeight = tileExtent;
+
     Widget child = ThumbnailImage(
       entry: entry,
       extent: tileExtent,
+      isMosaic: isMosaic,
       cancellableNotifier: cancellableNotifier,
       heroTag: heroTagger?.call(),
     );
@@ -57,8 +62,8 @@ class DecoratedThumbnail extends StatelessWidget {
           width: borderWidth,
         )),
       ),
-      width: tileExtent,
-      height: tileExtent,
+      width: thumbnailWidth,
+      height: thumbnailHeight,
       child: child,
     );
   }
