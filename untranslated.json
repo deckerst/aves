@@ -101,23 +101,10 @@
   ],
 
   "pt": [
-    "entryInfoActionEditTitleDescription",
-    "filterNoDateLabel",
-    "filterNoTitleLabel",
     "viewerTransitionNone",
     "widgetOpenPageHome",
     "widgetOpenPageViewer",
-    "viewDialogReverseSortOrder",
     "tileLayoutMosaic",
-    "sortOrderNewestFirst",
-    "sortOrderOldestFirst",
-    "sortOrderAtoZ",
-    "sortOrderZtoA",
-    "sortOrderHighestFirst",
-    "sortOrderLowestFirst",
-    "sortOrderLargestFirst",
-    "sortOrderSmallestFirst",
-    "searchMetadataSectionTitle",
     "settingsWidgetOpenPage"
   ],
 
