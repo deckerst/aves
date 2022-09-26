@@ -105,11 +105,11 @@ class AvesApp extends StatefulWidget {
 class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   final ValueNotifier<AppMode> appModeNotifier = ValueNotifier(AppMode.main);
   late final Future<void> _appSetup;
-  late final Size _screenSize;
   late final Future<CorePalette?> _dynamicColorPaletteLoader;
   final CollectionSource _mediaStoreSource = MediaStoreSource();
   final Debouncer _mediaStoreChangeDebouncer = Debouncer(delay: Durations.mediaContentChangeDebounceDelay);
   final Set<String> _changedUris = {};
+  Size? _screenSize;
 
   // observers are not registered when using the same list object with different items
   // the list itself needs to be reassigned
@@ -119,15 +119,13 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   final EventChannel _analysisCompletionChannel = const OptionalEventChannel('deckers.thibault/aves/analysis_events');
   final EventChannel _errorChannel = const OptionalEventChannel('deckers.thibault/aves/error');
 
-  Widget getFirstPage({Map? intentData}) => settings.hasAcceptedTerms ? HomePage(intentData: intentData) : const WelcomePage();
-
   @override
   void initState() {
     super.initState();
     EquatableConfig.stringify = true;
     _appSetup = _setup();
     // remember screen size to use it later, when `context` and `window` are no longer reliable
-    _screenSize = window.physicalSize / window.devicePixelRatio;
+    _screenSize = _getScreenSize();
     _dynamicColorPaletteLoader = DynamicColorPlugin.getCorePalette();
     _mediaStoreChangeChannel.receiveBroadcastStream().listen((event) => _onMediaStoreChange(event as String?));
     _newIntentChannel.receiveBroadcastStream().listen((event) => _onNewIntent(event as Map?));
@@ -159,7 +157,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
                         AvesApp.showSystemUI();
                       }
                       final home = initialized
-                          ? getFirstPage()
+                          ? _getFirstPage()
                           : Scaffold(
                               body: snapshot.hasError ? _buildError(snapshot.error!) : const SizedBox(),
                             );
@@ -291,23 +289,31 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     }
   }
 
+  Widget _getFirstPage({Map? intentData}) => settings.hasAcceptedTerms ? HomePage(intentData: intentData) : const WelcomePage();
+
+  Size? _getScreenSize() {
+    final physicalSize = window.physicalSize;
+    final ratio = window.devicePixelRatio;
+    return physicalSize > Size.zero && ratio > 0 ? physicalSize / ratio : null;
+  }
+
   // save IDs of entries visible at the top of the collection page with current layout settings
   void _saveTopEntries() {
     if (!settings.initialized) return;
 
-    final stopwatch = Stopwatch()..start();
+    final screenSize = _screenSize ?? _getScreenSize();
+    if (screenSize == null) return;
 
     var tileExtent = settings.getTileExtent(CollectionPage.routeName);
     if (tileExtent == 0) {
-      tileExtent = _screenSize.shortestSide / CollectionGrid.columnCountDefault;
+      tileExtent = screenSize.shortestSide / CollectionGrid.columnCountDefault;
     }
-    final rows = (_screenSize.height / tileExtent).ceil();
-    final columns = (_screenSize.width / tileExtent).ceil();
+    final rows = (screenSize.height / tileExtent).ceil();
+    final columns = (screenSize.width / tileExtent).ceil();
     final count = rows * columns;
     final collection = CollectionLens(source: _mediaStoreSource, listenToSource: false);
     settings.topEntryIds = collection.sortedEntries.take(count).map((entry) => entry.id).toList();
     collection.dispose();
-    debugPrint('Saved $count top entries in ${stopwatch.elapsed.inMilliseconds}ms');
   }
 
   // setup before the first page is displayed. keep it short
@@ -389,7 +395,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     reportService.log('New intent');
     AvesApp.navigatorKey.currentState!.pushReplacement(DirectMaterialPageRoute(
       settings: const RouteSettings(name: HomePage.routeName),
-      builder: (_) => getFirstPage(intentData: intentData),
+      builder: (_) => _getFirstPage(intentData: intentData),
     ));
   }
 
