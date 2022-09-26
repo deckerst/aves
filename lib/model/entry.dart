@@ -277,6 +277,8 @@ class AvesEntry {
 
   bool get isMediaStoreContent => uri.startsWith('content://media/');
 
+  bool get isMediaStoreMediaContent => isMediaStoreContent && {'/external/images/', '/external/video/'}.any(uri.contains);
+
   bool get canEdit => path != null && !trashed && isMediaStoreContent;
 
   bool get canEditDate => canEdit && (canEditExif || canEditXmp);
