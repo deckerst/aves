@@ -88,15 +88,18 @@
 
   "entryInfoActionEditDate": "Editar data e hora",
   "entryInfoActionEditLocation": "Editar localização",
+  "entryInfoActionEditTitleDescription": "Editar título e descrição",
   "entryInfoActionEditRating": "Editar classificação",
   "entryInfoActionEditTags": "Editar etiquetas",
   "entryInfoActionRemoveMetadata": "Remover metadados",
 
   "filterBinLabel": "Lixeira",
   "filterFavouriteLabel": "Favorito",
+  "filterNoDateLabel": "Sem data",
   "filterNoLocationLabel": "Não localizado",
   "filterNoRatingLabel": "Sem classificação",
   "filterNoTagLabel": "Sem etiqueta",
+  "filterNoTitleLabel": "Sem título",
   "filterOnThisDayLabel": "Neste dia",
   "filterRecentlyAddedLabel": "Adicionado recentemente",
   "filterRatingRejectedLabel": "Rejeitado",
@@ -284,6 +287,7 @@
   "viewDialogSortSectionTitle": "Organizar",
   "viewDialogGroupSectionTitle": "Grupo",
   "viewDialogLayoutSectionTitle": "Layout",
+  "viewDialogReverseSortOrder": "Ordem de classificação inversa",
 
   "tileLayoutGrid": "Grid",
   "tileLayoutList": "Lista",
@@ -387,6 +391,15 @@
   "sortByAlbumFileName": "Por álbum e nome de arquivo",
   "sortByRating": "Por classificação",
 
+  "sortOrderNewestFirst": "Os mais novos primeiro",
+  "sortOrderOldestFirst": "Mais velhos primeiro",
+  "sortOrderAtoZ": "A a Z",
+  "sortOrderZtoA": "Z a A",
+  "sortOrderHighestFirst": "Mais alto primeiro",
+  "sortOrderLowestFirst": "Mais baixo primeiro",
+  "sortOrderLargestFirst": "Maior primeiro",
+  "sortOrderSmallestFirst": "Menor primeiro",
+
   "albumGroupTier": "Por nível",
   "albumGroupVolume": "Por volume de armazenamento",
   "albumGroupNone": "Não agrupe",
@@ -424,6 +437,7 @@
   "searchPlacesSectionTitle": "Locais",
   "searchTagsSectionTitle": "Etiquetas",
   "searchRatingSectionTitle": "Classificações",
+  "searchMetadataSectionTitle": "Metadados",
 
   "settingsPageTitle": "Configurações",
   "settingsSystemDefault": "Sistema",
