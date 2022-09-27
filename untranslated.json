@@ -6,7 +6,8 @@
     "tileLayoutMosaic",
     "albumGroupType",
     "albumMimeTypeMixed",
-    "settingsWidgetOpenPage"
+    "settingsWidgetOpenPage",
+    "statsTopAlbumsSectionTitle"
   ],
 
   "el": [
@@ -16,7 +17,8 @@
     "tileLayoutMosaic",
     "albumGroupType",
     "albumMimeTypeMixed",
-    "settingsWidgetOpenPage"
+    "settingsWidgetOpenPage",
+    "statsTopAlbumsSectionTitle"
   ],
 
   "es": [
@@ -42,6 +44,7 @@
     "searchMetadataSectionTitle",
     "settingsConfirmationAfterMoveToBinItems",
     "settingsWidgetOpenPage",
+    "statsTopAlbumsSectionTitle",
     "viewerInfoLabelDescription"
   ],
 
@@ -50,7 +53,8 @@
     "widgetOpenPageViewer",
     "albumGroupType",
     "albumMimeTypeMixed",
-    "settingsWidgetOpenPage"
+    "settingsWidgetOpenPage",
+    "statsTopAlbumsSectionTitle"
   ],
 
   "id": [
@@ -60,7 +64,8 @@
     "tileLayoutMosaic",
     "albumGroupType",
     "albumMimeTypeMixed",
-    "settingsWidgetOpenPage"
+    "settingsWidgetOpenPage",
+    "statsTopAlbumsSectionTitle"
   ],
 
   "it": [
@@ -70,7 +75,8 @@
     "tileLayoutMosaic",
     "albumGroupType",
     "albumMimeTypeMixed",
-    "settingsWidgetOpenPage"
+    "settingsWidgetOpenPage",
+    "statsTopAlbumsSectionTitle"
   ],
 
   "ja": [
@@ -97,6 +103,7 @@
     "settingsConfirmationAfterMoveToBinItems",
     "settingsViewerGestureSideTapNext",
     "settingsWidgetOpenPage",
+    "statsTopAlbumsSectionTitle",
     "viewerInfoLabelDescription"
   ],
 
@@ -105,7 +112,8 @@
     "widgetOpenPageViewer",
     "albumGroupType",
     "albumMimeTypeMixed",
-    "settingsWidgetOpenPage"
+    "settingsWidgetOpenPage",
+    "statsTopAlbumsSectionTitle"
   ],
 
   "nl": [
@@ -115,7 +123,8 @@
     "tileLayoutMosaic",
     "albumGroupType",
     "albumMimeTypeMixed",
-    "settingsWidgetOpenPage"
+    "settingsWidgetOpenPage",
+    "statsTopAlbumsSectionTitle"
   ],
 
   "pt": [
@@ -125,7 +134,8 @@
     "tileLayoutMosaic",
     "albumGroupType",
     "albumMimeTypeMixed",
-    "settingsWidgetOpenPage"
+    "settingsWidgetOpenPage",
+    "statsTopAlbumsSectionTitle"
   ],
 
   "ru": [
@@ -135,7 +145,8 @@
     "tileLayoutMosaic",
     "albumGroupType",
     "albumMimeTypeMixed",
-    "settingsWidgetOpenPage"
+    "settingsWidgetOpenPage",
+    "statsTopAlbumsSectionTitle"
   ],
 
   "tr": [
@@ -189,6 +200,7 @@
     "settingsScreenSaverPageTitle",
     "settingsWidgetShowOutline",
     "settingsWidgetOpenPage",
+    "statsTopAlbumsSectionTitle",
     "viewerSetWallpaperButtonLabel",
     "viewerInfoLabelDescription"
   ],
@@ -200,6 +212,7 @@
     "tileLayoutMosaic",
     "albumGroupType",
     "albumMimeTypeMixed",
-    "settingsWidgetOpenPage"
+    "settingsWidgetOpenPage",
+    "statsTopAlbumsSectionTitle"
   ]
 }

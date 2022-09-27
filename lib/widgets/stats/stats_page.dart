@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:aves/model/entry.dart';
+import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/filters/rating.dart';
@@ -47,7 +48,7 @@ class StatsPage extends StatefulWidget {
 }
 
 class _StatsPageState extends State<StatsPage> {
-  final Map<String, int> _entryCountPerCountry = {}, _entryCountPerPlace = {}, _entryCountPerTag = {};
+  final Map<String, int> _entryCountPerCountry = {}, _entryCountPerPlace = {}, _entryCountPerTag = {}, _entryCountPerAlbum = {};
   final Map<int, int> _entryCountPerRating = Map.fromEntries(List.generate(7, (i) => MapEntry(5 - i, 0)));
   late final ValueNotifier<bool> _isPageAnimatingNotifier;
 
@@ -80,6 +81,11 @@ class _StatsPageState extends State<StatsPage> {
       entry.tags.forEach((tag) {
         _entryCountPerTag[tag] = (_entryCountPerTag[tag] ?? 0) + 1;
       });
+
+      final album = entry.directory;
+      if (album != null) {
+        _entryCountPerAlbum[album] = (_entryCountPerAlbum[album] ?? 0) + 1;
+      }
 
       final rating = entry.rating;
       _entryCountPerRating[rating] = (_entryCountPerRating[rating] ?? 0) + 1;
@@ -177,6 +183,7 @@ class _StatsPageState extends State<StatsPage> {
               ),
             );
             final showRatings = _entryCountPerRating.entries.any((kv) => kv.key != 0 && kv.value > 0);
+            final source = widget.source;
             child = AnimationLimiter(
               child: ListView(
                 children: AnimationConfiguration.toStaggeredList(
@@ -199,6 +206,7 @@ class _StatsPageState extends State<StatsPage> {
                     ..._buildFilterSection<String>(context, l10n.statsTopCountriesSectionTitle, _entryCountPerCountry, (v) => LocationFilter(LocationLevel.country, v)),
                     ..._buildFilterSection<String>(context, l10n.statsTopPlacesSectionTitle, _entryCountPerPlace, (v) => LocationFilter(LocationLevel.place, v)),
                     ..._buildFilterSection<String>(context, l10n.statsTopTagsSectionTitle, _entryCountPerTag, TagFilter.new),
+                    ..._buildFilterSection<String>(context, l10n.statsTopAlbumsSectionTitle, _entryCountPerAlbum, (v) => AlbumFilter(v, source.getAlbumDisplayName(context, v))),
                     if (showRatings) ..._buildFilterSection<int>(context, l10n.searchRatingSectionTitle, _entryCountPerRating, RatingFilter.new, sortByCount: false, maxRowCount: null),
                   ],
                 ),
