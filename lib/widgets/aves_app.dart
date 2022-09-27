@@ -380,10 +380,10 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
       'locales': WidgetsBinding.instance.window.locales.join(', '),
       'time_zone': '${now.timeZoneName} (${now.timeZoneOffset})',
     });
-    _navigatorObservers = [
-      AvesApp.pageRouteObserver,
-      ReportingRouteTracker(),
-    ];
+    setState(() => _navigatorObservers = [
+          AvesApp.pageRouteObserver,
+          ReportingRouteTracker(),
+        ]);
   }
 
   void _onNewIntent(Map? intentData) {
