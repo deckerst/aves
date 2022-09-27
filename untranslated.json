@@ -4,6 +4,8 @@
     "widgetOpenPageHome",
     "widgetOpenPageViewer",
     "tileLayoutMosaic",
+    "albumGroupType",
+    "albumMimeTypeMixed",
     "settingsWidgetOpenPage"
   ],
 
@@ -12,6 +14,8 @@
     "widgetOpenPageHome",
     "widgetOpenPageViewer",
     "tileLayoutMosaic",
+    "albumGroupType",
+    "albumMimeTypeMixed",
     "settingsWidgetOpenPage"
   ],
 
@@ -33,6 +37,8 @@
     "sortOrderLowestFirst",
     "sortOrderLargestFirst",
     "sortOrderSmallestFirst",
+    "albumGroupType",
+    "albumMimeTypeMixed",
     "searchMetadataSectionTitle",
     "settingsConfirmationAfterMoveToBinItems",
     "settingsWidgetOpenPage",
@@ -42,6 +48,8 @@
   "fr": [
     "widgetOpenPageHome",
     "widgetOpenPageViewer",
+    "albumGroupType",
+    "albumMimeTypeMixed",
     "settingsWidgetOpenPage"
   ],
 
@@ -50,6 +58,8 @@
     "widgetOpenPageHome",
     "widgetOpenPageViewer",
     "tileLayoutMosaic",
+    "albumGroupType",
+    "albumMimeTypeMixed",
     "settingsWidgetOpenPage"
   ],
 
@@ -58,6 +68,8 @@
     "widgetOpenPageHome",
     "widgetOpenPageViewer",
     "tileLayoutMosaic",
+    "albumGroupType",
+    "albumMimeTypeMixed",
     "settingsWidgetOpenPage"
   ],
 
@@ -79,6 +91,8 @@
     "sortOrderLowestFirst",
     "sortOrderLargestFirst",
     "sortOrderSmallestFirst",
+    "albumGroupType",
+    "albumMimeTypeMixed",
     "searchMetadataSectionTitle",
     "settingsConfirmationAfterMoveToBinItems",
     "settingsViewerGestureSideTapNext",
@@ -89,6 +103,8 @@
   "ko": [
     "widgetOpenPageHome",
     "widgetOpenPageViewer",
+    "albumGroupType",
+    "albumMimeTypeMixed",
     "settingsWidgetOpenPage"
   ],
 
@@ -97,6 +113,8 @@
     "widgetOpenPageHome",
     "widgetOpenPageViewer",
     "tileLayoutMosaic",
+    "albumGroupType",
+    "albumMimeTypeMixed",
     "settingsWidgetOpenPage"
   ],
 
@@ -105,6 +123,8 @@
     "widgetOpenPageHome",
     "widgetOpenPageViewer",
     "tileLayoutMosaic",
+    "albumGroupType",
+    "albumMimeTypeMixed",
     "settingsWidgetOpenPage"
   ],
 
@@ -113,6 +133,8 @@
     "widgetOpenPageHome",
     "widgetOpenPageViewer",
     "tileLayoutMosaic",
+    "albumGroupType",
+    "albumMimeTypeMixed",
     "settingsWidgetOpenPage"
   ],
 
@@ -148,6 +170,8 @@
     "sortOrderLowestFirst",
     "sortOrderLargestFirst",
     "sortOrderSmallestFirst",
+    "albumGroupType",
+    "albumMimeTypeMixed",
     "searchMetadataSectionTitle",
     "settingsConfirmationAfterMoveToBinItems",
     "settingsViewerGestureSideTapNext",
@@ -174,6 +198,8 @@
     "widgetOpenPageHome",
     "widgetOpenPageViewer",
     "tileLayoutMosaic",
+    "albumGroupType",
+    "albumMimeTypeMixed",
     "settingsWidgetOpenPage"
   ]
 }

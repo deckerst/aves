@@ -2,6 +2,7 @@ import 'package:aves/model/source/section_keys.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/filter_grids/common/enums.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
@@ -37,38 +38,19 @@ class AlbumImportanceSectionKey extends ChipSectionKey {
   Widget get leading => Icon(importance.getIcon());
 }
 
-enum AlbumImportance { newAlbum, pinned, special, apps, regular }
+class MimeTypeSectionKey extends ChipSectionKey {
+  final AlbumMimeType mimeType;
 
-extension ExtraAlbumImportance on AlbumImportance {
-  String getText(BuildContext context) {
-    switch (this) {
-      case AlbumImportance.newAlbum:
-        return context.l10n.albumTierNew;
-      case AlbumImportance.pinned:
-        return context.l10n.albumTierPinned;
-      case AlbumImportance.special:
-        return context.l10n.albumTierSpecial;
-      case AlbumImportance.apps:
-        return context.l10n.albumTierApps;
-      case AlbumImportance.regular:
-        return context.l10n.albumTierRegular;
-    }
-  }
+  MimeTypeSectionKey._private(BuildContext context, this.mimeType) : super(title: mimeType.getText(context));
 
-  IconData getIcon() {
-    switch (this) {
-      case AlbumImportance.newAlbum:
-        return AIcons.newTier;
-      case AlbumImportance.pinned:
-        return AIcons.pin;
-      case AlbumImportance.special:
-        return AIcons.important;
-      case AlbumImportance.apps:
-        return AIcons.app;
-      case AlbumImportance.regular:
-        return AIcons.album;
-    }
-  }
+  factory MimeTypeSectionKey.images(BuildContext context) => MimeTypeSectionKey._private(context, AlbumMimeType.images);
+
+  factory MimeTypeSectionKey.videos(BuildContext context) => MimeTypeSectionKey._private(context, AlbumMimeType.videos);
+
+  factory MimeTypeSectionKey.mixed(BuildContext context) => MimeTypeSectionKey._private(context, AlbumMimeType.mixed);
+
+  @override
+  Widget get leading => Icon(mimeType.getIcon());
 }
 
 class StorageVolumeSectionKey extends ChipSectionKey {

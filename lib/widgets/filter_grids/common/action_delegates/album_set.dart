@@ -59,6 +59,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
 
   static const _groupOptions = [
     AlbumChipGroupFactor.importance,
+    AlbumChipGroupFactor.mimeType,
     AlbumChipGroupFactor.volume,
     AlbumChipGroupFactor.none,
   ];
