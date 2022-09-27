@@ -34,6 +34,7 @@ class AIcons {
   static const IconData location = Icons.place_outlined;
   static const IconData locationUnlocated = Icons.location_off_outlined;
   static const IconData mainStorage = Icons.smartphone_outlined;
+  static const IconData mimeType = Icons.code_outlined;
   static const IconData opacity = Icons.opacity;
   static const IconData privacy = MdiIcons.shieldAccountOutline;
   static const IconData rating = Icons.star_border_outlined;

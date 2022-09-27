@@ -586,8 +586,11 @@
   "sortOrderSmallestFirst": "Smallest first",
 
   "albumGroupTier": "By tier",
+  "albumGroupType": "By type",
   "albumGroupVolume": "By storage volume",
   "albumGroupNone": "Do not group",
+
+  "albumMimeTypeMixed": "Mixed",
 
   "albumPickPageTitleCopy": "Copy to Album",
   "albumPickPageTitleExport": "Export to Album",

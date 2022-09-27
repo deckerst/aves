@@ -124,6 +124,8 @@ extension ExtraAlbumChipGroupFactor on AlbumChipGroupFactor {
     switch (this) {
       case AlbumChipGroupFactor.importance:
         return l10n.albumGroupTier;
+      case AlbumChipGroupFactor.mimeType:
+        return l10n.albumGroupType;
       case AlbumChipGroupFactor.volume:
         return l10n.albumGroupVolume;
       case AlbumChipGroupFactor.none:
@@ -135,6 +137,8 @@ extension ExtraAlbumChipGroupFactor on AlbumChipGroupFactor {
     switch (this) {
       case AlbumChipGroupFactor.importance:
         return AIcons.important;
+      case AlbumChipGroupFactor.mimeType:
+        return AIcons.mimeType;
       case AlbumChipGroupFactor.volume:
         return AIcons.removableStorage;
       case AlbumChipGroupFactor.none:

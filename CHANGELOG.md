@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - mosaic layout
+- Albums: group by content type
 - Slideshow: option for no transition
 - Widget: tap action setting
 
