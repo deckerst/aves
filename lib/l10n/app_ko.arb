@@ -41,6 +41,8 @@
   "chipActionGoToAlbumPage": "앨범 페이지에서 보기",
   "chipActionGoToCountryPage": "국가 페이지에서 보기",
   "chipActionGoToTagPage": "태그 페이지에서 보기",
+  "chipActionFilterOut": "제외하기",
+  "chipActionFilterIn": "포함시키기",
   "chipActionHide": "숨기기",
   "chipActionPin": "고정",
   "chipActionUnpin": "고정 해제",
@@ -172,6 +174,9 @@
   "wallpaperTargetHome": "홈 화면",
   "wallpaperTargetLock": "잠금화면",
   "wallpaperTargetHomeLock": "홈 및 잠금화면",
+
+  "widgetOpenPageHome": "홈 열기",
+  "widgetOpenPageViewer": "뷰어 열기",
 
   "albumTierNew": "신규",
   "albumTierPinned": "고정",
@@ -403,8 +408,11 @@
   "sortOrderSmallestFirst": "작은 파일순",
 
   "albumGroupTier": "단계별로",
+  "albumGroupType": "유형별로",
   "albumGroupVolume": "저장공간별로",
   "albumGroupNone": "묶음 없음",
+
+  "albumMimeTypeMixed": "혼합",
 
   "albumPickPageTitleCopy": "앨범으로 복사",
   "albumPickPageTitleExport": "앨범으로 내보내기",
@@ -614,6 +622,7 @@
 
   "settingsWidgetPageTitle": "사진 액자",
   "settingsWidgetShowOutline": "윤곽",
+  "settingsWidgetOpenPage": "위젯을 탭하면",
 
   "settingsCollectionTile": "미디어",
 
@@ -622,6 +631,7 @@
   "statsTopCountriesSectionTitle": "국가 랭킹",
   "statsTopPlacesSectionTitle": "장소 랭킹",
   "statsTopTagsSectionTitle": "태그 랭킹",
+  "statsTopAlbumsSectionTitle": "앨범 랭킹",
 
   "viewerOpenPanoramaButtonLabel": "파노라마 열기",
   "viewerSetWallpaperButtonLabel": "설정",

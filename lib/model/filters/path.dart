@@ -10,14 +10,24 @@ class PathFilter extends CollectionFilter {
   // without trailing separator
   final String _rootAlbum;
 
-  @override
-  List<Object?> get props => [path];
+  late final EntryFilter _test;
 
-  PathFilter(this.path) : _rootAlbum = path.substring(0, path.length - 1);
+  @override
+  List<Object?> get props => [path, reversed];
+
+  PathFilter(this.path, {super.reversed = false}) : _rootAlbum = path.substring(0, path.length - 1) {
+    _test = (entry) {
+      final dir = entry.directory;
+      if (dir == null) return false;
+      // avoid string building in most cases
+      return dir.startsWith(_rootAlbum) && '$dir${pContext.separator}'.startsWith(path);
+    };
+  }
 
   factory PathFilter.fromMap(Map<String, dynamic> json) {
     return PathFilter(
       json['path'],
+      reversed: json['reversed'] ?? false,
     );
   }
 
@@ -25,15 +35,14 @@ class PathFilter extends CollectionFilter {
   Map<String, dynamic> toMap() => {
         'type': type,
         'path': path,
+        'reversed': reversed,
       };
 
   @override
-  EntryFilter get test => (entry) {
-        final dir = entry.directory;
-        if (dir == null) return false;
-        // avoid string building in most cases
-        return dir.startsWith(_rootAlbum) && '$dir${pContext.separator}'.startsWith(path);
-      };
+  EntryFilter get positiveTest => _test;
+
+  @override
+  bool get exclusiveProp => true;
 
   @override
   String get universalLabel => path;

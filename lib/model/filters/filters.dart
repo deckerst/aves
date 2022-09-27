@@ -42,9 +42,44 @@ abstract class CollectionFilter extends Equatable implements Comparable<Collecti
     PathFilter.type,
   ];
 
-  final bool not;
+  final bool reversed;
 
-  const CollectionFilter({this.not = false});
+  const CollectionFilter({required this.reversed});
+
+  static CollectionFilter? _fromMap(Map<String, dynamic> jsonMap) {
+    final type = jsonMap['type'];
+    switch (type) {
+      case AlbumFilter.type:
+        return AlbumFilter.fromMap(jsonMap);
+      case CoordinateFilter.type:
+        return CoordinateFilter.fromMap(jsonMap);
+      case DateFilter.type:
+        return DateFilter.fromMap(jsonMap);
+      case FavouriteFilter.type:
+        return FavouriteFilter.fromMap(jsonMap);
+      case LocationFilter.type:
+        return LocationFilter.fromMap(jsonMap);
+      case MimeFilter.type:
+        return MimeFilter.fromMap(jsonMap);
+      case MissingFilter.type:
+        return MissingFilter.fromMap(jsonMap);
+      case PathFilter.type:
+        return PathFilter.fromMap(jsonMap);
+      case QueryFilter.type:
+        return QueryFilter.fromMap(jsonMap);
+      case RatingFilter.type:
+        return RatingFilter.fromMap(jsonMap);
+      case RecentlyAddedFilter.type:
+        return RecentlyAddedFilter.fromMap(jsonMap);
+      case TagFilter.type:
+        return TagFilter.fromMap(jsonMap);
+      case TypeFilter.type:
+        return TypeFilter.fromMap(jsonMap);
+      case TrashFilter.type:
+        return TrashFilter.fromMap(jsonMap);
+    }
+    return null;
+  }
 
   static CollectionFilter? fromJson(String jsonString) {
     if (jsonString.isEmpty) return null;
@@ -52,37 +87,7 @@ abstract class CollectionFilter extends Equatable implements Comparable<Collecti
     try {
       final jsonMap = jsonDecode(jsonString);
       if (jsonMap is Map<String, dynamic>) {
-        final type = jsonMap['type'];
-        switch (type) {
-          case AlbumFilter.type:
-            return AlbumFilter.fromMap(jsonMap);
-          case CoordinateFilter.type:
-            return CoordinateFilter.fromMap(jsonMap);
-          case DateFilter.type:
-            return DateFilter.fromMap(jsonMap);
-          case FavouriteFilter.type:
-            return FavouriteFilter.instance;
-          case LocationFilter.type:
-            return LocationFilter.fromMap(jsonMap);
-          case MimeFilter.type:
-            return MimeFilter.fromMap(jsonMap);
-          case MissingFilter.type:
-            return MissingFilter.fromMap(jsonMap);
-          case PathFilter.type:
-            return PathFilter.fromMap(jsonMap);
-          case QueryFilter.type:
-            return QueryFilter.fromMap(jsonMap);
-          case RatingFilter.type:
-            return RatingFilter.fromMap(jsonMap);
-          case RecentlyAddedFilter.type:
-            return RecentlyAddedFilter.instance;
-          case TagFilter.type:
-            return TagFilter.fromMap(jsonMap);
-          case TypeFilter.type:
-            return TypeFilter.fromMap(jsonMap);
-          case TrashFilter.type:
-            return TrashFilter.instance;
-        }
+        return _fromMap(jsonMap);
       }
     } catch (error, stack) {
       debugPrint('failed to parse filter from json=$jsonString error=$error\n$stack');
@@ -95,9 +100,21 @@ abstract class CollectionFilter extends Equatable implements Comparable<Collecti
 
   String toJson() => jsonEncode(toMap());
 
-  EntryFilter get test;
+  EntryFilter get positiveTest;
 
-  bool isCompatible(CollectionFilter other) => category != other.category;
+  EntryFilter get test => reversed ? (v) => !positiveTest(v) : positiveTest;
+
+  CollectionFilter reverse() => _fromMap(toMap()..['reversed'] = !reversed)!;
+
+  bool get exclusiveProp;
+
+  bool isCompatible(CollectionFilter other) {
+    if (category != other.category) return true;
+    if (!reversed && !other.reversed) return !exclusiveProp;
+    if (reversed && other.reversed) return true;
+    if (this == other.reverse()) return false;
+    return true;
+  }
 
   String get universalLabel;
 
@@ -129,7 +146,7 @@ abstract class CollectionFilter extends Equatable implements Comparable<Collecti
 
 @immutable
 abstract class CoveredCollectionFilter extends CollectionFilter {
-  const CoveredCollectionFilter({bool not = false}) : super(not: not);
+  const CoveredCollectionFilter({required super.reversed});
 
   @override
   Future<Color> color(BuildContext context) {

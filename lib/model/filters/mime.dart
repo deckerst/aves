@@ -14,17 +14,17 @@ class MimeFilter extends CollectionFilter {
   static const type = 'mime';
 
   final String mime;
-  late final EntryFilter _test;
   late final String _label;
   late final IconData _icon;
+  late final EntryFilter _test;
 
   static final image = MimeFilter(MimeTypes.anyImage);
   static final video = MimeFilter(MimeTypes.anyVideo);
 
   @override
-  List<Object?> get props => [mime];
+  List<Object?> get props => [mime, reversed];
 
-  MimeFilter(this.mime) {
+  MimeFilter(this.mime, {super.reversed = false}) {
     IconData? icon;
     var lowMime = mime.toLowerCase();
     if (lowMime.endsWith('/*')) {
@@ -46,6 +46,7 @@ class MimeFilter extends CollectionFilter {
   factory MimeFilter.fromMap(Map<String, dynamic> json) {
     return MimeFilter(
       json['mime'],
+      reversed: json['reversed'] ?? false,
     );
   }
 
@@ -53,10 +54,14 @@ class MimeFilter extends CollectionFilter {
   Map<String, dynamic> toMap() => {
         'type': type,
         'mime': mime,
+        'reversed': reversed,
       };
 
   @override
-  EntryFilter get test => _test;
+  EntryFilter get positiveTest => _test;
+
+  @override
+  bool get exclusiveProp => true;
 
   @override
   String get universalLabel => _label;

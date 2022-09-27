@@ -29,6 +29,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_app_bar.dart';
 import 'package:aves/widgets/common/search/route.dart';
 import 'package:aves/widgets/dialogs/tile_view_dialog.dart';
+import 'package:aves/widgets/filter_grids/common/action_delegates/chip.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -168,10 +169,16 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
                   bottom: Column(
                     children: [
                       if (showFilterBar)
-                        FilterBar(
-                          filters: visibleFilters,
-                          removable: removableFilters,
-                          onTap: removableFilters ? collection.removeFilter : null,
+                        NotificationListener<ReverseFilterNotification>(
+                          onNotification: (notification) {
+                            collection.addFilter(notification.reversedFilter);
+                            return true;
+                          },
+                          child: FilterBar(
+                            filters: visibleFilters,
+                            removable: removableFilters,
+                            onTap: removableFilters ? collection.removeFilter : null,
+                          ),
                         ),
                       if (queryEnabled)
                         EntryQueryBar(

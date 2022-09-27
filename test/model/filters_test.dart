@@ -33,7 +33,7 @@ void main() {
   test('Filter serialization', () {
     CollectionFilter? jsonRoundTrip(filter) => CollectionFilter.fromJson(filter.toJson());
 
-    const album = AlbumFilter('path/to/album', 'album');
+    final album = AlbumFilter('path/to/album', 'album');
     expect(album, jsonRoundTrip(album));
 
     final bounds = CoordinateFilter(LatLng(29.979167, 28.223615), LatLng(36.451000, 31.134167));
@@ -63,7 +63,7 @@ void main() {
     final query = QueryFilter('some query');
     expect(query, jsonRoundTrip(query));
 
-    const rating = RatingFilter(3);
+    final rating = RatingFilter(3);
     expect(rating, jsonRoundTrip(rating));
 
     final recent = RecentlyAddedFilter.instance;

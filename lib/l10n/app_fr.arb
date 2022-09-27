@@ -41,6 +41,8 @@
   "chipActionGoToAlbumPage": "Afficher dans Albums",
   "chipActionGoToCountryPage": "Afficher dans Pays",
   "chipActionGoToTagPage": "Afficher dans Libellés",
+  "chipActionFilterOut": "Exclure",
+  "chipActionFilterIn": "Inclure",
   "chipActionHide": "Masquer",
   "chipActionPin": "Épingler",
   "chipActionUnpin": "Retirer",
@@ -172,6 +174,9 @@
   "wallpaperTargetHome": "Écran d’accueil",
   "wallpaperTargetLock": "Écran de verrouillage",
   "wallpaperTargetHomeLock": "Écrans accueil et verrouillage",
+
+  "widgetOpenPageHome": "Ouvrir la page d’accueil",
+  "widgetOpenPageViewer": "Ouvrir la visionneuse",
 
   "albumTierNew": "Nouveaux",
   "albumTierPinned": "Épinglés",
@@ -403,8 +408,11 @@
   "sortOrderSmallestFirst": "Moins larges d’abord",
 
   "albumGroupTier": "par importance",
+  "albumGroupType": "par type",
   "albumGroupVolume": "par volume de stockage",
   "albumGroupNone": "ne pas grouper",
+
+  "albumMimeTypeMixed": "Mixte",
 
   "albumPickPageTitleCopy": "Copie",
   "albumPickPageTitleExport": "Export",
@@ -614,6 +622,7 @@
 
   "settingsWidgetPageTitle": "Cadre photo",
   "settingsWidgetShowOutline": "Contours",
+  "settingsWidgetOpenPage": "Quand vous appuyez sur le widget",
 
   "settingsCollectionTile": "Collection",
 
@@ -622,6 +631,7 @@
   "statsTopCountriesSectionTitle": "Top pays",
   "statsTopPlacesSectionTitle": "Top lieux",
   "statsTopTagsSectionTitle": "Top libellés",
+  "statsTopAlbumsSectionTitle": "Top albums",
 
   "viewerOpenPanoramaButtonLabel": "OUVRIR LE PANORAMA",
   "viewerSetWallpaperButtonLabel": "APPLIQUER",

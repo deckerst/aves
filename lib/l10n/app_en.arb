@@ -69,6 +69,8 @@
   "chipActionGoToAlbumPage": "Show in Albums",
   "chipActionGoToCountryPage": "Show in Countries",
   "chipActionGoToTagPage": "Show in Tags",
+  "chipActionFilterOut": "Filter out",
+  "chipActionFilterIn": "Filter in",
   "chipActionHide": "Hide",
   "chipActionPin": "Pin to top",
   "chipActionUnpin": "Unpin from top",

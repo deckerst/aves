@@ -173,7 +173,7 @@ class _AppDebugPageState extends State<AppDebugPage> {
         final source = context.read<CollectionSource>();
         settings.changeFilterVisibility(settings.hiddenFilters, true);
         settings.changeFilterVisibility({
-          TagFilter('aves-thumbnail', not: true),
+          TagFilter('aves-thumbnail', reversed: true),
         }, false);
         await favourites.clear();
         await favourites.add(source.visibleEntries);
