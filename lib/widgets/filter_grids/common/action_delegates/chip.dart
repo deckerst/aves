@@ -13,9 +13,6 @@ import 'package:provider/provider.dart';
 class ChipActionDelegate {
   void onActionSelected(BuildContext context, CollectionFilter filter, ChipAction action) {
     switch (action) {
-      case ChipAction.hide:
-        _hide(context, filter);
-        break;
       case ChipAction.goToAlbumPage:
         _goTo(context, filter, AlbumListPage.routeName, (context) => const AlbumListPage());
         break;
@@ -25,9 +22,32 @@ class ChipActionDelegate {
       case ChipAction.goToTagPage:
         _goTo(context, filter, TagListPage.routeName, (context) => const TagListPage());
         break;
+      case ChipAction.reverse:
+        ReverseFilterNotification(filter).dispatch(context);
+        break;
+      case ChipAction.hide:
+        _hide(context, filter);
+        break;
       default:
         break;
     }
+  }
+
+  void _goTo(
+    BuildContext context,
+    CollectionFilter filter,
+    String routeName,
+    WidgetBuilder pageBuilder,
+  ) {
+    context.read<HighlightInfo>().set(filter);
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        settings: RouteSettings(name: routeName),
+        builder: pageBuilder,
+      ),
+      (route) => false,
+    );
   }
 
   Future<void> _hide(BuildContext context, CollectionFilter filter) async {
@@ -53,21 +73,11 @@ class ChipActionDelegate {
 
     settings.changeFilterVisibility({filter}, false);
   }
+}
 
-  void _goTo(
-    BuildContext context,
-    CollectionFilter filter,
-    String routeName,
-    WidgetBuilder pageBuilder,
-  ) {
-    context.read<HighlightInfo>().set(filter);
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(
-        settings: RouteSettings(name: routeName),
-        builder: pageBuilder,
-      ),
-      (route) => false,
-    );
-  }
+@immutable
+class ReverseFilterNotification extends Notification {
+  final CollectionFilter reversedFilter;
+
+  ReverseFilterNotification(CollectionFilter filter) : reversedFilter = filter.reverse();
 }

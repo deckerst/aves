@@ -15,6 +15,7 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/collection/filter_bar.dart';
 import 'package:aves/widgets/common/basic/menu.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip.dart';
 import 'package:flutter/material.dart';
@@ -96,6 +97,7 @@ class AvesFilterChip extends StatefulWidget {
         if (filter is AlbumFilter) ChipAction.goToAlbumPage,
         if ((filter is LocationFilter && filter.level == LocationLevel.country)) ChipAction.goToCountryPage,
         if (filter is TagFilter) ChipAction.goToTagPage,
+        ChipAction.reverse,
         ChipAction.hide,
       ];
 
@@ -113,12 +115,20 @@ class AvesFilterChip extends StatefulWidget {
             child: Text(filter.getLabel(context)),
           ),
           const PopupMenuDivider(),
-          ...actions.map((action) => PopupMenuItem(
-                value: action,
-                child: MenuIconTheme(
-                  child: MenuRow(text: action.getText(context), icon: action.getIcon()),
-                ),
-              )),
+          ...actions.map((action) {
+            late String text;
+            if (action == ChipAction.reverse) {
+              text = filter.reversed ? context.l10n.chipActionFilterIn : context.l10n.chipActionFilterOut;
+            } else {
+              text = action.getText(context);
+            }
+            return PopupMenuItem(
+              value: action,
+              child: MenuIconTheme(
+                child: MenuRow(text: text, icon: action.getIcon()),
+              ),
+            );
+          }),
         ],
       );
       if (selectedAction != null) {
@@ -229,7 +239,8 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
               filter.getLabel(context),
               style: TextStyle(
                 fontSize: AvesFilterChip.fontSize,
-                decoration: filter.not ? TextDecoration.lineThrough : null,
+                decoration: filter.reversed ? TextDecoration.lineThrough : null,
+                decorationThickness: 2,
               ),
               softWrap: false,
               overflow: TextOverflow.fade,

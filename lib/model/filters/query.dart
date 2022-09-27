@@ -18,7 +18,7 @@ class QueryFilter extends CollectionFilter {
   late final EntryFilter _test;
 
   @override
-  List<Object?> get props => [query, live];
+  List<Object?> get props => [query, live, reversed];
 
   static final _fieldPattern = RegExp(r'(.+)([=<>])(.+)');
   static final _fileSizePattern = RegExp(r'(\d+)([KMG])?');
@@ -33,7 +33,7 @@ class QueryFilter extends CollectionFilter {
   static const opLower = '<';
   static const opGreater = '>';
 
-  QueryFilter(this.query, {this.colorful = true, this.live = false}) {
+  QueryFilter(this.query, {this.colorful = true, this.live = false, super.reversed = false}) {
     var upQuery = query.toUpperCase();
 
     final test = fieldTest(upQuery);
@@ -62,6 +62,7 @@ class QueryFilter extends CollectionFilter {
   factory QueryFilter.fromMap(Map<String, dynamic> json) {
     return QueryFilter(
       json['query'],
+      reversed: json['reversed'] ?? false,
     );
   }
 
@@ -69,13 +70,14 @@ class QueryFilter extends CollectionFilter {
   Map<String, dynamic> toMap() => {
         'type': type,
         'query': query,
+        'reversed': reversed,
       };
 
   @override
-  EntryFilter get test => _test;
+  EntryFilter get positiveTest => _test;
 
   @override
-  bool isCompatible(CollectionFilter other) => true;
+  bool get exclusiveProp => false;
 
   @override
   String get universalLabel => query;

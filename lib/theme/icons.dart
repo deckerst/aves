@@ -105,6 +105,7 @@ class AIcons {
   static const IconData print = Icons.print_outlined;
   static const IconData refresh = Icons.refresh_outlined;
   static const IconData replay10 = Icons.replay_10_outlined;
+  static const IconData reverse = Icons.invert_colors_outlined;
   static const IconData skip10 = Icons.forward_10_outlined;
   static const IconData reset = Icons.restart_alt_outlined;
   static const IconData restore = Icons.restore_outlined;

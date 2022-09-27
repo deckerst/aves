@@ -17,8 +17,8 @@ class TypeFilter extends CollectionFilter {
   static const _sphericalVideo = 'spherical_video'; // subset of videos
 
   final String itemType;
-  late final EntryFilter _test;
   late final IconData _icon;
+  late final EntryFilter _test;
 
   static final animated = TypeFilter._private(_animated);
   static final geotiff = TypeFilter._private(_geotiff);
@@ -28,9 +28,9 @@ class TypeFilter extends CollectionFilter {
   static final sphericalVideo = TypeFilter._private(_sphericalVideo);
 
   @override
-  List<Object?> get props => [itemType];
+  List<Object?> get props => [itemType, reversed];
 
-  TypeFilter._private(this.itemType) {
+  TypeFilter._private(this.itemType, {super.reversed = false}) {
     switch (itemType) {
       case _animated:
         _test = (entry) => entry.isAnimated;
@@ -62,6 +62,7 @@ class TypeFilter extends CollectionFilter {
   factory TypeFilter.fromMap(Map<String, dynamic> json) {
     return TypeFilter._private(
       json['itemType'],
+      reversed: json['reversed'] ?? false,
     );
   }
 
@@ -69,10 +70,14 @@ class TypeFilter extends CollectionFilter {
   Map<String, dynamic> toMap() => {
         'type': type,
         'itemType': itemType,
+        'reversed': reversed,
       };
 
   @override
-  EntryFilter get test => _test;
+  EntryFilter get positiveTest => _test;
+
+  @override
+  bool get exclusiveProp => false;
 
   @override
   String get universalLabel => itemType;

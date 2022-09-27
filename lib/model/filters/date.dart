@@ -18,9 +18,9 @@ class DateFilter extends CollectionFilter {
   static final onThisDay = DateFilter(DateLevel.md, null);
 
   @override
-  List<Object?> get props => [level, date];
+  List<Object?> get props => [level, date, reversed];
 
-  DateFilter(this.level, this.date) {
+  DateFilter(this.level, this.date, {super.reversed = false}) {
     _effectiveDate = date ?? DateTime.now();
     switch (level) {
       case DateLevel.y:
@@ -56,6 +56,7 @@ class DateFilter extends CollectionFilter {
     return DateFilter(
       DateLevel.values.firstWhereOrNull((v) => v.toString() == json['level']) ?? DateLevel.ymd,
       dateString != null ? DateTime.tryParse(dateString) : null,
+      reversed: json['reversed'] ?? false,
     );
   }
 
@@ -64,15 +65,20 @@ class DateFilter extends CollectionFilter {
         'type': type,
         'level': level.toString(),
         'date': date?.toIso8601String(),
+        'reversed': reversed,
       };
 
   @override
-  EntryFilter get test => _test;
+  EntryFilter get positiveTest => _test;
+
+  @override
+  bool get exclusiveProp => true;
 
   @override
   bool isCompatible(CollectionFilter other) {
     if (other is DateFilter) {
-      return isCompatibleLevel(level, other.level);
+      if (reversed != other.reversed && this == other.reverse()) return false;
+      return reversed || other.reversed || isCompatibleLevel(level, other.level);
     } else {
       return true;
     }

@@ -6,30 +6,43 @@ import 'package:flutter/material.dart';
 class RecentlyAddedFilter extends CollectionFilter {
   static const type = 'recently_added';
 
+  static late EntryFilter _test;
+
   static final instance = RecentlyAddedFilter._private();
+  static final instanceReversed = RecentlyAddedFilter._private(reversed: true);
 
   static late int nowSecs;
 
   static void updateNow() {
     nowSecs = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+    _test = (entry) => (nowSecs - (entry.dateAddedSecs ?? 0)) < _dayInSecs;
   }
 
   static const _dayInSecs = 24 * 60 * 60;
 
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [reversed];
 
-  RecentlyAddedFilter._private() {
+  RecentlyAddedFilter._private({super.reversed = false}) {
     updateNow();
+  }
+
+  factory RecentlyAddedFilter.fromMap(Map<String, dynamic> json) {
+    final reversed = json['reversed'] ?? false;
+    return reversed ? instanceReversed : instance;
   }
 
   @override
   Map<String, dynamic> toMap() => {
         'type': type,
+        'reversed': reversed,
       };
 
   @override
-  EntryFilter get test => (entry) => (nowSecs - (entry.dateAddedSecs ?? 0)) < _dayInSecs;
+  EntryFilter get positiveTest => _test;
+
+  @override
+  bool get exclusiveProp => false;
 
   @override
   String get universalLabel => type;

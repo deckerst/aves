@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - mosaic layout
+- reverse filters to filter out/in
 - Albums: group by content type
 - Stats: top albums
 - Stats: open full top listings

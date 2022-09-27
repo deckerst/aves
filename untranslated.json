@@ -1,5 +1,7 @@
 {
   "de": [
+    "chipActionFilterOut",
+    "chipActionFilterIn",
     "viewerTransitionNone",
     "widgetOpenPageHome",
     "widgetOpenPageViewer",
@@ -11,6 +13,8 @@
   ],
 
   "el": [
+    "chipActionFilterOut",
+    "chipActionFilterIn",
     "viewerTransitionNone",
     "widgetOpenPageHome",
     "widgetOpenPageViewer",
@@ -22,6 +26,8 @@
   ],
 
   "es": [
+    "chipActionFilterOut",
+    "chipActionFilterIn",
     "entryInfoActionEditTitleDescription",
     "filterNoDateLabel",
     "filterNoTitleLabel",
@@ -48,16 +54,9 @@
     "viewerInfoLabelDescription"
   ],
 
-  "fr": [
-    "widgetOpenPageHome",
-    "widgetOpenPageViewer",
-    "albumGroupType",
-    "albumMimeTypeMixed",
-    "settingsWidgetOpenPage",
-    "statsTopAlbumsSectionTitle"
-  ],
-
   "id": [
+    "chipActionFilterOut",
+    "chipActionFilterIn",
     "viewerTransitionNone",
     "widgetOpenPageHome",
     "widgetOpenPageViewer",
@@ -69,6 +68,8 @@
   ],
 
   "it": [
+    "chipActionFilterOut",
+    "chipActionFilterIn",
     "viewerTransitionNone",
     "widgetOpenPageHome",
     "widgetOpenPageViewer",
@@ -80,6 +81,8 @@
   ],
 
   "ja": [
+    "chipActionFilterOut",
+    "chipActionFilterIn",
     "entryInfoActionEditTitleDescription",
     "filterNoDateLabel",
     "filterNoTitleLabel",
@@ -107,16 +110,9 @@
     "viewerInfoLabelDescription"
   ],
 
-  "ko": [
-    "widgetOpenPageHome",
-    "widgetOpenPageViewer",
-    "albumGroupType",
-    "albumMimeTypeMixed",
-    "settingsWidgetOpenPage",
-    "statsTopAlbumsSectionTitle"
-  ],
-
   "nl": [
+    "chipActionFilterOut",
+    "chipActionFilterIn",
     "viewerTransitionNone",
     "widgetOpenPageHome",
     "widgetOpenPageViewer",
@@ -128,6 +124,8 @@
   ],
 
   "pt": [
+    "chipActionFilterOut",
+    "chipActionFilterIn",
     "viewerTransitionNone",
     "widgetOpenPageHome",
     "widgetOpenPageViewer",
@@ -139,6 +137,8 @@
   ],
 
   "ru": [
+    "chipActionFilterOut",
+    "chipActionFilterIn",
     "viewerTransitionNone",
     "widgetOpenPageHome",
     "widgetOpenPageViewer",
@@ -150,6 +150,8 @@
   ],
 
   "tr": [
+    "chipActionFilterOut",
+    "chipActionFilterIn",
     "slideshowActionResume",
     "slideshowActionShowInCollection",
     "entryInfoActionEditTitleDescription",
@@ -206,6 +208,8 @@
   ],
 
   "zh": [
+    "chipActionFilterOut",
+    "chipActionFilterIn",
     "viewerTransitionNone",
     "widgetOpenPageHome",
     "widgetOpenPageViewer",

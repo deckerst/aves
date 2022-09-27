@@ -113,7 +113,7 @@ void main() {
   });
 
   test('album/country/tag hidden on launch when their items are hidden by entry prop', () async {
-    settings.hiddenFilters = {const AlbumFilter(testAlbum, 'whatever')};
+    settings.hiddenFilters = {AlbumFilter(testAlbum, 'whatever')};
 
     final image1 = FakeMediaStoreService.newImage(testAlbum, 'image1');
     (mediaStoreService as FakeMediaStoreService).entries = {
@@ -191,7 +191,7 @@ void main() {
     expect(source.rawAlbums.length, 1);
     expect(covers.count, 0);
 
-    const albumFilter = AlbumFilter(testAlbum, 'whatever');
+    final albumFilter = AlbumFilter(testAlbum, 'whatever');
     expect(albumFilter.test(image1), true);
     expect(covers.count, 0);
     expect(covers.of(albumFilter), null);
@@ -213,7 +213,7 @@ void main() {
 
     final source = await _initSource();
     await image1.toggleFavourite();
-    const albumFilter = AlbumFilter(testAlbum, 'whatever');
+    final albumFilter = AlbumFilter(testAlbum, 'whatever');
     await covers.set(filter: albumFilter, entryId: image1.id, packageName: null, color: null);
     await source.updateAfterRename(
       todoEntries: {image1},
@@ -257,8 +257,8 @@ void main() {
     expect(source.rawAlbums.contains(sourceAlbum), true);
     expect(source.rawAlbums.contains(destinationAlbum), false);
 
-    const sourceAlbumFilter = AlbumFilter(sourceAlbum, 'whatever');
-    const destinationAlbumFilter = AlbumFilter(destinationAlbum, 'whatever');
+    final sourceAlbumFilter = AlbumFilter(sourceAlbum, 'whatever');
+    final destinationAlbumFilter = AlbumFilter(destinationAlbum, 'whatever');
     expect(sourceAlbumFilter.test(image1), true);
     expect(destinationAlbumFilter.test(image1), false);
 
@@ -308,7 +308,7 @@ void main() {
 
     final source = await _initSource();
     expect(source.rawAlbums.length, 1);
-    const sourceAlbumFilter = AlbumFilter(sourceAlbum, 'whatever');
+    final sourceAlbumFilter = AlbumFilter(sourceAlbum, 'whatever');
     await covers.set(filter: sourceAlbumFilter, entryId: image1.id, packageName: null, color: null);
 
     await source.updateAfterMove(
@@ -333,14 +333,14 @@ void main() {
 
     final source = await _initSource();
     await image1.toggleFavourite();
-    var albumFilter = const AlbumFilter(sourceAlbum, 'whatever');
+    var albumFilter = AlbumFilter(sourceAlbum, 'whatever');
     await covers.set(filter: albumFilter, entryId: image1.id, packageName: null, color: null);
     await source.renameAlbum(sourceAlbum, destinationAlbum, {
       image1
     }, {
       FakeMediaStoreService.moveOpEventForMove(image1, sourceAlbum, destinationAlbum),
     });
-    albumFilter = const AlbumFilter(destinationAlbum, 'whatever');
+    albumFilter = AlbumFilter(destinationAlbum, 'whatever');
 
     expect(favourites.count, 1);
     expect(image1.isFavourite, true);
