@@ -16,6 +16,7 @@ import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/common/extensions/media_query.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/stats/date/histogram.dart';
@@ -223,7 +224,12 @@ class _StatsPageState extends State<StatsPage> {
             body: GestureAreaProtectorStack(
               child: SafeArea(
                 bottom: false,
-                child: child,
+                child: TooltipTheme(
+                  data: TooltipTheme.of(context).copyWith(
+                    preferBelow: false,
+                  ),
+                  child: child,
+                ),
               ),
             ),
           ),
@@ -238,20 +244,50 @@ class _StatsPageState extends State<StatsPage> {
     Map<T, int> entryCountMap,
     CollectionFilter Function(T key) filterBuilder, {
     bool sortByCount = true,
-    int? maxRowCount = 5,
+    int? maxRowCount = 3,
   }) {
     if (entryCountMap.isEmpty) return [];
 
+    final totalEntryCount = entries.length;
+    final hasMore = maxRowCount != null && entryCountMap.length > maxRowCount;
     return [
       Padding(
         padding: const EdgeInsets.all(16),
-        child: Text(
-          title,
-          style: Constants.knownTitleTextStyle,
+        child: Row(
+          children: [
+            Text(
+              title,
+              style: Constants.knownTitleTextStyle,
+            ),
+            const Spacer(),
+            IconButton(
+              icon: const Icon(AIcons.next),
+              onPressed: hasMore
+                  ? () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          settings: const RouteSettings(name: StatsTopPage.routeName),
+                          builder: (context) => StatsTopPage(
+                            title: title,
+                            tableBuilder: (context) => FilterTable(
+                              totalEntryCount: totalEntryCount,
+                              entryCountMap: entryCountMap,
+                              filterBuilder: filterBuilder,
+                              sortByCount: sortByCount,
+                              maxRowCount: null,
+                              onFilterSelection: (filter) => _onFilterSelection(context, filter),
+                            ),
+                          ),
+                        ),
+                      )
+                  : null,
+              tooltip: MaterialLocalizations.of(context).moreButtonTooltip,
+            ),
+          ],
         ),
       ),
       FilterTable(
-        totalEntryCount: entries.length,
+        totalEntryCount: totalEntryCount,
         entryCountMap: entryCountMap,
         filterBuilder: filterBuilder,
         sortByCount: sortByCount,
@@ -290,6 +326,44 @@ class _StatsPageState extends State<StatsPage> {
         ),
       ),
       (route) => false,
+    );
+  }
+}
+
+class StatsTopPage extends StatelessWidget {
+  static const routeName = '/collection/stats/top';
+
+  final String title;
+  final WidgetBuilder tableBuilder;
+
+  const StatsTopPage({
+    super.key,
+    required this.title,
+    required this.tableBuilder,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return MediaQueryDataProvider(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(title),
+        ),
+        body: GestureAreaProtectorStack(
+          child: SafeArea(
+            bottom: false,
+            child: Builder(builder: (context) {
+              return SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(vertical: 8) +
+                    EdgeInsets.only(
+                      bottom: context.select<MediaQueryData, double>((mq) => mq.effectiveBottomPadding),
+                    ),
+                child: tableBuilder(context),
+              );
+            }),
+          ),
+        ),
+      ),
     );
   }
 }

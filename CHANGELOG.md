@@ -8,6 +8,8 @@ All notable changes to this project will be documented in this file.
 
 - mosaic layout
 - Albums: group by content type
+- Stats: top albums
+- Stats: open full top listings
 - Slideshow: option for no transition
 - Widget: tap action setting
 
