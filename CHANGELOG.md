@@ -15,6 +15,10 @@ All notable changes to this project will be documented in this file.
 - Slideshow: option for no transition
 - Widget: tap action setting
 
+### Fixed
+
+- restoring to missing Download subdir
+
 ## <a id="v1.7.0"></a>[v1.7.0] - 2022-09-19
 
 ### Added
