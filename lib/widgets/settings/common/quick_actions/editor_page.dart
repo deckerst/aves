@@ -12,12 +12,14 @@ import 'package:aves/widgets/settings/common/quick_actions/available_actions.dar
 import 'package:aves/widgets/settings/common/quick_actions/placeholder.dart';
 import 'package:aves/widgets/settings/common/quick_actions/quick_actions.dart';
 import 'package:aves/widgets/viewer/overlay/common.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class QuickActionEditorPage<T extends Object> extends StatelessWidget {
   final String title, bannerText;
-  final List<T> allAvailableActions;
+  final List<List<T>> allAvailableActions;
   final Widget? Function(T action) actionIcon;
   final String Function(BuildContext context, T action) actionText;
   final List<T> Function() load;
@@ -58,7 +60,7 @@ class QuickActionEditorPage<T extends Object> extends StatelessWidget {
 
 class QuickActionEditorBody<T extends Object> extends StatefulWidget {
   final String bannerText;
-  final List<T> allAvailableActions;
+  final List<List<T>> allAvailableActions;
   final Widget? Function(T action) actionIcon;
   final String Function(BuildContext context, T action) actionText;
   final List<T> Function() load;
@@ -87,6 +89,7 @@ class _QuickActionEditorBodyState<T extends Object> extends State<QuickActionEdi
   final ValueNotifier<bool> _quickActionHighlight = ValueNotifier(false);
   final ValueNotifier<bool> _availableActionHighlight = ValueNotifier(false);
   final AChangeNotifier _quickActionsChangeNotifier = AChangeNotifier();
+  final PageController _availableActionPageController = PageController();
 
   // use a flag to prevent quick action target accept/leave when already animating reorder
   // as dragging a button against axis direction messes index resolution while items pop in and out
@@ -119,6 +122,8 @@ class _QuickActionEditorBodyState<T extends Object> extends State<QuickActionEdi
   Widget build(BuildContext context) {
     super.build(context);
 
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     final header = QuickActionButton<T>(
       placement: QuickActionPlacement.header,
       panelHighlight: _quickActionHighlight,
@@ -222,7 +227,7 @@ class _QuickActionEditorBodyState<T extends Object> extends State<QuickActionEdi
                         ? Center(
                             child: Text(
                               context.l10n.settingsViewerQuickActionEmpty,
-                              style: Theme.of(context).textTheme.caption,
+                              style: theme.textTheme.caption,
                             ),
                           )
                         : const SizedBox(),
@@ -244,16 +249,55 @@ class _QuickActionEditorBodyState<T extends Object> extends State<QuickActionEdi
               highlight: highlight,
               child: child!,
             ),
-            child: AvailableActionPanel<T>(
-              allActions: widget.allAvailableActions,
-              quickActions: _quickActions,
-              quickActionsChangeNotifier: _quickActionsChangeNotifier,
-              panelHighlight: _availableActionHighlight,
-              draggedQuickAction: _draggedQuickAction,
-              draggedAvailableAction: _draggedAvailableAction,
-              removeQuickAction: _removeQuickAction,
-              actionIcon: widget.actionIcon,
-              actionText: widget.actionText,
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final allAvailableActions = widget.allAvailableActions;
+                final maxWidth = constraints.maxWidth;
+                final maxHeight = allAvailableActions
+                    .map((page) => AvailableActionPanel.heightFor(
+                          context,
+                          page.map((v) => widget.actionText(context, v)).toList(),
+                          maxWidth,
+                        ))
+                    .max;
+                return Column(
+                  children: [
+                    if (allAvailableActions.length > 1)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8),
+                        child: SmoothPageIndicator(
+                          controller: _availableActionPageController,
+                          count: allAvailableActions.length,
+                          effect: WormEffect(
+                            dotWidth: 8,
+                            dotHeight: 8,
+                            dotColor: colorScheme.onPrimary.withOpacity(.3),
+                            activeDotColor: colorScheme.secondary,
+                          ),
+                        ),
+                      ),
+                    SizedBox(
+                      height: maxHeight,
+                      child: PageView(
+                        controller: _availableActionPageController,
+                        children: allAvailableActions
+                            .map((allActions) => AvailableActionPanel<T>(
+                                  allActions: allActions,
+                                  quickActions: _quickActions,
+                                  quickActionsChangeNotifier: _quickActionsChangeNotifier,
+                                  panelHighlight: _availableActionHighlight,
+                                  draggedQuickAction: _draggedQuickAction,
+                                  draggedAvailableAction: _draggedAvailableAction,
+                                  removeQuickAction: _removeQuickAction,
+                                  actionIcon: widget.actionIcon,
+                                  actionText: widget.actionText,
+                                ))
+                            .toList(),
+                      ),
+                    ),
+                  ],
+                );
+              },
             ),
           ),
         ],

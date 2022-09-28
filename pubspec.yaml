@@ -75,6 +75,7 @@ dependencies:
   provider:
   screen_brightness:
   shared_preferences:
+  smooth_page_indicator:
   sqflite:
   streams_channel:
     git:
