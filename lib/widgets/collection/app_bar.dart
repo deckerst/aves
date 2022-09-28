@@ -318,7 +318,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
                     title: context.l10n.collectionActionEdit,
                     items: [
                       _buildRotateAndFlipMenuItems(context, canApply: canApply),
-                      ...EntrySetActions.edit.where(isVisible).map((action) => _toMenuItem(action, enabled: canApply(action), selection: selection)),
+                      ...EntrySetActions.edit.where((v) => isVisible(v) && !selectionQuickActions.contains(v)).map((action) => _toMenuItem(action, enabled: canApply(action), selection: selection)),
                     ],
                   ),
                 ),

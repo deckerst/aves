@@ -312,6 +312,11 @@ class Constants {
       license: 'MIT',
       sourceUrl: 'https://github.com/rrousselGit/provider',
     ),
+    Dependency(
+      name: 'Smooth Page Indicator',
+      license: 'MIT',
+      sourceUrl: 'https://github.com/Milad-Akarie/smooth_page_indicator',
+    ),
   ];
 
   static const List<Dependency> dartPackages = [

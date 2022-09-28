@@ -19,7 +19,7 @@ class CollectionActionEditorPage extends StatelessWidget {
         Tab(text: l10n.settingsCollectionQuickActionTabBrowsing),
         QuickActionEditorBody<EntrySetAction>(
           bannerText: context.l10n.settingsCollectionBrowsingQuickActionEditorBanner,
-          allAvailableActions: EntrySetActions.collectionEditorBrowsing,
+          allAvailableActions: const [EntrySetActions.collectionEditorBrowsing],
           actionIcon: (action) => action.getIcon(),
           actionText: (context, action) => action.getText(context),
           load: () => settings.collectionBrowsingQuickActions,
@@ -30,7 +30,10 @@ class CollectionActionEditorPage extends StatelessWidget {
         Tab(text: l10n.settingsCollectionQuickActionTabSelecting),
         QuickActionEditorBody<EntrySetAction>(
           bannerText: context.l10n.settingsCollectionSelectionQuickActionEditorBanner,
-          allAvailableActions: EntrySetActions.collectionEditorSelection,
+          allAvailableActions: const [
+            EntrySetActions.collectionEditorSelectionRegular,
+            EntrySetActions.collectionEditorSelectionEdit,
+          ],
           actionIcon: (action) => action.getIcon(),
           actionText: (context, action) => action.getText(context),
           load: () => settings.collectionSelectionQuickActions,
