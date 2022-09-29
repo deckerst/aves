@@ -676,6 +676,8 @@
   "viewerInfoSearchSuggestionResolution": "Résolution",
   "viewerInfoSearchSuggestionRights": "Droits",
 
+  "wallpaperUseScrollEffect": "Utiliser l’effet de défilement sur l’écran d’accueil",
+
   "tagEditorPageTitle": "Modifier les libellés",
   "tagEditorPageNewTagFieldLabel": "Nouveau libellé",
   "tagEditorPageAddTagTooltip": "Ajouter le libellé",

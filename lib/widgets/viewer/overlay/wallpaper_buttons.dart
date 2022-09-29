@@ -2,14 +2,13 @@ import 'dart:async';
 import 'dart:math';
 import 'dart:ui' as ui;
 
-import 'package:aves/model/device.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/entry_images.dart';
 import 'package:aves/model/wallpaper_target.dart';
 import 'package:aves/services/wallpaper_service.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
+import 'package:aves/widgets/dialogs/wallpaper_settings_dialog.dart';
 import 'package:aves/widgets/viewer/overlay/common.dart';
 import 'package:aves/widgets/viewer/overlay/viewer_buttons.dart';
 import 'package:aves/widgets/viewer/video/conductor.dart';
@@ -18,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
+import 'package:tuple/tuple.dart';
 
 class WallpaperButtons extends StatelessWidget with FeedbackMixin {
   final AvesEntry entry;
@@ -56,19 +56,14 @@ class WallpaperButtons extends StatelessWidget with FeedbackMixin {
 
   Future<void> _setWallpaper(BuildContext context) async {
     final l10n = context.l10n;
-    var target = WallpaperTarget.home;
-    if (device.canSetLockScreenWallpaper) {
-      final value = await showDialog<WallpaperTarget>(
-        context: context,
-        builder: (context) => AvesSelectionDialog<WallpaperTarget>(
-          initialValue: WallpaperTarget.home,
-          options: Map.fromEntries(WallpaperTarget.values.map((v) => MapEntry(v, v.getName(context)))),
-          confirmationButtonLabel: l10n.continueButtonLabel,
-        ),
-      );
-      if (value == null) return;
-      target = value;
-    }
+    final value = await showDialog<Tuple2<WallpaperTarget, bool>>(
+      context: context,
+      builder: (context) => const WallpaperSettingsDialog(),
+    );
+    if (value == null) return;
+
+    final target = value.item1;
+    final useScrollEffect = value.item2;
 
     final reportController = StreamController.broadcast();
     unawaited(showOpReport(
@@ -76,17 +71,15 @@ class WallpaperButtons extends StatelessWidget with FeedbackMixin {
       opStream: reportController.stream,
     ));
 
-    final viewState = context.read<ViewStateConductor>().getOrCreateController(entry).value;
-    final viewportSize = viewState.viewportSize;
-    final contentSize = viewState.contentSize;
-    final scale = viewState.scale;
-    if (viewportSize == null || contentSize == null || contentSize.isEmpty || scale == null) return;
+    var region = _getVisibleRegion(context);
+    if (region == null) return;
 
-    final center = (contentSize / 2 - viewState.position / scale) as Size;
-    final regionSize = viewportSize / scale;
-    final regionTopLeft = (center - regionSize / 2) as Offset;
-    final region = Rect.fromLTWH(regionTopLeft.dx, regionTopLeft.dy, regionSize.width, regionSize.height);
-    final bytes = await _getBytes(context, scale, region);
+    if (useScrollEffect) {
+      final deltaX = min(region.left, entry.displaySize.width - region.right);
+      region = Rect.fromLTRB(region.left - deltaX, region.top, region.right + deltaX, region.bottom);
+    }
+
+    final bytes = await _getBytes(context, region);
 
     final success = bytes != null && await WallpaperService.set(bytes, target);
     unawaited(reportController.close());
@@ -98,9 +91,25 @@ class WallpaperButtons extends StatelessWidget with FeedbackMixin {
     }
   }
 
-  Future<Uint8List?> _getBytes(BuildContext context, double scale, Rect displayRegion) async {
+  Rect? _getVisibleRegion(BuildContext context) {
+    final viewState = context.read<ViewStateConductor>().getOrCreateController(entry).value;
+    final viewportSize = viewState.viewportSize;
+    final contentSize = viewState.contentSize;
+    final scale = viewState.scale;
+    if (viewportSize == null || contentSize == null || contentSize.isEmpty || scale == null) return null;
+
+    final center = (contentSize / 2 - viewState.position / scale) as Size;
+    final regionSize = viewportSize / scale;
+    final regionTopLeft = (center - regionSize / 2) as Offset;
+    return Rect.fromLTWH(regionTopLeft.dx, regionTopLeft.dy, regionSize.width, regionSize.height);
+  }
+
+  Future<Uint8List?> _getBytes(BuildContext context, Rect displayRegion) async {
+    final viewState = context.read<ViewStateConductor>().getOrCreateController(entry).value;
+    final scale = viewState.scale;
+
     final displaySize = entry.displaySize;
-    if (displaySize.isEmpty) return null;
+    if (displaySize.isEmpty || scale == null) return null;
 
     var storageRegion = Rectangle(
       displayRegion.left,
