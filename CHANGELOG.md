@@ -14,6 +14,7 @@ All notable changes to this project will be documented in this file.
 - Stats: open full top listings
 - Slideshow: option for no transition
 - Widget: tap action setting
+- Wallpaper: scroll effect option
 
 ### Fixed
 

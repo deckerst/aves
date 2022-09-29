@@ -676,6 +676,8 @@
   "viewerInfoSearchSuggestionResolution": "해상도",
   "viewerInfoSearchSuggestionRights": "권리",
 
+  "wallpaperUseScrollEffect": "홈 화면에 스크롤 효과 사용",
+
   "tagEditorPageTitle": "태그 수정",
   "tagEditorPageNewTagFieldLabel": "새 태그",
   "tagEditorPageAddTagTooltip": "태그 추가",

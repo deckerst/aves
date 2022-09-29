@@ -861,6 +861,8 @@
   "viewerInfoSearchSuggestionResolution": "Resolution",
   "viewerInfoSearchSuggestionRights": "Rights",
 
+  "wallpaperUseScrollEffect": "Use scroll effect on home screen",
+
   "tagEditorPageTitle": "Edit Tags",
   "tagEditorPageNewTagFieldLabel": "New tag",
   "tagEditorPageAddTagTooltip": "Add tag",
