@@ -8,6 +8,7 @@ import 'package:aves/widgets/common/basic/multi_cross_fader.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/highlight_title.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
+import 'package:aves/widgets/viewer/info/metadata/xmp_namespaces.dart';
 import 'package:flutter/material.dart';
 
 class XmpStructArrayCard extends StatefulWidget {
@@ -93,7 +94,7 @@ class _XmpStructArrayCardState extends State<XmpStructArrayCard> {
               // without clipping the text
               padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
               child: InfoRowGroup(
-                info: structs[_index],
+                info: structs[_index].map((key, value) => MapEntry(XmpProp.formatKey(key), value)),
                 maxValueLength: Constants.infoGroupMaxValueLength,
                 spanBuilders: widget.linkifier?.call(_index + 1),
               ),
@@ -135,7 +136,7 @@ class XmpStructCard extends StatelessWidget {
               showHighlight: false,
             ),
             InfoRowGroup(
-              info: struct,
+              info: struct.map((key, value) => MapEntry(XmpProp.formatKey(key), value)),
               maxValueLength: Constants.infoGroupMaxValueLength,
               spanBuilders: linkifier?.call(),
             ),

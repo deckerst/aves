@@ -5,19 +5,28 @@ import 'package:flutter/widgets.dart';
 
 // cf https://github.com/adobe/xmp-docs/blob/master/XMPNamespaces/photoshop.md
 class XmpPhotoshopNamespace extends XmpNamespace {
+  late final cameraProfilesPattern = RegExp(nsPrefix + r'CameraProfiles\[(\d+)\]/(.*)');
   late final textLayersPattern = RegExp(nsPrefix + r'TextLayers\[(\d+)\]/(.*)');
 
+  final cameraProfiles = <int, Map<String, String>>{};
   final textLayers = <int, Map<String, String>>{};
 
   XmpPhotoshopNamespace(String nsPrefix, Map<String, String> rawProps) : super(Namespaces.photoshop, nsPrefix, rawProps);
 
   @override
   bool extractData(XmpProp prop) {
-    return extractIndexedStruct(prop, textLayersPattern, textLayers);
+    var hasIndexedStructs = extractIndexedStruct(prop, cameraProfilesPattern, cameraProfiles);
+    hasIndexedStructs |= extractIndexedStruct(prop, textLayersPattern, textLayers);
+    return hasIndexedStructs;
   }
 
   @override
   List<Widget> buildFromExtractedData() => [
+        if (cameraProfiles.isNotEmpty)
+          XmpStructArrayCard(
+            title: 'Camera Profiles',
+            structByIndex: cameraProfiles,
+          ),
         if (textLayers.isNotEmpty)
           XmpStructArrayCard(
             title: 'Text Layers',

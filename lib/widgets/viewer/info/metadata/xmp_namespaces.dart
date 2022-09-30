@@ -122,7 +122,7 @@ class XmpNamespace extends Equatable {
     if (matches.isEmpty) return false;
 
     final match = matches.first;
-    final field = XmpProp.formatKey(match.group(1)!);
+    final field = match.group(1)!;
     store[field] = formatValue(prop);
     return true;
   }
@@ -133,7 +133,7 @@ class XmpNamespace extends Equatable {
 
     final match = matches.first;
     final index = int.parse(match.group(1)!);
-    final field = XmpProp.formatKey(match.group(2)!);
+    final field = match.group(2)!;
     final fields = store.putIfAbsent(index, () => <String, String>{});
     fields[field] = formatValue(prop);
     return true;
