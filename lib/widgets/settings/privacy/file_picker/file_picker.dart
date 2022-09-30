@@ -157,7 +157,7 @@ class _FilePickerState extends State<FilePicker> {
             padding: const EdgeInsets.all(16),
             child: Text(
               context.l10n.filePickerOpenFrom,
-              style: Theme.of(context).textTheme.headline5,
+              style: Theme.of(context).textTheme.headlineSmall,
             ),
           ),
           ...volumes.map((v) {

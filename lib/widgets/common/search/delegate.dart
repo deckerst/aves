@@ -18,7 +18,7 @@ abstract class AvesSearchDelegate extends SearchDelegate {
   }
 
   @override
-  Widget buildLeading(BuildContext context) {
+  Widget? buildLeading(BuildContext context) {
     // use a property instead of checking `Navigator.canPop(context)`
     // because the navigator state changes as soon as we press back
     // so the leading may mistakenly switch to the close button
@@ -37,7 +37,7 @@ abstract class AvesSearchDelegate extends SearchDelegate {
   }
 
   @override
-  List<Widget> buildActions(BuildContext context) {
+  List<Widget>? buildActions(BuildContext context) {
     return [
       if (query.isNotEmpty)
         IconButton(
@@ -91,6 +91,9 @@ abstract class AvesSearchDelegate extends SearchDelegate {
   @override
   set query(String value) {
     queryTextController.text = value;
+    if (queryTextController.text.isNotEmpty) {
+      queryTextController.selection = TextSelection.fromPosition(TextPosition(offset: queryTextController.text.length));
+    }
   }
 
   final ValueNotifier<SearchBody?> currentBodyNotifier = ValueNotifier(null);

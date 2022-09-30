@@ -3,7 +3,8 @@ import 'dart:ui' as ui;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-// adapted from Flutter `RawImage`, `paintImage()` from `DecorationImagePainter`, etc.
+// adapted from Flutter `_ImageState` in `/widgets/image.dart`
+// and `DecorationImagePainter` in `/painting/decoration_image.dart`
 // to transition between 2 different fits during hero animation:
 // - BoxFit.cover at t=0
 // - BoxFit.contain at t=1
@@ -35,11 +36,6 @@ class _TransitionImageState extends State<TransitionImage> {
   int? _frameNumber;
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   void dispose() {
     assert(_imageStream != null);
     _stopListeningToStream();
@@ -63,8 +59,9 @@ class _TransitionImageState extends State<TransitionImage> {
   void didUpdateWidget(covariant TransitionImage oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (_isListeningToStream) {
-      _imageStream!.removeListener(_getListener());
-      _imageStream!.addListener(_getListener());
+      final ImageStreamListener oldListener = _getListener();
+      _imageStream!.addListener(_getListener(recreateListener: true));
+      _imageStream!.removeListener(oldListener);
     }
     if (widget.image != oldWidget.image) _resolveImage();
   }
@@ -84,31 +81,41 @@ class _TransitionImageState extends State<TransitionImage> {
     _updateSourceStream(newStream);
   }
 
-  ImageStreamListener _getListener() {
-    return ImageStreamListener(
-      _handleImageFrame,
-      onChunk: null,
-    );
+  ImageStreamListener? _imageStreamListener;
+
+  ImageStreamListener _getListener({bool recreateListener = false}) {
+    if (_imageStreamListener == null || recreateListener) {
+      _imageStreamListener = ImageStreamListener(
+        _handleImageFrame,
+      );
+    }
+    return _imageStreamListener!;
   }
 
   void _handleImageFrame(ImageInfo imageInfo, bool synchronousCall) {
     setState(() {
-      _imageInfo = imageInfo;
+      _replaceImage(info: imageInfo);
       _frameNumber = _frameNumber == null ? 0 : _frameNumber! + 1;
     });
   }
 
-  // Updates _imageStream to newStream, and moves the stream listener
-  // registration from the old stream to the new stream (if a listener was
-  // registered).
-  void _updateSourceStream(ImageStream newStream) {
-    if (_imageStream?.key == newStream.key) return;
+  void _replaceImage({required ImageInfo? info}) {
+    _imageInfo?.dispose();
+    _imageInfo = info;
+  }
 
-    if (_isListeningToStream) _imageStream!.removeListener(_getListener());
+  void _updateSourceStream(ImageStream newStream) {
+    if (_imageStream?.key == newStream.key) {
+      return;
+    }
+
+    if (_isListeningToStream) {
+      _imageStream!.removeListener(_getListener());
+    }
 
     if (!widget.gaplessPlayback) {
       setState(() {
-        _imageInfo = null;
+        _replaceImage(info: null);
       });
     }
 
@@ -117,17 +124,26 @@ class _TransitionImageState extends State<TransitionImage> {
     });
 
     _imageStream = newStream;
-    if (_isListeningToStream) _imageStream!.addListener(_getListener());
+    if (_isListeningToStream) {
+      _imageStream!.addListener(_getListener());
+    }
   }
 
   void _listenToStream() {
-    if (_isListeningToStream) return;
+    if (_isListeningToStream) {
+      return;
+    }
+
     _imageStream!.addListener(_getListener());
+
     _isListeningToStream = true;
   }
 
   void _stopListeningToStream() {
-    if (!_isListeningToStream) return;
+    if (!_isListeningToStream) {
+      return;
+    }
+
     _imageStream!.removeListener(_getListener());
     _isListeningToStream = false;
   }

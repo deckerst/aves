@@ -16,6 +16,10 @@ All notable changes to this project will be documented in this file.
 - Widget: tap action setting
 - Wallpaper: scroll effect option
 
+### Changed
+
+- upgraded Flutter to stable v3.3.3
+
 ### Fixed
 
 - restoring to missing Download subdir

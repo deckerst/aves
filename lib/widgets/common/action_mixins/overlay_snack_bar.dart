@@ -48,7 +48,7 @@ class OverlaySnackBar extends StatelessWidget {
       ),
     );
 
-    final contentTextStyle = snackBarTheme.contentTextStyle ?? ThemeData(brightness: brightness).textTheme.subtitle1;
+    final contentTextStyle = snackBarTheme.contentTextStyle ?? ThemeData(brightness: brightness).textTheme.titleMedium;
 
     final horizontalPadding = FeedbackMixin.snackBarHorizontalPadding(snackBarTheme);
     final padding = EdgeInsetsDirectional.only(start: horizontalPadding, end: action != null ? 0 : horizontalPadding);
