@@ -116,7 +116,7 @@ class _WelcomePageState extends State<WelcomePage> {
   List<Widget> _buildHeader(BuildContext context, {required bool isPortrait}) {
     final message = Text(
       context.l10n.welcomeMessage,
-      style: Theme.of(context).textTheme.headline5,
+      style: Theme.of(context).textTheme.headlineSmall,
     );
     final padding = isPortrait ? 16.0 : 8.0;
     return [

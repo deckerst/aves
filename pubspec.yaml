@@ -154,22 +154,23 @@ flutter:
 #  adapts from package `flutter_highlight` v0.7.0
 #
 #  `OutputBuffer` in `/services/common/output_buffer.dart`
-#  adapts from Flutter `_OutputBuffer` in `/foundation/consolidate_response.dart`
+#  adapts from Flutter v3.3.3 `_OutputBuffer` in `/foundation/consolidate_response.dart`
 #
 #  `OverlaySnackBar` in `/widgets/common/action_mixins/overlay_snack_bar.dart`
-#  adapts from Flutter `SnackBar` in `/material/snack_bar.dart`
+#  adapts from Flutter v3.3.3 `SnackBar` in `/material/snack_bar.dart`
 #
 #  `EagerScaleGestureRecognizer` in `/widgets/common/behaviour/eager_scale_gesture_recognizer.dart`
-#  adapts from Flutter `ScaleGestureRecognizer` in `/gestures/scale.dart`
+#  adapts from Flutter v3.3.3 `ScaleGestureRecognizer` in `/gestures/scale.dart`
 #
 #  `KnownExtentScrollPhysics` in `/widgets/common/behaviour/known_extent_scroll_physics.dart`
-#  adapts from Flutter `FixedExtentScrollPhysics` in `/widgets/list_wheel_scroll_view.dart`
+#  adapts from Flutter v3.3.3 `FixedExtentScrollPhysics` in `/widgets/list_wheel_scroll_view.dart`
 #
 #  `TransitionImage` in `/widgets/common/fx/transition_image.dart`
-#  adapts from Flutter `RawImage` in `/widgets/basic.dart` and `DecorationImagePainter` in `/painting/decoration_image.dart`
+#  adapts from Flutter v3.3.3 `_ImageState` in `/widgets/image.dart`
+#  and `DecorationImagePainter` in `/painting/decoration_image.dart`
 #
 #  `_RenderSliverKnownExtentBoxAdaptor` in `/widgets/common/grid/sliver.dart`
-#  adapts from Flutter `RenderSliverFixedExtentBoxAdaptor` in `/rendering/sliver_fixed_extent_list.dart`
+#  adapts from Flutter v3.3.3 `RenderSliverFixedExtentBoxAdaptor` in `/rendering/sliver_fixed_extent_list.dart`
 #
 #  `CollectionSearchDelegate`, `SearchPageRoute` in `/widgets/search/search_delegate.dart`
-#  adapts from Flutter `SearchDelegate`, `_SearchPageRoute` in `/material/search.dart`
+#  adapts from Flutter v3.3.3 `SearchDelegate`, `_SearchPageRoute` in `/material/search.dart`

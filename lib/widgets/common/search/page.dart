@@ -138,7 +138,7 @@ class _SearchPageState extends State<SearchPage> {
                   hintStyle: theme.inputDecorationTheme.hintStyle,
                 ),
                 textInputAction: TextInputAction.search,
-                style: theme.textTheme.headline6,
+                style: theme.textTheme.titleLarge,
                 onSubmitted: (_) => widget.delegate.showResults(context),
               ),
             ),

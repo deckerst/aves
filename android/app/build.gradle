@@ -164,12 +164,12 @@ dependencies {
     implementation 'com.github.deckerst:Android-TiffBitmapFactory:876e53870a'
     // forked, built by JitPack, cf https://jitpack.io/p/deckerst/pixymeta-android
     implementation 'com.github.deckerst:pixymeta-android:706bd73d6e'
-    implementation 'com.github.bumptech.glide:glide:4.13.2'
+    implementation 'com.github.bumptech.glide:glide:4.14.1'
 
     // huawei flavor only
     huaweiImplementation 'com.huawei.agconnect:agconnect-core:1.5.2.300'
 
-    kapt 'androidx.annotation:annotation:1.4.0'
+    kapt 'androidx.annotation:annotation:1.5.0'
     kapt 'com.github.bumptech.glide:compiler:4.13.0'
 
     compileOnly rootProject.findProject(':streams_channel')
