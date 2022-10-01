@@ -103,10 +103,11 @@ class MosaicSectionLayoutBuilder<T> extends SectionLayoutBuilder<T> {
         final textDirection = Directionality.of(context);
         final sectionChildIndex = listIndex - sectionFirstIndex;
         final row = sectionChildIndex == 0 ? null : rows[sectionChildIndex - 1];
+        final sectionGridIndex = row != null ? (sectionChildIndex + 1) * columnCount + row.firstIndex : sectionChildIndex * columnCount;
         return buildSectionWidget(
           context: context,
           section: section,
-          sectionGridIndex: listIndex * columnCount,
+          sectionGridIndex: sectionGridIndex,
           sectionChildIndex: sectionChildIndex,
           itemIndexRange: () => row == null ? const Tuple2(0, 0) : Tuple2(row.firstIndex, row.lastIndex + 1),
           sectionKey: sectionKey,
