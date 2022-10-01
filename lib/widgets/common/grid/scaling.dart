@@ -3,6 +3,7 @@ import 'package:aves/model/source/enums/enums.dart';
 import 'package:aves/widgets/common/behaviour/eager_scale_gesture_recognizer.dart';
 import 'package:aves/widgets/common/grid/sections/fixed/scale_overlay.dart';
 import 'package:aves/widgets/common/grid/sections/mosaic/scale_overlay.dart';
+import 'package:aves/widgets/common/grid/sections/section_layout_builder.dart';
 import 'package:aves/widgets/common/grid/theme.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
 import 'package:collection/collection.dart';
@@ -23,7 +24,7 @@ class GridScaleGestureDetector<T> extends StatefulWidget {
   final TileLayout tileLayout;
   final double Function(double width) heightForWidth;
   final Widget Function(Offset center, Size tileSize, Widget child) gridBuilder;
-  final Widget Function(T item, Size tileSize) scaledItemBuilder;
+  final TileBuilder<T> scaledItemBuilder;
   final MosaicItemBuilder mosaicItemBuilder;
   final Object Function(T item)? highlightItem;
   final Widget child;

@@ -8,6 +8,8 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
+typedef TileBuilder<T> = Widget Function(T item, Size tileSize);
+
 abstract class SectionLayoutBuilder<T> {
   final Map<SectionKey, List<T>> sections;
   final bool showHeaders;
@@ -17,7 +19,7 @@ abstract class SectionLayoutBuilder<T> {
   final TileLayout tileLayout;
   final int columnCount;
   final double spacing, horizontalPadding, tileWidth, tileHeight, bottom;
-  final Widget Function(T item) tileBuilder;
+  final TileBuilder<T> tileBuilder;
   final Duration tileAnimationDelay;
   final bool animate;
 
@@ -55,6 +57,7 @@ abstract class SectionLayoutBuilder<T> {
     required Tuple2<int, int> Function() itemIndexRange,
     required SectionKey sectionKey,
     required double headerExtent,
+    required List<Size> itemSizes,
     required bool animate,
     required Widget Function(List<Widget> children) buildGridRow,
   }) {
@@ -67,13 +70,17 @@ abstract class SectionLayoutBuilder<T> {
     final itemMinMax = itemIndexRange();
     final minItemIndex = itemMinMax.item1.clamp(0, sectionItemCount);
     final maxItemIndex = itemMinMax.item2.clamp(0, sectionItemCount);
+    final childrenCount = maxItemIndex - minItemIndex;
     final children = <Widget>[];
-    for (var i = minItemIndex; i < maxItemIndex; i++) {
-      final itemGridIndex = sectionGridIndex + i - minItemIndex;
+    for (var i = 0; i < childrenCount; i++) {
       final item = RepaintBoundary(
-        child: tileBuilder(section[i]),
+        child: tileBuilder(section[minItemIndex + i], itemSizes[i]),
       );
-      children.add(animate ? _buildAnimation(context, itemGridIndex, item) : item);
+      if (animate) {
+        children.add(_buildAnimation(context, sectionGridIndex + i, item));
+      } else {
+        children.add(item);
+      }
     }
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
