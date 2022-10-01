@@ -272,6 +272,8 @@ class _ThumbnailImageState extends State<ThumbnailImage> {
           return TransitionImage(
             image: entry.bestCachedThumbnail,
             animation: animation,
+            thumbnailFit: isMosaic ? BoxFit.contain : BoxFit.cover,
+            viewerFit: BoxFit.contain,
             background: backgroundColor,
           );
         },

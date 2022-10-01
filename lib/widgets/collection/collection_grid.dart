@@ -141,19 +141,22 @@ class _CollectionGridContent extends StatelessWidget {
                           spacing: tileSpacing,
                           horizontalPadding: horizontalPadding,
                           tileExtent: thumbnailExtent,
-                          tileBuilder: (entry) => AnimatedBuilder(
-                            animation: favourites,
-                            builder: (context, child) {
-                              return InteractiveTile(
-                                key: ValueKey(entry.id),
-                                collection: collection,
-                                entry: entry,
-                                thumbnailExtent: thumbnailExtent,
-                                tileLayout: tileLayout,
-                                isScrollingNotifier: _isScrollingNotifier,
-                              );
-                            },
-                          ),
+                          tileBuilder: (entry, tileSize) {
+                            final extent = tileSize.shortestSide;
+                            return AnimatedBuilder(
+                              animation: favourites,
+                              builder: (context, child) {
+                                return InteractiveTile(
+                                  key: ValueKey(entry.id),
+                                  collection: collection,
+                                  entry: entry,
+                                  thumbnailExtent: extent,
+                                  tileLayout: tileLayout,
+                                  isScrollingNotifier: _isScrollingNotifier,
+                                );
+                              },
+                            );
+                          },
                           tileAnimationDelay: tileAnimationDelay,
                           child: child!,
                         );

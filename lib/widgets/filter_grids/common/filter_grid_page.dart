@@ -306,11 +306,12 @@ class _FilterGridContent<T extends CollectionFilter> extends StatelessWidget {
                               horizontalPadding: horizontalPadding,
                               tileWidth: thumbnailExtent,
                               tileHeight: tileHeight,
-                              tileBuilder: (gridItem) {
+                              tileBuilder: (gridItem, tileSize) {
+                                final extent = tileSize.shortestSide;
                                 return InteractiveFilterTile(
                                   gridItem: gridItem,
-                                  chipExtent: thumbnailExtent,
-                                  thumbnailExtent: thumbnailExtent,
+                                  chipExtent: extent,
+                                  thumbnailExtent: extent,
                                   tileLayout: tileLayout,
                                   banner: _getFilterBanner(context, gridItem.filter),
                                   heroType: heroType,

@@ -281,10 +281,15 @@ class OverlayIcon extends StatelessWidget {
               children: [
                 iconChild,
                 const SizedBox(width: 2),
-                Text(
-                  text!,
-                  // consistent with the color used for the icon next to it
-                  style: TextStyle(color: IconTheme.of(context).color),
+                Flexible(
+                  child: Text(
+                    text!,
+                    // consistent with the color used for the icon next to it
+                    style: TextStyle(color: IconTheme.of(context).color),
+                    softWrap: false,
+                    overflow: TextOverflow.fade,
+                    maxLines: 1,
+                  ),
                 ),
               ],
             ),

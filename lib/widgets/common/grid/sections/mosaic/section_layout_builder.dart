@@ -113,6 +113,7 @@ class MosaicSectionLayoutBuilder<T> extends SectionLayoutBuilder<T> {
           itemIndexRange: () => isHeader ? const Tuple2(0, 0) : Tuple2(row.firstIndex, row.lastIndex + 1),
           sectionKey: sectionKey,
           headerExtent: headerExtent,
+          itemSizes: row.itemWidths.map((v) => Size(v, row.height)).toList(),
           animate: animate,
           buildGridRow: (children) {
             return isHeader

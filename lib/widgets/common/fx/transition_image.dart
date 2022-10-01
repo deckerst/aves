@@ -11,8 +11,9 @@ import 'package:flutter/material.dart';
 
 class TransitionImage extends StatefulWidget {
   final ImageProvider image;
-  final double? width, height;
   final ValueListenable<double> animation;
+  final BoxFit thumbnailFit, viewerFit;
+  final double? width, height;
   final bool gaplessPlayback = false;
   final Color? background;
 
@@ -20,6 +21,8 @@ class TransitionImage extends StatefulWidget {
     super.key,
     required this.image,
     required this.animation,
+    required this.thumbnailFit,
+    required this.viewerFit,
     this.width,
     this.height,
     this.background,
@@ -157,6 +160,8 @@ class _TransitionImageState extends State<TransitionImage> {
           image: _imageInfo?.image,
           scale: _imageInfo?.scale ?? 1.0,
           t: t,
+          thumbnailFit: widget.thumbnailFit,
+          viewerFit: widget.viewerFit,
           background: widget.background,
         ),
       ),
@@ -166,15 +171,17 @@ class _TransitionImageState extends State<TransitionImage> {
 
 class _TransitionImagePainter extends CustomPainter {
   final ui.Image? image;
-  final double scale;
-  final double t;
+  final double scale, t;
   final Color? background;
+  final BoxFit thumbnailFit, viewerFit;
 
   const _TransitionImagePainter({
     required this.image,
     required this.scale,
     required this.t,
-    this.background,
+    required this.thumbnailFit,
+    required this.viewerFit,
+    required this.background,
   });
 
   @override
@@ -190,10 +197,10 @@ class _TransitionImagePainter extends CustomPainter {
     final inputSize = Size(image!.width.toDouble(), image!.height.toDouble());
     final outputSize = rect.size;
 
-    final coverSizes = applyBoxFit(BoxFit.cover, inputSize / scale, size);
-    final containSizes = applyBoxFit(BoxFit.contain, inputSize / scale, size);
-    final sourceSize = Size.lerp(coverSizes.source, containSizes.source, t)! * scale;
-    final destinationSize = Size.lerp(coverSizes.destination, containSizes.destination, t)!;
+    final thumbnailSizes = applyBoxFit(thumbnailFit, inputSize / scale, size);
+    final viewerSizes = applyBoxFit(viewerFit, inputSize / scale, size);
+    final sourceSize = Size.lerp(thumbnailSizes.source, viewerSizes.source, t)! * scale;
+    final destinationSize = Size.lerp(thumbnailSizes.destination, viewerSizes.destination, t)!;
 
     final halfWidthDelta = (outputSize.width - destinationSize.width) / 2.0;
     final halfHeightDelta = (outputSize.height - destinationSize.height) / 2.0;

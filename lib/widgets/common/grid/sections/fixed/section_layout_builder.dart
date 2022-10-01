@@ -11,6 +11,7 @@ import 'package:tuple/tuple.dart';
 class FixedExtentSectionLayoutBuilder<T> extends SectionLayoutBuilder<T> {
   int _currentIndex = 0;
   double _currentOffset = 0;
+  List<Size> _itemSizes;
 
   FixedExtentSectionLayoutBuilder({
     required super.sections,
@@ -26,7 +27,7 @@ class FixedExtentSectionLayoutBuilder<T> extends SectionLayoutBuilder<T> {
     required super.tileHeight,
     required super.tileBuilder,
     required super.tileAnimationDelay,
-  });
+  }) : _itemSizes = List.generate(columnCount, (index) => Size(tileWidth, tileHeight));
 
   @override
   SectionedListLayout<T> updateLayouts(BuildContext context) {
@@ -93,6 +94,7 @@ class FixedExtentSectionLayoutBuilder<T> extends SectionLayoutBuilder<T> {
           ),
           sectionKey: sectionKey,
           headerExtent: headerExtent,
+          itemSizes: _itemSizes,
           animate: animate,
           buildGridRow: (children) => FixedExtentGridRow(
             width: tileWidth,
