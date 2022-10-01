@@ -35,9 +35,9 @@ class MosaicSectionLayoutBuilder<T> extends SectionLayoutBuilder<T> {
     required super.tileWidth,
     required super.tileHeight,
     required super.tileBuilder,
-    required super.tileAnimationDelay,
+    required Duration tileAnimationDelay,
     required this.coverRatioResolver,
-  }) {
+  }) : super(tileAnimationDelay: Duration(milliseconds: (tileAnimationDelay.inMilliseconds / columnCount).ceil())) {
     final rowWidth = scrollableWidth - horizontalPadding * 2;
     rowAvailableWidth = (itemCount) => rowWidth - (itemCount - 1) * spacing;
     rowHeightMax = tileWidth * heightMaxFactor;
@@ -102,19 +102,20 @@ class MosaicSectionLayoutBuilder<T> extends SectionLayoutBuilder<T> {
       builder: (context, listIndex) {
         final textDirection = Directionality.of(context);
         final sectionChildIndex = listIndex - sectionFirstIndex;
-        final row = sectionChildIndex == 0 ? null : rows[sectionChildIndex - 1];
-        final sectionGridIndex = row != null ? (sectionChildIndex + 1) * columnCount + row.firstIndex : sectionChildIndex * columnCount;
+        final isHeader = sectionChildIndex == 0;
+        final row = isHeader ? rows.first : rows[sectionChildIndex - 1];
+        final sectionGridIndex = isHeader ? sectionFirstIndex * columnCount : (sectionChildIndex + 1) * columnCount + row.firstIndex;
         return buildSectionWidget(
           context: context,
           section: section,
           sectionGridIndex: sectionGridIndex,
           sectionChildIndex: sectionChildIndex,
-          itemIndexRange: () => row == null ? const Tuple2(0, 0) : Tuple2(row.firstIndex, row.lastIndex + 1),
+          itemIndexRange: () => isHeader ? const Tuple2(0, 0) : Tuple2(row.firstIndex, row.lastIndex + 1),
           sectionKey: sectionKey,
           headerExtent: headerExtent,
           animate: animate,
           buildGridRow: (children) {
-            return row == null
+            return isHeader
                 ? const SizedBox()
                 : MosaicGridRow(
                     rowLayout: row,
