@@ -11,7 +11,7 @@ import 'package:tuple/tuple.dart';
 class FixedExtentSectionLayoutBuilder<T> extends SectionLayoutBuilder<T> {
   int _currentIndex = 0;
   double _currentOffset = 0;
-  List<Size> _itemSizes;
+  final List<Size> _itemSizes;
 
   FixedExtentSectionLayoutBuilder({
     required super.sections,
