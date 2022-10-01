@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 - reverse filters to filter out/in
 - Collection: selection edit actions available as quick actions
 - Albums: group by content type
+- Info: improved display for XMP
 - Stats: top albums
 - Stats: open full top listings
 - Slideshow: option for no transition
