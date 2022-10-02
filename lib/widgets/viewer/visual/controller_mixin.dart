@@ -66,7 +66,7 @@ mixin EntryViewControllerMixin<T extends StatefulWidget> on State<T> {
     }
   }
 
-  bool _shouldAutoPlayVideo(BuildContext context) {
+  bool get videoAutoPlayEnabled {
     if (!isViewingImage) return false;
 
     switch (videoPlaybackOverride) {
@@ -76,11 +76,39 @@ mixin EntryViewControllerMixin<T extends StatefulWidget> on State<T> {
       case SlideshowVideoPlayback.playWithSound:
         return true;
       case null:
-        return settings.enableVideoAutoPlay;
+        break;
+    }
+
+    switch (settings.videoAutoPlayMode) {
+      case VideoAutoPlayMode.disabled:
+        return false;
+      case VideoAutoPlayMode.playMuted:
+      case VideoAutoPlayMode.playWithSound:
+        return true;
     }
   }
 
-  bool _shouldAutoPlayMotionPhoto(BuildContext context) {
+  bool get shouldAutoPlayVideoMuted {
+    switch (videoPlaybackOverride) {
+      case SlideshowVideoPlayback.skip:
+      case SlideshowVideoPlayback.playWithSound:
+        return false;
+      case SlideshowVideoPlayback.playMuted:
+        return true;
+      case null:
+        break;
+    }
+
+    switch (settings.videoAutoPlayMode) {
+      case VideoAutoPlayMode.disabled:
+      case VideoAutoPlayMode.playWithSound:
+        return false;
+      case VideoAutoPlayMode.playMuted:
+        return true;
+    }
+  }
+
+  bool get shouldAutoPlayMotionPhoto {
     if (!isViewingImage) return false;
 
     return settings.enableMotionPhotoAutoPlay;
@@ -90,7 +118,7 @@ mixin EntryViewControllerMixin<T extends StatefulWidget> on State<T> {
     final controller = context.read<VideoConductor>().getOrCreateController(entry);
     setState(() {});
 
-    if (_shouldAutoPlayVideo(context)) {
+    if (videoAutoPlayEnabled) {
       final resumeTimeMillis = await controller.getResumeTime(context);
       await _playVideo(controller, () => entry == entryNotifier.value, resumeTimeMillis: resumeTimeMillis);
     }
@@ -117,7 +145,7 @@ mixin EntryViewControllerMixin<T extends StatefulWidget> on State<T> {
       // auto play/pause when changing page
       Future<void> _onPageChange() async {
         await pauseVideoControllers();
-        if (_shouldAutoPlayVideo(context) || (entry.isMotionPhoto && _shouldAutoPlayMotionPhoto(context))) {
+        if (videoAutoPlayEnabled || (entry.isMotionPhoto && shouldAutoPlayMotionPhoto)) {
           final page = multiPageController.page;
           final pageInfo = multiPageInfo.getByIndex(page)!;
           if (pageInfo.isVideo) {
@@ -135,7 +163,7 @@ mixin EntryViewControllerMixin<T extends StatefulWidget> on State<T> {
       multiPageController.pageNotifier.addListener(_onPageChange);
       await _onPageChange();
 
-      if (entry.isMotionPhoto && _shouldAutoPlayMotionPhoto(context)) {
+      if (entry.isMotionPhoto && shouldAutoPlayMotionPhoto) {
         await Future.delayed(Durations.motionPhotoAutoPlayDelay);
         if (entry == entryNotifier.value) {
           multiPageController.page = 1;
@@ -160,7 +188,7 @@ mixin EntryViewControllerMixin<T extends StatefulWidget> on State<T> {
     // so we play after a delay for increased stability
     await Future.delayed(const Duration(milliseconds: 300) * timeDilation);
 
-    if (videoPlaybackOverride == SlideshowVideoPlayback.playMuted && !videoController.isMuted) {
+    if (!videoController.isMuted && shouldAutoPlayVideoMuted) {
       await videoController.toggleMute();
     }
 

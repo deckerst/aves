@@ -155,9 +155,9 @@
   "displayRefreshRatePreferHighest": "Höchste Rate",
   "displayRefreshRatePreferLowest": "Niedrigste Rate",
 
-  "slideshowVideoPlaybackSkip": "Überspringen",
-  "slideshowVideoPlaybackMuted": "Stumm abspielen",
-  "slideshowVideoPlaybackWithSound": "Mit Ton abspielen",
+  "videoPlaybackSkip": "Überspringen",
+  "videoPlaybackMuted": "Stumm abspielen",
+  "videoPlaybackWithSound": "Mit Ton abspielen",
 
   "themeBrightnessLight": "Hell",
   "themeBrightnessDark": "Dunkel",
@@ -535,7 +535,7 @@
   "settingsVideoSectionTitle": "Video",
   "settingsVideoShowVideos": "Videos anzeigen",
   "settingsVideoEnableHardwareAcceleration": "Hardware-Beschleunigung",
-  "settingsVideoEnableAutoPlay": "Automatische Wiedergabe",
+  "settingsVideoAutoPlay": "Automatische Wiedergabe",
   "settingsVideoLoopModeTile": "Schleifen-Modus",
   "settingsVideoLoopModeDialogTitle": "Schleifen-Modus",
 

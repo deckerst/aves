@@ -155,9 +155,9 @@
   "displayRefreshRatePreferHighest": "Υψηλότερος ρυθμός",
   "displayRefreshRatePreferLowest": "Χαμηλότερος ρυθμός",
 
-  "slideshowVideoPlaybackSkip": "Παράλειψη",
-  "slideshowVideoPlaybackMuted": "Αναπαραγωγή σε σίγαση",
-  "slideshowVideoPlaybackWithSound": "Αναπαραγωγή με ήχο",
+  "videoPlaybackSkip": "Παράλειψη",
+  "videoPlaybackMuted": "Αναπαραγωγή σε σίγαση",
+  "videoPlaybackWithSound": "Αναπαραγωγή με ήχο",
 
   "themeBrightnessLight": "Φωτεινό",
   "themeBrightnessDark": "Σκούρο",
@@ -535,7 +535,7 @@
   "settingsVideoSectionTitle": "Βιντεο",
   "settingsVideoShowVideos": "Εμφάνιση των βίντεο στη συλλογή",
   "settingsVideoEnableHardwareAcceleration": "Επιτάχυνση υλισμικού",
-  "settingsVideoEnableAutoPlay": "Αυτόματη αναπαραγωγή κατά το άνοιγμα",
+  "settingsVideoAutoPlay": "Αυτόματη αναπαραγωγή κατά το άνοιγμα",
   "settingsVideoLoopModeTile": "Επανάληψη αυτόματα στο τέλος κάθε βίντεο",
   "settingsVideoLoopModeDialogTitle": "Επαναληψη Αυτοματα στο Τελος Καθε Βιντεο",
 

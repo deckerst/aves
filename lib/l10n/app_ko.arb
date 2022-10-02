@@ -157,9 +157,9 @@
   "displayRefreshRatePreferHighest": "가장 높은 재생률",
   "displayRefreshRatePreferLowest": "가장 낮은 재생률",
 
-  "slideshowVideoPlaybackSkip": "생략",
-  "slideshowVideoPlaybackMuted": "음소거 재생",
-  "slideshowVideoPlaybackWithSound": "일반 재생",
+  "videoPlaybackSkip": "생략",
+  "videoPlaybackMuted": "음소거 재생",
+  "videoPlaybackWithSound": "일반 재생",
 
   "themeBrightnessLight": "라이트",
   "themeBrightnessDark": "다크",
@@ -545,7 +545,7 @@
   "settingsVideoSectionTitle": "동영상",
   "settingsVideoShowVideos": "미디어에 동영상 표시",
   "settingsVideoEnableHardwareAcceleration": "하드웨어 가속",
-  "settingsVideoEnableAutoPlay": "자동 재생",
+  "settingsVideoAutoPlay": "자동 재생",
   "settingsVideoLoopModeTile": "반복 모드",
   "settingsVideoLoopModeDialogTitle": "반복 모드",
 

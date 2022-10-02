@@ -151,9 +151,9 @@
   "displayRefreshRatePreferHighest": "Alta tasa",
   "displayRefreshRatePreferLowest": "Baja tasa",
 
-  "slideshowVideoPlaybackSkip": "Saltear",
-  "slideshowVideoPlaybackMuted": "Reproducir sin sonido",
-  "slideshowVideoPlaybackWithSound": "Reproducir con sonido",
+  "videoPlaybackSkip": "Saltear",
+  "videoPlaybackMuted": "Reproducir sin sonido",
+  "videoPlaybackWithSound": "Reproducir con sonido",
 
   "themeBrightnessLight": "Claro",
   "themeBrightnessDark": "Obscuro",
@@ -519,7 +519,7 @@
   "settingsVideoSectionTitle": "Video",
   "settingsVideoShowVideos": "Mostrar videos",
   "settingsVideoEnableHardwareAcceleration": "Aceleración por hardware",
-  "settingsVideoEnableAutoPlay": "Reproducción automática",
+  "settingsVideoAutoPlay": "Reproducción automática",
   "settingsVideoLoopModeTile": "Modo bucle",
   "settingsVideoLoopModeDialogTitle": "Modo bucle",
 

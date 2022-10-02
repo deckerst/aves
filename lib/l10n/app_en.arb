@@ -197,9 +197,9 @@
   "displayRefreshRatePreferHighest": "Highest rate",
   "displayRefreshRatePreferLowest": "Lowest rate",
 
-  "slideshowVideoPlaybackSkip": "Skip",
-  "slideshowVideoPlaybackMuted": "Play muted",
-  "slideshowVideoPlaybackWithSound": "Play with sound",
+  "videoPlaybackSkip": "Skip",
+  "videoPlaybackMuted": "Play muted",
+  "videoPlaybackWithSound": "Play with sound",
 
   "themeBrightnessLight": "Light",
   "themeBrightnessDark": "Dark",
@@ -632,6 +632,7 @@
   "settingsPageTitle": "Settings",
   "settingsSystemDefault": "System",
   "settingsDefault": "Default",
+  "settingsDisabled": "Disabled",
 
   "settingsSearchFieldLabel": "Search settings",
   "settingsSearchEmpty": "No matching setting",
@@ -725,7 +726,7 @@
   "settingsVideoSectionTitle": "Video",
   "settingsVideoShowVideos": "Show videos",
   "settingsVideoEnableHardwareAcceleration": "Hardware acceleration",
-  "settingsVideoEnableAutoPlay": "Auto play",
+  "settingsVideoAutoPlay": "Auto play",
   "settingsVideoLoopModeTile": "Loop mode",
   "settingsVideoLoopModeDialogTitle": "Loop Mode",
 

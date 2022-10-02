@@ -155,9 +155,9 @@
   "displayRefreshRatePreferHighest": "Наивысшая частота",
   "displayRefreshRatePreferLowest": "Наименьшая частота",
 
-  "slideshowVideoPlaybackSkip": "Пропустить",
-  "slideshowVideoPlaybackMuted": "Играть без звука",
-  "slideshowVideoPlaybackWithSound": "Играть со звуком",
+  "videoPlaybackSkip": "Пропустить",
+  "videoPlaybackMuted": "Играть без звука",
+  "videoPlaybackWithSound": "Играть со звуком",
 
   "themeBrightnessLight": "Светлая",
   "themeBrightnessDark": "Тёмная",
@@ -535,7 +535,7 @@
   "settingsVideoSectionTitle": "Видео",
   "settingsVideoShowVideos": "Показать видео",
   "settingsVideoEnableHardwareAcceleration": "Аппаратное ускорение",
-  "settingsVideoEnableAutoPlay": "Автозапуск воспроизведения",
+  "settingsVideoAutoPlay": "Автозапуск воспроизведения",
   "settingsVideoLoopModeTile": "Циклический режим",
   "settingsVideoLoopModeDialogTitle": "Цикличный режим",
 

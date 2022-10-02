@@ -155,9 +155,9 @@
   "displayRefreshRatePreferHighest": "Hoogste waardering",
   "displayRefreshRatePreferLowest": "Laagste waardering",
 
-  "slideshowVideoPlaybackSkip": "Overslaan",
-  "slideshowVideoPlaybackMuted": "Gedempte afspelen",
-  "slideshowVideoPlaybackWithSound": "Met geluid afspelen",
+  "videoPlaybackSkip": "Overslaan",
+  "videoPlaybackMuted": "Gedempte afspelen",
+  "videoPlaybackWithSound": "Met geluid afspelen",
 
   "themeBrightnessLight": "Licht",
   "themeBrightnessDark": "Donker",
@@ -535,7 +535,7 @@
   "settingsVideoSectionTitle": "Video",
   "settingsVideoShowVideos": "Videos",
   "settingsVideoEnableHardwareAcceleration": "Hardware acceleratie",
-  "settingsVideoEnableAutoPlay": "Automatisch afspelen",
+  "settingsVideoAutoPlay": "Automatisch afspelen",
   "settingsVideoLoopModeTile": "Herhaald afspelen",
   "settingsVideoLoopModeDialogTitle": "Herhaald afspelen",
 

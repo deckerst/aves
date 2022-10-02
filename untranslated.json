@@ -8,6 +8,7 @@
     "tileLayoutMosaic",
     "albumGroupType",
     "albumMimeTypeMixed",
+    "settingsDisabled",
     "settingsWidgetOpenPage",
     "statsTopAlbumsSectionTitle",
     "wallpaperUseScrollEffect"
@@ -22,6 +23,7 @@
     "tileLayoutMosaic",
     "albumGroupType",
     "albumMimeTypeMixed",
+    "settingsDisabled",
     "settingsWidgetOpenPage",
     "statsTopAlbumsSectionTitle",
     "wallpaperUseScrollEffect"
@@ -50,11 +52,16 @@
     "albumGroupType",
     "albumMimeTypeMixed",
     "searchMetadataSectionTitle",
+    "settingsDisabled",
     "settingsConfirmationAfterMoveToBinItems",
     "settingsWidgetOpenPage",
     "statsTopAlbumsSectionTitle",
     "viewerInfoLabelDescription",
     "wallpaperUseScrollEffect"
+  ],
+
+  "fr": [
+    "settingsDisabled"
   ],
 
   "id": [
@@ -66,6 +73,7 @@
     "tileLayoutMosaic",
     "albumGroupType",
     "albumMimeTypeMixed",
+    "settingsDisabled",
     "settingsWidgetOpenPage",
     "statsTopAlbumsSectionTitle",
     "wallpaperUseScrollEffect"
@@ -80,6 +88,7 @@
     "tileLayoutMosaic",
     "albumGroupType",
     "albumMimeTypeMixed",
+    "settingsDisabled",
     "settingsWidgetOpenPage",
     "statsTopAlbumsSectionTitle",
     "wallpaperUseScrollEffect"
@@ -108,12 +117,17 @@
     "albumGroupType",
     "albumMimeTypeMixed",
     "searchMetadataSectionTitle",
+    "settingsDisabled",
     "settingsConfirmationAfterMoveToBinItems",
     "settingsViewerGestureSideTapNext",
     "settingsWidgetOpenPage",
     "statsTopAlbumsSectionTitle",
     "viewerInfoLabelDescription",
     "wallpaperUseScrollEffect"
+  ],
+
+  "ko": [
+    "settingsDisabled"
   ],
 
   "nl": [
@@ -125,6 +139,7 @@
     "tileLayoutMosaic",
     "albumGroupType",
     "albumMimeTypeMixed",
+    "settingsDisabled",
     "settingsWidgetOpenPage",
     "statsTopAlbumsSectionTitle",
     "wallpaperUseScrollEffect"
@@ -139,6 +154,7 @@
     "tileLayoutMosaic",
     "albumGroupType",
     "albumMimeTypeMixed",
+    "settingsDisabled",
     "settingsWidgetOpenPage",
     "statsTopAlbumsSectionTitle",
     "wallpaperUseScrollEffect"
@@ -153,6 +169,7 @@
     "tileLayoutMosaic",
     "albumGroupType",
     "albumMimeTypeMixed",
+    "settingsDisabled",
     "settingsWidgetOpenPage",
     "statsTopAlbumsSectionTitle",
     "wallpaperUseScrollEffect"
@@ -168,9 +185,9 @@
     "filterNoTitleLabel",
     "filterOnThisDayLabel",
     "filterRecentlyAddedLabel",
-    "slideshowVideoPlaybackSkip",
-    "slideshowVideoPlaybackMuted",
-    "slideshowVideoPlaybackWithSound",
+    "videoPlaybackSkip",
+    "videoPlaybackMuted",
+    "videoPlaybackWithSound",
     "viewerTransitionSlide",
     "viewerTransitionParallax",
     "viewerTransitionFade",
@@ -195,6 +212,7 @@
     "albumGroupType",
     "albumMimeTypeMixed",
     "searchMetadataSectionTitle",
+    "settingsDisabled",
     "settingsConfirmationAfterMoveToBinItems",
     "settingsViewerGestureSideTapNext",
     "settingsViewerSlideshowTile",
@@ -226,6 +244,7 @@
     "tileLayoutMosaic",
     "albumGroupType",
     "albumMimeTypeMixed",
+    "settingsDisabled",
     "settingsWidgetOpenPage",
     "statsTopAlbumsSectionTitle",
     "wallpaperUseScrollEffect"
