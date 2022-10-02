@@ -370,6 +370,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     Set<String> obsoleteTags = todoItems.expand((entry) => entry.tags).toSet();
     Set<String> obsoleteCountryCodes = todoItems.where((entry) => entry.hasAddress).map((entry) => entry.addressDetails?.countryCode).whereNotNull().toSet();
 
+    final Set<EntryDataType> dataTypes = {};
     final source = context.read<CollectionSource>();
     source.pauseMonitoring();
     var cancelled = false;
@@ -379,8 +380,9 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
         if (cancelled) {
           return ImageOpEvent(success: true, skipped: true, uri: entry.uri);
         } else {
-          final dataTypes = await op(entry);
-          return ImageOpEvent(success: dataTypes.isNotEmpty, skipped: false, uri: entry.uri);
+          final opDataTypes = await op(entry);
+          dataTypes.addAll(opDataTypes);
+          return ImageOpEvent(success: opDataTypes.isNotEmpty, skipped: false, uri: entry.uri);
         }
       }).asBroadcastStream(),
       itemCount: todoCount,
@@ -401,6 +403,10 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
             source.invalidateTagFilterSummary(tags: obsoleteTags);
           }
         }));
+
+        if (dataTypes.contains(EntryDataType.aspectRatio)) {
+          source.onAspectRatioChanged();
+        }
 
         if (showResult) {
           final l10n = context.l10n;

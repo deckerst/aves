@@ -7,6 +7,7 @@ import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
+import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums/enums.dart';
 import 'package:aves/model/source/section_keys.dart';
 import 'package:aves/ref/mime_types.dart';
@@ -117,12 +118,13 @@ class _CollectionGridContent extends StatelessWidget {
                 final columnCount = c.item2;
                 final tileSpacing = c.item3;
                 final horizontalPadding = c.item4;
+                final source = collection.source;
                 return GridTheme(
                   extent: thumbnailExtent,
                   child: EntryListDetailsTheme(
                     extent: thumbnailExtent,
                     child: ValueListenableBuilder<SourceState>(
-                      valueListenable: collection.source.stateNotifier,
+                      valueListenable: source.stateNotifier,
                       builder: (context, sourceState, child) {
                         late final Duration tileAnimationDelay;
                         if (sourceState == SourceState.ready) {
@@ -132,33 +134,37 @@ class _CollectionGridContent extends StatelessWidget {
                         } else {
                           tileAnimationDelay = Duration.zero;
                         }
-                        return SectionedEntryListLayoutProvider(
-                          collection: collection,
-                          selectable: selectable,
-                          scrollableWidth: scrollableWidth,
-                          tileLayout: tileLayout,
-                          columnCount: columnCount,
-                          spacing: tileSpacing,
-                          horizontalPadding: horizontalPadding,
-                          tileExtent: thumbnailExtent,
-                          tileBuilder: (entry, tileSize) {
-                            final extent = tileSize.shortestSide;
-                            return AnimatedBuilder(
-                              animation: favourites,
-                              builder: (context, child) {
-                                return InteractiveTile(
-                                  key: ValueKey(entry.id),
-                                  collection: collection,
-                                  entry: entry,
-                                  thumbnailExtent: extent,
-                                  tileLayout: tileLayout,
-                                  isScrollingNotifier: _isScrollingNotifier,
-                                );
-                              },
-                            );
-                          },
-                          tileAnimationDelay: tileAnimationDelay,
-                          child: child!,
+
+                        return StreamBuilder(
+                          stream: source.eventBus.on<AspectRatioChangedEvent>(),
+                          builder: (context, snapshot) => SectionedEntryListLayoutProvider(
+                            collection: collection,
+                            selectable: selectable,
+                            scrollableWidth: scrollableWidth,
+                            tileLayout: tileLayout,
+                            columnCount: columnCount,
+                            spacing: tileSpacing,
+                            horizontalPadding: horizontalPadding,
+                            tileExtent: thumbnailExtent,
+                            tileBuilder: (entry, tileSize) {
+                              final extent = tileSize.shortestSide;
+                              return AnimatedBuilder(
+                                animation: favourites,
+                                builder: (context, child) {
+                                  return InteractiveTile(
+                                    key: ValueKey(entry.id),
+                                    collection: collection,
+                                    entry: entry,
+                                    thumbnailExtent: extent,
+                                    tileLayout: tileLayout,
+                                    isScrollingNotifier: _isScrollingNotifier,
+                                  );
+                                },
+                              );
+                            },
+                            tileAnimationDelay: tileAnimationDelay,
+                            child: child!,
+                          ),
                         );
                       },
                       child: child,
