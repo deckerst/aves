@@ -157,9 +157,9 @@
   "displayRefreshRatePreferHighest": "Fréquence maximale",
   "displayRefreshRatePreferLowest": "Fréquence minimale",
 
-  "slideshowVideoPlaybackSkip": "Passer",
-  "slideshowVideoPlaybackMuted": "Jouer sans son",
-  "slideshowVideoPlaybackWithSound": "Jouer avec son",
+  "videoPlaybackSkip": "Passer",
+  "videoPlaybackMuted": "Jouer sans son",
+  "videoPlaybackWithSound": "Jouer avec son",
 
   "themeBrightnessLight": "Clair",
   "themeBrightnessDark": "Sombre",
@@ -545,7 +545,7 @@
   "settingsVideoSectionTitle": "Vidéo",
   "settingsVideoShowVideos": "Afficher les vidéos",
   "settingsVideoEnableHardwareAcceleration": "Accélération matérielle",
-  "settingsVideoEnableAutoPlay": "Lecture automatique",
+  "settingsVideoAutoPlay": "Lecture automatique",
   "settingsVideoLoopModeTile": "Lecture répétée",
   "settingsVideoLoopModeDialogTitle": "Lecture répétée",
 

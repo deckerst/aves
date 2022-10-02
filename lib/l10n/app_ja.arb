@@ -151,9 +151,9 @@
   "displayRefreshRatePreferHighest": "高レート",
   "displayRefreshRatePreferLowest": "低レート",
 
-  "slideshowVideoPlaybackSkip": "スキップ",
-  "slideshowVideoPlaybackMuted": "ミュート再生",
-  "slideshowVideoPlaybackWithSound": "音声あり再生",
+  "videoPlaybackSkip": "スキップ",
+  "videoPlaybackMuted": "ミュート再生",
+  "videoPlaybackWithSound": "音声あり再生",
 
   "themeBrightnessLight": "ライト",
   "themeBrightnessDark": "ダーク",
@@ -518,7 +518,7 @@
   "settingsVideoSectionTitle": "動画",
   "settingsVideoShowVideos": "動画を表示",
   "settingsVideoEnableHardwareAcceleration": "ハードウェア アクセラレーション",
-  "settingsVideoEnableAutoPlay": "自動再生",
+  "settingsVideoAutoPlay": "自動再生",
   "settingsVideoLoopModeTile": "ループ モード",
   "settingsVideoLoopModeDialogTitle": "ループ モード",
 

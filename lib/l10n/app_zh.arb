@@ -155,9 +155,9 @@
   "displayRefreshRatePreferHighest": "最高刷新率",
   "displayRefreshRatePreferLowest": "最低刷新率",
 
-  "slideshowVideoPlaybackSkip": "跳过",
-  "slideshowVideoPlaybackMuted": "静音播放",
-  "slideshowVideoPlaybackWithSound": "带音播放",
+  "videoPlaybackSkip": "跳过",
+  "videoPlaybackMuted": "静音播放",
+  "videoPlaybackWithSound": "带音播放",
 
   "themeBrightnessLight": "浅色",
   "themeBrightnessDark": "深色",
@@ -535,7 +535,7 @@
   "settingsVideoSectionTitle": "视频",
   "settingsVideoShowVideos": "显示视频",
   "settingsVideoEnableHardwareAcceleration": "硬件加速",
-  "settingsVideoEnableAutoPlay": "自动播放",
+  "settingsVideoAutoPlay": "自动播放",
   "settingsVideoLoopModeTile": "循环模式",
   "settingsVideoLoopModeDialogTitle": "循环模式",
 

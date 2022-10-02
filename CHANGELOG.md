@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file.
 - Info: improved display for XMP
 - Stats: top albums
 - Stats: open full top listings
+- Video: option for muted auto play
 - Slideshow: option for no transition
 - Widget: tap action setting
 - Wallpaper: scroll effect option

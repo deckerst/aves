@@ -112,7 +112,7 @@ class Settings extends ChangeNotifier {
 
   // video
   static const enableVideoHardwareAccelerationKey = 'video_hwaccel_mediacodec';
-  static const enableVideoAutoPlayKey = 'video_auto_play';
+  static const videoAutoPlayModeKey = 'video_auto_play_mode';
   static const videoLoopModeKey = 'video_loop';
   static const videoShowRawTimedTextKey = 'video_show_raw_timed_text';
   static const videoControlsKey = 'video_controls';
@@ -534,9 +534,9 @@ class Settings extends ChangeNotifier {
 
   set enableVideoHardwareAcceleration(bool newValue) => setAndNotify(enableVideoHardwareAccelerationKey, newValue);
 
-  bool get enableVideoAutoPlay => getBoolOrDefault(enableVideoAutoPlayKey, SettingsDefaults.enableVideoAutoPlay);
+  VideoAutoPlayMode get videoAutoPlayMode => getEnumOrDefault(videoAutoPlayModeKey, SettingsDefaults.videoAutoPlayMode, VideoAutoPlayMode.values);
 
-  set enableVideoAutoPlay(bool newValue) => setAndNotify(enableVideoAutoPlayKey, newValue);
+  set videoAutoPlayMode(VideoAutoPlayMode newValue) => setAndNotify(videoAutoPlayModeKey, newValue.toString());
 
   VideoLoopMode get videoLoopMode => getEnumOrDefault(videoLoopModeKey, SettingsDefaults.videoLoopMode, VideoLoopMode.values);
 
@@ -874,7 +874,6 @@ class Settings extends ChangeNotifier {
             case viewerMaxBrightnessKey:
             case enableMotionPhotoAutoPlayKey:
             case enableVideoHardwareAccelerationKey:
-            case enableVideoAutoPlayKey:
             case videoGestureDoubleTapTogglePlayKey:
             case videoGestureSideDoubleTapSeekKey:
             case subtitleShowOutlineKey:
@@ -903,6 +902,7 @@ class Settings extends ChangeNotifier {
             case countrySortFactorKey:
             case tagSortFactorKey:
             case imageBackgroundKey:
+            case videoAutoPlayModeKey:
             case videoLoopModeKey:
             case videoControlsKey:
             case subtitleTextAlignmentKey:

@@ -155,9 +155,9 @@
   "displayRefreshRatePreferHighest": "Penyegaran tertinggi",
   "displayRefreshRatePreferLowest": "Penyegaran terendah",
 
-  "slideshowVideoPlaybackSkip": "Lewati",
-  "slideshowVideoPlaybackMuted": "Mainkan bisu",
-  "slideshowVideoPlaybackWithSound": "Mainkan dengan suara",
+  "videoPlaybackSkip": "Lewati",
+  "videoPlaybackMuted": "Mainkan bisu",
+  "videoPlaybackWithSound": "Mainkan dengan suara",
 
   "themeBrightnessLight": "Terang",
   "themeBrightnessDark": "Gelap",
@@ -535,7 +535,7 @@
   "settingsVideoSectionTitle": "Video",
   "settingsVideoShowVideos": "Tampilkan video",
   "settingsVideoEnableHardwareAcceleration": "Akselerasi perangkat keras",
-  "settingsVideoEnableAutoPlay": "Putar otomatis",
+  "settingsVideoAutoPlay": "Putar otomatis",
   "settingsVideoLoopModeTile": "Putar ulang",
   "settingsVideoLoopModeDialogTitle": "Putar Ulang",
 

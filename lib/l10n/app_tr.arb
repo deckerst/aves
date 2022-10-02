@@ -502,7 +502,7 @@
   "settingsVideoSectionTitle": "Video",
   "settingsVideoShowVideos": "Videoları göster",
   "settingsVideoEnableHardwareAcceleration": "Donanım hızlandırma",
-  "settingsVideoEnableAutoPlay": "Otomatik oynat",
+  "settingsVideoAutoPlay": "Otomatik oynat",
   "settingsVideoLoopModeTile": "Döngü modu",
   "settingsVideoLoopModeDialogTitle": "Döngü Modu",
 
