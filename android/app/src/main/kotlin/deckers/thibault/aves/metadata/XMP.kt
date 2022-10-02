@@ -98,7 +98,7 @@ object XMP {
         if (MimeTypes.isHeic(mimeType) && !foundXmp && StorageUtils.isMediaStoreContentUri(uri) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             try {
                 val xmpBytes = context.queryContentResolverProp(uri, mimeType, MediaStore.MediaColumns.XMP)
-                if (xmpBytes is ByteArray) {
+                if (xmpBytes is ByteArray && xmpBytes.size > 0) {
                     val xmpMeta = XMPMetaFactory.parseFromBuffer(xmpBytes, SafeXmpReader.PARSE_OPTIONS)
                     processXmp(xmpMeta)
                 }
