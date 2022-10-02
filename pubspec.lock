@@ -8,6 +8,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "47.0.0"
+  _flutterfire_internals:
+    dependency: transitive
+    description:
+      name: _flutterfire_internals
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.1"
   analyzer:
     dependency: transitive
     description:
@@ -113,6 +120,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.1"
+  cloud_firestore_platform_interface:
+    dependency: transitive
+    description:
+      name: cloud_firestore_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "5.7.6"
+  cloud_firestore_web:
+    dependency: transitive
+    description:
+      name: cloud_firestore_web
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.8.9"
   collection:
     dependency: "direct main"
     description:
@@ -319,7 +340,7 @@ packages:
       name: firebase_core
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.23.0"
+    version: "1.24.0"
   firebase_core_platform_interface:
     dependency: transitive
     description:
@@ -333,21 +354,21 @@ packages:
       name: firebase_core_web
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.7.2"
+    version: "1.7.3"
   firebase_crashlytics:
     dependency: transitive
     description:
       name: firebase_crashlytics
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.8.11"
+    version: "2.8.12"
   firebase_crashlytics_platform_interface:
     dependency: transitive
     description:
       name: firebase_crashlytics_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.2.17"
+    version: "3.2.18"
   flex_color_picker:
     dependency: "direct main"
     description:
@@ -496,7 +517,7 @@ packages:
       name: google_maps_flutter_android
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.3.1"
+    version: "2.3.2"
   google_maps_flutter_ios:
     dependency: transitive
     description:
@@ -647,9 +668,11 @@ packages:
   motion_sensors:
     dependency: transitive
     description:
-      name: motion_sensors
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "."
+      ref: aves
+      resolved-ref: "0bf47932242dea4f93f51be0f6bfa3d9e5616c31"
+      url: "https://github.com/deckerst/aves_panorama_motion_sensors.git"
+    source: git
     version: "0.1.0"
   nested:
     dependency: transitive
@@ -740,7 +763,7 @@ packages:
     description:
       path: "."
       ref: aves
-      resolved-ref: "0050dc1aee451f821961980ea8b9c1eb3d131c01"
+      resolved-ref: "47442e5102a8bdf5e756d6dfab60108b73d132f0"
       url: "https://github.com/deckerst/aves_panorama.git"
     source: git
     version: "0.4.1"
