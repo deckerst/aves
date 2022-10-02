@@ -310,7 +310,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
             contentId: newFields['contentId'] as int?,
             // title can change when moved files are automatically renamed to avoid conflict
             title: newFields['title'] as String?,
-            dateAddedSecs: metadataDb.timestampSecs,
+            dateAddedSecs: newFields['dateAddedSecs'] as int?,
             dateModifiedSecs: newFields['dateModifiedSecs'] as int?,
           ));
         } else {

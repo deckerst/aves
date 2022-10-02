@@ -86,7 +86,7 @@ class MediaStoreImageProvider : ImageProvider() {
         val alwaysValid: NewEntryChecker = fun(_: Int, _: Int): Boolean = true
         val onSuccess: NewEntryHandler = fun(entry: FieldMap) { fetched.add(entry) }
         if (id != null) {
-            if (!found && (sourceMimeType == null || isImage(sourceMimeType))) {
+            if (sourceMimeType == null || isImage(sourceMimeType)) {
                 val contentUri = ContentUris.withAppendedId(IMAGE_CONTENT_URI, id)
                 found = fetchFrom(context, alwaysValid, onSuccess, contentUri, IMAGE_PROJECTION)
             }
@@ -189,6 +189,7 @@ class MediaStoreImageProvider : ImageProvider() {
                 val sizeColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.SIZE)
                 val widthColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.WIDTH)
                 val heightColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.HEIGHT)
+                val dateAddedColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATE_ADDED)
                 val dateModifiedColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATE_MODIFIED)
                 val dateTakenColumn = cursor.getColumnIndex(MediaColumns.DATE_TAKEN)
 
@@ -224,6 +225,7 @@ class MediaStoreImageProvider : ImageProvider() {
                                 "height" to height,
                                 "sourceRotationDegrees" to if (orientationColumn != -1) cursor.getInt(orientationColumn) else 0,
                                 "sizeBytes" to cursor.getLong(sizeColumn),
+                                "dateAddedSecs" to cursor.getInt(dateAddedColumn),
                                 "dateModifiedSecs" to dateModifiedSecs,
                                 "sourceDateTakenMillis" to if (dateTakenColumn != -1) cursor.getLong(dateTakenColumn) else null,
                                 "durationMillis" to durationMillis,
@@ -789,6 +791,7 @@ class MediaStoreImageProvider : ImageProvider() {
 
                     // we retrieve updated fields as the renamed/moved file became a new entry in the Media Store
                     val projection = arrayOf(
+                        MediaStore.MediaColumns.DATE_ADDED,
                         MediaStore.MediaColumns.DATE_MODIFIED,
                     )
                     try {
@@ -798,6 +801,7 @@ class MediaStoreImageProvider : ImageProvider() {
                             newFields["uri"] = uri.toString()
                             newFields["contentId"] = uri.tryParseId()
                             newFields["path"] = path
+                            cursor.getColumnIndex(MediaStore.MediaColumns.DATE_ADDED).let { if (it != -1) newFields["dateAddedSecs"] = cursor.getInt(it) }
                             cursor.getColumnIndex(MediaStore.MediaColumns.DATE_MODIFIED).let { if (it != -1) newFields["dateModifiedSecs"] = cursor.getInt(it) }
                             cursor.close()
                             return newFields
@@ -871,6 +875,7 @@ class MediaStoreImageProvider : ImageProvider() {
             MediaStore.MediaColumns.SIZE,
             MediaStore.MediaColumns.WIDTH,
             MediaStore.MediaColumns.HEIGHT,
+            MediaStore.MediaColumns.DATE_ADDED,
             MediaStore.MediaColumns.DATE_MODIFIED,
             MediaColumns.DATE_TAKEN,
         )

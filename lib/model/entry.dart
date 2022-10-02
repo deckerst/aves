@@ -150,6 +150,7 @@ class AvesEntry {
       'sourceRotationDegrees': sourceRotationDegrees,
       'sizeBytes': sizeBytes,
       'title': sourceTitle,
+      'dateAddedSecs': dateAddedSecs,
       'dateModifiedSecs': dateModifiedSecs,
       'sourceDateTakenMillis': sourceDateTakenMillis,
       'durationMillis': durationMillis,
