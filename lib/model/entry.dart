@@ -26,7 +26,7 @@ import 'package:country_code/country_code.dart';
 import 'package:flutter/foundation.dart';
 import 'package:latlong2/latlong.dart';
 
-enum EntryDataType { basic, catalog, address, references }
+enum EntryDataType { basic, aspectRatio, catalog, address, references }
 
 class AvesEntry {
   // `sizeBytes`, `dateModifiedSecs` can be missing in viewer mode
