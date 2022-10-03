@@ -1,5 +1,6 @@
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
+import 'package:aves/widgets/common/identity/aves_caption.dart';
 import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -103,7 +104,7 @@ class SettingsSelectionListTile<T extends Enum> extends StatelessWidget {
       selector: selector,
       builder: (context, current, child) => ListTile(
         title: Text(tileTitle),
-        subtitle: Text(getName(context, current)),
+        subtitle: AvesCaption(getName(context, current)),
         onTap: () => showSelectionDialog<T>(
           context: context,
           builder: (context) => AvesSelectionDialog<T>(

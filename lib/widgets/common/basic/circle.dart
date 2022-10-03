@@ -29,13 +29,13 @@ class _CircularIndicatorState extends State<CircularIndicator> {
       child: Stack(
         alignment: Alignment.center,
         children: [
-          Circle(
+          _Circle(
             radius: widget.radius,
             lineWidth: widget.lineWidth,
             percent: 1.0,
             color: widget.background,
           ),
-          Circle(
+          _Circle(
             radius: widget.radius,
             lineWidth: widget.lineWidth,
             percent: widget.percent,
@@ -48,11 +48,11 @@ class _CircularIndicatorState extends State<CircularIndicator> {
   }
 }
 
-class Circle extends StatelessWidget {
+class _Circle extends StatelessWidget {
   final double radius, lineWidth, percent;
   final Color color;
 
-  const Circle({
+  const _Circle({
     super.key,
     required this.radius,
     required this.lineWidth,
