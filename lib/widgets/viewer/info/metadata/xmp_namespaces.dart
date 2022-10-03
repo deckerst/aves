@@ -34,6 +34,8 @@ class XmpNamespace extends Equatable {
     switch (nsUri) {
       case Namespaces.container:
         return XmpContainer(nsPrefix, rawProps);
+      case Namespaces.creatorAtom:
+        return XmpCreatorAtom(nsPrefix, rawProps);
       case Namespaces.crs:
         return XmpCrsNamespace(nsPrefix, rawProps);
       case Namespaces.darktable:
