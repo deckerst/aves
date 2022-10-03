@@ -1,6 +1,15 @@
 import 'package:aves/utils/xmp_utils.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_namespaces.dart';
 
+class XmpCreatorAtom extends XmpNamespace {
+  XmpCreatorAtom(String nsPrefix, Map<String, String> rawProps) : super(Namespaces.creatorAtom, nsPrefix, rawProps);
+
+  @override
+  late final List<XmpCardData> cards = [
+    XmpCardData(RegExp(nsPrefix + r'aeProjectLink/(.*)'), title: 'AE Project Link'),
+  ];
+}
+
 class XmpDarktableNamespace extends XmpNamespace {
   XmpDarktableNamespace(String nsPrefix, Map<String, String> rawProps) : super(Namespaces.darktable, nsPrefix, rawProps);
 
