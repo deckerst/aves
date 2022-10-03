@@ -75,6 +75,9 @@ class _EntryPageViewState extends State<EntryPageView> {
   // use the high res photo as cover for the video part of a motion photo
   ImageProvider get videoCoverUriImage => mainEntry.isMotionPhoto ? mainEntry.uriImage : entry.uriImage;
 
+  static const rasterMaxScale = ScaleLevel(factor: 5);
+  static const vectorMaxScale = ScaleLevel(factor: 25);
+
   @override
   void initState() {
     super.initState();
@@ -174,7 +177,7 @@ class _EntryPageViewState extends State<EntryPageView> {
 
   Widget _buildSvgView() {
     return _buildMagnifier(
-      maxScale: const ScaleLevel(factor: 25),
+      maxScale: vectorMaxScale,
       scaleStateCycle: _vectorScaleStateCycle,
       applyScale: false,
       child: VectorImageView(
@@ -365,7 +368,7 @@ class _EntryPageViewState extends State<EntryPageView> {
   Widget _buildMagnifier({
     MagnifierController? controller,
     Size? displaySize,
-    ScaleLevel maxScale = const ScaleLevel(factor: 2.0),
+    ScaleLevel maxScale = rasterMaxScale,
     ScaleStateCycle scaleStateCycle = defaultScaleStateCycle,
     bool applyScale = true,
     MagnifierDoubleTapCallback? onDoubleTap,
