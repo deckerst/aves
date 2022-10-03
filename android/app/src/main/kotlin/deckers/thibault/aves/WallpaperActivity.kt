@@ -1,5 +1,6 @@
 package deckers.thibault.aves
 
+import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -16,50 +17,22 @@ import deckers.thibault.aves.channel.streams.ImageByteStreamHandler
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.getParcelableExtraCompat
 import io.flutter.embedding.android.FlutterActivity
+import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 
 class WallpaperActivity : FlutterActivity() {
     private lateinit var intentDataMap: MutableMap<String, Any?>
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
         Log.i(LOG_TAG, "onCreate intent=$intent")
         intent.extras?.takeUnless { it.isEmpty }?.let {
             Log.i(LOG_TAG, "onCreate intent extras=$it")
         }
-
-        super.onCreate(savedInstanceState)
-
-        val messenger = flutterEngine!!.dartExecutor
-
-        // dart -> platform -> dart
-        // - need Context
-        MethodChannel(messenger, DeviceHandler.CHANNEL).setMethodCallHandler(DeviceHandler(this))
-        MethodChannel(messenger, EmbeddedDataHandler.CHANNEL).setMethodCallHandler(EmbeddedDataHandler(this))
-        MethodChannel(messenger, MediaFetchBytesHandler.CHANNEL, AvesByteSendingMethodCodec.INSTANCE).setMethodCallHandler(MediaFetchBytesHandler(context))
-        MethodChannel(messenger, MediaFetchObjectHandler.CHANNEL).setMethodCallHandler(MediaFetchObjectHandler(this))
-        MethodChannel(messenger, MetadataFetchHandler.CHANNEL).setMethodCallHandler(MetadataFetchHandler(this))
-        MethodChannel(messenger, StorageHandler.CHANNEL).setMethodCallHandler(StorageHandler(this))
-        // - need ContextWrapper
-        MethodChannel(messenger, AccessibilityHandler.CHANNEL).setMethodCallHandler(AccessibilityHandler(this))
-        MethodChannel(messenger, WallpaperHandler.CHANNEL).setMethodCallHandler(WallpaperHandler(this))
-        // - need Activity
-        MethodChannel(messenger, WindowHandler.CHANNEL).setMethodCallHandler(ActivityWindowHandler(this))
-
-        // result streaming: dart -> platform ->->-> dart
-        // - need Context
-        StreamsChannel(messenger, ImageByteStreamHandler.CHANNEL).setStreamHandlerFactory { args -> ImageByteStreamHandler(this, args) }
-
-        // intent handling
-        // detail fetch: dart -> platform
         intentDataMap = extractIntentData(intent)
-        MethodChannel(messenger, MainActivity.INTENT_CHANNEL).setMethodCallHandler { call, result ->
-            when (call.method) {
-                "getIntentData" -> {
-                    result.success(intentDataMap)
-                    intentDataMap.clear()
-                }
-            }
-        }
+
+        initChannels(this)
     }
 
     override fun onStart() {
@@ -73,6 +46,41 @@ class WallpaperActivity : FlutterActivity() {
             Handler(Looper.getMainLooper()).postDelayed({
                 window.decorView.requestApplyInsets()
             }, 100)
+        }
+    }
+
+    private fun initChannels(activity: Activity) {
+        val messenger = flutterEngine!!.dartExecutor
+
+        // dart -> platform -> dart
+        // - need Context
+        MethodChannel(messenger, DeviceHandler.CHANNEL).setMethodCallHandler(DeviceHandler(activity))
+        MethodChannel(messenger, EmbeddedDataHandler.CHANNEL).setMethodCallHandler(EmbeddedDataHandler(activity))
+        MethodChannel(messenger, MediaFetchBytesHandler.CHANNEL, AvesByteSendingMethodCodec.INSTANCE).setMethodCallHandler(MediaFetchBytesHandler(activity))
+        MethodChannel(messenger, MediaFetchObjectHandler.CHANNEL).setMethodCallHandler(MediaFetchObjectHandler(activity))
+        MethodChannel(messenger, MetadataFetchHandler.CHANNEL).setMethodCallHandler(MetadataFetchHandler(activity))
+        MethodChannel(messenger, StorageHandler.CHANNEL).setMethodCallHandler(StorageHandler(activity))
+        // - need ContextWrapper
+        MethodChannel(messenger, AccessibilityHandler.CHANNEL).setMethodCallHandler(AccessibilityHandler(activity))
+        MethodChannel(messenger, WallpaperHandler.CHANNEL).setMethodCallHandler(WallpaperHandler(activity))
+        // - need Activity
+        MethodChannel(messenger, WindowHandler.CHANNEL).setMethodCallHandler(ActivityWindowHandler(activity))
+
+        // result streaming: dart -> platform ->->-> dart
+        // - need Context
+        StreamsChannel(messenger, ImageByteStreamHandler.CHANNEL).setStreamHandlerFactory { args -> ImageByteStreamHandler(activity, args) }
+
+        // intent handling
+        // detail fetch: dart -> platform
+        MethodChannel(messenger, MainActivity.INTENT_CHANNEL).setMethodCallHandler { call, result -> onMethodCall(call, result) }
+    }
+
+    private fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
+        when (call.method) {
+            "getIntentData" -> {
+                result.success(intentDataMap)
+                intentDataMap.clear()
+            }
         }
     }
 
