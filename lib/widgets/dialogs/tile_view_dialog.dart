@@ -3,6 +3,7 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/themes.dart';
 import 'package:aves/widgets/common/basic/text_dropdown_button.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/common/identity/aves_caption.dart';
 import 'package:aves/widgets/common/identity/highlight_title.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -76,12 +77,7 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
             _selectedSort = v;
             _reverseSort = false;
           },
-          bottom: _selectedSort != null
-              ? Text(
-                  widget.sortOrder(_selectedSort as S, _reverseSort),
-                  style: Theme.of(context).textTheme.caption,
-                )
-              : null,
+          bottom: _selectedSort != null ? AvesCaption(widget.sortOrder(_selectedSort as S, _reverseSort)) : null,
         ),
         AnimatedSwitcher(
           duration: context.read<DurationsData>().formTransition,

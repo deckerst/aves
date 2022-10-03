@@ -38,7 +38,7 @@ class _SearchPageState extends State<SearchPage> {
   @override
   void didUpdateWidget(covariant SearchPage oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.delegate != oldWidget.delegate) {
+    if (oldWidget.delegate != widget.delegate) {
       _unregisterWidget(oldWidget);
       _registerWidget(widget);
     }
