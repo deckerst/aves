@@ -53,7 +53,6 @@ class _Circle extends StatelessWidget {
   final Color color;
 
   const _Circle({
-    super.key,
     required this.radius,
     required this.lineWidth,
     required this.percent,
