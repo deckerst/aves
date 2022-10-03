@@ -25,6 +25,7 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 
 - restoring to missing Download subdir
+- crash when cataloguing PNG with large chunks
 
 ## <a id="v1.7.0"></a>[v1.7.0] - 2022-09-19
 
