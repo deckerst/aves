@@ -36,6 +36,11 @@ class ViewerSlideshowPage extends StatelessWidget {
               onChanged: (v) => settings.slideshowFillScreen = v,
               title: context.l10n.settingsSlideshowFillScreen,
             ),
+            SettingsSwitchListTile(
+              selector: (context, s) => s.slideshowAnimatedZoomEffect,
+              onChanged: (v) => settings.slideshowAnimatedZoomEffect = v,
+              title: context.l10n.settingsSlideshowAnimatedZoomEffect,
+            ),
             SettingsSelectionListTile<ViewerTransition>(
               values: ViewerTransition.values,
               getName: (context, v) => v.getName(context),

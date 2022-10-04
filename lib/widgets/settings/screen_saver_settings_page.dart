@@ -32,6 +32,11 @@ class ScreenSaverSettingsPage extends StatelessWidget {
                 onChanged: (v) => settings.screenSaverFillScreen = v,
                 title: context.l10n.settingsSlideshowFillScreen,
               ),
+              SettingsSwitchListTile(
+                selector: (context, s) => s.screenSaverAnimatedZoomEffect,
+                onChanged: (v) => settings.screenSaverAnimatedZoomEffect = v,
+                title: context.l10n.settingsSlideshowAnimatedZoomEffect,
+              ),
               SettingsSelectionListTile<ViewerTransition>(
                 values: ViewerTransition.values,
                 getName: (context, v) => v.getName(context),

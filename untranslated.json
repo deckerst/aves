@@ -9,6 +9,7 @@
     "albumGroupType",
     "albumMimeTypeMixed",
     "settingsDisabled",
+    "settingsSlideshowAnimatedZoomEffect",
     "settingsWidgetOpenPage",
     "statsTopAlbumsSectionTitle",
     "wallpaperUseScrollEffect"
@@ -24,6 +25,7 @@
     "albumGroupType",
     "albumMimeTypeMixed",
     "settingsDisabled",
+    "settingsSlideshowAnimatedZoomEffect",
     "settingsWidgetOpenPage",
     "statsTopAlbumsSectionTitle",
     "wallpaperUseScrollEffect"
@@ -54,6 +56,7 @@
     "searchMetadataSectionTitle",
     "settingsDisabled",
     "settingsConfirmationAfterMoveToBinItems",
+    "settingsSlideshowAnimatedZoomEffect",
     "settingsWidgetOpenPage",
     "statsTopAlbumsSectionTitle",
     "viewerInfoLabelDescription",
@@ -74,6 +77,7 @@
     "albumGroupType",
     "albumMimeTypeMixed",
     "settingsDisabled",
+    "settingsSlideshowAnimatedZoomEffect",
     "settingsWidgetOpenPage",
     "statsTopAlbumsSectionTitle",
     "wallpaperUseScrollEffect"
@@ -89,6 +93,7 @@
     "albumGroupType",
     "albumMimeTypeMixed",
     "settingsDisabled",
+    "settingsSlideshowAnimatedZoomEffect",
     "settingsWidgetOpenPage",
     "statsTopAlbumsSectionTitle",
     "wallpaperUseScrollEffect"
@@ -120,6 +125,7 @@
     "settingsDisabled",
     "settingsConfirmationAfterMoveToBinItems",
     "settingsViewerGestureSideTapNext",
+    "settingsSlideshowAnimatedZoomEffect",
     "settingsWidgetOpenPage",
     "statsTopAlbumsSectionTitle",
     "viewerInfoLabelDescription",
@@ -140,6 +146,7 @@
     "albumGroupType",
     "albumMimeTypeMixed",
     "settingsDisabled",
+    "settingsSlideshowAnimatedZoomEffect",
     "settingsWidgetOpenPage",
     "statsTopAlbumsSectionTitle",
     "wallpaperUseScrollEffect"
@@ -155,6 +162,7 @@
     "albumGroupType",
     "albumMimeTypeMixed",
     "settingsDisabled",
+    "settingsSlideshowAnimatedZoomEffect",
     "settingsWidgetOpenPage",
     "statsTopAlbumsSectionTitle",
     "wallpaperUseScrollEffect"
@@ -170,6 +178,7 @@
     "albumGroupType",
     "albumMimeTypeMixed",
     "settingsDisabled",
+    "settingsSlideshowAnimatedZoomEffect",
     "settingsWidgetOpenPage",
     "statsTopAlbumsSectionTitle",
     "wallpaperUseScrollEffect"
@@ -220,6 +229,7 @@
     "settingsSlideshowRepeat",
     "settingsSlideshowShuffle",
     "settingsSlideshowFillScreen",
+    "settingsSlideshowAnimatedZoomEffect",
     "settingsSlideshowTransitionTile",
     "settingsSlideshowTransitionDialogTitle",
     "settingsSlideshowIntervalTile",
@@ -245,6 +255,7 @@
     "albumGroupType",
     "albumMimeTypeMixed",
     "settingsDisabled",
+    "settingsSlideshowAnimatedZoomEffect",
     "settingsWidgetOpenPage",
     "statsTopAlbumsSectionTitle",
     "wallpaperUseScrollEffect"

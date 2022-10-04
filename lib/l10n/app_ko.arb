@@ -534,6 +534,7 @@
   "settingsSlideshowRepeat": "반복",
   "settingsSlideshowShuffle": "순서섞기",
   "settingsSlideshowFillScreen": "화면 채우기",
+  "settingsSlideshowAnimatedZoomEffect": "애니메이션 확대/축소 효과",
   "settingsSlideshowTransitionTile": "전환 효과",
   "settingsSlideshowTransitionDialogTitle": "전환 효과",
   "settingsSlideshowIntervalTile": "교체 주기",

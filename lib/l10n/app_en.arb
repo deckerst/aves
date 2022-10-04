@@ -715,6 +715,7 @@
   "settingsSlideshowRepeat": "Repeat",
   "settingsSlideshowShuffle": "Shuffle",
   "settingsSlideshowFillScreen": "Fill screen",
+  "settingsSlideshowAnimatedZoomEffect": "Animated zoom effect",
   "settingsSlideshowTransitionTile": "Transition",
   "settingsSlideshowTransitionDialogTitle": "Transition",
   "settingsSlideshowIntervalTile": "Interval",

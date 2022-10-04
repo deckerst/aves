@@ -151,6 +151,7 @@ class Settings extends ChangeNotifier {
 
   // screen saver
   static const screenSaverFillScreenKey = 'screen_saver_fill_screen';
+  static const screenSaverAnimatedZoomEffectKey = 'screen_saver_animated_zoom_effect';
   static const screenSaverTransitionKey = 'screen_saver_transition';
   static const screenSaverVideoPlaybackKey = 'screen_saver_video_playback';
   static const screenSaverIntervalKey = 'screen_saver_interval';
@@ -160,6 +161,7 @@ class Settings extends ChangeNotifier {
   static const slideshowRepeatKey = 'slideshow_loop';
   static const slideshowShuffleKey = 'slideshow_shuffle';
   static const slideshowFillScreenKey = 'slideshow_fill_screen';
+  static const slideshowAnimatedZoomEffectKey = 'slideshow_animated_zoom_effect';
   static const slideshowTransitionKey = 'slideshow_transition';
   static const slideshowVideoPlaybackKey = 'slideshow_video_playback';
   static const slideshowIntervalKey = 'slideshow_interval';
@@ -649,6 +651,10 @@ class Settings extends ChangeNotifier {
 
   set screenSaverFillScreen(bool newValue) => setAndNotify(screenSaverFillScreenKey, newValue);
 
+  bool get screenSaverAnimatedZoomEffect => getBoolOrDefault(screenSaverAnimatedZoomEffectKey, SettingsDefaults.slideshowAnimatedZoomEffect);
+
+  set screenSaverAnimatedZoomEffect(bool newValue) => setAndNotify(screenSaverAnimatedZoomEffectKey, newValue);
+
   ViewerTransition get screenSaverTransition => getEnumOrDefault(screenSaverTransitionKey, SettingsDefaults.slideshowTransition, ViewerTransition.values);
 
   set screenSaverTransition(ViewerTransition newValue) => setAndNotify(screenSaverTransitionKey, newValue.toString());
@@ -678,6 +684,10 @@ class Settings extends ChangeNotifier {
   bool get slideshowFillScreen => getBoolOrDefault(slideshowFillScreenKey, SettingsDefaults.slideshowFillScreen);
 
   set slideshowFillScreen(bool newValue) => setAndNotify(slideshowFillScreenKey, newValue);
+
+  bool get slideshowAnimatedZoomEffect => getBoolOrDefault(slideshowAnimatedZoomEffectKey, SettingsDefaults.slideshowAnimatedZoomEffect);
+
+  set slideshowAnimatedZoomEffect(bool newValue) => setAndNotify(slideshowAnimatedZoomEffectKey, newValue);
 
   ViewerTransition get slideshowTransition => getEnumOrDefault(slideshowTransitionKey, SettingsDefaults.slideshowTransition, ViewerTransition.values);
 
@@ -880,9 +890,11 @@ class Settings extends ChangeNotifier {
             case saveSearchHistoryKey:
             case filePickerShowHiddenFilesKey:
             case screenSaverFillScreenKey:
+            case screenSaverAnimatedZoomEffectKey:
             case slideshowRepeatKey:
             case slideshowShuffleKey:
             case slideshowFillScreenKey:
+            case slideshowAnimatedZoomEffectKey:
               if (newValue is bool) {
                 settingsStore.setBool(key, newValue);
               } else {
