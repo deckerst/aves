@@ -534,6 +534,7 @@
   "settingsSlideshowRepeat": "Répéter",
   "settingsSlideshowShuffle": "Aléatoire",
   "settingsSlideshowFillScreen": "Remplir l’écran",
+  "settingsSlideshowAnimatedZoomEffect": "Effet de zoom animé",
   "settingsSlideshowTransitionTile": "Transition",
   "settingsSlideshowTransitionDialogTitle": "Transition",
   "settingsSlideshowIntervalTile": "Intervalle",

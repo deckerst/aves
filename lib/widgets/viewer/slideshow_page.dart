@@ -45,6 +45,7 @@ class _SlideshowPageState extends State<SlideshowPage> {
       repeat: settings.slideshowRepeat,
       autopilot: true,
       autopilotInterval: settings.slideshowInterval.getDuration(),
+      autopilotAnimatedZoom: settings.slideshowAnimatedZoomEffect,
     );
     _initSlideshowCollection();
   }

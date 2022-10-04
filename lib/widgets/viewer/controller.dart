@@ -1,20 +1,25 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/settings/enums/enums.dart';
+import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/magnifier/scale/scale_level.dart';
 import 'package:flutter/widgets.dart';
 
 class ViewerController {
   final ValueNotifier<AvesEntry?> entryNotifier = ValueNotifier(null);
-  final ScaleLevel initialScale;
   final ViewerTransition transition;
   final Duration? autopilotInterval;
+  final bool autopilotAnimatedZoom;
   final bool repeat;
 
+  late final ScaleLevel _initialScale;
   late final ValueNotifier<bool> _autopilotNotifier;
   Timer? _playTimer;
   final StreamController _streamController = StreamController.broadcast();
+  final Map<TickerProvider, AnimationController> _autopilotAnimationControllers = {};
+  ScaleLevel? _autopilotInitialScale;
 
   Stream<dynamic> get _events => _streamController.stream;
 
@@ -26,13 +31,22 @@ class ViewerController {
 
   set autopilot(bool enabled) => _autopilotNotifier.value = enabled;
 
+  ScaleLevel get initialScale => _autopilotInitialScale ?? _initialScale;
+
+  static final _autopilotScaleTweens = [
+    Tween<double>(begin: 1, end: 1.2),
+    Tween<double>(begin: 1.2, end: 1),
+  ];
+
   ViewerController({
-    this.initialScale = const ScaleLevel(ref: ScaleReference.contained),
+    ScaleLevel initialScale = const ScaleLevel(ref: ScaleReference.contained),
     this.transition = ViewerTransition.parallax,
     this.repeat = false,
     bool autopilot = false,
     this.autopilotInterval,
+    this.autopilotAnimatedZoom = false,
   }) {
+    _initialScale = initialScale;
     _autopilotNotifier = ValueNotifier(autopilot);
     _autopilotNotifier.addListener(_onAutopilotChange);
     _onAutopilotChange();
@@ -40,20 +54,52 @@ class ViewerController {
 
   void dispose() {
     _autopilotNotifier.removeListener(_onAutopilotChange);
+    _clearAutopilotAnimations();
     _stopPlayTimer();
     _streamController.close();
   }
 
-  void _stopPlayTimer() {
-    _playTimer?.cancel();
-  }
-
   void _onAutopilotChange() {
+    _clearAutopilotAnimations();
     _stopPlayTimer();
     if (autopilot && autopilotInterval != null) {
       _playTimer = Timer.periodic(autopilotInterval!, (_) => _streamController.add(ViewerShowNextEvent()));
       _streamController.add(const ViewerOverlayToggleEvent(visible: false));
     }
+  }
+
+  void _stopPlayTimer() => _playTimer?.cancel();
+
+  void _clearAutopilotAnimations() => _autopilotAnimationControllers.keys.toSet().forEach((v) => stopAutopilotAnimation(vsync: v));
+
+  void stopAutopilotAnimation({required TickerProvider vsync}) => _autopilotAnimationControllers.remove(vsync)?.dispose();
+
+  void startAutopilotAnimation({
+    required TickerProvider vsync,
+    required void Function({required ScaleLevel scaleLevel}) onUpdate,
+  }) {
+    stopAutopilotAnimation(vsync: vsync);
+    if (!autopilot || !autopilotAnimatedZoom) return;
+
+    final scaleLevelRef = _initialScale.ref;
+    final scaleFactorTween = _autopilotScaleTweens[Random().nextInt(_autopilotScaleTweens.length)];
+    _autopilotInitialScale = ScaleLevel(ref: scaleLevelRef, factor: scaleFactorTween.begin!);
+
+    final animationController = AnimationController(
+      duration: autopilotInterval,
+      vsync: vsync,
+    );
+    animationController.addListener(() => onUpdate.call(
+          scaleLevel: ScaleLevel(
+            ref: scaleLevelRef,
+            factor: scaleFactorTween.evaluate(CurvedAnimation(
+              parent: animationController,
+              curve: Curves.linear,
+            )),
+          ),
+        ));
+    _autopilotAnimationControllers[vsync] = animationController;
+    Future.delayed(Durations.viewerHorizontalPageAnimation).then((_) => _autopilotAnimationControllers[vsync]?.forward());
   }
 }
 

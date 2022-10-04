@@ -16,6 +16,7 @@ import 'package:aves/widgets/common/magnifier/scale/scale_boundaries.dart';
 import 'package:aves/widgets/common/magnifier/scale/scale_level.dart';
 import 'package:aves/widgets/common/magnifier/scale/state.dart';
 import 'package:aves/widgets/common/thumbnail/image.dart';
+import 'package:aves/widgets/viewer/controller.dart';
 import 'package:aves/widgets/viewer/hero.dart';
 import 'package:aves/widgets/viewer/notifications.dart';
 import 'package:aves/widgets/viewer/video/conductor.dart';
@@ -35,7 +36,7 @@ import 'package:tuple/tuple.dart';
 
 class EntryPageView extends StatefulWidget {
   final AvesEntry mainEntry, pageEntry;
-  final ScaleLevel initialScale;
+  final ViewerController viewerController;
   final VoidCallback? onDisposed;
 
   static const decorationCheckSize = 20.0;
@@ -44,7 +45,7 @@ class EntryPageView extends StatefulWidget {
     super.key,
     required this.mainEntry,
     required this.pageEntry,
-    required this.initialScale,
+    required this.viewerController,
     this.onDisposed,
   });
 
@@ -52,7 +53,7 @@ class EntryPageView extends StatefulWidget {
   State<EntryPageView> createState() => _EntryPageViewState();
 }
 
-class _EntryPageViewState extends State<EntryPageView> {
+class _EntryPageViewState extends State<EntryPageView> with SingleTickerProviderStateMixin {
   late ValueNotifier<ViewState> _viewStateNotifier;
   late MagnifierController _magnifierController;
   final List<StreamSubscription> _subscriptions = [];
@@ -71,6 +72,8 @@ class _EntryPageViewState extends State<EntryPageView> {
   AvesEntry get mainEntry => widget.mainEntry;
 
   AvesEntry get entry => widget.pageEntry;
+
+  ViewerController get viewerController => widget.viewerController;
 
   // use the high res photo as cover for the video part of a motion photo
   ImageProvider get videoCoverUriImage => mainEntry.isMotionPhoto ? mainEntry.uriImage : entry.uriImage;
@@ -112,9 +115,16 @@ class _EntryPageViewState extends State<EntryPageView> {
       _videoCoverStream = videoCoverUriImage.resolve(ImageConfiguration.empty);
       _videoCoverStream!.addListener(_videoCoverStreamListener);
     }
+    viewerController.startAutopilotAnimation(
+        vsync: this,
+        onUpdate: ({required scaleLevel}) {
+          final scale = _magnifierController.scaleBoundaries.scaleForLevel(scaleLevel);
+          _magnifierController.update(scale: scale, source: ChangeSource.animation);
+        });
   }
 
   void _unregisterWidget(EntryPageView oldWidget) {
+    viewerController.stopAutopilotAnimation(vsync: this);
     _videoCoverStream?.removeListener(_videoCoverStreamListener);
     _videoCoverStream = null;
     _videoCoverInfoNotifier.value = null;
@@ -385,7 +395,7 @@ class _EntryPageViewState extends State<EntryPageView> {
       allowOriginalScaleBeyondRange: !isWallpaperMode,
       minScale: minScale,
       maxScale: maxScale,
-      initialScale: widget.initialScale,
+      initialScale: viewerController.initialScale,
       scaleStateCycle: scaleStateCycle,
       applyScale: applyScale,
       onTap: (c, s, a, p) => _onTap(alignment: a),
