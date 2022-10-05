@@ -15,22 +15,6 @@
     "wallpaperUseScrollEffect"
   ],
 
-  "el": [
-    "chipActionFilterOut",
-    "chipActionFilterIn",
-    "viewerTransitionNone",
-    "widgetOpenPageHome",
-    "widgetOpenPageViewer",
-    "tileLayoutMosaic",
-    "albumGroupType",
-    "albumMimeTypeMixed",
-    "settingsDisabled",
-    "settingsSlideshowAnimatedZoomEffect",
-    "settingsWidgetOpenPage",
-    "statsTopAlbumsSectionTitle",
-    "wallpaperUseScrollEffect"
-  ],
-
   "es": [
     "chipActionFilterOut",
     "chipActionFilterIn",

@@ -41,6 +41,8 @@
   "chipActionGoToAlbumPage": "Εμφάνιση στα Άλμπουμ",
   "chipActionGoToCountryPage": "Εμφάνιση στις χώρες",
   "chipActionGoToTagPage": "Εμφάνιση στις ετικέτες",
+  "chipActionFilterOut": "Χωρίς φιλτράρισμα",
+  "chipActionFilterIn": "Με φιλτράρισμα",
   "chipActionHide": "Απόκρυψη",
   "chipActionPin": "Καρφίτσωμα στην κορυφή",
   "chipActionUnpin": "Ξέκαρφίτσωμα από την κορυφή",
@@ -167,10 +169,14 @@
   "viewerTransitionParallax": "Παράλλαξη",
   "viewerTransitionFade": "Ξεθώριασμα",
   "viewerTransitionZoomIn": "Μεγέθυνση",
+  "viewerTransitionNone": "Καμία",
 
   "wallpaperTargetHome": "Αρχική οθόνη",
   "wallpaperTargetLock": "Οθόνη κλειδώματος",
   "wallpaperTargetHomeLock": "Αρχική οθόνη και οθόνη κλειδώματος",
+
+  "widgetOpenPageHome": "Άνοιγμα αρχικής σελίδας",
+  "widgetOpenPageViewer": "Άνοιγμα προβολέα αρχείων",
 
   "albumTierNew": "Νέα",
   "albumTierPinned": "Καρφιτσωμένα",
@@ -289,6 +295,7 @@
   "viewDialogLayoutSectionTitle": "Διαταξη",
   "viewDialogReverseSortOrder": "Αντίστροφη σειρά ταξινόμησης",
 
+  "tileLayoutMosaic": "Ψηφιδωτό",
   "tileLayoutGrid": "Πλέγμα",
   "tileLayoutList": "Λίστα",
 
@@ -401,8 +408,11 @@
   "sortOrderSmallestFirst": "Τα μικρότερα πρώτα",
 
   "albumGroupTier": "Ανά βαθμίδα",
+  "albumGroupType": "Ανά τύπο",
   "albumGroupVolume": "Ανά αποθηκευτική μονάδα",
   "albumGroupNone": "Να μην γίνει ομαδοποίηση",
+
+  "albumMimeTypeMixed": "Μικτα",
 
   "albumPickPageTitleCopy": "Αντιγραφή στο άλμπουμ",
   "albumPickPageTitleExport": "Εξαγωγή στο άλμπουμ",
@@ -442,6 +452,7 @@
   "settingsPageTitle": "Ρυθμισεις",
   "settingsSystemDefault": "Σύστημα",
   "settingsDefault": "Προεπιλογή",
+  "settingsDisabled": "Απενεργοποιημένο",
 
   "settingsSearchFieldLabel": "Αναζήτηση ρυθμίσεων",
   "settingsSearchEmpty": "Δεν υπάρχει αντίστοιχη ρύθμιση",
@@ -524,6 +535,7 @@
   "settingsSlideshowRepeat": "Επανάληψη",
   "settingsSlideshowShuffle": "Τυχαία σειρά",
   "settingsSlideshowFillScreen": "Χρησιμοποίηση πλήρης οθόνης",
+  "settingsSlideshowAnimatedZoomEffect": "Εφέ κινούμενου ζουμ",
   "settingsSlideshowTransitionTile": "Μετάβαση",
   "settingsSlideshowTransitionDialogTitle": "Μεταβαση",
   "settingsSlideshowIntervalTile": "Διάρκεια",
@@ -612,6 +624,7 @@
 
   "settingsWidgetPageTitle": "Κορνιζα",
   "settingsWidgetShowOutline": "Περίγραμμα",
+  "settingsWidgetOpenPage": "Όταν πατάτε στο γραφικό στοιχείο",
 
   "settingsCollectionTile": "Συλλογή",
 
@@ -620,6 +633,7 @@
   "statsTopCountriesSectionTitle": "Κορυφαιες Χωρες",
   "statsTopPlacesSectionTitle": "Κορυφαια Μερη",
   "statsTopTagsSectionTitle": "Κορυφαιες Ετικετες",
+  "statsTopAlbumsSectionTitle": "Κορυφαια Αλμπουμ",
 
   "viewerOpenPanoramaButtonLabel": "Άνοιγμα πανοραμικών",
   "viewerSetWallpaperButtonLabel": "ΟΡΙΣΜΟΣ ΤΑΠΕΤΣΑΡΙΑΣ",
@@ -663,6 +677,8 @@
   "viewerInfoSearchSuggestionDimensions": "Διαστάσεις",
   "viewerInfoSearchSuggestionResolution": "Ανάλυση",
   "viewerInfoSearchSuggestionRights": "Δικαιώματα",
+
+  "wallpaperUseScrollEffect": "Εφέ κύλισης στην αρχική οθόνη",
 
   "tagEditorPageTitle": "Επεξεργασια Ετικετων",
   "tagEditorPageNewTagFieldLabel": "Νέα ετικέτα",
