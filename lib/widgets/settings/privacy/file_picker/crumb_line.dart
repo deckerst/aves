@@ -44,7 +44,7 @@ class _CrumbLineState extends State<CrumbLine> {
       directory.getVolumeDescription(context),
       ...pContext.split(directory.relativeDir),
     ];
-    final crumbStyle = Theme.of(context).textTheme.bodyText2;
+    final crumbStyle = Theme.of(context).textTheme.bodyMedium;
     final crumbColor = crumbStyle!.color!.withOpacity(.4);
     return DefaultTextStyle(
       style: crumbStyle.copyWith(

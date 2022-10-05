@@ -33,9 +33,9 @@ class FilterListDetailsTheme extends StatelessWidget {
         final textScaleFactor = mq.textScaleFactor;
 
         final textTheme = Theme.of(context).textTheme;
-        final titleStyleBase = textTheme.bodyText2!;
+        final titleStyleBase = textTheme.bodyMedium!;
         final titleStyle = titleStyleBase.copyWith(fontSize: titleStyleBase.fontSize! * textScaleFactor);
-        final captionStyle = textTheme.caption!;
+        final captionStyle = textTheme.bodySmall!;
 
         final titleIconSize = AvesFilterChip.iconSize * textScaleFactor;
         final titleLineHeight = (RenderParagraph(

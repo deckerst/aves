@@ -49,7 +49,7 @@ class ActionButton extends StatelessWidget {
     );
   }
 
-  static TextStyle _textStyle(BuildContext context) => Theme.of(context).textTheme.caption!;
+  static TextStyle _textStyle(BuildContext context) => Theme.of(context).textTheme.bodySmall!;
 
   static double _width(BuildContext context) => OverlayButton.getSize(context) + padding * 2;
 

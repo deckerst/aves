@@ -148,7 +148,7 @@ class _RenameEntrySetPageState extends State<RenameEntrySetPage> {
                                     children: [
                                       Text(
                                         sourceName,
-                                        style: TextStyle(color: Theme.of(context).textTheme.caption!.color),
+                                        style: TextStyle(color: Theme.of(context).textTheme.bodySmall!.color),
                                         softWrap: false,
                                         overflow: TextOverflow.fade,
                                         maxLines: 1,
