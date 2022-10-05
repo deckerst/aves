@@ -8,6 +8,7 @@ import 'package:aves/services/accessibility_service.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/action_mixins/overlay_snack_bar.dart';
+import 'package:aves/widgets/common/basic/animated_text.dart';
 import 'package:aves/widgets/common/basic/circle.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/viewer/entry_viewer_page.dart';
@@ -343,7 +344,8 @@ class _FeedbackMessageState extends State<_FeedbackMessage> with SingleTickerPro
   Widget build(BuildContext context) {
     final text = Text(widget.message);
     final theme = Theme.of(context);
-    final contentTextStyle = theme.snackBarTheme.contentTextStyle ?? ThemeData(brightness: theme.brightness).textTheme.subtitle1;
+    final contentTextStyle = theme.snackBarTheme.contentTextStyle ?? ThemeData(brightness: theme.brightness).textTheme.titleMedium!;
+    final timerChangeShadowColor = theme.colorScheme.primary;
     return _remainingDurationMillis == null
         ? text
         : Row(
@@ -362,9 +364,25 @@ class _FeedbackMessageState extends State<_FeedbackMessage> with SingleTickerPro
                     // progress color is provided by the caller,
                     // because we cannot use the app context theme here
                     foreground: widget.progressColor,
-                    center: Text(
+                    center: AnimatedText(
                       '${(remainingDurationMillis / 1000).ceil()}',
-                      style: contentTextStyle,
+                      style: contentTextStyle.copyWith(
+                        shadows: [
+                          Shadow(
+                            color: timerChangeShadowColor.withOpacity(0),
+                            blurRadius: 0,
+                          )
+                        ],
+                      ),
+                      changedStyle: contentTextStyle.copyWith(
+                        shadows: [
+                          Shadow(
+                            color: timerChangeShadowColor,
+                            blurRadius: 5,
+                          )
+                        ],
+                      ),
+                      duration: context.read<DurationsData>().formTextStyleTransition,
                     ),
                   );
                 },

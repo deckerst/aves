@@ -50,7 +50,7 @@ class InfoRowGroup extends StatefulWidget {
   static const valueStyle = TextStyle(fontSize: fontSize);
   static final _keyStyle = valueStyle.copyWith(height: 2.0);
 
-  static TextStyle keyStyle(BuildContext context) => Theme.of(context).textTheme.caption!.merge(_keyStyle);
+  static TextStyle keyStyle(BuildContext context) => Theme.of(context).textTheme.bodySmall!.merge(_keyStyle);
 
   const InfoRowGroup({
     super.key,

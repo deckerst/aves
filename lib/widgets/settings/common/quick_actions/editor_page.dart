@@ -227,7 +227,7 @@ class _QuickActionEditorBodyState<T extends Object> extends State<QuickActionEdi
                         ? Center(
                             child: Text(
                               context.l10n.settingsViewerQuickActionEmpty,
-                              style: theme.textTheme.caption,
+                              style: theme.textTheme.bodySmall,
                             ),
                           )
                         : const SizedBox(),

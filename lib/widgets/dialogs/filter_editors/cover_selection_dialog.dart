@@ -449,7 +449,7 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
     }.fold('', (previousValue, element) => '$previousValue\n$element');
 
     final para = RenderParagraph(
-      TextSpan(text: _optionLines, style: Theme.of(context).textTheme.subtitle1!),
+      TextSpan(text: _optionLines, style: Theme.of(context).textTheme.titleMedium!),
       textDirection: TextDirection.ltr,
       textScaleFactor: MediaQuery.textScaleFactorOf(context),
     )..layout(const BoxConstraints(), parentUsesSize: true);

@@ -82,7 +82,7 @@ class _PopupMenuItemExpansionPanelState<T> extends State<PopupMenuItemExpansionP
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    var style = PopupMenuTheme.of(context).textStyle ?? theme.textTheme.subtitle1!;
+    var style = PopupMenuTheme.of(context).textStyle ?? theme.textTheme.titleMedium!;
     if (!widget.enabled) {
       style = style.copyWith(color: theme.disabledColor);
     }

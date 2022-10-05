@@ -167,7 +167,7 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
     );
   }
 
-  Color _detailColor(BuildContext context) => Theme.of(context).textTheme.caption!.color!;
+  Color _detailColor(BuildContext context) => Theme.of(context).textTheme.bodySmall!.color!;
 
   Widget _buildDetails(BuildContext context, CollectionSource source, T filter) {
     final locale = context.l10n.localeName;

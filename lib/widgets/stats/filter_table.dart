@@ -104,7 +104,7 @@ class FilterTable<T extends Comparable> extends StatelessWidget {
                   Text(
                     numberFormat.format(count),
                     style: TextStyle(
-                      color: theme.textTheme.caption!.color,
+                      color: theme.textTheme.bodySmall!.color,
                     ),
                     textAlign: TextAlign.end,
                   ),
