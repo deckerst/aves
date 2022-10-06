@@ -536,9 +536,7 @@
   "settingsSlideshowFillScreen": "화면 채우기",
   "settingsSlideshowAnimatedZoomEffect": "애니메이션 확대/축소 효과",
   "settingsSlideshowTransitionTile": "전환 효과",
-  "settingsSlideshowTransitionDialogTitle": "전환 효과",
   "settingsSlideshowIntervalTile": "교체 주기",
-  "settingsSlideshowIntervalDialogTitle": "교체 주기",
   "settingsSlideshowVideoPlaybackTile": "동영상 재생",
   "settingsSlideshowVideoPlaybackDialogTitle": "동영상 재생",
 
@@ -568,7 +566,6 @@
   "settingsVideoControlsTile": "제어",
   "settingsVideoControlsPageTitle": "제어",
   "settingsVideoButtonsTile": "버튼",
-  "settingsVideoButtonsDialogTitle": "버튼",
   "settingsVideoGestureDoubleTapTogglePlay": "두 번 탭해서 재생이나 일시정지하기",
   "settingsVideoGestureSideDoubleTapSeek": "화면 측면에서 두 번 탭해서 앞뒤로 가기",
 
@@ -601,7 +598,6 @@
   "settingsRemoveAnimationsTile": "애니메이션 삭제",
   "settingsRemoveAnimationsDialogTitle": "애니메이션 삭제",
   "settingsTimeToTakeActionTile": "액션 취하기 전 대기 시간",
-  "settingsTimeToTakeActionDialogTitle": "액션 취하기 전 대기 시간",
 
   "settingsDisplaySectionTitle": "디스플레이",
   "settingsThemeBrightnessTile": "테마",

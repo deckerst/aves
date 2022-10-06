@@ -537,9 +537,7 @@
   "settingsSlideshowFillScreen": "填充屏幕",
   "settingsSlideshowAnimatedZoomEffect": "动画缩放效果",
   "settingsSlideshowTransitionTile": "过渡动画",
-  "settingsSlideshowTransitionDialogTitle": "过渡动画",
   "settingsSlideshowIntervalTile": "时间间隔",
-  "settingsSlideshowIntervalDialogTitle": "时间间隔",
   "settingsSlideshowVideoPlaybackTile": "视频回放",
   "settingsSlideshowVideoPlaybackDialogTitle": "视频回放",
 
@@ -569,7 +567,6 @@
   "settingsVideoControlsTile": "控件",
   "settingsVideoControlsPageTitle": "控件",
   "settingsVideoButtonsTile": "按钮",
-  "settingsVideoButtonsDialogTitle": "按钮",
   "settingsVideoGestureDoubleTapTogglePlay": "双击播放/暂停",
   "settingsVideoGestureSideDoubleTapSeek": "双击屏幕边缘步进/步退",
 
@@ -602,7 +599,6 @@
   "settingsRemoveAnimationsTile": "移除动画",
   "settingsRemoveAnimationsDialogTitle": "移除动画",
   "settingsTimeToTakeActionTile": "生效时间",
-  "settingsTimeToTakeActionDialogTitle": "生效时间",
 
   "settingsDisplaySectionTitle": "显示",
   "settingsThemeBrightnessTile": "主题",

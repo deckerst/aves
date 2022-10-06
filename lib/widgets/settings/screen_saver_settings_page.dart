@@ -43,7 +43,6 @@ class ScreenSaverSettingsPage extends StatelessWidget {
                 selector: (context, s) => s.screenSaverTransition,
                 onSelection: (v) => settings.screenSaverTransition = v,
                 tileTitle: l10n.settingsSlideshowTransitionTile,
-                dialogTitle: l10n.settingsSlideshowTransitionDialogTitle,
               ),
               SettingsSelectionListTile<SlideshowInterval>(
                 values: SlideshowInterval.values,
@@ -51,7 +50,6 @@ class ScreenSaverSettingsPage extends StatelessWidget {
                 selector: (context, s) => s.screenSaverInterval,
                 onSelection: (v) => settings.screenSaverInterval = v,
                 tileTitle: l10n.settingsSlideshowIntervalTile,
-                dialogTitle: l10n.settingsSlideshowIntervalDialogTitle,
               ),
               SettingsSelectionListTile<SlideshowVideoPlayback>(
                 values: SlideshowVideoPlayback.values,

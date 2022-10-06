@@ -537,9 +537,7 @@
   "settingsSlideshowFillScreen": "Полный экран",
   "settingsSlideshowAnimatedZoomEffect": "Анимация зум эффекта",
   "settingsSlideshowTransitionTile": "Эффект перехода",
-  "settingsSlideshowTransitionDialogTitle": "Эффект Перехода",
   "settingsSlideshowIntervalTile": "Интервал",
-  "settingsSlideshowIntervalDialogTitle": "Интервал",
   "settingsSlideshowVideoPlaybackTile": "Проигрывание видео",
   "settingsSlideshowVideoPlaybackDialogTitle": "Проигрывание Видео",
 
@@ -569,7 +567,6 @@
   "settingsVideoControlsTile": "Элементы управления",
   "settingsVideoControlsPageTitle": "Элементы управления",
   "settingsVideoButtonsTile": "Кнопки",
-  "settingsVideoButtonsDialogTitle": "Кнопки",
   "settingsVideoGestureDoubleTapTogglePlay": "Двойное нажатие для воспроизведения/паузы",
   "settingsVideoGestureSideDoubleTapSeek": "Двойное нажатие на края экрана для перехода назад/вперёд",
 
@@ -602,7 +599,6 @@
   "settingsRemoveAnimationsTile": "Удалить анимацию",
   "settingsRemoveAnimationsDialogTitle": "Удалить анимацию",
   "settingsTimeToTakeActionTile": "Время на выполнение действия",
-  "settingsTimeToTakeActionDialogTitle": "Время на выполнение действия",
 
   "settingsDisplaySectionTitle": "Отображение",
   "settingsThemeBrightnessTile": "Тема",
