@@ -537,9 +537,7 @@
   "settingsSlideshowFillScreen": "Bildschirm ausfüllen",
   "settingsSlideshowAnimatedZoomEffect": "Animierter Zoomeffekt",
   "settingsSlideshowTransitionTile": "Übergang",
-  "settingsSlideshowTransitionDialogTitle": "Übergang",
   "settingsSlideshowIntervalTile": "Intervall",
-  "settingsSlideshowIntervalDialogTitle": "Intervall",
   "settingsSlideshowVideoPlaybackTile": "Videowiedergabe",
   "settingsSlideshowVideoPlaybackDialogTitle": "Videowiedergabe",
 
@@ -569,7 +567,6 @@
   "settingsVideoControlsTile": "Steuerung",
   "settingsVideoControlsPageTitle": "Steuerung",
   "settingsVideoButtonsTile": "Schaltflächen",
-  "settingsVideoButtonsDialogTitle": "Schaltflächen",
   "settingsVideoGestureDoubleTapTogglePlay": "Doppeltippen zum Abspielen/Pausieren",
   "settingsVideoGestureSideDoubleTapSeek": "Doppeltippen auf die Bildschirmränder zum Rückwärts-/Vorwärtsspringen",
 
@@ -602,7 +599,6 @@
   "settingsRemoveAnimationsTile": "Animationen entfernen",
   "settingsRemoveAnimationsDialogTitle": "Animationen entfernen",
   "settingsTimeToTakeActionTile": "Zeit zum Reagieren",
-  "settingsTimeToTakeActionDialogTitle": "Zeit zum Reagieren",
 
   "settingsDisplaySectionTitle": "Anzeige",
   "settingsThemeBrightnessTile": "Thema",

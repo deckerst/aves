@@ -537,9 +537,7 @@
   "settingsSlideshowFillScreen": "Χρησιμοποίηση πλήρης οθόνης",
   "settingsSlideshowAnimatedZoomEffect": "Εφέ κινούμενου ζουμ",
   "settingsSlideshowTransitionTile": "Μετάβαση",
-  "settingsSlideshowTransitionDialogTitle": "Μεταβαση",
   "settingsSlideshowIntervalTile": "Διάρκεια",
-  "settingsSlideshowIntervalDialogTitle": "Διαρκεια",
   "settingsSlideshowVideoPlaybackTile": "Αναπαραγωγή βίντεο",
   "settingsSlideshowVideoPlaybackDialogTitle": "Αναπαραγωγη Βιντεο",
 
@@ -569,7 +567,6 @@
   "settingsVideoControlsTile": "Έλεγχος",
   "settingsVideoControlsPageTitle": "Ελεγχος",
   "settingsVideoButtonsTile": "Κουμπιά",
-  "settingsVideoButtonsDialogTitle": "Κουμπια",
   "settingsVideoGestureDoubleTapTogglePlay": "Αγγίξτε την οθόνη δύο φορές για αναπαραγωγή/παύση",
   "settingsVideoGestureSideDoubleTapSeek": "Αγγίξτε δύο φορές τις άκρες της οθόνης για να πάτε πίσω/εμπρός",
 
@@ -602,7 +599,6 @@
   "settingsRemoveAnimationsTile": "Κατάργηση κινούμενων εικόνων",
   "settingsRemoveAnimationsDialogTitle": "Καταργηση Κινουμενων Εικονων",
   "settingsTimeToTakeActionTile": "Χρόνος λήψης ενεργειών",
-  "settingsTimeToTakeActionDialogTitle": "Χρονος Ληψης Ενεργειων",
 
   "settingsDisplaySectionTitle": "Οθονη",
   "settingsThemeBrightnessTile": "Θέμα",

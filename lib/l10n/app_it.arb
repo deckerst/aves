@@ -537,9 +537,7 @@
   "settingsSlideshowFillScreen": "Riempi schermo",
   "settingsSlideshowAnimatedZoomEffect": "Effetto ingrandimento animato",
   "settingsSlideshowTransitionTile": "Transizione",
-  "settingsSlideshowTransitionDialogTitle": "Transizione",
   "settingsSlideshowIntervalTile": "Intervallo",
-  "settingsSlideshowIntervalDialogTitle": "Intervallo",
   "settingsSlideshowVideoPlaybackTile": "Riproduzione video",
   "settingsSlideshowVideoPlaybackDialogTitle": "Riproduzione video",
 
@@ -569,7 +567,6 @@
   "settingsVideoControlsTile": "Controlli",
   "settingsVideoControlsPageTitle": "Controlli",
   "settingsVideoButtonsTile": "Pulsanti",
-  "settingsVideoButtonsDialogTitle": "Pulsanti",
   "settingsVideoGestureDoubleTapTogglePlay": "Doppio tocco per play/pausa",
   "settingsVideoGestureSideDoubleTapSeek": "Doppio tocco sui bordi dello schermo per cercare avanti/indietro",
 
@@ -602,7 +599,6 @@
   "settingsRemoveAnimationsTile": "Rimuovi animazioni",
   "settingsRemoveAnimationsDialogTitle": "Rimuovi animazioni",
   "settingsTimeToTakeActionTile": "Tempo di reazione",
-  "settingsTimeToTakeActionDialogTitle": "Tempo di reazione",
 
   "settingsDisplaySectionTitle": "Schermo",
   "settingsThemeBrightnessTile": "Tema",

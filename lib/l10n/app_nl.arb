@@ -537,9 +537,7 @@
   "settingsSlideshowFillScreen": "Volledig scherm",
   "settingsSlideshowAnimatedZoomEffect": "Geanimeerd zoomeffect",
   "settingsSlideshowTransitionTile": "Overgang",
-  "settingsSlideshowTransitionDialogTitle": "Overgang",
   "settingsSlideshowIntervalTile": "Interval",
-  "settingsSlideshowIntervalDialogTitle": "Interval",
   "settingsSlideshowVideoPlaybackTile": "Video afspelen",
   "settingsSlideshowVideoPlaybackDialogTitle": "Video afspelen",
 
@@ -569,7 +567,6 @@
   "settingsVideoControlsTile": "Bediening",
   "settingsVideoControlsPageTitle": "Bediening",
   "settingsVideoButtonsTile": "Knoppen",
-  "settingsVideoButtonsDialogTitle": "Knoppen",
   "settingsVideoGestureDoubleTapTogglePlay": "Dubbeltik om te spelen/pauzeren",
   "settingsVideoGestureSideDoubleTapSeek": "Dubbeltik op schermranden om achteruit/vooruit te zoeken",
 
@@ -602,7 +599,6 @@
   "settingsRemoveAnimationsTile": "Animaties verwijderen",
   "settingsRemoveAnimationsDialogTitle": "Animaties verwijderen",
   "settingsTimeToTakeActionTile": "Tijd om actie te ondernemen",
-  "settingsTimeToTakeActionDialogTitle": "Tijd om actie te ondernemen",
 
   "settingsDisplaySectionTitle": "Scherm",
   "settingsThemeBrightnessTile": "Thema",
