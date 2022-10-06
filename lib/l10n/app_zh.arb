@@ -41,6 +41,8 @@
   "chipActionGoToAlbumPage": "在相册中显示",
   "chipActionGoToCountryPage": "在国家中显示",
   "chipActionGoToTagPage": "在标签中显示",
+  "chipActionFilterOut": "滤除",
+  "chipActionFilterIn": "筛选",
   "chipActionHide": "隐藏",
   "chipActionPin": "置顶",
   "chipActionUnpin": "取消置顶",
@@ -167,10 +169,14 @@
   "viewerTransitionParallax": "视差滚动",
   "viewerTransitionFade": "淡入淡出",
   "viewerTransitionZoomIn": "放大",
+  "viewerTransitionNone": "无",
 
   "wallpaperTargetHome": "主屏幕",
   "wallpaperTargetLock": "锁屏界面",
   "wallpaperTargetHomeLock": "主屏幕 + 锁屏界面",
+
+  "widgetOpenPageHome": "打开主页",
+  "widgetOpenPageViewer": "打开查看器",
 
   "albumTierNew": "新的",
   "albumTierPinned": "钉选",
@@ -289,6 +295,7 @@
   "viewDialogLayoutSectionTitle": "布局",
   "viewDialogReverseSortOrder": "反向排序",
 
+  "tileLayoutMosaic": "马赛克",
   "tileLayoutGrid": "网格",
   "tileLayoutList": "列表",
 
@@ -401,8 +408,11 @@
   "sortOrderSmallestFirst": "由小到大",
 
   "albumGroupTier": "按层级",
+  "albumGroupType": "按类型",
   "albumGroupVolume": "按存储卷",
   "albumGroupNone": "不分组",
+
+  "albumMimeTypeMixed": "混合",
 
   "albumPickPageTitleCopy": "复制到相册",
   "albumPickPageTitleExport": "导出到相册",
@@ -442,6 +452,7 @@
   "settingsPageTitle": "设置",
   "settingsSystemDefault": "系统",
   "settingsDefault": "默认",
+  "settingsDisabled": "禁用",
 
   "settingsSearchFieldLabel": "搜索设置",
   "settingsSearchEmpty": "无匹配设置项",
@@ -524,6 +535,7 @@
   "settingsSlideshowRepeat": "重复",
   "settingsSlideshowShuffle": "随机播放",
   "settingsSlideshowFillScreen": "填充屏幕",
+  "settingsSlideshowAnimatedZoomEffect": "动画缩放效果",
   "settingsSlideshowTransitionTile": "过渡动画",
   "settingsSlideshowTransitionDialogTitle": "过渡动画",
   "settingsSlideshowIntervalTile": "时间间隔",
@@ -612,6 +624,7 @@
 
   "settingsWidgetPageTitle": "相框",
   "settingsWidgetShowOutline": "轮廓",
+  "settingsWidgetOpenPage": "轻触小部件时",
 
   "settingsCollectionTile": "媒体集",
 
@@ -620,6 +633,7 @@
   "statsTopCountriesSectionTitle": "热门国家",
   "statsTopPlacesSectionTitle": "热门地点",
   "statsTopTagsSectionTitle": "热门标签",
+  "statsTopAlbumsSectionTitle": "热门相册",
 
   "viewerOpenPanoramaButtonLabel": "打开全景",
   "viewerSetWallpaperButtonLabel": "设置壁纸",
@@ -663,6 +677,8 @@
   "viewerInfoSearchSuggestionDimensions": "尺寸",
   "viewerInfoSearchSuggestionResolution": "分辨率",
   "viewerInfoSearchSuggestionRights": "所有权",
+
+  "wallpaperUseScrollEffect": "在主屏幕上使用滚动效果",
 
   "tagEditorPageTitle": "编辑标签",
   "tagEditorPageNewTagFieldLabel": "新标签",

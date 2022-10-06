@@ -41,6 +41,8 @@
   "chipActionGoToAlbumPage": "Показать в Альбомах",
   "chipActionGoToCountryPage": "Показать в Странах",
   "chipActionGoToTagPage": "Показать в тегах",
+  "chipActionFilterOut": "Исключить",
+  "chipActionFilterIn": "Включить",
   "chipActionHide": "Скрыть",
   "chipActionPin": "Закрепить",
   "chipActionUnpin": "Открепить",
@@ -167,10 +169,14 @@
   "viewerTransitionParallax": "Параллакс",
   "viewerTransitionFade": "Затухание",
   "viewerTransitionZoomIn": "Приближение",
+  "viewerTransitionNone": "Нет",
 
   "wallpaperTargetHome": "Домашний экран",
   "wallpaperTargetLock": "Экран блокировки",
   "wallpaperTargetHomeLock": "Домашний экран и экран блокировки",
+
+  "widgetOpenPageHome": "Открыть главную страницу",
+  "widgetOpenPageViewer": "Просмотр текущего",
 
   "albumTierNew": "Новые",
   "albumTierPinned": "Закрепленные",
@@ -289,6 +295,7 @@
   "viewDialogLayoutSectionTitle": "Макет",
   "viewDialogReverseSortOrder": "Обратный порядок сортировки",
 
+  "tileLayoutMosaic": "Мозайка",
   "tileLayoutGrid": "Сетка",
   "tileLayoutList": "Список",
 
@@ -401,8 +408,11 @@
   "sortOrderSmallestFirst": "Сначала маленькие",
 
   "albumGroupTier": "По уровню",
+  "albumGroupType": "По типу",
   "albumGroupVolume": "По накопителю",
   "albumGroupNone": "Не группировать",
+
+  "albumMimeTypeMixed": "Разное",
 
   "albumPickPageTitleCopy": "Копировать в альбом",
   "albumPickPageTitleExport": "Экспорт в альбом",
@@ -442,6 +452,7 @@
   "settingsPageTitle": "Настройки",
   "settingsSystemDefault": "Система",
   "settingsDefault": "По умолчанию",
+  "settingsDisabled": "Выключено",
 
   "settingsSearchFieldLabel": "Поиск настроек",
   "settingsSearchEmpty": "Нет соответствующих настроек",
@@ -524,6 +535,7 @@
   "settingsSlideshowRepeat": "Повтор",
   "settingsSlideshowShuffle": "Вперемешку",
   "settingsSlideshowFillScreen": "Полный экран",
+  "settingsSlideshowAnimatedZoomEffect": "Анимация зум эффекта",
   "settingsSlideshowTransitionTile": "Эффект перехода",
   "settingsSlideshowTransitionDialogTitle": "Эффект Перехода",
   "settingsSlideshowIntervalTile": "Интервал",
@@ -612,6 +624,7 @@
 
   "settingsWidgetPageTitle": "Фоторамка",
   "settingsWidgetShowOutline": "Выделение",
+  "settingsWidgetOpenPage": "При нажатии на виджет",
 
   "settingsCollectionTile": "Коллекция",
 
@@ -620,6 +633,7 @@
   "statsTopCountriesSectionTitle": "Топ стран",
   "statsTopPlacesSectionTitle": "Топ локаций",
   "statsTopTagsSectionTitle": "Топ тегов",
+  "statsTopAlbumsSectionTitle": "Топ альбомов",
 
   "viewerOpenPanoramaButtonLabel": "ОТКРЫТЬ ПАНОРАМУ",
   "viewerSetWallpaperButtonLabel": "УСТАНОВИТЬ КАК ОБОИ",
@@ -663,6 +677,8 @@
   "viewerInfoSearchSuggestionDimensions": "Измерения",
   "viewerInfoSearchSuggestionResolution": "Разрешение",
   "viewerInfoSearchSuggestionRights": "Права",
+
+  "wallpaperUseScrollEffect": "Эффект прокрутки на домашнем экране",
 
   "tagEditorPageTitle": "Изменить теги",
   "tagEditorPageNewTagFieldLabel": "Новый тег",
