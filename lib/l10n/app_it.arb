@@ -40,7 +40,9 @@
   "chipActionDelete": "Elimina",
   "chipActionGoToAlbumPage": "Mostra negli album",
   "chipActionGoToCountryPage": "Mostra nei Paesi",
-  "chipActionGoToTagPage": "Mostra nelle etichette",
+  "chipActionGoToTagPage": "Mostra nelle Etichette",
+  "chipActionFilterOut": "Escludi",
+  "chipActionFilterIn": "Includi",
   "chipActionHide": "Nascondi",
   "chipActionPin": "Fissa in alto",
   "chipActionUnpin": "Rimuovi dall’alto",
@@ -167,10 +169,14 @@
   "viewerTransitionParallax": "Parallasse",
   "viewerTransitionFade": "Dissolvenza",
   "viewerTransitionZoomIn": "Ingrandisci",
+  "viewerTransitionNone": "Nessuna",
 
   "wallpaperTargetHome": "Schermata iniziale",
   "wallpaperTargetLock": "Schermata di blocco",
   "wallpaperTargetHomeLock": "Schermata iniziale e di blocco",
+
+  "widgetOpenPageHome": "Apri pagina iniziale",
+  "widgetOpenPageViewer": "Apri visualizzazione",
 
   "albumTierNew": "Nuovi",
   "albumTierPinned": "Fissati",
@@ -289,6 +295,7 @@
   "viewDialogLayoutSectionTitle": "Layout",
   "viewDialogReverseSortOrder": "Inverti ordinamento",
 
+  "tileLayoutMosaic": "Mosaico",
   "tileLayoutGrid": "Griglia",
   "tileLayoutList": "Lista",
 
@@ -390,6 +397,7 @@
   "sortBySize": "Per dimensione",
   "sortByAlbumFileName": "Per album e nome del file",
   "sortByRating": "Per valutazione",
+
   "sortOrderNewestFirst": "Prima i più nuovi",
   "sortOrderOldestFirst": "Prima i più vecchi",
   "sortOrderAtoZ": "Dalla A alla Z",
@@ -400,8 +408,11 @@
   "sortOrderSmallestFirst": "Prima i più piccoli",
 
   "albumGroupTier": "Per importanza",
+  "albumGroupType": "Per tipo",
   "albumGroupVolume": "Per volume di archiviazione",
   "albumGroupNone": "Non raggruppare",
+
+  "albumMimeTypeMixed": "Misto",
 
   "albumPickPageTitleCopy": "Copia",
   "albumPickPageTitleExport": "Esporta",
@@ -441,6 +452,7 @@
   "settingsPageTitle": "Impostazioni",
   "settingsSystemDefault": "Sistema",
   "settingsDefault": "Predefinite",
+  "settingsDisabled": "Disabilitato",
 
   "settingsSearchFieldLabel": "Ricerca impostazioni",
   "settingsSearchEmpty": "Nessuna impostazione corrispondente",
@@ -523,6 +535,7 @@
   "settingsSlideshowRepeat": "Ripeti",
   "settingsSlideshowShuffle": "Ordine casuale",
   "settingsSlideshowFillScreen": "Riempi schermo",
+  "settingsSlideshowAnimatedZoomEffect": "Effetto ingrandimento animato",
   "settingsSlideshowTransitionTile": "Transizione",
   "settingsSlideshowTransitionDialogTitle": "Transizione",
   "settingsSlideshowIntervalTile": "Intervallo",
@@ -611,6 +624,7 @@
 
   "settingsWidgetPageTitle": "Cornice foto",
   "settingsWidgetShowOutline": "Contorno",
+  "settingsWidgetOpenPage": "Se tocchi il widget",
 
   "settingsCollectionTile": "Collezione",
 
@@ -619,6 +633,7 @@
   "statsTopCountriesSectionTitle": "Paesi più frequenti",
   "statsTopPlacesSectionTitle": "Luoghi più frequenti",
   "statsTopTagsSectionTitle": "Etichette più frequenti",
+  "statsTopAlbumsSectionTitle": "Album più frequenti",
 
   "viewerOpenPanoramaButtonLabel": "APRI PANORAMA",
   "viewerSetWallpaperButtonLabel": "IMPOSTA SFONDO",
@@ -662,6 +677,8 @@
   "viewerInfoSearchSuggestionDimensions": "Dimensioni",
   "viewerInfoSearchSuggestionResolution": "Risoluzione",
   "viewerInfoSearchSuggestionRights": "Diritti",
+
+  "wallpaperUseScrollEffect": "Usa effetto di scorrimento nella schermata iniziale",
 
   "tagEditorPageTitle": "Modifica etichette",
   "tagEditorPageNewTagFieldLabel": "Nuova etichetta",
