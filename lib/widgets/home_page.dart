@@ -117,6 +117,8 @@ class _HomePageState extends State<HomePage> {
           String? uri, mimeType;
           final widgetId = intentData[intentDataKeyWidgetId];
           if (widgetId != null) {
+            // widget settings may be modified in a different process after channel setup
+            await settings.reload();
             final page = settings.getWidgetOpenPage(widgetId);
             if (page == WidgetOpenPage.viewer) {
               uri = settings.getWidgetUri(widgetId);
