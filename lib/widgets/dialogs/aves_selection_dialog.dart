@@ -56,25 +56,27 @@ class _AvesSelectionDialogState<T> extends State<AvesSelectionDialog<T>> {
 
   @override
   Widget build(BuildContext context) {
+    final title = widget.title;
     final message = widget.message;
     final confirmationButtonLabel = widget.confirmationButtonLabel;
     final needConfirmation = confirmationButtonLabel != null;
     return AvesDialog(
-      title: widget.title,
+      title: title,
       scrollableContent: [
+        if (title == null && message == null) SizedBox(height: AvesDialog.cornerRadius.y),
         if (message != null)
           Padding(
             padding: const EdgeInsets.all(16),
             child: Text(message),
           ),
         ...widget.options.entries.map((kv) {
-          final value = kv.key;
-          final title = kv.value;
+          final radioValue = kv.key;
+          final radioTitle = kv.value;
           return SelectionRadioListTile(
             // key is expected by test driver
-            key: Key(value.toString()),
-            value: value,
-            title: title,
+            key: Key(radioValue.toString()),
+            value: radioValue,
+            title: radioTitle,
             optionSubtitleBuilder: widget.optionSubtitleBuilder,
             needConfirmation: needConfirmation,
             dense: widget.dense,

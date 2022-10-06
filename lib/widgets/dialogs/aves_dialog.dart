@@ -40,7 +40,7 @@ class AvesDialog extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: borderWidth),
               child: DialogTitle(title: title!),
             )
-          : SizedBox(height: cornerRadius.y),
+          : null,
       titlePadding: EdgeInsets.zero,
       // the `scrollable` flag of `AlertDialog` makes it
       // scroll both the title and the content together,
