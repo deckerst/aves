@@ -41,6 +41,8 @@
   "chipActionGoToAlbumPage": "Anzeigen in Alben",
   "chipActionGoToCountryPage": "Anzeigen in Ländern",
   "chipActionGoToTagPage": "Zeige in Tags",
+  "chipActionFilterOut": "Filtern ohne",
+  "chipActionFilterIn": "Filtern mit",
   "chipActionHide": "Ausblenden",
   "chipActionPin": "Oben Anpinnen",
   "chipActionUnpin": "Nicht mehr Anpinen",
@@ -167,10 +169,14 @@
   "viewerTransitionParallax": "Parallaxe",
   "viewerTransitionFade": "Ausblenden",
   "viewerTransitionZoomIn": "Heranzoomen",
+  "viewerTransitionNone": "Keine",
 
   "wallpaperTargetHome": "Startbildschirm",
   "wallpaperTargetLock": "Sperrbildschirm",
   "wallpaperTargetHomeLock": "Start- und Sperrbildschirm",
+
+  "widgetOpenPageHome": "Startseite öffnen",
+  "widgetOpenPageViewer": "Viewer öffnen",
 
   "albumTierNew": "Neu",
   "albumTierPinned": "Angeheftet",
@@ -289,6 +295,7 @@
   "viewDialogLayoutSectionTitle": "Layout",
   "viewDialogReverseSortOrder": "Umgekehrte Sortierung",
 
+  "tileLayoutMosaic": "Mosaik",
   "tileLayoutGrid": "Kacheln",
   "tileLayoutList": "Liste",
 
@@ -401,8 +408,11 @@
   "sortOrderSmallestFirst": "Kleinste zuerst",
 
   "albumGroupTier": "Nach Ebene",
+  "albumGroupType": "Nach Typ",
   "albumGroupVolume": "Nach Speichervolumen",
   "albumGroupNone": "Nicht gruppieren",
+
+  "albumMimeTypeMixed": "Gemischt",
 
   "albumPickPageTitleCopy": "In Album kopieren",
   "albumPickPageTitleExport": "In Album exportieren",
@@ -442,6 +452,7 @@
   "settingsPageTitle": "Einstellungen",
   "settingsSystemDefault": "System",
   "settingsDefault": "Standard",
+  "settingsDisabled": "Deaktiviert",
 
   "settingsSearchFieldLabel": "Einstellungen durchsuchen",
   "settingsSearchEmpty": "Keine passende Einstellung",
@@ -524,6 +535,7 @@
   "settingsSlideshowRepeat": "Wiederholung",
   "settingsSlideshowShuffle": "Mischen",
   "settingsSlideshowFillScreen": "Bildschirm ausfüllen",
+  "settingsSlideshowAnimatedZoomEffect": "Animierter Zoomeffekt",
   "settingsSlideshowTransitionTile": "Übergang",
   "settingsSlideshowTransitionDialogTitle": "Übergang",
   "settingsSlideshowIntervalTile": "Intervall",
@@ -612,6 +624,7 @@
 
   "settingsWidgetPageTitle": "Bilderrahmen",
   "settingsWidgetShowOutline": "Gliederung",
+  "settingsWidgetOpenPage": "Beim Tippen auf das Widget",
 
   "settingsCollectionTile": "Sammlung",
 
@@ -620,6 +633,7 @@
   "statsTopCountriesSectionTitle": "Top-Länder",
   "statsTopPlacesSectionTitle": "Top-Plätze",
   "statsTopTagsSectionTitle": "Top-Tags",
+  "statsTopAlbumsSectionTitle": "Top-Alben",
 
   "viewerOpenPanoramaButtonLabel": "ÖFFNE PANORAMA",
   "viewerSetWallpaperButtonLabel": "HINTERGRUNDBILD EINSTELLEN",
@@ -663,6 +677,8 @@
   "viewerInfoSearchSuggestionDimensions": "Abmessungen",
   "viewerInfoSearchSuggestionResolution": "Auflösung",
   "viewerInfoSearchSuggestionRights": "Rechte",
+
+  "wallpaperUseScrollEffect": "Scroll-Effekt auf dem Startbildschirm verwenden",
 
   "tagEditorPageTitle": "Tags bearbeiten",
   "tagEditorPageNewTagFieldLabel": "Neuer Tag",

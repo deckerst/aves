@@ -41,6 +41,8 @@
   "chipActionGoToAlbumPage": "Tonen Albums",
   "chipActionGoToCountryPage": "Tonen in Landen",
   "chipActionGoToTagPage": "Tonen in Labels",
+  "chipActionFilterOut": "Uitfilteren",
+  "chipActionFilterIn": "Infilteren",
   "chipActionHide": "Verbergen",
   "chipActionPin": "Bovenaan pinnen",
   "chipActionUnpin": "Unpinnen",
@@ -167,10 +169,14 @@
   "viewerTransitionParallax": "Parallax",
   "viewerTransitionFade": "Vervagen",
   "viewerTransitionZoomIn": "Inzoomen",
+  "viewerTransitionNone": "Geen",
 
   "wallpaperTargetHome": "Home scherm",
   "wallpaperTargetLock": "Vergrendel scherm",
   "wallpaperTargetHomeLock": "Home and Vergrendel schermen",
+
+  "widgetOpenPageHome": "Open startscherm",
+  "widgetOpenPageViewer": "Open viewer",
 
   "albumTierNew": "Nieuw",
   "albumTierPinned": "Gepint",
@@ -289,6 +295,7 @@
   "viewDialogLayoutSectionTitle": "Layout",
   "viewDialogReverseSortOrder": "Draai sorteerrichting om",
 
+  "tileLayoutMosaic": "Mozaïek",
   "tileLayoutGrid": "Raster",
   "tileLayoutList": "Lijst",
 
@@ -401,8 +408,11 @@
   "sortOrderSmallestFirst": "Kleinste eerst",
 
   "albumGroupTier": "Op rang",
+  "albumGroupType": "Op type",
   "albumGroupVolume": "Op opslagvolume",
   "albumGroupNone": "Niet groeperen",
+
+  "albumMimeTypeMixed": "Gemengd",
 
   "albumPickPageTitleCopy": "Kopieer naar Album",
   "albumPickPageTitleExport": "Exporteer naar Album",
@@ -442,6 +452,7 @@
   "settingsPageTitle": "Instellingen",
   "settingsSystemDefault": "Systeem",
   "settingsDefault": "Standaard",
+  "settingsDisabled": "Uitgeschakeld",
 
   "settingsSearchFieldLabel": "Instellingen doorzoeken",
   "settingsSearchEmpty": "Geen instellingen gevonden",
@@ -524,6 +535,7 @@
   "settingsSlideshowRepeat": "Herhalen",
   "settingsSlideshowShuffle": "Shuffle",
   "settingsSlideshowFillScreen": "Volledig scherm",
+  "settingsSlideshowAnimatedZoomEffect": "Geanimeerd zoomeffect",
   "settingsSlideshowTransitionTile": "Overgang",
   "settingsSlideshowTransitionDialogTitle": "Overgang",
   "settingsSlideshowIntervalTile": "Interval",
@@ -612,6 +624,7 @@
 
   "settingsWidgetPageTitle": "Foto Lijstje",
   "settingsWidgetShowOutline": "Contour",
+  "settingsWidgetOpenPage": "Wanneer u op de widget tikt",
 
   "settingsCollectionTile": "Verzameling",
 
@@ -620,6 +633,7 @@
   "statsTopCountriesSectionTitle": "Top Landen",
   "statsTopPlacesSectionTitle": "Top Plaatsen",
   "statsTopTagsSectionTitle": "Top Labels",
+  "statsTopAlbumsSectionTitle": "Top Albums",
 
   "viewerOpenPanoramaButtonLabel": "OPEN PANORAMA",
   "viewerSetWallpaperButtonLabel": "ALS ACHTERGROND INSTELLEN",
@@ -663,6 +677,8 @@
   "viewerInfoSearchSuggestionDimensions": "Afmetingen",
   "viewerInfoSearchSuggestionResolution": "Resolutie",
   "viewerInfoSearchSuggestionRights": "Rechten",
+
+  "wallpaperUseScrollEffect": "Scroll-effect gebruiken op startscherm",
 
   "tagEditorPageTitle": "Wijzig Labels",
   "tagEditorPageNewTagFieldLabel": "Nieuw label",

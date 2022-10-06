@@ -1,20 +1,4 @@
 {
-  "de": [
-    "chipActionFilterOut",
-    "chipActionFilterIn",
-    "viewerTransitionNone",
-    "widgetOpenPageHome",
-    "widgetOpenPageViewer",
-    "tileLayoutMosaic",
-    "albumGroupType",
-    "albumMimeTypeMixed",
-    "settingsDisabled",
-    "settingsSlideshowAnimatedZoomEffect",
-    "settingsWidgetOpenPage",
-    "statsTopAlbumsSectionTitle",
-    "wallpaperUseScrollEffect"
-  ],
-
   "es": [
     "chipActionFilterOut",
     "chipActionFilterIn",
@@ -120,39 +104,7 @@
     "settingsDisabled"
   ],
 
-  "nl": [
-    "chipActionFilterOut",
-    "chipActionFilterIn",
-    "viewerTransitionNone",
-    "widgetOpenPageHome",
-    "widgetOpenPageViewer",
-    "tileLayoutMosaic",
-    "albumGroupType",
-    "albumMimeTypeMixed",
-    "settingsDisabled",
-    "settingsSlideshowAnimatedZoomEffect",
-    "settingsWidgetOpenPage",
-    "statsTopAlbumsSectionTitle",
-    "wallpaperUseScrollEffect"
-  ],
-
   "pt": [
-    "chipActionFilterOut",
-    "chipActionFilterIn",
-    "viewerTransitionNone",
-    "widgetOpenPageHome",
-    "widgetOpenPageViewer",
-    "tileLayoutMosaic",
-    "albumGroupType",
-    "albumMimeTypeMixed",
-    "settingsDisabled",
-    "settingsSlideshowAnimatedZoomEffect",
-    "settingsWidgetOpenPage",
-    "statsTopAlbumsSectionTitle",
-    "wallpaperUseScrollEffect"
-  ],
-
-  "ru": [
     "chipActionFilterOut",
     "chipActionFilterIn",
     "viewerTransitionNone",
@@ -226,22 +178,6 @@
     "statsTopAlbumsSectionTitle",
     "viewerSetWallpaperButtonLabel",
     "viewerInfoLabelDescription",
-    "wallpaperUseScrollEffect"
-  ],
-
-  "zh": [
-    "chipActionFilterOut",
-    "chipActionFilterIn",
-    "viewerTransitionNone",
-    "widgetOpenPageHome",
-    "widgetOpenPageViewer",
-    "tileLayoutMosaic",
-    "albumGroupType",
-    "albumMimeTypeMixed",
-    "settingsDisabled",
-    "settingsSlideshowAnimatedZoomEffect",
-    "settingsWidgetOpenPage",
-    "statsTopAlbumsSectionTitle",
     "wallpaperUseScrollEffect"
   ]
 }
