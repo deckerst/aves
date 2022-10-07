@@ -207,6 +207,7 @@ class _ThumbnailImageState extends State<ThumbnailImage> {
 
     final thumbnailWidth = isMosaic ? extent * entry.displayAspectRatio : extent;
     final thumbnailHeight = extent;
+    final canHaveAlpha = entry.canHaveAlpha;
 
     final fit = widget.fit ??
         (entry.isSvg
@@ -224,9 +225,10 @@ class _ThumbnailImageState extends State<ThumbnailImage> {
         : Selector<Settings, EntryBackground>(
             selector: (context, s) => s.imageBackground,
             builder: (context, background, child) {
-              final backgroundColor = background.isColor ? background.color : null;
+              // avoid background color filter or layer when the entry cannot be transparent
+              final backgroundColor = canHaveAlpha && background.isColor ? background.color : null;
 
-              if (background == EntryBackground.checkered) {
+              if (canHaveAlpha && background == EntryBackground.checkered) {
                 return LayoutBuilder(
                   builder: (context, constraints) {
                     final availableSize = constraints.biggest;
