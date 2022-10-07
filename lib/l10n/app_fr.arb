@@ -452,6 +452,7 @@
   "settingsPageTitle": "Réglages",
   "settingsSystemDefault": "Système",
   "settingsDefault": "Par défaut",
+  "settingsDisabled": "Désactivé",
 
   "settingsSearchFieldLabel": "Recherche de réglages",
   "settingsSearchEmpty": "Aucun réglage correspondant",

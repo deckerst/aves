@@ -450,8 +450,9 @@
   "searchMetadataSectionTitle": "메타데이터",
 
   "settingsPageTitle": "설정",
-  "settingsSystemDefault": "시스템",
+  "settingsSystemDefault": "시스템 기본값",
   "settingsDefault": "기본",
+  "settingsDisabled": "사용 안함",
 
   "settingsSearchFieldLabel": "설정 검색",
   "settingsSearchEmpty": "결과가 없습니다",
