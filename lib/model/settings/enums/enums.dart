@@ -28,6 +28,10 @@ enum VideoControls { play, playSeek, playOutside, none }
 
 enum VideoLoopMode { never, shortOnly, always }
 
-enum ViewerTransition { slide, parallax, fade, zoomIn }
+enum VideoAutoPlayMode { disabled, playMuted, playWithSound }
+
+enum ViewerTransition { slide, parallax, fade, zoomIn, none }
+
+enum WidgetOpenPage { home, viewer }
 
 enum WidgetShape { rrect, circle, heart }

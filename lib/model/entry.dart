@@ -26,7 +26,7 @@ import 'package:country_code/country_code.dart';
 import 'package:flutter/foundation.dart';
 import 'package:latlong2/latlong.dart';
 
-enum EntryDataType { basic, catalog, address, references }
+enum EntryDataType { basic, aspectRatio, catalog, address, references }
 
 class AvesEntry {
   // `sizeBytes`, `dateModifiedSecs` can be missing in viewer mode
@@ -150,6 +150,7 @@ class AvesEntry {
       'sourceRotationDegrees': sourceRotationDegrees,
       'sizeBytes': sizeBytes,
       'title': sourceTitle,
+      'dateAddedSecs': dateAddedSecs,
       'dateModifiedSecs': dateModifiedSecs,
       'sourceDateTakenMillis': sourceDateTakenMillis,
       'durationMillis': durationMillis,
@@ -277,6 +278,8 @@ class AvesEntry {
 
   bool get isMediaStoreContent => uri.startsWith('content://media/');
 
+  bool get isMediaStoreMediaContent => isMediaStoreContent && {'/external/images/', '/external/video/'}.any(uri.contains);
+
   bool get canEdit => path != null && !trashed && isMediaStoreContent;
 
   bool get canEditDate => canEdit && (canEditExif || canEditXmp);
@@ -291,9 +294,9 @@ class AvesEntry {
 
   bool get canRotateAndFlip => canEdit && canEditExif;
 
-  // as of androidx.exifinterface:exifinterface:1.3.3
-  // `exifinterface` declares support for DNG, but `exifinterface` strips non-standard Exif tags when saving attributes,
-  // and DNG requires DNG-specific tags saved along standard Exif. So `exifinterface` actually breaks DNG files.
+  // `exifinterface` v1.3.3 declared support for DNG, but it strips non-standard Exif tags when saving attributes,
+  // and DNG requires DNG-specific tags saved along standard Exif. So it was actually breaking DNG files.
+  // as of androidx.exifinterface:exifinterface:1.3.4
   bool get canEditExif {
     switch (mimeType.toLowerCase()) {
       case MimeTypes.jpeg:

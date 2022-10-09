@@ -14,8 +14,11 @@ class AIcons {
   static const IconData bin = Icons.delete_outlined;
   static const IconData broken = Icons.broken_image_outlined;
   static const IconData checked = Icons.done_outlined;
+  static const IconData count = MdiIcons.counter;
   static const IconData counter = Icons.plus_one_outlined;
   static const IconData date = Icons.calendar_today_outlined;
+  static const IconData dateByDay = Icons.today_outlined;
+  static const IconData dateByMonth = Icons.calendar_month_outlined;
   static const IconData dateRecent = Icons.today_outlined;
   static const IconData dateUndated = Icons.event_busy_outlined;
   static const IconData description = Icons.description_outlined;
@@ -31,6 +34,7 @@ class AIcons {
   static const IconData location = Icons.place_outlined;
   static const IconData locationUnlocated = Icons.location_off_outlined;
   static const IconData mainStorage = Icons.smartphone_outlined;
+  static const IconData mimeType = Icons.code_outlined;
   static const IconData opacity = Icons.opacity;
   static const IconData privacy = MdiIcons.shieldAccountOutline;
   static const IconData rating = Icons.star_border_outlined;
@@ -43,6 +47,7 @@ class AIcons {
   static const IconData sensorControlEnabled = Icons.explore_outlined;
   static const IconData sensorControlDisabled = Icons.explore_off_outlined;
   static const IconData settings = Icons.settings_outlined;
+  static const IconData size = Icons.data_usage_outlined;
   static const IconData text = Icons.format_quote_outlined;
   static const IconData tag = Icons.local_offer_outlined;
   static const IconData tagUntagged = MdiIcons.tagOffOutline;
@@ -50,6 +55,9 @@ class AIcons {
   // view
   static const IconData group = Icons.group_work_outlined;
   static const IconData layout = Icons.grid_view_outlined;
+  static const IconData layoutMosaic = Icons.view_compact_outlined;
+  static const IconData layoutGrid = Icons.view_comfy_outlined;
+  static const IconData layoutList = Icons.list_outlined;
   static const IconData sort = Icons.sort_outlined;
   static const IconData sortOrder = Icons.swap_vert_outlined;
 
@@ -97,6 +105,7 @@ class AIcons {
   static const IconData print = Icons.print_outlined;
   static const IconData refresh = Icons.refresh_outlined;
   static const IconData replay10 = Icons.replay_10_outlined;
+  static const IconData reverse = Icons.invert_colors_outlined;
   static const IconData skip10 = Icons.forward_10_outlined;
   static const IconData reset = Icons.restart_alt_outlined;
   static const IconData restore = Icons.restore_outlined;
@@ -111,7 +120,7 @@ class AIcons {
   static const IconData show = Icons.visibility_outlined;
   static const IconData slideshow = Icons.slideshow_outlined;
   static const IconData speed = Icons.speed_outlined;
-  static const IconData stats = Icons.pie_chart_outline_outlined;
+  static const IconData stats = Icons.donut_small_outlined;
   static const IconData streams = Icons.translate_outlined;
   static const IconData streamVideo = Icons.movie_outlined;
   static const IconData streamAudio = Icons.audiotrack_outlined;

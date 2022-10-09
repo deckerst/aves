@@ -21,6 +21,7 @@ import 'package:aves/widgets/common/providers/highlight_info_provider.dart';
 import 'package:aves/widgets/common/providers/map_theme_provider.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/common/thumbnail/scroller.dart';
+import 'package:aves/widgets/filter_grids/common/action_delegates/chip.dart';
 import 'package:aves/widgets/map/map_info_row.dart';
 import 'package:aves/widgets/viewer/entry_viewer_page.dart';
 import 'package:aves/widgets/viewer/notifications.dart';
@@ -164,9 +165,15 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
 
   @override
   Widget build(BuildContext context) {
-    return NotificationListener<FilterSelectedNotification>(
+    return NotificationListener(
       onNotification: (notification) {
-        _goToCollection(notification.filter);
+        if (notification is FilterSelectedNotification) {
+          _goToCollection(notification.filter);
+        } else if (notification is ReverseFilterNotification) {
+          _goToCollection(notification.reversedFilter);
+        } else {
+          return false;
+        }
         return true;
       },
       child: Selector<Settings, EntryMapStyle>(

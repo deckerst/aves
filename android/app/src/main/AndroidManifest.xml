@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-Android Studio Chipmunk (2021.2.1) recommends:
+Gradle v7.4 / Android Gradle Plugin v7.3.0 recommend:
 - removing "package" from AndroidManifest.xml
 - adding it as "namespace" in app/build.gradle
-This change eventually prevents building the app with Flutter v3.0.2.
+This change eventually prevents building the app with Flutter v3.3.3.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"

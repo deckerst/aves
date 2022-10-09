@@ -8,6 +8,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "47.0.0"
+  _flutterfire_internals:
+    dependency: transitive
+    description:
+      name: _flutterfire_internals
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.2"
   analyzer:
     dependency: transitive
     description:
@@ -113,6 +120,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.1"
+  cloud_firestore_platform_interface:
+    dependency: transitive
+    description:
+      name: cloud_firestore_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "5.7.7"
+  cloud_firestore_web:
+    dependency: transitive
+    description:
+      name: cloud_firestore_web
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.8.10"
   collection:
     dependency: "direct main"
     description:
@@ -126,7 +147,7 @@ packages:
       name: connectivity_plus
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.3.7"
+    version: "2.3.9"
   connectivity_plus_linux:
     dependency: transitive
     description:
@@ -140,7 +161,7 @@ packages:
       name: connectivity_plus_macos
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.2.4"
+    version: "1.2.6"
   connectivity_plus_platform_interface:
     dependency: transitive
     description:
@@ -154,7 +175,7 @@ packages:
       name: connectivity_plus_web
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.2.3"
+    version: "1.2.5"
   connectivity_plus_windows:
     dependency: transitive
     description:
@@ -217,42 +238,42 @@ packages:
       name: device_info_plus
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.1.2"
+    version: "5.0.5"
   device_info_plus_linux:
     dependency: transitive
     description:
       name: device_info_plus_linux
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.0"
+    version: "4.0.2"
   device_info_plus_macos:
     dependency: transitive
     description:
       name: device_info_plus_macos
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.0"
+    version: "4.0.2"
   device_info_plus_platform_interface:
     dependency: transitive
     description:
       name: device_info_plus_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.0"
+    version: "4.0.1"
   device_info_plus_web:
     dependency: transitive
     description:
       name: device_info_plus_web
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.0"
+    version: "4.0.2"
   device_info_plus_windows:
     dependency: transitive
     description:
       name: device_info_plus_windows
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.1.0"
+    version: "5.0.2"
   dynamic_color:
     dependency: "direct main"
     description:
@@ -319,7 +340,7 @@ packages:
       name: firebase_core
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.22.0"
+    version: "1.24.0"
   firebase_core_platform_interface:
     dependency: transitive
     description:
@@ -333,21 +354,21 @@ packages:
       name: firebase_core_web
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.7.2"
+    version: "1.7.3"
   firebase_crashlytics:
     dependency: transitive
     description:
       name: firebase_crashlytics
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.8.10"
+    version: "2.8.13"
   firebase_crashlytics_platform_interface:
     dependency: transitive
     description:
       name: firebase_crashlytics_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.2.16"
+    version: "3.2.19"
   flex_color_picker:
     dependency: "direct main"
     description:
@@ -489,28 +510,28 @@ packages:
       name: google_maps_flutter
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.2.0"
+    version: "2.2.1"
   google_maps_flutter_android:
     dependency: transitive
     description:
       name: google_maps_flutter_android
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.3.0"
+    version: "2.3.2"
   google_maps_flutter_ios:
     dependency: transitive
     description:
       name: google_maps_flutter_ios
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.11"
+    version: "2.1.12"
   google_maps_flutter_platform_interface:
     dependency: transitive
     description:
       name: google_maps_flutter_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.2.2"
+    version: "2.2.4"
   highlight:
     dependency: transitive
     description:
@@ -594,14 +615,14 @@ packages:
       name: logging
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.2"
+    version: "1.1.0"
   markdown:
     dependency: transitive
     description:
       name: markdown
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "6.0.0"
+    version: "6.0.1"
   matcher:
     dependency: transitive
     description:
@@ -647,9 +668,11 @@ packages:
   motion_sensors:
     dependency: transitive
     description:
-      name: motion_sensors
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "."
+      ref: aves
+      resolved-ref: "0bf47932242dea4f93f51be0f6bfa3d9e5616c31"
+      url: "https://github.com/deckerst/aves_panorama_motion_sensors.git"
+    source: git
     version: "0.1.0"
   nested:
     dependency: transitive
@@ -720,7 +743,7 @@ packages:
       name: package_info_plus_web
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.5"
+    version: "1.0.6"
   package_info_plus_windows:
     dependency: transitive
     description:
@@ -740,7 +763,7 @@ packages:
     description:
       path: "."
       ref: aves
-      resolved-ref: "0050dc1aee451f821961980ea8b9c1eb3d131c01"
+      resolved-ref: "47442e5102a8bdf5e756d6dfab60108b73d132f0"
       url: "https://github.com/deckerst/aves_panorama.git"
     source: git
     version: "0.4.1"
@@ -771,7 +794,7 @@ packages:
       name: path_provider_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.4"
+    version: "2.0.5"
   path_provider_windows:
     dependency: transitive
     description:
@@ -799,7 +822,7 @@ packages:
       name: permission_handler
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "10.0.0"
+    version: "10.1.0"
   permission_handler_android:
     dependency: "direct overridden"
     description:
@@ -815,21 +838,21 @@ packages:
       name: permission_handler_apple
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "9.0.4"
+    version: "9.0.6"
   permission_handler_platform_interface:
     dependency: transitive
     description:
       name: permission_handler_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.7.0"
+    version: "3.9.0"
   permission_handler_windows:
     dependency: transitive
     description:
       name: permission_handler_windows
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.0"
+    version: "0.1.1"
   petitparser:
     dependency: transitive
     description:
@@ -850,7 +873,7 @@ packages:
       name: plugin_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.2"
+    version: "2.1.3"
   polylabel:
     dependency: transitive
     description:
@@ -914,20 +937,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.1"
-  quiver:
-    dependency: transitive
-    description:
-      name: quiver
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "3.1.0"
   screen_brightness:
     dependency: "direct main"
     description:
       name: screen_brightness
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.1"
+    version: "0.2.2"
   screen_brightness_android:
     dependency: transitive
     description:
@@ -956,6 +972,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.1.0"
+  screen_brightness_windows:
+    dependency: transitive
+    description:
+      name: screen_brightness_windows
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.1"
   shared_preferences:
     dependency: "direct main"
     description:
@@ -1018,7 +1041,7 @@ packages:
       name: shelf
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.3.2"
+    version: "1.4.0"
   shelf_packages_handler:
     dependency: transitive
     description:
@@ -1045,6 +1068,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.99"
+  smooth_page_indicator:
+    dependency: "direct main"
+    description:
+      name: smooth_page_indicator
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0+2"
   source_map_stack_trace:
     dependency: transitive
     description:
@@ -1072,14 +1102,14 @@ packages:
       name: sqflite
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.3+1"
+    version: "2.1.0+1"
   sqflite_common:
     dependency: transitive
     description:
       name: sqflite_common
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.2.1+1"
+    version: "2.3.0"
   stack_trace:
     dependency: transitive
     description:
@@ -1100,7 +1130,7 @@ packages:
       name: stream_transform
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.0"
+    version: "2.0.1"
   streams_channel:
     dependency: "direct main"
     description:
@@ -1172,7 +1202,7 @@ packages:
       name: tuple
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.0"
+    version: "2.0.1"
   typed_data:
     dependency: transitive
     description:
@@ -1193,7 +1223,7 @@ packages:
       name: url_launcher
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "6.1.5"
+    version: "6.1.6"
   url_launcher_android:
     dependency: transitive
     description:
@@ -1228,7 +1258,7 @@ packages:
       name: url_launcher_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.0"
+    version: "2.1.1"
   url_launcher_web:
     dependency: transitive
     description:

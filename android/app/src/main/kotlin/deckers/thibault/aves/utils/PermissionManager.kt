@@ -105,7 +105,11 @@ object PermissionManager {
                             val primaryDir = dirSegments.firstOrNull()
                             if (getRestrictedPrimaryDirectories().contains(primaryDir) && dirSegments.size > 1) {
                                 // request secondary directory (if any) for restricted primary directory
-                                dirSet.add(dirSegments.take(2).joinToString(File.separator))
+                                val dir = dirSegments.take(2).joinToString(File.separator)
+                                // only register directories that exist on storage, so they can be selected for access grant
+                                if (File(volumePath, dir).exists()) {
+                                    dirSet.add(dir)
+                                }
                             } else {
                                 primaryDir?.let { dirSet.add(it) }
                             }

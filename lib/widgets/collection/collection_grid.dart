@@ -7,6 +7,7 @@ import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
+import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums/enums.dart';
 import 'package:aves/model/source/section_keys.dart';
 import 'package:aves/ref/mime_types.dart';
@@ -25,7 +26,9 @@ import 'package:aves/widgets/common/extensions/media_query.dart';
 import 'package:aves/widgets/common/grid/draggable_thumb_label.dart';
 import 'package:aves/widgets/common/grid/item_tracker.dart';
 import 'package:aves/widgets/common/grid/scaling.dart';
-import 'package:aves/widgets/common/grid/section_layout.dart';
+import 'package:aves/widgets/common/grid/sections/fixed/scale_grid.dart';
+import 'package:aves/widgets/common/grid/sections/list_layout.dart';
+import 'package:aves/widgets/common/grid/sections/section_layout.dart';
 import 'package:aves/widgets/common/grid/selector.dart';
 import 'package:aves/widgets/common/grid/sliver.dart';
 import 'package:aves/widgets/common/grid/theme.dart';
@@ -34,6 +37,7 @@ import 'package:aves/widgets/common/identity/empty.dart';
 import 'package:aves/widgets/common/identity/scroll_thumb.dart';
 import 'package:aves/widgets/common/providers/tile_extent_controller_provider.dart';
 import 'package:aves/widgets/common/thumbnail/decorated.dart';
+import 'package:aves/widgets/common/thumbnail/image.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
 import 'package:aves/widgets/navigation/nav_bar/nav_bar.dart';
 import 'package:flutter/gestures.dart';
@@ -50,7 +54,8 @@ class CollectionGrid extends StatefulWidget {
   static const int columnCountDefault = 4;
   static const double extentMin = 46;
   static const double extentMax = 300;
-  static const double spacing = 2;
+  static const double fixedExtentLayoutSpacing = 2;
+  static const double mosaicLayoutSpacing = 4;
 
   const CollectionGrid({
     super.key,
@@ -64,6 +69,8 @@ class CollectionGrid extends StatefulWidget {
 class _CollectionGridState extends State<CollectionGrid> {
   TileExtentController? _tileExtentController;
 
+  String get settingsRouteKey => widget.settingsRouteKey;
+
   @override
   void dispose() {
     _tileExtentController?.dispose();
@@ -72,14 +79,17 @@ class _CollectionGridState extends State<CollectionGrid> {
 
   @override
   Widget build(BuildContext context) {
-    _tileExtentController ??= TileExtentController(
-      settingsRouteKey: widget.settingsRouteKey,
-      columnCountDefault: CollectionGrid.columnCountDefault,
-      extentMin: CollectionGrid.extentMin,
-      extentMax: CollectionGrid.extentMax,
-      spacing: CollectionGrid.spacing,
-      horizontalPadding: 2,
-    );
+    final spacing = context.select<Settings, double>((s) => s.getTileLayout(settingsRouteKey) == TileLayout.mosaic ? CollectionGrid.mosaicLayoutSpacing : CollectionGrid.fixedExtentLayoutSpacing);
+    if (_tileExtentController?.spacing != spacing) {
+      _tileExtentController = TileExtentController(
+        settingsRouteKey: settingsRouteKey,
+        columnCountDefault: CollectionGrid.columnCountDefault,
+        extentMin: CollectionGrid.extentMin,
+        extentMax: CollectionGrid.extentMax,
+        spacing: spacing,
+        horizontalPadding: 2,
+      );
+    }
     return TileExtentControllerProvider(
       controller: _tileExtentController!,
       child: _CollectionGridContent(),
@@ -108,12 +118,13 @@ class _CollectionGridContent extends StatelessWidget {
                 final columnCount = c.item2;
                 final tileSpacing = c.item3;
                 final horizontalPadding = c.item4;
+                final source = collection.source;
                 return GridTheme(
                   extent: thumbnailExtent,
                   child: EntryListDetailsTheme(
                     extent: thumbnailExtent,
                     child: ValueListenableBuilder<SourceState>(
-                      valueListenable: collection.source.stateNotifier,
+                      valueListenable: source.stateNotifier,
                       builder: (context, sourceState, child) {
                         late final Duration tileAnimationDelay;
                         if (sourceState == SourceState.ready) {
@@ -123,30 +134,37 @@ class _CollectionGridContent extends StatelessWidget {
                         } else {
                           tileAnimationDelay = Duration.zero;
                         }
-                        return SectionedEntryListLayoutProvider(
-                          collection: collection,
-                          selectable: selectable,
-                          scrollableWidth: scrollableWidth,
-                          tileLayout: tileLayout,
-                          columnCount: columnCount,
-                          spacing: tileSpacing,
-                          horizontalPadding: horizontalPadding,
-                          tileExtent: thumbnailExtent,
-                          tileBuilder: (entry) => AnimatedBuilder(
-                            animation: favourites,
-                            builder: (context, child) {
-                              return InteractiveTile(
-                                key: ValueKey(entry.id),
-                                collection: collection,
-                                entry: entry,
-                                thumbnailExtent: thumbnailExtent,
-                                tileLayout: tileLayout,
-                                isScrollingNotifier: _isScrollingNotifier,
+
+                        return StreamBuilder(
+                          stream: source.eventBus.on<AspectRatioChangedEvent>(),
+                          builder: (context, snapshot) => SectionedEntryListLayoutProvider(
+                            collection: collection,
+                            selectable: selectable,
+                            scrollableWidth: scrollableWidth,
+                            tileLayout: tileLayout,
+                            columnCount: columnCount,
+                            spacing: tileSpacing,
+                            horizontalPadding: horizontalPadding,
+                            tileExtent: thumbnailExtent,
+                            tileBuilder: (entry, tileSize) {
+                              final extent = tileSize.shortestSide;
+                              return AnimatedBuilder(
+                                animation: favourites,
+                                builder: (context, child) {
+                                  return InteractiveTile(
+                                    key: ValueKey(entry.id),
+                                    collection: collection,
+                                    entry: entry,
+                                    thumbnailExtent: extent,
+                                    tileLayout: tileLayout,
+                                    isScrollingNotifier: _isScrollingNotifier,
+                                  );
+                                },
                               );
                             },
+                            tileAnimationDelay: tileAnimationDelay,
+                            child: child!,
                           ),
-                          tileAnimationDelay: tileAnimationDelay,
-                          child: child!,
                         );
                       },
                       child: child,
@@ -260,12 +278,13 @@ class _CollectionScaler extends StatelessWidget {
     final metrics = context.select<TileExtentController, Tuple2<double, double>>((v) => Tuple2(v.spacing, v.horizontalPadding));
     final tileSpacing = metrics.item1;
     final horizontalPadding = metrics.item2;
+    final brightness = Theme.of(context).brightness;
     return GridScaleGestureDetector<AvesEntry>(
       scrollableKey: scrollableKey,
       tileLayout: tileLayout,
       heightForWidth: (width) => width,
       gridBuilder: (center, tileSize, child) => CustomPaint(
-        painter: GridPainter(
+        painter: FixedExtentGridPainter(
           tileLayout: tileLayout,
           tileCenter: center,
           tileSize: tileSize,
@@ -278,12 +297,21 @@ class _CollectionScaler extends StatelessWidget {
         ),
         child: child,
       ),
-      scaledBuilder: (entry, tileSize) => EntryListDetailsTheme(
+      scaledItemBuilder: (entry, tileSize) => EntryListDetailsTheme(
         extent: tileSize.height,
         child: Tile(
           entry: entry,
           thumbnailExtent: context.read<TileExtentController>().effectiveExtentMax,
           tileLayout: tileLayout,
+        ),
+      ),
+      mosaicItemBuilder: (index, targetExtent) => DecoratedBox(
+        decoration: BoxDecoration(
+          color: ThumbnailImage.computeLoadingBackgroundColor(index * 10, brightness).withOpacity(.9),
+          border: Border.all(
+            color: DecoratedThumbnail.borderColor,
+            width: DecoratedThumbnail.borderWidth,
+          ),
         ),
       ),
       child: child,

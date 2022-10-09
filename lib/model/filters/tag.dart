@@ -10,20 +10,20 @@ class TagFilter extends CoveredCollectionFilter {
   late final EntryFilter _test;
 
   @override
-  List<Object?> get props => [tag];
+  List<Object?> get props => [tag, reversed];
 
-  TagFilter(this.tag, {bool not = false}) : super(not: not) {
+  TagFilter(this.tag, {super.reversed = false}) {
     if (tag.isEmpty) {
-      _test = not ? (entry) => entry.tags.isNotEmpty : (entry) => entry.tags.isEmpty;
+      _test = (entry) => entry.tags.isEmpty;
     } else {
-      _test = not ? (entry) => !entry.tags.contains(tag) : (entry) => entry.tags.contains(tag);
+      _test = (entry) => entry.tags.contains(tag);
     }
   }
 
   factory TagFilter.fromMap(Map<String, dynamic> json) {
     return TagFilter(
       json['tag'],
-      not: json['not'] ?? false,
+      reversed: json['reversed'] ?? false,
     );
   }
 
@@ -31,14 +31,14 @@ class TagFilter extends CoveredCollectionFilter {
   Map<String, dynamic> toMap() => {
         'type': type,
         'tag': tag,
-        'not': not,
+        'reversed': reversed,
       };
 
   @override
-  EntryFilter get test => _test;
+  EntryFilter get positiveTest => _test;
 
   @override
-  bool isCompatible(CollectionFilter other) => true;
+  bool get exclusiveProp => false;
 
   @override
   String get universalLabel => tag;

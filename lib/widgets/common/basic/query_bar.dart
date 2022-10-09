@@ -52,7 +52,7 @@ class _QueryBarState extends State<QueryBar> {
     );
 
     return DefaultTextStyle(
-      style: Theme.of(context).textTheme.bodyText2!,
+      style: Theme.of(context).textTheme.bodyMedium!,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

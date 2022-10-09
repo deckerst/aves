@@ -29,7 +29,7 @@ class SliderListTile extends StatelessWidget {
         ),
       ),
       child: DefaultTextStyle(
-        style: Theme.of(context).textTheme.subtitle1!,
+        style: Theme.of(context).textTheme.titleMedium!,
         child: Padding(
           padding: const EdgeInsets.only(top: 16, bottom: 8),
           child: Column(

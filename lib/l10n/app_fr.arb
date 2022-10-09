@@ -41,6 +41,8 @@
   "chipActionGoToAlbumPage": "Afficher dans Albums",
   "chipActionGoToCountryPage": "Afficher dans Pays",
   "chipActionGoToTagPage": "Afficher dans Libellés",
+  "chipActionFilterOut": "Exclure",
+  "chipActionFilterIn": "Inclure",
   "chipActionHide": "Masquer",
   "chipActionPin": "Épingler",
   "chipActionUnpin": "Retirer",
@@ -155,9 +157,9 @@
   "displayRefreshRatePreferHighest": "Fréquence maximale",
   "displayRefreshRatePreferLowest": "Fréquence minimale",
 
-  "slideshowVideoPlaybackSkip": "Passer",
-  "slideshowVideoPlaybackMuted": "Jouer sans son",
-  "slideshowVideoPlaybackWithSound": "Jouer avec son",
+  "videoPlaybackSkip": "Passer",
+  "videoPlaybackMuted": "Jouer sans son",
+  "videoPlaybackWithSound": "Jouer avec son",
 
   "themeBrightnessLight": "Clair",
   "themeBrightnessDark": "Sombre",
@@ -167,10 +169,14 @@
   "viewerTransitionParallax": "Parallaxe",
   "viewerTransitionFade": "Fondu",
   "viewerTransitionZoomIn": "Zoom",
+  "viewerTransitionNone": "Aucune",
 
   "wallpaperTargetHome": "Écran d’accueil",
   "wallpaperTargetLock": "Écran de verrouillage",
   "wallpaperTargetHomeLock": "Écrans accueil et verrouillage",
+
+  "widgetOpenPageHome": "Ouvrir la page d’accueil",
+  "widgetOpenPageViewer": "Ouvrir la visionneuse",
 
   "albumTierNew": "Nouveaux",
   "albumTierPinned": "Épinglés",
@@ -289,6 +295,7 @@
   "viewDialogLayoutSectionTitle": "Vue",
   "viewDialogReverseSortOrder": "Inverser l’ordre",
 
+  "tileLayoutMosaic": "Mosaïque",
   "tileLayoutGrid": "Grille",
   "tileLayoutList": "Liste",
 
@@ -401,8 +408,11 @@
   "sortOrderSmallestFirst": "Moins larges d’abord",
 
   "albumGroupTier": "par importance",
+  "albumGroupType": "par type",
   "albumGroupVolume": "par volume de stockage",
   "albumGroupNone": "ne pas grouper",
+
+  "albumMimeTypeMixed": "Mixte",
 
   "albumPickPageTitleCopy": "Copie",
   "albumPickPageTitleExport": "Export",
@@ -442,6 +452,7 @@
   "settingsPageTitle": "Réglages",
   "settingsSystemDefault": "Système",
   "settingsDefault": "Par défaut",
+  "settingsDisabled": "Désactivé",
 
   "settingsSearchFieldLabel": "Recherche de réglages",
   "settingsSearchEmpty": "Aucun réglage correspondant",
@@ -524,10 +535,9 @@
   "settingsSlideshowRepeat": "Répéter",
   "settingsSlideshowShuffle": "Aléatoire",
   "settingsSlideshowFillScreen": "Remplir l’écran",
+  "settingsSlideshowAnimatedZoomEffect": "Effet de zoom animé",
   "settingsSlideshowTransitionTile": "Transition",
-  "settingsSlideshowTransitionDialogTitle": "Transition",
   "settingsSlideshowIntervalTile": "Intervalle",
-  "settingsSlideshowIntervalDialogTitle": "Intervalle",
   "settingsSlideshowVideoPlaybackTile": "Lecture de vidéos",
   "settingsSlideshowVideoPlaybackDialogTitle": "Lecture de vidéos",
 
@@ -535,7 +545,7 @@
   "settingsVideoSectionTitle": "Vidéo",
   "settingsVideoShowVideos": "Afficher les vidéos",
   "settingsVideoEnableHardwareAcceleration": "Accélération matérielle",
-  "settingsVideoEnableAutoPlay": "Lecture automatique",
+  "settingsVideoAutoPlay": "Lecture automatique",
   "settingsVideoLoopModeTile": "Lecture répétée",
   "settingsVideoLoopModeDialogTitle": "Lecture répétée",
 
@@ -557,7 +567,6 @@
   "settingsVideoControlsTile": "Contrôles",
   "settingsVideoControlsPageTitle": "Contrôles",
   "settingsVideoButtonsTile": "Boutons",
-  "settingsVideoButtonsDialogTitle": "Boutons",
   "settingsVideoGestureDoubleTapTogglePlay": "Appuyer deux fois pour lire ou mettre en pause",
   "settingsVideoGestureSideDoubleTapSeek": "Appuyer deux fois sur les bords de l’écran pour reculer ou avancer",
 
@@ -590,7 +599,6 @@
   "settingsRemoveAnimationsTile": "Suppression des animations",
   "settingsRemoveAnimationsDialogTitle": "Suppression des animations",
   "settingsTimeToTakeActionTile": "Délai pour effectuer une action",
-  "settingsTimeToTakeActionDialogTitle": "Délai pour effectuer une action",
 
   "settingsDisplaySectionTitle": "Affichage",
   "settingsThemeBrightnessTile": "Thème",
@@ -612,6 +620,7 @@
 
   "settingsWidgetPageTitle": "Cadre photo",
   "settingsWidgetShowOutline": "Contours",
+  "settingsWidgetOpenPage": "Quand vous appuyez sur le widget",
 
   "settingsCollectionTile": "Collection",
 
@@ -620,6 +629,7 @@
   "statsTopCountriesSectionTitle": "Top pays",
   "statsTopPlacesSectionTitle": "Top lieux",
   "statsTopTagsSectionTitle": "Top libellés",
+  "statsTopAlbumsSectionTitle": "Top albums",
 
   "viewerOpenPanoramaButtonLabel": "OUVRIR LE PANORAMA",
   "viewerSetWallpaperButtonLabel": "APPLIQUER",
@@ -663,6 +673,8 @@
   "viewerInfoSearchSuggestionDimensions": "Dimensions",
   "viewerInfoSearchSuggestionResolution": "Résolution",
   "viewerInfoSearchSuggestionRights": "Droits",
+
+  "wallpaperUseScrollEffect": "Utiliser l’effet de défilement sur l’écran d’accueil",
 
   "tagEditorPageTitle": "Modifier les libellés",
   "tagEditorPageNewTagFieldLabel": "Nouveau libellé",

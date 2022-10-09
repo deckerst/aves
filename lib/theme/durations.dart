@@ -24,11 +24,12 @@ class Durations {
   static const chipDecorationAnimation = Duration(milliseconds: 200);
   static const highlightScrollAnimationMinMillis = 400;
   static const highlightScrollAnimationMaxMillis = 2000;
+  static const scalingGridBackgroundAnimation = Duration(milliseconds: 200);
+  static const scalingGridPositionAnimation = Duration(milliseconds: 150);
 
   // collection animations
   static const filterBarRemovalAnimation = Duration(milliseconds: 400);
   static const collectionOpOverlayAnimation = Duration(milliseconds: 300);
-  static const collectionScalingBackgroundAnimation = Duration(milliseconds: 200);
   static const sectionHeaderAnimation = Duration(milliseconds: 200);
   static const thumbnailOverlayAnimation = Duration(milliseconds: 200);
 
@@ -40,6 +41,7 @@ class Durations {
   static const thumbnailScrollerShadeAnimation = Duration(milliseconds: 150);
   static const viewerVideoPlayerTransition = Duration(milliseconds: 500);
   static const viewerActionFeedbackAnimation = Duration(milliseconds: 600);
+  static const viewerHorizontalPageAnimation = Duration(seconds: 1);
 
   // info animations
   static const mapStyleSwitchAnimation = Duration(milliseconds: 300);
@@ -95,6 +97,7 @@ class DurationsData {
   // common animations
   final Duration expansionTileAnimation;
   final Duration formTransition;
+  final Duration formTextStyleTransition;
   final Duration chartTransition;
   final Duration iconAnimation;
   final Duration staggeredAnimation;
@@ -111,6 +114,7 @@ class DurationsData {
   const DurationsData({
     this.expansionTileAnimation = const Duration(milliseconds: 200),
     this.formTransition = const Duration(milliseconds: 200),
+    this.formTextStyleTransition = const Duration(milliseconds: 800),
     this.chartTransition = const Duration(milliseconds: 400),
     this.iconAnimation = const Duration(milliseconds: 300),
     this.staggeredAnimation = const Duration(milliseconds: 375),
@@ -125,6 +129,7 @@ class DurationsData {
       // as of Flutter v2.5.1, `ExpansionPanelList` throws if animation duration is zero
       expansionTileAnimation: const Duration(microseconds: 1),
       formTransition: Duration.zero,
+      formTextStyleTransition: Duration.zero,
       chartTransition: Duration.zero,
       iconAnimation: Duration.zero,
       staggeredAnimation: Duration.zero,

@@ -310,7 +310,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
             contentId: newFields['contentId'] as int?,
             // title can change when moved files are automatically renamed to avoid conflict
             title: newFields['title'] as String?,
-            dateAddedSecs: metadataDb.timestampSecs,
+            dateAddedSecs: newFields['dateAddedSecs'] as int?,
             dateModifiedSecs: newFields['dateModifiedSecs'] as int?,
           ));
         } else {
@@ -395,16 +395,25 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
   Future<void> refreshEntry(AvesEntry entry, Set<EntryDataType> dataTypes) async {
     await entry.refresh(background: false, persist: true, dataTypes: dataTypes, geocoderLocale: settings.appliedLocale);
 
-    // update/delete in DB
     final id = entry.id;
-    if (dataTypes.contains(EntryDataType.catalog)) {
-      await metadataDb.updateCatalogMetadata(id, entry.catalogMetadata);
-      onCatalogMetadataChanged();
-    }
-    if (dataTypes.contains(EntryDataType.address)) {
-      await metadataDb.updateAddress(id, entry.addressDetails);
-      onAddressMetadataChanged();
-    }
+    await Future.forEach(EntryDataType.values, (dataType) async {
+      switch (dataType) {
+        case EntryDataType.aspectRatio:
+          onAspectRatioChanged();
+          break;
+        case EntryDataType.catalog:
+          await metadataDb.updateCatalogMetadata(id, entry.catalogMetadata);
+          onCatalogMetadataChanged();
+          break;
+        case EntryDataType.address:
+          await metadataDb.updateAddress(id, entry.addressDetails);
+          onAddressMetadataChanged();
+          break;
+        case EntryDataType.basic:
+        case EntryDataType.references:
+          break;
+      }
+    });
 
     updateDerivedFilters({entry});
     eventBus.fire(EntryRefreshedEvent({entry}));
@@ -448,6 +457,8 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
     }
     state = SourceState.ready;
   }
+
+  void onAspectRatioChanged() => eventBus.fire(AspectRatioChangedEvent());
 
   // monitoring
 
@@ -502,3 +513,5 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
     }
   }
 }
+
+class AspectRatioChangedEvent {}

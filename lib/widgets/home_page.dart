@@ -95,6 +95,9 @@ class _HomePageState extends State<HomePage> {
       // hide in some countries apps that force quit on permission denial
       await [
         Permission.storage,
+        // for media access on Android >=13
+        Permission.photos,
+        Permission.videos,
         // to access media with unredacted metadata with scoped storage (Android >=10)
         Permission.accessMediaLocation,
       ].request();
@@ -117,7 +120,12 @@ class _HomePageState extends State<HomePage> {
           String? uri, mimeType;
           final widgetId = intentData[intentDataKeyWidgetId];
           if (widgetId != null) {
-            uri = settings.getWidgetUri(widgetId);
+            // widget settings may be modified in a different process after channel setup
+            await settings.reload();
+            final page = settings.getWidgetOpenPage(widgetId);
+            if (page == WidgetOpenPage.viewer) {
+              uri = settings.getWidgetUri(widgetId);
+            }
             unawaited(WidgetService.update(widgetId));
           } else {
             uri = intentData[intentDataKeyUri];

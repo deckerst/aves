@@ -4,6 +4,32 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.7.1"></a>[v1.7.1] - 2022-10-09
+
+### Added
+
+- mosaic layout
+- reverse filters to filter out/in
+- Collection: selection edit actions available as quick actions
+- Albums: group by content type
+- Info: improved display for XMP
+- Stats: top albums
+- Stats: open full top listings
+- Video: option for muted auto play
+- Slideshow / Screen saver: option for no transition
+- Slideshow / Screen saver: animated zoom effect
+- Widget: tap action setting
+- Wallpaper: scroll effect option
+
+### Changed
+
+- upgraded Flutter to stable v3.3.4
+
+### Fixed
+
+- restoring to missing Download subdir
+- crash when cataloguing PNG with large chunks
+
 ## <a id="v1.7.0"></a>[v1.7.0] - 2022-09-19
 
 ### Added

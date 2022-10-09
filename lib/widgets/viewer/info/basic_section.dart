@@ -189,7 +189,7 @@ class _BasicInfoState extends State<_BasicInfo> {
   @override
   void initState() {
     super.initState();
-    if (!entry.trashed && entry.isMediaStoreContent) {
+    if (!entry.trashed && entry.isMediaStoreMediaContent) {
       _ownerPackageLoader = metadataFetchService.hasContentResolverProp(ownerPackageNamePropKey).then((exists) {
         return exists ? metadataFetchService.getContentResolverProp(entry, ownerPackageNamePropKey) : SynchronousFuture(null);
       });

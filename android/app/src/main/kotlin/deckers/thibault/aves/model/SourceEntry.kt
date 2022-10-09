@@ -41,6 +41,7 @@ class SourceEntry {
     var height: Int? = null
     private var sourceRotationDegrees: Int? = null
     private var sizeBytes: Long? = null
+    private var dateAddedSecs: Long? = null
     private var dateModifiedSecs: Long? = null
     private var sourceDateTakenMillis: Long? = null
     private var durationMillis: Long? = null
@@ -61,6 +62,7 @@ class SourceEntry {
         sourceRotationDegrees = map["sourceRotationDegrees"] as Int?
         sizeBytes = toLong(map["sizeBytes"])
         title = map["title"] as String?
+        dateAddedSecs = toLong(map["dateAddedSecs"])
         dateModifiedSecs = toLong(map["dateModifiedSecs"])
         sourceDateTakenMillis = toLong(map["sourceDateTakenMillis"])
         durationMillis = toLong(map["durationMillis"])
@@ -83,6 +85,7 @@ class SourceEntry {
             "sourceRotationDegrees" to (sourceRotationDegrees ?: 0),
             "sizeBytes" to sizeBytes,
             "title" to title,
+            "dateAddedSecs" to dateAddedSecs,
             "dateModifiedSecs" to dateModifiedSecs,
             "sourceDateTakenMillis" to sourceDateTakenMillis,
             "durationMillis" to durationMillis,

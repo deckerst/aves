@@ -83,7 +83,7 @@ class EntrySetActions {
   ];
 
   // exclude bin related actions
-  static const collectionEditorSelection = [
+  static const collectionEditorSelectionRegular = [
     EntrySetAction.share,
     EntrySetAction.delete,
     EntrySetAction.copy,
@@ -95,6 +95,18 @@ class EntrySetActions {
     EntrySetAction.stats,
     EntrySetAction.rescan,
     // editing actions are in their subsection
+  ];
+
+  static const collectionEditorSelectionEdit = [
+    EntrySetAction.rotateCCW,
+    EntrySetAction.rotateCW,
+    EntrySetAction.flip,
+    EntrySetAction.editDate,
+    EntrySetAction.editLocation,
+    EntrySetAction.editTitleDescription,
+    EntrySetAction.editRating,
+    EntrySetAction.editTags,
+    EntrySetAction.removeMetadata,
   ];
 
   static const edit = [

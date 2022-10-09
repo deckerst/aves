@@ -126,6 +126,7 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
     if (newFields.isNotEmpty) {
       dataTypes.addAll({
         EntryDataType.basic,
+        EntryDataType.aspectRatio,
         EntryDataType.catalog,
       });
     }
@@ -309,14 +310,18 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
   }
 
   Future<Set<EntryDataType>> removeMetadata(Set<MetadataType> types) async {
+    final Set<EntryDataType> dataTypes = {};
+
     final newFields = await metadataEditService.removeTypes(this, types);
-    return newFields.isEmpty
-        ? {}
-        : {
-            EntryDataType.basic,
-            EntryDataType.catalog,
-            EntryDataType.address,
-          };
+    if (newFields.isNotEmpty) {
+      dataTypes.addAll({
+        EntryDataType.basic,
+        EntryDataType.aspectRatio,
+        EntryDataType.catalog,
+        EntryDataType.address,
+      });
+    }
+    return dataTypes;
   }
 
   static void editIptcValues(List<Map<String, dynamic>> iptc, int record, int tag, Set<String> values) {

@@ -6,7 +6,7 @@ repository: https://github.com/deckerst/aves
 # - github changelog: /CHANGELOG.md
 # - play changelog:   /whatsnew/whatsnew-en-US
 # - izzy changelog:   /fastlane/metadata/android/en-US/changelogs/1XXX.txt
-version: 1.7.0+80
+version: 1.7.1+81
 publish_to: none
 
 environment:
@@ -75,6 +75,7 @@ dependencies:
   provider:
   screen_brightness:
   shared_preferences:
+  smooth_page_indicator:
   sqflite:
   streams_channel:
     git:
@@ -85,7 +86,8 @@ dependencies:
   xml:
 
 dependency_overrides:
-  # TODO TLAD as of 2022/06/18, latest version (v10.0.0) does not support Android 13 storage permissions
+  # TODO TLAD as of 2022/10/09, latest version (v10.1.0) does not support Android 13 storage permissions
+  # `permission_handler_platform_interface` v3.9.0 added support for them but it is not effective
   permission_handler_android:
     git:
       url: https://github.com/deckerst/flutter-permission-handler
@@ -153,22 +155,23 @@ flutter:
 #  adapts from package `flutter_highlight` v0.7.0
 #
 #  `OutputBuffer` in `/services/common/output_buffer.dart`
-#  adapts from Flutter `_OutputBuffer` in `/foundation/consolidate_response.dart`
+#  adapts from Flutter v3.3.3 `_OutputBuffer` in `/foundation/consolidate_response.dart`
 #
 #  `OverlaySnackBar` in `/widgets/common/action_mixins/overlay_snack_bar.dart`
-#  adapts from Flutter `SnackBar` in `/material/snack_bar.dart`
+#  adapts from Flutter v3.3.3 `SnackBar` in `/material/snack_bar.dart`
 #
 #  `EagerScaleGestureRecognizer` in `/widgets/common/behaviour/eager_scale_gesture_recognizer.dart`
-#  adapts from Flutter `ScaleGestureRecognizer` in `/gestures/scale.dart`
+#  adapts from Flutter v3.3.3 `ScaleGestureRecognizer` in `/gestures/scale.dart`
 #
 #  `KnownExtentScrollPhysics` in `/widgets/common/behaviour/known_extent_scroll_physics.dart`
-#  adapts from Flutter `FixedExtentScrollPhysics` in `/widgets/list_wheel_scroll_view.dart`
+#  adapts from Flutter v3.3.3 `FixedExtentScrollPhysics` in `/widgets/list_wheel_scroll_view.dart`
 #
 #  `TransitionImage` in `/widgets/common/fx/transition_image.dart`
-#  adapts from Flutter `RawImage` in `/widgets/basic.dart` and `DecorationImagePainter` in `/painting/decoration_image.dart`
+#  adapts from Flutter v3.3.3 `_ImageState` in `/widgets/image.dart`
+#  and `DecorationImagePainter` in `/painting/decoration_image.dart`
 #
 #  `_RenderSliverKnownExtentBoxAdaptor` in `/widgets/common/grid/sliver.dart`
-#  adapts from Flutter `RenderSliverFixedExtentBoxAdaptor` in `/rendering/sliver_fixed_extent_list.dart`
+#  adapts from Flutter v3.3.3 `RenderSliverFixedExtentBoxAdaptor` in `/rendering/sliver_fixed_extent_list.dart`
 #
 #  `CollectionSearchDelegate`, `SearchPageRoute` in `/widgets/search/search_delegate.dart`
-#  adapts from Flutter `SearchDelegate`, `_SearchPageRoute` in `/material/search.dart`
+#  adapts from Flutter v3.3.3 `SearchDelegate`, `_SearchPageRoute` in `/material/search.dart`

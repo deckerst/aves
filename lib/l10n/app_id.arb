@@ -155,9 +155,9 @@
   "displayRefreshRatePreferHighest": "Penyegaran tertinggi",
   "displayRefreshRatePreferLowest": "Penyegaran terendah",
 
-  "slideshowVideoPlaybackSkip": "Lewati",
-  "slideshowVideoPlaybackMuted": "Mainkan bisu",
-  "slideshowVideoPlaybackWithSound": "Mainkan dengan suara",
+  "videoPlaybackSkip": "Lewati",
+  "videoPlaybackMuted": "Mainkan bisu",
+  "videoPlaybackWithSound": "Mainkan dengan suara",
 
   "themeBrightnessLight": "Terang",
   "themeBrightnessDark": "Gelap",
@@ -525,9 +525,7 @@
   "settingsSlideshowShuffle": "Acak",
   "settingsSlideshowFillScreen": "Isi layar",
   "settingsSlideshowTransitionTile": "Transisi",
-  "settingsSlideshowTransitionDialogTitle": "Transisi",
   "settingsSlideshowIntervalTile": "Interval",
-  "settingsSlideshowIntervalDialogTitle": "Interval",
   "settingsSlideshowVideoPlaybackTile": "Putaran ulang video",
   "settingsSlideshowVideoPlaybackDialogTitle": "Putaran Ulang Video",
 
@@ -535,7 +533,7 @@
   "settingsVideoSectionTitle": "Video",
   "settingsVideoShowVideos": "Tampilkan video",
   "settingsVideoEnableHardwareAcceleration": "Akselerasi perangkat keras",
-  "settingsVideoEnableAutoPlay": "Putar otomatis",
+  "settingsVideoAutoPlay": "Putar otomatis",
   "settingsVideoLoopModeTile": "Putar ulang",
   "settingsVideoLoopModeDialogTitle": "Putar Ulang",
 
@@ -557,7 +555,6 @@
   "settingsVideoControlsTile": "Kontrol",
   "settingsVideoControlsPageTitle": "Kontrol",
   "settingsVideoButtonsTile": "Tombol",
-  "settingsVideoButtonsDialogTitle": "Tombol",
   "settingsVideoGestureDoubleTapTogglePlay": "Ketuk dua kali untuk mainkan/hentikan",
   "settingsVideoGestureSideDoubleTapSeek": "Ketuk dua kali di tepi layar untuk mencari kebelakang/kedepan",
 
@@ -590,7 +587,6 @@
   "settingsRemoveAnimationsTile": "Hapus animasi",
   "settingsRemoveAnimationsDialogTitle": "Hapus Animasi",
   "settingsTimeToTakeActionTile": "Waktu untuk mengambil tindakan",
-  "settingsTimeToTakeActionDialogTitle": "Saatnya Bertindak",
 
   "settingsDisplaySectionTitle": "Tampilan",
   "settingsThemeBrightnessTile": "Tema",

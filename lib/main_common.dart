@@ -33,6 +33,7 @@ void mainCommon(AppFlavor flavor) {
   // - in profile/release mode: plain grey background
   // This can be modified via `ErrorWidget.builder`
   // ErrorWidget.builder = (details) => ErrorWidget(details.exception);
+  // cf https://docs.flutter.dev/testing/errors
 
   runApp(AvesApp(flavor: flavor));
 }

@@ -81,9 +81,8 @@ class PlatformMediaFetchService implements MediaFetchService {
       }) as Map;
       return AvesEntry.fromMap(result);
     } on PlatformException catch (e, stack) {
-      // do not report issues with simple parameter-less media content
-      // as it is likely an obsolete Media Store entry
-      if (!uri.startsWith('content://media/') || uri.contains('?')) {
+      // do not report issues with media content as it is likely an obsolete Media Store entry
+      if (!uri.startsWith('content://media/')) {
         await reportService.recordError(e, stack);
       }
     }

@@ -29,8 +29,8 @@ class EntryListDetailsTheme extends StatelessWidget {
         final textScaleFactor = mq.textScaleFactor;
 
         final textTheme = Theme.of(context).textTheme;
-        final titleStyle = textTheme.bodyText2!;
-        final captionStyle = textTheme.caption!;
+        final titleStyle = textTheme.bodyMedium!;
+        final captionStyle = textTheme.bodySmall!;
 
         final titleLineHeight = (RenderParagraph(
           TextSpan(text: 'Fake Title', style: titleStyle),

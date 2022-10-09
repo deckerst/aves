@@ -139,6 +139,7 @@ class FilterTile<T extends CollectionFilter> extends StatelessWidget {
     final onChipTap = onTap != null ? (filter) => onTap?.call() : null;
 
     switch (tileLayout) {
+      case TileLayout.mosaic:
       case TileLayout.grid:
         return FilterChipGridDecorator<T, FilterGridItem<T>>(
           gridItem: gridItem,

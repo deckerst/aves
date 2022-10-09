@@ -1,7 +1,5 @@
 import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/actions/entry_set_actions.dart';
-import 'package:aves/model/filters/favourite.dart';
-import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/recent.dart';
 import 'package:aves/model/naming_pattern.dart';
 import 'package:aves/model/settings/enums/enums.dart';
@@ -40,8 +38,6 @@ class SettingsDefaults {
   static const setMetadataDateBeforeFileOp = false;
   static final drawerTypeBookmarks = [
     null,
-    MimeFilter.video,
-    FavouriteFilter.instance,
     RecentlyAddedFilter.instance,
   ];
   static const drawerPageBookmarks = [
@@ -93,7 +89,7 @@ class SettingsDefaults {
 
   // video
   static const enableVideoHardwareAcceleration = true;
-  static const enableVideoAutoPlay = false;
+  static const videoAutoPlayMode = VideoAutoPlayMode.disabled;
   static const videoLoopMode = VideoLoopMode.shortOnly;
   static const videoShowRawTimedText = false;
   static const videoControls = VideoControls.play;
@@ -133,6 +129,7 @@ class SettingsDefaults {
   static const slideshowRepeat = false;
   static const slideshowShuffle = false;
   static const slideshowFillScreen = false;
+  static const slideshowAnimatedZoomEffect = true;
   static const slideshowTransition = ViewerTransition.fade;
   static const slideshowVideoPlayback = SlideshowVideoPlayback.playMuted;
   static const slideshowInterval = SlideshowInterval.s5;
@@ -140,6 +137,7 @@ class SettingsDefaults {
   // widget
   static const widgetOutline = false;
   static const widgetShape = WidgetShape.rrect;
+  static const widgetOpenPage = WidgetOpenPage.viewer;
 
   // platform settings
   static const isRotationLocked = false;

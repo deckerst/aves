@@ -29,6 +29,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_app_bar.dart';
 import 'package:aves/widgets/common/search/route.dart';
 import 'package:aves/widgets/dialogs/tile_view_dialog.dart';
+import 'package:aves/widgets/filter_grids/common/action_delegates/chip.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -83,6 +84,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   ];
 
   static const _layoutOptions = [
+    TileLayout.mosaic,
     TileLayout.grid,
     TileLayout.list,
   ];
@@ -167,10 +169,16 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
                   bottom: Column(
                     children: [
                       if (showFilterBar)
-                        FilterBar(
-                          filters: visibleFilters,
-                          removable: removableFilters,
-                          onTap: removableFilters ? collection.removeFilter : null,
+                        NotificationListener<ReverseFilterNotification>(
+                          onNotification: (notification) {
+                            collection.addFilter(notification.reversedFilter);
+                            return true;
+                          },
+                          child: FilterBar(
+                            filters: visibleFilters,
+                            removable: removableFilters,
+                            onTap: removableFilters ? collection.removeFilter : null,
+                          ),
                         ),
                       if (queryEnabled)
                         EntryQueryBar(
@@ -310,7 +318,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
                     title: context.l10n.collectionActionEdit,
                     items: [
                       _buildRotateAndFlipMenuItems(context, canApply: canApply),
-                      ...EntrySetActions.edit.where(isVisible).map((action) => _toMenuItem(action, enabled: canApply(action), selection: selection)),
+                      ...EntrySetActions.edit.where((v) => isVisible(v) && !selectionQuickActions.contains(v)).map((action) => _toMenuItem(action, enabled: canApply(action), selection: selection)),
                     ],
                   ),
                 ),
@@ -537,9 +545,9 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       builder: (context) {
         return TileViewDialog<EntrySortFactor, EntryGroupFactor, TileLayout>(
           initialValue: initialValue,
-          sortOptions: Map.fromEntries(_sortOptions.map((v) => MapEntry(v, v.getName(context)))),
-          groupOptions: Map.fromEntries(_groupOptions.map((v) => MapEntry(v, v.getName(context)))),
-          layoutOptions: Map.fromEntries(_layoutOptions.map((v) => MapEntry(v, v.getName(context)))),
+          sortOptions: _sortOptions.map((v) => TileViewDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
+          groupOptions: _groupOptions.map((v) => TileViewDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
+          layoutOptions: _layoutOptions.map((v) => TileViewDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
           sortOrder: (factor, reverse) => factor.getOrderName(context, reverse),
           canGroup: (s, g, l) => s == EntrySortFactor.date,
         );

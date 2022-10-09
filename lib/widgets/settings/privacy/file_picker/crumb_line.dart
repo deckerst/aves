@@ -25,7 +25,7 @@ class _CrumbLineState extends State<CrumbLine> {
   @override
   void didUpdateWidget(covariant CrumbLine oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.directory.relativeDir.length > oldWidget.directory.relativeDir.length) {
+    if (oldWidget.directory.relativeDir.length < widget.directory.relativeDir.length) {
       // scroll to show last crumb
       WidgetsBinding.instance.addPostFrameCallback((_) {
         final extent = _controller.position.maxScrollExtent;
@@ -44,7 +44,7 @@ class _CrumbLineState extends State<CrumbLine> {
       directory.getVolumeDescription(context),
       ...pContext.split(directory.relativeDir),
     ];
-    final crumbStyle = Theme.of(context).textTheme.bodyText2;
+    final crumbStyle = Theme.of(context).textTheme.bodyMedium;
     final crumbColor = crumbStyle!.color!.withOpacity(.4);
     return DefaultTextStyle(
       style: crumbStyle.copyWith(

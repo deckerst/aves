@@ -43,6 +43,7 @@ class _ScreenSaverPageState extends State<ScreenSaverPage> with WidgetsBindingOb
       repeat: true,
       autopilot: true,
       autopilotInterval: settings.screenSaverInterval.getDuration(),
+      autopilotAnimatedZoom: settings.screenSaverAnimatedZoomEffect,
     );
     source.stateNotifier.addListener(_onSourceStateChanged);
     _initSlideshowCollection();

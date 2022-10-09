@@ -128,7 +128,7 @@ class LicenseRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    final bodyTextStyle = textTheme.bodyText2!;
+    final bodyTextStyle = textTheme.bodyMedium!;
     final subColor = bodyTextStyle.color!.withOpacity(.6);
 
     return Padding(

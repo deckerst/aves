@@ -45,7 +45,7 @@ class ScaleBoundaries extends Equatable {
     );
   }
 
-  double _scaleForLevel(ScaleLevel level) {
+  double scaleForLevel(ScaleLevel level) {
     final factor = level.factor;
     switch (level.ref) {
       case ScaleReference.contained:
@@ -61,18 +61,18 @@ class ScaleBoundaries extends Equatable {
   double get originalScale => 1.0 / window.devicePixelRatio;
 
   double get minScale => {
-        _scaleForLevel(_minScale),
+        scaleForLevel(_minScale),
         _allowOriginalScaleBeyondRange ? originalScale : double.infinity,
         initialScale,
       }.fold(double.infinity, min);
 
   double get maxScale => {
-        _scaleForLevel(_maxScale),
+        scaleForLevel(_maxScale),
         _allowOriginalScaleBeyondRange ? originalScale : double.negativeInfinity,
         initialScale,
       }.fold(0, max);
 
-  double get initialScale => _scaleForLevel(_initialScale);
+  double get initialScale => scaleForLevel(_initialScale);
 
   Offset get _viewportCenter => viewportSize.center(Offset.zero);
 

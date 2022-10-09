@@ -33,7 +33,7 @@ class _MultiCrossFaderState extends State<MultiCrossFader> {
   @override
   void didUpdateWidget(covariant MultiCrossFader oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (_first == oldWidget.child) {
+    if (oldWidget.child == _first) {
       _second = widget.child;
       _fadeState = CrossFadeState.showSecond;
     } else {

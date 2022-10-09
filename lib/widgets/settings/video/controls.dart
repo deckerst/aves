@@ -25,7 +25,6 @@ class VideoControlsPage extends StatelessWidget {
               selector: (context, s) => s.videoControls,
               onSelection: (v) => settings.videoControls = v,
               tileTitle: context.l10n.settingsVideoButtonsTile,
-              dialogTitle: context.l10n.settingsVideoButtonsDialogTitle,
             ),
             SettingsSwitchListTile(
               selector: (context, s) => s.videoGestureDoubleTapTogglePlay,

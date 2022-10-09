@@ -10,22 +10,26 @@ class ViewerActionEditorPage extends StatelessWidget {
   const ViewerActionEditorPage({super.key});
 
   static const allAvailableActions = [
-    EntryAction.share,
-    EntryAction.edit,
-    EntryAction.rename,
-    EntryAction.delete,
-    EntryAction.copy,
-    EntryAction.move,
-    EntryAction.toggleFavourite,
-    EntryAction.rotateScreen,
-    EntryAction.videoCaptureFrame,
-    EntryAction.videoToggleMute,
-    EntryAction.videoSetSpeed,
-    EntryAction.videoSelectStreams,
-    EntryAction.viewSource,
-    EntryAction.rotateCCW,
-    EntryAction.rotateCW,
-    EntryAction.flip,
+    [
+      EntryAction.share,
+      EntryAction.edit,
+      EntryAction.rename,
+      EntryAction.delete,
+      EntryAction.copy,
+      EntryAction.move,
+      EntryAction.toggleFavourite,
+      EntryAction.rotateScreen,
+      EntryAction.viewSource,
+      EntryAction.rotateCCW,
+      EntryAction.rotateCW,
+      EntryAction.flip,
+    ],
+    [
+      EntryAction.videoCaptureFrame,
+      EntryAction.videoToggleMute,
+      EntryAction.videoSetSpeed,
+      EntryAction.videoSelectStreams,
+    ],
   ];
 
   @override

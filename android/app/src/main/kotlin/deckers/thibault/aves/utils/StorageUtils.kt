@@ -9,6 +9,7 @@ import android.content.pm.PackageManager
 import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Build
+import android.os.Environment
 import android.os.storage.StorageManager
 import android.provider.DocumentsContract
 import android.provider.MediaStore
@@ -91,6 +92,10 @@ object StorageUtils {
 
     fun getVolumePath(context: Context, anyPath: String): String? {
         return getVolumePaths(context).firstOrNull { anyPath.startsWith(it) }
+    }
+
+    fun getDownloadDirPath(context: Context, anyPath: String): String? {
+        return getVolumePath(context, anyPath)?.let { volumePath -> ensureTrailingSeparator(File(volumePath, Environment.DIRECTORY_DOWNLOADS).path) }
     }
 
     private fun getPathStepIterator(context: Context, anyPath: String, root: String?): Iterator<String?>? {

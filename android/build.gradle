@@ -7,13 +7,13 @@ buildscript {
         maven { url 'https://developer.huawei.com/repo/' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.2.2'
+        classpath 'com.android.tools.build:gradle:7.3.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         // GMS & Firebase Crashlytics (used by some flavors only)
         classpath 'com.google.gms:google-services:4.3.14'
         classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.2'
         // HMS (used by some flavors only)
-        classpath 'com.huawei.agconnect:agcp:1.5.2.300'
+        classpath 'com.huawei.agconnect:agcp:1.7.2.300'
     }
 }
 
@@ -21,7 +21,7 @@ allprojects {
     repositories {
         google()
         mavenCentral()
-        maven {url 'https://developer.huawei.com/repo/'}
+        maven { url 'https://developer.huawei.com/repo/' }
     }
 //    gradle.projectsEvaluated {
 //        tasks.withType(JavaCompile) {

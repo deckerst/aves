@@ -66,7 +66,7 @@ class SourceStateSubtitle extends StatelessWidget {
 
     final theme = Theme.of(context);
     return DefaultTextStyle.merge(
-      style: theme.textTheme.caption!.copyWith(fontFeatures: const [FontFeature.disable('smcp')]),
+      style: theme.textTheme.bodySmall!.copyWith(fontFeatures: const [FontFeature.disable('smcp')]),
       child: ValueListenableBuilder<ProgressEvent>(
         valueListenable: source.progressNotifier,
         builder: (context, progress, snapshot) {

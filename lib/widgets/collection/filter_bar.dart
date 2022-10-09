@@ -64,7 +64,7 @@ class _FilterBarState extends State<FilterBar> {
                   ),
                 );
               }
-            : (context, animation) => _buildChip(filter),
+            : (context, animation) => const SizedBox(),
         duration: animate ? Durations.filterBarRemovalAnimation : Duration.zero,
       );
     });

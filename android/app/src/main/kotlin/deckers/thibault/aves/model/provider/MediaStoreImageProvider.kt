@@ -7,7 +7,6 @@ import android.content.*
 import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Build
-import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import com.commonsware.cwac.document.DocumentFileCompat
@@ -87,7 +86,7 @@ class MediaStoreImageProvider : ImageProvider() {
         val alwaysValid: NewEntryChecker = fun(_: Int, _: Int): Boolean = true
         val onSuccess: NewEntryHandler = fun(entry: FieldMap) { fetched.add(entry) }
         if (id != null) {
-            if (!found && (sourceMimeType == null || isImage(sourceMimeType))) {
+            if (sourceMimeType == null || isImage(sourceMimeType)) {
                 val contentUri = ContentUris.withAppendedId(IMAGE_CONTENT_URI, id)
                 found = fetchFrom(context, alwaysValid, onSuccess, contentUri, IMAGE_PROJECTION)
             }
@@ -190,6 +189,7 @@ class MediaStoreImageProvider : ImageProvider() {
                 val sizeColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.SIZE)
                 val widthColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.WIDTH)
                 val heightColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.HEIGHT)
+                val dateAddedColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATE_ADDED)
                 val dateModifiedColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATE_MODIFIED)
                 val dateTakenColumn = cursor.getColumnIndex(MediaColumns.DATE_TAKEN)
 
@@ -225,6 +225,7 @@ class MediaStoreImageProvider : ImageProvider() {
                                 "height" to height,
                                 "sourceRotationDegrees" to if (orientationColumn != -1) cursor.getInt(orientationColumn) else 0,
                                 "sizeBytes" to cursor.getLong(sizeColumn),
+                                "dateAddedSecs" to cursor.getInt(dateAddedColumn),
                                 "dateModifiedSecs" to dateModifiedSecs,
                                 "sourceDateTakenMillis" to if (dateTakenColumn != -1) cursor.getLong(dateTakenColumn) else null,
                                 "durationMillis" to durationMillis,
@@ -391,8 +392,13 @@ class MediaStoreImageProvider : ImageProvider() {
                 effectiveTargetDir = targetDir
                 targetDirDocFile = StorageUtils.createDirectoryDocIfAbsent(activity, targetDir)
                 if (!File(targetDir).exists()) {
-                    callback.onFailure(Exception("failed to create directory at path=$targetDir"))
-                    return
+                    val downloadDirPath = StorageUtils.getDownloadDirPath(activity, targetDir)
+                    val isDownloadSubdir = downloadDirPath != null && targetDir.startsWith(downloadDirPath)
+                    // download subdirectories can be created later by Media Store insertion
+                    if (!isDownloadSubdir) {
+                        callback.onFailure(Exception("failed to create directory at path=$targetDir"))
+                        return
+                    }
                 }
             }
 
@@ -535,54 +541,57 @@ class MediaStoreImageProvider : ImageProvider() {
         targetNameWithoutExtension: String,
         write: (OutputStream) -> Unit,
     ): String {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && isDownloadDir(activity, targetDir)) {
-            val targetFileName = "$targetNameWithoutExtension${extensionFor(mimeType)}"
-            val values = ContentValues().apply {
-                put(MediaStore.MediaColumns.DISPLAY_NAME, targetFileName)
-                put(MediaStore.MediaColumns.IS_PENDING, 1)
-            }
-            val resolver = activity.contentResolver
-            val uri = resolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val downloadDirPath = StorageUtils.getDownloadDirPath(activity, targetDir)
+            val isDownloadSubdir = downloadDirPath != null && targetDir.startsWith(downloadDirPath)
+            if (isDownloadSubdir) {
+                val volumePath = StorageUtils.getVolumePath(activity, targetDir)
+                val relativePath = targetDir.substring(volumePath?.length ?: 0)
 
-            uri?.let {
-                resolver.openOutputStream(uri)?.use(write)
-                values.clear()
-                values.put(MediaStore.MediaColumns.IS_PENDING, 0)
-                resolver.update(uri, values, null, null)
-            } ?: throw Exception("MediaStore failed for some reason")
-
-            File(targetDir, targetFileName).path
-        } else {
-            targetDirDocFile ?: throw Exception("failed to get tree doc for directory at path=$targetDir")
-
-            // the file created from a `TreeDocumentFile` is also a `TreeDocumentFile`
-            // but in order to open an output stream to it, we need to use a `SingleDocumentFile`
-            // through a document URI, not a tree URI
-            // note that `DocumentFile.getParentFile()` returns null if we did not pick a tree first
-            val targetTreeFile = targetDirDocFile.createFile(mimeType, targetNameWithoutExtension)
-            val targetDocFile = DocumentFileCompat.fromSingleUri(activity, targetTreeFile.uri)
-
-            try {
-                targetDocFile.openOutputStream().use(write)
-            } catch (e: Exception) {
-                // remove empty file
-                if (targetDocFile.exists()) {
-                    targetDocFile.delete()
+                val targetFileName = "$targetNameWithoutExtension${extensionFor(mimeType)}"
+                val values = ContentValues().apply {
+                    put(MediaStore.MediaColumns.DISPLAY_NAME, targetFileName)
+                    put(MediaStore.MediaColumns.RELATIVE_PATH, relativePath)
+                    put(MediaStore.MediaColumns.IS_PENDING, 1)
                 }
-                throw e
+                val resolver = activity.contentResolver
+                val uri = resolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values)
+
+                uri?.let {
+                    resolver.openOutputStream(uri)?.use(write)
+                    values.clear()
+                    values.put(MediaStore.MediaColumns.IS_PENDING, 0)
+                    resolver.update(uri, values, null, null)
+                } ?: throw Exception("MediaStore failed for some reason")
+
+                return File(targetDir, targetFileName).path
             }
-
-            // the source file name and the created document file name can be different when:
-            // - a file with the same name already exists, some implementations give a suffix like ` (1)`, some *do not*
-            // - the original extension does not match the extension added by the underlying provider
-            val fileName = targetDocFile.name
-            targetDir + fileName
         }
-    }
 
-    private fun isDownloadDir(context: Context, dirPath: String): Boolean {
-        val relativeDir = removeTrailingSeparator(PathSegments(context, dirPath).relativeDir ?: "")
-        return relativeDir == Environment.DIRECTORY_DOWNLOADS
+        targetDirDocFile ?: throw Exception("failed to get tree doc for directory at path=$targetDir")
+
+        // the file created from a `TreeDocumentFile` is also a `TreeDocumentFile`
+        // but in order to open an output stream to it, we need to use a `SingleDocumentFile`
+        // through a document URI, not a tree URI
+        // note that `DocumentFile.getParentFile()` returns null if we did not pick a tree first
+        val targetTreeFile = targetDirDocFile.createFile(mimeType, targetNameWithoutExtension)
+        val targetDocFile = DocumentFileCompat.fromSingleUri(activity, targetTreeFile.uri)
+
+        try {
+            targetDocFile.openOutputStream().use(write)
+        } catch (e: Exception) {
+            // remove empty file
+            if (targetDocFile.exists()) {
+                targetDocFile.delete()
+            }
+            throw e
+        }
+
+        // the source file name and the created document file name can be different when:
+        // - a file with the same name already exists, some implementations give a suffix like ` (1)`, some *do not*
+        // - the original extension does not match the extension added by the underlying provider
+        val fileName = targetDocFile.name
+        return targetDir + fileName
     }
 
     override suspend fun renameMultiple(
@@ -782,6 +791,7 @@ class MediaStoreImageProvider : ImageProvider() {
 
                     // we retrieve updated fields as the renamed/moved file became a new entry in the Media Store
                     val projection = arrayOf(
+                        MediaStore.MediaColumns.DATE_ADDED,
                         MediaStore.MediaColumns.DATE_MODIFIED,
                     )
                     try {
@@ -791,6 +801,7 @@ class MediaStoreImageProvider : ImageProvider() {
                             newFields["uri"] = uri.toString()
                             newFields["contentId"] = uri.tryParseId()
                             newFields["path"] = path
+                            cursor.getColumnIndex(MediaStore.MediaColumns.DATE_ADDED).let { if (it != -1) newFields["dateAddedSecs"] = cursor.getInt(it) }
                             cursor.getColumnIndex(MediaStore.MediaColumns.DATE_MODIFIED).let { if (it != -1) newFields["dateModifiedSecs"] = cursor.getInt(it) }
                             cursor.close()
                             return newFields
@@ -864,6 +875,7 @@ class MediaStoreImageProvider : ImageProvider() {
             MediaStore.MediaColumns.SIZE,
             MediaStore.MediaColumns.WIDTH,
             MediaStore.MediaColumns.HEIGHT,
+            MediaStore.MediaColumns.DATE_ADDED,
             MediaStore.MediaColumns.DATE_MODIFIED,
             MediaColumns.DATE_TAKEN,
         )

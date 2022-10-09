@@ -22,7 +22,12 @@ internal class FileImageProvider : ImageProvider() {
             try {
                 val file = File(path)
                 if (file.exists()) {
-                    entry.initFromFile(path, file.name, file.length(), file.lastModified() / 1000)
+                    entry.initFromFile(
+                        path = path,
+                        title = file.name,
+                        sizeBytes = file.length(),
+                        dateModifiedSecs = file.lastModified() / 1000,
+                    )
                 }
             } catch (e: SecurityException) {
                 callback.onFailure(e)

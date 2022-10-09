@@ -14,16 +14,20 @@ class AlbumFilter extends CoveredCollectionFilter {
 
   final String album;
   final String? displayName;
+  late final EntryFilter _test;
 
   @override
-  List<Object?> get props => [album];
+  List<Object?> get props => [album, reversed];
 
-  const AlbumFilter(this.album, this.displayName);
+  AlbumFilter(this.album, this.displayName, {super.reversed = false}) {
+    _test = (entry) => entry.directory == album;
+  }
 
   factory AlbumFilter.fromMap(Map<String, dynamic> json) {
     return AlbumFilter(
       json['album'],
       json['uniqueName'],
+      reversed: json['reversed'] ?? false,
     );
   }
 
@@ -32,10 +36,14 @@ class AlbumFilter extends CoveredCollectionFilter {
         'type': type,
         'album': album,
         'uniqueName': displayName,
+        'reversed': reversed,
       };
 
   @override
-  EntryFilter get test => (entry) => entry.directory == album;
+  EntryFilter get positiveTest => _test;
+
+  @override
+  bool get exclusiveProp => true;
 
   @override
   String get universalLabel => displayName ?? pContext.split(album).last;

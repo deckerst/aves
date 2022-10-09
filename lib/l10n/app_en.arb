@@ -69,6 +69,8 @@
   "chipActionGoToAlbumPage": "Show in Albums",
   "chipActionGoToCountryPage": "Show in Countries",
   "chipActionGoToTagPage": "Show in Tags",
+  "chipActionFilterOut": "Filter out",
+  "chipActionFilterIn": "Filter in",
   "chipActionHide": "Hide",
   "chipActionPin": "Pin to top",
   "chipActionUnpin": "Unpin from top",
@@ -195,9 +197,9 @@
   "displayRefreshRatePreferHighest": "Highest rate",
   "displayRefreshRatePreferLowest": "Lowest rate",
 
-  "slideshowVideoPlaybackSkip": "Skip",
-  "slideshowVideoPlaybackMuted": "Play muted",
-  "slideshowVideoPlaybackWithSound": "Play with sound",
+  "videoPlaybackSkip": "Skip",
+  "videoPlaybackMuted": "Play muted",
+  "videoPlaybackWithSound": "Play with sound",
 
   "themeBrightnessLight": "Light",
   "themeBrightnessDark": "Dark",
@@ -207,10 +209,14 @@
   "viewerTransitionParallax": "Parallax",
   "viewerTransitionFade": "Fade",
   "viewerTransitionZoomIn": "Zoom in",
+  "viewerTransitionNone": "None",
 
   "wallpaperTargetHome": "Home screen",
   "wallpaperTargetLock": "Lock screen",
   "wallpaperTargetHomeLock": "Home and lock screens",
+
+  "widgetOpenPageHome": "Open home",
+  "widgetOpenPageViewer": "Open viewer",
 
   "albumTierNew": "New",
   "albumTierPinned": "Pinned",
@@ -419,6 +425,7 @@
   "viewDialogLayoutSectionTitle": "Layout",
   "viewDialogReverseSortOrder": "Reverse sort order",
 
+  "tileLayoutMosaic": "Mosaic",
   "tileLayoutGrid": "Grid",
   "tileLayoutList": "List",
 
@@ -581,8 +588,11 @@
   "sortOrderSmallestFirst": "Smallest first",
 
   "albumGroupTier": "By tier",
+  "albumGroupType": "By type",
   "albumGroupVolume": "By storage volume",
   "albumGroupNone": "Do not group",
+
+  "albumMimeTypeMixed": "Mixed",
 
   "albumPickPageTitleCopy": "Copy to Album",
   "albumPickPageTitleExport": "Export to Album",
@@ -620,8 +630,9 @@
   "searchMetadataSectionTitle": "Metadata",
 
   "settingsPageTitle": "Settings",
-  "settingsSystemDefault": "System",
+  "settingsSystemDefault": "System default",
   "settingsDefault": "Default",
+  "settingsDisabled": "Disabled",
 
   "settingsSearchFieldLabel": "Search settings",
   "settingsSearchEmpty": "No matching setting",
@@ -704,10 +715,9 @@
   "settingsSlideshowRepeat": "Repeat",
   "settingsSlideshowShuffle": "Shuffle",
   "settingsSlideshowFillScreen": "Fill screen",
+  "settingsSlideshowAnimatedZoomEffect": "Animated zoom effect",
   "settingsSlideshowTransitionTile": "Transition",
-  "settingsSlideshowTransitionDialogTitle": "Transition",
   "settingsSlideshowIntervalTile": "Interval",
-  "settingsSlideshowIntervalDialogTitle": "Interval",
   "settingsSlideshowVideoPlaybackTile": "Video playback",
   "settingsSlideshowVideoPlaybackDialogTitle": "Video Playback",
 
@@ -715,7 +725,7 @@
   "settingsVideoSectionTitle": "Video",
   "settingsVideoShowVideos": "Show videos",
   "settingsVideoEnableHardwareAcceleration": "Hardware acceleration",
-  "settingsVideoEnableAutoPlay": "Auto play",
+  "settingsVideoAutoPlay": "Auto play",
   "settingsVideoLoopModeTile": "Loop mode",
   "settingsVideoLoopModeDialogTitle": "Loop Mode",
 
@@ -737,7 +747,6 @@
   "settingsVideoControlsTile": "Controls",
   "settingsVideoControlsPageTitle": "Controls",
   "settingsVideoButtonsTile": "Buttons",
-  "settingsVideoButtonsDialogTitle": "Buttons",
   "settingsVideoGestureDoubleTapTogglePlay": "Double tap to play/pause",
   "settingsVideoGestureSideDoubleTapSeek": "Double tap on screen edges to seek backward/forward",
 
@@ -770,7 +779,6 @@
   "settingsRemoveAnimationsTile": "Remove animations",
   "settingsRemoveAnimationsDialogTitle": "Remove Animations",
   "settingsTimeToTakeActionTile": "Time to take action",
-  "settingsTimeToTakeActionDialogTitle": "Time to Take Action",
 
   "settingsDisplaySectionTitle": "Display",
   "settingsThemeBrightnessTile": "Theme",
@@ -792,6 +800,7 @@
 
   "settingsWidgetPageTitle": "Photo Frame",
   "settingsWidgetShowOutline": "Outline",
+  "settingsWidgetOpenPage": "When tapping on the widget",
 
   "settingsCollectionTile": "Collection",
 
@@ -805,6 +814,7 @@
   "statsTopCountriesSectionTitle": "Top Countries",
   "statsTopPlacesSectionTitle": "Top Places",
   "statsTopTagsSectionTitle": "Top Tags",
+  "statsTopAlbumsSectionTitle": "Top Albums",
 
   "viewerOpenPanoramaButtonLabel": "OPEN PANORAMA",
   "viewerSetWallpaperButtonLabel": "SET WALLPAPER",
@@ -848,6 +858,8 @@
   "viewerInfoSearchSuggestionDimensions": "Dimensions",
   "viewerInfoSearchSuggestionResolution": "Resolution",
   "viewerInfoSearchSuggestionRights": "Rights",
+
+  "wallpaperUseScrollEffect": "Use scroll effect on home screen",
 
   "tagEditorPageTitle": "Edit Tags",
   "tagEditorPageNewTagFieldLabel": "New tag",

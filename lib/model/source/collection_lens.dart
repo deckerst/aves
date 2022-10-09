@@ -128,7 +128,7 @@ class CollectionLens with ChangeNotifier {
   }
 
   bool get showHeaders {
-    bool showAlbumHeaders() => !filters.any((f) => f is AlbumFilter);
+    bool showAlbumHeaders() => !filters.any((v) => v is AlbumFilter && !v.reversed);
 
     switch (sortFactor) {
       case EntrySortFactor.date:

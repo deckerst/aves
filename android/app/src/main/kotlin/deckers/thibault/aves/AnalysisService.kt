@@ -3,6 +3,7 @@ package deckers.thibault.aves
 import android.app.Notification
 import android.app.PendingIntent
 import android.app.Service
+import android.content.Context
 import android.content.Intent
 import android.os.*
 import android.util.Log
@@ -21,7 +22,7 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import kotlinx.coroutines.runBlocking
 
-class AnalysisService : MethodChannel.MethodCallHandler, Service() {
+class AnalysisService : Service() {
     private var flutterEngine: FlutterEngine? = null
     private var backgroundChannel: MethodChannel? = null
     private var serviceLooper: Looper? = null
@@ -30,35 +31,13 @@ class AnalysisService : MethodChannel.MethodCallHandler, Service() {
 
     override fun onCreate() {
         Log.i(LOG_TAG, "Create analysis service")
-        val context = this
-
         runBlocking {
-            FlutterUtils.initFlutterEngine(context, SHARED_PREFERENCES_KEY, CALLBACK_HANDLE_KEY) {
+            FlutterUtils.initFlutterEngine(this@AnalysisService, SHARED_PREFERENCES_KEY, CALLBACK_HANDLE_KEY) {
                 flutterEngine = it
             }
         }
 
-        val messenger = flutterEngine!!.dartExecutor
-
-        // channels for analysis
-
-        // dart -> platform -> dart
-        // - need Context
-        MethodChannel(messenger, DeviceHandler.CHANNEL).setMethodCallHandler(DeviceHandler(this))
-        MethodChannel(messenger, GeocodingHandler.CHANNEL).setMethodCallHandler(GeocodingHandler(this))
-        MethodChannel(messenger, MediaStoreHandler.CHANNEL).setMethodCallHandler(MediaStoreHandler(this))
-        MethodChannel(messenger, MetadataFetchHandler.CHANNEL).setMethodCallHandler(MetadataFetchHandler(this))
-        MethodChannel(messenger, StorageHandler.CHANNEL).setMethodCallHandler(StorageHandler(this))
-
-        // result streaming: dart -> platform ->->-> dart
-        // - need Context
-        StreamsChannel(messenger, ImageByteStreamHandler.CHANNEL).setStreamHandlerFactory { args -> ImageByteStreamHandler(this, args) }
-        StreamsChannel(messenger, MediaStoreStreamHandler.CHANNEL).setStreamHandlerFactory { args -> MediaStoreStreamHandler(this, args) }
-
-        // channel for service management
-        backgroundChannel = MethodChannel(messenger, BACKGROUND_CHANNEL).apply {
-            setMethodCallHandler(context)
-        }
+        initChannels(this)
 
         HandlerThread("Analysis service handler", Process.THREAD_PRIORITY_BACKGROUND).apply {
             start()
@@ -94,7 +73,36 @@ class AnalysisService : MethodChannel.MethodCallHandler, Service() {
         return START_NOT_STICKY
     }
 
-    override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
+    private fun detachAndStop() {
+        analysisServiceBinder.detach()
+        stopSelf()
+    }
+
+    private fun initChannels(context: Context) {
+        val messenger = flutterEngine!!.dartExecutor
+
+        // channels for analysis
+
+        // dart -> platform -> dart
+        // - need Context
+        MethodChannel(messenger, DeviceHandler.CHANNEL).setMethodCallHandler(DeviceHandler(context))
+        MethodChannel(messenger, GeocodingHandler.CHANNEL).setMethodCallHandler(GeocodingHandler(context))
+        MethodChannel(messenger, MediaStoreHandler.CHANNEL).setMethodCallHandler(MediaStoreHandler(context))
+        MethodChannel(messenger, MetadataFetchHandler.CHANNEL).setMethodCallHandler(MetadataFetchHandler(context))
+        MethodChannel(messenger, StorageHandler.CHANNEL).setMethodCallHandler(StorageHandler(context))
+
+        // result streaming: dart -> platform ->->-> dart
+        // - need Context
+        StreamsChannel(messenger, ImageByteStreamHandler.CHANNEL).setStreamHandlerFactory { args -> ImageByteStreamHandler(context, args) }
+        StreamsChannel(messenger, MediaStoreStreamHandler.CHANNEL).setStreamHandlerFactory { args -> MediaStoreStreamHandler(context, args) }
+
+        // channel for service management
+        backgroundChannel = MethodChannel(messenger, BACKGROUND_CHANNEL).apply {
+            setMethodCallHandler { call, result -> onMethodCall(call, result) }
+        }
+    }
+
+    private fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
             "initialized" -> {
                 Log.d(LOG_TAG, "background channel is ready")
@@ -117,11 +125,6 @@ class AnalysisService : MethodChannel.MethodCallHandler, Service() {
             }
             else -> result.notImplemented()
         }
-    }
-
-    private fun detachAndStop() {
-        analysisServiceBinder.detach()
-        stopSelf()
     }
 
     private fun buildNotification(title: String? = null, message: String? = null): Notification {

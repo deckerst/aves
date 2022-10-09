@@ -19,8 +19,12 @@ class PlatformMobileServices extends MobileServices {
 
   @override
   Future<void> init() async {
-    final result = await HmsApiAvailability().isHMSAvailable();
-    _isAvailable = result == _hmsCoreAvailable;
+    try {
+      final result = await HmsApiAvailability().isHMSAvailable();
+      _isAvailable = result == _hmsCoreAvailable;
+    } on Exception catch (e, stack) {
+      debugPrint('Failed to check services availability with exception=$e, stack=$stack');
+    }
     debugPrint('Device has Huawei Mobile Services=$_isAvailable');
 
     final apiKey = await AvesPlatformMetaPlatform.instance.getMetadata(manifestApiKey);

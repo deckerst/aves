@@ -35,9 +35,6 @@ class SqfliteMetadataDb implements MetadataDb {
   int get nextId => ++_lastId;
 
   @override
-  int get timestampSecs => DateTime.now().millisecondsSinceEpoch ~/ 1000;
-
-  @override
   Future<void> init() async {
     _db = await openDatabase(
       await path,

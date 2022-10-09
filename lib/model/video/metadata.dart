@@ -140,7 +140,7 @@ class VideoMetadataFormatter {
           hour = int.tryParse(match.group(5)!) ?? 0;
           minute = int.tryParse(match.group(6)!) ?? 0;
           second = int.tryParse(match.group(7)!) ?? 0;
-          pm = match.group(9) == 'pm';
+          pm = {'pm', 'p. m.'}.contains(match.group(9));
         }
 
         final date = DateTime(year, month, day, hour + (pm ? 12 : 0), minute, second, 0);

@@ -16,9 +16,6 @@ class FakeMetadataDb extends Fake implements MetadataDb {
   int get nextId => ++_lastId;
 
   @override
-  int get timestampSecs => DateTime.now().millisecondsSinceEpoch ~/ 1000;
-
-  @override
   Future<void> init() => SynchronousFuture(null);
 
   @override

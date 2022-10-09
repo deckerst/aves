@@ -151,9 +151,9 @@
   "displayRefreshRatePreferHighest": "高レート",
   "displayRefreshRatePreferLowest": "低レート",
 
-  "slideshowVideoPlaybackSkip": "スキップ",
-  "slideshowVideoPlaybackMuted": "ミュート再生",
-  "slideshowVideoPlaybackWithSound": "音声あり再生",
+  "videoPlaybackSkip": "スキップ",
+  "videoPlaybackMuted": "ミュート再生",
+  "videoPlaybackWithSound": "音声あり再生",
 
   "themeBrightnessLight": "ライト",
   "themeBrightnessDark": "ダーク",
@@ -508,9 +508,7 @@
   "settingsSlideshowShuffle": "シャッフル",
   "settingsSlideshowFillScreen": "画面いっぱいに表示",
   "settingsSlideshowTransitionTile": "トランジション",
-  "settingsSlideshowTransitionDialogTitle": "トランジション",
   "settingsSlideshowIntervalTile": "間隔",
-  "settingsSlideshowIntervalDialogTitle": "間隔",
   "settingsSlideshowVideoPlaybackTile": "動画を再生",
   "settingsSlideshowVideoPlaybackDialogTitle": "動画再生",
 
@@ -518,7 +516,7 @@
   "settingsVideoSectionTitle": "動画",
   "settingsVideoShowVideos": "動画を表示",
   "settingsVideoEnableHardwareAcceleration": "ハードウェア アクセラレーション",
-  "settingsVideoEnableAutoPlay": "自動再生",
+  "settingsVideoAutoPlay": "自動再生",
   "settingsVideoLoopModeTile": "ループ モード",
   "settingsVideoLoopModeDialogTitle": "ループ モード",
 
@@ -540,7 +538,6 @@
   "settingsVideoControlsTile": "操作",
   "settingsVideoControlsPageTitle": "操作",
   "settingsVideoButtonsTile": "ボタン",
-  "settingsVideoButtonsDialogTitle": "ボタン",
   "settingsVideoGestureDoubleTapTogglePlay": "２回タップして再生/一時停止",
   "settingsVideoGestureSideDoubleTapSeek": "画面の角を２回タップして早送り/早戻し",
 
@@ -573,7 +570,6 @@
   "settingsRemoveAnimationsTile": "アニメーションの削除",
   "settingsRemoveAnimationsDialogTitle": "アニメーションの削除",
   "settingsTimeToTakeActionTile": "操作までの時間",
-  "settingsTimeToTakeActionDialogTitle": "操作までの時間",
 
   "settingsDisplaySectionTitle": "ディスプレイ",
   "settingsThemeBrightnessTile": "テーマ",

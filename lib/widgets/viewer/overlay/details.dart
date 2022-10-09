@@ -145,7 +145,7 @@ class ViewerDetailOverlayContent extends StatelessWidget {
       builder: (context, child) {
         final positionTitle = _PositionTitleRow(entry: pageEntry, collectionPosition: position, multiPageController: multiPageController);
         return DefaultTextStyle(
-          style: Theme.of(context).textTheme.bodyText2!.copyWith(
+          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                 shadows: _shadows(context),
               ),
           softWrap: false,

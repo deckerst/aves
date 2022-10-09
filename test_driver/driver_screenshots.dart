@@ -1,8 +1,10 @@
 import 'package:aves/main_play.dart' as app;
+import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/settings/defaults.dart';
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/enums/enums.dart';
+import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/filter_grids/countries_page.dart';
 import 'package:flutter_driver/driver_extension.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -17,6 +19,8 @@ Future<void> configureAndLaunch() async {
     ..hasAcceptedTerms = true
     ..isInstalledAppAccessAllowed = true
     ..isErrorReportingAllowed = false
+    ..setTileExtent(CollectionPage.routeName, 69)
+    ..setTileLayout(CollectionPage.routeName, TileLayout.mosaic)
     ..setTileExtent(CountryListPage.routeName, 112)
     ..setTileLayout(CountryListPage.routeName, TileLayout.grid)
     // display
@@ -28,6 +32,7 @@ Future<void> configureAndLaunch() async {
     ..keepScreenOn = KeepScreenOn.always
     ..homePage = HomePageSetting.collection
     ..enableBottomNavigationBar = true
+    ..drawerTypeBookmarks = [null, FavouriteFilter.instance]
     // collection
     ..collectionSectionFactor = EntryGroupFactor.month
     ..collectionSortFactor = EntrySortFactor.date

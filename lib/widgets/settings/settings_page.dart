@@ -105,7 +105,7 @@ class _SettingsPageState extends State<SettingsPage> with FeedbackMixin {
               data: theme.copyWith(
                 textTheme: theme.textTheme.copyWith(
                   // dense style font for tile subtitles, without modifying title font
-                  bodyText2: const TextStyle(fontSize: 12),
+                  bodyMedium: const TextStyle(fontSize: 12),
                 ),
               ),
               child: AnimationLimiter(

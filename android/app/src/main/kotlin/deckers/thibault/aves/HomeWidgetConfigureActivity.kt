@@ -3,7 +3,6 @@ package deckers.thibault.aves
 import android.appwidget.AppWidgetManager
 import android.content.Intent
 import android.os.Bundle
-import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 
 class HomeWidgetSettingsActivity : MainActivity() {
@@ -26,7 +25,7 @@ class HomeWidgetSettingsActivity : MainActivity() {
         }
 
         val messenger = flutterEngine!!.dartExecutor
-        MethodChannel(messenger, CHANNEL).setMethodCallHandler { call: MethodCall, result: MethodChannel.Result ->
+        MethodChannel(messenger, CHANNEL).setMethodCallHandler { call, result ->
             when (call.method) {
                 "configure" -> {
                     result.success(null)
