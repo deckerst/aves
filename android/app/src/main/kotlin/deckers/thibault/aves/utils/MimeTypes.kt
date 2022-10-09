@@ -104,9 +104,8 @@ object MimeTypes {
         else -> false
     }
 
-    // as of androidx.exifinterface:exifinterface:1.3.3
+    // as of androidx.exifinterface:exifinterface:1.3.4
     fun canEditExif(mimeType: String) = when (mimeType) {
-        DNG,
         JPEG,
         PNG,
         WEBP -> true

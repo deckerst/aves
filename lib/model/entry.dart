@@ -294,9 +294,9 @@ class AvesEntry {
 
   bool get canRotateAndFlip => canEdit && canEditExif;
 
-  // as of androidx.exifinterface:exifinterface:1.3.3
-  // `exifinterface` declares support for DNG, but `exifinterface` strips non-standard Exif tags when saving attributes,
-  // and DNG requires DNG-specific tags saved along standard Exif. So `exifinterface` actually breaks DNG files.
+  // `exifinterface` v1.3.3 declared support for DNG, but it strips non-standard Exif tags when saving attributes,
+  // and DNG requires DNG-specific tags saved along standard Exif. So it was actually breaking DNG files.
+  // as of androidx.exifinterface:exifinterface:1.3.4
   bool get canEditExif {
     switch (mimeType.toLowerCase()) {
       case MimeTypes.jpeg:
