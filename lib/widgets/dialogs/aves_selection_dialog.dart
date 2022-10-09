@@ -56,18 +56,34 @@ class _AvesSelectionDialogState<T> extends State<AvesSelectionDialog<T>> {
 
   @override
   Widget build(BuildContext context) {
+    final title = widget.title;
     final message = widget.message;
     final confirmationButtonLabel = widget.confirmationButtonLabel;
     final needConfirmation = confirmationButtonLabel != null;
     return AvesDialog(
-      title: widget.title,
+      title: title,
       scrollableContent: [
+        if (title == null && message == null) SizedBox(height: AvesDialog.cornerRadius.y),
         if (message != null)
           Padding(
             padding: const EdgeInsets.all(16),
             child: Text(message),
           ),
-        ...widget.options.entries.map((kv) => _buildRadioListTile(kv.key, kv.value, needConfirmation)),
+        ...widget.options.entries.map((kv) {
+          final radioValue = kv.key;
+          final radioTitle = kv.value;
+          return SelectionRadioListTile(
+            // key is expected by test driver
+            key: Key(radioValue.toString()),
+            value: radioValue,
+            title: radioTitle,
+            optionSubtitleBuilder: widget.optionSubtitleBuilder,
+            needConfirmation: needConfirmation,
+            dense: widget.dense,
+            getGroupValue: () => _selectedValue,
+            setGroupValue: (v) => setState(() => _selectedValue = v),
+          );
+        }),
       ],
       actions: [
         TextButton(
@@ -82,17 +98,39 @@ class _AvesSelectionDialogState<T> extends State<AvesSelectionDialog<T>> {
       ],
     );
   }
+}
 
-  Widget _buildRadioListTile(T value, String title, bool needConfirmation) {
-    final subtitle = widget.optionSubtitleBuilder?.call(value);
+class SelectionRadioListTile<T> extends StatelessWidget {
+  final T value;
+  final String title;
+  final TextBuilder<T>? optionSubtitleBuilder;
+  final bool needConfirmation;
+  final bool? dense;
+  final T Function() getGroupValue;
+  final void Function(T value) setGroupValue;
+
+  const SelectionRadioListTile({
+    super.key,
+    required this.value,
+    required this.title,
+    this.optionSubtitleBuilder,
+    required this.needConfirmation,
+    this.dense,
+    required this.getGroupValue,
+    required this.setGroupValue,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final subtitle = optionSubtitleBuilder?.call(value);
     return ReselectableRadioListTile<T>(
       // key is expected by test driver
       key: Key(value.toString()),
       value: value,
-      groupValue: _selectedValue,
+      groupValue: getGroupValue(),
       onChanged: (v) {
         if (needConfirmation) {
-          setState(() => _selectedValue = v as T);
+          setGroupValue(v as T);
         } else {
           Navigator.pop(context, v);
         }
@@ -112,7 +150,7 @@ class _AvesSelectionDialogState<T> extends State<AvesSelectionDialog<T>> {
               maxLines: 1,
             )
           : null,
-      dense: widget.dense,
+      dense: dense,
     );
   }
 }

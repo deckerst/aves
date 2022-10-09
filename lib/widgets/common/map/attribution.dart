@@ -35,7 +35,7 @@ class Attribution extends StatelessWidget {
         selectable: true,
         styleSheet: MarkdownStyleSheet(
           a: TextStyle(color: theme.colorScheme.secondary),
-          p: theme.textTheme.caption!.merge(const TextStyle(fontSize: InfoRowGroup.fontSize)),
+          p: theme.textTheme.bodySmall!.merge(const TextStyle(fontSize: InfoRowGroup.fontSize)),
         ),
         onTapLink: (text, href, title) async {
           if (href != null) {

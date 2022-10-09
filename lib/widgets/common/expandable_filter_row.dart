@@ -30,7 +30,7 @@ class ExpandableFilterRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (filters.isEmpty) return const SizedBox.shrink();
+    if (filters.isEmpty) return const SizedBox();
 
     final hasTitle = title != null && title!.isNotEmpty;
 

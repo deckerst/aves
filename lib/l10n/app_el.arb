@@ -41,6 +41,8 @@
   "chipActionGoToAlbumPage": "Εμφάνιση στα Άλμπουμ",
   "chipActionGoToCountryPage": "Εμφάνιση στις χώρες",
   "chipActionGoToTagPage": "Εμφάνιση στις ετικέτες",
+  "chipActionFilterOut": "Χωρίς φιλτράρισμα",
+  "chipActionFilterIn": "Με φιλτράρισμα",
   "chipActionHide": "Απόκρυψη",
   "chipActionPin": "Καρφίτσωμα στην κορυφή",
   "chipActionUnpin": "Ξέκαρφίτσωμα από την κορυφή",
@@ -155,9 +157,9 @@
   "displayRefreshRatePreferHighest": "Υψηλότερος ρυθμός",
   "displayRefreshRatePreferLowest": "Χαμηλότερος ρυθμός",
 
-  "slideshowVideoPlaybackSkip": "Παράλειψη",
-  "slideshowVideoPlaybackMuted": "Αναπαραγωγή σε σίγαση",
-  "slideshowVideoPlaybackWithSound": "Αναπαραγωγή με ήχο",
+  "videoPlaybackSkip": "Παράλειψη",
+  "videoPlaybackMuted": "Αναπαραγωγή σε σίγαση",
+  "videoPlaybackWithSound": "Αναπαραγωγή με ήχο",
 
   "themeBrightnessLight": "Φωτεινό",
   "themeBrightnessDark": "Σκούρο",
@@ -167,10 +169,14 @@
   "viewerTransitionParallax": "Παράλλαξη",
   "viewerTransitionFade": "Ξεθώριασμα",
   "viewerTransitionZoomIn": "Μεγέθυνση",
+  "viewerTransitionNone": "Καμία",
 
   "wallpaperTargetHome": "Αρχική οθόνη",
   "wallpaperTargetLock": "Οθόνη κλειδώματος",
   "wallpaperTargetHomeLock": "Αρχική οθόνη και οθόνη κλειδώματος",
+
+  "widgetOpenPageHome": "Άνοιγμα αρχικής σελίδας",
+  "widgetOpenPageViewer": "Άνοιγμα προβολέα αρχείων",
 
   "albumTierNew": "Νέα",
   "albumTierPinned": "Καρφιτσωμένα",
@@ -289,6 +295,7 @@
   "viewDialogLayoutSectionTitle": "Διαταξη",
   "viewDialogReverseSortOrder": "Αντίστροφη σειρά ταξινόμησης",
 
+  "tileLayoutMosaic": "Ψηφιδωτό",
   "tileLayoutGrid": "Πλέγμα",
   "tileLayoutList": "Λίστα",
 
@@ -401,8 +408,11 @@
   "sortOrderSmallestFirst": "Τα μικρότερα πρώτα",
 
   "albumGroupTier": "Ανά βαθμίδα",
+  "albumGroupType": "Ανά τύπο",
   "albumGroupVolume": "Ανά αποθηκευτική μονάδα",
   "albumGroupNone": "Να μην γίνει ομαδοποίηση",
+
+  "albumMimeTypeMixed": "Μικτα",
 
   "albumPickPageTitleCopy": "Αντιγραφή στο άλμπουμ",
   "albumPickPageTitleExport": "Εξαγωγή στο άλμπουμ",
@@ -442,6 +452,7 @@
   "settingsPageTitle": "Ρυθμισεις",
   "settingsSystemDefault": "Σύστημα",
   "settingsDefault": "Προεπιλογή",
+  "settingsDisabled": "Απενεργοποιημένο",
 
   "settingsSearchFieldLabel": "Αναζήτηση ρυθμίσεων",
   "settingsSearchEmpty": "Δεν υπάρχει αντίστοιχη ρύθμιση",
@@ -524,10 +535,9 @@
   "settingsSlideshowRepeat": "Επανάληψη",
   "settingsSlideshowShuffle": "Τυχαία σειρά",
   "settingsSlideshowFillScreen": "Χρησιμοποίηση πλήρης οθόνης",
+  "settingsSlideshowAnimatedZoomEffect": "Εφέ κινούμενου ζουμ",
   "settingsSlideshowTransitionTile": "Μετάβαση",
-  "settingsSlideshowTransitionDialogTitle": "Μεταβαση",
   "settingsSlideshowIntervalTile": "Διάρκεια",
-  "settingsSlideshowIntervalDialogTitle": "Διαρκεια",
   "settingsSlideshowVideoPlaybackTile": "Αναπαραγωγή βίντεο",
   "settingsSlideshowVideoPlaybackDialogTitle": "Αναπαραγωγη Βιντεο",
 
@@ -535,7 +545,7 @@
   "settingsVideoSectionTitle": "Βιντεο",
   "settingsVideoShowVideos": "Εμφάνιση των βίντεο στη συλλογή",
   "settingsVideoEnableHardwareAcceleration": "Επιτάχυνση υλισμικού",
-  "settingsVideoEnableAutoPlay": "Αυτόματη αναπαραγωγή κατά το άνοιγμα",
+  "settingsVideoAutoPlay": "Αυτόματη αναπαραγωγή κατά το άνοιγμα",
   "settingsVideoLoopModeTile": "Επανάληψη αυτόματα στο τέλος κάθε βίντεο",
   "settingsVideoLoopModeDialogTitle": "Επαναληψη Αυτοματα στο Τελος Καθε Βιντεο",
 
@@ -557,7 +567,6 @@
   "settingsVideoControlsTile": "Έλεγχος",
   "settingsVideoControlsPageTitle": "Ελεγχος",
   "settingsVideoButtonsTile": "Κουμπιά",
-  "settingsVideoButtonsDialogTitle": "Κουμπια",
   "settingsVideoGestureDoubleTapTogglePlay": "Αγγίξτε την οθόνη δύο φορές για αναπαραγωγή/παύση",
   "settingsVideoGestureSideDoubleTapSeek": "Αγγίξτε δύο φορές τις άκρες της οθόνης για να πάτε πίσω/εμπρός",
 
@@ -590,7 +599,6 @@
   "settingsRemoveAnimationsTile": "Κατάργηση κινούμενων εικόνων",
   "settingsRemoveAnimationsDialogTitle": "Καταργηση Κινουμενων Εικονων",
   "settingsTimeToTakeActionTile": "Χρόνος λήψης ενεργειών",
-  "settingsTimeToTakeActionDialogTitle": "Χρονος Ληψης Ενεργειων",
 
   "settingsDisplaySectionTitle": "Οθονη",
   "settingsThemeBrightnessTile": "Θέμα",
@@ -612,6 +620,7 @@
 
   "settingsWidgetPageTitle": "Κορνιζα",
   "settingsWidgetShowOutline": "Περίγραμμα",
+  "settingsWidgetOpenPage": "Όταν πατάτε στο γραφικό στοιχείο",
 
   "settingsCollectionTile": "Συλλογή",
 
@@ -620,6 +629,7 @@
   "statsTopCountriesSectionTitle": "Κορυφαιες Χωρες",
   "statsTopPlacesSectionTitle": "Κορυφαια Μερη",
   "statsTopTagsSectionTitle": "Κορυφαιες Ετικετες",
+  "statsTopAlbumsSectionTitle": "Κορυφαια Αλμπουμ",
 
   "viewerOpenPanoramaButtonLabel": "Άνοιγμα πανοραμικών",
   "viewerSetWallpaperButtonLabel": "ΟΡΙΣΜΟΣ ΤΑΠΕΤΣΑΡΙΑΣ",
@@ -663,6 +673,8 @@
   "viewerInfoSearchSuggestionDimensions": "Διαστάσεις",
   "viewerInfoSearchSuggestionResolution": "Ανάλυση",
   "viewerInfoSearchSuggestionRights": "Δικαιώματα",
+
+  "wallpaperUseScrollEffect": "Εφέ κύλισης στην αρχική οθόνη",
 
   "tagEditorPageTitle": "Επεξεργασια Ετικετων",
   "tagEditorPageNewTagFieldLabel": "Νέα ετικέτα",

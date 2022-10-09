@@ -136,7 +136,7 @@ class _MimeDonutState extends State<MimeDonut> with AutomaticKeepAliveClientMixi
                         Text(
                           numberFormat.format(d.entryCount),
                           style: TextStyle(
-                            color: Theme.of(context).textTheme.caption!.color,
+                            color: Theme.of(context).textTheme.bodySmall!.color,
                           ),
                         ),
                       ],

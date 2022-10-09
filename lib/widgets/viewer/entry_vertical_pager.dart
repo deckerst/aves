@@ -229,7 +229,7 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
       if (animate) {
         pageController.animateToPage(
           target,
-          duration: const Duration(seconds: 1),
+          duration: Durations.viewerHorizontalPageAnimation,
           curve: Curves.easeInOutCubic,
         );
       } else {

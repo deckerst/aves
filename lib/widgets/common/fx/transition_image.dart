@@ -3,15 +3,17 @@ import 'dart:ui' as ui;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-// adapted from Flutter `RawImage`, `paintImage()` from `DecorationImagePainter`, etc.
+// adapted from Flutter `_ImageState` in `/widgets/image.dart`
+// and `DecorationImagePainter` in `/painting/decoration_image.dart`
 // to transition between 2 different fits during hero animation:
 // - BoxFit.cover at t=0
 // - BoxFit.contain at t=1
 
 class TransitionImage extends StatefulWidget {
   final ImageProvider image;
-  final double? width, height;
   final ValueListenable<double> animation;
+  final BoxFit thumbnailFit, viewerFit;
+  final double? width, height;
   final bool gaplessPlayback = false;
   final Color? background;
 
@@ -19,6 +21,8 @@ class TransitionImage extends StatefulWidget {
     super.key,
     required this.image,
     required this.animation,
+    required this.thumbnailFit,
+    required this.viewerFit,
     this.width,
     this.height,
     this.background,
@@ -33,11 +37,6 @@ class _TransitionImageState extends State<TransitionImage> {
   ImageInfo? _imageInfo;
   bool _isListeningToStream = false;
   int? _frameNumber;
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   void dispose() {
@@ -63,8 +62,9 @@ class _TransitionImageState extends State<TransitionImage> {
   void didUpdateWidget(covariant TransitionImage oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (_isListeningToStream) {
-      _imageStream!.removeListener(_getListener());
-      _imageStream!.addListener(_getListener());
+      final ImageStreamListener oldListener = _getListener();
+      _imageStream!.addListener(_getListener(recreateListener: true));
+      _imageStream!.removeListener(oldListener);
     }
     if (widget.image != oldWidget.image) _resolveImage();
   }
@@ -84,31 +84,41 @@ class _TransitionImageState extends State<TransitionImage> {
     _updateSourceStream(newStream);
   }
 
-  ImageStreamListener _getListener() {
-    return ImageStreamListener(
-      _handleImageFrame,
-      onChunk: null,
-    );
+  ImageStreamListener? _imageStreamListener;
+
+  ImageStreamListener _getListener({bool recreateListener = false}) {
+    if (_imageStreamListener == null || recreateListener) {
+      _imageStreamListener = ImageStreamListener(
+        _handleImageFrame,
+      );
+    }
+    return _imageStreamListener!;
   }
 
   void _handleImageFrame(ImageInfo imageInfo, bool synchronousCall) {
     setState(() {
-      _imageInfo = imageInfo;
+      _replaceImage(info: imageInfo);
       _frameNumber = _frameNumber == null ? 0 : _frameNumber! + 1;
     });
   }
 
-  // Updates _imageStream to newStream, and moves the stream listener
-  // registration from the old stream to the new stream (if a listener was
-  // registered).
-  void _updateSourceStream(ImageStream newStream) {
-    if (_imageStream?.key == newStream.key) return;
+  void _replaceImage({required ImageInfo? info}) {
+    _imageInfo?.dispose();
+    _imageInfo = info;
+  }
 
-    if (_isListeningToStream) _imageStream!.removeListener(_getListener());
+  void _updateSourceStream(ImageStream newStream) {
+    if (_imageStream?.key == newStream.key) {
+      return;
+    }
+
+    if (_isListeningToStream) {
+      _imageStream!.removeListener(_getListener());
+    }
 
     if (!widget.gaplessPlayback) {
       setState(() {
-        _imageInfo = null;
+        _replaceImage(info: null);
       });
     }
 
@@ -117,17 +127,26 @@ class _TransitionImageState extends State<TransitionImage> {
     });
 
     _imageStream = newStream;
-    if (_isListeningToStream) _imageStream!.addListener(_getListener());
+    if (_isListeningToStream) {
+      _imageStream!.addListener(_getListener());
+    }
   }
 
   void _listenToStream() {
-    if (_isListeningToStream) return;
+    if (_isListeningToStream) {
+      return;
+    }
+
     _imageStream!.addListener(_getListener());
+
     _isListeningToStream = true;
   }
 
   void _stopListeningToStream() {
-    if (!_isListeningToStream) return;
+    if (!_isListeningToStream) {
+      return;
+    }
+
     _imageStream!.removeListener(_getListener());
     _isListeningToStream = false;
   }
@@ -141,6 +160,8 @@ class _TransitionImageState extends State<TransitionImage> {
           image: _imageInfo?.image,
           scale: _imageInfo?.scale ?? 1.0,
           t: t,
+          thumbnailFit: widget.thumbnailFit,
+          viewerFit: widget.viewerFit,
           background: widget.background,
         ),
       ),
@@ -150,15 +171,17 @@ class _TransitionImageState extends State<TransitionImage> {
 
 class _TransitionImagePainter extends CustomPainter {
   final ui.Image? image;
-  final double scale;
-  final double t;
+  final double scale, t;
   final Color? background;
+  final BoxFit thumbnailFit, viewerFit;
 
   const _TransitionImagePainter({
     required this.image,
     required this.scale,
     required this.t,
-    this.background,
+    required this.thumbnailFit,
+    required this.viewerFit,
+    required this.background,
   });
 
   @override
@@ -174,10 +197,10 @@ class _TransitionImagePainter extends CustomPainter {
     final inputSize = Size(image!.width.toDouble(), image!.height.toDouble());
     final outputSize = rect.size;
 
-    final coverSizes = applyBoxFit(BoxFit.cover, inputSize / scale, size);
-    final containSizes = applyBoxFit(BoxFit.contain, inputSize / scale, size);
-    final sourceSize = Size.lerp(coverSizes.source, containSizes.source, t)! * scale;
-    final destinationSize = Size.lerp(coverSizes.destination, containSizes.destination, t)!;
+    final thumbnailSizes = applyBoxFit(thumbnailFit, inputSize / scale, size);
+    final viewerSizes = applyBoxFit(viewerFit, inputSize / scale, size);
+    final sourceSize = Size.lerp(thumbnailSizes.source, viewerSizes.source, t)! * scale;
+    final destinationSize = Size.lerp(thumbnailSizes.destination, viewerSizes.destination, t)!;
 
     final halfWidthDelta = (outputSize.width - destinationSize.width) / 2.0;
     final halfHeightDelta = (outputSize.height - destinationSize.height) / 2.0;

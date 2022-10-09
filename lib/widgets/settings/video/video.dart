@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/settings/enums/enums.dart';
+import 'package:aves/model/settings/enums/video_auto_play_mode.dart';
 import 'package:aves/model/settings/enums/video_loop_mode.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/colors.dart';
@@ -73,13 +74,15 @@ class SettingsTileVideoEnableHardwareAcceleration extends SettingsTile {
 
 class SettingsTileVideoEnableAutoPlay extends SettingsTile {
   @override
-  String title(BuildContext context) => context.l10n.settingsVideoEnableAutoPlay;
+  String title(BuildContext context) => context.l10n.settingsVideoAutoPlay;
 
   @override
-  Widget build(BuildContext context) => SettingsSwitchListTile(
-        selector: (context, s) => s.enableVideoAutoPlay,
-        onChanged: (v) => settings.enableVideoAutoPlay = v,
-        title: title(context),
+  Widget build(BuildContext context) => SettingsSelectionListTile<VideoAutoPlayMode>(
+        values: VideoAutoPlayMode.values,
+        getName: (context, v) => v.getName(context),
+        selector: (context, s) => s.videoAutoPlayMode,
+        onSelection: (v) => settings.videoAutoPlayMode = v,
+        tileTitle: title(context),
       );
 }
 

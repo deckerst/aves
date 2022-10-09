@@ -24,7 +24,7 @@ class InfoSearchDelegate extends SearchDelegate {
         );
 
   @override
-  Widget buildLeading(BuildContext context) {
+  Widget? buildLeading(BuildContext context) {
     return IconButton(
       icon: AnimatedIcon(
         icon: AnimatedIcons.menu_arrow,
@@ -36,7 +36,7 @@ class InfoSearchDelegate extends SearchDelegate {
   }
 
   @override
-  List<Widget> buildActions(BuildContext context) {
+  List<Widget>? buildActions(BuildContext context) {
     return [
       if (query.isNotEmpty)
         IconButton(

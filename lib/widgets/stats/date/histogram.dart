@@ -330,7 +330,7 @@ class _HistogramState extends State<Histogram> with AutomaticKeepAliveClientMixi
                 Text(
                   numberFormat.format(count),
                   style: TextStyle(
-                    color: Theme.of(context).textTheme.caption!.color,
+                    color: Theme.of(context).textTheme.bodySmall!.color,
                   ),
                   textAlign: TextAlign.end,
                 ),

@@ -159,13 +159,7 @@ class MediaStoreSource extends CollectionSource {
         // reuse known entry ID to overwrite it while preserving favourites, etc.
         final contentId = entry.contentId;
         final existingEntry = knownContentIds.contains(contentId) ? knownLiveEntries.firstWhereOrNull((entry) => entry.contentId == contentId) : null;
-        if (existingEntry != null) {
-          entry.id = existingEntry.id;
-          entry.dateAddedSecs = existingEntry.dateAddedSecs;
-        } else {
-          entry.id = metadataDb.nextId;
-          entry.dateAddedSecs = metadataDb.timestampSecs;
-        }
+        entry.id = existingEntry?.id ?? metadataDb.nextId;
 
         pendingNewEntries.add(entry);
         if (pendingNewEntries.length >= refreshCount) {
@@ -250,13 +244,7 @@ class MediaStoreSource extends CollectionSource {
           final newPath = sourceEntry.path;
           final volume = newPath != null ? androidFileUtils.getStorageVolume(newPath) : null;
           if (volume != null) {
-            if (existingEntry != null) {
-              sourceEntry.id = existingEntry.id;
-              sourceEntry.dateAddedSecs = existingEntry.dateAddedSecs;
-            } else {
-              sourceEntry.id = metadataDb.nextId;
-              sourceEntry.dateAddedSecs = metadataDb.timestampSecs;
-            }
+            sourceEntry.id = existingEntry?.id ?? metadataDb.nextId;
             newEntries.add(sourceEntry);
             final existingDirectory = existingEntry?.directory;
             if (existingDirectory != null) {

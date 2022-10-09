@@ -135,7 +135,7 @@ class SafeXmpReader : XmpReader() {
         private val LOG_TAG = LogUtils.createTag<SafeXmpReader>()
 
         // arbitrary size to detect extended XMP that may yield an OOM
-        private const val segmentTypeSizeDangerThreshold = 3 * (1 shl 20) // MB
+        const val segmentTypeSizeDangerThreshold = 3 * (1 shl 20) // MB
 
         // tighter node limits for faster loading
         val PARSE_OPTIONS: ParseOptions = ParseOptions().setXMPNodesToLimit(

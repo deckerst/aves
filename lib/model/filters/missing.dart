@@ -10,16 +10,16 @@ class MissingFilter extends CollectionFilter {
   static const _title = 'title';
 
   final String metadataType;
-  late final EntryFilter _test;
   late final IconData _icon;
+  late final EntryFilter _test;
 
   static final date = MissingFilter._private(_date);
   static final title = MissingFilter._private(_title);
 
   @override
-  List<Object?> get props => [metadataType];
+  List<Object?> get props => [metadataType, reversed];
 
-  MissingFilter._private(this.metadataType) {
+  MissingFilter._private(this.metadataType, {super.reversed = false}) {
     switch (metadataType) {
       case _date:
         _test = (entry) => (entry.catalogMetadata?.dateMillis ?? 0) == 0;
@@ -35,6 +35,7 @@ class MissingFilter extends CollectionFilter {
   factory MissingFilter.fromMap(Map<String, dynamic> json) {
     return MissingFilter._private(
       json['metadataType'],
+      reversed: json['reversed'] ?? false,
     );
   }
 
@@ -42,10 +43,14 @@ class MissingFilter extends CollectionFilter {
   Map<String, dynamic> toMap() => {
         'type': type,
         'metadataType': metadataType,
+        'reversed': reversed,
       };
 
   @override
-  EntryFilter get test => _test;
+  EntryFilter get positiveTest => _test;
+
+  @override
+  bool get exclusiveProp => false;
 
   @override
   String get universalLabel => metadataType;

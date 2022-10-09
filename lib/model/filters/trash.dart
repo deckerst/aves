@@ -1,3 +1,4 @@
+import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -6,20 +7,32 @@ import 'package:flutter/material.dart';
 class TrashFilter extends CollectionFilter {
   static const type = 'trash';
 
+  static bool _test(AvesEntry entry) => entry.trashed;
+
   static const instance = TrashFilter._private();
+  static const instanceReversed = TrashFilter._private(reversed: true);
 
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [reversed];
 
-  const TrashFilter._private();
+  const TrashFilter._private({super.reversed = false});
+
+  factory TrashFilter.fromMap(Map<String, dynamic> json) {
+    final reversed = json['reversed'] ?? false;
+    return reversed ? instanceReversed : instance;
+  }
 
   @override
   Map<String, dynamic> toMap() => {
         'type': type,
+        'reversed': reversed,
       };
 
   @override
-  EntryFilter get test => (entry) => entry.trashed;
+  EntryFilter get positiveTest => _test;
+
+  @override
+  bool get exclusiveProp => false;
 
   @override
   String get universalLabel => type;

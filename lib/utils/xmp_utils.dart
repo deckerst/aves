@@ -10,6 +10,7 @@ class Namespaces {
   static const container = 'http://ns.google.com/photos/1.0/container/';
   static const creatorAtom = 'http://ns.adobe.com/creatorAtom/1.0/';
   static const crd = 'http://ns.adobe.com/camera-raw-defaults/1.0/';
+  static const crlcp = 'http://ns.adobe.com/camera-raw-embedded-lens-profile/1.0/';
   static const crs = 'http://ns.adobe.com/camera-raw-settings/1.0/';
   static const crss = 'http://ns.adobe.com/camera-raw-saved-settings/1.0/';
   static const darktable = 'http://darktable.sf.net/';
@@ -30,7 +31,8 @@ class Namespaces {
   static const gettyImagesGift = 'http://xmp.gettyimages.com/gift/1.0/';
   static const gFocus = 'http://ns.google.com/photos/1.0/focus/';
   static const gImage = 'http://ns.google.com/photos/1.0/image/';
-  static const gimp = 'http://www.gimp.org/ns/2.10/';
+  static const gimp210 = 'http://www.gimp.org/ns/2.10/';
+  static const gimpXmp = 'http://www.gimp.org/xmp/';
   static const gPano = 'http://ns.google.com/photos/1.0/panorama/';
   static const gSpherical = 'http://ns.google.com/videos/1.0/spherical/';
   static const illustrator = 'http://ns.adobe.com/illustrator/1.0/';
@@ -56,6 +58,7 @@ class Namespaces {
   static const plus = 'http://ns.useplus.org/ldf/xmp/1.0/';
   static const pmtm = 'http://www.hdrsoft.com/photomatix_settings01';
   static const rdf = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#';
+  static const stCamera = 'http://ns.adobe.com/photoshop/1.0/camera-profile';
   static const stEvt = 'http://ns.adobe.com/xap/1.0/sType/ResourceEvent#';
   static const stRef = 'http://ns.adobe.com/xap/1.0/sType/ResourceRef#';
   static const tiff = 'http://ns.adobe.com/tiff/1.0/';
@@ -96,7 +99,8 @@ class Namespaces {
     gDepth: 'Google Depth',
     gFocus: 'Google Focus',
     gImage: 'Google Image',
-    gimp: 'GIMP',
+    gimp210: 'GIMP 2.10',
+    gimpXmp: 'GIMP',
     gPano: 'Google Panorama',
     gSpherical: 'Google Spherical',
     illustrator: 'Illustrator',
@@ -122,6 +126,7 @@ class Namespaces {
     xmpBJ: 'Basic Job Ticket',
     xmpDM: 'Dynamic Media',
     xmpMM: 'Media Management',
+    xmpNote: 'Note',
     xmpRights: 'Rights Management',
     xmpTPg: 'Paged-Text',
   };

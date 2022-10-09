@@ -13,7 +13,12 @@ class ActionPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = highlight ? Theme.of(context).colorScheme.secondary : Colors.blueGrey;
+    final theme = Theme.of(context);
+    final color = highlight
+        ? theme.colorScheme.secondary
+        : theme.brightness == Brightness.dark
+            ? Colors.blueGrey
+            : Colors.blueGrey.shade100;
     return AnimatedContainer(
       foregroundDecoration: BoxDecoration(
         color: color.withOpacity(.2),

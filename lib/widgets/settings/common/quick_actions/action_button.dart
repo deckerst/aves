@@ -1,5 +1,6 @@
 import 'package:aves/widgets/viewer/overlay/common.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 class ActionButton extends StatelessWidget {
   final String text;
@@ -14,13 +15,14 @@ class ActionButton extends StatelessWidget {
     this.showCaption = true,
   });
 
-  static const padding = 8.0;
+  static const int maxLines = 2;
+  static const double padding = 8;
 
   @override
   Widget build(BuildContext context) {
-    final textStyle = Theme.of(context).textTheme.caption;
+    final textStyle = _textStyle(context);
     return SizedBox(
-      width: OverlayButton.getSize(context) + padding * 2,
+      width: _width(context),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -35,15 +37,34 @@ class ActionButton extends StatelessWidget {
             const SizedBox(height: padding),
             Text(
               text,
-              style: enabled ? textStyle : textStyle!.copyWith(color: textStyle.color!.withOpacity(.2)),
+              style: enabled ? textStyle : textStyle.copyWith(color: textStyle.color!.withOpacity(.2)),
               textAlign: TextAlign.center,
               overflow: TextOverflow.ellipsis,
-              maxLines: 2,
+              maxLines: maxLines,
             ),
           ],
           const SizedBox(height: padding),
         ],
       ),
     );
+  }
+
+  static TextStyle _textStyle(BuildContext context) => Theme.of(context).textTheme.bodySmall!;
+
+  static double _width(BuildContext context) => OverlayButton.getSize(context) + padding * 2;
+
+  static Size getSize(BuildContext context, String text, {required bool showCaption}) {
+    final width = _width(context);
+    var height = width;
+    if (showCaption) {
+      final para = RenderParagraph(
+        TextSpan(text: text, style: _textStyle(context)),
+        textDirection: TextDirection.ltr,
+        textScaleFactor: MediaQuery.textScaleFactorOf(context),
+        maxLines: maxLines,
+      )..layout(const BoxConstraints(), parentUsesSize: true);
+      height += para.getMaxIntrinsicHeight(width) + padding;
+    }
+    return Size(width, height);
   }
 }

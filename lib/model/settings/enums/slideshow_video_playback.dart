@@ -7,11 +7,11 @@ extension ExtraSlideshowVideoPlayback on SlideshowVideoPlayback {
   String getName(BuildContext context) {
     switch (this) {
       case SlideshowVideoPlayback.skip:
-        return context.l10n.slideshowVideoPlaybackSkip;
+        return context.l10n.videoPlaybackSkip;
       case SlideshowVideoPlayback.playMuted:
-        return context.l10n.slideshowVideoPlaybackMuted;
+        return context.l10n.videoPlaybackMuted;
       case SlideshowVideoPlayback.playWithSound:
-        return context.l10n.slideshowVideoPlaybackWithSound;
+        return context.l10n.videoPlaybackWithSound;
     }
   }
 }

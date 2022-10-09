@@ -151,9 +151,9 @@
   "displayRefreshRatePreferHighest": "Alta tasa",
   "displayRefreshRatePreferLowest": "Baja tasa",
 
-  "slideshowVideoPlaybackSkip": "Saltear",
-  "slideshowVideoPlaybackMuted": "Reproducir sin sonido",
-  "slideshowVideoPlaybackWithSound": "Reproducir con sonido",
+  "videoPlaybackSkip": "Saltear",
+  "videoPlaybackMuted": "Reproducir sin sonido",
+  "videoPlaybackWithSound": "Reproducir con sonido",
 
   "themeBrightnessLight": "Claro",
   "themeBrightnessDark": "Obscuro",
@@ -509,9 +509,7 @@
   "settingsSlideshowShuffle": "Mezclar",
   "settingsSlideshowFillScreen": "Llenar pantalla",
   "settingsSlideshowTransitionTile": "Transición",
-  "settingsSlideshowTransitionDialogTitle": "Transición",
   "settingsSlideshowIntervalTile": "Intervalo",
-  "settingsSlideshowIntervalDialogTitle": "Intervalo",
   "settingsSlideshowVideoPlaybackTile": "Reproducción de video",
   "settingsSlideshowVideoPlaybackDialogTitle": "Reproducción de video",
 
@@ -519,7 +517,7 @@
   "settingsVideoSectionTitle": "Video",
   "settingsVideoShowVideos": "Mostrar videos",
   "settingsVideoEnableHardwareAcceleration": "Aceleración por hardware",
-  "settingsVideoEnableAutoPlay": "Reproducción automática",
+  "settingsVideoAutoPlay": "Reproducción automática",
   "settingsVideoLoopModeTile": "Modo bucle",
   "settingsVideoLoopModeDialogTitle": "Modo bucle",
 
@@ -541,7 +539,6 @@
   "settingsVideoControlsTile": "Controles",
   "settingsVideoControlsPageTitle": "Controles",
   "settingsVideoButtonsTile": "Botones",
-  "settingsVideoButtonsDialogTitle": "Botones",
   "settingsVideoGestureDoubleTapTogglePlay": "Doble toque para reproducir/pausar",
   "settingsVideoGestureSideDoubleTapSeek": "Doble toque en los bordes de la pantalla para buscar atrás/adelante",
 
@@ -574,7 +571,6 @@
   "settingsRemoveAnimationsTile": "Remover animaciones",
   "settingsRemoveAnimationsDialogTitle": "Remover animaciones",
   "settingsTimeToTakeActionTile": "Retraso para ejecutar una acción",
-  "settingsTimeToTakeActionDialogTitle": "Retraso para ejecutar una acción",
 
   "settingsDisplaySectionTitle": "Pantalla",
   "settingsThemeBrightnessTile": "Tema",

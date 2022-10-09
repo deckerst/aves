@@ -15,7 +15,6 @@ import deckers.thibault.aves.utils.ContextUtils.resourceUri
 import deckers.thibault.aves.utils.FlutterUtils
 import deckers.thibault.aves.utils.LogUtils
 import io.flutter.embedding.engine.FlutterEngine
-import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import kotlinx.coroutines.*
 import java.util.*
@@ -74,14 +73,15 @@ class SearchSuggestionsProvider : ContentProvider() {
         }
 
         val messenger = flutterEngine!!.dartExecutor
-        val backgroundChannel = MethodChannel(messenger, BACKGROUND_CHANNEL)
-        backgroundChannel.setMethodCallHandler { call: MethodCall, result: MethodChannel.Result ->
-            when (call.method) {
-                "initialized" -> {
-                    Log.d(LOG_TAG, "background channel is ready")
-                    result.success(null)
+        val backgroundChannel = MethodChannel(messenger, BACKGROUND_CHANNEL).apply {
+            setMethodCallHandler { call, result ->
+                when (call.method) {
+                    "initialized" -> {
+                        Log.d(LOG_TAG, "background channel is ready")
+                        result.success(null)
+                    }
+                    else -> result.notImplemented()
                 }
-                else -> result.notImplemented()
             }
         }
 

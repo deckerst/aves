@@ -118,6 +118,17 @@ class AlbumListPage extends StatelessWidget {
           if (sections.containsKey(regularKey)) regularKey: sections[regularKey]!,
         };
         break;
+      case AlbumChipGroupFactor.mimeType:
+        final visibleEntries = source.visibleEntries;
+        sections = groupBy<FilterGridItem<AlbumFilter>, ChipSectionKey>(unpinnedMapEntries, (kv) {
+          final matches = visibleEntries.where(kv.filter.test);
+          final hasImage = matches.any((v) => v.isImage);
+          final hasVideo = matches.any((v) => v.isVideo);
+          if (hasImage && !hasVideo) return MimeTypeSectionKey.images(context);
+          if (!hasImage && hasVideo) return MimeTypeSectionKey.videos(context);
+          return MimeTypeSectionKey.mixed(context);
+        });
+        break;
       case AlbumChipGroupFactor.volume:
         sections = groupBy<FilterGridItem<AlbumFilter>, ChipSectionKey>(unpinnedMapEntries, (kv) {
           return StorageVolumeSectionKey(context, androidFileUtils.getStorageVolume(kv.filter.album));

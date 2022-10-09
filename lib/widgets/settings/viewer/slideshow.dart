@@ -36,13 +36,17 @@ class ViewerSlideshowPage extends StatelessWidget {
               onChanged: (v) => settings.slideshowFillScreen = v,
               title: context.l10n.settingsSlideshowFillScreen,
             ),
+            SettingsSwitchListTile(
+              selector: (context, s) => s.slideshowAnimatedZoomEffect,
+              onChanged: (v) => settings.slideshowAnimatedZoomEffect = v,
+              title: context.l10n.settingsSlideshowAnimatedZoomEffect,
+            ),
             SettingsSelectionListTile<ViewerTransition>(
               values: ViewerTransition.values,
               getName: (context, v) => v.getName(context),
               selector: (context, s) => s.slideshowTransition,
               onSelection: (v) => settings.slideshowTransition = v,
               tileTitle: context.l10n.settingsSlideshowTransitionTile,
-              dialogTitle: context.l10n.settingsSlideshowTransitionDialogTitle,
             ),
             SettingsSelectionListTile<SlideshowInterval>(
               values: SlideshowInterval.values,
@@ -50,7 +54,6 @@ class ViewerSlideshowPage extends StatelessWidget {
               selector: (context, s) => s.slideshowInterval,
               onSelection: (v) => settings.slideshowInterval = v,
               tileTitle: context.l10n.settingsSlideshowIntervalTile,
-              dialogTitle: context.l10n.settingsSlideshowIntervalDialogTitle,
             ),
             SettingsSelectionListTile<SlideshowVideoPlayback>(
               values: SlideshowVideoPlayback.values,

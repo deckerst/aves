@@ -6,7 +6,9 @@ import 'package:aves/model/highlight.dart';
 import 'package:aves/model/query.dart';
 import 'package:aves/model/selection.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums/enums.dart';
+import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/basic/draggable_scrollbar.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
@@ -15,7 +17,8 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
 import 'package:aves/widgets/common/grid/item_tracker.dart';
 import 'package:aves/widgets/common/grid/scaling.dart';
-import 'package:aves/widgets/common/grid/section_layout.dart';
+import 'package:aves/widgets/common/grid/sections/fixed/scale_grid.dart';
+import 'package:aves/widgets/common/grid/sections/list_layout.dart';
 import 'package:aves/widgets/common/grid/selector.dart';
 import 'package:aves/widgets/common/grid/sliver.dart';
 import 'package:aves/widgets/common/grid/theme.dart';
@@ -24,6 +27,7 @@ import 'package:aves/widgets/common/identity/scroll_thumb.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/common/providers/query_provider.dart';
 import 'package:aves/widgets/common/providers/tile_extent_controller_provider.dart';
+import 'package:aves/widgets/common/thumbnail/image.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
 import 'package:aves/widgets/filter_grids/common/covered_filter_chip.dart';
 import 'package:aves/widgets/filter_grids/common/draggable_thumb_label.dart';
@@ -244,6 +248,7 @@ class _FilterGridContent<T extends CollectionFilter> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final source = context.read<CollectionSource>();
     final settingsRouteKey = context.read<TileExtentController>().settingsRouteKey;
     final tileLayout = context.select<Settings, TileLayout>((s) => s.getTileLayout(settingsRouteKey));
     return Selector<Query, bool>(
@@ -284,7 +289,7 @@ class _FilterGridContent<T extends CollectionFilter> extends StatelessWidget {
                         final tileHeight = CoveredFilterChip.tileHeight(
                           extent: thumbnailExtent,
                           textScaleFactor: textScaleFactor,
-                          showText: tileLayout == TileLayout.grid,
+                          showText: tileLayout != TileLayout.list,
                         );
                         return GridTheme(
                           extent: thumbnailExtent,
@@ -301,17 +306,22 @@ class _FilterGridContent<T extends CollectionFilter> extends StatelessWidget {
                               horizontalPadding: horizontalPadding,
                               tileWidth: thumbnailExtent,
                               tileHeight: tileHeight,
-                              tileBuilder: (gridItem) {
+                              tileBuilder: (gridItem, tileSize) {
+                                final extent = tileSize.shortestSide;
                                 return InteractiveFilterTile(
                                   gridItem: gridItem,
-                                  chipExtent: thumbnailExtent,
-                                  thumbnailExtent: thumbnailExtent,
+                                  chipExtent: extent,
+                                  thumbnailExtent: extent,
                                   tileLayout: tileLayout,
                                   banner: _getFilterBanner(context, gridItem.filter),
                                   heroType: heroType,
                                 );
                               },
                               tileAnimationDelay: tileAnimationDelay,
+                              coverRatioResolver: (item) {
+                                final coverEntry = source.coverEntry(item.filter) ?? item.entry;
+                                return coverEntry?.displayAspectRatio ?? 1;
+                              },
                               child: child!,
                             ),
                           ),
@@ -469,12 +479,13 @@ class _FilterScaler<T extends CollectionFilter> extends StatelessWidget {
     final metrics = context.select<TileExtentController, Tuple2<double, double>>((v) => Tuple2(v.spacing, v.horizontalPadding));
     final tileSpacing = metrics.item1;
     final horizontalPadding = metrics.item2;
+    final brightness = Theme.of(context).brightness;
     return GridScaleGestureDetector<FilterGridItem<T>>(
       scrollableKey: scrollableKey,
       tileLayout: tileLayout,
       heightForWidth: (width) => CoveredFilterChip.tileHeight(extent: width, textScaleFactor: textScaleFactor, showText: true),
       gridBuilder: (center, tileSize, child) => CustomPaint(
-        painter: GridPainter(
+        painter: FixedExtentGridPainter(
           tileLayout: tileLayout,
           tileCenter: center,
           tileSize: tileSize,
@@ -487,7 +498,7 @@ class _FilterScaler<T extends CollectionFilter> extends StatelessWidget {
         ),
         child: child,
       ),
-      scaledBuilder: (item, tileSize) => FilterListDetailsTheme(
+      scaledItemBuilder: (item, tileSize) => FilterListDetailsTheme(
         extent: tileSize.height,
         child: FilterTile(
           gridItem: item,
@@ -495,6 +506,16 @@ class _FilterScaler<T extends CollectionFilter> extends StatelessWidget {
           thumbnailExtent: context.read<TileExtentController>().effectiveExtentMax,
           tileLayout: tileLayout,
           banner: bannerBuilder(context, item.filter),
+        ),
+      ),
+      mosaicItemBuilder: (index, targetExtent) => DecoratedBox(
+        decoration: BoxDecoration(
+          color: ThumbnailImage.computeLoadingBackgroundColor(index * 10, brightness).withOpacity(.9),
+          border: Border.all(
+            color: context.read<AvesColorsData>().neutral,
+            width: AvesFilterChip.outlineWidth,
+          ),
+          borderRadius: BorderRadius.all(CoveredFilterChip.radius(targetExtent)),
         ),
       ),
       highlightItem: (item) => item.filter,

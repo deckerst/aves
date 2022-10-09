@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:aves/model/entry.dart';
+import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/filters/rating.dart';
@@ -15,8 +16,11 @@ import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/common/extensions/media_query.dart';
+import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
+import 'package:aves/widgets/filter_grids/common/action_delegates/chip.dart';
 import 'package:aves/widgets/stats/date/histogram.dart';
 import 'package:aves/widgets/stats/filter_table.dart';
 import 'package:aves/widgets/stats/mime_donut.dart';
@@ -47,7 +51,7 @@ class StatsPage extends StatefulWidget {
 }
 
 class _StatsPageState extends State<StatsPage> {
-  final Map<String, int> _entryCountPerCountry = {}, _entryCountPerPlace = {}, _entryCountPerTag = {};
+  final Map<String, int> _entryCountPerCountry = {}, _entryCountPerPlace = {}, _entryCountPerTag = {}, _entryCountPerAlbum = {};
   final Map<int, int> _entryCountPerRating = Map.fromEntries(List.generate(7, (i) => MapEntry(5 - i, 0)));
   late final ValueNotifier<bool> _isPageAnimatingNotifier;
 
@@ -80,6 +84,11 @@ class _StatsPageState extends State<StatsPage> {
       entry.tags.forEach((tag) {
         _entryCountPerTag[tag] = (_entryCountPerTag[tag] ?? 0) + 1;
       });
+
+      final album = entry.directory;
+      if (album != null) {
+        _entryCountPerAlbum[album] = (_entryCountPerAlbum[album] ?? 0) + 1;
+      }
 
       final rating = entry.rating;
       _entryCountPerRating[rating] = (_entryCountPerRating[rating] ?? 0) + 1;
@@ -177,30 +186,38 @@ class _StatsPageState extends State<StatsPage> {
               ),
             );
             final showRatings = _entryCountPerRating.entries.any((kv) => kv.key != 0 && kv.value > 0);
-            child = AnimationLimiter(
-              child: ListView(
-                children: AnimationConfiguration.toStaggeredList(
-                  duration: durations.staggeredAnimation,
-                  delay: durations.staggeredAnimationDelay * timeDilation,
-                  childAnimationBuilder: (child) => SlideAnimation(
-                    verticalOffset: 50.0,
-                    child: FadeInAnimation(
-                      child: child,
+            final source = widget.source;
+            child = NotificationListener<ReverseFilterNotification>(
+              onNotification: (notification) {
+                _onFilterSelection(context, notification.reversedFilter);
+                return true;
+              },
+              child: AnimationLimiter(
+                child: ListView(
+                  children: AnimationConfiguration.toStaggeredList(
+                    duration: durations.staggeredAnimation,
+                    delay: durations.staggeredAnimationDelay * timeDilation,
+                    childAnimationBuilder: (child) => SlideAnimation(
+                      verticalOffset: 50.0,
+                      child: FadeInAnimation(
+                        child: child,
+                      ),
                     ),
+                    children: [
+                      mimeDonuts,
+                      Histogram(
+                        entries: entries,
+                        animationDuration: chartAnimationDuration,
+                        onFilterSelection: (filter) => _onFilterSelection(context, filter),
+                      ),
+                      locationIndicator,
+                      ..._buildFilterSection<String>(context, l10n.statsTopCountriesSectionTitle, _entryCountPerCountry, (v) => LocationFilter(LocationLevel.country, v)),
+                      ..._buildFilterSection<String>(context, l10n.statsTopPlacesSectionTitle, _entryCountPerPlace, (v) => LocationFilter(LocationLevel.place, v)),
+                      ..._buildFilterSection<String>(context, l10n.statsTopTagsSectionTitle, _entryCountPerTag, TagFilter.new),
+                      ..._buildFilterSection<String>(context, l10n.statsTopAlbumsSectionTitle, _entryCountPerAlbum, (v) => AlbumFilter(v, source.getAlbumDisplayName(context, v))),
+                      if (showRatings) ..._buildFilterSection<int>(context, l10n.searchRatingSectionTitle, _entryCountPerRating, RatingFilter.new, sortByCount: false, maxRowCount: null),
+                    ],
                   ),
-                  children: [
-                    mimeDonuts,
-                    Histogram(
-                      entries: entries,
-                      animationDuration: chartAnimationDuration,
-                      onFilterSelection: (filter) => _onFilterSelection(context, filter),
-                    ),
-                    locationIndicator,
-                    ..._buildFilterSection<String>(context, l10n.statsTopCountriesSectionTitle, _entryCountPerCountry, (v) => LocationFilter(LocationLevel.country, v)),
-                    ..._buildFilterSection<String>(context, l10n.statsTopPlacesSectionTitle, _entryCountPerPlace, (v) => LocationFilter(LocationLevel.place, v)),
-                    ..._buildFilterSection<String>(context, l10n.statsTopTagsSectionTitle, _entryCountPerTag, TagFilter.new),
-                    if (showRatings) ..._buildFilterSection<int>(context, l10n.searchRatingSectionTitle, _entryCountPerRating, RatingFilter.new, sortByCount: false, maxRowCount: null),
-                  ],
                 ),
               ),
             );
@@ -215,7 +232,12 @@ class _StatsPageState extends State<StatsPage> {
             body: GestureAreaProtectorStack(
               child: SafeArea(
                 bottom: false,
-                child: child,
+                child: TooltipTheme(
+                  data: TooltipTheme.of(context).copyWith(
+                    preferBelow: false,
+                  ),
+                  child: child,
+                ),
               ),
             ),
           ),
@@ -230,20 +252,51 @@ class _StatsPageState extends State<StatsPage> {
     Map<T, int> entryCountMap,
     CollectionFilter Function(T key) filterBuilder, {
     bool sortByCount = true,
-    int? maxRowCount = 5,
+    int? maxRowCount = 3,
   }) {
     if (entryCountMap.isEmpty) return [];
 
+    final totalEntryCount = entries.length;
+    final hasMore = maxRowCount != null && entryCountMap.length > maxRowCount;
     return [
       Padding(
         padding: const EdgeInsets.all(16),
-        child: Text(
-          title,
-          style: Constants.knownTitleTextStyle,
+        child: Row(
+          children: [
+            Text(
+              title,
+              style: Constants.knownTitleTextStyle,
+            ),
+            const Spacer(),
+            IconButton(
+              icon: const Icon(AIcons.next),
+              onPressed: hasMore
+                  ? () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          settings: const RouteSettings(name: StatsTopPage.routeName),
+                          builder: (context) => StatsTopPage(
+                            title: title,
+                            tableBuilder: (context) => FilterTable(
+                              totalEntryCount: totalEntryCount,
+                              entryCountMap: entryCountMap,
+                              filterBuilder: filterBuilder,
+                              sortByCount: sortByCount,
+                              maxRowCount: null,
+                              onFilterSelection: (filter) => _onFilterSelection(context, filter),
+                            ),
+                            onFilterSelection: (filter) => _onFilterSelection(context, filter),
+                          ),
+                        ),
+                      )
+                  : null,
+              tooltip: MaterialLocalizations.of(context).moreButtonTooltip,
+            ),
+          ],
         ),
       ),
       FilterTable(
-        totalEntryCount: entries.length,
+        totalEntryCount: totalEntryCount,
         entryCountMap: entryCountMap,
         filterBuilder: filterBuilder,
         sortByCount: sortByCount,
@@ -268,7 +321,7 @@ class _StatsPageState extends State<StatsPage> {
     // even when the target is a child of an `AnimatedList`.
     // Do not use `WidgetsBinding.instance.addPostFrameCallback`,
     // as it may not trigger if there is no subsequent build.
-    Future.delayed(const Duration(milliseconds: 100), () => Navigator.pop(context));
+    Future.delayed(const Duration(milliseconds: 100), () => Navigator.popUntil(context, (route) => route.settings.name == CollectionPage.routeName));
   }
 
   void _jumpToCollectionPage(BuildContext context, CollectionFilter filter) {
@@ -282,6 +335,52 @@ class _StatsPageState extends State<StatsPage> {
         ),
       ),
       (route) => false,
+    );
+  }
+}
+
+class StatsTopPage extends StatelessWidget {
+  static const routeName = '/collection/stats/top';
+
+  final String title;
+  final WidgetBuilder tableBuilder;
+  final FilterCallback onFilterSelection;
+
+  const StatsTopPage({
+    super.key,
+    required this.title,
+    required this.tableBuilder,
+    required this.onFilterSelection,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return MediaQueryDataProvider(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(title),
+        ),
+        body: GestureAreaProtectorStack(
+          child: SafeArea(
+            bottom: false,
+            child: Builder(builder: (context) {
+              return NotificationListener<ReverseFilterNotification>(
+                onNotification: (notification) {
+                  onFilterSelection(notification.reversedFilter);
+                  return true;
+                },
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(vertical: 8) +
+                      EdgeInsets.only(
+                        bottom: context.select<MediaQueryData, double>((mq) => mq.effectiveBottomPadding),
+                      ),
+                  child: tableBuilder(context),
+                ),
+              );
+            }),
+          ),
+        ),
+      ),
     );
   }
 }

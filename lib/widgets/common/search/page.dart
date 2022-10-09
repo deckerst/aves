@@ -38,7 +38,7 @@ class _SearchPageState extends State<SearchPage> {
   @override
   void didUpdateWidget(covariant SearchPage oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.delegate != oldWidget.delegate) {
+    if (oldWidget.delegate != widget.delegate) {
       _unregisterWidget(oldWidget);
       _registerWidget(widget);
     }
@@ -138,7 +138,7 @@ class _SearchPageState extends State<SearchPage> {
                   hintStyle: theme.inputDecorationTheme.hintStyle,
                 ),
                 textInputAction: TextInputAction.search,
-                style: theme.textTheme.headline6,
+                style: theme.textTheme.titleLarge,
                 onSubmitted: (_) => widget.delegate.showResults(context),
               ),
             ),

@@ -6,6 +6,7 @@ enum ChipAction {
   goToAlbumPage,
   goToCountryPage,
   goToTagPage,
+  reverse,
   hide,
 }
 
@@ -18,6 +19,9 @@ extension ExtraChipAction on ChipAction {
         return context.l10n.chipActionGoToCountryPage;
       case ChipAction.goToTagPage:
         return context.l10n.chipActionGoToTagPage;
+      case ChipAction.reverse:
+        // different data depending on state
+        return context.l10n.chipActionFilterOut;
       case ChipAction.hide:
         return context.l10n.chipActionHide;
     }
@@ -33,6 +37,8 @@ extension ExtraChipAction on ChipAction {
         return AIcons.location;
       case ChipAction.goToTagPage:
         return AIcons.tag;
+      case ChipAction.reverse:
+        return AIcons.reverse;
       case ChipAction.hide:
         return AIcons.hide;
     }

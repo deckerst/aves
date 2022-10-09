@@ -90,7 +90,7 @@ class _MultiEntryScrollerState extends State<MultiEntryScroller> with AutomaticK
       key: const Key('image_view'),
       mainEntry: mainEntry,
       pageEntry: pageEntry ?? mainEntry,
-      initialScale: viewerController.initialScale,
+      viewerController: viewerController,
       onDisposed: () => widget.onViewDisposed(mainEntry, pageEntry),
     );
   }
@@ -139,7 +139,7 @@ class _SingleEntryScrollerState extends State<SingleEntryScroller> with Automati
     return EntryPageView(
       mainEntry: mainEntry,
       pageEntry: pageEntry ?? mainEntry,
-      initialScale: viewerController.initialScale,
+      viewerController: widget.viewerController,
     );
   }
 

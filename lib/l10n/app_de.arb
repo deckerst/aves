@@ -41,6 +41,8 @@
   "chipActionGoToAlbumPage": "Anzeigen in Alben",
   "chipActionGoToCountryPage": "Anzeigen in Ländern",
   "chipActionGoToTagPage": "Zeige in Tags",
+  "chipActionFilterOut": "Filtern ohne",
+  "chipActionFilterIn": "Filtern mit",
   "chipActionHide": "Ausblenden",
   "chipActionPin": "Oben Anpinnen",
   "chipActionUnpin": "Nicht mehr Anpinen",
@@ -88,15 +90,18 @@
 
   "entryInfoActionEditDate": "Datum & Uhrzeit bearbeiten",
   "entryInfoActionEditLocation": "Standort bearbeiten",
+  "entryInfoActionEditTitleDescription": "Titel und Beschreibung bearbeiten",
   "entryInfoActionEditRating": "Bewertung bearbeiten",
   "entryInfoActionEditTags": "Tags bearbeiten",
   "entryInfoActionRemoveMetadata": "Metadaten entfernen",
 
   "filterBinLabel": "Papierkorb",
   "filterFavouriteLabel": "Favorit",
+  "filterNoDateLabel": "Undatiert",
   "filterNoLocationLabel": "Ungeortet",
   "filterNoRatingLabel": "Nicht bewertet",
   "filterNoTagLabel": "Unmarkiert",
+  "filterNoTitleLabel": "Unbenannt",
   "filterOnThisDayLabel": "Am heutigen Tag",
   "filterRecentlyAddedLabel": "Kürzlich hinzugefügt",
   "filterRatingRejectedLabel": "Verworfen",
@@ -152,9 +157,9 @@
   "displayRefreshRatePreferHighest": "Höchste Rate",
   "displayRefreshRatePreferLowest": "Niedrigste Rate",
 
-  "slideshowVideoPlaybackSkip": "Überspringen",
-  "slideshowVideoPlaybackMuted": "Stumm abspielen",
-  "slideshowVideoPlaybackWithSound": "Mit Ton abspielen",
+  "videoPlaybackSkip": "Überspringen",
+  "videoPlaybackMuted": "Stumm abspielen",
+  "videoPlaybackWithSound": "Mit Ton abspielen",
 
   "themeBrightnessLight": "Hell",
   "themeBrightnessDark": "Dunkel",
@@ -164,10 +169,14 @@
   "viewerTransitionParallax": "Parallaxe",
   "viewerTransitionFade": "Ausblenden",
   "viewerTransitionZoomIn": "Heranzoomen",
+  "viewerTransitionNone": "Keine",
 
   "wallpaperTargetHome": "Startbildschirm",
   "wallpaperTargetLock": "Sperrbildschirm",
   "wallpaperTargetHomeLock": "Start- und Sperrbildschirm",
+
+  "widgetOpenPageHome": "Startseite öffnen",
+  "widgetOpenPageViewer": "Viewer öffnen",
 
   "albumTierNew": "Neu",
   "albumTierPinned": "Angeheftet",
@@ -284,7 +293,9 @@
   "viewDialogSortSectionTitle": "Sortieren",
   "viewDialogGroupSectionTitle": "Gruppe",
   "viewDialogLayoutSectionTitle": "Layout",
+  "viewDialogReverseSortOrder": "Umgekehrte Sortierung",
 
+  "tileLayoutMosaic": "Mosaik",
   "tileLayoutGrid": "Kacheln",
   "tileLayoutList": "Liste",
 
@@ -387,9 +398,21 @@
   "sortByAlbumFileName": "Nach Album & Dateiname",
   "sortByRating": "Nach Bewertung",
 
+  "sortOrderNewestFirst": "Neueste zuerst",
+  "sortOrderOldestFirst": "Älteste zuerst",
+  "sortOrderAtoZ": "A zu Z",
+  "sortOrderZtoA": "Z zu A",
+  "sortOrderHighestFirst": "Höchste zuerst",
+  "sortOrderLowestFirst": "Niedrigste zuerst",
+  "sortOrderLargestFirst": "Größtes zuerst",
+  "sortOrderSmallestFirst": "Kleinste zuerst",
+
   "albumGroupTier": "Nach Ebene",
+  "albumGroupType": "Nach Typ",
   "albumGroupVolume": "Nach Speichervolumen",
   "albumGroupNone": "Nicht gruppieren",
+
+  "albumMimeTypeMixed": "Gemischt",
 
   "albumPickPageTitleCopy": "In Album kopieren",
   "albumPickPageTitleExport": "In Album exportieren",
@@ -424,10 +447,12 @@
   "searchPlacesSectionTitle": "Orte",
   "searchTagsSectionTitle": "Tags",
   "searchRatingSectionTitle": "Bewertungen",
+  "searchMetadataSectionTitle": "Metadaten",
 
   "settingsPageTitle": "Einstellungen",
   "settingsSystemDefault": "System",
   "settingsDefault": "Standard",
+  "settingsDisabled": "Deaktiviert",
 
   "settingsSearchFieldLabel": "Einstellungen durchsuchen",
   "settingsSearchEmpty": "Keine passende Einstellung",
@@ -510,10 +535,9 @@
   "settingsSlideshowRepeat": "Wiederholung",
   "settingsSlideshowShuffle": "Mischen",
   "settingsSlideshowFillScreen": "Bildschirm ausfüllen",
+  "settingsSlideshowAnimatedZoomEffect": "Animierter Zoomeffekt",
   "settingsSlideshowTransitionTile": "Übergang",
-  "settingsSlideshowTransitionDialogTitle": "Übergang",
   "settingsSlideshowIntervalTile": "Intervall",
-  "settingsSlideshowIntervalDialogTitle": "Intervall",
   "settingsSlideshowVideoPlaybackTile": "Videowiedergabe",
   "settingsSlideshowVideoPlaybackDialogTitle": "Videowiedergabe",
 
@@ -521,7 +545,7 @@
   "settingsVideoSectionTitle": "Video",
   "settingsVideoShowVideos": "Videos anzeigen",
   "settingsVideoEnableHardwareAcceleration": "Hardware-Beschleunigung",
-  "settingsVideoEnableAutoPlay": "Automatische Wiedergabe",
+  "settingsVideoAutoPlay": "Automatische Wiedergabe",
   "settingsVideoLoopModeTile": "Schleifen-Modus",
   "settingsVideoLoopModeDialogTitle": "Schleifen-Modus",
 
@@ -543,7 +567,6 @@
   "settingsVideoControlsTile": "Steuerung",
   "settingsVideoControlsPageTitle": "Steuerung",
   "settingsVideoButtonsTile": "Schaltflächen",
-  "settingsVideoButtonsDialogTitle": "Schaltflächen",
   "settingsVideoGestureDoubleTapTogglePlay": "Doppeltippen zum Abspielen/Pausieren",
   "settingsVideoGestureSideDoubleTapSeek": "Doppeltippen auf die Bildschirmränder zum Rückwärts-/Vorwärtsspringen",
 
@@ -576,7 +599,6 @@
   "settingsRemoveAnimationsTile": "Animationen entfernen",
   "settingsRemoveAnimationsDialogTitle": "Animationen entfernen",
   "settingsTimeToTakeActionTile": "Zeit zum Reagieren",
-  "settingsTimeToTakeActionDialogTitle": "Zeit zum Reagieren",
 
   "settingsDisplaySectionTitle": "Anzeige",
   "settingsThemeBrightnessTile": "Thema",
@@ -598,6 +620,7 @@
 
   "settingsWidgetPageTitle": "Bilderrahmen",
   "settingsWidgetShowOutline": "Gliederung",
+  "settingsWidgetOpenPage": "Beim Tippen auf das Widget",
 
   "settingsCollectionTile": "Sammlung",
 
@@ -606,6 +629,7 @@
   "statsTopCountriesSectionTitle": "Top-Länder",
   "statsTopPlacesSectionTitle": "Top-Plätze",
   "statsTopTagsSectionTitle": "Top-Tags",
+  "statsTopAlbumsSectionTitle": "Top-Alben",
 
   "viewerOpenPanoramaButtonLabel": "ÖFFNE PANORAMA",
   "viewerSetWallpaperButtonLabel": "HINTERGRUNDBILD EINSTELLEN",
@@ -649,6 +673,8 @@
   "viewerInfoSearchSuggestionDimensions": "Abmessungen",
   "viewerInfoSearchSuggestionResolution": "Auflösung",
   "viewerInfoSearchSuggestionRights": "Rechte",
+
+  "wallpaperUseScrollEffect": "Scroll-Effekt auf dem Startbildschirm verwenden",
 
   "tagEditorPageTitle": "Tags bearbeiten",
   "tagEditorPageNewTagFieldLabel": "Neuer Tag",

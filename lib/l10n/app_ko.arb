@@ -41,6 +41,8 @@
   "chipActionGoToAlbumPage": "앨범 페이지에서 보기",
   "chipActionGoToCountryPage": "국가 페이지에서 보기",
   "chipActionGoToTagPage": "태그 페이지에서 보기",
+  "chipActionFilterOut": "제외하기",
+  "chipActionFilterIn": "포함시키기",
   "chipActionHide": "숨기기",
   "chipActionPin": "고정",
   "chipActionUnpin": "고정 해제",
@@ -155,9 +157,9 @@
   "displayRefreshRatePreferHighest": "가장 높은 재생률",
   "displayRefreshRatePreferLowest": "가장 낮은 재생률",
 
-  "slideshowVideoPlaybackSkip": "생략",
-  "slideshowVideoPlaybackMuted": "음소거 재생",
-  "slideshowVideoPlaybackWithSound": "일반 재생",
+  "videoPlaybackSkip": "생략",
+  "videoPlaybackMuted": "음소거 재생",
+  "videoPlaybackWithSound": "일반 재생",
 
   "themeBrightnessLight": "라이트",
   "themeBrightnessDark": "다크",
@@ -167,10 +169,14 @@
   "viewerTransitionParallax": "시차",
   "viewerTransitionFade": "페이드",
   "viewerTransitionZoomIn": "확대",
+  "viewerTransitionNone": "없음",
 
   "wallpaperTargetHome": "홈 화면",
   "wallpaperTargetLock": "잠금화면",
   "wallpaperTargetHomeLock": "홈 및 잠금화면",
+
+  "widgetOpenPageHome": "홈 열기",
+  "widgetOpenPageViewer": "뷰어 열기",
 
   "albumTierNew": "신규",
   "albumTierPinned": "고정",
@@ -289,6 +295,7 @@
   "viewDialogLayoutSectionTitle": "배치",
   "viewDialogReverseSortOrder": "순서를 뒤바꾸기",
 
+  "tileLayoutMosaic": "모자이크",
   "tileLayoutGrid": "바둑판",
   "tileLayoutList": "목록",
 
@@ -401,8 +408,11 @@
   "sortOrderSmallestFirst": "작은 파일순",
 
   "albumGroupTier": "단계별로",
+  "albumGroupType": "유형별로",
   "albumGroupVolume": "저장공간별로",
   "albumGroupNone": "묶음 없음",
+
+  "albumMimeTypeMixed": "혼합",
 
   "albumPickPageTitleCopy": "앨범으로 복사",
   "albumPickPageTitleExport": "앨범으로 내보내기",
@@ -440,8 +450,9 @@
   "searchMetadataSectionTitle": "메타데이터",
 
   "settingsPageTitle": "설정",
-  "settingsSystemDefault": "시스템",
+  "settingsSystemDefault": "시스템 기본값",
   "settingsDefault": "기본",
+  "settingsDisabled": "사용 안함",
 
   "settingsSearchFieldLabel": "설정 검색",
   "settingsSearchEmpty": "결과가 없습니다",
@@ -524,10 +535,9 @@
   "settingsSlideshowRepeat": "반복",
   "settingsSlideshowShuffle": "순서섞기",
   "settingsSlideshowFillScreen": "화면 채우기",
+  "settingsSlideshowAnimatedZoomEffect": "애니메이션 확대/축소 효과",
   "settingsSlideshowTransitionTile": "전환 효과",
-  "settingsSlideshowTransitionDialogTitle": "전환 효과",
   "settingsSlideshowIntervalTile": "교체 주기",
-  "settingsSlideshowIntervalDialogTitle": "교체 주기",
   "settingsSlideshowVideoPlaybackTile": "동영상 재생",
   "settingsSlideshowVideoPlaybackDialogTitle": "동영상 재생",
 
@@ -535,7 +545,7 @@
   "settingsVideoSectionTitle": "동영상",
   "settingsVideoShowVideos": "미디어에 동영상 표시",
   "settingsVideoEnableHardwareAcceleration": "하드웨어 가속",
-  "settingsVideoEnableAutoPlay": "자동 재생",
+  "settingsVideoAutoPlay": "자동 재생",
   "settingsVideoLoopModeTile": "반복 모드",
   "settingsVideoLoopModeDialogTitle": "반복 모드",
 
@@ -557,7 +567,6 @@
   "settingsVideoControlsTile": "제어",
   "settingsVideoControlsPageTitle": "제어",
   "settingsVideoButtonsTile": "버튼",
-  "settingsVideoButtonsDialogTitle": "버튼",
   "settingsVideoGestureDoubleTapTogglePlay": "두 번 탭해서 재생이나 일시정지하기",
   "settingsVideoGestureSideDoubleTapSeek": "화면 측면에서 두 번 탭해서 앞뒤로 가기",
 
@@ -590,7 +599,6 @@
   "settingsRemoveAnimationsTile": "애니메이션 삭제",
   "settingsRemoveAnimationsDialogTitle": "애니메이션 삭제",
   "settingsTimeToTakeActionTile": "액션 취하기 전 대기 시간",
-  "settingsTimeToTakeActionDialogTitle": "액션 취하기 전 대기 시간",
 
   "settingsDisplaySectionTitle": "디스플레이",
   "settingsThemeBrightnessTile": "테마",
@@ -612,6 +620,7 @@
 
   "settingsWidgetPageTitle": "사진 액자",
   "settingsWidgetShowOutline": "윤곽",
+  "settingsWidgetOpenPage": "위젯을 탭하면",
 
   "settingsCollectionTile": "미디어",
 
@@ -620,6 +629,7 @@
   "statsTopCountriesSectionTitle": "국가 랭킹",
   "statsTopPlacesSectionTitle": "장소 랭킹",
   "statsTopTagsSectionTitle": "태그 랭킹",
+  "statsTopAlbumsSectionTitle": "앨범 랭킹",
 
   "viewerOpenPanoramaButtonLabel": "파노라마 열기",
   "viewerSetWallpaperButtonLabel": "설정",
@@ -663,6 +673,8 @@
   "viewerInfoSearchSuggestionDimensions": "크기",
   "viewerInfoSearchSuggestionResolution": "해상도",
   "viewerInfoSearchSuggestionRights": "권리",
+
+  "wallpaperUseScrollEffect": "홈 화면에 스크롤 효과 사용",
 
   "tagEditorPageTitle": "태그 수정",
   "tagEditorPageNewTagFieldLabel": "새 태그",

@@ -15,6 +15,8 @@ extension ExtraViewerTransition on ViewerTransition {
         return context.l10n.viewerTransitionFade;
       case ViewerTransition.zoomIn:
         return context.l10n.viewerTransitionZoomIn;
+      case ViewerTransition.none:
+        return context.l10n.viewerTransitionNone;
     }
   }
 
@@ -28,6 +30,8 @@ extension ExtraViewerTransition on ViewerTransition {
         return PageTransitionEffects.fade(pageController, index, zoomIn: false);
       case ViewerTransition.zoomIn:
         return PageTransitionEffects.fade(pageController, index, zoomIn: true);
+      case ViewerTransition.none:
+        return PageTransitionEffects.none(pageController, index);
     }
   }
 }

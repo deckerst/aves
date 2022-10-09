@@ -32,13 +32,17 @@ class ScreenSaverSettingsPage extends StatelessWidget {
                 onChanged: (v) => settings.screenSaverFillScreen = v,
                 title: context.l10n.settingsSlideshowFillScreen,
               ),
+              SettingsSwitchListTile(
+                selector: (context, s) => s.screenSaverAnimatedZoomEffect,
+                onChanged: (v) => settings.screenSaverAnimatedZoomEffect = v,
+                title: context.l10n.settingsSlideshowAnimatedZoomEffect,
+              ),
               SettingsSelectionListTile<ViewerTransition>(
                 values: ViewerTransition.values,
                 getName: (context, v) => v.getName(context),
                 selector: (context, s) => s.screenSaverTransition,
                 onSelection: (v) => settings.screenSaverTransition = v,
                 tileTitle: l10n.settingsSlideshowTransitionTile,
-                dialogTitle: l10n.settingsSlideshowTransitionDialogTitle,
               ),
               SettingsSelectionListTile<SlideshowInterval>(
                 values: SlideshowInterval.values,
@@ -46,7 +50,6 @@ class ScreenSaverSettingsPage extends StatelessWidget {
                 selector: (context, s) => s.screenSaverInterval,
                 onSelection: (v) => settings.screenSaverInterval = v,
                 tileTitle: l10n.settingsSlideshowIntervalTile,
-                dialogTitle: l10n.settingsSlideshowIntervalDialogTitle,
               ),
               SettingsSelectionListTile<SlideshowVideoPlayback>(
                 values: SlideshowVideoPlayback.values,

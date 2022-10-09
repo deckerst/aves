@@ -15,9 +15,9 @@ class LocationFilter extends CoveredCollectionFilter {
   late final EntryFilter _test;
 
   @override
-  List<Object?> get props => [level, _location, _countryCode];
+  List<Object?> get props => [level, _location, _countryCode, reversed];
 
-  LocationFilter(this.level, String location) {
+  LocationFilter(this.level, String location, {super.reversed = false}) {
     final split = location.split(locationSeparator);
     _location = split.isNotEmpty ? split[0] : location;
     _countryCode = split.length > 1 ? split[1] : null;
@@ -35,6 +35,7 @@ class LocationFilter extends CoveredCollectionFilter {
     return LocationFilter(
       LocationLevel.values.firstWhereOrNull((v) => v.toString() == json['level']) ?? LocationLevel.place,
       json['location'],
+      reversed: json['reversed'] ?? false,
     );
   }
 
@@ -43,6 +44,7 @@ class LocationFilter extends CoveredCollectionFilter {
         'type': type,
         'level': level.toString(),
         'location': _countryCode != null ? countryNameAndCode : _location,
+        'reversed': reversed,
       };
 
   String get countryNameAndCode => '$_location$locationSeparator$_countryCode';
@@ -50,7 +52,10 @@ class LocationFilter extends CoveredCollectionFilter {
   String? get countryCode => _countryCode;
 
   @override
-  EntryFilter get test => _test;
+  EntryFilter get positiveTest => _test;
+
+  @override
+  bool get exclusiveProp => true;
 
   @override
   String get universalLabel => _location;

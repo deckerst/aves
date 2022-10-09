@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
-import 'package:aves/widgets/common/grid/section_layout.dart';
+import 'package:aves/widgets/common/grid/sections/list_layout.dart';
+import 'package:aves/widgets/common/grid/sections/section_layout.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +11,7 @@ import 'package:provider/provider.dart';
 
 // Use a `SliverList` instead of multiple `SliverGrid` because having one `SliverGrid` per section does not scale up.
 // With the multiple `SliverGrid` solution, thumbnails at the beginning of each sections are built even though they are offscreen
-// because of `RenderSliverMultiBoxAdaptor.addInitialChild` called by `RenderSliverGrid.performLayout` (line 547), as of Flutter v1.17.0.
+// because of `RenderSliverMultiBoxAdaptor.addInitialChild` called by `RenderSliverGrid.performLayout` (line 591), as of Flutter v3.3.3.
 // cf https://github.com/flutter/flutter/issues/49027
 // adapted from Flutter `RenderSliverFixedExtentBoxAdaptor` in `/rendering/sliver_fixed_extent_list.dart`
 class SectionedListSliver<T> extends StatelessWidget {
@@ -26,7 +27,7 @@ class SectionedListSliver<T> extends StatelessWidget {
         (context, index) {
           if (index >= childCount) return null;
           final sectionLayout = sectionLayouts.firstWhereOrNull((section) => section.hasChild(index));
-          return sectionLayout?.builder(context, index) ?? const SizedBox.shrink();
+          return sectionLayout?.builder(context, index) ?? const SizedBox();
         },
         childCount: childCount,
         addAutomaticKeepAlives: false,

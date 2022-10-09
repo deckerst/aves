@@ -502,7 +502,7 @@
   "settingsVideoSectionTitle": "Video",
   "settingsVideoShowVideos": "Videoları göster",
   "settingsVideoEnableHardwareAcceleration": "Donanım hızlandırma",
-  "settingsVideoEnableAutoPlay": "Otomatik oynat",
+  "settingsVideoAutoPlay": "Otomatik oynat",
   "settingsVideoLoopModeTile": "Döngü modu",
   "settingsVideoLoopModeDialogTitle": "Döngü Modu",
 
@@ -524,7 +524,6 @@
   "settingsVideoControlsTile": "Kontroller",
   "settingsVideoControlsPageTitle": "Kontroller",
   "settingsVideoButtonsTile": "Düğmeler",
-  "settingsVideoButtonsDialogTitle": "Düğmeler",
   "settingsVideoGestureDoubleTapTogglePlay": "Oynatmak/duraklatmak için çift dokunun",
   "settingsVideoGestureSideDoubleTapSeek": "Geri/ileri aramak için ekran kenarlarına çift dokunun",
 
@@ -557,7 +556,6 @@
   "settingsRemoveAnimationsTile": "Animasyonları kaldır",
   "settingsRemoveAnimationsDialogTitle": "Animasyonları Kaldır",
   "settingsTimeToTakeActionTile": "Harekete geçme zamanı",
-  "settingsTimeToTakeActionDialogTitle": "Harekete Geçme Zamanı",
 
   "settingsDisplaySectionTitle": "Ekran",
   "settingsThemeBrightnessTile": "Tema",

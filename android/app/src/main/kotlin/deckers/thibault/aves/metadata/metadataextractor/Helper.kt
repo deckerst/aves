@@ -67,6 +67,7 @@ object Helper {
 
         val metadata = when (fileType) {
             FileType.Jpeg -> safeReadJpeg(inputStream)
+            FileType.Png -> safeReadPng(inputStream)
             FileType.Tiff,
             FileType.Arw,
             FileType.Cr2,
@@ -93,6 +94,10 @@ object Helper {
         val metadata = com.drew.metadata.Metadata()
         JpegMetadataReader.process(metadata, input, readers)
         return metadata
+    }
+
+    private fun safeReadPng(input: InputStream): com.drew.metadata.Metadata {
+        return SafePngMetadataReader.readMetadata(input)
     }
 
     @Throws(IOException::class, TiffProcessingException::class)

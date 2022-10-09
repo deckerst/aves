@@ -22,6 +22,7 @@ import 'package:aves/widgets/common/expandable_filter_row.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/search/delegate.dart';
+import 'package:aves/widgets/filter_grids/common/action_delegates/chip.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -65,52 +66,60 @@ class CollectionSearchDelegate extends AvesSearchDelegate {
     final upQuery = query.trim().toUpperCase();
     bool containQuery(String s) => s.toUpperCase().contains(upQuery);
     return SafeArea(
-      child: ValueListenableBuilder<String?>(
+      child: NotificationListener<ReverseFilterNotification>(
+        onNotification: (notification) {
+          _select(context, notification.reversedFilter);
+          return true;
+        },
+        child: ValueListenableBuilder<String?>(
           valueListenable: _expandedSectionNotifier,
           builder: (context, expandedSection, child) {
             final queryFilter = _buildQueryFilter(false);
             return Selector<Settings, Set<CollectionFilter>>(
-                selector: (context, s) => s.hiddenFilters,
-                builder: (context, hiddenFilters, child) {
-                  bool notHidden(CollectionFilter filter) => !hiddenFilters.contains(filter);
+              selector: (context, s) => s.hiddenFilters,
+              builder: (context, hiddenFilters, child) {
+                bool notHidden(CollectionFilter filter) => !hiddenFilters.contains(filter);
 
-                  final visibleTypeFilters = typeFilters.where(notHidden).toList();
-                  if (hiddenFilters.contains(MimeFilter.video)) {
-                    [MimeFilter.image, TypeFilter.sphericalVideo].forEach(visibleTypeFilters.remove);
-                  }
+                final visibleTypeFilters = typeFilters.where(notHidden).toList();
+                if (hiddenFilters.contains(MimeFilter.video)) {
+                  [MimeFilter.image, TypeFilter.sphericalVideo].forEach(visibleTypeFilters.remove);
+                }
 
-                  final history = settings.searchHistory.where(notHidden).toList();
+                final history = settings.searchHistory.where(notHidden).toList();
 
-                  return ListView(
-                    padding: const EdgeInsets.only(top: 8),
-                    children: [
+                return ListView(
+                  padding: const EdgeInsets.only(top: 8),
+                  children: [
+                    _buildFilterRow(
+                      context: context,
+                      filters: [
+                        queryFilter,
+                        ...visibleTypeFilters,
+                      ].whereNotNull().where((f) => containQuery(f.getLabel(context))).toList(),
+                      // usually perform hero animation only on tapped chips,
+                      // but we also need to animate the query chip when it is selected by submitting the search query
+                      heroTypeBuilder: (filter) => filter == queryFilter ? HeroType.always : HeroType.onTap,
+                    ),
+                    if (upQuery.isEmpty && history.isNotEmpty)
                       _buildFilterRow(
                         context: context,
-                        filters: [
-                          queryFilter,
-                          ...visibleTypeFilters,
-                        ].whereNotNull().where((f) => containQuery(f.getLabel(context))).toList(),
-                        // usually perform hero animation only on tapped chips,
-                        // but we also need to animate the query chip when it is selected by submitting the search query
-                        heroTypeBuilder: (filter) => filter == queryFilter ? HeroType.always : HeroType.onTap,
+                        title: context.l10n.searchRecentSectionTitle,
+                        filters: history,
                       ),
-                      if (upQuery.isEmpty && history.isNotEmpty)
-                        _buildFilterRow(
-                          context: context,
-                          title: context.l10n.searchRecentSectionTitle,
-                          filters: history,
-                        ),
-                      _buildDateFilters(context, containQuery),
-                      _buildAlbumFilters(containQuery),
-                      _buildCountryFilters(containQuery),
-                      _buildPlaceFilters(containQuery),
-                      _buildTagFilters(containQuery),
-                      _buildRatingFilters(context, containQuery),
-                      _buildMetadataFilters(context, containQuery),
-                    ],
-                  );
-                });
-          }),
+                    _buildDateFilters(context, containQuery),
+                    _buildAlbumFilters(containQuery),
+                    _buildCountryFilters(containQuery),
+                    _buildPlaceFilters(containQuery),
+                    _buildTagFilters(containQuery),
+                    _buildRatingFilters(context, containQuery),
+                    _buildMetadataFilters(context, containQuery),
+                  ],
+                );
+              },
+            );
+          },
+        ),
+      ),
     );
   }
 
@@ -219,7 +228,7 @@ class CollectionSearchDelegate extends AvesSearchDelegate {
         MissingFilter.date,
         LocationFilter(LocationLevel.place, ''),
         TagFilter(''),
-        const RatingFilter(0),
+        RatingFilter(0),
         MissingFilter.title,
       ].where((f) => containQuery(f.getLabel(context))).toList(),
     );

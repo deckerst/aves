@@ -5,6 +5,8 @@ import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
+import android.content.res.Resources
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
@@ -62,6 +64,18 @@ class HomeWidgetProvider : AppWidgetProvider() {
         }
     }
 
+    private fun getDevicePixelRatio(): Float = Resources.getSystem().displayMetrics.density
+
+    private fun getWidgetSizePx(context: Context, widgetInfo: Bundle): Pair<Int, Int> {
+        val devicePixelRatio = getDevicePixelRatio()
+        val isPortrait = context.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+        val widthKey = if (isPortrait) AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH else AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH
+        val heightKey = if (isPortrait) AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT else AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT
+        val widthPx = (widgetInfo.getInt(widthKey) * devicePixelRatio).roundToInt()
+        val heightPx = (widgetInfo.getInt(heightKey) * devicePixelRatio).roundToInt()
+        return Pair(widthPx, heightPx)
+    }
+
     private suspend fun getBytes(
         context: Context,
         widgetId: Int,
@@ -69,9 +83,7 @@ class HomeWidgetProvider : AppWidgetProvider() {
         drawEntryImage: Boolean,
         reuseEntry: Boolean = false,
     ): ByteArray? {
-        val devicePixelRatio = context.resources.displayMetrics.density
-        val widthPx = (widgetInfo.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH) * devicePixelRatio).roundToInt()
-        val heightPx = (widgetInfo.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT) * devicePixelRatio).roundToInt()
+        val (widthPx, heightPx) = getWidgetSizePx(context, widgetInfo)
         if (widthPx == 0 || heightPx == 0) return null
 
         initFlutterEngine(context)
@@ -85,7 +97,7 @@ class HomeWidgetProvider : AppWidgetProvider() {
                             "widgetId" to widgetId,
                             "widthPx" to widthPx,
                             "heightPx" to heightPx,
-                            "devicePixelRatio" to devicePixelRatio,
+                            "devicePixelRatio" to getDevicePixelRatio(),
                             "drawEntryImage" to drawEntryImage,
                             "reuseEntry" to reuseEntry,
                         ), object : MethodChannel.Result {
@@ -120,9 +132,8 @@ class HomeWidgetProvider : AppWidgetProvider() {
     ) {
         bytes ?: return
 
-        val devicePixelRatio = context.resources.displayMetrics.density
-        val widthPx = (widgetInfo.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH) * devicePixelRatio).roundToInt()
-        val heightPx = (widgetInfo.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT) * devicePixelRatio).roundToInt()
+        val (widthPx, heightPx) = getWidgetSizePx(context, widgetInfo)
+        if (widthPx == 0 || heightPx == 0) return
 
         try {
             val bitmap = Bitmap.createBitmap(widthPx, heightPx, Bitmap.Config.ARGB_8888)
@@ -198,6 +209,5 @@ class HomeWidgetProvider : AppWidgetProvider() {
             StreamsChannel(messenger, ImageByteStreamHandler.CHANNEL).setStreamHandlerFactory { args -> ImageByteStreamHandler(context, args) }
             StreamsChannel(messenger, MediaStoreStreamHandler.CHANNEL).setStreamHandlerFactory { args -> MediaStoreStreamHandler(context, args) }
         }
-
     }
 }

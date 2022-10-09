@@ -39,12 +39,12 @@ class SettingsCollectionTile extends StatelessWidget {
                     children: [
                       Text(
                         l10n.settingsCollectionTile,
-                        style: textTheme.subtitle1!,
+                        style: textTheme.titleMedium!,
                       ),
                       if (hasSubtitle)
                         Text(
                           l10n.drawerCollectionAll,
-                          style: textTheme.bodyText2!.copyWith(color: textTheme.caption!.color),
+                          style: textTheme.bodyMedium!.copyWith(color: textTheme.bodySmall!.color),
                         ),
                     ],
                   ),

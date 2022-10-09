@@ -8,6 +8,7 @@ import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
+import 'package:aves/widgets/filter_grids/common/action_delegates/chip.dart';
 import 'package:aves/widgets/viewer/action/entry_info_action_delegate.dart';
 import 'package:aves/widgets/viewer/embedded/embedded_data_opener.dart';
 import 'package:aves/widgets/viewer/info/basic_section.dart';
@@ -230,25 +231,31 @@ class _InfoPageContentState extends State<_InfoPageContent> {
       metadataNotifier: _metadataNotifier,
     );
 
-    return CustomScrollView(
-      controller: widget.scrollController,
-      slivers: [
-        InfoAppBar(
-          entry: entry,
-          actionDelegate: _actionDelegate,
-          metadataNotifier: _metadataNotifier,
-          onBackPressed: widget.goToViewer,
-        ),
-        SliverPadding(
-          padding: horizontalPadding + const EdgeInsets.only(top: 8),
-          sliver: basicAndLocationSliver,
-        ),
-        SliverPadding(
-          padding: horizontalPadding + const EdgeInsets.only(bottom: 8),
-          sliver: metadataSliver,
-        ),
-        const BottomPaddingSliver(),
-      ],
+    return NotificationListener<ReverseFilterNotification>(
+      onNotification: (notification) {
+        _onFilter(notification.reversedFilter);
+        return true;
+      },
+      child: CustomScrollView(
+        controller: widget.scrollController,
+        slivers: [
+          InfoAppBar(
+            entry: entry,
+            actionDelegate: _actionDelegate,
+            metadataNotifier: _metadataNotifier,
+            onBackPressed: widget.goToViewer,
+          ),
+          SliverPadding(
+            padding: horizontalPadding + const EdgeInsets.only(top: 8),
+            sliver: basicAndLocationSliver,
+          ),
+          SliverPadding(
+            padding: horizontalPadding + const EdgeInsets.only(bottom: 8),
+            sliver: metadataSliver,
+          ),
+          const BottomPaddingSliver(),
+        ],
+      ),
     );
   }
 

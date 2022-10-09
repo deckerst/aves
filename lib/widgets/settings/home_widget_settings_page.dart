@@ -1,5 +1,6 @@
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/enums/enums.dart';
+import 'package:aves/model/settings/enums/widget_open_action.dart';
 import 'package:aves/model/settings/enums/widget_shape.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/widget_service.dart';
@@ -12,6 +13,7 @@ import 'package:aves/widgets/common/identity/buttons.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/home_widget.dart';
 import 'package:aves/widgets/settings/common/collection_tile.dart';
+import 'package:aves/widgets/settings/common/tiles.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -31,8 +33,9 @@ class HomeWidgetSettingsPage extends StatefulWidget {
 }
 
 class _HomeWidgetSettingsPageState extends State<HomeWidgetSettingsPage> {
-  late Color? _outline;
   late WidgetShape _shape;
+  late Color? _outline;
+  late WidgetOpenPage _openPage;
   late Set<CollectionFilter> _collectionFilters;
 
   int get widgetId => widget.widgetId;
@@ -53,8 +56,9 @@ class _HomeWidgetSettingsPageState extends State<HomeWidgetSettingsPage> {
   @override
   void initState() {
     super.initState();
-    _outline = settings.getWidgetOutline(widgetId);
     _shape = settings.getWidgetShape(widgetId);
+    _outline = settings.getWidgetOutline(widgetId);
+    _openPage = settings.getWidgetOpenPage(widgetId);
     _collectionFilters = settings.getWidgetCollectionFilters(widgetId);
   }
 
@@ -79,6 +83,13 @@ class _HomeWidgetSettingsPageState extends State<HomeWidgetSettingsPage> {
                         getter: () => _outline,
                         setter: (v) => setState(() => _outline = v),
                       ),
+                    ),
+                    SettingsSelectionListTile<WidgetOpenPage>(
+                      values: WidgetOpenPage.values,
+                      getName: (context, v) => v.getName(context),
+                      selector: (context, s) => _openPage,
+                      onSelection: (v) => setState(() => _openPage = v),
+                      tileTitle: l10n.settingsWidgetOpenPage,
                     ),
                     SettingsCollectionTile(
                       filters: _collectionFilters,
@@ -137,8 +148,9 @@ class _HomeWidgetSettingsPageState extends State<HomeWidgetSettingsPage> {
   }
 
   void _saveSettings() {
-    settings.setWidgetOutline(widgetId, _outline);
     settings.setWidgetShape(widgetId, _shape);
+    settings.setWidgetOutline(widgetId, _outline);
+    settings.setWidgetOpenPage(widgetId, _openPage);
     if (!const SetEquality().equals(_collectionFilters, settings.getWidgetCollectionFilters(widgetId))) {
       settings.setWidgetCollectionFilters(widgetId, _collectionFilters);
       settings.setWidgetUri(widgetId, null);

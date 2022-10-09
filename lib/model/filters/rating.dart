@@ -7,15 +7,19 @@ class RatingFilter extends CollectionFilter {
   static const type = 'rating';
 
   final int rating;
+  late final EntryFilter _test;
 
   @override
-  List<Object?> get props => [rating];
+  List<Object?> get props => [rating, reversed];
 
-  const RatingFilter(this.rating);
+  RatingFilter(this.rating, {super.reversed = false}) {
+    _test = (entry) => entry.rating == rating;
+  }
 
   factory RatingFilter.fromMap(Map<String, dynamic> json) {
     return RatingFilter(
       json['rating'] ?? 0,
+      reversed: json['reversed'] ?? false,
     );
   }
 
@@ -23,10 +27,14 @@ class RatingFilter extends CollectionFilter {
   Map<String, dynamic> toMap() => {
         'type': type,
         'rating': rating,
+        'reversed': reversed,
       };
 
   @override
-  EntryFilter get test => (entry) => entry.rating == rating;
+  EntryFilter get positiveTest => _test;
+
+  @override
+  bool get exclusiveProp => true;
 
   @override
   String get universalLabel => '$rating';

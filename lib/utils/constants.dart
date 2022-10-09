@@ -5,6 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 
 class Constants {
+  // `Color(0x00FFFFFF)` is different from `Color(0x00000000)` (or `Colors.transparent`)
+  // when used in gradients or lerping to it
+  static const transparentWhite = Color(0x00FFFFFF);
+  static const transparentBlack = Colors.transparent;
+
   // as of Flutter v2.8.0, overflowing `Text` miscalculates height and some text (e.g. 'Å') is clipped
   // so we give it a `strutStyle` with a slightly larger height
   static const overflowStrutStyle = StrutStyle(height: 1.3);
@@ -306,6 +311,11 @@ class Constants {
       name: 'Provider',
       license: 'MIT',
       sourceUrl: 'https://github.com/rrousselGit/provider',
+    ),
+    Dependency(
+      name: 'Smooth Page Indicator',
+      license: 'MIT',
+      sourceUrl: 'https://github.com/Milad-Akarie/smooth_page_indicator',
     ),
   ];
 
