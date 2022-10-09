@@ -41,6 +41,8 @@
   "chipActionGoToAlbumPage": "Mostrar nos Álbuns",
   "chipActionGoToCountryPage": "Mostrar em Países",
   "chipActionGoToTagPage": "Mostrar em Etiquetas",
+  "chipActionFilterOut": "Filtrar dentro",
+  "chipActionFilterIn": "Filtrar fora",
   "chipActionHide": "Ocultar",
   "chipActionPin": "Fixar no topo",
   "chipActionUnpin": "Desafixar do topo",
@@ -167,10 +169,14 @@
   "viewerTransitionParallax": "Parallax",
   "viewerTransitionFade": "Desvaneça",
   "viewerTransitionZoomIn": "Mais zoom",
+  "viewerTransitionNone": "Nenhum",
 
   "wallpaperTargetHome": "Tela inicial",
   "wallpaperTargetLock": "Tela de bloqueio",
   "wallpaperTargetHomeLock": "Telas iniciais e de bloqueio",
+
+  "widgetOpenPageHome": "Abrir inicial",
+  "widgetOpenPageViewer": "Abrir visualizador",
 
   "albumTierNew": "Novo",
   "albumTierPinned": "Fixada",
@@ -289,6 +295,7 @@
   "viewDialogLayoutSectionTitle": "Layout",
   "viewDialogReverseSortOrder": "Ordem de classificação inversa",
 
+  "tileLayoutMosaic": "Mosaico",
   "tileLayoutGrid": "Grid",
   "tileLayoutList": "Lista",
 
@@ -400,9 +407,12 @@
   "sortOrderLargestFirst": "Maior primeiro",
   "sortOrderSmallestFirst": "Menor primeiro",
 
+  "albumGroupType": "Por tipo",
   "albumGroupTier": "Por nível",
   "albumGroupVolume": "Por volume de armazenamento",
   "albumGroupNone": "Não agrupe",
+
+  "albumMimeTypeMixed": "Misturado",
 
   "albumPickPageTitleCopy": "Copiar para o álbum",
   "albumPickPageTitleExport": "Exportar para o álbum",
@@ -442,6 +452,7 @@
   "settingsPageTitle": "Configurações",
   "settingsSystemDefault": "Sistema",
   "settingsDefault": "Padrão",
+  "settingsDisabled": "Desativado",
 
   "settingsSearchFieldLabel": "Pesquisar configuração",
   "settingsSearchEmpty": "Nenhuma configuração correspondente",
@@ -524,6 +535,7 @@
   "settingsSlideshowRepeat": "Repetir",
   "settingsSlideshowShuffle": "Embaralhar",
   "settingsSlideshowFillScreen": "Preencher tela",
+  "settingsSlideshowAnimatedZoomEffect": "Efeito de zoom animado",
   "settingsSlideshowTransitionTile": "Transição",
   "settingsSlideshowIntervalTile": "Intervalo",
   "settingsSlideshowVideoPlaybackTile": "Reprodução de vídeo",
@@ -608,6 +620,7 @@
 
   "settingsWidgetPageTitle": "Porta-retratos",
   "settingsWidgetShowOutline": "Contorno",
+  "settingsWidgetOpenPage": "Ao tocar no widget",
 
   "settingsCollectionTile": "Coleção",
 
@@ -616,6 +629,7 @@
   "statsTopCountriesSectionTitle": "Principais Países",
   "statsTopPlacesSectionTitle": "Principais Lugares",
   "statsTopTagsSectionTitle": "Principais Etiquetas",
+  "statsTopAlbumsSectionTitle": "Principais Álbuns",
 
   "viewerOpenPanoramaButtonLabel": "ABRIR PANORAMA",
   "viewerSetWallpaperButtonLabel": "DEFINIR PAPEL DE PAREDE",
@@ -659,6 +673,8 @@
   "viewerInfoSearchSuggestionDimensions": "Dimensões",
   "viewerInfoSearchSuggestionResolution": "Resolução",
   "viewerInfoSearchSuggestionRights": "Direitos",
+
+  "wallpaperUseScrollEffect": "Use o efeito de rolagem na tela inicial",
 
   "tagEditorPageTitle": "Editar etiquetas",
   "tagEditorPageNewTagFieldLabel": "Nova etiqueta",
