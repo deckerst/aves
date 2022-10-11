@@ -307,7 +307,6 @@
   "appPickDialogNone": "Nenhum",
 
   "aboutPageTitle": "Sobre",
-  "aboutLinkSources": "Fontes",
   "aboutLinkLicense": "Licença",
   "aboutLinkPolicy": "Política de Privacidade",
 
@@ -452,7 +451,7 @@
   "settingsPageTitle": "Configurações",
   "settingsSystemDefault": "Sistema",
   "settingsDefault": "Padrão",
-  "settingsDisabled": "Desativado",
+  "settingsDisabled": "Desativada",
 
   "settingsSearchFieldLabel": "Pesquisar configuração",
   "settingsSearchEmpty": "Nenhuma configuração correspondente",
