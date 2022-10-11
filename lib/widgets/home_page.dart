@@ -106,6 +106,7 @@ class _HomePageState extends State<HomePage> {
     var appMode = AppMode.main;
     final intentData = widget.intentData ?? await IntentService.getIntentData();
     final intentAction = intentData[intentDataKeyAction];
+    _initialFilters = null;
 
     await androidFileUtils.init();
     if (!{actionScreenSaver, actionSetWallpaper}.contains(intentAction) && settings.isInstalledAppAccessAllowed) {
@@ -123,8 +124,15 @@ class _HomePageState extends State<HomePage> {
             // widget settings may be modified in a different process after channel setup
             await settings.reload();
             final page = settings.getWidgetOpenPage(widgetId);
-            if (page == WidgetOpenPage.viewer) {
-              uri = settings.getWidgetUri(widgetId);
+            switch (page) {
+              case WidgetOpenPage.home:
+                break;
+              case WidgetOpenPage.collection:
+                _initialFilters = settings.getWidgetCollectionFilters(widgetId);
+                break;
+              case WidgetOpenPage.viewer:
+                uri = settings.getWidgetUri(widgetId);
+                break;
             }
             unawaited(WidgetService.update(widgetId));
           } else {
@@ -181,8 +189,10 @@ class _HomePageState extends State<HomePage> {
             _initialRouteName = extraRoute;
           }
       }
-      final extraFilters = intentData[intentDataKeyFilters];
-      _initialFilters = extraFilters != null ? (extraFilters as List).cast<String>().map(CollectionFilter.fromJson).whereNotNull().toSet() : null;
+      if (_initialFilters == null) {
+        final extraFilters = intentData[intentDataKeyFilters];
+        _initialFilters = extraFilters != null ? (extraFilters as List).cast<String>().map(CollectionFilter.fromJson).whereNotNull().toSet() : null;
+      }
     }
     context.read<ValueNotifier<AppMode>>().value = appMode;
     unawaited(reportService.setCustomKey('app_mode', appMode.toString()));

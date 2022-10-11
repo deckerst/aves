@@ -32,6 +32,6 @@ enum VideoAutoPlayMode { disabled, playMuted, playWithSound }
 
 enum ViewerTransition { slide, parallax, fade, zoomIn, none }
 
-enum WidgetOpenPage { home, viewer }
+enum WidgetOpenPage { home, collection, viewer }
 
 enum WidgetShape { rrect, circle, heart }

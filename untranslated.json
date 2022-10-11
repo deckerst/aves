@@ -1,4 +1,12 @@
 {
+  "de": [
+    "widgetOpenPageCollection"
+  ],
+
+  "el": [
+    "widgetOpenPageCollection"
+  ],
+
   "es": [
     "chipActionFilterOut",
     "chipActionFilterIn",
@@ -8,6 +16,7 @@
     "filterRecentlyAddedLabel",
     "viewerTransitionNone",
     "widgetOpenPageHome",
+    "widgetOpenPageCollection",
     "widgetOpenPageViewer",
     "viewDialogReverseSortOrder",
     "tileLayoutMosaic",
@@ -36,6 +45,7 @@
     "chipActionFilterIn",
     "viewerTransitionNone",
     "widgetOpenPageHome",
+    "widgetOpenPageCollection",
     "widgetOpenPageViewer",
     "tileLayoutMosaic",
     "albumGroupType",
@@ -47,6 +57,10 @@
     "wallpaperUseScrollEffect"
   ],
 
+  "it": [
+    "widgetOpenPageCollection"
+  ],
+
   "ja": [
     "chipActionFilterOut",
     "chipActionFilterIn",
@@ -56,6 +70,7 @@
     "filterRecentlyAddedLabel",
     "viewerTransitionNone",
     "widgetOpenPageHome",
+    "widgetOpenPageCollection",
     "widgetOpenPageViewer",
     "viewDialogReverseSortOrder",
     "tileLayoutMosaic",
@@ -80,6 +95,18 @@
     "wallpaperUseScrollEffect"
   ],
 
+  "nl": [
+    "widgetOpenPageCollection"
+  ],
+
+  "pt": [
+    "widgetOpenPageCollection"
+  ],
+
+  "ru": [
+    "widgetOpenPageCollection"
+  ],
+
   "tr": [
     "chipActionFilterOut",
     "chipActionFilterIn",
@@ -102,6 +129,7 @@
     "wallpaperTargetLock",
     "wallpaperTargetHomeLock",
     "widgetOpenPageHome",
+    "widgetOpenPageCollection",
     "widgetOpenPageViewer",
     "menuActionSlideshow",
     "viewDialogReverseSortOrder",
@@ -137,5 +165,9 @@
     "viewerSetWallpaperButtonLabel",
     "viewerInfoLabelDescription",
     "wallpaperUseScrollEffect"
+  ],
+
+  "zh": [
+    "widgetOpenPageCollection"
   ]
 }
