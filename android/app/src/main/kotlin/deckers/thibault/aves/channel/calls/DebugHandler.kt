@@ -18,10 +18,12 @@ import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.metadata.ExifInterfaceHelper
 import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper
 import deckers.thibault.aves.metadata.Metadata
+import deckers.thibault.aves.metadata.Mp4ParserHelper.dumpBoxes
 import deckers.thibault.aves.metadata.PixyMetaHelper
 import deckers.thibault.aves.metadata.metadataextractor.Helper
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.utils.LogUtils
+import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.MimeTypes.canReadWithExifInterface
 import deckers.thibault.aves.utils.MimeTypes.canReadWithMetadataExtractor
 import deckers.thibault.aves.utils.MimeTypes.canReadWithPixyMeta
@@ -38,7 +40,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import org.beyka.tiffbitmapfactory.TiffBitmapFactory
+import org.mp4parser.IsoFile
 import java.io.IOException
+import java.nio.channels.Channels
 
 class DebugHandler(private val context: Context) : MethodCallHandler {
     private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
@@ -60,6 +64,7 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
             "getExifInterfaceMetadata" -> ioScope.launch { safe(call, result, ::getExifInterfaceMetadata) }
             "getMediaMetadataRetrieverMetadata" -> ioScope.launch { safe(call, result, ::getMediaMetadataRetrieverMetadata) }
             "getMetadataExtractorSummary" -> ioScope.launch { safe(call, result, ::getMetadataExtractorSummary) }
+            "getMp4ParserDump" -> ioScope.launch { safe(call, result, ::getMp4ParserDump) }
             "getPixyMetadata" -> ioScope.launch { safe(call, result, ::getPixyMetadata) }
             "getTiffStructure" -> ioScope.launch { safe(call, result, ::getTiffStructure) }
             else -> result.notImplemented()
@@ -317,6 +322,32 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
             }
         }
         result.success(metadataMap)
+    }
+
+    private fun getMp4ParserDump(call: MethodCall, result: MethodChannel.Result) {
+        val mimeType = call.argument<String>("mimeType")
+        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        if (mimeType == null || uri == null) {
+            result.error("getMp4ParserDump-args", "missing arguments", null)
+            return
+        }
+
+        val sb = StringBuilder()
+        if (mimeType == MimeTypes.MP4) {
+            try {
+                StorageUtils.openInputStream(context, uri)?.use { input ->
+                    Channels.newChannel(input).use { channel ->
+                        IsoFile(channel).use { isoFile ->
+                            isoFile.dumpBoxes(sb)
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                result.error("getMp4ParserDump-exception", e.message, e.stackTraceToString())
+                return
+            }
+        }
+        result.success(sb.toString())
     }
 
     private fun getPixyMetadata(call: MethodCall, result: MethodChannel.Result) {

@@ -259,7 +259,7 @@ class PlatformMetadataFetchService implements MetadataFetchService {
         'mimeType': entry.mimeType,
         'uri': entry.uri,
         'sizeBytes': entry.sizeBytes,
-        'field': field.exifInterfaceTag,
+        'field': field.toPlatform,
       });
       if (result is int) {
         return dateTimeFromMillis(result, isUtc: false);

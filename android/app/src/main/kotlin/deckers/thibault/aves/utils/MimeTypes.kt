@@ -104,28 +104,28 @@ object MimeTypes {
         else -> false
     }
 
-    // as of androidx.exifinterface:exifinterface:1.3.4
     fun canEditExif(mimeType: String) = when (mimeType) {
-        JPEG,
-        PNG,
-        WEBP -> true
+        // as of androidx.exifinterface:exifinterface:1.3.4
+        JPEG, PNG, WEBP -> true
         else -> false
     }
 
-    // as of latest PixyMeta
     fun canEditIptc(mimeType: String) = when (mimeType) {
+        // as of latest PixyMeta
         JPEG, TIFF -> true
         else -> false
     }
 
-    // as of latest PixyMeta
     fun canEditXmp(mimeType: String) = when (mimeType) {
+        // as of latest PixyMeta
         JPEG, TIFF, PNG, GIF -> true
+        // using `mp4parser`
+        MP4 -> true
         else -> false
     }
 
-    // as of latest PixyMeta
     fun canRemoveMetadata(mimeType: String) = when (mimeType) {
+        // as of latest PixyMeta
         JPEG, TIFF -> true
         else -> false
     }

@@ -32,6 +32,8 @@ enum MetadataType {
   jpegAdobe,
   // JPEG APP12 / Ducky: https://www.exiftool.org/TagNames/APP12.html#Ducky
   jpegDucky,
+  // ISO User Data box content, etc.
+  mp4,
   // Photoshop IRB: https://www.adobe.com/devnet-apps/photoshop/fileformatashtml/
   photoshopIrb,
   // XMP: https://en.wikipedia.org/wiki/Extensible_Metadata_Platform
@@ -78,10 +80,37 @@ extension ExtraMetadataType on MetadataType {
         return 'Adobe JPEG';
       case MetadataType.jpegDucky:
         return 'Ducky';
+      case MetadataType.mp4:
+        return 'MP4';
       case MetadataType.photoshopIrb:
         return 'Photoshop';
       case MetadataType.xmp:
         return 'XMP';
+    }
+  }
+
+  String get toPlatform {
+    switch (this) {
+      case MetadataType.comment:
+        return 'comment';
+      case MetadataType.exif:
+        return 'exif';
+      case MetadataType.iccProfile:
+        return 'icc_profile';
+      case MetadataType.iptc:
+        return 'iptc';
+      case MetadataType.jfif:
+        return 'jfif';
+      case MetadataType.jpegAdobe:
+        return 'jpeg_adobe';
+      case MetadataType.jpegDucky:
+        return 'jpeg_ducky';
+      case MetadataType.mp4:
+        return 'mp4';
+      case MetadataType.photoshopIrb:
+        return 'photoshop_irb';
+      case MetadataType.xmp:
+        return 'xmp';
     }
   }
 }

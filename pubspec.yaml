@@ -85,14 +85,6 @@ dependencies:
   url_launcher:
   xml:
 
-dependency_overrides:
-  # TODO TLAD as of 2022/10/09, latest version (v10.1.0) does not support Android 13 storage permissions
-  # `permission_handler_platform_interface` v3.9.0 added support for them but it is not effective
-  permission_handler_android:
-    git:
-      url: https://github.com/deckerst/flutter-permission-handler
-      path: permission_handler_android
-
 dev_dependencies:
   flutter_test:
     sdk: flutter

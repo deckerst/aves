@@ -10,6 +10,7 @@ import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
+import android.os.ParcelFileDescriptor
 import android.os.storage.StorageManager
 import android.provider.DocumentsContract
 import android.provider.MediaStore
@@ -17,6 +18,7 @@ import android.text.TextUtils
 import android.util.Log
 import androidx.annotation.RequiresApi
 import com.commonsware.cwac.document.DocumentFileCompat
+import deckers.thibault.aves.model.provider.ImageProvider
 import deckers.thibault.aves.utils.FileUtils.transferFrom
 import deckers.thibault.aves.utils.MimeTypes.isImage
 import deckers.thibault.aves.utils.MimeTypes.isVideo
@@ -580,19 +582,47 @@ object StorageUtils {
         } catch (e: Exception) {
             // among various other exceptions,
             // opening a file marked pending and owned by another package throws an `IllegalStateException`
-            Log.w(LOG_TAG, "failed to open input stream for uri=$uri effectiveUri=$effectiveUri", e)
+            Log.w(LOG_TAG, "failed to open input stream from effectiveUri=$effectiveUri for uri=$uri", e)
             null
         }
     }
 
-    fun openOutputStream(context: Context, uri: Uri, mimeType: String, mode: String): OutputStream? {
+    fun openOutputStream(context: Context, mimeType: String, uri: Uri, mode: String): OutputStream? {
         val effectiveUri = getMediaStoreScopedStorageSafeUri(uri, mimeType)
         return try {
             context.contentResolver.openOutputStream(effectiveUri, mode)
         } catch (e: Exception) {
             // among various other exceptions,
             // opening a file marked pending and owned by another package throws an `IllegalStateException`
-            Log.w(LOG_TAG, "failed to open output stream for uri=$uri effectiveUri=$effectiveUri mode=$mode", e)
+            Log.w(LOG_TAG, "failed to open output stream from effectiveUri=$effectiveUri for uri=$uri mode=$mode", e)
+            null
+        }
+    }
+
+    fun openInputFileDescriptor(context: Context, uri: Uri): ParcelFileDescriptor? {
+        val effectiveUri = getOriginalUri(context, uri)
+        return try {
+            context.contentResolver.openFileDescriptor(effectiveUri, "r")
+        } catch (e: Exception) {
+            // among various other exceptions,
+            // opening a file marked pending and owned by another package throws an `IllegalStateException`
+            Log.w(LOG_TAG, "failed to open input file descriptor from effectiveUri=$effectiveUri for uri=$uri", e)
+            null
+        }
+    }
+
+    fun openOutputFileDescriptor(context: Context, mimeType: String, uri: Uri, path: String, mode: String): ParcelFileDescriptor? {
+        val effectiveUri = if (ImageProvider.isMediaUriPermissionGranted(context, uri, mimeType)) {
+            getMediaStoreScopedStorageSafeUri(uri, mimeType)
+        } else {
+            getDocumentFile(context, path, uri)?.uri ?: throw Exception("failed to get document file for path=$path, uri=$uri")
+        }
+        return try {
+            context.contentResolver.openFileDescriptor(effectiveUri, mode)
+        } catch (e: Exception) {
+            // among various other exceptions,
+            // opening a file marked pending and owned by another package throws an `IllegalStateException`
+            Log.w(LOG_TAG, "failed to open output file descriptor from effectiveUri=$effectiveUri for uri=$uri path=$path", e)
             null
         }
     }

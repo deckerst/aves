@@ -10,15 +10,27 @@ import com.adobe.internal.xmp.XMPException
 import com.adobe.internal.xmp.XMPMeta
 import com.adobe.internal.xmp.XMPMetaFactory
 import com.adobe.internal.xmp.properties.XMPProperty
+import com.drew.metadata.Directory
+import deckers.thibault.aves.metadata.Mp4ParserHelper.processBoxes
+import deckers.thibault.aves.metadata.Mp4ParserHelper.toBytes
+import deckers.thibault.aves.metadata.metadataextractor.SafeMp4UuidBoxHandler
 import deckers.thibault.aves.metadata.metadataextractor.SafeXmpReader
 import deckers.thibault.aves.utils.ContextUtils.queryContentResolverProp
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.StorageUtils
+import org.mp4parser.IsoFile
+import org.mp4parser.PropertyBoxParserImpl
+import org.mp4parser.boxes.UserBox
+import org.mp4parser.boxes.iso14496.part12.MediaDataBox
+import java.io.FileInputStream
 import java.util.*
 
 object XMP {
     private val LOG_TAG = LogUtils.createTag<XMP>()
+
+    // BE7ACFCB 97A942E8 9C719994 91E3AFAC / BE7ACFCB-97A9-42E8-9C71-999491E3AFAC
+    val mp4Uuid = byteArrayOf(0xbe.toByte(), 0x7a, 0xcf.toByte(), 0xcb.toByte(), 0x97.toByte(), 0xa9.toByte(), 0x42, 0xe8.toByte(), 0x9c.toByte(), 0x71, 0x99.toByte(), 0x94.toByte(), 0x91.toByte(), 0xe3.toByte(), 0xaf.toByte(), 0xac.toByte())
 
     // standard namespaces
     // cf com.adobe.internal.xmp.XMPConst
@@ -94,7 +106,13 @@ object XMP {
 
     // as of `metadata-extractor` v2.18.0, XMP is not discovered in HEIC images,
     // so we fall back to the native content resolver, if possible
-    fun checkHeic(context: Context, uri: Uri, mimeType: String, foundXmp: Boolean, processXmp: (xmpMeta: XMPMeta) -> Unit) {
+    fun checkHeic(
+        context: Context,
+        mimeType: String,
+        uri: Uri,
+        foundXmp: Boolean,
+        processXmp: (xmpMeta: XMPMeta) -> Unit,
+    ) {
         if (MimeTypes.isHeic(mimeType) && !foundXmp && StorageUtils.isMediaStoreContentUri(uri) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             try {
                 val xmpBytes = context.queryContentResolverProp(uri, mimeType, MediaStore.MediaColumns.XMP)
@@ -105,6 +123,43 @@ object XMP {
             } catch (e: Exception) {
                 Log.w(LOG_TAG, "failed to get XMP by content resolver for mimeType=$mimeType uri=$uri", e)
             }
+        }
+    }
+
+    // as of `metadata-extractor` v2.18.0, processing large MP4 files may crash,
+    // so we fall back to parsing with `mp4parser`
+    fun checkMp4(
+        context: Context,
+        mimeType: String,
+        uri: Uri,
+        processDirs: (dirs: List<Directory>) -> Unit,
+    ) {
+        if (mimeType != MimeTypes.MP4) return
+        try {
+            // we can skip uninteresting boxes with a seekable data source
+            val pfd = StorageUtils.openInputFileDescriptor(context, uri) ?: throw Exception("failed to open file descriptor for uri=$uri")
+            pfd.use {
+                FileInputStream(it.fileDescriptor).use { stream ->
+                    stream.channel.use { channel ->
+                        val boxParser = PropertyBoxParserImpl().apply {
+                            skippingBoxes(MediaDataBox.TYPE)
+                        }
+                        // creating `IsoFile` with a `File` or a `File.inputStream()` yields `No such device`
+                        IsoFile(channel, boxParser).use { isoFile ->
+                            isoFile.processBoxes(UserBox::class.java, true) { box, _ ->
+                                val bytes = box.toBytes()
+                                val payload = bytes.copyOfRange(8, bytes.size)
+
+                                val metadata = com.drew.metadata.Metadata()
+                                SafeMp4UuidBoxHandler(metadata).processBox("", payload, -1, null)
+                                processDirs(metadata.directories.filter { dir -> dir.tagCount > 0 }.toList())
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            Log.w(LOG_TAG, "failed to get XMP by MP4 parser for mimeType=$mimeType uri=$uri", e)
         }
     }
 

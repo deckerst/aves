@@ -91,6 +91,12 @@ class XmpMMNamespace extends XmpNamespace {
     XmpCardData(RegExp(nsPrefix + r'DerivedFrom/(.*)')),
     XmpCardData(RegExp(nsPrefix + r'History\[(\d+)\]/(.*)')),
     XmpCardData(RegExp(nsPrefix + r'Ingredients\[(\d+)\]/(.*)')),
-    XmpCardData(RegExp(nsPrefix + r'Pantry\[(\d+)\]/(.*)')),
+    XmpCardData(
+      RegExp(nsPrefix + r'Pantry\[(\d+)\]/(.*)'),
+      cards: [
+        XmpCardData(RegExp(nsPrefix + r'DerivedFrom/(.*)')),
+        XmpCardData(RegExp(nsPrefix + r'History\[(\d+)\]/(.*)')),
+      ],
+    ),
   ];
 }

@@ -50,7 +50,6 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
         when (call.method) {
             "getPackages" -> ioScope.launch { safe(call, result, ::getPackages) }
             "getAppIcon" -> ioScope.launch { safeSuspend(call, result, ::getAppIcon) }
-            "getAppInstaller" -> ioScope.launch { safe(call, result, ::getAppInstaller) }
             "copyToClipboard" -> ioScope.launch { safe(call, result, ::copyToClipboard) }
             "edit" -> safe(call, result, ::edit)
             "open" -> safe(call, result, ::open)
@@ -184,23 +183,6 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
             result.success(data)
         } else {
             result.error("getAppIcon-null", "failed to get icon for packageName=$packageName", null)
-        }
-    }
-
-    private fun getAppInstaller(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
-        val packageName = context.packageName
-        val pm = context.packageManager
-        try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                val info = pm.getInstallSourceInfo(packageName)
-                result.success(info.initiatingPackageName ?: info.installingPackageName)
-            } else {
-                @Suppress("deprecation")
-                result.success(pm.getInstallerPackageName(packageName))
-            }
-        } catch (e: Exception) {
-            result.error("getAppInstaller-exception", "failed to get installer for packageName=$packageName", e.message)
-            return
         }
     }
 
