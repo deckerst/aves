@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
+- Collection / Info: edit MP4 metadata (date / location / title / description / rating / tags)
 - Widget: option to open collection on tap
 
 ## <a id="v1.7.1"></a>[v1.7.1] - 2022-10-09

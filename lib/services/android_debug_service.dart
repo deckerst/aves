@@ -146,6 +146,18 @@ class AndroidDebugService {
     return {};
   }
 
+  static Future<String?> getMp4ParserDump(AvesEntry entry) async {
+    try {
+      return await _platform.invokeMethod('getMp4ParserDump', <String, dynamic>{
+        'mimeType': entry.mimeType,
+        'uri': entry.uri,
+      });
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
+    return null;
+  }
+
   static Future<Map> getPixyMetadata(AvesEntry entry) async {
     try {
       // returns map with all data available from the `PixyMeta` library

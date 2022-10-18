@@ -284,7 +284,7 @@ class AvesEntry {
 
   bool get canEditDate => canEdit && (canEditExif || canEditXmp);
 
-  bool get canEditLocation => canEdit && canEditExif;
+  bool get canEditLocation => canEdit && (canEditExif || mimeType == MimeTypes.mp4);
 
   bool get canEditTitleDescription => canEdit && canEditXmp;
 
@@ -294,54 +294,13 @@ class AvesEntry {
 
   bool get canRotateAndFlip => canEdit && canEditExif;
 
-  // `exifinterface` v1.3.3 declared support for DNG, but it strips non-standard Exif tags when saving attributes,
-  // and DNG requires DNG-specific tags saved along standard Exif. So it was actually breaking DNG files.
-  // as of androidx.exifinterface:exifinterface:1.3.4
-  bool get canEditExif {
-    switch (mimeType.toLowerCase()) {
-      case MimeTypes.jpeg:
-      case MimeTypes.png:
-      case MimeTypes.webp:
-        return true;
-      default:
-        return false;
-    }
-  }
+  bool get canEditExif => MimeTypes.canEditExif(mimeType);
 
-  // as of latest PixyMeta
-  bool get canEditIptc {
-    switch (mimeType.toLowerCase()) {
-      case MimeTypes.jpeg:
-      case MimeTypes.tiff:
-        return true;
-      default:
-        return false;
-    }
-  }
+  bool get canEditIptc => MimeTypes.canEditIptc(mimeType);
 
-  // as of latest PixyMeta
-  bool get canEditXmp {
-    switch (mimeType.toLowerCase()) {
-      case MimeTypes.gif:
-      case MimeTypes.jpeg:
-      case MimeTypes.png:
-      case MimeTypes.tiff:
-        return true;
-      default:
-        return false;
-    }
-  }
+  bool get canEditXmp => MimeTypes.canEditXmp(mimeType);
 
-  // as of latest PixyMeta
-  bool get canRemoveMetadata {
-    switch (mimeType.toLowerCase()) {
-      case MimeTypes.jpeg:
-      case MimeTypes.tiff:
-        return true;
-      default:
-        return false;
-    }
-  }
+  bool get canRemoveMetadata => MimeTypes.canRemoveMetadata(mimeType);
 
   // Media Store size/rotation is inaccurate, e.g. a portrait FHD video is rotated according to its metadata,
   // so it should be registered as width=1920, height=1080, orientation=90,

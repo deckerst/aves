@@ -136,4 +136,56 @@ class MimeTypes {
     }
     return null;
   }
+
+  // `exifinterface` v1.3.3 declared support for DNG, but it strips non-standard Exif tags when saving attributes,
+  // and DNG requires DNG-specific tags saved along standard Exif. So it was actually breaking DNG files.
+  static bool canEditExif(String mimeType) {
+    switch (mimeType.toLowerCase()) {
+      // as of androidx.exifinterface:exifinterface:1.3.4
+      case jpeg:
+      case png:
+      case webp:
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  static bool canEditIptc(String mimeType) {
+    switch (mimeType.toLowerCase()) {
+      // as of latest PixyMeta
+      case jpeg:
+      case tiff:
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  static bool canEditXmp(String mimeType) {
+    switch (mimeType.toLowerCase()) {
+      // as of latest PixyMeta
+      case gif:
+      case jpeg:
+      case png:
+      case tiff:
+        return true;
+      // using `mp4parser`
+      case mp4:
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  static bool canRemoveMetadata(String mimeType) {
+    switch (mimeType.toLowerCase()) {
+      // as of latest PixyMeta
+      case jpeg:
+      case tiff:
+        return true;
+      default:
+        return false;
+    }
+  }
 }

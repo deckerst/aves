@@ -148,23 +148,43 @@ flutter {
 }
 
 repositories {
-    maven { url 'https://jitpack.io' }
-    maven { url 'https://s3.amazonaws.com/repo.commonsware.com' }
+    maven {
+        url 'https://jitpack.io'
+        content {
+            includeGroup "com.github.deckerst"
+            includeGroup "com.github.deckerst.mp4parser"
+        }
+    }
+    maven {
+        url 'https://s3.amazonaws.com/repo.commonsware.com'
+        content {
+            excludeGroupByRegex "com\\.github\\.deckerst.*"
+        }
+    }
 }
 
 dependencies {
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
+
     implementation 'androidx.core:core-ktx:1.9.0'
     implementation 'androidx.exifinterface:exifinterface:1.3.4'
     implementation 'androidx.multidex:multidex:2.0.1'
+
     implementation 'com.caverock:androidsvg-aar:1.4'
     implementation 'com.commonsware.cwac:document:0.5.0'
     implementation 'com.drewnoakes:metadata-extractor:2.18.0'
-    // forked, built by JitPack, cf https://jitpack.io/p/deckerst/Android-TiffBitmapFactory
-    implementation 'com.github.deckerst:Android-TiffBitmapFactory:876e53870a'
-    // forked, built by JitPack, cf https://jitpack.io/p/deckerst/pixymeta-android
-    implementation 'com.github.deckerst:pixymeta-android:706bd73d6e'
     implementation 'com.github.bumptech.glide:glide:4.14.2'
+    // SLF4J implementation for `mp4parser`
+    implementation 'org.slf4j:slf4j-simple:2.0.3'
+
+    // forked, built by JitPack:
+    // - https://jitpack.io/p/deckerst/Android-TiffBitmapFactory
+    // - https://jitpack.io/p/deckerst/mp4parser
+    // - https://jitpack.io/p/deckerst/pixymeta-android
+    implementation 'com.github.deckerst:Android-TiffBitmapFactory:876e53870a'
+    implementation 'com.github.deckerst.mp4parser:isoparser:64b571fdfb'
+    implementation 'com.github.deckerst.mp4parser:muxer:64b571fdfb'
+    implementation 'com.github.deckerst:pixymeta-android:706bd73d6e'
 
     // huawei flavor only
     huaweiImplementation 'com.huawei.agconnect:agconnect-core:1.7.2.300'
