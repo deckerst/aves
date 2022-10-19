@@ -15,8 +15,8 @@ class PanoramaInfo {
   factory PanoramaInfo.fromMap(Map map) {
     var cLeft = map['croppedAreaLeft'] as int?;
     var cTop = map['croppedAreaTop'] as int?;
-    final cWidth = map['croppedAreaWidth'] as int?;
-    final cHeight = map['croppedAreaHeight'] as int?;
+    var cWidth = map['croppedAreaWidth'] as int?;
+    var cHeight = map['croppedAreaHeight'] as int?;
     var fWidth = map['fullPanoWidth'] as int?;
     var fHeight = map['fullPanoHeight'] as int?;
     final projectionType = map['projectionType'] as String?;
@@ -25,6 +25,41 @@ class PanoramaInfo {
     if (fHeight == null && fWidth != null && cHeight != null) {
       fHeight = (fWidth / 2).round();
       cTop = ((fHeight - cHeight) / 2).round();
+    }
+
+    // handle inconsistent sizing (e.g. rotated image taken with OnePlus EB2103)
+    if (cWidth != null && cHeight != null && fWidth != null && fHeight != null) {
+      final croppedOrientation = cWidth > cHeight ? Orientation.landscape : Orientation.portrait;
+      final fullOrientation = fWidth > fHeight ? Orientation.landscape : Orientation.portrait;
+      var inconsistent = false;
+      if (croppedOrientation != fullOrientation) {
+        // inconsistent orientation
+        inconsistent = true;
+        final tmp = cHeight;
+        cHeight = cWidth;
+        cWidth = tmp;
+      }
+
+      if (cWidth > fWidth) {
+        // inconsistent full/cropped width
+        inconsistent = true;
+        final tmp = fWidth;
+        fWidth = cWidth;
+        cWidth = tmp;
+      }
+
+      if (cHeight > fHeight) {
+        // inconsistent full/cropped height
+        inconsistent = true;
+        final tmp = cHeight;
+        cHeight = fHeight;
+        fHeight = tmp;
+      }
+
+      if (inconsistent) {
+        cLeft = (fWidth - cWidth) ~/ 2;
+        cTop = (fHeight - cHeight) ~/ 2;
+      }
     }
 
     Rect? croppedAreaRect;
