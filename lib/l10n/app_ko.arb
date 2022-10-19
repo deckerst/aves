@@ -253,8 +253,10 @@
   "editEntryDateDialogExtractFromTitle": "제목에서 추출",
   "editEntryDateDialogShift": "시간 이동",
   "editEntryDateDialogSourceFileModifiedDate": "파일 수정한 날짜",
-  "editEntryDateDialogHours": "시간",
-  "editEntryDateDialogMinutes": "분",
+
+  "durationDialogHours": "시간",
+  "durationDialogMinutes": "분",
+  "durationDialogSeconds": "초",
 
   "editEntryLocationDialogTitle": "위치",
   "editEntryLocationDialogChooseOnMapTooltip": "지도에서 선택",

@@ -230,8 +230,9 @@
   "editEntryDateDialogExtractFromTitle": "Başlıktan ayıkla",
   "editEntryDateDialogShift": "Değişim",
   "editEntryDateDialogSourceFileModifiedDate": "Dosya değiştirilme tarihi",
-  "editEntryDateDialogHours": "Saat",
-  "editEntryDateDialogMinutes": "Dakika",
+
+  "durationDialogHours": "Saat",
+  "durationDialogMinutes": "Dakika",
 
   "editEntryLocationDialogTitle": "Konum",
   "editEntryLocationDialogChooseOnMapTooltip": "Harita üzerinde seç",

@@ -1,6 +1,5 @@
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/enums/enums.dart';
-import 'package:aves/model/settings/enums/slideshow_interval.dart';
 import 'package:aves/model/settings/enums/slideshow_video_playback.dart';
 import 'package:aves/model/settings/enums/viewer_transition.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -30,12 +29,12 @@ class ScreenSaverSettingsPage extends StatelessWidget {
               SettingsSwitchListTile(
                 selector: (context, s) => s.screenSaverFillScreen,
                 onChanged: (v) => settings.screenSaverFillScreen = v,
-                title: context.l10n.settingsSlideshowFillScreen,
+                title: l10n.settingsSlideshowFillScreen,
               ),
               SettingsSwitchListTile(
                 selector: (context, s) => s.screenSaverAnimatedZoomEffect,
                 onChanged: (v) => settings.screenSaverAnimatedZoomEffect = v,
-                title: context.l10n.settingsSlideshowAnimatedZoomEffect,
+                title: l10n.settingsSlideshowAnimatedZoomEffect,
               ),
               SettingsSelectionListTile<ViewerTransition>(
                 values: ViewerTransition.values,
@@ -44,12 +43,10 @@ class ScreenSaverSettingsPage extends StatelessWidget {
                 onSelection: (v) => settings.screenSaverTransition = v,
                 tileTitle: l10n.settingsSlideshowTransitionTile,
               ),
-              SettingsSelectionListTile<SlideshowInterval>(
-                values: SlideshowInterval.values,
-                getName: (context, v) => v.getName(context),
+              SettingsDurationListTile(
                 selector: (context, s) => s.screenSaverInterval,
-                onSelection: (v) => settings.screenSaverInterval = v,
-                tileTitle: l10n.settingsSlideshowIntervalTile,
+                onChanged: (v) => settings.screenSaverInterval = v,
+                title: l10n.settingsSlideshowIntervalTile,
               ),
               SettingsSelectionListTile<SlideshowVideoPlayback>(
                 values: SlideshowVideoPlayback.values,

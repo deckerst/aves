@@ -132,7 +132,7 @@ class SettingsDefaults {
   static const slideshowAnimatedZoomEffect = true;
   static const slideshowTransition = ViewerTransition.fade;
   static const slideshowVideoPlayback = SlideshowVideoPlayback.playMuted;
-  static const slideshowInterval = SlideshowInterval.s5;
+  static const slideshowInterval = 5;
 
   // widget
   static const widgetOutline = false;

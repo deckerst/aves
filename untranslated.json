@@ -1,10 +1,12 @@
 {
   "de": [
-    "widgetOpenPageCollection"
+    "widgetOpenPageCollection",
+    "durationDialogSeconds"
   ],
 
   "el": [
-    "widgetOpenPageCollection"
+    "widgetOpenPageCollection",
+    "durationDialogSeconds"
   ],
 
   "es": [
@@ -18,6 +20,7 @@
     "widgetOpenPageHome",
     "widgetOpenPageCollection",
     "widgetOpenPageViewer",
+    "durationDialogSeconds",
     "viewDialogReverseSortOrder",
     "tileLayoutMosaic",
     "sortOrderNewestFirst",
@@ -47,6 +50,7 @@
     "widgetOpenPageHome",
     "widgetOpenPageCollection",
     "widgetOpenPageViewer",
+    "durationDialogSeconds",
     "tileLayoutMosaic",
     "albumGroupType",
     "albumMimeTypeMixed",
@@ -58,7 +62,8 @@
   ],
 
   "it": [
-    "widgetOpenPageCollection"
+    "widgetOpenPageCollection",
+    "durationDialogSeconds"
   ],
 
   "ja": [
@@ -72,6 +77,7 @@
     "widgetOpenPageHome",
     "widgetOpenPageCollection",
     "widgetOpenPageViewer",
+    "durationDialogSeconds",
     "viewDialogReverseSortOrder",
     "tileLayoutMosaic",
     "sortOrderNewestFirst",
@@ -96,15 +102,18 @@
   ],
 
   "nl": [
-    "widgetOpenPageCollection"
+    "widgetOpenPageCollection",
+    "durationDialogSeconds"
   ],
 
   "pt": [
-    "widgetOpenPageCollection"
+    "widgetOpenPageCollection",
+    "durationDialogSeconds"
   ],
 
   "ru": [
-    "widgetOpenPageCollection"
+    "widgetOpenPageCollection",
+    "durationDialogSeconds"
   ],
 
   "tr": [
@@ -131,6 +140,7 @@
     "widgetOpenPageHome",
     "widgetOpenPageCollection",
     "widgetOpenPageViewer",
+    "durationDialogSeconds",
     "menuActionSlideshow",
     "viewDialogReverseSortOrder",
     "tileLayoutMosaic",
@@ -168,6 +178,7 @@
   ],
 
   "zh": [
-    "widgetOpenPageCollection"
+    "widgetOpenPageCollection",
+    "durationDialogSeconds"
   ]
 }

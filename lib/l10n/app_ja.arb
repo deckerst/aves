@@ -242,8 +242,9 @@
   "editEntryDateDialogExtractFromTitle": "タイトルから抽出する",
   "editEntryDateDialogShift": "シフト",
   "editEntryDateDialogSourceFileModifiedDate": "ファイル更新日",
-  "editEntryDateDialogHours": "時",
-  "editEntryDateDialogMinutes": "分",
+
+  "durationDialogHours": "時",
+  "durationDialogMinutes": "分",
 
   "editEntryLocationDialogTitle": "位置情報",
   "editEntryLocationDialogChooseOnMapTooltip": "地図上で選択",

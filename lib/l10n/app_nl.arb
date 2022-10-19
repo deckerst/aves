@@ -252,8 +252,9 @@
   "editEntryDateDialogExtractFromTitle": "Uit titel halen",
   "editEntryDateDialogShift": "Verschuiven",
   "editEntryDateDialogSourceFileModifiedDate": "Wijzigingsdatum bestand",
-  "editEntryDateDialogHours": "Uren",
-  "editEntryDateDialogMinutes": "Minuten",
+
+  "durationDialogHours": "Uren",
+  "durationDialogMinutes": "Minuten",
 
   "editEntryLocationDialogTitle": "Locatie",
   "editEntryLocationDialogChooseOnMapTooltip": "Kies op kaart",

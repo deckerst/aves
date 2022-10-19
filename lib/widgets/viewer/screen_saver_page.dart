@@ -1,6 +1,5 @@
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/settings/enums/enums.dart';
-import 'package:aves/model/settings/enums/slideshow_interval.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
@@ -42,7 +41,7 @@ class _ScreenSaverPageState extends State<ScreenSaverPage> with WidgetsBindingOb
       transition: settings.screenSaverTransition,
       repeat: true,
       autopilot: true,
-      autopilotInterval: settings.screenSaverInterval.getDuration(),
+      autopilotInterval: Duration(seconds: settings.screenSaverInterval),
       autopilotAnimatedZoom: settings.screenSaverAnimatedZoomEffect,
     );
     source.stateNotifier.addListener(_onSourceStateChanged);

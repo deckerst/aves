@@ -252,8 +252,9 @@
   "editEntryDateDialogExtractFromTitle": "Извлечь из названия",
   "editEntryDateDialogShift": "Сдвиг",
   "editEntryDateDialogSourceFileModifiedDate": "Дата изменения файла",
-  "editEntryDateDialogHours": "Часов",
-  "editEntryDateDialogMinutes": "Минут",
+
+  "durationDialogHours": "Часов",
+  "durationDialogMinutes": "Минут",
 
   "editEntryLocationDialogTitle": "Местоположение",
   "editEntryLocationDialogChooseOnMapTooltip": "Выбрать на карте",

@@ -383,8 +383,10 @@
   "editEntryDateDialogExtractFromTitle": "Extract from title",
   "editEntryDateDialogShift": "Shift",
   "editEntryDateDialogSourceFileModifiedDate": "File modified date",
-  "editEntryDateDialogHours": "Hours",
-  "editEntryDateDialogMinutes": "Minutes",
+
+  "durationDialogHours": "Hours",
+  "durationDialogMinutes": "Minutes",
+  "durationDialogSeconds": "Seconds",
 
   "editEntryLocationDialogTitle": "Location",
   "editEntryLocationDialogChooseOnMapTooltip": "Choose on map",

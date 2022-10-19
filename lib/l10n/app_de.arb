@@ -252,8 +252,9 @@
   "editEntryDateDialogExtractFromTitle": "Auszug aus dem Titel",
   "editEntryDateDialogShift": "Verschieben",
   "editEntryDateDialogSourceFileModifiedDate": "Änderungsdatum der Datei",
-  "editEntryDateDialogHours": "Stunden",
-  "editEntryDateDialogMinutes": "Minuten",
+
+  "durationDialogHours": "Stunden",
+  "durationDialogMinutes": "Minuten",
 
   "editEntryLocationDialogTitle": "Standort",
   "editEntryLocationDialogChooseOnMapTooltip": "Auf Karte wählen",
