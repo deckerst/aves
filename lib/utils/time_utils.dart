@@ -1,5 +1,9 @@
 import 'package:flutter/foundation.dart';
 
+const hoursInDay = 24;
+const minutesInHour = 60;
+const secondsInMinute = 60;
+
 extension ExtraDateTime on DateTime {
   bool isAtSameYearAs(DateTime? other) => year == other?.year;
 
@@ -47,7 +51,7 @@ DateTime? dateTimeFromMillis(int? millis, {bool isUtc = false}) {
 
 final _unixStampMillisPattern = RegExp(r'\d{13}');
 final _unixStampSecPattern = RegExp(r'\d{10}');
-final _dateYMD8Hms6Sub3Pattern = RegExp(r'(\d{8})([_-\s](\d{6})([_-\s](\d{3}))?)?');
+final _dateYMD8Hms6Sub3Pattern = RegExp(r'(\d{8})([_\s-](\d{6})([_\s-](\d{3}))?)?');
 final _dateY4M2D2H2m2s2Sub3Pattern = RegExp(r'(\d{4})-(\d{1,2})-(\d{1,2})[ -](\d{1,2})[.-](\d{1,2})[.-](\d{1,2})([.-](\d{1,3})?)?');
 final _dateY4M2D2Hms6Pattern = RegExp(r'(\d{4})-(\d{1,2})-(\d{1,2}) (\d{6})');
 

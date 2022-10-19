@@ -252,8 +252,9 @@
   "editEntryDateDialogExtractFromTitle": "从标题提取",
   "editEntryDateDialogShift": "转移",
   "editEntryDateDialogSourceFileModifiedDate": "文件修改日期",
-  "editEntryDateDialogHours": "时",
-  "editEntryDateDialogMinutes": "分",
+
+  "durationDialogHours": "时",
+  "durationDialogMinutes": "分",
 
   "editEntryLocationDialogTitle": "位置",
   "editEntryLocationDialogChooseOnMapTooltip": "从地图上选择",

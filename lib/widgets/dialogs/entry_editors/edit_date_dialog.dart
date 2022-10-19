@@ -7,6 +7,7 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/format.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/themes.dart';
+import 'package:aves/utils/time_utils.dart';
 import 'package:aves/widgets/common/basic/text_dropdown_button.dart';
 import 'package:aves/widgets/common/basic/wheel.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -48,7 +49,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
     super.initState();
     _initSet();
     _initCopyItem();
-    _initShift(60);
+    _initShift(minutesInHour);
   }
 
   void _initSet() {
@@ -61,8 +62,8 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
 
   void _initShift(int initialMinutes) {
     final abs = initialMinutes.abs();
-    _shiftHour = ValueNotifier(abs ~/ 60);
-    _shiftMinute = ValueNotifier(abs % 60);
+    _shiftHour = ValueNotifier(abs ~/ minutesInHour);
+    _shiftMinute = ValueNotifier(abs % minutesInHour);
     _shiftSign = ValueNotifier(initialMinutes.isNegative ? '-' : '+');
   }
 
@@ -198,9 +199,9 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
           TableRow(
             children: [
               const SizedBox(),
-              Center(child: Text(context.l10n.editEntryDateDialogHours)),
-              const SizedBox(),
-              Center(child: Text(context.l10n.editEntryDateDialogMinutes)),
+              Center(child: Text(context.l10n.durationDialogHours)),
+              const SizedBox(width: 16),
+              Center(child: Text(context.l10n.durationDialogMinutes)),
             ],
           ),
           TableRow(
@@ -215,7 +216,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
                 alignment: Alignment.centerRight,
                 child: WheelSelector(
                   valueNotifier: _shiftHour,
-                  values: List.generate(24, (i) => i),
+                  values: List.generate(hoursInDay, (i) => i),
                   textStyle: textStyle,
                   textAlign: TextAlign.end,
                 ),
@@ -231,7 +232,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
                 alignment: Alignment.centerLeft,
                 child: WheelSelector(
                   valueNotifier: _shiftMinute,
-                  values: List.generate(60, (i) => i),
+                  values: List.generate(minutesInHour, (i) => i),
                   textStyle: textStyle,
                   textAlign: TextAlign.end,
                 ),
@@ -373,7 +374,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
       case DateEditAction.extractFromTitle:
         return DateModifier.extractFromTitle();
       case DateEditAction.shift:
-        final shiftTotalMinutes = (_shiftHour.value * 60 + _shiftMinute.value) * (_shiftSign.value == '+' ? 1 : -1);
+        final shiftTotalMinutes = (_shiftHour.value * minutesInHour + _shiftMinute.value) * (_shiftSign.value == '+' ? 1 : -1);
         return DateModifier.shift(_fields, shiftTotalMinutes);
       case DateEditAction.remove:
         return DateModifier.remove(_fields);

@@ -246,8 +246,9 @@
   "editEntryDateDialogExtractFromTitle": "Ekstrak dari judul",
   "editEntryDateDialogShift": "Geser",
   "editEntryDateDialogSourceFileModifiedDate": "Tanggal modifikasi file",
-  "editEntryDateDialogHours": "Jam",
-  "editEntryDateDialogMinutes": "Menit",
+
+  "durationDialogHours": "Jam",
+  "durationDialogMinutes": "Menit",
 
   "editEntryLocationDialogTitle": "Lokasi",
   "editEntryLocationDialogChooseOnMapTooltip": "Pilih di peta",

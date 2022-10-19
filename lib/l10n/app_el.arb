@@ -252,8 +252,9 @@
   "editEntryDateDialogExtractFromTitle": "Εξαγωγή από το όνομα του κάθε αρχείου",
   "editEntryDateDialogShift": "Μετατόπιση",
   "editEntryDateDialogSourceFileModifiedDate": "Ημερομηνία τροποποίησης αρχείου",
-  "editEntryDateDialogHours": "Ώρες",
-  "editEntryDateDialogMinutes": "Λεπτά",
+
+  "durationDialogHours": "Ώρες",
+  "durationDialogMinutes": "Λεπτά",
 
   "editEntryLocationDialogTitle": "Τοποθεσια",
   "editEntryLocationDialogChooseOnMapTooltip": "Επιλογή στο χάρτη",

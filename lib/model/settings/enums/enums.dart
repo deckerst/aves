@@ -18,8 +18,6 @@ enum HomePageSetting { collection, albums }
 
 enum KeepScreenOn { never, viewerOnly, always }
 
-enum SlideshowInterval { s3, s5, s10, s30, s60 }
-
 enum SlideshowVideoPlayback { skip, playMuted, playWithSound }
 
 enum UnitSystem { metric, imperial }
