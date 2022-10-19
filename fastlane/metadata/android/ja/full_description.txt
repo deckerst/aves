@@ -2,6 +2,4 @@
 
 メディアコレクションをスキャンして、<b>モーションフォト</b>、<b>パノラマ</b>（Photo Sphere）、<b>360°動画</b>、<b>GeoTIFF</b>ファイルなどを識別します。
 
-<b>ナビゲーションと検索</b>は、Avesの重要な部分です。アルバムから写真、タグ、地図などへ簡単に移動できます。
-
-<i>Aves</i>は、<b>アプリショートカット</b>や<b>グローバル検索</b>などの機能を、Android（<b>API 19から33まで</b>、つまりAndroid 4.4から13 Lまで）と統合しています。また、<b>メディアビューワー</b>や<b>メディアピッカー</b>としても機能します。
+<i>Aves</i> integrates with Android (from <b>API 19 to 33</b>, i.e. from KitKat to Android 13) with features such as <b>widgets</b>, <b>app shortcuts</b>, <b>screen saver</b> and <b>global search</b> handling. It also works as a <b>media viewer and picker</b>.
