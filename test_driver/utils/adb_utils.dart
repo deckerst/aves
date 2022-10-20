@@ -19,7 +19,7 @@ String get adb {
   you need to use the -d, -e, or -s option to specify the target device
   to which the command should be directed.
  */
-const List<String> adbDeviceParam = []; // '[]', '[-d]', '[-e]', or '[-s, <serial_number>]'
+const List<String> adbDeviceParam = ['-d']; // `[]`, `['-d']`, `['-e']`, or `['-s', <serial_number>]`
 
 Future<void> runAdb(List<String> args) async {
   await Process.run(adb, [...adbDeviceParam, ...args]);

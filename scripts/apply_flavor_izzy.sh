@@ -1,4 +1,8 @@
 #!/bin/bash
+if [ ! -d "scripts" ]; then
+  cd ..
+fi
+
 PUBSPEC_PATH="../pubspec.yaml"
 
 flutter clean

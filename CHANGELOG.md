@@ -9,6 +9,10 @@ All notable changes to this project will be documented in this file.
 - Collection / Info: edit MP4 metadata (date / location / title / description / rating / tags)
 - Widget: option to open collection on tap
 
+### Changed
+
+- upgraded Flutter to stable v3.3.5
+
 ### Fixed
 
 - rendering of panoramas with inconsistent metadata
