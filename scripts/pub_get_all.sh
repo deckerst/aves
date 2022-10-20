@@ -1,7 +1,10 @@
 #!/bin/bash
-cd ..
+if [ ! -d "scripts" ]; then
+  cd ..
+fi
+
 flutter pub get
-cd plugins
+cd plugins || exit
 for plugin in $(ls -d *); do
   cd $plugin
   flutter pub get
