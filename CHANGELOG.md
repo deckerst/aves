@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 
 - rendering of panoramas with inconsistent metadata
+- failing scan of items copied to SD card on older devices
 
 ## <a id="v1.7.1"></a>[v1.7.1] - 2022-10-09
 
