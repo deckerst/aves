@@ -14,7 +14,7 @@ packages:
       name: _flutterfire_internals
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.4"
+    version: "1.0.5"
   analyzer:
     dependency: transitive
     description:
@@ -126,14 +126,14 @@ packages:
       name: cloud_firestore_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.8.1"
+    version: "5.8.2"
   cloud_firestore_web:
     dependency: transitive
     description:
       name: cloud_firestore_web
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.1"
+    version: "3.0.2"
   collection:
     dependency: "direct main"
     description:
@@ -147,7 +147,7 @@ packages:
       name: connectivity_plus
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.1"
+    version: "3.0.2"
   connectivity_plus_platform_interface:
     dependency: transitive
     description:
@@ -284,7 +284,7 @@ packages:
       name: firebase_core
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.0"
+    version: "2.1.0"
   firebase_core_platform_interface:
     dependency: transitive
     description:
@@ -305,14 +305,14 @@ packages:
       name: firebase_crashlytics
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.1"
+    version: "3.0.2"
   firebase_crashlytics_platform_interface:
     dependency: transitive
     description:
       name: firebase_crashlytics_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.3.2"
+    version: "3.3.3"
   flex_color_picker:
     dependency: "direct main"
     description:
@@ -545,7 +545,7 @@ packages:
       name: lints
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.0"
+    version: "2.0.1"
   lists:
     dependency: transitive
     description:
@@ -724,7 +724,7 @@ packages:
       name: pdf
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.8.3"
+    version: "3.8.4"
   percent_indicator:
     dependency: "direct main"
     description:
