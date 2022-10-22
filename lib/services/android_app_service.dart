@@ -36,6 +36,7 @@ class PlatformAndroidAppService implements AndroidAppService {
     'com.kakao.talk': {'KakaoTalkDownload'},
     'com.sony.playmemories.mobile': {'Imaging Edge Mobile'},
     'nekox.messenger': {'NekoX'},
+    'org.telegram.messenger': {'Telegram Images', 'Telegram Video'},
   };
 
   @override
