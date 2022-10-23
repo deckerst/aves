@@ -26,6 +26,9 @@ import deckers.thibault.aves.metadata.Metadata.TYPE_EXIF
 import deckers.thibault.aves.metadata.Metadata.TYPE_IPTC
 import deckers.thibault.aves.metadata.Metadata.TYPE_MP4
 import deckers.thibault.aves.metadata.Metadata.TYPE_XMP
+import deckers.thibault.aves.metadata.Mp4ParserHelper.updateLocation
+import deckers.thibault.aves.metadata.Mp4ParserHelper.updateRotation
+import deckers.thibault.aves.metadata.Mp4ParserHelper.updateXmp
 import deckers.thibault.aves.metadata.PixyMetaHelper.extendedXmpDocString
 import deckers.thibault.aves.metadata.PixyMetaHelper.xmpDocString
 import deckers.thibault.aves.model.AvesEntry
@@ -563,7 +566,8 @@ abstract class ImageProvider {
         uri: Uri,
         mimeType: String,
         callback: ImageOpCallback,
-        fields: Map<*, *>
+        fieldsToEdit: Map<*, *>,
+        newFields: FieldMap? = null,
     ): Boolean {
         if (mimeType != MimeTypes.MP4) {
             callback.onFailure(UnsupportedOperationException("unsupported mimeType=$mimeType"))
@@ -572,12 +576,18 @@ abstract class ImageProvider {
 
         try {
             val edits = Mp4ParserHelper.computeEdits(context, uri) { isoFile ->
-                fields.forEach { kv ->
+                fieldsToEdit.forEach { kv ->
                     val tag = kv.key as String
                     val value = kv.value as String?
                     when (tag) {
-                        "gpsCoordinates" -> Mp4ParserHelper.updateLocation(isoFile, value)
-                        "xmp" -> Mp4ParserHelper.updateXmp(isoFile, value)
+                        "gpsCoordinates" -> isoFile.updateLocation(value)
+                        "rotationDegrees" -> {
+                            val degrees = value?.toIntOrNull() ?: throw Exception("failed because of invalid rotation=$value")
+                            if (isoFile.updateRotation(degrees) && newFields != null) {
+                                newFields["rotationDegrees"] = degrees
+                            }
+                        }
+                        "xmp" -> isoFile.updateXmp(value)
                     }
                 }
             }
@@ -637,7 +647,7 @@ abstract class ImageProvider {
                 uri = uri,
                 mimeType = mimeType,
                 callback = callback,
-                fields = mapOf("xmp" to coreXmp),
+                fieldsToEdit = mapOf("xmp" to coreXmp),
             )
         }
 
@@ -898,6 +908,7 @@ abstract class ImageProvider {
         autoCorrectTrailerOffset: Boolean,
         callback: ImageOpCallback,
     ) {
+        val newFields: FieldMap = hashMapOf()
         if (modifier.containsKey(TYPE_EXIF)) {
             val fields = modifier[TYPE_EXIF] as Map<*, *>?
             if (fields != null && fields.isNotEmpty()) {
@@ -970,15 +981,16 @@ abstract class ImageProvider {
         }
 
         if (modifier.containsKey(TYPE_MP4)) {
-            val fields = modifier[TYPE_MP4] as Map<*, *>?
-            if (fields != null && fields.isNotEmpty()) {
+            val fieldsToEdit = modifier[TYPE_MP4] as Map<*, *>?
+            if (fieldsToEdit != null && fieldsToEdit.isNotEmpty()) {
                 if (!editMp4Metadata(
                         context = context,
                         path = path,
                         uri = uri,
                         mimeType = mimeType,
                         callback = callback,
-                        fields = fields,
+                        fieldsToEdit = fieldsToEdit,
+                        newFields = newFields,
                     )
                 ) return
             }
@@ -1003,7 +1015,6 @@ abstract class ImageProvider {
             }
         }
 
-        val newFields: FieldMap = hashMapOf()
         scanPostMetadataEdit(context, path, uri, mimeType, newFields, callback)
     }
 

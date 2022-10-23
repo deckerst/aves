@@ -4,10 +4,10 @@ import 'package:aves/model/entry.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/widgets/common/app_bar/favourite_toggler.dart';
 import 'package:aves/widgets/common/basic/menu.dart';
 import 'package:aves/widgets/common/basic/popup_menu_button.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:aves/widgets/common/app_bar/favourite_toggler.dart';
 import 'package:aves/widgets/viewer/action/entry_action_delegate.dart';
 import 'package:aves/widgets/viewer/multipage/conductor.dart';
 import 'package:aves/widgets/viewer/notifications.dart';
@@ -70,8 +70,9 @@ class ViewerButtons extends StatelessWidget {
             return targetEntry.canEdit;
           case EntryAction.rotateCCW:
           case EntryAction.rotateCW:
+            return targetEntry.canRotate;
           case EntryAction.flip:
-            return targetEntry.canRotateAndFlip;
+            return targetEntry.canFlip;
           case EntryAction.convert:
           case EntryAction.print:
             return !targetEntry.isVideo && device.canPrint;
@@ -161,7 +162,7 @@ class ViewerButtonRowContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final hasOverflowMenu = pageEntry.canRotateAndFlip || topLevelActions.isNotEmpty || exportActions.isNotEmpty || videoActions.isNotEmpty;
+    final hasOverflowMenu = pageEntry.canRotate || pageEntry.canFlip || topLevelActions.isNotEmpty || exportActions.isNotEmpty || videoActions.isNotEmpty;
     return Selector<VideoConductor, AvesVideoController?>(
       selector: (context, vc) => vc.getController(pageEntry),
       builder: (context, videoController, child) {
@@ -183,7 +184,7 @@ class ViewerButtonRowContent extends StatelessWidget {
                           final exportInternalActions = exportActions.whereNot(EntryActions.exportExternal.contains).toList();
                           final exportExternalActions = exportActions.where(EntryActions.exportExternal.contains).toList();
                           return [
-                            if (pageEntry.canRotateAndFlip) _buildRotateAndFlipMenuItems(context),
+                            if (pageEntry.canRotate || pageEntry.canFlip) _buildRotateAndFlipMenuItems(context),
                             ...topLevelActions.map((action) => _buildPopupMenuItem(context, action, videoController)),
                             if (exportActions.isNotEmpty)
                               PopupMenuItem<EntryAction>(
@@ -357,6 +358,18 @@ class ViewerButtonRowContent extends StatelessWidget {
   }
 
   PopupMenuItem<EntryAction> _buildRotateAndFlipMenuItems(BuildContext context) {
+    bool canApply(EntryAction action) {
+      switch (action) {
+        case EntryAction.rotateCCW:
+        case EntryAction.rotateCW:
+          return pageEntry.canRotate;
+        case EntryAction.flip:
+          return pageEntry.canFlip;
+        default:
+          return true;
+      }
+    }
+
     Widget buildDivider() => const SizedBox(
           height: 16,
           child: VerticalDivider(
@@ -373,6 +386,7 @@ class ViewerButtonRowContent extends StatelessWidget {
             clipBehavior: Clip.antiAlias,
             child: PopupMenuItem(
               value: action,
+              enabled: canApply(action),
               child: Tooltip(
                 message: action.getText(context),
                 child: Center(child: action.getIcon()),
@@ -382,20 +396,27 @@ class ViewerButtonRowContent extends StatelessWidget {
         );
 
     return PopupMenuItem(
+      padding: EdgeInsets.zero,
       child: IconTheme.merge(
         data: IconThemeData(
           color: ListTileTheme.of(context).iconColor,
         ),
-        child: Row(
-          children: [
-            buildDivider(),
-            buildItem(EntryAction.rotateCCW),
-            buildDivider(),
-            buildItem(EntryAction.rotateCW),
-            buildDivider(),
-            buildItem(EntryAction.flip),
-            buildDivider(),
-          ],
+        child: ColoredBox(
+          color: PopupMenuTheme.of(context).color!,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Row(
+              children: [
+                buildDivider(),
+                buildItem(EntryAction.rotateCCW),
+                buildDivider(),
+                buildItem(EntryAction.rotateCW),
+                buildDivider(),
+                buildItem(EntryAction.flip),
+                buildDivider(),
+              ],
+            ),
+          ),
         ),
       ),
     );

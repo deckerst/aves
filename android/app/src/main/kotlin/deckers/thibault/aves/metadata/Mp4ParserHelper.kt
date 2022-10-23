@@ -2,61 +2,19 @@ package deckers.thibault.aves.metadata
 
 import android.content.Context
 import android.net.Uri
-import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.StorageUtils
 import org.mp4parser.*
 import org.mp4parser.boxes.UserBox
 import org.mp4parser.boxes.apple.AppleGPSCoordinatesBox
-import org.mp4parser.boxes.iso14496.part12.FreeBox
-import org.mp4parser.boxes.iso14496.part12.MediaDataBox
-import org.mp4parser.boxes.iso14496.part12.MovieBox
-import org.mp4parser.boxes.iso14496.part12.UserDataBox
+import org.mp4parser.boxes.iso14496.part12.*
 import org.mp4parser.support.AbstractBox
+import org.mp4parser.support.Matrix
 import org.mp4parser.tools.Path
 import java.io.ByteArrayOutputStream
 import java.io.FileInputStream
 import java.nio.channels.Channels
 
 object Mp4ParserHelper {
-    private val LOG_TAG = LogUtils.createTag<Mp4ParserHelper>()
-
-    fun updateLocation(isoFile: IsoFile, locationIso6709: String?) {
-        // Apple GPS Coordinates Box can be in various locations:
-        // - moov[0]/udta[0]/©xyz
-        // - moov[0]/meta[0]/ilst/©xyz
-        // - others?
-        isoFile.removeBoxes(AppleGPSCoordinatesBox::class.java, true)
-
-        locationIso6709 ?: return
-
-        val movieBox = isoFile.movieBox
-        var userDataBox = Path.getPath<UserDataBox>(movieBox, UserDataBox.TYPE)
-        if (userDataBox == null) {
-            userDataBox = UserDataBox()
-            movieBox.addBox(userDataBox)
-        }
-
-        userDataBox.addBox(AppleGPSCoordinatesBox().apply {
-            value = locationIso6709
-        })
-    }
-
-    fun updateXmp(isoFile: IsoFile, xmp: String?) {
-        val xmpBox = isoFile.xmpBox
-        if (xmp != null) {
-            val xmpData = xmp.toByteArray(Charsets.UTF_8)
-            if (xmpBox == null) {
-                isoFile.addBox(UserBox(XMP.mp4Uuid).apply {
-                    data = xmpData
-                })
-            } else {
-                xmpBox.data = xmpData
-            }
-        } else if (xmpBox != null) {
-            isoFile.removeBox(xmpBox)
-        }
-    }
-
     fun computeEdits(context: Context, uri: Uri, modifier: (isoFile: IsoFile) -> Unit): List<Pair<Long, ByteArray>> {
         // we can skip uninteresting boxes with a seekable data source
         val pfd = StorageUtils.openInputFileDescriptor(context, uri) ?: throw Exception("failed to open file descriptor for uri=$uri")
@@ -134,6 +92,67 @@ object Mp4ParserHelper {
     }
 
     // extensions
+
+    fun IsoFile.updateLocation(locationIso6709: String?) {
+        // Apple GPS Coordinates Box can be in various locations:
+        // - moov[0]/udta[0]/©xyz
+        // - moov[0]/meta[0]/ilst/©xyz
+        // - others?
+        removeBoxes(AppleGPSCoordinatesBox::class.java, true)
+
+        locationIso6709 ?: return
+
+        var userDataBox = Path.getPath<UserDataBox>(movieBox, UserDataBox.TYPE)
+        if (userDataBox == null) {
+            userDataBox = UserDataBox()
+            movieBox.addBox(userDataBox)
+        }
+
+        userDataBox.addBox(AppleGPSCoordinatesBox().apply {
+            value = locationIso6709
+        })
+    }
+
+    fun IsoFile.updateRotation(degrees: Int): Boolean {
+        val matrix: Matrix = when (degrees) {
+            0 -> Matrix.ROTATE_0
+            90 -> Matrix.ROTATE_90
+            180 -> Matrix.ROTATE_180
+            270 -> Matrix.ROTATE_270
+            else -> throw Exception("failed because of invalid rotation degrees=$degrees")
+        }
+
+        var success = false
+        movieBox.getBoxes(TrackHeaderBox::class.java, true).filter { tkhd ->
+            if (!tkhd.isParsed) {
+                tkhd.parseDetails()
+            }
+            tkhd.width > 0 && tkhd.height > 0
+        }.forEach { tkhd ->
+            if (!setOf(Matrix.ROTATE_0, Matrix.ROTATE_90, Matrix.ROTATE_180, Matrix.ROTATE_270).contains(tkhd.matrix)) {
+                throw Exception("failed because existing matrix is not a simple rotation matrix")
+            }
+            tkhd.matrix = matrix
+            success = true
+        }
+        return success
+    }
+
+    fun IsoFile.updateXmp(xmp: String?) {
+        val xmpBox = xmpBox
+        if (xmp != null) {
+            val xmpData = xmp.toByteArray(Charsets.UTF_8)
+            if (xmpBox == null) {
+                addBox(UserBox(XMP.mp4Uuid).apply {
+                    data = xmpData
+                })
+            } else {
+                xmpBox.data = xmpData
+            }
+        } else if (xmpBox != null) {
+            removeBox(xmpBox)
+        }
+    }
 
     private fun IsoFile.getBoxOffset(test: (box: Box) -> Boolean): Long? {
         var offset = 0L
