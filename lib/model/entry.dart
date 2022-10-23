@@ -47,7 +47,7 @@ class AvesEntry {
 
   List<AvesEntry>? burstEntries;
 
-  final AChangeNotifier imageChangeNotifier = AChangeNotifier(), metadataChangeNotifier = AChangeNotifier(), addressChangeNotifier = AChangeNotifier();
+  final AChangeNotifier visualChangeNotifier = AChangeNotifier(), metadataChangeNotifier = AChangeNotifier(), addressChangeNotifier = AChangeNotifier();
 
   AvesEntry({
     required int? id,
@@ -176,7 +176,7 @@ class AvesEntry {
   }
 
   void dispose() {
-    imageChangeNotifier.dispose();
+    visualChangeNotifier.dispose();
     metadataChangeNotifier.dispose();
     addressChangeNotifier.dispose();
   }
@@ -292,7 +292,9 @@ class AvesEntry {
 
   bool get canEditTags => canEdit && canEditXmp;
 
-  bool get canRotateAndFlip => canEdit && canEditExif;
+  bool get canRotate => canEdit && (canEditExif || mimeType == MimeTypes.mp4);
+
+  bool get canFlip => canEdit && canEditExif;
 
   bool get canEditExif => MimeTypes.canEditExif(mimeType);
 
@@ -712,7 +714,7 @@ class AvesEntry {
   ) async {
     if ((!MimeTypes.refersToSameType(oldMimeType, mimeType) && !MimeTypes.isVideo(oldMimeType)) || oldDateModifiedSecs != dateModifiedSecs || oldRotationDegrees != rotationDegrees || oldIsFlipped != isFlipped) {
       await EntryCache.evict(uri, oldMimeType, oldDateModifiedSecs, oldRotationDegrees, oldIsFlipped);
-      imageChangeNotifier.notify();
+      visualChangeNotifier.notify();
     }
   }
 

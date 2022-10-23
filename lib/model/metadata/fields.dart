@@ -38,6 +38,7 @@ enum MetadataField {
   exifGpsVersionId,
   exifImageDescription,
   mp4GpsCoordinates,
+  mp4RotationDegrees,
   mp4Xmp,
   xmpXmpCreateDate,
 }
@@ -120,6 +121,7 @@ extension ExtraMetadataField on MetadataField {
       case MetadataField.exifImageDescription:
         return MetadataType.exif;
       case MetadataField.mp4GpsCoordinates:
+      case MetadataField.mp4RotationDegrees:
       case MetadataField.mp4Xmp:
         return MetadataType.mp4;
       case MetadataField.xmpXmpCreateDate:
@@ -134,6 +136,8 @@ extension ExtraMetadataField on MetadataField {
       switch (this) {
         case MetadataField.mp4GpsCoordinates:
           return 'gpsCoordinates';
+        case MetadataField.mp4RotationDegrees:
+          return 'rotationDegrees';
         case MetadataField.mp4Xmp:
           return 'xmp';
         default:
