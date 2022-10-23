@@ -1,0 +1,5 @@
+<i>Aves</i> obsługuje wszelkiego rodzaju obrazy i filmy, w tym typowe pliki JPEG i MP4 ale także bardziej egzotyczne formaty takie jak <b>wielostronnicowe pliki TIFF, SVG, stare pliki AVI i wiele więcej</b>! Skanuje twoją kolekcję multimediów aby zidentyfikować <b>ruchome zdjęcia</b>, <b>panoramy</b> (inaczej zdjęcia sferyczne), <b>filmy 360°</b>, a także pliki <b>GeoTIFF</b>.
+
+<b>Nawigacja i wyszukiwanie</b> jest ważną częścią <i>Aves</i>. Celem jest aby użytkownicy mogli łatwo przechodzić od albumów do zdjęć, tagów, map itp.
+
+<i>Aves</i> integruje się z Androidem (od <b>API 19 do 33</b>, czyli od KitKata do Androida 13) z funkcjami takimi jak <b>widżety</b>, <b>skróty do aplikacji</b>, <b>wygaszacz ekranu</b> i <b>obsługa globalnego wyszukiwania</b>. Działa również jako <b>przeglądarka i selektor mediów</b>.

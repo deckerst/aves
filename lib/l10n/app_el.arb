@@ -323,7 +323,7 @@
   "@rootDirectoryDescription": {},
   "otherDirectoryDescription": "«{name}» κατάλογος",
   "@otherDirectoryDescription": {},
-  "storageAccessDialogMessage": "Παρακαλώ επιλέξτε τον {directory} του «{volume}» στην επόμενη οθόνη για να δώσετε πρόσβαση στην εφαρμογή",
+  "storageAccessDialogMessage": "Παρακαλώ επιλέξτε τον {directory} του «{volume}» στην επόμενη οθόνη για να δώσετε πρόσβαση στην εφαρμογή.",
   "@storageAccessDialogMessage": {},
   "restrictedAccessDialogMessage": "Αυτή η εφαρμογή δεν επιτρέπεται να τροποποιεί αρχεία στο {directory} του «{volume}».\n\nΠαρακαλώ χρησιμοποιήστε μια άλλη εφαρμογή διαχείρισης αρχείων ή συλλογή φωτογραφιών για να μετακινήσετε τα στοιχεία αλλού.",
   "@restrictedAccessDialogMessage": {},
