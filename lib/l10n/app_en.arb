@@ -389,7 +389,8 @@
   "durationDialogSeconds": "Seconds",
 
   "editEntryLocationDialogTitle": "Location",
-  "editEntryLocationDialogChooseOnMapTooltip": "Choose on map",
+  "editEntryLocationDialogSetCustom": "Set custom location",
+  "editEntryLocationDialogChooseOnMap": "Choose on map",
   "editEntryLocationDialogLatitude": "Latitude",
   "editEntryLocationDialogLongitude": "Longitude",
 

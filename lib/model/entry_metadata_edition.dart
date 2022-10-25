@@ -3,7 +3,8 @@ import 'dart:io';
 
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/metadata/date_modifier.dart';
-import 'package:aves/model/metadata/enums.dart';
+import 'package:aves/model/metadata/enums/date_field_source.dart';
+import 'package:aves/model/metadata/enums/enums.dart';
 import 'package:aves/model/metadata/fields.dart';
 import 'package:aves/ref/exif.dart';
 import 'package:aves/ref/iptc.dart';
