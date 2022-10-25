@@ -1,4 +1,5 @@
-import 'package:aves/model/metadata/enums.dart';
+import 'package:aves/model/metadata/enums/enums.dart';
+import 'package:aves/model/metadata/enums/metadata_type.dart';
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/ref/brand_colors.dart';

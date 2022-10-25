@@ -1,6 +1,8 @@
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/metadata/date_modifier.dart';
-import 'package:aves/model/metadata/enums.dart';
+import 'package:aves/model/metadata/enums/date_edit_action.dart';
+import 'package:aves/model/metadata/enums/date_field_source.dart';
+import 'package:aves/model/metadata/enums/enums.dart';
 import 'package:aves/model/metadata/fields.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/theme/durations.dart';
@@ -36,7 +38,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
   DateEditAction _action = DateEditAction.setCustom;
   DateFieldSource _copyFieldSource = DateFieldSource.fileModifiedDate;
   late AvesEntry _copyItemSource;
-  late DateTime _setDateTime;
+  late DateTime _customDateTime;
   late ValueNotifier<int> _shiftHour, _shiftMinute;
   late ValueNotifier<String> _shiftSign;
   bool _showOptions = false;
@@ -47,13 +49,13 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
   @override
   void initState() {
     super.initState();
-    _initSet();
+    _initCustom();
     _initCopyItem();
     _initShift(minutesInHour);
   }
 
-  void _initSet() {
-    _setDateTime = widget.entry.bestDate ?? DateTime.now();
+  void _initCustom() {
+    _customDateTime = widget.entry.bestDate ?? DateTime.now();
   }
 
   void _initCopyItem() {
@@ -84,7 +86,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
                 padding: const EdgeInsets.only(left: 16, top: 8, right: 16),
                 child: TextDropdownButton<DateEditAction>(
                   values: DateEditAction.values,
-                  valueText: (v) => _actionText(context, v),
+                  valueText: (v) => v.getText(context),
                   value: _action,
                   onChanged: (v) => setState(() => _action = v!),
                   isExpanded: true,
@@ -143,7 +145,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
       padding: const EdgeInsetsDirectional.only(start: 16, end: 8),
       child: Row(
         children: [
-          Expanded(child: Text(formatDateTime(_setDateTime, locale, use24hour))),
+          Expanded(child: Text(formatDateTime(_customDateTime, locale, use24hour))),
           IconButton(
             icon: const Icon(AIcons.edit),
             onPressed: _editDate,
@@ -159,7 +161,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
       padding: const EdgeInsets.only(left: 16, top: 0, right: 16),
       child: TextDropdownButton<DateFieldSource>(
         values: DateFieldSource.values,
-        valueText: (v) => _setSourceText(context, v),
+        valueText: (v) => v.getText(context),
         value: _copyFieldSource,
         onChanged: (v) => setState(() => _copyFieldSource = v!),
         isExpanded: true,
@@ -280,44 +282,10 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
     );
   }
 
-  String _actionText(BuildContext context, DateEditAction action) {
-    final l10n = context.l10n;
-    switch (action) {
-      case DateEditAction.setCustom:
-        return l10n.editEntryDateDialogSetCustom;
-      case DateEditAction.copyField:
-        return l10n.editEntryDateDialogCopyField;
-      case DateEditAction.copyItem:
-        return l10n.editEntryDialogCopyFromItem;
-      case DateEditAction.extractFromTitle:
-        return l10n.editEntryDateDialogExtractFromTitle;
-      case DateEditAction.shift:
-        return l10n.editEntryDateDialogShift;
-      case DateEditAction.remove:
-        return l10n.actionRemove;
-    }
-  }
-
-  String _setSourceText(BuildContext context, DateFieldSource source) {
-    final l10n = context.l10n;
-    switch (source) {
-      case DateFieldSource.fileModifiedDate:
-        return l10n.editEntryDateDialogSourceFileModifiedDate;
-      case DateFieldSource.exifDate:
-        return 'Exif date';
-      case DateFieldSource.exifDateOriginal:
-        return 'Exif original date';
-      case DateFieldSource.exifDateDigitized:
-        return 'Exif digitized date';
-      case DateFieldSource.exifGpsDate:
-        return 'Exif GPS date';
-    }
-  }
-
   Future<void> _editDate() async {
     final _date = await showDatePicker(
       context: context,
-      initialDate: _setDateTime,
+      initialDate: _customDateTime,
       firstDate: DateTime(0),
       lastDate: DateTime(2100),
       confirmText: context.l10n.nextButtonLabel,
@@ -326,11 +294,11 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
 
     final _time = await showTimePicker(
       context: context,
-      initialTime: TimeOfDay.fromDateTime(_setDateTime),
+      initialTime: TimeOfDay.fromDateTime(_customDateTime),
     );
     if (_time == null) return;
 
-    setState(() => _setDateTime = DateTime(
+    setState(() => _customDateTime = DateTime(
           _date.year,
           _date.month,
           _date.day,
@@ -366,7 +334,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
     // whether each item supports Exif edition
     switch (_action) {
       case DateEditAction.setCustom:
-        return DateModifier.setCustom(const {}, _setDateTime);
+        return DateModifier.setCustom(const {}, _customDateTime);
       case DateEditAction.copyField:
         return DateModifier.copyField(_copyFieldSource);
       case DateEditAction.copyItem:

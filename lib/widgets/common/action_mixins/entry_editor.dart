@@ -1,7 +1,7 @@
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/entry_metadata_edition.dart';
 import 'package:aves/model/metadata/date_modifier.dart';
-import 'package:aves/model/metadata/enums.dart';
+import 'package:aves/model/metadata/enums/enums.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/services.dart';
@@ -33,12 +33,12 @@ mixin EntryEditorMixin {
   Future<LatLng?> selectLocation(BuildContext context, Set<AvesEntry> entries, CollectionLens? collection) async {
     if (entries.isEmpty) return null;
 
-    final initialLocation = entries.firstWhereOrNull((entry) => entry.hasGps)?.latLng;
+    final entry = entries.firstWhereOrNull((entry) => entry.hasGps) ?? entries.first;
 
     return showDialog<LatLng>(
       context: context,
       builder: (context) => EditEntryLocationDialog(
-        initialLocation: initialLocation,
+        entry: entry,
         collection: collection,
       ),
     );
