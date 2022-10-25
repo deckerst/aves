@@ -288,7 +288,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
       case DateEditAction.copyField:
         return l10n.editEntryDateDialogCopyField;
       case DateEditAction.copyItem:
-        return l10n.editEntryDateDialogCopyItem;
+        return l10n.editEntryDialogCopyFromItem;
       case DateEditAction.extractFromTitle:
         return l10n.editEntryDateDialogExtractFromTitle;
       case DateEditAction.shift:
