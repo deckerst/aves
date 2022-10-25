@@ -1142,5 +1142,9 @@
   "filePickerNoItems": "Κανένα στοιχείο",
   "@filePickerNoItems": {},
   "filePickerUseThisFolder": "Χρησιμοποιήστε αυτόν τον φάκελο",
-  "@filePickerUseThisFolder": {}
+  "@filePickerUseThisFolder": {},
+  "widgetOpenPageCollection": "Ανοιχτή συλλογή",
+  "@widgetOpenPageCollection": {},
+  "durationDialogSeconds": "Δευτερόλεπτα",
+  "@durationDialogSeconds": {}
 }

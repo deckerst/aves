@@ -1142,5 +1142,9 @@
   "filePickerNoItems": "Keine Elemente",
   "@filePickerNoItems": {},
   "filePickerUseThisFolder": "Diesen Ordner verwenden",
-  "@filePickerUseThisFolder": {}
+  "@filePickerUseThisFolder": {},
+  "widgetOpenPageCollection": "Sammlung öffnen",
+  "@widgetOpenPageCollection": {},
+  "durationDialogSeconds": "Sekunden",
+  "@durationDialogSeconds": {}
 }
