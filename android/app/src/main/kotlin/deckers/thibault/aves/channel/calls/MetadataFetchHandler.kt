@@ -125,8 +125,8 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         var foundExif = false
         var foundXmp = false
 
-        fun processXmp(xmpMeta: XMPMeta, dirMap: MutableMap<String, String>) {
-            if (foundXmp) return
+        fun processXmp(xmpMeta: XMPMeta, dirMap: MutableMap<String, String>, allowMultiple: Boolean = false) {
+            if (foundXmp && !allowMultiple) return
             foundXmp = true
             try {
                 for (prop in xmpMeta) {
@@ -340,7 +340,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                                 }
 
                                 if (dir is XmpDirectory) {
-                                    processXmp(dir.xmpMeta, dirMap)
+                                    processXmp(dir.xmpMeta, dirMap, allowMultiple = true)
                                 }
                             }
 
@@ -492,8 +492,8 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         var foundExif = false
         var foundXmp = false
 
-        fun processXmp(xmpMeta: XMPMeta) {
-            if (foundXmp) return
+        fun processXmp(xmpMeta: XMPMeta, allowMultiple: Boolean = false) {
+            if (foundXmp && !allowMultiple) return
             foundXmp = true
             try {
                 if (xmpMeta.doesPropExist(XMP.DC_SUBJECT_PROP_NAME)) {
@@ -599,7 +599,9 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
 
                     // XMP
                     if (!isLargeMp4(mimeType, sizeBytes)) {
-                        metadata.getDirectoriesOfType(XmpDirectory::class.java).map { it.xmpMeta }.forEach(::processXmp)
+                        metadata.getDirectoriesOfType(XmpDirectory::class.java).map { it.xmpMeta }.forEach {
+                            processXmp(it, allowMultiple = true)
+                        }
 
                         // XMP fallback to IPTC
                         if (!metadataMap.containsKey(KEY_XMP_TITLE) || !metadataMap.containsKey(KEY_XMP_SUBJECTS)) {
@@ -905,8 +907,8 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         val fields: FieldMap = hashMapOf()
         var foundXmp = false
 
-        fun processXmp(xmpMeta: XMPMeta) {
-            if (foundXmp) return
+        fun processXmp(xmpMeta: XMPMeta, allowMultiple: Boolean = false) {
+            if (foundXmp && !allowMultiple) return
             foundXmp = true
             try {
                 xmpMeta.getSafeInt(XMP.GPANO_CROPPED_AREA_LEFT_PROP_NAME) { fields["croppedAreaLeft"] = it }
@@ -925,7 +927,9 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             try {
                 Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
                     val metadata = Helper.safeRead(input)
-                    metadata.getDirectoriesOfType(XmpDirectory::class.java).map { it.xmpMeta }.forEach(::processXmp)
+                    metadata.getDirectoriesOfType(XmpDirectory::class.java).map { it.xmpMeta }.forEach {
+                        processXmp(it, allowMultiple = true)
+                    }
                 }
             } catch (e: Exception) {
                 Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for mimeType=$mimeType uri=$uri", e)
@@ -991,8 +995,8 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         val xmpStrings = mutableListOf<String>()
         var foundXmp = false
 
-        fun processXmp(xmpMeta: XMPMeta) {
-            if (foundXmp) return
+        fun processXmp(xmpMeta: XMPMeta, allowMultiple: Boolean = false) {
+            if (foundXmp && !allowMultiple) return
             foundXmp = true
             try {
                 xmpStrings.add(XMPMetaFactory.serializeToString(xmpMeta, xmpSerializeOptions))
@@ -1005,7 +1009,9 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             try {
                 Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
                     val metadata = Helper.safeRead(input)
-                    metadata.getDirectoriesOfType(XmpDirectory::class.java).map { it.xmpMeta }.forEach(::processXmp)
+                    metadata.getDirectoriesOfType(XmpDirectory::class.java).map { it.xmpMeta }.forEach {
+                        processXmp(it, allowMultiple = true)
+                    }
                 }
             } catch (e: Exception) {
                 result.error("getXmp-exception", "failed to read XMP for mimeType=$mimeType uri=$uri", e.message)
