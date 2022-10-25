@@ -325,7 +325,7 @@
   "@otherDirectoryDescription": {},
   "storageAccessDialogMessage": "Si prega di selezionare la {directory} di «{volume}» nella prossima schermata per dare accesso a questa applicazione.",
   "@storageAccessDialogMessage": {},
-  "restrictedAccessDialogMessage": "Questa applicazione non è autorizzata a modificare i file nella {directory} di «{volume}»",
+  "restrictedAccessDialogMessage": "Questa applicazione non è autorizzata a modificare i file nella {directory} di «{volume}».\n\nUtilizzare un gestore di file o un’applicazione di galleria preinstallata per spostare gli elementi in un’altra directory.",
   "@restrictedAccessDialogMessage": {},
   "notEnoughSpaceDialogMessage": "Questa operazione ha bisogno di {neededSize} di spazio libero su «{volume}» per essere completata, ma è rimasto solo {freeSize}.",
   "@notEnoughSpaceDialogMessage": {},
@@ -833,7 +833,7 @@
   "@settingsCollectionSelectionQuickActionEditorBanner": {},
   "settingsViewerSectionTitle": "Visualizzazione",
   "@settingsViewerSectionTitle": {},
-  "settingsViewerGestureSideTapNext": "Tocca i bordi dello schermo per visualizzare l'elemento precedente/successivo",
+  "settingsViewerGestureSideTapNext": "Tocca i bordi dello schermo per visualizzare l’elemento precedente/successivo",
   "@settingsViewerGestureSideTapNext": {},
   "settingsViewerUseCutout": "Usa area di ritaglio",
   "@settingsViewerUseCutout": {},
@@ -1142,5 +1142,9 @@
   "filePickerNoItems": "Nessun elemento",
   "@filePickerNoItems": {},
   "filePickerUseThisFolder": "Usa questa cartella",
-  "@filePickerUseThisFolder": {}
+  "@filePickerUseThisFolder": {},
+  "widgetOpenPageCollection": "Collezione aperta",
+  "@widgetOpenPageCollection": {},
+  "durationDialogSeconds": "Secondi",
+  "@durationDialogSeconds": {}
 }

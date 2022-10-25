@@ -1142,5 +1142,9 @@
   "filePickerNoItems": "无项目",
   "@filePickerNoItems": {},
   "filePickerUseThisFolder": "使用此文件夹",
-  "@filePickerUseThisFolder": {}
+  "@filePickerUseThisFolder": {},
+  "widgetOpenPageCollection": "打开媒体集",
+  "@widgetOpenPageCollection": {},
+  "durationDialogSeconds": "秒",
+  "@durationDialogSeconds": {}
 }
