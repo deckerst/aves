@@ -374,12 +374,12 @@
 
   "renameEntryDialogLabel": "New name",
 
+  "editEntryDialogCopyFromItem": "Copy from other item",
   "editEntryDialogTargetFieldsHeader": "Fields to modify",
 
   "editEntryDateDialogTitle": "Date & Time",
   "editEntryDateDialogSetCustom": "Set custom date",
   "editEntryDateDialogCopyField": "Copy from other date",
-  "editEntryDateDialogCopyItem": "Copy from other item",
   "editEntryDateDialogExtractFromTitle": "Extract from title",
   "editEntryDateDialogShift": "Shift",
   "editEntryDateDialogSourceFileModifiedDate": "File modified date",
