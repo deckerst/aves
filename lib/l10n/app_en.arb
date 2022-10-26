@@ -868,6 +868,10 @@
   "tagEditorPageNewTagFieldLabel": "New tag",
   "tagEditorPageAddTagTooltip": "Add tag",
   "tagEditorSectionRecent": "Recent",
+  "tagEditorSectionPlaceholders": "Placeholders",
+
+  "tagPlaceholderCountry": "Country",
+  "tagPlaceholderPlace": "Place",
 
   "panoramaEnableSensorControl": "Enable sensor control",
   "panoramaDisableSensorControl": "Disable sensor control",

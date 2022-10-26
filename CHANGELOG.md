@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 
 - Info: edit MP4 metadata (date / location / title / description / rating / tags / rotation)
 - Info: edit location by copying from other item
+- Info: edit tags with dynamic placeholders for country / place
 - Widget: option to open collection on tap
 
 ### Changed

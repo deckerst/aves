@@ -1,17 +1,26 @@
 {
   "de": [
-    "editEntryLocationDialogSetCustom"
+    "editEntryLocationDialogSetCustom",
+    "tagEditorSectionPlaceholders",
+    "tagPlaceholderCountry",
+    "tagPlaceholderPlace"
   ],
 
   "el": [
-    "editEntryLocationDialogSetCustom"
+    "editEntryLocationDialogSetCustom",
+    "tagEditorSectionPlaceholders",
+    "tagPlaceholderCountry",
+    "tagPlaceholderPlace"
   ],
 
   "es": [
     "widgetOpenPageHome",
     "widgetOpenPageCollection",
     "widgetOpenPageViewer",
-    "editEntryLocationDialogSetCustom"
+    "editEntryLocationDialogSetCustom",
+    "tagEditorSectionPlaceholders",
+    "tagPlaceholderCountry",
+    "tagPlaceholderPlace"
   ],
 
   "fa": [
@@ -582,6 +591,9 @@
     "tagEditorPageNewTagFieldLabel",
     "tagEditorPageAddTagTooltip",
     "tagEditorSectionRecent",
+    "tagEditorSectionPlaceholders",
+    "tagPlaceholderCountry",
+    "tagPlaceholderPlace",
     "panoramaEnableSensorControl",
     "panoramaDisableSensorControl",
     "sourceViewerPageTitle",
@@ -593,7 +605,10 @@
   ],
 
   "fr": [
-    "editEntryLocationDialogSetCustom"
+    "editEntryLocationDialogSetCustom",
+    "tagEditorSectionPlaceholders",
+    "tagPlaceholderCountry",
+    "tagPlaceholderPlace"
   ],
 
   "gl": [
@@ -1031,6 +1046,9 @@
     "tagEditorPageNewTagFieldLabel",
     "tagEditorPageAddTagTooltip",
     "tagEditorSectionRecent",
+    "tagEditorSectionPlaceholders",
+    "tagPlaceholderCountry",
+    "tagPlaceholderPlace",
     "panoramaEnableSensorControl",
     "panoramaDisableSensorControl",
     "sourceViewerPageTitle",
@@ -1057,11 +1075,17 @@
     "settingsSlideshowAnimatedZoomEffect",
     "settingsWidgetOpenPage",
     "statsTopAlbumsSectionTitle",
-    "wallpaperUseScrollEffect"
+    "wallpaperUseScrollEffect",
+    "tagEditorSectionPlaceholders",
+    "tagPlaceholderCountry",
+    "tagPlaceholderPlace"
   ],
 
   "it": [
-    "editEntryLocationDialogSetCustom"
+    "editEntryLocationDialogSetCustom",
+    "tagEditorSectionPlaceholders",
+    "tagPlaceholderCountry",
+    "tagPlaceholderPlace"
   ],
 
   "ja": [
@@ -1097,11 +1121,17 @@
     "settingsWidgetOpenPage",
     "statsTopAlbumsSectionTitle",
     "viewerInfoLabelDescription",
-    "wallpaperUseScrollEffect"
+    "wallpaperUseScrollEffect",
+    "tagEditorSectionPlaceholders",
+    "tagPlaceholderCountry",
+    "tagPlaceholderPlace"
   ],
 
   "ko": [
-    "editEntryLocationDialogSetCustom"
+    "editEntryLocationDialogSetCustom",
+    "tagEditorSectionPlaceholders",
+    "tagPlaceholderCountry",
+    "tagPlaceholderPlace"
   ],
 
   "nb": [
@@ -1210,7 +1240,10 @@
     "mapEmptyRegion",
     "viewerInfoOpenEmbeddedFailureFeedback",
     "viewerInfoSearchEmpty",
-    "wallpaperUseScrollEffect"
+    "wallpaperUseScrollEffect",
+    "tagEditorSectionPlaceholders",
+    "tagPlaceholderCountry",
+    "tagPlaceholderPlace"
   ],
 
   "nl": [
@@ -1219,7 +1252,10 @@
     "durationDialogSeconds",
     "editEntryLocationDialogSetCustom",
     "aboutLinkPolicy",
-    "policyPageTitle"
+    "policyPageTitle",
+    "tagEditorSectionPlaceholders",
+    "tagPlaceholderCountry",
+    "tagPlaceholderPlace"
   ],
 
   "pl": [
@@ -1697,6 +1733,9 @@
     "tagEditorPageNewTagFieldLabel",
     "tagEditorPageAddTagTooltip",
     "tagEditorSectionRecent",
+    "tagEditorSectionPlaceholders",
+    "tagPlaceholderCountry",
+    "tagPlaceholderPlace",
     "panoramaEnableSensorControl",
     "panoramaDisableSensorControl",
     "sourceViewerPageTitle",
@@ -1708,11 +1747,17 @@
   ],
 
   "pt": [
-    "editEntryLocationDialogSetCustom"
+    "editEntryLocationDialogSetCustom",
+    "tagEditorSectionPlaceholders",
+    "tagPlaceholderCountry",
+    "tagPlaceholderPlace"
   ],
 
   "ru": [
-    "editEntryLocationDialogSetCustom"
+    "editEntryLocationDialogSetCustom",
+    "tagEditorSectionPlaceholders",
+    "tagPlaceholderCountry",
+    "tagPlaceholderPlace"
   ],
 
   "tr": [
@@ -1774,10 +1819,16 @@
     "statsTopAlbumsSectionTitle",
     "viewerSetWallpaperButtonLabel",
     "viewerInfoLabelDescription",
-    "wallpaperUseScrollEffect"
+    "wallpaperUseScrollEffect",
+    "tagEditorSectionPlaceholders",
+    "tagPlaceholderCountry",
+    "tagPlaceholderPlace"
   ],
 
   "zh": [
-    "editEntryLocationDialogSetCustom"
+    "editEntryLocationDialogSetCustom",
+    "tagEditorSectionPlaceholders",
+    "tagPlaceholderCountry",
+    "tagPlaceholderPlace"
   ]
 }
