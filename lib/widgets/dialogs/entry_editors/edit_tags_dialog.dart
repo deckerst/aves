@@ -1,6 +1,8 @@
 import 'dart:math';
 
 import 'package:aves/model/entry.dart';
+import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/filters/placeholder.dart';
 import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/theme/durations.dart';
@@ -9,18 +11,17 @@ import 'package:aves/widgets/common/expandable_filter_row.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class TagEditorPage extends StatefulWidget {
   static const routeName = '/info/tag_editor';
 
-  final Map<AvesEntry, Set<String>> tagsByEntry;
+  final Map<AvesEntry, Set<CollectionFilter>> filtersByEntry;
 
   const TagEditorPage({
     super.key,
-    required this.tagsByEntry,
+    required this.filtersByEntry,
   });
 
   @override
@@ -31,14 +32,15 @@ class _TagEditorPageState extends State<TagEditorPage> {
   final TextEditingController _newTagTextController = TextEditingController();
   final FocusNode _newTagTextFocusNode = FocusNode();
   final ValueNotifier<String?> _expandedSectionNotifier = ValueNotifier(null);
-  late final List<String> _topTags;
+  late final List<CollectionFilter> _topTags;
+  late final List<PlaceholderFilter> _placeholders = [PlaceholderFilter.country, PlaceholderFilter.place];
 
-  static final List<String> _recentTags = [];
+  static final List<CollectionFilter> _recentTags = [];
 
   static const Color untaggedColor = Colors.blueGrey;
   static const int tagHistoryCount = 10;
 
-  Map<AvesEntry, Set<String>> get tagsByEntry => widget.tagsByEntry;
+  Map<AvesEntry, Set<CollectionFilter>> get tagsByEntry => widget.filtersByEntry;
 
   @override
   void initState() {
@@ -50,11 +52,11 @@ class _TagEditorPageState extends State<TagEditorPage> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final showCount = tagsByEntry.length > 1;
-    final Map<String, int> entryCountByTag = {};
+    final Map<CollectionFilter, int> entryCountByTag = {};
     tagsByEntry.entries.forEach((kv) {
       kv.value.forEach((tag) => entryCountByTag[tag] = (entryCountByTag[tag] ?? 0) + 1);
     });
-    List<MapEntry<String, int>> sortedTags = _sortEntryCountByTag(entryCountByTag);
+    List<MapEntry<CollectionFilter, int>> sortedTags = _sortEntryCountByTag(entryCountByTag);
 
     return MediaQueryDataProvider(
       child: Scaffold(
@@ -76,9 +78,10 @@ class _TagEditorPageState extends State<TagEditorPage> {
                 valueListenable: _newTagTextController,
                 builder: (context, value, child) {
                   final upQuery = value.text.trim().toUpperCase();
-                  bool containQuery(String s) => s.toUpperCase().contains(upQuery);
-                  final recentFilters = _recentTags.where(containQuery).map(TagFilter.new).toList();
-                  final topTagFilters = _topTags.where(containQuery).map(TagFilter.new).toList();
+                  bool containQuery(CollectionFilter v) => v.getLabel(context).toUpperCase().contains(upQuery);
+                  final recentFilters = _recentTags.where(containQuery).toList();
+                  final topTagFilters = _topTags.where(containQuery).toList();
+                  final placeholderFilters = _placeholders.where(containQuery).toList();
                   return ListView(
                     children: [
                       Padding(
@@ -95,7 +98,7 @@ class _TagEditorPageState extends State<TagEditorPage> {
                                 ),
                                 autofocus: true,
                                 onSubmitted: (newTag) {
-                                  _addTag(newTag);
+                                  _addCustomTag(newTag);
                                   _newTagTextFocusNode.requestFocus();
                                 },
                               ),
@@ -105,7 +108,7 @@ class _TagEditorPageState extends State<TagEditorPage> {
                               builder: (context, value, child) {
                                 return IconButton(
                                   icon: const Icon(AIcons.add),
-                                  onPressed: value.text.isEmpty ? null : () => _addTag(_newTagTextController.text),
+                                  onPressed: value.text.isEmpty ? null : () => _addCustomTag(_newTagTextController.text),
                                   tooltip: l10n.tagEditorPageAddTagTooltip,
                                 );
                               },
@@ -138,13 +141,12 @@ class _TagEditorPageState extends State<TagEditorPage> {
                               spacing: 8,
                               runSpacing: 8,
                               children: sortedTags.map((kv) {
-                                final tag = kv.key;
                                 return AvesFilterChip(
-                                  filter: TagFilter(tag),
+                                  filter: kv.key,
                                   removable: true,
                                   showGenericIcon: false,
                                   leadingOverride: showCount ? _TagCount(count: kv.value) : null,
-                                  onTap: (filter) => _removeTag(tag),
+                                  onTap: _removeTag,
                                   onLongPress: null,
                                 );
                               }).toList(),
@@ -167,6 +169,12 @@ class _TagEditorPageState extends State<TagEditorPage> {
                         expandedNotifier: _expandedSectionNotifier,
                         onTap: _addTag,
                       ),
+                      _FilterRow(
+                        title: l10n.tagEditorSectionPlaceholders,
+                        filters: placeholderFilters,
+                        expandedNotifier: _expandedSectionNotifier,
+                        onTap: _addTag,
+                      ),
                     ],
                   );
                 },
@@ -184,49 +192,54 @@ class _TagEditorPageState extends State<TagEditorPage> {
     visibleEntries?.forEach((entry) {
       entry.tags.forEach((tag) => entryCountByTag[tag] = (entryCountByTag[tag] ?? 0) + 1);
     });
-    List<MapEntry<String, int>> sortedTopTags = _sortEntryCountByTag(entryCountByTag);
+    List<MapEntry<CollectionFilter, int>> sortedTopTags = _sortEntryCountByTag(entryCountByTag.map((key, value) => MapEntry(TagFilter(key), value)));
     _topTags = sortedTopTags.map((kv) => kv.key).toList();
   }
 
-  List<MapEntry<String, int>> _sortEntryCountByTag(Map<String, int> entryCountByTag) {
+  List<MapEntry<CollectionFilter, int>> _sortEntryCountByTag(Map<CollectionFilter, int> entryCountByTag) {
     return entryCountByTag.entries.toList()
       ..sort((kv1, kv2) {
         final c = kv2.value.compareTo(kv1.value);
-        return c != 0 ? c : compareAsciiUpperCaseNatural(kv1.key, kv2.key);
+        return c != 0 ? c : kv1.key.compareTo(kv2.key);
       });
   }
 
   void _reset() {
     setState(() => tagsByEntry.forEach((entry, tags) {
+          final Set<TagFilter> originalFilters = entry.tags.map(TagFilter.new).toSet();
           tags
             ..clear()
-            ..addAll(entry.tags);
+            ..addAll(originalFilters);
         }));
   }
 
-  void _addTag(String newTag) {
+  void _addCustomTag(String newTag) {
     if (newTag.isNotEmpty) {
-      setState(() {
-        _recentTags
-          ..remove(newTag)
-          ..insert(0, newTag)
-          ..removeRange(min(tagHistoryCount, _recentTags.length), _recentTags.length);
-        tagsByEntry.forEach((entry, tags) => tags.add(newTag));
-      });
-      _newTagTextController.clear();
+      _addTag(TagFilter(newTag));
     }
   }
 
-  void _removeTag(String tag) {
-    setState(() => tagsByEntry.forEach((entry, tags) => tags.remove(tag)));
+  void _addTag(CollectionFilter newTag) {
+    setState(() {
+      _recentTags
+        ..remove(newTag)
+        ..insert(0, newTag)
+        ..removeRange(min(tagHistoryCount, _recentTags.length), _recentTags.length);
+      tagsByEntry.forEach((entry, tags) => tags.add(newTag));
+    });
+    _newTagTextController.clear();
+  }
+
+  void _removeTag(CollectionFilter filter) {
+    setState(() => tagsByEntry.forEach((entry, filters) => filters.remove(filter)));
   }
 }
 
 class _FilterRow extends StatelessWidget {
   final String title;
-  final List<TagFilter> filters;
+  final List<CollectionFilter> filters;
   final ValueNotifier<String?> expandedNotifier;
-  final void Function(String tag) onTap;
+  final void Function(CollectionFilter filter) onTap;
 
   const _FilterRow({
     required this.title,
@@ -244,7 +257,7 @@ class _FilterRow extends StatelessWidget {
             filters: filters,
             expandedNotifier: expandedNotifier,
             showGenericIcon: false,
-            onTap: (filter) => onTap((filter as TagFilter).tag),
+            onTap: onTap,
             onLongPress: null,
           );
   }
