@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 - Info: edit location by copying from other item
 - Info: edit tags with dynamic placeholders for country / place
 - Widget: option to open collection on tap
+- optional MANAGE_MEDIA permission to modify media without asking
 
 ### Changed
 

@@ -1,6 +1,7 @@
 {
   "de": [
     "editEntryLocationDialogSetCustom",
+    "settingsAllowMediaManagement",
     "tagEditorSectionPlaceholders",
     "tagPlaceholderCountry",
     "tagPlaceholderPlace"
@@ -8,6 +9,7 @@
 
   "el": [
     "editEntryLocationDialogSetCustom",
+    "settingsAllowMediaManagement",
     "tagEditorSectionPlaceholders",
     "tagPlaceholderCountry",
     "tagPlaceholderPlace"
@@ -18,6 +20,7 @@
     "widgetOpenPageCollection",
     "widgetOpenPageViewer",
     "editEntryLocationDialogSetCustom",
+    "settingsAllowMediaManagement",
     "tagEditorSectionPlaceholders",
     "tagPlaceholderCountry",
     "tagPlaceholderPlace"
@@ -507,6 +510,7 @@
     "settingsSaveSearchHistory",
     "settingsEnableBin",
     "settingsEnableBinSubtitle",
+    "settingsAllowMediaManagement",
     "settingsHiddenItemsTile",
     "settingsHiddenItemsPageTitle",
     "settingsHiddenItemsTabFilters",
@@ -606,6 +610,7 @@
 
   "fr": [
     "editEntryLocationDialogSetCustom",
+    "settingsAllowMediaManagement",
     "tagEditorSectionPlaceholders",
     "tagPlaceholderCountry",
     "tagPlaceholderPlace"
@@ -962,6 +967,7 @@
     "settingsSaveSearchHistory",
     "settingsEnableBin",
     "settingsEnableBinSubtitle",
+    "settingsAllowMediaManagement",
     "settingsHiddenItemsTile",
     "settingsHiddenItemsPageTitle",
     "settingsHiddenItemsTabFilters",
@@ -1073,6 +1079,7 @@
     "albumMimeTypeMixed",
     "settingsDisabled",
     "settingsSlideshowAnimatedZoomEffect",
+    "settingsAllowMediaManagement",
     "settingsWidgetOpenPage",
     "statsTopAlbumsSectionTitle",
     "wallpaperUseScrollEffect",
@@ -1083,6 +1090,7 @@
 
   "it": [
     "editEntryLocationDialogSetCustom",
+    "settingsAllowMediaManagement",
     "tagEditorSectionPlaceholders",
     "tagPlaceholderCountry",
     "tagPlaceholderPlace"
@@ -1118,6 +1126,7 @@
     "settingsConfirmationAfterMoveToBinItems",
     "settingsViewerGestureSideTapNext",
     "settingsSlideshowAnimatedZoomEffect",
+    "settingsAllowMediaManagement",
     "settingsWidgetOpenPage",
     "statsTopAlbumsSectionTitle",
     "viewerInfoLabelDescription",
@@ -1129,6 +1138,7 @@
 
   "ko": [
     "editEntryLocationDialogSetCustom",
+    "settingsAllowMediaManagement",
     "tagEditorSectionPlaceholders",
     "tagPlaceholderCountry",
     "tagPlaceholderPlace"
@@ -1222,6 +1232,7 @@
     "settingsSlideshowShuffle",
     "settingsSubtitleThemeSample",
     "settingsAllowInstalledAppAccess",
+    "settingsAllowMediaManagement",
     "settingsHiddenFiltersBanner",
     "settingsHiddenFiltersEmpty",
     "settingsHiddenItemsTabPaths",
@@ -1253,6 +1264,7 @@
     "editEntryLocationDialogSetCustom",
     "aboutLinkPolicy",
     "policyPageTitle",
+    "settingsAllowMediaManagement",
     "tagEditorSectionPlaceholders",
     "tagPlaceholderCountry",
     "tagPlaceholderPlace"
@@ -1649,6 +1661,7 @@
     "settingsSaveSearchHistory",
     "settingsEnableBin",
     "settingsEnableBinSubtitle",
+    "settingsAllowMediaManagement",
     "settingsHiddenItemsTile",
     "settingsHiddenItemsPageTitle",
     "settingsHiddenItemsTabFilters",
@@ -1748,6 +1761,7 @@
 
   "pt": [
     "editEntryLocationDialogSetCustom",
+    "settingsAllowMediaManagement",
     "tagEditorSectionPlaceholders",
     "tagPlaceholderCountry",
     "tagPlaceholderPlace"
@@ -1755,6 +1769,7 @@
 
   "ru": [
     "editEntryLocationDialogSetCustom",
+    "settingsAllowMediaManagement",
     "tagEditorSectionPlaceholders",
     "tagPlaceholderCountry",
     "tagPlaceholderPlace"
@@ -1813,6 +1828,7 @@
     "settingsSlideshowIntervalTile",
     "settingsSlideshowVideoPlaybackTile",
     "settingsSlideshowVideoPlaybackDialogTitle",
+    "settingsAllowMediaManagement",
     "settingsScreenSaverPageTitle",
     "settingsWidgetShowOutline",
     "settingsWidgetOpenPage",
@@ -1827,6 +1843,7 @@
 
   "zh": [
     "editEntryLocationDialogSetCustom",
+    "settingsAllowMediaManagement",
     "tagEditorSectionPlaceholders",
     "tagPlaceholderCountry",
     "tagPlaceholderPlace"
