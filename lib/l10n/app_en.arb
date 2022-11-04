@@ -760,6 +760,7 @@
   "settingsSaveSearchHistory": "Save search history",
   "settingsEnableBin": "Use recycle bin",
   "settingsEnableBinSubtitle": "Keep deleted items for 30 days",
+  "settingsAllowMediaManagement": "Allow media management",
 
   "settingsHiddenItemsTile": "Hidden items",
   "settingsHiddenItemsPageTitle": "Hidden Items",
