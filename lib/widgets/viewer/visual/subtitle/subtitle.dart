@@ -1,5 +1,6 @@
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/common/basic/outlined_text.dart';
+import 'package:aves/widgets/common/basic/text_background_painter.dart';
 import 'package:aves/widgets/viewer/video/controller.dart';
 import 'package:aves/widgets/viewer/visual/state.dart';
 import 'package:aves/widgets/viewer/visual/subtitle/ass_parser.dart';
@@ -42,7 +43,6 @@ class VideoSubtitles extends StatelessWidget {
           ];
           final baseStyle = TextStyle(
             color: settings.subtitleTextColor,
-            backgroundColor: settings.subtitleBackgroundColor,
             fontSize: settings.subtitleFontSize,
             shadows: settings.subtitleShowOutline ? baseShadows : null,
           );
@@ -243,7 +243,14 @@ class VideoSubtitles extends StatelessWidget {
                               padding: const EdgeInsets.symmetric(horizontal: 8),
                               child: Align(
                                 alignment: Alignment(alignX, alignY),
-                                child: child,
+                                child: TextBackgroundPainter(
+                                  spans: spans,
+                                  style: DefaultTextStyle.of(context).style.merge(spans.first.style!.copyWith(
+                                        backgroundColor: settings.subtitleBackgroundColor,
+                                      )),
+                                  textAlign: textAlign,
+                                  child: child,
+                                ),
                               ),
                             );
                           }
