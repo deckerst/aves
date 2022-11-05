@@ -1,4 +1,6 @@
-# cf guide: http://flutter.dev/go/i18n-user-guide
+# cf guides:
+# http://flutter.dev/go/i18n-user-guide
+# https://docs.flutter.dev/development/accessibility-and-localization/internationalization
 
 # use defaults to:
 # - parse ARB files from `lib/l10n`

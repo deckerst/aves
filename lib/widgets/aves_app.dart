@@ -48,6 +48,9 @@ import 'package:tuple/tuple.dart';
 class AvesApp extends StatefulWidget {
   final AppFlavor flavor;
 
+  // temporary exclude locales not ready yet for prime time
+  static final _unsupportedLocales = {'fa', 'gl', 'nb', 'pl'}.map(Locale.new).toSet();
+  static final List<Locale> supportedLocales = AppLocalizations.supportedLocales.where((v) => !_unsupportedLocales.contains(v)).toList();
   static final GlobalKey<NavigatorState> navigatorKey = GlobalKey(debugLabel: 'app-navigator');
 
   // do not monitor all `ModalRoute`s, which would include popup menus,
@@ -225,7 +228,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
                                 themeMode: themeBrightness.appThemeMode,
                                 locale: settingsLocale,
                                 localizationsDelegates: AppLocalizations.localizationsDelegates,
-                                supportedLocales: AppLocalizations.supportedLocales,
+                                supportedLocales: AvesApp.supportedLocales,
                                 // TODO TLAD remove custom scroll behavior when this is fixed: https://github.com/flutter/flutter/issues/82906
                                 scrollBehavior: StretchMaterialScrollBehavior(),
                               );
