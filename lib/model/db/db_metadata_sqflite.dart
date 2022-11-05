@@ -100,7 +100,7 @@ class SqfliteMetadataDb implements MetadataDb {
             ')');
       },
       onUpgrade: MetadataDbUpgrader.upgradeDb,
-      version: 9,
+      version: 10,
     );
 
     final maxIdRows = await _db.rawQuery('SELECT max(id) AS maxId FROM $entryTable');
