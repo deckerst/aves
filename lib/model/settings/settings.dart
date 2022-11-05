@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
-import 'package:aves/l10n/l10n.dart';
 import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/actions/entry_set_actions.dart';
 import 'package:aves/model/filters/filters.dart';
@@ -12,6 +11,7 @@ import 'package:aves/model/settings/enums/map_style.dart';
 import 'package:aves/model/source/enums/enums.dart';
 import 'package:aves/services/common/optional_event_channel.dart';
 import 'package:aves/services/common/services.dart';
+import 'package:aves/widgets/aves_app.dart';
 import 'package:aves_map/aves_map.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -283,7 +283,7 @@ class Settings extends ChangeNotifier {
           preferredLocales.addAll(_systemLocalesFallback);
         }
       }
-      _appliedLocale = basicLocaleListResolution(preferredLocales, AppLocalizations.supportedLocales);
+      _appliedLocale = basicLocaleListResolution(preferredLocales, AvesApp.supportedLocales);
     }
     return _appliedLocale!;
   }

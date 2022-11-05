@@ -16,14 +16,7 @@
   ],
 
   "es": [
-    "widgetOpenPageHome",
-    "widgetOpenPageCollection",
-    "widgetOpenPageViewer",
-    "editEntryLocationDialogSetCustom",
-    "settingsAllowMediaManagement",
-    "tagEditorSectionPlaceholders",
-    "tagPlaceholderCountry",
-    "tagPlaceholderPlace"
+    "settingsAllowMediaManagement"
   ],
 
   "fa": [
@@ -608,14 +601,6 @@
     "filePickerUseThisFolder"
   ],
 
-  "fr": [
-    "editEntryLocationDialogSetCustom",
-    "settingsAllowMediaManagement",
-    "tagEditorSectionPlaceholders",
-    "tagPlaceholderCountry",
-    "tagPlaceholderPlace"
-  ],
-
   "gl": [
     "accessibilityAnimationsRemove",
     "accessibilityAnimationsKeep",
@@ -1089,6 +1074,7 @@
   ],
 
   "it": [
+    "widgetOpenPageCollection",
     "editEntryLocationDialogSetCustom",
     "settingsAllowMediaManagement",
     "tagEditorSectionPlaceholders",
@@ -1131,14 +1117,6 @@
     "statsTopAlbumsSectionTitle",
     "viewerInfoLabelDescription",
     "wallpaperUseScrollEffect",
-    "tagEditorSectionPlaceholders",
-    "tagPlaceholderCountry",
-    "tagPlaceholderPlace"
-  ],
-
-  "ko": [
-    "editEntryLocationDialogSetCustom",
-    "settingsAllowMediaManagement",
     "tagEditorSectionPlaceholders",
     "tagPlaceholderCountry",
     "tagPlaceholderPlace"
@@ -1768,11 +1746,7 @@
   ],
 
   "ru": [
-    "editEntryLocationDialogSetCustom",
-    "settingsAllowMediaManagement",
-    "tagEditorSectionPlaceholders",
-    "tagPlaceholderCountry",
-    "tagPlaceholderPlace"
+    "settingsAllowMediaManagement"
   ],
 
   "tr": [
