@@ -1,1 +1,1 @@
-Gallery and metadata explorer
+Медиа галерея с навигацией по метаданным

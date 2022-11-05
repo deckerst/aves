@@ -1146,5 +1146,13 @@
   "durationDialogSeconds": "Секунд",
   "@durationDialogSeconds": {},
   "widgetOpenPageCollection": "Открыть коллекцию",
-  "@widgetOpenPageCollection": {}
+  "@widgetOpenPageCollection": {},
+  "tagPlaceholderCountry": "Страна",
+  "@tagPlaceholderCountry": {},
+  "tagEditorSectionPlaceholders": "Закладки",
+  "@tagEditorSectionPlaceholders": {},
+  "tagPlaceholderPlace": "Место",
+  "@tagPlaceholderPlace": {},
+  "editEntryLocationDialogSetCustom": "Редактировать местоположение",
+  "@editEntryLocationDialogSetCustom": {}
 }
