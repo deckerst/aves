@@ -1146,5 +1146,15 @@
   "filePickerNoItems": "Aucun élément",
   "@filePickerNoItems": {},
   "filePickerUseThisFolder": "Utiliser ce dossier",
-  "@filePickerUseThisFolder": {}
+  "@filePickerUseThisFolder": {},
+  "editEntryLocationDialogSetCustom": "Définir un lieu personnalisé",
+  "@editEntryLocationDialogSetCustom": {},
+  "tagEditorSectionPlaceholders": "Libellés de substitution",
+  "@tagEditorSectionPlaceholders": {},
+  "tagPlaceholderPlace": "Lieu",
+  "@tagPlaceholderPlace": {},
+  "tagPlaceholderCountry": "Pays",
+  "@tagPlaceholderCountry": {},
+  "settingsAllowMediaManagement": "Autoriser la gestion des médias",
+  "@settingsAllowMediaManagement": {}
 }

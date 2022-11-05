@@ -1143,8 +1143,6 @@
   "@filePickerNoItems": {},
   "filePickerUseThisFolder": "Usa questa cartella",
   "@filePickerUseThisFolder": {},
-  "widgetOpenPageCollection": "Collezione aperta",
-  "@widgetOpenPageCollection": {},
   "durationDialogSeconds": "Secondi",
   "@durationDialogSeconds": {}
 }
