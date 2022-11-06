@@ -19,22 +19,24 @@ class TiffRegionFetcher internal constructor(
         result: MethodChannel.Result,
     ) {
         try {
-            @Suppress("BlockingMethodInNonBlockingContext")
-            val fd = context.contentResolver.openFileDescriptor(uri, "r")?.detachFd()
-            if (fd == null) {
+            val pfd = context.contentResolver.openFileDescriptor(uri, "r")
+            if (pfd == null) {
                 result.error("getRegion-tiff-fd", "failed to get file descriptor for uri=$uri", null)
                 return
             }
-            val options = TiffBitmapFactory.Options().apply {
-                inDirectoryNumber = page
-                inSampleSize = sampleSize
-                inDecodeArea = DecodeArea(regionRect.left, regionRect.top, regionRect.width(), regionRect.height())
-            }
-            val bitmap = TiffBitmapFactory.decodeFileDescriptor(fd, options)
-            if (bitmap != null) {
-                result.success(bitmap.getBytes(canHaveAlpha = true, recycle = true))
-            } else {
-                result.error("getRegion-tiff-null", "failed to decode region for uri=$uri page=$page regionRect=$regionRect", null)
+            pfd.use {
+                val fd = pfd.detachFd()
+                val options = TiffBitmapFactory.Options().apply {
+                    inDirectoryNumber = page
+                    inSampleSize = sampleSize
+                    inDecodeArea = DecodeArea(regionRect.left, regionRect.top, regionRect.width(), regionRect.height())
+                }
+                val bitmap = TiffBitmapFactory.decodeFileDescriptor(fd, options)
+                if (bitmap != null) {
+                    result.success(bitmap.getBytes(canHaveAlpha = true, recycle = true))
+                } else {
+                    result.error("getRegion-tiff-null", "failed to decode region for uri=$uri page=$page regionRect=$regionRect", null)
+                }
             }
         } catch (e: Exception) {
             result.error("getRegion-tiff-read-exception", "failed to read from uri=$uri page=$page regionRect=$regionRect", e.message)
