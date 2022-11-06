@@ -49,11 +49,7 @@ class SafeXmpReader : XmpReader() {
         extendedXMPBuffer?.let { xmpBytes ->
             val totalSize = xmpBytes.size
             if (totalSize > segmentTypeSizeDangerThreshold) {
-                val error = "Extended XMP is too large, with a total size of $totalSize B"
-                Log.w(LOG_TAG, error)
-                metadata.addDirectory(XmpDirectory().apply {
-                    addError(error)
-                })
+                logError(metadata, totalSize)
             } else {
                 extract(xmpBytes, metadata)
             }
@@ -99,7 +95,7 @@ class SafeXmpReader : XmpReader() {
         return null
     }
 
-    // adapted from `XmpReader` because original is private
+    // adapted from `XmpReader` to prevent large allocation
     private fun processExtendedXMPChunk(metadata: Metadata, segmentBytes: ByteArray, extendedXMPGUID: String, extendedXMPBufferIn: ByteArray?): ByteArray? {
         var extendedXMPBuffer: ByteArray? = extendedXMPBufferIn
         val extensionPreambleLength = XMP_EXTENSION_JPEG_PREAMBLE.length
@@ -113,7 +109,15 @@ class SafeXmpReader : XmpReader() {
                 if (extendedXMPGUID == segmentGUID) {
                     val fullLength = reader.uInt32.toInt()
                     val chunkOffset = reader.uInt32.toInt()
-                    if (extendedXMPBuffer == null) extendedXMPBuffer = ByteArray(fullLength)
+                    if (extendedXMPBuffer == null) {
+                        // TLAD insert start
+                        if (fullLength > segmentTypeSizeDangerThreshold) {
+                            logError(metadata, fullLength)
+                            return null
+                        }
+                        // TLAD insert end
+                        extendedXMPBuffer = ByteArray(fullLength)
+                    }
                     if (extendedXMPBuffer.size == fullLength) {
                         System.arraycopy(segmentBytes, totalOffset, extendedXMPBuffer, chunkOffset, segmentLength - totalOffset)
                     } else {
@@ -129,6 +133,14 @@ class SafeXmpReader : XmpReader() {
             }
         }
         return extendedXMPBuffer
+    }
+
+    private fun logError(metadata: Metadata, size: Int) {
+        val error = "Extended XMP is too large, with a size of $size B"
+        Log.w(LOG_TAG, error)
+        metadata.addDirectory(XmpDirectory().apply {
+            addError(error)
+        })
     }
 
     companion object {
