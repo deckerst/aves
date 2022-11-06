@@ -51,6 +51,8 @@ class AvesDialog extends StatelessWidget {
       actions: actions,
       actionsPadding: actionsPadding,
       buttonPadding: buttonPadding,
+      // clipping to prevent highlighted material to bleed through rounded corners
+      clipBehavior: Clip.antiAlias,
       shape: shape(context),
     );
   }
@@ -74,7 +76,8 @@ class AvesDialog extends StatelessWidget {
               thumbVisibility: MaterialStateProperty.all(true),
               radius: const Radius.circular(16),
               crossAxisMargin: 4,
-              mainAxisMargin: 4,
+              // adapt margin when corner is around content itself, not outside for the title
+              mainAxisMargin: 4 + (title != null ? 0 : cornerRadius.y / 2),
               interactive: true,
             ),
           ),
