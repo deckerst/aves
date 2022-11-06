@@ -100,7 +100,8 @@ class VideoMetadataFormatter {
       }
     }
 
-    if (dateMillis != null) {
+    // exclude date if it is suspiciously close to epoch
+    if (dateMillis != null && !DateTime.fromMillisecondsSinceEpoch(dateMillis).isAtSameDayAs(epoch)) {
       return (entry.catalogMetadata ?? CatalogMetadata(id: entry.id)).copyWith(
         dateMillis: dateMillis,
       );
