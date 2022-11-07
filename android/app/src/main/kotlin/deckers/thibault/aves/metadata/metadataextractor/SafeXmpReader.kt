@@ -48,7 +48,7 @@ class SafeXmpReader : XmpReader() {
 
         extendedXMPBuffer?.let { xmpBytes ->
             val totalSize = xmpBytes.size
-            if (totalSize > segmentTypeSizeDangerThreshold) {
+            if (totalSize > SEGMENT_TYPE_SIZE_DANGER_THRESHOLD) {
                 logError(metadata, totalSize)
             } else {
                 extract(xmpBytes, metadata)
@@ -111,7 +111,7 @@ class SafeXmpReader : XmpReader() {
                     val chunkOffset = reader.uInt32.toInt()
                     if (extendedXMPBuffer == null) {
                         // TLAD insert start
-                        if (fullLength > segmentTypeSizeDangerThreshold) {
+                        if (fullLength > SEGMENT_TYPE_SIZE_DANGER_THRESHOLD) {
                             logError(metadata, fullLength)
                             return null
                         }
@@ -147,7 +147,7 @@ class SafeXmpReader : XmpReader() {
         private val LOG_TAG = LogUtils.createTag<SafeXmpReader>()
 
         // arbitrary size to detect extended XMP that may yield an OOM
-        const val segmentTypeSizeDangerThreshold = 3 * (1 shl 20) // MB
+        const val SEGMENT_TYPE_SIZE_DANGER_THRESHOLD = 3 * (1 shl 20) // MB
 
         // tighter node limits for faster loading
         val PARSE_OPTIONS: ParseOptions = ParseOptions().setXMPNodesToLimit(
