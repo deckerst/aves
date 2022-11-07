@@ -42,6 +42,7 @@ class RegionProvider extends ImageProvider<RegionProviderKey> {
         key.region,
         key.imageSize,
         pageId: pageId,
+        sizeBytes: key.sizeBytes,
         taskKey: key,
       );
       if (bytes.isEmpty) {
@@ -70,7 +71,7 @@ class RegionProviderKey extends Equatable {
   // do not store the entry as it is, because the key should be constant
   // but the entry attributes may change over time
   final String uri, mimeType;
-  final int? pageId;
+  final int? pageId, sizeBytes;
   final int rotationDegrees, sampleSize;
   final bool isFlipped;
   final Rectangle<int> region;
@@ -83,13 +84,11 @@ class RegionProviderKey extends Equatable {
     required this.uri,
     required this.mimeType,
     required this.pageId,
+    required this.sizeBytes,
     required this.rotationDegrees,
     required this.isFlipped,
     required this.sampleSize,
     required this.region,
     required this.imageSize,
   });
-
-  @override
-  String toString() => '$runtimeType#${shortHash(this)}{uri=$uri, mimeType=$mimeType, pageId=$pageId, rotationDegrees=$rotationDegrees, isFlipped=$isFlipped, sampleSize=$sampleSize, region=$region, imageSize=$imageSize}';
 }

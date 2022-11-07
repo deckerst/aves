@@ -52,8 +52,8 @@ class UriImage extends ImageProvider<UriImage> with EquatableMixin {
       final bytes = await mediaFetchService.getImage(
         uri,
         mimeType,
-        rotationDegrees,
-        isFlipped,
+        rotationDegrees: rotationDegrees,
+        isFlipped: isFlipped,
         pageId: pageId,
         sizeBytes: sizeBytes,
         onBytesReceived: (cumulative, total) {
@@ -76,7 +76,4 @@ class UriImage extends ImageProvider<UriImage> with EquatableMixin {
       unawaited(chunkEvents.close());
     }
   }
-
-  @override
-  String toString() => '$runtimeType#${shortHash(this)}{uri=$uri, mimeType=$mimeType, rotationDegrees=$rotationDegrees, isFlipped=$isFlipped, pageId=$pageId, scale=$scale}';
 }

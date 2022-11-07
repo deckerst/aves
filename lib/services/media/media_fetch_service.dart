@@ -17,17 +17,17 @@ abstract class MediaFetchService {
   Future<Uint8List> getSvg(
     String uri,
     String mimeType, {
-    int? expectedContentLength,
+    required int? sizeBytes,
     BytesReceivedCallback? onBytesReceived,
   });
 
   Future<Uint8List> getImage(
     String uri,
-    String mimeType,
-    int? rotationDegrees,
-    bool isFlipped, {
-    int? pageId,
-    int? sizeBytes,
+    String mimeType, {
+    required int? rotationDegrees,
+    required bool isFlipped,
+    required int? pageId,
+    required int? sizeBytes,
     BytesReceivedCallback? onBytesReceived,
   });
 
@@ -40,7 +40,8 @@ abstract class MediaFetchService {
     int sampleSize,
     Rectangle<int> regionRect,
     Size imageSize, {
-    int? pageId,
+    required int? pageId,
+    required int? sizeBytes,
     Object? taskKey,
     int? priority,
   });
@@ -93,26 +94,27 @@ class PlatformMediaFetchService implements MediaFetchService {
   Future<Uint8List> getSvg(
     String uri,
     String mimeType, {
-    int? expectedContentLength,
+    required int? sizeBytes,
     BytesReceivedCallback? onBytesReceived,
   }) =>
       getImage(
         uri,
         mimeType,
-        0,
-        false,
-        sizeBytes: expectedContentLength,
+        rotationDegrees: 0,
+        isFlipped: false,
+        pageId: null,
+        sizeBytes: sizeBytes,
         onBytesReceived: onBytesReceived,
       );
 
   @override
   Future<Uint8List> getImage(
     String uri,
-    String mimeType,
-    int? rotationDegrees,
-    bool isFlipped, {
-    int? pageId,
-    int? sizeBytes,
+    String mimeType, {
+    required int? rotationDegrees,
+    required bool isFlipped,
+    required int? pageId,
+    required int? sizeBytes,
     BytesReceivedCallback? onBytesReceived,
   }) async {
     try {
@@ -166,7 +168,8 @@ class PlatformMediaFetchService implements MediaFetchService {
     int sampleSize,
     Rectangle<int> regionRect,
     Size imageSize, {
-    int? pageId,
+    required int? pageId,
+    required int? sizeBytes,
     Object? taskKey,
     int? priority,
   }) {
@@ -176,6 +179,7 @@ class PlatformMediaFetchService implements MediaFetchService {
           final result = await _platformBytes.invokeMethod('getRegion', <String, dynamic>{
             'uri': uri,
             'mimeType': mimeType,
+            'sizeBytes': sizeBytes,
             'pageId': pageId,
             'sampleSize': sampleSize,
             'regionX': regionRect.left,
