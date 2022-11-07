@@ -15,7 +15,7 @@ object BitmapUtils {
     private const val INITIAL_BUFFER_SIZE = 2 shl 17 // 256kB
 
     // arbitrary size to detect buffer that may yield an OOM
-    private const val BUFFER_SIZE_DANGER_THRESHOLD = 10 * (1 shl 20) // MB
+    private const val BUFFER_SIZE_DANGER_THRESHOLD = 3 * (1 shl 20) // MB
 
     private val freeBaos = ArrayList<ByteArrayOutputStream>()
     private val mutex = Mutex()
@@ -44,11 +44,8 @@ object BitmapUtils {
             if (recycle) this.recycle()
 
             val bufferSize = stream.size()
-            if (bufferSize > BUFFER_SIZE_DANGER_THRESHOLD) {
-                val availableHeapSize = Runtime.getRuntime().let { it.maxMemory() - (it.totalMemory() - it.freeMemory()) }
-                if (bufferSize > availableHeapSize) {
-                    throw Exception("compressed bitmap to $bufferSize bytes, which cannot be allocated to a new byte array, with only $availableHeapSize free bytes")
-                }
+            if (bufferSize > BUFFER_SIZE_DANGER_THRESHOLD && !MemoryUtils.canAllocate(bufferSize)) {
+                throw Exception("bitmap compressed to $bufferSize bytes, which cannot be allocated to a new byte array")
             }
 
             val byteArray = stream.toByteArray()

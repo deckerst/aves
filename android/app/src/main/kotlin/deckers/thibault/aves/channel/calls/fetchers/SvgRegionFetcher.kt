@@ -12,6 +12,7 @@ import com.caverock.androidsvg.SVG
 import com.caverock.androidsvg.SVGParseException
 import deckers.thibault.aves.metadata.SvgHelper.normalizeSize
 import deckers.thibault.aves.utils.BitmapUtils.getBytes
+import deckers.thibault.aves.utils.MemoryUtils
 import deckers.thibault.aves.utils.StorageUtils
 import io.flutter.plugin.common.MethodChannel
 import kotlin.math.ceil
@@ -29,13 +30,10 @@ class SvgRegionFetcher internal constructor(
         imageHeight: Int,
         result: MethodChannel.Result,
     ) {
-        if (sizeBytes != null && sizeBytes > FILE_SIZE_DANGER_THRESHOLD) {
-            val availableHeapSize = Runtime.getRuntime().let { it.maxMemory() - (it.totalMemory() - it.freeMemory()) }
-            if (sizeBytes > availableHeapSize) {
-                // opening an SVG that large would yield an OOM during parsing from `com.caverock.androidsvg.SVGParser`
-                result.error("fetch-read-large", "SVG too large at $sizeBytes bytes, with only $availableHeapSize free bytes, for uri=$uri regionRect=$regionRect", null)
-                return
-            }
+        if (!MemoryUtils.canAllocate(sizeBytes)) {
+            // opening an SVG that large would yield an OOM during parsing from `com.caverock.androidsvg.SVGParser`
+            result.error("fetch-read-large", "SVG too large at $sizeBytes bytes, for uri=$uri regionRect=$regionRect", null)
+            return
         }
 
         var currentSvgRef = lastSvgRef
@@ -113,9 +111,4 @@ class SvgRegionFetcher internal constructor(
         val uri: Uri,
         val svg: SVG,
     )
-
-    companion object {
-        // arbitrary size to detect files that may yield an OOM
-        private const val FILE_SIZE_DANGER_THRESHOLD = 10 * (1 shl 20) // MB
-    }
 }
