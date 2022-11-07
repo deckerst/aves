@@ -45,9 +45,9 @@ object BitmapUtils {
 
             val bufferSize = stream.size()
             if (bufferSize > BUFFER_SIZE_DANGER_THRESHOLD) {
-                val availHeapSize = Runtime.getRuntime().let { it.maxMemory() - (it.totalMemory() - it.freeMemory()) }
-                if (bufferSize > availHeapSize) {
-                    throw Exception("compressed bitmap to $bufferSize bytes, which cannot be allocated to a new byte array, with only $availHeapSize free bytes")
+                val availableHeapSize = Runtime.getRuntime().let { it.maxMemory() - (it.totalMemory() - it.freeMemory()) }
+                if (bufferSize > availableHeapSize) {
+                    throw Exception("compressed bitmap to $bufferSize bytes, which cannot be allocated to a new byte array, with only $availableHeapSize free bytes")
                 }
             }
 

@@ -68,6 +68,7 @@ class MediaFetchBytesHandler(private val context: Context) : MethodCallHandler {
         val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
         val mimeType = call.argument<String>("mimeType")
         val pageId = call.argument<Int>("pageId")
+        val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
         val sampleSize = call.argument<Int>("sampleSize")
         val x = call.argument<Int>("regionX")
         val y = call.argument<Int>("regionY")
@@ -85,6 +86,7 @@ class MediaFetchBytesHandler(private val context: Context) : MethodCallHandler {
         when (mimeType) {
             MimeTypes.SVG -> SvgRegionFetcher(context).fetch(
                 uri = uri,
+                sizeBytes = sizeBytes,
                 regionRect = regionRect,
                 imageWidth = imageWidth,
                 imageHeight = imageHeight,
