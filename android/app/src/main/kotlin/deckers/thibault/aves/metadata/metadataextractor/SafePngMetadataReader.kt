@@ -28,7 +28,7 @@ object SafePngMetadataReader {
     private val LOG_TAG = LogUtils.createTag<SafePngMetadataReader>()
 
     // arbitrary size to detect chunks that may yield an OOM
-    private const val chunkSizeDangerThreshold = SafeXmpReader.segmentTypeSizeDangerThreshold
+    private const val chunkSizeDangerThreshold = SafeXmpReader.SEGMENT_TYPE_SIZE_DANGER_THRESHOLD
 
     private val latin1Encoding = Charsets.ISO_8859_1
     private val desiredChunkTypes: Set<PngChunkType> = hashSetOf(

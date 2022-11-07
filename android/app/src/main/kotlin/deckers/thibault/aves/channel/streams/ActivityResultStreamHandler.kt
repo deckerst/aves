@@ -188,7 +188,7 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
     }
 
     private fun pickCollectionFilters() {
-        val initialFilters = (args["initialFilters"] as List<*>?)?.mapNotNull { if (it is String) it else null } ?: listOf()
+        val initialFilters = (args["initialFilters"] as? List<*>)?.mapNotNull { if (it is String) it else null } ?: listOf()
         val intent = Intent(MainActivity.INTENT_ACTION_PICK_COLLECTION_FILTERS, null, activity, MainActivity::class.java)
             .putExtra(MainActivity.EXTRA_KEY_FILTERS_ARRAY, initialFilters.toTypedArray())
             .putExtra(MainActivity.EXTRA_KEY_FILTERS_STRING, initialFilters.joinToString(MainActivity.EXTRA_STRING_ARRAY_SEPARATOR))
