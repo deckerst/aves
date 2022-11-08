@@ -3,7 +3,7 @@ if [ ! -d "scripts" ]; then
   cd ..
 fi
 
-PUBSPEC_PATH="../pubspec.yaml"
+PUBSPEC_PATH="pubspec.yaml"
 
 flutter clean
 
