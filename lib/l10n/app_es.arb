@@ -1154,5 +1154,7 @@
   "tagPlaceholderPlace": "Lugar",
   "@tagPlaceholderPlace": {},
   "tagEditorSectionPlaceholders": "Marcadores de la posición",
-  "@tagEditorSectionPlaceholders": {}
+  "@tagEditorSectionPlaceholders": {},
+  "settingsAllowMediaManagement": "Permitir la gestión de medios",
+  "@settingsAllowMediaManagement": {}
 }
