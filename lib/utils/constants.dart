@@ -76,27 +76,15 @@ class Constants {
 
   static const List<Dependency> androidDependencies = [
     Dependency(
-      name: 'AndroidX Core-KTX',
-      license: apache2,
-      licenseUrl: 'https://android.googlesource.com/platform/frameworks/support/+/androidx-main/LICENSE.txt',
-      sourceUrl: 'https://android.googlesource.com/platform/frameworks/support/+/androidx-main/core/core-ktx',
-    ),
-    Dependency(
-      name: 'AndroidX Exifinterface',
-      license: apache2,
-      licenseUrl: 'https://android.googlesource.com/platform/frameworks/support/+/androidx-main/LICENSE.txt',
-      sourceUrl: 'https://android.googlesource.com/platform/frameworks/support/+/androidx-main/exifinterface/exifinterface',
-    ),
-    Dependency(
       name: 'AndroidSVG',
       license: apache2,
       sourceUrl: 'https://github.com/BigBadaboom/androidsvg',
     ),
     Dependency(
-      name: 'Android-TiffBitmapFactory (Aves fork)',
-      license: mit,
-      licenseUrl: 'https://github.com/deckerst/Android-TiffBitmapFactory/blob/master/license.txt',
-      sourceUrl: 'https://github.com/deckerst/Android-TiffBitmapFactory',
+      name: 'AndroidX (Core Kotlin, Exifinterface, Lifecycle Process, Multidex)',
+      license: apache2,
+      licenseUrl: 'https://android.googlesource.com/platform/frameworks/support/+/androidx-main/LICENSE.txt',
+      sourceUrl: 'https://android.googlesource.com/platform/frameworks/support/+/androidx-main/core/core-ktx',
     ),
     Dependency(
       name: 'CWAC-Document',
@@ -122,6 +110,12 @@ class Constants {
       name: 'PixyMeta Android (Aves fork)',
       license: eclipse1,
       sourceUrl: 'https://github.com/deckerst/pixymeta-android',
+    ),
+    Dependency(
+      name: 'Tiff Bitmap Factory (Aves fork)',
+      license: mit,
+      licenseUrl: 'https://github.com/deckerst/Android-TiffBitmapFactory/blob/master/license.txt',
+      sourceUrl: 'https://github.com/deckerst/Android-TiffBitmapFactory',
     ),
   ];
 
