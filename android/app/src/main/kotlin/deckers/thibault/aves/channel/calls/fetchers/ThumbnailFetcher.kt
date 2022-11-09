@@ -39,6 +39,7 @@ class ThumbnailFetcher internal constructor(
     height: Int?,
     private val pageId: Int?,
     private val defaultSize: Int,
+    private val quality: Int,
     private val result: MethodChannel.Result,
 ) {
     private val uri: Uri = Uri.parse(uri)
@@ -79,7 +80,7 @@ class ThumbnailFetcher internal constructor(
         }
 
         if (bitmap != null) {
-            result.success(bitmap.getBytes(MimeTypes.canHaveAlpha(mimeType), recycle = false))
+            result.success(bitmap.getBytes(MimeTypes.canHaveAlpha(mimeType), recycle = false, quality = quality))
         } else {
             var errorDetails: String? = exception?.message
             if (errorDetails?.isNotEmpty() == true) {
@@ -119,7 +120,7 @@ class ThumbnailFetcher internal constructor(
     private fun getByGlide(): Bitmap? {
         // add signature to ignore cache for images which got modified but kept the same URI
         var options = RequestOptions()
-            .format(DecodeFormat.PREFER_RGB_565)
+            .format(if (quality == 100) DecodeFormat.PREFER_ARGB_8888 else DecodeFormat.PREFER_RGB_565)
             .signature(ObjectKey("$dateModifiedSecs-$rotationDegrees-$isFlipped-$width-$pageId"))
             .override(width, height)
 

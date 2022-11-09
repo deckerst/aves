@@ -227,6 +227,7 @@ class PlatformMediaFetchService implements MediaFetchService {
             'heightDip': extent,
             'pageId': pageId,
             'defaultSizeDip': _thumbnailDefaultSize,
+            'quality': 100,
           });
           if (result != null) return result as Uint8List;
         } on PlatformException catch (e, stack) {
