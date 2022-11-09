@@ -19,10 +19,10 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.request.RequestOptions
 import deckers.thibault.aves.MainActivity
-import deckers.thibault.aves.MainActivity.Companion.EXTRA_STRING_ARRAY_SEPARATOR
 import deckers.thibault.aves.MainActivity.Companion.EXTRA_KEY_FILTERS_ARRAY
 import deckers.thibault.aves.MainActivity.Companion.EXTRA_KEY_FILTERS_STRING
 import deckers.thibault.aves.MainActivity.Companion.EXTRA_KEY_PAGE
+import deckers.thibault.aves.MainActivity.Companion.EXTRA_STRING_ARRAY_SEPARATOR
 import deckers.thibault.aves.R
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safeSuspend
@@ -159,7 +159,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
                     .build()
 
                 val options = RequestOptions()
-                    .format(DecodeFormat.PREFER_RGB_565)
+                    .format(DecodeFormat.PREFER_ARGB_8888)
                     .override(size, size)
                 val target = Glide.with(context)
                     .asBitmap()

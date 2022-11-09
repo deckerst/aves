@@ -42,8 +42,9 @@ class MediaFetchBytesHandler(private val context: Context) : MethodCallHandler {
         val heightDip = call.argument<Number>("heightDip")?.toDouble()
         val pageId = call.argument<Int>("pageId")
         val defaultSizeDip = call.argument<Number>("defaultSizeDip")?.toDouble()
+        val quality = call.argument<Int>("quality")
 
-        if (uri == null || mimeType == null || dateModifiedSecs == null || rotationDegrees == null || isFlipped == null || widthDip == null || heightDip == null || defaultSizeDip == null) {
+        if (uri == null || mimeType == null || dateModifiedSecs == null || rotationDegrees == null || isFlipped == null || widthDip == null || heightDip == null || defaultSizeDip == null || quality == null) {
             result.error("getThumbnail-args", "missing arguments", null)
             return
         }
@@ -60,6 +61,7 @@ class MediaFetchBytesHandler(private val context: Context) : MethodCallHandler {
             height = (heightDip * density).roundToInt(),
             pageId = pageId,
             defaultSize = (defaultSizeDip * density).roundToInt(),
+            quality = quality,
             result = result,
         ).fetch()
     }

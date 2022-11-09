@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:aves/app_flavor.dart';
 import 'package:aves/flutter_version.dart';
+import 'package:aves/model/device.dart';
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/ref/mime_types.dart';
@@ -149,6 +150,7 @@ class _BugReportState extends State<BugReport> with FeedbackMixin {
       'Android version: ${androidInfo.version.release} (SDK ${androidInfo.version.sdkInt})',
       'Android build: ${androidInfo.display}',
       'Device: ${androidInfo.manufacturer} ${androidInfo.model}',
+      'Geocoder: ${device.hasGeocoder ? 'ready' : 'not available'}',
       'Mobile services: ${mobileServices.isServiceAvailable ? 'ready' : 'not available'}',
       'System locales: ${WidgetsBinding.instance.window.locales.join(', ')}',
       'Aves locale: ${settings.locale ?? 'system'} -> ${settings.appliedLocale}',
