@@ -14,6 +14,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
+- higher quality thumbnails
 - upgraded Flutter to stable v3.3.7
 
 ### Fixed
