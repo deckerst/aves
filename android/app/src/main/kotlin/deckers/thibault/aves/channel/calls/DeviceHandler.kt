@@ -3,6 +3,7 @@ package deckers.thibault.aves.channel.calls
 import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
+import android.location.Geocoder
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
@@ -43,6 +44,7 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
                 "canRenderFlagEmojis" to (sdkInt >= Build.VERSION_CODES.LOLLIPOP),
                 "canRequestManageMedia" to (sdkInt >= Build.VERSION_CODES.S),
                 "canSetLockScreenWallpaper" to (sdkInt >= Build.VERSION_CODES.N),
+                "hasGeocoder" to Geocoder.isPresent(),
                 "isDynamicColorAvailable" to (sdkInt >= Build.VERSION_CODES.S),
                 "showPinShortcutFeedback" to (sdkInt >= Build.VERSION_CODES.O),
                 "supportEdgeToEdgeUIMode" to (sdkInt >= Build.VERSION_CODES.Q),
