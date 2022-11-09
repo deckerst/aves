@@ -6,7 +6,7 @@ final Device device = Device._private();
 class Device {
   late final String _userAgent;
   late final bool _canGrantDirectoryAccess, _canPinShortcut, _canPrint, _canRenderFlagEmojis, _canRequestManageMedia, _canSetLockScreenWallpaper;
-  late final bool _isDynamicColorAvailable, _showPinShortcutFeedback, _supportEdgeToEdgeUIMode;
+  late final bool _hasGeocoder, _isDynamicColorAvailable, _showPinShortcutFeedback, _supportEdgeToEdgeUIMode;
 
   String get userAgent => _userAgent;
 
@@ -21,6 +21,8 @@ class Device {
   bool get canRequestManageMedia => _canRequestManageMedia;
 
   bool get canSetLockScreenWallpaper => _canSetLockScreenWallpaper;
+
+  bool get hasGeocoder => _hasGeocoder;
 
   bool get isDynamicColorAvailable => _isDynamicColorAvailable;
 
@@ -41,6 +43,7 @@ class Device {
     _canRenderFlagEmojis = capabilities['canRenderFlagEmojis'] ?? false;
     _canRequestManageMedia = capabilities['canRequestManageMedia'] ?? false;
     _canSetLockScreenWallpaper = capabilities['canSetLockScreenWallpaper'] ?? false;
+    _hasGeocoder = capabilities['hasGeocoder'] ?? false;
     _isDynamicColorAvailable = capabilities['isDynamicColorAvailable'] ?? false;
     _showPinShortcutFeedback = capabilities['showPinShortcutFeedback'] ?? false;
     _supportEdgeToEdgeUIMode = capabilities['supportEdgeToEdgeUIMode'] ?? false;
