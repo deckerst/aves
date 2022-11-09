@@ -15,10 +15,6 @@
     "tagPlaceholderPlace"
   ],
 
-  "es": [
-    "settingsAllowMediaManagement"
-  ],
-
   "fa": [
     "appName",
     "welcomeMessage",
@@ -1073,53 +1069,13 @@
     "tagPlaceholderPlace"
   ],
 
-  "it": [
-    "widgetOpenPageCollection",
-    "editEntryLocationDialogSetCustom",
-    "settingsAllowMediaManagement",
-    "tagEditorSectionPlaceholders",
-    "tagPlaceholderCountry",
-    "tagPlaceholderPlace"
-  ],
-
   "ja": [
     "chipActionFilterOut",
     "chipActionFilterIn",
-    "entryInfoActionEditTitleDescription",
-    "filterNoDateLabel",
-    "filterNoTitleLabel",
-    "filterRecentlyAddedLabel",
-    "viewerTransitionNone",
-    "widgetOpenPageHome",
-    "widgetOpenPageCollection",
-    "widgetOpenPageViewer",
-    "durationDialogSeconds",
     "editEntryLocationDialogSetCustom",
-    "viewDialogReverseSortOrder",
-    "tileLayoutMosaic",
-    "sortOrderNewestFirst",
-    "sortOrderOldestFirst",
-    "sortOrderAtoZ",
-    "sortOrderZtoA",
-    "sortOrderHighestFirst",
-    "sortOrderLowestFirst",
-    "sortOrderLargestFirst",
-    "sortOrderSmallestFirst",
     "albumGroupType",
     "albumMimeTypeMixed",
-    "searchMetadataSectionTitle",
-    "settingsDisabled",
-    "settingsConfirmationAfterMoveToBinItems",
-    "settingsViewerGestureSideTapNext",
-    "settingsSlideshowAnimatedZoomEffect",
-    "settingsAllowMediaManagement",
-    "settingsWidgetOpenPage",
-    "statsTopAlbumsSectionTitle",
-    "viewerInfoLabelDescription",
-    "wallpaperUseScrollEffect",
-    "tagEditorSectionPlaceholders",
-    "tagPlaceholderCountry",
-    "tagPlaceholderPlace"
+    "statsTopAlbumsSectionTitle"
   ],
 
   "nb": [
@@ -1743,10 +1699,6 @@
     "tagEditorSectionPlaceholders",
     "tagPlaceholderCountry",
     "tagPlaceholderPlace"
-  ],
-
-  "ru": [
-    "settingsAllowMediaManagement"
   ],
 
   "tr": [
