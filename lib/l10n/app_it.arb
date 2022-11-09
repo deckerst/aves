@@ -1144,5 +1144,17 @@
   "filePickerUseThisFolder": "Usa questa cartella",
   "@filePickerUseThisFolder": {},
   "durationDialogSeconds": "Secondi",
-  "@durationDialogSeconds": {}
+  "@durationDialogSeconds": {},
+  "settingsAllowMediaManagement": "Consenti la gestione dei media",
+  "@settingsAllowMediaManagement": {},
+  "tagEditorSectionPlaceholders": "Segnaposti",
+  "@tagEditorSectionPlaceholders": {},
+  "tagPlaceholderCountry": "Paese",
+  "@tagPlaceholderCountry": {},
+  "tagPlaceholderPlace": "Luogo",
+  "@tagPlaceholderPlace": {},
+  "widgetOpenPageCollection": "Apri collezione",
+  "@widgetOpenPageCollection": {},
+  "editEntryLocationDialogSetCustom": "Imposta posizione personalizzata",
+  "@editEntryLocationDialogSetCustom": {}
 }
