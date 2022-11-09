@@ -1151,8 +1151,10 @@
   "@tagPlaceholderCountry": {},
   "tagEditorSectionPlaceholders": "Закладки",
   "@tagEditorSectionPlaceholders": {},
-  "tagPlaceholderPlace": "Место",
+  "tagPlaceholderPlace": "Локация",
   "@tagPlaceholderPlace": {},
   "editEntryLocationDialogSetCustom": "Редактировать местоположение",
-  "@editEntryLocationDialogSetCustom": {}
+  "@editEntryLocationDialogSetCustom": {},
+  "settingsAllowMediaManagement": "Разрешить управление медиа",
+  "@settingsAllowMediaManagement": {}
 }
