@@ -1,12 +1,4 @@
 {
-  "de": [
-    "editEntryLocationDialogSetCustom",
-    "settingsAllowMediaManagement",
-    "tagEditorSectionPlaceholders",
-    "tagPlaceholderCountry",
-    "tagPlaceholderPlace"
-  ],
-
   "el": [
     "editEntryLocationDialogSetCustom",
     "settingsAllowMediaManagement",
@@ -1046,29 +1038,6 @@
     "filePickerUseThisFolder"
   ],
 
-  "id": [
-    "chipActionFilterOut",
-    "chipActionFilterIn",
-    "viewerTransitionNone",
-    "widgetOpenPageHome",
-    "widgetOpenPageCollection",
-    "widgetOpenPageViewer",
-    "durationDialogSeconds",
-    "editEntryLocationDialogSetCustom",
-    "tileLayoutMosaic",
-    "albumGroupType",
-    "albumMimeTypeMixed",
-    "settingsDisabled",
-    "settingsSlideshowAnimatedZoomEffect",
-    "settingsAllowMediaManagement",
-    "settingsWidgetOpenPage",
-    "statsTopAlbumsSectionTitle",
-    "wallpaperUseScrollEffect",
-    "tagEditorSectionPlaceholders",
-    "tagPlaceholderCountry",
-    "tagPlaceholderPlace"
-  ],
-
   "ja": [
     "chipActionFilterOut",
     "chipActionFilterIn",
@@ -1186,19 +1155,6 @@
     "viewerInfoOpenEmbeddedFailureFeedback",
     "viewerInfoSearchEmpty",
     "wallpaperUseScrollEffect",
-    "tagEditorSectionPlaceholders",
-    "tagPlaceholderCountry",
-    "tagPlaceholderPlace"
-  ],
-
-  "nl": [
-    "widgetOpenPageCollection",
-    "widgetOpenPageViewer",
-    "durationDialogSeconds",
-    "editEntryLocationDialogSetCustom",
-    "aboutLinkPolicy",
-    "policyPageTitle",
-    "settingsAllowMediaManagement",
     "tagEditorSectionPlaceholders",
     "tagPlaceholderCountry",
     "tagPlaceholderPlace"
@@ -1691,80 +1647,6 @@
     "filePickerOpenFrom",
     "filePickerNoItems",
     "filePickerUseThisFolder"
-  ],
-
-  "pt": [
-    "editEntryLocationDialogSetCustom",
-    "settingsAllowMediaManagement",
-    "tagEditorSectionPlaceholders",
-    "tagPlaceholderCountry",
-    "tagPlaceholderPlace"
-  ],
-
-  "tr": [
-    "chipActionFilterOut",
-    "chipActionFilterIn",
-    "slideshowActionResume",
-    "slideshowActionShowInCollection",
-    "entryInfoActionEditTitleDescription",
-    "filterNoDateLabel",
-    "filterNoTitleLabel",
-    "filterOnThisDayLabel",
-    "filterRecentlyAddedLabel",
-    "videoPlaybackSkip",
-    "videoPlaybackMuted",
-    "videoPlaybackWithSound",
-    "viewerTransitionSlide",
-    "viewerTransitionParallax",
-    "viewerTransitionFade",
-    "viewerTransitionZoomIn",
-    "viewerTransitionNone",
-    "wallpaperTargetHome",
-    "wallpaperTargetLock",
-    "wallpaperTargetHomeLock",
-    "widgetOpenPageHome",
-    "widgetOpenPageCollection",
-    "widgetOpenPageViewer",
-    "durationDialogSeconds",
-    "editEntryLocationDialogSetCustom",
-    "menuActionSlideshow",
-    "viewDialogReverseSortOrder",
-    "tileLayoutMosaic",
-    "sortOrderNewestFirst",
-    "sortOrderOldestFirst",
-    "sortOrderAtoZ",
-    "sortOrderZtoA",
-    "sortOrderHighestFirst",
-    "sortOrderLowestFirst",
-    "sortOrderLargestFirst",
-    "sortOrderSmallestFirst",
-    "albumGroupType",
-    "albumMimeTypeMixed",
-    "searchMetadataSectionTitle",
-    "settingsDisabled",
-    "settingsConfirmationAfterMoveToBinItems",
-    "settingsViewerGestureSideTapNext",
-    "settingsViewerSlideshowTile",
-    "settingsViewerSlideshowPageTitle",
-    "settingsSlideshowRepeat",
-    "settingsSlideshowShuffle",
-    "settingsSlideshowFillScreen",
-    "settingsSlideshowAnimatedZoomEffect",
-    "settingsSlideshowTransitionTile",
-    "settingsSlideshowIntervalTile",
-    "settingsSlideshowVideoPlaybackTile",
-    "settingsSlideshowVideoPlaybackDialogTitle",
-    "settingsAllowMediaManagement",
-    "settingsScreenSaverPageTitle",
-    "settingsWidgetShowOutline",
-    "settingsWidgetOpenPage",
-    "statsTopAlbumsSectionTitle",
-    "viewerSetWallpaperButtonLabel",
-    "viewerInfoLabelDescription",
-    "wallpaperUseScrollEffect",
-    "tagEditorSectionPlaceholders",
-    "tagPlaceholderCountry",
-    "tagPlaceholderPlace"
   ],
 
   "zh": [
