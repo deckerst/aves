@@ -1,25 +1,10 @@
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/basic/link_chip.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:flutter/material.dart';
 
 class AboutCredits extends StatelessWidget {
   const AboutCredits({super.key});
-
-  static const translators = {
-    'Bahasa Indonesia': 'MeFinity',
-    'Deutsch': 'JanWaldhorn',
-    'Español (México)': 'n-berenice',
-    'Italiano': 'glemco',
-    'Nederlands': 'Martijn Fabrie, Koen Koppens',
-    'Português (Brasil)': 'Jonatas De Almeida Barros',
-    'Türkçe': 'metezd',
-    'Ελληνικά': 'Emmanouil Papavergis',
-    'Русский': 'D3ZOXY, kha84',
-    '日本語': 'Maki',
-    '简体中文': '小默, Aerowolf',
-  };
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +21,7 @@ class AboutCredits extends StatelessWidget {
               child: Text(l10n.aboutCreditsSectionTitle, style: Constants.knownTitleTextStyle),
             ),
           ),
+          const SizedBox(height: 8),
           Text.rich(
             TextSpan(
               children: [
@@ -52,15 +38,7 @@ class AboutCredits extends StatelessWidget {
               ],
             ),
           ),
-          ConstrainedBox(
-            constraints: const BoxConstraints(minHeight: 48),
-            child: Align(
-              alignment: AlignmentDirectional.centerStart,
-              child: Text(l10n.aboutTranslatorsSectionTitle, style: Constants.knownTitleTextStyle),
-            ),
-          ),
-          const InfoRowGroup(info: translators),
-          const SizedBox(height: 16),
+          const SizedBox(height: 8),
         ],
       ),
     );
