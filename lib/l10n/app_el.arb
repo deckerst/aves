@@ -369,7 +369,7 @@
   "@newAlbumDialogTitle": {},
   "newAlbumDialogNameLabel": "Όνομα άλμπουμ",
   "@newAlbumDialogNameLabel": {},
-  "newAlbumDialogNameLabelAlreadyExistsHelper": "Ο κατάλογος υπάρχει ήδη",
+  "newAlbumDialogNameLabelAlreadyExistsHelper": "Η ονομασία υπάρχει ήδη",
   "@newAlbumDialogNameLabelAlreadyExistsHelper": {},
   "newAlbumDialogStorageLabel": "Aποθηκευτικός χώρος:",
   "@newAlbumDialogStorageLabel": {},
@@ -385,7 +385,7 @@
   "@renameEntrySetPageInsertTooltip": {},
   "renameEntrySetPagePreviewSectionTitle": "Προεπισκοπηση",
   "@renameEntrySetPagePreviewSectionTitle": {},
-  "renameProcessorCounter": "Counter",
+  "renameProcessorCounter": "Μετρητής",
   "@renameProcessorCounter": {},
   "renameProcessorName": "Όνομα",
   "@renameProcessorName": {},
@@ -1146,5 +1146,13 @@
   "widgetOpenPageCollection": "Ανοιχτή συλλογή",
   "@widgetOpenPageCollection": {},
   "durationDialogSeconds": "Δευτερόλεπτα",
-  "@durationDialogSeconds": {}
+  "@durationDialogSeconds": {},
+  "settingsAllowMediaManagement": "Επιτρέψτε την πλήρη διαχείριση των αρχείων σας",
+  "@settingsAllowMediaManagement": {},
+  "editEntryLocationDialogSetCustom": "Ορισμός προσαρμοσμένης τοποθεσίας",
+  "@editEntryLocationDialogSetCustom": {},
+  "tagPlaceholderCountry": "Χώρα",
+  "@tagPlaceholderCountry": {},
+  "tagPlaceholderPlace": "Μέρος",
+  "@tagPlaceholderPlace": {}
 }
