@@ -1146,5 +1146,15 @@
   "widgetOpenPageCollection": "Abrir coleção",
   "@widgetOpenPageCollection": {},
   "durationDialogSeconds": "Segundos",
-  "@durationDialogSeconds": {}
+  "@durationDialogSeconds": {},
+  "settingsAllowMediaManagement": "Permitir gerenciamento de mídia",
+  "@settingsAllowMediaManagement": {},
+  "tagEditorSectionPlaceholders": "Espaços reservados",
+  "@tagEditorSectionPlaceholders": {},
+  "tagPlaceholderCountry": "País",
+  "@tagPlaceholderCountry": {},
+  "tagPlaceholderPlace": "Lugar",
+  "@tagPlaceholderPlace": {},
+  "editEntryLocationDialogSetCustom": "Definir local personalizado",
+  "@editEntryLocationDialogSetCustom": {}
 }

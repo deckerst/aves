@@ -1139,7 +1139,7 @@
   "@filePickerDoNotShowHiddenFiles": {},
   "filePickerOpenFrom": "Открыть",
   "@filePickerOpenFrom": {},
-  "filePickerNoItems": "Ничего нет.",
+  "filePickerNoItems": "Ничего нет",
   "@filePickerNoItems": {},
   "filePickerUseThisFolder": "Использовать эту папку",
   "@filePickerUseThisFolder": {},

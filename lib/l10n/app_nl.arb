@@ -1136,5 +1136,7 @@
   "filePickerNoItems": "Geen items",
   "@filePickerNoItems": {},
   "filePickerUseThisFolder": "Deze map gebruiken",
-  "@filePickerUseThisFolder": {}
+  "@filePickerUseThisFolder": {},
+  "widgetOpenPageCollection": "Open verzameling",
+  "@widgetOpenPageCollection": {}
 }
