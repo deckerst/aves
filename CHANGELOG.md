@@ -23,6 +23,8 @@ All notable changes to this project will be documented in this file.
 - failing scan of items copied to SD card on older devices
 - unreplaceable covers set before v1.7.1
 - inconsistent background height for multi-script subtitles
+- launch crash on Android KitKat
+- ExifInterface: producing invalid WebP files
 
 ## <a id="v1.7.1"></a>[v1.7.1] - 2022-10-09
 
