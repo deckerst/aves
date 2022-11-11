@@ -1,17 +1,17 @@
 import 'dart:async';
 
-import 'package:aves/widgets/common/magnifier/controller/controller.dart';
-import 'package:aves/widgets/common/magnifier/controller/state.dart';
-import 'package:aves/widgets/common/magnifier/core/core.dart';
-import 'package:aves/widgets/common/magnifier/scale/scale_boundaries.dart';
-import 'package:aves/widgets/common/magnifier/scale/state.dart';
+import 'package:aves_magnifier/src/controller/controller.dart';
+import 'package:aves_magnifier/src/controller/state.dart';
+import 'package:aves_magnifier/src/core/core.dart';
+import 'package:aves_magnifier/src/scale/scale_boundaries.dart';
+import 'package:aves_magnifier/src/scale/state.dart';
 import 'package:flutter/widgets.dart';
 
 /// A  class to hold internal layout logic to sync both controller states
 ///
 /// It reacts to layout changes (eg: enter landscape or widget resize) and syncs the two controllers.
-mixin MagnifierControllerDelegate on State<MagnifierCore> {
-  MagnifierController get controller => widget.controller;
+mixin AvesMagnifierControllerDelegate on State<MagnifierCore> {
+  AvesMagnifierController get controller => widget.controller;
 
   ScaleBoundaries get scaleBoundaries => controller.scaleBoundaries;
 

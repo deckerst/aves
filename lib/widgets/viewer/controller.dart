@@ -4,7 +4,7 @@ import 'dart:math';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/theme/durations.dart';
-import 'package:aves/widgets/common/magnifier/scale/scale_level.dart';
+import 'package:aves_magnifier/aves_magnifier.dart';
 import 'package:flutter/widgets.dart';
 
 class ViewerController {

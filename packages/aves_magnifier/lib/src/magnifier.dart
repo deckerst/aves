@@ -1,9 +1,9 @@
-import 'package:aves/widgets/common/magnifier/controller/controller.dart';
-import 'package:aves/widgets/common/magnifier/controller/state.dart';
-import 'package:aves/widgets/common/magnifier/core/core.dart';
-import 'package:aves/widgets/common/magnifier/scale/scale_boundaries.dart';
-import 'package:aves/widgets/common/magnifier/scale/scale_level.dart';
-import 'package:aves/widgets/common/magnifier/scale/state.dart';
+import 'package:aves_magnifier/src/controller/controller.dart';
+import 'package:aves_magnifier/src/controller/state.dart';
+import 'package:aves_magnifier/src/core/core.dart';
+import 'package:aves_magnifier/src/scale/scale_boundaries.dart';
+import 'package:aves_magnifier/src/scale/scale_level.dart';
+import 'package:aves_magnifier/src/scale/state.dart';
 import 'package:flutter/material.dart';
 
 /*
@@ -18,8 +18,8 @@ import 'package:flutter/material.dart';
   - added single & double tap position feedback
   - fixed focus when scaling by double-tap/pinch
  */
-class Magnifier extends StatelessWidget {
-  const Magnifier({
+class AvesMagnifier extends StatelessWidget {
+  const AvesMagnifier({
     super.key,
     required this.controller,
     required this.childSize,
@@ -34,7 +34,7 @@ class Magnifier extends StatelessWidget {
     required this.child,
   });
 
-  final MagnifierController controller;
+  final AvesMagnifierController controller;
 
   // The size of the custom [child]. This value is used to compute the relation between the child and the container's size to calculate the scale value.
   final Size childSize;

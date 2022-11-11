@@ -1,6 +1,6 @@
-import 'package:aves/widgets/common/magnifier/core/scale_gesture_recognizer.dart';
-import 'package:aves/widgets/common/magnifier/pan/corner_hit_detector.dart';
-import 'package:aves/widgets/common/magnifier/pan/gesture_detector_scope.dart';
+import 'package:aves_magnifier/src/core/scale_gesture_recognizer.dart';
+import 'package:aves_magnifier/src/pan/corner_hit_detector.dart';
+import 'package:aves_magnifier/src/pan/gesture_detector_scope.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
