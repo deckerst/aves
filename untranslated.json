@@ -1,10 +1,6 @@
 {
   "el": [
-    "editEntryLocationDialogSetCustom",
-    "settingsAllowMediaManagement",
-    "tagEditorSectionPlaceholders",
-    "tagPlaceholderCountry",
-    "tagPlaceholderPlace"
+    "tagEditorSectionPlaceholders"
   ],
 
   "fa": [
