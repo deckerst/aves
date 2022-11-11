@@ -22,6 +22,8 @@ object Mp4ParserHelper {
             FileInputStream(it.fileDescriptor).use { stream ->
                 stream.channel.use { channel ->
                     val boxParser = PropertyBoxParserImpl().apply {
+                        // parsing `MediaDataBox` can take a long time
+                        // do not skip anything inside `MovieBox` as it will be parsed and rewritten for editing
                         skippingBoxes(MediaDataBox.TYPE)
                     }
                     // creating `IsoFile` with a `File` or a `File.inputStream()` yields `No such device`

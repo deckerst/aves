@@ -41,8 +41,11 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import org.beyka.tiffbitmapfactory.TiffBitmapFactory
 import org.mp4parser.IsoFile
+import org.mp4parser.PropertyBoxParserImpl
+import org.mp4parser.boxes.iso14496.part12.MediaDataBox
+import org.mp4parser.boxes.iso14496.part12.SampleTableBox
+import java.io.FileInputStream
 import java.io.IOException
-import java.nio.channels.Channels
 
 class DebugHandler(private val context: Context) : MethodCallHandler {
     private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
@@ -335,10 +338,19 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
         val sb = StringBuilder()
         if (mimeType == MimeTypes.MP4) {
             try {
-                StorageUtils.openInputStream(context, uri)?.use { input ->
-                    Channels.newChannel(input).use { channel ->
-                        IsoFile(channel).use { isoFile ->
-                            isoFile.dumpBoxes(sb)
+                // we can skip uninteresting boxes with a seekable data source
+                val pfd = StorageUtils.openInputFileDescriptor(context, uri) ?: throw Exception("failed to open file descriptor for uri=$uri")
+                pfd.use {
+                    FileInputStream(it.fileDescriptor).use { stream ->
+                        stream.channel.use { channel ->
+                            val boxParser = PropertyBoxParserImpl().apply {
+                                // parsing `MediaDataBox` can take a long time
+                                // parsing `SampleTableBox` may yield OOM
+                                skippingBoxes(MediaDataBox.TYPE, SampleTableBox.TYPE)
+                            }
+                            IsoFile(channel, boxParser).use { isoFile ->
+                                isoFile.dumpBoxes(sb)
+                            }
                         }
                     }
                 }
