@@ -1,0 +1,5 @@
+<i>Aves</i> kan håndtere alle slags bilder og videoer, inkludert JPEG og MP4, men også mer eksotiske formater som <b>TIFF-filer over flere sider, SVG-er, gamle AVI-er, med mer</b>! Det skanner mediasamlingen din for å identifisere <b>bevegelige bilder</b>, <b>panoramaer</b> (også kjent som bildesirkler), <b>360°-videoer</b>, og også <b>GeoTIFF</b>-filer.
+
+<b>Navigasjon og søk</b> er en viktig del av <i>Aves</i>. Målet er at brukere enkelt skal kunne ta seg fra album, til bilder, til etiketter, til kart, osv.
+
+<i>Aves</i> integrerer seg med Android (fra <b>API 19 til 33</b>, altså fra KitKat til Android 13) med funksjoner som f.eks. <b>miniprogrammer</b>, <b>programsnarveier</b>, <b>skjermsparer</b> og <b>søk i hele programmet</b>. Det fungerer også som <b>mediaviser og utvelger</b>.

@@ -89,11 +89,16 @@ Aves requires a few permissions to do its job:
 
 ### Code
 
-At this stage this project does *not* accept PRs, except for translations.
+At this stage this project does *not* accept PRs.
 
 ### Translations
 
-If you want to translate this app in your language and share the result, [there is a guide](https://github.com/deckerst/aves/wiki/Contributing-to-Translations). English, Korean and French are already handled by me. Russian, German, Spanish, Portuguese, Indonesian, Japanese, Italian, Chinese, Turkish & Dutch are handled by generous volunteers.
+Translations are powered by [Weblate](https://hosted.weblate.org/engage/aves/) and the effort of wonderfully generous volunteers.
+<a href="https://hosted.weblate.org/engage/aves/">
+<img src="https://hosted.weblate.org/widgets/aves/-/multi-auto.svg" alt="Translation status" />
+</a>
+
+If you want to translate this app in your language and share the result, [there is a guide](https://github.com/deckerst/aves/wiki/Contributing-to-Translations).
 
 ### Donations
 

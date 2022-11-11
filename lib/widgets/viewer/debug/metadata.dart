@@ -22,7 +22,9 @@ class MetadataTab extends StatefulWidget {
 }
 
 class _MetadataTabState extends State<MetadataTab> {
-  late Future<Map> _bitmapFactoryLoader, _contentResolverMetadataLoader, _exifInterfaceMetadataLoader, _mediaMetadataLoader, _metadataExtractorLoader, _pixyMetaLoader, _tiffStructureLoader;
+  late Future<Map> _bitmapFactoryLoader, _contentResolverMetadataLoader, _exifInterfaceMetadataLoader;
+  late Future<Map> _mediaMetadataLoader, _metadataExtractorLoader, _pixyMetaLoader, _tiffStructureLoader;
+  late Future<String?> _mp4ParserDumpLoader;
 
   // MediaStore timestamp keys
   static const secondTimestampKeys = ['date_added', 'date_modified', 'date_expires', 'isPlayed'];
@@ -42,6 +44,7 @@ class _MetadataTabState extends State<MetadataTab> {
     _exifInterfaceMetadataLoader = AndroidDebugService.getExifInterfaceMetadata(entry);
     _mediaMetadataLoader = AndroidDebugService.getMediaMetadataRetrieverMetadata(entry);
     _metadataExtractorLoader = AndroidDebugService.getMetadataExtractorSummary(entry);
+    _mp4ParserDumpLoader = AndroidDebugService.getMp4ParserDump(entry);
     _pixyMetaLoader = AndroidDebugService.getPixyMetadata(entry);
     _tiffStructureLoader = AndroidDebugService.getTiffStructure(entry);
     setState(() {});
@@ -85,7 +88,7 @@ class _MetadataTabState extends State<MetadataTab> {
 
     Widget builderFromSnapshot(BuildContext context, AsyncSnapshot<Map> snapshot, String title) {
       if (snapshot.hasError) return Text(snapshot.error.toString());
-      if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
+      if (snapshot.connectionState != ConnectionState.done) return const SizedBox();
       return builderFromSnapshotData(context, snapshot.data!, title);
     }
 
@@ -112,6 +115,27 @@ class _MetadataTabState extends State<MetadataTab> {
           future: _metadataExtractorLoader,
           builder: (context, snapshot) => builderFromSnapshot(context, snapshot, 'Metadata Extractor'),
         ),
+        FutureBuilder<String?>(
+          future: _mp4ParserDumpLoader,
+          builder: (context, snapshot) {
+            if (snapshot.hasError) return Text(snapshot.error.toString());
+            if (snapshot.connectionState != ConnectionState.done) return const SizedBox();
+            final data = snapshot.data?.trim();
+            return AvesExpansionTile(
+              title: 'MP4 Parser',
+              children: [
+                if (data != null && data.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Text(data),
+                    ),
+                  )
+              ],
+            );
+          },
+        ),
         FutureBuilder<Map>(
           future: _pixyMetaLoader,
           builder: (context, snapshot) => builderFromSnapshot(context, snapshot, 'Pixy Meta'),
@@ -121,7 +145,7 @@ class _MetadataTabState extends State<MetadataTab> {
             future: _tiffStructureLoader,
             builder: (context, snapshot) {
               if (snapshot.hasError) return Text(snapshot.error.toString());
-              if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
+              if (snapshot.connectionState != ConnectionState.done) return const SizedBox();
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: snapshot.data!.entries.map((kv) => builderFromSnapshotData(context, kv.value as Map, 'TIFF ${kv.key}')).toList(),

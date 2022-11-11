@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
-import 'package:aves/l10n/l10n.dart';
 import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/actions/entry_set_actions.dart';
 import 'package:aves/model/filters/filters.dart';
@@ -12,6 +11,7 @@ import 'package:aves/model/settings/enums/map_style.dart';
 import 'package:aves/model/source/enums/enums.dart';
 import 'package:aves/services/common/optional_event_channel.dart';
 import 'package:aves/services/common/services.dart';
+import 'package:aves/widgets/aves_app.dart';
 import 'package:aves_map/aves_map.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -219,19 +219,19 @@ class Settings extends ChangeNotifier {
 
   // app
 
-  bool get hasAcceptedTerms => getBoolOrDefault(hasAcceptedTermsKey, SettingsDefaults.hasAcceptedTerms);
+  bool get hasAcceptedTerms => getBool(hasAcceptedTermsKey) ?? SettingsDefaults.hasAcceptedTerms;
 
   set hasAcceptedTerms(bool newValue) => setAndNotify(hasAcceptedTermsKey, newValue);
 
-  bool get canUseAnalysisService => getBoolOrDefault(canUseAnalysisServiceKey, SettingsDefaults.canUseAnalysisService);
+  bool get canUseAnalysisService => getBool(canUseAnalysisServiceKey) ?? SettingsDefaults.canUseAnalysisService;
 
   set canUseAnalysisService(bool newValue) => setAndNotify(canUseAnalysisServiceKey, newValue);
 
-  bool get isInstalledAppAccessAllowed => getBoolOrDefault(isInstalledAppAccessAllowedKey, SettingsDefaults.isInstalledAppAccessAllowed);
+  bool get isInstalledAppAccessAllowed => getBool(isInstalledAppAccessAllowedKey) ?? SettingsDefaults.isInstalledAppAccessAllowed;
 
   set isInstalledAppAccessAllowed(bool newValue) => setAndNotify(isInstalledAppAccessAllowedKey, newValue);
 
-  bool get isErrorReportingAllowed => getBoolOrDefault(isErrorReportingAllowedKey, SettingsDefaults.isErrorReportingAllowed);
+  bool get isErrorReportingAllowed => getBool(isErrorReportingAllowedKey) ?? SettingsDefaults.isErrorReportingAllowed;
 
   set isErrorReportingAllowed(bool newValue) => setAndNotify(isErrorReportingAllowedKey, newValue);
 
@@ -283,7 +283,7 @@ class Settings extends ChangeNotifier {
           preferredLocales.addAll(_systemLocalesFallback);
         }
       }
-      _appliedLocale = basicLocaleListResolution(preferredLocales, AppLocalizations.supportedLocales);
+      _appliedLocale = basicLocaleListResolution(preferredLocales, AvesApp.supportedLocales);
     }
     return _appliedLocale!;
   }
@@ -322,17 +322,17 @@ class Settings extends ChangeNotifier {
 
   set themeColorMode(AvesThemeColorMode newValue) => setAndNotify(themeColorModeKey, newValue.toString());
 
-  bool get enableDynamicColor => getBoolOrDefault(enableDynamicColorKey, SettingsDefaults.enableDynamicColor);
+  bool get enableDynamicColor => getBool(enableDynamicColorKey) ?? SettingsDefaults.enableDynamicColor;
 
   set enableDynamicColor(bool newValue) => setAndNotify(enableDynamicColorKey, newValue);
 
-  bool get enableBlurEffect => getBoolOrDefault(enableBlurEffectKey, SettingsDefaults.enableBlurEffect);
+  bool get enableBlurEffect => getBool(enableBlurEffectKey) ?? SettingsDefaults.enableBlurEffect;
 
   set enableBlurEffect(bool newValue) => setAndNotify(enableBlurEffectKey, newValue);
 
   // navigation
 
-  bool get mustBackTwiceToExit => getBoolOrDefault(mustBackTwiceToExitKey, SettingsDefaults.mustBackTwiceToExit);
+  bool get mustBackTwiceToExit => getBool(mustBackTwiceToExitKey) ?? SettingsDefaults.mustBackTwiceToExit;
 
   set mustBackTwiceToExit(bool newValue) => setAndNotify(mustBackTwiceToExitKey, newValue);
 
@@ -344,27 +344,27 @@ class Settings extends ChangeNotifier {
 
   set homePage(HomePageSetting newValue) => setAndNotify(homePageKey, newValue.toString());
 
-  bool get enableBottomNavigationBar => getBoolOrDefault(enableBottomNavigationBarKey, SettingsDefaults.enableBottomNavigationBar);
+  bool get enableBottomNavigationBar => getBool(enableBottomNavigationBarKey) ?? SettingsDefaults.enableBottomNavigationBar;
 
   set enableBottomNavigationBar(bool newValue) => setAndNotify(enableBottomNavigationBarKey, newValue);
 
-  bool get confirmDeleteForever => getBoolOrDefault(confirmDeleteForeverKey, SettingsDefaults.confirmDeleteForever);
+  bool get confirmDeleteForever => getBool(confirmDeleteForeverKey) ?? SettingsDefaults.confirmDeleteForever;
 
   set confirmDeleteForever(bool newValue) => setAndNotify(confirmDeleteForeverKey, newValue);
 
-  bool get confirmMoveToBin => getBoolOrDefault(confirmMoveToBinKey, SettingsDefaults.confirmMoveToBin);
+  bool get confirmMoveToBin => getBool(confirmMoveToBinKey) ?? SettingsDefaults.confirmMoveToBin;
 
   set confirmMoveToBin(bool newValue) => setAndNotify(confirmMoveToBinKey, newValue);
 
-  bool get confirmMoveUndatedItems => getBoolOrDefault(confirmMoveUndatedItemsKey, SettingsDefaults.confirmMoveUndatedItems);
+  bool get confirmMoveUndatedItems => getBool(confirmMoveUndatedItemsKey) ?? SettingsDefaults.confirmMoveUndatedItems;
 
   set confirmMoveUndatedItems(bool newValue) => setAndNotify(confirmMoveUndatedItemsKey, newValue);
 
-  bool get confirmAfterMoveToBin => getBoolOrDefault(confirmAfterMoveToBinKey, SettingsDefaults.confirmAfterMoveToBin);
+  bool get confirmAfterMoveToBin => getBool(confirmAfterMoveToBinKey) ?? SettingsDefaults.confirmAfterMoveToBin;
 
   set confirmAfterMoveToBin(bool newValue) => setAndNotify(confirmAfterMoveToBinKey, newValue);
 
-  bool get setMetadataDateBeforeFileOp => getBoolOrDefault(setMetadataDateBeforeFileOpKey, SettingsDefaults.setMetadataDateBeforeFileOp);
+  bool get setMetadataDateBeforeFileOp => getBool(setMetadataDateBeforeFileOpKey) ?? SettingsDefaults.setMetadataDateBeforeFileOp;
 
   set setMetadataDateBeforeFileOp(bool newValue) => setAndNotify(setMetadataDateBeforeFileOpKey, newValue);
 
@@ -395,7 +395,7 @@ class Settings extends ChangeNotifier {
 
   set collectionSortFactor(EntrySortFactor newValue) => setAndNotify(collectionSortFactorKey, newValue.toString());
 
-  bool get collectionSortReverse => getBoolOrDefault(collectionSortReverseKey, false);
+  bool get collectionSortReverse => getBool(collectionSortReverseKey) ?? false;
 
   set collectionSortReverse(bool newValue) => setAndNotify(collectionSortReverseKey, newValue);
 
@@ -407,31 +407,31 @@ class Settings extends ChangeNotifier {
 
   set collectionSelectionQuickActions(List<EntrySetAction> newValue) => setAndNotify(collectionSelectionQuickActionsKey, newValue.map((v) => v.toString()).toList());
 
-  bool get showThumbnailFavourite => getBoolOrDefault(showThumbnailFavouriteKey, SettingsDefaults.showThumbnailFavourite);
+  bool get showThumbnailFavourite => getBool(showThumbnailFavouriteKey) ?? SettingsDefaults.showThumbnailFavourite;
 
   set showThumbnailFavourite(bool newValue) => setAndNotify(showThumbnailFavouriteKey, newValue);
 
-  bool get showThumbnailTag => getBoolOrDefault(showThumbnailTagKey, SettingsDefaults.showThumbnailTag);
+  bool get showThumbnailTag => getBool(showThumbnailTagKey) ?? SettingsDefaults.showThumbnailTag;
 
   set showThumbnailTag(bool newValue) => setAndNotify(showThumbnailTagKey, newValue);
 
-  bool get showThumbnailLocation => getBoolOrDefault(showThumbnailLocationKey, SettingsDefaults.showThumbnailLocation);
+  bool get showThumbnailLocation => getBool(showThumbnailLocationKey) ?? SettingsDefaults.showThumbnailLocation;
 
   set showThumbnailLocation(bool newValue) => setAndNotify(showThumbnailLocationKey, newValue);
 
-  bool get showThumbnailMotionPhoto => getBoolOrDefault(showThumbnailMotionPhotoKey, SettingsDefaults.showThumbnailMotionPhoto);
+  bool get showThumbnailMotionPhoto => getBool(showThumbnailMotionPhotoKey) ?? SettingsDefaults.showThumbnailMotionPhoto;
 
   set showThumbnailMotionPhoto(bool newValue) => setAndNotify(showThumbnailMotionPhotoKey, newValue);
 
-  bool get showThumbnailRating => getBoolOrDefault(showThumbnailRatingKey, SettingsDefaults.showThumbnailRating);
+  bool get showThumbnailRating => getBool(showThumbnailRatingKey) ?? SettingsDefaults.showThumbnailRating;
 
   set showThumbnailRating(bool newValue) => setAndNotify(showThumbnailRatingKey, newValue);
 
-  bool get showThumbnailRaw => getBoolOrDefault(showThumbnailRawKey, SettingsDefaults.showThumbnailRaw);
+  bool get showThumbnailRaw => getBool(showThumbnailRawKey) ?? SettingsDefaults.showThumbnailRaw;
 
   set showThumbnailRaw(bool newValue) => setAndNotify(showThumbnailRawKey, newValue);
 
-  bool get showThumbnailVideoDuration => getBoolOrDefault(showThumbnailVideoDurationKey, SettingsDefaults.showThumbnailVideoDuration);
+  bool get showThumbnailVideoDuration => getBool(showThumbnailVideoDurationKey) ?? SettingsDefaults.showThumbnailVideoDuration;
 
   set showThumbnailVideoDuration(bool newValue) => setAndNotify(showThumbnailVideoDurationKey, newValue);
 
@@ -453,15 +453,15 @@ class Settings extends ChangeNotifier {
 
   set tagSortFactor(ChipSortFactor newValue) => setAndNotify(tagSortFactorKey, newValue.toString());
 
-  bool get albumSortReverse => getBoolOrDefault(albumSortReverseKey, false);
+  bool get albumSortReverse => getBool(albumSortReverseKey) ?? false;
 
   set albumSortReverse(bool newValue) => setAndNotify(albumSortReverseKey, newValue);
 
-  bool get countrySortReverse => getBoolOrDefault(countrySortReverseKey, false);
+  bool get countrySortReverse => getBool(countrySortReverseKey) ?? false;
 
   set countrySortReverse(bool newValue) => setAndNotify(countrySortReverseKey, newValue);
 
-  bool get tagSortReverse => getBoolOrDefault(tagSortReverseKey, false);
+  bool get tagSortReverse => getBool(tagSortReverseKey) ?? false;
 
   set tagSortReverse(bool newValue) => setAndNotify(tagSortReverseKey, newValue);
 
@@ -490,39 +490,39 @@ class Settings extends ChangeNotifier {
 
   set viewerQuickActions(List<EntryAction> newValue) => setAndNotify(viewerQuickActionsKey, newValue.map((v) => v.toString()).toList());
 
-  bool get showOverlayOnOpening => getBoolOrDefault(showOverlayOnOpeningKey, SettingsDefaults.showOverlayOnOpening);
+  bool get showOverlayOnOpening => getBool(showOverlayOnOpeningKey) ?? SettingsDefaults.showOverlayOnOpening;
 
   set showOverlayOnOpening(bool newValue) => setAndNotify(showOverlayOnOpeningKey, newValue);
 
-  bool get showOverlayMinimap => getBoolOrDefault(showOverlayMinimapKey, SettingsDefaults.showOverlayMinimap);
+  bool get showOverlayMinimap => getBool(showOverlayMinimapKey) ?? SettingsDefaults.showOverlayMinimap;
 
   set showOverlayMinimap(bool newValue) => setAndNotify(showOverlayMinimapKey, newValue);
 
-  bool get showOverlayInfo => getBoolOrDefault(showOverlayInfoKey, SettingsDefaults.showOverlayInfo);
+  bool get showOverlayInfo => getBool(showOverlayInfoKey) ?? SettingsDefaults.showOverlayInfo;
 
   set showOverlayInfo(bool newValue) => setAndNotify(showOverlayInfoKey, newValue);
 
-  bool get showOverlayShootingDetails => getBoolOrDefault(showOverlayShootingDetailsKey, SettingsDefaults.showOverlayShootingDetails);
+  bool get showOverlayShootingDetails => getBool(showOverlayShootingDetailsKey) ?? SettingsDefaults.showOverlayShootingDetails;
 
   set showOverlayShootingDetails(bool newValue) => setAndNotify(showOverlayShootingDetailsKey, newValue);
 
-  bool get showOverlayThumbnailPreview => getBoolOrDefault(showOverlayThumbnailPreviewKey, SettingsDefaults.showOverlayThumbnailPreview);
+  bool get showOverlayThumbnailPreview => getBool(showOverlayThumbnailPreviewKey) ?? SettingsDefaults.showOverlayThumbnailPreview;
 
   set showOverlayThumbnailPreview(bool newValue) => setAndNotify(showOverlayThumbnailPreviewKey, newValue);
 
-  bool get viewerGestureSideTapNext => getBoolOrDefault(viewerGestureSideTapNextKey, SettingsDefaults.viewerGestureSideTapNext);
+  bool get viewerGestureSideTapNext => getBool(viewerGestureSideTapNextKey) ?? SettingsDefaults.viewerGestureSideTapNext;
 
   set viewerGestureSideTapNext(bool newValue) => setAndNotify(viewerGestureSideTapNextKey, newValue);
 
-  bool get viewerUseCutout => getBoolOrDefault(viewerUseCutoutKey, SettingsDefaults.viewerUseCutout);
+  bool get viewerUseCutout => getBool(viewerUseCutoutKey) ?? SettingsDefaults.viewerUseCutout;
 
   set viewerUseCutout(bool newValue) => setAndNotify(viewerUseCutoutKey, newValue);
 
-  bool get viewerMaxBrightness => getBoolOrDefault(viewerMaxBrightnessKey, SettingsDefaults.viewerMaxBrightness);
+  bool get viewerMaxBrightness => getBool(viewerMaxBrightnessKey) ?? SettingsDefaults.viewerMaxBrightness;
 
   set viewerMaxBrightness(bool newValue) => setAndNotify(viewerMaxBrightnessKey, newValue);
 
-  bool get enableMotionPhotoAutoPlay => getBoolOrDefault(enableMotionPhotoAutoPlayKey, SettingsDefaults.enableMotionPhotoAutoPlay);
+  bool get enableMotionPhotoAutoPlay => getBool(enableMotionPhotoAutoPlayKey) ?? SettingsDefaults.enableMotionPhotoAutoPlay;
 
   set enableMotionPhotoAutoPlay(bool newValue) => setAndNotify(enableMotionPhotoAutoPlayKey, newValue);
 
@@ -532,7 +532,7 @@ class Settings extends ChangeNotifier {
 
   // video
 
-  bool get enableVideoHardwareAcceleration => getBoolOrDefault(enableVideoHardwareAccelerationKey, SettingsDefaults.enableVideoHardwareAcceleration);
+  bool get enableVideoHardwareAcceleration => getBool(enableVideoHardwareAccelerationKey) ?? SettingsDefaults.enableVideoHardwareAcceleration;
 
   set enableVideoHardwareAcceleration(bool newValue) => setAndNotify(enableVideoHardwareAccelerationKey, newValue);
 
@@ -544,7 +544,7 @@ class Settings extends ChangeNotifier {
 
   set videoLoopMode(VideoLoopMode newValue) => setAndNotify(videoLoopModeKey, newValue.toString());
 
-  bool get videoShowRawTimedText => getBoolOrDefault(videoShowRawTimedTextKey, SettingsDefaults.videoShowRawTimedText);
+  bool get videoShowRawTimedText => getBool(videoShowRawTimedTextKey) ?? SettingsDefaults.videoShowRawTimedText;
 
   set videoShowRawTimedText(bool newValue) => setAndNotify(videoShowRawTimedTextKey, newValue);
 
@@ -552,11 +552,11 @@ class Settings extends ChangeNotifier {
 
   set videoControls(VideoControls newValue) => setAndNotify(videoControlsKey, newValue.toString());
 
-  bool get videoGestureDoubleTapTogglePlay => getBoolOrDefault(videoGestureDoubleTapTogglePlayKey, SettingsDefaults.videoGestureDoubleTapTogglePlay);
+  bool get videoGestureDoubleTapTogglePlay => getBool(videoGestureDoubleTapTogglePlayKey) ?? SettingsDefaults.videoGestureDoubleTapTogglePlay;
 
   set videoGestureDoubleTapTogglePlay(bool newValue) => setAndNotify(videoGestureDoubleTapTogglePlayKey, newValue);
 
-  bool get videoGestureSideDoubleTapSeek => getBoolOrDefault(videoGestureSideDoubleTapSeekKey, SettingsDefaults.videoGestureSideDoubleTapSeek);
+  bool get videoGestureSideDoubleTapSeek => getBool(videoGestureSideDoubleTapSeekKey) ?? SettingsDefaults.videoGestureSideDoubleTapSeek;
 
   set videoGestureSideDoubleTapSeek(bool newValue) => setAndNotify(videoGestureSideDoubleTapSeekKey, newValue);
 
@@ -570,7 +570,7 @@ class Settings extends ChangeNotifier {
 
   set subtitleTextAlignment(TextAlign newValue) => setAndNotify(subtitleTextAlignmentKey, newValue.toString());
 
-  bool get subtitleShowOutline => getBoolOrDefault(subtitleShowOutlineKey, SettingsDefaults.subtitleShowOutline);
+  bool get subtitleShowOutline => getBool(subtitleShowOutlineKey) ?? SettingsDefaults.subtitleShowOutline;
 
   set subtitleShowOutline(bool newValue) => setAndNotify(subtitleShowOutlineKey, newValue);
 
@@ -615,7 +615,7 @@ class Settings extends ChangeNotifier {
 
   // search
 
-  bool get saveSearchHistory => getBoolOrDefault(saveSearchHistoryKey, SettingsDefaults.saveSearchHistory);
+  bool get saveSearchHistory => getBool(saveSearchHistoryKey) ?? SettingsDefaults.saveSearchHistory;
 
   set saveSearchHistory(bool newValue) => setAndNotify(saveSearchHistoryKey, newValue);
 
@@ -625,7 +625,7 @@ class Settings extends ChangeNotifier {
 
   // bin
 
-  bool get enableBin => getBoolOrDefault(enableBinKey, SettingsDefaults.enableBin);
+  bool get enableBin => getBool(enableBinKey) ?? SettingsDefaults.enableBin;
 
   set enableBin(bool newValue) => setAndNotify(enableBinKey, newValue);
 
@@ -641,17 +641,17 @@ class Settings extends ChangeNotifier {
 
   // file picker
 
-  bool get filePickerShowHiddenFiles => getBoolOrDefault(filePickerShowHiddenFilesKey, SettingsDefaults.filePickerShowHiddenFiles);
+  bool get filePickerShowHiddenFiles => getBool(filePickerShowHiddenFilesKey) ?? SettingsDefaults.filePickerShowHiddenFiles;
 
   set filePickerShowHiddenFiles(bool newValue) => setAndNotify(filePickerShowHiddenFilesKey, newValue);
 
   // screen saver
 
-  bool get screenSaverFillScreen => getBoolOrDefault(screenSaverFillScreenKey, SettingsDefaults.slideshowFillScreen);
+  bool get screenSaverFillScreen => getBool(screenSaverFillScreenKey) ?? SettingsDefaults.slideshowFillScreen;
 
   set screenSaverFillScreen(bool newValue) => setAndNotify(screenSaverFillScreenKey, newValue);
 
-  bool get screenSaverAnimatedZoomEffect => getBoolOrDefault(screenSaverAnimatedZoomEffectKey, SettingsDefaults.slideshowAnimatedZoomEffect);
+  bool get screenSaverAnimatedZoomEffect => getBool(screenSaverAnimatedZoomEffectKey) ?? SettingsDefaults.slideshowAnimatedZoomEffect;
 
   set screenSaverAnimatedZoomEffect(bool newValue) => setAndNotify(screenSaverAnimatedZoomEffectKey, newValue);
 
@@ -663,9 +663,9 @@ class Settings extends ChangeNotifier {
 
   set screenSaverVideoPlayback(SlideshowVideoPlayback newValue) => setAndNotify(screenSaverVideoPlaybackKey, newValue.toString());
 
-  SlideshowInterval get screenSaverInterval => getEnumOrDefault(screenSaverIntervalKey, SettingsDefaults.slideshowInterval, SlideshowInterval.values);
+  int get screenSaverInterval => getInt(screenSaverIntervalKey) ?? SettingsDefaults.slideshowInterval;
 
-  set screenSaverInterval(SlideshowInterval newValue) => setAndNotify(screenSaverIntervalKey, newValue.toString());
+  set screenSaverInterval(int newValue) => setAndNotify(screenSaverIntervalKey, newValue);
 
   Set<CollectionFilter> get screenSaverCollectionFilters => (getStringList(screenSaverCollectionFiltersKey) ?? []).map(CollectionFilter.fromJson).whereNotNull().toSet();
 
@@ -673,19 +673,19 @@ class Settings extends ChangeNotifier {
 
   // slideshow
 
-  bool get slideshowRepeat => getBoolOrDefault(slideshowRepeatKey, SettingsDefaults.slideshowRepeat);
+  bool get slideshowRepeat => getBool(slideshowRepeatKey) ?? SettingsDefaults.slideshowRepeat;
 
   set slideshowRepeat(bool newValue) => setAndNotify(slideshowRepeatKey, newValue);
 
-  bool get slideshowShuffle => getBoolOrDefault(slideshowShuffleKey, SettingsDefaults.slideshowShuffle);
+  bool get slideshowShuffle => getBool(slideshowShuffleKey) ?? SettingsDefaults.slideshowShuffle;
 
   set slideshowShuffle(bool newValue) => setAndNotify(slideshowShuffleKey, newValue);
 
-  bool get slideshowFillScreen => getBoolOrDefault(slideshowFillScreenKey, SettingsDefaults.slideshowFillScreen);
+  bool get slideshowFillScreen => getBool(slideshowFillScreenKey) ?? SettingsDefaults.slideshowFillScreen;
 
   set slideshowFillScreen(bool newValue) => setAndNotify(slideshowFillScreenKey, newValue);
 
-  bool get slideshowAnimatedZoomEffect => getBoolOrDefault(slideshowAnimatedZoomEffectKey, SettingsDefaults.slideshowAnimatedZoomEffect);
+  bool get slideshowAnimatedZoomEffect => getBool(slideshowAnimatedZoomEffectKey) ?? SettingsDefaults.slideshowAnimatedZoomEffect;
 
   set slideshowAnimatedZoomEffect(bool newValue) => setAndNotify(slideshowAnimatedZoomEffectKey, newValue);
 
@@ -697,9 +697,9 @@ class Settings extends ChangeNotifier {
 
   set slideshowVideoPlayback(SlideshowVideoPlayback newValue) => setAndNotify(slideshowVideoPlaybackKey, newValue.toString());
 
-  SlideshowInterval get slideshowInterval => getEnumOrDefault(slideshowIntervalKey, SettingsDefaults.slideshowInterval, SlideshowInterval.values);
+  int get slideshowInterval => getInt(slideshowIntervalKey) ?? SettingsDefaults.slideshowInterval;
 
-  set slideshowInterval(SlideshowInterval newValue) => setAndNotify(slideshowIntervalKey, newValue.toString());
+  set slideshowInterval(int newValue) => setAndNotify(slideshowIntervalKey, newValue);
 
   // widget
 
@@ -728,23 +728,61 @@ class Settings extends ChangeNotifier {
 
   // convenience methods
 
-  int? getInt(String key) => settingsStore.getInt(key);
+  bool? getBool(String key) {
+    try {
+      return settingsStore.getBool(key);
+    } catch (e) {
+      // ignore, could be obsolete value of different type
+      return null;
+    }
+  }
 
-  double? getDouble(String key) => settingsStore.getDouble(key);
+  int? getInt(String key) {
+    try {
+      return settingsStore.getInt(key);
+    } catch (e) {
+      // ignore, could be obsolete value of different type
+      return null;
+    }
+  }
 
-  String? getString(String key) => settingsStore.getString(key);
+  double? getDouble(String key) {
+    try {
+      return settingsStore.getDouble(key);
+    } catch (e) {
+      // ignore, could be obsolete value of different type
+      return null;
+    }
+  }
 
-  List<String>? getStringList(String key) => settingsStore.getStringList(key);
+  String? getString(String key) {
+    try {
+      return settingsStore.getString(key);
+    } catch (e) {
+      // ignore, could be obsolete value of different type
+      return null;
+    }
+  }
 
-  // ignore: avoid_positional_boolean_parameters
-  bool getBoolOrDefault(String key, bool defaultValue) => settingsStore.getBool(key) ?? defaultValue;
+  List<String>? getStringList(String key) {
+    try {
+      return settingsStore.getStringList(key);
+    } catch (e) {
+      // ignore, could be obsolete value of different type
+      return null;
+    }
+  }
 
   T getEnumOrDefault<T>(String key, T defaultValue, Iterable<T> values) {
-    final valueString = settingsStore.getString(key);
-    for (final v in values) {
-      if (v.toString() == valueString) {
-        return v;
+    try {
+      final valueString = settingsStore.getString(key);
+      for (final v in values) {
+        if (v.toString() == valueString) {
+          return v;
+        }
       }
+    } catch (e) {
+      // ignore, could be obsolete value of different type
     }
     return defaultValue;
   }
@@ -758,19 +796,19 @@ class Settings extends ChangeNotifier {
     if (newValue == null) {
       settingsStore.remove(key);
     } else if (newValue is String) {
-      oldValue = settingsStore.getString(key);
+      oldValue = getString(key);
       settingsStore.setString(key, newValue);
     } else if (newValue is List<String>) {
-      oldValue = settingsStore.getStringList(key);
+      oldValue = getStringList(key);
       settingsStore.setStringList(key, newValue);
     } else if (newValue is int) {
-      oldValue = settingsStore.getInt(key);
+      oldValue = getInt(key);
       settingsStore.setInt(key, newValue);
     } else if (newValue is double) {
-      oldValue = settingsStore.getDouble(key);
+      oldValue = getDouble(key);
       settingsStore.setDouble(key, newValue);
     } else if (newValue is bool) {
-      oldValue = settingsStore.getBool(key);
+      oldValue = getBool(key);
       settingsStore.setBool(key, newValue);
     }
     if (oldValue != newValue) {
@@ -797,11 +835,11 @@ class Settings extends ChangeNotifier {
     });
   }
 
-  bool get isRotationLocked => getBoolOrDefault(platformAccelerometerRotationKey, SettingsDefaults.isRotationLocked);
+  bool get isRotationLocked => getBool(platformAccelerometerRotationKey) ?? SettingsDefaults.isRotationLocked;
 
   set isRotationLocked(bool newValue) => setAndNotify(platformAccelerometerRotationKey, newValue);
 
-  bool get areAnimationsRemoved => getBoolOrDefault(platformTransitionAnimationScaleKey, SettingsDefaults.areAnimationsRemoved);
+  bool get areAnimationsRemoved => getBool(platformTransitionAnimationScaleKey) ?? SettingsDefaults.areAnimationsRemoved;
 
   set areAnimationsRemoved(bool newValue) => setAndNotify(platformTransitionAnimationScaleKey, newValue);
 
@@ -838,6 +876,8 @@ class Settings extends ChangeNotifier {
           switch (key) {
             case subtitleTextColorKey:
             case subtitleBackgroundColorKey:
+            case screenSaverIntervalKey:
+            case slideshowIntervalKey:
               if (newValue is int) {
                 settingsStore.setInt(key, newValue);
               } else {
@@ -926,10 +966,8 @@ class Settings extends ChangeNotifier {
             case timeToTakeActionKey:
             case screenSaverTransitionKey:
             case screenSaverVideoPlaybackKey:
-            case screenSaverIntervalKey:
             case slideshowTransitionKey:
             case slideshowVideoPlaybackKey:
-            case slideshowIntervalKey:
               if (newValue is String) {
                 settingsStore.setString(key, newValue);
               } else {

@@ -104,7 +104,7 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
       ..clear();
     widget.verticalPager.removeListener(_onVerticalPageControllerChanged);
     widget.entryNotifier.removeListener(_onEntryChanged);
-    _oldEntry?.imageChangeNotifier.removeListener(_onImageChanged);
+    _oldEntry?.visualChangeNotifier.removeListener(_onVisualChanged);
   }
 
   @override
@@ -264,12 +264,12 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
 
   // when the entry changed (e.g. by scrolling through the PageView, or if the entry got deleted)
   Future<void> _onEntryChanged() async {
-    _oldEntry?.imageChangeNotifier.removeListener(_onImageChanged);
+    _oldEntry?.visualChangeNotifier.removeListener(_onVisualChanged);
     _oldEntry = entry;
 
     final _entry = entry;
     if (_entry != null) {
-      _entry.imageChangeNotifier.addListener(_onImageChanged);
+      _entry.visualChangeNotifier.addListener(_onVisualChanged);
       // make sure to locate the entry,
       // so that we can display the address instead of coordinates
       // even when initial collection locating has not reached this entry yet
@@ -286,7 +286,7 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
   }
 
   // when the entry image itself changed (e.g. after rotation)
-  void _onImageChanged() async {
+  void _onVisualChanged() async {
     // rebuild to refresh the Image inside ImagePage
     if (mounted) {
       setState(() {});

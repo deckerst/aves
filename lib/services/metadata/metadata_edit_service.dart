@@ -2,7 +2,8 @@ import 'dart:async';
 
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/metadata/date_modifier.dart';
-import 'package:aves/model/metadata/enums.dart';
+import 'package:aves/model/metadata/enums/enums.dart';
+import 'package:aves/model/metadata/enums/metadata_type.dart';
 import 'package:aves/model/metadata/fields.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:collection/collection.dart';
@@ -65,7 +66,7 @@ class PlatformMetadataEditService implements MetadataEditService {
         'entry': entry.toPlatformEntryMap(),
         'dateMillis': modifier.setDateTime?.millisecondsSinceEpoch,
         'shiftMinutes': modifier.shiftMinutes,
-        'fields': modifier.fields.where((v) => v.type == MetadataType.exif).map((v) => v.exifInterfaceTag).whereNotNull().toList(),
+        'fields': modifier.fields.where((v) => v.type == MetadataType.exif).map((v) => v.toPlatform).whereNotNull().toList(),
       });
       if (result != null) return (result as Map).cast<String, dynamic>();
     } on PlatformException catch (e, stack) {
@@ -85,7 +86,7 @@ class PlatformMetadataEditService implements MetadataEditService {
     try {
       final result = await _platform.invokeMethod('editMetadata', <String, dynamic>{
         'entry': entry.toPlatformEntryMap(),
-        'metadata': metadata.map((type, value) => MapEntry(_toPlatformMetadataType(type), value)),
+        'metadata': metadata.map((type, value) => MapEntry(type.toPlatform, value)),
         'autoCorrectTrailerOffset': autoCorrectTrailerOffset,
       });
       if (result != null) return (result as Map).cast<String, dynamic>();
@@ -117,7 +118,7 @@ class PlatformMetadataEditService implements MetadataEditService {
     try {
       final result = await _platform.invokeMethod('removeTypes', <String, dynamic>{
         'entry': entry.toPlatformEntryMap(),
-        'types': types.map(_toPlatformMetadataType).toList(),
+        'types': types.map((v) => v.toPlatform).toList(),
       });
       if (result != null) return (result as Map).cast<String, dynamic>();
     } on PlatformException catch (e, stack) {
@@ -126,28 +127,5 @@ class PlatformMetadataEditService implements MetadataEditService {
       }
     }
     return {};
-  }
-
-  String _toPlatformMetadataType(MetadataType type) {
-    switch (type) {
-      case MetadataType.comment:
-        return 'comment';
-      case MetadataType.exif:
-        return 'exif';
-      case MetadataType.iccProfile:
-        return 'icc_profile';
-      case MetadataType.iptc:
-        return 'iptc';
-      case MetadataType.jfif:
-        return 'jfif';
-      case MetadataType.jpegAdobe:
-        return 'jpeg_adobe';
-      case MetadataType.jpegDucky:
-        return 'jpeg_ducky';
-      case MetadataType.photoshopIrb:
-        return 'photoshop_irb';
-      case MetadataType.xmp:
-        return 'xmp';
-    }
   }
 }

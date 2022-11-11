@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_widget_label">Ramka Zdjęcia</string>
+    <string name="search_shortcut_short_label">Szukaj</string>
+    <string name="videos_shortcut_short_label">Filmy</string>
+    <string name="analysis_channel_name">Skan mediów</string>
+    <string name="analysis_service_description">Skan obrazów &amp; filmów</string>
+    <string name="analysis_notification_default_title">Skanowanie mediów</string>
+    <string name="analysis_notification_action_stop">Zatrzymaj</string>
+    <string name="app_name">Aves</string>
+    <string name="wallpaper">Tapeta</string>
+</resources>

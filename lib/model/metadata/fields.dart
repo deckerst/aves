@@ -1,4 +1,4 @@
-import 'package:aves/model/metadata/enums.dart';
+import 'package:aves/model/metadata/enums/enums.dart';
 
 enum MetadataField {
   exifDate,
@@ -37,6 +37,9 @@ enum MetadataField {
   exifGpsTrackRef,
   exifGpsVersionId,
   exifImageDescription,
+  mp4GpsCoordinates,
+  mp4RotationDegrees,
+  mp4Xmp,
   xmpXmpCreateDate,
 }
 
@@ -117,12 +120,33 @@ extension ExtraMetadataField on MetadataField {
       case MetadataField.exifGpsVersionId:
       case MetadataField.exifImageDescription:
         return MetadataType.exif;
+      case MetadataField.mp4GpsCoordinates:
+      case MetadataField.mp4RotationDegrees:
+      case MetadataField.mp4Xmp:
+        return MetadataType.mp4;
       case MetadataField.xmpXmpCreateDate:
         return MetadataType.xmp;
     }
   }
 
-  String? get exifInterfaceTag {
+  String? get toPlatform {
+    if (type == MetadataType.exif) {
+      return _toExifInterfaceTag();
+    } else {
+      switch (this) {
+        case MetadataField.mp4GpsCoordinates:
+          return 'gpsCoordinates';
+        case MetadataField.mp4RotationDegrees:
+          return 'rotationDegrees';
+        case MetadataField.mp4Xmp:
+          return 'xmp';
+        default:
+          return null;
+      }
+    }
+  }
+
+  String? _toExifInterfaceTag() {
     switch (this) {
       case MetadataField.exifDate:
         return 'DateTime';
@@ -196,7 +220,7 @@ extension ExtraMetadataField on MetadataField {
         return 'GPSVersionID';
       case MetadataField.exifImageDescription:
         return 'ImageDescription';
-      case MetadataField.xmpXmpCreateDate:
+      default:
         return null;
     }
   }

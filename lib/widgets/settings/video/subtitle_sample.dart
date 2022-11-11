@@ -1,6 +1,7 @@
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/basic/outlined_text.dart';
+import 'package:aves/widgets/common/basic/text_background_painter.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
 import 'package:aves/widgets/viewer/visual/subtitle/subtitle.dart';
@@ -12,8 +13,13 @@ class SubtitleSample extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textSpans = [
+      TextSpan(text: context.l10n.settingsSubtitleThemeSample),
+    ];
+
     return Consumer<Settings>(
       builder: (context, settings, child) {
+        final textAlign = settings.subtitleTextAlignment;
         final outlineColor = Colors.black.withOpacity(settings.subtitleTextColor.opacity);
         final shadows = [
           Shadow(
@@ -34,7 +40,7 @@ class SubtitleSample extends StatelessWidget {
           ),
           height: 128,
           child: AnimatedAlign(
-            alignment: _getAlignment(settings.subtitleTextAlignment),
+            alignment: _getAlignment(textAlign),
             curve: Curves.easeInOutCubic,
             duration: const Duration(milliseconds: 400),
             child: Padding(
@@ -42,20 +48,24 @@ class SubtitleSample extends StatelessWidget {
               child: AnimatedDefaultTextStyle(
                 style: TextStyle(
                   color: settings.subtitleTextColor,
-                  backgroundColor: settings.subtitleBackgroundColor,
                   fontSize: settings.subtitleFontSize,
                   shadows: settings.subtitleShowOutline ? shadows : null,
                 ),
-                textAlign: settings.subtitleTextAlignment,
+                textAlign: textAlign,
                 duration: const Duration(milliseconds: 200),
-                child: OutlinedText(
-                  textSpans: [
-                    TextSpan(
-                      text: context.l10n.settingsSubtitleThemeSample,
+                child: Builder(
+                  builder: (context) => TextBackgroundPainter(
+                    spans: textSpans,
+                    style: DefaultTextStyle.of(context).style.copyWith(
+                          backgroundColor: settings.subtitleBackgroundColor,
+                        ),
+                    textAlign: textAlign,
+                    child: OutlinedText(
+                      textSpans: textSpans,
+                      outlineWidth: settings.subtitleShowOutline ? 1 : 0,
+                      outlineColor: outlineColor,
                     ),
-                  ],
-                  outlineWidth: settings.subtitleShowOutline ? 1 : 0,
-                  outlineColor: outlineColor,
+                  ),
                 ),
               ),
             ),

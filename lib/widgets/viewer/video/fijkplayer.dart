@@ -294,6 +294,9 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
   }
 
   @override
+  void onVisualChanged() => _init(startMillis: currentPosition);
+
+  @override
   Future<void> play() async {
     if (isReady) {
       await _instance.start();

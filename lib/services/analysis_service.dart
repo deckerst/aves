@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:ui';
 
 import 'package:aves/l10n/l10n.dart';
+import 'package:aves/model/device.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/analysis_controller.dart';
 import 'package:aves/model/source/enums/enums.dart';
@@ -47,6 +48,7 @@ Future<void> _init() async {
   initPlatformServices();
   await androidFileUtils.init();
   await metadataDb.init();
+  await device.init();
   await mobileServices.init();
   await settings.init(monitorPlatformSettings: false);
   FijkLog.setLevel(FijkLogLevel.Warn);

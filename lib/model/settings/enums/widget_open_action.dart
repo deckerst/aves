@@ -7,6 +7,8 @@ extension ExtraWidgetOpenPage on WidgetOpenPage {
     switch (this) {
       case WidgetOpenPage.home:
         return context.l10n.widgetOpenPageHome;
+      case WidgetOpenPage.collection:
+        return context.l10n.widgetOpenPageCollection;
       case WidgetOpenPage.viewer:
         return context.l10n.widgetOpenPageViewer;
     }

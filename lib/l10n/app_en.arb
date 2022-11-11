@@ -216,6 +216,7 @@
   "wallpaperTargetHomeLock": "Home and lock screens",
 
   "widgetOpenPageHome": "Open home",
+  "widgetOpenPageCollection": "Open collection",
   "widgetOpenPageViewer": "Open viewer",
 
   "albumTierNew": "New",
@@ -373,20 +374,23 @@
 
   "renameEntryDialogLabel": "New name",
 
+  "editEntryDialogCopyFromItem": "Copy from other item",
   "editEntryDialogTargetFieldsHeader": "Fields to modify",
 
   "editEntryDateDialogTitle": "Date & Time",
   "editEntryDateDialogSetCustom": "Set custom date",
   "editEntryDateDialogCopyField": "Copy from other date",
-  "editEntryDateDialogCopyItem": "Copy from other item",
   "editEntryDateDialogExtractFromTitle": "Extract from title",
   "editEntryDateDialogShift": "Shift",
   "editEntryDateDialogSourceFileModifiedDate": "File modified date",
-  "editEntryDateDialogHours": "Hours",
-  "editEntryDateDialogMinutes": "Minutes",
+
+  "durationDialogHours": "Hours",
+  "durationDialogMinutes": "Minutes",
+  "durationDialogSeconds": "Seconds",
 
   "editEntryLocationDialogTitle": "Location",
-  "editEntryLocationDialogChooseOnMapTooltip": "Choose on map",
+  "editEntryLocationDialogSetCustom": "Set custom location",
+  "editEntryLocationDialogChooseOnMap": "Choose on map",
   "editEntryLocationDialogLatitude": "Latitude",
   "editEntryLocationDialogLongitude": "Longitude",
 
@@ -437,7 +441,6 @@
   "appPickDialogNone": "None",
 
   "aboutPageTitle": "About",
-  "aboutLinkSources": "Sources",
   "aboutLinkLicense": "License",
   "aboutLinkPolicy": "Privacy Policy",
 
@@ -757,6 +760,7 @@
   "settingsSaveSearchHistory": "Save search history",
   "settingsEnableBin": "Use recycle bin",
   "settingsEnableBinSubtitle": "Keep deleted items for 30 days",
+  "settingsAllowMediaManagement": "Allow media management",
 
   "settingsHiddenItemsTile": "Hidden items",
   "settingsHiddenItemsPageTitle": "Hidden Items",
@@ -865,6 +869,10 @@
   "tagEditorPageNewTagFieldLabel": "New tag",
   "tagEditorPageAddTagTooltip": "Add tag",
   "tagEditorSectionRecent": "Recent",
+  "tagEditorSectionPlaceholders": "Placeholders",
+
+  "tagPlaceholderCountry": "Country",
+  "tagPlaceholderPlace": "Place",
 
   "panoramaEnableSensorControl": "Enable sensor control",
   "panoramaDisableSensorControl": "Disable sensor control",

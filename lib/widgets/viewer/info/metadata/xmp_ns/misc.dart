@@ -79,6 +79,8 @@ class XmpPlusNamespace extends XmpNamespace {
 
   @override
   late final List<XmpCardData> cards = [
+    XmpCardData(RegExp(nsPrefix + r'CopyrightOwner\[(\d+)\]/(.*)')),
+    XmpCardData(RegExp(nsPrefix + r'ImageCreator\[(\d+)\]/(.*)')),
     XmpCardData(RegExp(nsPrefix + r'Licensor\[(\d+)\]/(.*)')),
   ];
 }
@@ -91,6 +93,12 @@ class XmpMMNamespace extends XmpNamespace {
     XmpCardData(RegExp(nsPrefix + r'DerivedFrom/(.*)')),
     XmpCardData(RegExp(nsPrefix + r'History\[(\d+)\]/(.*)')),
     XmpCardData(RegExp(nsPrefix + r'Ingredients\[(\d+)\]/(.*)')),
-    XmpCardData(RegExp(nsPrefix + r'Pantry\[(\d+)\]/(.*)')),
+    XmpCardData(
+      RegExp(nsPrefix + r'Pantry\[(\d+)\]/(.*)'),
+      cards: [
+        XmpCardData(RegExp(nsPrefix + r'DerivedFrom/(.*)')),
+        XmpCardData(RegExp(nsPrefix + r'History\[(\d+)\]/(.*)')),
+      ],
+    ),
   ];
 }

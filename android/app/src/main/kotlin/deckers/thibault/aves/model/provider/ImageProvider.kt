@@ -22,6 +22,13 @@ import deckers.thibault.aves.decoder.SvgImage
 import deckers.thibault.aves.decoder.TiffImage
 import deckers.thibault.aves.metadata.*
 import deckers.thibault.aves.metadata.ExifInterfaceHelper.getSafeDateMillis
+import deckers.thibault.aves.metadata.Metadata.TYPE_EXIF
+import deckers.thibault.aves.metadata.Metadata.TYPE_IPTC
+import deckers.thibault.aves.metadata.Metadata.TYPE_MP4
+import deckers.thibault.aves.metadata.Metadata.TYPE_XMP
+import deckers.thibault.aves.metadata.Mp4ParserHelper.updateLocation
+import deckers.thibault.aves.metadata.Mp4ParserHelper.updateRotation
+import deckers.thibault.aves.metadata.Mp4ParserHelper.updateXmp
 import deckers.thibault.aves.metadata.PixyMetaHelper.extendedXmpDocString
 import deckers.thibault.aves.metadata.PixyMetaHelper.xmpDocString
 import deckers.thibault.aves.model.AvesEntry
@@ -37,10 +44,8 @@ import deckers.thibault.aves.utils.MimeTypes.canEditXmp
 import deckers.thibault.aves.utils.MimeTypes.canRemoveMetadata
 import deckers.thibault.aves.utils.MimeTypes.extensionFor
 import deckers.thibault.aves.utils.MimeTypes.isVideo
-import java.io.ByteArrayInputStream
-import java.io.File
-import java.io.IOException
-import java.io.OutputStream
+import java.io.*
+import java.nio.channels.Channels
 import java.util.*
 
 abstract class ImageProvider {
@@ -350,6 +355,7 @@ abstract class ImageProvider {
 
                 // copy the edited temporary file back to the original
                 DocumentFileCompat.fromFile(editableFile).copyTo(targetDocFile)
+                editableFile.delete()
             }
 
             val fileName = targetDocFile.name
@@ -457,11 +463,12 @@ abstract class ImageProvider {
             }
 
             // copy the edited temporary file back to the original
-            copyFileTo(context, mimeType, sourceFile = editableFile, targetUri = uri, targetPath = path)
+            editableFile.transferTo(outputStream(context, mimeType, uri, path))
 
             if (autoCorrectTrailerOffset && !checkTrailerOffset(context, path, uri, mimeType, videoSize, editableFile, callback)) {
                 return false
             }
+            editableFile.delete()
         } catch (e: IOException) {
             callback.onFailure(e)
             return false
@@ -524,7 +531,7 @@ abstract class ImageProvider {
                         iptc != null ->
                             PixyMetaHelper.setIptc(input, output, iptc)
                         canRemoveMetadata(mimeType) ->
-                            PixyMetaHelper.removeMetadata(input, output, setOf(Metadata.TYPE_IPTC))
+                            PixyMetaHelper.removeMetadata(input, output, setOf(TYPE_IPTC))
                         else -> {
                             Log.w(LOG_TAG, "setting empty IPTC for mimeType=$mimeType")
                             PixyMetaHelper.setIptc(input, output, null)
@@ -539,12 +546,74 @@ abstract class ImageProvider {
             }
 
             // copy the edited temporary file back to the original
-            copyFileTo(context, mimeType, sourceFile = editableFile, targetUri = uri, targetPath = path)
+            editableFile.transferTo(outputStream(context, mimeType, uri, path))
 
             if (autoCorrectTrailerOffset && !checkTrailerOffset(context, path, uri, mimeType, videoSize, editableFile, callback)) {
                 return false
             }
+            editableFile.delete()
         } catch (e: IOException) {
+            callback.onFailure(e)
+            return false
+        }
+
+        return true
+    }
+
+    private fun editMp4Metadata(
+        context: Context,
+        path: String,
+        uri: Uri,
+        mimeType: String,
+        callback: ImageOpCallback,
+        fieldsToEdit: Map<*, *>,
+        newFields: FieldMap? = null,
+    ): Boolean {
+        if (mimeType != MimeTypes.MP4) {
+            callback.onFailure(UnsupportedOperationException("unsupported mimeType=$mimeType"))
+            return false
+        }
+
+        try {
+            val edits = Mp4ParserHelper.computeEdits(context, uri) { isoFile ->
+                fieldsToEdit.forEach { kv ->
+                    val tag = kv.key as String
+                    val value = kv.value as String?
+                    when (tag) {
+                        "gpsCoordinates" -> isoFile.updateLocation(value)
+                        "rotationDegrees" -> {
+                            val degrees = value?.toIntOrNull() ?: throw Exception("failed because of invalid rotation=$value")
+                            if (isoFile.updateRotation(degrees) && newFields != null) {
+                                newFields["rotationDegrees"] = degrees
+                            }
+                        }
+                        "xmp" -> isoFile.updateXmp(value)
+                    }
+                }
+            }
+
+            val pfd = StorageUtils.openOutputFileDescriptor(
+                context = context,
+                mimeType = mimeType,
+                uri = uri,
+                path = path,
+                // do not truncate
+                mode = "w",
+            ) ?: throw Exception("failed to open file descriptor for uri=$uri path=$path")
+            pfd.use {
+                FileOutputStream(it.fileDescriptor).use { outputStream ->
+                    outputStream.channel.use { outputChannel ->
+                        edits.forEach { (offset, bytes) ->
+                            bytes.inputStream().use { inputStream ->
+                                Channels.newChannel(inputStream).use { inputChannel ->
+                                    outputChannel.transferFrom(inputChannel, offset, bytes.size.toLong())
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (e: Exception) {
             callback.onFailure(e)
             return false
         }
@@ -571,41 +640,31 @@ abstract class ImageProvider {
             return false
         }
 
+        if (mimeType == MimeTypes.MP4) {
+            return editMp4Metadata(
+                context = context,
+                path = path,
+                uri = uri,
+                mimeType = mimeType,
+                callback = callback,
+                fieldsToEdit = mapOf("xmp" to coreXmp),
+            )
+        }
+
         val originalFileSize = File(path).length()
         val videoSize = MultiPage.getMotionPhotoOffset(context, uri, mimeType, originalFileSize)?.let { it.toInt() + trailerDiff }
         val editableFile = File.createTempFile("aves", null).apply {
             deleteOnExit()
             try {
-                var editedXmpString = coreXmp
-                var editedExtendedXmp = extendedXmp
-                if (editCoreXmp != null) {
-                    val pixyXmp = StorageUtils.openInputStream(context, uri)?.use { input -> PixyMetaHelper.getXmp(input) }
-                    if (pixyXmp != null) {
-                        editedXmpString = editCoreXmp(pixyXmp.xmpDocString())
-                        if (pixyXmp.hasExtendedXmp()) {
-                            editedExtendedXmp = pixyXmp.extendedXmpDocString()
-                        }
-                    }
-                }
-
-                outputStream().use { output ->
-                    // reopen input to read from start
-                    StorageUtils.openInputStream(context, uri)?.use { input ->
-                        if (editedXmpString != null) {
-                            if (editedExtendedXmp != null && mimeType != MimeTypes.JPEG) {
-                                Log.w(LOG_TAG, "extended XMP is not supported by mimeType=$mimeType")
-                                PixyMetaHelper.setXmp(input, output, editedXmpString, null)
-                            } else {
-                                PixyMetaHelper.setXmp(input, output, editedXmpString, editedExtendedXmp)
-                            }
-                        } else if (canRemoveMetadata(mimeType)) {
-                            PixyMetaHelper.removeMetadata(input, output, setOf(Metadata.TYPE_XMP))
-                        } else {
-                            Log.w(LOG_TAG, "setting empty XMP for mimeType=$mimeType")
-                            PixyMetaHelper.setXmp(input, output, null, null)
-                        }
-                    }
-                }
+                editXmpWithPixy(
+                    context = context,
+                    uri = uri,
+                    mimeType = mimeType,
+                    coreXmp = coreXmp,
+                    extendedXmp = extendedXmp,
+                    editCoreXmp = editCoreXmp,
+                    editableFile = this
+                )
             } catch (e: Exception) {
                 callback.onFailure(e)
                 return false
@@ -614,17 +673,59 @@ abstract class ImageProvider {
 
         try {
             // copy the edited temporary file back to the original
-            copyFileTo(context, mimeType, sourceFile = editableFile, targetUri = uri, targetPath = path)
+            editableFile.transferTo(outputStream(context, mimeType, uri, path))
 
             if (autoCorrectTrailerOffset && !checkTrailerOffset(context, path, uri, mimeType, videoSize, editableFile, callback)) {
                 return false
             }
+            editableFile.delete()
         } catch (e: IOException) {
             callback.onFailure(e)
             return false
         }
 
         return true
+    }
+
+    private fun editXmpWithPixy(
+        context: Context,
+        uri: Uri,
+        mimeType: String,
+        coreXmp: String?,
+        extendedXmp: String?,
+        editCoreXmp: ((xmp: String) -> String)?,
+        editableFile: File
+    ) {
+        var editedXmpString = coreXmp
+        var editedExtendedXmp = extendedXmp
+        if (editCoreXmp != null) {
+            val pixyXmp = StorageUtils.openInputStream(context, uri)?.use { input -> PixyMetaHelper.getXmp(input) }
+            if (pixyXmp != null) {
+                editedXmpString = editCoreXmp(pixyXmp.xmpDocString())
+                if (pixyXmp.hasExtendedXmp()) {
+                    editedExtendedXmp = pixyXmp.extendedXmpDocString()
+                }
+            }
+        }
+
+        editableFile.outputStream().use { output ->
+            // reopen input to read from start
+            StorageUtils.openInputStream(context, uri)?.use { input ->
+                if (editedXmpString != null) {
+                    if (editedExtendedXmp != null && mimeType != MimeTypes.JPEG) {
+                        Log.w(LOG_TAG, "extended XMP is not supported by mimeType=$mimeType")
+                        PixyMetaHelper.setXmp(input, output, editedXmpString, null)
+                    } else {
+                        PixyMetaHelper.setXmp(input, output, editedXmpString, editedExtendedXmp)
+                    }
+                } else if (canRemoveMetadata(mimeType)) {
+                    PixyMetaHelper.removeMetadata(input, output, setOf(TYPE_XMP))
+                } else {
+                    Log.w(LOG_TAG, "setting empty XMP for mimeType=$mimeType")
+                    PixyMetaHelper.setXmp(input, output, null, null)
+                }
+            }
+        }
     }
 
     // A few bytes are sometimes appended when writing to a document output stream.
@@ -807,8 +908,9 @@ abstract class ImageProvider {
         autoCorrectTrailerOffset: Boolean,
         callback: ImageOpCallback,
     ) {
-        if (modifier.containsKey("exif")) {
-            val fields = modifier["exif"] as Map<*, *>?
+        val newFields: FieldMap = hashMapOf()
+        if (modifier.containsKey(TYPE_EXIF)) {
+            val fields = modifier[TYPE_EXIF] as Map<*, *>?
             if (fields != null && fields.isNotEmpty()) {
                 if (!editExif(
                         context = context,
@@ -825,7 +927,7 @@ abstract class ImageProvider {
                                 val value = kv.value
                                 if (value == null) {
                                     // remove attribute
-                                    exif.setAttribute(tag, value)
+                                    exif.setAttribute(tag, null)
                                 } else {
                                     when (tag) {
                                         ExifInterface.TAG_GPS_LATITUDE,
@@ -864,8 +966,8 @@ abstract class ImageProvider {
             }
         }
 
-        if (modifier.containsKey("iptc")) {
-            val iptc = (modifier["iptc"] as List<*>?)?.filterIsInstance<FieldMap>()
+        if (modifier.containsKey(TYPE_IPTC)) {
+            val iptc = (modifier[TYPE_IPTC] as List<*>?)?.filterIsInstance<FieldMap>()
             if (!editIptc(
                     context = context,
                     path = path,
@@ -878,8 +980,24 @@ abstract class ImageProvider {
             ) return
         }
 
-        if (modifier.containsKey("xmp")) {
-            val xmp = modifier["xmp"] as Map<*, *>?
+        if (modifier.containsKey(TYPE_MP4)) {
+            val fieldsToEdit = modifier[TYPE_MP4] as Map<*, *>?
+            if (fieldsToEdit != null && fieldsToEdit.isNotEmpty()) {
+                if (!editMp4Metadata(
+                        context = context,
+                        path = path,
+                        uri = uri,
+                        mimeType = mimeType,
+                        callback = callback,
+                        fieldsToEdit = fieldsToEdit,
+                        newFields = newFields,
+                    )
+                ) return
+            }
+        }
+
+        if (modifier.containsKey(TYPE_XMP)) {
+            val xmp = modifier[TYPE_XMP] as Map<*, *>?
             if (xmp != null) {
                 val coreXmp = xmp["xmp"] as String?
                 val extendedXmp = xmp["extendedXmp"] as String?
@@ -897,7 +1015,6 @@ abstract class ImageProvider {
             }
         }
 
-        val newFields: FieldMap = hashMapOf()
         scanPostMetadataEdit(context, path, uri, mimeType, newFields, callback)
     }
 
@@ -930,7 +1047,8 @@ abstract class ImageProvider {
 
         try {
             // copy the edited temporary file back to the original
-            copyFileTo(context, mimeType, sourceFile = editableFile, targetUri = uri, targetPath = path)
+            editableFile.transferTo(outputStream(context, mimeType, uri, path))
+            editableFile.delete()
         } catch (e: IOException) {
             callback.onFailure(e)
             return
@@ -973,11 +1091,12 @@ abstract class ImageProvider {
 
         try {
             // copy the edited temporary file back to the original
-            copyFileTo(context, mimeType, sourceFile = editableFile, targetUri = uri, targetPath = path)
+            editableFile.transferTo(outputStream(context, mimeType, uri, path))
 
-            if (!types.contains(Metadata.TYPE_XMP) && !checkTrailerOffset(context, path, uri, mimeType, videoSize, editableFile, callback)) {
+            if (!types.contains(TYPE_XMP) && !checkTrailerOffset(context, path, uri, mimeType, videoSize, editableFile, callback)) {
                 return
             }
+            editableFile.delete()
         } catch (e: IOException) {
             callback.onFailure(e)
             return
@@ -987,21 +1106,20 @@ abstract class ImageProvider {
         scanPostMetadataEdit(context, path, uri, mimeType, newFields, callback)
     }
 
-    private fun copyFileTo(
+    private fun outputStream(
         context: Context,
         mimeType: String,
-        sourceFile: File,
-        targetUri: Uri,
-        targetPath: String
-    ) {
+        uri: Uri,
+        path: String
+    ): OutputStream {
         // truncate is necessary when overwriting a longer file
-        val targetStream = if (isMediaUriPermissionGranted(context, targetUri, mimeType)) {
-            StorageUtils.openOutputStream(context, targetUri, mimeType, "wt") ?: throw Exception("failed to open output stream for uri=$targetUri")
+        val mode = "wt"
+        return if (isMediaUriPermissionGranted(context, uri, mimeType)) {
+            StorageUtils.openOutputStream(context, mimeType, uri, mode) ?: throw Exception("failed to open output stream for uri=$uri")
         } else {
-            val documentUri = StorageUtils.getDocumentFile(context, targetPath, targetUri)?.uri ?: throw Exception("failed to get document file for path=$targetPath, uri=$targetUri")
-            context.contentResolver.openOutputStream(documentUri, "wt") ?: throw Exception("failed to open output stream from documentUri=$documentUri for path=$targetPath, uri=$targetUri")
+            val documentUri = StorageUtils.getDocumentFile(context, path, uri)?.uri ?: throw Exception("failed to get document file for path=$path, uri=$uri")
+            context.contentResolver.openOutputStream(documentUri, mode) ?: throw Exception("failed to open output stream from documentUri=$documentUri for path=$path, uri=$uri")
         }
-        sourceFile.transferTo(targetStream)
     }
 
     interface ImageOpCallback {

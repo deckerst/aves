@@ -63,7 +63,7 @@ class _AvesSelectionDialogState<T> extends State<AvesSelectionDialog<T>> {
     return AvesDialog(
       title: title,
       scrollableContent: [
-        if (title == null && message == null) SizedBox(height: AvesDialog.cornerRadius.y),
+        if (title == null && message == null) SizedBox(height: AvesDialog.cornerRadius.y / 2),
         if (message != null)
           Padding(
             padding: const EdgeInsets.all(16),

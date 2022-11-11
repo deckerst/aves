@@ -137,7 +137,7 @@ class _EntryPageViewState extends State<EntryPageView> with SingleTickerProvider
   @override
   Widget build(BuildContext context) {
     Widget child = AnimatedBuilder(
-      animation: entry.imageChangeNotifier,
+      animation: entry.visualChangeNotifier,
       builder: (context, child) {
         Widget? child;
         if (entry.isSvg) {

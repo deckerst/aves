@@ -24,9 +24,14 @@ This change eventually prevents building the app with Flutter v3.3.3.
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="29"
         tools:ignore="ScopedStorage" />
+
+    <!-- from Android 12 (API 31), users can optionally grant access to the media management special permission -->
+    <uses-permission
+        android:name="android.permission.MANAGE_MEDIA"
+        tools:ignore="ProtectedPermissions" />
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.SET_WALLPAPER" />
-
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <!-- to show foreground service progress via notification -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />

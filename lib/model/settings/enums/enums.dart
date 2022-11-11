@@ -18,8 +18,6 @@ enum HomePageSetting { collection, albums }
 
 enum KeepScreenOn { never, viewerOnly, always }
 
-enum SlideshowInterval { s3, s5, s10, s30, s60 }
-
 enum SlideshowVideoPlayback { skip, playMuted, playWithSound }
 
 enum UnitSystem { metric, imperial }
@@ -32,6 +30,6 @@ enum VideoAutoPlayMode { disabled, playMuted, playWithSound }
 
 enum ViewerTransition { slide, parallax, fade, zoomIn, none }
 
-enum WidgetOpenPage { home, viewer }
+enum WidgetOpenPage { home, collection, viewer }
 
 enum WidgetShape { rrect, circle, heart }

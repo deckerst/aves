@@ -389,7 +389,7 @@ class AssParser {
     );
   }
 
-  static String _replaceChars(String text) => text.replaceAll(r'\h', noBreakSpace).replaceAll(r'\N', '\n');
+  static String _replaceChars(String text) => text.replaceAll(r'\h', noBreakSpace).replaceAll(r'\N', '\n').trim();
 
   static int? _parseAlpha(String param) {
     final match = alphaPattern.firstMatch(param);

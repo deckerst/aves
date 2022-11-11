@@ -42,8 +42,9 @@ class MediaFetchBytesHandler(private val context: Context) : MethodCallHandler {
         val heightDip = call.argument<Number>("heightDip")?.toDouble()
         val pageId = call.argument<Int>("pageId")
         val defaultSizeDip = call.argument<Number>("defaultSizeDip")?.toDouble()
+        val quality = call.argument<Int>("quality")
 
-        if (uri == null || mimeType == null || dateModifiedSecs == null || rotationDegrees == null || isFlipped == null || widthDip == null || heightDip == null || defaultSizeDip == null) {
+        if (uri == null || mimeType == null || dateModifiedSecs == null || rotationDegrees == null || isFlipped == null || widthDip == null || heightDip == null || defaultSizeDip == null || quality == null) {
             result.error("getThumbnail-args", "missing arguments", null)
             return
         }
@@ -60,6 +61,7 @@ class MediaFetchBytesHandler(private val context: Context) : MethodCallHandler {
             height = (heightDip * density).roundToInt(),
             pageId = pageId,
             defaultSize = (defaultSizeDip * density).roundToInt(),
+            quality = quality,
             result = result,
         ).fetch()
     }
@@ -68,6 +70,7 @@ class MediaFetchBytesHandler(private val context: Context) : MethodCallHandler {
         val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
         val mimeType = call.argument<String>("mimeType")
         val pageId = call.argument<Int>("pageId")
+        val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
         val sampleSize = call.argument<Int>("sampleSize")
         val x = call.argument<Int>("regionX")
         val y = call.argument<Int>("regionY")
@@ -85,6 +88,7 @@ class MediaFetchBytesHandler(private val context: Context) : MethodCallHandler {
         when (mimeType) {
             MimeTypes.SVG -> SvgRegionFetcher(context).fetch(
                 uri = uri,
+                sizeBytes = sizeBytes,
                 regionRect = regionRect,
                 imageWidth = imageWidth,
                 imageHeight = imageHeight,

@@ -1,12 +1,15 @@
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/metadata/date_modifier.dart';
-import 'package:aves/model/metadata/enums.dart';
+import 'package:aves/model/metadata/enums/date_edit_action.dart';
+import 'package:aves/model/metadata/enums/date_field_source.dart';
+import 'package:aves/model/metadata/enums/enums.dart';
 import 'package:aves/model/metadata/fields.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/format.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/themes.dart';
+import 'package:aves/utils/time_utils.dart';
 import 'package:aves/widgets/common/basic/text_dropdown_button.dart';
 import 'package:aves/widgets/common/basic/wheel.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -35,7 +38,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
   DateEditAction _action = DateEditAction.setCustom;
   DateFieldSource _copyFieldSource = DateFieldSource.fileModifiedDate;
   late AvesEntry _copyItemSource;
-  late DateTime _setDateTime;
+  late DateTime _customDateTime;
   late ValueNotifier<int> _shiftHour, _shiftMinute;
   late ValueNotifier<String> _shiftSign;
   bool _showOptions = false;
@@ -46,13 +49,13 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
   @override
   void initState() {
     super.initState();
-    _initSet();
+    _initCustom();
     _initCopyItem();
-    _initShift(60);
+    _initShift(minutesInHour);
   }
 
-  void _initSet() {
-    _setDateTime = widget.entry.bestDate ?? DateTime.now();
+  void _initCustom() {
+    _customDateTime = widget.entry.bestDate ?? DateTime.now();
   }
 
   void _initCopyItem() {
@@ -61,8 +64,8 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
 
   void _initShift(int initialMinutes) {
     final abs = initialMinutes.abs();
-    _shiftHour = ValueNotifier(abs ~/ 60);
-    _shiftMinute = ValueNotifier(abs % 60);
+    _shiftHour = ValueNotifier(abs ~/ minutesInHour);
+    _shiftMinute = ValueNotifier(abs % minutesInHour);
     _shiftSign = ValueNotifier(initialMinutes.isNegative ? '-' : '+');
   }
 
@@ -83,7 +86,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
                 padding: const EdgeInsets.only(left: 16, top: 8, right: 16),
                 child: TextDropdownButton<DateEditAction>(
                   values: DateEditAction.values,
-                  valueText: (v) => _actionText(context, v),
+                  valueText: (v) => v.getText(context),
                   value: _action,
                   onChanged: (v) => setState(() => _action = v!),
                   isExpanded: true,
@@ -142,7 +145,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
       padding: const EdgeInsetsDirectional.only(start: 16, end: 8),
       child: Row(
         children: [
-          Expanded(child: Text(formatDateTime(_setDateTime, locale, use24hour))),
+          Expanded(child: Text(formatDateTime(_customDateTime, locale, use24hour))),
           IconButton(
             icon: const Icon(AIcons.edit),
             onPressed: _editDate,
@@ -158,7 +161,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
       padding: const EdgeInsets.only(left: 16, top: 0, right: 16),
       child: TextDropdownButton<DateFieldSource>(
         values: DateFieldSource.values,
-        valueText: (v) => _setSourceText(context, v),
+        valueText: (v) => v.getText(context),
         value: _copyFieldSource,
         onChanged: (v) => setState(() => _copyFieldSource = v!),
         isExpanded: true,
@@ -198,9 +201,9 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
           TableRow(
             children: [
               const SizedBox(),
-              Center(child: Text(context.l10n.editEntryDateDialogHours)),
-              const SizedBox(),
-              Center(child: Text(context.l10n.editEntryDateDialogMinutes)),
+              Center(child: Text(context.l10n.durationDialogHours)),
+              const SizedBox(width: 16),
+              Center(child: Text(context.l10n.durationDialogMinutes)),
             ],
           ),
           TableRow(
@@ -215,7 +218,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
                 alignment: Alignment.centerRight,
                 child: WheelSelector(
                   valueNotifier: _shiftHour,
-                  values: List.generate(24, (i) => i),
+                  values: List.generate(hoursInDay, (i) => i),
                   textStyle: textStyle,
                   textAlign: TextAlign.end,
                 ),
@@ -231,7 +234,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
                 alignment: Alignment.centerLeft,
                 child: WheelSelector(
                   valueNotifier: _shiftMinute,
-                  values: List.generate(60, (i) => i),
+                  values: List.generate(minutesInHour, (i) => i),
                   textStyle: textStyle,
                   textAlign: TextAlign.end,
                 ),
@@ -279,44 +282,10 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
     );
   }
 
-  String _actionText(BuildContext context, DateEditAction action) {
-    final l10n = context.l10n;
-    switch (action) {
-      case DateEditAction.setCustom:
-        return l10n.editEntryDateDialogSetCustom;
-      case DateEditAction.copyField:
-        return l10n.editEntryDateDialogCopyField;
-      case DateEditAction.copyItem:
-        return l10n.editEntryDateDialogCopyItem;
-      case DateEditAction.extractFromTitle:
-        return l10n.editEntryDateDialogExtractFromTitle;
-      case DateEditAction.shift:
-        return l10n.editEntryDateDialogShift;
-      case DateEditAction.remove:
-        return l10n.actionRemove;
-    }
-  }
-
-  String _setSourceText(BuildContext context, DateFieldSource source) {
-    final l10n = context.l10n;
-    switch (source) {
-      case DateFieldSource.fileModifiedDate:
-        return l10n.editEntryDateDialogSourceFileModifiedDate;
-      case DateFieldSource.exifDate:
-        return 'Exif date';
-      case DateFieldSource.exifDateOriginal:
-        return 'Exif original date';
-      case DateFieldSource.exifDateDigitized:
-        return 'Exif digitized date';
-      case DateFieldSource.exifGpsDate:
-        return 'Exif GPS date';
-    }
-  }
-
   Future<void> _editDate() async {
     final _date = await showDatePicker(
       context: context,
-      initialDate: _setDateTime,
+      initialDate: _customDateTime,
       firstDate: DateTime(0),
       lastDate: DateTime(2100),
       confirmText: context.l10n.nextButtonLabel,
@@ -325,11 +294,11 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
 
     final _time = await showTimePicker(
       context: context,
-      initialTime: TimeOfDay.fromDateTime(_setDateTime),
+      initialTime: TimeOfDay.fromDateTime(_customDateTime),
     );
     if (_time == null) return;
 
-    setState(() => _setDateTime = DateTime(
+    setState(() => _customDateTime = DateTime(
           _date.year,
           _date.month,
           _date.day,
@@ -365,7 +334,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
     // whether each item supports Exif edition
     switch (_action) {
       case DateEditAction.setCustom:
-        return DateModifier.setCustom(const {}, _setDateTime);
+        return DateModifier.setCustom(const {}, _customDateTime);
       case DateEditAction.copyField:
         return DateModifier.copyField(_copyFieldSource);
       case DateEditAction.copyItem:
@@ -373,7 +342,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
       case DateEditAction.extractFromTitle:
         return DateModifier.extractFromTitle();
       case DateEditAction.shift:
-        final shiftTotalMinutes = (_shiftHour.value * 60 + _shiftMinute.value) * (_shiftSign.value == '+' ? 1 : -1);
+        final shiftTotalMinutes = (_shiftHour.value * minutesInHour + _shiftMinute.value) * (_shiftSign.value == '+' ? 1 : -1);
         return DateModifier.shift(_fields, shiftTotalMinutes);
       case DateEditAction.remove:
         return DateModifier.remove(_fields);

@@ -88,12 +88,12 @@ class _ThumbnailImageState extends State<ThumbnailImage> {
   }
 
   void _registerWidget(ThumbnailImage widget) {
-    widget.entry.imageChangeNotifier.addListener(_onImageChanged);
+    widget.entry.visualChangeNotifier.addListener(_onVisualChanged);
     _initProvider();
   }
 
   void _unregisterWidget(ThumbnailImage widget) {
-    widget.entry.imageChangeNotifier.removeListener(_onImageChanged);
+    widget.entry.visualChangeNotifier.removeListener(_onVisualChanged);
     _pauseProvider();
     _currentProviderStream?.stopListening();
     _currentProviderStream = null;
@@ -313,7 +313,7 @@ class _ThumbnailImageState extends State<ThumbnailImage> {
   }
 
   // when the entry image itself changed (e.g. after rotation)
-  void _onImageChanged() async {
+  void _onVisualChanged() async {
     // rebuild to refresh the thumbnails
     _pauseProvider();
     _initProvider();

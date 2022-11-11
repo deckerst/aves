@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:aves/app_flavor.dart';
 import 'package:aves/model/device.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -33,6 +34,7 @@ class PrivacySection extends SettingsSection {
     return [
       SettingsTilePrivacyAllowInstalledAppAccess(),
       if (canEnableErrorReporting) SettingsTilePrivacyAllowErrorReporting(),
+      if (device.canRequestManageMedia) SettingsTilePrivacyManageMedia(),
       SettingsTilePrivacySaveSearchHistory(),
       SettingsTilePrivacyEnableBin(),
       SettingsTilePrivacyHiddenItems(),
@@ -123,4 +125,66 @@ class SettingsTilePrivacyStorageAccess extends SettingsTile {
         routeName: StorageAccessPage.routeName,
         builder: (context) => const StorageAccessPage(),
       );
+}
+
+class SettingsTilePrivacyManageMedia extends SettingsTile {
+  @override
+  String title(BuildContext context) => context.l10n.settingsAllowMediaManagement;
+
+  @override
+  Widget build(BuildContext context) => _ManageMediaTile(title: title(context));
+}
+
+class _ManageMediaTile extends StatefulWidget {
+  final String title;
+
+  const _ManageMediaTile({
+    required this.title,
+  });
+
+  @override
+  State<_ManageMediaTile> createState() => _ManageMediaTileState();
+}
+
+class _ManageMediaTileState extends State<_ManageMediaTile> with WidgetsBindingObserver {
+  late Future<bool> _loader;
+
+  @override
+  void initState() {
+    super.initState();
+    _initLoader();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  void _initLoader() => _loader = deviceService.canManageMedia();
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _initLoader();
+      setState(() {});
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<bool>(
+      future: _loader,
+      builder: (context, snapshot) {
+        final loading = snapshot.connectionState != ConnectionState.done;
+        final current = snapshot.data ?? false;
+        return SwitchListTile(
+          value: current,
+          onChanged: loading ? null : (v) => deviceService.requestMediaManagePermission(),
+          title: Text(widget.title),
+        );
+      },
+    );
+  }
 }

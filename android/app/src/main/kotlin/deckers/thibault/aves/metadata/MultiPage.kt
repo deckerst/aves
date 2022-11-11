@@ -204,7 +204,7 @@ object MultiPage {
             Log.w(LOG_TAG, "failed to get motion photo offset from uri=$uri", e)
         }
 
-        XMP.checkHeic(context, uri, mimeType, foundXmp, ::processXmp)
+        XMP.checkHeic(context, mimeType, uri, foundXmp, ::processXmp)
 
         return offsetFromEnd
     }

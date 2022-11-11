@@ -1,3 +1,4 @@
+import 'package:aves/model/device.dart';
 import 'package:aves/model/settings/enums/map_style.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves_map/aves_map.dart';
@@ -40,10 +41,8 @@ class LiveAvesAvailability implements AvesAvailability {
     }
   }
 
-  // local geocoding with `geocoder` seems to require Google Play Services
-  // what about devices with Huawei Mobile Services?
   @override
-  Future<bool> get canLocatePlaces async => mobileServices.isServiceAvailable && await isConnected;
+  Future<bool> get canLocatePlaces async => device.hasGeocoder && await isConnected;
 
   @override
   List<EntryMapStyle> get mapStyles => [

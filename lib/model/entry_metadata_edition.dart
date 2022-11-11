@@ -3,22 +3,25 @@ import 'dart:io';
 
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/metadata/date_modifier.dart';
-import 'package:aves/model/metadata/enums.dart';
+import 'package:aves/model/metadata/enums/date_field_source.dart';
+import 'package:aves/model/metadata/enums/enums.dart';
 import 'package:aves/model/metadata/fields.dart';
 import 'package:aves/ref/exif.dart';
 import 'package:aves/ref/iptc.dart';
+import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/metadata/xmp.dart';
 import 'package:aves/utils/time_utils.dart';
 import 'package:aves/utils/xmp_utils.dart';
 import 'package:flutter/foundation.dart';
+import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:xml/xml.dart';
 
 extension ExtraAvesEntryMetadataEdition on AvesEntry {
   Future<Set<EntryDataType>> editDate(DateModifier userModifier) async {
-    final Set<EntryDataType> dataTypes = {};
+    final dataTypes = <EntryDataType>{};
 
     final appliedModifier = await _applyDateModifierToEntry(userModifier);
     if (appliedModifier == null) {
@@ -81,29 +84,64 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
   }
 
   Future<Set<EntryDataType>> editLocation(LatLng? latLng) async {
-    final Set<EntryDataType> dataTypes = {};
+    final dataTypes = <EntryDataType>{};
+    final metadata = <MetadataType, dynamic>{};
 
-    await _missingDateCheckAndExifEdit(dataTypes);
+    final missingDate = await _missingDateCheckAndExifEdit(dataTypes);
 
-    // clear every GPS field
-    final exifFields = Map<MetadataField, dynamic>.fromEntries(MetadataFields.exifGpsFields.map((k) => MapEntry(k, null)));
-    // add latitude & longitude, if any
-    if (latLng != null) {
-      final latitude = latLng.latitude;
-      final longitude = latLng.longitude;
-      if (latitude != 0 && longitude != 0) {
-        exifFields.addAll({
-          MetadataField.exifGpsLatitude: latitude.abs(),
-          MetadataField.exifGpsLatitudeRef: latitude >= 0 ? Exif.latitudeNorth : Exif.latitudeSouth,
-          MetadataField.exifGpsLongitude: longitude.abs(),
-          MetadataField.exifGpsLongitudeRef: longitude >= 0 ? Exif.longitudeEast : Exif.longitudeWest,
+    if (canEditExif) {
+      // clear every GPS field
+      final exifFields = Map<MetadataField, dynamic>.fromEntries(MetadataFields.exifGpsFields.map((k) => MapEntry(k, null)));
+      // add latitude & longitude, if any
+      if (latLng != null) {
+        final latitude = latLng.latitude;
+        final longitude = latLng.longitude;
+        if (latitude != 0 && longitude != 0) {
+          exifFields.addAll({
+            MetadataField.exifGpsLatitude: latitude.abs(),
+            MetadataField.exifGpsLatitudeRef: latitude >= 0 ? Exif.latitudeNorth : Exif.latitudeSouth,
+            MetadataField.exifGpsLongitude: longitude.abs(),
+            MetadataField.exifGpsLongitudeRef: longitude >= 0 ? Exif.longitudeEast : Exif.longitudeWest,
+          });
+        }
+      }
+      metadata[MetadataType.exif] = Map<String, dynamic>.fromEntries(exifFields.entries.map((kv) => MapEntry(kv.key.toPlatform!, kv.value)));
+
+      if (canEditXmp && missingDate != null) {
+        metadata[MetadataType.xmp] = await _editXmp((descriptions) {
+          editCreateDateXmp(descriptions, missingDate);
+          return true;
         });
       }
     }
 
-    final metadata = {
-      MetadataType.exif: Map<String, dynamic>.fromEntries(exifFields.entries.map((kv) => MapEntry(kv.key.exifInterfaceTag!, kv.value))),
-    };
+    if (mimeType == MimeTypes.mp4) {
+      final mp4Fields = <MetadataField, String?>{};
+
+      String? iso6709String;
+      if (latLng != null) {
+        final latitude = latLng.latitude;
+        final longitude = latLng.longitude;
+        if (latitude != 0 && longitude != 0) {
+          const locale = 'en_US';
+          final isoLat = '${latitude >= 0 ? '+' : '-'}${NumberFormat('00.0000', locale).format(latitude.abs())}';
+          final isoLon = '${longitude >= 0 ? '+' : '-'}${NumberFormat('000.0000', locale).format(longitude.abs())}';
+          iso6709String = '$isoLat$isoLon/';
+        }
+      }
+      mp4Fields[MetadataField.mp4GpsCoordinates] = iso6709String;
+
+      if (missingDate != null) {
+        final xmpParts = await _editXmp((descriptions) {
+          editCreateDateXmp(descriptions, missingDate);
+          return true;
+        });
+        mp4Fields[MetadataField.mp4Xmp] = xmpParts[xmpCoreKey];
+      }
+
+      metadata[MetadataType.mp4] = Map<String, String?>.fromEntries(mp4Fields.entries.map((kv) => MapEntry(kv.key.toPlatform!, kv.value)));
+    }
+
     final newFields = await metadataEditService.editMetadata(this, metadata);
     if (newFields.isNotEmpty) {
       dataTypes.addAll({
@@ -114,8 +152,8 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
     return dataTypes;
   }
 
-  Future<Set<EntryDataType>> _changeOrientation(Future<Map<String, dynamic>> Function() apply) async {
-    final Set<EntryDataType> dataTypes = {};
+  Future<Set<EntryDataType>> _changeExifOrientation(Future<Map<String, dynamic>> Function() apply) async {
+    final dataTypes = <EntryDataType>{};
 
     await _missingDateCheckAndExifEdit(dataTypes);
 
@@ -133,12 +171,51 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
     return dataTypes;
   }
 
+  Future<Set<EntryDataType>> _rotateMp4(int rotationDegrees) async {
+    final dataTypes = <EntryDataType>{};
+
+    final missingDate = await _missingDateCheckAndExifEdit(dataTypes);
+
+    final mp4Fields = <MetadataField, String?>{
+      MetadataField.mp4RotationDegrees: rotationDegrees.toString(),
+    };
+
+    if (missingDate != null) {
+      final xmpParts = await _editXmp((descriptions) {
+        editCreateDateXmp(descriptions, missingDate);
+        return true;
+      });
+      mp4Fields[MetadataField.mp4Xmp] = xmpParts[xmpCoreKey];
+    }
+
+    final metadata = <MetadataType, dynamic>{
+      MetadataType.mp4: Map<String, String?>.fromEntries(mp4Fields.entries.map((kv) => MapEntry(kv.key.toPlatform!, kv.value))),
+    };
+
+    final newFields = await metadataEditService.editMetadata(this, metadata);
+    // applying fields is only useful for a smoother visual change,
+    // as proper refreshing and persistence happens at the caller level
+    await applyNewFields(newFields, persist: false);
+    if (newFields.isNotEmpty) {
+      dataTypes.addAll({
+        EntryDataType.basic,
+        EntryDataType.aspectRatio,
+        EntryDataType.catalog,
+      });
+    }
+    return dataTypes;
+  }
+
   Future<Set<EntryDataType>> rotate({required bool clockwise}) {
-    return _changeOrientation(() => metadataEditService.rotate(this, clockwise: clockwise));
+    if (mimeType == MimeTypes.mp4) {
+      return _rotateMp4((rotationDegrees + (clockwise ? 90 : -90) + 360) % 360);
+    } else {
+      return _changeExifOrientation(() => metadataEditService.rotate(this, clockwise: clockwise));
+    }
   }
 
   Future<Set<EntryDataType>> flip() {
-    return _changeOrientation(() => metadataEditService.flip(this));
+    return _changeExifOrientation(() => metadataEditService.flip(this));
   }
 
   // write title:
@@ -149,8 +226,8 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
   // - IPTC / caption-abstract, if IPTC exists
   // - XMP / dc:description
   Future<Set<EntryDataType>> editTitleDescription(Map<DescriptionField, String?> fields) async {
-    final Set<EntryDataType> dataTypes = {};
-    final Map<MetadataType, dynamic> metadata = {};
+    final dataTypes = <EntryDataType>{};
+    final metadata = <MetadataType, dynamic>{};
 
     final missingDate = await _missingDateCheckAndExifEdit(dataTypes);
 
@@ -160,7 +237,7 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
     final description = fields[DescriptionField.description];
 
     if (canEditExif && editDescription) {
-      metadata[MetadataType.exif] = {MetadataField.exifImageDescription.exifInterfaceTag!: description};
+      metadata[MetadataType.exif] = {MetadataField.exifImageDescription.toPlatform!: description};
     }
 
     if (canEditIptc) {
@@ -219,8 +296,8 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
   // - IPTC / keywords, if IPTC exists
   // - XMP / dc:subject
   Future<Set<EntryDataType>> editTags(Set<String> tags) async {
-    final Set<EntryDataType> dataTypes = {};
-    final Map<MetadataType, dynamic> metadata = {};
+    final dataTypes = <EntryDataType>{};
+    final metadata = <MetadataType, dynamic>{};
 
     final missingDate = await _missingDateCheckAndExifEdit(dataTypes);
 
@@ -257,8 +334,8 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
   // - Exif / Rating
   // - Exif / RatingPercent
   Future<Set<EntryDataType>> editRating(int? rating) async {
-    final Set<EntryDataType> dataTypes = {};
-    final Map<MetadataType, dynamic> metadata = {};
+    final dataTypes = <EntryDataType>{};
+    final metadata = <MetadataType, dynamic>{};
 
     final missingDate = await _missingDateCheckAndExifEdit(dataTypes);
 
@@ -285,8 +362,8 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
   // - XMP / GCamera:MicroVideo*
   // - XMP / GCamera:MotionPhoto*
   Future<Set<EntryDataType>> removeTrailerVideo() async {
-    final Set<EntryDataType> dataTypes = {};
-    final Map<MetadataType, dynamic> metadata = {};
+    final dataTypes = <EntryDataType>{};
+    final metadata = <MetadataType, dynamic>{};
 
     if (!canEditXmp) return dataTypes;
 
@@ -310,7 +387,7 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
   }
 
   Future<Set<EntryDataType>> removeMetadata(Set<MetadataType> types) async {
-    final Set<EntryDataType> dataTypes = {};
+    final dataTypes = <EntryDataType>{};
 
     final newFields = await metadataEditService.removeTypes(this, types);
     if (newFields.isNotEmpty) {
@@ -480,10 +557,17 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
     }
   }
 
+  static const xmpCoreKey = 'xmp';
+  static const xmpExtendedKey = 'extendedXmp';
+
   Future<Map<String, String?>> _editXmp(bool Function(List<XmlNode> descriptions) apply) async {
     final xmp = await metadataFetchService.getXmp(this);
-    final xmpString = xmp?.xmpString;
-    final extendedXmpString = xmp?.extendedXmpString;
+    if (xmp == null) {
+      throw Exception('failed to get XMP');
+    }
+
+    final xmpString = xmp.xmpString;
+    final extendedXmpString = xmp.extendedXmpString;
 
     final editedXmpString = await XMP.edit(
       xmpString,
@@ -493,8 +577,8 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
 
     final editedXmp = AvesXmp(xmpString: editedXmpString, extendedXmpString: extendedXmpString);
     return {
-      'xmp': editedXmp.xmpString,
-      'extendedXmp': editedXmp.extendedXmpString,
+      xmpCoreKey: editedXmp.xmpString,
+      xmpExtendedKey: editedXmp.extendedXmpString,
     };
   }
 }

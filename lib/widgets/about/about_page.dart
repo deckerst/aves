@@ -2,6 +2,7 @@ import 'package:aves/widgets/about/app_ref.dart';
 import 'package:aves/widgets/about/bug_report.dart';
 import 'package:aves/widgets/about/credits.dart';
 import 'package:aves/widgets/about/licenses.dart';
+import 'package:aves/widgets/about/translators.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
@@ -34,6 +35,8 @@ class AboutPage extends StatelessWidget {
                         BugReport(),
                         Divider(),
                         AboutCredits(),
+                        Divider(),
+                        AboutTranslators(),
                         Divider(),
                       ],
                     ),

@@ -42,6 +42,7 @@ object Metadata {
     const val TYPE_JFIF = "jfif"
     const val TYPE_JPEG_ADOBE = "jpeg_adobe"
     const val TYPE_JPEG_DUCKY = "jpeg_ducky"
+    const val TYPE_MP4 = "mp4"
     const val TYPE_PHOTOSHOP_IRB = "photoshop_irb"
     const val TYPE_XMP = "xmp"
 
@@ -116,14 +117,16 @@ object Metadata {
         return date.time + parseSubSecond(subSecond)
     }
 
-    // opening large PSD/TIFF files yields an OOM (both with `metadata-extractor` v2.15.0 and `ExifInterface` v1.3.1),
+    // Opening large PSD/TIFF files yields an OOM (both with `metadata-extractor` v2.15.0 and `ExifInterface` v1.3.1),
     // so we define an arbitrary threshold to avoid a crash on launch.
     // It is not clear whether it is because of the file itself or its metadata.
-    private const val fileSizeBytesMax = 100 * (1 shl 20) // MB
+    private const val FILE_SIZE_MAX = 100 * (1 shl 20) // MB
+
+    fun isDangerouslyLarge(sizeBytes: Long?) = sizeBytes == null || sizeBytes > FILE_SIZE_MAX
 
     // we try and read metadata from large files by copying an arbitrary amount from its beginning
     // to a temporary file, and reusing that preview file for all metadata reading purposes
-    private const val previewSize: Long = 5 * (1 shl 20) // MB
+    private const val PREVIEW_SIZE: Long = 5 * (1 shl 20) // MB
 
     private val previewFiles = HashMap<Uri, File>()
 
@@ -134,10 +137,7 @@ object Metadata {
             MimeTypes.PSD_VND,
             MimeTypes.PSD_X,
             MimeTypes.TIFF -> {
-                if (sizeBytes != null && sizeBytes < fileSizeBytesMax) {
-                    // small enough to be safe as it is
-                    uri
-                } else {
+                if (isDangerouslyLarge(sizeBytes)) {
                     // make a preview from the beginning of the file,
                     // hoping the metadata is accessible in the copied chunk
                     var previewFile = previewFiles[uri]
@@ -146,6 +146,9 @@ object Metadata {
                         previewFiles[uri] = previewFile
                     }
                     Uri.fromFile(previewFile)
+                } else {
+                    // small enough to be safe as it is
+                    uri
                 }
             }
             // *probably* safe
@@ -156,7 +159,7 @@ object Metadata {
     fun createPreviewFile(context: Context, uri: Uri): File {
         return File.createTempFile("aves", null, context.cacheDir).apply {
             deleteOnExit()
-            transferFrom(StorageUtils.openInputStream(context, uri), previewSize)
+            transferFrom(StorageUtils.openInputStream(context, uri), PREVIEW_SIZE)
         }
     }
 

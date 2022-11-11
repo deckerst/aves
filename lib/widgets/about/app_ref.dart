@@ -73,12 +73,12 @@ class _AppReferenceState extends State<AppReference> {
       spacing: 16,
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [
-        LinkChip(
-          leading: const Icon(
+        const LinkChip(
+          leading: Icon(
             AIcons.github,
             size: 24,
           ),
-          text: l10n.aboutLinkSources,
+          text: 'GitHub',
           urlString: Constants.avesGithub,
         ),
         LinkChip(
