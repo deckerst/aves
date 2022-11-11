@@ -1,4 +1,4 @@
-import 'package:aves/widgets/common/magnifier/controller/state.dart';
+import 'package:aves_magnifier/src/controller/state.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/widgets.dart';
 

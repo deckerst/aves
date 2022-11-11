@@ -1,6 +1,5 @@
 import 'package:aves/model/entry.dart';
-import 'package:aves/widgets/common/magnifier/scale/scale_boundaries.dart';
-import 'package:aves/widgets/common/magnifier/scale/scale_level.dart';
+import 'package:aves_magnifier/aves_magnifier.dart';
 import 'package:aves/widgets/viewer/visual/state.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';

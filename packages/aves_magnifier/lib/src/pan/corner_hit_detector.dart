@@ -1,8 +1,8 @@
-import 'package:aves/widgets/common/magnifier/controller/controller_delegate.dart';
+import 'package:aves_magnifier/src/controller/controller_delegate.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-mixin CornerHitDetector on MagnifierControllerDelegate {
+mixin CornerHitDetector on AvesMagnifierControllerDelegate {
   // the child width/height is not accurate for some image size & scale combos
   // e.g. 3580.0 * 0.1005586592178771 yields 360.0
   // but 4764.0 * 0.07556675062972293 yields 360.00000000000006
