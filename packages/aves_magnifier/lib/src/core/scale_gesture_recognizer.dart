@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:aves/widgets/common/magnifier/pan/corner_hit_detector.dart';
+import 'package:aves_magnifier/src/pan/corner_hit_detector.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
 

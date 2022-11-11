@@ -9,12 +9,6 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
-import 'package:aves/widgets/common/magnifier/controller/controller.dart';
-import 'package:aves/widgets/common/magnifier/controller/state.dart';
-import 'package:aves/widgets/common/magnifier/magnifier.dart';
-import 'package:aves/widgets/common/magnifier/scale/scale_boundaries.dart';
-import 'package:aves/widgets/common/magnifier/scale/scale_level.dart';
-import 'package:aves/widgets/common/magnifier/scale/state.dart';
 import 'package:aves/widgets/common/thumbnail/image.dart';
 import 'package:aves/widgets/viewer/controller.dart';
 import 'package:aves/widgets/viewer/hero.dart';
@@ -28,6 +22,7 @@ import 'package:aves/widgets/viewer/visual/state.dart';
 import 'package:aves/widgets/viewer/visual/subtitle/subtitle.dart';
 import 'package:aves/widgets/viewer/visual/vector.dart';
 import 'package:aves/widgets/viewer/visual/video.dart';
+import 'package:aves_magnifier/aves_magnifier.dart';
 import 'package:collection/collection.dart';
 import 'package:decorated_icon/decorated_icon.dart';
 import 'package:flutter/material.dart';
@@ -55,17 +50,17 @@ class EntryPageView extends StatefulWidget {
 
 class _EntryPageViewState extends State<EntryPageView> with SingleTickerProviderStateMixin {
   late ValueNotifier<ViewState> _viewStateNotifier;
-  late MagnifierController _magnifierController;
+  late AvesMagnifierController _magnifierController;
   final List<StreamSubscription> _subscriptions = [];
   ImageStream? _videoCoverStream;
   late ImageStreamListener _videoCoverStreamListener;
   final ValueNotifier<ImageInfo?> _videoCoverInfoNotifier = ValueNotifier(null);
   final ValueNotifier<Widget?> _actionFeedbackChildNotifier = ValueNotifier(null);
 
-  MagnifierController? _dismissedCoverMagnifierController;
+  AvesMagnifierController? _dismissedCoverMagnifierController;
 
-  MagnifierController get dismissedCoverMagnifierController {
-    _dismissedCoverMagnifierController ??= MagnifierController();
+  AvesMagnifierController get dismissedCoverMagnifierController {
+    _dismissedCoverMagnifierController ??= AvesMagnifierController();
     return _dismissedCoverMagnifierController!;
   }
 
@@ -107,7 +102,7 @@ class _EntryPageViewState extends State<EntryPageView> with SingleTickerProvider
   void _registerWidget(EntryPageView widget) {
     final entry = widget.pageEntry;
     _viewStateNotifier = context.read<ViewStateConductor>().getOrCreateController(entry);
-    _magnifierController = MagnifierController();
+    _magnifierController = AvesMagnifierController();
     _subscriptions.add(_magnifierController.stateStream.listen(_onViewStateChanged));
     _subscriptions.add(_magnifierController.scaleBoundariesStream.listen(_onViewScaleBoundariesChanged));
     if (entry.isVideo) {
@@ -376,7 +371,7 @@ class _EntryPageViewState extends State<EntryPageView> with SingleTickerProvider
   }
 
   Widget _buildMagnifier({
-    MagnifierController? controller,
+    AvesMagnifierController? controller,
     Size? displaySize,
     ScaleLevel maxScale = rasterMaxScale,
     ScaleStateCycle scaleStateCycle = defaultScaleStateCycle,
@@ -387,7 +382,7 @@ class _EntryPageViewState extends State<EntryPageView> with SingleTickerProvider
     final isWallpaperMode = context.read<ValueNotifier<AppMode>>().value == AppMode.setWallpaper;
     final minScale = isWallpaperMode ? const ScaleLevel(ref: ScaleReference.covered) : const ScaleLevel(ref: ScaleReference.contained);
 
-    return Magnifier(
+    return AvesMagnifier(
       // key includes modified date to refresh when the image is modified by metadata (e.g. rotated)
       key: Key('${entry.uri}_${entry.pageId}_${entry.dateModifiedSecs}'),
       controller: controller ?? _magnifierController,

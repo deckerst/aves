@@ -21,6 +21,8 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
+  aves_magnifier:
+    path: packages/aves_magnifier
   aves_map:
     path: plugins/aves_map
   aves_report:
