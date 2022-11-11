@@ -1144,5 +1144,15 @@
   "sortOrderZtoA": "ZからA",
   "@sortOrderZtoA": {},
   "sortOrderLowestFirst": "低いものから表示",
-  "@sortOrderLowestFirst": {}
+  "@sortOrderLowestFirst": {},
+  "chipActionFilterOut": "除外する",
+  "@chipActionFilterOut": {},
+  "albumGroupType": "タイプ別",
+  "@albumGroupType": {},
+  "albumMimeTypeMixed": "混合",
+  "@albumMimeTypeMixed": {},
+  "statsTopAlbumsSectionTitle": "トップアルバム",
+  "@statsTopAlbumsSectionTitle": {},
+  "editEntryLocationDialogSetCustom": "カスタムの場所を設定する",
+  "@editEntryLocationDialogSetCustom": {}
 }
