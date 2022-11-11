@@ -1,1 +1,2 @@
 -keep class org.beyka.tiffbitmapfactory.**{ *; }
+-keep class org.mp4parser.**{ *; }
