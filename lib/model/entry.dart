@@ -748,7 +748,7 @@ class AvesEntry {
 
   bool get isBurst => burstEntries?.isNotEmpty == true;
 
-  // for backwards compatibility
+  // for backward compatibility
   bool get _isMotionPhotoLegacy => isMultiPage && !isBurst && mimeType == MimeTypes.jpeg;
 
   bool get isMotionPhoto => (_catalogMetadata?.isMotionPhoto ?? false) || _isMotionPhotoLegacy;

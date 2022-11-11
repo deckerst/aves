@@ -597,8 +597,10 @@ abstract class ImageProvider {
                 mimeType = mimeType,
                 uri = uri,
                 path = path,
-                // do not truncate
-                mode = "w",
+                // do not truncate with "t"
+                // "w" is enough on API 29+, but it will yield an empty file on API <29
+                // so "r" is necessary for backward compatibility
+                mode = "rw",
             ) ?: throw Exception("failed to open file descriptor for uri=$uri path=$path")
             pfd.use {
                 FileOutputStream(it.fileDescriptor).use { outputStream ->
