@@ -3,7 +3,6 @@ import 'package:aves/model/actions/slideshow_actions.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/settings/enums/enums.dart';
-import 'package:aves/model/settings/enums/slideshow_interval.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/theme/icons.dart';
@@ -44,7 +43,7 @@ class _SlideshowPageState extends State<SlideshowPage> {
       transition: settings.slideshowTransition,
       repeat: settings.slideshowRepeat,
       autopilot: true,
-      autopilotInterval: settings.slideshowInterval.getDuration(),
+      autopilotInterval: Duration(seconds: settings.slideshowInterval),
       autopilotAnimatedZoom: settings.slideshowAnimatedZoomEffect,
     );
     _initSlideshowCollection();

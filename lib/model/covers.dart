@@ -55,14 +55,14 @@ class Covers {
 
     final oldRows = _rows.where((row) => row.filter == filter).toSet();
     _rows.removeAll(oldRows);
+    await metadataDb.removeCovers({filter});
+
     final oldRow = oldRows.firstOrNull;
     final oldEntry = oldRow?.entryId;
     final oldPackage = oldRow?.packageName;
     final oldColor = oldRow?.color;
 
-    if (entryId == null && packageName == null && color == null) {
-      await metadataDb.removeCovers({filter});
-    } else {
+    if (entryId != null || packageName != null || color != null) {
       final row = CoverRow(
         filter: filter,
         entryId: entryId,

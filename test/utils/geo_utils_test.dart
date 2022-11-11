@@ -1,12 +1,13 @@
 import 'package:aves/l10n/l10n.dart';
 import 'package:aves/model/settings/enums/coordinate_format.dart';
+import 'package:aves/widgets/aves_app.dart';
 import 'package:aves_map/aves_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:test/test.dart';
 
 void main() {
   test('Decimal degrees to DMS (sexagesimal)', () {
-    final l10n = lookupAppLocalizations(AppLocalizations.supportedLocales.first);
+    final l10n = lookupAppLocalizations(AvesApp.supportedLocales.first);
     expect(ExtraCoordinateFormat.toDMS(l10n, LatLng(37.496667, 127.0275)), ['37° 29′ 48.00″ N', '127° 1′ 39.00″ E']); // Gangnam
     expect(ExtraCoordinateFormat.toDMS(l10n, LatLng(78.9243503, 11.9230465)), ['78° 55′ 27.66″ N', '11° 55′ 22.97″ E']); // Ny-Ålesund
     expect(ExtraCoordinateFormat.toDMS(l10n, LatLng(-38.6965891, 175.9830047)), ['38° 41′ 47.72″ S', '175° 58′ 58.82″ E']); // Taupo

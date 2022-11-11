@@ -1,7 +1,10 @@
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
+import 'package:aves/utils/time_utils.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_caption.dart';
 import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
+import 'package:aves/widgets/dialogs/duration_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -116,6 +119,50 @@ class SettingsSelectionListTile<T extends Enum> extends StatelessWidget {
           onSelection: onSelection,
         ),
       ),
+    );
+  }
+}
+
+class SettingsDurationListTile extends StatelessWidget {
+  final int Function(BuildContext, Settings) selector;
+  final ValueChanged<int> onChanged;
+  final String title;
+
+  const SettingsDurationListTile({
+    super.key,
+    required this.selector,
+    required this.onChanged,
+    required this.title,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Selector<Settings, int>(
+      selector: selector,
+      builder: (context, current, child) {
+        final currentMinutes = current ~/ secondsInMinute;
+        final currentSeconds = current % secondsInMinute;
+
+        final l10n = context.l10n;
+        final subtitle = [
+          if (currentMinutes > 0) l10n.timeMinutes(currentMinutes),
+          if (currentSeconds > 0) l10n.timeSeconds(currentSeconds),
+        ].join(' ');
+
+        return ListTile(
+          title: Text(title),
+          subtitle: AvesCaption(subtitle),
+          onTap: () async {
+            final v = await showDialog<int>(
+              context: context,
+              builder: (context) => DurationDialog(initialSeconds: current),
+            );
+            if (v != null) {
+              onChanged(v);
+            }
+          },
+        );
+      },
     );
   }
 }

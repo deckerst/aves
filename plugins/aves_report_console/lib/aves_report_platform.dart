@@ -11,7 +11,7 @@ class PlatformReportService extends ReportService {
   Future<void> log(String message) async => debugPrint('Report log with message=$message');
 
   @override
-  Future<void> recordError(exception, StackTrace? stack) async => debugPrint('Report error with exception=$exception, stack=$stack');
+  Future<void> recordError(dynamic exception, StackTrace? stack) async => debugPrint('Report error with exception=$exception, stack=$stack');
 
   @override
   Future<void> recordFlutterError(FlutterErrorDetails flutterErrorDetails) async => debugPrint('Report Flutter error with details=$flutterErrorDetails');

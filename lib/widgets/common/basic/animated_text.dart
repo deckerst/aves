@@ -33,7 +33,7 @@ class _AnimatedTextState extends State<AnimatedText> with SingleTickerProviderSt
     )
       ..value = 1
       ..addListener(() => setState(() {}));
-    _style = _ShadowedTextStyleTween(begin: widget.changedStyle, end: widget.style).animate(CurvedAnimation(
+    _style = ShadowedTextStyleTween(begin: widget.changedStyle, end: widget.style).animate(CurvedAnimation(
       parent: _controller,
       curve: widget.curve,
     ));
@@ -64,8 +64,8 @@ class _AnimatedTextState extends State<AnimatedText> with SingleTickerProviderSt
   }
 }
 
-class _ShadowedTextStyleTween extends Tween<TextStyle> {
-  _ShadowedTextStyleTween({super.begin, super.end});
+class ShadowedTextStyleTween extends Tween<TextStyle> {
+  ShadowedTextStyleTween({super.begin, super.end});
 
   @override
   TextStyle lerp(double t) {

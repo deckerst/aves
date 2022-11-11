@@ -1,4 +1,8 @@
 #!/bin/bash
+if [ ! -d "scripts" ]; then
+  cd ..
+fi
+
 # process raw screenshots from test driver to generate:
 # - scaled down versions for IzzyOnDroid
 # - framed versions for Google Play

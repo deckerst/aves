@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="videos_shortcut_short_label">ویدئو ها</string>
+    <string name="analysis_channel_name">کنکاش رسانه</string>
+    <string name="analysis_service_description">کنکاش تصاویر و ویدئو ها</string>
+    <string name="search_shortcut_short_label">جستجو</string>
+    <string name="wallpaper">کاغذدیواری</string>
+    <string name="analysis_notification_default_title">در حال کنکاش رسانه‌ها</string>
+    <string name="analysis_notification_action_stop">توقف کردن</string>
+    <string name="app_widget_label">قاب عکس</string>
+    <string name="app_name">Aves</string>
+</resources>

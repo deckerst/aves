@@ -1,8 +1,8 @@
 import 'dart:collection';
 
-import 'package:aves/l10n/l10n.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
+import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/common/basic/query_bar.dart';
 import 'package:aves/widgets/common/basic/reselectable_radio_list_tile.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -123,7 +123,7 @@ class _LocaleSelectionPageState extends State<LocaleSelectionPage> {
   }
 
   LinkedHashMap<Locale, String> _getLocaleOptions(BuildContext context) {
-    final displayLocales = AppLocalizations.supportedLocales.map((locale) => MapEntry(locale, LocaleTile.getLocaleName(locale))).toList()..sort((a, b) => compareAsciiUpperCase(a.value, b.value));
+    final displayLocales = AvesApp.supportedLocales.map((locale) => MapEntry(locale, LocaleTile.getLocaleName(locale))).toList()..sort((a, b) => compareAsciiUpperCase(a.value, b.value));
 
     return LinkedHashMap.of({
       LocaleTile.systemLocaleOption: context.l10n.settingsSystemDefault,

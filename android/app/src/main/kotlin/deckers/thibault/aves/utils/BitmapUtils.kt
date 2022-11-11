@@ -14,6 +14,9 @@ object BitmapUtils {
     private val LOG_TAG = LogUtils.createTag<BitmapUtils>()
     private const val INITIAL_BUFFER_SIZE = 2 shl 17 // 256kB
 
+    // arbitrary size to detect buffer that may yield an OOM
+    private const val BUFFER_SIZE_DANGER_THRESHOLD = 3 * (1 shl 20) // MB
+
     private val freeBaos = ArrayList<ByteArrayOutputStream>()
     private val mutex = Mutex()
 
@@ -39,6 +42,12 @@ object BitmapUtils {
                 this.compress(Bitmap.CompressFormat.JPEG, quality, stream)
             }
             if (recycle) this.recycle()
+
+            val bufferSize = stream.size()
+            if (bufferSize > BUFFER_SIZE_DANGER_THRESHOLD && !MemoryUtils.canAllocate(bufferSize)) {
+                throw Exception("bitmap compressed to $bufferSize bytes, which cannot be allocated to a new byte array")
+            }
+
             val byteArray = stream.toByteArray()
             stream.reset()
             mutex.withLock {
@@ -59,7 +68,7 @@ object BitmapUtils {
     }
 
     fun centerSquareCrop(context: Context, bitmap: Bitmap?, size: Int): Bitmap? {
-        bitmap ?: return bitmap
+        bitmap ?: return null
         return TransformationUtils.centerCrop(getBitmapPool(context), bitmap, size, size)
     }
 

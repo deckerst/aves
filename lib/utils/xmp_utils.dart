@@ -49,6 +49,7 @@ class Namespaces {
   static const mpreg = 'http://ns.microsoft.com/photo/1.2/t/Region#';
   static const mwgrs = 'http://www.metadataworkinggroup.com/schemas/regions/';
   static const nga = 'https://standards.nga.gov/metadata/media/image/artobject/1.0';
+  static const opMedia = 'http://ns.oneplus.com/media/1.0/';
   static const panorama = 'http://ns.adobe.com/photoshop/1.0/panorama-profile';
   static const panoStudio = 'http://www.tshsoft.com/xmlns';
   static const pdf = 'http://ns.adobe.com/pdf/1.3/';
@@ -113,6 +114,7 @@ class Namespaces {
     mp: 'Microsoft Photo 1.2',
     mwgrs: 'Regions',
     nga: 'National Gallery of Art',
+    opMedia: 'OnePlus Media',
     panorama: 'Panorama',
     panoStudio: 'PanoramaStudio',
     pdf: 'PDF',

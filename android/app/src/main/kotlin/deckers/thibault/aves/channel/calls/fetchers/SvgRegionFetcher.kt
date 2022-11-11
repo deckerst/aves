@@ -12,6 +12,7 @@ import com.caverock.androidsvg.SVG
 import com.caverock.androidsvg.SVGParseException
 import deckers.thibault.aves.metadata.SvgHelper.normalizeSize
 import deckers.thibault.aves.utils.BitmapUtils.getBytes
+import deckers.thibault.aves.utils.MemoryUtils
 import deckers.thibault.aves.utils.StorageUtils
 import io.flutter.plugin.common.MethodChannel
 import kotlin.math.ceil
@@ -23,11 +24,18 @@ class SvgRegionFetcher internal constructor(
 
     suspend fun fetch(
         uri: Uri,
+        sizeBytes: Long?,
         regionRect: Rect,
         imageWidth: Int,
         imageHeight: Int,
         result: MethodChannel.Result,
     ) {
+        if (!MemoryUtils.canAllocate(sizeBytes)) {
+            // opening an SVG that large would yield an OOM during parsing from `com.caverock.androidsvg.SVGParser`
+            result.error("fetch-read-large", "SVG too large at $sizeBytes bytes, for uri=$uri regionRect=$regionRect", null)
+            return
+        }
+
         var currentSvgRef = lastSvgRef
         if (currentSvgRef != null && currentSvgRef.uri != uri) {
             currentSvgRef = null

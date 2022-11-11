@@ -370,7 +370,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     Set<String> obsoleteTags = todoItems.expand((entry) => entry.tags).toSet();
     Set<String> obsoleteCountryCodes = todoItems.where((entry) => entry.hasAddress).map((entry) => entry.addressDetails?.countryCode).whereNotNull().toSet();
 
-    final Set<EntryDataType> dataTypes = {};
+    final dataTypes = <EntryDataType>{};
     final source = context.read<CollectionSource>();
     source.pauseMonitoring();
     var cancelled = false;
@@ -463,14 +463,14 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
   }
 
   Future<void> _rotate(BuildContext context, {required bool clockwise}) async {
-    final entries = await _getEditableTargetItems(context, canEdit: (entry) => entry.canRotateAndFlip);
+    final entries = await _getEditableTargetItems(context, canEdit: (entry) => entry.canRotate);
     if (entries == null || entries.isEmpty) return;
 
     await _edit(context, entries, (entry) => entry.rotate(clockwise: clockwise));
   }
 
   Future<void> _flip(BuildContext context) async {
-    final entries = await _getEditableTargetItems(context, canEdit: (entry) => entry.canRotateAndFlip);
+    final entries = await _getEditableTargetItems(context, canEdit: (entry) => entry.canFlip);
     if (entries == null || entries.isEmpty) return;
 
     await _edit(context, entries, (entry) => entry.flip());

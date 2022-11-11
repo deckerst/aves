@@ -100,7 +100,7 @@ class SqfliteMetadataDb implements MetadataDb {
             ')');
       },
       onUpgrade: MetadataDbUpgrader.upgradeDb,
-      version: 9,
+      version: 10,
     );
 
     final maxIdRows = await _db.rawQuery('SELECT max(id) AS maxId FROM $entryTable');
@@ -470,9 +470,23 @@ class SqfliteMetadataDb implements MetadataDb {
   Future<void> removeCovers(Set<CollectionFilter> filters) async {
     if (filters.isEmpty) return;
 
+    // for backward compatibility, remove stored JSON instead of removing de/reserialized filters
+    final obsoleteFilterJson = <String>{};
+
+    final rows = await _db.query(coverTable);
+    rows.forEach((row) {
+      final filterJson = row['filter'] as String?;
+      if (filterJson != null) {
+        final filter = CollectionFilter.fromJson(filterJson);
+        if (filters.any((v) => filter == v)) {
+          obsoleteFilterJson.add(filterJson);
+        }
+      }
+    });
+
     // using array in `whereArgs` and using it with `where filter IN ?` is a pain, so we prefer `batch` instead
     final batch = _db.batch();
-    filters.forEach((filter) => batch.delete(coverTable, where: 'filter = ?', whereArgs: [filter.toJson()]));
+    obsoleteFilterJson.forEach((filterJson) => batch.delete(coverTable, where: 'filter = ?', whereArgs: [filterJson]));
     await batch.commit(noResult: true);
   }
 

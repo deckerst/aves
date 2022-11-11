@@ -4,6 +4,30 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.7.2"></a>[v1.7.2] - 2022-11-11
+
+### Added
+
+- Info: edit MP4 metadata (date / location / title / description / rating / tags / rotation)
+- Info: edit location by copying from other item
+- Info: edit tags with dynamic placeholders for country / place
+- Widget: option to open collection on tap
+- optional MANAGE_MEDIA permission to modify media without asking
+
+### Changed
+
+- higher quality thumbnails
+- upgraded Flutter to stable v3.3.8
+
+### Fixed
+
+- rendering of panoramas with inconsistent metadata
+- failing scan of items copied to SD card on older devices
+- unreplaceable covers set before v1.7.1
+- inconsistent background height for multi-script subtitles
+- launch crash on Android KitKat
+- ExifInterface: producing invalid WebP files
+
 ## <a id="v1.7.1"></a>[v1.7.1] - 2022-10-09
 
 ### Added

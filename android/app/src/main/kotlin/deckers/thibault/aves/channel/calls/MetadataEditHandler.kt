@@ -68,7 +68,7 @@ class MetadataEditHandler(private val contextWrapper: ContextWrapper) : MethodCa
 
         provider.editOrientation(contextWrapper, path, uri, mimeType, op, object : ImageOpCallback {
             override fun onSuccess(fields: FieldMap) = result.success(fields)
-            override fun onFailure(throwable: Throwable) = result.error("editOrientation-failure", "failed to change orientation for mimeType=$mimeType uri=$uri", throwable.message)
+            override fun onFailure(throwable: Throwable) = result.error("editOrientation-failure", "failed to change orientation for mimeType=$mimeType uri=$uri", throwable)
         })
     }
 
@@ -98,7 +98,7 @@ class MetadataEditHandler(private val contextWrapper: ContextWrapper) : MethodCa
 
         provider.editDate(contextWrapper, path, uri, mimeType, dateMillis, shiftMinutes, fields, object : ImageOpCallback {
             override fun onSuccess(fields: FieldMap) = result.success(fields)
-            override fun onFailure(throwable: Throwable) = result.error("editDate-failure", "failed to edit date for mimeType=$mimeType uri=$uri", throwable.message)
+            override fun onFailure(throwable: Throwable) = result.error("editDate-failure", "failed to edit date for mimeType=$mimeType uri=$uri", throwable)
         })
     }
 
@@ -127,7 +127,7 @@ class MetadataEditHandler(private val contextWrapper: ContextWrapper) : MethodCa
 
         provider.editMetadata(contextWrapper, path, uri, mimeType, metadata, autoCorrectTrailerOffset, callback = object : ImageOpCallback {
             override fun onSuccess(fields: FieldMap) = result.success(fields)
-            override fun onFailure(throwable: Throwable) = result.error("editMetadata-failure", "failed to edit metadata for mimeType=$mimeType uri=$uri", throwable.message)
+            override fun onFailure(throwable: Throwable) = result.error("editMetadata-failure", "failed to edit metadata for mimeType=$mimeType uri=$uri", throwable)
         })
     }
 
@@ -154,7 +154,7 @@ class MetadataEditHandler(private val contextWrapper: ContextWrapper) : MethodCa
 
         provider.removeTrailerVideo(contextWrapper, path, uri, mimeType, object : ImageOpCallback {
             override fun onSuccess(fields: FieldMap) = result.success(fields)
-            override fun onFailure(throwable: Throwable) = result.error("removeTrailerVideo-failure", "failed to remove trailer video for mimeType=$mimeType uri=$uri", throwable.message)
+            override fun onFailure(throwable: Throwable) = result.error("removeTrailerVideo-failure", "failed to remove trailer video for mimeType=$mimeType uri=$uri", throwable)
         })
     }
 
@@ -182,7 +182,7 @@ class MetadataEditHandler(private val contextWrapper: ContextWrapper) : MethodCa
 
         provider.removeMetadataTypes(contextWrapper, path, uri, mimeType, types.toSet(), object : ImageOpCallback {
             override fun onSuccess(fields: FieldMap) = result.success(fields)
-            override fun onFailure(throwable: Throwable) = result.error("removeTypes-failure", "failed to remove metadata for mimeType=$mimeType uri=$uri", throwable.message)
+            override fun onFailure(throwable: Throwable) = result.error("removeTypes-failure", "failed to remove metadata for mimeType=$mimeType uri=$uri", throwable)
         })
     }
 

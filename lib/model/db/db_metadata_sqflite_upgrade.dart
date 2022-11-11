@@ -1,4 +1,5 @@
 import 'package:aves/model/db/db_metadata_sqflite.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -40,6 +41,9 @@ class MetadataDbUpgrader {
           break;
         case 8:
           await _upgradeFrom8(db);
+          break;
+        case 9:
+          await _upgradeFrom9(db);
           break;
       }
       oldVersion++;
@@ -333,5 +337,37 @@ class MetadataDbUpgrader {
       await db.execute('DROP TABLE $metadataTable;');
       await db.execute('ALTER TABLE $newMetadataTable RENAME TO $metadataTable;');
     });
+  }
+
+  static Future<void> _upgradeFrom9(Database db) async {
+    debugPrint('upgrading DB from v9');
+
+    // clean duplicates introduced before Aves v1.7.1
+    final duplicatedContentIdRows = await db.query(entryTable, columns: ['contentId'], groupBy: 'contentId', having: 'COUNT(id) > 1 AND contentId IS NOT NULL');
+    final duplicatedContentIds = duplicatedContentIdRows.map((row) => row['contentId'] as int?).whereNotNull().toSet();
+    final duplicateIds = <int>{};
+    await Future.forEach(duplicatedContentIds, (contentId) async {
+      final rows = await db.query(entryTable, columns: ['id'], where: 'contentId = ?', whereArgs: [contentId]);
+      final ids = rows.map((row) => row['id'] as int?).whereNotNull().toList()..sort();
+      if (ids.length > 1) {
+        ids.removeAt(0);
+        duplicateIds.addAll(ids);
+      }
+    });
+    final batch = db.batch();
+    const where = 'id = ?';
+    const coverWhere = 'entryId = ?';
+    duplicateIds.forEach((id) {
+      final whereArgs = [id];
+      batch.delete(entryTable, where: where, whereArgs: whereArgs);
+      batch.delete(dateTakenTable, where: where, whereArgs: whereArgs);
+      batch.delete(metadataTable, where: where, whereArgs: whereArgs);
+      batch.delete(addressTable, where: where, whereArgs: whereArgs);
+      batch.delete(favouriteTable, where: where, whereArgs: whereArgs);
+      batch.delete(coverTable, where: coverWhere, whereArgs: whereArgs);
+      batch.delete(trashTable, where: where, whereArgs: whereArgs);
+      batch.delete(videoPlaybackTable, where: where, whereArgs: whereArgs);
+    });
+    await batch.commit(noResult: true);
   }
 }

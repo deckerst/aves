@@ -15,10 +15,10 @@ class AvesXmp extends Equatable {
     this.extendedXmpString,
   });
 
-  static AvesXmp? fromList(List<String> xmpStrings) {
+  static AvesXmp fromList(List<String> xmpStrings) {
     switch (xmpStrings.length) {
       case 0:
-        return null;
+        return const AvesXmp(xmpString: null);
       case 1:
         return AvesXmp(xmpString: xmpStrings.single);
       default:

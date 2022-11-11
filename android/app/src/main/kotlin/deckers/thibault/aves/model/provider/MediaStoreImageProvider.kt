@@ -32,6 +32,7 @@ import java.io.File
 import java.io.OutputStream
 import java.util.*
 import java.util.concurrent.CompletableFuture
+import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
@@ -784,60 +785,81 @@ class MediaStoreImageProvider : ImageProvider() {
     }
 
     suspend fun scanNewPath(context: Context, path: String, mimeType: String): FieldMap =
-        suspendCoroutine { cont ->
-            MediaScannerConnection.scanFile(context, arrayOf(path), arrayOf(mimeType)) { _, newUri: Uri? ->
-                fun scanUri(uri: Uri?): FieldMap? {
-                    uri ?: return null
+        suspendCoroutine { cont -> tryScanNewPath(context, path = path, mimeType = mimeType, cont) }
 
-                    // we retrieve updated fields as the renamed/moved file became a new entry in the Media Store
-                    val projection = arrayOf(
-                        MediaStore.MediaColumns.DATE_ADDED,
-                        MediaStore.MediaColumns.DATE_MODIFIED,
-                    )
-                    try {
-                        val cursor = context.contentResolver.query(uri, projection, null, null, null)
-                        if (cursor != null && cursor.moveToFirst()) {
-                            val newFields = HashMap<String, Any?>()
-                            newFields["uri"] = uri.toString()
-                            newFields["contentId"] = uri.tryParseId()
-                            newFields["path"] = path
-                            cursor.getColumnIndex(MediaStore.MediaColumns.DATE_ADDED).let { if (it != -1) newFields["dateAddedSecs"] = cursor.getInt(it) }
-                            cursor.getColumnIndex(MediaStore.MediaColumns.DATE_MODIFIED).let { if (it != -1) newFields["dateModifiedSecs"] = cursor.getInt(it) }
-                            cursor.close()
-                            return newFields
-                        }
-                    } catch (e: Exception) {
-                        Log.w(LOG_TAG, "failed to scan uri=$uri", e)
-                    }
-                    return null
-                }
-
-                if (newUri != null) {
-                    var contentUri: Uri? = null
-                    // `newURI` is possibly a file media URI (e.g. "content://media/12a9-8b42/file/62872")
-                    // but we need an image/video media URI (e.g. "content://media/external/images/media/62872")
-                    val contentId = newUri.tryParseId()
-                    if (contentId != null) {
-                        if (isImage(mimeType)) {
-                            contentUri = ContentUris.withAppendedId(IMAGE_CONTENT_URI, contentId)
-                        } else if (isVideo(mimeType)) {
-                            contentUri = ContentUris.withAppendedId(VIDEO_CONTENT_URI, contentId)
-                        }
-                    }
-
-                    // prefer image/video content URI, fallback to original URI (possibly a file content URI)
-                    val newFields = scanUri(contentUri) ?: scanUri(newUri)
-
-                    if (newFields != null) {
-                        cont.resume(newFields)
-                    } else {
-                        cont.resumeWithException(Exception("failed to get item details from provider at contentUri=$contentUri (from newUri=$newUri)"))
-                    }
-                } else {
-                    cont.resumeWithException(Exception("failed to get URI of item at path=$path"))
+    private fun tryScanNewPath(context: Context, path: String, mimeType: String, cont: Continuation<FieldMap>, iteration: Int = 0) {
+        // `scanFile` may (e.g. when copying to SD card on Android 10 (API 29)):
+        // 1) yield no URI,
+        // 2) yield a temporary URI that fails when queried,
+        // 3) yield a temporary URI that succeeds when queried right away, but the Media Store actually won't have an entry for it until device reboot.
+        if (iteration > 5) {
+            // give up
+            cont.resumeWithException(Exception("failed to scan new path=$path after $iteration iterations"))
+            return
+        } else if (iteration > 0) {
+            // waiting and retrying just once usually works out for cases 1) and 2)
+            Thread.sleep(iteration * 100L)
+        } else if (iteration == 0 && Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+            // waiting before the first scan usually works out for case 3)
+            StorageUtils.getVolumePath(context, path)?.let { volumePath ->
+                if (volumePath != StorageUtils.getPrimaryVolumePath(context)) {
+                    Thread.sleep(100L)
                 }
             }
         }
+
+        MediaScannerConnection.scanFile(context, arrayOf(path), arrayOf(mimeType)) { _, newUri: Uri? ->
+            fun scanUri(uri: Uri?): FieldMap? {
+                uri ?: return null
+
+                // we retrieve updated fields as the renamed/moved file became a new entry in the Media Store
+                val projection = arrayOf(
+                    MediaStore.MediaColumns.DATE_ADDED,
+                    MediaStore.MediaColumns.DATE_MODIFIED,
+                )
+                try {
+                    val cursor = context.contentResolver.query(uri, projection, null, null, null)
+                    if (cursor != null && cursor.moveToFirst()) {
+                        val newFields = HashMap<String, Any?>()
+                        newFields["uri"] = uri.toString()
+                        newFields["contentId"] = uri.tryParseId()
+                        newFields["path"] = path
+                        cursor.getColumnIndex(MediaStore.MediaColumns.DATE_ADDED).let { if (it != -1) newFields["dateAddedSecs"] = cursor.getInt(it) }
+                        cursor.getColumnIndex(MediaStore.MediaColumns.DATE_MODIFIED).let { if (it != -1) newFields["dateModifiedSecs"] = cursor.getInt(it) }
+                        cursor.close()
+                        return newFields
+                    }
+                } catch (e: Exception) {
+                    Log.w(LOG_TAG, "failed to scan uri=$uri", e)
+                }
+                return null
+            }
+
+            if (newUri != null) {
+                var contentUri: Uri? = null
+                // `newURI` is possibly a file media URI (e.g. "content://media/12a9-8b42/file/62872")
+                // but we need an image/video media URI (e.g. "content://media/external/images/media/62872")
+                val contentId = newUri.tryParseId()
+                if (contentId != null) {
+                    if (isImage(mimeType)) {
+                        contentUri = ContentUris.withAppendedId(IMAGE_CONTENT_URI, contentId)
+                    } else if (isVideo(mimeType)) {
+                        contentUri = ContentUris.withAppendedId(VIDEO_CONTENT_URI, contentId)
+                    }
+                }
+
+                // prefer image/video content URI, fallback to original URI (possibly a file content URI)
+                val newFields = scanUri(contentUri) ?: scanUri(newUri)
+
+                if (newFields != null) {
+                    cont.resume(newFields)
+                    return@scanFile
+                }
+            }
+
+            tryScanNewPath(context, path = path, mimeType = mimeType, cont, iteration + 1)
+        }
+    }
 
     fun getContentUriForPath(context: Context, path: String): Uri? {
         val projection = arrayOf(MediaStore.MediaColumns._ID)

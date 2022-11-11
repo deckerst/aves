@@ -1,7 +1,10 @@
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/entry_metadata_edition.dart';
+import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/filters/placeholder.dart';
+import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/metadata/date_modifier.dart';
-import 'package:aves/model/metadata/enums.dart';
+import 'package:aves/model/metadata/enums/enums.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/services.dart';
@@ -33,12 +36,12 @@ mixin EntryEditorMixin {
   Future<LatLng?> selectLocation(BuildContext context, Set<AvesEntry> entries, CollectionLens? collection) async {
     if (entries.isEmpty) return null;
 
-    final initialLocation = entries.firstWhereOrNull((entry) => entry.hasGps)?.latLng;
+    final entry = entries.firstWhereOrNull((entry) => entry.hasGps) ?? entries.first;
 
     return showDialog<LatLng>(
       context: context,
       builder: (context) => EditEntryLocationDialog(
-        initialLocation: initialLocation,
+        entry: entry,
         collection: collection,
       ),
     );
@@ -74,16 +77,31 @@ mixin EntryEditorMixin {
   Future<Map<AvesEntry, Set<String>>?> selectTags(BuildContext context, Set<AvesEntry> entries) async {
     if (entries.isEmpty) return null;
 
-    final tagsByEntry = Map.fromEntries(entries.map((v) => MapEntry(v, v.tags.toSet())));
+    final filtersByEntry = Map.fromEntries(entries.map((v) {
+      // use `<CollectionFilter>{...}` instead of `toSet()` to circumvent an implicit typing issue, as of Dart v2.18.2
+      final filters = <CollectionFilter>{...v.tags.map(TagFilter.new)};
+      return MapEntry(v, filters);
+    }));
     await Navigator.push(
       context,
       MaterialPageRoute(
         settings: const RouteSettings(name: TagEditorPage.routeName),
         builder: (context) => TagEditorPage(
-          tagsByEntry: tagsByEntry,
+          filtersByEntry: filtersByEntry,
         ),
       ),
     );
+
+    final tagsByEntry = <AvesEntry, Set<String>>{};
+    await Future.forEach(filtersByEntry.entries, (kv) async {
+      final entry = kv.key;
+      final filters = kv.value;
+      final tags = filters.whereType<TagFilter>().map((v) => v.tag).toSet();
+      tagsByEntry[entry] = tags;
+
+      final placeholderTags = await Future.wait(filters.whereType<PlaceholderFilter>().map((v) => v.toTag(entry)));
+      tags.addAll(placeholderTags.whereNotNull().where((v) => v.isNotEmpty));
+    });
 
     return tagsByEntry;
   }

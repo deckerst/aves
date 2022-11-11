@@ -13,14 +13,17 @@ abstract class AvesVideoController {
 
   AvesEntry get entry => _entry;
 
-  AvesVideoController(AvesEntry entry, {required this.persistPlayback}) : _entry = entry;
-
   static const resumeTimeSaveMinProgress = .05;
   static const resumeTimeSaveMaxProgress = .95;
   static const resumeTimeSaveMinDuration = Duration(minutes: 2);
 
+  AvesVideoController(AvesEntry entry, {required this.persistPlayback}) : _entry = entry {
+    entry.visualChangeNotifier.addListener(onVisualChanged);
+  }
+
   @mustCallSuper
   Future<void> dispose() async {
+    entry.visualChangeNotifier.removeListener(onVisualChanged);
     await _savePlaybackState();
   }
 
@@ -75,6 +78,8 @@ abstract class AvesVideoController {
     if (resume == null || !resume) return 0;
     return resumeTime;
   }
+
+  void onVisualChanged();
 
   Future<void> play();
 

@@ -34,6 +34,7 @@ extension ExtraAvesEntryImages on AvesEntry {
       uri: uri,
       mimeType: mimeType,
       pageId: pageId,
+      sizeBytes: sizeBytes,
       rotationDegrees: rotationDegrees,
       isFlipped: isFlipped,
       sampleSize: sampleSize,

@@ -1,22 +1,32 @@
+import 'package:aves/model/entry.dart';
+import 'package:aves/model/metadata/enums/enums.dart';
+import 'package:aves/model/metadata/enums/location_edit_action.dart';
+import 'package:aves/model/settings/enums/coordinate_format.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
+import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/theme/themes.dart';
 import 'package:aves/utils/constants.dart';
+import 'package:aves/widgets/common/basic/text_dropdown_button.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
+import 'package:aves/widgets/dialogs/item_pick_dialog.dart';
+import 'package:aves/widgets/dialogs/item_picker.dart';
 import 'package:aves/widgets/dialogs/location_pick_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:provider/provider.dart';
 
 class EditEntryLocationDialog extends StatefulWidget {
-  final LatLng? initialLocation;
+  final AvesEntry entry;
   final CollectionLens? collection;
 
   const EditEntryLocationDialog({
     super.key,
-    required this.initialLocation,
+    required this.entry,
     this.collection,
   });
 
@@ -25,9 +35,10 @@ class EditEntryLocationDialog extends StatefulWidget {
 }
 
 class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> {
-  _LocationAction _action = _LocationAction.set;
+  LocationEditAction _action = LocationEditAction.chooseOnMap;
+  LatLng? _mapCoordinates;
+  late AvesEntry _copyItemSource;
   final TextEditingController _latitudeController = TextEditingController(), _longitudeController = TextEditingController();
-  final FocusNode _latitudeFocusNode = FocusNode(), _longitudeFocusNode = FocusNode();
   final ValueNotifier<bool> _isValidNotifier = ValueNotifier(false);
 
   NumberFormat get coordinateFormatter => NumberFormat('0.000000', context.l10n.localeName);
@@ -35,15 +46,35 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> {
   @override
   void initState() {
     super.initState();
-    _latitudeFocusNode.addListener(_onLatLngFocusChange);
-    _longitudeFocusNode.addListener(_onLatLngFocusChange);
-    WidgetsBinding.instance.addPostFrameCallback((_) => _setLocation(context, widget.initialLocation));
+    _initMapCoordinates();
+    _initCopyItem();
+    _initCustom();
+  }
+
+  void _initMapCoordinates() {
+    _mapCoordinates = widget.entry.latLng;
+  }
+
+  void _initCopyItem() {
+    _copyItemSource = widget.entry;
+  }
+
+  void _initCustom() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final latLng = widget.entry.latLng;
+      if (latLng != null) {
+        _latitudeController.text = coordinateFormatter.format(latLng.latitude);
+        _longitudeController.text = coordinateFormatter.format(latLng.longitude);
+      } else {
+        _latitudeController.text = '';
+        _longitudeController.text = '';
+      }
+      setState(_validate);
+    });
   }
 
   @override
   void dispose() {
-    _latitudeFocusNode.removeListener(_onLatLngFocusChange);
-    _longitudeFocusNode.removeListener(_onLatLngFocusChange);
     _latitudeController.dispose();
     _longitudeController.dispose();
     super.dispose();
@@ -62,64 +93,36 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> {
           return AvesDialog(
             title: l10n.editEntryLocationDialogTitle,
             scrollableContent: [
-              RadioListTile<_LocationAction>(
-                value: _LocationAction.set,
-                groupValue: _action,
-                onChanged: (v) => setState(() {
-                  _action = v!;
-                  _validate();
-                }),
-                title: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+              Padding(
+                padding: const EdgeInsets.only(left: 16, top: 8, right: 16),
+                child: TextDropdownButton<LocationEditAction>(
+                  values: LocationEditAction.values,
+                  valueText: (v) => v.getText(context),
+                  value: _action,
+                  onChanged: (v) => setState(() {
+                    _action = v!;
+                    _validate();
+                  }),
+                  isExpanded: true,
+                  dropdownColor: Themes.thirdLayerColor(context),
+                ),
+              ),
+              AnimatedSwitcher(
+                duration: context.read<DurationsData>().formTransition,
+                switchInCurve: Curves.easeInOutCubic,
+                switchOutCurve: Curves.easeInOutCubic,
+                transitionBuilder: _formTransitionBuilder,
+                child: Column(
+                  key: ValueKey(_action),
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    Expanded(
-                      child: Column(
-                        children: [
-                          TextField(
-                            controller: _latitudeController,
-                            focusNode: _latitudeFocusNode,
-                            decoration: InputDecoration(
-                              labelText: l10n.editEntryLocationDialogLatitude,
-                              hintText: coordinateFormatter.format(Constants.pointNemo.latitude),
-                            ),
-                            onChanged: (_) => _validate(),
-                          ),
-                          TextField(
-                            controller: _longitudeController,
-                            focusNode: _longitudeFocusNode,
-                            decoration: InputDecoration(
-                              labelText: l10n.editEntryLocationDialogLongitude,
-                              hintText: coordinateFormatter.format(Constants.pointNemo.longitude),
-                            ),
-                            onChanged: (_) => _validate(),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 8.0),
-                      child: IconButton(
-                        icon: const Icon(AIcons.map),
-                        onPressed: _pickLocation,
-                        tooltip: l10n.editEntryLocationDialogChooseOnMapTooltip,
-                      ),
-                    ),
+                    if (_action == LocationEditAction.chooseOnMap) _buildChooseOnMapContent(context),
+                    if (_action == LocationEditAction.copyItem) _buildCopyItemContent(context),
+                    if (_action == LocationEditAction.setCustom) _buildSetCustomContent(context),
                   ],
                 ),
-                contentPadding: const EdgeInsetsDirectional.only(start: 16, end: 8),
               ),
-              RadioListTile<_LocationAction>(
-                value: _LocationAction.remove,
-                groupValue: _action,
-                onChanged: (v) => setState(() {
-                  _action = v!;
-                  _latitudeFocusNode.unfocus();
-                  _longitudeFocusNode.unfocus();
-                  _validate();
-                }),
-                title: Text(l10n.actionRemove),
-              ),
+              const SizedBox(height: 8),
             ],
             actions: [
               TextButton(
@@ -142,22 +145,32 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> {
     );
   }
 
-  void _onLatLngFocusChange() {
-    if (_latitudeFocusNode.hasFocus || _longitudeFocusNode.hasFocus) {
-      setState(() {
-        _action = _LocationAction.set;
-        _validate();
-      });
-    }
-  }
+  Widget _formTransitionBuilder(Widget child, Animation<double> animation) => FadeTransition(
+        opacity: animation,
+        child: SizeTransition(
+          sizeFactor: animation,
+          axisAlignment: -1,
+          child: child,
+        ),
+      );
 
-  void _setLocation(BuildContext context, LatLng? latLng) {
-    _latitudeController.text = latLng != null ? coordinateFormatter.format(latLng.latitude) : '';
-    _longitudeController.text = latLng != null ? coordinateFormatter.format(latLng.longitude) : '';
-    setState(() {
-      _action = _LocationAction.set;
-      _validate();
-    });
+  Widget _buildChooseOnMapContent(BuildContext context) {
+    final l10n = context.l10n;
+
+    return Padding(
+      padding: const EdgeInsetsDirectional.only(start: 16, end: 8),
+      child: Row(
+        children: [
+          Expanded(child: _toText(context, _mapCoordinates)),
+          const SizedBox(width: 8),
+          IconButton(
+            icon: const Icon(AIcons.map),
+            onPressed: _pickLocation,
+            tooltip: l10n.editEntryLocationDialogChooseOnMap,
+          ),
+        ],
+      ),
+    );
   }
 
   Future<void> _pickLocation() async {
@@ -176,7 +189,7 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> {
               : null;
           return LocationPickDialog(
             collection: mapCollection,
-            initialLocation: _parseLatLng(),
+            initialLocation: _mapCoordinates,
           );
         },
         fullscreenDialog: true,
@@ -184,7 +197,102 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> {
     );
     if (latLng != null) {
       settings.mapDefaultCenter = latLng;
-      _setLocation(context, latLng);
+      setState(() {
+        _mapCoordinates = latLng;
+        _validate();
+      });
+    }
+  }
+
+  Widget _buildCopyItemContent(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsetsDirectional.only(start: 16, end: 8),
+      child: Row(
+        children: [
+          Expanded(child: _toText(context, _copyItemSource.latLng)),
+          const SizedBox(width: 8),
+          ItemPicker(
+            extent: 48,
+            entry: _copyItemSource,
+            onTap: _pickCopyItemSource,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _pickCopyItemSource() async {
+    final _collection = widget.collection;
+    if (_collection == null) return;
+
+    final entry = await Navigator.push<AvesEntry>(
+      context,
+      MaterialPageRoute(
+        settings: const RouteSettings(name: ItemPickDialog.routeName),
+        builder: (context) => ItemPickDialog(
+          collection: CollectionLens(
+            source: _collection.source,
+          ),
+        ),
+        fullscreenDialog: true,
+      ),
+    );
+    if (entry != null) {
+      setState(() {
+        _copyItemSource = entry;
+        _validate();
+      });
+    }
+  }
+
+  Widget _buildSetCustomContent(BuildContext context) {
+    final l10n = context.l10n;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Column(
+              children: [
+                TextField(
+                  controller: _latitudeController,
+                  decoration: InputDecoration(
+                    labelText: l10n.editEntryLocationDialogLatitude,
+                    hintText: coordinateFormatter.format(Constants.pointNemo.latitude),
+                  ),
+                  onChanged: (_) => _validate(),
+                ),
+                TextField(
+                  controller: _longitudeController,
+                  decoration: InputDecoration(
+                    labelText: l10n.editEntryLocationDialogLongitude,
+                    hintText: coordinateFormatter.format(Constants.pointNemo.longitude),
+                  ),
+                  onChanged: (_) => _validate(),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Text _toText(BuildContext context, LatLng? latLng) {
+    final l10n = context.l10n;
+    if (latLng != null) {
+      return Text(
+        ExtraCoordinateFormat.toDMS(l10n, latLng).join('\n'),
+      );
+    } else {
+      return Text(
+        l10n.viewerInfoUnknown,
+        style: TextStyle(
+          color: Theme.of(context).textTheme.bodySmall!.color,
+        ),
+      );
     }
   }
 
@@ -205,12 +313,18 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> {
     return LatLng(lat, lng);
   }
 
-  Future<void> _validate() async {
+  void _validate() {
     switch (_action) {
-      case _LocationAction.set:
+      case LocationEditAction.chooseOnMap:
+        _isValidNotifier.value = _mapCoordinates != null;
+        break;
+      case LocationEditAction.copyItem:
+        _isValidNotifier.value = _copyItemSource.hasGps;
+        break;
+      case LocationEditAction.setCustom:
         _isValidNotifier.value = _parseLatLng() != null;
         break;
-      case _LocationAction.remove:
+      case LocationEditAction.remove:
         _isValidNotifier.value = true;
         break;
     }
@@ -218,14 +332,18 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> {
 
   void _submit(BuildContext context) {
     switch (_action) {
-      case _LocationAction.set:
+      case LocationEditAction.chooseOnMap:
+        Navigator.pop(context, _mapCoordinates);
+        break;
+      case LocationEditAction.copyItem:
+        Navigator.pop(context, _copyItemSource.latLng);
+        break;
+      case LocationEditAction.setCustom:
         Navigator.pop(context, _parseLatLng());
         break;
-      case _LocationAction.remove:
+      case LocationEditAction.remove:
         Navigator.pop(context, LatLng(0, 0));
         break;
     }
   }
 }
-
-enum _LocationAction { set, remove }

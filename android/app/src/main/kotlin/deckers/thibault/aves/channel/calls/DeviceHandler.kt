@@ -3,7 +3,11 @@ package deckers.thibault.aves.channel.calls
 import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
+import android.location.Geocoder
+import android.net.Uri
 import android.os.Build
+import android.provider.MediaStore
+import android.provider.Settings
 import androidx.core.content.pm.ShortcutManagerCompat
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.model.FieldMap
@@ -15,13 +19,19 @@ import java.util.*
 class DeviceHandler(private val context: Context) : MethodCallHandler {
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
+            "canManageMedia" -> safe(call, result, ::canManageMedia)
             "getCapabilities" -> safe(call, result, ::getCapabilities)
             "getDefaultTimeZone" -> safe(call, result, ::getDefaultTimeZone)
             "getLocales" -> safe(call, result, ::getLocales)
             "getPerformanceClass" -> safe(call, result, ::getPerformanceClass)
             "isSystemFilePickerEnabled" -> safe(call, result, ::isSystemFilePickerEnabled)
+            "requestMediaManagePermission" -> safe(call, result, ::requestMediaManagePermission)
             else -> result.notImplemented()
         }
+    }
+
+    private fun canManageMedia(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
+        result.success(if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) MediaStore.canManageMedia(context) else false)
     }
 
     private fun getCapabilities(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
@@ -32,7 +42,9 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
                 "canPinShortcut" to ShortcutManagerCompat.isRequestPinShortcutSupported(context),
                 "canPrint" to (sdkInt >= Build.VERSION_CODES.KITKAT),
                 "canRenderFlagEmojis" to (sdkInt >= Build.VERSION_CODES.LOLLIPOP),
+                "canRequestManageMedia" to (sdkInt >= Build.VERSION_CODES.S),
                 "canSetLockScreenWallpaper" to (sdkInt >= Build.VERSION_CODES.N),
+                "hasGeocoder" to Geocoder.isPresent(),
                 "isDynamicColorAvailable" to (sdkInt >= Build.VERSION_CODES.S),
                 "showPinShortcutFeedback" to (sdkInt >= Build.VERSION_CODES.O),
                 "supportEdgeToEdgeUIMode" to (sdkInt >= Build.VERSION_CODES.Q),
@@ -88,6 +100,17 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
             false
         }
         result.success(enabled)
+    }
+
+    private fun requestMediaManagePermission(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+            result.error("requestMediaManagePermission-unsupported", "media management permission is not available before Android 12", null)
+            return
+        }
+
+        val intent = Intent(Settings.ACTION_REQUEST_MANAGE_MEDIA, Uri.parse("package:${context.packageName}"))
+        context.startActivity(intent)
+        result.success(true)
     }
 
     companion object {
