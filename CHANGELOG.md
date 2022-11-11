@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.7.2"></a>[v1.7.2] - 2022-11-11
+
 ### Added
 
 - Info: edit MP4 metadata (date / location / title / description / rating / tags / rotation)
