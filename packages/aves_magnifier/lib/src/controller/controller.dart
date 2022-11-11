@@ -1,13 +1,13 @@
 import 'dart:async';
 import 'dart:ui';
 
-import 'package:aves/widgets/common/magnifier/controller/state.dart';
-import 'package:aves/widgets/common/magnifier/scale/scale_boundaries.dart';
-import 'package:aves/widgets/common/magnifier/scale/scale_level.dart';
-import 'package:aves/widgets/common/magnifier/scale/state.dart';
+import 'package:aves_magnifier/src/controller/state.dart';
+import 'package:aves_magnifier/src/scale/scale_boundaries.dart';
+import 'package:aves_magnifier/src/scale/scale_level.dart';
+import 'package:aves_magnifier/src/scale/state.dart';
 import 'package:flutter/widgets.dart';
 
-class MagnifierController {
+class AvesMagnifierController {
   final StreamController<MagnifierState> _stateStreamController = StreamController.broadcast();
   final StreamController<ScaleBoundaries> _scaleBoundariesStreamController = StreamController.broadcast();
   final StreamController<ScaleStateChange> _scaleStateChangeStreamController = StreamController.broadcast();
@@ -17,7 +17,7 @@ class MagnifierController {
   ScaleBoundaries? _scaleBoundaries;
   late ScaleStateChange _currentScaleState, previousScaleState;
 
-  MagnifierController({
+  AvesMagnifierController({
     MagnifierState? initialState,
   }) : super() {
     initial = initialState ??

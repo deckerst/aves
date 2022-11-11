@@ -1,20 +1,20 @@
 import 'dart:math';
 
-import 'package:aves/widgets/common/magnifier/controller/controller.dart';
-import 'package:aves/widgets/common/magnifier/controller/controller_delegate.dart';
-import 'package:aves/widgets/common/magnifier/controller/state.dart';
-import 'package:aves/widgets/common/magnifier/core/gesture_detector.dart';
-import 'package:aves/widgets/common/magnifier/magnifier.dart';
-import 'package:aves/widgets/common/magnifier/pan/corner_hit_detector.dart';
-import 'package:aves/widgets/common/magnifier/scale/scale_boundaries.dart';
-import 'package:aves/widgets/common/magnifier/scale/state.dart';
+import 'package:aves_magnifier/src/controller/controller.dart';
+import 'package:aves_magnifier/src/controller/controller_delegate.dart';
+import 'package:aves_magnifier/src/controller/state.dart';
+import 'package:aves_magnifier/src/core/gesture_detector.dart';
+import 'package:aves_magnifier/src/magnifier.dart';
+import 'package:aves_magnifier/src/pan/corner_hit_detector.dart';
+import 'package:aves_magnifier/src/scale/scale_boundaries.dart';
+import 'package:aves_magnifier/src/scale/state.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/widgets.dart';
 
 /// Internal widget in which controls all animations lifecycle, core responses
 /// to user gestures, updates to the controller state and mounts the entire Layout
 class MagnifierCore extends StatefulWidget {
-  final MagnifierController controller;
+  final AvesMagnifierController controller;
   final ScaleStateCycle scaleStateCycle;
   final bool applyScale;
   final double panInertia;
@@ -37,7 +37,7 @@ class MagnifierCore extends StatefulWidget {
   State<StatefulWidget> createState() => _MagnifierCoreState();
 }
 
-class _MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateMixin, MagnifierControllerDelegate, CornerHitDetector {
+class _MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateMixin, AvesMagnifierControllerDelegate, CornerHitDetector {
   Offset? _startFocalPoint, _lastViewportFocalPosition;
   double? _startScale, _quickScaleLastY, _quickScaleLastDistance;
   late bool _doubleTap, _quickScaleMoved;

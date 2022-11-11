@@ -6,11 +6,11 @@ import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
-import 'package:aves/widgets/common/magnifier/scale/scale_level.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/viewer/controller.dart';
 import 'package:aves/widgets/viewer/entry_viewer_page.dart';
 import 'package:aves/widgets/viewer/entry_viewer_stack.dart';
+import 'package:aves_magnifier/aves_magnifier.dart';
 import 'package:flutter/material.dart';
 
 class ScreenSaverPage extends StatefulWidget {

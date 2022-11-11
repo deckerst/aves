@@ -1,8 +1,8 @@
 import 'dart:math';
 import 'dart:ui';
 
-import 'package:aves/widgets/common/magnifier/controller/controller.dart';
-import 'package:aves/widgets/common/magnifier/scale/scale_level.dart';
+import 'package:aves_magnifier/src/controller/controller.dart';
+import 'package:aves_magnifier/src/scale/scale_level.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 
@@ -78,11 +78,11 @@ class ScaleBoundaries extends Equatable {
 
   Offset get _childCenter => childSize.center(Offset.zero);
 
-  Offset viewportToStatePosition(MagnifierController controller, Offset viewportPosition) {
+  Offset viewportToStatePosition(AvesMagnifierController controller, Offset viewportPosition) {
     return viewportPosition - _viewportCenter - controller.position;
   }
 
-  Offset viewportToChildPosition(MagnifierController controller, Offset viewportPosition) {
+  Offset viewportToChildPosition(AvesMagnifierController controller, Offset viewportPosition) {
     return viewportToStatePosition(controller, viewportPosition) / controller.scale! + _childCenter;
   }
 
