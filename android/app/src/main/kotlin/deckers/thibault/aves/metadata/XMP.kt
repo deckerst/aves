@@ -23,6 +23,7 @@ import org.mp4parser.IsoFile
 import org.mp4parser.PropertyBoxParserImpl
 import org.mp4parser.boxes.UserBox
 import org.mp4parser.boxes.iso14496.part12.MediaDataBox
+import org.mp4parser.boxes.iso14496.part12.SampleTableBox
 import java.io.FileInputStream
 import java.util.*
 
@@ -142,7 +143,9 @@ object XMP {
                 FileInputStream(it.fileDescriptor).use { stream ->
                     stream.channel.use { channel ->
                         val boxParser = PropertyBoxParserImpl().apply {
-                            skippingBoxes(MediaDataBox.TYPE)
+                            // parsing `MediaDataBox` can take a long time
+                            // parsing `SampleTableBox` may yield OOM
+                            skippingBoxes(MediaDataBox.TYPE, SampleTableBox.TYPE)
                         }
                         // creating `IsoFile` with a `File` or a `File.inputStream()` yields `No such device`
                         IsoFile(channel, boxParser).use { isoFile ->

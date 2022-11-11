@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
-## <a id="v1.7.3"></a>[v1.7.3] - 2022-11-11
+## <a id="v1.7.4"></a>[v1.7.4] - 2022-11-11
 
 ### Added
 
@@ -27,6 +27,8 @@ All notable changes to this project will be documented in this file.
 - inconsistent background height for multi-script subtitles
 - launch crash on Android KitKat
 - ExifInterface: producing invalid WebP files
+
+## <a id="v1.7.3"></a>[v1.7.3] - 2022-11-11 [YANKED AGAIN!]
 
 ## <a id="v1.7.2"></a>[v1.7.2] - 2022-11-11 [YANKED]
 
