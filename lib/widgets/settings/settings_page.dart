@@ -182,7 +182,7 @@ class _SettingsPageState extends State<SettingsPage> with FeedbackMixin {
             final version = allJsonMap[exportVersionKey];
             final importable = <AppExportItem, dynamic>{};
             if (version == null) {
-              // backwards compatibility before versioning
+              // backward compatibility before versioning
               importable[AppExportItem.settings] = allJsonMap;
             } else {
               if (allJsonMap is! Map) {
