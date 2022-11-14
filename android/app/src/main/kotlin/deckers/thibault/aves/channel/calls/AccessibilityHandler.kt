@@ -3,6 +3,7 @@ package deckers.thibault.aves.channel.calls
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.ContextWrapper
+import android.content.res.Configuration
 import android.os.Build
 import android.provider.Settings
 import android.util.Log
@@ -19,6 +20,7 @@ class AccessibilityHandler(private val contextWrapper: ContextWrapper) : MethodC
             "areAnimationsRemoved" -> safe(call, result, ::areAnimationsRemoved)
             "hasRecommendedTimeouts" -> safe(call, result, ::hasRecommendedTimeouts)
             "getRecommendedTimeoutMillis" -> safe(call, result, ::getRecommendedTimeoutMillis)
+            "shouldUseBoldFont" -> safe(call, result, ::shouldUseBoldFont)
             else -> result.notImplemented()
         }
     }
@@ -76,8 +78,28 @@ class AccessibilityHandler(private val contextWrapper: ContextWrapper) : MethodC
         result.success(millis)
     }
 
+    // Flutter v3.4 already checks the system `Configuration.fontWeightAdjustment` to update `MediaQuery`
+    // but we need to also check the non-standard Samsung field `bf` representing the bold font toggle
+    private fun shouldUseBoldFont(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
+        var shouldBold = false
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            val config = contextWrapper.resources.configuration
+            val fontWeightAdjustment = config.fontWeightAdjustment
+            shouldBold = if (fontWeightAdjustment != Configuration.FONT_WEIGHT_ADJUSTMENT_UNDEFINED && fontWeightAdjustment != 0) {
+                fontWeightAdjustment >= BOLD_TEXT_WEIGHT_ADJUSTMENT
+            } else {
+                // fallback to Samsung non-standard field
+                Regex(" bf=([01]) ").find(config.toString())?.groups?.get(1)?.value == "1"
+            }
+        }
+        result.success(shouldBold)
+    }
+
     companion object {
         private val LOG_TAG = LogUtils.createTag<AccessibilityHandler>()
         const val CHANNEL = "deckers.thibault/aves/accessibility"
+
+        // match Flutter way: https://github.com/flutter/engine/blob/main/shell/platform/android/io/flutter/view/AccessibilityBridge.java#L125
+        const val BOLD_TEXT_WEIGHT_ADJUSTMENT = 300
     }
 }
