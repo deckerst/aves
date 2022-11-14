@@ -4,6 +4,16 @@ import 'package:flutter/services.dart';
 class AccessibilityService {
   static const _platform = MethodChannel('deckers.thibault/aves/accessibility');
 
+  static Future<bool> shouldUseBoldFont() async {
+    try {
+      final result = await _platform.invokeMethod('shouldUseBoldFont');
+      if (result != null) return result as bool;
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
+    return false;
+  }
+
   static Future<bool> areAnimationsRemoved() async {
     try {
       final result = await _platform.invokeMethod('areAnimationsRemoved');

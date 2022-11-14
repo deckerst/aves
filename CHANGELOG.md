@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Added
+
+- Accessibility: apply bold font system setting
+
 ## <a id="v1.7.4"></a>[v1.7.4] - 2022-11-11
 
 ### Added
