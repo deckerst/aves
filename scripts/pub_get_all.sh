@@ -5,14 +5,6 @@ fi
 
 flutter pub get
 
-cd packages || exit
-for package in $(ls -d *); do
-  cd $package
-  flutter pub get
-  cd ..
-done
-cd ..
-
 cd plugins || exit
 for plugin in $(ls -d *); do
   cd $plugin

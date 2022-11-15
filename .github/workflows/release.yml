@@ -66,6 +66,9 @@ jobs:
           (cd scripts/; ./apply_flavor_izzy.sh)
           flutter build apk -t lib/main_izzy.dart --flavor izzy --split-per-abi --bundle-sksl-path shaders_3.3.8.sksl.json
           cp build/app/outputs/apk/izzy/release/*.apk outputs
+          (cd scripts/; ./apply_flavor_libre.sh)
+          flutter build apk -t lib/main_libre.dart --flavor libre --bundle-sksl-path shaders_3.3.8.sksl.json
+          cp build/app/outputs/apk/libre/release/*.apk outputs
           rm $AVES_STORE_FILE
         env:
           AVES_STORE_FILE: ${{ github.workspace }}/key.jks
