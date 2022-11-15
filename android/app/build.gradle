@@ -4,7 +4,7 @@ plugins {
     id 'kotlin-kapt'
 }
 
-def appId = "deckers.thibault.aves"
+def packageName = "deckers.thibault.aves"
 
 // Flutter properties
 
@@ -49,7 +49,7 @@ android {
     }
 
     defaultConfig {
-        applicationId appId
+        applicationId packageName
         // minSdkVersion constraints:
         // - Flutter & other plugins: 16
         // - google_maps_flutter v2.1.1: 20
@@ -63,7 +63,6 @@ android {
         manifestPlaceholders = [googleApiKey: keystoreProperties['googleApiKey'],
                                 huaweiApiKey: keystoreProperties['huaweiApiKey']]
         multiDexEnabled true
-        resValue 'string', 'search_provider', "${appId}.search_provider"
     }
 
     signingConfigs {
@@ -106,22 +105,35 @@ android {
             // generate APK by ABI, but NDK ABI filters are incompatible with split APK generation
             ext.useNdkAbiFilters = false
         }
+
+        libre {
+            // F-Droid
+            applicationIdSuffix ".libre"
+            dimension "store"
+            ext.useCrashlytics = false
+            ext.useHMS = false
+            // generate a universal APK without x86 native libs
+            ext.useNdkAbiFilters = true
+        }
     }
 
     buildTypes {
         debug {
             applicationIdSuffix ".debug"
-            resValue 'string', 'search_provider', "${appId}.debug.search_provider"
         }
         profile {
             applicationIdSuffix ".profile"
-            resValue 'string', 'search_provider', "${appId}.profile.search_provider"
         }
         release {
             signingConfig signingConfigs.release
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+
+        applicationVariants.all { variant ->
+            variant.resValue 'string', 'screen_saver_settings_activity', "${applicationId}/${packageName}.ScreenSaverSettingsActivity"
+            variant.resValue 'string', 'search_provider', "${applicationId}.search_provider"
         }
 
         android.productFlavors.each { flavor ->

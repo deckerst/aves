@@ -1,2 +1,2 @@
 <dream xmlns:android="http://schemas.android.com/apk/res/android"
-    android:settingsActivity="deckers.thibault.aves/deckers.thibault.aves.ScreenSaverSettingsActivity" />
+    android:settingsActivity="@string/screen_saver_settings_activity" />
