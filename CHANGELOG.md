@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
+- Info: export metadata to text file
 - Accessibility: apply bold font system setting
 
 ### Fixed

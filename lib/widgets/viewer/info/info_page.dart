@@ -14,6 +14,7 @@ import 'package:aves/widgets/viewer/embedded/embedded_data_opener.dart';
 import 'package:aves/widgets/viewer/info/basic_section.dart';
 import 'package:aves/widgets/viewer/info/info_app_bar.dart';
 import 'package:aves/widgets/viewer/info/location_section.dart';
+import 'package:aves/widgets/viewer/info/metadata/metadata_dir.dart';
 import 'package:aves/widgets/viewer/info/metadata/metadata_section.dart';
 import 'package:aves/widgets/viewer/multipage/conductor.dart';
 import 'package:aves/widgets/viewer/notifications.dart';

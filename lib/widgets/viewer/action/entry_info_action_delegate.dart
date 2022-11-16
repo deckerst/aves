@@ -1,11 +1,14 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:aves/model/actions/entry_info_actions.dart';
 import 'package:aves/model/actions/events.dart';
 import 'package:aves/model/entry.dart';
+import 'package:aves/model/entry_info.dart';
 import 'package:aves/model/entry_metadata_edition.dart';
 import 'package:aves/model/geotiff.dart';
 import 'package:aves/model/source/collection_lens.dart';
+import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/common/action_mixins/entry_editor.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
@@ -39,6 +42,7 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
       case EntryInfoAction.editRating:
       case EntryInfoAction.editTags:
       case EntryInfoAction.removeMetadata:
+      case EntryInfoAction.exportMetadata:
         return true;
       // GeoTIFF
       case EntryInfoAction.showGeoTiffOnMap:
@@ -68,6 +72,8 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
         return entry.canEditTags;
       case EntryInfoAction.removeMetadata:
         return entry.canRemoveMetadata;
+      case EntryInfoAction.exportMetadata:
+        return true;
       // GeoTIFF
       case EntryInfoAction.showGeoTiffOnMap:
         return true;
@@ -103,6 +109,9 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
         break;
       case EntryInfoAction.removeMetadata:
         await _removeMetadata(context);
+        break;
+      case EntryInfoAction.exportMetadata:
+        await _exportMetadata(context);
         break;
       // GeoTIFF
       case EntryInfoAction.showGeoTiffOnMap:
@@ -167,6 +176,38 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
     if (types == null) return;
 
     await edit(context, () => entry.removeMetadata(types));
+  }
+
+  Future<void> _exportMetadata(BuildContext context) async {
+    final lines = <String>[];
+    final padding = ' ' * 2;
+    final titledDirectories = await entry.getMetadataDirectories(context);
+    titledDirectories.forEach((kv) {
+      final title = kv.key;
+      final dir = kv.value;
+
+      lines.add('[$title]');
+      final dirContent = dir.allTags;
+      final tags = dirContent.keys.toList()..sort();
+      tags.forEach((tag) {
+        final value = dirContent[tag];
+        lines.add('$padding$tag: $value');
+      });
+    });
+    final metadataString = lines.join('\n');
+
+    final success = await storageService.createFile(
+      '${entry.filenameWithoutExtension}-metadata.txt',
+      MimeTypes.plainText,
+      Uint8List.fromList(utf8.encode(metadataString)),
+    );
+    if (success != null) {
+      if (success) {
+        showFeedback(context, context.l10n.genericSuccessFeedback);
+      } else {
+        showFeedback(context, context.l10n.genericFailureFeedback);
+      }
+    }
   }
 
   Future<void> _convertMotionPhotoToStillImage(BuildContext context) async {

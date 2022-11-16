@@ -1,6 +1,15 @@
 {
+  "de": [
+    "entryInfoActionExportMetadata"
+  ],
+
   "el": [
+    "entryInfoActionExportMetadata",
     "tagEditorSectionPlaceholders"
+  ],
+
+  "es": [
+    "entryInfoActionExportMetadata"
   ],
 
   "fa": [
@@ -89,6 +98,7 @@
     "entryInfoActionEditRating",
     "entryInfoActionEditTags",
     "entryInfoActionRemoveMetadata",
+    "entryInfoActionExportMetadata",
     "filterBinLabel",
     "filterFavouriteLabel",
     "filterNoDateLabel",
@@ -585,7 +595,12 @@
     "filePickerUseThisFolder"
   ],
 
+  "fr": [
+    "entryInfoActionExportMetadata"
+  ],
+
   "gl": [
+    "entryInfoActionExportMetadata",
     "accessibilityAnimationsRemove",
     "accessibilityAnimationsKeep",
     "displayRefreshRatePreferHighest",
@@ -1034,14 +1049,28 @@
     "filePickerUseThisFolder"
   ],
 
+  "id": [
+    "entryInfoActionExportMetadata"
+  ],
+
+  "it": [
+    "entryInfoActionExportMetadata"
+  ],
+
   "ja": [
-    "chipActionFilterIn"
+    "chipActionFilterIn",
+    "entryInfoActionExportMetadata"
+  ],
+
+  "ko": [
+    "entryInfoActionExportMetadata"
   ],
 
   "nb": [
     "videoActionCaptureFrame",
     "videoActionSelectStreams",
     "entryInfoActionEditLocation",
+    "entryInfoActionExportMetadata",
     "coordinateFormatDms",
     "mapStyleHuaweiNormal",
     "mapStyleHuaweiTerrain",
@@ -1151,12 +1180,17 @@
     "tagPlaceholderPlace"
   ],
 
+  "nl": [
+    "entryInfoActionExportMetadata"
+  ],
+
   "pl": [
     "itemCount",
     "timeSeconds",
     "timeMinutes",
     "timeDays",
     "focalLength",
+    "entryInfoActionExportMetadata",
     "filterTypeRawLabel",
     "filterTypeSphericalVideoLabel",
     "filterTypeGeotiffLabel",
@@ -1640,7 +1674,20 @@
     "filePickerUseThisFolder"
   ],
 
+  "pt": [
+    "entryInfoActionExportMetadata"
+  ],
+
+  "ru": [
+    "entryInfoActionExportMetadata"
+  ],
+
+  "tr": [
+    "entryInfoActionExportMetadata"
+  ],
+
   "zh": [
+    "entryInfoActionExportMetadata",
     "editEntryLocationDialogSetCustom",
     "settingsAllowMediaManagement",
     "tagEditorSectionPlaceholders",

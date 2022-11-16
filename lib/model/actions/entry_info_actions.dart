@@ -11,6 +11,7 @@ enum EntryInfoAction {
   editRating,
   editTags,
   removeMetadata,
+  exportMetadata,
   // GeoTIFF
   showGeoTiffOnMap,
   // motion photo
@@ -28,6 +29,7 @@ class EntryInfoActions {
     EntryInfoAction.editRating,
     EntryInfoAction.editTags,
     EntryInfoAction.removeMetadata,
+    EntryInfoAction.exportMetadata,
   ];
 
   static const formatSpecific = [
@@ -53,6 +55,8 @@ extension ExtraEntryInfoAction on EntryInfoAction {
         return context.l10n.entryInfoActionEditTags;
       case EntryInfoAction.removeMetadata:
         return context.l10n.entryInfoActionRemoveMetadata;
+      case EntryInfoAction.exportMetadata:
+        return context.l10n.entryInfoActionExportMetadata;
       // GeoTIFF
       case EntryInfoAction.showGeoTiffOnMap:
         return context.l10n.entryActionShowGeoTiffOnMap;
@@ -96,6 +100,8 @@ extension ExtraEntryInfoAction on EntryInfoAction {
         return AIcons.editTags;
       case EntryInfoAction.removeMetadata:
         return AIcons.clear;
+      case EntryInfoAction.exportMetadata:
+        return AIcons.fileExport;
       // GeoTIFF
       case EntryInfoAction.showGeoTiffOnMap:
         return AIcons.map;

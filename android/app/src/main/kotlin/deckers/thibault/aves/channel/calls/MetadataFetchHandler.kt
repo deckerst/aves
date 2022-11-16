@@ -216,7 +216,6 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                         (it.tagCount > 0 || it.errorCount > 0)
                                 && it !is FileTypeDirectory
                                 && it !is AviDirectory
-                                && !(it is XmpDirectory && it.tagCount == 1 && it.containsTag(XmpDirectory.TAG_XMP_VALUE_COUNT))
                     }.groupBy { dir -> dir.name }
 
                     for (dirEntry in dirByName) {
@@ -386,8 +385,10 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         fun fallbackProcessXmp(xmpMeta: XMPMeta) {
             val thisDirName = XmpDirectory().name
             val dirMap = metadataMap[thisDirName] ?: HashMap()
-            metadataMap[thisDirName] = dirMap
             processXmp(xmpMeta, dirMap)
+            if (dirMap.isNotEmpty()) {
+                metadataMap[thisDirName] = dirMap
+            }
         }
 
         XMP.checkHeic(context, mimeType, uri, foundXmp, ::fallbackProcessXmp)
