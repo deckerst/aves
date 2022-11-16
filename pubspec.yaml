@@ -30,11 +30,11 @@ dependencies:
   aves_report:
     path: plugins/aves_report
   aves_report_platform:
-    path: plugins/aves_report_console
+    path: plugins/aves_report_crashlytics
   aves_services:
     path: plugins/aves_services
   aves_services_platform:
-    path: plugins/aves_services_none
+    path: plugins/aves_services_google
   charts_flutter:
   collection:
   connectivity_plus:

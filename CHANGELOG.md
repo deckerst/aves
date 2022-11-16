@@ -8,6 +8,10 @@ All notable changes to this project will be documented in this file.
 
 - Accessibility: apply bold font system setting
 
+### Fixed
+
+- reading metadata for some MP4 files
+
 ## <a id="v1.7.4"></a>[v1.7.4] - 2022-11-11
 
 ### Added
