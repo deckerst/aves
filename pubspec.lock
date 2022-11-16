@@ -253,7 +253,7 @@ packages:
     description:
       path: "."
       ref: aves
-      resolved-ref: "2aa0f5f08135de00966e9b71e58cddb61f93e81c"
+      resolved-ref: c1e8293103f1fbad6d3d7b781e31ff8b03aef331
       url: "https://github.com/deckerst/fijkplayer.git"
     source: git
     version: "0.10.0"
@@ -1168,4 +1168,4 @@ packages:
     version: "3.1.1"
 sdks:
   dart: ">=2.18.0 <3.0.0"
-  flutter: ">=3.3.0"
+  flutter: ">=3.3.8"
