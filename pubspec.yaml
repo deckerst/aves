@@ -10,6 +10,8 @@ version: 1.7.4+84
 publish_to: none
 
 environment:
+  # keep in sync with GitHub workflows
+  flutter: 3.3.8
   sdk: ">=2.18.0 <3.0.0"
 
 # following https://github.blog/2021-09-01-improving-git-protocol-security-github/
@@ -100,21 +102,6 @@ flutter:
     - assets/
   generate: true
   uses-material-design: true
-
-################################################################################
-# Build
-
-# deckerst/fijkplayer
-
-# This fork depends on a local .aar, but Flutter does not support this well
-# cf https://github.com/flutter/flutter/issues/28195
-# so building an app with this plugin requires the file to be present at:
-# `<app-root>/android/app/libs/fijkplayer-full-release.aar`
-# The .aar file in the app will take precedence over the one in the plugin itself.
-
-# The reference file is available at:
-# - [git] https://github.com/deckerst/fijkplayer/blob/aves-config/android/libs/fijkplayer-full-release.aar
-# - [local/win] C:\Users\<user>\AppData\Local\Pub\Cache\git\fijkplayer-<version>\android\libs\fijkplayer-full-release.aar
 
 ################################################################################
 # Localization
