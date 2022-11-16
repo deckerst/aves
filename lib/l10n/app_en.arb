@@ -122,6 +122,7 @@
   "entryInfoActionEditRating": "Edit rating",
   "entryInfoActionEditTags": "Edit tags",
   "entryInfoActionRemoveMetadata": "Remove metadata",
+  "entryInfoActionExportMetadata": "Export metadata",
 
   "filterBinLabel": "Recycle bin",
   "filterFavouriteLabel": "Favorite",
