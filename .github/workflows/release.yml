@@ -22,11 +22,6 @@ jobs:
           flutter-version: '3.3.8'
           channel: 'stable'
 
-      # Workaround for this Android Gradle Plugin issue (supposedly fixed in AGP 4.1):
-      # https://issuetracker.google.com/issues/144111441
-      - name: Install NDK
-        run: echo "y" | sudo /usr/local/lib/android/sdk/tools/bin/sdkmanager --install "ndk;20.0.5594570" --sdk_root=${ANDROID_SDK_ROOT}
-
       - name: Clone the repository.
         uses: actions/checkout@v2
 
@@ -56,18 +51,18 @@ jobs:
           rm release.keystore.asc
           mkdir outputs
           (cd scripts/; ./apply_flavor_play.sh)
-          flutter build appbundle -t lib/main_play.dart --flavor play --bundle-sksl-path shaders_3.3.8.sksl.json
+          flutter build appbundle -t lib/main_play.dart --flavor play --bundle-sksl-path shaders.sksl.json
           cp build/app/outputs/bundle/playRelease/*.aab outputs
-          flutter build apk -t lib/main_play.dart --flavor play --bundle-sksl-path shaders_3.3.8.sksl.json
+          flutter build apk -t lib/main_play.dart --flavor play --bundle-sksl-path shaders.sksl.json
           cp build/app/outputs/apk/play/release/*.apk outputs
           (cd scripts/; ./apply_flavor_huawei.sh)
-          flutter build apk -t lib/main_huawei.dart --flavor huawei --bundle-sksl-path shaders_3.3.8.sksl.json
+          flutter build apk -t lib/main_huawei.dart --flavor huawei --bundle-sksl-path shaders.sksl.json
           cp build/app/outputs/apk/huawei/release/*.apk outputs
           (cd scripts/; ./apply_flavor_izzy.sh)
-          flutter build apk -t lib/main_izzy.dart --flavor izzy --split-per-abi --bundle-sksl-path shaders_3.3.8.sksl.json
+          flutter build apk -t lib/main_izzy.dart --flavor izzy --split-per-abi --bundle-sksl-path shaders.sksl.json
           cp build/app/outputs/apk/izzy/release/*.apk outputs
           (cd scripts/; ./apply_flavor_libre.sh)
-          flutter build apk -t lib/main_libre.dart --flavor libre --bundle-sksl-path shaders_3.3.8.sksl.json
+          flutter build apk -t lib/main_libre.dart --flavor libre --bundle-sksl-path shaders.sksl.json
           cp build/app/outputs/apk/libre/release/*.apk outputs
           rm $AVES_STORE_FILE
         env:
