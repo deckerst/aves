@@ -80,8 +80,6 @@ android {
         play {
             // Google Play
             dimension "store"
-            ext.useCrashlytics = true
-            ext.useHMS = false
             // generate a universal APK without x86 native libs
             ext.useNdkAbiFilters = true
         }
@@ -89,8 +87,6 @@ android {
         huawei {
             // Huawei AppGallery
             dimension "store"
-            ext.useCrashlytics = false
-            ext.useHMS = true
             // generate a universal APK without x86 native libs
             ext.useNdkAbiFilters = true
         }
@@ -100,20 +96,18 @@ android {
             // check offending libraries with `scanapk`
             // cf https://android.izzysoft.de/articles/named/app-modules-2
             dimension "store"
-            ext.useCrashlytics = false
-            ext.useHMS = false
             // generate APK by ABI, but NDK ABI filters are incompatible with split APK generation
             ext.useNdkAbiFilters = false
         }
 
         libre {
             // F-Droid
-            applicationIdSuffix ".libre"
+            // check offending libraries with `fdroidserver`
+            // cf https://f-droid.org/en/docs/Submitting_to_F-Droid_Quick_Start_Guide/
             dimension "store"
-            ext.useCrashlytics = false
-            ext.useHMS = false
             // generate a universal APK without x86 native libs
             ext.useNdkAbiFilters = true
+            applicationIdSuffix ".libre"
         }
     }
 
@@ -150,6 +144,7 @@ android {
             }
         }
     }
+
     lint {
         disable 'InvalidPackage'
     }
@@ -208,15 +203,13 @@ dependencies {
     compileOnly rootProject.findProject(':streams_channel')
 }
 
-android.productFlavors.each { flavor ->
-    def tasks = gradle.startParameter.taskRequests.toString().toLowerCase()
-    if (tasks.contains(flavor.name) && flavor.ext.useCrashlytics) {
-        println("Building flavor [${flavor.name}] with Crashlytics plugin")
-        apply plugin: 'com.google.gms.google-services'
-        apply plugin: 'com.google.firebase.crashlytics'
-    }
-    if (tasks.contains(flavor.name) && flavor.ext.useHMS) {
-        println("Building flavor [${flavor.name}] with HMS plugin")
-        apply plugin: 'com.huawei.agconnect'
-    }
+if (useCrashlytics) {
+    println("Building flavor with Crashlytics plugin")
+    apply plugin: 'com.google.gms.google-services'
+    apply plugin: 'com.google.firebase.crashlytics'
+}
+
+if (useHms) {
+    println("Building flavor with HMS plugin")
+    apply plugin: 'com.huawei.agconnect'
 }
