@@ -274,7 +274,7 @@ packages:
     description:
       path: "."
       ref: aves
-      resolved-ref: c1e8293103f1fbad6d3d7b781e31ff8b03aef331
+      resolved-ref: "556b3348a616c835d564b023f8ef6f056f67ef16"
       url: "https://github.com/deckerst/fijkplayer.git"
     source: git
     version: "0.10.0"
@@ -594,7 +594,7 @@ packages:
       name: material_design_icons_flutter
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.0.6996"
+    version: "6.0.7096"
   meta:
     dependency: transitive
     description:
