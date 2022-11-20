@@ -8,6 +8,11 @@ All notable changes to this project will be documented in this file.
 
 - Info: export metadata to text file
 - Accessibility: apply bold font system setting
+- `libre` app flavor (no mobile service maps, no Crashlytics)
+
+### Changed
+
+- No default map style for `izzy` and `libre` flavors
 
 ### Fixed
 

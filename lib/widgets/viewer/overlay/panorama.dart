@@ -22,9 +22,8 @@ class PanoramaOverlay extends StatelessWidget {
     return Row(
       children: [
         const Spacer(),
-        OverlayTextButton(
+        ScalingOverlayTextButton(
           scale: scale,
-          buttonLabel: context.l10n.viewerOpenPanoramaButtonLabel,
           onPressed: () async {
             final info = await metadataFetchService.getPanoramaInfo(entry);
             if (info != null) {
@@ -40,7 +39,8 @@ class PanoramaOverlay extends StatelessWidget {
               ));
             }
           },
-        )
+          child: Text(context.l10n.viewerOpenPanoramaButtonLabel),
+        ),
       ],
     );
   }

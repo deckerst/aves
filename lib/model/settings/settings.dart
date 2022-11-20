@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:aves/app_flavor.dart';
 import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/actions/entry_set_actions.dart';
 import 'package:aves/model/filters/filters.dart';
@@ -202,18 +203,20 @@ class Settings extends ChangeNotifier {
 
   bool isInternalKey(String key) => _internalKeys.contains(key) || key.startsWith(_widgetKeyPrefix);
 
-  Future<void> setContextualDefaults() async {
+  Future<void> setContextualDefaults(AppFlavor flavor) async {
     // performance
     final performanceClass = await deviceService.getPerformanceClass();
     enableBlurEffect = performanceClass >= 29;
 
     // availability
-    final defaultMapStyle = mobileServices.defaultMapStyle;
-    if (mobileServices.mapStyles.contains(defaultMapStyle)) {
-      mapStyle = defaultMapStyle;
-    } else {
-      final styles = EntryMapStyle.values.whereNot((v) => v.needMobileService).toList();
-      mapStyle = styles[Random().nextInt(styles.length)];
+    if (flavor.hasMapStyleDefault) {
+      final defaultMapStyle = mobileServices.defaultMapStyle;
+      if (mobileServices.mapStyles.contains(defaultMapStyle)) {
+        mapStyle = defaultMapStyle;
+      } else {
+        final styles = EntryMapStyle.values.whereNot((v) => v.needMobileService).toList();
+        mapStyle = styles[Random().nextInt(styles.length)];
+      }
     }
   }
 
@@ -598,13 +601,15 @@ class Settings extends ChangeNotifier {
 
   // map
 
-  EntryMapStyle get mapStyle {
-    final preferred = getEnumOrDefault(mapStyleKey, SettingsDefaults.infoMapStyle, EntryMapStyle.values);
+  EntryMapStyle? get mapStyle {
+    final preferred = getEnumOrDefault(mapStyleKey, null, EntryMapStyle.values);
+    if (preferred == null) return null;
+
     final available = availability.mapStyles;
     return available.contains(preferred) ? preferred : available.first;
   }
 
-  set mapStyle(EntryMapStyle newValue) => setAndNotify(mapStyleKey, newValue.toString());
+  set mapStyle(EntryMapStyle? newValue) => setAndNotify(mapStyleKey, newValue?.toString());
 
   LatLng? get mapDefaultCenter {
     final json = getString(mapDefaultCenterKey);
