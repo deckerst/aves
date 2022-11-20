@@ -31,7 +31,6 @@ class _WelcomePageState extends State<WelcomePage> {
   @override
   void initState() {
     super.initState();
-    settings.setContextualDefaults();
     _termsLoader = rootBundle.loadString(termsPath);
     WidgetsBinding.instance.addPostFrameCallback((_) => _initWelcomeSettings());
   }
@@ -40,6 +39,7 @@ class _WelcomePageState extends State<WelcomePage> {
   // so they are not subject to future default changes
   void _initWelcomeSettings() {
     // this should be done outside of `initState`/`build`
+    settings.setContextualDefaults(context.read<AppFlavor>());
     settings.isInstalledAppAccessAllowed = SettingsDefaults.isInstalledAppAccessAllowed;
     settings.isErrorReportingAllowed = SettingsDefaults.isErrorReportingAllowed;
   }

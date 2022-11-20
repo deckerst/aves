@@ -7,7 +7,6 @@ import 'package:aves/model/source/enums/enums.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/countries_page.dart';
 import 'package:aves/widgets/filter_grids/tags_page.dart';
-import 'package:aves_map/aves_map.dart';
 import 'package:flutter/material.dart';
 
 class SettingsDefaults {
@@ -104,7 +103,6 @@ class SettingsDefaults {
   static const subtitleBackgroundColor = Colors.transparent;
 
   // info
-  static const infoMapStyle = EntryMapStyle.stamenWatercolor; // `infoMapStyle` has a contextual default value
   static const infoMapZoom = 12.0;
   static const coordinateFormat = CoordinateFormat.dms;
   static const unitSystem = UnitSystem.metric;

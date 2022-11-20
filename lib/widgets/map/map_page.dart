@@ -108,7 +108,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
   void initState() {
     super.initState();
 
-    if (settings.mapStyle.isHeavy) {
+    if (ExtraEntryMapStyle.isHeavy(settings.mapStyle)) {
       _isPageAnimatingNotifier.value = true;
       Future.delayed(Durations.pageTransitionAnimation * timeDilation).then((_) {
         if (!mounted) return;
@@ -176,11 +176,11 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
         }
         return true;
       },
-      child: Selector<Settings, EntryMapStyle>(
+      child: Selector<Settings, EntryMapStyle?>(
         selector: (context, s) => s.mapStyle,
         builder: (context, mapStyle, child) {
           late Widget scroller;
-          if (mapStyle.isHeavy) {
+          if (ExtraEntryMapStyle.isHeavy(mapStyle)) {
             // the map widget is too heavy for a smooth resizing animation
             // so we just toggle visibility when overlay animation is done
             scroller = ValueListenableBuilder<double>(

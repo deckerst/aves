@@ -60,16 +60,38 @@ class OverlayButton extends StatelessWidget {
   static double getSize(BuildContext context) => 48.0 + AvesBorder.curvedBorderWidth * 2;
 }
 
-class OverlayTextButton extends StatelessWidget {
+class ScalingOverlayTextButton extends StatelessWidget {
   final Animation<double> scale;
-  final String buttonLabel;
   final VoidCallback? onPressed;
+  final Widget child;
+
+  const ScalingOverlayTextButton({
+    super.key,
+    required this.scale,
+    this.onPressed,
+    required this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizeTransition(
+      sizeFactor: scale,
+      child: OverlayTextButton(
+        onPressed: onPressed,
+        child: child,
+      ),
+    );
+  }
+}
+
+class OverlayTextButton extends StatelessWidget {
+  final VoidCallback? onPressed;
+  final Widget child;
 
   const OverlayTextButton({
     super.key,
-    required this.scale,
-    required this.buttonLabel,
     this.onPressed,
+    required this.child,
   });
 
   static const _borderRadius = 123.0;
@@ -79,25 +101,22 @@ class OverlayTextButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final blurred = settings.enableBlurEffect;
     final theme = Theme.of(context);
-    return SizeTransition(
-      sizeFactor: scale,
-      child: BlurredRRect.all(
-        enabled: blurred,
-        borderRadius: _borderRadius,
-        child: OutlinedButton(
-          onPressed: onPressed,
-          style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all<Color>(Themes.overlayBackgroundColor(brightness: theme.brightness, blurred: blurred)),
-            foregroundColor: MaterialStateProperty.all<Color>(theme.colorScheme.onSurface),
-            overlayColor: theme.brightness == Brightness.dark ? MaterialStateProperty.all<Color>(Colors.white.withOpacity(0.12)) : null,
-            minimumSize: _minSize,
-            side: MaterialStateProperty.all<BorderSide>(AvesBorder.curvedSide(context)),
-            shape: MaterialStateProperty.all<OutlinedBorder>(const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(_borderRadius)),
-            )),
-          ),
-          child: Text(buttonLabel),
+    return BlurredRRect.all(
+      enabled: blurred,
+      borderRadius: _borderRadius,
+      child: OutlinedButton(
+        onPressed: onPressed,
+        style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all<Color>(Themes.overlayBackgroundColor(brightness: theme.brightness, blurred: blurred)),
+          foregroundColor: MaterialStateProperty.all<Color>(theme.colorScheme.onSurface),
+          overlayColor: theme.brightness == Brightness.dark ? MaterialStateProperty.all<Color>(Colors.white.withOpacity(0.12)) : null,
+          minimumSize: _minSize,
+          side: MaterialStateProperty.all<BorderSide>(AvesBorder.curvedSide(context)),
+          shape: MaterialStateProperty.all<OutlinedBorder>(const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(_borderRadius)),
+          )),
         ),
+        child: child,
       ),
     );
   }
