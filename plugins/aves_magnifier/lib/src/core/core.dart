@@ -195,7 +195,7 @@ class _MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateM
     const t = 0.2;
     final animationVelocity = (tween.end! - tween.begin!).distance * curve.transform(t) / t;
     final gestureVelocity = targetPixelPerSecond.distance;
-    return Duration(milliseconds: (animationVelocity / gestureVelocity * 1000).round());
+    return Duration(milliseconds: gestureVelocity != 0 ? (animationVelocity / gestureVelocity * 1000).round() : 0);
   }
 
   void onTap(TapUpDetails details) {
