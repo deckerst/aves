@@ -17,6 +17,7 @@ import deckers.thibault.aves.metadata.metadataextractor.SafeMp4UuidBoxHandler
 import deckers.thibault.aves.metadata.metadataextractor.SafeXmpReader
 import deckers.thibault.aves.utils.ContextUtils.queryContentResolverProp
 import deckers.thibault.aves.utils.LogUtils
+import deckers.thibault.aves.utils.MemoryUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.StorageUtils
 import org.mp4parser.IsoFile
@@ -150,12 +151,17 @@ object XMP {
                         // creating `IsoFile` with a `File` or a `File.inputStream()` yields `No such device`
                         IsoFile(channel, boxParser).use { isoFile ->
                             isoFile.processBoxes(UserBox::class.java, true) { box, _ ->
-                                val bytes = box.toBytes()
-                                val payload = bytes.copyOfRange(8, bytes.size)
+                                val boxSize = box.size
+                                if (MemoryUtils.canAllocate(boxSize)) {
+                                    val bytes = box.toBytes()
+                                    val payload = bytes.copyOfRange(8, bytes.size)
 
-                                val metadata = com.drew.metadata.Metadata()
-                                SafeMp4UuidBoxHandler(metadata).processBox("", payload, -1, null)
-                                processDirs(metadata.directories.filter { dir -> dir.tagCount > 0 }.toList())
+                                    val metadata = com.drew.metadata.Metadata()
+                                    SafeMp4UuidBoxHandler(metadata).processBox("", payload, -1, null)
+                                    processDirs(metadata.directories.filter { dir -> dir.tagCount > 0 }.toList())
+                                } else {
+                                    Log.w(LOG_TAG, "MP4 box too large at $boxSize bytes, for mimeType=$mimeType uri=$uri")
+                                }
                             }
                         }
                     }
