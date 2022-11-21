@@ -42,6 +42,7 @@ import kotlinx.coroutines.launch
 import org.beyka.tiffbitmapfactory.TiffBitmapFactory
 import org.mp4parser.IsoFile
 import org.mp4parser.PropertyBoxParserImpl
+import org.mp4parser.boxes.iso14496.part12.FreeBox
 import org.mp4parser.boxes.iso14496.part12.MediaDataBox
 import org.mp4parser.boxes.iso14496.part12.SampleTableBox
 import java.io.FileInputStream
@@ -344,9 +345,15 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
                     FileInputStream(it.fileDescriptor).use { stream ->
                         stream.channel.use { channel ->
                             val boxParser = PropertyBoxParserImpl().apply {
-                                // parsing `MediaDataBox` can take a long time
-                                // parsing `SampleTableBox` may yield OOM
-                                skippingBoxes(MediaDataBox.TYPE, SampleTableBox.TYPE)
+                                skippingBoxes(
+                                    // parsing `MediaDataBox` can take a long time
+                                    MediaDataBox.TYPE,
+                                    // parsing `SampleTableBox` or `FreeBox` may yield OOM
+                                    SampleTableBox.TYPE, FreeBox.TYPE,
+                                    // some files are padded with `0` but the parser does not stop, reads type "0000",
+                                    // then a large size from following "0000", which may yield OOM
+                                    "0000",
+                                )
                             }
                             IsoFile(channel, boxParser).use { isoFile ->
                                 isoFile.dumpBoxes(sb)

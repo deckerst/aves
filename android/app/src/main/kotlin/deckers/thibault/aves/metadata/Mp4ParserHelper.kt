@@ -22,9 +22,14 @@ object Mp4ParserHelper {
             FileInputStream(it.fileDescriptor).use { stream ->
                 stream.channel.use { channel ->
                     val boxParser = PropertyBoxParserImpl().apply {
-                        // parsing `MediaDataBox` can take a long time
                         // do not skip anything inside `MovieBox` as it will be parsed and rewritten for editing
-                        skippingBoxes(MediaDataBox.TYPE)
+                        skippingBoxes(
+                            // parsing `MediaDataBox` can take a long time
+                            MediaDataBox.TYPE,
+                            // some files are padded with `0` but the parser does not stop, reads type "0000",
+                            // then a large size from following "0000", which may yield OOM
+                            "0000",
+                        )
                     }
                     // creating `IsoFile` with a `File` or a `File.inputStream()` yields `No such device`
                     IsoFile(channel, boxParser).use { isoFile ->
