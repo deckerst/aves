@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 
+- crash when cataloguing some MP4 files
 - reading metadata for some MP4 files
 
 ## <a id="v1.7.4"></a>[v1.7.4] - 2022-11-11
