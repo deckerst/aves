@@ -112,6 +112,9 @@ class _MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateM
   }
 
   void onScaleUpdate(ScaleUpdateDetails details) {
+    final boundaries = scaleBoundaries;
+    if (boundaries == null) return;
+
     double newScale;
     if (_doubleTap) {
       // quick scale, aka one finger zoom
@@ -131,7 +134,7 @@ class _MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateM
     final scaleFocalPoint = _doubleTap ? _startFocalPoint! : details.focalPoint;
 
     final panPositionDelta = scaleFocalPoint - _lastViewportFocalPosition!;
-    final scalePositionDelta = scaleBoundaries.viewportToStatePosition(controller, scaleFocalPoint) * (scale! / newScale - 1);
+    final scalePositionDelta = boundaries.viewportToStatePosition(controller, scaleFocalPoint) * (scale! / newScale - 1);
     final newPosition = position + panPositionDelta + scalePositionDelta;
 
     updateScaleStateFromNewScale(newScale, ChangeSource.gesture);
@@ -145,10 +148,13 @@ class _MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateM
   }
 
   void onScaleEnd(ScaleEndDetails details) {
+    final boundaries = scaleBoundaries;
+    if (boundaries == null) return;
+
     final _position = controller.position;
     final _scale = controller.scale!;
-    final maxScale = scaleBoundaries.maxScale;
-    final minScale = scaleBoundaries.minScale;
+    final maxScale = boundaries.maxScale;
+    final minScale = boundaries.minScale;
 
     // animate back to min/max scale if gesture yielded a scale exceeding them
     if (_scale > maxScale || _scale < minScale) {
@@ -202,21 +208,30 @@ class _MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateM
     final onTap = widget.onTap;
     if (onTap == null) return;
 
+    final boundaries = scaleBoundaries;
+    if (boundaries == null) return;
+
     final viewportTapPosition = details.localPosition;
+    final viewportSize = boundaries.viewportSize;
     final alignment = Alignment(viewportTapPosition.dx / viewportSize.width, viewportTapPosition.dy / viewportSize.height);
-    final childTapPosition = scaleBoundaries.viewportToChildPosition(controller, viewportTapPosition);
+    final childTapPosition = boundaries.viewportToChildPosition(controller, viewportTapPosition);
+
     onTap(context, controller.currentState, alignment, childTapPosition);
   }
 
   void onDoubleTap(TapDownDetails details) {
+    final boundaries = scaleBoundaries;
+    if (boundaries == null) return;
+
     final viewportTapPosition = details.localPosition;
-    if (widget.onDoubleTap != null) {
-      final viewportSize = scaleBoundaries.viewportSize;
+    final onDoubleTap = widget.onDoubleTap;
+    if (onDoubleTap != null) {
+      final viewportSize = boundaries.viewportSize;
       final alignment = Alignment(viewportTapPosition.dx / viewportSize.width, viewportTapPosition.dy / viewportSize.height);
-      if (widget.onDoubleTap?.call(alignment) == true) return;
+      if (onDoubleTap.call(alignment) == true) return;
     }
 
-    final childTapPosition = scaleBoundaries.viewportToChildPosition(controller, viewportTapPosition);
+    final childTapPosition = boundaries.viewportToChildPosition(controller, viewportTapPosition);
     nextScaleState(ChangeSource.gesture, childFocalPoint: childTapPosition);
   }
 
@@ -245,7 +260,7 @@ class _MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateM
 
   /// Check if scale is equal to initial after scale animation update
   void onAnimationStatusCompleted() {
-    if (controller.scaleState.state != ScaleState.initial && scale == scaleBoundaries.initialScale) {
+    if (controller.scaleState.state != ScaleState.initial && scale == scaleBoundaries?.initialScale) {
       controller.setScaleState(ScaleState.initial, ChangeSource.animation);
     }
   }
@@ -264,42 +279,44 @@ class _MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateM
     }
 
     return StreamBuilder<MagnifierState>(
-        stream: controller.stateStream,
-        initialData: controller.previousState,
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) return Container();
+      stream: controller.stateStream,
+      initialData: controller.previousState,
+      builder: (context, snapshot) {
+        final boundaries = scaleBoundaries;
+        if (!snapshot.hasData || boundaries == null) return const SizedBox();
 
-          final magnifierState = snapshot.data!;
-          final position = magnifierState.position;
-          final applyScale = widget.applyScale;
+        final magnifierState = snapshot.data!;
+        final position = magnifierState.position;
+        final applyScale = widget.applyScale;
 
-          Widget child = CustomSingleChildLayout(
-            delegate: _CenterWithOriginalSizeDelegate(
-              scaleBoundaries.childSize,
-              basePosition,
-              applyScale,
-            ),
-            child: widget.child,
-          );
+        Widget child = CustomSingleChildLayout(
+          delegate: _CenterWithOriginalSizeDelegate(
+            boundaries.childSize,
+            basePosition,
+            applyScale,
+          ),
+          child: widget.child,
+        );
 
-          child = Transform(
-            transform: Matrix4.identity()
-              ..translate(position.dx, position.dy)
-              ..scale(applyScale ? scale : 1.0),
-            alignment: basePosition,
-            child: child,
-          );
+        child = Transform(
+          transform: Matrix4.identity()
+            ..translate(position.dx, position.dy)
+            ..scale(applyScale ? scale : 1.0),
+          alignment: basePosition,
+          child: child,
+        );
 
-          return MagnifierGestureDetector(
-            onDoubleTap: onDoubleTap,
-            onScaleStart: onScaleStart,
-            onScaleUpdate: onScaleUpdate,
-            onScaleEnd: onScaleEnd,
-            hitDetector: this,
-            onTapUp: widget.onTap == null ? null : onTap,
-            child: child,
-          );
-        });
+        return MagnifierGestureDetector(
+          onDoubleTap: onDoubleTap,
+          onScaleStart: onScaleStart,
+          onScaleUpdate: onScaleUpdate,
+          onScaleEnd: onScaleEnd,
+          hitDetector: this,
+          onTapUp: widget.onTap == null ? null : onTap,
+          child: child,
+        );
+      },
+    );
   }
 }
 
