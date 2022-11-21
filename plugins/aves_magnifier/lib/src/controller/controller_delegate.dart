@@ -13,11 +13,7 @@ import 'package:flutter/widgets.dart';
 mixin AvesMagnifierControllerDelegate on State<MagnifierCore> {
   AvesMagnifierController get controller => widget.controller;
 
-  ScaleBoundaries get scaleBoundaries => controller.scaleBoundaries;
-
-  Size get childSize => scaleBoundaries.childSize;
-
-  Size get viewportSize => scaleBoundaries.viewportSize;
+  ScaleBoundaries? get scaleBoundaries => controller.scaleBoundaries;
 
   ScaleStateCycle get scaleStateCycle => widget.scaleStateCycle;
 
@@ -56,8 +52,9 @@ mixin AvesMagnifierControllerDelegate on State<MagnifierCore> {
     var nextPosition = Offset.zero;
     if (nextScaleState == ScaleState.covering || nextScaleState == ScaleState.originalSize) {
       final childFocalPoint = scaleStateChange.childFocalPoint;
-      if (childFocalPoint != null) {
-        nextPosition = scaleBoundaries.childToStatePosition(nextScale!, childFocalPoint);
+      final boundaries = scaleBoundaries;
+      if (childFocalPoint != null && boundaries != null) {
+        nextPosition = boundaries.childToStatePosition(nextScale!, childFocalPoint);
       }
     }
 
@@ -70,11 +67,14 @@ mixin AvesMagnifierControllerDelegate on State<MagnifierCore> {
   }
 
   void _onMagnifierStateChange(MagnifierState state) {
+    final boundaries = scaleBoundaries;
+    if (boundaries == null) return;
+
     controller.update(position: clampPosition(), source: state.source);
     if (controller.scale == controller.previousState.scale) return;
 
     if (state.source == ChangeSource.internal || state.source == ChangeSource.animation) return;
-    final newScaleState = (scale! > scaleBoundaries.initialScale) ? ScaleState.zoomedIn : ScaleState.zoomedOut;
+    final newScaleState = (scale! > boundaries.initialScale) ? ScaleState.zoomedIn : ScaleState.zoomedOut;
     controller.setScaleState(newScaleState, state.source);
   }
 
@@ -104,9 +104,12 @@ mixin AvesMagnifierControllerDelegate on State<MagnifierCore> {
   }
 
   void updateScaleStateFromNewScale(double newScale, ChangeSource source) {
+    final boundaries = scaleBoundaries;
+    if (boundaries == null) return;
+
     var newScaleState = ScaleState.initial;
-    if (scale != scaleBoundaries.initialScale) {
-      newScaleState = (newScale > scaleBoundaries.initialScale) ? ScaleState.zoomedIn : ScaleState.zoomedOut;
+    if (scale != boundaries.initialScale) {
+      newScaleState = (newScale > boundaries.initialScale) ? ScaleState.zoomedIn : ScaleState.zoomedOut;
     }
     controller.setScaleState(newScaleState, source);
   }
@@ -136,10 +139,13 @@ mixin AvesMagnifierControllerDelegate on State<MagnifierCore> {
   }
 
   CornersRange cornersX({double? scale}) {
+    final boundaries = scaleBoundaries;
+    if (boundaries == null) return const CornersRange(0, 0);
+
     final _scale = scale ?? this.scale!;
 
-    final computedWidth = childSize.width * _scale;
-    final screenWidth = viewportSize.width;
+    final computedWidth = boundaries.childSize.width * _scale;
+    final screenWidth = boundaries.viewportSize.width;
 
     final positionX = basePosition.x;
     final widthDiff = computedWidth - screenWidth;
@@ -150,10 +156,13 @@ mixin AvesMagnifierControllerDelegate on State<MagnifierCore> {
   }
 
   CornersRange cornersY({double? scale}) {
+    final boundaries = scaleBoundaries;
+    if (boundaries == null) return const CornersRange(0, 0);
+
     final _scale = scale ?? this.scale!;
 
-    final computedHeight = childSize.height * _scale;
-    final screenHeight = viewportSize.height;
+    final computedHeight = boundaries.childSize.height * _scale;
+    final screenHeight = boundaries.viewportSize.height;
 
     final positionY = basePosition.y;
     final heightDiff = computedHeight - screenHeight;
@@ -164,14 +173,17 @@ mixin AvesMagnifierControllerDelegate on State<MagnifierCore> {
   }
 
   Offset clampPosition({Offset? position, double? scale}) {
+    final boundaries = scaleBoundaries;
+    if (boundaries == null) return Offset.zero;
+
     final _scale = scale ?? this.scale!;
     final _position = position ?? this.position;
 
-    final computedWidth = childSize.width * _scale;
-    final computedHeight = childSize.height * _scale;
+    final computedWidth = boundaries.childSize.width * _scale;
+    final computedHeight = boundaries.childSize.height * _scale;
 
-    final screenWidth = viewportSize.width;
-    final screenHeight = viewportSize.height;
+    final screenWidth = boundaries.viewportSize.width;
+    final screenHeight = boundaries.viewportSize.height;
 
     var finalX = 0.0;
     if (screenWidth < computedWidth) {

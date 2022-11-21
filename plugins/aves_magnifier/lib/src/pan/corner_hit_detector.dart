@@ -9,8 +9,11 @@ mixin CornerHitDetector on AvesMagnifierControllerDelegate {
   // so be sure to compare with `precisionErrorTolerance`
 
   _CornerHit _hitCornersX() {
-    final childWidth = scaleBoundaries.childSize.width * scale!;
-    final viewportWidth = scaleBoundaries.viewportSize.width;
+    final boundaries = scaleBoundaries;
+    if (boundaries == null) return const _CornerHit(false, false);
+
+    final childWidth = boundaries.childSize.width * scale!;
+    final viewportWidth = boundaries.viewportSize.width;
     if (viewportWidth + precisionErrorTolerance >= childWidth) {
       return const _CornerHit(true, true);
     }
@@ -20,8 +23,11 @@ mixin CornerHitDetector on AvesMagnifierControllerDelegate {
   }
 
   _CornerHit _hitCornersY() {
-    final childHeight = scaleBoundaries.childSize.height * scale!;
-    final viewportHeight = scaleBoundaries.viewportSize.height;
+    final boundaries = scaleBoundaries;
+    if (boundaries == null) return const _CornerHit(false, false);
+
+    final childHeight = boundaries.childSize.height * scale!;
+    final viewportHeight = boundaries.viewportSize.height;
     if (viewportHeight + precisionErrorTolerance >= childHeight) {
       return const _CornerHit(true, true);
     }

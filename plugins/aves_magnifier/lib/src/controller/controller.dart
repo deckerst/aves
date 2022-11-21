@@ -48,7 +48,7 @@ class AvesMagnifierController {
 
   double? get scale => currentState.scale;
 
-  ScaleBoundaries get scaleBoundaries => _scaleBoundaries!;
+  ScaleBoundaries? get scaleBoundaries => _scaleBoundaries;
 
   ScaleStateChange get scaleState => _currentScaleState;
 
@@ -118,17 +118,20 @@ class AvesMagnifierController {
   }
 
   double? getScaleForScaleState(ScaleState scaleState) {
-    double _clamp(double scale) => scale.clamp(scaleBoundaries.minScale, scaleBoundaries.maxScale);
+    final boundaries = scaleBoundaries;
+    if (boundaries == null) return null;
+
+    double _clamp(double scale) => scale.clamp(boundaries.minScale, boundaries.maxScale);
 
     switch (scaleState) {
       case ScaleState.initial:
       case ScaleState.zoomedIn:
       case ScaleState.zoomedOut:
-        return _clamp(scaleBoundaries.initialScale);
+        return _clamp(boundaries.initialScale);
       case ScaleState.covering:
-        return _clamp(ScaleLevel.scaleForCovering(scaleBoundaries.viewportSize, scaleBoundaries.childSize));
+        return _clamp(ScaleLevel.scaleForCovering(boundaries.viewportSize, boundaries.childSize));
       case ScaleState.originalSize:
-        return _clamp(scaleBoundaries.originalScale);
+        return _clamp(boundaries.originalScale);
       default:
         return null;
     }
