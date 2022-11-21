@@ -15,11 +15,8 @@ import android.util.Log
 import androidx.exifinterface.media.ExifInterface
 import com.drew.metadata.file.FileTypeDirectory
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
-import deckers.thibault.aves.metadata.ExifInterfaceHelper
-import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper
-import deckers.thibault.aves.metadata.Metadata
+import deckers.thibault.aves.metadata.*
 import deckers.thibault.aves.metadata.Mp4ParserHelper.dumpBoxes
-import deckers.thibault.aves.metadata.PixyMetaHelper
 import deckers.thibault.aves.metadata.metadataextractor.Helper
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.utils.LogUtils
@@ -345,7 +342,7 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
                     FileInputStream(it.fileDescriptor).use { stream ->
                         stream.channel.use { channel ->
                             val boxParser = PropertyBoxParserImpl().apply {
-                                skippingBoxes(
+                                val skippedTypes = listOf(
                                     // parsing `MediaDataBox` can take a long time
                                     MediaDataBox.TYPE,
                                     // parsing `SampleTableBox` or `FreeBox` may yield OOM
@@ -354,6 +351,11 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
                                     // then a large size from following "0000", which may yield OOM
                                     "0000",
                                 )
+                                setBoxSkipper { type, size ->
+                                    if (skippedTypes.contains(type)) return@setBoxSkipper true
+                                    if (size > Mp4ParserHelper.BOX_SIZE_DANGER_THRESHOLD) throw Exception("box (type=$type size=$size) is too large")
+                                    false
+                                }
                             }
                             IsoFile(channel, boxParser).use { isoFile ->
                                 isoFile.dumpBoxes(sb)

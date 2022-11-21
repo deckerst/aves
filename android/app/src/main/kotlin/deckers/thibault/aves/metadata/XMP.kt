@@ -145,15 +145,17 @@ object XMP {
                 FileInputStream(it.fileDescriptor).use { stream ->
                     stream.channel.use { channel ->
                         val boxParser = PropertyBoxParserImpl().apply {
-                            skippingBoxes(
+                            val skippedTypes = listOf(
                                 // parsing `MediaDataBox` can take a long time
                                 MediaDataBox.TYPE,
                                 // parsing `SampleTableBox` or `FreeBox` may yield OOM
                                 SampleTableBox.TYPE, FreeBox.TYPE,
-                                // some files are padded with `0` but the parser does not stop, reads type "0000",
-                                // then a large size from following "0000", which may yield OOM
-                                "0000",
                             )
+                            setBoxSkipper { type, size ->
+                                if (skippedTypes.contains(type)) return@setBoxSkipper true
+                                if (size > Mp4ParserHelper.BOX_SIZE_DANGER_THRESHOLD) throw Exception("box (type=$type size=$size) is too large")
+                                false
+                            }
                         }
                         // creating `IsoFile` with a `File` or a `File.inputStream()` yields `No such device`
                         IsoFile(channel, boxParser).use { isoFile ->
