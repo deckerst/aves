@@ -21,6 +21,8 @@ import deckers.thibault.aves.channel.calls.*
 import deckers.thibault.aves.channel.calls.window.ActivityWindowHandler
 import deckers.thibault.aves.channel.calls.window.WindowHandler
 import deckers.thibault.aves.channel.streams.*
+import deckers.thibault.aves.utils.FlutterUtils.enableSoftwareRendering
+import deckers.thibault.aves.utils.FlutterUtils.isSoftwareRenderingRequired
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.getParcelableExtraCompat
 import io.flutter.embedding.android.FlutterActivity
@@ -40,6 +42,14 @@ open class MainActivity : FlutterActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.i(LOG_TAG, "onCreate intent=$intent")
+
+        if (isSoftwareRenderingRequired()) {
+            intent.enableSoftwareRendering()
+            // running the app from Android Studio automatically adds to the intent the `start-paused` flag
+            // so the IDE can connect to the app, but launching on KitKat emulators fails because of a timeout
+            intent.removeExtra("start-paused")
+        }
+
         intent.extras?.takeUnless { it.isEmpty }?.let {
             Log.i(LOG_TAG, "onCreate intent extras=$it")
         }
