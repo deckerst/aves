@@ -128,10 +128,5 @@ To run the app:
 # flutter run -t lib/main_play.dart --flavor play
 ```
 
-To run the app on API 19 emulators:
-```
-# flutter run -t lib/main_play.dart --flavor play --enable-software-rendering
-```
-
 [Version badge]: https://img.shields.io/github/v/release/deckerst/aves?include_prereleases&sort=semver
 [Build badge]: https://img.shields.io/github/workflow/status/deckerst/aves/Quality%20check
