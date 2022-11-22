@@ -1,7 +1,7 @@
 import 'package:aves/model/actions/entry_actions.dart';
-import 'package:aves/model/device.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/app_bar/favourite_toggler.dart';
@@ -9,7 +9,6 @@ import 'package:aves/widgets/common/basic/menu.dart';
 import 'package:aves/widgets/common/basic/popup_menu_button.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/viewer/action/entry_action_delegate.dart';
-import 'package:aves/widgets/viewer/multipage/conductor.dart';
 import 'package:aves/widgets/viewer/notifications.dart';
 import 'package:aves/widgets/viewer/overlay/common.dart';
 import 'package:aves/widgets/viewer/overlay/video/mute_toggler.dart';
@@ -23,10 +22,9 @@ import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 
 class ViewerButtons extends StatelessWidget {
-  final AvesEntry mainEntry;
-  final AvesEntry pageEntry;
+  final AvesEntry mainEntry, pageEntry;
+  final CollectionLens? collection;
   final Animation<double> scale;
-  final bool canToggleFavourite;
 
   static const double outerPadding = 8;
   static const double innerPadding = 8;
@@ -39,74 +37,14 @@ class ViewerButtons extends StatelessWidget {
     super.key,
     required this.mainEntry,
     required this.pageEntry,
+    required this.collection,
     required this.scale,
-    required this.canToggleFavourite,
   });
 
   @override
   Widget build(BuildContext context) {
+    final actionDelegate = EntryActionDelegate(mainEntry, pageEntry, collection);
     final trashed = mainEntry.trashed;
-
-    bool _isVisible(EntryAction action) {
-      if (trashed) {
-        switch (action) {
-          case EntryAction.delete:
-          case EntryAction.restore:
-            return true;
-          case EntryAction.debug:
-            return kDebugMode;
-          default:
-            return false;
-        }
-      } else {
-        final targetEntry = EntryActions.pageActions.contains(action) ? pageEntry : mainEntry;
-        switch (action) {
-          case EntryAction.toggleFavourite:
-            return canToggleFavourite;
-          case EntryAction.delete:
-          case EntryAction.rename:
-          case EntryAction.copy:
-          case EntryAction.move:
-            return targetEntry.canEdit;
-          case EntryAction.rotateCCW:
-          case EntryAction.rotateCW:
-            return targetEntry.canRotate;
-          case EntryAction.flip:
-            return targetEntry.canFlip;
-          case EntryAction.convert:
-          case EntryAction.print:
-            return !targetEntry.isVideo && device.canPrint;
-          case EntryAction.openMap:
-            return targetEntry.hasGps;
-          case EntryAction.viewSource:
-            return targetEntry.isSvg;
-          case EntryAction.videoCaptureFrame:
-          case EntryAction.videoToggleMute:
-          case EntryAction.videoSelectStreams:
-          case EntryAction.videoSetSpeed:
-          case EntryAction.videoSettings:
-          case EntryAction.videoTogglePlay:
-          case EntryAction.videoReplay10:
-          case EntryAction.videoSkip10:
-            return targetEntry.isVideo;
-          case EntryAction.rotateScreen:
-            return settings.isRotationLocked;
-          case EntryAction.addShortcut:
-            return device.canPinShortcut;
-          case EntryAction.info:
-          case EntryAction.copyToClipboard:
-          case EntryAction.edit:
-          case EntryAction.open:
-          case EntryAction.setAs:
-          case EntryAction.share:
-            return true;
-          case EntryAction.restore:
-            return false;
-          case EntryAction.debug:
-            return kDebugMode;
-        }
-      }
-    }
 
     return SafeArea(
       top: false,
@@ -118,10 +56,10 @@ class ViewerButtons extends StatelessWidget {
           return Selector<Settings, bool>(
             selector: (context, s) => s.isRotationLocked,
             builder: (context, s, child) {
-              final quickActions = (trashed ? EntryActions.trashed : settings.viewerQuickActions).where(_isVisible).take(availableCount - 1).toList();
-              final topLevelActions = EntryActions.topLevel.where((action) => !quickActions.contains(action)).where(_isVisible).toList();
-              final exportActions = EntryActions.export.where((action) => !quickActions.contains(action)).where(_isVisible).toList();
-              final videoActions = EntryActions.video.where((action) => !quickActions.contains(action)).where(_isVisible).toList();
+              final quickActions = (trashed ? EntryActions.trashed : settings.viewerQuickActions).where(actionDelegate.isVisible).where(actionDelegate.canApply).take(availableCount - 1).toList();
+              final topLevelActions = EntryActions.topLevel.where((action) => !quickActions.contains(action)).where(actionDelegate.isVisible).toList();
+              final exportActions = EntryActions.export.where((action) => !quickActions.contains(action)).where(actionDelegate.isVisible).toList();
+              final videoActions = EntryActions.video.where((action) => !quickActions.contains(action)).where(actionDelegate.isVisible).toList();
               return ViewerButtonRowContent(
                 quickActions: quickActions,
                 topLevelActions: topLevelActions,
@@ -130,6 +68,7 @@ class ViewerButtons extends StatelessWidget {
                 scale: scale,
                 mainEntry: mainEntry,
                 pageEntry: pageEntry,
+                collection: collection,
               );
             },
           );
@@ -143,6 +82,7 @@ class ViewerButtonRowContent extends StatelessWidget {
   final List<EntryAction> quickActions, topLevelActions, exportActions, videoActions;
   final Animation<double> scale;
   final AvesEntry mainEntry, pageEntry;
+  final CollectionLens? collection;
   final ValueNotifier<String?> _popupExpandedNotifier = ValueNotifier(null);
 
   AvesEntry get favouriteTargetEntry => mainEntry.isBurst ? pageEntry : mainEntry;
@@ -158,6 +98,7 @@ class ViewerButtonRowContent extends StatelessWidget {
     required this.scale,
     required this.mainEntry,
     required this.pageEntry,
+    required this.collection,
   });
 
   @override
@@ -358,17 +299,7 @@ class ViewerButtonRowContent extends StatelessWidget {
   }
 
   PopupMenuItem<EntryAction> _buildRotateAndFlipMenuItems(BuildContext context) {
-    bool canApply(EntryAction action) {
-      switch (action) {
-        case EntryAction.rotateCCW:
-        case EntryAction.rotateCW:
-          return pageEntry.canRotate;
-        case EntryAction.flip:
-          return pageEntry.canFlip;
-        default:
-          return true;
-      }
-    }
+    final actionDelegate = EntryActionDelegate(mainEntry, pageEntry, collection);
 
     Widget buildDivider() => const SizedBox(
           height: 16,
@@ -386,7 +317,7 @@ class ViewerButtonRowContent extends StatelessWidget {
             clipBehavior: Clip.antiAlias,
             child: PopupMenuItem(
               value: action,
-              enabled: canApply(action),
+              enabled: actionDelegate.canApply(action),
               child: Tooltip(
                 message: action.getText(context),
                 child: Center(child: action.getIcon()),
@@ -423,17 +354,6 @@ class ViewerButtonRowContent extends StatelessWidget {
   }
 
   void _onActionSelected(BuildContext context, EntryAction action) {
-    var targetEntry = mainEntry;
-    if (mainEntry.isMultiPage && (mainEntry.isBurst || EntryActions.pageActions.contains(action))) {
-      final multiPageController = context.read<MultiPageConductor>().getController(mainEntry);
-      if (multiPageController != null) {
-        final multiPageInfo = multiPageController.info;
-        final pageEntry = multiPageInfo?.getPageEntryByIndex(multiPageController.page);
-        if (pageEntry != null) {
-          targetEntry = pageEntry;
-        }
-      }
-    }
-    EntryActionDelegate(targetEntry).onActionSelected(context, action);
+    EntryActionDelegate(mainEntry, pageEntry, collection).onActionSelected(context, action);
   }
 }

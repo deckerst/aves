@@ -1,6 +1,6 @@
 import 'package:aves/app_mode.dart';
 import 'package:aves/image_providers/app_icon_image_provider.dart';
-import 'package:aves/model/actions/entry_info_actions.dart';
+import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/favourites.dart';
 import 'package:aves/model/filters/album.dart';
@@ -29,7 +29,7 @@ class BasicSection extends StatelessWidget {
   final AvesEntry entry;
   final CollectionLens? collection;
   final EntryInfoActionDelegate actionDelegate;
-  final ValueNotifier<EntryInfoAction?> isEditingMetadataNotifier;
+  final ValueNotifier<EntryAction?> isEditingMetadataNotifier;
   final FilterCallback onFilter;
 
   const BasicSection({
@@ -100,9 +100,9 @@ class BasicSection extends StatelessWidget {
 
   Widget _buildEditButtons(BuildContext context) {
     final children = [
-      EntryInfoAction.editRating,
-      EntryInfoAction.editTags,
-    ].where(actionDelegate.canApply).map((v) => _buildEditMetadataButton(context, v)).toList();
+      EntryAction.editRating,
+      EntryAction.editTags,
+    ].where((v) => actionDelegate.canApply(entry, v)).map((v) => _buildEditMetadataButton(context, v)).toList();
 
     return children.isEmpty
         ? const SizedBox()
@@ -121,8 +121,8 @@ class BasicSection extends StatelessWidget {
           );
   }
 
-  Widget _buildEditMetadataButton(BuildContext context, EntryInfoAction action) {
-    return ValueListenableBuilder<EntryInfoAction?>(
+  Widget _buildEditMetadataButton(BuildContext context, EntryAction action) {
+    return ValueListenableBuilder<EntryAction?>(
       valueListenable: isEditingMetadataNotifier,
       builder: (context, editingAction, child) {
         final isEditing = editingAction != null;
@@ -138,7 +138,7 @@ class BasicSection extends StatelessWidget {
               ),
               child: IconButton(
                 icon: action.getIcon(),
-                onPressed: isEditing ? null : () => actionDelegate.onActionSelected(context, action),
+                onPressed: isEditing ? null : () => actionDelegate.onActionSelected(context, entry, collection, action),
                 tooltip: action.getText(context),
               ),
             ),

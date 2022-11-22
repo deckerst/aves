@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:aves/model/actions/entry_info_actions.dart';
+import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/actions/events.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/filters.dart';
@@ -150,7 +150,7 @@ class _InfoPageContentState extends State<_InfoPageContent> {
   final List<StreamSubscription> _subscriptions = [];
   late EntryInfoActionDelegate _actionDelegate;
   final ValueNotifier<Map<String, MetadataDirectory>> _metadataNotifier = ValueNotifier({});
-  final ValueNotifier<EntryInfoAction?> _isEditingMetadataNotifier = ValueNotifier(null);
+  final ValueNotifier<EntryAction?> _isEditingMetadataNotifier = ValueNotifier(null);
 
   static const horizontalPadding = EdgeInsets.symmetric(horizontal: 8);
 
@@ -181,7 +181,7 @@ class _InfoPageContentState extends State<_InfoPageContent> {
   }
 
   void _registerWidget(_InfoPageContent widget) {
-    _actionDelegate = EntryInfoActionDelegate(widget.entry, collection);
+    _actionDelegate = EntryInfoActionDelegate();
     _subscriptions.add(_actionDelegate.eventStream.listen(_onActionDelegateEvent));
   }
 
@@ -242,6 +242,7 @@ class _InfoPageContentState extends State<_InfoPageContent> {
         slivers: [
           InfoAppBar(
             entry: entry,
+            collection: collection,
             actionDelegate: _actionDelegate,
             metadataNotifier: _metadataNotifier,
             onBackPressed: widget.goToViewer,
@@ -260,7 +261,7 @@ class _InfoPageContentState extends State<_InfoPageContent> {
     );
   }
 
-  void _onActionDelegateEvent(ActionEvent<EntryInfoAction> event) {
+  void _onActionDelegateEvent(ActionEvent<EntryAction> event) {
     Future.delayed(Durations.dialogTransitionAnimation).then((_) {
       if (event is ActionStartedEvent) {
         _isEditingMetadataNotifier.value = event.action;

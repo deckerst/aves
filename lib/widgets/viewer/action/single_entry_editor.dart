@@ -12,12 +12,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 mixin SingleEntryEditorMixin on FeedbackMixin, PermissionAwareMixin {
-  AvesEntry get entry;
-
   bool _isMainMode(BuildContext context) => context.read<ValueNotifier<AppMode>>().value == AppMode.main;
 
-  Future<void> edit(BuildContext context, Future<Set<EntryDataType>> Function() apply) async {
-    if (!await checkStoragePermission(context, {entry})) return;
+  Future<void> edit(BuildContext context, AvesEntry targetEntry, Future<Set<EntryDataType>> Function() apply) async {
+    if (!await checkStoragePermission(context, {targetEntry})) return;
 
     // check before applying, because it relies on provider
     // but the widget tree may be disposed if the user navigated away
@@ -32,10 +30,10 @@ mixin SingleEntryEditorMixin on FeedbackMixin, PermissionAwareMixin {
     try {
       if (success) {
         if (isMainMode && source != null) {
-          Set<String> obsoleteTags = entry.tags;
-          String? obsoleteCountryCode = entry.addressDetails?.countryCode;
+          Set<String> obsoleteTags = targetEntry.tags;
+          String? obsoleteCountryCode = targetEntry.addressDetails?.countryCode;
 
-          await source.refreshEntry(entry, dataTypes);
+          await source.refreshEntry(targetEntry, dataTypes);
 
           // invalidate filters derived from values before edition
           // this invalidation must happen after the source is refreshed,
@@ -47,7 +45,7 @@ mixin SingleEntryEditorMixin on FeedbackMixin, PermissionAwareMixin {
             source.invalidateTagFilterSummary(tags: obsoleteTags);
           }
         } else {
-          await entry.refresh(background: false, persist: false, dataTypes: dataTypes, geocoderLocale: settings.appliedLocale);
+          await targetEntry.refresh(background: false, persist: false, dataTypes: dataTypes, geocoderLocale: settings.appliedLocale);
         }
         showFeedback(context, l10n.genericSuccessFeedback);
       } else {
