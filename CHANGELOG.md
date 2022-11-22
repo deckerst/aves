@@ -14,6 +14,7 @@ All notable changes to this project will be documented in this file.
 ### Changed
 
 - No default map style for `izzy` and `libre` flavors
+- allow setting default editor
 
 ### Fixed
 

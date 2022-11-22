@@ -213,7 +213,6 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
     }
 
     private fun edit(call: MethodCall, result: MethodChannel.Result) {
-        val title = call.argument<String>("title")
         val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
         val mimeType = call.argument<String>("mimeType")
         if (uri == null) {
@@ -224,7 +223,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
         val intent = Intent(Intent.ACTION_EDIT)
             .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
             .setDataAndType(getShareableUri(context, uri), mimeType)
-        val started = safeStartActivityChooser(title, intent)
+        val started = safeStartActivity(intent)
 
         result.success(started)
     }
@@ -327,7 +326,16 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
             context.startActivity(intent)
             return true
         } catch (e: SecurityException) {
-            Log.w(LOG_TAG, "failed to start activity for intent=$intent", e)
+            if (intent.flags and Intent.FLAG_GRANT_WRITE_URI_PERMISSION != 0) {
+                // in some environments, providing the write flag yields a `SecurityException`:
+                // "UID XXXX does not have permission to content://XXXX"
+                // so we retry without it
+                Log.i(LOG_TAG, "retry intent=$intent without FLAG_GRANT_WRITE_URI_PERMISSION")
+                intent.flags = intent.flags and Intent.FLAG_GRANT_WRITE_URI_PERMISSION.inv()
+                return safeStartActivity(intent)
+            } else {
+                Log.w(LOG_TAG, "failed to start activity for intent=$intent", e)
+            }
         }
         return false
     }
