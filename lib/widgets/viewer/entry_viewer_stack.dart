@@ -440,7 +440,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
               ViewerBottomOverlay(
                 entries: entries,
                 index: _currentEntryIndex,
-                hasCollection: hasCollection,
+                collection: collection,
                 animationController: _overlayAnimationController,
                 viewInsets: _frozenViewInsets,
                 viewPadding: _frozenViewPadding,

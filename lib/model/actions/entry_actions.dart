@@ -38,6 +38,19 @@ enum EntryAction {
   setAs,
   // platform
   rotateScreen,
+  // metadata
+  editDate,
+  editLocation,
+  editTitleDescription,
+  editRating,
+  editTags,
+  removeMetadata,
+  exportMetadata,
+  // metadata / GeoTIFF
+  showGeoTiffOnMap,
+  // metadata / motion photo
+  convertMotionPhotoToStillImage,
+  viewMotionPhotoVideo,
   // debug
   debug,
 }
@@ -98,6 +111,22 @@ class EntryActions {
     EntryAction.videoSetSpeed,
     EntryAction.videoSelectStreams,
     EntryAction.videoSettings,
+  ];
+
+  static const commonMetadataActions = [
+    EntryAction.editDate,
+    EntryAction.editLocation,
+    EntryAction.editTitleDescription,
+    EntryAction.editRating,
+    EntryAction.editTags,
+    EntryAction.removeMetadata,
+    EntryAction.exportMetadata,
+  ];
+
+  static const formatSpecificMetadataActions = [
+    EntryAction.showGeoTiffOnMap,
+    EntryAction.convertMotionPhotoToStillImage,
+    EntryAction.viewMotionPhotoVideo,
   ];
 }
 
@@ -170,6 +199,29 @@ extension ExtraEntryAction on EntryAction {
       // platform
       case EntryAction.rotateScreen:
         return context.l10n.entryActionRotateScreen;
+      // metadata
+      case EntryAction.editDate:
+        return context.l10n.entryInfoActionEditDate;
+      case EntryAction.editLocation:
+        return context.l10n.entryInfoActionEditLocation;
+      case EntryAction.editTitleDescription:
+        return context.l10n.entryInfoActionEditTitleDescription;
+      case EntryAction.editRating:
+        return context.l10n.entryInfoActionEditRating;
+      case EntryAction.editTags:
+        return context.l10n.entryInfoActionEditTags;
+      case EntryAction.removeMetadata:
+        return context.l10n.entryInfoActionRemoveMetadata;
+      case EntryAction.exportMetadata:
+        return context.l10n.entryInfoActionExportMetadata;
+      // metadata / GeoTIFF
+      case EntryAction.showGeoTiffOnMap:
+        return context.l10n.entryActionShowGeoTiffOnMap;
+      // metadata / motion photo
+      case EntryAction.convertMotionPhotoToStillImage:
+        return context.l10n.entryActionConvertMotionPhotoToStillImage;
+      case EntryAction.viewMotionPhotoVideo:
+        return context.l10n.entryActionViewMotionPhotoVideo;
       // debug
       case EntryAction.debug:
         return 'Debug';
@@ -258,6 +310,29 @@ extension ExtraEntryAction on EntryAction {
       // platform
       case EntryAction.rotateScreen:
         return AIcons.rotateScreen;
+      // metadata
+      case EntryAction.editDate:
+        return AIcons.date;
+      case EntryAction.editLocation:
+        return AIcons.location;
+      case EntryAction.editTitleDescription:
+        return AIcons.description;
+      case EntryAction.editRating:
+        return AIcons.editRating;
+      case EntryAction.editTags:
+        return AIcons.editTags;
+      case EntryAction.removeMetadata:
+        return AIcons.clear;
+      case EntryAction.exportMetadata:
+        return AIcons.fileExport;
+      // metadata / GeoTIFF
+      case EntryAction.showGeoTiffOnMap:
+        return AIcons.map;
+      // metadata / motion photo
+      case EntryAction.convertMotionPhotoToStillImage:
+        return AIcons.convertToStillImage;
+      case EntryAction.viewMotionPhotoVideo:
+        return AIcons.openVideo;
       // debug
       case EntryAction.debug:
         return AIcons.debug;
