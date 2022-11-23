@@ -599,28 +599,6 @@
     "settingsWidgetDisplayedItem"
   ],
 
-  "el": [
-    "entryInfoActionExportMetadata",
-    "subtitlePositionTop",
-    "subtitlePositionBottom",
-    "widgetDisplayedItemRandom",
-    "widgetDisplayedItemMostRecent",
-    "settingsSubtitleThemeTextPositionTile",
-    "settingsSubtitleThemeTextPositionDialogTitle",
-    "settingsWidgetDisplayedItem",
-    "tagEditorSectionPlaceholders"
-  ],
-
-  "es": [
-    "subtitlePositionTop",
-    "subtitlePositionBottom",
-    "widgetDisplayedItemRandom",
-    "widgetDisplayedItemMostRecent",
-    "settingsSubtitleThemeTextPositionTile",
-    "settingsSubtitleThemeTextPositionDialogTitle",
-    "settingsWidgetDisplayedItem"
-  ],
-
   "fa": [
     "appName",
     "welcomeMessage",
@@ -1679,16 +1657,6 @@
     "settingsWidgetDisplayedItem"
   ],
 
-  "it": [
-    "subtitlePositionTop",
-    "subtitlePositionBottom",
-    "widgetDisplayedItemRandom",
-    "widgetDisplayedItemMostRecent",
-    "settingsSubtitleThemeTextPositionTile",
-    "settingsSubtitleThemeTextPositionDialogTitle",
-    "settingsWidgetDisplayedItem"
-  ],
-
   "ja": [
     "chipActionFilterIn",
     "entryInfoActionExportMetadata",
@@ -2638,7 +2606,6 @@
 
   "ru": [
     "subtitlePositionTop",
-    "subtitlePositionBottom",
     "widgetDisplayedItemRandom",
     "widgetDisplayedItemMostRecent",
     "settingsSubtitleThemeTextPositionTile",
