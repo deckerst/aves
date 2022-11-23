@@ -1156,5 +1156,7 @@
   "editEntryLocationDialogSetCustom": "Редактировать местоположение",
   "@editEntryLocationDialogSetCustom": {},
   "settingsAllowMediaManagement": "Разрешить управление медиа",
-  "@settingsAllowMediaManagement": {}
+  "@settingsAllowMediaManagement": {},
+  "entryInfoActionExportMetadata": "Экспорт метаданных",
+  "@entryInfoActionExportMetadata": {}
 }

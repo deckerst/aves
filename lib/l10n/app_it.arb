@@ -325,7 +325,7 @@
   "@otherDirectoryDescription": {},
   "storageAccessDialogMessage": "Si prega di selezionare la {directory} di «{volume}» nella prossima schermata per dare accesso a questa applicazione.",
   "@storageAccessDialogMessage": {},
-  "restrictedAccessDialogMessage": "Questa applicazione non è autorizzata a modificare i file nella {directory} di «{volume}».\n\nUtilizzare un gestore di file o un’applicazione di galleria preinstallata per spostare gli elementi in un’altra directory.",
+  "restrictedAccessDialogMessage": "Questa applicazione non è autorizzata a modificare i file nella {directory} di «{volume}».\n\nUsa un gestore file o un’app galleria preinstallata per spostare gli elementi in un’altra cartella.",
   "@restrictedAccessDialogMessage": {},
   "notEnoughSpaceDialogMessage": "Questa operazione ha bisogno di {neededSize} di spazio libero su «{volume}» per essere completata, ma è rimasto solo {freeSize}.",
   "@notEnoughSpaceDialogMessage": {},
@@ -449,7 +449,7 @@
   "@videoStreamSelectionDialogAudio": {},
   "videoStreamSelectionDialogText": "Sottotitoli",
   "@videoStreamSelectionDialogText": {},
-  "videoStreamSelectionDialogOff": "Off",
+  "videoStreamSelectionDialogOff": "Spento",
   "@videoStreamSelectionDialogOff": {},
   "videoStreamSelectionDialogTrack": "Traccia",
   "@videoStreamSelectionDialogTrack": {},
@@ -1156,5 +1156,7 @@
   "widgetOpenPageCollection": "Apri collezione",
   "@widgetOpenPageCollection": {},
   "editEntryLocationDialogSetCustom": "Imposta posizione personalizzata",
-  "@editEntryLocationDialogSetCustom": {}
+  "@editEntryLocationDialogSetCustom": {},
+  "entryInfoActionExportMetadata": "Esporta metadati",
+  "@entryInfoActionExportMetadata": {}
 }

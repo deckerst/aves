@@ -1156,5 +1156,21 @@
   "tagPlaceholderPlace": "장소",
   "@tagPlaceholderPlace": {},
   "settingsAllowMediaManagement": "미디어 관리 허용",
-  "@settingsAllowMediaManagement": {}
+  "@settingsAllowMediaManagement": {},
+  "subtitlePositionTop": "위",
+  "@subtitlePositionTop": {},
+  "settingsSubtitleThemeTextPositionTile": "수직 정렬",
+  "@settingsSubtitleThemeTextPositionTile": {},
+  "widgetDisplayedItemMostRecent": "최신",
+  "@widgetDisplayedItemMostRecent": {},
+  "subtitlePositionBottom": "아래",
+  "@subtitlePositionBottom": {},
+  "widgetDisplayedItemRandom": "무작위로",
+  "@widgetDisplayedItemRandom": {},
+  "settingsSubtitleThemeTextPositionDialogTitle": "수직 정렬",
+  "@settingsSubtitleThemeTextPositionDialogTitle": {},
+  "settingsWidgetDisplayedItem": "표시될 항목",
+  "@settingsWidgetDisplayedItem": {},
+  "entryInfoActionExportMetadata": "메타데이터 내보내기",
+  "@entryInfoActionExportMetadata": {}
 }
