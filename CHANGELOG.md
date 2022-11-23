@@ -18,6 +18,7 @@ All notable changes to this project will be documented in this file.
 - Map: no default map style for `izzy` and `libre` flavors
 - Viewer: allow setting default editor
 - Viewer: keep manually un/muted state for following autoplayed videos
+- upgraded Flutter to stable v3.3.9
 
 ### Fixed
 
