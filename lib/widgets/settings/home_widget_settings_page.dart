@@ -1,5 +1,6 @@
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/enums/enums.dart';
+import 'package:aves/model/settings/enums/widget_displayed_item.dart';
 import 'package:aves/model/settings/enums/widget_open_action.dart';
 import 'package:aves/model/settings/enums/widget_shape.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -36,6 +37,7 @@ class _HomeWidgetSettingsPageState extends State<HomeWidgetSettingsPage> {
   late WidgetShape _shape;
   late Color? _outline;
   late WidgetOpenPage _openPage;
+  late WidgetDisplayedItem _displayedItem;
   late Set<CollectionFilter> _collectionFilters;
 
   int get widgetId => widget.widgetId;
@@ -59,6 +61,7 @@ class _HomeWidgetSettingsPageState extends State<HomeWidgetSettingsPage> {
     _shape = settings.getWidgetShape(widgetId);
     _outline = settings.getWidgetOutline(widgetId);
     _openPage = settings.getWidgetOpenPage(widgetId);
+    _displayedItem = settings.getWidgetDisplayedItem(widgetId);
     _collectionFilters = settings.getWidgetCollectionFilters(widgetId);
   }
 
@@ -90,6 +93,13 @@ class _HomeWidgetSettingsPageState extends State<HomeWidgetSettingsPage> {
                       selector: (context, s) => _openPage,
                       onSelection: (v) => setState(() => _openPage = v),
                       tileTitle: l10n.settingsWidgetOpenPage,
+                    ),
+                    SettingsSelectionListTile<WidgetDisplayedItem>(
+                      values: WidgetDisplayedItem.values,
+                      getName: (context, v) => v.getName(context),
+                      selector: (context, s) => _displayedItem,
+                      onSelection: (v) => setState(() => _displayedItem = v),
+                      tileTitle: l10n.settingsWidgetDisplayedItem,
                     ),
                     SettingsCollectionTile(
                       filters: _collectionFilters,
@@ -148,11 +158,15 @@ class _HomeWidgetSettingsPageState extends State<HomeWidgetSettingsPage> {
   }
 
   void _saveSettings() {
+    final invalidateUri = _displayedItem != settings.getWidgetDisplayedItem(widgetId) || !const SetEquality().equals(_collectionFilters, settings.getWidgetCollectionFilters(widgetId));
+
     settings.setWidgetShape(widgetId, _shape);
     settings.setWidgetOutline(widgetId, _outline);
     settings.setWidgetOpenPage(widgetId, _openPage);
-    if (!const SetEquality().equals(_collectionFilters, settings.getWidgetCollectionFilters(widgetId))) {
-      settings.setWidgetCollectionFilters(widgetId, _collectionFilters);
+    settings.setWidgetDisplayedItem(widgetId, _displayedItem);
+    settings.setWidgetCollectionFilters(widgetId, _collectionFilters);
+
+    if (invalidateUri) {
       settings.setWidgetUri(widgetId, null);
     }
   }

@@ -137,6 +137,7 @@ class SettingsDefaults {
   static const widgetOutline = false;
   static const widgetShape = WidgetShape.rrect;
   static const widgetOpenPage = WidgetOpenPage.viewer;
+  static const widgetDisplayedItem = WidgetDisplayedItem.random;
 
   // platform settings
   static const isRotationLocked = false;

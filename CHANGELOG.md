@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 - Video: subtitle vertical position option
 - Info: export metadata to text file
 - Accessibility: apply bold font system setting
+- Widget: option to show most recent item instead of random items
 - `libre` app flavor (no mobile service maps, no Crashlytics)
 
 ### Changed

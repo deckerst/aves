@@ -3,16 +3,22 @@
     "entryInfoActionExportMetadata",
     "subtitlePositionTop",
     "subtitlePositionBottom",
+    "widgetDisplayedItemRandom",
+    "widgetDisplayedItemMostRecent",
     "settingsSubtitleThemeTextPositionTile",
-    "settingsSubtitleThemeTextPositionDialogTitle"
+    "settingsSubtitleThemeTextPositionDialogTitle",
+    "settingsWidgetDisplayedItem"
   ],
 
   "el": [
     "entryInfoActionExportMetadata",
     "subtitlePositionTop",
     "subtitlePositionBottom",
+    "widgetDisplayedItemRandom",
+    "widgetDisplayedItemMostRecent",
     "settingsSubtitleThemeTextPositionTile",
     "settingsSubtitleThemeTextPositionDialogTitle",
+    "settingsWidgetDisplayedItem",
     "tagEditorSectionPlaceholders"
   ],
 
@@ -20,8 +26,11 @@
     "entryInfoActionExportMetadata",
     "subtitlePositionTop",
     "subtitlePositionBottom",
+    "widgetDisplayedItemRandom",
+    "widgetDisplayedItemMostRecent",
     "settingsSubtitleThemeTextPositionTile",
-    "settingsSubtitleThemeTextPositionDialogTitle"
+    "settingsSubtitleThemeTextPositionDialogTitle",
+    "settingsWidgetDisplayedItem"
   ],
 
   "fa": [
@@ -179,6 +188,8 @@
     "wallpaperTargetHome",
     "wallpaperTargetLock",
     "wallpaperTargetHomeLock",
+    "widgetDisplayedItemRandom",
+    "widgetDisplayedItemMostRecent",
     "widgetOpenPageHome",
     "widgetOpenPageCollection",
     "widgetOpenPageViewer",
@@ -549,6 +560,7 @@
     "settingsWidgetPageTitle",
     "settingsWidgetShowOutline",
     "settingsWidgetOpenPage",
+    "settingsWidgetDisplayedItem",
     "settingsCollectionTile",
     "statsPageTitle",
     "statsWithGps",
@@ -615,8 +627,11 @@
     "entryInfoActionExportMetadata",
     "subtitlePositionTop",
     "subtitlePositionBottom",
+    "widgetDisplayedItemRandom",
+    "widgetDisplayedItemMostRecent",
     "settingsSubtitleThemeTextPositionTile",
-    "settingsSubtitleThemeTextPositionDialogTitle"
+    "settingsSubtitleThemeTextPositionDialogTitle",
+    "settingsWidgetDisplayedItem"
   ],
 
   "gl": [
@@ -641,6 +656,8 @@
     "wallpaperTargetHome",
     "wallpaperTargetLock",
     "wallpaperTargetHomeLock",
+    "widgetDisplayedItemRandom",
+    "widgetDisplayedItemMostRecent",
     "widgetOpenPageHome",
     "widgetOpenPageCollection",
     "widgetOpenPageViewer",
@@ -1011,6 +1028,7 @@
     "settingsWidgetPageTitle",
     "settingsWidgetShowOutline",
     "settingsWidgetOpenPage",
+    "settingsWidgetDisplayedItem",
     "settingsCollectionTile",
     "statsPageTitle",
     "statsWithGps",
@@ -1077,16 +1095,22 @@
     "entryInfoActionExportMetadata",
     "subtitlePositionTop",
     "subtitlePositionBottom",
+    "widgetDisplayedItemRandom",
+    "widgetDisplayedItemMostRecent",
     "settingsSubtitleThemeTextPositionTile",
-    "settingsSubtitleThemeTextPositionDialogTitle"
+    "settingsSubtitleThemeTextPositionDialogTitle",
+    "settingsWidgetDisplayedItem"
   ],
 
   "it": [
     "entryInfoActionExportMetadata",
     "subtitlePositionTop",
     "subtitlePositionBottom",
+    "widgetDisplayedItemRandom",
+    "widgetDisplayedItemMostRecent",
     "settingsSubtitleThemeTextPositionTile",
-    "settingsSubtitleThemeTextPositionDialogTitle"
+    "settingsSubtitleThemeTextPositionDialogTitle",
+    "settingsWidgetDisplayedItem"
   ],
 
   "ja": [
@@ -1094,16 +1118,22 @@
     "entryInfoActionExportMetadata",
     "subtitlePositionTop",
     "subtitlePositionBottom",
+    "widgetDisplayedItemRandom",
+    "widgetDisplayedItemMostRecent",
     "settingsSubtitleThemeTextPositionTile",
-    "settingsSubtitleThemeTextPositionDialogTitle"
+    "settingsSubtitleThemeTextPositionDialogTitle",
+    "settingsWidgetDisplayedItem"
   ],
 
   "ko": [
     "entryInfoActionExportMetadata",
     "subtitlePositionTop",
     "subtitlePositionBottom",
+    "widgetDisplayedItemRandom",
+    "widgetDisplayedItemMostRecent",
     "settingsSubtitleThemeTextPositionTile",
-    "settingsSubtitleThemeTextPositionDialogTitle"
+    "settingsSubtitleThemeTextPositionDialogTitle",
+    "settingsWidgetDisplayedItem"
   ],
 
   "nb": [
@@ -1120,6 +1150,8 @@
     "subtitlePositionTop",
     "subtitlePositionBottom",
     "viewerTransitionFade",
+    "widgetDisplayedItemRandom",
+    "widgetDisplayedItemMostRecent",
     "albumTierSpecial",
     "storageAccessDialogMessage",
     "restrictedAccessDialogMessage",
@@ -1212,6 +1244,7 @@
     "settingsThemeColorHighlights",
     "settingsDisplayRefreshRateModeTile",
     "settingsDisplayRefreshRateModeDialogTitle",
+    "settingsWidgetDisplayedItem",
     "statsWithGps",
     "viewerErrorDoesNotExist",
     "mapAttributionStamen",
@@ -1228,8 +1261,11 @@
     "entryInfoActionExportMetadata",
     "subtitlePositionTop",
     "subtitlePositionBottom",
+    "widgetDisplayedItemRandom",
+    "widgetDisplayedItemMostRecent",
     "settingsSubtitleThemeTextPositionTile",
-    "settingsSubtitleThemeTextPositionDialogTitle"
+    "settingsSubtitleThemeTextPositionDialogTitle",
+    "settingsWidgetDisplayedItem"
   ],
 
   "pl": [
@@ -1294,6 +1330,8 @@
     "wallpaperTargetHome",
     "wallpaperTargetLock",
     "wallpaperTargetHomeLock",
+    "widgetDisplayedItemRandom",
+    "widgetDisplayedItemMostRecent",
     "widgetOpenPageHome",
     "widgetOpenPageCollection",
     "widgetOpenPageViewer",
@@ -1664,6 +1702,7 @@
     "settingsWidgetPageTitle",
     "settingsWidgetShowOutline",
     "settingsWidgetOpenPage",
+    "settingsWidgetDisplayedItem",
     "settingsCollectionTile",
     "statsPageTitle",
     "statsWithGps",
@@ -1730,34 +1769,46 @@
     "entryInfoActionExportMetadata",
     "subtitlePositionTop",
     "subtitlePositionBottom",
+    "widgetDisplayedItemRandom",
+    "widgetDisplayedItemMostRecent",
     "settingsSubtitleThemeTextPositionTile",
-    "settingsSubtitleThemeTextPositionDialogTitle"
+    "settingsSubtitleThemeTextPositionDialogTitle",
+    "settingsWidgetDisplayedItem"
   ],
 
   "ru": [
     "entryInfoActionExportMetadata",
     "subtitlePositionTop",
     "subtitlePositionBottom",
+    "widgetDisplayedItemRandom",
+    "widgetDisplayedItemMostRecent",
     "settingsSubtitleThemeTextPositionTile",
-    "settingsSubtitleThemeTextPositionDialogTitle"
+    "settingsSubtitleThemeTextPositionDialogTitle",
+    "settingsWidgetDisplayedItem"
   ],
 
   "tr": [
     "entryInfoActionExportMetadata",
     "subtitlePositionTop",
     "subtitlePositionBottom",
+    "widgetDisplayedItemRandom",
+    "widgetDisplayedItemMostRecent",
     "settingsSubtitleThemeTextPositionTile",
-    "settingsSubtitleThemeTextPositionDialogTitle"
+    "settingsSubtitleThemeTextPositionDialogTitle",
+    "settingsWidgetDisplayedItem"
   ],
 
   "zh": [
     "entryInfoActionExportMetadata",
     "subtitlePositionTop",
     "subtitlePositionBottom",
+    "widgetDisplayedItemRandom",
+    "widgetDisplayedItemMostRecent",
     "editEntryLocationDialogSetCustom",
     "settingsSubtitleThemeTextPositionTile",
     "settingsSubtitleThemeTextPositionDialogTitle",
     "settingsAllowMediaManagement",
+    "settingsWidgetDisplayedItem",
     "tagEditorSectionPlaceholders",
     "tagPlaceholderCountry",
     "tagPlaceholderPlace"

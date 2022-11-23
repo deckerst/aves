@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:aves/app_flavor.dart';
 import 'package:aves/model/entry.dart';
+import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/media_store_source.dart';
@@ -74,7 +75,14 @@ Future<AvesEntry?> _getWidgetEntry(int widgetId, bool reuseEntry) async {
   await readyCompleter.future;
 
   final entries = CollectionLens(source: source, filters: filters).sortedEntries;
-  entries.shuffle();
+  switch (settings.getWidgetDisplayedItem(widgetId)) {
+    case WidgetDisplayedItem.random:
+      entries.shuffle();
+      break;
+    case WidgetDisplayedItem.mostRecent:
+      entries.sort(AvesEntry.compareByDate);
+      break;
+  }
   final entry = entries.firstOrNull;
   if (entry != null) {
     settings.setWidgetUri(widgetId, entry.uri);

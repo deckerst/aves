@@ -219,6 +219,9 @@
   "wallpaperTargetLock": "Lock screen",
   "wallpaperTargetHomeLock": "Home and lock screens",
 
+  "widgetDisplayedItemRandom": "Random",
+  "widgetDisplayedItemMostRecent": "Most recent",
+
   "widgetOpenPageHome": "Open home",
   "widgetOpenPageCollection": "Open collection",
   "widgetOpenPageViewer": "Open viewer",
@@ -811,6 +814,7 @@
   "settingsWidgetPageTitle": "Photo Frame",
   "settingsWidgetShowOutline": "Outline",
   "settingsWidgetOpenPage": "When tapping on the widget",
+  "settingsWidgetDisplayedItem": "Displayed item",
 
   "settingsCollectionTile": "Collection",
 
