@@ -17,9 +17,9 @@ class AboutTranslators extends StatelessWidget {
     Contributor('MeFinity', 'me.dot.finity@gmail.com'),
     Contributor('Maki', null),
     Contributor('HiSubway', 'shenyusoftware@gmail.com'),
-    Contributor('glemco', null),
+    Contributor('glemco', 'glemco@posteo.net'),
     Contributor('Aerowolf', null),
-    Contributor('小默', null),
+    Contributor('小默', 'duzhe163908@gmail.com'),
     Contributor('metezd', 'itoldyouthat@protonmail.com'),
     Contributor('Martijn Fabrie', null),
     Contributor('Koen Koppens', 'koenkoppens@proton.me'),
@@ -33,6 +33,9 @@ class AboutTranslators extends StatelessWidget {
     // Contributor('Allan Nordhøy', 'epost@anotheragency.no'),
     // Contributor('Piotr K', '1337.kelt@gmail.com'),
     // Contributor('امیر جهانگرد', 'ijahangard.a@gmail.com'),
+    // Contributor('Ralea Adrian Vicențiu', 'ralea.adrian@gmail.com'),
+    // Contributor('SAMIRAH AIL', 'samiratalzahrani@gmail.com'),
+    // Contributor('Salih Ail', 'rrrfff444@gmail.com'),
   };
 
   @override

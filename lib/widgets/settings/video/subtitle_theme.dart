@@ -1,3 +1,5 @@
+import 'package:aves/model/settings/enums/enums.dart';
+import 'package:aves/model/settings/enums/subtitle_position.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/common/basic/color_list_tile.dart';
 import 'package:aves/widgets/common/basic/slider_list_tile.dart';
@@ -39,6 +41,14 @@ class SubtitleThemePage extends StatelessWidget {
                         onSelection: (v) => settings.subtitleTextAlignment = v,
                         tileTitle: context.l10n.settingsSubtitleThemeTextAlignmentTile,
                         dialogTitle: context.l10n.settingsSubtitleThemeTextAlignmentDialogTitle,
+                      ),
+                      SettingsSelectionListTile<SubtitlePosition>(
+                        values: const [SubtitlePosition.top, SubtitlePosition.bottom],
+                        getName: (context, v) => v.getName(context),
+                        selector: (context, s) => s.subtitleTextPosition,
+                        onSelection: (v) => settings.subtitleTextPosition = v,
+                        tileTitle: context.l10n.settingsSubtitleThemeTextPositionTile,
+                        dialogTitle: context.l10n.settingsSubtitleThemeTextPositionDialogTitle,
                       ),
                       SliderListTile(
                         title: context.l10n.settingsSubtitleThemeTextSize,

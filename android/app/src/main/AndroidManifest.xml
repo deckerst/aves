@@ -172,9 +172,10 @@ This change eventually prevents building the app with Flutter v3.3.3.
             </intent-filter>
         </activity>
 
+        <!-- exported for Android API 19 launcher to access this activity -->
         <activity
             android:name=".HomeWidgetSettingsActivity"
-            android:exported="false"
+            android:exported="true"
             android:theme="@style/NormalTheme">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />

@@ -124,6 +124,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         val metadataMap = HashMap<String, MutableMap<String, String>>()
         var foundExif = false
         var foundXmp = false
+        var foundMp4Uuid = false
 
         fun processXmp(xmpMeta: XMPMeta, dirMap: MutableMap<String, String>, allowMultiple: Boolean = false) {
             if (foundXmp && !allowMultiple) return
@@ -209,6 +210,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                 Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
                     val metadata = Helper.safeRead(input)
                     foundExif = metadata.directories.any { it is ExifDirectoryBase && it.tagCount > 0 }
+                    foundMp4Uuid = metadata.directories.any { it is Mp4UuidBoxDirectory && it.tagCount > 0 }
 
                     val dirByName = metadata.directories.filter {
                         (it.tagCount > 0 || it.errorCount > 0)
@@ -383,16 +385,20 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         fun fallbackProcessXmp(xmpMeta: XMPMeta) {
             val thisDirName = XmpDirectory().name
             val dirMap = metadataMap[thisDirName] ?: HashMap()
-            metadataMap[thisDirName] = dirMap
             processXmp(xmpMeta, dirMap)
+            if (dirMap.isNotEmpty()) {
+                metadataMap[thisDirName] = dirMap
+            }
         }
 
         XMP.checkHeic(context, mimeType, uri, foundXmp, ::fallbackProcessXmp)
-        if (isLargeMp4(mimeType, sizeBytes)) {
-            XMP.checkMp4(context, mimeType, uri) { dirs ->
-                for (dir in dirs.filterIsInstance<XmpDirectory>()) {
-                    fallbackProcessXmp(dir.xmpMeta)
-                }
+        // `metadata-extractor` may fail to get UUID boxes for some MP4 files,
+        // so we always check with `mp4parser`, even for smaller files
+        XMP.checkMp4(context, mimeType, uri) { dirs ->
+            for (dir in dirs.filterIsInstance<XmpDirectory>()) {
+                fallbackProcessXmp(dir.xmpMeta)
+            }
+            if (!foundMp4Uuid) {
                 for (dir in dirs.filterIsInstance<Mp4UuidBoxDirectory>()) {
                     processMp4Uuid(dir)
                 }
@@ -491,6 +497,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         var flags = (metadataMap[KEY_FLAGS] ?: 0) as Int
         var foundExif = false
         var foundXmp = false
+        var foundMp4Uuid = false
 
         fun processXmp(xmpMeta: XMPMeta, allowMultiple: Boolean = false) {
             if (foundXmp && !allowMultiple) return
@@ -543,6 +550,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                 Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
                     val metadata = Helper.safeRead(input)
                     foundExif = metadata.directories.any { it is ExifDirectoryBase && it.tagCount > 0 }
+                    foundMp4Uuid = metadata.directories.any { it is Mp4UuidBoxDirectory && it.tagCount > 0 }
 
                     // File type
                     for (dir in metadata.getDirectoriesOfType(FileTypeDirectory::class.java)) {
@@ -695,11 +703,13 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         }
 
         XMP.checkHeic(context, mimeType, uri, foundXmp, ::processXmp)
-        if (isLargeMp4(mimeType, sizeBytes)) {
-            XMP.checkMp4(context, mimeType, uri) { dirs ->
-                for (dir in dirs.filterIsInstance<XmpDirectory>()) {
-                    processXmp(dir.xmpMeta)
-                }
+        // `metadata-extractor` may fail to get UUID boxes for some MP4 files,
+        // so we always check with `mp4parser`, even for smaller files
+        XMP.checkMp4(context, mimeType, uri) { dirs ->
+            for (dir in dirs.filterIsInstance<XmpDirectory>()) {
+                processXmp(dir.xmpMeta)
+            }
+            if (!foundMp4Uuid) {
                 for (dir in dirs.filterIsInstance<Mp4UuidBoxDirectory>()) {
                     processMp4Uuid(dir)
                 }
@@ -941,11 +951,11 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         }
 
         XMP.checkHeic(context, mimeType, uri, foundXmp, ::processXmp)
-        if (isLargeMp4(mimeType, sizeBytes)) {
-            XMP.checkMp4(context, mimeType, uri) { dirs ->
-                for (dir in dirs.filterIsInstance<XmpDirectory>()) {
-                    processXmp(dir.xmpMeta)
-                }
+        // `metadata-extractor` may fail to get UUID boxes for some MP4 files,
+        // so we always check with `mp4parser`, even for smaller files
+        XMP.checkMp4(context, mimeType, uri) { dirs ->
+            for (dir in dirs.filterIsInstance<XmpDirectory>()) {
+                processXmp(dir.xmpMeta)
             }
         }
 
@@ -1026,11 +1036,11 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         }
 
         XMP.checkHeic(context, mimeType, uri, foundXmp, ::processXmp)
-        if (isLargeMp4(mimeType, sizeBytes)) {
-            XMP.checkMp4(context, mimeType, uri) { dirs ->
-                for (dir in dirs.filterIsInstance<XmpDirectory>()) {
-                    processXmp(dir.xmpMeta)
-                }
+        // `metadata-extractor` may fail to get UUID boxes for some MP4 files,
+        // so we always check with `mp4parser`, even for smaller files
+        XMP.checkMp4(context, mimeType, uri) { dirs ->
+            for (dir in dirs.filterIsInstance<XmpDirectory>()) {
+                processXmp(dir.xmpMeta)
             }
         }
 

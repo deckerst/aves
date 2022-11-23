@@ -20,6 +20,8 @@ enum KeepScreenOn { never, viewerOnly, always }
 
 enum SlideshowVideoPlayback { skip, playMuted, playWithSound }
 
+enum SubtitlePosition { top, bottom }
+
 enum UnitSystem { metric, imperial }
 
 enum VideoControls { play, playSeek, playOutside, none }
@@ -29,6 +31,8 @@ enum VideoLoopMode { never, shortOnly, always }
 enum VideoAutoPlayMode { disabled, playMuted, playWithSound }
 
 enum ViewerTransition { slide, parallax, fade, zoomIn, none }
+
+enum WidgetDisplayedItem { random, mostRecent }
 
 enum WidgetOpenPage { home, collection, viewer }
 

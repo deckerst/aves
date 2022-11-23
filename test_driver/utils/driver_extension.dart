@@ -19,12 +19,14 @@ extension ExtraFlutterDriver on FlutterDriver {
     await tap(finder, timeout: timeout);
   }
 
-  Future<void> tapKeyAndWait(String key) async {
+  Future<void> tapKeyAndWait(String key, {bool waitUntilNoTransient = true}) async {
     print('  find key=$key');
     final finder = find.byValueKey(key);
     await waitFor(finder);
     await tap(finder);
-    await waitUntilNoTransientCallbacks();
+    if (waitUntilNoTransient) {
+      await waitUntilNoTransientCallbacks();
+    }
   }
 
   Future<void> scanMediaDir(String dir) async {

@@ -144,7 +144,7 @@ abstract class AvesVideoController {
 
   Future<Uint8List> captureFrame();
 
-  Future<void> toggleMute();
+  Future<void> mute(bool muted);
 
   Widget buildPlayerWidget(BuildContext context);
 }

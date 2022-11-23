@@ -527,8 +527,6 @@
   "@aboutLicensesSectionTitle": {},
   "aboutLicensesBanner": "本应用使用以下开源软件包和库",
   "@aboutLicensesBanner": {},
-  "aboutLicensesAndroidLibrariesSectionTitle": "Android Libraries",
-  "@aboutLicensesAndroidLibrariesSectionTitle": {},
   "aboutLicensesFlutterPluginsSectionTitle": "Flutter Plugins",
   "@aboutLicensesFlutterPluginsSectionTitle": {},
   "aboutLicensesFlutterPackagesSectionTitle": "Flutter Packages",
@@ -1146,5 +1144,15 @@
   "widgetOpenPageCollection": "打开媒体集",
   "@widgetOpenPageCollection": {},
   "durationDialogSeconds": "秒",
-  "@durationDialogSeconds": {}
+  "@durationDialogSeconds": {},
+  "settingsAllowMediaManagement": "允许媒体管理",
+  "@settingsAllowMediaManagement": {},
+  "tagEditorSectionPlaceholders": "占位符",
+  "@tagEditorSectionPlaceholders": {},
+  "editEntryLocationDialogSetCustom": "设置自定义位置",
+  "@editEntryLocationDialogSetCustom": {},
+  "tagPlaceholderCountry": "国家",
+  "@tagPlaceholderCountry": {},
+  "tagPlaceholderPlace": "地方",
+  "@tagPlaceholderPlace": {}
 }

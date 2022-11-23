@@ -113,8 +113,11 @@ class _EntryPageViewState extends State<EntryPageView> with SingleTickerProvider
     viewerController.startAutopilotAnimation(
         vsync: this,
         onUpdate: ({required scaleLevel}) {
-          final scale = _magnifierController.scaleBoundaries.scaleForLevel(scaleLevel);
-          _magnifierController.update(scale: scale, source: ChangeSource.animation);
+          final boundaries = _magnifierController.scaleBoundaries;
+          if (boundaries != null) {
+            final scale = boundaries.scaleForLevel(scaleLevel);
+            _magnifierController.update(scale: scale, source: ChangeSource.animation);
+          }
         });
   }
 
@@ -318,11 +321,14 @@ class _EntryPageViewState extends State<EntryPageView> with SingleTickerProvider
               // while cover is fading out, the same controller is used for both the cover and the video,
               // and both fire scale boundaries events, so we make sure that in the end
               // the scale boundaries from the video are used after the cover is gone
-              _magnifierController.setScaleBoundaries(
-                _magnifierController.scaleBoundaries.copyWith(
-                  childSize: videoDisplaySize,
-                ),
-              );
+              final boundaries = _magnifierController.scaleBoundaries;
+              if (boundaries != null) {
+                _magnifierController.setScaleBoundaries(
+                  boundaries.copyWith(
+                    childSize: videoDisplaySize,
+                  ),
+                );
+              }
             },
             child: ValueListenableBuilder<ImageInfo?>(
               valueListenable: _videoCoverInfoNotifier,

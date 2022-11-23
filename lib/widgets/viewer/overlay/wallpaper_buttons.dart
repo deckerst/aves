@@ -42,10 +42,10 @@ class WallpaperButtons extends StatelessWidget with FeedbackMixin {
             const Spacer(),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: padding / 2),
-              child: OverlayTextButton(
+              child: ScalingOverlayTextButton(
                 scale: scale,
-                buttonLabel: context.l10n.viewerSetWallpaperButtonLabel,
                 onPressed: () => _setWallpaper(context),
+                child: Text(context.l10n.viewerSetWallpaperButtonLabel),
               ),
             ),
           ],

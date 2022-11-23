@@ -17,11 +17,13 @@ import deckers.thibault.aves.metadata.metadataextractor.SafeMp4UuidBoxHandler
 import deckers.thibault.aves.metadata.metadataextractor.SafeXmpReader
 import deckers.thibault.aves.utils.ContextUtils.queryContentResolverProp
 import deckers.thibault.aves.utils.LogUtils
+import deckers.thibault.aves.utils.MemoryUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.StorageUtils
 import org.mp4parser.IsoFile
 import org.mp4parser.PropertyBoxParserImpl
 import org.mp4parser.boxes.UserBox
+import org.mp4parser.boxes.iso14496.part12.FreeBox
 import org.mp4parser.boxes.iso14496.part12.MediaDataBox
 import org.mp4parser.boxes.iso14496.part12.SampleTableBox
 import java.io.FileInputStream
@@ -143,19 +145,32 @@ object XMP {
                 FileInputStream(it.fileDescriptor).use { stream ->
                     stream.channel.use { channel ->
                         val boxParser = PropertyBoxParserImpl().apply {
-                            // parsing `MediaDataBox` can take a long time
-                            // parsing `SampleTableBox` may yield OOM
-                            skippingBoxes(MediaDataBox.TYPE, SampleTableBox.TYPE)
+                            val skippedTypes = listOf(
+                                // parsing `MediaDataBox` can take a long time
+                                MediaDataBox.TYPE,
+                                // parsing `SampleTableBox` or `FreeBox` may yield OOM
+                                SampleTableBox.TYPE, FreeBox.TYPE,
+                            )
+                            setBoxSkipper { type, size ->
+                                if (skippedTypes.contains(type)) return@setBoxSkipper true
+                                if (size > Mp4ParserHelper.BOX_SIZE_DANGER_THRESHOLD) throw Exception("box (type=$type size=$size) is too large")
+                                false
+                            }
                         }
                         // creating `IsoFile` with a `File` or a `File.inputStream()` yields `No such device`
                         IsoFile(channel, boxParser).use { isoFile ->
                             isoFile.processBoxes(UserBox::class.java, true) { box, _ ->
-                                val bytes = box.toBytes()
-                                val payload = bytes.copyOfRange(8, bytes.size)
+                                val boxSize = box.size
+                                if (MemoryUtils.canAllocate(boxSize)) {
+                                    val bytes = box.toBytes()
+                                    val payload = bytes.copyOfRange(8, bytes.size)
 
-                                val metadata = com.drew.metadata.Metadata()
-                                SafeMp4UuidBoxHandler(metadata).processBox("", payload, -1, null)
-                                processDirs(metadata.directories.filter { dir -> dir.tagCount > 0 }.toList())
+                                    val metadata = com.drew.metadata.Metadata()
+                                    SafeMp4UuidBoxHandler(metadata).processBox("", payload, -1, null)
+                                    processDirs(metadata.directories.filter { dir -> dir.tagCount > 0 }.toList())
+                                } else {
+                                    Log.w(LOG_TAG, "MP4 box too large at $boxSize bytes, for mimeType=$mimeType uri=$uri")
+                                }
                             }
                         }
                     }

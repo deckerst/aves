@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
 import 'package:aves/widgets/viewer/multipage/controller.dart';
 import 'package:aves/widgets/viewer/overlay/multipage.dart';
@@ -17,7 +18,7 @@ import 'package:tuple/tuple.dart';
 class ViewerBottomOverlay extends StatefulWidget {
   final List<AvesEntry> entries;
   final int index;
-  final bool hasCollection;
+  final CollectionLens? collection;
   final AnimationController animationController;
   final EdgeInsets? viewInsets, viewPadding;
   final MultiPageController? multiPageController;
@@ -26,7 +27,7 @@ class ViewerBottomOverlay extends StatefulWidget {
     super.key,
     required this.entries,
     required this.index,
-    required this.hasCollection,
+    required this.collection,
     required this.animationController,
     this.viewInsets,
     this.viewPadding,
@@ -65,7 +66,7 @@ class _ViewerBottomOverlayState extends State<ViewerBottomOverlay> {
           index: widget.index,
           mainEntry: mainEntry,
           pageEntry: pageEntry ?? mainEntry,
-          hasCollection: widget.hasCollection,
+          collection: widget.collection,
           viewInsets: widget.viewInsets,
           viewPadding: widget.viewPadding,
           multiPageController: multiPageController,
@@ -96,7 +97,7 @@ class _BottomOverlayContent extends StatefulWidget {
   final List<AvesEntry> entries;
   final int index;
   final AvesEntry mainEntry, pageEntry;
-  final bool hasCollection;
+  final CollectionLens? collection;
   final EdgeInsets? viewInsets, viewPadding;
   final MultiPageController? multiPageController;
   final AnimationController animationController;
@@ -106,7 +107,7 @@ class _BottomOverlayContent extends StatefulWidget {
     required this.index,
     required this.mainEntry,
     required this.pageEntry,
-    required this.hasCollection,
+    required this.collection,
     required this.viewInsets,
     required this.viewPadding,
     required this.multiPageController,
@@ -167,8 +168,8 @@ class _BottomOverlayContentState extends State<_BottomOverlayContent> {
                     : ViewerButtons(
                         mainEntry: mainEntry,
                         pageEntry: pageEntry,
+                        collection: widget.collection,
                         scale: _buttonScale,
-                        canToggleFavourite: widget.hasCollection,
                       ),
               );
 

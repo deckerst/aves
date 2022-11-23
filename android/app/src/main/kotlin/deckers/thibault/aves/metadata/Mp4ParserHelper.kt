@@ -15,6 +15,9 @@ import java.io.FileInputStream
 import java.nio.channels.Channels
 
 object Mp4ParserHelper {
+    // arbitrary size to detect boxes that may yield an OOM
+    const val BOX_SIZE_DANGER_THRESHOLD = 3 * (1 shl 20) // MB
+
     fun computeEdits(context: Context, uri: Uri, modifier: (isoFile: IsoFile) -> Unit): List<Pair<Long, ByteArray>> {
         // we can skip uninteresting boxes with a seekable data source
         val pfd = StorageUtils.openInputFileDescriptor(context, uri) ?: throw Exception("failed to open file descriptor for uri=$uri")
@@ -22,9 +25,17 @@ object Mp4ParserHelper {
             FileInputStream(it.fileDescriptor).use { stream ->
                 stream.channel.use { channel ->
                     val boxParser = PropertyBoxParserImpl().apply {
-                        // parsing `MediaDataBox` can take a long time
                         // do not skip anything inside `MovieBox` as it will be parsed and rewritten for editing
-                        skippingBoxes(MediaDataBox.TYPE)
+                        // do not skip weird boxes (like trailing "0000" box), to fail fast if it is large
+                        val skippedTypes = listOf(
+                            // parsing `MediaDataBox` can take a long time
+                            MediaDataBox.TYPE,
+                        )
+                        setBoxSkipper { type, size ->
+                            if (skippedTypes.contains(type)) return@setBoxSkipper true
+                            if (size > BOX_SIZE_DANGER_THRESHOLD) throw Exception("box (type=$type size=$size) is too large")
+                            false
+                        }
                     }
                     // creating `IsoFile` with a `File` or a `File.inputStream()` yields `No such device`
                     IsoFile(channel, boxParser).use { isoFile ->

@@ -1156,5 +1156,21 @@
   "tagPlaceholderCountry": "Pays",
   "@tagPlaceholderCountry": {},
   "settingsAllowMediaManagement": "Autoriser la gestion des médias",
-  "@settingsAllowMediaManagement": {}
+  "@settingsAllowMediaManagement": {},
+  "subtitlePositionTop": "Haut",
+  "@subtitlePositionTop": {},
+  "subtitlePositionBottom": "Bas",
+  "@subtitlePositionBottom": {},
+  "settingsSubtitleThemeTextPositionTile": "Position du texte",
+  "@settingsSubtitleThemeTextPositionTile": {},
+  "widgetDisplayedItemMostRecent": "Le plus récent",
+  "@widgetDisplayedItemMostRecent": {},
+  "settingsWidgetDisplayedItem": "Élément affiché",
+  "@settingsWidgetDisplayedItem": {},
+  "widgetDisplayedItemRandom": "Aléatoire",
+  "@widgetDisplayedItemRandom": {},
+  "settingsSubtitleThemeTextPositionDialogTitle": "Position du texte",
+  "@settingsSubtitleThemeTextPositionDialogTitle": {},
+  "entryInfoActionExportMetadata": "Exporter les métadonnées",
+  "@entryInfoActionExportMetadata": {}
 }

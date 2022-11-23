@@ -1,0 +1,5 @@
+<i>Aves</i> poate gestiona tot felul de imagini și videoclipuri, inclusiv JPEG și MP4-uri tipice, dar și lucruri mai exotice, cum ar fi <b>TIFF-uri cu mai multe pagini, SVG, AVI vechi și multe altele</b>! Acesta scanează colecția dvs. media pentru a identifica <b>fotografii în mișcare</b>, <b>panorame</b> (alias foto sferice), <b>videoclipuri la 360°</b>, precum și <b>GeoTIFF</b> fișiere.
+
+<b>Navigația și căutarea</b> sunt o parte importantă a <i>Aves</i>. Scopul este ca utilizatorii să treacă cu ușurință de la albume la fotografii la etichete la hărți etc.
+
+<i>Aves</i> se integrează cu Android (de la <b>API 19 la 33</b>, adică de la KitKat la Android 13) cu funcții precum <b>widgeturi</b>, <b>comenzi rapide pentru aplicații</b>, <b>protector de ecran</b> și gestionarea <b>căutării globale</b>. De asemenea, funcționează ca <b>vizionator și selector de conținut media</b>.

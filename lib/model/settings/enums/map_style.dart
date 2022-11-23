@@ -3,6 +3,19 @@ import 'package:aves_map/aves_map.dart';
 import 'package:flutter/widgets.dart';
 
 extension ExtraEntryMapStyle on EntryMapStyle {
+  static bool isHeavy(EntryMapStyle? style) {
+    switch (style) {
+      case EntryMapStyle.googleNormal:
+      case EntryMapStyle.googleHybrid:
+      case EntryMapStyle.googleTerrain:
+      case EntryMapStyle.hmsNormal:
+      case EntryMapStyle.hmsTerrain:
+        return true;
+      default:
+        return false;
+    }
+  }
+
   String getName(BuildContext context) {
     switch (this) {
       case EntryMapStyle.googleNormal:
@@ -21,19 +34,6 @@ extension ExtraEntryMapStyle on EntryMapStyle {
         return context.l10n.mapStyleStamenToner;
       case EntryMapStyle.stamenWatercolor:
         return context.l10n.mapStyleStamenWatercolor;
-    }
-  }
-
-  bool get isHeavy {
-    switch (this) {
-      case EntryMapStyle.googleNormal:
-      case EntryMapStyle.googleHybrid:
-      case EntryMapStyle.googleTerrain:
-      case EntryMapStyle.hmsNormal:
-      case EntryMapStyle.hmsTerrain:
-        return true;
-      default:
-        return false;
     }
   }
 

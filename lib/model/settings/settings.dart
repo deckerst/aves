@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:aves/app_flavor.dart';
 import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/actions/entry_set_actions.dart';
 import 'package:aves/model/filters/filters.dart';
@@ -122,6 +123,7 @@ class Settings extends ChangeNotifier {
   // subtitles
   static const subtitleFontSizeKey = 'subtitle_font_size';
   static const subtitleTextAlignmentKey = 'subtitle_text_alignment';
+  static const subtitleTextPositionKey = 'subtitle_text_position';
   static const subtitleShowOutlineKey = 'subtitle_show_outline';
   static const subtitleTextColorKey = 'subtitle_text_color';
   static const subtitleBackgroundColorKey = 'subtitle_background_color';
@@ -171,6 +173,7 @@ class Settings extends ChangeNotifier {
   static const widgetShapePrefixKey = '${_widgetKeyPrefix}shape_';
   static const widgetCollectionFiltersPrefixKey = '${_widgetKeyPrefix}collection_filters_';
   static const widgetOpenPagePrefixKey = '${_widgetKeyPrefix}open_page_';
+  static const widgetDisplayedItemPrefixKey = '${_widgetKeyPrefix}displayed_item_';
   static const widgetUriPrefixKey = '${_widgetKeyPrefix}uri_';
 
   // platform settings
@@ -202,18 +205,20 @@ class Settings extends ChangeNotifier {
 
   bool isInternalKey(String key) => _internalKeys.contains(key) || key.startsWith(_widgetKeyPrefix);
 
-  Future<void> setContextualDefaults() async {
+  Future<void> setContextualDefaults(AppFlavor flavor) async {
     // performance
     final performanceClass = await deviceService.getPerformanceClass();
     enableBlurEffect = performanceClass >= 29;
 
     // availability
-    final defaultMapStyle = mobileServices.defaultMapStyle;
-    if (mobileServices.mapStyles.contains(defaultMapStyle)) {
-      mapStyle = defaultMapStyle;
-    } else {
-      final styles = EntryMapStyle.values.whereNot((v) => v.needMobileService).toList();
-      mapStyle = styles[Random().nextInt(styles.length)];
+    if (flavor.hasMapStyleDefault) {
+      final defaultMapStyle = mobileServices.defaultMapStyle;
+      if (mobileServices.mapStyles.contains(defaultMapStyle)) {
+        mapStyle = defaultMapStyle;
+      } else {
+        final styles = EntryMapStyle.values.whereNot((v) => v.needMobileService).toList();
+        mapStyle = styles[Random().nextInt(styles.length)];
+      }
     }
   }
 
@@ -570,6 +575,10 @@ class Settings extends ChangeNotifier {
 
   set subtitleTextAlignment(TextAlign newValue) => setAndNotify(subtitleTextAlignmentKey, newValue.toString());
 
+  SubtitlePosition get subtitleTextPosition => getEnumOrDefault(subtitleTextPositionKey, SettingsDefaults.subtitleTextPosition, SubtitlePosition.values);
+
+  set subtitleTextPosition(SubtitlePosition newValue) => setAndNotify(subtitleTextPositionKey, newValue.toString());
+
   bool get subtitleShowOutline => getBool(subtitleShowOutlineKey) ?? SettingsDefaults.subtitleShowOutline;
 
   set subtitleShowOutline(bool newValue) => setAndNotify(subtitleShowOutlineKey, newValue);
@@ -598,13 +607,15 @@ class Settings extends ChangeNotifier {
 
   // map
 
-  EntryMapStyle get mapStyle {
-    final preferred = getEnumOrDefault(mapStyleKey, SettingsDefaults.infoMapStyle, EntryMapStyle.values);
+  EntryMapStyle? get mapStyle {
+    final preferred = getEnumOrDefault(mapStyleKey, null, EntryMapStyle.values);
+    if (preferred == null) return null;
+
     final available = availability.mapStyles;
     return available.contains(preferred) ? preferred : available.first;
   }
 
-  set mapStyle(EntryMapStyle newValue) => setAndNotify(mapStyleKey, newValue.toString());
+  set mapStyle(EntryMapStyle? newValue) => setAndNotify(mapStyleKey, newValue?.toString());
 
   LatLng? get mapDefaultCenter {
     final json = getString(mapDefaultCenterKey);
@@ -721,6 +732,10 @@ class Settings extends ChangeNotifier {
   WidgetOpenPage getWidgetOpenPage(int widgetId) => getEnumOrDefault('$widgetOpenPagePrefixKey$widgetId', SettingsDefaults.widgetOpenPage, WidgetOpenPage.values);
 
   void setWidgetOpenPage(int widgetId, WidgetOpenPage newValue) => setAndNotify('$widgetOpenPagePrefixKey$widgetId', newValue.toString());
+
+  WidgetDisplayedItem getWidgetDisplayedItem(int widgetId) => getEnumOrDefault('$widgetDisplayedItemPrefixKey$widgetId', SettingsDefaults.widgetDisplayedItem, WidgetDisplayedItem.values);
+
+  void setWidgetDisplayedItem(int widgetId, WidgetDisplayedItem newValue) => setAndNotify('$widgetDisplayedItemPrefixKey$widgetId', newValue.toString());
 
   String? getWidgetUri(int widgetId) => getString('$widgetUriPrefixKey$widgetId');
 
@@ -958,6 +973,7 @@ class Settings extends ChangeNotifier {
             case videoLoopModeKey:
             case videoControlsKey:
             case subtitleTextAlignmentKey:
+            case subtitleTextPositionKey:
             case mapStyleKey:
             case mapDefaultCenterKey:
             case coordinateFormatKey:

@@ -363,8 +363,8 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
   bool get isMuted => _volume == 0;
 
   @override
-  Future<void> toggleMute() async {
-    _volume = isMuted ? 1 : 0;
+  Future<void> mute(bool muted) async {
+    _volume = muted ? 0 : 1;
     _volumeStreamController.add(_volume);
     await _applyVolume();
   }

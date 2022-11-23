@@ -35,39 +35,39 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     stopOverlayHidingTimer();
   }
 
-  void onActionSelected(BuildContext context, AvesVideoController controller, EntryAction action) {
+  Future<void> onActionSelected(BuildContext context, AvesVideoController controller, EntryAction action) async {
     // make sure overlay is not disappearing when selecting an action
     stopOverlayHidingTimer();
     const ToggleOverlayNotification(visible: true).dispatch(context);
 
     switch (action) {
       case EntryAction.videoCaptureFrame:
-        _captureFrame(context, controller);
+        await _captureFrame(context, controller);
         break;
       case EntryAction.videoToggleMute:
-        controller.toggleMute();
+        await controller.mute(!controller.isMuted);
         break;
       case EntryAction.videoSelectStreams:
-        _showStreamSelectionDialog(context, controller);
+        await _showStreamSelectionDialog(context, controller);
         break;
       case EntryAction.videoSetSpeed:
-        _showSpeedDialog(context, controller);
+        await _showSpeedDialog(context, controller);
         break;
       case EntryAction.videoSettings:
-        _showSettings(context, controller);
+        await _showSettings(context, controller);
         break;
       case EntryAction.videoTogglePlay:
-        _togglePlayPause(context, controller);
+        await _togglePlayPause(context, controller);
         break;
       case EntryAction.videoReplay10:
-        controller.seekTo(controller.currentPosition - 10000);
+        await controller.seekTo(controller.currentPosition - 10000);
         break;
       case EntryAction.videoSkip10:
-        controller.seekTo(controller.currentPosition + 10000);
+        await controller.seekTo(controller.currentPosition + 10000);
         break;
       case EntryAction.open:
         final entry = controller.entry;
-        androidAppService.open(entry.uri, entry.mimeTypeAnySubtype).then((success) {
+        await androidAppService.open(entry.uri, entry.mimeTypeAnySubtype).then((success) {
           if (!success) showNoMatchingAppDialog(context);
         });
         break;

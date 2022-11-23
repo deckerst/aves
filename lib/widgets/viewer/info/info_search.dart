@@ -4,8 +4,8 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/viewer/embedded/embedded_data_opener.dart';
+import 'package:aves/widgets/viewer/info/metadata/metadata_dir.dart';
 import 'package:aves/widgets/viewer/info/metadata/metadata_dir_tile.dart';
-import 'package:aves/widgets/viewer/info/metadata/metadata_section.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 

@@ -122,6 +122,7 @@
   "entryInfoActionEditRating": "Edit rating",
   "entryInfoActionEditTags": "Edit tags",
   "entryInfoActionRemoveMetadata": "Remove metadata",
+  "entryInfoActionExportMetadata": "Export metadata",
 
   "filterBinLabel": "Recycle bin",
   "filterFavouriteLabel": "Favorite",
@@ -197,6 +198,9 @@
   "displayRefreshRatePreferHighest": "Highest rate",
   "displayRefreshRatePreferLowest": "Lowest rate",
 
+  "subtitlePositionTop": "Top",
+  "subtitlePositionBottom": "Bottom",
+
   "videoPlaybackSkip": "Skip",
   "videoPlaybackMuted": "Play muted",
   "videoPlaybackWithSound": "Play with sound",
@@ -214,6 +218,9 @@
   "wallpaperTargetHome": "Home screen",
   "wallpaperTargetLock": "Lock screen",
   "wallpaperTargetHomeLock": "Home and lock screens",
+
+  "widgetDisplayedItemRandom": "Random",
+  "widgetDisplayedItemMostRecent": "Most recent",
 
   "widgetOpenPageHome": "Open home",
   "widgetOpenPageCollection": "Open collection",
@@ -737,6 +744,8 @@
   "settingsSubtitleThemeSample": "This is a sample.",
   "settingsSubtitleThemeTextAlignmentTile": "Text alignment",
   "settingsSubtitleThemeTextAlignmentDialogTitle": "Text Alignment",
+  "settingsSubtitleThemeTextPositionTile": "Text position",
+  "settingsSubtitleThemeTextPositionDialogTitle": "Text Position",
   "settingsSubtitleThemeTextSize": "Text size",
   "settingsSubtitleThemeShowOutline": "Show outline and shadow",
   "settingsSubtitleThemeTextColor": "Text color",
@@ -805,6 +814,7 @@
   "settingsWidgetPageTitle": "Photo Frame",
   "settingsWidgetShowOutline": "Outline",
   "settingsWidgetOpenPage": "When tapping on the widget",
+  "settingsWidgetDisplayedItem": "Displayed item",
 
   "settingsCollectionTile": "Collection",
 
