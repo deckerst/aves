@@ -173,6 +173,7 @@ class Settings extends ChangeNotifier {
   static const widgetShapePrefixKey = '${_widgetKeyPrefix}shape_';
   static const widgetCollectionFiltersPrefixKey = '${_widgetKeyPrefix}collection_filters_';
   static const widgetOpenPagePrefixKey = '${_widgetKeyPrefix}open_page_';
+  static const widgetDisplayedItemPrefixKey = '${_widgetKeyPrefix}displayed_item_';
   static const widgetUriPrefixKey = '${_widgetKeyPrefix}uri_';
 
   // platform settings
@@ -731,6 +732,10 @@ class Settings extends ChangeNotifier {
   WidgetOpenPage getWidgetOpenPage(int widgetId) => getEnumOrDefault('$widgetOpenPagePrefixKey$widgetId', SettingsDefaults.widgetOpenPage, WidgetOpenPage.values);
 
   void setWidgetOpenPage(int widgetId, WidgetOpenPage newValue) => setAndNotify('$widgetOpenPagePrefixKey$widgetId', newValue.toString());
+
+  WidgetDisplayedItem getWidgetDisplayedItem(int widgetId) => getEnumOrDefault('$widgetDisplayedItemPrefixKey$widgetId', SettingsDefaults.widgetDisplayedItem, WidgetDisplayedItem.values);
+
+  void setWidgetDisplayedItem(int widgetId, WidgetDisplayedItem newValue) => setAndNotify('$widgetDisplayedItemPrefixKey$widgetId', newValue.toString());
 
   String? getWidgetUri(int widgetId) => getString('$widgetUriPrefixKey$widgetId');
 
