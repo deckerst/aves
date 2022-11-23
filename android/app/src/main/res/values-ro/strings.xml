@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Aves</string>
+    <string name="app_widget_label">Rama foto</string>
+    <string name="wallpaper">Tapet</string>
+    <string name="videos_shortcut_short_label">Videoclipuri</string>
+    <string name="analysis_channel_name">Scanare media</string>
+    <string name="analysis_service_description">Scanați imagini și videoclipuri</string>
+    <string name="analysis_notification_default_title">Scanarea suporturilor</string>
+    <string name="analysis_notification_action_stop">Stop</string>
+    <string name="search_shortcut_short_label">Căutare</string>
+</resources>
