@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:aves/model/entry.dart';
 import 'package:aves/widgets/viewer/video/controller.dart';
 import 'package:aves/widgets/viewer/video/fijkplayer.dart';
@@ -34,5 +36,9 @@ class VideoConductor {
     return _controllers.firstWhereOrNull((c) => c.entry.uri == entry.uri && c.entry.pageId == entry.pageId);
   }
 
-  Future<void> pauseAll() => Future.forEach<AvesVideoController>(_controllers, (controller) => controller.pause());
+  Future<void> _applyToAll(FutureOr Function(AvesVideoController controller) action) => Future.forEach<AvesVideoController>(_controllers, action);
+
+  Future<void> pauseAll() => _applyToAll((controller) => controller.pause());
+
+  Future<void> muteAll(bool muted) => _applyToAll((controller) => controller.mute(muted));
 }
