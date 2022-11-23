@@ -6,7 +6,7 @@ repository: https://github.com/deckerst/aves
 # - github changelog: /CHANGELOG.md
 # - play changelog:   /whatsnew/whatsnew-en-US
 # - izzy changelog:   /fastlane/metadata/android/en-US/changelogs/1XXX.txt
-version: 1.7.4+84
+version: 1.7.5+85
 publish_to: none
 
 environment:
