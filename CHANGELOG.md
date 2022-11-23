@@ -13,8 +13,9 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
-- No default map style for `izzy` and `libre` flavors
-- allow setting default editor
+- Map: no default map style for `izzy` and `libre` flavors
+- Viewer: allow setting default editor
+- Viewer: keep manually un/muted state for following autoplayed videos
 
 ### Fixed
 

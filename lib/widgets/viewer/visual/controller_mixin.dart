@@ -17,6 +17,8 @@ mixin EntryViewControllerMixin<T extends StatefulWidget> on State<T> {
   final Map<AvesEntry, VoidCallback> _metadataChangeListeners = {};
   final Map<MultiPageController, Future<void> Function()> _multiPageControllerPageListeners = {};
 
+  bool? videoMutedOverride;
+
   bool get isViewingImage;
 
   ValueNotifier<AvesEntry?> get entryNotifier;
@@ -89,6 +91,10 @@ mixin EntryViewControllerMixin<T extends StatefulWidget> on State<T> {
   }
 
   bool get shouldAutoPlayVideoMuted {
+    if (videoMutedOverride != null) {
+      return videoMutedOverride!;
+    }
+
     switch (videoPlaybackOverride) {
       case SlideshowVideoPlayback.skip:
       case SlideshowVideoPlayback.playWithSound:
@@ -189,7 +195,7 @@ mixin EntryViewControllerMixin<T extends StatefulWidget> on State<T> {
     await Future.delayed(const Duration(milliseconds: 300) * timeDilation);
 
     if (!videoController.isMuted && shouldAutoPlayVideoMuted) {
-      await videoController.toggleMute();
+      await videoController.mute(true);
     }
 
     if (resumeTimeMillis != null) {
