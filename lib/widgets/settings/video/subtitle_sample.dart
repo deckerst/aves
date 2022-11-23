@@ -1,3 +1,4 @@
+import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/basic/outlined_text.dart';
@@ -20,6 +21,7 @@ class SubtitleSample extends StatelessWidget {
     return Consumer<Settings>(
       builder: (context, settings, child) {
         final textAlign = settings.subtitleTextAlignment;
+        final textPosition = settings.subtitleTextPosition;
         final outlineColor = Colors.black.withOpacity(settings.subtitleTextColor.opacity);
         final shadows = [
           Shadow(
@@ -40,7 +42,7 @@ class SubtitleSample extends StatelessWidget {
           ),
           height: 128,
           child: AnimatedAlign(
-            alignment: _getAlignment(textAlign),
+            alignment: _getAlignment(textAlign, textPosition),
             curve: Curves.easeInOutCubic,
             duration: const Duration(milliseconds: 400),
             child: Padding(
@@ -75,15 +77,28 @@ class SubtitleSample extends StatelessWidget {
     );
   }
 
-  Alignment _getAlignment(TextAlign textAlign) {
-    switch (textAlign) {
-      case TextAlign.left:
-        return Alignment.bottomLeft;
-      case TextAlign.right:
-        return Alignment.bottomRight;
-      case TextAlign.center:
-      default:
-        return Alignment.bottomCenter;
+  Alignment _getAlignment(TextAlign textAlign, SubtitlePosition textPosition) {
+    switch (textPosition) {
+      case SubtitlePosition.top:
+        switch (textAlign) {
+          case TextAlign.left:
+            return Alignment.topLeft;
+          case TextAlign.right:
+            return Alignment.topRight;
+          case TextAlign.center:
+          default:
+            return Alignment.topCenter;
+        }
+      case SubtitlePosition.bottom:
+        switch (textAlign) {
+          case TextAlign.left:
+            return Alignment.bottomLeft;
+          case TextAlign.right:
+            return Alignment.bottomRight;
+          case TextAlign.center:
+          default:
+            return Alignment.bottomCenter;
+        }
     }
   }
 }

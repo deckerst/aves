@@ -20,6 +20,8 @@ enum KeepScreenOn { never, viewerOnly, always }
 
 enum SlideshowVideoPlayback { skip, playMuted, playWithSound }
 
+enum SubtitlePosition { top, bottom }
+
 enum UnitSystem { metric, imperial }
 
 enum VideoControls { play, playSeek, playOutside, none }

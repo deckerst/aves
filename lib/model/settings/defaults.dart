@@ -98,6 +98,7 @@ class SettingsDefaults {
   // subtitles
   static const subtitleFontSize = 20.0;
   static const subtitleTextAlignment = TextAlign.center;
+  static const subtitleTextPosition = SubtitlePosition.bottom;
   static const subtitleShowOutline = true;
   static const subtitleTextColor = Colors.white;
   static const subtitleBackgroundColor = Colors.transparent;
