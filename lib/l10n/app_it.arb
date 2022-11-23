@@ -1158,5 +1158,19 @@
   "editEntryLocationDialogSetCustom": "Imposta posizione personalizzata",
   "@editEntryLocationDialogSetCustom": {},
   "entryInfoActionExportMetadata": "Esporta metadati",
-  "@entryInfoActionExportMetadata": {}
+  "@entryInfoActionExportMetadata": {},
+  "subtitlePositionTop": "In cima",
+  "@subtitlePositionTop": {},
+  "widgetDisplayedItemMostRecent": "Più recente",
+  "@widgetDisplayedItemMostRecent": {},
+  "widgetDisplayedItemRandom": "Casuale",
+  "@widgetDisplayedItemRandom": {},
+  "settingsSubtitleThemeTextPositionTile": "Posizione testo",
+  "@settingsSubtitleThemeTextPositionTile": {},
+  "subtitlePositionBottom": "In basso",
+  "@subtitlePositionBottom": {},
+  "settingsSubtitleThemeTextPositionDialogTitle": "Posizione testo",
+  "@settingsSubtitleThemeTextPositionDialogTitle": {},
+  "settingsWidgetDisplayedItem": "Elemento visualizzato",
+  "@settingsWidgetDisplayedItem": {}
 }
