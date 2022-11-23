@@ -1156,5 +1156,7 @@
   "tagEditorSectionPlaceholders": "Marcadores de la posición",
   "@tagEditorSectionPlaceholders": {},
   "settingsAllowMediaManagement": "Permitir la gestión de medios",
-  "@settingsAllowMediaManagement": {}
+  "@settingsAllowMediaManagement": {},
+  "entryInfoActionExportMetadata": "Exportar los metadatos",
+  "@entryInfoActionExportMetadata": {}
 }
