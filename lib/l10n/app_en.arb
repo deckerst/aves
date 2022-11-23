@@ -198,6 +198,9 @@
   "displayRefreshRatePreferHighest": "Highest rate",
   "displayRefreshRatePreferLowest": "Lowest rate",
 
+  "subtitlePositionTop": "Top",
+  "subtitlePositionBottom": "Bottom",
+
   "videoPlaybackSkip": "Skip",
   "videoPlaybackMuted": "Play muted",
   "videoPlaybackWithSound": "Play with sound",
@@ -738,6 +741,8 @@
   "settingsSubtitleThemeSample": "This is a sample.",
   "settingsSubtitleThemeTextAlignmentTile": "Text alignment",
   "settingsSubtitleThemeTextAlignmentDialogTitle": "Text Alignment",
+  "settingsSubtitleThemeTextPositionTile": "Text position",
+  "settingsSubtitleThemeTextPositionDialogTitle": "Text Position",
   "settingsSubtitleThemeTextSize": "Text size",
   "settingsSubtitleThemeShowOutline": "Show outline and shadow",
   "settingsSubtitleThemeTextColor": "Text color",

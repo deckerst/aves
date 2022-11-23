@@ -1,3 +1,4 @@
+import 'package:aves/model/settings/enums/subtitle_position.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/common/basic/outlined_text.dart';
 import 'package:aves/widgets/common/basic/text_background_painter.dart';
@@ -33,6 +34,7 @@ class VideoSubtitles extends StatelessWidget {
       child: Consumer<Settings>(
         builder: (context, settings, child) {
           final baseTextAlign = settings.subtitleTextAlignment;
+          final baseTextAlignY = settings.subtitleTextPosition.toTextAlignVertical();
           final baseOutlineWidth = settings.subtitleShowOutline ? 1 : 0;
           final baseOutlineColor = Colors.black.withOpacity(settings.subtitleTextColor.opacity);
           final baseShadows = [
@@ -119,7 +121,8 @@ class VideoSubtitles extends StatelessWidget {
                             );
                           }).toList();
                           final drawingPaths = extraStyle.drawingPaths;
-                          final textAlign = extraStyle.hAlign ?? (position != null ? TextAlign.center : baseTextAlign);
+                          final textHAlign = extraStyle.hAlign ?? (position != null ? TextAlign.center : baseTextAlign);
+                          final textVAlign = extraStyle.vAlign ?? (position != null ? TextAlignVertical.bottom : baseTextAlignY);
 
                           Widget child;
                           if (drawingPaths != null) {
@@ -138,7 +141,7 @@ class VideoSubtitles extends StatelessWidget {
                               outlineWidth: outlineWidth * (position != null ? viewScale : baseOutlineWidth),
                               outlineColor: extraStyle.borderColor ?? baseOutlineColor,
                               outlineBlurSigma: extraStyle.edgeBlur ?? 0,
-                              textAlign: textAlign,
+                              textAlign: textHAlign,
                             );
                           }
 
@@ -154,7 +157,7 @@ class VideoSubtitles extends StatelessWidget {
                             final textHeight = para.getMaxIntrinsicHeight(double.infinity);
 
                             late double anchorOffsetX, anchorOffsetY;
-                            switch (textAlign) {
+                            switch (textHAlign) {
                               case TextAlign.left:
                                 anchorOffsetX = 0;
                                 break;
@@ -166,7 +169,7 @@ class VideoSubtitles extends StatelessWidget {
                                 anchorOffsetX = -textWidth / 2;
                                 break;
                             }
-                            switch (extraStyle.vAlign ?? TextAlignVertical.bottom) {
+                            switch (textVAlign) {
                               case TextAlignVertical.top:
                                 anchorOffsetY = 0;
                                 break;
@@ -214,7 +217,7 @@ class VideoSubtitles extends StatelessWidget {
 
                           if (position == null) {
                             late double alignX;
-                            switch (textAlign) {
+                            switch (textHAlign) {
                               case TextAlign.left:
                                 alignX = -1;
                                 break;
@@ -227,7 +230,7 @@ class VideoSubtitles extends StatelessWidget {
                                 break;
                             }
                             late double alignY;
-                            switch (extraStyle.vAlign) {
+                            switch (textVAlign) {
                               case TextAlignVertical.top:
                                 alignY = -bottom;
                                 break;
@@ -248,7 +251,7 @@ class VideoSubtitles extends StatelessWidget {
                                   style: DefaultTextStyle.of(context).style.merge(spans.first.style!.copyWith(
                                         backgroundColor: settings.subtitleBackgroundColor,
                                       )),
-                                  textAlign: textAlign,
+                                  textAlign: textHAlign,
                                   child: child,
                                 ),
                               ),

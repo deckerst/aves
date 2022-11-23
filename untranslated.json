@@ -1,15 +1,27 @@
 {
   "de": [
-    "entryInfoActionExportMetadata"
+    "entryInfoActionExportMetadata",
+    "subtitlePositionTop",
+    "subtitlePositionBottom",
+    "settingsSubtitleThemeTextPositionTile",
+    "settingsSubtitleThemeTextPositionDialogTitle"
   ],
 
   "el": [
     "entryInfoActionExportMetadata",
+    "subtitlePositionTop",
+    "subtitlePositionBottom",
+    "settingsSubtitleThemeTextPositionTile",
+    "settingsSubtitleThemeTextPositionDialogTitle",
     "tagEditorSectionPlaceholders"
   ],
 
   "es": [
-    "entryInfoActionExportMetadata"
+    "entryInfoActionExportMetadata",
+    "subtitlePositionTop",
+    "subtitlePositionBottom",
+    "settingsSubtitleThemeTextPositionTile",
+    "settingsSubtitleThemeTextPositionDialogTitle"
   ],
 
   "fa": [
@@ -151,6 +163,8 @@
     "accessibilityAnimationsKeep",
     "displayRefreshRatePreferHighest",
     "displayRefreshRatePreferLowest",
+    "subtitlePositionTop",
+    "subtitlePositionBottom",
     "videoPlaybackSkip",
     "videoPlaybackMuted",
     "videoPlaybackWithSound",
@@ -476,6 +490,8 @@
     "settingsSubtitleThemeSample",
     "settingsSubtitleThemeTextAlignmentTile",
     "settingsSubtitleThemeTextAlignmentDialogTitle",
+    "settingsSubtitleThemeTextPositionTile",
+    "settingsSubtitleThemeTextPositionDialogTitle",
     "settingsSubtitleThemeTextSize",
     "settingsSubtitleThemeShowOutline",
     "settingsSubtitleThemeTextColor",
@@ -596,7 +612,11 @@
   ],
 
   "fr": [
-    "entryInfoActionExportMetadata"
+    "entryInfoActionExportMetadata",
+    "subtitlePositionTop",
+    "subtitlePositionBottom",
+    "settingsSubtitleThemeTextPositionTile",
+    "settingsSubtitleThemeTextPositionDialogTitle"
   ],
 
   "gl": [
@@ -605,6 +625,8 @@
     "accessibilityAnimationsKeep",
     "displayRefreshRatePreferHighest",
     "displayRefreshRatePreferLowest",
+    "subtitlePositionTop",
+    "subtitlePositionBottom",
     "videoPlaybackSkip",
     "videoPlaybackMuted",
     "videoPlaybackWithSound",
@@ -930,6 +952,8 @@
     "settingsSubtitleThemeSample",
     "settingsSubtitleThemeTextAlignmentTile",
     "settingsSubtitleThemeTextAlignmentDialogTitle",
+    "settingsSubtitleThemeTextPositionTile",
+    "settingsSubtitleThemeTextPositionDialogTitle",
     "settingsSubtitleThemeTextSize",
     "settingsSubtitleThemeShowOutline",
     "settingsSubtitleThemeTextColor",
@@ -1050,20 +1074,36 @@
   ],
 
   "id": [
-    "entryInfoActionExportMetadata"
+    "entryInfoActionExportMetadata",
+    "subtitlePositionTop",
+    "subtitlePositionBottom",
+    "settingsSubtitleThemeTextPositionTile",
+    "settingsSubtitleThemeTextPositionDialogTitle"
   ],
 
   "it": [
-    "entryInfoActionExportMetadata"
+    "entryInfoActionExportMetadata",
+    "subtitlePositionTop",
+    "subtitlePositionBottom",
+    "settingsSubtitleThemeTextPositionTile",
+    "settingsSubtitleThemeTextPositionDialogTitle"
   ],
 
   "ja": [
     "chipActionFilterIn",
-    "entryInfoActionExportMetadata"
+    "entryInfoActionExportMetadata",
+    "subtitlePositionTop",
+    "subtitlePositionBottom",
+    "settingsSubtitleThemeTextPositionTile",
+    "settingsSubtitleThemeTextPositionDialogTitle"
   ],
 
   "ko": [
-    "entryInfoActionExportMetadata"
+    "entryInfoActionExportMetadata",
+    "subtitlePositionTop",
+    "subtitlePositionBottom",
+    "settingsSubtitleThemeTextPositionTile",
+    "settingsSubtitleThemeTextPositionDialogTitle"
   ],
 
   "nb": [
@@ -1077,6 +1117,8 @@
     "mapStyleStamenToner",
     "mapStyleStamenWatercolor",
     "keepScreenOnViewerOnly",
+    "subtitlePositionTop",
+    "subtitlePositionBottom",
     "viewerTransitionFade",
     "albumTierSpecial",
     "storageAccessDialogMessage",
@@ -1154,6 +1196,8 @@
     "settingsViewerEnableOverlayBlurEffect",
     "settingsSlideshowShuffle",
     "settingsSubtitleThemeSample",
+    "settingsSubtitleThemeTextPositionTile",
+    "settingsSubtitleThemeTextPositionDialogTitle",
     "settingsAllowInstalledAppAccess",
     "settingsAllowMediaManagement",
     "settingsHiddenFiltersBanner",
@@ -1181,7 +1225,11 @@
   ],
 
   "nl": [
-    "entryInfoActionExportMetadata"
+    "entryInfoActionExportMetadata",
+    "subtitlePositionTop",
+    "subtitlePositionBottom",
+    "settingsSubtitleThemeTextPositionTile",
+    "settingsSubtitleThemeTextPositionDialogTitle"
   ],
 
   "pl": [
@@ -1230,6 +1278,8 @@
     "accessibilityAnimationsKeep",
     "displayRefreshRatePreferHighest",
     "displayRefreshRatePreferLowest",
+    "subtitlePositionTop",
+    "subtitlePositionBottom",
     "videoPlaybackSkip",
     "videoPlaybackMuted",
     "videoPlaybackWithSound",
@@ -1555,6 +1605,8 @@
     "settingsSubtitleThemeSample",
     "settingsSubtitleThemeTextAlignmentTile",
     "settingsSubtitleThemeTextAlignmentDialogTitle",
+    "settingsSubtitleThemeTextPositionTile",
+    "settingsSubtitleThemeTextPositionDialogTitle",
     "settingsSubtitleThemeTextSize",
     "settingsSubtitleThemeShowOutline",
     "settingsSubtitleThemeTextColor",
@@ -1675,20 +1727,36 @@
   ],
 
   "pt": [
-    "entryInfoActionExportMetadata"
+    "entryInfoActionExportMetadata",
+    "subtitlePositionTop",
+    "subtitlePositionBottom",
+    "settingsSubtitleThemeTextPositionTile",
+    "settingsSubtitleThemeTextPositionDialogTitle"
   ],
 
   "ru": [
-    "entryInfoActionExportMetadata"
+    "entryInfoActionExportMetadata",
+    "subtitlePositionTop",
+    "subtitlePositionBottom",
+    "settingsSubtitleThemeTextPositionTile",
+    "settingsSubtitleThemeTextPositionDialogTitle"
   ],
 
   "tr": [
-    "entryInfoActionExportMetadata"
+    "entryInfoActionExportMetadata",
+    "subtitlePositionTop",
+    "subtitlePositionBottom",
+    "settingsSubtitleThemeTextPositionTile",
+    "settingsSubtitleThemeTextPositionDialogTitle"
   ],
 
   "zh": [
     "entryInfoActionExportMetadata",
+    "subtitlePositionTop",
+    "subtitlePositionBottom",
     "editEntryLocationDialogSetCustom",
+    "settingsSubtitleThemeTextPositionTile",
+    "settingsSubtitleThemeTextPositionDialogTitle",
     "settingsAllowMediaManagement",
     "tagEditorSectionPlaceholders",
     "tagPlaceholderCountry",

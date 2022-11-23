@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - Viewer: Info page editing actions available as quick actions
+- Video: subtitle vertical position option
 - Info: export metadata to text file
 - Accessibility: apply bold font system setting
 - `libre` app flavor (no mobile service maps, no Crashlytics)

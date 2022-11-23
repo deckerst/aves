@@ -123,6 +123,7 @@ class Settings extends ChangeNotifier {
   // subtitles
   static const subtitleFontSizeKey = 'subtitle_font_size';
   static const subtitleTextAlignmentKey = 'subtitle_text_alignment';
+  static const subtitleTextPositionKey = 'subtitle_text_position';
   static const subtitleShowOutlineKey = 'subtitle_show_outline';
   static const subtitleTextColorKey = 'subtitle_text_color';
   static const subtitleBackgroundColorKey = 'subtitle_background_color';
@@ -573,6 +574,10 @@ class Settings extends ChangeNotifier {
 
   set subtitleTextAlignment(TextAlign newValue) => setAndNotify(subtitleTextAlignmentKey, newValue.toString());
 
+  SubtitlePosition get subtitleTextPosition => getEnumOrDefault(subtitleTextPositionKey, SettingsDefaults.subtitleTextPosition, SubtitlePosition.values);
+
+  set subtitleTextPosition(SubtitlePosition newValue) => setAndNotify(subtitleTextPositionKey, newValue.toString());
+
   bool get subtitleShowOutline => getBool(subtitleShowOutlineKey) ?? SettingsDefaults.subtitleShowOutline;
 
   set subtitleShowOutline(bool newValue) => setAndNotify(subtitleShowOutlineKey, newValue);
@@ -963,6 +968,7 @@ class Settings extends ChangeNotifier {
             case videoLoopModeKey:
             case videoControlsKey:
             case subtitleTextAlignmentKey:
+            case subtitleTextPositionKey:
             case mapStyleKey:
             case mapDefaultCenterKey:
             case coordinateFormatKey:
