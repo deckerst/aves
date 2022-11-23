@@ -1158,5 +1158,7 @@
   "settingsAllowMediaManagement": "Разрешить управление медиа",
   "@settingsAllowMediaManagement": {},
   "entryInfoActionExportMetadata": "Экспорт метаданных",
-  "@entryInfoActionExportMetadata": {}
+  "@entryInfoActionExportMetadata": {},
+  "subtitlePositionBottom": "Внизу",
+  "@subtitlePositionBottom": {}
 }
