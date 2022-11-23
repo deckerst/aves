@@ -73,7 +73,9 @@ void agreeToTerms() {
 void visitAbout() {
   test('[collection] visit about page', () async {
     await driver.tapKeyAndWait('appbar-leading-button');
-    await driver.tapKeyAndWait('drawer-about-button');
+    // do not wait for stability, as the about page animates forever
+    await driver.tapKeyAndWait('drawer-about-button', waitUntilNoTransient: false);
+    await Future.delayed(const Duration(seconds: 1));
 
     await pressDeviceBackButton();
     await driver.waitUntilNoTransientCallbacks();

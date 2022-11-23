@@ -49,7 +49,7 @@ class AvesApp extends StatefulWidget {
   final AppFlavor flavor;
 
   // temporary exclude locales not ready yet for prime time
-  static final _unsupportedLocales = {'fa', 'gl', 'nb', 'pl'}.map(Locale.new).toSet();
+  static final _unsupportedLocales = {'ar', 'fa', 'gl', 'nb', 'pl', 'ro'}.map(Locale.new).toSet();
   static final List<Locale> supportedLocales = AppLocalizations.supportedLocales.where((v) => !_unsupportedLocales.contains(v)).toList();
   static final GlobalKey<NavigatorState> navigatorKey = GlobalKey(debugLabel: 'app-navigator');
 
@@ -108,6 +108,7 @@ class AvesApp extends StatefulWidget {
 class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   final ValueNotifier<AppMode> appModeNotifier = ValueNotifier(AppMode.main);
   late final Future<void> _appSetup;
+  late final Future<bool> _shouldUseBoldFontLoader;
   late final Future<CorePalette?> _dynamicColorPaletteLoader;
   final CollectionSource _mediaStoreSource = MediaStoreSource();
   final Debouncer _mediaStoreChangeDebouncer = Debouncer(delay: Durations.mediaContentChangeDebounceDelay);
@@ -129,6 +130,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     _appSetup = _setup();
     // remember screen size to use it later, when `context` and `window` are no longer reliable
     _screenSize = _getScreenSize();
+    _shouldUseBoldFontLoader = AccessibilityService.shouldUseBoldFont();
     _dynamicColorPaletteLoader = DynamicColorPlugin.getCorePalette();
     _mediaStoreChangeChannel.receiveBroadcastStream().listen((event) => _onMediaStoreChange(event as String?));
     _newIntentChannel.receiveBroadcastStream().listen((event) => _onNewIntent(event as Map?));
@@ -205,32 +207,43 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
                                 lightAccent = Color(tonalPalette?.get(60) ?? defaultAccent.value);
                                 darkAccent = Color(tonalPalette?.get(70) ?? defaultAccent.value);
                               }
-                              return MaterialApp(
-                                navigatorKey: AvesApp.navigatorKey,
-                                home: home,
-                                navigatorObservers: _navigatorObservers,
-                                builder: (context, child) {
-                                  if (initialized) {
-                                    WidgetsBinding.instance.addPostFrameCallback((_) => AvesApp.setSystemUIStyle(context));
-                                  }
-                                  return AvesColorsProvider(
-                                    child: Theme(
-                                      data: Theme.of(context).copyWith(
-                                        pageTransitionsTheme: pageTransitionsTheme,
-                                      ),
-                                      child: child!,
-                                    ),
+                              return FutureBuilder<bool>(
+                                future: _shouldUseBoldFontLoader,
+                                builder: (context, snapshot) {
+                                  // Flutter v3.4 already checks the system `Configuration.fontWeightAdjustment` to update `MediaQuery`
+                                  // but we need to also check the non-standard Samsung field `bf` representing the bold font toggle
+                                  final shouldUseBoldFont = snapshot.data ?? false;
+                                  return MaterialApp(
+                                    navigatorKey: AvesApp.navigatorKey,
+                                    home: home,
+                                    navigatorObservers: _navigatorObservers,
+                                    builder: (context, child) {
+                                      if (initialized) {
+                                        WidgetsBinding.instance.addPostFrameCallback((_) => AvesApp.setSystemUIStyle(context));
+                                      }
+                                      return MediaQuery(
+                                        data: MediaQuery.of(context).copyWith(boldText: shouldUseBoldFont),
+                                        child: AvesColorsProvider(
+                                          child: Theme(
+                                            data: Theme.of(context).copyWith(
+                                              pageTransitionsTheme: pageTransitionsTheme,
+                                            ),
+                                            child: child!,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    onGenerateTitle: (context) => context.l10n.appName,
+                                    theme: Themes.lightTheme(lightAccent, initialized),
+                                    darkTheme: themeBrightness == AvesThemeBrightness.black ? Themes.blackTheme(darkAccent, initialized) : Themes.darkTheme(darkAccent, initialized),
+                                    themeMode: themeBrightness.appThemeMode,
+                                    locale: settingsLocale,
+                                    localizationsDelegates: AppLocalizations.localizationsDelegates,
+                                    supportedLocales: AvesApp.supportedLocales,
+                                    // TODO TLAD remove custom scroll behavior when this is fixed: https://github.com/flutter/flutter/issues/82906
+                                    scrollBehavior: StretchMaterialScrollBehavior(),
                                   );
                                 },
-                                onGenerateTitle: (context) => context.l10n.appName,
-                                theme: Themes.lightTheme(lightAccent, initialized),
-                                darkTheme: themeBrightness == AvesThemeBrightness.black ? Themes.blackTheme(darkAccent, initialized) : Themes.darkTheme(darkAccent, initialized),
-                                themeMode: themeBrightness.appThemeMode,
-                                locale: settingsLocale,
-                                localizationsDelegates: AppLocalizations.localizationsDelegates,
-                                supportedLocales: AvesApp.supportedLocales,
-                                // TODO TLAD remove custom scroll behavior when this is fixed: https://github.com/flutter/flutter/issues/82906
-                                scrollBehavior: StretchMaterialScrollBehavior(),
                               );
                             },
                           );

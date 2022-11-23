@@ -96,7 +96,7 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
             val granted = PermissionManager.requestMediaFileAccess(activity, uris, mimeTypes)
             success(granted)
         } catch (e: Exception) {
-            error("requestMediaFileAccess-request", "failed to request access to uris=$uris", e.message)
+            error("requestMediaFileAccess-request", "failed to request access to ${uris.size} uris=$uris", e.message)
         }
         endOfStream()
     }

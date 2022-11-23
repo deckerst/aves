@@ -7,7 +7,6 @@ import 'package:aves/model/source/enums/enums.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/countries_page.dart';
 import 'package:aves/widgets/filter_grids/tags_page.dart';
-import 'package:aves_map/aves_map.dart';
 import 'package:flutter/material.dart';
 
 class SettingsDefaults {
@@ -99,12 +98,12 @@ class SettingsDefaults {
   // subtitles
   static const subtitleFontSize = 20.0;
   static const subtitleTextAlignment = TextAlign.center;
+  static const subtitleTextPosition = SubtitlePosition.bottom;
   static const subtitleShowOutline = true;
   static const subtitleTextColor = Colors.white;
   static const subtitleBackgroundColor = Colors.transparent;
 
   // info
-  static const infoMapStyle = EntryMapStyle.stamenWatercolor; // `infoMapStyle` has a contextual default value
   static const infoMapZoom = 12.0;
   static const coordinateFormat = CoordinateFormat.dms;
   static const unitSystem = UnitSystem.metric;
@@ -138,6 +137,7 @@ class SettingsDefaults {
   static const widgetOutline = false;
   static const widgetShape = WidgetShape.rrect;
   static const widgetOpenPage = WidgetOpenPage.viewer;
+  static const widgetDisplayedItem = WidgetDisplayedItem.random;
 
   // platform settings
   static const isRotationLocked = false;

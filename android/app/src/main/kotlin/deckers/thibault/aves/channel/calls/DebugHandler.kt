@@ -15,11 +15,8 @@ import android.util.Log
 import androidx.exifinterface.media.ExifInterface
 import com.drew.metadata.file.FileTypeDirectory
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
-import deckers.thibault.aves.metadata.ExifInterfaceHelper
-import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper
-import deckers.thibault.aves.metadata.Metadata
+import deckers.thibault.aves.metadata.*
 import deckers.thibault.aves.metadata.Mp4ParserHelper.dumpBoxes
-import deckers.thibault.aves.metadata.PixyMetaHelper
 import deckers.thibault.aves.metadata.metadataextractor.Helper
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.utils.LogUtils
@@ -42,6 +39,7 @@ import kotlinx.coroutines.launch
 import org.beyka.tiffbitmapfactory.TiffBitmapFactory
 import org.mp4parser.IsoFile
 import org.mp4parser.PropertyBoxParserImpl
+import org.mp4parser.boxes.iso14496.part12.FreeBox
 import org.mp4parser.boxes.iso14496.part12.MediaDataBox
 import org.mp4parser.boxes.iso14496.part12.SampleTableBox
 import java.io.FileInputStream
@@ -344,9 +342,20 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
                     FileInputStream(it.fileDescriptor).use { stream ->
                         stream.channel.use { channel ->
                             val boxParser = PropertyBoxParserImpl().apply {
-                                // parsing `MediaDataBox` can take a long time
-                                // parsing `SampleTableBox` may yield OOM
-                                skippingBoxes(MediaDataBox.TYPE, SampleTableBox.TYPE)
+                                val skippedTypes = listOf(
+                                    // parsing `MediaDataBox` can take a long time
+                                    MediaDataBox.TYPE,
+                                    // parsing `SampleTableBox` or `FreeBox` may yield OOM
+                                    SampleTableBox.TYPE, FreeBox.TYPE,
+                                    // some files are padded with `0` but the parser does not stop, reads type "0000",
+                                    // then a large size from following "0000", which may yield OOM
+                                    "0000",
+                                )
+                                setBoxSkipper { type, size ->
+                                    if (skippedTypes.contains(type)) return@setBoxSkipper true
+                                    if (size > Mp4ParserHelper.BOX_SIZE_DANGER_THRESHOLD) throw Exception("box (type=$type size=$size) is too large")
+                                    false
+                                }
                             }
                             IsoFile(channel, boxParser).use { isoFile ->
                                 isoFile.dumpBoxes(sb)

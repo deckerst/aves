@@ -14,6 +14,8 @@ import deckers.thibault.aves.channel.calls.*
 import deckers.thibault.aves.channel.calls.window.ActivityWindowHandler
 import deckers.thibault.aves.channel.calls.window.WindowHandler
 import deckers.thibault.aves.channel.streams.ImageByteStreamHandler
+import deckers.thibault.aves.utils.FlutterUtils
+import deckers.thibault.aves.utils.FlutterUtils.enableSoftwareRendering
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.getParcelableExtraCompat
 import io.flutter.embedding.android.FlutterActivity
@@ -24,6 +26,9 @@ class WallpaperActivity : FlutterActivity() {
     private lateinit var intentDataMap: MutableMap<String, Any?>
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        if (FlutterUtils.isSoftwareRenderingRequired()) {
+            intent.enableSoftwareRendering()
+        }
         super.onCreate(savedInstanceState)
 
         Log.i(LOG_TAG, "onCreate intent=$intent")

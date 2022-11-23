@@ -211,7 +211,7 @@ class _EntryEditorState extends State<EntryEditor> with EntryViewControllerMixin
           ViewerBottomOverlay(
             entries: [widget.entry],
             index: 0,
-            hasCollection: false,
+            collection: null,
             animationController: _overlayAnimationController,
             viewInsets: _frozenViewInsets,
             viewPadding: _frozenViewPadding,

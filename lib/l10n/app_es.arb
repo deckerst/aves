@@ -1156,5 +1156,21 @@
   "tagEditorSectionPlaceholders": "Marcadores de la posición",
   "@tagEditorSectionPlaceholders": {},
   "settingsAllowMediaManagement": "Permitir la gestión de medios",
-  "@settingsAllowMediaManagement": {}
+  "@settingsAllowMediaManagement": {},
+  "entryInfoActionExportMetadata": "Exportar los metadatos",
+  "@entryInfoActionExportMetadata": {},
+  "subtitlePositionTop": "Parte superior",
+  "@subtitlePositionTop": {},
+  "subtitlePositionBottom": "Inferior",
+  "@subtitlePositionBottom": {},
+  "settingsSubtitleThemeTextPositionTile": "Posición del texto",
+  "@settingsSubtitleThemeTextPositionTile": {},
+  "widgetDisplayedItemMostRecent": "Más reciente",
+  "@widgetDisplayedItemMostRecent": {},
+  "widgetDisplayedItemRandom": "Aleatorio",
+  "@widgetDisplayedItemRandom": {},
+  "settingsSubtitleThemeTextPositionDialogTitle": "Posición del texto",
+  "@settingsSubtitleThemeTextPositionDialogTitle": {},
+  "settingsWidgetDisplayedItem": "Elemento para mostrar",
+  "@settingsWidgetDisplayedItem": {}
 }

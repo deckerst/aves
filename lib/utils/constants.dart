@@ -223,6 +223,8 @@ class Constants {
     ..._googleMobileServices,
   ];
 
+  static const List<Dependency> _flutterPluginsLibreOnly = [];
+
   static const List<Dependency> _flutterPluginsPlayOnly = [
     ..._googleMobileServices,
     Dependency(
@@ -236,6 +238,7 @@ class Constants {
         ..._flutterPluginsCommon,
         if (flavor == AppFlavor.huawei) ..._flutterPluginsHuaweiOnly,
         if (flavor == AppFlavor.izzy) ..._flutterPluginsIzzyOnly,
+        if (flavor == AppFlavor.libre) ..._flutterPluginsLibreOnly,
         if (flavor == AppFlavor.play) ..._flutterPluginsPlayOnly,
       ];
 

@@ -15,6 +15,9 @@ Aves is a gallery and metadata explorer app. It is built for Android, with Flutt
 [<img src="https://raw.githubusercontent.com/deckerst/common/main/assets/huawei-appgallery-badge-english-black.png"
       alt='Get it on Huawei AppGallery'
       height="80">](https://appgallery.huawei.com/app/C106014023)
+[<img src="https://raw.githubusercontent.com/deckerst/common/main/assets/samsung-galaxy-store-badge-english.png"
+      alt='Get it on Samsung Galaxy Store'
+      height="80">](https://galaxy.store/aves)
 [<img src="https://raw.githubusercontent.com/deckerst/common/main/assets/amazon-appstore-badge-english-black.png"
       alt='Get it on Amazon Appstore'
       height="80">](https://www.amazon.com/dp/B09XQHQQ72)
@@ -115,7 +118,7 @@ Some users have expressed the wish to financially support the project. Thanks! â
 
 Before running or building the app, update the dependencies for the desired flavor:
 ```
-# (cd scripts/; ./apply_flavor_play.sh)
+# ./scripts/apply_flavor_play.sh
 ```
 
 To build the project, create a file named `<app dir>/android/key.properties`. It should contain a reference to a keystore for app signing, and other necessary credentials. See [key_template.properties](https://github.com/deckerst/aves/blob/develop/android/key_template.properties) for the expected keys.
@@ -123,11 +126,6 @@ To build the project, create a file named `<app dir>/android/key.properties`. It
 To run the app:
 ```
 # flutter run -t lib/main_play.dart --flavor play
-```
-
-To run the app on API 19 emulators:
-```
-# flutter run -t lib/main_play.dart --flavor play --enable-software-rendering
 ```
 
 [Version badge]: https://img.shields.io/github/v/release/deckerst/aves?include_prereleases&sort=semver

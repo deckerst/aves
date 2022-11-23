@@ -52,7 +52,9 @@ class MimeTypes {
   static const v3gpp = 'video/3gpp';
   static const asf = 'video/x-ms-asf';
   static const avi = 'video/avi';
+  static const aviMSVideo = 'video/msvideo';
   static const aviVnd = 'video/vnd.avi';
+  static const aviXMSVideo = 'video/x-msvideo';
   static const flv = 'video/flv';
   static const flvX = 'video/x-flv';
   static const mkv = 'video/mkv';
@@ -87,7 +89,7 @@ class MimeTypes {
 
   static const Set<String> _knownOpaqueImages = {jpeg};
 
-  static const Set<String> _knownVideos = {v3gpp, asf, avi, aviVnd, flv, flvX, mkv, mkvX, mov, mp2p, mp2t, mp2ts, mp4, mpeg, ogv, realVideo, webm, wmv};
+  static const Set<String> _knownVideos = {v3gpp, asf, avi, aviMSVideo, aviVnd, aviXMSVideo, flv, flvX, mkv, mkvX, mov, mp2p, mp2t, mp2ts, mp4, mpeg, ogv, realVideo, webm, wmv};
 
   static final Set<String> knownMediaTypes = {
     anyImage,
@@ -108,7 +110,9 @@ class MimeTypes {
   static bool refersToSameType(String a, b) {
     switch (a) {
       case avi:
+      case aviMSVideo:
       case aviVnd:
+      case aviXMSVideo:
         return [avi, aviVnd].contains(b);
       case bmp:
       case bmpX:

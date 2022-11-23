@@ -1,20 +1,35 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
-    ext.kotlin_version = '1.7.10'
+    ext.kotlin_version = '1.7.20'
+
+    ext.useCrashlytics = gradle.startParameter.taskNames.any { task -> task.containsIgnoreCase("play") }
+    ext.useHms = gradle.startParameter.taskNames.any { task -> task.containsIgnoreCase("huawei") }
+
     repositories {
         google()
         mavenCentral()
-        maven { url 'https://developer.huawei.com/repo/' }
+
+        if (useHms) {
+            // HMS (used by some flavors only)
+            maven { url 'https://developer.huawei.com/repo/' }
+        }
     }
+
     dependencies {
         // TODO TLAD upgrade Android Gradle plugin >=7.3 when this is fixed: https://github.com/flutter/flutter/issues/115100
         classpath 'com.android.tools.build:gradle:7.2.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        // GMS & Firebase Crashlytics (used by some flavors only)
-        classpath 'com.google.gms:google-services:4.3.14'
-        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.2'
-        // HMS (used by some flavors only)
-        classpath 'com.huawei.agconnect:agcp:1.7.2.300'
+
+        if (useCrashlytics) {
+            // GMS & Firebase Crashlytics (used by some flavors only)
+            classpath 'com.google.gms:google-services:4.3.14'
+            classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.2'
+        }
+
+        if (useHms) {
+            // HMS (used by some flavors only)
+            classpath 'com.huawei.agconnect:agcp:1.7.2.300'
+        }
     }
 }
 
@@ -22,8 +37,13 @@ allprojects {
     repositories {
         google()
         mavenCentral()
-        maven { url 'https://developer.huawei.com/repo/' }
+
+        if (useHms) {
+            // HMS (used by some flavors only)
+            maven { url 'https://developer.huawei.com/repo/' }
+        }
     }
+
 //    gradle.projectsEvaluated {
 //        tasks.withType(JavaCompile) {
 //            options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"

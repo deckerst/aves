@@ -1,20 +1,22 @@
-import 'package:aves/model/actions/entry_info_actions.dart';
+import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/entry.dart';
+import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/app_bar/app_bar_title.dart';
+import 'package:aves/widgets/common/app_bar/sliver_app_bar_title.dart';
 import 'package:aves/widgets/common/basic/menu.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:aves/widgets/common/app_bar/sliver_app_bar_title.dart';
 import 'package:aves/widgets/viewer/action/entry_info_action_delegate.dart';
 import 'package:aves/widgets/viewer/info/info_search.dart';
-import 'package:aves/widgets/viewer/info/metadata/metadata_section.dart';
+import 'package:aves/widgets/viewer/info/metadata/metadata_dir.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
 class InfoAppBar extends StatelessWidget {
   final AvesEntry entry;
+  final CollectionLens? collection;
   final EntryInfoActionDelegate actionDelegate;
   final ValueNotifier<Map<String, MetadataDirectory>> metadataNotifier;
   final VoidCallback onBackPressed;
@@ -22,6 +24,7 @@ class InfoAppBar extends StatelessWidget {
   const InfoAppBar({
     super.key,
     required this.entry,
+    required this.collection,
     required this.actionDelegate,
     required this.metadataNotifier,
     required this.onBackPressed,
@@ -29,8 +32,8 @@ class InfoAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final commonActions = EntryInfoActions.common.where(actionDelegate.isVisible);
-    final formatSpecificActions = EntryInfoActions.formatSpecific.where(actionDelegate.isVisible);
+    final commonActions = EntryActions.commonMetadataActions.where((v) => actionDelegate.isVisible(entry, v));
+    final formatSpecificActions = EntryActions.formatSpecificMetadataActions.where((v) => actionDelegate.isVisible(entry, v));
 
     return SliverAppBar(
       leading: IconButton(
@@ -54,22 +57,22 @@ class InfoAppBar extends StatelessWidget {
         ),
         if (entry.canEdit)
           MenuIconTheme(
-            child: PopupMenuButton<EntryInfoAction>(
+            child: PopupMenuButton<EntryAction>(
               itemBuilder: (context) => [
-                ...commonActions.map((action) => _toMenuItem(context, action, enabled: actionDelegate.canApply(action))),
+                ...commonActions.map((action) => _toMenuItem(context, action, enabled: actionDelegate.canApply(entry, action))),
                 if (formatSpecificActions.isNotEmpty) ...[
                   const PopupMenuDivider(),
-                  ...formatSpecificActions.map((action) => _toMenuItem(context, action, enabled: actionDelegate.canApply(action))),
+                  ...formatSpecificActions.map((action) => _toMenuItem(context, action, enabled: actionDelegate.canApply(entry, action))),
                 ],
                 if (!kReleaseMode) ...[
                   const PopupMenuDivider(),
-                  _toMenuItem(context, EntryInfoAction.debug, enabled: true),
+                  _toMenuItem(context, EntryAction.debug, enabled: true),
                 ]
               ],
               onSelected: (action) async {
                 // wait for the popup menu to hide before proceeding with the action
                 await Future.delayed(Durations.popupMenuAnimation * timeDilation);
-                actionDelegate.onActionSelected(context, action);
+                actionDelegate.onActionSelected(context, entry, collection, action);
               },
             ),
           ),
@@ -78,7 +81,7 @@ class InfoAppBar extends StatelessWidget {
     );
   }
 
-  PopupMenuItem<EntryInfoAction> _toMenuItem(BuildContext context, EntryInfoAction action, {required bool enabled}) {
+  PopupMenuItem<EntryAction> _toMenuItem(BuildContext context, EntryAction action, {required bool enabled}) {
     return PopupMenuItem(
       value: action,
       enabled: enabled,

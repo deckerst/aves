@@ -6,7 +6,7 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Attribution extends StatelessWidget {
-  final EntryMapStyle style;
+  final EntryMapStyle? style;
 
   const Attribution({
     super.key,

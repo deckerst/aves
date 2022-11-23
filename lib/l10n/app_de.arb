@@ -1156,5 +1156,7 @@
   "tagPlaceholderPlace": "Ort",
   "@tagPlaceholderPlace": {},
   "editEntryLocationDialogSetCustom": "Benutzerdefinierten Standort festlegen",
-  "@editEntryLocationDialogSetCustom": {}
+  "@editEntryLocationDialogSetCustom": {},
+  "entryInfoActionExportMetadata": "Metadaten exportieren",
+  "@entryInfoActionExportMetadata": {}
 }

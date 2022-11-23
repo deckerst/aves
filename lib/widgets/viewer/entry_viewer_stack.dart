@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:aves/app_mode.dart';
+import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/actions/move_type.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/filters.dart';
@@ -255,7 +256,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
             } else if (notification is VideoActionNotification) {
               final controller = notification.controller;
               final action = notification.action;
-              _videoActionDelegate.onActionSelected(context, controller, action);
+              _onVideoAction(context, controller, action);
             } else {
               return false;
             }
@@ -396,7 +397,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
                 scale: _overlayVideoControlScale,
                 onActionSelected: (action) {
                   if (videoController != null) {
-                    _videoActionDelegate.onActionSelected(context, videoController, action);
+                    _onVideoAction(context, videoController, action);
                   }
                 },
                 onActionMenuOpened: () {
@@ -440,7 +441,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
               ViewerBottomOverlay(
                 entries: entries,
                 index: _currentEntryIndex,
-                hasCollection: hasCollection,
+                collection: collection,
                 animationController: _overlayAnimationController,
                 viewInsets: _frozenViewInsets,
                 viewPadding: _frozenViewPadding,
@@ -480,6 +481,15 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
       },
       child: child,
     );
+  }
+
+  Future<void> _onVideoAction(BuildContext context, AvesVideoController controller, EntryAction action) async {
+    await _videoActionDelegate.onActionSelected(context, controller, action);
+    if (action == EntryAction.videoToggleMute) {
+      final override = controller.isMuted;
+      videoMutedOverride = override;
+      await context.read<VideoConductor>().muteAll(override);
+    }
   }
 
   void _onVerticalPageControllerChange() {

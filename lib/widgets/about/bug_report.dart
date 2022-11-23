@@ -145,9 +145,13 @@ class _BugReportState extends State<BugReport> with FeedbackMixin {
     final androidInfo = await DeviceInfoPlugin().androidInfo;
     final flavor = context.read<AppFlavor>().toString().split('.')[1];
     return [
-      'Aves version: ${packageInfo.version}-$flavor (Build ${packageInfo.buildNumber})',
-      'Flutter version: ${version['frameworkVersion']} (Channel ${version['channel']})',
-      'Android version: ${androidInfo.version.release} (SDK ${androidInfo.version.sdkInt})',
+      'Package: ${packageInfo.packageName}',
+      'Aves version: ${packageInfo.version}-$flavor',
+      'Aves build: ${packageInfo.buildNumber}',
+      'Flutter version: ${version['frameworkVersion']}',
+      'Flutter channel: ${version['channel']}',
+      'Android version: ${androidInfo.version.release}',
+      'Android API: ${androidInfo.version.sdkInt}',
       'Android build: ${androidInfo.display}',
       'Device: ${androidInfo.manufacturer} ${androidInfo.model}',
       'Geocoder: ${device.hasGeocoder ? 'ready' : 'not available'}',

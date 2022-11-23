@@ -4,6 +4,29 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.7.5"></a>[v1.7.5] - 2022-11-23
+
+### Added
+
+- Viewer: Info page editing actions available as quick actions
+- Video: subtitle vertical position option
+- Info: export metadata to text file
+- Accessibility: apply bold font system setting
+- Widget: option to show most recent item instead of random items
+- `libre` app flavor (no mobile service maps, no Crashlytics)
+
+### Changed
+
+- Map: no default map style for `izzy` and `libre` flavors
+- Viewer: allow setting default editor
+- Viewer: keep manually un/muted state for following autoplayed videos
+- upgraded Flutter to stable v3.3.9
+
+### Fixed
+
+- crash when cataloguing some MP4 files
+- reading metadata for some MP4 files
+
 ## <a id="v1.7.4"></a>[v1.7.4] - 2022-11-11
 
 ### Added

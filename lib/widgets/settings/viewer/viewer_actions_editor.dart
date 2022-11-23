@@ -30,6 +30,7 @@ class ViewerActionEditorPage extends StatelessWidget {
       EntryAction.videoSetSpeed,
       EntryAction.videoSelectStreams,
     ],
+    EntryActions.commonMetadataActions,
   ];
 
   @override
