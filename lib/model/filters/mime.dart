@@ -98,5 +98,5 @@ class MimeFilter extends CollectionFilter {
   String get category => type;
 
   @override
-  String get key => '$type-$mime';
+  String get key => '$type-$reversed-$mime';
 }

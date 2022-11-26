@@ -82,7 +82,7 @@ class LocationFilter extends CoveredCollectionFilter {
   String get category => type;
 
   @override
-  String get key => '$type-$level-$_location';
+  String get key => '$type-$reversed-$level-$_location';
 
   // U+0041 Latin Capital letter A
   // U+1F1E6 🇦 REGIONAL INDICATOR SYMBOL LETTER A

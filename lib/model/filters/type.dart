@@ -129,5 +129,5 @@ class TypeFilter extends CollectionFilter {
   String get category => type;
 
   @override
-  String get key => '$type-$itemType';
+  String get key => '$type-$reversed-$itemType';
 }

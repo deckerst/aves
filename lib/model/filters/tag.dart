@@ -53,5 +53,5 @@ class TagFilter extends CoveredCollectionFilter {
   String get category => type;
 
   @override
-  String get key => '$type-$tag';
+  String get key => '$type-$reversed-$tag';
 }

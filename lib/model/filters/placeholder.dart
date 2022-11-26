@@ -91,5 +91,5 @@ class PlaceholderFilter extends CollectionFilter {
   String get category => type;
 
   @override
-  String get key => '$type-$placeholder';
+  String get key => '$type-$reversed-$placeholder';
 }

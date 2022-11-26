@@ -99,7 +99,7 @@ class QueryFilter extends CollectionFilter {
   String get category => type;
 
   @override
-  String get key => '$type-$query';
+  String get key => '$type-$reversed-$query';
 
   EntryFilter? fieldTest(String upQuery) {
     var match = _fieldPattern.firstMatch(upQuery);
