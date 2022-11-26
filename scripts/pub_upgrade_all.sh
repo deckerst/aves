@@ -3,12 +3,12 @@ if [ ! -d "scripts" ]; then
   cd ..
 fi
 
-flutter pub upgrade
+./flutterw pub upgrade
 
 cd plugins || exit
 for plugin in $(ls -d *); do
   cd $plugin
-  flutter pub upgrade
+  ../../flutterw pub upgrade
   cd ..
 done
 cd ..
