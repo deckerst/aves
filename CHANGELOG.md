@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Added
+
+- Romanian translation (thanks Ralea Adrian Vicențiu, Igor Sorocean)
+
 ## <a id="v1.7.6"></a>[v1.7.6] - 2022-11-26
 
 ### Changed
