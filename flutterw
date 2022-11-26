@@ -1,0 +1,113 @@
+#!/usr/bin/env sh
+
+##############################################################################
+##
+##  Flutter start up script for UN*X
+##  Version: v1.3.1
+##  Date: 2022-11-26 11:30:13
+##
+##  Use this flutter wrapper to bundle Flutter within your project to make
+##  sure everybody builds with the same version.
+##
+##  Read about the install and uninstall process in the README on GitHub
+##  https://github.com/passsy/flutter_wrapper
+##
+##  Inspired by gradle-wrapper.
+##
+##############################################################################
+
+echoerr() { echo "$@" 1>&2; }
+
+# Attempt to set APP_HOME
+# Resolve links: $0 may be a link
+PRG="$0"
+# Need this for relative symlinks.
+while [ -h "$PRG" ]; do
+  ls=$(ls -ld "$PRG")
+  link=$(expr "$ls" : '.*-> \(.*\)$')
+  if expr "$link" : '/.*' >/dev/null; then
+    PRG="$link"
+  else
+    PRG=$(dirname "$PRG")"/$link"
+  fi
+done
+SAVED="$(pwd)"
+cd "$(dirname "$PRG")/" >/dev/null
+APP_HOME="$(pwd -P)"
+cd "$SAVED" >/dev/null
+
+FLUTTER_SUBMODULE_NAME='.flutter'
+GIT_HOME=$(git -C "${APP_HOME}" rev-parse --show-toplevel)
+FLUTTER_DIR="${GIT_HOME}/${FLUTTER_SUBMODULE_NAME}"
+
+# by default we should be in the correct project dir, but when run from Finder on Mac, the cwd is wrong
+if [ "$(uname)" = "Darwin" ] && [ "$HOME" = "$PWD" ]; then
+  cd "$(dirname "$0")"
+fi
+
+# Fix not initialized flutter submodule
+if [ ! -f "${FLUTTER_DIR}/bin/flutter" ]; then
+  echoerr "$FLUTTER_SUBMODULE_NAME submodule not initialized. Initializing..."
+  git submodule update --init "${FLUTTER_DIR}"
+fi
+
+# Detect detach HEAD and fix it. commands like upgrade expect a valid branch, not a detached HEAD
+FLUTTER_SYMBOLIC_REF=$(git -C "${FLUTTER_DIR}" symbolic-ref -q HEAD)
+if [ -z "${FLUTTER_SYMBOLIC_REF}" ]; then
+  FLUTTER_REV=$(git -C "${FLUTTER_DIR}" rev-parse HEAD)
+  FLUTTER_CHANNEL=$(git -C "${GIT_HOME}" config -f .gitmodules submodule.${FLUTTER_SUBMODULE_NAME}.branch)
+
+  if [ -z "${FLUTTER_CHANNEL}" ]; then
+    echoerr "Warning: Submodule '$FLUTTER_SUBMODULE_NAME' doesn't point to an official Flutter channel \
+(one of stable|beta|dev|master). './flutterw upgrade' will fail without a channel."
+    echoerr "Fix this by adding a specific channel with:"
+    echoerr " - './flutterw channel <channel>' or"
+    echoerr " - Add 'branch = <channel>' to '$FLUTTER_SUBMODULE_NAME' submodule in .gitmodules"
+  else
+    echoerr "Fixing detached HEAD: '$FLUTTER_SUBMODULE_NAME' submodule points to a specific commit $FLUTTER_REV, not channel '$FLUTTER_CHANNEL' (as defined in .gitmodules)."
+    # Make sure channel is fetched
+    # Remove old channel branch because it might be moved to an unrelated commit where fast-forward pull isn't possible
+    git -C "${FLUTTER_DIR}" branch -q -D "${FLUTTER_CHANNEL}" 2> /dev/null || true
+    git -C "${FLUTTER_DIR}" fetch -q origin
+
+    # bind current HEAD to channel defined in .gitmodules
+    git -C "${FLUTTER_DIR}" checkout -q -b "${FLUTTER_CHANNEL}" "${FLUTTER_REV}"
+    git -C "${FLUTTER_DIR}" branch -q -u "origin/${FLUTTER_CHANNEL}" "${FLUTTER_CHANNEL}"
+    echoerr "Fixed! Migrated to channel '$FLUTTER_CHANNEL' while staying at commit $FLUTTER_REV. './flutterw upgrade' now works without problems!"
+    git -C "${FLUTTER_DIR}" status -bs
+  fi
+fi
+
+# Wrapper tasks done, call flutter binary with all args
+set -e
+"$FLUTTER_DIR/bin/flutter" "$@"
+set +e
+
+# Post flutterw tasks. exit code from /bin/flutterw will be used as final exit
+FLUTTER_EXIT_STATUS=$?
+if [ ${FLUTTER_EXIT_STATUS} -eq 0 ]; then
+
+  # ./flutterw channel CHANNEL
+  if echo "$@" | grep -q "channel"; then
+    if [ -n "$2" ]; then
+      # make sure .gitmodules is updated as well
+      CHANNEL=${2} # second arg
+      git config -f "${GIT_HOME}/.gitmodules" "submodule.${FLUTTER_SUBMODULE_NAME}.branch" "${CHANNEL}"
+      # makes sure nobody forgets to do commit all changed files
+      git add "${GIT_HOME}/.gitmodules"
+      git add "${FLUTTER_DIR}"
+    fi
+  fi
+
+  # ./flutterw upgrade
+  if echo "$@" | grep -q "upgrade"; then
+    # makes sure nobody forgets to do commit the changed submodule
+    git add "${FLUTTER_DIR}"
+    # flutter packages get runs automatically. Stage those changes as well
+    if [ -f pubspec.lock ]; then
+      git add pubspec.lock
+    fi
+  fi
+fi
+
+exit ${FLUTTER_EXIT_STATUS}

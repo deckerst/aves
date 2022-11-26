@@ -118,14 +118,14 @@ Some users have expressed the wish to financially support the project. Thanks! â
 
 Before running or building the app, update the dependencies for the desired flavor:
 ```
-# ./scripts/apply_flavor_play.sh
+# scripts/apply_flavor_play.sh
 ```
 
 To build the project, create a file named `<app dir>/android/key.properties`. It should contain a reference to a keystore for app signing, and other necessary credentials. See [key_template.properties](https://github.com/deckerst/aves/blob/develop/android/key_template.properties) for the expected keys.
 
 To run the app:
 ```
-# flutter run -t lib/main_play.dart --flavor play
+# ./flutterw run -t lib/main_play.dart --flavor play
 ```
 
 [Version badge]: https://img.shields.io/github/v/release/deckerst/aves?include_prereleases&sort=semver

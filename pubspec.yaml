@@ -3,14 +3,15 @@ description: A visual media gallery and metadata explorer app.
 repository: https://github.com/deckerst/aves
 # version bump checklist:
 # - pubspec version
-# - github changelog: /CHANGELOG.md
-# - play changelog:   /whatsnew/whatsnew-en-US
-# - izzy changelog:   /fastlane/metadata/android/en-US/changelogs/1XXX.txt
-version: 1.7.5+85
+# - github changelog:     /CHANGELOG.md
+# - play changelog:       /whatsnew/whatsnew-en-US
+# - izzy/libre changelog: /fastlane/metadata/android/en-US/changelogs/1XXX.txt
+version: 1.7.6+86
 publish_to: none
 
 environment:
-  # keep in sync with GitHub workflows
+  # this project bundles Flutter SDK via `flutter_wrapper`
+  # cf https://github.com/passsy/flutter_wrapper
   flutter: 3.3.9
   sdk: ">=2.18.0 <3.0.0"
 
