@@ -97,5 +97,5 @@ class AlbumFilter extends CoveredCollectionFilter {
 
   // key `album-{path}` is expected by test driver
   @override
-  String get key => '$type-$album';
+  String get key => '$type-$reversed-$album';
 }

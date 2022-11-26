@@ -57,5 +57,5 @@ class RecentlyAddedFilter extends CollectionFilter {
   String get category => type;
 
   @override
-  String get key => type;
+  String get key => '$type-$reversed';
 }

@@ -72,5 +72,5 @@ class CoordinateFilter extends CollectionFilter {
   String get category => type;
 
   @override
-  String get key => '$type-$sw-$ne';
+  String get key => '$type-$reversed-$sw-$ne';
 }

@@ -74,5 +74,5 @@ class MissingFilter extends CollectionFilter {
   String get category => type;
 
   @override
-  String get key => '$type-$metadataType';
+  String get key => '$type-$reversed-$metadataType';
 }
