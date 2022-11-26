@@ -73,8 +73,6 @@ class _AvesSelectionDialogState<T> extends State<AvesSelectionDialog<T>> {
           final radioValue = kv.key;
           final radioTitle = kv.value;
           return SelectionRadioListTile(
-            // key is expected by test driver
-            key: Key(radioValue.toString()),
             value: radioValue,
             title: radioTitle,
             optionSubtitleBuilder: widget.optionSubtitleBuilder,
@@ -125,7 +123,7 @@ class SelectionRadioListTile<T> extends StatelessWidget {
     final subtitle = optionSubtitleBuilder?.call(value);
     return ReselectableRadioListTile<T>(
       // key is expected by test driver
-      key: Key(value.toString()),
+      key: Key('$value'),
       value: value,
       groupValue: getGroupValue(),
       onChanged: (v) {
