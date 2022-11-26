@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Changed
+- build: use `flutter-wrapper`, bundle Flutter as submodule
+- build: use split APKs for `libre` flavor
+
 ## <a id="v1.7.5"></a>[v1.7.5] - 2022-11-23
 
 ### Added

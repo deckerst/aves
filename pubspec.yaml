@@ -10,7 +10,8 @@ version: 1.7.5+85
 publish_to: none
 
 environment:
-  # keep in sync with GitHub workflows
+  # this project bundles Flutter SDK via `flutter_wrapper`
+  # cf https://github.com/passsy/flutter_wrapper
   flutter: 3.3.9
   sdk: ">=2.18.0 <3.0.0"
 

@@ -1,10 +1,15 @@
 #!/bin/bash
-FILE_PATH="../lib/flutter_version.dart"
+if [ ! -d "scripts" ]; then
+  cd ..
+fi
+
+FILE_PATH="lib/flutter_version.dart"
+
 rm "$FILE_PATH"
 echo "Updating flutter_version.dart:"
 {
   echo "const Map<String, String> version = "
-  flutter --version --machine
+  ./flutterw --version --machine
   echo ";"
 } >> "$FILE_PATH"
 cat "$FILE_PATH"
