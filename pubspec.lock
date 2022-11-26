@@ -326,7 +326,7 @@ packages:
       name: flex_color_picker
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.6.1"
+    version: "3.0.0"
   flex_seed_scheme:
     dependency: transitive
     description:
@@ -1242,7 +1242,7 @@ packages:
       name: win32
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.1.1"
+    version: "3.1.2"
   wkt_parser:
     dependency: transitive
     description:

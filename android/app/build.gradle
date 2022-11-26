@@ -33,12 +33,12 @@ if (keystorePropertiesFile.exists()) {
     // for release using credentials in environment variables set up by GitHub Actions
     // warning: in property file, single quotes should be escaped with a backslash
     // but they should not be escaped when stored in env variables
-    keystoreProperties['storeFile'] = System.getenv('AVES_STORE_FILE')
-    keystoreProperties['storePassword'] = System.getenv('AVES_STORE_PASSWORD')
-    keystoreProperties['keyAlias'] = System.getenv('AVES_KEY_ALIAS')
-    keystoreProperties['keyPassword'] = System.getenv('AVES_KEY_PASSWORD')
-    keystoreProperties['googleApiKey'] = System.getenv('AVES_GOOGLE_API_KEY')
-    keystoreProperties['huaweiApiKey'] = System.getenv('AVES_HUAWEI_API_KEY')
+    keystoreProperties['storeFile'] = System.getenv('AVES_STORE_FILE') ?: '<NONE>'
+    keystoreProperties['storePassword'] = System.getenv('AVES_STORE_PASSWORD') ?: '<NONE>'
+    keystoreProperties['keyAlias'] = System.getenv('AVES_KEY_ALIAS') ?: '<NONE>'
+    keystoreProperties['keyPassword'] = System.getenv('AVES_KEY_PASSWORD') ?: '<NONE>'
+    keystoreProperties['googleApiKey'] = System.getenv('AVES_GOOGLE_API_KEY') ?: '<NONE>'
+    keystoreProperties['huaweiApiKey'] = System.getenv('AVES_HUAWEI_API_KEY') ?: '<NONE>'
 }
 
 android {
@@ -60,8 +60,8 @@ android {
         targetSdkVersion 33
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
-        manifestPlaceholders = [googleApiKey: keystoreProperties['googleApiKey'],
-                                huaweiApiKey: keystoreProperties['huaweiApiKey']]
+        manifestPlaceholders = [googleApiKey: keystoreProperties['googleApiKey'] ?: '<NONE>',
+                                huaweiApiKey: keystoreProperties['huaweiApiKey'] ?: '<NONE>']
         multiDexEnabled true
     }
 
@@ -105,8 +105,8 @@ android {
             // check offending libraries with `fdroidserver`
             // cf https://f-droid.org/en/docs/Submitting_to_F-Droid_Quick_Start_Guide/
             dimension "store"
-            // generate a universal APK without x86 native libs
-            ext.useNdkAbiFilters = true
+            // generate APK by ABI, but NDK ABI filters are incompatible with split APK generation
+            ext.useNdkAbiFilters = false
             applicationIdSuffix ".libre"
         }
     }
