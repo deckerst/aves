@@ -4,13 +4,20 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.7.7"></a>[v1.7.7] - 2022-11-27
+
 ### Added
 
 - Romanian translation (thanks Ralea Adrian Vicențiu, Igor Sorocean)
 
+### Changed
+
+- build: changed version codes for `izzy`, `libre` flavors
+
 ## <a id="v1.7.6"></a>[v1.7.6] - 2022-11-26
 
 ### Changed
+
 - build: use `flutter-wrapper`, bundle Flutter as submodule
 - build: use split APKs for `libre` flavor
 
