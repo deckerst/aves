@@ -128,6 +128,13 @@ android {
         applicationVariants.all { variant ->
             variant.resValue 'string', 'screen_saver_settings_activity', "${applicationId}/${packageName}.ScreenSaverSettingsActivity"
             variant.resValue 'string', 'search_provider', "${applicationId}.search_provider"
+
+            variant.outputs.each { output ->
+                def baseAbiVersionCode = rootProject.ext.abiCodes.get(output.getFilter(com.android.build.OutputFile.ABI))
+                if (baseAbiVersionCode != null) {
+                    output.versionCodeOverride = variant.versionCode * 100 + baseAbiVersionCode
+                }
+            }
         }
 
         android.productFlavors.each { flavor ->
