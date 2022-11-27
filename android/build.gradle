@@ -1,9 +1,11 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
-    ext.kotlin_version = '1.7.20'
-
-    ext.useCrashlytics = gradle.startParameter.taskNames.any { task -> task.containsIgnoreCase("play") }
-    ext.useHms = gradle.startParameter.taskNames.any { task -> task.containsIgnoreCase("huawei") }
+    ext {
+        kotlin_version = '1.7.20'
+        abiCodes = ['armeabi-v7a': 1, 'arm64-v8a': 2, 'x86': 3, 'x86_64': 4]
+        useCrashlytics = gradle.startParameter.taskNames.any { task -> task.containsIgnoreCase("play") }
+        useHms = gradle.startParameter.taskNames.any { task -> task.containsIgnoreCase("huawei") }
+    }
 
     repositories {
         google()
