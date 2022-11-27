@@ -16,7 +16,7 @@ abstract class AndroidAppService {
 
   Future<bool> edit(String uri, String mimeType);
 
-  Future<bool> open(String uri, String mimeType);
+  Future<bool> open(String uri, String mimeType, {required bool forceChooser});
 
   Future<bool> openMap(LatLng latLng);
 
@@ -101,11 +101,12 @@ class PlatformAndroidAppService implements AndroidAppService {
   }
 
   @override
-  Future<bool> open(String uri, String mimeType) async {
+  Future<bool> open(String uri, String mimeType, {required bool forceChooser}) async {
     try {
       final result = await _platform.invokeMethod('open', <String, dynamic>{
         'uri': uri,
         'mimeType': mimeType,
+        'forceChooser': forceChooser,
       });
       if (result != null) return result as bool;
     } on PlatformException catch (e, stack) {

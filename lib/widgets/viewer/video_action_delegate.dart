@@ -65,9 +65,9 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       case EntryAction.videoSkip10:
         await controller.seekTo(controller.currentPosition + 10000);
         break;
-      case EntryAction.open:
+      case EntryAction.openVideo:
         final entry = controller.entry;
-        await androidAppService.open(entry.uri, entry.mimeTypeAnySubtype).then((success) {
+        await androidAppService.open(entry.uri, entry.mimeTypeAnySubtype, forceChooser: false).then((success) {
           if (!success) showNoMatchingAppDialog(context);
         });
         break;

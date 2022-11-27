@@ -66,7 +66,7 @@ class VideoControlRow extends StatelessWidget {
             final trashed = controller?.entry.trashed ?? false;
             return Padding(
               padding: const EdgeInsetsDirectional.only(start: padding),
-              child: _buildIconButton(context, EntryAction.open, enabled: !trashed),
+              child: _buildIconButton(context, EntryAction.openVideo, enabled: !trashed),
             );
           case VideoControls.none:
             return const SizedBox();

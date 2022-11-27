@@ -34,6 +34,7 @@ enum EntryAction {
   // external
   edit,
   open,
+  openVideo,
   openMap,
   setAs,
   // platform
@@ -191,6 +192,7 @@ extension ExtraEntryAction on EntryAction {
       case EntryAction.edit:
         return context.l10n.entryActionEdit;
       case EntryAction.open:
+      case EntryAction.openVideo:
         return context.l10n.entryActionOpen;
       case EntryAction.openMap:
         return context.l10n.entryActionOpenMap;
@@ -302,6 +304,7 @@ extension ExtraEntryAction on EntryAction {
       case EntryAction.edit:
         return AIcons.edit;
       case EntryAction.open:
+      case EntryAction.openVideo:
         return AIcons.openOutside;
       case EntryAction.openMap:
         return AIcons.map;

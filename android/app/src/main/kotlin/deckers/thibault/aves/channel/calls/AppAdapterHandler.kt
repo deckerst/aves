@@ -232,7 +232,8 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
         val title = call.argument<String>("title")
         val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
         val mimeType = call.argument<String>("mimeType")
-        if (uri == null) {
+        val forceChooser = call.argument<Boolean>("forceChooser")
+        if (uri == null || forceChooser == null) {
             result.error("open-args", "missing arguments", null)
             return
         }
@@ -240,7 +241,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
         val intent = Intent(Intent.ACTION_VIEW)
             .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             .setDataAndType(getShareableUri(context, uri), mimeType)
-        val started = safeStartActivityChooser(title, intent)
+        val started = if (forceChooser) safeStartActivityChooser(title, intent) else safeStartActivity(intent)
 
         result.success(started)
     }
