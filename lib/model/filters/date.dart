@@ -137,7 +137,7 @@ class DateFilter extends CollectionFilter {
   String get category => type;
 
   @override
-  String get key => '$type-$level-$date';
+  String get key => '$type-$reversed-$level-$date';
 }
 
 enum DateLevel { y, ym, ymd, md, m, d }

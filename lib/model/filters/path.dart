@@ -51,5 +51,5 @@ class PathFilter extends CollectionFilter {
   String get category => type;
 
   @override
-  String get key => '$type-$path';
+  String get key => '$type-$reversed-$path';
 }

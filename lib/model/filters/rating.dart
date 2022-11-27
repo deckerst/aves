@@ -58,7 +58,7 @@ class RatingFilter extends CollectionFilter {
   String get category => type;
 
   @override
-  String get key => '$type-$rating';
+  String get key => '$type-$reversed-$rating';
 
   static String formatRating(BuildContext context, int rating) {
     switch (rating) {

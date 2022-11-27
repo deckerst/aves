@@ -120,9 +120,9 @@ void configureCollectionVisibility(AppDebugAction action) {
 void collection() {
   test('1. Collection', () async {
     await driver.tapKeyAndWait('appbar-leading-button');
-    await driver.tapKeyAndWait('drawer-type-favourite');
-    await _search('birds', 'tag-birds');
-    await _search('South Korea', 'tag-South Korea');
+    await driver.tapKeyAndWait('drawer-type-favourite-false');
+    await _search('birds', 'tag-false-birds');
+    await _search('South Korea', 'tag-false-South Korea');
 
     await _takeScreenshot(driver, '1');
   });
@@ -133,7 +133,7 @@ void viewer() {
     await driver.tapKeyAndWait('appbar-leading-button');
     await driver.tapKeyAndWait('drawer-type-null');
 
-    await _search('viewer', 'album-$screenshotsTargetDirAndroid/viewer');
+    await _search('viewer', 'album-false-$screenshotsTargetDirAndroid/viewer');
 
     // delay to avoid flaky descendant resolution
     await Future.delayed(const Duration(seconds: 2));
@@ -190,8 +190,8 @@ void stats() {
     final maxYear = DateTime.now().year + 1;
     final maxQuery = 'year<$maxYear';
     const minQuery = 'year>2005';
-    await _search(maxQuery, 'query-$maxQuery');
-    await _search(minQuery, 'query-$minQuery');
+    await _search(maxQuery, 'query-false-$maxQuery');
+    await _search(minQuery, 'query-false-$minQuery');
 
     await driver.tapKeyAndWait('appbar-menu-button');
     await driver.tapKeyAndWait('menu-stats');
@@ -217,8 +217,8 @@ void map() {
     await driver.tapKeyAndWait('appbar-leading-button');
     await driver.tapKeyAndWait('drawer-type-null');
 
-    await _search('animals', 'tag-animals');
-    await _search('Singapore', 'location-LocationLevel.country-Singapore');
+    await _search('animals', 'tag-false-animals');
+    await _search('Singapore', 'location-false-LocationLevel.country-Singapore');
 
     await driver.tapKeyAndWait('appbar-menu-button');
     await driver.tapKeyAndWait('menu-map');

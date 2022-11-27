@@ -30,12 +30,14 @@ class AboutTranslators extends StatelessWidget {
     Contributor('Jean Mareilles', 'waged1266@tutanota.com'),
     Contributor('이정희', 'daemul72@gmail.com'),
     Contributor('Translator-3000', 'weblate.m1d0h@8shield.net'),
+    Contributor('Ralea Adrian Vicențiu', 'ralea.adrian@gmail.com'),
+    Contributor('Igor Sorocean', 'sorocean.igor@gmail.com'),
     // Contributor('Allan Nordhøy', 'epost@anotheragency.no'),
     // Contributor('Piotr K', '1337.kelt@gmail.com'),
     // Contributor('امیر جهانگرد', 'ijahangard.a@gmail.com'),
-    // Contributor('Ralea Adrian Vicențiu', 'ralea.adrian@gmail.com'),
     // Contributor('SAMIRAH AIL', 'samiratalzahrani@gmail.com'),
     // Contributor('Salih Ail', 'rrrfff444@gmail.com'),
+    // Contributor('Gediminas Murauskas', 'muziejusinfo@gmail.com'),
   };
 
   @override

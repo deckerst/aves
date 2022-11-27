@@ -14,6 +14,7 @@ class SupportedLocales {
     'ko': '한국어',
     'nl': 'Nederlands',
     'pt': 'Português (Brasil)',
+    'ro': 'Română',
     'ru': 'Русский',
     'tr': 'Türkçe',
     'zh': '简体中文',
