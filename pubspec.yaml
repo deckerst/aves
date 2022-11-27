@@ -3,10 +3,11 @@ description: A visual media gallery and metadata explorer app.
 repository: https://github.com/deckerst/aves
 # version bump checklist:
 # - pubspec version
-# - github changelog:     /CHANGELOG.md
-# - play changelog:       /whatsnew/whatsnew-en-US
-# - izzy/libre changelog: /fastlane/metadata/android/en-US/changelogs/1XXX.txt
-version: 1.7.6+86
+# - github changelog: /CHANGELOG.md
+# - play changelog:   /whatsnew/whatsnew-en-US
+# - izzy changelog:   /fastlane/metadata/android/en-US/changelogs/XX01.txt
+# - libre changelog:  /fastlane/metadata/android/en-US/changelogs/XX.txt
+version: 1.7.7+87
 publish_to: none
 
 environment:
