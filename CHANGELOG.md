@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Changed
+
+- Viewer: allow setting default outside video player
+
 ## <a id="v1.7.7"></a>[v1.7.7] - 2022-11-27
 
 ### Added

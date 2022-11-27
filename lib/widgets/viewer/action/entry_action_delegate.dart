@@ -93,6 +93,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         case EntryAction.videoTogglePlay:
         case EntryAction.videoReplay10:
         case EntryAction.videoSkip10:
+        case EntryAction.openVideo:
           return targetEntry.isVideo;
         case EntryAction.rotateScreen:
           return settings.isRotationLocked;
@@ -225,6 +226,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       case EntryAction.videoTogglePlay:
       case EntryAction.videoReplay10:
       case EntryAction.videoSkip10:
+      case EntryAction.openVideo:
         final controller = context.read<VideoConductor>().getController(targetEntry);
         if (controller != null) {
           VideoActionNotification(controller: controller, action: action).dispatch(context);
@@ -236,7 +238,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         });
         break;
       case EntryAction.open:
-        androidAppService.open(targetEntry.uri, targetEntry.mimeTypeAnySubtype).then((success) {
+        androidAppService.open(targetEntry.uri, targetEntry.mimeTypeAnySubtype, forceChooser: true).then((success) {
           if (!success) showNoMatchingAppDialog(context);
         });
         break;
