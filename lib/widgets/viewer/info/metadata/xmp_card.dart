@@ -92,7 +92,6 @@ class _XmpCardState extends State<XmpCard> {
                     Expanded(
                       child: HighlightTitle(
                         title: widget.title,
-                        selectable: true,
                         showHighlight: false,
                       ),
                     ),
