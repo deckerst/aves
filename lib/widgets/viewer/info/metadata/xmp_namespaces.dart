@@ -116,7 +116,6 @@ class XmpNamespace extends Equatable {
                 child: HighlightTitle(
                   title: displayTitle,
                   color: context.select<AvesColorsData, Color?>((v) => v.fromBrandColor(BrandColors.get(displayTitle))),
-                  selectable: true,
                 ),
               ),
             ...content

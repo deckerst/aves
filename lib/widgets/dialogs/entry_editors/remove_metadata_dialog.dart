@@ -5,6 +5,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/ref/brand_colors.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/durations.dart';
+import 'package:aves/widgets/common/basic/outlined_text.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/highlight_decoration.dart';
 import 'package:aves/widgets/common/identity/highlight_title.dart';
@@ -100,15 +101,21 @@ class _RemoveEntryMetadataDialogState extends State<RemoveEntryMetadataDialog> {
 
   Widget _toTile(MetadataType type) {
     final text = type.getText();
-    Widget child = Text(
-      text,
-      style: TextStyle(
-        shadows: Theme.of(context).brightness == Brightness.dark ? HighlightTitle.shadows : null,
-      ),
+    Widget child = OutlinedText(
+      textSpans: [
+        TextSpan(
+          text: text,
+          style: TextStyle(
+            shadows: HighlightTitle.shadows(context),
+          ),
+        ),
+      ],
+      outlineColor: Theme.of(context).scaffoldBackgroundColor,
     );
     if (context.select<Settings, bool>((v) => v.themeColorMode == AvesThemeColorMode.polychrome)) {
       final colors = context.watch<AvesColorsData>();
-      child = DecoratedBox(
+      child = Container(
+        padding: const EdgeInsets.symmetric(horizontal: 2),
         decoration: HighlightDecoration(
           color: colors.fromBrandColor(BrandColors.get(text)) ?? colors.fromString(text),
         ),

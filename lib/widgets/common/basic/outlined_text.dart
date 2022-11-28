@@ -8,6 +8,9 @@ class OutlinedText extends StatelessWidget {
   final Color outlineColor;
   final double outlineBlurSigma;
   final TextAlign? textAlign;
+  final bool? softWrap;
+  final TextOverflow? overflow;
+  final int? maxLines;
 
   static const widgetSpanAlignment = PlaceholderAlignment.middle;
 
@@ -18,6 +21,9 @@ class OutlinedText extends StatelessWidget {
     Color? outlineColor,
     double? outlineBlurSigma,
     this.textAlign,
+    this.softWrap,
+    this.overflow,
+    this.maxLines,
   })  : outlineWidth = outlineWidth ?? 1,
         outlineColor = outlineColor ?? Colors.black,
         outlineBlurSigma = outlineBlurSigma ?? 0;
@@ -49,6 +55,9 @@ class OutlinedText extends StatelessWidget {
                 children: textSpans.map(_toStrokeSpan).toList(),
               ),
               textAlign: textAlign,
+              softWrap: softWrap,
+              overflow: overflow,
+              maxLines: maxLines,
             ),
           ),
         Text.rich(
@@ -56,6 +65,9 @@ class OutlinedText extends StatelessWidget {
             children: hasOutline ? textSpans.map(_toFillSpan).toList() : textSpans,
           ),
           textAlign: textAlign,
+          softWrap: softWrap,
+          overflow: overflow,
+          maxLines: maxLines,
         ),
       ],
     );
