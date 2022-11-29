@@ -5,6 +5,7 @@ import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/app_bar/favourite_toggler.dart';
+import 'package:aves/widgets/common/app_bar/rate_button.dart';
 import 'package:aves/widgets/common/basic/menu.dart';
 import 'package:aves/widgets/common/basic/popup_menu_button.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -230,6 +231,13 @@ class ViewerButtonRowContent extends StatelessWidget {
       case EntryAction.videoSetSpeed:
         child = _buildFromListenable(videoController?.canSetSpeedNotifier);
         break;
+      case EntryAction.editRating:
+        child = RateButton(
+          chooserPosition: PopupMenuPosition.over,
+          onChooserValue: (rating) => _quickRate(context, rating),
+          onPressed: onPressed,
+        );
+        break;
       default:
         child = IconButton(
           icon: action.getIcon(),
@@ -353,7 +361,9 @@ class ViewerButtonRowContent extends StatelessWidget {
     );
   }
 
-  void _onActionSelected(BuildContext context, EntryAction action) {
-    EntryActionDelegate(mainEntry, pageEntry, collection).onActionSelected(context, action);
-  }
+  EntryActionDelegate get _entryActionDelegate => EntryActionDelegate(mainEntry, pageEntry, collection);
+
+  void _onActionSelected(BuildContext context, EntryAction action) => _entryActionDelegate.onActionSelected(context, action);
+
+  void _quickRate(BuildContext context, int? rating) => _entryActionDelegate.quickRate(context, rating);
 }

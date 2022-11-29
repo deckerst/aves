@@ -29,6 +29,10 @@ class _FavouriteTogglerState extends State<FavouriteToggler> {
 
   Set<AvesEntry> get entries => widget.entries;
 
+  static const isFavouriteIcon = AIcons.favouriteActive;
+  static const isNotFavouriteIcon = AIcons.favourite;
+  static const favouriteSweeperIcon = AIcons.favourite;
+
   @override
   void initState() {
     super.initState();
@@ -57,25 +61,25 @@ class _FavouriteTogglerState extends State<FavouriteToggler> {
           return isFavourite
               ? MenuRow(
                   text: context.l10n.entryActionRemoveFavourite,
-                  icon: const Icon(AIcons.favouriteActive),
+                  icon: const Icon(isFavouriteIcon),
                 )
               : MenuRow(
                   text: context.l10n.entryActionAddFavourite,
-                  icon: const Icon(AIcons.favourite),
+                  icon: const Icon(isNotFavouriteIcon),
                 );
         }
         return Stack(
           alignment: Alignment.center,
           children: [
             IconButton(
-              icon: Icon(isFavourite ? AIcons.favouriteActive : AIcons.favourite),
+              icon: Icon(isFavourite ? isFavouriteIcon : isNotFavouriteIcon),
               onPressed: widget.onPressed,
               tooltip: isFavourite ? context.l10n.entryActionRemoveFavourite : context.l10n.entryActionAddFavourite,
             ),
             Sweeper(
               key: ValueKey(entries.length == 1 ? entries.first : entries.length),
               builder: (context) => Icon(
-                AIcons.favourite,
+                favouriteSweeperIcon,
                 color: context.select<AvesColorsData, Color>((v) => v.favourite),
               ),
               toggledNotifier: isFavouriteNotifier,
