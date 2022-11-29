@@ -3,7 +3,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/themes.dart';
 import 'package:aves/widgets/common/fx/blurred.dart';
 import 'package:aves/widgets/viewer/multipage/conductor.dart';
-import 'package:aves/widgets/viewer/overlay/details.dart';
+import 'package:aves/widgets/viewer/overlay/details/details.dart';
 import 'package:aves/widgets/viewer/overlay/minimap.dart';
 import 'package:aves/widgets/viewer/page_entry_builder.dart';
 import 'package:aves/widgets/viewer/visual/conductor.dart';

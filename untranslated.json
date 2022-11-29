@@ -443,6 +443,7 @@
     "settingsViewerShowMinimap",
     "settingsViewerShowInformation",
     "settingsViewerShowInformationSubtitle",
+    "settingsViewerShowRatingTags",
     "settingsViewerShowShootingDetails",
     "settingsViewerShowOverlayThumbnails",
     "settingsViewerEnableOverlayBlurEffect",
@@ -596,17 +597,20 @@
     "subtitlePositionBottom",
     "widgetDisplayedItemRandom",
     "widgetDisplayedItemMostRecent",
+    "settingsViewerShowRatingTags",
     "settingsSubtitleThemeTextPositionTile",
     "settingsSubtitleThemeTextPositionDialogTitle",
     "settingsWidgetDisplayedItem"
   ],
 
   "el": [
-    "filterNoAddressLabel"
+    "filterNoAddressLabel",
+    "settingsViewerShowRatingTags"
   ],
 
   "es": [
-    "filterNoAddressLabel"
+    "filterNoAddressLabel",
+    "settingsViewerShowRatingTags"
   ],
 
   "fa": [
@@ -1053,6 +1057,7 @@
     "settingsViewerShowMinimap",
     "settingsViewerShowInformation",
     "settingsViewerShowInformationSubtitle",
+    "settingsViewerShowRatingTags",
     "settingsViewerShowShootingDetails",
     "settingsViewerShowOverlayThumbnails",
     "settingsViewerEnableOverlayBlurEffect",
@@ -1201,7 +1206,8 @@
   ],
 
   "fr": [
-    "filterNoAddressLabel"
+    "filterNoAddressLabel",
+    "settingsViewerShowRatingTags"
   ],
 
   "gl": [
@@ -1515,6 +1521,7 @@
     "settingsViewerShowMinimap",
     "settingsViewerShowInformation",
     "settingsViewerShowInformationSubtitle",
+    "settingsViewerShowRatingTags",
     "settingsViewerShowShootingDetails",
     "settingsViewerShowOverlayThumbnails",
     "settingsViewerEnableOverlayBlurEffect",
@@ -1669,13 +1676,15 @@
     "subtitlePositionBottom",
     "widgetDisplayedItemRandom",
     "widgetDisplayedItemMostRecent",
+    "settingsViewerShowRatingTags",
     "settingsSubtitleThemeTextPositionTile",
     "settingsSubtitleThemeTextPositionDialogTitle",
     "settingsWidgetDisplayedItem"
   ],
 
   "it": [
-    "filterNoAddressLabel"
+    "filterNoAddressLabel",
+    "settingsViewerShowRatingTags"
   ],
 
   "ja": [
@@ -1686,17 +1695,20 @@
     "subtitlePositionBottom",
     "widgetDisplayedItemRandom",
     "widgetDisplayedItemMostRecent",
+    "settingsViewerShowRatingTags",
     "settingsSubtitleThemeTextPositionTile",
     "settingsSubtitleThemeTextPositionDialogTitle",
     "settingsWidgetDisplayedItem"
   ],
 
   "ko": [
-    "filterNoAddressLabel"
+    "filterNoAddressLabel",
+    "settingsViewerShowRatingTags"
   ],
 
   "lt": [
-    "filterNoAddressLabel"
+    "filterNoAddressLabel",
+    "settingsViewerShowRatingTags"
   ],
 
   "nb": [
@@ -1788,6 +1800,7 @@
     "settingsViewerOverlayTile",
     "settingsViewerOverlayPageTitle",
     "settingsViewerShowOverlayOnOpening",
+    "settingsViewerShowRatingTags",
     "settingsViewerShowShootingDetails",
     "settingsViewerEnableOverlayBlurEffect",
     "settingsSlideshowShuffle",
@@ -1828,6 +1841,7 @@
     "subtitlePositionBottom",
     "widgetDisplayedItemRandom",
     "widgetDisplayedItemMostRecent",
+    "settingsViewerShowRatingTags",
     "settingsSubtitleThemeTextPositionTile",
     "settingsSubtitleThemeTextPositionDialogTitle",
     "settingsWidgetDisplayedItem"
@@ -2184,6 +2198,7 @@
     "settingsViewerShowMinimap",
     "settingsViewerShowInformation",
     "settingsViewerShowInformationSubtitle",
+    "settingsViewerShowRatingTags",
     "settingsViewerShowShootingDetails",
     "settingsViewerShowOverlayThumbnails",
     "settingsViewerEnableOverlayBlurEffect",
@@ -2338,17 +2353,20 @@
     "subtitlePositionBottom",
     "widgetDisplayedItemRandom",
     "widgetDisplayedItemMostRecent",
+    "settingsViewerShowRatingTags",
     "settingsSubtitleThemeTextPositionTile",
     "settingsSubtitleThemeTextPositionDialogTitle",
     "settingsWidgetDisplayedItem"
   ],
 
   "ro": [
-    "filterNoAddressLabel"
+    "filterNoAddressLabel",
+    "settingsViewerShowRatingTags"
   ],
 
   "ru": [
-    "filterNoAddressLabel"
+    "filterNoAddressLabel",
+    "settingsViewerShowRatingTags"
   ],
 
   "th": [
@@ -2575,6 +2593,7 @@
     "settingsViewerShowMinimap",
     "settingsViewerShowInformation",
     "settingsViewerShowInformationSubtitle",
+    "settingsViewerShowRatingTags",
     "settingsViewerShowShootingDetails",
     "settingsViewerShowOverlayThumbnails",
     "settingsViewerEnableOverlayBlurEffect",
@@ -2723,20 +2742,14 @@
   ],
 
   "tr": [
-    "entryInfoActionExportMetadata",
     "filterNoAddressLabel",
-    "subtitlePositionTop",
-    "subtitlePositionBottom",
-    "widgetDisplayedItemRandom",
-    "widgetDisplayedItemMostRecent",
-    "settingsSubtitleThemeTextPositionTile",
-    "settingsSubtitleThemeTextPositionDialogTitle",
-    "settingsWidgetDisplayedItem"
+    "settingsViewerShowRatingTags"
   ],
 
   "zh": [
     "filterNoAddressLabel",
     "aboutLicensesFlutterPackagesSectionTitle",
-    "aboutLicensesDartPackagesSectionTitle"
+    "aboutLicensesDartPackagesSectionTitle",
+    "settingsViewerShowRatingTags"
   ]
 }

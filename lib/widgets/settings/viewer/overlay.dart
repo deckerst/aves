@@ -31,6 +31,18 @@ class ViewerOverlayPage extends StatelessWidget {
               subtitle: context.l10n.settingsViewerShowInformationSubtitle,
             ),
             Selector<Settings, Tuple2<bool, bool>>(
+              selector: (context, s) => Tuple2(s.showOverlayInfo, s.showOverlayRatingTags),
+              builder: (context, s, child) {
+                final showInfo = s.item1;
+                final current = s.item2;
+                return SwitchListTile(
+                  value: current,
+                  onChanged: showInfo ? (v) => settings.showOverlayRatingTags = v : null,
+                  title: Text(context.l10n.settingsViewerShowRatingTags),
+                );
+              },
+            ),
+            Selector<Settings, Tuple2<bool, bool>>(
               selector: (context, s) => Tuple2(s.showOverlayInfo, s.showOverlayShootingDetails),
               builder: (context, s, child) {
                 final showInfo = s.item1;

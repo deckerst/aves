@@ -2,6 +2,7 @@ import 'package:aves/app_flavor.dart';
 import 'package:aves/model/settings/defaults.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
+import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/basic/markdown_container.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_logo.dart';
@@ -155,7 +156,7 @@ class _WelcomePageState extends State<WelcomePage> {
             value: settings.isInstalledAppAccessAllowed,
             onChanged: (v) => setState(() => settings.isInstalledAppAccessAllowed = v),
             title: Text(l10n.settingsAllowInstalledAppAccess),
-            subtitle: Text([l10n.welcomeOptional, l10n.settingsAllowInstalledAppAccessSubtitle].join(' • ')),
+            subtitle: Text([l10n.welcomeOptional, l10n.settingsAllowInstalledAppAccessSubtitle].join(Constants.separator)),
             contentPadding: contentPadding,
           ),
           if (canEnableErrorReporting)

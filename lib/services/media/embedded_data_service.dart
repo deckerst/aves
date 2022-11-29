@@ -1,5 +1,6 @@
 import 'package:aves/model/entry.dart';
 import 'package:aves/services/common/services.dart';
+import 'package:aves/utils/constants.dart';
 import 'package:flutter/services.dart';
 
 abstract class EmbeddedDataService {
@@ -37,7 +38,7 @@ class PlatformEmbeddedDataService implements EmbeddedDataService {
         'mimeType': entry.mimeType,
         'uri': entry.uri,
         'sizeBytes': entry.sizeBytes,
-        'displayName': '${entry.bestTitle} • Video',
+        'displayName': ['${entry.bestTitle}', 'Video'].join(Constants.separator),
       });
       if (result != null) return result as Map;
     } on PlatformException catch (e, stack) {
@@ -51,7 +52,7 @@ class PlatformEmbeddedDataService implements EmbeddedDataService {
     try {
       final result = await _platform.invokeMethod('extractVideoEmbeddedPicture', <String, dynamic>{
         'uri': entry.uri,
-        'displayName': '${entry.bestTitle} • Cover',
+        'displayName': ['${entry.bestTitle}', 'Cover'].join(Constants.separator),
       });
       if (result != null) return result as Map;
     } on PlatformException catch (e, stack) {
@@ -67,7 +68,7 @@ class PlatformEmbeddedDataService implements EmbeddedDataService {
         'mimeType': entry.mimeType,
         'uri': entry.uri,
         'sizeBytes': entry.sizeBytes,
-        'displayName': '${entry.bestTitle} • $props',
+        'displayName': ['${entry.bestTitle}', '$props'].join(Constants.separator),
         'propPath': props,
         'propMimeType': propMimeType,
       });
