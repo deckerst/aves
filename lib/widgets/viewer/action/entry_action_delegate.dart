@@ -149,18 +149,22 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     }
   }
 
-  void onActionSelected(BuildContext context, EntryAction action) {
-    var targetEntry = mainEntry;
+  AvesEntry _getTargetEntry(BuildContext context, EntryAction action) {
     if (mainEntry.isMultiPage && (mainEntry.isBurst || EntryActions.pageActions.contains(action))) {
       final multiPageController = context.read<MultiPageConductor>().getController(mainEntry);
       if (multiPageController != null) {
         final multiPageInfo = multiPageController.info;
         final pageEntry = multiPageInfo?.getPageEntryByIndex(multiPageController.page);
         if (pageEntry != null) {
-          targetEntry = pageEntry;
+          return pageEntry;
         }
       }
     }
+    return mainEntry;
+  }
+
+  void onActionSelected(BuildContext context, EntryAction action) {
+    final targetEntry = _getTargetEntry(context, action);
 
     switch (action) {
       case EntryAction.info:
@@ -274,6 +278,11 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         _goToDebug(context, targetEntry);
         break;
     }
+  }
+
+  void quickRate(BuildContext context, int? rating) {
+    final targetEntry = _getTargetEntry(context, EntryAction.editRating);
+    _metadataActionDelegate.quickRate(context, targetEntry, rating);
   }
 
   Future<void> _addShortcut(BuildContext context, AvesEntry targetEntry) async {

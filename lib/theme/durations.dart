@@ -102,6 +102,7 @@ class DurationsData {
   final Duration iconAnimation;
   final Duration staggeredAnimation;
   final Duration staggeredAnimationPageTarget;
+  final Duration quickChooserAnimation;
 
   // viewer animations
   final Duration viewerVerticalPageScrollAnimation;
@@ -119,6 +120,7 @@ class DurationsData {
     this.iconAnimation = const Duration(milliseconds: 300),
     this.staggeredAnimation = const Duration(milliseconds: 375),
     this.staggeredAnimationPageTarget = const Duration(milliseconds: 800),
+    this.quickChooserAnimation = const Duration(milliseconds: 100),
     this.viewerVerticalPageScrollAnimation = const Duration(milliseconds: 500),
     this.viewerOverlayAnimation = const Duration(milliseconds: 200),
     this.viewerOverlayChangeAnimation = const Duration(milliseconds: 150),
@@ -134,6 +136,7 @@ class DurationsData {
       iconAnimation: Duration.zero,
       staggeredAnimation: Duration.zero,
       staggeredAnimationPageTarget: Duration.zero,
+      quickChooserAnimation: Duration.zero,
       viewerVerticalPageScrollAnimation: Duration.zero,
       viewerOverlayAnimation: Duration.zero,
       viewerOverlayChangeAnimation: Duration.zero,

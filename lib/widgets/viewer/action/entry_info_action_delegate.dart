@@ -144,6 +144,10 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
 
   Future<void> _editRating(BuildContext context, AvesEntry targetEntry) async {
     final rating = await selectRating(context, {targetEntry});
+    await quickRate(context, targetEntry, rating);
+  }
+
+  Future<void> quickRate(BuildContext context, AvesEntry targetEntry, int? rating) async {
     if (rating == null) return;
 
     await edit(context, targetEntry, () => targetEntry.editRating(rating));
