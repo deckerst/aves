@@ -124,6 +124,8 @@
   "entryInfoActionRemoveMetadata": "Remove metadata",
   "entryInfoActionExportMetadata": "Export metadata",
 
+  "filterAspectRatioLandscapeLabel": "Landscape",
+  "filterAspectRatioPortraitLabel": "Portrait",
   "filterBinLabel": "Recycle bin",
   "filterFavouriteLabel": "Favorite",
   "filterNoDateLabel": "Undated",

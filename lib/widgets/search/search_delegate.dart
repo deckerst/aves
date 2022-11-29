@@ -1,4 +1,5 @@
 import 'package:aves/model/filters/album.dart';
+import 'package:aves/model/filters/aspect_ratio.dart';
 import 'package:aves/model/filters/date.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/filters.dart';
@@ -40,6 +41,8 @@ class CollectionSearchDelegate extends AvesSearchDelegate {
     MimeFilter.video,
     TypeFilter.animated,
     TypeFilter.motionPhoto,
+    AspectRatioFilter.portrait,
+    AspectRatioFilter.landscape,
     TypeFilter.panorama,
     TypeFilter.sphericalVideo,
     TypeFilter.geotiff,
