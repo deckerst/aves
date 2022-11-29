@@ -127,6 +127,7 @@
   "filterBinLabel": "Recycle bin",
   "filterFavouriteLabel": "Favorite",
   "filterNoDateLabel": "Undated",
+  "filterNoAddressLabel": "No address",
   "filterNoLocationLabel": "Unlocated",
   "filterNoRatingLabel": "Unrated",
   "filterNoTagLabel": "Untagged",

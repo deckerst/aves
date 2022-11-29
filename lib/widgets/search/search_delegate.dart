@@ -227,6 +227,7 @@ class CollectionSearchDelegate extends AvesSearchDelegate {
       filters: [
         MissingFilter.date,
         LocationFilter(LocationLevel.place, ''),
+        MissingFilter.fineAddress,
         TagFilter(''),
         RatingFilter(0),
         MissingFilter.title,
