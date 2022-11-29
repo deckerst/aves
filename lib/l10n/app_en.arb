@@ -717,6 +717,7 @@
   "settingsViewerShowMinimap": "Show minimap",
   "settingsViewerShowInformation": "Show information",
   "settingsViewerShowInformationSubtitle": "Show title, date, location, etc.",
+  "settingsViewerShowRatingTags": "Show rating & tags",
   "settingsViewerShowShootingDetails": "Show shooting details",
   "settingsViewerShowOverlayThumbnails": "Show thumbnails",
   "settingsViewerEnableOverlayBlurEffect": "Blur effect",

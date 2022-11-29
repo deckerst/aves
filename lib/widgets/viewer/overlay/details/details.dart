@@ -2,29 +2,20 @@ import 'dart:math';
 
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/metadata/overlay.dart';
-import 'package:aves/model/multipage.dart';
-import 'package:aves/model/settings/enums/coordinate_format.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
-import 'package:aves/theme/format.dart';
-import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/constants.dart';
-import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/viewer/multipage/controller.dart';
+import 'package:aves/widgets/viewer/overlay/details/date.dart';
+import 'package:aves/widgets/viewer/overlay/details/location.dart';
+import 'package:aves/widgets/viewer/overlay/details/position_title.dart';
+import 'package:aves/widgets/viewer/overlay/details/rating_tags.dart';
+import 'package:aves/widgets/viewer/overlay/details/shooting.dart';
 import 'package:aves/widgets/viewer/page_entry_builder.dart';
-import 'package:decorated_icon/decorated_icon.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-
-const double _iconPadding = 8.0;
-const double _iconSize = 16.0;
-const double _interRowPadding = 2.0;
-const double _subRowMinWidth = 300.0;
-
-List<Shadow>? _shadows(BuildContext context) => Theme.of(context).brightness == Brightness.dark ? Constants.embossShadows : null;
 
 class ViewerDetailOverlay extends StatefulWidget {
   final List<AvesEntry> entries;
@@ -124,7 +115,13 @@ class ViewerDetailOverlayContent extends StatelessWidget {
   final double availableWidth;
   final MultiPageController? multiPageController;
 
+  static const double _interRowPadding = 2.0;
+  static const double _subRowMinWidth = 300.0;
   static const padding = EdgeInsets.symmetric(vertical: 4, horizontal: 8);
+  static const double iconPadding = 8.0;
+  static const double iconSize = 16.0;
+
+  static List<Shadow>? shadows(BuildContext context) => Theme.of(context).brightness == Brightness.dark ? Constants.embossShadows : null;
 
   const ViewerDetailOverlayContent({
     super.key,
@@ -138,15 +135,16 @@ class ViewerDetailOverlayContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final infoMaxWidth = availableWidth - padding.horizontal;
+    final showRatingTags = settings.showOverlayRatingTags;
     final showShooting = settings.showOverlayShootingDetails;
 
     return AnimatedBuilder(
       animation: pageEntry.metadataChangeNotifier,
       builder: (context, child) {
-        final positionTitle = _PositionTitleRow(entry: pageEntry, collectionPosition: position, multiPageController: multiPageController);
+        final positionTitle = OverlayPositionTitleRow(entry: pageEntry, collectionPosition: position, multiPageController: multiPageController);
         return DefaultTextStyle(
           style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                shadows: _shadows(context),
+                shadows: shadows(context),
               ),
           softWrap: false,
           overflow: TextOverflow.fade,
@@ -185,6 +183,9 @@ class ViewerDetailOverlayContent extends StatelessWidget {
                 if (!collapsedLocation) {
                   rows.add(_buildLocationFullRow(context));
                 }
+                if (showRatingTags) {
+                  rows.add(_buildRatingTagsFullRow(context));
+                }
 
                 return Column(
                   mainAxisSize: MainAxisSize.min,
@@ -201,10 +202,16 @@ class ViewerDetailOverlayContent extends StatelessWidget {
 
   Widget _buildDateSubRow(double subRowWidth) => SizedBox(
         width: subRowWidth,
-        child: _DateRow(
+        child: OverlayDateRow(
           entry: pageEntry,
           multiPageController: multiPageController,
         ),
+      );
+
+  Widget _buildRatingTagsFullRow(BuildContext context) => _buildFullRowSwitcher(
+        context: context,
+        visible: pageEntry.rating != 0 || pageEntry.tags.isNotEmpty,
+        builder: (context) => OverlayRatingTagsRow(entry: pageEntry),
       );
 
   Widget _buildShootingFullRow(BuildContext context, double subRowWidth) => _buildFullRowSwitcher(
@@ -212,7 +219,7 @@ class ViewerDetailOverlayContent extends StatelessWidget {
         visible: details != null && details!.isNotEmpty,
         builder: (context) => SizedBox(
           width: subRowWidth,
-          child: _ShootingRow(details!),
+          child: OverlayShootingRow(details: details!),
         ),
       );
 
@@ -220,20 +227,20 @@ class ViewerDetailOverlayContent extends StatelessWidget {
         context: context,
         subRowWidth: subRowWidth,
         visible: details != null && details!.isNotEmpty,
-        builder: (context) => _ShootingRow(details!),
+        builder: (context) => OverlayShootingRow(details: details!),
       );
 
   Widget _buildLocationFullRow(BuildContext context) => _buildFullRowSwitcher(
         context: context,
         visible: pageEntry.hasGps,
-        builder: (context) => _LocationRow(entry: pageEntry),
+        builder: (context) => OverlayLocationRow(entry: pageEntry),
       );
 
   Widget _buildLocationSubRow(BuildContext context, double subRowWidth) => _buildSubRowSwitcher(
         context: context,
         subRowWidth: subRowWidth,
         visible: pageEntry.hasGps,
-        builder: (context) => _LocationRow(entry: pageEntry),
+        builder: (context) => OverlayLocationRow(entry: pageEntry),
       );
 
   Widget _buildSubRowSwitcher({
@@ -282,147 +289,4 @@ class ViewerDetailOverlayContent extends StatelessWidget {
               )
             : const SizedBox(),
       );
-}
-
-class _LocationRow extends AnimatedWidget {
-  final AvesEntry entry;
-
-  _LocationRow({
-    required this.entry,
-  }) : super(listenable: entry.addressChangeNotifier);
-
-  @override
-  Widget build(BuildContext context) {
-    late final String location;
-    if (entry.hasAddress) {
-      location = entry.shortAddress;
-    } else {
-      final latLng = entry.latLng;
-      if (latLng != null) {
-        location = settings.coordinateFormat.format(context.l10n, latLng);
-      } else {
-        location = '';
-      }
-    }
-    return Row(
-      children: [
-        DecoratedIcon(AIcons.location, size: _iconSize, shadows: _shadows(context)),
-        const SizedBox(width: _iconPadding),
-        Expanded(child: Text(location, strutStyle: Constants.overflowStrutStyle)),
-      ],
-    );
-  }
-}
-
-class _PositionTitleRow extends StatelessWidget {
-  final AvesEntry entry;
-  final String? collectionPosition;
-  final MultiPageController? multiPageController;
-
-  const _PositionTitleRow({
-    required this.entry,
-    required this.collectionPosition,
-    required this.multiPageController,
-  });
-
-  String? get title => entry.bestTitle;
-
-  bool get isNotEmpty => collectionPosition != null || multiPageController != null || title != null;
-
-  static const separator = ' • ';
-
-  @override
-  Widget build(BuildContext context) {
-    Text toText({String? pagePosition}) => Text(
-        [
-          if (collectionPosition != null) collectionPosition,
-          if (pagePosition != null) pagePosition,
-          if (title != null) '${Constants.fsi}$title${Constants.pdi}',
-        ].join(separator),
-        strutStyle: Constants.overflowStrutStyle);
-
-    if (multiPageController == null) return toText();
-
-    return StreamBuilder<MultiPageInfo?>(
-      stream: multiPageController!.infoStream,
-      builder: (context, snapshot) {
-        final multiPageInfo = multiPageController!.info;
-        String? pagePosition;
-        if (multiPageInfo != null) {
-          // page count may be 0 when we know an entry to have multiple pages
-          // but fail to get information about these pages
-          final pageCount = multiPageInfo.pageCount;
-          if (pageCount > 0) {
-            final page = multiPageInfo.getById(entry.pageId ?? entry.id) ?? multiPageInfo.defaultPage;
-            pagePosition = '${(page?.index ?? 0) + 1}/$pageCount';
-          }
-        }
-        return toText(pagePosition: pagePosition);
-      },
-    );
-  }
-}
-
-class _DateRow extends StatelessWidget {
-  final AvesEntry entry;
-  final MultiPageController? multiPageController;
-
-  const _DateRow({
-    required this.entry,
-    required this.multiPageController,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final locale = context.l10n.localeName;
-    final use24hour = context.select<MediaQueryData, bool>((v) => v.alwaysUse24HourFormat);
-
-    final date = entry.bestDate;
-    final dateText = date != null ? formatDateTime(date, locale, use24hour) : Constants.overlayUnknown;
-    final resolutionText = entry.isSvg
-        ? entry.aspectRatioText
-        : entry.isSized
-            ? entry.resolutionText
-            : '';
-
-    return Row(
-      children: [
-        DecoratedIcon(AIcons.date, size: _iconSize, shadows: _shadows(context)),
-        const SizedBox(width: _iconPadding),
-        Expanded(flex: 3, child: Text(dateText, strutStyle: Constants.overflowStrutStyle)),
-        Expanded(flex: 2, child: Text(resolutionText, strutStyle: Constants.overflowStrutStyle)),
-      ],
-    );
-  }
-}
-
-class _ShootingRow extends StatelessWidget {
-  final OverlayMetadata details;
-
-  const _ShootingRow(this.details);
-
-  @override
-  Widget build(BuildContext context) {
-    final locale = context.l10n.localeName;
-
-    final aperture = details.aperture;
-    final apertureText = aperture != null ? 'ƒ/${NumberFormat('0.0', locale).format(aperture)}' : Constants.overlayUnknown;
-
-    final focalLength = details.focalLength;
-    final focalLengthText = focalLength != null ? context.l10n.focalLength(NumberFormat('0.#', locale).format(focalLength)) : Constants.overlayUnknown;
-
-    final iso = details.iso;
-    final isoText = iso != null ? 'ISO$iso' : Constants.overlayUnknown;
-
-    return Row(
-      children: [
-        DecoratedIcon(AIcons.shooting, size: _iconSize, shadows: _shadows(context)),
-        const SizedBox(width: _iconPadding),
-        Expanded(child: Text(apertureText, strutStyle: Constants.overflowStrutStyle)),
-        Expanded(child: Text(details.exposureTime ?? Constants.overlayUnknown, strutStyle: Constants.overflowStrutStyle)),
-        Expanded(child: Text(focalLengthText, strutStyle: Constants.overflowStrutStyle)),
-        Expanded(child: Text(isoText, strutStyle: Constants.overflowStrutStyle)),
-      ],
-    );
-  }
 }

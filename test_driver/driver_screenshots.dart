@@ -46,6 +46,7 @@ Future<void> configureAndLaunch() async {
     ..showOverlayOnOpening = true
     ..showOverlayMinimap = false
     ..showOverlayInfo = true
+    ..showOverlayRatingTags = false
     ..showOverlayShootingDetails = false
     ..showOverlayThumbnailPreview = false
     ..viewerUseCutout = true

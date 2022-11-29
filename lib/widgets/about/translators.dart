@@ -138,7 +138,7 @@ class _RandomTextSpanHighlighterState extends State<_RandomTextSpanHighlighter> 
       TextSpan(
         children: [
           ...widget.spans.expandIndexed((i, v) => [
-                if (i != 0) const TextSpan(text: ' • '),
+                if (i != 0) const TextSpan(text: Constants.separator),
                 TextSpan(text: v, style: i == _highlightedIndex ? _animatedStyle.value : _baseStyle),
               ])
         ],
