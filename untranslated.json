@@ -86,6 +86,8 @@
     "entryInfoActionEditTags",
     "entryInfoActionRemoveMetadata",
     "entryInfoActionExportMetadata",
+    "filterAspectRatioLandscapeLabel",
+    "filterAspectRatioPortraitLabel",
     "filterBinLabel",
     "filterFavouriteLabel",
     "filterNoDateLabel",
@@ -592,6 +594,8 @@
   ],
 
   "de": [
+    "filterAspectRatioLandscapeLabel",
+    "filterAspectRatioPortraitLabel",
     "filterNoAddressLabel",
     "subtitlePositionTop",
     "subtitlePositionBottom",
@@ -604,11 +608,15 @@
   ],
 
   "el": [
+    "filterAspectRatioLandscapeLabel",
+    "filterAspectRatioPortraitLabel",
     "filterNoAddressLabel",
     "settingsViewerShowRatingTags"
   ],
 
   "es": [
+    "filterAspectRatioLandscapeLabel",
+    "filterAspectRatioPortraitLabel",
     "filterNoAddressLabel",
     "settingsViewerShowRatingTags"
   ],
@@ -700,6 +708,8 @@
     "entryInfoActionEditTags",
     "entryInfoActionRemoveMetadata",
     "entryInfoActionExportMetadata",
+    "filterAspectRatioLandscapeLabel",
+    "filterAspectRatioPortraitLabel",
     "filterBinLabel",
     "filterFavouriteLabel",
     "filterNoDateLabel",
@@ -1206,12 +1216,16 @@
   ],
 
   "fr": [
+    "filterAspectRatioLandscapeLabel",
+    "filterAspectRatioPortraitLabel",
     "filterNoAddressLabel",
     "settingsViewerShowRatingTags"
   ],
 
   "gl": [
     "entryInfoActionExportMetadata",
+    "filterAspectRatioLandscapeLabel",
+    "filterAspectRatioPortraitLabel",
     "filterNoAddressLabel",
     "accessibilityAnimationsRemove",
     "accessibilityAnimationsKeep",
@@ -1671,6 +1685,8 @@
 
   "id": [
     "entryInfoActionExportMetadata",
+    "filterAspectRatioLandscapeLabel",
+    "filterAspectRatioPortraitLabel",
     "filterNoAddressLabel",
     "subtitlePositionTop",
     "subtitlePositionBottom",
@@ -1683,6 +1699,8 @@
   ],
 
   "it": [
+    "filterAspectRatioLandscapeLabel",
+    "filterAspectRatioPortraitLabel",
     "filterNoAddressLabel",
     "settingsViewerShowRatingTags"
   ],
@@ -1690,6 +1708,8 @@
   "ja": [
     "chipActionFilterIn",
     "entryInfoActionExportMetadata",
+    "filterAspectRatioLandscapeLabel",
+    "filterAspectRatioPortraitLabel",
     "filterNoAddressLabel",
     "subtitlePositionTop",
     "subtitlePositionBottom",
@@ -1702,11 +1722,15 @@
   ],
 
   "ko": [
+    "filterAspectRatioLandscapeLabel",
+    "filterAspectRatioPortraitLabel",
     "filterNoAddressLabel",
     "settingsViewerShowRatingTags"
   ],
 
   "lt": [
+    "filterAspectRatioLandscapeLabel",
+    "filterAspectRatioPortraitLabel",
     "filterNoAddressLabel",
     "settingsViewerShowRatingTags"
   ],
@@ -1716,6 +1740,8 @@
     "videoActionSelectStreams",
     "entryInfoActionEditLocation",
     "entryInfoActionExportMetadata",
+    "filterAspectRatioLandscapeLabel",
+    "filterAspectRatioPortraitLabel",
     "filterNoAddressLabel",
     "coordinateFormatDms",
     "mapStyleHuaweiNormal",
@@ -1836,6 +1862,8 @@
 
   "nl": [
     "entryInfoActionExportMetadata",
+    "filterAspectRatioLandscapeLabel",
+    "filterAspectRatioPortraitLabel",
     "filterNoAddressLabel",
     "subtitlePositionTop",
     "subtitlePositionBottom",
@@ -1854,6 +1882,8 @@
     "timeDays",
     "focalLength",
     "entryInfoActionExportMetadata",
+    "filterAspectRatioLandscapeLabel",
+    "filterAspectRatioPortraitLabel",
     "filterNoAddressLabel",
     "filterTypeRawLabel",
     "filterTypeSphericalVideoLabel",
@@ -2348,6 +2378,8 @@
 
   "pt": [
     "entryInfoActionExportMetadata",
+    "filterAspectRatioLandscapeLabel",
+    "filterAspectRatioPortraitLabel",
     "filterNoAddressLabel",
     "subtitlePositionTop",
     "subtitlePositionBottom",
@@ -2360,11 +2392,15 @@
   ],
 
   "ro": [
+    "filterAspectRatioLandscapeLabel",
+    "filterAspectRatioPortraitLabel",
     "filterNoAddressLabel",
     "settingsViewerShowRatingTags"
   ],
 
   "ru": [
+    "filterAspectRatioLandscapeLabel",
+    "filterAspectRatioPortraitLabel",
     "filterNoAddressLabel",
     "settingsViewerShowRatingTags"
   ],
@@ -2378,6 +2414,8 @@
     "applyButtonLabel",
     "entryActionShowGeoTiffOnMap",
     "videoActionCaptureFrame",
+    "filterAspectRatioLandscapeLabel",
+    "filterAspectRatioPortraitLabel",
     "filterNoAddressLabel",
     "coordinateDms",
     "keepScreenOnViewerOnly",
@@ -2742,11 +2780,15 @@
   ],
 
   "tr": [
+    "filterAspectRatioLandscapeLabel",
+    "filterAspectRatioPortraitLabel",
     "filterNoAddressLabel",
     "settingsViewerShowRatingTags"
   ],
 
   "zh": [
+    "filterAspectRatioLandscapeLabel",
+    "filterAspectRatioPortraitLabel",
     "filterNoAddressLabel",
     "aboutLicensesFlutterPackagesSectionTitle",
     "aboutLicensesDartPackagesSectionTitle",

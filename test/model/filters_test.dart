@@ -1,4 +1,5 @@
 import 'package:aves/model/filters/album.dart';
+import 'package:aves/model/filters/aspect_ratio.dart';
 import 'package:aves/model/filters/coordinate.dart';
 import 'package:aves/model/filters/date.dart';
 import 'package:aves/model/filters/favourite.dart';
@@ -35,6 +36,9 @@ void main() {
 
     final album = AlbumFilter('path/to/album', 'album');
     expect(album, jsonRoundTrip(album));
+
+    final aspectRatio = AspectRatioFilter.landscape;
+    expect(aspectRatio, jsonRoundTrip(aspectRatio));
 
     final bounds = CoordinateFilter(LatLng(29.979167, 28.223615), LatLng(36.451000, 31.134167));
     expect(bounds, jsonRoundTrip(bounds));

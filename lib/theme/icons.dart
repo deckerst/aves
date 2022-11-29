@@ -11,6 +11,7 @@ class AIcons {
   static const IconData android = Icons.android;
   static const IconData app = Icons.apps_outlined;
   static const IconData apply = Icons.done_outlined;
+  static const IconData aspectRatio = Icons.aspect_ratio_outlined;
   static const IconData bin = Icons.delete_outlined;
   static const IconData broken = Icons.broken_image_outlined;
   static const IconData checked = Icons.done_outlined;
