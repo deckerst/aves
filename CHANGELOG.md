@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - Viewer: long press on rating quick action for quicker rating
+- Search: missing address filter
 - Lithuanian translation (thanks Gediminas Murauskas)
 
 ### Changed

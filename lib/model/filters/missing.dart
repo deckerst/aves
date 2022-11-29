@@ -7,6 +7,7 @@ class MissingFilter extends CollectionFilter {
   static const type = 'missing';
 
   static const _date = 'date';
+  static const _fineAddress = 'fine_address';
   static const _title = 'title';
 
   final String metadataType;
@@ -14,6 +15,7 @@ class MissingFilter extends CollectionFilter {
   late final EntryFilter _test;
 
   static final date = MissingFilter._private(_date);
+  static final fineAddress = MissingFilter._private(_fineAddress);
   static final title = MissingFilter._private(_title);
 
   @override
@@ -24,6 +26,10 @@ class MissingFilter extends CollectionFilter {
       case _date:
         _test = (entry) => (entry.catalogMetadata?.dateMillis ?? 0) == 0;
         _icon = AIcons.dateUndated;
+        break;
+      case _fineAddress:
+        _test = (entry) => entry.hasGps && !entry.hasFineAddress;
+        _icon = AIcons.locationUnlocated;
         break;
       case _title:
         _test = (entry) => (entry.catalogMetadata?.xmpTitle ?? '').isEmpty;
@@ -60,6 +66,8 @@ class MissingFilter extends CollectionFilter {
     switch (metadataType) {
       case _date:
         return context.l10n.filterNoDateLabel;
+      case _fineAddress:
+        return context.l10n.filterNoAddressLabel;
       case _title:
         return context.l10n.filterNoTitleLabel;
       default:

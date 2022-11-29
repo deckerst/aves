@@ -89,6 +89,7 @@
     "filterBinLabel",
     "filterFavouriteLabel",
     "filterNoDateLabel",
+    "filterNoAddressLabel",
     "filterNoLocationLabel",
     "filterNoRatingLabel",
     "filterNoTagLabel",
@@ -590,6 +591,7 @@
   ],
 
   "de": [
+    "filterNoAddressLabel",
     "subtitlePositionTop",
     "subtitlePositionBottom",
     "widgetDisplayedItemRandom",
@@ -597,6 +599,14 @@
     "settingsSubtitleThemeTextPositionTile",
     "settingsSubtitleThemeTextPositionDialogTitle",
     "settingsWidgetDisplayedItem"
+  ],
+
+  "el": [
+    "filterNoAddressLabel"
+  ],
+
+  "es": [
+    "filterNoAddressLabel"
   ],
 
   "fa": [
@@ -689,6 +699,7 @@
     "filterBinLabel",
     "filterFavouriteLabel",
     "filterNoDateLabel",
+    "filterNoAddressLabel",
     "filterNoLocationLabel",
     "filterNoRatingLabel",
     "filterNoTagLabel",
@@ -1189,8 +1200,13 @@
     "filePickerUseThisFolder"
   ],
 
+  "fr": [
+    "filterNoAddressLabel"
+  ],
+
   "gl": [
     "entryInfoActionExportMetadata",
+    "filterNoAddressLabel",
     "accessibilityAnimationsRemove",
     "accessibilityAnimationsKeep",
     "displayRefreshRatePreferHighest",
@@ -1648,6 +1664,7 @@
 
   "id": [
     "entryInfoActionExportMetadata",
+    "filterNoAddressLabel",
     "subtitlePositionTop",
     "subtitlePositionBottom",
     "widgetDisplayedItemRandom",
@@ -1657,9 +1674,14 @@
     "settingsWidgetDisplayedItem"
   ],
 
+  "it": [
+    "filterNoAddressLabel"
+  ],
+
   "ja": [
     "chipActionFilterIn",
     "entryInfoActionExportMetadata",
+    "filterNoAddressLabel",
     "subtitlePositionTop",
     "subtitlePositionBottom",
     "widgetDisplayedItemRandom",
@@ -1667,6 +1689,14 @@
     "settingsSubtitleThemeTextPositionTile",
     "settingsSubtitleThemeTextPositionDialogTitle",
     "settingsWidgetDisplayedItem"
+  ],
+
+  "ko": [
+    "filterNoAddressLabel"
+  ],
+
+  "lt": [
+    "filterNoAddressLabel"
   ],
 
   "nb": [
@@ -1674,6 +1704,7 @@
     "videoActionSelectStreams",
     "entryInfoActionEditLocation",
     "entryInfoActionExportMetadata",
+    "filterNoAddressLabel",
     "coordinateFormatDms",
     "mapStyleHuaweiNormal",
     "mapStyleHuaweiTerrain",
@@ -1792,6 +1823,7 @@
 
   "nl": [
     "entryInfoActionExportMetadata",
+    "filterNoAddressLabel",
     "subtitlePositionTop",
     "subtitlePositionBottom",
     "widgetDisplayedItemRandom",
@@ -1808,6 +1840,7 @@
     "timeDays",
     "focalLength",
     "entryInfoActionExportMetadata",
+    "filterNoAddressLabel",
     "filterTypeRawLabel",
     "filterTypeSphericalVideoLabel",
     "filterTypeGeotiffLabel",
@@ -2300,6 +2333,7 @@
 
   "pt": [
     "entryInfoActionExportMetadata",
+    "filterNoAddressLabel",
     "subtitlePositionTop",
     "subtitlePositionBottom",
     "widgetDisplayedItemRandom",
@@ -2307,6 +2341,14 @@
     "settingsSubtitleThemeTextPositionTile",
     "settingsSubtitleThemeTextPositionDialogTitle",
     "settingsWidgetDisplayedItem"
+  ],
+
+  "ro": [
+    "filterNoAddressLabel"
+  ],
+
+  "ru": [
+    "filterNoAddressLabel"
   ],
 
   "th": [
@@ -2318,6 +2360,7 @@
     "applyButtonLabel",
     "entryActionShowGeoTiffOnMap",
     "videoActionCaptureFrame",
+    "filterNoAddressLabel",
     "coordinateDms",
     "keepScreenOnViewerOnly",
     "accessibilityAnimationsRemove",
@@ -2681,6 +2724,7 @@
 
   "tr": [
     "entryInfoActionExportMetadata",
+    "filterNoAddressLabel",
     "subtitlePositionTop",
     "subtitlePositionBottom",
     "widgetDisplayedItemRandom",
@@ -2691,6 +2735,7 @@
   ],
 
   "zh": [
+    "filterNoAddressLabel",
     "aboutLicensesFlutterPackagesSectionTitle",
     "aboutLicensesDartPackagesSectionTitle"
   ]
