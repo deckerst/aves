@@ -7,7 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - Viewer: optionally show rating & tags on overlay
-- Viewer: long press on copy/move/rating quick action for quicker action
+- Viewer: long press on copy/move/rating/tag quick action for quicker action
 - Search: missing address, portrait, landscape filters
 - Lithuanian translation (thanks Gediminas Murauskas)
 

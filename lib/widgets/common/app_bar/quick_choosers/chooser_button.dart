@@ -7,8 +7,8 @@ import 'package:provider/provider.dart';
 
 abstract class ChooserQuickButton<T> extends StatefulWidget {
   final PopupMenuPosition? chooserPosition;
-  final ValueSetter<T?>? onChooserValue;
-  final VoidCallback onPressed;
+  final ValueSetter<T>? onChooserValue;
+  final VoidCallback? onPressed;
 
   const ChooserQuickButton({
     super.key,
@@ -29,7 +29,7 @@ abstract class ChooserQuickButtonState<T extends ChooserQuickButton<U>, U> exten
 
   String get tooltip;
 
-  U? get defaultValue;
+  U? get defaultValue => null;
 
   Duration get animationDuration => context.read<DurationsData>().quickChooserAnimation;
 
@@ -61,7 +61,10 @@ abstract class ChooserQuickButtonState<T extends ChooserQuickButton<U>, U> exten
       onLongPressEnd: isChooserEnabled
           ? (details) {
               _clearChooserOverlayEntry();
-              onChooserValue.call(_chooserValueNotifier.value);
+              final selectedValue = _chooserValueNotifier.value;
+              if (selectedValue != null) {
+                onChooserValue(selectedValue);
+              }
             }
           : null,
       onLongPressCancel: _clearChooserOverlayEntry,

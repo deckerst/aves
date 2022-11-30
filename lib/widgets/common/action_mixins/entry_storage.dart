@@ -209,7 +209,7 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
         final destinationAlbum = await pickAlbum(context: context, moveType: moveType);
         if (destinationAlbum == null) return;
 
-        settings.moveDestinationAlbums = settings.moveDestinationAlbums
+        settings.recentDestinationAlbums = settings.recentDestinationAlbums
           ..remove(destinationAlbum)
           ..insert(0, destinationAlbum);
         entriesByDestination[destinationAlbum] = entries;

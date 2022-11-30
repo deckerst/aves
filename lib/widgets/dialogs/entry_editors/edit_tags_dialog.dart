@@ -1,9 +1,8 @@
-import 'dart:math';
-
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/placeholder.dart';
 import 'package:aves/model/filters/tag.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
@@ -35,10 +34,7 @@ class _TagEditorPageState extends State<TagEditorPage> {
   late final List<CollectionFilter> _topTags;
   late final List<PlaceholderFilter> _placeholders = [PlaceholderFilter.country, PlaceholderFilter.place];
 
-  static final List<CollectionFilter> _recentTags = [];
-
   static const Color untaggedColor = Colors.blueGrey;
-  static const int tagHistoryCount = 10;
 
   Map<AvesEntry, Set<CollectionFilter>> get tagsByEntry => widget.filtersByEntry;
 
@@ -79,7 +75,7 @@ class _TagEditorPageState extends State<TagEditorPage> {
                 builder: (context, value, child) {
                   final upQuery = value.text.trim().toUpperCase();
                   bool containQuery(CollectionFilter v) => v.getLabel(context).toUpperCase().contains(upQuery);
-                  final recentFilters = _recentTags.where(containQuery).toList();
+                  final recentFilters = settings.recentTags.where(containQuery).toList();
                   final topTagFilters = _topTags.where(containQuery).toList();
                   final placeholderFilters = _placeholders.where(containQuery).toList();
                   return ListView(
@@ -220,13 +216,10 @@ class _TagEditorPageState extends State<TagEditorPage> {
   }
 
   void _addTag(CollectionFilter newTag) {
-    setState(() {
-      _recentTags
-        ..remove(newTag)
-        ..insert(0, newTag)
-        ..removeRange(min(tagHistoryCount, _recentTags.length), _recentTags.length);
-      tagsByEntry.forEach((entry, tags) => tags.add(newTag));
-    });
+    settings.recentTags = settings.recentTags
+      ..remove(newTag)
+      ..insert(0, newTag);
+    setState(() => tagsByEntry.forEach((entry, tags) => tags.add(newTag)));
     _newTagTextController.clear();
   }
 

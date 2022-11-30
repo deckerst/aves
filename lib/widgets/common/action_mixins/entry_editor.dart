@@ -96,14 +96,17 @@ mixin EntryEditorMixin {
     await Future.forEach(filtersByEntry.entries, (kv) async {
       final entry = kv.key;
       final filters = kv.value;
-      final tags = filters.whereType<TagFilter>().map((v) => v.tag).toSet();
-      tagsByEntry[entry] = tags;
-
-      final placeholderTags = await Future.wait(filters.whereType<PlaceholderFilter>().map((v) => v.toTag(entry)));
-      tags.addAll(placeholderTags.whereNotNull().where((v) => v.isNotEmpty));
+      tagsByEntry[entry] = await getTagsFromFilters(filters, entry);
     });
 
     return tagsByEntry;
+  }
+
+  Future<Set<String>> getTagsFromFilters(Set<CollectionFilter> filters, AvesEntry entry) async {
+    final tags = filters.whereType<TagFilter>().map((v) => v.tag).toSet();
+    final placeholderTags = await Future.wait(filters.whereType<PlaceholderFilter>().map((v) => v.toTag(entry)));
+    tags.addAll(placeholderTags.whereNotNull().where((v) => v.isNotEmpty));
+    return tags;
   }
 
   Future<Set<MetadataType>?> selectMetadataToRemove(BuildContext context, Set<AvesEntry> entries) async {

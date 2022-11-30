@@ -11,13 +11,15 @@ class FilterQuickChooser<T> extends StatefulWidget {
   final Stream<Offset> pointerGlobalPosition;
   final Widget Function(BuildContext context, T album) buildFilterChip;
 
-  const FilterQuickChooser({
+  static const int maxOptionCount = 3;
+
+  FilterQuickChooser({
     super.key,
     required this.valueNotifier,
-    required this.options,
+    required List<T> options,
     required this.pointerGlobalPosition,
     required this.buildFilterChip,
-  });
+  }) : options = options.take(maxOptionCount).toList();
 
   @override
   State<FilterQuickChooser<T>> createState() => _FilterQuickChooserState<T>();
@@ -134,8 +136,8 @@ class _FilterQuickChooserState<T> extends State<FilterQuickChooser<T>> {
 
     T? selectedValue;
     if (0 < dx && dx < contentWidth && 0 < dy && dy < contentHeight) {
-      final index = (options.length * dy / contentHeight).floor();
-      if (0 <= index && index < options.length) {
+      final index = (optionCount * dy / contentHeight).floor();
+      if (0 <= index && index < optionCount) {
         selectedValue = options[index];
         final top = index * (itemHeight + intraPadding);
         _selectedRowRect.value = Rect.fromLTWH(0, top, contentWidth, itemHeight);
