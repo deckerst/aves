@@ -85,6 +85,13 @@ packages:
       relative: true
     source: path
     version: "0.0.1"
+  aves_ui:
+    dependency: "direct main"
+    description:
+      path: "plugins/aves_ui"
+      relative: true
+    source: path
+    version: "0.0.1"
   barcode:
     dependency: transitive
     description:
@@ -615,7 +622,7 @@ packages:
       name: mime
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.2"
+    version: "1.0.3"
   motion_sensors:
     dependency: transitive
     description:

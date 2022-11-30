@@ -39,7 +39,7 @@ abstract class ChooserQuickButtonState<T extends ChooserQuickButton<U>, U> exten
 
   ValueNotifier<U?> get chooserValueNotifier => _chooserValueNotifier;
 
-  Stream<LongPressMoveUpdateDetails> get moveUpdates => _moveUpdateStreamController.stream;
+  Stream<Offset> get pointerGlobalPosition => _moveUpdateStreamController.stream.map((event) => event.globalPosition);
 
   @override
   void dispose() {

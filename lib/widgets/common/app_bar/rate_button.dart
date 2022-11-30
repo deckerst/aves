@@ -34,8 +34,8 @@ class _RateQuickButtonState extends ChooserQuickButtonState<RateButton, int> {
       child: ScaleTransition(
         scale: animation,
         child: RateQuickChooser(
-          ratingNotifier: chooserValueNotifier,
-          moveUpdates: moveUpdates,
+          valueNotifier: chooserValueNotifier,
+          pointerGlobalPosition: pointerGlobalPosition,
         ),
       ),
     );

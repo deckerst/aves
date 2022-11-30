@@ -280,6 +280,19 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     }
   }
 
+  void quickMove(BuildContext context, String? album, {required bool copy}) {
+    final targetEntry = _getTargetEntry(context, EntryAction.editRating);
+    if (album == null || (!copy && targetEntry.directory == album)) return;
+
+    doQuickMove(
+      context,
+      moveType: copy ? MoveType.copy : MoveType.move,
+      entriesByDestination: {
+        album: {targetEntry}
+      },
+    );
+  }
+
   void quickRate(BuildContext context, int? rating) {
     final targetEntry = _getTargetEntry(context, EntryAction.editRating);
     _metadataActionDelegate.quickRate(context, targetEntry, rating);
@@ -441,7 +454,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     );
   }
 
-  Future<void> _move(BuildContext context, AvesEntry targetEntry, {required MoveType moveType}) => move(
+  Future<void> _move(BuildContext context, AvesEntry targetEntry, {required MoveType moveType}) => doMove(
         context,
         moveType: moveType,
         entries: {targetEntry},

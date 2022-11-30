@@ -5,6 +5,7 @@ import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/app_bar/favourite_toggler.dart';
+import 'package:aves/widgets/common/app_bar/move_button.dart';
 import 'package:aves/widgets/common/app_bar/rate_button.dart';
 import 'package:aves/widgets/common/basic/menu.dart';
 import 'package:aves/widgets/common/basic/popup_menu_button.dart';
@@ -204,6 +205,22 @@ class ViewerButtonRowContent extends StatelessWidget {
     }
 
     switch (action) {
+      case EntryAction.copy:
+        child = MoveButton(
+          copy: true,
+          chooserPosition: PopupMenuPosition.over,
+          onChooserValue: (album) => _quickMove(context, album, copy: true),
+          onPressed: onPressed,
+        );
+        break;
+      case EntryAction.move:
+        child = MoveButton(
+          copy: false,
+          chooserPosition: PopupMenuPosition.over,
+          onChooserValue: (album) => _quickMove(context, album, copy: false),
+          onPressed: onPressed,
+        );
+        break;
       case EntryAction.toggleFavourite:
         child = FavouriteToggler(
           entries: {favouriteTargetEntry},
@@ -364,6 +381,8 @@ class ViewerButtonRowContent extends StatelessWidget {
   EntryActionDelegate get _entryActionDelegate => EntryActionDelegate(mainEntry, pageEntry, collection);
 
   void _onActionSelected(BuildContext context, EntryAction action) => _entryActionDelegate.onActionSelected(context, action);
+
+  void _quickMove(BuildContext context, String? album, {required bool copy}) => _entryActionDelegate.quickMove(context, album, copy: copy);
 
   void _quickRate(BuildContext context, int? rating) => _entryActionDelegate.quickRate(context, rating);
 }

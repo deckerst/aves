@@ -213,8 +213,8 @@ class _GeoMapState extends State<GeoMap> {
                   MapThemeData.markerImageExtent + MapThemeData.markerOuterBorderWidth * 2 + MapThemeData.markerArrowSize.height,
                 ),
                 dotMarkerSize: const Size(
-                  DotMarker.diameter + MapThemeData.markerOuterBorderWidth * 2,
-                  DotMarker.diameter + MapThemeData.markerOuterBorderWidth * 2,
+                  MapThemeData.markerDotDiameter + MapThemeData.markerOuterBorderWidth * 2,
+                  MapThemeData.markerDotDiameter + MapThemeData.markerOuterBorderWidth * 2,
                 ),
                 overlayOpacityNotifier: widget.overlayOpacityNotifier,
                 overlayEntry: widget.overlayEntry,

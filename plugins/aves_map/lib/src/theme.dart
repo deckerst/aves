@@ -22,6 +22,7 @@ class MapThemeData {
   static const double markerInnerBorderWidth = 2;
   static const double markerImageExtent = 48.0;
   static const Size markerArrowSize = Size(8, 6);
+  static const double markerDotDiameter = 16;
 
   static Color markerThemedOuterBorderColor(bool isDark) => isDark ? Colors.white30 : Colors.black26;
 

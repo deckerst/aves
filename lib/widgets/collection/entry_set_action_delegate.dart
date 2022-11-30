@@ -317,7 +317,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
 
   Future<void> _move(BuildContext context, {required MoveType moveType}) async {
     final entries = _getTargetItems(context);
-    await move(context, moveType: moveType, entries: entries);
+    await doMove(context, moveType: moveType, entries: entries);
 
     _leaveSelectionMode(context);
   }
