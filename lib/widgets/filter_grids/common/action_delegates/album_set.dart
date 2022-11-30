@@ -212,7 +212,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
     final emptyAlbums = todoAlbums.whereNot(filledAlbums.contains).toSet();
 
     if (settings.enableBin && filledAlbums.isNotEmpty) {
-      await move(
+      await doMove(
         context,
         moveType: MoveType.toBin,
         entries: todoEntries,

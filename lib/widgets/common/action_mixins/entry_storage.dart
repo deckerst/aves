@@ -34,49 +34,19 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
-  Future<void> move(
+  Future<void> doQuickMove(
     BuildContext context, {
     required MoveType moveType,
-    required Set<AvesEntry> entries,
+    required Map<String, Iterable<AvesEntry>> entriesByDestination,
     bool hideShowAction = false,
     VoidCallback? onSuccess,
   }) async {
+    final entries = entriesByDestination.values.expand((v) => v).toSet();
     final todoCount = entries.length;
     assert(todoCount > 0);
 
     final toBin = moveType == MoveType.toBin;
     final copy = moveType == MoveType.copy;
-
-    final l10n = context.l10n;
-    if (toBin) {
-      if (!await showConfirmationDialog(
-        context: context,
-        type: ConfirmationDialog.moveToBin,
-        message: l10n.binEntriesConfirmationDialogMessage(todoCount),
-        confirmationButtonLabel: l10n.deleteButtonLabel,
-      )) return;
-    }
-
-    final entriesByDestination = <String, Set<AvesEntry>>{};
-    switch (moveType) {
-      case MoveType.copy:
-      case MoveType.move:
-      case MoveType.export:
-        final destinationAlbum = await pickAlbum(context: context, moveType: moveType);
-        if (destinationAlbum == null) return;
-        entriesByDestination[destinationAlbum] = entries;
-        break;
-      case MoveType.toBin:
-        entriesByDestination[AndroidFileUtils.trashDirPath] = entries;
-        break;
-      case MoveType.fromBin:
-        groupBy<AvesEntry, String?>(entries, (e) => e.directory).forEach((originAlbum, dirEntries) {
-          if (originAlbum != null) {
-            entriesByDestination[originAlbum] = dirEntries.toSet();
-          }
-        });
-        break;
-    }
 
     // permission for modification at destinations
     final destinationAlbums = entriesByDestination.keys.toSet();
@@ -90,6 +60,7 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
       if (!await checkFreeSpaceForMove(context, entries, destinationAlbum, moveType)) return;
     });
 
+    final l10n = context.l10n;
     var nameConflictStrategy = NameConflictStrategy.rename;
     if (!toBin && destinationAlbums.length == 1) {
       final destinationDirectory = Directory(destinationAlbums.single);
@@ -174,7 +145,7 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
                     // local context may be deactivated when action is triggered after navigation
                     final context = AvesApp.navigatorKey.currentContext;
                     if (context != null) {
-                      move(
+                      doMove(
                         context,
                         moveType: MoveType.fromBin,
                         entries: movedEntries,
@@ -210,6 +181,55 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
           onSuccess?.call();
         }
       },
+    );
+  }
+
+  Future<void> doMove(
+    BuildContext context, {
+    required MoveType moveType,
+    required Set<AvesEntry> entries,
+    bool hideShowAction = false,
+    VoidCallback? onSuccess,
+  }) async {
+    if (moveType == MoveType.toBin) {
+      final l10n = context.l10n;
+      if (!await showConfirmationDialog(
+        context: context,
+        type: ConfirmationDialog.moveToBin,
+        message: l10n.binEntriesConfirmationDialogMessage(entries.length),
+        confirmationButtonLabel: l10n.deleteButtonLabel,
+      )) return;
+    }
+
+    final entriesByDestination = <String, Set<AvesEntry>>{};
+    switch (moveType) {
+      case MoveType.copy:
+      case MoveType.move:
+      case MoveType.export:
+        final destinationAlbum = await pickAlbum(context: context, moveType: moveType);
+        if (destinationAlbum == null) return;
+
+        settings.moveDestinationAlbums = settings.moveDestinationAlbums
+          ..remove(destinationAlbum)
+          ..insert(0, destinationAlbum);
+        entriesByDestination[destinationAlbum] = entries;
+        break;
+      case MoveType.toBin:
+        entriesByDestination[AndroidFileUtils.trashDirPath] = entries;
+        break;
+      case MoveType.fromBin:
+        groupBy<AvesEntry, String?>(entries, (e) => e.directory).forEach((originAlbum, dirEntries) {
+          if (originAlbum != null) {
+            entriesByDestination[originAlbum] = dirEntries.toSet();
+          }
+        });
+        break;
+    }
+
+    await doQuickMove(
+      context,
+      moveType: moveType,
+      entriesByDestination: entriesByDestination,
     );
   }
 

@@ -5,13 +5,13 @@ import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:flutter/material.dart';
 
 class RateQuickChooser extends StatefulWidget {
-  final ValueNotifier<int?> ratingNotifier;
-  final Stream<LongPressMoveUpdateDetails> moveUpdates;
+  final ValueNotifier<int?> valueNotifier;
+  final Stream<Offset> pointerGlobalPosition;
 
   const RateQuickChooser({
     super.key,
-    required this.ratingNotifier,
-    required this.moveUpdates,
+    required this.valueNotifier,
+    required this.pointerGlobalPosition,
   });
 
   @override
@@ -20,6 +20,11 @@ class RateQuickChooser extends StatefulWidget {
 
 class _RateQuickChooserState extends State<RateQuickChooser> {
   final List<StreamSubscription> _subscriptions = [];
+
+  ValueNotifier<int?> get valueNotifier => widget.valueNotifier;
+
+  static const margin = EdgeInsets.all(8);
+  static const padding = EdgeInsets.all(8);
 
   @override
   void initState() {
@@ -41,7 +46,7 @@ class _RateQuickChooserState extends State<RateQuickChooser> {
   }
 
   void _registerWidget(RateQuickChooser widget) {
-    _subscriptions.add(widget.moveUpdates.map((event) => event.globalPosition).listen(_onPointerMove));
+    _subscriptions.add(widget.pointerGlobalPosition.listen(_onPointerMove));
   }
 
   void _unregisterWidget(RateQuickChooser widget) {
@@ -53,29 +58,27 @@ class _RateQuickChooserState extends State<RateQuickChooser> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8),
+      padding: margin,
       child: Material(
         shape: AvesDialog.shape(context),
         child: Padding(
-          padding: const EdgeInsets.all(8),
+          padding: padding,
           child: ValueListenableBuilder<int?>(
-            valueListenable: widget.ratingNotifier,
-            builder: (context, rating, child) {
-              final _rating = rating ?? 0;
+            valueListenable: valueNotifier,
+            builder: (context, selectedValue, child) {
+              final _rating = selectedValue ?? 0;
               return Row(
                 mainAxisSize: MainAxisSize.min,
-                children: [
-                  ...List.generate(5, (i) {
-                    final thisRating = i + 1;
-                    return Padding(
-                      padding: const EdgeInsets.all(4),
-                      child: Icon(
-                        _rating < thisRating ? AIcons.rating : AIcons.ratingFull,
-                        color: _rating < thisRating ? Colors.grey : Colors.amber,
-                      ),
-                    );
-                  })
-                ],
+                children: List.generate(5, (i) {
+                  final thisRating = i + 1;
+                  return Padding(
+                    padding: const EdgeInsets.all(4),
+                    child: Icon(
+                      _rating < thisRating ? AIcons.rating : AIcons.ratingFull,
+                      color: _rating < thisRating ? Colors.grey : Colors.amber,
+                    ),
+                  );
+                }).toList(),
               );
             },
           ),
@@ -85,9 +88,13 @@ class _RateQuickChooserState extends State<RateQuickChooser> {
   }
 
   void _onPointerMove(Offset globalPosition) {
-    final rowBox = context.findRenderObject() as RenderBox;
-    final rowSize = rowBox.size;
-    final local = rowBox.globalToLocal(globalPosition);
-    widget.ratingNotifier.value = (5 * local.dx / rowSize.width).ceil().clamp(0, 5);
+    final chooserBox = context.findRenderObject() as RenderBox;
+    final chooserSize = chooserBox.size;
+    final contentWidth = chooserSize.width - (margin.horizontal + padding.horizontal);
+
+    final local = chooserBox.globalToLocal(globalPosition);
+    final dx = local.dx - (margin.horizontal + padding.horizontal) / 2;
+
+    valueNotifier.value = (5 * dx / contentWidth).ceil().clamp(0, 5);
   }
 }

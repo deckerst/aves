@@ -53,7 +53,7 @@ class EntryLeafletMap<T> extends StatefulWidget {
   });
 
   @override
-  State<StatefulWidget> createState() => _EntryLeafletMapState<T>();
+  State<EntryLeafletMap<T>> createState() => _EntryLeafletMapState<T>();
 }
 
 class _EntryLeafletMapState<T> extends State<EntryLeafletMap<T>> with TickerProviderStateMixin {
