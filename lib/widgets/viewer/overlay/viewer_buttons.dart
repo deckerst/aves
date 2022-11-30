@@ -7,6 +7,7 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/app_bar/favourite_toggler.dart';
 import 'package:aves/widgets/common/app_bar/move_button.dart';
 import 'package:aves/widgets/common/app_bar/rate_button.dart';
+import 'package:aves/widgets/common/app_bar/tag_button.dart';
 import 'package:aves/widgets/common/basic/menu.dart';
 import 'package:aves/widgets/common/basic/popup_menu_button.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -90,6 +91,7 @@ class ViewerButtonRowContent extends StatelessWidget {
   AvesEntry get favouriteTargetEntry => mainEntry.isBurst ? pageEntry : mainEntry;
 
   static const double padding = 8;
+  static const quickChooserPosition = PopupMenuPosition.over;
 
   ViewerButtonRowContent({
     super.key,
@@ -208,16 +210,16 @@ class ViewerButtonRowContent extends StatelessWidget {
       case EntryAction.copy:
         child = MoveButton(
           copy: true,
-          chooserPosition: PopupMenuPosition.over,
-          onChooserValue: (album) => _quickMove(context, album, copy: true),
+          chooserPosition: quickChooserPosition,
+          onChooserValue: (album) => _entryActionDelegate.quickMove(context, album, copy: true),
           onPressed: onPressed,
         );
         break;
       case EntryAction.move:
         child = MoveButton(
           copy: false,
-          chooserPosition: PopupMenuPosition.over,
-          onChooserValue: (album) => _quickMove(context, album, copy: false),
+          chooserPosition: quickChooserPosition,
+          onChooserValue: (album) => _entryActionDelegate.quickMove(context, album, copy: false),
           onPressed: onPressed,
         );
         break;
@@ -250,8 +252,15 @@ class ViewerButtonRowContent extends StatelessWidget {
         break;
       case EntryAction.editRating:
         child = RateButton(
-          chooserPosition: PopupMenuPosition.over,
-          onChooserValue: (rating) => _quickRate(context, rating),
+          chooserPosition: quickChooserPosition,
+          onChooserValue: (rating) => _entryActionDelegate.quickRate(context, rating),
+          onPressed: onPressed,
+        );
+        break;
+      case EntryAction.editTags:
+        child = TagButton(
+          chooserPosition: quickChooserPosition,
+          onChooserValue: (filter) => _entryActionDelegate.quickTag(context, filter),
           onPressed: onPressed,
         );
         break;
@@ -381,8 +390,4 @@ class ViewerButtonRowContent extends StatelessWidget {
   EntryActionDelegate get _entryActionDelegate => EntryActionDelegate(mainEntry, pageEntry, collection);
 
   void _onActionSelected(BuildContext context, EntryAction action) => _entryActionDelegate.onActionSelected(context, action);
-
-  void _quickMove(BuildContext context, String? album, {required bool copy}) => _entryActionDelegate.quickMove(context, album, copy: copy);
-
-  void _quickRate(BuildContext context, int? rating) => _entryActionDelegate.quickRate(context, rating);
 }

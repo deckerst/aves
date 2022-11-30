@@ -8,6 +8,7 @@ import 'package:aves/model/device.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/entry_metadata_edition.dart';
 import 'package:aves/model/filters/album.dart';
+import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
@@ -280,9 +281,9 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     }
   }
 
-  void quickMove(BuildContext context, String? album, {required bool copy}) {
-    final targetEntry = _getTargetEntry(context, EntryAction.editRating);
-    if (album == null || (!copy && targetEntry.directory == album)) return;
+  void quickMove(BuildContext context, String album, {required bool copy}) {
+    final targetEntry = _getTargetEntry(context, copy ? EntryAction.copy : EntryAction.move);
+    if (!copy && targetEntry.directory == album) return;
 
     doQuickMove(
       context,
@@ -293,9 +294,14 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     );
   }
 
-  void quickRate(BuildContext context, int? rating) {
+  void quickRate(BuildContext context, int rating) {
     final targetEntry = _getTargetEntry(context, EntryAction.editRating);
     _metadataActionDelegate.quickRate(context, targetEntry, rating);
+  }
+
+  void quickTag(BuildContext context, CollectionFilter filter) {
+    final targetEntry = _getTargetEntry(context, EntryAction.editTags);
+    _metadataActionDelegate.quickTag(context, targetEntry, filter);
   }
 
   Future<void> _addShortcut(BuildContext context, AvesEntry targetEntry) async {

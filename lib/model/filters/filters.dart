@@ -11,6 +11,7 @@ import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/missing.dart';
 import 'package:aves/model/filters/path.dart';
+import 'package:aves/model/filters/placeholder.dart';
 import 'package:aves/model/filters/query.dart';
 import 'package:aves/model/filters/rating.dart';
 import 'package:aves/model/filters/recent.dart';
@@ -69,6 +70,8 @@ abstract class CollectionFilter extends Equatable implements Comparable<Collecti
         return MissingFilter.fromMap(jsonMap);
       case PathFilter.type:
         return PathFilter.fromMap(jsonMap);
+      case PlaceholderFilter.type:
+        return PlaceholderFilter.fromMap(jsonMap);
       case QueryFilter.type:
         return QueryFilter.fromMap(jsonMap);
       case RatingFilter.type:

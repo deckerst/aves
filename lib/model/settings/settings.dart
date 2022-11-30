@@ -29,8 +29,7 @@ class Settings extends ChangeNotifier {
 
   Settings._private();
 
-  static const int moveDestinationAlbumMax = 3;
-
+  static const int _recentFilterHistoryMax = 10;
   static const Set<String> _internalKeys = {
     hasAcceptedTermsKey,
     catalogTimeZoneKey,
@@ -39,7 +38,8 @@ class Settings extends ChangeNotifier {
     platformAccelerometerRotationKey,
     platformTransitionAnimationScaleKey,
     topEntryIdsKey,
-    moveDestinationAlbumsKey,
+    recentDestinationAlbumsKey,
+    recentTagsKey,
   };
   static const _widgetKeyPrefix = 'widget_';
 
@@ -54,7 +54,8 @@ class Settings extends ChangeNotifier {
   static const tileLayoutPrefixKey = 'tile_layout_';
   static const entryRenamingPatternKey = 'entry_renaming_pattern';
   static const topEntryIdsKey = 'top_entry_ids';
-  static const moveDestinationAlbumsKey = 'move_destination_albums';
+  static const recentDestinationAlbumsKey = 'recent_destination_albums';
+  static const recentTagsKey = 'recent_tags';
 
   // display
   static const displayRefreshRateModeKey = 'display_refresh_rate_mode';
@@ -318,9 +319,13 @@ class Settings extends ChangeNotifier {
 
   set topEntryIds(List<int>? newValue) => setAndNotify(topEntryIdsKey, newValue?.map((id) => id.toString()).whereNotNull().toList());
 
-  List<String> get moveDestinationAlbums => getStringList(moveDestinationAlbumsKey) ?? [];
+  List<String> get recentDestinationAlbums => getStringList(recentDestinationAlbumsKey) ?? [];
 
-  set moveDestinationAlbums(List<String> newValue) => setAndNotify(moveDestinationAlbumsKey, newValue.take(Settings.moveDestinationAlbumMax).toList());
+  set recentDestinationAlbums(List<String> newValue) => setAndNotify(recentDestinationAlbumsKey, newValue.take(_recentFilterHistoryMax).toList());
+
+  List<CollectionFilter> get recentTags => (getStringList(recentTagsKey) ?? []).map(CollectionFilter.fromJson).whereNotNull().toList();
+
+  set recentTags(List<CollectionFilter> newValue) => setAndNotify(recentTagsKey, newValue.take(_recentFilterHistoryMax).map((filter) => filter.toJson()).toList());
 
   // display
 

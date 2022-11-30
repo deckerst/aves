@@ -8,6 +8,7 @@ import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/missing.dart';
 import 'package:aves/model/filters/path.dart';
+import 'package:aves/model/filters/placeholder.dart';
 import 'package:aves/model/filters/query.dart';
 import 'package:aves/model/filters/rating.dart';
 import 'package:aves/model/filters/recent.dart';
@@ -63,6 +64,9 @@ void main() {
 
     final path = PathFilter('/some/path/');
     expect(path, jsonRoundTrip(path));
+
+    final placeholder = PlaceholderFilter.country;
+    expect(placeholder, jsonRoundTrip(placeholder));
 
     final query = QueryFilter('some query');
     expect(query, jsonRoundTrip(query));

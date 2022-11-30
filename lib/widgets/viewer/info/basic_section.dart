@@ -16,6 +16,8 @@ import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/format.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/file_utils.dart';
+import 'package:aves/widgets/common/app_bar/rate_button.dart';
+import 'package:aves/widgets/common/app_bar/tag_button.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/viewer/action/entry_info_action_delegate.dart';
@@ -31,6 +33,8 @@ class BasicSection extends StatelessWidget {
   final EntryInfoActionDelegate actionDelegate;
   final ValueNotifier<EntryAction?> isEditingMetadataNotifier;
   final FilterCallback onFilter;
+
+  static const quickChooserPosition = PopupMenuPosition.over;
 
   const BasicSection({
     super.key,
@@ -126,6 +130,31 @@ class BasicSection extends StatelessWidget {
       valueListenable: isEditingMetadataNotifier,
       builder: (context, editingAction, child) {
         final isEditing = editingAction != null;
+        final onPressed = isEditing ? null : () => actionDelegate.onActionSelected(context, entry, collection, action);
+        Widget button;
+        switch (action) {
+          case EntryAction.editRating:
+            button = RateButton(
+              chooserPosition: quickChooserPosition,
+              onChooserValue: (rating) => actionDelegate.quickRate(context, entry, rating),
+              onPressed: onPressed,
+            );
+            break;
+          case EntryAction.editTags:
+            button = TagButton(
+              chooserPosition: quickChooserPosition,
+              onChooserValue: (filter) => actionDelegate.quickTag(context, entry, filter),
+              onPressed: onPressed,
+            );
+            break;
+          default:
+            button = IconButton(
+              icon: action.getIcon(),
+              onPressed: onPressed,
+              tooltip: action.getText(context),
+            );
+            break;
+        }
         return Stack(
           children: [
             DecoratedBox(
@@ -136,11 +165,7 @@ class BasicSection extends StatelessWidget {
                 )),
                 borderRadius: const BorderRadius.all(Radius.circular(AvesFilterChip.defaultRadius)),
               ),
-              child: IconButton(
-                icon: action.getIcon(),
-                onPressed: isEditing ? null : () => actionDelegate.onActionSelected(context, entry, collection, action),
-                tooltip: action.getText(context),
-              ),
+              child: button,
             ),
             Positioned.fill(
               child: Visibility(

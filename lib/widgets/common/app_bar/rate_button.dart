@@ -12,10 +12,10 @@ class RateButton extends ChooserQuickButton<int> {
   });
 
   @override
-  State<RateButton> createState() => _RateQuickButtonState();
+  State<RateButton> createState() => _RateButtonState();
 }
 
-class _RateQuickButtonState extends ChooserQuickButtonState<RateButton, int> {
+class _RateButtonState extends ChooserQuickButtonState<RateButton, int> {
   static const _action = EntryAction.editRating;
 
   @override

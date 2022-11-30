@@ -6,6 +6,7 @@ import 'package:aves/model/actions/events.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/entry_info.dart';
 import 'package:aves/model/entry_metadata_edition.dart';
+import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/geotiff.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/ref/mime_types.dart';
@@ -144,20 +145,34 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
 
   Future<void> _editRating(BuildContext context, AvesEntry targetEntry) async {
     final rating = await selectRating(context, {targetEntry});
+    if (rating == null) return;
+
     await quickRate(context, targetEntry, rating);
   }
 
-  Future<void> quickRate(BuildContext context, AvesEntry targetEntry, int? rating) async {
-    if (rating == null || targetEntry.rating == rating) return;
+  Future<void> quickRate(BuildContext context, AvesEntry targetEntry, int rating) async {
+    if (targetEntry.rating == rating) return;
 
     await edit(context, targetEntry, () => targetEntry.editRating(rating));
   }
 
   Future<void> _editTags(BuildContext context, AvesEntry targetEntry) async {
-    final newTagsByEntry = await selectTags(context, {targetEntry});
-    if (newTagsByEntry == null) return;
+    final tagsByEntry = await selectTags(context, {targetEntry});
+    if (tagsByEntry == null) return;
 
-    final newTags = newTagsByEntry[targetEntry] ?? targetEntry.tags;
+    final newTags = tagsByEntry[targetEntry] ?? targetEntry.tags;
+    await _applyTags(context, targetEntry, newTags);
+  }
+
+  Future<void> quickTag(BuildContext context, AvesEntry targetEntry, CollectionFilter filter) async {
+    final newTags = {
+      ...targetEntry.tags,
+      ...await getTagsFromFilters({filter}, targetEntry),
+    };
+    await _applyTags(context, targetEntry, newTags);
+  }
+
+  Future<void> _applyTags(BuildContext context, AvesEntry targetEntry, Set<String> newTags) async {
     final currentTags = targetEntry.tags;
     if (newTags.length == currentTags.length && newTags.every(currentTags.contains)) return;
 
