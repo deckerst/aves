@@ -1172,5 +1172,13 @@
   "settingsWidgetDisplayedItem": "Görüntülenen öğe",
   "@settingsWidgetDisplayedItem": {},
   "settingsSubtitleThemeTextPositionDialogTitle": "Metin Konumu",
-  "@settingsSubtitleThemeTextPositionDialogTitle": {}
+  "@settingsSubtitleThemeTextPositionDialogTitle": {},
+  "filterNoAddressLabel": "Adres yok",
+  "@filterNoAddressLabel": {},
+  "filterAspectRatioLandscapeLabel": "Yatay",
+  "@filterAspectRatioLandscapeLabel": {},
+  "settingsViewerShowRatingTags": "Derecelendirme ve etiketleri göster",
+  "@settingsViewerShowRatingTags": {},
+  "filterAspectRatioPortraitLabel": "Dikey",
+  "@filterAspectRatioPortraitLabel": {}
 }

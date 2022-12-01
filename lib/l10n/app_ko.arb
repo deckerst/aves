@@ -1172,5 +1172,13 @@
   "settingsWidgetDisplayedItem": "표시될 항목",
   "@settingsWidgetDisplayedItem": {},
   "entryInfoActionExportMetadata": "메타데이터 내보내기",
-  "@entryInfoActionExportMetadata": {}
+  "@entryInfoActionExportMetadata": {},
+  "filterNoAddressLabel": "주소 없음",
+  "@filterNoAddressLabel": {},
+  "filterAspectRatioPortraitLabel": "세로",
+  "@filterAspectRatioPortraitLabel": {},
+  "settingsViewerShowRatingTags": "별점 및 태그 표시",
+  "@settingsViewerShowRatingTags": {},
+  "filterAspectRatioLandscapeLabel": "가로",
+  "@filterAspectRatioLandscapeLabel": {}
 }
