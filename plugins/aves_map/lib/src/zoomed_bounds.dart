@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:aves_map/src/geo_utils.dart';
 import 'package:equatable/equatable.dart';
@@ -89,4 +90,10 @@ class ZoomedBounds extends Equatable {
   }
 
   bool contains(LatLng point) => GeoUtils.contains(sw, ne, point);
+
+  Size toDisplaySize() {
+    final swPoint = _crs.latLngToPoint(sw, zoom);
+    final nePoint = _crs.latLngToPoint(ne, zoom);
+    return Size((swPoint.x - nePoint.x).abs().toDouble(), (swPoint.y - nePoint.y).abs().toDouble());
+  }
 }

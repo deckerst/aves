@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/entry_images.dart';
@@ -320,18 +321,25 @@ class _GeoMapState extends State<GeoMap> {
       }
     }
     if (bounds == null) {
-      // fit map to located items
+      LatLng? centerToSave;
       final initialCenter = widget.initialCenter;
-      final points = initialCenter != null ? {initialCenter} : entries.map((v) => v.latLng!).toSet();
-      if (points.isNotEmpty) {
+      if (initialCenter != null) {
+        // fit map for specified center and user zoom
         bounds = ZoomedBounds.fromPoints(
-          points: points,
+          points: {initialCenter},
           collocationZoom: settings.infoMapZoom,
         );
-        final center = bounds.projectedCenter;
+        centerToSave = initialCenter;
+      } else {
+        // fit map for all located items if possible, falling back to most recent items
+        bounds = _initBoundsForEntries(entries: entries);
+        centerToSave = bounds?.projectedCenter;
+      }
+
+      if (centerToSave != null) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (!mounted) return;
-          settings.mapDefaultCenter = center;
+          settings.mapDefaultCenter = centerToSave;
         });
       }
     }
@@ -351,6 +359,29 @@ class _GeoMapState extends State<GeoMap> {
     return bounds.copyWith(
       zoom: max(bounds.zoom, minInitialZoom),
     );
+  }
+
+  ZoomedBounds? _initBoundsForEntries({required List<AvesEntry> entries, int? recentCount}) {
+    if (recentCount != null) {
+      entries = List.of(entries)..sort(AvesEntry.compareByDate);
+      entries = entries.take(recentCount).toList();
+    }
+
+    if (entries.isEmpty) return null;
+
+    final points = entries.map((v) => v.latLng!).toSet();
+    var bounds = ZoomedBounds.fromPoints(
+      points: points,
+      collocationZoom: settings.infoMapZoom,
+    );
+    bounds = bounds.copyWith(zoom: max(minInitialZoom, bounds.zoom.floorToDouble()));
+
+    final availableSize = window.physicalSize / window.devicePixelRatio;
+    final neededSize = bounds.toDisplaySize();
+    if (neededSize.longestSide > availableSize.shortestSide) {
+      return _initBoundsForEntries(entries: entries, recentCount: (recentCount ?? 10000) ~/ 10);
+    }
+    return bounds;
   }
 
   void _onCollectionChanged() {
