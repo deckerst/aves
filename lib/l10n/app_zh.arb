@@ -1168,5 +1168,9 @@
   "settingsSubtitleThemeTextPositionTile": "文本位置",
   "@settingsSubtitleThemeTextPositionTile": {},
   "settingsSubtitleThemeTextPositionDialogTitle": "文本位置",
-  "@settingsSubtitleThemeTextPositionDialogTitle": {}
+  "@settingsSubtitleThemeTextPositionDialogTitle": {},
+  "aboutLicensesDartPackagesSectionTitle": "Dart Packages",
+  "@aboutLicensesDartPackagesSectionTitle": {},
+  "aboutLicensesFlutterPackagesSectionTitle": "Flutter Packages",
+  "@aboutLicensesFlutterPackagesSectionTitle": {}
 }
