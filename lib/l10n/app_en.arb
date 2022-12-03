@@ -38,12 +38,12 @@
     }
   },
 
-  "applyButtonLabel": "APPLY",
-  "deleteButtonLabel": "DELETE",
-  "nextButtonLabel": "NEXT",
-  "showButtonLabel": "SHOW",
-  "hideButtonLabel": "HIDE",
-  "continueButtonLabel": "CONTINUE",
+  "applyButtonLabel": "Apply",
+  "deleteButtonLabel": "Delete",
+  "nextButtonLabel": "Next",
+  "showButtonLabel": "Show",
+  "hideButtonLabel": "Hide",
+  "continueButtonLabel": "Continue",
 
   "cancelTooltip": "Cancel",
   "changeTooltip": "Change",
@@ -57,10 +57,10 @@
   "saveTooltip": "Save",
   "pickTooltip": "Pick",
 
-  "doubleBackExitMessage": "Tap “back” again to exit.",
+  "doubleBackExitMessage": "Tap “Back” again to exit.",
   "doNotAskAgain": "Do not ask again",
 
-  "sourceStateLoading": "Loading",
+  "sourceStateLoading": "Loading…",
   "sourceStateCataloguing": "Cataloguing",
   "sourceStateLocatingCountries": "Locating countries",
   "sourceStateLocatingPlaces": "Locating places",
@@ -69,8 +69,8 @@
   "chipActionGoToAlbumPage": "Show in Albums",
   "chipActionGoToCountryPage": "Show in Countries",
   "chipActionGoToTagPage": "Show in Tags",
-  "chipActionFilterOut": "Filter out",
-  "chipActionFilterIn": "Filter in",
+  "chipActionFilterOut": "Exclude",
+  "chipActionFilterIn": "Include",
   "chipActionHide": "Hide",
   "chipActionPin": "Pin to top",
   "chipActionUnpin": "Unpin from top",
@@ -116,9 +116,9 @@
   "slideshowActionResume": "Resume",
   "slideshowActionShowInCollection": "Show in Collection",
 
-  "entryInfoActionEditDate": "Edit date & time",
+  "entryInfoActionEditDate": "Edit date and time",
   "entryInfoActionEditLocation": "Edit location",
-  "entryInfoActionEditTitleDescription": "Edit title & description",
+  "entryInfoActionEditTitleDescription": "Edit title and description",
   "entryInfoActionEditRating": "Edit rating",
   "entryInfoActionEditTags": "Edit tags",
   "entryInfoActionRemoveMetadata": "Remove metadata",
@@ -174,17 +174,17 @@
   "videoLoopModeAlways": "Always",
 
   "videoControlsPlay": "Play",
-  "videoControlsPlaySeek": "Play & seek backward/forward",
+  "videoControlsPlaySeek": "Play and seek backward/forward",
   "videoControlsPlayOutside": "Open with other player",
   "videoControlsNone": "None",
 
   "mapStyleGoogleNormal": "Google Maps",
-  "mapStyleGoogleHybrid": "Google Maps (Hybrid)",
-  "mapStyleGoogleTerrain": "Google Maps (Terrain)",
+  "mapStyleGoogleHybrid": "Google Maps (hybrid)",
+  "mapStyleGoogleTerrain": "Google Maps (terrain)",
   "mapStyleHuaweiNormal": "Petal Maps",
   "mapStyleHuaweiTerrain": "Petal Maps (Terrain)",
   "mapStyleOsmHot": "Humanitarian OSM",
-  "mapStyleStamenToner": "Stamen Toner",
+  "mapStyleStamenToner": "Stamen Toner (monochrome)",
   "mapStyleStamenWatercolor": "Stamen Watercolor",
 
   "nameConflictStrategyRename": "Rename",
@@ -218,9 +218,9 @@
   "viewerTransitionZoomIn": "Zoom in",
   "viewerTransitionNone": "None",
 
-  "wallpaperTargetHome": "Home screen",
-  "wallpaperTargetLock": "Lock screen",
-  "wallpaperTargetHomeLock": "Home and lock screens",
+  "wallpaperTargetHome": "Homescreen",
+  "wallpaperTargetLock": "Lockscreen",
+  "wallpaperTargetHomeLock": "Home- and lockscreen",
 
   "widgetDisplayedItemRandom": "Random",
   "widgetDisplayedItemMostRecent": "Most recent",
@@ -231,29 +231,29 @@
 
   "albumTierNew": "New",
   "albumTierPinned": "Pinned",
-  "albumTierSpecial": "Common",
+  "albumTierSpecial": "Often used",
   "albumTierApps": "Apps",
   "albumTierRegular": "Others",
 
   "storageVolumeDescriptionFallbackPrimary": "Internal storage",
   "storageVolumeDescriptionFallbackNonPrimary": "SD card",
-  "rootDirectoryDescription": "root directory",
-  "otherDirectoryDescription": "“{name}” directory",
+  "rootDirectoryDescription": "root folder",
+  "otherDirectoryDescription": "“{name}” folder",
   "@otherDirectoryDescription": {
     "placeholders": {
       "name": {
         "type": "String",
         "example": "Pictures",
-        "description": "the name of a specific directory"
+        "description": "the name of a specific folder"
       }
     }
   },
-  "storageAccessDialogMessage": "Please select the {directory} of “{volume}” in the next screen to give this app access to it.",
+  "storageAccessDialogMessage": "Please select the {directory} of “{volume}” next to give this app access to it.",
   "@storageAccessDialogMessage": {
     "placeholders": {
       "directory": {
         "type": "String",
-        "description": "the name of a directory, using the output of `rootDirectoryDescription` or `otherDirectoryDescription`"
+        "description": "the full name of a folder, using the output of `rootDirectoryDescription` or `otherDirectoryDescription`"
       },
       "volume": {
         "type": "String",
@@ -267,7 +267,7 @@
     "placeholders": {
       "directory": {
         "type": "String",
-        "description": "the name of a directory, using the output of `rootDirectoryDescription` or `otherDirectoryDescription`"
+        "description": "the name of a folder, using the output of `rootDirectoryDescription` or `otherDirectoryDescription`"
       },
       "volume": {
         "type": "String",
@@ -312,9 +312,9 @@
   "nameConflictDialogMultipleSourceMessage": "Some files have the same name.",
 
   "addShortcutDialogLabel": "Shortcut label",
-  "addShortcutButtonLabel": "ADD",
+  "addShortcutButtonLabel": "Add",
 
-  "noMatchingAppDialogMessage": "There are no apps that can handle this.",
+  "noMatchingAppDialogMessage": "Install an app that can open these files.",
 
   "binEntriesConfirmationDialogMessage": "{count, plural, =1{Move this item to the recycle bin?} other{Move these {count} items to the recycle bin?}}",
   "@binEntriesConfirmationDialogMessage": {
@@ -331,7 +331,7 @@
   "moveUndatedConfirmationDialogMessage": "Save item dates before proceeding?",
   "moveUndatedConfirmationDialogSetDate": "Save dates",
 
-  "videoResumeDialogMessage": "Do you want to resume playing at {time}?",
+  "videoResumeDialogMessage": "Resume playing from {time}?",
   "@videoResumeDialogMessage": {
     "placeholders": {
       "time": {
@@ -340,8 +340,8 @@
       }
     }
   },
-  "videoStartOverButtonLabel": "START OVER",
-  "videoResumeButtonLabel": "RESUME",
+  "videoStartOverButtonLabel": "Start over",
+  "videoResumeButtonLabel": "Resume",
 
   "setCoverDialogLatest": "Latest item",
   "setCoverDialogAuto": "Auto",
@@ -351,11 +351,11 @@
 
   "newAlbumDialogTitle": "New Album",
   "newAlbumDialogNameLabel": "Album name",
-  "newAlbumDialogNameLabelAlreadyExistsHelper": "Directory already exists",
+  "newAlbumDialogNameLabelAlreadyExistsHelper": "This folder already exists",
   "newAlbumDialogStorageLabel": "Storage:",
 
   "renameAlbumDialogLabel": "New name",
-  "renameAlbumDialogLabelAlreadyExistsHelper": "Directory already exists",
+  "renameAlbumDialogLabelAlreadyExistsHelper": "This folder already exists",
 
   "renameEntrySetPageTitle": "Rename",
   "renameEntrySetPagePatternFieldLabel": "Naming pattern",
@@ -456,9 +456,9 @@
 
   "aboutBugSectionTitle": "Bug Report",
   "aboutBugSaveLogInstruction": "Save app logs to a file",
-  "aboutBugCopyInfoInstruction": "Copy system information",
+  "aboutBugCopyInfoInstruction": "Copy system info",
   "aboutBugCopyInfoButton": "Copy",
-  "aboutBugReportInstruction": "Report on GitHub with the logs and system information",
+  "aboutBugReportInstruction": "Report on GitHub with the logs and system info",
   "aboutBugReportButton": "Report",
 
   "aboutCreditsSectionTitle": "Credits",
@@ -664,7 +664,7 @@
   "settingsShowBottomNavigationBar": "Show bottom navigation bar",
   "settingsKeepScreenOnTile": "Keep screen on",
   "settingsKeepScreenOnDialogTitle": "Keep Screen On",
-  "settingsDoubleBackExit": "Tap “back” twice to exit",
+  "settingsDoubleBackExit": "Tap “Back” twice to exit",
 
   "settingsConfirmationTile": "Confirmation dialogs",
   "settingsConfirmationDialogTitle": "Confirmation Dialogs",
@@ -717,9 +717,9 @@
   "settingsViewerOverlayPageTitle": "Overlay",
   "settingsViewerShowOverlayOnOpening": "Show on opening",
   "settingsViewerShowMinimap": "Show minimap",
-  "settingsViewerShowInformation": "Show information",
+  "settingsViewerShowInformation": "Show info",
   "settingsViewerShowInformationSubtitle": "Show title, date, location, etc.",
-  "settingsViewerShowRatingTags": "Show rating & tags",
+  "settingsViewerShowRatingTags": "Show rating and tags",
   "settingsViewerShowShootingDetails": "Show shooting details",
   "settingsViewerShowOverlayThumbnails": "Show thumbnails",
   "settingsViewerEnableOverlayBlurEffect": "Blur effect",
@@ -745,7 +745,7 @@
 
   "settingsSubtitleThemeTile": "Subtitles",
   "settingsSubtitleThemePageTitle": "Subtitles",
-  "settingsSubtitleThemeSample": "This is a sample.",
+  "settingsSubtitleThemeSample": "This is a en example.",
   "settingsSubtitleThemeTextAlignmentTile": "Text alignment",
   "settingsSubtitleThemeTextAlignmentDialogTitle": "Text Alignment",
   "settingsSubtitleThemeTextPositionTile": "Text position",
@@ -767,7 +767,7 @@
   "settingsVideoGestureSideDoubleTapSeek": "Double tap on screen edges to seek backward/forward",
 
   "settingsPrivacySectionTitle": "Privacy",
-  "settingsAllowInstalledAppAccess": "Allow access to app inventory",
+  "settingsAllowInstalledAppAccess": "Access to app inventory",
   "settingsAllowInstalledAppAccessSubtitle": "Used to improve album display",
   "settingsAllowErrorReporting": "Allow anonymous error reporting",
   "settingsSaveSearchHistory": "Save search history",
@@ -779,16 +779,16 @@
   "settingsHiddenItemsPageTitle": "Hidden Items",
 
   "settingsHiddenItemsTabFilters": "Hidden Filters",
-  "settingsHiddenFiltersBanner": "Photos and videos matching hidden filters will not appear in your collection.",
+  "settingsHiddenFiltersBanner": "Photos and videos from exclusion filters will not appear in your collection.",
   "settingsHiddenFiltersEmpty": "No hidden filters",
 
   "settingsHiddenItemsTabPaths": "Hidden Paths",
-  "settingsHiddenPathsBanner": "Photos and videos in these folders, or any of their subfolders, will not appear in your collection.",
+  "settingsHiddenPathsBanner": "Photos and videos in these folders (or respective subfolders) will not appear in your collection.",
   "addPathTooltip": "Add path",
 
   "settingsStorageAccessTile": "Storage access",
   "settingsStorageAccessPageTitle": "Storage Access",
-  "settingsStorageAccessBanner": "Some directories require an explicit access grant to modify files in them. You can review here directories to which you previously gave access.",
+  "settingsStorageAccessBanner": "Some folders require permission to modify files in them. Here you can review which ones you allow to be edited.",
   "settingsStorageAccessEmpty": "No access grants",
   "settingsStorageAccessRevokeTooltip": "Revoke",
 
@@ -800,12 +800,12 @@
   "settingsDisplaySectionTitle": "Display",
   "settingsThemeBrightnessTile": "Theme",
   "settingsThemeBrightnessDialogTitle": "Theme",
-  "settingsThemeColorHighlights": "Color highlights",
+  "settingsThemeColorHighlights": "Colored highlights",
   "settingsThemeEnableDynamicColor": "Dynamic color",
   "settingsDisplayRefreshRateModeTile": "Display refresh rate",
   "settingsDisplayRefreshRateModeDialogTitle": "Refresh Rate",
 
-  "settingsLanguageSectionTitle": "Language & Formats",
+  "settingsLanguageSectionTitle": "Language and Formats",
   "settingsLanguageTile": "Language",
   "settingsLanguagePageTitle": "Language",
   "settingsCoordinateFormatTile": "Coordinate format",
@@ -834,8 +834,8 @@
   "statsTopTagsSectionTitle": "Top Tags",
   "statsTopAlbumsSectionTitle": "Top Albums",
 
-  "viewerOpenPanoramaButtonLabel": "OPEN PANORAMA",
-  "viewerSetWallpaperButtonLabel": "SET WALLPAPER",
+  "viewerOpenPanoramaButtonLabel": "Open panorama",
+  "viewerSetWallpaperButtonLabel": "Set wallpaper",
   "viewerErrorUnknown": "Oops!",
   "viewerErrorDoesNotExist": "The file no longer exists.",
 
@@ -859,25 +859,25 @@
   "mapStyleTooltip": "Select map style",
   "mapZoomInTooltip": "Zoom in",
   "mapZoomOutTooltip": "Zoom out",
-  "mapPointNorthUpTooltip": "Point north up",
+  "mapPointNorthUpTooltip": "North upwards",
   "mapAttributionOsmHot": "Map data © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors • Tiles by [HOT](https://www.hotosm.org/) • Hosted by [OSM France](https://openstreetmap.fr/)",
-  "mapAttributionStamen": "Map data © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors • Tiles by [Stamen Design](http://stamen.com), [CC BY 3.0](http://creativecommons.org/licenses/by/3.0)",
-  "openMapPageTooltip": "View on Map page",
+  "mapAttributionStamen": "Map data © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors • Tiles by [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)",
+  "openMapPageTooltip": "View on map",
   "mapEmptyRegion": "No images in this region",
 
-  "viewerInfoOpenEmbeddedFailureFeedback": "Failed to extract embedded data",
+  "viewerInfoOpenEmbeddedFailureFeedback": "Could not extract embedded data",
   "viewerInfoOpenLinkText": "Open",
   "viewerInfoViewXmlLinkText": "View XML",
 
   "viewerInfoSearchFieldLabel": "Search metadata",
   "viewerInfoSearchEmpty": "No matching keys",
-  "viewerInfoSearchSuggestionDate": "Date & time",
+  "viewerInfoSearchSuggestionDate": "Date and time",
   "viewerInfoSearchSuggestionDescription": "Description",
   "viewerInfoSearchSuggestionDimensions": "Dimensions",
   "viewerInfoSearchSuggestionResolution": "Resolution",
   "viewerInfoSearchSuggestionRights": "Rights",
 
-  "wallpaperUseScrollEffect": "Use scroll effect on home screen",
+  "wallpaperUseScrollEffect": "Use scroll effect on homescreen",
 
   "tagEditorPageTitle": "Edit Tags",
   "tagEditorPageNewTagFieldLabel": "New tag",
@@ -888,8 +888,8 @@
   "tagPlaceholderCountry": "Country",
   "tagPlaceholderPlace": "Place",
 
-  "panoramaEnableSensorControl": "Enable sensor control",
-  "panoramaDisableSensorControl": "Disable sensor control",
+  "panoramaEnableSensorControl": "Sensor control",
+  "panoramaDisableSensorControl": "Turn off sensor control",
 
   "sourceViewerPageTitle": "Source",
 
