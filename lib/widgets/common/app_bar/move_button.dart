@@ -37,7 +37,7 @@ class _MoveButtonState extends ChooserQuickButtonState<MoveButton, String> {
   String get tooltip => action.getText(context);
 
   @override
-  Widget buildChooser(Animation<double> animation) {
+  Widget buildChooser(Animation<double> animation, PopupMenuPosition chooserPosition) {
     final options = settings.recentDestinationAlbums;
     final takeCount = FilterQuickChooser.maxOptionCount - options.length;
     if (takeCount > 0) {
@@ -53,9 +53,11 @@ class _MoveButtonState extends ChooserQuickButtonState<MoveButton, String> {
         opacity: animation,
         child: ScaleTransition(
           scale: animation,
+          alignment: chooserPosition == PopupMenuPosition.over ? Alignment.bottomCenter : Alignment.topCenter,
           child: AlbumQuickChooser(
             valueNotifier: chooserValueNotifier,
-            options: widget.chooserPosition == PopupMenuPosition.over ? options.reversed.toList() : options,
+            options: options,
+            chooserPosition: chooserPosition,
             pointerGlobalPosition: pointerGlobalPosition,
           ),
         ),
