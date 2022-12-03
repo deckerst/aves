@@ -35,7 +35,7 @@ abstract class ChooserQuickButtonState<T extends ChooserQuickButton<U>, U> exten
 
   Curve get animationCurve => Curves.easeOutQuad;
 
-  Widget buildChooser(Animation<double> animation);
+  Widget buildChooser(Animation<double> animation, PopupMenuPosition chooserPosition);
 
   ValueNotifier<U?> get chooserValueNotifier => _chooserValueNotifier;
 
@@ -106,7 +106,7 @@ abstract class ChooserQuickButtonState<T extends ChooserQuickButton<U>, U> exten
             mediaQuery.padding,
             DisplayFeatureSubScreen.avoidBounds(mediaQuery).toSet(),
           ),
-          child: buildChooser(_animation!),
+          child: buildChooser(_animation!, chooserPosition),
         );
       },
     );
