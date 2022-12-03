@@ -1330,5 +1330,13 @@
   "tagPlaceholderPlace": "Vieta",
   "@tagPlaceholderPlace": {},
   "filePickerOpenFrom": "Atidaryti iš",
-  "@filePickerOpenFrom": {}
+  "@filePickerOpenFrom": {},
+  "filterNoAddressLabel": "Nėra adreso",
+  "@filterNoAddressLabel": {},
+  "filterAspectRatioLandscapeLabel": "Gulsčias",
+  "@filterAspectRatioLandscapeLabel": {},
+  "filterAspectRatioPortraitLabel": "Portretas",
+  "@filterAspectRatioPortraitLabel": {},
+  "settingsViewerShowRatingTags": "Rodyti įvertinimus ir žymas",
+  "@settingsViewerShowRatingTags": {}
 }
