@@ -1172,5 +1172,13 @@
   "settingsSubtitleThemeTextPositionDialogTitle": "Position du texte",
   "@settingsSubtitleThemeTextPositionDialogTitle": {},
   "entryInfoActionExportMetadata": "Exporter les métadonnées",
-  "@entryInfoActionExportMetadata": {}
+  "@entryInfoActionExportMetadata": {},
+  "filterNoAddressLabel": "Sans adresse",
+  "@filterNoAddressLabel": {},
+  "filterAspectRatioPortraitLabel": "Portrait",
+  "@filterAspectRatioPortraitLabel": {},
+  "filterAspectRatioLandscapeLabel": "Paysage",
+  "@filterAspectRatioLandscapeLabel": {},
+  "settingsViewerShowRatingTags": "Afficher la notation et les libellés",
+  "@settingsViewerShowRatingTags": {}
 }

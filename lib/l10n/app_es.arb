@@ -1172,5 +1172,13 @@
   "settingsSubtitleThemeTextPositionDialogTitle": "Posición del texto",
   "@settingsSubtitleThemeTextPositionDialogTitle": {},
   "settingsWidgetDisplayedItem": "Elemento para mostrar",
-  "@settingsWidgetDisplayedItem": {}
+  "@settingsWidgetDisplayedItem": {},
+  "filterNoAddressLabel": "Sin dirección",
+  "@filterNoAddressLabel": {},
+  "filterAspectRatioLandscapeLabel": "Paisaje",
+  "@filterAspectRatioLandscapeLabel": {},
+  "filterAspectRatioPortraitLabel": "Retrato",
+  "@filterAspectRatioPortraitLabel": {},
+  "settingsViewerShowRatingTags": "Mostrar la valoración y las etiquetas",
+  "@settingsViewerShowRatingTags": {}
 }
