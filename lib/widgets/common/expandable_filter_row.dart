@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 
 class TitledExpandableFilterRow extends StatelessWidget {
   final String title;
-  final Iterable<CollectionFilter> filters;
+  final List<CollectionFilter> filters;
   final ValueNotifier<String?> expandedNotifier;
   final bool showGenericIcon;
   final HeroType Function(CollectionFilter filter)? heroTypeBuilder;
@@ -65,9 +65,10 @@ class TitledExpandableFilterRow extends StatelessWidget {
 }
 
 class ExpandableFilterRow extends StatelessWidget {
-  final Iterable<CollectionFilter> filters;
+  final List<CollectionFilter> filters;
   final bool isExpanded;
-  final bool showGenericIcon;
+  final bool removable, showGenericIcon;
+  final Widget? Function(CollectionFilter)? leadingBuilder;
   final HeroType Function(CollectionFilter filter)? heroTypeBuilder;
   final FilterCallback onTap;
   final OffsetFilterCallback? onLongPress;
@@ -79,7 +80,9 @@ class ExpandableFilterRow extends StatelessWidget {
     super.key,
     required this.filters,
     required this.isExpanded,
+    this.removable = false,
     this.showGenericIcon = true,
+    this.leadingBuilder,
     this.heroTypeBuilder,
     required this.onTap,
     required this.onLongPress,
@@ -101,7 +104,6 @@ class ExpandableFilterRow extends StatelessWidget {
   }
 
   Widget _buildExpanded() {
-    final filterList = filters.toList();
     return Container(
       key: const Key('wrap'),
       padding: const EdgeInsets.symmetric(horizontal: horizontalPadding),
@@ -111,13 +113,12 @@ class ExpandableFilterRow extends StatelessWidget {
       child: Wrap(
         spacing: horizontalPadding,
         runSpacing: verticalPadding,
-        children: filterList.map(_buildChip).toList(),
+        children: filters.map(_buildChip).toList(),
       ),
     );
   }
 
   Widget _buildCollapsed() {
-    final filterList = filters.toList();
     final list = Container(
       key: const Key('list'),
       // specify transparent as a workaround to prevent
@@ -128,10 +129,10 @@ class ExpandableFilterRow extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: horizontalPadding),
         itemBuilder: (context, index) {
-          return index < filterList.length ? _buildChip(filterList[index]) : const SizedBox();
+          return index < filters.length ? _buildChip(filters[index]) : const SizedBox();
         },
         separatorBuilder: (context, index) => const SizedBox(width: 8),
-        itemCount: filterList.length,
+        itemCount: filters.length,
       ),
     );
     return list;
@@ -142,7 +143,9 @@ class ExpandableFilterRow extends StatelessWidget {
       // key `album-{path}` is expected by test driver
       key: Key(filter.key),
       filter: filter,
+      removable: removable,
       showGenericIcon: showGenericIcon,
+      leadingOverride: leadingBuilder?.call(filter),
       heroType: heroTypeBuilder?.call(filter) ?? HeroType.onTap,
       onTap: onTap,
       onLongPress: onLongPress,

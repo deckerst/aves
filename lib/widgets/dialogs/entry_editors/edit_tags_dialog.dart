@@ -81,7 +81,7 @@ class _TagEditorPageState extends State<TagEditorPage> {
                   return ListView(
                     children: [
                       Padding(
-                        padding: const EdgeInsetsDirectional.only(start: 8),
+                        padding: const EdgeInsetsDirectional.only(start: 8, end: 16),
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
@@ -108,7 +108,17 @@ class _TagEditorPageState extends State<TagEditorPage> {
                                   tooltip: l10n.tagEditorPageAddTagTooltip,
                                 );
                               },
-                            )
+                            ),
+                            Selector<Settings, bool>(
+                              selector: (context, s) => s.tagEditorCurrentFilterSectionExpanded,
+                              builder: (context, isExpanded, child) {
+                                return IconButton(
+                                  icon: Icon(isExpanded ? AIcons.collapse : AIcons.expand),
+                                  onPressed: sortedTags.isEmpty ? null : () => settings.tagEditorCurrentFilterSectionExpanded = !isExpanded,
+                                  tooltip: isExpanded ? MaterialLocalizations.of(context).expandedIconTapHint : MaterialLocalizations.of(context).collapsedIconTapHint,
+                                );
+                              },
+                            ),
                           ],
                         ),
                       ),
@@ -131,22 +141,18 @@ class _TagEditorPageState extends State<TagEditorPage> {
                               ),
                             ),
                           ),
-                          secondChild: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8),
-                            child: Wrap(
-                              spacing: 8,
-                              runSpacing: 8,
-                              children: sortedTags.map((kv) {
-                                return AvesFilterChip(
-                                  filter: kv.key,
-                                  removable: true,
-                                  showGenericIcon: false,
-                                  leadingOverride: showCount ? _TagCount(count: kv.value) : null,
-                                  onTap: _removeTag,
-                                  onLongPress: null,
-                                );
-                              }).toList(),
-                            ),
+                          secondChild: ExpandableFilterRow(
+                            filters: sortedTags.map((kv) => kv.key).toList(),
+                            isExpanded: context.select<Settings, bool>((v) => v.tagEditorCurrentFilterSectionExpanded),
+                            removable: true,
+                            showGenericIcon: false,
+                            leadingBuilder: showCount
+                                ? (filter) => _TagCount(
+                                      count: sortedTags.firstWhere((kv) => kv.key == filter).value,
+                                    )
+                                : null,
+                            onTap: _removeTag,
+                            onLongPress: null,
                           ),
                           crossFadeState: sortedTags.isEmpty ? CrossFadeState.showFirst : CrossFadeState.showSecond,
                           duration: Durations.tagEditorTransition,
@@ -154,14 +160,14 @@ class _TagEditorPageState extends State<TagEditorPage> {
                       ),
                       const Divider(height: 0),
                       _FilterRow(
-                        title: l10n.tagEditorSectionRecent,
-                        filters: recentFilters,
+                        title: l10n.statsTopTagsSectionTitle,
+                        filters: topTagFilters,
                         expandedNotifier: _expandedSectionNotifier,
                         onTap: _addTag,
                       ),
                       _FilterRow(
-                        title: l10n.statsTopTagsSectionTitle,
-                        filters: topTagFilters,
+                        title: l10n.tagEditorSectionRecent,
+                        filters: recentFilters,
                         expandedNotifier: _expandedSectionNotifier,
                         onTap: _addTag,
                       ),

@@ -36,13 +36,13 @@ class OverlayRatingTagsRow extends AnimatedWidget {
     return Row(
       children: [
         if (ratingString.isNotEmpty) ...[
-          Text(ratingString),
+          Text(ratingString, strutStyle: Constants.overflowStrutStyle),
           if (hasTags) const Text(Constants.separator),
         ],
         if (hasTags) ...[
           DecoratedIcon(AIcons.tag, size: ViewerDetailOverlayContent.iconSize, shadows: ViewerDetailOverlayContent.shadows(context)),
           const SizedBox(width: ViewerDetailOverlayContent.iconPadding),
-          Expanded(child: Text(tags)),
+          Expanded(child: Text(tags, strutStyle: Constants.overflowStrutStyle)),
         ],
       ],
     );
