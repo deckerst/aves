@@ -1325,7 +1325,7 @@
   "@settingsThumbnailShowLocationIcon": {},
   "tagPlaceholderCountry": "Šalis",
   "@tagPlaceholderCountry": {},
-  "mapAttributionStamen": "Žemėlapio duomenys © [OpenStreetMap](https://www.openstreetmap.org/copyright) bendradarbiai • Sluoksniai [Stamen Design](http://stamen.com), [CC BY 3.0](http://creativecommons.org/licenses/by/3.0)",
+  "mapAttributionStamen": "Žemėlapio duomenys © [OpenStreetMap](https://www.openstreetmap.org/copyright) bendradarbiai • Sluoksniai [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)",
   "@mapAttributionStamen": {},
   "tagPlaceholderPlace": "Vieta",
   "@tagPlaceholderPlace": {},

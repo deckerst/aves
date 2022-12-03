@@ -981,7 +981,7 @@
   "@mapPointNorthUpTooltip": {},
   "mapAttributionOsmHot": "Harita verileri © [OpenStreetMap](https://www.openstreetmap.org/copyright) katkıda bulunanlar • Kutucuklar [HOT](https://www.hotosm.org/) tarafından hazırlanmıştır • [OSM France](https://openstreetmap.fr/) tarafından barındırılmaktadır",
   "@mapAttributionOsmHot": {},
-  "mapAttributionStamen": "Harita verileri © [OpenStreetMap](https://www.openstreetmap.org/copyright) katkıda bulunanlar • Döşemeler [Stamen Design](http://stamen.com), [CC BY 3.0](http://creativecommons.org/licenses/by/3.0)",
+  "mapAttributionStamen": "Harita verileri © [OpenStreetMap](https://www.openstreetmap.org/copyright) katkıda bulunanlar • Döşemeler [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)",
   "@mapAttributionStamen": {},
   "openMapPageTooltip": "Harita sayfasında görüntüle",
   "@openMapPageTooltip": {},

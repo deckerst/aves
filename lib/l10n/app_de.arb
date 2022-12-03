@@ -1091,7 +1091,7 @@
   "@mapPointNorthUpTooltip": {},
   "mapAttributionOsmHot": "Kartendaten © [OpenStreetMap](https://www.openstreetmap.org/copyright) Mitwirkende • Kacheln von [HOT](https://www.hotosm.org/) • Gehostet von [OSM France](https://openstreetmap.fr/)",
   "@mapAttributionOsmHot": {},
-  "mapAttributionStamen": "Kartendaten © [OpenStreetMap](https://www.openstreetmap.org/copyright) Mitwirkende • Kacheln von [Stamen Design](http://stamen.com), [CC BY 3.0](http://creativecommons.org/licenses/by/3.0)",
+  "mapAttributionStamen": "Kartendaten © [OpenStreetMap](https://www.openstreetmap.org/copyright) Mitwirkende • Kacheln von [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)",
   "@mapAttributionStamen": {},
   "openMapPageTooltip": "Auf der Karte anzeigen",
   "@openMapPageTooltip": {},

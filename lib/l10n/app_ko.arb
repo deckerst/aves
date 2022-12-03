@@ -1095,7 +1095,7 @@
   "@mapPointNorthUpTooltip": {},
   "mapAttributionOsmHot": "지도 데이터 © [OpenStreetMap](https://www.openstreetmap.org/copyright) 기여자 • 타일 [HOT](https://www.hotosm.org/) • 호스팅 [OSM France](https://openstreetmap.fr/)",
   "@mapAttributionOsmHot": {},
-  "mapAttributionStamen": "지도 데이터 © [OpenStreetMap](https://www.openstreetmap.org/copyright) 기여자 • 타일 [Stamen Design](http://stamen.com), [CC BY 3.0](http://creativecommons.org/licenses/by/3.0)",
+  "mapAttributionStamen": "지도 데이터 © [OpenStreetMap](https://www.openstreetmap.org/copyright) 기여자 • 타일 [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)",
   "@mapAttributionStamen": {},
   "openMapPageTooltip": "지도 페이지에서 보기",
   "@openMapPageTooltip": {},

@@ -1091,7 +1091,7 @@
   "@mapPointNorthUpTooltip": {},
   "mapAttributionOsmHot": "Dati della mappa © collaboratori di [OpenStreetMap](https://www.openstreetmap.org/copyright) • Titoli di [HOT](https://www.hotosm.org/) • Ospitato da [OSM France](https://openstreetmap.fr/)",
   "@mapAttributionOsmHot": {},
-  "mapAttributionStamen": "Dati della mappa © collaboratori di [OpenStreetMap](https://www.openstreetmap.org/copyright) • Titoli di [Stamen Design](http://stamen.com), [CC BY 3.0](http://creativecommons.org/licenses/by/3.0)",
+  "mapAttributionStamen": "Dati della mappa © collaboratori di [OpenStreetMap](https://www.openstreetmap.org/copyright) • Titoli di [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)",
   "@mapAttributionStamen": {},
   "openMapPageTooltip": "Visualizza sulla pagina della mappa",
   "@openMapPageTooltip": {},
