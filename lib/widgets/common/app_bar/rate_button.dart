@@ -28,11 +28,12 @@ class _RateButtonState extends ChooserQuickButtonState<RateButton, int> {
   int? get defaultValue => 3;
 
   @override
-  Widget buildChooser(Animation<double> animation) {
+  Widget buildChooser(Animation<double> animation, PopupMenuPosition chooserPosition) {
     return FadeTransition(
       opacity: animation,
       child: ScaleTransition(
         scale: animation,
+        alignment: chooserPosition == PopupMenuPosition.over ? Alignment.bottomCenter : Alignment.topCenter,
         child: RateQuickChooser(
           valueNotifier: chooserValueNotifier,
           pointerGlobalPosition: pointerGlobalPosition,

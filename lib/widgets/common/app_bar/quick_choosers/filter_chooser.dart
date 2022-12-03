@@ -1,22 +1,29 @@
 import 'dart:async';
+import 'dart:ui';
 
+import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves_ui/aves_ui.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:provider/provider.dart';
 
 class FilterQuickChooser<T> extends StatefulWidget {
   final ValueNotifier<T?> valueNotifier;
   final List<T> options;
+  final PopupMenuPosition chooserPosition;
   final Stream<Offset> pointerGlobalPosition;
   final Widget Function(BuildContext context, T album) buildFilterChip;
 
-  static const int maxOptionCount = 3;
+  static const int maxOptionCount = 5;
 
   FilterQuickChooser({
     super.key,
     required this.valueNotifier,
     required List<T> options,
+    required this.chooserPosition,
     required this.pointerGlobalPosition,
     required this.buildFilterChip,
   }) : options = options.take(maxOptionCount).toList();
@@ -33,13 +40,16 @@ class _FilterQuickChooserState<T> extends State<FilterQuickChooser<T>> {
 
   List<T> get options => widget.options;
 
+  bool get reversed => widget.chooserPosition == PopupMenuPosition.over;
+
   static const margin = EdgeInsets.all(8);
-  static const padding = EdgeInsets.all(8);
+  static const padding = EdgeInsets.symmetric(horizontal: 8);
   static const double intraPadding = 8;
 
   @override
   void initState() {
     super.initState();
+    _selectedRowRect.value = Rect.fromLTWH(0, window.physicalSize.height * (reversed ? 1 : -1), 0, 0);
     _registerWidget(widget);
   }
 
@@ -72,11 +82,38 @@ class _FilterQuickChooserState<T> extends State<FilterQuickChooser<T>> {
       padding: margin,
       child: Material(
         shape: AvesDialog.shape(context),
+        clipBehavior: Clip.antiAlias,
         child: Padding(
           padding: padding,
           child: ValueListenableBuilder<T?>(
             valueListenable: valueNotifier,
             builder: (context, selectedValue, child) {
+              final durations = context.watch<DurationsData>();
+
+              List<Widget> optionChildren = options.mapIndexed((index, value) {
+                final isFirst = index == (reversed ? options.length - 1 : 0);
+                return Padding(
+                  padding: EdgeInsets.only(top: isFirst ? intraPadding : 0, bottom: intraPadding),
+                  child: widget.buildFilterChip(context, value),
+                );
+              }).toList();
+
+              optionChildren = AnimationConfiguration.toStaggeredList(
+                duration: durations.staggeredAnimation * .5,
+                delay: durations.staggeredAnimationDelay * .5 * timeDilation,
+                childAnimationBuilder: (child) => SlideAnimation(
+                  verticalOffset: 50.0,
+                  child: FadeInAnimation(
+                    child: child,
+                  ),
+                ),
+                children: optionChildren,
+              );
+
+              if (reversed) {
+                optionChildren = optionChildren.reversed.toList();
+              }
+
               return Stack(
                 children: [
                   ValueListenableBuilder<Rect>(
@@ -104,12 +141,7 @@ class _FilterQuickChooserState<T> extends State<FilterQuickChooser<T>> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: options.mapIndexed((index, value) {
-                        return Padding(
-                          padding: index == 0 ? EdgeInsets.zero : const EdgeInsets.only(top: intraPadding),
-                          child: widget.buildFilterChip(context, value),
-                        );
-                      }).toList(),
+                      children: optionChildren,
                     ),
                   ),
                 ],
@@ -128,7 +160,7 @@ class _FilterQuickChooserState<T> extends State<FilterQuickChooser<T>> {
     final contentHeight = chooserSize.height - (margin.vertical + padding.vertical);
 
     final optionCount = options.length;
-    final itemHeight = (contentHeight - (optionCount - 1) * intraPadding) / optionCount;
+    final itemHeight = (contentHeight - (optionCount + 1) * intraPadding) / optionCount;
 
     final local = chooserBox.globalToLocal(globalPosition);
     final dx = local.dx;
@@ -138,8 +170,8 @@ class _FilterQuickChooserState<T> extends State<FilterQuickChooser<T>> {
     if (0 < dx && dx < contentWidth && 0 < dy && dy < contentHeight) {
       final index = (optionCount * dy / contentHeight).floor();
       if (0 <= index && index < optionCount) {
-        selectedValue = options[index];
-        final top = index * (itemHeight + intraPadding);
+        selectedValue = options[reversed ? optionCount - 1 - index : index];
+        final top = index * (itemHeight + intraPadding) + intraPadding;
         _selectedRowRect.value = Rect.fromLTWH(0, top, contentWidth, itemHeight);
       }
     }

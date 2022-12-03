@@ -34,7 +34,7 @@ class _TagButtonState extends ChooserQuickButtonState<TagButton, CollectionFilte
   String get tooltip => action.getText(context);
 
   @override
-  Widget buildChooser(Animation<double> animation) {
+  Widget buildChooser(Animation<double> animation, PopupMenuPosition chooserPosition) {
     final options = settings.recentTags;
     final takeCount = FilterQuickChooser.maxOptionCount - options.length;
     if (takeCount > 0) {
@@ -50,9 +50,11 @@ class _TagButtonState extends ChooserQuickButtonState<TagButton, CollectionFilte
         opacity: animation,
         child: ScaleTransition(
           scale: animation,
+          alignment: chooserPosition == PopupMenuPosition.over ? Alignment.bottomCenter : Alignment.topCenter,
           child: TagQuickChooser(
             valueNotifier: chooserValueNotifier,
-            options: widget.chooserPosition == PopupMenuPosition.over ? options.reversed.toList() : options,
+            options: options,
+            chooserPosition: chooserPosition,
             pointerGlobalPosition: pointerGlobalPosition,
           ),
         ),
