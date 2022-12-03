@@ -245,7 +245,7 @@ class _FilterRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return filters.isEmpty
         ? const SizedBox()
-        : ExpandableFilterRow(
+        : TitledExpandableFilterRow(
             title: title,
             filters: filters,
             expandedNotifier: expandedNotifier,
