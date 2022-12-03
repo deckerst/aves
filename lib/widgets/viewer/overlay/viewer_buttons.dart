@@ -91,7 +91,6 @@ class ViewerButtonRowContent extends StatelessWidget {
   AvesEntry get favouriteTargetEntry => mainEntry.isBurst ? pageEntry : mainEntry;
 
   static const double padding = 8;
-  static const quickChooserPosition = PopupMenuPosition.over;
 
   ViewerButtonRowContent({
     super.key,
@@ -206,11 +205,12 @@ class ViewerButtonRowContent extends StatelessWidget {
       );
     }
 
+    final blurred = settings.enableBlurEffect;
     switch (action) {
       case EntryAction.copy:
         child = MoveButton(
           copy: true,
-          chooserPosition: quickChooserPosition,
+          blurred: blurred,
           onChooserValue: (album) => _entryActionDelegate.quickMove(context, album, copy: true),
           onPressed: onPressed,
         );
@@ -218,7 +218,7 @@ class ViewerButtonRowContent extends StatelessWidget {
       case EntryAction.move:
         child = MoveButton(
           copy: false,
-          chooserPosition: quickChooserPosition,
+          blurred: blurred,
           onChooserValue: (album) => _entryActionDelegate.quickMove(context, album, copy: false),
           onPressed: onPressed,
         );
@@ -252,14 +252,14 @@ class ViewerButtonRowContent extends StatelessWidget {
         break;
       case EntryAction.editRating:
         child = RateButton(
-          chooserPosition: quickChooserPosition,
+          blurred: blurred,
           onChooserValue: (rating) => _entryActionDelegate.quickRate(context, rating),
           onPressed: onPressed,
         );
         break;
       case EntryAction.editTags:
         child = TagButton(
-          chooserPosition: quickChooserPosition,
+          blurred: blurred,
           onChooserValue: (filter) => _entryActionDelegate.quickTag(context, filter),
           onPressed: onPressed,
         );

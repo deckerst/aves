@@ -18,7 +18,7 @@ class MoveButton extends ChooserQuickButton<String> {
   const MoveButton({
     super.key,
     required this.copy,
-    super.chooserPosition,
+    required super.blurred,
     super.onChooserValue,
     required super.onPressed,
   });
@@ -57,6 +57,7 @@ class _MoveButtonState extends ChooserQuickButtonState<MoveButton, String> {
           child: AlbumQuickChooser(
             valueNotifier: chooserValueNotifier,
             options: options,
+            blurred: widget.blurred,
             chooserPosition: chooserPosition,
             pointerGlobalPosition: pointerGlobalPosition,
           ),

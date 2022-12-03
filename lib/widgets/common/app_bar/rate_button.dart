@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 class RateButton extends ChooserQuickButton<int> {
   const RateButton({
     super.key,
-    super.chooserPosition,
+    required super.blurred,
     super.onChooserValue,
     required super.onPressed,
   });
@@ -35,6 +35,7 @@ class _RateButtonState extends ChooserQuickButtonState<RateButton, int> {
         scale: animation,
         alignment: chooserPosition == PopupMenuPosition.over ? Alignment.bottomCenter : Alignment.topCenter,
         child: RateQuickChooser(
+          blurred: widget.blurred,
           valueNotifier: chooserValueNotifier,
           pointerGlobalPosition: pointerGlobalPosition,
         ),

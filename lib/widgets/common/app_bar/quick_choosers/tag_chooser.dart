@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 class TagQuickChooser extends StatelessWidget {
   final ValueNotifier<CollectionFilter?> valueNotifier;
   final List<CollectionFilter> options;
+  final bool blurred;
   final PopupMenuPosition chooserPosition;
   final Stream<Offset> pointerGlobalPosition;
 
@@ -15,6 +16,7 @@ class TagQuickChooser extends StatelessWidget {
     super.key,
     required this.valueNotifier,
     required this.options,
+    required this.blurred,
     required this.chooserPosition,
     required this.pointerGlobalPosition,
   });
@@ -24,6 +26,7 @@ class TagQuickChooser extends StatelessWidget {
     return FilterQuickChooser<CollectionFilter>(
       valueNotifier: valueNotifier,
       options: options,
+      blurred: blurred,
       chooserPosition: chooserPosition,
       pointerGlobalPosition: pointerGlobalPosition,
       buildFilterChip: (context, filter) => AvesFilterChip(
