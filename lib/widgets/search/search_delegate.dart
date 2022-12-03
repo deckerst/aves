@@ -132,14 +132,24 @@ class CollectionSearchDelegate extends AvesSearchDelegate {
     required List<CollectionFilter> filters,
     HeroType Function(CollectionFilter filter)? heroTypeBuilder,
   }) {
-    return ExpandableFilterRow(
-      title: title,
-      filters: filters,
-      expandedNotifier: _expandedSectionNotifier,
-      heroTypeBuilder: heroTypeBuilder,
-      onTap: (filter) => _select(context, filter is QueryFilter ? QueryFilter(filter.query) : filter),
-      onLongPress: AvesFilterChip.showDefaultLongPressMenu,
-    );
+    void onTap(filter) => _select(context, filter is QueryFilter ? QueryFilter(filter.query) : filter);
+    const onLongPress = AvesFilterChip.showDefaultLongPressMenu;
+    return title != null
+        ? TitledExpandableFilterRow(
+            title: title,
+            filters: filters,
+            expandedNotifier: _expandedSectionNotifier,
+            heroTypeBuilder: heroTypeBuilder,
+            onTap: onTap,
+            onLongPress: onLongPress,
+          )
+        : ExpandableFilterRow(
+            filters: filters,
+            isExpanded: false,
+            heroTypeBuilder: heroTypeBuilder,
+            onTap: onTap,
+            onLongPress: onLongPress,
+          );
   }
 
   Widget _buildDateFilters(BuildContext context, _ContainQuery containQuery) {

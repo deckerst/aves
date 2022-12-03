@@ -34,6 +34,7 @@ class AboutTranslators extends StatelessWidget {
     Contributor('Igor Sorocean', 'sorocean.igor@gmail.com'),
     Contributor('JY3', 'GeeyunJY3@gmail.com'),
     Contributor('Gediminas Murauskas', 'muziejusinfo@gmail.com'),
+    Contributor('Oğuz Ersen', 'oguz@ersen.moe'),
     // Contributor('Allan Nordhøy', 'epost@anotheragency.no'),
     // Contributor('Piotr K', '1337.kelt@gmail.com'),
     // Contributor('امیر جهانگرد', 'ijahangard.a@gmail.com'),
