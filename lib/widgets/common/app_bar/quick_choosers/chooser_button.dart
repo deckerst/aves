@@ -6,16 +6,16 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 abstract class ChooserQuickButton<T> extends StatefulWidget {
-  final PopupMenuPosition? chooserPosition;
+  final bool blurred;
   final ValueSetter<T>? onChooserValue;
   final VoidCallback? onPressed;
 
   const ChooserQuickButton({
     super.key,
-    this.chooserPosition,
+    required this.blurred,
     this.onChooserValue,
     required this.onPressed,
-  }) : assert((chooserPosition == null) == (onChooserValue == null));
+  });
 }
 
 abstract class ChooserQuickButtonState<T extends ChooserQuickButton<U>, U> extends State<T> with SingleTickerProviderStateMixin {
@@ -50,13 +50,12 @@ abstract class ChooserQuickButtonState<T extends ChooserQuickButton<U>, U> exten
 
   @override
   Widget build(BuildContext context) {
-    final chooserPosition = widget.chooserPosition;
     final onChooserValue = widget.onChooserValue;
-    final isChooserEnabled = chooserPosition != null && onChooserValue != null;
+    final isChooserEnabled = onChooserValue != null;
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onLongPressStart: isChooserEnabled ? (details) => _showChooser() : null,
+      onLongPressStart: isChooserEnabled ? _showChooser : null,
       onLongPressMoveUpdate: isChooserEnabled ? _moveUpdateStreamController.add : null,
       onLongPressEnd: isChooserEnabled
           ? (details) {
@@ -83,10 +82,7 @@ abstract class ChooserQuickButtonState<T extends ChooserQuickButton<U>, U> exten
     }
   }
 
-  void _showChooser() {
-    final chooserPosition = widget.chooserPosition;
-    if (chooserPosition == null) return;
-
+  void _showChooser(LongPressStartDetails details) {
     final overlay = Overlay.of(context)!;
     final triggerBox = context.findRenderObject() as RenderBox;
     final overlayBox = overlay.context.findRenderObject() as RenderBox;
@@ -98,13 +94,14 @@ abstract class ChooserQuickButtonState<T extends ChooserQuickButton<U>, U> exten
     _chooserValueNotifier.value = defaultValue;
     _chooserOverlayEntry = OverlayEntry(
       builder: (context) {
-        final mediaQuery = MediaQuery.of(context);
+        final mq = MediaQuery.of(context);
+        final chooserPosition = (details.globalPosition.dy > mq.size.height / 2) ? PopupMenuPosition.over : PopupMenuPosition.under;
         return CustomSingleChildLayout(
           delegate: QuickChooserRouteLayout(
             triggerRect,
             chooserPosition,
-            mediaQuery.padding,
-            DisplayFeatureSubScreen.avoidBounds(mediaQuery).toSet(),
+            mq.padding,
+            DisplayFeatureSubScreen.avoidBounds(mq).toSet(),
           ),
           child: buildChooser(_animation!, chooserPosition),
         );

@@ -15,7 +15,7 @@ import 'package:provider/provider.dart';
 class TagButton extends ChooserQuickButton<CollectionFilter> {
   const TagButton({
     super.key,
-    super.chooserPosition,
+    required super.blurred,
     super.onChooserValue,
     required super.onPressed,
   });
@@ -54,6 +54,7 @@ class _TagButtonState extends ChooserQuickButtonState<TagButton, CollectionFilte
           child: TagQuickChooser(
             valueNotifier: chooserValueNotifier,
             options: options,
+            blurred: widget.blurred,
             chooserPosition: chooserPosition,
             pointerGlobalPosition: pointerGlobalPosition,
           ),
