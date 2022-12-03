@@ -13,6 +13,7 @@ class SupportedLocales {
     'ja': '日本語',
     'ko': '한국어',
     'lt': 'Lietuvių',
+    'nb': 'Norsk (Bokmål)',
     'nl': 'Nederlands',
     'pt': 'Português (Brasil)',
     'ro': 'Română',

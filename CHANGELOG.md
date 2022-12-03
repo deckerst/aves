@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 - Viewer: long press on copy/move/rating/tag quick action for quicker action
 - Search: missing address, portrait, landscape filters
 - Lithuanian translation (thanks Gediminas Murauskas)
+- Norsk (Bokmål) translation (thanks Allan Nordhøy)
 
 ### Changed
 
