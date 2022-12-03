@@ -139,6 +139,10 @@ class Settings extends ChangeNotifier {
   static const coordinateFormatKey = 'coordinates_format';
   static const unitSystemKey = 'unit_system';
 
+  // tag editor
+
+  static const tagEditorCurrentFilterSectionExpandedKey = 'tag_editor_current_filter_section_expanded';
+
   // map
   static const mapStyleKey = 'info_map_style';
   static const mapDefaultCenterKey = 'map_default_center';
@@ -623,6 +627,12 @@ class Settings extends ChangeNotifier {
 
   set unitSystem(UnitSystem newValue) => setAndNotify(unitSystemKey, newValue.toString());
 
+  // tag editor
+
+  bool get tagEditorCurrentFilterSectionExpanded => getBool(tagEditorCurrentFilterSectionExpandedKey) ?? SettingsDefaults.tagEditorCurrentFilterSectionExpanded;
+
+  set tagEditorCurrentFilterSectionExpanded(bool newValue) => setAndNotify(tagEditorCurrentFilterSectionExpandedKey, newValue);
+
   // map
 
   EntryMapStyle? get mapStyle {
@@ -961,6 +971,7 @@ class Settings extends ChangeNotifier {
             case videoGestureDoubleTapTogglePlayKey:
             case videoGestureSideDoubleTapSeekKey:
             case subtitleShowOutlineKey:
+            case tagEditorCurrentFilterSectionExpandedKey:
             case saveSearchHistoryKey:
             case filePickerShowHiddenFilesKey:
             case screenSaverFillScreenKey:

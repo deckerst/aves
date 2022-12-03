@@ -109,6 +109,10 @@ class SettingsDefaults {
   static const coordinateFormat = CoordinateFormat.dms;
   static const unitSystem = UnitSystem.metric;
 
+  // tag editor
+
+  static const tagEditorCurrentFilterSectionExpanded = true;
+
   // rendering
   static const imageBackground = EntryBackground.white;
 
