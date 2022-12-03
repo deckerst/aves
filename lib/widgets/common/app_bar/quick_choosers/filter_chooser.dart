@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:ui';
 
 import 'package:aves/theme/durations.dart';
-import 'package:aves/widgets/dialogs/aves_dialog.dart';
+import 'package:aves/widgets/common/app_bar/quick_choosers/quick_chooser.dart';
 import 'package:aves_ui/aves_ui.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +13,7 @@ import 'package:provider/provider.dart';
 class FilterQuickChooser<T> extends StatefulWidget {
   final ValueNotifier<T?> valueNotifier;
   final List<T> options;
+  final bool blurred;
   final PopupMenuPosition chooserPosition;
   final Stream<Offset> pointerGlobalPosition;
   final Widget Function(BuildContext context, T album) buildFilterChip;
@@ -23,6 +24,7 @@ class FilterQuickChooser<T> extends StatefulWidget {
     super.key,
     required this.valueNotifier,
     required List<T> options,
+    required this.blurred,
     required this.chooserPosition,
     required this.pointerGlobalPosition,
     required this.buildFilterChip,
@@ -42,8 +44,6 @@ class _FilterQuickChooserState<T> extends State<FilterQuickChooser<T>> {
 
   bool get reversed => widget.chooserPosition == PopupMenuPosition.over;
 
-  static const margin = EdgeInsets.all(8);
-  static const padding = EdgeInsets.symmetric(horizontal: 8);
   static const double intraPadding = 8;
 
   @override
@@ -78,93 +78,88 @@ class _FilterQuickChooserState<T> extends State<FilterQuickChooser<T>> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: margin,
-      child: Material(
-        shape: AvesDialog.shape(context),
-        clipBehavior: Clip.antiAlias,
-        child: Padding(
-          padding: padding,
-          child: ValueListenableBuilder<T?>(
-            valueListenable: valueNotifier,
-            builder: (context, selectedValue, child) {
-              final durations = context.watch<DurationsData>();
+    return QuickChooser(
+      blurred: widget.blurred,
+      child: ValueListenableBuilder<T?>(
+        valueListenable: valueNotifier,
+        builder: (context, selectedValue, child) {
+          final durations = context.watch<DurationsData>();
 
-              List<Widget> optionChildren = options.mapIndexed((index, value) {
-                final isFirst = index == (reversed ? options.length - 1 : 0);
-                return Padding(
-                  padding: EdgeInsets.only(top: isFirst ? intraPadding : 0, bottom: intraPadding),
-                  child: widget.buildFilterChip(context, value),
-                );
-              }).toList();
+          List<Widget> optionChildren = options.mapIndexed((index, value) {
+            final isFirst = index == (reversed ? options.length - 1 : 0);
+            return Padding(
+              padding: EdgeInsets.only(top: isFirst ? intraPadding : 0, bottom: intraPadding),
+              child: widget.buildFilterChip(context, value),
+            );
+          }).toList();
 
-              optionChildren = AnimationConfiguration.toStaggeredList(
-                duration: durations.staggeredAnimation * .5,
-                delay: durations.staggeredAnimationDelay * .5 * timeDilation,
-                childAnimationBuilder: (child) => SlideAnimation(
-                  verticalOffset: 50.0,
-                  child: FadeInAnimation(
+          optionChildren = AnimationConfiguration.toStaggeredList(
+            duration: durations.staggeredAnimation * .5,
+            delay: durations.staggeredAnimationDelay * .5 * timeDilation,
+            childAnimationBuilder: (child) => SlideAnimation(
+              verticalOffset: 50.0 * (widget.chooserPosition == PopupMenuPosition.over ? 1 : -1),
+              child: FadeInAnimation(
+                child: child,
+              ),
+            ),
+            children: optionChildren,
+          );
+
+          if (reversed) {
+            optionChildren = optionChildren.reversed.toList();
+          }
+
+          return Stack(
+            children: [
+              ValueListenableBuilder<Rect>(
+                valueListenable: _selectedRowRect,
+                builder: (context, selectedRowRect, child) {
+                  Widget child = const Center(child: AvesDot());
+                  child = AnimatedOpacity(
+                    opacity: selectedValue != null ? 1 : 0,
+                    curve: Curves.easeInOutCubic,
+                    duration: const Duration(milliseconds: 200),
                     child: child,
-                  ),
+                  );
+                  child = AnimatedPositioned(
+                    top: selectedRowRect.top,
+                    height: selectedRowRect.height,
+                    curve: Curves.easeInOutCubic,
+                    duration: const Duration(milliseconds: 200),
+                    child: child,
+                  );
+                  return child;
+                },
+              ),
+              Padding(
+                padding: const EdgeInsetsDirectional.only(start: 24),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: optionChildren,
                 ),
-                children: optionChildren,
-              );
-
-              if (reversed) {
-                optionChildren = optionChildren.reversed.toList();
-              }
-
-              return Stack(
-                children: [
-                  ValueListenableBuilder<Rect>(
-                    valueListenable: _selectedRowRect,
-                    builder: (context, selectedRowRect, child) {
-                      Widget child = const Center(child: AvesDot());
-                      child = AnimatedOpacity(
-                        opacity: selectedValue != null ? 1 : 0,
-                        curve: Curves.easeInOutCubic,
-                        duration: const Duration(milliseconds: 200),
-                        child: child,
-                      );
-                      child = AnimatedPositioned(
-                        top: selectedRowRect.top,
-                        height: selectedRowRect.height,
-                        curve: Curves.easeInOutCubic,
-                        duration: const Duration(milliseconds: 200),
-                        child: child,
-                      );
-                      return child;
-                    },
-                  ),
-                  Padding(
-                    padding: const EdgeInsetsDirectional.only(start: 24),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: optionChildren,
-                    ),
-                  ),
-                ],
-              );
-            },
-          ),
-        ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
 
   void _onPointerMove(Offset globalPosition) {
+    final padding = QuickChooser.margin.vertical + QuickChooser.padding.vertical;
+
     final chooserBox = context.findRenderObject() as RenderBox;
     final chooserSize = chooserBox.size;
     final contentWidth = chooserSize.width;
-    final contentHeight = chooserSize.height - (margin.vertical + padding.vertical);
+    final contentHeight = chooserSize.height - padding;
 
     final optionCount = options.length;
     final itemHeight = (contentHeight - (optionCount + 1) * intraPadding) / optionCount;
 
     final local = chooserBox.globalToLocal(globalPosition);
     final dx = local.dx;
-    final dy = local.dy - (margin.vertical + padding.vertical) / 2;
+    final dy = local.dy - padding / 2;
 
     T? selectedValue;
     if (0 < dx && dx < contentWidth && 0 < dy && dy < contentHeight) {

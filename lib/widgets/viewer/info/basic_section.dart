@@ -34,8 +34,6 @@ class BasicSection extends StatelessWidget {
   final ValueNotifier<EntryAction?> isEditingMetadataNotifier;
   final FilterCallback onFilter;
 
-  static const quickChooserPosition = PopupMenuPosition.over;
-
   const BasicSection({
     super.key,
     required this.entry,
@@ -135,14 +133,14 @@ class BasicSection extends StatelessWidget {
         switch (action) {
           case EntryAction.editRating:
             button = RateButton(
-              chooserPosition: quickChooserPosition,
+              blurred: false,
               onChooserValue: (rating) => actionDelegate.quickRate(context, entry, rating),
               onPressed: onPressed,
             );
             break;
           case EntryAction.editTags:
             button = TagButton(
-              chooserPosition: quickChooserPosition,
+              blurred: false,
               onChooserValue: (filter) => actionDelegate.quickTag(context, entry, filter),
               onPressed: onPressed,
             );

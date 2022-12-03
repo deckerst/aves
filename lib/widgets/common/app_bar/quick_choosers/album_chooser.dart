@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 class AlbumQuickChooser extends StatelessWidget {
   final ValueNotifier<String?> valueNotifier;
   final List<String> options;
+  final bool blurred;
   final PopupMenuPosition chooserPosition;
   final Stream<Offset> pointerGlobalPosition;
 
@@ -17,6 +18,7 @@ class AlbumQuickChooser extends StatelessWidget {
     super.key,
     required this.valueNotifier,
     required this.options,
+    required this.blurred,
     required this.chooserPosition,
     required this.pointerGlobalPosition,
   });
@@ -27,6 +29,7 @@ class AlbumQuickChooser extends StatelessWidget {
     return FilterQuickChooser<String>(
       valueNotifier: valueNotifier,
       options: options,
+      blurred: blurred,
       chooserPosition: chooserPosition,
       pointerGlobalPosition: pointerGlobalPosition,
       buildFilterChip: (context, album) => AvesFilterChip(
