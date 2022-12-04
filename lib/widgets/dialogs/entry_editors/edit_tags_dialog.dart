@@ -33,6 +33,7 @@ class _TagEditorPageState extends State<TagEditorPage> {
   final ValueNotifier<String?> _expandedSectionNotifier = ValueNotifier(null);
   late final List<CollectionFilter> _topTags;
   late final List<PlaceholderFilter> _placeholders = [PlaceholderFilter.country, PlaceholderFilter.place];
+  final List<CollectionFilter> _userAddedFilters = [];
 
   static const Color untaggedColor = Colors.blueGrey;
 
@@ -52,7 +53,7 @@ class _TagEditorPageState extends State<TagEditorPage> {
     tagsByEntry.entries.forEach((kv) {
       kv.value.forEach((tag) => entryCountByTag[tag] = (entryCountByTag[tag] ?? 0) + 1);
     });
-    List<MapEntry<CollectionFilter, int>> sortedTags = _sortEntryCountByTag(entryCountByTag);
+    List<MapEntry<CollectionFilter, int>> sortedTags = _sortCurrentTags(entryCountByTag);
 
     return MediaQueryDataProvider(
       child: Scaffold(
@@ -194,25 +195,39 @@ class _TagEditorPageState extends State<TagEditorPage> {
     visibleEntries?.forEach((entry) {
       entry.tags.forEach((tag) => entryCountByTag[tag] = (entryCountByTag[tag] ?? 0) + 1);
     });
-    List<MapEntry<CollectionFilter, int>> sortedTopTags = _sortEntryCountByTag(entryCountByTag.map((key, value) => MapEntry(TagFilter(key), value)));
+    List<MapEntry<CollectionFilter, int>> sortedTopTags = _sortCurrentTags(entryCountByTag.map((key, value) => MapEntry(TagFilter(key), value)));
     _topTags = sortedTopTags.map((kv) => kv.key).toList();
   }
 
-  List<MapEntry<CollectionFilter, int>> _sortEntryCountByTag(Map<CollectionFilter, int> entryCountByTag) {
+  List<MapEntry<CollectionFilter, int>> _sortCurrentTags(Map<CollectionFilter, int> entryCountByTag) {
     return entryCountByTag.entries.toList()
       ..sort((kv1, kv2) {
-        final c = kv2.value.compareTo(kv1.value);
-        return c != 0 ? c : kv1.key.compareTo(kv2.key);
+        final filter1 = kv1.key;
+        final filter2 = kv2.key;
+
+        final recent1 = _userAddedFilters.indexOf(filter1);
+        final recent2 = _userAddedFilters.indexOf(filter2);
+        var c = recent2.compareTo(recent1);
+        if (c != 0) return c;
+
+        final count1 = kv1.value;
+        final count2 = kv2.value;
+        c = count2.compareTo(count1);
+        if (c != 0) return c;
+
+        return filter1.compareTo(filter2);
       });
   }
 
   void _reset() {
-    setState(() => tagsByEntry.forEach((entry, tags) {
-          final Set<TagFilter> originalFilters = entry.tags.map(TagFilter.new).toSet();
-          tags
-            ..clear()
-            ..addAll(originalFilters);
-        }));
+    _userAddedFilters.clear();
+    tagsByEntry.forEach((entry, tags) {
+      final Set<TagFilter> originalFilters = entry.tags.map(TagFilter.new).toSet();
+      tags
+        ..clear()
+        ..addAll(originalFilters);
+    });
+    setState(() {});
   }
 
   void _addCustomTag(String newTag) {
@@ -221,16 +236,22 @@ class _TagEditorPageState extends State<TagEditorPage> {
     }
   }
 
-  void _addTag(CollectionFilter newTag) {
+  void _addTag(CollectionFilter filter) {
     settings.recentTags = settings.recentTags
-      ..remove(newTag)
-      ..insert(0, newTag);
-    setState(() => tagsByEntry.forEach((entry, tags) => tags.add(newTag)));
+      ..remove(filter)
+      ..insert(0, filter);
+    _userAddedFilters
+      ..remove(filter)
+      ..add(filter);
+    tagsByEntry.forEach((entry, tags) => tags.add(filter));
     _newTagTextController.clear();
+    setState(() {});
   }
 
   void _removeTag(CollectionFilter filter) {
-    setState(() => tagsByEntry.forEach((entry, filters) => filters.remove(filter)));
+    _userAddedFilters.remove(filter);
+    tagsByEntry.forEach((entry, filters) => filters.remove(filter));
+    setState(() {});
   }
 }
 
