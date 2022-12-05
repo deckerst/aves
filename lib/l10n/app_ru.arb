@@ -161,7 +161,7 @@
   "@entryInfoActionEditDate": {},
   "entryInfoActionEditLocation": "Изменить местоположение",
   "@entryInfoActionEditLocation": {},
-  "entryInfoActionEditTitleDescription": "Изменить название & описание",
+  "entryInfoActionEditTitleDescription": "Изменить название и описание",
   "@entryInfoActionEditTitleDescription": {},
   "entryInfoActionEditRating": "Изменить рейтинг",
   "@entryInfoActionEditRating": {},
@@ -1172,5 +1172,13 @@
   "settingsWidgetDisplayedItem": "Показывать",
   "@settingsWidgetDisplayedItem": {},
   "widgetDisplayedItemMostRecent": "Недавние",
-  "@widgetDisplayedItemMostRecent": {}
+  "@widgetDisplayedItemMostRecent": {},
+  "filterNoAddressLabel": "Без адреса",
+  "@filterNoAddressLabel": {},
+  "filterAspectRatioLandscapeLabel": "Горизонтально",
+  "@filterAspectRatioLandscapeLabel": {},
+  "filterAspectRatioPortraitLabel": "Вертикально",
+  "@filterAspectRatioPortraitLabel": {},
+  "settingsViewerShowRatingTags": "Показать рейтинг и теги",
+  "@settingsViewerShowRatingTags": {}
 }
