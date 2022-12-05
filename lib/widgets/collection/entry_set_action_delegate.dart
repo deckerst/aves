@@ -32,6 +32,7 @@ import 'package:aves/widgets/dialogs/add_shortcut_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/entry_editors/rename_entry_set_dialog.dart';
+import 'package:aves/widgets/dialogs/location_pick_dialog.dart';
 import 'package:aves/widgets/map/map_page.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
 import 'package:aves/widgets/stats/stats_page.dart';
@@ -39,6 +40,7 @@ import 'package:aves/widgets/viewer/slideshow_page.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
@@ -427,8 +429,15 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
   Future<Set<AvesEntry>?> _getEditableTargetItems(
     BuildContext context, {
     required bool Function(AvesEntry entry) canEdit,
+  }) =>
+      _getEditableItems(context, _getTargetItems(context), canEdit: canEdit);
+
+  Future<Set<AvesEntry>?> _getEditableItems(
+    BuildContext context,
+    Set<AvesEntry> entries, {
+    required bool Function(AvesEntry entry) canEdit,
   }) async {
-    final bySupported = groupBy<AvesEntry, bool>(_getTargetItems(context), canEdit);
+    final bySupported = groupBy<AvesEntry, bool>(entries, canEdit);
     final supported = (bySupported[true] ?? []).toSet();
     final unsupported = (bySupported[false] ?? []).toSet();
 
@@ -500,6 +509,27 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     await _edit(context, entries, (entry) => entry.editLocation(location));
   }
 
+  Future<LatLng?> quickLocationByMap(BuildContext context, Set<AvesEntry> entries, LatLng clusterLocation, CollectionLens mapCollection) async {
+    final editableEntries = await _getEditableItems(context, entries, canEdit: (entry) => entry.canEditLocation);
+    if (editableEntries == null || editableEntries.isEmpty) return null;
+
+    final location = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        settings: const RouteSettings(name: LocationPickDialog.routeName),
+        builder: (context) => LocationPickDialog(
+          collection: mapCollection,
+          initialLocation: clusterLocation,
+        ),
+        fullscreenDialog: true,
+      ),
+    );
+    if (location == null) return null;
+
+    await _edit(context, editableEntries, (entry) => entry.editLocation(location));
+    return location;
+  }
+
   Future<void> _editTitleDescription(BuildContext context) async {
     final entries = await _getEditableTargetItems(context, canEdit: (entry) => entry.canEditTitleDescription);
     if (entries == null || entries.isEmpty) return;
@@ -549,24 +579,24 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     await _edit(context, entries, (entry) => entry.removeMetadata(types));
   }
 
-  void _goToMap(BuildContext context) {
+  Future<void> _goToMap(BuildContext context) async {
     final collection = context.read<CollectionLens>();
     final entries = _getTargetItems(context);
 
-    Navigator.push(
+    // need collection with fresh ID to prevent hero from scroller on Map page to Collection page
+    final mapCollection = CollectionLens(
+      source: collection.source,
+      filters: collection.filters,
+      fixedSelection: entries.where((entry) => entry.hasGps).toList(),
+    );
+    await Navigator.push(
       context,
       MaterialPageRoute(
         settings: const RouteSettings(name: MapPage.routeName),
-        builder: (context) => MapPage(
-          // need collection with fresh ID to prevent hero from scroller on Map page to Collection page
-          collection: CollectionLens(
-            source: collection.source,
-            filters: collection.filters,
-            fixedSelection: entries.where((entry) => entry.hasGps).toList(),
-          ),
-        ),
+        builder: (context) => MapPage(collection: mapCollection),
       ),
     );
+    mapCollection.dispose();
   }
 
   void _goToSlideshow(BuildContext context) {

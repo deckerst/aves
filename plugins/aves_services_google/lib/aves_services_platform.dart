@@ -74,6 +74,7 @@ class PlatformMobileServices extends MobileServices {
     required UserZoomChangeCallback? onUserZoomChange,
     required MapTapCallback? onMapTap,
     required MarkerTapCallback<T>? onMarkerTap,
+    required MarkerLongPressCallback<T>? onMarkerLongPress,
   }) {
     return EntryGoogleMap<T>(
       controller: controller,
@@ -93,6 +94,7 @@ class PlatformMobileServices extends MobileServices {
       onUserZoomChange: onUserZoomChange,
       onMapTap: onMapTap,
       onMarkerTap: onMarkerTap,
+      onMarkerLongPress: onMarkerLongPress,
     );
   }
 }

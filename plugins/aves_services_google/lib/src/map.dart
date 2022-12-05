@@ -24,6 +24,7 @@ class EntryGoogleMap<T> extends StatefulWidget {
   final UserZoomChangeCallback? onUserZoomChange;
   final MapTapCallback? onMapTap;
   final MarkerTapCallback<T>? onMarkerTap;
+  final MarkerLongPressCallback<T>? onMarkerLongPress;
 
   const EntryGoogleMap({
     super.key,
@@ -44,6 +45,7 @@ class EntryGoogleMap<T> extends StatefulWidget {
     this.onUserZoomChange,
     this.onMapTap,
     this.onMarkerTap,
+    this.onMarkerLongPress,
   });
 
   @override
@@ -143,6 +145,7 @@ class _EntryGoogleMapState<T> extends State<EntryGoogleMap<T>> with WidgetsBindi
   }
 
   Widget _buildMap() {
+    final _onMarkerLongPress = widget.onMarkerLongPress;
     return StreamBuilder(
       stream: _markerBitmapReadyStreamController.stream,
       builder: (context, _) {
@@ -226,7 +229,17 @@ class _EntryGoogleMapState<T> extends State<EntryGoogleMap<T>> with WidgetsBindi
                       },
                       onCameraMove: (position) => _updateVisibleRegion(zoom: position.zoom, rotation: -position.bearing),
                       onCameraIdle: _onIdle,
-                      onTap: (position) => widget.onMapTap?.call(_fromServiceLatLng(position)),
+                      onTap: (v) => widget.onMapTap?.call(_fromServiceLatLng(v)),
+                      onLongPress: _onMarkerLongPress != null
+                          ? (v) {
+                              final pressLocation = _fromServiceLatLng(v);
+                              final markers = _geoEntryByMarkerKey.values.toSet();
+                              final geoEntry = ImageMarker.markerMatch(pressLocation, bounds.zoom, markers);
+                              if (geoEntry != null) {
+                                _onMarkerLongPress(geoEntry, pressLocation);
+                              }
+                            }
+                          : null,
                     );
                   },
                 );

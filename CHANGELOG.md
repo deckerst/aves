@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 - Viewer: optionally show rating & tags on overlay
 - Viewer: long press on copy/move/rating/tag quick action for quicker action
 - Search: missing address, portrait, landscape filters
+- Map: edit cluster location
 - Lithuanian translation (thanks Gediminas Murauskas)
 - Norsk (Bokmål) translation (thanks Allan Nordhøy)
 

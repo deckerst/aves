@@ -1,9 +1,14 @@
-import 'package:aves_map/src/theme.dart';
+import 'package:aves_map/aves_map.dart';
+import 'package:aves_map/src/marker/arrow_painter.dart';
+import 'package:collection/collection.dart';
 import 'package:custom_rounded_rectangle_border/custom_rounded_rectangle_border.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 
 class ImageMarker extends StatelessWidget {
   final int? count;
+  final bool drawArrow;
   final Widget Function(double extent) buildThumbnailImage;
 
   static const double outerBorderRadiusDim = 8;
@@ -18,6 +23,7 @@ class ImageMarker extends StatelessWidget {
   const ImageMarker({
     super.key,
     required this.count,
+    this.drawArrow = true,
     required this.buildThumbnailImage,
   });
 
@@ -112,63 +118,51 @@ class ImageMarker extends StatelessWidget {
       );
     }
 
-    return CustomPaint(
-      foregroundPainter: _MarkerArrowPainter(
-        color: innerBorderColor,
-        outlineColor: outerBorderColor,
-        outlineWidth: outerBorderWidth,
-        size: arrowSize,
-      ),
-      child: Padding(
-        padding: EdgeInsets.only(bottom: arrowSize.height),
-        child: Container(
-          decoration: outerDecoration,
+    child = Container(
+      decoration: outerDecoration,
+      child: child,
+    );
+
+    if (drawArrow) {
+      child = CustomPaint(
+        foregroundPainter: MarkerArrowPainter(
+          color: innerBorderColor,
+          outlineColor: outerBorderColor,
+          outlineWidth: outerBorderWidth,
+          size: arrowSize,
+        ),
+        child: Padding(
+          padding: EdgeInsets.only(bottom: arrowSize.height),
           child: child,
         ),
-      ),
-    );
-  }
-}
+      );
+    }
 
-class _MarkerArrowPainter extends CustomPainter {
-  final Color color, outlineColor;
-  final double outlineWidth;
-  final Size size;
-
-  const _MarkerArrowPainter({
-    required this.color,
-    required this.outlineColor,
-    required this.outlineWidth,
-    required this.size,
-  });
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final triangleWidth = this.size.width;
-    final triangleHeight = this.size.height;
-
-    final bottomCenter = Offset(size.width / 2, size.height);
-    final topLeft = bottomCenter + Offset(-triangleWidth / 2, -triangleHeight);
-    final topRight = bottomCenter + Offset(triangleWidth / 2, -triangleHeight);
-
-    canvas.drawPath(
-        Path()
-          ..moveTo(bottomCenter.dx, bottomCenter.dy)
-          ..lineTo(topRight.dx, topRight.dy)
-          ..lineTo(topLeft.dx, topLeft.dy)
-          ..close(),
-        Paint()..color = outlineColor);
-
-    canvas.translate(0, -outlineWidth.ceilToDouble());
-    canvas.drawPath(
-        Path()
-          ..moveTo(bottomCenter.dx, bottomCenter.dy)
-          ..lineTo(topRight.dx, topRight.dy)
-          ..lineTo(topLeft.dx, topLeft.dy)
-          ..close(),
-        Paint()..color = color);
+    return child;
   }
 
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  static const _crs = Epsg3857();
+
+  static GeoEntry<T>? markerMatch<T>(LatLng position, double zoom, Set<GeoEntry<T>> markers) {
+    final pressPoint = _crs.latLngToPoint(position, zoom);
+    final pressOffset = Offset(pressPoint.x.toDouble(), pressPoint.y.toDouble());
+
+    const double markerWidth = extent;
+    const double markerHeight = extent;
+
+    return markers.firstWhereOrNull((marker) {
+      final latitude = marker.latitude;
+      final longitude = marker.longitude;
+      if (latitude == null || longitude == null) return false;
+
+      final markerAnchorPoint = _crs.latLngToPoint(LatLng(latitude, longitude), zoom);
+      final bottom = markerAnchorPoint.y.toDouble();
+      final top = bottom - markerHeight;
+      final left = markerAnchorPoint.x.toDouble() - markerWidth / 2;
+      final right = left + markerWidth;
+      final markerRect = Rect.fromLTRB(left, top, right, bottom);
+
+      return markerRect.contains(pressOffset);
+    });
+  }
 }

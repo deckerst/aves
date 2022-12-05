@@ -38,7 +38,8 @@ class GeoMap extends StatefulWidget {
   final MapOverlay? overlayEntry;
   final UserZoomChangeCallback? onUserZoomChange;
   final MapTapCallback? onMapTap;
-  final void Function(LatLng averageLocation, AvesEntry markerEntry, Set<AvesEntry> Function() getClusterEntries)? onMarkerTap;
+  final void Function(LatLng clusterLocation, AvesEntry markerEntry)? onMarkerTap;
+  final void Function(Offset tapLocalPosition, Set<AvesEntry> clusterEntries, LatLng clusterLocation, WidgetBuilder markerBuilder)? onMarkerLongPress;
   final void Function(BuildContext context)? openMapPage;
 
   const GeoMap({
@@ -54,6 +55,7 @@ class GeoMap extends StatefulWidget {
     this.onUserZoomChange,
     this.onMapTap,
     this.onMarkerTap,
+    this.onMarkerLongPress,
     this.openMapPage,
   });
 
@@ -118,41 +120,6 @@ class _GeoMapState extends State<GeoMap> {
 
   @override
   Widget build(BuildContext context) {
-    void _onMarkerTap(GeoEntry<AvesEntry> geoEntry) {
-      final onTap = widget.onMarkerTap;
-      if (onTap == null) return;
-
-      final clusterId = geoEntry.clusterId;
-      AvesEntry? markerEntry;
-      if (clusterId != null) {
-        final uri = geoEntry.childMarkerId;
-        markerEntry = entries.firstWhereOrNull((v) => v.uri == uri);
-      } else {
-        markerEntry = geoEntry.entry;
-      }
-
-      if (markerEntry == null) return;
-
-      Set<AvesEntry> getClusterEntries() {
-        if (clusterId == null) {
-          return {geoEntry.entry!};
-        }
-
-        var points = _defaultMarkerCluster?.points(clusterId) ?? [];
-        if (points.length != geoEntry.pointsSize) {
-          // `Fluster.points()` method does not always return all the points contained in a cluster
-          // the higher `nodeSize` is, the higher the chance to get all the points (i.e. as many as the cluster `pointsSize`)
-          _slowMarkerCluster ??= _buildFluster(nodeSize: smallestPowerOf2(entries.length));
-          points = _slowMarkerCluster!.points(clusterId);
-          assert(points.length == geoEntry.pointsSize, 'got ${points.length}/${geoEntry.pointsSize} for geoEntry=$geoEntry');
-        }
-        return points.map((geoEntry) => geoEntry.entry!).toSet();
-      }
-
-      final clusterAverageLocation = LatLng(geoEntry.latitude!, geoEntry.longitude!);
-      onTap(clusterAverageLocation, markerEntry, getClusterEntries);
-    }
-
     return Selector<Settings, EntryMapStyle?>(
       selector: (context, s) => s.mapStyle,
       builder: (context, mapStyle, child) {
@@ -192,6 +159,7 @@ class _GeoMapState extends State<GeoMap> {
                 onUserZoomChange: widget.onUserZoomChange,
                 onMapTap: widget.onMapTap,
                 onMarkerTap: _onMarkerTap,
+                onMarkerLongPress: _onMarkerLongPress,
               );
               break;
             case EntryMapStyle.osmHot:
@@ -222,6 +190,7 @@ class _GeoMapState extends State<GeoMap> {
                 onUserZoomChange: widget.onUserZoomChange,
                 onMapTap: widget.onMapTap,
                 onMarkerTap: _onMarkerTap,
+                onMarkerLongPress: _onMarkerLongPress,
               );
               break;
           }
@@ -378,7 +347,7 @@ class _GeoMapState extends State<GeoMap> {
 
     final availableSize = window.physicalSize / window.devicePixelRatio;
     final neededSize = bounds.toDisplaySize();
-    if (neededSize.longestSide > availableSize.shortestSide) {
+    if (neededSize.width > availableSize.width || neededSize.height > availableSize.height) {
       return _initBoundsForEntries(entries: entries, recentCount: (recentCount ?? 10000) ~/ 10);
     }
     return bounds;
@@ -431,6 +400,67 @@ class _GeoMapState extends State<GeoMap> {
       }
       return MapEntry(MarkerKey(v.entry!, null), v);
     }));
+  }
+
+  Set<AvesEntry> _getClusterEntries(GeoEntry<AvesEntry> geoEntry) {
+    final clusterId = geoEntry.clusterId;
+    if (clusterId == null) {
+      return {geoEntry.entry!};
+    }
+
+    var points = _defaultMarkerCluster?.points(clusterId) ?? [];
+    if (points.length != geoEntry.pointsSize) {
+      // `Fluster.points()` method does not always return all the points contained in a cluster
+      // the higher `nodeSize` is, the higher the chance to get all the points (i.e. as many as the cluster `pointsSize`)
+      _slowMarkerCluster ??= _buildFluster(nodeSize: smallestPowerOf2(entries.length));
+      points = _slowMarkerCluster!.points(clusterId);
+      assert(points.length == geoEntry.pointsSize, 'got ${points.length}/${geoEntry.pointsSize} for geoEntry=$geoEntry');
+    }
+    return points.map((geoEntry) => geoEntry.entry!).toSet();
+  }
+
+  void _onMarkerTap(GeoEntry<AvesEntry> geoEntry) {
+    final onTap = widget.onMarkerTap;
+    if (onTap == null) return;
+
+    final clusterId = geoEntry.clusterId;
+    AvesEntry? markerEntry;
+    if (clusterId != null) {
+      final uri = geoEntry.childMarkerId;
+      markerEntry = entries.firstWhereOrNull((v) => v.uri == uri);
+    } else {
+      markerEntry = geoEntry.entry;
+    }
+    if (markerEntry == null) return;
+
+    final clusterLocation = LatLng(geoEntry.latitude!, geoEntry.longitude!);
+    onTap(clusterLocation, markerEntry);
+  }
+
+  Future<void> _onMarkerLongPress(GeoEntry<AvesEntry> geoEntry, LatLng tapLocation) async {
+    final onMarkerLongPress = widget.onMarkerLongPress;
+    if (onMarkerLongPress == null) return;
+
+    final clusterEntries = _getClusterEntries(geoEntry);
+    final tapLocalPosition = _boundsNotifier.value.offset(tapLocation);
+
+    AvesEntry markerEntry;
+    if (geoEntry.isCluster!) {
+      final uri = geoEntry.childMarkerId;
+      markerEntry = entries.firstWhere((v) => v.uri == uri);
+    } else {
+      markerEntry = geoEntry.entry!;
+    }
+    final clusterLocation = LatLng(geoEntry.latitude!, geoEntry.longitude!);
+    Widget markerBuilder(BuildContext context) => ImageMarker(
+          count: geoEntry.pointsSize,
+          drawArrow: false,
+          buildThumbnailImage: (extent) => ThumbnailImage(
+            entry: markerEntry,
+            extent: extent,
+          ),
+        );
+    onMarkerLongPress(tapLocalPosition, clusterEntries, clusterLocation, markerBuilder);
   }
 
   Widget _decorateMap(BuildContext context, Widget? child) => MapDecorator(child: child);

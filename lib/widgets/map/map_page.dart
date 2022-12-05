@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:aves/app_mode.dart';
+import 'package:aves/model/actions/entry_set_actions.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/coordinate.dart';
 import 'package:aves/model/filters/filters.dart';
@@ -13,6 +14,8 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/debouncer.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
+import 'package:aves/widgets/collection/entry_set_action_delegate.dart';
+import 'package:aves/widgets/common/basic/menu.dart';
 import 'package:aves/widgets/common/behaviour/routes.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
@@ -160,6 +163,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
     _overlayVisible.removeListener(_onOverlayVisibleChange);
     _mapController.dispose();
     _selectedIndexNotifier.removeListener(_onThumbnailIndexChange);
+    _regionCollectionNotifier.value?.dispose();
     super.dispose();
   }
 
@@ -243,14 +247,15 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
         overlayOpacityNotifier: _overlayOpacityNotifier,
         overlayEntry: widget.overlayEntry,
         onMapTap: (_) => _toggleOverlay(),
-        onMarkerTap: (averageLocation, markerEntry, getClusterEntries) async {
-          final index = regionCollection?.sortedEntries.indexOf(markerEntry);
+        onMarkerTap: (location, entry) async {
+          final index = regionCollection?.sortedEntries.indexOf(entry);
           if (index != null && _selectedIndexNotifier.value != index) {
             _selectedIndexNotifier.value = index;
           }
           await Future.delayed(const Duration(milliseconds: 500));
-          context.read<HighlightInfo>().set(markerEntry);
+          context.read<HighlightInfo>().set(entry);
         },
+        onMarkerLongPress: _onMarkerLongPress,
       ),
     );
   }
@@ -346,12 +351,15 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
       selectedEntry = selectedIndex != null && 0 <= selectedIndex && selectedIndex < regionEntries.length ? regionEntries[selectedIndex] : null;
     }
 
-    _regionCollectionNotifier.value = openingCollection.copyWith(
+    final oldRegionCollection = _regionCollectionNotifier.value;
+    final newRegionCollection = openingCollection.copyWith(
       filters: {
         ...openingCollection.filters.whereNot((v) => v is CoordinateFilter),
         CoordinateFilter(bounds.sw, bounds.ne),
       },
     );
+    _regionCollectionNotifier.value = newRegionCollection;
+    oldRegionCollection?.dispose();
 
     // get entries from the new collection, so the entry order is the same
     // as the one used by the thumbnail scroller (considering sort/section/group)
@@ -448,5 +456,61 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
         _overlayAnimationController.reset();
       }
     }
+  }
+
+  // cluster context menu
+
+  Future<void> _onMarkerLongPress(
+    Offset tapLocalPosition,
+    Set<AvesEntry> clusterEntries,
+    LatLng clusterLocation,
+    WidgetBuilder markerBuilder,
+  ) async {
+    final overlay = Overlay.of(context)!.context.findRenderObject() as RenderBox;
+    const touchArea = Size(kMinInteractiveDimension, kMinInteractiveDimension);
+    final selectedAction = await showMenu<EntrySetAction>(
+      context: context,
+      position: RelativeRect.fromRect(tapLocalPosition & touchArea, Offset.zero & overlay.size),
+      items: [
+        PopupMenuItem(
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              markerBuilder(context),
+              const SizedBox(width: 16),
+              Text(context.l10n.itemCount(clusterEntries.length)),
+            ],
+          ),
+        ),
+        const PopupMenuDivider(),
+        _buildMenuItem(EntrySetAction.editLocation),
+      ],
+    );
+    if (selectedAction != null) {
+      // wait for the popup menu to hide before proceeding with the action
+      await Future.delayed(Durations.popupMenuAnimation * timeDilation);
+      switch (selectedAction) {
+        case EntrySetAction.editLocation:
+          final location = await EntrySetActionDelegate().quickLocationByMap(context, clusterEntries, clusterLocation, openingCollection);
+          if (location != null) {
+            _mapController.moveTo(location);
+          }
+          break;
+        default:
+          break;
+      }
+    }
+  }
+
+  PopupMenuItem<EntrySetAction> _buildMenuItem(EntrySetAction action) {
+    return PopupMenuItem(
+      value: action,
+      child: MenuIconTheme(
+        child: MenuRow(
+          text: action.getText(context),
+          icon: action.getIcon(),
+        ),
+      ),
+    );
   }
 }

@@ -29,5 +29,6 @@ abstract class MobileServices {
     required UserZoomChangeCallback? onUserZoomChange,
     required MapTapCallback? onMapTap,
     required MarkerTapCallback<T>? onMarkerTap,
+    required MarkerLongPressCallback<T>? onMarkerLongPress,
   });
 }

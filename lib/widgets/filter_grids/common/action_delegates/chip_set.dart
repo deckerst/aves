@@ -238,19 +238,19 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
     }
   }
 
-  void _goToMap(BuildContext context, Set<T> filters) {
-    Navigator.push(
+  Future<void> _goToMap(BuildContext context, Set<T> filters) async {
+    final mapCollection = CollectionLens(
+      source: context.read<CollectionSource>(),
+      fixedSelection: _selectedEntries(context, filters).where((entry) => entry.hasGps).toList(),
+    );
+    await Navigator.push(
       context,
       MaterialPageRoute(
         settings: const RouteSettings(name: MapPage.routeName),
-        builder: (context) => MapPage(
-          collection: CollectionLens(
-            source: context.read<CollectionSource>(),
-            fixedSelection: _selectedEntries(context, filters).where((entry) => entry.hasGps).toList(),
-          ),
-        ),
+        builder: (context) => MapPage(collection: mapCollection),
       ),
     );
+    mapCollection.dispose();
   }
 
   void _goToSlideshow(BuildContext context, Set<T> filters) {

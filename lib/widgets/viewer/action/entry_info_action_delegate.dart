@@ -255,20 +255,20 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
     final baseCollection = collection;
     if (baseCollection == null) return;
 
+    final mapCollection = baseCollection.copyWith(
+      listenToSource: true,
+      fixedSelection: baseCollection.sortedEntries.where((entry) => entry.hasGps).where((entry) => entry != targetEntry).toList(),
+    );
     await Navigator.push(
       context,
       MaterialPageRoute(
         settings: const RouteSettings(name: MapPage.routeName),
-        builder: (context) {
-          return MapPage(
-            collection: baseCollection.copyWith(
-              listenToSource: true,
-              fixedSelection: baseCollection.sortedEntries.where((entry) => entry.hasGps).where((entry) => entry != targetEntry).toList(),
-            ),
-            overlayEntry: mappedGeoTiff,
-          );
-        },
+        builder: (context) => MapPage(
+          collection: mapCollection,
+          overlayEntry: mappedGeoTiff,
+        ),
       ),
     );
+    mapCollection.dispose();
   }
 }
