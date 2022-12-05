@@ -41,6 +41,7 @@ class AboutTranslators extends StatelessWidget {
     // Contributor('SAMIRAH AIL', 'samiratalzahrani@gmail.com'),
     // Contributor('Salih Ail', 'rrrfff444@gmail.com'),
     // Contributor('Nattapong K', 'mixer5056@gmail.com'),
+    // Contributor('tryvseu', 'tryvseu@tuta.io'),
   };
 
   @override
