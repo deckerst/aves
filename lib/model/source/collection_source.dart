@@ -392,31 +392,36 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
 
   Future<Set<String>> refreshUris(Set<String> changedUris, {AnalysisController? analysisController});
 
-  Future<void> refreshEntry(AvesEntry entry, Set<EntryDataType> dataTypes) async {
-    await entry.refresh(background: false, persist: true, dataTypes: dataTypes, geocoderLocale: settings.appliedLocale);
+  Future<void> refreshEntries(Set<AvesEntry> entries, Set<EntryDataType> dataTypes) async {
+    const background = false;
+    const persist = true;
 
-    final id = entry.id;
-    await Future.forEach(EntryDataType.values, (dataType) async {
-      switch (dataType) {
-        case EntryDataType.aspectRatio:
-          onAspectRatioChanged();
-          break;
-        case EntryDataType.catalog:
-          await metadataDb.updateCatalogMetadata(id, entry.catalogMetadata);
-          onCatalogMetadataChanged();
-          break;
-        case EntryDataType.address:
-          await metadataDb.updateAddress(id, entry.addressDetails);
-          onAddressMetadataChanged();
-          break;
-        case EntryDataType.basic:
-        case EntryDataType.references:
-          break;
-      }
+    await Future.forEach(entries, (entry) async {
+      await entry.refresh(background: background, persist: persist, dataTypes: dataTypes);
     });
 
-    updateDerivedFilters({entry});
-    eventBus.fire(EntryRefreshedEvent({entry}));
+    if (dataTypes.contains(EntryDataType.aspectRatio)) {
+      onAspectRatioChanged();
+    }
+
+    if (dataTypes.contains(EntryDataType.catalog)) {
+      await Future.forEach(entries, (entry) async {
+        await entry.catalog(background: background, force: dataTypes.contains(EntryDataType.catalog), persist: persist);
+        await metadataDb.updateCatalogMetadata(entry.id, entry.catalogMetadata);
+      });
+      onCatalogMetadataChanged();
+    }
+
+    if (dataTypes.contains(EntryDataType.address)) {
+      await Future.forEach(entries, (entry) async {
+        await entry.locate(background: background, force: dataTypes.contains(EntryDataType.address), geocoderLocale: settings.appliedLocale);
+        await metadataDb.updateAddress(entry.id, entry.addressDetails);
+      });
+      onAddressMetadataChanged();
+    }
+
+    updateDerivedFilters(entries);
+    eventBus.fire(EntryRefreshedEvent(entries));
   }
 
   Future<void> analyze(AnalysisController? analysisController, {Set<AvesEntry>? entries}) async {

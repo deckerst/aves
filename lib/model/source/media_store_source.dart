@@ -271,8 +271,7 @@ class MediaStoreSource extends CollectionSource {
     }
 
     if (entriesToRefresh.isNotEmpty) {
-      final allDataTypes = EntryDataType.values.toSet();
-      await Future.forEach(entriesToRefresh, (entry) => refreshEntry(entry, allDataTypes));
+      await refreshEntries(entriesToRefresh, EntryDataType.values.toSet());
     }
 
     return tempUris;
