@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Aves</string>
+    <string name="app_widget_label">Bileteramme</string>
+    <string name="wallpaper">Bakgrunnsbilete</string>
+    <string name="search_shortcut_short_label">Søk</string>
+    <string name="videos_shortcut_short_label">Videoar</string>
+    <string name="analysis_channel_name">Mediasøking</string>
+    <string name="analysis_service_description">Søk igjennom bilete og videoar</string>
+    <string name="analysis_notification_default_title">Søkjer igjennom media</string>
+    <string name="analysis_notification_action_stop">Stogg</string>
+</resources>
