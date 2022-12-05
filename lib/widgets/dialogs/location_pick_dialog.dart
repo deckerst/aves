@@ -142,9 +142,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
         isAnimatingNotifier: _isPageAnimatingNotifier,
         dotLocationNotifier: _dotLocationNotifier,
         onMapTap: _setLocation,
-        onMarkerTap: (averageLocation, markerEntry, getClusterEntries) {
-          _setLocation(averageLocation);
-        },
+        onMarkerTap: (location, entry) => _setLocation(location),
       ),
     );
   }

@@ -174,27 +174,26 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> {
   }
 
   Future<void> _pickLocation() async {
+    final baseCollection = widget.collection;
+    final mapCollection = baseCollection != null
+        ? CollectionLens(
+            source: baseCollection.source,
+            filters: baseCollection.filters,
+            fixedSelection: baseCollection.sortedEntries.where((entry) => entry.hasGps).toList(),
+          )
+        : null;
     final latLng = await Navigator.push(
       context,
       MaterialPageRoute(
         settings: const RouteSettings(name: LocationPickDialog.routeName),
-        builder: (context) {
-          final baseCollection = widget.collection;
-          final mapCollection = baseCollection != null
-              ? CollectionLens(
-                  source: baseCollection.source,
-                  filters: baseCollection.filters,
-                  fixedSelection: baseCollection.sortedEntries.where((entry) => entry.hasGps).toList(),
-                )
-              : null;
-          return LocationPickDialog(
-            collection: mapCollection,
-            initialLocation: _mapCoordinates,
-          );
-        },
+        builder: (context) => LocationPickDialog(
+          collection: mapCollection,
+          initialLocation: _mapCoordinates,
+        ),
         fullscreenDialog: true,
       ),
     );
+    mapCollection?.dispose();
     if (latLng != null) {
       settings.mapDefaultCenter = latLng;
       setState(() {
