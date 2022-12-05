@@ -672,7 +672,6 @@ class AvesEntry {
     required bool background,
     required bool persist,
     required Set<EntryDataType> dataTypes,
-    required Locale geocoderLocale,
   }) async {
     // clear derived fields
     _bestDate = null;
@@ -687,8 +686,6 @@ class AvesEntry {
     if (updatedEntry != null) {
       await applyNewFields(updatedEntry.toMap(), persist: persist);
     }
-    await catalog(background: background, force: dataTypes.contains(EntryDataType.catalog), persist: persist);
-    await locate(background: background, force: dataTypes.contains(EntryDataType.address), geocoderLocale: geocoderLocale);
   }
 
   Future<bool> delete() {

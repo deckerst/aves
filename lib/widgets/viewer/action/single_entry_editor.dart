@@ -33,7 +33,7 @@ mixin SingleEntryEditorMixin on FeedbackMixin, PermissionAwareMixin {
           Set<String> obsoleteTags = targetEntry.tags;
           String? obsoleteCountryCode = targetEntry.addressDetails?.countryCode;
 
-          await source.refreshEntry(targetEntry, dataTypes);
+          await source.refreshEntries({targetEntry}, dataTypes);
 
           // invalidate filters derived from values before edition
           // this invalidation must happen after the source is refreshed,
@@ -45,7 +45,11 @@ mixin SingleEntryEditorMixin on FeedbackMixin, PermissionAwareMixin {
             source.invalidateTagFilterSummary(tags: obsoleteTags);
           }
         } else {
-          await targetEntry.refresh(background: false, persist: false, dataTypes: dataTypes, geocoderLocale: settings.appliedLocale);
+          const background = false;
+          const persist = false;
+          await targetEntry.refresh(background: background, persist: persist, dataTypes: dataTypes);
+          await targetEntry.catalog(background: background, force: dataTypes.contains(EntryDataType.catalog), persist: persist);
+          await targetEntry.locate(background: background, force: dataTypes.contains(EntryDataType.address), geocoderLocale: settings.appliedLocale);
         }
         showFeedback(context, l10n.genericSuccessFeedback);
       } else {
