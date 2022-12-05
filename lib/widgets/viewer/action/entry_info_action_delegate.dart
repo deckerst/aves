@@ -223,7 +223,7 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
       context: context,
       builder: (context) {
         return AvesDialog(
-          content: Text(context.l10n.convertMotionPhotoToStillImageWarningDialogMessage),
+          content: Text(context.l10n.genericDangerWarningDialogMessage),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),

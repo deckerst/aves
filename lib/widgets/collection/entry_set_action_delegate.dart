@@ -535,7 +535,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       context: context,
       builder: (context) {
         return AvesDialog(
-          content: Text(context.l10n.convertMotionPhotoToStillImageWarningDialogMessage),
+          content: Text(context.l10n.genericDangerWarningDialogMessage),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
