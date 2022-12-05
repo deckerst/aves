@@ -38,8 +38,17 @@ class GeoMap extends StatefulWidget {
   final MapOverlay? overlayEntry;
   final UserZoomChangeCallback? onUserZoomChange;
   final MapTapCallback? onMapTap;
-  final void Function(LatLng clusterLocation, AvesEntry markerEntry)? onMarkerTap;
-  final void Function(Offset tapLocalPosition, Set<AvesEntry> clusterEntries, LatLng clusterLocation, WidgetBuilder markerBuilder)? onMarkerLongPress;
+  final void Function(
+    LatLng markerLocation,
+    AvesEntry markerEntry,
+  )? onMarkerTap;
+  final void Function(
+    LatLng markerLocation,
+    AvesEntry markerEntry,
+    Set<AvesEntry> clusterEntries,
+    Offset tapLocalPosition,
+    WidgetBuilder markerBuilder,
+  )? onMarkerLongPress;
   final void Function(BuildContext context)? openMapPage;
 
   const GeoMap({
@@ -360,15 +369,20 @@ class _GeoMapState extends State<GeoMap> {
   }
 
   Fluster<GeoEntry<AvesEntry>> _buildFluster({int nodeSize = 64}) {
-    final markers = entries.map((entry) {
-      final latLng = entry.latLng!;
-      return GeoEntry<AvesEntry>(
-        entry: entry,
-        latitude: latLng.latitude,
-        longitude: latLng.longitude,
-        markerId: entry.uri,
-      );
-    }).toList();
+    final markers = entries
+        .map((entry) {
+          final latLng = entry.latLng;
+          return latLng != null
+              ? GeoEntry<AvesEntry>(
+                  entry: entry,
+                  latitude: latLng.latitude,
+                  longitude: latLng.longitude,
+                  markerId: entry.uri,
+                )
+              : null;
+        })
+        .whereNotNull()
+        .toList();
 
     return Fluster<GeoEntry<AvesEntry>>(
       // we keep clustering on the whole range of zooms (including the maximum)
@@ -433,8 +447,8 @@ class _GeoMapState extends State<GeoMap> {
     }
     if (markerEntry == null) return;
 
-    final clusterLocation = LatLng(geoEntry.latitude!, geoEntry.longitude!);
-    onTap(clusterLocation, markerEntry);
+    final markerLocation = LatLng(geoEntry.latitude!, geoEntry.longitude!);
+    onTap(markerLocation, markerEntry);
   }
 
   Future<void> _onMarkerLongPress(GeoEntry<AvesEntry> geoEntry, LatLng tapLocation) async {
@@ -451,7 +465,7 @@ class _GeoMapState extends State<GeoMap> {
     } else {
       markerEntry = geoEntry.entry!;
     }
-    final clusterLocation = LatLng(geoEntry.latitude!, geoEntry.longitude!);
+    final markerLocation = LatLng(geoEntry.latitude!, geoEntry.longitude!);
     Widget markerBuilder(BuildContext context) => ImageMarker(
           count: geoEntry.pointsSize,
           drawArrow: false,
@@ -460,7 +474,13 @@ class _GeoMapState extends State<GeoMap> {
             extent: extent,
           ),
         );
-    onMarkerLongPress(tapLocalPosition, clusterEntries, clusterLocation, markerBuilder);
+    onMarkerLongPress(
+      markerLocation,
+      markerEntry,
+      clusterEntries,
+      tapLocalPosition,
+      markerBuilder,
+    );
   }
 
   Widget _decorateMap(BuildContext context, Widget? child) => MapDecorator(child: child);

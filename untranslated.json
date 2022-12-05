@@ -86,6 +86,7 @@
     "entryInfoActionEditTags",
     "entryInfoActionRemoveMetadata",
     "entryInfoActionExportMetadata",
+    "entryInfoActionRemoveLocation",
     "filterAspectRatioLandscapeLabel",
     "filterAspectRatioPortraitLabel",
     "filterBinLabel",
@@ -593,11 +594,20 @@
     "filePickerUseThisFolder"
   ],
 
+  "de": [
+    "entryInfoActionRemoveLocation"
+  ],
+
   "el": [
+    "entryInfoActionRemoveLocation",
     "filterAspectRatioLandscapeLabel",
     "filterAspectRatioPortraitLabel",
     "filterNoAddressLabel",
     "settingsViewerShowRatingTags"
+  ],
+
+  "es": [
+    "entryInfoActionRemoveLocation"
   ],
 
   "fa": [
@@ -687,6 +697,7 @@
     "entryInfoActionEditTags",
     "entryInfoActionRemoveMetadata",
     "entryInfoActionExportMetadata",
+    "entryInfoActionRemoveLocation",
     "filterAspectRatioLandscapeLabel",
     "filterAspectRatioPortraitLabel",
     "filterBinLabel",
@@ -1194,8 +1205,13 @@
     "filePickerUseThisFolder"
   ],
 
+  "fr": [
+    "entryInfoActionRemoveLocation"
+  ],
+
   "gl": [
     "entryInfoActionExportMetadata",
+    "entryInfoActionRemoveLocation",
     "filterAspectRatioLandscapeLabel",
     "filterAspectRatioPortraitLabel",
     "filterNoAddressLabel",
@@ -1657,6 +1673,7 @@
 
   "id": [
     "entryInfoActionExportMetadata",
+    "entryInfoActionRemoveLocation",
     "filterAspectRatioLandscapeLabel",
     "filterAspectRatioPortraitLabel",
     "filterNoAddressLabel",
@@ -1671,6 +1688,7 @@
   ],
 
   "it": [
+    "entryInfoActionRemoveLocation",
     "filterAspectRatioLandscapeLabel",
     "filterAspectRatioPortraitLabel",
     "filterNoAddressLabel",
@@ -1680,6 +1698,7 @@
   "ja": [
     "chipActionFilterIn",
     "entryInfoActionExportMetadata",
+    "entryInfoActionRemoveLocation",
     "filterAspectRatioLandscapeLabel",
     "filterAspectRatioPortraitLabel",
     "filterNoAddressLabel",
@@ -1693,8 +1712,21 @@
     "settingsWidgetDisplayedItem"
   ],
 
+  "ko": [
+    "entryInfoActionRemoveLocation"
+  ],
+
+  "lt": [
+    "entryInfoActionRemoveLocation"
+  ],
+
+  "nb": [
+    "entryInfoActionRemoveLocation"
+  ],
+
   "nl": [
     "entryInfoActionExportMetadata",
+    "entryInfoActionRemoveLocation",
     "filterAspectRatioLandscapeLabel",
     "filterAspectRatioPortraitLabel",
     "filterNoAddressLabel",
@@ -1715,6 +1747,7 @@
     "timeDays",
     "focalLength",
     "entryInfoActionExportMetadata",
+    "entryInfoActionRemoveLocation",
     "filterAspectRatioLandscapeLabel",
     "filterAspectRatioPortraitLabel",
     "filterNoAddressLabel",
@@ -2211,6 +2244,7 @@
 
   "pt": [
     "entryInfoActionExportMetadata",
+    "entryInfoActionRemoveLocation",
     "filterAspectRatioLandscapeLabel",
     "filterAspectRatioPortraitLabel",
     "filterNoAddressLabel",
@@ -2225,6 +2259,7 @@
   ],
 
   "ro": [
+    "entryInfoActionRemoveLocation",
     "filterAspectRatioLandscapeLabel",
     "filterAspectRatioPortraitLabel",
     "filterNoAddressLabel",
@@ -2232,6 +2267,7 @@
   ],
 
   "ru": [
+    "entryInfoActionRemoveLocation",
     "filterAspectRatioLandscapeLabel",
     "filterAspectRatioPortraitLabel",
     "filterNoAddressLabel",
@@ -2247,6 +2283,7 @@
     "applyButtonLabel",
     "entryActionShowGeoTiffOnMap",
     "videoActionCaptureFrame",
+    "entryInfoActionRemoveLocation",
     "filterAspectRatioLandscapeLabel",
     "filterAspectRatioPortraitLabel",
     "filterNoAddressLabel",
@@ -2612,7 +2649,12 @@
     "filePickerUseThisFolder"
   ],
 
+  "tr": [
+    "entryInfoActionRemoveLocation"
+  ],
+
   "zh": [
+    "entryInfoActionRemoveLocation",
     "filterAspectRatioLandscapeLabel",
     "filterAspectRatioPortraitLabel",
     "filterNoAddressLabel",

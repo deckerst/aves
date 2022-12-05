@@ -123,6 +123,7 @@
   "entryInfoActionEditTags": "Edit tags",
   "entryInfoActionRemoveMetadata": "Remove metadata",
   "entryInfoActionExportMetadata": "Export metadata",
+  "entryInfoActionRemoveLocation": "Remove location",
 
   "filterAspectRatioLandscapeLabel": "Landscape",
   "filterAspectRatioPortraitLabel": "Portrait",
