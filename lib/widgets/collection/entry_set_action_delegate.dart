@@ -509,7 +509,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     await _edit(context, entries, (entry) => entry.editLocation(location));
   }
 
-  Future<LatLng?> quickLocationByMap(BuildContext context, Set<AvesEntry> entries, LatLng clusterLocation, CollectionLens mapCollection) async {
+  Future<LatLng?> editLocationByMap(BuildContext context, Set<AvesEntry> entries, LatLng clusterLocation, CollectionLens mapCollection) async {
     final editableEntries = await _getEditableItems(context, entries, canEdit: (entry) => entry.canEditLocation);
     if (editableEntries == null || editableEntries.isEmpty) return null;
 
@@ -528,6 +528,33 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
 
     await _edit(context, editableEntries, (entry) => entry.editLocation(location));
     return location;
+  }
+
+  Future<void> removeLocation(BuildContext context, Set<AvesEntry> entries) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AvesDialog(
+          content: Text(context.l10n.convertMotionPhotoToStillImageWarningDialogMessage),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: Text(context.l10n.applyButtonLabel),
+            ),
+          ],
+        );
+      },
+    );
+    if (confirmed == null || !confirmed) return;
+
+    final editableEntries = await _getEditableItems(context, entries, canEdit: (entry) => entry.canEditLocation);
+    if (editableEntries == null || editableEntries.isEmpty) return;
+
+    await _edit(context, editableEntries, (entry) => entry.editLocation(ExtraAvesEntryMetadataEdition.removalLocation));
   }
 
   Future<void> _editTitleDescription(BuildContext context) async {

@@ -1,4 +1,5 @@
 import 'package:aves/model/entry.dart';
+import 'package:aves/model/entry_metadata_edition.dart';
 import 'package:aves/model/metadata/enums/enums.dart';
 import 'package:aves/model/metadata/enums/location_edit_action.dart';
 import 'package:aves/model/settings/enums/coordinate_format.dart';
@@ -341,7 +342,7 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> {
         Navigator.pop(context, _parseLatLng());
         break;
       case LocationEditAction.remove:
-        Navigator.pop(context, LatLng(0, 0));
+        Navigator.pop(context, ExtraAvesEntryMetadataEdition.removalLocation);
         break;
     }
   }

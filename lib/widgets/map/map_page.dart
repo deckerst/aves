@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:aves/app_mode.dart';
-import 'package:aves/model/actions/entry_set_actions.dart';
+import 'package:aves/model/actions/map_cluster_actions.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/coordinate.dart';
 import 'package:aves/model/filters/filters.dart';
@@ -10,6 +10,7 @@ import 'package:aves/model/highlight.dart';
 import 'package:aves/model/settings/enums/map_style.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
+import 'package:aves/model/source/tag.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/debouncer.dart';
@@ -102,6 +103,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
   final ValueNotifier<bool> _overlayVisible = ValueNotifier(true);
   late AnimationController _overlayAnimationController;
   late Animation<double> _overlayScale, _scrollerSize;
+  CoordinateFilter? _regionFilter;
 
   CollectionLens? get regionCollection => _regionCollectionNotifier.value;
 
@@ -119,7 +121,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
       });
     }
 
-    _dotEntryNotifier.addListener(_updateInfoEntry);
+    _dotEntryNotifier.addListener(_onSelectedEntryChanged);
 
     _overlayAnimationController = AnimationController(
       duration: context.read<DurationsData>().viewerOverlayAnimation,
@@ -136,6 +138,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
     _overlayVisible.addListener(_onOverlayVisibleChange);
 
     _subscriptions.add(_mapController.idleUpdates.listen((event) => _onIdle(event.bounds)));
+    _subscriptions.add(openingCollection.source.eventBus.on<CatalogMetadataChangedEvent>().listen((e) => _updateRegionCollection()));
 
     _selectedIndexNotifier.addListener(_onThumbnailIndexChange);
     Future.delayed(Durations.pageTransitionAnimation * timeDilation + const Duration(seconds: 1), () {
@@ -158,12 +161,13 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
     _subscriptions
       ..forEach((sub) => sub.cancel())
       ..clear();
-    _dotEntryNotifier.removeListener(_updateInfoEntry);
+    _dotEntryNotifier.value?.metadataChangeNotifier.removeListener(_onMarkerEntryMetadataChanged);
+    _dotEntryNotifier.removeListener(_onSelectedEntryChanged);
     _overlayAnimationController.dispose();
     _overlayVisible.removeListener(_onOverlayVisibleChange);
     _mapController.dispose();
     _selectedIndexNotifier.removeListener(_onThumbnailIndexChange);
-    _regionCollectionNotifier.value?.dispose();
+    regionCollection?.dispose();
     super.dispose();
   }
 
@@ -344,6 +348,14 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
   }
 
   void _onIdle(ZoomedBounds bounds) {
+    _regionFilter = CoordinateFilter(bounds.sw, bounds.ne);
+    _updateRegionCollection();
+  }
+
+  void _updateRegionCollection() {
+    final regionFilter = _regionFilter;
+    if (regionFilter == null) return;
+
     AvesEntry? selectedEntry;
     if (regionCollection != null) {
       final regionEntries = regionCollection!.sortedEntries;
@@ -351,11 +363,11 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
       selectedEntry = selectedIndex != null && 0 <= selectedIndex && selectedIndex < regionEntries.length ? regionEntries[selectedIndex] : null;
     }
 
-    final oldRegionCollection = _regionCollectionNotifier.value;
+    final oldRegionCollection = regionCollection;
     final newRegionCollection = openingCollection.copyWith(
       filters: {
         ...openingCollection.filters.whereNot((v) => v is CoordinateFilter),
-        CoordinateFilter(bounds.sw, bounds.ne),
+        regionFilter,
       },
     );
     _regionCollectionNotifier.value = newRegionCollection;
@@ -389,11 +401,17 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
   void _onThumbnailIndexChange() => _onEntrySelected(_getRegionEntry(_selectedIndexNotifier.value));
 
   void _onEntrySelected(AvesEntry? selectedEntry) {
-    _dotLocationNotifier.value = selectedEntry?.latLng;
+    _dotEntryNotifier.value?.metadataChangeNotifier.removeListener(_onMarkerEntryMetadataChanged);
     _dotEntryNotifier.value = selectedEntry;
+    selectedEntry?.metadataChangeNotifier.addListener(_onMarkerEntryMetadataChanged);
+    _onMarkerEntryMetadataChanged();
   }
 
-  void _updateInfoEntry() {
+  void _onMarkerEntryMetadataChanged() {
+    _dotLocationNotifier.value = _dotEntryNotifier.value?.latLng;
+  }
+
+  void _onSelectedEntryChanged() {
     final selectedEntry = _dotEntryNotifier.value;
     if (_infoEntryNotifier.value == null || selectedEntry == null) {
       _infoEntryNotifier.value = selectedEntry;
@@ -461,14 +479,15 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
   // cluster context menu
 
   Future<void> _onMarkerLongPress(
-    Offset tapLocalPosition,
+    LatLng markerLocation,
+    AvesEntry markerEntry,
     Set<AvesEntry> clusterEntries,
-    LatLng clusterLocation,
+    Offset tapLocalPosition,
     WidgetBuilder markerBuilder,
   ) async {
     final overlay = Overlay.of(context)!.context.findRenderObject() as RenderBox;
     const touchArea = Size(kMinInteractiveDimension, kMinInteractiveDimension);
-    final selectedAction = await showMenu<EntrySetAction>(
+    final selectedAction = await showMenu<MapClusterAction>(
       context: context,
       position: RelativeRect.fromRect(tapLocalPosition & touchArea, Offset.zero & overlay.size),
       items: [
@@ -483,26 +502,36 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
           ),
         ),
         const PopupMenuDivider(),
-        _buildMenuItem(EntrySetAction.editLocation),
+        ...[
+          MapClusterAction.editLocation,
+          MapClusterAction.removeLocation,
+        ].map(_buildMenuItem),
       ],
     );
     if (selectedAction != null) {
       // wait for the popup menu to hide before proceeding with the action
       await Future.delayed(Durations.popupMenuAnimation * timeDilation);
+      final delegate = EntrySetActionDelegate();
       switch (selectedAction) {
-        case EntrySetAction.editLocation:
-          final location = await EntrySetActionDelegate().quickLocationByMap(context, clusterEntries, clusterLocation, openingCollection);
+        case MapClusterAction.editLocation:
+          final regionEntries = regionCollection?.sortedEntries ?? [];
+          final markerIndex = regionEntries.indexOf(markerEntry);
+          final location = await delegate.editLocationByMap(context, clusterEntries, markerLocation, openingCollection);
           if (location != null) {
+            if (markerIndex != -1) {
+              _selectedIndexNotifier.value = markerIndex;
+            }
             _mapController.moveTo(location);
           }
           break;
-        default:
+        case MapClusterAction.removeLocation:
+          await delegate.removeLocation(context, clusterEntries);
           break;
       }
     }
   }
 
-  PopupMenuItem<EntrySetAction> _buildMenuItem(EntrySetAction action) {
+  PopupMenuItem<MapClusterAction> _buildMenuItem(MapClusterAction action) {
     return PopupMenuItem(
       value: action,
       child: MenuIconTheme(
