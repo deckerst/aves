@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:aves/theme/icons.dart';
-import 'package:aves/widgets/common/app_bar/quick_choosers/quick_chooser.dart';
+import 'package:aves/widgets/common/app_bar/quick_choosers/common/quick_chooser.dart';
 import 'package:flutter/material.dart';
 
 class RateQuickChooser extends StatefulWidget {

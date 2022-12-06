@@ -5,9 +5,10 @@ import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/app_bar/favourite_toggler.dart';
-import 'package:aves/widgets/common/app_bar/move_button.dart';
-import 'package:aves/widgets/common/app_bar/rate_button.dart';
-import 'package:aves/widgets/common/app_bar/tag_button.dart';
+import 'package:aves/widgets/common/app_bar/quick_choosers/move_button.dart';
+import 'package:aves/widgets/common/app_bar/quick_choosers/rate_button.dart';
+import 'package:aves/widgets/common/app_bar/quick_choosers/share_button.dart';
+import 'package:aves/widgets/common/app_bar/quick_choosers/tag_button.dart';
 import 'package:aves/widgets/common/basic/menu.dart';
 import 'package:aves/widgets/common/basic/popup_menu_button.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -220,6 +221,14 @@ class ViewerButtonRowContent extends StatelessWidget {
           copy: false,
           blurred: blurred,
           onChooserValue: (album) => _entryActionDelegate.quickMove(context, album, copy: false),
+          onPressed: onPressed,
+        );
+        break;
+      case EntryAction.share:
+        child = ShareButton(
+          blurred: blurred,
+          entries: {mainEntry},
+          onChooserValue: (action) => _entryActionDelegate.quickShare(context, action),
           onPressed: onPressed,
         );
         break;

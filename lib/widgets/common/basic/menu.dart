@@ -15,6 +15,7 @@ class MenuRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisSize: MainAxisSize.min,
       children: [
         if (icon != null)
           Padding(
@@ -26,7 +27,9 @@ class MenuRow extends StatelessWidget {
               child: icon!,
             ),
           ),
-        Expanded(child: Text(text)),
+        Flexible(
+          child: Text(text),
+        ),
       ],
     );
   }

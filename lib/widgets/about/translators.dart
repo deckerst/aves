@@ -53,7 +53,7 @@ class AboutTranslators extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ConstrainedBox(
-            constraints: const BoxConstraints(minHeight: 48),
+            constraints: const BoxConstraints(minHeight: kMinInteractiveDimension),
             child: Align(
               alignment: AlignmentDirectional.centerStart,
               child: Text(l10n.aboutTranslatorsSectionTitle, style: Constants.knownTitleTextStyle),

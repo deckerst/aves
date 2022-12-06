@@ -1,31 +1,34 @@
 import 'package:aves/model/actions/entry_actions.dart';
+import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
-import 'package:aves/widgets/common/app_bar/quick_choosers/chooser_button.dart';
-import 'package:aves/widgets/common/app_bar/quick_choosers/filter_chooser.dart';
-import 'package:aves/widgets/common/app_bar/quick_choosers/tag_chooser.dart';
+import 'package:aves/widgets/common/app_bar/quick_choosers/album_chooser.dart';
+import 'package:aves/widgets/common/app_bar/quick_choosers/common/button.dart';
+import 'package:aves/widgets/common/app_bar/quick_choosers/common/menu.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/filter_grids/common/filter_nav_page.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class TagButton extends ChooserQuickButton<CollectionFilter> {
-  const TagButton({
+class MoveButton extends ChooserQuickButton<String> {
+  final bool copy;
+
+  const MoveButton({
     super.key,
+    required this.copy,
     required super.blurred,
     super.onChooserValue,
     required super.onPressed,
   });
 
   @override
-  State<TagButton> createState() => _TagButtonState();
+  State<MoveButton> createState() => _MoveButtonState();
 }
 
-class _TagButtonState extends ChooserQuickButtonState<TagButton, CollectionFilter> {
-  EntryAction get action => EntryAction.editTags;
+class _MoveButtonState extends ChooserQuickButtonState<MoveButton, String> {
+  EntryAction get action => widget.copy ? EntryAction.copy : EntryAction.move;
 
   @override
   Widget get icon => action.getIcon();
@@ -35,14 +38,14 @@ class _TagButtonState extends ChooserQuickButtonState<TagButton, CollectionFilte
 
   @override
   Widget buildChooser(Animation<double> animation, PopupMenuPosition chooserPosition) {
-    final options = settings.recentTags;
-    final takeCount = FilterQuickChooser.maxOptionCount - options.length;
+    final options = settings.recentDestinationAlbums;
+    final takeCount = MenuQuickChooser.maxOptionCount - options.length;
     if (takeCount > 0) {
       final source = context.read<CollectionSource>();
-      final filters = source.sortedTags.map(TagFilter.new).whereNot(options.contains).toSet();
+      final filters = source.rawAlbums.whereNot(options.contains).map((album) => AlbumFilter(album, null)).toSet();
       final allMapEntries = filters.map((filter) => FilterGridItem(filter, source.recentEntry(filter))).toList();
       allMapEntries.sort(FilterNavigationPage.compareFiltersByDate);
-      options.addAll(allMapEntries.take(takeCount).map((v) => v.filter));
+      options.addAll(allMapEntries.take(takeCount).map((v) => v.filter.album));
     }
 
     return MediaQueryDataProvider(
@@ -51,7 +54,7 @@ class _TagButtonState extends ChooserQuickButtonState<TagButton, CollectionFilte
         child: ScaleTransition(
           scale: animation,
           alignment: chooserPosition == PopupMenuPosition.over ? Alignment.bottomCenter : Alignment.topCenter,
-          child: TagQuickChooser(
+          child: AlbumQuickChooser(
             valueNotifier: chooserValueNotifier,
             options: options,
             blurred: widget.blurred,

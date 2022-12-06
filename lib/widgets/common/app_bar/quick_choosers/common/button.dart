@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:aves/theme/durations.dart';
-import 'package:aves/widgets/common/app_bar/quick_choosers/route_layout.dart';
+import 'package:aves/widgets/common/app_bar/quick_choosers/common/route_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -35,6 +35,8 @@ abstract class ChooserQuickButtonState<T extends ChooserQuickButton<U>, U> exten
 
   Curve get animationCurve => Curves.easeOutQuad;
 
+  bool get hasChooser => widget.onChooserValue != null;
+
   Widget buildChooser(Animation<double> animation, PopupMenuPosition chooserPosition);
 
   ValueNotifier<U?> get chooserValueNotifier => _chooserValueNotifier;
@@ -50,19 +52,18 @@ abstract class ChooserQuickButtonState<T extends ChooserQuickButton<U>, U> exten
 
   @override
   Widget build(BuildContext context) {
-    final onChooserValue = widget.onChooserValue;
-    final isChooserEnabled = onChooserValue != null;
+    final _hasChooser = hasChooser;
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onLongPressStart: isChooserEnabled ? _showChooser : null,
-      onLongPressMoveUpdate: isChooserEnabled ? _moveUpdateStreamController.add : null,
-      onLongPressEnd: isChooserEnabled
+      onLongPressStart: _hasChooser ? _showChooser : null,
+      onLongPressMoveUpdate: _hasChooser ? _moveUpdateStreamController.add : null,
+      onLongPressEnd: _hasChooser
           ? (details) {
               _clearChooserOverlayEntry();
               final selectedValue = _chooserValueNotifier.value;
               if (selectedValue != null) {
-                onChooserValue(selectedValue);
+                widget.onChooserValue?.call(selectedValue);
               }
             }
           : null,
@@ -70,7 +71,7 @@ abstract class ChooserQuickButtonState<T extends ChooserQuickButton<U>, U> exten
       child: IconButton(
         icon: icon,
         onPressed: widget.onPressed,
-        tooltip: isChooserEnabled ? null : tooltip,
+        tooltip: _hasChooser ? null : tooltip,
       ),
     );
   }

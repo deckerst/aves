@@ -56,7 +56,7 @@ class _BugReportState extends State<BugReport> with FeedbackMixin {
       children: [
         ExpansionPanel(
           headerBuilder: (context, isExpanded) => ConstrainedBox(
-            constraints: const BoxConstraints(minHeight: 48),
+            constraints: const BoxConstraints(minHeight: kMinInteractiveDimension),
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               alignment: AlignmentDirectional.centerStart,
