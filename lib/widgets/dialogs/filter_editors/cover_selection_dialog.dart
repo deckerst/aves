@@ -131,9 +131,7 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
                   ),
                 ),
                 ConstrainedBox(
-                  constraints: BoxConstraints(
-                    maxHeight: maxHeight,
-                  ),
+                  constraints: BoxConstraints(maxHeight: maxHeight),
                   child: TabBarView(
                     physics: const NeverScrollableScrollPhysics(),
                     children: tabs
@@ -179,9 +177,7 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
         final availableBodyWidth = constraints.maxWidth;
         final maxWidth = min(availableBodyWidth, tabBodyMaxWidth(context));
         return ConstrainedBox(
-          constraints: BoxConstraints(
-            maxWidth: maxWidth,
-          ),
+          constraints: BoxConstraints(maxWidth: maxWidth),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,

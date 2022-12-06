@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/actions/move_type.dart';
+import 'package:aves/model/actions/share_actions.dart';
 import 'package:aves/model/device.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/entry_metadata_edition.dart';
@@ -292,6 +293,33 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         album: {targetEntry}
       },
     );
+  }
+
+  Future<void> quickShare(BuildContext context, ShareAction action) async {
+    switch (action) {
+      case ShareAction.imageOnly:
+        if (mainEntry.isMotionPhoto) {
+          final fields = await embeddedDataService.extractMotionPhotoImage(mainEntry);
+          await _shareMotionPhotoPart(context, fields);
+        }
+        break;
+      case ShareAction.videoOnly:
+        if (mainEntry.isMotionPhoto) {
+          final fields = await embeddedDataService.extractMotionPhotoVideo(mainEntry);
+          await _shareMotionPhotoPart(context, fields);
+        }
+        break;
+    }
+  }
+
+  Future<void> _shareMotionPhotoPart(BuildContext context, Map fields) async {
+    final uri = fields['uri'] as String?;
+    final mimeType = fields['mimeType'] as String?;
+    if (uri != null && mimeType != null) {
+      await androidAppService.shareSingle(uri, mimeType).then((success) {
+        if (!success) showNoMatchingAppDialog(context);
+      });
+    }
   }
 
   void quickRate(BuildContext context, int rating) {

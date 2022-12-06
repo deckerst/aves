@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 
 - Viewer: optionally show rating & tags on overlay
 - Viewer: long press on copy/move/rating/tag quick action for quicker action
+- Viewer: long press on share quick action to share parts of motion photo
 - Search: missing address, portrait, landscape filters
 - Map: edit cluster location
 - Lithuanian translation (thanks Gediminas Murauskas)

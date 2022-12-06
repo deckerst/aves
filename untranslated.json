@@ -56,6 +56,8 @@
     "entryActionFlip",
     "entryActionPrint",
     "entryActionShare",
+    "entryActionShareImageOnly",
+    "entryActionShareVideoOnly",
     "entryActionViewSource",
     "entryActionShowGeoTiffOnMap",
     "entryActionConvertMotionPhotoToStillImage",
@@ -595,10 +597,14 @@
   ],
 
   "de": [
+    "entryActionShareImageOnly",
+    "entryActionShareVideoOnly",
     "entryInfoActionRemoveLocation"
   ],
 
   "el": [
+    "entryActionShareImageOnly",
+    "entryActionShareVideoOnly",
     "entryInfoActionRemoveLocation",
     "filterAspectRatioLandscapeLabel",
     "filterAspectRatioPortraitLabel",
@@ -607,6 +613,8 @@
   ],
 
   "es": [
+    "entryActionShareImageOnly",
+    "entryActionShareVideoOnly",
     "entryInfoActionRemoveLocation"
   ],
 
@@ -667,6 +675,8 @@
     "entryActionFlip",
     "entryActionPrint",
     "entryActionShare",
+    "entryActionShareImageOnly",
+    "entryActionShareVideoOnly",
     "entryActionViewSource",
     "entryActionShowGeoTiffOnMap",
     "entryActionConvertMotionPhotoToStillImage",
@@ -1206,10 +1216,14 @@
   ],
 
   "fr": [
+    "entryActionShareImageOnly",
+    "entryActionShareVideoOnly",
     "entryInfoActionRemoveLocation"
   ],
 
   "gl": [
+    "entryActionShareImageOnly",
+    "entryActionShareVideoOnly",
     "entryInfoActionExportMetadata",
     "entryInfoActionRemoveLocation",
     "filterAspectRatioLandscapeLabel",
@@ -1672,6 +1686,8 @@
   ],
 
   "id": [
+    "entryActionShareImageOnly",
+    "entryActionShareVideoOnly",
     "entryInfoActionExportMetadata",
     "entryInfoActionRemoveLocation",
     "filterAspectRatioLandscapeLabel",
@@ -1688,6 +1704,8 @@
   ],
 
   "it": [
+    "entryActionShareImageOnly",
+    "entryActionShareVideoOnly",
     "entryInfoActionRemoveLocation",
     "filterAspectRatioLandscapeLabel",
     "filterAspectRatioPortraitLabel",
@@ -1697,6 +1715,8 @@
 
   "ja": [
     "chipActionFilterIn",
+    "entryActionShareImageOnly",
+    "entryActionShareVideoOnly",
     "entryInfoActionExportMetadata",
     "entryInfoActionRemoveLocation",
     "filterAspectRatioLandscapeLabel",
@@ -1713,18 +1733,26 @@
   ],
 
   "ko": [
+    "entryActionShareImageOnly",
+    "entryActionShareVideoOnly",
     "entryInfoActionRemoveLocation"
   ],
 
   "lt": [
+    "entryActionShareImageOnly",
+    "entryActionShareVideoOnly",
     "entryInfoActionRemoveLocation"
   ],
 
   "nb": [
+    "entryActionShareImageOnly",
+    "entryActionShareVideoOnly",
     "entryInfoActionRemoveLocation"
   ],
 
   "nl": [
+    "entryActionShareImageOnly",
+    "entryActionShareVideoOnly",
     "entryInfoActionExportMetadata",
     "entryInfoActionRemoveLocation",
     "filterAspectRatioLandscapeLabel",
@@ -1743,6 +1771,8 @@
   "nn": [
     "sourceStateLoading",
     "sourceStateCataloguing",
+    "entryActionShareImageOnly",
+    "entryActionShareVideoOnly",
     "entryInfoActionRemoveLocation",
     "filterBinLabel",
     "filterNoLocationLabel",
@@ -2191,6 +2221,8 @@
     "timeMinutes",
     "timeDays",
     "focalLength",
+    "entryActionShareImageOnly",
+    "entryActionShareVideoOnly",
     "entryInfoActionExportMetadata",
     "entryInfoActionRemoveLocation",
     "filterAspectRatioLandscapeLabel",
@@ -2688,6 +2720,8 @@
   ],
 
   "pt": [
+    "entryActionShareImageOnly",
+    "entryActionShareVideoOnly",
     "entryInfoActionExportMetadata",
     "entryInfoActionRemoveLocation",
     "filterAspectRatioLandscapeLabel",
@@ -2704,6 +2738,8 @@
   ],
 
   "ro": [
+    "entryActionShareImageOnly",
+    "entryActionShareVideoOnly",
     "entryInfoActionRemoveLocation",
     "filterAspectRatioLandscapeLabel",
     "filterAspectRatioPortraitLabel",
@@ -2712,6 +2748,8 @@
   ],
 
   "ru": [
+    "entryActionShareImageOnly",
+    "entryActionShareVideoOnly",
     "entryInfoActionRemoveLocation"
   ],
 
@@ -2722,6 +2760,8 @@
     "timeDays",
     "focalLength",
     "applyButtonLabel",
+    "entryActionShareImageOnly",
+    "entryActionShareVideoOnly",
     "entryActionShowGeoTiffOnMap",
     "videoActionCaptureFrame",
     "entryInfoActionRemoveLocation",
@@ -3091,10 +3131,14 @@
   ],
 
   "tr": [
+    "entryActionShareImageOnly",
+    "entryActionShareVideoOnly",
     "entryInfoActionRemoveLocation"
   ],
 
   "zh": [
+    "entryActionShareImageOnly",
+    "entryActionShareVideoOnly",
     "entryInfoActionRemoveLocation",
     "filterAspectRatioLandscapeLabel",
     "filterAspectRatioPortraitLabel",

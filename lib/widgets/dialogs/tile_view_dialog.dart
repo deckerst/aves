@@ -147,9 +147,7 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
           children: [
             const SizedBox(height: 8),
             ConstrainedBox(
-              constraints: const BoxConstraints(
-                minHeight: kMinInteractiveDimension,
-              ),
+              constraints: const BoxConstraints(minHeight: kMinInteractiveDimension),
               child: Row(
                 children: [
                   Icon(icon),

@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:ui';
 
 import 'package:aves/theme/durations.dart';
-import 'package:aves/widgets/common/app_bar/quick_choosers/quick_chooser.dart';
+import 'package:aves/widgets/common/app_bar/quick_choosers/common/quick_chooser.dart';
 import 'package:aves_ui/aves_ui.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -10,31 +10,33 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:provider/provider.dart';
 
-class FilterQuickChooser<T> extends StatefulWidget {
+class MenuQuickChooser<T> extends StatefulWidget {
   final ValueNotifier<T?> valueNotifier;
   final List<T> options;
+  final bool autoReverse;
   final bool blurred;
   final PopupMenuPosition chooserPosition;
   final Stream<Offset> pointerGlobalPosition;
-  final Widget Function(BuildContext context, T album) buildFilterChip;
+  final Widget Function(BuildContext context, T menuItem) itemBuilder;
 
   static const int maxOptionCount = 5;
 
-  FilterQuickChooser({
+  MenuQuickChooser({
     super.key,
     required this.valueNotifier,
     required List<T> options,
+    required this.autoReverse,
     required this.blurred,
     required this.chooserPosition,
     required this.pointerGlobalPosition,
-    required this.buildFilterChip,
+    required this.itemBuilder,
   }) : options = options.take(maxOptionCount).toList();
 
   @override
-  State<FilterQuickChooser<T>> createState() => _FilterQuickChooserState<T>();
+  State<MenuQuickChooser<T>> createState() => _MenuQuickChooserState<T>();
 }
 
-class _FilterQuickChooserState<T> extends State<FilterQuickChooser<T>> {
+class _MenuQuickChooserState<T> extends State<MenuQuickChooser<T>> {
   final List<StreamSubscription> _subscriptions = [];
   final ValueNotifier<Rect> _selectedRowRect = ValueNotifier(Rect.zero);
 
@@ -42,7 +44,7 @@ class _FilterQuickChooserState<T> extends State<FilterQuickChooser<T>> {
 
   List<T> get options => widget.options;
 
-  bool get reversed => widget.chooserPosition == PopupMenuPosition.over;
+  bool get reversed => widget.autoReverse && widget.chooserPosition == PopupMenuPosition.over;
 
   static const double intraPadding = 8;
 
@@ -54,7 +56,7 @@ class _FilterQuickChooserState<T> extends State<FilterQuickChooser<T>> {
   }
 
   @override
-  void didUpdateWidget(covariant FilterQuickChooser<T> oldWidget) {
+  void didUpdateWidget(covariant MenuQuickChooser<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
     _unregisterWidget(oldWidget);
     _registerWidget(widget);
@@ -66,11 +68,11 @@ class _FilterQuickChooserState<T> extends State<FilterQuickChooser<T>> {
     super.dispose();
   }
 
-  void _registerWidget(FilterQuickChooser<T> widget) {
+  void _registerWidget(MenuQuickChooser<T> widget) {
     _subscriptions.add(widget.pointerGlobalPosition.listen(_onPointerMove));
   }
 
-  void _unregisterWidget(FilterQuickChooser<T> widget) {
+  void _unregisterWidget(MenuQuickChooser<T> widget) {
     _subscriptions
       ..forEach((sub) => sub.cancel())
       ..clear();
@@ -89,7 +91,7 @@ class _FilterQuickChooserState<T> extends State<FilterQuickChooser<T>> {
             final isFirst = index == (reversed ? options.length - 1 : 0);
             return Padding(
               padding: EdgeInsets.only(top: isFirst ? intraPadding : 0, bottom: intraPadding),
-              child: widget.buildFilterChip(context, value),
+              child: widget.itemBuilder(context, value),
             );
           }).toList();
 

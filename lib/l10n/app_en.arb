@@ -90,6 +90,8 @@
   "entryActionFlip": "Flip horizontally",
   "entryActionPrint": "Print",
   "entryActionShare": "Share",
+  "entryActionShareImageOnly": "Share image only",
+  "entryActionShareVideoOnly": "Share video only",
   "entryActionViewSource": "View source",
   "entryActionShowGeoTiffOnMap": "Show as map overlay",
   "entryActionConvertMotionPhotoToStillImage": "Convert to still image",
