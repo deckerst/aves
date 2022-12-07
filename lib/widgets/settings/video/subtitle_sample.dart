@@ -1,8 +1,8 @@
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/utils/constants.dart';
-import 'package:aves/widgets/common/basic/outlined_text.dart';
-import 'package:aves/widgets/common/basic/text_background_painter.dart';
+import 'package:aves/widgets/common/basic/text/background_painter.dart';
+import 'package:aves/widgets/common/basic/text/outlined.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
 import 'package:aves/widgets/viewer/visual/subtitle/subtitle.dart';

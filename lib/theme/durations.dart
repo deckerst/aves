@@ -98,6 +98,7 @@ class DurationsData {
   final Duration expansionTileAnimation;
   final Duration formTransition;
   final Duration formTextStyleTransition;
+  final Duration textDiffAnimation;
   final Duration chartTransition;
   final Duration iconAnimation;
   final Duration staggeredAnimation;
@@ -116,6 +117,7 @@ class DurationsData {
     this.expansionTileAnimation = const Duration(milliseconds: 200),
     this.formTransition = const Duration(milliseconds: 200),
     this.formTextStyleTransition = const Duration(milliseconds: 800),
+    this.textDiffAnimation = const Duration(milliseconds: 150),
     this.chartTransition = const Duration(milliseconds: 400),
     this.iconAnimation = const Duration(milliseconds: 300),
     this.staggeredAnimation = const Duration(milliseconds: 375),
@@ -132,6 +134,7 @@ class DurationsData {
       expansionTileAnimation: const Duration(microseconds: 1),
       formTransition: Duration.zero,
       formTextStyleTransition: Duration.zero,
+      textDiffAnimation: Duration.zero,
       chartTransition: Duration.zero,
       iconAnimation: Duration.zero,
       staggeredAnimation: Duration.zero,

@@ -1,13 +1,13 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
-class AnimatedText extends StatefulWidget {
+class ChangeHighlightText extends StatefulWidget {
   final String data;
   final TextStyle style, changedStyle;
   final Curve curve;
   final Duration duration;
 
-  const AnimatedText(
+  const ChangeHighlightText(
     this.data, {
     super.key,
     required this.style,
@@ -17,10 +17,10 @@ class AnimatedText extends StatefulWidget {
   });
 
   @override
-  State<AnimatedText> createState() => _AnimatedTextState();
+  State<ChangeHighlightText> createState() => _ChangeHighlightTextState();
 }
 
-class _AnimatedTextState extends State<AnimatedText> with SingleTickerProviderStateMixin {
+class _ChangeHighlightTextState extends State<ChangeHighlightText> with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   late final Animation<TextStyle> _style;
 
@@ -40,7 +40,7 @@ class _AnimatedTextState extends State<AnimatedText> with SingleTickerProviderSt
   }
 
   @override
-  void didUpdateWidget(AnimatedText oldWidget) {
+  void didUpdateWidget(ChangeHighlightText oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.data != widget.data) {
       _controller
