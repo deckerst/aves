@@ -1180,5 +1180,11 @@
   "settingsViewerShowRatingTags": "별점 및 태그 표시",
   "@settingsViewerShowRatingTags": {},
   "filterAspectRatioLandscapeLabel": "가로",
-  "@filterAspectRatioLandscapeLabel": {}
+  "@filterAspectRatioLandscapeLabel": {},
+  "entryActionShareImageOnly": "사진만 공유",
+  "@entryActionShareImageOnly": {},
+  "entryActionShareVideoOnly": "동영상만 공유",
+  "@entryActionShareVideoOnly": {},
+  "entryInfoActionRemoveLocation": "위치 삭제",
+  "@entryInfoActionRemoveLocation": {}
 }

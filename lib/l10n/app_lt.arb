@@ -1338,5 +1338,11 @@
   "filterAspectRatioPortraitLabel": "Portretas",
   "@filterAspectRatioPortraitLabel": {},
   "settingsViewerShowRatingTags": "Rodyti įvertinimus ir žymas",
-  "@settingsViewerShowRatingTags": {}
+  "@settingsViewerShowRatingTags": {},
+  "entryActionShareVideoOnly": "Bendrinti tik vaizdo įrašą",
+  "@entryActionShareVideoOnly": {},
+  "entryActionShareImageOnly": "Bendrinti tik paveikslėlį",
+  "@entryActionShareImageOnly": {},
+  "entryInfoActionRemoveLocation": "Pašalinti vietą",
+  "@entryInfoActionRemoveLocation": {}
 }

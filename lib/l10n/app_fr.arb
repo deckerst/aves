@@ -1180,5 +1180,11 @@
   "filterAspectRatioLandscapeLabel": "Paysage",
   "@filterAspectRatioLandscapeLabel": {},
   "settingsViewerShowRatingTags": "Afficher la notation et les libellés",
-  "@settingsViewerShowRatingTags": {}
+  "@settingsViewerShowRatingTags": {},
+  "entryActionShareImageOnly": "Partager l’image seulement",
+  "@entryActionShareImageOnly": {},
+  "entryActionShareVideoOnly": "Partager la vidéo seulement",
+  "@entryActionShareVideoOnly": {},
+  "entryInfoActionRemoveLocation": "Retirer le lieu",
+  "@entryInfoActionRemoveLocation": {}
 }

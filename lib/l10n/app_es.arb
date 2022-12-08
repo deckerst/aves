@@ -1180,5 +1180,11 @@
   "filterAspectRatioPortraitLabel": "Retrato",
   "@filterAspectRatioPortraitLabel": {},
   "settingsViewerShowRatingTags": "Mostrar la valoración y las etiquetas",
-  "@settingsViewerShowRatingTags": {}
+  "@settingsViewerShowRatingTags": {},
+  "entryInfoActionRemoveLocation": "Eliminar la ubicación",
+  "@entryInfoActionRemoveLocation": {},
+  "entryActionShareVideoOnly": "Compartir sólo el vídeo",
+  "@entryActionShareVideoOnly": {},
+  "entryActionShareImageOnly": "Compartir sólo la imagen",
+  "@entryActionShareImageOnly": {}
 }
