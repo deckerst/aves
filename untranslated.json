@@ -585,15 +585,6 @@
     "tagEditorPageAddTagTooltip",
     "tagEditorSectionRecent",
     "tagEditorSectionPlaceholders",
-    "tagPlaceholderCountry",
-    "tagPlaceholderPlace",
-    "panoramaEnableSensorControl",
-    "panoramaDisableSensorControl",
-    "sourceViewerPageTitle",
-    "filePickerShowHiddenFiles",
-    "filePickerDoNotShowHiddenFiles",
-    "filePickerOpenFrom",
-    "filePickerNoItems",
     "filePickerUseThisFolder"
   ],
 
@@ -616,9 +607,6 @@
   ],
 
   "es": [
-    "entryActionShareImageOnly",
-    "entryActionShareVideoOnly",
-    "entryInfoActionRemoveLocation",
     "keepScreenOnVideoPlayback"
   ],
 
@@ -1221,9 +1209,6 @@
   ],
 
   "fr": [
-    "entryActionShareImageOnly",
-    "entryActionShareVideoOnly",
-    "entryInfoActionRemoveLocation",
     "keepScreenOnVideoPlayback"
   ],
 
@@ -1743,16 +1728,10 @@
   ],
 
   "ko": [
-    "entryActionShareImageOnly",
-    "entryActionShareVideoOnly",
-    "entryInfoActionRemoveLocation",
     "keepScreenOnVideoPlayback"
   ],
 
   "lt": [
-    "entryActionShareImageOnly",
-    "entryActionShareVideoOnly",
-    "entryInfoActionRemoveLocation",
     "keepScreenOnVideoPlayback"
   ],
 
@@ -2803,44 +2782,6 @@
     "editEntryDateDialogExtractFromTitle",
     "editEntryDateDialogShift",
     "removeEntryMetadataDialogTitle",
-    "menuActionSlideshow",
-    "menuActionStats",
-    "viewDialogSortSectionTitle",
-    "viewDialogGroupSectionTitle",
-    "viewDialogLayoutSectionTitle",
-    "viewDialogReverseSortOrder",
-    "tileLayoutMosaic",
-    "tileLayoutGrid",
-    "tileLayoutList",
-    "coverDialogTabCover",
-    "coverDialogTabApp",
-    "coverDialogTabColor",
-    "appPickDialogTitle",
-    "appPickDialogNone",
-    "aboutPageTitle",
-    "aboutLinkLicense",
-    "aboutLinkPolicy",
-    "aboutBugSectionTitle",
-    "aboutBugSaveLogInstruction",
-    "aboutBugCopyInfoInstruction",
-    "aboutBugCopyInfoButton",
-    "aboutBugReportInstruction",
-    "aboutBugReportButton",
-    "aboutCreditsSectionTitle",
-    "aboutCreditsWorldAtlas1",
-    "aboutCreditsWorldAtlas2",
-    "aboutTranslatorsSectionTitle",
-    "aboutLicensesSectionTitle",
-    "aboutLicensesBanner",
-    "aboutLicensesAndroidLibrariesSectionTitle",
-    "aboutLicensesFlutterPluginsSectionTitle",
-    "aboutLicensesFlutterPackagesSectionTitle",
-    "aboutLicensesDartPackagesSectionTitle",
-    "aboutLicensesShowAllButtonLabel",
-    "policyPageTitle",
-    "collectionPageTitle",
-    "collectionPickPageTitle",
-    "collectionSelectPageTitle",
     "collectionActionShowTitleSearch",
     "collectionActionHideTitleSearch",
     "collectionActionAddShortcut",
@@ -3151,9 +3092,6 @@
   ],
 
   "tr": [
-    "entryActionShareImageOnly",
-    "entryActionShareVideoOnly",
-    "entryInfoActionRemoveLocation",
     "keepScreenOnVideoPlayback"
   ],
 

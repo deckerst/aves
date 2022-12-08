@@ -14,7 +14,7 @@ packages:
       name: _flutterfire_internals
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.9"
+    version: "1.0.10"
   analyzer:
     dependency: transitive
     description:
@@ -140,14 +140,14 @@ packages:
       name: cloud_firestore_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.9.0"
+    version: "5.9.1"
   cloud_firestore_web:
     dependency: transitive
     description:
       name: cloud_firestore_web
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.1.0"
+    version: "3.1.1"
   collection:
     dependency: "direct main"
     description:
@@ -298,7 +298,7 @@ packages:
       name: firebase_core
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.3.0"
+    version: "2.4.0"
   firebase_core_platform_interface:
     dependency: transitive
     description:
@@ -312,21 +312,21 @@ packages:
       name: firebase_core_web
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.1"
+    version: "2.0.2"
   firebase_crashlytics:
     dependency: transitive
     description:
       name: firebase_crashlytics
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.6"
+    version: "3.0.7"
   firebase_crashlytics_platform_interface:
     dependency: transitive
     description:
       name: firebase_crashlytics_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.3.7"
+    version: "3.3.8"
   flex_color_picker:
     dependency: "direct main"
     description:
@@ -475,7 +475,7 @@ packages:
       name: google_maps_flutter_android
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.3.3"
+    version: "2.4.0"
   google_maps_flutter_ios:
     dependency: transitive
     description:
@@ -1030,7 +1030,7 @@ packages:
       name: sqflite
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.2.0+3"
+    version: "2.2.2"
   sqflite_common:
     dependency: transitive
     description:

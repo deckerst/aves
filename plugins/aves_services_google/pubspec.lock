@@ -150,7 +150,7 @@ packages:
       name: google_maps_flutter_android
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.3.3"
+    version: "2.4.0"
   google_maps_flutter_ios:
     dependency: transitive
     description:
@@ -248,7 +248,7 @@ packages:
       name: path
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.8.2"
+    version: "1.8.3"
   plugin_platform_interface:
     dependency: transitive
     description:
