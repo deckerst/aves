@@ -1180,5 +1180,11 @@
   "settingsViewerShowRatingTags": "Derecelendirme ve etiketleri göster",
   "@settingsViewerShowRatingTags": {},
   "filterAspectRatioPortraitLabel": "Dikey",
-  "@filterAspectRatioPortraitLabel": {}
+  "@filterAspectRatioPortraitLabel": {},
+  "entryInfoActionRemoveLocation": "Konumu kaldır",
+  "@entryInfoActionRemoveLocation": {},
+  "entryActionShareVideoOnly": "Yalnızca video paylaş",
+  "@entryActionShareVideoOnly": {},
+  "entryActionShareImageOnly": "Yalnızca resim paylaş",
+  "@entryActionShareImageOnly": {}
 }
