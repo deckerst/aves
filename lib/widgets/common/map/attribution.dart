@@ -1,9 +1,9 @@
+import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:aves_map/aves_map.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class Attribution extends StatelessWidget {
   final EntryMapStyle? style;
@@ -37,14 +37,7 @@ class Attribution extends StatelessWidget {
           a: TextStyle(color: theme.colorScheme.secondary),
           p: theme.textTheme.bodySmall!.merge(const TextStyle(fontSize: InfoRowGroup.fontSize)),
         ),
-        onTapLink: (text, href, title) async {
-          if (href != null) {
-            final url = Uri.parse(href);
-            if (await canLaunchUrl(url)) {
-              await launchUrl(url, mode: LaunchMode.externalApplication);
-            }
-          }
-        },
+        onTapLink: (text, href, title) => AvesApp.launchUrl(href),
       ),
     );
   }

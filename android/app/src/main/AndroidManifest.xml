@@ -11,6 +11,13 @@ This change eventually prevents building the app with Flutter v3.3.3.
     package="deckers.thibault.aves"
     android:installLocation="auto">
 
+    <uses-feature
+        android:name="android.hardware.touchscreen"
+        android:required="false" />
+    <uses-feature
+        android:name="android.software.leanback"
+        android:required="false" />
+
     <!--
     Scoped storage on Android 10 is inconvenient because users need to confirm edition on each individual file.
     So we request `WRITE_EXTERNAL_STORAGE` until Android 10 (API 29), and enable `requestLegacyExternalStorage`
@@ -67,6 +74,7 @@ This change eventually prevents building the app with Flutter v3.3.3.
     <application
         android:allowBackup="true"
         android:appCategory="image"
+        android:banner="@drawable/banner"
         android:fullBackupOnly="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -83,6 +91,8 @@ This change eventually prevents building the app with Flutter v3.3.3.
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             <intent-filter>

@@ -34,11 +34,11 @@ class PrivacySection extends SettingsSection {
     return [
       SettingsTilePrivacyAllowInstalledAppAccess(),
       if (canEnableErrorReporting) SettingsTilePrivacyAllowErrorReporting(),
-      if (device.canRequestManageMedia) SettingsTilePrivacyManageMedia(),
+      if (!device.isTelevision && device.canRequestManageMedia) SettingsTilePrivacyManageMedia(),
       SettingsTilePrivacySaveSearchHistory(),
-      SettingsTilePrivacyEnableBin(),
+      if (!device.isTelevision) SettingsTilePrivacyEnableBin(),
       SettingsTilePrivacyHiddenItems(),
-      if (device.canGrantDirectoryAccess) SettingsTilePrivacyStorageAccess(),
+      if (!device.isTelevision && device.canGrantDirectoryAccess) SettingsTilePrivacyStorageAccess(),
     ];
   }
 }

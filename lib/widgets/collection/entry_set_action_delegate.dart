@@ -73,7 +73,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       case EntrySetAction.addShortcut:
         return appMode == AppMode.main && !isSelecting && device.canPinShortcut && !isTrash;
       case EntrySetAction.emptyBin:
-        return appMode == AppMode.main && isTrash;
+        return !device.isReadOnly && appMode == AppMode.main && isTrash;
       // browsing or selecting
       case EntrySetAction.map:
       case EntrySetAction.slideshow:
@@ -82,13 +82,14 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       case EntrySetAction.rescan:
         return appMode == AppMode.main && !isTrash;
       // selecting
-      case EntrySetAction.delete:
-        return appMode == AppMode.main && isSelecting;
       case EntrySetAction.share:
+      case EntrySetAction.toggleFavourite:
+        return appMode == AppMode.main && isSelecting && !isTrash;
+      case EntrySetAction.delete:
+        return !device.isReadOnly && appMode == AppMode.main && isSelecting;
       case EntrySetAction.copy:
       case EntrySetAction.move:
       case EntrySetAction.rename:
-      case EntrySetAction.toggleFavourite:
       case EntrySetAction.rotateCCW:
       case EntrySetAction.rotateCW:
       case EntrySetAction.flip:
@@ -98,9 +99,9 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       case EntrySetAction.editRating:
       case EntrySetAction.editTags:
       case EntrySetAction.removeMetadata:
-        return appMode == AppMode.main && isSelecting && !isTrash;
+        return !device.isReadOnly && appMode == AppMode.main && isSelecting && !isTrash;
       case EntrySetAction.restore:
-        return appMode == AppMode.main && isSelecting && isTrash;
+        return !device.isReadOnly && appMode == AppMode.main && isSelecting && isTrash;
     }
   }
 

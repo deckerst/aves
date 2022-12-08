@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/actions/entry_set_actions.dart';
+import 'package:aves/model/device.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/query.dart';
@@ -307,7 +308,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
               ...(isSelecting ? selectionMenuActions : browsingMenuActions).where(isVisible).map(
                     (action) => _toMenuItem(action, enabled: canApply(action), selection: selection),
                   ),
-              if (isSelecting && !isTrash && appMode == AppMode.main)
+              if (isSelecting && !device.isReadOnly && appMode == AppMode.main && !isTrash)
                 PopupMenuItem<EntrySetAction>(
                   enabled: canApplyEditActions,
                   padding: EdgeInsets.zero,
