@@ -9,6 +9,8 @@ extension ExtraKeepScreenOn on KeepScreenOn {
     switch (this) {
       case KeepScreenOn.never:
         return context.l10n.keepScreenOnNever;
+      case KeepScreenOn.videoPlayback:
+        return context.l10n.keepScreenOnVideoPlayback;
       case KeepScreenOn.viewerOnly:
         return context.l10n.keepScreenOnViewerOnly;
       case KeepScreenOn.always:

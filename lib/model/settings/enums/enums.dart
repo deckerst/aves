@@ -16,7 +16,7 @@ enum EntryBackground { black, white, checkered }
 
 enum HomePageSetting { collection, albums }
 
-enum KeepScreenOn { never, viewerOnly, always }
+enum KeepScreenOn { never, videoPlayback, viewerOnly, always }
 
 enum SlideshowVideoPlayback { skip, playMuted, playWithSound }
 

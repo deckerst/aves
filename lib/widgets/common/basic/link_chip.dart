@@ -1,6 +1,6 @@
 import 'package:aves/theme/icons.dart';
+import 'package:aves/widgets/aves_app.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class LinkChip extends StatelessWidget {
   final Widget? leading;
@@ -24,20 +24,11 @@ class LinkChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _urlString = urlString;
     return DefaultTextStyle.merge(
       style: (textStyle ?? const TextStyle()).copyWith(color: color),
       child: InkWell(
         borderRadius: borderRadius,
-        onTap: onTap ??
-            () async {
-              if (_urlString != null) {
-                final url = Uri.parse(_urlString);
-                if (await canLaunchUrl(url)) {
-                  await launchUrl(url, mode: LaunchMode.externalApplication);
-                }
-              }
-            },
+        onTap: onTap ?? () => AvesApp.launchUrl(urlString),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Row(

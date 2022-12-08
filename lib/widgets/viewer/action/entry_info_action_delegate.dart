@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/actions/events.dart';
+import 'package:aves/model/device.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/entry_info.dart';
 import 'package:aves/model/entry_metadata_edition.dart';
@@ -37,12 +38,13 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
       case EntryAction.editTags:
       case EntryAction.removeMetadata:
       case EntryAction.exportMetadata:
-        return true;
+        return !device.isReadOnly;
       // GeoTIFF
       case EntryAction.showGeoTiffOnMap:
         return targetEntry.isGeotiff;
       // motion photo
       case EntryAction.convertMotionPhotoToStillImage:
+        return !device.isReadOnly && targetEntry.isMotionPhoto;
       case EntryAction.viewMotionPhotoVideo:
         return targetEntry.isMotionPhoto;
       default:

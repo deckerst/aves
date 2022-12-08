@@ -5,7 +5,11 @@ import 'dart:math';
 import 'package:aves/app_flavor.dart';
 import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/actions/entry_set_actions.dart';
+import 'package:aves/model/device.dart';
+import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/filters/mime.dart';
+import 'package:aves/model/filters/recent.dart';
 import 'package:aves/model/settings/defaults.dart';
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/enums/map_style.dart';
@@ -229,6 +233,25 @@ class Settings extends ChangeNotifier {
         final styles = EntryMapStyle.values.whereNot((v) => v.needMobileService).toList();
         mapStyle = styles[Random().nextInt(styles.length)];
       }
+    }
+
+    if (device.isTelevision) {
+      drawerTypeBookmarks = [
+        null,
+        MimeFilter.video,
+        FavouriteFilter.instance,
+        RecentlyAddedFilter.instance,
+      ];
+      mustBackTwiceToExit = false;
+      keepScreenOn = KeepScreenOn.videoPlayback;
+      enableBottomNavigationBar = false;
+      viewerGestureSideTapNext = false;
+      viewerUseCutout = true;
+      viewerMaxBrightness = false;
+      videoControls = VideoControls.playSeek;
+      videoGestureDoubleTapTogglePlay = false;
+      videoGestureSideDoubleTapSeek = false;
+      enableBin = false;
     }
   }
 
