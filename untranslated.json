@@ -138,6 +138,7 @@
     "nameConflictStrategyReplace",
     "nameConflictStrategySkip",
     "keepScreenOnNever",
+    "keepScreenOnVideoPlayback",
     "keepScreenOnViewerOnly",
     "keepScreenOnAlways",
     "accessibilityAnimationsRemove",
@@ -599,7 +600,8 @@
   "de": [
     "entryActionShareImageOnly",
     "entryActionShareVideoOnly",
-    "entryInfoActionRemoveLocation"
+    "entryInfoActionRemoveLocation",
+    "keepScreenOnVideoPlayback"
   ],
 
   "el": [
@@ -609,13 +611,15 @@
     "filterAspectRatioLandscapeLabel",
     "filterAspectRatioPortraitLabel",
     "filterNoAddressLabel",
+    "keepScreenOnVideoPlayback",
     "settingsViewerShowRatingTags"
   ],
 
   "es": [
     "entryActionShareImageOnly",
     "entryActionShareVideoOnly",
-    "entryInfoActionRemoveLocation"
+    "entryInfoActionRemoveLocation",
+    "keepScreenOnVideoPlayback"
   ],
 
   "fa": [
@@ -757,6 +761,7 @@
     "nameConflictStrategyReplace",
     "nameConflictStrategySkip",
     "keepScreenOnNever",
+    "keepScreenOnVideoPlayback",
     "keepScreenOnViewerOnly",
     "keepScreenOnAlways",
     "accessibilityAnimationsRemove",
@@ -1218,7 +1223,8 @@
   "fr": [
     "entryActionShareImageOnly",
     "entryActionShareVideoOnly",
-    "entryInfoActionRemoveLocation"
+    "entryInfoActionRemoveLocation",
+    "keepScreenOnVideoPlayback"
   ],
 
   "gl": [
@@ -1229,6 +1235,7 @@
     "filterAspectRatioLandscapeLabel",
     "filterAspectRatioPortraitLabel",
     "filterNoAddressLabel",
+    "keepScreenOnVideoPlayback",
     "accessibilityAnimationsRemove",
     "accessibilityAnimationsKeep",
     "displayRefreshRatePreferHighest",
@@ -1693,6 +1700,7 @@
     "filterAspectRatioLandscapeLabel",
     "filterAspectRatioPortraitLabel",
     "filterNoAddressLabel",
+    "keepScreenOnVideoPlayback",
     "subtitlePositionTop",
     "subtitlePositionBottom",
     "widgetDisplayedItemRandom",
@@ -1710,6 +1718,7 @@
     "filterAspectRatioLandscapeLabel",
     "filterAspectRatioPortraitLabel",
     "filterNoAddressLabel",
+    "keepScreenOnVideoPlayback",
     "settingsViewerShowRatingTags"
   ],
 
@@ -1722,6 +1731,7 @@
     "filterAspectRatioLandscapeLabel",
     "filterAspectRatioPortraitLabel",
     "filterNoAddressLabel",
+    "keepScreenOnVideoPlayback",
     "subtitlePositionTop",
     "subtitlePositionBottom",
     "widgetDisplayedItemRandom",
@@ -1735,19 +1745,22 @@
   "ko": [
     "entryActionShareImageOnly",
     "entryActionShareVideoOnly",
-    "entryInfoActionRemoveLocation"
+    "entryInfoActionRemoveLocation",
+    "keepScreenOnVideoPlayback"
   ],
 
   "lt": [
     "entryActionShareImageOnly",
     "entryActionShareVideoOnly",
-    "entryInfoActionRemoveLocation"
+    "entryInfoActionRemoveLocation",
+    "keepScreenOnVideoPlayback"
   ],
 
   "nb": [
     "entryActionShareImageOnly",
     "entryActionShareVideoOnly",
-    "entryInfoActionRemoveLocation"
+    "entryInfoActionRemoveLocation",
+    "keepScreenOnVideoPlayback"
   ],
 
   "nl": [
@@ -1758,6 +1771,7 @@
     "filterAspectRatioLandscapeLabel",
     "filterAspectRatioPortraitLabel",
     "filterNoAddressLabel",
+    "keepScreenOnVideoPlayback",
     "subtitlePositionTop",
     "subtitlePositionBottom",
     "widgetDisplayedItemRandom",
@@ -1781,6 +1795,7 @@
     "filterTypePanoramaLabel",
     "mapStyleOsmHot",
     "mapStyleStamenToner",
+    "keepScreenOnVideoPlayback",
     "accessibilityAnimationsKeep",
     "displayRefreshRatePreferHighest",
     "displayRefreshRatePreferLowest",
@@ -2261,6 +2276,7 @@
     "nameConflictStrategyReplace",
     "nameConflictStrategySkip",
     "keepScreenOnNever",
+    "keepScreenOnVideoPlayback",
     "keepScreenOnViewerOnly",
     "keepScreenOnAlways",
     "accessibilityAnimationsRemove",
@@ -2727,6 +2743,7 @@
     "filterAspectRatioLandscapeLabel",
     "filterAspectRatioPortraitLabel",
     "filterNoAddressLabel",
+    "keepScreenOnVideoPlayback",
     "subtitlePositionTop",
     "subtitlePositionBottom",
     "widgetDisplayedItemRandom",
@@ -2744,13 +2761,15 @@
     "filterAspectRatioLandscapeLabel",
     "filterAspectRatioPortraitLabel",
     "filterNoAddressLabel",
+    "keepScreenOnVideoPlayback",
     "settingsViewerShowRatingTags"
   ],
 
   "ru": [
     "entryActionShareImageOnly",
     "entryActionShareVideoOnly",
-    "entryInfoActionRemoveLocation"
+    "entryInfoActionRemoveLocation",
+    "keepScreenOnVideoPlayback"
   ],
 
   "th": [
@@ -2769,6 +2788,7 @@
     "filterAspectRatioPortraitLabel",
     "filterNoAddressLabel",
     "coordinateDms",
+    "keepScreenOnVideoPlayback",
     "keepScreenOnViewerOnly",
     "accessibilityAnimationsRemove",
     "accessibilityAnimationsKeep",
@@ -3133,7 +3153,8 @@
   "tr": [
     "entryActionShareImageOnly",
     "entryActionShareVideoOnly",
-    "entryInfoActionRemoveLocation"
+    "entryInfoActionRemoveLocation",
+    "keepScreenOnVideoPlayback"
   ],
 
   "zh": [
@@ -3143,6 +3164,7 @@
     "filterAspectRatioLandscapeLabel",
     "filterAspectRatioPortraitLabel",
     "filterNoAddressLabel",
+    "keepScreenOnVideoPlayback",
     "settingsViewerShowRatingTags"
   ]
 }

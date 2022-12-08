@@ -33,7 +33,7 @@ class DisplaySection extends SettingsSection {
         SettingsTileDisplayThemeColorMode(),
         if (device.isDynamicColorAvailable) SettingsTileDisplayEnableDynamicColor(),
         SettingsTileDisplayEnableBlurEffect(),
-        SettingsTileDisplayDisplayRefreshRateMode(),
+        if (!device.isTelevision) SettingsTileDisplayDisplayRefreshRateMode(),
       ];
 }
 

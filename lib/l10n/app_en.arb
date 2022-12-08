@@ -195,6 +195,7 @@
   "nameConflictStrategySkip": "Skip",
 
   "keepScreenOnNever": "Never",
+  "keepScreenOnVideoPlayback": "During video playback",
   "keepScreenOnViewerOnly": "Viewer page only",
   "keepScreenOnAlways": "Always",
 

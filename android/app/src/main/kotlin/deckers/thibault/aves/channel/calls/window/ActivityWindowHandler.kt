@@ -20,10 +20,14 @@ class ActivityWindowHandler(private val activity: Activity) : WindowHandler(acti
 
         val window = activity.window
         val flag = WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
-        if (on) {
-            window.addFlags(flag)
-        } else {
-            window.clearFlags(flag)
+
+        val old = (window.attributes.flags and flag) != 0
+        if (old != on) {
+            if (on) {
+                window.addFlags(flag)
+            } else {
+                window.clearFlags(flag)
+            }
         }
         result.success(null)
     }

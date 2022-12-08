@@ -72,22 +72,25 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
           return collection != null;
         case EntryAction.delete:
         case EntryAction.rename:
-        case EntryAction.copy:
         case EntryAction.move:
           return targetEntry.canEdit;
+        case EntryAction.copy:
+          return !device.isReadOnly;
         case EntryAction.rotateCCW:
         case EntryAction.rotateCW:
           return targetEntry.canRotate;
         case EntryAction.flip:
           return targetEntry.canFlip;
         case EntryAction.convert:
+          return !device.isReadOnly && !targetEntry.isVideo;
         case EntryAction.print:
-          return !targetEntry.isVideo && device.canPrint;
+          return device.canPrint && !targetEntry.isVideo;
         case EntryAction.openMap:
           return targetEntry.hasGps;
         case EntryAction.viewSource:
           return targetEntry.isSvg;
         case EntryAction.videoCaptureFrame:
+          return !device.isReadOnly && targetEntry.isVideo;
         case EntryAction.videoToggleMute:
         case EntryAction.videoSelectStreams:
         case EntryAction.videoSetSpeed:
@@ -98,12 +101,13 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         case EntryAction.openVideo:
           return targetEntry.isVideo;
         case EntryAction.rotateScreen:
-          return settings.isRotationLocked;
+          return !device.isTelevision && settings.isRotationLocked;
         case EntryAction.addShortcut:
           return device.canPinShortcut;
+        case EntryAction.edit:
+          return !device.isReadOnly;
         case EntryAction.info:
         case EntryAction.copyToClipboard:
-        case EntryAction.edit:
         case EntryAction.open:
         case EntryAction.setAs:
         case EntryAction.share:
