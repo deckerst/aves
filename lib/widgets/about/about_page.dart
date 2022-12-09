@@ -5,7 +5,6 @@ import 'package:aves/widgets/about/licenses.dart';
 import 'package:aves/widgets/about/translators.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:flutter/material.dart';
 
 class AboutPage extends StatelessWidget {
