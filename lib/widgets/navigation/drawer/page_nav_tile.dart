@@ -1,24 +1,27 @@
+import 'package:aves/widgets/about/about_page.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/debug/app_debug_page.dart';
+import 'package:aves/widgets/filter_grids/albums_page.dart';
+import 'package:aves/widgets/filter_grids/countries_page.dart';
+import 'package:aves/widgets/filter_grids/tags_page.dart';
 import 'package:aves/widgets/navigation/drawer/tile.dart';
+import 'package:aves/widgets/settings/settings_page.dart';
 import 'package:flutter/material.dart';
 
 class PageNavTile extends StatelessWidget {
   final Widget? trailing;
   final bool topLevel;
   final String routeName;
-  final WidgetBuilder? pageBuilder;
 
   const PageNavTile({
     super.key,
     this.trailing,
     this.topLevel = true,
     required this.routeName,
-    required this.pageBuilder,
   });
 
   @override
   Widget build(BuildContext context) {
-    final _pageBuilder = pageBuilder;
     return SafeArea(
       top: false,
       bottom: false,
@@ -37,26 +40,43 @@ class PageNavTile extends StatelessWidget {
                 ),
               )
             : null,
-        onTap: _pageBuilder != null
-            ? () {
-                Navigator.pop(context);
-                final route = MaterialPageRoute(
-                  settings: RouteSettings(name: routeName),
-                  builder: _pageBuilder,
-                );
-                if (topLevel) {
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    route,
-                    (route) => false,
-                  );
-                } else {
-                  Navigator.push(context, route);
-                }
-              }
-            : null,
+        onTap: () {
+          Navigator.pop(context);
+          final route = MaterialPageRoute(
+            settings: RouteSettings(name: routeName),
+            builder: pageBuilder(routeName),
+          );
+          if (topLevel) {
+            Navigator.pushAndRemoveUntil(
+              context,
+              route,
+              (route) => false,
+            );
+          } else {
+            Navigator.push(context, route);
+          }
+        },
         selected: context.currentRouteName == routeName,
       ),
     );
+  }
+
+  static WidgetBuilder pageBuilder(String route) {
+    switch (route) {
+      case AlbumListPage.routeName:
+        return (_) => const AlbumListPage();
+      case CountryListPage.routeName:
+        return (_) => const CountryListPage();
+      case TagListPage.routeName:
+        return (_) => const TagListPage();
+      case SettingsPage.routeName:
+        return (_) => const SettingsPage();
+      case AboutPage.routeName:
+        return (_) => const AboutPage();
+      case AppDebugPage.routeName:
+        return (_) => const AppDebugPage();
+      default:
+        throw Exception('unknown route=$route');
+    }
   }
 }

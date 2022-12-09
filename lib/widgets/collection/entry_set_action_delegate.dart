@@ -31,8 +31,8 @@ import 'package:aves/widgets/common/search/route.dart';
 import 'package:aves/widgets/dialogs/add_shortcut_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
-import 'package:aves/widgets/dialogs/entry_editors/rename_entry_set_dialog.dart';
-import 'package:aves/widgets/dialogs/location_pick_dialog.dart';
+import 'package:aves/widgets/dialogs/entry_editors/rename_entry_set_page.dart';
+import 'package:aves/widgets/dialogs/pick_dialogs/location_pick_page.dart';
 import 'package:aves/widgets/map/map_page.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
 import 'package:aves/widgets/stats/stats_page.dart';
@@ -517,8 +517,8 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     final location = await Navigator.push(
       context,
       MaterialPageRoute(
-        settings: const RouteSettings(name: LocationPickDialog.routeName),
-        builder: (context) => LocationPickDialog(
+        settings: const RouteSettings(name: LocationPickPage.routeName),
+        builder: (context) => LocationPickPage(
           collection: mapCollection,
           initialLocation: clusterLocation,
         ),

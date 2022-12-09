@@ -32,6 +32,7 @@ import 'package:aves/widgets/common/behaviour/route_tracker.dart';
 import 'package:aves/widgets/common/behaviour/routes.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/providers/highlight_info_provider.dart';
+import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/home_page.dart';
 import 'package:aves/widgets/welcome_page.dart';
 import 'package:dynamic_color/dynamic_color.dart';
@@ -249,7 +250,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
                                               data: Theme.of(context).copyWith(
                                                 pageTransitionsTheme: pageTransitionsTheme,
                                               ),
-                                              child: child!,
+                                              child: MediaQueryDataProvider(child: child!),
                                             ),
                                           ),
                                         );

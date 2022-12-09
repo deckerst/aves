@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/debouncer.dart';
 import 'package:aves/widgets/common/identity/aves_app_bar.dart';
-import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/common/search/delegate.dart';
 import 'package:aves/widgets/common/search/route.dart';
 import 'package:flutter/material.dart';
@@ -116,39 +115,37 @@ class _SearchPageState extends State<SearchPage> {
       case null:
         break;
     }
-    return MediaQueryDataProvider(
-      child: Scaffold(
-        appBar: AppBar(
-          leading: Hero(
-            tag: AvesAppBar.leadingHeroTag,
-            transitionOnUserGestures: true,
-            child: Center(child: widget.delegate.buildLeading(context)),
-          ),
-          title: Hero(
-            tag: AvesAppBar.titleHeroTag,
-            transitionOnUserGestures: true,
-            child: DefaultTextStyle.merge(
-              style: const TextStyle(fontFeatures: [FontFeature.disable('smcp')]),
-              child: TextField(
-                controller: widget.delegate.queryTextController,
-                focusNode: _focusNode,
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                  hintText: widget.delegate.searchFieldLabel,
-                  hintStyle: theme.inputDecorationTheme.hintStyle,
-                ),
-                textInputAction: TextInputAction.search,
-                style: theme.textTheme.titleLarge,
-                onSubmitted: (_) => widget.delegate.showResults(context),
+    return Scaffold(
+      appBar: AppBar(
+        leading: Hero(
+          tag: AvesAppBar.leadingHeroTag,
+          transitionOnUserGestures: true,
+          child: Center(child: widget.delegate.buildLeading(context)),
+        ),
+        title: Hero(
+          tag: AvesAppBar.titleHeroTag,
+          transitionOnUserGestures: true,
+          child: DefaultTextStyle.merge(
+            style: const TextStyle(fontFeatures: [FontFeature.disable('smcp')]),
+            child: TextField(
+              controller: widget.delegate.queryTextController,
+              focusNode: _focusNode,
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                hintText: widget.delegate.searchFieldLabel,
+                hintStyle: theme.inputDecorationTheme.hintStyle,
               ),
+              textInputAction: TextInputAction.search,
+              style: theme.textTheme.titleLarge,
+              onSubmitted: (_) => widget.delegate.showResults(context),
             ),
           ),
-          actions: widget.delegate.buildActions(context),
         ),
-        body: AnimatedSwitcher(
-          duration: const Duration(milliseconds: 300),
-          child: body,
-        ),
+        actions: widget.delegate.buildActions(context),
+      ),
+      body: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 300),
+        child: body,
       ),
     );
   }

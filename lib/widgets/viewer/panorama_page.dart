@@ -8,7 +8,6 @@ import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
-import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/viewer/overlay/common.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -60,89 +59,87 @@ class _PanoramaPageState extends State<PanoramaPage> {
         _onLeave();
         return SynchronousFuture(true);
       },
-      child: MediaQueryDataProvider(
-        child: Scaffold(
-          body: Stack(
-            children: [
-              ValueListenableBuilder<SensorControl>(
-                valueListenable: _sensorControl,
-                builder: (context, sensorControl, child) {
-                  void onTap(longitude, latitude, tilt) => _overlayVisible.value = !_overlayVisible.value;
-                  final imageChild = child as Image;
+      child: Scaffold(
+        body: Stack(
+          children: [
+            ValueListenableBuilder<SensorControl>(
+              valueListenable: _sensorControl,
+              builder: (context, sensorControl, child) {
+                void onTap(longitude, latitude, tilt) => _overlayVisible.value = !_overlayVisible.value;
+                final imageChild = child as Image;
 
-                  if (info.hasCroppedArea) {
-                    final croppedArea = info.croppedAreaRect!;
-                    final fullSize = info.fullPanoSize!;
-                    final longitude = ((croppedArea.left + croppedArea.width / 2) / fullSize.width - 1 / 2) * 360;
-                    return Panorama(
-                      longitude: longitude,
-                      sensorControl: sensorControl,
-                      croppedArea: croppedArea,
-                      croppedFullWidth: fullSize.width,
-                      croppedFullHeight: fullSize.height,
-                      onTap: onTap,
-                      child: imageChild,
-                    );
-                  } else {
-                    return Panorama(
-                      sensorControl: sensorControl,
-                      onTap: onTap,
-                      child: imageChild,
-                    );
-                  }
-                },
-                child: Image(
-                  image: entry.uriImage,
-                ),
+                if (info.hasCroppedArea) {
+                  final croppedArea = info.croppedAreaRect!;
+                  final fullSize = info.fullPanoSize!;
+                  final longitude = ((croppedArea.left + croppedArea.width / 2) / fullSize.width - 1 / 2) * 360;
+                  return Panorama(
+                    longitude: longitude,
+                    sensorControl: sensorControl,
+                    croppedArea: croppedArea,
+                    croppedFullWidth: fullSize.width,
+                    croppedFullHeight: fullSize.height,
+                    onTap: onTap,
+                    child: imageChild,
+                  );
+                } else {
+                  return Panorama(
+                    sensorControl: sensorControl,
+                    onTap: onTap,
+                    child: imageChild,
+                  );
+                }
+              },
+              child: Image(
+                image: entry.uriImage,
               ),
-              Positioned(
-                right: 0,
-                bottom: 0,
-                child: TooltipTheme(
-                  data: TooltipTheme.of(context).copyWith(
-                    preferBelow: false,
-                  ),
-                  child: ValueListenableBuilder<bool>(
-                    valueListenable: _overlayVisible,
-                    builder: (context, overlayVisible, child) {
-                      return Visibility(
-                        visible: overlayVisible,
-                        child: Selector<MediaQueryData, double>(
-                          selector: (context, mq) => max(mq.effectiveBottomPadding, mq.systemGestureInsets.bottom),
-                          builder: (context, mqPaddingBottom, child) {
-                            return SafeArea(
-                              bottom: false,
-                              child: Padding(
-                                padding: const EdgeInsets.all(8) + EdgeInsets.only(bottom: mqPaddingBottom),
-                                child: child,
-                              ),
-                            );
-                          },
-                          child: OverlayButton(
-                            child: ValueListenableBuilder<SensorControl>(
-                              valueListenable: _sensorControl,
-                              builder: (context, sensorControl, child) {
-                                return IconButton(
-                                  icon: Icon(sensorControl == SensorControl.None ? AIcons.sensorControlEnabled : AIcons.sensorControlDisabled),
-                                  onPressed: _toggleSensor,
-                                  tooltip: sensorControl == SensorControl.None ? context.l10n.panoramaEnableSensorControl : context.l10n.panoramaDisableSensorControl,
-                                );
-                              },
+            ),
+            Positioned(
+              right: 0,
+              bottom: 0,
+              child: TooltipTheme(
+                data: TooltipTheme.of(context).copyWith(
+                  preferBelow: false,
+                ),
+                child: ValueListenableBuilder<bool>(
+                  valueListenable: _overlayVisible,
+                  builder: (context, overlayVisible, child) {
+                    return Visibility(
+                      visible: overlayVisible,
+                      child: Selector<MediaQueryData, double>(
+                        selector: (context, mq) => max(mq.effectiveBottomPadding, mq.systemGestureInsets.bottom),
+                        builder: (context, mqPaddingBottom, child) {
+                          return SafeArea(
+                            bottom: false,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8) + EdgeInsets.only(bottom: mqPaddingBottom),
+                              child: child,
                             ),
+                          );
+                        },
+                        child: OverlayButton(
+                          child: ValueListenableBuilder<SensorControl>(
+                            valueListenable: _sensorControl,
+                            builder: (context, sensorControl, child) {
+                              return IconButton(
+                                icon: Icon(sensorControl == SensorControl.None ? AIcons.sensorControlEnabled : AIcons.sensorControlDisabled),
+                                onPressed: _toggleSensor,
+                                tooltip: sensorControl == SensorControl.None ? context.l10n.panoramaEnableSensorControl : context.l10n.panoramaDisableSensorControl,
+                              );
+                            },
                           ),
                         ),
-                      );
-                    },
-                  ),
+                      ),
+                    );
+                  },
                 ),
               ),
-              const TopGestureAreaProtector(),
-              const SideGestureAreaProtector(),
-              const BottomGestureAreaProtector(),
-            ],
-          ),
-          resizeToAvoidBottomInset: false,
+            ),
+            const TopGestureAreaProtector(),
+            const SideGestureAreaProtector(),
+            const BottomGestureAreaProtector(),
+          ],
         ),
+        resizeToAvoidBottomInset: false,
       ),
     );
   }

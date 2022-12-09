@@ -7,8 +7,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/identity/buttons.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
-import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
-import 'package:aves/widgets/settings/privacy/file_picker/file_picker.dart';
+import 'package:aves/widgets/settings/privacy/file_picker/file_picker_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
@@ -33,20 +32,18 @@ class HiddenItemsPage extends StatelessWidget {
       ),
     ];
 
-    return MediaQueryDataProvider(
-      child: DefaultTabController(
-        length: tabs.length,
-        child: Scaffold(
-          appBar: AppBar(
-            title: Text(l10n.settingsHiddenItemsPageTitle),
-            bottom: TabBar(
-              tabs: tabs.map((t) => t.item1).toList(),
-            ),
+    return DefaultTabController(
+      length: tabs.length,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(l10n.settingsHiddenItemsPageTitle),
+          bottom: TabBar(
+            tabs: tabs.map((t) => t.item1).toList(),
           ),
-          body: SafeArea(
-            child: TabBarView(
-              children: tabs.map((t) => t.item2).toList(),
-            ),
+        ),
+        body: SafeArea(
+          child: TabBarView(
+            children: tabs.map((t) => t.item2).toList(),
           ),
         ),
       ),
@@ -148,8 +145,8 @@ class _HiddenPaths extends StatelessWidget {
                 final path = await Navigator.push(
                   context,
                   MaterialPageRoute<String>(
-                    settings: const RouteSettings(name: FilePicker.routeName),
-                    builder: (context) => const FilePicker(),
+                    settings: const RouteSettings(name: FilePickerPage.routeName),
+                    builder: (context) => const FilePickerPage(),
                   ),
                 );
                 // wait for the dialog to hide as applying the change may block the UI

@@ -9,7 +9,6 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
-import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/viewer/controller.dart';
 import 'package:aves/widgets/viewer/entry_viewer_page.dart';
 import 'package:aves/widgets/viewer/entry_viewer_stack.dart';
@@ -60,32 +59,30 @@ class _SlideshowPageState extends State<SlideshowPage> {
     final entries = _slideshowCollection.sortedEntries;
     return ListenableProvider<ValueNotifier<AppMode>>.value(
       value: ValueNotifier(AppMode.slideshow),
-      child: MediaQueryDataProvider(
-        child: Scaffold(
-          body: entries.isEmpty
-              ? EmptyContent(
-                  icon: AIcons.image,
-                  text: context.l10n.collectionEmptyImages,
-                  alignment: Alignment.center,
-                )
-              : ViewStateConductorProvider(
-                  child: VideoConductorProvider(
-                    child: MultiPageConductorProvider(
-                      child: NotificationListener<SlideshowActionNotification>(
-                        onNotification: (notification) {
-                          _onActionSelected(notification.action);
-                          return true;
-                        },
-                        child: EntryViewerStack(
-                          collection: _slideshowCollection,
-                          initialEntry: entries.first,
-                          viewerController: _viewerController,
-                        ),
+      child: Scaffold(
+        body: entries.isEmpty
+            ? EmptyContent(
+                icon: AIcons.image,
+                text: context.l10n.collectionEmptyImages,
+                alignment: Alignment.center,
+              )
+            : ViewStateConductorProvider(
+                child: VideoConductorProvider(
+                  child: MultiPageConductorProvider(
+                    child: NotificationListener<SlideshowActionNotification>(
+                      onNotification: (notification) {
+                        _onActionSelected(notification.action);
+                        return true;
+                      },
+                      child: EntryViewerStack(
+                        collection: _slideshowCollection,
+                        initialEntry: entries.first,
+                        viewerController: _viewerController,
                       ),
                     ),
                   ),
                 ),
-        ),
+              ),
       ),
     );
   }

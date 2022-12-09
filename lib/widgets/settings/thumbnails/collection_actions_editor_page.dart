@@ -1,7 +1,6 @@
 import 'package:aves/model/actions/entry_set_actions.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/settings/common/quick_actions/editor_page.dart';
 import 'package:flutter/material.dart';
 import 'package:tuple/tuple.dart';
@@ -42,20 +41,18 @@ class CollectionActionEditorPage extends StatelessWidget {
       ),
     ];
 
-    return MediaQueryDataProvider(
-      child: DefaultTabController(
-        length: tabs.length,
-        child: Scaffold(
-          appBar: AppBar(
-            title: Text(context.l10n.settingsCollectionQuickActionEditorPageTitle),
-            bottom: TabBar(
-              tabs: tabs.map((t) => t.item1).toList(),
-            ),
+    return DefaultTabController(
+      length: tabs.length,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(context.l10n.settingsCollectionQuickActionEditorPageTitle),
+          bottom: TabBar(
+            tabs: tabs.map((t) => t.item1).toList(),
           ),
-          body: SafeArea(
-            child: TabBarView(
-              children: tabs.map((t) => t.item2).toList(),
-            ),
+        ),
+        body: SafeArea(
+          child: TabBarView(
+            children: tabs.map((t) => t.item2).toList(),
           ),
         ),
       ),

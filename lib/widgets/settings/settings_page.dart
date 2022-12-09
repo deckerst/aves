@@ -63,73 +63,71 @@ class _SettingsPageState extends State<SettingsPage> with FeedbackMixin {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final durations = context.watch<DurationsData>();
-    return MediaQueryDataProvider(
-      child: Scaffold(
-        appBar: AppBar(
-          title: InteractiveAppBarTitle(
-            onTap: () => _goToSearch(context),
-            child: Text(context.l10n.settingsPageTitle),
-          ),
-          actions: [
-            IconButton(
-              icon: const Icon(AIcons.search),
-              onPressed: () => _goToSearch(context),
-              tooltip: MaterialLocalizations.of(context).searchFieldLabel,
-            ),
-            if (!device.isTelevision)
-              MenuIconTheme(
-                child: PopupMenuButton<SettingsAction>(
-                  itemBuilder: (context) {
-                    return [
-                      PopupMenuItem(
-                        value: SettingsAction.export,
-                        child: MenuRow(text: context.l10n.settingsActionExport, icon: const Icon(AIcons.fileExport)),
-                      ),
-                      PopupMenuItem(
-                        value: SettingsAction.import,
-                        child: MenuRow(text: context.l10n.settingsActionImport, icon: const Icon(AIcons.fileImport)),
-                      ),
-                    ];
-                  },
-                  onSelected: (action) async {
-                    // wait for the popup menu to hide before proceeding with the action
-                    await Future.delayed(Durations.popupMenuAnimation * timeDilation);
-                    _onActionSelected(action);
-                  },
-                ),
-              ),
-          ],
+    return Scaffold(
+      appBar: AppBar(
+        title: InteractiveAppBarTitle(
+          onTap: () => _goToSearch(context),
+          child: Text(context.l10n.settingsPageTitle),
         ),
-        body: GestureAreaProtectorStack(
-          child: SafeArea(
-            bottom: false,
-            child: Theme(
-              data: theme.copyWith(
-                textTheme: theme.textTheme.copyWith(
-                  // dense style font for tile subtitles, without modifying title font
-                  bodyMedium: const TextStyle(fontSize: 12),
-                ),
+        actions: [
+          IconButton(
+            icon: const Icon(AIcons.search),
+            onPressed: () => _goToSearch(context),
+            tooltip: MaterialLocalizations.of(context).searchFieldLabel,
+          ),
+          if (!device.isTelevision)
+            MenuIconTheme(
+              child: PopupMenuButton<SettingsAction>(
+                itemBuilder: (context) {
+                  return [
+                    PopupMenuItem(
+                      value: SettingsAction.export,
+                      child: MenuRow(text: context.l10n.settingsActionExport, icon: const Icon(AIcons.fileExport)),
+                    ),
+                    PopupMenuItem(
+                      value: SettingsAction.import,
+                      child: MenuRow(text: context.l10n.settingsActionImport, icon: const Icon(AIcons.fileImport)),
+                    ),
+                  ];
+                },
+                onSelected: (action) async {
+                  // wait for the popup menu to hide before proceeding with the action
+                  await Future.delayed(Durations.popupMenuAnimation * timeDilation);
+                  _onActionSelected(action);
+                },
               ),
-              child: AnimationLimiter(
-                child: Selector<MediaQueryData, double>(
-                    selector: (context, mq) => max(mq.effectiveBottomPadding, mq.systemGestureInsets.bottom),
-                    builder: (context, mqPaddingBottom, child) {
-                      return ListView(
-                        padding: const EdgeInsets.all(8) + EdgeInsets.only(bottom: mqPaddingBottom),
-                        children: AnimationConfiguration.toStaggeredList(
-                          duration: durations.staggeredAnimation,
-                          delay: durations.staggeredAnimationDelay * timeDilation,
-                          childAnimationBuilder: (child) => SlideAnimation(
-                            verticalOffset: 50.0,
-                            child: FadeInAnimation(
-                              child: child,
-                            ),
+            ),
+        ],
+      ),
+      body: GestureAreaProtectorStack(
+        child: SafeArea(
+          bottom: false,
+          child: Theme(
+            data: theme.copyWith(
+              textTheme: theme.textTheme.copyWith(
+                // dense style font for tile subtitles, without modifying title font
+                bodyMedium: const TextStyle(fontSize: 12),
+              ),
+            ),
+            child: AnimationLimiter(
+              child: Selector<MediaQueryData, double>(
+                  selector: (context, mq) => max(mq.effectiveBottomPadding, mq.systemGestureInsets.bottom),
+                  builder: (context, mqPaddingBottom, child) {
+                    return ListView(
+                      padding: const EdgeInsets.all(8) + EdgeInsets.only(bottom: mqPaddingBottom),
+                      children: AnimationConfiguration.toStaggeredList(
+                        duration: durations.staggeredAnimation,
+                        delay: durations.staggeredAnimationDelay * timeDilation,
+                        childAnimationBuilder: (child) => SlideAnimation(
+                          verticalOffset: 50.0,
+                          child: FadeInAnimation(
+                            child: child,
                           ),
-                          children: sections.map((v) => v.build(context, _expandedNotifier)).toList(),
                         ),
-                      );
-                    }),
-              ),
+                        children: sections.map((v) => v.build(context, _expandedNotifier)).toList(),
+                      ),
+                    );
+                  }),
             ),
           ),
         ),

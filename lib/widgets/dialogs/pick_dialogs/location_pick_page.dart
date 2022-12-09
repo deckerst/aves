@@ -14,20 +14,19 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/buttons.dart';
 import 'package:aves/widgets/common/map/geo_map.dart';
 import 'package:aves/widgets/common/providers/map_theme_provider.dart';
-import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves_map/aves_map.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 
-class LocationPickDialog extends StatelessWidget {
+class LocationPickPage extends StatelessWidget {
   static const routeName = '/location_pick';
 
   final CollectionLens? collection;
   final LatLng? initialLocation;
 
-  const LocationPickDialog({
+  const LocationPickPage({
     super.key,
     required this.collection,
     required this.initialLocation,
@@ -35,17 +34,15 @@ class LocationPickDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MediaQueryDataProvider(
-      child: Scaffold(
-        body: SafeArea(
-          left: false,
-          top: false,
-          right: false,
-          bottom: true,
-          child: _Content(
-            collection: collection,
-            initialLocation: initialLocation,
-          ),
+    return Scaffold(
+      body: SafeArea(
+        left: false,
+        top: false,
+        right: false,
+        bottom: true,
+        child: _Content(
+          collection: collection,
+          initialLocation: initialLocation,
         ),
       ),
     );

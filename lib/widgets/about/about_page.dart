@@ -15,37 +15,35 @@ class AboutPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MediaQueryDataProvider(
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(context.l10n.aboutPageTitle),
-        ),
-        body: GestureAreaProtectorStack(
-          child: SafeArea(
-            bottom: false,
-            child: CustomScrollView(
-              slivers: [
-                SliverPadding(
-                  padding: const EdgeInsets.only(top: 16),
-                  sliver: SliverList(
-                    delegate: SliverChildListDelegate(
-                      const [
-                        AppReference(),
-                        Divider(),
-                        BugReport(),
-                        Divider(),
-                        AboutCredits(),
-                        Divider(),
-                        AboutTranslators(),
-                        Divider(),
-                      ],
-                    ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(context.l10n.aboutPageTitle),
+      ),
+      body: GestureAreaProtectorStack(
+        child: SafeArea(
+          bottom: false,
+          child: CustomScrollView(
+            slivers: [
+              SliverPadding(
+                padding: const EdgeInsets.only(top: 16),
+                sliver: SliverList(
+                  delegate: SliverChildListDelegate(
+                    const [
+                      AppReference(),
+                      Divider(),
+                      BugReport(),
+                      Divider(),
+                      AboutCredits(),
+                      Divider(),
+                      AboutTranslators(),
+                      Divider(),
+                    ],
                   ),
                 ),
-                const Licenses(),
-                const BottomPaddingSliver(),
-              ],
-            ),
+              ),
+              const Licenses(),
+              const BottomPaddingSliver(),
+            ],
           ),
         ),
       ),

@@ -7,7 +7,6 @@ import 'package:aves/widgets/common/basic/markdown_container.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_logo.dart';
 import 'package:aves/widgets/common/identity/buttons.dart';
-import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -47,67 +46,65 @@ class _WelcomePageState extends State<WelcomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return MediaQueryDataProvider(
-      child: Scaffold(
-        body: SafeArea(
-          child: Center(
-            child: FutureBuilder<String>(
-              future: _termsLoader,
-              builder: (context, snapshot) {
-                if (snapshot.hasError || snapshot.connectionState != ConnectionState.done) return const SizedBox();
-                final terms = snapshot.data!;
-                final durations = context.watch<DurationsData>();
-                final isPortrait = context.select<MediaQueryData, Orientation>((mq) => mq.orientation) == Orientation.portrait;
-                return Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: _toStaggeredList(
-                    duration: durations.staggeredAnimation,
-                    delay: durations.staggeredAnimationDelay * timeDilation,
-                    childAnimationBuilder: (child) => SlideAnimation(
-                      verticalOffset: 50.0,
-                      child: FadeInAnimation(
-                        child: child,
-                      ),
+    return Scaffold(
+      body: SafeArea(
+        child: Center(
+          child: FutureBuilder<String>(
+            future: _termsLoader,
+            builder: (context, snapshot) {
+              if (snapshot.hasError || snapshot.connectionState != ConnectionState.done) return const SizedBox();
+              final terms = snapshot.data!;
+              final durations = context.watch<DurationsData>();
+              final isPortrait = context.select<MediaQueryData, Orientation>((mq) => mq.orientation) == Orientation.portrait;
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: _toStaggeredList(
+                  duration: durations.staggeredAnimation,
+                  delay: durations.staggeredAnimationDelay * timeDilation,
+                  childAnimationBuilder: (child) => SlideAnimation(
+                    verticalOffset: 50.0,
+                    child: FadeInAnimation(
+                      child: child,
                     ),
-                    children: [
-                      ..._buildHeader(context, isPortrait: isPortrait),
-                      if (isPortrait) ...[
-                        Flexible(
-                          child: MarkdownContainer(
-                            data: terms,
-                            textDirection: termsDirection,
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        ..._buildControls(context),
-                      ] else
-                        Flexible(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Flexible(
-                                child: Padding(
-                                  padding: const EdgeInsets.only(bottom: 8),
-                                  child: MarkdownContainer(
-                                    data: terms,
-                                    textDirection: termsDirection,
-                                  ),
-                                ),
-                              ),
-                              Flexible(
-                                child: ListView(
-                                  shrinkWrap: true,
-                                  children: _buildControls(context),
-                                ),
-                              ),
-                            ],
-                          ),
-                        )
-                    ],
                   ),
-                );
-              },
-            ),
+                  children: [
+                    ..._buildHeader(context, isPortrait: isPortrait),
+                    if (isPortrait) ...[
+                      Flexible(
+                        child: MarkdownContainer(
+                          data: terms,
+                          textDirection: termsDirection,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      ..._buildControls(context),
+                    ] else
+                      Flexible(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Flexible(
+                              child: Padding(
+                                padding: const EdgeInsets.only(bottom: 8),
+                                child: MarkdownContainer(
+                                  data: terms,
+                                  textDirection: termsDirection,
+                                ),
+                              ),
+                            ),
+                            Flexible(
+                              child: ListView(
+                                shrinkWrap: true,
+                                children: _buildControls(context),
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                  ],
+                ),
+              );
+            },
           ),
         ),
       ),
