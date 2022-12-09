@@ -5,7 +5,6 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
-import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/viewer/controller.dart';
 import 'package:aves/widgets/viewer/entry_horizontal_pager.dart';
 import 'package:aves/widgets/viewer/entry_viewer_page.dart';
@@ -35,22 +34,20 @@ class WallpaperPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MediaQueryDataProvider(
-      child: Scaffold(
-        body: entry != null
-            ? ViewStateConductorProvider(
-                child: VideoConductorProvider(
-                  child: MultiPageConductorProvider(
-                    child: EntryEditor(
-                      entry: entry!,
-                    ),
+    return Scaffold(
+      body: entry != null
+          ? ViewStateConductorProvider(
+              child: VideoConductorProvider(
+                child: MultiPageConductorProvider(
+                  child: EntryEditor(
+                    entry: entry!,
                   ),
                 ),
-              )
-            : const SizedBox(),
-        backgroundColor: Theme.of(context).brightness == Brightness.dark ? Colors.black : Colors.white,
-        resizeToAvoidBottomInset: false,
-      ),
+              ),
+            )
+          : const SizedBox(),
+      backgroundColor: Theme.of(context).brightness == Brightness.dark ? Colors.black : Colors.white,
+      resizeToAvoidBottomInset: false,
     );
   }
 }

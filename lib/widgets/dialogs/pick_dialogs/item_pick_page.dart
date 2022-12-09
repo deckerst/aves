@@ -5,28 +5,27 @@ import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/widgets/collection/collection_grid.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
-import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/common/providers/query_provider.dart';
 import 'package:aves/widgets/common/providers/selection_provider.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class ItemPickDialog extends StatefulWidget {
+class ItemPickPage extends StatefulWidget {
   static const routeName = '/item_pick';
 
   final CollectionLens collection;
 
-  const ItemPickDialog({
+  const ItemPickPage({
     super.key,
     required this.collection,
   });
 
   @override
-  State<ItemPickDialog> createState() => _ItemPickDialogState();
+  State<ItemPickPage> createState() => _ItemPickPageState();
 }
 
-class _ItemPickDialogState extends State<ItemPickDialog> {
+class _ItemPickPageState extends State<ItemPickPage> {
   CollectionLens get collection => widget.collection;
 
   @override
@@ -40,20 +39,18 @@ class _ItemPickDialogState extends State<ItemPickDialog> {
     final liveFilter = collection.filters.firstWhereOrNull((v) => v is QueryFilter && v.live) as QueryFilter?;
     return ListenableProvider<ValueNotifier<AppMode>>.value(
       value: ValueNotifier(AppMode.pickMediaInternal),
-      child: MediaQueryDataProvider(
-        child: Scaffold(
-          body: SelectionProvider<AvesEntry>(
-            child: QueryProvider(
-              initialQuery: liveFilter?.query,
-              child: GestureAreaProtectorStack(
-                child: SafeArea(
-                  top: false,
-                  bottom: false,
-                  child: ChangeNotifierProvider<CollectionLens>.value(
-                    value: collection,
-                    child: const CollectionGrid(
-                      settingsRouteKey: CollectionPage.routeName,
-                    ),
+      child: Scaffold(
+        body: SelectionProvider<AvesEntry>(
+          child: QueryProvider(
+            initialQuery: liveFilter?.query,
+            child: GestureAreaProtectorStack(
+              child: SafeArea(
+                top: false,
+                bottom: false,
+                child: ChangeNotifierProvider<CollectionLens>.value(
+                  value: collection,
+                  child: const CollectionGrid(
+                    settingsRouteKey: CollectionPage.routeName,
                   ),
                 ),
               ),

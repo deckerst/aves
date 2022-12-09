@@ -5,7 +5,6 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/change_notifier.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/settings/common/quick_actions/action_button.dart';
 import 'package:aves/widgets/settings/common/quick_actions/action_panel.dart';
 import 'package:aves/widgets/settings/common/quick_actions/available_actions.dart';
@@ -38,20 +37,18 @@ class QuickActionEditorPage<T extends Object> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MediaQueryDataProvider(
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(title),
-        ),
-        body: SafeArea(
-          child: QuickActionEditorBody(
-            bannerText: bannerText,
-            allAvailableActions: allAvailableActions,
-            actionIcon: actionIcon,
-            actionText: actionText,
-            load: load,
-            save: save,
-          ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(title),
+      ),
+      body: SafeArea(
+        child: QuickActionEditorBody(
+          bannerText: bannerText,
+          allAvailableActions: allAvailableActions,
+          actionIcon: actionIcon,
+          actionText: actionText,
+          load: load,
+          save: save,
         ),
       ),
     );

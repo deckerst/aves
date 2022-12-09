@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:aves/app_mode.dart';
+import 'package:aves/model/device.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/query.dart';
@@ -18,11 +19,11 @@ import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/behaviour/double_back_pop.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_fab.dart';
-import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/common/providers/query_provider.dart';
 import 'package:aves/widgets/common/providers/selection_provider.dart';
 import 'package:aves/widgets/navigation/drawer/app_drawer.dart';
 import 'package:aves/widgets/navigation/nav_bar/nav_bar.dart';
+import 'package:aves/widgets/navigation/tv_rail.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -80,53 +81,67 @@ class _CollectionPageState extends State<CollectionPage> {
   @override
   Widget build(BuildContext context) {
     final liveFilter = _collection.filters.firstWhereOrNull((v) => v is QueryFilter && v.live) as QueryFilter?;
-    return MediaQueryDataProvider(
-      child: SelectionProvider<AvesEntry>(
-        child: Selector<Selection<AvesEntry>, bool>(
-          selector: (context, selection) => selection.selectedItems.isNotEmpty,
-          builder: (context, hasSelection, child) {
+    return SelectionProvider<AvesEntry>(
+      child: Selector<Selection<AvesEntry>, bool>(
+        selector: (context, selection) => selection.selectedItems.isNotEmpty,
+        builder: (context, hasSelection, child) {
+          final body = QueryProvider(
+            initialQuery: liveFilter?.query,
+            child: Builder(
+              builder: (context) => WillPopScope(
+                onWillPop: () {
+                  final selection = context.read<Selection<AvesEntry>>();
+                  if (selection.isSelecting) {
+                    selection.browse();
+                    return SynchronousFuture(false);
+                  }
+                  return SynchronousFuture(true);
+                },
+                child: DoubleBackPopScope(
+                  child: GestureAreaProtectorStack(
+                    child: SafeArea(
+                      top: false,
+                      bottom: false,
+                      child: ChangeNotifierProvider<CollectionLens>.value(
+                        value: _collection,
+                        child: const CollectionGrid(
+                          // key is expected by test driver
+                          key: Key('collection-grid'),
+                          settingsRouteKey: CollectionPage.routeName,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+
+          if (device.isTelevision) {
+            return Scaffold(
+              body: Row(
+                children: [
+                  TvRail(currentCollection: _collection),
+                  Expanded(child: body),
+                ],
+              ),
+              resizeToAvoidBottomInset: false,
+              extendBody: true,
+            );
+          } else {
             return Selector<Settings, bool>(
               selector: (context, s) => s.enableBottomNavigationBar,
               builder: (context, enableBottomNavigationBar, child) {
                 final canNavigate = context.select<ValueNotifier<AppMode>, bool>((v) => v.value.canNavigate);
                 final showBottomNavigationBar = canNavigate && enableBottomNavigationBar;
+
                 return NotificationListener<DraggableScrollBarNotification>(
                   onNotification: (notification) {
                     _draggableScrollBarEventStreamController.add(notification.event);
                     return false;
                   },
                   child: Scaffold(
-                    body: QueryProvider(
-                      initialQuery: liveFilter?.query,
-                      child: Builder(
-                        builder: (context) => WillPopScope(
-                          onWillPop: () {
-                            final selection = context.read<Selection<AvesEntry>>();
-                            if (selection.isSelecting) {
-                              selection.browse();
-                              return SynchronousFuture(false);
-                            }
-                            return SynchronousFuture(true);
-                          },
-                          child: DoubleBackPopScope(
-                            child: GestureAreaProtectorStack(
-                              child: SafeArea(
-                                top: false,
-                                bottom: false,
-                                child: ChangeNotifierProvider<CollectionLens>.value(
-                                  value: _collection,
-                                  child: const CollectionGrid(
-                                    // key is expected by test driver
-                                    key: Key('collection-grid'),
-                                    settingsRouteKey: CollectionPage.routeName,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
+                    body: body,
                     floatingActionButton: _buildFab(context, hasSelection),
                     drawer: canNavigate ? AppDrawer(currentCollection: _collection) : null,
                     bottomNavigationBar: showBottomNavigationBar
@@ -141,8 +156,8 @@ class _CollectionPageState extends State<CollectionPage> {
                 );
               },
             );
-          },
-        ),
+          }
+        },
       ),
     );
   }

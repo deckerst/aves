@@ -230,25 +230,21 @@ class _AppDrawerState extends State<AppDrawer> {
     return [
       const Divider(),
       ...pageBookmarks.map((route) {
-        WidgetBuilder? pageBuilder;
         Widget? trailing;
         switch (route) {
           case AlbumListPage.routeName:
-            pageBuilder = (_) => const AlbumListPage();
             trailing = StreamBuilder(
               stream: source.eventBus.on<AlbumsChangedEvent>(),
               builder: (context, _) => Text('${source.rawAlbums.length}'),
             );
             break;
           case CountryListPage.routeName:
-            pageBuilder = (_) => const CountryListPage();
             trailing = StreamBuilder(
               stream: source.eventBus.on<CountriesChangedEvent>(),
               builder: (context, _) => Text('${source.sortedCountries.length}'),
             );
             break;
           case TagListPage.routeName:
-            pageBuilder = (_) => const TagListPage();
             trailing = StreamBuilder(
               stream: source.eventBus.on<TagsChangedEvent>(),
               builder: (context, _) => Text('${source.sortedTags.length}'),
@@ -261,7 +257,6 @@ class _AppDrawerState extends State<AppDrawer> {
           key: Key('drawer-page-$route'),
           trailing: trailing,
           routeName: route,
-          pageBuilder: pageBuilder ?? (_) => const SizedBox(),
         );
       }),
     ];
@@ -281,11 +276,10 @@ class _AppDrawerState extends State<AppDrawer> {
     );
   }
 
-  Widget get debugTile => PageNavTile(
+  Widget get debugTile => const PageNavTile(
         // key is expected by test driver
-        key: const Key('drawer-debug'),
+        key: Key('drawer-debug'),
         topLevel: false,
         routeName: AppDebugPage.routeName,
-        pageBuilder: (_) => const AppDebugPage(),
       );
 }

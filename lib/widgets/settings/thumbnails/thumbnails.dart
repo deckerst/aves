@@ -4,7 +4,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/settings/common/tile_leading.dart';
 import 'package:aves/widgets/settings/common/tiles.dart';
 import 'package:aves/widgets/settings/settings_definition.dart';
-import 'package:aves/widgets/settings/thumbnails/collection_actions_editor.dart';
+import 'package:aves/widgets/settings/thumbnails/collection_actions_editor_page.dart';
 import 'package:aves/widgets/settings/thumbnails/overlay.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

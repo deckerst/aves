@@ -23,7 +23,6 @@ import 'package:aves/widgets/common/identity/empty.dart';
 import 'package:aves/widgets/common/map/geo_map.dart';
 import 'package:aves/widgets/common/providers/highlight_info_provider.dart';
 import 'package:aves/widgets/common/providers/map_theme_provider.dart';
-import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/common/thumbnail/scroller.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip.dart';
 import 'package:aves/widgets/map/map_info_row.dart';
@@ -56,18 +55,16 @@ class MapPage extends StatelessWidget {
     // as the map can be stacked on top of other pages
     // that catch highlight events and will not let it bubble up
     return HighlightInfoProvider(
-      child: MediaQueryDataProvider(
-        child: Scaffold(
-          body: SafeArea(
-            left: false,
-            top: false,
-            right: false,
-            bottom: true,
-            child: _Content(
-              collection: collection,
-              initialEntry: initialEntry,
-              overlayEntry: overlayEntry,
-            ),
+      child: Scaffold(
+        body: SafeArea(
+          left: false,
+          top: false,
+          right: false,
+          bottom: true,
+          child: _Content(
+            collection: collection,
+            initialEntry: initialEntry,
+            overlayEntry: overlayEntry,
           ),
         ),
       ),

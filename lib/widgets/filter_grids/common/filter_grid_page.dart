@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:aves/app_mode.dart';
+import 'package:aves/model/device.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/highlight.dart';
 import 'package:aves/model/query.dart';
@@ -24,7 +25,6 @@ import 'package:aves/widgets/common/grid/sliver.dart';
 import 'package:aves/widgets/common/grid/theme.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/identity/scroll_thumb.dart';
-import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/common/providers/query_provider.dart';
 import 'package:aves/widgets/common/providers/tile_extent_controller_provider.dart';
 import 'package:aves/widgets/common/thumbnail/image.dart';
@@ -37,6 +37,7 @@ import 'package:aves/widgets/filter_grids/common/section_keys.dart';
 import 'package:aves/widgets/filter_grids/common/section_layout.dart';
 import 'package:aves/widgets/navigation/drawer/app_drawer.dart';
 import 'package:aves/widgets/navigation/nav_bar/nav_bar.dart';
+import 'package:aves/widgets/navigation/tv_rail.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -76,64 +77,78 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MediaQueryDataProvider(
-      child: Selector<Settings, bool>(
+    final body = QueryProvider(
+      initialQuery: null,
+      child: WillPopScope(
+        onWillPop: () {
+          final selection = context.read<Selection<FilterGridItem<T>>>();
+          if (selection.isSelecting) {
+            selection.browse();
+            return SynchronousFuture(false);
+          }
+          return SynchronousFuture(true);
+        },
+        child: DoubleBackPopScope(
+          child: GestureAreaProtectorStack(
+            child: SafeArea(
+              top: false,
+              bottom: false,
+              child: Selector<MediaQueryData, double>(
+                selector: (context, mq) => mq.padding.top,
+                builder: (context, mqPaddingTop, child) {
+                  return ValueListenableBuilder<double>(
+                    valueListenable: appBarHeightNotifier,
+                    builder: (context, appBarHeight, child) {
+                      return FilterGrid<T>(
+                        // key is expected by test driver
+                        key: const Key('filter-grid'),
+                        settingsRouteKey: settingsRouteKey,
+                        appBar: appBar,
+                        appBarHeight: mqPaddingTop + appBarHeight,
+                        sections: sections,
+                        newFilters: newFilters,
+                        sortFactor: sortFactor,
+                        showHeaders: showHeaders,
+                        selectable: selectable,
+                        applyQuery: applyQuery,
+                        emptyBuilder: emptyBuilder,
+                        heroType: heroType,
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    if (device.isTelevision) {
+      return Scaffold(
+        body: Row(
+          children: [
+            const TvRail(),
+            Expanded(child: body),
+          ],
+        ),
+        resizeToAvoidBottomInset: false,
+        extendBody: true,
+      );
+    } else {
+      return Selector<Settings, bool>(
         selector: (context, s) => s.enableBottomNavigationBar,
         builder: (context, enableBottomNavigationBar, child) {
           final canNavigate = context.select<ValueNotifier<AppMode>, bool>((v) => v.value.canNavigate);
           final showBottomNavigationBar = canNavigate && enableBottomNavigationBar;
+
           return NotificationListener<DraggableScrollBarNotification>(
             onNotification: (notification) {
               _draggableScrollBarEventStreamController.add(notification.event);
               return false;
             },
             child: Scaffold(
-              body: QueryProvider(
-                initialQuery: null,
-                child: WillPopScope(
-                  onWillPop: () {
-                    final selection = context.read<Selection<FilterGridItem<T>>>();
-                    if (selection.isSelecting) {
-                      selection.browse();
-                      return SynchronousFuture(false);
-                    }
-                    return SynchronousFuture(true);
-                  },
-                  child: DoubleBackPopScope(
-                    child: GestureAreaProtectorStack(
-                      child: SafeArea(
-                        top: false,
-                        bottom: false,
-                        child: Selector<MediaQueryData, double>(
-                          selector: (context, mq) => mq.padding.top,
-                          builder: (context, mqPaddingTop, child) {
-                            return ValueListenableBuilder<double>(
-                              valueListenable: appBarHeightNotifier,
-                              builder: (context, appBarHeight, child) {
-                                return FilterGrid<T>(
-                                  // key is expected by test driver
-                                  key: const Key('filter-grid'),
-                                  settingsRouteKey: settingsRouteKey,
-                                  appBar: appBar,
-                                  appBarHeight: mqPaddingTop + appBarHeight,
-                                  sections: sections,
-                                  newFilters: newFilters,
-                                  sortFactor: sortFactor,
-                                  showHeaders: showHeaders,
-                                  selectable: selectable,
-                                  applyQuery: applyQuery,
-                                  emptyBuilder: emptyBuilder,
-                                  heroType: heroType,
-                                );
-                              },
-                            );
-                          },
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+              body: body,
               drawer: canNavigate ? const AppDrawer() : null,
               bottomNavigationBar: showBottomNavigationBar
                   ? AppBottomNavBar(
@@ -145,8 +160,8 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
             ),
           );
         },
-      ),
-    );
+      );
+    }
   }
 }
 

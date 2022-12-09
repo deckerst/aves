@@ -7,7 +7,6 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
-import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip.dart';
 import 'package:aves/widgets/viewer/action/entry_info_action_delegate.dart';
 import 'package:aves/widgets/viewer/embedded/embedded_data_opener.dart';
@@ -46,51 +45,49 @@ class _InfoPageState extends State<InfoPage> {
 
   @override
   Widget build(BuildContext context) {
-    return MediaQueryDataProvider(
-      child: Scaffold(
-        body: GestureAreaProtectorStack(
-          child: SafeArea(
-            bottom: false,
-            child: NotificationListener<ScrollNotification>(
-              onNotification: _handleTopScroll,
-              child: Selector<MediaQueryData, double>(
-                selector: (context, mq) => mq.size.width,
-                builder: (context, mqWidth, child) {
-                  return ValueListenableBuilder<AvesEntry?>(
-                    valueListenable: widget.entryNotifier,
-                    builder: (context, mainEntry, child) {
-                      if (mainEntry == null) return const SizedBox();
+    return Scaffold(
+      body: GestureAreaProtectorStack(
+        child: SafeArea(
+          bottom: false,
+          child: NotificationListener<ScrollNotification>(
+            onNotification: _handleTopScroll,
+            child: Selector<MediaQueryData, double>(
+              selector: (context, mq) => mq.size.width,
+              builder: (context, mqWidth, child) {
+                return ValueListenableBuilder<AvesEntry?>(
+                  valueListenable: widget.entryNotifier,
+                  builder: (context, mainEntry, child) {
+                    if (mainEntry == null) return const SizedBox();
 
-                      Widget _buildContent({AvesEntry? pageEntry}) {
-                        final targetEntry = pageEntry ?? mainEntry;
-                        return EmbeddedDataOpener(
+                    Widget _buildContent({AvesEntry? pageEntry}) {
+                      final targetEntry = pageEntry ?? mainEntry;
+                      return EmbeddedDataOpener(
+                        entry: targetEntry,
+                        child: _InfoPageContent(
+                          collection: widget.collection,
                           entry: targetEntry,
-                          child: _InfoPageContent(
-                            collection: widget.collection,
-                            entry: targetEntry,
-                            isScrollingNotifier: widget.isScrollingNotifier,
-                            scrollController: _scrollController,
-                            split: mqWidth > splitScreenWidthThreshold,
-                            goToViewer: _goToViewer,
-                          ),
-                        );
-                      }
+                          isScrollingNotifier: widget.isScrollingNotifier,
+                          scrollController: _scrollController,
+                          split: mqWidth > splitScreenWidthThreshold,
+                          goToViewer: _goToViewer,
+                        ),
+                      );
+                    }
 
-                      return mainEntry.isBurst
-                          ? PageEntryBuilder(
-                              multiPageController: context.read<MultiPageConductor>().getController(mainEntry),
-                              builder: (pageEntry) => _buildContent(pageEntry: pageEntry),
-                            )
-                          : _buildContent();
-                    },
-                  );
-                },
-              ),
+                    return mainEntry.isBurst
+                        ? PageEntryBuilder(
+                            multiPageController: context.read<MultiPageConductor>().getController(mainEntry),
+                            builder: (pageEntry) => _buildContent(pageEntry: pageEntry),
+                          )
+                        : _buildContent();
+                  },
+                );
+              },
             ),
           ),
         ),
-        resizeToAvoidBottomInset: false,
       ),
+      resizeToAvoidBottomInset: false,
     );
   }
 
