@@ -1186,5 +1186,7 @@
   "entryActionShareVideoOnly": "Yalnızca video paylaş",
   "@entryActionShareVideoOnly": {},
   "entryActionShareImageOnly": "Yalnızca resim paylaş",
-  "@entryActionShareImageOnly": {}
+  "@entryActionShareImageOnly": {},
+  "keepScreenOnVideoPlayback": "Video oynatma sırasında",
+  "@keepScreenOnVideoPlayback": {}
 }
