@@ -44,6 +44,7 @@ class LocaleTile extends StatelessWidget {
   static String getLocaleName(Locale locale) {
     // the package `flutter_localized_locales` has the answer for all locales
     // but it comes with 3 MB of assets
-    return SupportedLocales.languagesByLanguageCode[locale.languageCode] ?? locale.toString();
+    final localeString = locale.toString();
+    return SupportedLocales.languagesByLanguageCode[localeString] ?? localeString;
   }
 }

@@ -20,5 +20,6 @@ class SupportedLocales {
     'ru': 'Русский',
     'tr': 'Türkçe',
     'zh': '简体中文',
+    'zh_Hant': '繁體中文',
   };
 }
