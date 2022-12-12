@@ -47,6 +47,7 @@ mv izzy/en izzy/en-US
 mv izzy/es izzy/es-MX
 mv izzy/pt izzy/pt-BR
 mv izzy/zh izzy/zh-CN
+mv izzy/zh_Hant izzy/zh-TW
 
 # play: add device frame
 for source in overlay/*/*; do
