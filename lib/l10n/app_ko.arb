@@ -1186,5 +1186,7 @@
   "entryActionShareVideoOnly": "동영상만 공유",
   "@entryActionShareVideoOnly": {},
   "entryInfoActionRemoveLocation": "위치 삭제",
-  "@entryInfoActionRemoveLocation": {}
+  "@entryInfoActionRemoveLocation": {},
+  "keepScreenOnVideoPlayback": "동영상 재생 시 작동",
+  "@keepScreenOnVideoPlayback": {}
 }

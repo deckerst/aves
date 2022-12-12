@@ -1186,5 +1186,7 @@
   "entryActionShareVideoOnly": "Compartir sólo el vídeo",
   "@entryActionShareVideoOnly": {},
   "entryActionShareImageOnly": "Compartir sólo la imagen",
-  "@entryActionShareImageOnly": {}
+  "@entryActionShareImageOnly": {},
+  "keepScreenOnVideoPlayback": "Durante la reproducción de vídeo",
+  "@keepScreenOnVideoPlayback": {}
 }

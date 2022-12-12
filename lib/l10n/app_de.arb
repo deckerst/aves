@@ -347,7 +347,7 @@
   "@binEntriesConfirmationDialogMessage": {},
   "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{Sicher, dass dieses Element gelöscht werden soll?} other{Sicher, dass diese {count} Elemente gelöscht werden sollen?}}",
   "@deleteEntriesConfirmationDialogMessage": {},
-  "moveUndatedConfirmationDialogMessage": "Speichern Sie Artikeldaten, bevor Sie fortfahren?",
+  "moveUndatedConfirmationDialogMessage": "Daten speichern, bevor es weitergeht?",
   "@moveUndatedConfirmationDialogMessage": {},
   "moveUndatedConfirmationDialogSetDate": "Datum einstellen",
   "@moveUndatedConfirmationDialogSetDate": {},
@@ -1180,5 +1180,13 @@
   "filterAspectRatioPortraitLabel": "Hochformat",
   "@filterAspectRatioPortraitLabel": {},
   "filterAspectRatioLandscapeLabel": "Querformat",
-  "@filterAspectRatioLandscapeLabel": {}
+  "@filterAspectRatioLandscapeLabel": {},
+  "entryActionShareImageOnly": "Nur das Bild teilen",
+  "@entryActionShareImageOnly": {},
+  "keepScreenOnVideoPlayback": "Während der Videowiedergabe",
+  "@keepScreenOnVideoPlayback": {},
+  "entryInfoActionRemoveLocation": "Standort entfernen",
+  "@entryInfoActionRemoveLocation": {},
+  "entryActionShareVideoOnly": "Nur das Video teilen",
+  "@entryActionShareVideoOnly": {}
 }
