@@ -1186,5 +1186,7 @@
   "entryActionShareVideoOnly": "Partager la vidéo seulement",
   "@entryActionShareVideoOnly": {},
   "entryInfoActionRemoveLocation": "Retirer le lieu",
-  "@entryInfoActionRemoveLocation": {}
+  "@entryInfoActionRemoveLocation": {},
+  "keepScreenOnVideoPlayback": "Pendant la lecture de vidéos",
+  "@keepScreenOnVideoPlayback": {}
 }

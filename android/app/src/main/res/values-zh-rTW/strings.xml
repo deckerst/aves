@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="videos_shortcut_short_label">影片</string>
+    <string name="wallpaper">桌布</string>
+    <string name="analysis_notification_default_title">掃描媒體中</string>
+    <string name="app_name">Aves</string>
+    <string name="app_widget_label">相框</string>
+    <string name="search_shortcut_short_label">搜尋</string>
+    <string name="analysis_channel_name">媒體掃描</string>
+    <string name="analysis_service_description">掃描圖片和影片</string>
+    <string name="analysis_notification_action_stop">停止</string>
+</resources>
