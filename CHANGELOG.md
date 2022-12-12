@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file.
 - Map: edit cluster location
 - Lithuanian translation (thanks Gediminas Murauskas)
 - Norsk (Bokmål) translation (thanks Allan Nordhøy)
+- Chinese (Traditional) translation (thanks pemibe)
 
 ### Changed
 
