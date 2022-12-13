@@ -70,4 +70,9 @@ class ActionButton extends StatelessWidget {
     }
     return Size(width, height);
   }
+
+  static double getTelevisionButtonHeight(BuildContext context) {
+    final text = 'whatever' * 42;
+    return ActionButton.getSize(context, text, showCaption: true).height;
+  }
 }

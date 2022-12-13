@@ -174,7 +174,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
                     children: [
                       if (isTelevision)
                         SizedBox(
-                          height: tvActionButtonHeight,
+                          height: ActionButton.getTelevisionButtonHeight(context),
                           child: ListView(
                             padding: const EdgeInsets.symmetric(horizontal: 8),
                             scrollDirection: Axis.horizontal,
@@ -197,7 +197,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
                         EntryQueryBar(
                           queryNotifier: context.select<Query, ValueNotifier<String>>((query) => query.queryNotifier),
                           focusNode: _queryBarFocusNode,
-                        )
+                        ),
                     ],
                   ),
                   transitionKey: isSelecting,
@@ -210,19 +210,10 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     );
   }
 
-  double get tvActionButtonHeight {
-    final text = [
-      ...EntrySetActions.general,
-      ...EntrySetActions.pageBrowsing,
-      ...EntrySetActions.pageSelection,
-    ].map((action) => action.getText(context)).fold('', (prev, v) => v.length > prev.length ? v : prev);
-    return ActionButton.getSize(context, text, showCaption: true).height;
-  }
-
   double get appBarContentHeight {
     double height = kToolbarHeight;
     if (device.isTelevision) {
-      height += tvActionButtonHeight;
+      height += ActionButton.getTelevisionButtonHeight(context);
     }
     if (showFilterBar) {
       height += FilterBar.preferredHeight;
@@ -318,12 +309,14 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
 
     return device.isTelevision
         ? _buildTelevisionActions(
+            context: context,
             appMode: appMode,
             selection: selection,
             isVisible: isVisible,
             canApply: canApply,
           )
         : _buildMobileActions(
+            context: context,
             appMode: appMode,
             selection: selection,
             isVisible: isVisible,
@@ -332,6 +325,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   }
 
   List<Widget> _buildTelevisionActions({
+    required BuildContext context,
     required AppMode appMode,
     required Selection<AvesEntry> selection,
     required bool Function(EntrySetAction action) isVisible,
@@ -344,16 +338,18 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       ...isSelecting ? EntrySetActions.pageSelection : EntrySetActions.pageBrowsing,
     ].where(isVisible).map((action) {
       // TODO TLAD [tv] togglers cf `_toIconActionButton`
+      final enabled = canApply(action);
       return ActionButton(
         text: action.getText(context),
         icon: action.getIcon(),
-        enabled: canApply(action),
-        onPressed: canApply(action) ? () => _onActionSelected(action) : null,
+        enabled: enabled,
+        onPressed: enabled ? () => _onActionSelected(action) : null,
       );
     }).toList();
   }
 
   List<Widget> _buildMobileActions({
+    required BuildContext context,
     required AppMode appMode,
     required Selection<AvesEntry> selection,
     required bool Function(EntrySetAction action) isVisible,
