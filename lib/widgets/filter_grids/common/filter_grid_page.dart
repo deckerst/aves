@@ -233,8 +233,9 @@ class _FilterGridState<T extends CollectionFilter> extends State<FilterGrid<T>> 
   }
 }
 
-class _FilterGridContent<T extends CollectionFilter> extends StatelessWidget {
+class _FilterGridContent<T extends CollectionFilter> extends StatefulWidget {
   final Widget appBar;
+  final double appBarHeight;
   final Map<ChipSectionKey, List<FilterGridItem<T>>> sections;
   final Set<T> newFilters;
   final ChipSortFactor sortFactor;
@@ -243,12 +244,10 @@ class _FilterGridContent<T extends CollectionFilter> extends StatelessWidget {
   final QueryTest<T> applyQuery;
   final HeroType heroType;
 
-  final ValueNotifier<double> _appBarHeightNotifier = ValueNotifier(0);
-
-  _FilterGridContent({
+  const _FilterGridContent({
     super.key,
     required this.appBar,
-    required double appBarHeight,
+    required this.appBarHeight,
     required this.sections,
     required this.newFilters,
     required this.sortFactor,
@@ -257,8 +256,27 @@ class _FilterGridContent<T extends CollectionFilter> extends StatelessWidget {
     required this.applyQuery,
     required this.emptyBuilder,
     required this.heroType,
-  }) {
-    _appBarHeightNotifier.value = appBarHeight;
+  });
+
+  @override
+  State<_FilterGridContent<T>> createState() => _FilterGridContentState<T>();
+}
+
+class _FilterGridContentState<T extends CollectionFilter> extends State<_FilterGridContent<T>> {
+  final ValueNotifier<double> _appBarHeightNotifier = ValueNotifier(0);
+  final ValueNotifier<FilterGridItem<T>?> _focusedItemNotifier = ValueNotifier(null);
+
+  @override
+  void didUpdateWidget(covariant _FilterGridContent<T> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _appBarHeightNotifier.value = widget.appBarHeight;
+  }
+
+  @override
+  void dispose() {
+    _appBarHeightNotifier.dispose();
+    _focusedItemNotifier.dispose();
+    super.dispose();
   }
 
   @override
@@ -275,14 +293,14 @@ class _FilterGridContent<T extends CollectionFilter> extends StatelessWidget {
             Map<ChipSectionKey, List<FilterGridItem<T>>> visibleSections;
             if (queryEnabled && query.isNotEmpty) {
               visibleSections = {};
-              sections.forEach((sectionKey, sectionFilters) {
-                final visibleFilters = applyQuery(context, sectionFilters, query.toUpperCase());
+              widget.sections.forEach((sectionKey, sectionFilters) {
+                final visibleFilters = widget.applyQuery(context, sectionFilters, query.toUpperCase());
                 if (visibleFilters.isNotEmpty) {
                   visibleSections[sectionKey] = visibleFilters;
                 }
               });
             } else {
-              visibleSections = sections;
+              visibleSections = widget.sections;
             }
 
             final sectionedListLayoutProvider = ValueListenableBuilder<double>(
@@ -312,8 +330,8 @@ class _FilterGridContent<T extends CollectionFilter> extends StatelessWidget {
                             extent: thumbnailExtent,
                             child: SectionedFilterListLayoutProvider<T>(
                               sections: visibleSections,
-                              showHeaders: showHeaders,
-                              selectable: selectable,
+                              showHeaders: widget.showHeaders,
+                              selectable: widget.selectable,
                               tileLayout: tileLayout,
                               scrollableWidth: scrollableWidth,
                               columnCount: columnCount,
@@ -323,13 +341,36 @@ class _FilterGridContent<T extends CollectionFilter> extends StatelessWidget {
                               tileHeight: tileHeight,
                               tileBuilder: (gridItem, tileSize) {
                                 final extent = tileSize.shortestSide;
-                                return InteractiveFilterTile(
+                                final tile = InteractiveFilterTile(
                                   gridItem: gridItem,
                                   chipExtent: extent,
                                   thumbnailExtent: extent,
                                   tileLayout: tileLayout,
                                   banner: _getFilterBanner(context, gridItem.filter),
-                                  heroType: heroType,
+                                  heroType: widget.heroType,
+                                );
+                                if (!device.isTelevision) return tile;
+
+                                return Focus(
+                                  onFocusChange: (focused) {
+                                    if (focused) {
+                                      _focusedItemNotifier.value = gridItem;
+                                    } else if (_focusedItemNotifier.value == gridItem) {
+                                      _focusedItemNotifier.value = null;
+                                    }
+                                  },
+                                  child: ValueListenableBuilder<FilterGridItem<T>?>(
+                                    valueListenable: _focusedItemNotifier,
+                                    builder: (context, focusedItem, child) {
+                                      return AnimatedScale(
+                                        scale: focusedItem == gridItem ? 1 : .9,
+                                        curve: Curves.fastOutSlowIn,
+                                        duration: context.select<DurationsData, Duration>((v) => v.gridTvFocusAnimation),
+                                        child: child!,
+                                      );
+                                    },
+                                    child: tile,
+                                  ),
                                 );
                               },
                               tileAnimationDelay: tileAnimationDelay,
@@ -349,12 +390,12 @@ class _FilterGridContent<T extends CollectionFilter> extends StatelessWidget {
                 );
               },
               child: _FilterSectionedContent<T>(
-                appBar: appBar,
+                appBar: widget.appBar,
                 appBarHeightNotifier: _appBarHeightNotifier,
                 visibleSections: visibleSections,
-                sortFactor: sortFactor,
-                selectable: selectable,
-                emptyBuilder: emptyBuilder,
+                sortFactor: widget.sortFactor,
+                selectable: widget.selectable,
+                emptyBuilder: widget.emptyBuilder,
                 bannerBuilder: _getFilterBanner,
                 scrollController: PrimaryScrollController.of(context)!,
                 tileLayout: tileLayout,
@@ -368,7 +409,7 @@ class _FilterGridContent<T extends CollectionFilter> extends StatelessWidget {
   }
 
   String? _getFilterBanner(BuildContext context, T filter) {
-    final isNew = newFilters.contains(filter);
+    final isNew = widget.newFilters.contains(filter);
     return isNew ? context.l10n.newFilterBanner : null;
   }
 }
