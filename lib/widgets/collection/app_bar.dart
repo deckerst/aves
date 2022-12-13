@@ -32,6 +32,7 @@ import 'package:aves/widgets/common/search/route.dart';
 import 'package:aves/widgets/dialogs/tile_view_dialog.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
+import 'package:aves/widgets/settings/common/quick_actions/action_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
@@ -159,6 +160,8 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
             return Selector<Settings, List<EntrySetAction>>(
               selector: (context, s) => s.collectionBrowsingQuickActions,
               builder: (context, _, child) {
+                final isTelevision = device.isTelevision;
+                final actions = _buildActions(context, selection);
                 return AvesAppBar(
                   contentHeight: appBarContentHeight,
                   leading: _buildAppBarLeading(
@@ -166,9 +169,18 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
                     isSelecting: isSelecting,
                   ),
                   title: _buildAppBarTitle(isSelecting),
-                  actions: _buildActions(context, selection),
+                  actions: isTelevision ? [] : actions,
                   bottom: Column(
                     children: [
+                      if (isTelevision)
+                        SizedBox(
+                          height: tvActionButtonHeight,
+                          child: ListView(
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            scrollDirection: Axis.horizontal,
+                            children: actions,
+                          ),
+                        ),
                       if (showFilterBar)
                         NotificationListener<ReverseFilterNotification>(
                           onNotification: (notification) {
@@ -198,12 +210,32 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     );
   }
 
-  double get appBarContentHeight {
-    final hasQuery = context.read<Query>().enabled;
-    return kToolbarHeight + (showFilterBar ? FilterBar.preferredHeight : .0) + (hasQuery ? EntryQueryBar.preferredHeight : .0);
+  double get tvActionButtonHeight {
+    final text = [
+      ...EntrySetActions.general,
+      ...EntrySetActions.pageBrowsing,
+      ...EntrySetActions.pageSelection,
+    ].map((action) => action.getText(context)).fold('', (prev, v) => v.length > prev.length ? v : prev);
+    return ActionButton.getSize(context, text, showCaption: true).height;
   }
 
-  Widget _buildAppBarLeading({required bool hasDrawer, required bool isSelecting}) {
+  double get appBarContentHeight {
+    double height = kToolbarHeight;
+    if (device.isTelevision) {
+      height += tvActionButtonHeight;
+    }
+    if (showFilterBar) {
+      height += FilterBar.preferredHeight;
+    }
+    if (context.read<Query>().enabled) {
+      height += EntryQueryBar.preferredHeight;
+    }
+    return height;
+  }
+
+  Widget? _buildAppBarLeading({required bool hasDrawer, required bool isSelecting}) {
+    if (device.isTelevision) return null;
+
     if (!hasDrawer) {
       return const CloseButton();
     }
@@ -265,10 +297,10 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   }
 
   List<Widget> _buildActions(BuildContext context, Selection<AvesEntry> selection) {
+    final appMode = context.watch<ValueNotifier<AppMode>>().value;
     final isSelecting = selection.isSelecting;
     final selectedItemCount = selection.selectedItems.length;
 
-    final appMode = context.watch<ValueNotifier<AppMode>>().value;
     bool isVisible(EntrySetAction action) => _actionDelegate.isVisible(
           action,
           appMode: appMode,
@@ -283,12 +315,58 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
           itemCount: collection.entryCount,
           selectedItemCount: selectedItemCount,
         );
-    final canApplyEditActions = selectedItemCount > 0;
+
+    return device.isTelevision
+        ? _buildTelevisionActions(
+            appMode: appMode,
+            selection: selection,
+            isVisible: isVisible,
+            canApply: canApply,
+          )
+        : _buildMobileActions(
+            appMode: appMode,
+            selection: selection,
+            isVisible: isVisible,
+            canApply: canApply,
+          );
+  }
+
+  List<Widget> _buildTelevisionActions({
+    required AppMode appMode,
+    required Selection<AvesEntry> selection,
+    required bool Function(EntrySetAction action) isVisible,
+    required bool Function(EntrySetAction action) canApply,
+  }) {
+    final isSelecting = selection.isSelecting;
+
+    return [
+      ...EntrySetActions.general,
+      ...isSelecting ? EntrySetActions.pageSelection : EntrySetActions.pageBrowsing,
+    ].where(isVisible).map((action) {
+      // TODO TLAD [tv] togglers cf `_toIconActionButton`
+      return ActionButton(
+        text: action.getText(context),
+        icon: action.getIcon(),
+        enabled: canApply(action),
+        onPressed: canApply(action) ? () => _onActionSelected(action) : null,
+      );
+    }).toList();
+  }
+
+  List<Widget> _buildMobileActions({
+    required AppMode appMode,
+    required Selection<AvesEntry> selection,
+    required bool Function(EntrySetAction action) isVisible,
+    required bool Function(EntrySetAction action) canApply,
+  }) {
+    final isSelecting = selection.isSelecting;
+    final selectedItemCount = selection.selectedItems.length;
+    final hasSelection = selectedItemCount > 0;
 
     final browsingQuickActions = settings.collectionBrowsingQuickActions;
     final selectionQuickActions = isTrash ? [EntrySetAction.delete, EntrySetAction.restore] : settings.collectionSelectionQuickActions;
     final quickActionButtons = (isSelecting ? selectionQuickActions : browsingQuickActions).where(isVisible).map(
-          (action) => _toActionButton(action, enabled: canApply(action), selection: selection),
+          (action) => _toIconActionButton(action, enabled: canApply(action), selection: selection),
         );
 
     return [
@@ -310,10 +388,10 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
                   ),
               if (isSelecting && !device.isReadOnly && appMode == AppMode.main && !isTrash)
                 PopupMenuItem<EntrySetAction>(
-                  enabled: canApplyEditActions,
+                  enabled: hasSelection,
                   padding: EdgeInsets.zero,
                   child: PopupMenuItemExpansionPanel<EntrySetAction>(
-                    enabled: canApplyEditActions,
+                    enabled: hasSelection,
                     value: 'edit',
                     icon: AIcons.edit,
                     title: context.l10n.collectionActionEdit,
@@ -350,7 +428,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   // key is expected by test driver (e.g. 'menu-configureView', 'menu-map')
   Key _getActionKey(EntrySetAction action) => Key('menu-${action.name}');
 
-  Widget _toActionButton(EntrySetAction action, {required bool enabled, required Selection<AvesEntry> selection}) {
+  Widget _toIconActionButton(EntrySetAction action, {required bool enabled, required Selection<AvesEntry> selection}) {
     final onPressed = enabled ? () => _onActionSelected(action) : null;
     switch (action) {
       case EntrySetAction.toggleTitleSearch:
