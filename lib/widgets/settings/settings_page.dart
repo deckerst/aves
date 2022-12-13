@@ -15,7 +15,9 @@ import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/basic/menu.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
+import 'package:aves/widgets/common/identity/highlight_title.dart';
 import 'package:aves/widgets/common/search/route.dart';
+import 'package:aves/widgets/navigation/tv_rail.dart';
 import 'package:aves/widgets/settings/accessibility/accessibility.dart';
 import 'package:aves/widgets/settings/app_export/items.dart';
 import 'package:aves/widgets/settings/app_export/selection_dialog.dart';
@@ -46,6 +48,7 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> with FeedbackMixin {
   final ValueNotifier<String?> _expandedNotifier = ValueNotifier(null);
+  Future<List<List<Widget> Function(BuildContext)?>>? _tvSettingsLoader;
 
   static final List<SettingsSection> sections = [
     NavigationSection(),
@@ -60,21 +63,53 @@ class _SettingsPageState extends State<SettingsPage> with FeedbackMixin {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final durations = context.watch<DurationsData>();
-    return Scaffold(
-      appBar: AppBar(
-        title: InteractiveAppBarTitle(
-          onTap: () => _goToSearch(context),
-          child: Text(context.l10n.settingsPageTitle),
+    if (device.isTelevision) {
+      _initTvSettings(context);
+    }
+
+    final appBarTitle = Text(context.l10n.settingsPageTitle);
+
+    if (device.isTelevision) {
+      return Scaffold(
+        body: Row(
+          children: [
+            const TvRail(),
+            Expanded(
+              child: FutureBuilder<List<List<Widget> Function(BuildContext)?>>(
+                future: _tvSettingsLoader,
+                builder: (context, snapshot) {
+                  final loaders = snapshot.data;
+                  if (loaders == null) return const SizedBox();
+
+                  return _buildListView(
+                    children: [
+                      AppBar(
+                        automaticallyImplyLeading: false,
+                        title: appBarTitle,
+                        elevation: 0,
+                      ),
+                      ...loaders.whereNotNull().expand((builder) => builder(context)),
+                    ],
+                  );
+                },
+              ),
+            ),
+          ],
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(AIcons.search),
-            onPressed: () => _goToSearch(context),
-            tooltip: MaterialLocalizations.of(context).searchFieldLabel,
+      );
+    } else {
+      return Scaffold(
+        appBar: AppBar(
+          title: InteractiveAppBarTitle(
+            onTap: () => _goToSearch(context),
+            child: appBarTitle,
           ),
-          if (!device.isTelevision)
+          actions: [
+            IconButton(
+              icon: const Icon(AIcons.search),
+              onPressed: () => _goToSearch(context),
+              tooltip: MaterialLocalizations.of(context).searchFieldLabel,
+            ),
             MenuIconTheme(
               child: PopupMenuButton<SettingsAction>(
                 itemBuilder: (context) {
@@ -96,39 +131,76 @@ class _SettingsPageState extends State<SettingsPage> with FeedbackMixin {
                 },
               ),
             ),
-        ],
-      ),
-      body: GestureAreaProtectorStack(
-        child: SafeArea(
-          bottom: false,
-          child: Theme(
-            data: theme.copyWith(
-              textTheme: theme.textTheme.copyWith(
-                // dense style font for tile subtitles, without modifying title font
-                bodyMedium: const TextStyle(fontSize: 12),
-              ),
-            ),
-            child: AnimationLimiter(
-              child: Selector<MediaQueryData, double>(
-                  selector: (context, mq) => max(mq.effectiveBottomPadding, mq.systemGestureInsets.bottom),
-                  builder: (context, mqPaddingBottom, child) {
-                    return ListView(
-                      padding: const EdgeInsets.all(8) + EdgeInsets.only(bottom: mqPaddingBottom),
-                      children: AnimationConfiguration.toStaggeredList(
-                        duration: durations.staggeredAnimation,
-                        delay: durations.staggeredAnimationDelay * timeDilation,
-                        childAnimationBuilder: (child) => SlideAnimation(
-                          verticalOffset: 50.0,
-                          child: FadeInAnimation(
-                            child: child,
-                          ),
-                        ),
-                        children: sections.map((v) => v.build(context, _expandedNotifier)).toList(),
-                      ),
-                    );
-                  }),
+          ],
+        ),
+        body: GestureAreaProtectorStack(
+          child: SafeArea(
+            bottom: false,
+            child: _buildListView(
+              children: sections.map((v) => v.build(context, _expandedNotifier)).toList(),
             ),
           ),
+        ),
+      );
+    }
+  }
+
+  void _initTvSettings(BuildContext context) {
+    _tvSettingsLoader ??= Future.wait(sections.map((section) async {
+      final tiles = await section.tiles(context);
+      return (context) {
+        return <Widget>[
+          Padding(
+            // match header layout in Settings page
+            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 13),
+            child: Row(
+              children: [
+                section.icon(context),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: HighlightTitle(
+                    title: section.title(context),
+                    showHighlight: false,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          ...tiles.map((v) => v.build(context)),
+        ];
+      };
+    }));
+  }
+
+  Widget _buildListView({required List<Widget> children}) {
+    final theme = Theme.of(context);
+    return Theme(
+      data: theme.copyWith(
+        textTheme: theme.textTheme.copyWith(
+          // dense style font for tile subtitles, without modifying title font
+          bodyMedium: const TextStyle(fontSize: 12),
+        ),
+      ),
+      child: AnimationLimiter(
+        child: Selector<MediaQueryData, double>(
+          selector: (context, mq) => max(mq.effectiveBottomPadding, mq.systemGestureInsets.bottom),
+          builder: (context, mqPaddingBottom, child) {
+            final durations = context.watch<DurationsData>();
+            return ListView(
+              padding: const EdgeInsets.all(8) + EdgeInsets.only(bottom: mqPaddingBottom),
+              children: AnimationConfiguration.toStaggeredList(
+                duration: durations.staggeredAnimation,
+                delay: durations.staggeredAnimationDelay * timeDilation,
+                childAnimationBuilder: (child) => SlideAnimation(
+                  verticalOffset: 50.0,
+                  child: FadeInAnimation(
+                    child: child,
+                  ),
+                ),
+                children: children,
+              ),
+            );
+          },
         ),
       ),
     );

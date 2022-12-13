@@ -34,6 +34,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/providers/highlight_info_provider.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/home_page.dart';
+import 'package:aves/widgets/navigation/tv_page_transitions.dart';
 import 'package:aves/widgets/welcome_page.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:equatable/equatable.dart';
@@ -130,6 +131,12 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   final Set<String> _changedUris = {};
   Size? _screenSize;
 
+  // Flutter has various page transition implementations for Android:
+  // - `FadeUpwardsPageTransitionsBuilder` on Oreo / API 27 and below
+  // - `OpenUpwardsPageTransitionsBuilder` on Pie / API 28
+  // - `ZoomPageTransitionsBuilder` on Android 10 / API 29 and above (default in Flutter v3.0.0)
+  final ValueNotifier<PageTransitionsBuilder> _pageTransitionsBuilderNotifier = ValueNotifier(const FadeUpwardsPageTransitionsBuilder());
+
   // observers are not registered when using the same list object with different items
   // the list itself needs to be reassigned
   List<NavigatorObserver> _navigatorObservers = [AvesApp.pageRouteObserver];
@@ -196,19 +203,6 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
 
                           Constants.updateStylesForLocale(settings.appliedLocale);
 
-                          final pageTransitionsTheme = areAnimationsEnabled
-                              // Flutter has various page transition implementations for Android:
-                              // - `FadeUpwardsPageTransitionsBuilder` on Oreo / API 27 and below
-                              // - `OpenUpwardsPageTransitionsBuilder` on Pie / API 28
-                              // - `ZoomPageTransitionsBuilder` on Android 10 / API 29 and above (default in Flutter v3.0.0)
-                              ? const PageTransitionsTheme(
-                                  builders: {
-                                    TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
-                                  },
-                                )
-                              // strip page transitions used by `MaterialPageRoute`
-                              : const DirectPageTransitionsTheme();
-
                           return FutureBuilder<CorePalette?>(
                             future: _dynamicColorPaletteLoader,
                             builder: (context, snapshot) {
@@ -246,11 +240,20 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
                                         return MediaQuery(
                                           data: MediaQuery.of(context).copyWith(boldText: shouldUseBoldFont),
                                           child: AvesColorsProvider(
-                                            child: Theme(
-                                              data: Theme.of(context).copyWith(
-                                                pageTransitionsTheme: pageTransitionsTheme,
-                                              ),
-                                              child: MediaQueryDataProvider(child: child!),
+                                            child: ValueListenableBuilder<PageTransitionsBuilder>(
+                                              valueListenable: _pageTransitionsBuilderNotifier,
+                                              builder: (context, pageTransitionsBuilder, child) {
+                                                return Theme(
+                                                  data: Theme.of(context).copyWith(
+                                                    pageTransitionsTheme: areAnimationsEnabled
+                                                        ? PageTransitionsTheme(builders: {TargetPlatform.android: pageTransitionsBuilder})
+                                                        // strip page transitions used by `MaterialPageRoute`
+                                                        : const DirectPageTransitionsTheme(),
+                                                  ),
+                                                  child: MediaQueryDataProvider(child: child!),
+                                                );
+                                              },
+                                              child: child,
                                             ),
                                           ),
                                         );
@@ -360,6 +363,9 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     final stopwatch = Stopwatch()..start();
 
     await device.init();
+    if (device.isTelevision) {
+      _pageTransitionsBuilderNotifier.value = const TvPageTransitionsBuilder();
+    }
     await mobileServices.init();
     await settings.init(monitorPlatformSettings: true);
     settings.isRotationLocked = await windowService.isRotationLocked();

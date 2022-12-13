@@ -1,8 +1,12 @@
 import 'package:aves/app_flavor.dart';
+import 'package:aves/model/device.dart';
 import 'package:aves/model/settings/defaults.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
+import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/constants.dart';
+import 'package:aves/widgets/about/policy_page.dart';
+import 'package:aves/widgets/common/basic/link_chip.dart';
 import 'package:aves/widgets/common/basic/markdown_container.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_logo.dart';
@@ -67,41 +71,58 @@ class _WelcomePageState extends State<WelcomePage> {
                       child: child,
                     ),
                   ),
-                  children: [
-                    ..._buildHeader(context, isPortrait: isPortrait),
-                    if (isPortrait) ...[
-                      Flexible(
-                        child: MarkdownContainer(
-                          data: terms,
-                          textDirection: termsDirection,
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      ..._buildControls(context),
-                    ] else
-                      Flexible(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
+                  children: device.isTelevision
+                      ? [
+                          ..._buildHeader(context, isPortrait: isPortrait),
+                          Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: LinkChip(
+                              leading: const Icon(
+                                AIcons.privacy,
+                                size: 22,
+                              ),
+                              text: context.l10n.aboutLinkPolicy,
+                              textStyle: Theme.of(context).textTheme.titleLarge,
+                              onTap: _goToPolicyPage,
+                            ),
+                          ),
+                          ..._buildControls(context),
+                        ]
+                      : [
+                          ..._buildHeader(context, isPortrait: isPortrait),
+                          if (isPortrait) ...[
                             Flexible(
-                              child: Padding(
-                                padding: const EdgeInsets.only(bottom: 8),
-                                child: MarkdownContainer(
-                                  data: terms,
-                                  textDirection: termsDirection,
-                                ),
+                              child: MarkdownContainer(
+                                data: terms,
+                                textDirection: termsDirection,
                               ),
                             ),
+                            const SizedBox(height: 16),
+                            ..._buildControls(context),
+                          ] else
                             Flexible(
-                              child: ListView(
-                                shrinkWrap: true,
-                                children: _buildControls(context),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Flexible(
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(bottom: 8),
+                                      child: MarkdownContainer(
+                                        data: terms,
+                                        textDirection: termsDirection,
+                                      ),
+                                    ),
+                                  ),
+                                  Flexible(
+                                    child: ListView(
+                                      shrinkWrap: true,
+                                      children: _buildControls(context),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                          ],
-                        ),
-                      )
-                  ],
+                        ],
                 ),
               );
             },
@@ -199,6 +220,16 @@ class _WelcomePageState extends State<WelcomePage> {
       Center(child: button),
       const SizedBox(height: 8),
     ];
+  }
+
+  void _goToPolicyPage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        settings: const RouteSettings(name: PolicyPage.routeName),
+        builder: (context) => const PolicyPage(),
+      ),
+    );
   }
 
   // as of flutter_staggered_animations v0.1.2, `AnimationConfiguration.toStaggeredList` does not handle `Flexible` widgets
