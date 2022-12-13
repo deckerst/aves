@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:aves/app_mode.dart';
+import 'package:aves/model/device.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/favourites.dart';
 import 'package:aves/model/filters/favourite.dart';
@@ -92,13 +93,28 @@ class _CollectionGridState extends State<CollectionGrid> {
     }
     return TileExtentControllerProvider(
       controller: _tileExtentController!,
-      child: _CollectionGridContent(),
+      child: const _CollectionGridContent(),
     );
   }
 }
 
-class _CollectionGridContent extends StatelessWidget {
+class _CollectionGridContent extends StatefulWidget {
+  const _CollectionGridContent();
+
+  @override
+  State<_CollectionGridContent> createState() => _CollectionGridContentState();
+}
+
+class _CollectionGridContentState extends State<_CollectionGridContent> {
+  final ValueNotifier<AvesEntry?> _focusedItemNotifier = ValueNotifier(null);
   final ValueNotifier<bool> _isScrollingNotifier = ValueNotifier(false);
+
+  @override
+  void dispose() {
+    _focusedItemNotifier.dispose();
+    _isScrollingNotifier.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -151,13 +167,36 @@ class _CollectionGridContent extends StatelessWidget {
                               return AnimatedBuilder(
                                 animation: favourites,
                                 builder: (context, child) {
-                                  return InteractiveTile(
+                                  Widget tile = InteractiveTile(
                                     key: ValueKey(entry.id),
                                     collection: collection,
                                     entry: entry,
                                     thumbnailExtent: extent,
                                     tileLayout: tileLayout,
                                     isScrollingNotifier: _isScrollingNotifier,
+                                  );
+                                  if (!device.isTelevision) return tile;
+
+                                  return Focus(
+                                    onFocusChange: (focused) {
+                                      if (focused) {
+                                        _focusedItemNotifier.value = entry;
+                                      } else if (_focusedItemNotifier.value == entry) {
+                                        _focusedItemNotifier.value = null;
+                                      }
+                                    },
+                                    child: ValueListenableBuilder<AvesEntry?>(
+                                      valueListenable: _focusedItemNotifier,
+                                      builder: (context, focusedItem, child) {
+                                        return AnimatedScale(
+                                          scale: focusedItem == entry ? 1 : .9,
+                                          curve: Curves.fastOutSlowIn,
+                                          duration: context.select<DurationsData, Duration>((v) => v.gridTvFocusAnimation),
+                                          child: child!,
+                                        );
+                                      },
+                                      child: tile,
+                                    ),
                                   );
                                 },
                               );

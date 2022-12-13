@@ -109,7 +109,10 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T
     );
     // abort if we cannot find an image to show on overlay
     if (renderMetaData == null) return;
-    _metadata = renderMetaData.metaData;
+    final metadata = renderMetaData.metaData;
+    if (metadata is! ScalerMetadata<T>) return;
+    _metadata = metadata;
+
     switch (tileLayout) {
       case TileLayout.mosaic:
         _startSize = Size.square(tileExtentController.extentNotifier.value);

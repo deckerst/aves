@@ -85,12 +85,11 @@ class MapButtonPanel extends StatelessWidget {
                             builder: (context, bounds, child) {
                               final degrees = bounds.rotation;
                               final opacity = degrees == 0 ? .0 : 1.0;
-                              final animationDuration = context.select<DurationsData, Duration>((v) => v.viewerOverlayAnimation);
                               return IgnorePointer(
                                 ignoring: opacity == 0,
                                 child: AnimatedOpacity(
                                   opacity: opacity,
-                                  duration: animationDuration,
+                                  duration: context.select<DurationsData, Duration>((v) => v.viewerOverlayAnimation),
                                   child: MapOverlayButton(
                                     icon: Transform(
                                       origin: iconSize.center(Offset.zero),
