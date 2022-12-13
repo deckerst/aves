@@ -236,15 +236,16 @@ class Settings extends ChangeNotifier {
     }
 
     if (device.isTelevision) {
+      themeBrightness = AvesThemeBrightness.dark;
+      mustBackTwiceToExit = false;
+      keepScreenOn = KeepScreenOn.videoPlayback;
+      enableBottomNavigationBar = false;
       drawerTypeBookmarks = [
         null,
         MimeFilter.video,
         FavouriteFilter.instance,
         RecentlyAddedFilter.instance,
       ];
-      mustBackTwiceToExit = false;
-      keepScreenOn = KeepScreenOn.videoPlayback;
-      enableBottomNavigationBar = false;
       viewerGestureSideTapNext = false;
       viewerUseCutout = true;
       viewerMaxBrightness = false;

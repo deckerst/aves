@@ -29,7 +29,7 @@ class DisplaySection extends SettingsSection {
 
   @override
   FutureOr<List<SettingsTile>> tiles(BuildContext context) => [
-        SettingsTileDisplayThemeBrightness(),
+        if (!device.isTelevision) SettingsTileDisplayThemeBrightness(),
         SettingsTileDisplayThemeColorMode(),
         if (device.isDynamicColorAvailable) SettingsTileDisplayEnableDynamicColor(),
         SettingsTileDisplayEnableBlurEffect(),

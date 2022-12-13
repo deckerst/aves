@@ -90,6 +90,7 @@ class _LicensesState extends State<Licenses> {
                 ),
               ),
             ),
+            const SizedBox(height: 16),
           ],
         ),
       ),
