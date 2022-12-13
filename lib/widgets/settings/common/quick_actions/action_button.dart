@@ -6,6 +6,7 @@ class ActionButton extends StatelessWidget {
   final String text;
   final Widget? icon;
   final bool enabled, showCaption;
+  final VoidCallback? onPressed;
 
   const ActionButton({
     super.key,
@@ -13,7 +14,8 @@ class ActionButton extends StatelessWidget {
     required this.icon,
     this.enabled = true,
     this.showCaption = true,
-  });
+    this.onPressed,
+  }) : assert(onPressed == null || enabled);
 
   static const int maxLines = 2;
   static const double padding = 8;
@@ -21,6 +23,7 @@ class ActionButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textStyle = _textStyle(context);
+    final _enabled = onPressed != null || enabled;
     return SizedBox(
       width: _width(context),
       child: Column(
@@ -30,14 +33,14 @@ class ActionButton extends StatelessWidget {
           OverlayButton(
             child: IconButton(
               icon: icon ?? const SizedBox(),
-              onPressed: enabled ? () {} : null,
+              onPressed: onPressed ?? (_enabled ? () {} : null),
             ),
           ),
           if (showCaption) ...[
             const SizedBox(height: padding),
             Text(
               text,
-              style: enabled ? textStyle : textStyle.copyWith(color: textStyle.color!.withOpacity(.2)),
+              style: _enabled ? textStyle : textStyle.copyWith(color: textStyle.color!.withOpacity(.2)),
               textAlign: TextAlign.center,
               overflow: TextOverflow.ellipsis,
               maxLines: maxLines,

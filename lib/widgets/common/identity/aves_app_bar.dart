@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 
 class AvesAppBar extends StatelessWidget {
   final double contentHeight;
-  final Widget leading;
+  final Widget? leading;
   final Widget title;
   final List<Widget> actions;
   final Widget? bottom;
@@ -33,8 +33,8 @@ class AvesAppBar extends StatelessWidget {
       selector: (context, mq) => mq.padding.top,
       builder: (context, mqPaddingTop, child) {
         return SliverPersistentHeader(
-          floating: true,
-          pinned: device.isTelevision,
+          floating: !device.isTelevision,
+          pinned: false,
           delegate: _SliverAppBarDelegate(
             height: mqPaddingTop + appBarHeightForContentHeight(contentHeight),
             child: SafeArea(
@@ -51,15 +51,17 @@ class AvesAppBar extends StatelessWidget {
                       height: kToolbarHeight,
                       child: Row(
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 4),
-                            child: Hero(
-                              tag: leadingHeroTag,
-                              flightShuttleBuilder: _flightShuttleBuilder,
-                              transitionOnUserGestures: true,
-                              child: leading,
-                            ),
-                          ),
+                          leading != null
+                              ? Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                                  child: Hero(
+                                    tag: leadingHeroTag,
+                                    flightShuttleBuilder: _flightShuttleBuilder,
+                                    transitionOnUserGestures: true,
+                                    child: leading!,
+                                  ),
+                                )
+                              : const SizedBox(width: 16),
                           Expanded(
                             child: Hero(
                               tag: titleHeroTag,

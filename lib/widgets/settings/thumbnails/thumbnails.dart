@@ -1,3 +1,4 @@
+import 'package:aves/model/device.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -24,7 +25,7 @@ class ThumbnailsSection extends SettingsSection {
 
   @override
   List<SettingsTile> tiles(BuildContext context) => [
-        SettingsTileCollectionQuickActions(),
+        if (!device.isTelevision) SettingsTileCollectionQuickActions(),
         SettingsTileThumbnailOverlay(),
       ];
 }
