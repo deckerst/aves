@@ -61,11 +61,11 @@ class _LocationSectionState extends State<LocationSection> {
   }
 
   void _registerWidget(LocationSection widget) {
-    widget.entry.metadataChangeNotifier.addListener(_onMetadataChange);
+    widget.entry.metadataChangeNotifier.addListener(_onMetadataChanged);
   }
 
   void _unregisterWidget(LocationSection widget) {
-    widget.entry.metadataChangeNotifier.removeListener(_onMetadataChange);
+    widget.entry.metadataChangeNotifier.removeListener(_onMetadataChanged);
   }
 
   @override
@@ -150,7 +150,7 @@ class _LocationSectionState extends State<LocationSection> {
     mapCollection.dispose();
   }
 
-  void _onMetadataChange() {
+  void _onMetadataChanged() {
     setState(() {});
 
     final location = entry.latLng;

@@ -203,7 +203,7 @@ class Settings extends ChangeNotifier {
     await settingsStore.init();
     _appliedLocale = null;
     if (monitorPlatformSettings) {
-      _platformSettingsChangeChannel.receiveBroadcastStream().listen((event) => _onPlatformSettingsChange(event as Map?));
+      _platformSettingsChangeChannel.receiveBroadcastStream().listen((event) => _onPlatformSettingsChanged(event as Map?));
     }
   }
 
@@ -246,10 +246,13 @@ class Settings extends ChangeNotifier {
         FavouriteFilter.instance,
         RecentlyAddedFilter.instance,
       ];
+      showOverlayOnOpening = false;
+      showOverlayMinimap = false;
+      showOverlayThumbnailPreview = false;
       viewerGestureSideTapNext = false;
       viewerUseCutout = true;
       viewerMaxBrightness = false;
-      videoControls = VideoControls.playSeek;
+      videoControls = VideoControls.none;
       videoGestureDoubleTapTogglePlay = false;
       videoGestureSideDoubleTapSeek = false;
       enableBin = false;
@@ -886,7 +889,7 @@ class Settings extends ChangeNotifier {
 
   // platform settings
 
-  void _onPlatformSettingsChange(Map? fields) {
+  void _onPlatformSettingsChanged(Map? fields) {
     fields?.forEach((key, value) {
       switch (key) {
         case platformAccelerometerRotationKey:

@@ -499,14 +499,14 @@ extension ExtraFijkPlayer on FijkPlayer {
     await setDataSource(uri, autoPlay: false, showCover: false);
 
     final completer = Completer();
-    void onChange() {
+    void onChanged() {
       switch (state) {
         case FijkState.prepared:
-          removeListener(onChange);
+          removeListener(onChanged);
           completer.complete();
           break;
         case FijkState.error:
-          removeListener(onChange);
+          removeListener(onChanged);
           completer.completeError(value.exception);
           break;
         default:
@@ -514,7 +514,7 @@ extension ExtraFijkPlayer on FijkPlayer {
       }
     }
 
-    addListener(onChange);
+    addListener(onChanged);
     await prepareAsync();
     return completer.future;
   }

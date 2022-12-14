@@ -1,3 +1,4 @@
+import 'package:aves/model/device.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/settings/common/tiles.dart';
@@ -19,11 +20,12 @@ class ViewerOverlayPage extends StatelessWidget {
       body: SafeArea(
         child: ListView(
           children: [
-            SettingsSwitchListTile(
-              selector: (context, s) => s.showOverlayOnOpening,
-              onChanged: (v) => settings.showOverlayOnOpening = v,
-              title: context.l10n.settingsViewerShowOverlayOnOpening,
-            ),
+            if (!device.isTelevision)
+              SettingsSwitchListTile(
+                selector: (context, s) => s.showOverlayOnOpening,
+                onChanged: (v) => settings.showOverlayOnOpening = v,
+                title: context.l10n.settingsViewerShowOverlayOnOpening,
+              ),
             SettingsSwitchListTile(
               selector: (context, s) => s.showOverlayInfo,
               onChanged: (v) => settings.showOverlayInfo = v,
@@ -54,16 +56,18 @@ class ViewerOverlayPage extends StatelessWidget {
                 );
               },
             ),
-            SettingsSwitchListTile(
-              selector: (context, s) => s.showOverlayMinimap,
-              onChanged: (v) => settings.showOverlayMinimap = v,
-              title: context.l10n.settingsViewerShowMinimap,
-            ),
-            SettingsSwitchListTile(
-              selector: (context, s) => s.showOverlayThumbnailPreview,
-              onChanged: (v) => settings.showOverlayThumbnailPreview = v,
-              title: context.l10n.settingsViewerShowOverlayThumbnails,
-            ),
+            if (!device.isTelevision)
+              SettingsSwitchListTile(
+                selector: (context, s) => s.showOverlayMinimap,
+                onChanged: (v) => settings.showOverlayMinimap = v,
+                title: context.l10n.settingsViewerShowMinimap,
+              ),
+            if (!device.isTelevision)
+              SettingsSwitchListTile(
+                selector: (context, s) => s.showOverlayThumbnailPreview,
+                onChanged: (v) => settings.showOverlayThumbnailPreview = v,
+                title: context.l10n.settingsViewerShowOverlayThumbnails,
+              ),
           ],
         ),
       ),

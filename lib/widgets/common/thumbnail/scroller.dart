@@ -78,14 +78,14 @@ class _ThumbnailScrollerState extends State<ThumbnailScroller> {
   void _registerWidget(ThumbnailScroller widget) {
     final scrollOffset = indexToScrollOffset(indexNotifier.value ?? 0);
     _scrollController = ScrollController(initialScrollOffset: scrollOffset);
-    _scrollController.addListener(_onScrollChange);
-    widget.indexNotifier.addListener(_onIndexChange);
+    _scrollController.addListener(_onScrollChanged);
+    widget.indexNotifier.addListener(_onIndexChanged);
   }
 
   void _unregisterWidget(ThumbnailScroller widget) {
-    _scrollController.removeListener(_onScrollChange);
+    _scrollController.removeListener(_onScrollChanged);
     _scrollController.dispose();
-    widget.indexNotifier.removeListener(_onIndexChange);
+    widget.indexNotifier.removeListener(_onIndexChanged);
   }
 
   @override
@@ -180,7 +180,7 @@ class _ThumbnailScrollerState extends State<ThumbnailScroller> {
     }
   }
 
-  void _onScrollChange() {
+  void _onScrollChanged() {
     if (!_isAnimating) {
       final index = scrollOffsetToIndex(_scrollController.offset);
       if (indexNotifier.value != index) {
@@ -190,7 +190,7 @@ class _ThumbnailScrollerState extends State<ThumbnailScroller> {
     }
   }
 
-  void _onIndexChange() {
+  void _onIndexChanged() {
     if (!_isScrolling && !_isAnimating) {
       final index = indexNotifier.value;
       if (index != null) {

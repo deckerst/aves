@@ -98,12 +98,12 @@ class _EntryLeafletMapState<T> extends State<EntryLeafletMap<T>> with TickerProv
     }
     _subscriptions.add(_leafletMapController.mapEventStream.listen((event) => _updateVisibleRegion()));
     widget.clusterListenable.addListener(_updateMarkers);
-    widget.boundsNotifier.addListener(_onBoundsChange);
+    widget.boundsNotifier.addListener(_onBoundsChanged);
   }
 
   void _unregisterWidget(EntryLeafletMap<T> widget) {
     widget.clusterListenable.removeListener(_updateMarkers);
-    widget.boundsNotifier.removeListener(_onBoundsChange);
+    widget.boundsNotifier.removeListener(_onBoundsChanged);
     _subscriptions
       ..forEach((sub) => sub.cancel())
       ..clear();
@@ -230,7 +230,7 @@ class _EntryLeafletMapState<T> extends State<EntryLeafletMap<T>> with TickerProv
     );
   }
 
-  void _onBoundsChange() => _debouncer(_onIdle);
+  void _onBoundsChanged() => _debouncer(_onIdle);
 
   void _onIdle() {
     if (!mounted) return;

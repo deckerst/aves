@@ -1,17 +1,22 @@
 import 'dart:math';
 
 import 'package:aves/app_mode.dart';
+import 'package:aves/model/device.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
+import 'package:aves/widgets/viewer/entry_vertical_pager.dart';
 import 'package:aves/widgets/viewer/multipage/controller.dart';
+import 'package:aves/widgets/viewer/notifications.dart';
 import 'package:aves/widgets/viewer/overlay/multipage.dart';
 import 'package:aves/widgets/viewer/overlay/thumbnail_preview.dart';
 import 'package:aves/widgets/viewer/overlay/viewer_buttons.dart';
 import 'package:aves/widgets/viewer/overlay/wallpaper_buttons.dart';
 import 'package:aves/widgets/viewer/page_entry_builder.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
@@ -119,11 +124,30 @@ class _BottomOverlayContent extends StatefulWidget {
 }
 
 class _BottomOverlayContentState extends State<_BottomOverlayContent> {
+  final FocusScopeNode _buttonRowFocusScopeNode = FocusScopeNode();
   late Animation<double> _buttonScale, _thumbnailOpacity;
 
   @override
   void initState() {
     super.initState();
+    _registerWidget(widget);
+  }
+
+  @override
+  void didUpdateWidget(covariant _BottomOverlayContent oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _unregisterWidget(oldWidget);
+    _registerWidget(widget);
+  }
+
+  @override
+  void dispose() {
+    _unregisterWidget(widget);
+    _buttonRowFocusScopeNode.dispose();
+    super.dispose();
+  }
+
+  void _registerWidget(_BottomOverlayContent widget) {
     final animationController = widget.animationController;
     _buttonScale = CurvedAnimation(
       parent: animationController,
@@ -134,6 +158,11 @@ class _BottomOverlayContentState extends State<_BottomOverlayContent> {
       parent: animationController,
       curve: Curves.easeOutQuad,
     );
+    animationController.addStatusListener(_onAnimationStatusChanged);
+  }
+
+  void _unregisterWidget(_BottomOverlayContent widget) {
+    widget.animationController.removeStatusListener(_onAnimationStatusChanged);
   }
 
   @override
@@ -144,16 +173,20 @@ class _BottomOverlayContentState extends State<_BottomOverlayContent> {
     final isWallpaperMode = context.read<ValueNotifier<AppMode>>().value == AppMode.setWallpaper;
 
     return AnimatedBuilder(
-        animation: Listenable.merge([
-          mainEntry.metadataChangeNotifier,
-          pageEntry.metadataChangeNotifier,
-        ]),
-        builder: (context, child) {
-          return Selector<MediaQueryData, double>(
-            selector: (context, mq) => mq.size.width,
-            builder: (context, mqWidth, child) {
-              final viewInsetsPadding = (widget.viewInsets ?? EdgeInsets.zero) + (widget.viewPadding ?? EdgeInsets.zero);
-              final viewerButtonRow = SafeArea(
+      animation: Listenable.merge([
+        mainEntry.metadataChangeNotifier,
+        pageEntry.metadataChangeNotifier,
+      ]),
+      builder: (context, child) {
+        return Selector<MediaQueryData, double>(
+          selector: (context, mq) => mq.size.width,
+          builder: (context, mqWidth, child) {
+            final viewInsetsPadding = (widget.viewInsets ?? EdgeInsets.zero) + (widget.viewPadding ?? EdgeInsets.zero);
+            final viewerButtonRow = FocusableActionDetector(
+              focusNode: _buttonRowFocusScopeNode,
+              shortcuts: device.isTelevision ? const {SingleActivator(LogicalKeyboardKey.arrowUp): TvShowLessInfoIntent()} : null,
+              actions: {TvShowLessInfoIntent: CallbackAction<Intent>(onInvoke: (intent) => TvShowLessInfoNotification().dispatch(context))},
+              child: SafeArea(
                 top: false,
                 bottom: false,
                 minimum: EdgeInsets.only(
@@ -171,64 +204,72 @@ class _BottomOverlayContentState extends State<_BottomOverlayContent> {
                         collection: widget.collection,
                         scale: _buttonScale,
                       ),
-              );
+              ),
+            );
 
-              final showMultiPageOverlay = mainEntry.isMultiPage && multiPageController != null;
-              final collapsedPageScroller = mainEntry.isMotionPhoto;
+            final showMultiPageOverlay = mainEntry.isMultiPage && multiPageController != null;
+            final collapsedPageScroller = mainEntry.isMotionPhoto;
 
-              return SizedBox(
-                width: mqWidth,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (showMultiPageOverlay && !collapsedPageScroller)
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 8),
-                        child: FadeTransition(
-                          opacity: _thumbnailOpacity,
-                          child: MultiPageOverlay(
-                            controller: multiPageController,
-                            availableWidth: mqWidth,
-                            scrollable: true,
-                          ),
+            return SizedBox(
+              width: mqWidth,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (showMultiPageOverlay && !collapsedPageScroller)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: FadeTransition(
+                        opacity: _thumbnailOpacity,
+                        child: MultiPageOverlay(
+                          controller: multiPageController,
+                          availableWidth: mqWidth,
+                          scrollable: true,
                         ),
                       ),
-                    (showMultiPageOverlay && collapsedPageScroller)
-                        ? Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              SafeArea(
-                                top: false,
-                                bottom: false,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(bottom: 8),
-                                  child: MultiPageOverlay(
-                                    controller: multiPageController,
-                                    availableWidth: mqWidth,
-                                    scrollable: false,
-                                  ),
+                    ),
+                  (showMultiPageOverlay && collapsedPageScroller)
+                      ? Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            SafeArea(
+                              top: false,
+                              bottom: false,
+                              child: Padding(
+                                padding: const EdgeInsets.only(bottom: 8),
+                                child: MultiPageOverlay(
+                                  controller: multiPageController,
+                                  availableWidth: mqWidth,
+                                  scrollable: false,
                                 ),
                               ),
-                              Expanded(child: viewerButtonRow),
-                            ],
-                          )
-                        : viewerButtonRow,
-                    if (settings.showOverlayThumbnailPreview && !isWallpaperMode)
-                      FadeTransition(
-                        opacity: _thumbnailOpacity,
-                        child: ViewerThumbnailPreview(
-                          availableWidth: mqWidth,
-                          displayedIndex: widget.index,
-                          entries: widget.entries,
-                        ),
+                            ),
+                            Expanded(child: viewerButtonRow),
+                          ],
+                        )
+                      : viewerButtonRow,
+                  if (settings.showOverlayThumbnailPreview && !isWallpaperMode)
+                    FadeTransition(
+                      opacity: _thumbnailOpacity,
+                      child: ViewerThumbnailPreview(
+                        availableWidth: mqWidth,
+                        displayedIndex: widget.index,
+                        entries: widget.entries,
                       ),
-                  ],
-                ),
-              );
-            },
-          );
-        });
+                    ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void _onAnimationStatusChanged(AnimationStatus status) {
+    if (status == AnimationStatus.completed) {
+      _buttonRowFocusScopeNode.children.firstOrNull?.requestFocus();
+    }
   }
 }
 

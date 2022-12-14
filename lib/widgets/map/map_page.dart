@@ -132,12 +132,12 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
       parent: _overlayAnimationController,
       curve: Curves.easeOutQuad,
     );
-    _overlayVisible.addListener(_onOverlayVisibleChange);
+    _overlayVisible.addListener(_onOverlayVisibleChanged);
 
     _subscriptions.add(_mapController.idleUpdates.listen((event) => _onIdle(event.bounds)));
     _subscriptions.add(openingCollection.source.eventBus.on<CatalogMetadataChangedEvent>().listen((e) => _updateRegionCollection()));
 
-    _selectedIndexNotifier.addListener(_onThumbnailIndexChange);
+    _selectedIndexNotifier.addListener(_onThumbnailIndexChanged);
     Future.delayed(Durations.pageTransitionAnimation * timeDilation + const Duration(seconds: 1), () {
       final regionEntries = regionCollection?.sortedEntries ?? [];
       final initialEntry = widget.initialEntry ?? regionEntries.firstOrNull;
@@ -150,7 +150,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
       }
     });
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => _onOverlayVisibleChange(animate: false));
+    WidgetsBinding.instance.addPostFrameCallback((_) => _onOverlayVisibleChanged(animate: false));
   }
 
   @override
@@ -161,9 +161,9 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
     _dotEntryNotifier.value?.metadataChangeNotifier.removeListener(_onMarkerEntryMetadataChanged);
     _dotEntryNotifier.removeListener(_onSelectedEntryChanged);
     _overlayAnimationController.dispose();
-    _overlayVisible.removeListener(_onOverlayVisibleChange);
+    _overlayVisible.removeListener(_onOverlayVisibleChanged);
     _mapController.dispose();
-    _selectedIndexNotifier.removeListener(_onThumbnailIndexChange);
+    _selectedIndexNotifier.removeListener(_onThumbnailIndexChanged);
     regionCollection?.dispose();
     super.dispose();
   }
@@ -380,7 +380,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
             : 0;
     _selectedIndexNotifier.value = selectedIndex;
     // force update, as the region entries may change without a change of index
-    _onThumbnailIndexChange();
+    _onThumbnailIndexChanged();
   }
 
   AvesEntry? _getRegionEntry(int? index) {
@@ -395,7 +395,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
 
   void _onThumbnailTap(int index) => _goToViewer(_getRegionEntry(index));
 
-  void _onThumbnailIndexChange() => _onEntrySelected(_getRegionEntry(_selectedIndexNotifier.value));
+  void _onThumbnailIndexChanged() => _onEntrySelected(_getRegionEntry(_selectedIndexNotifier.value));
 
   void _onEntrySelected(AvesEntry? selectedEntry) {
     _dotEntryNotifier.value?.metadataChangeNotifier.removeListener(_onMarkerEntryMetadataChanged);
@@ -457,7 +457,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
 
   void _toggleOverlay() => _overlayVisible.value = !_overlayVisible.value;
 
-  Future<void> _onOverlayVisibleChange({bool animate = true}) async {
+  Future<void> _onOverlayVisibleChanged({bool animate = true}) async {
     if (_overlayVisible.value) {
       if (animate) {
         await _overlayAnimationController.forward();

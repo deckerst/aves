@@ -59,8 +59,8 @@ class _PlayTogglerState extends State<PlayToggler> with SingleTickerProviderStat
   void _registerWidget(PlayToggler widget) {
     final controller = widget.controller;
     if (controller != null) {
-      _subscriptions.add(controller.statusStream.listen(_onStatusChange));
-      _onStatusChange(controller.status);
+      _subscriptions.add(controller.statusStream.listen(_onStatusChanged));
+      _onStatusChanged(controller.status);
     }
   }
 
@@ -89,7 +89,7 @@ class _PlayTogglerState extends State<PlayToggler> with SingleTickerProviderStat
           );
   }
 
-  void _onStatusChange(VideoStatus status) {
+  void _onStatusChanged(VideoStatus status) {
     final status = _playPauseAnimation.status;
     if (isPlaying && status != AnimationStatus.forward && status != AnimationStatus.completed) {
       _playPauseAnimation.forward();

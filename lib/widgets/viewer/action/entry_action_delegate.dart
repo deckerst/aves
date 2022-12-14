@@ -92,6 +92,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         case EntryAction.videoCaptureFrame:
           return !device.isReadOnly && targetEntry.isVideo;
         case EntryAction.videoToggleMute:
+          return !device.isTelevision && targetEntry.isVideo;
         case EntryAction.videoSelectStreams:
         case EntryAction.videoSetSpeed:
         case EntryAction.videoSettings:
@@ -106,8 +107,9 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
           return device.canPinShortcut;
         case EntryAction.edit:
           return !device.isReadOnly;
-        case EntryAction.info:
         case EntryAction.copyToClipboard:
+          return !device.isTelevision;
+        case EntryAction.info:
         case EntryAction.open:
         case EntryAction.setAs:
         case EntryAction.share:
@@ -174,7 +176,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
 
     switch (action) {
       case EntryAction.info:
-        ShowInfoNotification().dispatch(context);
+        ShowInfoPageNotification().dispatch(context);
         break;
       case EntryAction.addShortcut:
         _addShortcut(context, targetEntry);

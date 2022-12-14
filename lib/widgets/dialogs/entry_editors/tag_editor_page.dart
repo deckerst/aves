@@ -45,6 +45,13 @@ class _TagEditorPageState extends State<TagEditorPage> {
   }
 
   @override
+  void dispose() {
+    _newTagTextFocusNode.dispose();
+    _expandedSectionNotifier.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final showCount = tagsByEntry.length > 1;

@@ -102,7 +102,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       duration: context.read<DurationsData>().iconAnimation,
       vsync: this,
     );
-    _isSelectingNotifier.addListener(_onActivityChange);
+    _isSelectingNotifier.addListener(_onActivityChanged);
     _registerWidget(widget);
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -121,8 +121,10 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   @override
   void dispose() {
     _unregisterWidget(widget);
+    _queryBarFocusNode.dispose();
     _queryFocusRequestNotifier.removeListener(_onQueryFocusRequest);
-    _isSelectingNotifier.removeListener(_onActivityChange);
+    _isSelectingNotifier.removeListener(_onActivityChanged);
+    _isSelectingNotifier.dispose();
     _browseToSelectAnimation.dispose();
     _subscriptions
       ..forEach((sub) => sub.cancel())
@@ -529,7 +531,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     );
   }
 
-  void _onActivityChange() {
+  void _onActivityChanged() {
     if (context.read<Selection<AvesEntry>>().isSelecting) {
       _browseToSelectAnimation.forward();
     } else {
