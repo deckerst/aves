@@ -85,6 +85,7 @@ class _TvRailState extends State<TvRail> {
       children: [
         const SizedBox(height: 8),
         header,
+        const SizedBox(height: 4),
         Expanded(
           child: LayoutBuilder(
             builder: (context, constraints) {
