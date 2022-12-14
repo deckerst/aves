@@ -20,12 +20,19 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+class TvRailController {
+  int? focusedIndex;
+  double offset = 0;
+}
+
 class TvRail extends StatefulWidget {
   // collection loaded in the `CollectionPage`, if any
   final CollectionLens? currentCollection;
+  final TvRailController controller;
 
   const TvRail({
     super.key,
+    required this.controller,
     this.currentCollection,
   });
 
@@ -34,9 +41,40 @@ class TvRail extends StatefulWidget {
 }
 
 class _TvRailState extends State<TvRail> {
-  final _scrollController = ScrollController();
+  late final ScrollController _scrollController;
+  final FocusNode _focusNode = FocusNode();
+
+  TvRailController get controller => widget.controller;
 
   CollectionLens? get currentCollection => widget.currentCollection;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _scrollController = ScrollController(initialScrollOffset: controller.offset);
+    _scrollController.addListener(_onScrollChanged);
+
+    final focusedIndex = controller.focusedIndex;
+    if (focusedIndex != null) {
+      controller.focusedIndex = null;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final nodes = _focusNode.children.toList();
+        debugPrint('TLAD focusedIndex=$focusedIndex < nodes.length=${nodes.length}');
+        if (focusedIndex < nodes.length) {
+          nodes[focusedIndex].requestFocus();
+        }
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScrollChanged);
+    _scrollController.dispose();
+    _focusNode.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,21 +102,28 @@ class _TvRailState extends State<TvRail> {
       ...[
         SettingsPage.routeName,
         AboutPage.routeName,
+        if (!kReleaseMode) AppDebugPage.routeName,
       ].map(_routeNavEntry),
-      if (!kReleaseMode) _routeNavEntry(AppDebugPage.routeName),
     ];
 
-    final rail = NavigationRail(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      extended: true,
-      destinations: navEntries
-          .map((v) => NavigationRailDestination(
-                icon: v.icon,
-                label: v.label,
-              ))
-          .toList(),
-      selectedIndex: max(0, navEntries.indexWhere(((v) => v.isSelected))),
-      onDestinationSelected: (index) => navEntries[index].onSelection(),
+    final rail = Focus(
+      focusNode: _focusNode,
+      skipTraversal: true,
+      child: NavigationRail(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        extended: true,
+        destinations: navEntries
+            .map((v) => NavigationRailDestination(
+                  icon: v.icon,
+                  label: v.label,
+                ))
+            .toList(),
+        selectedIndex: max(0, navEntries.indexWhere(((v) => v.isSelected))),
+        onDestinationSelected: (index) {
+          controller.focusedIndex = index;
+          navEntries[index].onSelection();
+        },
+      ),
     );
 
     return Column(
@@ -177,6 +222,8 @@ class _TvRailState extends State<TvRail> {
       (route) => false,
     );
   }
+
+  void _onScrollChanged() => controller.offset = _scrollController.offset;
 }
 
 @immutable

@@ -128,7 +128,9 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
       return Scaffold(
         body: Row(
           children: [
-            const TvRail(),
+            TvRail(
+              controller: context.read<TvRailController>(),
+            ),
             Expanded(child: body),
           ],
         ),

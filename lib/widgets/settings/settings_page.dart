@@ -75,7 +75,9 @@ class _SettingsPageState extends State<SettingsPage> with FeedbackMixin {
       return Scaffold(
         body: Row(
           children: [
-            const TvRail(),
+            TvRail(
+              controller: context.read<TvRailController>(),
+            ),
             Expanded(
               child: Column(
                 children: [

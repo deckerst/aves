@@ -8,6 +8,7 @@ import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/navigation/tv_rail.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class AboutPage extends StatelessWidget {
   static const routeName = '/about';
@@ -47,7 +48,9 @@ class AboutPage extends StatelessWidget {
       return Scaffold(
         body: Row(
           children: [
-            const TvRail(),
+            TvRail(
+              controller: context.read<TvRailController>(),
+            ),
             Expanded(child: body),
           ],
         ),
