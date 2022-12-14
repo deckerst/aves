@@ -35,6 +35,7 @@ import 'package:aves/widgets/common/providers/highlight_info_provider.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/home_page.dart';
 import 'package:aves/widgets/navigation/tv_page_transitions.dart';
+import 'package:aves/widgets/navigation/tv_rail.dart';
 import 'package:aves/widgets/welcome_page.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:equatable/equatable.dart';
@@ -126,6 +127,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   late final Future<void> _appSetup;
   late final Future<bool> _shouldUseBoldFontLoader;
   late final Future<CorePalette?> _dynamicColorPaletteLoader;
+  final TvRailController _tvRailController = TvRailController();
   final CollectionSource _mediaStoreSource = MediaStoreSource();
   final Debouncer _mediaStoreChangeDebouncer = Debouncer(delay: Durations.mediaContentChangeDebounceDelay);
   final Set<String> _changedUris = {};
@@ -173,109 +175,112 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
           value: appModeNotifier,
           child: Provider<CollectionSource>.value(
             value: _mediaStoreSource,
-            child: DurationsProvider(
-              child: HighlightInfoProvider(
-                child: OverlaySupport(
-                  child: FutureBuilder<void>(
-                    future: _appSetup,
-                    builder: (context, snapshot) {
-                      final initialized = !snapshot.hasError && snapshot.connectionState == ConnectionState.done;
-                      if (initialized) {
-                        AvesApp.showSystemUI();
-                      }
-                      final home = initialized
-                          ? _getFirstPage()
-                          : Scaffold(
-                              body: snapshot.hasError ? _buildError(snapshot.error!) : const SizedBox(),
-                            );
-                      return Selector<Settings, Tuple4<Locale?, bool, AvesThemeBrightness, bool>>(
-                        selector: (context, s) => Tuple4(
-                          s.locale,
-                          s.initialized ? s.accessibilityAnimations.animate : true,
-                          s.initialized ? s.themeBrightness : SettingsDefaults.themeBrightness,
-                          s.initialized ? s.enableDynamicColor : SettingsDefaults.enableDynamicColor,
-                        ),
-                        builder: (context, s, child) {
-                          final settingsLocale = s.item1;
-                          final areAnimationsEnabled = s.item2;
-                          final themeBrightness = s.item3;
-                          final enableDynamicColor = s.item4;
-
-                          Constants.updateStylesForLocale(settings.appliedLocale);
-
-                          return FutureBuilder<CorePalette?>(
-                            future: _dynamicColorPaletteLoader,
-                            builder: (context, snapshot) {
-                              const defaultAccent = Themes.defaultAccent;
-                              Color lightAccent = defaultAccent, darkAccent = defaultAccent;
-                              if (enableDynamicColor) {
-                                // `DynamicColorBuilder` from package `dynamic_color` provides light/dark
-                                // palettes with a primary color from tones too dark/light (40/80),
-                                // so we derive the color with adjusted tones (60/70)
-                                final tonalPalette = snapshot.data?.primary;
-                                lightAccent = Color(tonalPalette?.get(60) ?? defaultAccent.value);
-                                darkAccent = Color(tonalPalette?.get(70) ?? defaultAccent.value);
-                              }
-                              final lightTheme = Themes.lightTheme(lightAccent, initialized);
-                              final darkTheme = themeBrightness == AvesThemeBrightness.black ? Themes.blackTheme(darkAccent, initialized) : Themes.darkTheme(darkAccent, initialized);
-                              return FutureBuilder<bool>(
-                                future: _shouldUseBoldFontLoader,
-                                builder: (context, snapshot) {
-                                  // Flutter v3.4 already checks the system `Configuration.fontWeightAdjustment` to update `MediaQuery`
-                                  // but we need to also check the non-standard Samsung field `bf` representing the bold font toggle
-                                  final shouldUseBoldFont = snapshot.data ?? false;
-                                  return Shortcuts(
-                                    shortcuts: <LogicalKeySet, Intent>{
-                                      // handle Android TV remote `select` button
-                                      LogicalKeySet(LogicalKeyboardKey.select): const ActivateIntent(),
-                                    },
-                                    child: MaterialApp(
-                                      navigatorKey: AvesApp.navigatorKey,
-                                      home: home,
-                                      navigatorObservers: _navigatorObservers,
-                                      builder: (context, child) {
-                                        if (initialized) {
-                                          WidgetsBinding.instance.addPostFrameCallback((_) => AvesApp.setSystemUIStyle(context));
-                                        }
-                                        return MediaQuery(
-                                          data: MediaQuery.of(context).copyWith(boldText: shouldUseBoldFont),
-                                          child: AvesColorsProvider(
-                                            child: ValueListenableBuilder<PageTransitionsBuilder>(
-                                              valueListenable: _pageTransitionsBuilderNotifier,
-                                              builder: (context, pageTransitionsBuilder, child) {
-                                                return Theme(
-                                                  data: Theme.of(context).copyWith(
-                                                    pageTransitionsTheme: areAnimationsEnabled
-                                                        ? PageTransitionsTheme(builders: {TargetPlatform.android: pageTransitionsBuilder})
-                                                        // strip page transitions used by `MaterialPageRoute`
-                                                        : const DirectPageTransitionsTheme(),
-                                                  ),
-                                                  child: MediaQueryDataProvider(child: child!),
-                                                );
-                                              },
-                                              child: child,
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                      onGenerateTitle: (context) => context.l10n.appName,
-                                      theme: lightTheme,
-                                      darkTheme: darkTheme,
-                                      themeMode: themeBrightness.appThemeMode,
-                                      locale: settingsLocale,
-                                      localizationsDelegates: AppLocalizations.localizationsDelegates,
-                                      supportedLocales: AvesApp.supportedLocales,
-                                      // TODO TLAD remove custom scroll behavior when this is fixed: https://github.com/flutter/flutter/issues/82906
-                                      scrollBehavior: StretchMaterialScrollBehavior(),
-                                    ),
-                                  );
-                                },
+            child: Provider<TvRailController>.value(
+              value: _tvRailController,
+              child: DurationsProvider(
+                child: HighlightInfoProvider(
+                  child: OverlaySupport(
+                    child: FutureBuilder<void>(
+                      future: _appSetup,
+                      builder: (context, snapshot) {
+                        final initialized = !snapshot.hasError && snapshot.connectionState == ConnectionState.done;
+                        if (initialized) {
+                          AvesApp.showSystemUI();
+                        }
+                        final home = initialized
+                            ? _getFirstPage()
+                            : Scaffold(
+                                body: snapshot.hasError ? _buildError(snapshot.error!) : const SizedBox(),
                               );
-                            },
-                          );
-                        },
-                      );
-                    },
+                        return Selector<Settings, Tuple4<Locale?, bool, AvesThemeBrightness, bool>>(
+                          selector: (context, s) => Tuple4(
+                            s.locale,
+                            s.initialized ? s.accessibilityAnimations.animate : true,
+                            s.initialized ? s.themeBrightness : SettingsDefaults.themeBrightness,
+                            s.initialized ? s.enableDynamicColor : SettingsDefaults.enableDynamicColor,
+                          ),
+                          builder: (context, s, child) {
+                            final settingsLocale = s.item1;
+                            final areAnimationsEnabled = s.item2;
+                            final themeBrightness = s.item3;
+                            final enableDynamicColor = s.item4;
+
+                            Constants.updateStylesForLocale(settings.appliedLocale);
+
+                            return FutureBuilder<CorePalette?>(
+                              future: _dynamicColorPaletteLoader,
+                              builder: (context, snapshot) {
+                                const defaultAccent = Themes.defaultAccent;
+                                Color lightAccent = defaultAccent, darkAccent = defaultAccent;
+                                if (enableDynamicColor) {
+                                  // `DynamicColorBuilder` from package `dynamic_color` provides light/dark
+                                  // palettes with a primary color from tones too dark/light (40/80),
+                                  // so we derive the color with adjusted tones (60/70)
+                                  final tonalPalette = snapshot.data?.primary;
+                                  lightAccent = Color(tonalPalette?.get(60) ?? defaultAccent.value);
+                                  darkAccent = Color(tonalPalette?.get(70) ?? defaultAccent.value);
+                                }
+                                final lightTheme = Themes.lightTheme(lightAccent, initialized);
+                                final darkTheme = themeBrightness == AvesThemeBrightness.black ? Themes.blackTheme(darkAccent, initialized) : Themes.darkTheme(darkAccent, initialized);
+                                return FutureBuilder<bool>(
+                                  future: _shouldUseBoldFontLoader,
+                                  builder: (context, snapshot) {
+                                    // Flutter v3.4 already checks the system `Configuration.fontWeightAdjustment` to update `MediaQuery`
+                                    // but we need to also check the non-standard Samsung field `bf` representing the bold font toggle
+                                    final shouldUseBoldFont = snapshot.data ?? false;
+                                    return Shortcuts(
+                                      shortcuts: <LogicalKeySet, Intent>{
+                                        // handle Android TV remote `select` button
+                                        LogicalKeySet(LogicalKeyboardKey.select): const ActivateIntent(),
+                                      },
+                                      child: MaterialApp(
+                                        navigatorKey: AvesApp.navigatorKey,
+                                        home: home,
+                                        navigatorObservers: _navigatorObservers,
+                                        builder: (context, child) {
+                                          if (initialized) {
+                                            WidgetsBinding.instance.addPostFrameCallback((_) => AvesApp.setSystemUIStyle(context));
+                                          }
+                                          return MediaQuery(
+                                            data: MediaQuery.of(context).copyWith(boldText: shouldUseBoldFont),
+                                            child: AvesColorsProvider(
+                                              child: ValueListenableBuilder<PageTransitionsBuilder>(
+                                                valueListenable: _pageTransitionsBuilderNotifier,
+                                                builder: (context, pageTransitionsBuilder, child) {
+                                                  return Theme(
+                                                    data: Theme.of(context).copyWith(
+                                                      pageTransitionsTheme: areAnimationsEnabled
+                                                          ? PageTransitionsTheme(builders: {TargetPlatform.android: pageTransitionsBuilder})
+                                                          // strip page transitions used by `MaterialPageRoute`
+                                                          : const DirectPageTransitionsTheme(),
+                                                    ),
+                                                    child: MediaQueryDataProvider(child: child!),
+                                                  );
+                                                },
+                                                child: child,
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                        onGenerateTitle: (context) => context.l10n.appName,
+                                        theme: lightTheme,
+                                        darkTheme: darkTheme,
+                                        themeMode: themeBrightness.appThemeMode,
+                                        locale: settingsLocale,
+                                        localizationsDelegates: AppLocalizations.localizationsDelegates,
+                                        supportedLocales: AvesApp.supportedLocales,
+                                        // TODO TLAD remove custom scroll behavior when this is fixed: https://github.com/flutter/flutter/issues/82906
+                                        scrollBehavior: StretchMaterialScrollBehavior(),
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                            );
+                          },
+                        );
+                      },
+                    ),
                   ),
                 ),
               ),

@@ -121,7 +121,10 @@ class _CollectionPageState extends State<CollectionPage> {
             return Scaffold(
               body: Row(
                 children: [
-                  TvRail(currentCollection: _collection),
+                  TvRail(
+                    controller: context.read<TvRailController>(),
+                    currentCollection: _collection,
+                  ),
                   Expanded(child: body),
                 ],
               ),
