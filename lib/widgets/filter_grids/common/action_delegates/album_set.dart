@@ -75,7 +75,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
   }) {
     switch (action) {
       case ChipSetAction.createAlbum:
-        return appMode == AppMode.main && !isSelecting;
+        return !device.isReadOnly && appMode == AppMode.main && !isSelecting;
       case ChipSetAction.delete:
       case ChipSetAction.rename:
         return !device.isReadOnly && appMode == AppMode.main && isSelecting;

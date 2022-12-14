@@ -1,4 +1,6 @@
+import 'package:aves/model/device.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
+import 'package:aves/widgets/common/tile_extent_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -109,6 +111,19 @@ class BottomPaddingSliver extends StatelessWidget {
         builder: (context, mqPaddingBottom, child) {
           return SizedBox(height: mqPaddingBottom);
         },
+      ),
+    );
+  }
+}
+
+class TvTileGridBottomPaddingSliver extends StatelessWidget {
+  const TvTileGridBottomPaddingSliver({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverToBoxAdapter(
+      child: SizedBox(
+        height: device.isTelevision ? context.select<TileExtentController, double>((controller) => controller.spacing) : 0,
       ),
     );
   }

@@ -513,6 +513,7 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> with Widge
             : const SectionedListSliver<AvesEntry>(),
         const NavBarPaddingSliver(),
         const BottomPaddingSliver(),
+        const TvTileGridBottomPaddingSliver(),
       ],
     );
   }

@@ -14,6 +14,7 @@ class SlideshowButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // TODO TLAD [tv] action buttons
     const padding = ViewerButtonRowContent.padding;
     return SafeArea(
       child: Padding(
