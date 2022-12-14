@@ -34,7 +34,7 @@ class ViewerSection extends SettingsSection {
   FutureOr<List<SettingsTile>> tiles(BuildContext context) async {
     final canSetCutoutMode = await windowService.canSetCutoutMode();
     return [
-      SettingsTileViewerQuickActions(),
+      if (!device.isTelevision) SettingsTileViewerQuickActions(),
       SettingsTileViewerOverlay(),
       SettingsTileViewerSlideshow(),
       if (!device.isTelevision) SettingsTileViewerGestureSideTapNext(),

@@ -664,6 +664,7 @@ class _FilterScrollView<T extends CollectionFilter> extends StatelessWidget {
             }),
         const NavBarPaddingSliver(),
         const BottomPaddingSliver(),
+        const TvTileGridBottomPaddingSliver(),
       ],
     );
   }
