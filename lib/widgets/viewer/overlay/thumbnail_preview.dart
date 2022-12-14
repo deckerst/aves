@@ -35,7 +35,7 @@ class _ViewerThumbnailPreviewState extends State<ViewerThumbnailPreview> {
   void initState() {
     super.initState();
     _entryIndexNotifier.value = widget.displayedIndex;
-    _entryIndexNotifier.addListener(_onScrollerIndexChange);
+    _entryIndexNotifier.addListener(_onScrollerIndexChanged);
   }
 
   @override
@@ -49,7 +49,7 @@ class _ViewerThumbnailPreviewState extends State<ViewerThumbnailPreview> {
 
   @override
   void dispose() {
-    _entryIndexNotifier.removeListener(_onScrollerIndexChange);
+    _entryIndexNotifier.removeListener(_onScrollerIndexChanged);
     super.dispose();
   }
 
@@ -64,7 +64,7 @@ class _ViewerThumbnailPreviewState extends State<ViewerThumbnailPreview> {
     );
   }
 
-  void _onScrollerIndexChange() => _debouncer(() {
+  void _onScrollerIndexChanged() => _debouncer(() {
         if (mounted) {
           JumpToEntryNotification(index: _entryIndexNotifier.value).dispatch(context);
         }

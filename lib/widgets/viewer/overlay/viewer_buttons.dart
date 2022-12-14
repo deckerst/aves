@@ -1,4 +1,5 @@
 import 'package:aves/model/actions/entry_actions.dart';
+import 'package:aves/model/device.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
@@ -12,6 +13,7 @@ import 'package:aves/widgets/common/app_bar/quick_choosers/tag_button.dart';
 import 'package:aves/widgets/common/basic/menu.dart';
 import 'package:aves/widgets/common/basic/popup_menu_button.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/settings/common/quick_actions/action_button.dart';
 import 'package:aves/widgets/viewer/action/entry_action_delegate.dart';
 import 'package:aves/widgets/viewer/notifications.dart';
 import 'package:aves/widgets/viewer/overlay/common.dart';
@@ -47,9 +49,17 @@ class ViewerButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (device.isTelevision) {
+      return _TvButtonRowContent(
+        scale: scale,
+        mainEntry: mainEntry,
+        pageEntry: pageEntry,
+        collection: collection,
+      );
+    }
+
     final actionDelegate = EntryActionDelegate(mainEntry, pageEntry, collection);
     final trashed = mainEntry.trashed;
-
     return SafeArea(
       top: false,
       bottom: false,
@@ -78,6 +88,44 @@ class ViewerButtons extends StatelessWidget {
           );
         },
       ),
+    );
+  }
+}
+
+class _TvButtonRowContent extends StatelessWidget {
+  final Animation<double> scale;
+  final AvesEntry mainEntry, pageEntry;
+  final CollectionLens? collection;
+
+  const _TvButtonRowContent({
+    required this.scale,
+    required this.mainEntry,
+    required this.pageEntry,
+    required this.collection,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final actionDelegate = EntryActionDelegate(mainEntry, pageEntry, collection);
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ...EntryActions.topLevel,
+        ...EntryActions.export,
+        ...EntryActions.video,
+      ].where(actionDelegate.isVisible).map((action) {
+        // TODO TLAD [tv] togglers cf `_buildOverlayButton`
+        // TODO TLAD [tv] use `scale`
+        final enabled = actionDelegate.canApply(action);
+        return ActionButton(
+          text: action.getText(context),
+          icon: action.getIcon(),
+          enabled: enabled,
+          onPressed: enabled ? () => actionDelegate.onActionSelected(context, action) : null,
+        );
+      }).toList(),
     );
   }
 }
@@ -342,7 +390,7 @@ class ViewerButtonRowContent extends StatelessWidget {
   }
 
   PopupMenuItem<EntryAction> _buildRotateAndFlipMenuItems(BuildContext context) {
-    final actionDelegate = EntryActionDelegate(mainEntry, pageEntry, collection);
+    final actionDelegate = _entryActionDelegate;
 
     Widget buildDivider() => const SizedBox(
           height: 16,

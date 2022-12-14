@@ -118,7 +118,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     _currentEntryIndex = max(0, entry != null ? entries.indexOf(entry) : -1);
     _currentVerticalPage = ValueNotifier(imagePage);
     _horizontalPager = PageController(initialPage: _currentEntryIndex);
-    _verticalPager = PageController(initialPage: _currentVerticalPage.value)..addListener(_onVerticalPageControllerChange);
+    _verticalPager = PageController(initialPage: _currentVerticalPage.value)..addListener(_onVerticalPageControllerChanged);
     _overlayAnimationController = AnimationController(
       duration: context.read<DurationsData>().viewerOverlayAnimation,
       vsync: this,
@@ -142,7 +142,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
       curve: Curves.easeOutQuad,
     ));
     _overlayVisible.value = settings.showOverlayOnOpening && !viewerController.autopilot;
-    _overlayVisible.addListener(_onOverlayVisibleChange);
+    _overlayVisible.addListener(_onOverlayVisibleChanged);
     _videoActionDelegate = VideoActionDelegate(
       collection: collection,
     );
@@ -164,19 +164,19 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     cleanEntryControllers(entryNotifier.value);
     _videoActionDelegate.dispose();
     _overlayAnimationController.dispose();
-    _overlayVisible.removeListener(_onOverlayVisibleChange);
-    _verticalPager.removeListener(_onVerticalPageControllerChange);
+    _overlayVisible.removeListener(_onOverlayVisibleChanged);
+    _verticalPager.removeListener(_onVerticalPageControllerChanged);
     WidgetsBinding.instance.removeObserver(this);
     _unregisterWidget(widget);
     super.dispose();
   }
 
   void _registerWidget(EntryViewerStack widget) {
-    widget.collection?.addListener(_onCollectionChange);
+    widget.collection?.addListener(_onCollectionChanged);
   }
 
   void _unregisterWidget(EntryViewerStack widget) {
-    widget.collection?.removeListener(_onCollectionChange);
+    widget.collection?.removeListener(_onCollectionChanged);
   }
 
   @override
@@ -199,13 +199,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     final viewStateConductor = context.read<ViewStateConductor>();
     return WillPopScope(
       onWillPop: () {
-        if (_currentVerticalPage.value == infoPage) {
-          // back from info to image
-          _goToVerticalPage(imagePage);
-        } else {
-          if (!_isEntryTracked) _trackEntry();
-          _popVisual();
-        }
+        _onWillPop();
         return SynchronousFuture(false);
       },
       child: ValueListenableProvider<HeroInfo?>.value(
@@ -243,10 +237,19 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
               }
             } else if (notification is ToggleOverlayNotification) {
               _overlayVisible.value = notification.visible ?? !_overlayVisible.value;
-            } else if (notification is ShowInfoNotification) {
+            } else if (notification is TvShowLessInfoNotification) {
+              if (_overlayVisible.value) {
+                _overlayVisible.value = false;
+              } else {
+                _onWillPop();
+              }
+            } else if (notification is TvShowMoreInfoNotification) {
+              if (!_overlayVisible.value) {
+                _overlayVisible.value = true;
+              }
+            } else if (notification is ShowInfoPageNotification) {
               // remove focus, if any, to prevent viewer shortcuts activation from the Info page
-              FocusManager.instance.primaryFocus?.unfocus();
-              _goToVerticalPage(infoPage);
+              _showInfoPage();
             } else if (notification is JumpToPreviousEntryNotification) {
               _jumpToHorizontalPageByDelta(-1);
             } else if (notification is JumpToNextEntryNotification) {
@@ -458,7 +461,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
       builder: (context, mqHeight, child) {
         // when orientation change, the `PageController` offset is not updated right away
         // and it does not trigger its listeners when it does, so we force a refresh in the next frame
-        WidgetsBinding.instance.addPostFrameCallback((_) => _onVerticalPageControllerChange());
+        WidgetsBinding.instance.addPostFrameCallback((_) => _onVerticalPageControllerChanged());
         return AnimatedBuilder(
           animation: _verticalScrollNotifier,
           builder: (context, child) => Positioned(
@@ -492,7 +495,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     }
   }
 
-  void _onVerticalPageControllerChange() {
+  void _onVerticalPageControllerChanged() {
     if (!_isEntryTracked && _verticalPager.hasClients && _verticalPager.page?.floor() == transitionPage) {
       _trackEntry();
     }
@@ -518,6 +521,12 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
       ),
       (route) => false,
     );
+  }
+
+  void _showInfoPage() {
+    // remove focus, if any, to prevent viewer shortcuts activation from the Info page
+    FocusManager.instance.primaryFocus?.unfocus();
+    _goToVerticalPage(infoPage);
   }
 
   Future<void> _goToVerticalPage(int page) async {
@@ -574,7 +583,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     _updateEntry();
   }
 
-  void _onCollectionChange() {
+  void _onCollectionChanged() {
     _updateEntry();
   }
 
@@ -588,7 +597,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
       if (index != -1) {
         _onHorizontalPageChanged(index);
       }
-      _onCollectionChange();
+      _onCollectionChanged();
     }
   }
 
@@ -600,7 +609,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
       final collectionEntries = collection!.sortedEntries;
       removedEntries.forEach(collectionEntries.remove);
       if (collectionEntries.isNotEmpty) {
-        _onCollectionChange();
+        _onCollectionChanged();
         return;
       }
     }
@@ -628,6 +637,16 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     _isEntryTracked = false;
     await pauseVideoControllers();
     await initEntryControllers(newEntry);
+  }
+
+  void _onWillPop() {
+    if (_currentVerticalPage.value == infoPage) {
+      // back from info to image
+      _goToVerticalPage(imagePage);
+    } else {
+      if (!_isEntryTracked) _trackEntry();
+      _popVisual();
+    }
   }
 
   void _popVisual() {
@@ -689,11 +708,11 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     // wait for MaterialPageRoute.transitionDuration
     // to show overlay after hero animation is complete
     await Future.delayed(ModalRoute.of(context)!.transitionDuration * timeDilation);
-    await _onOverlayVisibleChange();
+    await _onOverlayVisibleChanged();
     _overlayInitialized = true;
   }
 
-  Future<void> _onOverlayVisibleChange({bool animate = true}) async {
+  Future<void> _onOverlayVisibleChanged({bool animate = true}) async {
     if (_overlayVisible.value) {
       await AvesApp.showSystemUI();
       AvesApp.setSystemUIStyle(context);

@@ -3,6 +3,8 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:aves/app_mode.dart';
+import 'package:aves/model/actions/entry_actions.dart';
+import 'package:aves/model/device.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
@@ -11,6 +13,7 @@ import 'package:aves/widgets/viewer/controller.dart';
 import 'package:aves/widgets/viewer/entry_horizontal_pager.dart';
 import 'package:aves/widgets/viewer/info/info_page.dart';
 import 'package:aves/widgets/viewer/notifications.dart';
+import 'package:aves/widgets/viewer/video/conductor.dart';
 import 'package:aves_magnifier/aves_magnifier.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -50,6 +53,7 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
   final List<StreamSubscription> _subscriptions = [];
   final ValueNotifier<double> _backgroundOpacityNotifier = ValueNotifier(1);
   final ValueNotifier<bool> _isVerticallyScrollingNotifier = ValueNotifier(false);
+  final ValueNotifier<bool> _isImageFocusedNotifier = ValueNotifier(true);
   Timer? _verticalScrollMonitoringTimer;
   AvesEntry? _oldEntry;
   Future<double>? _systemBrightness;
@@ -83,6 +87,9 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
   void dispose() {
     _unregisterWidget(widget);
     _stopScrollMonitoringTimer();
+    _backgroundOpacityNotifier.dispose();
+    _isVerticallyScrollingNotifier.dispose();
+    _isImageFocusedNotifier.dispose();
     super.dispose();
   }
 
@@ -174,10 +181,19 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
   }
 
   Widget _buildImagePage() {
+    final isTelevision = device.isTelevision;
+
     Widget? child;
-    Map<ShortcutActivator, Intent>? shortcuts;
+    Map<ShortcutActivator, Intent>? shortcuts = {
+      const SingleActivator(LogicalKeyboardKey.arrowUp): isTelevision ? const TvShowLessInfoIntent() : const LeaveIntent(),
+      const SingleActivator(LogicalKeyboardKey.arrowDown): isTelevision ? const TvShowMoreInfoIntent() : const ShowInfoIntent(),
+    };
 
     if (hasCollection) {
+      shortcuts.addAll(const {
+        SingleActivator(LogicalKeyboardKey.arrowLeft): ShowPreviousIntent(),
+        SingleActivator(LogicalKeyboardKey.arrowRight): ShowNextIntent(),
+      });
       child = MultiEntryScroller(
         collection: collection!,
         viewerController: widget.viewerController,
@@ -185,23 +201,28 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
         onPageChanged: widget.onHorizontalPageChanged,
         onViewDisposed: widget.onViewDisposed,
       );
-      shortcuts = const {
-        SingleActivator(LogicalKeyboardKey.arrowLeft): ShowPreviousIntent(),
-        SingleActivator(LogicalKeyboardKey.arrowRight): ShowNextIntent(),
-        SingleActivator(LogicalKeyboardKey.arrowUp): LeaveIntent(),
-        SingleActivator(LogicalKeyboardKey.arrowDown): ShowInfoIntent(),
-      };
     } else if (entry != null) {
       child = SingleEntryScroller(
         viewerController: widget.viewerController,
         entry: entry!,
       );
-      shortcuts = const {
-        SingleActivator(LogicalKeyboardKey.arrowUp): LeaveIntent(),
-        SingleActivator(LogicalKeyboardKey.arrowDown): ShowInfoIntent(),
-      };
     }
     if (child != null) {
+      if (device.isTelevision) {
+        child = ValueListenableBuilder<bool>(
+          valueListenable: _isImageFocusedNotifier,
+          builder: (context, isImageFocused, child) {
+            return AnimatedScale(
+              scale: isImageFocused ? 1 : .7,
+              curve: Curves.fastOutSlowIn,
+              duration: context.select<DurationsData, Duration>((v) => v.tvImageFocusAnimation),
+              child: child!,
+            );
+          },
+          child: child,
+        );
+      }
+
       return FocusableActionDetector(
         autofocus: true,
         shortcuts: shortcuts,
@@ -209,8 +230,25 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
           ShowPreviousIntent: CallbackAction<Intent>(onInvoke: (intent) => _goToHorizontalPage(-1, animate: false)),
           ShowNextIntent: CallbackAction<Intent>(onInvoke: (intent) => _goToHorizontalPage(1, animate: false)),
           LeaveIntent: CallbackAction<Intent>(onInvoke: (intent) => Navigator.pop(context)),
-          ShowInfoIntent: CallbackAction<Intent>(onInvoke: (intent) => ShowInfoNotification().dispatch(context)),
+          ShowInfoIntent: CallbackAction<Intent>(onInvoke: (intent) => ShowInfoPageNotification().dispatch(context)),
+          TvShowLessInfoIntent: CallbackAction<Intent>(onInvoke: (intent) => TvShowLessInfoNotification().dispatch(context)),
+          TvShowMoreInfoIntent: CallbackAction<Intent>(onInvoke: (intent) => TvShowMoreInfoNotification().dispatch(context)),
+          ActivateIntent: CallbackAction<Intent>(onInvoke: (intent) {
+            if (isTelevision) {
+              final _entry = entry;
+              if (_entry != null && _entry.isVideo) {
+                final controller = context.read<VideoConductor>().getController(_entry);
+                if (controller != null) {
+                  VideoActionNotification(controller: controller, action: EntryAction.videoTogglePlay).dispatch(context);
+                }
+              } else {
+                const ToggleOverlayNotification().dispatch(context);
+              }
+            }
+            return null;
+          }),
         },
+        onFocusChange: (focused) => _isImageFocusedNotifier.value = focused,
         child: child,
       );
     }
@@ -310,4 +348,12 @@ class LeaveIntent extends Intent {
 
 class ShowInfoIntent extends Intent {
   const ShowInfoIntent();
+}
+
+class TvShowLessInfoIntent extends Intent {
+  const TvShowLessInfoIntent();
+}
+
+class TvShowMoreInfoIntent extends Intent {
+  const TvShowMoreInfoIntent();
 }

@@ -365,7 +365,7 @@ class _FilterGridContentState<T extends CollectionFilter> extends State<_FilterG
                                       return AnimatedScale(
                                         scale: focusedItem == gridItem ? 1 : .9,
                                         curve: Curves.fastOutSlowIn,
-                                        duration: context.select<DurationsData, Duration>((v) => v.gridTvFocusAnimation),
+                                        duration: context.select<DurationsData, Duration>((v) => v.tvImageFocusAnimation),
                                         child: child!,
                                       );
                                     },

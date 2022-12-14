@@ -45,13 +45,13 @@ class _RenameEntrySetPageState extends State<RenameEntrySetPage> {
   void initState() {
     super.initState();
     _patternTextController.text = settings.entryRenamingPattern;
-    _patternTextController.addListener(_onUserPatternChange);
-    _onUserPatternChange();
+    _patternTextController.addListener(_onUserPatternChanged);
+    _onUserPatternChanged();
   }
 
   @override
   void dispose() {
-    _patternTextController.removeListener(_onUserPatternChange);
+    _patternTextController.removeListener(_onUserPatternChanged);
     super.dispose();
   }
 
@@ -196,7 +196,7 @@ class _RenameEntrySetPageState extends State<RenameEntrySetPage> {
     );
   }
 
-  void _onUserPatternChange() {
+  void _onUserPatternChanged() {
     _namingPatternNotifier.value = NamingPattern.from(
       userPattern: _patternTextController.text,
       entryCount: entryCount,

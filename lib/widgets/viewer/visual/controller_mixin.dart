@@ -32,7 +32,7 @@ mixin EntryViewControllerMixin<T extends StatefulWidget> on State<T> {
     if (entry.isMultiPage) {
       await _initMultiPageController(entry);
     }
-    void listener() => _onMetadataChange(entry);
+    void listener() => _onMetadataChanged(entry);
     _metadataChangeListeners[entry] = listener;
     entry.metadataChangeNotifier.addListener(listener);
   }
@@ -49,7 +49,7 @@ mixin EntryViewControllerMixin<T extends StatefulWidget> on State<T> {
     }
   }
 
-  void _onMetadataChange(AvesEntry entry) {
+  void _onMetadataChanged(AvesEntry entry) {
     debugPrint('reinitialize controllers for entry=$entry because metadata changed');
     cleanEntryControllers(entry);
     initEntryControllers(entry);
@@ -149,7 +149,7 @@ mixin EntryViewControllerMixin<T extends StatefulWidget> on State<T> {
       videoPageEntries.forEach((entry) => videoConductor.getOrCreateController(entry, maxControllerCount: videoPageEntries.length));
 
       // auto play/pause when changing page
-      Future<void> _onPageChange() async {
+      Future<void> _onPageChanged() async {
         await pauseVideoControllers();
         if (videoAutoPlayEnabled || (entry.isMotionPhoto && shouldAutoPlayMotionPhoto)) {
           final page = multiPageController.page;
@@ -165,9 +165,9 @@ mixin EntryViewControllerMixin<T extends StatefulWidget> on State<T> {
         }
       }
 
-      _multiPageControllerPageListeners[multiPageController] = _onPageChange;
-      multiPageController.pageNotifier.addListener(_onPageChange);
-      await _onPageChange();
+      _multiPageControllerPageListeners[multiPageController] = _onPageChanged;
+      multiPageController.pageNotifier.addListener(_onPageChanged);
+      await _onPageChanged();
 
       if (entry.isMotionPhoto && shouldAutoPlayMotionPhoto) {
         await Future.delayed(Durations.motionPhotoAutoPlayDelay);

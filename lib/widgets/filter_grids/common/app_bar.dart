@@ -102,14 +102,16 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
       duration: context.read<DurationsData>().iconAnimation,
       vsync: this,
     );
-    _isSelectingNotifier.addListener(_onActivityChange);
+    _isSelectingNotifier.addListener(_onActivityChanged);
     WidgetsBinding.instance.addPostFrameCallback((_) => _updateAppBarHeight());
   }
 
   @override
   void dispose() {
+    _queryBarFocusNode.dispose();
     _queryFocusRequestNotifier.removeListener(_onQueryFocusRequest);
-    _isSelectingNotifier.removeListener(_onActivityChange);
+    _isSelectingNotifier.removeListener(_onActivityChanged);
+    _isSelectingNotifier.dispose();
     _browseToSelectAnimation.dispose();
     _subscriptions
       ..forEach((sub) => sub.cancel())
@@ -368,7 +370,7 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
     }
   }
 
-  void _onActivityChange() {
+  void _onActivityChanged() {
     if (context.read<Selection<FilterGridItem<T>>>().isSelecting) {
       _browseToSelectAnimation.forward();
     } else {

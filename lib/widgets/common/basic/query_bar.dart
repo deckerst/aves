@@ -59,7 +59,7 @@ class _QueryBarState extends State<QueryBar> {
           Expanded(
             child: TextField(
               controller: _controller,
-              focusNode: widget.focusNode ?? FocusNode(),
+              focusNode: widget.focusNode,
               decoration: InputDecoration(
                 icon: Padding(
                   padding: widget.leadingPadding ?? const EdgeInsetsDirectional.only(start: 16),

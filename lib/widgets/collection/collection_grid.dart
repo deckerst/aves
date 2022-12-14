@@ -191,7 +191,7 @@ class _CollectionGridContentState extends State<_CollectionGridContent> {
                                         return AnimatedScale(
                                           scale: focusedItem == entry ? 1 : .9,
                                           curve: Curves.fastOutSlowIn,
-                                          duration: context.select<DurationsData, Duration>((v) => v.gridTvFocusAnimation),
+                                          duration: context.select<DurationsData, Duration>((v) => v.tvImageFocusAnimation),
                                           child: child!,
                                         );
                                       },
@@ -408,13 +408,13 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> with Widge
   void _registerWidget(_CollectionScrollView widget) {
     widget.collection.filterChangeNotifier.addListener(_scrollToTop);
     widget.collection.sortSectionChangeNotifier.addListener(_scrollToTop);
-    widget.scrollController.addListener(_onScrollChange);
+    widget.scrollController.addListener(_onScrollChanged);
   }
 
   void _unregisterWidget(_CollectionScrollView widget) {
     widget.collection.filterChangeNotifier.removeListener(_scrollToTop);
     widget.collection.sortSectionChangeNotifier.removeListener(_scrollToTop);
-    widget.scrollController.removeListener(_onScrollChange);
+    widget.scrollController.removeListener(_onScrollChanged);
   }
 
   @override
@@ -570,7 +570,7 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> with Widge
 
   void _scrollToTop() => widget.scrollController.jumpTo(0);
 
-  void _onScrollChange() {
+  void _onScrollChanged() {
     widget.isScrollingNotifier.value = true;
     _stopScrollMonitoringTimer();
     _scrollMonitoringTimer = Timer(Durations.collectionScrollMonitoringTimerDelay, () {

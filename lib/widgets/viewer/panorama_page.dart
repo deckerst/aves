@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:aves/model/device.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/entry_images.dart';
 import 'package:aves/model/panorama.dart';
@@ -42,13 +43,13 @@ class _PanoramaPageState extends State<PanoramaPage> {
   @override
   void initState() {
     super.initState();
-    _overlayVisible.addListener(_onOverlayVisibleChange);
+    _overlayVisible.addListener(_onOverlayVisibleChanged);
     WidgetsBinding.instance.addPostFrameCallback((_) => _initOverlay());
   }
 
   @override
   void dispose() {
-    _overlayVisible.removeListener(_onOverlayVisibleChange);
+    _overlayVisible.removeListener(_onOverlayVisibleChanged);
     super.dispose();
   }
 
@@ -96,43 +97,7 @@ class _PanoramaPageState extends State<PanoramaPage> {
             Positioned(
               right: 0,
               bottom: 0,
-              child: TooltipTheme(
-                data: TooltipTheme.of(context).copyWith(
-                  preferBelow: false,
-                ),
-                child: ValueListenableBuilder<bool>(
-                  valueListenable: _overlayVisible,
-                  builder: (context, overlayVisible, child) {
-                    return Visibility(
-                      visible: overlayVisible,
-                      child: Selector<MediaQueryData, double>(
-                        selector: (context, mq) => max(mq.effectiveBottomPadding, mq.systemGestureInsets.bottom),
-                        builder: (context, mqPaddingBottom, child) {
-                          return SafeArea(
-                            bottom: false,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8) + EdgeInsets.only(bottom: mqPaddingBottom),
-                              child: child,
-                            ),
-                          );
-                        },
-                        child: OverlayButton(
-                          child: ValueListenableBuilder<SensorControl>(
-                            valueListenable: _sensorControl,
-                            builder: (context, sensorControl, child) {
-                              return IconButton(
-                                icon: Icon(sensorControl == SensorControl.None ? AIcons.sensorControlEnabled : AIcons.sensorControlDisabled),
-                                onPressed: _toggleSensor,
-                                tooltip: sensorControl == SensorControl.None ? context.l10n.panoramaEnableSensorControl : context.l10n.panoramaDisableSensorControl,
-                              );
-                            },
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
+              child: _buildOverlay(context),
             ),
             const TopGestureAreaProtector(),
             const SideGestureAreaProtector(),
@@ -140,6 +105,48 @@ class _PanoramaPageState extends State<PanoramaPage> {
           ],
         ),
         resizeToAvoidBottomInset: false,
+      ),
+    );
+  }
+
+  Widget _buildOverlay(BuildContext context) {
+    if (device.isTelevision) return const SizedBox();
+
+    return TooltipTheme(
+      data: TooltipTheme.of(context).copyWith(
+        preferBelow: false,
+      ),
+      child: ValueListenableBuilder<bool>(
+        valueListenable: _overlayVisible,
+        builder: (context, overlayVisible, child) {
+          return Visibility(
+            visible: overlayVisible,
+            child: Selector<MediaQueryData, double>(
+              selector: (context, mq) => max(mq.effectiveBottomPadding, mq.systemGestureInsets.bottom),
+              builder: (context, mqPaddingBottom, child) {
+                return SafeArea(
+                  bottom: false,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8) + EdgeInsets.only(bottom: mqPaddingBottom),
+                    child: child,
+                  ),
+                );
+              },
+              child: OverlayButton(
+                child: ValueListenableBuilder<SensorControl>(
+                  valueListenable: _sensorControl,
+                  builder: (context, sensorControl, child) {
+                    return IconButton(
+                      icon: Icon(sensorControl == SensorControl.None ? AIcons.sensorControlEnabled : AIcons.sensorControlDisabled),
+                      onPressed: _toggleSensor,
+                      tooltip: sensorControl == SensorControl.None ? context.l10n.panoramaEnableSensorControl : context.l10n.panoramaDisableSensorControl,
+                    );
+                  },
+                ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -169,10 +176,10 @@ class _PanoramaPageState extends State<PanoramaPage> {
     // wait for MaterialPageRoute.transitionDuration
     // to show overlay after page animation is complete
     await Future.delayed(ModalRoute.of(context)!.transitionDuration * timeDilation);
-    await _onOverlayVisibleChange();
+    await _onOverlayVisibleChanged();
   }
 
-  Future<void> _onOverlayVisibleChange() async {
+  Future<void> _onOverlayVisibleChanged() async {
     if (_overlayVisible.value) {
       await AvesApp.showSystemUI();
       AvesApp.setSystemUIStyle(context);

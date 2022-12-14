@@ -154,7 +154,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     _screenSize = _getScreenSize();
     _shouldUseBoldFontLoader = AccessibilityService.shouldUseBoldFont();
     _dynamicColorPaletteLoader = DynamicColorPlugin.getCorePalette();
-    _mediaStoreChangeChannel.receiveBroadcastStream().listen((event) => _onMediaStoreChange(event as String?));
+    _mediaStoreChangeChannel.receiveBroadcastStream().listen((event) => _onMediaStoreChanged(event as String?));
     _newIntentChannel.receiveBroadcastStream().listen((event) => _onNewIntent(event as Map?));
     _analysisCompletionChannel.receiveBroadcastStream().listen((event) => _onAnalysisCompletion());
     _errorChannel.receiveBroadcastStream().listen((event) => _onError(event as String?));
@@ -451,7 +451,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     _mediaStoreSource.updateDerivedFilters();
   }
 
-  void _onMediaStoreChange(String? uri) {
+  void _onMediaStoreChanged(String? uri) {
     if (uri != null) _changedUris.add(uri);
     if (_changedUris.isNotEmpty) {
       _mediaStoreChangeDebouncer(() async {
@@ -460,7 +460,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
         final tempUris = await _mediaStoreSource.refreshUris(todo);
         if (tempUris.isNotEmpty) {
           _changedUris.addAll(tempUris);
-          _onMediaStoreChange(null);
+          _onMediaStoreChanged(null);
         }
       });
     }
