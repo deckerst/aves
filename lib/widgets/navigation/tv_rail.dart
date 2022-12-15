@@ -60,7 +60,6 @@ class _TvRailState extends State<TvRail> {
       controller.focusedIndex = null;
       WidgetsBinding.instance.addPostFrameCallback((_) {
         final nodes = _focusNode.children.toList();
-        debugPrint('TLAD focusedIndex=$focusedIndex < nodes.length=${nodes.length}');
         if (focusedIndex < nodes.length) {
           nodes[focusedIndex].requestFocus();
         }
