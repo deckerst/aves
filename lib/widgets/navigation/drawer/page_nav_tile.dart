@@ -1,12 +1,17 @@
+import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/widgets/about/about_page.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/common/search/page.dart';
+import 'package:aves/widgets/common/search/route.dart';
 import 'package:aves/widgets/debug/app_debug_page.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/countries_page.dart';
 import 'package:aves/widgets/filter_grids/tags_page.dart';
 import 'package:aves/widgets/navigation/drawer/tile.dart';
+import 'package:aves/widgets/search/search_delegate.dart';
 import 'package:aves/widgets/settings/settings_page.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class PageNavTile extends StatelessWidget {
   final Widget? trailing;
@@ -42,10 +47,7 @@ class PageNavTile extends StatelessWidget {
             : null,
         onTap: () {
           Navigator.pop(context);
-          final route = MaterialPageRoute(
-            settings: RouteSettings(name: routeName),
-            builder: pageBuilder(routeName),
-          );
+          final route = routeBuilder(context, routeName);
           if (topLevel) {
             Navigator.pushAndRemoveUntil(
               context,
@@ -61,8 +63,25 @@ class PageNavTile extends StatelessWidget {
     );
   }
 
-  static WidgetBuilder pageBuilder(String route) {
-    switch (route) {
+  static Route routeBuilder(BuildContext context, String routeName) {
+    switch (routeName) {
+      case SearchPage.routeName:
+        return SearchPageRoute(
+          delegate: CollectionSearchDelegate(
+            searchFieldLabel: context.l10n.searchCollectionFieldHint,
+            source: context.read<CollectionSource>(),
+          ),
+        );
+      default:
+        return MaterialPageRoute(
+          settings: RouteSettings(name: routeName),
+          builder: _materialPageBuilder(routeName),
+        );
+    }
+  }
+
+  static WidgetBuilder _materialPageBuilder(String routeName) {
+    switch (routeName) {
       case AlbumListPage.routeName:
         return (_) => const AlbumListPage();
       case CountryListPage.routeName:
@@ -76,7 +95,7 @@ class PageNavTile extends StatelessWidget {
       case AppDebugPage.routeName:
         return (_) => const AppDebugPage();
       default:
-        throw Exception('unknown route=$route');
+        throw Exception('unknown route=$routeName');
     }
   }
 }

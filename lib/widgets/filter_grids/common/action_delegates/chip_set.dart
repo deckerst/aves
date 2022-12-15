@@ -1,6 +1,7 @@
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/actions/chip_set_actions.dart';
 import 'package:aves/model/covers.dart';
+import 'package:aves/model/device.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
@@ -68,6 +69,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
   }) {
     final selectedItemCount = selectedFilters.length;
     final hasSelection = selectedFilters.isNotEmpty;
+    final isMain = appMode == AppMode.main;
     switch (action) {
       // general
       case ChipSetAction.configureView:
@@ -80,7 +82,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
         return isSelecting && selectedItemCount == itemCount;
       // browsing
       case ChipSetAction.search:
-        return appMode.canNavigate && !isSelecting;
+        return !device.isTelevision && appMode.canNavigate && !isSelecting;
       case ChipSetAction.toggleTitleSearch:
         return !isSelecting;
       case ChipSetAction.createAlbum:
@@ -89,12 +91,12 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
       case ChipSetAction.map:
       case ChipSetAction.slideshow:
       case ChipSetAction.stats:
-        return appMode == AppMode.main;
+        return isMain;
       // selecting (single/multiple filters)
       case ChipSetAction.delete:
         return false;
       case ChipSetAction.hide:
-        return appMode == AppMode.main;
+        return isMain;
       case ChipSetAction.pin:
         return !hasSelection || !settings.pinnedFilters.containsAll(selectedFilters);
       case ChipSetAction.unpin:
@@ -103,7 +105,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
       case ChipSetAction.rename:
         return false;
       case ChipSetAction.setCover:
-        return appMode == AppMode.main;
+        return isMain;
     }
   }
 

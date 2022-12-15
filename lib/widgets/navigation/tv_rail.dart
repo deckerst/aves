@@ -200,12 +200,8 @@ class _TvRailState extends State<TvRail> {
       );
 
   Future<void> _goTo(String routeName) async {
-    await Navigator.push(
-        context,
-        MaterialPageRoute(
-          settings: RouteSettings(name: routeName),
-          builder: PageNavTile.pageBuilder(routeName),
-        ));
+    // TODO TLAD [tv] check `topLevel` / `Navigator.pushAndRemoveUntil`
+    await Navigator.push(context, PageNavTile.routeBuilder(context, routeName));
   }
 
   void _goToCollection(BuildContext context, CollectionFilter? filter) {

@@ -12,6 +12,8 @@ class SearchPage extends StatefulWidget {
   final AvesSearchDelegate delegate;
   final Animation<double> animation;
 
+  static const routeName = '/search';
+
   const SearchPage({
     super.key,
     required this.delegate,

@@ -67,6 +67,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       }
     } else {
       final targetEntry = EntryActions.pageActions.contains(action) ? pageEntry : mainEntry;
+      final canWrite = !device.isReadOnly;
       switch (action) {
         case EntryAction.toggleFavourite:
           return collection != null;
@@ -75,14 +76,14 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         case EntryAction.move:
           return targetEntry.canEdit;
         case EntryAction.copy:
-          return !device.isReadOnly;
+          return canWrite;
         case EntryAction.rotateCCW:
         case EntryAction.rotateCW:
           return targetEntry.canRotate;
         case EntryAction.flip:
           return targetEntry.canFlip;
         case EntryAction.convert:
-          return !device.isReadOnly && !targetEntry.isVideo;
+          return canWrite && !targetEntry.isVideo;
         case EntryAction.print:
           return device.canPrint && !targetEntry.isVideo;
         case EntryAction.openMap:
@@ -90,7 +91,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         case EntryAction.viewSource:
           return targetEntry.isSvg;
         case EntryAction.videoCaptureFrame:
-          return !device.isReadOnly && targetEntry.isVideo;
+          return canWrite && targetEntry.isVideo;
         case EntryAction.videoToggleMute:
           return !device.isTelevision && targetEntry.isVideo;
         case EntryAction.videoSelectStreams:
@@ -106,7 +107,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         case EntryAction.addShortcut:
           return device.canPinShortcut;
         case EntryAction.edit:
-          return !device.isReadOnly;
+          return canWrite;
         case EntryAction.copyToClipboard:
           return !device.isTelevision;
         case EntryAction.info:
