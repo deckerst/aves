@@ -1,5 +1,5 @@
 import 'package:aves/model/actions/slideshow_actions.dart';
-import 'package:aves/widgets/viewer/overlay/common.dart';
+import 'package:aves/widgets/common/identity/buttons/overlay_button.dart';
 import 'package:aves/widgets/viewer/overlay/viewer_buttons.dart';
 import 'package:aves/widgets/viewer/slideshow_page.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +14,7 @@ class SlideshowButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO TLAD [tv] action buttons
+    // TODO TLAD [tv] captioned buttons
     const padding = ViewerButtonRowContent.padding;
     return SafeArea(
       child: Padding(

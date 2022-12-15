@@ -10,7 +10,7 @@ import 'package:aves/widgets/collection/collection_grid.dart';
 import 'package:aves/widgets/common/basic/menu.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/grid/theme.dart';
-import 'package:aves/widgets/common/identity/buttons.dart';
+import 'package:aves/widgets/common/identity/buttons/outlined_button.dart';
 import 'package:aves/widgets/common/thumbnail/decorated.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';

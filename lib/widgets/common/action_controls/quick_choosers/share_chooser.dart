@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:aves/model/actions/share_actions.dart';
-import 'package:aves/widgets/common/app_bar/quick_choosers/common/menu.dart';
+import 'package:aves/widgets/common/action_controls/quick_choosers/common/menu.dart';
 import 'package:aves/widgets/common/basic/menu.dart';
 import 'package:flutter/material.dart';
 

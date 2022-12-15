@@ -1,18 +1,20 @@
 import 'dart:async';
 
-import 'package:aves/model/filters/filters.dart';
-import 'package:aves/widgets/common/app_bar/quick_choosers/common/menu.dart';
+import 'package:aves/model/filters/album.dart';
+import 'package:aves/model/source/collection_source.dart';
+import 'package:aves/widgets/common/action_controls/quick_choosers/common/menu.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class TagQuickChooser extends StatelessWidget {
-  final ValueNotifier<CollectionFilter?> valueNotifier;
-  final List<CollectionFilter> options;
+class AlbumQuickChooser extends StatelessWidget {
+  final ValueNotifier<String?> valueNotifier;
+  final List<String> options;
   final bool blurred;
   final PopupMenuPosition chooserPosition;
   final Stream<Offset> pointerGlobalPosition;
 
-  const TagQuickChooser({
+  const AlbumQuickChooser({
     super.key,
     required this.valueNotifier,
     required this.options,
@@ -23,15 +25,16 @@ class TagQuickChooser extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MenuQuickChooser<CollectionFilter>(
+    final source = context.read<CollectionSource>();
+    return MenuQuickChooser<String>(
       valueNotifier: valueNotifier,
       options: options,
       autoReverse: true,
       blurred: blurred,
       chooserPosition: chooserPosition,
       pointerGlobalPosition: pointerGlobalPosition,
-      itemBuilder: (context, filter) => AvesFilterChip(
-        filter: filter,
+      itemBuilder: (context, album) => AvesFilterChip(
+        filter: AlbumFilter(album, source.getAlbumDisplayName(context, album)),
         showGenericIcon: false,
       ),
     );

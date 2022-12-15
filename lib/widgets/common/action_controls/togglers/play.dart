@@ -4,6 +4,7 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/basic/menu.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/common/identity/buttons/captioned_button.dart';
 import 'package:aves/widgets/viewer/video/controller.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -96,5 +97,31 @@ class _PlayTogglerState extends State<PlayToggler> with SingleTickerProviderStat
     } else if (!isPlaying && status != AnimationStatus.reverse && status != AnimationStatus.dismissed) {
       _playPauseAnimation.reverse();
     }
+  }
+}
+
+class PlayTogglerCaption extends StatelessWidget {
+  final AvesVideoController? controller;
+  final bool enabled;
+
+  const PlayTogglerCaption({
+    super.key,
+    required this.controller,
+    required this.enabled,
+  });
+
+  bool get isPlaying => controller?.isPlaying ?? false;
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<VideoStatus>(
+      stream: controller?.statusStream ?? Stream.value(VideoStatus.idle),
+      builder: (context, snapshot) {
+        return CaptionedButtonText(
+          text: isPlaying ? context.l10n.videoActionPause : context.l10n.videoActionPlay,
+          enabled: enabled,
+        );
+      },
+    );
   }
 }

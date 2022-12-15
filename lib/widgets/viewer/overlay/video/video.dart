@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/entry.dart';
-import 'package:aves/widgets/viewer/overlay/common.dart';
+import 'package:aves/widgets/common/identity/buttons/overlay_button.dart';
 import 'package:aves/widgets/viewer/overlay/video/controls.dart';
 import 'package:aves/widgets/viewer/overlay/video/progress_bar.dart';
 import 'package:aves/widgets/viewer/video/controller.dart';
