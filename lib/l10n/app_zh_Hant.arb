@@ -1342,5 +1342,9 @@
   "collectionSelectSectionTooltip": "選擇部份",
   "@collectionSelectSectionTooltip": {},
   "coordinateFormatDecimal": "Decimal Degrees",
-  "@coordinateFormatDecimal": {}
+  "@coordinateFormatDecimal": {},
+  "collectionDeselectSectionTooltip": "取消選擇部份",
+  "@collectionDeselectSectionTooltip": {},
+  "settingsAllowInstalledAppAccess": "允許存取應用程式清單",
+  "@settingsAllowInstalledAppAccess": {}
 }
