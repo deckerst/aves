@@ -30,6 +30,7 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
   Stream<ActionEvent<EntryAction>> get eventStream => _eventStreamController.stream;
 
   bool isVisible(AvesEntry targetEntry, EntryAction action) {
+    final canWrite = !device.isReadOnly;
     switch (action) {
       // general
       case EntryAction.editDate:
@@ -39,13 +40,13 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
       case EntryAction.editTags:
       case EntryAction.removeMetadata:
       case EntryAction.exportMetadata:
-        return !device.isReadOnly;
+        return canWrite;
       // GeoTIFF
       case EntryAction.showGeoTiffOnMap:
         return targetEntry.isGeotiff;
       // motion photo
       case EntryAction.convertMotionPhotoToStillImage:
-        return !device.isReadOnly && targetEntry.isMotionPhoto;
+        return canWrite && targetEntry.isMotionPhoto;
       case EntryAction.viewMotionPhotoVideo:
         return targetEntry.isMotionPhoto;
       default:

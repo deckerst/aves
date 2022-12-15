@@ -36,6 +36,7 @@ class ColorListTile extends StatelessWidget {
       onTap: () async {
         final color = await showDialog<Color>(
           context: context,
+          // TODO TLAD [tv] color pick
           builder: (context) => ColorPickerDialog(
             initialValue: value,
           ),

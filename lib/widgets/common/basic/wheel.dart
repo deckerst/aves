@@ -41,6 +41,7 @@ class _WheelSelectorState<T> extends State<WheelSelector<T>> {
     const background = Colors.transparent;
     final foreground = DefaultTextStyle.of(context).style.color!;
 
+    // TODO TLAD [tv] wheel traversal
     return NotificationListener<ScrollNotification>(
       // cancel notification bubbling so that the dialog scroll bar
       // does not misinterpret wheel scrolling for dialog content scrolling

@@ -17,8 +17,13 @@ import 'package:aves/model/source/enums/enums.dart';
 import 'package:aves/services/common/optional_event_channel.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/aves_app.dart';
+import 'package:aves/widgets/common/search/page.dart';
+import 'package:aves/widgets/filter_grids/albums_page.dart';
+import 'package:aves/widgets/filter_grids/countries_page.dart';
+import 'package:aves/widgets/filter_grids/tags_page.dart';
 import 'package:aves_map/aves_map.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:latlong2/latlong.dart';
@@ -245,6 +250,12 @@ class Settings extends ChangeNotifier {
         MimeFilter.video,
         FavouriteFilter.instance,
         RecentlyAddedFilter.instance,
+      ];
+      drawerPageBookmarks = [
+        AlbumListPage.routeName,
+        CountryListPage.routeName,
+        TagListPage.routeName,
+        SearchPage.routeName,
       ];
       showOverlayOnOpening = false;
       showOverlayMinimap = false;

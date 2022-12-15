@@ -2,6 +2,7 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/recent.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/common/search/page.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/countries_page.dart';
 import 'package:aves/widgets/filter_grids/tags_page.dart';
@@ -39,6 +40,7 @@ class _NavigationDrawerEditorPageState extends State<NavigationDrawerEditorPage>
     AlbumListPage.routeName,
     CountryListPage.routeName,
     TagListPage.routeName,
+    SearchPage.routeName,
   };
 
   @override

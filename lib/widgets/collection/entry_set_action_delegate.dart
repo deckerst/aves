@@ -55,6 +55,8 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     required int selectedItemCount,
     required bool isTrash,
   }) {
+    final canWrite = !device.isReadOnly;
+    final isMain = appMode == AppMode.main;
     switch (action) {
       // general
       case EntrySetAction.configureView:
@@ -67,26 +69,26 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
         return isSelecting && selectedItemCount == itemCount;
       // browsing
       case EntrySetAction.searchCollection:
-        return appMode.canNavigate && !isSelecting;
+        return !device.isTelevision && appMode.canNavigate && !isSelecting;
       case EntrySetAction.toggleTitleSearch:
         return !isSelecting;
       case EntrySetAction.addShortcut:
-        return appMode == AppMode.main && !isSelecting && device.canPinShortcut && !isTrash;
+        return isMain && !isSelecting && device.canPinShortcut && !isTrash;
       case EntrySetAction.emptyBin:
-        return !device.isReadOnly && appMode == AppMode.main && isTrash;
+        return canWrite && isMain && isTrash;
       // browsing or selecting
       case EntrySetAction.map:
       case EntrySetAction.slideshow:
       case EntrySetAction.stats:
-        return appMode == AppMode.main;
+        return isMain;
       case EntrySetAction.rescan:
-        return appMode == AppMode.main && !isTrash;
+        return !device.isTelevision && isMain && !isTrash;
       // selecting
       case EntrySetAction.share:
       case EntrySetAction.toggleFavourite:
-        return appMode == AppMode.main && isSelecting && !isTrash;
+        return isMain && isSelecting && !isTrash;
       case EntrySetAction.delete:
-        return !device.isReadOnly && appMode == AppMode.main && isSelecting;
+        return canWrite && isMain && isSelecting;
       case EntrySetAction.copy:
       case EntrySetAction.move:
       case EntrySetAction.rename:
@@ -99,9 +101,9 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       case EntrySetAction.editRating:
       case EntrySetAction.editTags:
       case EntrySetAction.removeMetadata:
-        return !device.isReadOnly && appMode == AppMode.main && isSelecting && !isTrash;
+        return canWrite && isMain && isSelecting && !isTrash;
       case EntrySetAction.restore:
-        return !device.isReadOnly && appMode == AppMode.main && isSelecting && isTrash;
+        return canWrite && isMain && isSelecting && isTrash;
     }
   }
 

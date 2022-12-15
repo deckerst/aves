@@ -123,7 +123,7 @@ class AvesApp extends StatefulWidget {
 }
 
 class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
-  final ValueNotifier<AppMode> appModeNotifier = ValueNotifier(AppMode.main);
+  final List<StreamSubscription> _subscriptions = [];
   late final Future<void> _appSetup;
   late final Future<bool> _shouldUseBoldFontLoader;
   late final Future<CorePalette?> _dynamicColorPaletteLoader;
@@ -138,6 +138,8 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   // - `OpenUpwardsPageTransitionsBuilder` on Pie / API 28
   // - `ZoomPageTransitionsBuilder` on Android 10 / API 29 and above (default in Flutter v3.0.0)
   final ValueNotifier<PageTransitionsBuilder> _pageTransitionsBuilderNotifier = ValueNotifier(const FadeUpwardsPageTransitionsBuilder());
+  final ValueNotifier<NavigationMode> _navigationModeNotifier = ValueNotifier(NavigationMode.traditional);
+  final ValueNotifier<AppMode> _appModeNotifier = ValueNotifier(AppMode.main);
 
   // observers are not registered when using the same list object with different items
   // the list itself needs to be reassigned
@@ -156,11 +158,23 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     _screenSize = _getScreenSize();
     _shouldUseBoldFontLoader = AccessibilityService.shouldUseBoldFont();
     _dynamicColorPaletteLoader = DynamicColorPlugin.getCorePalette();
-    _mediaStoreChangeChannel.receiveBroadcastStream().listen((event) => _onMediaStoreChanged(event as String?));
-    _newIntentChannel.receiveBroadcastStream().listen((event) => _onNewIntent(event as Map?));
-    _analysisCompletionChannel.receiveBroadcastStream().listen((event) => _onAnalysisCompletion());
-    _errorChannel.receiveBroadcastStream().listen((event) => _onError(event as String?));
+    _subscriptions.add(_mediaStoreChangeChannel.receiveBroadcastStream().listen((event) => _onMediaStoreChanged(event as String?)));
+    _subscriptions.add(_newIntentChannel.receiveBroadcastStream().listen((event) => _onNewIntent(event as Map?)));
+    _subscriptions.add(_analysisCompletionChannel.receiveBroadcastStream().listen((event) => _onAnalysisCompletion()));
+    _subscriptions.add(_errorChannel.receiveBroadcastStream().listen((event) => _onError(event as String?)));
     WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    _pageTransitionsBuilderNotifier.dispose();
+    _navigationModeNotifier.dispose();
+    _appModeNotifier.dispose();
+    _subscriptions
+      ..forEach((sub) => sub.cancel())
+      ..clear();
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
   @override
@@ -172,7 +186,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
       child: ChangeNotifierProvider<Settings>.value(
         value: settings,
         child: ListenableProvider<ValueNotifier<AppMode>>.value(
-          value: appModeNotifier,
+          value: _appModeNotifier,
           child: Provider<CollectionSource>.value(
             value: _mediaStoreSource,
             child: Provider<TvRailController>.value(
@@ -192,18 +206,16 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
                             : Scaffold(
                                 body: snapshot.hasError ? _buildError(snapshot.error!) : const SizedBox(),
                               );
-                        return Selector<Settings, Tuple4<Locale?, bool, AvesThemeBrightness, bool>>(
-                          selector: (context, s) => Tuple4(
+                        return Selector<Settings, Tuple3<Locale?, AvesThemeBrightness, bool>>(
+                          selector: (context, s) => Tuple3(
                             s.locale,
-                            s.initialized ? s.accessibilityAnimations.animate : true,
                             s.initialized ? s.themeBrightness : SettingsDefaults.themeBrightness,
                             s.initialized ? s.enableDynamicColor : SettingsDefaults.enableDynamicColor,
                           ),
                           builder: (context, s, child) {
                             final settingsLocale = s.item1;
-                            final areAnimationsEnabled = s.item2;
-                            final themeBrightness = s.item3;
-                            final enableDynamicColor = s.item4;
+                            final themeBrightness = s.item2;
+                            final enableDynamicColor = s.item3;
 
                             Constants.updateStylesForLocale(settings.appliedLocale);
 
@@ -222,58 +234,30 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
                                 }
                                 final lightTheme = Themes.lightTheme(lightAccent, initialized);
                                 final darkTheme = themeBrightness == AvesThemeBrightness.black ? Themes.blackTheme(darkAccent, initialized) : Themes.darkTheme(darkAccent, initialized);
-                                return FutureBuilder<bool>(
-                                  future: _shouldUseBoldFontLoader,
-                                  builder: (context, snapshot) {
-                                    // Flutter v3.4 already checks the system `Configuration.fontWeightAdjustment` to update `MediaQuery`
-                                    // but we need to also check the non-standard Samsung field `bf` representing the bold font toggle
-                                    final shouldUseBoldFont = snapshot.data ?? false;
-                                    return Shortcuts(
-                                      shortcuts: <LogicalKeySet, Intent>{
-                                        // handle Android TV remote `select` button
-                                        LogicalKeySet(LogicalKeyboardKey.select): const ActivateIntent(),
-                                      },
-                                      child: MaterialApp(
-                                        navigatorKey: AvesApp.navigatorKey,
-                                        home: home,
-                                        navigatorObservers: _navigatorObservers,
-                                        builder: (context, child) {
-                                          if (initialized) {
-                                            WidgetsBinding.instance.addPostFrameCallback((_) => AvesApp.setSystemUIStyle(context));
-                                          }
-                                          return MediaQuery(
-                                            data: MediaQuery.of(context).copyWith(boldText: shouldUseBoldFont),
-                                            child: AvesColorsProvider(
-                                              child: ValueListenableBuilder<PageTransitionsBuilder>(
-                                                valueListenable: _pageTransitionsBuilderNotifier,
-                                                builder: (context, pageTransitionsBuilder, child) {
-                                                  return Theme(
-                                                    data: Theme.of(context).copyWith(
-                                                      pageTransitionsTheme: areAnimationsEnabled
-                                                          ? PageTransitionsTheme(builders: {TargetPlatform.android: pageTransitionsBuilder})
-                                                          // strip page transitions used by `MaterialPageRoute`
-                                                          : const DirectPageTransitionsTheme(),
-                                                    ),
-                                                    child: MediaQueryDataProvider(child: child!),
-                                                  );
-                                                },
-                                                child: child,
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                        onGenerateTitle: (context) => context.l10n.appName,
-                                        theme: lightTheme,
-                                        darkTheme: darkTheme,
-                                        themeMode: themeBrightness.appThemeMode,
-                                        locale: settingsLocale,
-                                        localizationsDelegates: AppLocalizations.localizationsDelegates,
-                                        supportedLocales: AvesApp.supportedLocales,
-                                        // TODO TLAD remove custom scroll behavior when this is fixed: https://github.com/flutter/flutter/issues/82906
-                                        scrollBehavior: StretchMaterialScrollBehavior(),
-                                      ),
-                                    );
+                                return Shortcuts(
+                                  shortcuts: <LogicalKeySet, Intent>{
+                                    // handle Android TV remote `select` button
+                                    LogicalKeySet(LogicalKeyboardKey.select): const ActivateIntent(),
                                   },
+                                  child: MaterialApp(
+                                    navigatorKey: AvesApp.navigatorKey,
+                                    home: home,
+                                    navigatorObservers: _navigatorObservers,
+                                    builder: (context, child) => _decorateAppChild(
+                                      context: context,
+                                      initialized: initialized,
+                                      child: child,
+                                    ),
+                                    onGenerateTitle: (context) => context.l10n.appName,
+                                    theme: lightTheme,
+                                    darkTheme: darkTheme,
+                                    themeMode: themeBrightness.appThemeMode,
+                                    locale: settingsLocale,
+                                    localizationsDelegates: AppLocalizations.localizationsDelegates,
+                                    supportedLocales: AvesApp.supportedLocales,
+                                    // TODO TLAD remove custom scroll behavior when this is fixed: https://github.com/flutter/flutter/issues/82906
+                                    scrollBehavior: StretchMaterialScrollBehavior(),
+                                  ),
                                 );
                               },
                             );
@@ -288,6 +272,59 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _decorateAppChild({
+    required BuildContext context,
+    required bool initialized,
+    required Widget? child,
+  }) {
+    if (initialized) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => AvesApp.setSystemUIStyle(context));
+    }
+    return Selector<Settings, bool>(
+      selector: (context, s) => s.initialized ? s.accessibilityAnimations.animate : true,
+      builder: (context, areAnimationsEnabled, child) {
+        return FutureBuilder<bool>(
+          future: _shouldUseBoldFontLoader,
+          builder: (context, snapshot) {
+            // Flutter v3.4 already checks the system `Configuration.fontWeightAdjustment` to update `MediaQuery`
+            // but we need to also check the non-standard Samsung field `bf` representing the bold font toggle
+            final shouldUseBoldFont = snapshot.data ?? false;
+            return ValueListenableBuilder<NavigationMode>(
+              valueListenable: _navigationModeNotifier,
+              builder: (context, navigationMode, child) {
+                return MediaQuery(
+                  data: MediaQuery.of(context).copyWith(
+                    boldText: shouldUseBoldFont,
+                    navigationMode: navigationMode,
+                  ),
+                  child: AvesColorsProvider(
+                    child: ValueListenableBuilder<PageTransitionsBuilder>(
+                      valueListenable: _pageTransitionsBuilderNotifier,
+                      builder: (context, pageTransitionsBuilder, child) {
+                        return Theme(
+                          data: Theme.of(context).copyWith(
+                            pageTransitionsTheme: areAnimationsEnabled
+                                ? PageTransitionsTheme(builders: {TargetPlatform.android: pageTransitionsBuilder})
+                                // strip page transitions used by `MaterialPageRoute`
+                                : const DirectPageTransitionsTheme(),
+                          ),
+                          child: MediaQueryDataProvider(child: child!),
+                        );
+                      },
+                      child: child,
+                    ),
+                  ),
+                );
+              },
+              child: child,
+            );
+          },
+        );
+      },
+      child: child,
     );
   }
 
@@ -311,7 +348,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     debugPrint('$runtimeType lifecycle ${state.name}');
     switch (state) {
       case AppLifecycleState.inactive:
-        switch (appModeNotifier.value) {
+        switch (_appModeNotifier.value) {
           case AppMode.main:
           case AppMode.pickSingleMediaExternal:
           case AppMode.pickMultipleMediaExternal:
@@ -370,6 +407,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     await device.init();
     if (device.isTelevision) {
       _pageTransitionsBuilderNotifier.value = const TvPageTransitionsBuilder();
+      _navigationModeNotifier.value = NavigationMode.directional;
     }
     await mobileServices.init();
     await settings.init(monitorPlatformSettings: true);
@@ -440,7 +478,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     debugPrint('$runtimeType onNewIntent with intentData=$intentData');
 
     // do not reset when relaunching the app
-    if (appModeNotifier.value == AppMode.main && (intentData == null || intentData.isEmpty == true)) return;
+    if (_appModeNotifier.value == AppMode.main && (intentData == null || intentData.isEmpty == true)) return;
 
     reportService.log('New intent');
     AvesApp.navigatorKey.currentState!.pushReplacement(DirectMaterialPageRoute(
