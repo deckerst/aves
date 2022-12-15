@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:ui';
 
 import 'package:aves/theme/durations.dart';
-import 'package:aves/widgets/common/app_bar/quick_choosers/common/quick_chooser.dart';
+import 'package:aves/widgets/common/action_controls/quick_choosers/common/quick_chooser.dart';
 import 'package:aves_ui/aves_ui.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';

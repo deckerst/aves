@@ -8,17 +8,17 @@ import 'package:aves/model/query.dart';
 import 'package:aves/model/selection.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/theme/durations.dart';
+import 'package:aves/widgets/common/action_controls/togglers/title_search.dart';
 import 'package:aves/widgets/common/app_bar/app_bar_subtitle.dart';
 import 'package:aves/widgets/common/app_bar/app_bar_title.dart';
-import 'package:aves/widgets/common/app_bar/title_search_toggler.dart';
 import 'package:aves/widgets/common/basic/menu.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_app_bar.dart';
+import 'package:aves/widgets/common/identity/buttons/captioned_button.dart';
 import 'package:aves/widgets/common/search/route.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip_set.dart';
 import 'package:aves/widgets/filter_grids/common/query_bar.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
-import 'package:aves/widgets/settings/common/quick_actions/action_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
@@ -143,7 +143,7 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
             children: [
               if (isTelevision)
                 SizedBox(
-                  height: ActionButton.getTelevisionButtonHeight(context),
+                  height: CaptionedButton.getTelevisionButtonHeight(context),
                   child: ListView(
                     padding: const EdgeInsets.symmetric(horizontal: 8),
                     scrollDirection: Axis.horizontal,
@@ -166,7 +166,7 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
   double get appBarContentHeight {
     double height = kToolbarHeight;
     if (device.isTelevision) {
-      height += ActionButton.getTelevisionButtonHeight(context);
+      height += CaptionedButton.getTelevisionButtonHeight(context);
     }
     if (context.read<Query>().enabled) {
       height += FilterQueryBar.preferredHeight;
@@ -281,12 +281,10 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
       ...ChipSetActions.general,
       ...isSelecting ? ChipSetActions.selection : ChipSetActions.browsing,
     ].where(isVisible).map((action) {
-      // TODO TLAD [tv] togglers cf `FilterGridAppBar.toMenuItem`
       final enabled = canApply(action);
-      return ActionButton(
-        text: action.getText(context),
-        icon: action.getIcon(),
-        enabled: enabled,
+      return CaptionedButton(
+        iconButton: _buildButtonIcon(context, actionDelegate, action, enabled: enabled),
+        captionText: _buildButtonCaption(context, action, enabled: enabled),
         onPressed: enabled ? () => _onActionSelected(context, action, actionDelegate) : null,
       );
     }).toList();
@@ -302,7 +300,7 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
     final isSelecting = selection.isSelecting;
 
     final quickActionButtons = (isSelecting ? selectionQuickActions : browsingQuickActions).where(isVisible).map(
-          (action) => _toActionButton(context, actionDelegate, action, enabled: canApply(action)),
+          (action) => _buildButtonIcon(context, actionDelegate, action, enabled: canApply(action)),
         );
 
     return [
@@ -342,7 +340,7 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
     ];
   }
 
-  Widget _toActionButton(
+  Widget _buildButtonIcon(
     BuildContext context,
     CSAD actionDelegate,
     ChipSetAction action, {
@@ -366,6 +364,24 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
           icon: action.getIcon(),
           onPressed: onPressed,
           tooltip: action.getText(context),
+        );
+    }
+  }
+
+  Widget _buildButtonCaption(
+    BuildContext context,
+    ChipSetAction action, {
+    required bool enabled,
+  }) {
+    switch (action) {
+      case ChipSetAction.toggleTitleSearch:
+        return TitleSearchTogglerCaption(
+          enabled: enabled,
+        );
+      default:
+        return CaptionedButtonText(
+          text: action.getText(context),
+          enabled: enabled,
         );
     }
   }

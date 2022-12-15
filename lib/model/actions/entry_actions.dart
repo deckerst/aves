@@ -114,6 +114,12 @@ class EntryActions {
     EntryAction.videoSettings,
   ];
 
+  static const videoPlayback = [
+    EntryAction.videoReplay10,
+    EntryAction.videoTogglePlay,
+    EntryAction.videoSkip10,
+  ];
+
   static const commonMetadataActions = [
     EntryAction.editDate,
     EntryAction.editLocation,

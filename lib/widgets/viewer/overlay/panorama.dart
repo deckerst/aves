@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:aves/model/entry.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:aves/widgets/viewer/overlay/common.dart';
+import 'package:aves/widgets/common/identity/buttons/overlay_button.dart';
 import 'package:aves/widgets/viewer/panorama_page.dart';
 import 'package:flutter/material.dart';
 

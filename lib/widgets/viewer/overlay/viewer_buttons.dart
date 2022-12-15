@@ -5,20 +5,20 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/widgets/common/app_bar/favourite_toggler.dart';
-import 'package:aves/widgets/common/app_bar/quick_choosers/move_button.dart';
-import 'package:aves/widgets/common/app_bar/quick_choosers/rate_button.dart';
-import 'package:aves/widgets/common/app_bar/quick_choosers/share_button.dart';
-import 'package:aves/widgets/common/app_bar/quick_choosers/tag_button.dart';
+import 'package:aves/widgets/common/action_controls/quick_choosers/move_button.dart';
+import 'package:aves/widgets/common/action_controls/quick_choosers/rate_button.dart';
+import 'package:aves/widgets/common/action_controls/quick_choosers/share_button.dart';
+import 'package:aves/widgets/common/action_controls/quick_choosers/tag_button.dart';
+import 'package:aves/widgets/common/action_controls/togglers/favourite.dart';
+import 'package:aves/widgets/common/action_controls/togglers/mute.dart';
+import 'package:aves/widgets/common/action_controls/togglers/play.dart';
 import 'package:aves/widgets/common/basic/menu.dart';
 import 'package:aves/widgets/common/basic/popup_menu_button.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:aves/widgets/settings/common/quick_actions/action_button.dart';
+import 'package:aves/widgets/common/identity/buttons/captioned_button.dart';
+import 'package:aves/widgets/common/identity/buttons/overlay_button.dart';
 import 'package:aves/widgets/viewer/action/entry_action_delegate.dart';
 import 'package:aves/widgets/viewer/notifications.dart';
-import 'package:aves/widgets/viewer/overlay/common.dart';
-import 'package:aves/widgets/viewer/overlay/video/mute_toggler.dart';
-import 'package:aves/widgets/viewer/overlay/video/play_toggler.dart';
 import 'package:aves/widgets/viewer/video/conductor.dart';
 import 'package:aves/widgets/viewer/video/controller.dart';
 import 'package:collection/collection.dart';
@@ -49,16 +49,17 @@ class ViewerButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final actionDelegate = EntryActionDelegate(mainEntry, pageEntry, collection);
+
     if (device.isTelevision) {
       return _TvButtonRowContent(
+        actionDelegate: actionDelegate,
         scale: scale,
         mainEntry: mainEntry,
         pageEntry: pageEntry,
-        collection: collection,
       );
     }
 
-    final actionDelegate = EntryActionDelegate(mainEntry, pageEntry, collection);
     final trashed = mainEntry.trashed;
     return SafeArea(
       top: false,
@@ -75,6 +76,7 @@ class ViewerButtons extends StatelessWidget {
               final exportActions = EntryActions.export.where((action) => !quickActions.contains(action)).where(actionDelegate.isVisible).toList();
               final videoActions = EntryActions.video.where((action) => !quickActions.contains(action)).where(actionDelegate.isVisible).toList();
               return ViewerButtonRowContent(
+                actionDelegate: EntryActionDelegate(mainEntry, pageEntry, collection),
                 quickActions: quickActions,
                 topLevelActions: topLevelActions,
                 exportActions: exportActions,
@@ -82,7 +84,6 @@ class ViewerButtons extends StatelessWidget {
                 scale: scale,
                 mainEntry: mainEntry,
                 pageEntry: pageEntry,
-                collection: collection,
               );
             },
           );
@@ -93,48 +94,64 @@ class ViewerButtons extends StatelessWidget {
 }
 
 class _TvButtonRowContent extends StatelessWidget {
+  final EntryActionDelegate actionDelegate;
   final Animation<double> scale;
   final AvesEntry mainEntry, pageEntry;
-  final CollectionLens? collection;
 
   const _TvButtonRowContent({
+    required this.actionDelegate,
     required this.scale,
     required this.mainEntry,
     required this.pageEntry,
-    required this.collection,
   });
 
   @override
   Widget build(BuildContext context) {
-    final actionDelegate = EntryActionDelegate(mainEntry, pageEntry, collection);
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        ...EntryActions.topLevel,
-        ...EntryActions.export,
-        ...EntryActions.video,
-      ].where(actionDelegate.isVisible).map((action) {
-        // TODO TLAD [tv] togglers cf `_buildOverlayButton`
-        // TODO TLAD [tv] use `scale`
-        final enabled = actionDelegate.canApply(action);
-        return ActionButton(
-          text: action.getText(context),
-          icon: action.getIcon(),
-          enabled: enabled,
-          onPressed: enabled ? () => actionDelegate.onActionSelected(context, action) : null,
+    return Selector<VideoConductor, AvesVideoController?>(
+      selector: (context, vc) => vc.getController(pageEntry),
+      builder: (context, videoController, child) {
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ...EntryActions.topLevel,
+            ...EntryActions.export,
+            ...EntryActions.videoPlayback,
+            ...EntryActions.video,
+          ].where(actionDelegate.isVisible).map((action) {
+            final enabled = actionDelegate.canApply(action);
+            return CaptionedButton(
+              scale: scale,
+              iconButton: _buildButtonIcon(
+                context: context,
+                action: action,
+                mainEntry: mainEntry,
+                pageEntry: pageEntry,
+                videoController: videoController,
+                actionDelegate: actionDelegate,
+              ),
+              captionText: _buildButtonCaption(
+                context: context,
+                action: action,
+                mainEntry: mainEntry,
+                pageEntry: pageEntry,
+                videoController: videoController,
+                enabled: enabled,
+              ),
+              onPressed: enabled ? () => actionDelegate.onActionSelected(context, action) : null,
+            );
+          }).toList(),
         );
-      }).toList(),
+      },
     );
   }
 }
 
 class ViewerButtonRowContent extends StatelessWidget {
+  final EntryActionDelegate actionDelegate;
   final List<EntryAction> quickActions, topLevelActions, exportActions, videoActions;
   final Animation<double> scale;
   final AvesEntry mainEntry, pageEntry;
-  final CollectionLens? collection;
   final ValueNotifier<String?> _popupExpandedNotifier = ValueNotifier(null);
 
   AvesEntry get favouriteTargetEntry => mainEntry.isBurst ? pageEntry : mainEntry;
@@ -143,6 +160,7 @@ class ViewerButtonRowContent extends StatelessWidget {
 
   ViewerButtonRowContent({
     super.key,
+    required this.actionDelegate,
     required this.quickActions,
     required this.topLevelActions,
     required this.exportActions,
@@ -150,7 +168,6 @@ class ViewerButtonRowContent extends StatelessWidget {
     required this.scale,
     required this.mainEntry,
     required this.pageEntry,
-    required this.collection,
   });
 
   @override
@@ -216,7 +233,7 @@ class ViewerButtonRowContent extends StatelessWidget {
                         onSelected: (action) {
                           _popupExpandedNotifier.value = null;
                           // wait for the popup menu to hide before proceeding with the action
-                          Future.delayed(Durations.popupMenuAnimation * timeDilation, () => _onActionSelected(context, action));
+                          Future.delayed(Durations.popupMenuAnimation * timeDilation, () => actionDelegate.onActionSelected(context, action));
                         },
                         onCanceled: () {
                           _popupExpandedNotifier.value = null;
@@ -239,101 +256,18 @@ class ViewerButtonRowContent extends StatelessWidget {
   }
 
   Widget _buildOverlayButton(BuildContext context, EntryAction action, AvesVideoController? videoController) {
-    Widget? child;
-    void onPressed() => _onActionSelected(context, action);
-
-    ValueListenableBuilder<bool> _buildFromListenable(ValueListenable<bool>? enabledNotifier) {
-      return ValueListenableBuilder<bool>(
-        valueListenable: enabledNotifier ?? ValueNotifier(false),
-        builder: (context, canDo, child) => IconButton(
-          icon: child!,
-          onPressed: canDo ? onPressed : null,
-          tooltip: action.getText(context),
-        ),
-        child: action.getIcon(),
-      );
-    }
-
-    final blurred = settings.enableBlurEffect;
-    switch (action) {
-      case EntryAction.copy:
-        child = MoveButton(
-          copy: true,
-          blurred: blurred,
-          onChooserValue: (album) => _entryActionDelegate.quickMove(context, album, copy: true),
-          onPressed: onPressed,
-        );
-        break;
-      case EntryAction.move:
-        child = MoveButton(
-          copy: false,
-          blurred: blurred,
-          onChooserValue: (album) => _entryActionDelegate.quickMove(context, album, copy: false),
-          onPressed: onPressed,
-        );
-        break;
-      case EntryAction.share:
-        child = ShareButton(
-          blurred: blurred,
-          entries: {mainEntry},
-          onChooserValue: (action) => _entryActionDelegate.quickShare(context, action),
-          onPressed: onPressed,
-        );
-        break;
-      case EntryAction.toggleFavourite:
-        child = FavouriteToggler(
-          entries: {favouriteTargetEntry},
-          onPressed: onPressed,
-        );
-        break;
-      case EntryAction.videoToggleMute:
-        child = MuteToggler(
-          controller: videoController,
-          onPressed: onPressed,
-        );
-        break;
-      case EntryAction.videoTogglePlay:
-        child = PlayToggler(
-          controller: videoController,
-          onPressed: onPressed,
-        );
-        break;
-      case EntryAction.videoCaptureFrame:
-        child = _buildFromListenable(videoController?.canCaptureFrameNotifier);
-        break;
-      case EntryAction.videoSelectStreams:
-        child = _buildFromListenable(videoController?.canSelectStreamNotifier);
-        break;
-      case EntryAction.videoSetSpeed:
-        child = _buildFromListenable(videoController?.canSetSpeedNotifier);
-        break;
-      case EntryAction.editRating:
-        child = RateButton(
-          blurred: blurred,
-          onChooserValue: (rating) => _entryActionDelegate.quickRate(context, rating),
-          onPressed: onPressed,
-        );
-        break;
-      case EntryAction.editTags:
-        child = TagButton(
-          blurred: blurred,
-          onChooserValue: (filter) => _entryActionDelegate.quickTag(context, filter),
-          onPressed: onPressed,
-        );
-        break;
-      default:
-        child = IconButton(
-          icon: action.getIcon(),
-          onPressed: onPressed,
-          tooltip: action.getText(context),
-        );
-        break;
-    }
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: padding / 2),
       child: OverlayButton(
         scale: scale,
-        child: child,
+        child: _buildButtonIcon(
+          context: context,
+          action: action,
+          mainEntry: mainEntry,
+          pageEntry: pageEntry,
+          videoController: videoController,
+          actionDelegate: actionDelegate,
+        ),
       ),
     );
   }
@@ -390,8 +324,6 @@ class ViewerButtonRowContent extends StatelessWidget {
   }
 
   PopupMenuItem<EntryAction> _buildRotateAndFlipMenuItems(BuildContext context) {
-    final actionDelegate = _entryActionDelegate;
-
     Widget buildDivider() => const SizedBox(
           height: 16,
           child: VerticalDivider(
@@ -443,8 +375,139 @@ class ViewerButtonRowContent extends StatelessWidget {
       ),
     );
   }
+}
 
-  EntryActionDelegate get _entryActionDelegate => EntryActionDelegate(mainEntry, pageEntry, collection);
+Widget _buildButtonIcon({
+  required BuildContext context,
+  required EntryAction action,
+  required AvesEntry mainEntry,
+  required AvesEntry pageEntry,
+  required AvesVideoController? videoController,
+  required EntryActionDelegate actionDelegate,
+}) {
+  Widget? child;
+  void onPressed() => actionDelegate.onActionSelected(context, action);
 
-  void _onActionSelected(BuildContext context, EntryAction action) => _entryActionDelegate.onActionSelected(context, action);
+  ValueListenableBuilder<bool> _buildFromListenable(ValueListenable<bool>? enabledNotifier) {
+    return ValueListenableBuilder<bool>(
+      valueListenable: enabledNotifier ?? ValueNotifier(false),
+      builder: (context, canDo, child) => IconButton(
+        icon: child!,
+        onPressed: canDo ? onPressed : null,
+        tooltip: action.getText(context),
+      ),
+      child: action.getIcon(),
+    );
+  }
+
+  final blurred = settings.enableBlurEffect;
+  switch (action) {
+    case EntryAction.copy:
+      child = MoveButton(
+        copy: true,
+        blurred: blurred,
+        onChooserValue: (album) => actionDelegate.quickMove(context, album, copy: true),
+        onPressed: onPressed,
+      );
+      break;
+    case EntryAction.move:
+      child = MoveButton(
+        copy: false,
+        blurred: blurred,
+        onChooserValue: (album) => actionDelegate.quickMove(context, album, copy: false),
+        onPressed: onPressed,
+      );
+      break;
+    case EntryAction.share:
+      child = ShareButton(
+        blurred: blurred,
+        entries: {mainEntry},
+        onChooserValue: (action) => actionDelegate.quickShare(context, action),
+        onPressed: onPressed,
+      );
+      break;
+    case EntryAction.toggleFavourite:
+      final favouriteTargetEntry = mainEntry.isBurst ? pageEntry : mainEntry;
+      child = FavouriteToggler(
+        entries: {favouriteTargetEntry},
+        onPressed: onPressed,
+      );
+      break;
+    case EntryAction.videoToggleMute:
+      child = MuteToggler(
+        controller: videoController,
+        onPressed: onPressed,
+      );
+      break;
+    case EntryAction.videoTogglePlay:
+      child = PlayToggler(
+        controller: videoController,
+        onPressed: onPressed,
+      );
+      break;
+    case EntryAction.videoCaptureFrame:
+      child = _buildFromListenable(videoController?.canCaptureFrameNotifier);
+      break;
+    case EntryAction.videoSelectStreams:
+      child = _buildFromListenable(videoController?.canSelectStreamNotifier);
+      break;
+    case EntryAction.videoSetSpeed:
+      child = _buildFromListenable(videoController?.canSetSpeedNotifier);
+      break;
+    case EntryAction.editRating:
+      child = RateButton(
+        blurred: blurred,
+        onChooserValue: (rating) => actionDelegate.quickRate(context, rating),
+        onPressed: onPressed,
+      );
+      break;
+    case EntryAction.editTags:
+      child = TagButton(
+        blurred: blurred,
+        onChooserValue: (filter) => actionDelegate.quickTag(context, filter),
+        onPressed: onPressed,
+      );
+      break;
+    default:
+      child = IconButton(
+        icon: action.getIcon(),
+        onPressed: onPressed,
+        tooltip: action.getText(context),
+      );
+      break;
+  }
+  return child;
+}
+
+Widget _buildButtonCaption({
+  required BuildContext context,
+  required EntryAction action,
+  required AvesEntry mainEntry,
+  required AvesEntry pageEntry,
+  required AvesVideoController? videoController,
+  required bool enabled,
+}) {
+  switch (action) {
+    case EntryAction.toggleFavourite:
+      final favouriteTargetEntry = mainEntry.isBurst ? pageEntry : mainEntry;
+      return FavouriteTogglerCaption(
+        entries: {favouriteTargetEntry},
+        enabled: enabled,
+      );
+    case EntryAction.videoToggleMute:
+      return MuteTogglerCaption(
+        controller: videoController,
+        enabled: enabled,
+      );
+    case EntryAction.videoTogglePlay:
+      return PlayTogglerCaption(
+        controller: videoController,
+        enabled: enabled,
+      );
+    default:
+      return CaptionedButtonText(
+        text: action.getText(context),
+        enabled: enabled,
+      );
+  }
 }

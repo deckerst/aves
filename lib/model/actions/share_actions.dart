@@ -2,7 +2,10 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/widgets.dart';
 
-enum ShareAction { imageOnly, videoOnly, }
+enum ShareAction {
+  imageOnly,
+  videoOnly,
+}
 
 extension ExtraShareAction on ShareAction {
   String getText(BuildContext context) {

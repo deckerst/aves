@@ -21,18 +21,18 @@ import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/collection/entry_set_action_delegate.dart';
 import 'package:aves/widgets/collection/filter_bar.dart';
 import 'package:aves/widgets/collection/query_bar.dart';
+import 'package:aves/widgets/common/action_controls/togglers/favourite.dart';
+import 'package:aves/widgets/common/action_controls/togglers/title_search.dart';
 import 'package:aves/widgets/common/app_bar/app_bar_subtitle.dart';
 import 'package:aves/widgets/common/app_bar/app_bar_title.dart';
-import 'package:aves/widgets/common/app_bar/favourite_toggler.dart';
-import 'package:aves/widgets/common/app_bar/title_search_toggler.dart';
 import 'package:aves/widgets/common/basic/menu.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_app_bar.dart';
+import 'package:aves/widgets/common/identity/buttons/captioned_button.dart';
 import 'package:aves/widgets/common/search/route.dart';
 import 'package:aves/widgets/dialogs/tile_view_dialog.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
-import 'package:aves/widgets/settings/common/quick_actions/action_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
@@ -176,7 +176,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
                     children: [
                       if (isTelevision)
                         SizedBox(
-                          height: ActionButton.getTelevisionButtonHeight(context),
+                          height: CaptionedButton.getTelevisionButtonHeight(context),
                           child: ListView(
                             padding: const EdgeInsets.symmetric(horizontal: 8),
                             scrollDirection: Axis.horizontal,
@@ -215,7 +215,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   double get appBarContentHeight {
     double height = kToolbarHeight;
     if (device.isTelevision) {
-      height += ActionButton.getTelevisionButtonHeight(context);
+      height += CaptionedButton.getTelevisionButtonHeight(context);
     }
     if (showFilterBar) {
       height += FilterBar.preferredHeight;
@@ -339,12 +339,10 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       ...EntrySetActions.general,
       ...isSelecting ? EntrySetActions.pageSelection : EntrySetActions.pageBrowsing,
     ].where(isVisible).map((action) {
-      // TODO TLAD [tv] togglers cf `_toIconActionButton`
       final enabled = canApply(action);
-      return ActionButton(
-        text: action.getText(context),
-        icon: action.getIcon(),
-        enabled: enabled,
+      return CaptionedButton(
+        iconButton: _buildButtonIcon(context, action, enabled: enabled, selection: selection),
+        captionText: _buildButtonCaption(context, action, enabled: enabled),
         onPressed: enabled ? () => _onActionSelected(action) : null,
       );
     }).toList();
@@ -364,7 +362,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     final browsingQuickActions = settings.collectionBrowsingQuickActions;
     final selectionQuickActions = isTrash ? [EntrySetAction.delete, EntrySetAction.restore] : settings.collectionSelectionQuickActions;
     final quickActionButtons = (isSelecting ? selectionQuickActions : browsingQuickActions).where(isVisible).map(
-          (action) => _toIconActionButton(action, enabled: canApply(action), selection: selection),
+          (action) => _buildButtonIcon(context, action, enabled: canApply(action), selection: selection),
         );
 
     return [
@@ -426,7 +424,12 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   // key is expected by test driver (e.g. 'menu-configureView', 'menu-map')
   Key _getActionKey(EntrySetAction action) => Key('menu-${action.name}');
 
-  Widget _toIconActionButton(EntrySetAction action, {required bool enabled, required Selection<AvesEntry> selection}) {
+  Widget _buildButtonIcon(
+    BuildContext context,
+    EntrySetAction action, {
+    required bool enabled,
+    required Selection<AvesEntry> selection,
+  }) {
     final onPressed = enabled ? () => _onActionSelected(action) : null;
     switch (action) {
       case EntrySetAction.toggleTitleSearch:
@@ -451,6 +454,24 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
           icon: action.getIcon(),
           onPressed: onPressed,
           tooltip: action.getText(context),
+        );
+    }
+  }
+
+  Widget _buildButtonCaption(
+    BuildContext context,
+    EntrySetAction action, {
+    required bool enabled,
+  }) {
+    switch (action) {
+      case EntrySetAction.toggleTitleSearch:
+        return TitleSearchTogglerCaption(
+          enabled: enabled,
+        );
+      default:
+        return CaptionedButtonText(
+          text: action.getText(context),
+          enabled: enabled,
         );
     }
   }

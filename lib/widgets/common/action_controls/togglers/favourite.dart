@@ -5,6 +5,7 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/basic/menu.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/sweeper.dart';
+import 'package:aves/widgets/common/identity/buttons/captioned_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -49,6 +50,7 @@ class _FavouriteTogglerState extends State<FavouriteToggler> {
   @override
   void dispose() {
     favourites.removeListener(_onChanged);
+    isFavouriteNotifier.dispose();
     super.dispose();
   }
 
@@ -85,6 +87,63 @@ class _FavouriteTogglerState extends State<FavouriteToggler> {
               toggledNotifier: isFavouriteNotifier,
             ),
           ],
+        );
+      },
+    );
+  }
+
+  void _onChanged() {
+    isFavouriteNotifier.value = entries.isNotEmpty && entries.every((entry) => entry.isFavourite);
+  }
+}
+
+class FavouriteTogglerCaption extends StatefulWidget {
+  final Set<AvesEntry> entries;
+  final bool enabled;
+
+  const FavouriteTogglerCaption({
+    super.key,
+    required this.entries,
+    required this.enabled,
+  });
+
+  @override
+  State<FavouriteTogglerCaption> createState() => _FavouriteTogglerCaptionState();
+}
+
+class _FavouriteTogglerCaptionState extends State<FavouriteTogglerCaption> {
+  final ValueNotifier<bool> isFavouriteNotifier = ValueNotifier(false);
+
+  Set<AvesEntry> get entries => widget.entries;
+
+  @override
+  void initState() {
+    super.initState();
+    favourites.addListener(_onChanged);
+    _onChanged();
+  }
+
+  @override
+  void didUpdateWidget(covariant FavouriteTogglerCaption oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _onChanged();
+  }
+
+  @override
+  void dispose() {
+    favourites.removeListener(_onChanged);
+    isFavouriteNotifier.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<bool>(
+      valueListenable: isFavouriteNotifier,
+      builder: (context, isFavourite, child) {
+        return CaptionedButtonText(
+          text: isFavourite ? context.l10n.entryActionRemoveFavourite : context.l10n.entryActionAddFavourite,
+          enabled: widget.enabled,
         );
       },
     );
