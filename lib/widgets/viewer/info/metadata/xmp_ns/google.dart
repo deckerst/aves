@@ -69,6 +69,24 @@ class XmpGDepthNamespace extends XmpGoogleNamespace {
       ];
 }
 
+class XmpGDeviceNamespace extends XmpNamespace {
+  XmpGDeviceNamespace(String nsPrefix, Map<String, String> rawProps) : super(Namespaces.gDevice, nsPrefix, rawProps);
+
+  @override
+  late final List<XmpCardData> cards = [
+    XmpCardData(
+      RegExp(nsPrefix + r'Cameras\[(\d+)\]/(.*)'),
+      cards: [
+        XmpCardData(RegExp(r'Camera:DepthMap/(.*)')),
+        XmpCardData(RegExp(r'Camera:Image/(.*)')),
+        XmpCardData(RegExp(r'Camera:ImagingModel/(.*)')),
+      ],
+    ),
+    XmpCardData(RegExp(nsPrefix + r'Container/Container:Directory\[(\d+)\]/(.*)')),
+    XmpCardData(RegExp(nsPrefix + r'Profiles\[(\d+)\]/(.*)')),
+  ];
+}
+
 class XmpGImageNamespace extends XmpGoogleNamespace {
   const XmpGImageNamespace(String nsPrefix, Map<String, String> rawProps) : super(Namespaces.gImage, nsPrefix, rawProps);
 

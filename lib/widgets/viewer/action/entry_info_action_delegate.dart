@@ -19,6 +19,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/map/map_page.dart';
 import 'package:aves/widgets/viewer/action/single_entry_editor.dart';
+import 'package:aves/widgets/viewer/debug/debug_page.dart';
 import 'package:aves/widgets/viewer/embedded/notifications.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -117,6 +118,10 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
         break;
       case EntryAction.viewMotionPhotoVideo:
         OpenEmbeddedDataNotification.motionPhotoVideo().dispatch(context);
+        break;
+      // debug
+      case EntryAction.debug:
+        _goToDebug(context, targetEntry);
         break;
       default:
         break;
@@ -272,5 +277,15 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
       ),
     );
     mapCollection.dispose();
+  }
+
+  void _goToDebug(BuildContext context, AvesEntry targetEntry) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        settings: const RouteSettings(name: ViewerDebugPage.routeName),
+        builder: (context) => ViewerDebugPage(entry: targetEntry),
+      ),
+    );
   }
 }
