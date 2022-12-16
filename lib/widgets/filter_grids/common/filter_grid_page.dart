@@ -211,7 +211,7 @@ class _FilterGridState<T extends CollectionFilter> extends State<FilterGrid<T>> 
   Widget build(BuildContext context) {
     _tileExtentController ??= TileExtentController(
       settingsRouteKey: widget.settingsRouteKey ?? context.currentRouteName!,
-      columnCountDefault: 3,
+      columnCountDefault: device.isTelevision ? 4 : 3,
       extentMin: 60,
       extentMax: 300,
       spacing: 8,

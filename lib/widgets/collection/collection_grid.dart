@@ -52,11 +52,12 @@ import 'package:tuple/tuple.dart';
 class CollectionGrid extends StatefulWidget {
   final String settingsRouteKey;
 
-  static const int columnCountDefault = 4;
   static const double extentMin = 46;
   static const double extentMax = 300;
   static const double fixedExtentLayoutSpacing = 2;
   static const double mosaicLayoutSpacing = 4;
+
+  static int get columnCountDefault => device.isTelevision ? 6 : 4;
 
   const CollectionGrid({
     super.key,

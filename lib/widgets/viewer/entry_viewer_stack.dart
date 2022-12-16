@@ -283,7 +283,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
                 onImagePageRequested: () => _goToVerticalPage(imagePage),
                 onViewDisposed: (mainEntry, pageEntry) => viewStateConductor.reset(pageEntry ?? mainEntry),
               ),
-              ..._buildOverlays(),
+              ..._buildOverlays().map(_decorateOverlay),
               const TopGestureAreaProtector(),
               const SideGestureAreaProtector(),
               const BottomGestureAreaProtector(),
@@ -291,6 +291,19 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
           ),
         ),
       ),
+    );
+  }
+
+  Widget _decorateOverlay(Widget overlay) {
+    return ValueListenableBuilder<double>(
+      valueListenable: _overlayAnimationController,
+      builder: (context, animation, child) {
+        return Visibility(
+          visible: !_overlayAnimationController.isDismissed,
+          child: child!,
+        );
+      },
+      child: overlay,
     );
   }
 
@@ -324,7 +337,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
                 preferBelow: false,
               ),
               child: SlideshowButtons(
-                scale: _overlayButtonScale,
+                animationController: _overlayAnimationController,
               ),
             ),
           ),
@@ -359,17 +372,6 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
       builder: (context, page, child) {
         return Visibility(
           visible: page == imagePage,
-          child: child!,
-        );
-      },
-      child: child,
-    );
-
-    child = ValueListenableBuilder<double>(
-      valueListenable: _overlayAnimationController,
-      builder: (context, animation, child) {
-        return Visibility(
-          visible: !_overlayAnimationController.isDismissed,
           child: child!,
         );
       },
@@ -474,16 +476,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
       child: child,
     );
 
-    return ValueListenableBuilder<double>(
-      valueListenable: _overlayAnimationController,
-      builder: (context, animation, child) {
-        return Visibility(
-          visible: !_overlayAnimationController.isDismissed,
-          child: child!,
-        );
-      },
-      child: child,
-    );
+    return child;
   }
 
   Future<void> _onVideoAction(BuildContext context, AvesVideoController controller, EntryAction action) async {
