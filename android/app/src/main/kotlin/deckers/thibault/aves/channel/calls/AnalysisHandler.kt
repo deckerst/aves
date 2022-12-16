@@ -9,8 +9,6 @@ import android.content.ServiceConnection
 import android.os.Build
 import android.os.IBinder
 import android.util.Log
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.ProcessLifecycleOwner
 import deckers.thibault.aves.AnalysisService
 import deckers.thibault.aves.AnalysisServiceBinder
 import deckers.thibault.aves.AnalysisServiceListener
@@ -65,11 +63,9 @@ class AnalysisHandler(private val activity: Activity, private val onAnalysisComp
                 .putExtra(AnalysisService.KEY_ENTRY_IDS, entryIds?.toIntArray())
                 .putExtra(AnalysisService.KEY_FORCE, force)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val appState = ProcessLifecycleOwner.get().lifecycle.currentState
-                if (!appState.isAtLeast(Lifecycle.State.STARTED)) {
-                    result.error("startAnalysis-background", "cannot start foreground service from background", null)
-                    return
-                }
+                // Foreground services cannot start from background, but the service here may start fine
+                // while the current lifecycle state (via `ProcessLifecycleOwner.get().lifecycle.currentState`)
+                // is only `INITIALIZED`, so we should not preemptively return when the state is below `STARTED`.
                 activity.startForegroundService(intent)
             } else {
                 activity.startService(intent)
