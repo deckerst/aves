@@ -5,6 +5,7 @@
     "welcomeOptional",
     "welcomeTermsToggle",
     "itemCount",
+    "columnCount",
     "timeSeconds",
     "timeMinutes",
     "timeDays",
@@ -516,6 +517,7 @@
     "settingsRemoveAnimationsTile",
     "settingsRemoveAnimationsDialogTitle",
     "settingsTimeToTakeActionTile",
+    "settingsAccessibilityShowPinchGestureAlternatives",
     "settingsDisplaySectionTitle",
     "settingsThemeBrightnessTile",
     "settingsThemeBrightnessDialogTitle",
@@ -588,7 +590,13 @@
     "filePickerUseThisFolder"
   ],
 
+  "de": [
+    "columnCount",
+    "settingsAccessibilityShowPinchGestureAlternatives"
+  ],
+
   "el": [
+    "columnCount",
     "entryActionShareImageOnly",
     "entryActionShareVideoOnly",
     "entryInfoActionRemoveLocation",
@@ -596,10 +604,17 @@
     "filterAspectRatioPortraitLabel",
     "filterNoAddressLabel",
     "keepScreenOnVideoPlayback",
-    "settingsViewerShowRatingTags"
+    "settingsViewerShowRatingTags",
+    "settingsAccessibilityShowPinchGestureAlternatives"
+  ],
+
+  "es": [
+    "columnCount",
+    "settingsAccessibilityShowPinchGestureAlternatives"
   ],
 
   "fa": [
+    "columnCount",
     "clearTooltip",
     "entryActionCopyToClipboard",
     "entryActionShowGeoTiffOnMap",
@@ -982,6 +997,7 @@
     "settingsRemoveAnimationsTile",
     "settingsRemoveAnimationsDialogTitle",
     "settingsTimeToTakeActionTile",
+    "settingsAccessibilityShowPinchGestureAlternatives",
     "settingsDisplaySectionTitle",
     "settingsThemeBrightnessTile",
     "settingsThemeBrightnessDialogTitle",
@@ -1061,7 +1077,13 @@
     "filePickerUseThisFolder"
   ],
 
+  "fr": [
+    "columnCount",
+    "settingsAccessibilityShowPinchGestureAlternatives"
+  ],
+
   "gl": [
+    "columnCount",
     "entryActionShareImageOnly",
     "entryActionShareVideoOnly",
     "entryInfoActionExportMetadata",
@@ -1445,6 +1467,7 @@
     "settingsRemoveAnimationsTile",
     "settingsRemoveAnimationsDialogTitle",
     "settingsTimeToTakeActionTile",
+    "settingsAccessibilityShowPinchGestureAlternatives",
     "settingsDisplaySectionTitle",
     "settingsThemeBrightnessTile",
     "settingsThemeBrightnessDialogTitle",
@@ -1527,6 +1550,7 @@
   ],
 
   "id": [
+    "columnCount",
     "entryActionShareImageOnly",
     "entryActionShareVideoOnly",
     "entryInfoActionExportMetadata",
@@ -1542,10 +1566,12 @@
     "settingsViewerShowRatingTags",
     "settingsSubtitleThemeTextPositionTile",
     "settingsSubtitleThemeTextPositionDialogTitle",
+    "settingsAccessibilityShowPinchGestureAlternatives",
     "settingsWidgetDisplayedItem"
   ],
 
   "it": [
+    "columnCount",
     "entryActionShareImageOnly",
     "entryActionShareVideoOnly",
     "entryInfoActionRemoveLocation",
@@ -1553,10 +1579,12 @@
     "filterAspectRatioPortraitLabel",
     "filterNoAddressLabel",
     "keepScreenOnVideoPlayback",
-    "settingsViewerShowRatingTags"
+    "settingsViewerShowRatingTags",
+    "settingsAccessibilityShowPinchGestureAlternatives"
   ],
 
   "ja": [
+    "columnCount",
     "chipActionFilterIn",
     "filterAspectRatioLandscapeLabel",
     "filterAspectRatioPortraitLabel",
@@ -1564,21 +1592,32 @@
     "keepScreenOnVideoPlayback",
     "subtitlePositionTop",
     "subtitlePositionBottom",
+    "settingsAccessibilityShowPinchGestureAlternatives",
     "settingsWidgetDisplayedItem"
   ],
 
+  "ko": [
+    "columnCount",
+    "settingsAccessibilityShowPinchGestureAlternatives"
+  ],
+
   "lt": [
-    "keepScreenOnVideoPlayback"
+    "columnCount",
+    "keepScreenOnVideoPlayback",
+    "settingsAccessibilityShowPinchGestureAlternatives"
   ],
 
   "nb": [
+    "columnCount",
     "entryActionShareImageOnly",
     "entryActionShareVideoOnly",
     "entryInfoActionRemoveLocation",
-    "keepScreenOnVideoPlayback"
+    "keepScreenOnVideoPlayback",
+    "settingsAccessibilityShowPinchGestureAlternatives"
   ],
 
   "nl": [
+    "columnCount",
     "entryActionShareImageOnly",
     "entryActionShareVideoOnly",
     "entryInfoActionExportMetadata",
@@ -1594,10 +1633,12 @@
     "settingsViewerShowRatingTags",
     "settingsSubtitleThemeTextPositionTile",
     "settingsSubtitleThemeTextPositionDialogTitle",
+    "settingsAccessibilityShowPinchGestureAlternatives",
     "settingsWidgetDisplayedItem"
   ],
 
   "nn": [
+    "columnCount",
     "sourceStateLoading",
     "sourceStateCataloguing",
     "entryActionShareImageOnly",
@@ -1964,6 +2005,7 @@
     "settingsRemoveAnimationsTile",
     "settingsRemoveAnimationsDialogTitle",
     "settingsTimeToTakeActionTile",
+    "settingsAccessibilityShowPinchGestureAlternatives",
     "settingsDisplaySectionTitle",
     "settingsThemeBrightnessTile",
     "settingsThemeBrightnessDialogTitle",
@@ -2047,6 +2089,7 @@
 
   "pl": [
     "itemCount",
+    "columnCount",
     "timeSeconds",
     "timeMinutes",
     "timeDays",
@@ -2469,6 +2512,7 @@
     "settingsRemoveAnimationsTile",
     "settingsRemoveAnimationsDialogTitle",
     "settingsTimeToTakeActionTile",
+    "settingsAccessibilityShowPinchGestureAlternatives",
     "settingsDisplaySectionTitle",
     "settingsThemeBrightnessTile",
     "settingsThemeBrightnessDialogTitle",
@@ -2551,6 +2595,7 @@
   ],
 
   "pt": [
+    "columnCount",
     "entryActionShareImageOnly",
     "entryActionShareVideoOnly",
     "entryInfoActionExportMetadata",
@@ -2566,10 +2611,12 @@
     "settingsViewerShowRatingTags",
     "settingsSubtitleThemeTextPositionTile",
     "settingsSubtitleThemeTextPositionDialogTitle",
+    "settingsAccessibilityShowPinchGestureAlternatives",
     "settingsWidgetDisplayedItem"
   ],
 
   "ro": [
+    "columnCount",
     "entryActionShareImageOnly",
     "entryActionShareVideoOnly",
     "entryInfoActionRemoveLocation",
@@ -2577,18 +2624,22 @@
     "filterAspectRatioPortraitLabel",
     "filterNoAddressLabel",
     "keepScreenOnVideoPlayback",
-    "settingsViewerShowRatingTags"
+    "settingsViewerShowRatingTags",
+    "settingsAccessibilityShowPinchGestureAlternatives"
   ],
 
   "ru": [
+    "columnCount",
     "entryActionShareImageOnly",
     "entryActionShareVideoOnly",
     "entryInfoActionRemoveLocation",
-    "keepScreenOnVideoPlayback"
+    "keepScreenOnVideoPlayback",
+    "settingsAccessibilityShowPinchGestureAlternatives"
   ],
 
   "th": [
     "itemCount",
+    "columnCount",
     "timeSeconds",
     "timeMinutes",
     "timeDays",
@@ -2846,6 +2897,7 @@
     "settingsRemoveAnimationsTile",
     "settingsRemoveAnimationsDialogTitle",
     "settingsTimeToTakeActionTile",
+    "settingsAccessibilityShowPinchGestureAlternatives",
     "settingsDisplaySectionTitle",
     "settingsThemeBrightnessTile",
     "settingsThemeBrightnessDialogTitle",
@@ -2927,7 +2979,13 @@
     "filePickerUseThisFolder"
   ],
 
+  "tr": [
+    "columnCount",
+    "settingsAccessibilityShowPinchGestureAlternatives"
+  ],
+
   "uk": [
+    "columnCount",
     "setCoverDialogCustom",
     "menuActionSelectNone",
     "albumPageTitle",
@@ -3083,6 +3141,7 @@
     "settingsRemoveAnimationsTile",
     "settingsRemoveAnimationsDialogTitle",
     "settingsTimeToTakeActionTile",
+    "settingsAccessibilityShowPinchGestureAlternatives",
     "settingsDisplaySectionTitle",
     "settingsThemeBrightnessTile",
     "settingsThemeBrightnessDialogTitle",
@@ -3164,6 +3223,7 @@
   ],
 
   "zh": [
+    "columnCount",
     "entryActionShareImageOnly",
     "entryActionShareVideoOnly",
     "entryInfoActionRemoveLocation",
@@ -3171,6 +3231,12 @@
     "filterAspectRatioPortraitLabel",
     "filterNoAddressLabel",
     "keepScreenOnVideoPlayback",
-    "settingsViewerShowRatingTags"
+    "settingsViewerShowRatingTags",
+    "settingsAccessibilityShowPinchGestureAlternatives"
+  ],
+
+  "zh_Hant": [
+    "columnCount",
+    "settingsAccessibilityShowPinchGestureAlternatives"
   ]
 }

@@ -61,6 +61,8 @@ class AIcons {
   static const IconData layoutList = Icons.list_outlined;
   static const IconData sort = Icons.sort_outlined;
   static const IconData sortOrder = Icons.swap_vert_outlined;
+  static const IconData thumbnailLarge = Icons.photo_size_select_large_outlined;
+  static const IconData thumbnailSmall = Icons.photo_size_select_small_outlined;
 
   // actions
   static const IconData add = Icons.add_circle_outline;

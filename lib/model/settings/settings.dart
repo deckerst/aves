@@ -163,6 +163,7 @@ class Settings extends ChangeNotifier {
   static const enableBinKey = 'enable_bin';
 
   // accessibility
+  static const showPinchGestureAlternativesKey = 'show_pinch_gesture_alternatives';
   static const accessibilityAnimationsKey = 'accessibility_animations';
   static const timeToTakeActionKey = 'time_to_take_action';
 
@@ -266,6 +267,7 @@ class Settings extends ChangeNotifier {
       videoGestureDoubleTapTogglePlay = false;
       videoGestureSideDoubleTapSeek = false;
       enableBin = false;
+      showPinchGestureAlternatives = true;
     }
   }
 
@@ -707,6 +709,10 @@ class Settings extends ChangeNotifier {
 
   // accessibility
 
+  bool get showPinchGestureAlternatives => getBool(showPinchGestureAlternativesKey) ?? SettingsDefaults.showPinchGestureAlternatives;
+
+  set showPinchGestureAlternatives(bool newValue) => setAndNotify(showPinchGestureAlternativesKey, newValue);
+
   AccessibilityAnimations get accessibilityAnimations => getEnumOrDefault(accessibilityAnimationsKey, SettingsDefaults.accessibilityAnimations, AccessibilityAnimations.values);
 
   set accessibilityAnimations(AccessibilityAnimations newValue) => setAndNotify(accessibilityAnimationsKey, newValue.toString());
@@ -1010,6 +1016,7 @@ class Settings extends ChangeNotifier {
             case subtitleShowOutlineKey:
             case tagEditorCurrentFilterSectionExpandedKey:
             case saveSearchHistoryKey:
+            case showPinchGestureAlternativesKey:
             case filePickerShowHiddenFilesKey:
             case screenSaverFillScreenKey:
             case screenSaverAnimatedZoomEffectKey:

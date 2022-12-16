@@ -19,6 +19,7 @@ import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
 import 'package:aves/widgets/common/action_mixins/size_aware.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/search/route.dart';
+import 'package:aves/widgets/common/tile_extent_controller.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/filter_editors/cover_selection_dialog.dart';
 import 'package:aves/widgets/dialogs/tile_view_dialog.dart';
@@ -220,6 +221,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
       tileLayout,
       sortReverse,
     );
+    final extentController = context.read<TileExtentController>();
     final value = await showDialog<Tuple4<ChipSortFactor?, void, TileLayout?, bool>>(
       context: context,
       builder: (context) {
@@ -228,6 +230,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
           sortOptions: sortOptions.map((v) => TileViewDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
           layoutOptions: layoutOptions.map((v) => TileViewDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
           sortOrder: (factor, reverse) => factor.getOrderName(context, reverse),
+          tileExtentController: extentController,
         );
       },
     );

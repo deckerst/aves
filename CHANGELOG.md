@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 - Viewer: long press on share quick action to share parts of motion photo
 - Search: missing address, portrait, landscape filters
 - Map: edit cluster location
+- Accessibility: optional alternative to pinch-to-zoom thumbnails
 - Lithuanian translation (thanks Gediminas Murauskas)
 - Norsk (Bokmål) translation (thanks Allan Nordhøy)
 - Chinese (Traditional) translation (thanks pemibe)

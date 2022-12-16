@@ -123,6 +123,7 @@ class SettingsDefaults {
   static const enableBin = true;
 
   // accessibility
+  static const showPinchGestureAlternatives = false;
   static const accessibilityAnimations = AccessibilityAnimations.system;
   static const timeToTakeAction = AccessibilityTimeout.s3;
 
