@@ -19,6 +19,7 @@ All notable changes to this project will be documented in this file.
 
 - Viewer: allow setting default outside video player
 - Map: fit to most recent items if all items cannot fit on screen
+- upgraded Flutter to stable v3.3.10
 
 ## <a id="v1.7.7"></a>[v1.7.7] - 2022-11-27
 

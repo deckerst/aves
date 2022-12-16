@@ -100,15 +100,19 @@ void visitMap() {
     // wait for heavy Google map initialization
     await Future.delayed(const Duration(seconds: 3));
 
-    final mapView = find.byValueKey('map_view');
+    // as of Flutter v3.3.10, driver scroll/tap commands on the map Platform View
+    // trigger a long press on the central marker, and there are no tap command based on offset
+    // cf https://github.com/flutter/flutter/issues/48400
 
-    print('* hide overlay');
-    await driver.tap(mapView);
-    await Future.delayed(const Duration(seconds: 2));
-
-    print('* show overlay');
-    await driver.tap(mapView);
-    await Future.delayed(const Duration(seconds: 2));
+    // final mapView = find.byValueKey('map_view');
+    //
+    // print('* hide overlay');
+    // await driver.tap(mapView);
+    // await Future.delayed(const Duration(seconds: 2));
+    //
+    // print('* show overlay');
+    // await driver.tap(mapView);
+    // await Future.delayed(const Duration(seconds: 2));
 
     await pressDeviceBackButton();
     await driver.waitUntilNoTransientCallbacks();
@@ -144,7 +148,7 @@ void searchAlbum() {
     await driver.tap(find.byType('TextField'));
     await driver.enterText(albumDisplayName);
 
-    await driver.tapKeyAndWait('album-$albumPath');
+    await driver.tapKeyAndWait('album-false-$albumPath');
   });
 }
 
