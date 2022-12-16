@@ -32,11 +32,11 @@ class NavigationSection extends SettingsSection {
   @override
   FutureOr<List<SettingsTile>> tiles(BuildContext context) => [
         SettingsTileNavigationHomePage(),
+        if (!device.isTelevision) SettingsTileNavigationKeepScreenOn(),
         if (!device.isTelevision) SettingsTileShowBottomNavigationBar(),
+        if (!device.isTelevision) SettingsTileNavigationDoubleBackExit(),
         SettingsTileNavigationDrawer(),
         if (!device.isTelevision) SettingsTileNavigationConfirmationDialog(),
-        if (!device.isTelevision) SettingsTileNavigationKeepScreenOn(),
-        if (!device.isTelevision) SettingsTileNavigationDoubleBackExit(),
       ];
 }
 

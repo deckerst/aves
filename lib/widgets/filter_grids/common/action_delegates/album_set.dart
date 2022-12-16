@@ -20,6 +20,7 @@ import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/common/action_mixins/entry_storage.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/common/tile_extent_controller.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/filter_editors/create_album_dialog.dart';
 import 'package:aves/widgets/dialogs/filter_editors/rename_album_dialog.dart';
@@ -146,6 +147,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
       tileLayout,
       sortReverse,
     );
+    final extentController = context.read<TileExtentController>();
     final value = await showDialog<Tuple4<ChipSortFactor?, AlbumChipGroupFactor?, TileLayout?, bool>>(
       context: context,
       builder: (context) {
@@ -155,6 +157,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
           groupOptions: _groupOptions.map((v) => TileViewDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
           layoutOptions: ChipSetActionDelegate.layoutOptions.map((v) => TileViewDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
           sortOrder: (factor, reverse) => factor.getOrderName(context, reverse),
+          tileExtentController: extentController,
         );
       },
     );

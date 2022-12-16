@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:aves/model/settings/settings.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
+import 'package:tuple/tuple.dart';
 
 class TileExtentController {
   final String settingsRouteKey;
@@ -52,6 +53,8 @@ class TileExtentController {
     }
   }
 
+  double setUserPreferredColumnCount(int columnCount) => _update(userPreferredExtent: _extentForColumnCount(columnCount));
+
   double setUserPreferredExtent(double extent) => _update(userPreferredExtent: extent.roundToDouble());
 
   double _update({double? userPreferredExtent}) {
@@ -94,6 +97,8 @@ class TileExtentController {
   double get effectiveExtentMin => _extentForColumnCount(_effectiveColumnCountMax());
 
   double get effectiveExtentMax => _extentForColumnCount(_effectiveColumnCountMin());
+
+  Tuple2<int, int> get effectiveColumnRange => Tuple2(_effectiveColumnCountMin(), _effectiveColumnCountMax());
 
   int get columnCount => _effectiveColumnCountForExtent(extentNotifier.value);
 

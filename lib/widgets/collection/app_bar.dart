@@ -30,6 +30,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_app_bar.dart';
 import 'package:aves/widgets/common/identity/buttons/captioned_button.dart';
 import 'package:aves/widgets/common/search/route.dart';
+import 'package:aves/widgets/common/tile_extent_controller.dart';
 import 'package:aves/widgets/dialogs/tile_view_dialog.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
@@ -638,6 +639,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       settings.getTileLayout(CollectionPage.routeName),
       settings.collectionSortReverse,
     );
+    final extentController = context.read<TileExtentController>();
     final value = await showDialog<Tuple4<EntrySortFactor?, EntryGroupFactor?, TileLayout?, bool>>(
       context: context,
       builder: (context) {
@@ -648,6 +650,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
           layoutOptions: _layoutOptions.map((v) => TileViewDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
           sortOrder: (factor, reverse) => factor.getOrderName(context, reverse),
           canGroup: (s, g, l) => s == EntrySortFactor.date,
+          tileExtentController: extentController,
         );
       },
     );
