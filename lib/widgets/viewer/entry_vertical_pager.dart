@@ -185,14 +185,17 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
 
     Widget? child;
     Map<ShortcutActivator, Intent>? shortcuts = {
-      const SingleActivator(LogicalKeyboardKey.arrowUp): isTelevision ? const TvShowLessInfoIntent() : const LeaveIntent(),
-      const SingleActivator(LogicalKeyboardKey.arrowDown): isTelevision ? const TvShowMoreInfoIntent() : const ShowInfoIntent(),
+      const SingleActivator(LogicalKeyboardKey.arrowUp): isTelevision ? const TvShowLessInfoIntent() : const _LeaveIntent(),
+      const SingleActivator(LogicalKeyboardKey.arrowDown): isTelevision ? const _TvShowMoreInfoIntent() : const _ShowInfoIntent(),
+      const SingleActivator(LogicalKeyboardKey.mediaPause): const _PlayPauseIntent.pause(),
+      const SingleActivator(LogicalKeyboardKey.mediaPlay): const _PlayPauseIntent.play(),
+      const SingleActivator(LogicalKeyboardKey.mediaPlayPause): const _PlayPauseIntent.toggle(),
     };
 
     if (hasCollection) {
       shortcuts.addAll(const {
-        SingleActivator(LogicalKeyboardKey.arrowLeft): ShowPreviousIntent(),
-        SingleActivator(LogicalKeyboardKey.arrowRight): ShowNextIntent(),
+        SingleActivator(LogicalKeyboardKey.arrowLeft): _ShowPreviousIntent(),
+        SingleActivator(LogicalKeyboardKey.arrowRight): _ShowNextIntent(),
       });
       child = MultiEntryScroller(
         collection: collection!,
@@ -227,16 +230,18 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
         autofocus: true,
         shortcuts: shortcuts,
         actions: {
-          ShowPreviousIntent: CallbackAction<Intent>(onInvoke: (intent) => _goToHorizontalPage(-1, animate: false)),
-          ShowNextIntent: CallbackAction<Intent>(onInvoke: (intent) => _goToHorizontalPage(1, animate: false)),
-          LeaveIntent: CallbackAction<Intent>(onInvoke: (intent) => Navigator.pop(context)),
-          ShowInfoIntent: CallbackAction<Intent>(onInvoke: (intent) => ShowInfoPageNotification().dispatch(context)),
+          _ShowPreviousIntent: CallbackAction<Intent>(onInvoke: (intent) => _goToHorizontalPage(-1, animate: false)),
+          _ShowNextIntent: CallbackAction<Intent>(onInvoke: (intent) => _goToHorizontalPage(1, animate: false)),
+          _LeaveIntent: CallbackAction<Intent>(onInvoke: (intent) => Navigator.pop(context)),
+          _ShowInfoIntent: CallbackAction<Intent>(onInvoke: (intent) => ShowInfoPageNotification().dispatch(context)),
           TvShowLessInfoIntent: CallbackAction<Intent>(onInvoke: (intent) => TvShowLessInfoNotification().dispatch(context)),
-          TvShowMoreInfoIntent: CallbackAction<Intent>(onInvoke: (intent) => TvShowMoreInfoNotification().dispatch(context)),
+          _TvShowMoreInfoIntent: CallbackAction<Intent>(onInvoke: (intent) => TvShowMoreInfoNotification().dispatch(context)),
+          _PlayPauseIntent: CallbackAction<_PlayPauseIntent>(onInvoke: (intent) => _onPlayPauseIntent(intent, entry)),
           ActivateIntent: CallbackAction<Intent>(onInvoke: (intent) {
             if (isTelevision) {
               final _entry = entry;
               if (_entry != null && _entry.isVideo) {
+                // address `TV-PC` requirement from https://developer.android.com/docs/quality-guidelines/tv-app-quality
                 final controller = context.read<VideoConductor>().getController(_entry);
                 if (controller != null) {
                   VideoActionNotification(controller: controller, action: EntryAction.videoTogglePlay).dispatch(context);
@@ -330,30 +335,75 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
       setState(() {});
     }
   }
+
+  void _onPlayPauseIntent(_PlayPauseIntent intent, entry) {
+    // address `TV-PP` requirement from https://developer.android.com/docs/quality-guidelines/tv-app-quality
+    final _entry = entry;
+    if (_entry != null && _entry.isVideo) {
+      final controller = context.read<VideoConductor>().getController(_entry);
+      if (controller != null) {
+        bool toggle;
+        switch (intent.type) {
+          case _TvPlayPauseType.play:
+            toggle = !controller.isPlaying;
+            break;
+          case _TvPlayPauseType.pause:
+            toggle = controller.isPlaying;
+            break;
+          case _TvPlayPauseType.toggle:
+            toggle = true;
+            break;
+        }
+        if (toggle) {
+          VideoActionNotification(controller: controller, action: EntryAction.videoTogglePlay).dispatch(context);
+        }
+      }
+    }
+  }
 }
 
 // keyboard shortcut intents
 
-class ShowPreviousIntent extends Intent {
-  const ShowPreviousIntent();
+class _ShowPreviousIntent extends Intent {
+  const _ShowPreviousIntent();
 }
 
-class ShowNextIntent extends Intent {
-  const ShowNextIntent();
+class _ShowNextIntent extends Intent {
+  const _ShowNextIntent();
 }
 
-class LeaveIntent extends Intent {
-  const LeaveIntent();
+class _LeaveIntent extends Intent {
+  const _LeaveIntent();
 }
 
-class ShowInfoIntent extends Intent {
-  const ShowInfoIntent();
+class _ShowInfoIntent extends Intent {
+  const _ShowInfoIntent();
 }
 
 class TvShowLessInfoIntent extends Intent {
   const TvShowLessInfoIntent();
 }
 
-class TvShowMoreInfoIntent extends Intent {
-  const TvShowMoreInfoIntent();
+class _TvShowMoreInfoIntent extends Intent {
+  const _TvShowMoreInfoIntent();
+}
+
+class _PlayPauseIntent extends Intent {
+  const _PlayPauseIntent({
+    required this.type,
+  });
+
+  const _PlayPauseIntent.play() : type = _TvPlayPauseType.play;
+
+  const _PlayPauseIntent.pause() : type = _TvPlayPauseType.pause;
+
+  const _PlayPauseIntent.toggle() : type = _TvPlayPauseType.toggle;
+
+  final _TvPlayPauseType type;
+}
+
+enum _TvPlayPauseType {
+  play,
+  pause,
+  toggle,
 }

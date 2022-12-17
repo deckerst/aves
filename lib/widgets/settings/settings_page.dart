@@ -13,6 +13,7 @@ import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/app_bar/app_bar_title.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/basic/menu.dart';
+import 'package:aves/widgets/common/behaviour/tv_pop.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
 import 'package:aves/widgets/common/search/route.dart';
@@ -73,62 +74,64 @@ class _SettingsPageState extends State<SettingsPage> with FeedbackMixin {
 
     if (device.isTelevision) {
       return Scaffold(
-        body: Row(
-          children: [
-            TvRail(
-              controller: context.read<TvRailController>(),
-            ),
-            Expanded(
-              child: Column(
-                children: [
-                  const SizedBox(height: 8),
-                  AppBar(
-                    automaticallyImplyLeading: false,
-                    title: appBarTitle,
-                    elevation: 0,
-                  ),
-                  Expanded(
-                    child: ValueListenableBuilder<int>(
-                      valueListenable: _tvSelectedIndexNotifier,
-                      builder: (context, selectedIndex, child) {
-                        final rail = NavigationRail(
-                          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                          extended: true,
-                          destinations: sections
-                              .map((section) => NavigationRailDestination(
-                                    icon: section.icon(context),
-                                    label: Text(section.title(context)),
-                                  ))
-                              .toList(),
-                          selectedIndex: selectedIndex,
-                          onDestinationSelected: (index) => _tvSelectedIndexNotifier.value = index,
-                        );
-                        return LayoutBuilder(
-                          builder: (context, constraints) {
-                            return Row(
-                              children: [
-                                SingleChildScrollView(
-                                  child: ConstrainedBox(
-                                    constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                                    child: IntrinsicHeight(child: rail),
-                                  ),
-                                ),
-                                Expanded(
-                                  child: _SettingsSectionBody(
-                                    loader: Future.value(sections[selectedIndex].tiles(context)),
-                                  ),
-                                ),
-                              ],
-                            );
-                          },
-                        );
-                      },
-                    ),
-                  ),
-                ],
+        body: TvPopScope(
+          child: Row(
+            children: [
+              TvRail(
+                controller: context.read<TvRailController>(),
               ),
-            ),
-          ],
+              Expanded(
+                child: Column(
+                  children: [
+                    const SizedBox(height: 8),
+                    AppBar(
+                      automaticallyImplyLeading: false,
+                      title: appBarTitle,
+                      elevation: 0,
+                    ),
+                    Expanded(
+                      child: ValueListenableBuilder<int>(
+                        valueListenable: _tvSelectedIndexNotifier,
+                        builder: (context, selectedIndex, child) {
+                          final rail = NavigationRail(
+                            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                            extended: true,
+                            destinations: sections
+                                .map((section) => NavigationRailDestination(
+                                      icon: section.icon(context),
+                                      label: Text(section.title(context)),
+                                    ))
+                                .toList(),
+                            selectedIndex: selectedIndex,
+                            onDestinationSelected: (index) => _tvSelectedIndexNotifier.value = index,
+                          );
+                          return LayoutBuilder(
+                            builder: (context, constraints) {
+                              return Row(
+                                children: [
+                                  SingleChildScrollView(
+                                    child: ConstrainedBox(
+                                      constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                                      child: IntrinsicHeight(child: rail),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: _SettingsSectionBody(
+                                      loader: Future.value(sections[selectedIndex].tiles(context)),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       );
     } else {

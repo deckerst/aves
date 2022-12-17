@@ -1,3 +1,4 @@
+import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/widgets/about/about_page.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -66,10 +67,12 @@ class PageNavTile extends StatelessWidget {
   static Route routeBuilder(BuildContext context, String routeName) {
     switch (routeName) {
       case SearchPage.routeName:
+        final currentCollection = context.read<CollectionLens?>();
         return SearchPageRoute(
           delegate: CollectionSearchDelegate(
             searchFieldLabel: context.l10n.searchCollectionFieldHint,
             source: context.read<CollectionSource>(),
+            parentCollection: currentCollection?.copyWith(),
           ),
         );
       default:

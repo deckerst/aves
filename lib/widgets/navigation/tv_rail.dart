@@ -192,16 +192,19 @@ class _TvRailState extends State<TvRail> {
     return pageBookmarks.map(_routeNavEntry).toList();
   }
 
-  _NavEntry _routeNavEntry(String route) => _NavEntry(
-        icon: DrawerPageIcon(route: route),
-        label: DrawerPageTitle(route: route),
-        isSelected: context.currentRouteName == route,
-        onSelection: () => _goTo(route),
+  _NavEntry _routeNavEntry(String routeName) => _NavEntry(
+        icon: DrawerPageIcon(route: routeName),
+        label: DrawerPageTitle(route: routeName),
+        isSelected: context.currentRouteName == routeName,
+        onSelection: () => _goTo(routeName),
       );
 
-  Future<void> _goTo(String routeName) async {
-    // TODO TLAD [tv] check `topLevel` / `Navigator.pushAndRemoveUntil`
-    await Navigator.push(context, PageNavTile.routeBuilder(context, routeName));
+  void _goTo(String routeName) {
+    Navigator.pushAndRemoveUntil(
+      context,
+      PageNavTile.routeBuilder(context, routeName),
+      (route) => false,
+    );
   }
 
   void _goToCollection(BuildContext context, CollectionFilter? filter) {

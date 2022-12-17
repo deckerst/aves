@@ -243,6 +243,7 @@ class Settings extends ChangeNotifier {
     if (device.isTelevision) {
       themeBrightness = AvesThemeBrightness.dark;
       mustBackTwiceToExit = false;
+      // address `TV-BU` / `TV-BY` requirements from https://developer.android.com/docs/quality-guidelines/tv-app-quality
       keepScreenOn = KeepScreenOn.videoPlayback;
       enableBottomNavigationBar = false;
       drawerTypeBookmarks = [
