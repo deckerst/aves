@@ -133,4 +133,4 @@ To run the app:
 ```
 
 [Version badge]: https://img.shields.io/github/v/release/deckerst/aves?include_prereleases&sort=semver
-[Build badge]: https://img.shields.io/github/workflow/status/deckerst/aves/Quality%20check
+[Build badge]: https://img.shields.io/github/actions/workflow/status/deckerst/aves/check.yml?branch=develop
