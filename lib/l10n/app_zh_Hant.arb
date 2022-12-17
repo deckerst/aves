@@ -1341,7 +1341,7 @@
   "@filePickerDoNotShowHiddenFiles": {},
   "collectionSelectSectionTooltip": "選擇部份",
   "@collectionSelectSectionTooltip": {},
-  "coordinateFormatDecimal": "Decimal Degrees",
+  "coordinateFormatDecimal": "Decimal degrees",
   "@coordinateFormatDecimal": {},
   "collectionDeselectSectionTooltip": "取消選擇部份",
   "@collectionDeselectSectionTooltip": {},

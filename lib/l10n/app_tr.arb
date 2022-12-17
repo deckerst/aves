@@ -1188,5 +1188,13 @@
   "entryActionShareImageOnly": "Yalnızca resim paylaş",
   "@entryActionShareImageOnly": {},
   "keepScreenOnVideoPlayback": "Video oynatma sırasında",
-  "@keepScreenOnVideoPlayback": {}
+  "@keepScreenOnVideoPlayback": {},
+  "columnCount": "{count, plural, =1{1 sütun} other{{count} sütun}}",
+  "@columnCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "settingsAccessibilityShowPinchGestureAlternatives": "Sıkıştırma hareketi alternatiflerini göster",
+  "@settingsAccessibilityShowPinchGestureAlternatives": {}
 }
