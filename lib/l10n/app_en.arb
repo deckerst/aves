@@ -806,7 +806,7 @@
   "settingsRemoveAnimationsTile": "Remove animations",
   "settingsRemoveAnimationsDialogTitle": "Remove Animations",
   "settingsTimeToTakeActionTile": "Time to take action",
-  "settingsAccessibilityShowPinchGestureAlternatives": "Show pinch gesture alternatives",
+  "settingsAccessibilityShowPinchGestureAlternatives": "Show multi-touch gesture alternatives",
 
   "settingsDisplaySectionTitle": "Display",
   "settingsThemeBrightnessTile": "Theme",
