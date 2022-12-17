@@ -17,6 +17,7 @@ import 'package:aves/widgets/collection/collection_grid.dart';
 import 'package:aves/widgets/common/basic/draggable_scrollbar.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/behaviour/double_back_pop.dart';
+import 'package:aves/widgets/common/behaviour/tv_pop.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_fab.dart';
 import 'package:aves/widgets/common/providers/query_provider.dart';
@@ -97,18 +98,15 @@ class _CollectionPageState extends State<CollectionPage> {
                   }
                   return SynchronousFuture(true);
                 },
-                child: DoubleBackPopScope(
+                child: const DoubleBackPopScope(
                   child: GestureAreaProtectorStack(
                     child: SafeArea(
                       top: false,
                       bottom: false,
-                      child: ChangeNotifierProvider<CollectionLens>.value(
-                        value: _collection,
-                        child: const CollectionGrid(
-                          // key is expected by test driver
-                          key: Key('collection-grid'),
-                          settingsRouteKey: CollectionPage.routeName,
-                        ),
+                      child: CollectionGrid(
+                        // key is expected by test driver
+                        key: Key('collection-grid'),
+                        settingsRouteKey: CollectionPage.routeName,
                       ),
                     ),
                   ),
@@ -117,22 +115,25 @@ class _CollectionPageState extends State<CollectionPage> {
             ),
           );
 
+          Widget page;
           if (device.isTelevision) {
-            return Scaffold(
-              body: Row(
-                children: [
-                  TvRail(
-                    controller: context.read<TvRailController>(),
-                    currentCollection: _collection,
-                  ),
-                  Expanded(child: body),
-                ],
+            page = TvPopScope(
+              child: Scaffold(
+                body: Row(
+                  children: [
+                    TvRail(
+                      controller: context.read<TvRailController>(),
+                      currentCollection: _collection,
+                    ),
+                    Expanded(child: body),
+                  ],
+                ),
+                resizeToAvoidBottomInset: false,
+                extendBody: true,
               ),
-              resizeToAvoidBottomInset: false,
-              extendBody: true,
             );
           } else {
-            return Selector<Settings, bool>(
+            page = Selector<Settings, bool>(
               selector: (context, s) => s.enableBottomNavigationBar,
               builder: (context, enableBottomNavigationBar, child) {
                 final canNavigate = context.select<ValueNotifier<AppMode>, bool>((v) => v.value.canNavigate);
@@ -160,6 +161,11 @@ class _CollectionPageState extends State<CollectionPage> {
               },
             );
           }
+          // this provider should be above `TvRail`
+          return ChangeNotifierProvider<CollectionLens>.value(
+            value: _collection,
+            child: page,
+          );
         },
       ),
     );

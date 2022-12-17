@@ -112,8 +112,10 @@ class AvesApp extends StatefulWidget {
     if (urlString != null) {
       final url = Uri.parse(urlString);
       if (await ul.canLaunchUrl(url)) {
+        // address `TV-WB` requirement from https://developer.android.com/docs/quality-guidelines/tv-app-quality
+        final mode = device.isTelevision ? ul.LaunchMode.inAppWebView : ul.LaunchMode.externalApplication;
         try {
-          await ul.launchUrl(url, mode: device.isTelevision ? ul.LaunchMode.inAppWebView : ul.LaunchMode.externalApplication);
+          await ul.launchUrl(url, mode: mode);
         } catch (error, stack) {
           debugPrint('failed to open url=$urlString with error=$error\n$stack');
         }

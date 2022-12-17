@@ -279,21 +279,25 @@ class CollectionSearchDelegate extends AvesSearchDelegate {
     if (parentCollection != null) {
       _applyToParentCollectionPage(context, filter);
     } else {
-      _jumpToCollectionPage(context, filter);
+      _jumpToCollectionPage(context, {filter});
     }
   }
 
   void _applyToParentCollectionPage(BuildContext context, CollectionFilter filter) {
     parentCollection!.addFilter(filter);
-    // We delay closing the current page after applying the filter selection
-    // so that hero animation target is ready in the `FilterBar`,
-    // even when the target is a child of an `AnimatedList`.
-    // Do not use `WidgetsBinding.instance.addPostFrameCallback`,
-    // as it may not trigger if there is no subsequent build.
-    Future.delayed(const Duration(milliseconds: 100), () => goBack(context));
+    if (Navigator.canPop(context)) {
+      // We delay closing the current page after applying the filter selection
+      // so that hero animation target is ready in the `FilterBar`,
+      // even when the target is a child of an `AnimatedList`.
+      // Do not use `WidgetsBinding.instance.addPostFrameCallback`,
+      // as it may not trigger if there is no subsequent build.
+      Future.delayed(const Duration(milliseconds: 100), () => goBack(context));
+    } else {
+      _jumpToCollectionPage(context, parentCollection!.filters);
+    }
   }
 
-  void _jumpToCollectionPage(BuildContext context, CollectionFilter filter) {
+  void _jumpToCollectionPage(BuildContext context, Set<CollectionFilter> filters) {
     clean();
     Navigator.pushAndRemoveUntil(
       context,
@@ -301,7 +305,7 @@ class CollectionSearchDelegate extends AvesSearchDelegate {
         settings: const RouteSettings(name: CollectionPage.routeName),
         builder: (context) => CollectionPage(
           source: source,
-          filters: {filter},
+          filters: filters,
         ),
       ),
       (route) => false,

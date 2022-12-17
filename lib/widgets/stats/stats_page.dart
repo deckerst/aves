@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:aves/model/device.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
@@ -225,6 +226,7 @@ class _StatsPageState extends State<StatsPage> {
 
         return Scaffold(
           appBar: AppBar(
+            automaticallyImplyLeading: !device.isTelevision,
             title: Text(l10n.statsPageTitle),
           ),
           body: GestureAreaProtectorStack(
@@ -354,6 +356,7 @@ class StatsTopPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: !device.isTelevision,
         title: Text(title),
       ),
       body: GestureAreaProtectorStack(

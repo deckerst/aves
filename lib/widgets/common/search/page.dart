@@ -2,6 +2,8 @@ import 'dart:ui';
 
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/debouncer.dart';
+import 'package:aves/widgets/common/behaviour/double_back_pop.dart';
+import 'package:aves/widgets/common/behaviour/tv_pop.dart';
 import 'package:aves/widgets/common/identity/aves_app_bar.dart';
 import 'package:aves/widgets/common/search/delegate.dart';
 import 'package:aves/widgets/common/search/route.dart';
@@ -145,9 +147,13 @@ class _SearchPageState extends State<SearchPage> {
         ),
         actions: widget.delegate.buildActions(context),
       ),
-      body: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 300),
-        child: body,
+      body: TvPopScope(
+        child: DoubleBackPopScope(
+          child: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 300),
+            child: body,
+          ),
+        ),
       ),
     );
   }

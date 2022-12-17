@@ -14,6 +14,7 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/basic/draggable_scrollbar.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/behaviour/double_back_pop.dart';
+import 'package:aves/widgets/common/behaviour/tv_pop.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
 import 'package:aves/widgets/common/grid/item_tracker.dart';
@@ -88,35 +89,37 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
           }
           return SynchronousFuture(true);
         },
-        child: DoubleBackPopScope(
-          child: GestureAreaProtectorStack(
-            child: SafeArea(
-              top: false,
-              bottom: false,
-              child: Selector<MediaQueryData, double>(
-                selector: (context, mq) => mq.padding.top,
-                builder: (context, mqPaddingTop, child) {
-                  return ValueListenableBuilder<double>(
-                    valueListenable: appBarHeightNotifier,
-                    builder: (context, appBarHeight, child) {
-                      return FilterGrid<T>(
-                        // key is expected by test driver
-                        key: const Key('filter-grid'),
-                        settingsRouteKey: settingsRouteKey,
-                        appBar: appBar,
-                        appBarHeight: mqPaddingTop + appBarHeight,
-                        sections: sections,
-                        newFilters: newFilters,
-                        sortFactor: sortFactor,
-                        showHeaders: showHeaders,
-                        selectable: selectable,
-                        applyQuery: applyQuery,
-                        emptyBuilder: emptyBuilder,
-                        heroType: heroType,
-                      );
-                    },
-                  );
-                },
+        child: TvPopScope(
+          child: DoubleBackPopScope(
+            child: GestureAreaProtectorStack(
+              child: SafeArea(
+                top: false,
+                bottom: false,
+                child: Selector<MediaQueryData, double>(
+                  selector: (context, mq) => mq.padding.top,
+                  builder: (context, mqPaddingTop, child) {
+                    return ValueListenableBuilder<double>(
+                      valueListenable: appBarHeightNotifier,
+                      builder: (context, appBarHeight, child) {
+                        return FilterGrid<T>(
+                          // key is expected by test driver
+                          key: const Key('filter-grid'),
+                          settingsRouteKey: settingsRouteKey,
+                          appBar: appBar,
+                          appBarHeight: mqPaddingTop + appBarHeight,
+                          sections: sections,
+                          newFilters: newFilters,
+                          sortFactor: sortFactor,
+                          showHeaders: showHeaders,
+                          selectable: selectable,
+                          applyQuery: applyQuery,
+                          emptyBuilder: emptyBuilder,
+                          heroType: heroType,
+                        );
+                      },
+                    );
+                  },
+                ),
               ),
             ),
           ),

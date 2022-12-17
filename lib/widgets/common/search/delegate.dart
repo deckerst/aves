@@ -1,3 +1,4 @@
+import 'package:aves/model/device.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/search/route.dart';
@@ -19,6 +20,10 @@ abstract class AvesSearchDelegate extends SearchDelegate {
 
   @override
   Widget? buildLeading(BuildContext context) {
+    if (device.isTelevision) {
+      return const Icon(AIcons.search);
+    }
+
     // use a property instead of checking `Navigator.canPop(context)`
     // because the navigator state changes as soon as we press back
     // so the leading may mistakenly switch to the close button
