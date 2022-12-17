@@ -19,6 +19,7 @@ class SupportedLocales {
     'ro': 'Română',
     'ru': 'Русский',
     'tr': 'Türkçe',
+    'uk': 'Українська',
     'zh': '简体中文',
     'zh_Hant': '繁體中文',
   };

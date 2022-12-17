@@ -15,6 +15,7 @@ All notable changes to this project will be documented in this file.
 - Lithuanian translation (thanks Gediminas Murauskas)
 - Norsk (Bokmål) translation (thanks Allan Nordhøy)
 - Chinese (Traditional) translation (thanks pemibe)
+- Ukrainian translation (thanks Olexandr Mazur)
 
 ### Changed
 
