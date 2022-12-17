@@ -1188,5 +1188,13 @@
   "entryActionShareImageOnly": "Compartir sólo la imagen",
   "@entryActionShareImageOnly": {},
   "keepScreenOnVideoPlayback": "Durante la reproducción de vídeo",
-  "@keepScreenOnVideoPlayback": {}
+  "@keepScreenOnVideoPlayback": {},
+  "settingsAccessibilityShowPinchGestureAlternatives": "Mostrar alternativas al gestos del pellizco",
+  "@settingsAccessibilityShowPinchGestureAlternatives": {},
+  "columnCount": "{count, plural, =1{1 columna} other{{count} columnas}}",
+  "@columnCount": {
+    "placeholders": {
+      "count": {}
+    }
+  }
 }

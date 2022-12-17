@@ -1188,5 +1188,13 @@
   "entryInfoActionRemoveLocation": "위치 삭제",
   "@entryInfoActionRemoveLocation": {},
   "keepScreenOnVideoPlayback": "동영상 재생 시 작동",
-  "@keepScreenOnVideoPlayback": {}
+  "@keepScreenOnVideoPlayback": {},
+  "settingsAccessibilityShowPinchGestureAlternatives": "멀티터치의 대안 표시",
+  "@settingsAccessibilityShowPinchGestureAlternatives": {},
+  "columnCount": "{count, plural, other{{count}열}}",
+  "@columnCount": {
+    "placeholders": {
+      "count": {}
+    }
+  }
 }

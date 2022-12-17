@@ -1188,5 +1188,13 @@
   "entryInfoActionRemoveLocation": "Retirer le lieu",
   "@entryInfoActionRemoveLocation": {},
   "keepScreenOnVideoPlayback": "Pendant la lecture de vidéos",
-  "@keepScreenOnVideoPlayback": {}
+  "@keepScreenOnVideoPlayback": {},
+  "columnCount": "{count, plural, =1{1 colonne} other{{count} colonnes}}",
+  "@columnCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "settingsAccessibilityShowPinchGestureAlternatives": "Afficher des alternatives aux interactions multitactiles",
+  "@settingsAccessibilityShowPinchGestureAlternatives": {}
 }
