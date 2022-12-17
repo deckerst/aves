@@ -248,8 +248,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
                 _overlayVisible.value = true;
               }
             } else if (notification is ShowInfoPageNotification) {
-              // remove focus, if any, to prevent viewer shortcuts activation from the Info page
-              _showInfoPage();
+              _goToVerticalPage(infoPage);
             } else if (notification is JumpToPreviousEntryNotification) {
               _jumpToHorizontalPageByDelta(-1);
             } else if (notification is JumpToNextEntryNotification) {
@@ -514,12 +513,6 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
       ),
       (route) => false,
     );
-  }
-
-  void _showInfoPage() {
-    // remove focus, if any, to prevent viewer shortcuts activation from the Info page
-    FocusManager.instance.primaryFocus?.unfocus();
-    _goToVerticalPage(infoPage);
   }
 
   Future<void> _goToVerticalPage(int page) async {
