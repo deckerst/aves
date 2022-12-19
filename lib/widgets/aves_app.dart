@@ -140,7 +140,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   // - `OpenUpwardsPageTransitionsBuilder` on Pie / API 28
   // - `ZoomPageTransitionsBuilder` on Android 10 / API 29 and above (default in Flutter v3.0.0)
   final ValueNotifier<PageTransitionsBuilder> _pageTransitionsBuilderNotifier = ValueNotifier(const FadeUpwardsPageTransitionsBuilder());
-  final ValueNotifier<NavigationMode> _navigationModeNotifier = ValueNotifier(NavigationMode.traditional);
+  final ValueNotifier<TvMediaQueryModifier?> _tvMediaQueryModifierNotifier = ValueNotifier(null);
   final ValueNotifier<AppMode> _appModeNotifier = ValueNotifier(AppMode.main);
 
   // observers are not registered when using the same list object with different items
@@ -170,7 +170,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   @override
   void dispose() {
     _pageTransitionsBuilderNotifier.dispose();
-    _navigationModeNotifier.dispose();
+    _tvMediaQueryModifierNotifier.dispose();
     _appModeNotifier.dispose();
     _subscriptions
       ..forEach((sub) => sub.cancel())
@@ -294,14 +294,14 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
             // Flutter v3.4 already checks the system `Configuration.fontWeightAdjustment` to update `MediaQuery`
             // but we need to also check the non-standard Samsung field `bf` representing the bold font toggle
             final shouldUseBoldFont = snapshot.data ?? false;
-            return ValueListenableBuilder<NavigationMode>(
-              valueListenable: _navigationModeNotifier,
-              builder: (context, navigationMode, child) {
+            final mq = MediaQuery.of(context).copyWith(
+              boldText: shouldUseBoldFont,
+            );
+            return ValueListenableBuilder<TvMediaQueryModifier?>(
+              valueListenable: _tvMediaQueryModifierNotifier,
+              builder: (context, modifier, child) {
                 return MediaQuery(
-                  data: MediaQuery.of(context).copyWith(
-                    boldText: shouldUseBoldFont,
-                    navigationMode: navigationMode,
-                  ),
+                  data: modifier?.call(mq) ?? mq,
                   child: AvesColorsProvider(
                     child: ValueListenableBuilder<PageTransitionsBuilder>(
                       valueListenable: _pageTransitionsBuilderNotifier,
@@ -409,7 +409,10 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     await device.init();
     if (device.isTelevision) {
       _pageTransitionsBuilderNotifier.value = const TvPageTransitionsBuilder();
-      _navigationModeNotifier.value = NavigationMode.directional;
+      _tvMediaQueryModifierNotifier.value = (mq) => mq.copyWith(
+            textScaleFactor: 1.1,
+            navigationMode: NavigationMode.directional,
+          );
     }
     await mobileServices.init();
     await settings.init(monitorPlatformSettings: true);
@@ -523,3 +526,5 @@ class StretchMaterialScrollBehavior extends MaterialScrollBehavior {
     );
   }
 }
+
+typedef TvMediaQueryModifier = MediaQueryData Function(MediaQueryData);

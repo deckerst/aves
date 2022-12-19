@@ -16,8 +16,9 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/collection/collection_grid.dart';
 import 'package:aves/widgets/common/basic/draggable_scrollbar.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
-import 'package:aves/widgets/common/behaviour/double_back_pop.dart';
-import 'package:aves/widgets/common/behaviour/tv_pop.dart';
+import 'package:aves/widgets/common/behaviour/pop/double_back.dart';
+import 'package:aves/widgets/common/behaviour/pop/scope.dart';
+import 'package:aves/widgets/common/behaviour/pop/tv_navigation.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_fab.dart';
 import 'package:aves/widgets/common/providers/query_provider.dart';
@@ -26,7 +27,6 @@ import 'package:aves/widgets/navigation/drawer/app_drawer.dart';
 import 'package:aves/widgets/navigation/nav_bar/nav_bar.dart';
 import 'package:aves/widgets/navigation/tv_rail.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -52,6 +52,7 @@ class _CollectionPageState extends State<CollectionPage> {
   final List<StreamSubscription> _subscriptions = [];
   late CollectionLens _collection;
   final StreamController<DraggableScrollBarEvent> _draggableScrollBarEventStreamController = StreamController.broadcast();
+  final DoubleBackPopHandler _doubleBackPopHandler = DoubleBackPopHandler();
 
   @override
   void initState() {
@@ -76,6 +77,7 @@ class _CollectionPageState extends State<CollectionPage> {
       ..forEach((sub) => sub.cancel())
       ..clear();
     _collection.dispose();
+    _doubleBackPopHandler.dispose();
     super.dispose();
   }
 
@@ -89,17 +91,21 @@ class _CollectionPageState extends State<CollectionPage> {
           final body = QueryProvider(
             initialQuery: liveFilter?.query,
             child: Builder(
-              builder: (context) => WillPopScope(
-                onWillPop: () {
-                  final selection = context.read<Selection<AvesEntry>>();
-                  if (selection.isSelecting) {
-                    selection.browse();
-                    return SynchronousFuture(false);
-                  }
-                  return SynchronousFuture(true);
-                },
-                child: const DoubleBackPopScope(
-                  child: GestureAreaProtectorStack(
+              builder: (context) {
+                return AvesPopScope(
+                  handlers: [
+                    (context) {
+                      final selection = context.read<Selection<AvesEntry>>();
+                      if (selection.isSelecting) {
+                        selection.browse();
+                        return false;
+                      }
+                      return true;
+                    },
+                    TvNavigationPopHandler.pop,
+                    _doubleBackPopHandler.pop,
+                  ],
+                  child: const GestureAreaProtectorStack(
                     child: SafeArea(
                       top: false,
                       bottom: false,
@@ -110,27 +116,25 @@ class _CollectionPageState extends State<CollectionPage> {
                       ),
                     ),
                   ),
-                ),
-              ),
+                );
+              },
             ),
           );
 
           Widget page;
           if (device.isTelevision) {
-            page = TvPopScope(
-              child: Scaffold(
-                body: Row(
-                  children: [
-                    TvRail(
-                      controller: context.read<TvRailController>(),
-                      currentCollection: _collection,
-                    ),
-                    Expanded(child: body),
-                  ],
-                ),
-                resizeToAvoidBottomInset: false,
-                extendBody: true,
+            page = Scaffold(
+              body: Row(
+                children: [
+                  TvRail(
+                    controller: context.read<TvRailController>(),
+                    currentCollection: _collection,
+                  ),
+                  Expanded(child: body),
+                ],
               ),
+              resizeToAvoidBottomInset: false,
+              extendBody: true,
             );
           } else {
             page = Selector<Settings, bool>(

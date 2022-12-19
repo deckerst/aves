@@ -306,7 +306,7 @@ class _TagCount extends StatelessWidget {
       ),
       child: Text(
         '$count',
-        style: TextStyle(fontSize: AvesFilterChip.fontSize),
+        style: const TextStyle(fontSize: AvesFilterChip.fontSize),
       ),
     );
   }

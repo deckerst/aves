@@ -9,7 +9,6 @@ import 'package:aves/model/device.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/mime.dart';
-import 'package:aves/model/filters/recent.dart';
 import 'package:aves/model/settings/defaults.dart';
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/enums/map_style.dart';
@@ -250,7 +249,6 @@ class Settings extends ChangeNotifier {
         null,
         MimeFilter.video,
         FavouriteFilter.instance,
-        RecentlyAddedFilter.instance,
       ];
       drawerPageBookmarks = [
         AlbumListPage.routeName,

@@ -13,8 +13,9 @@ import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/basic/draggable_scrollbar.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
-import 'package:aves/widgets/common/behaviour/double_back_pop.dart';
-import 'package:aves/widgets/common/behaviour/tv_pop.dart';
+import 'package:aves/widgets/common/behaviour/pop/double_back.dart';
+import 'package:aves/widgets/common/behaviour/pop/scope.dart';
+import 'package:aves/widgets/common/behaviour/pop/tv_navigation.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
 import 'package:aves/widgets/common/grid/item_tracker.dart';
@@ -40,7 +41,6 @@ import 'package:aves/widgets/navigation/drawer/app_drawer.dart';
 import 'package:aves/widgets/navigation/nav_bar/nav_bar.dart';
 import 'package:aves/widgets/navigation/tv_rail.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:provider/provider.dart';
@@ -80,48 +80,34 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
   Widget build(BuildContext context) {
     final body = QueryProvider(
       initialQuery: null,
-      child: WillPopScope(
-        onWillPop: () {
-          final selection = context.read<Selection<FilterGridItem<T>>>();
-          if (selection.isSelecting) {
-            selection.browse();
-            return SynchronousFuture(false);
-          }
-          return SynchronousFuture(true);
-        },
-        child: TvPopScope(
-          child: DoubleBackPopScope(
-            child: GestureAreaProtectorStack(
-              child: SafeArea(
-                top: false,
-                bottom: false,
-                child: Selector<MediaQueryData, double>(
-                  selector: (context, mq) => mq.padding.top,
-                  builder: (context, mqPaddingTop, child) {
-                    return ValueListenableBuilder<double>(
-                      valueListenable: appBarHeightNotifier,
-                      builder: (context, appBarHeight, child) {
-                        return FilterGrid<T>(
-                          // key is expected by test driver
-                          key: const Key('filter-grid'),
-                          settingsRouteKey: settingsRouteKey,
-                          appBar: appBar,
-                          appBarHeight: mqPaddingTop + appBarHeight,
-                          sections: sections,
-                          newFilters: newFilters,
-                          sortFactor: sortFactor,
-                          showHeaders: showHeaders,
-                          selectable: selectable,
-                          applyQuery: applyQuery,
-                          emptyBuilder: emptyBuilder,
-                          heroType: heroType,
-                        );
-                      },
-                    );
-                  },
-                ),
-              ),
-            ),
+      child: GestureAreaProtectorStack(
+        child: SafeArea(
+          top: false,
+          bottom: false,
+          child: Selector<MediaQueryData, double>(
+            selector: (context, mq) => mq.padding.top,
+            builder: (context, mqPaddingTop, child) {
+              return ValueListenableBuilder<double>(
+                valueListenable: appBarHeightNotifier,
+                builder: (context, appBarHeight, child) {
+                  return _FilterGrid<T>(
+                    // key is expected by test driver
+                    key: const Key('filter-grid'),
+                    settingsRouteKey: settingsRouteKey,
+                    appBar: appBar,
+                    appBarHeight: mqPaddingTop + appBarHeight,
+                    sections: sections,
+                    newFilters: newFilters,
+                    sortFactor: sortFactor,
+                    showHeaders: showHeaders,
+                    selectable: selectable,
+                    applyQuery: applyQuery,
+                    emptyBuilder: emptyBuilder,
+                    heroType: heroType,
+                  );
+                },
+              );
+            },
           ),
         ),
       ),
@@ -170,7 +156,7 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
   }
 }
 
-class FilterGrid<T extends CollectionFilter> extends StatefulWidget {
+class _FilterGrid<T extends CollectionFilter> extends StatefulWidget {
   final String? settingsRouteKey;
   final Widget appBar;
   final double appBarHeight;
@@ -182,7 +168,7 @@ class FilterGrid<T extends CollectionFilter> extends StatefulWidget {
   final Widget Function() emptyBuilder;
   final HeroType heroType;
 
-  const FilterGrid({
+  const _FilterGrid({
     super.key,
     required this.settingsRouteKey,
     required this.appBar,
@@ -198,15 +184,17 @@ class FilterGrid<T extends CollectionFilter> extends StatefulWidget {
   });
 
   @override
-  State<FilterGrid<T>> createState() => _FilterGridState<T>();
+  State<_FilterGrid<T>> createState() => _FilterGridState<T>();
 }
 
-class _FilterGridState<T extends CollectionFilter> extends State<FilterGrid<T>> {
+class _FilterGridState<T extends CollectionFilter> extends State<_FilterGrid<T>> {
   TileExtentController? _tileExtentController;
+  final DoubleBackPopHandler _doubleBackPopHandler = DoubleBackPopHandler();
 
   @override
   void dispose() {
     _tileExtentController?.dispose();
+    _doubleBackPopHandler.dispose();
     super.dispose();
   }
 
@@ -220,19 +208,33 @@ class _FilterGridState<T extends CollectionFilter> extends State<FilterGrid<T>> 
       spacing: 8,
       horizontalPadding: 2,
     );
-    return TileExtentControllerProvider(
-      controller: _tileExtentController!,
-      child: _FilterGridContent<T>(
-        appBar: widget.appBar,
-        appBarHeight: widget.appBarHeight,
-        sections: widget.sections,
-        newFilters: widget.newFilters,
-        sortFactor: widget.sortFactor,
-        showHeaders: widget.showHeaders,
-        selectable: widget.selectable,
-        applyQuery: widget.applyQuery,
-        emptyBuilder: widget.emptyBuilder,
-        heroType: widget.heroType,
+    return AvesPopScope(
+      handlers: [
+        (context) {
+          final selection = context.read<Selection<FilterGridItem<T>>>();
+          if (selection.isSelecting) {
+            selection.browse();
+            return false;
+          }
+          return true;
+        },
+        TvNavigationPopHandler.pop,
+        _doubleBackPopHandler.pop,
+      ],
+      child: TileExtentControllerProvider(
+        controller: _tileExtentController!,
+        child: _FilterGridContent<T>(
+          appBar: widget.appBar,
+          appBarHeight: widget.appBarHeight,
+          sections: widget.sections,
+          newFilters: widget.newFilters,
+          sortFactor: widget.sortFactor,
+          showHeaders: widget.showHeaders,
+          selectable: widget.selectable,
+          applyQuery: widget.applyQuery,
+          emptyBuilder: widget.emptyBuilder,
+          heroType: widget.heroType,
+        ),
       ),
     );
   }

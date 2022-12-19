@@ -42,7 +42,6 @@ class AvesAppBar extends StatelessWidget {
               child: AvesFloatingBar(
                 builder: (context, backgroundColor, child) => Material(
                   color: backgroundColor,
-                  textStyle: Theme.of(context).appBarTheme.titleTextStyle,
                   child: child,
                 ),
                 child: Column(
@@ -63,18 +62,21 @@ class AvesAppBar extends StatelessWidget {
                                 )
                               : const SizedBox(width: 16),
                           Expanded(
-                            child: Hero(
-                              tag: titleHeroTag,
-                              flightShuttleBuilder: _flightShuttleBuilder,
-                              transitionOnUserGestures: true,
-                              child: AnimatedSwitcher(
-                                duration: context.read<DurationsData>().iconAnimation,
-                                child: Row(
-                                  key: ValueKey(transitionKey),
-                                  children: [
-                                    Expanded(child: title),
-                                    ...actions,
-                                  ],
+                            child: DefaultTextStyle(
+                              style: Theme.of(context).appBarTheme.titleTextStyle!,
+                              child: Hero(
+                                tag: titleHeroTag,
+                                flightShuttleBuilder: _flightShuttleBuilder,
+                                transitionOnUserGestures: true,
+                                child: AnimatedSwitcher(
+                                  duration: context.read<DurationsData>().iconAnimation,
+                                  child: Row(
+                                    key: ValueKey(transitionKey),
+                                    children: [
+                                      Expanded(child: title),
+                                      ...actions,
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
