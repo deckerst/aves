@@ -1,7 +1,7 @@
 {
   "appName": "Aves",
   "@appName": {},
-  "welcomeMessage": "Selamat datang ke Aves",
+  "welcomeMessage": "Selamat datang di Aves",
   "@welcomeMessage": {},
   "welcomeOptional": "Opsional",
   "@welcomeOptional": {},
@@ -1187,7 +1187,7 @@
   "@keepScreenOnVideoPlayback": {},
   "entryInfoActionExportMetadata": "Ekspor metadata",
   "@entryInfoActionExportMetadata": {},
-  "settingsWidgetDisplayedItem": "Item yang ditampilkan",
+  "settingsWidgetDisplayedItem": "Barang yang ditampilkan",
   "@settingsWidgetDisplayedItem": {},
   "columnCount": "{count, plural, other{{count} kolom}}",
   "@columnCount": {
@@ -1195,6 +1195,6 @@
       "count": {}
     }
   },
-  "settingsAccessibilityShowPinchGestureAlternatives": "Tampilkan alternatif gestur cubit",
+  "settingsAccessibilityShowPinchGestureAlternatives": "Tampilkan alternatif gestur multisentuh",
   "@settingsAccessibilityShowPinchGestureAlternatives": {}
 }

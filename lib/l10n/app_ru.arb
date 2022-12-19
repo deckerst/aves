@@ -1180,5 +1180,21 @@
   "filterAspectRatioPortraitLabel": "Вертикально",
   "@filterAspectRatioPortraitLabel": {},
   "settingsViewerShowRatingTags": "Показать рейтинг и теги",
-  "@settingsViewerShowRatingTags": {}
+  "@settingsViewerShowRatingTags": {},
+  "columnCount": "{count, plural, =1{1 столбец} few{{count} столбца} other{{count} столбцов}}",
+  "@columnCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "entryInfoActionRemoveLocation": "Удалить местоположение",
+  "@entryInfoActionRemoveLocation": {},
+  "keepScreenOnVideoPlayback": "Во время воспроизведения видео",
+  "@keepScreenOnVideoPlayback": {},
+  "settingsAccessibilityShowPinchGestureAlternatives": "Показать альтернативные жесты щипка",
+  "@settingsAccessibilityShowPinchGestureAlternatives": {},
+  "entryActionShareImageOnly": "Поделиться только изображением",
+  "@entryActionShareImageOnly": {},
+  "entryActionShareVideoOnly": "Поделиться только видео",
+  "@entryActionShareVideoOnly": {}
 }
