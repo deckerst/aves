@@ -5,7 +5,8 @@ import 'package:aves/widgets/about/credits.dart';
 import 'package:aves/widgets/about/licenses.dart';
 import 'package:aves/widgets/about/translators.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
-import 'package:aves/widgets/common/behaviour/tv_pop.dart';
+import 'package:aves/widgets/common/behaviour/pop/scope.dart';
+import 'package:aves/widgets/common/behaviour/pop/tv_navigation.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/navigation/tv_rail.dart';
 import 'package:flutter/material.dart';
@@ -47,7 +48,8 @@ class AboutPage extends StatelessWidget {
 
     if (device.isTelevision) {
       return Scaffold(
-        body: TvPopScope(
+        body: AvesPopScope(
+          handlers: const [TvNavigationPopHandler.pop],
           child: Row(
             children: [
               TvRail(

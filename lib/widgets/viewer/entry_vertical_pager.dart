@@ -216,7 +216,7 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
           valueListenable: _isImageFocusedNotifier,
           builder: (context, isImageFocused, child) {
             return AnimatedScale(
-              scale: isImageFocused ? 1 : .7,
+              scale: isImageFocused ? 1 : .6,
               curve: Curves.fastOutSlowIn,
               duration: context.select<DurationsData, Duration>((v) => v.tvImageFocusAnimation),
               child: child!,

@@ -4,7 +4,6 @@ import 'dart:math';
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/actions/chip_actions.dart';
 import 'package:aves/model/covers.dart';
-import 'package:aves/model/device.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/location.dart';
@@ -60,9 +59,8 @@ class AvesFilterChip extends StatefulWidget {
   static const double minChipHeight = kMinInteractiveDimension;
   static const double minChipWidth = 80;
   static const double iconSize = 18;
+  static const double fontSize = 14;
   static const double decoratedContentVerticalPadding = 5;
-
-  static double get fontSize => device.isTelevision ? 18 : 14;
 
   const AvesFilterChip({
     super.key,

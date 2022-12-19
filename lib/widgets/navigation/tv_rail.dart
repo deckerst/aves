@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
@@ -11,6 +12,7 @@ import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_logo.dart';
 import 'package:aves/widgets/debug/app_debug_page.dart';
+import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/navigation/drawer/app_drawer.dart';
 import 'package:aves/widgets/navigation/drawer/page_nav_tile.dart';
 import 'package:aves/widgets/navigation/drawer/tile.dart';
@@ -55,16 +57,7 @@ class _TvRailState extends State<TvRail> {
     _scrollController = ScrollController(initialScrollOffset: controller.offset);
     _scrollController.addListener(_onScrollChanged);
 
-    final focusedIndex = controller.focusedIndex;
-    if (focusedIndex != null) {
-      controller.focusedIndex = null;
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        final nodes = _focusNode.children.toList();
-        if (focusedIndex < nodes.length) {
-          nodes[focusedIndex].requestFocus();
-        }
-      });
-    }
+    WidgetsBinding.instance.addPostFrameCallback((_) => _initFocus());
   }
 
   @override
@@ -85,7 +78,7 @@ class _TvRailState extends State<TvRail> {
           context.l10n.appName,
           style: const TextStyle(
             color: Colors.white,
-            fontSize: 44,
+            fontSize: 32,
             fontWeight: FontWeight.w300,
             letterSpacing: 1.0,
             fontFeatures: [FontFeature.enable('smcp')],
@@ -94,16 +87,7 @@ class _TvRailState extends State<TvRail> {
       ],
     );
 
-    final navEntries = <_NavEntry>[
-      ..._buildTypeLinks(),
-      ..._buildAlbumLinks(context),
-      ..._buildPageLinks(context),
-      ...[
-        SettingsPage.routeName,
-        AboutPage.routeName,
-        if (!kReleaseMode) AppDebugPage.routeName,
-      ].map(_routeNavEntry),
-    ];
+    final navEntries = _getNavEntries(context);
 
     final rail = Focus(
       focusNode: _focusNode,
@@ -147,6 +131,35 @@ class _TvRailState extends State<TvRail> {
     );
   }
 
+  void _initFocus() {
+    var index = controller.focusedIndex ?? -1;
+    controller.focusedIndex = null;
+
+    if (index == -1) {
+      final navEntries = _getNavEntries(context);
+      index = navEntries.indexWhere((v) => v.isHome);
+    }
+
+    final nodes = _focusNode.children.toList();
+    if (0 <= index && index < nodes.length) {
+      nodes[index].requestFocus();
+    }
+  }
+
+  List<_NavEntry> _getNavEntries(BuildContext context) {
+    final navEntries = <_NavEntry>[
+      ..._buildTypeLinks(),
+      ..._buildAlbumLinks(context),
+      ..._buildPageLinks(context),
+      ...[
+        SettingsPage.routeName,
+        AboutPage.routeName,
+        if (!kReleaseMode) AppDebugPage.routeName,
+      ].map(_routeNavEntry),
+    ];
+    return navEntries;
+  }
+
   List<_NavEntry> _buildTypeLinks() {
     final hiddenFilters = settings.hiddenFilters;
     final typeBookmarks = settings.drawerTypeBookmarks;
@@ -160,6 +173,7 @@ class _TvRailState extends State<TvRail> {
       return _NavEntry(
         icon: DrawerFilterIcon(filter: filter),
         label: DrawerFilterTitle(filter: filter),
+        isHome: settings.homePage == HomePageSetting.collection && filter == null,
         isSelected: isSelected(),
         onSelection: () => _goToCollection(context, filter),
       );
@@ -181,6 +195,7 @@ class _TvRailState extends State<TvRail> {
       return _NavEntry(
         icon: DrawerFilterIcon(filter: filter),
         label: DrawerFilterTitle(filter: filter),
+        isHome: false,
         isSelected: isSelected(),
         onSelection: () => _goToCollection(context, filter),
       );
@@ -195,6 +210,7 @@ class _TvRailState extends State<TvRail> {
   _NavEntry _routeNavEntry(String routeName) => _NavEntry(
         icon: DrawerPageIcon(route: routeName),
         label: DrawerPageTitle(route: routeName),
+        isHome: settings.homePage == HomePageSetting.albums && routeName == AlbumListPage.routeName,
         isSelected: context.currentRouteName == routeName,
         onSelection: () => _goTo(routeName),
       );
@@ -226,14 +242,14 @@ class _TvRailState extends State<TvRail> {
 
 @immutable
 class _NavEntry {
-  final Widget icon;
-  final Widget label;
-  final bool isSelected;
+  final Widget icon, label;
+  final bool isHome, isSelected;
   final VoidCallback onSelection;
 
   const _NavEntry({
     required this.icon,
     required this.label,
+    required this.isHome,
     required this.isSelected,
     required this.onSelection,
   });

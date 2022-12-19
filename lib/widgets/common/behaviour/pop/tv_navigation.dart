@@ -7,39 +7,25 @@ import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 // address `TV-DB` requirement from https://developer.android.com/docs/quality-guidelines/tv-app-quality
-class TvPopScope extends StatelessWidget {
-  final Widget child;
+class TvNavigationPopHandler {
+  static bool pop(BuildContext context) {
+    if (!device.isTelevision || _isHome(context)) {
+      return true;
+    }
 
-  const TvPopScope({
-    super.key,
-    required this.child,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () {
-        if (!device.isTelevision || _isHome(context)) {
-          return SynchronousFuture(true);
-        }
-
-        Navigator.pushAndRemoveUntil(
-          context,
-          _getHomeRoute(),
-          (route) => false,
-        );
-        return SynchronousFuture(false);
-      },
-      child: child,
+    Navigator.pushAndRemoveUntil(
+      context,
+      _getHomeRoute(),
+      (route) => false,
     );
+    return false;
   }
 
-  bool _isHome(BuildContext context) {
+  static bool _isHome(BuildContext context) {
     final homePage = settings.homePage;
     final currentRoute = context.currentRouteName;
 
@@ -53,7 +39,7 @@ class TvPopScope extends StatelessWidget {
     }
   }
 
-  Route _getHomeRoute() {
+  static Route _getHomeRoute() {
     switch (settings.homePage) {
       case HomePageSetting.collection:
         return MaterialPageRoute(

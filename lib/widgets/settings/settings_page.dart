@@ -13,7 +13,8 @@ import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/app_bar/app_bar_title.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/basic/menu.dart';
-import 'package:aves/widgets/common/behaviour/tv_pop.dart';
+import 'package:aves/widgets/common/behaviour/pop/scope.dart';
+import 'package:aves/widgets/common/behaviour/pop/tv_navigation.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
 import 'package:aves/widgets/common/search/route.dart';
@@ -74,7 +75,8 @@ class _SettingsPageState extends State<SettingsPage> with FeedbackMixin {
 
     if (device.isTelevision) {
       return Scaffold(
-        body: TvPopScope(
+        body: AvesPopScope(
+          handlers: const [TvNavigationPopHandler.pop],
           child: Row(
             children: [
               TvRail(
