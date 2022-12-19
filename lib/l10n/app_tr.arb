@@ -1195,6 +1195,6 @@
       "count": {}
     }
   },
-  "settingsAccessibilityShowPinchGestureAlternatives": "Sıkıştırma hareketi alternatiflerini göster",
+  "settingsAccessibilityShowPinchGestureAlternatives": "Çoklu dokunma hareketi alternatiflerini göster",
   "@settingsAccessibilityShowPinchGestureAlternatives": {}
 }

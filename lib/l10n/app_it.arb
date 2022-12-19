@@ -1172,5 +1172,29 @@
   "settingsSubtitleThemeTextPositionDialogTitle": "Posizione testo",
   "@settingsSubtitleThemeTextPositionDialogTitle": {},
   "settingsWidgetDisplayedItem": "Elemento visualizzato",
-  "@settingsWidgetDisplayedItem": {}
+  "@settingsWidgetDisplayedItem": {},
+  "settingsViewerShowRatingTags": "Mostra valutazione & etichette",
+  "@settingsViewerShowRatingTags": {},
+  "columnCount": "{count, plural, =1{1 colonna} other{{count} colonne}}",
+  "@columnCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "entryInfoActionRemoveLocation": "Rimuovi posizione",
+  "@entryInfoActionRemoveLocation": {},
+  "filterAspectRatioLandscapeLabel": "Orizzontale",
+  "@filterAspectRatioLandscapeLabel": {},
+  "filterAspectRatioPortraitLabel": "Verticale",
+  "@filterAspectRatioPortraitLabel": {},
+  "keepScreenOnVideoPlayback": "Durante la riproduzione video",
+  "@keepScreenOnVideoPlayback": {},
+  "settingsAccessibilityShowPinchGestureAlternatives": "Mostra gesti multi-touch alternativi",
+  "@settingsAccessibilityShowPinchGestureAlternatives": {},
+  "entryActionShareImageOnly": "Condividi solo immagine",
+  "@entryActionShareImageOnly": {},
+  "entryActionShareVideoOnly": "Condividi solo video",
+  "@entryActionShareVideoOnly": {},
+  "filterNoAddressLabel": "Senza indirizzo",
+  "@filterNoAddressLabel": {}
 }
