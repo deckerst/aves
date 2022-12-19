@@ -1347,7 +1347,7 @@
   "@settingsWidgetDisplayedItem": {},
   "mapAttributionOsmHot": "Картографічні дані © [OpenStreetMap](https://www.openstreetmap.org/copyright) помічники • Плитки [HOT](https://www.hotosm.org/) • Розміщена на [OSM France](https://openstreetmap.fr/)",
   "@mapAttributionOsmHot": {},
-  "settingsAccessibilityShowPinchGestureAlternatives": "Показати альтернативи жесту щипання",
+  "settingsAccessibilityShowPinchGestureAlternatives": "Показати альтернативи мультисенсорним жестам",
   "@settingsAccessibilityShowPinchGestureAlternatives": {},
   "columnCount": "{count, plural, =1{1 стовпець} few{{count} стовпці} other{{count} стовпців}}",
   "@columnCount": {

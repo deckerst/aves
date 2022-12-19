@@ -1172,5 +1172,27 @@
   "aboutLicensesDartPackagesSectionTitle": "Dart Packages",
   "@aboutLicensesDartPackagesSectionTitle": {},
   "aboutLicensesFlutterPackagesSectionTitle": "Flutter Packages",
-  "@aboutLicensesFlutterPackagesSectionTitle": {}
+  "@aboutLicensesFlutterPackagesSectionTitle": {},
+  "keepScreenOnVideoPlayback": "视频播放期间",
+  "@keepScreenOnVideoPlayback": {},
+  "columnCount": "{count, plural, other{{count} 列}}",
+  "@columnCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "entryActionShareImageOnly": "仅分享图片",
+  "@entryActionShareImageOnly": {},
+  "entryActionShareVideoOnly": "仅分享视频",
+  "@entryActionShareVideoOnly": {},
+  "filterAspectRatioLandscapeLabel": "横向",
+  "@filterAspectRatioLandscapeLabel": {},
+  "filterAspectRatioPortraitLabel": "纵向",
+  "@filterAspectRatioPortraitLabel": {},
+  "entryInfoActionRemoveLocation": "移除位置",
+  "@entryInfoActionRemoveLocation": {},
+  "filterNoAddressLabel": "无地址",
+  "@filterNoAddressLabel": {},
+  "settingsViewerShowRatingTags": "显示评分和标签",
+  "@settingsViewerShowRatingTags": {}
 }

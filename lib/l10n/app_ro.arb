@@ -1330,5 +1330,29 @@
   "statsPageTitle": "Statistici",
   "@statsPageTitle": {},
   "statsTopCountriesSectionTitle": "Țări de top",
-  "@statsTopCountriesSectionTitle": {}
+  "@statsTopCountriesSectionTitle": {},
+  "settingsAccessibilityShowPinchGestureAlternatives": "Afișare alternative de gesturi atingeri-multiple",
+  "@settingsAccessibilityShowPinchGestureAlternatives": {},
+  "columnCount": "{count, plural, =1{1 coloană} other{{count} coloane}}",
+  "@columnCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "entryActionShareImageOnly": "Distribuie doar imaginea",
+  "@entryActionShareImageOnly": {},
+  "entryActionShareVideoOnly": "Distribuie numai videoclipul",
+  "@entryActionShareVideoOnly": {},
+  "keepScreenOnVideoPlayback": "În timpul redării video",
+  "@keepScreenOnVideoPlayback": {},
+  "settingsViewerShowRatingTags": "Afișare evaluare și etichete",
+  "@settingsViewerShowRatingTags": {},
+  "filterAspectRatioLandscapeLabel": "Peisaj",
+  "@filterAspectRatioLandscapeLabel": {},
+  "filterAspectRatioPortraitLabel": "Portret",
+  "@filterAspectRatioPortraitLabel": {},
+  "filterNoAddressLabel": "Nicio adresă",
+  "@filterNoAddressLabel": {},
+  "entryInfoActionRemoveLocation": "Eliminare locație",
+  "@entryInfoActionRemoveLocation": {}
 }
