@@ -1189,7 +1189,7 @@
   "@entryActionShareImageOnly": {},
   "keepScreenOnVideoPlayback": "Video oynatma sırasında",
   "@keepScreenOnVideoPlayback": {},
-  "columnCount": "{count, plural, =1{1 sütun} other{{count} sütun}}",
+  "columnCount": "{count, plural, other{{count} sütun}}",
   "@columnCount": {
     "placeholders": {
       "count": {}
