@@ -595,19 +595,6 @@
     "settingsAccessibilityShowPinchGestureAlternatives"
   ],
 
-  "el": [
-    "columnCount",
-    "entryActionShareImageOnly",
-    "entryActionShareVideoOnly",
-    "entryInfoActionRemoveLocation",
-    "filterAspectRatioLandscapeLabel",
-    "filterAspectRatioPortraitLabel",
-    "filterNoAddressLabel",
-    "keepScreenOnVideoPlayback",
-    "settingsViewerShowRatingTags",
-    "settingsAccessibilityShowPinchGestureAlternatives"
-  ],
-
   "fa": [
     "columnCount",
     "clearTooltip",
@@ -1537,19 +1524,6 @@
     "filePickerOpenFrom",
     "filePickerNoItems",
     "filePickerUseThisFolder"
-  ],
-
-  "it": [
-    "columnCount",
-    "entryActionShareImageOnly",
-    "entryActionShareVideoOnly",
-    "entryInfoActionRemoveLocation",
-    "filterAspectRatioLandscapeLabel",
-    "filterAspectRatioPortraitLabel",
-    "filterNoAddressLabel",
-    "keepScreenOnVideoPlayback",
-    "settingsViewerShowRatingTags",
-    "settingsAccessibilityShowPinchGestureAlternatives"
   ],
 
   "ja": [
@@ -2579,28 +2553,6 @@
     "settingsWidgetDisplayedItem"
   ],
 
-  "ro": [
-    "columnCount",
-    "entryActionShareImageOnly",
-    "entryActionShareVideoOnly",
-    "entryInfoActionRemoveLocation",
-    "filterAspectRatioLandscapeLabel",
-    "filterAspectRatioPortraitLabel",
-    "filterNoAddressLabel",
-    "keepScreenOnVideoPlayback",
-    "settingsViewerShowRatingTags",
-    "settingsAccessibilityShowPinchGestureAlternatives"
-  ],
-
-  "ru": [
-    "columnCount",
-    "entryActionShareImageOnly",
-    "entryActionShareVideoOnly",
-    "entryInfoActionRemoveLocation",
-    "keepScreenOnVideoPlayback",
-    "settingsAccessibilityShowPinchGestureAlternatives"
-  ],
-
   "th": [
     "itemCount",
     "columnCount",
@@ -2944,15 +2896,6 @@
   ],
 
   "zh": [
-    "columnCount",
-    "entryActionShareImageOnly",
-    "entryActionShareVideoOnly",
-    "entryInfoActionRemoveLocation",
-    "filterAspectRatioLandscapeLabel",
-    "filterAspectRatioPortraitLabel",
-    "filterNoAddressLabel",
-    "keepScreenOnVideoPlayback",
-    "settingsViewerShowRatingTags",
     "settingsAccessibilityShowPinchGestureAlternatives"
   ],
 
