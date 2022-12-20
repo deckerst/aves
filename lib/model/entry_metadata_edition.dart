@@ -83,6 +83,8 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
     return dataTypes;
   }
 
+  static final removalLocation = LatLng(0, 0);
+
   Future<Set<EntryDataType>> editLocation(LatLng? latLng) async {
     final dataTypes = <EntryDataType>{};
     final metadata = <MetadataType, dynamic>{};
@@ -93,17 +95,15 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
       // clear every GPS field
       final exifFields = Map<MetadataField, dynamic>.fromEntries(MetadataFields.exifGpsFields.map((k) => MapEntry(k, null)));
       // add latitude & longitude, if any
-      if (latLng != null) {
+      if (latLng != null && latLng != removalLocation) {
         final latitude = latLng.latitude;
         final longitude = latLng.longitude;
-        if (latitude != 0 && longitude != 0) {
-          exifFields.addAll({
-            MetadataField.exifGpsLatitude: latitude.abs(),
-            MetadataField.exifGpsLatitudeRef: latitude >= 0 ? Exif.latitudeNorth : Exif.latitudeSouth,
-            MetadataField.exifGpsLongitude: longitude.abs(),
-            MetadataField.exifGpsLongitudeRef: longitude >= 0 ? Exif.longitudeEast : Exif.longitudeWest,
-          });
-        }
+        exifFields.addAll({
+          MetadataField.exifGpsLatitude: latitude.abs(),
+          MetadataField.exifGpsLatitudeRef: latitude >= 0 ? Exif.latitudeNorth : Exif.latitudeSouth,
+          MetadataField.exifGpsLongitude: longitude.abs(),
+          MetadataField.exifGpsLongitudeRef: longitude >= 0 ? Exif.longitudeEast : Exif.longitudeWest,
+        });
       }
       metadata[MetadataType.exif] = Map<String, dynamic>.fromEntries(exifFields.entries.map((kv) => MapEntry(kv.key.toPlatform!, kv.value)));
 
@@ -119,15 +119,13 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
       final mp4Fields = <MetadataField, String?>{};
 
       String? iso6709String;
-      if (latLng != null) {
+      if (latLng != null && latLng != removalLocation) {
         final latitude = latLng.latitude;
         final longitude = latLng.longitude;
-        if (latitude != 0 && longitude != 0) {
-          const locale = 'en_US';
-          final isoLat = '${latitude >= 0 ? '+' : '-'}${NumberFormat('00.0000', locale).format(latitude.abs())}';
-          final isoLon = '${longitude >= 0 ? '+' : '-'}${NumberFormat('000.0000', locale).format(longitude.abs())}';
-          iso6709String = '$isoLat$isoLon/';
-        }
+        const locale = 'en_US';
+        final isoLat = '${latitude >= 0 ? '+' : '-'}${NumberFormat('00.0000', locale).format(latitude.abs())}';
+        final isoLon = '${longitude >= 0 ? '+' : '-'}${NumberFormat('000.0000', locale).format(longitude.abs())}';
+        iso6709String = '$isoLat$isoLon/';
       }
       mp4Fields[MetadataField.mp4GpsCoordinates] = iso6709String;
 

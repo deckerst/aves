@@ -3,6 +3,7 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:aves/model/actions/settings_actions.dart';
+import 'package:aves/model/device.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/services.dart';
@@ -12,10 +13,12 @@ import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/app_bar/app_bar_title.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/basic/menu.dart';
+import 'package:aves/widgets/common/behaviour/pop/scope.dart';
+import 'package:aves/widgets/common/behaviour/pop/tv_navigation.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
-import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/common/search/route.dart';
+import 'package:aves/widgets/navigation/tv_rail.dart';
 import 'package:aves/widgets/settings/accessibility/accessibility.dart';
 import 'package:aves/widgets/settings/app_export/items.dart';
 import 'package:aves/widgets/settings/app_export/selection_dialog.dart';
@@ -46,6 +49,7 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> with FeedbackMixin {
   final ValueNotifier<String?> _expandedNotifier = ValueNotifier(null);
+  final ValueNotifier<int> _tvSelectedIndexNotifier = ValueNotifier(0);
 
   static final List<SettingsSection> sections = [
     NavigationSection(),
@@ -59,15 +63,85 @@ class _SettingsPageState extends State<SettingsPage> with FeedbackMixin {
   ];
 
   @override
+  void dispose() {
+    _expandedNotifier.dispose();
+    _tvSelectedIndexNotifier.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final durations = context.watch<DurationsData>();
-    return MediaQueryDataProvider(
-      child: Scaffold(
+    final appBarTitle = Text(context.l10n.settingsPageTitle);
+
+    if (device.isTelevision) {
+      return Scaffold(
+        body: AvesPopScope(
+          handlers: const [TvNavigationPopHandler.pop],
+          child: Row(
+            children: [
+              TvRail(
+                controller: context.read<TvRailController>(),
+              ),
+              Expanded(
+                child: Column(
+                  children: [
+                    const SizedBox(height: 8),
+                    AppBar(
+                      automaticallyImplyLeading: false,
+                      title: appBarTitle,
+                      elevation: 0,
+                    ),
+                    Expanded(
+                      child: ValueListenableBuilder<int>(
+                        valueListenable: _tvSelectedIndexNotifier,
+                        builder: (context, selectedIndex, child) {
+                          final rail = NavigationRail(
+                            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                            extended: true,
+                            destinations: sections
+                                .map((section) => NavigationRailDestination(
+                                      icon: section.icon(context),
+                                      label: Text(section.title(context)),
+                                    ))
+                                .toList(),
+                            selectedIndex: selectedIndex,
+                            onDestinationSelected: (index) => _tvSelectedIndexNotifier.value = index,
+                          );
+                          return LayoutBuilder(
+                            builder: (context, constraints) {
+                              return Row(
+                                children: [
+                                  SingleChildScrollView(
+                                    child: ConstrainedBox(
+                                      constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                                      child: IntrinsicHeight(child: rail),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: _SettingsSectionBody(
+                                      loader: Future.value(sections[selectedIndex].tiles(context)),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    } else {
+      return Scaffold(
         appBar: AppBar(
           title: InteractiveAppBarTitle(
             onTap: () => _goToSearch(context),
-            child: Text(context.l10n.settingsPageTitle),
+            child: appBarTitle,
           ),
           actions: [
             IconButton(
@@ -101,38 +175,15 @@ class _SettingsPageState extends State<SettingsPage> with FeedbackMixin {
         body: GestureAreaProtectorStack(
           child: SafeArea(
             bottom: false,
-            child: Theme(
-              data: theme.copyWith(
-                textTheme: theme.textTheme.copyWith(
-                  // dense style font for tile subtitles, without modifying title font
-                  bodyMedium: const TextStyle(fontSize: 12),
-                ),
-              ),
-              child: AnimationLimiter(
-                child: Selector<MediaQueryData, double>(
-                    selector: (context, mq) => max(mq.effectiveBottomPadding, mq.systemGestureInsets.bottom),
-                    builder: (context, mqPaddingBottom, child) {
-                      return ListView(
-                        padding: const EdgeInsets.all(8) + EdgeInsets.only(bottom: mqPaddingBottom),
-                        children: AnimationConfiguration.toStaggeredList(
-                          duration: durations.staggeredAnimation,
-                          delay: durations.staggeredAnimationDelay * timeDilation,
-                          childAnimationBuilder: (child) => SlideAnimation(
-                            verticalOffset: 50.0,
-                            child: FadeInAnimation(
-                              child: child,
-                            ),
-                          ),
-                          children: sections.map((v) => v.build(context, _expandedNotifier)).toList(),
-                        ),
-                      );
-                    }),
+            child: AnimationLimiter(
+              child: _SettingsListView(
+                children: sections.map((v) => v.build(context, _expandedNotifier)).toList(),
               ),
             ),
           ),
         ),
-      ),
-    );
+      );
+    }
   }
 
   static const String exportVersionKey = 'version';
@@ -230,6 +281,70 @@ class _SettingsPageState extends State<SettingsPage> with FeedbackMixin {
           sections: sections,
         ),
       ),
+    );
+  }
+}
+
+class _SettingsListView extends StatelessWidget {
+  final List<Widget> children;
+
+  const _SettingsListView({
+    super.key,
+    required this.children,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Theme(
+      data: theme.copyWith(
+        textTheme: theme.textTheme.copyWith(
+          // dense style font for tile subtitles, without modifying title font
+          bodyMedium: const TextStyle(fontSize: 12),
+        ),
+      ),
+      child: Selector<MediaQueryData, double>(
+        selector: (context, mq) => max(mq.effectiveBottomPadding, mq.systemGestureInsets.bottom),
+        builder: (context, mqPaddingBottom, child) {
+          final durations = context.watch<DurationsData>();
+          return ListView(
+            padding: const EdgeInsets.all(8) + EdgeInsets.only(bottom: mqPaddingBottom),
+            children: AnimationConfiguration.toStaggeredList(
+              duration: durations.staggeredAnimation,
+              delay: durations.staggeredAnimationDelay * timeDilation,
+              childAnimationBuilder: (child) => SlideAnimation(
+                verticalOffset: 50.0,
+                child: FadeInAnimation(
+                  child: child,
+                ),
+              ),
+              children: children,
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _SettingsSectionBody extends StatelessWidget {
+  final Future<List<SettingsTile>> loader;
+
+  const _SettingsSectionBody({required this.loader});
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<List<SettingsTile>>(
+      future: loader,
+      builder: (context, snapshot) {
+        final tiles = snapshot.data;
+        if (tiles == null) return const SizedBox();
+
+        return _SettingsListView(
+          key: ValueKey(loader),
+          children: tiles.map((v) => v.build(context)).toList(),
+        );
+      },
     );
   }
 }

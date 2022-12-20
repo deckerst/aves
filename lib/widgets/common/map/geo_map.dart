@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/entry_images.dart';
@@ -12,13 +13,13 @@ import 'package:aves/utils/change_notifier.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/utils/math_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/common/identity/buttons/overlay_button.dart';
 import 'package:aves/widgets/common/map/attribution.dart';
 import 'package:aves/widgets/common/map/buttons/panel.dart';
 import 'package:aves/widgets/common/map/decorator.dart';
 import 'package:aves/widgets/common/map/leaflet/map.dart';
 import 'package:aves/widgets/common/thumbnail/image.dart';
 import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
-import 'package:aves/widgets/viewer/overlay/common.dart';
 import 'package:aves_map/aves_map.dart';
 import 'package:collection/collection.dart';
 import 'package:fluster/fluster.dart';
@@ -37,7 +38,17 @@ class GeoMap extends StatefulWidget {
   final MapOverlay? overlayEntry;
   final UserZoomChangeCallback? onUserZoomChange;
   final MapTapCallback? onMapTap;
-  final void Function(LatLng averageLocation, AvesEntry markerEntry, Set<AvesEntry> Function() getClusterEntries)? onMarkerTap;
+  final void Function(
+    LatLng markerLocation,
+    AvesEntry markerEntry,
+  )? onMarkerTap;
+  final void Function(
+    LatLng markerLocation,
+    AvesEntry markerEntry,
+    Set<AvesEntry> clusterEntries,
+    Offset tapLocalPosition,
+    WidgetBuilder markerBuilder,
+  )? onMarkerLongPress;
   final void Function(BuildContext context)? openMapPage;
 
   const GeoMap({
@@ -53,6 +64,7 @@ class GeoMap extends StatefulWidget {
     this.onUserZoomChange,
     this.onMapTap,
     this.onMarkerTap,
+    this.onMarkerLongPress,
     this.openMapPage,
   });
 
@@ -117,41 +129,6 @@ class _GeoMapState extends State<GeoMap> {
 
   @override
   Widget build(BuildContext context) {
-    void _onMarkerTap(GeoEntry<AvesEntry> geoEntry) {
-      final onTap = widget.onMarkerTap;
-      if (onTap == null) return;
-
-      final clusterId = geoEntry.clusterId;
-      AvesEntry? markerEntry;
-      if (clusterId != null) {
-        final uri = geoEntry.childMarkerId;
-        markerEntry = entries.firstWhereOrNull((v) => v.uri == uri);
-      } else {
-        markerEntry = geoEntry.entry;
-      }
-
-      if (markerEntry == null) return;
-
-      Set<AvesEntry> getClusterEntries() {
-        if (clusterId == null) {
-          return {geoEntry.entry!};
-        }
-
-        var points = _defaultMarkerCluster?.points(clusterId) ?? [];
-        if (points.length != geoEntry.pointsSize) {
-          // `Fluster.points()` method does not always return all the points contained in a cluster
-          // the higher `nodeSize` is, the higher the chance to get all the points (i.e. as many as the cluster `pointsSize`)
-          _slowMarkerCluster ??= _buildFluster(nodeSize: smallestPowerOf2(entries.length));
-          points = _slowMarkerCluster!.points(clusterId);
-          assert(points.length == geoEntry.pointsSize, 'got ${points.length}/${geoEntry.pointsSize} for geoEntry=$geoEntry');
-        }
-        return points.map((geoEntry) => geoEntry.entry!).toSet();
-      }
-
-      final clusterAverageLocation = LatLng(geoEntry.latitude!, geoEntry.longitude!);
-      onTap(clusterAverageLocation, markerEntry, getClusterEntries);
-    }
-
     return Selector<Settings, EntryMapStyle?>(
       selector: (context, s) => s.mapStyle,
       builder: (context, mapStyle, child) {
@@ -191,6 +168,7 @@ class _GeoMapState extends State<GeoMap> {
                 onUserZoomChange: widget.onUserZoomChange,
                 onMapTap: widget.onMapTap,
                 onMarkerTap: _onMarkerTap,
+                onMarkerLongPress: _onMarkerLongPress,
               );
               break;
             case EntryMapStyle.osmHot:
@@ -213,14 +191,15 @@ class _GeoMapState extends State<GeoMap> {
                   MapThemeData.markerImageExtent + MapThemeData.markerOuterBorderWidth * 2 + MapThemeData.markerArrowSize.height,
                 ),
                 dotMarkerSize: const Size(
-                  DotMarker.diameter + MapThemeData.markerOuterBorderWidth * 2,
-                  DotMarker.diameter + MapThemeData.markerOuterBorderWidth * 2,
+                  MapThemeData.markerDotDiameter + MapThemeData.markerOuterBorderWidth * 2,
+                  MapThemeData.markerDotDiameter + MapThemeData.markerOuterBorderWidth * 2,
                 ),
                 overlayOpacityNotifier: widget.overlayOpacityNotifier,
                 overlayEntry: widget.overlayEntry,
                 onUserZoomChange: widget.onUserZoomChange,
                 onMapTap: widget.onMapTap,
                 onMarkerTap: _onMarkerTap,
+                onMarkerLongPress: _onMarkerLongPress,
               );
               break;
           }
@@ -320,18 +299,25 @@ class _GeoMapState extends State<GeoMap> {
       }
     }
     if (bounds == null) {
-      // fit map to located items
+      LatLng? centerToSave;
       final initialCenter = widget.initialCenter;
-      final points = initialCenter != null ? {initialCenter} : entries.map((v) => v.latLng!).toSet();
-      if (points.isNotEmpty) {
+      if (initialCenter != null) {
+        // fit map for specified center and user zoom
         bounds = ZoomedBounds.fromPoints(
-          points: points,
+          points: {initialCenter},
           collocationZoom: settings.infoMapZoom,
         );
-        final center = bounds.projectedCenter;
+        centerToSave = initialCenter;
+      } else {
+        // fit map for all located items if possible, falling back to most recent items
+        bounds = _initBoundsForEntries(entries: entries);
+        centerToSave = bounds?.projectedCenter;
+      }
+
+      if (centerToSave != null) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (!mounted) return;
-          settings.mapDefaultCenter = center;
+          settings.mapDefaultCenter = centerToSave;
         });
       }
     }
@@ -353,6 +339,29 @@ class _GeoMapState extends State<GeoMap> {
     );
   }
 
+  ZoomedBounds? _initBoundsForEntries({required List<AvesEntry> entries, int? recentCount}) {
+    if (recentCount != null) {
+      entries = List.of(entries)..sort(AvesEntry.compareByDate);
+      entries = entries.take(recentCount).toList();
+    }
+
+    if (entries.isEmpty) return null;
+
+    final points = entries.map((v) => v.latLng!).toSet();
+    var bounds = ZoomedBounds.fromPoints(
+      points: points,
+      collocationZoom: settings.infoMapZoom,
+    );
+    bounds = bounds.copyWith(zoom: max(minInitialZoom, bounds.zoom.floorToDouble()));
+
+    final availableSize = window.physicalSize / window.devicePixelRatio;
+    final neededSize = bounds.toDisplaySize();
+    if (neededSize.width > availableSize.width || neededSize.height > availableSize.height) {
+      return _initBoundsForEntries(entries: entries, recentCount: (recentCount ?? 10000) ~/ 10);
+    }
+    return bounds;
+  }
+
   void _onCollectionChanged() {
     _defaultMarkerCluster = _buildFluster();
     _slowMarkerCluster = null;
@@ -360,15 +369,20 @@ class _GeoMapState extends State<GeoMap> {
   }
 
   Fluster<GeoEntry<AvesEntry>> _buildFluster({int nodeSize = 64}) {
-    final markers = entries.map((entry) {
-      final latLng = entry.latLng!;
-      return GeoEntry<AvesEntry>(
-        entry: entry,
-        latitude: latLng.latitude,
-        longitude: latLng.longitude,
-        markerId: entry.uri,
-      );
-    }).toList();
+    final markers = entries
+        .map((entry) {
+          final latLng = entry.latLng;
+          return latLng != null
+              ? GeoEntry<AvesEntry>(
+                  entry: entry,
+                  latitude: latLng.latitude,
+                  longitude: latLng.longitude,
+                  markerId: entry.uri,
+                )
+              : null;
+        })
+        .whereNotNull()
+        .toList();
 
     return Fluster<GeoEntry<AvesEntry>>(
       // we keep clustering on the whole range of zooms (including the maximum)
@@ -400,6 +414,73 @@ class _GeoMapState extends State<GeoMap> {
       }
       return MapEntry(MarkerKey(v.entry!, null), v);
     }));
+  }
+
+  Set<AvesEntry> _getClusterEntries(GeoEntry<AvesEntry> geoEntry) {
+    final clusterId = geoEntry.clusterId;
+    if (clusterId == null) {
+      return {geoEntry.entry!};
+    }
+
+    var points = _defaultMarkerCluster?.points(clusterId) ?? [];
+    if (points.length != geoEntry.pointsSize) {
+      // `Fluster.points()` method does not always return all the points contained in a cluster
+      // the higher `nodeSize` is, the higher the chance to get all the points (i.e. as many as the cluster `pointsSize`)
+      _slowMarkerCluster ??= _buildFluster(nodeSize: smallestPowerOf2(entries.length));
+      points = _slowMarkerCluster!.points(clusterId);
+      assert(points.length == geoEntry.pointsSize, 'got ${points.length}/${geoEntry.pointsSize} for geoEntry=$geoEntry');
+    }
+    return points.map((geoEntry) => geoEntry.entry!).toSet();
+  }
+
+  void _onMarkerTap(GeoEntry<AvesEntry> geoEntry) {
+    final onTap = widget.onMarkerTap;
+    if (onTap == null) return;
+
+    final clusterId = geoEntry.clusterId;
+    AvesEntry? markerEntry;
+    if (clusterId != null) {
+      final uri = geoEntry.childMarkerId;
+      markerEntry = entries.firstWhereOrNull((v) => v.uri == uri);
+    } else {
+      markerEntry = geoEntry.entry;
+    }
+    if (markerEntry == null) return;
+
+    final markerLocation = LatLng(geoEntry.latitude!, geoEntry.longitude!);
+    onTap(markerLocation, markerEntry);
+  }
+
+  Future<void> _onMarkerLongPress(GeoEntry<AvesEntry> geoEntry, LatLng tapLocation) async {
+    final onMarkerLongPress = widget.onMarkerLongPress;
+    if (onMarkerLongPress == null) return;
+
+    final clusterEntries = _getClusterEntries(geoEntry);
+    final tapLocalPosition = _boundsNotifier.value.offset(tapLocation);
+
+    AvesEntry markerEntry;
+    if (geoEntry.isCluster!) {
+      final uri = geoEntry.childMarkerId;
+      markerEntry = entries.firstWhere((v) => v.uri == uri);
+    } else {
+      markerEntry = geoEntry.entry!;
+    }
+    final markerLocation = LatLng(geoEntry.latitude!, geoEntry.longitude!);
+    Widget markerBuilder(BuildContext context) => ImageMarker(
+          count: geoEntry.pointsSize,
+          drawArrow: false,
+          buildThumbnailImage: (extent) => ThumbnailImage(
+            entry: markerEntry,
+            extent: extent,
+          ),
+        );
+    onMarkerLongPress(
+      markerLocation,
+      markerEntry,
+      clusterEntries,
+      tapLocalPosition,
+      markerBuilder,
+    );
   }
 
   Widget _decorateMap(BuildContext context, Widget? child) => MapDecorator(child: child);

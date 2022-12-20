@@ -28,13 +28,14 @@ class Namespaces {
   static const gCamera = 'http://ns.google.com/photos/1.0/camera/';
   static const gCreations = 'http://ns.google.com/photos/1.0/creations/';
   static const gDepth = 'http://ns.google.com/photos/1.0/depthmap/';
-  static const gettyImagesGift = 'http://xmp.gettyimages.com/gift/1.0/';
+  static const gDevice = 'http://ns.google.com/photos/dd/1.0/device/';
   static const gFocus = 'http://ns.google.com/photos/1.0/focus/';
   static const gImage = 'http://ns.google.com/photos/1.0/image/';
-  static const gimp210 = 'http://www.gimp.org/ns/2.10/';
-  static const gimpXmp = 'http://www.gimp.org/xmp/';
   static const gPano = 'http://ns.google.com/photos/1.0/panorama/';
   static const gSpherical = 'http://ns.google.com/videos/1.0/spherical/';
+  static const gettyImagesGift = 'http://xmp.gettyimages.com/gift/1.0/';
+  static const gimp210 = 'http://www.gimp.org/ns/2.10/';
+  static const gimpXmp = 'http://www.gimp.org/xmp/';
   static const illustrator = 'http://ns.adobe.com/illustrator/1.0/';
   static const iptc4xmpCore = 'http://iptc.org/std/Iptc4xmpCore/1.0/xmlns/';
   static const iptc4xmpExt = 'http://iptc.org/std/Iptc4xmpExt/2008-02-29/';
@@ -93,17 +94,18 @@ class Namespaces {
     dwc: 'Darwin Core',
     exif: 'Exif',
     exifEx: 'Exif Ex',
-    gettyImagesGift: 'Getty Images',
     gAudio: 'Google Audio',
     gCamera: 'Google Camera',
     gCreations: 'Google Creations',
     gDepth: 'Google Depth',
+    gDevice: 'Google Device',
     gFocus: 'Google Focus',
     gImage: 'Google Image',
-    gimp210: 'GIMP 2.10',
-    gimpXmp: 'GIMP',
     gPano: 'Google Panorama',
     gSpherical: 'Google Spherical',
+    gettyImagesGift: 'Getty Images',
+    gimp210: 'GIMP 2.10',
+    gimpXmp: 'GIMP',
     illustrator: 'Illustrator',
     iptc4xmpCore: 'IPTC Core',
     iptc4xmpExt: 'IPTC Extension',

@@ -4,8 +4,8 @@ import 'package:aves/model/filters/query.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
-import 'package:aves/widgets/dialogs/item_pick_dialog.dart';
 import 'package:aves/widgets/dialogs/item_picker.dart';
+import 'package:aves/widgets/dialogs/pick_dialogs/item_pick_page.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -114,7 +114,7 @@ class _AddShortcutDialogState extends State<AddShortcutDialog> {
     final entry = await Navigator.push<AvesEntry>(
       context,
       MaterialPageRoute(
-        settings: const RouteSettings(name: ItemPickDialog.routeName),
+        settings: const RouteSettings(name: ItemPickPage.routeName),
         builder: (context) {
           final pickFilters = _collection.filters.toSet();
           final liveFilters = pickFilters.whereType<QueryFilter>().where((v) => v.live).toSet();
@@ -122,7 +122,7 @@ class _AddShortcutDialogState extends State<AddShortcutDialog> {
             pickFilters.remove(filter);
             pickFilters.add(QueryFilter(filter.query));
           });
-          return ItemPickDialog(
+          return ItemPickPage(
             collection: CollectionLens(
               source: _collection.source,
               filters: pickFilters,

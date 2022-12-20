@@ -1,2 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="analysis_service_description">Nuskaityti paveikslėlius ir vaizdo įrašus</string>
+    <string name="wallpaper">Ekrano paveikslėlis</string>
+    <string name="videos_shortcut_short_label">Vaizdo įrašai</string>
+    <string name="app_name">Aves</string>
+    <string name="app_widget_label">Nuotraukų rėmelis</string>
+    <string name="analysis_channel_name">Medijos nuskaitymas</string>
+    <string name="search_shortcut_short_label">Paieška</string>
+    <string name="analysis_notification_action_stop">Sustabdyti</string>
+    <string name="analysis_notification_default_title">Nuskaitoma medija</string>
+</resources>

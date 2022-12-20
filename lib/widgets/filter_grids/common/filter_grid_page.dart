@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:aves/app_mode.dart';
+import 'package:aves/model/device.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/highlight.dart';
 import 'package:aves/model/query.dart';
@@ -12,7 +13,9 @@ import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/basic/draggable_scrollbar.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
-import 'package:aves/widgets/common/behaviour/double_back_pop.dart';
+import 'package:aves/widgets/common/behaviour/pop/double_back.dart';
+import 'package:aves/widgets/common/behaviour/pop/scope.dart';
+import 'package:aves/widgets/common/behaviour/pop/tv_navigation.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
 import 'package:aves/widgets/common/grid/item_tracker.dart';
@@ -24,7 +27,6 @@ import 'package:aves/widgets/common/grid/sliver.dart';
 import 'package:aves/widgets/common/grid/theme.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/identity/scroll_thumb.dart';
-import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/common/providers/query_provider.dart';
 import 'package:aves/widgets/common/providers/tile_extent_controller_provider.dart';
 import 'package:aves/widgets/common/thumbnail/image.dart';
@@ -37,8 +39,8 @@ import 'package:aves/widgets/filter_grids/common/section_keys.dart';
 import 'package:aves/widgets/filter_grids/common/section_layout.dart';
 import 'package:aves/widgets/navigation/drawer/app_drawer.dart';
 import 'package:aves/widgets/navigation/nav_bar/nav_bar.dart';
+import 'package:aves/widgets/navigation/tv_rail.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:provider/provider.dart';
@@ -76,64 +78,68 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MediaQueryDataProvider(
-      child: Selector<Settings, bool>(
+    final body = QueryProvider(
+      initialQuery: null,
+      child: GestureAreaProtectorStack(
+        child: SafeArea(
+          top: false,
+          bottom: false,
+          child: Selector<MediaQueryData, double>(
+            selector: (context, mq) => mq.padding.top,
+            builder: (context, mqPaddingTop, child) {
+              return ValueListenableBuilder<double>(
+                valueListenable: appBarHeightNotifier,
+                builder: (context, appBarHeight, child) {
+                  return _FilterGrid<T>(
+                    // key is expected by test driver
+                    key: const Key('filter-grid'),
+                    settingsRouteKey: settingsRouteKey,
+                    appBar: appBar,
+                    appBarHeight: mqPaddingTop + appBarHeight,
+                    sections: sections,
+                    newFilters: newFilters,
+                    sortFactor: sortFactor,
+                    showHeaders: showHeaders,
+                    selectable: selectable,
+                    applyQuery: applyQuery,
+                    emptyBuilder: emptyBuilder,
+                    heroType: heroType,
+                  );
+                },
+              );
+            },
+          ),
+        ),
+      ),
+    );
+
+    if (device.isTelevision) {
+      return Scaffold(
+        body: Row(
+          children: [
+            TvRail(
+              controller: context.read<TvRailController>(),
+            ),
+            Expanded(child: body),
+          ],
+        ),
+        resizeToAvoidBottomInset: false,
+        extendBody: true,
+      );
+    } else {
+      return Selector<Settings, bool>(
         selector: (context, s) => s.enableBottomNavigationBar,
         builder: (context, enableBottomNavigationBar, child) {
           final canNavigate = context.select<ValueNotifier<AppMode>, bool>((v) => v.value.canNavigate);
           final showBottomNavigationBar = canNavigate && enableBottomNavigationBar;
+
           return NotificationListener<DraggableScrollBarNotification>(
             onNotification: (notification) {
               _draggableScrollBarEventStreamController.add(notification.event);
               return false;
             },
             child: Scaffold(
-              body: QueryProvider(
-                initialQuery: null,
-                child: WillPopScope(
-                  onWillPop: () {
-                    final selection = context.read<Selection<FilterGridItem<T>>>();
-                    if (selection.isSelecting) {
-                      selection.browse();
-                      return SynchronousFuture(false);
-                    }
-                    return SynchronousFuture(true);
-                  },
-                  child: DoubleBackPopScope(
-                    child: GestureAreaProtectorStack(
-                      child: SafeArea(
-                        top: false,
-                        bottom: false,
-                        child: Selector<MediaQueryData, double>(
-                          selector: (context, mq) => mq.padding.top,
-                          builder: (context, mqPaddingTop, child) {
-                            return ValueListenableBuilder<double>(
-                              valueListenable: appBarHeightNotifier,
-                              builder: (context, appBarHeight, child) {
-                                return FilterGrid<T>(
-                                  // key is expected by test driver
-                                  key: const Key('filter-grid'),
-                                  settingsRouteKey: settingsRouteKey,
-                                  appBar: appBar,
-                                  appBarHeight: mqPaddingTop + appBarHeight,
-                                  sections: sections,
-                                  newFilters: newFilters,
-                                  sortFactor: sortFactor,
-                                  showHeaders: showHeaders,
-                                  selectable: selectable,
-                                  applyQuery: applyQuery,
-                                  emptyBuilder: emptyBuilder,
-                                  heroType: heroType,
-                                );
-                              },
-                            );
-                          },
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+              body: body,
               drawer: canNavigate ? const AppDrawer() : null,
               bottomNavigationBar: showBottomNavigationBar
                   ? AppBottomNavBar(
@@ -145,12 +151,12 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
             ),
           );
         },
-      ),
-    );
+      );
+    }
   }
 }
 
-class FilterGrid<T extends CollectionFilter> extends StatefulWidget {
+class _FilterGrid<T extends CollectionFilter> extends StatefulWidget {
   final String? settingsRouteKey;
   final Widget appBar;
   final double appBarHeight;
@@ -162,7 +168,7 @@ class FilterGrid<T extends CollectionFilter> extends StatefulWidget {
   final Widget Function() emptyBuilder;
   final HeroType heroType;
 
-  const FilterGrid({
+  const _FilterGrid({
     super.key,
     required this.settingsRouteKey,
     required this.appBar,
@@ -178,15 +184,17 @@ class FilterGrid<T extends CollectionFilter> extends StatefulWidget {
   });
 
   @override
-  State<FilterGrid<T>> createState() => _FilterGridState<T>();
+  State<_FilterGrid<T>> createState() => _FilterGridState<T>();
 }
 
-class _FilterGridState<T extends CollectionFilter> extends State<FilterGrid<T>> {
+class _FilterGridState<T extends CollectionFilter> extends State<_FilterGrid<T>> {
   TileExtentController? _tileExtentController;
+  final DoubleBackPopHandler _doubleBackPopHandler = DoubleBackPopHandler();
 
   @override
   void dispose() {
     _tileExtentController?.dispose();
+    _doubleBackPopHandler.dispose();
     super.dispose();
   }
 
@@ -194,32 +202,47 @@ class _FilterGridState<T extends CollectionFilter> extends State<FilterGrid<T>> 
   Widget build(BuildContext context) {
     _tileExtentController ??= TileExtentController(
       settingsRouteKey: widget.settingsRouteKey ?? context.currentRouteName!,
-      columnCountDefault: 3,
+      columnCountDefault: device.isTelevision ? 4 : 3,
       extentMin: 60,
       extentMax: 300,
       spacing: 8,
       horizontalPadding: 2,
     );
-    return TileExtentControllerProvider(
-      controller: _tileExtentController!,
-      child: _FilterGridContent<T>(
-        appBar: widget.appBar,
-        appBarHeight: widget.appBarHeight,
-        sections: widget.sections,
-        newFilters: widget.newFilters,
-        sortFactor: widget.sortFactor,
-        showHeaders: widget.showHeaders,
-        selectable: widget.selectable,
-        applyQuery: widget.applyQuery,
-        emptyBuilder: widget.emptyBuilder,
-        heroType: widget.heroType,
+    return AvesPopScope(
+      handlers: [
+        (context) {
+          final selection = context.read<Selection<FilterGridItem<T>>>();
+          if (selection.isSelecting) {
+            selection.browse();
+            return false;
+          }
+          return true;
+        },
+        TvNavigationPopHandler.pop,
+        _doubleBackPopHandler.pop,
+      ],
+      child: TileExtentControllerProvider(
+        controller: _tileExtentController!,
+        child: _FilterGridContent<T>(
+          appBar: widget.appBar,
+          appBarHeight: widget.appBarHeight,
+          sections: widget.sections,
+          newFilters: widget.newFilters,
+          sortFactor: widget.sortFactor,
+          showHeaders: widget.showHeaders,
+          selectable: widget.selectable,
+          applyQuery: widget.applyQuery,
+          emptyBuilder: widget.emptyBuilder,
+          heroType: widget.heroType,
+        ),
       ),
     );
   }
 }
 
-class _FilterGridContent<T extends CollectionFilter> extends StatelessWidget {
+class _FilterGridContent<T extends CollectionFilter> extends StatefulWidget {
   final Widget appBar;
+  final double appBarHeight;
   final Map<ChipSectionKey, List<FilterGridItem<T>>> sections;
   final Set<T> newFilters;
   final ChipSortFactor sortFactor;
@@ -228,12 +251,10 @@ class _FilterGridContent<T extends CollectionFilter> extends StatelessWidget {
   final QueryTest<T> applyQuery;
   final HeroType heroType;
 
-  final ValueNotifier<double> _appBarHeightNotifier = ValueNotifier(0);
-
-  _FilterGridContent({
+  const _FilterGridContent({
     super.key,
     required this.appBar,
-    required double appBarHeight,
+    required this.appBarHeight,
     required this.sections,
     required this.newFilters,
     required this.sortFactor,
@@ -242,8 +263,27 @@ class _FilterGridContent<T extends CollectionFilter> extends StatelessWidget {
     required this.applyQuery,
     required this.emptyBuilder,
     required this.heroType,
-  }) {
-    _appBarHeightNotifier.value = appBarHeight;
+  });
+
+  @override
+  State<_FilterGridContent<T>> createState() => _FilterGridContentState<T>();
+}
+
+class _FilterGridContentState<T extends CollectionFilter> extends State<_FilterGridContent<T>> {
+  final ValueNotifier<double> _appBarHeightNotifier = ValueNotifier(0);
+  final ValueNotifier<FilterGridItem<T>?> _focusedItemNotifier = ValueNotifier(null);
+
+  @override
+  void didUpdateWidget(covariant _FilterGridContent<T> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _appBarHeightNotifier.value = widget.appBarHeight;
+  }
+
+  @override
+  void dispose() {
+    _appBarHeightNotifier.dispose();
+    _focusedItemNotifier.dispose();
+    super.dispose();
   }
 
   @override
@@ -260,14 +300,14 @@ class _FilterGridContent<T extends CollectionFilter> extends StatelessWidget {
             Map<ChipSectionKey, List<FilterGridItem<T>>> visibleSections;
             if (queryEnabled && query.isNotEmpty) {
               visibleSections = {};
-              sections.forEach((sectionKey, sectionFilters) {
-                final visibleFilters = applyQuery(context, sectionFilters, query.toUpperCase());
+              widget.sections.forEach((sectionKey, sectionFilters) {
+                final visibleFilters = widget.applyQuery(context, sectionFilters, query.toUpperCase());
                 if (visibleFilters.isNotEmpty) {
                   visibleSections[sectionKey] = visibleFilters;
                 }
               });
             } else {
-              visibleSections = sections;
+              visibleSections = widget.sections;
             }
 
             final sectionedListLayoutProvider = ValueListenableBuilder<double>(
@@ -297,8 +337,8 @@ class _FilterGridContent<T extends CollectionFilter> extends StatelessWidget {
                             extent: thumbnailExtent,
                             child: SectionedFilterListLayoutProvider<T>(
                               sections: visibleSections,
-                              showHeaders: showHeaders,
-                              selectable: selectable,
+                              showHeaders: widget.showHeaders,
+                              selectable: widget.selectable,
                               tileLayout: tileLayout,
                               scrollableWidth: scrollableWidth,
                               columnCount: columnCount,
@@ -308,13 +348,36 @@ class _FilterGridContent<T extends CollectionFilter> extends StatelessWidget {
                               tileHeight: tileHeight,
                               tileBuilder: (gridItem, tileSize) {
                                 final extent = tileSize.shortestSide;
-                                return InteractiveFilterTile(
+                                final tile = InteractiveFilterTile(
                                   gridItem: gridItem,
                                   chipExtent: extent,
                                   thumbnailExtent: extent,
                                   tileLayout: tileLayout,
                                   banner: _getFilterBanner(context, gridItem.filter),
-                                  heroType: heroType,
+                                  heroType: widget.heroType,
+                                );
+                                if (!device.isTelevision) return tile;
+
+                                return Focus(
+                                  onFocusChange: (focused) {
+                                    if (focused) {
+                                      _focusedItemNotifier.value = gridItem;
+                                    } else if (_focusedItemNotifier.value == gridItem) {
+                                      _focusedItemNotifier.value = null;
+                                    }
+                                  },
+                                  child: ValueListenableBuilder<FilterGridItem<T>?>(
+                                    valueListenable: _focusedItemNotifier,
+                                    builder: (context, focusedItem, child) {
+                                      return AnimatedScale(
+                                        scale: focusedItem == gridItem ? 1 : .9,
+                                        curve: Curves.fastOutSlowIn,
+                                        duration: context.select<DurationsData, Duration>((v) => v.tvImageFocusAnimation),
+                                        child: child!,
+                                      );
+                                    },
+                                    child: tile,
+                                  ),
                                 );
                               },
                               tileAnimationDelay: tileAnimationDelay,
@@ -334,12 +397,12 @@ class _FilterGridContent<T extends CollectionFilter> extends StatelessWidget {
                 );
               },
               child: _FilterSectionedContent<T>(
-                appBar: appBar,
+                appBar: widget.appBar,
                 appBarHeightNotifier: _appBarHeightNotifier,
                 visibleSections: visibleSections,
-                sortFactor: sortFactor,
-                selectable: selectable,
-                emptyBuilder: emptyBuilder,
+                sortFactor: widget.sortFactor,
+                selectable: widget.selectable,
+                emptyBuilder: widget.emptyBuilder,
                 bannerBuilder: _getFilterBanner,
                 scrollController: PrimaryScrollController.of(context)!,
                 tileLayout: tileLayout,
@@ -353,7 +416,7 @@ class _FilterGridContent<T extends CollectionFilter> extends StatelessWidget {
   }
 
   String? _getFilterBanner(BuildContext context, T filter) {
-    final isNew = newFilters.contains(filter);
+    final isNew = widget.newFilters.contains(filter);
     return isNew ? context.l10n.newFilterBanner : null;
   }
 }
@@ -606,6 +669,7 @@ class _FilterScrollView<T extends CollectionFilter> extends StatelessWidget {
             }),
         const NavBarPaddingSliver(),
         const BottomPaddingSliver(),
+        const TvTileGridBottomPaddingSliver(),
       ],
     );
   }

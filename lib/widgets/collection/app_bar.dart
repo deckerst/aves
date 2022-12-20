@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/actions/entry_set_actions.dart';
+import 'package:aves/model/device.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/query.dart';
@@ -20,14 +21,16 @@ import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/collection/entry_set_action_delegate.dart';
 import 'package:aves/widgets/collection/filter_bar.dart';
 import 'package:aves/widgets/collection/query_bar.dart';
+import 'package:aves/widgets/common/action_controls/togglers/favourite.dart';
+import 'package:aves/widgets/common/action_controls/togglers/title_search.dart';
 import 'package:aves/widgets/common/app_bar/app_bar_subtitle.dart';
 import 'package:aves/widgets/common/app_bar/app_bar_title.dart';
-import 'package:aves/widgets/common/app_bar/favourite_toggler.dart';
-import 'package:aves/widgets/common/app_bar/title_search_toggler.dart';
 import 'package:aves/widgets/common/basic/menu.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_app_bar.dart';
+import 'package:aves/widgets/common/identity/buttons/captioned_button.dart';
 import 'package:aves/widgets/common/search/route.dart';
+import 'package:aves/widgets/common/tile_extent_controller.dart';
 import 'package:aves/widgets/dialogs/tile_view_dialog.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
@@ -100,7 +103,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       duration: context.read<DurationsData>().iconAnimation,
       vsync: this,
     );
-    _isSelectingNotifier.addListener(_onActivityChange);
+    _isSelectingNotifier.addListener(_onActivityChanged);
     _registerWidget(widget);
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -119,8 +122,10 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   @override
   void dispose() {
     _unregisterWidget(widget);
+    _queryBarFocusNode.dispose();
     _queryFocusRequestNotifier.removeListener(_onQueryFocusRequest);
-    _isSelectingNotifier.removeListener(_onActivityChange);
+    _isSelectingNotifier.removeListener(_onActivityChanged);
+    _isSelectingNotifier.dispose();
     _browseToSelectAnimation.dispose();
     _subscriptions
       ..forEach((sub) => sub.cancel())
@@ -158,6 +163,8 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
             return Selector<Settings, List<EntrySetAction>>(
               selector: (context, s) => s.collectionBrowsingQuickActions,
               builder: (context, _, child) {
+                final isTelevision = device.isTelevision;
+                final actions = _buildActions(context, selection);
                 return AvesAppBar(
                   contentHeight: appBarContentHeight,
                   leading: _buildAppBarLeading(
@@ -165,9 +172,18 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
                     isSelecting: isSelecting,
                   ),
                   title: _buildAppBarTitle(isSelecting),
-                  actions: _buildActions(context, selection),
+                  actions: isTelevision ? [] : actions,
                   bottom: Column(
                     children: [
+                      if (isTelevision)
+                        SizedBox(
+                          height: CaptionedButton.getTelevisionButtonHeight(context),
+                          child: ListView(
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            scrollDirection: Axis.horizontal,
+                            children: actions,
+                          ),
+                        ),
                       if (showFilterBar)
                         NotificationListener<ReverseFilterNotification>(
                           onNotification: (notification) {
@@ -184,7 +200,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
                         EntryQueryBar(
                           queryNotifier: context.select<Query, ValueNotifier<String>>((query) => query.queryNotifier),
                           focusNode: _queryBarFocusNode,
-                        )
+                        ),
                     ],
                   ),
                   transitionKey: isSelecting,
@@ -198,11 +214,22 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   }
 
   double get appBarContentHeight {
-    final hasQuery = context.read<Query>().enabled;
-    return kToolbarHeight + (showFilterBar ? FilterBar.preferredHeight : .0) + (hasQuery ? EntryQueryBar.preferredHeight : .0);
+    double height = kToolbarHeight;
+    if (device.isTelevision) {
+      height += CaptionedButton.getTelevisionButtonHeight(context);
+    }
+    if (showFilterBar) {
+      height += FilterBar.preferredHeight;
+    }
+    if (context.read<Query>().enabled) {
+      height += EntryQueryBar.preferredHeight;
+    }
+    return height;
   }
 
-  Widget _buildAppBarLeading({required bool hasDrawer, required bool isSelecting}) {
+  Widget? _buildAppBarLeading({required bool hasDrawer, required bool isSelecting}) {
+    if (device.isTelevision) return null;
+
     if (!hasDrawer) {
       return const CloseButton();
     }
@@ -264,10 +291,10 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   }
 
   List<Widget> _buildActions(BuildContext context, Selection<AvesEntry> selection) {
+    final appMode = context.watch<ValueNotifier<AppMode>>().value;
     final isSelecting = selection.isSelecting;
     final selectedItemCount = selection.selectedItems.length;
 
-    final appMode = context.watch<ValueNotifier<AppMode>>().value;
     bool isVisible(EntrySetAction action) => _actionDelegate.isVisible(
           action,
           appMode: appMode,
@@ -282,12 +309,61 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
           itemCount: collection.entryCount,
           selectedItemCount: selectedItemCount,
         );
-    final canApplyEditActions = selectedItemCount > 0;
+
+    return device.isTelevision
+        ? _buildTelevisionActions(
+            context: context,
+            appMode: appMode,
+            selection: selection,
+            isVisible: isVisible,
+            canApply: canApply,
+          )
+        : _buildMobileActions(
+            context: context,
+            appMode: appMode,
+            selection: selection,
+            isVisible: isVisible,
+            canApply: canApply,
+          );
+  }
+
+  List<Widget> _buildTelevisionActions({
+    required BuildContext context,
+    required AppMode appMode,
+    required Selection<AvesEntry> selection,
+    required bool Function(EntrySetAction action) isVisible,
+    required bool Function(EntrySetAction action) canApply,
+  }) {
+    final isSelecting = selection.isSelecting;
+
+    return [
+      ...EntrySetActions.general,
+      ...isSelecting ? EntrySetActions.pageSelection : EntrySetActions.pageBrowsing,
+    ].where(isVisible).map((action) {
+      final enabled = canApply(action);
+      return CaptionedButton(
+        iconButton: _buildButtonIcon(context, action, enabled: enabled, selection: selection),
+        captionText: _buildButtonCaption(context, action, enabled: enabled),
+        onPressed: enabled ? () => _onActionSelected(action) : null,
+      );
+    }).toList();
+  }
+
+  List<Widget> _buildMobileActions({
+    required BuildContext context,
+    required AppMode appMode,
+    required Selection<AvesEntry> selection,
+    required bool Function(EntrySetAction action) isVisible,
+    required bool Function(EntrySetAction action) canApply,
+  }) {
+    final isSelecting = selection.isSelecting;
+    final selectedItemCount = selection.selectedItems.length;
+    final hasSelection = selectedItemCount > 0;
 
     final browsingQuickActions = settings.collectionBrowsingQuickActions;
     final selectionQuickActions = isTrash ? [EntrySetAction.delete, EntrySetAction.restore] : settings.collectionSelectionQuickActions;
     final quickActionButtons = (isSelecting ? selectionQuickActions : browsingQuickActions).where(isVisible).map(
-          (action) => _toActionButton(action, enabled: canApply(action), selection: selection),
+          (action) => _buildButtonIcon(context, action, enabled: canApply(action), selection: selection),
         );
 
     return [
@@ -307,12 +383,12 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
               ...(isSelecting ? selectionMenuActions : browsingMenuActions).where(isVisible).map(
                     (action) => _toMenuItem(action, enabled: canApply(action), selection: selection),
                   ),
-              if (isSelecting && !isTrash && appMode == AppMode.main)
+              if (isSelecting && !device.isReadOnly && appMode == AppMode.main && !isTrash)
                 PopupMenuItem<EntrySetAction>(
-                  enabled: canApplyEditActions,
+                  enabled: hasSelection,
                   padding: EdgeInsets.zero,
                   child: PopupMenuItemExpansionPanel<EntrySetAction>(
-                    enabled: canApplyEditActions,
+                    enabled: hasSelection,
                     value: 'edit',
                     icon: AIcons.edit,
                     title: context.l10n.collectionActionEdit,
@@ -349,7 +425,12 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   // key is expected by test driver (e.g. 'menu-configureView', 'menu-map')
   Key _getActionKey(EntrySetAction action) => Key('menu-${action.name}');
 
-  Widget _toActionButton(EntrySetAction action, {required bool enabled, required Selection<AvesEntry> selection}) {
+  Widget _buildButtonIcon(
+    BuildContext context,
+    EntrySetAction action, {
+    required bool enabled,
+    required Selection<AvesEntry> selection,
+  }) {
     final onPressed = enabled ? () => _onActionSelected(action) : null;
     switch (action) {
       case EntrySetAction.toggleTitleSearch:
@@ -374,6 +455,24 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
           icon: action.getIcon(),
           onPressed: onPressed,
           tooltip: action.getText(context),
+        );
+    }
+  }
+
+  Widget _buildButtonCaption(
+    BuildContext context,
+    EntrySetAction action, {
+    required bool enabled,
+  }) {
+    switch (action) {
+      case EntrySetAction.toggleTitleSearch:
+        return TitleSearchTogglerCaption(
+          enabled: enabled,
+        );
+      default:
+        return CaptionedButtonText(
+          text: action.getText(context),
+          enabled: enabled,
         );
     }
   }
@@ -454,7 +553,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     );
   }
 
-  void _onActivityChange() {
+  void _onActivityChanged() {
     if (context.read<Selection<AvesEntry>>().isSelecting) {
       _browseToSelectAnimation.forward();
     } else {
@@ -540,6 +639,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       settings.getTileLayout(CollectionPage.routeName),
       settings.collectionSortReverse,
     );
+    final extentController = context.read<TileExtentController>();
     final value = await showDialog<Tuple4<EntrySortFactor?, EntryGroupFactor?, TileLayout?, bool>>(
       context: context,
       builder: (context) {
@@ -550,6 +650,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
           layoutOptions: _layoutOptions.map((v) => TileViewDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
           sortOrder: (factor, reverse) => factor.getOrderName(context, reverse),
           canGroup: (s, g, l) => s == EntrySortFactor.date,
+          tileExtentController: extentController,
         );
       },
     );

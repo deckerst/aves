@@ -70,7 +70,7 @@ class _GridItemTrackerState<T> extends State<GridItemTracker<T>> with WidgetsBin
   void didUpdateWidget(covariant GridItemTracker<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.tileLayout != widget.tileLayout) {
-      _onLayoutChange();
+      _onLayoutChanged();
     }
     _saveLayoutMetrics();
   }
@@ -83,7 +83,7 @@ class _GridItemTrackerState<T> extends State<GridItemTracker<T>> with WidgetsBin
     final orientation = _windowOrientation;
     if (_lastOrientation != orientation) {
       _lastOrientation = orientation;
-      _onLayoutChange();
+      _onLayoutChanged();
       _saveLayoutMetrics();
     }
   }
@@ -147,7 +147,7 @@ class _GridItemTrackerState<T> extends State<GridItemTracker<T>> with WidgetsBin
     }
   }
 
-  void _onLayoutChange() {
+  void _onLayoutChanged() {
     if (scrollController.positions.length != 1) return;
 
     // do not track when view shows top edge

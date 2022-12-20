@@ -1,4 +1,5 @@
 import 'package:aves/model/entry.dart';
+import 'package:aves/model/entry_metadata_edition.dart';
 import 'package:aves/model/metadata/enums/enums.dart';
 import 'package:aves/model/metadata/enums/location_edit_action.dart';
 import 'package:aves/model/settings/enums/coordinate_format.dart';
@@ -12,9 +13,9 @@ import 'package:aves/widgets/common/basic/text_dropdown_button.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
-import 'package:aves/widgets/dialogs/item_pick_dialog.dart';
 import 'package:aves/widgets/dialogs/item_picker.dart';
-import 'package:aves/widgets/dialogs/location_pick_dialog.dart';
+import 'package:aves/widgets/dialogs/pick_dialogs/item_pick_page.dart';
+import 'package:aves/widgets/dialogs/pick_dialogs/location_pick_page.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
@@ -174,27 +175,26 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> {
   }
 
   Future<void> _pickLocation() async {
+    final baseCollection = widget.collection;
+    final mapCollection = baseCollection != null
+        ? CollectionLens(
+            source: baseCollection.source,
+            filters: baseCollection.filters,
+            fixedSelection: baseCollection.sortedEntries.where((entry) => entry.hasGps).toList(),
+          )
+        : null;
     final latLng = await Navigator.push(
       context,
       MaterialPageRoute(
-        settings: const RouteSettings(name: LocationPickDialog.routeName),
-        builder: (context) {
-          final baseCollection = widget.collection;
-          final mapCollection = baseCollection != null
-              ? CollectionLens(
-                  source: baseCollection.source,
-                  filters: baseCollection.filters,
-                  fixedSelection: baseCollection.sortedEntries.where((entry) => entry.hasGps).toList(),
-                )
-              : null;
-          return LocationPickDialog(
-            collection: mapCollection,
-            initialLocation: _mapCoordinates,
-          );
-        },
+        settings: const RouteSettings(name: LocationPickPage.routeName),
+        builder: (context) => LocationPickPage(
+          collection: mapCollection,
+          initialLocation: _mapCoordinates,
+        ),
         fullscreenDialog: true,
       ),
     );
+    mapCollection?.dispose();
     if (latLng != null) {
       settings.mapDefaultCenter = latLng;
       setState(() {
@@ -228,8 +228,8 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> {
     final entry = await Navigator.push<AvesEntry>(
       context,
       MaterialPageRoute(
-        settings: const RouteSettings(name: ItemPickDialog.routeName),
-        builder: (context) => ItemPickDialog(
+        settings: const RouteSettings(name: ItemPickPage.routeName),
+        builder: (context) => ItemPickPage(
           collection: CollectionLens(
             source: _collection.source,
           ),
@@ -342,7 +342,7 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> {
         Navigator.pop(context, _parseLatLng());
         break;
       case LocationEditAction.remove:
-        Navigator.pop(context, LatLng(0, 0));
+        Navigator.pop(context, ExtraAvesEntryMetadataEdition.removalLocation);
         break;
     }
   }

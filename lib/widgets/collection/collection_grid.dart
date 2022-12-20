@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:aves/app_mode.dart';
+import 'package:aves/model/device.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/favourites.dart';
 import 'package:aves/model/filters/favourite.dart';
@@ -32,7 +33,7 @@ import 'package:aves/widgets/common/grid/sections/section_layout.dart';
 import 'package:aves/widgets/common/grid/selector.dart';
 import 'package:aves/widgets/common/grid/sliver.dart';
 import 'package:aves/widgets/common/grid/theme.dart';
-import 'package:aves/widgets/common/identity/buttons.dart';
+import 'package:aves/widgets/common/identity/buttons/outlined_button.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
 import 'package:aves/widgets/common/identity/scroll_thumb.dart';
 import 'package:aves/widgets/common/providers/tile_extent_controller_provider.dart';
@@ -51,11 +52,12 @@ import 'package:tuple/tuple.dart';
 class CollectionGrid extends StatefulWidget {
   final String settingsRouteKey;
 
-  static const int columnCountDefault = 4;
   static const double extentMin = 46;
   static const double extentMax = 300;
   static const double fixedExtentLayoutSpacing = 2;
   static const double mosaicLayoutSpacing = 4;
+
+  static int get columnCountDefault => device.isTelevision ? 6 : 4;
 
   const CollectionGrid({
     super.key,
@@ -92,13 +94,28 @@ class _CollectionGridState extends State<CollectionGrid> {
     }
     return TileExtentControllerProvider(
       controller: _tileExtentController!,
-      child: _CollectionGridContent(),
+      child: const _CollectionGridContent(),
     );
   }
 }
 
-class _CollectionGridContent extends StatelessWidget {
+class _CollectionGridContent extends StatefulWidget {
+  const _CollectionGridContent();
+
+  @override
+  State<_CollectionGridContent> createState() => _CollectionGridContentState();
+}
+
+class _CollectionGridContentState extends State<_CollectionGridContent> {
+  final ValueNotifier<AvesEntry?> _focusedItemNotifier = ValueNotifier(null);
   final ValueNotifier<bool> _isScrollingNotifier = ValueNotifier(false);
+
+  @override
+  void dispose() {
+    _focusedItemNotifier.dispose();
+    _isScrollingNotifier.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -151,13 +168,36 @@ class _CollectionGridContent extends StatelessWidget {
                               return AnimatedBuilder(
                                 animation: favourites,
                                 builder: (context, child) {
-                                  return InteractiveTile(
+                                  Widget tile = InteractiveTile(
                                     key: ValueKey(entry.id),
                                     collection: collection,
                                     entry: entry,
                                     thumbnailExtent: extent,
                                     tileLayout: tileLayout,
                                     isScrollingNotifier: _isScrollingNotifier,
+                                  );
+                                  if (!device.isTelevision) return tile;
+
+                                  return Focus(
+                                    onFocusChange: (focused) {
+                                      if (focused) {
+                                        _focusedItemNotifier.value = entry;
+                                      } else if (_focusedItemNotifier.value == entry) {
+                                        _focusedItemNotifier.value = null;
+                                      }
+                                    },
+                                    child: ValueListenableBuilder<AvesEntry?>(
+                                      valueListenable: _focusedItemNotifier,
+                                      builder: (context, focusedItem, child) {
+                                        return AnimatedScale(
+                                          scale: focusedItem == entry ? 1 : .9,
+                                          curve: Curves.fastOutSlowIn,
+                                          duration: context.select<DurationsData, Duration>((v) => v.tvImageFocusAnimation),
+                                          child: child!,
+                                        );
+                                      },
+                                      child: tile,
+                                    ),
                                   );
                                 },
                               );
@@ -369,13 +409,13 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> with Widge
   void _registerWidget(_CollectionScrollView widget) {
     widget.collection.filterChangeNotifier.addListener(_scrollToTop);
     widget.collection.sortSectionChangeNotifier.addListener(_scrollToTop);
-    widget.scrollController.addListener(_onScrollChange);
+    widget.scrollController.addListener(_onScrollChanged);
   }
 
   void _unregisterWidget(_CollectionScrollView widget) {
     widget.collection.filterChangeNotifier.removeListener(_scrollToTop);
     widget.collection.sortSectionChangeNotifier.removeListener(_scrollToTop);
-    widget.scrollController.removeListener(_onScrollChange);
+    widget.scrollController.removeListener(_onScrollChanged);
   }
 
   @override
@@ -474,6 +514,7 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> with Widge
             : const SectionedListSliver<AvesEntry>(),
         const NavBarPaddingSliver(),
         const BottomPaddingSliver(),
+        const TvTileGridBottomPaddingSliver(),
       ],
     );
   }
@@ -531,7 +572,7 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> with Widge
 
   void _scrollToTop() => widget.scrollController.jumpTo(0);
 
-  void _onScrollChange() {
+  void _onScrollChanged() {
     widget.isScrollingNotifier.value = true;
     _stopScrollMonitoringTimer();
     _scrollMonitoringTimer = Timer(Durations.collectionScrollMonitoringTimerDelay, () {

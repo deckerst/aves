@@ -64,9 +64,7 @@ class _VideoProgressBarState extends State<VideoProgressBar> {
             if (_playingOnDragStart) controller!.play();
           },
           child: ConstrainedBox(
-            constraints: const BoxConstraints(
-              minHeight: kMinInteractiveDimension,
-            ),
+            constraints: const BoxConstraints(minHeight: kMinInteractiveDimension),
             child: Container(
               alignment: Alignment.center,
               padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),

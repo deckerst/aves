@@ -1,7 +1,7 @@
 import 'package:aves/model/settings/enums/subtitle_position.dart';
 import 'package:aves/model/settings/settings.dart';
-import 'package:aves/widgets/common/basic/outlined_text.dart';
-import 'package:aves/widgets/common/basic/text_background_painter.dart';
+import 'package:aves/widgets/common/basic/text/background_painter.dart';
+import 'package:aves/widgets/common/basic/text/outlined.dart';
 import 'package:aves/widgets/viewer/video/controller.dart';
 import 'package:aves/widgets/viewer/visual/state.dart';
 import 'package:aves/widgets/viewer/visual/subtitle/ass_parser.dart';

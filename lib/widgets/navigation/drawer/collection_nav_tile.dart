@@ -85,7 +85,7 @@ class AlbumNavTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final source = context.read<CollectionSource>();
-    var filter = AlbumFilter(album, source.getAlbumDisplayName(context, album));
+    final filter = AlbumFilter(album, source.getAlbumDisplayName(context, album));
     return CollectionNavTile(
       leading: DrawerFilterIcon(filter: filter),
       title: DrawerFilterTitle(filter: filter),

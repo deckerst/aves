@@ -1,5 +1,5 @@
+import 'package:aves/widgets/common/identity/buttons/overlay_button.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
-import 'package:aves/widgets/viewer/overlay/common.dart';
 import 'package:flutter/widgets.dart';
 
 enum QuickActionPlacement { header, action, footer }

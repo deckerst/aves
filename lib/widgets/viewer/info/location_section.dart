@@ -61,11 +61,11 @@ class _LocationSectionState extends State<LocationSection> {
   }
 
   void _registerWidget(LocationSection widget) {
-    widget.entry.metadataChangeNotifier.addListener(_onMetadataChange);
+    widget.entry.metadataChangeNotifier.addListener(_onMetadataChanged);
   }
 
   void _unregisterWidget(LocationSection widget) {
-    widget.entry.metadataChangeNotifier.removeListener(_onMetadataChange);
+    widget.entry.metadataChangeNotifier.removeListener(_onMetadataChanged);
   }
 
   @override
@@ -87,7 +87,7 @@ class _LocationSectionState extends State<LocationSection> {
             entries: [entry],
             isAnimatingNotifier: widget.isScrollingNotifier,
             onUserZoomChange: (zoom) => settings.infoMapZoom = zoom.roundToDouble(),
-            onMarkerTap: collection != null ? (_, __, ___) => _openMapPage(context) : null,
+            onMarkerTap: collection != null ? (location, entry) => _openMapPage(context) : null,
             openMapPage: collection != null ? _openMapPage : null,
           ),
         ),
@@ -129,26 +129,28 @@ class _LocationSectionState extends State<LocationSection> {
     );
   }
 
-  void _openMapPage(BuildContext context) {
+  Future<void> _openMapPage(BuildContext context) async {
     final baseCollection = collection;
     if (baseCollection == null) return;
 
-    Navigator.push(
+    final mapCollection = baseCollection.copyWith(
+      listenToSource: true,
+      fixedSelection: baseCollection.sortedEntries.where((entry) => entry.hasGps).toList(),
+    );
+    await Navigator.push(
       context,
       MaterialPageRoute(
         settings: const RouteSettings(name: MapPage.routeName),
         builder: (context) => MapPage(
-          collection: baseCollection.copyWith(
-            listenToSource: true,
-            fixedSelection: baseCollection.sortedEntries.where((entry) => entry.hasGps).toList(),
-          ),
+          collection: mapCollection,
           initialEntry: entry,
         ),
       ),
     );
+    mapCollection.dispose();
   }
 
-  void _onMetadataChange() {
+  void _onMetadataChanged() {
     setState(() {});
 
     final location = entry.latLng;

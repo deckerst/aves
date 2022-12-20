@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:aves/model/device.dart';
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/common/services.dart';
@@ -33,12 +34,12 @@ class ViewerSection extends SettingsSection {
   FutureOr<List<SettingsTile>> tiles(BuildContext context) async {
     final canSetCutoutMode = await windowService.canSetCutoutMode();
     return [
-      SettingsTileViewerQuickActions(),
+      if (!device.isTelevision) SettingsTileViewerQuickActions(),
       SettingsTileViewerOverlay(),
       SettingsTileViewerSlideshow(),
-      SettingsTileViewerGestureSideTapNext(),
-      if (canSetCutoutMode) SettingsTileViewerCutoutMode(),
-      SettingsTileViewerMaxBrightness(),
+      if (!device.isTelevision) SettingsTileViewerGestureSideTapNext(),
+      if (!device.isTelevision && canSetCutoutMode) SettingsTileViewerCutoutMode(),
+      if (!device.isTelevision) SettingsTileViewerMaxBrightness(),
       SettingsTileViewerMotionPhotoAutoPlay(),
       SettingsTileViewerImageBackground(),
     ];

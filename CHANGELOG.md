@@ -4,6 +4,28 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.7.8"></a>[v1.7.8] - 2022-12-20
+
+### Added
+
+- Android TV support
+- Viewer: optionally show rating & tags on overlay
+- Viewer: long press on copy/move/rating/tag quick action for quicker action
+- Viewer: long press on share quick action to share parts of motion photo
+- Search: missing address, portrait, landscape filters
+- Map: edit cluster location
+- Accessibility: optional alternative to pinch-to-zoom thumbnails
+- Lithuanian translation (thanks Gediminas Murauskas)
+- Norwegian (Bokmål) translation (thanks Allan Nordhøy)
+- Chinese (Traditional) translation (thanks pemibe)
+- Ukrainian translation (thanks Olexandr Mazur)
+
+### Changed
+
+- Viewer: allow setting default outside video player
+- Map: fit to most recent items if all items cannot fit on screen
+- upgraded Flutter to stable v3.3.10
+
 ## <a id="v1.7.7"></a>[v1.7.7] - 2022-11-27
 
 ### Added

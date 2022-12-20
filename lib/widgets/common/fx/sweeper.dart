@@ -53,7 +53,7 @@ class _SweeperState extends State<Sweeper> with SingleTickerProviderStateMixin {
       parent: _angleAnimationController,
       curve: widget.curve,
     ));
-    _angleAnimationController.addStatusListener(_onAnimationStatusChange);
+    _angleAnimationController.addStatusListener(_onAnimationStatusChanged);
     _registerWidget(widget);
   }
 
@@ -66,7 +66,7 @@ class _SweeperState extends State<Sweeper> with SingleTickerProviderStateMixin {
 
   @override
   void dispose() {
-    _angleAnimationController.removeStatusListener(_onAnimationStatusChange);
+    _angleAnimationController.removeStatusListener(_onAnimationStatusChanged);
     _angleAnimationController.dispose();
     _unregisterWidget(widget);
     super.dispose();
@@ -101,7 +101,7 @@ class _SweeperState extends State<Sweeper> with SingleTickerProviderStateMixin {
     );
   }
 
-  void _onAnimationStatusChange(AnimationStatus status) {
+  void _onAnimationStatusChanged(AnimationStatus status) {
     setState(() {});
     if (status == AnimationStatus.completed) {
       widget.onSweepEnd?.call();

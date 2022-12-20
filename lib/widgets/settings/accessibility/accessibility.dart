@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:aves/model/device.dart';
 import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -28,9 +29,22 @@ class AccessibilitySection extends SettingsSection {
 
   @override
   FutureOr<List<SettingsTile>> tiles(BuildContext context) => [
+        if (!device.isTelevision) SettingsTileAccessibilityShowPinchGestureAlternatives(),
         SettingsTileAccessibilityAnimations(),
         SettingsTileAccessibilityTimeToTakeAction(),
       ];
+}
+
+class SettingsTileAccessibilityShowPinchGestureAlternatives extends SettingsTile {
+  @override
+  String title(BuildContext context) => context.l10n.settingsAccessibilityShowPinchGestureAlternatives;
+
+  @override
+  Widget build(BuildContext context) => SettingsSwitchListTile(
+        selector: (context, s) => s.showPinchGestureAlternatives,
+        onChanged: (v) => settings.showPinchGestureAlternatives = v,
+        title: title(context),
+      );
 }
 
 class SettingsTileAccessibilityAnimations extends SettingsTile {

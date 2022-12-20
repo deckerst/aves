@@ -15,7 +15,7 @@ import 'package:aves/widgets/common/basic/wheel.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
-import 'package:aves/widgets/dialogs/item_pick_dialog.dart';
+import 'package:aves/widgets/dialogs/pick_dialogs/item_pick_page.dart';
 import 'package:aves/widgets/dialogs/item_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -314,8 +314,8 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
     final entry = await Navigator.push<AvesEntry>(
       context,
       MaterialPageRoute(
-        settings: const RouteSettings(name: ItemPickDialog.routeName),
-        builder: (context) => ItemPickDialog(
+        settings: const RouteSettings(name: ItemPickPage.routeName),
+        builder: (context) => ItemPickPage(
           collection: CollectionLens(
             source: _collection.source,
           ),

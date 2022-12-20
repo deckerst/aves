@@ -1,3 +1,4 @@
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/themes.dart';
@@ -5,6 +6,7 @@ import 'package:aves/widgets/common/basic/text_dropdown_button.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_caption.dart';
 import 'package:aves/widgets/common/identity/highlight_title.dart';
+import 'package:aves/widgets/common/tile_extent_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
@@ -17,6 +19,7 @@ class TileViewDialog<S, G, L> extends StatefulWidget {
   final List<TileViewDialogOption<G>> groupOptions;
   final List<TileViewDialogOption<L>> layoutOptions;
   final String Function(S sort, bool reverse) sortOrder;
+  final TileExtentController tileExtentController;
   final bool Function(S? sort, G? group, L? layout)? canGroup;
 
   const TileViewDialog({
@@ -27,6 +30,7 @@ class TileViewDialog<S, G, L> extends StatefulWidget {
     this.layoutOptions = const [],
     required this.sortOrder,
     this.canGroup,
+    required this.tileExtentController,
   });
 
   @override
@@ -38,12 +42,16 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
   late G? _selectedGroup;
   late L? _selectedLayout;
   late bool _reverseSort;
+  late int _columnMin, _columnMax;
+  late final ValueNotifier<int> _columnCountNotifier = ValueNotifier(tileExtentController.columnCount);
 
   List<TileViewDialogOption<S>> get sortOptions => widget.sortOptions;
 
   List<TileViewDialogOption<G>> get groupOptions => widget.groupOptions;
 
   List<TileViewDialogOption<L>> get layoutOptions => widget.layoutOptions;
+
+  TileExtentController get tileExtentController => widget.tileExtentController;
 
   bool get canGroup => (widget.canGroup ?? (s, g, l) => true).call(_selectedSort, _selectedGroup, _selectedLayout);
 
@@ -55,6 +63,11 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
     _selectedGroup = initialValue.item2;
     _selectedLayout = initialValue.item3;
     _reverseSort = initialValue.item4;
+
+    final extentController = tileExtentController;
+    final columnRange = extentController.effectiveColumnRange;
+    _columnMin = columnRange.item1;
+    _columnMax = columnRange.item2;
   }
 
   @override
@@ -107,6 +120,29 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
           value: _selectedLayout,
           onChanged: (v) => _selectedLayout = v,
         ),
+        if (settings.showPinchGestureAlternatives)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+            child: Row(
+              children: [
+                const Icon(AIcons.thumbnailLarge),
+                Expanded(
+                  child: ValueListenableBuilder<int>(
+                    valueListenable: _columnCountNotifier,
+                    builder: (context, columnCount, child) => Slider(
+                      label: context.l10n.columnCount(columnCount),
+                      value: columnCount.toDouble(),
+                      onChanged: (v) => _columnCountNotifier.value = v.round(),
+                      min: _columnMin.toDouble(),
+                      max: _columnMax.toDouble(),
+                      divisions: (_columnMax - _columnMin),
+                    ),
+                  ),
+                ),
+                const Icon(AIcons.thumbnailSmall),
+              ],
+            ),
+          ),
       ],
       actions: [
         TextButton(
@@ -115,7 +151,10 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
         ),
         TextButton(
           key: const Key('button-apply'),
-          onPressed: () => Navigator.pop(context, Tuple4(_selectedSort, _selectedGroup, _selectedLayout, _reverseSort)),
+          onPressed: () {
+            tileExtentController.setUserPreferredColumnCount(_columnCountNotifier.value);
+            Navigator.pop(context, Tuple4(_selectedSort, _selectedGroup, _selectedLayout, _reverseSort));
+          },
           child: Text(l10n.applyButtonLabel),
         )
       ],
@@ -147,9 +186,7 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
           children: [
             const SizedBox(height: 8),
             ConstrainedBox(
-              constraints: const BoxConstraints(
-                minHeight: kMinInteractiveDimension,
-              ),
+              constraints: const BoxConstraints(minHeight: kMinInteractiveDimension),
               child: Row(
                 children: [
                   Icon(icon),

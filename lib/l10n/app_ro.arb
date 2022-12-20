@@ -494,8 +494,8 @@
   "@removeEntryMetadataDialogMore": {},
   "removeEntryMetadataMotionPhotoXmpWarningDialogMessage": "XMP este necesar pentru a reda videoclipul dintr-o fotografie în mișcare.\n\nSunteți sigur că doriți să-l eliminați?",
   "@removeEntryMetadataMotionPhotoXmpWarningDialogMessage": {},
-  "convertMotionPhotoToStillImageWarningDialogMessage": "Esti sigur?",
-  "@convertMotionPhotoToStillImageWarningDialogMessage": {},
+  "genericDangerWarningDialogMessage": "Esti sigur?",
+  "@genericDangerWarningDialogMessage": {},
   "videoSpeedDialogLabel": "Viteza de redare",
   "@videoSpeedDialogLabel": {},
   "videoStreamSelectionDialogVideo": "Video",
@@ -1189,9 +1189,9 @@
   "@settingsScreenSaverPageTitle": {},
   "settingsWidgetPageTitle": "Ramă foto",
   "@settingsWidgetPageTitle": {},
-  "mapAttributionStamen": "Datele hărții © [OpenStreetMap](https://www.openstreetmap.org/copyright) - Plăci de la [Stamen Design](http://stamen.com), [CC BY 3.0](http://creativecommons.org/licenses/by/3.0)",
+  "mapAttributionStamen": "Datele hărții © [OpenStreetMap](https://www.openstreetmap.org/copyright) • Plăci de la [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)",
   "@mapAttributionStamen": {},
-  "mapAttributionOsmHot": "Datele hărții © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributori - Plăci de la [HOT](https://www.hotosm.org/) - Găzduit de [OSM France](https://openstreetmap.fr/)",
+  "mapAttributionOsmHot": "Datele hărții © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributori • Plăci de la [HOT](https://www.hotosm.org/) • Găzduit de [OSM France](https://openstreetmap.fr/)",
   "@mapAttributionOsmHot": {},
   "filePickerNoItems": "Fără articole",
   "@filePickerNoItems": {},
@@ -1330,5 +1330,29 @@
   "statsPageTitle": "Statistici",
   "@statsPageTitle": {},
   "statsTopCountriesSectionTitle": "Țări de top",
-  "@statsTopCountriesSectionTitle": {}
+  "@statsTopCountriesSectionTitle": {},
+  "settingsAccessibilityShowPinchGestureAlternatives": "Afișare alternative de gesturi atingeri-multiple",
+  "@settingsAccessibilityShowPinchGestureAlternatives": {},
+  "columnCount": "{count, plural, =1{1 coloană} other{{count} coloane}}",
+  "@columnCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "entryActionShareImageOnly": "Distribuie doar imaginea",
+  "@entryActionShareImageOnly": {},
+  "entryActionShareVideoOnly": "Distribuie numai videoclipul",
+  "@entryActionShareVideoOnly": {},
+  "keepScreenOnVideoPlayback": "În timpul redării video",
+  "@keepScreenOnVideoPlayback": {},
+  "settingsViewerShowRatingTags": "Afișare evaluare și etichete",
+  "@settingsViewerShowRatingTags": {},
+  "filterAspectRatioLandscapeLabel": "Peisaj",
+  "@filterAspectRatioLandscapeLabel": {},
+  "filterAspectRatioPortraitLabel": "Portret",
+  "@filterAspectRatioPortraitLabel": {},
+  "filterNoAddressLabel": "Nicio adresă",
+  "@filterNoAddressLabel": {},
+  "entryInfoActionRemoveLocation": "Eliminare locație",
+  "@entryInfoActionRemoveLocation": {}
 }

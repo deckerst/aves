@@ -3,9 +3,11 @@ import 'dart:convert';
 
 import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/actions/events.dart';
+import 'package:aves/model/device.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/entry_info.dart';
 import 'package:aves/model/entry_metadata_edition.dart';
+import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/geotiff.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/ref/mime_types.dart';
@@ -17,6 +19,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/map/map_page.dart';
 import 'package:aves/widgets/viewer/action/single_entry_editor.dart';
+import 'package:aves/widgets/viewer/debug/debug_page.dart';
 import 'package:aves/widgets/viewer/embedded/notifications.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +30,7 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
   Stream<ActionEvent<EntryAction>> get eventStream => _eventStreamController.stream;
 
   bool isVisible(AvesEntry targetEntry, EntryAction action) {
+    final canWrite = !device.isReadOnly;
     switch (action) {
       // general
       case EntryAction.editDate:
@@ -36,12 +40,13 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
       case EntryAction.editTags:
       case EntryAction.removeMetadata:
       case EntryAction.exportMetadata:
-        return true;
+        return canWrite;
       // GeoTIFF
       case EntryAction.showGeoTiffOnMap:
         return targetEntry.isGeotiff;
       // motion photo
       case EntryAction.convertMotionPhotoToStillImage:
+        return canWrite && targetEntry.isMotionPhoto;
       case EntryAction.viewMotionPhotoVideo:
         return targetEntry.isMotionPhoto;
       default:
@@ -115,6 +120,10 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
       case EntryAction.viewMotionPhotoVideo:
         OpenEmbeddedDataNotification.motionPhotoVideo().dispatch(context);
         break;
+      // debug
+      case EntryAction.debug:
+        _goToDebug(context, targetEntry);
+        break;
       default:
         break;
     }
@@ -146,14 +155,32 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
     final rating = await selectRating(context, {targetEntry});
     if (rating == null) return;
 
+    await quickRate(context, targetEntry, rating);
+  }
+
+  Future<void> quickRate(BuildContext context, AvesEntry targetEntry, int rating) async {
+    if (targetEntry.rating == rating) return;
+
     await edit(context, targetEntry, () => targetEntry.editRating(rating));
   }
 
   Future<void> _editTags(BuildContext context, AvesEntry targetEntry) async {
-    final newTagsByEntry = await selectTags(context, {targetEntry});
-    if (newTagsByEntry == null) return;
+    final tagsByEntry = await selectTags(context, {targetEntry});
+    if (tagsByEntry == null) return;
 
-    final newTags = newTagsByEntry[targetEntry] ?? targetEntry.tags;
+    final newTags = tagsByEntry[targetEntry] ?? targetEntry.tags;
+    await _applyTags(context, targetEntry, newTags);
+  }
+
+  Future<void> quickTag(BuildContext context, AvesEntry targetEntry, CollectionFilter filter) async {
+    final newTags = {
+      ...targetEntry.tags,
+      ...await getTagsFromFilters({filter}, targetEntry),
+    };
+    await _applyTags(context, targetEntry, newTags);
+  }
+
+  Future<void> _applyTags(BuildContext context, AvesEntry targetEntry, Set<String> newTags) async {
     final currentTags = targetEntry.tags;
     if (newTags.length == currentTags.length && newTags.every(currentTags.contains)) return;
 
@@ -204,7 +231,7 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
       context: context,
       builder: (context) {
         return AvesDialog(
-          content: Text(context.l10n.convertMotionPhotoToStillImageWarningDialogMessage),
+          content: Text(context.l10n.genericDangerWarningDialogMessage),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
@@ -236,19 +263,29 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
     final baseCollection = collection;
     if (baseCollection == null) return;
 
+    final mapCollection = baseCollection.copyWith(
+      listenToSource: true,
+      fixedSelection: baseCollection.sortedEntries.where((entry) => entry.hasGps).where((entry) => entry != targetEntry).toList(),
+    );
     await Navigator.push(
       context,
       MaterialPageRoute(
         settings: const RouteSettings(name: MapPage.routeName),
-        builder: (context) {
-          return MapPage(
-            collection: baseCollection.copyWith(
-              listenToSource: true,
-              fixedSelection: baseCollection.sortedEntries.where((entry) => entry.hasGps).where((entry) => entry != targetEntry).toList(),
-            ),
-            overlayEntry: mappedGeoTiff,
-          );
-        },
+        builder: (context) => MapPage(
+          collection: mapCollection,
+          overlayEntry: mappedGeoTiff,
+        ),
+      ),
+    );
+    mapCollection.dispose();
+  }
+
+  void _goToDebug(BuildContext context, AvesEntry targetEntry) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        settings: const RouteSettings(name: ViewerDebugPage.routeName),
+        builder: (context) => ViewerDebugPage(entry: targetEntry),
       ),
     );
   }

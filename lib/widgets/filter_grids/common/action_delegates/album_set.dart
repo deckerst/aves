@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/actions/chip_set_actions.dart';
 import 'package:aves/model/actions/move_type.dart';
+import 'package:aves/model/device.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/highlight.dart';
@@ -19,6 +20,7 @@ import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/common/action_mixins/entry_storage.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/common/tile_extent_controller.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/filter_editors/create_album_dialog.dart';
 import 'package:aves/widgets/dialogs/filter_editors/rename_album_dialog.dart';
@@ -74,10 +76,10 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
   }) {
     switch (action) {
       case ChipSetAction.createAlbum:
-        return appMode == AppMode.main && !isSelecting;
+        return !device.isReadOnly && appMode == AppMode.main && !isSelecting;
       case ChipSetAction.delete:
       case ChipSetAction.rename:
-        return appMode == AppMode.main && isSelecting;
+        return !device.isReadOnly && appMode == AppMode.main && isSelecting;
       default:
         return super.isVisible(
           action,
@@ -145,6 +147,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
       tileLayout,
       sortReverse,
     );
+    final extentController = context.read<TileExtentController>();
     final value = await showDialog<Tuple4<ChipSortFactor?, AlbumChipGroupFactor?, TileLayout?, bool>>(
       context: context,
       builder: (context) {
@@ -154,6 +157,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
           groupOptions: _groupOptions.map((v) => TileViewDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
           layoutOptions: ChipSetActionDelegate.layoutOptions.map((v) => TileViewDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
           sortOrder: (factor, reverse) => factor.getOrderName(context, reverse),
+          tileExtentController: extentController,
         );
       },
     );
@@ -212,7 +216,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
     final emptyAlbums = todoAlbums.whereNot(filledAlbums.contains).toSet();
 
     if (settings.enableBin && filledAlbums.isNotEmpty) {
-      await move(
+      await doMove(
         context,
         moveType: MoveType.toBin,
         entries: todoEntries,

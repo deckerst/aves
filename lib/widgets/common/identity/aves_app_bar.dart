@@ -1,3 +1,4 @@
+import 'package:aves/model/device.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/aves_app.dart';
@@ -7,7 +8,7 @@ import 'package:provider/provider.dart';
 
 class AvesAppBar extends StatelessWidget {
   final double contentHeight;
-  final Widget leading;
+  final Widget? leading;
   final Widget title;
   final List<Widget> actions;
   final Widget? bottom;
@@ -32,7 +33,7 @@ class AvesAppBar extends StatelessWidget {
       selector: (context, mq) => mq.padding.top,
       builder: (context, mqPaddingTop, child) {
         return SliverPersistentHeader(
-          floating: true,
+          floating: !device.isTelevision,
           pinned: false,
           delegate: _SliverAppBarDelegate(
             height: mqPaddingTop + appBarHeightForContentHeight(contentHeight),
@@ -41,7 +42,6 @@ class AvesAppBar extends StatelessWidget {
               child: AvesFloatingBar(
                 builder: (context, backgroundColor, child) => Material(
                   color: backgroundColor,
-                  textStyle: Theme.of(context).appBarTheme.titleTextStyle,
                   child: child,
                 ),
                 child: Column(
@@ -50,28 +50,33 @@ class AvesAppBar extends StatelessWidget {
                       height: kToolbarHeight,
                       child: Row(
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 4),
-                            child: Hero(
-                              tag: leadingHeroTag,
-                              flightShuttleBuilder: _flightShuttleBuilder,
-                              transitionOnUserGestures: true,
-                              child: leading,
-                            ),
-                          ),
+                          leading != null
+                              ? Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                                  child: Hero(
+                                    tag: leadingHeroTag,
+                                    flightShuttleBuilder: _flightShuttleBuilder,
+                                    transitionOnUserGestures: true,
+                                    child: leading!,
+                                  ),
+                                )
+                              : const SizedBox(width: 16),
                           Expanded(
-                            child: Hero(
-                              tag: titleHeroTag,
-                              flightShuttleBuilder: _flightShuttleBuilder,
-                              transitionOnUserGestures: true,
-                              child: AnimatedSwitcher(
-                                duration: context.read<DurationsData>().iconAnimation,
-                                child: Row(
-                                  key: ValueKey(transitionKey),
-                                  children: [
-                                    Expanded(child: title),
-                                    ...actions,
-                                  ],
+                            child: DefaultTextStyle(
+                              style: Theme.of(context).appBarTheme.titleTextStyle!,
+                              child: Hero(
+                                tag: titleHeroTag,
+                                flightShuttleBuilder: _flightShuttleBuilder,
+                                transitionOnUserGestures: true,
+                                child: AnimatedSwitcher(
+                                  duration: context.read<DurationsData>().iconAnimation,
+                                  child: Row(
+                                    key: ValueKey(transitionKey),
+                                    children: [
+                                      Expanded(child: title),
+                                      ...actions,
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),

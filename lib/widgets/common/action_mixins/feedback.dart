@@ -8,8 +8,8 @@ import 'package:aves/services/accessibility_service.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/action_mixins/overlay_snack_bar.dart';
-import 'package:aves/widgets/common/basic/animated_text.dart';
 import 'package:aves/widgets/common/basic/circle.dart';
+import 'package:aves/widgets/common/basic/text/change_highlight.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/viewer/entry_viewer_page.dart';
 import 'package:flutter/foundation.dart';
@@ -364,7 +364,7 @@ class _FeedbackMessageState extends State<_FeedbackMessage> with SingleTickerPro
                     // progress color is provided by the caller,
                     // because we cannot use the app context theme here
                     foreground: widget.progressColor,
-                    center: AnimatedText(
+                    center: ChangeHighlightText(
                       '${(remainingDurationMillis / 1000).ceil()}',
                       style: contentTextStyle.copyWith(
                         shadows: [

@@ -57,11 +57,11 @@ class _AppBottomNavBarState extends State<AppBottomNavBar> {
   }
 
   void _registerWidget(AppBottomNavBar widget) {
-    widget.currentCollection?.filterChangeNotifier.addListener(_onCollectionFilterChange);
+    widget.currentCollection?.filterChangeNotifier.addListener(_onCollectionFilterChanged);
   }
 
   void _unregisterWidget(AppBottomNavBar widget) {
-    widget.currentCollection?.filterChangeNotifier.removeListener(_onCollectionFilterChange);
+    widget.currentCollection?.filterChangeNotifier.removeListener(_onCollectionFilterChanged);
   }
 
   @override
@@ -112,7 +112,7 @@ class _AppBottomNavBarState extends State<AppBottomNavBar> {
     );
   }
 
-  void _onCollectionFilterChange() => setState(() {});
+  void _onCollectionFilterChanged() => setState(() {});
 
   int _getCurrentIndex(BuildContext context, List<AvesBottomNavItem> items) {
     // current route may be null during navigation

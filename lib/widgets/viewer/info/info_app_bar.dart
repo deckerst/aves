@@ -1,4 +1,5 @@
 import 'package:aves/model/actions/entry_actions.dart';
+import 'package:aves/model/device.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/theme/durations.dart';
@@ -36,13 +37,16 @@ class InfoAppBar extends StatelessWidget {
     final formatSpecificActions = EntryActions.formatSpecificMetadataActions.where((v) => actionDelegate.isVisible(entry, v));
 
     return SliverAppBar(
-      leading: IconButton(
-        // key is expected by test driver
-        key: const Key('back-button'),
-        icon: const Icon(AIcons.goUp),
-        onPressed: onBackPressed,
-        tooltip: context.l10n.viewerInfoBackToViewerTooltip,
-      ),
+      leading: device.isTelevision
+          ? null
+          : IconButton(
+              // key is expected by test driver
+              key: const Key('back-button'),
+              icon: const Icon(AIcons.goUp),
+              onPressed: onBackPressed,
+              tooltip: context.l10n.viewerInfoBackToViewerTooltip,
+            ),
+      automaticallyImplyLeading: false,
       title: SliverAppBarTitleWrapper(
         child: InteractiveAppBarTitle(
           onTap: () => _goToSearch(context),

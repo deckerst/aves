@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:aves/model/device.dart';
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/enums/home_page.dart';
 import 'package:aves/model/settings/enums/screen_on.dart';
@@ -31,11 +32,11 @@ class NavigationSection extends SettingsSection {
   @override
   FutureOr<List<SettingsTile>> tiles(BuildContext context) => [
         SettingsTileNavigationHomePage(),
-        SettingsTileShowBottomNavigationBar(),
+        if (!device.isTelevision) SettingsTileNavigationKeepScreenOn(),
+        if (!device.isTelevision) SettingsTileShowBottomNavigationBar(),
+        if (!device.isTelevision) SettingsTileNavigationDoubleBackExit(),
         SettingsTileNavigationDrawer(),
-        SettingsTileNavigationConfirmationDialog(),
-        SettingsTileNavigationKeepScreenOn(),
-        SettingsTileNavigationDoubleBackExit(),
+        if (!device.isTelevision) SettingsTileNavigationConfirmationDialog(),
       ];
 }
 

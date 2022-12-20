@@ -44,7 +44,7 @@ abstract class AvesColorsData {
   Color fromString(String string) {
     var color = _stringColors[string];
     if (color == null) {
-      final hash = string.codeUnits.fold<int>(0, (prev, el) => prev = el + ((prev << 5) - prev));
+      final hash = string.codeUnits.fold<int>(0, (prev, v) => prev = v + ((prev << 5) - prev));
       final hue = (hash % 360).toDouble();
       color = fromHue(hue);
       _stringColors[string] = color;

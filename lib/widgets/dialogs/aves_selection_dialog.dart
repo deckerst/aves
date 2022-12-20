@@ -58,12 +58,13 @@ class _AvesSelectionDialogState<T> extends State<AvesSelectionDialog<T>> {
   Widget build(BuildContext context) {
     final title = widget.title;
     final message = widget.message;
+    final verticalPadding = (title == null && message == null) ? AvesDialog.cornerRadius.y / 2 : .0;
     final confirmationButtonLabel = widget.confirmationButtonLabel;
     final needConfirmation = confirmationButtonLabel != null;
     return AvesDialog(
       title: title,
       scrollableContent: [
-        if (title == null && message == null) SizedBox(height: AvesDialog.cornerRadius.y / 2),
+        if (verticalPadding != 0) SizedBox(height: verticalPadding),
         if (message != null)
           Padding(
             padding: const EdgeInsets.all(16),
@@ -82,6 +83,7 @@ class _AvesSelectionDialogState<T> extends State<AvesSelectionDialog<T>> {
             setGroupValue: (v) => setState(() => _selectedValue = v),
           );
         }),
+        if (verticalPadding != 0) SizedBox(height: verticalPadding),
       ],
       actions: [
         TextButton(

@@ -79,6 +79,7 @@ class SettingsDefaults {
   static const showOverlayOnOpening = true;
   static const showOverlayMinimap = false;
   static const showOverlayInfo = true;
+  static const showOverlayRatingTags = false;
   static const showOverlayShootingDetails = false;
   static const showOverlayThumbnailPreview = false;
   static const viewerGestureSideTapNext = false;
@@ -108,6 +109,10 @@ class SettingsDefaults {
   static const coordinateFormat = CoordinateFormat.dms;
   static const unitSystem = UnitSystem.metric;
 
+  // tag editor
+
+  static const tagEditorCurrentFilterSectionExpanded = true;
+
   // rendering
   static const imageBackground = EntryBackground.white;
 
@@ -118,6 +123,7 @@ class SettingsDefaults {
   static const enableBin = true;
 
   // accessibility
+  static const showPinchGestureAlternatives = false;
   static const accessibilityAnimations = AccessibilityAnimations.system;
   static const timeToTakeAction = AccessibilityTimeout.s3;
 

@@ -1,1 +1,20 @@
-{}
+{
+  "filePickerDoNotShowHiddenFiles": "عدم إظهار الملفات المخفية",
+  "@filePickerDoNotShowHiddenFiles": {},
+  "tagPlaceholderPlace": "المكان",
+  "@tagPlaceholderPlace": {},
+  "tagPlaceholderCountry": "البلد",
+  "@tagPlaceholderCountry": {},
+  "sourceViewerPageTitle": "المصدر",
+  "@sourceViewerPageTitle": {},
+  "panoramaDisableSensorControl": "تعطيل التحكم في المستشعر",
+  "@panoramaDisableSensorControl": {},
+  "filePickerNoItems": "لا توجد عناصر",
+  "@filePickerNoItems": {},
+  "filePickerOpenFrom": "فتح من",
+  "@filePickerOpenFrom": {},
+  "filePickerShowHiddenFiles": "إظهار الملفات المخفية",
+  "@filePickerShowHiddenFiles": {},
+  "panoramaEnableSensorControl": "تمكين التحكم في المستشعر",
+  "@panoramaEnableSensorControl": {}
+}

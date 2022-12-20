@@ -10,7 +10,13 @@ import 'package:flutter/widgets.dart';
 class ShowImageNotification extends Notification {}
 
 @immutable
-class ShowInfoNotification extends Notification {}
+class ShowInfoPageNotification extends Notification {}
+
+@immutable
+class TvShowLessInfoNotification extends Notification {}
+
+@immutable
+class TvShowMoreInfoNotification extends Notification {}
 
 @immutable
 class ToggleOverlayNotification extends Notification {

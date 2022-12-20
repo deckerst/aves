@@ -1,4 +1,5 @@
 import 'package:aves/model/filters/album.dart';
+import 'package:aves/model/filters/aspect_ratio.dart';
 import 'package:aves/model/filters/coordinate.dart';
 import 'package:aves/model/filters/date.dart';
 import 'package:aves/model/filters/favourite.dart';
@@ -7,6 +8,7 @@ import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/missing.dart';
 import 'package:aves/model/filters/path.dart';
+import 'package:aves/model/filters/placeholder.dart';
 import 'package:aves/model/filters/query.dart';
 import 'package:aves/model/filters/rating.dart';
 import 'package:aves/model/filters/recent.dart';
@@ -36,6 +38,9 @@ void main() {
     final album = AlbumFilter('path/to/album', 'album');
     expect(album, jsonRoundTrip(album));
 
+    final aspectRatio = AspectRatioFilter.landscape;
+    expect(aspectRatio, jsonRoundTrip(aspectRatio));
+
     final bounds = CoordinateFilter(LatLng(29.979167, 28.223615), LatLng(36.451000, 31.134167));
     expect(bounds, jsonRoundTrip(bounds));
 
@@ -59,6 +64,9 @@ void main() {
 
     final path = PathFilter('/some/path/');
     expect(path, jsonRoundTrip(path));
+
+    final placeholder = PlaceholderFilter.country;
+    expect(placeholder, jsonRoundTrip(placeholder));
 
     final query = QueryFilter('some query');
     expect(query, jsonRoundTrip(query));

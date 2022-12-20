@@ -29,6 +29,7 @@ class EntryLeafletMap<T> extends StatefulWidget {
   final UserZoomChangeCallback? onUserZoomChange;
   final MapTapCallback? onMapTap;
   final MarkerTapCallback<T>? onMarkerTap;
+  final MarkerLongPressCallback<T>? onMarkerLongPress;
 
   const EntryLeafletMap({
     super.key,
@@ -50,10 +51,11 @@ class EntryLeafletMap<T> extends StatefulWidget {
     this.onUserZoomChange,
     this.onMapTap,
     this.onMarkerTap,
+    this.onMarkerLongPress,
   });
 
   @override
-  State<StatefulWidget> createState() => _EntryLeafletMapState<T>();
+  State<EntryLeafletMap<T>> createState() => _EntryLeafletMapState<T>();
 }
 
 class _EntryLeafletMapState<T> extends State<EntryLeafletMap<T>> with TickerProviderStateMixin {
@@ -96,12 +98,12 @@ class _EntryLeafletMapState<T> extends State<EntryLeafletMap<T>> with TickerProv
     }
     _subscriptions.add(_leafletMapController.mapEventStream.listen((event) => _updateVisibleRegion()));
     widget.clusterListenable.addListener(_updateMarkers);
-    widget.boundsNotifier.addListener(_onBoundsChange);
+    widget.boundsNotifier.addListener(_onBoundsChanged);
   }
 
   void _unregisterWidget(EntryLeafletMap<T> widget) {
     widget.clusterListenable.removeListener(_updateMarkers);
-    widget.boundsNotifier.removeListener(_onBoundsChange);
+    widget.boundsNotifier.removeListener(_onBoundsChanged);
     _subscriptions
       ..forEach((sub) => sub.cancel())
       ..clear();
@@ -134,6 +136,7 @@ class _EntryLeafletMapState<T> extends State<EntryLeafletMap<T>> with TickerProv
           // marker tap handling prevents the default handling of focal zoom on double tap,
           // so we reimplement the double tap gesture here
           onDoubleTap: interactive ? () => _zoomBy(1, focalPoint: latLng) : null,
+          onLongPress: () => widget.onMarkerLongPress?.call(geoEntry, LatLng(geoEntry.latitude!, geoEntry.longitude!)),
           child: widget.markerWidgetBuilder(markerKey),
         ),
         width: markerSize.width,
@@ -227,7 +230,7 @@ class _EntryLeafletMapState<T> extends State<EntryLeafletMap<T>> with TickerProv
     );
   }
 
-  void _onBoundsChange() => _debouncer(_onIdle);
+  void _onBoundsChanged() => _debouncer(_onIdle);
 
   void _onIdle() {
     if (!mounted) return;

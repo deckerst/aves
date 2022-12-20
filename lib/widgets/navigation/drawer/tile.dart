@@ -2,9 +2,6 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/debug/app_debug_page.dart';
-import 'package:aves/widgets/filter_grids/albums_page.dart';
-import 'package:aves/widgets/filter_grids/countries_page.dart';
-import 'package:aves/widgets/filter_grids/tags_page.dart';
 import 'package:aves/widgets/navigation/nav_display.dart';
 import 'package:flutter/material.dart';
 
@@ -52,16 +49,14 @@ class DrawerPageIcon extends StatelessWidget {
     final icon = NavigationDisplay.getPageIcon(route);
     if (icon != null) {
       switch (route) {
-        case AlbumListPage.routeName:
-        case CountryListPage.routeName:
-        case TagListPage.routeName:
-          return Icon(icon);
         case AppDebugPage.routeName:
           return ShaderMask(
             shaderCallback: AvesColorsData.debugGradient.createShader,
             blendMode: BlendMode.srcIn,
             child: Icon(icon),
           );
+        default:
+          return Icon(icon);
       }
     }
     return const SizedBox();

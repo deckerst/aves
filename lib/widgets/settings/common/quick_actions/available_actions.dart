@@ -1,7 +1,7 @@
+import 'package:aves/widgets/common/identity/buttons/captioned_button.dart';
+import 'package:aves/widgets/common/identity/buttons/overlay_button.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
-import 'package:aves/widgets/settings/common/quick_actions/action_button.dart';
 import 'package:aves/widgets/settings/common/quick_actions/placeholder.dart';
-import 'package:aves/widgets/viewer/overlay/common.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -13,7 +13,7 @@ class AvailableActionPanel<T extends Object> extends StatelessWidget {
   final ValueNotifier<T?> draggedQuickAction;
   final ValueNotifier<T?> draggedAvailableAction;
   final bool Function(T? action) removeQuickAction;
-  final Widget? Function(T action) actionIcon;
+  final Widget Function(T action) actionIcon;
   final String Function(BuildContext context, T action) actionText;
 
   static const double spacing = 8;
@@ -107,11 +107,11 @@ class AvailableActionPanel<T extends Object> extends StatelessWidget {
     bool enabled = true,
     bool showCaption = true,
   }) =>
-      ActionButton(
-        text: actionText(context, action),
+      CaptionedButton(
         icon: actionIcon(action),
-        enabled: enabled,
+        caption: actionText(context, action),
         showCaption: showCaption,
+        onPressed: enabled ? () {} : null,
       );
 
   void _setDraggedQuickAction(T? action) => draggedQuickAction.value = action;
@@ -121,7 +121,7 @@ class AvailableActionPanel<T extends Object> extends StatelessWidget {
   void _setPanelHighlight(bool flag) => panelHighlight.value = flag;
 
   static double heightFor(BuildContext context, List<String> captions, double width) {
-    final buttonSizes = captions.map((v) => ActionButton.getSize(context, v, showCaption: true));
+    final buttonSizes = captions.map((v) => CaptionedButton.getSize(context, v, showCaption: true));
     final actionsPerRun = (width - padding.horizontal + spacing) ~/ (buttonSizes.first.width + spacing);
     final runCount = (captions.length / actionsPerRun).ceil();
     var height = .0;

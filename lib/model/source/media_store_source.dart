@@ -231,7 +231,7 @@ class MediaStoreSource extends CollectionSource {
 
     // fetch new entries
     final tempUris = <String>{};
-    final newEntries = <AvesEntry>{};
+    final newEntries = <AvesEntry>{}, entriesToRefresh = <AvesEntry>{};
     final existingDirectories = <String>{};
     for (final kv in uriByContentId.entries) {
       final contentId = kv.key;
@@ -244,8 +244,12 @@ class MediaStoreSource extends CollectionSource {
           final newPath = sourceEntry.path;
           final volume = newPath != null ? androidFileUtils.getStorageVolume(newPath) : null;
           if (volume != null) {
-            sourceEntry.id = existingEntry?.id ?? metadataDb.nextId;
-            newEntries.add(sourceEntry);
+            if (existingEntry != null) {
+              entriesToRefresh.add(existingEntry);
+            } else {
+              sourceEntry.id = metadataDb.nextId;
+              newEntries.add(sourceEntry);
+            }
             final existingDirectory = existingEntry?.directory;
             if (existingDirectory != null) {
               existingDirectories.add(existingDirectory);
@@ -258,13 +262,16 @@ class MediaStoreSource extends CollectionSource {
       }
     }
 
+    invalidateAlbumFilterSummary(directories: existingDirectories);
+
     if (newEntries.isNotEmpty) {
-      invalidateAlbumFilterSummary(directories: existingDirectories);
       addEntries(newEntries);
       await metadataDb.saveEntries(newEntries);
-      cleanEmptyAlbums(existingDirectories);
-
       await analyze(analysisController, entries: newEntries);
+    }
+
+    if (entriesToRefresh.isNotEmpty) {
+      await refreshEntries(entriesToRefresh, EntryDataType.values.toSet());
     }
 
     return tempUris;

@@ -106,7 +106,7 @@ class AvesFilterChip extends StatefulWidget {
       FocusManager.instance.primaryFocus?.unfocus();
 
       final overlay = Overlay.of(context)!.context.findRenderObject() as RenderBox;
-      const touchArea = Size(40, 40);
+      const touchArea = Size(kMinInteractiveDimension, kMinInteractiveDimension);
       final selectedAction = await showMenu<ChipAction>(
         context: context,
         position: RelativeRect.fromRect(tapPosition & touchArea, Offset.zero & overlay.size),
@@ -162,13 +162,13 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
   void initState() {
     super.initState();
     _tapped = false;
-    _subscriptions.add(covers.packageChangeStream.listen(_onCoverColorChange));
-    _subscriptions.add(covers.colorChangeStream.listen(_onCoverColorChange));
+    _subscriptions.add(covers.packageChangeStream.listen(_onCoverColorChanged));
+    _subscriptions.add(covers.colorChangeStream.listen(_onCoverColorChanged));
     _subscriptions.add(settings.updateStream.where((event) => event.key == Settings.themeColorModeKey).listen((_) {
       // delay so that contextual colors reflect the new settings
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted) return;
-        _onCoverColorChange(null);
+        _onCoverColorChanged(null);
       });
     }));
   }
@@ -207,7 +207,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
     _outlineColor = context.read<AvesColorsData>().neutral;
   }
 
-  void _onCoverColorChange(Set<CollectionFilter>? event) {
+  void _onCoverColorChanged(Set<CollectionFilter>? event) {
     if (event == null || event.contains(filter)) {
       _initColorLoader();
       setState(() {});

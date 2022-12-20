@@ -5,7 +5,10 @@ import 'dart:math';
 import 'package:aves/app_flavor.dart';
 import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/actions/entry_set_actions.dart';
+import 'package:aves/model/device.dart';
+import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/settings/defaults.dart';
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/enums/map_style.dart';
@@ -13,6 +16,10 @@ import 'package:aves/model/source/enums/enums.dart';
 import 'package:aves/services/common/optional_event_channel.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/aves_app.dart';
+import 'package:aves/widgets/common/search/page.dart';
+import 'package:aves/widgets/filter_grids/albums_page.dart';
+import 'package:aves/widgets/filter_grids/countries_page.dart';
+import 'package:aves/widgets/filter_grids/tags_page.dart';
 import 'package:aves_map/aves_map.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -29,6 +36,7 @@ class Settings extends ChangeNotifier {
 
   Settings._private();
 
+  static const int _recentFilterHistoryMax = 10;
   static const Set<String> _internalKeys = {
     hasAcceptedTermsKey,
     catalogTimeZoneKey,
@@ -37,6 +45,8 @@ class Settings extends ChangeNotifier {
     platformAccelerometerRotationKey,
     platformTransitionAnimationScaleKey,
     topEntryIdsKey,
+    recentDestinationAlbumsKey,
+    recentTagsKey,
   };
   static const _widgetKeyPrefix = 'widget_';
 
@@ -51,6 +61,8 @@ class Settings extends ChangeNotifier {
   static const tileLayoutPrefixKey = 'tile_layout_';
   static const entryRenamingPatternKey = 'entry_renaming_pattern';
   static const topEntryIdsKey = 'top_entry_ids';
+  static const recentDestinationAlbumsKey = 'recent_destination_albums';
+  static const recentTagsKey = 'recent_tags';
 
   // display
   static const displayRefreshRateModeKey = 'display_refresh_rate_mode';
@@ -103,6 +115,7 @@ class Settings extends ChangeNotifier {
   static const showOverlayOnOpeningKey = 'show_overlay_on_opening';
   static const showOverlayMinimapKey = 'show_overlay_minimap';
   static const showOverlayInfoKey = 'show_overlay_info';
+  static const showOverlayRatingTagsKey = 'show_overlay_rating_tags';
   static const showOverlayShootingDetailsKey = 'show_overlay_shooting_details';
   static const showOverlayThumbnailPreviewKey = 'show_overlay_thumbnail_preview';
   static const viewerGestureSideTapNextKey = 'viewer_gesture_side_tap_next';
@@ -133,6 +146,10 @@ class Settings extends ChangeNotifier {
   static const coordinateFormatKey = 'coordinates_format';
   static const unitSystemKey = 'unit_system';
 
+  // tag editor
+
+  static const tagEditorCurrentFilterSectionExpandedKey = 'tag_editor_current_filter_section_expanded';
+
   // map
   static const mapStyleKey = 'info_map_style';
   static const mapDefaultCenterKey = 'map_default_center';
@@ -145,6 +162,7 @@ class Settings extends ChangeNotifier {
   static const enableBinKey = 'enable_bin';
 
   // accessibility
+  static const showPinchGestureAlternativesKey = 'show_pinch_gesture_alternatives';
   static const accessibilityAnimationsKey = 'accessibility_animations';
   static const timeToTakeActionKey = 'time_to_take_action';
 
@@ -189,7 +207,7 @@ class Settings extends ChangeNotifier {
     await settingsStore.init();
     _appliedLocale = null;
     if (monitorPlatformSettings) {
-      _platformSettingsChangeChannel.receiveBroadcastStream().listen((event) => _onPlatformSettingsChange(event as Map?));
+      _platformSettingsChangeChannel.receiveBroadcastStream().listen((event) => _onPlatformSettingsChanged(event as Map?));
     }
   }
 
@@ -219,6 +237,36 @@ class Settings extends ChangeNotifier {
         final styles = EntryMapStyle.values.whereNot((v) => v.needMobileService).toList();
         mapStyle = styles[Random().nextInt(styles.length)];
       }
+    }
+
+    if (device.isTelevision) {
+      themeBrightness = AvesThemeBrightness.dark;
+      mustBackTwiceToExit = false;
+      // address `TV-BU` / `TV-BY` requirements from https://developer.android.com/docs/quality-guidelines/tv-app-quality
+      keepScreenOn = KeepScreenOn.videoPlayback;
+      enableBottomNavigationBar = false;
+      drawerTypeBookmarks = [
+        null,
+        MimeFilter.video,
+        FavouriteFilter.instance,
+      ];
+      drawerPageBookmarks = [
+        AlbumListPage.routeName,
+        CountryListPage.routeName,
+        TagListPage.routeName,
+        SearchPage.routeName,
+      ];
+      showOverlayOnOpening = false;
+      showOverlayMinimap = false;
+      showOverlayThumbnailPreview = false;
+      viewerGestureSideTapNext = false;
+      viewerUseCutout = true;
+      viewerMaxBrightness = false;
+      videoControls = VideoControls.none;
+      videoGestureDoubleTapTogglePlay = false;
+      videoGestureSideDoubleTapSeek = false;
+      enableBin = false;
+      showPinchGestureAlternatives = true;
     }
   }
 
@@ -312,6 +360,14 @@ class Settings extends ChangeNotifier {
   List<int>? get topEntryIds => getStringList(topEntryIdsKey)?.map(int.tryParse).whereNotNull().toList();
 
   set topEntryIds(List<int>? newValue) => setAndNotify(topEntryIdsKey, newValue?.map((id) => id.toString()).whereNotNull().toList());
+
+  List<String> get recentDestinationAlbums => getStringList(recentDestinationAlbumsKey) ?? [];
+
+  set recentDestinationAlbums(List<String> newValue) => setAndNotify(recentDestinationAlbumsKey, newValue.take(_recentFilterHistoryMax).toList());
+
+  List<CollectionFilter> get recentTags => (getStringList(recentTagsKey) ?? []).map(CollectionFilter.fromJson).whereNotNull().toList();
+
+  set recentTags(List<CollectionFilter> newValue) => setAndNotify(recentTagsKey, newValue.take(_recentFilterHistoryMax).map((filter) => filter.toJson()).toList());
 
   // display
 
@@ -507,6 +563,10 @@ class Settings extends ChangeNotifier {
 
   set showOverlayInfo(bool newValue) => setAndNotify(showOverlayInfoKey, newValue);
 
+  bool get showOverlayRatingTags => getBool(showOverlayRatingTagsKey) ?? SettingsDefaults.showOverlayRatingTags;
+
+  set showOverlayRatingTags(bool newValue) => setAndNotify(showOverlayRatingTagsKey, newValue);
+
   bool get showOverlayShootingDetails => getBool(showOverlayShootingDetailsKey) ?? SettingsDefaults.showOverlayShootingDetails;
 
   set showOverlayShootingDetails(bool newValue) => setAndNotify(showOverlayShootingDetailsKey, newValue);
@@ -605,6 +665,12 @@ class Settings extends ChangeNotifier {
 
   set unitSystem(UnitSystem newValue) => setAndNotify(unitSystemKey, newValue.toString());
 
+  // tag editor
+
+  bool get tagEditorCurrentFilterSectionExpanded => getBool(tagEditorCurrentFilterSectionExpandedKey) ?? SettingsDefaults.tagEditorCurrentFilterSectionExpanded;
+
+  set tagEditorCurrentFilterSectionExpanded(bool newValue) => setAndNotify(tagEditorCurrentFilterSectionExpandedKey, newValue);
+
   // map
 
   EntryMapStyle? get mapStyle {
@@ -641,6 +707,10 @@ class Settings extends ChangeNotifier {
   set enableBin(bool newValue) => setAndNotify(enableBinKey, newValue);
 
   // accessibility
+
+  bool get showPinchGestureAlternatives => getBool(showPinchGestureAlternativesKey) ?? SettingsDefaults.showPinchGestureAlternatives;
+
+  set showPinchGestureAlternatives(bool newValue) => setAndNotify(showPinchGestureAlternativesKey, newValue);
 
   AccessibilityAnimations get accessibilityAnimations => getEnumOrDefault(accessibilityAnimationsKey, SettingsDefaults.accessibilityAnimations, AccessibilityAnimations.values);
 
@@ -834,7 +904,7 @@ class Settings extends ChangeNotifier {
 
   // platform settings
 
-  void _onPlatformSettingsChange(Map? fields) {
+  void _onPlatformSettingsChanged(Map? fields) {
     fields?.forEach((key, value) {
       switch (key) {
         case platformAccelerometerRotationKey:
@@ -932,6 +1002,7 @@ class Settings extends ChangeNotifier {
             case showOverlayOnOpeningKey:
             case showOverlayMinimapKey:
             case showOverlayInfoKey:
+            case showOverlayRatingTagsKey:
             case showOverlayShootingDetailsKey:
             case showOverlayThumbnailPreviewKey:
             case viewerGestureSideTapNextKey:
@@ -942,7 +1013,9 @@ class Settings extends ChangeNotifier {
             case videoGestureDoubleTapTogglePlayKey:
             case videoGestureSideDoubleTapSeekKey:
             case subtitleShowOutlineKey:
+            case tagEditorCurrentFilterSectionExpandedKey:
             case saveSearchHistoryKey:
+            case showPinchGestureAlternativesKey:
             case filePickerShowHiddenFilesKey:
             case screenSaverFillScreenKey:
             case screenSaverAnimatedZoomEffectKey:

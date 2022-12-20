@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:aves/model/device.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
@@ -19,7 +20,6 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
-import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip.dart';
 import 'package:aves/widgets/stats/date/histogram.dart';
 import 'package:aves/widgets/stats/filter_table.dart';
@@ -224,20 +224,19 @@ class _StatsPageState extends State<StatsPage> {
           }
         }
 
-        return MediaQueryDataProvider(
-          child: Scaffold(
-            appBar: AppBar(
-              title: Text(l10n.statsPageTitle),
-            ),
-            body: GestureAreaProtectorStack(
-              child: SafeArea(
-                bottom: false,
-                child: TooltipTheme(
-                  data: TooltipTheme.of(context).copyWith(
-                    preferBelow: false,
-                  ),
-                  child: child,
+        return Scaffold(
+          appBar: AppBar(
+            automaticallyImplyLeading: !device.isTelevision,
+            title: Text(l10n.statsPageTitle),
+          ),
+          body: GestureAreaProtectorStack(
+            child: SafeArea(
+              bottom: false,
+              child: TooltipTheme(
+                data: TooltipTheme.of(context).copyWith(
+                  preferBelow: false,
                 ),
+                child: child,
               ),
             ),
           ),
@@ -355,30 +354,29 @@ class StatsTopPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MediaQueryDataProvider(
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(title),
-        ),
-        body: GestureAreaProtectorStack(
-          child: SafeArea(
-            bottom: false,
-            child: Builder(builder: (context) {
-              return NotificationListener<ReverseFilterNotification>(
-                onNotification: (notification) {
-                  onFilterSelection(notification.reversedFilter);
-                  return true;
-                },
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(vertical: 8) +
-                      EdgeInsets.only(
-                        bottom: context.select<MediaQueryData, double>((mq) => mq.effectiveBottomPadding),
-                      ),
-                  child: tableBuilder(context),
-                ),
-              );
-            }),
-          ),
+    return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: !device.isTelevision,
+        title: Text(title),
+      ),
+      body: GestureAreaProtectorStack(
+        child: SafeArea(
+          bottom: false,
+          child: Builder(builder: (context) {
+            return NotificationListener<ReverseFilterNotification>(
+              onNotification: (notification) {
+                onFilterSelection(notification.reversedFilter);
+                return true;
+              },
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(vertical: 8) +
+                    EdgeInsets.only(
+                      bottom: context.select<MediaQueryData, double>((mq) => mq.effectiveBottomPadding),
+                    ),
+                child: tableBuilder(context),
+              ),
+            );
+          }),
         ),
       ),
     );

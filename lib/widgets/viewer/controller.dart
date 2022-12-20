@@ -48,18 +48,18 @@ class ViewerController {
   }) {
     _initialScale = initialScale;
     _autopilotNotifier = ValueNotifier(autopilot);
-    _autopilotNotifier.addListener(_onAutopilotChange);
-    _onAutopilotChange();
+    _autopilotNotifier.addListener(_onAutopilotChanged);
+    _onAutopilotChanged();
   }
 
   void dispose() {
-    _autopilotNotifier.removeListener(_onAutopilotChange);
+    _autopilotNotifier.removeListener(_onAutopilotChanged);
     _clearAutopilotAnimations();
     _stopPlayTimer();
     _streamController.close();
   }
 
-  void _onAutopilotChange() {
+  void _onAutopilotChanged() {
     _clearAutopilotAnimations();
     _stopPlayTimer();
     if (autopilot && autopilotInterval != null) {

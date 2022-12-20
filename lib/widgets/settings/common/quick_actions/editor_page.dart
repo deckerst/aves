@@ -5,13 +5,12 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/change_notifier.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
-import 'package:aves/widgets/settings/common/quick_actions/action_button.dart';
+import 'package:aves/widgets/common/identity/buttons/captioned_button.dart';
+import 'package:aves/widgets/common/identity/buttons/overlay_button.dart';
 import 'package:aves/widgets/settings/common/quick_actions/action_panel.dart';
 import 'package:aves/widgets/settings/common/quick_actions/available_actions.dart';
 import 'package:aves/widgets/settings/common/quick_actions/placeholder.dart';
 import 'package:aves/widgets/settings/common/quick_actions/quick_actions.dart';
-import 'package:aves/widgets/viewer/overlay/common.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +19,7 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 class QuickActionEditorPage<T extends Object> extends StatelessWidget {
   final String title, bannerText;
   final List<List<T>> allAvailableActions;
-  final Widget? Function(T action) actionIcon;
+  final Widget Function(T action) actionIcon;
   final String Function(BuildContext context, T action) actionText;
   final List<T> Function() load;
   final void Function(List<T> actions) save;
@@ -38,20 +37,18 @@ class QuickActionEditorPage<T extends Object> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MediaQueryDataProvider(
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(title),
-        ),
-        body: SafeArea(
-          child: QuickActionEditorBody(
-            bannerText: bannerText,
-            allAvailableActions: allAvailableActions,
-            actionIcon: actionIcon,
-            actionText: actionText,
-            load: load,
-            save: save,
-          ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(title),
+      ),
+      body: SafeArea(
+        child: QuickActionEditorBody(
+          bannerText: bannerText,
+          allAvailableActions: allAvailableActions,
+          actionIcon: actionIcon,
+          actionText: actionText,
+          load: load,
+          save: save,
         ),
       ),
     );
@@ -61,7 +58,7 @@ class QuickActionEditorPage<T extends Object> extends StatelessWidget {
 class QuickActionEditorBody<T extends Object> extends StatefulWidget {
   final String bannerText;
   final List<List<T>> allAvailableActions;
-  final Widget? Function(T action) actionIcon;
+  final Widget Function(T action) actionIcon;
   final String Function(BuildContext context, T action) actionText;
   final List<T> Function() load;
   final void Function(List<T> actions) save;
@@ -211,10 +208,11 @@ class _QuickActionEditorBodyState<T extends Object> extends State<QuickActionEdi
                           insertAction: _insertQuickAction,
                           removeAction: _removeQuickAction,
                           onTargetLeave: _onQuickActionTargetLeave,
-                          draggableFeedbackBuilder: (action) => ActionButton(
-                            text: widget.actionText(context, action),
+                          draggableFeedbackBuilder: (action) => CaptionedButton(
                             icon: widget.actionIcon(action),
+                            caption: widget.actionText(context, action),
                             showCaption: false,
+                            onPressed: () {},
                           ),
                           child: _buildQuickActionButton(action, animation),
                         );
@@ -364,7 +362,7 @@ class _QuickActionEditorBodyState<T extends Object> extends State<QuickActionEdi
           padding: const EdgeInsets.symmetric(vertical: _QuickActionEditorBodyState.quickActionVerticalPadding, horizontal: 4),
           child: OverlayButton(
             child: IconButton(
-              icon: widget.actionIcon(action) ?? const SizedBox(),
+              icon: widget.actionIcon(action),
               onPressed: () {},
             ),
           ),

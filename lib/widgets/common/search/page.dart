@@ -2,8 +2,10 @@ import 'dart:ui';
 
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/debouncer.dart';
+import 'package:aves/widgets/common/behaviour/pop/double_back.dart';
+import 'package:aves/widgets/common/behaviour/pop/scope.dart';
+import 'package:aves/widgets/common/behaviour/pop/tv_navigation.dart';
 import 'package:aves/widgets/common/identity/aves_app_bar.dart';
-import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/common/search/delegate.dart';
 import 'package:aves/widgets/common/search/route.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +14,8 @@ import 'package:flutter/scheduler.dart';
 class SearchPage extends StatefulWidget {
   final AvesSearchDelegate delegate;
   final Animation<double> animation;
+
+  static const routeName = '/search';
 
   const SearchPage({
     super.key,
@@ -26,6 +30,7 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage> {
   final Debouncer _debouncer = Debouncer(delay: Durations.searchDebounceDelay);
   final FocusNode _focusNode = FocusNode();
+  final DoubleBackPopHandler _doubleBackPopHandler = DoubleBackPopHandler();
 
   @override
   void initState() {
@@ -49,6 +54,7 @@ class _SearchPageState extends State<SearchPage> {
     _unregisterWidget(widget);
     widget.animation.removeStatusListener(_onAnimationStatusChanged);
     _focusNode.dispose();
+    _doubleBackPopHandler.dispose();
     super.dispose();
   }
 
@@ -116,36 +122,40 @@ class _SearchPageState extends State<SearchPage> {
       case null:
         break;
     }
-    return MediaQueryDataProvider(
-      child: Scaffold(
-        appBar: AppBar(
-          leading: Hero(
-            tag: AvesAppBar.leadingHeroTag,
-            transitionOnUserGestures: true,
-            child: Center(child: widget.delegate.buildLeading(context)),
-          ),
-          title: Hero(
-            tag: AvesAppBar.titleHeroTag,
-            transitionOnUserGestures: true,
-            child: DefaultTextStyle.merge(
-              style: const TextStyle(fontFeatures: [FontFeature.disable('smcp')]),
-              child: TextField(
-                controller: widget.delegate.queryTextController,
-                focusNode: _focusNode,
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                  hintText: widget.delegate.searchFieldLabel,
-                  hintStyle: theme.inputDecorationTheme.hintStyle,
-                ),
-                textInputAction: TextInputAction.search,
-                style: theme.textTheme.titleLarge,
-                onSubmitted: (_) => widget.delegate.showResults(context),
+    return Scaffold(
+      appBar: AppBar(
+        leading: Hero(
+          tag: AvesAppBar.leadingHeroTag,
+          transitionOnUserGestures: true,
+          child: Center(child: widget.delegate.buildLeading(context)),
+        ),
+        title: Hero(
+          tag: AvesAppBar.titleHeroTag,
+          transitionOnUserGestures: true,
+          child: DefaultTextStyle.merge(
+            style: const TextStyle(fontFeatures: [FontFeature.disable('smcp')]),
+            child: TextField(
+              controller: widget.delegate.queryTextController,
+              focusNode: _focusNode,
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                hintText: widget.delegate.searchFieldLabel,
+                hintStyle: theme.inputDecorationTheme.hintStyle,
               ),
+              textInputAction: TextInputAction.search,
+              style: theme.textTheme.titleLarge,
+              onSubmitted: (_) => widget.delegate.showResults(context),
             ),
           ),
-          actions: widget.delegate.buildActions(context),
         ),
-        body: AnimatedSwitcher(
+        actions: widget.delegate.buildActions(context),
+      ),
+      body: AvesPopScope(
+        handlers: [
+          TvNavigationPopHandler.pop,
+          _doubleBackPopHandler.pop,
+        ],
+        child: AnimatedSwitcher(
           duration: const Duration(milliseconds: 300),
           child: body,
         ),

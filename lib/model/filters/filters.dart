@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:aves/model/covers.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/album.dart';
+import 'package:aves/model/filters/aspect_ratio.dart';
 import 'package:aves/model/filters/coordinate.dart';
 import 'package:aves/model/filters/date.dart';
 import 'package:aves/model/filters/favourite.dart';
@@ -10,6 +11,7 @@ import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/missing.dart';
 import 'package:aves/model/filters/path.dart';
+import 'package:aves/model/filters/placeholder.dart';
 import 'package:aves/model/filters/query.dart';
 import 'package:aves/model/filters/rating.dart';
 import 'package:aves/model/filters/recent.dart';
@@ -38,6 +40,7 @@ abstract class CollectionFilter extends Equatable implements Comparable<Collecti
     FavouriteFilter.type,
     RatingFilter.type,
     TagFilter.type,
+    AspectRatioFilter.type,
     MissingFilter.type,
     PathFilter.type,
   ];
@@ -51,6 +54,8 @@ abstract class CollectionFilter extends Equatable implements Comparable<Collecti
     switch (type) {
       case AlbumFilter.type:
         return AlbumFilter.fromMap(jsonMap);
+      case AspectRatioFilter.type:
+        return AspectRatioFilter.fromMap(jsonMap);
       case CoordinateFilter.type:
         return CoordinateFilter.fromMap(jsonMap);
       case DateFilter.type:
@@ -65,6 +70,8 @@ abstract class CollectionFilter extends Equatable implements Comparable<Collecti
         return MissingFilter.fromMap(jsonMap);
       case PathFilter.type:
         return PathFilter.fromMap(jsonMap);
+      case PlaceholderFilter.type:
+        return PlaceholderFilter.fromMap(jsonMap);
       case QueryFilter.type:
         return QueryFilter.fromMap(jsonMap);
       case RatingFilter.type:

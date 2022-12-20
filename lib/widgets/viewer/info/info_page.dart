@@ -7,7 +7,6 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
-import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip.dart';
 import 'package:aves/widgets/viewer/action/entry_info_action_delegate.dart';
 import 'package:aves/widgets/viewer/embedded/embedded_data_opener.dart';
@@ -39,32 +38,72 @@ class InfoPage extends StatefulWidget {
 }
 
 class _InfoPageState extends State<InfoPage> {
+  final FocusNode _focusNode = FocusNode();
   final ScrollController _scrollController = ScrollController();
   bool _scrollStartFromTop = false;
 
   static const splitScreenWidthThreshold = 600;
 
   @override
-  Widget build(BuildContext context) {
-    return MediaQueryDataProvider(
-      child: Scaffold(
-        body: GestureAreaProtectorStack(
-          child: SafeArea(
-            bottom: false,
-            child: NotificationListener<ScrollNotification>(
-              onNotification: _handleTopScroll,
-              child: Selector<MediaQueryData, double>(
-                selector: (context, mq) => mq.size.width,
-                builder: (context, mqWidth, child) {
-                  return ValueListenableBuilder<AvesEntry?>(
-                    valueListenable: widget.entryNotifier,
-                    builder: (context, mainEntry, child) {
-                      if (mainEntry == null) return const SizedBox();
+  void initState() {
+    super.initState();
+    _registerWidget(widget);
+    _onScrollingChanged();
+  }
 
-                      Widget _buildContent({AvesEntry? pageEntry}) {
-                        final targetEntry = pageEntry ?? mainEntry;
-                        return EmbeddedDataOpener(
-                          entry: targetEntry,
+  @override
+  void didUpdateWidget(covariant InfoPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _unregisterWidget(oldWidget);
+    _registerWidget(widget);
+  }
+
+  @override
+  void dispose() {
+    _unregisterWidget(widget);
+    _focusNode.dispose();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _registerWidget(InfoPage widget) {
+    widget.isScrollingNotifier.addListener(_onScrollingChanged);
+  }
+
+  void _unregisterWidget(InfoPage widget) {
+    widget.isScrollingNotifier.removeListener(_onScrollingChanged);
+  }
+
+  void _onScrollingChanged() {
+    if (!widget.isScrollingNotifier.value) {
+      // using `autofocus` while scrolling seems to fail for widget built offscreen
+      // so we give focus to this page when the screen is no longer scrolling
+      _focusNode.requestFocus();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: GestureAreaProtectorStack(
+        child: SafeArea(
+          bottom: false,
+          child: NotificationListener<ScrollNotification>(
+            onNotification: _handleTopScroll,
+            child: Selector<MediaQueryData, double>(
+              selector: (context, mq) => mq.size.width,
+              builder: (context, mqWidth, child) {
+                return ValueListenableBuilder<AvesEntry?>(
+                  valueListenable: widget.entryNotifier,
+                  builder: (context, mainEntry, child) {
+                    if (mainEntry == null) return const SizedBox();
+
+                    Widget _buildContent({AvesEntry? pageEntry}) {
+                      final targetEntry = pageEntry ?? mainEntry;
+                      return EmbeddedDataOpener(
+                        entry: targetEntry,
+                        child: Focus(
+                          focusNode: _focusNode,
                           child: _InfoPageContent(
                             collection: widget.collection,
                             entry: targetEntry,
@@ -73,24 +112,24 @@ class _InfoPageState extends State<InfoPage> {
                             split: mqWidth > splitScreenWidthThreshold,
                             goToViewer: _goToViewer,
                           ),
-                        );
-                      }
+                        ),
+                      );
+                    }
 
-                      return mainEntry.isBurst
-                          ? PageEntryBuilder(
-                              multiPageController: context.read<MultiPageConductor>().getController(mainEntry),
-                              builder: (pageEntry) => _buildContent(pageEntry: pageEntry),
-                            )
-                          : _buildContent();
-                    },
-                  );
-                },
-              ),
+                    return mainEntry.isBurst
+                        ? PageEntryBuilder(
+                            multiPageController: context.read<MultiPageConductor>().getController(mainEntry),
+                            builder: (pageEntry) => _buildContent(pageEntry: pageEntry),
+                          )
+                        : _buildContent();
+                  },
+                );
+              },
             ),
           ),
         ),
-        resizeToAvoidBottomInset: false,
       ),
+      resizeToAvoidBottomInset: false,
     );
   }
 
@@ -176,6 +215,8 @@ class _InfoPageContentState extends State<_InfoPageContent> {
 
   @override
   void dispose() {
+    _metadataNotifier.dispose();
+    _isEditingMetadataNotifier.dispose();
     _unregisterWidget(widget);
     super.dispose();
   }

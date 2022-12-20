@@ -443,8 +443,8 @@
   "@removeEntryMetadataDialogMore": {},
   "removeEntryMetadataMotionPhotoXmpWarningDialogMessage": "XMP가 있어야 모션 사진에 포함되는 동영상을 재생할 수 있습니다.\n\n삭제하시겠습니까?",
   "@removeEntryMetadataMotionPhotoXmpWarningDialogMessage": {},
-  "convertMotionPhotoToStillImageWarningDialogMessage": "확실합니까?",
-  "@convertMotionPhotoToStillImageWarningDialogMessage": {},
+  "genericDangerWarningDialogMessage": "확실합니까?",
+  "@genericDangerWarningDialogMessage": {},
   "videoSpeedDialogLabel": "재생 배속",
   "@videoSpeedDialogLabel": {},
   "videoStreamSelectionDialogVideo": "동영상",
@@ -1095,7 +1095,7 @@
   "@mapPointNorthUpTooltip": {},
   "mapAttributionOsmHot": "지도 데이터 © [OpenStreetMap](https://www.openstreetmap.org/copyright) 기여자 • 타일 [HOT](https://www.hotosm.org/) • 호스팅 [OSM France](https://openstreetmap.fr/)",
   "@mapAttributionOsmHot": {},
-  "mapAttributionStamen": "지도 데이터 © [OpenStreetMap](https://www.openstreetmap.org/copyright) 기여자 • 타일 [Stamen Design](http://stamen.com), [CC BY 3.0](http://creativecommons.org/licenses/by/3.0)",
+  "mapAttributionStamen": "지도 데이터 © [OpenStreetMap](https://www.openstreetmap.org/copyright) 기여자 • 타일 [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)",
   "@mapAttributionStamen": {},
   "openMapPageTooltip": "지도 페이지에서 보기",
   "@openMapPageTooltip": {},
@@ -1172,5 +1172,29 @@
   "settingsWidgetDisplayedItem": "표시될 항목",
   "@settingsWidgetDisplayedItem": {},
   "entryInfoActionExportMetadata": "메타데이터 내보내기",
-  "@entryInfoActionExportMetadata": {}
+  "@entryInfoActionExportMetadata": {},
+  "filterNoAddressLabel": "주소 없음",
+  "@filterNoAddressLabel": {},
+  "filterAspectRatioPortraitLabel": "세로",
+  "@filterAspectRatioPortraitLabel": {},
+  "settingsViewerShowRatingTags": "별점 및 태그 표시",
+  "@settingsViewerShowRatingTags": {},
+  "filterAspectRatioLandscapeLabel": "가로",
+  "@filterAspectRatioLandscapeLabel": {},
+  "entryActionShareImageOnly": "사진만 공유",
+  "@entryActionShareImageOnly": {},
+  "entryActionShareVideoOnly": "동영상만 공유",
+  "@entryActionShareVideoOnly": {},
+  "entryInfoActionRemoveLocation": "위치 삭제",
+  "@entryInfoActionRemoveLocation": {},
+  "keepScreenOnVideoPlayback": "동영상 재생 시 작동",
+  "@keepScreenOnVideoPlayback": {},
+  "settingsAccessibilityShowPinchGestureAlternatives": "멀티터치의 대안 표시",
+  "@settingsAccessibilityShowPinchGestureAlternatives": {},
+  "columnCount": "{count, plural, other{{count}열}}",
+  "@columnCount": {
+    "placeholders": {
+      "count": {}
+    }
+  }
 }

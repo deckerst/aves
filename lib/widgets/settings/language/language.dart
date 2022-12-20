@@ -10,7 +10,7 @@ import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/settings/common/tile_leading.dart';
 import 'package:aves/widgets/settings/common/tiles.dart';
-import 'package:aves/widgets/settings/language/locale.dart';
+import 'package:aves/widgets/settings/language/locale_tile.dart';
 import 'package:aves/widgets/settings/settings_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

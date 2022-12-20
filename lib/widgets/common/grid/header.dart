@@ -1,3 +1,4 @@
+import 'package:aves/model/device.dart';
 import 'package:aves/model/selection.dart';
 import 'package:aves/model/source/section_keys.dart';
 import 'package:aves/theme/durations.dart';
@@ -25,17 +26,42 @@ class SectionHeader<T> extends StatelessWidget {
   });
 
   static const leadingSize = Size(48, 32);
-  static const padding = EdgeInsets.all(16);
+  static const margin = EdgeInsets.symmetric(vertical: 0, horizontal: 8);
+  static const padding = EdgeInsets.symmetric(vertical: 16, horizontal: 8);
   static const widgetSpanAlignment = PlaceholderAlignment.middle;
 
   @override
   Widget build(BuildContext context) {
+    Widget child = _buildContent(context);
+    if (device.isTelevision) {
+      final colors = Theme.of(context).colorScheme;
+      child = Material(
+        type: MaterialType.transparency,
+        child: InkResponse(
+          onTap: _onTap(context),
+          onHover: (_) {},
+          highlightShape: BoxShape.rectangle,
+          borderRadius: const BorderRadius.all(Radius.circular(123)),
+          containedInkWell: true,
+          splashColor: colors.primary.withOpacity(0.12),
+          hoverColor: colors.primary.withOpacity(0.04),
+          child: child,
+        ),
+      );
+    }
     return Container(
       alignment: AlignmentDirectional.centerStart,
+      margin: margin,
+      child: child,
+    );
+  }
+
+  Widget _buildContent(BuildContext context) {
+    return Container(
       padding: padding,
       constraints: BoxConstraints(minHeight: leadingSize.height),
       child: GestureDetector(
-        onTap: selectable ? () => _toggleSectionSelection(context) : null,
+        onTap: _onTap(context),
         onLongPress: selectable
             ? () {
                 final selection = context.read<Selection<T>>();
@@ -63,7 +89,7 @@ class SectionHeader<T> extends StatelessWidget {
                             child: leading,
                           )
                       : null,
-                  onPressed: selectable ? () => _toggleSectionSelection(context) : null,
+                  onPressed: _onTap(context),
                 ),
               ),
               TextSpan(
@@ -84,6 +110,8 @@ class SectionHeader<T> extends StatelessWidget {
       ),
     );
   }
+
+  VoidCallback? _onTap(BuildContext context) => selectable ? () => _toggleSectionSelection(context) : null;
 
   List<T> _getSectionEntries(BuildContext context) => context.read<SectionedListLayout<T>>().sections[sectionKey] ?? [];
 
@@ -107,7 +135,7 @@ class SectionHeader<T> extends StatelessWidget {
     bool hasTrailing = false,
   }) {
     final textScaleFactor = MediaQuery.textScaleFactorOf(context);
-    final maxContentWidth = maxWidth - SectionHeader.padding.horizontal;
+    final maxContentWidth = maxWidth - (SectionHeader.padding.horizontal + SectionHeader.margin.horizontal);
     final para = RenderParagraph(
       TextSpan(
         children: [
@@ -159,27 +187,31 @@ class _SectionSelectableLeading<T> extends StatelessWidget {
           )
         : _buildBrowsing(context);
 
-    return AnimatedSwitcher(
-      duration: Durations.sectionHeaderAnimation,
-      switchInCurve: Curves.easeInOut,
-      switchOutCurve: Curves.easeInOut,
-      transitionBuilder: (child, animation) {
-        Widget transition = ScaleTransition(
-          scale: animation,
-          child: child,
-        );
-        if (browsingBuilder == null) {
-          // when switching with a header that has no icon,
-          // we also transition the size for a smooth push to the text
-          transition = SizeTransition(
-            axis: Axis.horizontal,
-            sizeFactor: animation,
-            child: transition,
+    return FocusTraversalGroup(
+      descendantsAreFocusable: false,
+      descendantsAreTraversable: false,
+      child: AnimatedSwitcher(
+        duration: Durations.sectionHeaderAnimation,
+        switchInCurve: Curves.easeInOut,
+        switchOutCurve: Curves.easeInOut,
+        transitionBuilder: (child, animation) {
+          Widget transition = ScaleTransition(
+            scale: animation,
+            child: child,
           );
-        }
-        return transition;
-      },
-      child: child,
+          if (browsingBuilder == null) {
+            // when switching with a header that has no icon,
+            // we also transition the size for a smooth push to the text
+            transition = SizeTransition(
+              axis: Axis.horizontal,
+              sizeFactor: animation,
+              child: transition,
+            );
+          }
+          return transition;
+        },
+        child: child,
+      ),
     );
   }
 
