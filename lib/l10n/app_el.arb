@@ -1172,5 +1172,29 @@
   "settingsSubtitleThemeTextPositionDialogTitle": "Θεση κειμενου",
   "@settingsSubtitleThemeTextPositionDialogTitle": {},
   "entryInfoActionExportMetadata": "Εξαγωγή μεταδεδομένων",
-  "@entryInfoActionExportMetadata": {}
+  "@entryInfoActionExportMetadata": {},
+  "columnCount": "{count, plural, =1{1 στήλη} other{{count} στήλες}}",
+  "@columnCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "keepScreenOnVideoPlayback": "Κατά την αναπαραγωγή βίντεο",
+  "@keepScreenOnVideoPlayback": {},
+  "settingsAccessibilityShowPinchGestureAlternatives": "Εμφάνιση χειρονομιών πολλαπλής αφής",
+  "@settingsAccessibilityShowPinchGestureAlternatives": {},
+  "entryActionShareImageOnly": "Κοινοποίηση μόνο την εικόνα",
+  "@entryActionShareImageOnly": {},
+  "entryActionShareVideoOnly": "Κοινοποίηση μόνο το βίντεο",
+  "@entryActionShareVideoOnly": {},
+  "entryInfoActionRemoveLocation": "Αφαίρεση τοποθεσίας",
+  "@entryInfoActionRemoveLocation": {},
+  "filterAspectRatioLandscapeLabel": "Oριζόντιες εικόνες",
+  "@filterAspectRatioLandscapeLabel": {},
+  "filterAspectRatioPortraitLabel": "Κατακόρυφες εικόνες",
+  "@filterAspectRatioPortraitLabel": {},
+  "filterNoAddressLabel": "Χωρίς διεύθυνση",
+  "@filterNoAddressLabel": {},
+  "settingsViewerShowRatingTags": "Εμφάνιση βαθμολογίας & ετικετών",
+  "@settingsViewerShowRatingTags": {}
 }
