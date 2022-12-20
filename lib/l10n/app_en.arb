@@ -9,6 +9,12 @@
       "count": {}
     }
   },
+  "columnCount": "{count, plural, =1{1 column} other{{count} columns}}",
+  "@columnCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
 
   "timeSeconds": "{seconds, plural, =1{1 second} other{{seconds} seconds}}",
   "@timeSeconds": {
@@ -90,6 +96,8 @@
   "entryActionFlip": "Flip horizontally",
   "entryActionPrint": "Print",
   "entryActionShare": "Share",
+  "entryActionShareImageOnly": "Share image only",
+  "entryActionShareVideoOnly": "Share video only",
   "entryActionViewSource": "View source",
   "entryActionShowGeoTiffOnMap": "Show as map overlay",
   "entryActionConvertMotionPhotoToStillImage": "Convert to still image",
@@ -123,10 +131,14 @@
   "entryInfoActionEditTags": "Edit tags",
   "entryInfoActionRemoveMetadata": "Remove metadata",
   "entryInfoActionExportMetadata": "Export metadata",
+  "entryInfoActionRemoveLocation": "Remove location",
 
+  "filterAspectRatioLandscapeLabel": "Landscape",
+  "filterAspectRatioPortraitLabel": "Portrait",
   "filterBinLabel": "Recycle bin",
   "filterFavouriteLabel": "Favorite",
   "filterNoDateLabel": "Undated",
+  "filterNoAddressLabel": "No address",
   "filterNoLocationLabel": "Unlocated",
   "filterNoRatingLabel": "Unrated",
   "filterNoTagLabel": "Untagged",
@@ -189,6 +201,7 @@
   "nameConflictStrategySkip": "Skip",
 
   "keepScreenOnNever": "Never",
+  "keepScreenOnVideoPlayback": "During video playback",
   "keepScreenOnViewerOnly": "Viewer page only",
   "keepScreenOnAlways": "Always",
 
@@ -409,7 +422,6 @@
   "removeEntryMetadataDialogMore": "More",
 
   "removeEntryMetadataMotionPhotoXmpWarningDialogMessage": "XMP is required to play the video inside a motion photo.\n\nAre you sure you want to remove it?",
-  "convertMotionPhotoToStillImageWarningDialogMessage": "Are you sure?",
 
   "videoSpeedDialogLabel": "Playback speed",
 
@@ -422,6 +434,7 @@
 
   "genericSuccessFeedback": "Done!",
   "genericFailureFeedback": "Failed",
+  "genericDangerWarningDialogMessage": "Are you sure?",
 
   "menuActionConfigureView": "View",
   "menuActionSelect": "Select",
@@ -716,6 +729,7 @@
   "settingsViewerShowMinimap": "Show minimap",
   "settingsViewerShowInformation": "Show information",
   "settingsViewerShowInformationSubtitle": "Show title, date, location, etc.",
+  "settingsViewerShowRatingTags": "Show rating & tags",
   "settingsViewerShowShootingDetails": "Show shooting details",
   "settingsViewerShowOverlayThumbnails": "Show thumbnails",
   "settingsViewerEnableOverlayBlurEffect": "Blur effect",
@@ -792,6 +806,7 @@
   "settingsRemoveAnimationsTile": "Remove animations",
   "settingsRemoveAnimationsDialogTitle": "Remove Animations",
   "settingsTimeToTakeActionTile": "Time to take action",
+  "settingsAccessibilityShowPinchGestureAlternatives": "Show multi-touch gesture alternatives",
 
   "settingsDisplaySectionTitle": "Display",
   "settingsThemeBrightnessTile": "Theme",
@@ -857,7 +872,7 @@
   "mapZoomOutTooltip": "Zoom out",
   "mapPointNorthUpTooltip": "Point north up",
   "mapAttributionOsmHot": "Map data © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors • Tiles by [HOT](https://www.hotosm.org/) • Hosted by [OSM France](https://openstreetmap.fr/)",
-  "mapAttributionStamen": "Map data © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors • Tiles by [Stamen Design](http://stamen.com), [CC BY 3.0](http://creativecommons.org/licenses/by/3.0)",
+  "mapAttributionStamen": "Map data © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors • Tiles by [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)",
   "openMapPageTooltip": "View on Map page",
   "mapEmptyRegion": "No images in this region",
 

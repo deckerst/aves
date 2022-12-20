@@ -1,7 +1,6 @@
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
-import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/viewer/controller.dart';
 import 'package:aves/widgets/viewer/entry_viewer_stack.dart';
 import 'package:aves/widgets/viewer/multipage/conductor.dart';
@@ -42,26 +41,24 @@ class _EntryViewerPageState extends State<EntryViewerPage> {
 
   @override
   Widget build(BuildContext context) {
-    return MediaQueryDataProvider(
-      child: Scaffold(
-        body: ViewStateConductorProvider(
-          child: VideoConductorProvider(
-            child: MultiPageConductorProvider(
-              child: EntryViewerStack(
-                collection: widget.collection,
-                initialEntry: widget.initialEntry,
-                viewerController: _viewerController,
-              ),
+    return Scaffold(
+      body: ViewStateConductorProvider(
+        child: VideoConductorProvider(
+          child: MultiPageConductorProvider(
+            child: EntryViewerStack(
+              collection: widget.collection,
+              initialEntry: widget.initialEntry,
+              viewerController: _viewerController,
             ),
           ),
         ),
-        backgroundColor: Navigator.canPop(context)
-            ? Colors.transparent
-            : Theme.of(context).brightness == Brightness.dark
-                ? Colors.black
-                : Colors.white,
-        resizeToAvoidBottomInset: false,
       ),
+      backgroundColor: Navigator.canPop(context)
+          ? Colors.transparent
+          : Theme.of(context).brightness == Brightness.dark
+              ? Colors.black
+              : Colors.white,
+      resizeToAvoidBottomInset: false,
     );
   }
 }

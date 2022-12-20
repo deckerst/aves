@@ -46,6 +46,7 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
             "getExifThumbnails" -> ioScope.launch { safeSuspend(call, result, ::getExifThumbnails) }
+            "extractMotionPhotoImage" -> ioScope.launch { safe(call, result, ::extractMotionPhotoImage) }
             "extractMotionPhotoVideo" -> ioScope.launch { safe(call, result, ::extractMotionPhotoVideo) }
             "extractVideoEmbeddedPicture" -> ioScope.launch { safe(call, result, ::extractVideoEmbeddedPicture) }
             "extractXmpDataProp" -> ioScope.launch { safe(call, result, ::extractXmpDataProp) }
@@ -81,6 +82,27 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
             }
         }
         result.success(thumbnails)
+    }
+
+    private fun extractMotionPhotoImage(call: MethodCall, result: MethodChannel.Result) {
+        val mimeType = call.argument<String>("mimeType")
+        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
+        val displayName = call.argument<String>("displayName")
+        if (mimeType == null || uri == null || sizeBytes == null) {
+            result.error("extractMotionPhotoImage-args", "missing arguments", null)
+            return
+        }
+
+        MultiPage.getMotionPhotoOffset(context, uri, mimeType, sizeBytes)?.let { videoSizeBytes ->
+            val imageSizeBytes = sizeBytes - videoSizeBytes
+            StorageUtils.openInputStream(context, uri)?.let { input ->
+                copyEmbeddedBytes(result, mimeType, displayName, input, imageSizeBytes)
+            }
+            return
+        }
+
+        result.error("extractMotionPhotoImage-empty", "failed to extract image from motion photo at uri=$uri", null)
     }
 
     private fun extractMotionPhotoVideo(call: MethodCall, result: MethodChannel.Result) {
@@ -166,9 +188,9 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
                     try {
                         val embedBytes: ByteArray = if (props.size == 1) {
                             val prop = props.first() as XMPPropName
-                            xmpDirs.mapNotNull { it.xmpMeta.getPropertyBase64(prop.nsUri, prop.toString()) }.first()
+                            xmpDirs.firstNotNullOf { it.xmpMeta.getPropertyBase64(prop.nsUri, prop.toString()) }
                         } else {
-                            xmpDirs.mapNotNull { it.xmpMeta.getSafeStructField(props) }.first().let {
+                            xmpDirs.firstNotNullOf { it.xmpMeta.getSafeStructField(props) }.let {
                                 XMPUtils.decodeBase64(it.value)
                             }
                         }

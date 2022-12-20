@@ -1,7 +1,7 @@
+import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class MarkdownContainer extends StatelessWidget {
   final String data;
@@ -43,14 +43,7 @@ class MarkdownContainer extends StatelessWidget {
               child: Markdown(
                 data: data,
                 selectable: true,
-                onTapLink: (text, href, title) async {
-                  if (href != null) {
-                    final url = Uri.parse(href);
-                    if (await canLaunchUrl(url)) {
-                      await launchUrl(url, mode: LaunchMode.externalApplication);
-                    }
-                  }
-                },
+                onTapLink: (text, href, title) => AvesApp.launchUrl(href),
                 shrinkWrap: true,
               ),
             ),

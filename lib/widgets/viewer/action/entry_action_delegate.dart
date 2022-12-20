@@ -4,10 +4,12 @@ import 'dart:convert';
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/actions/move_type.dart';
+import 'package:aves/model/actions/share_actions.dart';
 import 'package:aves/model/device.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/entry_metadata_edition.dart';
 import 'package:aves/model/filters/album.dart';
+import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
@@ -65,42 +67,50 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       }
     } else {
       final targetEntry = EntryActions.pageActions.contains(action) ? pageEntry : mainEntry;
+      final canWrite = !device.isReadOnly;
       switch (action) {
         case EntryAction.toggleFavourite:
           return collection != null;
         case EntryAction.delete:
         case EntryAction.rename:
-        case EntryAction.copy:
         case EntryAction.move:
           return targetEntry.canEdit;
+        case EntryAction.copy:
+          return canWrite;
         case EntryAction.rotateCCW:
         case EntryAction.rotateCW:
           return targetEntry.canRotate;
         case EntryAction.flip:
           return targetEntry.canFlip;
         case EntryAction.convert:
+          return canWrite && !targetEntry.isVideo;
         case EntryAction.print:
-          return !targetEntry.isVideo && device.canPrint;
+          return device.canPrint && !targetEntry.isVideo;
         case EntryAction.openMap:
           return targetEntry.hasGps;
         case EntryAction.viewSource:
           return targetEntry.isSvg;
         case EntryAction.videoCaptureFrame:
+          return canWrite && targetEntry.isVideo;
         case EntryAction.videoToggleMute:
+          return !device.isTelevision && targetEntry.isVideo;
         case EntryAction.videoSelectStreams:
         case EntryAction.videoSetSpeed:
         case EntryAction.videoSettings:
         case EntryAction.videoTogglePlay:
         case EntryAction.videoReplay10:
         case EntryAction.videoSkip10:
+        case EntryAction.openVideo:
           return targetEntry.isVideo;
         case EntryAction.rotateScreen:
-          return settings.isRotationLocked;
+          return !device.isTelevision && settings.isRotationLocked;
         case EntryAction.addShortcut:
           return device.canPinShortcut;
-        case EntryAction.info:
-        case EntryAction.copyToClipboard:
         case EntryAction.edit:
+          return canWrite;
+        case EntryAction.copyToClipboard:
+          return !device.isTelevision;
+        case EntryAction.info:
         case EntryAction.open:
         case EntryAction.setAs:
         case EntryAction.share:
@@ -148,22 +158,26 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     }
   }
 
-  void onActionSelected(BuildContext context, EntryAction action) {
-    var targetEntry = mainEntry;
+  AvesEntry _getTargetEntry(BuildContext context, EntryAction action) {
     if (mainEntry.isMultiPage && (mainEntry.isBurst || EntryActions.pageActions.contains(action))) {
       final multiPageController = context.read<MultiPageConductor>().getController(mainEntry);
       if (multiPageController != null) {
         final multiPageInfo = multiPageController.info;
         final pageEntry = multiPageInfo?.getPageEntryByIndex(multiPageController.page);
         if (pageEntry != null) {
-          targetEntry = pageEntry;
+          return pageEntry;
         }
       }
     }
+    return mainEntry;
+  }
+
+  void onActionSelected(BuildContext context, EntryAction action) {
+    final targetEntry = _getTargetEntry(context, action);
 
     switch (action) {
       case EntryAction.info:
-        ShowInfoNotification().dispatch(context);
+        ShowInfoPageNotification().dispatch(context);
         break;
       case EntryAction.addShortcut:
         _addShortcut(context, targetEntry);
@@ -225,6 +239,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       case EntryAction.videoTogglePlay:
       case EntryAction.videoReplay10:
       case EntryAction.videoSkip10:
+      case EntryAction.openVideo:
         final controller = context.read<VideoConductor>().getController(targetEntry);
         if (controller != null) {
           VideoActionNotification(controller: controller, action: action).dispatch(context);
@@ -236,7 +251,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         });
         break;
       case EntryAction.open:
-        androidAppService.open(targetEntry.uri, targetEntry.mimeTypeAnySubtype).then((success) {
+        androidAppService.open(targetEntry.uri, targetEntry.mimeTypeAnySubtype, forceChooser: true).then((success) {
           if (!success) showNoMatchingAppDialog(context);
         });
         break;
@@ -272,6 +287,56 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         _goToDebug(context, targetEntry);
         break;
     }
+  }
+
+  void quickMove(BuildContext context, String album, {required bool copy}) {
+    final targetEntry = _getTargetEntry(context, copy ? EntryAction.copy : EntryAction.move);
+    if (!copy && targetEntry.directory == album) return;
+
+    doQuickMove(
+      context,
+      moveType: copy ? MoveType.copy : MoveType.move,
+      entriesByDestination: {
+        album: {targetEntry}
+      },
+    );
+  }
+
+  Future<void> quickShare(BuildContext context, ShareAction action) async {
+    switch (action) {
+      case ShareAction.imageOnly:
+        if (mainEntry.isMotionPhoto) {
+          final fields = await embeddedDataService.extractMotionPhotoImage(mainEntry);
+          await _shareMotionPhotoPart(context, fields);
+        }
+        break;
+      case ShareAction.videoOnly:
+        if (mainEntry.isMotionPhoto) {
+          final fields = await embeddedDataService.extractMotionPhotoVideo(mainEntry);
+          await _shareMotionPhotoPart(context, fields);
+        }
+        break;
+    }
+  }
+
+  Future<void> _shareMotionPhotoPart(BuildContext context, Map fields) async {
+    final uri = fields['uri'] as String?;
+    final mimeType = fields['mimeType'] as String?;
+    if (uri != null && mimeType != null) {
+      await androidAppService.shareSingle(uri, mimeType).then((success) {
+        if (!success) showNoMatchingAppDialog(context);
+      });
+    }
+  }
+
+  void quickRate(BuildContext context, int rating) {
+    final targetEntry = _getTargetEntry(context, EntryAction.editRating);
+    _metadataActionDelegate.quickRate(context, targetEntry, rating);
+  }
+
+  void quickTag(BuildContext context, CollectionFilter filter) {
+    final targetEntry = _getTargetEntry(context, EntryAction.editTags);
+    _metadataActionDelegate.quickTag(context, targetEntry, filter);
   }
 
   Future<void> _addShortcut(BuildContext context, AvesEntry targetEntry) async {
@@ -430,7 +495,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     );
   }
 
-  Future<void> _move(BuildContext context, AvesEntry targetEntry, {required MoveType moveType}) => move(
+  Future<void> _move(BuildContext context, AvesEntry targetEntry, {required MoveType moveType}) => doMove(
         context,
         moveType: moveType,
         entries: {targetEntry},

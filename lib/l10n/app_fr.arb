@@ -443,8 +443,8 @@
   "@removeEntryMetadataDialogMore": {},
   "removeEntryMetadataMotionPhotoXmpWarningDialogMessage": "Les métadonnées XMP sont nécessaires pour lire la vidéo d’une photo animée.\n\nVoulez-vous vraiment les supprimer ?",
   "@removeEntryMetadataMotionPhotoXmpWarningDialogMessage": {},
-  "convertMotionPhotoToStillImageWarningDialogMessage": "Êtes-vous sûr ?",
-  "@convertMotionPhotoToStillImageWarningDialogMessage": {},
+  "genericDangerWarningDialogMessage": "Êtes-vous sûr ?",
+  "@genericDangerWarningDialogMessage": {},
   "videoSpeedDialogLabel": "Vitesse de lecture",
   "@videoSpeedDialogLabel": {},
   "videoStreamSelectionDialogVideo": "Vidéo",
@@ -1095,7 +1095,7 @@
   "@mapPointNorthUpTooltip": {},
   "mapAttributionOsmHot": "Données © les contributeurs d’[OpenStreetMap](https://www.openstreetmap.org/copyright) • Fond de carte par [HOT](https://www.hotosm.org/) • Hébergé par [OSM France](https://openstreetmap.fr/)",
   "@mapAttributionOsmHot": {},
-  "mapAttributionStamen": "Données © les contributeurs d’[OpenStreetMap](https://www.openstreetmap.org/copyright) • Fond de carte par [Stamen Design](http://stamen.com), [CC BY 3.0](http://creativecommons.org/licenses/by/3.0)",
+  "mapAttributionStamen": "Données © les contributeurs d’[OpenStreetMap](https://www.openstreetmap.org/copyright) • Fond de carte par [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)",
   "@mapAttributionStamen": {},
   "openMapPageTooltip": "Ouvrir la page Carte",
   "@openMapPageTooltip": {},
@@ -1172,5 +1172,29 @@
   "settingsSubtitleThemeTextPositionDialogTitle": "Position du texte",
   "@settingsSubtitleThemeTextPositionDialogTitle": {},
   "entryInfoActionExportMetadata": "Exporter les métadonnées",
-  "@entryInfoActionExportMetadata": {}
+  "@entryInfoActionExportMetadata": {},
+  "filterNoAddressLabel": "Sans adresse",
+  "@filterNoAddressLabel": {},
+  "filterAspectRatioPortraitLabel": "Portrait",
+  "@filterAspectRatioPortraitLabel": {},
+  "filterAspectRatioLandscapeLabel": "Paysage",
+  "@filterAspectRatioLandscapeLabel": {},
+  "settingsViewerShowRatingTags": "Afficher la notation et les libellés",
+  "@settingsViewerShowRatingTags": {},
+  "entryActionShareImageOnly": "Partager l’image seulement",
+  "@entryActionShareImageOnly": {},
+  "entryActionShareVideoOnly": "Partager la vidéo seulement",
+  "@entryActionShareVideoOnly": {},
+  "entryInfoActionRemoveLocation": "Retirer le lieu",
+  "@entryInfoActionRemoveLocation": {},
+  "keepScreenOnVideoPlayback": "Pendant la lecture de vidéos",
+  "@keepScreenOnVideoPlayback": {},
+  "columnCount": "{count, plural, =1{1 colonne} other{{count} colonnes}}",
+  "@columnCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "settingsAccessibilityShowPinchGestureAlternatives": "Afficher des alternatives aux interactions multitactiles",
+  "@settingsAccessibilityShowPinchGestureAlternatives": {}
 }

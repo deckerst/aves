@@ -1,5 +1,5 @@
 import 'package:aves/theme/durations.dart';
-import 'package:aves/widgets/common/basic/animated_text.dart';
+import 'package:aves/widgets/common/basic/text/change_highlight.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -16,7 +16,7 @@ class AvesCaption extends StatelessWidget {
     final theme = Theme.of(context);
     final subtitleStyle = theme.textTheme.bodySmall!;
     final subtitleChangeShadowColor = theme.colorScheme.onPrimary;
-    return AnimatedText(
+    return ChangeHighlightText(
       // provide key to refresh on theme brightness change
       key: ValueKey(subtitleChangeShadowColor),
       data,

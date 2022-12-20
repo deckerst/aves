@@ -1,4 +1,5 @@
 import 'package:aves/model/filters/album.dart';
+import 'package:aves/model/filters/aspect_ratio.dart';
 import 'package:aves/model/filters/date.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/filters.dart';
@@ -22,6 +23,7 @@ import 'package:aves/widgets/common/expandable_filter_row.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/search/delegate.dart';
+import 'package:aves/widgets/common/search/page.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -32,7 +34,6 @@ class CollectionSearchDelegate extends AvesSearchDelegate {
   final CollectionLens? parentCollection;
   final ValueNotifier<String?> _expandedSectionNotifier = ValueNotifier(null);
 
-  static const pageRouteName = '/search';
   static const int searchHistoryCount = 10;
   static final typeFilters = [
     FavouriteFilter.instance,
@@ -40,6 +41,8 @@ class CollectionSearchDelegate extends AvesSearchDelegate {
     MimeFilter.video,
     TypeFilter.animated,
     TypeFilter.motionPhoto,
+    AspectRatioFilter.portrait,
+    AspectRatioFilter.landscape,
     TypeFilter.panorama,
     TypeFilter.sphericalVideo,
     TypeFilter.geotiff,
@@ -56,7 +59,7 @@ class CollectionSearchDelegate extends AvesSearchDelegate {
     super.canPop,
     String? initialQuery,
   }) : super(
-          routeName: pageRouteName,
+          routeName: SearchPage.routeName,
         ) {
     query = initialQuery ?? '';
   }
@@ -129,14 +132,24 @@ class CollectionSearchDelegate extends AvesSearchDelegate {
     required List<CollectionFilter> filters,
     HeroType Function(CollectionFilter filter)? heroTypeBuilder,
   }) {
-    return ExpandableFilterRow(
-      title: title,
-      filters: filters,
-      expandedNotifier: _expandedSectionNotifier,
-      heroTypeBuilder: heroTypeBuilder,
-      onTap: (filter) => _select(context, filter is QueryFilter ? QueryFilter(filter.query) : filter),
-      onLongPress: AvesFilterChip.showDefaultLongPressMenu,
-    );
+    void onTap(filter) => _select(context, filter is QueryFilter ? QueryFilter(filter.query) : filter);
+    const onLongPress = AvesFilterChip.showDefaultLongPressMenu;
+    return title != null
+        ? TitledExpandableFilterRow(
+            title: title,
+            filters: filters,
+            expandedNotifier: _expandedSectionNotifier,
+            heroTypeBuilder: heroTypeBuilder,
+            onTap: onTap,
+            onLongPress: onLongPress,
+          )
+        : ExpandableFilterRow(
+            filters: filters,
+            isExpanded: false,
+            heroTypeBuilder: heroTypeBuilder,
+            onTap: onTap,
+            onLongPress: onLongPress,
+          );
   }
 
   Widget _buildDateFilters(BuildContext context, _ContainQuery containQuery) {
@@ -227,6 +240,7 @@ class CollectionSearchDelegate extends AvesSearchDelegate {
       filters: [
         MissingFilter.date,
         LocationFilter(LocationLevel.place, ''),
+        MissingFilter.fineAddress,
         TagFilter(''),
         RatingFilter(0),
         MissingFilter.title,
@@ -265,21 +279,25 @@ class CollectionSearchDelegate extends AvesSearchDelegate {
     if (parentCollection != null) {
       _applyToParentCollectionPage(context, filter);
     } else {
-      _jumpToCollectionPage(context, filter);
+      _jumpToCollectionPage(context, {filter});
     }
   }
 
   void _applyToParentCollectionPage(BuildContext context, CollectionFilter filter) {
     parentCollection!.addFilter(filter);
-    // We delay closing the current page after applying the filter selection
-    // so that hero animation target is ready in the `FilterBar`,
-    // even when the target is a child of an `AnimatedList`.
-    // Do not use `WidgetsBinding.instance.addPostFrameCallback`,
-    // as it may not trigger if there is no subsequent build.
-    Future.delayed(const Duration(milliseconds: 100), () => goBack(context));
+    if (Navigator.canPop(context)) {
+      // We delay closing the current page after applying the filter selection
+      // so that hero animation target is ready in the `FilterBar`,
+      // even when the target is a child of an `AnimatedList`.
+      // Do not use `WidgetsBinding.instance.addPostFrameCallback`,
+      // as it may not trigger if there is no subsequent build.
+      Future.delayed(const Duration(milliseconds: 100), () => goBack(context));
+    } else {
+      _jumpToCollectionPage(context, parentCollection!.filters);
+    }
   }
 
-  void _jumpToCollectionPage(BuildContext context, CollectionFilter filter) {
+  void _jumpToCollectionPage(BuildContext context, Set<CollectionFilter> filters) {
     clean();
     Navigator.pushAndRemoveUntil(
       context,
@@ -287,7 +305,7 @@ class CollectionSearchDelegate extends AvesSearchDelegate {
         settings: const RouteSettings(name: CollectionPage.routeName),
         builder: (context) => CollectionPage(
           source: source,
-          filters: {filter},
+          filters: filters,
         ),
       ),
       (route) => false,

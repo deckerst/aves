@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:aves/geo/countries.dart';
+import 'package:aves/model/device.dart';
 import 'package:aves/model/entry_cache.dart';
 import 'package:aves/model/entry_dirs.dart';
 import 'package:aves/model/favourites.dart';
@@ -280,7 +281,7 @@ class AvesEntry {
 
   bool get isMediaStoreMediaContent => isMediaStoreContent && {'/external/images/', '/external/video/'}.any(uri.contains);
 
-  bool get canEdit => path != null && !trashed && isMediaStoreContent;
+  bool get canEdit => !device.isReadOnly && path != null && !trashed && isMediaStoreContent;
 
   bool get canEditDate => canEdit && (canEditExif || canEditXmp);
 
@@ -672,7 +673,6 @@ class AvesEntry {
     required bool background,
     required bool persist,
     required Set<EntryDataType> dataTypes,
-    required Locale geocoderLocale,
   }) async {
     // clear derived fields
     _bestDate = null;
@@ -687,8 +687,6 @@ class AvesEntry {
     if (updatedEntry != null) {
       await applyNewFields(updatedEntry.toMap(), persist: persist);
     }
-    await catalog(background: background, force: dataTypes.contains(EntryDataType.catalog), persist: persist);
-    await locate(background: background, force: dataTypes.contains(EntryDataType.address), geocoderLocale: geocoderLocale);
   }
 
   Future<bool> delete() {

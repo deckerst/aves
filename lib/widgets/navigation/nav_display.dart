@@ -3,13 +3,15 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/type.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/widgets/about/about_page.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/common/search/page.dart';
 import 'package:aves/widgets/debug/app_debug_page.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/countries_page.dart';
 import 'package:aves/widgets/filter_grids/tags_page.dart';
+import 'package:aves/widgets/settings/settings_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class NavigationDisplay {
   static String getFilterTitle(BuildContext context, CollectionFilter? filter) {
@@ -35,6 +37,12 @@ class NavigationDisplay {
         return l10n.drawerCountryPage;
       case TagListPage.routeName:
         return l10n.drawerTagPage;
+      case SettingsPage.routeName:
+        return l10n.settingsPageTitle;
+      case AboutPage.routeName:
+        return l10n.aboutPageTitle;
+      case SearchPage.routeName:
+        return MaterialLocalizations.of(context).searchFieldLabel;
       case AppDebugPage.routeName:
         return 'Debug';
       default:
@@ -50,6 +58,12 @@ class NavigationDisplay {
         return AIcons.location;
       case TagListPage.routeName:
         return AIcons.tag;
+      case SettingsPage.routeName:
+        return AIcons.settings;
+      case AboutPage.routeName:
+        return AIcons.info;
+      case SearchPage.routeName:
+        return AIcons.search;
       case AppDebugPage.routeName:
         return AIcons.debug;
       default:

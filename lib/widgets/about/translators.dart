@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:aves/utils/constants.dart';
-import 'package:aves/widgets/common/basic/animated_text.dart';
+import 'package:aves/widgets/common/basic/text/change_highlight.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -32,12 +32,20 @@ class AboutTranslators extends StatelessWidget {
     Contributor('Translator-3000', 'weblate.m1d0h@8shield.net'),
     Contributor('Ralea Adrian Vicențiu', 'ralea.adrian@gmail.com'),
     Contributor('Igor Sorocean', 'sorocean.igor@gmail.com'),
-    // Contributor('Allan Nordhøy', 'epost@anotheragency.no'),
-    // Contributor('Piotr K', '1337.kelt@gmail.com'),
-    // Contributor('امیر جهانگرد', 'ijahangard.a@gmail.com'),
-    // Contributor('SAMIRAH AIL', 'samiratalzahrani@gmail.com'),
-    // Contributor('Salih Ail', 'rrrfff444@gmail.com'),
-    // Contributor('Gediminas Murauskas', 'muziejusinfo@gmail.com'),
+    Contributor('JY3', 'GeeyunJY3@gmail.com'),
+    Contributor('Gediminas Murauskas', 'muziejusinfo@gmail.com'),
+    Contributor('Oğuz Ersen', 'oguz@ersen.moe'),
+    Contributor('Allan Nordhøy', 'epost@anotheragency.no'),
+    Contributor('pemibe', 'pemibe4634@dmonies.com'),
+    Contributor('Linerly', 'linerly@protonmail.com'),
+    Contributor('Olexandr Mazur', 'rozihrash.ya6w7@simplelogin.com'),
+    // Contributor('SAMIRAH AIL', 'samiratalzahrani@gmail.com'), // Arabic
+    // Contributor('Salih Ail', 'rrrfff444@gmail.com'), // Arabic
+    // Contributor('Piotr K', '1337.kelt@gmail.com'), // Polish
+    // Contributor('امیر جهانگرد', 'ijahangard.a@gmail.com'), // Persian
+    // Contributor('slasb37', 'p84haghi@gmail.com'), // Persian
+    // Contributor('tryvseu', 'tryvseu@tuta.io'), // Nynorsk
+    // Contributor('Nattapong K', 'mixer5056@gmail.com'), // Thai
   };
 
   @override
@@ -49,7 +57,7 @@ class AboutTranslators extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ConstrainedBox(
-            constraints: const BoxConstraints(minHeight: 48),
+            constraints: const BoxConstraints(minHeight: kMinInteractiveDimension),
             child: Align(
               alignment: AlignmentDirectional.centerStart,
               child: Text(l10n.aboutTranslatorsSectionTitle, style: Constants.knownTitleTextStyle),
@@ -136,7 +144,7 @@ class _RandomTextSpanHighlighterState extends State<_RandomTextSpanHighlighter> 
       TextSpan(
         children: [
           ...widget.spans.expandIndexed((i, v) => [
-                if (i != 0) const TextSpan(text: ' • '),
+                if (i != 0) const TextSpan(text: Constants.separator),
                 TextSpan(text: v, style: i == _highlightedIndex ? _animatedStyle.value : _baseStyle),
               ])
         ],

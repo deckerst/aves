@@ -18,7 +18,7 @@ class CrumbLine extends StatefulWidget {
 }
 
 class _CrumbLineState extends State<CrumbLine> {
-  final ScrollController _controller = ScrollController();
+  final ScrollController _scrollController = ScrollController();
 
   VolumeRelativeDirectory get directory => widget.directory;
 
@@ -28,8 +28,8 @@ class _CrumbLineState extends State<CrumbLine> {
     if (oldWidget.directory.relativeDir.length < widget.directory.relativeDir.length) {
       // scroll to show last crumb
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        final extent = _controller.position.maxScrollExtent;
-        _controller.animateTo(
+        final extent = _scrollController.position.maxScrollExtent;
+        _scrollController.animateTo(
           extent,
           duration: const Duration(milliseconds: 500),
           curve: Curves.easeOutQuad,
@@ -53,7 +53,7 @@ class _CrumbLineState extends State<CrumbLine> {
       ),
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        controller: _controller,
+        controller: _scrollController,
         padding: const EdgeInsets.symmetric(horizontal: 8),
         itemBuilder: (context, index) {
           Widget _buildText(String text) => Padding(

@@ -98,10 +98,13 @@ class DurationsData {
   final Duration expansionTileAnimation;
   final Duration formTransition;
   final Duration formTextStyleTransition;
+  final Duration textDiffAnimation;
   final Duration chartTransition;
   final Duration iconAnimation;
   final Duration staggeredAnimation;
   final Duration staggeredAnimationPageTarget;
+  final Duration quickChooserAnimation;
+  final Duration tvImageFocusAnimation;
 
   // viewer animations
   final Duration viewerVerticalPageScrollAnimation;
@@ -115,10 +118,13 @@ class DurationsData {
     this.expansionTileAnimation = const Duration(milliseconds: 200),
     this.formTransition = const Duration(milliseconds: 200),
     this.formTextStyleTransition = const Duration(milliseconds: 800),
+    this.textDiffAnimation = const Duration(milliseconds: 150),
     this.chartTransition = const Duration(milliseconds: 400),
     this.iconAnimation = const Duration(milliseconds: 300),
     this.staggeredAnimation = const Duration(milliseconds: 375),
     this.staggeredAnimationPageTarget = const Duration(milliseconds: 800),
+    this.quickChooserAnimation = const Duration(milliseconds: 100),
+    this.tvImageFocusAnimation = const Duration(milliseconds: 150),
     this.viewerVerticalPageScrollAnimation = const Duration(milliseconds: 500),
     this.viewerOverlayAnimation = const Duration(milliseconds: 200),
     this.viewerOverlayChangeAnimation = const Duration(milliseconds: 150),
@@ -130,10 +136,13 @@ class DurationsData {
       expansionTileAnimation: const Duration(microseconds: 1),
       formTransition: Duration.zero,
       formTextStyleTransition: Duration.zero,
+      textDiffAnimation: Duration.zero,
       chartTransition: Duration.zero,
       iconAnimation: Duration.zero,
       staggeredAnimation: Duration.zero,
       staggeredAnimationPageTarget: Duration.zero,
+      quickChooserAnimation: Duration.zero,
+      tvImageFocusAnimation: Duration.zero,
       viewerVerticalPageScrollAnimation: Duration.zero,
       viewerOverlayAnimation: Duration.zero,
       viewerOverlayChangeAnimation: Duration.zero,

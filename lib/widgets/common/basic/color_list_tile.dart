@@ -1,3 +1,4 @@
+import 'package:aves/model/device.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
@@ -71,18 +72,25 @@ class _ColorPickerDialogState extends State<ColorPickerDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final isTelevision = device.isTelevision;
     return AvesDialog(
       scrollableContent: [
         ColorPicker(
           color: color,
           onColorChanged: (v) => color = v,
-          pickersEnabled: const {
-            ColorPickerType.primary: false,
-            ColorPickerType.accent: false,
-            ColorPickerType.wheel: true,
-          },
+          pickersEnabled: isTelevision
+              ? const {
+                  ColorPickerType.primary: true,
+                  ColorPickerType.accent: false,
+                }
+              : const {
+                  ColorPickerType.primary: false,
+                  ColorPickerType.accent: false,
+                  ColorPickerType.wheel: true,
+                },
           hasBorder: true,
           borderRadius: 20,
+          subheading: isTelevision ? const SizedBox(height: 16) : null,
         )
       ],
       actions: [

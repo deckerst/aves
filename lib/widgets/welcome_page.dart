@@ -1,12 +1,16 @@
 import 'package:aves/app_flavor.dart';
+import 'package:aves/model/device.dart';
 import 'package:aves/model/settings/defaults.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
+import 'package:aves/theme/icons.dart';
+import 'package:aves/utils/constants.dart';
+import 'package:aves/widgets/about/policy_page.dart';
+import 'package:aves/widgets/common/basic/link_chip.dart';
 import 'package:aves/widgets/common/basic/markdown_container.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_logo.dart';
-import 'package:aves/widgets/common/identity/buttons.dart';
-import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
+import 'package:aves/widgets/common/identity/buttons/outlined_button.dart';
 import 'package:aves/widgets/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -46,67 +50,82 @@ class _WelcomePageState extends State<WelcomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return MediaQueryDataProvider(
-      child: Scaffold(
-        body: SafeArea(
-          child: Center(
-            child: FutureBuilder<String>(
-              future: _termsLoader,
-              builder: (context, snapshot) {
-                if (snapshot.hasError || snapshot.connectionState != ConnectionState.done) return const SizedBox();
-                final terms = snapshot.data!;
-                final durations = context.watch<DurationsData>();
-                final isPortrait = context.select<MediaQueryData, Orientation>((mq) => mq.orientation) == Orientation.portrait;
-                return Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: _toStaggeredList(
-                    duration: durations.staggeredAnimation,
-                    delay: durations.staggeredAnimationDelay * timeDilation,
-                    childAnimationBuilder: (child) => SlideAnimation(
-                      verticalOffset: 50.0,
-                      child: FadeInAnimation(
-                        child: child,
-                      ),
+    return Scaffold(
+      body: SafeArea(
+        child: Center(
+          child: FutureBuilder<String>(
+            future: _termsLoader,
+            builder: (context, snapshot) {
+              if (snapshot.hasError || snapshot.connectionState != ConnectionState.done) return const SizedBox();
+              final terms = snapshot.data!;
+              final durations = context.watch<DurationsData>();
+              final isPortrait = context.select<MediaQueryData, Orientation>((mq) => mq.orientation) == Orientation.portrait;
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: _toStaggeredList(
+                  duration: durations.staggeredAnimation,
+                  delay: durations.staggeredAnimationDelay * timeDilation,
+                  childAnimationBuilder: (child) => SlideAnimation(
+                    verticalOffset: 50.0,
+                    child: FadeInAnimation(
+                      child: child,
                     ),
-                    children: [
-                      ..._buildHeader(context, isPortrait: isPortrait),
-                      if (isPortrait) ...[
-                        Flexible(
-                          child: MarkdownContainer(
-                            data: terms,
-                            textDirection: termsDirection,
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        ..._buildControls(context),
-                      ] else
-                        Flexible(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Flexible(
-                                child: Padding(
-                                  padding: const EdgeInsets.only(bottom: 8),
-                                  child: MarkdownContainer(
-                                    data: terms,
-                                    textDirection: termsDirection,
-                                  ),
-                                ),
-                              ),
-                              Flexible(
-                                child: ListView(
-                                  shrinkWrap: true,
-                                  children: _buildControls(context),
-                                ),
-                              ),
-                            ],
-                          ),
-                        )
-                    ],
                   ),
-                );
-              },
-            ),
+                  children: device.isTelevision
+                      ? [
+                          ..._buildHeader(context, isPortrait: isPortrait),
+                          Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: LinkChip(
+                              leading: const Icon(
+                                AIcons.privacy,
+                                size: 22,
+                              ),
+                              text: context.l10n.aboutLinkPolicy,
+                              textStyle: Theme.of(context).textTheme.titleLarge,
+                              onTap: _goToPolicyPage,
+                            ),
+                          ),
+                          ..._buildControls(context),
+                        ]
+                      : [
+                          ..._buildHeader(context, isPortrait: isPortrait),
+                          if (isPortrait) ...[
+                            Flexible(
+                              child: MarkdownContainer(
+                                data: terms,
+                                textDirection: termsDirection,
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            ..._buildControls(context),
+                          ] else
+                            Flexible(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Flexible(
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(bottom: 8),
+                                      child: MarkdownContainer(
+                                        data: terms,
+                                        textDirection: termsDirection,
+                                      ),
+                                    ),
+                                  ),
+                                  Flexible(
+                                    child: ListView(
+                                      shrinkWrap: true,
+                                      children: _buildControls(context),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                        ],
+                ),
+              );
+            },
           ),
         ),
       ),
@@ -155,7 +174,7 @@ class _WelcomePageState extends State<WelcomePage> {
             value: settings.isInstalledAppAccessAllowed,
             onChanged: (v) => setState(() => settings.isInstalledAppAccessAllowed = v),
             title: Text(l10n.settingsAllowInstalledAppAccess),
-            subtitle: Text([l10n.welcomeOptional, l10n.settingsAllowInstalledAppAccessSubtitle].join(' • ')),
+            subtitle: Text([l10n.welcomeOptional, l10n.settingsAllowInstalledAppAccessSubtitle].join(Constants.separator)),
             contentPadding: contentPadding,
           ),
           if (canEnableErrorReporting)
@@ -201,6 +220,16 @@ class _WelcomePageState extends State<WelcomePage> {
       Center(child: button),
       const SizedBox(height: 8),
     ];
+  }
+
+  void _goToPolicyPage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        settings: const RouteSettings(name: PolicyPage.routeName),
+        builder: (context) => const PolicyPage(),
+      ),
+    );
   }
 
   // as of flutter_staggered_animations v0.1.2, `AnimationConfiguration.toStaggeredList` does not handle `Flexible` widgets

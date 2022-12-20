@@ -7,13 +7,13 @@ repository: https://github.com/deckerst/aves
 # - play changelog:   /whatsnew/whatsnew-en-US
 # - izzy changelog:   /fastlane/metadata/android/en-US/changelogs/XX01.txt
 # - libre changelog:  /fastlane/metadata/android/en-US/changelogs/XX.txt
-version: 1.7.7+87
+version: 1.7.8+88
 publish_to: none
 
 environment:
   # this project bundles Flutter SDK via `flutter_wrapper`
   # cf https://github.com/passsy/flutter_wrapper
-  flutter: 3.3.9
+  flutter: 3.3.10
   sdk: ">=2.18.0 <3.0.0"
 
 # following https://github.blog/2021-09-01-improving-git-protocol-security-github/
@@ -37,6 +37,8 @@ dependencies:
     path: plugins/aves_services
   aves_services_platform:
     path: plugins/aves_services_google
+  aves_ui:
+    path: plugins/aves_ui
   charts_flutter:
   collection:
   connectivity_plus:
@@ -114,16 +116,16 @@ flutter:
 # - edit locale name in /lib/widgets/settings/language/locales.dart
 
 # generate `AppLocalizations`
-# % flutter gen-l10n
+# % ./flutterw gen-l10n
 
 ################################################################################
 # Test driver
 
 # capture shaders (profile mode, real device only):
-# % flutter drive --flavor play -t test_driver/driver_shaders.dart --profile --cache-sksl --write-sksl-on-exit shaders.sksl.json
+# % ./flutterw drive --flavor play -t test_driver/driver_shaders.dart --profile --cache-sksl --write-sksl-on-exit shaders.sksl.json
 
 # generate screenshots (profile mode, specific collection):
-# % flutter drive --flavor play -t test_driver/driver_screenshots.dart --profile
+# % ./flutterw drive --flavor play -t test_driver/driver_screenshots.dart --profile
 
 ################################################################################
 # Adaptations

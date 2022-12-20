@@ -48,6 +48,8 @@ class XmpNamespace extends Equatable {
         return XmpGAudioNamespace(nsPrefix, rawProps);
       case Namespaces.gDepth:
         return XmpGDepthNamespace(nsPrefix, rawProps);
+      case Namespaces.gDevice:
+        return XmpGDeviceNamespace(nsPrefix, rawProps);
       case Namespaces.gImage:
         return XmpGImageNamespace(nsPrefix, rawProps);
       case Namespaces.iptc4xmpCore:
@@ -116,7 +118,6 @@ class XmpNamespace extends Equatable {
                 child: HighlightTitle(
                   title: displayTitle,
                   color: context.select<AvesColorsData, Color?>((v) => v.fromBrandColor(BrandColors.get(displayTitle))),
-                  selectable: true,
                 ),
               ),
             ...content

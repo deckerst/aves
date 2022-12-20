@@ -11,6 +11,7 @@ class AIcons {
   static const IconData android = Icons.android;
   static const IconData app = Icons.apps_outlined;
   static const IconData apply = Icons.done_outlined;
+  static const IconData aspectRatio = Icons.aspect_ratio_outlined;
   static const IconData bin = Icons.delete_outlined;
   static const IconData broken = Icons.broken_image_outlined;
   static const IconData checked = Icons.done_outlined;
@@ -60,6 +61,8 @@ class AIcons {
   static const IconData layoutList = Icons.list_outlined;
   static const IconData sort = Icons.sort_outlined;
   static const IconData sortOrder = Icons.swap_vert_outlined;
+  static const IconData thumbnailLarge = Icons.photo_size_select_large_outlined;
+  static const IconData thumbnailSmall = Icons.photo_size_select_small_outlined;
 
   // actions
   static const IconData add = Icons.add_circle_outline;

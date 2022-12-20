@@ -3,6 +3,8 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:aves/app_mode.dart';
+import 'package:aves/model/actions/entry_actions.dart';
+import 'package:aves/model/device.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
@@ -11,6 +13,7 @@ import 'package:aves/widgets/viewer/controller.dart';
 import 'package:aves/widgets/viewer/entry_horizontal_pager.dart';
 import 'package:aves/widgets/viewer/info/info_page.dart';
 import 'package:aves/widgets/viewer/notifications.dart';
+import 'package:aves/widgets/viewer/video/conductor.dart';
 import 'package:aves_magnifier/aves_magnifier.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -50,6 +53,7 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
   final List<StreamSubscription> _subscriptions = [];
   final ValueNotifier<double> _backgroundOpacityNotifier = ValueNotifier(1);
   final ValueNotifier<bool> _isVerticallyScrollingNotifier = ValueNotifier(false);
+  final ValueNotifier<bool> _isImageFocusedNotifier = ValueNotifier(true);
   Timer? _verticalScrollMonitoringTimer;
   AvesEntry? _oldEntry;
   Future<double>? _systemBrightness;
@@ -83,6 +87,9 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
   void dispose() {
     _unregisterWidget(widget);
     _stopScrollMonitoringTimer();
+    _backgroundOpacityNotifier.dispose();
+    _isVerticallyScrollingNotifier.dispose();
+    _isImageFocusedNotifier.dispose();
     super.dispose();
   }
 
@@ -174,10 +181,22 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
   }
 
   Widget _buildImagePage() {
+    final isTelevision = device.isTelevision;
+
     Widget? child;
-    Map<ShortcutActivator, Intent>? shortcuts;
+    Map<ShortcutActivator, Intent>? shortcuts = {
+      const SingleActivator(LogicalKeyboardKey.arrowUp): isTelevision ? const TvShowLessInfoIntent() : const _LeaveIntent(),
+      const SingleActivator(LogicalKeyboardKey.arrowDown): isTelevision ? const _TvShowMoreInfoIntent() : const _ShowInfoIntent(),
+      const SingleActivator(LogicalKeyboardKey.mediaPause): const _PlayPauseIntent.pause(),
+      const SingleActivator(LogicalKeyboardKey.mediaPlay): const _PlayPauseIntent.play(),
+      const SingleActivator(LogicalKeyboardKey.mediaPlayPause): const _PlayPauseIntent.toggle(),
+    };
 
     if (hasCollection) {
+      shortcuts.addAll(const {
+        SingleActivator(LogicalKeyboardKey.arrowLeft): _ShowPreviousIntent(),
+        SingleActivator(LogicalKeyboardKey.arrowRight): _ShowNextIntent(),
+      });
       child = MultiEntryScroller(
         collection: collection!,
         viewerController: widget.viewerController,
@@ -185,32 +204,56 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
         onPageChanged: widget.onHorizontalPageChanged,
         onViewDisposed: widget.onViewDisposed,
       );
-      shortcuts = const {
-        SingleActivator(LogicalKeyboardKey.arrowLeft): ShowPreviousIntent(),
-        SingleActivator(LogicalKeyboardKey.arrowRight): ShowNextIntent(),
-        SingleActivator(LogicalKeyboardKey.arrowUp): LeaveIntent(),
-        SingleActivator(LogicalKeyboardKey.arrowDown): ShowInfoIntent(),
-      };
     } else if (entry != null) {
       child = SingleEntryScroller(
         viewerController: widget.viewerController,
         entry: entry!,
       );
-      shortcuts = const {
-        SingleActivator(LogicalKeyboardKey.arrowUp): LeaveIntent(),
-        SingleActivator(LogicalKeyboardKey.arrowDown): ShowInfoIntent(),
-      };
     }
     if (child != null) {
+      if (device.isTelevision) {
+        child = ValueListenableBuilder<bool>(
+          valueListenable: _isImageFocusedNotifier,
+          builder: (context, isImageFocused, child) {
+            return AnimatedScale(
+              scale: isImageFocused ? 1 : .6,
+              curve: Curves.fastOutSlowIn,
+              duration: context.select<DurationsData, Duration>((v) => v.tvImageFocusAnimation),
+              child: child!,
+            );
+          },
+          child: child,
+        );
+      }
+
       return FocusableActionDetector(
         autofocus: true,
         shortcuts: shortcuts,
         actions: {
-          ShowPreviousIntent: CallbackAction<Intent>(onInvoke: (intent) => _goToHorizontalPage(-1, animate: false)),
-          ShowNextIntent: CallbackAction<Intent>(onInvoke: (intent) => _goToHorizontalPage(1, animate: false)),
-          LeaveIntent: CallbackAction<Intent>(onInvoke: (intent) => Navigator.pop(context)),
-          ShowInfoIntent: CallbackAction<Intent>(onInvoke: (intent) => ShowInfoNotification().dispatch(context)),
+          _ShowPreviousIntent: CallbackAction<Intent>(onInvoke: (intent) => _goToHorizontalPage(-1, animate: false)),
+          _ShowNextIntent: CallbackAction<Intent>(onInvoke: (intent) => _goToHorizontalPage(1, animate: false)),
+          _LeaveIntent: CallbackAction<Intent>(onInvoke: (intent) => Navigator.pop(context)),
+          _ShowInfoIntent: CallbackAction<Intent>(onInvoke: (intent) => ShowInfoPageNotification().dispatch(context)),
+          TvShowLessInfoIntent: CallbackAction<Intent>(onInvoke: (intent) => TvShowLessInfoNotification().dispatch(context)),
+          _TvShowMoreInfoIntent: CallbackAction<Intent>(onInvoke: (intent) => TvShowMoreInfoNotification().dispatch(context)),
+          _PlayPauseIntent: CallbackAction<_PlayPauseIntent>(onInvoke: (intent) => _onPlayPauseIntent(intent, entry)),
+          ActivateIntent: CallbackAction<Intent>(onInvoke: (intent) {
+            if (isTelevision) {
+              final _entry = entry;
+              if (_entry != null && _entry.isVideo) {
+                // address `TV-PC` requirement from https://developer.android.com/docs/quality-guidelines/tv-app-quality
+                final controller = context.read<VideoConductor>().getController(_entry);
+                if (controller != null) {
+                  VideoActionNotification(controller: controller, action: EntryAction.videoTogglePlay).dispatch(context);
+                }
+              } else {
+                const ToggleOverlayNotification().dispatch(context);
+              }
+            }
+            return null;
+          }),
         },
+        onFocusChange: (focused) => _isImageFocusedNotifier.value = focused,
         child: child,
       );
     }
@@ -292,22 +335,75 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
       setState(() {});
     }
   }
+
+  void _onPlayPauseIntent(_PlayPauseIntent intent, entry) {
+    // address `TV-PP` requirement from https://developer.android.com/docs/quality-guidelines/tv-app-quality
+    final _entry = entry;
+    if (_entry != null && _entry.isVideo) {
+      final controller = context.read<VideoConductor>().getController(_entry);
+      if (controller != null) {
+        bool toggle;
+        switch (intent.type) {
+          case _TvPlayPauseType.play:
+            toggle = !controller.isPlaying;
+            break;
+          case _TvPlayPauseType.pause:
+            toggle = controller.isPlaying;
+            break;
+          case _TvPlayPauseType.toggle:
+            toggle = true;
+            break;
+        }
+        if (toggle) {
+          VideoActionNotification(controller: controller, action: EntryAction.videoTogglePlay).dispatch(context);
+        }
+      }
+    }
+  }
 }
 
 // keyboard shortcut intents
 
-class ShowPreviousIntent extends Intent {
-  const ShowPreviousIntent();
+class _ShowPreviousIntent extends Intent {
+  const _ShowPreviousIntent();
 }
 
-class ShowNextIntent extends Intent {
-  const ShowNextIntent();
+class _ShowNextIntent extends Intent {
+  const _ShowNextIntent();
 }
 
-class LeaveIntent extends Intent {
-  const LeaveIntent();
+class _LeaveIntent extends Intent {
+  const _LeaveIntent();
 }
 
-class ShowInfoIntent extends Intent {
-  const ShowInfoIntent();
+class _ShowInfoIntent extends Intent {
+  const _ShowInfoIntent();
+}
+
+class TvShowLessInfoIntent extends Intent {
+  const TvShowLessInfoIntent();
+}
+
+class _TvShowMoreInfoIntent extends Intent {
+  const _TvShowMoreInfoIntent();
+}
+
+class _PlayPauseIntent extends Intent {
+  const _PlayPauseIntent({
+    required this.type,
+  });
+
+  const _PlayPauseIntent.play() : type = _TvPlayPauseType.play;
+
+  const _PlayPauseIntent.pause() : type = _TvPlayPauseType.pause;
+
+  const _PlayPauseIntent.toggle() : type = _TvPlayPauseType.toggle;
+
+  final _TvPlayPauseType type;
+}
+
+enum _TvPlayPauseType {
+  play,
+  pause,
+  toggle,
 }

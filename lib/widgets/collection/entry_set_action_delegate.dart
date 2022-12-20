@@ -31,7 +31,8 @@ import 'package:aves/widgets/common/search/route.dart';
 import 'package:aves/widgets/dialogs/add_shortcut_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
-import 'package:aves/widgets/dialogs/entry_editors/rename_entry_set_dialog.dart';
+import 'package:aves/widgets/dialogs/entry_editors/rename_entry_set_page.dart';
+import 'package:aves/widgets/dialogs/pick_dialogs/location_pick_page.dart';
 import 'package:aves/widgets/map/map_page.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
 import 'package:aves/widgets/stats/stats_page.dart';
@@ -39,6 +40,7 @@ import 'package:aves/widgets/viewer/slideshow_page.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
@@ -53,6 +55,8 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     required int selectedItemCount,
     required bool isTrash,
   }) {
+    final canWrite = !device.isReadOnly;
+    final isMain = appMode == AppMode.main;
     switch (action) {
       // general
       case EntrySetAction.configureView:
@@ -65,28 +69,29 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
         return isSelecting && selectedItemCount == itemCount;
       // browsing
       case EntrySetAction.searchCollection:
-        return appMode.canNavigate && !isSelecting;
+        return !device.isTelevision && appMode.canNavigate && !isSelecting;
       case EntrySetAction.toggleTitleSearch:
         return !isSelecting;
       case EntrySetAction.addShortcut:
-        return appMode == AppMode.main && !isSelecting && device.canPinShortcut && !isTrash;
+        return isMain && !isSelecting && device.canPinShortcut && !isTrash;
       case EntrySetAction.emptyBin:
-        return appMode == AppMode.main && isTrash;
+        return canWrite && isMain && isTrash;
       // browsing or selecting
       case EntrySetAction.map:
       case EntrySetAction.slideshow:
       case EntrySetAction.stats:
-        return appMode == AppMode.main;
+        return isMain;
       case EntrySetAction.rescan:
-        return appMode == AppMode.main && !isTrash;
+        return !device.isTelevision && isMain && !isTrash;
       // selecting
-      case EntrySetAction.delete:
-        return appMode == AppMode.main && isSelecting;
       case EntrySetAction.share:
+      case EntrySetAction.toggleFavourite:
+        return isMain && isSelecting && !isTrash;
+      case EntrySetAction.delete:
+        return canWrite && isMain && isSelecting;
       case EntrySetAction.copy:
       case EntrySetAction.move:
       case EntrySetAction.rename:
-      case EntrySetAction.toggleFavourite:
       case EntrySetAction.rotateCCW:
       case EntrySetAction.rotateCW:
       case EntrySetAction.flip:
@@ -96,9 +101,9 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       case EntrySetAction.editRating:
       case EntrySetAction.editTags:
       case EntrySetAction.removeMetadata:
-        return appMode == AppMode.main && isSelecting && !isTrash;
+        return canWrite && isMain && isSelecting && !isTrash;
       case EntrySetAction.restore:
-        return appMode == AppMode.main && isSelecting && isTrash;
+        return canWrite && isMain && isSelecting && isTrash;
     }
   }
 
@@ -317,7 +322,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
 
   Future<void> _move(BuildContext context, {required MoveType moveType}) async {
     final entries = _getTargetItems(context);
-    await move(context, moveType: moveType, entries: entries);
+    await doMove(context, moveType: moveType, entries: entries);
 
     _leaveSelectionMode(context);
   }
@@ -427,8 +432,15 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
   Future<Set<AvesEntry>?> _getEditableTargetItems(
     BuildContext context, {
     required bool Function(AvesEntry entry) canEdit,
+  }) =>
+      _getEditableItems(context, _getTargetItems(context), canEdit: canEdit);
+
+  Future<Set<AvesEntry>?> _getEditableItems(
+    BuildContext context,
+    Set<AvesEntry> entries, {
+    required bool Function(AvesEntry entry) canEdit,
   }) async {
-    final bySupported = groupBy<AvesEntry, bool>(_getTargetItems(context), canEdit);
+    final bySupported = groupBy<AvesEntry, bool>(entries, canEdit);
     final supported = (bySupported[true] ?? []).toSet();
     final unsupported = (bySupported[false] ?? []).toSet();
 
@@ -500,6 +512,54 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     await _edit(context, entries, (entry) => entry.editLocation(location));
   }
 
+  Future<LatLng?> editLocationByMap(BuildContext context, Set<AvesEntry> entries, LatLng clusterLocation, CollectionLens mapCollection) async {
+    final editableEntries = await _getEditableItems(context, entries, canEdit: (entry) => entry.canEditLocation);
+    if (editableEntries == null || editableEntries.isEmpty) return null;
+
+    final location = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        settings: const RouteSettings(name: LocationPickPage.routeName),
+        builder: (context) => LocationPickPage(
+          collection: mapCollection,
+          initialLocation: clusterLocation,
+        ),
+        fullscreenDialog: true,
+      ),
+    );
+    if (location == null) return null;
+
+    await _edit(context, editableEntries, (entry) => entry.editLocation(location));
+    return location;
+  }
+
+  Future<void> removeLocation(BuildContext context, Set<AvesEntry> entries) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AvesDialog(
+          content: Text(context.l10n.genericDangerWarningDialogMessage),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: Text(context.l10n.applyButtonLabel),
+            ),
+          ],
+        );
+      },
+    );
+    if (confirmed == null || !confirmed) return;
+
+    final editableEntries = await _getEditableItems(context, entries, canEdit: (entry) => entry.canEditLocation);
+    if (editableEntries == null || editableEntries.isEmpty) return;
+
+    await _edit(context, editableEntries, (entry) => entry.editLocation(ExtraAvesEntryMetadataEdition.removalLocation));
+  }
+
   Future<void> _editTitleDescription(BuildContext context) async {
     final entries = await _getEditableTargetItems(context, canEdit: (entry) => entry.canEditTitleDescription);
     if (entries == null || entries.isEmpty) return;
@@ -549,24 +609,24 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     await _edit(context, entries, (entry) => entry.removeMetadata(types));
   }
 
-  void _goToMap(BuildContext context) {
+  Future<void> _goToMap(BuildContext context) async {
     final collection = context.read<CollectionLens>();
     final entries = _getTargetItems(context);
 
-    Navigator.push(
+    // need collection with fresh ID to prevent hero from scroller on Map page to Collection page
+    final mapCollection = CollectionLens(
+      source: collection.source,
+      filters: collection.filters,
+      fixedSelection: entries.where((entry) => entry.hasGps).toList(),
+    );
+    await Navigator.push(
       context,
       MaterialPageRoute(
         settings: const RouteSettings(name: MapPage.routeName),
-        builder: (context) => MapPage(
-          // need collection with fresh ID to prevent hero from scroller on Map page to Collection page
-          collection: CollectionLens(
-            source: collection.source,
-            filters: collection.filters,
-            fixedSelection: entries.where((entry) => entry.hasGps).toList(),
-          ),
-        ),
+        builder: (context) => MapPage(collection: mapCollection),
       ),
     );
+    mapCollection.dispose();
   }
 
   void _goToSlideshow(BuildContext context) {

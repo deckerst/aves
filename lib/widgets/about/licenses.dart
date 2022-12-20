@@ -5,7 +5,7 @@ import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/basic/link_chip.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
-import 'package:aves/widgets/common/identity/buttons.dart';
+import 'package:aves/widgets/common/identity/buttons/outlined_button.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -90,6 +90,7 @@ class _LicensesState extends State<Licenses> {
                 ),
               ),
             ),
+            const SizedBox(height: 16),
           ],
         ),
       ),
@@ -103,7 +104,7 @@ class _LicensesState extends State<Licenses> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ConstrainedBox(
-            constraints: const BoxConstraints(minHeight: 48),
+            constraints: const BoxConstraints(minHeight: kMinInteractiveDimension),
             child: Align(
               alignment: AlignmentDirectional.centerStart,
               child: Text(context.l10n.aboutLicensesSectionTitle, style: Constants.knownTitleTextStyle),

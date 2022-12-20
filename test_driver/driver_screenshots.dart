@@ -6,6 +6,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/enums/enums.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/filter_grids/countries_page.dart';
+import 'package:aves_map/aves_map.dart';
 import 'package:flutter_driver/driver_extension.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -46,12 +47,15 @@ Future<void> configureAndLaunch() async {
     ..showOverlayOnOpening = true
     ..showOverlayMinimap = false
     ..showOverlayInfo = true
+    ..showOverlayRatingTags = false
     ..showOverlayShootingDetails = false
     ..showOverlayThumbnailPreview = false
     ..viewerUseCutout = true
     // info
     ..infoMapZoom = 13
     ..coordinateFormat = CoordinateFormat.dms
-    ..unitSystem = UnitSystem.metric;
+    ..unitSystem = UnitSystem.metric
+    // map
+    ..mapStyle = EntryMapStyle.googleNormal;
   app.main();
 }

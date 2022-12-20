@@ -49,11 +49,11 @@ class _MultiPageOverlayState extends State<MultiPageOverlay> {
   }
 
   void _registerWidget(MultiPageOverlay widget) {
-    widget.controller.pageNotifier.addListener(_onPageChange);
+    widget.controller.pageNotifier.addListener(_onPageChanged);
   }
 
   void _unregisterWidget(MultiPageOverlay widget) {
-    widget.controller.pageNotifier.removeListener(_onPageChange);
+    widget.controller.pageNotifier.removeListener(_onPageChanged);
   }
 
   @override
@@ -74,7 +74,7 @@ class _MultiPageOverlayState extends State<MultiPageOverlay> {
     );
   }
 
-  void _onPageChange() {
+  void _onPageChanged() {
     if (_previousPage != null) {
       final info = controller.info;
       if (info != null) {

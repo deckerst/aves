@@ -69,12 +69,12 @@ class _FloatingNavBarState extends State<FloatingNavBar> with SingleTickerProvid
 
   void _registerWidget(FloatingNavBar widget) {
     _lastOffset = null;
-    widget.scrollController?.addListener(_onScrollChange);
+    widget.scrollController?.addListener(_onScrollChanged);
     _subscriptions.add(widget.events.listen(_onDraggableScrollBarEvent));
   }
 
   void _unregisterWidget(FloatingNavBar widget) {
-    widget.scrollController?.removeListener(_onScrollChange);
+    widget.scrollController?.removeListener(_onScrollChanged);
     _subscriptions
       ..forEach((sub) => sub.cancel())
       ..clear();
@@ -88,7 +88,7 @@ class _FloatingNavBarState extends State<FloatingNavBar> with SingleTickerProvid
     );
   }
 
-  void _onScrollChange() {
+  void _onScrollChanged() {
     final scrollController = widget.scrollController;
     if (scrollController == null) return;
 

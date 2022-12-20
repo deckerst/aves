@@ -10,3 +10,4 @@ typedef MarkerImageReadyChecker<T> = bool Function(MarkerKey<T> key);
 typedef UserZoomChangeCallback = void Function(double zoom);
 typedef MapTapCallback = void Function(LatLng location);
 typedef MarkerTapCallback<T> = void Function(GeoEntry<T> geoEntry);
+typedef MarkerLongPressCallback<T> = void Function(GeoEntry<T> geoEntry, LatLng tapLocation);

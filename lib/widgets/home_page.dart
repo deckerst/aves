@@ -19,6 +19,7 @@ import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/behaviour/routes.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/common/search/page.dart';
 import 'package:aves/widgets/common/search/route.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
@@ -75,7 +76,7 @@ class _HomePageState extends State<HomePage> {
   static const allowedShortcutRoutes = [
     CollectionPage.routeName,
     AlbumListPage.routeName,
-    CollectionSearchDelegate.pageRouteName,
+    SearchPage.routeName,
   ];
 
   @override
@@ -168,7 +169,7 @@ class _HomePageState extends State<HomePage> {
           _initialRouteName = ScreenSaverSettingsPage.routeName;
           break;
         case actionSearch:
-          _initialRouteName = CollectionSearchDelegate.pageRouteName;
+          _initialRouteName = SearchPage.routeName;
           _initialSearchQuery = intentData[intentDataKeyQuery];
           break;
         case actionSetWallpaper:
@@ -363,7 +364,7 @@ class _HomePageState extends State<HomePage> {
             widgetId: _widgetId!,
           ),
         );
-      case CollectionSearchDelegate.pageRouteName:
+      case SearchPage.routeName:
         return SearchPageRoute(
           delegate: CollectionSearchDelegate(
             searchFieldLabel: context.l10n.searchCollectionFieldHint,

@@ -24,6 +24,7 @@ class EntryHmsMap<T> extends StatefulWidget {
   final UserZoomChangeCallback? onUserZoomChange;
   final MapTapCallback? onMapTap;
   final MarkerTapCallback<T>? onMarkerTap;
+  final MarkerLongPressCallback<T>? onMarkerLongPress;
 
   const EntryHmsMap({
     super.key,
@@ -44,6 +45,7 @@ class EntryHmsMap<T> extends StatefulWidget {
     this.onUserZoomChange,
     this.onMapTap,
     this.onMarkerTap,
+    this.onMarkerLongPress,
   });
 
   @override
@@ -122,6 +124,7 @@ class _EntryHmsMapState<T> extends State<EntryHmsMap<T>> {
   }
 
   Widget _buildMap() {
+    final _onMarkerLongPress = widget.onMarkerLongPress;
     return StreamBuilder(
       stream: _markerBitmapReadyStreamController.stream,
       builder: (context, _) {
@@ -228,7 +231,17 @@ class _EntryHmsMapState<T> extends State<EntryHmsMap<T>> {
                   },
                   onCameraMove: (position) => _updateVisibleRegion(zoom: position.zoom, rotation: position.bearing),
                   onCameraIdle: _onIdle,
-                  onClick: (position) => widget.onMapTap?.call(_fromServiceLatLng(position)),
+                  onClick: (v) => widget.onMapTap?.call(_fromServiceLatLng(v)),
+                  onLongPress: _onMarkerLongPress != null
+                      ? (v) {
+                          final pressLocation = _fromServiceLatLng(v);
+                          final markers = _geoEntryByMarkerKey.values.toSet();
+                          final geoEntry = ImageMarker.markerMatch(pressLocation, bounds.zoom, markers);
+                          if (geoEntry != null) {
+                            _onMarkerLongPress(geoEntry, pressLocation);
+                          }
+                        }
+                      : null,
                   onPoiClick: (poi) {
                     final poiPosition = poi.latLng;
                     if (poiPosition != null) {

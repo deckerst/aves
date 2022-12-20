@@ -1,3 +1,4 @@
+import 'package:aves/model/device.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/settings/common/tiles.dart';
@@ -19,16 +20,29 @@ class ViewerOverlayPage extends StatelessWidget {
       body: SafeArea(
         child: ListView(
           children: [
-            SettingsSwitchListTile(
-              selector: (context, s) => s.showOverlayOnOpening,
-              onChanged: (v) => settings.showOverlayOnOpening = v,
-              title: context.l10n.settingsViewerShowOverlayOnOpening,
-            ),
+            if (!device.isTelevision)
+              SettingsSwitchListTile(
+                selector: (context, s) => s.showOverlayOnOpening,
+                onChanged: (v) => settings.showOverlayOnOpening = v,
+                title: context.l10n.settingsViewerShowOverlayOnOpening,
+              ),
             SettingsSwitchListTile(
               selector: (context, s) => s.showOverlayInfo,
               onChanged: (v) => settings.showOverlayInfo = v,
               title: context.l10n.settingsViewerShowInformation,
               subtitle: context.l10n.settingsViewerShowInformationSubtitle,
+            ),
+            Selector<Settings, Tuple2<bool, bool>>(
+              selector: (context, s) => Tuple2(s.showOverlayInfo, s.showOverlayRatingTags),
+              builder: (context, s, child) {
+                final showInfo = s.item1;
+                final current = s.item2;
+                return SwitchListTile(
+                  value: current,
+                  onChanged: showInfo ? (v) => settings.showOverlayRatingTags = v : null,
+                  title: Text(context.l10n.settingsViewerShowRatingTags),
+                );
+              },
             ),
             Selector<Settings, Tuple2<bool, bool>>(
               selector: (context, s) => Tuple2(s.showOverlayInfo, s.showOverlayShootingDetails),
@@ -42,16 +56,18 @@ class ViewerOverlayPage extends StatelessWidget {
                 );
               },
             ),
-            SettingsSwitchListTile(
-              selector: (context, s) => s.showOverlayMinimap,
-              onChanged: (v) => settings.showOverlayMinimap = v,
-              title: context.l10n.settingsViewerShowMinimap,
-            ),
-            SettingsSwitchListTile(
-              selector: (context, s) => s.showOverlayThumbnailPreview,
-              onChanged: (v) => settings.showOverlayThumbnailPreview = v,
-              title: context.l10n.settingsViewerShowOverlayThumbnails,
-            ),
+            if (!device.isTelevision)
+              SettingsSwitchListTile(
+                selector: (context, s) => s.showOverlayMinimap,
+                onChanged: (v) => settings.showOverlayMinimap = v,
+                title: context.l10n.settingsViewerShowMinimap,
+              ),
+            if (!device.isTelevision)
+              SettingsSwitchListTile(
+                selector: (context, s) => s.showOverlayThumbnailPreview,
+                onChanged: (v) => settings.showOverlayThumbnailPreview = v,
+                title: context.l10n.settingsViewerShowOverlayThumbnails,
+              ),
           ],
         ),
       ),

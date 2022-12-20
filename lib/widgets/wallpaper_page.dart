@@ -5,7 +5,6 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
-import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/viewer/controller.dart';
 import 'package:aves/widgets/viewer/entry_horizontal_pager.dart';
 import 'package:aves/widgets/viewer/entry_viewer_page.dart';
@@ -35,22 +34,20 @@ class WallpaperPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MediaQueryDataProvider(
-      child: Scaffold(
-        body: entry != null
-            ? ViewStateConductorProvider(
-                child: VideoConductorProvider(
-                  child: MultiPageConductorProvider(
-                    child: EntryEditor(
-                      entry: entry!,
-                    ),
+    return Scaffold(
+      body: entry != null
+          ? ViewStateConductorProvider(
+              child: VideoConductorProvider(
+                child: MultiPageConductorProvider(
+                  child: EntryEditor(
+                    entry: entry!,
                   ),
                 ),
-              )
-            : const SizedBox(),
-        backgroundColor: Theme.of(context).brightness == Brightness.dark ? Colors.black : Colors.white,
-        resizeToAvoidBottomInset: false,
-      ),
+              ),
+            )
+          : const SizedBox(),
+      backgroundColor: Theme.of(context).brightness == Brightness.dark ? Colors.black : Colors.white,
+      resizeToAvoidBottomInset: false,
     );
   }
 }
@@ -106,7 +103,7 @@ class _EntryEditorState extends State<EntryEditor> with EntryViewControllerMixin
       // no bounce at the bottom, to avoid video controller displacement
       curve: Curves.easeOutQuad,
     );
-    _overlayVisible.addListener(_onOverlayVisibleChange);
+    _overlayVisible.addListener(_onOverlayVisibleChanged);
     _videoActionDelegate = VideoActionDelegate(
       collection: null,
     );
@@ -115,7 +112,7 @@ class _EntryEditorState extends State<EntryEditor> with EntryViewControllerMixin
       initialScale: const ScaleLevel(ref: ScaleReference.covered),
     );
     initEntryControllers(entry);
-    _onOverlayVisibleChange();
+    _onOverlayVisibleChanged();
   }
 
   @override
@@ -124,7 +121,7 @@ class _EntryEditorState extends State<EntryEditor> with EntryViewControllerMixin
     _viewerController.dispose();
     _videoActionDelegate.dispose();
     _overlayAnimationController.dispose();
-    _overlayVisible.removeListener(_onOverlayVisibleChange);
+    _overlayVisible.removeListener(_onOverlayVisibleChanged);
     super.dispose();
   }
 
@@ -235,7 +232,7 @@ class _EntryEditorState extends State<EntryEditor> with EntryViewControllerMixin
 
   // overlay
 
-  Future<void> _onOverlayVisibleChange({bool animate = true}) async {
+  Future<void> _onOverlayVisibleChanged({bool animate = true}) async {
     if (_overlayVisible.value) {
       await AvesApp.showSystemUI();
       AvesApp.setSystemUIStyle(context);

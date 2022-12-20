@@ -32,7 +32,10 @@ import 'package:aves/widgets/common/behaviour/route_tracker.dart';
 import 'package:aves/widgets/common/behaviour/routes.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/providers/highlight_info_provider.dart';
+import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/home_page.dart';
+import 'package:aves/widgets/navigation/tv_page_transitions.dart';
+import 'package:aves/widgets/navigation/tv_rail.dart';
 import 'package:aves/widgets/welcome_page.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:equatable/equatable.dart';
@@ -44,12 +47,13 @@ import 'package:material_color_utilities/material_color_utilities.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
+import 'package:url_launcher/url_launcher.dart' as ul;
 
 class AvesApp extends StatefulWidget {
   final AppFlavor flavor;
 
   // temporary exclude locales not ready yet for prime time
-  static final _unsupportedLocales = {'ar', 'fa', 'gl', 'lt', 'nb', 'pl'}.map(Locale.new).toSet();
+  static final _unsupportedLocales = {'ar', 'fa', 'gl', 'nn', 'pl', 'th'}.map(Locale.new).toSet();
   static final List<Locale> supportedLocales = AppLocalizations.supportedLocales.where((v) => !_unsupportedLocales.contains(v)).toList();
   static final GlobalKey<NavigatorState> navigatorKey = GlobalKey(debugLabel: 'app-navigator');
 
@@ -103,17 +107,41 @@ class AvesApp extends StatefulWidget {
   static Future<void> hideSystemUI() async {
     await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
   }
+
+  static Future<void> launchUrl(String? urlString) async {
+    if (urlString != null) {
+      final url = Uri.parse(urlString);
+      if (await ul.canLaunchUrl(url)) {
+        // address `TV-WB` requirement from https://developer.android.com/docs/quality-guidelines/tv-app-quality
+        final mode = device.isTelevision ? ul.LaunchMode.inAppWebView : ul.LaunchMode.externalApplication;
+        try {
+          await ul.launchUrl(url, mode: mode);
+        } catch (error, stack) {
+          debugPrint('failed to open url=$urlString with error=$error\n$stack');
+        }
+      }
+    }
+  }
 }
 
 class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
-  final ValueNotifier<AppMode> appModeNotifier = ValueNotifier(AppMode.main);
+  final List<StreamSubscription> _subscriptions = [];
   late final Future<void> _appSetup;
   late final Future<bool> _shouldUseBoldFontLoader;
   late final Future<CorePalette?> _dynamicColorPaletteLoader;
+  final TvRailController _tvRailController = TvRailController();
   final CollectionSource _mediaStoreSource = MediaStoreSource();
   final Debouncer _mediaStoreChangeDebouncer = Debouncer(delay: Durations.mediaContentChangeDebounceDelay);
   final Set<String> _changedUris = {};
   Size? _screenSize;
+
+  // Flutter has various page transition implementations for Android:
+  // - `FadeUpwardsPageTransitionsBuilder` on Oreo / API 27 and below
+  // - `OpenUpwardsPageTransitionsBuilder` on Pie / API 28
+  // - `ZoomPageTransitionsBuilder` on Android 10 / API 29 and above (default in Flutter v3.0.0)
+  final ValueNotifier<PageTransitionsBuilder> _pageTransitionsBuilderNotifier = ValueNotifier(const FadeUpwardsPageTransitionsBuilder());
+  final ValueNotifier<TvMediaQueryModifier?> _tvMediaQueryModifierNotifier = ValueNotifier(null);
+  final ValueNotifier<AppMode> _appModeNotifier = ValueNotifier(AppMode.main);
 
   // observers are not registered when using the same list object with different items
   // the list itself needs to be reassigned
@@ -132,11 +160,23 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     _screenSize = _getScreenSize();
     _shouldUseBoldFontLoader = AccessibilityService.shouldUseBoldFont();
     _dynamicColorPaletteLoader = DynamicColorPlugin.getCorePalette();
-    _mediaStoreChangeChannel.receiveBroadcastStream().listen((event) => _onMediaStoreChange(event as String?));
-    _newIntentChannel.receiveBroadcastStream().listen((event) => _onNewIntent(event as Map?));
-    _analysisCompletionChannel.receiveBroadcastStream().listen((event) => _onAnalysisCompletion());
-    _errorChannel.receiveBroadcastStream().listen((event) => _onError(event as String?));
+    _subscriptions.add(_mediaStoreChangeChannel.receiveBroadcastStream().listen((event) => _onMediaStoreChanged(event as String?)));
+    _subscriptions.add(_newIntentChannel.receiveBroadcastStream().listen((event) => _onNewIntent(event as Map?)));
+    _subscriptions.add(_analysisCompletionChannel.receiveBroadcastStream().listen((event) => _onAnalysisCompletion()));
+    _subscriptions.add(_errorChannel.receiveBroadcastStream().listen((event) => _onError(event as String?)));
     WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    _pageTransitionsBuilderNotifier.dispose();
+    _tvMediaQueryModifierNotifier.dispose();
+    _appModeNotifier.dispose();
+    _subscriptions
+      ..forEach((sub) => sub.cancel())
+      ..clear();
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
   @override
@@ -148,108 +188,85 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
       child: ChangeNotifierProvider<Settings>.value(
         value: settings,
         child: ListenableProvider<ValueNotifier<AppMode>>.value(
-          value: appModeNotifier,
+          value: _appModeNotifier,
           child: Provider<CollectionSource>.value(
             value: _mediaStoreSource,
-            child: DurationsProvider(
-              child: HighlightInfoProvider(
-                child: OverlaySupport(
-                  child: FutureBuilder<void>(
-                    future: _appSetup,
-                    builder: (context, snapshot) {
-                      final initialized = !snapshot.hasError && snapshot.connectionState == ConnectionState.done;
-                      if (initialized) {
-                        AvesApp.showSystemUI();
-                      }
-                      final home = initialized
-                          ? _getFirstPage()
-                          : Scaffold(
-                              body: snapshot.hasError ? _buildError(snapshot.error!) : const SizedBox(),
-                            );
-                      return Selector<Settings, Tuple4<Locale?, bool, AvesThemeBrightness, bool>>(
-                        selector: (context, s) => Tuple4(
-                          s.locale,
-                          s.initialized ? s.accessibilityAnimations.animate : true,
-                          s.initialized ? s.themeBrightness : SettingsDefaults.themeBrightness,
-                          s.initialized ? s.enableDynamicColor : SettingsDefaults.enableDynamicColor,
-                        ),
-                        builder: (context, s, child) {
-                          final settingsLocale = s.item1;
-                          final areAnimationsEnabled = s.item2;
-                          final themeBrightness = s.item3;
-                          final enableDynamicColor = s.item4;
+            child: Provider<TvRailController>.value(
+              value: _tvRailController,
+              child: DurationsProvider(
+                child: HighlightInfoProvider(
+                  child: OverlaySupport(
+                    child: FutureBuilder<void>(
+                      future: _appSetup,
+                      builder: (context, snapshot) {
+                        final initialized = !snapshot.hasError && snapshot.connectionState == ConnectionState.done;
+                        if (initialized) {
+                          AvesApp.showSystemUI();
+                        }
+                        final home = initialized
+                            ? _getFirstPage()
+                            : Scaffold(
+                                body: snapshot.hasError ? _buildError(snapshot.error!) : const SizedBox(),
+                              );
+                        return Selector<Settings, Tuple3<Locale?, AvesThemeBrightness, bool>>(
+                          selector: (context, s) => Tuple3(
+                            s.locale,
+                            s.initialized ? s.themeBrightness : SettingsDefaults.themeBrightness,
+                            s.initialized ? s.enableDynamicColor : SettingsDefaults.enableDynamicColor,
+                          ),
+                          builder: (context, s, child) {
+                            final settingsLocale = s.item1;
+                            final themeBrightness = s.item2;
+                            final enableDynamicColor = s.item3;
 
-                          Constants.updateStylesForLocale(settings.appliedLocale);
+                            Constants.updateStylesForLocale(settings.appliedLocale);
 
-                          final pageTransitionsTheme = areAnimationsEnabled
-                              // Flutter has various page transition implementations for Android:
-                              // - `FadeUpwardsPageTransitionsBuilder` on Oreo / API 27 and below
-                              // - `OpenUpwardsPageTransitionsBuilder` on Pie / API 28
-                              // - `ZoomPageTransitionsBuilder` on Android 10 / API 29 and above (default in Flutter v3.0.0)
-                              ? const PageTransitionsTheme(
-                                  builders: {
-                                    TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
+                            return FutureBuilder<CorePalette?>(
+                              future: _dynamicColorPaletteLoader,
+                              builder: (context, snapshot) {
+                                const defaultAccent = Themes.defaultAccent;
+                                Color lightAccent = defaultAccent, darkAccent = defaultAccent;
+                                if (enableDynamicColor) {
+                                  // `DynamicColorBuilder` from package `dynamic_color` provides light/dark
+                                  // palettes with a primary color from tones too dark/light (40/80),
+                                  // so we derive the color with adjusted tones (60/70)
+                                  final tonalPalette = snapshot.data?.primary;
+                                  lightAccent = Color(tonalPalette?.get(60) ?? defaultAccent.value);
+                                  darkAccent = Color(tonalPalette?.get(70) ?? defaultAccent.value);
+                                }
+                                final lightTheme = Themes.lightTheme(lightAccent, initialized);
+                                final darkTheme = themeBrightness == AvesThemeBrightness.black ? Themes.blackTheme(darkAccent, initialized) : Themes.darkTheme(darkAccent, initialized);
+                                return Shortcuts(
+                                  shortcuts: {
+                                    // handle Android TV remote `select` button
+                                    LogicalKeySet(LogicalKeyboardKey.select): const ActivateIntent(),
                                   },
-                                )
-                              // strip page transitions used by `MaterialPageRoute`
-                              : const DirectPageTransitionsTheme();
-
-                          return FutureBuilder<CorePalette?>(
-                            future: _dynamicColorPaletteLoader,
-                            builder: (context, snapshot) {
-                              const defaultAccent = Themes.defaultAccent;
-                              Color lightAccent = defaultAccent, darkAccent = defaultAccent;
-                              if (enableDynamicColor) {
-                                // `DynamicColorBuilder` from package `dynamic_color` provides light/dark
-                                // palettes with a primary color from tones too dark/light (40/80),
-                                // so we derive the color with adjusted tones (60/70)
-                                final tonalPalette = snapshot.data?.primary;
-                                lightAccent = Color(tonalPalette?.get(60) ?? defaultAccent.value);
-                                darkAccent = Color(tonalPalette?.get(70) ?? defaultAccent.value);
-                              }
-                              return FutureBuilder<bool>(
-                                future: _shouldUseBoldFontLoader,
-                                builder: (context, snapshot) {
-                                  // Flutter v3.4 already checks the system `Configuration.fontWeightAdjustment` to update `MediaQuery`
-                                  // but we need to also check the non-standard Samsung field `bf` representing the bold font toggle
-                                  final shouldUseBoldFont = snapshot.data ?? false;
-                                  return MaterialApp(
+                                  child: MaterialApp(
                                     navigatorKey: AvesApp.navigatorKey,
                                     home: home,
                                     navigatorObservers: _navigatorObservers,
-                                    builder: (context, child) {
-                                      if (initialized) {
-                                        WidgetsBinding.instance.addPostFrameCallback((_) => AvesApp.setSystemUIStyle(context));
-                                      }
-                                      return MediaQuery(
-                                        data: MediaQuery.of(context).copyWith(boldText: shouldUseBoldFont),
-                                        child: AvesColorsProvider(
-                                          child: Theme(
-                                            data: Theme.of(context).copyWith(
-                                              pageTransitionsTheme: pageTransitionsTheme,
-                                            ),
-                                            child: child!,
-                                          ),
-                                        ),
-                                      );
-                                    },
+                                    builder: (context, child) => _decorateAppChild(
+                                      context: context,
+                                      initialized: initialized,
+                                      child: child,
+                                    ),
                                     onGenerateTitle: (context) => context.l10n.appName,
-                                    theme: Themes.lightTheme(lightAccent, initialized),
-                                    darkTheme: themeBrightness == AvesThemeBrightness.black ? Themes.blackTheme(darkAccent, initialized) : Themes.darkTheme(darkAccent, initialized),
+                                    theme: lightTheme,
+                                    darkTheme: darkTheme,
                                     themeMode: themeBrightness.appThemeMode,
                                     locale: settingsLocale,
                                     localizationsDelegates: AppLocalizations.localizationsDelegates,
                                     supportedLocales: AvesApp.supportedLocales,
                                     // TODO TLAD remove custom scroll behavior when this is fixed: https://github.com/flutter/flutter/issues/82906
                                     scrollBehavior: StretchMaterialScrollBehavior(),
-                                  );
-                                },
-                              );
-                            },
-                          );
-                        },
-                      );
-                    },
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                        );
+                      },
+                    ),
                   ),
                 ),
               ),
@@ -257,6 +274,59 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _decorateAppChild({
+    required BuildContext context,
+    required bool initialized,
+    required Widget? child,
+  }) {
+    if (initialized) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => AvesApp.setSystemUIStyle(context));
+    }
+    return Selector<Settings, bool>(
+      selector: (context, s) => s.initialized ? s.accessibilityAnimations.animate : true,
+      builder: (context, areAnimationsEnabled, child) {
+        return FutureBuilder<bool>(
+          future: _shouldUseBoldFontLoader,
+          builder: (context, snapshot) {
+            // Flutter v3.4 already checks the system `Configuration.fontWeightAdjustment` to update `MediaQuery`
+            // but we need to also check the non-standard Samsung field `bf` representing the bold font toggle
+            final shouldUseBoldFont = snapshot.data ?? false;
+            final mq = MediaQuery.of(context).copyWith(
+              boldText: shouldUseBoldFont,
+            );
+            return ValueListenableBuilder<TvMediaQueryModifier?>(
+              valueListenable: _tvMediaQueryModifierNotifier,
+              builder: (context, modifier, child) {
+                return MediaQuery(
+                  data: modifier?.call(mq) ?? mq,
+                  child: AvesColorsProvider(
+                    child: ValueListenableBuilder<PageTransitionsBuilder>(
+                      valueListenable: _pageTransitionsBuilderNotifier,
+                      builder: (context, pageTransitionsBuilder, child) {
+                        return Theme(
+                          data: Theme.of(context).copyWith(
+                            pageTransitionsTheme: areAnimationsEnabled
+                                ? PageTransitionsTheme(builders: {TargetPlatform.android: pageTransitionsBuilder})
+                                // strip page transitions used by `MaterialPageRoute`
+                                : const DirectPageTransitionsTheme(),
+                          ),
+                          child: MediaQueryDataProvider(child: child!),
+                        );
+                      },
+                      child: child,
+                    ),
+                  ),
+                );
+              },
+              child: child,
+            );
+          },
+        );
+      },
+      child: child,
     );
   }
 
@@ -280,7 +350,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     debugPrint('$runtimeType lifecycle ${state.name}');
     switch (state) {
       case AppLifecycleState.inactive:
-        switch (appModeNotifier.value) {
+        switch (_appModeNotifier.value) {
           case AppMode.main:
           case AppMode.pickSingleMediaExternal:
           case AppMode.pickMultipleMediaExternal:
@@ -337,6 +407,13 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     final stopwatch = Stopwatch()..start();
 
     await device.init();
+    if (device.isTelevision) {
+      _pageTransitionsBuilderNotifier.value = const TvPageTransitionsBuilder();
+      _tvMediaQueryModifierNotifier.value = (mq) => mq.copyWith(
+            textScaleFactor: 1.1,
+            navigationMode: NavigationMode.directional,
+          );
+    }
     await mobileServices.init();
     await settings.init(monitorPlatformSettings: true);
     settings.isRotationLocked = await windowService.isRotationLocked();
@@ -406,7 +483,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     debugPrint('$runtimeType onNewIntent with intentData=$intentData');
 
     // do not reset when relaunching the app
-    if (appModeNotifier.value == AppMode.main && (intentData == null || intentData.isEmpty == true)) return;
+    if (_appModeNotifier.value == AppMode.main && (intentData == null || intentData.isEmpty == true)) return;
 
     reportService.log('New intent');
     AvesApp.navigatorKey.currentState!.pushReplacement(DirectMaterialPageRoute(
@@ -422,7 +499,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     _mediaStoreSource.updateDerivedFilters();
   }
 
-  void _onMediaStoreChange(String? uri) {
+  void _onMediaStoreChanged(String? uri) {
     if (uri != null) _changedUris.add(uri);
     if (_changedUris.isNotEmpty) {
       _mediaStoreChangeDebouncer(() async {
@@ -431,7 +508,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
         final tempUris = await _mediaStoreSource.refreshUris(todo);
         if (tempUris.isNotEmpty) {
           _changedUris.addAll(tempUris);
-          _onMediaStoreChange(null);
+          _onMediaStoreChanged(null);
         }
       });
     }
@@ -449,3 +526,5 @@ class StretchMaterialScrollBehavior extends MaterialScrollBehavior {
     );
   }
 }
+
+typedef TvMediaQueryModifier = MediaQueryData Function(MediaQueryData);

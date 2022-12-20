@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:aves/app_mode.dart';
+import 'package:aves/model/device.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/query.dart';
@@ -15,16 +16,17 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/collection/collection_grid.dart';
 import 'package:aves/widgets/common/basic/draggable_scrollbar.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
-import 'package:aves/widgets/common/behaviour/double_back_pop.dart';
+import 'package:aves/widgets/common/behaviour/pop/double_back.dart';
+import 'package:aves/widgets/common/behaviour/pop/scope.dart';
+import 'package:aves/widgets/common/behaviour/pop/tv_navigation.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_fab.dart';
-import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/common/providers/query_provider.dart';
 import 'package:aves/widgets/common/providers/selection_provider.dart';
 import 'package:aves/widgets/navigation/drawer/app_drawer.dart';
 import 'package:aves/widgets/navigation/nav_bar/nav_bar.dart';
+import 'package:aves/widgets/navigation/tv_rail.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -50,6 +52,7 @@ class _CollectionPageState extends State<CollectionPage> {
   final List<StreamSubscription> _subscriptions = [];
   late CollectionLens _collection;
   final StreamController<DraggableScrollBarEvent> _draggableScrollBarEventStreamController = StreamController.broadcast();
+  final DoubleBackPopHandler _doubleBackPopHandler = DoubleBackPopHandler();
 
   @override
   void initState() {
@@ -74,59 +77,79 @@ class _CollectionPageState extends State<CollectionPage> {
       ..forEach((sub) => sub.cancel())
       ..clear();
     _collection.dispose();
+    _doubleBackPopHandler.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final liveFilter = _collection.filters.firstWhereOrNull((v) => v is QueryFilter && v.live) as QueryFilter?;
-    return MediaQueryDataProvider(
-      child: SelectionProvider<AvesEntry>(
-        child: Selector<Selection<AvesEntry>, bool>(
-          selector: (context, selection) => selection.selectedItems.isNotEmpty,
-          builder: (context, hasSelection, child) {
-            return Selector<Settings, bool>(
+    return SelectionProvider<AvesEntry>(
+      child: Selector<Selection<AvesEntry>, bool>(
+        selector: (context, selection) => selection.selectedItems.isNotEmpty,
+        builder: (context, hasSelection, child) {
+          final body = QueryProvider(
+            initialQuery: liveFilter?.query,
+            child: Builder(
+              builder: (context) {
+                return AvesPopScope(
+                  handlers: [
+                    (context) {
+                      final selection = context.read<Selection<AvesEntry>>();
+                      if (selection.isSelecting) {
+                        selection.browse();
+                        return false;
+                      }
+                      return true;
+                    },
+                    TvNavigationPopHandler.pop,
+                    _doubleBackPopHandler.pop,
+                  ],
+                  child: const GestureAreaProtectorStack(
+                    child: SafeArea(
+                      top: false,
+                      bottom: false,
+                      child: CollectionGrid(
+                        // key is expected by test driver
+                        key: Key('collection-grid'),
+                        settingsRouteKey: CollectionPage.routeName,
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+
+          Widget page;
+          if (device.isTelevision) {
+            page = Scaffold(
+              body: Row(
+                children: [
+                  TvRail(
+                    controller: context.read<TvRailController>(),
+                    currentCollection: _collection,
+                  ),
+                  Expanded(child: body),
+                ],
+              ),
+              resizeToAvoidBottomInset: false,
+              extendBody: true,
+            );
+          } else {
+            page = Selector<Settings, bool>(
               selector: (context, s) => s.enableBottomNavigationBar,
               builder: (context, enableBottomNavigationBar, child) {
                 final canNavigate = context.select<ValueNotifier<AppMode>, bool>((v) => v.value.canNavigate);
                 final showBottomNavigationBar = canNavigate && enableBottomNavigationBar;
+
                 return NotificationListener<DraggableScrollBarNotification>(
                   onNotification: (notification) {
                     _draggableScrollBarEventStreamController.add(notification.event);
                     return false;
                   },
                   child: Scaffold(
-                    body: QueryProvider(
-                      initialQuery: liveFilter?.query,
-                      child: Builder(
-                        builder: (context) => WillPopScope(
-                          onWillPop: () {
-                            final selection = context.read<Selection<AvesEntry>>();
-                            if (selection.isSelecting) {
-                              selection.browse();
-                              return SynchronousFuture(false);
-                            }
-                            return SynchronousFuture(true);
-                          },
-                          child: DoubleBackPopScope(
-                            child: GestureAreaProtectorStack(
-                              child: SafeArea(
-                                top: false,
-                                bottom: false,
-                                child: ChangeNotifierProvider<CollectionLens>.value(
-                                  value: _collection,
-                                  child: const CollectionGrid(
-                                    // key is expected by test driver
-                                    key: Key('collection-grid'),
-                                    settingsRouteKey: CollectionPage.routeName,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
+                    body: body,
                     floatingActionButton: _buildFab(context, hasSelection),
                     drawer: canNavigate ? AppDrawer(currentCollection: _collection) : null,
                     bottomNavigationBar: showBottomNavigationBar
@@ -141,8 +164,13 @@ class _CollectionPageState extends State<CollectionPage> {
                 );
               },
             );
-          },
-        ),
+          }
+          // this provider should be above `TvRail`
+          return ChangeNotifierProvider<CollectionLens>.value(
+            value: _collection,
+            child: page,
+          );
+        },
       ),
     );
   }

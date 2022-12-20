@@ -13,10 +13,10 @@ import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/basic/color_list_tile.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
-import 'package:aves/widgets/dialogs/app_pick_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
-import 'package:aves/widgets/dialogs/item_pick_dialog.dart';
 import 'package:aves/widgets/dialogs/item_picker.dart';
+import 'package:aves/widgets/dialogs/pick_dialogs/app_pick_page.dart';
+import 'package:aves/widgets/dialogs/pick_dialogs/item_pick_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
@@ -131,9 +131,7 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
                   ),
                 ),
                 ConstrainedBox(
-                  constraints: BoxConstraints(
-                    maxHeight: maxHeight,
-                  ),
+                  constraints: BoxConstraints(maxHeight: maxHeight),
                   child: TabBarView(
                     physics: const NeverScrollableScrollPhysics(),
                     children: tabs
@@ -179,9 +177,7 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
         final availableBodyWidth = constraints.maxWidth;
         final maxWidth = min(availableBodyWidth, tabBodyMaxWidth(context));
         return ConstrainedBox(
-          constraints: BoxConstraints(
-            maxWidth: maxWidth,
-          ),
+          constraints: BoxConstraints(maxWidth: maxWidth),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -350,8 +346,8 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
     final entry = await Navigator.push<AvesEntry>(
       context,
       MaterialPageRoute(
-        settings: const RouteSettings(name: ItemPickDialog.routeName),
-        builder: (context) => ItemPickDialog(
+        settings: const RouteSettings(name: ItemPickPage.routeName),
+        builder: (context) => ItemPickPage(
           collection: CollectionLens(
             source: context.read<CollectionSource>(),
             filters: {filter},
@@ -371,8 +367,8 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
     final package = await Navigator.push<String>(
       context,
       MaterialPageRoute(
-        settings: const RouteSettings(name: AppPickDialog.routeName),
-        builder: (context) => AppPickDialog(
+        settings: const RouteSettings(name: AppPickPage.routeName),
+        builder: (context) => AppPickPage(
           initialValue: _customPackage,
         ),
         fullscreenDialog: true,

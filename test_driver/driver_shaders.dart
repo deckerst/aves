@@ -40,7 +40,7 @@ Future<void> configureAndLaunch() async {
     ..showOverlayShootingDetails = true
     ..showOverlayThumbnailPreview = true
     ..imageBackground = EntryBackground.checkered
-    // info
+    // map
     ..mapStyle = EntryMapStyle.googleNormal;
   app.main();
 }

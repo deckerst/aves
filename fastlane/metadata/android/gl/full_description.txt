@@ -2,4 +2,4 @@
 
 A <b>navegación e busca</b> é unha parte importante de <i>Aves</i>. O obxectivo é que os usuarios poidan fluír facilmente de álbums a fotos, a etiquetas a mapas, etc.
 
-<i>Aves</i> intégrase con Android (de <b>API 19 a 33</b>, é dicir, de KitKat a Android 13) con funcións como <b>widgets</b>, <b>atallos de aplicacións </b>, <b>salvapantallas</b> e manexo da <b>busca global</b>. Tamén funciona como <b>visor e selector de medios</b>.
+<i>Aves</i> intégrase con Android (desde KitKat ata Android 13, incluíndo Android TV) con funcións como <b>complementos</b>, <b>atallos de aplicacións</b>, <b>salvapantallas</b> e <b>busca global</b>. Tamén funciona como <b>visor e selector de medios</b>.

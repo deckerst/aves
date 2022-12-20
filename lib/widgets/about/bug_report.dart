@@ -11,17 +11,17 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/constants.dart';
+import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
-import 'package:aves/widgets/common/identity/buttons.dart';
+import 'package:aves/widgets/common/identity/buttons/outlined_button.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class BugReport extends StatefulWidget {
   const BugReport({super.key});
@@ -34,7 +34,7 @@ class _BugReportState extends State<BugReport> with FeedbackMixin {
   late Future<String> _infoLoader;
   bool _showInstructions = false;
 
-  static final bugReportUri = Uri.parse('${Constants.avesGithub}/issues/new?labels=type%3Abug&template=bug_report.md');
+  static const bugReportUrl = '${Constants.avesGithub}/issues/new?labels=type%3Abug&template=bug_report.md';
 
   @override
   void initState() {
@@ -56,7 +56,7 @@ class _BugReportState extends State<BugReport> with FeedbackMixin {
       children: [
         ExpansionPanel(
           headerBuilder: (context, isExpanded) => ConstrainedBox(
-            constraints: const BoxConstraints(minHeight: 48),
+            constraints: const BoxConstraints(minHeight: kMinInteractiveDimension),
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               alignment: AlignmentDirectional.centerStart,
@@ -184,9 +184,5 @@ class _BugReportState extends State<BugReport> with FeedbackMixin {
     showFeedback(context, context.l10n.genericSuccessFeedback);
   }
 
-  Future<void> _goToGithub() async {
-    if (await canLaunchUrl(bugReportUri)) {
-      await launchUrl(bugReportUri, mode: LaunchMode.externalApplication);
-    }
-  }
+  Future<void> _goToGithub() => AvesApp.launchUrl(bugReportUrl);
 }

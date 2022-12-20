@@ -9,8 +9,8 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/settings/common/tile_leading.dart';
 import 'package:aves/widgets/settings/common/tiles.dart';
-import 'package:aves/widgets/settings/privacy/access_grants.dart';
-import 'package:aves/widgets/settings/privacy/hidden_items.dart';
+import 'package:aves/widgets/settings/privacy/access_grants_page.dart';
+import 'package:aves/widgets/settings/privacy/hidden_items_page.dart';
 import 'package:aves/widgets/settings/settings_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -34,11 +34,11 @@ class PrivacySection extends SettingsSection {
     return [
       SettingsTilePrivacyAllowInstalledAppAccess(),
       if (canEnableErrorReporting) SettingsTilePrivacyAllowErrorReporting(),
-      if (device.canRequestManageMedia) SettingsTilePrivacyManageMedia(),
+      if (!device.isTelevision && device.canRequestManageMedia) SettingsTilePrivacyManageMedia(),
       SettingsTilePrivacySaveSearchHistory(),
-      SettingsTilePrivacyEnableBin(),
+      if (!device.isTelevision) SettingsTilePrivacyEnableBin(),
       SettingsTilePrivacyHiddenItems(),
-      if (device.canGrantDirectoryAccess) SettingsTilePrivacyStorageAccess(),
+      if (!device.isTelevision && device.canGrantDirectoryAccess) SettingsTilePrivacyStorageAccess(),
     ];
   }
 }
