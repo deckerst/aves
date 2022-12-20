@@ -4,8 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.7.8"></a>[v1.7.8] - 2022-12-20
+
 ### Added
 
+- Android TV support
 - Viewer: optionally show rating & tags on overlay
 - Viewer: long press on copy/move/rating/tag quick action for quicker action
 - Viewer: long press on share quick action to share parts of motion photo
