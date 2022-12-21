@@ -11,14 +11,13 @@ class FilterBar extends StatefulWidget {
   static const double preferredHeight = AvesFilterChip.minChipHeight + verticalPadding;
 
   final List<CollectionFilter> filters;
-  final bool removable;
-  final FilterCallback? onTap;
+  final FilterCallback? onTap, onRemove;
 
   FilterBar({
     super.key,
     required Set<CollectionFilter> filters,
-    this.removable = false,
     this.onTap,
+    this.onRemove,
   }) : filters = List<CollectionFilter>.from(filters)..sort();
 
   @override
@@ -30,8 +29,6 @@ class _FilterBarState extends State<FilterBar> {
   CollectionFilter? _userTappedFilter;
 
   List<CollectionFilter> get filters => widget.filters;
-
-  FilterCallback? get onTap => widget.onTap;
 
   @override
   void didUpdateWidget(covariant FilterBar oldWidget) {
@@ -104,30 +101,37 @@ class _FilterBarState extends State<FilterBar> {
   }
 
   Widget _buildChip(CollectionFilter filter) {
+    final onTap = widget.onTap != null
+        ? (filter) {
+            _userTappedFilter = filter;
+            widget.onTap?.call(filter);
+          }
+        : null;
+    final onRemove = widget.onRemove != null
+        ? (filter) {
+            _userTappedFilter = filter;
+            widget.onRemove?.call(filter);
+          }
+        : null;
     return _Chip(
       filter: filter,
-      removable: widget.removable,
       single: filters.length == 1,
-      onTap: onTap != null
-          ? (filter) {
-              _userTappedFilter = filter;
-              onTap!(filter);
-            }
-          : null,
+      onTap: onTap,
+      onRemove: onRemove,
     );
   }
 }
 
 class _Chip extends StatelessWidget {
   final CollectionFilter filter;
-  final bool removable, single;
-  final FilterCallback? onTap;
+  final bool single;
+  final FilterCallback? onTap, onRemove;
 
   const _Chip({
     required this.filter,
-    required this.removable,
     required this.single,
     required this.onTap,
+    required this.onRemove,
   });
 
   @override
@@ -138,7 +142,6 @@ class _Chip extends StatelessWidget {
         child: AvesFilterChip(
           key: ValueKey(filter),
           filter: filter,
-          removable: removable,
           maxWidth: single
               ? AvesFilterChip.computeMaxWidth(
                   context,
@@ -149,6 +152,7 @@ class _Chip extends StatelessWidget {
               : null,
           heroType: HeroType.always,
           onTap: onTap,
+          onRemove: onRemove,
         ),
       ),
     );

@@ -88,14 +88,15 @@ class _HiddenFilters extends StatelessWidget {
               child: Wrap(
                 spacing: 8,
                 runSpacing: 8,
-                children: filterList
-                    .map((filter) => AvesFilterChip(
-                          filter: filter,
-                          removable: true,
-                          onTap: (filter) => settings.changeFilterVisibility({filter}, true),
-                          onLongPress: null,
-                        ))
-                    .toList(),
+                children: filterList.map((filter) {
+                  void onRemove(CollectionFilter filter) => settings.changeFilterVisibility({filter}, true);
+                  return AvesFilterChip(
+                    filter: filter,
+                    onTap: onRemove,
+                    onRemove: onRemove,
+                    onLongPress: null,
+                  );
+                }).toList(),
               ),
             ),
           ],
