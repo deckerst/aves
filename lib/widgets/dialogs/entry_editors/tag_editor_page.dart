@@ -150,14 +150,16 @@ class _TagEditorPageState extends State<TagEditorPage> {
                         secondChild: ExpandableFilterRow(
                           filters: sortedTags.map((kv) => kv.key).toList(),
                           isExpanded: context.select<Settings, bool>((v) => v.tagEditorCurrentFilterSectionExpanded),
-                          removable: true,
                           showGenericIcon: false,
                           leadingBuilder: showCount
                               ? (filter) => _TagCount(
                                     count: sortedTags.firstWhere((kv) => kv.key == filter).value,
                                   )
                               : null,
-                          onTap: _removeTag,
+                          onTap: (filter) {
+                            // TODO TLAD [#453]
+                          },
+                          onRemove: _removeTag,
                           onLongPress: null,
                         ),
                         crossFadeState: sortedTags.isEmpty ? CrossFadeState.showFirst : CrossFadeState.showSecond,

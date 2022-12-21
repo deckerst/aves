@@ -165,6 +165,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
               builder: (context, _, child) {
                 final isTelevision = device.isTelevision;
                 final actions = _buildActions(context, selection);
+                final onFilterTap = removableFilters ? collection.removeFilter : null;
                 return AvesAppBar(
                   contentHeight: appBarContentHeight,
                   leading: _buildAppBarLeading(
@@ -192,8 +193,8 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
                           },
                           child: FilterBar(
                             filters: visibleFilters,
-                            removable: removableFilters,
-                            onTap: removableFilters ? collection.removeFilter : null,
+                            onTap: onFilterTap,
+                            onRemove: onFilterTap,
                           ),
                         ),
                       if (queryEnabled)

@@ -1,5 +1,6 @@
 import 'package:aves/model/device.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/common/fx/blurred.dart';
@@ -63,7 +64,7 @@ class AvesAppBar extends StatelessWidget {
                               : const SizedBox(width: 16),
                           Expanded(
                             child: DefaultTextStyle(
-                              style: Theme.of(context).appBarTheme.titleTextStyle!,
+                              style: context.select<AvesColorsData, TextStyle>((v) => Theme.of(context).appBarTheme.titleTextStyle!),
                               child: Hero(
                                 tag: titleHeroTag,
                                 flightShuttleBuilder: _flightShuttleBuilder,
