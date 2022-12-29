@@ -591,6 +591,10 @@
     "filePickerUseThisFolder"
   ],
 
+  "cs": [
+    "settingsViewerShowDescription"
+  ],
+
   "de": [
     "columnCount",
     "settingsViewerShowDescription",
@@ -1068,10 +1072,6 @@
     "filePickerOpenFrom",
     "filePickerNoItems",
     "filePickerUseThisFolder"
-  ],
-
-  "fr": [
-    "settingsViewerShowDescription"
   ],
 
   "gl": [
@@ -1562,10 +1562,6 @@
     "settingsViewerShowDescription",
     "settingsAccessibilityShowPinchGestureAlternatives",
     "settingsWidgetDisplayedItem"
-  ],
-
-  "ko": [
-    "settingsViewerShowDescription"
   ],
 
   "lt": [
@@ -2589,10 +2585,6 @@
   ],
 
   "ro": [
-    "settingsViewerShowDescription"
-  ],
-
-  "ru": [
     "settingsViewerShowDescription"
   ],
 

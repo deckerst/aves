@@ -39,6 +39,7 @@ class AboutTranslators extends StatelessWidget {
     Contributor('pemibe', 'pemibe4634@dmonies.com'),
     Contributor('Linerly', 'linerly@protonmail.com'),
     Contributor('Olexandr Mazur', 'rozihrash.ya6w7@simplelogin.com'),
+    Contributor('vesp', 'vesp@post.cz'),
     // Contributor('SAMIRAH AIL', 'samiratalzahrani@gmail.com'), // Arabic
     // Contributor('Salih Ail', 'rrrfff444@gmail.com'), // Arabic
     // Contributor('Piotr K', '1337.kelt@gmail.com'), // Polish

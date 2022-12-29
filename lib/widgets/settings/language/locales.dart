@@ -3,6 +3,7 @@
 
 class SupportedLocales {
   static const languagesByLanguageCode = {
+    'cs': 'Čeština',
     'de': 'Deutsch',
     'el': 'Ελληνικά',
     'en': 'English',

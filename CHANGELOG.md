@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - Viewer: optionally show description on overlay
+- Czech translation (thanks vesp)
 
 ### Changed
 
