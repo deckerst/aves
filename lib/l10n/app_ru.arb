@@ -1196,5 +1196,7 @@
   "entryActionShareImageOnly": "Поделиться только изображением",
   "@entryActionShareImageOnly": {},
   "entryActionShareVideoOnly": "Поделиться только видео",
-  "@entryActionShareVideoOnly": {}
+  "@entryActionShareVideoOnly": {},
+  "settingsViewerShowDescription": "Показать описание",
+  "@settingsViewerShowDescription": {}
 }

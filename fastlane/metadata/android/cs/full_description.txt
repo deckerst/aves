@@ -1,0 +1,5 @@
+<i>Aves</i> může pracovat se všemi typy obrázků a videí, jako jsou běžné formáty JPEG a MP4, ale také více exotické jako <b>vícestránkový TIFF, SVG, starý AVI a mnohem více</b>! Prohledává vaši sbírku médií kvůli rozpoznání <b>pohyblivých fotografií</b>, <b>panoramatických snímků</b> (čili fotosféry), <b>360° videí</b>, nebo souborů <b>GeoTIFF</b>.
+
+<b>Navigace a vyhledávání</b> jsou důležitou součástí aplikace <i>Aves</i>. Cílem je, aby uživatelé jednoduše přecházeli z alb k fotografiím, albům, mapám, atd.
+
+<i>Aves</i> podporuje Android (od verze KitKat po Android 13, včetně Android TV) s funkcemi jako jsou <b>widgety</b>, <b>zkratky aplikací</b>, <b>spořič displeje</b> a <b>globální vyhledávání</b>. Rovněž jej lze použít pro <b>prohlížení a výběr médií</b>.
