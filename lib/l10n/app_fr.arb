@@ -1196,5 +1196,7 @@
     }
   },
   "settingsAccessibilityShowPinchGestureAlternatives": "Afficher des alternatives aux interactions multitactiles",
-  "@settingsAccessibilityShowPinchGestureAlternatives": {}
+  "@settingsAccessibilityShowPinchGestureAlternatives": {},
+  "settingsViewerShowDescription": "Afficher la description",
+  "@settingsViewerShowDescription": {}
 }

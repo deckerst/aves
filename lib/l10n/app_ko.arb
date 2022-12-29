@@ -1196,5 +1196,7 @@
     "placeholders": {
       "count": {}
     }
-  }
+  },
+  "settingsViewerShowDescription": "설명 표시",
+  "@settingsViewerShowDescription": {}
 }
