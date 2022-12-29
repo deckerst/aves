@@ -8,6 +8,7 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/viewer/multipage/controller.dart';
 import 'package:aves/widgets/viewer/overlay/details/date.dart';
+import 'package:aves/widgets/viewer/overlay/details/description.dart';
 import 'package:aves/widgets/viewer/overlay/details/location.dart';
 import 'package:aves/widgets/viewer/overlay/details/position_title.dart';
 import 'package:aves/widgets/viewer/overlay/details/rating_tags.dart';
@@ -43,9 +44,9 @@ class _ViewerDetailOverlayState extends State<ViewerDetailOverlay> {
     return index < entries.length ? entries[index] : null;
   }
 
-  late Future<OverlayMetadata?> _detailLoader;
+  late Future<List<dynamic>?> _detailLoader;
   AvesEntry? _lastEntry;
-  OverlayMetadata? _lastDetails;
+  List<dynamic>? _lastDetails;
 
   @override
   void initState() {
@@ -63,7 +64,14 @@ class _ViewerDetailOverlayState extends State<ViewerDetailOverlay> {
 
   void _initDetailLoader() {
     final requestEntry = entry;
-    _detailLoader = requestEntry != null ? metadataFetchService.getOverlayMetadata(requestEntry) : SynchronousFuture(null);
+    if (requestEntry == null) {
+      _detailLoader = SynchronousFuture(null);
+    } else {
+      _detailLoader = Future.wait([
+        settings.showOverlayShootingDetails ? metadataFetchService.getOverlayMetadata(requestEntry) : Future.value(null),
+        settings.showOverlayDescription ? metadataFetchService.getDescription(requestEntry) : Future.value(null),
+      ]);
+    }
   }
 
   @override
@@ -75,7 +83,7 @@ class _ViewerDetailOverlayState extends State<ViewerDetailOverlay> {
         builder: (context, constraints) {
           final availableWidth = constraints.maxWidth;
 
-          return FutureBuilder<OverlayMetadata?>(
+          return FutureBuilder<List<dynamic>?>(
             future: _detailLoader,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done && !snapshot.hasError) {
@@ -85,10 +93,14 @@ class _ViewerDetailOverlayState extends State<ViewerDetailOverlay> {
               if (_lastEntry == null) return const SizedBox();
               final mainEntry = _lastEntry!;
 
+              final shootingDetails = _lastDetails![0];
+              final description = _lastDetails![1];
+
               final multiPageController = widget.multiPageController;
               Widget _buildContent({AvesEntry? pageEntry}) => ViewerDetailOverlayContent(
                     pageEntry: pageEntry ?? mainEntry,
-                    details: _lastDetails,
+                    shootingDetails: shootingDetails,
+                    description: description,
                     position: widget.hasCollection ? '${widget.index + 1}/${entries.length}' : null,
                     availableWidth: availableWidth,
                     multiPageController: multiPageController,
@@ -110,7 +122,8 @@ class _ViewerDetailOverlayState extends State<ViewerDetailOverlay> {
 
 class ViewerDetailOverlayContent extends StatelessWidget {
   final AvesEntry pageEntry;
-  final OverlayMetadata? details;
+  final OverlayMetadata? shootingDetails;
+  final String? description;
   final String? position;
   final double availableWidth;
   final MultiPageController? multiPageController;
@@ -126,7 +139,8 @@ class ViewerDetailOverlayContent extends StatelessWidget {
   const ViewerDetailOverlayContent({
     super.key,
     required this.pageEntry,
-    required this.details,
+    required this.shootingDetails,
+    required this.description,
     required this.position,
     required this.availableWidth,
     required this.multiPageController,
@@ -136,7 +150,8 @@ class ViewerDetailOverlayContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final infoMaxWidth = availableWidth - padding.horizontal;
     final showRatingTags = settings.showOverlayRatingTags;
-    final showShooting = settings.showOverlayShootingDetails;
+    final showShootingDetails = settings.showOverlayShootingDetails;
+    final showDescription = settings.showOverlayDescription;
 
     return AnimatedBuilder(
       animation: pageEntry.metadataChangeNotifier,
@@ -156,8 +171,8 @@ class ViewerDetailOverlayContent extends StatelessWidget {
               builder: (context, orientation, child) {
                 final twoColumns = orientation == Orientation.landscape && infoMaxWidth / 2 > _subRowMinWidth;
                 final subRowWidth = twoColumns ? min(_subRowMinWidth, infoMaxWidth / 2) : infoMaxWidth;
-                final collapsedShooting = twoColumns && showShooting;
-                final collapsedLocation = twoColumns && !showShooting;
+                final collapsedShooting = twoColumns && showShootingDetails;
+                final collapsedLocation = twoColumns && !showShootingDetails;
 
                 final rows = <Widget>[];
                 if (positionTitle.isNotEmpty) {
@@ -176,7 +191,7 @@ class ViewerDetailOverlayContent extends StatelessWidget {
                   );
                 } else {
                   rows.add(_buildDateSubRow(subRowWidth));
-                  if (showShooting) {
+                  if (showShootingDetails) {
                     rows.add(_buildShootingFullRow(context, subRowWidth));
                   }
                 }
@@ -185,6 +200,9 @@ class ViewerDetailOverlayContent extends StatelessWidget {
                 }
                 if (showRatingTags) {
                   rows.add(_buildRatingTagsFullRow(context));
+                }
+                if (showDescription) {
+                  rows.add(_buildDescriptionFullRow(context));
                 }
 
                 return Column(
@@ -214,20 +232,26 @@ class ViewerDetailOverlayContent extends StatelessWidget {
         builder: (context) => OverlayRatingTagsRow(entry: pageEntry),
       );
 
+  Widget _buildDescriptionFullRow(BuildContext context) => _buildFullRowSwitcher(
+        context: context,
+        visible: description != null,
+        builder: (context) => OverlayDescriptionRow(description: description!),
+      );
+
   Widget _buildShootingFullRow(BuildContext context, double subRowWidth) => _buildFullRowSwitcher(
         context: context,
-        visible: details != null && details!.isNotEmpty,
+        visible: shootingDetails != null && shootingDetails!.isNotEmpty,
         builder: (context) => SizedBox(
           width: subRowWidth,
-          child: OverlayShootingRow(details: details!),
+          child: OverlayShootingRow(details: shootingDetails!),
         ),
       );
 
   Widget _buildShootingSubRow(BuildContext context, double subRowWidth) => _buildSubRowSwitcher(
         context: context,
         subRowWidth: subRowWidth,
-        visible: details != null && details!.isNotEmpty,
-        builder: (context) => OverlayShootingRow(details: details!),
+        visible: shootingDetails != null && shootingDetails!.isNotEmpty,
+        builder: (context) => OverlayShootingRow(details: shootingDetails!),
       );
 
   Widget _buildLocationFullRow(BuildContext context) => _buildFullRowSwitcher(

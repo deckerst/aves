@@ -731,6 +731,7 @@
   "settingsViewerShowInformationSubtitle": "Show title, date, location, etc.",
   "settingsViewerShowRatingTags": "Show rating & tags",
   "settingsViewerShowShootingDetails": "Show shooting details",
+  "settingsViewerShowDescription": "Show description",
   "settingsViewerShowOverlayThumbnails": "Show thumbnails",
   "settingsViewerEnableOverlayBlurEffect": "Blur effect",
 

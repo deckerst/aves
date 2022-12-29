@@ -452,6 +452,7 @@
     "settingsViewerShowInformationSubtitle",
     "settingsViewerShowRatingTags",
     "settingsViewerShowShootingDetails",
+    "settingsViewerShowDescription",
     "settingsViewerShowOverlayThumbnails",
     "settingsViewerEnableOverlayBlurEffect",
     "settingsViewerSlideshowTile",
@@ -592,7 +593,16 @@
 
   "de": [
     "columnCount",
+    "settingsViewerShowDescription",
     "settingsAccessibilityShowPinchGestureAlternatives"
+  ],
+
+  "el": [
+    "settingsViewerShowDescription"
+  ],
+
+  "es": [
+    "settingsViewerShowDescription"
   ],
 
   "fa": [
@@ -914,6 +924,7 @@
     "settingsViewerShowInformationSubtitle",
     "settingsViewerShowRatingTags",
     "settingsViewerShowShootingDetails",
+    "settingsViewerShowDescription",
     "settingsViewerShowOverlayThumbnails",
     "settingsViewerEnableOverlayBlurEffect",
     "settingsViewerSlideshowTile",
@@ -1057,6 +1068,10 @@
     "filePickerOpenFrom",
     "filePickerNoItems",
     "filePickerUseThisFolder"
+  ],
+
+  "fr": [
+    "settingsViewerShowDescription"
   ],
 
   "gl": [
@@ -1379,6 +1394,7 @@
     "settingsViewerShowInformationSubtitle",
     "settingsViewerShowRatingTags",
     "settingsViewerShowShootingDetails",
+    "settingsViewerShowDescription",
     "settingsViewerShowOverlayThumbnails",
     "settingsViewerEnableOverlayBlurEffect",
     "settingsViewerSlideshowTile",
@@ -1526,6 +1542,14 @@
     "filePickerUseThisFolder"
   ],
 
+  "id": [
+    "settingsViewerShowDescription"
+  ],
+
+  "it": [
+    "settingsViewerShowDescription"
+  ],
+
   "ja": [
     "columnCount",
     "chipActionFilterIn",
@@ -1535,13 +1559,19 @@
     "keepScreenOnVideoPlayback",
     "subtitlePositionTop",
     "subtitlePositionBottom",
+    "settingsViewerShowDescription",
     "settingsAccessibilityShowPinchGestureAlternatives",
     "settingsWidgetDisplayedItem"
+  ],
+
+  "ko": [
+    "settingsViewerShowDescription"
   ],
 
   "lt": [
     "columnCount",
     "keepScreenOnVideoPlayback",
+    "settingsViewerShowDescription",
     "settingsAccessibilityShowPinchGestureAlternatives"
   ],
 
@@ -1551,6 +1581,7 @@
     "entryActionShareVideoOnly",
     "entryInfoActionRemoveLocation",
     "keepScreenOnVideoPlayback",
+    "settingsViewerShowDescription",
     "settingsAccessibilityShowPinchGestureAlternatives"
   ],
 
@@ -1569,6 +1600,7 @@
     "widgetDisplayedItemRandom",
     "widgetDisplayedItemMostRecent",
     "settingsViewerShowRatingTags",
+    "settingsViewerShowDescription",
     "settingsSubtitleThemeTextPositionTile",
     "settingsSubtitleThemeTextPositionDialogTitle",
     "settingsAccessibilityShowPinchGestureAlternatives",
@@ -1878,6 +1910,7 @@
     "settingsViewerShowInformationSubtitle",
     "settingsViewerShowRatingTags",
     "settingsViewerShowShootingDetails",
+    "settingsViewerShowDescription",
     "settingsViewerShowOverlayThumbnails",
     "settingsViewerEnableOverlayBlurEffect",
     "settingsViewerSlideshowTile",
@@ -2385,6 +2418,7 @@
     "settingsViewerShowInformationSubtitle",
     "settingsViewerShowRatingTags",
     "settingsViewerShowShootingDetails",
+    "settingsViewerShowDescription",
     "settingsViewerShowOverlayThumbnails",
     "settingsViewerEnableOverlayBlurEffect",
     "settingsViewerSlideshowTile",
@@ -2547,10 +2581,19 @@
     "widgetDisplayedItemRandom",
     "widgetDisplayedItemMostRecent",
     "settingsViewerShowRatingTags",
+    "settingsViewerShowDescription",
     "settingsSubtitleThemeTextPositionTile",
     "settingsSubtitleThemeTextPositionDialogTitle",
     "settingsAccessibilityShowPinchGestureAlternatives",
     "settingsWidgetDisplayedItem"
+  ],
+
+  "ro": [
+    "settingsViewerShowDescription"
+  ],
+
+  "ru": [
+    "settingsViewerShowDescription"
   ],
 
   "th": [
@@ -2748,6 +2791,7 @@
     "settingsViewerShowInformationSubtitle",
     "settingsViewerShowRatingTags",
     "settingsViewerShowShootingDetails",
+    "settingsViewerShowDescription",
     "settingsViewerShowOverlayThumbnails",
     "settingsViewerEnableOverlayBlurEffect",
     "settingsViewerSlideshowTile",
@@ -2895,12 +2939,22 @@
     "filePickerUseThisFolder"
   ],
 
+  "tr": [
+    "settingsViewerShowDescription"
+  ],
+
+  "uk": [
+    "settingsViewerShowDescription"
+  ],
+
   "zh": [
+    "settingsViewerShowDescription",
     "settingsAccessibilityShowPinchGestureAlternatives"
   ],
 
   "zh_Hant": [
     "columnCount",
+    "settingsViewerShowDescription",
     "settingsAccessibilityShowPinchGestureAlternatives"
   ]
 }

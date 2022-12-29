@@ -56,6 +56,18 @@ class ViewerOverlayPage extends StatelessWidget {
                 );
               },
             ),
+            Selector<Settings, Tuple2<bool, bool>>(
+              selector: (context, s) => Tuple2(s.showOverlayInfo, s.showOverlayDescription),
+              builder: (context, s, child) {
+                final showInfo = s.item1;
+                final current = s.item2;
+                return SwitchListTile(
+                  value: current,
+                  onChanged: showInfo ? (v) => settings.showOverlayDescription = v : null,
+                  title: Text(context.l10n.settingsViewerShowDescription),
+                );
+              },
+            ),
             if (!device.isTelevision)
               SettingsSwitchListTile(
                 selector: (context, s) => s.showOverlayMinimap,
