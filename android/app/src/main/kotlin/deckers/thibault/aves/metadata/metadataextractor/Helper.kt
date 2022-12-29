@@ -117,8 +117,13 @@ object Helper {
 
     // extensions
 
-    fun Directory.getSafeString(tag: Int, save: (value: String) -> Unit) {
-        if (this.containsTag(tag)) save(this.getString(tag))
+    fun Directory.getSafeString(tag: Int, acceptBlank: Boolean = true, save: (value: String) -> Unit) {
+        if (this.containsTag(tag)) {
+            val string = this.getString(tag)
+            if (acceptBlank || string.isNotBlank()) {
+                save(string)
+            }
+        }
     }
 
     fun Directory.getSafeBoolean(tag: Int, save: (value: Boolean) -> Unit) {

@@ -79,6 +79,7 @@ class SettingsDefaults {
   static const showOverlayOnOpening = true;
   static const showOverlayMinimap = false;
   static const showOverlayInfo = true;
+  static const showOverlayDescription = false;
   static const showOverlayRatingTags = false;
   static const showOverlayShootingDetails = false;
   static const showOverlayThumbnailPreview = false;

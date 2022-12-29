@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Added
+
+- Viewer: optionally show description on overlay
+
+### Changed
+
+- editing description writes XMP `dc:description`, and clears Exif `ImageDescription` / `UserComment`
+
 ## <a id="v1.7.8"></a>[v1.7.8] - 2022-12-20
 
 ### Added

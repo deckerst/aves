@@ -115,6 +115,7 @@ class Settings extends ChangeNotifier {
   static const showOverlayOnOpeningKey = 'show_overlay_on_opening';
   static const showOverlayMinimapKey = 'show_overlay_minimap';
   static const showOverlayInfoKey = 'show_overlay_info';
+  static const showOverlayDescriptionKey = 'show_overlay_description';
   static const showOverlayRatingTagsKey = 'show_overlay_rating_tags';
   static const showOverlayShootingDetailsKey = 'show_overlay_shooting_details';
   static const showOverlayThumbnailPreviewKey = 'show_overlay_thumbnail_preview';
@@ -563,6 +564,10 @@ class Settings extends ChangeNotifier {
 
   set showOverlayInfo(bool newValue) => setAndNotify(showOverlayInfoKey, newValue);
 
+  bool get showOverlayDescription => getBool(showOverlayDescriptionKey) ?? SettingsDefaults.showOverlayDescription;
+
+  set showOverlayDescription(bool newValue) => setAndNotify(showOverlayDescriptionKey, newValue);
+
   bool get showOverlayRatingTags => getBool(showOverlayRatingTagsKey) ?? SettingsDefaults.showOverlayRatingTags;
 
   set showOverlayRatingTags(bool newValue) => setAndNotify(showOverlayRatingTagsKey, newValue);
@@ -1002,6 +1007,7 @@ class Settings extends ChangeNotifier {
             case showOverlayOnOpeningKey:
             case showOverlayMinimapKey:
             case showOverlayInfoKey:
+            case showOverlayDescriptionKey:
             case showOverlayRatingTagsKey:
             case showOverlayShootingDetailsKey:
             case showOverlayThumbnailPreviewKey:

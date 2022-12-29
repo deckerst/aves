@@ -615,7 +615,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                         if (!metadataMap.containsKey(KEY_XMP_TITLE) || !metadataMap.containsKey(KEY_XMP_SUBJECTS)) {
                             for (dir in metadata.getDirectoriesOfType(IptcDirectory::class.java)) {
                                 if (!metadataMap.containsKey(KEY_XMP_TITLE)) {
-                                    dir.getSafeString(IptcDirectory.TAG_OBJECT_NAME) { metadataMap[KEY_XMP_TITLE] = it }
+                                    dir.getSafeString(IptcDirectory.TAG_OBJECT_NAME, acceptBlank = false) { metadataMap[KEY_XMP_TITLE] = it }
                                 }
                                 if (!metadataMap.containsKey(KEY_XMP_SUBJECTS)) {
                                     dir.keywords?.let { metadataMap[KEY_XMP_SUBJECTS] = it.joinToString(XMP_SUBJECTS_SEPARATOR) }
@@ -1151,6 +1151,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
     // return description from these fields (by precedence):
     // - XMP / dc:description
     // - IPTC / caption-abstract
+    // - Exif / UserComment
     // - Exif / ImageDescription
     private fun getDescription(call: MethodCall, result: MethodChannel.Result) {
         val mimeType = call.argument<String>("mimeType")
@@ -1171,7 +1172,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                         val xmpMeta = dir.xmpMeta
                         try {
                             if (xmpMeta.doesPropExist(XMP.DC_DESCRIPTION_PROP_NAME)) {
-                                xmpMeta.getSafeLocalizedText(XMP.DC_DESCRIPTION_PROP_NAME) { description = it }
+                                xmpMeta.getSafeLocalizedText(XMP.DC_DESCRIPTION_PROP_NAME, acceptBlank = false) { description = it }
                             }
                         } catch (e: XMPException) {
                             Log.w(LOG_TAG, "failed to read XMP directory for uri=$uri", e)
@@ -1179,12 +1180,23 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                     }
                     if (description == null) {
                         for (dir in metadata.getDirectoriesOfType(IptcDirectory::class.java)) {
-                            dir.getSafeString(IptcDirectory.TAG_CAPTION) { description = it }
+                            dir.getSafeString(IptcDirectory.TAG_CAPTION, acceptBlank = false) { description = it }
+                        }
+                    }
+                    if (description == null) {
+                        for (dir in metadata.getDirectoriesOfType(ExifSubIFDDirectory::class.java)) {
+                            // user comment field specifies encoding, unlike other string fields
+                            if (dir.containsTag(ExifSubIFDDirectory.TAG_USER_COMMENT)) {
+                                val string = dir.getDescription(ExifSubIFDDirectory.TAG_USER_COMMENT)
+                                if (string.isNotBlank()) {
+                                    description = string
+                                }
+                            }
                         }
                     }
                     if (description == null) {
                         for (dir in metadata.getDirectoriesOfType(ExifIFD0Directory::class.java)) {
-                            dir.getSafeString(ExifIFD0Directory.TAG_IMAGE_DESCRIPTION) { description = it }
+                            dir.getSafeString(ExifIFD0Directory.TAG_IMAGE_DESCRIPTION, acceptBlank = false) { description = it }
                         }
                     }
                 }
