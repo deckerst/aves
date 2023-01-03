@@ -8,6 +8,7 @@ class MimeUtils {
       case MimeTypes.ico:
         return 'ICO';
       case MimeTypes.mov:
+      case MimeTypes.movX:
         return 'MOV';
       case MimeTypes.psdVnd:
       case MimeTypes.psdX:
