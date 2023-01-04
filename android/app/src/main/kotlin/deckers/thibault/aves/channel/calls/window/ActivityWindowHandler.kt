@@ -58,18 +58,14 @@ class ActivityWindowHandler(private val activity: Activity) : WindowHandler(acti
         } else {
             activity.window.decorView.rootWindowInsets.displayCutout
         }
-        if (cutout == null) {
-            result.error("getCutoutInsets-null", "cutout insets are null", null)
-            return
-        }
 
         val density = activity.resources.displayMetrics.density
         result.success(
             hashMapOf(
-                "left" to cutout.safeInsetLeft / density,
-                "top" to cutout.safeInsetTop / density,
-                "right" to cutout.safeInsetRight / density,
-                "bottom" to cutout.safeInsetBottom / density,
+                "left" to (cutout?.safeInsetLeft ?: 0) / density,
+                "top" to (cutout?.safeInsetTop ?: 0) / density,
+                "right" to (cutout?.safeInsetRight ?: 0) / density,
+                "bottom" to (cutout?.safeInsetBottom ?: 0) / density,
             )
         )
     }
