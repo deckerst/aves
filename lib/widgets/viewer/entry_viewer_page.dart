@@ -1,4 +1,3 @@
-import 'package:aves/app_mode.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/widgets/viewer/controller.dart';
@@ -96,9 +95,7 @@ class VideoConductorProvider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Provider<VideoConductor>(
-      create: (context) => VideoConductor(
-        persistPlayback: context.read<ValueNotifier<AppMode>>().value == AppMode.main,
-      ),
+      create: (context) => VideoConductor(),
       dispose: (context, value) => value.dispose(),
       child: child,
     );
