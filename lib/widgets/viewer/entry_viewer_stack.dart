@@ -604,8 +604,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     if (Navigator.canPop(context)) {
       Navigator.pop(context);
     } else {
-      // leave viewer
-      SystemNavigator.pop();
+      _leaveViewer();
     }
   }
 
@@ -654,9 +653,16 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
         pop();
       }
     } else {
-      // exit app when trying to pop a viewer page for a single entry
-      SystemNavigator.pop();
+      // exit app when trying to pop a viewer page
+      _leaveViewer();
     }
+  }
+
+  Future<void> _leaveViewer() async {
+    // widgets do not get disposed normally when popping the `SystemNavigator`
+    // so we manually clean video controllers and save playback state
+    await context.read<VideoConductor>().dispose();
+    await SystemNavigator.pop();
   }
 
   // track item when returning to collection,
