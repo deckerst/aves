@@ -143,9 +143,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   }
 
   @override
-  void didChangeMetrics() {
-    _updateStatusBarHeight();
-  }
+  void didChangeMetrics() => _updateStatusBarHeight();
 
   @override
   Widget build(BuildContext context) {

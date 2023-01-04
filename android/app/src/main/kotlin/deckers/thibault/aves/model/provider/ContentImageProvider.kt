@@ -55,7 +55,7 @@ internal class ContentImageProvider : ImageProvider() {
             if (cursor != null && cursor.moveToFirst()) {
                 cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME).let { if (it != -1) fields["title"] = cursor.getString(it) }
                 cursor.getColumnIndex(OpenableColumns.SIZE).let { if (it != -1) fields["sizeBytes"] = cursor.getLong(it) }
-                cursor.getColumnIndex(PATH).let { if (it != -1) fields["path"] = cursor.getString(it) }
+                cursor.getColumnIndex(MediaStore.MediaColumns.DATA).let { if (it != -1) fields["path"] = cursor.getString(it) }
                 cursor.close()
             }
         } catch (e: Exception) {
@@ -73,8 +73,5 @@ internal class ContentImageProvider : ImageProvider() {
 
     companion object {
         private val LOG_TAG = LogUtils.createTag<ContentImageProvider>()
-
-        @Suppress("deprecation")
-        const val PATH = MediaStore.MediaColumns.DATA
     }
 }

@@ -32,13 +32,13 @@ class ViewerSection extends SettingsSection {
 
   @override
   FutureOr<List<SettingsTile>> tiles(BuildContext context) async {
-    final canSetCutoutMode = await windowService.canSetCutoutMode();
+    final isCutoutAware = await windowService.isCutoutAware();
     return [
       if (!device.isTelevision) SettingsTileViewerQuickActions(),
       SettingsTileViewerOverlay(),
       SettingsTileViewerSlideshow(),
       if (!device.isTelevision) SettingsTileViewerGestureSideTapNext(),
-      if (!device.isTelevision && canSetCutoutMode) SettingsTileViewerCutoutMode(),
+      if (!device.isTelevision && isCutoutAware) SettingsTileViewerUseCutout(),
       if (!device.isTelevision) SettingsTileViewerMaxBrightness(),
       SettingsTileViewerMotionPhotoAutoPlay(),
       SettingsTileViewerImageBackground(),
@@ -94,7 +94,7 @@ class SettingsTileViewerGestureSideTapNext extends SettingsTile {
       );
 }
 
-class SettingsTileViewerCutoutMode extends SettingsTile {
+class SettingsTileViewerUseCutout extends SettingsTile {
   @override
   String title(BuildContext context) => context.l10n.settingsViewerUseCutout;
 

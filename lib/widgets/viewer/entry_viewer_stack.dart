@@ -95,9 +95,6 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
   @override
   void initState() {
     super.initState();
-    if (!settings.viewerUseCutout) {
-      windowService.setCutoutMode(false);
-    }
     if (settings.viewerMaxBrightness) {
       ScreenBrightness().setScreenBrightness(1);
     }
@@ -205,88 +202,35 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
       child: ValueListenableProvider<HeroInfo?>.value(
         value: _heroInfoNotifier,
         child: NotificationListener(
-          onNotification: (dynamic notification) {
-            if (notification is FilterSelectedNotification) {
-              _goToCollection(notification.filter);
-            } else if (notification is EntryDeletedNotification) {
-              _onEntryRemoved(context, notification.entries);
-            } else if (notification is EntryMovedNotification) {
-              // only add or remove entries following user actions,
-              // instead of applying all collection source changes
-              final isBin = collection?.filters.contains(TrashFilter.instance) ?? false;
-              final entries = notification.entries;
-              switch (notification.moveType) {
-                case MoveType.move:
-                  _onEntryRemoved(context, entries);
-                  break;
-                case MoveType.toBin:
-                  if (!isBin) {
-                    _onEntryRemoved(context, entries);
-                  }
-                  break;
-                case MoveType.fromBin:
-                  if (isBin) {
-                    _onEntryRemoved(context, entries);
-                  } else {
-                    _onEntryRestored(entries);
-                  }
-                  break;
-                case MoveType.copy:
-                case MoveType.export:
-                  break;
-              }
-            } else if (notification is ToggleOverlayNotification) {
-              _overlayVisible.value = notification.visible ?? !_overlayVisible.value;
-            } else if (notification is TvShowLessInfoNotification) {
-              if (_overlayVisible.value) {
-                _overlayVisible.value = false;
-              } else {
-                _onWillPop();
-              }
-            } else if (notification is TvShowMoreInfoNotification) {
-              if (!_overlayVisible.value) {
-                _overlayVisible.value = true;
-              }
-            } else if (notification is ShowInfoPageNotification) {
-              _goToVerticalPage(infoPage);
-            } else if (notification is JumpToPreviousEntryNotification) {
-              _jumpToHorizontalPageByDelta(-1);
-            } else if (notification is JumpToNextEntryNotification) {
-              _jumpToHorizontalPageByDelta(1);
-            } else if (notification is JumpToEntryNotification) {
-              _jumpToHorizontalPageByIndex(notification.index);
-            } else if (notification is VideoActionNotification) {
-              final controller = notification.controller;
-              final action = notification.action;
-              _onVideoAction(context, controller, action);
-            } else {
-              return false;
-            }
-            return true;
-          },
-          child: Stack(
-            children: [
-              ViewerVerticalPageView(
-                collection: collection,
-                entryNotifier: entryNotifier,
-                viewerController: viewerController,
-                overlayOpacity: _overlayInitialized
-                    ? _overlayOpacity
-                    : settings.showOverlayOnOpening
-                        ? kAlwaysCompleteAnimation
-                        : kAlwaysDismissedAnimation,
-                verticalPager: _verticalPager,
-                horizontalPager: _horizontalPager,
-                onVerticalPageChanged: _onVerticalPageChanged,
-                onHorizontalPageChanged: _onHorizontalPageChanged,
-                onImagePageRequested: () => _goToVerticalPage(imagePage),
-                onViewDisposed: (mainEntry, pageEntry) => viewStateConductor.reset(pageEntry ?? mainEntry),
-              ),
-              ..._buildOverlays().map(_decorateOverlay),
-              const TopGestureAreaProtector(),
-              const SideGestureAreaProtector(),
-              const BottomGestureAreaProtector(),
-            ],
+          onNotification: _handleNotification,
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final availableSize = Size(constraints.maxWidth, constraints.maxHeight);
+              return Stack(
+                children: [
+                  ViewerVerticalPageView(
+                    collection: collection,
+                    entryNotifier: entryNotifier,
+                    viewerController: viewerController,
+                    overlayOpacity: _overlayInitialized
+                        ? _overlayOpacity
+                        : settings.showOverlayOnOpening
+                            ? kAlwaysCompleteAnimation
+                            : kAlwaysDismissedAnimation,
+                    verticalPager: _verticalPager,
+                    horizontalPager: _horizontalPager,
+                    onVerticalPageChanged: _onVerticalPageChanged,
+                    onHorizontalPageChanged: _onHorizontalPageChanged,
+                    onImagePageRequested: () => _goToVerticalPage(imagePage),
+                    onViewDisposed: (mainEntry, pageEntry) => viewStateConductor.reset(pageEntry ?? mainEntry),
+                  ),
+                  ..._buildOverlays(availableSize).map(_decorateOverlay),
+                  const TopGestureAreaProtector(),
+                  const SideGestureAreaProtector(),
+                  const BottomGestureAreaProtector(),
+                ],
+              );
+            },
           ),
         ),
       ),
@@ -306,46 +250,41 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     );
   }
 
-  List<Widget> _buildOverlays() {
+  List<Widget> _buildOverlays(Size availableSize) {
     final appMode = context.read<ValueNotifier<AppMode>>().value;
     switch (appMode) {
       case AppMode.screenSaver:
         return [];
       case AppMode.slideshow:
         return [
-          _buildSlideshowBottomOverlay(),
+          _buildSlideshowBottomOverlay(availableSize),
         ];
       default:
         return [
-          _buildViewerTopOverlay(),
-          _buildViewerBottomOverlay(),
+          _buildViewerTopOverlay(availableSize),
+          _buildViewerBottomOverlay(availableSize),
         ];
     }
   }
 
-  Widget _buildSlideshowBottomOverlay() {
-    return Selector<MediaQueryData, Size>(
-      selector: (context, mq) => mq.size,
-      builder: (context, mqSize, child) {
-        return SizedBox.fromSize(
-          size: mqSize,
-          child: Align(
-            alignment: AlignmentDirectional.bottomEnd,
-            child: TooltipTheme(
-              data: TooltipTheme.of(context).copyWith(
-                preferBelow: false,
-              ),
-              child: SlideshowButtons(
-                animationController: _overlayAnimationController,
-              ),
-            ),
+  Widget _buildSlideshowBottomOverlay(Size availableSize) {
+    return SizedBox.fromSize(
+      size: availableSize,
+      child: Align(
+        alignment: AlignmentDirectional.bottomEnd,
+        child: TooltipTheme(
+          data: TooltipTheme.of(context).copyWith(
+            preferBelow: false,
           ),
-        );
-      },
+          child: SlideshowButtons(
+            animationController: _overlayAnimationController,
+          ),
+        ),
+      ),
     );
   }
 
-  Widget _buildViewerTopOverlay() {
+  Widget _buildViewerTopOverlay(Size availableSize) {
     Widget child = ValueListenableBuilder<AvesEntry?>(
       valueListenable: entryNotifier,
       builder: (context, mainEntry, child) {
@@ -359,6 +298,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
             hasCollection: hasCollection,
             mainEntry: mainEntry,
             scale: _overlayButtonScale,
+            availableSize: availableSize,
             viewInsets: _frozenViewInsets,
             viewPadding: _frozenViewPadding,
           ),
@@ -380,7 +320,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     return child;
   }
 
-  Widget _buildViewerBottomOverlay() {
+  Widget _buildViewerBottomOverlay(Size availableSize) {
     Widget child = ValueListenableBuilder<AvesEntry?>(
       valueListenable: entryNotifier,
       builder: (context, mainEntry, child) {
@@ -447,6 +387,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
                 index: _currentEntryIndex,
                 collection: collection,
                 animationController: _overlayAnimationController,
+                availableSize: availableSize,
                 viewInsets: _frozenViewInsets,
                 viewPadding: _frozenViewPadding,
                 multiPageController: multiPageController,
@@ -466,7 +407,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
         return AnimatedBuilder(
           animation: _verticalScrollNotifier,
           builder: (context, child) => Positioned(
-            bottom: (_verticalPager.hasClients && _verticalPager.position.hasPixels ? _verticalPager.offset : 0) - mqHeight,
+            bottom: (_verticalPager.hasClients && _verticalPager.position.hasPixels ? _verticalPager.offset : 0) - availableSize.height,
             child: child!,
           ),
           child: child,
@@ -476,6 +417,66 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     );
 
     return child;
+  }
+
+  bool _handleNotification(dynamic notification) {
+    if (notification is FilterSelectedNotification) {
+      _goToCollection(notification.filter);
+    } else if (notification is EntryDeletedNotification) {
+      _onEntryRemoved(context, notification.entries);
+    } else if (notification is EntryMovedNotification) {
+      // only add or remove entries following user actions,
+      // instead of applying all collection source changes
+      final isBin = collection?.filters.contains(TrashFilter.instance) ?? false;
+      final entries = notification.entries;
+      switch (notification.moveType) {
+        case MoveType.move:
+          _onEntryRemoved(context, entries);
+          break;
+        case MoveType.toBin:
+          if (!isBin) {
+            _onEntryRemoved(context, entries);
+          }
+          break;
+        case MoveType.fromBin:
+          if (isBin) {
+            _onEntryRemoved(context, entries);
+          } else {
+            _onEntryRestored(entries);
+          }
+          break;
+        case MoveType.copy:
+        case MoveType.export:
+          break;
+      }
+    } else if (notification is ToggleOverlayNotification) {
+      _overlayVisible.value = notification.visible ?? !_overlayVisible.value;
+    } else if (notification is TvShowLessInfoNotification) {
+      if (_overlayVisible.value) {
+        _overlayVisible.value = false;
+      } else {
+        _onWillPop();
+      }
+    } else if (notification is TvShowMoreInfoNotification) {
+      if (!_overlayVisible.value) {
+        _overlayVisible.value = true;
+      }
+    } else if (notification is ShowInfoPageNotification) {
+      _goToVerticalPage(infoPage);
+    } else if (notification is JumpToPreviousEntryNotification) {
+      _jumpToHorizontalPageByDelta(-1);
+    } else if (notification is JumpToNextEntryNotification) {
+      _jumpToHorizontalPageByDelta(1);
+    } else if (notification is JumpToEntryNotification) {
+      _jumpToHorizontalPageByIndex(notification.index);
+    } else if (notification is VideoActionNotification) {
+      final controller = notification.controller;
+      final action = notification.action;
+      _onVideoAction(context, controller, action);
+    } else {
+      return false;
+    }
+    return true;
   }
 
   Future<void> _onVideoAction(BuildContext context, AvesVideoController controller, EntryAction action) async {
@@ -673,9 +674,6 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
   }
 
   Future<void> _onLeave() async {
-    if (!settings.viewerUseCutout) {
-      await windowService.setCutoutMode(true);
-    }
     if (settings.viewerMaxBrightness) {
       await ScreenBrightness().resetScreenBrightness();
     }

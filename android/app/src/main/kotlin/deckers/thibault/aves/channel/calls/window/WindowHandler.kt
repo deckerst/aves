@@ -15,8 +15,8 @@ abstract class WindowHandler(private val contextWrapper: ContextWrapper) : Metho
             "keepScreenOn" -> Coresult.safe(call, result, ::keepScreenOn)
             "isRotationLocked" -> Coresult.safe(call, result, ::isRotationLocked)
             "requestOrientation" -> Coresult.safe(call, result, ::requestOrientation)
-            "canSetCutoutMode" -> Coresult.safe(call, result, ::canSetCutoutMode)
-            "setCutoutMode" -> Coresult.safe(call, result, ::setCutoutMode)
+            "isCutoutAware" -> Coresult.safe(call, result, ::isCutoutAware)
+            "getCutoutInsets" -> Coresult.safe(call, result, ::getCutoutInsets)
             else -> result.notImplemented()
         }
     }
@@ -37,9 +37,9 @@ abstract class WindowHandler(private val contextWrapper: ContextWrapper) : Metho
 
     abstract fun requestOrientation(call: MethodCall, result: MethodChannel.Result)
 
-    abstract fun canSetCutoutMode(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result)
+    abstract fun isCutoutAware(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result)
 
-    abstract fun setCutoutMode(call: MethodCall, result: MethodChannel.Result)
+    abstract fun getCutoutInsets(call: MethodCall, result: MethodChannel.Result)
 
     companion object {
         private val LOG_TAG = LogUtils.createTag<WindowHandler>()
