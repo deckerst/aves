@@ -119,7 +119,7 @@ class _MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateM
     if (_doubleTap) {
       // quick scale, aka one finger zoom
       // magic numbers from `davemorrissey/subsampling-scale-image-view`
-      final focalPointY = details.focalPoint.dy;
+      final focalPointY = details.localFocalPoint.dy;
       final distance = (focalPointY - _startFocalPoint!.dy).abs() * 2 + 20;
       _quickScaleLastDistance ??= distance;
       final spanDiff = (1 - (distance / _quickScaleLastDistance!)).abs() * .5;
@@ -131,7 +131,7 @@ class _MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateM
     } else {
       newScale = _startScale! * details.scale;
     }
-    final scaleFocalPoint = _doubleTap ? _startFocalPoint! : details.focalPoint;
+    final scaleFocalPoint = _doubleTap ? _startFocalPoint! : details.localFocalPoint;
 
     final panPositionDelta = scaleFocalPoint - _lastViewportFocalPosition!;
     final scalePositionDelta = boundaries.viewportToStatePosition(controller, scaleFocalPoint) * (scale! / newScale - 1);

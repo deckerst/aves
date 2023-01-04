@@ -23,6 +23,7 @@ class ViewerDetailOverlay extends StatefulWidget {
   final int index;
   final bool hasCollection;
   final MultiPageController? multiPageController;
+  final Size availableSize;
 
   const ViewerDetailOverlay({
     super.key,
@@ -30,6 +31,7 @@ class ViewerDetailOverlay extends StatefulWidget {
     required this.index,
     required this.hasCollection,
     required this.multiPageController,
+    required this.availableSize,
   });
 
   @override
@@ -79,41 +81,35 @@ class _ViewerDetailOverlayState extends State<ViewerDetailOverlay> {
     return SafeArea(
       top: false,
       bottom: false,
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final availableWidth = constraints.maxWidth;
+      child: FutureBuilder<List<dynamic>?>(
+        future: _detailLoader,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done && !snapshot.hasError) {
+            _lastDetails = snapshot.data;
+            _lastEntry = entry;
+          }
+          if (_lastEntry == null) return const SizedBox();
+          final mainEntry = _lastEntry!;
 
-          return FutureBuilder<List<dynamic>?>(
-            future: _detailLoader,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done && !snapshot.hasError) {
-                _lastDetails = snapshot.data;
-                _lastEntry = entry;
-              }
-              if (_lastEntry == null) return const SizedBox();
-              final mainEntry = _lastEntry!;
+          final shootingDetails = _lastDetails![0];
+          final description = _lastDetails![1];
 
-              final shootingDetails = _lastDetails![0];
-              final description = _lastDetails![1];
+          final multiPageController = widget.multiPageController;
+          Widget _buildContent({AvesEntry? pageEntry}) => ViewerDetailOverlayContent(
+                pageEntry: pageEntry ?? mainEntry,
+                shootingDetails: shootingDetails,
+                description: description,
+                position: widget.hasCollection ? '${widget.index + 1}/${entries.length}' : null,
+                availableWidth: widget.availableSize.width,
+                multiPageController: multiPageController,
+              );
 
-              final multiPageController = widget.multiPageController;
-              Widget _buildContent({AvesEntry? pageEntry}) => ViewerDetailOverlayContent(
-                    pageEntry: pageEntry ?? mainEntry,
-                    shootingDetails: shootingDetails,
-                    description: description,
-                    position: widget.hasCollection ? '${widget.index + 1}/${entries.length}' : null,
-                    availableWidth: availableWidth,
-                    multiPageController: multiPageController,
-                  );
-
-              return multiPageController != null
-                  ? PageEntryBuilder(
-                      multiPageController: multiPageController,
-                      builder: (pageEntry) => _buildContent(pageEntry: pageEntry),
-                    )
-                  : _buildContent();
-            },
-          );
+          return multiPageController != null
+              ? PageEntryBuilder(
+                  multiPageController: multiPageController,
+                  builder: (pageEntry) => _buildContent(pageEntry: pageEntry),
+                )
+              : _buildContent();
         },
       ),
     );

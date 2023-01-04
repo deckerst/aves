@@ -55,6 +55,7 @@ class AvesApp extends StatefulWidget {
   // temporary exclude locales not ready yet for prime time
   static final _unsupportedLocales = {'ar', 'fa', 'gl', 'nn', 'pl', 'th'}.map(Locale.new).toSet();
   static final List<Locale> supportedLocales = AppLocalizations.supportedLocales.where((v) => !_unsupportedLocales.contains(v)).toList();
+  static final ValueNotifier<EdgeInsets> cutoutInsetsNotifier = ValueNotifier(EdgeInsets.zero);
   static final GlobalKey<NavigatorState> navigatorKey = GlobalKey(debugLabel: 'app-navigator');
 
   // do not monitor all `ModalRoute`s, which would include popup menus,
@@ -164,6 +165,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     _subscriptions.add(_newIntentChannel.receiveBroadcastStream().listen((event) => _onNewIntent(event as Map?)));
     _subscriptions.add(_analysisCompletionChannel.receiveBroadcastStream().listen((event) => _onAnalysisCompletion()));
     _subscriptions.add(_errorChannel.receiveBroadcastStream().listen((event) => _onError(event as String?)));
+    _updateCutoutInsets();
     WidgetsBinding.instance.addObserver(this);
   }
 
@@ -373,6 +375,13 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
       case AppLifecycleState.detached:
         break;
     }
+  }
+
+  @override
+  void didChangeMetrics() => _updateCutoutInsets();
+
+  Future<void> _updateCutoutInsets() async {
+    AvesApp.cutoutInsetsNotifier.value = await windowService.getCutoutInsets();
   }
 
   Widget _getFirstPage({Map? intentData}) => settings.hasAcceptedTerms ? HomePage(intentData: intentData) : const WelcomePage();

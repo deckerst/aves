@@ -17,8 +17,11 @@ class FakeWindowService extends Fake implements WindowService {
   Future<void> requestOrientation([Orientation? orientation]) => SynchronousFuture(null);
 
   @override
-  Future<bool> canSetCutoutMode() => SynchronousFuture(true);
+  Future<bool> isCutoutAware() => SynchronousFuture(true);
 
   @override
   Future<void> setCutoutMode(bool use) => SynchronousFuture(null);
+
+  @override
+  Future<EdgeInsets> getCutoutInsets() => SynchronousFuture(EdgeInsets.zero);
 }

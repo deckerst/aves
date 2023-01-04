@@ -25,6 +25,7 @@ class ViewerBottomOverlay extends StatefulWidget {
   final int index;
   final CollectionLens? collection;
   final AnimationController animationController;
+  final Size availableSize;
   final EdgeInsets? viewInsets, viewPadding;
   final MultiPageController? multiPageController;
 
@@ -34,6 +35,7 @@ class ViewerBottomOverlay extends StatefulWidget {
     required this.index,
     required this.collection,
     required this.animationController,
+    required this.availableSize,
     this.viewInsets,
     this.viewPadding,
     required this.multiPageController,
@@ -72,6 +74,7 @@ class _ViewerBottomOverlayState extends State<ViewerBottomOverlay> {
           mainEntry: mainEntry,
           pageEntry: pageEntry ?? mainEntry,
           collection: widget.collection,
+          availableSize: widget.availableSize,
           viewInsets: widget.viewInsets,
           viewPadding: widget.viewPadding,
           multiPageController: multiPageController,
@@ -103,6 +106,7 @@ class _BottomOverlayContent extends StatefulWidget {
   final int index;
   final AvesEntry mainEntry, pageEntry;
   final CollectionLens? collection;
+  final Size availableSize;
   final EdgeInsets? viewInsets, viewPadding;
   final MultiPageController? multiPageController;
   final AnimationController animationController;
@@ -113,6 +117,7 @@ class _BottomOverlayContent extends StatefulWidget {
     required this.mainEntry,
     required this.pageEntry,
     required this.collection,
+    required this.availableSize,
     required this.viewInsets,
     required this.viewPadding,
     required this.multiPageController,
@@ -178,89 +183,85 @@ class _BottomOverlayContentState extends State<_BottomOverlayContent> {
         pageEntry.metadataChangeNotifier,
       ]),
       builder: (context, child) {
-        return Selector<MediaQueryData, double>(
-          selector: (context, mq) => mq.size.width,
-          builder: (context, mqWidth, child) {
-            final viewInsetsPadding = (widget.viewInsets ?? EdgeInsets.zero) + (widget.viewPadding ?? EdgeInsets.zero);
-            final viewerButtonRow = FocusableActionDetector(
-              focusNode: _buttonRowFocusScopeNode,
-              shortcuts: device.isTelevision ? const {SingleActivator(LogicalKeyboardKey.arrowUp): TvShowLessInfoIntent()} : null,
-              actions: {TvShowLessInfoIntent: CallbackAction<Intent>(onInvoke: (intent) => TvShowLessInfoNotification().dispatch(context))},
-              child: SafeArea(
-                top: false,
-                bottom: false,
-                minimum: EdgeInsets.only(
-                  left: viewInsetsPadding.left,
-                  right: viewInsetsPadding.right,
+        final viewInsetsPadding = (widget.viewInsets ?? EdgeInsets.zero) + (widget.viewPadding ?? EdgeInsets.zero);
+        final viewerButtonRow = FocusableActionDetector(
+          focusNode: _buttonRowFocusScopeNode,
+          shortcuts: device.isTelevision ? const {SingleActivator(LogicalKeyboardKey.arrowUp): TvShowLessInfoIntent()} : null,
+          actions: {TvShowLessInfoIntent: CallbackAction<Intent>(onInvoke: (intent) => TvShowLessInfoNotification().dispatch(context))},
+          child: SafeArea(
+            top: false,
+            bottom: false,
+            minimum: EdgeInsets.only(
+              left: viewInsetsPadding.left,
+              right: viewInsetsPadding.right,
+            ),
+            child: isWallpaperMode
+                ? WallpaperButtons(
+                    entry: pageEntry,
+                    scale: _buttonScale,
+                  )
+                : ViewerButtons(
+                    mainEntry: mainEntry,
+                    pageEntry: pageEntry,
+                    collection: widget.collection,
+                    scale: _buttonScale,
+                  ),
+          ),
+        );
+
+        final showMultiPageOverlay = mainEntry.isMultiPage && multiPageController != null;
+        final collapsedPageScroller = mainEntry.isMotionPhoto;
+
+        final availableWidth = widget.availableSize.width;
+        return SizedBox(
+          width: availableWidth,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (showMultiPageOverlay && !collapsedPageScroller)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: FadeTransition(
+                    opacity: _thumbnailOpacity,
+                    child: MultiPageOverlay(
+                      controller: multiPageController,
+                      availableWidth: availableWidth,
+                      scrollable: true,
+                    ),
+                  ),
                 ),
-                child: isWallpaperMode
-                    ? WallpaperButtons(
-                        entry: pageEntry,
-                        scale: _buttonScale,
-                      )
-                    : ViewerButtons(
-                        mainEntry: mainEntry,
-                        pageEntry: pageEntry,
-                        collection: widget.collection,
-                        scale: _buttonScale,
-                      ),
-              ),
-            );
-
-            final showMultiPageOverlay = mainEntry.isMultiPage && multiPageController != null;
-            final collapsedPageScroller = mainEntry.isMotionPhoto;
-
-            return SizedBox(
-              width: mqWidth,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (showMultiPageOverlay && !collapsedPageScroller)
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 8),
-                      child: FadeTransition(
-                        opacity: _thumbnailOpacity,
-                        child: MultiPageOverlay(
-                          controller: multiPageController,
-                          availableWidth: mqWidth,
-                          scrollable: true,
-                        ),
-                      ),
-                    ),
-                  (showMultiPageOverlay && collapsedPageScroller)
-                      ? Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            SafeArea(
-                              top: false,
-                              bottom: false,
-                              child: Padding(
-                                padding: const EdgeInsets.only(bottom: 8),
-                                child: MultiPageOverlay(
-                                  controller: multiPageController,
-                                  availableWidth: mqWidth,
-                                  scrollable: false,
-                                ),
-                              ),
+              (showMultiPageOverlay && collapsedPageScroller)
+                  ? Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SafeArea(
+                          top: false,
+                          bottom: false,
+                          child: Padding(
+                            padding: const EdgeInsets.only(bottom: 8),
+                            child: MultiPageOverlay(
+                              controller: multiPageController,
+                              availableWidth: availableWidth,
+                              scrollable: false,
                             ),
-                            Expanded(child: viewerButtonRow),
-                          ],
-                        )
-                      : viewerButtonRow,
-                  if (settings.showOverlayThumbnailPreview && !isWallpaperMode)
-                    FadeTransition(
-                      opacity: _thumbnailOpacity,
-                      child: ViewerThumbnailPreview(
-                        availableWidth: mqWidth,
-                        displayedIndex: widget.index,
-                        entries: widget.entries,
-                      ),
-                    ),
-                ],
-              ),
-            );
-          },
+                          ),
+                        ),
+                        Expanded(child: viewerButtonRow),
+                      ],
+                    )
+                  : viewerButtonRow,
+              if (settings.showOverlayThumbnailPreview && !isWallpaperMode)
+                FadeTransition(
+                  opacity: _thumbnailOpacity,
+                  child: ViewerThumbnailPreview(
+                    availableWidth: availableWidth,
+                    displayedIndex: widget.index,
+                    entries: widget.entries,
+                  ),
+                ),
+            ],
+          ),
         );
       },
     );

@@ -1,5 +1,9 @@
+import 'dart:math';
+
 import 'package:aves/model/device.dart';
+import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
+import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -124,6 +128,62 @@ class TvTileGridBottomPaddingSliver extends StatelessWidget {
     return SliverToBoxAdapter(
       child: SizedBox(
         height: device.isTelevision ? context.select<TileExtentController, double>((controller) => controller.spacing) : 0,
+      ),
+    );
+  }
+}
+
+// `MediaQuery.padding` matches cutout areas but also includes other system UI like the status bar
+// so we cannot use `SafeArea` along `MediaQuery.removePadding()` to remove cutout areas
+class SafeCutoutArea extends StatelessWidget {
+  final Animation<double>? animation;
+  final Widget child;
+
+  const SafeCutoutArea({
+    super.key,
+    this.animation,
+    required this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<EdgeInsets>(
+      valueListenable: AvesApp.cutoutInsetsNotifier,
+      builder: (context, cutoutInsets, child) {
+        return ValueListenableBuilder<double>(
+          valueListenable: animation ?? ValueNotifier(1),
+          builder: (context, factor, child) {
+            final effectiveInsets = cutoutInsets * factor;
+            return Padding(
+              padding: effectiveInsets,
+              child: MediaQueryDataProvider(
+                value: MediaQuery.of(context).removeCutoutInsets(effectiveInsets),
+                child: child!,
+              ),
+            );
+          },
+          child: child,
+        );
+      },
+      child: child,
+    );
+  }
+}
+
+extension ExtraMediaQueryData on MediaQueryData {
+  MediaQueryData removeCutoutInsets(EdgeInsets cutoutInsets) {
+    return copyWith(
+      padding: EdgeInsets.only(
+        left: max(0.0, padding.left - cutoutInsets.left),
+        top: max(0.0, padding.top - cutoutInsets.top),
+        right: max(0.0, padding.right - cutoutInsets.right),
+        bottom: max(0.0, padding.bottom - cutoutInsets.bottom),
+      ),
+      viewPadding: EdgeInsets.only(
+        left: max(0.0, viewPadding.left - cutoutInsets.left),
+        top: max(0.0, viewPadding.top - cutoutInsets.top),
+        right: max(0.0, viewPadding.right - cutoutInsets.right),
+        bottom: max(0.0, viewPadding.bottom - cutoutInsets.bottom),
       ),
     );
   }
