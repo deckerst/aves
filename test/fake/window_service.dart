@@ -20,8 +20,5 @@ class FakeWindowService extends Fake implements WindowService {
   Future<bool> isCutoutAware() => SynchronousFuture(true);
 
   @override
-  Future<void> setCutoutMode(bool use) => SynchronousFuture(null);
-
-  @override
   Future<EdgeInsets> getCutoutInsets() => SynchronousFuture(EdgeInsets.zero);
 }
