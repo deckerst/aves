@@ -77,10 +77,12 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final useTvLayout = settings.useTvLayout;
     final body = QueryProvider(
       initialQuery: null,
       child: GestureAreaProtectorStack(
-        child: SafeArea(
+        child: DirectionalSafeArea(
+          start: !useTvLayout,
           top: false,
           bottom: false,
           child: Selector<MediaQueryData, double>(
@@ -112,7 +114,7 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
       ),
     );
 
-    if (settings.useTvLayout) {
+    if (useTvLayout) {
       return Scaffold(
         body: Row(
           children: [

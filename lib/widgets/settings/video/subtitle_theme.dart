@@ -18,6 +18,7 @@ class SubtitleThemePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: !settings.useTvLayout,
         title: Text(context.l10n.settingsSubtitleThemePageTitle),
       ),
       body: SafeArea(

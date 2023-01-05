@@ -113,29 +113,31 @@ class SettingsTileDisplayForceTvLayout extends SettingsTile {
   Widget build(BuildContext context) => SettingsSwitchListTile(
         selector: (context, s) => s.forceTvLayout,
         onChanged: (v) async {
-          final confirmed = await showDialog<bool>(
-            context: context,
-            builder: (context) {
-              final l10n = context.l10n;
-              return AvesDialog(
-                content: Text([
-                  l10n.settingsModificationWarningDialogMessage,
-                  l10n.genericDangerWarningDialogMessage,
-                ].join('\n\n')),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
-                  ),
-                  TextButton(
-                    onPressed: () => Navigator.pop(context, true),
-                    child: Text(l10n.applyButtonLabel),
-                  ),
-                ],
-              );
-            },
-          );
-          if (confirmed == null || !confirmed) return;
+          if (v) {
+            final confirmed = await showDialog<bool>(
+              context: context,
+              builder: (context) {
+                final l10n = context.l10n;
+                return AvesDialog(
+                  content: Text([
+                    l10n.settingsModificationWarningDialogMessage,
+                    l10n.genericDangerWarningDialogMessage,
+                  ].join('\n\n')),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, true),
+                      child: Text(l10n.applyButtonLabel),
+                    ),
+                  ],
+                );
+              },
+            );
+            if (confirmed == null || !confirmed) return;
+          }
 
           settings.forceTvLayout = v;
         },

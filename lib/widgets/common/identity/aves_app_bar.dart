@@ -2,6 +2,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/aves_app.dart';
+import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/fx/blurred.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -32,12 +33,14 @@ class AvesAppBar extends StatelessWidget {
     return Selector<MediaQueryData, double>(
       selector: (context, mq) => mq.padding.top,
       builder: (context, mqPaddingTop, child) {
+        final useTvLayout = settings.useTvLayout;
         return SliverPersistentHeader(
-          floating: !settings.useTvLayout,
+          floating: !useTvLayout,
           pinned: false,
           delegate: _SliverAppBarDelegate(
             height: mqPaddingTop + appBarHeightForContentHeight(contentHeight),
-            child: SafeArea(
+            child: DirectionalSafeArea(
+              start: !useTvLayout,
               bottom: false,
               child: AvesFloatingBar(
                 builder: (context, backgroundColor, child) => Material(

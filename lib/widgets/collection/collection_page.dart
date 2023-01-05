@@ -82,6 +82,7 @@ class _CollectionPageState extends State<CollectionPage> {
 
   @override
   Widget build(BuildContext context) {
+    final useTvLayout = settings.useTvLayout;
     final liveFilter = _collection.filters.firstWhereOrNull((v) => v is QueryFilter && v.live) as QueryFilter?;
     return SelectionProvider<AvesEntry>(
       child: Selector<Selection<AvesEntry>, bool>(
@@ -104,11 +105,12 @@ class _CollectionPageState extends State<CollectionPage> {
                     TvNavigationPopHandler.pop,
                     _doubleBackPopHandler.pop,
                   ],
-                  child: const GestureAreaProtectorStack(
-                    child: SafeArea(
+                  child: GestureAreaProtectorStack(
+                    child: DirectionalSafeArea(
+                      start: !useTvLayout,
                       top: false,
                       bottom: false,
-                      child: CollectionGrid(
+                      child: const CollectionGrid(
                         // key is expected by test driver
                         key: Key('collection-grid'),
                         settingsRouteKey: CollectionPage.routeName,
@@ -121,7 +123,7 @@ class _CollectionPageState extends State<CollectionPage> {
           );
 
           Widget page;
-          if (settings.useTvLayout) {
+          if (useTvLayout) {
             page = Scaffold(
               body: Row(
                 children: [

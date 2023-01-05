@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/aves_app.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
@@ -185,6 +186,38 @@ extension ExtraMediaQueryData on MediaQueryData {
         right: max(0.0, viewPadding.right - cutoutInsets.right),
         bottom: max(0.0, viewPadding.bottom - cutoutInsets.bottom),
       ),
+    );
+  }
+}
+
+class DirectionalSafeArea extends StatelessWidget {
+  final bool start, top, end, bottom;
+  final EdgeInsets minimum;
+  final bool maintainBottomViewPadding;
+  final Widget child;
+
+  const DirectionalSafeArea({
+    super.key,
+    this.start = true,
+    this.top = true,
+    this.end = true,
+    this.bottom = true,
+    this.minimum = EdgeInsets.zero,
+    this.maintainBottomViewPadding = false,
+    required this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isRtl = context.isRtl;
+    return SafeArea(
+      left: isRtl ? end : start,
+      top: top,
+      right: isRtl ? start : end,
+      bottom: bottom,
+      minimum: minimum,
+      maintainBottomViewPadding: maintainBottomViewPadding,
+      child: child,
     );
   }
 }

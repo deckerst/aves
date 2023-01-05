@@ -19,6 +19,7 @@ class ThumbnailOverlayPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: !settings.useTvLayout,
         title: Text(context.l10n.settingsThumbnailOverlayPageTitle),
       ),
       body: SafeArea(
