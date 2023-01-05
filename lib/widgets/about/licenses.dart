@@ -2,6 +2,7 @@ import 'package:aves/app_flavor.dart';
 import 'package:aves/ref/brand_colors.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/utils/constants.dart';
+import 'package:aves/utils/dependencies.dart';
 import 'package:aves/widgets/common/basic/link_chip.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
@@ -24,10 +25,10 @@ class _LicensesState extends State<Licenses> {
   @override
   void initState() {
     super.initState();
-    _platform = List<Dependency>.from(Constants.androidDependencies);
-    _flutterPlugins = List<Dependency>.from(Constants.flutterPlugins(context.read<AppFlavor>()));
-    _flutterPackages = List<Dependency>.from(Constants.flutterPackages);
-    _dartPackages = List<Dependency>.from(Constants.dartPackages);
+    _platform = List<Dependency>.from(Dependencies.androidDependencies);
+    _flutterPlugins = List<Dependency>.from(Dependencies.flutterPlugins(context.read<AppFlavor>()));
+    _flutterPackages = List<Dependency>.from(Dependencies.flutterPackages);
+    _dartPackages = List<Dependency>.from(Dependencies.dartPackages);
     _sortPackages();
   }
 

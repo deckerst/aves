@@ -20,6 +20,7 @@ class AboutPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final appBarTitle = Text(context.l10n.aboutPageTitle);
+    final useTvLayout = settings.useTvLayout;
     final body = CustomScrollView(
       slivers: [
         SliverPadding(
@@ -27,7 +28,7 @@ class AboutPage extends StatelessWidget {
           sliver: SliverList(
             delegate: SliverChildListDelegate(
               [
-                const AppReference(),
+                AppReference(showLogo: !useTvLayout),
                 if (!settings.useTvLayout) ...[
                   const Divider(),
                   const BugReport(),
@@ -46,7 +47,7 @@ class AboutPage extends StatelessWidget {
       ],
     );
 
-    if (settings.useTvLayout) {
+    if (useTvLayout) {
       return Scaffold(
         body: AvesPopScope(
           handlers: const [TvNavigationPopHandler.pop],
