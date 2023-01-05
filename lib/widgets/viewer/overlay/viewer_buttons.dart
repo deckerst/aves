@@ -1,5 +1,4 @@
 import 'package:aves/model/actions/entry_actions.dart';
-import 'package:aves/model/device.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
@@ -51,7 +50,7 @@ class ViewerButtons extends StatelessWidget {
   Widget build(BuildContext context) {
     final actionDelegate = EntryActionDelegate(mainEntry, pageEntry, collection);
 
-    if (device.isTelevision) {
+    if (settings.useTvLayout) {
       return _TvButtonRowContent(
         actionDelegate: actionDelegate,
         scale: scale,

@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:aves/model/device.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
@@ -127,7 +127,7 @@ class TvTileGridBottomPaddingSliver extends StatelessWidget {
   Widget build(BuildContext context) {
     return SliverToBoxAdapter(
       child: SizedBox(
-        height: device.isTelevision ? context.select<TileExtentController, double>((controller) => controller.spacing) : 0,
+        height: settings.useTvLayout ? context.select<TileExtentController, double>((controller) => controller.spacing) : 0,
       ),
     );
   }

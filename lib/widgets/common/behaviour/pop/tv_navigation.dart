@@ -1,4 +1,3 @@
-import 'package:aves/model/device.dart';
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/enums/home_page.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -13,7 +12,7 @@ import 'package:provider/provider.dart';
 // address `TV-DB` requirement from https://developer.android.com/docs/quality-guidelines/tv-app-quality
 class TvNavigationPopHandler {
   static bool pop(BuildContext context) {
-    if (!device.isTelevision || _isHome(context)) {
+    if (!settings.useTvLayout || _isHome(context)) {
       return true;
     }
 

@@ -1,4 +1,4 @@
-import 'package:aves/model/device.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/search/route.dart';
@@ -20,7 +20,7 @@ abstract class AvesSearchDelegate extends SearchDelegate {
 
   @override
   Widget? buildLeading(BuildContext context) {
-    if (device.isTelevision) {
+    if (settings.useTvLayout) {
       return const Icon(AIcons.search);
     }
 

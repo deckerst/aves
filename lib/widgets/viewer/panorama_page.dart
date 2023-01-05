@@ -1,9 +1,9 @@
 import 'dart:math';
 
-import 'package:aves/model/device.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/entry_images.dart';
 import 'package:aves/model/panorama.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
@@ -110,7 +110,7 @@ class _PanoramaPageState extends State<PanoramaPage> {
   }
 
   Widget _buildOverlay(BuildContext context) {
-    if (device.isTelevision) return const SizedBox();
+    if (settings.useTvLayout) return const SizedBox();
 
     return TooltipTheme(
       data: TooltipTheme.of(context).copyWith(

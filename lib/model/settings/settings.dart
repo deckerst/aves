@@ -70,6 +70,7 @@ class Settings extends ChangeNotifier {
   static const themeColorModeKey = 'theme_color_mode';
   static const enableDynamicColorKey = 'dynamic_color';
   static const enableBlurEffectKey = 'enable_overlay_blur_effect';
+  static const forceTvLayoutKey = 'force_tv_layout';
 
   // navigation
   static const mustBackTwiceToExitKey = 'must_back_twice_to_exit';
@@ -240,7 +241,11 @@ class Settings extends ChangeNotifier {
       }
     }
 
-    if (device.isTelevision) {
+    applyTvSettings();
+  }
+
+  void applyTvSettings() {
+    if (settings.useTvLayout) {
       themeBrightness = AvesThemeBrightness.dark;
       mustBackTwiceToExit = false;
       // address `TV-BU` / `TV-BY` requirements from https://developer.android.com/docs/quality-guidelines/tv-app-quality
@@ -391,6 +396,12 @@ class Settings extends ChangeNotifier {
   bool get enableBlurEffect => getBool(enableBlurEffectKey) ?? SettingsDefaults.enableBlurEffect;
 
   set enableBlurEffect(bool newValue) => setAndNotify(enableBlurEffectKey, newValue);
+
+  bool get forceTvLayout => getBool(forceTvLayoutKey) ?? SettingsDefaults.forceTvLayout;
+
+  set forceTvLayout(bool newValue) => setAndNotify(forceTvLayoutKey, newValue);
+
+  bool get useTvLayout => device.isTelevision || forceTvLayout;
 
   // navigation
 

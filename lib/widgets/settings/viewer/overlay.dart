@@ -1,4 +1,3 @@
-import 'package:aves/model/device.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/settings/common/tiles.dart';
@@ -20,7 +19,7 @@ class ViewerOverlayPage extends StatelessWidget {
       body: SafeArea(
         child: ListView(
           children: [
-            if (!device.isTelevision)
+            if (!settings.useTvLayout)
               SettingsSwitchListTile(
                 selector: (context, s) => s.showOverlayOnOpening,
                 onChanged: (v) => settings.showOverlayOnOpening = v,
@@ -68,13 +67,13 @@ class ViewerOverlayPage extends StatelessWidget {
                 );
               },
             ),
-            if (!device.isTelevision)
+            if (!settings.useTvLayout)
               SettingsSwitchListTile(
                 selector: (context, s) => s.showOverlayMinimap,
                 onChanged: (v) => settings.showOverlayMinimap = v,
                 title: context.l10n.settingsViewerShowMinimap,
               ),
-            if (!device.isTelevision)
+            if (!settings.useTvLayout)
               SettingsSwitchListTile(
                 selector: (context, s) => s.showOverlayThumbnailPreview,
                 onChanged: (v) => settings.showOverlayThumbnailPreview = v,

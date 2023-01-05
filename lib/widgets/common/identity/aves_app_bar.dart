@@ -1,4 +1,3 @@
-import 'package:aves/model/device.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/durations.dart';
@@ -34,7 +33,7 @@ class AvesAppBar extends StatelessWidget {
       selector: (context, mq) => mq.padding.top,
       builder: (context, mqPaddingTop, child) {
         return SliverPersistentHeader(
-          floating: !device.isTelevision,
+          floating: !settings.useTvLayout,
           pinned: false,
           delegate: _SliverAppBarDelegate(
             height: mqPaddingTop + appBarHeightForContentHeight(contentHeight),

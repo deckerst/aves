@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:aves/app_mode.dart';
-import 'package:aves/model/device.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/favourites.dart';
 import 'package:aves/model/filters/favourite.dart';
@@ -57,7 +56,7 @@ class CollectionGrid extends StatefulWidget {
   static const double fixedExtentLayoutSpacing = 2;
   static const double mosaicLayoutSpacing = 4;
 
-  static int get columnCountDefault => device.isTelevision ? 6 : 4;
+  static int get columnCountDefault => settings.useTvLayout ? 6 : 4;
 
   const CollectionGrid({
     super.key,
@@ -176,7 +175,7 @@ class _CollectionGridContentState extends State<_CollectionGridContent> {
                                     tileLayout: tileLayout,
                                     isScrollingNotifier: _isScrollingNotifier,
                                   );
-                                  if (!device.isTelevision) return tile;
+                                  if (!settings.useTvLayout) return tile;
 
                                   return Focus(
                                     onFocusChange: (focused) {

@@ -689,7 +689,9 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
 
     await AvesApp.showSystemUI();
     AvesApp.setSystemUIStyle(context);
-    await windowService.requestOrientation();
+    if (!settings.useTvLayout) {
+      await windowService.requestOrientation();
+    }
   }
 
   // overlay

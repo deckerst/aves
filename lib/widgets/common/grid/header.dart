@@ -1,5 +1,5 @@
-import 'package:aves/model/device.dart';
 import 'package:aves/model/selection.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/section_keys.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
@@ -33,7 +33,7 @@ class SectionHeader<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget child = _buildContent(context);
-    if (device.isTelevision) {
+    if (settings.useTvLayout) {
       final colors = Theme.of(context).colorScheme;
       child = Material(
         type: MaterialType.transparency,

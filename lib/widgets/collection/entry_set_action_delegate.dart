@@ -69,7 +69,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
         return isSelecting && selectedItemCount == itemCount;
       // browsing
       case EntrySetAction.searchCollection:
-        return !device.isTelevision && appMode.canNavigate && !isSelecting;
+        return !settings.useTvLayout && appMode.canNavigate && !isSelecting;
       case EntrySetAction.toggleTitleSearch:
         return !isSelecting;
       case EntrySetAction.addShortcut:
@@ -82,7 +82,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       case EntrySetAction.stats:
         return isMain;
       case EntrySetAction.rescan:
-        return !device.isTelevision && isMain && !isTrash;
+        return !settings.useTvLayout && isMain && !isTrash;
       // selecting
       case EntrySetAction.share:
       case EntrySetAction.toggleFavourite:
