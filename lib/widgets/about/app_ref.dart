@@ -10,7 +10,12 @@ import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 class AppReference extends StatefulWidget {
-  const AppReference({super.key});
+  final bool showLogo;
+
+  const AppReference({
+    super.key,
+    required this.showLogo,
+  });
 
   @override
   State<AppReference> createState() => _AppReferenceState();
@@ -52,10 +57,12 @@ class _AppReferenceState extends State<AppReference> {
         return Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            AvesLogo(
-              size: style.fontSize! * MediaQuery.textScaleFactorOf(context) * 1.3,
-            ),
-            const SizedBox(width: 8),
+            if (widget.showLogo) ...[
+              AvesLogo(
+                size: style.fontSize! * MediaQuery.textScaleFactorOf(context) * 1.3,
+              ),
+              const SizedBox(width: 8),
+            ],
             Text(
               '${context.l10n.appName} ${snapshot.data?.version}',
               style: style,

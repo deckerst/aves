@@ -86,10 +86,15 @@ class _SettingsPageState extends State<SettingsPage> with FeedbackMixin {
                 child: Column(
                   children: [
                     const SizedBox(height: 8),
-                    AppBar(
-                      automaticallyImplyLeading: false,
-                      title: appBarTitle,
-                      elevation: 0,
+                    DirectionalSafeArea(
+                      start: false,
+                      bottom: false,
+                      child: AppBar(
+                        automaticallyImplyLeading: false,
+                        title: appBarTitle,
+                        elevation: 0,
+                        primary: false,
+                      ),
                     ),
                     Expanded(
                       child: ValueListenableBuilder<int>(

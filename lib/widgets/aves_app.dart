@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:aves/app_flavor.dart';
@@ -436,10 +437,36 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
       settings.applyTvSettings();
 
       _pageTransitionsBuilderNotifier.value = const TvPageTransitionsBuilder();
-      _tvMediaQueryModifierNotifier.value = (mq) => mq.copyWith(
-            textScaleFactor: 1.1,
-            navigationMode: NavigationMode.directional,
-          );
+      _tvMediaQueryModifierNotifier.value = (mq) {
+        // cf https://developer.android.com/training/tv/start/layouts.html#overscan
+        final screenSize = mq.size;
+        const overscanFactor = .05;
+        final overscanInsets = EdgeInsets.symmetric(
+          vertical: screenSize.shortestSide * overscanFactor,
+          horizontal: screenSize.longestSide * overscanFactor,
+        );
+        final oldViewPadding = mq.viewPadding;
+        final newViewPadding = EdgeInsets.only(
+          top: max(oldViewPadding.top, overscanInsets.top),
+          right: max(oldViewPadding.right, overscanInsets.right),
+          bottom: max(oldViewPadding.bottom, overscanInsets.bottom),
+          left: max(oldViewPadding.left, overscanInsets.left),
+        );
+        var newPadding = newViewPadding - mq.viewInsets;
+        newPadding = EdgeInsets.only(
+          top: max(0.0, newPadding.top),
+          right: max(0.0, newPadding.right),
+          bottom: max(0.0, newPadding.bottom),
+          left: max(0.0, newPadding.left),
+        );
+
+        return mq.copyWith(
+          textScaleFactor: 1.1,
+          padding: newPadding,
+          viewPadding: newViewPadding,
+          navigationMode: NavigationMode.directional,
+        );
+      };
       if (settings.forceTvLayout) {
         await windowService.requestOrientation(Orientation.landscape);
       }
