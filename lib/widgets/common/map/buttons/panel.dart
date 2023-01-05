@@ -1,4 +1,3 @@
-import 'package:aves/model/device.dart';
 import 'package:aves/model/settings/enums/map_style.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/common/services.dart';
@@ -36,7 +35,7 @@ class MapButtonPanel extends StatelessWidget {
     Widget? navigationButton;
     switch (context.select<MapThemeData, MapNavigationButton>((v) => v.navigationButton)) {
       case MapNavigationButton.back:
-        if (!device.isTelevision) {
+        if (!settings.useTvLayout) {
           navigationButton = MapOverlayButton(
             icon: const BackButtonIcon(),
             onPressed: () => Navigator.pop(context),

@@ -82,20 +82,15 @@ class _FilterBarState extends State<FilterBar> {
       // chip border clipping when the floating app bar is fading
       color: Colors.transparent,
       height: FilterBar.preferredHeight,
-      child: NotificationListener<ScrollNotification>(
-        // cancel notification bubbling so that the draggable scroll bar
-        // does not misinterpret filter bar scrolling for collection scrolling
-        onNotification: (notification) => true,
-        child: AnimatedList(
-          key: _animatedListKey,
-          initialItemCount: filters.length,
-          scrollDirection: Axis.horizontal,
-          padding: FilterBar.rowPadding,
-          itemBuilder: (context, index, animation) {
-            if (index >= filters.length) return const SizedBox();
-            return _buildChip(filters.toList()[index]);
-          },
-        ),
+      child: AnimatedList(
+        key: _animatedListKey,
+        initialItemCount: filters.length,
+        scrollDirection: Axis.horizontal,
+        padding: FilterBar.rowPadding,
+        itemBuilder: (context, index, animation) {
+          if (index >= filters.length) return const SizedBox();
+          return _buildChip(filters.toList()[index]);
+        },
       ),
     );
   }

@@ -1,4 +1,4 @@
-import 'package:aves/model/device.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/about/app_ref.dart';
 import 'package:aves/widgets/about/bug_report.dart';
 import 'package:aves/widgets/about/credits.dart';
@@ -28,7 +28,7 @@ class AboutPage extends StatelessWidget {
             delegate: SliverChildListDelegate(
               [
                 const AppReference(),
-                if (!device.isTelevision) ...[
+                if (!settings.useTvLayout) ...[
                   const Divider(),
                   const BugReport(),
                 ],
@@ -46,7 +46,8 @@ class AboutPage extends StatelessWidget {
       ],
     );
 
-    if (device.isTelevision) {
+    if (settings.useTvLayout) {
+      final isRtl = context.isRtl;
       return Scaffold(
         body: AvesPopScope(
           handlers: const [TvNavigationPopHandler.pop],
@@ -55,7 +56,13 @@ class AboutPage extends StatelessWidget {
               TvRail(
                 controller: context.read<TvRailController>(),
               ),
-              Expanded(child: body),
+              Expanded(
+                child: SafeArea(
+                  left: isRtl,
+                  right: !isRtl,
+                  child: body,
+                ),
+              ),
             ],
           ),
         ),

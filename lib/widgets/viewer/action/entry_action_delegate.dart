@@ -93,7 +93,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         case EntryAction.videoCaptureFrame:
           return canWrite && targetEntry.isVideo;
         case EntryAction.videoToggleMute:
-          return !device.isTelevision && targetEntry.isVideo;
+          return !settings.useTvLayout && targetEntry.isVideo;
         case EntryAction.videoSelectStreams:
         case EntryAction.videoSetSpeed:
         case EntryAction.videoSettings:
@@ -103,13 +103,13 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         case EntryAction.openVideo:
           return targetEntry.isVideo;
         case EntryAction.rotateScreen:
-          return !device.isTelevision && settings.isRotationLocked;
+          return !settings.useTvLayout && settings.isRotationLocked;
         case EntryAction.addShortcut:
           return device.canPinShortcut;
         case EntryAction.edit:
           return canWrite;
         case EntryAction.copyToClipboard:
-          return !device.isTelevision;
+          return !settings.useTvLayout;
         case EntryAction.info:
         case EntryAction.open:
         case EntryAction.setAs:

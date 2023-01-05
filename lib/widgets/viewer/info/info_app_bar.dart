@@ -1,6 +1,6 @@
 import 'package:aves/model/actions/entry_actions.dart';
-import 'package:aves/model/device.dart';
 import 'package:aves/model/entry.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
@@ -37,7 +37,7 @@ class InfoAppBar extends StatelessWidget {
     final formatSpecificActions = EntryActions.formatSpecificMetadataActions.where((v) => actionDelegate.isVisible(entry, v));
 
     return SliverAppBar(
-      leading: device.isTelevision
+      leading: settings.useTvLayout
           ? null
           : IconButton(
               // key is expected by test driver

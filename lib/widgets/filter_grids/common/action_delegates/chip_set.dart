@@ -1,7 +1,6 @@
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/actions/chip_set_actions.dart';
 import 'package:aves/model/covers.dart';
-import 'package:aves/model/device.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
@@ -83,7 +82,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
         return isSelecting && selectedItemCount == itemCount;
       // browsing
       case ChipSetAction.search:
-        return !device.isTelevision && appMode.canNavigate && !isSelecting;
+        return !settings.useTvLayout && appMode.canNavigate && !isSelecting;
       case ChipSetAction.toggleTitleSearch:
         return !isSelecting;
       case ChipSetAction.createAlbum:

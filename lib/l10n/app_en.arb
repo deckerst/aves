@@ -656,6 +656,7 @@
   "settingsSystemDefault": "System default",
   "settingsDefault": "Default",
   "settingsDisabled": "Disabled",
+  "settingsModificationWarningDialogMessage": "Other settings will be modified.",
 
   "settingsSearchFieldLabel": "Search settings",
   "settingsSearchEmpty": "No matching setting",
@@ -816,6 +817,7 @@
   "settingsThemeEnableDynamicColor": "Dynamic color",
   "settingsDisplayRefreshRateModeTile": "Display refresh rate",
   "settingsDisplayRefreshRateModeDialogTitle": "Refresh Rate",
+  "settingsDisplayUseTvInterface": "Android TV interface",
 
   "settingsLanguageSectionTitle": "Language & Formats",
   "settingsLanguageTile": "Language",

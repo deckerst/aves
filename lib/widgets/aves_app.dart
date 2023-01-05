@@ -416,17 +416,20 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     final stopwatch = Stopwatch()..start();
 
     await device.init();
-    if (device.isTelevision) {
+    await mobileServices.init();
+    await settings.init(monitorPlatformSettings: true);
+    settings.isRotationLocked = await windowService.isRotationLocked();
+    settings.areAnimationsRemoved = await AccessibilityService.areAnimationsRemoved();
+    if (settings.useTvLayout) {
       _pageTransitionsBuilderNotifier.value = const TvPageTransitionsBuilder();
       _tvMediaQueryModifierNotifier.value = (mq) => mq.copyWith(
             textScaleFactor: 1.1,
             navigationMode: NavigationMode.directional,
           );
+      if (settings.forceTvLayout) {
+        await windowService.requestOrientation(Orientation.landscape);
+      }
     }
-    await mobileServices.init();
-    await settings.init(monitorPlatformSettings: true);
-    settings.isRotationLocked = await windowService.isRotationLocked();
-    settings.areAnimationsRemoved = await AccessibilityService.areAnimationsRemoved();
     _monitorSettings();
 
     FijkLog.setLevel(FijkLogLevel.Warn);
@@ -448,15 +451,28 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     void applyKeepScreenOn() => settings.keepScreenOn.apply();
 
     void applyIsRotationLocked() {
-      if (!settings.isRotationLocked) {
+      if (!settings.isRotationLocked && !settings.useTvLayout) {
         windowService.requestOrientation();
       }
+    }
+
+    void applyForceTvLayout() {
+      settings.applyTvSettings();
+      windowService.requestOrientation(settings.forceTvLayout ? Orientation.landscape : null);
+      AvesApp.navigatorKey.currentState!.pushAndRemoveUntil(
+        MaterialPageRoute(
+          settings: const RouteSettings(name: HomePage.routeName),
+          builder: (_) => _getFirstPage(),
+        ),
+        (route) => false,
+      );
     }
 
     settings.updateStream.where((event) => event.key == Settings.isInstalledAppAccessAllowedKey).listen((_) => applyIsInstalledAppAccessAllowed());
     settings.updateStream.where((event) => event.key == Settings.displayRefreshRateModeKey).listen((_) => applyDisplayRefreshRateMode());
     settings.updateStream.where((event) => event.key == Settings.keepScreenOnKey).listen((_) => applyKeepScreenOn());
     settings.updateStream.where((event) => event.key == Settings.platformAccelerometerRotationKey).listen((_) => applyIsRotationLocked());
+    settings.updateStream.where((event) => event.key == Settings.forceTvLayoutKey).listen((_) => applyForceTvLayout());
 
     applyDisplayRefreshRateMode();
     applyKeepScreenOn();

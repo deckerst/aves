@@ -1,5 +1,4 @@
 import 'package:aves/app_flavor.dart';
-import 'package:aves/model/device.dart';
 import 'package:aves/model/settings/defaults.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
@@ -71,7 +70,7 @@ class _WelcomePageState extends State<WelcomePage> {
                       child: child,
                     ),
                   ),
-                  children: device.isTelevision
+                  children: settings.useTvLayout
                       ? [
                           ..._buildHeader(context, isPortrait: isPortrait),
                           Padding(

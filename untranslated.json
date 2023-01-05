@@ -387,6 +387,7 @@
     "settingsSystemDefault",
     "settingsDefault",
     "settingsDisabled",
+    "settingsModificationWarningDialogMessage",
     "settingsSearchFieldLabel",
     "settingsSearchEmpty",
     "settingsActionExport",
@@ -526,6 +527,7 @@
     "settingsThemeEnableDynamicColor",
     "settingsDisplayRefreshRateModeTile",
     "settingsDisplayRefreshRateModeDialogTitle",
+    "settingsDisplayUseTvInterface",
     "settingsLanguageSectionTitle",
     "settingsLanguageTile",
     "settingsLanguagePageTitle",
@@ -592,21 +594,29 @@
   ],
 
   "cs": [
-    "settingsViewerShowDescription"
+    "settingsModificationWarningDialogMessage",
+    "settingsViewerShowDescription",
+    "settingsDisplayUseTvInterface"
   ],
 
   "de": [
     "columnCount",
+    "settingsModificationWarningDialogMessage",
     "settingsViewerShowDescription",
-    "settingsAccessibilityShowPinchGestureAlternatives"
+    "settingsAccessibilityShowPinchGestureAlternatives",
+    "settingsDisplayUseTvInterface"
   ],
 
   "el": [
-    "settingsViewerShowDescription"
+    "settingsModificationWarningDialogMessage",
+    "settingsViewerShowDescription",
+    "settingsDisplayUseTvInterface"
   ],
 
   "es": [
-    "settingsViewerShowDescription"
+    "settingsModificationWarningDialogMessage",
+    "settingsViewerShowDescription",
+    "settingsDisplayUseTvInterface"
   ],
 
   "fa": [
@@ -867,6 +877,7 @@
     "settingsSystemDefault",
     "settingsDefault",
     "settingsDisabled",
+    "settingsModificationWarningDialogMessage",
     "settingsSearchFieldLabel",
     "settingsSearchEmpty",
     "settingsActionImport",
@@ -1002,6 +1013,7 @@
     "settingsThemeEnableDynamicColor",
     "settingsDisplayRefreshRateModeTile",
     "settingsDisplayRefreshRateModeDialogTitle",
+    "settingsDisplayUseTvInterface",
     "settingsLanguageSectionTitle",
     "settingsLanguageTile",
     "settingsLanguagePageTitle",
@@ -1072,6 +1084,11 @@
     "filePickerOpenFrom",
     "filePickerNoItems",
     "filePickerUseThisFolder"
+  ],
+
+  "fr": [
+    "settingsModificationWarningDialogMessage",
+    "settingsDisplayUseTvInterface"
   ],
 
   "gl": [
@@ -1329,6 +1346,7 @@
     "settingsSystemDefault",
     "settingsDefault",
     "settingsDisabled",
+    "settingsModificationWarningDialogMessage",
     "settingsSearchFieldLabel",
     "settingsSearchEmpty",
     "settingsActionExport",
@@ -1468,6 +1486,7 @@
     "settingsThemeEnableDynamicColor",
     "settingsDisplayRefreshRateModeTile",
     "settingsDisplayRefreshRateModeDialogTitle",
+    "settingsDisplayUseTvInterface",
     "settingsLanguageSectionTitle",
     "settingsLanguageTile",
     "settingsLanguagePageTitle",
@@ -1543,11 +1562,15 @@
   ],
 
   "id": [
-    "settingsViewerShowDescription"
+    "settingsModificationWarningDialogMessage",
+    "settingsViewerShowDescription",
+    "settingsDisplayUseTvInterface"
   ],
 
   "it": [
-    "settingsViewerShowDescription"
+    "settingsModificationWarningDialogMessage",
+    "settingsViewerShowDescription",
+    "settingsDisplayUseTvInterface"
   ],
 
   "ja": [
@@ -1559,16 +1582,25 @@
     "keepScreenOnVideoPlayback",
     "subtitlePositionTop",
     "subtitlePositionBottom",
+    "settingsModificationWarningDialogMessage",
     "settingsViewerShowDescription",
     "settingsAccessibilityShowPinchGestureAlternatives",
+    "settingsDisplayUseTvInterface",
     "settingsWidgetDisplayedItem"
+  ],
+
+  "ko": [
+    "settingsModificationWarningDialogMessage",
+    "settingsDisplayUseTvInterface"
   ],
 
   "lt": [
     "columnCount",
     "keepScreenOnVideoPlayback",
+    "settingsModificationWarningDialogMessage",
     "settingsViewerShowDescription",
-    "settingsAccessibilityShowPinchGestureAlternatives"
+    "settingsAccessibilityShowPinchGestureAlternatives",
+    "settingsDisplayUseTvInterface"
   ],
 
   "nb": [
@@ -1577,8 +1609,10 @@
     "entryActionShareVideoOnly",
     "entryInfoActionRemoveLocation",
     "keepScreenOnVideoPlayback",
+    "settingsModificationWarningDialogMessage",
     "settingsViewerShowDescription",
-    "settingsAccessibilityShowPinchGestureAlternatives"
+    "settingsAccessibilityShowPinchGestureAlternatives",
+    "settingsDisplayUseTvInterface"
   ],
 
   "nl": [
@@ -1595,11 +1629,13 @@
     "subtitlePositionBottom",
     "widgetDisplayedItemRandom",
     "widgetDisplayedItemMostRecent",
+    "settingsModificationWarningDialogMessage",
     "settingsViewerShowRatingTags",
     "settingsViewerShowDescription",
     "settingsSubtitleThemeTextPositionTile",
     "settingsSubtitleThemeTextPositionDialogTitle",
     "settingsAccessibilityShowPinchGestureAlternatives",
+    "settingsDisplayUseTvInterface",
     "settingsWidgetDisplayedItem"
   ],
 
@@ -1841,6 +1877,7 @@
     "settingsSystemDefault",
     "settingsDefault",
     "settingsDisabled",
+    "settingsModificationWarningDialogMessage",
     "settingsSearchFieldLabel",
     "settingsSearchEmpty",
     "settingsActionExport",
@@ -1980,6 +2017,7 @@
     "settingsThemeEnableDynamicColor",
     "settingsDisplayRefreshRateModeTile",
     "settingsDisplayRefreshRateModeDialogTitle",
+    "settingsDisplayUseTvInterface",
     "settingsLanguageSectionTitle",
     "settingsLanguageTile",
     "settingsLanguagePageTitle",
@@ -2349,6 +2387,7 @@
     "settingsSystemDefault",
     "settingsDefault",
     "settingsDisabled",
+    "settingsModificationWarningDialogMessage",
     "settingsSearchFieldLabel",
     "settingsSearchEmpty",
     "settingsActionExport",
@@ -2488,6 +2527,7 @@
     "settingsThemeEnableDynamicColor",
     "settingsDisplayRefreshRateModeTile",
     "settingsDisplayRefreshRateModeDialogTitle",
+    "settingsDisplayUseTvInterface",
     "settingsLanguageSectionTitle",
     "settingsLanguageTile",
     "settingsLanguagePageTitle",
@@ -2576,16 +2616,25 @@
     "subtitlePositionBottom",
     "widgetDisplayedItemRandom",
     "widgetDisplayedItemMostRecent",
+    "settingsModificationWarningDialogMessage",
     "settingsViewerShowRatingTags",
     "settingsViewerShowDescription",
     "settingsSubtitleThemeTextPositionTile",
     "settingsSubtitleThemeTextPositionDialogTitle",
     "settingsAccessibilityShowPinchGestureAlternatives",
+    "settingsDisplayUseTvInterface",
     "settingsWidgetDisplayedItem"
   ],
 
   "ro": [
-    "settingsViewerShowDescription"
+    "settingsModificationWarningDialogMessage",
+    "settingsViewerShowDescription",
+    "settingsDisplayUseTvInterface"
+  ],
+
+  "ru": [
+    "settingsModificationWarningDialogMessage",
+    "settingsDisplayUseTvInterface"
   ],
 
   "th": [
@@ -2718,6 +2767,7 @@
     "settingsSystemDefault",
     "settingsDefault",
     "settingsDisabled",
+    "settingsModificationWarningDialogMessage",
     "settingsSearchFieldLabel",
     "settingsSearchEmpty",
     "settingsActionExport",
@@ -2857,6 +2907,7 @@
     "settingsThemeEnableDynamicColor",
     "settingsDisplayRefreshRateModeTile",
     "settingsDisplayRefreshRateModeDialogTitle",
+    "settingsDisplayUseTvInterface",
     "settingsLanguageSectionTitle",
     "settingsLanguageTile",
     "settingsLanguagePageTitle",
@@ -2932,21 +2983,29 @@
   ],
 
   "tr": [
-    "settingsViewerShowDescription"
+    "settingsModificationWarningDialogMessage",
+    "settingsViewerShowDescription",
+    "settingsDisplayUseTvInterface"
   ],
 
   "uk": [
-    "settingsViewerShowDescription"
+    "settingsModificationWarningDialogMessage",
+    "settingsViewerShowDescription",
+    "settingsDisplayUseTvInterface"
   ],
 
   "zh": [
+    "settingsModificationWarningDialogMessage",
     "settingsViewerShowDescription",
-    "settingsAccessibilityShowPinchGestureAlternatives"
+    "settingsAccessibilityShowPinchGestureAlternatives",
+    "settingsDisplayUseTvInterface"
   ],
 
   "zh_Hant": [
     "columnCount",
+    "settingsModificationWarningDialogMessage",
     "settingsViewerShowDescription",
-    "settingsAccessibilityShowPinchGestureAlternatives"
+    "settingsAccessibilityShowPinchGestureAlternatives",
+    "settingsDisplayUseTvInterface"
   ]
 }

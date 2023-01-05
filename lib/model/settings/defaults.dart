@@ -24,6 +24,7 @@ class SettingsDefaults {
   static const themeColorMode = AvesThemeColorMode.polychrome;
   static const enableDynamicColor = false;
   static const enableBlurEffect = true; // `enableBlurEffect` has a contextual default value
+  static const forceTvLayout = false;
 
   // navigation
   static const mustBackTwiceToExit = true;

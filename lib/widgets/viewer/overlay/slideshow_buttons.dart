@@ -1,5 +1,5 @@
 import 'package:aves/model/actions/slideshow_actions.dart';
-import 'package:aves/model/device.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/common/identity/buttons/captioned_button.dart';
 import 'package:aves/widgets/common/identity/buttons/overlay_button.dart';
 import 'package:aves/widgets/viewer/entry_vertical_pager.dart';
@@ -70,9 +70,9 @@ class _SlideshowButtonsState extends State<SlideshowButtons> {
   Widget build(BuildContext context) {
     return FocusableActionDetector(
       focusNode: _buttonRowFocusScopeNode,
-      shortcuts: device.isTelevision ? const {SingleActivator(LogicalKeyboardKey.arrowUp): TvShowLessInfoIntent()} : null,
+      shortcuts: settings.useTvLayout ? const {SingleActivator(LogicalKeyboardKey.arrowUp): TvShowLessInfoIntent()} : null,
       actions: {TvShowLessInfoIntent: CallbackAction<Intent>(onInvoke: (intent) => TvShowLessInfoNotification().dispatch(context))},
-      child: device.isTelevision
+      child: settings.useTvLayout
           ? Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,

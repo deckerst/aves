@@ -151,70 +151,75 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     final selection = context.watch<Selection<AvesEntry>>();
     final isSelecting = selection.isSelecting;
     _isSelectingNotifier.value = isSelecting;
-    return AnimatedBuilder(
-      animation: collection.filterChangeNotifier,
-      builder: (context, child) {
-        final removableFilters = appMode != AppMode.pickMediaInternal;
-        return Selector<Query, bool>(
-          selector: (context, query) => query.enabled,
-          builder: (context, queryEnabled, child) {
-            return Selector<Settings, List<EntrySetAction>>(
-              selector: (context, s) => s.collectionBrowsingQuickActions,
-              builder: (context, _, child) {
-                final isTelevision = device.isTelevision;
-                final actions = _buildActions(context, selection);
-                final onFilterTap = removableFilters ? collection.removeFilter : null;
-                return AvesAppBar(
-                  contentHeight: appBarContentHeight,
-                  leading: _buildAppBarLeading(
-                    hasDrawer: appMode.canNavigate,
-                    isSelecting: isSelecting,
-                  ),
-                  title: _buildAppBarTitle(isSelecting),
-                  actions: isTelevision ? [] : actions,
-                  bottom: Column(
-                    children: [
-                      if (isTelevision)
-                        SizedBox(
-                          height: CaptionedButton.getTelevisionButtonHeight(context),
-                          child: ListView(
-                            padding: const EdgeInsets.symmetric(horizontal: 8),
-                            scrollDirection: Axis.horizontal,
-                            children: actions,
+    return NotificationListener<ScrollNotification>(
+      // cancel notification bubbling so that the draggable scroll bar
+      // does not misinterpret filter bar scrolling for collection scrolling
+      onNotification: (notification) => true,
+      child: AnimatedBuilder(
+        animation: collection.filterChangeNotifier,
+        builder: (context, child) {
+          final removableFilters = appMode != AppMode.pickMediaInternal;
+          return Selector<Query, bool>(
+            selector: (context, query) => query.enabled,
+            builder: (context, queryEnabled, child) {
+              return Selector<Settings, List<EntrySetAction>>(
+                selector: (context, s) => s.collectionBrowsingQuickActions,
+                builder: (context, _, child) {
+                  final useTvLayout = settings.useTvLayout;
+                  final actions = _buildActions(context, selection);
+                  final onFilterTap = removableFilters ? collection.removeFilter : null;
+                  return AvesAppBar(
+                    contentHeight: appBarContentHeight,
+                    leading: _buildAppBarLeading(
+                      hasDrawer: appMode.canNavigate,
+                      isSelecting: isSelecting,
+                    ),
+                    title: _buildAppBarTitle(isSelecting),
+                    actions: useTvLayout ? [] : actions,
+                    bottom: Column(
+                      children: [
+                        if (useTvLayout)
+                          SizedBox(
+                            height: CaptionedButton.getTelevisionButtonHeight(context),
+                            child: ListView(
+                              padding: const EdgeInsets.symmetric(horizontal: 8),
+                              scrollDirection: Axis.horizontal,
+                              children: actions,
+                            ),
                           ),
-                        ),
-                      if (showFilterBar)
-                        NotificationListener<ReverseFilterNotification>(
-                          onNotification: (notification) {
-                            collection.addFilter(notification.reversedFilter);
-                            return true;
-                          },
-                          child: FilterBar(
-                            filters: visibleFilters,
-                            onTap: onFilterTap,
-                            onRemove: onFilterTap,
+                        if (showFilterBar)
+                          NotificationListener<ReverseFilterNotification>(
+                            onNotification: (notification) {
+                              collection.addFilter(notification.reversedFilter);
+                              return true;
+                            },
+                            child: FilterBar(
+                              filters: visibleFilters,
+                              onTap: onFilterTap,
+                              onRemove: onFilterTap,
+                            ),
                           ),
-                        ),
-                      if (queryEnabled)
-                        EntryQueryBar(
-                          queryNotifier: context.select<Query, ValueNotifier<String>>((query) => query.queryNotifier),
-                          focusNode: _queryBarFocusNode,
-                        ),
-                    ],
-                  ),
-                  transitionKey: isSelecting,
-                );
-              },
-            );
-          },
-        );
-      },
+                        if (queryEnabled)
+                          EntryQueryBar(
+                            queryNotifier: context.select<Query, ValueNotifier<String>>((query) => query.queryNotifier),
+                            focusNode: _queryBarFocusNode,
+                          ),
+                      ],
+                    ),
+                    transitionKey: isSelecting,
+                  );
+                },
+              );
+            },
+          );
+        },
+      ),
     );
   }
 
   double get appBarContentHeight {
     double height = kToolbarHeight;
-    if (device.isTelevision) {
+    if (settings.useTvLayout) {
       height += CaptionedButton.getTelevisionButtonHeight(context);
     }
     if (showFilterBar) {
@@ -227,7 +232,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   }
 
   Widget? _buildAppBarLeading({required bool hasDrawer, required bool isSelecting}) {
-    if (device.isTelevision) return null;
+    if (settings.useTvLayout) return null;
 
     if (!hasDrawer) {
       return const CloseButton();
@@ -309,7 +314,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
           selectedItemCount: selectedItemCount,
         );
 
-    return device.isTelevision
+    return settings.useTvLayout
         ? _buildTelevisionActions(
             context: context,
             appMode: appMode,

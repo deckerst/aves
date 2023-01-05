@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:aves/app_mode.dart';
-import 'package:aves/model/device.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/query.dart';
@@ -122,7 +121,7 @@ class _CollectionPageState extends State<CollectionPage> {
           );
 
           Widget page;
-          if (device.isTelevision) {
+          if (settings.useTvLayout) {
             page = Scaffold(
               body: Row(
                 children: [

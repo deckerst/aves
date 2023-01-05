@@ -109,25 +109,28 @@ class _TvRailState extends State<TvRail> {
       ),
     );
 
-    return Column(
-      children: [
-        const SizedBox(height: 8),
-        header,
-        const SizedBox(height: 4),
-        Expanded(
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              return SingleChildScrollView(
-                controller: _scrollController,
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                  child: IntrinsicHeight(child: rail),
-                ),
-              );
-            },
+    return SafeArea(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const SizedBox(height: 8),
+          header,
+          const SizedBox(height: 4),
+          Expanded(
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                return SingleChildScrollView(
+                  controller: _scrollController,
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                    child: IntrinsicHeight(child: rail),
+                  ),
+                );
+              },
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 

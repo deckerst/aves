@@ -1,16 +1,21 @@
 package deckers.thibault.aves.channel.calls
 
+import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
 import android.media.session.PlaybackState
 import android.net.Uri
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
+import android.view.KeyEvent
+import androidx.media.session.MediaButtonReceiver
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safeSuspend
 import deckers.thibault.aves.utils.FlutterUtils
 import deckers.thibault.aves.utils.LogUtils
+import deckers.thibault.aves.utils.getParcelableExtraCompat
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
@@ -74,7 +79,9 @@ class MediaSessionHandler(private val context: Context) : MethodCallHandler {
 
         var session = sessions[uri]
         if (session == null) {
-            session = MediaSessionCompat(context, "aves-$uri")
+            val mbrIntent = MediaButtonReceiver.buildMediaButtonPendingIntent(context, PlaybackStateCompat.ACTION_PLAY_PAUSE)
+            val mbrName = ComponentName(context, MediaButtonReceiver::class.java)
+            session = MediaSessionCompat(context, "aves-$uri", mbrName, mbrIntent)
             sessions[uri] = session
 
             val metadata = MediaMetadataCompat.Builder()
@@ -86,6 +93,12 @@ class MediaSessionHandler(private val context: Context) : MethodCallHandler {
             session.setMetadata(metadata)
 
             val callback: MediaSessionCompat.Callback = object : MediaSessionCompat.Callback() {
+                override fun onMediaButtonEvent(mediaButtonEvent: Intent): Boolean {
+                    val keyEvent = mediaButtonEvent.getParcelableExtraCompat<KeyEvent?>(Intent.EXTRA_KEY_EVENT) ?: return false
+                    Log.d(LOG_TAG, "TLAD onMediaButtonEvent keyEvent=$keyEvent")
+                    return super.onMediaButtonEvent(mediaButtonEvent)
+                }
+
                 override fun onPlay() {
                     super.onPlay()
                     Log.d(LOG_TAG, "TLAD onPlay uri=$uri")

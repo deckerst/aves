@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:aves/app_mode.dart';
-import 'package:aves/model/device.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/highlight.dart';
 import 'package:aves/model/query.dart';
@@ -113,7 +112,7 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
       ),
     );
 
-    if (device.isTelevision) {
+    if (settings.useTvLayout) {
       return Scaffold(
         body: Row(
           children: [
@@ -202,7 +201,7 @@ class _FilterGridState<T extends CollectionFilter> extends State<_FilterGrid<T>>
   Widget build(BuildContext context) {
     _tileExtentController ??= TileExtentController(
       settingsRouteKey: widget.settingsRouteKey ?? context.currentRouteName!,
-      columnCountDefault: device.isTelevision ? 4 : 3,
+      columnCountDefault: settings.useTvLayout ? 4 : 3,
       extentMin: 60,
       extentMax: 300,
       spacing: 8,
@@ -356,7 +355,7 @@ class _FilterGridContentState<T extends CollectionFilter> extends State<_FilterG
                                   banner: _getFilterBanner(context, gridItem.filter),
                                   heroType: widget.heroType,
                                 );
-                                if (!device.isTelevision) return tile;
+                                if (!settings.useTvLayout) return tile;
 
                                 return Focus(
                                   onFocusChange: (focused) {

@@ -3,7 +3,7 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:aves/model/actions/settings_actions.dart';
-import 'package:aves/model/device.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/services.dart';
@@ -73,7 +73,7 @@ class _SettingsPageState extends State<SettingsPage> with FeedbackMixin {
   Widget build(BuildContext context) {
     final appBarTitle = Text(context.l10n.settingsPageTitle);
 
-    if (device.isTelevision) {
+    if (settings.useTvLayout) {
       return Scaffold(
         body: AvesPopScope(
           handlers: const [TvNavigationPopHandler.pop],

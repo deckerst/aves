@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:aves/app_mode.dart';
-import 'package:aves/model/device.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
@@ -186,7 +185,7 @@ class _BottomOverlayContentState extends State<_BottomOverlayContent> {
         final viewInsetsPadding = (widget.viewInsets ?? EdgeInsets.zero) + (widget.viewPadding ?? EdgeInsets.zero);
         final viewerButtonRow = FocusableActionDetector(
           focusNode: _buttonRowFocusScopeNode,
-          shortcuts: device.isTelevision ? const {SingleActivator(LogicalKeyboardKey.arrowUp): TvShowLessInfoIntent()} : null,
+          shortcuts: settings.useTvLayout ? const {SingleActivator(LogicalKeyboardKey.arrowUp): TvShowLessInfoIntent()} : null,
           actions: {TvShowLessInfoIntent: CallbackAction<Intent>(onInvoke: (intent) => TvShowLessInfoNotification().dispatch(context))},
           child: SafeArea(
             top: false,
