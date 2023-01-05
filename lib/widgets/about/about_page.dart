@@ -47,7 +47,6 @@ class AboutPage extends StatelessWidget {
     );
 
     if (settings.useTvLayout) {
-      final isRtl = context.isRtl;
       return Scaffold(
         body: AvesPopScope(
           handlers: const [TvNavigationPopHandler.pop],
@@ -57,9 +56,8 @@ class AboutPage extends StatelessWidget {
                 controller: context.read<TvRailController>(),
               ),
               Expanded(
-                child: SafeArea(
-                  left: isRtl,
-                  right: !isRtl,
+                child: DirectionalSafeArea(
+                  start: false,
                   child: body,
                 ),
               ),

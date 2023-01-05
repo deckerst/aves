@@ -12,14 +12,16 @@ class ViewerOverlayPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final useTvLayout = settings.useTvLayout;
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: !useTvLayout,
         title: Text(context.l10n.settingsViewerOverlayPageTitle),
       ),
       body: SafeArea(
         child: ListView(
           children: [
-            if (!settings.useTvLayout)
+            if (!useTvLayout)
               SettingsSwitchListTile(
                 selector: (context, s) => s.showOverlayOnOpening,
                 onChanged: (v) => settings.showOverlayOnOpening = v,
@@ -67,13 +69,13 @@ class ViewerOverlayPage extends StatelessWidget {
                 );
               },
             ),
-            if (!settings.useTvLayout)
+            if (!useTvLayout)
               SettingsSwitchListTile(
                 selector: (context, s) => s.showOverlayMinimap,
                 onChanged: (v) => settings.showOverlayMinimap = v,
                 title: context.l10n.settingsViewerShowMinimap,
               ),
-            if (!settings.useTvLayout)
+            if (!useTvLayout)
               SettingsSwitchListTile(
                 selector: (context, s) => s.showOverlayThumbnailPreview,
                 onChanged: (v) => settings.showOverlayThumbnailPreview = v,

@@ -36,6 +36,7 @@ class HiddenItemsPage extends StatelessWidget {
       length: tabs.length,
       child: Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading: !settings.useTvLayout,
           title: Text(l10n.settingsHiddenItemsPageTitle),
           bottom: TabBar(
             tabs: tabs.map((t) => t.item1).toList(),

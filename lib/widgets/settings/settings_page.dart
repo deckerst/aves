@@ -106,6 +106,7 @@ class _SettingsPageState extends State<SettingsPage> with FeedbackMixin {
                                 .toList(),
                             selectedIndex: selectedIndex,
                             onDestinationSelected: (index) => _tvSelectedIndexNotifier.value = index,
+                            minExtendedWidth: TvRail.minExtendedWidth,
                           );
                           return LayoutBuilder(
                             builder: (context, constraints) {
@@ -118,8 +119,13 @@ class _SettingsPageState extends State<SettingsPage> with FeedbackMixin {
                                     ),
                                   ),
                                   Expanded(
-                                    child: _SettingsSectionBody(
-                                      loader: Future.value(sections[selectedIndex].tiles(context)),
+                                    child: MediaQuery.removePadding(
+                                      context: context,
+                                      removeLeft: !context.isRtl,
+                                      removeRight: context.isRtl,
+                                      child: _SettingsSectionBody(
+                                        loader: Future.value(sections[selectedIndex].tiles(context)),
+                                      ),
                                     ),
                                   ),
                                 ],
