@@ -256,43 +256,71 @@ class _StatsPageState extends State<StatsPage> {
 
     final totalEntryCount = entries.length;
     final hasMore = maxRowCount != null && entryCountMap.length > maxRowCount;
-    return [
-      Padding(
+    final onHeaderPressed = hasMore
+        ? () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                settings: const RouteSettings(name: StatsTopPage.routeName),
+                builder: (context) => StatsTopPage(
+                  title: title,
+                  tableBuilder: (context) => FilterTable(
+                    totalEntryCount: totalEntryCount,
+                    entryCountMap: entryCountMap,
+                    filterBuilder: filterBuilder,
+                    sortByCount: sortByCount,
+                    maxRowCount: null,
+                    onFilterSelection: (filter) => _onFilterSelection(context, filter),
+                  ),
+                  onFilterSelection: (filter) => _onFilterSelection(context, filter),
+                ),
+              ),
+            )
+        : null;
+    Widget header = Text(
+      title,
+      style: Constants.knownTitleTextStyle,
+    );
+    if (settings.useTvLayout) {
+      final colors = Theme.of(context).colorScheme;
+      header = Container(
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        alignment: AlignmentDirectional.centerStart,
+        child: Material(
+          type: MaterialType.transparency,
+          child: InkResponse(
+            onTap: onHeaderPressed,
+            onHover: (_) {},
+            highlightShape: BoxShape.rectangle,
+            borderRadius: const BorderRadius.all(Radius.circular(123)),
+            containedInkWell: true,
+            splashColor: colors.primary.withOpacity(0.12),
+            hoverColor: colors.primary.withOpacity(0.04),
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: header,
+            ),
+          ),
+        ),
+      );
+    } else {
+      header = Padding(
         padding: const EdgeInsets.all(16),
         child: Row(
           children: [
-            Text(
-              title,
-              style: Constants.knownTitleTextStyle,
-            ),
+            header,
             const Spacer(),
             IconButton(
               icon: const Icon(AIcons.next),
-              onPressed: hasMore
-                  ? () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          settings: const RouteSettings(name: StatsTopPage.routeName),
-                          builder: (context) => StatsTopPage(
-                            title: title,
-                            tableBuilder: (context) => FilterTable(
-                              totalEntryCount: totalEntryCount,
-                              entryCountMap: entryCountMap,
-                              filterBuilder: filterBuilder,
-                              sortByCount: sortByCount,
-                              maxRowCount: null,
-                              onFilterSelection: (filter) => _onFilterSelection(context, filter),
-                            ),
-                            onFilterSelection: (filter) => _onFilterSelection(context, filter),
-                          ),
-                        ),
-                      )
-                  : null,
+              onPressed: onHeaderPressed,
               tooltip: MaterialLocalizations.of(context).moreButtonTooltip,
             ),
           ],
         ),
-      ),
+      );
+    }
+
+    return [
+      header,
       FilterTable(
         totalEntryCount: totalEntryCount,
         entryCountMap: entryCountMap,

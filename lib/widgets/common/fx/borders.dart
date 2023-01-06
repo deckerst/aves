@@ -13,15 +13,15 @@ class AvesBorder {
   // 1 device pixel for curves is too thin
   static double get curvedBorderWidth => window.devicePixelRatio > 2 ? 0.5 : 1.0;
 
-  static BorderSide straightSide(BuildContext context) => BorderSide(
+  static BorderSide straightSide(BuildContext context, {double? width}) => BorderSide(
         color: _borderColor(context),
-        width: straightBorderWidth,
+        width: width ?? straightBorderWidth,
       );
 
-  static BorderSide curvedSide(BuildContext context) => BorderSide(
+  static BorderSide curvedSide(BuildContext context, {double? width}) => BorderSide(
         color: _borderColor(context),
-        width: curvedBorderWidth,
+        width: width ?? curvedBorderWidth,
       );
 
-  static Border border(BuildContext context) => Border.fromBorderSide(curvedSide(context));
+  static Border border(BuildContext context, {double? width}) => Border.fromBorderSide(curvedSide(context, width: width));
 }

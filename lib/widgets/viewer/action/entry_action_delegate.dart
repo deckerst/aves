@@ -87,7 +87,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         case EntryAction.print:
           return device.canPrint && !targetEntry.isVideo;
         case EntryAction.openMap:
-          return targetEntry.hasGps;
+          return !settings.useTvLayout && targetEntry.hasGps;
         case EntryAction.viewSource:
           return targetEntry.isSvg;
         case EntryAction.videoCaptureFrame:
@@ -109,9 +109,9 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         case EntryAction.edit:
           return canWrite;
         case EntryAction.copyToClipboard:
+        case EntryAction.open:
           return !settings.useTvLayout;
         case EntryAction.info:
-        case EntryAction.open:
         case EntryAction.setAs:
         case EntryAction.share:
           return true;

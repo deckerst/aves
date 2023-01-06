@@ -288,7 +288,13 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
     ].where(isVisible).map((action) {
       final enabled = canApply(action);
       return CaptionedButton(
-        iconButton: _buildButtonIcon(context, actionDelegate, action, enabled: enabled),
+        iconButtonBuilder: (context, focusNode) => _buildButtonIcon(
+          context,
+          actionDelegate,
+          action,
+          enabled: enabled,
+          focusNode: focusNode,
+        ),
         captionText: _buildButtonCaption(context, action, enabled: enabled),
         onPressed: enabled ? () => _onActionSelected(context, action, actionDelegate) : null,
       );
@@ -350,6 +356,7 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
     CSAD actionDelegate,
     ChipSetAction action, {
     required bool enabled,
+    FocusNode? focusNode,
   }) {
     final onPressed = enabled ? () => _onActionSelected(context, action, actionDelegate) : null;
     switch (action) {
@@ -360,6 +367,7 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
           builder: (context, queryEnabled, child) {
             return TitleSearchToggler(
               queryEnabled: queryEnabled,
+              focusNode: focusNode,
               onPressed: onPressed,
             );
           },
@@ -368,6 +376,7 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
         return IconButton(
           icon: action.getIcon(),
           onPressed: onPressed,
+          focusNode: focusNode,
           tooltip: action.getText(context),
         );
     }
