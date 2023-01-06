@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/settings/settings_definition.dart';
 import 'package:aves/widgets/settings/video/video.dart';
@@ -20,6 +21,7 @@ class _VideoSettingsPageState extends State<VideoSettingsPage> {
     final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: !settings.useTvLayout,
         title: Text(context.l10n.settingsVideoPageTitle),
       ),
       body: Theme(

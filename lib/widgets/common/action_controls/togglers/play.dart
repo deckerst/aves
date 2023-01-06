@@ -12,12 +12,14 @@ import 'package:provider/provider.dart';
 class PlayToggler extends StatefulWidget {
   final AvesVideoController? controller;
   final bool isMenuItem;
+  final FocusNode? focusNode;
   final VoidCallback? onPressed;
 
   const PlayToggler({
     super.key,
     required this.controller,
     this.isMenuItem = false,
+    this.focusNode,
     this.onPressed,
   });
 
@@ -86,6 +88,7 @@ class _PlayTogglerState extends State<PlayToggler> with SingleTickerProviderStat
               progress: _playPauseAnimation,
             ),
             onPressed: widget.onPressed,
+            focusNode: widget.focusNode,
             tooltip: text,
           );
   }

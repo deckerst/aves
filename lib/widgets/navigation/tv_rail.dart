@@ -57,20 +57,36 @@ class _TvRailState extends State<TvRail> {
   @override
   void initState() {
     super.initState();
-
     _scrollController = ScrollController(initialScrollOffset: controller.offset);
     _scrollController.addListener(_onScrollChanged);
 
+    _registerWidget(widget);
     WidgetsBinding.instance.addPostFrameCallback((_) => _initFocus());
   }
 
   @override
+  void didUpdateWidget(covariant TvRail oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _unregisterWidget(oldWidget);
+    _registerWidget(widget);
+  }
+
+  @override
   void dispose() {
+    _unregisterWidget(widget);
     _scrollController.removeListener(_onScrollChanged);
     _scrollController.dispose();
     _extendedNotifier.dispose();
     _focusNode.dispose();
     super.dispose();
+  }
+
+  void _registerWidget(TvRail widget) {
+    widget.currentCollection?.filterChangeNotifier.addListener(_onCollectionFilterChanged);
+  }
+
+  void _unregisterWidget(TvRail widget) {
+    widget.currentCollection?.filterChangeNotifier.removeListener(_onCollectionFilterChanged);
   }
 
   @override
@@ -255,6 +271,8 @@ class _TvRailState extends State<TvRail> {
   }
 
   void _onScrollChanged() => controller.offset = _scrollController.offset;
+
+  void _onCollectionFilterChanged() => setState(() {});
 }
 
 @immutable

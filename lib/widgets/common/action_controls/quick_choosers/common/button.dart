@@ -8,12 +8,14 @@ import 'package:provider/provider.dart';
 abstract class ChooserQuickButton<T> extends StatefulWidget {
   final bool blurred;
   final ValueSetter<T>? onChooserValue;
+  final FocusNode? focusNode;
   final VoidCallback? onPressed;
 
   const ChooserQuickButton({
     super.key,
     required this.blurred,
     this.onChooserValue,
+    this.focusNode,
     required this.onPressed,
   });
 }
@@ -71,6 +73,7 @@ abstract class ChooserQuickButtonState<T extends ChooserQuickButton<U>, U> exten
       child: IconButton(
         icon: icon,
         onPressed: widget.onPressed,
+        focusNode: widget.focusNode,
         tooltip: _hasChooser ? null : tooltip,
       ),
     );

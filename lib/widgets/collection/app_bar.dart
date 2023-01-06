@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:ui';
 
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/actions/entry_set_actions.dart';
@@ -346,7 +345,13 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     ].where(isVisible).map((action) {
       final enabled = canApply(action);
       return CaptionedButton(
-        iconButton: _buildButtonIcon(context, action, enabled: enabled, selection: selection),
+        iconButtonBuilder: (context, focusNode) => _buildButtonIcon(
+          context,
+          action,
+          enabled: enabled,
+          selection: selection,
+          focusNode: focusNode,
+        ),
         captionText: _buildButtonCaption(context, action, enabled: enabled),
         onPressed: enabled ? () => _onActionSelected(action) : null,
       );
@@ -433,6 +438,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     BuildContext context,
     EntrySetAction action, {
     required bool enabled,
+    FocusNode? focusNode,
     required Selection<AvesEntry> selection,
   }) {
     final onPressed = enabled ? () => _onActionSelected(action) : null;
@@ -445,12 +451,14 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
             return TitleSearchToggler(
               queryEnabled: queryEnabled,
               onPressed: onPressed,
+              focusNode: focusNode,
             );
           },
         );
       case EntrySetAction.toggleFavourite:
         return FavouriteToggler(
           entries: _getExpandedSelectedItems(selection),
+          focusNode: focusNode,
           onPressed: onPressed,
         );
       default:
@@ -458,6 +466,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
           key: _getActionKey(action),
           icon: action.getIcon(),
           onPressed: onPressed,
+          focusNode: focusNode,
           tooltip: action.getText(context),
         );
     }
@@ -581,7 +590,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   void _onQueryFocusRequest() => _queryBarFocusNode.requestFocus();
 
   void _updateStatusBarHeight() {
-    _statusBarHeight = EdgeInsets.fromWindowPadding(window.padding, window.devicePixelRatio).top;
+    _statusBarHeight = context.read<MediaQueryData>().padding.top;
     _updateAppBarHeight();
   }
 
