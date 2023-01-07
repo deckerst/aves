@@ -1196,5 +1196,11 @@
     "placeholders": {
       "count": {}
     }
-  }
+  },
+  "settingsViewerShowDescription": "Mostrar la descripción",
+  "@settingsViewerShowDescription": {},
+  "settingsModificationWarningDialogMessage": "Otras configuraciones serán modificadas.",
+  "@settingsModificationWarningDialogMessage": {},
+  "settingsDisplayUseTvInterface": "Interfaz de Android TV",
+  "@settingsDisplayUseTvInterface": {}
 }

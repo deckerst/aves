@@ -1196,5 +1196,11 @@
     }
   },
   "settingsAccessibilityShowPinchGestureAlternatives": "Tampilkan alternatif gestur multisentuh",
-  "@settingsAccessibilityShowPinchGestureAlternatives": {}
+  "@settingsAccessibilityShowPinchGestureAlternatives": {},
+  "settingsViewerShowDescription": "Tampilkan deskripsi",
+  "@settingsViewerShowDescription": {},
+  "settingsModificationWarningDialogMessage": "Pengaturan lain akan diubah.",
+  "@settingsModificationWarningDialogMessage": {},
+  "settingsDisplayUseTvInterface": "Antarmuka Android TV",
+  "@settingsDisplayUseTvInterface": {}
 }

@@ -1196,5 +1196,11 @@
     }
   },
   "settingsAccessibilityShowPinchGestureAlternatives": "Çoklu dokunma hareketi alternatiflerini göster",
-  "@settingsAccessibilityShowPinchGestureAlternatives": {}
+  "@settingsAccessibilityShowPinchGestureAlternatives": {},
+  "settingsViewerShowDescription": "Açıklamayı göster",
+  "@settingsViewerShowDescription": {},
+  "settingsModificationWarningDialogMessage": "Diğer ayarlar değiştirilecektir.",
+  "@settingsModificationWarningDialogMessage": {},
+  "settingsDisplayUseTvInterface": "Android TV arayüzü",
+  "@settingsDisplayUseTvInterface": {}
 }
