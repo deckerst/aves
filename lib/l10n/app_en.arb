@@ -139,8 +139,10 @@
   "filterFavouriteLabel": "Favorite",
   "filterNoDateLabel": "Undated",
   "filterNoAddressLabel": "No address",
+  "filterLocatedLabel": "Located",
   "filterNoLocationLabel": "Unlocated",
   "filterNoRatingLabel": "Unrated",
+  "filterTaggedLabel": "Tagged",
   "filterNoTagLabel": "Untagged",
   "filterNoTitleLabel": "Untitled",
   "filterOnThisDayLabel": "On this day",
@@ -213,12 +215,6 @@
 
   "subtitlePositionTop": "Top",
   "subtitlePositionBottom": "Bottom",
-
-  "thumbnailOverlayLocatedIcon": "Located icon",
-  "thumbnailOverlayUnlocatedIcon": "Unlocated icon",
-
-  "thumbnailOverlayTaggedIcon": "Tagged icon",
-  "thumbnailOverlayUntaggedIcon": "Untagged icon",
 
   "videoPlaybackSkip": "Skip",
   "videoPlaybackMuted": "Play muted",
