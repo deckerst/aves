@@ -8,9 +8,9 @@ extension ExtraThumbnailOverlayLocationIcon on ThumbnailOverlayLocationIcon {
   String getName(BuildContext context) {
     switch (this) {
       case ThumbnailOverlayLocationIcon.located:
-        return context.l10n.thumbnailOverlayLocatedIcon;
+        return context.l10n.filterLocatedLabel;
       case ThumbnailOverlayLocationIcon.unlocated:
-        return context.l10n.thumbnailOverlayUnlocatedIcon;
+        return context.l10n.filterNoLocationLabel;
       case ThumbnailOverlayLocationIcon.none:
         return context.l10n.settingsDisabled;
     }

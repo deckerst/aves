@@ -96,8 +96,10 @@
     "filterFavouriteLabel",
     "filterNoDateLabel",
     "filterNoAddressLabel",
+    "filterLocatedLabel",
     "filterNoLocationLabel",
     "filterNoRatingLabel",
+    "filterTaggedLabel",
     "filterNoTagLabel",
     "filterNoTitleLabel",
     "filterOnThisDayLabel",
@@ -148,10 +150,6 @@
     "displayRefreshRatePreferLowest",
     "subtitlePositionTop",
     "subtitlePositionBottom",
-    "thumbnailOverlayLocatedIcon",
-    "thumbnailOverlayUnlocatedIcon",
-    "thumbnailOverlayTaggedIcon",
-    "thumbnailOverlayUntaggedIcon",
     "videoPlaybackSkip",
     "videoPlaybackMuted",
     "videoPlaybackWithSound",
@@ -598,10 +596,8 @@
   ],
 
   "cs": [
-    "thumbnailOverlayLocatedIcon",
-    "thumbnailOverlayUnlocatedIcon",
-    "thumbnailOverlayTaggedIcon",
-    "thumbnailOverlayUntaggedIcon",
+    "filterLocatedLabel",
+    "filterTaggedLabel",
     "settingsModificationWarningDialogMessage",
     "settingsViewerShowDescription",
     "settingsDisplayUseTvInterface"
@@ -609,10 +605,8 @@
 
   "de": [
     "columnCount",
-    "thumbnailOverlayLocatedIcon",
-    "thumbnailOverlayUnlocatedIcon",
-    "thumbnailOverlayTaggedIcon",
-    "thumbnailOverlayUntaggedIcon",
+    "filterLocatedLabel",
+    "filterTaggedLabel",
     "settingsModificationWarningDialogMessage",
     "settingsViewerShowDescription",
     "settingsAccessibilityShowPinchGestureAlternatives",
@@ -620,20 +614,16 @@
   ],
 
   "el": [
-    "thumbnailOverlayLocatedIcon",
-    "thumbnailOverlayUnlocatedIcon",
-    "thumbnailOverlayTaggedIcon",
-    "thumbnailOverlayUntaggedIcon",
+    "filterLocatedLabel",
+    "filterTaggedLabel",
     "settingsModificationWarningDialogMessage",
     "settingsViewerShowDescription",
     "settingsDisplayUseTvInterface"
   ],
 
   "es": [
-    "thumbnailOverlayLocatedIcon",
-    "thumbnailOverlayUnlocatedIcon",
-    "thumbnailOverlayTaggedIcon",
-    "thumbnailOverlayUntaggedIcon"
+    "filterLocatedLabel",
+    "filterTaggedLabel"
   ],
 
   "fa": [
@@ -647,6 +637,8 @@
     "slideshowActionResume",
     "filterAspectRatioLandscapeLabel",
     "filterAspectRatioPortraitLabel",
+    "filterLocatedLabel",
+    "filterTaggedLabel",
     "filterOnThisDayLabel",
     "filterRatingRejectedLabel",
     "filterTypeAnimatedLabel",
@@ -681,10 +673,6 @@
     "displayRefreshRatePreferLowest",
     "subtitlePositionTop",
     "subtitlePositionBottom",
-    "thumbnailOverlayLocatedIcon",
-    "thumbnailOverlayUnlocatedIcon",
-    "thumbnailOverlayTaggedIcon",
-    "thumbnailOverlayUntaggedIcon",
     "videoPlaybackSkip",
     "videoPlaybackMuted",
     "videoPlaybackWithSound",
@@ -1108,10 +1096,8 @@
   ],
 
   "fr": [
-    "thumbnailOverlayLocatedIcon",
-    "thumbnailOverlayUnlocatedIcon",
-    "thumbnailOverlayTaggedIcon",
-    "thumbnailOverlayUntaggedIcon"
+    "filterLocatedLabel",
+    "filterTaggedLabel"
   ],
 
   "gl": [
@@ -1123,6 +1109,8 @@
     "filterAspectRatioLandscapeLabel",
     "filterAspectRatioPortraitLabel",
     "filterNoAddressLabel",
+    "filterLocatedLabel",
+    "filterTaggedLabel",
     "keepScreenOnVideoPlayback",
     "accessibilityAnimationsRemove",
     "accessibilityAnimationsKeep",
@@ -1130,10 +1118,6 @@
     "displayRefreshRatePreferLowest",
     "subtitlePositionTop",
     "subtitlePositionBottom",
-    "thumbnailOverlayLocatedIcon",
-    "thumbnailOverlayUnlocatedIcon",
-    "thumbnailOverlayTaggedIcon",
-    "thumbnailOverlayUntaggedIcon",
     "videoPlaybackSkip",
     "videoPlaybackMuted",
     "videoPlaybackWithSound",
@@ -1589,17 +1573,13 @@
   ],
 
   "id": [
-    "thumbnailOverlayLocatedIcon",
-    "thumbnailOverlayUnlocatedIcon",
-    "thumbnailOverlayTaggedIcon",
-    "thumbnailOverlayUntaggedIcon"
+    "filterLocatedLabel",
+    "filterTaggedLabel"
   ],
 
   "it": [
-    "thumbnailOverlayLocatedIcon",
-    "thumbnailOverlayUnlocatedIcon",
-    "thumbnailOverlayTaggedIcon",
-    "thumbnailOverlayUntaggedIcon",
+    "filterLocatedLabel",
+    "filterTaggedLabel",
     "settingsModificationWarningDialogMessage",
     "settingsViewerShowDescription",
     "settingsDisplayUseTvInterface"
@@ -1611,13 +1591,11 @@
     "filterAspectRatioLandscapeLabel",
     "filterAspectRatioPortraitLabel",
     "filterNoAddressLabel",
+    "filterLocatedLabel",
+    "filterTaggedLabel",
     "keepScreenOnVideoPlayback",
     "subtitlePositionTop",
     "subtitlePositionBottom",
-    "thumbnailOverlayLocatedIcon",
-    "thumbnailOverlayUnlocatedIcon",
-    "thumbnailOverlayTaggedIcon",
-    "thumbnailOverlayUntaggedIcon",
     "settingsModificationWarningDialogMessage",
     "settingsViewerShowDescription",
     "settingsAccessibilityShowPinchGestureAlternatives",
@@ -1626,19 +1604,15 @@
   ],
 
   "ko": [
-    "thumbnailOverlayLocatedIcon",
-    "thumbnailOverlayUnlocatedIcon",
-    "thumbnailOverlayTaggedIcon",
-    "thumbnailOverlayUntaggedIcon"
+    "filterLocatedLabel",
+    "filterTaggedLabel"
   ],
 
   "lt": [
     "columnCount",
+    "filterLocatedLabel",
+    "filterTaggedLabel",
     "keepScreenOnVideoPlayback",
-    "thumbnailOverlayLocatedIcon",
-    "thumbnailOverlayUnlocatedIcon",
-    "thumbnailOverlayTaggedIcon",
-    "thumbnailOverlayUntaggedIcon",
     "settingsModificationWarningDialogMessage",
     "settingsViewerShowDescription",
     "settingsAccessibilityShowPinchGestureAlternatives",
@@ -1650,11 +1624,9 @@
     "entryActionShareImageOnly",
     "entryActionShareVideoOnly",
     "entryInfoActionRemoveLocation",
+    "filterLocatedLabel",
+    "filterTaggedLabel",
     "keepScreenOnVideoPlayback",
-    "thumbnailOverlayLocatedIcon",
-    "thumbnailOverlayUnlocatedIcon",
-    "thumbnailOverlayTaggedIcon",
-    "thumbnailOverlayUntaggedIcon",
     "settingsModificationWarningDialogMessage",
     "settingsViewerShowDescription",
     "settingsAccessibilityShowPinchGestureAlternatives",
@@ -1670,13 +1642,11 @@
     "filterAspectRatioLandscapeLabel",
     "filterAspectRatioPortraitLabel",
     "filterNoAddressLabel",
+    "filterLocatedLabel",
+    "filterTaggedLabel",
     "keepScreenOnVideoPlayback",
     "subtitlePositionTop",
     "subtitlePositionBottom",
-    "thumbnailOverlayLocatedIcon",
-    "thumbnailOverlayUnlocatedIcon",
-    "thumbnailOverlayTaggedIcon",
-    "thumbnailOverlayUntaggedIcon",
     "widgetDisplayedItemRandom",
     "widgetDisplayedItemMostRecent",
     "settingsModificationWarningDialogMessage",
@@ -1693,14 +1663,12 @@
     "columnCount",
     "sourceStateCataloguing",
     "entryInfoActionRemoveLocation",
+    "filterLocatedLabel",
     "filterNoLocationLabel",
+    "filterTaggedLabel",
     "accessibilityAnimationsKeep",
     "displayRefreshRatePreferHighest",
     "displayRefreshRatePreferLowest",
-    "thumbnailOverlayLocatedIcon",
-    "thumbnailOverlayUnlocatedIcon",
-    "thumbnailOverlayTaggedIcon",
-    "thumbnailOverlayUntaggedIcon",
     "wallpaperTargetHome",
     "wallpaperTargetHomeLock",
     "setCoverDialogCustom",
@@ -2029,6 +1997,8 @@
     "filterAspectRatioLandscapeLabel",
     "filterAspectRatioPortraitLabel",
     "filterNoAddressLabel",
+    "filterLocatedLabel",
+    "filterTaggedLabel",
     "filterTypeRawLabel",
     "filterTypeSphericalVideoLabel",
     "filterTypeGeotiffLabel",
@@ -2071,10 +2041,6 @@
     "displayRefreshRatePreferLowest",
     "subtitlePositionTop",
     "subtitlePositionBottom",
-    "thumbnailOverlayLocatedIcon",
-    "thumbnailOverlayUnlocatedIcon",
-    "thumbnailOverlayTaggedIcon",
-    "thumbnailOverlayUntaggedIcon",
     "videoPlaybackSkip",
     "videoPlaybackMuted",
     "videoPlaybackWithSound",
@@ -2538,13 +2504,11 @@
     "filterAspectRatioLandscapeLabel",
     "filterAspectRatioPortraitLabel",
     "filterNoAddressLabel",
+    "filterLocatedLabel",
+    "filterTaggedLabel",
     "keepScreenOnVideoPlayback",
     "subtitlePositionTop",
     "subtitlePositionBottom",
-    "thumbnailOverlayLocatedIcon",
-    "thumbnailOverlayUnlocatedIcon",
-    "thumbnailOverlayTaggedIcon",
-    "thumbnailOverlayUntaggedIcon",
     "widgetDisplayedItemRandom",
     "widgetDisplayedItemMostRecent",
     "settingsModificationWarningDialogMessage",
@@ -2558,19 +2522,15 @@
   ],
 
   "ro": [
-    "thumbnailOverlayLocatedIcon",
-    "thumbnailOverlayUnlocatedIcon",
-    "thumbnailOverlayTaggedIcon",
-    "thumbnailOverlayUntaggedIcon",
+    "filterLocatedLabel",
+    "filterTaggedLabel",
     "settingsModificationWarningDialogMessage",
     "settingsDisplayUseTvInterface"
   ],
 
   "ru": [
-    "thumbnailOverlayLocatedIcon",
-    "thumbnailOverlayUnlocatedIcon",
-    "thumbnailOverlayTaggedIcon",
-    "thumbnailOverlayUntaggedIcon",
+    "filterLocatedLabel",
+    "filterTaggedLabel",
     "settingsModificationWarningDialogMessage",
     "settingsDisplayUseTvInterface"
   ],
@@ -2591,15 +2551,13 @@
     "filterAspectRatioLandscapeLabel",
     "filterAspectRatioPortraitLabel",
     "filterNoAddressLabel",
+    "filterLocatedLabel",
+    "filterTaggedLabel",
     "coordinateDms",
     "keepScreenOnVideoPlayback",
     "keepScreenOnViewerOnly",
     "accessibilityAnimationsRemove",
     "accessibilityAnimationsKeep",
-    "thumbnailOverlayLocatedIcon",
-    "thumbnailOverlayUnlocatedIcon",
-    "thumbnailOverlayTaggedIcon",
-    "thumbnailOverlayUntaggedIcon",
     "widgetOpenPageViewer",
     "missingSystemFilePickerDialogMessage",
     "unsupportedTypeDialogMessage",
@@ -2925,24 +2883,18 @@
   ],
 
   "tr": [
-    "thumbnailOverlayLocatedIcon",
-    "thumbnailOverlayUnlocatedIcon",
-    "thumbnailOverlayTaggedIcon",
-    "thumbnailOverlayUntaggedIcon"
+    "filterLocatedLabel",
+    "filterTaggedLabel"
   ],
 
   "uk": [
-    "thumbnailOverlayLocatedIcon",
-    "thumbnailOverlayUnlocatedIcon",
-    "thumbnailOverlayTaggedIcon",
-    "thumbnailOverlayUntaggedIcon"
+    "filterLocatedLabel",
+    "filterTaggedLabel"
   ],
 
   "zh": [
-    "thumbnailOverlayLocatedIcon",
-    "thumbnailOverlayUnlocatedIcon",
-    "thumbnailOverlayTaggedIcon",
-    "thumbnailOverlayUntaggedIcon",
+    "filterLocatedLabel",
+    "filterTaggedLabel",
     "settingsModificationWarningDialogMessage",
     "settingsViewerShowDescription",
     "settingsAccessibilityShowPinchGestureAlternatives",
@@ -2951,10 +2903,8 @@
 
   "zh_Hant": [
     "columnCount",
-    "thumbnailOverlayLocatedIcon",
-    "thumbnailOverlayUnlocatedIcon",
-    "thumbnailOverlayTaggedIcon",
-    "thumbnailOverlayUntaggedIcon",
+    "filterLocatedLabel",
+    "filterTaggedLabel",
     "settingsModificationWarningDialogMessage",
     "settingsViewerShowDescription",
     "settingsAccessibilityShowPinchGestureAlternatives",
