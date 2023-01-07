@@ -1198,5 +1198,9 @@
     }
   },
   "settingsViewerShowDescription": "설명 표시",
-  "@settingsViewerShowDescription": {}
+  "@settingsViewerShowDescription": {},
+  "settingsModificationWarningDialogMessage": "다른 설정도 변경될 것입니다.",
+  "@settingsModificationWarningDialogMessage": {},
+  "settingsDisplayUseTvInterface": "안드로이드 TV 인터페이스 사용하기",
+  "@settingsDisplayUseTvInterface": {}
 }

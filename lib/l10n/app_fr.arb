@@ -1198,5 +1198,9 @@
   "settingsAccessibilityShowPinchGestureAlternatives": "Afficher des alternatives aux interactions multitactiles",
   "@settingsAccessibilityShowPinchGestureAlternatives": {},
   "settingsViewerShowDescription": "Afficher la description",
-  "@settingsViewerShowDescription": {}
+  "@settingsViewerShowDescription": {},
+  "settingsModificationWarningDialogMessage": "D’autres réglages seront modifiés.",
+  "@settingsModificationWarningDialogMessage": {},
+  "settingsDisplayUseTvInterface": "Interface Android TV",
+  "@settingsDisplayUseTvInterface": {}
 }
