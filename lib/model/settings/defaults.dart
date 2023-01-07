@@ -57,8 +57,8 @@ class SettingsDefaults {
     EntrySetAction.delete,
   ];
   static const showThumbnailFavourite = true;
-  static const showThumbnailTag = false;
-  static const showThumbnailLocation = true;
+  static const thumbnailLocationIcon = ThumbnailOverlayLocationIcon.none;
+  static const thumbnailTagIcon = ThumbnailOverlayTagIcon.none;
   static const showThumbnailMotionPhoto = true;
   static const showThumbnailRating = true;
   static const showThumbnailRaw = true;

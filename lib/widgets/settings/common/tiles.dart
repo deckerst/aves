@@ -43,6 +43,8 @@ class SettingsSwitchListTile extends StatelessWidget {
   final String? subtitle;
   final Widget? trailing;
 
+  static const disabledOpacity = .2;
+
   const SettingsSwitchListTile({
     super.key,
     required this.selector,
@@ -63,7 +65,7 @@ class SettingsSwitchListTile extends StatelessWidget {
             children: [
               Expanded(child: titleWidget),
               AnimatedOpacity(
-                opacity: current ? 1 : .2,
+                opacity: current ? 1 : disabledOpacity,
                 duration: Durations.toggleableTransitionAnimation,
                 child: trailing,
               ),
@@ -87,6 +89,7 @@ class SettingsSelectionListTile<T extends Enum> extends StatelessWidget {
   final T Function(BuildContext, Settings) selector;
   final ValueChanged<T> onSelection;
   final String tileTitle;
+  final WidgetBuilder? trailingBuilder;
   final String? dialogTitle;
   final TextBuilder<T>? optionSubtitleBuilder;
 
@@ -97,6 +100,7 @@ class SettingsSelectionListTile<T extends Enum> extends StatelessWidget {
     required this.selector,
     required this.onSelection,
     required this.tileTitle,
+    this.trailingBuilder,
     this.dialogTitle,
     this.optionSubtitleBuilder,
   });
@@ -105,20 +109,31 @@ class SettingsSelectionListTile<T extends Enum> extends StatelessWidget {
   Widget build(BuildContext context) {
     return Selector<Settings, T>(
       selector: selector,
-      builder: (context, current, child) => ListTile(
-        title: Text(tileTitle),
-        subtitle: AvesCaption(getName(context, current)),
-        onTap: () => showSelectionDialog<T>(
-          context: context,
-          builder: (context) => AvesSelectionDialog<T>(
-            initialValue: current,
-            options: Map.fromEntries(values.map((v) => MapEntry(v, getName(context, v)))),
-            optionSubtitleBuilder: optionSubtitleBuilder,
-            title: dialogTitle,
+      builder: (context, current, child) {
+        Widget titleWidget = Text(tileTitle);
+        if (trailingBuilder != null) {
+          titleWidget = Row(
+            children: [
+              Expanded(child: titleWidget),
+              trailingBuilder!(context),
+            ],
+          );
+        }
+        return ListTile(
+          title: titleWidget,
+          subtitle: AvesCaption(getName(context, current)),
+          onTap: () => showSelectionDialog<T>(
+            context: context,
+            builder: (context) => AvesSelectionDialog<T>(
+              initialValue: current,
+              options: Map.fromEntries(values.map((v) => MapEntry(v, getName(context, v)))),
+              optionSubtitleBuilder: optionSubtitleBuilder,
+              title: dialogTitle,
+            ),
+            onSelection: onSelection,
           ),
-          onSelection: onSelection,
-        ),
-      ),
+        );
+      },
     );
   }
 }
