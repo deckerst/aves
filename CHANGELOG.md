@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file.
 ### Changed
 
 - editing description writes XMP `dc:description`, and clears Exif `ImageDescription` / `UserComment`
+- in the tag editor, tapping on applied tag applies it to all items instead of removing it
 
 ### Fixed
 
