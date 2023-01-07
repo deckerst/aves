@@ -1,9 +1,14 @@
+import 'package:aves/model/settings/enums/enums.dart';
+import 'package:aves/model/settings/enums/thumbnail_overlay_location_icon.dart';
+import 'package:aves/model/settings/enums/thumbnail_overlay_tag_icon.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/colors.dart';
+import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_icons.dart';
 import 'package:aves/widgets/settings/common/tiles.dart';
+import 'package:aves/widgets/settings/settings_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -14,8 +19,8 @@ class ThumbnailOverlayPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final iconSize = IconTheme.of(context).size! * MediaQuery.textScaleFactorOf(context);
-    final iconColor = context.select<AvesColorsData, Color>((v) => v.neutral);
+    final iconSize = _getIconSize(context);
+    final iconColor = _getIconColor(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -36,29 +41,6 @@ class ThumbnailOverlayPage extends StatelessWidget {
                   size: iconSize * FavouriteIcon.scale,
                   color: iconColor,
                 ),
-              ),
-            ),
-            SettingsSwitchListTile(
-              selector: (context, s) => s.showThumbnailTag,
-              onChanged: (v) => settings.showThumbnailTag = v,
-              title: context.l10n.settingsThumbnailShowTagIcon,
-              trailing: Padding(
-                padding: EdgeInsets.symmetric(horizontal: iconSize * (1 - TagIcon.scale) / 2),
-                child: Icon(
-                  AIcons.tag,
-                  size: iconSize * TagIcon.scale,
-                  color: iconColor,
-                ),
-              ),
-            ),
-            SettingsSwitchListTile(
-              selector: (context, s) => s.showThumbnailLocation,
-              onChanged: (v) => settings.showThumbnailLocation = v,
-              title: context.l10n.settingsThumbnailShowLocationIcon,
-              trailing: Icon(
-                AIcons.location,
-                size: iconSize,
-                color: iconColor,
               ),
             ),
             SettingsSwitchListTile(
@@ -99,9 +81,86 @@ class ThumbnailOverlayPage extends StatelessWidget {
               onChanged: (v) => settings.showThumbnailVideoDuration = v,
               title: context.l10n.settingsThumbnailShowVideoDuration,
             ),
+            SettingsTileThumbnailLocationIcon().build(context),
+            SettingsTileThumbnailTagIcon().build(context),
           ],
         ),
       ),
+    );
+  }
+
+  static double _getIconSize(BuildContext context) => IconTheme.of(context).size! * MediaQuery.textScaleFactorOf(context);
+
+  static Color _getIconColor(BuildContext context) => context.select<AvesColorsData, Color>((v) => v.neutral);
+
+  static Widget buildTrailingIcon({
+    required BuildContext context,
+    required Object key,
+    required IconData icon,
+    required bool disabled,
+  }) {
+    return Padding(
+      // Switch width (`_kSwitchWidth`) + tile content padding
+      padding: const EdgeInsetsDirectional.only(end: 59 + 16),
+      child: AnimatedSwitcher(
+        duration: context.read<DurationsData>().iconAnimation,
+        child: Icon(
+          icon,
+          key: ValueKey(key),
+          size: _getIconSize(context),
+          color: _getIconColor(context).withOpacity(disabled ? SettingsSwitchListTile.disabledOpacity : 1.0),
+        ),
+      ),
+    );
+  }
+}
+
+class SettingsTileThumbnailLocationIcon extends SettingsTile {
+  @override
+  String title(BuildContext context) => context.l10n.settingsThumbnailShowLocationIcon;
+
+  @override
+  Widget build(BuildContext context) => SettingsSelectionListTile<ThumbnailOverlayLocationIcon>(
+        values: ThumbnailOverlayLocationIcon.values,
+        getName: (context, v) => v.getName(context),
+        selector: (context, s) => s.thumbnailLocationIcon,
+        onSelection: (v) => settings.thumbnailLocationIcon = v,
+        tileTitle: title(context),
+        trailingBuilder: _buildTrailing,
+      );
+
+  Widget _buildTrailing(BuildContext context) {
+    final iconType = context.select<Settings, ThumbnailOverlayLocationIcon>((s) => s.thumbnailLocationIcon);
+    return ThumbnailOverlayPage.buildTrailingIcon(
+      context: context,
+      key: iconType,
+      icon: iconType.getIcon(context),
+      disabled: iconType == ThumbnailOverlayLocationIcon.none,
+    );
+  }
+}
+
+class SettingsTileThumbnailTagIcon extends SettingsTile {
+  @override
+  String title(BuildContext context) => context.l10n.settingsThumbnailShowTagIcon;
+
+  @override
+  Widget build(BuildContext context) => SettingsSelectionListTile<ThumbnailOverlayTagIcon>(
+        values: ThumbnailOverlayTagIcon.values,
+        getName: (context, v) => v.getName(context),
+        selector: (context, s) => s.thumbnailTagIcon,
+        onSelection: (v) => settings.thumbnailTagIcon = v,
+        tileTitle: title(context),
+        trailingBuilder: _buildTrailing,
+      );
+
+  Widget _buildTrailing(BuildContext context) {
+    final iconType = context.select<Settings, ThumbnailOverlayTagIcon>((s) => s.thumbnailTagIcon);
+    return ThumbnailOverlayPage.buildTrailingIcon(
+      context: context,
+      key: iconType,
+      icon: iconType.getIcon(context),
+      disabled: iconType == ThumbnailOverlayTagIcon.none,
     );
   }
 }

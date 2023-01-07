@@ -93,8 +93,8 @@ class Settings extends ChangeNotifier {
   static const collectionBrowsingQuickActionsKey = 'collection_browsing_quick_actions';
   static const collectionSelectionQuickActionsKey = 'collection_selection_quick_actions';
   static const showThumbnailFavouriteKey = 'show_thumbnail_favourite';
-  static const showThumbnailTagKey = 'show_thumbnail_tag';
-  static const showThumbnailLocationKey = 'show_thumbnail_location';
+  static const thumbnailLocationIconKey = 'thumbnail_location_icon';
+  static const thumbnailTagIconKey = 'thumbnail_tag_icon';
   static const showThumbnailMotionPhotoKey = 'show_thumbnail_motion_photo';
   static const showThumbnailRatingKey = 'show_thumbnail_rating';
   static const showThumbnailRawKey = 'show_thumbnail_raw';
@@ -484,14 +484,14 @@ class Settings extends ChangeNotifier {
 
   set showThumbnailFavourite(bool newValue) => setAndNotify(showThumbnailFavouriteKey, newValue);
 
-  bool get showThumbnailTag => getBool(showThumbnailTagKey) ?? SettingsDefaults.showThumbnailTag;
+  ThumbnailOverlayLocationIcon get thumbnailLocationIcon => getEnumOrDefault(thumbnailLocationIconKey, SettingsDefaults.thumbnailLocationIcon, ThumbnailOverlayLocationIcon.values);
 
-  set showThumbnailTag(bool newValue) => setAndNotify(showThumbnailTagKey, newValue);
+  set thumbnailLocationIcon(ThumbnailOverlayLocationIcon newValue) => setAndNotify(thumbnailLocationIconKey, newValue.toString());
 
-  bool get showThumbnailLocation => getBool(showThumbnailLocationKey) ?? SettingsDefaults.showThumbnailLocation;
+  ThumbnailOverlayTagIcon get thumbnailTagIcon => getEnumOrDefault(thumbnailTagIconKey, SettingsDefaults.thumbnailTagIcon, ThumbnailOverlayTagIcon.values);
 
-  set showThumbnailLocation(bool newValue) => setAndNotify(showThumbnailLocationKey, newValue);
-
+  set thumbnailTagIcon(ThumbnailOverlayTagIcon newValue) => setAndNotify(thumbnailTagIconKey, newValue.toString());
+  
   bool get showThumbnailMotionPhoto => getBool(showThumbnailMotionPhotoKey) ?? SettingsDefaults.showThumbnailMotionPhoto;
 
   set showThumbnailMotionPhoto(bool newValue) => setAndNotify(showThumbnailMotionPhotoKey, newValue);
@@ -1006,8 +1006,6 @@ class Settings extends ChangeNotifier {
             case setMetadataDateBeforeFileOpKey:
             case collectionSortReverseKey:
             case showThumbnailFavouriteKey:
-            case showThumbnailTagKey:
-            case showThumbnailLocationKey:
             case showThumbnailMotionPhotoKey:
             case showThumbnailRatingKey:
             case showThumbnailRawKey:
@@ -1054,6 +1052,8 @@ class Settings extends ChangeNotifier {
             case homePageKey:
             case collectionGroupFactorKey:
             case collectionSortFactorKey:
+            case thumbnailLocationIconKey:
+            case thumbnailTagIconKey:
             case albumGroupFactorKey:
             case albumSortFactorKey:
             case countrySortFactorKey:

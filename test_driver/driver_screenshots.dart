@@ -39,8 +39,8 @@ Future<void> configureAndLaunch() async {
     ..collectionSortFactor = EntrySortFactor.date
     ..collectionBrowsingQuickActions = SettingsDefaults.collectionBrowsingQuickActions
     ..showThumbnailFavourite = false
-    ..showThumbnailTag = false
-    ..showThumbnailLocation = false
+    ..thumbnailLocationIcon = ThumbnailOverlayLocationIcon.none
+    ..thumbnailTagIcon = ThumbnailOverlayTagIcon.none
     ..hiddenFilters = {}
     // viewer
     ..viewerQuickActions = SettingsDefaults.viewerQuickActions
