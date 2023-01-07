@@ -157,7 +157,14 @@ class _TagEditorPageState extends State<TagEditorPage> {
                                   )
                               : null,
                           onTap: (filter) {
-                            // TODO TLAD [#453]
+                            if (tagsByEntry.keys.length > 1) {
+                              // for multiple entries, set tag for all of them
+                              tagsByEntry.forEach((entry, filters) => filters.add(filter));
+                              setState(() {});
+                            } else {
+                              // for single entry, remove tag (like pressing on the remove icon)
+                              _removeTag(filter);
+                            }
                           },
                           onRemove: _removeTag,
                           onLongPress: null,

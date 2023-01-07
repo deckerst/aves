@@ -280,7 +280,7 @@ class _CollectionSectionedContentState extends State<_CollectionSectionedContent
       child: scrollView,
     );
 
-    final selector = GridSelectionGestureDetector(
+    final selector = GridSelectionGestureDetector<AvesEntry>(
       scrollableKey: _scrollableKey,
       selectable: widget.selectable,
       items: collection.sortedEntries,
