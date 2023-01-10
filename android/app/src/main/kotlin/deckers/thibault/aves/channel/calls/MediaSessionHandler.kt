@@ -2,20 +2,16 @@ package deckers.thibault.aves.channel.calls
 
 import android.content.ComponentName
 import android.content.Context
-import android.content.Intent
 import android.media.session.PlaybackState
 import android.net.Uri
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
-import android.util.Log
-import android.view.KeyEvent
 import androidx.media.session.MediaButtonReceiver
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safeSuspend
+import deckers.thibault.aves.channel.streams.MediaCommandStreamHandler
 import deckers.thibault.aves.utils.FlutterUtils
-import deckers.thibault.aves.utils.LogUtils
-import deckers.thibault.aves.utils.getParcelableExtraCompat
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
@@ -24,10 +20,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
-class MediaSessionHandler(private val context: Context) : MethodCallHandler {
+class MediaSessionHandler(private val context: Context, private val mediaCommandHandler: MediaCommandStreamHandler) : MethodCallHandler {
     private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
-    private val sessions = HashMap<Uri, MediaSessionCompat>()
+    private var session: MediaSessionCompat? = null
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
@@ -77,77 +73,41 @@ class MediaSessionHandler(private val context: Context) : MethodCallHandler {
             .setActions(actions)
             .build()
 
-        var session = sessions[uri]
-        if (session == null) {
-            val mbrIntent = MediaButtonReceiver.buildMediaButtonPendingIntent(context, PlaybackStateCompat.ACTION_PLAY_PAUSE)
-            val mbrName = ComponentName(context, MediaButtonReceiver::class.java)
-            session = MediaSessionCompat(context, "aves-$uri", mbrName, mbrIntent)
-            sessions[uri] = session
-
-            val metadata = MediaMetadataCompat.Builder()
-                .putString(MediaMetadataCompat.METADATA_KEY_TITLE, title)
-                .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, title)
-                .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, durationMillis)
-                .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI, uri.toString())
-                .build()
-            session.setMetadata(metadata)
-
-            val callback: MediaSessionCompat.Callback = object : MediaSessionCompat.Callback() {
-                override fun onMediaButtonEvent(mediaButtonEvent: Intent): Boolean {
-                    val keyEvent = mediaButtonEvent.getParcelableExtraCompat<KeyEvent?>(Intent.EXTRA_KEY_EVENT) ?: return false
-                    Log.d(LOG_TAG, "TLAD onMediaButtonEvent keyEvent=$keyEvent")
-                    return super.onMediaButtonEvent(mediaButtonEvent)
-                }
-
-                override fun onPlay() {
-                    super.onPlay()
-                    Log.d(LOG_TAG, "TLAD onPlay uri=$uri")
-                }
-
-                override fun onPause() {
-                    super.onPause()
-                    Log.d(LOG_TAG, "TLAD onPause uri=$uri")
-                }
-
-                override fun onStop() {
-                    super.onStop()
-                    Log.d(LOG_TAG, "TLAD onStop uri=$uri")
-                }
-
-                override fun onSeekTo(pos: Long) {
-                    super.onSeekTo(pos)
-                    Log.d(LOG_TAG, "TLAD onSeekTo uri=$uri pos=$pos")
+        FlutterUtils.runOnUiThread {
+            if (session == null) {
+                val mbrIntent = MediaButtonReceiver.buildMediaButtonPendingIntent(context, PlaybackStateCompat.ACTION_PLAY_PAUSE)
+                val mbrName = ComponentName(context, MediaButtonReceiver::class.java)
+                session = MediaSessionCompat(context, "aves", mbrName, mbrIntent).apply {
+                    setCallback(mediaCommandHandler)
                 }
             }
-            FlutterUtils.runOnUiThread {
-                session.setCallback(callback)
+            session!!.apply {
+                val metadata = MediaMetadataCompat.Builder()
+                    .putString(MediaMetadataCompat.METADATA_KEY_TITLE, title)
+                    .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, title)
+                    .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, durationMillis)
+                    .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI, uri.toString())
+                    .build()
+                setMetadata(metadata)
+                setPlaybackState(playbackState)
+                if (!isActive) {
+                    isActive = true
+                }
             }
-        }
-
-        session.setPlaybackState(playbackState)
-
-        if (!session.isActive) {
-            session.isActive = true
         }
 
         result.success(null)
     }
 
-    private fun release(call: MethodCall, result: MethodChannel.Result) {
-        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
-
-        if (uri == null) {
-            result.error("release-args", "missing arguments", null)
-            return
+    private fun release(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
+        session?.let {
+            it.release()
+            session = null
         }
-
-        sessions[uri]?.release()
-
         result.success(null)
     }
 
     companion object {
-        private val LOG_TAG = LogUtils.createTag<MediaSessionHandler>()
         const val CHANNEL = "deckers.thibault/aves/media_session"
 
         const val STATE_STOPPED = "stopped"
