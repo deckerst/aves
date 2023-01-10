@@ -70,6 +70,17 @@ open class MainActivity : FlutterActivity() {
 
         val messenger = flutterEngine!!.dartExecutor
 
+        // notification: platform -> dart
+        analysisStreamHandler = AnalysisStreamHandler().apply {
+            EventChannel(messenger, AnalysisStreamHandler.CHANNEL).setStreamHandler(this)
+        }
+        errorStreamHandler = ErrorStreamHandler().apply {
+            EventChannel(messenger, ErrorStreamHandler.CHANNEL).setStreamHandler(this)
+        }
+        val mediaCommandHandler = MediaCommandStreamHandler().apply {
+            EventChannel(messenger, MediaCommandStreamHandler.CHANNEL).setStreamHandler(this)
+        }
+
         // dart -> platform -> dart
         // - need Context
         analysisHandler = AnalysisHandler(this, ::onAnalysisCompleted)
@@ -83,7 +94,7 @@ open class MainActivity : FlutterActivity() {
         MethodChannel(messenger, HomeWidgetHandler.CHANNEL).setMethodCallHandler(HomeWidgetHandler(this))
         MethodChannel(messenger, MediaFetchBytesHandler.CHANNEL, AvesByteSendingMethodCodec.INSTANCE).setMethodCallHandler(MediaFetchBytesHandler(this))
         MethodChannel(messenger, MediaFetchObjectHandler.CHANNEL).setMethodCallHandler(MediaFetchObjectHandler(this))
-        MethodChannel(messenger, MediaSessionHandler.CHANNEL).setMethodCallHandler(MediaSessionHandler(this))
+        MethodChannel(messenger, MediaSessionHandler.CHANNEL).setMethodCallHandler(MediaSessionHandler(this, mediaCommandHandler))
         MethodChannel(messenger, MediaStoreHandler.CHANNEL).setMethodCallHandler(MediaStoreHandler(this))
         MethodChannel(messenger, MetadataFetchHandler.CHANNEL).setMethodCallHandler(MetadataFetchHandler(this))
         MethodChannel(messenger, StorageHandler.CHANNEL).setMethodCallHandler(StorageHandler(this))
@@ -126,16 +137,6 @@ open class MainActivity : FlutterActivity() {
                 "submitPickedItems" -> submitPickedItems(call)
                 "submitPickedCollectionFilters" -> submitPickedCollectionFilters(call)
             }
-        }
-
-        // notification: platform -> dart
-        analysisStreamHandler = AnalysisStreamHandler().apply {
-            EventChannel(messenger, AnalysisStreamHandler.CHANNEL).setStreamHandler(this)
-        }
-
-        // notification: platform -> dart
-        errorStreamHandler = ErrorStreamHandler().apply {
-            EventChannel(messenger, ErrorStreamHandler.CHANNEL).setStreamHandler(this)
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
@@ -431,7 +432,7 @@ open class MainActivity : FlutterActivity() {
             }
         }
 
-        var errorStreamHandler: ErrorStreamHandler? = null
+        private var errorStreamHandler: ErrorStreamHandler? = null
 
         suspend fun notifyError(error: String) {
             Log.e(LOG_TAG, "notifyError error=$error")

@@ -686,7 +686,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     if (settings.keepScreenOn == KeepScreenOn.viewerOnly) {
       await windowService.keepScreenOn(false);
     }
-
+    await mediaSessionService.release();
     await AvesApp.showSystemUI();
     AvesApp.setSystemUIStyle(context);
     if (!settings.useTvLayout) {

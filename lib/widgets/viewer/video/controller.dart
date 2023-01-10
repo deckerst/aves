@@ -30,7 +30,6 @@ abstract class AvesVideoController {
     _subscriptions
       ..forEach((sub) => sub.cancel())
       ..clear();
-    await mediaSessionService.release(entry.uri);
     entry.visualChangeNotifier.removeListener(onVisualChanged);
     await _savePlaybackState();
   }

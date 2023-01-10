@@ -1,6 +1,8 @@
 package deckers.thibault.aves.channel.streams
 
+import android.util.Log
 import deckers.thibault.aves.utils.FlutterUtils
+import deckers.thibault.aves.utils.LogUtils
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.EventChannel.EventSink
 
@@ -14,7 +16,9 @@ class ErrorStreamHandler : EventChannel.StreamHandler {
         this.eventSink = eventSink
     }
 
-    override fun onCancel(arguments: Any?) {}
+    override fun onCancel(arguments: Any?) {
+        Log.i(LOG_TAG, "onCancel arguments=$arguments")
+    }
 
     suspend fun notifyError(error: String) {
         FlutterUtils.runOnUiThread {
@@ -23,6 +27,7 @@ class ErrorStreamHandler : EventChannel.StreamHandler {
     }
 
     companion object {
+        private val LOG_TAG = LogUtils.createTag<ErrorStreamHandler>()
         const val CHANNEL = "deckers.thibault/aves/error"
     }
 }
