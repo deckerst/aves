@@ -23,11 +23,11 @@ import 'package:aves/widgets/filter_grids/common/action_delegates/chip.dart';
 import 'package:aves/widgets/stats/date/histogram.dart';
 import 'package:aves/widgets/stats/filter_table.dart';
 import 'package:aves/widgets/stats/mime_donut.dart';
+import 'package:aves/widgets/stats/percent_text.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:intl/intl.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
 
@@ -105,7 +105,6 @@ class _StatsPageState extends State<StatsPage> {
 
         if (!animating) {
           final durations = context.watch<DurationsData>();
-          final percentFormat = NumberFormat.percentPattern();
 
           if (entries.isEmpty) {
             child = EmptyContent(
@@ -114,7 +113,6 @@ class _StatsPageState extends State<StatsPage> {
             );
           } else {
             final theme = Theme.of(context);
-            final isDark = theme.brightness == Brightness.dark;
             final chartAnimationDuration = context.read<DurationsData>().chartTransition;
 
             final byMimeTypes = groupBy<AvesEntry, String>(entries, (entry) => entry.mimeType).map<String, int>((k, v) => MapEntry(k, v.length));
@@ -163,12 +161,7 @@ class _StatsPageState extends State<StatsPage> {
                           animation: context.select<Settings, bool>((v) => v.accessibilityAnimations.animate),
                           isRTL: context.isRtl,
                           barRadius: barRadius,
-                          center: Text(
-                            percentFormat.format(withGpsPercent),
-                            style: TextStyle(
-                              shadows: isDark ? Constants.embossShadows : null,
-                            ),
-                          ),
+                          center: LinearPercentIndicatorText(percent: withGpsPercent),
                           padding: EdgeInsets.symmetric(horizontal: lineHeight),
                         ),
                       ),

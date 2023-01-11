@@ -1,4 +1,5 @@
 import 'package:aves/services/common/services.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 class AccessibilityService {
@@ -24,14 +25,17 @@ class AccessibilityService {
     return false;
   }
 
+  static bool? _hasRecommendedTimeouts;
+
   static Future<bool> hasRecommendedTimeouts() async {
+    if (_hasRecommendedTimeouts != null) return SynchronousFuture(_hasRecommendedTimeouts!);
     try {
       final result = await _platform.invokeMethod('hasRecommendedTimeouts');
-      if (result != null) return result as bool;
+      _hasRecommendedTimeouts = result as bool?;
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
     }
-    return false;
+    return _hasRecommendedTimeouts ?? false;
   }
 
   static Future<int> getRecommendedTimeToRead(Duration originalTimeoutDuration) async {
