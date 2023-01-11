@@ -3,7 +3,6 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:aves/geo/countries.dart';
-import 'package:aves/model/device.dart';
 import 'package:aves/model/entry_cache.dart';
 import 'package:aves/model/entry_dirs.dart';
 import 'package:aves/model/favourites.dart';
@@ -12,6 +11,7 @@ import 'package:aves/model/metadata/address.dart';
 import 'package:aves/model/metadata/catalog.dart';
 import 'package:aves/model/metadata/trash.dart';
 import 'package:aves/model/multipage.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/trash.dart';
 import 'package:aves/model/video/metadata.dart';
 import 'package:aves/ref/mime_types.dart';
@@ -281,7 +281,7 @@ class AvesEntry {
 
   bool get isMediaStoreMediaContent => isMediaStoreContent && {'/external/images/', '/external/video/'}.any(uri.contains);
 
-  bool get canEdit => !device.isReadOnly && path != null && !trashed && isMediaStoreContent;
+  bool get canEdit => !settings.isReadOnly && path != null && !trashed && isMediaStoreContent;
 
   bool get canEditDate => canEdit && (canEditExif || canEditXmp);
 

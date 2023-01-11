@@ -403,6 +403,8 @@ class Settings extends ChangeNotifier {
 
   bool get useTvLayout => device.isTelevision || forceTvLayout;
 
+  bool get isReadOnly => useTvLayout;
+
   // navigation
 
   bool get mustBackTwiceToExit => getBool(mustBackTwiceToExitKey) ?? SettingsDefaults.mustBackTwiceToExit;
@@ -491,7 +493,7 @@ class Settings extends ChangeNotifier {
   ThumbnailOverlayTagIcon get thumbnailTagIcon => getEnumOrDefault(thumbnailTagIconKey, SettingsDefaults.thumbnailTagIcon, ThumbnailOverlayTagIcon.values);
 
   set thumbnailTagIcon(ThumbnailOverlayTagIcon newValue) => setAndNotify(thumbnailTagIconKey, newValue.toString());
-  
+
   bool get showThumbnailMotionPhoto => getBool(showThumbnailMotionPhotoKey) ?? SettingsDefaults.showThumbnailMotionPhoto;
 
   set showThumbnailMotionPhoto(bool newValue) => setAndNotify(showThumbnailMotionPhotoKey, newValue);

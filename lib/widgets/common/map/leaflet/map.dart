@@ -95,6 +95,7 @@ class _EntryLeafletMapState<T> extends State<EntryLeafletMap<T>> with TickerProv
     final avesMapController = widget.controller;
     if (avesMapController != null) {
       _subscriptions.add(avesMapController.moveCommands.listen((event) => _moveTo(event.latLng)));
+      _subscriptions.add(avesMapController.zoomCommands.listen((event) => _zoomBy(event.delta)));
     }
     _subscriptions.add(_leafletMapController.mapEventStream.listen((event) => _updateVisibleRegion()));
     widget.clusterListenable.addListener(_updateMarkers);
@@ -114,7 +115,7 @@ class _EntryLeafletMapState<T> extends State<EntryLeafletMap<T>> with TickerProv
     return Stack(
       children: [
         widget.decoratorBuilder(context, _buildMap()),
-        widget.buttonPanelBuilder(_zoomBy, _resetRotation),
+        widget.buttonPanelBuilder(_resetRotation),
       ],
     );
   }

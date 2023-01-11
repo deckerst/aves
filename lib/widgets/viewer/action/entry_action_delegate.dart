@@ -67,7 +67,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       }
     } else {
       final targetEntry = EntryActions.pageActions.contains(action) ? pageEntry : mainEntry;
-      final canWrite = !device.isReadOnly;
+      final canWrite = !settings.isReadOnly;
       switch (action) {
         case EntryAction.toggleFavourite:
           return collection != null;

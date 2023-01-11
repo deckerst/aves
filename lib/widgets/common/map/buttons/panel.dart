@@ -1,28 +1,27 @@
-import 'package:aves/model/settings/enums/map_style.dart';
+import 'package:aves/model/actions/map_actions.dart';
 import 'package:aves/model/settings/settings.dart';
-import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/map/buttons/button.dart';
 import 'package:aves/widgets/common/map/buttons/coordinate_filter.dart';
 import 'package:aves/widgets/common/map/compass.dart';
-import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
+import 'package:aves/widgets/common/map/map_action_delegate.dart';
 import 'package:aves_map/aves_map.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 
 class MapButtonPanel extends StatelessWidget {
+  final AvesMapController? controller;
   final ValueNotifier<ZoomedBounds> boundsNotifier;
-  final Future<void> Function(double amount)? zoomBy;
   final void Function(BuildContext context)? openMapPage;
   final VoidCallback? resetRotation;
 
   const MapButtonPanel({
     super.key,
+    required this.controller,
     required this.boundsNotifier,
-    this.zoomBy,
     this.openMapPage,
     this.resetRotation,
   });
@@ -123,21 +122,8 @@ class MapButtonPanel extends StatelessWidget {
                         : const Spacer(),
                     Padding(
                       padding: EdgeInsets.only(top: padding),
-                      child: MapOverlayButton(
-                        // key is expected by test driver
-                        buttonKey: const Key('map-menu-layers'),
-                        icon: const Icon(AIcons.layers),
-                        onPressed: () => showSelectionDialog<EntryMapStyle>(
-                          context: context,
-                          builder: (context) => AvesSelectionDialog<EntryMapStyle?>(
-                            initialValue: settings.mapStyle,
-                            options: Map.fromEntries(availability.mapStyles.map((v) => MapEntry(v, v.getName(context)))),
-                            title: context.l10n.mapStyleDialogTitle,
-                          ),
-                          onSelection: (v) => settings.mapStyle = v,
-                        ),
-                        tooltip: context.l10n.mapStyleTooltip,
-                      ),
+                      // key is expected by test driver
+                      child: _buildButton(context, MapAction.selectStyle, buttonKey: const Key('map-menu-layers')),
                     ),
                   ],
                 ),
@@ -148,17 +134,9 @@ class MapButtonPanel extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    MapOverlayButton(
-                      icon: const Icon(AIcons.zoomIn),
-                      onPressed: zoomBy != null ? () => zoomBy?.call(1) : null,
-                      tooltip: context.l10n.mapZoomInTooltip,
-                    ),
+                    _buildButton(context, MapAction.zoomIn),
                     SizedBox(height: padding),
-                    MapOverlayButton(
-                      icon: const Icon(AIcons.zoomOut),
-                      onPressed: zoomBy != null ? () => zoomBy?.call(-1) : null,
-                      tooltip: context.l10n.mapZoomOutTooltip,
-                    ),
+                    _buildButton(context, MapAction.zoomOut),
                   ],
                 ),
               ),
@@ -168,4 +146,11 @@ class MapButtonPanel extends StatelessWidget {
       ),
     );
   }
+
+  Widget _buildButton(BuildContext context, MapAction action, {Key? buttonKey}) => MapOverlayButton(
+        buttonKey: buttonKey,
+        icon: action.getIcon(),
+        onPressed: () => MapActionDelegate(controller).onActionSelected(context, action),
+        tooltip: action.getText(context),
+      );
 }
