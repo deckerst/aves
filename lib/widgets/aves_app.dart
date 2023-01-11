@@ -384,7 +384,9 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   void didChangeMetrics() => _updateCutoutInsets();
 
   Future<void> _updateCutoutInsets() async {
-    AvesApp.cutoutInsetsNotifier.value = await windowService.getCutoutInsets();
+    if (await windowService.isCutoutAware()) {
+      AvesApp.cutoutInsetsNotifier.value = await windowService.getCutoutInsets();
+    }
   }
 
   Widget _getFirstPage({Map? intentData}) => settings.hasAcceptedTerms ? HomePage(intentData: intentData) : const WelcomePage();

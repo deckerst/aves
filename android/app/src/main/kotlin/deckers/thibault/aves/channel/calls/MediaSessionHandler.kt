@@ -33,15 +33,19 @@ class MediaSessionHandler(private val context: Context, private val mediaCommand
         }
     }
 
+    fun dispose() {
+        context.unregisterReceiver(noisyAudioReceiver)
+    }
+
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
-            "update" -> ioScope.launch { safeSuspend(call, result, ::update) }
-            "release" -> ioScope.launch { safe(call, result, ::release) }
+            "update" -> ioScope.launch { safeSuspend(call, result, ::updateSession) }
+            "release" -> ioScope.launch { safe(call, result, ::releaseSession) }
             else -> result.notImplemented()
         }
     }
 
-    private suspend fun update(call: MethodCall, result: MethodChannel.Result) {
+    private suspend fun updateSession(call: MethodCall, result: MethodChannel.Result) {
         val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
         val title = call.argument<String>("title")
         val durationMillis = call.argument<Number>("durationMillis")?.toLong()
@@ -115,7 +119,7 @@ class MediaSessionHandler(private val context: Context, private val mediaCommand
         result.success(null)
     }
 
-    private fun release(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
+    private fun releaseSession(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
         session?.let {
             it.release()
             session = null
