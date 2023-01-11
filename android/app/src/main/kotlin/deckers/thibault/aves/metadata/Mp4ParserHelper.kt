@@ -33,7 +33,7 @@ object Mp4ParserHelper {
                         )
                         setBoxSkipper { type, size ->
                             if (skippedTypes.contains(type)) return@setBoxSkipper true
-                            if (size > BOX_SIZE_DANGER_THRESHOLD) throw Exception("box (type=$type size=$size) is too large")
+                            if (size > BOX_SIZE_DANGER_THRESHOLD) throw Mp4TooLargeException(type, "box (type=$type size=$size) is too large")
                             false
                         }
                     }
@@ -232,3 +232,5 @@ object Mp4ParserHelper {
         return stream.toByteArray()
     }
 }
+
+class Mp4TooLargeException(val type: String, message: String) : RuntimeException(message)

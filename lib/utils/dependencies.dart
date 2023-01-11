@@ -177,9 +177,9 @@ class Dependencies {
 
   static const List<Dependency> flutterPackages = [
     Dependency(
-      name: 'Charts',
+      name: 'Charts (fzyzcjy fork)',
       license: apache2,
-      sourceUrl: 'https://github.com/google/charts',
+      sourceUrl: 'https://github.com/fzyzcjy/charts',
     ),
     Dependency(
       name: 'Custom rounded rectangle border',

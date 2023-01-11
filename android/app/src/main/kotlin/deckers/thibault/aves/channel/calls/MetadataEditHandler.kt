@@ -3,6 +3,7 @@ package deckers.thibault.aves.channel.calls
 import android.content.ContextWrapper
 import android.net.Uri
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
+import deckers.thibault.aves.metadata.Mp4TooLargeException
 import deckers.thibault.aves.model.ExifOrientationOp
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.model.provider.ImageProvider.ImageOpCallback
@@ -66,10 +67,8 @@ class MetadataEditHandler(private val contextWrapper: ContextWrapper) : MethodCa
             return
         }
 
-        provider.editOrientation(contextWrapper, path, uri, mimeType, op, object : ImageOpCallback {
-            override fun onSuccess(fields: FieldMap) = result.success(fields)
-            override fun onFailure(throwable: Throwable) = result.error("editOrientation-failure", "failed to change orientation for mimeType=$mimeType uri=$uri", throwable)
-        })
+        val callback = MetadataOpCallback("editOrientation", entryMap, result)
+        provider.editOrientation(contextWrapper, path, uri, mimeType, op, callback)
     }
 
     private fun editDate(call: MethodCall, result: MethodChannel.Result) {
@@ -96,10 +95,8 @@ class MetadataEditHandler(private val contextWrapper: ContextWrapper) : MethodCa
             return
         }
 
-        provider.editDate(contextWrapper, path, uri, mimeType, dateMillis, shiftMinutes, fields, object : ImageOpCallback {
-            override fun onSuccess(fields: FieldMap) = result.success(fields)
-            override fun onFailure(throwable: Throwable) = result.error("editDate-failure", "failed to edit date for mimeType=$mimeType uri=$uri", throwable)
-        })
+        val callback = MetadataOpCallback("editDate", entryMap, result)
+        provider.editDate(contextWrapper, path, uri, mimeType, dateMillis, shiftMinutes, fields, callback)
     }
 
     private fun editMetadata(call: MethodCall, result: MethodChannel.Result) {
@@ -125,10 +122,8 @@ class MetadataEditHandler(private val contextWrapper: ContextWrapper) : MethodCa
             return
         }
 
-        provider.editMetadata(contextWrapper, path, uri, mimeType, metadata, autoCorrectTrailerOffset, callback = object : ImageOpCallback {
-            override fun onSuccess(fields: FieldMap) = result.success(fields)
-            override fun onFailure(throwable: Throwable) = result.error("editMetadata-failure", "failed to edit metadata for mimeType=$mimeType uri=$uri", throwable)
-        })
+        val callback = MetadataOpCallback("editMetadata", entryMap, result)
+        provider.editMetadata(contextWrapper, path, uri, mimeType, metadata, autoCorrectTrailerOffset, callback)
     }
 
     private fun removeTrailerVideo(call: MethodCall, result: MethodChannel.Result) {
@@ -152,10 +147,8 @@ class MetadataEditHandler(private val contextWrapper: ContextWrapper) : MethodCa
             return
         }
 
-        provider.removeTrailerVideo(contextWrapper, path, uri, mimeType, object : ImageOpCallback {
-            override fun onSuccess(fields: FieldMap) = result.success(fields)
-            override fun onFailure(throwable: Throwable) = result.error("removeTrailerVideo-failure", "failed to remove trailer video for mimeType=$mimeType uri=$uri", throwable)
-        })
+        val callback = MetadataOpCallback("removeTrailerVideo", entryMap, result)
+        provider.removeTrailerVideo(contextWrapper, path, uri, mimeType, callback)
     }
 
     private fun removeTypes(call: MethodCall, result: MethodChannel.Result) {
@@ -180,13 +173,31 @@ class MetadataEditHandler(private val contextWrapper: ContextWrapper) : MethodCa
             return
         }
 
-        provider.removeMetadataTypes(contextWrapper, path, uri, mimeType, types.toSet(), object : ImageOpCallback {
-            override fun onSuccess(fields: FieldMap) = result.success(fields)
-            override fun onFailure(throwable: Throwable) = result.error("removeTypes-failure", "failed to remove metadata for mimeType=$mimeType uri=$uri", throwable)
-        })
+        val callback = MetadataOpCallback("removeTypes", entryMap, result)
+        provider.removeMetadataTypes(contextWrapper, path, uri, mimeType, types.toSet(), callback)
     }
 
     companion object {
         const val CHANNEL = "deckers.thibault/aves/metadata_edit"
+    }
+}
+
+private class MetadataOpCallback(
+    private val errorCodeBase: String,
+    private val entryMap: FieldMap,
+    private val result: MethodChannel.Result,
+) : ImageOpCallback {
+    override fun onSuccess(fields: FieldMap) = result.success(fields)
+    override fun onFailure(throwable: Throwable) {
+        val errorCode = if (throwable is Mp4TooLargeException) {
+            if (throwable.type == "moov") {
+                "$errorCodeBase-mp4largemoov"
+            } else {
+                "$errorCodeBase-mp4largeother"
+            }
+        } else {
+            "$errorCodeBase-failure"
+        }
+        result.error(errorCode, "failed for entry=$entryMap", throwable)
     }
 }

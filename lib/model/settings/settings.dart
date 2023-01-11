@@ -13,6 +13,7 @@ import 'package:aves/model/settings/defaults.dart';
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/enums/map_style.dart';
 import 'package:aves/model/source/enums/enums.dart';
+import 'package:aves/services/accessibility_service.dart';
 import 'package:aves/services/common/optional_event_channel.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/aves_app.dart';
@@ -276,23 +277,32 @@ class Settings extends ChangeNotifier {
     }
   }
 
+  Future<void> sanitize() async {
+    if (timeToTakeAction == AccessibilityTimeout.system && !(await AccessibilityService.hasRecommendedTimeouts())) {
+      _set(timeToTakeActionKey, null);
+    }
+    if (viewerUseCutout != SettingsDefaults.viewerUseCutout && !(await windowService.isCutoutAware())) {
+      _set(viewerUseCutoutKey, null);
+    }
+  }
+
   // app
 
   bool get hasAcceptedTerms => getBool(hasAcceptedTermsKey) ?? SettingsDefaults.hasAcceptedTerms;
 
-  set hasAcceptedTerms(bool newValue) => setAndNotify(hasAcceptedTermsKey, newValue);
+  set hasAcceptedTerms(bool newValue) => _set(hasAcceptedTermsKey, newValue);
 
   bool get canUseAnalysisService => getBool(canUseAnalysisServiceKey) ?? SettingsDefaults.canUseAnalysisService;
 
-  set canUseAnalysisService(bool newValue) => setAndNotify(canUseAnalysisServiceKey, newValue);
+  set canUseAnalysisService(bool newValue) => _set(canUseAnalysisServiceKey, newValue);
 
   bool get isInstalledAppAccessAllowed => getBool(isInstalledAppAccessAllowedKey) ?? SettingsDefaults.isInstalledAppAccessAllowed;
 
-  set isInstalledAppAccessAllowed(bool newValue) => setAndNotify(isInstalledAppAccessAllowedKey, newValue);
+  set isInstalledAppAccessAllowed(bool newValue) => _set(isInstalledAppAccessAllowedKey, newValue);
 
   bool get isErrorReportingAllowed => getBool(isErrorReportingAllowedKey) ?? SettingsDefaults.isErrorReportingAllowed;
 
-  set isErrorReportingAllowed(bool newValue) => setAndNotify(isErrorReportingAllowedKey, newValue);
+  set isErrorReportingAllowed(bool newValue) => _set(isErrorReportingAllowedKey, newValue);
 
   static const localeSeparator = '-';
 
@@ -319,7 +329,7 @@ class Settings extends ChangeNotifier {
         newValue.countryCode ?? '',
       ].join(localeSeparator);
     }
-    setAndNotify(localeKey, tag);
+    _set(localeKey, tag);
     _appliedLocale = null;
   }
 
@@ -349,57 +359,57 @@ class Settings extends ChangeNotifier {
 
   String get catalogTimeZone => getString(catalogTimeZoneKey) ?? '';
 
-  set catalogTimeZone(String newValue) => setAndNotify(catalogTimeZoneKey, newValue);
+  set catalogTimeZone(String newValue) => _set(catalogTimeZoneKey, newValue);
 
   double getTileExtent(String routeName) => getDouble(tileExtentPrefixKey + routeName) ?? 0;
 
-  void setTileExtent(String routeName, double newValue) => setAndNotify(tileExtentPrefixKey + routeName, newValue);
+  void setTileExtent(String routeName, double newValue) => _set(tileExtentPrefixKey + routeName, newValue);
 
   TileLayout getTileLayout(String routeName) => getEnumOrDefault(tileLayoutPrefixKey + routeName, SettingsDefaults.tileLayout, TileLayout.values);
 
-  void setTileLayout(String routeName, TileLayout newValue) => setAndNotify(tileLayoutPrefixKey + routeName, newValue.toString());
+  void setTileLayout(String routeName, TileLayout newValue) => _set(tileLayoutPrefixKey + routeName, newValue.toString());
 
   String get entryRenamingPattern => getString(entryRenamingPatternKey) ?? SettingsDefaults.entryRenamingPattern;
 
-  set entryRenamingPattern(String newValue) => setAndNotify(entryRenamingPatternKey, newValue);
+  set entryRenamingPattern(String newValue) => _set(entryRenamingPatternKey, newValue);
 
   List<int>? get topEntryIds => getStringList(topEntryIdsKey)?.map(int.tryParse).whereNotNull().toList();
 
-  set topEntryIds(List<int>? newValue) => setAndNotify(topEntryIdsKey, newValue?.map((id) => id.toString()).whereNotNull().toList());
+  set topEntryIds(List<int>? newValue) => _set(topEntryIdsKey, newValue?.map((id) => id.toString()).whereNotNull().toList());
 
   List<String> get recentDestinationAlbums => getStringList(recentDestinationAlbumsKey) ?? [];
 
-  set recentDestinationAlbums(List<String> newValue) => setAndNotify(recentDestinationAlbumsKey, newValue.take(_recentFilterHistoryMax).toList());
+  set recentDestinationAlbums(List<String> newValue) => _set(recentDestinationAlbumsKey, newValue.take(_recentFilterHistoryMax).toList());
 
   List<CollectionFilter> get recentTags => (getStringList(recentTagsKey) ?? []).map(CollectionFilter.fromJson).whereNotNull().toList();
 
-  set recentTags(List<CollectionFilter> newValue) => setAndNotify(recentTagsKey, newValue.take(_recentFilterHistoryMax).map((filter) => filter.toJson()).toList());
+  set recentTags(List<CollectionFilter> newValue) => _set(recentTagsKey, newValue.take(_recentFilterHistoryMax).map((filter) => filter.toJson()).toList());
 
   // display
 
   DisplayRefreshRateMode get displayRefreshRateMode => getEnumOrDefault(displayRefreshRateModeKey, SettingsDefaults.displayRefreshRateMode, DisplayRefreshRateMode.values);
 
-  set displayRefreshRateMode(DisplayRefreshRateMode newValue) => setAndNotify(displayRefreshRateModeKey, newValue.toString());
+  set displayRefreshRateMode(DisplayRefreshRateMode newValue) => _set(displayRefreshRateModeKey, newValue.toString());
 
   AvesThemeBrightness get themeBrightness => getEnumOrDefault(themeBrightnessKey, SettingsDefaults.themeBrightness, AvesThemeBrightness.values);
 
-  set themeBrightness(AvesThemeBrightness newValue) => setAndNotify(themeBrightnessKey, newValue.toString());
+  set themeBrightness(AvesThemeBrightness newValue) => _set(themeBrightnessKey, newValue.toString());
 
   AvesThemeColorMode get themeColorMode => getEnumOrDefault(themeColorModeKey, SettingsDefaults.themeColorMode, AvesThemeColorMode.values);
 
-  set themeColorMode(AvesThemeColorMode newValue) => setAndNotify(themeColorModeKey, newValue.toString());
+  set themeColorMode(AvesThemeColorMode newValue) => _set(themeColorModeKey, newValue.toString());
 
   bool get enableDynamicColor => getBool(enableDynamicColorKey) ?? SettingsDefaults.enableDynamicColor;
 
-  set enableDynamicColor(bool newValue) => setAndNotify(enableDynamicColorKey, newValue);
+  set enableDynamicColor(bool newValue) => _set(enableDynamicColorKey, newValue);
 
   bool get enableBlurEffect => getBool(enableBlurEffectKey) ?? SettingsDefaults.enableBlurEffect;
 
-  set enableBlurEffect(bool newValue) => setAndNotify(enableBlurEffectKey, newValue);
+  set enableBlurEffect(bool newValue) => _set(enableBlurEffectKey, newValue);
 
   bool get forceTvLayout => getBool(forceTvLayoutKey) ?? SettingsDefaults.forceTvLayout;
 
-  set forceTvLayout(bool newValue) => setAndNotify(forceTvLayoutKey, newValue);
+  set forceTvLayout(bool newValue) => _set(forceTvLayoutKey, newValue);
 
   bool get useTvLayout => device.isTelevision || forceTvLayout;
 
@@ -409,39 +419,39 @@ class Settings extends ChangeNotifier {
 
   bool get mustBackTwiceToExit => getBool(mustBackTwiceToExitKey) ?? SettingsDefaults.mustBackTwiceToExit;
 
-  set mustBackTwiceToExit(bool newValue) => setAndNotify(mustBackTwiceToExitKey, newValue);
+  set mustBackTwiceToExit(bool newValue) => _set(mustBackTwiceToExitKey, newValue);
 
   KeepScreenOn get keepScreenOn => getEnumOrDefault(keepScreenOnKey, SettingsDefaults.keepScreenOn, KeepScreenOn.values);
 
-  set keepScreenOn(KeepScreenOn newValue) => setAndNotify(keepScreenOnKey, newValue.toString());
+  set keepScreenOn(KeepScreenOn newValue) => _set(keepScreenOnKey, newValue.toString());
 
   HomePageSetting get homePage => getEnumOrDefault(homePageKey, SettingsDefaults.homePage, HomePageSetting.values);
 
-  set homePage(HomePageSetting newValue) => setAndNotify(homePageKey, newValue.toString());
+  set homePage(HomePageSetting newValue) => _set(homePageKey, newValue.toString());
 
   bool get enableBottomNavigationBar => getBool(enableBottomNavigationBarKey) ?? SettingsDefaults.enableBottomNavigationBar;
 
-  set enableBottomNavigationBar(bool newValue) => setAndNotify(enableBottomNavigationBarKey, newValue);
+  set enableBottomNavigationBar(bool newValue) => _set(enableBottomNavigationBarKey, newValue);
 
   bool get confirmDeleteForever => getBool(confirmDeleteForeverKey) ?? SettingsDefaults.confirmDeleteForever;
 
-  set confirmDeleteForever(bool newValue) => setAndNotify(confirmDeleteForeverKey, newValue);
+  set confirmDeleteForever(bool newValue) => _set(confirmDeleteForeverKey, newValue);
 
   bool get confirmMoveToBin => getBool(confirmMoveToBinKey) ?? SettingsDefaults.confirmMoveToBin;
 
-  set confirmMoveToBin(bool newValue) => setAndNotify(confirmMoveToBinKey, newValue);
+  set confirmMoveToBin(bool newValue) => _set(confirmMoveToBinKey, newValue);
 
   bool get confirmMoveUndatedItems => getBool(confirmMoveUndatedItemsKey) ?? SettingsDefaults.confirmMoveUndatedItems;
 
-  set confirmMoveUndatedItems(bool newValue) => setAndNotify(confirmMoveUndatedItemsKey, newValue);
+  set confirmMoveUndatedItems(bool newValue) => _set(confirmMoveUndatedItemsKey, newValue);
 
   bool get confirmAfterMoveToBin => getBool(confirmAfterMoveToBinKey) ?? SettingsDefaults.confirmAfterMoveToBin;
 
-  set confirmAfterMoveToBin(bool newValue) => setAndNotify(confirmAfterMoveToBinKey, newValue);
+  set confirmAfterMoveToBin(bool newValue) => _set(confirmAfterMoveToBinKey, newValue);
 
   bool get setMetadataDateBeforeFileOp => getBool(setMetadataDateBeforeFileOpKey) ?? SettingsDefaults.setMetadataDateBeforeFileOp;
 
-  set setMetadataDateBeforeFileOp(bool newValue) => setAndNotify(setMetadataDateBeforeFileOpKey, newValue);
+  set setMetadataDateBeforeFileOp(bool newValue) => _set(setMetadataDateBeforeFileOpKey, newValue);
 
   List<CollectionFilter?> get drawerTypeBookmarks =>
       (getStringList(drawerTypeBookmarksKey))?.map((v) {
@@ -450,103 +460,103 @@ class Settings extends ChangeNotifier {
       }).toList() ??
       SettingsDefaults.drawerTypeBookmarks;
 
-  set drawerTypeBookmarks(List<CollectionFilter?> newValue) => setAndNotify(drawerTypeBookmarksKey, newValue.map((filter) => filter?.toJson() ?? '').toList());
+  set drawerTypeBookmarks(List<CollectionFilter?> newValue) => _set(drawerTypeBookmarksKey, newValue.map((filter) => filter?.toJson() ?? '').toList());
 
   List<String>? get drawerAlbumBookmarks => getStringList(drawerAlbumBookmarksKey);
 
-  set drawerAlbumBookmarks(List<String>? newValue) => setAndNotify(drawerAlbumBookmarksKey, newValue);
+  set drawerAlbumBookmarks(List<String>? newValue) => _set(drawerAlbumBookmarksKey, newValue);
 
   List<String> get drawerPageBookmarks => getStringList(drawerPageBookmarksKey) ?? SettingsDefaults.drawerPageBookmarks;
 
-  set drawerPageBookmarks(List<String> newValue) => setAndNotify(drawerPageBookmarksKey, newValue);
+  set drawerPageBookmarks(List<String> newValue) => _set(drawerPageBookmarksKey, newValue);
 
   // collection
 
   EntryGroupFactor get collectionSectionFactor => getEnumOrDefault(collectionGroupFactorKey, SettingsDefaults.collectionSectionFactor, EntryGroupFactor.values);
 
-  set collectionSectionFactor(EntryGroupFactor newValue) => setAndNotify(collectionGroupFactorKey, newValue.toString());
+  set collectionSectionFactor(EntryGroupFactor newValue) => _set(collectionGroupFactorKey, newValue.toString());
 
   EntrySortFactor get collectionSortFactor => getEnumOrDefault(collectionSortFactorKey, SettingsDefaults.collectionSortFactor, EntrySortFactor.values);
 
-  set collectionSortFactor(EntrySortFactor newValue) => setAndNotify(collectionSortFactorKey, newValue.toString());
+  set collectionSortFactor(EntrySortFactor newValue) => _set(collectionSortFactorKey, newValue.toString());
 
   bool get collectionSortReverse => getBool(collectionSortReverseKey) ?? false;
 
-  set collectionSortReverse(bool newValue) => setAndNotify(collectionSortReverseKey, newValue);
+  set collectionSortReverse(bool newValue) => _set(collectionSortReverseKey, newValue);
 
   List<EntrySetAction> get collectionBrowsingQuickActions => getEnumListOrDefault(collectionBrowsingQuickActionsKey, SettingsDefaults.collectionBrowsingQuickActions, EntrySetAction.values);
 
-  set collectionBrowsingQuickActions(List<EntrySetAction> newValue) => setAndNotify(collectionBrowsingQuickActionsKey, newValue.map((v) => v.toString()).toList());
+  set collectionBrowsingQuickActions(List<EntrySetAction> newValue) => _set(collectionBrowsingQuickActionsKey, newValue.map((v) => v.toString()).toList());
 
   List<EntrySetAction> get collectionSelectionQuickActions => getEnumListOrDefault(collectionSelectionQuickActionsKey, SettingsDefaults.collectionSelectionQuickActions, EntrySetAction.values);
 
-  set collectionSelectionQuickActions(List<EntrySetAction> newValue) => setAndNotify(collectionSelectionQuickActionsKey, newValue.map((v) => v.toString()).toList());
+  set collectionSelectionQuickActions(List<EntrySetAction> newValue) => _set(collectionSelectionQuickActionsKey, newValue.map((v) => v.toString()).toList());
 
   bool get showThumbnailFavourite => getBool(showThumbnailFavouriteKey) ?? SettingsDefaults.showThumbnailFavourite;
 
-  set showThumbnailFavourite(bool newValue) => setAndNotify(showThumbnailFavouriteKey, newValue);
+  set showThumbnailFavourite(bool newValue) => _set(showThumbnailFavouriteKey, newValue);
 
   ThumbnailOverlayLocationIcon get thumbnailLocationIcon => getEnumOrDefault(thumbnailLocationIconKey, SettingsDefaults.thumbnailLocationIcon, ThumbnailOverlayLocationIcon.values);
 
-  set thumbnailLocationIcon(ThumbnailOverlayLocationIcon newValue) => setAndNotify(thumbnailLocationIconKey, newValue.toString());
+  set thumbnailLocationIcon(ThumbnailOverlayLocationIcon newValue) => _set(thumbnailLocationIconKey, newValue.toString());
 
   ThumbnailOverlayTagIcon get thumbnailTagIcon => getEnumOrDefault(thumbnailTagIconKey, SettingsDefaults.thumbnailTagIcon, ThumbnailOverlayTagIcon.values);
 
-  set thumbnailTagIcon(ThumbnailOverlayTagIcon newValue) => setAndNotify(thumbnailTagIconKey, newValue.toString());
+  set thumbnailTagIcon(ThumbnailOverlayTagIcon newValue) => _set(thumbnailTagIconKey, newValue.toString());
 
   bool get showThumbnailMotionPhoto => getBool(showThumbnailMotionPhotoKey) ?? SettingsDefaults.showThumbnailMotionPhoto;
 
-  set showThumbnailMotionPhoto(bool newValue) => setAndNotify(showThumbnailMotionPhotoKey, newValue);
+  set showThumbnailMotionPhoto(bool newValue) => _set(showThumbnailMotionPhotoKey, newValue);
 
   bool get showThumbnailRating => getBool(showThumbnailRatingKey) ?? SettingsDefaults.showThumbnailRating;
 
-  set showThumbnailRating(bool newValue) => setAndNotify(showThumbnailRatingKey, newValue);
+  set showThumbnailRating(bool newValue) => _set(showThumbnailRatingKey, newValue);
 
   bool get showThumbnailRaw => getBool(showThumbnailRawKey) ?? SettingsDefaults.showThumbnailRaw;
 
-  set showThumbnailRaw(bool newValue) => setAndNotify(showThumbnailRawKey, newValue);
+  set showThumbnailRaw(bool newValue) => _set(showThumbnailRawKey, newValue);
 
   bool get showThumbnailVideoDuration => getBool(showThumbnailVideoDurationKey) ?? SettingsDefaults.showThumbnailVideoDuration;
 
-  set showThumbnailVideoDuration(bool newValue) => setAndNotify(showThumbnailVideoDurationKey, newValue);
+  set showThumbnailVideoDuration(bool newValue) => _set(showThumbnailVideoDurationKey, newValue);
 
   // filter grids
 
   AlbumChipGroupFactor get albumGroupFactor => getEnumOrDefault(albumGroupFactorKey, SettingsDefaults.albumGroupFactor, AlbumChipGroupFactor.values);
 
-  set albumGroupFactor(AlbumChipGroupFactor newValue) => setAndNotify(albumGroupFactorKey, newValue.toString());
+  set albumGroupFactor(AlbumChipGroupFactor newValue) => _set(albumGroupFactorKey, newValue.toString());
 
   ChipSortFactor get albumSortFactor => getEnumOrDefault(albumSortFactorKey, SettingsDefaults.albumSortFactor, ChipSortFactor.values);
 
-  set albumSortFactor(ChipSortFactor newValue) => setAndNotify(albumSortFactorKey, newValue.toString());
+  set albumSortFactor(ChipSortFactor newValue) => _set(albumSortFactorKey, newValue.toString());
 
   ChipSortFactor get countrySortFactor => getEnumOrDefault(countrySortFactorKey, SettingsDefaults.countrySortFactor, ChipSortFactor.values);
 
-  set countrySortFactor(ChipSortFactor newValue) => setAndNotify(countrySortFactorKey, newValue.toString());
+  set countrySortFactor(ChipSortFactor newValue) => _set(countrySortFactorKey, newValue.toString());
 
   ChipSortFactor get tagSortFactor => getEnumOrDefault(tagSortFactorKey, SettingsDefaults.tagSortFactor, ChipSortFactor.values);
 
-  set tagSortFactor(ChipSortFactor newValue) => setAndNotify(tagSortFactorKey, newValue.toString());
+  set tagSortFactor(ChipSortFactor newValue) => _set(tagSortFactorKey, newValue.toString());
 
   bool get albumSortReverse => getBool(albumSortReverseKey) ?? false;
 
-  set albumSortReverse(bool newValue) => setAndNotify(albumSortReverseKey, newValue);
+  set albumSortReverse(bool newValue) => _set(albumSortReverseKey, newValue);
 
   bool get countrySortReverse => getBool(countrySortReverseKey) ?? false;
 
-  set countrySortReverse(bool newValue) => setAndNotify(countrySortReverseKey, newValue);
+  set countrySortReverse(bool newValue) => _set(countrySortReverseKey, newValue);
 
   bool get tagSortReverse => getBool(tagSortReverseKey) ?? false;
 
-  set tagSortReverse(bool newValue) => setAndNotify(tagSortReverseKey, newValue);
+  set tagSortReverse(bool newValue) => _set(tagSortReverseKey, newValue);
 
   Set<CollectionFilter> get pinnedFilters => (getStringList(pinnedFiltersKey) ?? []).map(CollectionFilter.fromJson).whereNotNull().toSet();
 
-  set pinnedFilters(Set<CollectionFilter> newValue) => setAndNotify(pinnedFiltersKey, newValue.map((filter) => filter.toJson()).toList());
+  set pinnedFilters(Set<CollectionFilter> newValue) => _set(pinnedFiltersKey, newValue.map((filter) => filter.toJson()).toList());
 
   Set<CollectionFilter> get hiddenFilters => (getStringList(hiddenFiltersKey) ?? []).map(CollectionFilter.fromJson).whereNotNull().toSet();
 
-  set hiddenFilters(Set<CollectionFilter> newValue) => setAndNotify(hiddenFiltersKey, newValue.map((filter) => filter.toJson()).toList());
+  set hiddenFilters(Set<CollectionFilter> newValue) => _set(hiddenFiltersKey, newValue.map((filter) => filter.toJson()).toList());
 
   void changeFilterVisibility(Set<CollectionFilter> filters, bool visible) {
     final _hiddenFilters = hiddenFilters;
@@ -563,131 +573,131 @@ class Settings extends ChangeNotifier {
 
   List<EntryAction> get viewerQuickActions => getEnumListOrDefault(viewerQuickActionsKey, SettingsDefaults.viewerQuickActions, EntryAction.values);
 
-  set viewerQuickActions(List<EntryAction> newValue) => setAndNotify(viewerQuickActionsKey, newValue.map((v) => v.toString()).toList());
+  set viewerQuickActions(List<EntryAction> newValue) => _set(viewerQuickActionsKey, newValue.map((v) => v.toString()).toList());
 
   bool get showOverlayOnOpening => getBool(showOverlayOnOpeningKey) ?? SettingsDefaults.showOverlayOnOpening;
 
-  set showOverlayOnOpening(bool newValue) => setAndNotify(showOverlayOnOpeningKey, newValue);
+  set showOverlayOnOpening(bool newValue) => _set(showOverlayOnOpeningKey, newValue);
 
   bool get showOverlayMinimap => getBool(showOverlayMinimapKey) ?? SettingsDefaults.showOverlayMinimap;
 
-  set showOverlayMinimap(bool newValue) => setAndNotify(showOverlayMinimapKey, newValue);
+  set showOverlayMinimap(bool newValue) => _set(showOverlayMinimapKey, newValue);
 
   bool get showOverlayInfo => getBool(showOverlayInfoKey) ?? SettingsDefaults.showOverlayInfo;
 
-  set showOverlayInfo(bool newValue) => setAndNotify(showOverlayInfoKey, newValue);
+  set showOverlayInfo(bool newValue) => _set(showOverlayInfoKey, newValue);
 
   bool get showOverlayDescription => getBool(showOverlayDescriptionKey) ?? SettingsDefaults.showOverlayDescription;
 
-  set showOverlayDescription(bool newValue) => setAndNotify(showOverlayDescriptionKey, newValue);
+  set showOverlayDescription(bool newValue) => _set(showOverlayDescriptionKey, newValue);
 
   bool get showOverlayRatingTags => getBool(showOverlayRatingTagsKey) ?? SettingsDefaults.showOverlayRatingTags;
 
-  set showOverlayRatingTags(bool newValue) => setAndNotify(showOverlayRatingTagsKey, newValue);
+  set showOverlayRatingTags(bool newValue) => _set(showOverlayRatingTagsKey, newValue);
 
   bool get showOverlayShootingDetails => getBool(showOverlayShootingDetailsKey) ?? SettingsDefaults.showOverlayShootingDetails;
 
-  set showOverlayShootingDetails(bool newValue) => setAndNotify(showOverlayShootingDetailsKey, newValue);
+  set showOverlayShootingDetails(bool newValue) => _set(showOverlayShootingDetailsKey, newValue);
 
   bool get showOverlayThumbnailPreview => getBool(showOverlayThumbnailPreviewKey) ?? SettingsDefaults.showOverlayThumbnailPreview;
 
-  set showOverlayThumbnailPreview(bool newValue) => setAndNotify(showOverlayThumbnailPreviewKey, newValue);
+  set showOverlayThumbnailPreview(bool newValue) => _set(showOverlayThumbnailPreviewKey, newValue);
 
   bool get viewerGestureSideTapNext => getBool(viewerGestureSideTapNextKey) ?? SettingsDefaults.viewerGestureSideTapNext;
 
-  set viewerGestureSideTapNext(bool newValue) => setAndNotify(viewerGestureSideTapNextKey, newValue);
+  set viewerGestureSideTapNext(bool newValue) => _set(viewerGestureSideTapNextKey, newValue);
 
   bool get viewerUseCutout => getBool(viewerUseCutoutKey) ?? SettingsDefaults.viewerUseCutout;
 
-  set viewerUseCutout(bool newValue) => setAndNotify(viewerUseCutoutKey, newValue);
+  set viewerUseCutout(bool newValue) => _set(viewerUseCutoutKey, newValue);
 
   bool get viewerMaxBrightness => getBool(viewerMaxBrightnessKey) ?? SettingsDefaults.viewerMaxBrightness;
 
-  set viewerMaxBrightness(bool newValue) => setAndNotify(viewerMaxBrightnessKey, newValue);
+  set viewerMaxBrightness(bool newValue) => _set(viewerMaxBrightnessKey, newValue);
 
   bool get enableMotionPhotoAutoPlay => getBool(enableMotionPhotoAutoPlayKey) ?? SettingsDefaults.enableMotionPhotoAutoPlay;
 
-  set enableMotionPhotoAutoPlay(bool newValue) => setAndNotify(enableMotionPhotoAutoPlayKey, newValue);
+  set enableMotionPhotoAutoPlay(bool newValue) => _set(enableMotionPhotoAutoPlayKey, newValue);
 
   EntryBackground get imageBackground => getEnumOrDefault(imageBackgroundKey, SettingsDefaults.imageBackground, EntryBackground.values);
 
-  set imageBackground(EntryBackground newValue) => setAndNotify(imageBackgroundKey, newValue.toString());
+  set imageBackground(EntryBackground newValue) => _set(imageBackgroundKey, newValue.toString());
 
   // video
 
   bool get enableVideoHardwareAcceleration => getBool(enableVideoHardwareAccelerationKey) ?? SettingsDefaults.enableVideoHardwareAcceleration;
 
-  set enableVideoHardwareAcceleration(bool newValue) => setAndNotify(enableVideoHardwareAccelerationKey, newValue);
+  set enableVideoHardwareAcceleration(bool newValue) => _set(enableVideoHardwareAccelerationKey, newValue);
 
   VideoAutoPlayMode get videoAutoPlayMode => getEnumOrDefault(videoAutoPlayModeKey, SettingsDefaults.videoAutoPlayMode, VideoAutoPlayMode.values);
 
-  set videoAutoPlayMode(VideoAutoPlayMode newValue) => setAndNotify(videoAutoPlayModeKey, newValue.toString());
+  set videoAutoPlayMode(VideoAutoPlayMode newValue) => _set(videoAutoPlayModeKey, newValue.toString());
 
   VideoLoopMode get videoLoopMode => getEnumOrDefault(videoLoopModeKey, SettingsDefaults.videoLoopMode, VideoLoopMode.values);
 
-  set videoLoopMode(VideoLoopMode newValue) => setAndNotify(videoLoopModeKey, newValue.toString());
+  set videoLoopMode(VideoLoopMode newValue) => _set(videoLoopModeKey, newValue.toString());
 
   bool get videoShowRawTimedText => getBool(videoShowRawTimedTextKey) ?? SettingsDefaults.videoShowRawTimedText;
 
-  set videoShowRawTimedText(bool newValue) => setAndNotify(videoShowRawTimedTextKey, newValue);
+  set videoShowRawTimedText(bool newValue) => _set(videoShowRawTimedTextKey, newValue);
 
   VideoControls get videoControls => getEnumOrDefault(videoControlsKey, SettingsDefaults.videoControls, VideoControls.values);
 
-  set videoControls(VideoControls newValue) => setAndNotify(videoControlsKey, newValue.toString());
+  set videoControls(VideoControls newValue) => _set(videoControlsKey, newValue.toString());
 
   bool get videoGestureDoubleTapTogglePlay => getBool(videoGestureDoubleTapTogglePlayKey) ?? SettingsDefaults.videoGestureDoubleTapTogglePlay;
 
-  set videoGestureDoubleTapTogglePlay(bool newValue) => setAndNotify(videoGestureDoubleTapTogglePlayKey, newValue);
+  set videoGestureDoubleTapTogglePlay(bool newValue) => _set(videoGestureDoubleTapTogglePlayKey, newValue);
 
   bool get videoGestureSideDoubleTapSeek => getBool(videoGestureSideDoubleTapSeekKey) ?? SettingsDefaults.videoGestureSideDoubleTapSeek;
 
-  set videoGestureSideDoubleTapSeek(bool newValue) => setAndNotify(videoGestureSideDoubleTapSeekKey, newValue);
+  set videoGestureSideDoubleTapSeek(bool newValue) => _set(videoGestureSideDoubleTapSeekKey, newValue);
 
   // subtitles
 
   double get subtitleFontSize => getDouble(subtitleFontSizeKey) ?? SettingsDefaults.subtitleFontSize;
 
-  set subtitleFontSize(double newValue) => setAndNotify(subtitleFontSizeKey, newValue);
+  set subtitleFontSize(double newValue) => _set(subtitleFontSizeKey, newValue);
 
   TextAlign get subtitleTextAlignment => getEnumOrDefault(subtitleTextAlignmentKey, SettingsDefaults.subtitleTextAlignment, TextAlign.values);
 
-  set subtitleTextAlignment(TextAlign newValue) => setAndNotify(subtitleTextAlignmentKey, newValue.toString());
+  set subtitleTextAlignment(TextAlign newValue) => _set(subtitleTextAlignmentKey, newValue.toString());
 
   SubtitlePosition get subtitleTextPosition => getEnumOrDefault(subtitleTextPositionKey, SettingsDefaults.subtitleTextPosition, SubtitlePosition.values);
 
-  set subtitleTextPosition(SubtitlePosition newValue) => setAndNotify(subtitleTextPositionKey, newValue.toString());
+  set subtitleTextPosition(SubtitlePosition newValue) => _set(subtitleTextPositionKey, newValue.toString());
 
   bool get subtitleShowOutline => getBool(subtitleShowOutlineKey) ?? SettingsDefaults.subtitleShowOutline;
 
-  set subtitleShowOutline(bool newValue) => setAndNotify(subtitleShowOutlineKey, newValue);
+  set subtitleShowOutline(bool newValue) => _set(subtitleShowOutlineKey, newValue);
 
   Color get subtitleTextColor => Color(getInt(subtitleTextColorKey) ?? SettingsDefaults.subtitleTextColor.value);
 
-  set subtitleTextColor(Color newValue) => setAndNotify(subtitleTextColorKey, newValue.value);
+  set subtitleTextColor(Color newValue) => _set(subtitleTextColorKey, newValue.value);
 
   Color get subtitleBackgroundColor => Color(getInt(subtitleBackgroundColorKey) ?? SettingsDefaults.subtitleBackgroundColor.value);
 
-  set subtitleBackgroundColor(Color newValue) => setAndNotify(subtitleBackgroundColorKey, newValue.value);
+  set subtitleBackgroundColor(Color newValue) => _set(subtitleBackgroundColorKey, newValue.value);
 
   // info
 
   double get infoMapZoom => getDouble(infoMapZoomKey) ?? SettingsDefaults.infoMapZoom;
 
-  set infoMapZoom(double newValue) => setAndNotify(infoMapZoomKey, newValue);
+  set infoMapZoom(double newValue) => _set(infoMapZoomKey, newValue);
 
   CoordinateFormat get coordinateFormat => getEnumOrDefault(coordinateFormatKey, SettingsDefaults.coordinateFormat, CoordinateFormat.values);
 
-  set coordinateFormat(CoordinateFormat newValue) => setAndNotify(coordinateFormatKey, newValue.toString());
+  set coordinateFormat(CoordinateFormat newValue) => _set(coordinateFormatKey, newValue.toString());
 
   UnitSystem get unitSystem => getEnumOrDefault(unitSystemKey, SettingsDefaults.unitSystem, UnitSystem.values);
 
-  set unitSystem(UnitSystem newValue) => setAndNotify(unitSystemKey, newValue.toString());
+  set unitSystem(UnitSystem newValue) => _set(unitSystemKey, newValue.toString());
 
   // tag editor
 
   bool get tagEditorCurrentFilterSectionExpanded => getBool(tagEditorCurrentFilterSectionExpandedKey) ?? SettingsDefaults.tagEditorCurrentFilterSectionExpanded;
 
-  set tagEditorCurrentFilterSectionExpanded(bool newValue) => setAndNotify(tagEditorCurrentFilterSectionExpandedKey, newValue);
+  set tagEditorCurrentFilterSectionExpanded(bool newValue) => _set(tagEditorCurrentFilterSectionExpandedKey, newValue);
 
   // map
 
@@ -699,106 +709,106 @@ class Settings extends ChangeNotifier {
     return available.contains(preferred) ? preferred : available.first;
   }
 
-  set mapStyle(EntryMapStyle? newValue) => setAndNotify(mapStyleKey, newValue?.toString());
+  set mapStyle(EntryMapStyle? newValue) => _set(mapStyleKey, newValue?.toString());
 
   LatLng? get mapDefaultCenter {
     final json = getString(mapDefaultCenterKey);
     return json != null ? LatLng.fromJson(jsonDecode(json)) : null;
   }
 
-  set mapDefaultCenter(LatLng? newValue) => setAndNotify(mapDefaultCenterKey, newValue != null ? jsonEncode(newValue.toJson()) : null);
+  set mapDefaultCenter(LatLng? newValue) => _set(mapDefaultCenterKey, newValue != null ? jsonEncode(newValue.toJson()) : null);
 
   // search
 
   bool get saveSearchHistory => getBool(saveSearchHistoryKey) ?? SettingsDefaults.saveSearchHistory;
 
-  set saveSearchHistory(bool newValue) => setAndNotify(saveSearchHistoryKey, newValue);
+  set saveSearchHistory(bool newValue) => _set(saveSearchHistoryKey, newValue);
 
   List<CollectionFilter> get searchHistory => (getStringList(searchHistoryKey) ?? []).map(CollectionFilter.fromJson).whereNotNull().toList();
 
-  set searchHistory(List<CollectionFilter> newValue) => setAndNotify(searchHistoryKey, newValue.map((filter) => filter.toJson()).toList());
+  set searchHistory(List<CollectionFilter> newValue) => _set(searchHistoryKey, newValue.map((filter) => filter.toJson()).toList());
 
   // bin
 
   bool get enableBin => getBool(enableBinKey) ?? SettingsDefaults.enableBin;
 
-  set enableBin(bool newValue) => setAndNotify(enableBinKey, newValue);
+  set enableBin(bool newValue) => _set(enableBinKey, newValue);
 
   // accessibility
 
   bool get showPinchGestureAlternatives => getBool(showPinchGestureAlternativesKey) ?? SettingsDefaults.showPinchGestureAlternatives;
 
-  set showPinchGestureAlternatives(bool newValue) => setAndNotify(showPinchGestureAlternativesKey, newValue);
+  set showPinchGestureAlternatives(bool newValue) => _set(showPinchGestureAlternativesKey, newValue);
 
   AccessibilityAnimations get accessibilityAnimations => getEnumOrDefault(accessibilityAnimationsKey, SettingsDefaults.accessibilityAnimations, AccessibilityAnimations.values);
 
-  set accessibilityAnimations(AccessibilityAnimations newValue) => setAndNotify(accessibilityAnimationsKey, newValue.toString());
+  set accessibilityAnimations(AccessibilityAnimations newValue) => _set(accessibilityAnimationsKey, newValue.toString());
 
   AccessibilityTimeout get timeToTakeAction => getEnumOrDefault(timeToTakeActionKey, SettingsDefaults.timeToTakeAction, AccessibilityTimeout.values);
 
-  set timeToTakeAction(AccessibilityTimeout newValue) => setAndNotify(timeToTakeActionKey, newValue.toString());
+  set timeToTakeAction(AccessibilityTimeout newValue) => _set(timeToTakeActionKey, newValue.toString());
 
   // file picker
 
   bool get filePickerShowHiddenFiles => getBool(filePickerShowHiddenFilesKey) ?? SettingsDefaults.filePickerShowHiddenFiles;
 
-  set filePickerShowHiddenFiles(bool newValue) => setAndNotify(filePickerShowHiddenFilesKey, newValue);
+  set filePickerShowHiddenFiles(bool newValue) => _set(filePickerShowHiddenFilesKey, newValue);
 
   // screen saver
 
   bool get screenSaverFillScreen => getBool(screenSaverFillScreenKey) ?? SettingsDefaults.slideshowFillScreen;
 
-  set screenSaverFillScreen(bool newValue) => setAndNotify(screenSaverFillScreenKey, newValue);
+  set screenSaverFillScreen(bool newValue) => _set(screenSaverFillScreenKey, newValue);
 
   bool get screenSaverAnimatedZoomEffect => getBool(screenSaverAnimatedZoomEffectKey) ?? SettingsDefaults.slideshowAnimatedZoomEffect;
 
-  set screenSaverAnimatedZoomEffect(bool newValue) => setAndNotify(screenSaverAnimatedZoomEffectKey, newValue);
+  set screenSaverAnimatedZoomEffect(bool newValue) => _set(screenSaverAnimatedZoomEffectKey, newValue);
 
   ViewerTransition get screenSaverTransition => getEnumOrDefault(screenSaverTransitionKey, SettingsDefaults.slideshowTransition, ViewerTransition.values);
 
-  set screenSaverTransition(ViewerTransition newValue) => setAndNotify(screenSaverTransitionKey, newValue.toString());
+  set screenSaverTransition(ViewerTransition newValue) => _set(screenSaverTransitionKey, newValue.toString());
 
   SlideshowVideoPlayback get screenSaverVideoPlayback => getEnumOrDefault(screenSaverVideoPlaybackKey, SettingsDefaults.slideshowVideoPlayback, SlideshowVideoPlayback.values);
 
-  set screenSaverVideoPlayback(SlideshowVideoPlayback newValue) => setAndNotify(screenSaverVideoPlaybackKey, newValue.toString());
+  set screenSaverVideoPlayback(SlideshowVideoPlayback newValue) => _set(screenSaverVideoPlaybackKey, newValue.toString());
 
   int get screenSaverInterval => getInt(screenSaverIntervalKey) ?? SettingsDefaults.slideshowInterval;
 
-  set screenSaverInterval(int newValue) => setAndNotify(screenSaverIntervalKey, newValue);
+  set screenSaverInterval(int newValue) => _set(screenSaverIntervalKey, newValue);
 
   Set<CollectionFilter> get screenSaverCollectionFilters => (getStringList(screenSaverCollectionFiltersKey) ?? []).map(CollectionFilter.fromJson).whereNotNull().toSet();
 
-  set screenSaverCollectionFilters(Set<CollectionFilter> newValue) => setAndNotify(screenSaverCollectionFiltersKey, newValue.map((filter) => filter.toJson()).toList());
+  set screenSaverCollectionFilters(Set<CollectionFilter> newValue) => _set(screenSaverCollectionFiltersKey, newValue.map((filter) => filter.toJson()).toList());
 
   // slideshow
 
   bool get slideshowRepeat => getBool(slideshowRepeatKey) ?? SettingsDefaults.slideshowRepeat;
 
-  set slideshowRepeat(bool newValue) => setAndNotify(slideshowRepeatKey, newValue);
+  set slideshowRepeat(bool newValue) => _set(slideshowRepeatKey, newValue);
 
   bool get slideshowShuffle => getBool(slideshowShuffleKey) ?? SettingsDefaults.slideshowShuffle;
 
-  set slideshowShuffle(bool newValue) => setAndNotify(slideshowShuffleKey, newValue);
+  set slideshowShuffle(bool newValue) => _set(slideshowShuffleKey, newValue);
 
   bool get slideshowFillScreen => getBool(slideshowFillScreenKey) ?? SettingsDefaults.slideshowFillScreen;
 
-  set slideshowFillScreen(bool newValue) => setAndNotify(slideshowFillScreenKey, newValue);
+  set slideshowFillScreen(bool newValue) => _set(slideshowFillScreenKey, newValue);
 
   bool get slideshowAnimatedZoomEffect => getBool(slideshowAnimatedZoomEffectKey) ?? SettingsDefaults.slideshowAnimatedZoomEffect;
 
-  set slideshowAnimatedZoomEffect(bool newValue) => setAndNotify(slideshowAnimatedZoomEffectKey, newValue);
+  set slideshowAnimatedZoomEffect(bool newValue) => _set(slideshowAnimatedZoomEffectKey, newValue);
 
   ViewerTransition get slideshowTransition => getEnumOrDefault(slideshowTransitionKey, SettingsDefaults.slideshowTransition, ViewerTransition.values);
 
-  set slideshowTransition(ViewerTransition newValue) => setAndNotify(slideshowTransitionKey, newValue.toString());
+  set slideshowTransition(ViewerTransition newValue) => _set(slideshowTransitionKey, newValue.toString());
 
   SlideshowVideoPlayback get slideshowVideoPlayback => getEnumOrDefault(slideshowVideoPlaybackKey, SettingsDefaults.slideshowVideoPlayback, SlideshowVideoPlayback.values);
 
-  set slideshowVideoPlayback(SlideshowVideoPlayback newValue) => setAndNotify(slideshowVideoPlaybackKey, newValue.toString());
+  set slideshowVideoPlayback(SlideshowVideoPlayback newValue) => _set(slideshowVideoPlaybackKey, newValue.toString());
 
   int get slideshowInterval => getInt(slideshowIntervalKey) ?? SettingsDefaults.slideshowInterval;
 
-  set slideshowInterval(int newValue) => setAndNotify(slideshowIntervalKey, newValue);
+  set slideshowInterval(int newValue) => _set(slideshowIntervalKey, newValue);
 
   // widget
 
@@ -807,27 +817,27 @@ class Settings extends ChangeNotifier {
     return value != null ? Color(value) : null;
   }
 
-  void setWidgetOutline(int widgetId, Color? newValue) => setAndNotify('$widgetOutlinePrefixKey$widgetId', newValue?.value);
+  void setWidgetOutline(int widgetId, Color? newValue) => _set('$widgetOutlinePrefixKey$widgetId', newValue?.value);
 
   WidgetShape getWidgetShape(int widgetId) => getEnumOrDefault('$widgetShapePrefixKey$widgetId', SettingsDefaults.widgetShape, WidgetShape.values);
 
-  void setWidgetShape(int widgetId, WidgetShape newValue) => setAndNotify('$widgetShapePrefixKey$widgetId', newValue.toString());
+  void setWidgetShape(int widgetId, WidgetShape newValue) => _set('$widgetShapePrefixKey$widgetId', newValue.toString());
 
   Set<CollectionFilter> getWidgetCollectionFilters(int widgetId) => (getStringList('$widgetCollectionFiltersPrefixKey$widgetId') ?? []).map(CollectionFilter.fromJson).whereNotNull().toSet();
 
-  void setWidgetCollectionFilters(int widgetId, Set<CollectionFilter> newValue) => setAndNotify('$widgetCollectionFiltersPrefixKey$widgetId', newValue.map((filter) => filter.toJson()).toList());
+  void setWidgetCollectionFilters(int widgetId, Set<CollectionFilter> newValue) => _set('$widgetCollectionFiltersPrefixKey$widgetId', newValue.map((filter) => filter.toJson()).toList());
 
   WidgetOpenPage getWidgetOpenPage(int widgetId) => getEnumOrDefault('$widgetOpenPagePrefixKey$widgetId', SettingsDefaults.widgetOpenPage, WidgetOpenPage.values);
 
-  void setWidgetOpenPage(int widgetId, WidgetOpenPage newValue) => setAndNotify('$widgetOpenPagePrefixKey$widgetId', newValue.toString());
+  void setWidgetOpenPage(int widgetId, WidgetOpenPage newValue) => _set('$widgetOpenPagePrefixKey$widgetId', newValue.toString());
 
   WidgetDisplayedItem getWidgetDisplayedItem(int widgetId) => getEnumOrDefault('$widgetDisplayedItemPrefixKey$widgetId', SettingsDefaults.widgetDisplayedItem, WidgetDisplayedItem.values);
 
-  void setWidgetDisplayedItem(int widgetId, WidgetDisplayedItem newValue) => setAndNotify('$widgetDisplayedItemPrefixKey$widgetId', newValue.toString());
+  void setWidgetDisplayedItem(int widgetId, WidgetDisplayedItem newValue) => _set('$widgetDisplayedItemPrefixKey$widgetId', newValue.toString());
 
   String? getWidgetUri(int widgetId) => getString('$widgetUriPrefixKey$widgetId');
 
-  void setWidgetUri(int widgetId, String? newValue) => setAndNotify('$widgetUriPrefixKey$widgetId', newValue);
+  void setWidgetUri(int widgetId, String? newValue) => _set('$widgetUriPrefixKey$widgetId', newValue);
 
   // convenience methods
 
@@ -894,7 +904,7 @@ class Settings extends ChangeNotifier {
     return settingsStore.getStringList(key)?.map((s) => values.firstWhereOrNull((v) => v.toString() == s)).whereNotNull().toList() ?? defaultValue;
   }
 
-  void setAndNotify(String key, dynamic newValue) {
+  void _set(String key, dynamic newValue) {
     var oldValue = settingsStore.get(key);
     if (newValue == null) {
       settingsStore.remove(key);
@@ -940,11 +950,11 @@ class Settings extends ChangeNotifier {
 
   bool get isRotationLocked => getBool(platformAccelerometerRotationKey) ?? SettingsDefaults.isRotationLocked;
 
-  set isRotationLocked(bool newValue) => setAndNotify(platformAccelerometerRotationKey, newValue);
+  set isRotationLocked(bool newValue) => _set(platformAccelerometerRotationKey, newValue);
 
   bool get areAnimationsRemoved => getBool(platformTransitionAnimationScaleKey) ?? SettingsDefaults.areAnimationsRemoved;
 
-  set areAnimationsRemoved(bool newValue) => setAndNotify(platformTransitionAnimationScaleKey, newValue);
+  set areAnimationsRemoved(bool newValue) => _set(platformTransitionAnimationScaleKey, newValue);
 
   // import/export
 
@@ -1103,6 +1113,7 @@ class Settings extends ChangeNotifier {
           _updateStreamController.add(SettingsChangedEvent(key, oldValue, newValue));
         }
       });
+      await sanitize();
       notifyListeners();
     }
   }

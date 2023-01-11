@@ -1,4 +1,5 @@
 import 'package:aves/services/common/services.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
@@ -79,15 +80,18 @@ class PlatformWindowService implements WindowService {
     }
   }
 
+  bool? _isCutoutAware;
+
   @override
   Future<bool> isCutoutAware() async {
+    if (_isCutoutAware != null) return SynchronousFuture(_isCutoutAware!);
     try {
       final result = await _platform.invokeMethod('isCutoutAware');
-      if (result != null) return result as bool;
+      _isCutoutAware = result as bool?;
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
     }
-    return false;
+    return _isCutoutAware ?? false;
   }
 
   @override

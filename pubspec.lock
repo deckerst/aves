@@ -123,9 +123,11 @@ packages:
   charts_flutter:
     dependency: "direct main"
     description:
-      name: charts_flutter
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: charts_flutter
+      ref: master
+      resolved-ref: de76a46c1908b0c35aaf60823100fe9bfa26ae4d
+      url: "https://github.com/fzyzcjy/charts.git"
+    source: git
     version: "0.12.0"
   clock:
     dependency: transitive

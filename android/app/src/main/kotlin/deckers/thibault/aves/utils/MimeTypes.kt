@@ -90,7 +90,8 @@ object MimeTypes {
 
     // as of `metadata-extractor` v2.14.0
     fun canReadWithMetadataExtractor(mimeType: String) = when (mimeType) {
-        DJVU, WBMP, MKV, MP2T, MP2TS, OGV, WEBM -> false
+        DJVU, WBMP -> false
+        MKV, MP2T, MP2TS, OGV, WEBM -> false
         else -> true
     }
 
