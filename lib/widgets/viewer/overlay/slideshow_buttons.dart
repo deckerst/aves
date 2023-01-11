@@ -36,6 +36,7 @@ class _SlideshowButtonsState extends State<SlideshowButtons> {
   void initState() {
     super.initState();
     _registerWidget(widget);
+    WidgetsBinding.instance.addPostFrameCallback((_) => _requestFocus());
   }
 
   @override
@@ -53,17 +54,15 @@ class _SlideshowButtonsState extends State<SlideshowButtons> {
   }
 
   void _registerWidget(SlideshowButtons widget) {
-    final animationController = widget.animationController;
     _buttonScale = CurvedAnimation(
-      parent: animationController,
+      parent: widget.animationController,
       // a little bounce at the top
       curve: Curves.easeOutBack,
     );
-    animationController.addStatusListener(_onAnimationStatusChanged);
   }
 
   void _unregisterWidget(SlideshowButtons widget) {
-    widget.animationController.removeStatusListener(_onAnimationStatusChanged);
+    // nothing
   }
 
   @override
@@ -111,9 +110,5 @@ class _SlideshowButtonsState extends State<SlideshowButtons> {
 
   void _onAction(BuildContext context, SlideshowAction action) => SlideshowActionNotification(action).dispatch(context);
 
-  void _onAnimationStatusChanged(AnimationStatus status) {
-    if (status == AnimationStatus.completed) {
-      _buttonRowFocusScopeNode.children.firstOrNull?.requestFocus();
-    }
-  }
+  void _requestFocus() => _buttonRowFocusScopeNode.children.firstOrNull?.requestFocus();
 }

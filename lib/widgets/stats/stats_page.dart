@@ -281,7 +281,7 @@ class _StatsPageState extends State<StatsPage> {
       style: Constants.knownTitleTextStyle,
     );
     if (settings.useTvLayout) {
-      final colors = Theme.of(context).colorScheme;
+      final primaryColor = Theme.of(context).colorScheme.primary;
       header = Container(
         padding: const EdgeInsets.symmetric(vertical: 12),
         alignment: AlignmentDirectional.centerStart,
@@ -289,12 +289,11 @@ class _StatsPageState extends State<StatsPage> {
           type: MaterialType.transparency,
           child: InkResponse(
             onTap: onHeaderPressed,
-            onHover: (_) {},
+            containedInkWell: true,
             highlightShape: BoxShape.rectangle,
             borderRadius: const BorderRadius.all(Radius.circular(123)),
-            containedInkWell: true,
-            splashColor: colors.primary.withOpacity(0.12),
-            hoverColor: colors.primary.withOpacity(0.04),
+            hoverColor: primaryColor.withOpacity(0.04),
+            splashColor: primaryColor.withOpacity(0.12),
             child: Padding(
               padding: const EdgeInsets.all(16),
               child: header,

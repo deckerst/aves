@@ -3,12 +3,12 @@ import 'dart:convert';
 
 import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/actions/events.dart';
-import 'package:aves/model/device.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/entry_info.dart';
 import 'package:aves/model/entry_metadata_edition.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/geotiff.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/services.dart';
@@ -30,7 +30,7 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
   Stream<ActionEvent<EntryAction>> get eventStream => _eventStreamController.stream;
 
   bool isVisible(AvesEntry targetEntry, EntryAction action) {
-    final canWrite = !device.isReadOnly;
+    final canWrite = !settings.isReadOnly;
     switch (action) {
       // general
       case EntryAction.editDate:

@@ -27,8 +27,6 @@ class Device {
 
   bool get isDynamicColorAvailable => _isDynamicColorAvailable;
 
-  bool get isReadOnly => _isTelevision;
-
   bool get isTelevision => _isTelevision;
 
   bool get showPinShortcutFeedback => _showPinShortcutFeedback;

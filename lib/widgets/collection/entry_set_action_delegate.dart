@@ -55,7 +55,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     required int selectedItemCount,
     required bool isTrash,
   }) {
-    final canWrite = !device.isReadOnly;
+    final canWrite = !settings.isReadOnly;
     final isMain = appMode == AppMode.main;
     switch (action) {
       // general

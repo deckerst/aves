@@ -25,6 +25,7 @@ class MediaSessionHandler(private val context: Context, private val mediaCommand
 
     private var session: MediaSessionCompat? = null
     private var wasPlaying = false
+    private var isNoisyAudioReceiverRegistered = false
     private val noisyAudioReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             if (intent.action == AudioManager.ACTION_AUDIO_BECOMING_NOISY) {
@@ -34,7 +35,10 @@ class MediaSessionHandler(private val context: Context, private val mediaCommand
     }
 
     fun dispose() {
-        context.unregisterReceiver(noisyAudioReceiver)
+        if (isNoisyAudioReceiverRegistered) {
+            context.unregisterReceiver(noisyAudioReceiver)
+            isNoisyAudioReceiverRegistered = false
+        }
     }
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
@@ -110,8 +114,10 @@ class MediaSessionHandler(private val context: Context, private val mediaCommand
             val isPlaying = state == PlaybackStateCompat.STATE_PLAYING
             if (!wasPlaying && isPlaying) {
                 context.registerReceiver(noisyAudioReceiver, IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY))
+                isNoisyAudioReceiverRegistered = true
             } else if (wasPlaying && !isPlaying) {
                 context.unregisterReceiver(noisyAudioReceiver)
+                isNoisyAudioReceiverRegistered = false
             }
             wasPlaying = isPlaying
         }

@@ -135,6 +135,7 @@ class _BottomOverlayContentState extends State<_BottomOverlayContent> {
   void initState() {
     super.initState();
     _registerWidget(widget);
+    WidgetsBinding.instance.addPostFrameCallback((_) => _requestFocus());
   }
 
   @override
@@ -162,11 +163,10 @@ class _BottomOverlayContentState extends State<_BottomOverlayContent> {
       parent: animationController,
       curve: Curves.easeOutQuad,
     );
-    animationController.addStatusListener(_onAnimationStatusChanged);
   }
 
   void _unregisterWidget(_BottomOverlayContent widget) {
-    widget.animationController.removeStatusListener(_onAnimationStatusChanged);
+    // nothing
   }
 
   @override
@@ -266,11 +266,7 @@ class _BottomOverlayContentState extends State<_BottomOverlayContent> {
     );
   }
 
-  void _onAnimationStatusChanged(AnimationStatus status) {
-    if (status == AnimationStatus.completed) {
-      _buttonRowFocusScopeNode.children.firstOrNull?.requestFocus();
-    }
-  }
+  void _requestFocus() => _buttonRowFocusScopeNode.children.firstOrNull?.requestFocus();
 }
 
 class ExtraBottomOverlay extends StatelessWidget {
