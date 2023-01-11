@@ -8,6 +8,8 @@ All notable changes to this project will be documented in this file.
 
 - Viewer: optionally show description on overlay
 - Collection: unlocated/untagged overlay icons
+- Video: stop when losing audio focus
+- Video: stop when becoming noisy
 - Czech translation (thanks vesp)
 
 ### Changed

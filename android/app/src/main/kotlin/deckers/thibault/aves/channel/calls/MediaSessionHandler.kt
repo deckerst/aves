@@ -1,7 +1,7 @@
 package deckers.thibault.aves.channel.calls
 
-import android.content.ComponentName
-import android.content.Context
+import android.content.*
+import android.media.AudioManager
 import android.media.session.PlaybackState
 import android.net.Uri
 import android.support.v4.media.MediaMetadataCompat
@@ -24,6 +24,14 @@ class MediaSessionHandler(private val context: Context, private val mediaCommand
     private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     private var session: MediaSessionCompat? = null
+    private var wasPlaying = false
+    private val noisyAudioReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            if (intent.action == AudioManager.ACTION_AUDIO_BECOMING_NOISY) {
+                mediaCommandHandler.onStop()
+            }
+        }
+    }
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
@@ -94,6 +102,14 @@ class MediaSessionHandler(private val context: Context, private val mediaCommand
                     isActive = true
                 }
             }
+
+            val isPlaying = state == PlaybackStateCompat.STATE_PLAYING
+            if (!wasPlaying && isPlaying) {
+                context.registerReceiver(noisyAudioReceiver, IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY))
+            } else if (wasPlaying && !isPlaying) {
+                context.unregisterReceiver(noisyAudioReceiver)
+            }
+            wasPlaying = isPlaying
         }
 
         result.success(null)
