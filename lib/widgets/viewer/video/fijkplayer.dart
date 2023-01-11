@@ -1,18 +1,21 @@
 import 'dart:async';
-import 'dart:typed_data';
 
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/settings/enums/video_loop_mode.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/video/keys.dart';
 import 'package:aves/model/video/metadata.dart';
+import 'package:aves/services/common/optional_event_channel.dart';
 import 'package:aves/utils/change_notifier.dart';
 import 'package:aves/widgets/viewer/video/controller.dart';
 import 'package:collection/collection.dart';
 import 'package:fijkplayer/fijkplayer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class IjkPlayerAvesVideoController extends AvesVideoController {
+  final EventChannel _eventChannel = const OptionalEventChannel('befovy.com/fijk/event');
+
   late FijkPlayer _instance;
   final List<StreamSubscription> _subscriptions = [];
   final StreamController<FijkValue> _valueStreamController = StreamController.broadcast();
@@ -94,6 +97,7 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
 
   void _startListening() {
     _instance.addListener(_onValueChanged);
+    _subscriptions.add(_eventChannel.receiveBroadcastStream().listen((event) => _onPluginEvent(event as Map?)));
     _subscriptions.add(_valueStream.where((value) => value.state == FijkState.completed).listen((_) => _completedNotifier.notify()));
     _subscriptions.add(_instance.onTimedText.listen(_timedTextStreamController.add));
     _subscriptions.add(settings.updateStream
@@ -135,7 +139,13 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
 
   void _applyOptions(int startMillis) {
     // FFmpeg options
-    // cf https://github.com/Bilibili/ijkplayer/blob/master/ijkmedia/ijkplayer/ff_ffplay_options.h
+    // `setHostOption`, cf:
+    // - https://fijkplayer.befovy.com/docs/zh/host-option.html
+    // - https://github.com/deckerst/fijkplayer/blob/master/android/src/main/java/com/befovy/fijkplayer/HostOption.java
+    // `setFormatOption`, cf https://github.com/FFmpeg/FFmpeg/blob/master/libavcodec/options_table.h
+    // `setCodecOption`, cf https://github.com/FFmpeg/FFmpeg/blob/master/libavformat/options_table.h
+    // `setSwsOption`, cf https://github.com/FFmpeg/FFmpeg/blob/master/libswscale/options.c
+    // `setPlayerOption`, cf https://github.com/Bilibili/ijkplayer/blob/master/ijkmedia/ijkplayer/ff_ffplay_options.h
     // cf https://www.jianshu.com/p/843c86a9e9ad
     // cf https://www.jianshu.com/p/3649c073b346
 
@@ -166,9 +176,14 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
 
     // `enable-snapshot`: enable snapshot interface
     // default: 0, in [0, 1]
-    // cf https://fijkplayer.befovy.com/docs/zh/host-option.html
     // there is a performance cost, and it should be set up before playing
     options.setHostOption('enable-snapshot', captureFrameEnabled ? 1 : 0);
+
+    // default: 0, in [0, 1]
+    options.setHostOption('request-audio-focus', 1);
+
+    // default: 0, in [0, 1]
+    options.setHostOption('release-audio-focus', 1);
 
     // `accurate-seek-timeout`: accurate seek timeout
     // default: 5000 ms, in [0, 5000]
@@ -283,6 +298,31 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
         final den = streamInfo[Keys.sarDen] ?? 0;
         sarNotifier.value = (num != 0 ? num : 1) / (den != 0 ? den : 1);
       }
+    }
+  }
+
+  // cf https://developer.android.com/reference/android/media/AudioManager
+  static const int _audioFocusLoss = -1;
+  static const int _audioFocusRequestFailed = 0;
+
+  void _onPluginEvent(Map? fields) {
+    if (fields == null) return;
+    final event = fields['event'] as String?;
+    switch (event) {
+      case 'volume':
+        // ignore
+        break;
+      case 'audiofocus':
+        final value = fields['value'] as int?;
+        if (value != null) {
+          switch (value) {
+            case _audioFocusLoss:
+            case _audioFocusRequestFailed:
+              pause();
+              break;
+          }
+        }
+        break;
     }
   }
 
