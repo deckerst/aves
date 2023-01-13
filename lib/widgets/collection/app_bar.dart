@@ -168,6 +168,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
                   final onFilterTap = removableFilters ? collection.removeFilter : null;
                   return AvesAppBar(
                     contentHeight: appBarContentHeight,
+                    pinned: context.select<Selection<AvesEntry>, bool>((selection) => selection.isSelecting),
                     leading: _buildAppBarLeading(
                       hasDrawer: appMode.canNavigate,
                       isSelecting: isSelecting,

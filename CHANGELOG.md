@@ -10,12 +10,17 @@ All notable changes to this project will be documented in this file.
 - Collection: unlocated/untagged overlay icons
 - Video: stop when losing audio focus
 - Video: stop when becoming noisy
+- Info: Google camera portrait mode item extraction
+- TV: handle overscan
+- TV: improved support for Viewer, Info, Map, Stats
+- TV: option to use TV layout on any device
 - Czech translation (thanks vesp)
 
 ### Changed
 
 - editing description writes XMP `dc:description`, and clears Exif `ImageDescription` / `UserComment`
 - in the tag editor, tapping on applied tag applies it to all items instead of removing it
+- pin app bar when selecting items
 
 ### Fixed
 
