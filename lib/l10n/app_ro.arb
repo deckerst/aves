@@ -1356,5 +1356,13 @@
   "entryInfoActionRemoveLocation": "Eliminare locație",
   "@entryInfoActionRemoveLocation": {},
   "settingsViewerShowDescription": "Afișare descriere",
-  "@settingsViewerShowDescription": {}
+  "@settingsViewerShowDescription": {},
+  "filterLocatedLabel": "Locație",
+  "@filterLocatedLabel": {},
+  "filterTaggedLabel": "Etichetat",
+  "@filterTaggedLabel": {},
+  "settingsModificationWarningDialogMessage": "Alte setări vor fi modificate.",
+  "@settingsModificationWarningDialogMessage": {},
+  "settingsDisplayUseTvInterface": "Interfață Android TV",
+  "@settingsDisplayUseTvInterface": {}
 }

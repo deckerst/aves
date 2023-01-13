@@ -1202,5 +1202,9 @@
   "settingsModificationWarningDialogMessage": "Otras configuraciones serán modificadas.",
   "@settingsModificationWarningDialogMessage": {},
   "settingsDisplayUseTvInterface": "Interfaz de Android TV",
-  "@settingsDisplayUseTvInterface": {}
+  "@settingsDisplayUseTvInterface": {},
+  "filterLocatedLabel": "Localizado",
+  "@filterLocatedLabel": {},
+  "filterTaggedLabel": "Etiquetado",
+  "@filterTaggedLabel": {}
 }
