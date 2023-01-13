@@ -6,6 +6,8 @@ import 'package:flutter/services.dart';
 abstract class EmbeddedDataService {
   Future<List<Uint8List>> getExifThumbnails(AvesEntry entry);
 
+  Future<Map> extractGoogleDeviceItem(AvesEntry entry, String dataUri);
+
   Future<Map> extractMotionPhotoImage(AvesEntry entry);
 
   Future<Map> extractMotionPhotoVideo(AvesEntry entry);
@@ -31,6 +33,23 @@ class PlatformEmbeddedDataService implements EmbeddedDataService {
       await reportService.recordError(e, stack);
     }
     return [];
+  }
+
+  @override
+  Future<Map> extractGoogleDeviceItem(AvesEntry entry, String dataUri) async {
+    try {
+      final result = await _platform.invokeMethod('extractGoogleDeviceItem', <String, dynamic>{
+        'mimeType': entry.mimeType,
+        'uri': entry.uri,
+        'sizeBytes': entry.sizeBytes,
+        'displayName': ['${entry.bestTitle}', dataUri].join(Constants.separator),
+        'dataUri': dataUri,
+      });
+      if (result != null) return result as Map;
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
+    return {};
   }
 
   @override

@@ -91,7 +91,7 @@ class _InfoRowGroupState extends State<InfoRowGroup> {
 
   @override
   Widget build(BuildContext context) {
-    if (keyValues.isEmpty) return const SizedBox.shrink();
+    if (keyValues.isEmpty) return const SizedBox();
 
     final _keyStyle = InfoRowGroup.keyStyle(context);
 

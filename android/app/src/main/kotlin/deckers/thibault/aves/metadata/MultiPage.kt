@@ -175,14 +175,14 @@ object MultiPage {
             if (xmpMeta.doesPropExist(XMP.GCAMERA_VIDEO_OFFSET_PROP_NAME)) {
                 // `GCamera` motion photo
                 xmpMeta.getSafeLong(XMP.GCAMERA_VIDEO_OFFSET_PROP_NAME) { offsetFromEnd = it }
-            } else if (xmpMeta.doesPropExist(XMP.CONTAINER_DIRECTORY_PROP_NAME)) {
+            } else if (xmpMeta.doesPropExist(XMP.GCONTAINER_DIRECTORY_PROP_NAME)) {
                 // `Container` motion photo
-                val count = xmpMeta.countPropArrayItems(XMP.CONTAINER_DIRECTORY_PROP_NAME)
+                val count = xmpMeta.countPropArrayItems(XMP.GCONTAINER_DIRECTORY_PROP_NAME)
                 if (count == 2) {
                     // expect the video to be the second item
                     val i = 2
-                    val mime = xmpMeta.getSafeStructField(listOf(XMP.CONTAINER_DIRECTORY_PROP_NAME, i, XMP.CONTAINER_ITEM_PROP_NAME, XMP.CONTAINER_ITEM_MIME_PROP_NAME))?.value
-                    val length = xmpMeta.getSafeStructField(listOf(XMP.CONTAINER_DIRECTORY_PROP_NAME, i, XMP.CONTAINER_ITEM_PROP_NAME, XMP.CONTAINER_ITEM_LENGTH_PROP_NAME))?.value
+                    val mime = xmpMeta.getSafeStructField(listOf(XMP.GCONTAINER_DIRECTORY_PROP_NAME, i, XMP.GCONTAINER_ITEM_PROP_NAME, XMP.GCONTAINER_ITEM_MIME_PROP_NAME))?.value
+                    val length = xmpMeta.getSafeStructField(listOf(XMP.GCONTAINER_DIRECTORY_PROP_NAME, i, XMP.GCONTAINER_ITEM_PROP_NAME, XMP.GCONTAINER_ITEM_LENGTH_PROP_NAME))?.value
                     if (MimeTypes.isVideo(mime) && length != null) {
                         offsetFromEnd = length.toLong()
                     }
