@@ -579,9 +579,7 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> with Widge
     });
   }
 
-  void _stopScrollMonitoringTimer() {
-    _scrollMonitoringTimer?.cancel();
-  }
+  void _stopScrollMonitoringTimer() => _scrollMonitoringTimer?.cancel();
 
   Map<double, String> _getCrumbs(List<SectionLayout> sectionLayouts) {
     final crumbs = <double, String>{};
