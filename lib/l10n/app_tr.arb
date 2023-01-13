@@ -1202,5 +1202,9 @@
   "settingsModificationWarningDialogMessage": "Diğer ayarlar değiştirilecektir.",
   "@settingsModificationWarningDialogMessage": {},
   "settingsDisplayUseTvInterface": "Android TV arayüzü",
-  "@settingsDisplayUseTvInterface": {}
+  "@settingsDisplayUseTvInterface": {},
+  "filterLocatedLabel": "Konumlu",
+  "@filterLocatedLabel": {},
+  "filterTaggedLabel": "Etiketli",
+  "@filterTaggedLabel": {}
 }

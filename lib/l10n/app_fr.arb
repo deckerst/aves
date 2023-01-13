@@ -391,9 +391,9 @@
   "@renameProcessorCounter": {},
   "renameProcessorName": "Nom",
   "@renameProcessorName": {},
-  "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{Supprimer cet album et son élément ?} other{Supprimer cet album et ses {count} éléments ?}}",
+  "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{Supprimer cet album et l’élément dedans ?} other{Supprimer cet album et les {count} éléments dedans ?}}",
   "@deleteSingleAlbumConfirmationDialogMessage": {},
-  "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{Supprimer ces albums et leur élément ?} other{Supprimer ces albums et leurs {count} éléments ?}}",
+  "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{Supprimer ces albums et l’élément dedans ?} other{Supprimer ces albums et les {count} éléments dedans ?}}",
   "@deleteMultiAlbumConfirmationDialogMessage": {},
   "exportEntryDialogFormat": "Format :",
   "@exportEntryDialogFormat": {},
@@ -1202,5 +1202,9 @@
   "settingsModificationWarningDialogMessage": "D’autres réglages seront modifiés.",
   "@settingsModificationWarningDialogMessage": {},
   "settingsDisplayUseTvInterface": "Interface Android TV",
-  "@settingsDisplayUseTvInterface": {}
+  "@settingsDisplayUseTvInterface": {},
+  "filterTaggedLabel": "Étiqueté",
+  "@filterTaggedLabel": {},
+  "filterLocatedLabel": "Localisé",
+  "@filterLocatedLabel": {}
 }
