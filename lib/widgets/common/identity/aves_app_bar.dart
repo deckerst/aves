@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 
 class AvesAppBar extends StatelessWidget {
   final double contentHeight;
+  final bool pinned;
   final Widget? leading;
   final Widget title;
   final List<Widget> actions;
@@ -21,6 +22,7 @@ class AvesAppBar extends StatelessWidget {
   const AvesAppBar({
     super.key,
     required this.contentHeight,
+    required this.pinned,
     required this.leading,
     required this.title,
     required this.actions,
@@ -36,7 +38,7 @@ class AvesAppBar extends StatelessWidget {
         final useTvLayout = settings.useTvLayout;
         return SliverPersistentHeader(
           floating: !useTvLayout,
-          pinned: false,
+          pinned: pinned,
           delegate: _SliverAppBarDelegate(
             height: mqPaddingTop + appBarHeightForContentHeight(contentHeight),
             child: DirectionalSafeArea(

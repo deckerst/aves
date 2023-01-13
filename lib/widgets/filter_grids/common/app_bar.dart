@@ -137,6 +137,7 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
           final actions = actionsBuilder(context, appMode, selection, widget.actionDelegate);
           return AvesAppBar(
             contentHeight: appBarContentHeight,
+            pinned: context.select<Selection<FilterGridItem<T>>, bool>((selection) => selection.isSelecting),
             leading: _buildAppBarLeading(
               hasDrawer: appMode.canNavigate,
               isSelecting: isSelecting,
