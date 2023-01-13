@@ -20,7 +20,7 @@ fun <E> MutableList<E>.compatRemoveIf(filter: (t: E) -> Boolean): Boolean {
 }
 
 // Boyer-Moore algorithm for pattern searching
-fun ByteArray.indexOfBytes(pattern: ByteArray): Int {
+fun ByteArray.indexOfBytes(pattern: ByteArray, start: Int = 0): Int {
     val n: Int = this.size
     val m: Int = pattern.size
     val badChar = Array(256) { 0 }
@@ -30,7 +30,7 @@ fun ByteArray.indexOfBytes(pattern: ByteArray): Int {
         i += 1
     }
     var j: Int = m - 1
-    var s = 0
+    var s = start
     while (s <= (n - m)) {
         while (j >= 0 && pattern[j] == this[s + j]) {
             j -= 1

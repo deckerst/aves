@@ -70,7 +70,24 @@ class XmpGDepthNamespace extends XmpGoogleNamespace {
 }
 
 class XmpGDeviceNamespace extends XmpNamespace {
-  XmpGDeviceNamespace(String nsPrefix, Map<String, String> rawProps) : super(Namespaces.gDevice, nsPrefix, rawProps);
+  XmpGDeviceNamespace(String nsPrefix, Map<String, String> rawProps) : super(Namespaces.gDevice, nsPrefix, rawProps) {
+    final mimePattern = RegExp(nsPrefix + r'Container/Container:Directory\[(\d+)\]/Item:Mime');
+    final originalProps = rawProps.entries.toList();
+    originalProps.forEach((kv) {
+      final path = kv.key;
+      final match = mimePattern.firstMatch(path);
+      if (match != null) {
+        final indexString = match.group(1);
+        if (indexString != null) {
+          final index = int.tryParse(indexString);
+          if (index != null) {
+            final dataPath = '${nsPrefix}Container/Container:Directory[$index]/Item:Data';
+            rawProps[dataPath] = '[skipped]';
+          }
+        }
+      }
+    });
+  }
 
   @override
   late final List<XmpCardData> cards = [
@@ -82,7 +99,23 @@ class XmpGDeviceNamespace extends XmpNamespace {
         XmpCardData(RegExp(r'Camera:ImagingModel/(.*)')),
       ],
     ),
-    XmpCardData(RegExp(nsPrefix + r'Container/Container:Directory\[(\d+)\]/(.*)')),
+    XmpCardData(
+      RegExp(nsPrefix + r'Container/Container:Directory\[(\d+)\]/(.*)'),
+      spanBuilders: (index, struct) {
+        if (struct.containsKey('Item:Data') && struct.containsKey('Item:DataURI')) {
+          final dataUriProp = struct['Item:DataURI'];
+          if (dataUriProp != null) {
+            return {
+              'Data': InfoRowGroup.linkSpanBuilder(
+                linkText: (context) => context.l10n.viewerInfoOpenLinkText,
+                onTap: (context) => OpenEmbeddedDataNotification.googleDevice(dataUri: dataUriProp.value).dispatch(context),
+              ),
+            };
+          }
+        }
+        return {};
+      },
+    ),
     XmpCardData(RegExp(nsPrefix + r'Profiles\[(\d+)\]/(.*)')),
   ];
 }

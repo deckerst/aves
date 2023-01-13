@@ -761,8 +761,8 @@ abstract class ImageProvider {
                 "${XMP.GCAMERA_VIDEO_OFFSET_PROP_NAME}=\"$newTrailerOffset\"",
             ).replace(
                 // Container motion photo
-                "${XMP.CONTAINER_ITEM_LENGTH_PROP_NAME}=\"$trailerOffset\"",
-                "${XMP.CONTAINER_ITEM_LENGTH_PROP_NAME}=\"$newTrailerOffset\"",
+                "${XMP.GCONTAINER_ITEM_LENGTH_PROP_NAME}=\"$trailerOffset\"",
+                "${XMP.GCONTAINER_ITEM_LENGTH_PROP_NAME}=\"$newTrailerOffset\"",
             )
         })
     }

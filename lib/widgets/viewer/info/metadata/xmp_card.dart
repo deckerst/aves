@@ -58,7 +58,7 @@ class _XmpCardState extends State<XmpCard> {
   @override
   void didUpdateWidget(covariant XmpCard oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (_indexNotifier.value >= indexedStructCount) {
+    if (isIndexed && _indexNotifier.value >= indexedStructCount) {
       _indexNotifier.value = indexedStructCount - 1;
     }
   }

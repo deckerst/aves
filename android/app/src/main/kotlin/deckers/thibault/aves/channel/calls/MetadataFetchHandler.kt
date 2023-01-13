@@ -134,7 +134,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                     if (prop is XMPPropertyInfo) {
                         val path = prop.path
                         if (path?.isNotEmpty() == true) {
-                            val value = if (XMP.isDataPath(path)) "[skipped]" else prop.value
+                            val value = if (XMP.isDataPath(path)) VALUE_SKIPPED_DATA else prop.value
                             if (value?.isNotEmpty() == true) {
                                 dirMap[path] = value
                             }
@@ -1281,5 +1281,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
 
         // additional media key
         private const val KEY_HAS_EMBEDDED_PICTURE = "Has Embedded Picture"
+
+        private const val VALUE_SKIPPED_DATA = "[skipped]"
     }
 }
