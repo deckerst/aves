@@ -114,27 +114,22 @@ class SettingsTileDisplayForceTvLayout extends SettingsTile {
         selector: (context, s) => s.forceTvLayout,
         onChanged: (v) async {
           if (v) {
+            final l10n = context.l10n;
             final confirmed = await showDialog<bool>(
               context: context,
-              builder: (context) {
-                final l10n = context.l10n;
-                return AvesDialog(
-                  content: Text([
-                    l10n.settingsModificationWarningDialogMessage,
-                    l10n.genericDangerWarningDialogMessage,
-                  ].join('\n\n')),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.pop(context),
-                      child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
-                    ),
-                    TextButton(
-                      onPressed: () => Navigator.pop(context, true),
-                      child: Text(l10n.applyButtonLabel),
-                    ),
-                  ],
-                );
-              },
+              builder: (context) => AvesDialog(
+                content: Text([
+                  l10n.settingsModificationWarningDialogMessage,
+                  l10n.genericDangerWarningDialogMessage,
+                ].join('\n\n')),
+                actions: [
+                  const CancelButton(),
+                  TextButton(
+                    onPressed: () => Navigator.pop(context, true),
+                    child: Text(l10n.applyButtonLabel),
+                  ),
+                ],
+              ),
             );
             if (confirmed == null || !confirmed) return;
           }

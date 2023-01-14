@@ -10,6 +10,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
+import android.os.TransactionTooLargeException
 import android.util.Log
 import androidx.core.content.FileProvider
 import androidx.core.content.pm.ShortcutInfoCompat
@@ -280,7 +281,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
         val title = call.argument<String>("title")
         val urisByMimeType = call.argument<Map<String, List<String>>>("urisByMimeType")
         if (urisByMimeType == null) {
-            result.error("setAs-args", "missing arguments", null)
+            result.error("share-args", "missing arguments", null)
             return
         }
 
@@ -288,15 +289,14 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
         val mimeTypes = urisByMimeType.keys.toTypedArray()
 
         // simplify share intent for a single item, as some apps can handle one item but not more
-        val started = if (uriList.size == 1) {
+        val intent = if (uriList.size == 1) {
             val uri = uriList.first()
             val mimeType = mimeTypes.first()
 
-            val intent = Intent(Intent.ACTION_SEND)
+            Intent(Intent.ACTION_SEND)
                 .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                 .setType(mimeType)
                 .putExtra(Intent.EXTRA_STREAM, getShareableUri(context, uri))
-            safeStartActivityChooser(title, intent)
         } else {
             var mimeType = "*/*"
             if (mimeTypes.size == 1) {
@@ -311,14 +311,21 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
                 }
             }
 
-            val intent = Intent(Intent.ACTION_SEND_MULTIPLE)
+            Intent(Intent.ACTION_SEND_MULTIPLE)
                 .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                 .putParcelableArrayListExtra(Intent.EXTRA_STREAM, uriList)
                 .setType(mimeType)
-            safeStartActivityChooser(title, intent)
         }
-
-        result.success(started)
+        try {
+            val started = safeStartActivityChooser(title, intent)
+            result.success(started)
+        } catch (e: Exception) {
+            if (e is TransactionTooLargeException || e.cause is TransactionTooLargeException) {
+                result.error("share-large", "transaction too large with ${uriList.size} URIs", e)
+            } else {
+                result.error("share-exception", "failed to share ${uriList.size} URIs", e)
+            }
+        }
     }
 
     private fun safeStartActivity(intent: Intent): Boolean {

@@ -234,21 +234,16 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
 
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (context) {
-        return AvesDialog(
-          content: Text(filters.length == 1 ? l10n.deleteSingleAlbumConfirmationDialogMessage(todoCount) : l10n.deleteMultiAlbumConfirmationDialogMessage(todoCount)),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
-            ),
-            TextButton(
-              onPressed: () => Navigator.pop(context, true),
-              child: Text(l10n.deleteButtonLabel),
-            ),
-          ],
-        );
-      },
+      builder: (context) => AvesDialog(
+        content: Text(filters.length == 1 ? l10n.deleteSingleAlbumConfirmationDialogMessage(todoCount) : l10n.deleteMultiAlbumConfirmationDialogMessage(todoCount)),
+        actions: [
+          const CancelButton(),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text(l10n.deleteButtonLabel),
+          ),
+        ],
+      ),
     );
     if (confirmed == null || !confirmed) return;
 

@@ -226,6 +226,7 @@
     "genericSuccessFeedback",
     "genericFailureFeedback",
     "genericDangerWarningDialogMessage",
+    "tooManyItemsErrorDialogMessage",
     "menuActionConfigureView",
     "menuActionSelect",
     "menuActionSelectAll",
@@ -572,6 +573,7 @@
   "cs": [
     "filterLocatedLabel",
     "filterTaggedLabel",
+    "tooManyItemsErrorDialogMessage",
     "settingsModificationWarningDialogMessage",
     "settingsViewerShowDescription",
     "settingsDisplayUseTvInterface"
@@ -581,6 +583,7 @@
     "columnCount",
     "filterLocatedLabel",
     "filterTaggedLabel",
+    "tooManyItemsErrorDialogMessage",
     "settingsModificationWarningDialogMessage",
     "settingsViewerShowDescription",
     "settingsAccessibilityShowPinchGestureAlternatives",
@@ -590,9 +593,14 @@
   "el": [
     "filterLocatedLabel",
     "filterTaggedLabel",
+    "tooManyItemsErrorDialogMessage",
     "settingsModificationWarningDialogMessage",
     "settingsViewerShowDescription",
     "settingsDisplayUseTvInterface"
+  ],
+
+  "es": [
+    "tooManyItemsErrorDialogMessage"
   ],
 
   "fa": [
@@ -708,6 +716,7 @@
     "genericSuccessFeedback",
     "genericFailureFeedback",
     "genericDangerWarningDialogMessage",
+    "tooManyItemsErrorDialogMessage",
     "menuActionConfigureView",
     "menuActionSelect",
     "menuActionSelectAll",
@@ -1035,6 +1044,10 @@
     "filePickerUseThisFolder"
   ],
 
+  "fr": [
+    "tooManyItemsErrorDialogMessage"
+  ],
+
   "gl": [
     "columnCount",
     "entryActionShareImageOnly",
@@ -1151,6 +1164,7 @@
     "genericSuccessFeedback",
     "genericFailureFeedback",
     "genericDangerWarningDialogMessage",
+    "tooManyItemsErrorDialogMessage",
     "menuActionConfigureView",
     "menuActionSelect",
     "menuActionSelectAll",
@@ -1507,9 +1521,14 @@
     "filePickerUseThisFolder"
   ],
 
+  "id": [
+    "tooManyItemsErrorDialogMessage"
+  ],
+
   "it": [
     "filterLocatedLabel",
     "filterTaggedLabel",
+    "tooManyItemsErrorDialogMessage",
     "settingsModificationWarningDialogMessage",
     "settingsViewerShowDescription",
     "settingsDisplayUseTvInterface"
@@ -1526,6 +1545,7 @@
     "keepScreenOnVideoPlayback",
     "subtitlePositionTop",
     "subtitlePositionBottom",
+    "tooManyItemsErrorDialogMessage",
     "settingsModificationWarningDialogMessage",
     "settingsViewerShowDescription",
     "settingsAccessibilityShowPinchGestureAlternatives",
@@ -1533,11 +1553,16 @@
     "settingsWidgetDisplayedItem"
   ],
 
+  "ko": [
+    "tooManyItemsErrorDialogMessage"
+  ],
+
   "lt": [
     "columnCount",
     "filterLocatedLabel",
     "filterTaggedLabel",
     "keepScreenOnVideoPlayback",
+    "tooManyItemsErrorDialogMessage",
     "settingsModificationWarningDialogMessage",
     "settingsViewerShowDescription",
     "settingsAccessibilityShowPinchGestureAlternatives",
@@ -1552,6 +1577,7 @@
     "filterLocatedLabel",
     "filterTaggedLabel",
     "keepScreenOnVideoPlayback",
+    "tooManyItemsErrorDialogMessage",
     "settingsModificationWarningDialogMessage",
     "settingsViewerShowDescription",
     "settingsAccessibilityShowPinchGestureAlternatives",
@@ -1574,6 +1600,7 @@
     "subtitlePositionBottom",
     "widgetDisplayedItemRandom",
     "widgetDisplayedItemMostRecent",
+    "tooManyItemsErrorDialogMessage",
     "settingsModificationWarningDialogMessage",
     "settingsViewerShowRatingTags",
     "settingsViewerShowDescription",
@@ -1603,6 +1630,7 @@
     "editEntryLocationDialogSetCustom",
     "locationPickerUseThisLocationButton",
     "removeEntryMetadataMotionPhotoXmpWarningDialogMessage",
+    "tooManyItemsErrorDialogMessage",
     "viewDialogSortSectionTitle",
     "viewDialogReverseSortOrder",
     "aboutLinkPolicy",
@@ -1870,20 +1898,30 @@
     "wallpaperUseScrollEffect"
   ],
 
+  "pl": [
+    "tooManyItemsErrorDialogMessage"
+  ],
+
   "pt": [
     "columnCount",
     "filterLocatedLabel",
     "filterTaggedLabel",
     "widgetDisplayedItemMostRecent",
+    "tooManyItemsErrorDialogMessage",
     "settingsModificationWarningDialogMessage",
     "settingsViewerShowRatingTags",
     "settingsAccessibilityShowPinchGestureAlternatives",
     "settingsDisplayUseTvInterface"
   ],
 
+  "ro": [
+    "tooManyItemsErrorDialogMessage"
+  ],
+
   "ru": [
     "filterLocatedLabel",
     "filterTaggedLabel",
+    "tooManyItemsErrorDialogMessage",
     "settingsModificationWarningDialogMessage",
     "settingsDisplayUseTvInterface"
   ],
@@ -1922,6 +1960,7 @@
     "editEntryDateDialogExtractFromTitle",
     "editEntryDateDialogShift",
     "removeEntryMetadataDialogTitle",
+    "tooManyItemsErrorDialogMessage",
     "collectionActionShowTitleSearch",
     "collectionActionHideTitleSearch",
     "collectionActionAddShortcut",
@@ -2235,9 +2274,18 @@
     "filePickerUseThisFolder"
   ],
 
+  "tr": [
+    "tooManyItemsErrorDialogMessage"
+  ],
+
+  "uk": [
+    "tooManyItemsErrorDialogMessage"
+  ],
+
   "zh": [
     "filterLocatedLabel",
     "filterTaggedLabel",
+    "tooManyItemsErrorDialogMessage",
     "settingsModificationWarningDialogMessage",
     "settingsViewerShowDescription",
     "settingsAccessibilityShowPinchGestureAlternatives",
@@ -2248,6 +2296,7 @@
     "columnCount",
     "filterLocatedLabel",
     "filterTaggedLabel",
+    "tooManyItemsErrorDialogMessage",
     "settingsModificationWarningDialogMessage",
     "settingsViewerShowDescription",
     "settingsAccessibilityShowPinchGestureAlternatives",

@@ -229,21 +229,16 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
   Future<void> _convertMotionPhotoToStillImage(BuildContext context, AvesEntry targetEntry) async {
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (context) {
-        return AvesDialog(
-          content: Text(context.l10n.genericDangerWarningDialogMessage),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
-            ),
-            TextButton(
-              onPressed: () => Navigator.pop(context, true),
-              child: Text(context.l10n.applyButtonLabel),
-            ),
-          ],
-        );
-      },
+      builder: (context) => AvesDialog(
+        content: Text(context.l10n.genericDangerWarningDialogMessage),
+        actions: [
+          const CancelButton(),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text(context.l10n.applyButtonLabel),
+          ),
+        ],
+      ),
     );
     if (confirmed == null || !confirmed) return;
 

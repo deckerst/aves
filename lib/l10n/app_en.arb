@@ -438,6 +438,8 @@
   "genericFailureFeedback": "Failed",
   "genericDangerWarningDialogMessage": "Are you sure?",
 
+  "tooManyItemsErrorDialogMessage": "Try again with fewer items.",
+
   "menuActionConfigureView": "View",
   "menuActionSelect": "Select",
   "menuActionSelectAll": "Select all",

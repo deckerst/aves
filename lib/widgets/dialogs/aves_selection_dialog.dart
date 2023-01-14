@@ -86,10 +86,7 @@ class _AvesSelectionDialogState<T> extends State<AvesSelectionDialog<T>> {
         if (verticalPadding != 0) SizedBox(height: verticalPadding),
       ],
       actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
-        ),
+        const CancelButton(),
         if (needConfirmation)
           TextButton(
             onPressed: () => Navigator.pop(context, _selectedValue),

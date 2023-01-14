@@ -126,10 +126,7 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> {
               const SizedBox(height: 8),
             ],
             actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
-              ),
+              const CancelButton(),
               ValueListenableBuilder<bool>(
                 valueListenable: _isValidNotifier,
                 builder: (context, isValid, child) {
