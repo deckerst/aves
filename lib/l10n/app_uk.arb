@@ -795,7 +795,7 @@
       "count": {}
     }
   },
-  "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{Видалити цей альбом і його елемент?} few{Видалити цей альбом і {count} елементи?} other{Видалити цей альбом і {count} елементів?}}",
+  "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{Видалити цей альбом і елемент у ньому?} few{Видалити цей альбом і {count} елементи у ньому?} other{Видалити цей альбом і {count} елементів у ньому?}}",
   "@deleteSingleAlbumConfirmationDialogMessage": {
     "placeholders": {
       "count": {}
@@ -803,7 +803,7 @@
   },
   "nameConflictDialogSingleSourceMessage": "Деякі файли в папці призначення мають одну й ту саму назву.",
   "@nameConflictDialogSingleSourceMessage": {},
-  "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{Видалити ці альбоми та їх елементи?} few{Видалити ці альбоми та їх {count} елементи?} other{Видалити ці альбоми та їх {count} елементів?}}",
+  "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{Видалити ці альбоми та елемент в них?} few{Видалити ці альбоми та {count} елементи в них?} other{Видалити ці альбоми та {count} елементів в них?}}",
   "@deleteMultiAlbumConfirmationDialogMessage": {
     "placeholders": {
       "count": {}
