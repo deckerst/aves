@@ -15,6 +15,7 @@ All notable changes to this project will be documented in this file.
 - TV: improved support for Viewer, Info, Map, Stats
 - TV: option to use TV layout on any device
 - Czech translation (thanks vesp)
+- Polish translation (thanks Piotr K, rehork)
 
 ### Changed
 
