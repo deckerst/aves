@@ -307,7 +307,7 @@ packages:
       name: firebase_crashlytics
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.9"
+    version: "3.0.10"
   firebase_crashlytics_platform_interface:
     dependency: transitive
     description:
@@ -321,7 +321,7 @@ packages:
       name: flex_color_picker
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.0"
+    version: "3.0.2"
   flex_seed_scheme:
     dependency: transitive
     description:
@@ -456,28 +456,28 @@ packages:
       name: google_maps_flutter
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.2.2"
+    version: "2.2.3"
   google_maps_flutter_android:
     dependency: transitive
     description:
       name: google_maps_flutter_android
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.4.0"
+    version: "2.4.2"
   google_maps_flutter_ios:
     dependency: transitive
     description:
       name: google_maps_flutter_ios
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.12"
+    version: "2.1.13"
   google_maps_flutter_platform_interface:
     dependency: transitive
     description:
       name: google_maps_flutter_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.2.4"
+    version: "2.2.5"
   highlight:
     dependency: transitive
     description:
@@ -512,7 +512,7 @@ packages:
       name: image
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.2.2"
+    version: "3.3.0"
   intl:
     dependency: "direct main"
     description:
@@ -610,7 +610,7 @@ packages:
       name: mime
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.3"
+    version: "1.0.4"
   motion_sensors:
     dependency: transitive
     description:
@@ -681,7 +681,7 @@ packages:
     description:
       path: "."
       ref: aves
-      resolved-ref: "47442e5102a8bdf5e756d6dfab60108b73d132f0"
+      resolved-ref: "89fbc3f1ecfd9be56cf9b4b674aa0aec15cae61e"
       url: "https://github.com/deckerst/aves_panorama.git"
     source: git
     version: "0.4.1"
@@ -901,7 +901,7 @@ packages:
       name: shared_preferences
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.15"
+    version: "2.0.16"
   shared_preferences_android:
     dependency: transitive
     description:
@@ -909,10 +909,10 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.14"
-  shared_preferences_ios:
+  shared_preferences_foundation:
     dependency: transitive
     description:
-      name: shared_preferences_ios
+      name: shared_preferences_foundation
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.1"
@@ -923,13 +923,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.2"
-  shared_preferences_macos:
-    dependency: transitive
-    description:
-      name: shared_preferences_macos
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.4"
   shared_preferences_platform_interface:
     dependency: transitive
     description:
@@ -1018,14 +1011,14 @@ packages:
       name: sqflite
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.2.2"
+    version: "2.2.3"
   sqflite_common:
     dependency: transitive
     description:
       name: sqflite_common
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.4.0+2"
+    version: "2.4.1"
   stack_trace:
     dependency: transitive
     description:
@@ -1076,7 +1069,7 @@ packages:
       name: synchronized
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.0+3"
+    version: "3.0.1"
   term_glyph:
     dependency: transitive
     description:
@@ -1216,7 +1209,7 @@ packages:
       name: web_socket_channel
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.2.0"
+    version: "2.3.0"
   webdriver:
     dependency: transitive
     description:
@@ -1251,7 +1244,7 @@ packages:
       name: xdg_directories
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.0+2"
+    version: "0.2.0+3"
   xml:
     dependency: "direct main"
     description:
