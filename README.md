@@ -41,7 +41,7 @@ It scans your media collection to identify **motion photos**, **panoramas** (aka
 
 **Navigation and search** is an important part of Aves. The goal is for users to easily flow from albums to photos to tags to maps, etc.
 
-Aves integrates with Android (from **API 19 to 33**, i.e. from KitKat to Android 13) with features such as **widgets**, **app shortcuts**, **screen saver** and **global search** handling. It also works as a **media viewer and picker**.
+Aves integrates with Android (from KitKat to Android 13, including Android TV) with features such as **widgets**, **app shortcuts**, **screen saver** and **global search** handling. It also works as a **media viewer and picker**.
 
 ## Screenshots
 
