@@ -57,10 +57,7 @@ class _VideoSpeedDialogState extends State<VideoSpeedDialog> {
         ],
       ),
       actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
-        ),
+        const CancelButton(),
         TextButton(
           onPressed: () => _submit(context),
           child: Text(context.l10n.applyButtonLabel),

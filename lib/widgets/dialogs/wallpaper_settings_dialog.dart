@@ -39,10 +39,7 @@ class _WallpaperSettingsDialogState extends State<WallpaperSettingsDialog> {
         )
       ],
       actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
-        ),
+        const CancelButton(),
         TextButton(
           onPressed: () => Navigator.pop(context, Tuple2<WallpaperTarget, bool>(_selectedTarget, _useScrollEffect)),
           child: Text(context.l10n.applyButtonLabel),

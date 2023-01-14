@@ -17,6 +17,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/analysis_controller.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
+import 'package:aves/services/android_app_service.dart';
 import 'package:aves/services/common/image_op_events.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
@@ -252,11 +253,21 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     return groupedEntries.expand((entry) => entry.burstEntries ?? {entry}).toSet();
   }
 
-  void _share(BuildContext context) {
+  Future<void> _share(BuildContext context) async {
     final entries = _getTargetItems(context);
-    androidAppService.shareEntries(entries).then((success) {
-      if (!success) showNoMatchingAppDialog(context);
-    });
+    try {
+      if (!await androidAppService.shareEntries(entries)) {
+        await showNoMatchingAppDialog(context);
+      }
+    } on TooManyItemsException catch (_) {
+      await showDialog(
+        context: context,
+        builder: (context) => AvesDialog(
+          content: Text(context.l10n.tooManyItemsErrorDialogMessage),
+          actions: const [OkButton()],
+        ),
+      );
+    }
   }
 
   void _rescan(BuildContext context) {
@@ -447,25 +458,20 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     if (unsupported.isEmpty) return supported;
 
     final unsupportedTypes = unsupported.map((entry) => entry.mimeType).toSet().map(MimeUtils.displayType).toList()..sort();
+    final l10n = context.l10n;
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (context) {
-        final l10n = context.l10n;
-        return AvesDialog(
-          content: Text(l10n.unsupportedTypeDialogMessage(unsupportedTypes.length, unsupportedTypes.join(', '))),
-          actions: [
+      builder: (context) => AvesDialog(
+        content: Text(l10n.unsupportedTypeDialogMessage(unsupportedTypes.length, unsupportedTypes.join(', '))),
+        actions: [
+          const CancelButton(),
+          if (supported.isNotEmpty)
             TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
+              onPressed: () => Navigator.pop(context, true),
+              child: Text(l10n.continueButtonLabel),
             ),
-            if (supported.isNotEmpty)
-              TextButton(
-                onPressed: () => Navigator.pop(context, true),
-                child: Text(l10n.continueButtonLabel),
-              ),
-          ],
-        );
-      },
+        ],
+      ),
     );
     if (confirmed == null || !confirmed) return null;
 
@@ -536,21 +542,16 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
   Future<void> removeLocation(BuildContext context, Set<AvesEntry> entries) async {
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (context) {
-        return AvesDialog(
-          content: Text(context.l10n.genericDangerWarningDialogMessage),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
-            ),
-            TextButton(
-              onPressed: () => Navigator.pop(context, true),
-              child: Text(context.l10n.applyButtonLabel),
-            ),
-          ],
-        );
-      },
+      builder: (context) => AvesDialog(
+        content: Text(context.l10n.genericDangerWarningDialogMessage),
+        actions: [
+          const CancelButton(),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text(context.l10n.applyButtonLabel),
+          ),
+        ],
+      ),
     );
     if (confirmed == null || !confirmed) return;
 

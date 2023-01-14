@@ -152,19 +152,34 @@ class DialogTitle extends StatelessWidget {
   }
 }
 
-void showNoMatchingAppDialog(BuildContext context) {
-  showDialog(
-    context: context,
-    builder: (context) {
-      return AvesDialog(
+Future<void> showNoMatchingAppDialog(BuildContext context) => showDialog(
+      context: context,
+      builder: (context) => AvesDialog(
         content: Text(context.l10n.noMatchingAppDialogMessage),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(MaterialLocalizations.of(context).okButtonLabel),
-          ),
-        ],
-      );
-    },
-  );
+        actions: const [OkButton()],
+      ),
+    );
+
+class CancelButton extends StatelessWidget {
+  const CancelButton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+      onPressed: () => Navigator.pop(context),
+      child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
+    );
+  }
+}
+
+class OkButton extends StatelessWidget {
+  const OkButton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+      onPressed: () => Navigator.pop(context),
+      child: Text(MaterialLocalizations.of(context).okButtonLabel),
+    );
+  }
 }
