@@ -99,10 +99,7 @@ class _EditEntryRatingDialogState extends State<EditEntryRatingDialog> {
               ),
             ],
             actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
-              ),
+              const CancelButton(),
               TextButton(
                 onPressed: isValid ? () => _submit(context) : null,
                 child: Text(l10n.applyButtonLabel),

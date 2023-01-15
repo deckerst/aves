@@ -1,4 +1,3 @@
-import 'package:aves/model/device.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/settings/common/tiles.dart';
@@ -13,14 +12,16 @@ class ViewerOverlayPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final useTvLayout = settings.useTvLayout;
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: !useTvLayout,
         title: Text(context.l10n.settingsViewerOverlayPageTitle),
       ),
       body: SafeArea(
         child: ListView(
           children: [
-            if (!device.isTelevision)
+            if (!useTvLayout)
               SettingsSwitchListTile(
                 selector: (context, s) => s.showOverlayOnOpening,
                 onChanged: (v) => settings.showOverlayOnOpening = v,
@@ -56,13 +57,25 @@ class ViewerOverlayPage extends StatelessWidget {
                 );
               },
             ),
-            if (!device.isTelevision)
+            Selector<Settings, Tuple2<bool, bool>>(
+              selector: (context, s) => Tuple2(s.showOverlayInfo, s.showOverlayDescription),
+              builder: (context, s, child) {
+                final showInfo = s.item1;
+                final current = s.item2;
+                return SwitchListTile(
+                  value: current,
+                  onChanged: showInfo ? (v) => settings.showOverlayDescription = v : null,
+                  title: Text(context.l10n.settingsViewerShowDescription),
+                );
+              },
+            ),
+            if (!useTvLayout)
               SettingsSwitchListTile(
                 selector: (context, s) => s.showOverlayMinimap,
                 onChanged: (v) => settings.showOverlayMinimap = v,
                 title: context.l10n.settingsViewerShowMinimap,
               ),
-            if (!device.isTelevision)
+            if (!useTvLayout)
               SettingsSwitchListTile(
                 selector: (context, s) => s.showOverlayThumbnailPreview,
                 onChanged: (v) => settings.showOverlayThumbnailPreview = v,

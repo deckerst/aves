@@ -150,11 +150,13 @@ class _FilePickerPageState extends State<FilePickerPage> {
     return Drawer(
       child: ListView(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Text(
-              context.l10n.filePickerOpenFrom,
-              style: Theme.of(context).textTheme.headlineSmall,
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Text(
+                context.l10n.filePickerOpenFrom,
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
             ),
           ),
           ...volumes.map((v) {

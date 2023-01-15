@@ -30,8 +30,10 @@ class _LocaleSelectionPageState extends State<LocaleSelectionPage> {
 
   @override
   Widget build(BuildContext context) {
+    final useTvLayout = settings.useTvLayout;
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: !useTvLayout,
         title: Text(context.l10n.settingsLanguagePageTitle),
       ),
       body: SafeArea(
@@ -41,10 +43,11 @@ class _LocaleSelectionPageState extends State<LocaleSelectionPage> {
             final upQuery = query.toUpperCase().trim();
             return ListView(
               children: [
-                QueryBar(
-                  queryNotifier: _queryNotifier,
-                  leadingPadding: const EdgeInsetsDirectional.only(start: 24, end: 8),
-                ),
+                if (!useTvLayout)
+                  QueryBar(
+                    queryNotifier: _queryNotifier,
+                    leadingPadding: const EdgeInsetsDirectional.only(start: 24, end: 8),
+                  ),
                 ..._getLocaleOptions(context).entries.where((kv) {
                   if (upQuery.isEmpty) return true;
                   final title = kv.value;

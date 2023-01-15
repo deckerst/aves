@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/actions/chip_set_actions.dart';
-import 'package:aves/model/device.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/query.dart';
 import 'package:aves/model/selection.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/action_controls/togglers/title_search.dart';
@@ -125,47 +125,53 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
     final selection = context.watch<Selection<FilterGridItem<T>>>();
     final isSelecting = selection.isSelecting;
     _isSelectingNotifier.value = isSelecting;
-    return Selector<Query, bool>(
-      selector: (context, query) => query.enabled,
-      builder: (context, queryEnabled, child) {
-        ActionsBuilder<T, CSAD> actionsBuilder = widget.actionsBuilder ?? _buildActions;
-        final isTelevision = device.isTelevision;
-        final actions = actionsBuilder(context, appMode, selection, widget.actionDelegate);
-        return AvesAppBar(
-          contentHeight: appBarContentHeight,
-          leading: _buildAppBarLeading(
-            hasDrawer: appMode.canNavigate,
-            isSelecting: isSelecting,
-          ),
-          title: _buildAppBarTitle(isSelecting),
-          actions: isTelevision ? [] : actions,
-          bottom: Column(
-            children: [
-              if (isTelevision)
-                SizedBox(
-                  height: CaptionedButton.getTelevisionButtonHeight(context),
-                  child: ListView(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    scrollDirection: Axis.horizontal,
-                    children: actions,
+    return NotificationListener<ScrollNotification>(
+      // cancel notification bubbling so that the draggable scroll bar
+      // does not misinterpret filter bar scrolling for collection scrolling
+      onNotification: (notification) => true,
+      child: Selector<Query, bool>(
+        selector: (context, query) => query.enabled,
+        builder: (context, queryEnabled, child) {
+          ActionsBuilder<T, CSAD> actionsBuilder = widget.actionsBuilder ?? _buildActions;
+          final useTvLayout = settings.useTvLayout;
+          final actions = actionsBuilder(context, appMode, selection, widget.actionDelegate);
+          return AvesAppBar(
+            contentHeight: appBarContentHeight,
+            pinned: context.select<Selection<FilterGridItem<T>>, bool>((selection) => selection.isSelecting),
+            leading: _buildAppBarLeading(
+              hasDrawer: appMode.canNavigate,
+              isSelecting: isSelecting,
+            ),
+            title: _buildAppBarTitle(isSelecting),
+            actions: useTvLayout ? [] : actions,
+            bottom: Column(
+              children: [
+                if (useTvLayout)
+                  SizedBox(
+                    height: CaptionedButton.getTelevisionButtonHeight(context),
+                    child: ListView(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      scrollDirection: Axis.horizontal,
+                      children: actions,
+                    ),
                   ),
-                ),
-              if (queryEnabled)
-                FilterQueryBar<T>(
-                  queryNotifier: context.select<Query, ValueNotifier<String>>((query) => query.queryNotifier),
-                  focusNode: _queryBarFocusNode,
-                ),
-            ],
-          ),
-          transitionKey: isSelecting,
-        );
-      },
+                if (queryEnabled)
+                  FilterQueryBar<T>(
+                    queryNotifier: context.select<Query, ValueNotifier<String>>((query) => query.queryNotifier),
+                    focusNode: _queryBarFocusNode,
+                  ),
+              ],
+            ),
+            transitionKey: isSelecting,
+          );
+        },
+      ),
     );
   }
 
   double get appBarContentHeight {
     double height = kToolbarHeight;
-    if (device.isTelevision) {
+    if (settings.useTvLayout) {
       height += CaptionedButton.getTelevisionButtonHeight(context);
     }
     if (context.read<Query>().enabled) {
@@ -175,7 +181,7 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
   }
 
   Widget? _buildAppBarLeading({required bool hasDrawer, required bool isSelecting}) {
-    if (device.isTelevision) return null;
+    if (settings.useTvLayout) return null;
 
     if (!hasDrawer) {
       return const CloseButton();
@@ -251,7 +257,7 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
           selectedFilters: selectedFilters,
         );
 
-    return device.isTelevision
+    return settings.useTvLayout
         ? _buildTelevisionActions(
             context: context,
             selection: selection,
@@ -283,7 +289,13 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
     ].where(isVisible).map((action) {
       final enabled = canApply(action);
       return CaptionedButton(
-        iconButton: _buildButtonIcon(context, actionDelegate, action, enabled: enabled),
+        iconButtonBuilder: (context, focusNode) => _buildButtonIcon(
+          context,
+          actionDelegate,
+          action,
+          enabled: enabled,
+          focusNode: focusNode,
+        ),
         captionText: _buildButtonCaption(context, action, enabled: enabled),
         onPressed: enabled ? () => _onActionSelected(context, action, actionDelegate) : null,
       );
@@ -345,6 +357,7 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
     CSAD actionDelegate,
     ChipSetAction action, {
     required bool enabled,
+    FocusNode? focusNode,
   }) {
     final onPressed = enabled ? () => _onActionSelected(context, action, actionDelegate) : null;
     switch (action) {
@@ -355,6 +368,7 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
           builder: (context, queryEnabled, child) {
             return TitleSearchToggler(
               queryEnabled: queryEnabled,
+              focusNode: focusNode,
               onPressed: onPressed,
             );
           },
@@ -363,6 +377,7 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
         return IconButton(
           icon: action.getIcon(),
           onPressed: onPressed,
+          focusNode: focusNode,
           tooltip: action.getText(context),
         );
     }

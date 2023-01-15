@@ -1,5 +1,5 @@
-import 'package:aves/model/device.dart';
 import 'package:aves/model/selection.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/section_keys.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
@@ -33,18 +33,17 @@ class SectionHeader<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget child = _buildContent(context);
-    if (device.isTelevision) {
-      final colors = Theme.of(context).colorScheme;
+    if (settings.useTvLayout) {
+      final primaryColor = Theme.of(context).colorScheme.primary;
       child = Material(
         type: MaterialType.transparency,
         child: InkResponse(
           onTap: _onTap(context),
-          onHover: (_) {},
+          containedInkWell: true,
           highlightShape: BoxShape.rectangle,
           borderRadius: const BorderRadius.all(Radius.circular(123)),
-          containedInkWell: true,
-          splashColor: colors.primary.withOpacity(0.12),
-          hoverColor: colors.primary.withOpacity(0.04),
+          hoverColor: primaryColor.withOpacity(0.04),
+          splashColor: primaryColor.withOpacity(0.12),
           child: child,
         ),
       );

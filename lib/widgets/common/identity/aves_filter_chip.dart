@@ -44,14 +44,14 @@ class AvesFilterDecoration {
 
 class AvesFilterChip extends StatefulWidget {
   final CollectionFilter filter;
-  final bool removable, showText, showGenericIcon, useFilterColor;
+  final bool showText, showGenericIcon, useFilterColor;
   final AvesFilterDecoration? decoration;
   final String? banner;
   final Widget? leadingOverride, details;
   final double padding;
   final double? maxWidth;
   final HeroType heroType;
-  final FilterCallback? onTap;
+  final FilterCallback? onTap, onRemove;
   final OffsetFilterCallback? onLongPress;
 
   static const double defaultRadius = 32;
@@ -65,7 +65,6 @@ class AvesFilterChip extends StatefulWidget {
   const AvesFilterChip({
     super.key,
     required this.filter,
-    this.removable = false,
     this.showText = true,
     this.showGenericIcon = true,
     this.useFilterColor = true,
@@ -77,6 +76,7 @@ class AvesFilterChip extends StatefulWidget {
     this.maxWidth,
     this.heroType = HeroType.onTap,
     this.onTap,
+    this.onRemove,
     this.onLongPress = showDefaultLongPressMenu,
   });
 
@@ -154,10 +154,6 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
 
   double get padding => widget.padding;
 
-  FilterCallback? get onTap => widget.onTap;
-
-  OffsetFilterCallback? get onLongPress => widget.onLongPress;
-
   @override
   void initState() {
     super.initState();
@@ -219,12 +215,40 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
     final decoration = widget.decoration;
     final chipBackground = Theme.of(context).scaffoldBackgroundColor;
 
+    final onTap = widget.onTap != null
+        ? () {
+            WidgetsBinding.instance.addPostFrameCallback((_) => widget.onTap?.call(filter));
+            setState(() => _tapped = true);
+          }
+        : null;
+    final onRemove = widget.onRemove != null
+        ? () {
+            WidgetsBinding.instance.addPostFrameCallback((_) => widget.onRemove?.call(filter));
+            setState(() => _tapped = true);
+          }
+        : null;
+    final onLongPress = widget.onLongPress != null
+        ? () {
+            if (_tapPosition != null) {
+              widget.onLongPress?.call(context, filter, _tapPosition!);
+            }
+          }
+        : null;
+
     Widget? content;
     if (widget.showText) {
       final textScaleFactor = MediaQuery.textScaleFactorOf(context);
       final iconSize = AvesFilterChip.iconSize * textScaleFactor;
       final leading = widget.leadingOverride ?? filter.iconBuilder(context, iconSize, showGenericIcon: widget.showGenericIcon);
-      final trailing = widget.removable ? Icon(AIcons.clear, size: iconSize) : null;
+      final trailing = onRemove != null
+          ? IconButton(
+              icon: Icon(AIcons.clear, size: iconSize),
+              padding: EdgeInsets.zero,
+              splashRadius: IconTheme.of(context).size,
+              constraints: const BoxConstraints(),
+              onPressed: onRemove,
+            )
+          : null;
 
       content = Row(
         mainAxisSize: decoration != null ? MainAxisSize.max : MainAxisSize.min,
@@ -317,13 +341,8 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
               // as of Flutter v2.8.0, `InkWell` does not have `onLongPressStart` like `GestureDetector`,
               // so we get the long press details from the tap instead
               onTapDown: onLongPress != null ? (details) => _tapPosition = details.globalPosition : null,
-              onTap: onTap != null
-                  ? () {
-                      WidgetsBinding.instance.addPostFrameCallback((_) => onTap!(filter));
-                      setState(() => _tapped = true);
-                    }
-                  : null,
-              onLongPress: onLongPress != null ? () => onLongPress!(context, filter, _tapPosition!) : null,
+              onTap: onTap,
+              onLongPress: onLongPress,
               borderRadius: borderRadius,
               child: FutureBuilder<Color>(
                 future: _colorFuture,

@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:aves/model/device.dart';
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/common/services.dart';
@@ -32,14 +31,14 @@ class ViewerSection extends SettingsSection {
 
   @override
   FutureOr<List<SettingsTile>> tiles(BuildContext context) async {
-    final canSetCutoutMode = await windowService.canSetCutoutMode();
+    final isCutoutAware = await windowService.isCutoutAware();
     return [
-      if (!device.isTelevision) SettingsTileViewerQuickActions(),
+      if (!settings.useTvLayout) SettingsTileViewerQuickActions(),
       SettingsTileViewerOverlay(),
       SettingsTileViewerSlideshow(),
-      if (!device.isTelevision) SettingsTileViewerGestureSideTapNext(),
-      if (!device.isTelevision && canSetCutoutMode) SettingsTileViewerCutoutMode(),
-      if (!device.isTelevision) SettingsTileViewerMaxBrightness(),
+      if (!settings.useTvLayout) SettingsTileViewerGestureSideTapNext(),
+      if (!settings.useTvLayout && isCutoutAware) SettingsTileViewerUseCutout(),
+      if (!settings.useTvLayout) SettingsTileViewerMaxBrightness(),
       SettingsTileViewerMotionPhotoAutoPlay(),
       SettingsTileViewerImageBackground(),
     ];
@@ -94,7 +93,7 @@ class SettingsTileViewerGestureSideTapNext extends SettingsTile {
       );
 }
 
-class SettingsTileViewerCutoutMode extends SettingsTile {
+class SettingsTileViewerUseCutout extends SettingsTile {
   @override
   String title(BuildContext context) => context.l10n.settingsViewerUseCutout;
 

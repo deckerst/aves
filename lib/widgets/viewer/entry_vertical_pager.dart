@@ -4,7 +4,6 @@ import 'dart:ui';
 
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/actions/entry_actions.dart';
-import 'package:aves/model/device.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
@@ -181,12 +180,12 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
   }
 
   Widget _buildImagePage() {
-    final isTelevision = device.isTelevision;
+    final useTvLayout = settings.useTvLayout;
 
     Widget? child;
     Map<ShortcutActivator, Intent>? shortcuts = {
-      const SingleActivator(LogicalKeyboardKey.arrowUp): isTelevision ? const TvShowLessInfoIntent() : const _LeaveIntent(),
-      const SingleActivator(LogicalKeyboardKey.arrowDown): isTelevision ? const _TvShowMoreInfoIntent() : const _ShowInfoIntent(),
+      const SingleActivator(LogicalKeyboardKey.arrowUp): useTvLayout ? const TvShowLessInfoIntent() : const _LeaveIntent(),
+      const SingleActivator(LogicalKeyboardKey.arrowDown): useTvLayout ? const _TvShowMoreInfoIntent() : const _ShowInfoIntent(),
       const SingleActivator(LogicalKeyboardKey.mediaPause): const _PlayPauseIntent.pause(),
       const SingleActivator(LogicalKeyboardKey.mediaPlay): const _PlayPauseIntent.play(),
       const SingleActivator(LogicalKeyboardKey.mediaPlayPause): const _PlayPauseIntent.toggle(),
@@ -211,7 +210,7 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
       );
     }
     if (child != null) {
-      if (device.isTelevision) {
+      if (settings.useTvLayout) {
         child = ValueListenableBuilder<bool>(
           valueListenable: _isImageFocusedNotifier,
           builder: (context, isImageFocused, child) {
@@ -238,7 +237,7 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
           _TvShowMoreInfoIntent: CallbackAction<Intent>(onInvoke: (intent) => TvShowMoreInfoNotification().dispatch(context)),
           _PlayPauseIntent: CallbackAction<_PlayPauseIntent>(onInvoke: (intent) => _onPlayPauseIntent(intent, entry)),
           ActivateIntent: CallbackAction<Intent>(onInvoke: (intent) {
-            if (isTelevision) {
+            if (useTvLayout) {
               final _entry = entry;
               if (_entry != null && _entry.isVideo) {
                 // address `TV-PC` requirement from https://developer.android.com/docs/quality-guidelines/tv-app-quality

@@ -12,12 +12,14 @@ import 'package:provider/provider.dart';
 class FavouriteToggler extends StatefulWidget {
   final Set<AvesEntry> entries;
   final bool isMenuItem;
+  final FocusNode? focusNode;
   final VoidCallback? onPressed;
 
   const FavouriteToggler({
     super.key,
     required this.entries,
     this.isMenuItem = false,
+    this.focusNode,
     this.onPressed,
   });
 
@@ -76,6 +78,7 @@ class _FavouriteTogglerState extends State<FavouriteToggler> {
             IconButton(
               icon: Icon(isFavourite ? isFavouriteIcon : isNotFavouriteIcon),
               onPressed: widget.onPressed,
+              focusNode: widget.focusNode,
               tooltip: isFavourite ? context.l10n.entryActionRemoveFavourite : context.l10n.entryActionAddFavourite,
             ),
             Sweeper(

@@ -6,6 +6,7 @@ import 'package:aves/utils/math_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
 import 'package:aves/widgets/common/grid/sections/list_layout.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -37,7 +38,9 @@ class _GridSelectionGestureDetectorState<T> extends State<GridSelectionGestureDe
   late Offset _localPosition;
   late EdgeInsets _scrollableInsets;
   late double _scrollSpeedFactor;
-  Timer? _updateTimer;
+  Timer? _selectionUpdateTimer;
+  Timer? _scrollMonitoringTimer;
+  var _isScrolling = false;
 
   List<T> get items => widget.items;
 
@@ -57,11 +60,41 @@ class _GridSelectionGestureDetectorState<T> extends State<GridSelectionGestureDe
   static const Duration scrollUpdateInterval = Duration(milliseconds: 100);
 
   @override
+  void initState() {
+    super.initState();
+    _registerWidget(widget);
+  }
+
+  @override
+  void didUpdateWidget(covariant GridSelectionGestureDetector<T> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _unregisterWidget(oldWidget);
+    _registerWidget(widget);
+  }
+
+  @override
+  void dispose() {
+    _unregisterWidget(widget);
+    _stopScrollMonitoringTimer();
+    super.dispose();
+  }
+
+  void _registerWidget(GridSelectionGestureDetector<T> widget) {
+    widget.scrollController.addListener(_onScrollChanged);
+  }
+
+  void _unregisterWidget(GridSelectionGestureDetector<T> widget) {
+    widget.scrollController.removeListener(_onScrollChanged);
+  }
+
+  @override
   Widget build(BuildContext context) {
     final selectable = widget.selectable;
     return GestureDetector(
       onLongPressStart: selectable
           ? (details) {
+              if (_isScrolling) return;
+
               final fromItem = _getItemAt(details.localPosition);
               if (fromItem == null) return;
 
@@ -105,6 +138,16 @@ class _GridSelectionGestureDetectorState<T> extends State<GridSelectionGestureDe
     );
   }
 
+  void _onScrollChanged() {
+    _isScrolling = true;
+    _stopScrollMonitoringTimer();
+    _scrollMonitoringTimer = Timer(kLongPressTimeout + const Duration(milliseconds: 150), () {
+      _isScrolling = false;
+    });
+  }
+
+  void _stopScrollMonitoringTimer() => _scrollMonitoringTimer?.cancel();
+
   void _onLongPressUpdate() {
     final dy = _localPosition.dy;
 
@@ -128,7 +171,7 @@ class _GridSelectionGestureDetectorState<T> extends State<GridSelectionGestureDe
   void _setScrollSpeed(double speedFactor) {
     if (speedFactor == _scrollSpeedFactor) return;
     _scrollSpeedFactor = speedFactor;
-    _updateTimer?.cancel();
+    _selectionUpdateTimer?.cancel();
 
     final current = scrollController.offset;
     if (speedFactor == 0) {
@@ -147,7 +190,7 @@ class _GridSelectionGestureDetectorState<T> extends State<GridSelectionGestureDe
       );
       // use a timer to update the selection, because `onLongPressMoveUpdate`
       // is not called when the pointer stays still while the view is scrolling
-      _updateTimer = Timer.periodic(scrollUpdateInterval, (_) => _onLongPressUpdate());
+      _selectionUpdateTimer = Timer.periodic(scrollUpdateInterval, (_) => _onLongPressUpdate());
     }
   }
 

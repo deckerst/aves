@@ -3,12 +3,12 @@ import 'dart:convert';
 
 import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/actions/events.dart';
-import 'package:aves/model/device.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/entry_info.dart';
 import 'package:aves/model/entry_metadata_edition.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/geotiff.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/services.dart';
@@ -30,7 +30,7 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
   Stream<ActionEvent<EntryAction>> get eventStream => _eventStreamController.stream;
 
   bool isVisible(AvesEntry targetEntry, EntryAction action) {
-    final canWrite = !device.isReadOnly;
+    final canWrite = !settings.isReadOnly;
     switch (action) {
       // general
       case EntryAction.editDate:
@@ -229,21 +229,16 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
   Future<void> _convertMotionPhotoToStillImage(BuildContext context, AvesEntry targetEntry) async {
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (context) {
-        return AvesDialog(
-          content: Text(context.l10n.genericDangerWarningDialogMessage),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
-            ),
-            TextButton(
-              onPressed: () => Navigator.pop(context, true),
-              child: Text(context.l10n.applyButtonLabel),
-            ),
-          ],
-        );
-      },
+      builder: (context) => AvesDialog(
+        content: Text(context.l10n.genericDangerWarningDialogMessage),
+        actions: [
+          const CancelButton(),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text(context.l10n.applyButtonLabel),
+          ),
+        ],
+      ),
     );
     if (confirmed == null || !confirmed) return;
 

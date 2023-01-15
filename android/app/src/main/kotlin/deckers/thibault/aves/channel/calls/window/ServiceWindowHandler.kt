@@ -17,11 +17,11 @@ class ServiceWindowHandler(service: Service) : WindowHandler(service) {
         result.success(false)
     }
 
-    override fun canSetCutoutMode(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
+    override fun isCutoutAware(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
         result.success(false)
     }
 
-    override fun setCutoutMode(call: MethodCall, result: MethodChannel.Result) {
-        result.success(false)
+    override fun getCutoutInsets(call: MethodCall, result: MethodChannel.Result) {
+        result.success(HashMap<String, Any>())
     }
 }

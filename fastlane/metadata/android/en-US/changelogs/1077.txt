@@ -1,5 +1,0 @@
-In v1.6.11:
-- add the photo frame widget to your home
-- use your photos as screen saver
-- search photos taken "on this day"
-Full changelog available on GitHub

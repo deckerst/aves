@@ -16,6 +16,7 @@ void main() {
     expect(VideoMetadataFormatter.parseVideoDate('2022-01-28T5:07:46 p. m.Z'), DateTime(2022, 1, 28, 17, 7, 46).millisecondsSinceEpoch);
     expect(VideoMetadataFormatter.parseVideoDate('2012-1-1T12:00:00Z'), DateTime(2012, 1, 1, 12, 0, 0).millisecondsSinceEpoch);
     expect(VideoMetadataFormatter.parseVideoDate('2020.10.14'), DateTime(2020, 10, 14).millisecondsSinceEpoch);
+    expect(VideoMetadataFormatter.parseVideoDate('2016:11:16 18:00:00'), DateTime(2016, 11, 16, 18, 0, 0).millisecondsSinceEpoch);
   });
 
   test('Ambiguous date', () {

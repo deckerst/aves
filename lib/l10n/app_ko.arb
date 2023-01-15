@@ -175,7 +175,7 @@
   "@filterFavouriteLabel": {},
   "filterNoDateLabel": "날짜 없음",
   "@filterNoDateLabel": {},
-  "filterNoLocationLabel": "장소 없음",
+  "filterNoLocationLabel": "위치 없음",
   "@filterNoLocationLabel": {},
   "filterNoRatingLabel": "별점 없음",
   "@filterNoRatingLabel": {},
@@ -1196,5 +1196,17 @@
     "placeholders": {
       "count": {}
     }
-  }
+  },
+  "settingsViewerShowDescription": "설명 표시",
+  "@settingsViewerShowDescription": {},
+  "settingsModificationWarningDialogMessage": "다른 설정도 변경될 것입니다.",
+  "@settingsModificationWarningDialogMessage": {},
+  "settingsDisplayUseTvInterface": "안드로이드 TV 인터페이스 사용하기",
+  "@settingsDisplayUseTvInterface": {},
+  "filterTaggedLabel": "태그 있음",
+  "@filterTaggedLabel": {},
+  "filterLocatedLabel": "위치 있음",
+  "@filterLocatedLabel": {},
+  "tooManyItemsErrorDialogMessage": "항목 수를 줄이고 다시 시도하세요.",
+  "@tooManyItemsErrorDialogMessage": {}
 }

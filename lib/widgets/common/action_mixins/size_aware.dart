@@ -85,12 +85,7 @@ mixin SizeAwareMixin {
         final volume = destinationVolume.getDescription(context);
         return AvesDialog(
           content: Text(l10n.notEnoughSpaceDialogMessage(neededSize, freeSize, volume)),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text(MaterialLocalizations.of(context).okButtonLabel),
-            ),
-          ],
+          actions: const [OkButton()],
         );
       },
     );

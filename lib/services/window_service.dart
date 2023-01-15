@@ -1,4 +1,5 @@
 import 'package:aves/services/common/services.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
@@ -11,9 +12,9 @@ abstract class WindowService {
 
   Future<void> requestOrientation([Orientation? orientation]);
 
-  Future<bool> canSetCutoutMode();
+  Future<bool> isCutoutAware();
 
-  Future<void> setCutoutMode(bool use);
+  Future<EdgeInsets> getCutoutInsets();
 }
 
 class PlatformWindowService implements WindowService {
@@ -79,25 +80,35 @@ class PlatformWindowService implements WindowService {
     }
   }
 
+  bool? _isCutoutAware;
+
   @override
-  Future<bool> canSetCutoutMode() async {
+  Future<bool> isCutoutAware() async {
+    if (_isCutoutAware != null) return SynchronousFuture(_isCutoutAware!);
     try {
-      final result = await _platform.invokeMethod('canSetCutoutMode');
-      if (result != null) return result as bool;
+      final result = await _platform.invokeMethod('isCutoutAware');
+      _isCutoutAware = result as bool?;
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
     }
-    return false;
+    return _isCutoutAware ?? false;
   }
 
   @override
-  Future<void> setCutoutMode(bool use) async {
+  Future<EdgeInsets> getCutoutInsets() async {
     try {
-      await _platform.invokeMethod('setCutoutMode', <String, dynamic>{
-        'use': use,
-      });
+      final result = await _platform.invokeMethod('getCutoutInsets');
+      if (result != null) {
+        return EdgeInsets.only(
+          left: result['left']?.toDouble() ?? 0,
+          top: result['top']?.toDouble() ?? 0,
+          right: result['right']?.toDouble() ?? 0,
+          bottom: result['bottom']?.toDouble() ?? 0,
+        );
+      }
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
     }
+    return EdgeInsets.zero;
   }
 }

@@ -155,10 +155,7 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
         spacing: AvesDialog.buttonPadding.horizontal / 2,
         overflowAlignment: OverflowBarAlignment.end,
         children: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
-          ),
+          const CancelButton(),
           TextButton(
             onPressed: () {
               final entry = _isCustomEntry ? _customEntry : null;

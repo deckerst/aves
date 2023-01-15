@@ -1,16 +1,17 @@
 package deckers.thibault.aves.channel.calls
 
-import android.content.Context
+import android.content.*
+import android.media.AudioManager
 import android.media.session.PlaybackState
 import android.net.Uri
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
-import android.util.Log
+import androidx.media.session.MediaButtonReceiver
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safeSuspend
+import deckers.thibault.aves.channel.streams.MediaCommandStreamHandler
 import deckers.thibault.aves.utils.FlutterUtils
-import deckers.thibault.aves.utils.LogUtils
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
@@ -19,20 +20,36 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
-class MediaSessionHandler(private val context: Context) : MethodCallHandler {
+class MediaSessionHandler(private val context: Context, private val mediaCommandHandler: MediaCommandStreamHandler) : MethodCallHandler {
     private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
-    private val sessions = HashMap<Uri, MediaSessionCompat>()
+    private var session: MediaSessionCompat? = null
+    private var wasPlaying = false
+    private var isNoisyAudioReceiverRegistered = false
+    private val noisyAudioReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            if (intent.action == AudioManager.ACTION_AUDIO_BECOMING_NOISY) {
+                mediaCommandHandler.onStop()
+            }
+        }
+    }
+
+    fun dispose() {
+        if (isNoisyAudioReceiverRegistered) {
+            context.unregisterReceiver(noisyAudioReceiver)
+            isNoisyAudioReceiverRegistered = false
+        }
+    }
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
-            "update" -> ioScope.launch { safeSuspend(call, result, ::update) }
-            "release" -> ioScope.launch { safe(call, result, ::release) }
+            "update" -> ioScope.launch { safeSuspend(call, result, ::updateSession) }
+            "release" -> ioScope.launch { safe(call, result, ::releaseSession) }
             else -> result.notImplemented()
         }
     }
 
-    private suspend fun update(call: MethodCall, result: MethodChannel.Result) {
+    private suspend fun updateSession(call: MethodCall, result: MethodChannel.Result) {
         val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
         val title = call.argument<String>("title")
         val durationMillis = call.argument<Number>("durationMillis")?.toLong()
@@ -72,69 +89,51 @@ class MediaSessionHandler(private val context: Context) : MethodCallHandler {
             .setActions(actions)
             .build()
 
-        var session = sessions[uri]
-        if (session == null) {
-            session = MediaSessionCompat(context, "aves-$uri")
-            sessions[uri] = session
-
-            val metadata = MediaMetadataCompat.Builder()
-                .putString(MediaMetadataCompat.METADATA_KEY_TITLE, title)
-                .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, title)
-                .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, durationMillis)
-                .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI, uri.toString())
-                .build()
-            session.setMetadata(metadata)
-
-            val callback: MediaSessionCompat.Callback = object : MediaSessionCompat.Callback() {
-                override fun onPlay() {
-                    super.onPlay()
-                    Log.d(LOG_TAG, "TLAD onPlay uri=$uri")
-                }
-
-                override fun onPause() {
-                    super.onPause()
-                    Log.d(LOG_TAG, "TLAD onPause uri=$uri")
-                }
-
-                override fun onStop() {
-                    super.onStop()
-                    Log.d(LOG_TAG, "TLAD onStop uri=$uri")
-                }
-
-                override fun onSeekTo(pos: Long) {
-                    super.onSeekTo(pos)
-                    Log.d(LOG_TAG, "TLAD onSeekTo uri=$uri pos=$pos")
+        FlutterUtils.runOnUiThread {
+            if (session == null) {
+                val mbrIntent = MediaButtonReceiver.buildMediaButtonPendingIntent(context, PlaybackStateCompat.ACTION_PLAY_PAUSE)
+                val mbrName = ComponentName(context, MediaButtonReceiver::class.java)
+                session = MediaSessionCompat(context, "aves", mbrName, mbrIntent).apply {
+                    setCallback(mediaCommandHandler)
                 }
             }
-            FlutterUtils.runOnUiThread {
-                session.setCallback(callback)
+            session!!.apply {
+                val metadata = MediaMetadataCompat.Builder()
+                    .putString(MediaMetadataCompat.METADATA_KEY_TITLE, title)
+                    .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, title)
+                    .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, durationMillis)
+                    .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI, uri.toString())
+                    .build()
+                setMetadata(metadata)
+                setPlaybackState(playbackState)
+                if (!isActive) {
+                    isActive = true
+                }
             }
-        }
 
-        session.setPlaybackState(playbackState)
-
-        if (!session.isActive) {
-            session.isActive = true
+            val isPlaying = state == PlaybackStateCompat.STATE_PLAYING
+            if (!wasPlaying && isPlaying) {
+                context.registerReceiver(noisyAudioReceiver, IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY))
+                isNoisyAudioReceiverRegistered = true
+            } else if (wasPlaying && !isPlaying) {
+                context.unregisterReceiver(noisyAudioReceiver)
+                isNoisyAudioReceiverRegistered = false
+            }
+            wasPlaying = isPlaying
         }
 
         result.success(null)
     }
 
-    private fun release(call: MethodCall, result: MethodChannel.Result) {
-        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
-
-        if (uri == null) {
-            result.error("release-args", "missing arguments", null)
-            return
+    private fun releaseSession(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
+        session?.let {
+            it.release()
+            session = null
         }
-
-        sessions[uri]?.release()
-
         result.success(null)
     }
 
     companion object {
-        private val LOG_TAG = LogUtils.createTag<MediaSessionHandler>()
         const val CHANNEL = "deckers.thibault/aves/media_session"
 
         const val STATE_STOPPED = "stopped"

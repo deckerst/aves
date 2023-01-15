@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/actions/chip_set_actions.dart';
 import 'package:aves/model/actions/move_type.dart';
-import 'package:aves/model/device.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/highlight.dart';
@@ -76,10 +75,10 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
   }) {
     switch (action) {
       case ChipSetAction.createAlbum:
-        return !device.isReadOnly && appMode == AppMode.main && !isSelecting;
+        return !settings.isReadOnly && appMode == AppMode.main && !isSelecting;
       case ChipSetAction.delete:
       case ChipSetAction.rename:
-        return !device.isReadOnly && appMode == AppMode.main && isSelecting;
+        return !settings.isReadOnly && appMode == AppMode.main && isSelecting;
       default:
         return super.isVisible(
           action,
@@ -235,21 +234,16 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
 
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (context) {
-        return AvesDialog(
-          content: Text(filters.length == 1 ? l10n.deleteSingleAlbumConfirmationDialogMessage(todoCount) : l10n.deleteMultiAlbumConfirmationDialogMessage(todoCount)),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
-            ),
-            TextButton(
-              onPressed: () => Navigator.pop(context, true),
-              child: Text(l10n.deleteButtonLabel),
-            ),
-          ],
-        );
-      },
+      builder: (context) => AvesDialog(
+        content: Text(filters.length == 1 ? l10n.deleteSingleAlbumConfirmationDialogMessage(todoCount) : l10n.deleteMultiAlbumConfirmationDialogMessage(todoCount)),
+        actions: [
+          const CancelButton(),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text(l10n.deleteButtonLabel),
+          ),
+        ],
+      ),
     );
     if (confirmed == null || !confirmed) return;
 

@@ -8,6 +8,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/settings/common/tile_leading.dart';
 import 'package:aves/widgets/settings/common/tiles.dart';
 import 'package:aves/widgets/settings/settings_definition.dart';
@@ -29,11 +30,12 @@ class DisplaySection extends SettingsSection {
 
   @override
   FutureOr<List<SettingsTile>> tiles(BuildContext context) => [
-        if (!device.isTelevision) SettingsTileDisplayThemeBrightness(),
+        if (!settings.useTvLayout) SettingsTileDisplayThemeBrightness(),
         SettingsTileDisplayThemeColorMode(),
         if (device.isDynamicColorAvailable) SettingsTileDisplayEnableDynamicColor(),
         SettingsTileDisplayEnableBlurEffect(),
-        if (!device.isTelevision) SettingsTileDisplayDisplayRefreshRateMode(),
+        if (!settings.useTvLayout) SettingsTileDisplayRefreshRateMode(),
+        if (!device.isTelevision) SettingsTileDisplayForceTvLayout(),
       ];
 }
 
@@ -88,7 +90,7 @@ class SettingsTileDisplayEnableBlurEffect extends SettingsTile {
       );
 }
 
-class SettingsTileDisplayDisplayRefreshRateMode extends SettingsTile {
+class SettingsTileDisplayRefreshRateMode extends SettingsTile {
   @override
   String title(BuildContext context) => context.l10n.settingsDisplayRefreshRateModeTile;
 
@@ -100,5 +102,40 @@ class SettingsTileDisplayDisplayRefreshRateMode extends SettingsTile {
         onSelection: (v) => settings.displayRefreshRateMode = v,
         tileTitle: title(context),
         dialogTitle: context.l10n.settingsDisplayRefreshRateModeDialogTitle,
+      );
+}
+
+class SettingsTileDisplayForceTvLayout extends SettingsTile {
+  @override
+  String title(BuildContext context) => context.l10n.settingsDisplayUseTvInterface;
+
+  @override
+  Widget build(BuildContext context) => SettingsSwitchListTile(
+        selector: (context, s) => s.forceTvLayout,
+        onChanged: (v) async {
+          if (v) {
+            final l10n = context.l10n;
+            final confirmed = await showDialog<bool>(
+              context: context,
+              builder: (context) => AvesDialog(
+                content: Text([
+                  l10n.settingsModificationWarningDialogMessage,
+                  l10n.genericDangerWarningDialogMessage,
+                ].join('\n\n')),
+                actions: [
+                  const CancelButton(),
+                  TextButton(
+                    onPressed: () => Navigator.pop(context, true),
+                    child: Text(l10n.applyButtonLabel),
+                  ),
+                ],
+              ),
+            );
+            if (confirmed == null || !confirmed) return;
+          }
+
+          settings.forceTvLayout = v;
+        },
+        title: title(context),
       );
 }

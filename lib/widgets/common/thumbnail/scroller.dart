@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:aves/model/entry.dart';
-import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/behaviour/known_extent_scroll_physics.dart';
 import 'package:aves/widgets/common/grid/theme.dart';
@@ -95,7 +94,7 @@ class _ThumbnailScrollerState extends State<ThumbnailScroller> {
 
     return GridTheme(
       extent: thumbnailExtent,
-      showLocation: widget.showLocation && settings.showThumbnailLocation,
+      showLocation: widget.showLocation,
       showTrash: false,
       child: SizedBox(
         width: scrollable ? null : widthFor(entryCount),

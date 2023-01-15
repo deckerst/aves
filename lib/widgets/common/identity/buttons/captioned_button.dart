@@ -2,58 +2,39 @@ import 'package:aves/widgets/common/identity/buttons/overlay_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-class CaptionedButton extends StatelessWidget {
+typedef CaptionedIconButtonBuilder = Widget Function(BuildContext context, FocusNode focusNode);
+
+class CaptionedButton extends StatefulWidget {
   final Animation<double> scale;
   final Widget captionText;
-  final Widget iconButton;
+  final CaptionedIconButtonBuilder iconButtonBuilder;
   final bool showCaption;
   final VoidCallback? onPressed;
+
+  static const EdgeInsets padding = EdgeInsets.symmetric(horizontal: 8);
+  static const double iconTextPadding = 8;
 
   CaptionedButton({
     super.key,
     this.scale = kAlwaysCompleteAnimation,
     Widget? icon,
-    Widget? iconButton,
+    CaptionedIconButtonBuilder? iconButtonBuilder,
     String? caption,
     Widget? captionText,
     this.showCaption = true,
     required this.onPressed,
-  })  : assert(icon != null || iconButton != null),
+  })  : assert(icon != null || iconButtonBuilder != null),
         assert(caption != null || captionText != null),
-        iconButton = iconButton ?? IconButton(icon: icon!, onPressed: onPressed),
+        iconButtonBuilder = iconButtonBuilder ?? ((_, focusNode) => IconButton(icon: icon!, onPressed: onPressed, focusNode: focusNode)),
         captionText = captionText ?? CaptionedButtonText(text: caption!, enabled: onPressed != null);
 
-  static const double padding = 8;
-
   @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: _width(context),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const SizedBox(height: padding),
-          OverlayButton(
-            scale: scale,
-            child: iconButton,
-          ),
-          if (showCaption) ...[
-            const SizedBox(height: padding),
-            ScaleTransition(
-              scale: scale,
-              child: captionText,
-            ),
-          ],
-          const SizedBox(height: padding),
-        ],
-      ),
-    );
-  }
+  State<CaptionedButton> createState() => _CaptionedButtonState();
 
-  static double _width(BuildContext context) => OverlayButton.getSize(context) + padding * 2;
+  static double getWidth(BuildContext context) => OverlayButton.getSize(context) + padding.horizontal;
 
   static Size getSize(BuildContext context, String text, {required bool showCaption}) {
-    final width = _width(context);
+    final width = getWidth(context);
     var height = width;
     if (showCaption) {
       final para = RenderParagraph(
@@ -62,7 +43,7 @@ class CaptionedButton extends StatelessWidget {
         textScaleFactor: MediaQuery.textScaleFactorOf(context),
         maxLines: CaptionedButtonText.maxLines,
       )..layout(const BoxConstraints(), parentUsesSize: true);
-      height += para.getMaxIntrinsicHeight(width) + padding;
+      height += para.getMaxIntrinsicHeight(width) + padding.vertical;
     }
     return Size(width, height);
   }
@@ -70,6 +51,81 @@ class CaptionedButton extends StatelessWidget {
   static double getTelevisionButtonHeight(BuildContext context) {
     final text = 'whatever' * 42;
     return CaptionedButton.getSize(context, text, showCaption: true).height;
+  }
+}
+
+class _CaptionedButtonState extends State<CaptionedButton> {
+  final FocusNode _focusNode = FocusNode();
+  final ValueNotifier<bool> _focusedNotifier = ValueNotifier(false);
+
+  @override
+  void initState() {
+    super.initState();
+    _updateTraversal();
+    _focusNode.addListener(_onFocusChanged);
+  }
+
+  @override
+  void didUpdateWidget(covariant CaptionedButton oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.onPressed != widget.onPressed) {
+      _updateTraversal();
+    }
+  }
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    _focusedNotifier.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: CaptionedButton.getWidth(context),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SizedBox(height: CaptionedButton.padding.top),
+          OverlayButton(
+            scale: widget.scale,
+            focusNode: _focusNode,
+            child: widget.iconButtonBuilder(context, _focusNode),
+          ),
+          if (widget.showCaption) ...[
+            const SizedBox(height: CaptionedButton.iconTextPadding),
+            ScaleTransition(
+              scale: widget.scale,
+              child: ValueListenableBuilder<bool>(
+                valueListenable: _focusedNotifier,
+                builder: (context, focused, child) {
+                  final style = CaptionedButtonText.textStyle(context);
+                  return AnimatedDefaultTextStyle(
+                    style: focused
+                        ? style.copyWith(
+                            color: Theme.of(context).colorScheme.onPrimary,
+                          )
+                        : style,
+                    duration: const Duration(milliseconds: 200),
+                    child: widget.captionText,
+                  );
+                },
+              ),
+            ),
+          ],
+          SizedBox(height: CaptionedButton.padding.bottom),
+        ],
+      ),
+    );
+  }
+
+  void _onFocusChanged() => _focusedNotifier.value = _focusNode.hasFocus;
+
+  void _updateTraversal() {
+    final enabled = widget.onPressed != null;
+    _focusNode.skipTraversal = !enabled;
+    _focusNode.canRequestFocus = enabled;
   }
 }
 
@@ -87,7 +143,7 @@ class CaptionedButtonText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var style = textStyle(context);
+    var style = DefaultTextStyle.of(context).style;
     if (!enabled) {
       style = style.copyWith(color: style.color!.withOpacity(.2));
     }

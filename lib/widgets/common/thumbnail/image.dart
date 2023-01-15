@@ -9,6 +9,7 @@ import 'package:aves/model/settings/enums/entry_background.dart';
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/common/services.dart';
+import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/fx/checkered_decoration.dart';
 import 'package:aves/widgets/common/fx/transition_image.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
@@ -271,13 +272,20 @@ class _ThumbnailImageState extends State<ThumbnailImage> {
       image = Hero(
         tag: widget.heroTag!,
         flightShuttleBuilder: (flight, animation, direction, fromHero, toHero) {
-          return TransitionImage(
+          Widget child = TransitionImage(
             image: entry.bestCachedThumbnail,
             animation: animation,
             thumbnailFit: isMosaic ? BoxFit.contain : BoxFit.cover,
             viewerFit: BoxFit.contain,
             background: backgroundColor,
           );
+          if (!settings.viewerUseCutout) {
+            child = SafeCutoutArea(
+              animation: animation,
+              child: child,
+            );
+          }
+          return child;
         },
         transitionOnUserGestures: true,
         child: image,

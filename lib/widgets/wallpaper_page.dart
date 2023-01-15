@@ -83,9 +83,6 @@ class _EntryEditorState extends State<EntryEditor> with EntryViewControllerMixin
   @override
   void initState() {
     super.initState();
-    if (!settings.viewerUseCutout) {
-      windowService.setCutoutMode(false);
-    }
     if (settings.viewerMaxBrightness) {
       ScreenBrightness().setScreenBrightness(1);
     }
@@ -134,25 +131,30 @@ class _EntryEditorState extends State<EntryEditor> with EntryViewControllerMixin
         }
         return true;
       },
-      child: Stack(
-        children: [
-          SingleEntryScroller(
-            entry: entry,
-            viewerController: _viewerController,
-          ),
-          Positioned(
-            bottom: 0,
-            child: _buildBottomOverlay(),
-          ),
-          const TopGestureAreaProtector(),
-          const SideGestureAreaProtector(),
-          const BottomGestureAreaProtector(),
-        ],
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final viewSize = Size(constraints.maxWidth, constraints.maxHeight);
+          return Stack(
+            children: [
+              SingleEntryScroller(
+                entry: entry,
+                viewerController: _viewerController,
+              ),
+              Positioned(
+                bottom: 0,
+                child: _buildBottomOverlay(viewSize),
+              ),
+              const TopGestureAreaProtector(),
+              const SideGestureAreaProtector(),
+              const BottomGestureAreaProtector(),
+            ],
+          );
+        },
       ),
     );
   }
 
-  Widget _buildBottomOverlay() {
+  Widget _buildBottomOverlay(Size viewSize) {
     final mainEntry = entry;
     final multiPageController = mainEntry.isMultiPage ? context.read<MultiPageConductor>().getController(mainEntry) : null;
 
@@ -210,6 +212,7 @@ class _EntryEditorState extends State<EntryEditor> with EntryViewControllerMixin
             index: 0,
             collection: null,
             animationController: _overlayAnimationController,
+            availableSize: viewSize,
             viewInsets: _frozenViewInsets,
             viewPadding: _frozenViewPadding,
             multiPageController: multiPageController,

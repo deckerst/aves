@@ -16,6 +16,7 @@ class ViewerSlideshowPage extends StatelessWidget {
     final l10n = context.l10n;
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: !settings.useTvLayout,
         title: Text(l10n.settingsViewerSlideshowPageTitle),
       ),
       body: SafeArea(

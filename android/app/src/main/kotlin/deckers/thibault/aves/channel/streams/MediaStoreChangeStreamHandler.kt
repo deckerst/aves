@@ -41,7 +41,9 @@ class MediaStoreChangeStreamHandler(private val context: Context) : EventChannel
         handler = Handler(Looper.getMainLooper())
     }
 
-    override fun onCancel(arguments: Any?) {}
+    override fun onCancel(arguments: Any?) {
+        Log.i(LOG_TAG, "onCancel arguments=$arguments")
+    }
 
     fun dispose() {
         context.contentResolver.unregisterContentObserver(contentObserver)

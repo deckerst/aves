@@ -80,10 +80,7 @@ class _VideoStreamSelectionDialogState extends State<VideoStreamSelectionDialog>
             ]
           : null,
       actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
-        ),
+        const CancelButton(),
         if (canSelect)
           TextButton(
             onPressed: () => _submit(context),

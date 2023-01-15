@@ -17,7 +17,8 @@ class AvailableActionPanel<T extends Object> extends StatelessWidget {
   final String Function(BuildContext context, T action) actionText;
 
   static const double spacing = 8;
-  static const padding = EdgeInsets.all(spacing);
+  static const double runSpacing = 20;
+  static const padding = EdgeInsets.symmetric(vertical: 16, horizontal: 8);
 
   const AvailableActionPanel({
     super.key,
@@ -56,7 +57,7 @@ class AvailableActionPanel<T extends Object> extends StatelessWidget {
               child: Wrap(
                 alignment: WrapAlignment.spaceEvenly,
                 spacing: spacing,
-                runSpacing: spacing,
+                runSpacing: runSpacing,
                 children: allActions.map((action) {
                   final dragged = action == draggedAvailableAction.value;
                   final enabled = dragged || !quickActions.contains(action);
@@ -124,11 +125,10 @@ class AvailableActionPanel<T extends Object> extends StatelessWidget {
     final buttonSizes = captions.map((v) => CaptionedButton.getSize(context, v, showCaption: true));
     final actionsPerRun = (width - padding.horizontal + spacing) ~/ (buttonSizes.first.width + spacing);
     final runCount = (captions.length / actionsPerRun).ceil();
-    var height = .0;
+    var height = runSpacing * (runCount - 1) + padding.vertical / 2;
     for (var i = 0; i < runCount; i++) {
       height += buttonSizes.skip(i * actionsPerRun).take(actionsPerRun).map((v) => v.height).max;
     }
-    height += spacing * (runCount - 1) + padding.vertical;
     return height;
   }
 }

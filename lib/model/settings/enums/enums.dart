@@ -22,6 +22,10 @@ enum SlideshowVideoPlayback { skip, playMuted, playWithSound }
 
 enum SubtitlePosition { top, bottom }
 
+enum ThumbnailOverlayLocationIcon { located, unlocated, none }
+
+enum ThumbnailOverlayTagIcon { tagged, untagged, none }
+
 enum UnitSystem { metric, imperial }
 
 enum VideoControls { play, playSeek, playOutside, none }

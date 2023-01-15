@@ -89,6 +89,7 @@ class _EntryHmsMapState<T> extends State<EntryHmsMap<T>> {
     final avesMapController = widget.controller;
     if (avesMapController != null) {
       _subscriptions.add(avesMapController.moveCommands.listen((event) => _moveTo(_toServiceLatLng(event.latLng))));
+      _subscriptions.add(avesMapController.zoomCommands.listen((event) => _zoomBy(event.delta)));
     }
     widget.clusterListenable.addListener(_updateMarkers);
   }
@@ -118,7 +119,7 @@ class _EntryHmsMapState<T> extends State<EntryHmsMap<T>> {
           },
         ),
         widget.decoratorBuilder(context, _buildMap()),
-        widget.buttonPanelBuilder(_zoomBy, _resetRotation),
+        widget.buttonPanelBuilder(_resetRotation),
       ],
     );
   }

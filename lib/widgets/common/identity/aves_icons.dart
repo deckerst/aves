@@ -91,27 +91,39 @@ class FavouriteIcon extends StatelessWidget {
 }
 
 class TagIcon extends StatelessWidget {
-  const TagIcon({super.key});
+  final IconData icon;
+
+  const TagIcon._private({required this.icon});
+
+  factory TagIcon.tagged() => const TagIcon._private(icon: AIcons.tag);
+
+  factory TagIcon.untagged() => const TagIcon._private(icon: AIcons.tagUntagged);
 
   static const scale = .9;
 
   @override
   Widget build(BuildContext context) {
-    return const OverlayIcon(
-      icon: AIcons.tag,
+    return OverlayIcon(
+      icon: icon,
       iconScale: scale,
-      relativeOffset: Offset(.05, .05),
+      relativeOffset: const Offset(.05, .05),
     );
   }
 }
 
-class GpsIcon extends StatelessWidget {
-  const GpsIcon({super.key});
+class LocationIcon extends StatelessWidget {
+  final IconData icon;
+
+  const LocationIcon._private({required this.icon});
+
+  factory LocationIcon.located() => const LocationIcon._private(icon: AIcons.location);
+
+  factory LocationIcon.unlocated() => const LocationIcon._private(icon: AIcons.locationUnlocated);
 
   @override
   Widget build(BuildContext context) {
-    return const OverlayIcon(
-      icon: AIcons.location,
+    return OverlayIcon(
+      icon: icon,
     );
   }
 }
@@ -181,10 +193,9 @@ class RatingIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final gridTheme = context.watch<GridThemeData>();
     return DefaultTextStyle(
       style: TextStyle(
-        fontSize: gridTheme.fontSize,
+        fontSize: context.select<GridThemeData, double>((t) => t.fontSize),
       ),
       child: OverlayIcon(
         icon: AIcons.rating,

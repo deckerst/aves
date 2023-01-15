@@ -111,35 +111,45 @@ class _MimeDonutState extends State<MimeDonut> with AutomaticKeepAliveClientMixi
           ],
         ),
       );
+      final primaryColor = Theme.of(context).colorScheme.primary;
       final legend = SizedBox(
         width: dim,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: seriesData
-              .map((d) => GestureDetector(
-                    onTap: () => widget.onFilterSelection(MimeFilter(d.mimeType)),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(AIcons.disc, color: d.color),
-                        const SizedBox(width: 8),
-                        Flexible(
-                          child: Text(
-                            d.displayText,
-                            overflow: TextOverflow.fade,
-                            softWrap: false,
-                            maxLines: 1,
+              .map((d) => Material(
+                    type: MaterialType.transparency,
+                    child: InkResponse(
+                      onTap: () => widget.onFilterSelection(MimeFilter(d.mimeType)),
+                      containedInkWell: true,
+                      highlightShape: BoxShape.rectangle,
+                      borderRadius: const BorderRadius.all(Radius.circular(123)),
+                      hoverColor: primaryColor.withOpacity(0.04),
+                      splashColor: primaryColor.withOpacity(0.12),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(AIcons.disc, color: d.color),
+                          const SizedBox(width: 8),
+                          Flexible(
+                            child: Text(
+                              d.displayText,
+                              overflow: TextOverflow.fade,
+                              softWrap: false,
+                              maxLines: 1,
+                            ),
                           ),
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          numberFormat.format(d.entryCount),
-                          style: TextStyle(
-                            color: Theme.of(context).textTheme.bodySmall!.color,
+                          const SizedBox(width: 8),
+                          Text(
+                            numberFormat.format(d.entryCount),
+                            style: TextStyle(
+                              color: Theme.of(context).textTheme.bodySmall!.color,
+                            ),
                           ),
-                        ),
-                      ],
+                          const SizedBox(width: 4),
+                        ],
+                      ),
                     ),
                   ))
               .toList(),

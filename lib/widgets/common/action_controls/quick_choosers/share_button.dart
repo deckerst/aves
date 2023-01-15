@@ -13,6 +13,7 @@ class ShareButton extends ChooserQuickButton<ShareAction> {
     required super.blurred,
     required this.entries,
     super.onChooserValue,
+    super.focusNode,
     required super.onPressed,
   });
 

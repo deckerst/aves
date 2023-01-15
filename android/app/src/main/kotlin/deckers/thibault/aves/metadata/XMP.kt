@@ -43,11 +43,13 @@ object XMP {
     private const val XMP_NS_URI = "http://ns.adobe.com/xap/1.0/"
 
     // other namespaces
-    private const val CONTAINER_NS_URI = "http://ns.google.com/photos/1.0/container/"
-    private const val CONTAINER_ITEM_NS_URI = "http://ns.google.com/photos/1.0/container/item/"
     private const val GAUDIO_NS_URI = "http://ns.google.com/photos/1.0/audio/"
     private const val GCAMERA_NS_URI = "http://ns.google.com/photos/1.0/camera/"
+    private const val GCONTAINER_NS_URI = "http://ns.google.com/photos/1.0/container/"
+    private const val GCONTAINER_ITEM_NS_URI = "http://ns.google.com/photos/1.0/container/item/"
     private const val GDEPTH_NS_URI = "http://ns.google.com/photos/1.0/depthmap/"
+    private const val GDEVICE_NS_URI = "http://ns.google.com/photos/dd/1.0/device/"
+    private const val GDEVICE_ITEM_NS_URI = "http://ns.google.com/photos/dd/1.0/item/"
     private const val GIMAGE_NS_URI = "http://ns.google.com/photos/1.0/image/"
     private const val GPANO_NS_URI = "http://ns.google.com/photos/1.0/panorama/"
     private const val PMTM_NS_URI = "http://www.hdrsoft.com/photomatix_settings01"
@@ -75,13 +77,20 @@ object XMP {
 
     fun isDataPath(path: String) = knownDataProps.map { it.toString() }.any { path == it }
 
+    // google portrait
+
+    val GDEVICE_DIRECTORY_PROP_NAME = XMPPropName(GDEVICE_NS_URI, "Container/Container:Directory")
+    val GDEVICE_CONTAINER_ITEM_DATA_URI_PROP_NAME = XMPPropName(GDEVICE_ITEM_NS_URI, "DataURI")
+    val GDEVICE_CONTAINER_ITEM_LENGTH_PROP_NAME = XMPPropName(GDEVICE_ITEM_NS_URI, "Length")
+    val GDEVICE_CONTAINER_ITEM_MIME_PROP_NAME = XMPPropName(GDEVICE_ITEM_NS_URI, "Mime")
+
     // motion photo
 
     val GCAMERA_VIDEO_OFFSET_PROP_NAME = XMPPropName(GCAMERA_NS_URI, "MicroVideoOffset")
-    val CONTAINER_DIRECTORY_PROP_NAME = XMPPropName(CONTAINER_NS_URI, "Directory")
-    val CONTAINER_ITEM_PROP_NAME = XMPPropName(CONTAINER_NS_URI, "Item")
-    val CONTAINER_ITEM_LENGTH_PROP_NAME = XMPPropName(CONTAINER_ITEM_NS_URI, "Length")
-    val CONTAINER_ITEM_MIME_PROP_NAME = XMPPropName(CONTAINER_ITEM_NS_URI, "Mime")
+    val GCONTAINER_DIRECTORY_PROP_NAME = XMPPropName(GCONTAINER_NS_URI, "Directory")
+    val GCONTAINER_ITEM_PROP_NAME = XMPPropName(GCONTAINER_NS_URI, "Item")
+    val GCONTAINER_ITEM_LENGTH_PROP_NAME = XMPPropName(GCONTAINER_ITEM_NS_URI, "Length")
+    val GCONTAINER_ITEM_MIME_PROP_NAME = XMPPropName(GCONTAINER_ITEM_NS_URI, "Mime")
 
     // panorama
     // cf https://developers.google.com/streetview/spherical-metadata
@@ -189,14 +198,14 @@ object XMP {
             if (doesPropExist(GCAMERA_VIDEO_OFFSET_PROP_NAME)) return true
 
             // Container motion photo
-            if (doesPropExist(CONTAINER_DIRECTORY_PROP_NAME)) {
-                val count = countPropArrayItems(CONTAINER_DIRECTORY_PROP_NAME)
+            if (doesPropExist(GCONTAINER_DIRECTORY_PROP_NAME)) {
+                val count = countPropArrayItems(GCONTAINER_DIRECTORY_PROP_NAME)
                 if (count == 2) {
                     var hasImage = false
                     var hasVideo = false
                     for (i in 1 until count + 1) {
-                        val mime = getSafeStructField(listOf(CONTAINER_DIRECTORY_PROP_NAME, i, CONTAINER_ITEM_PROP_NAME, CONTAINER_ITEM_MIME_PROP_NAME))?.value
-                        val length = getSafeStructField(listOf(CONTAINER_DIRECTORY_PROP_NAME, i, CONTAINER_ITEM_PROP_NAME, CONTAINER_ITEM_LENGTH_PROP_NAME))?.value
+                        val mime = getSafeStructField(listOf(GCONTAINER_DIRECTORY_PROP_NAME, i, GCONTAINER_ITEM_PROP_NAME, GCONTAINER_ITEM_MIME_PROP_NAME))?.value
+                        val length = getSafeStructField(listOf(GCONTAINER_DIRECTORY_PROP_NAME, i, GCONTAINER_ITEM_PROP_NAME, GCONTAINER_ITEM_LENGTH_PROP_NAME))?.value
                         hasImage = hasImage || MimeTypes.isImage(mime) && length != null
                         hasVideo = hasVideo || MimeTypes.isVideo(mime) && length != null
                     }

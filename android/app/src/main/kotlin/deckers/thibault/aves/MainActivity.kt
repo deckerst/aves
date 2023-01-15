@@ -39,6 +39,7 @@ open class MainActivity : FlutterActivity() {
     private lateinit var analysisStreamHandler: AnalysisStreamHandler
     internal lateinit var intentDataMap: MutableMap<String, Any?>
     private lateinit var analysisHandler: AnalysisHandler
+    private lateinit var mediaSessionHandler: MediaSessionHandler
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.i(LOG_TAG, "onCreate intent=$intent")
@@ -70,9 +71,21 @@ open class MainActivity : FlutterActivity() {
 
         val messenger = flutterEngine!!.dartExecutor
 
+        // notification: platform -> dart
+        analysisStreamHandler = AnalysisStreamHandler().apply {
+            EventChannel(messenger, AnalysisStreamHandler.CHANNEL).setStreamHandler(this)
+        }
+        errorStreamHandler = ErrorStreamHandler().apply {
+            EventChannel(messenger, ErrorStreamHandler.CHANNEL).setStreamHandler(this)
+        }
+        val mediaCommandStreamHandler = MediaCommandStreamHandler().apply {
+            EventChannel(messenger, MediaCommandStreamHandler.CHANNEL).setStreamHandler(this)
+        }
+
         // dart -> platform -> dart
         // - need Context
         analysisHandler = AnalysisHandler(this, ::onAnalysisCompleted)
+        mediaSessionHandler = MediaSessionHandler(this, mediaCommandStreamHandler)
         MethodChannel(messenger, AnalysisHandler.CHANNEL).setMethodCallHandler(analysisHandler)
         MethodChannel(messenger, AppAdapterHandler.CHANNEL).setMethodCallHandler(AppAdapterHandler(this))
         MethodChannel(messenger, DebugHandler.CHANNEL).setMethodCallHandler(DebugHandler(this))
@@ -83,7 +96,7 @@ open class MainActivity : FlutterActivity() {
         MethodChannel(messenger, HomeWidgetHandler.CHANNEL).setMethodCallHandler(HomeWidgetHandler(this))
         MethodChannel(messenger, MediaFetchBytesHandler.CHANNEL, AvesByteSendingMethodCodec.INSTANCE).setMethodCallHandler(MediaFetchBytesHandler(this))
         MethodChannel(messenger, MediaFetchObjectHandler.CHANNEL).setMethodCallHandler(MediaFetchObjectHandler(this))
-        MethodChannel(messenger, MediaSessionHandler.CHANNEL).setMethodCallHandler(MediaSessionHandler(this))
+        MethodChannel(messenger, MediaSessionHandler.CHANNEL).setMethodCallHandler(mediaSessionHandler)
         MethodChannel(messenger, MediaStoreHandler.CHANNEL).setMethodCallHandler(MediaStoreHandler(this))
         MethodChannel(messenger, MetadataFetchHandler.CHANNEL).setMethodCallHandler(MetadataFetchHandler(this))
         MethodChannel(messenger, StorageHandler.CHANNEL).setMethodCallHandler(StorageHandler(this))
@@ -128,16 +141,6 @@ open class MainActivity : FlutterActivity() {
             }
         }
 
-        // notification: platform -> dart
-        analysisStreamHandler = AnalysisStreamHandler().apply {
-            EventChannel(messenger, AnalysisStreamHandler.CHANNEL).setStreamHandler(this)
-        }
-
-        // notification: platform -> dart
-        errorStreamHandler = ErrorStreamHandler().apply {
-            EventChannel(messenger, ErrorStreamHandler.CHANNEL).setStreamHandler(this)
-        }
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
             setupShortcuts()
         }
@@ -166,6 +169,7 @@ open class MainActivity : FlutterActivity() {
 
     override fun onDestroy() {
         Log.i(LOG_TAG, "onDestroy")
+        mediaSessionHandler.dispose()
         mediaStoreChangeStreamHandler.dispose()
         settingsChangeStreamHandler.dispose()
         super.onDestroy()
@@ -431,7 +435,7 @@ open class MainActivity : FlutterActivity() {
             }
         }
 
-        var errorStreamHandler: ErrorStreamHandler? = null
+        private var errorStreamHandler: ErrorStreamHandler? = null
 
         suspend fun notifyError(error: String) {
             Log.e(LOG_TAG, "notifyError error=$error")

@@ -10,7 +10,10 @@ import 'package:intl/intl.dart';
 class OverlayShootingRow extends StatelessWidget {
   final OverlayMetadata details;
 
-  const OverlayShootingRow({super.key, required this.details});
+  const OverlayShootingRow({
+    super.key,
+    required this.details,
+  });
 
   @override
   Widget build(BuildContext context) {

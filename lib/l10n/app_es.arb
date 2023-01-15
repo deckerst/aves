@@ -371,9 +371,9 @@
   "@renameProcessorCounter": {},
   "renameProcessorName": "Nombre",
   "@renameProcessorName": {},
-  "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{¿Está seguro de que desea borrar este álbum y un elemento?} other{¿Está seguro de que desea borrar este álbum y sus {count} elementos?}}",
+  "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{¿Eliminar este álbum y el elemento que contiene?} other{¿Eliminar este álbum y los {count} elementos que contiene?}}",
   "@deleteSingleAlbumConfirmationDialogMessage": {},
-  "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{¿Está seguro de que desea borrar estos álbumes y un elemento?} other{¿Está seguro de que desea borrar estos álbumes y sus {count} elementos?}}",
+  "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{¿Eliminar estos álbumes y el elemento que contienen?} other{¿Eliminar estos álbumes y los {count} elementos que contienen?}}",
   "@deleteMultiAlbumConfirmationDialogMessage": {},
   "exportEntryDialogFormat": "Formato:",
   "@exportEntryDialogFormat": {},
@@ -1196,5 +1196,15 @@
     "placeholders": {
       "count": {}
     }
-  }
+  },
+  "settingsViewerShowDescription": "Mostrar la descripción",
+  "@settingsViewerShowDescription": {},
+  "settingsModificationWarningDialogMessage": "Otras configuraciones serán modificadas.",
+  "@settingsModificationWarningDialogMessage": {},
+  "settingsDisplayUseTvInterface": "Interfaz de Android TV",
+  "@settingsDisplayUseTvInterface": {},
+  "filterLocatedLabel": "Localizado",
+  "@filterLocatedLabel": {},
+  "filterTaggedLabel": "Etiquetado",
+  "@filterTaggedLabel": {}
 }

@@ -15,9 +15,6 @@ Aves is a gallery and metadata explorer app. It is built for Android, with Flutt
 [<img src="https://raw.githubusercontent.com/deckerst/common/main/assets/huawei-appgallery-badge-english-black.png"
       alt='Get it on Huawei AppGallery'
       height="80">](https://appgallery.huawei.com/app/C106014023)
-[<img src="https://raw.githubusercontent.com/deckerst/common/main/assets/samsung-galaxy-store-badge-english.png"
-      alt='Get it on Samsung Galaxy Store'
-      height="80">](https://galaxy.store/aves)
 [<img src="https://raw.githubusercontent.com/deckerst/common/main/assets/amazon-appstore-badge-english-black.png"
       alt='Get it on Amazon Appstore'
       height="80">](https://www.amazon.com/dp/B09XQHQQ72)
@@ -44,7 +41,7 @@ It scans your media collection to identify **motion photos**, **panoramas** (aka
 
 **Navigation and search** is an important part of Aves. The goal is for users to easily flow from albums to photos to tags to maps, etc.
 
-Aves integrates with Android (from **API 19 to 33**, i.e. from KitKat to Android 13) with features such as **widgets**, **app shortcuts**, **screen saver** and **global search** handling. It also works as a **media viewer and picker**.
+Aves integrates with Android (from KitKat to Android 13, including Android TV) with features such as **widgets**, **app shortcuts**, **screen saver** and **global search** handling. It also works as a **media viewer and picker**.
 
 ## Screenshots
 

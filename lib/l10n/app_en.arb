@@ -139,8 +139,10 @@
   "filterFavouriteLabel": "Favorite",
   "filterNoDateLabel": "Undated",
   "filterNoAddressLabel": "No address",
+  "filterLocatedLabel": "Located",
   "filterNoLocationLabel": "Unlocated",
   "filterNoRatingLabel": "Unrated",
+  "filterTaggedLabel": "Tagged",
   "filterNoTagLabel": "Untagged",
   "filterNoTitleLabel": "Untitled",
   "filterOnThisDayLabel": "On this day",
@@ -375,13 +377,13 @@
   "renameProcessorCounter": "Counter",
   "renameProcessorName": "Name",
 
-  "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{Delete this album and its item?} other{Delete this album and its {count} items?}}",
+  "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{Delete this album and the item in it?} other{Delete this album and the {count} items in it?}}",
   "@deleteSingleAlbumConfirmationDialogMessage": {
     "placeholders": {
       "count": {}
     }
   },
-  "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{Delete these albums and their item?} other{Delete these albums and their {count} items?}}",
+  "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{Delete these albums and the item in them?} other{Delete these albums and the {count} items in them?}}",
   "@deleteMultiAlbumConfirmationDialogMessage": {
     "placeholders": {
       "count": {}
@@ -435,6 +437,8 @@
   "genericSuccessFeedback": "Done!",
   "genericFailureFeedback": "Failed",
   "genericDangerWarningDialogMessage": "Are you sure?",
+
+  "tooManyItemsErrorDialogMessage": "Try again with fewer items.",
 
   "menuActionConfigureView": "View",
   "menuActionSelect": "Select",
@@ -656,6 +660,7 @@
   "settingsSystemDefault": "System default",
   "settingsDefault": "Default",
   "settingsDisabled": "Disabled",
+  "settingsModificationWarningDialogMessage": "Other settings will be modified.",
 
   "settingsSearchFieldLabel": "Search settings",
   "settingsSearchEmpty": "No matching setting",
@@ -731,6 +736,7 @@
   "settingsViewerShowInformationSubtitle": "Show title, date, location, etc.",
   "settingsViewerShowRatingTags": "Show rating & tags",
   "settingsViewerShowShootingDetails": "Show shooting details",
+  "settingsViewerShowDescription": "Show description",
   "settingsViewerShowOverlayThumbnails": "Show thumbnails",
   "settingsViewerEnableOverlayBlurEffect": "Blur effect",
 
@@ -815,6 +821,7 @@
   "settingsThemeEnableDynamicColor": "Dynamic color",
   "settingsDisplayRefreshRateModeTile": "Display refresh rate",
   "settingsDisplayRefreshRateModeDialogTitle": "Refresh Rate",
+  "settingsDisplayUseTvInterface": "Android TV interface",
 
   "settingsLanguageSectionTitle": "Language & Formats",
   "settingsLanguageTile": "Language",
