@@ -24,6 +24,7 @@ class SettingsDefaults {
   static const themeColorMode = AvesThemeColorMode.polychrome;
   static const enableDynamicColor = false;
   static const enableBlurEffect = true; // `enableBlurEffect` has a contextual default value
+  static const forceTvLayout = false;
 
   // navigation
   static const mustBackTwiceToExit = true;
@@ -56,8 +57,8 @@ class SettingsDefaults {
     EntrySetAction.delete,
   ];
   static const showThumbnailFavourite = true;
-  static const showThumbnailTag = false;
-  static const showThumbnailLocation = true;
+  static const thumbnailLocationIcon = ThumbnailOverlayLocationIcon.none;
+  static const thumbnailTagIcon = ThumbnailOverlayTagIcon.none;
   static const showThumbnailMotionPhoto = true;
   static const showThumbnailRating = true;
   static const showThumbnailRaw = true;
@@ -79,6 +80,7 @@ class SettingsDefaults {
   static const showOverlayOnOpening = true;
   static const showOverlayMinimap = false;
   static const showOverlayInfo = true;
+  static const showOverlayDescription = false;
   static const showOverlayRatingTags = false;
   static const showOverlayShootingDetails = false;
   static const showOverlayThumbnailPreview = false;

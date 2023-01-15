@@ -54,10 +54,7 @@ class _AppExportItemSelectionDialogState extends State<AppExportItemSelectionDia
         );
       }).toList(),
       actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
-        ),
+        const CancelButton(),
         TextButton(
           onPressed: _selectedItems.isEmpty ? null : () => Navigator.pop(context, _selectedItems),
           child: Text(context.l10n.applyButtonLabel),

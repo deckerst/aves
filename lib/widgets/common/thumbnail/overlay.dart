@@ -4,7 +4,6 @@ import 'package:aves/model/entry.dart';
 import 'package:aves/model/highlight.dart';
 import 'package:aves/widgets/common/fx/sweeper.dart';
 import 'package:aves/widgets/common/grid/theme.dart';
-import 'package:aves/widgets/common/identity/aves_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -18,26 +17,8 @@ class ThumbnailEntryOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final children = [
-      if (entry.isFavourite && context.select<GridThemeData, bool>((t) => t.showFavourite)) const FavouriteIcon(),
-      if (entry.tags.isNotEmpty && context.select<GridThemeData, bool>((t) => t.showTag)) const TagIcon(),
-      if (entry.hasGps && context.select<GridThemeData, bool>((t) => t.showLocation)) const GpsIcon(),
-      if (entry.rating != 0 && context.select<GridThemeData, bool>((t) => t.showRating)) RatingIcon(entry: entry),
-      if (entry.isVideo)
-        VideoIcon(entry: entry)
-      else if (entry.isAnimated)
-        const AnimatedImageIcon()
-      else ...[
-        if (entry.isRaw && context.select<GridThemeData, bool>((t) => t.showRaw)) const RawIcon(),
-        if (entry.is360) const PanoramaIcon(),
-      ],
-      if (entry.isMultiPage) ...[
-        if (entry.isMotionPhoto && context.select<GridThemeData, bool>((t) => t.showMotionPhoto)) const MotionPhotoIcon(),
-        if (!entry.isMotionPhoto) MultiPageIcon(entry: entry),
-      ],
-      if (entry.isGeotiff) const GeoTiffIcon(),
-      if (entry.trashed && context.select<GridThemeData, bool>((t) => t.showTrash)) TrashIcon(trashDaysLeft: entry.trashDaysLeft),
-    ];
+    final iconBuilder = context.select<GridThemeData, GridThemeIconBuilder>((t) => t.iconBuilder);
+    final children = iconBuilder(context, entry);
     if (children.isEmpty) return const SizedBox();
     return Align(
       alignment: AlignmentDirectional.bottomStart,

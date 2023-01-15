@@ -10,12 +10,14 @@ import 'package:flutter/material.dart';
 class MuteToggler extends StatelessWidget {
   final AvesVideoController? controller;
   final bool isMenuItem;
+  final FocusNode? focusNode;
   final VoidCallback? onPressed;
 
   const MuteToggler({
     super.key,
     required this.controller,
     this.isMenuItem = false,
+    this.focusNode,
     this.onPressed,
   });
 
@@ -40,6 +42,7 @@ class MuteToggler extends StatelessWidget {
                 : IconButton(
                     icon: icon,
                     onPressed: canDo ? onPressed : null,
+                    focusNode: focusNode,
                     tooltip: text,
                   );
           },

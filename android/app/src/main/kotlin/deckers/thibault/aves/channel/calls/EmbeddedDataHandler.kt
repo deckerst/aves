@@ -11,25 +11,21 @@ import com.bumptech.glide.load.resource.bitmap.TransformationUtils
 import com.drew.metadata.xmp.XmpDirectory
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safeSuspend
-import deckers.thibault.aves.metadata.Metadata
-import deckers.thibault.aves.metadata.MultiPage
+import deckers.thibault.aves.metadata.*
+import deckers.thibault.aves.metadata.XMP.doesPropExist
 import deckers.thibault.aves.metadata.XMP.getSafeStructField
-import deckers.thibault.aves.metadata.XMPPropName
 import deckers.thibault.aves.metadata.metadataextractor.Helper
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.model.provider.ContentImageProvider
 import deckers.thibault.aves.model.provider.ImageProvider
-import deckers.thibault.aves.utils.BitmapUtils
+import deckers.thibault.aves.utils.*
 import deckers.thibault.aves.utils.BitmapUtils.getBytes
 import deckers.thibault.aves.utils.FileUtils.transferFrom
-import deckers.thibault.aves.utils.LogUtils
-import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.MimeTypes.canReadWithExifInterface
 import deckers.thibault.aves.utils.MimeTypes.canReadWithMetadataExtractor
 import deckers.thibault.aves.utils.MimeTypes.extensionFor
 import deckers.thibault.aves.utils.MimeTypes.isImage
 import deckers.thibault.aves.utils.MimeTypes.isVideo
-import deckers.thibault.aves.utils.StorageUtils
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
@@ -46,6 +42,7 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
             "getExifThumbnails" -> ioScope.launch { safeSuspend(call, result, ::getExifThumbnails) }
+            "extractGoogleDeviceItem" -> ioScope.launch { safe(call, result, ::extractGoogleDeviceItem) }
             "extractMotionPhotoImage" -> ioScope.launch { safe(call, result, ::extractMotionPhotoImage) }
             "extractMotionPhotoVideo" -> ioScope.launch { safe(call, result, ::extractMotionPhotoVideo) }
             "extractVideoEmbeddedPicture" -> ioScope.launch { safe(call, result, ::extractVideoEmbeddedPicture) }
@@ -82,6 +79,68 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
             }
         }
         result.success(thumbnails)
+    }
+
+    private fun extractGoogleDeviceItem(call: MethodCall, result: MethodChannel.Result) {
+        val mimeType = call.argument<String>("mimeType")
+        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
+        val displayName = call.argument<String>("displayName")
+        val dataUri = call.argument<String>("dataUri")
+        if (mimeType == null || uri == null || sizeBytes == null || dataUri == null) {
+            result.error("extractGoogleDeviceItem-args", "missing arguments", null)
+            return
+        }
+
+        var container: GoogleDeviceContainer? = null
+
+        if (canReadWithMetadataExtractor(mimeType)) {
+            try {
+                Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
+                    val metadata = Helper.safeRead(input)
+                    // data can be large and stored in "Extended XMP",
+                    // which is returned as a second XMP directory
+                    val xmpDirs = metadata.getDirectoriesOfType(XmpDirectory::class.java)
+                    try {
+                        container = xmpDirs.firstNotNullOfOrNull {
+                            val xmpMeta = it.xmpMeta
+                            if (xmpMeta.doesPropExist(XMP.GDEVICE_DIRECTORY_PROP_NAME)) {
+                                GoogleDeviceContainer().apply { findItems(xmpMeta) }
+                            } else {
+                                null
+                            }
+                        }
+                    } catch (e: XMPException) {
+                        result.error("extractGoogleDeviceItem-xmp", "failed to read XMP directory for uri=$uri dataUri=$dataUri", e.message)
+                        return
+                    }
+                }
+            } catch (e: Exception) {
+                Log.w(LOG_TAG, "failed to extract file from XMP", e)
+            } catch (e: NoClassDefFoundError) {
+                Log.w(LOG_TAG, "failed to extract file from XMP", e)
+            } catch (e: AssertionError) {
+                Log.w(LOG_TAG, "failed to extract file from XMP", e)
+            }
+        }
+
+        container?.let {
+            it.findOffsets(context, uri, mimeType, sizeBytes)
+
+            val index = it.itemIndex(dataUri)
+            val itemStartOffset = it.itemStartOffset(index)
+            val itemLength = it.itemLength(index)
+            val itemMimeType = it.itemMimeType(index)
+            if (itemStartOffset != null && itemLength != null && itemMimeType != null) {
+                StorageUtils.openInputStream(context, uri)?.let { input ->
+                    input.skip(itemStartOffset)
+                    copyEmbeddedBytes(result, itemMimeType, displayName, input, itemLength)
+                    return
+                }
+            }
+        }
+
+        result.error("extractGoogleDeviceItem-empty", "failed to extract item from Google Device XMP at uri=$uri dataUri=$dataUri", null)
     }
 
     private fun extractMotionPhotoImage(call: MethodCall, result: MethodChannel.Result) {

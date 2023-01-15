@@ -41,6 +41,7 @@ class Namespaces {
   static const iptc4xmpExt = 'http://iptc.org/std/Iptc4xmpExt/2008-02-29/';
   static const lr = 'http://ns.adobe.com/lightroom/1.0/';
   static const mediapro = 'http://ns.iview-multimedia.com/mediapro/1.0/';
+  static const miCamera = 'http://ns.xiaomi.com/photos/1.0/camera/';
 
   // also seen in the wild for prefix `MicrosoftPhoto`: 'http://ns.microsoft.com/photo/1.0'
   static const microsoftPhoto = 'http://ns.microsoft.com/photo/1.0/';
@@ -111,6 +112,7 @@ class Namespaces {
     iptc4xmpExt: 'IPTC Extension',
     lr: 'Lightroom',
     mediapro: 'MediaPro',
+    miCamera: 'Mi Camera',
     microsoftPhoto: 'Microsoft Photo 1.0',
     mp1: 'Microsoft Photo 1.1',
     mp: 'Microsoft Photo 1.2',

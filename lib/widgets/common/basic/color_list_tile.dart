@@ -1,4 +1,4 @@
-import 'package:aves/model/device.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
@@ -72,13 +72,13 @@ class _ColorPickerDialogState extends State<ColorPickerDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final isTelevision = device.isTelevision;
+    final useTvLayout = settings.useTvLayout;
     return AvesDialog(
       scrollableContent: [
         ColorPicker(
           color: color,
           onColorChanged: (v) => color = v,
-          pickersEnabled: isTelevision
+          pickersEnabled: useTvLayout
               ? const {
                   ColorPickerType.primary: true,
                   ColorPickerType.accent: false,
@@ -90,14 +90,11 @@ class _ColorPickerDialogState extends State<ColorPickerDialog> {
                 },
           hasBorder: true,
           borderRadius: 20,
-          subheading: isTelevision ? const SizedBox(height: 16) : null,
+          subheading: useTvLayout ? const SizedBox(height: 16) : null,
         )
       ],
       actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
-        ),
+        const CancelButton(),
         TextButton(
           onPressed: () => Navigator.pop(context, color),
           child: Text(context.l10n.applyButtonLabel),

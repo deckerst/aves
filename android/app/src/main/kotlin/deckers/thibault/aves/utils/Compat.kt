@@ -1,11 +1,13 @@
 package deckers.thibault.aves.utils
 
+import android.app.Activity
 import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
 import android.os.Build
 import android.os.Parcelable
+import android.view.Display
 
 inline fun <reified T> Intent.getParcelableExtraCompat(name: String): T? {
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -16,6 +18,14 @@ inline fun <reified T> Intent.getParcelableExtraCompat(name: String): T? {
     }
 }
 
+fun Activity.getDisplayCompat(): Display? {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        display
+    } else {
+        @Suppress("deprecation")
+        windowManager.defaultDisplay
+    }
+}
 
 fun PackageManager.getApplicationInfoCompat(packageName: String, flags: Int): ApplicationInfo {
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {

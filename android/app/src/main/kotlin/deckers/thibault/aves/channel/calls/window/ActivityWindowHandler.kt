@@ -3,6 +3,7 @@ package deckers.thibault.aves.channel.calls.window
 import android.app.Activity
 import android.os.Build
 import android.view.WindowManager
+import deckers.thibault.aves.utils.getDisplayCompat
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 
@@ -42,25 +43,30 @@ class ActivityWindowHandler(private val activity: Activity) : WindowHandler(acti
         result.success(true)
     }
 
-    override fun canSetCutoutMode(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
+    override fun isCutoutAware(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
         result.success(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
     }
 
-    override fun setCutoutMode(call: MethodCall, result: MethodChannel.Result) {
-        val use = call.argument<Boolean>("use")
-        if (use == null) {
-            result.error("setCutoutMode-args", "missing arguments", null)
+    override fun getCutoutInsets(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+            result.error("getCutoutInsets-sdk", "unsupported SDK version=${Build.VERSION.SDK_INT}", null)
             return
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            val mode = if (use) {
-                WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
-            } else {
-                WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_NEVER
-            }
-            activity.window.attributes.layoutInDisplayCutoutMode = mode
+        val cutout = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            activity.getDisplayCompat()?.cutout
+        } else {
+            activity.window.decorView.rootWindowInsets.displayCutout
         }
-        result.success(true)
+
+        val density = activity.resources.displayMetrics.density
+        result.success(
+            hashMapOf(
+                "left" to (cutout?.safeInsetLeft ?: 0) / density,
+                "top" to (cutout?.safeInsetTop ?: 0) / density,
+                "right" to (cutout?.safeInsetRight ?: 0) / density,
+                "bottom" to (cutout?.safeInsetBottom ?: 0) / density,
+            )
+        )
     }
 }

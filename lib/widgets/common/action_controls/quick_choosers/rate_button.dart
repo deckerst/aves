@@ -8,6 +8,7 @@ class RateButton extends ChooserQuickButton<int> {
     super.key,
     required super.blurred,
     super.onChooserValue,
+    super.focusNode,
     required super.onPressed,
   });
 

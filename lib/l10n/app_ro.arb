@@ -1354,5 +1354,15 @@
   "filterNoAddressLabel": "Nicio adresă",
   "@filterNoAddressLabel": {},
   "entryInfoActionRemoveLocation": "Eliminare locație",
-  "@entryInfoActionRemoveLocation": {}
+  "@entryInfoActionRemoveLocation": {},
+  "settingsViewerShowDescription": "Afișare descriere",
+  "@settingsViewerShowDescription": {},
+  "filterLocatedLabel": "Locație",
+  "@filterLocatedLabel": {},
+  "filterTaggedLabel": "Etichetat",
+  "@filterTaggedLabel": {},
+  "settingsModificationWarningDialogMessage": "Alte setări vor fi modificate.",
+  "@settingsModificationWarningDialogMessage": {},
+  "settingsDisplayUseTvInterface": "Interfață Android TV",
+  "@settingsDisplayUseTvInterface": {}
 }

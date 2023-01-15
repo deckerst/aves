@@ -148,32 +148,34 @@ class PlatformAndroidAppService implements AndroidAppService {
   }
 
   @override
-  Future<bool> shareEntries(Iterable<AvesEntry> entries) async {
-    // loosen MIME type to a generic one, so we can share with badly defined apps
-    // e.g. Google Lens declares receiving "image/jpeg" only, but it can actually handle more formats
-    final urisByMimeType = groupBy<AvesEntry, String>(entries, (e) => e.mimeTypeAnySubtype).map((k, v) => MapEntry(k, v.map((e) => e.uri).toList()));
+  Future<bool> shareEntries(Iterable<AvesEntry> entries) {
+    return _share(groupBy<AvesEntry, String>(
+      entries,
+      // loosen MIME type to a generic one, so we can share with badly defined apps
+      // e.g. Google Lens declares receiving "image/jpeg" only, but it can actually handle more formats
+      (e) => e.mimeTypeAnySubtype,
+    ).map((k, v) => MapEntry(k, v.map((e) => e.uri).toList())));
+  }
+
+  @override
+  Future<bool> shareSingle(String uri, String mimeType) {
+    return _share({
+      mimeType: [uri]
+    });
+  }
+
+  Future<bool> _share(Map<String, List<String>> urisByMimeType) async {
     try {
       final result = await _platform.invokeMethod('share', <String, dynamic>{
         'urisByMimeType': urisByMimeType,
       });
       if (result != null) return result as bool;
     } on PlatformException catch (e, stack) {
-      await reportService.recordError(e, stack);
-    }
-    return false;
-  }
-
-  @override
-  Future<bool> shareSingle(String uri, String mimeType) async {
-    try {
-      final result = await _platform.invokeMethod('share', <String, dynamic>{
-        'urisByMimeType': {
-          mimeType: [uri]
-        },
-      });
-      if (result != null) return result as bool;
-    } on PlatformException catch (e, stack) {
-      await reportService.recordError(e, stack);
+      if (e.code == 'share-large') {
+        throw TooManyItemsException();
+      } else {
+        await reportService.recordError(e, stack);
+      }
     }
     return false;
   }
@@ -207,3 +209,5 @@ class PlatformAndroidAppService implements AndroidAppService {
     }
   }
 }
+
+class TooManyItemsException implements Exception {}

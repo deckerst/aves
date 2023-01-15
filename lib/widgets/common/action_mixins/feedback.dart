@@ -136,21 +136,20 @@ mixin FeedbackMixin {
     int? itemCount,
     VoidCallback? onCancel,
     void Function(Set<T> processed)? onDone,
-  }) {
-    return showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => ReportOverlay<T>(
-        opStream: opStream,
-        itemCount: itemCount,
-        onCancel: onCancel,
-        onDone: (processed) {
-          Navigator.pop(context);
-          onDone?.call(processed);
-        },
-      ),
-    );
-  }
+  }) =>
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => ReportOverlay<T>(
+          opStream: opStream,
+          itemCount: itemCount,
+          onCancel: onCancel,
+          onDone: (processed) {
+            Navigator.pop(context);
+            onDone?.call(processed);
+          },
+        ),
+      );
 }
 
 class ReportOverlay<T> extends StatefulWidget {

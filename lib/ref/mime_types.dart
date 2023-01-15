@@ -60,6 +60,7 @@ class MimeTypes {
   static const mkv = 'video/mkv';
   static const mkvX = 'video/x-matroska';
   static const mov = 'video/quicktime';
+  static const movX = 'video/x-quicktime';
   static const mp2p = 'video/mp2p';
   static const mp2t = 'video/mp2t'; // .m2ts, .ts
   static const mp2ts = 'video/mp2ts'; // .ts (prefer `mp2t` when possible)
@@ -89,7 +90,7 @@ class MimeTypes {
 
   static const Set<String> _knownOpaqueImages = {jpeg};
 
-  static const Set<String> _knownVideos = {v3gpp, asf, avi, aviMSVideo, aviVnd, aviXMSVideo, flv, flvX, mkv, mkvX, mov, mp2p, mp2t, mp2ts, mp4, mpeg, ogv, realVideo, webm, wmv};
+  static const Set<String> _knownVideos = {v3gpp, asf, avi, aviMSVideo, aviVnd, aviXMSVideo, flv, flvX, mkv, mkvX, mov, movX, mp2p, mp2t, mp2ts, mp4, mpeg, ogv, realVideo, webm, wmv};
 
   static final Set<String> knownMediaTypes = {
     anyImage,
@@ -107,29 +108,34 @@ class MimeTypes {
 
   static bool isVisual(String mimeType) => isImage(mimeType) || isVideo(mimeType);
 
-  static bool refersToSameType(String a, b) {
-    switch (a) {
+  static String _collapsedType(String mimeType) {
+    switch (mimeType) {
       case avi:
       case aviMSVideo:
       case aviVnd:
       case aviXMSVideo:
-        return [avi, aviVnd].contains(b);
+        return avi;
       case bmp:
       case bmpX:
-        return [bmp, bmpX].contains(b);
+        return bmp;
       case flv:
       case flvX:
-        return [flv, flvX].contains(b);
+        return flv;
       case heic:
       case heif:
-        return [heic, heif].contains(b);
+        return heic;
+      case mov:
+      case movX:
+        return mov;
       case psdVnd:
       case psdX:
-        return [psdVnd, psdX].contains(b);
+        return psdVnd;
       default:
-        return a == b;
+        return mimeType;
     }
   }
+
+  static bool refersToSameType(String a, b) => _collapsedType(a) == _collapsedType(b);
 
   static String? forExtension(String extension) {
     switch (extension) {

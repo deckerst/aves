@@ -235,7 +235,10 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
     final description = fields[DescriptionField.description];
 
     if (canEditExif && editDescription) {
-      metadata[MetadataType.exif] = {MetadataField.exifImageDescription.toPlatform!: description};
+      metadata[MetadataType.exif] = {
+        MetadataField.exifImageDescription.toPlatform!: null,
+        MetadataField.exifUserComment.toPlatform!: null,
+      };
     }
 
     if (canEditIptc) {

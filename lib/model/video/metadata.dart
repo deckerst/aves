@@ -22,7 +22,7 @@ import 'package:fijkplayer/fijkplayer.dart';
 import 'package:flutter/foundation.dart';
 
 class VideoMetadataFormatter {
-  static final _dateY4M2D2H2m2s2Pattern = RegExp(r'(\d{4})[-./](\d{1,2})[-./](\d{1,2})([ T](\d{1,2}):(\d{1,2}):(\d{1,2})( ([ap]\.? ?m\.?))?)?');
+  static final _dateY4M2D2H2m2s2Pattern = RegExp(r'(\d{4})[-./:](\d{1,2})[-./:](\d{1,2})([ T](\d{1,2}):(\d{1,2}):(\d{1,2})( ([ap]\.? ?m\.?))?)?');
   static final _ambiguousDatePatterns = {
     RegExp(r'^\d{2}[-/]\d{2}[-/]\d{4}$'),
   };
@@ -127,6 +127,7 @@ class VideoMetadataFormatter {
     // - `2022-01-28T5:07:46 p. m.Z`
     // - `2012-1-1T12:00:00Z`
     // - `2020.10.14`
+    // - `2016:11:16 18:00:00`
     // - `2021` (not enough to build a date)
 
     var match = _dateY4M2D2H2m2s2Pattern.firstMatch(dateString);

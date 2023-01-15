@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:aves/model/device.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/enums/video_auto_play_mode.dart';
@@ -43,7 +42,7 @@ class VideoSection extends SettingsSection {
       SettingsTileVideoEnableHardwareAcceleration(),
       SettingsTileVideoEnableAutoPlay(),
       SettingsTileVideoLoopMode(),
-      if (!device.isTelevision) SettingsTileVideoControls(),
+      if (!settings.useTvLayout) SettingsTileVideoControls(),
       SettingsTileVideoSubtitleTheme(),
     ];
   }

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:aves/app_mode.dart';
+import 'package:aves/model/actions/map_actions.dart';
 import 'package:aves/model/actions/map_cluster_actions.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/coordinate.dart';
@@ -16,11 +17,14 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/debouncer.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/collection/entry_set_action_delegate.dart';
+import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/basic/menu.dart';
 import 'package:aves/widgets/common/behaviour/routes.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/common/identity/buttons/captioned_button.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
 import 'package:aves/widgets/common/map/geo_map.dart';
+import 'package:aves/widgets/common/map/map_action_delegate.dart';
 import 'package:aves/widgets/common/providers/highlight_info_provider.dart';
 import 'package:aves/widgets/common/providers/map_theme_provider.dart';
 import 'package:aves/widgets/common/thumbnail/scroller.dart';
@@ -231,7 +235,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
   }
 
   Widget _buildMap() {
-    return MapTheme(
+    Widget child = MapTheme(
       interactive: true,
       showCoordinateFilter: true,
       navigationButton: MapNavigationButton.back,
@@ -259,6 +263,37 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
         onMarkerLongPress: _onMarkerLongPress,
       ),
     );
+    if (settings.useTvLayout) {
+      child = DirectionalSafeArea(
+        top: false,
+        end: false,
+        bottom: false,
+        child: Row(
+          children: [
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                MapAction.selectStyle,
+                MapAction.zoomIn,
+                MapAction.zoomOut,
+              ]
+                  .map((action) => Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        child: CaptionedButton(
+                          icon: action.getIcon(),
+                          caption: action.getText(context),
+                          onPressed: () => MapActionDelegate(_mapController).onActionSelected(context, action),
+                        ),
+                      ))
+                  .toList(),
+            ),
+            const SizedBox(width: 16),
+            Expanded(child: child),
+          ],
+        ),
+      );
+    }
+    return child;
   }
 
   Widget _buildOverlayController() {

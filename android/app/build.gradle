@@ -191,7 +191,7 @@ dependencies {
     implementation 'com.drewnoakes:metadata-extractor:2.18.0'
     implementation 'com.github.bumptech.glide:glide:4.14.2'
     // SLF4J implementation for `mp4parser`
-    implementation 'org.slf4j:slf4j-simple:2.0.3'
+    implementation 'org.slf4j:slf4j-simple:2.0.6'
 
     // forked, built by JitPack:
     // - https://jitpack.io/p/deckerst/Android-TiffBitmapFactory

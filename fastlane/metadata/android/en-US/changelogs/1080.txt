@@ -1,5 +1,0 @@
-In v1.7.0:
-- change the sort order
-- edit image titles
-- enjoy the app in Greek
-Full changelog available on GitHub

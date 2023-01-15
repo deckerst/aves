@@ -88,10 +88,7 @@ class _DurationDialogState extends State<DurationDialog> {
             ),
           ],
           actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
-            ),
+            const CancelButton(),
             AnimatedBuilder(
               animation: Listenable.merge([_minutes, _seconds]),
               builder: (context, child) {

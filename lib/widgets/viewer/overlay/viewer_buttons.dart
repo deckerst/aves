@@ -1,5 +1,4 @@
 import 'package:aves/model/actions/entry_actions.dart';
-import 'package:aves/model/device.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
@@ -51,7 +50,7 @@ class ViewerButtons extends StatelessWidget {
   Widget build(BuildContext context) {
     final actionDelegate = EntryActionDelegate(mainEntry, pageEntry, collection);
 
-    if (device.isTelevision) {
+    if (settings.useTvLayout) {
       return _TvButtonRowContent(
         actionDelegate: actionDelegate,
         scale: scale,
@@ -122,13 +121,14 @@ class _TvButtonRowContent extends StatelessWidget {
             final enabled = actionDelegate.canApply(action);
             return CaptionedButton(
               scale: scale,
-              iconButton: _buildButtonIcon(
+              iconButtonBuilder: (context, focusNode) => ViewerButtonRowContent._buildButtonIcon(
                 context: context,
                 action: action,
                 mainEntry: mainEntry,
                 pageEntry: pageEntry,
                 videoController: videoController,
                 actionDelegate: actionDelegate,
+                focusNode: focusNode,
               ),
               captionText: _buildButtonCaption(
                 context: context,
@@ -144,6 +144,39 @@ class _TvButtonRowContent extends StatelessWidget {
         );
       },
     );
+  }
+
+  static Widget _buildButtonCaption({
+    required BuildContext context,
+    required EntryAction action,
+    required AvesEntry mainEntry,
+    required AvesEntry pageEntry,
+    required AvesVideoController? videoController,
+    required bool enabled,
+  }) {
+    switch (action) {
+      case EntryAction.toggleFavourite:
+        final favouriteTargetEntry = mainEntry.isBurst ? pageEntry : mainEntry;
+        return FavouriteTogglerCaption(
+          entries: {favouriteTargetEntry},
+          enabled: enabled,
+        );
+      case EntryAction.videoToggleMute:
+        return MuteTogglerCaption(
+          controller: videoController,
+          enabled: enabled,
+        );
+      case EntryAction.videoTogglePlay:
+        return PlayTogglerCaption(
+          controller: videoController,
+          enabled: enabled,
+        );
+      default:
+        return CaptionedButtonText(
+          text: action.getText(context),
+          enabled: enabled,
+        );
+    }
   }
 }
 
@@ -375,139 +408,115 @@ class ViewerButtonRowContent extends StatelessWidget {
       ),
     );
   }
-}
 
-Widget _buildButtonIcon({
-  required BuildContext context,
-  required EntryAction action,
-  required AvesEntry mainEntry,
-  required AvesEntry pageEntry,
-  required AvesVideoController? videoController,
-  required EntryActionDelegate actionDelegate,
-}) {
-  Widget? child;
-  void onPressed() => actionDelegate.onActionSelected(context, action);
+  static Widget _buildButtonIcon({
+    required BuildContext context,
+    required EntryAction action,
+    required AvesEntry mainEntry,
+    required AvesEntry pageEntry,
+    required AvesVideoController? videoController,
+    required EntryActionDelegate actionDelegate,
+    FocusNode? focusNode,
+  }) {
+    Widget? child;
+    void onPressed() => actionDelegate.onActionSelected(context, action);
 
-  ValueListenableBuilder<bool> _buildFromListenable(ValueListenable<bool>? enabledNotifier) {
-    return ValueListenableBuilder<bool>(
-      valueListenable: enabledNotifier ?? ValueNotifier(false),
-      builder: (context, canDo, child) => IconButton(
-        icon: child!,
-        onPressed: canDo ? onPressed : null,
-        tooltip: action.getText(context),
-      ),
-      child: action.getIcon(),
-    );
-  }
+    ValueListenableBuilder<bool> _buildFromListenable(ValueListenable<bool>? enabledNotifier) {
+      return ValueListenableBuilder<bool>(
+        valueListenable: enabledNotifier ?? ValueNotifier(false),
+        builder: (context, canDo, child) => IconButton(
+          icon: child!,
+          onPressed: canDo ? onPressed : null,
+          focusNode: focusNode,
+          tooltip: action.getText(context),
+        ),
+        child: action.getIcon(),
+      );
+    }
 
-  final blurred = settings.enableBlurEffect;
-  switch (action) {
-    case EntryAction.copy:
-      child = MoveButton(
-        copy: true,
-        blurred: blurred,
-        onChooserValue: (album) => actionDelegate.quickMove(context, album, copy: true),
-        onPressed: onPressed,
-      );
-      break;
-    case EntryAction.move:
-      child = MoveButton(
-        copy: false,
-        blurred: blurred,
-        onChooserValue: (album) => actionDelegate.quickMove(context, album, copy: false),
-        onPressed: onPressed,
-      );
-      break;
-    case EntryAction.share:
-      child = ShareButton(
-        blurred: blurred,
-        entries: {mainEntry},
-        onChooserValue: (action) => actionDelegate.quickShare(context, action),
-        onPressed: onPressed,
-      );
-      break;
-    case EntryAction.toggleFavourite:
-      final favouriteTargetEntry = mainEntry.isBurst ? pageEntry : mainEntry;
-      child = FavouriteToggler(
-        entries: {favouriteTargetEntry},
-        onPressed: onPressed,
-      );
-      break;
-    case EntryAction.videoToggleMute:
-      child = MuteToggler(
-        controller: videoController,
-        onPressed: onPressed,
-      );
-      break;
-    case EntryAction.videoTogglePlay:
-      child = PlayToggler(
-        controller: videoController,
-        onPressed: onPressed,
-      );
-      break;
-    case EntryAction.videoCaptureFrame:
-      child = _buildFromListenable(videoController?.canCaptureFrameNotifier);
-      break;
-    case EntryAction.videoSelectStreams:
-      child = _buildFromListenable(videoController?.canSelectStreamNotifier);
-      break;
-    case EntryAction.videoSetSpeed:
-      child = _buildFromListenable(videoController?.canSetSpeedNotifier);
-      break;
-    case EntryAction.editRating:
-      child = RateButton(
-        blurred: blurred,
-        onChooserValue: (rating) => actionDelegate.quickRate(context, rating),
-        onPressed: onPressed,
-      );
-      break;
-    case EntryAction.editTags:
-      child = TagButton(
-        blurred: blurred,
-        onChooserValue: (filter) => actionDelegate.quickTag(context, filter),
-        onPressed: onPressed,
-      );
-      break;
-    default:
-      child = IconButton(
-        icon: action.getIcon(),
-        onPressed: onPressed,
-        tooltip: action.getText(context),
-      );
-      break;
-  }
-  return child;
-}
-
-Widget _buildButtonCaption({
-  required BuildContext context,
-  required EntryAction action,
-  required AvesEntry mainEntry,
-  required AvesEntry pageEntry,
-  required AvesVideoController? videoController,
-  required bool enabled,
-}) {
-  switch (action) {
-    case EntryAction.toggleFavourite:
-      final favouriteTargetEntry = mainEntry.isBurst ? pageEntry : mainEntry;
-      return FavouriteTogglerCaption(
-        entries: {favouriteTargetEntry},
-        enabled: enabled,
-      );
-    case EntryAction.videoToggleMute:
-      return MuteTogglerCaption(
-        controller: videoController,
-        enabled: enabled,
-      );
-    case EntryAction.videoTogglePlay:
-      return PlayTogglerCaption(
-        controller: videoController,
-        enabled: enabled,
-      );
-    default:
-      return CaptionedButtonText(
-        text: action.getText(context),
-        enabled: enabled,
-      );
+    final blurred = settings.enableBlurEffect;
+    switch (action) {
+      case EntryAction.copy:
+        child = MoveButton(
+          copy: true,
+          blurred: blurred,
+          onChooserValue: (album) => actionDelegate.quickMove(context, album, copy: true),
+          onPressed: onPressed,
+        );
+        break;
+      case EntryAction.move:
+        child = MoveButton(
+          copy: false,
+          blurred: blurred,
+          onChooserValue: (album) => actionDelegate.quickMove(context, album, copy: false),
+          onPressed: onPressed,
+        );
+        break;
+      case EntryAction.share:
+        child = ShareButton(
+          blurred: blurred,
+          entries: {mainEntry},
+          onChooserValue: (action) => actionDelegate.quickShare(context, action),
+          focusNode: focusNode,
+          onPressed: onPressed,
+        );
+        break;
+      case EntryAction.toggleFavourite:
+        final favouriteTargetEntry = mainEntry.isBurst ? pageEntry : mainEntry;
+        child = FavouriteToggler(
+          entries: {favouriteTargetEntry},
+          focusNode: focusNode,
+          onPressed: onPressed,
+        );
+        break;
+      case EntryAction.videoToggleMute:
+        child = MuteToggler(
+          controller: videoController,
+          focusNode: focusNode,
+          onPressed: onPressed,
+        );
+        break;
+      case EntryAction.videoTogglePlay:
+        child = PlayToggler(
+          controller: videoController,
+          focusNode: focusNode,
+          onPressed: onPressed,
+        );
+        break;
+      case EntryAction.videoCaptureFrame:
+        child = _buildFromListenable(videoController?.canCaptureFrameNotifier);
+        break;
+      case EntryAction.videoSelectStreams:
+        child = _buildFromListenable(videoController?.canSelectStreamNotifier);
+        break;
+      case EntryAction.videoSetSpeed:
+        child = _buildFromListenable(videoController?.canSetSpeedNotifier);
+        break;
+      case EntryAction.editRating:
+        child = RateButton(
+          blurred: blurred,
+          onChooserValue: (rating) => actionDelegate.quickRate(context, rating),
+          focusNode: focusNode,
+          onPressed: onPressed,
+        );
+        break;
+      case EntryAction.editTags:
+        child = TagButton(
+          blurred: blurred,
+          onChooserValue: (filter) => actionDelegate.quickTag(context, filter),
+          focusNode: focusNode,
+          onPressed: onPressed,
+        );
+        break;
+      default:
+        child = IconButton(
+          icon: action.getIcon(),
+          onPressed: onPressed,
+          focusNode: focusNode,
+          tooltip: action.getText(context),
+        );
+        break;
+    }
+    return child;
   }
 }

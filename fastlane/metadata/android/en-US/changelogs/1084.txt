@@ -1,5 +1,0 @@
-In v1.7.4:
-- tag your MP4, rate your MP4, date your MP4, locate your MP4, rotate your MP4
-- give media management access (on Android 12+) to skip some confirmation dialogs
-- enjoy higher quality thumbnails
-Full changelog available on GitHub

@@ -1,6 +1,6 @@
 import 'package:aves/model/actions/entry_actions.dart';
-import 'package:aves/model/device.dart';
 import 'package:aves/model/entry.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
@@ -35,9 +35,9 @@ class InfoAppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final commonActions = EntryActions.commonMetadataActions.where((v) => actionDelegate.isVisible(entry, v));
     final formatSpecificActions = EntryActions.formatSpecificMetadataActions.where((v) => actionDelegate.isVisible(entry, v));
-
+    final useTvLayout = settings.useTvLayout;
     return SliverAppBar(
-      leading: device.isTelevision
+      leading: useTvLayout
           ? null
           : IconButton(
               // key is expected by test driver
@@ -53,34 +53,36 @@ class InfoAppBar extends StatelessWidget {
           child: Text(context.l10n.viewerInfoPageTitle),
         ),
       ),
-      actions: [
-        IconButton(
-          icon: const Icon(AIcons.search),
-          onPressed: () => _goToSearch(context),
-          tooltip: MaterialLocalizations.of(context).searchFieldLabel,
-        ),
-        if (entry.canEdit)
-          MenuIconTheme(
-            child: PopupMenuButton<EntryAction>(
-              itemBuilder: (context) => [
-                ...commonActions.map((action) => _toMenuItem(context, action, enabled: actionDelegate.canApply(entry, action))),
-                if (formatSpecificActions.isNotEmpty) ...[
-                  const PopupMenuDivider(),
-                  ...formatSpecificActions.map((action) => _toMenuItem(context, action, enabled: actionDelegate.canApply(entry, action))),
-                ],
-                if (!kReleaseMode) ...[
-                  const PopupMenuDivider(),
-                  _toMenuItem(context, EntryAction.debug, enabled: true),
-                ]
-              ],
-              onSelected: (action) async {
-                // wait for the popup menu to hide before proceeding with the action
-                await Future.delayed(Durations.popupMenuAnimation * timeDilation);
-                actionDelegate.onActionSelected(context, entry, collection, action);
-              },
-            ),
-          ),
-      ],
+      actions: useTvLayout
+          ? []
+          : [
+              IconButton(
+                icon: const Icon(AIcons.search),
+                onPressed: () => _goToSearch(context),
+                tooltip: MaterialLocalizations.of(context).searchFieldLabel,
+              ),
+              if (entry.canEdit)
+                MenuIconTheme(
+                  child: PopupMenuButton<EntryAction>(
+                    itemBuilder: (context) => [
+                      ...commonActions.map((action) => _toMenuItem(context, action, enabled: actionDelegate.canApply(entry, action))),
+                      if (formatSpecificActions.isNotEmpty) ...[
+                        const PopupMenuDivider(),
+                        ...formatSpecificActions.map((action) => _toMenuItem(context, action, enabled: actionDelegate.canApply(entry, action))),
+                      ],
+                      if (!kReleaseMode) ...[
+                        const PopupMenuDivider(),
+                        _toMenuItem(context, EntryAction.debug, enabled: true),
+                      ]
+                    ],
+                    onSelected: (action) async {
+                      // wait for the popup menu to hide before proceeding with the action
+                      await Future.delayed(Durations.popupMenuAnimation * timeDilation);
+                      actionDelegate.onActionSelected(context, entry, collection, action);
+                    },
+                  ),
+                ),
+            ],
       floating: true,
     );
   }

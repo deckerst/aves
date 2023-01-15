@@ -144,6 +144,7 @@ class _GeoMapState extends State<GeoMap> {
             );
         bool _isMarkerImageReady(MarkerKey<AvesEntry> key) => key.entry.isThumbnailReady(extent: MapThemeData.markerImageExtent);
 
+        final controller = widget.controller;
         Widget child = const SizedBox();
         if (mapStyle != null) {
           switch (mapStyle) {
@@ -153,7 +154,7 @@ class _GeoMapState extends State<GeoMap> {
             case EntryMapStyle.hmsNormal:
             case EntryMapStyle.hmsTerrain:
               child = mobileServices.buildMap<AvesEntry>(
-                controller: widget.controller,
+                controller: controller,
                 clusterListenable: _clusterChangeNotifier,
                 boundsNotifier: _boundsNotifier,
                 style: mapStyle,
@@ -175,7 +176,7 @@ class _GeoMapState extends State<GeoMap> {
             case EntryMapStyle.stamenToner:
             case EntryMapStyle.stamenWatercolor:
               child = EntryLeafletMap<AvesEntry>(
-                controller: widget.controller,
+                controller: controller,
                 clusterListenable: _clusterChangeNotifier,
                 boundsNotifier: _boundsNotifier,
                 minZoom: 2,
@@ -260,6 +261,7 @@ class _GeoMapState extends State<GeoMap> {
                 children: [
                   const MapDecorator(),
                   MapButtonPanel(
+                    controller: controller,
                     boundsNotifier: _boundsNotifier,
                     openMapPage: widget.openMapPage,
                   ),
@@ -485,14 +487,13 @@ class _GeoMapState extends State<GeoMap> {
 
   Widget _decorateMap(BuildContext context, Widget? child) => MapDecorator(child: child);
 
-  Widget _buildButtonPanel(
-    Future<void> Function(double amount) zoomBy,
-    VoidCallback resetRotation,
-  ) =>
-      MapButtonPanel(
-        boundsNotifier: _boundsNotifier,
-        zoomBy: zoomBy,
-        openMapPage: widget.openMapPage,
-        resetRotation: resetRotation,
-      );
+  Widget _buildButtonPanel(VoidCallback resetRotation) {
+    if (settings.useTvLayout) return const SizedBox();
+    return MapButtonPanel(
+      controller: widget.controller,
+      boundsNotifier: _boundsNotifier,
+      openMapPage: widget.openMapPage,
+      resetRotation: resetRotation,
+    );
+  }
 }

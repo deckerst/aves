@@ -16,6 +16,7 @@ class ViewerTopOverlay extends StatelessWidget {
   final AvesEntry mainEntry;
   final Animation<double> scale;
   final bool hasCollection;
+  final Size availableSize;
   final EdgeInsets? viewInsets, viewPadding;
 
   const ViewerTopOverlay({
@@ -25,6 +26,7 @@ class ViewerTopOverlay extends StatelessWidget {
     required this.mainEntry,
     required this.scale,
     required this.hasCollection,
+    required this.availableSize,
     required this.viewInsets,
     required this.viewPadding,
   });
@@ -65,6 +67,7 @@ class ViewerTopOverlay extends StatelessWidget {
                       entries: entries,
                       hasCollection: hasCollection,
                       multiPageController: multiPageController,
+                      availableSize: availableSize,
                     ),
                   ),
                 ),

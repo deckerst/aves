@@ -54,10 +54,7 @@ mixin PermissionAwareMixin {
           return AvesDialog(
             content: Text(l10n.storageAccessDialogMessage(directory, volume)),
             actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
-              ),
+              const CancelButton(),
               TextButton(
                 onPressed: () => Navigator.pop(context, true),
                 child: Text(MaterialLocalizations.of(context).okButtonLabel),
@@ -72,17 +69,10 @@ mixin PermissionAwareMixin {
       if (!await deviceService.isSystemFilePickerEnabled()) {
         await showDialog(
           context: context,
-          builder: (context) {
-            return AvesDialog(
-              content: Text(context.l10n.missingSystemFilePickerDialogMessage),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: Text(MaterialLocalizations.of(context).okButtonLabel),
-                ),
-              ],
-            );
-          },
+          builder: (context) => AvesDialog(
+            content: Text(context.l10n.missingSystemFilePickerDialogMessage),
+            actions: const [OkButton()],
+          ),
         );
         return false;
       }
@@ -103,12 +93,7 @@ mixin PermissionAwareMixin {
         final volume = dir.getVolumeDescription(context);
         return AvesDialog(
           content: Text(context.l10n.restrictedAccessDialogMessage(directory, volume)),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text(MaterialLocalizations.of(context).okButtonLabel),
-            ),
-          ],
+          actions: const [OkButton()],
         );
       },
     );

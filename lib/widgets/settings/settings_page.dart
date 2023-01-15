@@ -3,7 +3,7 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:aves/model/actions/settings_actions.dart';
-import 'package:aves/model/device.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/services.dart';
@@ -73,7 +73,7 @@ class _SettingsPageState extends State<SettingsPage> with FeedbackMixin {
   Widget build(BuildContext context) {
     final appBarTitle = Text(context.l10n.settingsPageTitle);
 
-    if (device.isTelevision) {
+    if (settings.useTvLayout) {
       return Scaffold(
         body: AvesPopScope(
           handlers: const [TvNavigationPopHandler.pop],
@@ -86,10 +86,15 @@ class _SettingsPageState extends State<SettingsPage> with FeedbackMixin {
                 child: Column(
                   children: [
                     const SizedBox(height: 8),
-                    AppBar(
-                      automaticallyImplyLeading: false,
-                      title: appBarTitle,
-                      elevation: 0,
+                    DirectionalSafeArea(
+                      start: false,
+                      bottom: false,
+                      child: AppBar(
+                        automaticallyImplyLeading: false,
+                        title: appBarTitle,
+                        elevation: 0,
+                        primary: false,
+                      ),
                     ),
                     Expanded(
                       child: ValueListenableBuilder<int>(
@@ -106,6 +111,7 @@ class _SettingsPageState extends State<SettingsPage> with FeedbackMixin {
                                 .toList(),
                             selectedIndex: selectedIndex,
                             onDestinationSelected: (index) => _tvSelectedIndexNotifier.value = index,
+                            minExtendedWidth: TvRail.minExtendedWidth,
                           );
                           return LayoutBuilder(
                             builder: (context, constraints) {
@@ -118,8 +124,13 @@ class _SettingsPageState extends State<SettingsPage> with FeedbackMixin {
                                     ),
                                   ),
                                   Expanded(
-                                    child: _SettingsSectionBody(
-                                      loader: Future.value(sections[selectedIndex].tiles(context)),
+                                    child: MediaQuery.removePadding(
+                                      context: context,
+                                      removeLeft: !context.isRtl,
+                                      removeRight: context.isRtl,
+                                      child: _SettingsSectionBody(
+                                        loader: Future.value(sections[selectedIndex].tiles(context)),
+                                      ),
                                     ),
                                   ),
                                 ],

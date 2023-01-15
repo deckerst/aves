@@ -1,5 +1,0 @@
-In v1.7.1:
-- view your photos with the mosaic layout
-- reverse filters to filter out/in
-- set wallpapers with scroll effect
-Full changelog available on GitHub

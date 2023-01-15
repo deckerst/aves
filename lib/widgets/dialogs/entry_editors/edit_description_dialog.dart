@@ -44,10 +44,7 @@ class _EditEntryTitleDescriptionDialogState extends State<EditEntryTitleDescript
             const SizedBox(height: 8),
           ],
           actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
-            ),
+            const CancelButton(),
             TextButton(
               onPressed: fields.isEmpty ? null : () => _submit(context),
               child: Text(context.l10n.applyButtonLabel),

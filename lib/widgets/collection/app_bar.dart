@@ -1,9 +1,7 @@
 import 'dart:async';
-import 'dart:ui';
 
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/actions/entry_set_actions.dart';
-import 'package:aves/model/device.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/query.dart';
@@ -143,9 +141,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   }
 
   @override
-  void didChangeMetrics() {
-    _updateStatusBarHeight();
-  }
+  void didChangeMetrics() => _updateStatusBarHeight();
 
   @override
   Widget build(BuildContext context) {
@@ -153,69 +149,76 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     final selection = context.watch<Selection<AvesEntry>>();
     final isSelecting = selection.isSelecting;
     _isSelectingNotifier.value = isSelecting;
-    return AnimatedBuilder(
-      animation: collection.filterChangeNotifier,
-      builder: (context, child) {
-        final removableFilters = appMode != AppMode.pickMediaInternal;
-        return Selector<Query, bool>(
-          selector: (context, query) => query.enabled,
-          builder: (context, queryEnabled, child) {
-            return Selector<Settings, List<EntrySetAction>>(
-              selector: (context, s) => s.collectionBrowsingQuickActions,
-              builder: (context, _, child) {
-                final isTelevision = device.isTelevision;
-                final actions = _buildActions(context, selection);
-                return AvesAppBar(
-                  contentHeight: appBarContentHeight,
-                  leading: _buildAppBarLeading(
-                    hasDrawer: appMode.canNavigate,
-                    isSelecting: isSelecting,
-                  ),
-                  title: _buildAppBarTitle(isSelecting),
-                  actions: isTelevision ? [] : actions,
-                  bottom: Column(
-                    children: [
-                      if (isTelevision)
-                        SizedBox(
-                          height: CaptionedButton.getTelevisionButtonHeight(context),
-                          child: ListView(
-                            padding: const EdgeInsets.symmetric(horizontal: 8),
-                            scrollDirection: Axis.horizontal,
-                            children: actions,
+    return NotificationListener<ScrollNotification>(
+      // cancel notification bubbling so that the draggable scroll bar
+      // does not misinterpret filter bar scrolling for collection scrolling
+      onNotification: (notification) => true,
+      child: AnimatedBuilder(
+        animation: collection.filterChangeNotifier,
+        builder: (context, child) {
+          final removableFilters = appMode != AppMode.pickMediaInternal;
+          return Selector<Query, bool>(
+            selector: (context, query) => query.enabled,
+            builder: (context, queryEnabled, child) {
+              return Selector<Settings, List<EntrySetAction>>(
+                selector: (context, s) => s.collectionBrowsingQuickActions,
+                builder: (context, _, child) {
+                  final useTvLayout = settings.useTvLayout;
+                  final actions = _buildActions(context, selection);
+                  final onFilterTap = removableFilters ? collection.removeFilter : null;
+                  return AvesAppBar(
+                    contentHeight: appBarContentHeight,
+                    pinned: context.select<Selection<AvesEntry>, bool>((selection) => selection.isSelecting),
+                    leading: _buildAppBarLeading(
+                      hasDrawer: appMode.canNavigate,
+                      isSelecting: isSelecting,
+                    ),
+                    title: _buildAppBarTitle(isSelecting),
+                    actions: useTvLayout ? [] : actions,
+                    bottom: Column(
+                      children: [
+                        if (useTvLayout)
+                          SizedBox(
+                            height: CaptionedButton.getTelevisionButtonHeight(context),
+                            child: ListView(
+                              padding: const EdgeInsets.symmetric(horizontal: 8),
+                              scrollDirection: Axis.horizontal,
+                              children: actions,
+                            ),
                           ),
-                        ),
-                      if (showFilterBar)
-                        NotificationListener<ReverseFilterNotification>(
-                          onNotification: (notification) {
-                            collection.addFilter(notification.reversedFilter);
-                            return true;
-                          },
-                          child: FilterBar(
-                            filters: visibleFilters,
-                            removable: removableFilters,
-                            onTap: removableFilters ? collection.removeFilter : null,
+                        if (showFilterBar)
+                          NotificationListener<ReverseFilterNotification>(
+                            onNotification: (notification) {
+                              collection.addFilter(notification.reversedFilter);
+                              return true;
+                            },
+                            child: FilterBar(
+                              filters: visibleFilters,
+                              onTap: onFilterTap,
+                              onRemove: onFilterTap,
+                            ),
                           ),
-                        ),
-                      if (queryEnabled)
-                        EntryQueryBar(
-                          queryNotifier: context.select<Query, ValueNotifier<String>>((query) => query.queryNotifier),
-                          focusNode: _queryBarFocusNode,
-                        ),
-                    ],
-                  ),
-                  transitionKey: isSelecting,
-                );
-              },
-            );
-          },
-        );
-      },
+                        if (queryEnabled)
+                          EntryQueryBar(
+                            queryNotifier: context.select<Query, ValueNotifier<String>>((query) => query.queryNotifier),
+                            focusNode: _queryBarFocusNode,
+                          ),
+                      ],
+                    ),
+                    transitionKey: isSelecting,
+                  );
+                },
+              );
+            },
+          );
+        },
+      ),
     );
   }
 
   double get appBarContentHeight {
     double height = kToolbarHeight;
-    if (device.isTelevision) {
+    if (settings.useTvLayout) {
       height += CaptionedButton.getTelevisionButtonHeight(context);
     }
     if (showFilterBar) {
@@ -228,7 +231,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   }
 
   Widget? _buildAppBarLeading({required bool hasDrawer, required bool isSelecting}) {
-    if (device.isTelevision) return null;
+    if (settings.useTvLayout) return null;
 
     if (!hasDrawer) {
       return const CloseButton();
@@ -310,7 +313,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
           selectedItemCount: selectedItemCount,
         );
 
-    return device.isTelevision
+    return settings.useTvLayout
         ? _buildTelevisionActions(
             context: context,
             appMode: appMode,
@@ -342,7 +345,13 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     ].where(isVisible).map((action) {
       final enabled = canApply(action);
       return CaptionedButton(
-        iconButton: _buildButtonIcon(context, action, enabled: enabled, selection: selection),
+        iconButtonBuilder: (context, focusNode) => _buildButtonIcon(
+          context,
+          action,
+          enabled: enabled,
+          selection: selection,
+          focusNode: focusNode,
+        ),
         captionText: _buildButtonCaption(context, action, enabled: enabled),
         onPressed: enabled ? () => _onActionSelected(action) : null,
       );
@@ -383,7 +392,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
               ...(isSelecting ? selectionMenuActions : browsingMenuActions).where(isVisible).map(
                     (action) => _toMenuItem(action, enabled: canApply(action), selection: selection),
                   ),
-              if (isSelecting && !device.isReadOnly && appMode == AppMode.main && !isTrash)
+              if (isSelecting && !settings.isReadOnly && appMode == AppMode.main && !isTrash)
                 PopupMenuItem<EntrySetAction>(
                   enabled: hasSelection,
                   padding: EdgeInsets.zero,
@@ -429,6 +438,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     BuildContext context,
     EntrySetAction action, {
     required bool enabled,
+    FocusNode? focusNode,
     required Selection<AvesEntry> selection,
   }) {
     final onPressed = enabled ? () => _onActionSelected(action) : null;
@@ -441,12 +451,14 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
             return TitleSearchToggler(
               queryEnabled: queryEnabled,
               onPressed: onPressed,
+              focusNode: focusNode,
             );
           },
         );
       case EntrySetAction.toggleFavourite:
         return FavouriteToggler(
           entries: _getExpandedSelectedItems(selection),
+          focusNode: focusNode,
           onPressed: onPressed,
         );
       default:
@@ -454,6 +466,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
           key: _getActionKey(action),
           icon: action.getIcon(),
           onPressed: onPressed,
+          focusNode: focusNode,
           tooltip: action.getText(context),
         );
     }
@@ -577,7 +590,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   void _onQueryFocusRequest() => _queryBarFocusNode.requestFocus();
 
   void _updateStatusBarHeight() {
-    _statusBarHeight = EdgeInsets.fromWindowPadding(window.padding, window.devicePixelRatio).top;
+    _statusBarHeight = context.read<MediaQueryData>().padding.top;
     _updateAppBarHeight();
   }
 

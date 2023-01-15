@@ -1196,5 +1196,15 @@
   "filterNoAddressLabel": "Χωρίς διεύθυνση",
   "@filterNoAddressLabel": {},
   "settingsViewerShowRatingTags": "Εμφάνιση βαθμολογίας & ετικετών",
-  "@settingsViewerShowRatingTags": {}
+  "@settingsViewerShowRatingTags": {},
+  "filterLocatedLabel": "Με τοποθεσία",
+  "@filterLocatedLabel": {},
+  "filterTaggedLabel": "Με ετικέτα",
+  "@filterTaggedLabel": {},
+  "settingsModificationWarningDialogMessage": "Άλλες ρυθμίσεις θα τροποποιηθούν.",
+  "@settingsModificationWarningDialogMessage": {},
+  "settingsDisplayUseTvInterface": "Χρήση του Android TV περιβάλλον",
+  "@settingsDisplayUseTvInterface": {},
+  "settingsViewerShowDescription": "Εμφάνιση περιγραφής",
+  "@settingsViewerShowDescription": {}
 }

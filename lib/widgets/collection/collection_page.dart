@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:aves/app_mode.dart';
-import 'package:aves/model/device.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/query.dart';
@@ -83,6 +82,7 @@ class _CollectionPageState extends State<CollectionPage> {
 
   @override
   Widget build(BuildContext context) {
+    final useTvLayout = settings.useTvLayout;
     final liveFilter = _collection.filters.firstWhereOrNull((v) => v is QueryFilter && v.live) as QueryFilter?;
     return SelectionProvider<AvesEntry>(
       child: Selector<Selection<AvesEntry>, bool>(
@@ -105,11 +105,12 @@ class _CollectionPageState extends State<CollectionPage> {
                     TvNavigationPopHandler.pop,
                     _doubleBackPopHandler.pop,
                   ],
-                  child: const GestureAreaProtectorStack(
-                    child: SafeArea(
+                  child: GestureAreaProtectorStack(
+                    child: DirectionalSafeArea(
+                      start: !useTvLayout,
                       top: false,
                       bottom: false,
-                      child: CollectionGrid(
+                      child: const CollectionGrid(
                         // key is expected by test driver
                         key: Key('collection-grid'),
                         settingsRouteKey: CollectionPage.routeName,
@@ -122,7 +123,7 @@ class _CollectionPageState extends State<CollectionPage> {
           );
 
           Widget page;
-          if (device.isTelevision) {
+          if (useTvLayout) {
             page = Scaffold(
               body: Row(
                 children: [

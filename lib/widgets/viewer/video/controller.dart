@@ -30,7 +30,6 @@ abstract class AvesVideoController {
     _subscriptions
       ..forEach((sub) => sub.cancel())
       ..clear();
-    await mediaSessionService.release(entry.uri);
     entry.visualChangeNotifier.removeListener(onVisualChanged);
     await _savePlaybackState();
   }
@@ -67,21 +66,19 @@ abstract class AvesVideoController {
 
     final resume = await showDialog<bool>(
       context: context,
-      builder: (context) {
-        return AvesDialog(
-          content: Text(context.l10n.videoResumeDialogMessage(formatFriendlyDuration(Duration(milliseconds: resumeTime)))),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text(context.l10n.videoStartOverButtonLabel),
-            ),
-            TextButton(
-              onPressed: () => Navigator.pop(context, true),
-              child: Text(context.l10n.videoResumeButtonLabel),
-            ),
-          ],
-        );
-      },
+      builder: (context) => AvesDialog(
+        content: Text(context.l10n.videoResumeDialogMessage(formatFriendlyDuration(Duration(milliseconds: resumeTime)))),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(context.l10n.videoStartOverButtonLabel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text(context.l10n.videoResumeButtonLabel),
+          ),
+        ],
+      ),
     );
     if (resume == null || !resume) return 0;
     return resumeTime;

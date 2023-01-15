@@ -1,5 +1,5 @@
 import 'package:aves/model/actions/slideshow_actions.dart';
-import 'package:aves/model/device.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/common/identity/buttons/captioned_button.dart';
 import 'package:aves/widgets/common/identity/buttons/overlay_button.dart';
 import 'package:aves/widgets/viewer/entry_vertical_pager.dart';
@@ -36,6 +36,7 @@ class _SlideshowButtonsState extends State<SlideshowButtons> {
   void initState() {
     super.initState();
     _registerWidget(widget);
+    WidgetsBinding.instance.addPostFrameCallback((_) => _requestFocus());
   }
 
   @override
@@ -53,26 +54,24 @@ class _SlideshowButtonsState extends State<SlideshowButtons> {
   }
 
   void _registerWidget(SlideshowButtons widget) {
-    final animationController = widget.animationController;
     _buttonScale = CurvedAnimation(
-      parent: animationController,
+      parent: widget.animationController,
       // a little bounce at the top
       curve: Curves.easeOutBack,
     );
-    animationController.addStatusListener(_onAnimationStatusChanged);
   }
 
   void _unregisterWidget(SlideshowButtons widget) {
-    widget.animationController.removeStatusListener(_onAnimationStatusChanged);
+    // nothing
   }
 
   @override
   Widget build(BuildContext context) {
     return FocusableActionDetector(
       focusNode: _buttonRowFocusScopeNode,
-      shortcuts: device.isTelevision ? const {SingleActivator(LogicalKeyboardKey.arrowUp): TvShowLessInfoIntent()} : null,
+      shortcuts: settings.useTvLayout ? const {SingleActivator(LogicalKeyboardKey.arrowUp): TvShowLessInfoIntent()} : null,
       actions: {TvShowLessInfoIntent: CallbackAction<Intent>(onInvoke: (intent) => TvShowLessInfoNotification().dispatch(context))},
-      child: device.isTelevision
+      child: settings.useTvLayout
           ? Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -111,9 +110,5 @@ class _SlideshowButtonsState extends State<SlideshowButtons> {
 
   void _onAction(BuildContext context, SlideshowAction action) => SlideshowActionNotification(action).dispatch(context);
 
-  void _onAnimationStatusChanged(AnimationStatus status) {
-    if (status == AnimationStatus.completed) {
-      _buttonRowFocusScopeNode.children.firstOrNull?.requestFocus();
-    }
-  }
+  void _requestFocus() => _buttonRowFocusScopeNode.children.firstOrNull?.requestFocus();
 }

@@ -199,7 +199,9 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
         activity.startActivityForResult(intent, MainActivity.PICK_COLLECTION_FILTERS_REQUEST)
     }
 
-    override fun onCancel(arguments: Any?) {}
+    override fun onCancel(arguments: Any?) {
+        Log.i(LOG_TAG, "onCancel arguments=$arguments")
+    }
 
     private fun success(result: Any?) {
         handler.post {

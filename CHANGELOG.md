@@ -4,6 +4,32 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.7.9"></a>[v1.7.9] - 2023-01-15
+
+### Added
+
+- Viewer: optionally show description on overlay
+- Collection: unlocated/untagged overlay icons
+- Video: stop when losing audio focus
+- Video: stop when becoming noisy
+- Info: Google camera portrait mode item extraction
+- TV: handle overscan
+- TV: improved support for Viewer, Info, Map, Stats
+- TV: option to use TV layout on any device
+- Czech translation (thanks vesp)
+- Polish translation (thanks Piotr K, rehork)
+
+### Changed
+
+- editing description writes XMP `dc:description`, and clears Exif `ImageDescription` / `UserComment`
+- in the tag editor, tapping on applied tag applies it to all items instead of removing it
+- pin app bar when selecting items
+
+### Fixed
+
+- transition between collection and viewer when cutout area is not used
+- saving video playback state when leaving viewer
+
 ## <a id="v1.7.8"></a>[v1.7.8] - 2022-12-20
 
 ### Added

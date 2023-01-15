@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:aves/model/entry.dart';
+import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/common/identity/aves_icons.dart';
 import 'package:flutter/material.dart';
@@ -7,13 +9,14 @@ import 'package:provider/provider.dart';
 
 class GridTheme extends StatelessWidget {
   final double extent;
-  final bool? showLocation, showTrash;
+  final bool showLocation;
+  final bool? showTrash;
   final Widget child;
 
   const GridTheme({
     super.key,
     required this.extent,
-    this.showLocation,
+    this.showLocation = true,
     this.showTrash,
     required this.child,
   });
@@ -32,11 +35,11 @@ class GridTheme extends StatelessWidget {
           fontSize: fontSize,
           highlightBorderWidth: highlightBorderWidth,
           showFavourite: settings.showThumbnailFavourite,
-          showLocation: showLocation ?? settings.showThumbnailLocation,
+          locationIcon: showLocation ? settings.thumbnailLocationIcon : ThumbnailOverlayLocationIcon.none,
+          tagIcon: settings.thumbnailTagIcon,
           showMotionPhoto: settings.showThumbnailMotionPhoto,
           showRating: settings.showThumbnailRating,
           showRaw: settings.showThumbnailRaw,
-          showTag: settings.showThumbnailTag,
           showTrash: showTrash ?? true,
           showVideoDuration: settings.showThumbnailVideoDuration,
         );
@@ -46,21 +49,55 @@ class GridTheme extends StatelessWidget {
   }
 }
 
+typedef GridThemeIconBuilder = List<Widget> Function(BuildContext context, AvesEntry entry);
+
 class GridThemeData {
   final double iconSize, fontSize, highlightBorderWidth;
-  final bool showFavourite, showLocation, showMotionPhoto, showRating, showRaw, showTag, showTrash, showVideoDuration;
+  final bool showFavourite, showMotionPhoto, showRating, showRaw, showTrash, showVideoDuration;
+  final bool showLocated, showUnlocated, showTagged, showUntagged;
+  late final GridThemeIconBuilder iconBuilder;
 
-  const GridThemeData({
+  GridThemeData({
     required this.iconSize,
     required this.fontSize,
     required this.highlightBorderWidth,
     required this.showFavourite,
-    required this.showLocation,
+    required ThumbnailOverlayLocationIcon locationIcon,
+    required ThumbnailOverlayTagIcon tagIcon,
     required this.showMotionPhoto,
     required this.showRating,
     required this.showRaw,
-    required this.showTag,
     required this.showTrash,
     required this.showVideoDuration,
-  });
+  })  : showLocated = locationIcon == ThumbnailOverlayLocationIcon.located,
+        showUnlocated = locationIcon == ThumbnailOverlayLocationIcon.unlocated,
+        showTagged = tagIcon == ThumbnailOverlayTagIcon.tagged,
+        showUntagged = tagIcon == ThumbnailOverlayTagIcon.untagged {
+    iconBuilder = (context, entry) {
+      final located = entry.hasGps;
+      final tagged = entry.tags.isNotEmpty;
+      return [
+        if (entry.isFavourite && showFavourite) const FavouriteIcon(),
+        if (tagged && showTagged) TagIcon.tagged(),
+        if (!tagged && showUntagged) TagIcon.untagged(),
+        if (located && showLocated) LocationIcon.located(),
+        if (!located && showUnlocated) LocationIcon.unlocated(),
+        if (entry.rating != 0 && showRating) RatingIcon(entry: entry),
+        if (entry.isVideo)
+          VideoIcon(entry: entry)
+        else if (entry.isAnimated)
+          const AnimatedImageIcon()
+        else ...[
+          if (entry.isRaw && showRaw) const RawIcon(),
+          if (entry.is360) const PanoramaIcon(),
+        ],
+        if (entry.isMultiPage) ...[
+          if (entry.isMotionPhoto && showMotionPhoto) const MotionPhotoIcon(),
+          if (!entry.isMotionPhoto) MultiPageIcon(entry: entry),
+        ],
+        if (entry.isGeotiff) const GeoTiffIcon(),
+        if (entry.trashed && showTrash) TrashIcon(trashDaysLeft: entry.trashDaysLeft),
+      ];
+    };
+  }
 }

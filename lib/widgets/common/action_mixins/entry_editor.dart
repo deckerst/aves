@@ -123,21 +123,16 @@ mixin EntryEditorMixin {
     if (entries.any((entry) => entry.isMotionPhoto) && types.contains(MetadataType.xmp)) {
       final confirmed = await showDialog<bool>(
         context: context,
-        builder: (context) {
-          return AvesDialog(
-            content: Text(context.l10n.removeEntryMetadataMotionPhotoXmpWarningDialogMessage),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
-              ),
-              TextButton(
-                onPressed: () => Navigator.pop(context, true),
-                child: Text(context.l10n.applyButtonLabel),
-              ),
-            ],
-          );
-        },
+        builder: (context) => AvesDialog(
+          content: Text(context.l10n.removeEntryMetadataMotionPhotoXmpWarningDialogMessage),
+          actions: [
+            const CancelButton(),
+            TextButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: Text(context.l10n.applyButtonLabel),
+            ),
+          ],
+        ),
       );
       if (confirmed == null || !confirmed) return null;
     }

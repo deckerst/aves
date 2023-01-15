@@ -9,6 +9,7 @@ import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/widgets/about/about_page.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
+import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_logo.dart';
 import 'package:aves/widgets/debug/app_debug_page.dart';
@@ -32,6 +33,8 @@ class TvRail extends StatefulWidget {
   final CollectionLens? currentCollection;
   final TvRailController controller;
 
+  static const double minExtendedWidth = 256;
+
   const TvRail({
     super.key,
     required this.controller,
@@ -44,6 +47,7 @@ class TvRail extends StatefulWidget {
 
 class _TvRailState extends State<TvRail> {
   late final ScrollController _scrollController;
+  final ValueNotifier<bool> _extendedNotifier = ValueNotifier(true);
   final FocusNode _focusNode = FocusNode();
 
   TvRailController get controller => widget.controller;
@@ -53,81 +57,110 @@ class _TvRailState extends State<TvRail> {
   @override
   void initState() {
     super.initState();
-
     _scrollController = ScrollController(initialScrollOffset: controller.offset);
     _scrollController.addListener(_onScrollChanged);
 
+    _registerWidget(widget);
     WidgetsBinding.instance.addPostFrameCallback((_) => _initFocus());
   }
 
   @override
+  void didUpdateWidget(covariant TvRail oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _unregisterWidget(oldWidget);
+    _registerWidget(widget);
+  }
+
+  @override
   void dispose() {
+    _unregisterWidget(widget);
     _scrollController.removeListener(_onScrollChanged);
     _scrollController.dispose();
+    _extendedNotifier.dispose();
     _focusNode.dispose();
     super.dispose();
   }
 
+  void _registerWidget(TvRail widget) {
+    widget.currentCollection?.filterChangeNotifier.addListener(_onCollectionFilterChanged);
+  }
+
+  void _unregisterWidget(TvRail widget) {
+    widget.currentCollection?.filterChangeNotifier.removeListener(_onCollectionFilterChanged);
+  }
+
   @override
   Widget build(BuildContext context) {
-    final header = Row(
-      children: [
-        const AvesLogo(size: 48),
-        const SizedBox(width: 16),
-        Text(
-          context.l10n.appName,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 32,
-            fontWeight: FontWeight.w300,
-            letterSpacing: 1.0,
-            fontFeatures: [FontFeature.enable('smcp')],
-          ),
-        ),
-      ],
-    );
-
     final navEntries = _getNavEntries(context);
+    return DirectionalSafeArea(
+      end: false,
+      child: ValueListenableBuilder<bool>(
+        valueListenable: _extendedNotifier,
+        builder: (context, extended, child) {
+          const logo = AvesLogo(size: 48);
+          final header = extended
+              ? Row(
+                  children: [
+                    logo,
+                    const SizedBox(width: 16),
+                    Text(
+                      context.l10n.appName,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 32,
+                        fontWeight: FontWeight.w300,
+                        letterSpacing: 1.0,
+                        fontFeatures: [FontFeature.enable('smcp')],
+                      ),
+                    ),
+                  ],
+                )
+              : logo;
 
-    final rail = Focus(
-      focusNode: _focusNode,
-      skipTraversal: true,
-      child: NavigationRail(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        extended: true,
-        destinations: navEntries
-            .map((v) => NavigationRailDestination(
-                  icon: v.icon,
-                  label: v.label,
-                ))
-            .toList(),
-        selectedIndex: max(0, navEntries.indexWhere(((v) => v.isSelected))),
-        onDestinationSelected: (index) {
-          controller.focusedIndex = index;
-          navEntries[index].onSelection();
+          final rail = Focus(
+            focusNode: _focusNode,
+            skipTraversal: true,
+            child: NavigationRail(
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              extended: extended,
+              destinations: navEntries
+                  .map((v) => NavigationRailDestination(
+                        icon: v.icon,
+                        label: v.label,
+                      ))
+                  .toList(),
+              selectedIndex: max(0, navEntries.indexWhere(((v) => v.isSelected))),
+              onDestinationSelected: (index) {
+                controller.focusedIndex = index;
+                navEntries[index].onSelection();
+              },
+              minExtendedWidth: TvRail.minExtendedWidth,
+            ),
+          );
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const SizedBox(height: 8),
+              header,
+              const SizedBox(height: 4),
+              Expanded(
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    return SingleChildScrollView(
+                      controller: _scrollController,
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                        child: IntrinsicHeight(child: rail),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          );
         },
       ),
-    );
-
-    return Column(
-      children: [
-        const SizedBox(height: 8),
-        header,
-        const SizedBox(height: 4),
-        Expanded(
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              return SingleChildScrollView(
-                controller: _scrollController,
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                  child: IntrinsicHeight(child: rail),
-                ),
-              );
-            },
-          ),
-        ),
-      ],
     );
   }
 
@@ -238,6 +271,8 @@ class _TvRailState extends State<TvRail> {
   }
 
   void _onScrollChanged() => controller.offset = _scrollController.offset;
+
+  void _onCollectionFilterChanged() => setState(() {});
 }
 
 @immutable

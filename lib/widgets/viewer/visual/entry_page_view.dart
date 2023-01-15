@@ -6,9 +6,12 @@ import 'package:aves/model/entry.dart';
 import 'package:aves/model/entry_images.dart';
 import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/services/common/services.dart';
+import 'package:aves/services/media/media_session_service.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
+import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/thumbnail/image.dart';
 import 'package:aves/widgets/viewer/controller.dart';
 import 'package:aves/widgets/viewer/hero.dart';
@@ -106,6 +109,7 @@ class _EntryPageViewState extends State<EntryPageView> with SingleTickerProvider
     _subscriptions.add(_magnifierController.stateStream.listen(_onViewStateChanged));
     _subscriptions.add(_magnifierController.scaleBoundariesStream.listen(_onViewScaleBoundariesChanged));
     if (entry.isVideo) {
+      _subscriptions.add(mediaSessionService.mediaCommands.listen(_onMediaCommand));
       _videoCoverStreamListener = ImageStreamListener((image, _) => _videoCoverInfoNotifier.value = image);
       _videoCoverStream = videoCoverUriImage.resolve(ImageConfiguration.empty);
       _videoCoverStream!.addListener(_videoCoverStreamListener);
@@ -147,6 +151,7 @@ class _EntryPageViewState extends State<EntryPageView> with SingleTickerProvider
             child = _buildRasterView();
           }
         }
+
         child ??= ErrorView(
           entry: entry,
           onTap: _onTap,
@@ -154,6 +159,14 @@ class _EntryPageViewState extends State<EntryPageView> with SingleTickerProvider
         return child;
       },
     );
+
+    if (!settings.viewerUseCutout) {
+      child = SafeCutoutArea(
+        child: ClipRect(
+          child: child,
+        ),
+      );
+    }
 
     final animate = context.select<Settings, bool>((v) => v.accessibilityAnimations.animate);
     if (animate) {
@@ -166,6 +179,7 @@ class _EntryPageViewState extends State<EntryPageView> with SingleTickerProvider
         child: child,
       );
     }
+
     return child;
   }
 
@@ -417,6 +431,28 @@ class _EntryPageViewState extends State<EntryPageView> with SingleTickerProvider
       }
     }
     const ToggleOverlayNotification().dispatch(context);
+  }
+
+  void _onMediaCommand(MediaCommandEvent event) {
+    final videoController = context.read<VideoConductor>().getController(entry);
+    if (videoController == null) return;
+
+    switch (event.command) {
+      case MediaCommand.play:
+        videoController.play();
+        break;
+      case MediaCommand.pause:
+        videoController.pause();
+        break;
+      case MediaCommand.stop:
+        videoController.pause();
+        break;
+      case MediaCommand.seek:
+        if (event is MediaSeekCommandEvent) {
+          videoController.seekTo(event.position);
+        }
+        break;
+    }
   }
 
   void _onViewStateChanged(MagnifierState v) {

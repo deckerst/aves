@@ -8,12 +8,14 @@ import 'package:provider/provider.dart';
 
 class TitleSearchToggler extends StatelessWidget {
   final bool queryEnabled, isMenuItem;
+  final FocusNode? focusNode;
   final VoidCallback? onPressed;
 
   const TitleSearchToggler({
     super.key,
     required this.queryEnabled,
     this.isMenuItem = false,
+    this.focusNode,
     this.onPressed,
   });
 
@@ -29,6 +31,7 @@ class TitleSearchToggler extends StatelessWidget {
         : IconButton(
             icon: icon,
             onPressed: onPressed,
+            focusNode: focusNode,
             tooltip: text,
           );
   }

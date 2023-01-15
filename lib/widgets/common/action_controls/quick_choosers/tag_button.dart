@@ -17,6 +17,7 @@ class TagButton extends ChooserQuickButton<CollectionFilter> {
     super.key,
     required super.blurred,
     super.onChooserValue,
+    super.focusNode,
     required super.onPressed,
   });
 

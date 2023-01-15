@@ -10,6 +10,8 @@ class AvesMapController {
 
   Stream<MapControllerMoveEvent> get moveCommands => _events.where((event) => event is MapControllerMoveEvent).cast<MapControllerMoveEvent>();
 
+  Stream<MapControllerZoomEvent> get zoomCommands => _events.where((event) => event is MapControllerZoomEvent).cast<MapControllerZoomEvent>();
+
   Stream<MapIdleUpdate> get idleUpdates => _events.where((event) => event is MapIdleUpdate).cast<MapIdleUpdate>();
 
   Stream<MapMarkerLocationChangeEvent> get markerLocationChanges => _events.where((event) => event is MapMarkerLocationChangeEvent).cast<MapMarkerLocationChangeEvent>();
@@ -20,6 +22,8 @@ class AvesMapController {
 
   void moveTo(LatLng latLng) => _streamController.add(MapControllerMoveEvent(latLng));
 
+  void zoomBy(double delta) => _streamController.add(MapControllerZoomEvent(delta));
+
   void notifyIdle(ZoomedBounds bounds) => _streamController.add(MapIdleUpdate(bounds));
 
   void notifyMarkerLocationChange() => _streamController.add(MapMarkerLocationChangeEvent());
@@ -29,6 +33,12 @@ class MapControllerMoveEvent {
   final LatLng latLng;
 
   MapControllerMoveEvent(this.latLng);
+}
+
+class MapControllerZoomEvent {
+  final double delta;
+
+  MapControllerZoomEvent(this.delta);
 }
 
 class MapIdleUpdate {

@@ -55,10 +55,10 @@ class MediaStoreImageProvider : ImageProvider() {
             val relativePathDirectory = ensureTrailingSeparator(directory)
             val relativePath = PathSegments(context, relativePathDirectory).relativeDir
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && relativePath != null) {
-                selection = "${MediaStore.MediaColumns.RELATIVE_PATH} = ? AND ${MediaColumns.PATH} LIKE ?"
+                selection = "${MediaStore.MediaColumns.RELATIVE_PATH} = ? AND ${MediaStore.MediaColumns.DATA} LIKE ?"
                 selectionArgs = arrayOf(relativePath, "$relativePathDirectory%")
             } else {
-                selection = "${MediaColumns.PATH} LIKE ?"
+                selection = "${MediaStore.MediaColumns.DATA} LIKE ?"
                 selectionArgs = arrayOf("$relativePathDirectory%")
             }
 
@@ -139,12 +139,12 @@ class MediaStoreImageProvider : ImageProvider() {
     fun checkObsoletePaths(context: Context, knownPathById: Map<Int?, String?>): List<Int> {
         val obsoleteIds = ArrayList<Int>()
         fun check(context: Context, contentUri: Uri) {
-            val projection = arrayOf(MediaStore.MediaColumns._ID, MediaColumns.PATH)
+            val projection = arrayOf(MediaStore.MediaColumns._ID, MediaStore.MediaColumns.DATA)
             try {
                 val cursor = context.contentResolver.query(contentUri, projection, null, null, null)
                 if (cursor != null) {
                     val idColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns._ID)
-                    val pathColumn = cursor.getColumnIndexOrThrow(MediaColumns.PATH)
+                    val pathColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA)
                     while (cursor.moveToNext()) {
                         val id = cursor.getInt(idColumn)
                         val path = cursor.getString(pathColumn)
@@ -185,7 +185,7 @@ class MediaStoreImageProvider : ImageProvider() {
 
                 // image & video
                 val idColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns._ID)
-                val pathColumn = cursor.getColumnIndexOrThrow(MediaColumns.PATH)
+                val pathColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA)
                 val mimeTypeColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.MIME_TYPE)
                 val sizeColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.SIZE)
                 val widthColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.WIDTH)
@@ -863,7 +863,7 @@ class MediaStoreImageProvider : ImageProvider() {
 
     fun getContentUriForPath(context: Context, path: String): Uri? {
         val projection = arrayOf(MediaStore.MediaColumns._ID)
-        val selection = "${MediaColumns.PATH} = ?"
+        val selection = "${MediaStore.MediaColumns.DATA} = ?"
         val selectionArgs = arrayOf(path)
 
         fun check(context: Context, contentUri: Uri): Uri? {
@@ -892,7 +892,7 @@ class MediaStoreImageProvider : ImageProvider() {
 
         private val BASE_PROJECTION = arrayOf(
             MediaStore.MediaColumns._ID,
-            MediaColumns.PATH,
+            MediaStore.MediaColumns.DATA,
             MediaStore.MediaColumns.MIME_TYPE,
             MediaStore.MediaColumns.SIZE,
             MediaStore.MediaColumns.WIDTH,
@@ -931,9 +931,6 @@ object MediaColumns {
 
     @SuppressLint("InlinedApi")
     const val DURATION = MediaStore.MediaColumns.DURATION
-
-    @Suppress("deprecation")
-    const val PATH = MediaStore.MediaColumns.DATA
 }
 
 typealias NewEntryHandler = (entry: FieldMap) -> Unit

@@ -345,9 +345,9 @@
   "@renameProcessorCounter": {},
   "renameProcessorName": "Ad",
   "@renameProcessorName": {},
-  "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{Bu albüm ve öğesi silinsin mi?} other{Bu albüm ve {count} öğesi silinsin mi?}}",
+  "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{Bu albüm ve içindeki öge silinsin mi?} other{Bu albüm ve içindeki {count} öge silinsin mi?}}",
   "@deleteSingleAlbumConfirmationDialogMessage": {},
-  "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{Bu albümler ve öğeleri silinsin mi?} other{Bu albümler ve {count} öğesi silinsin mi?}}",
+  "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{Bu albümler ve içindeki öge silinsin mi?} other{Bu albümler ve içindeki {count} ögesi silinsin mi?}}",
   "@deleteMultiAlbumConfirmationDialogMessage": {},
   "exportEntryDialogFormat": "Biçim:",
   "@exportEntryDialogFormat": {},
@@ -1196,5 +1196,17 @@
     }
   },
   "settingsAccessibilityShowPinchGestureAlternatives": "Çoklu dokunma hareketi alternatiflerini göster",
-  "@settingsAccessibilityShowPinchGestureAlternatives": {}
+  "@settingsAccessibilityShowPinchGestureAlternatives": {},
+  "settingsViewerShowDescription": "Açıklamayı göster",
+  "@settingsViewerShowDescription": {},
+  "settingsModificationWarningDialogMessage": "Diğer ayarlar değiştirilecektir.",
+  "@settingsModificationWarningDialogMessage": {},
+  "settingsDisplayUseTvInterface": "Android TV arayüzü",
+  "@settingsDisplayUseTvInterface": {},
+  "filterLocatedLabel": "Konumlu",
+  "@filterLocatedLabel": {},
+  "filterTaggedLabel": "Etiketli",
+  "@filterTaggedLabel": {},
+  "tooManyItemsErrorDialogMessage": "Daha az ögeyle tekrar deneyin.",
+  "@tooManyItemsErrorDialogMessage": {}
 }

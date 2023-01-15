@@ -297,5 +297,86 @@
   "policyPageTitle": "سیاست حفظ حریم خصوصی",
   "@policyPageTitle": {},
   "collectionPickPageTitle": "انتخاب",
-  "@collectionPickPageTitle": {}
+  "@collectionPickPageTitle": {},
+  "videoResumeDialogMessage": "ادامه پخش از زمان {time}؟",
+  "@videoResumeDialogMessage": {
+    "placeholders": {
+      "time": {
+        "type": "String",
+        "example": "13:37"
+      }
+    }
+  },
+  "storageVolumeDescriptionFallbackNonPrimary": "کارت حافظه",
+  "@storageVolumeDescriptionFallbackNonPrimary": {},
+  "videoPlaybackWithSound": "پخش با صدا",
+  "@videoPlaybackWithSound": {},
+  "entryActionCopyToClipboard": "کپی به کلیپ بورد",
+  "@entryActionCopyToClipboard": {},
+  "entryActionShowGeoTiffOnMap": "نمایش بر روی نقشه",
+  "@entryActionShowGeoTiffOnMap": {},
+  "filterOnThisDayLabel": "در امروز",
+  "@filterOnThisDayLabel": {},
+  "mapStyleGoogleNormal": "گوگل مپ",
+  "@mapStyleGoogleNormal": {},
+  "mapStyleGoogleTerrain": "گوگل مپ (نمایش زمین)",
+  "@mapStyleGoogleTerrain": {},
+  "mapStyleGoogleHybrid": "گوگل مپ (نمایش هیبریدی)",
+  "@mapStyleGoogleHybrid": {},
+  "subtitlePositionTop": "بالا",
+  "@subtitlePositionTop": {},
+  "mapStyleStamenWatercolor": "استامن (نمایش نقشه کشیده شده)",
+  "@mapStyleStamenWatercolor": {},
+  "displayRefreshRatePreferLowest": "کمترین مقدار",
+  "@displayRefreshRatePreferLowest": {},
+  "videoPlaybackMuted": "پخش بی صدا",
+  "@videoPlaybackMuted": {},
+  "storageVolumeDescriptionFallbackPrimary": "حافظه داخلی",
+  "@storageVolumeDescriptionFallbackPrimary": {},
+  "columnCount": "{count, plural, =1{1 ستون} other{{count} ستون}}",
+  "@columnCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "mapStyleHuaweiNormal": "پتال مپس",
+  "@mapStyleHuaweiNormal": {},
+  "mapStyleHuaweiTerrain": "پتال مپس (نمایش زمین)",
+  "@mapStyleHuaweiTerrain": {},
+  "mapStyleOsmHot": "اوپن‌استریت‌مپ",
+  "@mapStyleOsmHot": {},
+  "subtitlePositionBottom": "پایین",
+  "@subtitlePositionBottom": {},
+  "themeBrightnessLight": "روشن",
+  "@themeBrightnessLight": {},
+  "themeBrightnessDark": "تاریک",
+  "@themeBrightnessDark": {},
+  "themeBrightnessBlack": "سیاه",
+  "@themeBrightnessBlack": {},
+  "videoStartOverButtonLabel": "شروع از اول",
+  "@videoStartOverButtonLabel": {},
+  "albumTierApps": "برنامه ها",
+  "@albumTierApps": {},
+  "nameConflictStrategyRename": "تغییر نام",
+  "@nameConflictStrategyRename": {},
+  "nameConflictStrategyReplace": "جایگزین کردن",
+  "@nameConflictStrategyReplace": {},
+  "displayRefreshRatePreferHighest": "بیشترین مقدار",
+  "@displayRefreshRatePreferHighest": {},
+  "storageAccessDialogMessage": "لطفا فولدر {directory} در {volume} را در صفحه بعد انتخاب کنید و اجازه را به برنامه بدهید.",
+  "@storageAccessDialogMessage": {
+    "placeholders": {
+      "directory": {
+        "type": "String",
+        "description": "the name of a directory, using the output of `rootDirectoryDescription` or `otherDirectoryDescription`"
+      },
+      "volume": {
+        "type": "String",
+        "example": "SD card",
+        "description": "the name of a storage volume"
+      }
+    }
+  },
+  "mapStyleStamenToner": "استامن (نمایش رود ها)",
+  "@mapStyleStamenToner": {}
 }

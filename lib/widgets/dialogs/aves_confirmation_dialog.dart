@@ -110,10 +110,7 @@ class _AvesConfirmationDialogState extends State<_AvesConfirmationDialog> {
         ),
       ],
       actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
-        ),
+        const CancelButton(),
         TextButton(
           onPressed: () {
             if (_skip.value) {

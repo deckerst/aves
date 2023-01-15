@@ -87,10 +87,7 @@ class _AddShortcutDialogState extends State<AddShortcutDialog> {
               ),
             ],
             actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
-              ),
+              const CancelButton(),
               ValueListenableBuilder<bool>(
                 valueListenable: _isValidNotifier,
                 builder: (context, isValid, child) {

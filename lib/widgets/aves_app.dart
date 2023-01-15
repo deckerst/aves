@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:aves/app_flavor.dart';
@@ -53,8 +54,9 @@ class AvesApp extends StatefulWidget {
   final AppFlavor flavor;
 
   // temporary exclude locales not ready yet for prime time
-  static final _unsupportedLocales = {'ar', 'fa', 'gl', 'nn', 'pl', 'th'}.map(Locale.new).toSet();
+  static final _unsupportedLocales = {'ar', 'fa', 'gl', 'nn', 'th'}.map(Locale.new).toSet();
   static final List<Locale> supportedLocales = AppLocalizations.supportedLocales.where((v) => !_unsupportedLocales.contains(v)).toList();
+  static final ValueNotifier<EdgeInsets> cutoutInsetsNotifier = ValueNotifier(EdgeInsets.zero);
   static final GlobalKey<NavigatorState> navigatorKey = GlobalKey(debugLabel: 'app-navigator');
 
   // do not monitor all `ModalRoute`s, which would include popup menus,
@@ -135,11 +137,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   final Set<String> _changedUris = {};
   Size? _screenSize;
 
-  // Flutter has various page transition implementations for Android:
-  // - `FadeUpwardsPageTransitionsBuilder` on Oreo / API 27 and below
-  // - `OpenUpwardsPageTransitionsBuilder` on Pie / API 28
-  // - `ZoomPageTransitionsBuilder` on Android 10 / API 29 and above (default in Flutter v3.0.0)
-  final ValueNotifier<PageTransitionsBuilder> _pageTransitionsBuilderNotifier = ValueNotifier(const FadeUpwardsPageTransitionsBuilder());
+  final ValueNotifier<PageTransitionsBuilder> _pageTransitionsBuilderNotifier = ValueNotifier(defaultPageTransitionsBuilder);
   final ValueNotifier<TvMediaQueryModifier?> _tvMediaQueryModifierNotifier = ValueNotifier(null);
   final ValueNotifier<AppMode> _appModeNotifier = ValueNotifier(AppMode.main);
 
@@ -150,6 +148,12 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   final EventChannel _newIntentChannel = const OptionalEventChannel('deckers.thibault/aves/new_intent_stream');
   final EventChannel _analysisCompletionChannel = const OptionalEventChannel('deckers.thibault/aves/analysis_events');
   final EventChannel _errorChannel = const OptionalEventChannel('deckers.thibault/aves/error');
+
+  // Flutter has various page transition implementations for Android:
+  // - `FadeUpwardsPageTransitionsBuilder` on Oreo / API 27 and below
+  // - `OpenUpwardsPageTransitionsBuilder` on Pie / API 28
+  // - `ZoomPageTransitionsBuilder` on Android 10 / API 29 and above (default in Flutter v3.0.0)
+  static const defaultPageTransitionsBuilder = FadeUpwardsPageTransitionsBuilder();
 
   @override
   void initState() {
@@ -164,6 +168,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     _subscriptions.add(_newIntentChannel.receiveBroadcastStream().listen((event) => _onNewIntent(event as Map?)));
     _subscriptions.add(_analysisCompletionChannel.receiveBroadcastStream().listen((event) => _onAnalysisCompletion()));
     _subscriptions.add(_errorChannel.receiveBroadcastStream().listen((event) => _onError(event as String?)));
+    _updateCutoutInsets();
     WidgetsBinding.instance.addObserver(this);
   }
 
@@ -375,6 +380,15 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     }
   }
 
+  @override
+  void didChangeMetrics() => _updateCutoutInsets();
+
+  Future<void> _updateCutoutInsets() async {
+    if (await windowService.isCutoutAware()) {
+      AvesApp.cutoutInsetsNotifier.value = await windowService.getCutoutInsets();
+    }
+  }
+
   Widget _getFirstPage({Map? intentData}) => settings.hasAcceptedTerms ? HomePage(intentData: intentData) : const WelcomePage();
 
   Size? _getScreenSize() {
@@ -407,23 +421,62 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     final stopwatch = Stopwatch()..start();
 
     await device.init();
-    if (device.isTelevision) {
-      _pageTransitionsBuilderNotifier.value = const TvPageTransitionsBuilder();
-      _tvMediaQueryModifierNotifier.value = (mq) => mq.copyWith(
-            textScaleFactor: 1.1,
-            navigationMode: NavigationMode.directional,
-          );
-    }
     await mobileServices.init();
     await settings.init(monitorPlatformSettings: true);
     settings.isRotationLocked = await windowService.isRotationLocked();
     settings.areAnimationsRemoved = await AccessibilityService.areAnimationsRemoved();
+    await _onTvLayoutChanged();
     _monitorSettings();
 
     FijkLog.setLevel(FijkLogLevel.Warn);
     unawaited(_setupErrorReporting());
 
     debugPrint('App setup in ${stopwatch.elapsed.inMilliseconds}ms');
+  }
+
+  Future<void> _onTvLayoutChanged() async {
+    if (settings.useTvLayout) {
+      settings.applyTvSettings();
+
+      _pageTransitionsBuilderNotifier.value = const TvPageTransitionsBuilder();
+      _tvMediaQueryModifierNotifier.value = (mq) {
+        // cf https://developer.android.com/training/tv/start/layouts.html#overscan
+        final screenSize = mq.size;
+        const overscanFactor = .05;
+        final overscanInsets = EdgeInsets.symmetric(
+          vertical: screenSize.shortestSide * overscanFactor,
+          horizontal: screenSize.longestSide * overscanFactor,
+        );
+        final oldViewPadding = mq.viewPadding;
+        final newViewPadding = EdgeInsets.only(
+          top: max(oldViewPadding.top, overscanInsets.top),
+          right: max(oldViewPadding.right, overscanInsets.right),
+          bottom: max(oldViewPadding.bottom, overscanInsets.bottom),
+          left: max(oldViewPadding.left, overscanInsets.left),
+        );
+        var newPadding = newViewPadding - mq.viewInsets;
+        newPadding = EdgeInsets.only(
+          top: max(0.0, newPadding.top),
+          right: max(0.0, newPadding.right),
+          bottom: max(0.0, newPadding.bottom),
+          left: max(0.0, newPadding.left),
+        );
+
+        return mq.copyWith(
+          textScaleFactor: 1.1,
+          padding: newPadding,
+          viewPadding: newViewPadding,
+          navigationMode: NavigationMode.directional,
+        );
+      };
+      if (settings.forceTvLayout) {
+        await windowService.requestOrientation(Orientation.landscape);
+      }
+    } else {
+      _pageTransitionsBuilderNotifier.value = defaultPageTransitionsBuilder;
+      _tvMediaQueryModifierNotifier.value = null;
+      await windowService.requestOrientation(null);
+    }
   }
 
   void _monitorSettings() {
@@ -439,15 +492,32 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     void applyKeepScreenOn() => settings.keepScreenOn.apply();
 
     void applyIsRotationLocked() {
-      if (!settings.isRotationLocked) {
+      if (!settings.isRotationLocked && !settings.useTvLayout) {
         windowService.requestOrientation();
       }
     }
 
-    settings.updateStream.where((event) => event.key == Settings.isInstalledAppAccessAllowedKey).listen((_) => applyIsInstalledAppAccessAllowed());
-    settings.updateStream.where((event) => event.key == Settings.displayRefreshRateModeKey).listen((_) => applyDisplayRefreshRateMode());
-    settings.updateStream.where((event) => event.key == Settings.keepScreenOnKey).listen((_) => applyKeepScreenOn());
-    settings.updateStream.where((event) => event.key == Settings.platformAccelerometerRotationKey).listen((_) => applyIsRotationLocked());
+    void applyForceTvLayout() {
+      _onTvLayoutChanged();
+      unawaited(AvesApp.navigatorKey.currentState!.pushAndRemoveUntil(
+        MaterialPageRoute(
+          settings: const RouteSettings(name: HomePage.routeName),
+          builder: (_) => _getFirstPage(),
+        ),
+        (route) => false,
+      ));
+    }
+
+    final settingStream = settings.updateStream;
+    // app
+    settingStream.where((event) => event.key == Settings.isInstalledAppAccessAllowedKey).listen((_) => applyIsInstalledAppAccessAllowed());
+    // display
+    settingStream.where((event) => event.key == Settings.displayRefreshRateModeKey).listen((_) => applyDisplayRefreshRateMode());
+    settingStream.where((event) => event.key == Settings.forceTvLayoutKey).listen((_) => applyForceTvLayout());
+    // navigation
+    settingStream.where((event) => event.key == Settings.keepScreenOnKey).listen((_) => applyKeepScreenOn());
+    // platform settings
+    settingStream.where((event) => event.key == Settings.platformAccelerometerRotationKey).listen((_) => applyIsRotationLocked());
 
     applyDisplayRefreshRateMode();
     applyKeepScreenOn();

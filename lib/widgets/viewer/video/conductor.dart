@@ -11,14 +11,13 @@ import 'package:collection/collection.dart';
 class VideoConductor {
   final List<AvesVideoController> _controllers = [];
   final List<StreamSubscription> _subscriptions = [];
-  final bool persistPlayback;
 
   static const _defaultMaxControllerCount = 3;
 
-  VideoConductor({required this.persistPlayback});
+  VideoConductor();
 
   Future<void> dispose() async {
-    await Future.forEach<AvesVideoController>(_controllers, (controller) => controller.dispose());
+    await disposeAll();
     _subscriptions
       ..forEach((sub) => sub.cancel())
       ..clear();
@@ -33,7 +32,7 @@ class VideoConductor {
     if (controller != null) {
       _controllers.remove(controller);
     } else {
-      controller = IjkPlayerAvesVideoController(entry, persistPlayback: persistPlayback);
+      controller = IjkPlayerAvesVideoController(entry, persistPlayback: true);
       _subscriptions.add(controller.statusStream.listen(_onControllerStatusChanged));
     }
     _controllers.insert(0, controller);
@@ -54,6 +53,8 @@ class VideoConductor {
   }
 
   Future<void> _applyToAll(FutureOr Function(AvesVideoController controller) action) => Future.forEach<AvesVideoController>(_controllers, action);
+
+  Future<void> disposeAll() => _applyToAll((controller) => controller.dispose());
 
   Future<void> pauseAll() => _applyToAll((controller) => controller.pause());
 

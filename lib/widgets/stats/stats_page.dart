@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:aves/model/device.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
@@ -24,11 +23,11 @@ import 'package:aves/widgets/filter_grids/common/action_delegates/chip.dart';
 import 'package:aves/widgets/stats/date/histogram.dart';
 import 'package:aves/widgets/stats/filter_table.dart';
 import 'package:aves/widgets/stats/mime_donut.dart';
+import 'package:aves/widgets/stats/percent_text.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:intl/intl.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
 
@@ -106,7 +105,6 @@ class _StatsPageState extends State<StatsPage> {
 
         if (!animating) {
           final durations = context.watch<DurationsData>();
-          final percentFormat = NumberFormat.percentPattern();
 
           if (entries.isEmpty) {
             child = EmptyContent(
@@ -115,7 +113,6 @@ class _StatsPageState extends State<StatsPage> {
             );
           } else {
             final theme = Theme.of(context);
-            final isDark = theme.brightness == Brightness.dark;
             final chartAnimationDuration = context.read<DurationsData>().chartTransition;
 
             final byMimeTypes = groupBy<AvesEntry, String>(entries, (entry) => entry.mimeType).map<String, int>((k, v) => MapEntry(k, v.length));
@@ -164,12 +161,7 @@ class _StatsPageState extends State<StatsPage> {
                           animation: context.select<Settings, bool>((v) => v.accessibilityAnimations.animate),
                           isRTL: context.isRtl,
                           barRadius: barRadius,
-                          center: Text(
-                            percentFormat.format(withGpsPercent),
-                            style: TextStyle(
-                              shadows: isDark ? Constants.embossShadows : null,
-                            ),
-                          ),
+                          center: LinearPercentIndicatorText(percent: withGpsPercent),
                           padding: EdgeInsets.symmetric(horizontal: lineHeight),
                         ),
                       ),
@@ -226,7 +218,7 @@ class _StatsPageState extends State<StatsPage> {
 
         return Scaffold(
           appBar: AppBar(
-            automaticallyImplyLeading: !device.isTelevision,
+            automaticallyImplyLeading: !settings.useTvLayout,
             title: Text(l10n.statsPageTitle),
           ),
           body: GestureAreaProtectorStack(
@@ -257,43 +249,70 @@ class _StatsPageState extends State<StatsPage> {
 
     final totalEntryCount = entries.length;
     final hasMore = maxRowCount != null && entryCountMap.length > maxRowCount;
-    return [
-      Padding(
+    final onHeaderPressed = hasMore
+        ? () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                settings: const RouteSettings(name: StatsTopPage.routeName),
+                builder: (context) => StatsTopPage(
+                  title: title,
+                  tableBuilder: (context) => FilterTable(
+                    totalEntryCount: totalEntryCount,
+                    entryCountMap: entryCountMap,
+                    filterBuilder: filterBuilder,
+                    sortByCount: sortByCount,
+                    maxRowCount: null,
+                    onFilterSelection: (filter) => _onFilterSelection(context, filter),
+                  ),
+                  onFilterSelection: (filter) => _onFilterSelection(context, filter),
+                ),
+              ),
+            )
+        : null;
+    Widget header = Text(
+      title,
+      style: Constants.knownTitleTextStyle,
+    );
+    if (settings.useTvLayout) {
+      final primaryColor = Theme.of(context).colorScheme.primary;
+      header = Container(
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        alignment: AlignmentDirectional.centerStart,
+        child: Material(
+          type: MaterialType.transparency,
+          child: InkResponse(
+            onTap: onHeaderPressed,
+            containedInkWell: true,
+            highlightShape: BoxShape.rectangle,
+            borderRadius: const BorderRadius.all(Radius.circular(123)),
+            hoverColor: primaryColor.withOpacity(0.04),
+            splashColor: primaryColor.withOpacity(0.12),
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: header,
+            ),
+          ),
+        ),
+      );
+    } else {
+      header = Padding(
         padding: const EdgeInsets.all(16),
         child: Row(
           children: [
-            Text(
-              title,
-              style: Constants.knownTitleTextStyle,
-            ),
+            header,
             const Spacer(),
             IconButton(
               icon: const Icon(AIcons.next),
-              onPressed: hasMore
-                  ? () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          settings: const RouteSettings(name: StatsTopPage.routeName),
-                          builder: (context) => StatsTopPage(
-                            title: title,
-                            tableBuilder: (context) => FilterTable(
-                              totalEntryCount: totalEntryCount,
-                              entryCountMap: entryCountMap,
-                              filterBuilder: filterBuilder,
-                              sortByCount: sortByCount,
-                              maxRowCount: null,
-                              onFilterSelection: (filter) => _onFilterSelection(context, filter),
-                            ),
-                            onFilterSelection: (filter) => _onFilterSelection(context, filter),
-                          ),
-                        ),
-                      )
-                  : null,
+              onPressed: onHeaderPressed,
               tooltip: MaterialLocalizations.of(context).moreButtonTooltip,
             ),
           ],
         ),
-      ),
+      );
+    }
+
+    return [
+      header,
       FilterTable(
         totalEntryCount: totalEntryCount,
         entryCountMap: entryCountMap,
@@ -356,7 +375,7 @@ class StatsTopPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: !device.isTelevision,
+        automaticallyImplyLeading: !settings.useTvLayout,
         title: Text(title),
       ),
       body: GestureAreaProtectorStack(
