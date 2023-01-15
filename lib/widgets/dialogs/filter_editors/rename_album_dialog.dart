@@ -36,6 +36,8 @@ class _RenameAlbumDialogState extends State<RenameAlbumDialog> {
   @override
   void dispose() {
     _nameController.dispose();
+    _existsNotifier.dispose();
+    _isValidNotifier.dispose();
     super.dispose();
   }
 
@@ -66,7 +68,7 @@ class _RenameAlbumDialogState extends State<RenameAlbumDialog> {
               child: Text(context.l10n.applyButtonLabel),
             );
           },
-        )
+        ),
       ],
     );
   }

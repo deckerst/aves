@@ -15,8 +15,8 @@ import 'package:aves/widgets/common/basic/wheel.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
-import 'package:aves/widgets/dialogs/pick_dialogs/item_pick_page.dart';
 import 'package:aves/widgets/dialogs/item_picker.dart';
+import 'package:aves/widgets/dialogs/pick_dialogs/item_pick_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -43,6 +43,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
   late ValueNotifier<String> _shiftSign;
   bool _showOptions = false;
   final Set<MetadataField> _fields = {...DateModifier.writableFields};
+  final ValueNotifier<bool> _isValidNotifier = ValueNotifier(false);
 
   DateTime get copyItemDate => _copyItemSource.bestDate ?? DateTime.now();
 
@@ -52,6 +53,13 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
     _initCustom();
     _initCopyItem();
     _initShift(minutesInHour);
+    _validate();
+  }
+
+  @override
+  void dispose() {
+    _isValidNotifier.dispose();
+    super.dispose();
   }
 
   void _initCustom() {
@@ -88,7 +96,11 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
                   values: DateEditAction.values,
                   valueText: (v) => v.getText(context),
                   value: _action,
-                  onChanged: (v) => setState(() => _action = v!),
+                  onChanged: (v) {
+                    _action = v!;
+                    _validate();
+                    setState(() {});
+                  },
                   isExpanded: true,
                   dropdownColor: Themes.thirdLayerColor(context),
                 ),
@@ -113,9 +125,14 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
             ],
             actions: [
               const CancelButton(),
-              TextButton(
-                onPressed: () => _submit(context),
-                child: Text(l10n.applyButtonLabel),
+              ValueListenableBuilder<bool>(
+                valueListenable: _isValidNotifier,
+                builder: (context, isValid, child) {
+                  return TextButton(
+                    onPressed: isValid ? () => _submit(context) : null,
+                    child: Text(l10n.applyButtonLabel),
+                  );
+                },
               ),
             ],
           );
@@ -265,7 +282,11 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
               children: DateModifier.writableFields
                   .map((field) => SwitchListTile(
                         value: _fields.contains(field),
-                        onChanged: (selected) => setState(() => selected ? _fields.add(field) : _fields.remove(field)),
+                        onChanged: (selected) {
+                          selected ? _fields.add(field) : _fields.remove(field);
+                          _validate();
+                          setState(() {});
+                        },
                         title: Text(field.title),
                       ))
                   .toList(),
@@ -346,5 +367,24 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
     }
   }
 
-  void _submit(BuildContext context) => Navigator.pop(context, _getModifier());
+  void _validate() {
+    switch (_action) {
+      case DateEditAction.setCustom:
+      case DateEditAction.copyField:
+      case DateEditAction.copyItem:
+      case DateEditAction.extractFromTitle:
+        _isValidNotifier.value = true;
+        break;
+      case DateEditAction.shift:
+      case DateEditAction.remove:
+        _isValidNotifier.value = _fields.isNotEmpty;
+        break;
+    }
+  }
+
+  void _submit(BuildContext context) {
+    if (_isValidNotifier.value) {
+      Navigator.pop(context, _getModifier());
+    }
+  }
 }
