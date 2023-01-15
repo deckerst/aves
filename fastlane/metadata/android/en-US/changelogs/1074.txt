@@ -1,5 +1,0 @@
-In v1.6.8:
-- bottom navigation bar
-- fast scroll with breadcrumbs
-- settings search
-Full changelog available on GitHub

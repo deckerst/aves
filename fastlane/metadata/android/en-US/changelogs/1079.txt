@@ -1,5 +1,0 @@
-In v1.6.13:
-- play your HEIC motion photos
-- find recently downloaded images with the `recently added` filter
-- enjoy the app in Dutch
-Full changelog available on GitHub
