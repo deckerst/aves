@@ -1206,5 +1206,7 @@
   "filterTaggedLabel": "태그 있음",
   "@filterTaggedLabel": {},
   "filterLocatedLabel": "위치 있음",
-  "@filterLocatedLabel": {}
+  "@filterLocatedLabel": {},
+  "tooManyItemsErrorDialogMessage": "항목 수를 줄이고 다시 시도하세요.",
+  "@tooManyItemsErrorDialogMessage": {}
 }

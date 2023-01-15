@@ -1186,5 +1186,19 @@
   "filterAspectRatioLandscapeLabel": "Paisagem",
   "@filterAspectRatioLandscapeLabel": {},
   "entryInfoActionExportMetadata": "Exportar metadados",
-  "@entryInfoActionExportMetadata": {}
+  "@entryInfoActionExportMetadata": {},
+  "widgetDisplayedItemMostRecent": "Mais recente",
+  "@widgetDisplayedItemMostRecent": {},
+  "filterTaggedLabel": "Marcado",
+  "@filterTaggedLabel": {},
+  "filterLocatedLabel": "Localizado",
+  "@filterLocatedLabel": {},
+  "settingsAccessibilityShowPinchGestureAlternatives": "Mostrar alternativas de gesto multitoque",
+  "@settingsAccessibilityShowPinchGestureAlternatives": {},
+  "settingsModificationWarningDialogMessage": "Outras configurações serão modificadas.",
+  "@settingsModificationWarningDialogMessage": {},
+  "settingsDisplayUseTvInterface": "Interface de TV Android",
+  "@settingsDisplayUseTvInterface": {},
+  "settingsViewerShowRatingTags": "Mostrar avaliações e tags",
+  "@settingsViewerShowRatingTags": {}
 }
