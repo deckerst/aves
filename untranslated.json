@@ -591,12 +591,7 @@
   ],
 
   "el": [
-    "filterLocatedLabel",
-    "filterTaggedLabel",
-    "tooManyItemsErrorDialogMessage",
-    "settingsModificationWarningDialogMessage",
-    "settingsViewerShowDescription",
-    "settingsDisplayUseTvInterface"
+    "tooManyItemsErrorDialogMessage"
   ],
 
   "es": [
@@ -1042,10 +1037,6 @@
     "filePickerOpenFrom",
     "filePickerNoItems",
     "filePickerUseThisFolder"
-  ],
-
-  "fr": [
-    "tooManyItemsErrorDialogMessage"
   ],
 
   "gl": [
@@ -1521,19 +1512,6 @@
     "filePickerUseThisFolder"
   ],
 
-  "id": [
-    "tooManyItemsErrorDialogMessage"
-  ],
-
-  "it": [
-    "filterLocatedLabel",
-    "filterTaggedLabel",
-    "tooManyItemsErrorDialogMessage",
-    "settingsModificationWarningDialogMessage",
-    "settingsViewerShowDescription",
-    "settingsDisplayUseTvInterface"
-  ],
-
   "ja": [
     "columnCount",
     "chipActionFilterIn",
@@ -1551,10 +1529,6 @@
     "settingsAccessibilityShowPinchGestureAlternatives",
     "settingsDisplayUseTvInterface",
     "settingsWidgetDisplayedItem"
-  ],
-
-  "ko": [
-    "tooManyItemsErrorDialogMessage"
   ],
 
   "lt": [
@@ -1904,14 +1878,7 @@
 
   "pt": [
     "columnCount",
-    "filterLocatedLabel",
-    "filterTaggedLabel",
-    "widgetDisplayedItemMostRecent",
-    "tooManyItemsErrorDialogMessage",
-    "settingsModificationWarningDialogMessage",
-    "settingsViewerShowRatingTags",
-    "settingsAccessibilityShowPinchGestureAlternatives",
-    "settingsDisplayUseTvInterface"
+    "tooManyItemsErrorDialogMessage"
   ],
 
   "ro": [
@@ -2272,10 +2239,6 @@
     "filePickerOpenFrom",
     "filePickerNoItems",
     "filePickerUseThisFolder"
-  ],
-
-  "tr": [
-    "tooManyItemsErrorDialogMessage"
   ],
 
   "uk": [

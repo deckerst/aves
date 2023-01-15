@@ -1,5 +1,0 @@
-In v1.7.6:
-- use viewer quick actions to rate, tag, locate
-- set a default editor
-- export metadata to a text file
-Full changelog available on GitHub
