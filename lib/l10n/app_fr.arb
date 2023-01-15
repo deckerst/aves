@@ -1206,5 +1206,7 @@
   "filterTaggedLabel": "Étiqueté",
   "@filterTaggedLabel": {},
   "filterLocatedLabel": "Localisé",
-  "@filterLocatedLabel": {}
+  "@filterLocatedLabel": {},
+  "tooManyItemsErrorDialogMessage": "Réessayez avec moins d’éléments.",
+  "@tooManyItemsErrorDialogMessage": {}
 }

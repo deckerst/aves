@@ -1206,5 +1206,7 @@
   "filterLocatedLabel": "Konumlu",
   "@filterLocatedLabel": {},
   "filterTaggedLabel": "Etiketli",
-  "@filterTaggedLabel": {}
+  "@filterTaggedLabel": {},
+  "tooManyItemsErrorDialogMessage": "Daha az ögeyle tekrar deneyin.",
+  "@tooManyItemsErrorDialogMessage": {}
 }
