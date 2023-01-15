@@ -1,5 +1,4 @@
 import 'package:aves/model/settings/settings.dart';
-import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
@@ -32,71 +31,72 @@ class AvesAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final useTvLayout = settings.useTvLayout;
     return Selector<MediaQueryData, double>(
       selector: (context, mq) => mq.padding.top,
       builder: (context, mqPaddingTop, child) {
-        final useTvLayout = settings.useTvLayout;
         return SliverPersistentHeader(
           floating: !useTvLayout,
           pinned: pinned,
           delegate: _SliverAppBarDelegate(
             height: mqPaddingTop + appBarHeightForContentHeight(contentHeight),
-            child: DirectionalSafeArea(
-              start: !useTvLayout,
-              bottom: false,
-              child: AvesFloatingBar(
-                builder: (context, backgroundColor, child) => Material(
-                  color: backgroundColor,
-                  child: child,
-                ),
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: kToolbarHeight,
-                      child: Row(
-                        children: [
-                          leading != null
-                              ? Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 4),
-                                  child: Hero(
-                                    tag: leadingHeroTag,
-                                    flightShuttleBuilder: _flightShuttleBuilder,
-                                    transitionOnUserGestures: true,
-                                    child: leading!,
-                                  ),
-                                )
-                              : const SizedBox(width: 16),
-                          Expanded(
-                            child: DefaultTextStyle(
-                              style: context.select<AvesColorsData, TextStyle>((v) => Theme.of(context).appBarTheme.titleTextStyle!),
-                              child: Hero(
-                                tag: titleHeroTag,
-                                flightShuttleBuilder: _flightShuttleBuilder,
-                                transitionOnUserGestures: true,
-                                child: AnimatedSwitcher(
-                                  duration: context.read<DurationsData>().iconAnimation,
-                                  child: Row(
-                                    key: ValueKey(transitionKey),
-                                    children: [
-                                      Expanded(child: title),
-                                      ...actions,
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    if (bottom != null) bottom!,
-                  ],
-                ),
-              ),
-            ),
+            child: child!,
           ),
         );
       },
+      child: DirectionalSafeArea(
+        start: !useTvLayout,
+        bottom: false,
+        child: AvesFloatingBar(
+          builder: (context, backgroundColor, child) => Material(
+            color: backgroundColor,
+            child: child,
+          ),
+          child: Column(
+            children: [
+              SizedBox(
+                height: kToolbarHeight,
+                child: Row(
+                  children: [
+                    leading != null
+                        ? Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 4),
+                            child: Hero(
+                              tag: leadingHeroTag,
+                              flightShuttleBuilder: _flightShuttleBuilder,
+                              transitionOnUserGestures: true,
+                              child: leading!,
+                            ),
+                          )
+                        : const SizedBox(width: 16),
+                    Expanded(
+                      child: DefaultTextStyle(
+                        style: Theme.of(context).appBarTheme.titleTextStyle!,
+                        child: Hero(
+                          tag: titleHeroTag,
+                          flightShuttleBuilder: _flightShuttleBuilder,
+                          transitionOnUserGestures: true,
+                          child: AnimatedSwitcher(
+                            duration: context.read<DurationsData>().iconAnimation,
+                            child: Row(
+                              key: ValueKey(transitionKey),
+                              children: [
+                                Expanded(child: title),
+                                ...actions,
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              if (bottom != null) bottom!,
+            ],
+          ),
+        ),
+      ),
     );
   }
 
