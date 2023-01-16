@@ -3,7 +3,7 @@ package deckers.thibault.aves.metadata
 import android.content.Context
 import android.net.Uri
 import com.adobe.internal.xmp.XMPMeta
-import deckers.thibault.aves.metadata.XMP.countPropArrayItems
+import deckers.thibault.aves.metadata.XMP.countPropPathArrayItems
 import deckers.thibault.aves.metadata.XMP.getSafeStructField
 import deckers.thibault.aves.utils.indexOfBytes
 import java.io.DataInputStream
@@ -15,11 +15,12 @@ class GoogleDeviceContainer {
     private val offsets: MutableList<Int> = ArrayList()
 
     fun findItems(xmpMeta: XMPMeta) {
-        val count = xmpMeta.countPropArrayItems(XMP.GDEVICE_DIRECTORY_PROP_NAME)
+        val containerDirectoryPath = listOf(XMP.GDEVICE_CONTAINER_PROP_NAME, XMP.GDEVICE_CONTAINER_DIRECTORY_PROP_NAME)
+        val count = xmpMeta.countPropPathArrayItems(containerDirectoryPath)
         for (i in 1 until count + 1) {
-            val mimeType = xmpMeta.getSafeStructField(listOf(XMP.GDEVICE_DIRECTORY_PROP_NAME, i, XMP.GDEVICE_CONTAINER_ITEM_MIME_PROP_NAME))?.value
-            val length = xmpMeta.getSafeStructField(listOf(XMP.GDEVICE_DIRECTORY_PROP_NAME, i, XMP.GDEVICE_CONTAINER_ITEM_LENGTH_PROP_NAME))?.value?.toLongOrNull()
-            val dataUri = xmpMeta.getSafeStructField(listOf(XMP.GDEVICE_DIRECTORY_PROP_NAME, i, XMP.GDEVICE_CONTAINER_ITEM_DATA_URI_PROP_NAME))?.value
+            val mimeType = xmpMeta.getSafeStructField(containerDirectoryPath + listOf(i, XMP.GDEVICE_CONTAINER_ITEM_MIME_PROP_NAME))?.value
+            val length = xmpMeta.getSafeStructField(containerDirectoryPath + listOf(i, XMP.GDEVICE_CONTAINER_ITEM_LENGTH_PROP_NAME))?.value?.toLongOrNull()
+            val dataUri = xmpMeta.getSafeStructField(containerDirectoryPath + listOf(i, XMP.GDEVICE_CONTAINER_ITEM_DATA_URI_PROP_NAME))?.value
             if (mimeType != null && length != null && dataUri != null) {
                 items.add(
                     GoogleDeviceContainerItem(

@@ -4,68 +4,69 @@ import 'package:aves/widgets/viewer/info/metadata/xmp_namespaces.dart';
 
 // cf https://github.com/adobe/xmp-docs/blob/master/XMPNamespaces/exif.md
 class XmpExifNamespace extends XmpNamespace {
-  const XmpExifNamespace(String nsPrefix, Map<String, String> rawProps) : super(Namespaces.exif, nsPrefix, rawProps);
+  XmpExifNamespace({required super.schemaRegistryPrefixes, required super.rawProps}) : super(nsUri: Namespaces.exif);
 
   @override
   String formatValue(XmpProp prop) {
     final v = prop.value;
-    switch (prop.path) {
-      case 'exif:ColorSpace':
+    final field = prop.path.replaceAll(nsPrefix, '');
+    switch (field) {
+      case 'ColorSpace':
         return Exif.getColorSpaceDescription(v);
-      case 'exif:Contrast':
+      case 'Contrast':
         return Exif.getContrastDescription(v);
-      case 'exif:CustomRendered':
+      case 'CustomRendered':
         return Exif.getCustomRenderedDescription(v);
-      case 'exif:ExifVersion':
-      case 'exif:FlashpixVersion':
+      case 'ExifVersion':
+      case 'FlashpixVersion':
         return Exif.getExifVersionDescription(v);
-      case 'exif:ExposureMode':
+      case 'ExposureMode':
         return Exif.getExposureModeDescription(v);
-      case 'exif:ExposureProgram':
+      case 'ExposureProgram':
         return Exif.getExposureProgramDescription(v);
-      case 'exif:FileSource':
+      case 'FileSource':
         return Exif.getFileSourceDescription(v);
-      case 'exif:Flash/exif:Mode':
+      case 'Flash/Mode':
         return Exif.getFlashModeDescription(v);
-      case 'exif:Flash/exif:Return':
+      case 'Flash/Return':
         return Exif.getFlashReturnDescription(v);
-      case 'exif:FocalPlaneResolutionUnit':
+      case 'FocalPlaneResolutionUnit':
         return Exif.getResolutionUnitDescription(v);
-      case 'exif:GainControl':
+      case 'GainControl':
         return Exif.getGainControlDescription(v);
-      case 'exif:LightSource':
+      case 'LightSource':
         return Exif.getLightSourceDescription(v);
-      case 'exif:MeteringMode':
+      case 'MeteringMode':
         return Exif.getMeteringModeDescription(v);
-      case 'exif:Saturation':
+      case 'Saturation':
         return Exif.getSaturationDescription(v);
-      case 'exif:SceneCaptureType':
+      case 'SceneCaptureType':
         return Exif.getSceneCaptureTypeDescription(v);
-      case 'exif:SceneType':
+      case 'SceneType':
         return Exif.getSceneTypeDescription(v);
-      case 'exif:SensingMethod':
+      case 'SensingMethod':
         return Exif.getSensingMethodDescription(v);
-      case 'exif:Sharpness':
+      case 'Sharpness':
         return Exif.getSharpnessDescription(v);
-      case 'exif:SubjectDistanceRange':
+      case 'SubjectDistanceRange':
         return Exif.getSubjectDistanceRangeDescription(v);
-      case 'exif:WhiteBalance':
+      case 'WhiteBalance':
         return Exif.getWhiteBalanceDescription(v);
-      case 'exif:GPSAltitudeRef':
+      case 'GPSAltitudeRef':
         return Exif.getGPSAltitudeRefDescription(v);
-      case 'exif:GPSDestBearingRef':
-      case 'exif:GPSImgDirectionRef':
-      case 'exif:GPSTrackRef':
+      case 'GPSDestBearingRef':
+      case 'GPSImgDirectionRef':
+      case 'GPSTrackRef':
         return Exif.getGPSDirectionRefDescription(v);
-      case 'exif:GPSDestDistanceRef':
+      case 'GPSDestDistanceRef':
         return Exif.getGPSDestDistanceRefDescription(v);
-      case 'exif:GPSDifferential':
+      case 'GPSDifferential':
         return Exif.getGPSDifferentialDescription(v);
-      case 'exif:GPSMeasureMode':
+      case 'GPSMeasureMode':
         return Exif.getGPSMeasureModeDescription(v);
-      case 'exif:GPSSpeedRef':
+      case 'GPSSpeedRef':
         return Exif.getGPSSpeedRefDescription(v);
-      case 'exif:GPSStatus':
+      case 'GPSStatus':
         return Exif.getGPSStatusDescription(v);
       default:
         return v;

@@ -463,7 +463,7 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
     modified |= XMP.removeElements(
       descriptions,
       XMP.containerDirectory,
-      Namespaces.container,
+      Namespaces.gContainer,
     );
 
     modified |= [
