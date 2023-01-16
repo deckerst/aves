@@ -71,6 +71,7 @@ object XMP {
     // cf https://developers.google.com/vr/reference/cardboard-camera-vr-photo-format
     private val knownDataProps = listOf(
         XMPPropName(GAUDIO_NS_URI, "Data"),
+        XMPPropName(GCAMERA_NS_URI, "RelitInputImageData"),
         XMPPropName(GIMAGE_NS_URI, "Data"),
         XMPPropName(GDEPTH_NS_URI, "Data"),
         XMPPropName(GDEPTH_NS_URI, "Confidence"),
