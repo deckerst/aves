@@ -50,6 +50,8 @@ class XmpNamespace extends Equatable {
         return XmpExifNamespace(schemaRegistryPrefixes: schemaRegistryPrefixes, rawProps: rawProps);
       case Namespaces.gAudio:
         return XmpGAudioNamespace(schemaRegistryPrefixes: schemaRegistryPrefixes, rawProps: rawProps);
+      case Namespaces.gCamera:
+        return XmpGCameraNamespace(schemaRegistryPrefixes: schemaRegistryPrefixes, rawProps: rawProps);
       case Namespaces.gContainer:
         return XmpGContainer(schemaRegistryPrefixes: schemaRegistryPrefixes, rawProps: rawProps);
       case Namespaces.gDepth:

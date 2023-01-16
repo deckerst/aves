@@ -60,7 +60,27 @@ class XmpGAudioNamespace extends XmpGoogleNamespace {
   XmpGAudioNamespace({required super.schemaRegistryPrefixes, required super.rawProps}) : super(nsUri: Namespaces.gAudio);
 
   @override
-  List<Tuple2<String, String>> get dataProps => [Tuple2('${nsPrefix}Data', '${nsPrefix}Mime')];
+  List<Tuple2<String, String>> get dataProps => [
+        Tuple2('${nsPrefix}Data', '${nsPrefix}Mime'),
+      ];
+}
+
+class XmpGCameraNamespace extends XmpGoogleNamespace {
+  XmpGCameraNamespace({required super.schemaRegistryPrefixes, required super.rawProps}) : super(nsUri: Namespaces.gCamera);
+
+  @override
+  List<Tuple2<String, String>> get dataProps => [
+        Tuple2('${nsPrefix}RelitInputImageData', '${nsPrefix}RelitInputImageMime'),
+      ];
+}
+
+class XmpGContainer extends XmpNamespace {
+  XmpGContainer({required super.schemaRegistryPrefixes, required super.rawProps}) : super(nsUri: Namespaces.gContainer);
+
+  @override
+  late final List<XmpCardData> cards = [
+    XmpCardData(RegExp(nsPrefix + r'Directory\[(\d+)\]/' + nsPrefix + r'Item/(.*)'), title: 'Directory Item'),
+  ];
 }
 
 class XmpGDepthNamespace extends XmpGoogleNamespace {
@@ -136,14 +156,7 @@ class XmpGImageNamespace extends XmpGoogleNamespace {
   XmpGImageNamespace({required super.schemaRegistryPrefixes, required super.rawProps}) : super(nsUri: Namespaces.gImage);
 
   @override
-  List<Tuple2<String, String>> get dataProps => [Tuple2('${nsPrefix}Data', '${nsPrefix}Mime')];
-}
-
-class XmpGContainer extends XmpNamespace {
-  XmpGContainer({required super.schemaRegistryPrefixes, required super.rawProps}) : super(nsUri: Namespaces.gContainer);
-
-  @override
-  late final List<XmpCardData> cards = [
-    XmpCardData(RegExp(nsPrefix + r'Directory\[(\d+)\]/' + nsPrefix + r'Item/(.*)'), title: 'Directory Item'),
-  ];
+  List<Tuple2<String, String>> get dataProps => [
+        Tuple2('${nsPrefix}Data', '${nsPrefix}Mime'),
+      ];
 }
