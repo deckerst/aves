@@ -781,6 +781,7 @@
   "settingsVideoButtonsTile": "Buttons",
   "settingsVideoGestureDoubleTapTogglePlay": "Double tap to play/pause",
   "settingsVideoGestureSideDoubleTapSeek": "Double tap on screen edges to seek backward/forward",
+  "settingsVideoGestureVerticalDragBrightnessVolume": "Swipe up or down to adjust brightness/volume",
 
   "settingsPrivacySectionTitle": "Privacy",
   "settingsAllowInstalledAppAccess": "Allow access to app inventory",

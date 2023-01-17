@@ -97,6 +97,7 @@ class SettingsDefaults {
   static const videoControls = VideoControls.play;
   static const videoGestureDoubleTapTogglePlay = false;
   static const videoGestureSideDoubleTapSeek = true;
+  static const videoGestureVerticalDragBrightnessVolume = false;
 
   // subtitles
   static const subtitleFontSize = 20.0;

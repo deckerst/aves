@@ -5,7 +5,7 @@ import 'package:aves/widgets/common/basic/text/background_painter.dart';
 import 'package:aves/widgets/common/basic/text/outlined.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
-import 'package:aves/widgets/viewer/visual/subtitle/subtitle.dart';
+import 'package:aves/widgets/viewer/visual/video/subtitle/subtitle.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

@@ -1,4 +1,4 @@
-import 'package:aves/widgets/viewer/visual/subtitle/style.dart';
+import 'package:aves/widgets/viewer/visual/video/subtitle/style.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
