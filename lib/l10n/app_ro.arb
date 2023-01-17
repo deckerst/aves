@@ -432,13 +432,13 @@
   "@renameProcessorCounter": {},
   "renameProcessorName": "Nume",
   "@renameProcessorName": {},
-  "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{Ștergeți acest album și articolul său?} other{Ștergeți acest album și {count} articole ale acestuia?}}",
+  "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{Ștergi acest album și articolul din el?} other{Ștergi acest album și {count} articolele din el?}}",
   "@deleteSingleAlbumConfirmationDialogMessage": {
     "placeholders": {
       "count": {}
     }
   },
-  "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{Ștergeți aceste albume și articolele lor?} other{Ștergeți aceste albume și {count} articole ale lor?}}",
+  "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{Ștergi aceste albume și articolul din ele?} other{Ștergi aceste albume și {count} articolele din ele?}}",
   "@deleteMultiAlbumConfirmationDialogMessage": {
     "placeholders": {
       "count": {}
@@ -1364,5 +1364,7 @@
   "settingsModificationWarningDialogMessage": "Alte setări vor fi modificate.",
   "@settingsModificationWarningDialogMessage": {},
   "settingsDisplayUseTvInterface": "Interfață Android TV",
-  "@settingsDisplayUseTvInterface": {}
+  "@settingsDisplayUseTvInterface": {},
+  "tooManyItemsErrorDialogMessage": "Încearcă din nou cu mai puține elemente.",
+  "@tooManyItemsErrorDialogMessage": {}
 }

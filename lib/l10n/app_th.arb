@@ -569,5 +569,87 @@
   "viewDialogLayoutSectionTitle": "เค้าโครง",
   "@viewDialogLayoutSectionTitle": {},
   "aboutLinkPolicy": "นโยบายความเป็นส่วนตัว",
-  "@aboutLinkPolicy": {}
+  "@aboutLinkPolicy": {},
+  "filterLocatedLabel": "ระบุสถานที่",
+  "@filterLocatedLabel": {},
+  "filterTaggedLabel": "ระบุแท็ก",
+  "@filterTaggedLabel": {},
+  "keepScreenOnVideoPlayback": "ระหว่างการเล่นวิดีโอ",
+  "@keepScreenOnVideoPlayback": {},
+  "keepScreenOnViewerOnly": "หน้า Viewer เท่านั้น",
+  "@keepScreenOnViewerOnly": {},
+  "accessibilityAnimationsRemove": "ปิดการเคลื่อนไหว",
+  "@accessibilityAnimationsRemove": {},
+  "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{ลบอัลบั้มเหล่านี้และรายการในอัลบั้มทั้งหมด?} other{ลบอัลบั้มเหล่านี้และ {count} รายการในอัลบั้ม?}}",
+  "@deleteMultiAlbumConfirmationDialogMessage": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "entryActionShareVideoOnly": "แชร์วิดีโอเท่านั้น",
+  "@entryActionShareVideoOnly": {},
+  "entryActionShowGeoTiffOnMap": "แสดงแผนที่ซ้อน",
+  "@entryActionShowGeoTiffOnMap": {},
+  "videoActionCaptureFrame": "จับภาพเฟรม",
+  "@videoActionCaptureFrame": {},
+  "entryInfoActionRemoveLocation": "ลบสถานที่",
+  "@entryInfoActionRemoveLocation": {},
+  "filterAspectRatioLandscapeLabel": "ภาพแนวนอน",
+  "@filterAspectRatioLandscapeLabel": {},
+  "filterAspectRatioPortraitLabel": "ภาพแนวตั้ง",
+  "@filterAspectRatioPortraitLabel": {},
+  "filterNoAddressLabel": "ไม่มีที่อยู่",
+  "@filterNoAddressLabel": {},
+  "widgetOpenPageViewer": "เปิดหน้า Viewer",
+  "@widgetOpenPageViewer": {},
+  "coordinateDms": "{coordinate} {direction}",
+  "@coordinateDms": {
+    "placeholders": {
+      "coordinate": {
+        "type": "String",
+        "example": "38° 41′ 47.72″"
+      },
+      "direction": {
+        "type": "String",
+        "example": "S"
+      }
+    }
+  },
+  "missingSystemFilePickerDialogMessage": "ตัวเลือกไฟล์ระบบหายไป หรือปิดใช้งาน โปรดเปิดใช้งานและลองอีกครั้ง",
+  "@missingSystemFilePickerDialogMessage": {},
+  "addShortcutDialogLabel": "ป้ายทางลัด",
+  "@addShortcutDialogLabel": {},
+  "binEntriesConfirmationDialogMessage": "{count, plural, =1{ย้ายรายการนี้ไปยังถังขยะ?} other{ย้าย {count} รายการนี้ไปยังถังขยะ?}}",
+  "@binEntriesConfirmationDialogMessage": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{ลบรายการนี้?} other{ลบ {count} รายการนี้?}}",
+  "@deleteEntriesConfirmationDialogMessage": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{ลบอัลบั้มนี้และรายการในอัลบั้มทั้งหมด?} other{ลบอัลบั้มนี้และ {count} รายการในอัลบั้ม?}}",
+  "@deleteSingleAlbumConfirmationDialogMessage": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "entryActionShareImageOnly": "แชร์รูปภาพเท่านั้น",
+  "@entryActionShareImageOnly": {},
+  "accessibilityAnimationsKeep": "เปิดการเคลื่อนไหว",
+  "@accessibilityAnimationsKeep": {},
+  "unsupportedTypeDialogMessage": "{count, plural, =1{การดำเนินการนี้ไม่รองรับรายการประเภทต่อไปนี้: {types}.} other{การดำเนินการนี้ไม่รองรับรายการประเภทต่อไปนี้: {types}.}}",
+  "@unsupportedTypeDialogMessage": {
+    "placeholders": {
+      "count": {},
+      "types": {
+        "type": "String",
+        "example": "GIF, TIFF, MP4",
+        "description": "a list of unsupported types"
+      }
+    }
+  }
 }
