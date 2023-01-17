@@ -1,0 +1,10 @@
+{
+  "appName": "אייבז",
+  "@appName": {},
+  "welcomeMessage": "ברוך הבא לאייבז",
+  "@welcomeMessage": {},
+  "welcomeOptional": "אופציונלי",
+  "@welcomeOptional": {},
+  "welcomeTermsToggle": "אני מסכימ/ה לתנאים",
+  "@welcomeTermsToggle": {}
+}

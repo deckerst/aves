@@ -1265,7 +1265,7 @@
       "count": {}
     }
   },
-  "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{Slett disse albumene og deres element?} other{Slett disse albumene og deres {count} elementer?}}",
+  "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{Slett disse albumene og elementet i demt?} other{Slett disse albumene og de {count} elementene i dem?}}",
   "@deleteMultiAlbumConfirmationDialogMessage": {
     "placeholders": {
       "count": {}
@@ -1338,5 +1338,33 @@
   "albumTierSpecial": "Ofte åpnet",
   "@albumTierSpecial": {},
   "editEntryLocationDialogTitle": "Plassering",
-  "@editEntryLocationDialogTitle": {}
+  "@editEntryLocationDialogTitle": {},
+  "filterLocatedLabel": "Posisjonert",
+  "@filterLocatedLabel": {},
+  "filterTaggedLabel": "Etikettmerket",
+  "@filterTaggedLabel": {},
+  "settingsDisplayUseTvInterface": "Android TV-grensesnitt",
+  "@settingsDisplayUseTvInterface": {},
+  "settingsAccessibilityShowPinchGestureAlternatives": "Vis multi-trykkhåndvendingsalternativer",
+  "@settingsAccessibilityShowPinchGestureAlternatives": {},
+  "columnCount": "{count, plural, =1{1 kolonne} other{{count} kolonner}}",
+  "@columnCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "keepScreenOnVideoPlayback": "Under videoavspilling",
+  "@keepScreenOnVideoPlayback": {},
+  "entryActionShareImageOnly": "Del kun bilde",
+  "@entryActionShareImageOnly": {},
+  "entryActionShareVideoOnly": "Del kun video",
+  "@entryActionShareVideoOnly": {},
+  "entryInfoActionRemoveLocation": "Fjern posisjon",
+  "@entryInfoActionRemoveLocation": {},
+  "settingsViewerShowDescription": "Vis beskrivelse",
+  "@settingsViewerShowDescription": {},
+  "settingsModificationWarningDialogMessage": "Andre innstillinger vil bli endret.",
+  "@settingsModificationWarningDialogMessage": {},
+  "tooManyItemsErrorDialogMessage": "Prøv igjen med færre elementer.",
+  "@tooManyItemsErrorDialogMessage": {}
 }
