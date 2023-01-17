@@ -123,6 +123,11 @@ class Dependencies {
       licenseUrl: 'https://github.com/flutter/plugins/blob/master/packages/url_launcher/url_launcher/LICENSE',
       sourceUrl: 'https://github.com/flutter/plugins/tree/master/packages/url_launcher/url_launcher',
     ),
+    Dependency(
+      name: 'Volume Controller',
+      license: mit,
+      sourceUrl: 'https://github.com/kurenai7968/volume_controller',
+    ),
   ];
 
   static const List<Dependency> _googleMobileServices = [

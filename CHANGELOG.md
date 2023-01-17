@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Added
+
+- Video: optional gestures to adjust brightness/volume
+
 ## <a id="v1.7.9"></a>[v1.7.9] - 2023-01-15
 
 ### Added

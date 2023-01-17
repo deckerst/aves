@@ -29,6 +29,9 @@ class AvesMagnifier extends StatelessWidget {
     this.initialScale = const ScaleLevel(ref: ScaleReference.contained),
     this.scaleStateCycle = defaultScaleStateCycle,
     this.applyScale = true,
+    this.onScaleStart,
+    this.onScaleUpdate,
+    this.onScaleEnd,
     this.onTap,
     this.onDoubleTap,
     required this.child,
@@ -52,6 +55,9 @@ class AvesMagnifier extends StatelessWidget {
 
   final ScaleStateCycle scaleStateCycle;
   final bool applyScale;
+  final MagnifierGestureScaleStartCallback? onScaleStart;
+  final MagnifierGestureScaleUpdateCallback? onScaleUpdate;
+  final MagnifierGestureScaleEndCallback? onScaleEnd;
   final MagnifierTapCallback? onTap;
   final MagnifierDoubleTapCallback? onDoubleTap;
   final Widget child;
@@ -73,6 +79,9 @@ class AvesMagnifier extends StatelessWidget {
           controller: controller,
           scaleStateCycle: scaleStateCycle,
           applyScale: applyScale,
+          onScaleStart: onScaleStart,
+          onScaleUpdate: onScaleUpdate,
+          onScaleEnd: onScaleEnd,
           onTap: onTap,
           onDoubleTap: onDoubleTap,
           child: child,
@@ -88,7 +97,7 @@ typedef MagnifierTapCallback = Function(
   Alignment alignment,
   Offset childTapPosition,
 );
-
-typedef MagnifierDoubleTapCallback = bool Function(
-  Alignment alignment,
-);
+typedef MagnifierDoubleTapCallback = bool Function(Alignment alignment);
+typedef MagnifierGestureScaleStartCallback = void Function(ScaleStartDetails details, bool doubleTap, ScaleBoundaries boundaries);
+typedef MagnifierGestureScaleUpdateCallback = bool Function(ScaleUpdateDetails details);
+typedef MagnifierGestureScaleEndCallback = void Function(ScaleEndDetails details);

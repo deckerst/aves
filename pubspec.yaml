@@ -95,6 +95,7 @@ dependencies:
   transparent_image:
   tuple:
   url_launcher:
+  volume_controller:
   xml:
 
 dev_dependencies:

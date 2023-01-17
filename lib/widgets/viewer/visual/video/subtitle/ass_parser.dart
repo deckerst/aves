@@ -1,6 +1,6 @@
-import 'package:aves/widgets/viewer/visual/subtitle/line.dart';
-import 'package:aves/widgets/viewer/visual/subtitle/span.dart';
-import 'package:aves/widgets/viewer/visual/subtitle/style.dart';
+import 'package:aves/widgets/viewer/visual/video/subtitle/line.dart';
+import 'package:aves/widgets/viewer/visual/video/subtitle/span.dart';
+import 'package:aves/widgets/viewer/visual/video/subtitle/style.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 

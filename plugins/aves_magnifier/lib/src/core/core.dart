@@ -18,6 +18,9 @@ class MagnifierCore extends StatefulWidget {
   final ScaleStateCycle scaleStateCycle;
   final bool applyScale;
   final double panInertia;
+  final MagnifierGestureScaleStartCallback? onScaleStart;
+  final MagnifierGestureScaleUpdateCallback? onScaleUpdate;
+  final MagnifierGestureScaleEndCallback? onScaleEnd;
   final MagnifierTapCallback? onTap;
   final MagnifierDoubleTapCallback? onDoubleTap;
   final Widget child;
@@ -28,6 +31,9 @@ class MagnifierCore extends StatefulWidget {
     required this.scaleStateCycle,
     required this.applyScale,
     this.panInertia = .2,
+    this.onScaleStart,
+    this.onScaleUpdate,
+    this.onScaleEnd,
     this.onTap,
     this.onDoubleTap,
     required this.child,
@@ -40,7 +46,7 @@ class MagnifierCore extends StatefulWidget {
 class _MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateMixin, AvesMagnifierControllerDelegate, CornerHitDetector {
   Offset? _startFocalPoint, _lastViewportFocalPosition;
   double? _startScale, _quickScaleLastY, _quickScaleLastDistance;
-  late bool _doubleTap, _quickScaleMoved;
+  late bool _dropped, _doubleTap, _quickScaleMoved;
   DateTime _lastScaleGestureDate = DateTime.now();
 
   late AnimationController _scaleAnimationController;
@@ -99,9 +105,15 @@ class _MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateM
   }
 
   void onScaleStart(ScaleStartDetails details, bool doubleTap) {
+    final boundaries = scaleBoundaries;
+    if (boundaries == null) return;
+
+    widget.onScaleStart?.call(details, doubleTap, boundaries);
+
     _startScale = scale;
     _startFocalPoint = details.localFocalPoint;
     _lastViewportFocalPosition = _startFocalPoint;
+    _dropped = false;
     _doubleTap = doubleTap;
     _quickScaleLastDistance = null;
     _quickScaleLastY = _startFocalPoint!.dy;
@@ -114,6 +126,9 @@ class _MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateM
   void onScaleUpdate(ScaleUpdateDetails details) {
     final boundaries = scaleBoundaries;
     if (boundaries == null) return;
+
+    _dropped |= widget.onScaleUpdate?.call(details) ?? false;
+    if (_dropped) return;
 
     double newScale;
     if (_doubleTap) {
@@ -150,6 +165,8 @@ class _MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateM
   void onScaleEnd(ScaleEndDetails details) {
     final boundaries = scaleBoundaries;
     if (boundaries == null) return;
+
+    widget.onScaleEnd?.call(details);
 
     final _position = controller.position;
     final _scale = controller.scale!;
@@ -228,7 +245,7 @@ class _MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateM
     if (onDoubleTap != null) {
       final viewportSize = boundaries.viewportSize;
       final alignment = Alignment(viewportTapPosition.dx / viewportSize.width, viewportTapPosition.dy / viewportSize.height);
-      if (onDoubleTap.call(alignment) == true) return;
+      if (onDoubleTap(alignment) == true) return;
     }
 
     final childTapPosition = boundaries.viewportToChildPosition(controller, viewportTapPosition);
@@ -307,12 +324,12 @@ class _MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateM
         );
 
         return MagnifierGestureDetector(
-          onDoubleTap: onDoubleTap,
+          hitDetector: this,
           onScaleStart: onScaleStart,
           onScaleUpdate: onScaleUpdate,
           onScaleEnd: onScaleEnd,
-          hitDetector: this,
           onTapUp: widget.onTap == null ? null : onTap,
+          onDoubleTap: onDoubleTap,
           child: child,
         );
       },
