@@ -8,6 +8,10 @@ All notable changes to this project will be documented in this file.
 
 - Video: optional gestures to adjust brightness/volume
 
+### Changed
+
+- Viewer: do not keep max brightness when viewing info
+
 ## <a id="v1.7.9"></a>[v1.7.9] - 2023-01-15
 
 ### Added
