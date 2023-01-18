@@ -135,16 +135,14 @@ class SelectionRadioListTile<T> extends StatelessWidget {
       reselectable: true,
       title: Text(
         title,
-        softWrap: false,
-        overflow: TextOverflow.fade,
-        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        maxLines: 2,
       ),
       subtitle: subtitle != null
           ? Text(
               subtitle,
               softWrap: false,
               overflow: TextOverflow.fade,
-              maxLines: 1,
             )
           : null,
       dense: dense,
