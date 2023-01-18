@@ -1040,10 +1040,6 @@
     "filePickerUseThisFolder"
   ],
 
-  "fr": [
-    "settingsVideoGestureVerticalDragBrightnessVolume"
-  ],
-
   "gl": [
     "columnCount",
     "entryActionShareImageOnly",
@@ -2121,10 +2117,6 @@
     "filePickerUseThisFolder"
   ],
 
-  "id": [
-    "settingsVideoGestureVerticalDragBrightnessVolume"
-  ],
-
   "it": [
     "settingsVideoGestureVerticalDragBrightnessVolume"
   ],
@@ -2147,10 +2139,6 @@
     "settingsAccessibilityShowPinchGestureAlternatives",
     "settingsDisplayUseTvInterface",
     "settingsWidgetDisplayedItem"
-  ],
-
-  "ko": [
-    "settingsVideoGestureVerticalDragBrightnessVolume"
   ],
 
   "lt": [
@@ -2829,15 +2817,6 @@
     "filePickerOpenFrom",
     "filePickerNoItems",
     "filePickerUseThisFolder"
-  ],
-
-  "tr": [
-    "settingsVideoGestureVerticalDragBrightnessVolume"
-  ],
-
-  "uk": [
-    "tooManyItemsErrorDialogMessage",
-    "settingsVideoGestureVerticalDragBrightnessVolume"
   ],
 
   "zh": [
