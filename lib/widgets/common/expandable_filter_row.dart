@@ -1,4 +1,5 @@
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/constants.dart';
@@ -31,26 +32,49 @@ class TitledExpandableFilterRow extends StatelessWidget {
 
     final isExpanded = expandedNotifier.value == title;
 
+    Widget header = Text(
+      title,
+      style: Constants.knownTitleTextStyle,
+    );
+    void toggle() => expandedNotifier.value = isExpanded ? null : title;
+    if (settings.useTvLayout) {
+      header = Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: InkWell(
+          onTap: toggle,
+          borderRadius: const BorderRadius.all(Radius.circular(123)),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                header,
+              ],
+            ),
+          ),
+        ),
+      );
+    } else {
+      header = Padding(
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          children: [
+            header,
+            const Spacer(),
+            IconButton(
+              icon: Icon(isExpanded ? AIcons.collapse : AIcons.expand),
+              onPressed: toggle,
+              tooltip: isExpanded ? MaterialLocalizations.of(context).expandedIconTapHint : MaterialLocalizations.of(context).collapsedIconTapHint,
+            ),
+          ],
+        ),
+      );
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.all(16),
-          child: Row(
-            children: [
-              Text(
-                title,
-                style: Constants.knownTitleTextStyle,
-              ),
-              const Spacer(),
-              IconButton(
-                icon: Icon(isExpanded ? AIcons.collapse : AIcons.expand),
-                onPressed: () => expandedNotifier.value = isExpanded ? null : title,
-                tooltip: isExpanded ? MaterialLocalizations.of(context).expandedIconTapHint : MaterialLocalizations.of(context).collapsedIconTapHint,
-              ),
-            ],
-          ),
-        ),
+        header,
         ExpandableFilterRow(
           filters: filters,
           isExpanded: isExpanded,

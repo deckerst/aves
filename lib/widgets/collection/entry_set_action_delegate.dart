@@ -58,6 +58,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
   }) {
     final canWrite = !settings.isReadOnly;
     final isMain = appMode == AppMode.main;
+    final useTvLayout = settings.useTvLayout;
     switch (action) {
       // general
       case EntrySetAction.configureView:
@@ -70,9 +71,9 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
         return isSelecting && selectedItemCount == itemCount;
       // browsing
       case EntrySetAction.searchCollection:
-        return !settings.useTvLayout && appMode.canNavigate && !isSelecting;
+        return !useTvLayout && appMode.canNavigate && !isSelecting;
       case EntrySetAction.toggleTitleSearch:
-        return !isSelecting;
+        return !useTvLayout && !isSelecting;
       case EntrySetAction.addShortcut:
         return isMain && !isSelecting && device.canPinShortcut && !isTrash;
       case EntrySetAction.emptyBin:
@@ -83,7 +84,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       case EntrySetAction.stats:
         return isMain;
       case EntrySetAction.rescan:
-        return !settings.useTvLayout && isMain && !isTrash;
+        return !useTvLayout && isMain && !isTrash;
       // selecting
       case EntrySetAction.share:
       case EntrySetAction.toggleFavourite:

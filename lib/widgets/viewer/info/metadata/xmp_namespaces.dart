@@ -22,56 +22,64 @@ import 'package:tuple/tuple.dart';
 
 @immutable
 class XmpNamespace extends Equatable {
+  final Map<String, String> schemaRegistryPrefixes;
   final String nsUri, nsPrefix;
   final Map<String, String> rawProps;
 
   @override
   List<Object?> get props => [nsUri, nsPrefix];
 
-  const XmpNamespace(this.nsUri, this.nsPrefix, this.rawProps);
+  XmpNamespace({
+    required this.nsUri,
+    required this.schemaRegistryPrefixes,
+    required this.rawProps,
+  }) : nsPrefix = prefixForUri(schemaRegistryPrefixes, nsUri);
 
-  factory XmpNamespace.create(String nsUri, String nsPrefix, Map<String, String> rawProps) {
+  factory XmpNamespace.create(Map<String, String> schemaRegistryPrefixes, String nsPrefix, Map<String, String> rawProps) {
+    final nsUri = schemaRegistryPrefixes[nsPrefix] ?? '';
     switch (nsUri) {
-      case Namespaces.container:
-        return XmpContainer(nsPrefix, rawProps);
       case Namespaces.creatorAtom:
-        return XmpCreatorAtom(nsPrefix, rawProps);
+        return XmpCreatorAtom(schemaRegistryPrefixes: schemaRegistryPrefixes, rawProps: rawProps);
       case Namespaces.crs:
-        return XmpCrsNamespace(nsPrefix, rawProps);
+        return XmpCrsNamespace(schemaRegistryPrefixes: schemaRegistryPrefixes, rawProps: rawProps);
       case Namespaces.darktable:
-        return XmpDarktableNamespace(nsPrefix, rawProps);
+        return XmpDarktableNamespace(schemaRegistryPrefixes: schemaRegistryPrefixes, rawProps: rawProps);
       case Namespaces.dwc:
-        return XmpDwcNamespace(nsPrefix, rawProps);
+        return XmpDwcNamespace(schemaRegistryPrefixes: schemaRegistryPrefixes, rawProps: rawProps);
       case Namespaces.exif:
-        return XmpExifNamespace(nsPrefix, rawProps);
+        return XmpExifNamespace(schemaRegistryPrefixes: schemaRegistryPrefixes, rawProps: rawProps);
       case Namespaces.gAudio:
-        return XmpGAudioNamespace(nsPrefix, rawProps);
+        return XmpGAudioNamespace(schemaRegistryPrefixes: schemaRegistryPrefixes, rawProps: rawProps);
+      case Namespaces.gCamera:
+        return XmpGCameraNamespace(schemaRegistryPrefixes: schemaRegistryPrefixes, rawProps: rawProps);
+      case Namespaces.gContainer:
+        return XmpGContainer(schemaRegistryPrefixes: schemaRegistryPrefixes, rawProps: rawProps);
       case Namespaces.gDepth:
-        return XmpGDepthNamespace(nsPrefix, rawProps);
+        return XmpGDepthNamespace(schemaRegistryPrefixes: schemaRegistryPrefixes, rawProps: rawProps);
       case Namespaces.gDevice:
-        return XmpGDeviceNamespace(nsPrefix, rawProps);
+        return XmpGDeviceNamespace(schemaRegistryPrefixes: schemaRegistryPrefixes, rawProps: rawProps);
       case Namespaces.gImage:
-        return XmpGImageNamespace(nsPrefix, rawProps);
+        return XmpGImageNamespace(schemaRegistryPrefixes: schemaRegistryPrefixes, rawProps: rawProps);
       case Namespaces.iptc4xmpCore:
-        return XmpIptcCoreNamespace(nsPrefix, rawProps);
+        return XmpIptcCoreNamespace(schemaRegistryPrefixes: schemaRegistryPrefixes, rawProps: rawProps);
       case Namespaces.iptc4xmpExt:
-        return XmpIptc4xmpExtNamespace(nsPrefix, rawProps);
+        return XmpIptc4xmpExtNamespace(schemaRegistryPrefixes: schemaRegistryPrefixes, rawProps: rawProps);
       case Namespaces.mwgrs:
-        return XmpMgwRegionsNamespace(nsPrefix, rawProps);
+        return XmpMgwRegionsNamespace(schemaRegistryPrefixes: schemaRegistryPrefixes, rawProps: rawProps);
       case Namespaces.mp:
-        return XmpMPNamespace(nsPrefix, rawProps);
+        return XmpMPNamespace(schemaRegistryPrefixes: schemaRegistryPrefixes, rawProps: rawProps);
       case Namespaces.photoshop:
-        return XmpPhotoshopNamespace(nsPrefix, rawProps);
+        return XmpPhotoshopNamespace(schemaRegistryPrefixes: schemaRegistryPrefixes, rawProps: rawProps);
       case Namespaces.plus:
-        return XmpPlusNamespace(nsPrefix, rawProps);
+        return XmpPlusNamespace(schemaRegistryPrefixes: schemaRegistryPrefixes, rawProps: rawProps);
       case Namespaces.tiff:
-        return XmpTiffNamespace(nsPrefix, rawProps);
+        return XmpTiffNamespace(schemaRegistryPrefixes: schemaRegistryPrefixes, rawProps: rawProps);
       case Namespaces.xmp:
-        return XmpBasicNamespace(nsPrefix, rawProps);
+        return XmpBasicNamespace(schemaRegistryPrefixes: schemaRegistryPrefixes, rawProps: rawProps);
       case Namespaces.xmpMM:
-        return XmpMMNamespace(nsPrefix, rawProps);
+        return XmpMMNamespace(schemaRegistryPrefixes: schemaRegistryPrefixes, rawProps: rawProps);
       default:
-        return XmpNamespace(nsUri, nsPrefix, rawProps);
+        return XmpNamespace(nsUri: nsUri, schemaRegistryPrefixes: schemaRegistryPrefixes, rawProps: rawProps);
     }
   }
 
@@ -130,6 +138,8 @@ class XmpNamespace extends Equatable {
   String formatValue(XmpProp prop) => prop.value;
 
   Map<String, InfoValueSpanBuilder> linkifyValues(List<XmpProp> props) => {};
+
+  static String prefixForUri(Map<String, String> schemaRegistryPrefixes, String nsUri) => schemaRegistryPrefixes.entries.firstWhereOrNull((kv) => kv.value == nsUri)?.key ?? '';
 }
 
 class XmpProp implements Comparable<XmpProp> {

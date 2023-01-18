@@ -70,6 +70,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
     final selectedItemCount = selectedFilters.length;
     final hasSelection = selectedFilters.isNotEmpty;
     final isMain = appMode == AppMode.main;
+    final useTvLayout = settings.useTvLayout;
     switch (action) {
       // general
       case ChipSetAction.configureView:
@@ -82,9 +83,9 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
         return isSelecting && selectedItemCount == itemCount;
       // browsing
       case ChipSetAction.search:
-        return !settings.useTvLayout && appMode.canNavigate && !isSelecting;
+        return !useTvLayout && appMode.canNavigate && !isSelecting;
       case ChipSetAction.toggleTitleSearch:
-        return !isSelecting;
+        return !useTvLayout && !isSelecting;
       case ChipSetAction.createAlbum:
         return false;
       // browsing or selecting

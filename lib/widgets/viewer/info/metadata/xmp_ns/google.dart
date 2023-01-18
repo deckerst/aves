@@ -7,7 +7,11 @@ import 'package:collection/collection.dart';
 import 'package:tuple/tuple.dart';
 
 abstract class XmpGoogleNamespace extends XmpNamespace {
-  const XmpGoogleNamespace(String nsUri, String nsPrefix, Map<String, String> rawProps) : super(nsUri, nsPrefix, rawProps);
+  XmpGoogleNamespace({
+    required super.nsUri,
+    required super.schemaRegistryPrefixes,
+    required super.rawProps,
+  });
 
   List<Tuple2<String, String>> get dataProps;
 
@@ -53,14 +57,34 @@ abstract class XmpGoogleNamespace extends XmpNamespace {
 }
 
 class XmpGAudioNamespace extends XmpGoogleNamespace {
-  const XmpGAudioNamespace(String nsPrefix, Map<String, String> rawProps) : super(Namespaces.gAudio, nsPrefix, rawProps);
+  XmpGAudioNamespace({required super.schemaRegistryPrefixes, required super.rawProps}) : super(nsUri: Namespaces.gAudio);
 
   @override
-  List<Tuple2<String, String>> get dataProps => [Tuple2('${nsPrefix}Data', '${nsPrefix}Mime')];
+  List<Tuple2<String, String>> get dataProps => [
+        Tuple2('${nsPrefix}Data', '${nsPrefix}Mime'),
+      ];
+}
+
+class XmpGCameraNamespace extends XmpGoogleNamespace {
+  XmpGCameraNamespace({required super.schemaRegistryPrefixes, required super.rawProps}) : super(nsUri: Namespaces.gCamera);
+
+  @override
+  List<Tuple2<String, String>> get dataProps => [
+        Tuple2('${nsPrefix}RelitInputImageData', '${nsPrefix}RelitInputImageMime'),
+      ];
+}
+
+class XmpGContainer extends XmpNamespace {
+  XmpGContainer({required super.schemaRegistryPrefixes, required super.rawProps}) : super(nsUri: Namespaces.gContainer);
+
+  @override
+  late final List<XmpCardData> cards = [
+    XmpCardData(RegExp(nsPrefix + r'Directory\[(\d+)\]/' + nsPrefix + r'Item/(.*)'), title: 'Directory Item'),
+  ];
 }
 
 class XmpGDepthNamespace extends XmpGoogleNamespace {
-  const XmpGDepthNamespace(String nsPrefix, Map<String, String> rawProps) : super(Namespaces.gDepth, nsPrefix, rawProps);
+  XmpGDepthNamespace({required super.schemaRegistryPrefixes, required super.rawProps}) : super(nsUri: Namespaces.gDepth);
 
   @override
   List<Tuple2<String, String>> get dataProps => [
@@ -70,8 +94,16 @@ class XmpGDepthNamespace extends XmpGoogleNamespace {
 }
 
 class XmpGDeviceNamespace extends XmpNamespace {
-  XmpGDeviceNamespace(String nsPrefix, Map<String, String> rawProps) : super(Namespaces.gDevice, nsPrefix, rawProps) {
-    final mimePattern = RegExp(nsPrefix + r'Container/Container:Directory\[(\d+)\]/Item:Mime');
+  late final String _cameraNsPrefix;
+  late final String _containerNsPrefix;
+  late final String _itemNsPrefix;
+
+  XmpGDeviceNamespace({required super.schemaRegistryPrefixes, required super.rawProps}) : super(nsUri: Namespaces.gDevice) {
+    _cameraNsPrefix = XmpNamespace.prefixForUri(schemaRegistryPrefixes, Namespaces.gDeviceCamera);
+    _containerNsPrefix = XmpNamespace.prefixForUri(schemaRegistryPrefixes, Namespaces.gDeviceContainer);
+    _itemNsPrefix = XmpNamespace.prefixForUri(schemaRegistryPrefixes, Namespaces.gDeviceItem);
+
+    final mimePattern = RegExp(nsPrefix + r'Container/' + _containerNsPrefix + r'Directory\[(\d+)\]/' + _itemNsPrefix + r'Mime');
     final originalProps = rawProps.entries.toList();
     originalProps.forEach((kv) {
       final path = kv.key;
@@ -81,7 +113,7 @@ class XmpGDeviceNamespace extends XmpNamespace {
         if (indexString != null) {
           final index = int.tryParse(indexString);
           if (index != null) {
-            final dataPath = '${nsPrefix}Container/Container:Directory[$index]/Item:Data';
+            final dataPath = '${nsPrefix}Container/${_containerNsPrefix}Directory[$index]/${_itemNsPrefix}Data';
             rawProps[dataPath] = '[skipped]';
           }
         }
@@ -94,16 +126,16 @@ class XmpGDeviceNamespace extends XmpNamespace {
     XmpCardData(
       RegExp(nsPrefix + r'Cameras\[(\d+)\]/(.*)'),
       cards: [
-        XmpCardData(RegExp(r'Camera:DepthMap/(.*)')),
-        XmpCardData(RegExp(r'Camera:Image/(.*)')),
-        XmpCardData(RegExp(r'Camera:ImagingModel/(.*)')),
+        XmpCardData(RegExp(_cameraNsPrefix + r'DepthMap/(.*)')),
+        XmpCardData(RegExp(_cameraNsPrefix + r'Image/(.*)')),
+        XmpCardData(RegExp(_cameraNsPrefix + r'ImagingModel/(.*)')),
       ],
     ),
     XmpCardData(
-      RegExp(nsPrefix + r'Container/Container:Directory\[(\d+)\]/(.*)'),
+      RegExp(nsPrefix + r'Container/' + _containerNsPrefix + r'Directory\[(\d+)\]/(.*)'),
       spanBuilders: (index, struct) {
-        if (struct.containsKey('Item:Data') && struct.containsKey('Item:DataURI')) {
-          final dataUriProp = struct['Item:DataURI'];
+        if (struct.containsKey('${_itemNsPrefix}Data') && struct.containsKey('${_itemNsPrefix}DataURI')) {
+          final dataUriProp = struct['${_itemNsPrefix}DataURI'];
           if (dataUriProp != null) {
             return {
               'Data': InfoRowGroup.linkSpanBuilder(
@@ -121,17 +153,10 @@ class XmpGDeviceNamespace extends XmpNamespace {
 }
 
 class XmpGImageNamespace extends XmpGoogleNamespace {
-  const XmpGImageNamespace(String nsPrefix, Map<String, String> rawProps) : super(Namespaces.gImage, nsPrefix, rawProps);
+  XmpGImageNamespace({required super.schemaRegistryPrefixes, required super.rawProps}) : super(nsUri: Namespaces.gImage);
 
   @override
-  List<Tuple2<String, String>> get dataProps => [Tuple2('${nsPrefix}Data', '${nsPrefix}Mime')];
-}
-
-class XmpContainer extends XmpNamespace {
-  XmpContainer(String nsPrefix, Map<String, String> rawProps) : super(Namespaces.container, nsPrefix, rawProps);
-
-  @override
-  late final List<XmpCardData> cards = [
-    XmpCardData(RegExp('${nsPrefix}Directory\\[(\\d+)\\]/${nsPrefix}Item/(.*)'), title: 'Directory Item'),
-  ];
+  List<Tuple2<String, String>> get dataProps => [
+        Tuple2('${nsPrefix}Data', '${nsPrefix}Mime'),
+      ];
 }

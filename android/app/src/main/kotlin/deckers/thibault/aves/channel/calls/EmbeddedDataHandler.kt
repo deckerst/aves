@@ -12,7 +12,7 @@ import com.drew.metadata.xmp.XmpDirectory
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safeSuspend
 import deckers.thibault.aves.metadata.*
-import deckers.thibault.aves.metadata.XMP.doesPropExist
+import deckers.thibault.aves.metadata.XMP.doesPropPathExist
 import deckers.thibault.aves.metadata.XMP.getSafeStructField
 import deckers.thibault.aves.metadata.metadataextractor.Helper
 import deckers.thibault.aves.model.FieldMap
@@ -104,7 +104,7 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
                     try {
                         container = xmpDirs.firstNotNullOfOrNull {
                             val xmpMeta = it.xmpMeta
-                            if (xmpMeta.doesPropExist(XMP.GDEVICE_DIRECTORY_PROP_NAME)) {
+                            if (xmpMeta.doesPropPathExist(listOf(XMP.GDEVICE_CONTAINER_PROP_NAME, XMP.GDEVICE_CONTAINER_DIRECTORY_PROP_NAME))) {
                                 GoogleDeviceContainer().apply { findItems(xmpMeta) }
                             } else {
                                 null

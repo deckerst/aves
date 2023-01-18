@@ -1196,6 +1196,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "9.0.0"
+  volume_controller:
+    dependency: "direct main"
+    description:
+      name: volume_controller
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.6"
   watcher:
     dependency: transitive
     description:

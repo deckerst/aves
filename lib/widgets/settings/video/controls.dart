@@ -36,6 +36,11 @@ class VideoControlsPage extends StatelessWidget {
               onChanged: (v) => settings.videoGestureSideDoubleTapSeek = v,
               title: context.l10n.settingsVideoGestureSideDoubleTapSeek,
             ),
+            SettingsSwitchListTile(
+              selector: (context, s) => s.videoGestureVerticalDragBrightnessVolume,
+              onChanged: (v) => settings.videoGestureVerticalDragBrightnessVolume = v,
+              title: context.l10n.settingsVideoGestureVerticalDragBrightnessVolume,
+            ),
           ],
         ),
       ),

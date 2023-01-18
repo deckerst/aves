@@ -1,4 +1,4 @@
-<i>Aves</i> obsługuje wszelkiego rodzaju obrazy i filmy, w tym typowe pliki JPEG i MP4 ale także bardziej egzotyczne formaty takie jak <b>wielostronnicowe pliki TIFF, SVG, stare pliki AVI i wiele więcej</b>! Skanuje twoją kolekcję multimediów aby zidentyfikować <b>ruchome zdjęcia</b>, <b>panoramy</b> (inaczej zdjęcia sferyczne), <b>filmy 360°</b>, a także pliki <b>GeoTIFF</b>.
+<i>Aves</i> obsługuje wszelkiego rodzaju obrazy i filmy, w tym typowe pliki JPEG i MP4, ale także bardziej egzotyczne formaty, takie jak <b>wielostronicowe pliki TIFF, SVG, stare pliki AVI i wiele innych</b>! Skanuje twoją kolekcję multimediów, aby zidentyfikować <b>ruchome zdjęcia</b>, <b>zdjęcia panoramiczne</b> (inaczej zdjęcia sferyczne), <b>wideo 360°</b>, a także pliki <b>GeoTIFF</b>.
 
 <b>Nawigacja i wyszukiwanie</b> jest ważną częścią <i>Aves</i>. Celem jest aby użytkownicy mogli łatwo przechodzić od albumów do zdjęć, tagów, map itd.
 

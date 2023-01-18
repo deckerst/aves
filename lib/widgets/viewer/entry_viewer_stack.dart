@@ -680,9 +680,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
   }
 
   Future<void> _onLeave() async {
-    if (settings.viewerMaxBrightness) {
-      await ScreenBrightness().resetScreenBrightness();
-    }
+    await ScreenBrightness().resetScreenBrightness();
     if (settings.keepScreenOn == KeepScreenOn.viewerOnly) {
       await windowService.keepScreenOn(false);
     }

@@ -3,7 +3,7 @@ import 'package:aves/widgets/viewer/info/metadata/xmp_namespaces.dart';
 
 // cf https://github.com/adobe/xmp-docs/blob/master/XMPNamespaces/photoshop.md
 class XmpPhotoshopNamespace extends XmpNamespace {
-  XmpPhotoshopNamespace(String nsPrefix, Map<String, String> rawProps) : super(Namespaces.photoshop, nsPrefix, rawProps);
+  XmpPhotoshopNamespace({required super.schemaRegistryPrefixes, required super.rawProps}) : super(nsUri: Namespaces.photoshop);
 
   @override
   late final List<XmpCardData> cards = [

@@ -34,18 +34,10 @@ class SectionHeader<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget child = _buildContent(context);
     if (settings.useTvLayout) {
-      final primaryColor = Theme.of(context).colorScheme.primary;
-      child = Material(
-        type: MaterialType.transparency,
-        child: InkResponse(
-          onTap: _onTap(context),
-          containedInkWell: true,
-          highlightShape: BoxShape.rectangle,
-          borderRadius: const BorderRadius.all(Radius.circular(123)),
-          hoverColor: primaryColor.withOpacity(0.04),
-          splashColor: primaryColor.withOpacity(0.12),
-          child: child,
-        ),
+      child = InkWell(
+        onTap: _onTap(context),
+        borderRadius: const BorderRadius.all(Radius.circular(123)),
+        child: child,
       );
     }
     return Container(

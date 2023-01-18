@@ -14,6 +14,8 @@ class AIcons {
   static const IconData aspectRatio = Icons.aspect_ratio_outlined;
   static const IconData bin = Icons.delete_outlined;
   static const IconData broken = Icons.broken_image_outlined;
+  static const IconData brightnessMin = Icons.brightness_low_outlined;
+  static const IconData brightnessMax = Icons.brightness_high_outlined;
   static const IconData checked = Icons.done_outlined;
   static const IconData count = MdiIcons.counter;
   static const IconData counter = Icons.plus_one_outlined;
@@ -52,6 +54,8 @@ class AIcons {
   static const IconData text = Icons.format_quote_outlined;
   static const IconData tag = Icons.local_offer_outlined;
   static const IconData tagUntagged = MdiIcons.tagOffOutline;
+  static const IconData volumeMin = Icons.volume_mute_outlined;
+  static const IconData volumeMax = Icons.volume_up_outlined;
 
   // view
   static const IconData group = Icons.group_work_outlined;

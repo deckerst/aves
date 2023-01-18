@@ -138,10 +138,12 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
               child: child!,
             );
           },
-          child: InfoPage(
-            collection: collection,
-            entryNotifier: widget.entryNotifier,
-            isScrollingNotifier: _isVerticallyScrollingNotifier,
+          child: FocusScope(
+            child: InfoPage(
+              collection: collection,
+              entryNotifier: widget.entryNotifier,
+              isScrollingNotifier: _isVerticallyScrollingNotifier,
+            ),
           ),
         ),
       );
@@ -286,10 +288,10 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
     final opacity = min(1.0, page);
     _backgroundOpacityNotifier.value = opacity * opacity;
 
-    if (page <= 1 && settings.viewerMaxBrightness) {
+    if (settings.viewerMaxBrightness) {
       _systemBrightness?.then((system) {
-        final transition = max(system, lerpDouble(system, maximumBrightness, page / 2)!);
-        ScreenBrightness().setScreenBrightness(transition);
+        final value = lerpDouble(maximumBrightness, system, ((1 - page).abs() * 2).clamp(0, 1))!;
+        ScreenBrightness().setScreenBrightness(value);
       });
     }
 

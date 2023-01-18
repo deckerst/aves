@@ -1,9 +1,10 @@
 import 'package:aves/model/filters/album.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/buttons/outlined_button.dart';
-import 'package:aves/widgets/filter_grids/album_pick.dart';
+import 'package:aves/widgets/dialogs/pick_dialogs/album_pick_page.dart';
 import 'package:aves/widgets/navigation/drawer/tile.dart';
 import 'package:aves/widgets/settings/navigation/drawer_editor_banner.dart';
 import 'package:flutter/material.dart';
@@ -29,8 +30,10 @@ class _DrawerAlbumTabState extends State<DrawerAlbumTab> {
     final source = context.read<CollectionSource>();
     return Column(
       children: [
-        const DrawerEditorBanner(),
-        const Divider(height: 0),
+        if (!settings.useTvLayout) ...[
+          const DrawerEditorBanner(),
+          const Divider(height: 0),
+        ],
         Flexible(
           child: ReorderableListView.builder(
             itemBuilder: (context, index) {

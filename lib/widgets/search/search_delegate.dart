@@ -19,6 +19,7 @@ import 'package:aves/model/source/location.dart';
 import 'package:aves/model/source/tag.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
+import 'package:aves/widgets/common/basic/tv_edge_focus.dart';
 import 'package:aves/widgets/common/expandable_filter_row.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
@@ -33,6 +34,14 @@ class CollectionSearchDelegate extends AvesSearchDelegate {
   final CollectionSource source;
   final CollectionLens? parentCollection;
   final ValueNotifier<String?> _expandedSectionNotifier = ValueNotifier(null);
+  final FocusNode _suggestionsTopFocusNode = FocusNode();
+  final ScrollController _suggestionsScrollController = ScrollController();
+
+  @override
+  FocusNode? get suggestionsFocusNode => _suggestionsTopFocusNode;
+
+  @override
+  ScrollController get suggestionsScrollController => _suggestionsScrollController;
 
   static const int searchHistoryCount = 10;
   static final typeFilters = [
@@ -65,6 +74,14 @@ class CollectionSearchDelegate extends AvesSearchDelegate {
   }
 
   @override
+  void dispose() {
+    _expandedSectionNotifier.dispose();
+    _suggestionsTopFocusNode.dispose();
+    _suggestionsScrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget buildSuggestions(BuildContext context) {
     final upQuery = query.trim().toUpperCase();
     bool containQuery(String s) => s.toUpperCase().contains(upQuery);
@@ -91,8 +108,12 @@ class CollectionSearchDelegate extends AvesSearchDelegate {
                 final history = settings.searchHistory.where(notHidden).toList();
 
                 return ListView(
+                  controller: _suggestionsScrollController,
                   padding: const EdgeInsets.only(top: 8),
                   children: [
+                    TvEdgeFocus(
+                      focusNode: _suggestionsTopFocusNode,
+                    ),
                     _buildFilterRow(
                       context: context,
                       filters: [

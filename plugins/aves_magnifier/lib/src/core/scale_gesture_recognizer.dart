@@ -1,20 +1,19 @@
 import 'dart:math';
 
+import 'package:aves_magnifier/aves_magnifier.dart';
 import 'package:aves_magnifier/src/pan/corner_hit_detector.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
 
 class MagnifierGestureRecognizer extends ScaleGestureRecognizer {
   final CornerHitDetector hitDetector;
-  final List<Axis> validateAxis;
-  final double touchSlopFactor;
+  final MagnifierGestureDetectorScope scope;
   final ValueNotifier<TapDownDetails?> doubleTapDetails;
 
   MagnifierGestureRecognizer({
     super.debugOwner,
     required this.hitDetector,
-    required this.validateAxis,
-    this.touchSlopFactor = 2,
+    required this.scope,
     required this.doubleTapDetails,
   });
 
@@ -46,7 +45,7 @@ class MagnifierGestureRecognizer extends ScaleGestureRecognizer {
 
   @override
   void handleEvent(PointerEvent event) {
-    if (validateAxis.isNotEmpty) {
+    if (scope.axis.isNotEmpty) {
       var didChangeConfiguration = false;
       if (event is PointerMoveEvent) {
         if (!event.synthesized) {
@@ -104,26 +103,27 @@ class MagnifierGestureRecognizer extends ScaleGestureRecognizer {
       return;
     }
 
+    final validateAxis = scope.axis;
     final move = _initialFocalPoint! - _currentFocalPoint!;
-    var shouldMove = false;
-    if (validateAxis.length == 2) {
-      // the image is the descendant of gesture detector(s) handling drag in both directions
-      final shouldMoveX = validateAxis.contains(Axis.horizontal) && hitDetector.shouldMoveX(move);
-      final shouldMoveY = validateAxis.contains(Axis.vertical) && hitDetector.shouldMoveY(move);
-      if (shouldMoveX == shouldMoveY) {
-        // consistently can/cannot pan the image in both direction the same way
-        shouldMove = shouldMoveX;
+    bool shouldMove = scope.acceptPointerEvent?.call(move) ?? false;
+
+    if (!shouldMove) {
+      if (validateAxis.length == 2) {
+        // the image is the descendant of gesture detector(s) handling drag in both directions
+        final shouldMoveX = validateAxis.contains(Axis.horizontal) && hitDetector.shouldMoveX(move);
+        final shouldMoveY = validateAxis.contains(Axis.vertical) && hitDetector.shouldMoveY(move);
+        if (shouldMoveX == shouldMoveY) {
+          // consistently can/cannot pan the image in both direction the same way
+          shouldMove = shouldMoveX;
+        } else {
+          // can pan the image in one direction, but should yield to an ascendant gesture detector in the other one
+          // the gesture direction angle is in ]-pi, pi], cf `Offset` doc for details
+          shouldMove = (isXPan(move) && shouldMoveX) || (isYPan(move) && shouldMoveY);
+        }
       } else {
-        // can pan the image in one direction, but should yield to an ascendant gesture detector in the other one
-        final d = move.direction;
-        // the gesture direction angle is in ]-pi, pi], cf `Offset` doc for details
-        final xPan = (-pi / 4 < d && d < pi / 4) || (3 / 4 * pi < d && d <= pi) || (-pi < d && d < -3 / 4 * pi);
-        final yPan = (pi / 4 < d && d < 3 / 4 * pi) || (-3 / 4 * pi < d && d < -pi / 4);
-        shouldMove = (xPan && shouldMoveX) || (yPan && shouldMoveY);
+        // the image is the descendant of a gesture detector handling drag in one direction
+        shouldMove = validateAxis.contains(Axis.vertical) ? hitDetector.shouldMoveY(move) : hitDetector.shouldMoveX(move);
       }
-    } else {
-      // the image is the descendant of a gesture detector handling drag in one direction
-      shouldMove = validateAxis.contains(Axis.vertical) ? hitDetector.shouldMoveY(move) : hitDetector.shouldMoveX(move);
     }
 
     final doubleTap = doubleTapDetails.value != null;
@@ -137,9 +137,19 @@ class MagnifierGestureRecognizer extends ScaleGestureRecognizer {
       // and the magnifier recognizer may compete with the `HorizontalDragGestureRecognizer` from a containing `PageView`
       // setting `touchSlopFactor` to 2 restores default `ScaleGestureRecognizer` behaviour as `kPanSlop = kTouchSlop * 2.0`
       // setting `touchSlopFactor` in [0, 1] will allow this recognizer to accept the gesture before the one from `PageView`
-      if (spanDelta > computeScaleSlop(pointerDeviceKind) || focalPointDelta > computeHitSlop(pointerDeviceKind, gestureSettings) * touchSlopFactor) {
+      if (spanDelta > computeScaleSlop(pointerDeviceKind) || focalPointDelta > computeHitSlop(pointerDeviceKind, gestureSettings) * scope.touchSlopFactor) {
         acceptGesture(event.pointer);
       }
     }
+  }
+
+  static bool isXPan(Offset move) {
+    final d = move.direction;
+    return (-pi / 4 < d && d < pi / 4) || (3 / 4 * pi < d && d <= pi) || (-pi < d && d < -3 / 4 * pi);
+  }
+
+  static bool isYPan(Offset move) {
+    final d = move.direction;
+    return (pi / 4 < d && d < 3 / 4 * pi) || (-3 / 4 * pi < d && d < -pi / 4);
   }
 }

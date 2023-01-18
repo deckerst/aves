@@ -18,6 +18,9 @@ abstract class AvesSearchDelegate extends SearchDelegate {
     query = initialQuery ?? '';
   }
 
+  @mustCallSuper
+  void dispose() {}
+
   @override
   Widget? buildLeading(BuildContext context) {
     if (settings.useTvLayout) {
@@ -44,7 +47,7 @@ abstract class AvesSearchDelegate extends SearchDelegate {
   @override
   List<Widget>? buildActions(BuildContext context) {
     return [
-      if (query.isNotEmpty)
+      if (!settings.useTvLayout && query.isNotEmpty)
         IconButton(
           icon: const Icon(AIcons.clear),
           onPressed: () {
@@ -63,28 +66,40 @@ abstract class AvesSearchDelegate extends SearchDelegate {
 
   void clean() {
     currentBody = null;
-    focusNode?.unfocus();
+    searchFieldFocusNode?.unfocus();
   }
 
   // adapted from Flutter `SearchDelegate` in `/material/search.dart`
 
   @override
   void showResults(BuildContext context) {
-    focusNode?.unfocus();
-    currentBody = SearchBody.results;
+    if (settings.useTvLayout) {
+      suggestionsScrollController?.jumpTo(0);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        suggestionsFocusNode?.requestFocus();
+        FocusScope.of(context).nextFocus();
+      });
+    } else {
+      searchFieldFocusNode?.unfocus();
+      currentBody = SearchBody.results;
+    }
   }
 
   @override
   void showSuggestions(BuildContext context) {
-    assert(focusNode != null, '_focusNode must be set by route before showSuggestions is called.');
-    focusNode!.requestFocus();
+    assert(searchFieldFocusNode != null, '_focusNode must be set by route before showSuggestions is called.');
+    searchFieldFocusNode!.requestFocus();
     currentBody = SearchBody.suggestions;
   }
 
   @override
   Animation<double> get transitionAnimation => proxyAnimation;
 
-  FocusNode? focusNode;
+  FocusNode? searchFieldFocusNode;
+
+  FocusNode? get suggestionsFocusNode => null;
+
+  ScrollController? get suggestionsScrollController => null;
 
   final TextEditingController queryTextController = TextEditingController();
 

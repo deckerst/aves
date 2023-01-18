@@ -49,6 +49,7 @@ object XMP {
     private const val GCONTAINER_ITEM_NS_URI = "http://ns.google.com/photos/1.0/container/item/"
     private const val GDEPTH_NS_URI = "http://ns.google.com/photos/1.0/depthmap/"
     private const val GDEVICE_NS_URI = "http://ns.google.com/photos/dd/1.0/device/"
+    private const val GDEVICE_CONTAINER_NS_URI = "http://ns.google.com/photos/dd/1.0/container/"
     private const val GDEVICE_ITEM_NS_URI = "http://ns.google.com/photos/dd/1.0/item/"
     private const val GIMAGE_NS_URI = "http://ns.google.com/photos/1.0/image/"
     private const val GPANO_NS_URI = "http://ns.google.com/photos/1.0/panorama/"
@@ -70,6 +71,7 @@ object XMP {
     // cf https://developers.google.com/vr/reference/cardboard-camera-vr-photo-format
     private val knownDataProps = listOf(
         XMPPropName(GAUDIO_NS_URI, "Data"),
+        XMPPropName(GCAMERA_NS_URI, "RelitInputImageData"),
         XMPPropName(GIMAGE_NS_URI, "Data"),
         XMPPropName(GDEPTH_NS_URI, "Data"),
         XMPPropName(GDEPTH_NS_URI, "Confidence"),
@@ -79,7 +81,8 @@ object XMP {
 
     // google portrait
 
-    val GDEVICE_DIRECTORY_PROP_NAME = XMPPropName(GDEVICE_NS_URI, "Container/Container:Directory")
+    val GDEVICE_CONTAINER_PROP_NAME = XMPPropName(GDEVICE_NS_URI, "Container")
+    val GDEVICE_CONTAINER_DIRECTORY_PROP_NAME = XMPPropName(GDEVICE_CONTAINER_NS_URI, "Directory")
     val GDEVICE_CONTAINER_ITEM_DATA_URI_PROP_NAME = XMPPropName(GDEVICE_ITEM_NS_URI, "DataURI")
     val GDEVICE_CONTAINER_ITEM_LENGTH_PROP_NAME = XMPPropName(GDEVICE_ITEM_NS_URI, "Length")
     val GDEVICE_CONTAINER_ITEM_MIME_PROP_NAME = XMPPropName(GDEVICE_ITEM_NS_URI, "Mime")
@@ -254,8 +257,16 @@ object XMP {
         return doesPropertyExist(prop.nsUri, prop.toString())
     }
 
+    fun XMPMeta.doesPropPathExist(props: List<XMPPropName>): Boolean {
+        return doesPropertyExist(props.first().nsUri, props.joinToString("/"))
+    }
+
     fun XMPMeta.countPropArrayItems(prop: XMPPropName): Int {
         return countArrayItems(prop.nsUri, prop.toString())
+    }
+
+    fun XMPMeta.countPropPathArrayItems(props: List<XMPPropName>): Int {
+        return countArrayItems(props.first().nsUri, props.joinToString("/"))
     }
 
     fun XMPMeta.getPropArrayItemValues(prop: XMPPropName): List<String> {

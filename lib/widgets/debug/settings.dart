@@ -43,11 +43,6 @@ class DebugSettingsSection extends StatelessWidget {
               onChanged: (v) => settings.canUseAnalysisService = v,
               title: const Text('canUseAnalysisService'),
             ),
-            SwitchListTile(
-              value: settings.videoShowRawTimedText,
-              onChanged: (v) => settings.videoShowRawTimedText = v,
-              title: const Text('videoShowRawTimedText'),
-            ),
             Padding(
               padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
               child: InfoRowGroup(
