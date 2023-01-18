@@ -1208,5 +1208,7 @@
   "filterLocatedLabel": "Localisé",
   "@filterLocatedLabel": {},
   "tooManyItemsErrorDialogMessage": "Réessayez avec moins d’éléments.",
-  "@tooManyItemsErrorDialogMessage": {}
+  "@tooManyItemsErrorDialogMessage": {},
+  "settingsVideoGestureVerticalDragBrightnessVolume": "Balayer verticalement pour ajuster la luminosité et le volume",
+  "@settingsVideoGestureVerticalDragBrightnessVolume": {}
 }
