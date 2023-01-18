@@ -1208,5 +1208,7 @@
   "filterTaggedLabel": "Etiketli",
   "@filterTaggedLabel": {},
   "tooManyItemsErrorDialogMessage": "Daha az ögeyle tekrar deneyin.",
-  "@tooManyItemsErrorDialogMessage": {}
+  "@tooManyItemsErrorDialogMessage": {},
+  "settingsVideoGestureVerticalDragBrightnessVolume": "Parlaklığı/ses seviyesini ayarlamak için yukarı veya aşağı kaydırın",
+  "@settingsVideoGestureVerticalDragBrightnessVolume": {}
 }

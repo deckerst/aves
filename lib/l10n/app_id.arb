@@ -1208,5 +1208,7 @@
   "filterTaggedLabel": "Dilabel",
   "@filterTaggedLabel": {},
   "tooManyItemsErrorDialogMessage": "Coba lagi dengan item yang lebih sedikit.",
-  "@tooManyItemsErrorDialogMessage": {}
+  "@tooManyItemsErrorDialogMessage": {},
+  "settingsVideoGestureVerticalDragBrightnessVolume": "Usap ke atas atau bawah untuk mengatur kecerahan/volume",
+  "@settingsVideoGestureVerticalDragBrightnessVolume": {}
 }

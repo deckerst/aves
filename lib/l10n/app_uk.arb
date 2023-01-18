@@ -1364,5 +1364,9 @@
   "filterLocatedLabel": "Розташований",
   "@filterLocatedLabel": {},
   "filterTaggedLabel": "Позначений тегом",
-  "@filterTaggedLabel": {}
+  "@filterTaggedLabel": {},
+  "tooManyItemsErrorDialogMessage": "Спробуйте ще раз з меншою кількістю елементів.",
+  "@tooManyItemsErrorDialogMessage": {},
+  "settingsVideoGestureVerticalDragBrightnessVolume": "Проведіть пальцем угору або вниз, щоб налаштувати яскравість/гучність",
+  "@settingsVideoGestureVerticalDragBrightnessVolume": {}
 }
