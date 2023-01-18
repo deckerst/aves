@@ -7,10 +7,15 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - Video: optional gestures to adjust brightness/volume
+- TV: improved support for Search, About, Privacy Policy
 
 ### Changed
 
 - Viewer: do not keep max brightness when viewing info
+
+### Fixed
+
+- crash when media button events are triggered with no active media session
 
 ## <a id="v1.7.9"></a>[v1.7.9] - 2023-01-15
 
